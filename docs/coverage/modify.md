@@ -394,14 +394,23 @@ Capa=Actual`, p310); `Select object to offset or [Exit/Undo] <Exit>:` (es
 `Specify point on side to offset or [Exit/Multiple/Undo] <Exit>:` (es
 `Precise punto en lado de desplazamiento o [Salir/Múltiple/Deshacer] <Salir>:`) and Through's
 `Specify through point or [Exit/Multiple/Undo] <Exit>:` (es `Precise punto a atravesar o …`);
+the object is clicked or typed (`@` from LASTPOINT, a number its direct distance), a point on nothing
+asked again in silence and a selection mode refused with `Expects a point or Exit` (es
+`Requiere un punto o Salir`) (p240, p241, p245, p298); the pick puts LASTPOINT there, hit or miss
+(p240, p241); an object on a locked layer says `The object is on a locked layer.` (es
+`El objeto está en una capa bloqueada.`, p250); the side and through points are points, picked or
+typed (`x,y`, `@` from the object's pick, polar, a number, FROM) with X and Y in the tooltip and
+object snaps, Perpendicular measured from the pick (p253–p276, p285); a through point on the object
+(a line, its extension, a circle's rim) says `Invalid through point.` (es
+`Punto a atravesar no válido.`) and at a circle's centre `Cannot offset that object.` (es
+`Imposible transponer este objeto.`), then asks for the next object (p273, p277, p278, p295, p296);
 Multiple asks `… [Exit/Undo] <next object>:` (es `<siguiente objeto>`), Through's too and steps out
 from the last copy, Undo takes back the last copy; line/circle/arc/polyline (straight and arc
 bulges, with corner joins); the copy keeps the source's elevation, rise and thickness; an object at
 an angle to the UCS's XY plane does not highlight
 
 **Missing:** OFFSETGAPTYPE, ellipses and splines (an ellipse's parallel curve is a spline, and
-offsetting a spline is not built, so neither highlights, and `Cannot offset that object.` — es
-`Imposible transponer este objeto.` — is never needed), what Undo says with nothing left to undo
+offsetting a spline is not built, so neither highlights), what Undo says with nothing left to undo
 (nothing here), Erase and Layer kept past the session (OPEN leaves them, p310; a restart is
 unprobed)
 

@@ -1041,6 +1041,8 @@ export class CadRuntime extends Observable {
     if (this.typedZoom) this.zoomCombines = zoom
     this.history.nameCommand(next.id === "select" ? null : this.startingName)
     this.resetTracking()
+    // An override left pending ends with its command (probe offset/p294).
+    this.snapping.clearOverride()
     this.answerPrefix = null
     this.commandStart = this.echoMark ?? this.commandLine.mark()
     this.activeTool = next
@@ -5186,6 +5188,9 @@ export class CadRuntime extends Observable {
 
   /** Enter or Escape on the drawing, returning whether the tool kept it. */
   private endKey(e: KeyEventData): boolean {
+    // Enter answers an override's `of` as it answers the prompt, and the
+    // override goes with it (probe offset/p294).
+    if (e.key === "Enter") this.snapping.clearOverride()
     // Enter is a command confirmation: a tool may consume it to advance its own
     // flow (e.g. MOVE confirming the selection set) and keep running. Only when
     // unhandled does it accept the default and drop to neutral, ending a

@@ -27,6 +27,12 @@ import {
   ReplaceEntitiesCommand,
 } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
+import {
+  isCoordinateExpression,
+  parseCoordinate,
+} from "../input/coordinateInput"
+import type { MessageId } from "../EngineText"
+import { screenDistanceToEntity } from "../viewPick"
 import type { PromptId } from "../../locales/types"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
@@ -40,6 +46,7 @@ import {
   ToolQuestion,
   type QuestionInput,
 } from "./Tool"
+import { typedPick } from "./typedPick"
 
 /**
  * The offset tool creates equidistant parallel copies — AutoCAD's OFFSET,
@@ -211,16 +218,18 @@ export class OffsetTool implements Tool {
     }
   }
 
-  /** One object picked, then a point on its side. */
+  /**
+   * One object picked, whose refusal names Exit alone, as AutoCAD's does
+   * (`Expects a point or Exit`, probe offset/p245); the side and through
+   * points are their boxes' coordinates.
+   */
   takes(): QuestionInput | null {
-    switch (this.state.phase) {
-      case "select":
-        return "object"
-      case "side":
-        return "point"
-      default:
-        return null
-    }
+    return this.state.phase === "select"
+      ? {
+          refusal: ["invalidSelection", "expectsPointOr"],
+          keywords: { ids: ["Exit"] },
+        }
+      : null
   }
 
   defaultOption(): string | null {
@@ -245,7 +254,7 @@ export class OffsetTool implements Tool {
 
     switch (this.state.phase) {
       case "side":
-        this.state = { ...this.state, cursor: input.world }
+        this.state = { ...this.state, cursor: input.point }
         break
       case "select":
         // Preview which object a click would offset (AutoCAD rollover highlight).
@@ -266,40 +275,43 @@ export class OffsetTool implements Tool {
     if (input.button !== 0) return
 
     switch (this.state.phase) {
-      case "select": {
-        const hit = this.pickSource(input, ctx)
-        if (!hit) return
-        this.state =
-          this.state.distance === null
-            ? {
-                phase: "throughPoint",
-                source: hit,
-                erasedOriginal: false,
-                multiple: false,
-                cursor: input.point,
-              }
-            : {
-                phase: "side",
-                distance: this.state.distance,
-                source: hit,
-                original: hit,
-                erasedOriginal: false,
-                multiple: false,
-                cursor: input.world,
-              }
-        ctx.requestRender()
+      case "select":
+        this.pickObject(input, ctx)
         return
-      }
       case "side":
-        this.placeOffset(this.state, input.world, ctx)
-        return
       case "throughPoint":
-        this.placeThrough(this.state, input.point, ctx)
+        this.placePoint(input.point, ctx)
         return
       case "erase":
       case "layer":
         return
     }
+  }
+
+  /**
+   * A point typed at `Select object to offset` picks there, as a click
+   * does, a number its direct distance (probes offset/p240, p241, p297,
+   * p298); the selection modes stay refused (p245).
+   */
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    if (this.state.phase !== "select") return false
+    const point = typedPick(text, ctx)
+    if (!point) return false
+    this.pickObject(
+      {
+        screen: ctx.viewport.worldToScreen(point),
+        world: point,
+        point,
+        snap: null,
+        tracking: null,
+        button: 0,
+        shiftKey: false,
+        ctrlKey: false,
+        altKey: false,
+      },
+      ctx
+    )
+    return true
   }
 
   /**
@@ -390,10 +402,16 @@ export class OffsetTool implements Tool {
   }
 
   wantsSnap(): boolean {
-    // The through-point is a point, often an exact one; the distance's two
-    // points are the runtime's to measure, and object and side picking are
-    // proximity/side decisions.
-    return this.state.phase === "throughPoint"
+    // The distance's two points are the runtime's to measure.
+    return this.state.phase === "side" || this.state.phase === "throughPoint"
+  }
+
+  /**
+   * Perpendicular and Tangent at the side and through points measure from
+   * the object's pick, LASTPOINT (probes offset/p263, p285).
+   */
+  snapsFromLastPoint(): boolean {
+    return this.wantsSnap()
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
@@ -482,7 +500,9 @@ export class OffsetTool implements Tool {
       const { source, cursor } = this.state
       const prims = highlight(source, THEME.selected, 2)
       const offset = computeThrough(source, cursor)
-      if (offset) prims.push(...draw(offset, THEME.rubberBand, 1))
+      if (offset && offset.kind !== "refused") {
+        prims.push(...draw(offset, THEME.rubberBand, 1))
+      }
       return prims
     }
 
@@ -517,6 +537,79 @@ export class OffsetTool implements Tool {
     ctx.requestRender()
   }
 
+  /**
+   * The side or through point: picked, or typed as any point is — `@` from
+   * the object's pick, polar, a number its direct distance, an object snap,
+   * FROM — which the runtime reads (probes offset/p253–p276).
+   */
+  private openPointInput(ctx: ToolContext): void {
+    ctx.dynamicInput.open({
+      fields: [{ id: "point", kind: "coordinate" }],
+      commit: () => {},
+      commitRaw: (commitCtx) => this.commitTypedPoint(commitCtx),
+    })
+    if (this.lastScreen) ctx.dynamicInput.setPosition(this.lastScreen)
+    ctx.requestRender()
+  }
+
+  private commitTypedPoint(ctx: ToolContext): boolean {
+    const text = ctx.dynamicInput.getText("point").trim()
+    if (!isCoordinateExpression(text)) return false
+    const point = parseCoordinate(text, {
+      lastPoint: ctx.lastPoint,
+      relativeByDefault: false,
+      ucs: ctx.ucs,
+      elevation: ctx.elevation,
+    })
+    if (!point) return false
+    this.placePoint(point, ctx)
+    return true
+  }
+
+  /** The side or through point, clicked or typed: one path for both. */
+  private placePoint(point: Vec2, ctx: ToolContext): void {
+    if (this.state.phase === "side") this.placeOffset(this.state, point, ctx)
+    else if (this.state.phase === "throughPoint") {
+      this.placeThrough(this.state, point, ctx)
+    }
+  }
+
+  /**
+   * The object picked, clicked or typed, which puts LASTPOINT there, hit or
+   * miss (probes offset/p240, p241). An object on a locked layer is said
+   * and asked again (p250).
+   */
+  private pickObject(input: PointerInput, ctx: ToolContext): void {
+    if (this.state.phase !== "select") return
+    ctx.setLastPoint(input.world)
+    const hit = this.pickSource(input, ctx)
+    if (!hit) {
+      if (lockedObjectAt(input.screen, ctx)) {
+        ctx.report(ctx.text.message("objectOnLockedLayer"), "error")
+      }
+      return
+    }
+    this.state =
+      this.state.distance === null
+        ? {
+            phase: "throughPoint",
+            source: hit,
+            erasedOriginal: false,
+            multiple: false,
+            cursor: input.point,
+          }
+        : {
+            phase: "side",
+            distance: this.state.distance,
+            source: hit,
+            original: hit,
+            erasedOriginal: false,
+            multiple: false,
+            cursor: input.point,
+          }
+    this.openPointInput(ctx)
+  }
+
   private backToDistance(ctx: ToolContext): void {
     this.state = { phase: "distance" }
     this.openDistanceInput(ctx)
@@ -543,7 +636,7 @@ export class OffsetTool implements Tool {
   private selectNext(ctx: ToolContext): void {
     const distance = this.state.phase === "side" ? this.state.distance : null
     this.state = { phase: "select", distance, hover: null }
-    ctx.requestRender()
+    this.openKeywordPrompt(ctx)
   }
 
   /**
@@ -572,10 +665,10 @@ export class OffsetTool implements Tool {
         offsetToEntity(offset, this.copyLayer(state.source, ctx))
       )
       this.state = { ...state, source, erasedOriginal, cursor: side }
+      ctx.requestRender()
     } else {
-      this.state = { phase: "select", distance: state.distance, hover: null }
+      this.selectNext(ctx)
     }
-    ctx.requestRender()
   }
 
   /**
@@ -589,7 +682,14 @@ export class OffsetTool implements Tool {
     ctx: ToolContext
   ): void {
     const offset = computeThrough(state.source, point)
-    if (!offset) return // degenerate (the point lies on the object); wait
+    if (!offset) return
+    if (offset.kind === "refused") {
+      // Said, then the next object, Multiple or not (probes offset/p277,
+      // p295, p296).
+      ctx.report(ctx.text.message(offset.message), "error")
+      this.selectNext(ctx)
+      return
+    }
     const erasedOriginal = this.emitCopy(
       state.source,
       state.source,
@@ -597,10 +697,12 @@ export class OffsetTool implements Tool {
       state.erasedOriginal,
       ctx
     )
-    this.state = state.multiple
-      ? { ...state, erasedOriginal, cursor: point }
-      : { phase: "select", distance: null, hover: null }
-    ctx.requestRender()
+    if (state.multiple) {
+      this.state = { ...state, erasedOriginal, cursor: point }
+      ctx.requestRender()
+    } else {
+      this.selectNext(ctx)
+    }
   }
 
   /**
@@ -668,6 +770,23 @@ export class OffsetTool implements Tool {
     ctx.execute(new AddEntityCommand(copy))
     return erasedOriginal
   }
+}
+
+/**
+ * Whether an object on a locked layer is under `screen`, which `ctx.pick`
+ * passes over: AutoCAD's pick finds it to refuse it (probe offset/p250).
+ */
+function lockedObjectAt(screen: Vec2, ctx: ToolContext): boolean {
+  const { document, viewport } = ctx
+  const pixels = viewport.worldToScreenDistance(ctx.pickTolerance())
+  return document
+    .getEntities()
+    .some(
+      (entity) =>
+        document.getLayer(entity.layerId)?.locked === true &&
+        document.isEntityVisible(entity) &&
+        screenDistanceToEntity(viewport, entity, screen, ctx.blocks) <= pixels
+    )
 }
 
 /** The bare shape of an entity, for drawing highlights without an offset. */
@@ -766,14 +885,30 @@ function computeOffset(
   }
 }
 
+/** A through point AutoCAD refuses, in its words. */
+interface ThroughRefusal {
+  readonly kind: "refused"
+  readonly message: MessageId
+}
+
+/** On the object: on a line, its extension or a circle's rim (21221). */
+const ON_OBJECT: ThroughRefusal = {
+  kind: "refused",
+  message: "invalidThroughPoint",
+}
+
 /**
  * The offset copy of `source` passing through `point` — AutoCAD's Through. For
  * a line, the parallel line that contains the point (shifted by the point's
  * offset from its perpendicular foot); for a circle/arc, the concentric one
- * whose radius is the point's distance to the centre. `null` when degenerate
- * (the point lies on the line, or the radius would be zero).
+ * whose radius is the point's distance to the centre. Refused for a point on
+ * the object, and at the centre, a radius of zero, `Cannot offset that
+ * object.` (probes offset/p273, p277, p278, p295, p296).
  */
-function computeThrough(source: Entity, point: Vec2): OffsetGeom | null {
+function computeThrough(
+  source: Entity,
+  point: Vec2
+): OffsetGeom | ThroughRefusal | null {
   switch (source.type) {
     case "line": {
       const foot = closestPointOnInfiniteLine(
@@ -782,30 +917,31 @@ function computeThrough(source: Entity, point: Vec2): OffsetGeom | null {
         point
       ).point
       const delta = V.sub(point, foot)
-      if (V.length(delta) < 1e-9) return null // the point lies on the line
+      if (V.length(delta) < 1e-9) return ON_OBJECT
       return {
         kind: "line",
         a: V.add(source.start, delta),
         b: V.add(source.end, delta),
       }
     }
-    case "circle": {
-      const radius = V.distance(source.center, point)
-      return radius > 1e-9
-        ? { kind: "circle", center: source.center, radius }
-        : null
-    }
+    case "circle":
     case "arc": {
       const radius = V.distance(source.center, point)
-      return radius > 1e-9
-        ? {
+      if (radius < 1e-9) {
+        return { kind: "refused", message: "cannotOffsetObject" }
+      }
+      if (Math.abs(radius - source.radius) < 1e-9 * source.radius) {
+        return ON_OBJECT
+      }
+      return source.type === "circle"
+        ? { kind: "circle", center: source.center, radius }
+        : {
             kind: "arc",
             center: source.center,
             radius,
             startAngle: source.startAngle,
             endAngle: source.endAngle,
           }
-        : null
     }
     case "polyline": {
       // The offset distance is the point's perpendicular distance to the
@@ -825,7 +961,7 @@ function computeThrough(source: Entity, point: Vec2): OffsetGeom | null {
               ).distance
         if (d < best) best = d
       }
-      return best > 1e-9 ? offsetPolyline(source, best, point) : null
+      return best > 1e-9 ? offsetPolyline(source, best, point) : ON_OBJECT
     }
     case "ellipse":
     case "spline":

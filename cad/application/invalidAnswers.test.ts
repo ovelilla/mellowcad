@@ -313,12 +313,18 @@ describe("a wrong answer mid-command", () => {
   })
 
   it("expects a point or the prompt's keywords where one object is picked", () => {
+    // probe offset/p245: OFFSET's names Exit alone, AutoCAD's own list.
     const cad = createHarness({ entities: twoLines() })
     cad.command("OFFSET").type("10").enter()
     answerLine(cad, "FOO")
     expect(cad.commandLog().slice(-2)).toEqual([
       "*Invalid selection*",
-      "Expects a point or Exit/Undo",
+      "Expects a point or Exit",
+    ])
+    answerLine(cad, "_W")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "*Invalid selection*",
+      "Expects a point or Exit",
     ])
     cad.escape().command("FILLET")
     answerLine(cad, "FOO")

@@ -1720,6 +1720,9 @@ export const en: EngineCatalog = {
         ],
         "  OFFSETGAPTYPE=0"
       ],
+      "objectOnLockedLayer": "The object is on a locked layer.",
+      "invalidThroughPoint": "Invalid through point.",
+      "cannotOffsetObject": "Cannot offset that object.",
       "objectsFound": [
         [
           "box",

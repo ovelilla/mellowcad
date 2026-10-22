@@ -4215,4 +4215,213 @@ describe("OFFSET", () => {
     const copy = linesOf(cad.entities()).find((line) => line.id !== "L1")!
     expect(copy.start.y).toBeCloseTo(50)
   })
+
+  describe("its picks and points", () => {
+    const L1 = () => lineOf(p(0, 0), p(100, 0), { id: "L1" })
+    const C1 = () => circleOf(p(200, 100), 30, { id: "C1" })
+    /** The console's drawing: the line, two more, the circle (offset/p263). */
+    const drawing = () => [
+      L1(),
+      lineOf(p(110, 1), p(110, 5), { id: "L2" }),
+      lineOf(p(60, 30), p(100, -10), { id: "L3" }),
+      C1(),
+    ]
+    const SELECT = "Select object to offset or [Exit/Undo] <Exit>:"
+
+    function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+      for (const text of texts) {
+        cad.runtime.setCommandLineText(text)
+        cad.runtime.submitCommandLine()
+      }
+      return cad
+    }
+    const copyOf = (cad: CadHarness) =>
+      linesOf(cad.entities()).find((line) => !/^L\d$/.test(line.id))
+    function lastPoint(cad: CadHarness): string {
+      answer(cad, "ID", "@")
+      return cad.commandLog().at(-1)!.trim()
+    }
+
+    it("picks the object at a point typed, and on nothing asks again in silence", () => {
+      // probes offset/p240, p241: `50,30` asks again, LASTPOINT 50,30; `50,0`
+      // picks the line and goes on to its side.
+      const cad = answer(createHarness({ entities: [L1()] }), "OFFSET", "10")
+      answer(cad, "50,30")
+      expect(cad.commandLog().slice(-2)).toEqual([
+        "Specify offset distance or [Through/Erase/Layer] <Through>: 10",
+        `${SELECT} 50,30`,
+      ])
+      expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+      answer(cad, "50,0")
+      expect(cad.state().commandLine.prompt).toBe(
+        "OFFSET Specify point on side to offset or [Exit/Multiple/Undo] <Exit>:"
+      )
+      cad.escape()
+      expect(lastPoint(cad)).toBe("X = 50.00     Y = 0.00     Z = 0.00")
+    })
+
+    it("picks with `@` from LASTPOINT", () => {
+      // probe offset/p298: `@50,-50` after `ID 0,50` picks the line at 50,0.
+      const cad = createHarness({ entities: [L1()] })
+      answer(cad, "ID", "0,50", "OFFSET", "10", "@50,-50", "50,50", "")
+      expect(copyOf(cad)?.start.y).toBeCloseTo(10)
+    })
+
+    it("puts LASTPOINT at the object's pick, hit or miss", () => {
+      // probes offset/p240, p241 (typed; a click is taken alike, OFFSET-D23).
+      const cad = createHarness({ entities: [L1()] })
+      answer(cad, "ID", "0,50", "OFFSET", "10")
+      cad.click(p(50, 30))
+      cad.escape()
+      expect(lastPoint(cad)).toBe("X = 50.00     Y = 30.00     Z = 0.00")
+      answer(cad, "OFFSET", "10")
+      cad.click(p(50, 0)).enter()
+      expect(lastPoint(cad)).toBe("X = 50.00     Y = 0.00     Z = 0.00")
+    })
+
+    it("takes a side point typed, absolute or from the pick", () => {
+      // probe offset/p253: `30,20` puts the copy at y=10.
+      const cad = createHarness({ entities: [L1()] })
+      answer(cad, "OFFSET", "10")
+      cad.click(p(50, 0))
+      answer(cad, "30,20")
+      expect(copyOf(cad)?.start.y).toBeCloseTo(10)
+      // probe offset/p255: `@0,-20` is from the object's pick, 50,0, and
+      // LASTPOINT is the side point.
+      const below = createHarness({ entities: [L1()] })
+      answer(below, "ID", "0,50", "OFFSET", "10")
+      below.click(p(50, 0))
+      answer(below, "@0,-20", "")
+      expect(copyOf(below)?.start.y).toBeCloseTo(-10)
+      expect(lastPoint(below)).toBe("X = 50.00     Y = -20.00     Z = 0.00")
+    })
+
+    it("takes a through point typed: absolute, from the pick, polar", () => {
+      // probe offset/p270: `30,20` → y=20.
+      const cad = answer(createHarness({ entities: [L1()] }), "OFFSET", "T")
+      cad.click(p(50, 0))
+      answer(cad, "30,20", "")
+      expect(copyOf(cad)?.start.y).toBeCloseTo(20)
+      // probe offset/p272: `@0,-20` after `ID 0,50` is from the pick → y=-20.
+      const from = createHarness({ entities: [L1()] })
+      answer(from, "ID", "0,50", "OFFSET", "T")
+      from.click(p(50, 0))
+      answer(from, "@0,-20", "")
+      expect(copyOf(from)?.start.y).toBeCloseTo(-20)
+      // probe offset/p274: `20<90` → y=20.
+      const polar = answer(createHarness({ entities: [L1()] }), "OFFSET", "T")
+      polar.click(p(50, 0))
+      answer(polar, "20<90", "")
+      expect(copyOf(polar)?.start.y).toBeCloseTo(20)
+    })
+
+    it("shows X and Y at the side and through points", () => {
+      // desktop offset/d01-5, d02-1: the cursor's X and Y in the tooltip.
+      const cad = createHarness({ entities: [L1()] })
+      cad.command("OFFSET").type("10").enter().click(p(50, 0))
+      const kinds = () =>
+        cad.state().dynamicInput?.fields.map((field) => field.kind)
+      expect(kinds()).toEqual(["coordinate"])
+      cad.escape().command("OFFSET").option("Through").click(p(50, 0))
+      expect(kinds()).toEqual(["coordinate"])
+    })
+
+    it("refuses an object on a locked layer in words", () => {
+      // probe offset/p250: `The object is on a locked layer.`, then the
+      // prompt again and no copy.
+      const cad = createHarness()
+      const locked = cad.runtime.createLayer("LK")
+      cad.runtime.document.load([
+        lineOf(p(0, 0), p(100, 0), { id: "L1", layerId: locked }),
+      ])
+      cad.runtime.updateLayer(locked, { locked: true })
+      answer(cad, "OFFSET", "10")
+      cad.click(p(50, 0))
+      expect(cad.commandLog().slice(-2)).toEqual([
+        SELECT,
+        "The object is on a locked layer.",
+      ])
+      expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+      answer(cad, "50,0")
+      expect(cad.commandLog().slice(-2)).toEqual([
+        `${SELECT} 50,0`,
+        "The object is on a locked layer.",
+      ])
+      answer(cad, "")
+      expect(cad.entityCount).toBe(1)
+    })
+
+    it("refuses a through point on the object, and asks for the next object", () => {
+      // probe offset/p277: `30,0` on the line; LASTPOINT 30,0.
+      const cad = answer(createHarness({ entities: [L1()] }), "OFFSET", "T")
+      cad.click(p(50, 0))
+      answer(cad, "30,0")
+      expect(cad.commandLog().slice(-2)).toEqual([
+        "Specify through point or [Exit/Multiple/Undo] <Exit>: 30,0",
+        "Invalid through point.",
+      ])
+      expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+      cad.escape()
+      expect(lastPoint(cad)).toBe("X = 30.00     Y = 0.00     Z = 0.00")
+      // probes offset/p273, p278: `@` (the pick) and the line's extension.
+      for (const at of ["@", "150,0"]) {
+        const again = answer(createHarness({ entities: [L1()] }), "OFFSET", "T")
+        again.click(p(50, 0))
+        answer(again, at)
+        expect(again.commandLog().at(-1)).toBe("Invalid through point.")
+        expect(again.entityCount).toBe(1)
+      }
+    })
+
+    it("refuses a through point on a circle's rim, and at its centre cannot offset", () => {
+      // probe offset/p296: on the rim, `Invalid through point.`, no copy.
+      const rim = answer(createHarness({ entities: [C1()] }), "OFFSET", "T")
+      rim.click(p(230, 100)).click(p(200, 130))
+      expect(rim.commandLog().at(-1)).toBe("Invalid through point.")
+      expect(rim.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+      expect(rim.entityCount).toBe(1)
+      // probe offset/p295: at the centre, `Cannot offset that object.`.
+      const centre = answer(createHarness({ entities: [C1()] }), "OFFSET", "T")
+      centre.click(p(230, 100)).click(p(200, 100))
+      expect(centre.commandLog().at(-1)).toBe("Cannot offset that object.")
+      // Still in Through: the next object goes on to its through point.
+      centre.click(p(230, 100))
+      expect(centre.state().commandLine.prompt).toBe(
+        "OFFSET Specify through point or [Exit/Multiple/Undo] <Exit>:"
+      )
+    })
+
+    it("snaps the side point", () => {
+      // probe offset/p263: `_END of 110,-1` is 110,1, so the copy goes up
+      // though the raw point is below; LASTPOINT 110,1.
+      const cad = answer(createHarness({ entities: drawing() }), "OFFSET", "10")
+      cad.click(p(50, 0))
+      answer(cad, "_END", "110,-1", "")
+      expect(copyOf(cad)?.start.y).toBeCloseTo(10)
+      expect(lastPoint(cad)).toBe("X = 110.00     Y = 1.00     Z = 0.00")
+    })
+
+    it("measures Perpendicular at the through point from the pick", () => {
+      // probe offset/p285: `_PER to 99,-9` finds 70,20 on the slanted line,
+      // perpendicular from the pick at 50,0.
+      const cad = answer(createHarness({ entities: drawing() }), "OFFSET", "T")
+      cad.click(p(50, 0))
+      answer(cad, "_PER", "99,-9", "")
+      expect(copyOf(cad)?.start.y).toBeCloseTo(20)
+      expect(lastPoint(cad)).toBe("X = 70.00     Y = 20.00     Z = 0.00")
+    })
+
+    it("leaves no override behind when Enter answers it", () => {
+      // probe offset/p294: `_END`, Enter at `of` ends OFFSET; `ID 40,40` is
+      // 40,40.
+      const cad = answer(createHarness({ entities: drawing() }), "OFFSET", "T")
+      cad.click(p(50, 0))
+      answer(cad, "_END", "")
+      expect(cad.activeToolId()).toBe("select")
+      answer(cad, "ID", "40,40")
+      expect(cad.commandLog().at(-1)!.trim()).toBe(
+        "X = 40.00     Y = 40.00     Z = 0.00"
+      )
+    })
+  })
 })

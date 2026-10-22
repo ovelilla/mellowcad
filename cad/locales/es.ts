@@ -2067,6 +2067,9 @@ export const es: EngineLocale = {
         ],
         "  OFFSETGAPTYPE=0"
       ],
+      "objectOnLockedLayer": "El objeto está en una capa bloqueada.",
+      "invalidThroughPoint": "Punto a atravesar no válido.",
+      "cannotOffsetObject": "Imposible transponer este objeto.",
       "rotatingCopy": "Girando una copia de los objetos seleccionados.",
       "scalingCopy": "Escalando una copia de los objetos seleccionados.",
       "objectsFound": [

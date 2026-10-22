@@ -83,10 +83,13 @@ nothing, `No found for specified point.`, as 2027 writes it (LINE-D11); es
 `No se ha encontrado ptoFINal para el punto designado.` (puntoMEDio, CENtro, PERpendicular,
 INTersección); Quadrant's, Nearest's and Insertion's names (`Quadrant`, `Nearest`, `Insert`; es
 `CUAdrante`, `CERcano`, `INSerción`) come from table 27408, **unverified**. A second override
-typed at the first's `of` is `Invalid point.`, and neither holds (p162). A Tangent or Perpendicular
+typed at the first's `of` is `Invalid point.`, and neither holds (p162). Enter at an override's `of`
+is the prompt's own Enter, and the override never outlives its command (offset/p294). A Tangent or
+Perpendicular
 at a prompt with no base point measures from LASTPOINT where AutoCAD's does — CIRCLE's centre
 (circle/p343, p345), ELLIPSE's first point and centre (ellipse/p266, p267, p295), SPLINE's first
-point, Fit and CV (spline/p242, p243, p274) —, a LASTPOINT inside the circle finding no tangent
+point, Fit and CV (spline/p242, p243, p274), OFFSET's side and through points (offset/p263,
+p285) —, a LASTPOINT inside the circle finding no tangent
 (spline/p252). At SPLINE's end tangent a Tangent on a circle or an arc is deferred: the end leaves
 along the circle where it is nearest the spline's end, pointing the pick's way (spline/p250, p262,
 p263, p272); on other objects it is the ordinary one from the last point (unprobed).

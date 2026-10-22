@@ -648,6 +648,27 @@ describe("a second object snap override", () => {
   })
 })
 
+describe("an object snap override answered by Enter", () => {
+  it("ends with the command, and the next command's point is as typed", () => {
+    // probe offset/p294: Enter at `of` ends the command; `ID 40,40` after
+    // it is 40,40, no Endpoint looked for.
+    const cad = answer(
+      createHarness({ entities: [REFERENCE] }),
+      "LINE",
+      "50,50",
+      "_END",
+      ""
+    )
+
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.state().snapOverride).toBeNull()
+    answer(cad, "ID", "40,40")
+    expect(cad.commandLog().at(-1)?.trim()).toBe(
+      "X = 40.00     Y = 40.00     Z = 0.00"
+    )
+  })
+})
+
 describe("the echo of an object snap override", () => {
   it.each([
     ["_END", "of"],

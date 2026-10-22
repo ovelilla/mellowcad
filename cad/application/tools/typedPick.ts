@@ -11,8 +11,9 @@ import { ToolContext } from "./Tool"
  * and CHAMFER's object prompts, TRIM's and EXTEND's), which AutoCAD 2023's
  * console takes as a pick there: read as a first point is, `@` from
  * LASTPOINT, a number its direct distance (acc/wn11, wn51, wn52), and then
- * LASTPOINT itself (wn17, wn44, wn54). Null for what is no point, which the
- * prompt refuses.
+ * LASTPOINT itself (wn17, wn44, wn54); 2027's console at OFFSET's object
+ * alike (offset/p240, p241, p297, p298). Null for what is no point, which
+ * the prompt refuses.
  */
 export function typedPick(text: string, ctx: ToolContext): Vec3 | null {
   const distance = isCoordinateExpression(text) ? null : parseNumber(text)

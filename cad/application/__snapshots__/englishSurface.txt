@@ -2570,7 +2570,9 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt| Specify offset distance or [Through/Erase/Layer] <Through>: 20
 > pick
   prompt: OFFSET Specify point on side to offset or [Exit/Multiple/Undo] <Exit>:
+  asks: ""
   tip: Specify point on side to offset or
+  dyn: "X,Y"=""||*
   options: [E] Exit, [M] Multiple, [U] Undo
   prompt| Select object to offset or [Exit/Undo] <Exit>:
 > M
@@ -2581,7 +2583,9 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt| Specify point on side to offset or [Exit/Undo] <next object>:
 > enter
   prompt: OFFSET Select object to offset or [Exit/Undo] <Exit>:
+  asks: 
   tip: Select object to offset or
+  dyn: 
   prompt| Specify point on side to offset or [Exit/Undo] <next object>:
 > U
   prompt| Select object to offset or [Exit/Undo] <Exit>: U
@@ -2603,12 +2607,16 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt| Specify offset distance or [Through/Erase/Layer] <20.00>: T
 > pick
   prompt: OFFSET Specify through point or [Exit/Multiple/Undo] <Exit>:
+  asks: ""
   tip: Specify through point or
+  dyn: "X,Y"=""||*
   options: [E] Exit, [M] Multiple, [U] Undo
   prompt| Select object to offset or [Exit/Undo] <Exit>:
 > through
   prompt: OFFSET Select object to offset or [Exit/Undo] <Exit>:
+  asks: 
   tip: Select object to offset or
+  dyn: 
   options: [E] Exit, [U] Undo
   prompt| Specify through point or [Exit/Multiple/Undo] <Exit>:
 > escape
@@ -5365,7 +5373,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > FOO
   prompt| Select object to offset or [Exit/Undo] <Exit>: FOO
   error| *Invalid selection*
-  error| Expects a point or Exit/Undo
+  error| Expects a point or Exit
 > escape
   prompt: Command:
   asks: -
