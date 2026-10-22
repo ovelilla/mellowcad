@@ -1,0 +1,8 @@
+(getvar "ACADVER")
+(getvar "_VERNUM")
+(getvar "FILLETRAD")
+(getvar "CHAMFERA")
+(getvar "CHAMFERB")
+(getvar "TRIMMODE")
+(getvar "CHAMMODE")
+(getvar "FILLETPOLYARC")

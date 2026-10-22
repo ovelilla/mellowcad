@@ -1,0 +1,18 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_LINE
+0,0
+100,0
+
+_LINE
+30,-20
+30,60
+
+_ID
+5,5
+_FILLET
+_SI
+
+(getvar "LASTPOINT")

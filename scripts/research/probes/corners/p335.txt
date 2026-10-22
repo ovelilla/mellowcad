@@ -1,0 +1,22 @@
+(entmake (list (cons 0 "ARC") (cons 100 "AcDbEntity") (cons 100 "AcDbCircle") (list 10 0.0 0.0 0.0) (cons 40 50.0) (cons 100 "AcDbArc") (cons 50 0.0) (cons 51 1.5707963267948966) (list 210 0.0 0.0 -1.0)))
+_LINE
+-30,-20
+-30,80
+
+(entmake (list (cons 0 "LWPOLYLINE") (cons 100 "AcDbEntity") (cons 100 "AcDbPolyline") (cons 90 3) (cons 70 0) (list 10 0.0 200.0) (cons 40 0.0) (cons 41 0.0) (cons 42 0.0) (list 10 100.0 200.0) (cons 40 0.0) (cons 41 0.0) (cons 42 0.0) (list 10 100.0 300.0) (cons 40 0.0) (cons 41 0.0) (cons 42 0.0) (list 210 0.0 0.0 -1.0)))
+_ZOOM
+_W
+-300,-300
+300,300
+_FILLET
+_R
+5
+-30,10
+-45,21.794
+_FILLET
+_R
+10
+-50,200
+-100,250
+MPDUMP
+-

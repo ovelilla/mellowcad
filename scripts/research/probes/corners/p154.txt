@@ -1,0 +1,24 @@
+_LINE
+0,0
+80,0
+
+_LINE
+100,20
+100,100
+
+_ZOOM
+_W
+-20,-20
+320,280
+_CHAMFER
+_D
+10
+5
+_U
+_D
+
+
+40,0
+100,60
+(getvar "CHAMFERA")
+(getvar "CHAMFERB")

@@ -1,0 +1,19 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_LINE
+0,0
+100,0
+
+_LINE
+30,-20
+30,60
+
+_ID
+5,5
+_FILLET
+30,10
+22.937
+(getvar "LASTPOINT")
+(progn (setq ss (ssget "_X") i 0) (if ss (repeat (sslength ss) (setq e (entget (ssname ss i))) (terpri) (princ (list (cdr (assoc 5 e)) (cdr (assoc 0 e)) (cdr (assoc 8 e)))) (foreach x e (if (member (car x) '(10 11 40 42 50 51)) (princ x))) (setq i (1+ i)))) (princ))
