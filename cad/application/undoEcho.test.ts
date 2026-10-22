@@ -411,6 +411,22 @@ describe("ERASE undone and redone", () => {
     ])
   })
 
+  // probe pieces/p264: a polyline, then a line; ERASE the polyline and U →
+  // the polyline is first again, and `ERASE _L` erases the line.
+  it("U puts the object back in its place in the drawing (pieces/p264)", () => {
+    const cad = answer(
+      createHarness({ entities: two() }),
+      "_ERASE",
+      "5,0",
+      "",
+      "_U"
+    )
+    expect(cad.entities().map((entity) => entity.id)).toEqual(["A", "B"])
+
+    answer(cad, "_ERASE", "_L", "")
+    expect(cad.entities().map((entity) => entity.id)).toEqual(["A"])
+  })
+
   it("MREDO 1 redoes it, and U steps back one command at a time (erase/p321, p322)", () => {
     const cad = answer(createHarness({ entities: two() }), "_ERASE", "ALL", "")
     answer(cad, "_U")

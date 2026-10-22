@@ -93,6 +93,41 @@ describe("entity storage", () => {
     expect(document.size).toBe(1)
   })
 
+  it("puts removed objects back at the indices they had, in one change", () => {
+    const ids = ["A", "B", "C", "D"]
+    const document = documentWith(
+      ids.map((id, i) => lineOf(p(0, i), p(1, i), { id }))
+    )
+    const placed = document.placesOf(["D", "B", "ghost"])
+    expect(placed.map((place) => [place.entity.id, place.index])).toEqual([
+      ["B", 1],
+      ["D", 3],
+    ])
+    document.removeMany(["B", "D"])
+    const listener = vi.fn()
+    document.subscribe(listener)
+
+    document.restoreMany(placed)
+
+    expect(document.getEntities().map((e) => e.id)).toEqual(ids)
+    expect(listener).toHaveBeenCalledTimes(1)
+  })
+
+  it("moves an object it still holds back to its index", () => {
+    const document = documentWith([
+      lineOf(p(0, 0), p(1, 0), { id: "A" }),
+      lineOf(p(0, 1), p(1, 1), { id: "B" }),
+    ])
+    const placed = document.placesOf(["A"])
+    document.remove("A")
+    document.add(lineOf(p(0, 0), p(2, 0), { id: "A" }))
+
+    document.restoreMany(placed)
+
+    expect(document.getEntities().map((e) => e.id)).toEqual(["A", "B"])
+    expect(document.get("A")).toBe(placed[0].entity)
+  })
+
   it("counts only the entities it actually removed", () => {
     const document = documentWith([
       lineOf(p(0, 0), p(1, 0), { id: "L1" }),

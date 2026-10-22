@@ -1,8 +1,9 @@
 import { describe, expect, it } from "vitest"
 import { CadHarness, createHarness } from "../../../test/harness"
-import { lineOf, p } from "../../../test/builders"
+import { layerOf, lineOf, p } from "../../../test/builders"
 import {
   createMText,
+  measureTextWidth,
   MTextEntity,
   TEXT_LINE_SPACING_FACTOR,
   TextEntity,
@@ -348,15 +349,62 @@ describe("editing MTEXT", () => {
     expect(cad.byId<MTextEntity>("M1").width).toBeCloseTo(120)
   })
 
-  it("explodes into one text per line", () => {
-    const cad = withMText()
+  // probe pieces/p255: Top left at 10,50, h10, on L1 red → TEXT OLD and
+  // LINES, BaseLeft, on L1 red (their positions differ by the font's metrics,
+  // EXP-06, the Text review's).
+  it("explodes into one text per line (pieces/p255)", () => {
+    const cad = createHarness()
+    cad.runtime.document.load(
+      [
+        {
+          ...createMText(p(10, 50), "OLD\\PLINES", {
+            height: 10,
+            id: "M1",
+            layerId: "L1",
+          }),
+          color: "#ff0000",
+        },
+      ],
+      { layers: [layerOf("0"), layerOf("L1")] }
+    )
     cad.select("M1").command("EXPLODE")
 
     const texts = cad.entities() as TextEntity[]
-    expect(texts.map((text) => [text.type, text.value])).toEqual([
-      ["text", "OLD"],
-      ["text", "LINES"],
+    expect(
+      texts.map((text) => [
+        text.type,
+        text.value,
+        text.justify,
+        text.layerId,
+        text.color,
+      ])
+    ).toEqual([
+      ["text", "OLD", "left", "L1", "#ff0000"],
+      ["text", "LINES", "left", "L1", "#ff0000"],
     ])
+    expect(texts[0].position).toBeCloseToPoint(p(10, 40))
+  })
+
+  // probe pieces/p256: Middle center at 10,50 → OLD BaseLeft at
+  // -4.328104,53.415189 and LINES at -10.334243,36.57799, each line's drawn
+  // left end, not the column.
+  it("makes each line Left at its drawn left end, whatever the attachment (pieces/p256)", () => {
+    const cad = createHarness({
+      entities: [
+        createMText(p(10, 50), "OLD\\PLINES", {
+          height: 10,
+          attachment: "mc",
+          id: "M1",
+        }),
+      ],
+    })
+    cad.select("M1").command("EXPLODE")
+
+    const [old, lines] = cad.entities() as TextEntity[]
+    expect([old.justify, lines.justify]).toEqual(["left", "left"])
+    expect(old.position.x).toBeCloseTo(10 - measureTextWidth("OLD", 10) / 2)
+    expect(lines.position.x).toBeCloseTo(10 - measureTextWidth("LINES", 10) / 2)
+    expect(old.position.x).toBeCloseTo(-4.328104, 0)
   })
 
   it("is picked anywhere inside its box", () => {

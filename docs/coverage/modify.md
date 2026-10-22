@@ -830,27 +830,44 @@ Backspace there is unverified)
 **Missing:** OOPS, which in 2027 brings back the last set ERASE erased even after other commands, as
 a step U names `OOPS`, and with nothing to bring back says nothing (erase/p307, p309)
 
-### `EXPLODE` / `X` · es `DESCOMP` / `DP`†
+### `EXPLODE` / `X` · es `DESCOMP` / `DP`
 
-**Implemented:** polyline → lines/arcs on its centreline, its widths lost with
+**Implemented:** `X` echoed `X EXPLODE`, es `DP` (`DESCOMP`), Enter repeats it (pieces/p240, p243,
+p245); one undo step that U names `EXPLODE` (es `DESCOMP`, p247), which puts the exploded objects
+back where they were in the drawing's order (`ERASE _L` then finds what was drawn after them,
+p262). Polyline → lines/arcs on its centreline, each with every property, its plane and Z
+(standing and −Z ones too, p248, p250, p251), its widths lost with
 `Exploding this polyline has lost width information.` / `The UNDO command will restore it.` for each
 wide one (es `Al descomponer esta línea se ha perdido información de grosor.` /
-`Se puede restituir con el comando DESHACER.`, the table's), block reference → contents (one nesting
-level), fresh ids, layer-0 reverts to real layer 0, multiline text → one TEXT per line as drawn,
-aligned by the attachment's column (Autodesk documents only "Explodes into text objects"); a
-reference with attributes gives its definitions back and drops the values. `Select objects:` takes
-whole objects (its refusal lists no `SUbobject/Object`, erase/p02, p138). Anything else is refused
-as it is found, under each selection's count and after the locked layer's line, counted in `found`
-and kept out of the set and its total: `1 found` / `1 was not able to be exploded.` (es
-`1 no se ha podido descomponer.`); at `Remove objects:` nothing is said (erase/p213–p219, p248). A spline passes and is refused by name once the set is closed, each one:
-`Cannot explode SPLINE` (es `No se puede descomponer SPLINE`; spline/p319, p324). Enter on an
-empty set, after everything was refused too, says `None found.` (es `No hallada.`, table 20841;
-p205, p216). A preselection is counted and sifted the same way after the echo; with nothing left
-it asks `Select objects:` and explodes at the first selection that adds something, with no Enter
+`Se puede restituir con el comando DESHACER.`, the table's; p249), block reference → contents (one
+nesting level), placed as the reference drew them, fresh ids, their own colours and layers, layer-0
+reverting to real layer 0 (p252); a reference with attributes gives its definitions back and drops
+the values (p254). Multiline text → one TEXT per line as drawn, each Left at its line's drawn left
+end whatever the attachment, wrapped lines included (p255–p257). A pattern hatch → its pattern's
+lines clipped to its boundary, on its layer with its colour and lineweight, each with linetype
+`Continuous` set (p259: 33 LINEs for ANSI31 over 100 × 50; p263). `Select objects:` takes whole
+objects (its refusal lists no `SUbobject/Object`, erase/p02, p138). A spline, an ellipse or
+elliptical arc and a SOLID hatch pass the count and are refused by name once the set is closed,
+each one: `Cannot explode SPLINE`, `Cannot explode ELLIPSE`, `Cannot explode HATCH` (es
+`No se puede descomponer …`; spline/p319, p324; pieces/p260, p261, p265). Anything else (lines,
+circles, arcs, texts, attribute definitions, dimensions) is refused as it is found, under each
+selection's count and after the locked layer's line, counted in `found` and kept out of the set and
+its total: `1 found` / `1 was not able to be exploded.` (es `1 no se ha podido descomponer.`); at
+`Remove objects:` nothing is said (erase/p213–p219, p248; pieces/p261). Enter on an empty set, after
+everything was refused too, says `None found.` (es `No hallada.`, table 20841; p205, p216). A
+preselection is counted and sifted the same way after the echo; with nothing left it asks
+`Select objects:` and explodes at the first selection that adds something, with no Enter
 (`1 found, 0 total` for a refused one, p241, p242, p254). It leaves nothing selected and the
 pieces as the Previous set (`ERASE _P` → `2 found`, p236, p258)
 
-**Missing:** ByBlock resolution, non-uniform-scale → ellipse conversion
+**Missing:** a dimension, which 2027 explodes into its LINEs, a SOLID per arrowhead and an MTEXT
+(pieces/p258): refused, as there is no SOLID object here (WHY at `ExplodeTool`'s refusal); a hatch
+of a pattern this build does not ship is named like a SOLID one; the pattern's lines are made in
+the generator's order, not AutoCAD's (p259 runs from the far corner); `Hatch boundary associativity
+removed.` (es `Asociatividad del contorno del sombreado eliminada.`, p263), as no hatch is
+associative here; exploded MTEXT's positions differ by the font's metrics (EXP-06, p255: OLD at
+9.324693,39.822647 in AutoCAD, 10,40 here); ByBlock resolution, non-uniform-scale → ellipse
+conversion
 
 ### `JOIN` / `J` · es `UNIR` / `U`†
 

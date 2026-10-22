@@ -123,6 +123,46 @@ describe("ReplaceEntitiesCommand", () => {
     expect(document.size).toBe(1)
     expect(document.has("L1")).toBe(true)
   })
+
+  // probe pieces/p262: U after EXPLODE puts the polyline back before the line
+  // drawn after it, and `ERASE _L` then erases the line.
+  it("puts what it removed back in its place in the drawing's order", () => {
+    const document = documentWith([L1, L2, circleOf(p(0, 0), 5, { id: "C1" })])
+    const history = historyOn(document)
+
+    history.execute(
+      new ReplaceEntitiesCommand(
+        ["L1", "C1"],
+        [
+          lineOf(p(0, 0), p(40, 0), { id: "A" }),
+          lineOf(p(60, 0), p(100, 0), { id: "B" }),
+        ]
+      )
+    )
+    history.undo()
+
+    expect(document.getEntities().map((e) => e.id)).toEqual(["L1", "L2", "C1"])
+  })
+
+  it("keeps a piece under the object's id where the object was", () => {
+    const document = documentWith([L1, L2])
+    const history = historyOn(document)
+
+    history.execute(
+      new ReplaceEntitiesCommand(
+        ["L1"],
+        [
+          lineOf(p(0, 0), p(40, 0), { id: "L1" }),
+          lineOf(p(60, 0), p(100, 0), { id: "B" }),
+        ]
+      )
+    )
+    expect(document.getEntities().map((e) => e.id)).toEqual(["L1", "L2", "B"])
+
+    history.undo()
+    expect(document.getEntities().map((e) => e.id)).toEqual(["L1", "L2"])
+    expect((document.get("L1") as LineEntity).end.x).toBe(100)
+  })
 })
 
 describe("RemoveEntitiesCommand", () => {
@@ -134,12 +174,8 @@ describe("RemoveEntitiesCommand", () => {
     expect(document.getEntities().map((e) => e.id)).toEqual(["L2"])
 
     history.undo()
-    expect(
-      document
-        .getEntities()
-        .map((e) => e.id)
-        .sort()
-    ).toEqual(["C1", "L1", "L2"])
+    // probe pieces/p264: U after ERASE puts the object back in its place.
+    expect(document.getEntities().map((e) => e.id)).toEqual(["L1", "L2", "C1"])
   })
 
   it("ignores ids that are not in the document", () => {

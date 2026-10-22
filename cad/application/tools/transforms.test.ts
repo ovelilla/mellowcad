@@ -15,6 +15,7 @@ import type {
 } from "../../domain/entities"
 import {
   assignEntityColor,
+  createAttributeDefinition,
   createBlockDefinition,
   createDimension,
   createInsert,
@@ -36,6 +37,7 @@ import {
   arcOf,
   circleOf,
   deg,
+  ellipseOf,
   hatchOf,
   layerOf,
   lineOf,
@@ -2540,7 +2542,9 @@ describe("EXPLODE", () => {
     closed: true,
   })
 
-  it("EXPLODE turns a closed polyline into its four segments", () => {
+  // probe pieces/p248: a closed polyline explodes into one object per
+  // segment, the closing one included, appended after what was drawn later.
+  it("EXPLODE turns a closed polyline into its four segments (pieces/p248)", () => {
     const cad = createHarness({ entities: [rectangle] })
 
     cad.select("P1").command("EXPLODE")
@@ -2555,7 +2559,9 @@ describe("EXPLODE", () => {
     expect(closing?.end).toBeCloseToPoint(p(0, 0))
   })
 
-  it("EXPLODE emits an arc for a bulged segment", () => {
+  // probe pieces/p248: the half circle from 100,0 to 100,100 → ARC centre
+  // 100,50, 270° → 90°.
+  it("EXPLODE emits an arc for a bulged segment (pieces/p248)", () => {
     const cad = createHarness({
       entities: [
         polylineOf([p(0, 0), p(100, 0), p(100, 100)], {
@@ -2571,9 +2577,11 @@ describe("EXPLODE", () => {
     const arc = cad.only<ArcEntity>("arc")
     expect(arc.center).toBeCloseToPoint(p(100, 50))
     expect(arc.radius).toBeCloseTo(50)
+    expect(arc.startAngle).toBeCloseToAngle(deg(270))
+    expect(arc.endAngle).toBeCloseToAngle(deg(90))
   })
 
-  it("previews the object under the cursor while selecting", () => {
+  it("previews the object under the cursor while selecting (desktop pieces/d08)", () => {
     const cad = createHarness({ entities: [rectangle] })
     const previews = () =>
       cad
@@ -2627,6 +2635,246 @@ describe("EXPLODE", () => {
       expect(at).toBeGreaterThanOrEqual(0)
       expect(lines.slice(at + 1)).toEqual([named])
       expect(mixed.typeCounts()).toEqual({ line: 1, spline: 1 })
+    }
+  )
+
+  // probes pieces/p261 (ALL over a line, circle, arc, ellipse, text and
+  // attribute definition) and p265 (a line and an elliptical arc): the
+  // ellipse passes the count and is named once the set is closed.
+  it.each([
+    [
+      undefined,
+      "EXPLODE",
+      ["6 found", "5 were not able to be exploded."],
+      "Select objects:",
+      "Cannot explode ELLIPSE",
+    ],
+    [
+      es,
+      "DESCOMP",
+      ["6 encontrados", "5 no se han podido descomponer."],
+      "Designe objetos:",
+      "No se puede descomponer ELLIPSE",
+    ],
+  ] as const)(
+    "names each ellipse it cannot explode (pieces/p261, p265; %#)",
+    (locale, name, counted, prompt, named) => {
+      const cad = createHarness({
+        locale,
+        entities: [
+          lineOf(p(0, 0), p(10, 0)),
+          circleOf(p(50, 0), 5),
+          arcOf(p(80, 0), 5, 0, Math.PI / 2),
+          ellipseOf(p(120, 0), p(10, 0), 0.3),
+          createText(p(0, -20), "HI", { height: 5 }),
+          createAttributeDefinition(p(50, -20), "T", { height: 5 }),
+        ],
+      })
+      answer(cad, name, "_ALL", "")
+      expect(cad.commandLog().slice(-4)).toEqual([...counted, prompt, named])
+      expect(cad.typeCounts().ellipse).toBe(1)
+
+      const arc = createHarness({
+        locale,
+        entities: [
+          lineOf(p(0, 0), p(10, 0)),
+          ellipseOf(p(50, 0), p(10, 0), 0.3, {
+            startParam: 0,
+            endParam: Math.PI / 2,
+          }),
+        ],
+      })
+      answer(arc, name, "_ALL", "")
+      expect(arc.commandLog().slice(-3)).toEqual([
+        locale
+          ? "1 no se ha podido descomponer."
+          : "1 was not able to be exploded.",
+        prompt,
+        named,
+      ])
+    }
+  )
+
+  // probe pieces/p259: ANSI31 at scale 1 in a metric drawing (acadiso.pat's
+  // `45, 0,0, 0,3.175`, here ANSI31 at 25.4) over -50,-25 → 50,25, its
+  // boundary erased → 33 LINEs at 45°, from -50,21.842 → -46.842,25 to the
+  // far corner, each `Continuous`; the hatch gone.
+  it("explodes a pattern hatch into its pattern's lines, clipped to its boundary (pieces/p259)", () => {
+    const cad = createHarness({
+      entities: [
+        hatchOf([loopOf(p(-50, -25), p(50, 25))], {
+          patternId: "ANSI31",
+          patternScale: 25.4,
+        }),
+      ],
+    })
+    answer(cad, "EXPLODE", "L", "")
+
+    expect(cad.commandLog().slice(-2)).toEqual(["1 found", "Select objects:"])
+    const lines = linesOf(cad.entities())
+    expect(cad.typeCounts()).toEqual({ line: 33 })
+    const pitch = 3.175 * Math.SQRT2
+    const offsets = lines.map((line) => {
+      expect(line.linetype).toBe("Continuous")
+      expect(line.end.x - line.start.x).toBeGreaterThan(0)
+      expect(line.end.y - line.start.y).toBeCloseTo(line.end.x - line.start.x)
+      for (const end of [line.start, line.end]) {
+        const onSide =
+          Math.abs(Math.abs(end.x) - 50) < 1e-9 ||
+          Math.abs(Math.abs(end.y) - 25) < 1e-9
+        expect(onSide).toBe(true)
+      }
+      return Math.round((line.start.y - line.start.x) / pitch)
+    })
+    expect([...offsets].sort((a, b) => a - b)).toEqual(
+      Array.from({ length: 33 }, (_, i) => i - 16)
+    )
+    const corner = lines[offsets.indexOf(16)]
+    expect(corner.start).toBeCloseToPoint(p(-50, 21.842049))
+    expect(corner.end).toBeCloseToPoint(p(-46.842049, 25))
+  })
+
+  // probe pieces/p263: the hatch drawn on L1 with colour 1, lineweight 0.50
+  // and DASHED current, its boundary kept → each LINE on L1, colour 1,
+  // lineweight 0.50, linetype Continuous.
+  it("gives the lines the hatch's layer, colour and lineweight, Continuous (pieces/p263)", () => {
+    const cad = createHarness()
+    cad.runtime.document.load(
+      [
+        rectOf(p(-50, -25), p(50, 25), { id: "B", layerId: "L1" }),
+        {
+          ...hatchOf([loopOf(p(-50, -25), p(50, 25))], {
+            id: "H",
+            layerId: "L1",
+            patternScale: 25.4,
+          }),
+          color: "#ff0000",
+          linetype: "Dashed",
+          lineweight: 0.5,
+        },
+      ],
+      { layers: [layerOf("0"), layerOf("L1")] }
+    )
+    cad.select("H").command("EXPLODE")
+
+    const lines = linesOf(cad.entities())
+    expect(lines).toHaveLength(33)
+    const worn = new Set(
+      lines.map((line) =>
+        JSON.stringify([
+          line.layerId,
+          line.color,
+          line.linetype,
+          line.lineweight,
+        ])
+      )
+    )
+    expect([...worn]).toEqual([
+      JSON.stringify(["L1", "#ff0000", "Continuous", 0.5]),
+    ])
+    expect(cad.typeCounts()).toEqual({ polyline: 1, line: 33 })
+  })
+
+  // probe pieces/p260: a SOLID hatch passes the count and is named once the
+  // set is closed.
+  it.each([
+    [
+      undefined,
+      "EXPLODE",
+      ["1 found", "Select objects:", "Cannot explode HATCH"],
+    ],
+    [
+      es,
+      "DESCOMP",
+      ["1 encontrados", "Designe objetos:", "No se puede descomponer HATCH"],
+    ],
+  ] as const)(
+    "names a solid hatch it cannot explode (pieces/p260; %#)",
+    (locale, name, said) => {
+      const cad = createHarness({
+        locale,
+        entities: [
+          hatchOf([loopOf(p(-50, -25), p(50, 25))], { patternId: "SOLID" }),
+        ],
+      })
+      answer(cad, name, "_L", "")
+      expect(cad.commandLog().slice(-3)).toEqual(said)
+      expect(cad.typeCounts()).toEqual({ hatch: 1 })
+    }
+  )
+
+  // probe pieces/p258: AutoCAD 2027 explodes a DIMLINEAR into 3 LINEs, 2
+  // SOLIDs and an MTEXT; with no SOLID object here it stays refused.
+  it("refuses a dimension under the count (pieces/p258)", () => {
+    const cad = answer(
+      createHarness(),
+      ...["DIMLINEAR", "-50,0", "50,0", "0,-20"],
+      ...["EXPLODE", "L", ""]
+    )
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "1 found",
+      "1 was not able to be exploded.",
+      "Select objects:",
+      "None found.",
+    ])
+    expect(cad.typeCounts()).toEqual({ dimension: 1 })
+  })
+
+  // probe pieces/p262: a polyline, then a line; EXPLODE the polyline and U →
+  // the polyline is before the line again, and `ERASE _L` erases the line.
+  it("is one step U takes back, the polyline back in its place (pieces/p262)", () => {
+    const cad = createHarness({
+      entities: [
+        polylineOf([p(0, 0), p(100, 0), p(100, 100)], { id: "P" }),
+        lineOf(p(0, 200), p(100, 200), { id: "L" }),
+      ],
+    })
+    answer(cad, "EXPLODE", "50,0", "", "U")
+    expect(cad.entities().map((entity) => entity.id)).toEqual(["P", "L"])
+
+    answer(cad, "ERASE", "L", "")
+    expect(cad.entities().map((entity) => entity.id)).toEqual(["P"])
+  })
+
+  // probe pieces/p247: `_U` after it names EXPLODE (es DESCOMP).
+  it.each([
+    [undefined, "EXPLODE"],
+    [es, "DESCOMP"],
+  ] as const)("U names it (pieces/p247; %#)", (locale, name) => {
+    const cad = createHarness({
+      locale,
+      entities: [polylineOf([p(0, 0), p(100, 0), p(100, 100)], { id: "P" })],
+    })
+    answer(cad, "_EXPLODE", "50,0", "", "_U")
+    expect(cad.commandLog().at(-1)).toBe(name)
+    expect(cad.entities().map((entity) => entity.id)).toEqual(["P"])
+  })
+
+  // probes pieces/p240 (`X`), p243 (es `DP`), p245 (Enter repeats it,
+  // echoed EXPLODE, es DESCOMP).
+  it.each([
+    [undefined, "X", "EXPLODE", "Select objects:"],
+    [es, "DP", "DESCOMP", "Designe objetos:"],
+  ] as const)(
+    "runs from its alias and repeats at Enter (pieces/p240, p243, p245; %#)",
+    (locale, alias, name, prompt) => {
+      const cad = createHarness({
+        locale,
+        entities: [
+          polylineOf([p(0, 0), p(100, 0), p(100, 100)], { id: "P1" }),
+          polylineOf([p(0, 150), p(100, 150)], { id: "P2" }),
+        ],
+      })
+      answer(cad, alias, "50,0", "")
+      expect(cad.commandLog()[0]).toBe(`${alias} ${name}`)
+      answer(cad, "", "50,150", "")
+      expect(cad.commandLog().slice(-4)).toEqual([
+        name,
+        `${prompt} 50,150`,
+        locale ? "1 encontrados" : "1 found",
+        prompt,
+      ])
+      expect(cad.typeCounts()).toEqual({ line: 3 })
     }
   )
 })

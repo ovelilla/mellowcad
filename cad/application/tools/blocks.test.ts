@@ -1,13 +1,15 @@
 import { describe, expect, it } from "vitest"
 import { createHarness } from "../../../test/harness"
-import { layerOf, lineOf, p } from "../../../test/builders"
+import { circleOf, layerOf, lineOf, p, textOf } from "../../../test/builders"
 import {
+  CircleEntity,
   createBlockDefinition,
   createInsert,
   insertGeometry,
   entityBounds,
   InsertEntity,
   LineEntity,
+  TextEntity,
 } from "../../domain/entities"
 import {
   parseDrawingFile,
@@ -356,6 +358,68 @@ describe("a block reference in the drawing", () => {
 })
 
 describe("EXPLODE of a block reference", () => {
+  // probe pieces/p252: B (a B0 reference at 0,0, a line 0,0 → 20,0 on layer
+  // 0, a circle r5 on L2 colour 3, a B0 reference at 0,10, a text HI at
+  // 0,-10 h2) inserted on L1, red, at 10,10, scale 2, rotation 30 → B0 at
+  // 10,10 turned 30; LINE 10,10 → 44.641016,30 on layer 0 ByLayer; CIRCLE
+  // r10 on L2 colour 3; B0 at 0,27.320508; TEXT at 20,-7.320508 h4 turned 30.
+  it("places one level of the block where the reference drew it, in the objects' own colours (pieces/p252)", () => {
+    const b0 = createBlockDefinition("B0", p(0, 0), [lineOf(p(0, 0), p(10, 0))])
+    const b = createBlockDefinition("B", p(0, 0), [
+      createInsert("B0", p(0, 0)),
+      lineOf(p(0, 0), p(20, 0)),
+      { ...circleOf(p(0, 0), 5, { layerId: "L2" }), color: "#00ff00" },
+      createInsert("B0", p(0, 10)),
+      textOf(p(0, -10), "HI", { height: 2 }),
+    ])
+    const cad = createHarness()
+    cad.runtime.document.load(
+      [
+        {
+          ...createInsert("B", p(10, 10), {
+            id: "I",
+            scale: 2,
+            rotation: Math.PI / 6,
+            layerId: "L1",
+          }),
+          color: "#ff0000",
+        },
+      ],
+      {
+        layers: [layerOf("0"), layerOf("L1"), layerOf("L2")],
+        blocks: [b0, b],
+      }
+    )
+    cad.select("I").command("EXPLODE")
+
+    const [first, line, circle, second, text] = cad.entities() as [
+      InsertEntity,
+      LineEntity,
+      CircleEntity,
+      InsertEntity,
+      TextEntity,
+    ]
+    expect([first.blockId, first.scale, first.rotation]).toEqual([
+      "B0",
+      2,
+      Math.PI / 6,
+    ])
+    expect(first.position).toBeCloseToPoint(p(10, 10))
+    expect(line.start).toBeCloseToPoint(p(10, 10))
+    expect(line.end).toBeCloseToPoint(p(44.641016, 30))
+    expect([line.layerId, line.color]).toEqual(["0", undefined])
+    expect(circle.center).toBeCloseToPoint(p(10, 10))
+    expect([circle.radius, circle.layerId, circle.color]).toEqual([
+      10,
+      "L2",
+      "#00ff00",
+    ])
+    expect(second.position).toBeCloseToPoint(p(0, 27.320508))
+    expect(text.position).toBeCloseToPoint(p(20, -7.320508))
+    expect(text.height).toBeCloseTo(4)
+    expect(text.rotation).toBeCloseTo(Math.PI / 6)
+  })
+
   it("gives back copies of the objects that compose the block", () => {
     const cad = createHarness({
       blocks: [barBlock()],

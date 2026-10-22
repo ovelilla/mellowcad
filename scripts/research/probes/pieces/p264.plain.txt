@@ -1,0 +1,23 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_PLINE
+0,0
+100,0
+100,100
+
+_LINE
+0,150
+100,150
+
+_ERASE
+50,0
+
+_U
+(progn (setq e (entnext)) (while e (setq d (entget e)) (terpri) (princ (list (cdr (assoc 5 d)) (cdr (assoc 0 d)))) (setq e (entnext e))) (princ))
+(progn (setq s (ssget "_X") i 0) (while (< i (sslength s)) (terpri) (princ (cdr (assoc 0 (entget (ssname s i))))) (setq i (1+ i))) (princ))
+_ERASE
+_L
+
+(progn (setq e (entnext)) (while e (setq d (entget e)) (terpri) (princ (list (cdr (assoc 5 d)) (cdr (assoc 0 d)))) (setq e (entnext e))) (princ))

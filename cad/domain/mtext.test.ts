@@ -131,7 +131,9 @@ describe("MTEXT layout", () => {
 })
 
 describe("exploding MTEXT", () => {
-  it("gives one single-line text per line, on its baseline", () => {
+  // probes pieces/p255 (Top left), p256 (Middle center): every TEXT is
+  // BaseLeft, at its line's drawn left end, whatever the attachment.
+  it("gives one Left text per line, at the left end of its baseline", () => {
     const mtext = createMText(p(0, 0), "ONE\\P\\PTWO", {
       height: 10,
       width: 200,
@@ -140,9 +142,25 @@ describe("exploding MTEXT", () => {
     })
     const texts = mtextLineTexts(mtext)
     expect(texts.map((text) => text.value)).toEqual(["ONE", "TWO"])
-    expect(texts.map((text) => text.justify)).toEqual(["center", "center"])
-    expect(texts[0].position).toBeCloseToPoint(p(0, -10))
-    expect(texts[1].position).toBeCloseToPoint(p(0, -10 - 2 * (50 / 3)))
+    expect(texts.map((text) => text.justify)).toEqual(["left", "left"])
+    expect(texts[0].position).toBeCloseToPoint(
+      p(-measureTextWidth("ONE", 10) / 2, -10)
+    )
+    expect(texts[1].position).toBeCloseToPoint(
+      p(-measureTextWidth("TWO", 10) / 2, -10 - 2 * (50 / 3))
+    )
     expect(texts[0].layerId).toBe("Notes")
+  })
+
+  it("starts a right-attached line where it is drawn, turned with the object", () => {
+    const mtext = createMText(p(10, 0), "AB", {
+      height: 10,
+      attachment: "br",
+      rotation: Math.PI / 2,
+    })
+    const [text] = mtextLineTexts(mtext)
+    expect(text.justify).toBe("left")
+    expect(text.rotation).toBeCloseTo(Math.PI / 2)
+    expect(text.position).toBeCloseToPoint(p(10, -measureTextWidth("AB", 10)))
   })
 })

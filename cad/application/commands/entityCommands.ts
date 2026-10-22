@@ -1,4 +1,8 @@
-import { CadDocument, DocumentTables } from "../../domain/Document"
+import {
+  CadDocument,
+  DocumentTables,
+  PlacedEntity,
+} from "../../domain/Document"
 import { Entity, EntityId } from "../../domain/entities"
 import { Command } from "./Command"
 
@@ -108,11 +112,11 @@ export class UpdateEntitiesCommand implements Command {
  * in the drawing, and the others come after it: TRIM or BREAK splitting a
  * line keeps the line as its first piece and adds the second, as AutoCAD
  * keeps the handle. Captures the removed entities so `undo` restores them
- * exactly.
+ * exactly, each in its place.
  */
 export class ReplaceEntitiesCommand implements Command {
   readonly label = "replace-entities"
-  private removed: Entity[] = []
+  private removed: PlacedEntity[] = []
 
   constructor(
     private readonly removedIds: readonly EntityId[],
@@ -124,9 +128,7 @@ export class ReplaceEntitiesCommand implements Command {
   }
 
   execute(doc: CadDocument): void {
-    this.removed = this.removedIds
-      .map((id) => doc.get(id))
-      .filter((entity): entity is Entity => entity !== undefined)
+    this.removed = doc.placesOf(this.removedIds)
     const kept = new Set(this.added.map((entity) => entity.id))
     doc.removeMany(this.removedIds.filter((id) => !kept.has(id)))
     doc.addMany(this.added)
@@ -137,14 +139,14 @@ export class ReplaceEntitiesCommand implements Command {
     doc.removeMany(
       this.added.map((entity) => entity.id).filter((id) => !removed.has(id))
     )
-    doc.addMany(this.removed)
+    doc.restoreMany(this.removed)
   }
 }
 
 /** Removes a set of entities (Delete key, erase tools...). */
 export class RemoveEntitiesCommand implements Command {
   readonly label = "remove-entities"
-  private removed: Entity[] = []
+  private removed: PlacedEntity[] = []
 
   constructor(private readonly ids: readonly EntityId[]) {}
 
@@ -153,14 +155,12 @@ export class RemoveEntitiesCommand implements Command {
   }
 
   execute(doc: CadDocument): void {
-    this.removed = this.ids
-      .map((id) => doc.get(id))
-      .filter((e): e is Entity => e !== undefined)
+    this.removed = doc.placesOf(this.ids)
     doc.removeMany(this.ids)
   }
 
   undo(doc: CadDocument): void {
-    for (const entity of this.removed) doc.add(entity)
+    doc.restoreMany(this.removed)
   }
 }
 

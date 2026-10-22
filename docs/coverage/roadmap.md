@@ -101,4 +101,5 @@ under the pick box, locked or not, and a command passing `locked` says it once p
 a pick or a mode finds (BRP-01, BRP-02, BRP-05: FILLET's and BREAK's); UCS OBject's and ARRAYPATH's
 pass none and still say nothing of one: the UCS and Arrays reviews probe their words. A point typed
 at `Select objects:` or a single object's pick off the screen still finds (BRP-04, pieces/p158):
-for the `Select objects:` area.
+for the `Select objects:` area. EXPLODE's texts from an MTEXT stand where this layout's metrics put
+each line, not where AutoCAD's font does (EXP-06, pieces/p255): for the Text review.

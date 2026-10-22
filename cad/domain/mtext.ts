@@ -266,19 +266,22 @@ export function mtextCorners(
 
 /**
  * The single-line text objects EXPLODE turns an MTEXT into: one per line as
- * drawn, on its baseline and aligned as it was. Blank lines leave nothing.
+ * drawn, each Left at its baseline's drawn left end whatever the attachment
+ * (pieces/p255, p256). Blank lines leave nothing.
  */
 export function mtextLineTexts(mtext: MTextEntity): TextEntity[] {
   const layout = mtextLayout(mtext)
+  const share = { left: 0, center: 0.5, right: 1 }[layout.align]
   return layout.lines
     .filter((line) => line.value.trim().length > 0)
-    .map((line) =>
-      createText(mtextToWorld(mtext, line.x, line.y), line.value, {
+    .map((line) => {
+      const left = line.x - share * measureTextWidth(line.value, mtext.height)
+      return createText(mtextToWorld(mtext, left, line.y), line.value, {
         height: mtext.height,
         rotation: mtext.rotation,
-        justify: layout.align,
+        justify: "left",
         styleId: mtext.styleId,
         layerId: mtext.layerId,
       })
-    )
+    })
 }

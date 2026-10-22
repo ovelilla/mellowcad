@@ -582,7 +582,9 @@ describe("what the editing commands do with the widths", () => {
     ])
   })
 
-  it("EXPLODE loses them and says so for each wide polyline (acc/w8, w23)", () => {
+  // probe pieces/p249: a tapered, a 2-wide and a 0-wide polyline → the
+  // message twice, both languages.
+  it("EXPLODE loses them and says so for each wide polyline (pieces/p249)", () => {
     const cad = createHarness({
       entities: [
         tapered(),

@@ -126,7 +126,44 @@ describe("an object with a normal of its own", () => {
     })
   })
 
-  it("explodes, as a polyline, into lines in the WCS", () => {
+  // probes pieces/p250 (drawn in UCS X 90: normal 0,-1,0) and p251 (normal
+  // 0,0,-1): 0,0 → 100,0 then a half circle to 100,100 → a LINE and an ARC,
+  // each carrying the normal; the ARC's centre at WCS 100,0,50 and -100,50,0,
+  // 270° → 90° in its OCS.
+  it.each([
+    [FACING_FRONT, { x: 100, y: 0, z: 0 }, { x: 100, y: 0, z: 50 }],
+    [
+      { x: 0, y: 0, z: -1 },
+      { x: -100, y: 0, z: 0 },
+      { x: -100, y: 50, z: 0 },
+    ],
+  ])(
+    "explodes a polyline with an arc into pieces carrying its normal (pieces/p250, p251; %#)",
+    (normal, lineEnd, center) => {
+      const polyline = withNormal(
+        polylineOf([p(0, 0), p(100, 0), p(100, 100)], {
+          id: "P",
+          bulges: [0, 1],
+        }),
+        normal
+      )
+      const cad = createHarness({ entities: [polyline] })
+      cad.select("P").command("EXPLODE")
+
+      const [line, arc] = cad.entities() as [LineEntity, ArcEntity]
+      for (const piece of [line, arc]) {
+        expectAt(entityNormal(piece), normal)
+      }
+      expectAt(ends(line)[0], { x: 0, y: 0, z: 0 })
+      expectAt(ends(line)[1], lineEnd)
+      expectAt(entityPointToWorld(arc, arc.center), center)
+      expect(arc.startAngle).toBeCloseToAngle(deg(270))
+      expect(arc.endAngle).toBeCloseToAngle(deg(90))
+    }
+  )
+
+  // probe pieces/p250: a standing polyline's lines lie where it stood.
+  it("explodes, as a polyline, into lines in the WCS (pieces/p250)", () => {
     const polyline = standing(
       polylineOf([p(0, 0), p(100, 0), p(100, 50)], { id: "P" })
     )
@@ -148,6 +185,7 @@ describe("an object with a normal of its own", () => {
         { x: 100, y: 0, z: 50 },
       ],
     ])
+    for (const line of lines) expectAt(entityNormal(line), FACING_FRONT)
   })
 
   it("shows its center in the UCS and its normal in the palette", () => {

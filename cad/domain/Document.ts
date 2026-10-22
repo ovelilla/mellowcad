@@ -106,6 +106,12 @@ export interface DocumentTables {
   readonly blocks?: Iterable<BlockDefinition>
 }
 
+/** An object with its index in the drawing's order, as it was found. */
+export interface PlacedEntity {
+  readonly entity: Entity
+  readonly index: number
+}
+
 /**
  * The document is the single source of truth for the persistent drawing:
  * entities in world coordinates plus unit settings. Mutations notify
@@ -615,6 +621,49 @@ export class CadDocument extends Observable implements DocumentReader {
     }
     if (count > 0) this.emit()
     return count
+  }
+
+  /** Those of `ids` the drawing holds, each with its index, in the drawing's order. */
+  placesOf(ids: Iterable<EntityId>): PlacedEntity[] {
+    const wanted = new Set(ids)
+    const placed: PlacedEntity[] = []
+    let index = 0
+    for (const entity of this.entities.values()) {
+      if (wanted.has(entity.id)) placed.push({ entity, index })
+      index += 1
+    }
+    return placed
+  }
+
+  /**
+   * Puts objects back at the indices {@link placesOf} found them at, which
+   * undo owes what a command removed: AutoCAD's U unerases an object where it
+   * was, so `ERASE _L` and the paint order still see it older than what was
+   * drawn after it (pieces/p262, p264). One the drawing still holds under its
+   * id is moved there. Valid only against the drawing as it was right after
+   * the removal, which the undo stack guarantees.
+   */
+  restoreMany(placed: readonly PlacedEntity[]): void {
+    if (placed.length === 0) return
+    const sorted = [...placed].sort((a, b) => a.index - b.index)
+    const moving = new Set(sorted.map((place) => place.entity.id))
+    const rest = [...this.entities.values()].filter((e) => !moving.has(e.id))
+    this.entities.clear()
+    let next = 0
+    const putDue = () => {
+      while (next < sorted.length && sorted[next].index <= this.entities.size) {
+        const { entity } = sorted[next++]
+        this.entities.set(entity.id, entity)
+      }
+    }
+    for (const entity of rest) {
+      putDue()
+      this.entities.set(entity.id, entity)
+    }
+    for (; next < sorted.length; next++) {
+      this.entities.set(sorted[next].entity.id, sorted[next].entity)
+    }
+    this.emit()
   }
 
   clear(): void {

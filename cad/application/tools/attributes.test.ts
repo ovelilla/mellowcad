@@ -536,7 +536,9 @@ describe("the Insertion snap", () => {
 })
 
 describe("EXPLODE", () => {
-  it("brings the definitions back and drops the values", () => {
+  // probe pieces/p254: TAG (a PART definition, default X-0, and a line)
+  // inserted with P-7 → its LINE and the ATTDEF PART back, the value gone.
+  it("brings the definitions back and drops the values (pieces/p254)", () => {
     const cad = createHarness({
       blocks: [taggedBlock()],
       entities: [

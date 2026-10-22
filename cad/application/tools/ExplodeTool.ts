@@ -5,11 +5,17 @@ import {
   copyEntity,
   createArc,
   createLine,
+  hatchGeometry,
   insertGeometry,
   isWidePolyline,
   mtextLineTexts,
   polylineSegmentGeometries,
 } from "../../domain/entities"
+import {
+  hatchPatternLines,
+  isSolidHatchPattern,
+} from "../../domain/hatchPatterns"
+import { DEFAULT_LINETYPE_ID } from "../../domain/linetypes"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
 import type { MessageId } from "../EngineText"
 import type { ObjectSelectorOptions } from "./objectSelection"
@@ -21,7 +27,30 @@ const EXPLODED: ReadonlySet<Entity["type"]> = new Set([
   "polyline",
   "insert",
   "mtext",
+  "hatch",
 ])
+
+/**
+ * The name EXPLODE gives an object it passes at `Select objects:` and then
+ * cannot explode, said once the set is closed, or `null`.
+ */
+function cannotExplode(entity: Entity): string | null {
+  switch (entity.type) {
+    case "spline":
+      return "SPLINE"
+    case "ellipse":
+      return "ELLIPSE"
+    case "hatch":
+      // WHY a pattern this build does not ship is named too: its lines cannot
+      // be made, and keeping the hatch beats erasing it.
+      return isSolidHatchPattern(entity.patternId) ||
+        hatchPatternLines(entity.patternId).length === 0
+        ? "HATCH"
+        : null
+    default:
+      return null
+  }
+}
 
 /**
  * AutoCAD's EXPLODE. A polyline is replaced by an independent object per
@@ -30,14 +59,16 @@ const EXPLODED: ReadonlySet<Entity["type"]> = new Set([
  * objects that compose the block, removing **one grouping level at a time**: a
  * nested block comes back as a nested block, to be exploded again, and the
  * objects "revert to their original properties" rather than keeping the ones
- * the reference lent them. A multiline text becomes one single-line text per
- * line as drawn ("Multiline Text — Explodes into text objects"). A polyline's
- * widths are lost, its pieces following its centreline, and AutoCAD says so
- * for each wide one.
+ * the reference lent them. A multiline text becomes one Left single-line text
+ * per line as drawn. A pattern hatch becomes its pattern's lines clipped to
+ * its boundary. A polyline's widths are lost, its pieces following its
+ * centreline, and AutoCAD says so for each wide one.
  *
- * Everything else is refused as `Select objects:` finds it, said under each
- * count (`1 was not able to be exploded.`, erase/p213–p219), and one undo
- * step reverts the whole explode.
+ * A spline, an ellipse and a solid hatch pass the count and are named once the
+ * set is closed (`Cannot explode ELLIPSE`); everything else is refused as
+ * `Select objects:` finds it, said under each count (`1 was not able to be
+ * exploded.`, erase/p213–p219; pieces/p261). One undo step reverts the whole
+ * explode.
  */
 export class ExplodeTool extends SelectionActionTool {
   readonly id = "explode"
@@ -47,12 +78,17 @@ export class ExplodeTool extends SelectionActionTool {
     return "wholeObjects"
   }
 
-  // WHY a spline passes: it is refused by name once the set is closed, each
-  // one (spline/p319, p324).
+  // WHY a spline and an ellipse pass: they are refused by name once the set
+  // is closed, each one (spline/p319, p324; pieces/p261, p265). WHY a
+  // dimension is refused, though AutoCAD 2027 explodes it into lines, SOLIDs
+  // for its arrowheads and an MTEXT (pieces/p258): there is no SOLID object
+  // here to make them.
   protected refusal(): ObjectSelectorOptions["refuse"] {
     return {
       rejects: (entity) =>
-        !EXPLODED.has(entity.type) && entity.type !== "spline",
+        !EXPLODED.has(entity.type) &&
+        entity.type !== "spline" &&
+        entity.type !== "ellipse",
       message: "explodeRejected",
     }
   }
@@ -62,12 +98,13 @@ export class ExplodeTool extends SelectionActionTool {
   }
 
   protected run(entities: readonly Entity[], ctx: ToolContext): void {
-    const composite = entities.filter((e) => EXPLODED.has(e.type))
     for (const entity of entities) {
-      if (entity.type === "spline") {
-        ctx.report(ctx.text.message("explodeCannot", { name: "SPLINE" }))
-      }
+      const name = cannotExplode(entity)
+      if (name) ctx.report(ctx.text.message("explodeCannot", { name }))
     }
+    const composite = entities.filter(
+      (e) => EXPLODED.has(e.type) && cannotExplode(e) === null
+    )
     if (composite.length === 0) return
 
     const removedIds: EntityId[] = []
@@ -84,6 +121,20 @@ export class ExplodeTool extends SelectionActionTool {
         // The definition's objects keep their ids inside the block, so each
         // piece is copied to mint one of its own.
         for (const part of parts) pieces.push(copyEntity(part, { x: 0, y: 0 }))
+        continue
+      }
+      if (entity.type === "hatch") {
+        const { lines } = hatchGeometry(entity)
+        if (lines.length === 0) continue
+        removedIds.push(entity.id)
+        for (const [a, b] of lines) {
+          // WHY Continuous set on each, whatever the hatch's: AutoCAD's
+          // pattern lines carry it (pieces/p259, p263).
+          pieces.push({
+            ...carryOverrides(entity, createLine(a, b, entity.layerId)),
+            linetype: DEFAULT_LINETYPE_ID,
+          })
+        }
         continue
       }
       if (entity.type === "mtext") {

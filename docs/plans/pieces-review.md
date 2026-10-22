@@ -373,7 +373,7 @@ line was erased): ours follows the snapped point (PIECES-D30).
 #### EXP-02 — A hatch is refused at the count; AutoCAD explodes a pattern and names a solid one
 
 - **Severity:** medium · **Row:** H, B · **Status:** verified
-- **AutoCAD:** p259 an ANSI31 hatch into 30 LINEs clipped to its boundary, each `Continuous`; p260 a
+- **AutoCAD:** p259 an ANSI31 hatch into 33 LINEs clipped to its boundary, each `Continuous`; p260 a
   SOLID hatch `1 found`, then `Cannot explode HATCH` (es `No se puede descomponer HATCH`).
 - **mellowcad:** `1 was not able to be exploded.`, `None found.` **Fix:** PIECES-D12.
 

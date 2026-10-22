@@ -1,4 +1,4 @@
-import { CadDocument } from "../../domain/Document"
+import { CadDocument, PlacedEntity } from "../../domain/Document"
 import {
   BlockDefinition,
   BlockId,
@@ -19,7 +19,7 @@ import { Command } from "./Command"
  */
 export class CreateBlockCommand implements Command {
   readonly label = "create-block"
-  private removed: Entity[] = []
+  private removed: PlacedEntity[] = []
   private previousDefinition: BlockDefinition | undefined
 
   constructor(
@@ -39,9 +39,7 @@ export class CreateBlockCommand implements Command {
 
   execute(doc: CadDocument): void {
     this.previousDefinition = doc.getBlock(this.block.id)
-    this.removed = this.removedIds
-      .map((id) => doc.get(id))
-      .filter((entity): entity is Entity => entity !== undefined)
+    this.removed = doc.placesOf(this.removedIds)
     doc.addBlock(this.block)
     doc.removeMany(this.removedIds)
     if (this.reference) doc.add(this.reference)
@@ -49,7 +47,7 @@ export class CreateBlockCommand implements Command {
 
   undo(doc: CadDocument): void {
     if (this.reference) doc.remove(this.reference.id)
-    doc.addMany(this.removed)
+    doc.restoreMany(this.removed)
     if (this.previousDefinition) doc.addBlock(this.previousDefinition)
     else doc.removeBlock(this.block.id)
   }
