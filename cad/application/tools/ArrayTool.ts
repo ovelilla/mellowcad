@@ -1,9 +1,9 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Vec3, add3, sub3 } from "../../geometry/Vec3"
-import { Entity } from "../../domain/entities"
+import { Entity, EntityId, entitiesBounds } from "../../domain/entities"
 import {
   RectangularArray,
-  arrayItemCopy,
+  arrayAxis,
   arraySourceSize,
   placeArrayItem,
   rectangularArrayItems,
@@ -12,7 +12,6 @@ import { parseNumber } from "../../domain/units"
 import { Ucs, ucsDirectionToWorld, worldDirectionToUcs } from "../../domain/ucs"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
-import { AddEntitiesCommand } from "../commands/entityCommands"
 import {
   isCoordinateExpression,
   parseCoordinate,
@@ -21,6 +20,7 @@ import { ObjectSelector } from "./objectSelection"
 import { selectedInDrawingOrder } from "./drawingOrder"
 import { MAX_PREVIEW_ITEMS, refusesCount, takesCount } from "./arrayCounts"
 import { drawn } from "./ghostLook"
+import { ArrayAssociativity, makeArray, reportArrayType } from "./arrayObject"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -34,21 +34,19 @@ import {
 
 /**
  * AutoCAD's ARRAYRECT, as its 2027 console asks it: `Select objects:` (or
- * ARRAY's set, {@link takeSet}), then `Type = Rectangular  Associative = No`
- * and `Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:`
- * over a live preview of the grid — 4 columns along the UCS's +X and 3 rows
- * along its +Y, a negative spacing flipping the direction. COUnt asks the
+ * ARRAY's set, {@link takeSet}), then `Type = Rectangular  Associative = Yes`
+ * and `Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/
+ * eXit] <eXit>:` over a live preview of the grid — 4 columns along the UCS's
+ * +X and 3 rows along its +Y, a negative spacing flipping the direction.
+ * ASsociative asks `Create associative array [Yes/No] <Yes>:`. COUnt asks the
  * number of columns and of rows, Spacing the distance between columns or
  * [Unit cell] — two corners, whose sides along the UCS's axes are both
  * distances — and between rows, COLumns the number of columns and their
  * distance, Rows the number of rows, their distance and the elevation each row
- * rises by; eXit or Enter makes the copies, one undo step with the source as
- * item 1,1. Escape makes them too, with the values given so far (desktop
- * arrays/d08, d08b); before the main prompt it makes nothing.
- *
- * WHY Associative = No: an associative array is one object here neither
- * models nor edits, so the copies are plain geometry, as AutoCAD's are with
- * ASsociative No. The grips, Base point and Levels are not offered.
+ * rises by; eXit or Enter makes the array (`makeArray`), one undo step with
+ * the source as item 1,1. Escape makes it too, with the values given so far
+ * (desktop arrays/d08, d08b); before the main prompt it makes nothing. The
+ * grips, Base point and Levels are not offered.
  */
 
 const DEFAULT_COLUMNS = 4
@@ -63,6 +61,7 @@ type Grid = RectangularArray
  */
 type Step =
   | "main"
+  | "associative"
   | "countColumns"
   | "countRows"
   | "spacingColumns"
@@ -92,6 +91,7 @@ type ArrayState =
 /** The step each keyword starts, and the one each step goes on to. */
 const NEXT: Readonly<Record<Step, Step>> = {
   main: "main",
+  associative: "main",
   countColumns: "countRows",
   countRows: "main",
   spacingColumns: "spacingRows",
@@ -121,6 +121,10 @@ export class ArrayTool implements Tool {
     done: (ctx) => this.confirmSelection(ctx),
   })
   private lastScreen: Vec2 | null = null
+
+  constructor(
+    private readonly mode: ArrayAssociativity = { associative: true }
+  ) {}
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -158,6 +162,8 @@ export class ArrayTool implements Tool {
     switch (state.step) {
       case "main":
         return "selectGripToEditArrayOr"
+      case "associative":
+        return "createAssociativeArray"
       case "countColumns":
       case "columnsCount":
         return { id: "enterNumberOfColumns", enter: { count: grid.columns } }
@@ -208,6 +214,8 @@ export class ArrayTool implements Tool {
     switch (state.step) {
       case "main":
         return "point"
+      case "associative":
+        return "keyword"
       case "countColumns":
       case "countRows":
       case "columnsCount":
@@ -241,8 +249,12 @@ export class ArrayTool implements Tool {
     if (this.state.phase === "edit" && this.state.step === "spacingColumns") {
       return [{ id: "Unit cell" }]
     }
+    if (this.state.phase === "edit" && this.state.step === "associative") {
+      return [{ id: "Yes" }, { id: "No" }]
+    }
     if (this.state.phase !== "edit" || this.state.step !== "main") return []
     return [
+      { id: "ASsociative" },
       { id: "COUnt" },
       { id: "Spacing" },
       { id: "COLumns" },
@@ -252,9 +264,11 @@ export class ArrayTool implements Tool {
   }
 
   defaultOption(): string | null {
-    return this.state.phase === "edit" && this.state.step === "main"
-      ? "eXit"
-      : null
+    if (this.state.phase !== "edit") return null
+    if (this.state.step === "associative") {
+      return this.mode.associative ? "Yes" : "No"
+    }
+    return this.state.step === "main" ? "eXit" : null
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
@@ -269,8 +283,18 @@ export class ArrayTool implements Tool {
       this.ask("unitCellFirst", ctx)
       return "continue"
     }
+    if (this.state.phase === "edit" && this.state.step === "associative") {
+      if (id !== "Yes" && id !== "No") return "unhandled"
+      this.mode.associative = id === "Yes"
+      this.ask("main", ctx)
+      return "continue"
+    }
     if (this.state.phase !== "edit" || this.state.step !== "main") {
       return "unhandled"
+    }
+    if (id === "ASsociative") {
+      this.ask("associative", ctx)
+      return "continue"
     }
     if (id === "eXit") {
       this.create(ctx)
@@ -336,7 +360,18 @@ export class ArrayTool implements Tool {
       ctx.endCommand()
       return true
     }
+    if (this.state.phase === "edit" && this.state.step === "associative") {
+      this.ask("main", ctx) // <Yes> or <No>: the current answer stays
+      return true
+    }
     return false
+  }
+
+  /** The source is item 1 of the preview (ARRAYS-D5). */
+  hiddenEntityIds(): readonly EntityId[] {
+    return this.state.phase === "edit"
+      ? this.state.originals.map((entity) => entity.id)
+      : []
   }
 
   wantsSnap(): boolean {
@@ -362,15 +397,14 @@ export class ArrayTool implements Tool {
         : null
     const grid = cell ?? this.previewGrid(ctx, this.state.grid, this.state.step)
     const { originals } = this.state
-    const copies = rectangularArrayItems(
-      grid,
-      ctx.ucs,
-      MAX_PREVIEW_ITEMS
-    ).flatMap((item) =>
-      originals.flatMap((entity) =>
-        drawn(ctx, placeArrayItem(entity, item), "plain")
-      )
-    )
+    const copies = [
+      ...originals.flatMap((entity) => drawn(ctx, entity, "plain")),
+      ...rectangularArrayItems(grid, MAX_PREVIEW_ITEMS).flatMap((item) =>
+        originals.flatMap((entity) =>
+          drawn(ctx, placeArrayItem(entity, item), "plain")
+        )
+      ),
+    ]
     if (cell === null || !corner || !cursor) return copies
     // WHY solid: the trace says UseDashedLine 1 (probe arrays/p123), which
     // no desktop pass has shown yet (ARRAYS-D7).
@@ -421,10 +455,11 @@ export class ArrayTool implements Tool {
         colSpacing,
         rowSpacing,
         rowElevation: 0,
+        axis: arrayAxis(ctx.ucs),
       },
       step: "main",
     }
-    ctx.report(ctx.text.message("arrayType", { type: "rectangular" }))
+    reportArrayType(ctx, "rectangular", this.mode)
     this.openMain(ctx)
   }
 
@@ -437,7 +472,7 @@ export class ArrayTool implements Tool {
   private ask(step: Step, ctx: ToolContext): void {
     if (this.state.phase !== "edit") return
     this.state = { ...this.state, step }
-    if (step === "main") {
+    if (step === "main" || step === "associative") {
       this.openMain(ctx)
       return
     }
@@ -565,7 +600,7 @@ export class ArrayTool implements Tool {
 
   /** The grid the preview shows: the value being typed already applied. */
   private previewGrid(ctx: ToolContext, grid: Grid, step: Step): Grid {
-    if (step === "main") return grid
+    if (step === "main" || step === "associative") return grid
     const typed = parseNumber(ctx.dynamicInput.getText("value").trim())
     if (typed === null || !Number.isFinite(typed)) return grid
     if (isCount(step) && !takesCount(typed)) return grid
@@ -577,17 +612,26 @@ export class ArrayTool implements Tool {
     const { originals, grid } = this.state
     // Left first: the command's end deactivates the tool, which commits too.
     this.state = { phase: "selecting" }
-    const copies = rectangularArrayItems(grid, ctx.ucs).flatMap((item) =>
-      originals.map((entity) => arrayItemCopy(entity, item))
-    )
-    if (copies.length > 0) ctx.execute(new AddEntitiesCommand(copies))
+    // The base point is the source's extents centre (probes arrays/p403,
+    // p404).
+    const box = entitiesBounds(originals, ctx.blocks)
+    const base = box
+      ? { x: (box.min.x + box.max.x) / 2, y: (box.min.y + box.max.y) / 2 }
+      : { x: 0, y: 0 }
+    makeArray(ctx, originals, { kind: "rectangular", ...grid }, base, this.mode)
     ctx.dynamicInput.close()
   }
 }
 
 /** The box's label for each value asked. */
 const FIELD_LABEL: Readonly<
-  Record<Exclude<Step, "main" | "unitCellFirst" | "unitCellOpposite">, PromptId>
+  Record<
+    Exclude<
+      Step,
+      "main" | "associative" | "unitCellFirst" | "unitCellOpposite"
+    >,
+    PromptId
+  >
 > = {
   countColumns: "columns",
   columnsCount: "columns",
@@ -655,7 +699,10 @@ function defaultSpacing(
   originals: readonly Entity[],
   ctx: Pick<ToolContext, "blocks" | "ucs">
 ): { colSpacing: number; rowSpacing: number } {
-  const { width, height } = arraySourceSize(originals, ctx.ucs, ctx.blocks)
+  const { width, height } = arraySourceSize(
+    entitiesBounds(originals, ctx.blocks),
+    ctx.ucs
+  )
   return {
     colSpacing: width > 1e-6 ? width * 1.5 : 1,
     rowSpacing: height > 1e-6 ? height * 1.5 : 1,

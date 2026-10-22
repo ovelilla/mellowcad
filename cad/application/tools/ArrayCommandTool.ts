@@ -1,6 +1,7 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
 import { ScenePrimitive } from "../../scene/types"
+import type { EntityId } from "../../domain/entities"
 import { ObjectSelector } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
 import {
@@ -155,6 +156,10 @@ export class ArrayCommandTool implements Tool {
   wantsSnap(): boolean {
     if (this.chosen) return this.chosen.tool.wantsSnap?.() ?? false
     return this.phase === "selecting" && this.selector.wantsSnap()
+  }
+
+  hiddenEntityIds(): readonly EntityId[] {
+    return this.chosen?.tool.hiddenEntityIds?.() ?? []
   }
 
   getConstraintAnchor(): Vec2 | Vec3 | null {

@@ -14,7 +14,12 @@ import type {
   InterfaceCatalog,
   PromptId,
 } from "../locales/types"
-import type { EntityType, DimensionKind, TextJustify } from "../domain/entities"
+import type {
+  DimensionKind,
+  Entity,
+  EntityType,
+  TextJustify,
+} from "../domain/entities"
 import type { SnapType } from "./snapping/types"
 import type { ViewPreset } from "./tools/viewPresets"
 import type { CompassLetter, ViewCubeFace } from "./viewCube"
@@ -141,6 +146,13 @@ export class EngineText {
 
   entity(type: EntityType, count: number): string {
     return this.format(this.ui.entity[type], { count })
+  }
+
+  /** One object's name: an array's is its kind's (`Array (Rectangular)`), not a reference's. */
+  entityName(entity: Entity): string {
+    return entity.type === "insert" && entity.array
+      ? this.format(this.ui.array[entity.array.kind])
+      : this.entity(entity.type, 1)
   }
 
   propertyTitle(id: keyof Property["title"], count = 1): string {

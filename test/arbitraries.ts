@@ -11,6 +11,8 @@ import {
   withNormal,
   withThickness,
   type ArcEntity,
+  type ArrayParameters,
+  type ArrayPathPiece,
   type AttributeDefinitionEntity,
   type AttributeModes,
   type BlockAttribute,
@@ -26,6 +28,7 @@ import {
   type SplineEntity,
   type TextEntity,
 } from "../cad/domain/entities"
+import { arrayPathOfPieces } from "../cad/domain/arrays"
 import { DEFAULT_HATCH_PATTERN_ID } from "../cad/domain/hatchPatterns"
 import { DEFAULT_LAYER_ID } from "../cad/domain/layers"
 import { DEFAULT_TEXT_STYLE_ID } from "../cad/domain/textStyles"
@@ -451,15 +454,88 @@ export const hatchEntity: fc.Arbitrary<HatchEntity> = fc
     )
   )
 
+const count = fc.integer({ min: 1, max: 5 })
+
+const arrayPathPiece: fc.Arbitrary<ArrayPathPiece> = fc.oneof(
+  fc.tuple(point, point).map(([a, b]) => ({ kind: "line" as const, a, b })),
+  fc
+    .tuple(point, positiveLength, angle, angle)
+    .map(([center, radius, start, sweep]) => ({
+      kind: "arc" as const,
+      center,
+      radius,
+      start,
+      sweep,
+    }))
+)
+
+/** An array's parameters, small counts so that its items stay cheap to derive. */
+export const arrayParameters: fc.Arbitrary<ArrayParameters> = fc.oneof(
+  fc
+    .tuple(count, count, coordinate, coordinate, coordinate, angle)
+    .map(([columns, rows, colSpacing, rowSpacing, rowElevation, turn]) => ({
+      kind: "rectangular" as const,
+      columns,
+      rows,
+      colSpacing,
+      rowSpacing,
+      rowElevation,
+      axis: { x: Math.cos(turn), y: Math.sin(turn) },
+    })),
+  fc
+    .tuple(
+      point,
+      point,
+      count,
+      fc.integer({ min: 1, max: 360 }),
+      fc.boolean(),
+      fc.boolean()
+    )
+    .map(([center, basePoint, items, fill, clockwise, rotate]) => ({
+      kind: "polar" as const,
+      center,
+      basePoint,
+      items,
+      fill,
+      clockwise,
+      rotate,
+    })),
+  fc
+    .tuple(
+      fc.array(arrayPathPiece, { minLength: 1, maxLength: 3 }),
+      fc.boolean(),
+      fc.constantFrom("divide" as const, "measure" as const),
+      count,
+      positiveLength,
+      fc.boolean()
+    )
+    .map(([pieces, closed, method, items, spacing, align]) => ({
+      pieces,
+      closed,
+      method,
+      items,
+      spacing,
+      align,
+    }))
+    .filter(({ pieces, closed }) => arrayPathOfPieces(pieces, closed) !== null)
+    .map(({ pieces, closed, ...layout }) => ({
+      kind: "path" as const,
+      path: arrayPathOfPieces(pieces, closed)!,
+      pathId: "path",
+      ...layout,
+    }))
+)
+
 export const insertEntity: fc.Arbitrary<InsertEntity> = fc
   .tuple(
     point,
     positiveLength,
     angle,
     fc.boolean(),
-    fc.array(blockAttribute, { maxLength: 3 })
+    fc.array(blockAttribute, { maxLength: 3 }),
+    fc.option(arrayParameters, { freq: 3, nil: undefined })
   )
-  .map(([position, scale, rotation, mirrored, attributes]) =>
+  .map(([position, scale, rotation, mirrored, attributes, array]) =>
     withId<InsertEntity>(
       {
         type: "insert",
@@ -472,6 +548,7 @@ export const insertEntity: fc.Arbitrary<InsertEntity> = fc
         // survive the field being absent as well as present.
         ...(mirrored ? { mirrored: true } : {}),
         ...(attributes.length > 0 ? { attributes } : {}),
+        ...(array ? { array } : {}),
       },
       "insert"
     )

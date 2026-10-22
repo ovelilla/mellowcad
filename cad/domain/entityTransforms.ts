@@ -107,6 +107,7 @@ function insertLike(
     mirrored: overrides.mirrored ?? insert.mirrored,
     attributes: insert.attributes,
     layerId: insert.layerId,
+    array: insert.array,
   })
 }
 

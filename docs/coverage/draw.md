@@ -679,7 +679,8 @@ the other ~70 predefined patterns
 `Invalid block name.`), `Specify insertion base point:` (`Invalid point.`), then `Select objects:`
 with its modes and counts (es `Parámetros actuales: conversión de objetos=Convertir` — the word
 **unverified** —, `Indique nombre de bloque o [?]`, `Especifique un punto base de inserción`,
-`Nombre de bloque no válido.`); `?` list, Convert mode, layer-0 inheritance on insert; attribute
+`Nombre de bloque no válido.`); `?` list (an array's anonymous `*U<n>` left out, arrays/p400),
+Convert mode, layer-0 inheritance on insert; attribute
 definitions ask in pick order (a window or crossing picks them in reverse order of creation), and
 the converted reference asks their values as INSERT does
 
@@ -691,7 +692,8 @@ they were, as AutoCAD does)
 ### `INSERT` / `I` / `-INSERT` · es `INSERT` / `IN`†
 
 **Implemented:** -INSERT's command line: `Enter block name or [?] <B1>:` (the last block inserted,
-or else the last defined, INSNAME's: per drawing, not saved, so NEW and OPEN forget the block
+or else the last named one defined — an array's anonymous `*U<n>` neither listed by `?` nor found
+by name —, INSNAME's: per drawing, not saved, so NEW and OPEN forget the block
 inserted, rectang/p303), `Specify insertion point or [Scale/Rotate]:`, Scale's
 `Specify scale factor for XYZ axes <1.00>:` (uniform; `Requires numeric distance or two points.`)
 and Rotate's `Specify rotation angle <0.00>:` (`Requires valid numeric angle or two points.`), each

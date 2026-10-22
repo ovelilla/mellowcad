@@ -48,6 +48,7 @@ import {
   entityPointToWorld,
   entityThickness,
   hasThickness,
+  isAnonymousBlock,
   lineEndZ,
   lineLength3d,
   lineStartZ,
@@ -635,11 +636,13 @@ export function buildBlockInfos(
     if (entity.type !== "insert") continue
     counts.set(entity.blockId, (counts.get(entity.blockId) ?? 0) + 1)
   }
-  return blocks.map((block) => ({
-    id: block.id,
-    name: block.name,
-    referenceCount: counts.get(block.id) ?? 0,
-  }))
+  return blocks
+    .filter((block) => !isAnonymousBlock(block.name))
+    .map((block) => ({
+      id: block.id,
+      name: block.name,
+      referenceCount: counts.get(block.id) ?? 0,
+    }))
 }
 
 /**
@@ -673,7 +676,7 @@ export function buildRolloverUi(
   return {
     id: entity.id,
     at,
-    title: text.entity(entity.type, 1),
+    title: text.entityName(entity),
     color:
       entity.color === undefined
         ? names.byLayer
@@ -699,7 +702,7 @@ export function buildSelectionCandidates(
 ): SelectionCandidateUi[] {
   return entities.map((entity) => ({
     id: entity.id,
-    label: text.entity(entity.type, 1),
+    label: text.entityName(entity),
   }))
 }
 
@@ -1389,7 +1392,7 @@ function singleEntityInfo(
     }
     case "insert": {
       return {
-        title: title("insert"),
+        title: text.entityName(entity),
         count: 1,
         groups: [
           // The block is chosen when the reference is inserted; swapping one

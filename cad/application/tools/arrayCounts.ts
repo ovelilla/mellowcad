@@ -1,12 +1,7 @@
+import { MAX_ARRAY_COUNT } from "../../domain/arrays"
 import { ToolContext } from "./Tool"
 
-/**
- * The largest count the arrays' prompts take: AutoCAD asks every one of them
- * as a 16-bit integer (probe arrays/p279: `Requires an integer between 1 and
- * 32767, or option keyword.`; ARRAYRECT's and ARRAYPATH's counts are the same
- * integer prompt, p111, p331).
- */
-export const MAX_ARRAY_COUNT = 32767
+export { MAX_ARRAY_COUNT }
 
 /**
  * WHY the preview draws no more items than this, where AutoCAD's jig draws

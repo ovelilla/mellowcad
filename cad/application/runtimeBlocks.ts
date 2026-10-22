@@ -1,5 +1,5 @@
 import { CadDocument } from "../domain/Document"
-import { BlockId, entitiesBounds } from "../domain/entities"
+import { BlockId, entitiesBounds, isAnonymousBlock } from "../domain/entities"
 import { Scene } from "../scene/types"
 import { CommandHistory } from "./commands/Command"
 import { PurgeBlocksCommand } from "./commands/blockCommands"
@@ -12,14 +12,19 @@ const PREVIEW_PADDING_PX = 6
  * Removes block definitions the drawing no longer references — AutoCAD's
  * PURGE, which "removes unused items… from the drawing" and lists a
  * referenced block under the items you *cannot* purge. With no ids given,
- * every unused block goes. Returns how many were removed.
+ * every unused named block goes: an anonymous one (an array's) is no item a
+ * user purges, and saving drops it once unused. Returns how many were removed.
  */
 export function purgeBlocks(
   document: CadDocument,
   history: CommandHistory,
   ids?: readonly BlockId[]
 ): number {
-  const unused = (ids ?? document.getBlocks().map((b) => b.id)).filter(
+  const named = document
+    .getBlocks()
+    .filter((block) => !isAnonymousBlock(block.name))
+    .map((block) => block.id)
+  const unused = (ids ?? named).filter(
     (id) => document.getBlock(id) && !document.blockInUse(id)
   )
   if (unused.length === 0) return 0

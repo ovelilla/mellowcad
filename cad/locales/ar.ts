@@ -302,6 +302,11 @@ export const ar: EngineLocale = {
         ]
       ]
     },
+    "array": {
+      "rectangular": "مصفوفة (مستطيلة)",
+      "polar": "مصفوفة (قطبية)",
+      "path": "مصفوفة (على مسار)"
+    },
     "property": {
       "title": {
         "ellipticalArc": "قوس قطع ناقص",

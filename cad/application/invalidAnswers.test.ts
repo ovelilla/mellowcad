@@ -391,7 +391,8 @@ describe("a wrong answer mid-command", () => {
     expect(cad.commandLog().at(-1)).toBe(
       "Requires a positive nonzero integer or option keyword."
     )
-    cad.escape().select("A").command("ARRAYPATH")
+    // Escape made the array, A inside it (desktop arrays/d08).
+    cad.escape().select("B").command("ARRAYPATH")
     answerLine(cad, "FOO")
     expect(cad.commandLog().at(-1)).toBe(
       "Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Previous/AUto"

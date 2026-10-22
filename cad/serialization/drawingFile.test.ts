@@ -20,7 +20,13 @@ import {
   DEFAULT_HATCH_PATTERN_ID,
   DEFAULT_HATCH_SCALE,
 } from "../domain/hatchPatterns"
-import { Entity, createDimension, createHatch } from "../domain/entities"
+import {
+  Entity,
+  createBlockDefinition,
+  createDimension,
+  createHatch,
+  createInsert,
+} from "../domain/entities"
 import {
   drawingSnapshot,
   entity as entityArbitrary,
@@ -1319,6 +1325,111 @@ describe("blocks", () => {
     expect(entity.scale).toBe(1)
     expect(entity.rotation).toBe(0)
     expect(entity.mirrored).toBeUndefined()
+  })
+
+  it("reads an array's parameters, and keeps a damaged one's reference plain", () => {
+    const array = (parameters: Record<string, unknown>) => ({
+      id: "a",
+      type: "insert",
+      blockId: "*U1",
+      position: { x: 0, y: 0 },
+      array: parameters,
+    })
+    const rect = {
+      kind: "rectangular",
+      columns: 4,
+      rows: 3,
+      colSpacing: 6,
+      rowSpacing: -6,
+      rowElevation: 0,
+      axis: { x: 0, y: 2 },
+    }
+    const polar = {
+      kind: "polar",
+      center: { x: 0, y: 0 },
+      basePoint: { x: 10, y: 10 },
+      items: 6,
+      fill: 360,
+      clockwise: false,
+      rotate: true,
+    }
+    const path = {
+      kind: "path",
+      path: {
+        pieces: [
+          { kind: "line", a: { x: 0, y: 0 }, b: { x: 100, y: 0 } },
+          {
+            kind: "arc",
+            center: { x: 100, y: 10 },
+            radius: 10,
+            start: -Math.PI / 2,
+            sweep: Math.PI,
+          },
+        ],
+        length: 1,
+        closed: false,
+      },
+      pathId: "P",
+      method: "measure",
+      items: 17,
+      spacing: 6,
+      align: true,
+    }
+    const damaged = [
+      { ...rect, columns: 0 },
+      { ...rect, rows: 32768 },
+      { ...rect, axis: { x: 0, y: 0 } },
+      { ...rect, colSpacing: "6" },
+      { ...polar, fill: 0 },
+      { ...polar, fill: 361 },
+      { ...polar, rotate: "Yes" },
+      { ...polar, center: null },
+      { ...path, method: "along" },
+      { ...path, spacing: 0 },
+      { ...path, pathId: 7 },
+      { ...path, path: { ...path.path, pieces: [] } },
+      { ...path, path: { ...path.path, pieces: [{ kind: "spline" }] } },
+      { ...path, path: { ...path.path, closed: "no" } },
+      { ...path, path: "line" },
+      { kind: "spiral" },
+    ]
+    const parsed = file({
+      blocks: [{ name: "*U1", entities: bar }],
+      entities: [rect, polar, path, ...damaged].map(array),
+    })
+
+    expect(parsed.entities).toHaveLength(3 + damaged.length)
+    const [r, o, a] = parsed.entities.map((e) =>
+      e.type === "insert" ? e.array : undefined
+    )
+    expect(r).toEqual({ ...rect, axis: { x: 0, y: 1 } })
+    expect(o).toEqual(polar)
+    // The length is the pieces', whatever the file says.
+    expect(a?.kind === "path" && a.path.length).toBeCloseTo(100 + 10 * Math.PI)
+    for (const plain of parsed.entities.slice(3)) {
+      expect(plain).not.toHaveProperty("array")
+    }
+  })
+
+  it("writes no anonymous block that no reference places", () => {
+    const anonymous = (name: string) =>
+      createBlockDefinition(name, p(0, 0), [
+        lineOf(p(0, 0), p(10, 0), { id: `${name}-line` }),
+      ])
+    const holder = createBlockDefinition("HOLDER", p(0, 0), [
+      createInsert("*U3", p(0, 0), { id: "nested" }),
+    ])
+    const written = parseDrawingFile(
+      serializeDrawing({
+        ...snapshotOf([createInsert("*U1", p(0, 0), { id: "array" })]),
+        blocks: [anonymous("*U1"), anonymous("*U2"), anonymous("*U3"), holder],
+      })
+    )
+    expect(written.blocks.map((block) => block.name)).toEqual([
+      "*U1",
+      "*U3",
+      "HOLDER",
+    ])
   })
 
   it("drops a reference with no position or no block name", () => {

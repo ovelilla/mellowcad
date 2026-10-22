@@ -891,6 +891,9 @@ describe("the engine's English surface", () => {
           .do("_X", (c) => answer(c, "_X"))
           .do("PO", (c) => answer(c, "PO"))
           .do("centre", (c) => c.click(at(0, -100)))
+          // Loose copies from here on, SRC kept for the next runs.
+          .do("AS", (c) => answer(c, "AS"))
+          .do("N", (c) => answer(c, "N"))
           .do("enter", (c) => c.enter())
           .do("ARRAYRECT", (c) => c.select("SRC").command("ARRAYRECT"))
           .do("S", (c) => answer(c, "S"))
@@ -912,7 +915,10 @@ describe("the engine's English surface", () => {
           .do("M", (c) => answer(c, "M"))
           .do("A", (c) => answer(c, "A"))
           .do("M back", (c) => answer(c, "M"))
+          .do("AS", (c) => answer(c, "AS"))
+          .do("Y", (c) => answer(c, "Y"))
           .do("enter", (c) => c.enter())
+          .do("pick the array", (c) => c.click(at(10, 0)))
     )
     walk(
       "TRIM EXTEND FILLET CHAMFER",

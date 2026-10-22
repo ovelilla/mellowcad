@@ -8,6 +8,7 @@ import {
   HatchPatternId,
 } from "./hatchPatterns"
 import {
+  ArrayParameters,
   EntityId,
   LineEntity,
   CircleEntity,
@@ -144,6 +145,7 @@ export interface InsertOptions {
   readonly attributes?: readonly BlockAttribute[]
   readonly layerId?: LayerId
   readonly id?: EntityId
+  readonly array?: ArrayParameters
 }
 
 export function createInsert(
@@ -165,6 +167,7 @@ export function createInsert(
     ...(options.attributes && options.attributes.length > 0
       ? { attributes: options.attributes.slice() }
       : {}),
+    ...(options.array ? { array: options.array } : {}),
   }
 }
 

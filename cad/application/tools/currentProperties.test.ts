@@ -146,6 +146,26 @@ const FROM_SCRATCH: ReadonlyArray<
     [BASE_DIMENSION],
   ],
   ["INSERT", (c) => c.command("INSERT").type("BAR").enter().click(p(300, 0))],
+  // probe arrays/p403: the array object is on CLAYER and CECOLOR, the objects
+  // inside keep their own (DERIVED's rows, which answer `_AS _N`).
+  [
+    "ARRAYRECT",
+    (c) => c.select("SRC").command("ARRAYRECT").enter(),
+    [circleOf(p(0, -100), 2, { id: "SRC" })],
+  ],
+  [
+    "ARRAYPOLAR",
+    (c) => c.select("SRC").command("ARRAYPOLAR").click(p(0, -150)).enter(),
+    [circleOf(p(0, -100), 2, { id: "SRC" })],
+  ],
+  [
+    "ARRAYPATH",
+    (c) => c.select("SRC").command("ARRAYPATH").click(p(50, -200)).enter(),
+    [
+      circleOf(p(0, -100), 2, { id: "SRC" }),
+      lineOf(p(0, -200), p(100, -200), { id: "PATH" }),
+    ],
+  ],
   [
     "ATTDEF",
     (c) =>
@@ -214,14 +234,16 @@ const DERIVED: ReadonlyArray<
         .enter(),
     [blueLine(0, 100, "L1")],
   ],
-  // probe arrays/p164: the copies wear the source's layer, colour and
-  // lineweight, not the current ones.
+  // probe arrays/p164 (`_AS _N`): the copies wear the source's layer, colour
+  // and lineweight, not the current ones.
   [
-    "ARRAYRECT",
+    "ARRAYRECT ASsociative No",
     (c) =>
       c
         .select("L1")
         .command("ARRAYRECT")
+        .option("ASsociative")
+        .option("No")
         .option("COUnt")
         .type("3")
         .enter()
@@ -233,12 +255,14 @@ const DERIVED: ReadonlyArray<
   // probe arrays/p249: the polar copies wear the source's, not CLAYER's or
   // CECOLOR's.
   [
-    "ARRAYPOLAR",
+    "ARRAYPOLAR ASsociative No",
     (c) =>
       c
         .select("L1")
         .command("ARRAYPOLAR")
         .click(p(0, 50))
+        .option("ASsociative")
+        .option("No")
         .option("Items")
         .type("4")
         .enter()
@@ -247,8 +271,15 @@ const DERIVED: ReadonlyArray<
   ],
   // probe arrays/p316: so do the path's items.
   [
-    "ARRAYPATH",
-    (c) => c.select("L1").command("ARRAYPATH").click(p(50, 200)).enter(),
+    "ARRAYPATH ASsociative No",
+    (c) =>
+      c
+        .select("L1")
+        .command("ARRAYPATH")
+        .click(p(50, 200))
+        .option("ASsociative")
+        .option("No")
+        .enter(),
     [
       blueLine(0, 100, "L1"),
       blue(lineOf(p(0, 200), p(300, 200), { id: "P1" })),

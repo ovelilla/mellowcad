@@ -1,67 +1,67 @@
 idle: Command:
 ## hero
-239 +187 command |  | CIRCLE
-426 +127 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 0,0
-552 +107 input | Specify radius of circle or [Diameter]: | 50
-993 +187 command |  | OFFSET
-993 +0 info |  | Current settings: Erase source=No  Layer=Source  OFFSETGAPTYPE=0
-1180 +107 input | Specify offset distance or [Through/Erase/Layer] <Through>: | 30
-1287 +124 input | Select object to offset or [Exit/Undo] <Exit>: | 
-1411 +124 input | Specify point on side to offset or [Exit/Multiple/Undo] <Exit>: | 
-1936 +187 command |  | CIRCLE
-2123 +147 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 36,0
-2270 +87 input | Specify radius of circle or [Diameter] <50.00>: | 6
-2553 +267 command |  | ARRAYPOLAR
-2821 +124 input | Select objects: | 1 found
-2945 +67 input | Select objects: | 
-2945 +0 info |  | Type = Polar  Associative = No
-3011 +127 input | Specify center point of array: | 0,0
-3138 +67 input | Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: | 
-3507 +207 command |  | RECTANG
-3714 +167 input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 80,20
-3881 +187 input | Specify other corner point or [Area/Dimensions/Rotation]: | @14,30
-4306 +207 command |  | RECTANG
-4513 +187 input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 80,-50
-4700 +187 input | Specify other corner point or [Area/Dimensions/Rotation]: | @14,30
-5279 +147 command |  | LINE
-5426 +167 input | Specify first point: | -58,0
-5593 +187 input | Specify next point or [Undo]: | @160,0
-6180 +147 command |  | LINE
-6327 +167 input | Specify first point: | 0,-58
-6494 +187 input | Specify next point or [Undo]: | @0,116
-7082 +187 command |  | CIRCLE
-7269 +127 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 0,0
-7396 +107 input | Specify radius of circle or [Diameter] <6.00>: | 36
-8005 +167 command |  | HATCH
-8005 +0 info |  | Current hatch pattern:  ANSI31
-8172 +87 input | Specify internal point or [Properties/Select objects]: | P
-8258 +67 input | Enter a pattern name or [?/Solid] <ANSI31>: | 
-8325 +107 input | Specify a scale for the pattern <1.00>: | 20
-8432 +67 input | Specify an angle for the pattern <0>: | 
-8432 +0 info |  | Current hatch pattern:  ANSI31
-8499 +124 input | Specify internal point or [Properties/Select objects]: | 
-8499 +0 info |  | Selecting everything...
-8499 +0 info |  | Selecting everything visible...
-8499 +0 info |  | Analyzing the selected data...
-8499 +0 info |  | Analyzing internal islands...
-8499 +0 info |  | Current hatch pattern:  ANSI31
-8623 +124 input | Specify internal point or [Properties/Select objects]: | 
-8623 +0 info |  | Selecting everything...
-8623 +0 info |  | Selecting everything visible...
-8623 +0 info |  | Analyzing the selected data...
-8623 +0 info |  | Analyzing internal islands...
-8623 +0 info |  | Current hatch pattern:  ANSI31
-8747 +67 input | Specify internal point or [Properties/Select objects]: | 
-9694 +287 command |  | DIMDIAMETER
-9982 +124 input | Select arc or circle: | 
-10106 +124 input | Specify dimension line location or [Text/Angle]: | 
-10106 +0 info |  | Dimension text = 100.00
-10506 +247 command |  | DIMLINEAR
-10753 +124 input | Specify first extension line origin or <select object>: | 
-10877 +124 input | Specify second extension line origin: | 
-10877 +0 info |  | Non-associative dimension created.
-11001 +124 input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: | 
-11001 +0 info |  | Dimension text = 14.00
+242 +190 command |  | CIRCLE
+432 +129 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 0,0
+561 +108 input | Specify radius of circle or [Diameter]: | 50
+1008 +190 command |  | OFFSET
+1008 +0 info |  | Current settings: Erase source=No  Layer=Source  OFFSETGAPTYPE=0
+1198 +108 input | Specify offset distance or [Through/Erase/Layer] <Through>: | 30
+1306 +126 input | Select object to offset or [Exit/Undo] <Exit>: | 
+1432 +126 input | Specify point on side to offset or [Exit/Multiple/Undo] <Exit>: | 
+1965 +190 command |  | CIRCLE
+2155 +149 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 36,0
+2304 +88 input | Specify radius of circle or [Diameter] <50.00>: | 6
+2392 +271 command |  | ARRAYPOLAR
+2663 +126 input | Select objects: | 1 found
+2789 +68 input | Select objects: | 
+2789 +0 info |  | Type = Polar  Associative = Yes
+2857 +129 input | Specify center point of array: | 0,0
+2986 +68 input | Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: | 
+3386 +210 command |  | RECTANG
+3597 +169 input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 80,20
+3766 +190 input | Specify other corner point or [Area/Dimensions/Rotation]: | @14,30
+4198 +210 command |  | RECTANG
+4408 +190 input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 80,-50
+4598 +190 input | Specify other corner point or [Area/Dimensions/Rotation]: | @14,30
+5185 +149 command |  | LINE
+5334 +169 input | Specify first point: | -58,0
+5504 +190 input | Specify next point or [Undo]: | @160,0
+6100 +149 command |  | LINE
+6249 +169 input | Specify first point: | 0,-58
+6419 +190 input | Specify next point or [Undo]: | @0,116
+7015 +190 command |  | CIRCLE
+7205 +129 input | Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: | 0,0
+7334 +108 input | Specify radius of circle or [Diameter] <6.00>: | 36
+7952 +169 command |  | HATCH
+7952 +0 info |  | Current hatch pattern:  ANSI31
+8122 +88 input | Specify internal point or [Properties/Select objects]: | P
+8210 +68 input | Enter a pattern name or [?/Solid] <ANSI31>: | 
+8277 +108 input | Specify a scale for the pattern <1.00>: | 20
+8386 +68 input | Specify an angle for the pattern <0>: | 
+8386 +0 info |  | Current hatch pattern:  ANSI31
+8454 +126 input | Specify internal point or [Properties/Select objects]: | 
+8454 +0 info |  | Selecting everything...
+8454 +0 info |  | Selecting everything visible...
+8454 +0 info |  | Analyzing the selected data...
+8454 +0 info |  | Analyzing internal islands...
+8454 +0 info |  | Current hatch pattern:  ANSI31
+8580 +126 input | Specify internal point or [Properties/Select objects]: | 
+8580 +0 info |  | Selecting everything...
+8580 +0 info |  | Selecting everything visible...
+8580 +0 info |  | Analyzing the selected data...
+8580 +0 info |  | Analyzing internal islands...
+8580 +0 info |  | Current hatch pattern:  ANSI31
+8706 +68 input | Specify internal point or [Properties/Select objects]: | 
+9667 +292 command |  | DIMDIAMETER
+9959 +126 input | Select arc or circle: | 
+10085 +126 input | Specify dimension line location or [Text/Angle]: | 
+10085 +0 info |  | Dimension text = 100.00
+10491 +251 command |  | DIMLINEAR
+10742 +126 input | Specify first extension line origin or <select object>: | 
+10868 +126 input | Specify second extension line origin: | 
+10868 +0 info |  | Non-associative dimension created.
+10994 +126 input | Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: | 
+10994 +0 info |  | Dimension text = 14.00
 ## offset
 command |  | PLINE
 input | Specify start point: | 0,0

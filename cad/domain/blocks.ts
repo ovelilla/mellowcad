@@ -22,6 +22,7 @@ import {
   attributeShown,
   blockAttributeText,
 } from "./attributes"
+import { arrayItems, placeArrayItem } from "./arrays"
 
 /**
  * How deep block references may nest before the expansion gives up. AutoCAD
@@ -34,6 +35,44 @@ const BLOCK_ORIGIN: Vec2 = { x: 0, y: 0 }
 
 /** The +Y axis through the origin: reflecting across it negates X. */
 const BLOCK_MIRROR_AXIS: Vec2 = { x: 0, y: 1 }
+
+/**
+ * Whether a block is anonymous, as an array's is (`*U2`, probe arrays/p400):
+ * the drawing makes and names it, so no list a user reads shows it and no
+ * name a user types reaches it.
+ */
+export function isAnonymousBlock(name: string): boolean {
+  return name.startsWith("*")
+}
+
+/** The lowest `*U<n>` no block in `blocks` is named. */
+export function anonymousBlockName(blocks: Iterable<{ name: string }>): string {
+  const taken = new Set<string>()
+  for (const block of blocks) taken.add(block.name.toUpperCase())
+  let n = 1
+  while (taken.has(`*U${n}`)) n++
+  return `*U${n}`
+}
+
+/**
+ * The objects a reference places, in its block's coordinates: the block's
+ * own, and on an array each item's after them, item by item, the source being
+ * item 1 (probes arrays/p402, p415, p418: what EXPLODE gives, in that order).
+ * WHY no cap on the items: EXPLODE must give every one, and AutoCAD takes
+ * any count up to 32767 each way (probe arrays/p279); a huge array costs what
+ * as many loose copies cost to draw and pick.
+ */
+function referencedObjects(
+  insert: InsertEntity,
+  block: BlockDefinition
+): readonly Entity[] {
+  if (!insert.array) return block.entities
+  const out = [...block.entities]
+  for (const item of arrayItems(insert.array)) {
+    for (const entity of block.entities) out.push(placeArrayItem(entity, item))
+  }
+  return out
+}
 
 /**
  * The definition's entities placed in the drawing by one reference — a single
@@ -58,7 +97,7 @@ export function insertGeometry(
 ): Entity[] {
   if (!block) return []
   const inheritLayer = options.inheritLayer ?? true
-  return block.entities.map((entity) =>
+  return referencedObjects(insert, block).map((entity) =>
     placeInReference(entity, insert, block, inheritLayer)
   )
 }
@@ -115,7 +154,7 @@ function insertDisplayGeometry(
 ): Entity[] {
   if (!block) return []
   const out: Entity[] = []
-  for (const entity of block.entities) {
+  for (const entity of referencedObjects(insert, block)) {
     if (entity.type !== "attdef") {
       out.push(placeInReference(entity, insert, block, true))
     } else if (

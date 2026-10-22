@@ -183,15 +183,19 @@ the last type chosen: **unverified**, so `<Rectangular>` always)
 ### `ARRAYRECT` · es `MATRIZRECTANG`
 
 **Implemented:** `Select objects:` (MOVE's counts; ARRAY's set),
-`Type = Rectangular  Associative = No` (es `Tipo = Rectangular  Asociativa = No`, composed from the table's words; the console's with
-Associative Yes is `Tipo = Rectangular  Asociativa = Sí`, p100), then
-`Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:` (es
-`Seleccione un pinzamiento para editar la matriz o [COntar/Espaciado/Columnas/Filas/Salir] <Salir>`)
+`Type = Rectangular  Associative = Yes` (es `Tipo = Rectangular  Asociativa = Sí`, arrays/p01,
+p04), `= No` (es `= No`) once ASsociative No is the answer, then
+`Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:` (es
+`Seleccione un pinzamiento para editar la matriz o [Asociativa/COntar/Espaciado/Columnas/Filas/Salir] <Salir>`)
 over a live preview — the items as the drawing will draw them, each in its own colour, linetype and
-lineweight (desktop arrays/d01-1) — 4 columns along the UCS's X and 3 rows along its Y, one and a
+lineweight, the source hidden and drawn as item 1 (desktop arrays/d01-1) — 4 columns along the UCS's X and 3 rows along its Y, one and a
 half times the selection's extents apart, its width and height measured along the UCS's axes (1 where it has
-none; arrays/p165, p168); a point or a number typed there is taken and the prompt asked again
-without a word (p109, p129); COUnt asks `Enter the number of columns <4>:` and
+none; p165, p168); a point or a number typed there is taken and the prompt asked again
+without a word (p109, p129); ASsociative asks `Create associative array [Yes/No] <Yes>:` (es
+`Crear matriz asociativa [Sí/No] <Sí>:`, AcArrayRes:5609; p04–p06), its default the answer
+in force, which ARRAYRECT, ARRAYPOLAR and ARRAYPATH share for the session (p364: the next run says
+`Associative = No`; WHY the session and not the drawing: AutoCAD keeps ARRAYASSOCIATIVITY in the
+registry, a drawing saved at 1 opening at 0 after `_AS _N`, p422); COUnt asks `Enter the number of columns <4>:` and
 `Enter the number of rows <3>:`, Spacing
 `Specify the distance between columns or [Unit cell] <15>:` and
 `Specify the distance between rows <1>:` — the defaults without trailing zeros, at the drawing's
@@ -218,16 +222,36 @@ preview draws the first 1000 cells (as ARRAYPOLAR's); a distance refuses 0 with
 elevation takes it (p117, p120, p135); `FOO` at Spacing's rows says
 `Requires numeric distance or two points.` (es `Requiere una distancia numérica o dos puntos.`),
 at the other distances `…, two points, or option keyword.` (p121, p138); `'ZOOM` at any prompt,
-a count's too, resumes it (p154, p157, p158); eXit or Enter makes the copies, in the drawing's
-order whatever the pick's (p167), with the source's layer, colour, lineweight and Z (p164, p166), one undo step
-(U writes `ARRAYRECT`, p159); Escape at the main prompt makes them too, the prompt written with
-`*Cancel*` (es `*Cancelado*`; desktop d08, d08b), at a value's prompt with the values given before
-it (**unverified**: the desktop showed the main prompt only), before the main prompt nothing
+a count's too, resumes it (p154, p157, p158); eXit or Enter makes the array object below, or with
+ASsociative No the copies, in the drawing's order whatever the pick's (p167), with the source's
+layer, colour, lineweight and Z (p164, p166), the source kept; one undo step (U writes
+`ARRAYRECT`, p159); Escape at the main prompt makes it too, the prompt written with `*Cancel*` (es
+`*Cancelado*`; desktop d08, d08b), at a value's prompt with the values given before it
+(**unverified**: the desktop showed the main prompt only), before the main prompt nothing.
 
-**Missing:** associative arrays (WHY Associative = No: an array object is not modelled, so the
-copies are plain geometry, as with AutoCAD's ASsociative No — the keyword is not offered), the grips
-the main prompt picks, and so the preview's grips and the source drawn as the array's item 1 (it
-stays selected here); Unit cell's rubber band dashed, as the trace's UseDashedLine 1 says (p123;
+The array object (the three commands'): one block reference, named for its kind — `Array
+(Rectangular)`, `Array (Polar)`, `Array (Path)` (es `Matriz (rectangular)`, `Matriz (polar)`,
+`Matriz (de ruta)`; AcArrayRes 9575, 39923, 887) in the palette's title, the rollover and the
+selection list — to an anonymous block `*U<n>` holding the source where it stood, the source
+consumed into it (p01–p03, p400); on the current layer, colour, linetype and lineweight, the
+objects inside keeping theirs, those on layer 0 shown on its layer as in any block (p403); at the
+source's extents centre (p403, p404), ARRAYPOLAR's at the centre, the extents centre its base point
+(p405), ARRAYPATH's at the path's start (p406). Its items are derived from its parameters, kept in
+the block's coordinates, so they are drawn, picked, bounded and snapped to as the drawing's own: a
+pick on any item takes the array (p408), `_END` finds an item's end (p412), and MOVE, COPY (a
+second array, p410), ROTATE, SCALE, MIRROR, STRETCH and the insertion grip carry it whole; EXPLODE
+gives each item's objects, item by item, on their own layers (p402, p415, p418); U puts the source
+back with its id (p409); the file keeps it (p411a, p411b); PASTECLIP lands it with an anonymous
+block of its own. Its block is in no list of blocks (INSERT's `?` and default, BLOCK's `?`, the
+Blocks palette, PURGE), a typed `*U1` is no block INSERT finds, and a drawing is saved without one
+no reference places any more (AutoCAD's own purge of them: **unverified**)
+
+**Missing:** the grips the main prompt picks, and so the preview's grips; the array object's own
+grips, multifunctional menus and Properties rows (review block AYG: it keeps a block reference's
+insertion grip and Block and Position rows, its Name `*U1`, and the palette's object filter counts
+it with the block references); LIST's `ARRAY` report (p401, p403–p406); ARRAYEDIT (p419–p421) and
+ARRAYCLOSE; no cap on the items but 32767 each way, a large array costing what as many loose
+copies cost to draw and pick; Unit cell's rubber band dashed, as the trace's UseDashedLine 1 says (p123;
 solid here: **unverified** on the desktop); Base point (`Specify base point or [Key point] <centroid>:`, es
 `Especifique un punto base o [punto Clave] <centro de gravedad>:`, p140); Levels
 (`Enter the number of levels or [Expression] <1>:`,
@@ -244,8 +268,8 @@ and UPdate (the main prompt asked again, p142); the counts' `[Expression]` and t
 (p01, p04; WHY not built: the space is per question here, not per language, and it changes no
 letter typed); 'ORTHOMODE at a count (p155: ORTHOMODE is no variable here, drafting-aids.md);
 MAXARRAY's message (MAXARRAY is nil in 2027, p00: **unverified**); Expression (WHY not built: it
-ties an associative array to the drawing's parameters, and with Associative = No and no Parameters
-Manager it would only be a calculator; 2027's console: `Enter expression<4>:`, es
+ties an associative array to the drawing's parameters, and with no Parameters Manager it would only
+be a calculator; 2027's console: `Enter expression<4>:`, es
 `Introduzca la expresión<4>:`, p134; AutoCAD 2023's: arithmetic with `^`, `%`, parentheses and
 functions — `sqrt(16)`, `max(2,5)`, `SQRT(9)` — refusing `FOO` with
 `The syntax is incorrect or a variable is not defined.  Reenter the expression or value.` and a
@@ -253,12 +277,13 @@ fraction with `Requires an integer between 1 an 32767, or option keyword.`)
 
 ### `ARRAYPOLAR` · es `MATRIZPOLAR`
 
-**Implemented:** `Select objects:` (MOVE's counts; ARRAY's set), `Type = Polar  Associative = No`
-(es `Tipo = Polar  Asociativa = No`), `Specify center point of array:` (es
+**Implemented:** `Select objects:` (MOVE's counts; ARRAY's set), `Type = Polar  Associative = Yes`
+(es `Tipo = Polar  Asociativa = Sí`, p02; `No` as ARRAYRECT's), `Specify center point of array:` (es
 `Especifique el punto central de la matriz`, arrays/p201), where Enter says
 `Point or option keyword required.` (es `Se requiere un punto o una opción.`) and asks again (p206);
-then `Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:` (es
-`[Elementos/ángUlo entre/ángulo de Relleno/Girar objetos/Salir] <Salir>`) over a live preview, 6
+then `Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:`
+(es `[Asociativa/Elementos/ángUlo entre/ángulo de Relleno/Girar objetos/Salir] <Salir>`; ASsociative
+as ARRAYRECT's, p05) over a live preview, 6
 items over 360° at first, drawn as ARRAYRECT's, nothing marking the centre, and no preview while the
 centre is asked (desktop d02-1, d02-2); a point or a number typed there is taken and the prompt asked again
 without a word (p208, p209); `R` asks `ROWs or ROTate?`, as AutoCAD's declared ROWs makes it
@@ -281,12 +306,13 @@ and show their defaults unsigned, without trailing zeros, at the drawing's preci
 `<33.33>`, `<100>` at AUPREC 2, p264, p275); ROTate items `Rotate arrayed items? [Yes/No] <Yes>:`
 (es `Indique el número de elementos de la matriz`, `Indique el ángulo entre elementos`,
 `Precise el ángulo que se debe rellenar (+ =antihorario, -=horario)`,
-`¿Girar elementos de la matriz?`); eXit or Enter makes the copies with the source's layer and
-colour (p249), one undo step; the preview draws the first 1000 items (WHY: a count of thousands
+`¿Girar elementos de la matriz?`); eXit or Enter makes the array object (ARRAYRECT's), at the
+centre (p02, p405), or with ASsociative No the copies with the source's layer and colour (p05,
+p249), one undo step; the preview draws the first 1000 items (WHY: a count of thousands
 redrawn on every move would hang the page), the commit all of them; Escape as ARRAYRECT's once the
 centre is given, before it nothing (**unverified**: the desktop's polar run, d08c, was inconclusive)
 
-**Missing:** associative (as ARRAYRECT's), the grips, the preview's as ARRAYRECT's; Base point, at the centre and the main
+**Missing:** the grips and the array object's, as ARRAYRECT's; Base point, at the centre and the main
 prompt (`Specify base point or [Key point] <centroid>:`, es
 `Especifique un punto base o [punto Clave] <centro de gravedad>:`, p253, p255); Axis of rotation
 (`Specify first point on axis of rotation:`, `Specify second point on axis of rotation:`, es
@@ -312,8 +338,8 @@ as ARRAYRECT's) and the `[Expression]`, `[EXpression]` the value prompts list; E
 
 ### `ARRAYPATH` · es `MATRIZCAMINO`
 
-**Implemented:** `Select objects:` (or ARRAY's set), `Type = Path  Associative = No` (es
-`Tipo = Ruta  Asociativa = No`), `Select path curve:` (es `Seleccione la curva de trayectoria`): a
+**Implemented:** `Select objects:` (or ARRAY's set), `Type = Path  Associative = Yes` (es
+`Tipo = Ruta  Asociativa = Sí`, p03; `No` as ARRAYRECT's), `Select path curve:` (es `Seleccione la curva de trayectoria`): a
 line, an arc, a circle or a polyline, one segment or many (arrays/p308), level with the UCS; a
 pick on one of the arrayed objects says
 `Objects selected to be arrayed may not be selected as path curve.` and `1 was filtered out`
@@ -334,8 +360,9 @@ polygon's last point (p300, p303, p342, p343, p376–p378); an exact midpoint, w
 either way (p06, p310, p344), runs from the curve's start here —; a circle from its angle 0,
 counter-clockwise, wherever it is picked (p301, p315); a closed polyline from its first vertex,
 its own way round (**unverified**). Then
-`Select grip to edit array or [Method/Items/Align items/eXit] <eXit>:` (es
-`[Método/Elementos/ALinear elementos/Salir] <Salir>`) over a live preview, the items drawn as
+`Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>:` (es
+`[Asociativa/Método/Elementos/ALinear elementos/Salir] <Salir>`; ASsociative as ARRAYRECT's, p06)
+over a live preview, the items drawn as
 ARRAYRECT's and the path as the drawing draws it (d03-2); a point or a number typed there is taken and the prompt asked again
 without a word (p328, p329). Method `Enter path method [Divide/Measure] <Measure>:`, Measure
 going on from Divide's spacing (p334); Items by Divide `Enter number of items along path <17>:`,
@@ -353,12 +380,16 @@ one (p301); Divide keeps the count, L/(n − 1) apart on an open path, L/n on a 
 p374). The source stays where it is as item 1; item k is the source moved by how far the path's
 point at k steps is from its start and, aligned, turned about that point as far as the path's
 direction has turned there (p302, p303, p305, p308); Align No only moves it (p304). eXit or
-Enter adds the copies, the source's layer, colour and Z (p309, p312, p316), one undo step U names
-(p369); the path is left in place; Escape as ARRAYRECT's once the path is picked (desktop d08c:
-the copies kept), before it nothing
+Enter makes the array object (ARRAYRECT's) at the path's start, keeping the path's geometry and
+which object it was (p03, p406), or with ASsociative No adds the copies, the source's layer, colour
+and Z (p06, p309, p312, p316), one undo step U names (p369); the path is left in place, and erasing
+it leaves the array (p416); Escape as ARRAYRECT's once the path is picked (desktop d08c: the copies
+kept), before it nothing
 
-**Missing:** associative (as ARRAYRECT's; Yes consumes the source into the array, p06), the
-grips, the preview's as ARRAYRECT's; Group at `Select path curve:` (`Enter group name:`, es `Indique nombre de grupo:`,
+**Missing:** the grips and the array object's, as ARRAYRECT's; the array following its path
+(p407: STRETCH of the path's end from 100 to 50 leaves 9 items; WHY not built: the array keeps the
+path's geometry and id, ARRAYS-D9, and following an edit of another object is associativity no
+object here has yet); Group at `Select path curve:` (`Enter group name:`, es `Indique nombre de grupo:`,
 `Invalid group name.`, es `Nombre de grupo no válido.`, p355; `*Invalid selection*` here);
 splines and ellipses as paths (p359, p360; filtered out here); a path not level with the UCS,
 which AutoCAD arrays along in 3D (p311; a sloping line is arrayed in plan here); Base point
@@ -1175,7 +1206,8 @@ line (**unverified**: the keyword's word, `Múltiple`, is assumed)
 ### `PURGE` / `PU` · es `LIMPIA` / `LI`†
 
 **Implemented:** unreferenced block definitions, all or by id, undoable, per-block delete in the
-palette disabled with a reason when in use
+palette disabled with a reason when in use; an array's anonymous block is none of them (the drawing
+is saved without it once unused, ARRAYRECT's entry)
 
 **Missing:** layers / text styles / dim styles, the Purge dialog, "one level at a time", Purge
 Nested Items, unnamed objects

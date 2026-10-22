@@ -5,7 +5,8 @@
 **Implemented:** all four plus select-all; PASTECLIP asks `Specify insertion point:` (es
 `Precise punto de inserción`), Enter asking again and what is no point refused with
 `Invalid 2D point.`, as AutoCAD 2023's console does; `Clipboard` port with a session fallback, table
-reconciliation across drawings (destination name wins), single undo on paste, bounded read timeout,
+reconciliation across drawings (destination name wins; an array's anonymous block lands under a
+fresh `*U<n>`, arrays/p410), single undo on paste, bounded read timeout,
 editable-field guard for Ctrl+C/X/V/A
 
 **Missing:** PASTEBLOCK, PASTEORIG, CUTBASE, PASTESPEC/OLE, drag and drop between windows, a

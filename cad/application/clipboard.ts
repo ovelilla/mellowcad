@@ -7,10 +7,13 @@
 import { Vec3, sub3 } from "../geometry/Vec3"
 import { DocumentReader } from "../domain/Document"
 import {
+  anonymousBlockName,
   assignEntityLayer,
   BlockDefinition,
+  BlockId,
   copyEntity,
   Entity,
+  isAnonymousBlock,
   MAX_BLOCK_NESTING,
 } from "../domain/entities"
 import { DEFAULT_LAYER_ID, Layer, LayerId, nextLayerId } from "../domain/layers"
@@ -113,7 +116,9 @@ export interface PastePlan {
  * or use the style and block definition that are already there, and only names
  * the drawing has never heard of are added. That is AutoCAD's rule — pasting
  * never redefines the drawing it lands in — and it is also what makes a paste
- * back into the drawing it was copied from a plain duplicate.
+ * back into the drawing it was copied from a plain duplicate. An anonymous
+ * block (an array's) is no name at all: it lands as a fresh `*U<n>`, as COPY
+ * makes a second array of its own (probe arrays/p410).
  */
 export function planPaste(
   fragment: ClipboardFragment,
@@ -126,8 +131,12 @@ export function planPaste(
     document
   )
   const layerOf = (id: LayerId) => layerIds.get(id) ?? DEFAULT_LAYER_ID
+  const anonymous = renameAnonymousBlocks(fragment.drawing.blocks, document)
   const onLayer = (entity: Entity): Entity => {
-    const placed = assignEntityLayer(entity, layerOf(entity.layerId))
+    const placed = withAnonymousRenamed(
+      assignEntityLayer(entity, layerOf(entity.layerId)),
+      anonymous
+    )
     return placed.type === "insert" && placed.attributes
       ? {
           ...placed,
@@ -155,12 +164,44 @@ export function planPaste(
       (style) => !document.getDimStyle(style.id)
     ),
     blocks: fragment.drawing.blocks
-      .filter((block) => !document.getBlock(block.id))
-      .map((block) => ({
-        ...block,
-        entities: block.entities.map(onLayer),
-      })),
+      .filter(
+        (block) => anonymous.has(block.id) || !document.getBlock(block.id)
+      )
+      .map((block) => {
+        const name = anonymous.get(block.id)
+        return {
+          ...block,
+          ...(name ? { id: name, name } : {}),
+          entities: block.entities.map(onLayer),
+        }
+      }),
   }
+}
+
+/** A fresh `*U<n>` for each anonymous block of a fragment, none the target has. */
+function renameAnonymousBlocks(
+  blocks: readonly BlockDefinition[],
+  document: DocumentReader
+): Map<BlockId, BlockId> {
+  const taken = document.getBlocks().map((block) => ({ name: block.name }))
+  const renamed = new Map<BlockId, BlockId>()
+  for (const block of blocks) {
+    if (!isAnonymousBlock(block.name)) continue
+    const name = anonymousBlockName(taken)
+    taken.push({ name })
+    renamed.set(block.id, name)
+  }
+  return renamed
+}
+
+function withAnonymousRenamed(
+  entity: Entity,
+  renamed: ReadonlyMap<BlockId, BlockId>
+): Entity {
+  const name = entity.type === "insert" ? renamed.get(entity.blockId) : null
+  return name && entity.type === "insert"
+    ? { ...entity, blockId: name }
+    : entity
 }
 
 /**

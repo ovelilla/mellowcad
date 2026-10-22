@@ -1,7 +1,6 @@
 import { Vec2 } from "../../geometry/Vec2"
-import { Entity, entityBounds } from "../../domain/entities"
+import { Entity, EntityId, entityBounds } from "../../domain/entities"
 import {
-  arrayItemCopy,
   isFullTurn,
   placeArrayItem,
   polarAngleBetween,
@@ -13,10 +12,10 @@ import {
   parseCoordinate,
 } from "../input/coordinateInput"
 import { ScenePrimitive } from "../../scene/types"
-import { AddEntitiesCommand } from "../commands/entityCommands"
 import { ObjectSelector } from "./objectSelection"
 import { MAX_PREVIEW_ITEMS, refusesCount, takesCount } from "./arrayCounts"
 import { drawn } from "./ghostLook"
+import { ArrayAssociativity, makeArray, reportArrayType } from "./arrayObject"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -30,22 +29,22 @@ import {
 
 /**
  * AutoCAD's ARRAYPOLAR, as its 2027 console asks it: `Select objects:` (or
- * ARRAY's set), `Type = Polar  Associative = No`, `Specify center point of
- * array:`, then `Select grip to edit array or [Items/Angle between/Fill
- * angle/ROTate items/eXit] <eXit>:` over a live preview — 6 items over 360°
- * at first. Items asks the count, Angle between the angle from one item to
+ * ARRAY's set), `Type = Polar  Associative = Yes`, `Specify center point of
+ * array:`, then `Select grip to edit array or [ASsociative/Items/Angle
+ * between/Fill angle/ROTate items/eXit] <eXit>:` over a live preview — 6
+ * items over 360° at first. ASsociative asks as ARRAYRECT's does. Items asks
+ * the count, Angle between the angle from one item to
  * the next, Fill angle the angle they span (+ counterclockwise, - clockwise),
  * ROTate items `Rotate arrayed items? [Yes/No] <Yes>:` (Yes turns each copy to
  * follow the ring, No only carries it round). A full 360° spaces the items by
  * fill / count; any other fill spans the first and last, fill / (count − 1),
  * and an angle between makes the fill that many steps, a full turn once they
  * reach 360°. The ring keeps its direction apart from its size, which the
- * defaults show. eXit or Enter makes the copies, one undo step with the source
- * as item 1; so does Escape once the centre is given (**unverified**: d08c's
- * polar run was inconclusive), before it nothing.
- *
- * WHY Associative = No: as ARRAYRECT's. Base point, Axis of rotation, ROWs and
- * Levels are not offered; ROWs is declared, so that `R` asks which.
+ * defaults show. eXit or Enter makes the array (`makeArray`), one undo step
+ * with the source as item 1, the reference at the centre (probe arrays/p405);
+ * so does Escape once the centre is given (**unverified**: d08c's polar run
+ * was inconclusive), before it nothing. Base point, Axis of rotation, ROWs
+ * and Levels are not offered; ROWs is declared, so that `R` asks which.
  */
 
 const DEFAULT_ITEMS = 6
@@ -62,12 +61,15 @@ interface Ring {
   readonly rotate: boolean
 }
 
-type Step = "main" | "items" | "between" | "fill" | "rotate"
+type Step = "main" | "associative" | "items" | "between" | "fill" | "rotate"
 
 interface PolarConfig {
   readonly originals: readonly Entity[]
   readonly center: Vec2
-  /** Base point (selection centroid) carried around the ring when not rotating. */
+  /**
+   * The set's extents centre, carried round the ring when the items are not
+   * turned: LIST's `Base point:` (probe arrays/p405).
+   */
   readonly basePoint: Vec2
 }
 
@@ -100,6 +102,10 @@ export class ArrayPolarTool implements Tool {
     done: (ctx) => this.confirmSelection(ctx),
   })
   private lastScreen: Vec2 | null = null
+
+  constructor(
+    private readonly mode: ArrayAssociativity = { associative: true }
+  ) {}
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -144,6 +150,7 @@ export class ArrayPolarTool implements Tool {
         return {
           id: "selectGripToEditArrayOr",
           declared: [
+            "ASsociative",
             "Items",
             "Angle between",
             "Fill angle",
@@ -152,6 +159,8 @@ export class ArrayPolarTool implements Tool {
             "eXit",
           ],
         }
+      case "associative":
+        return "createAssociativeArray"
       case "items":
         return { id: "enterNumberOfItemsInArray", enter: { count: ring.items } }
       // Unsigned and without trailing zeros, whichever way the ring runs
@@ -194,6 +203,7 @@ export class ArrayPolarTool implements Tool {
           refusal: "requiresAngle",
           values: { points: "two", keyword: "yes" },
         }
+      case "associative":
       case "rotate":
         return "keyword"
     }
@@ -205,6 +215,7 @@ export class ArrayPolarTool implements Tool {
     switch (this.state.step) {
       case "main":
         return [
+          { id: "ASsociative" },
           { id: "Items" },
           { id: "Angle between" },
           { id: "Fill angle" },
@@ -214,6 +225,7 @@ export class ArrayPolarTool implements Tool {
           // letters must keep `R` ambiguous (p210).
           { id: "ROWs", hidden: true },
         ]
+      case "associative":
       case "rotate":
         return [{ id: "Yes" }, { id: "No" }]
       default:
@@ -226,6 +238,8 @@ export class ArrayPolarTool implements Tool {
     switch (this.state.step) {
       case "main":
         return "eXit"
+      case "associative":
+        return this.mode.associative ? "Yes" : "No"
       case "rotate":
         return this.state.ring.rotate ? "Yes" : "No"
       default:
@@ -238,6 +252,12 @@ export class ArrayPolarTool implements Tool {
       return this.selector.invokeOption(id, ctx) ? "continue" : "unhandled"
     }
     if (this.state.phase !== "edit") return "unhandled"
+    if (this.state.step === "associative") {
+      if (id !== "Yes" && id !== "No") return "unhandled"
+      this.mode.associative = id === "Yes"
+      this.ask("main", ctx)
+      return "continue"
+    }
     if (this.state.step === "rotate") {
       if (id !== "Yes" && id !== "No") return "unhandled"
       this.state = {
@@ -251,6 +271,10 @@ export class ArrayPolarTool implements Tool {
     if (id === "eXit") {
       this.create(ctx)
       return "end"
+    }
+    if (id === "ASsociative") {
+      this.ask("associative", ctx)
+      return "continue"
     }
     const step = KEYWORD_STEP[id]
     if (step === undefined) return "unhandled"
@@ -317,11 +341,21 @@ export class ArrayPolarTool implements Tool {
       ctx.endCommand()
       return true
     }
-    if (this.state.phase === "edit" && this.state.step === "rotate") {
+    if (
+      this.state.phase === "edit" &&
+      (this.state.step === "rotate" || this.state.step === "associative")
+    ) {
       this.ask("main", ctx) // <Yes> or <No>: the current answer stays
       return true
     }
     return false
+  }
+
+  /** The source is item 1 of the preview (ARRAYS-D5). */
+  hiddenEntityIds(): readonly EntityId[] {
+    return this.state.phase === "edit"
+      ? this.state.config.originals.map((entity) => entity.id)
+      : []
   }
 
   wantsSnap(): boolean {
@@ -343,14 +377,18 @@ export class ArrayPolarTool implements Tool {
     if (state.phase !== "edit") return []
 
     const ring = this.previewRing(ctx, state.ring, state.step)
-    return polarArrayItems(
-      { ...state.config, ...ring },
-      MAX_PREVIEW_ITEMS
-    ).flatMap((item) =>
-      state.config.originals.flatMap((entity) =>
-        drawn(ctx, placeArrayItem(entity, item), "plain")
-      )
-    )
+    const { originals } = state.config
+    return [
+      ...originals.flatMap((entity) => drawn(ctx, entity, "plain")),
+      ...polarArrayItems(
+        { ...state.config, ...ring },
+        MAX_PREVIEW_ITEMS
+      ).flatMap((item) =>
+        originals.flatMap((entity) =>
+          drawn(ctx, placeArrayItem(entity, item), "plain")
+        )
+      ),
+    ]
   }
 
   /** Goes on from the set `Select objects:` closed to the center point. */
@@ -371,7 +409,7 @@ export class ArrayPolarTool implements Tool {
       return
     }
     this.state = { phase: "center", originals }
-    ctx.report(ctx.text.message("arrayType", { type: "polar" }))
+    reportArrayType(ctx, "polar", this.mode)
     ctx.dynamicInput.open({
       fields: [{ id: "center", prompt: "centerPoint", kind: "coordinate" }],
       commit: () => {},
@@ -409,7 +447,7 @@ export class ArrayPolarTool implements Tool {
       phase: "edit",
       config: {
         originals,
-        center,
+        center: { x: center.x, y: center.y },
         basePoint: centroid(originals, ctx.blocks),
       },
       ring: {
@@ -426,7 +464,7 @@ export class ArrayPolarTool implements Tool {
   private ask(step: Step, ctx: ToolContext): void {
     if (this.state.phase !== "edit") return
     this.state = { ...this.state, step }
-    if (step === "main" || step === "rotate") {
+    if (step === "main" || step === "associative" || step === "rotate") {
       // Keywords only, the focus left on the drawing.
       ctx.dynamicInput.open({ fields: [], commit: () => {} })
       ctx.requestRender()
@@ -477,7 +515,9 @@ export class ArrayPolarTool implements Tool {
 
   /** The ring the preview shows: the value being typed already applied. */
   private previewRing(ctx: ToolContext, ring: Ring, step: Step): Ring {
-    if (step === "main" || step === "rotate") return ring
+    if (step === "main" || step === "associative" || step === "rotate") {
+      return ring
+    }
     const typed = parseNumber(ctx.dynamicInput.getText("value").trim())
     if (typed === null || !Number.isFinite(typed)) return ring
     const taken =
@@ -494,11 +534,14 @@ export class ArrayPolarTool implements Tool {
     if (state.phase !== "edit") return
     // Left first: the command's end deactivates the tool, which commits too.
     this.state = { phase: "selecting" }
-    const copies = polarArrayItems({ ...state.config, ...state.ring }).flatMap(
-      (item) =>
-        state.config.originals.map((entity) => arrayItemCopy(entity, item))
+    const { originals, center, basePoint } = state.config
+    makeArray(
+      ctx,
+      originals,
+      { kind: "polar", center, basePoint, ...state.ring },
+      center,
+      this.mode
     )
-    if (copies.length > 0) ctx.execute(new AddEntitiesCommand(copies))
     ctx.dynamicInput.close()
   }
 }

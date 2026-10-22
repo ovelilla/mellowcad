@@ -3047,14 +3047,24 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   dyn: "X,Y"=""||*
   options: -
   prompt| Enter array type [Rectangular/PAth/POlar] <Rectangular>: PO
-  info| Type = Polar  Associative = No
+  info| Type = Polar  Associative = Yes
 > centre
-  prompt: ARRAY Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
+  prompt: ARRAY Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
   asks: 
   tip: Select grip to edit array or
   dyn: 
-  options: [I] Items, [A] Angle between, [F] Fill angle, [ROT] ROTate items, [X] eXit
+  options: [AS] ASsociative, [I] Items, [A] Angle between, [F] Fill angle, [ROT] ROTate items, [X] eXit
   prompt| Specify center point of array:
+> AS
+  prompt: ARRAY Create associative array [Yes/No] <Yes>:
+  tip: Create associative array
+  options: [Y] Yes, [N] No
+  prompt| Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: AS
+> N
+  prompt: ARRAY Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
+  tip: Select grip to edit array or
+  options: [AS] ASsociative, [I] Items, [A] Angle between, [F] Fill angle, [ROT] ROTate items, [X] eXit
+  prompt| Create associative array [Yes/No] <Yes>: N
 > enter
   prompt: Command:
   asks: -
@@ -3062,13 +3072,13 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   dyn: -
   options: -
   properties: -
-  prompt| Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
+  prompt| Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
 > ARRAYRECT
-  prompt: ARRAYRECT Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:
+  prompt: ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:
   asks: 
   tip: Select grip to edit array or
   dyn: 
-  options: [COU] COUnt, [S] Spacing, [COL] COLumns, [R] Rows, [X] eXit
+  options: [AS] ASsociative, [COU] COUnt, [S] Spacing, [COL] COLumns, [R] Rows, [X] eXit
   properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm~, Area=314.16 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
   command| ARRAYRECT
   info| 1 found
@@ -3079,7 +3089,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: Specify the distance between columns or
   dyn: "Column spacing"=""||mm*
   options: [U] Unit cell
-  prompt| Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S
 > U
   prompt: ARRAYRECT Specify first corner point of unit cell:
   asks: "First corner"
@@ -3088,11 +3098,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   options: -
   prompt| Specify the distance between columns or [Unit cell] <30>: U
 > FOO
-  prompt: ARRAYRECT Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:
+  prompt: ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:
   asks: 
   tip: Select grip to edit array or
   dyn: 
-  options: [COU] COUnt, [S] Spacing, [COL] COLumns, [R] Rows, [X] eXit
+  options: [AS] ASsociative, [COU] COUnt, [S] Spacing, [COL] COLumns, [R] Rows, [X] eXit
   prompt| Specify first corner point of unit cell: FOO
   error| Requires numeric nonzero value.
 > S
@@ -3101,7 +3111,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: Specify the distance between columns or
   dyn: "Column spacing"=""||mm*
   options: [U] Unit cell
-  prompt| Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S
 > U
   prompt: ARRAYRECT Specify first corner point of unit cell:
   asks: "First corner"
@@ -3115,11 +3125,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: Specify opposite corner:
   prompt| Specify first corner point of unit cell:
 > opposite
-  prompt: ARRAYRECT Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:
+  prompt: ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:
   asks: 
   tip: Select grip to edit array or
   dyn: 
-  options: [COU] COUnt, [S] Spacing, [COL] COLumns, [R] Rows, [X] eXit
+  options: [AS] ASsociative, [COU] COUnt, [S] Spacing, [COL] COLumns, [R] Rows, [X] eXit
   prompt| Specify opposite corner:
 > enter
   prompt: Command:
@@ -3128,7 +3138,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   dyn: -
   options: -
   properties: -
-  prompt| Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:
 > ARRAYPOLAR
   prompt: ARRAYPOLAR Specify center point of array:
   asks: "Center point"
@@ -3139,16 +3149,16 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   info| 1 found
   info| Type = Polar  Associative = No
 > centre
-  prompt: ARRAYPOLAR Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
+  prompt: ARRAYPOLAR Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
   asks: 
   tip: Select grip to edit array or
   dyn: 
-  options: [I] Items, [A] Angle between, [F] Fill angle, [ROT] ROTate items, [X] eXit
+  options: [AS] ASsociative, [I] Items, [A] Angle between, [F] Fill angle, [ROT] ROTate items, [X] eXit
   prompt| Specify center point of array:
 > R
   prompt: ARRAYPOLAR ROWs or ROTate?
   tip: ROWs or ROTate?
-  prompt| Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: R
+  prompt| Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: R
   error| Ambiguous response, please clarify...
 > ROT
   prompt: ARRAYPOLAR Rotate arrayed items? [Yes/No] <Yes>:
@@ -3156,9 +3166,9 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   options: [Y] Yes, [N] No
   prompt| ROWs or ROTate? ROT
 > enter
-  prompt: ARRAYPOLAR Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
+  prompt: ARRAYPOLAR Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
   tip: Select grip to edit array or
-  options: [I] Items, [A] Angle between, [F] Fill angle, [ROT] ROTate items, [X] eXit
+  options: [AS] ASsociative, [I] Items, [A] Angle between, [F] Fill angle, [ROT] ROTate items, [X] eXit
   prompt| Rotate arrayed items? [Yes/No] <Yes>:
 > enter
   prompt: Command:
@@ -3167,7 +3177,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   dyn: -
   options: -
   properties: -
-  prompt| Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
+  prompt| Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
 > ARRAYPATH
   prompt: ARRAYPATH Select path curve:
   asks: 
@@ -3178,23 +3188,33 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   info| 1 found
   info| Type = Path  Associative = No
 > path
-  prompt: ARRAYPATH Select grip to edit array or [Method/Items/Align items/eXit] <eXit>:
+  prompt: ARRAYPATH Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>:
   tip: Select grip to edit array or
-  options: [M] Method, [I] Items, [A] Align items, [X] eXit
+  options: [AS] ASsociative, [M] Method, [I] Items, [A] Align items, [X] eXit
   prompt| Select path curve:
 > M
   prompt: ARRAYPATH Enter path method [Divide/Measure] <Measure>:
   tip: Enter path method
   options: [D] Divide, [M] Measure
-  prompt| Select grip to edit array or [Method/Items/Align items/eXit] <eXit>: M
+  prompt| Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>: M
 > A
   prompt| Enter path method [Divide/Measure] <Measure>: A
   error| Invalid option keyword.
 > M back
-  prompt: ARRAYPATH Select grip to edit array or [Method/Items/Align items/eXit] <eXit>:
+  prompt: ARRAYPATH Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>:
   tip: Select grip to edit array or
-  options: [M] Method, [I] Items, [A] Align items, [X] eXit
+  options: [AS] ASsociative, [M] Method, [I] Items, [A] Align items, [X] eXit
   prompt| Enter path method [Divide/Measure] <Measure>: M
+> AS
+  prompt: ARRAYPATH Create associative array [Yes/No] <No>:
+  tip: Create associative array
+  options: [Y] Yes, [N] No
+  prompt| Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>: AS
+> Y
+  prompt: ARRAYPATH Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>:
+  tip: Select grip to edit array or
+  options: [AS] ASsociative, [M] Method, [I] Items, [A] Align items, [X] eXit
+  prompt| Create associative array [Yes/No] <No>: Y
 > enter
   prompt: Command:
   asks: -
@@ -3202,7 +3222,9 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   dyn: -
   options: -
   properties: -
-  prompt| Select grip to edit array or [Method/Items/Align items/eXit] <eXit>:
+  prompt| Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>:
+> pick the array
+  properties: Array (Path) (1) [Block: Name=*U1, Scale=1.00~, Rotation=0°~] [Position: X=0.00~, Y=100.00~, Z=0.00~]
 
 ## TRIM EXTEND FILLET CHAMFER
 > start

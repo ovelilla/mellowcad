@@ -36,6 +36,7 @@ import { ArrayCommandTool } from "./tools/ArrayCommandTool"
 import { TrimTool } from "./tools/TrimTool"
 import { ExtendTool } from "./tools/ExtendTool"
 import type { TrimExtendMode } from "./tools/EdgeEditTool"
+import type { ArrayAssociativity } from "./tools/arrayObject"
 import { FilletTool } from "./tools/FilletTool"
 import { ChamferTool } from "./tools/ChamferTool"
 import { EraseTool } from "./tools/EraseTool"
@@ -83,10 +84,11 @@ export function defaultTools(
   const circleRadius = { radius: 0 }
   const trimExtendMode: TrimExtendMode = { standard: false, edgeExtend: false }
   const splineSettings = defaultSplineSettings()
+  const associativity: ArrayAssociativity = { associative: true }
   const arrays = {
-    Rectangular: new ArrayTool(),
-    POlar: new ArrayPolarTool(),
-    PAth: new ArrayPathTool(),
+    Rectangular: new ArrayTool(associativity),
+    POlar: new ArrayPolarTool(associativity),
+    PAth: new ArrayPathTool(associativity),
   }
   return [
     new SelectTool(),

@@ -86,7 +86,7 @@ locale), run with `scripts/research/probe.sh arrays <ids>`; p411b runs with
 | p100–p179 | ARRAYRECT and ARRAY: names, every prompt and keyword, refusals, Unit cell, COLumns, Rows, Total, Expression, Levels, Base point, clicK, UPdate, point forms, snaps, transparency, undo, properties, Z, UCS, drawing order; the preselection of all three (p169–p178) |
 | p200–p279 | ARRAYPOLAR: names, the centre, Items, Angle between, Fill angle, ROTate items, overruns, signs, AUPREC, Base point, Axis, ROWs, Levels, clicK, UPdate, point forms, snaps, transparency, undo, properties, Z, UCS, the cap |
 | p300–p379 | ARRAYPATH: where items go (the source, the pick's end, Align, Divide, Measure, arcs, circles, polylines, splines, ellipses, a sloping line, a turned UCS), the path pick (locked, snaps, modes, Enter, Group, non-curves), every prompt, transparency, undo |
-| p400–p421 | the array object: its block structure, LIST of each kind, EXPLODE, layers and colours, base points, path association (STRETCH, ERASE of the path), a pick on an item, U, COPY, SAVEAS and reopen, END on an item, a turned UCS, a mixed set, ARRAYEDIT |
+| p400–p422 | the array object: its block structure, LIST of each kind, EXPLODE, layers and colours, base points, path association (STRETCH, ERASE of the path), a pick on an item, U, COPY, SAVEAS and reopen, END on an item, a turned UCS, a mixed set, ARRAYEDIT; p422 where ARRAYASSOCIATIVITY and ARRAYTYPE live (`_AS _N`, SAVEAS, OPEN of a drawing saved at 1: both read as last set, so the registry) |
 | d01–d03 | the jig of each command (the preview, its grips, the polar centre, the path pick's rollover); d01b each grip hovered mid-command; d01c the column-count grip dragged (`** TOTAL DE COLUMNAS **`) |
 | d04–d06 | each finished array selected: its grips and every multifunctional menu |
 | d07 | the Properties palette of each array (and the contextual Array ribbon tab) |
@@ -457,14 +457,24 @@ Ce the centre, M, I Items, AB Angle between, F Fill angle, R ROTate items. **ARR
   references.
 - **ARRAYS-D2** — each kind's layout is one pure `domain/` function (`rectangularItems`,
   `polarItems`, `pathItems`) shared by the tools' previews, their No commit and the object.
-- **ARRAYS-D3** — ASsociative `[Yes/No] <Yes>`: a session setting (the console's isolated run
-  kept it, p364; whether it is the registry's is the OPEN test, AYO's block).
+- **ARRAYS-D3** — ASsociative `[Yes/No] <Yes>`: a session setting shared by the three commands,
+  never the drawing's (p364 kept it for the next run; p422: OPEN of a drawing saved at 1 still
+  reads 0 after `_AS _N`, in both locales, ARRAYTYPE likewise — the registry).
 - **ARRAYS-D4** — Escape at a main prompt commits; at a value's prompt the values given before
   stay (the desktop showed only the main prompt).
 - **ARRAYS-D5** — the preview draws through `ghostLook.drawn` plain; the source is hidden and is
   item 1.
 - **ARRAYS-D6** — the grips and palette come after the object, in AYG's block.
 - **ARRAYS-D7** — Unit cell's rubber band dashed only once a desktop probe shows it.
+- **ARRAYS-D8** — the array's parameters are stored in its **block's** coordinates: the block holds
+  the source as picked, its base point the array's (the extents centre, the polar centre, the
+  path's start), the reference there at rotation 0 and scale 1 (p414: 0 in a turned UCS too), the
+  columns' direction a parameter of their own. Every transform of the reference (MOVE, ROTATE,
+  SCALE, MIRROR, STRETCH, grips, UCS frames, `mapEntities`) then carries the array with no code
+  that knows of it, as attributes are carried.
+- **ARRAYS-D9** — a path array keeps its path's geometry (in block coordinates) and the path's id;
+  following edits of the path (p407: STRETCH of its end moves the items) is Missing in coverage,
+  not built; erasing the path leaves the array (p416), which holds by itself.
 - **ARRAYS-D10** — ARRAY is a command: `Select objects:`, the type, the set handed on (p204);
   `AR`, `ARRAY`, `MA`, `MATRIZ` move to it (APO's D40 merged here).
 - **ARRAYS-D11** — the four distances refuse 0 (`valueMustBeNonzero`); the elevation takes it.

@@ -15,6 +15,7 @@ import { CreateBlockCommand } from "../commands/blockCommands"
 import { parseCoordinate } from "../input/coordinateInput"
 import { ScenePrimitive } from "../../scene/types"
 import { AttributeValuePrompts } from "./attributeValues"
+import { namedBlocks } from "./InsertTool"
 import { ObjectSelector } from "./objectSelection"
 import {
   CommandOption,
@@ -165,7 +166,7 @@ export class BlockTool implements Tool {
   }
 
   private listBlocks(ctx: ToolContext): void {
-    const blocks = ctx.document.getBlocks()
+    const blocks = namedBlocks(ctx.document)
     ctx.report(
       blocks.length === 0
         ? ctx.text.message("noBlocks")

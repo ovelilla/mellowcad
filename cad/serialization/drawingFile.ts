@@ -26,7 +26,10 @@
  */
 
 import { COLOR_BYLAYER, normalizeColor } from "../domain/colors"
+import { MAX_ARRAY_COUNT, arrayPathOfPieces } from "../domain/arrays"
 import {
+  ArrayParameters,
+  ArrayPathPiece,
   AttributeModes,
   BlockAttribute,
   BlockDefinition,
@@ -37,6 +40,7 @@ import {
   createMText,
   DEFAULT_ATTRIBUTE_MODES,
   Entity,
+  isAnonymousBlock,
   nextEntityId,
   DimensionKind,
   HatchLoop,
@@ -113,7 +117,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 29
+export const DRAWING_FILE_VERSION = 30
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -239,9 +243,38 @@ export function toDrawingFile(snapshot: DrawingSnapshot): DrawingFile {
     currentTextStyleId: snapshot.currentTextStyleId,
     dimStyles: snapshot.dimStyles.map(cloneDimStyle),
     currentDimStyleId: snapshot.currentDimStyleId,
-    blocks: snapshot.blocks.map(cloneBlock),
+    blocks: savedBlocks(snapshot.blocks, snapshot.entities).map(cloneBlock),
     entities: snapshot.entities.map(cloneEntity),
   }
+}
+
+/**
+ * The block table as written: an anonymous block (an array's) no reference
+ * places any more is left out. WHY only on writing: in the session an undo
+ * can bring its reference back, which a loaded drawing's cleared history
+ * cannot. AutoCAD drops unreferenced anonymous blocks when it saves too
+ * (**unverified** by a probe).
+ */
+function savedBlocks(
+  blocks: readonly BlockDefinition[],
+  entities: readonly Entity[]
+): readonly BlockDefinition[] {
+  const byId = new Map(blocks.map((block) => [block.id, block]))
+  const placed = new Set<string>()
+  const visit = (list: readonly Entity[]): void => {
+    for (const entity of list) {
+      if (entity.type !== "insert" || placed.has(entity.blockId)) continue
+      placed.add(entity.blockId)
+      visit(byId.get(entity.blockId)?.entities ?? [])
+    }
+  }
+  visit(entities)
+  for (const block of blocks) {
+    if (!isAnonymousBlock(block.name)) visit(block.entities)
+  }
+  return blocks.filter(
+    (block) => !isAnonymousBlock(block.name) || placed.has(block.id)
+  )
 }
 
 export function serializeDrawing(snapshot: DrawingSnapshot): string {
@@ -518,8 +551,64 @@ function cloneEntityShape(entity: Entity): Entity {
         ...(entity.attributes
           ? { attributes: entity.attributes.map(cloneBlockAttribute) }
           : {}),
+        ...(entity.array ? { array: cloneArray(entity.array) } : {}),
       }
   }
+}
+
+function cloneArray(array: ArrayParameters): ArrayParameters {
+  switch (array.kind) {
+    case "rectangular":
+      return {
+        kind: "rectangular",
+        columns: array.columns,
+        rows: array.rows,
+        colSpacing: array.colSpacing,
+        rowSpacing: array.rowSpacing,
+        rowElevation: array.rowElevation,
+        axis: { x: array.axis.x, y: array.axis.y },
+      }
+    case "polar":
+      return {
+        kind: "polar",
+        center: { x: array.center.x, y: array.center.y },
+        basePoint: { x: array.basePoint.x, y: array.basePoint.y },
+        items: array.items,
+        fill: array.fill,
+        clockwise: array.clockwise,
+        rotate: array.rotate,
+      }
+    case "path":
+      return {
+        kind: "path",
+        path: {
+          pieces: array.path.pieces.map(clonePathPiece),
+          length: array.path.length,
+          closed: array.path.closed,
+        },
+        pathId: array.pathId,
+        method: array.method,
+        items: array.items,
+        spacing: array.spacing,
+        align: array.align,
+      }
+  }
+}
+
+function clonePathPiece(piece: ArrayPathPiece): ArrayPathPiece {
+  return piece.kind === "line"
+    ? {
+        kind: "line",
+        a: { x: piece.a.x, y: piece.a.y },
+        b: { x: piece.b.x, y: piece.b.y },
+      }
+    : {
+        kind: "arc",
+        center: { x: piece.center.x, y: piece.center.y },
+        radius: piece.radius,
+        start: piece.start,
+        sweep: piece.sweep,
+      }
 }
 
 function cloneBlockAttribute(attribute: BlockAttribute): BlockAttribute {
@@ -1134,6 +1223,7 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         rotation: isFiniteNumber(raw.rotation) ? raw.rotation : 0,
         ...(raw.mirrored === true ? { mirrored: true } : {}),
         ...parseBlockAttributes(raw.attributes),
+        ...parseArray(raw.array),
       }
     }
     default:
@@ -1213,6 +1303,124 @@ function parseBlockAttributes(value: unknown): {
     })
   }
   return attributes.length > 0 ? { attributes } : {}
+}
+
+/**
+ * An array's parameters, from 30. WHY a malformed one leaves a plain
+ * reference rather than dropping it: the block still holds the source, item
+ * 1, which is the drawing's; only the derived items are lost.
+ */
+function parseArray(value: unknown): { array?: ArrayParameters } {
+  if (!isRecord(value)) return {}
+  const count = (n: unknown): n is number =>
+    Number.isInteger(n) &&
+    (n as number) >= 1 &&
+    (n as number) <= MAX_ARRAY_COUNT
+  const flag = (b: unknown): b is boolean => typeof b === "boolean"
+  switch (value.kind) {
+    case "rectangular": {
+      const axis = parseVec2(value.axis)
+      const size = axis ? Math.hypot(axis.x, axis.y) : 0
+      const { columns, rows, colSpacing, rowSpacing, rowElevation } = value
+      if (
+        !axis ||
+        !(size > 0) ||
+        !count(columns) ||
+        !count(rows) ||
+        !isFiniteNumber(colSpacing) ||
+        !isFiniteNumber(rowSpacing) ||
+        !isFiniteNumber(rowElevation)
+      ) {
+        return {}
+      }
+      return {
+        array: {
+          kind: "rectangular",
+          columns,
+          rows,
+          colSpacing,
+          rowSpacing,
+          rowElevation,
+          axis:
+            Math.abs(size - 1) < 1e-9
+              ? axis
+              : { x: axis.x / size, y: axis.y / size },
+        },
+      }
+    }
+    case "polar": {
+      const center = parseVec2(value.center)
+      const basePoint = parseVec2(value.basePoint)
+      const { items, fill, clockwise, rotate } = value
+      if (
+        !center ||
+        !basePoint ||
+        !count(items) ||
+        !isFiniteNumber(fill) ||
+        !(fill > 0 && fill <= 360) ||
+        !flag(clockwise) ||
+        !flag(rotate)
+      ) {
+        return {}
+      }
+      return {
+        array: {
+          kind: "polar",
+          center,
+          basePoint,
+          items,
+          fill,
+          clockwise,
+          rotate,
+        },
+      }
+    }
+    case "path": {
+      const raw = isRecord(value.path) ? value.path : null
+      const pieces = raw && Array.isArray(raw.pieces) ? raw.pieces : null
+      const parsed = pieces?.map(parsePathPiece) ?? []
+      const path =
+        raw && flag(raw.closed) && parsed.every((piece) => piece !== null)
+          ? arrayPathOfPieces(parsed as ArrayPathPiece[], raw.closed)
+          : null
+      const { pathId, method, items, spacing, align } = value
+      if (
+        !path ||
+        typeof pathId !== "string" ||
+        (method !== "divide" && method !== "measure") ||
+        !count(items) ||
+        !isFiniteNumber(spacing) ||
+        !(spacing > 0) ||
+        !flag(align)
+      ) {
+        return {}
+      }
+      return {
+        array: { kind: "path", path, pathId, method, items, spacing, align },
+      }
+    }
+    default:
+      return {}
+  }
+}
+
+function parsePathPiece(value: unknown): ArrayPathPiece | null {
+  if (!isRecord(value)) return null
+  if (value.kind === "line") {
+    const a = parseVec2(value.a)
+    const b = parseVec2(value.b)
+    return a && b ? { kind: "line", a, b } : null
+  }
+  const center = parseVec2(value.center)
+  const { radius, start, sweep } = value
+  return value.kind === "arc" &&
+    center &&
+    isFiniteNumber(radius) &&
+    radius > 0 &&
+    isFiniteNumber(start) &&
+    isFiniteNumber(sweep)
+    ? { kind: "arc", center, radius, start, sweep }
+    : null
 }
 
 /** Boundary loops. Two vertices are enough when they carry arc bulges. */

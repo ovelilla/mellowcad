@@ -130,9 +130,9 @@ Dependencies run types → per-type modules → overrides → transforms → que
   touches all three.
 - `insertGeometry` is what EXPLODE returns, attribute definitions included; what a reference
   **shows** is `insertFlatGeometry` (values in place of definitions, filtered by ATTMODE, carried
-  by `document.blockLookup()`). Attributes are stored in the **block's** coordinates, so no
-  transform, grip or serializer path knows they exist; anything that needs one in the drawing
-  (`insertAttributePoints`) places it as `insertFlatGeometry` does.
+  by `document.blockLookup()`). Attributes and an array's parameters (`arrayItems`) are in the
+  **block's** coordinates, so no transform or grip knows they exist; anything that needs one in
+  the drawing (`insertAttributePoints`) places it as `insertFlatGeometry` does.
 
 ## Algorithms over a set of entities
 
@@ -166,8 +166,8 @@ visible in the viewport, so the _tool_ filters). Give it a cap: pairwise work is
   use or the base cannot be deleted**.
 - A **fragment** (the clipboard, tomorrow WBLOCK) carries every table entry its objects reference,
   through block definitions, as a one-off drawing (`clipboardFile.ts`). Landing it (`planPaste`): **a
-  name the target already has wins**, and **only layers are remapped** (a layer's id is not its
-  name).
+  name the target already has wins**, and **only layers and anonymous blocks are remapped** (a
+  layer's id is not its name).
 - A _registry_ is per build (`linetypes.ts`, `hatchPatterns.ts`): an entity stores the **name**,
   and an unknown one draws nothing rather than failing the load. Transcribe a definition from
   AutoCAD's, quoted verbatim beside the data; adding one is data only, or the model is wrong.

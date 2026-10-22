@@ -1,25 +1,25 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Vec3, vec3 } from "../../geometry/Vec3"
-import { Entity, readsInPlan } from "../../domain/entities"
+import { Entity, entitiesBounds, readsInPlan } from "../../domain/entities"
 import {
   ArrayPath,
   PathLayout,
-  arrayItemCopy,
   arrayPathOf,
   arraySourceSize,
   pathArrayItems,
   pathArrayMaximum,
   pathDivideStep,
   placeArrayItem,
+  pointAlongPath,
 } from "../../domain/arrays"
 import { parseNumber } from "../../domain/units"
 import type { EntityId } from "../../domain/entities"
 import { ScenePrimitive } from "../../scene/types"
-import { AddEntitiesCommand } from "../commands/entityCommands"
 import { isCoordinateExpression } from "../input/coordinateInput"
 import { ONE_OBJECT_MODES, ObjectSelector } from "./objectSelection"
 import { lockedObjectAt } from "./lockedPick"
 import { drawn, rollover } from "./ghostLook"
+import { ArrayAssociativity, makeArray, reportArrayType } from "./arrayObject"
 import {
   MAX_ARRAY_COUNT,
   MAX_PREVIEW_ITEMS,
@@ -39,11 +39,12 @@ import {
 
 /**
  * AutoCAD's ARRAYPATH, as its 2027 console asks it: `Select objects:` (or
- * ARRAY's set, {@link takeSet}), `Type = Path  Associative = No`, `Select path
- * curve:` — a line, an arc, a circle or a polyline —, then `Select grip to
- * edit array or [Method/Items/Align items/eXit] <eXit>:` over a live preview.
- * Method asks `Enter path method [Divide/Measure] <Measure>:`: Measure steps
- * the items a distance apart, Divide spreads them evenly over the path. Items
+ * ARRAY's set, {@link takeSet}), `Type = Path  Associative = Yes`, `Select
+ * path curve:` — a line, an arc, a circle or a polyline —, then `Select grip
+ * to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>:` over
+ * a live preview. ASsociative asks as ARRAYRECT's does. Method asks `Enter
+ * path method [Divide/Measure] <Measure>:`: Measure steps the items a
+ * distance apart, Divide spreads them evenly over the path. Items
  * asks, by Divide, `Enter number of items along path`; by Measure, `Specify
  * the distance between items along path`, then says `Maximum items = 11` and
  * asks `Specify number of items or [Fill entire path]`. Align items asks
@@ -51,14 +52,20 @@ import {
  * and a half times the selection's size apart and fill the path. The source
  * stays where it is as item 1, the rest stepped from it along the path from
  * the end nearer the pick (`domain/arrays.ts`); the path is left in place.
- * eXit or Enter makes the copies, one undo step; so does Escape once the path
- * is picked (desktop arrays/d08c), before it nothing.
- *
- * WHY Associative = No: as ARRAYRECT's. Base point, Tangent direction, Rows,
- * Levels and Z direction are not offered.
+ * eXit or Enter makes the array (`makeArray`), one undo step, the reference
+ * at the path's start (probe arrays/p406); so does Escape once the path is
+ * picked (desktop arrays/d08c), before it nothing. Base point, Tangent
+ * direction, Rows, Levels and Z direction are not offered.
  */
 
-type Step = "main" | "method" | "count" | "spacing" | "measureCount" | "align"
+type Step =
+  | "main"
+  | "associative"
+  | "method"
+  | "count"
+  | "spacing"
+  | "measureCount"
+  | "align"
 
 type ArrayPathState =
   /** No pre-selection: `Select objects:` builds the set. */
@@ -70,6 +77,8 @@ type ArrayPathState =
       readonly phase: "edit"
       readonly originals: readonly Entity[]
       readonly path: ArrayPath
+      /** The object the path was, which the array keeps (ARRAYS-D9). */
+      readonly pathId: EntityId
       /** What the prompts edit: kept together, as AutoCAD keeps the count across methods. */
       readonly layout: PathLayout
       readonly step: Step
@@ -119,6 +128,10 @@ export class ArrayPathTool implements Tool {
   /** LASTPOINT as `Select path curve:` found it. */
   private lastPointAtPath: Vec3 = vec3(0, 0, 0)
 
+  constructor(
+    private readonly mode: ArrayAssociativity = { associative: true }
+  ) {}
+
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     this.selector.start()
@@ -158,6 +171,8 @@ export class ArrayPathTool implements Tool {
     switch (state.step) {
       case "main":
         return "selectGripToEditArrayOr"
+      case "associative":
+        return "createAssociativeArray"
       case "method":
         return "enterPathMethod"
       case "count":
@@ -199,6 +214,7 @@ export class ArrayPathTool implements Tool {
           refusal: "requiresDistance",
           values: { points: "two", keyword: "yes" },
         }
+      case "associative":
       case "method":
       case "align":
         return "keyword"
@@ -220,6 +236,7 @@ export class ArrayPathTool implements Tool {
     switch (this.state.step) {
       case "main":
         return [
+          { id: "ASsociative" },
           { id: "Method" },
           { id: "Items" },
           { id: "Align items" },
@@ -229,6 +246,7 @@ export class ArrayPathTool implements Tool {
         return [{ id: "Divide" }, { id: "Measure" }]
       case "measureCount":
         return [{ id: "Fill entire path" }]
+      case "associative":
       case "align":
         return [{ id: "Yes" }, { id: "No" }]
       default:
@@ -242,6 +260,8 @@ export class ArrayPathTool implements Tool {
     switch (this.state.step) {
       case "main":
         return "eXit"
+      case "associative":
+        return this.mode.associative ? "Yes" : "No"
       case "method":
         return layout.method === "divide" ? "Divide" : "Measure"
       case "align":
@@ -266,7 +286,8 @@ export class ArrayPathTool implements Tool {
           this.create(ctx)
           return "end"
         }
-        if (id === "Method") this.ask("method", ctx)
+        if (id === "ASsociative") this.ask("associative", ctx)
+        else if (id === "Method") this.ask("method", ctx)
         else if (id === "Items") {
           this.ask(layout.method === "divide" ? "count" : "spacing", ctx)
         } else if (id === "Align items") this.ask("align", ctx)
@@ -295,6 +316,11 @@ export class ArrayPathTool implements Tool {
       case "align":
         if (id !== "Yes" && id !== "No") return "unhandled"
         this.state = { ...state, layout: { ...layout, align: id === "Yes" } }
+        this.ask("main", ctx)
+        return "continue"
+      case "associative":
+        if (id !== "Yes" && id !== "No") return "unhandled"
+        this.mode.associative = id === "Yes"
         this.ask("main", ctx)
         return "continue"
       default:
@@ -431,6 +457,7 @@ export class ArrayPathTool implements Tool {
         this.create(ctx)
         ctx.endCommand()
         return true
+      case "associative":
       case "method":
       case "align":
         this.ask("main", ctx) // the current answer stays
@@ -445,6 +472,13 @@ export class ArrayPathTool implements Tool {
     if (this.state.phase === "edit" && this.state.step === "measureCount") {
       this.sayMaximum(ctx)
     }
+  }
+
+  /** The source is item 1 of the preview (ARRAYS-D5). */
+  hiddenEntityIds(): readonly EntityId[] {
+    return this.state.phase === "edit"
+      ? this.state.originals.map((entity) => entity.id)
+      : []
   }
 
   wantsSnap(): boolean {
@@ -468,12 +502,14 @@ export class ArrayPathTool implements Tool {
     }
 
     const layout = this.previewLayout(ctx, state.layout, state.step)
-    return pathArrayItems(state.path, layout, MAX_PREVIEW_ITEMS).flatMap(
-      (item) =>
+    return [
+      ...state.originals.flatMap((entity) => drawn(ctx, entity, "plain")),
+      ...pathArrayItems(state.path, layout, MAX_PREVIEW_ITEMS).flatMap((item) =>
         state.originals.flatMap((entity) =>
           drawn(ctx, placeArrayItem(entity, item), "plain")
         )
-    )
+      ),
+    ]
   }
 
   /** Goes on from the set `Select objects:` closed to the path curve. */
@@ -486,7 +522,7 @@ export class ArrayPathTool implements Tool {
     this.state = { phase: "pickPath", hover: null }
     this.pathModes.start()
     this.lastPointAtPath = ctx.lastPoint
-    ctx.report(ctx.text.message("arrayType", { type: "path" }))
+    reportArrayType(ctx, "path", this.mode)
     ctx.dynamicInput.open({ fields: [], commit: () => {} })
   }
 
@@ -506,13 +542,17 @@ export class ArrayPathTool implements Tool {
 
     // One and a half times the larger side of the set's extents along the
     // UCS's axes, 1 for a set of no size (probes arrays/p06, p310).
-    const { width, height } = arraySourceSize(originals, ctx.ucs, ctx.blocks)
+    const { width, height } = arraySourceSize(
+      entitiesBounds(originals, ctx.blocks),
+      ctx.ucs
+    )
     const size = Math.max(width, height)
     const spacing = size > 1e-6 ? size * 1.5 : 1
     this.state = {
       phase: "edit",
       originals,
       path,
+      pathId: pathEntity.id,
       layout: {
         method: "measure",
         items: maxItems(path, spacing),
@@ -528,7 +568,12 @@ export class ArrayPathTool implements Tool {
     const state = this.state
     if (state.phase !== "edit") return
     this.state = { ...state, step }
-    if (step === "main" || step === "method" || step === "align") {
+    if (
+      step === "main" ||
+      step === "associative" ||
+      step === "method" ||
+      step === "align"
+    ) {
       // Keywords only, the focus left on the drawing.
       ctx.dynamicInput.open({ fields: [], commit: () => {} })
       ctx.requestRender()
@@ -620,20 +665,19 @@ export class ArrayPathTool implements Tool {
     return { ...layout, items: typed }
   }
 
-  /**
-   * The copies: the source stays as item 1 (WHY not consumed: an
-   * associative array is not built, and AutoCAD's ASsociative No keeps it,
-   * probe arrays/p06).
-   */
   private create(ctx: ToolContext): void {
     const state = this.state
     if (state.phase !== "edit") return
     // Left first: the command's end deactivates the tool, which commits too.
     this.state = { phase: "selecting" }
-    const copies = pathArrayItems(state.path, state.layout).flatMap((item) =>
-      state.originals.map((entity) => arrayItemCopy(entity, item))
+    const { path, pathId, layout } = state
+    makeArray(
+      ctx,
+      state.originals,
+      { kind: "path", path, pathId, ...layout },
+      pointAlongPath(path, 0).point,
+      this.mode
     )
-    if (copies.length > 0) ctx.execute(new AddEntitiesCommand(copies))
     ctx.dynamicInput.close()
   }
 }

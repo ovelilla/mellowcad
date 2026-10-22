@@ -526,7 +526,84 @@ export interface InsertEntity extends BaseEntity {
   readonly mirrored?: boolean
   /** The values given to the block's attribute definitions, in prompt order. */
   readonly attributes?: readonly BlockAttribute[]
+  /**
+   * Present on an associative array (AutoCAD's ARRAY object, probe
+   * arrays/p400): the block holds the source, item 1, and the other items are
+   * derived from these parameters (`domain/arrays.ts`).
+   */
+  readonly array?: ArrayParameters
 }
+
+/** One run of a path: a straight piece, or an arc swept from `start` by `sweep` (signed). */
+export type ArrayPathPiece =
+  | { readonly kind: "line"; readonly a: Vec2; readonly b: Vec2 }
+  | {
+      readonly kind: "arc"
+      readonly center: Vec2
+      readonly radius: number
+      readonly start: number
+      readonly sweep: number
+    }
+
+/**
+ * A curve ARRAYPATH runs along, from the end it starts at: its pieces in
+ * that order and its length.
+ */
+export interface ArrayPath {
+  readonly pieces: readonly ArrayPathPiece[]
+  readonly length: number
+  readonly closed: boolean
+}
+
+/** ARRAYRECT's grid: columns along `axis`, rows square to it, counter-clockwise. */
+export interface RectangularArray {
+  readonly columns: number
+  readonly rows: number
+  readonly colSpacing: number
+  readonly rowSpacing: number
+  /** How far each row rises above the one before it. */
+  readonly rowElevation: number
+  /** The columns' direction, a unit vector: the UCS's X when it was made. */
+  readonly axis: Vec2
+}
+
+/** ARRAYPOLAR's ring, its angles in degrees. */
+export interface PolarArray {
+  readonly center: Vec2
+  /** The point carried round when the items are not turned. */
+  readonly basePoint: Vec2
+  readonly items: number
+  /** The angle the items fill, in (0, 360]. */
+  readonly fill: number
+  readonly clockwise: boolean
+  readonly rotate: boolean
+}
+
+/** ARRAYPATH's layout: how the items are spaced along the path. */
+export interface PathLayout {
+  readonly method: "divide" | "measure"
+  readonly items: number
+  /** Measure's distance between items. */
+  readonly spacing: number
+  readonly align: boolean
+}
+
+/**
+ * What an array reference derives its items from, in its block's own
+ * coordinates, so whatever moves, turns, scales or mirrors the reference
+ * carries the array with it. A path array keeps the path's geometry as it was
+ * and the id of the object it was (ARRAYS-D9).
+ */
+export type ArrayParameters =
+  | (RectangularArray & { readonly kind: "rectangular" })
+  | (PolarArray & { readonly kind: "polar" })
+  | (PathLayout & {
+      readonly kind: "path"
+      readonly path: ArrayPath
+      readonly pathId: EntityId
+    })
+
+export type ArrayKind = ArrayParameters["kind"]
 
 export type Entity =
   | LineEntity

@@ -12,6 +12,7 @@ import {
   type PathLayout,
   arrayItemCopy,
   arrayPathOf,
+  arrayAxis,
   arraySourceSize,
   pathArrayItems,
   pathArrayMaximum,
@@ -21,7 +22,22 @@ import {
   polarArrayItems,
   rectangularArrayItems,
 } from "./arrays"
-import { WORLD_UCS } from "./ucs"
+import { WORLD_UCS, createUcs } from "./ucs"
+import type { BlockLookup, Entity, InsertEntity } from "./entityTypes"
+import { createBlockDefinition, createInsert } from "./entityFactories"
+import {
+  anonymousBlockName,
+  insertFlatGeometry,
+  insertGeometry,
+  isAnonymousBlock,
+} from "./blocks"
+import {
+  copyEntity,
+  mirrorEntity,
+  rotateEntity,
+  scaleEntity,
+  translateEntity,
+} from "./entityTransforms"
 
 describe("arrayPathOf", () => {
   it("takes lines, arcs, circles and polylines, and nothing of no length", () => {
@@ -139,14 +155,23 @@ describe("the rectangular and polar layouts", () => {
       colSpacing: 10,
       rowSpacing: 5,
       rowElevation: 1,
+      axis: arrayAxis(WORLD_UCS),
     }
-    const items = rectangularArrayItems(grid, WORLD_UCS)
+    const items = rectangularArrayItems(grid)
     expect(items.map((item) => item.move)).toEqual([
       { x: 0, y: 5, z: 1 },
       { x: 10, y: 0, z: 0 },
       { x: 10, y: 5, z: 1 },
     ])
-    expect(rectangularArrayItems(grid, WORLD_UCS, 2)).toHaveLength(2)
+    expect(rectangularArrayItems(grid, 2)).toHaveLength(2)
+    // The columns along a UCS turned 90°, the rows square to them (probe
+    // arrays/p414: the axis is the UCS's X when the array was made).
+    const turned = rectangularArrayItems({
+      ...grid,
+      axis: arrayAxis(createUcs(p(0, 0), p(0, 1))!),
+    })
+    expect(turned[1].move).toBeCloseToPoint(p(0, 10))
+    expect(turned[0].move).toBeCloseToPoint(p(-5, 0))
   })
 
   it("turns each item about the centre, or carries the base point round", () => {
@@ -170,6 +195,108 @@ describe("the rectangular and polar layouts", () => {
   })
 
   it("measures a set of nothing as nothing", () => {
-    expect(arraySourceSize([], WORLD_UCS)).toEqual({ width: 0, height: 0 })
+    expect(arraySourceSize(null, WORLD_UCS)).toEqual({ width: 0, height: 0 })
+  })
+})
+
+describe("an array reference", () => {
+  const bar = lineOf(p(10, 0), p(14, 0), { id: "B", layerId: "L1" })
+  const block = createBlockDefinition("*U1", p(12, 0), [bar])
+  const lookup: BlockLookup = (id) => (id === block.id ? block : undefined)
+  const rect = createInsert(block.id, p(12, 0), {
+    array: {
+      kind: "rectangular",
+      columns: 3,
+      rows: 2,
+      colSpacing: 6,
+      rowSpacing: 5,
+      rowElevation: 0,
+      axis: { x: 1, y: 0 },
+    },
+  })
+  const ends = (entities: readonly Entity[]) =>
+    entities.flatMap((e) => (e.type === "line" ? [e.start, e.end] : []))
+
+  // probes arrays/p400, p402: the source as item 1, the others column by
+  // column, as EXPLODE gives them.
+  it("shows and explodes every item, the source first", () => {
+    const shown = insertFlatGeometry(rect, lookup)
+    expect(ends(shown)).toBeCloseToPoints([
+      p(10, 0),
+      p(14, 0),
+      p(10, 5),
+      p(14, 5),
+      p(16, 0),
+      p(20, 0),
+      p(16, 5),
+      p(20, 5),
+      p(22, 0),
+      p(26, 0),
+      p(22, 5),
+      p(26, 5),
+    ])
+    const exploded = insertGeometry(rect, block, { inheritLayer: false })
+    expect(ends(exploded)).toBeCloseToPoints(ends(shown))
+    expect(exploded.every((e) => e.layerId === "L1")).toBe(true)
+  })
+
+  // ARRAYS-D8: the parameters are the block's, so no transform knows of them.
+  it("carries its items with every transform of the reference", () => {
+    const transforms: ((entity: Entity) => Entity)[] = [
+      (e) => translateEntity(e, p(100, -50)),
+      (e) => rotateEntity(e, p(3, 4), deg(30)),
+      (e) => scaleEntity(e, p(-2, 7), 2.5),
+      (e) => mirrorEntity(e, p(0, 0), p(1, 1)),
+      (e) => copyEntity(e, p(5, 5)),
+    ]
+    for (const transform of transforms) {
+      const moved = transform(rect)
+      expect(moved.type === "insert" && moved.array).toEqual(rect.array)
+      expect(
+        ends(insertFlatGeometry(moved as InsertEntity, lookup))
+      ).toBeCloseToPoints(ends(insertFlatGeometry(rect, lookup).map(transform)))
+    }
+  })
+
+  it("derives a polar and a path array's items from their parameters", () => {
+    const ring = createInsert(block.id, p(12, 0), {
+      array: {
+        kind: "polar",
+        center: p(0, 0),
+        basePoint: p(12, 0),
+        items: 4,
+        fill: 360,
+        clockwise: false,
+        rotate: true,
+      },
+    })
+    expect(
+      ends(insertFlatGeometry(ring, lookup)).slice(2, 4)
+    ).toBeCloseToPoints([p(0, 10), p(0, 14)])
+    const path = arrayPathOf(lineOf(p(10, 0), p(10, 30)))!
+    const along = createInsert(block.id, p(12, 0), {
+      array: {
+        kind: "path",
+        path,
+        pathId: "P",
+        method: "divide",
+        items: 3,
+        spacing: 1,
+        align: false,
+      },
+    })
+    expect(ends(insertFlatGeometry(along, lookup)).slice(4)).toBeCloseToPoints([
+      p(10, 30),
+      p(14, 30),
+    ])
+  })
+
+  it("names its anonymous block the lowest free *U<n>", () => {
+    expect(anonymousBlockName([])).toBe("*U1")
+    expect(
+      anonymousBlockName([{ name: "*U1" }, { name: "*u3" }, { name: "U2" }])
+    ).toBe("*U2")
+    expect(isAnonymousBlock("*U2")).toBe(true)
+    expect(isAnonymousBlock("BOLT")).toBe(false)
   })
 })

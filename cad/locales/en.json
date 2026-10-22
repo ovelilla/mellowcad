@@ -185,6 +185,11 @@
       "hatch": "{count, plural, one {Hatch} other {Hatches}}",
       "insert": "{count, plural, one {Block reference} other {Block references}}"
     },
+    "array": {
+      "rectangular": "Array (Rectangular)",
+      "polar": "Array (Polar)",
+      "path": "Array (Path)"
+    },
     "property": {
       "title": {
         "ellipticalArc": "Elliptical arc",
@@ -686,14 +691,18 @@
         "POlar": "POlar"
       },
       "ARRAYRECT": {
+        "ASsociative": "ASsociative",
         "COUnt": "COUnt",
         "Spacing": "Spacing",
         "COLumns": "COLumns",
         "Rows": "Rows",
         "eXit": "eXit",
-        "Unit cell": "Unit"
+        "Unit cell": "Unit",
+        "Yes": "Yes",
+        "No": "No"
       },
       "ARRAYPOLAR": {
+        "ASsociative": "ASsociative",
         "Items": "Items",
         "Angle between": "Angle",
         "Fill angle": "Fill",
@@ -704,6 +713,7 @@
         "No": "No"
       },
       "ARRAYPATH": {
+        "ASsociative": "ASsociative",
         "Method": "Method",
         "Items": "Items",
         "Align items": "Align",
@@ -1244,6 +1254,7 @@
       "specifyAngleBetweenItems": "Specify angle between items",
       "specifyTheAngleToFill": "Specify the angle to fill (+=ccw, -=cw)",
       "rotateArrayedItems": "Rotate arrayed items?",
+      "createAssociativeArray": "Create associative array",
       "selectPathCurve": "Select path curve",
       "enterPathMethod": "Enter path method",
       "enterNumberOfItemsAlongPath": "Enter number of items along path",
@@ -1543,6 +1554,7 @@
       "cannotBreakBlock": "Can't break a block",
       "cannotBreakClosedAtOnePoint": "Cannot break a closed, periodic curve at only one point.",
       "arrayType": "Type = {type, select, rectangular {Rectangular} polar {Polar} other {Path}}  Associative = No",
+      "arrayTypeAssociative": "Type = {type, select, rectangular {Rectangular} polar {Polar} other {Path}}  Associative = Yes",
       "requiresPositiveInteger": "Requires a positive nonzero integer or option keyword.",
       "requiresNonzero": "Requires numeric nonzero value.",
       "maximumItems": "Maximum items = {count}",

@@ -13,6 +13,7 @@ import {
 import {
   createBlockDefinition,
   dimensionMeasurement,
+  insertFlatGeometry,
   type DimensionEntity,
   type HatchEntity,
   type InsertEntity,
@@ -357,15 +358,20 @@ describe("what follows the UCS", () => {
     expect(Math.hypot(b.x - a.x, b.y - a.y)).toBeCloseTo(20)
   })
 
+  // probe arrays/p414: the array is no turned reference; its columns run
+  // along the UCS's X as it was.
   it("ARRAYRECT runs its columns along its X axis", () => {
     const cad = createHarness({ entities: [circleOf(p(0, 0), 5, { id: "c" })] })
     cad.command("UCS").option("Z").enter()
     cad.select("c").command("ARRAYRECT").option("COUnt")
     cad.type("2").enter().type("1").enter()
     cad.option("Spacing").type("50").enter().enter().enter()
-    const centers = cad
-      .entities()
-      .flatMap((entity) => (entity.type === "circle" ? [entity.center] : []))
+    const array = cad.only<InsertEntity>("insert")
+    expect(array.rotation).toBe(0)
+    const centers = insertFlatGeometry(
+      array,
+      cad.runtime.document.blockLookup()
+    ).flatMap((entity) => (entity.type === "circle" ? [entity.center] : []))
     expect(centers[1]).toBeCloseToPoint(p(0, 50))
   })
 

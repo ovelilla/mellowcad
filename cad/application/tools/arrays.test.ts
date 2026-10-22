@@ -1,6 +1,11 @@
 import { readFileSync } from "node:fs"
 import { describe, expect, it } from "vitest"
-import type { CircleEntity, Entity, LineEntity } from "../../domain/entities"
+import type {
+  CircleEntity,
+  Entity,
+  InsertEntity,
+  LineEntity,
+} from "../../domain/entities"
 import { type CadHarness, createHarness } from "../../../test/harness"
 import {
   arcOf,
@@ -12,24 +17,38 @@ import {
   polylineOf,
   textOf,
 } from "../../../test/builders"
-import { withElevation } from "../../domain/elevation"
+import { entityPointToWorld, withElevation } from "../../domain/elevation"
+import { insertFlatGeometry } from "../../domain/blocks"
 import { THEME } from "../../scene/theme"
 import { es } from "../../locales/es"
 
 /**
- * ARRAY, ARRAYRECT, ARRAYPOLAR, ARRAYPATH and the arrays' shared prompts,
- * against AutoCAD 2027's console (probes arrays/p06, p100–p179, p200–p279,
- * p300–p379, in en-US and es-ES).
+ * ARRAY, ARRAYRECT, ARRAYPOLAR, ARRAYPATH, the arrays' shared prompts and the
+ * array object, against AutoCAD 2027's console (probes arrays/p01–p06,
+ * p100–p179, p200–p279, p300–p379, p400–p422, in en-US and es-ES).
  */
+
+/**
+ * What the drawing shows, each array flattened into its items' objects, the
+ * source first: what the probes' `ssget` listed of the loose copies.
+ */
+function shown(cad: CadHarness): Entity[] {
+  const blocks = cad.runtime.document.blockLookup()
+  return cad
+    .entities()
+    .flatMap((entity) =>
+      entity.type === "insert" ? insertFlatGeometry(entity, blocks) : [entity]
+    )
+}
 
 function linesOf(entities: readonly Entity[]): LineEntity[] {
   return entities.filter((e): e is LineEntity => e.type === "line")
 }
 
 function centres(cad: CadHarness): CircleEntity["center"][] {
-  return cad
-    .entities()
-    .flatMap((e) => (e.type === "circle" ? [(e as CircleEntity).center] : []))
+  return shown(cad).flatMap((e) =>
+    e.type === "circle" ? [(e as CircleEntity).center] : []
+  )
 }
 
 /** Whether a circle is centred at x,y, to the console's four places. */
@@ -81,7 +100,7 @@ describe("ARRAYRECT", () => {
 
     cad.command("ARRAYRECT").click(p(20, 0)).enter()
     expect(cad.state().commandLine.prompt).toBe(
-      "ARRAYRECT Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:"
+      "ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:"
     )
     cad.option("COUnt")
     expect(cad.state().commandLine.prompt).toBe(
@@ -109,25 +128,25 @@ describe("ARRAYRECT", () => {
       "ARRAYRECT",
       "Select objects: 1 found",
       "Select objects:",
-      "Type = Rectangular  Associative = No",
-      "Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: COU",
+      "Type = Rectangular  Associative = Yes",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: COU",
       "Enter the number of columns <4>: 0",
       "Value must be positive and nonzero.",
       "Enter the number of columns <4>: 2.5",
       "Requires a positive nonzero integer or option keyword.",
       "Enter the number of columns <4>: 3",
       "Enter the number of rows <3>: 2",
-      "Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S",
       "Specify the distance between columns or [Unit cell] <60>: 100",
       "Specify the distance between rows <1>: 50",
-      "Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: R",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: R",
       "Enter the number of rows <2>:",
       "Specify the distance between rows <50>:",
       "Specify the incrementing elevation between rows <0>: 5",
-      "Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:",
     ])
-    expect(cad.entityCount).toBe(6)
-    const raised = linesOf(cad.entities()).filter((line) => line.start.y === 50)
+    expect(shown(cad).length).toBe(6)
+    const raised = linesOf(shown(cad)).filter((line) => line.start.y === 50)
     expect(raised.map((line) => line.elevation)).toEqual([5, 5, 5])
   })
 
@@ -139,9 +158,9 @@ describe("ARRAYRECT", () => {
     })
 
     cad.select("L1").command("MATRIZRECTANG")
-    expect(cad.commandLog().at(-1)).toBe("Tipo = Rectangular  Asociativa = No")
+    expect(cad.commandLog().at(-1)).toBe("Tipo = Rectangular  Asociativa = Sí")
     expect(cad.state().commandLine.prompt).toBe(
-      "MATRIZRECTANG Seleccione un pinzamiento para editar la matriz o [COntar/Espaciado/Columnas/Filas/Salir] <Salir>:"
+      "MATRIZRECTANG Seleccione un pinzamiento para editar la matriz o [Asociativa/COntar/Espaciado/Columnas/Filas/Salir] <Salir>:"
     )
     cad.option("COUnt")
     expect(cad.state().commandLine.prompt).toBe(
@@ -182,8 +201,8 @@ describe("ARRAYRECT", () => {
     cad.option("Rows").type("2").enter().type("50").enter().enter()
     cad.enter()
 
-    expect(cad.entityCount).toBe(6)
-    const starts = linesOf(cad.entities())
+    expect(shown(cad).length).toBe(6)
+    const starts = linesOf(shown(cad))
       .map((line) => `${line.start.x},${line.start.y}`)
       .sort()
     expect(starts).toEqual(
@@ -221,10 +240,10 @@ describe("ARRAYRECT", () => {
     expect(cad.commandLog().slice(-11)).toEqual([
       "Specify first corner point of unit cell: FOO",
       "Requires numeric nonzero value.",
-      "Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S",
       "Specify the distance between columns or [Unit cell] <15>: U",
       "Specify first corner point of unit cell:",
-      "Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S",
       "Specify the distance between columns or [Unit cell] <15>: U",
       "Specify first corner point of unit cell: 0,0",
       "Specify opposite corner: FOO",
@@ -237,18 +256,18 @@ describe("ARRAYRECT", () => {
     )
     // Escape there keeps the cell given before it (ARRAYS-D4); U takes it back.
     cad.escape()
-    expect(cad.entityCount).toBe(12)
+    expect(shown(cad).length).toBe(12)
     answer("_U")
     cad.select("L1").command("ARRAYRECT")
     answer("S")
     answer("U")
     cad.click(p(0, 0)).click(p(-30, -20))
     cad.enter()
-    const starts = linesOf(cad.entities())
+    const starts = linesOf(shown(cad))
       .map((line) => `${line.start.x},${line.start.y}`)
       .sort()
     expect(starts).toContain("-90,-40")
-    expect(cad.entityCount).toBe(12)
+    expect(shown(cad).length).toBe(12)
   })
 
   // AutoCAD 2027's console (probes arrays/p125–p127, p130): a number at the
@@ -313,7 +332,7 @@ describe("ARRAYRECT", () => {
 
       answer(cad, "_ARRAYRECT", "_L", "", "_X", "_U")
 
-      expect(cad.entityCount).toBe(1)
+      expect(shown(cad).length).toBe(1)
       expect(cad.commandLog().at(-1)).toBe(named)
     }
   })
@@ -338,10 +357,10 @@ describe("ARRAY", () => {
       "Enter array type [Rectangular/PAth/POlar] <Rectangular>: _X",
       "Invalid option keyword.",
       "Enter array type [Rectangular/PAth/POlar] <Rectangular>:",
-      "Type = Rectangular  Associative = No",
+      "Type = Rectangular  Associative = Yes",
     ])
     expect(cad.state().commandLine.prompt).toBe(
-      "ARRAY Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:"
+      "ARRAY Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:"
     )
     answer(cad, "_COU", "2", "1", "")
     expect(centres(cad)).toHaveLength(2)
@@ -358,11 +377,11 @@ describe("ARRAY", () => {
     answer(cad, "_X")
     expect(cad.commandLog().at(-1)).toBe("Opción no válida.")
     answer(cad, "")
-    expect(cad.commandLog().at(-1)).toBe("Tipo = Rectangular  Asociativa = No")
+    expect(cad.commandLog().at(-1)).toBe("Tipo = Rectangular  Asociativa = Sí")
     cad.escape()
 
     answer(cad, "MATRIZ", "_L", "", "CA")
-    expect(cad.commandLog().at(-1)).toBe("Tipo = Ruta  Asociativa = No")
+    expect(cad.commandLog().at(-1)).toBe("Tipo = Ruta  Asociativa = Sí")
     expect(cad.state().commandLine.prompt).toBe(
       "MATRIZ Seleccione la curva de trayectoria:"
     )
@@ -370,8 +389,8 @@ describe("ARRAY", () => {
 
   it("hands the set to ARRAYPOLAR at POlar (probe arrays/p204)", () => {
     for (const [locale, type] of [
-      [undefined, "Type = Polar  Associative = No"],
-      [es, "Tipo = Polar  Asociativa = No"],
+      [undefined, "Type = Polar  Associative = Yes"],
+      [es, "Tipo = Polar  Asociativa = Sí"],
     ] as const) {
       const cad = createHarness({ locale, entities: [circle()] })
 
@@ -390,7 +409,7 @@ describe("ARRAY", () => {
     expect(cad.commandLog()).toEqual([
       "AR ARRAY 1 found",
       "Enter array type [Rectangular/PAth/POlar] <Rectangular>:",
-      "Type = Rectangular  Associative = No",
+      "Type = Rectangular  Associative = Yes",
     ])
   })
 
@@ -490,11 +509,11 @@ describe("ARRAYRECT's answers", () => {
 
     answer(cad, "_ARRAYRECT", "_L", "", "5", "30,20")
     expect(cad.commandLog().slice(-2)).toEqual([
-      "Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: 5",
-      "Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>: 30,20",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: 5",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: 30,20",
     ])
     expect(cad.state().commandLine.prompt).toBe(
-      "ARRAYRECT Select grip to edit array or [COUnt/Spacing/COLumns/Rows/eXit] <eXit>:"
+      "ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:"
     )
   })
 
@@ -558,7 +577,7 @@ describe("ARRAYRECT's answers", () => {
     })
 
     answer(cad, "_ARRAYRECT", "12,10", "45,0", "", "_COU", "2", "1", "_X")
-    const added = cad.entities().slice(2)
+    const added = shown(cad).slice(2)
     expect(added.map((e) => e.type)).toEqual(["line", "circle"])
     expect(linesOf(added)[0].start).toBeCloseToPoint(p(103, 0))
     expect(hasCentre(cad, 73, 10)).toBe(true)
@@ -580,7 +599,7 @@ describe("ARRAYRECT's answers", () => {
     cad.runtime.setCurrentLineweight(0.3)
 
     answer(cad, "_ARRAYRECT", "_L", "", "_X")
-    const all = cad.entities() as (Entity & {
+    const all = shown(cad) as (Entity & {
       color?: string
       lineweight?: number
     })[]
@@ -598,9 +617,7 @@ describe("ARRAYRECT's answers", () => {
     const cad = createHarness({ entities: [withElevation(circle(), 5)] })
 
     answer(cad, "_ARRAYRECT", "_L", "", "_X")
-    const zs = cad
-      .entities()
-      .map((e) => (e as { elevation?: number }).elevation)
+    const zs = shown(cad).map((e) => (e as { elevation?: number }).elevation)
     expect(zs).toEqual(Array(12).fill(5))
   })
 
@@ -633,7 +650,7 @@ function polar(locale?: typeof es): CadHarness {
 }
 
 const POLAR_MAIN =
-  "ARRAYPOLAR Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:"
+  "ARRAYPOLAR Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:"
 
 describe("ARRAYPOLAR", () => {
   // probe arrays/p248: a line round 0,0, ROTate Yes.
@@ -645,7 +662,7 @@ describe("ARRAYPOLAR", () => {
     cad.select("L1").command("ARRAYPOLAR").click(p(0, 0))
     cad.option("Items").type("4").enter().enter()
 
-    const lines = linesOf(cad.entities())
+    const lines = linesOf(shown(cad))
     expect(lines.map((line) => line.start)).toBeCloseToPoints([
       p(10, 10),
       p(-10, 10),
@@ -694,26 +711,27 @@ describe("ARRAYPOLAR", () => {
     expect(cad.commandLog()).toEqual([
       "ARRAYPOLAR",
       "1 found",
-      "Type = Polar  Associative = No",
+      "Type = Polar  Associative = Yes",
       "Specify center point of array:",
-      "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: I",
+      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: I",
       "Enter number of items in array <6>: 4",
-      "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: A",
+      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: A",
       "Specify angle between items <90>: 30",
-      "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: F",
+      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: F",
       "Specify the angle to fill (+=ccw, -=cw) <90>: 180",
-      "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: ROT",
+      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: ROT",
       "Rotate arrayed items? [Yes/No] <Yes>: N",
-      "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: X",
+      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: X",
     ])
     // Four items over 180°, 60° apart, carried round by the extents' centre
     // 100,10 without turning (p245).
-    expect(linesOf(cad.entities()).map((line) => line.start)).toBeCloseToPoints(
-      [p(100, 0), p(41.339746, 81.60254), p(-58.660254, 71.60254), p(-100, -20)]
-    )
-    expect(linesOf(cad.entities()).every((l) => l.end.x === l.start.x)).toBe(
-      true
-    )
+    expect(linesOf(shown(cad)).map((line) => line.start)).toBeCloseToPoints([
+      p(100, 0),
+      p(41.339746, 81.60254),
+      p(-58.660254, 71.60254),
+      p(-100, -20),
+    ])
+    expect(linesOf(shown(cad)).every((l) => l.end.x === l.start.x)).toBe(true)
   })
 
   // probes arrays/p201, p262: 2027's Spanish centre prompt.
@@ -724,13 +742,13 @@ describe("ARRAYPOLAR", () => {
     })
 
     cad.select("L1").command("MATRIZPOLAR")
-    expect(cad.commandLog().at(-1)).toBe("Tipo = Polar  Asociativa = No")
+    expect(cad.commandLog().at(-1)).toBe("Tipo = Polar  Asociativa = Sí")
     expect(cad.state().commandLine.prompt).toBe(
       "MATRIZPOLAR Especifique el punto central de la matriz:"
     )
     cad.click(p(0, 0))
     expect(cad.state().commandLine.prompt).toBe(
-      "MATRIZPOLAR Seleccione un pinzamiento para editar la matriz o [Elementos/ángUlo entre/ángulo de Relleno/Girar objetos/Salir] <Salir>:"
+      "MATRIZPOLAR Seleccione un pinzamiento para editar la matriz o [Asociativa/Elementos/ángUlo entre/ángulo de Relleno/Girar objetos/Salir] <Salir>:"
     )
     cad.option("Items")
     expect(cad.state().commandLine.prompt).toBe(
@@ -782,11 +800,11 @@ describe("ARRAYPOLAR's answers", () => {
 
     answer(cad, "0,0", "5,5", "7")
     expect(cad.commandLog().slice(-2)).toEqual([
-      "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: 5,5",
-      "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: 7",
+      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: 5,5",
+      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: 7",
     ])
     expect(cad.state().commandLine.prompt).toBe(POLAR_MAIN)
-    expect(cad.entityCount).toBe(1)
+    expect(shown(cad).length).toBe(1)
   })
 
   it("asks ROWs or ROTate? at R, ROWs declared but not built (probe arrays/p210)", () => {
@@ -794,7 +812,7 @@ describe("ARRAYPOLAR's answers", () => {
 
     answer(cad, "0,0", "R")
     expect(cad.commandLog().slice(-2)).toEqual([
-      "Select grip to edit array or [Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: R",
+      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: R",
       "Ambiguous response, please clarify...",
     ])
     expect(cad.state().commandLine.prompt).toBe("ARRAYPOLAR ROWs or ROTate?")
@@ -1178,19 +1196,19 @@ describe("ARRAYPOLAR's prompts", () => {
     const cad = polar()
     answer(cad, "0,0", "_X", "_U")
     expect(cad.commandLog().at(-1)).toBe("ARRAYPOLAR")
-    expect(cad.entityCount).toBe(1)
+    expect(shown(cad).length).toBe(1)
 
     const two = createHarness()
     answer(two, "_CIRCLE", "10,10", "2", "_ARRAYPOLAR", "_L", "", "0,0", "_X")
     answer(two, "_UNDO", "2")
     expect(two.commandLog().at(-1)).toBe("ARRAYPOLAR CIRCLE")
-    expect(two.entityCount).toBe(0)
+    expect(shown(two).length).toBe(0)
     answer(two, "_REDO")
     expect(two.commandLog().slice(-2)).toEqual([
       "CIRCLE ARRAYPOLAR",
       "Everything has been redone",
     ])
-    expect(two.entityCount).toBe(6)
+    expect(shown(two).length).toBe(6)
 
     const spanish = polar(es)
     answer(spanish, "0,0", "_X", "_U")
@@ -1206,7 +1224,7 @@ describe("what ARRAYPOLAR makes", () => {
       return String(x === 0 ? 0 : x)
     }
     const pt = (q: { x: number; y: number }) => `${at(q.x)},${at(q.y)}`
-    return cad.entities().map((e) => {
+    return shown(cad).map((e) => {
       switch (e.type) {
         case "line":
           return `${pt(e.start)} ${pt(e.end)}`
@@ -1280,9 +1298,7 @@ describe("what ARRAYPOLAR makes", () => {
 
     answer(cad, "_CIRCLE", "10,10,5", "2", "_ARRAYPOLAR", "_L", "", "0,0")
     answer(cad, "_I", "4", "_X")
-    const zs = cad
-      .entities()
-      .map((e) => (e as { elevation?: number }).elevation)
+    const zs = shown(cad).map((e) => (e as { elevation?: number }).elevation)
     expect(zs).toEqual([5, 5, 5, 5])
   })
 })
@@ -1306,7 +1322,7 @@ function hasLine(
   [bx, by]: readonly [number, number]
 ): boolean {
   const near = (u: number, v: number) => Math.abs(u - v) < 1e-4
-  return linesOf(cad.entities()).some(
+  return linesOf(shown(cad)).some(
     (l) =>
       near(l.start.x, ax) &&
       near(l.start.y, ay) &&
@@ -1370,10 +1386,10 @@ describe("ARRAYPATH", () => {
     cad.option("Method").option("Divide").option("Items")
     cad.type("5").enter().enter()
 
-    // The source, four copies stepped 50 from it, and the path.
-    expect(cad.entityCount).toBe(6)
-    expect(cad.runtime.document.get("SRC")).toEqual(source)
-    const xs = linesOf(cad.entities())
+    // The source, four items stepped 50 from it, and the path.
+    expect(shown(cad).length).toBe(6)
+    expect(shown(cad).find((e) => e.id === "SRC")).toEqual(source)
+    const xs = linesOf(shown(cad))
       .filter((line) => line.id !== "PATH")
       .map((line) => round4(line.start.x))
       .sort((a, b) => a - b)
@@ -1389,7 +1405,7 @@ describe("ARRAYPATH", () => {
     cad.option("Fill entire path").enter()
 
     // 0, 40, 80, 120, 160, 200 → six items, plus the path.
-    expect(cad.entityCount).toBe(7)
+    expect(shown(cad).length).toBe(7)
   })
 
   it("takes the copies back in one undo step, which U names (probe arrays/p369)", () => {
@@ -1403,7 +1419,7 @@ describe("ARRAYPATH", () => {
       answer(cad, "_U")
 
       expect(cad.commandLog().at(-1)).toBe(name)
-      expect(cad.entityCount).toBe(2)
+      expect(shown(cad).length).toBe(2)
       expect(cad.runtime.document.get("SRC")).toEqual(source)
     }
   })
@@ -1414,7 +1430,7 @@ describe("ARRAYPATH", () => {
 
     const aligned = createHarness({ entities: [arcPath, bar] })
     aligned.select("SRC").command("ARRAYPATH").click(p(50, 0)).enter()
-    expect(linesOf(aligned.entities())).toHaveLength(11)
+    expect(linesOf(shown(aligned))).toHaveLength(11)
     expect(hasLine(aligned, [70, 0], [80, 0])).toBe(true)
     expect(hasLine(aligned, [66.8736, 20.6864], [76.4269, 23.6416])).toBe(true)
     expect(hasLine(aligned, [-69.2995, 9.8784], [-79.1994, 11.2896])).toBe(true)
@@ -1422,7 +1438,7 @@ describe("ARRAYPATH", () => {
     const free = createHarness({ entities: [arcPath, bar] })
     free.select("SRC").command("ARRAYPATH").click(p(50, 0))
     free.option("Align items").option("No").enter()
-    expect(linesOf(free.entities())).toHaveLength(11)
+    expect(linesOf(shown(free))).toHaveLength(11)
     expect(hasLine(free, [67.7668, 14.776], [77.7668, 14.776])).toBe(true)
     expect(hasLine(free, [-29.4996, 7.056], [-19.4996, 7.056])).toBe(true)
   })
@@ -1439,7 +1455,7 @@ describe("ARRAYPATH", () => {
     ])
     cad.click(p(50, 0))
     expect(cad.state().commandLine.prompt).toBe(
-      "ARRAYPATH Select grip to edit array or [Method/Items/Align items/eXit] <eXit>:"
+      "ARRAYPATH Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>:"
     )
     cad.option("Method")
     expect(cad.state().commandLine.prompt).toBe(
@@ -1466,25 +1482,25 @@ describe("ARRAYPATH", () => {
     expect(cad.commandLog().slice(0, 5)).toEqual([
       "ARRAYPATH",
       "1 found",
-      "Type = Path  Associative = No",
+      "Type = Path  Associative = Yes",
       "Select path curve:",
       "Objects selected to be arrayed may not be selected as path curve.",
     ])
     // 0, 30 … 180 → seven items, plus the path.
-    expect(cad.entityCount).toBe(8)
+    expect(shown(cad).length).toBe(8)
   })
 
   it("asks in the words of Autodesk's Spanish table (probes arrays/p307, p334)", () => {
     const cad = createHarness({ locale: es, entities: [path, source] })
 
     cad.select("SRC").command("MATRIZCAMINO")
-    expect(cad.commandLog().at(-1)).toBe("Tipo = Ruta  Asociativa = No")
+    expect(cad.commandLog().at(-1)).toBe("Tipo = Ruta  Asociativa = Sí")
     expect(cad.state().commandLine.prompt).toBe(
       "MATRIZCAMINO Seleccione la curva de trayectoria:"
     )
     cad.click(p(50, 0))
     expect(cad.state().commandLine.prompt).toBe(
-      "MATRIZCAMINO Seleccione un pinzamiento para editar la matriz o [Método/Elementos/ALinear elementos/Salir] <Salir>:"
+      "MATRIZCAMINO Seleccione un pinzamiento para editar la matriz o [Asociativa/Método/Elementos/ALinear elementos/Salir] <Salir>:"
     )
     cad.option("Method")
     expect(cad.state().commandLine.prompt).toBe(
@@ -1514,7 +1530,7 @@ describe("where ARRAYPATH puts the items", () => {
       Array.from({ length: 17 }, (_, k) => 10 + 6 * k)
     )
     expect(centres(cad).every((c) => round4(c.y) === 10)).toBe(true)
-    expect(cad.runtime.document.get("C")).toEqual(circle())
+    expect(shown(cad).find((e) => e.id === "C")).toEqual(circle())
   })
 
   it("runs from the end nearer the pick (probe arrays/p300)", () => {
@@ -1620,7 +1636,7 @@ describe("where ARRAYPATH puts the items", () => {
     })
     cad.select("C")
     answer(cad, "ARRAYPATH", "30,0", "_X")
-    const circles = cad.entities().filter((e) => e.type === "circle")
+    const circles = shown(cad).filter((e) => e.type === "circle")
     expect(circles).toHaveLength(17)
     for (const e of circles) {
       expect((e as { elevation?: number }).elevation).toBe(5)
@@ -1973,7 +1989,7 @@ describe("the arrays' Escape", () => {
       expect(centres(cad), name).toEqual(centres(entered))
       answer(cad, "_U")
       expect(cad.commandLog().at(-1), name).toBe(name)
-      expect(cad.entityCount, name).toBe(before)
+      expect(shown(cad).length, name).toBe(before)
     }
     const es_ = rect(es)
     es_.escape()
@@ -2024,7 +2040,7 @@ describe("the arrays' Escape", () => {
       [picking, 2],
     ] as const) {
       cad.escape()
-      expect(cad.entityCount).toBe(before)
+      expect(shown(cad).length).toBe(before)
       expect(cad.activeToolId()).toBe("select")
     }
   })
@@ -2121,5 +2137,387 @@ describe("the arrays' preview", () => {
       )
     expect(band).toHaveLength(4)
     for (const stroke of band) expect(stroke).not.toHaveProperty("dash")
+  })
+})
+
+/** The probes' path array: the line 0,0–100,0 and the circle, picked at 50,0. */
+function pathDrawing(): Entity[] {
+  return [lineOf(p(0, 0), p(100, 0), { id: "PATH" }), circle()]
+}
+
+/** The one array the drawing holds. */
+function arrayOf(cad: CadHarness): InsertEntity {
+  const array = cad.only<InsertEntity>("insert")
+  expect(array.array).toBeDefined()
+  return array
+}
+
+describe("the array object (AYO-01)", () => {
+  // probes arrays/p01–p03: `Associative = Yes`, one INSERT of an anonymous
+  // block, the source consumed into it; p400: its block holds the source.
+  it("is one object of each kind, the source consumed into it", () => {
+    for (const [run, type, kind, items] of [
+      [["_ARRAYRECT", "_L", "", "_X"], "Rectangular", "rectangular", 12],
+      [["_ARRAYPOLAR", "_L", "", "0,0", "_X"], "Polar", "polar", 6],
+      [["_ARRAYPATH", "_L", "", "50,0", "_X"], "Path", "path", 17],
+    ] as const) {
+      const cad = createHarness({ entities: pathDrawing() })
+
+      answer(cad, ...run)
+
+      expect(cad.commandLog()).toContain(`Type = ${type}  Associative = Yes`)
+      const array = arrayOf(cad)
+      expect(array.array?.kind).toBe(kind)
+      expect(array.blockId).toBe("*U1")
+      expect(cad.runtime.document.get("C")).toBeUndefined()
+      expect(cad.runtime.document.getBlock("*U1")?.entities).toEqual([circle()])
+      expect(centres(cad)).toHaveLength(items)
+      // The array and the path line, which stays.
+      expect(cad.entityCount).toBe(2)
+    }
+  })
+
+  // probe arrays/p403: the array on CLAYER L2 and CECOLOR 5, the line inside
+  // on L1 and red.
+  it("is made on the current layer and colour, the objects inside keeping theirs", () => {
+    const line = {
+      ...lineOf(p(0, 0), p(10, 5), { id: "L" }),
+      layerId: "L1",
+      color: "#ff0000",
+    } as Entity
+    const cad = createHarness()
+    cad.runtime.document.load([line], {
+      layers: [layerOf("0"), layerOf("L1"), layerOf("L2")],
+    })
+    cad.runtime.setCurrentLayer("L2")
+    cad.runtime.setCurrentColor("#0000ff")
+
+    answer(cad, "_ARRAYRECT", "_L", "", "_X")
+
+    expect(arrayOf(cad)).toMatchObject({ layerId: "L2", color: "#0000ff" })
+    const items = shown(cad)
+    expect(items).toHaveLength(12)
+    for (const item of items) {
+      expect(item).toMatchObject({ layerId: "L1", color: "#ff0000" })
+    }
+  })
+
+  // LIST's `Base point:` and the INSERT's position: the source's extents
+  // centre (probes arrays/p403, p404), a polar array's centre with the
+  // extents centre its base point (p405), the path's start (p406).
+  it("stands at AutoCAD's base point", () => {
+    const rect = createHarness({
+      entities: [lineOf(p(0, 0), p(10, 5), { id: "L" })],
+    })
+    answer(rect, "_ARRAYRECT", "_L", "", "_X")
+    expect(arrayOf(rect).position).toBeCloseToPoint(p(5, 2.5))
+
+    const corner = createHarness({
+      entities: [polylineOf([p(3, 1), p(13, 1), p(13, 9)], { id: "PL" })],
+    })
+    answer(corner, "_ARRAYRECT", "_L", "", "_X")
+    expect(arrayOf(corner).position).toBeCloseToPoint(p(8, 5))
+
+    const polar = createHarness({ entities: [circle()] })
+    answer(polar, "_ARRAYPOLAR", "_L", "", "0,0", "_X")
+    const ring = arrayOf(polar)
+    expect(ring.position).toBeCloseToPoint(p(0, 0))
+    expect(ring.array?.kind === "polar" && ring.array.basePoint).toEqual(
+      p(10, 10)
+    )
+
+    const path = createHarness({ entities: pathDrawing() })
+    answer(path, "_ARRAYPATH", "_L", "", "50,0", "_X")
+    expect(arrayOf(path).position).toBeCloseToPoint(p(0, 0))
+  })
+
+  // probe arrays/p402: EXPLODE gives the twelve circles, item by item.
+  it("explodes into each item's objects", () => {
+    const cad = createHarness({ entities: [circle()] })
+
+    answer(cad, "_ARRAYRECT", "_L", "", "_X")
+    expect(cad.typeCounts()).toEqual({ insert: 1 })
+    answer(cad, "_EXPLODE", "_L", "")
+
+    expect(cad.typeCounts()).toEqual({ circle: 12 })
+    expect(centres(cad).map((c) => `${round4(c.x)},${round4(c.y)}`)).toEqual([
+      "10,10",
+      "10,16",
+      "10,22",
+      "16,10",
+      "16,16",
+      "16,22",
+      "22,10",
+      "22,16",
+      "22,22",
+      "28,10",
+      "28,16",
+      "28,22",
+    ])
+  })
+
+  // probe arrays/p418: a line on L1 and a circle on L2, arrayed on layer 0
+  // and exploded: each item's line and circle, on their layers.
+  it("explodes into objects that keep their layers", () => {
+    const cad = createHarness()
+    cad.runtime.document.load(
+      [
+        { ...lineOf(p(0, 0), p(10, 0), { id: "L" }), layerId: "L1" },
+        { ...circleOf(p(5, 5), 2, { id: "C" }), layerId: "L2" },
+      ],
+      { layers: [layerOf("0"), layerOf("L1"), layerOf("L2")] }
+    )
+
+    answer(cad, "_ARRAYRECT", "_ALL", "", "_X")
+    expect(cad.typeCounts()).toEqual({ insert: 1 })
+    answer(cad, "_EXPLODE", "_ALL", "")
+
+    const parts = cad.entities()
+    expect(parts).toHaveLength(24)
+    expect(parts.map((e) => `${e.type} ${e.layerId}`).slice(0, 4)).toEqual([
+      "line L1",
+      "circle L2",
+      "line L1",
+      "circle L2",
+    ])
+    expect(linesOf(parts).map((l) => `${l.start.x},${l.start.y}`)).toContain(
+      "45,21"
+    )
+    expect(hasCentre(cad, 50, 26)).toBe(true)
+  })
+
+  // probe arrays/p409: U takes the array back and the source with its handle.
+  it("is taken back by U, the source back with its id", () => {
+    const cad = createHarness({ entities: [circle()] })
+
+    answer(cad, "_ARRAYRECT", "_L", "", "_X")
+    expect(cad.typeCounts()).toEqual({ insert: 1 })
+    answer(cad, "_U")
+
+    expect(cad.entities()).toEqual([circle()])
+    expect(cad.runtime.document.getBlocks()).toEqual([])
+  })
+
+  // probes arrays/p411a, p411b: saved and opened, it is still the array.
+  it("is saved and opened as the array", () => {
+    for (const run of [
+      ["_ARRAYRECT", "_L", "", "_X"],
+      ["_ARRAYPOLAR", "_L", "", "0,0", "_ROT", "_N", "_X"],
+      ["_ARRAYPATH", "_L", "", "50,0", "_X"],
+    ]) {
+      const cad = createHarness({ entities: pathDrawing() })
+      answer(cad, ...run)
+
+      const copy = createHarness()
+      copy.runtime.loadDrawing(cad.runtime.serializeDrawing())
+
+      expect(copy.entities()).toEqual(cad.entities())
+      expect(arrayOf(copy).array).toEqual(arrayOf(cad).array)
+      expect(copy.runtime.document.getBlock("*U1")).toEqual(
+        cad.runtime.document.getBlock("*U1")
+      )
+      expect(centres(copy)).toEqual(centres(cad))
+    }
+  })
+
+  // probe arrays/p412: `_END` on an item's line snaps to its end.
+  it("snaps on its items", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(10, 0), { id: "L" })],
+    })
+
+    answer(cad, "_ARRAYRECT", "_L", "", "_X")
+    expect(cad.typeCounts()).toEqual({ insert: 1 })
+    answer(cad, "_ID", "_END", "24,0.2")
+
+    expect(cad.commandLog().at(-1)).toBe(" X = 25.00     Y = 0.00     Z = 0.00")
+  })
+
+  // probe arrays/p408: a pick on any item takes the whole array.
+  it("is taken whole by a pick on any item", () => {
+    const cad = createHarness({ entities: [circle()] })
+
+    answer(cad, "_ARRAYRECT", "_L", "", "_X", "_ERASE", "24,16", "")
+
+    expect(cad.entities()).toEqual([])
+  })
+
+  // probe arrays/p410: COPY makes a second array, its base point moved.
+  it("is copied as a second array", () => {
+    const cad = createHarness({ entities: [circle()] })
+
+    answer(cad, "_ARRAYRECT", "_L", "", "_X")
+    answer(cad, "_COPY", "_L", "", "0,0", "100,0", "")
+
+    const arrays = cad.entities() as InsertEntity[]
+    expect(arrays.map((a) => a.array?.kind)).toEqual([
+      "rectangular",
+      "rectangular",
+    ])
+    expect(arrays[1].position).toBeCloseToPoint(p(110, 10))
+    expect(centres(cad)).toHaveLength(24)
+    expect(hasCentre(cad, 128, 22)).toBe(true)
+  })
+
+  // probes arrays/p04–p06: `_AS _N` leaves the copies loose and the source
+  // where it was; p364: the next run says `Associative = No`; AcArrayRes:5609
+  // offers the answer as the default.
+  it("leaves loose copies after ASsociative No, and keeps the answer", () => {
+    const cad = createHarness({ entities: pathDrawing() })
+
+    answer(cad, "_ARRAYRECT", "_L", "", "_AS")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYRECT Create associative array [Yes/No] <Yes>:"
+    )
+    answer(cad, "_N")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:"
+    )
+    answer(cad, "_X")
+    expect(cad.typeCounts()).toEqual({ line: 1, circle: 12 })
+    expect(cad.runtime.document.get("C")).toEqual(circle())
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Type = Rectangular  Associative = Yes",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: _AS",
+      "Create associative array [Yes/No] <Yes>: _N",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: _X",
+    ])
+
+    answer(cad, "_ARRAYPATH", "12,10", "", "50,0")
+    expect(cad.commandLog()).toContain("Type = Path  Associative = No")
+    answer(cad, "_AS")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPATH Create associative array [Yes/No] <No>:"
+    )
+    answer(cad, "", "_X")
+    expect(cad.typeCounts()).toEqual({ line: 1, circle: 12 + 16 })
+  })
+
+  // probes arrays/p04.es–p06.es: `Asociativa`, its question and the type line.
+  it("asks it in Spanish", () => {
+    const cad = createHarness({ locale: es, entities: [circle()] })
+
+    answer(cad, "MATRIZRECTANG", "_L", "")
+    expect(cad.commandLog().at(-1)).toBe("Tipo = Rectangular  Asociativa = Sí")
+    answer(cad, "A")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZRECTANG Crear matriz asociativa [Sí/No] <Sí>:"
+    )
+    answer(cad, "N", "")
+    expect(cad.typeCounts()).toEqual({ circle: 12 })
+    answer(cad, "MATRIZPOLAR", "12,10", "")
+    expect(cad.commandLog().at(-1)).toBe("Tipo = Polar  Asociativa = No")
+  })
+
+  // The names of strings AcArrayRes 9575, 39923 and 887, in the palette's
+  // title and the rollover.
+  it("is named by its kind", () => {
+    for (const [locale, run, name] of [
+      [undefined, ["_ARRAYRECT", "_L", "", "_X"], "Array (Rectangular)"],
+      [undefined, ["_ARRAYPOLAR", "_L", "", "0,0", "_X"], "Array (Polar)"],
+      [es, ["_ARRAYPATH", "_L", "", "50,0", "_X"], "Matriz (de ruta)"],
+    ] as const) {
+      const cad = createHarness({ locale, entities: pathDrawing() })
+      answer(cad, ...run)
+
+      cad.select(arrayOf(cad).id)
+
+      expect(cad.state().properties.info?.title).toBe(name)
+    }
+  })
+
+  // ARRAYS-D5: the source is item 1 of the preview, drawn as the items are,
+  // not glowing as the selection.
+  it("previews the source as item 1", () => {
+    const cad = answer(createHarness({ entities: [circle()] }), "_ARRAYRECT")
+    answer(cad, "_L", "")
+
+    const source = cad.scene().primitives.flatMap((prim) => {
+      if (prim.kind !== "circle") return []
+      const c = cad.runtime.viewport.screenToWorld(prim.center)
+      return Math.abs(c.x - 10) < 1e-4 && Math.abs(c.y - 10) < 1e-4
+        ? [prim.stroke?.color]
+        : []
+    })
+    expect(source).toHaveLength(1)
+    expect(source[0]).not.toBe(THEME.selected)
+    expect(itemCircles(cad)).toHaveLength(11)
+  })
+
+  // An array's anonymous block is no block a user lists or names (probe
+  // arrays/p400: `*U2`).
+  it("keeps its block out of every list of blocks", () => {
+    const cad = createHarness({ entities: [circle()] })
+    answer(cad, "_ARRAYRECT", "_L", "", "_X")
+
+    expect(cad.state().blocks).toEqual([])
+    answer(cad, "_INSERT", "?")
+    expect(cad.commandLog().at(-1)).toBe("No blocks defined.")
+    answer(cad, "*U1")
+    expect(cad.commandLog().at(-1)).toBe('Block "*U1" is not defined.')
+    cad.escape()
+    answer(cad, "_ERASE", "_ALL", "", "_PURGE")
+    expect(cad.commandLog().at(-1)).toBe("No unused blocks.")
+    expect(cad.runtime.document.getBlock("*U1")).toBeDefined()
+    // Saved, an unreferenced anonymous block is left out.
+    const saved = JSON.parse(cad.runtime.serializeDrawing()) as {
+      blocks: unknown[]
+    }
+    expect(saved.blocks).toEqual([])
+  })
+
+  // probe arrays/p410's second array, through the clipboard: a pasted array
+  // lands with an anonymous block of its own.
+  it("is pasted with a fresh anonymous block", async () => {
+    const cad = createHarness({ entities: [circle()] })
+    answer(cad, "_ARRAYRECT", "_L", "", "_X")
+    answer(cad, "_COPYCLIP", "_L", "")
+
+    await cad.runtime.pasteFromClipboard()
+    cad.click(p(200, 0))
+
+    const arrays = cad.entities() as InsertEntity[]
+    expect(arrays.map((a) => a.blockId)).toEqual(["*U1", "*U2"])
+    expect(cad.runtime.document.getBlock("*U2")?.entities).toHaveLength(1)
+    expect(centres(cad)).toHaveLength(24)
+  })
+})
+
+describe("ARRAYRECT in a tilted UCS", () => {
+  // No probe: the positions ARRAYRECT gave before AYO, its columns along the
+  // UCS's X, its rows along its Y and their elevation along its Z. Whether
+  // AutoCAD lays a tilted grid so is **unverified**.
+  it("keeps the grid in the UCS's axes, as an array and as loose copies", () => {
+    for (const associative of ["_Y", "_N"]) {
+      const cad = createHarness()
+      answer(cad, "_UCS", "_X", "90", "_CIRCLE", "0,0", "2")
+      answer(cad, "_ARRAYRECT", "_L", "", "_AS", associative)
+      answer(cad, "_COU", "2", "2", "_COL", "", "10", "_R", "", "20", "5", "_X")
+
+      expect(cad.typeCounts()).toEqual(
+        associative === "_Y" ? { insert: 1 } : { circle: 4 }
+      )
+      const placed = shown(cad).flatMap((e) =>
+        e.type === "circle" ? [entityPointToWorld(e, e.center)] : []
+      )
+      // UCS X is the WCS's X, its Y the WCS's Z, its Z the WCS's −Y.
+      expect(placed).toHaveLength(4)
+      for (const [x, y, z] of [
+        [0, 0, 0],
+        [0, -5, 20],
+        [10, 0, 0],
+        [10, -5, 20],
+      ]) {
+        expect(
+          placed.some(
+            (c) =>
+              Math.abs(c.x - x) < 1e-6 &&
+              Math.abs(c.y - y) < 1e-6 &&
+              Math.abs(c.z - z) < 1e-6
+          ),
+          `${x},${y},${z} in ${JSON.stringify(placed)}`
+        ).toBe(true)
+      }
+    }
   })
 })

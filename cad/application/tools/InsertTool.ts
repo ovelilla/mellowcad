@@ -1,11 +1,14 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
+import { DocumentReader } from "../../domain/Document"
 import {
   BlockAttribute,
+  BlockDefinition,
   BlockId,
   EntityId,
   InsertEntity,
   createInsert,
+  isAnonymousBlock,
   onPlaneOf,
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
@@ -233,7 +236,7 @@ export class InsertTool implements Tool {
   private enterName(ctx: ToolContext): void {
     // INSNAME: the last block inserted, or else the last one defined.
     if (!ctx.document.getBlock(this.blockId)) {
-      this.blockId = ctx.document.getBlocks().at(-1)?.id ?? ""
+      this.blockId = namedBlocks(ctx.document).at(-1)?.id ?? ""
     }
     this.state = { phase: "name" }
     ctx.dynamicInput.open({
@@ -248,7 +251,7 @@ export class InsertTool implements Tool {
         }
         // Enter with nothing typed keeps the last block, the `<default>`.
         const name = typed.length === 0 ? this.blockId : typed
-        if (!commitCtx.document.getBlock(name)) {
+        if (isAnonymousBlock(name) || !commitCtx.document.getBlock(name)) {
           commitCtx.report(
             commitCtx.text.message("blockUndefined", { name }),
             "error"
@@ -265,7 +268,7 @@ export class InsertTool implements Tool {
   }
 
   private listBlocks(ctx: ToolContext): void {
-    const blocks = ctx.document.getBlocks()
+    const blocks = namedBlocks(ctx.document)
     ctx.report(
       blocks.length === 0
         ? ctx.text.message("noBlocks")
@@ -350,4 +353,9 @@ export class InsertTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }
+}
+
+/** The blocks a user names: an array's anonymous block is none of them. */
+export function namedBlocks(document: DocumentReader): BlockDefinition[] {
+  return document.getBlocks().filter((block) => !isAnonymousBlock(block.name))
 }

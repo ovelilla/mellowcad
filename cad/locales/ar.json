@@ -178,6 +178,11 @@
       "hatch": "{count, plural, one {تهشير} two {تهشيران} other {تهشيرات}}",
       "insert": "{count, plural, one {مرجع كتلة} two {مرجعا كتلة} other {مراجع كتل}}"
     },
+    "array": {
+      "rectangular": "مصفوفة (مستطيلة)",
+      "polar": "مصفوفة (قطبية)",
+      "path": "مصفوفة (على مسار)"
+    },
     "property": {
       "title": {
         "ellipticalArc": "قوس قطع ناقص",

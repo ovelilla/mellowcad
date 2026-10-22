@@ -1,0 +1,34 @@
+_.SAVEAS
+2018
+ayoB
+(getvar "ARRAYASSOCIATIVITY")
+(getvar "ARRAYTYPE")
+_LINE
+0,0
+10,0
+
+_ARRAYRECT
+_L
+
+_AS
+_N
+_X
+(getvar "ARRAYASSOCIATIVITY")
+(setvar "ARRAYTYPE" 1)
+(getvar "ARRAYTYPE")
+_.SAVEAS
+2018
+ayoX
+_.OPEN
+ayoB
+(getvar "DWGNAME")
+(getvar "ARRAYASSOCIATIVITY")
+(getvar "ARRAYTYPE")
+_.OPEN
+ayoX
+(getvar "DWGNAME")
+(getvar "ARRAYASSOCIATIVITY")
+(getvar "ARRAYTYPE")
+(setvar "ARRAYASSOCIATIVITY" 1)
+(setvar "ARRAYTYPE" 0)
+(getvar "ARRAYASSOCIATIVITY")

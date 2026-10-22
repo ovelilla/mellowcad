@@ -2,7 +2,13 @@ import { describe, expect, it, onTestFinished, vi } from "vitest"
 
 import { createHarness, type CadHarness } from "../../test/harness"
 import { arcOf, lineOf, p } from "../../test/builders"
-import type { CircleEntity, LineEntity, MTextEntity } from "../domain/entities"
+import {
+  insertFlatGeometry,
+  type CircleEntity,
+  type InsertEntity,
+  type LineEntity,
+  type MTextEntity,
+} from "../domain/entities"
 import { createTextStyle } from "../domain/textStyles"
 
 /**
@@ -222,7 +228,10 @@ describe("Enter with nothing typed", () => {
     })
     cad.select("L1").command("ARRAYRECT").moveTo(FAR).enter()
 
-    expect(cad.entityCount).toBe(4 * 3)
+    const array = cad.only<InsertEntity>("insert")
+    expect(
+      insertFlatGeometry(array, cad.runtime.document.blockLookup())
+    ).toHaveLength(4 * 3)
   })
 
   it("offsets through a point at first, then by the last distance", () => {

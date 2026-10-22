@@ -290,6 +290,11 @@ export const es: EngineLocale = {
         ]
       ]
     },
+    "array": {
+      "rectangular": "Matriz (rectangular)",
+      "polar": "Matriz (polar)",
+      "path": "Matriz (de ruta)"
+    },
     "property": {
       "title": {
         "ellipticalArc": "Arco elíptico",
@@ -1167,14 +1172,18 @@ export const es: EngineLocale = {
         "POlar": "POlar"
       },
       "ARRAYRECT": {
+        "ASsociative": "Asociativa",
         "COUnt": "COntar",
         "Spacing": "Espaciado",
         "COLumns": "Columnas",
         "Rows": "Filas",
         "eXit": "Salir",
-        "Unit cell": "Unidad"
+        "Unit cell": "Unidad",
+        "Yes": "Sí",
+        "No": "No"
       },
       "ARRAYPOLAR": {
+        "ASsociative": "Asociativa",
         "Items": "Elementos",
         "Angle between": "ángUlo",
         "Fill angle": "Relleno",
@@ -1185,6 +1194,7 @@ export const es: EngineLocale = {
         "No": "No"
       },
       "ARRAYPATH": {
+        "ASsociative": "Asociativa",
         "Method": "Método",
         "Items": "Elementos",
         "Align items": "ALinear",
@@ -1781,6 +1791,7 @@ export const es: EngineLocale = {
       "specifyAngleBetweenItems": "Indique el ángulo entre elementos",
       "specifyTheAngleToFill": "Precise el ángulo que se debe rellenar (+ =antihorario, -=horario)",
       "rotateArrayedItems": "¿Girar elementos de la matriz?",
+      "createAssociativeArray": "Crear matriz asociativa",
       "selectPathCurve": "Seleccione la curva de trayectoria",
       "enterPathMethod": "Introduzca el método de camino",
       "enterNumberOfItemsAlongPath": "Introduzca el número de elementos a lo largo del camino",
@@ -3354,6 +3365,19 @@ export const es: EngineLocale = {
           }
         ],
         "  Asociativa = No"
+      ],
+      "arrayTypeAssociative": [
+        "Tipo = ",
+        [
+          "type",
+          1,
+          {
+            "rectangular": "Rectangular",
+            "polar": "Polar",
+            "other": "Ruta"
+          }
+        ],
+        "  Asociativa = Sí"
       ],
       "requiresPositiveInteger": "Requiere un nº entero positivo que no sea cero o una opción.",
       "requiresNonzero": "Necesita un valor numérico distinto de cero.",

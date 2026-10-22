@@ -35,6 +35,13 @@ export type {
   BlockDefinition,
   BlockLookup,
   InsertEntity,
+  ArrayKind,
+  ArrayParameters,
+  ArrayPath,
+  ArrayPathPiece,
+  RectangularArray,
+  PolarArray,
+  PathLayout,
   Entity,
   Bounds,
 } from "./entityTypes"
@@ -54,6 +61,8 @@ export {
 
 export {
   MAX_BLOCK_NESTING,
+  isAnonymousBlock,
+  anonymousBlockName,
   insertGeometry,
   insertFlatGeometry,
   insertAttributePoints,

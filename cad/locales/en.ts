@@ -296,6 +296,11 @@ export const en: EngineCatalog = {
         ]
       ]
     },
+    "array": {
+      "rectangular": "Array (Rectangular)",
+      "polar": "Array (Polar)",
+      "path": "Array (Path)"
+    },
     "property": {
       "title": {
         "ellipticalArc": "Elliptical arc",
@@ -1417,6 +1422,7 @@ export const en: EngineCatalog = {
       "specifyAngleBetweenItems": "Specify angle between items",
       "specifyTheAngleToFill": "Specify the angle to fill (+=ccw, -=cw)",
       "rotateArrayedItems": "Rotate arrayed items?",
+      "createAssociativeArray": "Create associative array",
       "selectPathCurve": "Select path curve",
       "enterPathMethod": "Enter path method",
       "enterNumberOfItemsAlongPath": "Enter number of items along path",
@@ -2987,6 +2993,19 @@ export const en: EngineCatalog = {
           }
         ],
         "  Associative = No"
+      ],
+      "arrayTypeAssociative": [
+        "Type = ",
+        [
+          "type",
+          1,
+          {
+            "rectangular": "Rectangular",
+            "polar": "Polar",
+            "other": "Path"
+          }
+        ],
+        "  Associative = Yes"
       ],
       "requiresPositiveInteger": "Requires a positive nonzero integer or option keyword.",
       "requiresNonzero": "Requires numeric nonzero value.",

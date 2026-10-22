@@ -1,8 +1,16 @@
 import { Vec2, V } from "../geometry/Vec2"
 import { Vec3 } from "../geometry/Vec3"
 import { polarPoint } from "../geometry/primitives"
-import type { BlockLookup, Entity } from "./entityTypes"
-import { entityBounds } from "./entityQueries"
+import type {
+  ArrayParameters,
+  ArrayPath,
+  ArrayPathPiece,
+  Bounds,
+  Entity,
+  PathLayout,
+  PolarArray,
+  RectangularArray,
+} from "./entityTypes"
 import {
   copyEntity,
   rotateEntity,
@@ -12,6 +20,16 @@ import {
 } from "./entityTransforms"
 import { polylineSegmentGeometries } from "./polylines"
 import { Ucs, ucsDirectionToWorld, worldDirectionToUcs } from "./ucs"
+
+export type { ArrayPath, PathLayout, PolarArray, RectangularArray }
+
+/**
+ * The largest count the arrays' prompts take: AutoCAD asks every one of them
+ * as a 16-bit integer (probe arrays/p279: `Requires an integer between 1 and
+ * 32767, or option keyword.`; ARRAYRECT's and ARRAYPATH's counts are the same
+ * integer prompt, p111, p331).
+ */
+export const MAX_ARRAY_COUNT = 32767
 
 /**
  * Where one item of an array goes: the source moved by `move`, then turned
@@ -42,31 +60,19 @@ export function arrayItemCopy(entity: Entity, item: ArrayItem): Entity {
 }
 
 /**
- * The set's extents box, its sides measured along the UCS's axes: what the
- * arrays' default spacings are one and a half times (probes arrays/p165,
- * p310: a circle of radius 2 under `_UCS _Z 30` is 4 (cos 30° + sin 30°)
- * across).
+ * The set's extents box (`entitiesBounds`), its sides measured along the
+ * UCS's axes: what the arrays' default spacings are one and a half times
+ * (probes arrays/p165, p310: a circle of radius 2 under `_UCS _Z 30` is
+ * 4 (cos 30° + sin 30°) across).
  */
 export function arraySourceSize(
-  entities: readonly Entity[],
-  ucs: Ucs,
-  blocks?: BlockLookup
+  box: Bounds | null,
+  ucs: Ucs
 ): { width: number; height: number } {
-  let minX = Infinity
-  let minY = Infinity
-  let maxX = -Infinity
-  let maxY = -Infinity
-  for (const entity of entities) {
-    const b = entityBounds(entity, blocks)
-    minX = Math.min(minX, b.min.x)
-    minY = Math.min(minY, b.min.y)
-    maxX = Math.max(maxX, b.max.x)
-    maxY = Math.max(maxY, b.max.y)
-  }
-  if (entities.length === 0) return { width: 0, height: 0 }
+  if (box === null) return { width: 0, height: 0 }
   const sides = [
-    { x: maxX - minX, y: 0 },
-    { x: 0, y: maxY - minY },
+    { x: box.max.x - box.min.x, y: 0 },
+    { x: 0, y: box.max.y - box.min.y },
   ].map((side) => worldDirectionToUcs(ucs, side))
   return {
     width: Math.abs(sides[0].x) + Math.abs(sides[1].x),
@@ -74,31 +80,29 @@ export function arraySourceSize(
   }
 }
 
-/** ARRAYRECT's grid: columns along the UCS's X, rows along its Y. */
-export interface RectangularArray {
-  readonly columns: number
-  readonly rows: number
-  readonly colSpacing: number
-  readonly rowSpacing: number
-  /** How far each row rises above the one before it (the UCS's Z). */
-  readonly rowElevation: number
+/** The columns' direction a rectangular array laid out in `ucs` takes: its X axis. */
+export function arrayAxis(ucs: Ucs): Vec2 {
+  const { x, y } = ucsDirectionToWorld(ucs, { x: 1, y: 0 })
+  return { x, y }
 }
 
 /** The grid's items, column by column, the source's cell (0, 0) left out. */
 export function rectangularArrayItems(
   grid: RectangularArray,
-  ucs: Ucs,
   limit = Infinity
 ): ArrayItem[] {
+  const { x: c, y: s } = grid.axis
   const out: ArrayItem[] = []
   for (let i = 0; i < grid.columns && out.length < limit; i++) {
     for (let j = 0; j < grid.rows && out.length < limit; j++) {
       if (i === 0 && j === 0) continue
-      const move = ucsDirectionToWorld(ucs, {
-        x: i * grid.colSpacing,
-        y: j * grid.rowSpacing,
+      const along = i * grid.colSpacing
+      const across = j * grid.rowSpacing
+      const move = {
+        x: along * c - across * s,
+        y: along * s + across * c,
         z: j * grid.rowElevation,
-      })
+      }
       out.push({ move, pivot: { x: 0, y: 0 }, turn: 0 })
     }
   }
@@ -106,18 +110,6 @@ export function rectangularArrayItems(
 }
 
 const FULL_TURN = 360
-
-/** ARRAYPOLAR's ring, its angles in degrees. */
-export interface PolarArray {
-  readonly center: Vec2
-  /** The point carried round when the items are not turned. */
-  readonly basePoint: Vec2
-  readonly items: number
-  /** The angle the items fill, in (0, 360]. */
-  readonly fill: number
-  readonly clockwise: boolean
-  readonly rotate: boolean
-}
 
 /** Whether a fill is a whole turn, where the closing item would land on the first. */
 export function isFullTurn(fill: number): boolean {
@@ -157,28 +149,18 @@ export function polarArrayItems(
   return out
 }
 
-/** One run of a path: a straight piece, or an arc swept from `start` by `sweep` (signed). */
-type PathPiece =
-  | { readonly kind: "line"; readonly a: Vec2; readonly b: Vec2 }
-  | {
-      readonly kind: "arc"
-      readonly center: Vec2
-      readonly radius: number
-      readonly start: number
-      readonly sweep: number
-    }
-
-/**
- * A curve ARRAYPATH runs along, from the end it starts at: its pieces in
- * that order and its length.
- */
-export interface ArrayPath {
-  readonly pieces: readonly PathPiece[]
-  readonly length: number
-  readonly closed: boolean
-}
-
 const PATH_EPS = 1e-9
+
+/** The path its pieces make, run in their order; null when they have no length. */
+export function arrayPathOfPieces(
+  pieces: readonly ArrayPathPiece[],
+  closed: boolean
+): ArrayPath | null {
+  const length = pieces.reduce((sum, piece) => sum + pieceLength(piece), 0)
+  return pieces.length > 0 && length >= PATH_EPS
+    ? { pieces, length, closed }
+    : null
+}
 
 /**
  * The path a line, an arc, a circle or a polyline makes, null for any other
@@ -212,7 +194,7 @@ export function arrayPathOf(
   }
 }
 
-function pathPieces(entity: Entity): PathPiece[] | null {
+function pathPieces(entity: Entity): ArrayPathPiece[] | null {
   switch (entity.type) {
     case "line":
       return [{ kind: "line", a: entity.start, b: entity.end }]
@@ -241,7 +223,7 @@ function pathPieces(entity: Entity): PathPiece[] | null {
     }
     case "polyline":
       return polylineSegmentGeometries(entity)
-        .map((segment): PathPiece => {
+        .map((segment): ArrayPathPiece => {
           if (segment.kind === "line") {
             return { kind: "line", a: segment.a, b: segment.b }
           }
@@ -260,25 +242,25 @@ function pathPieces(entity: Entity): PathPiece[] | null {
   }
 }
 
-function pieceLength(piece: PathPiece): number {
+function pieceLength(piece: ArrayPathPiece): number {
   return piece.kind === "line"
     ? V.distance(piece.a, piece.b)
     : piece.radius * Math.abs(piece.sweep)
 }
 
-function pieceStart(piece: PathPiece): Vec2 {
+function pieceStart(piece: ArrayPathPiece): Vec2 {
   return piece.kind === "line"
     ? piece.a
     : polarPoint(piece.center, piece.radius, piece.start)
 }
 
-function pieceEnd(piece: PathPiece): Vec2 {
+function pieceEnd(piece: ArrayPathPiece): Vec2 {
   return piece.kind === "line"
     ? piece.b
     : polarPoint(piece.center, piece.radius, piece.start + piece.sweep)
 }
 
-function reversePiece(piece: PathPiece): PathPiece {
+function reversePiece(piece: ArrayPathPiece): ArrayPathPiece {
   return piece.kind === "line"
     ? { kind: "line", a: piece.b, b: piece.a }
     : { ...piece, start: piece.start + piece.sweep, sweep: -piece.sweep }
@@ -315,15 +297,6 @@ export function pointAlongPath(
     }
   }
   return { point: { x: 0, y: 0 }, direction: 0 }
-}
-
-/** ARRAYPATH's layout: how the items are spaced along the path. */
-export interface PathLayout {
-  readonly method: "divide" | "measure"
-  readonly items: number
-  /** Measure's distance between items. */
-  readonly spacing: number
-  readonly align: boolean
 }
 
 /**
@@ -371,4 +344,19 @@ export function pathArrayItems(
     })
   }
   return out
+}
+
+/** The items after the source an array's parameters derive, in its block's coordinates. */
+export function arrayItems(
+  array: ArrayParameters,
+  limit = Infinity
+): ArrayItem[] {
+  switch (array.kind) {
+    case "rectangular":
+      return rectangularArrayItems(array, limit)
+    case "polar":
+      return polarArrayItems(array, limit)
+    case "path":
+      return pathArrayItems(array.path, array, limit)
+  }
 }
