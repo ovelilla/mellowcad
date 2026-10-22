@@ -1357,6 +1357,7 @@
       "objectOnLockedLayer": "El objeto está en una capa bloqueada.",
       "invalidThroughPoint": "Punto a atravesar no válido.",
       "cannotOffsetObject": "Imposible transponer este objeto.",
+      "cannotOffsetAtViewDirection": "Imposible transponer este objeto en la dirección de la vista actual.",
       "rotatingCopy": "Girando una copia de los objetos seleccionados.",
       "scalingCopy": "Escalando una copia de los objetos seleccionados.",
       "objectsFound": "{box, select, yes {Designe esquina opuesta: } other {}}{found} encontrados{duplicate, plural, =0 {} other { (# duplicados)}}{removed, plural, =0 {} other {, eliminados #}}{hasTotal, select, yes {, {total} total} other {}}",

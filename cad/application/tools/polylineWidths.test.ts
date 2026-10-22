@@ -598,7 +598,7 @@ describe("what the editing commands do with the widths", () => {
     expect(cad.entities().every((e) => e.type === "line")).toBe(true)
   })
 
-  it("OFFSET keeps them on the copy (acc/w9)", () => {
+  it("OFFSET keeps them on the copy (offset/p185, p186)", () => {
     const cad = createHarness({ entities: [tapered()] })
     cad.command("OFFSET").type("5").enter().click(p(25, 0)).click(p(25, -20))
     expect(widths(cad)).toEqual([WIDE, WIDE])

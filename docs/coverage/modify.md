@@ -414,14 +414,41 @@ Multiple asks `… [Exit/Undo] <next object>:` (es `<siguiente objeto>`), Throug
 from the last copy, Multiple typed again there taken in silence (p131, p137); Undo takes back the
 last copy, whichever object it came from, and asks for the object in the run's mode, out of
 Multiple, and with no copy left says `Command has been completely undone.` (es
-`Comando deshecho totalmente.`, table 22415) (p125, p132, p138, p157, p158, p166);
-line/circle/arc/polyline (straight and arc bulges, with corner joins); the copy keeps the source's
-elevation, rise and thickness; an object at an angle to the UCS's XY plane does not highlight
+`Comando deshecho totalmente.`, table 22415) (p125, p132, p138, p157, p158, p166); a line
+offsets to a parallel line, a circle or an arc to a concentric one, and one taken to its centre or
+past says `Cannot offset that object.` and asks for the next object (p174–p176); a polyline as
+AutoCAD's OFFSETGAPTYPE 0 makes it (`offsetPolyline`): a zero-length segment left out (p194), the
+side judged against an arc as the arc (p226), the offset segments extended or trimmed to meet and,
+where they do not, joined by an arc on the source vertex whose radius is the distance (p183,
+p184), an arc that collapses dropped (p230, p231), a segment the offset reverses dropped (p187),
+and an outline pinched apart made one polyline per loop, in the source's order, from the vertices
+AutoCAD starts them at and with the collinear ones it keeps (p188), one point's copies one step
+for Undo and U; each segment keeps its widths (p185, p186); a closed polyline on one straight line
+(p192, a bulged one offsets, p193), or one with nothing left at the distance, cannot be offset;
+TEXT, MTEXT, INSERT, DIMENSION and HATCH (ATTDEF too) are refused at the pick with the same words,
+the object asked again (p201–p205); Through on a polyline measures to it with its open ends drawn
+on along their tangents (p211, p212), and outside an arc's span cannot offset (p209); the copy
+keeps the source's colour, linetype, lineweight, plane and elevation, a line's rise and a line's
+or polyline's thickness, but a circle's or an arc's copy has none (p218, p219, p225, p232, p233);
+Erase replaces the source with its copy at once (p159), and in Multiple erases it when the object
+is left — `<next object>`, Exit, a refused point — after its copies (p216, p224); a circle, an arc
+or a polyline tilted to the UCS is offset in its own plane, its normal kept, the point taken there
+along the line of sight (p235, p239; an isometric view, p237), and one edge-on to the view says
+`Cannot offset that object at current view direction.` (es
+`Imposible transponer este objeto en la dirección de la vista actual.`, table 21223) at the pick
+(p207, p234)
 
-**Missing:** OFFSETGAPTYPE, ellipses and splines (an ellipse's parallel curve is a spline, and
-offsetting a spline is not built, so neither highlights), Erase and Layer kept past the session
-(OPEN leaves them, p310; a restart is unprobed); **unverified**: one object preselected on a locked
-layer, dropped here and the object asked
+**Missing:** OFFSETGAPTYPE 1 and 2, ellipses and splines (AutoCAD offsets them into a SPLINE,
+p196–p198, which is not built: neither is picked, OFFSET-D11), Erase and Layer kept past the
+session (OPEN leaves them, p310; a restart is unprobed), a polyline of more than 2000 segments
+(declined with `Cannot offset that object.`, the clean-up's cap); **unverified**: one object
+preselected on a locked layer, dropped here and the object asked; which piece Multiple steps on
+from once a polyline falls apart (the first here); Escape and Undo with Erase in Multiple (the
+source kept here, the copies kept as at Escape, desktop d06); a line out of the UCS's XY plane
+(offset in that plane here, its rise kept; one along the UCS's Z cannot be offset); a closed
+polyline of more than two vertices on one straight line (refused as p192); a through point on an
+arc's circle outside its span (refused as p209); an open polyline the offset pinches apart (its
+pieces stitched as a closed one's, a piece doubled by two collinear offsets left out)
 
 ### `FILLET` / `F` · es `EMPALME` / `MP`†
 

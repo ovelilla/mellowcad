@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest"
 import {
+  createAttributeDefinition,
+  createDimension,
+  createInsert,
+  createMText,
   createSpline,
+  createText,
   ellipseEndPoint,
   ellipseStartPoint,
   type ArcEntity,
@@ -21,7 +26,9 @@ import {
   deg,
   ellipseOf,
   layerOf,
+  hatchOf,
   lineOf,
+  loopOf,
   p,
   polylineOf,
 } from "../../../test/builders"
@@ -3982,25 +3989,35 @@ describe("OFFSET", () => {
     ])
   })
 
-  it("will not offset an ellipse, and does not even highlight one", () => {
-    // The parallel curve of an ellipse is a spline, which this engine has no
-    // object for — so, like DIMSPACE with non-parallel dimensions, the object
-    // simply never lights up as a candidate.
-    const cad = createHarness({
-      entities: [ellipseOf(p(0, 0), p(100, 0), 0.5, { id: "E1" })],
+  it("will not offset an ellipse or a spline, and does not even highlight one", () => {
+    // AutoCAD offsets them into a spline (probes offset/p196–p198), which is
+    // not built: neither is picked, in silence (OFFSET-D11).
+    const spline = createSpline("fit", [p(0, 50), p(50, 80), p(100, 50)], {
+      id: "S1",
     })
+    const cad = createHarness({
+      entities: [ellipseOf(p(0, 0), p(100, 0), 0.5, { id: "E1" }), spline],
+    })
+    const lit = () =>
+      cad
+        .scene()
+        .primitives.filter(
+          (primitive) =>
+            "stroke" in primitive &&
+            (primitive.stroke?.color === THEME.selected ||
+              primitive.stroke?.color === THEME.entityHover)
+        )
 
-    cad.command("OFFSET").type("20").enter().moveTo(p(100, 0))
-    const highlights = cad
-      .scene()
-      .primitives.filter(
-        (primitive) =>
-          "stroke" in primitive && primitive.stroke?.color === THEME.selected
-      )
-    expect(highlights).toHaveLength(0)
-
-    cad.click(p(100, 0)).click(p(200, 0)).escape()
-    expect(cad.entityCount).toBe(1)
+    cad.command("OFFSET").type("20").enter()
+    for (const at of [p(100, 0), p(0, 50)]) {
+      cad.moveTo(at)
+      expect(lit()).toHaveLength(0)
+      cad.click(at)
+      expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+    }
+    cad.click(p(200, 0)).escape()
+    expect(cad.entityCount).toBe(2)
+    expect(cad.commandLog()).not.toContain("Cannot offset that object.")
   })
 
   it("Through places the copy on a picked point", () => {
@@ -4655,6 +4672,483 @@ describe("OFFSET", () => {
       expect(cad.entityCount).toBe(3)
       cad.undo()
       expect(cad.entityCount).toBe(1)
+    })
+  })
+
+  describe("what it produces", () => {
+    const QUARTER = 0.41421356237309503
+    const polylines = (cad: CadHarness) =>
+      cad
+        .entities()
+        .filter(
+          (e): e is PolylineEntity => e.type === "polyline" && e.id !== "P1"
+        )
+    const offset = (
+      entity: Entity,
+      distance: string,
+      pick: string,
+      side: string
+    ): CadHarness =>
+      answer(
+        createHarness({ entities: [entity] }),
+        "_OFFSET",
+        distance,
+        pick,
+        side
+      )
+    const said = (cad: CadHarness) => cad.commandLog().at(-1)
+
+    it("rounds a vertex the offset segments no longer meet at", () => {
+      // probe offset/p183: arcs of radius 10 on (100,100) and (0,100).
+      const concave = polylineOf([p(0, 0), p(100, 0), p(100, 100), p(0, 100)], {
+        id: "P1",
+        closed: true,
+        bulges: [0, 0, -0.5, 0],
+      })
+      const [copy] = polylines(offset(concave, "10", "50,0", "50,-50"))
+      expect(copy.vertices).toBeCloseToPoints(
+        [
+          p(-10, -10),
+          p(110.00000000000001, -10),
+          p(110, 100),
+          p(92, 106),
+          p(8.00000000000001, 105.99999999999997),
+          p(-10, 100),
+        ],
+        12
+      )
+      expect(copy.bulges![2]).toBeCloseTo(0.7207592200561265, 12)
+      expect(copy.bulges![3]).toBeCloseTo(-0.5000000000000002, 12)
+      expect(copy.bulges![4]).toBeCloseTo(0.7207592200561265, 12)
+    })
+
+    it("drops a segment the offset reverses", () => {
+      // probe offset/p187: the trapezoid's copy is a triangle.
+      const trapezoid = polylineOf([p(0, 0), p(100, 0), p(55, 40), p(45, 40)], {
+        id: "P1",
+        closed: true,
+      })
+      const copies = polylines(offset(trapezoid, "15", "50,0", "50,10"))
+      expect(copies).toHaveLength(1)
+      expect(copies[0].vertices).toBeCloseToPoints(
+        [
+          p(39.452989835235556, 15),
+          p(60.547010164764444, 15),
+          p(50, 24.37512014645729),
+        ],
+        12
+      )
+    })
+
+    it("splits a pinched outline in two, the left first, one step for Undo", () => {
+      // probe offset/p188: two LWPOLYLINEs, 2D8 from (10,10) before 2D9.
+      const dumbbell = polylineOf(
+        [
+          p(0, 0),
+          p(90, 0),
+          p(90, 45),
+          p(110, 45),
+          p(110, 0),
+          p(200, 0),
+          p(200, 100),
+          p(110, 100),
+          p(110, 55),
+          p(90, 55),
+          p(90, 100),
+          p(0, 100),
+        ],
+        { id: "P1", closed: true }
+      )
+      const cad = offset(dumbbell, "10", "50,0", "50,50")
+      const copies = polylines(cad)
+      expect(copies).toHaveLength(2)
+      expect(copies[0].vertices).toBeCloseToPoints(
+        [p(10, 10), p(80, 10), p(80, 55), p(80, 90), p(10, 90)],
+        12
+      )
+      expect(copies[1].vertices).toBeCloseToPoints(
+        [p(120, 45), p(120, 10), p(190, 10), p(190, 90), p(120, 90)],
+        12
+      )
+      answer(cad, "_U")
+      expect(cad.entityCount).toBe(1)
+    })
+
+    it("drops the rounded corners that collapse inward", () => {
+      // probes offset/p230 (15, past the radius), p231 (10, to it).
+      const rounded = () =>
+        polylineOf(
+          [
+            p(10, 0),
+            p(90, 0),
+            p(100, 10),
+            p(100, 90),
+            p(90, 100),
+            p(10, 100),
+            p(0, 90),
+            p(0, 10),
+          ],
+          {
+            id: "P1",
+            closed: true,
+            bulges: [0, QUARTER, 0, QUARTER, 0, QUARTER, 0, QUARTER],
+          }
+        )
+      const [past] = polylines(offset(rounded(), "15", "50,0", "50,50"))
+      expect(past.vertices).toBeCloseToPoints(
+        [p(15, 15), p(85, 15), p(85, 85), p(15, 85)],
+        12
+      )
+      expect(past.bulges).toBeUndefined()
+      const [to] = polylines(offset(rounded(), "10", "50,0", "50,50"))
+      expect(to.vertices).toBeCloseToPoints(
+        [p(10, 10), p(90, 10), p(90, 90), p(10, 90)],
+        12
+      )
+    })
+
+    it("takes the side inside an arc segment's bulge as inside", () => {
+      // probe offset/p226: as p181's inward copy.
+      const d = polylineOf([p(0, 0), p(100, 0), p(100, 100), p(0, 100)], {
+        id: "P1",
+        bulges: [0, 1, 0],
+      })
+      const [copy] = polylines(offset(d, "10", "50,0", "140,50"))
+      expect(copy.vertices).toBeCloseToPoints([
+        p(0, 10),
+        p(100, 10),
+        p(100, 90),
+        p(0, 90),
+      ])
+      expect(copy.bulges![1]).toBeCloseTo(1, 12)
+    })
+
+    it("leaves a zero-length segment out", () => {
+      // probe offset/p194.
+      const doubled = polylineOf([p(0, 0), p(100, 0), p(100, 0), p(100, 100)], {
+        id: "P1",
+      })
+      const [copy] = polylines(offset(doubled, "10", "50,0", "50,50"))
+      expect(copy.vertices).toBeCloseToPoints([p(0, 10), p(90, 10), p(90, 100)])
+    })
+
+    it("cannot offset a closed polyline on one line; a bulged one it can", () => {
+      // probes offset/p192, p193.
+      const flat = offset(
+        polylineOf([p(0, 0), p(100, 0)], { id: "P1", closed: true }),
+        "10",
+        "50,0",
+        "50,50"
+      )
+      expect(flat.entityCount).toBe(1)
+      expect(said(flat)).toBe("Cannot offset that object.")
+      expect(flat.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+      const round = offset(
+        polylineOf([p(0, 0), p(100, 0)], {
+          id: "P1",
+          closed: true,
+          bulges: [1, 1],
+        }),
+        "10",
+        "50,50",
+        "50,10"
+      )
+      expect(polylines(round)[0].vertices).toBeCloseToPoints(
+        [p(10, 0), p(90, 0)],
+        12
+      )
+    })
+
+    it("cannot offset an arc or a circle to its centre or past", () => {
+      // probes offset/p174 (past), p175 (to it), p176 (a circle): said,
+      // then the next object.
+      const arc = () => arcOf(p(0, 0), 50, 0, deg(90), { id: "A1" })
+      for (const [entity, distance, side] of [
+        [arc(), "60", "10,10"],
+        [arc(), "50", "10,10"],
+        [circleOf(p(0, 0), 50, { id: "C1" }), "60", "10,0"],
+      ] as const) {
+        const cad = offset(entity, distance, "50,0", side)
+        expect(cad.entityCount).toBe(1)
+        expect(said(cad)).toBe("Cannot offset that object.")
+        expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+      }
+    })
+
+    it("refuses text, MTEXT, a block, a dimension and a hatch at the pick", () => {
+      // probes offset/p201–p205: said, `Select object to offset` again.
+      const objects: [Entity, string][] = [
+        [createText(p(0, 0), "Hola", { height: 10 }), "5,5"],
+        [createMText(p(0, 0), "Hola", { height: 10, width: 100 }), "5,-5"],
+        [createInsert("B1", p(0, 0)), "50,0"],
+        [createDimension("linear", p(0, 0), p(100, 0), p(50, -20)), "50,-20"],
+        [hatchOf([loopOf(p(0, 0), p(100, 100))]), "50,50"],
+        [createAttributeDefinition(p(0, 0), "TAG", { height: 10 }), "5,5"],
+      ]
+      for (const [entity, pick] of objects) {
+        const cad = answer(
+          createHarness({
+            entities: [entity],
+            blocks: [
+              {
+                id: "B1",
+                name: "B1",
+                basePoint: p(0, 0),
+                entities: [lineOf(p(0, 0), p(100, 0))],
+              },
+            ],
+          }),
+          "_OFFSET",
+          "10",
+          pick
+        )
+        expect(cad.commandLog().at(-1)).toBe("Cannot offset that object.")
+        expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+        expect(cad.entityCount).toBe(1)
+      }
+    })
+
+    it("measures Through past an open polyline's end to its last segment drawn on", () => {
+      // probes offset/p211 (30), p212 (36.0555127546399, to the corner).
+      const l = () =>
+        polylineOf([p(0, 0), p(100, 0), p(100, 100)], { id: "P1" })
+      const [beyond] = polylines(offset(l(), "_T", "50,0", "130,150"))
+      expect(beyond.vertices).toBeCloseToPoints(
+        [p(0, -30), p(130, -30), p(130, 100)],
+        12
+      )
+      const [corner] = polylines(offset(l(), "_T", "50,0", "130,-20"))
+      const d = 36.0555127546399
+      expect(corner.vertices).toBeCloseToPoints(
+        [p(0, -d), p(100 + d, -d), p(100 + d, 100)],
+        12
+      )
+    })
+
+    it("cannot offset an arc through a point outside its span", () => {
+      // probe offset/p209.
+      const cad = offset(
+        arcOf(p(0, 0), 50, 0, deg(90), { id: "A1" }),
+        "_T",
+        "50,0",
+        "-80,-60"
+      )
+      expect(cad.entityCount).toBe(1)
+      expect(said(cad)).toBe("Cannot offset that object.")
+      expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+    })
+
+    it("gives a circle's and an arc's copy no thickness, a polyline's its own", () => {
+      // probes offset/p219, p233 (a circle), p232 (an arc): thickness 3 at
+      // Z 7 → none, Z 7, the colour kept; p225: a polyline keeps its 2.
+      const thick = <T extends Entity>(entity: T, thickness: number) =>
+        ({ ...entity, elevation: 7, thickness, color: "#ff0000" }) as T
+      const circle = offset(
+        thick(circleOf(p(0, 0), 50, { id: "C1" }), 3),
+        "10",
+        "50,0",
+        "100,0"
+      )
+      const arc = offset(
+        thick(arcOf(p(0, 0), 50, 0, deg(90), { id: "A1" }), 3),
+        "10",
+        "50,0",
+        "100,100"
+      )
+      for (const cad of [circle, arc]) {
+        const copy = cad.entities()[1]
+        expect(copy).toMatchObject({ elevation: 7, color: "#ff0000" })
+        expect("thickness" in copy).toBe(false)
+      }
+      const poly = offset(
+        thick(polylineOf([p(0, 0), p(100, 0), p(100, 100)], { id: "P1" }), 2),
+        "10",
+        "50,0",
+        "50,50"
+      )
+      expect(polylines(poly)[0]).toMatchObject({ elevation: 7, thickness: 2 })
+    })
+
+    it("erases the source with Multiple when the object is left", () => {
+      // probe offset/p216: two copies, the line erased at `<next object>`.
+      const cad = answer(
+        createHarness({ entities: [L1()] }),
+        "_OFFSET",
+        "_E",
+        "_Y",
+        "10",
+        "50,0",
+        "_M",
+        "50,50"
+      )
+      expect(cad.entityCount).toBe(2)
+      answer(cad, "50,50", "")
+      expect(cad.entities().map((e) => (e as LineEntity).start.y)).toEqual([
+        10, 20,
+      ])
+      expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+      // Undo takes back the last copy with the erase (unverified).
+      answer(cad, "_U")
+      expect(cad.entities().map((e) => e.id)).toContain("L1")
+      expect(cad.entityCount).toBe(2)
+      answer(cad, "")
+      cad.undo()
+      expect(cad.entities().map((e) => e.id)).toEqual(["L1"])
+    })
+
+    it("erases the source with Multiple Through at Exit, the copies through it", () => {
+      // probe offset/p224: copies at y=10 and y=30, the line erased.
+      const cad = answer(
+        createHarness({ entities: [L1()] }),
+        "_OFFSET",
+        "_E",
+        "_Y",
+        "_T",
+        "50,0",
+        "_M",
+        "50,10",
+        "50,30"
+      )
+      expect(cad.entityCount).toBe(3)
+      answer(cad, "_E")
+      expect(cad.entities().map((e) => (e as LineEntity).start.y)).toEqual([
+        10, 30,
+      ])
+    })
+
+    it("keeps the source at Escape with Erase in Multiple", () => {
+      // Unverified: the run so far is kept (desktop offset/d06), the erase
+      // AutoCAD makes on leaving the object never comes.
+      const cad = answer(
+        createHarness({ entities: [L1()] }),
+        "_OFFSET",
+        "_E",
+        "_Y",
+        "10",
+        "50,0",
+        "_M",
+        "50,50"
+      )
+      cad.escape()
+      expect(cad.entities().map((e) => e.id)[0]).toBe("L1")
+      expect(cad.entityCount).toBe(2)
+    })
+
+    it("offsets an object tilted to the UCS in its own plane, keeping its normal", () => {
+      // probe offset/p239: a circle of normal (0,-.707,.707), UCS World, the
+      // top view: the side taken along the view, the copy r60 in its plane.
+      const tilted = answer(
+        createHarness(),
+        "_UCS",
+        "_X",
+        "45",
+        "_CIRCLE",
+        "0,0",
+        "50",
+        "_UCS",
+        "_W"
+      )
+      tilted.command("OFFSET").type("10").enter()
+      tilted.click({ x: 50, y: 0, z: 0 }).click({ x: 100, y: 0, z: 0 })
+      const [source, copy] = tilted.entities() as CircleEntity[]
+      expect(copy.radius).toBeCloseTo(60, 12)
+      expect(copy.normal).toEqual(source.normal)
+      // probe offset/p235: a WCS circle, the UCS turned _X 90, the top view.
+      const level = answer(
+        createHarness(),
+        "_CIRCLE",
+        "0,0",
+        "50",
+        "_UCS",
+        "_X",
+        "90",
+        "_OFFSET",
+        "10",
+        "50,0",
+        "100,0"
+      )
+      const [, flat] = level.entities() as CircleEntity[]
+      expect(flat.radius).toBeCloseTo(60, 12)
+      expect(flat.normal).toBeUndefined()
+    })
+
+    it("offsets in an isometric view, the side taken onto the object's plane", () => {
+      // probe offset/p237 (at Z 0; at Z 7 the same, unprobed).
+      const cad = answer(
+        createHarness(),
+        "_CIRCLE",
+        "0,0,7",
+        "50",
+        "_-VIEW",
+        "_SEISO"
+      )
+      cad.command("OFFSET").type("10").enter()
+      cad.click({ x: 50, y: 0, z: 7 }).click({ x: 100, y: 0, z: 7 })
+      const [, copy] = cad.entities() as CircleEntity[]
+      expect(copy).toMatchObject({ radius: 60, elevation: 7 })
+    })
+
+    it("cannot offset an object edge-on to the view, in the UCS or not", () => {
+      // probes offset/p234 (in the UCS turned _X 90), p207 (back in World):
+      // said at the pick, `Select object to offset` again.
+      for (const back of [[], ["_UCS", "_W"]]) {
+        const cad = answer(
+          createHarness(),
+          "_UCS",
+          "_X",
+          "90",
+          "_CIRCLE",
+          "0,0",
+          "50",
+          ...back,
+          "_OFFSET",
+          "10"
+        )
+        cad.click({ x: 10, y: 0, z: 0 })
+        expect(cad.commandLog().at(-1)).toBe(
+          "Cannot offset that object at current view direction."
+        )
+        expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
+      }
+    })
+
+    it("steps on in Multiple from the first piece of a polyline that fell apart", () => {
+      // Unverified: which piece AutoCAD steps from is unprobed.
+      const dumbbell = polylineOf(
+        [
+          p(0, 0),
+          p(90, 0),
+          p(90, 45),
+          p(110, 45),
+          p(110, 0),
+          p(200, 0),
+          p(200, 100),
+          p(110, 100),
+          p(110, 55),
+          p(90, 55),
+          p(90, 100),
+          p(0, 100),
+        ],
+        { id: "P1", closed: true }
+      )
+      const cad = answer(
+        createHarness({ entities: [dumbbell] }),
+        "_OFFSET",
+        "10",
+        "50,0",
+        "_M",
+        "50,50",
+        "50,50"
+      )
+      const copies = polylines(cad)
+      expect(copies).toHaveLength(3)
+      expect(copies[2].vertices).toBeCloseToPoints([
+        p(20, 20),
+        p(70, 20),
+        p(70, 55),
+        p(70, 80),
+        p(20, 80),
+      ])
     })
   })
 })

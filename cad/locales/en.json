@@ -1331,6 +1331,7 @@
       "objectOnLockedLayer": "The object is on a locked layer.",
       "invalidThroughPoint": "Invalid through point.",
       "cannotOffsetObject": "Cannot offset that object.",
+      "cannotOffsetAtViewDirection": "Cannot offset that object at current view direction.",
       "objectsFound": "{box, select, yes {Specify opposite corner: } other {}}{found} found{duplicate, plural, =0 {} other { (# duplicate)}}{removed, plural, =0 {} other {, # removed}}{hasTotal, select, yes {, {total} total} other {}}",
       "lassoMode": "{mode, select, window {Window} crossing {Crossing} other {Fence}} Lasso  Press Spacebar to cycle options",
       "onLockedLayer": "{count, plural, one {# was on a locked layer.} other {# were on a locked layer.}}",

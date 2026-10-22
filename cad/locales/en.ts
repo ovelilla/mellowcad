@@ -1723,6 +1723,7 @@ export const en: EngineCatalog = {
       "objectOnLockedLayer": "The object is on a locked layer.",
       "invalidThroughPoint": "Invalid through point.",
       "cannotOffsetObject": "Cannot offset that object.",
+      "cannotOffsetAtViewDirection": "Cannot offset that object at current view direction.",
       "objectsFound": [
         [
           "box",

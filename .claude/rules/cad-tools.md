@@ -285,7 +285,7 @@ returns `true`; `false` ends the command.
   UCS builds the patch with `ucsChange(settings, ucs, name)` (`UcsTool.ts`) as one
   `UpdateSettingsCommand`.
 - **A tool with flat geometry acts only on `readsInPlan` objects** (level in the frame, and lines):
-  TRIM / EXTEND, BREAK, OFFSET, JOIN, HATCH, ARRAYPATH's path, the dimensions and their picks.
+  TRIM / EXTEND, BREAK, JOIN, HATCH, ARRAYPATH's path, the dimensions and their picks.
   Filter at the pick. FILLET and CHAMFER of polylines work in the polyline's OCS instead.
 - **Everything typed is read in the UCS.** `parseCoordinate` requires `ucs` and `elevation`; `*`
   reads WCS numbers, and without a Z lies at the WCS's Z 0, ELEVATION left out. A typed number is
@@ -313,7 +313,8 @@ first)`, later points projected (`withZOf(point, first)`); SPLINE by limitation 
 - **An edit that needs coplanar objects refuses with AutoCAD's message** (`coplanar`,
   `linesNonCoplanar`). JOIN chains one plane; HATCH takes the plane of the first boundary it finds.
 - **THICKNESS is given by LINE, CIRCLE, ARC, PLINE and POLYGON only** (`withCurrentThickness`);
-  RECTANG has its own, TEXT none, a rebuilt object carries the source's.
+  RECTANG has its own, TEXT none, a rebuilt object carries the source's (not OFFSET's of a circle
+  or arc).
 - **A default AutoCAD aligns with the UCS is kept relative to it** (TEXT, MTEXT, ATTDEF, INSERT
   rotation via `ucsAngleToWorld`; HATCH's angle and origin; DIMLINEAR's axes; RECTANG's sides;
   ARRAYRECT's rows). A new orientation default starts at the UCS X axis.

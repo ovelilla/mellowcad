@@ -1,12 +1,9 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3, WORLD_Z, dot3, planar, withZ, zOf } from "../../geometry/Vec3"
+import { arbitraryAxis, worldToAxes } from "../../geometry/ocs"
 import {
-  circleCircleIntersection,
-  closestPointOnArc,
+  angleWithinSweep,
   closestPointOnInfiniteLine,
-  closestPointOnSegment,
-  infiniteLineIntersection,
-  lineCircleIntersectionParams,
-  normalizeAngle,
   offsetSegment,
 } from "../../geometry/primitives"
 import {
@@ -14,16 +11,23 @@ import {
   createCircle,
   createLine,
   carryOverrides,
+  carryPlane,
   createPolyline,
-  polylineSegmentGeometries,
-  polylineSegments,
-  readsInPlan,
+  entityElevation,
+  entityNormal,
+  withNormal,
+  withThickness,
   Entity,
-  PolylineEntity,
   PolylineWidth,
 } from "../../domain/entities"
 import {
-  AddEntityCommand,
+  offsetPolyline,
+  polylineThroughDistance,
+  type OffsetPolylineShape,
+} from "../../domain/polylineOffset"
+import {
+  AddEntitiesCommand,
+  RemoveEntitiesCommand,
   ReplaceEntitiesCommand,
 } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -33,6 +37,7 @@ import {
 } from "../input/coordinateInput"
 import type { MessageId } from "../EngineText"
 import { screenDistanceToEntity } from "../viewPick"
+import type { Viewport } from "../Viewport"
 import type { PromptId } from "../../locales/types"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
@@ -70,13 +75,14 @@ import { typedPick } from "./typedPick"
  * through point asked as soon as the distance is set. Both loop until Exit
  * (Enter) or Escape; Undo takes back the last copy and asks for the object.
  *
- * Lines offset to a parallel line; circles and arcs to a concentric one. Erase
- * and Layer are AutoCAD's own sub-prompts at the distance prompt, reported in
- * `Current settings:` when the command starts; Multiple belongs to the side
- * prompt and keeps stepping copies out from the same object. Nothing is
- * mutated directly: each copy is an {@link AddEntityCommand} (or a
- * {@link ReplaceEntitiesCommand} when Erase replaces the source), so every step
- * is individually undoable.
+ * Lines offset to a parallel line; circles and arcs to a concentric one;
+ * polylines as `offsetPolyline` makes them, perhaps several. Erase and Layer
+ * are AutoCAD's own sub-prompts at the distance prompt, reported in `Current
+ * settings:` when the command starts; Multiple belongs to the side prompt and
+ * keeps stepping copies out from the same object. Nothing is mutated
+ * directly: each point's copies are one {@link AddEntitiesCommand} (or a
+ * {@link ReplaceEntitiesCommand} when Erase replaces the source), so every
+ * step is individually undoable.
  */
 
 /** A resolved offset copy (no id/layer yet), used for preview and commit. */
@@ -121,23 +127,26 @@ type OffsetToolState =
   | {
       readonly phase: "side"
       readonly distance: number
-      /** The object being offset (evolves to the last copy in Multiple mode). */
+      /**
+       * The object being offset: in Multiple the last copy, the first piece
+       * of a polyline that fell apart (unprobed).
+       */
       readonly source: Entity
       /** The originally-picked object (the one Erase removes). */
       readonly original: Entity
-      /** Whether the original has already been erased (Erase, once). */
-      readonly erasedOriginal: boolean
+      /** Copies made in Multiple, whose original Erase removes on leaving it. */
+      readonly erasePending: boolean
       readonly multiple: boolean
-      readonly cursor: Vec2
+      readonly cursor: Vec3
     }
   /** Through mode: object chosen; awaiting the point the copy passes through. */
   | {
       readonly phase: "throughPoint"
       readonly source: Entity
-      /** Whether the source has already been erased (Erase, once). */
-      readonly erasedOriginal: boolean
+      /** Copies made in Multiple, whose source Erase removes on leaving it. */
+      readonly erasePending: boolean
       readonly multiple: boolean
-      readonly cursor: Vec2
+      readonly cursor: Vec3
     }
 
 export class OffsetTool implements Tool {
@@ -147,8 +156,11 @@ export class OffsetTool implements Tool {
   private state: OffsetToolState = { phase: "distance" }
   /** Last known screen position, used to place dynamic input on open. */
   private lastScreen: Vec2 | null = null
-  /** The copies made since the command started, for Undo to count. */
-  private copies = 0
+  /**
+   * Where the history stood before each copy step since the command started,
+   * for Undo to take back the last (with the erase that left its object).
+   */
+  private marks: number[] = []
   /**
    * The one object selected before the command, offset once the distance is
    * set (probes offset/p165, p251, p290).
@@ -178,7 +190,7 @@ export class OffsetTool implements Tool {
     this.preselected = this.preselectedSource(ctx)
     // Cleared at once, one object or several (probes offset/p165, p167).
     ctx.selection.clear()
-    this.copies = 0
+    this.marks = []
     // OFFSETGAPTYPE is always 0 here: corners are extended to meet.
     ctx.report(
       ctx.text.message("offsetSettings", {
@@ -192,7 +204,7 @@ export class OffsetTool implements Tool {
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "distance" }
-    this.copies = 0
+    this.marks = []
     this.preselected = null
     ctx.dynamicInput.close()
   }
@@ -387,7 +399,10 @@ export class OffsetTool implements Tool {
       return "continue"
     }
     if (phase === "select" || phase === "side" || phase === "throughPoint") {
-      if (id === "Exit") return "end"
+      if (id === "Exit") {
+        this.eraseLeftObject(this.state, ctx)
+        return "end"
+      }
       if (id === "Undo") {
         this.undoStep(ctx)
         return "continue"
@@ -455,25 +470,22 @@ export class OffsetTool implements Tool {
         case "polyline":
           return entityScenePrimitive(
             viewport,
-            createPolyline(
-              geom.vertices,
-              geom.closed,
-              "0",
-              geom.bulges,
-              OFFSET_PREVIEW_ID,
-              geom.widths
-            ),
+            offsetToEntity(geom, "0", OFFSET_PREVIEW_ID),
             stroke
           )
       }
     }
-    // Highlights an entity's outline, or nothing when it has no offset geometry
-    // (e.g. a polyline, whose offset is a later phase).
+    // Highlights an entity's outline, or nothing for one OFFSET refuses; one
+    // off the plan through its own plane.
     const highlight = (
       entity: Entity,
       color: string,
       width: number
     ): ScenePrimitive[] => {
+      if (offsetKind(entity) !== "offsets") return []
+      if (isOffPlan(entity, viewport)) {
+        return entityScenePrimitive(viewport, entity, { color, width })
+      }
       const geom = entityAsGeom(entity)
       return geom ? draw(geom, color, width) : []
     }
@@ -486,22 +498,28 @@ export class OffsetTool implements Tool {
         : []
     }
 
-    if (this.state.phase === "side") {
-      const { source, distance, cursor } = this.state
-      // Keep the chosen source emphasised while the side is picked, plus a live
-      // preview of the copy about to be created.
-      const prims = highlight(source, THEME.selected, 2)
-      const offset = computeOffset(source, distance, cursor)
-      if (offset) prims.push(...draw(offset, THEME.rubberBand, 1))
-      return prims
-    }
-
-    if (this.state.phase === "throughPoint") {
+    if (this.state.phase === "side" || this.state.phase === "throughPoint") {
       const { source, cursor } = this.state
+      // Keep the chosen source emphasised while the side is picked, plus a live
+      // preview of the copies about to be created.
       const prims = highlight(source, THEME.selected, 2)
-      const offset = computeThrough(source, cursor)
-      if (offset && offset.kind !== "refused") {
-        prims.push(...draw(offset, THEME.rubberBand, 1))
+      const offset = this.resolve(this.state, cursor, ctx)
+      if (!isRefusal(offset)) {
+        const offPlan = isOffPlan(source, viewport)
+        for (const geom of offset) {
+          prims.push(
+            ...(offPlan
+              ? entityScenePrimitive(
+                  viewport,
+                  carryPlane(
+                    source,
+                    offsetToEntity(geom, "0", OFFSET_PREVIEW_ID)
+                  ),
+                  { color: THEME.rubberBand, width: 1 }
+                )
+              : draw(geom, THEME.rubberBand, 1))
+          )
+        }
       }
       return prims
     }
@@ -567,7 +585,7 @@ export class OffsetTool implements Tool {
   }
 
   /** The side or through point, clicked or typed: one path for both. */
-  private placePoint(point: Vec2, ctx: ToolContext): void {
+  private placePoint(point: Vec3, ctx: ToolContext): void {
     if (this.state.phase === "side") this.placeOffset(this.state, point, ctx)
     else if (this.state.phase === "throughPoint") {
       this.placeThrough(this.state, point, ctx)
@@ -577,7 +595,7 @@ export class OffsetTool implements Tool {
   /**
    * The object picked, clicked or typed, which puts LASTPOINT there, hit or
    * miss (probes offset/p240, p241). An object on a locked layer is said
-   * and asked again (p250).
+   * and asked again (p250), and so is one OFFSET has no copy of (p201–p205).
    */
   private pickObject(input: PointerInput, ctx: ToolContext): void {
     if (this.state.phase !== "select") return
@@ -587,6 +605,15 @@ export class OffsetTool implements Tool {
       if (lockedObjectAt(input.screen, ctx)) {
         ctx.report(ctx.text.message("objectOnLockedLayer"), "error")
       }
+      return
+    }
+    if (offsetKind(hit) === "refused") {
+      ctx.report(ctx.text.message("cannotOffsetObject"), "error")
+      return
+    }
+    if (edgeOn(hit, ctx.viewport)) {
+      // probes offset/p207, p234: in the UCS or not, said at the pick.
+      ctx.report(ctx.text.message("cannotOffsetAtViewDirection"), "error")
       return
     }
     this.takeSource(hit, this.state.distance, input.point, ctx)
@@ -599,7 +626,7 @@ export class OffsetTool implements Tool {
   private takeSource(
     source: Entity,
     distance: number | null,
-    cursor: Vec2,
+    cursor: Vec3,
     ctx: ToolContext
   ): void {
     this.state =
@@ -607,7 +634,7 @@ export class OffsetTool implements Tool {
         ? {
             phase: "throughPoint",
             source,
-            erasedOriginal: false,
+            erasePending: false,
             multiple: false,
             cursor,
           }
@@ -616,7 +643,7 @@ export class OffsetTool implements Tool {
             distance,
             source,
             original: source,
-            erasedOriginal: false,
+            erasePending: false,
             multiple: false,
             cursor,
           }
@@ -632,7 +659,13 @@ export class OffsetTool implements Tool {
     const ids = ctx.selection.toArray()
     if (ids.length !== 1) return null
     const entity = ctx.document.get(ids[0])
-    if (!entity || !readsInPlan(entity) || !entityAsGeom(entity)) return null
+    if (
+      !entity ||
+      offsetKind(entity) !== "offsets" ||
+      edgeOn(entity, ctx.viewport)
+    ) {
+      return null
+    }
     return ctx.document.getLayer(entity.layerId)?.locked ? null : entity
   }
 
@@ -645,7 +678,7 @@ export class OffsetTool implements Tool {
     this.preselected = null
     if (source) {
       const cursor = this.lastScreen
-        ? ctx.viewport.screenToWorld(this.lastScreen)
+        ? withZ(ctx.viewport.screenToWorld(this.lastScreen), ctx.elevation)
         : ctx.lastPoint
       this.takeSource(source, distance, cursor, ctx)
       return
@@ -678,79 +711,94 @@ export class OffsetTool implements Tool {
     this.toFirstObject(null, ctx)
   }
 
-  /** Back to `Select object to offset`, in the mode the command is in. */
-  private selectNext(ctx: ToolContext): void {
+  /**
+   * Back to `Select object to offset`, in the mode the command is in, leaving
+   * the object (Erase's pending erase done) unless Undo took its copy back.
+   */
+  private selectNext(ctx: ToolContext, leaving = true): void {
+    const left = this.state
     const distance =
-      this.state.phase === "side" || this.state.phase === "select"
-        ? this.state.distance
-        : null
+      left.phase === "side" || left.phase === "select" ? left.distance : null
     this.state = { phase: "select", distance, hover: null }
     this.openKeywordPrompt(ctx)
+    if (leaving) this.eraseLeftObject(left, ctx)
   }
 
   /**
-   * Creates the parallel copy on the side `side`. In Multiple mode it keeps
+   * Erase with Multiple erases the object as it is left, its copies made: at
+   * `<next object>`, Exit or a refused point (probes offset/p216, p224 append
+   * the copies, then erase the source). Undo leaves it, and so does Escape
+   * (both unverified).
+   */
+  private eraseLeftObject(left: OffsetToolState, ctx: ToolContext): void {
+    if (left.phase !== "side" && left.phase !== "throughPoint") return
+    if (!left.erasePending) return
+    const original = left.phase === "side" ? left.original : left.source
+    ctx.execute(new RemoveEntitiesCommand([original.id]))
+  }
+
+  /**
+   * Creates the parallel copies on the side `side`. In Multiple mode it keeps
    * stepping out from the last copy (each further by the distance); otherwise it
-   * loops back to selecting the next object — AutoCAD's continuous OFFSET.
+   * loops back to selecting the next object — AutoCAD's continuous OFFSET. A
+   * side that leaves nothing is said, then the next object (probes
+   * offset/p174–p176).
    */
   private placeOffset(
     state: Extract<OffsetToolState, { phase: "side" }>,
-    side: Vec2,
+    side: Vec3,
     ctx: ToolContext
   ): void {
-    const offset = computeOffset(state.source, state.distance, side)
-    if (!offset) return // degenerate (e.g. the cursor is on the line); wait
-    const erasedOriginal = this.emitCopy(
-      state.original,
-      state.source,
-      offset,
-      state.erasedOriginal,
-      ctx
-    )
+    const offset = this.resolve(state, side, ctx)
+    if (isRefusal(offset)) {
+      ctx.report(ctx.text.message(offset.message), "error")
+      this.selectNext(ctx)
+      return
+    }
+    const copies = this.copiesOf(state.source, offset, ctx)
     if (state.multiple) {
       // Step out from the copy just made, keeping the command in this object.
-      const source = carryOverrides(
-        state.source,
-        offsetToEntity(offset, this.copyLayer(state.source, ctx))
-      )
-      this.state = { ...state, source, erasedOriginal, cursor: side }
+      this.state = {
+        ...state,
+        source: copies[0],
+        erasePending: this.erase,
+        cursor: side,
+      }
+      this.emit(state.original, copies, false, ctx)
       ctx.requestRender()
     } else {
       this.selectNext(ctx)
+      this.emit(state.original, copies, this.erase, ctx)
     }
   }
 
   /**
-   * Creates the copy passing through `point`. In Multiple mode it keeps making
-   * copies of the same source through further points; otherwise it loops back to
-   * selecting the next object — AutoCAD's continuous OFFSET Through.
+   * Creates the copies passing through `point`. In Multiple mode it keeps
+   * making copies of the same source through further points; otherwise it
+   * loops back to selecting the next object — AutoCAD's continuous OFFSET
+   * Through.
    */
   private placeThrough(
     state: Extract<OffsetToolState, { phase: "throughPoint" }>,
-    point: Vec2,
+    point: Vec3,
     ctx: ToolContext
   ): void {
-    const offset = computeThrough(state.source, point)
-    if (!offset) return
-    if (offset.kind === "refused") {
+    const offset = this.resolve(state, point, ctx)
+    if (isRefusal(offset)) {
       // Said, then the next object, Multiple or not (probes offset/p277,
       // p295, p296).
       ctx.report(ctx.text.message(offset.message), "error")
       this.selectNext(ctx)
       return
     }
-    const erasedOriginal = this.emitCopy(
-      state.source,
-      state.source,
-      offset,
-      state.erasedOriginal,
-      ctx
-    )
+    const copies = this.copiesOf(state.source, offset, ctx)
     if (state.multiple) {
-      this.state = { ...state, erasedOriginal, cursor: point }
+      this.state = { ...state, erasePending: this.erase, cursor: point }
+      this.emit(state.source, copies, false, ctx)
       ctx.requestRender()
     } else {
       this.selectNext(ctx)
+      this.emit(state.source, copies, this.erase, ctx)
     }
   }
 
@@ -760,13 +808,13 @@ export class OffsetTool implements Tool {
    * (probes offset/p125, p132, p138, p157, p158, p166).
    */
   private undoStep(ctx: ToolContext): void {
-    if (this.copies === 0) {
+    const mark = this.marks.pop()
+    this.selectNext(ctx, false)
+    if (mark === undefined) {
       ctx.report(ctx.text.message("commandCompletelyUndoneShort"))
     } else {
-      this.copies--
-      ctx.undo()
+      ctx.undoTo(mark)
     }
-    this.selectNext(ctx)
     ctx.requestRender()
   }
 
@@ -778,37 +826,61 @@ export class OffsetTool implements Tool {
   }
 
   /**
-   * The object a click would offset: OFFSET works in the UCS's XY plane, so
-   * one at an angle to it never highlights.
+   * The copies a side or through point makes, the one resolver of the preview
+   * and the commit: in the object's own plane, the point taken there along
+   * the view (probes offset/p235, p237, p239).
    */
+  private resolve(
+    state: Extract<OffsetToolState, { phase: "side" | "throughPoint" }>,
+    point: Vec3,
+    ctx: ToolContext
+  ): OffsetResult {
+    const { flat, into } = offsetPlane(state.source, ctx.viewport)
+    return state.phase === "side"
+      ? computeOffset(flat, state.distance, into(point))
+      : computeThrough(flat, into(point))
+  }
+
+  /** The object a click would offset or refuse; an ellipse or a spline is never taken. */
   private pickSource(input: PointerInput, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(input.world)
-    return hit && readsInPlan(hit) ? hit : null
+    return hit && offsetKind(hit) !== "notPicked" ? hit : null
+  }
+
+  /** The copies of `source` the geometry makes, wearing what it wears. */
+  private copiesOf(
+    source: Entity,
+    geoms: readonly OffsetGeom[],
+    ctx: ToolContext
+  ): Entity[] {
+    const layer = this.copyLayer(source, ctx)
+    return geoms.map((geom) => {
+      const copy = carryOverrides(source, offsetToEntity(geom, layer))
+      // WHY: AutoCAD's copy of a circle or an arc has no thickness, its
+      // elevation, colour, linetype and lineweight kept; a line's and a
+      // polyline's keep theirs (probes offset/p219, p232, p233; p218, p225).
+      return copy.type === "circle" || copy.type === "arc"
+        ? withThickness(copy, 0)
+        : copy
+    })
   }
 
   /**
-   * Executes the copy for `geom`. With Erase on and the original not yet gone,
-   * the copy *replaces* the original in one undoable step; otherwise it is added
-   * alongside. Returns whether the original has now been erased.
+   * One point's copies as one step, for Undo: with `erase`, replacing
+   * `original` (probe offset/p159).
    */
-  private emitCopy(
+  private emit(
     original: Entity,
-    source: Entity,
-    geom: OffsetGeom,
-    erasedOriginal: boolean,
+    copies: readonly Entity[],
+    erase: boolean,
     ctx: ToolContext
-  ): boolean {
-    const copy = carryOverrides(
-      source,
-      offsetToEntity(geom, this.copyLayer(source, ctx))
+  ): void {
+    this.marks.push(ctx.historyDepth())
+    ctx.execute(
+      erase
+        ? new ReplaceEntitiesCommand([original.id], copies)
+        : new AddEntitiesCommand(copies)
     )
-    this.copies++
-    if (this.erase && !erasedOriginal) {
-      ctx.execute(new ReplaceEntitiesCommand([original.id], [copy]))
-      return true
-    }
-    ctx.execute(new AddEntityCommand(copy))
-    return erasedOriginal
   }
 }
 
@@ -855,13 +927,8 @@ function entityAsGeom(entity: Entity): OffsetGeom | null {
     case "text":
     case "mtext":
     case "attdef":
-      return null // text has no parallel copy
     case "ellipse":
     case "spline":
-      // The parallel curve of an ellipse is not an ellipse — AutoCAD offsets
-      // one into a spline, and offsetting a spline is not built — so neither
-      // even highlights as a source.
-      return null
     case "dimension":
     case "hatch":
     case "insert":
@@ -870,20 +937,70 @@ function entityAsGeom(entity: Entity): OffsetGeom | null {
 }
 
 /**
+ * What OFFSET does with a picked object: offsets it; refuses it with `Cannot
+ * offset that object.` (TEXT, MTEXT, INSERT, DIMENSION, HATCH: probes
+ * offset/p201–p205); or never takes it. AutoCAD offsets an ellipse or a
+ * spline into a spline (p196–p198), which is not built: a refusal there would
+ * be false, so neither is even picked (OFFSET-D11).
+ */
+function offsetKind(entity: Entity): "offsets" | "refused" | "notPicked" {
+  switch (entity.type) {
+    case "line":
+    case "circle":
+    case "arc":
+    case "polyline":
+      return "offsets"
+    case "text":
+    case "mtext":
+    case "attdef":
+    case "dimension":
+    case "hatch":
+    case "insert":
+      return "refused"
+    case "ellipse":
+    case "spline":
+      return "notPicked"
+  }
+}
+
+/** A side or through point AutoCAD refuses, in its words. */
+interface Refusal {
+  readonly kind: "refused"
+  readonly message: MessageId
+}
+
+/** The copies a point makes, one or more (a polyline can fall apart), or its refusal. */
+type OffsetResult = readonly OffsetGeom[] | Refusal
+
+/** On the object: on a line, its extension or a circle's rim (21221). */
+const ON_OBJECT: Refusal = { kind: "refused", message: "invalidThroughPoint" }
+
+/** Nothing left at that distance, or no copy of that point (21222). */
+const CANNOT_OFFSET: Refusal = {
+  kind: "refused",
+  message: "cannotOffsetObject",
+}
+
+function isRefusal(result: OffsetResult): result is Refusal {
+  return "kind" in result
+}
+
+/**
  * The offset copy of `source` at `distance`, on the side of `side`. Lines get a
  * parallel segment; circles and arcs a concentric one whose radius grows when
- * the side is outside the original and shrinks when inside — `null` when the
- * result is degenerate (a line of zero length or a non-positive radius).
+ * the side is outside the original and shrinks when inside, refused when that
+ * takes it to its centre or past (probes offset/p174–p176); a polyline what
+ * {@link offsetPolyline} makes of it.
  */
 function computeOffset(
   source: Entity,
   distance: number,
   side: Vec2
-): OffsetGeom | null {
+): OffsetResult {
   switch (source.type) {
     case "line": {
       const o = offsetSegment(source.start, source.end, distance, side)
-      return o ? { kind: "line", a: o.a, b: o.b } : null
+      return o ? [{ kind: "line", a: o.a, b: o.b }] : CANNOT_OFFSET
     }
     case "circle": {
       const radius = concentricRadius(
@@ -892,7 +1009,9 @@ function computeOffset(
         distance,
         side
       )
-      return radius ? { kind: "circle", center: source.center, radius } : null
+      return radius
+        ? [{ kind: "circle", center: source.center, radius }]
+        : CANNOT_OFFSET
     }
     case "arc": {
       const radius = concentricRadius(
@@ -902,17 +1021,19 @@ function computeOffset(
         side
       )
       return radius
-        ? {
-            kind: "arc",
-            center: source.center,
-            radius,
-            startAngle: source.startAngle,
-            endAngle: source.endAngle,
-          }
-        : null
+        ? [
+            {
+              kind: "arc",
+              center: source.center,
+              radius,
+              startAngle: source.startAngle,
+              endAngle: source.endAngle,
+            },
+          ]
+        : CANNOT_OFFSET
     }
     case "polyline":
-      return offsetPolyline(source, distance, side)
+      return polylineCopies(offsetPolyline(source, distance, side))
     case "ellipse":
     case "spline":
     case "text":
@@ -921,34 +1042,26 @@ function computeOffset(
     case "dimension":
     case "hatch":
     case "insert":
-      return null
+      return CANNOT_OFFSET
   }
 }
 
-/** A through point AutoCAD refuses, in its words. */
-interface ThroughRefusal {
-  readonly kind: "refused"
-  readonly message: MessageId
-}
-
-/** On the object: on a line, its extension or a circle's rim (21221). */
-const ON_OBJECT: ThroughRefusal = {
-  kind: "refused",
-  message: "invalidThroughPoint",
+function polylineCopies(shapes: readonly OffsetPolylineShape[]): OffsetResult {
+  if (shapes.length === 0) return CANNOT_OFFSET
+  return shapes.map((shape) => ({ kind: "polyline", ...shape }))
 }
 
 /**
  * The offset copy of `source` passing through `point` — AutoCAD's Through. For
  * a line, the parallel line that contains the point (shifted by the point's
  * offset from its perpendicular foot); for a circle/arc, the concentric one
- * whose radius is the point's distance to the centre. Refused for a point on
- * the object, and at the centre, a radius of zero, `Cannot offset that
- * object.` (probes offset/p273, p277, p278, p295, p296).
+ * whose radius is the point's distance to the centre; for a polyline, the one
+ * at the point's distance from it, its open ends drawn on (probes offset/p211,
+ * p212). Refused for a point on the object; at the centre, a radius of zero,
+ * and outside an arc's span, `Cannot offset that object.` (probes
+ * offset/p209, p273, p277, p278, p295, p296).
  */
-function computeThrough(
-  source: Entity,
-  point: Vec2
-): OffsetGeom | ThroughRefusal | null {
+function computeThrough(source: Entity, point: Vec2): OffsetResult {
   switch (source.type) {
     case "line": {
       const foot = closestPointOnInfiniteLine(
@@ -958,50 +1071,48 @@ function computeThrough(
       ).point
       const delta = V.sub(point, foot)
       if (V.length(delta) < 1e-9) return ON_OBJECT
-      return {
-        kind: "line",
-        a: V.add(source.start, delta),
-        b: V.add(source.end, delta),
-      }
+      return [
+        {
+          kind: "line",
+          a: V.add(source.start, delta),
+          b: V.add(source.end, delta),
+        },
+      ]
     }
     case "circle":
     case "arc": {
       const radius = V.distance(source.center, point)
-      if (radius < 1e-9) {
-        return { kind: "refused", message: "cannotOffsetObject" }
+      if (radius < 1e-9) return CANNOT_OFFSET
+      if (
+        source.type === "arc" &&
+        !angleWithinSweep(
+          source.startAngle,
+          source.endAngle,
+          Math.atan2(point.y - source.center.y, point.x - source.center.x)
+        )
+      ) {
+        return CANNOT_OFFSET
       }
       if (Math.abs(radius - source.radius) < 1e-9 * source.radius) {
         return ON_OBJECT
       }
       return source.type === "circle"
-        ? { kind: "circle", center: source.center, radius }
-        : {
-            kind: "arc",
-            center: source.center,
-            radius,
-            startAngle: source.startAngle,
-            endAngle: source.endAngle,
-          }
+        ? [{ kind: "circle", center: source.center, radius }]
+        : [
+            {
+              kind: "arc",
+              center: source.center,
+              radius,
+              startAngle: source.startAngle,
+              endAngle: source.endAngle,
+            },
+          ]
     }
     case "polyline": {
-      // The offset distance is the point's perpendicular distance to the
-      // nearest segment; the point itself decides the side, so the parallel
-      // runs through it.
-      let best = Infinity
-      for (const seg of polylineSegmentGeometries(source)) {
-        const d =
-          seg.kind === "line"
-            ? closestPointOnSegment(seg.a, seg.b, point).distance
-            : closestPointOnArc(
-                seg.center,
-                seg.radius,
-                seg.startAngle,
-                seg.endAngle,
-                point
-              ).distance
-        if (d < best) best = d
-      }
-      return best > 1e-9 ? offsetPolyline(source, best, point) : ON_OBJECT
+      const distance = polylineThroughDistance(source, point)
+      return distance > 1e-9
+        ? polylineCopies(offsetPolyline(source, distance, point))
+        : ON_OBJECT
     }
     case "ellipse":
     case "spline":
@@ -1011,7 +1122,7 @@ function computeThrough(
     case "dimension":
     case "hatch":
     case "insert":
-      return null
+      return CANNOT_OFFSET
   }
 }
 
@@ -1028,19 +1139,24 @@ function concentricRadius(
   return next > 1e-9 ? next : null
 }
 
-function offsetToEntity(geom: OffsetGeom, layerId: string): Entity {
+function offsetToEntity(
+  geom: OffsetGeom,
+  layerId: string,
+  id?: string
+): Entity {
   switch (geom.kind) {
     case "line":
-      return createLine(geom.a, geom.b, layerId)
+      return createLine(geom.a, geom.b, layerId, id)
     case "circle":
-      return createCircle(geom.center, geom.radius, layerId)
+      return createCircle(geom.center, geom.radius, layerId, id)
     case "arc":
       return createArc(
         geom.center,
         geom.radius,
         geom.startAngle,
         geom.endAngle,
-        layerId
+        layerId,
+        id
       )
     case "polyline":
       return createPolyline(
@@ -1048,227 +1164,58 @@ function offsetToEntity(geom: OffsetGeom, layerId: string): Entity {
         geom.closed,
         layerId,
         geom.bulges,
-        undefined,
+        id,
         geom.widths
       )
   }
 }
 
-const OFFSET_PREVIEW_ID = "__offset_preview__"
+/** Whether `entity` lies off the plan: in a plane of its own the view does not look straight at. */
+function isOffPlan(entity: Entity, viewport: Viewport): boolean {
+  return entity.type !== "line" && (!viewport.isPlan || !!entity.normal)
+}
 
 /**
- * The parallel copy of a polyline at `distance`, on the side of the `side`
- * point. Straight segments shift by their perpendicular; arc (bulge) segments
- * become concentric arcs whose radius grows or shrinks depending on which way
- * the offset goes. Consecutive offset segments are re-joined at their
- * intersection so corners stay sharp (AutoCAD's default OFFSETGAPTYPE = extend);
- * line↔line joins are line intersections, and any join involving an arc is a
- * line↔circle or circle↔circle intersection. A single global side sign keeps the
- * offset consistently inside or outside the whole chain. Returns `null` for a
- * degenerate result (a zero-length segment or a non-positive arc radius).
+ * Whether the view looks along the plane of a circle, an arc or a polyline:
+ * no side of it can be pointed at.
  */
-function offsetPolyline(
-  poly: PolylineEntity,
-  distance: number,
-  side: Vec2
-): OffsetGeom | null {
-  const geoms = polylineSegmentGeometries(poly)
-  if (geoms.length === 0) return null
-
-  const sign = offsetSideSign(polylineSegments(poly), side)
-  const signedLeftOffset = sign * distance
-
-  const offsetSegs: (OffsetSeg | null)[] = geoms.map((g) => {
-    if (g.kind === "line") {
-      const s = shiftedSegment(g.a, g.b, signedLeftOffset)
-      return s ? { kind: "line", a: s.a, b: s.b } : null
-    }
-    // A concentric arc: shifting toward the centre shrinks the radius, away
-    // grows it. The centre is on the left of travel for a CCW arc (bulge > 0),
-    // on the right for CW, which sets the sign of the radius change.
-    const newRadius = g.radius - Math.sign(g.bulge) * signedLeftOffset
-    if (newRadius < 1e-9) return null
-    const radial = (p: Vec2): Vec2 =>
-      V.add(g.center, V.scale(V.sub(p, g.center), newRadius / g.radius))
-    return {
-      kind: "arc",
-      center: g.center,
-      radius: newRadius,
-      a: radial(g.a),
-      b: radial(g.b),
-      bulge: g.bulge,
-    }
-  })
-  if (offsetSegs.some((s) => s === null)) return null
-  const segs = offsetSegs as OffsetSeg[]
-  const m = segs.length
-
-  const vertices: Vec2[] = []
-  if (poly.closed) {
-    for (let j = 0; j < m; j++) {
-      vertices.push(joinOffsetSegments(segs[(j - 1 + m) % m], segs[j]))
-    }
-  } else {
-    vertices.push(segs[0].a)
-    for (let j = 1; j < m; j++) {
-      vertices.push(joinOffsetSegments(segs[j - 1], segs[j]))
-    }
-    vertices.push(segs[m - 1].b)
-  }
-
-  // Each arc segment's bulge is recomputed from its (corner-adjusted) endpoints
-  // so the retained curvature stays exact; straight segments contribute 0.
-  const bulges: number[] = []
-  for (let j = 0; j < m; j++) {
-    const seg = segs[j]
-    if (seg.kind === "line") {
-      bulges.push(0)
-      continue
-    }
-    const start = vertices[j]
-    const end = vertices[poly.closed ? (j + 1) % m : j + 1]
-    bulges.push(arcBulgeFromEndpoints(seg.center, start, end, seg.bulge))
-  }
-
-  // Each segment keeps its widths (acc/w9).
-  return {
-    kind: "polyline",
-    vertices,
-    closed: poly.closed,
-    bulges,
-    widths: poly.widths,
-  }
-}
-
-/** An offset segment before its corners are re-joined. */
-type OffsetSeg =
-  | { readonly kind: "line"; readonly a: Vec2; readonly b: Vec2 }
-  | {
-      readonly kind: "arc"
-      readonly center: Vec2
-      readonly radius: number
-      readonly a: Vec2
-      readonly b: Vec2
-      readonly bulge: number
-    }
-
-/** The corner joining two consecutive offset segments, picking (for curves) the
- * intersection nearest the naive corner between them. */
-function joinOffsetSegments(prev: OffsetSeg, cur: OffsetSeg): Vec2 {
-  const ref = V.scale(V.add(prev.b, cur.a), 0.5)
-  if (prev.kind === "line" && cur.kind === "line") {
-    const x = infiniteLineIntersection(prev.a, prev.b, cur.a, cur.b)
-    return x ? x.point : cur.a
-  }
-  if (prev.kind === "line" && cur.kind === "arc") {
-    return (
-      nearestPoint(
-        lineCirclePoints(prev.a, prev.b, cur.center, cur.radius),
-        ref
-      ) ?? cur.a
-    )
-  }
-  if (prev.kind === "arc" && cur.kind === "line") {
-    return (
-      nearestPoint(
-        lineCirclePoints(cur.a, cur.b, prev.center, prev.radius),
-        ref
-      ) ?? cur.a
-    )
-  }
-  if (prev.kind === "arc" && cur.kind === "arc") {
-    return (
-      nearestPoint(
-        circleCircleIntersection(
-          prev.center,
-          prev.radius,
-          cur.center,
-          cur.radius
-        ),
-        ref
-      ) ?? cur.a
-    )
-  }
-  return cur.a
-}
-
-/** Points where the infinite line through `a`/`b` meets a circle. */
-function lineCirclePoints(
-  a: Vec2,
-  b: Vec2,
-  center: Vec2,
-  radius: number
-): Vec2[] {
-  const dir = V.sub(b, a)
-  return lineCircleIntersectionParams(a, b, center, radius).map((t) =>
-    V.add(a, V.scale(dir, t))
+function edgeOn(entity: Entity, viewport: Viewport): boolean {
+  return (
+    offsetKind(entity) === "offsets" &&
+    entity.type !== "line" &&
+    Math.abs(dot3(entityNormal(entity), viewport.direction)) < 1e-9
   )
 }
 
-/** The point in `points` nearest `ref`, or `null` when there are none. */
-function nearestPoint(points: readonly Vec2[], ref: Vec2): Vec2 | null {
-  let best: Vec2 | null = null
-  let bestDist = Infinity
-  for (const p of points) {
-    const d = V.distance(p, ref)
-    if (d < bestDist) {
-      bestDist = d
-      best = p
-    }
-  }
-  return best
-}
-
-/** The bulge of a concentric arc between two endpoints on its circle, keeping
- * the original rotational direction (sign). */
-function arcBulgeFromEndpoints(
-  center: Vec2,
-  start: Vec2,
-  end: Vec2,
-  originalBulge: number
-): number {
-  const angStart = Math.atan2(start.y - center.y, start.x - center.x)
-  const angEnd = Math.atan2(end.y - center.y, end.x - center.x)
-  const included =
-    originalBulge >= 0
-      ? normalizeAngle(angEnd - angStart)
-      : normalizeAngle(angStart - angEnd)
-  const magnitude = Math.tan(included / 4)
-  return originalBulge >= 0 ? magnitude : -magnitude
-}
-
-type ShiftedSegment = { readonly a: Vec2; readonly b: Vec2; readonly dir: Vec2 }
-
-/** A segment moved by `offset` along its left normal, keeping its direction. */
-function shiftedSegment(
-  a: Vec2,
-  b: Vec2,
-  offset: number
-): ShiftedSegment | null {
-  const dir = V.sub(b, a)
-  const len = V.length(dir)
-  if (len < 1e-9) return null
-  const unit = V.scale(dir, 1 / len)
-  const normal = { x: -unit.y, y: unit.x } // left of the travel direction
-  const shift = V.scale(normal, offset)
-  return { a: V.add(a, shift), b: V.add(b, shift), dir: unit }
-}
-
 /**
- * +1 when the `side` point lies to the left of the segment nearest it, -1 to
- * the right — the global sign that sends the whole offset to that side.
+ * The plane an object is offset in: its own, where it lies level (`flat`,
+ * its stored points), and a side or through point taken there along the line
+ * of sight (`into`). AutoCAD offsets an object tilted to the UCS in its plane
+ * and keeps its normal (probes offset/p235, p239), and one seen in an
+ * isometric view too (p237); a copy built on `flat` goes back through
+ * `carryOverrides`, which puts it in the source's plane. A line is offset in
+ * the UCS's XY plane.
  */
-function offsetSideSign(segs: readonly [Vec2, Vec2][], side: Vec2): number {
-  let best = Infinity
-  let nearest = segs[0]
-  for (const seg of segs) {
-    const d = closestPointOnSegment(seg[0], seg[1], side).distance
-    if (d < best) {
-      best = d
-      nearest = seg
+function offsetPlane(
+  source: Entity,
+  viewport: Viewport
+): { flat: Entity; into: (point: Vec2 | Vec3) => Vec2 | Vec3 } {
+  if (!isOffPlan(source, viewport)) return { flat: source, into: (p) => p }
+  const normal = entityNormal(source)
+  const axes = arbitraryAxis(normal)
+  const elevation = entityElevation(source)
+  const direction = viewport.direction
+  const into = (point: Vec2 | Vec3): Vec2 => {
+    const p: Vec3 = { x: point.x, y: point.y, z: zOf(point) }
+    const t = (elevation - dot3(p, normal)) / dot3(direction, normal)
+    const onPlane: Vec3 = {
+      x: p.x + direction.x * t,
+      y: p.y + direction.y * t,
+      z: p.z + direction.z * t,
     }
+    return axes ? planar(worldToAxes(axes, onPlane)) : planar(onPlane)
   }
-  const dir = V.sub(nearest[1], nearest[0])
-  const left = { x: -dir.y, y: dir.x }
-  return V.dot(left, V.sub(side, nearest[0])) >= 0 ? 1 : -1
+  return { flat: withNormal(source, WORLD_Z), into }
 }
+
+const OFFSET_PREVIEW_ID = "__offset_preview__"
