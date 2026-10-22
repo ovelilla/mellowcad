@@ -7,7 +7,7 @@
 
 ## 1. Summary
 
-0 critical, 5 high, 22 medium and 22 low findings over six blocks.
+0 critical, 5 high, 24 medium and 23 low findings over six blocks.
 
 The worst: AutoCAD 2027 makes **one associative array object** by default (ARRAYASSOCIATIVITY 1:
 `Associative = Yes`, an INSERT of an anonymous block, the source consumed into it) where mellowcad
@@ -33,7 +33,7 @@ Spanish profile (d01–d10).
 | APA — ARRAYPATH's command line and path pick | 0 | 2 | 6 | 10 |
 | AYJ — the three commands' jig: Escape and the look | 0 | 1 | 1 | 1 |
 | AYO — the array object | 0 | 1 | 0 | 0 |
-| AYG — the array's grips, menus and palette | 0 | 0 | 1 | 0 |
+| AYG — the array's grips, menus and palette | 0 | 0 | 3 | 1 |
 
 ## 2. Inventory
 
@@ -92,6 +92,7 @@ locale), run with `scripts/research/probe.sh arrays <ids>`; p411b runs with
 | d07 | the Properties palette of each array (and the contextual Array ribbon tab) |
 | d08, d08b, d08c | Escape at the main prompt: Yes keeps the array, No keeps the copies (d08c's polar run is ambiguous, see §9) |
 | d09 | the right button at the main prompt; d10 the rollover at `Command:` over an item |
+| d11–d20 | AYG's en-US pass (`dsk-en.sh`, the English profile): d11 each array's grips; d12 every grip's hover menu; d13 the palette of each; d14, d14s, d15, d15x, d16 each grip's default drag, read with `LIST`; d17 a count typed while hot; d18c, d18d the main prompt's grip; d19 the rollover; d20 palette edits |
 
 ## 4. Matrix
 
@@ -167,7 +168,7 @@ Ce the centre, M, I Items, AB Angle between, F Fill angle, R ROTate items. **ARR
 | --- | --- |
 | H | one INSERT `*U2` of a block of item INSERTs of `*U1` (the source in its frame) · p400; the array on CLAYER and CECOLOR, items keep their own · p403; base point the source's extents centre (rect, polar) or the path's start · p403–p406; a pick on an item takes the array · p408 — differs AYO-01 |
 | F | U puts the source back, its handle kept · p409 — AYO-01 |
-| I | grips and menus (d01-1, d04, d05, d06), palette rows (d07), rollover tooltip (d10) — differs AYG-01 |
+| I | grips and drags (d04–d06, d11, d14–d17) — differs AYG-01; palette rows and edits (d07, d13, d20) — differs AYG-02; the main prompt's grips (d01-1, d18c, d18d) — differs AYG-03; hover menus (d12) — AYG-04; rollover tooltip (d10, d19) — holds (AYO) |
 | J | SAVEAS and reopen keeps the ARRAY · p411a, p411b; COPY makes a second array · p410 — AYO-01 |
 | O | EXPLODE gives each item's objects, on their layers (p402, p415, p418); END snaps inside it (p412); a path array follows its path (p407) and outlives it (p416); ARRAYEDIT (p419–p421) — AYO-01 |
 
@@ -401,23 +402,69 @@ Ce the centre, M, I Items, AB Angle between, F Fill angle, R ROTate items. **ARR
   `ghostLook.drawn(…, "plain")`, the source hidden (`hiddenEntityIds`) and drawn as item 1, no
   cross, no outline (ARRAYS-D5). **Test:** the scene's strokes at each prompt.
 
-#### AYG-01 — The array's grips, multifunctional menus and palette rows
+#### AYG-01 — A selected array has one insertion grip; AutoCAD gives it the array's grips and their drags
 
-- **Row:** I. **AutoCAD:** rectangular (d01-1, d04): base square (Move, Level count), column
-  spacing and row spacing arrows (no menu), column count (Column count, Total column spacing, Axis
-  angle), row count (Row count, Total row spacing, Axis angle), total square (Row and column count,
-  Total row and column spacing); a drag of the column count asks `** TOTAL DE COLUMNAS **`
-  `Especifique el número de columnas:` live (d01c); the same grips at the main prompt (the prompt's
-  name). Polar (d02-2, d05): base (Stretch radius, Row count, Level count, Item count, Fill angle),
-  centre, angle between; the ring of the base point drawn grey while selected. Path (d03-2, d06):
-  base (Move, Row count, Level count), spacing. Palette (d07): `Matriz (rectangular)` with
-  Geometry Base X/Y/Z and Misc Columns, Column spacing, Rows, Row spacing, Row elevation
-  increment, Levels, Level spacing, Axis angle; polar: Base, Centre X/Y/Z, Radius, Direction,
-  Items, Angle between items, Fill angle, Rows…, Rotate items; path: Base, Path length, Method,
-  Fill entire path, Items, Item spacing, Start offset, Rows…, Align items. Rollover tooltip
-  `Matriz (rectangular)` with Color, Layer, Linetype (d10). The contextual Array ribbon tab: n/a
-  (no ribbon). **Fix:** AYG's block after AYO (ARRAYS-D6); the English labels need an en-US pass or
-  `ax26res.dll` (§9).
+- **Severity:** medium · **Row:** I · **Status:** verified
+- **Where:** `selectToolGrips.ts` (`case "insert"`: one move grip), `selectToolEdits.ts`.
+- **AutoCAD:** grips (d04, d05, d06; en-US d11): rectangular — a base square at the base point,
+  arrows at the column-spacing item (base + spacing along the axis) and the row-spacing item
+  pointing along their axes, arrows at the last column and the last row, a square at the far
+  corner; polar — a square at the base point, a square at the centre, an arrow at item 2's base
+  point pointing round the ring, and the ring through the base point drawn grey; path — a square at
+  the path's start and an arrow at the spacing along the path, both on the path. Default drags (d14,
+  d14s, d15, d15x, d16, d17; `LIST` after each): the base square and the polar centre **move** the
+  array; a count arrow sets `floor(|d| / s) + 1` from the base, `d` the cursor's projection on the
+  axis (43 and 47 at 8 → 6, `13,6` → 6; behind the base, −10 → 2 columns at −8); the corner both
+  counts; a spacing arrow the projection itself (12.07, 12.556); the polar base the radius,
+  `|cursor − centre|`, the base staying on its ray (24.12); the angle arrow the angle between, the
+  fill becoming `(items − 1) × angle` (45 → 224 at 44.8°), refused past 360 (90° with 6 items: no
+  change); the path arrow the spacing along the path, the items the most that fit (10.08 → 8 of
+  14). A count typed while the grip is hot is the count (d17: 6). One step each, U echoing
+  `Grip Edit` (d14 history).
+- **mellowcad:** the block reference's single insertion grip, which moves it.
+- **Scenario:** an AutoCAD user selects a bolt pattern and pulls the last column's arrow to add
+  three columns: here there is nothing to pull.
+- **Fix:** ARRAYS-D70–D74. **Regression test:** `arrays.test.ts`, each drag citing its probe.
+
+#### AYG-02 — The palette shows a block reference's rows for an array
+
+- **Severity:** medium · **Row:** I · **Status:** verified
+- **Where:** `EngineState.ts` (`case "insert"`), `entityProperties.ts`.
+- **AutoCAD:** d13 (en-US), d07 (es-ES): no Block group (Name, Scale, Rotation); Geometry Base X,
+  Base Y, Base Z, polar `Center X`, `Center Y`, `Center Z`, `Radius`, path `Path length`; Misc
+  rectangular `Columns`, `Column spacing`, `Rows`, `Row spacing`, `Row elevation increment`,
+  `Levels`, `Level spacing`, `Included axis angle`; polar `Direction` (`Counter-clockwise`),
+  `Items`, `Angle between items`, `Fill angle`, Rows…, `Rotate items`; path `Method`,
+  `Fill entire path`, `Items`, `Item spacing`, `Start offset`, Rows…, `Align items`. Edits (d20,
+  U echoing `Modify Property`): Columns 5 → 5; Base X −40 moves the **base point only**, the items
+  stay; Items 8 → angle 45, fill 360; Angle between 30 → fill 150; Fill angle 180 → angle 36;
+  Radius 20 → base 23,45; Item spacing 10 → 9 items.
+- **mellowcad:** Block Name `*U1`, Scale, Rotation, Position X/Y/Z (AYO's commit message).
+- **Fix:** ARRAYS-D75, D76. **Regression test:** `arrays.test.ts` and the English surface.
+
+#### AYG-03 — The main prompt's preview has no grips to pick
+
+- **Severity:** medium · **Row:** I, M · **Status:** verified
+- **Where:** the three tools' main prompt (`selectGripToEditArrayOr`).
+- **AutoCAD:** d01-1, d18-1: the preview wears the same grips; d18c: a click on the column-count
+  arrow asks `** COLUMN COUNT **` `Specify number of columns:`, the preview follows the cursor
+  with the grips hidden, and a click there (32 at 6 → 6 columns) returns to the main prompt; the run
+  stays one step (U echoes `ARRAYRECT`). d18d: Enter at that prompt says
+  `Requires an integer between 1 an 32767, or option keyword.` (sic) and returns to the main prompt.
+- **mellowcad:** no grips; a click at the main prompt is refused.
+- **Fix:** ARRAYS-D77.
+
+#### AYG-04 — The grips' hover menus, Ctrl cycling and hover dimensions are not built
+
+- **Severity:** low · **Row:** I, Q · **Status:** verified
+- **AutoCAD:** d12 (en-US): rectangular base `Move`, `Level Count`; column count `Column Count`,
+  `Total Column Spacing`, `Axis Angle`; row count `Row Count`, `Total Row Spacing`, `Axis Angle`;
+  corner `Row and Column Count`, `Total Row and Column Spacing`; polar base `Stretch Radius`,
+  `Row Count`, `Level Count`, `Item Count`, `Fill Angle`; path base `Move`, `Row Count`,
+  `Level Count`; the spacing arrows, the polar centre and angle arrow: none. Hovered, a grip shows
+  its value (`Columns = 4`, `8`, `18`, `60°`); hot, its tooltip lists `Press Ctrl to cycle
+  between:` the menu's entries (d14a-1).
+- **Fix:** recorded in Missing (ARRAYS-D78): no object's hover menu is built (drafting-aids.md).
 
 ### Low
 
@@ -529,6 +576,39 @@ Ce the centre, M, I Items, AB Angle between, F Fill angle, R ROTate items. **ARR
 - **ARRAYS-D65** — polylines are built as paths; splines, ellipses, sloping and tilted paths
   Missing.
 - **ARRAYS-D66** — the path pick's rollover is `ghostLook.rollover`.
+- **ARRAYS-D70** — an array's grips are one pure module of `application/tools` (each kind's grips
+  from the reference and its parameters, and what a drag to a point makes of them), read by
+  SelectTool at `Command:` and by the three tools at their main prompt, so both places agree.
+- **ARRAYS-D71** — the grips' shapes: squares, and an arrow (a triangle along its direction) for
+  the spacing, count and angle grips, as d11 draws them; the polar ring grey while selected.
+- **ARRAYS-D72** — default drags only, as d14–d16 measured; the corner square sets both counts;
+  a count or angle the drag would make out of range (past 32767, a fill past 360) is refused and
+  the grip stays hot. A number typed while hot is the count, the spacing, the radius or the angle
+  (d17's count; the others by analogy, **unverified**).
+- **ARRAYS-D73** — the polar radius moves the source too: the ring keeps the source's own anchor
+  (an optional field, file version bumped) and the base point moves along its ray, item 1
+  included; the block itself is never edited, since a copied array shares it.
+- **ARRAYS-D74** — with one column (one row) the count arrow would sit on the base: it is left out
+  and the spacing arrow stays (**unverified**); a Divide path shows the base square only
+  (**unverified**: d06 was Measure).
+- **ARRAYS-D75** — the palette shows what the model holds: Base X/Y/Z read-only (the base point
+  moved alone is the Base point option, Missing), polar Center X/Y/Z read-only (**unverified**
+  edits) and Radius, path Path length read-only; Misc rows editable as d20 shows (Items keeps the
+  fill, Angle between sets `(items − 1) × angle`, Fill angle keeps the items, Item spacing sets the
+  most items that fit, Direction, Rotate items, Method, Align items as choices); `Included axis
+  angle` 90 read-only; rows of options not built (Levels, Level spacing, a polar or path array's
+  Rows, Row spacing, Row elevation increment, Start offset, Fill entire path) left out and listed in
+  Missing.
+- **ARRAYS-D76** — the Spanish labels d07 truncates (`Espacio entre colum…`, `Incremento de
+  eleva…`, `Incluye el ángulo de…`, `Ángulo entre eleme…`, `Espaciado entre ele…`, `Longitud de
+  trayect…`) are completed in Autodesk's style and marked **unverified**.
+- **ARRAYS-D77** — the main prompt's preview wears the grips; a click on one takes its drag as at
+  `Command:`, the preview following the cursor, and a second click returns to the main prompt; no
+  `** COLUMN COUNT **` lines (no grip writes its prompt here, drafting-aids.md Missing); Enter while
+  hot refuses with `requiresIntegerBetweenOrKeyword` (AutoCAD's `an` typo not copied: no letter
+  typed changes) and returns to the main prompt.
+- **ARRAYS-D78** — hover menus, Ctrl cycling and the hover values stay Missing, with every other
+  object's (drafting-aids.md), each array grip's entries listed in the coverage entry.
 - **ARRAYS-D68** — ARRAYPATH's tests move from `inquiry.test.ts` into a new arrays test file with the
   others, each value citing a 2027 probe.
 
@@ -615,9 +695,8 @@ questions, keyword ids), "What a new object wears" (copies are DERIVED: p164, p2
 4. **AYJ** (this session): AYJ-01, AYJ-02 (the source hidden as item 1 only once AYO makes it
    one; until then the source stays drawn, the copies plain), AYJ-03 recorded.
 5. **AYO** (a fresh session; no mouse): the object, skill `extend-model` — the largest block.
-6. **AYG** (a fresh session; the owner's mouse for an en-US desktop pass of the labels and the
-   grips' drags): the grips during the command and at `Command:`, the multifunctional menus, the
-   palette rows and their edits.
+6. **AYG** (its en-US desktop pass done in its own session, d11–d20; AYG-01 to AYG-04): the
+  grips module, SelectTool, the palette, then the main prompts (one subagent).
 
 Blocks 1–4 share the catalogs and snapshots: one after another.
 
