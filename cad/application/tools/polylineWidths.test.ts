@@ -616,7 +616,7 @@ describe("what the editing commands do with the widths", () => {
     ])
   })
 
-  it("TRIM cuts it there too (acc/w17)", () => {
+  it("TRIM cuts it there too (probe trim/p233)", () => {
     const cad = createHarness({
       entities: [tapered(), lineOf(p(50, -30), p(50, 30))],
     })
@@ -624,7 +624,7 @@ describe("what the editing commands do with the widths", () => {
     expect(widths(cad)).toEqual([[[0, 5]], [[2, 2]]])
   })
 
-  it("EXTEND keeps the widths of the segment it grows (acc/w18)", () => {
+  it("EXTEND keeps the widths of the segment it grows (probe trim/p234)", () => {
     const cad = createHarness({
       entities: [tapered(), lineOf(p(-30, -30), p(-30, 90))],
     })

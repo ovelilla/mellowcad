@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import type { Vec3 } from "../../geometry/Vec3"
+import { WORLD_Z, type Vec3 } from "../../geometry/Vec3"
 import {
   angleWithinSweep,
   circleCircleIntersection,
@@ -12,6 +12,7 @@ import {
 } from "../../geometry/primitives"
 import {
   ArcEntity,
+  BlockLookup,
   CircleEntity,
   EllipseEntity,
   Entity,
@@ -30,17 +31,29 @@ import {
   createPolyline,
   distanceToEntity,
   entitiesBounds,
+  entityAxes,
+  entityBounds,
+  entityElevation,
+  entityNormal,
   ellipseCut,
   ellipseParamAt,
   ellipseSweepParams,
   isFullEllipse,
   fractionAlongSegment,
+  hasThickness,
+  insertFlatGeometry,
+  mirrorEntity,
+  mtextCorners,
   nearestPolylineSegment,
   polylineParamAt,
   polylineSegmentGeometries,
   polylineSegments,
   polylineSpan,
   readsInPlan,
+  rotateEntity,
+  textCorners,
+  withElevation,
+  withNormal,
 } from "../../domain/entities"
 import { LayerId } from "../../domain/layers"
 import {
@@ -120,7 +133,9 @@ import {
  * The command loops until Escape/Enter, so successive clicks trim more pieces
  * or extend to further boundaries — exactly like AutoCAD. Lines, circles,
  * arcs, polylines, ellipses and splines all serve as edges/boundaries for
- * one another.
+ * one another, and so do what a block reference draws and a text's box
+ * (`edgeShapes`); an object whose normal is -Z is read in plan (`inPlan`),
+ * one standing upright on the plane refused (`standsUpright`).
  */
 
 type EdgeEditMode = "trim" | "extend"
@@ -940,7 +955,7 @@ export abstract class EdgeEditTool implements Tool {
       planExtendLine(
         hit,
         pointOnLine(hit, 1 - paramOnLine(hit, input.world)),
-        this.boundsFor(hit, this.drawing(ctx))
+        this.boundsFor(hit, this.drawing(ctx), ctx.blocks)
       ) !== null
     ctx.report(
       ctx.text.message(otherEnd ? "noEdgeInThatDirection" : message),
@@ -1102,6 +1117,7 @@ export abstract class EdgeEditTool implements Tool {
       return
     }
     let drawing = originals
+    const upright = (hit: Entity) => this.footprints(ctx, hit)
     const pieces = new Map<EntityId, readonly EntityId[]>()
     const left = new Set<EntityId>()
     const near = view.screenToWorldDistance(2)
@@ -1121,7 +1137,14 @@ export abstract class EdgeEditTool implements Tool {
         near
       )
       if (!target) continue
-      const plan = this.planOn(target, at, this.defaultMode, drawing)
+      const plan = this.planOn(
+        target,
+        at,
+        this.defaultMode,
+        drawing,
+        upright(target),
+        ctx.blocks
+      )
       if (!plan || plan.kind === "refuse") {
         const message =
           plan?.kind === "refuse"
@@ -1142,13 +1165,20 @@ export abstract class EdgeEditTool implements Tool {
       ])
     }
     const ids = [...pieces.keys()]
-    const kept = new Set([...pieces.values()].flat())
+    const sourceOf = new Map<EntityId, Entity | undefined>()
+    for (const [id, kept] of pieces) {
+      for (const piece of kept) sourceOf.set(piece, ctx.document.get(id))
+    }
     if (ids.length > 0) {
       this.pushStep(ctx)
       ctx.execute(
         new ReplaceEntitiesCommand(
           ids,
-          drawing.filter((entity) => kept.has(entity.id))
+          drawing.flatMap((entity) => {
+            if (!sourceOf.has(entity.id)) return []
+            const source = sourceOf.get(entity.id)
+            return [source ? asStored(source, entity) : entity]
+          })
         )
       )
     }
@@ -1161,13 +1191,30 @@ export abstract class EdgeEditTool implements Tool {
   }
 
   /**
-   * TRIM and EXTEND work in the UCS's XY plane: an object at an angle to it
-   * is neither cut nor a boundary (AutoCAD would project some; PROJMODE).
+   * TRIM and EXTEND work in the UCS's XY plane, each object as its plan
+   * reads it (`inPlan`): one at an angle to it is neither cut nor a boundary
+   * (AutoCAD would project some; PROJMODE), one standing upright on it only
+   * said (`footprints`).
    */
   private drawing(ctx: ToolContext): Entity[] {
+    return ctx.document.getEntities().flatMap((e) => {
+      const level = ctx.document.isEntityVisible(e) && inPlan(e)
+      return level ? [level] : []
+    })
+  }
+
+  /** Where the edges standing upright on the UCS's XY plane lie in plan. */
+  private footprints(ctx: ToolContext, hit: Entity): LineEntity[] {
     return ctx.document
       .getEntities()
-      .filter((e) => ctx.document.isEntityVisible(e) && readsInPlan(e))
+      .flatMap((e) =>
+        standsUpright(e) &&
+        e.id !== hit.id &&
+        this.isEdge(e.id) &&
+        ctx.document.isEntityVisible(e)
+          ? footprint(e)
+          : []
+      )
   }
 
   /** Whether an object on a locked layer lies under the pick box at `world`. */
@@ -1184,62 +1231,109 @@ export abstract class EdgeEditTool implements Tool {
       )
   }
 
+  /** The object picked at `input`, as its plan reads it. */
   private pickFor(input: PointerInput, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(input.world)
-    return hit && readsInPlan(hit) ? hit : null
+    return hit && inPlan(hit)
   }
 
   private planFor(input: PointerInput, ctx: ToolContext): EdgeEditPlan | null {
+    // WHY refused: the console says so, TRIM and EXTEND alike, and counts
+    // it for Undo (probes trim/p220, p411).
+    const picked = ctx.pick(input.world)
+    if (picked && standsUpright(picked)) {
+      return { kind: "refuse", message: "objectPerpendicularToUcs" }
+    }
     const hit = this.pickFor(input, ctx)
     if (!hit) return null
-    return this.planOn(hit, input.world, this.modeFor(input), this.drawing(ctx))
+    return this.planOn(
+      hit,
+      input.world,
+      this.modeFor(input),
+      this.drawing(ctx),
+      this.footprints(ctx, hit),
+      ctx.blocks
+    )
   }
 
-  /** The edit of `hit` picked at `click`, the edges of `drawing` edges. */
+  /**
+   * The edit of `hit` picked at `click`, the edges of `drawing` edges, those
+   * standing upright on the plane at `upright`.
+   */
   private planOn(
     hit: Entity,
     click: Vec2,
     mode: EdgeEditMode,
-    drawing: readonly Entity[]
+    drawing: readonly Entity[],
+    upright: readonly LineEntity[],
+    blocks: BlockLookup
   ): EdgeEditPlan | null {
-    const others = this.boundsFor(hit, drawing)
-    if (mode === "extend") return planExtend(hit, click, others)
-    const plan = planTrim(hit, click, others, this.isEdge(hit.id))
+    const others = this.boundsFor(hit, drawing, blocks)
+    const own = this.isEdge(hit.id)
+    // WHY: an edge standing upright on the plane bounds nothing; the console
+    // says so where it alone would, and leaves the object (probes trim/p221,
+    // p411).
+    const uprightOnly = (): EdgeEditPlan | null =>
+      upright.length > 0 &&
+      (mode === "extend"
+        ? planExtend(hit, click, upright, false)
+        : planTrim(hit, click, upright, false)) !== null
+        ? { kind: "refuse", message: "edgePerpendicularToUcs" }
+        : null
+    if (mode === "extend") {
+      return planExtend(hit, click, others, own) ?? uprightOnly()
+    }
+    const refusal = trimRefusal(hit)
+    if (refusal) return { kind: "refuse", message: refusal }
+    const plan = planTrim(hit, click, others, own)
     if (plan || !TRIMMED.has(hit.type)) return plan
     // "In Quick mode, selecting an object that doesn't cross a boundary
-    // deletes the object instead" — of those trimmed here; Standard says so
-    // (probes trim/p383, p388).
-    return this.mode.standard
-      ? { kind: "refuse", message: "doesNotIntersectCuttingEdge" }
-      : { kind: "erase", target: hit }
+    // deletes the object instead" — of those trimmed here, and a dimension,
+    // which nothing cuts (probe trim/p194); Standard says so (p239, p383,
+    // p388).
+    return (
+      uprightOnly() ??
+      (this.mode.standard
+        ? { kind: "refuse", message: "doesNotIntersectCuttingEdge" }
+        : { kind: "erase", target: hit })
+    )
   }
 
   /**
    * What cuts or bounds `hit`: the edges of `drawing`, run on under Edge's
-   * Extend.
+   * Extend, a text and a block reference by what they draw (`edgeShapes`).
    */
-  private boundsFor(hit: Entity, drawing: readonly Entity[]): Entity[] {
+  private boundsFor(
+    hit: Entity,
+    drawing: readonly Entity[],
+    blocks: BlockLookup
+  ): Entity[] {
     const edges = drawing.filter((e) => e.id !== hit.id && this.isEdge(e.id))
-    return this.mode.standard && this.mode.edgeExtend
-      ? edges.flatMap((edge) => prolonged(edge, reachOf(drawing)))
-      : edges
+    const run =
+      this.mode.standard && this.mode.edgeExtend
+        ? edges.flatMap((edge) => prolonged(edge, reachOf(drawing)))
+        : edges
+    return run.flatMap((edge) => edgeShapes(edge, blocks))
   }
 
   private commit(
     plan: Exclude<EdgeEditPlan, { kind: "refuse" }>,
     ctx: ToolContext
   ): void {
-    const target =
-      plan.kind === "erase" ? plan.target : ctx.document.get(plan.targetId)
-    if (!target) return
-    const pieces = this.piecesOf(plan, target)
-    this.keepEdges(pieces.id, pieces.added)
-    if (pieces.added.length === 0) {
-      ctx.execute(new RemoveEntitiesCommand([pieces.id]))
-    } else if (pieces.added.length === 1) {
-      ctx.execute(new UpdateEntityCommand(pieces.added[0]))
+    const source = ctx.document.get(
+      plan.kind === "erase" ? plan.target.id : plan.targetId
+    )
+    const target = source && inPlan(source)
+    if (!source || !target) return
+    const { id, added } = this.piecesOf(plan, target)
+    this.keepEdges(id, added)
+    const stored = added.map((piece) => asStored(source, piece))
+    if (stored.length === 0) {
+      ctx.execute(new RemoveEntitiesCommand([id]))
+    } else if (stored.length === 1) {
+      ctx.execute(new UpdateEntityCommand(stored[0]))
     } else {
-      ctx.execute(new ReplaceEntitiesCommand([pieces.id], pieces.added))
+      ctx.execute(new ReplaceEntitiesCommand([id], stored))
     }
   }
 
@@ -1252,7 +1346,7 @@ export abstract class EdgeEditTool implements Tool {
     const geoms = plan.kind === "extend" ? [plan.result] : plan.replacements
     // A mid-object cut splits it in two: the piece from its start, listed
     // first, is the object kept (its handle), the other a new one, which
-    // Last then finds — AutoCAD 2023's console (acc/hd1–hd7, hd20).
+    // Last then finds (probes trim/p170, p174, p178, p229–p231).
     return {
       id: target.id,
       added: geoms.map((g, i) =>
@@ -1273,9 +1367,9 @@ function snappedPick(input: PointerInput): PointerInput {
 /**
  * EDGEMODE's Extend: an edge as it would run on — a line both ways, an arc
  * and an elliptical arc round their whole curve, an open polyline on from
- * its ends along its end segments (AutoCAD 2023's console, acc/eg1, eg5,
- * eg7, eh2–eh5; an arc end segment round its circle, **unverified**) —,
- * `reach` past its ends.
+ * its ends along its end segments, an arc end segment round its circle
+ * (probes trim/p224–p226) —, `reach` past its ends. Its polyline is read
+ * through its segments where it is crossed (`segmentEntities`).
  */
 function prolonged(edge: Entity, reach: number): Entity[] {
   const ray = (from: Vec2, away: Vec2): Entity[] =>
@@ -1395,14 +1489,187 @@ function nearestOf(
   return nearest
 }
 
-/** What `planTrim` cuts, and so what Quick mode deletes when nothing cuts it. */
+/**
+ * What `planTrim` cuts, and so what Quick mode deletes when nothing cuts it;
+ * a dimension is cut by nothing, so always (probes trim/p194, p239).
+ */
 const TRIMMED: ReadonlySet<Entity["type"]> = new Set([
   "line",
   "circle",
   "arc",
   "polyline",
   "ellipse",
+  "dimension",
 ])
+
+/** Below this a normal's Z counts as none: its plane stands upright. */
+const UPRIGHT_TOLERANCE = 1e-9
+
+const DOWN: Vec3 = { x: 0, y: 0, z: -1 }
+
+/** The types an object whose normal is -Z is cut as, read in plan. */
+const TURNED: ReadonlySet<Entity["type"]> = new Set([
+  "circle",
+  "arc",
+  "polyline",
+  "ellipse",
+])
+
+/**
+ * The object as TRIM and EXTEND read it in plan, or `null` where they do not:
+ * one whose normal is -Z lies level, seen from below, and is cut and bounds
+ * as its plan reads it (probe trim/p175), as `turnedOver` gives it.
+ */
+function inPlan(entity: Entity): Entity | null {
+  if (readsInPlan(entity)) return entity
+  return isUpsideDown(entity) ? turnedOver(entity) : null
+}
+
+function isUpsideDown(entity: Entity): boolean {
+  const n = entity.normal
+  return (
+    !!n &&
+    TURNED.has(entity.type) &&
+    Math.abs(n.x) <= UPRIGHT_TOLERANCE &&
+    Math.abs(n.y) <= UPRIGHT_TOLERANCE &&
+    n.z < 0
+  )
+}
+
+/**
+ * An object of normal -Z as the +Z one over the same points, and back: its
+ * OCS's X is the WCS's -X, its Z the WCS's -Z, so its points mirror across
+ * the Y axis and its elevation and thickness change sign.
+ */
+function turnedOver(entity: Entity): Entity {
+  let turned = withElevation(
+    mirrorEntity(withNormal(entity, WORLD_Z), { x: 0, y: 0 }, { x: 0, y: 1 }),
+    -entityElevation(entity)
+  )
+  if (hasThickness(turned) && turned.thickness) {
+    turned = { ...turned, thickness: -turned.thickness }
+  }
+  return isUpsideDown(entity) ? turned : withNormal(turned, DOWN)
+}
+
+/** A piece made in plan of the drawing's `source`, as `source` keeps its points. */
+function asStored(source: Entity, piece: Entity): Entity {
+  return isUpsideDown(source) ? turnedOver(piece) : piece
+}
+
+/** Whether the object's plane stands upright on the XY plane. */
+function standsUpright(entity: Entity): boolean {
+  return (
+    entity.type !== "line" &&
+    !!entity.normal &&
+    Math.abs(entity.normal.z) <= UPRIGHT_TOLERANCE
+  )
+}
+
+/**
+ * Where an object standing upright on the XY plane lies in plan: a segment
+ * along its plane's level direction, as far as the object reaches along it.
+ */
+function footprint(entity: Entity): LineEntity[] {
+  const n = entityNormal(entity)
+  const level = V.normalize({ x: -n.y, y: n.x })
+  const axes = entityAxes(entity)
+  // The level direction in the object's own coordinates, along which its
+  // extent is read as a turned copy's bounds.
+  const along = Math.atan2(
+    axes.y.x * level.x + axes.y.y * level.y,
+    axes.x.x * level.x + axes.x.y * level.y
+  )
+  const { min, max } = entityBounds(
+    rotateEntity(withNormal(entity, WORLD_Z), { x: 0, y: 0 }, -along)
+  )
+  const base = V.scale({ x: n.x, y: n.y }, entityElevation(entity))
+  const a = V.add(base, V.scale(level, min.x))
+  const b = V.add(base, V.scale(level, max.x))
+  return V.distance(a, b) > 0
+    ? [createLine(a, b, entity.layerId, entity.id)]
+    : []
+}
+
+/**
+ * An edge as the closed forms read it: a polyline its segments (lines and
+ * arcs), a TEXT's and an MTEXT's box its four sides (the box this engine
+ * measures, not AutoCAD's glyph extents), a block reference the objects it
+ * draws, each an edge of its type (probes trim/p171–p173, p237, p238, p412).
+ * An attribute definition and a hatch are none (p203, p413).
+ */
+function edgeShapes(edge: Entity, blocks: BlockLookup): Entity[] {
+  const box = (corners: readonly Vec2[]): Entity[] =>
+    corners.map((corner, i) =>
+      createLine(
+        corner,
+        corners[(i + 1) % corners.length],
+        edge.layerId,
+        edge.id
+      )
+    )
+  switch (edge.type) {
+    case "polyline":
+      return segmentEntities(edge)
+    case "text":
+      return box(textCorners(edge))
+    case "mtext":
+      return box(mtextCorners(edge))
+    case "insert":
+      // Nested references come flattened, as deep as MAX_BLOCK_NESTING.
+      return insertFlatGeometry(edge, blocks).flatMap((placed) => {
+        const level = inPlan(placed)
+        return level ? edgeShapes(level, blocks) : []
+      })
+    case "attdef":
+    case "hatch":
+      return []
+    default:
+      return [edge]
+  }
+}
+
+/**
+ * A polyline's segments as lines and arcs, but the one at `skip`. WHY never
+ * `polylineSegments`' chords for an edge: an arc segment cuts and bounds
+ * where it runs (probes trim/p171–p173).
+ */
+function segmentEntities(poly: PolylineEntity, skip = -1): Entity[] {
+  return polylineSegmentGeometries(poly).flatMap((g, j): Entity[] => {
+    if (j === skip) return []
+    return g.kind === "line"
+      ? [createLine(g.a, g.b, poly.layerId, poly.id)]
+      : [
+          createArc(
+            g.center,
+            g.radius,
+            g.startAngle,
+            g.endAngle,
+            poly.layerId,
+            poly.id
+          ),
+        ]
+  })
+}
+
+/**
+ * What TRIM refuses outright, its words one table's in Spanish per type:
+ * a TEXT, an attribute definition and a block reference 21680's, an MTEXT and
+ * a hatch 53's (probes trim/p190, p192, p198, p202).
+ */
+function trimRefusal(target: Entity): MessageId | null {
+  switch (target.type) {
+    case "text":
+    case "attdef":
+    case "insert":
+      return "cannotTrimObject"
+    case "mtext":
+    case "hatch":
+      return "cannotTrimThisObject"
+    default:
+      return null
+  }
+}
 
 const PARAM_EPS = 1e-6
 const ANGLE_EPS = 1e-6
@@ -1465,7 +1732,6 @@ function planTrim(
     case "text":
     case "mtext":
     case "attdef":
-      return null // annotation, not an outline to cut
     case "dimension":
     case "hatch":
     case "insert":
@@ -1476,35 +1742,38 @@ function planTrim(
 /**
  * Why EXTEND leaves `target` as it is, in the console's words: a line or an
  * arc `Path does not intersect with the bounding edge.`, an open polyline's
- * end `Object does not intersect an edge.`, a closed polyline and a circle
- * `Cannot EXTEND this object.`, a dimension the path's; an elliptical arc as
- * an open polyline's end, a whole ellipse and a closed spline as a closed
- * polyline. `null` where the console extends what is not built here (an
- * open spline) or was not asked.
+ * end `Object does not intersect an edge.`, the rest `Cannot EXTEND this
+ * object.`, a dimension the path's; an elliptical arc as an open polyline's
+ * end. Spanish words the last by two tables: a circle, a TEXT, an attribute
+ * definition and a block reference 20623's, a closed polyline, a whole
+ * ellipse, a closed spline, an MTEXT and a hatch 54's (probes trim/p191,
+ * p193, p195, p199, p204–p211, p410). `null` where the console extends what
+ * is not built here (an open spline).
  */
 function extendRefusal(target: Entity): MessageId | null {
   switch (target.type) {
     case "line":
     case "arc":
-      return "pathDoesNotIntersectBoundingEdge"
-    case "polyline":
-      return target.closed ? "cannotExtendObject" : "objectDoesNotIntersectEdge"
-    case "circle":
-      return "cannotExtendObject"
-    case "ellipse":
-      return isFullEllipse(target)
-        ? "cannotExtendObject"
-        : "objectDoesNotIntersectEdge"
-    case "spline":
-      return target.closed ? "cannotExtendObject" : null
     case "dimension":
       return "pathDoesNotIntersectBoundingEdge"
+    case "polyline":
+      return target.closed
+        ? "cannotExtendThisObject"
+        : "objectDoesNotIntersectEdge"
+    case "ellipse":
+      return isFullEllipse(target)
+        ? "cannotExtendThisObject"
+        : "objectDoesNotIntersectEdge"
+    case "spline":
+      return target.closed ? "cannotExtendThisObject" : null
+    case "circle":
     case "text":
-    case "mtext":
     case "attdef":
-    case "hatch":
     case "insert":
-      return null
+      return "cannotExtendObject"
+    case "mtext":
+    case "hatch":
+      return "cannotExtendThisObject"
     default: {
       const unhandled: never = target
       return unhandled
@@ -1512,10 +1781,12 @@ function extendRefusal(target: Entity): MessageId | null {
   }
 }
 
+/** `own`: whether `target` is an edge, which bounds a polyline's own end. */
 function planExtend(
   target: Entity,
   click: Vec2,
-  others: readonly Entity[]
+  others: readonly Entity[],
+  own: boolean
 ): EdgeEditPlan | null {
   switch (target.type) {
     case "line":
@@ -1525,7 +1796,7 @@ function planExtend(
     case "circle":
       return null // a closed circle has no endpoint to extend
     case "polyline":
-      return planExtendPolyline(target, click, others)
+      return planExtendPolyline(target, click, others, own)
     case "ellipse":
       return planExtendEllipse(target, click, others)
     case "spline":
@@ -1596,18 +1867,7 @@ function trimCrossParams(
         if (t > PARAM_EPS && t < 1 - PARAM_EPS) out.push(t)
       }
     } else if (o.type === "polyline") {
-      for (const [a, b] of polylineSegments(o)) {
-        const x = infiniteLineIntersection(line.start, line.end, a, b)
-        if (
-          x &&
-          x.t > PARAM_EPS &&
-          x.t < 1 - PARAM_EPS &&
-          x.u >= -PARAM_EPS &&
-          x.u <= 1 + PARAM_EPS
-        ) {
-          out.push(x.t)
-        }
-      }
+      out.push(...trimCrossParams(line, segmentEntities(o)))
     } else if (o.type === "ellipse" || o.type === "spline") {
       for (const t of lineCurveParams(line, o)) {
         if (t > PARAM_EPS && t < 1 - PARAM_EPS) out.push(t)
@@ -1666,10 +1926,7 @@ function extendCrossParams(
         if (angleWithinSweep(o.startAngle, o.endAngle, angle)) out.push(t)
       }
     } else if (o.type === "polyline") {
-      for (const [a, b] of polylineSegments(o)) {
-        const x = infiniteLineIntersection(line.start, line.end, a, b)
-        if (x && x.u >= -PARAM_EPS && x.u <= 1 + PARAM_EPS) out.push(x.t)
-      }
+      out.push(...extendCrossParams(line, segmentEntities(o)))
     } else if (o.type === "ellipse" || o.type === "spline") {
       out.push(...lineCurveParams(line, o))
     }
@@ -1795,13 +2052,10 @@ function circleEdgeCrossPoints(
           Math.atan2(p.y - o.center.y, p.x - o.center.x)
         )
       )
-    case "polyline": {
-      const points: Vec2[] = []
-      for (const [a, b] of polylineSegments(o)) {
-        points.push(...segmentCircleIntersection(a, b, center, radius))
-      }
-      return points
-    }
+    case "polyline":
+      return segmentEntities(o).flatMap((segment) =>
+        circleEdgeCrossPoints(center, radius, segment)
+      )
     case "ellipse":
     case "spline":
       return curveCrossings(o, (p) => V.distance(p, center) - radius)
@@ -1844,7 +2098,7 @@ function planTrimCircle(
 ): EdgeEditPlan | null {
   const angles = circleCrossAngles(circle.center, circle.radius, others)
   if (angles.length === 0) return null
-  // AutoCAD 2023's console (acc/o1): cut once, a circle is left as it is.
+  // Cut once, a circle is left as it is (probe trim/p176).
   if (angles.length === 1) {
     return { kind: "refuse", message: "circleMustIntersectTwice" }
   }
@@ -2055,7 +2309,7 @@ function ellipsePiece(
  * Trims an ellipse as a circle (two crossings bound the removed piece, the
  * rest is left as an elliptical arc) and an elliptical arc as an arc, in the
  * ellipse's parameter. Cut once, a whole ellipse is refused, as AutoCAD 2023's
- * console refuses it (acc/o4).
+ * console refuses it (acc/o4), not probed again.
  */
 function planTrimEllipse(
   ellipse: EllipseEntity,
@@ -2118,8 +2372,8 @@ function planTrimEllipse(
 /**
  * Extends an elliptical arc round its ellipse to the nearest edge past the
  * end that grows: the one the pick lies nearer in the ellipse's parameter, as
- * AutoCAD 2023's console decides it (acc/m1–m4) — not along the curve, nor in
- * a straight line.
+ * AutoCAD's console decides it (probe trim/p213) — not along the curve, nor
+ * in a straight line.
  */
 function planExtendEllipse(
   ellipse: EllipseEntity,
@@ -2160,10 +2414,10 @@ function planExtendEllipse(
 // --- Spline target ----------------------------------------------------------
 
 /**
- * A spline is only deleted or refused here: trimmed, AutoCAD 2023's console
- * leaves its piece on control points and knots of its own (acc/t2, p12),
- * which a spline here — fit points or control vertices on uniform knots —
- * cannot hold, so a spline an edge cuts stays as it is.
+ * A spline is only deleted or refused here: trimmed, AutoCAD's console
+ * leaves its piece on control points and knots of its own (probes trim/p187,
+ * p188), which a spline here — fit points or control vertices on uniform
+ * knots — cannot hold, so a spline an edge cuts stays as it is.
  */
 function planTrimSpline(
   spline: SplineEntity,
@@ -2178,7 +2432,8 @@ function planTrimSpline(
   }
   const crossings = dedupeSorted(params).length
   if (crossings === 0) return { kind: "erase", target: spline }
-  // acc/o3: cut once, a closed one is refused as a whole ellipse is.
+  // Cut once, a closed one is refused as a whole ellipse is: AutoCAD 2023's
+  // console (acc/o3), not probed again.
   if (spline.closed && crossings === 1) {
     return { kind: "refuse", message: "curveMustIntersectTwice" }
   }
@@ -2190,27 +2445,13 @@ function planTrimSpline(
 /** Index of the polyline segment nearest the click (matches `polylineSegmentGeometries`). */
 /**
  * The polyline's other segments, which cut the picked one as any edge does:
- * Quick mode makes every object an edge, the polyline too, so AutoCAD 2023's
+ * Quick mode makes every object an edge, the polyline too, so AutoCAD's
  * console trims a segment back to its own vertices and to where the polyline
- * crosses itself (acc/tp1, tq1, tq5, tr4), and deletes only a polyline of one
- * segment nothing crosses (tr1).
+ * crosses itself (probes trim/p177, p180, p183), and deletes only a polyline
+ * of one segment nothing crosses.
  */
 function ownEdges(poly: PolylineEntity, si: number): Entity[] {
-  return polylineSegmentGeometries(poly).flatMap((g, j): Entity[] => {
-    if (j === si) return []
-    return g.kind === "line"
-      ? [createLine(g.a, g.b, poly.layerId, poly.id)]
-      : [
-          createArc(
-            g.center,
-            g.radius,
-            g.startAngle,
-            g.endAngle,
-            poly.layerId,
-            poly.id
-          ),
-        ]
-  })
+  return segmentEntities(poly, si)
 }
 
 /**
@@ -2356,8 +2597,8 @@ function planTrimPolylineArc(
 /**
  * A polyline that is no edge, its own vertices none: its pick is trimmed
  * along it, past its vertices, back to the nearest edges' crossings round a
- * closed one (AutoCAD 2023's console, acc/sn5, sn11); cut once, a closed
- * one is refused as a closed spline is (**unverified**).
+ * closed one (AutoCAD 2023's console, acc/sn5, sn11, not probed again); cut
+ * once, a closed one is refused as a closed spline is (probe trim/p184).
  */
 function planTrimPolylinePath(
   poly: PolylineEntity,
@@ -2422,14 +2663,17 @@ function trimPolylinePieces(
  * own direction/sweep until it meets the nearest boundary, moving the chain's
  * endpoint vertex (arc segments are handled by {@link planExtendPolylineArc}).
  * The end is the one the pick lies nearer in the polyline's parameter — its
- * segment's index plus how far along it —, as AutoCAD 2023's console grows
- * it from any segment: from the first half of the segments the start, so an
- * end segment's own end. Closed polylines have no free end.
+ * segment's index plus how far along it —, as AutoCAD's console grows it
+ * from any segment: from the first half of the segments the start, so an end
+ * segment's own end (probes trim/p212, p232). Closed polylines have no free
+ * end. One that is an edge bounds its own end with its other segments, but
+ * the one growing and its neighbour there (`own`, p236).
  */
 function planExtendPolyline(
   poly: PolylineEntity,
   click: Vec2,
-  others: readonly Entity[]
+  edges: readonly Entity[],
+  own: boolean
 ): EdgeEditPlan | null {
   if (poly.closed) return null
   const v = poly.vertices
@@ -2438,6 +2682,13 @@ function planExtendPolyline(
   const si = nearestPolylineSegment(poly, click)
   const growStart = si + fractionAlongSegment(segments[si], click) < (n - 1) / 2
   const end = growStart ? 0 : n - 2
+  const neighbour = growStart ? 1 : n - 3
+  const others = own
+    ? [
+        ...edges,
+        ...segmentEntities(poly).filter((_, j) => j !== end && j !== neighbour),
+      ]
+    : edges
   const geom = segments[end]
   if (geom.kind === "arc") {
     return planExtendPolylineArc(poly, end, geom, others, growStart)
@@ -2565,7 +2816,7 @@ function extendedPolyline(
     bulges[bulgeOverride.index] = bulgeOverride.value
   }
   // The segment grown keeps its widths, tapering over its new length
-  // (acc/w18).
+  // (probe trim/p234).
   return {
     kind: "polyline",
     vertices,

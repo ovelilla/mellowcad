@@ -294,7 +294,7 @@ chosen; cuTting edges (`T`, es `CO`; EXTEND's Boundary edges `B`) says the setti
 only edges — whatever mode follows, and an edge's pieces with it —, Quick still deleting what none
 crosses; a polyline is cut at its own vertices only when it is an edge itself, and otherwise trimmed
 along it, past them, back to the nearest crossings (a closed one cut once refused as
-`Curve must intersect cutting edges at least twice.`, **unverified**); Edge (`E`, es `A`, Standard's
+`Curve must intersect cutting edges at least twice.`, p184); Edge (`E`, es `A`, Standard's
 alone — Quick refuses it) asks
 `Enter an implied edge extension mode [Extend/No extend] <No extend>:` (es
 `Indique modo de alargamiento de arista implícito [Alargar/No alargar] <No alargar>:`, No extend
@@ -302,7 +302,7 @@ declared `Noextend`, es `No`), the mode in force its default, Enter keeping it; 
 (EDGEMODE 1, shared and lasting the session as the trim mode does) an edge cuts, and bounds an
 extension, where it would run on — a line both ways, an arc and an elliptical arc round their whole
 curve, an open polyline from its ends along its end segments (an arc end segment round its circle,
-**unverified**) —, never in Quick mode; a choice is
+p224) —, never in Quick mode; a choice is
 an Undo step joined to the edit after it, and a U right after it takes it back with the edit before
 it, as the console does; a point typed picks there, as the console takes it (`@` from LASTPOINT, a
 polar point, `*x,y` in the WCS, a number a direct distance from it towards the cursor, which it then
@@ -348,7 +348,15 @@ mOde, Undo once listed — of those built
 `Requiere un punto o Borde/aristas de COrte/Captura/MOdo/bOrrar`; EXTEND's
 `Expects a point or Fence/Boundary edges/Crossing/mOde`), at Crossing's first corner every word
 declared but Undo; Quick mode over line/circle/arc/polyline (straight and arc segments)/ellipse
-(whole or an arc of one), each an edge for the others and so is a spline, Shift to swap mode (Shift's
+(whole or an arc of one), each an edge for the others — a polyline's arc segment where it runs, not
+at its chord (p171–p173) — and so is a spline, a block reference's objects, each an edge of its
+type (p237), and a TEXT's or an MTEXT's box (this engine's measure of it, not AutoCAD's glyph
+extents: p238, p412), an attribute definition and a hatch none (p203, p413); TRIM refuses a TEXT,
+an attribute definition and a block reference with `Cannot TRIM this object.` (es
+`Objeto no procesado por RECORTA.`), an MTEXT and a hatch with the same (es
+`Este objeto no se puede RECORTAR.`), counted for Undo (p190, p192, p198, p202); a dimension is cut
+by nothing, so Quick deletes it and Standard says `Does not intersect with the cutting edge.`
+(p194, p239); Shift to swap mode (Shift's
 trim inside EXTEND deletes what no edge crosses, as TRIM's Quick does: desktop d02); a
 spline no edge crosses is deleted too, a closed one cut once refused as a whole ellipse is, and a
 closed one EXTEND refuses as a closed polyline; an elliptical arc grows round its ellipse from the
@@ -359,11 +367,12 @@ as it is, `Curve must intersect cutting edges at least twice.` (es
 open polyline picked at any segment grows the end its pick lies nearer in the polyline's parameter
 (the segment's index and how far along it: from the first half of the segments the start, so an end
 segment's own end), straight or round an arc, and only that end
-(`Object does not intersect an edge.` where it reaches none, though the other would); a polyline is
+(`Object does not intersect an edge.` where it reaches none, though the other would), its own other
+segments bounding it but the one growing and its neighbour there (p236); a polyline is
 an edge of its own, so its picked segment is trimmed back to the segment's vertices and the
 crossings on it, where it crosses itself too, whatever else crosses the polyline or nothing at all —
 an open one shortened or split in two, a closed one opened from the cut's far end round to its near
-one, keeping its direction and its handle, as AutoCAD 2023's console does; an object cut in two is
+one, keeping its direction and its handle (p177, p180, p183); an object cut in two is
 kept as the piece from its start — its handle, its place in the drawing — and the other piece is a
 new object, which Last finds, U putting the object back whole (the console's LIST, line, arc,
 polyline and elliptical arc alike); a trim of an object no edge crosses deletes it ("In Quick mode,
@@ -375,10 +384,17 @@ reaches no edge says why, as the console does — a line whose other end would r
 `Path does not intersect with the bounding edge.` (es
 `La trayectoria no se interseca con la arista de contorno.`), an open polyline's end
 `Object does not intersect an edge.` (es `El objeto no se interseca con ninguna arista.`), an
-elliptical arc too, a closed polyline, a whole ellipse or a circle `Cannot EXTEND this object.` (es
-`Objeto no procesado por ALARGA.`), a dimension the path's; worked out in the UCS's XY plane
-(PROJMODE 1), a line's new end at the Z along its own slope; an object at an angle to that plane is
-neither an edge nor trimmed (it does not highlight). English wording from AutoCAD 2027's console
+elliptical arc too, a closed polyline, a whole ellipse, a closed spline, an MTEXT or a hatch
+`Cannot EXTEND this object.` (es `Este objeto no se puede ALARGAR.`), a circle, a TEXT, an
+attribute definition or a block reference the same (es `Objeto no procesado por ALARGA.`: p191,
+p193, p199, p207–p211, p410), a dimension the path's; worked out in the UCS's XY plane
+(PROJMODE 1), a line's new end at the Z along its own slope; an object whose normal is −Z lies
+level, trimmed and an edge in its own plane (p175); one standing upright on the plane, picked, is
+`Object is perpendicular to UCS XY plane.` (es `El objeto es perpendicular al plano XY del SCP.`),
+and what only such an edge crosses or bounds is left, `Edge is perpendicular to UCS XY plane.` (es
+`La arista es perpendicular al plano XY del SCP.`), both counted for Undo, TRIM and EXTEND alike
+(p220, p221, p411); an object at another angle is neither an edge nor trimmed (it does not
+highlight). English wording from AutoCAD 2027's console
 (probes trim/p100–p389) and the 2026 help
 
 **Missing:** Project — AutoCAD's `Enter a projection option [None/Ucs/View] <Ucs>:` (es
@@ -390,7 +406,9 @@ plane, which is Ucs, so `P` is refused as an option not built —, the fence dra
 (`pick/drag cursor`), Shift held for a fence or a window (the console has no Shift: **unverified**),
 PROJMODE, EDGEMODE and TRIMEXTENDMODE as variables (and across sessions, as AutoCAD keeps them in
 the registry), a spline as an edge running on, projecting objects at an angle to the UCS onto its XY
-plane; a spline an edge cuts or an open one EXTEND picks (the console leaves the piece on control
+plane (so Quick deletes what only an object at an angle crosses, where the console cuts it at the
+projection: p221); a pick inside a hatch, which the console takes for none and starts a fence at
+(p196, p197), here the hatch, refused; a spline an edge cuts or an open one EXTEND picks (the console leaves the piece on control
 points and knots of its own — a trimmed one loses its fit points, a fit spline grows by a straight
 piece along its end tangent behind a triple knot, a CV spline by a curved one —, which a spline
 here, fit points or control vertices on uniform knots, cannot hold; so neither an open spline's

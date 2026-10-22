@@ -8,6 +8,12 @@ import {
   createText,
   ellipseEndPoint,
   ellipseStartPoint,
+  lineEndZ,
+  lineStartZ,
+  mtextCorners,
+  textCorners,
+  withElevation,
+  withNormal,
   type ArcEntity,
   type CircleEntity,
   type EllipseEntity,
@@ -21,6 +27,7 @@ import type { Vec2 } from "../../geometry/Vec2"
 import { THEME } from "../../scene/theme"
 import { type CadHarness, createHarness } from "../../../test/harness"
 import { es } from "../../locales/es"
+import { parseDrawingFile } from "../../serialization/drawingFile"
 import {
   arcOf,
   circleOf,
@@ -147,7 +154,7 @@ describe("TRIM", () => {
     expect(spans[1]).toBeCloseToPoints([p(50, 0), p(200, 0)])
   })
 
-  // AutoCAD 2023's console (acc/hd1–hd7, hd20): the piece from the object's
+  // Probes trim/p170, p174, p178, p229–p231: the piece from the object's
   // start is the object kept — its handle, its place —, the other is new and
   // Last finds it; U puts the object back whole.
   it("keeps the object as the piece from its start, the other new", () => {
@@ -296,7 +303,7 @@ describe("TRIM", () => {
     expect(cad.entityCount).toBe(1)
   })
 
-  // AutoCAD 2023's console (acc/o1): a circle one edge crosses once is not
+  // Probe trim/p176: a circle one edge crosses once is not
   // deleted, and Undo counts the pick.
   it("leaves a circle cut once as it is, saying it must be cut twice", () => {
     for (const [locale, name, asked, said, undone] of [
@@ -330,8 +337,8 @@ describe("TRIM", () => {
     }
   })
 
-  // AutoCAD 2023's console (acc/o6, o7, tp1, tp3, tq1, tp11, tp10): a
-  // polyline is its own edge, so a segment is trimmed back to its vertices and
+  // Probe trim/p177 (and AutoCAD 2023's console, acc/o6, o7, not probed
+  // again): a polyline is its own edge, so a segment is trimmed back to its vertices and
   // the crossings on it; a closed one opens from the cut's far end round to
   // its near one, keeping its handle and direction.
   it("trims a polyline's segment between its vertices and the crossings on it", () => {
@@ -407,7 +414,7 @@ describe("TRIM", () => {
     }
   })
 
-  // AutoCAD 2023's console (acc/tr1–tr4): an open polyline too, split in two
+  // Probes trim/p180, p183: an open polyline too, split in two
   // at a middle segment; where it crosses itself is an edge; one segment
   // nothing crosses is deleted.
   it("trims an open polyline at its vertices and where it crosses itself", () => {
@@ -437,8 +444,8 @@ describe("TRIM", () => {
     expect(run([p(0, 0), p(100, 0)], p(50, 0)).entityCount).toBe(0)
   })
 
-  // AutoCAD 2023's console (acc/tp14): EXTEND still refuses a closed one,
-  // the pick counted for Undo.
+  // Probe trim/p207: EXTEND still refuses a closed one, the pick counted for
+  // Undo, Spanish in table 54's words.
   it("cannot EXTEND a closed polyline", () => {
     for (const [locale, name, said, undone] of [
       [
@@ -450,7 +457,7 @@ describe("TRIM", () => {
       [
         es,
         "ALARGA",
-        "Objeto no procesado por ALARGA.",
+        "Este objeto no se puede ALARGAR.",
         "Todos los efectos del comando han sido deshechos.",
       ],
     ] as const) {
@@ -562,10 +569,9 @@ describe("EXTEND", () => {
     expect(cad.commandLog().at(-1)).toBe("No edge in that direction.")
   })
 
-  // AutoCAD 2023's console (acc/x1, x5, x6, x8, x12, x15 of the arcs session):
-  // each object EXTEND cannot reach an edge with has its words; Undo is
-  // listed after each, and takes back the edit before it (probes trim/p195,
-  // p204, p208, p388).
+  // Probes trim/p195, p204–p208, p388: each object EXTEND cannot reach an
+  // edge with has its words, a closed polyline's and a circle's Spanish two
+  // tables'; Undo is listed after each, and takes back the edit before it.
   it("says why an object reaches no edge, listing Undo", () => {
     const boundary = lineOf(p(100, -50), p(100, 50), { id: "B" })
     for (const [locale, name, said] of [
@@ -576,6 +582,7 @@ describe("EXTEND", () => {
           "Path does not intersect with the bounding edge.",
           "Object does not intersect an edge.",
           "Cannot EXTEND this object.",
+          "Cannot EXTEND this object.",
         ],
       ],
       [
@@ -584,6 +591,7 @@ describe("EXTEND", () => {
         [
           "La trayectoria no se interseca con la arista de contorno.",
           "El objeto no se interseca con ninguna arista.",
+          "Este objeto no se puede ALARGAR.",
           "Objeto no procesado por ALARGA.",
         ],
       ],
@@ -610,7 +618,7 @@ describe("EXTEND", () => {
       cad.option("Undo")
 
       cad.click(p(40, -40))
-      expect(cad.commandLog().at(-1)).toBe(said[2])
+      expect(cad.commandLog().at(-1)).toBe(said[3])
       expect(cad.optionIds()).toEqual(["Boundary", "Crossing", "mOde", "Undo"])
       expect(cad.entities()).toEqual(entities)
 
@@ -623,8 +631,7 @@ describe("EXTEND", () => {
     }
   })
 
-  // AutoCAD 2023's console (acc/e1–e15 of the selection modes session): the
-  // end the pick lies nearer in the polyline's parameter grows — not the one
+  // Probes trim/p212, p232: the end the pick lies nearer in the polyline's parameter grows — not the one
   // nearer along it nor in a straight line —, and only that one.
   it("grows a polyline picked at a middle segment from the end nearer in its parameter", () => {
     const extend = (
@@ -2384,8 +2391,9 @@ describe("TRIM and EXTEND's Edge", () => {
     expect(lines(before)).toEqual(["0,0 100,0"])
   })
 })
-// AutoCAD 2023's console (acc/e1–e7, m1–m4, w1, c1–c4, t1–t9, x1, o4 of the
-// elliptical arcs session), read with LIST at AUPREC 4.
+// Probes trim/p209, p210, p213, p229, p230; the rest AutoCAD 2023's console
+// (acc/e1–e7, w1, c1–c4, t1–t9, o4 of the elliptical arcs session, read with
+// LIST at AUPREC 4), not probed again.
 describe("TRIM and EXTEND an ellipse", () => {
   /**
    * a = 100, b = 50 round the origin, from the angle `from` to `to`
@@ -2449,7 +2457,7 @@ describe("TRIM and EXTEND an ellipse", () => {
         "ALARGA",
         [
           "El objeto no se interseca con ninguna arista.",
-          "Objeto no procesado por ALARGA.",
+          "Este objeto no se puede ALARGAR.",
         ],
       ],
     ] as const) {
@@ -2556,9 +2564,10 @@ describe("TRIM and EXTEND an ellipse", () => {
   })
 })
 
-// AutoCAD 2023's console (acc/b1, p1, p4, q1–q6, c3, s4, t2, t6, o3,
-// p12 of the elliptical arcs session), read with LIST at AUPREC 4. The values
-// are the CV spline's, the one that session measured.
+// Probes trim/p187, p188, p211; the rest AutoCAD 2023's console (acc/b1, p1,
+// p4, q1–q6, c3, s4, t6, o3 of the elliptical arcs session, read with LIST at
+// AUPREC 4), not probed again. The values are the CV spline's, the one that
+// session measured.
 describe("TRIM and EXTEND with an ellipse or a spline", () => {
   const ellipse = ellipseOf(p(0, 0), p(100, 0), 0.5, { id: "E" })
   const spline = createSpline(
@@ -2703,7 +2712,7 @@ describe("TRIM and EXTEND with an ellipse or a spline", () => {
         "ALARGA",
         [
           "La curva debe intersecar las aristas de corte al menos dos veces.",
-          "Objeto no procesado por ALARGA.",
+          "Este objeto no se puede ALARGAR.",
         ],
       ],
     ] as const) {
@@ -2717,6 +2726,667 @@ describe("TRIM and EXTEND with an ellipse or a spline", () => {
       expect(cad.state().commandLine.prompt).toMatch(/\/(Undo|desHacer)\]:$/)
       expect(cad.entities()).toEqual(entities)
     }
+  })
+})
+
+// AutoCAD 2027's console (probes trim/p170–p239, p410–p413): what TRIM and
+// EXTEND take as an edge, what they refuse and in which words, and the
+// objects they leave.
+describe("TRIM and EXTEND's edges, refusals and pieces", () => {
+  const typed = (cad: CadHarness, ...texts: string[]) => {
+    for (const text of texts) {
+      if (text === "") cad.enter()
+      else {
+        cad.runtime.setCommandLineText(text)
+        cad.runtime.submitCommandLine()
+      }
+    }
+    return cad
+  }
+  const said = (cad: CadHarness) => cad.commandLog().at(-1)
+  const ends = (line: LineEntity) => [line.start, line.end]
+  const B1 = {
+    id: "B1",
+    name: "B1",
+    basePoint: p(0, 0),
+    entities: [lineOf(p(0, -50), p(0, 50))],
+  }
+
+  describe("a polyline's arc segment as an edge", () => {
+    const slot = () =>
+      polylineOf([p(0, 0), p(100, 0)], { id: "P", bulges: [1] })
+
+    it("cuts a line where the arc crosses it, not at its chord (probe trim/p171)", () => {
+      const cad = createHarness({
+        entities: [slot(), lineOf(p(50, 100), p(50, -100), { id: "L" })],
+      })
+      typed(cad, "TRIM", "50,80")
+      expect(ends(cad.byId<LineEntity>("L"))).toBeCloseToPoints([
+        p(50, -50),
+        p(50, -100),
+      ])
+    })
+
+    it("bounds a line grown to it (probe trim/p172)", () => {
+      const cad = createHarness({
+        entities: [slot(), lineOf(p(50, -200), p(50, -150), { id: "L" })],
+      })
+      typed(cad, "EXTEND", "50,-160")
+      expect(cad.byId<LineEntity>("L").end).toBeCloseToPoint(p(50, -50))
+    })
+
+    it("cuts a circle it crosses twice, which Quick no longer deletes (probe trim/p173)", () => {
+      const cad = createHarness({
+        entities: [slot(), circleOf(p(50, -50), 30, { id: "C" })],
+      })
+      typed(cad, "TRIM", "50,-80")
+      const arc = cad.byId<ArcEntity>("C")
+      expect(arc.type).toBe("arc")
+      expect(arc.startAngle).toBeCloseTo(0.304693, 5)
+      expect(arc.endAngle).toBeCloseTo(2.8369, 4)
+    })
+  })
+
+  describe("blocks and text as edges", () => {
+    it("takes a block reference's objects as edges (probe trim/p237)", () => {
+      const cad = createHarness({
+        entities: [
+          createInsert("B1", p(50, 0)),
+          lineOf(p(0, 0), p(100, 0), { id: "L" }),
+        ],
+        blocks: [B1],
+      })
+      typed(cad, "TRIM", "75,0")
+      expect(ends(cad.byId<LineEntity>("L"))).toBeCloseToPoints([
+        p(0, 0),
+        p(50, 0),
+      ])
+
+      // A reference nested in the block's objects is an edge too.
+      const nested = createHarness({
+        entities: [
+          createInsert("B2", p(50, 0)),
+          lineOf(p(0, 0), p(100, 0), { id: "L" }),
+        ],
+        blocks: [
+          B1,
+          {
+            id: "B2",
+            name: "B2",
+            basePoint: p(0, 0),
+            entities: [createInsert("B1", p(10, 0))],
+          },
+        ],
+      })
+      typed(nested, "TRIM", "75,0")
+      expect(ends(nested.byId<LineEntity>("L"))).toBeCloseToPoints([
+        p(0, 0),
+        p(60, 0),
+      ])
+    })
+
+    it("takes the box of a TEXT or an MTEXT as edges, an attribute definition's not (probes trim/p238, p412, p413)", () => {
+      const text = createText(p(40, -5), "HOLA", { height: 10 })
+      const cut = typed(
+        createHarness({
+          entities: [text, lineOf(p(0, 0), p(100, 0), { id: "L" })],
+        }),
+        "TRIM",
+        "95,0"
+      )
+      expect(ends(cut.byId<LineEntity>("L"))).toBeCloseToPoints([
+        p(0, 0),
+        p(textCorners(text)[1].x, 0),
+      ])
+
+      const mtext = createMText(p(40, 10), "HOLA", { height: 10, width: 100 })
+      const right = Math.max(...mtextCorners(mtext).map((corner) => corner.x))
+      const boxed = typed(
+        createHarness({
+          entities: [mtext, lineOf(p(0, 5), p(200, 5), { id: "L" })],
+        }),
+        "TRIM",
+        "195,5"
+      )
+      expect(ends(boxed.byId<LineEntity>("L"))).toBeCloseToPoints([
+        p(0, 5),
+        p(right, 5),
+      ])
+
+      const attdef = createAttributeDefinition(p(40, -5), "TAG", {
+        height: 10,
+      })
+      const quick = typed(
+        createHarness({
+          entities: [attdef, lineOf(p(0, 0), p(100, 0), { id: "L" })],
+        }),
+        "TRIM",
+        "95,0"
+      )
+      expect(quick.entities()).toEqual([attdef])
+    })
+
+    it("takes no hatch as an edge: Quick deletes what only it crosses (probe trim/p203)", () => {
+      const cad = createHarness({
+        entities: [
+          hatchOf([loopOf(p(0, 0), p(100, 50))]),
+          lineOf(p(-50, 25), p(150, 25), { id: "L" }),
+        ],
+      })
+      typed(cad, "TRIM", "-40,25")
+      expect(cad.entities().map((e) => e.type)).toEqual(["hatch"])
+    })
+  })
+
+  describe("what they refuse", () => {
+    const edge = () => lineOf(p(50, -50), p(50, 50), { id: "V" })
+    const run = (
+      entity: Entity,
+      command: string,
+      pick: string,
+      locale?: typeof es
+    ) =>
+      typed(
+        createHarness({
+          locale,
+          entities: [entity, edge()],
+          blocks: [{ ...B1, entities: [lineOf(p(0, 0), p(100, 0))] }],
+        }),
+        command,
+        pick
+      )
+
+    it("refuses text, MTEXT, attribute definitions, block references and hatches in each table's words, listing Undo (probes trim/p190–p193, p198, p199, p202, p410)", () => {
+      const hatch = hatchOf([loopOf(p(0, 0), p(100, 50))])
+      for (const [entity, pick, trim, extend] of [
+        [
+          createText(p(0, 0), "HOLA", { height: 10 }),
+          "3,3",
+          "Objeto no procesado por RECORTA.",
+          "Objeto no procesado por ALARGA.",
+        ],
+        [
+          createAttributeDefinition(p(0, 30), "TAG", { height: 10 }),
+          "3,33",
+          "Objeto no procesado por RECORTA.",
+          "Objeto no procesado por ALARGA.",
+        ],
+        [
+          createMText(p(0, 10), "HOLA", { height: 10, width: 100 }),
+          "3,5",
+          "Este objeto no se puede RECORTAR.",
+          "Este objeto no se puede ALARGAR.",
+        ],
+        [
+          createInsert("B1", p(0, 0)),
+          "25,0",
+          "Objeto no procesado por RECORTA.",
+          "Objeto no procesado por ALARGA.",
+        ],
+        [
+          hatch,
+          "0,25",
+          "Este objeto no se puede RECORTAR.",
+          "Este objeto no se puede ALARGAR.",
+        ],
+      ] as const) {
+        const results = [
+          run(entity, "TRIM", pick),
+          run(entity, "RECORTA", pick, es),
+          run(entity, "EXTEND", pick),
+          run(entity, "ALARGA", pick, es),
+        ]
+        expect(results.map(said)).toEqual([
+          "Cannot TRIM this object.",
+          trim,
+          "Cannot EXTEND this object.",
+          extend,
+        ])
+        for (const cad of results) {
+          expect(cad.state().commandLine.prompt).toMatch(
+            /\/(Undo|desHacer)\]:$/
+          )
+          expect(cad.entities()).toHaveLength(2)
+        }
+      }
+    })
+
+    it("deletes a dimension in Quick mode, says it does not intersect in Standard (probes trim/p194, p239, p195)", () => {
+      const dimension = () =>
+        createDimension("linear", p(0, 0), p(100, 0), p(50, 20))
+      const quick = run(dimension(), "TRIM", "25,20")
+      expect(quick.entities().map((e) => e.type)).toEqual(["line"])
+      const standard = typed(
+        createHarness({ entities: [dimension(), edge()] }),
+        "TRIM",
+        "_O",
+        "_S",
+        "25,20"
+      )
+      expect(said(standard)).toBe("Does not intersect with the cutting edge.")
+      expect(standard.entities()).toHaveLength(2)
+      expect(said(run(dimension(), "EXTEND", "25,20"))).toBe(
+        "Path does not intersect with the bounding edge."
+      )
+    })
+
+    it("words EXTEND's refusal of a closed object by its table (probes trim/p207–p211)", () => {
+      const far = lineOf(p(250, 250), p(280, 250))
+      const refused = (entity: Entity, pick: string) =>
+        said(
+          typed(
+            createHarness({ locale: es, entities: [far, entity] }),
+            "ALARGA",
+            pick
+          )
+        )
+      expect([
+        refused(
+          polylineOf([p(0, 60), p(50, 60), p(50, 80)], { closed: true }),
+          "25,60"
+        ),
+        refused(ellipseOf(p(0, 0), p(100, 0), 0.5), "-100,0"),
+        refused(
+          createSpline("fit", [p(0, 0), p(50, 30), p(100, 0), p(50, -30)], {
+            closed: true,
+          }),
+          "0,0"
+        ),
+        refused(circleOf(p(30, -40), 10), "40,-40"),
+      ]).toEqual([
+        "Este objeto no se puede ALARGAR.",
+        "Este objeto no se puede ALARGAR.",
+        "Este objeto no se puede ALARGAR.",
+        "Objeto no procesado por ALARGA.",
+      ])
+    })
+  })
+
+  describe("the plane", () => {
+    const FRONT = { x: 0, y: -1, z: 0 }
+    const upright = () => withNormal(circleOf(p(50, 0), 20, { id: "C" }), FRONT)
+
+    it("refuses an object perpendicular to the UCS, and keeps what only one crosses (probes trim/p220, p221, p411)", () => {
+      for (const [locale, trim, extend, object, crossed] of [
+        [
+          undefined,
+          "TRIM",
+          "EXTEND",
+          "Object is perpendicular to UCS XY plane.",
+          "Edge is perpendicular to UCS XY plane.",
+        ],
+        [
+          es,
+          "RECORTA",
+          "ALARGA",
+          "El objeto es perpendicular al plano XY del SCP.",
+          "La arista es perpendicular al plano XY del SCP.",
+        ],
+      ] as const) {
+        const across = [upright(), lineOf(p(50, -50), p(50, 50), { id: "L" })]
+        const picked = typed(
+          createHarness({ locale, entities: across }),
+          trim,
+          "35,0"
+        )
+        expect(said(picked)).toBe(object)
+        expect(picked.state().commandLine.prompt).toMatch(
+          /\/(Undo|desHacer)\]:$/
+        )
+        const kept = typed(
+          createHarness({ locale, entities: across }),
+          trim,
+          "50,30"
+        )
+        expect(said(kept)).toBe(crossed)
+        expect(kept.entities()).toEqual(across)
+
+        const short = [upright(), lineOf(p(50, -100), p(50, -50), { id: "L" })]
+        const grown = typed(
+          createHarness({ locale, entities: short }),
+          extend,
+          "35,0",
+          "50,-55"
+        )
+        expect(
+          grown.commandLog().filter((line) => line === object)
+        ).toHaveLength(1)
+        expect(said(grown)).toBe(crossed)
+        expect(grown.entities()).toEqual(short)
+      }
+    })
+
+    it("trims a circle whose normal is -Z in its plane, and takes it as an edge (probe trim/p175)", () => {
+      const cad = createHarness({
+        entities: [
+          withElevation(
+            withNormal(circleOf(p(0, 0), 100, { id: "C" }), {
+              x: 0,
+              y: 0,
+              z: -1,
+            }),
+            10
+          ),
+          lineOf(p(0, -200), p(0, 200)),
+          lineOf(p(-150, 50), p(150, 50), { id: "H" }),
+        ],
+      })
+      typed(cad, "TRIM", "-100,0", "-120,50")
+      const arc = cad.byId<ArcEntity>("C")
+      expect(arc).toMatchObject({
+        type: "arc",
+        normal: { x: 0, y: 0, z: -1 },
+        elevation: 10,
+      })
+      expect(arc.startAngle).toBeCloseToAngle(deg(30))
+      expect(arc.endAngle).toBeCloseToAngle(deg(270))
+      expect(ends(cad.byId<LineEntity>("H"))).toBeCloseToPoints(
+        [p(-86.60254, 50), p(150, 50)],
+        5
+      )
+    })
+
+    it("reads a typed pick in a turned UCS (probe trim/p222)", () => {
+      const cad = createHarness({
+        entities: [
+          lineOf(p(0, 0), p(100, 0), { id: "A" }),
+          lineOf(p(30, -50), p(30, 50)),
+          lineOf(p(70, -50), p(70, 50)),
+        ],
+      })
+      typed(cad, "UCS", "Z", "30", "TRIM", "43.30127,-25")
+      expect(ends(cad.byId<LineEntity>("A"))).toBeCloseToPoints([
+        p(0, 0),
+        p(30, 0),
+      ])
+      expect(cad.entities()).toHaveLength(4)
+    })
+
+    it("cuts a line at another Z by an edge at Z 0, keeping its Z (probe trim/p223)", () => {
+      const cad = createHarness({
+        entities: [
+          withElevation(lineOf(p(0, 0), p(100, 0), { id: "A" }), 20),
+          lineOf(p(50, -50), p(50, 50)),
+        ],
+      })
+      typed(cad, "TRIM", "75,0")
+      const a = cad.byId<LineEntity>("A")
+      expect(ends(a)).toBeCloseToPoints([p(0, 0), p(50, 0)])
+      expect([lineStartZ(a), lineEndZ(a)]).toEqual([20, 20])
+    })
+  })
+
+  describe("polylines", () => {
+    it("opens a closed one with widths, the cut segment's width read at the cut (probe trim/p177)", () => {
+      const cad = createHarness({
+        entities: [
+          polylineOf([p(-50, -50), p(50, -50), p(50, 50), p(-50, 50)], {
+            id: "P",
+            closed: true,
+            widths: [
+              [0, 2],
+              [2, 4],
+              [4, 6],
+              [6, 8],
+            ],
+          }),
+          lineOf(p(0, 0), p(0, 100)),
+        ],
+      })
+      typed(cad, "TRIM", "25,50")
+      const poly = cad.byId<PolylineEntity>("P")
+      expect(poly.vertices).toBeCloseToPoints([
+        p(0, 50),
+        p(-50, 50),
+        p(-50, -50),
+        p(50, -50),
+        p(50, 50),
+      ])
+      expect(
+        poly.widths?.map(([s, e]) => [+s.toFixed(6), +e.toFixed(6)])
+      ).toEqual([
+        [5, 6],
+        [6, 8],
+        [0, 2],
+        [2, 4],
+      ])
+    })
+
+    it("splits an open one at a straight or an arc segment, the bulges kept or refitted (probes trim/p178, p179)", () => {
+      const drawing = (a: number, b: number) =>
+        createHarness({
+          entities: [
+            polylineOf([p(0, 0), p(100, 0), p(200, 0), p(300, 0)], {
+              id: "P",
+              bulges: [0, 0.5, 0],
+            }),
+            lineOf(p(a, -50), p(a, 50)),
+            lineOf(p(b, -50), p(b, 50)),
+          ],
+        })
+      const straight = typed(drawing(40, 60), "TRIM", "50,0")
+      const [kept, , , other] = straight.entities() as PolylineEntity[]
+      expect(kept.id).toBe("P")
+      expect(kept.vertices).toBeCloseToPoints([p(0, 0), p(40, 0)])
+      expect(other.vertices).toBeCloseToPoints([
+        p(60, 0),
+        p(100, 0),
+        p(200, 0),
+        p(300, 0),
+      ])
+      expect(other.bulges).toEqual([0, 0.5, 0])
+
+      const arc = typed(drawing(130, 170), "TRIM", "150,-25")
+      const [from, , , to] = arc.entities() as PolylineEntity[]
+      expect(from.id).toBe("P")
+      expect(from.vertices).toBeCloseToPoints(
+        [p(0, 0), p(100, 0), p(130, -21.713596)],
+        5
+      )
+      expect(from.bulges?.[1]).toBeCloseTo(0.151536, 5)
+      expect(to.vertices).toBeCloseToPoints(
+        [p(170, -21.713596), p(200, 0), p(300, 0)],
+        5
+      )
+      expect(to.bulges?.[0]).toBeCloseTo(0.151536, 5)
+    })
+
+    it("refuses a closed one cut once in Standard mode, no edge itself (probe trim/p184)", () => {
+      for (const [locale, name, words] of [
+        [
+          undefined,
+          "TRIM",
+          "Curve must intersect cutting edges at least twice.",
+        ],
+        [
+          es,
+          "RECORTA",
+          "La curva debe intersecar las aristas de corte al menos dos veces.",
+        ],
+      ] as const) {
+        const entities = [
+          polylineOf([p(-50, -50), p(50, -50), p(50, 50), p(-50, 50)], {
+            id: "P",
+            closed: true,
+          }),
+          lineOf(p(0, 0), p(0, 100), { id: "L" }),
+        ]
+        const cad = createHarness({ locale, entities })
+        typed(cad, name, "_O", "_S", "_T", "_L", "", "-50,0")
+        expect(said(cad)).toBe(words)
+        expect(cad.entities()).toEqual(entities)
+      }
+    })
+
+    it("grows an open one to its own other segments, not to the neighbour of the end it grows (probe trim/p236)", () => {
+      const cad = typed(
+        createHarness({
+          entities: [
+            polylineOf([p(0, 50), p(100, 50), p(100, 0), p(50, 0), p(50, 20)], {
+              id: "P",
+            }),
+          ],
+        }),
+        "EXTEND",
+        "50,18"
+      )
+      expect(cad.byId<PolylineEntity>("P").vertices.at(-1)).toBeCloseToPoint(
+        p(50, 50)
+      )
+      const hook = typed(
+        createHarness({
+          entities: [polylineOf([p(0, 0), p(100, 0), p(100, 20)], { id: "P" })],
+        }),
+        "EXTEND",
+        "100,18"
+      )
+      expect(said(hook)).toBe("Object does not intersect an edge.")
+    })
+  })
+
+  describe("ends and tangents", () => {
+    it("grows an end already on a boundary to the next one, or says the path's words (probes trim/p214, p215)", () => {
+      const next = typed(
+        createHarness({
+          entities: [
+            lineOf(p(0, 0), p(100, 0), { id: "A" }),
+            lineOf(p(100, -50), p(100, 50)),
+            lineOf(p(150, -50), p(150, 50)),
+          ],
+        }),
+        "EXTEND",
+        "90,0"
+      )
+      expect(next.byId<LineEntity>("A").end).toBeCloseToPoint(p(150, 0))
+      const only = typed(
+        createHarness({
+          entities: [
+            lineOf(p(0, 0), p(100, 0), { id: "A" }),
+            lineOf(p(100, -50), p(100, 50)),
+          ],
+        }),
+        "EXTEND",
+        "90,0"
+      )
+      expect(said(only)).toBe("Path does not intersect with the bounding edge.")
+    })
+
+    it("deletes a line an edge meets at its end only, and cuts once at two edges through one point (probes trim/p216, p217)", () => {
+      const end = typed(
+        createHarness({
+          entities: [
+            lineOf(p(0, 0), p(100, 0), { id: "A" }),
+            lineOf(p(100, -50), p(100, 50)),
+          ],
+        }),
+        "TRIM",
+        "50,0"
+      )
+      expect(end.entities().map((e) => e.id)).not.toContain("A")
+      const two = typed(
+        createHarness({
+          entities: [
+            lineOf(p(0, 0), p(100, 0), { id: "A" }),
+            lineOf(p(50, -50), p(50, 50)),
+            lineOf(p(25, -50), p(75, 50)),
+          ],
+        }),
+        "TRIM",
+        "75,0"
+      )
+      expect(two.entities()).toHaveLength(3)
+      expect(ends(two.byId<LineEntity>("A"))).toBeCloseToPoints([
+        p(0, 0),
+        p(50, 0),
+      ])
+    })
+
+    it("cuts a line at a circle's tangent point and grows one to it (probes trim/p218, p219)", () => {
+      const cut = typed(
+        createHarness({
+          entities: [
+            lineOf(p(-100, 50), p(100, 50), { id: "A" }),
+            circleOf(p(0, 0), 50),
+          ],
+        }),
+        "TRIM",
+        "50,50"
+      )
+      expect(ends(cut.byId<LineEntity>("A"))).toBeCloseToPoints([
+        p(-100, 50),
+        p(0, 50),
+      ])
+      const grown = typed(
+        createHarness({
+          entities: [
+            lineOf(p(-100, 50), p(-60, 50), { id: "A" }),
+            circleOf(p(0, 0), 50),
+          ],
+        }),
+        "EXTEND",
+        "-65,50"
+      )
+      expect(grown.byId<LineEntity>("A").end).toBeCloseToPoint(p(0, 50))
+    })
+  })
+
+  it("puts the object back whole, its id, at Undo and at U after the command (probes trim/p227, p228)", () => {
+    const drawing = () => [
+      lineOf(p(0, 0), p(100, 0), { id: "A" }),
+      lineOf(p(30, -50), p(30, 50), { id: "V1" }),
+      lineOf(p(70, -50), p(70, 50), { id: "V2" }),
+    ]
+    const inside = typed(
+      createHarness({ entities: drawing() }),
+      "TRIM",
+      "50,0",
+      "_U"
+    )
+    expect(inside.entities()).toEqual(drawing())
+    const after = typed(
+      createHarness({ entities: drawing() }),
+      "TRIM",
+      "50,0",
+      "",
+      "U"
+    )
+    expect(after.entities()).toEqual(drawing())
+  })
+
+  it("saves and opens what it trimmed as it was", () => {
+    const cad = createHarness({
+      entities: [
+        polylineOf([p(0, 0), p(100, 0), p(200, 0), p(300, 0)], {
+          id: "P",
+          bulges: [0, 0.5, 0],
+          widths: [
+            [0, 2],
+            [2, 4],
+            [4, 6],
+          ],
+        }),
+        lineOf(p(130, -50), p(130, 50)),
+        lineOf(p(170, -50), p(170, 50)),
+        ellipseOf(p(0, 200), p(100, 0), 0.5, { id: "E" }),
+        lineOf(p(0, 100), p(0, 300)),
+        withElevation(circleOf(p(300, 200), 50, { id: "C" }), 7),
+        lineOf(p(300, 100), p(300, 300)),
+      ],
+    })
+    typed(cad, "TRIM", "150,-25", "-100,200", "250,200", "")
+    expect(cad.entities().map((e) => e.type)).toEqual([
+      "polyline",
+      "line",
+      "line",
+      "ellipse",
+      "line",
+      "arc",
+      "line",
+      "polyline",
+    ])
+    expect(parseDrawingFile(cad.runtime.serializeDrawing()).entities).toEqual(
+      cad.entities()
+    )
   })
 })
 

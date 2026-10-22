@@ -284,8 +284,8 @@ returns `true`; `false` ends the command.
   UCS builds the patch with `ucsChange(settings, ucs, name)` (`UcsTool.ts`) as one
   `UpdateSettingsCommand`.
 - **A tool with flat geometry acts only on `readsInPlan` objects** (level in the frame, and lines):
-  TRIM / EXTEND, BREAK, JOIN, HATCH, ARRAYPATH's path, the dimensions and their picks.
-  Filter at the pick. FILLET and CHAMFER of polylines work in the polyline's OCS instead.
+  BREAK, JOIN, HATCH, ARRAYPATH's path, the dimensions and their picks (TRIM / EXTEND: ±Z).
+  Filter at the pick. FILLET and CHAMFER cut a polyline in its OCS instead.
 - **Everything typed is read in the UCS.** `parseCoordinate` requires `ucs` and `elevation`; `*`
   reads WCS numbers, and without a Z lies at the WCS's Z 0, ELEVATION left out. A typed number is
   `parseNumber` / `parseDecimalNumber`, an angle `parseAngleDegrees`, never `Number()`. An
