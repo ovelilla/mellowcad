@@ -4020,6 +4020,59 @@ describe("OFFSET", () => {
     expect(cad.commandLog()).not.toContain("Cannot offset that object.")
   })
 
+  describe("its look", () => {
+    /** The strokes of the segments drawn from `a` to `b` on the screen. */
+    function segmentsAt(cad: CadHarness, a: Vec2, b: Vec2) {
+      const near = (q: Vec2, r: Vec2) => Math.hypot(q.x - r.x, q.y - r.y) < 1e-6
+      const [sa, sb] = [cad.toScreen(a), cad.toScreen(b)]
+      return cad
+        .scene()
+        .primitives.flatMap((prim) =>
+          prim.kind === "segment" && near(prim.a, sa) && near(prim.b, sb)
+            ? [prim.stroke]
+            : []
+        )
+    }
+    const red = () =>
+      createHarness({
+        entities: [
+          { ...lineOf(p(-100, 0), p(100, 0), { id: "L1" }), color: "#ff0000" },
+        ],
+      })
+    const source = (cad: CadHarness) =>
+      segmentsAt(cad, p(-100, 0), p(100, 0)).map((stroke) => stroke.color)
+
+    it("rolls over the object at Select object to offset with the plain glow", () => {
+      // desktop offset/d01-4 (OFFSET-D30).
+      const cad = red()
+      cad.command("OFFSET").type("20").enter().moveTo(p(0, 0))
+
+      expect(segmentsAt(cad, p(-100, 0), p(100, 0))).toContainEqual({
+        color: THEME.entityHover,
+        width: 2,
+      })
+      expect(source(cad)).not.toContain(THEME.selected)
+    })
+
+    it("drags the copy as the object, in its colour, the source selected", () => {
+      // desktop offset/d01-5: the side's copy; d02-1: Through's.
+      const cad = red()
+      cad.command("OFFSET").type("20").enter().click(p(0, 0)).moveTo(p(0, 50))
+
+      expect(segmentsAt(cad, p(-100, 20), p(100, 20))).toEqual([
+        { color: "#ff0000", width: 1 },
+      ])
+      expect(source(cad)).toContain(THEME.selected)
+
+      cad.escape().escape().command("OFFSET").option("Through")
+      cad.click(p(0, 0)).moveTo(p(0, -40))
+      expect(segmentsAt(cad, p(-100, -40), p(100, -40))).toEqual([
+        { color: "#ff0000", width: 1 },
+      ])
+      expect(source(cad)).toContain(THEME.selected)
+    })
+  })
+
   it("Through places the copy on a picked point", () => {
     // probe offset/p208.
     const cad = createHarness({

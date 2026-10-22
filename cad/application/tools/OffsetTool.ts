@@ -11,7 +11,6 @@ import {
   createCircle,
   createLine,
   carryOverrides,
-  carryPlane,
   createPolyline,
   entityElevation,
   entityNormal,
@@ -500,24 +499,26 @@ export class OffsetTool implements Tool {
 
     if (this.state.phase === "side" || this.state.phase === "throughPoint") {
       const { source, cursor } = this.state
-      // Keep the chosen source emphasised while the side is picked, plus a live
-      // preview of the copies about to be created.
+      // The picked source selected, and the copies the point would make drawn
+      // as themselves, solid in the source's colour, as a transform drags its
+      // set (desktop offset/d01-5, d02, d03; move/d01).
       const prims = highlight(source, THEME.selected, 2)
       const offset = this.resolve(this.state, cursor, ctx)
       if (!isRefusal(offset)) {
-        const offPlan = isOffPlan(source, viewport)
-        for (const geom of offset) {
+        const stroke = {
+          color: ctx.document.resolveEntityColor(source),
+          width: 1,
+        }
+        for (const copy of this.copiesOf(
+          source,
+          offset,
+          ctx,
+          OFFSET_PREVIEW_ID
+        )) {
           prims.push(
-            ...(offPlan
-              ? entityScenePrimitive(
-                  viewport,
-                  carryPlane(
-                    source,
-                    offsetToEntity(geom, "0", OFFSET_PREVIEW_ID)
-                  ),
-                  { color: THEME.rubberBand, width: 1 }
-                )
-              : draw(geom, THEME.rubberBand, 1))
+            ...entityScenePrimitive(viewport, copy, stroke, {
+              blocks: ctx.blocks,
+            })
           )
         }
       }
@@ -847,15 +848,19 @@ export class OffsetTool implements Tool {
     return hit && offsetKind(hit) !== "notPicked" ? hit : null
   }
 
-  /** The copies of `source` the geometry makes, wearing what it wears. */
+  /**
+   * The copies of `source` the geometry makes, wearing what it wears; the
+   * preview passes its fixed `id`.
+   */
   private copiesOf(
     source: Entity,
     geoms: readonly OffsetGeom[],
-    ctx: ToolContext
+    ctx: ToolContext,
+    id?: string
   ): Entity[] {
     const layer = this.copyLayer(source, ctx)
     return geoms.map((geom) => {
-      const copy = carryOverrides(source, offsetToEntity(geom, layer))
+      const copy = carryOverrides(source, offsetToEntity(geom, layer, id))
       // WHY: AutoCAD's copy of a circle or an arc has no thickness, its
       // elevation, colour, linetype and lineweight kept; a line's and a
       // polyline's keep theirs (probes offset/p219, p232, p233; p218, p225).

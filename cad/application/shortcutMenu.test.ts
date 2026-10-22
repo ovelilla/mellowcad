@@ -168,6 +168,27 @@ describe("during a command", () => {
     expect(cad.only<LineEntity>("line").end).toBeCloseToPoint(p(100, 0))
   })
 
+  it("offers Snap Overrides only where the question takes a point", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+
+    // desktop offset/d04-1: the distance, which two points measure.
+    cad.command("OFFSET")
+    cad.rightClick(CLEAR)
+    expect(entriesOf(cad.state().shortcutMenu)).toEqual([
+      "enter cancel",
+      "option:Through option:Erase option:Layer",
+      "snapOverrides",
+    ])
+
+    // desktop offset/d04-2: `Select object to offset` takes none.
+    cad.escape().type("20").enter()
+    cad.rightClick(CLEAR)
+    expect(entriesOf(cad.state().shortcutMenu)).toEqual([
+      "enter cancel",
+      "option:Exit option:Undo",
+    ])
+  })
+
   it("lists the prompt's options with its words, and runs the one chosen", () => {
     const cad = createHarness()
     cad.command("LINE").click(p(0, 0)).click(p(100, 0)).click(p(100, 100))

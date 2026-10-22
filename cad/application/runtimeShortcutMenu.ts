@@ -70,6 +70,8 @@ export function buildShortcutMenu(
     /** The last command, which Repeat runs; null before the first. */
     readonly repeat: string | null
     readonly options: ReadonlyArray<CommandOptionUi>
+    /** Whether the running question takes a point, which Snap Overrides needs. */
+    readonly takesPoint: boolean
   }
 ): ShortcutMenuUi {
   const groups: ShortcutMenuEntry[][] =
@@ -79,7 +81,9 @@ export function buildShortcutMenu(
           // "the command's options (keywords within the square brackets) are
           // inserted into this menu"
           context.options.map((option) => ({ kind: "option", option })),
-          [{ kind: "snapOverrides" }],
+          // Absent where no point is asked (desktop offset/d04-2, at
+          // `Select object to offset`; shown at its distance, d04-1).
+          context.takesPoint ? [{ kind: "snapOverrides" }] : [],
         ]
       : [
           context.repeat !== null ? [action("repeat")] : [],

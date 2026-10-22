@@ -5711,6 +5711,7 @@ export class CadRuntime extends Observable {
         buildShortcutMenu(this.shortcutMenu.mode, this.shortcutMenu.at, {
           repeat: this.commandLine.getLastCommand(),
           options,
+          takesPoint: this.wantsPoint(),
         }),
       orthoActive: this.constraints.isEnabled(ConstraintType.Ortho),
       polarActive: this.constraints.isEnabled(ConstraintType.Polar),

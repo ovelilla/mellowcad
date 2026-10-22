@@ -436,13 +436,17 @@ or a polyline tilted to the UCS is offset in its own plane, its normal kept, the
 along the line of sight (p235, p239; an isometric view, p237), and one edge-on to the view says
 `Cannot offset that object at current view direction.` (es
 `Imposible transponer este objeto en la dirección de la vista actual.`, table 21223) at the pick
-(p207, p234)
+(p207, p234); the object under the cursor at `Select object to offset` rolls over with the plain
+glow (desktop d01-4), the picked one turns selected, and the side and through points drag the
+copies they would make drawn as the objects, solid in the source's colour, every piece of a split
+polyline and a tilted object's copy in its plane (d01-5, d02, d03)
 
 **Missing:** OFFSETGAPTYPE 1 and 2, ellipses and splines (AutoCAD offsets them into a SPLINE,
 p196–p198, which is not built: neither is picked, OFFSET-D11), Erase and Layer kept past the
 session (OPEN leaves them, p310; a restart is unprobed), a polyline of more than 2000 segments
-(declined with `Cannot offset that object.`, the clean-up's cap); **unverified**: one object
-preselected on a locked layer, dropped here and the object asked; which piece Multiple steps on
+(declined with `Cannot offset that object.`, the clean-up's cap), the ghost's linetype and
+lineweight (it wears the source's colour only, as MOVE's); **unverified**: one object preselected
+on a locked layer, dropped here and the object asked; which piece Multiple steps on
 from once a polyline falls apart (the first here); Escape and Undo with Erase in Multiple (the
 source kept here, the copies kept as at Escape, desktop d06); a line out of the UCS's XY plane
 (offset in that plane here, its rise kept; one along the UCS's Z cannot be offset); a closed

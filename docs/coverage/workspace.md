@@ -141,10 +141,11 @@ command›, Clipboard ▸ (Cut, Copy, Copy with Base Point and Paste, with their
 `&Repeat %s`; Redo runs its macro, `^C^C_mredo 1`, as MREDO 1); Edit: Repeat, Clipboard ▸, Erase,
 Move, Copy Selection, Scale, Rotate, Deselect All, Properties; Command: Enter, Cancel, the prompt's
 options as its brackets word them ("the command's options (keywords within the square brackets) are
-inserted into this menu"), Snap Overrides ▸ (the override menu's entries), in the 2027 desktop's
-order (Intro, Cancelar, Entrada reciente ▸ · options · Modificaciones de REFENT ▸ · Encuadre, Zoom,
-SteeringWheels · Calculadora rápida, LINE's next point, probe line/d07); an entry that is a
-command runs by its global name, echoed, repeated and undone like it, Deselect All is Escape ("Press
+inserted into this menu"), Snap Overrides ▸ (the override menu's entries) only at a prompt that
+takes a point (OFFSET's distance has it, desktop offset/d04-1; `Select object to offset` not,
+d04-2), in the 2027 desktop's order (Intro, Cancelar, Entrada reciente ▸ · options ·
+Modificaciones de REFENT ▸ · Encuadre, Zoom, SteeringWheels · Calculadora rápida, LINE's next
+point, probe line/d07); an entry that is a command runs by its global name, echoed, repeated and undone like it, Deselect All is Escape ("Press
 Esc to deselect all objects"), and an option is answered as typed; Escape or a click outside closes
 the menu, and focus goes back to the drawing; es Repetir, Entrada reciente, Portapapeles, Intro,
 Cancelar, Seleccionar similares, Agregar selección (the help's words), Modificaciones de REFENT (the
