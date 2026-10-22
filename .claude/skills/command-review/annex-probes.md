@@ -158,6 +158,10 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   lands on its grip, not on the line, so a drag probed in a scratch test uses long geometry.
 - `drag.ps1` holds Ctrl (`ctrl`) or the right button (`right`) as `scripts/research/probes/move/`'s
   copy does: Ctrl held from the press is AutoCAD's sub-object pick, not a drag (move/d09).
+- What a jig's field reads is not always the plain distance or angle: click at a known distance
+  and read the object back (SCALE's factor is the distance over half the set's extents,
+  transforms/d06, d07). Wait a second after typing a command before its first pick, or the pick
+  can miss and Enter end the command empty (Transforms' review).
 
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).

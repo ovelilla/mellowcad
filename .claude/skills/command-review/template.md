@@ -222,8 +222,10 @@ deviation without a `WHY` and a coverage note is a finding.
 ### 4.8 Subagents
 
 - At most three at once, never nested. They change nothing in the repo but their own console
-  probes, in an id range each (`p100`–`p149`…), and write scratch tests only in a folder each
-  (`research/review/<command>/<letter>/`). They never drive the desktop.
+  probes, in an id range each (`p100`–`p149`…; 70 for a command with options, or the last
+  questions go unasked), and write scratch tests only in a folder each
+  (`research/review/<command>/<letter>/`) and scratch files only in a scratchpad folder each (two
+  overwrote a shared helper). They never drive the desktop.
 - Each gets its list of files, the rules to open, the matrix rows and prompts it answers (disjoint:
   two subagents with the same prompts found ELLIPSE's differences twice; a case every prompt meets,
   such as a zero vector, goes to one of them, or MOVE's turned up under three ids), the finding format
@@ -233,6 +235,8 @@ deviation without a `WHY` and a coverage note is a finding.
 - They return the cells they answered, what they could not check, and the tests they read, as
   text: a subagent cannot write a report file, so the reviewer keeps it in the scratchpad.
 - Their high and critical findings are verified by the reviewer, in person, before the plan.
+- A desktop surprise goes at once to the subagent owning that prompt (SendMessage): the console
+  then settles it case by case (SCALE's factor, transforms/d06 → p219, within the hour).
 
 ## 5. Evidence
 
@@ -394,3 +398,6 @@ Applied:
 - 2026-10-22, after MOVE's and COPY's review: U after a run that changed nothing, and the order of
   what a set out of order makes (matrix.md F, H); a case shared by every prompt to one subagent
   (§4.8); function keys sent as keys, and what a desktop accident leaves (annex-probes.md §4).
+- 2026-10-22, after the Transforms review: probe ranges and scratchpad folders per subagent, a
+  desktop surprise sent to its subagent (§4.8); a jig's reading checked by a click, a pause before
+  the first desktop pick (annex-probes.md §4).
