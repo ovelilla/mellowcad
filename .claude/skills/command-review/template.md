@@ -405,4 +405,4 @@ Applied:
   tests to one subagent by name (§4.8).
 - 2026-10-22, after TRIM's review: desktop settings and keys reach the console, an Enter through
   COM (annex-probes.md §4); the Undo keyword to one subagent (§4.8).
-- 2026-10-22, after the Corners review: ranges by weight (§4.8); matrix.md Q; annex §4, §5.
+- 2026-10-22, after Corners and Pieces: ranges by weight (§4.8); matrix.md Q; annex §3–§5.

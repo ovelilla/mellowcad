@@ -82,6 +82,9 @@ The minimum per prompt of the command, adapted and numbered in the plan:
 | J   | `_.SAVEAS` to a DWG and a DXF, then a run that opens it (`-i`) and dumps it                                                                                                                      |
 | L   | the transcript itself is the history: compared line by line with the harness's `commandLog()`                                                                                                    |
 
+A pick several commands share (`ObjectSelector`'s `one`): a mode's find mixing locked and unlocked
+objects, for each of them (pieces/p395 found FILLET's).
+
 Rows I, M, P and Q, the keys of G (Escape, the right button, SHORTCUTMENU), the tooltip of D and
 the modes in combination (matrix.md) are desktop probes. So is a pass with DYNMODE 3 at every point prompt: the
 dimensional fields are the command's own (RECTANG's other corner shows its sides, rectang/d05).
@@ -176,6 +179,12 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
 - A console answer to Enter at a prompt is checked on the desktop through COM alone, without the
   mouse: `com send "_TRIM\n\n\n"` and `com hist` tell one command asked twice from two commands
   (TRIM/EXTEND's review).
+
+- A ghost under a far Endpoint marker (running END takes the nearer end of whatever the aperture
+  crosses) trails the raw cursor while the click takes the marker: read a click's result, not the
+  ghost, when a marker shows (pieces/d13). An Enter the console refuses at a jig prompt is checked
+  through COM between two answers, `com send "_BREAK\n30,0\n\n60,0\n"`: refused, the second
+  answer completes it; taken, it lands at `Command:` (pieces/d15).
 
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).
