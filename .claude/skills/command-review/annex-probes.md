@@ -186,6 +186,21 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   through COM between two answers, `com send "_BREAK\n30,0\n\n60,0\n"`: refused, the second
   answer completes it; taken, it lands at `Command:` (pieces/d15).
 
+- Keep every pick in the middle third of the view: one near its lower edge lands on the command
+  line (the English profile's floats over the drawing), a window starts and the keywords typed
+  next run as commands (`_AS` → CONEXIONBD). A keyword that writes a registry variable (`_AS _N` →
+  ARRAYASSOCIATIVITY 0) is listed in the `dsk.sh` header, read after its case and put back. A
+  dialog an accident opens is closed with a posted `WM_COMMAND IDCANCEL` when UIA cannot. End a
+  case with Escape, never Enter at `Command:`: it repeats the last command and locks COM.
+- A grip drag or palette edit is read back with `LIST` of the object's **handle** (`_L` is the
+  last made, not the last edited), then undone with two U (LIST is a step of its own); turn the
+  running snaps off (`com set OSMODE 0`, put back) while a drag's value is measured, or the click
+  lands on a Center nearby. Keys typed into the Properties palette go to its own window
+  (`acad.sh type "<text>" <palette hwnd>`, erasing first with `\b`): to any other, type.ps1 hands
+  them to the frame's command line (Arrays review, d14, d20).
+- When the command's object is not modelled yet, its desktop pass of grips, menus and palette goes
+  in the review's first session anyway: it sizes the object's block before the plan (Arrays).
+
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).
 

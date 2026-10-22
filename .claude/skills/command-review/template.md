@@ -364,45 +364,14 @@ a finding that needed a question the template does not ask, a step that cost mor
 probe pattern worth reusing. They are proposed in the plan (§6.14) and applied here at the
 review's close (the owner waived the wait for approval on 2026-10-21), each with its date.
 
-Applied:
+Applied (each change's detail is in `git log -- .claude/skills/command-review`):
 
-- 2026-10-21, after LINE's review: subagents' own ranges (§4.8); untraced undo probes, a trailing
-  Enter, typed desktop input through COM (annex-probes.md); `es-several` and `no-source` per
-  command (annex-catalogs.md); sessions sized by blocks (§1.4).
-- 2026-10-21, after LINE's execution: one subagent per block, the reviewer committing; an unused
-  catalog key stays; every session ends with the next one's prompt (§8).
-- 2026-10-21, at the owner's request: the matrix gained pointer gestures (P), the look (Q, after
-  AGENTS.md's rule that a look slowing an AutoCAD user down is a finding), every object snap three
-  ways (running, picked, typed) and the modes in combination.
-- 2026-10-21, after PLINE's review: start from the previous review's analogues (§4.1); row H
-  asks for properties changed mid-command (matrix.md); the desktop's traps and a probe for one
-  locale (annex-probes.md); the execution may follow in the review's session (§0).
-- 2026-10-21, after CIRCLE's review: the trace's flags read before the desktop, the ribbon's
-  macros, solutions as data tables, scratch output to a file, two desktop traps, quitting AutoCAD
-  at the end (annex-probes.md).
-- 2026-10-21, after ARC's review: two desktop traps (a command left open by `com send`, a
-  negative DYNMODE), a grip's default drag probed apart from its menu, the Spanish profile planned
-  with the owner (annex-probes.md §4).
-- 2026-10-21, after RECTANG's and POLYGON's review: UseBasePoint and `<a` read from the desktop
-  where a command draws its own jig, a restored DYNMODE checked with Lisp, a DYNMODE 3 desktop pass
-  (annex-probes.md); storage settled by the OPEN test (§1.3).
-- 2026-10-21, after ELLIPSE's review: disjoint prompts per subagent (§4.8); Escape on the Down
-  list and the English labels of a Spanish desktop pass (annex-probes.md §4).
-- 2026-10-21, after SPLINE's review: the launcher opens the Spanish profile (`/language es-ES`, the
-  trap that blamed launching went); subagents return their reports as text (§4.8); the palette on
-  a second monitor, and a console answer at a jig checked through COM (annex-probes.md §4).
-- 2026-10-21, after ERASE's review: what a command leaves selected (§4.1); a press and drag with
-  the button held between screenshots, a key held across one, and the click tool's jiggle against
-  selection cycling (annex-probes.md §4).
-- 2026-10-22, after MOVE's and COPY's review: U after a run that changed nothing, and the order of
-  what a set out of order makes (matrix.md F, H); a case shared by every prompt to one subagent
-  (§4.8); function keys sent as keys, and what a desktop accident leaves (annex-probes.md §4).
-- 2026-10-22, after the Transforms review: probe ranges and scratchpad folders per subagent, a
-  desktop surprise sent to its subagent (§4.8); a jig's reading checked by a click, a pause before
-  the first desktop pick (annex-probes.md §4).
-- 2026-10-22, after OFFSET's review: a desktop variable read before trusting a default, each
-  desktop Enter planned against its prompt (annex-probes.md §4); the preselection and the existing
-  tests to one subagent by name (§4.8).
-- 2026-10-22, after TRIM's review: desktop settings and keys reach the console, an Enter through
-  COM (annex-probes.md §4); the Undo keyword to one subagent (§4.8).
-- 2026-10-22, after Corners and Pieces: ranges by weight (§4.8); matrix.md Q; annex §3–§5.
+- 2026-10-21: LINE (subagents' ranges, untraced undo, COM input; one subagent per block, unused
+  keys stay, the next session's prompt); the matrix's P, Q and snaps three ways (owner); PLINE
+  (analogues first, row H, the review's own execution); CIRCLE, ARC, RECTANG and POLYGON, ELLIPSE,
+  SPLINE, ERASE (desktop traps, storage by the OPEN test, disjoint prompts, the preselection).
+- 2026-10-22: MOVE and COPY, Transforms, OFFSET, TRIM, Corners and Pieces (shared cases and the
+  Undo keyword to one subagent, ranges by weight, desktop traps, matrix.md Q, annex §3–§5).
+- 2026-10-22, after the Arrays review: picks off the command line's band, registry keywords put
+  back, a reading by handle with two U, snaps off while a drag is measured, keys into the
+  palette's window, the object's desktop pass before its plan (annex-probes.md §4).
