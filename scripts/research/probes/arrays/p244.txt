@@ -1,0 +1,17 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_CIRCLE
+10,10
+2
+_ARRAYPOLAR
+_L
+
+_LINE
+0,0
+_I
+_LINE
+4
+_LINE
+_X

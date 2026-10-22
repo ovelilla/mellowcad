@@ -1,0 +1,10 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_CIRCLE
+10,10
+2
+_ARRAYPOLAR
+
+(princ (if (setq s (ssget "_I")) (sslength s) 0))

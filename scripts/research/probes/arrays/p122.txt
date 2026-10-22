@@ -1,0 +1,19 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_CIRCLE
+10,10
+2
+_ARRAYRECT
+_L
+
+_AS
+_N
+_S
+3,4
+33,4
+
+_X
+(getvar "LASTPOINT")
+(progn (setq ss (ssget "_X") i 0) (if ss (repeat (sslength ss) (setq e (entget (ssname ss i))) (terpri) (princ (mapcar (quote (lambda (k) (cdr (assoc k e)))) (quote (5 0 8 62 6 370 10 11 40)))) (setq i (1+ i)))) (princ))

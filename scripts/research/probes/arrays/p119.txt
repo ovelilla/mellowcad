@@ -1,0 +1,15 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_CIRCLE
+10,10
+2
+_ARRAYRECT
+_L
+
+_S
+FOO
+7
+
+_X

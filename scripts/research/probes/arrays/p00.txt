@@ -1,0 +1,8 @@
+(getvar "ACADVER")
+(getvar "_VERNUM")
+(getvar "ARRAYASSOCIATIVITY")
+(getvar "ARRAYTYPE")
+(getvar "ARRAYEDITSTATE")
+(getvar "PICKFIRST")
+(getvar "OSMODE")
+(getvar "MAXARRAY")

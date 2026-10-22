@@ -1,0 +1,16 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_CIRCLE
+10,10
+2
+_ARRAYRECT
+_L
+
+_X
+_FILEDIA
+0
+_.SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\arr411.dwg

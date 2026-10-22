@@ -1,0 +1,23 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_LINE
+0,0
+100,0
+
+_CIRCLE
+10,10
+2
+_ID
+5,5
+_ARRAYPATH
+_L
+
+150,150
+160,160
+30,0
+_AS
+_N
+_X
+(getvar "LASTPOINT")

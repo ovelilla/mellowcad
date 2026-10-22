@@ -1,0 +1,14 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_CIRCLE
+10,10
+2
+_ARRAYRECT
+_L
+
+_X
+(princ (sslength (ssget "_X")))
+_U
+(princ (sslength (ssget "_X")))

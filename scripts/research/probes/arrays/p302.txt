@@ -1,0 +1,20 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_ARC
+_C
+0,0
+50,0
+-50,0
+_CIRCLE
+80,10
+2
+_ARRAYPATH
+_L
+
+50,0
+_AS
+_N
+_X
+(progn (setq ss (ssget "_X") i 0) (if ss (repeat (sslength ss) (setq e (entget (ssname ss i))) (terpri) (princ (list (cdr (assoc 5 e)) (cdr (assoc 0 e)) (cdr (assoc 8 e)) (cdr (assoc 62 e)) (cdr (assoc 10 e)) (cdr (assoc 11 e)) (cdr (assoc 40 e)) (cdr (assoc 50 e)) (cdr (assoc 51 e)))) (setq i (1+ i)))) (princ))

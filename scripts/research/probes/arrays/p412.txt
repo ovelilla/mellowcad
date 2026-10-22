@@ -1,0 +1,16 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_LINE
+0,0
+10,0
+
+_ARRAYRECT
+_L
+
+_X
+_ID
+_END
+24,0.2
+(getvar "LASTPOINT")

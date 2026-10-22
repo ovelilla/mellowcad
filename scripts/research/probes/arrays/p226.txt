@@ -1,0 +1,17 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_CIRCLE
+10,10
+2
+_ARRAYPOLAR
+_L
+
+@
+_AS
+_N
+_X
+(getvar "LASTPOINT")
+MPDUMP
+-

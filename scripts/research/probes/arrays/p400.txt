@@ -1,0 +1,16 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_CIRCLE
+10,10
+2
+_ARRAYRECT
+_L
+
+_X
+(setq a (entlast))
+(entget a (quote ("*")))
+(progn (defun dumpblk (nm lvl / b) (setq b (tblobjname "BLOCK" nm)) (terpri) (princ (list lvl "BLOCK" nm (cdr (assoc 70 (entget b))) (cdr (assoc 10 (entget b))))) (while (setq b (entnext b)) (setq e (entget b)) (terpri) (princ (list lvl (cdr (assoc 5 e)) (cdr (assoc 0 e)) (cdr (assoc 2 e)) (cdr (assoc 8 e)) (cdr (assoc 62 e)) (cdr (assoc 10 e)) (cdr (assoc 41 e)) (cdr (assoc 50 e)))) (if (and (= (cdr (assoc 0 e)) "INSERT") (< lvl 2)) (dumpblk (cdr (assoc 2 e)) (1+ lvl))))) (princ))
+(dumpblk (cdr (assoc 2 (entget a))) 0)
+(dumpallproperties a)

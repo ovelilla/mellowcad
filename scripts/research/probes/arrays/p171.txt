@@ -1,0 +1,19 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_LINE
+0,0
+100,0
+
+_CIRCLE
+10,10
+2
+(sssetfirst nil (ssadd (entlast)))
+_ARRAYPATH
+50,0
+_AS
+_N
+_X
+(princ (if (setq s (ssget "_I")) (sslength s) 0))
+(princ (sslength (ssget "_X")))

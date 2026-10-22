@@ -1,0 +1,19 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_CIRCLE
+10,10
+2
+_ARRAYPOLAR
+_L
+
+0,0
+_AS
+_N
+_X
+_UNDO
+2
+(ssget "_X")
+_REDO
+(sslength (ssget "_X"))
