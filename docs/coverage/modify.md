@@ -949,7 +949,7 @@ way round — and is left open from the later point round to the earlier, an arc
 own circle; the same point twice (`@`, BREAKATPOINT) splits one at a vertex too, a closed one at its
 start vertex as well, and does nothing at an end or at that start vertex; an object broken in two is
 kept as the piece from its start — its handle, its place in the drawing —, the other piece a new
-object, which Last finds, and a circle is kept as the arc left (AutoCAD 2023's console's LIST);
+object, which Last finds, and a circle is kept as the arc left (p205, p209–p219, p224, p225, p228);
 ellipses, as the console's DXF parameters show them: a whole one loses what runs counter-clockwise
 from the first point to the second and keeps its handle (ellipse/p334; `@` and BREAKATPOINT on it
 `Cannot break a closed, periodic curve at only one point.`, es
@@ -957,15 +957,31 @@ from the first point to the second and keeps its handle (ellipse/p334; `@` and B
 between the points in its parameter, whichever comes first, split by `@`, untouched at an end; text,
 MTEXT, attribute definitions, dimensions and hatches `Object can't be broken` (es
 `Imposible partir este objeto`), a block `Can't break a block` (es `Imposible partir un bloque`),
-picked or found by a mode, and `Select object:` again; a line's pieces keep the Z along its slope;
-an object at an angle to the UCS's XY plane is not taken
+picked or found by a mode, and `Select object:` again (p180–p187); points off the object taken at
+its nearest point, an arc's from its gap at its nearer end (p200–p204, p206, p218, p219); a line's
+pieces keep the Z along its slope (p189), every piece the object's layer, colour, linetype,
+lineweight, thickness and elevation (p194–p196, p198), in a turned UCS as in the WCS (p197); a
+polyline not level with the UCS, standing up or under a −Z normal, broken in its OCS, a point lying
+in its plane read there and any other where the line of sight meets it, the pieces keeping its
+normal and elevation (p190, p192); the look: `Select object:`'s rollover the plain hover glow, as
+FILLET's, over a text too, none over a locked object (desktop d01-1, d06-1, d06-2); at the second
+break point the break the click would make, what it keeps in the selection's glow over the object
+dimmed — nothing glowing where all of it goes, the object glowing where nothing changes —, off the
+object at its nearest point, past an end to the end (d01-2–d01-4, d02-1, d03-1, d03-2, d04-2);
+`Specify first break point:` the object plain (d04-1); BREAKATPOINT's point the object whole in the
+glow (d14-1)
 
 **Missing:** splines (they do not highlight; AutoCAD breaks a CV spline into pieces on control
 points and knots of their own, which a spline here, on uniform knots, cannot hold, spline/p325, and
 a fit spline broken at two fit points into fit splines whose end tangents are the curve's
 derivatives there, p326); a point typed off the screen at `Select object:` (command-line.md's
 `Select objects:` Missing); a mirrored whole ellipse,
-which AutoCAD breaks counter-clockwise about its −Z normal (ellipse/p329; MIRROR's entry)
+which AutoCAD breaks counter-clockwise about its −Z normal (ellipse/p329; MIRROR's entry); an ARC,
+CIRCLE or ELLIPSE not level with the UCS, `No object found` here: AutoCAD breaks one, a −Z one
+reading the picks' WCS X,Y as OCS coordinates (p191, p193, p199, p229, p230), a tilted one by a rule
+p188 does not settle (PIECES-D10); the ghost under a far Endpoint marker trails the raw cursor in
+AutoCAD while the click takes the marker (desktop d13), here it follows the point the click takes
+(PIECES-D30)
 
 ### `MATCHPROP` / `MA` · es `IGUALARPROP` / `IP`† / `COPARPROP`†
 

@@ -14,6 +14,11 @@ import {
   createMText,
   ellipseEndPoint,
   ellipseStartPoint,
+  createAttributeDefinition,
+  entityElevation,
+  entityThickness,
+  withElevation,
+  withNormal,
 } from "../../domain/entities"
 import { type CadHarness, createHarness } from "../../../test/harness"
 import {
@@ -244,9 +249,9 @@ describe("BREAK", () => {
     expect(arcSweepAngle(arcs[1])).toBeCloseTo(deg(45))
   })
 
-  // AutoCAD 2023's console (acc/hd9–hd13, hd16–hd18): the piece from the
-  // object's start is the object kept — its handle, its place —, the other
-  // is new and Last finds it; U puts the object back whole.
+  // AutoCAD 2027's console (probes pieces/p213, p224, p225, p228): the piece
+  // from the object's start is the object kept — its handle, its place —,
+  // the other is new and Last finds it; U puts the object back whole.
   it("keeps the object as the piece from its start, the other new", () => {
     for (const [start, end, second, kept, added] of [
       [p(0, 0), p(100, 0), "70,0", [p(0, 0), p(50, 0)], [p(70, 0), p(100, 0)]],
@@ -333,8 +338,8 @@ function pieces(cad: CadHarness): { id: string; vertices: string }[] {
 
 const SQUARE = [p(0, 0), p(100, 0), p(100, 100), p(0, 100)]
 
-// AutoCAD 2023's console's LIST after each break (acc/pb1–pb11, pc1–pc12,
-// pa1–pa4, pk1–pk9): the piece from the polyline's start keeps its handle.
+// AutoCAD 2027's console's dump after each break (probes pieces/p209–p219):
+// the piece from the polyline's start keeps its handle.
 describe("BREAK of a polyline", () => {
   it("keeps what lies before and after on an open one, the first piece the object", () => {
     for (const [first, second, kept, added] of [
@@ -508,8 +513,9 @@ describe("BREAK of a polyline", () => {
   })
 })
 
-// AutoCAD 2023's console, LWPOLYLINE vertices read in the WCS (acc/bz6–bz10):
-// in a UCS at 10,0 turned 30°, the points typed in the WCS with `*`.
+// The cuts of AutoCAD 2027's console (probes pieces/p209–p213), typed with
+// `*` in a UCS at 10,0 turned 30°: a turned UCS changes how the points are
+// read, not the cut (p197).
 describe("BREAK of a polyline in a turned UCS", () => {
   const turned = (...entities: PolylineEntity[]) =>
     answer(createHarness({ entities }), "UCS", "O", "10,0", "UCS", "Z", "30")
@@ -573,14 +579,98 @@ describe("BREAK of a polyline in a turned UCS", () => {
   })
 })
 
-// AutoCAD 2023's console (acc/bz1–bz5): at a line's or an arc's end, `@`
-// and BREAKATPOINT leave it as it was, saying nothing.
+const STANDING = { x: 0, y: -1, z: 0 }
+const DOWN = { x: 0, y: 0, z: -1 }
+const ELL = [p(0, 0), p(100, 0), p(100, 50)]
+
+/** The polylines left, `id|new vertices` in its OCS, each with its normal. */
+function planePieces(cad: CadHarness) {
+  return pieces(cad).map(({ id, vertices }, i) => ({
+    piece: `${id === "P" ? "P" : "new"} ${vertices}`,
+    normal: cad.entities()[i].normal,
+    elevation: entityElevation(cad.entities()[i]),
+  }))
+}
+
+// AutoCAD 2027's console (probes pieces/p190, p192): a polyline not level
+// with the UCS is broken in its OCS, the picks read on it in its plane, the
+// pieces in that plane and the piece from its start the object.
+describe("BREAK of a polyline not level with the UCS", () => {
+  it("breaks one standing up, drawn in UCS X 90 (p190)", () => {
+    const cad = createHarness({
+      entities: [withNormal(polylineOf(ELL, { id: "P" }), STANDING)],
+    })
+    answer(cad, "BREAK", "50,0", "80,0")
+    expect(planePieces(cad)).toEqual([
+      { piece: "P 0,0 50,0", normal: STANDING, elevation: 0 },
+      { piece: "new 80,0 100,0 100,50", normal: STANDING, elevation: 0 },
+    ])
+  })
+
+  it("breaks one under a −Z normal, its X the WCS's −X (p192)", () => {
+    const cad = createHarness({
+      entities: [withNormal(polylineOf(ELL, { id: "P" }), DOWN)],
+    })
+    answer(cad, "BREAK", "-25,0", "-75,0")
+    expect(planePieces(cad)).toEqual([
+      { piece: "P 0,0 25,0", normal: DOWN, elevation: 0 },
+      { piece: "new 75,0 100,0 100,50", normal: DOWN, elevation: 0 },
+    ])
+
+    // Clicked in plan, off its plane (WCS Z −5): read where the line of
+    // sight meets it.
+    const raised = createHarness({
+      entities: [
+        withElevation(withNormal(polylineOf(ELL, { id: "P" }), DOWN), 5),
+      ],
+    })
+    raised.command("BREAK").click(p(-25, 0)).click(p(-75, 0))
+    expect(planePieces(raised)).toEqual([
+      { piece: "P 0,0 25,0", normal: DOWN, elevation: 5 },
+      { piece: "new 75,0 100,0 100,50", normal: DOWN, elevation: 5 },
+    ])
+  })
+
+  it("splits one at BREAKATPOINT's point, read on the segment it lies on", () => {
+    const cad = createHarness({
+      entities: [withNormal(polylineOf(ELL, { id: "P" }), STANDING)],
+    })
+    answer(cad, "BREAKATPOINT", "50,0", "100,0,25")
+    expect(planePieces(cad).map(({ piece }) => piece)).toEqual([
+      "P 0,0 100,0 100,25",
+      "new 100,25 100,50",
+    ])
+  })
+
+  // probes pieces/p188, p191, p193, p199, p229, p230: AutoCAD breaks an ARC,
+  // a CIRCLE or an ELLIPSE not level too, a −Z one reading the picks' WCS X,Y
+  // as OCS coordinates; the tilted rule two probes do not settle (Missing).
+  it("does not take an arc, a circle or an ellipse not level", () => {
+    for (const entity of [
+      withNormal(circleOf(p(0, 0), 50, { id: "C" }), STANDING),
+      withNormal(circleOf(p(0, 0), 50, { id: "C" }), DOWN),
+      withNormal(arcOf(p(0, 0), 50, 0, deg(90), { id: "C" }), DOWN),
+      withNormal(ellipseOf(p(0, 0), p(50, 0), 0.5, { id: "C" }), DOWN),
+    ]) {
+      const cad = answer(
+        createHarness({ entities: [entity] }),
+        "BREAK",
+        "-50,0"
+      )
+      expect(cad.commandLog().at(-1)).toBe("No object found")
+      expect(cad.entities()).toEqual([entity])
+    }
+  })
+})
+
+// AutoCAD 2027's console (probes pieces/p226, p227): at a line's or an
+// arc's end, `@` and BREAKATPOINT leave it as it was, saying nothing.
 describe("BREAK at an end", () => {
   it("does nothing to a line or an arc, silently", () => {
-    for (const [command, first, second] of [
-      ["BREAK", "100,0", "@"],
-      ["BREAK", "0,0", "@"],
-      ["BREAKATPOINT", "50,0", "100,0"],
+    for (const [command, first, second, prompt] of [
+      ["BREAK", "100,0", "@", "Specify second break point or [First point]:"],
+      ["BREAK", "0,0", "@", "Specify second break point or [First point]:"],
+      ["BREAKATPOINT", "50,0", "100,0", "Specify break point:"],
     ]) {
       const cad = answer(
         createHarness({ entities: [lineOf(p(0, 0), p(100, 0), { id: "l1" })] }),
@@ -592,7 +682,7 @@ describe("BREAK at an end", () => {
         id: "l1",
         end: { x: 100, y: 0 },
       })
-      expect(cad.commandLog().at(-1)).toMatch(/break point/)
+      expect(cad.commandLog().at(-1)).toBe(`${prompt} ${second}`)
       expect(cad.activeToolId()).toBe("select")
     }
     for (const first of ["100,0", "0,100"]) {
@@ -635,8 +725,9 @@ const ARC = () =>
   })
 const T45 = "85.3553,67.6777"
 
-// Each ellipse's handle and DXF 41/42 read after the break (AutoCAD 2023's
-// console, acc/be1–be21; 2027 keeps the whole ellipse's rule, ellipse/p334).
+// Each ellipse's handle and DXF 41/42 read after the break (AutoCAD 2027's
+// console, probes pieces/p220–p223, ellipse/p334); what it cannot break,
+// p180–p187.
 describe("BREAK of an ellipse", () => {
   it("takes from a whole one what runs counter-clockwise from the first point to the second", () => {
     for (const [first, second, kept] of [
@@ -769,6 +860,174 @@ describe("BREAK of an ellipse", () => {
       "50,-20"
     )
     expect(dimension.commandLog().at(-1)).toBe("Object can't be broken")
+  })
+  // probes pieces/p182, p187: an attribute definition picked, a text a
+  // Window finds.
+  it("refuses an attribute definition, and a text a mode finds", () => {
+    for (const [entity, ...picks] of [
+      [createAttributeDefinition(p(0, 0), "TAG", { height: 10 }), "3,3"],
+      [textOf(p(0, 0), "HOLA", { height: 10 }), "W", "-10,-10", "100,30"],
+    ] as const) {
+      const cad = createHarness({
+        entities: [entity, lineOf(p(200, -100), p(200, 100), { id: "L" })],
+      })
+      answer(cad, "BREAK", ...picks)
+      expect(cad.commandLog().at(-1)).toBe("Object can't be broken")
+      answer(cad, "200,0", "200,50")
+      expect(lineList(cad, "L")).toEqual([
+        `* ${entity.type}`,
+        "L 200,-100 200,0",
+        "* 200,50 200,100",
+      ])
+    }
+  })
+})
+
+// AutoCAD 2027's console (probes pieces/p201–p204, p206, p218, p219): a point
+// off the object is taken at its nearest point — a line's or a polyline's
+// foot, an arc's point on the same radius or, from its gap, its nearer end —
+// and a circle's at its angle from the centre.
+describe("BREAK's points off the object", () => {
+  it("are taken at the object's nearest point", () => {
+    const line = answer(
+      createHarness({ entities: [lineA()] }),
+      ...["BREAK", "10,0", "F", "30,20", "70,-20"]
+    )
+    expect(lineList(line, "A")).toEqual(["A 0,0 30,0", "* 70,0 100,0"])
+
+    for (const [arc, first, second, kept] of [
+      [
+        arcOf(p(0, 0), 50, 0, deg(90)),
+        "35.355339,35.355339",
+        "0,-50",
+        [[45, 90]],
+      ],
+      [
+        arcOf(p(0, 0), 50, 0, deg(90)),
+        "35.355339,35.355339",
+        "-50,0",
+        [[0, 45]],
+      ],
+      [
+        arcOf(p(0, 0), 50, 0, deg(180)),
+        "43.30127,25",
+        "-10,10",
+        [
+          [0, 30],
+          [135, 180],
+        ],
+      ],
+      [circleOf(p(0, 0), 50), "50,0", "0,10", [[90, 0]]],
+    ] as const) {
+      const cad = answer(
+        createHarness({ entities: [arc] }),
+        "BREAK",
+        first,
+        second
+      )
+      const arcs = cad.entities() as ArcEntity[]
+      expect(arcs).toHaveLength(kept.length)
+      arcs.forEach((piece, i) => {
+        expect(piece.startAngle).toBeCloseToAngle(deg(kept[i][0]))
+        expect(piece.endAngle).toBeCloseToAngle(deg(kept[i][1]))
+      })
+    }
+
+    for (const [second, added] of [
+      ["150,50", "100,50 100,100 0,100"],
+      ["150,-50", "100,0 100,100 0,100"],
+    ]) {
+      const cad = createHarness({ entities: [polylineOf(SQUARE, { id: "P" })] })
+      answer(cad, "BREAK", "50,0", second)
+      expect(pieces(cad).map((piece) => piece.vertices)).toEqual([
+        "0,0 50,0",
+        added,
+      ])
+    }
+  })
+})
+
+// AutoCAD 2027's console (probes pieces/p194–p196, p198): every piece wears
+// the object's layer, colour, linetype, lineweight, thickness and elevation
+// (its linetype scale and transparency are not modelled here), a new one
+// appended after a later object.
+describe("BREAK's pieces", () => {
+  const WORN = {
+    layerId: "L1",
+    color: "#ff0000",
+    linetype: "DASHED",
+    lineweight: 0.5,
+  }
+  const wearing = (entity: Entity): Entity => ({
+    ...entity,
+    ...WORN,
+    elevation: 10,
+    ...(entity.type === "ellipse" ? {} : { thickness: 3 }),
+  })
+
+  it("wear the object's properties", () => {
+    for (const [object, first, second, ids] of [
+      [
+        lineOf(p(0, 0), p(100, 0), { id: "O" }),
+        "30,0",
+        "70,0",
+        ["O", "B", "*"],
+      ],
+      [circleOf(p(0, 0), 50, { id: "O" }), "50,0", "0,50", ["O", "B"]],
+      [
+        polylineOf(SQUARE, {
+          id: "O",
+          widths: [
+            [2, 2],
+            [2, 2],
+            [2, 2],
+          ],
+        }),
+        "50,0",
+        "50,100",
+        ["O", "B", "*"],
+      ],
+      [
+        ellipseOf(p(0, 0), p(50, 0), 0.5, { id: "O" }),
+        "50,0",
+        "0,25",
+        ["O", "B"],
+      ],
+    ] as const) {
+      const cad = createHarness()
+      cad.runtime.document.load(
+        [wearing(object), wearing(lineOf(p(0, 150), p(100, 150), { id: "B" }))],
+        { layers: [layerOf("0"), layerOf("L1")] }
+      )
+      answer(cad, "BREAK", first, second)
+      const left = cad.entities()
+      expect(
+        left.map(({ id }) => (id === "O" || id === "B" ? id : "*"))
+      ).toEqual(ids)
+      for (const piece of left) {
+        expect(piece).toMatchObject(WORN)
+        expect(entityElevation(piece)).toBe(10)
+        expect(entityThickness(piece)).toBe(piece.type === "ellipse" ? 0 : 3)
+      }
+    }
+  })
+
+  // probe pieces/p197: points read in a UCS turned 30°, the pieces in the WCS.
+  it("are cut in a turned UCS", () => {
+    const cad = answer(
+      createHarness(),
+      ...["UCS", "Z", "30", "LINE", "0,0", "100,0", ""],
+      ...["BREAK", "30,0", "70,0"]
+    )
+    const [kept, added] = cad.entities() as LineEntity[]
+    expect([kept.start, kept.end]).toBeCloseToPoints([
+      p(0, 0),
+      p(25.980762, 15),
+    ])
+    expect([added.start, added.end]).toBeCloseToPoints([
+      p(60.621778, 35),
+      p(86.60254, 50),
+    ])
   })
 })
 

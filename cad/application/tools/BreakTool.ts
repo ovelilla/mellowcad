@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3 } from "../../geometry/Vec3"
+import { Vec3, planar } from "../../geometry/Vec3"
 import {
   arcSweepAngle,
   ArcEntity,
@@ -16,7 +16,9 @@ import {
   polylineParamAt,
   polylineSegments,
   polylineSpan,
+  entityElevation,
   readsInPlan,
+  worldToEntity,
 } from "../../domain/entities"
 import { normalizeAngle } from "../../geometry/primitives"
 import {
@@ -29,9 +31,8 @@ import {
 } from "../../domain/ellipses"
 import type { EllipseEntity } from "../../domain/entityTypes"
 import type { MessageId } from "../EngineText"
-import { ScenePrimitive } from "../../scene/types"
-import { THEME } from "../../scene/theme"
-import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
+import type { CameraTransform, ScenePrimitive } from "../../scene/types"
+import { cursorOnEntityPlane } from "../viewPick"
 import {
   RemoveEntitiesCommand,
   ReplaceEntitiesCommand,
@@ -42,6 +43,7 @@ import {
   parseCoordinate,
 } from "../input/coordinateInput"
 import type { PromptId } from "../../locales/types"
+import { drawn, rollover } from "./ghostLook"
 import { lockedObjectAt } from "./lockedPick"
 import { ONE_OBJECT_MODES, ObjectSelector } from "./objectSelection"
 import {
@@ -74,8 +76,8 @@ type BreakState =
   | {
       readonly phase: "second"
       readonly target: Entity
-      readonly first: Vec2
-      readonly cursor: Vec2
+      readonly first: Vec2 | Vec3
+      readonly cursor: Vec2 | Vec3
       /** Whether the first point was given after `First point`, which asks no keyword. */
       readonly respecified: boolean
     }
@@ -103,15 +105,12 @@ type BreakGeom =
       readonly widths: readonly PolylineWidth[]
     }
 
-interface BreakResult {
-  /** The surviving pieces — empty when the whole object is consumed. */
-  readonly kept: readonly BreakGeom[]
-  /** The piece taken away, for the preview; null for a gapless split. */
-  readonly removed: BreakGeom | null
-}
+/** The surviving pieces, from the object's start — none when all of it goes. */
+type BreakResult = readonly BreakGeom[]
 
 const PARAM_EPS = 1e-6
 const ANGLE_EPS = 1e-6
+const PLANE_EPS = 1e-9
 
 export class BreakTool implements Tool {
   constructor(
@@ -179,8 +178,8 @@ export class BreakTool implements Tool {
 
   /**
    * `Select object:` is a set of one object, and the second break point keeps
-   * its keyword's refusal even where the prompt lists none (AutoCAD 2023's
-   * console).
+   * its keyword's refusal even where the prompt lists none (AutoCAD 2027's
+   * console, probes pieces/p146, p150).
    */
   takes(): QuestionInput {
     switch (this.state.phase) {
@@ -195,7 +194,7 @@ export class BreakTool implements Tool {
 
   /**
    * The second break point is LASTPOINT, although its refusal is its own
-   * (AutoCAD 2023's console, acc/bk31, bk35).
+   * (AutoCAD 2027's console, probes pieces/p146, p153, p154).
    */
   setsLastPoint(): boolean | null {
     return this.state.phase === "second" ? true : null
@@ -234,6 +233,9 @@ export class BreakTool implements Tool {
       return
     }
     if (this.state.phase === "second") {
+      // WHY the snapped point: the click takes it (preview must equal
+      // commit); AutoCAD's ghost trails the raw cursor under a far Endpoint
+      // marker while its click takes the marker (desktop pieces/d13).
       this.state = { ...this.state, cursor: input.point }
       ctx.requestRender()
     }
@@ -303,42 +305,50 @@ export class BreakTool implements Tool {
     return "continue"
   }
 
+  /**
+   * BREAK's ghost is the break the click would make: what it keeps in the
+   * selection's glow over the object dimmed — nothing in the glow where all
+   * of it goes, the object in the glow where it does nothing (desktop
+   * pieces/d01-2–d01-4, d02-1, d03-1, d03-2, d04-2), as FILLET's. At
+   * `Specify first break point:` the object is drawn plain (d04-1), at
+   * BREAKATPOINT's point whole in the glow, both pieces kept (d14-1).
+   */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase === "select") {
-      if (this.modes.inMode()) return this.modes.buildOverlay(ctx)
-      return this.state.hover ? this.highlight(this.state.hover, ctx) : []
-    }
-
-    const out: ScenePrimitive[] = this.highlight(this.state.target, ctx)
-    if (this.state.phase === "second") {
-      const result = computeBreak(
-        this.state.target,
-        this.state.first,
-        this.state.cursor
-      )
-      if (result?.removed) {
-        out.push(
-          ...geomPrimitives(this.state.target, result.removed, ctx, {
-            color: THEME.gripHot,
-            width: 1.5,
-            dash: [6, 4],
-          })
-        )
+    switch (this.state.phase) {
+      case "select":
+        if (this.modes.inMode()) return this.modes.buildOverlay(ctx)
+        return this.state.hover ? rollover(ctx, this.state.hover) : []
+      case "first":
+        return this.mode === "atPoint"
+          ? drawn(ctx, this.state.target, "glow")
+          : []
+      case "second": {
+        const { target, first, cursor } = this.state
+        const pieces = breakPieces(target, first, cursor, ctx.viewport, true)
+        if (!pieces) return drawn(ctx, target, "glow")
+        return [
+          ...drawn(ctx, target, "faded"),
+          ...pieces.flatMap((piece) => drawn(ctx, piece, "glow")),
+        ]
       }
     }
-    return out
   }
 
-  private highlight(entity: Entity, ctx: ToolContext): ScenePrimitive[] {
-    return entityScenePrimitive(ctx.viewport, entity, {
-      color: THEME.selected,
-      width: 2,
-    })
+  /** The object the ghost draws again. */
+  hiddenEntityIds(): readonly EntityId[] {
+    switch (this.state.phase) {
+      case "select":
+        return []
+      case "first":
+        return this.mode === "atPoint" ? [this.state.target.id] : []
+      case "second":
+        return [this.state.target.id]
+    }
   }
 
   /**
-   * A breakable object in the UCS's XY plane, never one at an angle to it,
-   * or one AutoCAD says it cannot break.
+   * An object BREAK breaks (`breakable`), or one AutoCAD says it cannot
+   * break.
    */
   private pick(world: Vec2, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(world)
@@ -373,7 +383,7 @@ export class BreakTool implements Tool {
     if (!hit) ctx.report(ctx.text.message("noObjectFound"))
     else if (this.refuse(hit, ctx)) ctx.requestRender()
     else if (this.mode === "atPoint") this.askFirst(hit, ctx)
-    else this.askSecond(hit, at, false, ctx)
+    else this.askSecond(hit, world, false, ctx)
   }
 
   private askFirst(target: Entity, ctx: ToolContext): void {
@@ -383,7 +393,7 @@ export class BreakTool implements Tool {
 
   private askSecond(
     target: Entity,
-    first: Vec2,
+    first: Vec2 | Vec3,
     respecified: boolean,
     ctx: ToolContext
   ): void {
@@ -391,7 +401,7 @@ export class BreakTool implements Tool {
     this.openPointInput(ctx)
   }
 
-  private placeFirst(point: Vec2, ctx: ToolContext): void {
+  private placeFirst(point: Vec2 | Vec3, ctx: ToolContext): void {
     if (this.state.phase !== "first") return
     if (this.mode === "atPoint") {
       this.commit(this.state.target, point, point, ctx)
@@ -445,15 +455,15 @@ export class BreakTool implements Tool {
 
   private commit(
     target: Entity,
-    first: Vec2,
-    second: Vec2,
+    first: Vec2 | Vec3,
+    second: Vec2 | Vec3,
     ctx: ToolContext
   ): void {
-    const result = computeBreak(target, first, second)
-    if (!result) {
-      // WHY: AutoCAD 2023's console will not split a circle or an ellipse
-      // in place (acc/pc5, pc13, be4, be5, be18); at a line's or an arc's
-      // end it does nothing.
+    const pieces = breakPieces(target, first, second, ctx.viewport, false)
+    if (!pieces) {
+      // WHY: AutoCAD 2027's console will not split a circle or an ellipse
+      // in place (probes pieces/p207, p208, p223); at a line's or an arc's
+      // end it does nothing (p226, p227).
       if (target.type === "circle") {
         ctx.report(ctx.text.message("arcCannotBeFull360"))
       } else if (target.type === "ellipse") {
@@ -462,12 +472,6 @@ export class BreakTool implements Tool {
       ctx.endCommand()
       return
     }
-    // The piece from the object's start, listed first, is the object kept
-    // (its handle; a circle's one arc too), the other a new one, which Last
-    // then finds — AutoCAD 2023's console (acc/hd9–hd13, hd16–hd18).
-    const pieces = result.kept.map((geom, i) =>
-      toEntity(target, geom, i === 0 ? target.id : undefined)
-    )
     if (pieces.length === 0) {
       ctx.execute(new RemoveEntitiesCommand([target.id]))
     } else if (pieces.length === 1) {
@@ -479,7 +483,7 @@ export class BreakTool implements Tool {
   }
 }
 
-/** What {@link computeBreak} cuts; anything else does not highlight. */
+/** What {@link computeBreak} cuts. */
 const BROKEN: ReadonlySet<Entity["type"]> = new Set([
   "line",
   "arc",
@@ -488,13 +492,23 @@ const BROKEN: ReadonlySet<Entity["type"]> = new Set([
   "polyline",
 ])
 
+/**
+ * WHY a polyline not level with the UCS and nothing else not level: AutoCAD
+ * 2027 cuts one in its OCS, as here (probes pieces/p190, p192), and breaks an
+ * ARC, CIRCLE or ELLIPSE too, a −Z one reading the picks' WCS X,Y as OCS
+ * coordinates (p191, p193, p199, p229, p230), a tilted one by a rule p188
+ * does not settle.
+ */
 function breakable(entity: Entity): boolean {
-  return BROKEN.has(entity.type) && readsInPlan(entity)
+  return (
+    BROKEN.has(entity.type) &&
+    (readsInPlan(entity) || entity.type === "polyline")
+  )
 }
 
 /**
- * What AutoCAD 2023's console says of an object BREAK cannot break, asking
- * `Select object:` again (acc/be13–be15, be19–be21); a spline it breaks,
+ * What AutoCAD 2027's console says of an object BREAK cannot break, asking
+ * `Select object:` again (probes pieces/p180–p187); a spline it breaks,
  * which is not built here.
  */
 function cannotBreak(entity: Entity): MessageId | null {
@@ -565,53 +579,36 @@ function toEntity(source: Entity, geom: BreakGeom, id?: EntityId): Entity {
   }
 }
 
-function geomPrimitives(
-  source: Entity,
-  geom: BreakGeom,
-  ctx: ToolContext,
-  stroke: { color: string; width: number; dash?: number[] }
-): ScenePrimitive[] {
-  switch (geom.kind) {
-    case "ellipse":
-      return entityScenePrimitive(
-        ctx.viewport,
-        toEntity(source, geom, "break-preview"),
-        stroke
-      )
-    case "line":
-      return [
-        {
-          kind: "segment",
-          a: ctx.viewport.worldToScreen(geom.start),
-          b: ctx.viewport.worldToScreen(geom.end),
-          stroke,
-        },
-      ]
-    case "arc":
-      return [
-        arcScenePrimitive(
-          ctx.viewport,
-          geom.center,
-          geom.radius,
-          geom.startAngle,
-          geom.endAngle,
-          stroke
-        ),
-      ]
-    case "polyline":
-      return entityScenePrimitive(
-        ctx.viewport,
-        toEntity(source, geom, "break-preview"),
-        stroke
-      )
-  }
+/**
+ * What a break at `first` and `second` keeps of `target`, worked out once for
+ * the click and the ghost (`ghost`: a new piece under a fixed id). The piece
+ * from the object's start, listed first, is the object kept (its handle; a
+ * circle's one arc too), the other a new one, which Last then finds (AutoCAD
+ * 2027's console, probes pieces/p213, p224, p225, p228); null where the break
+ * does nothing.
+ */
+function breakPieces(
+  target: Entity,
+  first: Vec2 | Vec3,
+  second: Vec2 | Vec3,
+  view: CameraTransform,
+  ghost: boolean
+): Entity[] | null {
+  const kept = computeBreak(target, first, second, view)
+  const newId = ghost ? "break-preview" : undefined
+  return (
+    kept?.map((geom, i) =>
+      toEntity(target, geom, i === 0 ? target.id : newId)
+    ) ?? null
+  )
 }
 
 /** The pieces a break at `first`/`second` leaves, or null when it does nothing. */
 function computeBreak(
   entity: Entity,
-  first: Vec2,
-  second: Vec2
+  first: Vec2 | Vec3,
+  second: Vec2 | Vec3,
+  view: CameraTransform
 ): BreakResult | null {
   switch (entity.type) {
     case "line":
@@ -621,7 +618,13 @@ function computeBreak(
     case "circle":
       return breakCircle(entity, first, second)
     case "polyline":
-      return breakPolyline(entity, first, second)
+      return readsInPlan(entity)
+        ? breakPolyline(entity, first, second)
+        : breakPolyline(
+            entity,
+            inPlaneOf(entity, first, view),
+            inPlaneOf(entity, second, view)
+          )
     case "ellipse":
       return breakEllipse(entity, first, second)
     case "spline":
@@ -650,13 +653,10 @@ function breakLine(
   if (tb - ta < PARAM_EPS) {
     // A gapless split: only meaningful away from the ends.
     if (ta < PARAM_EPS || ta > 1 - PARAM_EPS) return null
-    return {
-      kept: [
-        { kind: "line", start: line.start, end: at(ta) },
-        { kind: "line", start: at(ta), end: line.end },
-      ],
-      removed: null,
-    }
+    return [
+      { kind: "line", start: line.start, end: at(ta) },
+      { kind: "line", start: at(ta), end: line.end },
+    ]
   }
 
   const kept: BreakGeom[] = []
@@ -666,7 +666,7 @@ function breakLine(
   if (tb < 1 - PARAM_EPS) {
     kept.push({ kind: "line", start: at(tb), end: line.end })
   }
-  return { kept, removed: { kind: "line", start: at(ta), end: at(tb) } }
+  return kept
 }
 
 function breakArc(
@@ -683,19 +683,16 @@ function breakArc(
 
   if (ob - oa < ANGLE_EPS) {
     if (oa < ANGLE_EPS || oa > sweep - ANGLE_EPS) return null
-    return {
-      kept: [
-        arcGeom(arc, arc.startAngle, at(oa)),
-        arcGeom(arc, at(oa), arc.endAngle),
-      ],
-      removed: null,
-    }
+    return [
+      arcGeom(arc, arc.startAngle, at(oa)),
+      arcGeom(arc, at(oa), arc.endAngle),
+    ]
   }
 
   const kept: BreakGeom[] = []
   if (oa > ANGLE_EPS) kept.push(arcGeom(arc, arc.startAngle, at(oa)))
   if (ob < sweep - ANGLE_EPS) kept.push(arcGeom(arc, at(ob), arc.endAngle))
-  return { kept, removed: arcGeom(arc, at(oa), at(ob)) }
+  return kept
 }
 
 /**
@@ -713,34 +710,25 @@ function breakCircle(
   const removedSweep = normalizeAngle(a2 - a1)
   if (removedSweep < ANGLE_EPS) return null
 
-  return {
-    kept: [
-      {
-        kind: "arc",
-        center: circle.center,
-        radius: circle.radius,
-        startAngle: a2,
-        endAngle: a1,
-      },
-    ],
-    removed: {
+  return [
+    {
       kind: "arc",
       center: circle.center,
       radius: circle.radius,
-      startAngle: a1,
-      endAngle: a2,
+      startAngle: a2,
+      endAngle: a1,
     },
-  }
+  ]
 }
 
 /**
  * A polyline loses the part between the two points in its vertices' order,
- * whichever is picked first (AutoCAD 2023's console, acc/pb1–pb11): an open
- * one keeps what lies before and after, a closed one what runs on from the
- * later point round to the earlier, opened there, even where that is the
- * longer way round (pc1–pc10). The same point twice splits it, a closed one
- * at its start vertex too, and does nothing at an end or at that vertex
- * (pb7–pb10, pc4, pc11, pc12).
+ * whichever is picked first (AutoCAD 2027's console, probes pieces/p210,
+ * p211, p218, p219): an open one keeps what lies before and after, a closed
+ * one what runs on from the later point round to the earlier, opened there,
+ * even where that is the longer way round (p212). The same point twice
+ * splits it, a closed one at its start vertex too, and does nothing at an
+ * end or at that vertex (p213–p217).
  */
 function breakPolyline(
   poly: PolylineEntity,
@@ -759,26 +747,23 @@ function breakPolyline(
 
   if (tb - ta < PARAM_EPS) {
     if (ta < PARAM_EPS || ta > count - PARAM_EPS) return null
-    return { kept: [span(0, ta), span(ta, count)], removed: null }
+    return [span(0, ta), span(ta, count)]
   }
   if (poly.closed) {
     const rest = ta + count - tb
-    return {
-      kept: rest > PARAM_EPS ? [span(tb, ta + count)] : [],
-      removed: span(ta, tb),
-    }
+    return rest > PARAM_EPS ? [span(tb, ta + count)] : []
   }
   const kept: BreakGeom[] = []
   if (ta > PARAM_EPS) kept.push(span(0, ta))
   if (tb < count - PARAM_EPS) kept.push(span(tb, count))
-  return { kept, removed: span(ta, tb) }
+  return kept
 }
 
 /**
  * An ellipse loses what runs counter-clockwise from the first point to the
  * second, as a circle does, its piece keeping the handle; an elliptical arc
- * what lies between them in its parameter, as an arc does (AutoCAD 2023's
- * console, acc/be1–be12) — cut with `ellipseCut`, as TRIM cuts it.
+ * what lies between them in its parameter, as an arc does (AutoCAD 2027's
+ * console, probes pieces/p220–p222) — cut with `ellipseCut`, as TRIM cuts it.
  */
 function breakEllipse(
   ellipse: EllipseEntity,
@@ -797,16 +782,30 @@ function breakEllipse(
   if (isFullEllipse(ellipse)) {
     const gap = normalizeAngle(t2 - t1)
     if (gap < ANGLE_EPS) return null
-    const { kept, removed } = ellipseCut(ellipse, t1, t1 + gap)
-    return { kept: kept.map(piece), removed: piece(removed) }
+    return ellipseCut(ellipse, t1, t1 + gap).kept.map(piece)
   }
   const { sweep } = ellipseSweepParams(ellipse)
   const from = Math.min(t1, t2)
   const to = Math.max(t1, t2)
   const split = to - from < ANGLE_EPS
   if (split && (from < ANGLE_EPS || from > sweep - ANGLE_EPS)) return null
-  const { kept, removed } = ellipseCut(ellipse, from, to)
-  return { kept: kept.map(piece), removed: split ? null : piece(removed) }
+  return ellipseCut(ellipse, from, to).kept.map(piece)
+}
+
+/**
+ * A break point on a polyline not level with the UCS, in its OCS: one lying
+ * in its plane, typed or snapped, where it lies; any other where the line of
+ * sight through it meets the plane.
+ */
+function inPlaneOf(
+  poly: PolylineEntity,
+  point: Vec2 | Vec3,
+  view: CameraTransform
+): Vec2 {
+  const local = worldToEntity(poly, point)
+  return Math.abs(local.z - entityElevation(poly)) < PLANE_EPS
+    ? planar(local)
+    : cursorOnEntityPlane(view, poly, view.worldToScreen(point))
 }
 
 function arcGeom(

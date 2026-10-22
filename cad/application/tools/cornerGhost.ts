@@ -4,11 +4,9 @@ import {
   UpdateEntityCommand,
 } from "../commands/entityCommands"
 import { ScenePrimitive } from "../../scene/types"
-import { THEME } from "../../scene/theme"
-import { entityScenePrimitive } from "../SceneBuilder"
 import { cornerEntity, isSegment, pickedEntity } from "./cornerObjects"
 import type { FilletObject, CurveObject } from "./cornerObjects"
-import { drawn } from "./ghostLook"
+import { drawn, rollover } from "./ghostLook"
 import { ToolContext } from "./Tool"
 
 /**
@@ -122,8 +120,5 @@ export function cornerRollover(
   ctx: ToolContext,
   object: FilletObject | CurveObject
 ): ScenePrimitive[] {
-  return entityScenePrimitive(ctx.viewport, pickedEntity(object), {
-    color: THEME.entityHover,
-    width: 2,
-  })
+  return rollover(ctx, pickedEntity(object))
 }

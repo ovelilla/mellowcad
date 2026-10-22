@@ -604,7 +604,9 @@ describe("what the editing commands do with the widths", () => {
     expect(widths(cad)).toEqual([WIDE, WIDE])
   })
 
-  it("BREAK cuts a segment's width where it cuts it (acc/w9)", () => {
+  // probe pieces/p209: 0,0 → 100,0 tapering 0 → 10, a half circle to
+  // 100,100 at 10, 2 wide to 0,100, broken at 50,0 and 150,50.
+  it("BREAK cuts a segment's width where it cuts it (probe pieces/p209)", () => {
     const cad = createHarness({ entities: [tapered()] })
     cad.command("BREAK").click(p(25, 0)).click(p(75, 0))
     expect(widths(cad)).toEqual([
@@ -614,6 +616,29 @@ describe("what the editing commands do with the widths", () => {
         [2, 2],
       ],
     ])
+
+    const arched = createHarness({
+      entities: [
+        polylineOf([p(0, 0), p(100, 0), p(100, 100), p(0, 100)], {
+          bulges: [0, 1, 0],
+          widths: [
+            [0, 10],
+            [10, 10],
+            [2, 2],
+          ],
+        }),
+      ],
+    })
+    arched.command("BREAK").click(p(50, 0)).click(p(150, 50))
+    expect(widths(arched)).toEqual([
+      [[0, 5]],
+      [
+        [10, 10],
+        [2, 2],
+      ],
+    ])
+    const [, piece] = arched.entities() as PolylineEntity[]
+    expect(piece.bulges?.[0]).toBeCloseTo(0.414214, 6)
   })
 
   it("TRIM cuts it there too (probe trim/p233)", () => {

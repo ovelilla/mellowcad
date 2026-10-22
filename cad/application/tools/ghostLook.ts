@@ -1,4 +1,5 @@
 import { Entity } from "../../domain/entities"
+import { THEME } from "../../scene/theme"
 import { ScenePrimitive } from "../../scene/types"
 import {
   entityScenePrimitive,
@@ -34,4 +35,17 @@ export function drawn(
   return look === "glow"
     ? [...primitives, ...selectionGlow(ctx.viewport, piece, stroke, options)]
     : primitives
+}
+
+/**
+ * A single object's pick's rollover: the object a pick there takes, in the
+ * plain hover glow (desktop corners/d01-1, pieces/d01-1).
+ */
+export function rollover(ctx: ToolContext, entity: Entity): ScenePrimitive[] {
+  return entityScenePrimitive(
+    ctx.viewport,
+    entity,
+    { color: THEME.entityHover, width: 2 },
+    { blocks: ctx.blocks }
+  )
 }
