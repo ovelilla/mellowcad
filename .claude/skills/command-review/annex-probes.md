@@ -167,6 +167,13 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   d01-1). Read the desktop's value before trusting a default there. Plan each Enter a desktop step
   sends against the prompt it lands on: at a prompt whose Enter is Exit it ends the command, and the
   next click starts a window (OFFSET's review).
+- A registry variable a desktop step changes (TRIMEXTENDMODE by mOde) reaches the console's
+  isolated runs of that language, which start from the owner's profile: put it back at once and
+  read it with `runacc.sh -r`. A key held on the desktop (Shift through `shift.ps1`) reaches the
+  console runs going on at that moment (trim/p228 ran as EXTEND): hold none while subagents probe.
+- A console answer to Enter at a prompt is checked on the desktop through COM alone, without the
+  mouse: `com send "_TRIM\n\n\n"` and `com hist` tell one command asked twice from two commands
+  (TRIM/EXTEND's review).
 
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).

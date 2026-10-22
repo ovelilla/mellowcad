@@ -229,7 +229,8 @@ deviation without a `WHY` and a coverage note is a finding.
 - Each gets its list of files, the rules to open, the matrix rows and prompts it answers (disjoint:
   two subagents with the same prompts found ELLIPSE's differences twice; a case every prompt meets,
   such as a zero vector, goes to one of them, or MOVE's turned up under three ids), the finding format
-  (§5.1), its prefix and a range of decision ids of its own (the preselection and the review of the
+  (§5.1), its prefix and a range of decision ids of its own (the Undo keyword's listing and steps
+  at every prompt, the preselection and the review of the
   existing tests go to one subagent by name: OFFSET's turned up three times), the order to claim nothing about
   AutoCAD without a probe id the reviewer gave it, and the patterns found earlier in the review
   (with their IDs) to look for analogues.
@@ -365,14 +366,11 @@ review's close (the owner waived the wait for approval on 2026-10-21), each with
 
 Applied:
 
-- 2026-10-21, after LINE's review: subagents probe and run scratch tests in ranges of their own
-  (§4.8: three of them wrote 45 probes and 230 scratch tests); undo-depth probes run untraced, a
-  probe's trailing Enter repeats the last command, and typed desktop input goes through COM
-  (annex-probes.md); `es-several` and `no-source` are settled per command (annex-catalogs.md);
-  sessions sized by blocks, desktop probes apart (§1.4).
-- 2026-10-21, after LINE's execution: one subagent per block, the reviewer committing (thirteen
-  commits overnight); an unused catalog key stays (two blocks had decided otherwise); every session
-  ends with the next one's prompt, at the owner's request (§8).
+- 2026-10-21, after LINE's review: subagents' own ranges (§4.8); untraced undo probes, a trailing
+  Enter, typed desktop input through COM (annex-probes.md); `es-several` and `no-source` per
+  command (annex-catalogs.md); sessions sized by blocks (§1.4).
+- 2026-10-21, after LINE's execution: one subagent per block, the reviewer committing; an unused
+  catalog key stays; every session ends with the next one's prompt (§8).
 - 2026-10-21, at the owner's request: the matrix gained pointer gestures (P), the look (Q, after
   AGENTS.md's rule that a look slowing an AutoCAD user down is a finding), every object snap three
   ways (running, picked, typed) and the modes in combination.
@@ -405,3 +403,6 @@ Applied:
 - 2026-10-22, after OFFSET's review: a desktop variable read before trusting a default, each
   desktop Enter planned against its prompt (annex-probes.md §4); the preselection and the existing
   tests to one subagent by name (§4.8).
+- 2026-10-22, after TRIM's and EXTEND's review: a desktop setting and a held key reach the
+  console's runs, an Enter checked through COM alone (annex-probes.md §4); the Undo keyword's
+  listing and steps to one subagent across every prompt (§4.8).

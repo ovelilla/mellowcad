@@ -8,8 +8,9 @@ its header says what each flag does. Set `ACCORE` to use another install. A run 
 - A command review keeps its probes as files and runs them in both languages with
   `scripts/research/probe.sh` (skill `command-review`).
 - **Each run is isolated**: `/isolate` gives it a registry hive and user folder of its own,
-  removed afterwards. Variables that live in the registry (TRIMEXTENDMODE, UNDO's Combine and
-  Layer…) start at their defaults every time, and runs can go in parallel. `-r` runs in the
+  removed afterwards, and runs can go in parallel. Variables that live in the registry
+  (TRIMEXTENDMODE, UNDO's Combine and Layer…) start at the owner's profile of that language, not at
+  their defaults: a desktop pass that changes one changes every isolated run after it (trim/p109). `-r` runs in the
   user's real profile instead, where whatever the probe sets persists: restore it.
 - **Encoding**: the console reads its input as Windows-1252 and the runner converts the probe;
   `/utf8` makes it write UTF-8 (by default it writes UTF-16).
