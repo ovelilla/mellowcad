@@ -16,9 +16,8 @@ import { DynamicInputSession } from "../input/DynamicInput"
 import { formatLength } from "../../domain/units"
 import type { PromptId } from "../../locales/types"
 import type { MessageId } from "../EngineText"
-import { ScenePrimitive, StrokeStyle } from "../../scene/types"
-import { THEME } from "../../scene/theme"
-import { entityScenePrimitive } from "../SceneBuilder"
+import { ScenePrimitive } from "../../scene/types"
+import type { CursorBadge } from "../SceneBuilder"
 import { LineCorner, LinePick, lineCorner } from "./lineCorner"
 import {
   CornerCut,
@@ -26,6 +25,7 @@ import {
   cutBetweenSegments,
   SegmentsRefusal,
   cutPolylineCorners,
+  type PolylineCornersResult,
   reportSkipped,
 } from "./polylineCorners"
 import {
@@ -56,8 +56,22 @@ import {
   refusesLockedPick,
   typedCornerPick,
   typeRefusal,
+  type TypeRefusal,
   cornerPickOf,
 } from "./cornerObjects"
+import {
+  type CornerOutcome,
+  ENDS,
+  NONE,
+  cornerCommand,
+  cornerGhost,
+  cornerRollover,
+  ghostHidden,
+  made,
+  polylineGhost,
+  refused,
+  updated,
+} from "./cornerGhost"
 import { ModeFind, ObjectSelector } from "./objectSelection"
 import { setCommandSettings } from "./commandSettings"
 import {
@@ -109,15 +123,40 @@ type ChamferState =
       readonly first: ChamferObject
       /** Where the first line was clicked — picks which corner to cut. */
       readonly pick1: LinePick
-      readonly hover: ChamferObject | null
       readonly cursor: LinePick
       /** Shift is held: the second pick applies a corner. */
       readonly corner: boolean
+      /** What a click at {@link cursor} would do, which the ghost draws. */
+      readonly preview: Outcome | null
       /** The first a polyline a mode found whole: no corner will be made. */
       readonly whole: boolean
     }
   /** Polyline: awaiting the 2D polyline whose every corner is bevelled. */
-  | { readonly phase: "polyline"; readonly hover: PolylineEntity | null }
+  | {
+      readonly phase: "polyline"
+      readonly hover: PolylineEntity | null
+      /** The hovered polyline with its corners bevelled, if any is. */
+      readonly cut: PolylineEntity | null
+    }
+
+/** Why a second object makes no corner, said as {@link ChamferTool} says it. */
+type ChamferRefusal =
+  | {
+      readonly by: "refuse"
+      readonly message: MessageId
+      readonly invalid: boolean
+    }
+  | { readonly by: "pair"; readonly pair: PairRefusal }
+  /** A type CHAMFER refuses, an ARC or a CIRCLE among them. */
+  | { readonly by: "type"; readonly entity: Entity }
+  /** `Lines are non-coplanar.`, and the first prompt again. */
+  | { readonly by: "nonCoplanar" }
+
+type Outcome = CornerOutcome<ChamferRefusal>
+
+function refusal(message: MessageId, invalid = true): Outcome {
+  return refused({ by: "refuse", message, invalid })
+}
 
 export class ChamferTool implements Tool {
   readonly id = "chamfer"
@@ -237,22 +276,43 @@ export class ChamferTool implements Tool {
           hover: pickChamferObject(ctx, input, null),
         }
         break
-      case "second":
+      case "second": {
+        const cursor = { world: input.world, screen: input.screen }
         this.state = {
           ...this.state,
-          hover: pickChamferObject(ctx, input, this.state.first),
-          cursor: { world: input.world, screen: input.screen },
+          cursor,
           corner: input.shiftKey,
+          preview: this.secondAt(cursor, input.shiftKey, ctx, PREVIEW_ID),
         }
         break
+      }
       case "polyline":
-        this.state = {
-          phase: "polyline",
-          hover: this.pickPolyline(input.world, ctx),
-        }
+        this.state = this.polylineHover(this.pickPolyline(input.world, ctx))
         break
     }
     ctx.requestRender()
+  }
+
+  /** Polyline's prompt over `hover`, its corners bevelled as a click would. */
+  private polylineHover(hover: PolylineEntity | null): ChamferState {
+    return {
+      phase: "polyline",
+      hover,
+      cut: hover && this.cutPolyline(hover).polyline,
+    }
+  }
+
+  /** The ghost again, at distances changed since the cursor last moved. */
+  private refreshPreview(ctx: ToolContext): void {
+    if (this.state.phase === "second") {
+      const { cursor, corner } = this.state
+      this.state = {
+        ...this.state,
+        preview: this.secondAt(cursor, corner, ctx, PREVIEW_ID),
+      }
+    } else if (this.state.phase === "polyline") {
+      this.state = this.polylineHover(this.state.hover)
+    }
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
@@ -286,17 +346,9 @@ export class ChamferTool implements Tool {
         if (hit) this.takeFirst(hit, pick, false, ctx)
         return
       }
-      case "second": {
-        if (this.refusesRound(ctx.pick(pick.world), ctx)) return
-        const refusal = cornerPairRefusal(ctx, pick, this.state.first)
-        if (refusal) {
-          this.refusePair(refusal, ctx)
-        } else {
-          const second = pickChamferObject(ctx, pick, this.state.first)
-          if (second) this.placeSecond(second, pick, shift, false, ctx)
-        }
+      case "second":
+        this.apply(this.secondAt(pick, shift, ctx), ctx)
         return
-      }
       case "polyline": {
         const hit = ctx.pick(pick.world)
         if (hit) this.takePolyline(hit, ctx)
@@ -366,7 +418,7 @@ export class ChamferTool implements Tool {
         this.undoStep(ctx)
         return
       case "Polyline":
-        this.state = { phase: "polyline", hover: null }
+        this.state = { phase: "polyline", hover: null, cut: null }
         ctx.requestRender()
         return
       case "Multiple":
@@ -389,82 +441,51 @@ export class ChamferTool implements Tool {
     return !this.askingDistance && this.modes.wantsSnap()
   }
 
+  /**
+   * As FILLET's: the first prompt's rollover, the segment a pick takes
+   * (desktop corners/d04-2), the second's ghost (d03-1, d03-2), Polyline's.
+   */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    const { viewport } = ctx
-    const draw = (entity: Entity, stroke: StrokeStyle) =>
-      entityScenePrimitive(viewport, entity, stroke)
-
     if (this.modes.inMode()) {
       return [
         ...(this.state.phase === "second"
-          ? draw(cornerEntity(this.state.first), selectedStroke)
+          ? cornerGhost(ctx, this.state.first, this.state.whole, null)
           : []),
         ...this.modes.buildOverlay(ctx),
       ]
     }
-
-    if (this.state.phase === "first") {
-      const h = this.state.hover
-      return h ? draw(cornerEntity(h), hoverStroke) : []
-    }
-    if (this.state.phase === "polyline") {
-      const h = this.state.hover
-      return h ? draw(h, selectedStroke) : []
-    }
-
-    const { first, pick1, hover, cursor } = this.state
-    if (isCurve(first) || (hover && isCurve(hover))) {
-      return [
-        ...draw(cornerEntity(first), selectedStroke),
-        ...(hover ? draw(cornerEntity(hover), hoverStroke) : []),
-      ]
-    }
-    const plane =
-      hover && cornerPlane(first, pick1, hover, cursor, ctx.viewport)
-    const join =
-      plane && cornerJoin(plane.first, plane.pick1, plane.second, plane.pick2)
-    if (plane && join) {
-      const cut =
-        !this.joinRefusal(join) && this.chamferJoin(join, this.state.corner)
-      return cut && cutFits(join, cut)
-        ? draw(plane.back(joinAtCut(join, cut)), hoverStroke)
-        : [
-            ...draw(cornerEntity(first), selectedStroke),
-            ...draw(cornerEntity(hover), hoverStroke),
-          ]
-    }
-    if (isSegment(first)) {
-      const cut =
-        plane &&
-        isSegment(plane.first) &&
-        isSegment(plane.second) &&
-        this.chamferSegments(plane.first, plane.second, this.state.corner)
-      return plane && cut && typeof cut !== "string"
-        ? draw(plane.back(cut), hoverStroke)
-        : draw(first.poly, selectedStroke)
-    }
-    const line1 = first
-    const prims = draw(line1, selectedStroke)
-    if (!hover || isSegment(hover)) return prims
-
-    const corner = lineCorner(line1, pick1, hover, cursor, viewport)
-    const chamfered =
-      corner &&
-      this.chamfer(corner, line1, hover, this.state.corner, ctx, PREVIEW_ID)
-    if (!chamfered || chamfered === "tooLarge") {
-      return [...prims, ...draw(hover, hoverStroke)]
-    }
-    for (const entity of chamfered) {
-      prims.push(
-        ...draw(
-          entity,
-          entity.id === PREVIEW_ID
-            ? { color: THEME.rubberBand, width: 1 }
-            : hoverStroke
+    switch (this.state.phase) {
+      case "first":
+        return this.state.hover ? cornerRollover(ctx, this.state.hover) : []
+      case "polyline":
+        return this.state.hover
+          ? polylineGhost(ctx, this.state.hover, this.state.cut)
+          : []
+      case "second":
+        return cornerGhost(
+          ctx,
+          this.state.first,
+          this.state.whole,
+          this.state.preview
         )
-      )
     }
-    return prims
+  }
+
+  hiddenEntityIds(): readonly EntityId[] {
+    if (this.modes.inMode()) return []
+    if (this.state.phase === "second") return ghostHidden(this.state.preview)
+    return this.state.phase === "polyline" && this.state.cut
+      ? [this.state.cut.id]
+      : []
+  }
+
+  /** As FILLET's (desktop corners/d06-1). */
+  cursorBadge(): CursorBadge | null {
+    if (this.modes.inMode() || this.askingDistance) return null
+    return this.state.phase === "second" &&
+      this.state.preview?.kind === "refused"
+      ? "refused"
+      : null
   }
 
   private reset(): void {
@@ -524,19 +545,15 @@ export class ChamferTool implements Tool {
       phase: "second",
       first,
       pick1: pick,
-      hover: null,
       cursor: pick,
       corner: false,
+      preview: null,
       whole,
     }
     ctx.requestRender()
   }
 
-  /**
-   * The second object, picked at `pick2` (`corner`: with Shift), chamfered
-   * with the first. A polyline a mode found whole makes nothing, as AutoCAD
-   * 2023's console makes nothing of it in FILLET, and says nothing.
-   */
+  /** The second object a mode found, chamfered with the first. */
   private placeSecond(
     second: ChamferObject,
     pick2: LinePick,
@@ -544,31 +561,95 @@ export class ChamferTool implements Tool {
     whole: boolean,
     ctx: ToolContext
   ): void {
-    if (this.state.phase !== "second") return
+    this.apply(this.outcome(second, pick2, corner, whole, ctx), ctx)
+  }
+
+  /**
+   * What a pick at the second prompt does (`corner`: with Shift), as
+   * FILLET's: the click and the ghost both ask it, the ghost's bevel
+   * `bevelId`.
+   */
+  private secondAt(
+    pick: LinePick,
+    corner: boolean,
+    ctx: ToolContext,
+    bevelId?: EntityId
+  ): Outcome {
+    if (this.state.phase !== "second") return NONE
+    const hit = ctx.pick(pick.world)
+    if (hit && this.roundRefusal(hit))
+      return refused({ by: "type", entity: hit })
+    const pair = cornerPairRefusal(ctx, pick, this.state.first)
+    if (pair) return refused({ by: "pair", pair })
+    const second = pickChamferObject(ctx, pick, this.state.first)
+    return second
+      ? this.outcome(second, pick, corner, false, ctx, bevelId)
+      : NONE
+  }
+
+  /**
+   * The second object, picked at `pick2` (`corner`: with Shift), chamfered
+   * with the first. A polyline a mode found whole makes nothing, as AutoCAD
+   * 2023's console makes nothing of it in FILLET, and says nothing.
+   */
+  private outcome(
+    second: ChamferObject,
+    pick2: LinePick,
+    corner: boolean,
+    whole: boolean,
+    ctx: ToolContext,
+    bevelId?: EntityId
+  ): Outcome {
+    if (this.state.phase !== "second") return NONE
     const { first, pick1 } = this.state
-    if (whole || this.state.whole) {
-      this.done(null, ctx)
-      return
-    }
+    if (whole || this.state.whole) return ENDS
     // An ellipse, an elliptical arc or a spline with a line: AutoCAD 2027's
     // words, and the end (probes corners/p319, p327, p370, p380).
     if (isCurve(first) || isCurve(second)) {
-      this.refuse("cannotChamferBetween", ctx, false)
-      return
+      return refusal("cannotChamferBetween", false)
     }
     const plane = cornerPlane(first, pick1, second, pick2, ctx.viewport)
     const join = cornerJoin(plane.first, plane.pick1, plane.second, plane.pick2)
-    if (join) {
-      this.commitJoin(join, corner, plane.back, ctx)
-    } else if (isSegment(plane.first) && isSegment(plane.second)) {
+    if (join) return this.joinOutcome(join, corner, plane.back)
+    if (isSegment(plane.first) && isSegment(plane.second)) {
       const cut = this.chamferSegments(plane.first, plane.second, corner)
-      if (typeof cut !== "string") {
-        this.done(new UpdateEntityCommand(plane.back(cut)), ctx)
-      } else {
-        this.refuse(REFUSALS[cut], ctx)
-      }
-    } else if (!isSegment(first) && !isSegment(second)) {
-      this.commitChamfer(first, pick1, second, pick2, corner, ctx)
+      return typeof cut !== "string"
+        ? updated(plane.back(cut))
+        : refusal(REFUSALS[cut])
+    }
+    if (isSegment(first) || isSegment(second)) return NONE
+    return this.linesOutcome(first, pick1, second, pick2, corner, ctx, bevelId)
+  }
+
+  /** Does what `outcome` says: the corner made, the refusal said. */
+  private apply(outcome: Outcome, ctx: ToolContext): void {
+    switch (outcome.kind) {
+      case "made":
+        this.done(cornerCommand(outcome), ctx)
+        return
+      case "none":
+        if (outcome.ends) this.done(null, ctx)
+        return
+      case "refused":
+        this.sayRefusal(outcome.refusal, ctx)
+    }
+  }
+
+  private sayRefusal(refusal: ChamferRefusal, ctx: ToolContext): void {
+    switch (refusal.by) {
+      case "refuse":
+        this.refuse(refusal.message, ctx, refusal.invalid)
+        return
+      case "pair":
+        this.refusePair(refusal.pair, ctx)
+        return
+      case "type":
+        this.refusesRound(refusal.entity, ctx)
+        return
+      case "nonCoplanar":
+        ctx.report(ctx.text.message("linesNonCoplanar"), "error")
+        this.state = { phase: "first", hover: null }
+        ctx.requestRender()
     }
   }
 
@@ -628,41 +709,29 @@ export class ChamferTool implements Tool {
     return built.map((entity) => corner.back(entity))
   }
 
-  private commitChamfer(
+  private linesOutcome(
     line1: LineEntity,
     pick1: LinePick,
     line2: LineEntity,
     pick2: LinePick,
     sharp: boolean,
-    ctx: ToolContext
-  ): void {
+    ctx: ToolContext,
+    bevelId?: EntityId
+  ): Outcome {
     const corner = lineCorner(line1, pick1, line2, pick2, ctx.viewport)
-    if (!corner) {
-      ctx.report(ctx.text.message("linesNonCoplanar"), "error")
-      this.state = { phase: "first", hover: null }
-      ctx.requestRender()
-      return
-    }
-    const chamfered = this.chamfer(corner, line1, line2, sharp, ctx)
+    if (!corner) return refused({ by: "nonCoplanar" })
+    const chamfered = this.chamfer(corner, line1, line2, sharp, ctx, bevelId)
     if (!chamfered) {
       // WHY collinear apart: AutoCAD 2023's console says it with no *Invalid*,
       // as FILLET does; parallel lines are `Lines are parallel`, *Invalid*.
       const { line1: a, line2: b } = corner
-      if (
-        capParallelLines(a.start, a.end, b.start, b.end, a.start) ===
+      return capParallelLines(a.start, a.end, b.start, b.end, a.start) ===
         "collinear"
-      ) {
-        this.refuse("collinearCannotChamfer", ctx, false)
-      } else {
-        this.refuse("linesParallel", ctx)
-      }
-      return
+        ? refusal("collinearCannotChamfer", false)
+        : refusal("linesParallel")
     }
-    if (chamfered === "tooLarge") {
-      this.refuse("chamferDistanceTooLarge", ctx)
-      return
-    }
-    this.done(new ReplaceEntitiesCommand([line1.id, line2.id], chamfered), ctx)
+    if (chamfered === "tooLarge") return refusal("chamferDistanceTooLarge")
+    return made([line1.id, line2.id], chamfered)
   }
 
   /**
@@ -670,32 +739,19 @@ export class ChamferTool implements Tool {
    * into one polyline by the bevel; refused, as the console does, when they
    * are parallel or a distance runs past the end of its line or segment.
    */
-  private commitJoin(
+  private joinOutcome(
     join: CornerJoin,
     sharp: boolean,
-    back: (entity: Entity) => Entity,
-    ctx: ToolContext
-  ): void {
-    const refusal = this.joinRefusal(join)
-    if (refusal) {
-      this.refuse(refusal, ctx, false)
-      return
-    }
+    back: (entity: Entity) => Entity
+  ): Outcome {
+    const refusedJoin = this.joinRefusal(join)
+    if (refusedJoin) return refusal(refusedJoin, false)
     const cut = this.chamferJoin(join, sharp)
-    if (!cut) {
-      this.refuse("linesParallel", ctx, false)
-      return
-    }
-    if (!cutFits(join, cut)) {
-      this.refuse("chamferDistanceTooLarge", ctx, false)
-      return
-    }
-    this.done(
-      new ReplaceEntitiesCommand(
-        [cornerEntity(join.other).id, join.segment.poly.id],
-        [back(joinAtCut(join, cut))]
-      ),
-      ctx
+    if (!cut) return refusal("linesParallel", false)
+    if (!cutFits(join, cut)) return refusal("chamferDistanceTooLarge", false)
+    return made(
+      [cornerEntity(join.other).id, join.segment.poly.id],
+      [back(joinAtCut(join, cut))]
     )
   }
 
@@ -805,10 +861,7 @@ export class ChamferTool implements Tool {
    * at a line–arc vertex, the console's).
    */
   private commitPolyline(poly: PolylineEntity, ctx: ToolContext): void {
-    const result = cutPolylineCorners(poly, {
-      lines: (corner) => this.bevel(corner, false),
-      chords: true,
-    })
+    const result = this.cutPolyline(poly)
     ctx.report(ctx.text.message("linesChamfered", { count: result.cut }))
     reportSkipped(result, ctx)
     if (result.polyline) {
@@ -820,6 +873,14 @@ export class ChamferTool implements Tool {
       ctx.dynamicInput.close()
       ctx.endCommand()
     }
+  }
+
+  /** Polyline's cut of `poly` at the distances, which its ghost draws too. */
+  private cutPolyline(poly: PolylineEntity): PolylineCornersResult {
+    return cutPolylineCorners(poly, {
+      lines: (corner) => this.bevel(corner, false),
+      chords: true,
+    })
   }
 
   /**
@@ -899,18 +960,18 @@ export class ChamferTool implements Tool {
    * corner of, said in the console's words (see {@link typeRefusal}).
    */
   private refusesRound(hit: Entity | null, ctx: ToolContext): boolean {
-    const refusal = typeRefusal("chamfer", hit, this.state.phase === "second")
-    if (refusal?.ends) {
-      this.refuse(refusal.message, ctx, false)
-      return true
-    }
-    const message =
-      hit?.type === "arc" || hit?.type === "circle"
-        ? "chamferRequiresLines"
-        : refusal?.message
-    if (!message) return false
-    ctx.report(ctx.text.message(message), "error")
+    const refusal = hit && this.roundRefusal(hit)
+    if (!refusal) return false
+    if (refusal.ends) this.refuse(refusal.message, ctx, false)
+    else ctx.report(ctx.text.message(refusal.message), "error")
     return true
+  }
+
+  private roundRefusal(hit: Entity): TypeRefusal | null {
+    if (hit.type === "arc" || hit.type === "circle") {
+      return { message: "chamferRequiresLines", ends: false }
+    }
+    return typeRefusal("chamfer", hit, this.state.phase === "second")
   }
 
   private pickPolyline(world: Vec2, ctx: ToolContext): PolylineEntity | null {
@@ -982,6 +1043,7 @@ export class ChamferTool implements Tool {
       },
       ctx
     )
+    this.refreshPreview(ctx)
     this.openKeywordPrompt(ctx)
     ctx.requestRender()
   }
@@ -1012,8 +1074,6 @@ const REFUSALS: Readonly<Record<SegmentsRefusal, MessageId>> = {
   noCorner: "linesParallel",
 }
 
-const hoverStroke: StrokeStyle = { color: THEME.entityHover, width: 2 }
-const selectedStroke: StrokeStyle = { color: THEME.selected, width: 2 }
 /** The preview bevel's id, reused every frame so a preview burns no entity ids. */
 const PREVIEW_ID = "chamfer-preview"
 

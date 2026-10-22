@@ -58,9 +58,10 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
   rules (`curveCrossing` / `keptEnd`, `filletRound` / `wholeFillet`, refused): never send one kind
   through another's path. What a mode found is read by `foundFilletObject`: never invent a pick
   point in the tool. A second object that makes no corner is said and refused
-  (`cornerPairRefusal`, `foundPairRefusal`), never filtered out. A tilted polyline is cut in its
-  OCS (`cornerPlane`, `roundPlane`): never cut its points against plan picks. `bulgeThroughPoint`
-  reads its point as the arc's middle: beside an arc pass the bisector of the radii.
+  (`cornerPairRefusal`, `foundPairRefusal`), never filtered out; click and ghost share one
+  `CornerOutcome`. A tilted polyline is cut in its OCS (`cornerPlane`, `roundPlane`): never cut its
+  points against plan picks. `bulgeThroughPoint` reads its point as the arc's middle: beside an arc
+  pass the bisector of the radii.
 - `ArcSegmentInput` (`arcSegmentInput.ts`) — the prompts a polyline's arc options open, for any
   command drawing a polyline's arcs (PLINE; DIST's Arc). The tool lists `ARC_SEGMENT_OPTIONS` among
   its keywords in AutoCAD's order, calls `begin`, and while `active` hands it the question, input,
@@ -82,7 +83,7 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
 ## Pick feedback
 
 **Pick through `ctx.pick(world)`, never `document.pick`**: it is where selection cycling
-(Shift+Space, the Selection list box) chooses among overlapping objects.
+chooses among overlapping objects.
 
 A prompt that asks "which object?" owes a rollover highlight in `buildOverlay` (update the state
 only when the hovered id changes): a **set** prompt → `THEME.entityHover`, width 2, skipping

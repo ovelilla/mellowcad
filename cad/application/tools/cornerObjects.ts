@@ -31,6 +31,7 @@ import {
   isFullEllipse,
   isTilted,
   polylineSegmentGeometries,
+  polylineSpan,
   polylineWidth,
   type PolylineWidth,
   readsInPlan,
@@ -91,9 +92,31 @@ export function isCurve(object: AnyObject): object is CurveObject {
   )
 }
 
-/** What a pick of `object` highlights: the object, or its whole polyline. */
+/** The object a pick of `object` edits: the object, or its whole polyline. */
 export function cornerEntity(object: AnyObject): Entity {
   return isSegment(object) ? object.poly : object
+}
+
+/**
+ * What a pick of `object` highlights: the object, or the segment of its
+ * polyline the pick takes, drawn as the polyline draws it (desktop
+ * corners/d04-2).
+ */
+export function pickedEntity(object: AnyObject): Entity {
+  if (!isSegment(object)) return object
+  const { poly, index } = object
+  const span = polylineSpan(poly, index, index + 1)
+  return carryOverrides(
+    poly,
+    createPolyline(
+      span.vertices,
+      false,
+      poly.layerId,
+      span.bulges,
+      poly.id,
+      span.widths
+    )
+  )
 }
 
 /**

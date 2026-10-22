@@ -22,14 +22,13 @@ import {
   ReplaceEntitiesCommand,
   UpdateEntityCommand,
 } from "../commands/entityCommands"
+import type { CursorBadge } from "../SceneBuilder"
 import { DynamicInputSession } from "../input/DynamicInput"
 import { formatLength } from "../../domain/units"
 import type { PromptId } from "../../locales/types"
 import type { MessageId } from "../EngineText"
 import type { MessageValues } from "../../i18n/types"
-import { ScenePrimitive, StrokeStyle } from "../../scene/types"
-import { THEME } from "../../scene/theme"
-import { entityScenePrimitive } from "../SceneBuilder"
+import { ScenePrimitive } from "../../scene/types"
 import { LineCorner, LinePick, lineCorner } from "./lineCorner"
 import {
   ArcCorner,
@@ -38,6 +37,7 @@ import {
   SegmentsRefusal,
   cutBetweenSegments,
   cutPolylineCorners,
+  type PolylineCornersResult,
   reportSkipped,
 } from "./polylineCorners"
 import {
@@ -70,8 +70,22 @@ import {
   refusesLockedPick,
   typedCornerPick,
   typeRefusal,
+  type TypeRefusal,
   cornerPickOf,
 } from "./cornerObjects"
+import {
+  type CornerOutcome,
+  ENDS,
+  NONE,
+  cornerCommand,
+  cornerGhost,
+  cornerRollover,
+  ghostHidden,
+  made,
+  polylineGhost,
+  refused,
+  updated,
+} from "./cornerGhost"
 import { curveCrossings, segmentImplicit } from "./curveCrossings"
 import { ModeFind, ObjectSelector } from "./objectSelection"
 import { setCommandSettings } from "./commandSettings"
@@ -129,17 +143,46 @@ type FilletState =
       readonly first: FilletObject
       /** Where the first line was clicked — picks which corner to round. */
       readonly pick1: LinePick
-      readonly hover: FilletObject | null
       readonly cursor: LinePick
       /** Shift is held: the second pick applies a corner. */
       readonly corner: boolean
+      /** What a click at {@link cursor} would do, which the ghost draws. */
+      readonly preview: Outcome | null
       /** The first a polyline a mode found whole: no corner will be made. */
       readonly whole: boolean
       /** {@link pick1} only stands for a pick a mode did not give. */
       readonly stands: boolean
     }
   /** Polyline: awaiting the 2D polyline whose every corner is rounded. */
-  | { readonly phase: "polyline"; readonly hover: PolylineEntity | null }
+  | {
+      readonly phase: "polyline"
+      readonly hover: PolylineEntity | null
+      /** The hovered polyline with its corners rounded, if any is. */
+      readonly cut: PolylineEntity | null
+    }
+
+/** Why a second object makes no corner, said as {@link FilletTool} says it. */
+type FilletRefusal =
+  | {
+      readonly by: "refuse"
+      readonly message: MessageId
+      readonly invalid: boolean | "sameLine"
+      readonly values?: MessageValues
+    }
+  | { readonly by: "pair"; readonly pair: PairRefusal }
+  | { readonly by: "type"; readonly type: TypeRefusal }
+  /** `Lines are non-coplanar.`, and the first prompt again. */
+  | { readonly by: "nonCoplanar" }
+
+type Outcome = CornerOutcome<FilletRefusal>
+
+function refusal(
+  message: MessageId,
+  invalid: boolean | "sameLine" = true,
+  values?: MessageValues
+): Outcome {
+  return refused({ by: "refuse", message, invalid, values })
+}
 
 export class FilletTool implements Tool {
   readonly id = "fillet"
@@ -255,22 +298,43 @@ export class FilletTool implements Tool {
           hover: pickFilletObject(ctx, input, null),
         }
         break
-      case "second":
+      case "second": {
+        const cursor = { world: input.world, screen: input.screen }
         this.state = {
           ...this.state,
-          hover: pickFilletObject(ctx, input, this.state.first),
-          cursor: { world: input.world, screen: input.screen },
+          cursor,
           corner: input.shiftKey,
+          preview: this.secondAt(cursor, input.shiftKey, ctx, PREVIEW_ID),
         }
         break
+      }
       case "polyline":
-        this.state = {
-          phase: "polyline",
-          hover: this.pickPolyline(input.world, ctx),
-        }
+        this.state = this.polylineHover(this.pickPolyline(input.world, ctx))
         break
     }
     ctx.requestRender()
+  }
+
+  /** Polyline's prompt over `hover`, its corners rounded as a click would. */
+  private polylineHover(hover: PolylineEntity | null): FilletState {
+    return {
+      phase: "polyline",
+      hover,
+      cut: hover && this.cutPolyline(hover).polyline,
+    }
+  }
+
+  /** The ghost again, at a radius changed since the cursor last moved. */
+  private refreshPreview(ctx: ToolContext): void {
+    if (this.state.phase === "second") {
+      const { cursor, corner } = this.state
+      this.state = {
+        ...this.state,
+        preview: this.secondAt(cursor, corner, ctx, PREVIEW_ID),
+      }
+    } else if (this.state.phase === "polyline") {
+      this.state = this.polylineHover(this.state.hover)
+    }
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
@@ -297,14 +361,9 @@ export class FilletTool implements Tool {
    */
   private pickAt(pick: LinePick, shift: boolean, ctx: ToolContext): void {
     if (refusesLockedPick(ctx, pick)) return
-    if (
-      this.state.phase !== "polyline" &&
-      this.refusesType(ctx.pick(pick.world), ctx)
-    ) {
-      return
-    }
     switch (this.state.phase) {
       case "first": {
+        if (this.refusesType(ctx.pick(pick.world), ctx)) return
         const hit = pickFilletObject(ctx, pick, null)
         if (hit) {
           this.takeFirst(
@@ -314,16 +373,9 @@ export class FilletTool implements Tool {
         }
         return
       }
-      case "second": {
-        const refusal = cornerPairRefusal(ctx, pick, this.state.first)
-        if (refusal) {
-          this.refusePair(refusal, ctx)
-        } else {
-          const second = pickFilletObject(ctx, pick, this.state.first)
-          if (second) this.placeSecond(second, pick, shift, false, ctx)
-        }
+      case "second":
+        this.apply(this.secondAt(pick, shift, ctx), ctx)
         return
-      }
       case "polyline": {
         const hit = ctx.pick(pick.world)
         if (hit) this.takePolyline(hit, ctx)
@@ -395,7 +447,7 @@ export class FilletTool implements Tool {
         this.undoStep(ctx)
         return
       case "Polyline":
-        this.state = { phase: "polyline", hover: null }
+        this.state = { phase: "polyline", hover: null, cut: null }
         ctx.requestRender()
         return
       case "Multiple":
@@ -423,128 +475,52 @@ export class FilletTool implements Tool {
     return !this.askingRadius && this.modes.wantsSnap()
   }
 
+  /**
+   * The first prompt's rollover, the segment a pick on a polyline takes
+   * (desktop corners/d01-1, d04-2, d04-3); the second's ghost (see
+   * {@link cornerGhost}); Polyline's (see {@link polylineGhost}).
+   */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    const { viewport } = ctx
-    const draw = (entity: Entity, stroke: StrokeStyle) =>
-      entityScenePrimitive(viewport, entity, stroke)
-
     if (this.modes.inMode()) {
       return [
         ...(this.state.phase === "second"
-          ? draw(cornerEntity(this.state.first), selectedStroke)
+          ? cornerGhost(ctx, this.state.first, this.state.whole, null)
           : []),
         ...this.modes.buildOverlay(ctx),
       ]
     }
-    if (this.state.phase === "first") {
-      const h = this.state.hover
-      return h ? draw(cornerEntity(h), hoverStroke) : []
-    }
-    if (this.state.phase === "polyline") {
-      const h = this.state.hover
-      return h ? draw(h, selectedStroke) : []
-    }
-
-    const { first, pick1, hover, cursor } = this.state
-    const radius = this.state.corner ? 0 : this.radius
-    if (isCurve(first) || (hover && isCurve(hover))) {
-      return [
-        ...draw(cornerEntity(first), selectedStroke),
-        ...(hover ? draw(cornerEntity(hover), hoverStroke) : []),
-      ]
-    }
-    if (isRound(first) || (hover && isRound(hover))) {
-      const plane =
-        hover &&
-        !isSegment(first) &&
-        !isSegment(hover) &&
-        roundPlane(first, pick1, hover, cursor, viewport)
-      const filleted =
-        plane &&
-        filletRound(
-          plane.first,
-          plane.pick1,
-          plane.second,
-          plane.pick2,
-          radius,
-          ctx.document.getCurrentLayerId(),
-          PREVIEW_ID
+    switch (this.state.phase) {
+      case "first":
+        return this.state.hover ? cornerRollover(ctx, this.state.hover) : []
+      case "polyline":
+        return this.state.hover
+          ? polylineGhost(ctx, this.state.hover, this.state.cut)
+          : []
+      case "second":
+        return cornerGhost(
+          ctx,
+          this.state.first,
+          this.state.whole,
+          this.state.preview
         )
-      if (!plane || !filleted || typeof filleted === "string") {
-        return [
-          ...draw(cornerEntity(first), selectedStroke),
-          ...(hover ? draw(cornerEntity(hover), hoverStroke) : []),
-        ]
-      }
-      return filleted.built.flatMap((entity) =>
-        draw(
-          entity.id === PREVIEW_ID ? plane.made(entity) : plane.back(entity),
-          entity.id === PREVIEW_ID
-            ? { color: THEME.rubberBand, width: 1 }
-            : hoverStroke
-        )
-      )
     }
-    const plane =
-      hover && cornerPlane(first, pick1, hover, cursor, ctx.viewport)
-    const join =
-      plane && cornerJoin(plane.first, plane.pick1, plane.second, plane.pick2)
-    if (plane && join) {
-      const cut = !joinRefusal(join) && filletJoin(join, radius)
-      return cut
-        ? draw(plane.back(joinAtCut(join, cut)), hoverStroke)
-        : [
-            ...draw(cornerEntity(first), selectedStroke),
-            ...draw(cornerEntity(hover), hoverStroke),
-          ]
-    }
-    if (isSegment(first)) {
-      const cut =
-        plane &&
-        isSegment(plane.first) &&
-        isSegment(plane.second) &&
-        filletSegments(plane.first, plane.second, radius)
-      return plane && cut && typeof cut !== "string"
-        ? draw(plane.back(cut), hoverStroke)
-        : draw(first.poly, selectedStroke)
-    }
-    const line1 = first
-    const prims = draw(line1, selectedStroke)
-    if (!hover || isSegment(hover)) return prims
-
-    const corner = lineCorner(line1, pick1, hover, cursor, viewport)
-    const filleted =
-      corner &&
-      (this.fillet(corner, line1, hover, radius, ctx, PREVIEW_ID) ??
-        this.previewCap(line1, hover, cursor, ctx))
-    if (!filleted || typeof filleted === "string") {
-      return [...prims, ...draw(hover, hoverStroke)]
-    }
-    for (const entity of filleted) {
-      prims.push(
-        ...draw(
-          entity,
-          entity.type === "arc"
-            ? { color: THEME.rubberBand, width: 1 }
-            : hoverStroke
-        )
-      )
-    }
-    return prims
   }
 
-  /** The cap two parallel lines would get, the first drawn as it stays. */
-  private previewCap(
-    line1: LineEntity,
-    line2: LineEntity,
-    cursor: LinePick,
-    ctx: ToolContext
-  ): Entity[] | "collinear" | "turnsBack" | null {
-    if (this.state.phase !== "second") return null
-    const { pick1, stands } = this.state
-    const from = stands ? originPick(ctx) : pick1
-    const corner = lineCorner(line1, from, line2, cursor, ctx.viewport)
-    return corner && this.cap(corner, line1, line2, ctx, PREVIEW_ID)
+  hiddenEntityIds(): readonly EntityId[] {
+    if (this.modes.inMode()) return []
+    if (this.state.phase === "second") return ghostHidden(this.state.preview)
+    return this.state.phase === "polyline" && this.state.cut
+      ? [this.state.cut.id]
+      : []
+  }
+
+  /** The circle-and-slash over a second object the pair refuses (desktop corners/d06-1). */
+  cursorBadge(): CursorBadge | null {
+    if (this.modes.inMode() || this.askingRadius) return null
+    return this.state.phase === "second" &&
+      this.state.preview?.kind === "refused"
+      ? "refused"
+      : null
   }
 
   private reset(): void {
@@ -590,10 +566,13 @@ export class FilletTool implements Tool {
    */
   private refusesType(entity: Entity | null, ctx: ToolContext): boolean {
     const refusal = typeRefusal("fillet", entity, this.state.phase === "second")
-    if (!refusal) return false
+    if (refusal) this.sayType(refusal, ctx)
+    return refusal !== null
+  }
+
+  private sayType(refusal: TypeRefusal, ctx: ToolContext): void {
     if (refusal.ends) this.refuse(refusal.message, ctx, false)
     else ctx.report(ctx.text.message(refusal.message), "error")
-    return true
   }
 
   /**
@@ -627,20 +606,16 @@ export class FilletTool implements Tool {
       phase: "second",
       first: found.object,
       pick1: found.pick,
-      hover: null,
       cursor: found.pick,
       corner: false,
+      preview: null,
       whole: found.whole,
       stands: found.stands,
     }
     ctx.requestRender()
   }
 
-  /**
-   * The second object, picked at `pick2` (`corner`: with Shift), filleted
-   * with the first. A polyline a mode found whole makes nothing, as AutoCAD
-   * 2023's console makes nothing of it, and says nothing.
-   */
+  /** The second object a mode found, filleted with the first. */
   private placeSecond(
     second: FilletObject,
     pick2: LinePick,
@@ -648,37 +623,102 @@ export class FilletTool implements Tool {
     whole: boolean,
     ctx: ToolContext
   ): void {
-    if (this.state.phase !== "second") return
+    this.apply(this.outcome(second, pick2, corner, whole, ctx), ctx)
+  }
+
+  /**
+   * What a pick at the second prompt does (`corner`: with Shift): an object
+   * of a type FILLET refuses, the first again, or the corner with what it
+   * takes. The click and the ghost both ask it, the ghost's arc `arcId`.
+   */
+  private secondAt(
+    pick: LinePick,
+    corner: boolean,
+    ctx: ToolContext,
+    arcId?: EntityId
+  ): Outcome {
+    if (this.state.phase !== "second") return NONE
+    const type = typeRefusal("fillet", ctx.pick(pick.world), true)
+    if (type) return refused({ by: "type", type })
+    const pair = cornerPairRefusal(ctx, pick, this.state.first)
+    if (pair) return refused({ by: "pair", pair })
+    const second = pickFilletObject(ctx, pick, this.state.first)
+    return second ? this.outcome(second, pick, corner, false, ctx, arcId) : NONE
+  }
+
+  /**
+   * The second object, picked at `pick2` (`corner`: with Shift), filleted
+   * with the first. A polyline a mode found whole makes nothing, as AutoCAD
+   * 2023's console makes nothing of it, and says nothing.
+   */
+  private outcome(
+    second: FilletObject,
+    pick2: LinePick,
+    corner: boolean,
+    whole: boolean,
+    ctx: ToolContext,
+    arcId?: EntityId
+  ): Outcome {
+    if (this.state.phase !== "second") return NONE
     const { first, pick1, stands } = this.state
-    if (whole || this.state.whole) {
-      this.done(null, ctx)
-      return
-    }
+    if (whole || this.state.whole) return ENDS
     const radius = corner ? 0 : this.radius
     if (isCurve(first) || isCurve(second)) {
-      this.commitCurve(first, second, radius, ctx)
-      return
+      return curveOutcome(first, second, radius)
     }
     if (isRound(first) || isRound(second)) {
-      this.commitRound(first, pick1, second, pick2, radius, ctx)
-      return
+      return this.roundOutcome(first, pick1, second, pick2, radius, ctx, arcId)
     }
     const plane = cornerPlane(first, pick1, second, pick2, ctx.viewport)
     const join = cornerJoin(plane.first, plane.pick1, plane.second, plane.pick2)
-    if (join) {
-      this.commitJoin(join, radius, plane.back, ctx)
-    } else if (isSegment(plane.first) && isSegment(plane.second)) {
+    if (join) return joinOutcome(join, radius, plane.back)
+    if (isSegment(plane.first) && isSegment(plane.second)) {
       const cut = filletSegments(plane.first, plane.second, radius)
-      if (typeof cut !== "string") {
-        this.done(new UpdateEntityCommand(plane.back(cut)), ctx)
-      } else if (cut === "noCorner") {
-        this.refuse("cannotFilletBetween", ctx, "sameLine")
-      } else {
-        this.refuse(REFUSALS[cut], ctx)
-      }
-    } else if (!isSegment(first) && !isSegment(second)) {
-      const capFrom = stands ? originPick(ctx) : pick1
-      this.commitFillet(first, pick1, second, pick2, capFrom, radius, ctx)
+      if (typeof cut !== "string") return updated(plane.back(cut))
+      return cut === "noCorner"
+        ? refusal("cannotFilletBetween", "sameLine")
+        : refusal(REFUSALS[cut])
+    }
+    if (isSegment(first) || isSegment(second)) return NONE
+    const capFrom = stands ? originPick(ctx) : pick1
+    const lines = lineCorner(first, pick1, second, pick2, ctx.viewport)
+    if (!lines) return refused({ by: "nonCoplanar" })
+    const filleted = this.fillet(lines, first, second, radius, ctx, arcId)
+    if (filleted === "tooLarge") return refusal("filletRadiusTooLarge")
+    return filleted
+      ? made([first.id, second.id], filleted)
+      : this.capOutcome(first, capFrom, second, pick2, ctx, arcId)
+  }
+
+  /** Does what `outcome` says: the corner made, the refusal said. */
+  private apply(outcome: Outcome, ctx: ToolContext): void {
+    switch (outcome.kind) {
+      case "made":
+        this.done(cornerCommand(outcome), ctx)
+        return
+      case "none":
+        if (outcome.ends) this.done(null, ctx)
+        return
+      case "refused":
+        this.sayRefusal(outcome.refusal, ctx)
+    }
+  }
+
+  private sayRefusal(refusal: FilletRefusal, ctx: ToolContext): void {
+    switch (refusal.by) {
+      case "refuse":
+        this.refuse(refusal.message, ctx, refusal.invalid, refusal.values)
+        return
+      case "pair":
+        this.refusePair(refusal.pair, ctx)
+        return
+      case "type":
+        this.sayType(refusal.type, ctx)
+        return
+      case "nonCoplanar":
+        ctx.report(ctx.text.message("linesNonCoplanar"), "error")
+        this.state = { phase: "first", hover: null }
+        ctx.requestRender()
     }
   }
 
@@ -745,34 +785,6 @@ export class FilletTool implements Tool {
     return built.map((entity) => corner.back(entity))
   }
 
-  private commitFillet(
-    line1: LineEntity,
-    pick1: LinePick,
-    line2: LineEntity,
-    pick2: LinePick,
-    capFrom: LinePick,
-    radius: number,
-    ctx: ToolContext
-  ): void {
-    const corner = lineCorner(line1, pick1, line2, pick2, ctx.viewport)
-    if (!corner) {
-      ctx.report(ctx.text.message("linesNonCoplanar"), "error")
-      this.state = { phase: "first", hover: null }
-      ctx.requestRender()
-      return
-    }
-    const filleted = this.fillet(corner, line1, line2, radius, ctx)
-    if (!filleted) {
-      this.commitCap(line1, capFrom, line2, pick2, ctx)
-      return
-    }
-    if (filleted === "tooLarge") {
-      this.refuse("filletRadiusTooLarge", ctx)
-      return
-    }
-    this.done(new ReplaceEntitiesCommand([line1.id, line2.id], filleted), ctx)
-  }
-
   /**
    * Two parallel lines capped with a half circle, whatever the radius;
    * collinear, `Collinear lines connot be filleted.`, Autodesk's typo and
@@ -780,22 +792,19 @@ export class FilletTool implements Tool {
    * second line would turn back: the console then adds a zero-length arc at
    * the origin and changes nothing else, silently (acc/e4, h5).
    */
-  private commitCap(
+  private capOutcome(
     line1: LineEntity,
     capFrom: LinePick,
     line2: LineEntity,
     pick2: LinePick,
-    ctx: ToolContext
-  ): void {
+    ctx: ToolContext,
+    arcId?: EntityId
+  ): Outcome {
     const corner = lineCorner(line1, capFrom, line2, pick2, ctx.viewport)
-    const capped = corner && this.cap(corner, line1, line2, ctx)
-    if (capped === "collinear") {
-      this.refuse("collinearCannotFillet", ctx, false)
-    } else if (capped === "turnsBack") {
-      this.done(null, ctx)
-    } else if (capped) {
-      this.done(new ReplaceEntitiesCommand([line2.id], capped), ctx)
-    }
+    const capped = corner && this.cap(corner, line1, line2, ctx, arcId)
+    if (capped === "collinear") return refusal("collinearCannotFillet", false)
+    if (capped === "turnsBack") return ENDS
+    return capped ? made([line2.id], capped) : NONE
   }
 
   /**
@@ -844,114 +853,48 @@ export class FilletTool implements Tool {
   }
 
   /**
-   * A closed ellipse with the other object, in AutoCAD 2027's console's words
-   * (probes corners/p236, p325, p366, p367, p383–p385): with a polyline's
-   * segment `Cannot fillet between these two entities.`; with a line or
-   * another ellipse, at a radius `Unable to fillet curves.`; at radius 0, a
-   * line that misses it makes nothing and nothing is said. WHY the rest is
-   * not taken, the prompt asked again: AutoCAD trims a line meeting it at
-   * radius 0 (p324) and fillets it with an arc or a circle (p368), which is
-   * not built.
-   */
-  private commitCurve(
-    first: FilletObject,
-    second: FilletObject,
-    radius: number,
-    ctx: ToolContext
-  ): void {
-    const other = isCurve(first) ? second : first
-    const ellipse = (isCurve(first) ? first : second) as EllipseEntity
-    if (isSegment(other)) {
-      this.refuse("cannotFilletBetweenThese", ctx, false)
-    } else if (other.type !== "line" && other.type !== "ellipse") {
-      return
-    } else if (radius > 0) {
-      this.refuse("unableToFilletCurves", ctx, false)
-    } else if (other.type === "line" && missesEllipse(other, ellipse)) {
-      this.done(null, ctx)
-    }
-  }
-
-  /**
    * An ARC or a CIRCLE with a line or another of them; with a polyline's
    * segment, `Cannot fillet between these two entities.` (acc/d1–d3); out
    * of each other's plane, `Two entities are non coplanar.` (acc/w1–w6 of
    * 2026-10-14: at another height, or one upright); in a tilted plane they
    * share, rounded in it (see {@link roundPlane}).
    */
-  private commitRound(
+  private roundOutcome(
     first: CornerObject | RoundObject,
     pick1: LinePick,
     second: CornerObject | RoundObject,
     pick2: LinePick,
     radius: number,
-    ctx: ToolContext
-  ): void {
+    ctx: ToolContext,
+    arcId?: EntityId
+  ): Outcome {
     if (isSegment(first) || isSegment(second)) {
-      this.refuse("cannotFilletBetween", ctx, false)
-      return
+      return refusal("cannotFilletBetween", false)
     }
     const plane = roundPlane(first, pick1, second, pick2, ctx.viewport)
-    if (!plane) {
-      this.refuse("twoEntitiesNonCoplanar", ctx, false)
-      return
-    }
+    if (!plane) return refusal("twoEntitiesNonCoplanar", false)
     const filleted = filletRound(
       plane.first,
       plane.pick1,
       plane.second,
       plane.pick2,
       radius,
-      ctx.document.getCurrentLayerId()
+      ctx.document.getCurrentLayerId(),
+      arcId
     )
     if (filleted === "noValidFillet") {
-      this.refuse("noValidFillet", ctx, false, {
+      return refusal("noValidFillet", false, {
         radius: formatLength(radius, ctx.document.getSettings()),
       })
-    } else if (filleted === "nothing") {
-      this.done(null, ctx)
-    } else {
-      this.done(
-        new ReplaceEntitiesCommand(
-          filleted.replaced,
-          filleted.built.map((entity) =>
-            filleted.replaced.includes(entity.id)
-              ? plane.back(entity)
-              : plane.made(entity)
-          )
-        ),
-        ctx
+    }
+    if (filleted === "nothing") return ENDS
+    return made(
+      filleted.replaced,
+      filleted.built.map((entity) =>
+        filleted.replaced.includes(entity.id)
+          ? plane.back(entity)
+          : plane.made(entity)
       )
-    }
-  }
-
-  /**
-   * A line and a polyline's segment, or segments of two polylines, joined
-   * into one polyline through the arc; parallel, `Cannot fillet between these
-   * two entities.`
-   */
-  private commitJoin(
-    join: CornerJoin,
-    radius: number,
-    back: (entity: Entity) => Entity,
-    ctx: ToolContext
-  ): void {
-    const refusal = joinRefusal(join)
-    if (refusal) {
-      this.refuse(refusal, ctx, false)
-      return
-    }
-    const cut = filletJoin(join, radius)
-    if (!cut) {
-      this.refuse("cannotFilletBetween", ctx, false)
-      return
-    }
-    this.done(
-      new ReplaceEntitiesCommand(
-        [cornerEntity(join.other).id, join.segment.poly.id],
-        [back(joinAtCut(join, cut))]
-      ),
-      ctx
     )
   }
 
@@ -992,11 +935,7 @@ export class FilletTool implements Tool {
    * removes it, the lines meeting at their crossing.
    */
   private commitPolyline(poly: PolylineEntity, ctx: ToolContext): void {
-    const result = cutPolylineCorners(poly, {
-      lines: (corner) => filletCorner(corner, this.radius),
-      acrossArcs: true,
-      arcs: (corner) => filletArcCorner(corner, this.radius),
-    })
+    const result = this.cutPolyline(poly)
     ctx.report(ctx.text.message("linesFilleted", { count: result.cut }))
     reportSkipped(result, ctx)
     if (result.polyline) {
@@ -1008,6 +947,15 @@ export class FilletTool implements Tool {
       ctx.dynamicInput.close()
       ctx.endCommand()
     }
+  }
+
+  /** Polyline's cut of `poly` at the radius, which its ghost draws too. */
+  private cutPolyline(poly: PolylineEntity): PolylineCornersResult {
+    return cutPolylineCorners(poly, {
+      lines: (corner) => filletCorner(corner, this.radius),
+      acrossArcs: true,
+      arcs: (corner) => filletArcCorner(corner, this.radius),
+    })
   }
 
   /**
@@ -1087,6 +1035,7 @@ export class FilletTool implements Tool {
       this.steps.push({ radius: this.radius, depth: ctx.historyDepth() })
       this.writeRadius(value, ctx)
     }
+    this.refreshPreview(ctx)
     this.openKeywordPrompt(ctx)
     ctx.requestRender()
   }
@@ -1095,6 +1044,49 @@ export class FilletTool implements Tool {
     this.radius = value
     setCommandSettings({ filletRadius: value }, ctx)
   }
+}
+
+/**
+ * A closed ellipse with the other object, in AutoCAD 2027's console's words
+ * (probes corners/p236, p325, p366, p367, p383–p385): with a polyline's
+ * segment `Cannot fillet between these two entities.`; with a line or
+ * another ellipse, at a radius `Unable to fillet curves.`; at radius 0, a
+ * line that misses it makes nothing and nothing is said. WHY the rest is
+ * not taken, the prompt asked again: AutoCAD trims a line meeting it at
+ * radius 0 (p324) and fillets it with an arc or a circle (p368), which is
+ * not built.
+ */
+function curveOutcome(
+  first: FilletObject,
+  second: FilletObject,
+  radius: number
+): Outcome {
+  const other = isCurve(first) ? second : first
+  const ellipse = (isCurve(first) ? first : second) as EllipseEntity
+  if (isSegment(other)) return refusal("cannotFilletBetweenThese", false)
+  if (other.type !== "line" && other.type !== "ellipse") return NONE
+  if (radius > 0) return refusal("unableToFilletCurves", false)
+  return other.type === "line" && missesEllipse(other, ellipse) ? ENDS : NONE
+}
+
+/**
+ * A line and a polyline's segment, or segments of two polylines, joined
+ * into one polyline through the arc; parallel, `Cannot fillet between these
+ * two entities.`
+ */
+function joinOutcome(
+  join: CornerJoin,
+  radius: number,
+  back: (entity: Entity) => Entity
+): Outcome {
+  const refusedJoin = joinRefusal(join)
+  if (refusedJoin) return refusal(refusedJoin, false)
+  const cut = filletJoin(join, radius)
+  if (!cut) return refusal("cannotFilletBetween", false)
+  return made(
+    [cornerEntity(join.other).id, join.segment.poly.id],
+    [back(joinAtCut(join, cut))]
+  )
 }
 
 /** Whether a line, taken whole, misses a closed ellipse lying in plan. */
@@ -1128,8 +1120,6 @@ function originPick(ctx: ToolContext): LinePick {
   return { world: origin, screen: ctx.viewport.worldToScreen(origin) }
 }
 
-const hoverStroke: StrokeStyle = { color: THEME.entityHover, width: 2 }
-const selectedStroke: StrokeStyle = { color: THEME.selected, width: 2 }
 /** The preview arc's id, reused every frame so a preview burns no entity ids. */
 const PREVIEW_ID = "fillet-preview"
 

@@ -60,12 +60,7 @@ import {
   UpdateEntityCommand,
 } from "../commands/entityCommands"
 import { ScenePrimitive } from "../../scene/types"
-import {
-  type CursorBadge,
-  entityScenePrimitive,
-  entityStroke,
-  selectionGlow,
-} from "../SceneBuilder"
+import type { CursorBadge } from "../SceneBuilder"
 import type { PromptId } from "../../locales/types"
 import type { MessageId } from "../EngineText"
 import {
@@ -87,6 +82,7 @@ import {
 } from "./curveCrossings"
 import { lockedObjectAt } from "./lockedPick"
 import { typedPick } from "./typedPick"
+import { drawn } from "./ghostLook"
 import { ObjectSelector } from "./objectSelection"
 import {
   buildFenceOverlay,
@@ -1515,30 +1511,6 @@ function removedPiece(
     target,
     geomToEntity(plan.removed, plan.layerId, PREVIEW_ID)
   )
-}
-
-/**
- * `piece` as the drawing draws it, faded as ERASE's preview fades an object,
- * or with the selection's glow over it.
- */
-function drawn(
-  ctx: ToolContext,
-  piece: Entity,
-  look: "plain" | "faded" | "glow"
-): ScenePrimitive[] {
-  const settings = ctx.document.getSettings()
-  const stroke = entityStroke(
-    ctx.viewport,
-    piece,
-    ctx.document.getLayer(piece.layerId),
-    settings,
-    look === "faded"
-  )
-  const options = { fill: settings.fillMode, linetype: true }
-  const primitives = entityScenePrimitive(ctx.viewport, piece, stroke, options)
-  return look === "glow"
-    ? [...primitives, ...selectionGlow(ctx.viewport, piece, stroke, options)]
-    : primitives
 }
 
 /**

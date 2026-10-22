@@ -654,7 +654,18 @@ Radius alone (corners/p100, p121, p124) — (es `*Designación no válida*`,
 cannot be (`'LINE`) says `** That command may not be invoked transparently **` first (p144);
 'ZOOM, '-PAN and '-OSNAP run at every prompt and resume it (p140–p146). A selection made
 before the command is dropped, and nothing is left selected after (p162–p164); Enter at `Command:`
-repeats it, and `'FILLET` is refused as no transparent command (p105, p106). Wording, English and
+repeats it, and `'FILLET` is refused as no transparent command (p105, p106). The look (desktop
+corners/d01–d06): the first prompt's rollover thickens what a pick takes — a line, an arc, a
+circle, a closed ellipse, a polyline's segment alone (d01-1, d04-2, d04-3) —, none over a type it
+refuses nor over an object on a locked layer (d04-4); the second prompt's ghost is what the click
+makes, worked out as the click works it out — the lines trimmed and the arc, Shift's sharp corner,
+the cap, a joined polyline — in the selection's glow, over the objects it replaces drawn dimmed in
+place, so what shows of them is what it removes, the side following the cursor (d01-2, d01-3,
+d02-1, d06-2), a circle left as drawn; with the cursor on nothing, or on an object making nothing,
+the first object alone in the glow (d01-4), and on one the pair refuses — the first again, a type
+refused, parallel, a radius too large — the circle-and-slash beside the cursor (d06-1); Polyline's
+prompt over a 2D polyline draws every corner as the current radius would round it, in the glow,
+over the polyline dimmed (d05-1), and nothing over anything else (d05-2). Wording, English and
 Spanish, from AutoCAD 2027's console (corners/p100–p169, p174, p176, p231–p239, p240–p309,
 p310–p312, p323, p325, p360–p388) and its string tables
 
@@ -669,9 +680,15 @@ console's choice between two fillets of an ARC or a CIRCLE equally near a line's
 symmetric about it: the right one at radius 15, the left at 200, acc/b1, b4 — here the first found),
 the zero-length arc the console leaves at the origin where a cap would turn the second line back,
 `out of limits`; the double space Autodesk's Spanish puts before `[Radio]` at the second prompt;
-**unverified**: whether a circle a mode finds stands picked at its angle 0 or at 180° (here 180°,
-which p303–p305 match: the console settles only that it is one of them), two closed ellipses at
-radius 0 (not taken), the arc–arc rule beyond p219, p322 and p362–p365, and an open polyline's
+the refusal's words in the cursor's tooltip before the click, over a pair that makes no corner
+(`Imposible empalmar esos dos objetos.` in place of the prompt, desktop corners/d06-1: the dynamic
+prompt here shows the prompt alone); the padlock beside the pick box over an object on a locked
+layer and the locked layers' fade (LAYLOCKFADECTL, d04-4), left to the Properties review;
+**unverified**: whether the first object, a polyline's segment, glows at the second prompt as that
+segment alone (as the rollover; seen only with a line, d01-4), the circle-and-slash over the first
+object again or a radius too large (shown here, as over d06-1's pair), whether a circle a mode
+finds stands picked at its angle 0 or at 180° (here 180°, which p303–p305 match: the console
+settles only that it is one of them), two closed ellipses at radius 0 (not taken), the arc–arc rule beyond p219, p322 and p362–p365, and an open polyline's
 first and last of three that cross along the first segment itself (one apart here)
 
 ### `CHAMFER` / `CHA` · es `CHAFLAN` / `CH`
@@ -740,15 +757,20 @@ polyline two or more apart are refused in FILLET's words; a wrong answer is refu
 `Expects a point or Window/Last/Crossing/BOX/Fence/WPolygon/CPolygon/Undo/Polyline/Distance`, at the
 second prompt and Polyline's `…/CPolygon/Distance` (the first prompt's words refused at the second,
 as FILLET's: p122, p125) (the console's `Distance/Angle`, Angle not offered; es
-`…/desHacer/Polilínea/Distancia`, `…/Distancia`: p117, p118). Wording, English and Spanish, from
-AutoCAD 2027's console (corners/p100–p169, p182, p184, p314–p319, p327, p370–p382) and its string
-tables
+`…/desHacer/Polilínea/Distancia`, `…/Distancia`: p117, p118). The look is FILLET's: the rollover
+(a line, a polyline's segment, an ellipse, an elliptical arc or a spline; none over an ARC, a
+CIRCLE, a type refused or a locked object), the ghost of the cut lines and the bevel or Shift's
+corner in the glow over the originals dimmed (desktop corners/d03-1, d03-2), the circle-and-slash
+over a pair refused, and Polyline's corners at the current distances. Wording, English and Spanish,
+from AutoCAD 2027's console (corners/p100–p169, p182, p184, p314–p319, p327, p370–p382) and its
+string tables
 
 **Missing:** the bevel's linetype scale from the second line, as FILLET's arc's; Angle, mEthod and
 Trim (CHAMMODE is always Distance and TRIMMODE 1, so they are not listed, nor the second prompt's
 and Polyline's Angle and Method: 2027 lists `Select 2D polyline or [Distance/Angle/Method]:`, es
 `[Distancia/ángUlo/Método]`, and `M` at either prompt is Method's
-`Enter trim method [Distance/Angle] <Distance>:`, refused here: corners/p112, p122, p125);
+`Enter trim method [Distance/Angle] <Distance>:`, refused here: corners/p112, p122, p125); the
+refusal's words at the cursor, the padlock and the locked layers' fade, as FILLET's;
 **unverified**: an ellipse or a spline with anything but a line (said as with one), and one a mode
 finds (not taken)
 
