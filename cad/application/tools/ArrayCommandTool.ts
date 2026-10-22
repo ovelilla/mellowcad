@@ -87,6 +87,10 @@ export class ArrayCommandTool implements Tool {
     return this.chosen?.tool.setsLastPoint?.() ?? null
   }
 
+  takesSnapOverride(): boolean {
+    return this.chosen?.tool.takesSnapOverride?.() ?? false
+  }
+
   commandOptions(): readonly CommandOption[] {
     if (this.chosen) return this.chosen.tool.commandOptions?.() ?? []
     if (this.phase === "selecting") return this.selector.commandOptions()
@@ -130,6 +134,10 @@ export class ArrayCommandTool implements Tool {
   answerTyped(text: string, ctx: ToolContext): boolean {
     if (this.chosen) return this.chosen.tool.answerTyped?.(text, ctx) ?? false
     return this.phase === "selecting" && this.selector.answerTyped(text, ctx)
+  }
+
+  onAskAgain(ctx: ToolContext): void {
+    this.chosen?.tool.onAskAgain?.(ctx)
   }
 
   cycleLasso(ctx: ToolContext): boolean {

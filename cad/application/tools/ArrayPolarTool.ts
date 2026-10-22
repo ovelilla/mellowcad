@@ -1,13 +1,12 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { Entity, entityBounds } from "../../domain/entities"
 import {
-  Entity,
-  copyEntity,
-  entityBounds,
-  rotateEntity,
-  rotateEntityCopy,
-  rotatePoint,
-  translateEntity,
-} from "../../domain/entities"
+  arrayItemCopy,
+  isFullTurn,
+  placeArrayItem,
+  polarAngleBetween,
+  polarArrayItems,
+} from "../../domain/arrays"
 import { parseNumber } from "../../domain/units"
 import {
   isCoordinateExpression,
@@ -158,7 +157,7 @@ export class ArrayPolarTool implements Tool {
       case "between":
         return {
           id: "specifyAngleBetweenItems",
-          enter: { angle: angleBetween(ring) },
+          enter: { angle: polarAngleBetween(ring) },
           trimmed: true,
         }
       case "fill":
@@ -340,12 +339,16 @@ export class ArrayPolarTool implements Tool {
     const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
     const ring = this.previewRing(ctx, state.ring, state.step)
     const out: ScenePrimitive[] = []
-    for (const angle of itemAngles(ring).slice(0, MAX_PREVIEW_ITEMS)) {
+    const items = polarArrayItems(
+      { ...state.config, ...ring },
+      MAX_PREVIEW_ITEMS
+    )
+    for (const item of items) {
       for (const entity of state.config.originals) {
         out.push(
           ...entityScenePrimitive(
             ctx.viewport,
-            placeItem(entity, state.config, angle, ring.rotate),
+            placeArrayItem(entity, item),
             ghost,
             { blocks: ctx.blocks }
           )
@@ -495,26 +498,13 @@ export class ArrayPolarTool implements Tool {
   private create(ctx: ToolContext): void {
     const state = this.state
     if (state.phase !== "edit") return
-    const copies = itemAngles(state.ring).flatMap((angle) =>
-      state.config.originals.map((entity) =>
-        placeItemCopy(entity, state.config, angle, state.ring.rotate)
-      )
+    const copies = polarArrayItems({ ...state.config, ...state.ring }).flatMap(
+      (item) =>
+        state.config.originals.map((entity) => arrayItemCopy(entity, item))
     )
     if (copies.length > 0) ctx.execute(new AddEntitiesCommand(copies))
     ctx.dynamicInput.close()
   }
-}
-
-/** Whether the fill is a whole turn, where the closing item would land on the first. */
-function isFull(fill: number): boolean {
-  return fill > FULL_TURN - 1e-9
-}
-
-function angleBetween(ring: Ring): number {
-  if (ring.items <= 1) return 0
-  return isFull(ring.fill)
-    ? ring.fill / ring.items
-    : ring.fill / (ring.items - 1)
 }
 
 /**
@@ -531,7 +521,7 @@ function withValue(ring: Ring, step: Step, value: number): Ring {
       return { ...ring, items: value }
     case "between": {
       const span = value * Math.max(ring.items - 1, 1)
-      return { ...ring, fill: isFull(span) ? FULL_TURN : span }
+      return { ...ring, fill: isFullTurn(span) ? FULL_TURN : span }
     }
     case "fill":
       return { ...ring, fill: withinTurn(value), clockwise: value < 0 }
@@ -549,46 +539,6 @@ function withinTurn(fill: number): number {
   if (size <= FULL_TURN) return size
   const rest = size % FULL_TURN
   return rest < 1e-9 ? FULL_TURN : rest
-}
-
-/** The angles of the copies, in degrees: every item but the source, item 1. */
-function itemAngles(ring: Ring): number[] {
-  const step = ring.clockwise ? -angleBetween(ring) : angleBetween(ring)
-  const out: number[] = []
-  for (let k = 1; k < ring.items; k++) out.push(k * step)
-  return out
-}
-
-/** One array item, preserving id — used for the live ghost preview. */
-function placeItem(
-  entity: Entity,
-  config: PolarConfig,
-  angleDeg: number,
-  rotate: boolean
-): Entity {
-  const rad = (angleDeg * Math.PI) / 180
-  if (rotate) return rotateEntity(entity, config.center, rad)
-  const moved = rotatePoint(config.basePoint, config.center, rad)
-  return translateEntity(entity, {
-    x: moved.x - config.basePoint.x,
-    y: moved.y - config.basePoint.y,
-  })
-}
-
-/** One array item as a fresh entity — used when committing the array. */
-function placeItemCopy(
-  entity: Entity,
-  config: PolarConfig,
-  angleDeg: number,
-  rotate: boolean
-): Entity {
-  const rad = (angleDeg * Math.PI) / 180
-  if (rotate) return rotateEntityCopy(entity, config.center, rad)
-  const moved = rotatePoint(config.basePoint, config.center, rad)
-  return copyEntity(entity, {
-    x: moved.x - config.basePoint.x,
-    y: moved.y - config.basePoint.y,
-  })
 }
 
 function pushCenterMarker(out: ScenePrimitive[], at: Vec2): void {

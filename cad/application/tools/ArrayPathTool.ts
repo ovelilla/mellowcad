@@ -1,20 +1,27 @@
-import { Vec2, V } from "../../geometry/Vec2"
+import { Vec2 } from "../../geometry/Vec2"
 import { Vec3, vec3 } from "../../geometry/Vec3"
-import { normalizeDegrees } from "../../geometry/primitives"
+import { Entity, readsInPlan } from "../../domain/entities"
 import {
-  Entity,
-  copyEntity,
-  entityBounds,
-  readsInPlan,
-  rotateEntity,
-  translateEntity,
-} from "../../domain/entities"
+  ArrayPath,
+  PathLayout,
+  arrayItemCopy,
+  arrayPathOf,
+  arraySourceSize,
+  pathArrayItems,
+  pathArrayMaximum,
+  pathDivideStep,
+  placeArrayItem,
+} from "../../domain/arrays"
 import { parseNumber } from "../../domain/units"
+import type { EntityId } from "../../domain/entities"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { THEME } from "../../scene/theme"
-import { ReplaceEntitiesCommand } from "../commands/entityCommands"
+import { AddEntitiesCommand } from "../commands/entityCommands"
+import { isCoordinateExpression } from "../input/coordinateInput"
 import { ONE_OBJECT_MODES, ObjectSelector } from "./objectSelection"
+import { lockedObjectAt } from "./lockedPick"
+import { rollover } from "./ghostLook"
 import {
   MAX_ARRAY_COUNT,
   MAX_PREVIEW_ITEMS,
@@ -33,49 +40,24 @@ import {
 } from "./Tool"
 
 /**
- * AutoCAD's ARRAYPATH, as its 2023 console asks it: `Select objects:`, `Type =
- * Path  Associative = No`, `Select path curve:` — a line, a circle or an arc —
- * then `Select grip to edit array or [Method/Items/Align items/eXit] <eXit>:`
- * over a live preview. Method asks `Enter path method [Divide/Measure]
- * <Measure>:`: Measure steps the items a distance apart from the path's start,
- * Divide spreads them evenly over it. Items asks, by Divide, `Enter number of
- * items along path`; by Measure, `Specify the distance between items along
- * path`, then says `Maximum items = 11` and asks `Specify number of items or
- * [Fill entire path]`. Align items asks `Align arrayed items to path?
- * [Yes/No] <Yes>:` (Yes turns each copy to follow the path's tangent). At
- * first the items are one and a half times the selection's size apart and
- * fill the path. As in AutoCAD the source objects are consumed into the array
- * (the first item sits at the path's start); the path is left in place. eXit
- * or Enter commits it as one undo step; Escape changes nothing.
+ * AutoCAD's ARRAYPATH, as its 2027 console asks it: `Select objects:` (or
+ * ARRAY's set, {@link takeSet}), `Type = Path  Associative = No`, `Select path
+ * curve:` — a line, an arc, a circle or a polyline —, then `Select grip to
+ * edit array or [Method/Items/Align items/eXit] <eXit>:` over a live preview.
+ * Method asks `Enter path method [Divide/Measure] <Measure>:`: Measure steps
+ * the items a distance apart, Divide spreads them evenly over the path. Items
+ * asks, by Divide, `Enter number of items along path`; by Measure, `Specify
+ * the distance between items along path`, then says `Maximum items = 11` and
+ * asks `Specify number of items or [Fill entire path]`. Align items asks
+ * `Align arrayed items to path? [Yes/No] <Yes>:`. At first the items are one
+ * and a half times the selection's size apart and fill the path. The source
+ * stays where it is as item 1, the rest stepped from it along the path from
+ * the end nearer the pick (`domain/arrays.ts`); the path is left in place.
+ * eXit or Enter makes the copies, one undo step; Escape makes none.
  *
  * WHY Associative = No: as ARRAYRECT's. Base point, Tangent direction, Rows,
  * Levels and Z direction are not offered.
  */
-
-/** A curve the array runs along, parameterised by arc length. */
-interface PathCurve {
-  readonly length: number
-  readonly closed: boolean
-  /** Point and tangent direction (deg CCW from +X) at an arc-length distance. */
-  at(distance: number): { point: Vec2; tangentDeg: number }
-}
-
-interface PathConfig {
-  readonly originals: readonly Entity[]
-  readonly pathEntity: Entity
-  readonly path: PathCurve
-  /** Base point (selection centroid) placed on the path at each item. */
-  readonly basePoint: Vec2
-}
-
-/** What the prompts edit: kept together, as AutoCAD keeps the count across methods. */
-interface Layout {
-  readonly method: "divide" | "measure"
-  readonly items: number
-  /** Measure's distance between items. */
-  readonly spacing: number
-  readonly align: boolean
-}
 
 type Step = "main" | "method" | "count" | "spacing" | "measureCount" | "align"
 
@@ -87,8 +69,10 @@ type ArrayPathState =
   /** Path chosen; editing the layout with a live preview. */
   | {
       readonly phase: "edit"
-      readonly config: PathConfig
-      readonly layout: Layout
+      readonly originals: readonly Entity[]
+      readonly path: ArrayPath
+      /** What the prompts edit: kept together, as AutoCAD keeps the count across methods. */
+      readonly layout: PathLayout
       readonly step: Step
     }
 
@@ -102,8 +86,10 @@ export class ArrayPathTool implements Tool {
   })
   /**
    * The selection modes typed at `Select path curve:` — Previous and AUto
-   * too, as its refusal lists them. AutoCAD 2023's console takes the newest
-   * curve found, and leaves out the objects being arrayed.
+   * too, as its refusal lists them. AutoCAD 2027's console takes the newest
+   * curve found, its run from the end nearer the mode's last point, and
+   * leaves out the objects being arrayed (probes arrays/p339–p341, p353–p356,
+   * p376–p378).
    */
   private readonly pathModes = new ObjectSelector({
     takes: () => "pathCurve",
@@ -116,10 +102,14 @@ export class ArrayPathTool implements Tool {
         return entity !== undefined && !ctx.selection.has(id) && isPath(entity)
       }),
     one: {
-      take: (entity, ctx) => this.enterEdit(entity, ctx),
+      take: (entity, ctx, find) =>
+        this.enterEdit(entity, find.last ?? null, ctx),
       newest: true,
+      locked: "onLockedLayer",
+      lockedAsksAgain: true,
+      named: (found, ctx) => this.sayArrayed(found, ctx),
       // WHY LASTPOINT put back: a point typed on an object there leaves it
-      // as it was (AutoCAD 2023's console, acc/bk45, bk46).
+      // as it was (probe arrays/p357).
       pick: (point, ctx) => {
         ctx.setLastPoint(this.lastPointAtPath)
         this.pickCurve(point, ctx)
@@ -178,15 +168,13 @@ export class ArrayPathTool implements Tool {
         return {
           id: "specifyDistanceBetweenItemsAlongPath",
           enter: layout.spacing,
+          trimmed: true,
         }
       case "measureCount":
         return {
           id: "specifyNumberOfItemsOr",
           enter: {
-            count: Math.min(
-              layout.items,
-              maxItems(state.config.path, layout.spacing)
-            ),
+            count: Math.min(layout.items, maxItems(state.path, layout.spacing)),
           },
         }
       case "align":
@@ -194,7 +182,7 @@ export class ArrayPathTool implements Tool {
     }
   }
 
-  /** As AutoCAD 2023's console refuses them. */
+  /** As AutoCAD 2027's console refuses them (probes arrays/p327–p336, p373). */
   takes(): QuestionInput | null {
     const state = this.state
     if (state.phase === "pickPath") return this.pathModes.takes()
@@ -216,10 +204,18 @@ export class ArrayPathTool implements Tool {
     }
   }
 
+  /**
+   * WHY at `Select path curve:`: a typed object snap picks there, its point
+   * where the run starts nearest, LASTPOINT kept (probes arrays/p342–p344);
+   * a mode's points are points already.
+   */
+  takesSnapOverride(): boolean {
+    return this.state.phase === "pickPath" && !this.pathModes.inMode()
+  }
+
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "selecting") return this.selector.commandOptions()
     if (this.state.phase === "pickPath") return this.pathModes.commandOptions()
-    if (this.state.phase !== "edit") return []
     switch (this.state.step) {
       case "main":
         return [
@@ -262,8 +258,7 @@ export class ArrayPathTool implements Tool {
       return this.pathModes.invokeOption(id, ctx) ? "continue" : "unhandled"
     }
     const state = this.state
-    if (state.phase !== "edit") return "unhandled"
-    const { layout, config } = state
+    const { layout, path } = state
     switch (state.step) {
       case "main":
         if (id === "eXit") {
@@ -279,10 +274,10 @@ export class ArrayPathTool implements Tool {
       case "method": {
         if (id !== "Divide" && id !== "Measure") return "unhandled"
         const method = id === "Divide" ? "divide" : "measure"
-        // Measure goes on from the spacing Divide had, as AutoCAD's does.
+        // Measure goes on from the spacing Divide had (probe arrays/p334).
         const spacing =
           method === "measure" && layout.method === "divide"
-            ? divideStep(config.path, layout.items)
+            ? pathDivideStep(path, layout.items)
             : layout.spacing
         this.state = { ...state, layout: { ...layout, method, spacing } }
         this.ask("main", ctx)
@@ -292,7 +287,7 @@ export class ArrayPathTool implements Tool {
         if (id !== "Fill entire path") return "unhandled"
         this.state = {
           ...state,
-          layout: { ...layout, items: maxItems(config.path, layout.spacing) },
+          layout: { ...layout, items: maxItems(path, layout.spacing) },
         }
         this.ask("main", ctx)
         return "continue"
@@ -318,9 +313,8 @@ export class ArrayPathTool implements Tool {
           this.pathModes.onPointerMove(input, ctx)
           break
         }
-        // AutoCAD's rollover highlight: preview the curve under the cursor so
-        // it is clear what clicking will pick as the path.
-        const hover = this.pickPath(input, ctx)
+        const hit = ctx.pick(input.world)
+        const hover = hit && isPath(hit) ? hit : null
         if (hover?.id !== this.state.hover?.id) {
           this.state = { phase: "pickPath", hover }
         }
@@ -346,40 +340,54 @@ export class ArrayPathTool implements Tool {
           this.pathModes.onPointerDown(input, ctx)
           return
         }
-        this.pickCurve(input.world, ctx)
+        if (input.snap) ctx.setLastPoint(this.lastPointAtPath)
+        this.pickCurve(input.snap ? input.point : input.world, ctx)
         return
       }
     }
   }
 
   /**
-   * The pick at `Select path curve:`, clicked or typed (AutoCAD 2023's
-   * console takes a typed point as one, acc/bk19, bk21): an arrayed object is
-   * refused, and on nothing a window starts, as the AUto its refusal lists
-   * makes it (bk20, bk48).
+   * The pick at `Select path curve:`, clicked, typed or snapped (probes
+   * arrays/p338, p342–p348): a curve on a locked layer says `1 was on a
+   * locked layer.` and the prompt is asked again, an arrayed object is
+   * refused in its words, another that is no path is filtered out, and on
+   * nothing a window starts, as the AUto its refusal lists makes it. The
+   * point picked is where the run starts nearest.
    */
-  private pickCurve(world: Vec2, ctx: ToolContext): void {
-    const under = ctx.pick(world)
-    if (!under) {
-      this.pathModes.startWindow({ x: world.x, y: world.y }, ctx)
+  private pickCurve(world: Vec2 | Vec3, ctx: ToolContext): void {
+    const at = { x: world.x, y: world.y }
+    const under = ctx.pick(at)
+    if (lockedObjectAt(ctx.viewport.worldToScreen(world), ctx, under)) {
+      ctx.report(ctx.text.message("onLockedLayer", { count: 1 }), "error")
       return
     }
-    if (!isPath(under)) return
+    if (!under) {
+      this.pathModes.startWindow(at, ctx)
+      return
+    }
     if (ctx.selection.has(under.id)) {
       ctx.report(ctx.text.message("pathCurveIsArrayed"))
       ctx.report(ctx.text.message("filteredOut", { count: 1 }))
       return
     }
-    this.enterEdit(under, ctx)
+    if (!isPath(under)) {
+      ctx.report(ctx.text.message("filteredOut", { count: 1 }))
+      return
+    }
+    this.enterEdit(under, at, ctx)
   }
 
   /**
-   * The curve a click would take as the path: one in the UCS's XY plane, where
-   * the array is laid out (a path at an angle to it is not offered).
+   * What Previous and ALL say when they find an arrayed object: its line,
+   * then all they found counted as filtered out — ALL still taking the curve
+   * (probes arrays/p354, p356). Last says the count alone (p353).
    */
-  private pickPath(input: PointerInput, ctx: ToolContext): Entity | null {
-    const hit = ctx.pick(input.world)
-    return hit && isPath(hit) ? hit : null
+  private sayArrayed(found: readonly EntityId[], ctx: ToolContext): boolean {
+    if (!found.some((id) => ctx.selection.has(id))) return false
+    ctx.report(ctx.text.message("pathCurveIsArrayed"))
+    ctx.report(ctx.text.message("filteredOut", { count: found.length }))
+    return true
   }
 
   answerTyped(text: string, ctx: ToolContext): boolean {
@@ -389,7 +397,12 @@ export class ArrayPathTool implements Tool {
       case "pickPath":
         return this.pathModes.answerTyped(text, ctx)
       default:
-        return false
+        // WHY taken and asked again: a point or a number there picks no
+        // grip, and the console says nothing (probes arrays/p328, p329).
+        return (
+          this.state.step === "main" &&
+          (isCoordinateExpression(text) || parseNumber(text) !== null)
+        )
     }
   }
 
@@ -406,9 +419,11 @@ export class ArrayPathTool implements Tool {
     const state = this.state
     if (state.phase === "selecting") return this.selector.onEnter(ctx)
     if (state.phase === "pickPath") {
-      return this.pathModes.inMode() && this.pathModes.onEnter(ctx)
+      // WHY consumed: Enter at `Select path curve:` asks it again (probe
+      // arrays/p349).
+      if (this.pathModes.inMode()) this.pathModes.onEnter(ctx)
+      return true
     }
-    if (state.phase !== "edit") return false
     switch (state.step) {
       case "main":
         // <eXit>: the array is made and the command ends.
@@ -424,60 +439,46 @@ export class ArrayPathTool implements Tool {
     }
   }
 
+  /** `Maximum items = N` before the count is asked again (probes arrays/p367, p373). */
+  onAskAgain(ctx: ToolContext): void {
+    if (this.state.phase === "edit" && this.state.step === "measureCount") {
+      this.sayMaximum(ctx)
+    }
+  }
+
   wantsSnap(): boolean {
     if (this.state.phase === "pickPath") return this.pathModes.wantsSnap()
     return this.state.phase === "selecting" && this.selector.wantsSnap()
   }
 
+  /**
+   * The path pick's rollover is the shared one (desktop arrays/d03-1); the
+   * edit's preview draws the items, the path left as the drawing draws it
+   * (d03-2).
+   */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    const { viewport } = ctx
     const state = this.state
 
     if (state.phase === "selecting") return this.selector.buildOverlay(ctx)
 
-    // Rollover-highlight the curve under the cursor while choosing the path,
-    // in the same amber it takes once picked so the candidate is unmistakable.
     if (state.phase === "pickPath") {
       if (this.pathModes.inMode()) return this.pathModes.buildOverlay(ctx)
-      const out: ScenePrimitive[] = []
-      if (state.hover) {
-        pushEntityOutline(out, viewport, state.hover, {
-          color: THEME.selected,
-          width: 2.5,
-        })
-      }
-      return out
+      return state.hover ? rollover(ctx, state.hover) : []
     }
-
-    if (state.phase !== "edit") return []
-
-    const { config } = state
-    const out: ScenePrimitive[] = []
-    pushEntityOutline(out, viewport, config.pathEntity, {
-      color: THEME.selected,
-      width: 2,
-    })
 
     const layout = this.previewLayout(ctx, state.layout, state.step)
-    const placements = placementsOf(config.path, layout).slice(
-      0,
-      MAX_PREVIEW_ITEMS
-    )
     const ghost: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
-    const t0 = placements.length > 0 ? placements[0].tangentDeg : 0
-    for (const pl of placements) {
-      const dth = layout.align ? pl.tangentDeg - t0 : 0
-      for (const entity of config.originals) {
-        pushEntityOutline(
-          out,
-          viewport,
-          itemEntity(entity, config.basePoint, dth, pl.point),
-          ghost,
-          ctx.blocks
+    return pathArrayItems(state.path, layout, MAX_PREVIEW_ITEMS).flatMap(
+      (item) =>
+        state.originals.flatMap((entity) =>
+          entityScenePrimitive(
+            ctx.viewport,
+            placeArrayItem(entity, item),
+            ghost,
+            { blocks: ctx.blocks }
+          )
         )
-      }
-    }
-    return out
+    )
   }
 
   /** Goes on from the set `Select objects:` closed to the path curve. */
@@ -494,8 +495,13 @@ export class ArrayPathTool implements Tool {
     ctx.dynamicInput.open({ fields: [], commit: () => {} })
   }
 
-  private enterEdit(pathEntity: Entity, ctx: ToolContext): void {
-    const path = makePath(pathEntity)
+  /** The path picked, its run from the end nearer `near` (null: its own start). */
+  private enterEdit(
+    pathEntity: Entity,
+    near: Vec2 | null,
+    ctx: ToolContext
+  ): void {
+    const path = arrayPathOf(pathEntity, near)
     if (!path) return
     const originals = ctx.selection
       .toArray()
@@ -503,15 +509,15 @@ export class ArrayPathTool implements Tool {
       .filter((entity): entity is Entity => entity !== undefined)
     if (originals.length === 0) return
 
-    const spacing = defaultSpacing(originals, ctx.blocks)
+    // One and a half times the larger side of the set's extents along the
+    // UCS's axes, 1 for a set of no size (probes arrays/p06, p310).
+    const { width, height } = arraySourceSize(originals, ctx.ucs, ctx.blocks)
+    const size = Math.max(width, height)
+    const spacing = size > 1e-6 ? size * 1.5 : 1
     this.state = {
       phase: "edit",
-      config: {
-        originals,
-        pathEntity,
-        path,
-        basePoint: centroid(originals, ctx.blocks),
-      },
+      originals,
+      path,
       layout: {
         method: "measure",
         items: maxItems(path, spacing),
@@ -533,13 +539,7 @@ export class ArrayPathTool implements Tool {
       ctx.requestRender()
       return
     }
-    if (step === "measureCount") {
-      ctx.report(
-        ctx.text.message("maximumItems", {
-          count: maxItems(state.config.path, state.layout.spacing),
-        })
-      )
-    }
+    if (step === "measureCount") this.sayMaximum(ctx)
     const distance = step === "spacing"
     ctx.dynamicInput.open({
       fields: [
@@ -561,12 +561,22 @@ export class ArrayPathTool implements Tool {
     ctx.requestRender()
   }
 
+  private sayMaximum(ctx: ToolContext): void {
+    if (this.state.phase !== "edit") return
+    ctx.report(
+      ctx.text.message("maximumItems", {
+        count: maxItems(this.state.path, this.state.layout.spacing),
+      })
+    )
+  }
+
   /** The value typed for the step asked (null: Enter, the offered one). */
   private answer(value: number | null, ctx: ToolContext): void {
     const state = this.state
     if (state.phase !== "edit") return
-    const { step, layout, config } = state
+    const { step, layout, path } = state
     if (value !== null && step !== "spacing" && refusesCount(value, ctx)) {
+      this.onAskAgain(ctx)
       return
     }
     if (value !== null && step === "spacing" && value <= 0) {
@@ -583,9 +593,10 @@ export class ArrayPathTool implements Tool {
         this.ask("measureCount", ctx)
         return
       case "measureCount": {
+        // A count over the maximum is taken as the maximum (probe arrays/p373).
         const items = Math.min(
           value ?? layout.items,
-          maxItems(config.path, layout.spacing)
+          maxItems(path, layout.spacing)
         )
         this.setLayout({ ...layout, items })
         this.ask("main", ctx)
@@ -594,12 +605,16 @@ export class ArrayPathTool implements Tool {
     }
   }
 
-  private setLayout(layout: Layout): void {
+  private setLayout(layout: PathLayout): void {
     if (this.state.phase === "edit") this.state = { ...this.state, layout }
   }
 
   /** The layout the preview shows: the value being typed already applied. */
-  private previewLayout(ctx: ToolContext, layout: Layout, step: Step): Layout {
+  private previewLayout(
+    ctx: ToolContext,
+    layout: PathLayout,
+    step: Step
+  ): PathLayout {
     if (step !== "count" && step !== "spacing" && step !== "measureCount") {
       return layout
     }
@@ -610,207 +625,28 @@ export class ArrayPathTool implements Tool {
     return { ...layout, items: typed }
   }
 
+  /**
+   * The copies: the source stays as item 1 (WHY not consumed: an
+   * associative array is not built, and AutoCAD's ASsociative No keeps it,
+   * probe arrays/p06).
+   */
   private create(ctx: ToolContext): void {
     const state = this.state
     if (state.phase !== "edit") return
-    const { config, layout } = state
-    const placements = placementsOf(config.path, layout)
-    const items: Entity[] = []
-    const t0 = placements.length > 0 ? placements[0].tangentDeg : 0
-    for (const pl of placements) {
-      const dth = layout.align ? pl.tangentDeg - t0 : 0
-      for (const entity of config.originals) {
-        items.push(itemCopy(entity, config.basePoint, dth, pl.point))
-      }
-    }
-    if (items.length > 0) {
-      ctx.execute(
-        new ReplaceEntitiesCommand(
-          config.originals.map((entity) => entity.id),
-          items
-        )
-      )
-    }
+    const copies = pathArrayItems(state.path, state.layout).flatMap((item) =>
+      state.originals.map((entity) => arrayItemCopy(entity, item))
+    )
+    if (copies.length > 0) ctx.execute(new AddEntitiesCommand(copies))
     ctx.dynamicInput.close()
   }
 }
 
-/** How many items fit `spacing` apart on the path (AutoCAD's `Maximum items`). */
-function maxItems(path: PathCurve, spacing: number): number {
-  if (!(spacing > 0)) return 1
-  const fit = Math.floor((path.length + 1e-6) / spacing)
-  return Math.max(1, Math.min(MAX_ARRAY_COUNT, path.closed ? fit : fit + 1))
+/** `Maximum items`, no more than the arrays' counts take. */
+function maxItems(path: ArrayPath, spacing: number): number {
+  return Math.min(MAX_ARRAY_COUNT, pathArrayMaximum(path, spacing))
 }
 
-/** Divide's step: the path shared evenly, its ends both items when open. */
-function divideStep(path: PathCurve, items: number): number {
-  if (items <= 1) return path.length
-  return path.closed ? path.length / items : path.length / (items - 1)
-}
-
-/** Arc-length positions (and tangents) of every item. */
-function placementsOf(
-  path: PathCurve,
-  layout: Layout
-): { point: Vec2; tangentDeg: number }[] {
-  const step =
-    layout.method === "divide" ? divideStep(path, layout.items) : layout.spacing
-  const count =
-    layout.method === "divide"
-      ? layout.items
-      : Math.min(layout.items, maxItems(path, layout.spacing))
-  const out: { point: Vec2; tangentDeg: number }[] = []
-  for (let k = 0; k < count; k++) {
-    out.push(path.at(Math.min(k * step, path.length)))
-  }
-  return out
-}
-
-/**
- * The items one and a half times the selection's size apart, as AutoCAD's
- * Measure starts (a circle 4 across: 6); 1 for a selection of no size.
- */
-function defaultSpacing(
-  originals: readonly Entity[],
-  blocks: ToolContext["blocks"]
-): number {
-  let minX = Infinity
-  let minY = Infinity
-  let maxX = -Infinity
-  let maxY = -Infinity
-  for (const entity of originals) {
-    const b = entityBounds(entity, blocks)
-    minX = Math.min(minX, b.min.x)
-    minY = Math.min(minY, b.min.y)
-    maxX = Math.max(maxX, b.max.x)
-    maxY = Math.max(maxY, b.max.y)
-  }
-  const size = Math.max(maxX - minX, maxY - minY)
-  return size > 1e-6 ? size * 1.5 : 1
-}
-
-/** Draws an entity with the given stroke. */
-function pushEntityOutline(
-  out: ScenePrimitive[],
-  viewport: ToolContext["viewport"],
-  entity: Entity,
-  stroke: StrokeStyle,
-  blocks?: ToolContext["blocks"]
-): void {
-  out.push(...entityScenePrimitive(viewport, entity, stroke, { blocks }))
-}
-
-/** Builds a path curve from a line (open) or circle (closed). */
 /** A curve in the UCS's XY plane, where the array is laid out. */
 function isPath(entity: Entity): boolean {
-  return readsInPlan(entity) && makePath(entity) !== null
-}
-
-function makePath(entity: Entity): PathCurve | null {
-  if (entity.type === "line") {
-    const dir = V.sub(entity.end, entity.start)
-    const length = V.length(dir)
-    if (length < 1e-9) return null
-    const tangentDeg = angleOf(dir)
-    return {
-      length,
-      closed: false,
-      at: (distance) => {
-        const t = length > 0 ? distance / length : 0
-        return { point: V.add(entity.start, V.scale(dir, t)), tangentDeg }
-      },
-    }
-  }
-  if (entity.type === "circle") {
-    const length = 2 * Math.PI * entity.radius
-    if (length < 1e-9) return null
-    return {
-      length,
-      closed: true,
-      at: (distance) => {
-        const theta = (distance / length) * 2 * Math.PI
-        return {
-          point: {
-            x: entity.center.x + entity.radius * Math.cos(theta),
-            y: entity.center.y + entity.radius * Math.sin(theta),
-          },
-          // Tangent of a counter-clockwise circle leads the radius by 90°.
-          tangentDeg: normalizeDegrees((theta * 180) / Math.PI + 90),
-        }
-      },
-    }
-  }
-  if (entity.type === "arc") {
-    const twoPi = Math.PI * 2
-    let sweep = (entity.endAngle - entity.startAngle) % twoPi
-    if (sweep <= 1e-9) sweep += twoPi
-    const length = entity.radius * sweep
-    if (length < 1e-9) return null
-    return {
-      length,
-      closed: false,
-      at: (distance) => {
-        const t = length > 0 ? distance / length : 0
-        const theta = entity.startAngle + t * sweep
-        return {
-          point: {
-            x: entity.center.x + entity.radius * Math.cos(theta),
-            y: entity.center.y + entity.radius * Math.sin(theta),
-          },
-          // Tangent of a counter-clockwise arc leads the radius by 90°.
-          tangentDeg: normalizeDegrees((theta * 180) / Math.PI + 90),
-        }
-      },
-    }
-  }
-  return null
-}
-
-/** One array item, preserving id — used for the live ghost preview. */
-function itemEntity(
-  entity: Entity,
-  basePoint: Vec2,
-  dthDeg: number,
-  point: Vec2
-): Entity {
-  const rotated = rotateEntity(entity, basePoint, (dthDeg * Math.PI) / 180)
-  return translateEntity(rotated, {
-    x: point.x - basePoint.x,
-    y: point.y - basePoint.y,
-  })
-}
-
-/** One array item as a fresh entity — used when committing the array. */
-function itemCopy(
-  entity: Entity,
-  basePoint: Vec2,
-  dthDeg: number,
-  point: Vec2
-): Entity {
-  return copyEntity(itemEntity(entity, basePoint, dthDeg, point), {
-    x: 0,
-    y: 0,
-  })
-}
-
-function centroid(
-  originals: readonly Entity[],
-  blocks: ToolContext["blocks"]
-): Vec2 {
-  let minX = Infinity
-  let minY = Infinity
-  let maxX = -Infinity
-  let maxY = -Infinity
-  for (const entity of originals) {
-    const b = entityBounds(entity, blocks)
-    minX = Math.min(minX, b.min.x)
-    minY = Math.min(minY, b.min.y)
-    maxX = Math.max(maxX, b.max.x)
-    maxY = Math.max(maxY, b.max.y)
-  }
-  return { x: (minX + maxX) / 2, y: (minY + maxY) / 2 }
-}
-
-function angleOf(dir: Vec2): number {
-  return normalizeDegrees((Math.atan2(dir.y, dir.x) * 180) / Math.PI)
+  return readsInPlan(entity) && arrayPathOf(entity) !== null
 }

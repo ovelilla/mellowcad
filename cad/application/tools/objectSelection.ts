@@ -134,12 +134,16 @@ type Step =
  * How a mode found what a single object's pick takes, which the command may
  * read where a pick would have been: across a fence (its points), by a
  * crossing window or polygon (its outline), or wholly inside a window or a
- * polygon, or by Last, which leave no trace on the object.
+ * polygon, or by Last, which leave no trace on the object. `last` is the
+ * point the mode ended on — a window's opposite corner, a fence's or a
+ * polygon's last vertex —, where ARRAYPATH's run starts nearest (probes
+ * arrays/p340, p376–p378).
  */
-export type ModeFind =
+export type ModeFind = (
   | { readonly by: "fence"; readonly points: readonly Vec2[] }
   | { readonly by: "crossing"; readonly outline: readonly Vec2[] }
   | { readonly by: "enclosing" }
+) & { readonly last?: Vec2 }
 
 const ENCLOSING: ModeFind = { by: "enclosing" }
 
@@ -242,16 +246,30 @@ export interface ObjectSelectorOptions {
     /**
      * Said once for each object on a locked layer the mode found, whatever
      * else it found, before what is taken (FILLET's and BREAK's `The object
-     * is on a locked layer.`, probes corners/p274, pieces/p102, p178, p395);
-     * locked objects are never taken. Without it nothing is said, nor where
-     * every one found is locked.
+     * is on a locked layer.`, probes corners/p274, pieces/p102, p178, p395;
+     * ARRAYPATH's counted `1 was on a locked layer.`, arrays/p340, given
+     * `count` 1); locked objects are never taken. Without it nothing is
+     * said, nor where every one found is locked.
      */
     readonly locked?: MessageId
     /**
+     * Where every one found is locked, their lines are all that is said and
+     * the prompt is asked again: ARRAYPATH's (arrays/p339), where BREAK's
+     * goes on to `No object found`.
+     */
+    readonly lockedAsksAgain?: boolean
+    /**
+     * What Previous and ALL found, before one of it is taken: the command's
+     * lines about it, and whether it said them, the count of what was left
+     * out then said by them alone (ARRAYPATH's arrayed objects, arrays/p354,
+     * p356).
+     */
+    readonly named?: (found: readonly EntityId[], ctx: ToolContext) => boolean
+    /**
      * A point typed at the prompt, read as {@link typedPick} reads it (`@`,
-     * a number), which AutoCAD 2023's console takes as a pick there: the
-     * command's own, which says what a pick on nothing does — unless the
-     * prompt takes AUto, where nothing under it starts a window.
+     * a number), which AutoCAD's console takes as a pick there: the
+     * command's own, which says what a pick on nothing does (where the
+     * prompt takes AUto, {@link startWindow}).
      */
     readonly pick?: (point: Vec3, ctx: ToolContext) => void
   }
@@ -442,10 +460,8 @@ export class ObjectSelector {
         return true
       }
       case "ALL":
-        this.select(
+        this.selectNamed(
           ctx.document.getEntities().map((entity) => entity.id),
-          false,
-          NAMED,
           ctx
         )
         return true
@@ -456,7 +472,7 @@ export class ObjectSelector {
         if (previous.length === 0) {
           ctx.report(ctx.text.message("noPreviousSelection"))
         } else {
-          this.select(previous, false, NAMED, ctx)
+          this.selectNamed(previous, ctx)
         }
         return true
       }
@@ -488,7 +504,7 @@ export class ObjectSelector {
    * AutoCAD 2023's console takes it: the object there is picked (`1 found`),
    * and on nothing a window starts there, asking `Specify opposite corner:`.
    * A single object's pick hands it to the command's {@link one}`.pick`
-   * (none without one), but for a window on nothing where it takes AUto.
+   * (none without one), which says what a pick on nothing does.
    */
   answerTyped(text: string, ctx: ToolContext): boolean {
     const one = this.options.one
@@ -496,7 +512,7 @@ export class ObjectSelector {
     const point = typedPick(text, ctx)
     if (!point) return false
     const at = { x: point.x, y: point.y }
-    if (one?.pick && (ctx.pick(at) || !this.offered().includes("AUto"))) {
+    if (one?.pick) {
       one.pick(point, ctx)
       ctx.requestRender()
       return true
@@ -711,7 +727,7 @@ export class ObjectSelector {
           false,
           PICKED,
           ctx,
-          { by: "fence", points: step.points }
+          { by: "fence", points: step.points, last: step.points.at(-1) }
         )
         return true
       }
@@ -738,7 +754,9 @@ export class ObjectSelector {
           false,
           step.crossing ? { by: "frame", frame: step.points } : PICKED,
           ctx,
-          step.crossing ? { by: "crossing", outline: step.points } : ENCLOSING
+          step.crossing
+            ? { by: "crossing", outline: step.points, last }
+            : { by: "enclosing", last }
         )
         return true
       }
@@ -902,7 +920,9 @@ export class ObjectSelector {
       subtract,
       crossing ? { by: "frame", frame } : PICKED,
       ctx,
-      crossing ? { by: "crossing", outline } : ENCLOSING,
+      crossing
+        ? { by: "crossing", outline, last: end }
+        : { by: "enclosing", last: end },
       implied
     )
   }
@@ -1002,16 +1022,17 @@ export class ObjectSelector {
     how: AddedBy,
     ctx: ToolContext,
     find: ModeFind = ENCLOSING,
-    implied = false
+    implied = false,
+    said = false
   ): void {
     const ids = this.options.accept?.(found, ctx) ?? found
     if (this.options.one) {
       this.takeOne(
         ids,
-        found.length - ids.length,
+        said ? 0 : found.length - ids.length,
         this.options.one,
         find,
-        implied,
+        implied || said,
         ctx
       )
       return
@@ -1054,6 +1075,12 @@ export class ObjectSelector {
       (this.closesOnAdd && added.length > 0)
     )
       this.close(ctx)
+  }
+
+  /** What Previous or ALL found, after what a single object's pick says of it. */
+  private selectNamed(found: readonly EntityId[], ctx: ToolContext): void {
+    const said = this.options.one?.named?.(found, ctx) ?? false
+    this.select(found, false, NAMED, ctx, ENCLOSING, false, said)
   }
 
   /**
@@ -1111,9 +1138,14 @@ export class ObjectSelector {
     )
     if (one.locked) {
       for (let i = inOrder.length; i < all.length; i++) {
-        ctx.report(ctx.text.message(one.locked), "error")
+        ctx.report(ctx.text.message(one.locked, { count: 1 }), "error")
       }
-    } else if (inOrder.length === 0 && all.length > 0) {
+    }
+    if (
+      inOrder.length === 0 &&
+      all.length > 0 &&
+      (!one.locked || one.lockedAsksAgain)
+    ) {
       ctx.requestRender()
       return
     }

@@ -98,8 +98,9 @@ padlock the corners' desktop showed (d04-4). JOIN reads a window's or a crossing
 order (pieces/p390); every other set keeps the drawing's, which `Select objects:` checks per
 command (JNG-05: `docs/plans/pieces-review.md`). A single object's pick tests the newest object
 under the pick box, locked or not, and a command passing `locked` says it once per locked object
-a pick or a mode finds (BRP-01, BRP-02, BRP-05: FILLET's and BREAK's); UCS OBject's and ARRAYPATH's
-pass none and still say nothing of one: the UCS and Arrays reviews probe their words. A point typed
+a pick or a mode finds (BRP-01, BRP-02, BRP-05: FILLET's and BREAK's; ARRAYPATH's counted
+`1 was on a locked layer.`, APA-03); UCS OBject's passes none and still says nothing of one: the
+UCS review probes its words. A point typed
 at `Select objects:` or a single object's pick off the screen still finds (BRP-04, pieces/p158):
 for the `Select objects:` area. EXPLODE's texts from an MTEXT stand where this layout's metrics put
 each line, not where AutoCAD's font does (EXP-06, pieces/p255): for the Text review.

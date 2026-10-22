@@ -1,11 +1,13 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Vec3, add3, sub3 } from "../../geometry/Vec3"
+import { Entity } from "../../domain/entities"
 import {
-  Entity,
-  copyEntity,
-  entityBounds,
-  translateEntity,
-} from "../../domain/entities"
+  RectangularArray,
+  arrayItemCopy,
+  arraySourceSize,
+  placeArrayItem,
+  rectangularArrayItems,
+} from "../../domain/arrays"
 import { parseNumber } from "../../domain/units"
 import { Ucs, ucsDirectionToWorld, worldDirectionToUcs } from "../../domain/ucs"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
@@ -52,14 +54,7 @@ const DEFAULT_COLUMNS = 4
 const DEFAULT_ROWS = 3
 
 /** The grid the prompts edit, the preview shows and eXit creates. */
-interface Grid {
-  readonly columns: number
-  readonly rows: number
-  readonly colSpacing: number
-  readonly rowSpacing: number
-  /** How far each row rises above the one before it (the UCS's Z). */
-  readonly rowElevation: number
-}
+type Grid = RectangularArray
 
 /**
  * The question being asked after the selection: the main prompt, or one of
@@ -359,17 +354,20 @@ export class ArrayTool implements Tool {
         ? withCell(this.state.grid, corner, cursor, ctx.ucs)
         : null
     const grid = cell ?? this.previewGrid(ctx, this.state.grid, this.state.step)
-    const copies = cells(grid, ctx, MAX_PREVIEW_ITEMS).flatMap((delta) =>
-      this.state.phase === "edit"
-        ? this.state.originals.flatMap((entity) =>
-            entityScenePrimitive(
-              ctx.viewport,
-              translateEntity(entity, delta),
-              ghost,
-              { blocks: ctx.blocks }
-            )
-          )
-        : []
+    const { originals } = this.state
+    const copies = rectangularArrayItems(
+      grid,
+      ctx.ucs,
+      MAX_PREVIEW_ITEMS
+    ).flatMap((item) =>
+      originals.flatMap((entity) =>
+        entityScenePrimitive(
+          ctx.viewport,
+          placeArrayItem(entity, item),
+          ghost,
+          { blocks: ctx.blocks }
+        )
+      )
     )
     if (cell === null || !corner || !cursor) return copies
     const rubber: StrokeStyle = { color: THEME.rubberBand, width: 1 }
@@ -572,10 +570,9 @@ export class ArrayTool implements Tool {
 
   private create(ctx: ToolContext): void {
     if (this.state.phase !== "edit") return
-    const copies = cells(this.state.grid, ctx).flatMap((delta) =>
-      this.state.phase === "edit"
-        ? this.state.originals.map((entity) => copyEntity(entity, delta))
-        : []
+    const { originals } = this.state
+    const copies = rectangularArrayItems(this.state.grid, ctx.ucs).flatMap(
+      (item) => originals.map((entity) => arrayItemCopy(entity, item))
     )
     if (copies.length > 0) ctx.execute(new AddEntitiesCommand(copies))
     ctx.dynamicInput.close()
@@ -642,27 +639,6 @@ function withValue(grid: Grid, step: Step, value: number): Grid {
 }
 
 /**
- * Where each copy goes, in the WCS: every cell but the source's (0, 0), or
- * the first `limit` of them.
- */
-function cells(grid: Grid, ctx: ToolContext, limit = Infinity) {
-  const out: ReturnType<typeof ucsDirectionToWorld>[] = []
-  for (let i = 0; i < grid.columns && out.length < limit; i++) {
-    for (let j = 0; j < grid.rows && out.length < limit; j++) {
-      if (i === 0 && j === 0) continue
-      out.push(
-        ucsDirectionToWorld(ctx.ucs, {
-          x: i * grid.colSpacing,
-          y: j * grid.rowSpacing,
-          z: j * grid.rowElevation,
-        })
-      )
-    }
-  }
-  return out
-}
-
-/**
  * AutoCAD's default spacing: one and a half times the selection's width
  * between columns and its height between rows, 1 where it has none (probe
  * arrays/p168: a line's rows 1 apart). Width and height are the extents box's,
@@ -673,23 +649,7 @@ function defaultSpacing(
   originals: readonly Entity[],
   ctx: Pick<ToolContext, "blocks" | "ucs">
 ): { colSpacing: number; rowSpacing: number } {
-  let minX = Infinity
-  let minY = Infinity
-  let maxX = -Infinity
-  let maxY = -Infinity
-  for (const entity of originals) {
-    const b = entityBounds(entity, ctx.blocks)
-    minX = Math.min(minX, b.min.x)
-    minY = Math.min(minY, b.min.y)
-    maxX = Math.max(maxX, b.max.x)
-    maxY = Math.max(maxY, b.max.y)
-  }
-  const sides = [
-    { x: maxX - minX, y: 0 },
-    { x: 0, y: maxY - minY },
-  ].map((side) => worldDirectionToUcs(ctx.ucs, side))
-  const width = Math.abs(sides[0].x) + Math.abs(sides[1].x)
-  const height = Math.abs(sides[0].y) + Math.abs(sides[1].y)
+  const { width, height } = arraySourceSize(originals, ctx.ucs, ctx.blocks)
   return {
     colSpacing: width > 1e-6 ? width * 1.5 : 1,
     rowSpacing: height > 1e-6 ? height * 1.5 : 1,

@@ -305,26 +305,77 @@ as ARRAYRECT's) and the `[Expression]`, `[EXpression]` the value prompts list; E
 
 ### `ARRAYPATH` · es `MATRIZCAMINO`
 
-**Implemented:** `Select objects:`, `Type = Path  Associative = No`, `Select path curve:` (es
-`Seleccione la curva de trayectoria`; a line, a circle or an arc; one of the arrayed objects says
-`Objects selected to be arrayed may not be selected as path curve.` and `1 was filtered out`; the
-selection modes typed there — Window, Last, Crossing, BOX, ALL, Fence, WPolygon, CPolygon, Previous,
-AUto — take the newest curve they find, leaving out the arrayed objects with `1 was filtered out`
-and saying `No object found` with none, as AutoCAD 2023's console does; a point typed there picks as
-a click does, leaving LASTPOINT as it was, and one on nothing — typed or clicked — starts a window
-(`Specify opposite corner:`), as the AUto it lists makes it, which says nothing when it finds
-nothing), then `Select grip to edit array or [Method/Items/Align items/eXit] <eXit>:` (es
-`[Método/Elementos/ALinear elementos/Salir] <Salir>`) over a live preview: Method
-`Enter path method [Divide/Measure] <Measure>:`, Items by Divide `Enter number of items along path`,
-by Measure `Specify the distance between items along path`, `Maximum items = 11` and
-`Specify number of items or [Fill entire path] <5>:` — a count up to 32767, as ARRAYPOLAR's (p279),
-the preview the first 1000 items —, Align items
-`Align arrayed items to path? [Yes/No] <Yes>:` (es from the table); Measure at first, the items one
-and a half times the selection's size apart and filling the path; the source is consumed into the
-array, the path left in place
+**Implemented:** `Select objects:` (or ARRAY's set), `Type = Path  Associative = No` (es
+`Tipo = Ruta  Asociativa = No`), `Select path curve:` (es `Seleccione la curva de trayectoria`): a
+line, an arc, a circle or a polyline, one segment or many (arrays/p308), level with the UCS; a
+pick on one of the arrayed objects says
+`Objects selected to be arrayed may not be selected as path curve.` and `1 was filtered out`
+(p347), on any other object `1 was filtered out` (p346), on a curve on a locked layer
+`1 was on a locked layer.` (es `1 estaba en una capa bloqueada.`, p338), the prompt asked again
+each time; Enter asks it again (p349); a typed object snap is the pick, at its point (p342,
+p343); the selection modes typed there — Window, Last, Crossing, BOX, ALL, Fence, WPolygon,
+CPolygon, Previous, AUto — take the newest curve they find, after `1 was on a locked layer.` for
+each locked one (a find of locked ones alone asks again, p339–p341); Last leaves out the arrayed
+objects with `1 was filtered out` (p353); Previous and ALL first say the arrayed objects' line and
+count all they found as filtered out, ALL still taking the curve (`2 were filtered out`, p354,
+p356); a mode finding none says `No object found` (AutoCAD 2023's console; 2027's unprobed); a
+point typed there picks as a click does, one on nothing — typed or clicked — starts a window
+(`Specify opposite corner:`) that says nothing when it finds nothing (p348); LASTPOINT stays as
+it was (p342, p357); its rollover is every single pick's (desktop d03-1). An open path runs from
+the end nearer the pick — clicked, typed, snapped, a window's opposite corner, a fence's or a
+polygon's last point (p300, p303, p342, p343, p376–p378); an exact midpoint, which AutoCAD breaks
+either way (p06, p310, p344), runs from the curve's start here —; a circle from its angle 0,
+counter-clockwise, wherever it is picked (p301, p315); a closed polyline from its first vertex,
+its own way round (**unverified**). Then
+`Select grip to edit array or [Method/Items/Align items/eXit] <eXit>:` (es
+`[Método/Elementos/ALinear elementos/Salir] <Salir>`) over a live preview, the path drawn as the
+drawing draws it (d03-2); a point or a number typed there is taken and the prompt asked again
+without a word (p328, p329). Method `Enter path method [Divide/Measure] <Measure>:`, Measure
+going on from Divide's spacing (p334); Items by Divide `Enter number of items along path <17>:`,
+by Measure `Specify the distance between items along path <6>:` (a distance or two points; 0 or
+less `Value must be positive and nonzero.`; the defaults without trailing zeros, p307, p332,
+p334), `Maximum items = 11` — said again before the count is asked again after a refusal or a
+transparent command (p367, p373) — and `Specify number of items or [Fill entire path] <11>:`, a
+count over the maximum taken as it (p373), Enter keeping the count (p375); a count up to 32767,
+as ARRAYPOLAR's (p279), the preview the first 1000 items; Align items
+`Align arrayed items to path? [Yes/No] <Yes>:` (es from the table; p330, p331, p336 refuse as the
+console does). Measure at first, the items one and a half times the larger side of the set's
+extents along the UCS's axes apart (p06, p310), filling the path: floor(L/s) + 1 items on an open
+path, the last ones past its end as far as the source stands from it (p06), floor(L/s) on a closed
+one (p301); Divide keeps the count, L/(n − 1) apart on an open path, L/n on a closed one (p306,
+p374). The source stays where it is as item 1; item k is the source moved by how far the path's
+point at k steps is from its start and, aligned, turned about that point as far as the path's
+direction has turned there (p302, p303, p305, p308); Align No only moves it (p304). eXit or
+Enter adds the copies, the source's layer, colour and Z (p309, p312, p316), one undo step U names
+(p369); the path is left in place
 
-**Missing:** multi-segment polyline path, associative (as ARRAYRECT's), Base point, Tangent
-direction, Rows, Levels, Z direction, Expression (as ARRAYRECT's), the grips
+**Missing:** associative (as ARRAYRECT's; Yes consumes the source into the array, p06), the
+grips; Group at `Select path curve:` (`Enter group name:`, es `Indique nombre de grupo:`,
+`Invalid group name.`, es `Nombre de grupo no válido.`, p355; `*Invalid selection*` here);
+splines and ellipses as paths (p359, p360; filtered out here); a path not level with the UCS,
+which AutoCAD arrays along in 3D (p311; a sloping line is arrayed in plan here); Base point
+(`Specify base point or [Key point] <end of path curve>:`, es
+`Especifique un punto base o [punto Clave] <final de la curva de trayectoria>:`, p317, p318);
+Tangent direction (`Specify first point of tangent direction vector or [Normal]:`,
+`Specify second point of tangent direction vector:`, es
+`Especifique el primer punto del vector de dirección de tangente o [NOrmal]:`,
+`Especifique el segundo punto del vector de dirección de tangente:`, p319); Rows
+(`Enter the number of rows or [Expression] <1>:`,
+`Specify the distance between rows or [Total/Expression] <6>:`,
+`Specify the incrementing elevation between rows or [Expresson] <0>:`, es
+`Indique el número de filas o [Expresión] <1>:`,
+`Especifique la distancia entre filas o [Total/Expresión] <6>:`,
+`Especifique la elevación incremental entre filas o [Expresión] <0>:`, p320); Levels
+(`Enter the number of levels or [Expression] <1>:`,
+`Specify the distance between levels or [Total/Expression] <1>:`, es
+`Indique el número de niveles o [Expresión] <1>:`,
+`Especifique la distancia entre niveles o [Total/Expresión] <1>:`, p321); Z direction
+(`Maintain Z direction for all items in the array? [Yes/No] <Yes>:`, es
+`¿Mantener la dirección Z para todos los elementos de la matriz? [Sí/No] <Sí>:`, p322); the
+hidden clicK (an integer asked with no prompt, `Requires a positive nonzero integer.`, es
+`Requiere un nº entero positivo que no sea cero.`, p323) and UPdate (the main prompt asked again,
+p324); Expression (as ARRAYRECT's) and the `[Expression]` the value prompts list; English's
+`…/eXit]<eXit>:` with no space before the default (p06; as ARRAYRECT's)
 
 ### `TRIM` / `EXTEND` · es `RECORTA` / `RR` · `ALARGA` / `AL`
 

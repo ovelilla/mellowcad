@@ -2,13 +2,24 @@ import { readFileSync } from "node:fs"
 import { describe, expect, it } from "vitest"
 import type { CircleEntity, Entity, LineEntity } from "../../domain/entities"
 import { type CadHarness, createHarness } from "../../../test/harness"
-import { circleOf, layerOf, lineOf, p } from "../../../test/builders"
+import {
+  arcOf,
+  circleOf,
+  deg,
+  layerOf,
+  lineOf,
+  p,
+  polylineOf,
+  textOf,
+} from "../../../test/builders"
 import { withElevation } from "../../domain/elevation"
+import { THEME } from "../../scene/theme"
 import { es } from "../../locales/es"
 
 /**
- * ARRAY, ARRAYRECT, ARRAYPOLAR and the arrays' shared prompts, against AutoCAD 2027's
- * console (probes arrays/p100–p179, p200–p279, in en-US and es-ES).
+ * ARRAY, ARRAYRECT, ARRAYPOLAR, ARRAYPATH and the arrays' shared prompts,
+ * against AutoCAD 2027's console (probes arrays/p06, p100–p179, p200–p279,
+ * p300–p379, in en-US and es-ES).
  */
 
 function linesOf(entities: readonly Entity[]): LineEntity[] {
@@ -1270,5 +1281,674 @@ describe("what ARRAYPOLAR makes", () => {
       .entities()
       .map((e) => (e as { elevation?: number }).elevation)
     expect(zs).toEqual([5, 5, 5, 5])
+  })
+})
+
+const round4 = (v: number) => {
+  const x = Math.round(v * 1e4) / 1e4
+  return Object.is(x, -0) ? 0 : x
+}
+
+/** The circles' centres' X, rounded to the console's four places, in order. */
+function centreXs(cad: CadHarness): number[] {
+  return centres(cad)
+    .map((c) => round4(c.x))
+    .sort((a, b) => a - b)
+}
+
+/** Whether a line runs from a to b, to the console's four places. */
+function hasLine(
+  cad: CadHarness,
+  [ax, ay]: readonly [number, number],
+  [bx, by]: readonly [number, number]
+): boolean {
+  const near = (u: number, v: number) => Math.abs(u - v) < 1e-4
+  return linesOf(cad.entities()).some(
+    (l) =>
+      near(l.start.x, ax) &&
+      near(l.start.y, ay) &&
+      near(l.end.x, bx) &&
+      near(l.end.y, by)
+  )
+}
+
+/** The probes' path: a line from 0,0 to 100,0. */
+const pathLine = () => lineOf(p(0, 0), p(100, 0), { id: "P" })
+
+/**
+ * The probes' drawing — the line and the circle at 10,10 — the circle
+ * arrayed along the line picked at `at`: off its midpoint, a tie AutoCAD
+ * breaks either way (p06, p310, p344).
+ */
+function pathArray(at = "30,0", locale?: typeof es): CadHarness {
+  const cad = createHarness({ locale, entities: [pathLine(), circle()] })
+  cad.select("C")
+  answer(cad, locale ? "MATRIZCAMINO" : "ARRAYPATH", at)
+  return cad
+}
+
+/** A drawing whose layer LK is locked. */
+function withLocked(entities: Entity[], locale?: typeof es): CadHarness {
+  const cad = createHarness({ locale })
+  cad.runtime.document.load(entities, {
+    layers: [layerOf("0"), layerOf("LK", { locked: true })],
+  })
+  return cad
+}
+
+const PATH_MAIN = /^ARRAYPATH Select grip to edit array/
+
+/** The strokes the tool draws over the probes' path, the line along y = 0. */
+function pathStrokes(cad: CadHarness): unknown[] {
+  const onPath = (point: { x: number; y: number }) =>
+    Math.abs(cad.runtime.viewport.screenToWorld(point).y) < 1e-6
+  return cad
+    .scene()
+    .primitives.flatMap((prim) =>
+      prim.kind === "segment" &&
+      prim.stroke.color !== undefined &&
+      onPath(prim.a) &&
+      onPath(prim.b) &&
+      (prim.stroke.color === THEME.entityHover ||
+        prim.stroke.color === THEME.selected)
+        ? [prim.stroke]
+        : []
+    )
+}
+
+describe("ARRAYPATH", () => {
+  const path = lineOf(p(0, 0), p(200, 0), { id: "PATH" })
+  const source = lineOf(p(400, -25), p(400, 25), { id: "SRC" })
+
+  it("divides the path evenly, the source kept as item 1 (probe arrays/p306)", () => {
+    const cad = createHarness({ entities: [path, source] })
+
+    cad.select("SRC").command("ARRAYPATH").click(p(50, 0))
+    cad.option("Method").option("Divide").option("Items")
+    cad.type("5").enter().enter()
+
+    // The source, four copies stepped 50 from it, and the path.
+    expect(cad.entityCount).toBe(6)
+    expect(cad.runtime.document.get("SRC")).toEqual(source)
+    const xs = linesOf(cad.entities())
+      .filter((line) => line.id !== "PATH")
+      .map((line) => round4(line.start.x))
+      .sort((a, b) => a - b)
+    expect(xs).toEqual([400, 450, 500, 550, 600])
+  })
+
+  it("places items at a fixed spacing under the Measure method", () => {
+    const cad = createHarness({ entities: [path, source] })
+
+    cad.select("SRC").command("ARRAYPATH").click(p(50, 0))
+    cad.option("Items").type("40").enter()
+    expect(cad.commandLog().at(-1)).toBe("Maximum items = 6")
+    cad.option("Fill entire path").enter()
+
+    // 0, 40, 80, 120, 160, 200 → six items, plus the path.
+    expect(cad.entityCount).toBe(7)
+  })
+
+  it("takes the copies back in one undo step, which U names (probe arrays/p369)", () => {
+    for (const [locale, name] of [
+      [undefined, "ARRAYPATH"],
+      [es, "MATRIZCAMINO"],
+    ] as const) {
+      const cad = createHarness({ locale, entities: [path, source] })
+
+      cad.select("SRC").command(name).click(p(50, 0)).option("eXit")
+      answer(cad, "_U")
+
+      expect(cad.commandLog().at(-1)).toBe(name)
+      expect(cad.entityCount).toBe(2)
+      expect(cad.runtime.document.get("SRC")).toEqual(source)
+    }
+  })
+
+  it("turns each item with the path, or only moves it (probes arrays/p304, p305)", () => {
+    const arcPath = arcOf(p(0, 0), 50, 0, deg(180), { id: "PATH" })
+    const bar = lineOf(p(70, 0), p(80, 0), { id: "SRC" })
+
+    const aligned = createHarness({ entities: [arcPath, bar] })
+    aligned.select("SRC").command("ARRAYPATH").click(p(50, 0)).enter()
+    expect(linesOf(aligned.entities())).toHaveLength(11)
+    expect(hasLine(aligned, [70, 0], [80, 0])).toBe(true)
+    expect(hasLine(aligned, [66.8736, 20.6864], [76.4269, 23.6416])).toBe(true)
+    expect(hasLine(aligned, [-69.2995, 9.8784], [-79.1994, 11.2896])).toBe(true)
+
+    const free = createHarness({ entities: [arcPath, bar] })
+    free.select("SRC").command("ARRAYPATH").click(p(50, 0))
+    free.option("Align items").option("No").enter()
+    expect(linesOf(free.entities())).toHaveLength(11)
+    expect(hasLine(free, [67.7668, 14.776], [77.7668, 14.776])).toBe(true)
+    expect(hasLine(free, [-29.4996, 7.056], [-19.4996, 7.056])).toBe(true)
+  })
+
+  it("asks AutoCAD's questions over the preview and writes them answered (probes arrays/p307, p330–p334, p347)", () => {
+    const cad = createHarness({ entities: [path, source] })
+
+    cad.select("SRC").command("ARRAYPATH")
+    expect(cad.state().commandLine.prompt).toBe("ARRAYPATH Select path curve:")
+    cad.click(p(400, 0))
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Objects selected to be arrayed may not be selected as path curve.",
+      "1 was filtered out",
+    ])
+    cad.click(p(50, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPATH Select grip to edit array or [Method/Items/Align items/eXit] <eXit>:"
+    )
+    cad.option("Method")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPATH Enter path method [Divide/Measure] <Measure>:"
+    )
+    cad.option("Divide").option("Items")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPATH Enter number of items along path <3>:"
+    )
+    cad.type("5").enter().option("Method").option("Measure").option("Items")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPATH Specify the distance between items along path <50>:"
+    )
+    cad.type("30").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPATH Specify number of items or [Fill entire path] <5>:"
+    )
+    cad.option("Fill entire path").option("Align items")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPATH Align arrayed items to path? [Yes/No] <Yes>:"
+    )
+    cad.enter().enter()
+
+    expect(cad.commandLog().slice(0, 5)).toEqual([
+      "ARRAYPATH",
+      "1 found",
+      "Type = Path  Associative = No",
+      "Select path curve:",
+      "Objects selected to be arrayed may not be selected as path curve.",
+    ])
+    // 0, 30 … 180 → seven items, plus the path.
+    expect(cad.entityCount).toBe(8)
+  })
+
+  it("asks in the words of Autodesk's Spanish table (probes arrays/p307, p334)", () => {
+    const cad = createHarness({ locale: es, entities: [path, source] })
+
+    cad.select("SRC").command("MATRIZCAMINO")
+    expect(cad.commandLog().at(-1)).toBe("Tipo = Ruta  Asociativa = No")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZCAMINO Seleccione la curva de trayectoria:"
+    )
+    cad.click(p(50, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZCAMINO Seleccione un pinzamiento para editar la matriz o [Método/Elementos/ALinear elementos/Salir] <Salir>:"
+    )
+    cad.option("Method")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZCAMINO Introduzca el método de camino [Dividir/Medir] <Medir>:"
+    )
+    cad.enter().option("Items")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZCAMINO Especifique la distancia entre los elementos a lo largo del camino <75>:"
+    )
+    cad.enter()
+    expect(cad.commandLog().at(-1)).toBe("Número máximo de elementos = 3")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZCAMINO Introduzca el número de elementos o [Llenar todo el camino] <3>:"
+    )
+    cad.enter().option("Align items")
+    expect(cad.state().commandLine.prompt).toBe(
+      "MATRIZCAMINO ¿Alinear elementos de matriz con el camino? [Sí/No] <Sí>:"
+    )
+  })
+
+  it("cancels without touching the drawing", () => {
+    const cad = createHarness({ entities: [path, source] })
+
+    cad.select("SRC").command("ARRAYPATH").click(p(50, 0)).escape()
+
+    expect(cad.entityCount).toBe(2)
+    expect(cad.runtime.document.has("SRC")).toBe(true)
+  })
+})
+
+describe("where ARRAYPATH puts the items", () => {
+  it("repeats the source from where it stands, 6 apart, past the path's end (probes arrays/p06, p314)", () => {
+    const cad = pathArray()
+    answer(cad, "_X")
+    expect(centreXs(cad)).toEqual(
+      Array.from({ length: 17 }, (_, k) => 10 + 6 * k)
+    )
+    expect(centres(cad).every((c) => round4(c.y) === 10)).toBe(true)
+    expect(cad.runtime.document.get("C")).toEqual(circle())
+  })
+
+  it("runs from the end nearer the pick (probe arrays/p300)", () => {
+    const cad = pathArray("90,0")
+    answer(cad, "_X")
+    expect(centreXs(cad)).toEqual(
+      Array.from({ length: 17 }, (_, k) => 10 - 6 * (16 - k))
+    )
+  })
+
+  it("follows an arc from either end, turning the items with it (probes arrays/p302, p303)", () => {
+    const runs: [string, [number, number], [number, number]][] = [
+      ["50,0", [78.2276, 19.5051], [75.33, 28.7296]],
+      ["-50,0", [80.6218, 0.3511], [80.0841, -9.3028]],
+    ]
+    for (const [at, item2, item3] of runs) {
+      const cad = createHarness({
+        entities: [
+          arcOf(p(0, 0), 50, 0, deg(180), { id: "A" }),
+          circleOf(p(80, 10), 2, { id: "C" }),
+        ],
+      })
+      cad.select("C")
+      answer(cad, "ARRAYPATH", at, "_X")
+      expect(centres(cad), at).toHaveLength(27)
+      expect(hasCentre(cad, 80, 10), at).toBe(true)
+      expect(hasCentre(cad, ...item2), at).toBe(true)
+      expect(hasCentre(cad, ...item3), at).toBe(true)
+    }
+  })
+
+  it("runs round a circle from its angle 0, counter-clockwise, wherever it is picked (probes arrays/p301, p315, p374)", () => {
+    for (const at of ["50,0", "0,50"]) {
+      const cad = createHarness({
+        entities: [
+          circleOf(p(0, 0), 50, { id: "R" }),
+          circleOf(p(80, 0), 2, { id: "C" }),
+        ],
+      })
+      cad.select("C")
+      answer(cad, "ARRAYPATH", at, "_X")
+      // floor(2π·50 / 6): the closing item would land on the first.
+      expect(centres(cad), at).toHaveLength(53)
+      expect(hasCentre(cad, 10.4339, 79.3167), at).toBe(true)
+      expect(hasCentre(cad, 78.9372, -12.997), at).toBe(true)
+    }
+
+    const divided = createHarness({
+      entities: [
+        circleOf(p(0, 0), 50, { id: "R" }),
+        circleOf(p(80, 0), 2, { id: "C" }),
+      ],
+    })
+    divided.select("C")
+    answer(divided, "ARRAYPATH", "50,0", "_M", "_D", "_I")
+    expect(divided.state().commandLine.prompt).toBe(
+      "ARRAYPATH Enter number of items along path <52>:"
+    )
+    answer(divided, "", "_X")
+    expect(hasCentre(divided, 79.4167, -9.6429)).toBe(true)
+  })
+
+  it("divides an open path from end to end (probe arrays/p306)", () => {
+    const cad = pathArray()
+    answer(cad, "_M", "_D", "_X")
+    expect(centreXs(cad)).toEqual(
+      Array.from({ length: 17 }, (_, k) => 10 + 6.25 * k)
+    )
+  })
+
+  it("takes a polyline, turning the items at its corner (probe arrays/p308)", () => {
+    const cad = createHarness({
+      entities: [
+        polylineOf([p(0, 0), p(100, 0), p(100, 100)], { id: "PL" }),
+        circle(),
+      ],
+    })
+    cad.select("C")
+    answer(cad, "ARRAYPATH", "50,0")
+    expect(cad.state().commandLine.prompt).toMatch(PATH_MAIN)
+    answer(cad, "_X")
+    expect(centres(cad)).toHaveLength(34)
+    expect(hasCentre(cad, 106, 10)).toBe(true)
+    expect(hasCentre(cad, 90, 12)).toBe(true)
+    expect(hasCentre(cad, 90, 108)).toBe(true)
+  })
+
+  it("fills the path, and takes a count over the maximum as the maximum (probes arrays/p333, p373)", () => {
+    const filled = pathArray()
+    answer(filled, "_I", "10", "_F", "_X")
+    expect(centreXs(filled)).toEqual(
+      Array.from({ length: 11 }, (_, k) => 10 + 10 * k)
+    )
+
+    const capped = pathArray()
+    answer(capped, "_I", "10", "20", "_X")
+    expect(centres(capped)).toHaveLength(11)
+  })
+
+  it("keeps the source's Z (probe arrays/p309)", () => {
+    const cad = createHarness({
+      entities: [pathLine(), withElevation(circle(), 5)],
+    })
+    cad.select("C")
+    answer(cad, "ARRAYPATH", "30,0", "_X")
+    const circles = cad.entities().filter((e) => e.type === "circle")
+    expect(circles).toHaveLength(17)
+    for (const e of circles) {
+      expect((e as { elevation?: number }).elevation).toBe(5)
+    }
+  })
+
+  it("spaces a turned UCS's default by the extents seen along its axes (probe arrays/p310)", () => {
+    const cad = createHarness()
+    answer(cad, "_UCS", "_Z", "30", "_LINE", "0,0", "100,0", "")
+    answer(cad, "_CIRCLE", "10,10", "2", "_ARRAYPATH", "_L", "", "30,0", "_I")
+    // 1.5 × 4 (cos 30° + sin 30°), at the drawing's two places.
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPATH Specify the distance between items along path <8.2>:"
+    )
+    answer(cad, "", "", "_X")
+    expect(centres(cad)).toHaveLength(13)
+    expect(hasCentre(cad, 3.6603, 13.6603)).toBe(true)
+    expect(hasCentre(cad, 10.7583, 17.7583)).toBe(true)
+  })
+
+  it("previews the very items it makes (BRJ-01's analogue)", () => {
+    const cad = pathArray()
+    const ghosts = cad
+      .scene()
+      .primitives.flatMap((prim) =>
+        prim.kind === "circle" && prim.stroke?.color === THEME.preview
+          ? [cad.runtime.viewport.screenToWorld(prim.center)]
+          : []
+      )
+      .map((c) => `${round4(c.x)},${round4(c.y)}`)
+      .sort()
+    answer(cad, "_X")
+    const made = centres(cad)
+      .filter((c) => !(c.x === 10 && c.y === 10))
+      .map((c) => `${round4(c.x)},${round4(c.y)}`)
+      .sort()
+    expect(ghosts).toHaveLength(16)
+    expect(ghosts).toEqual(made)
+  })
+})
+
+describe("ARRAYPATH's path pick", () => {
+  it("says a locked curve picked and asks again (probe arrays/p338)", () => {
+    for (const [locale, name, said] of [
+      [undefined, "ARRAYPATH", "1 was on a locked layer."],
+      [es, "MATRIZCAMINO", "1 estaba en una capa bloqueada."],
+    ] as const) {
+      const cad = withLocked(
+        [
+          lineOf(p(0, 50), p(100, 50), { id: "B" }),
+          lineOf(p(0, 0), p(100, 0), { id: "K", layerId: "LK" }),
+          circle(),
+        ],
+        locale
+      )
+      cad.select("C")
+      const select = cad.command(name).state().commandLine.prompt
+      answer(cad, "30,0")
+      expect(cad.commandLog().at(-1), name).toBe(said)
+      expect(cad.state().commandLine.prompt, name).toBe(select)
+      cad.click(p(30, 0))
+      expect(cad.commandLog().at(-1), name).toBe(said)
+      answer(cad, "30,50")
+      expect(cad.state().commandLine.prompt, name).not.toBe(select)
+    }
+  })
+
+  it("says the locked curves a window finds, taking the newest other (probes arrays/p339–p341)", () => {
+    const alone = withLocked([
+      lineOf(p(0, 50), p(100, 50), { id: "B" }),
+      lineOf(p(0, 0), p(100, 0), { id: "K", layerId: "LK" }),
+      circle(),
+    ])
+    alone.select("C").command("ARRAYPATH")
+    answer(alone, "_W", "-10,-10", "110,10")
+    expect(alone.commandLog().at(-1)).toBe("1 was on a locked layer.")
+    expect(alone.state().commandLine.prompt).toBe(
+      "ARRAYPATH Select path curve:"
+    )
+
+    const locked = lineOf(p(0, 5), p(100, 5), { id: "K", layerId: "LK" })
+    for (const entities of [
+      [pathLine(), locked, circle()],
+      [locked, pathLine(), circle()],
+    ]) {
+      const cad = withLocked(entities)
+      cad.select("C").command("ARRAYPATH")
+      answer(cad, "_W", "-10,-10", "110,10")
+      expect(cad.commandLog().at(-1)).toBe("1 was on a locked layer.")
+      expect(cad.state().commandLine.prompt).toMatch(PATH_MAIN)
+      // The run from the end nearer the window's opposite corner.
+      answer(cad, "_X")
+      expect(hasCentre(cad, -86, 10)).toBe(true)
+    }
+  })
+
+  it("starts the run at the end nearer a window's last corner, or a crossing's (probes arrays/p376–p378)", () => {
+    for (const [mode, first, opposite, last] of [
+      ["_W", "-10,-10", "110,5", -86],
+      ["_W", "110,5", "-10,-10", 106],
+      ["_C", "5,-5", "15,5", 106],
+    ] as const) {
+      const cad = createHarness({ entities: [pathLine(), circle()] })
+      cad.select("C")
+      answer(cad, "ARRAYPATH", mode, first, opposite, "_X")
+      expect(hasCentre(cad, last, 10), `${mode} ${first}`).toBe(true)
+    }
+  })
+
+  it("takes a typed object snap's point as the pick, LASTPOINT kept (probes arrays/p342, p343)", () => {
+    for (const [snap, at] of [
+      ["_END", "95,1"],
+      ["_NEA", "80,1"],
+    ]) {
+      const cad = createHarness({ entities: [pathLine(), circle()] })
+      answer(cad, "ID", "5,5")
+      cad.select("C")
+      answer(cad, "ARRAYPATH", snap, at)
+      expect(cad.state().commandLine.prompt, snap).toMatch(PATH_MAIN)
+      answer(cad, "_X")
+      expect(hasCentre(cad, -86, 10), snap).toBe(true)
+      expect(lastPoint(cad), snap).toMatch(/5[.,]00 .* 5[.,]00 /)
+    }
+  })
+
+  it("takes the newer of two curves under the pick (probe arrays/p345)", () => {
+    const cad = createHarness({
+      entities: [
+        pathLine(),
+        lineOf(p(30, -20), p(30, 60), { id: "V" }),
+        circle(),
+      ],
+    })
+    cad.select("C")
+    answer(cad, "ARRAYPATH", "30,0", "_X")
+    expect(hasCentre(cad, 10, 88)).toBe(true)
+  })
+
+  it("filters out an object that is no curve (probe arrays/p346)", () => {
+    const cad = createHarness({
+      entities: [pathLine(), textOf(p(50, 20), "HELLO", { id: "T" }), circle()],
+    })
+    cad.select("C")
+    answer(cad, "ARRAYPATH", "52,21")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select path curve: 52,21",
+      "1 was filtered out",
+    ])
+    expect(cad.state().commandLine.prompt).toBe("ARRAYPATH Select path curve:")
+  })
+
+  it("asks again at Enter (probe arrays/p349)", () => {
+    const cad = createHarness({ entities: [pathLine(), circle()] })
+    cad.select("C").command("ARRAYPATH").enter()
+    expect(cad.commandLog().at(-1)).toBe("Select path curve:")
+    expect(cad.state().commandLine.prompt).toBe("ARRAYPATH Select path curve:")
+    answer(cad, "30,0")
+    expect(cad.state().commandLine.prompt).toMatch(PATH_MAIN)
+  })
+
+  it("says the arrayed objects Previous and ALL find; ALL still takes the curve (probes arrays/p353, p354, p356)", () => {
+    for (const [mode, lines, taken] of [
+      ["_L", ["Select path curve: _L", "1 was filtered out"], false],
+      [
+        "_P",
+        [
+          "Objects selected to be arrayed may not be selected as path curve.",
+          "1 was filtered out",
+        ],
+        false,
+      ],
+      [
+        "_ALL",
+        [
+          "Objects selected to be arrayed may not be selected as path curve.",
+          "2 were filtered out",
+        ],
+        true,
+      ],
+    ] as const) {
+      const cad = createHarness({ entities: [pathLine(), circle()] })
+      cad.select("C")
+      answer(cad, "ARRAYPATH", mode)
+      expect(cad.commandLog().slice(-lines.length), mode).toEqual(lines)
+      expect(PATH_MAIN.test(cad.state().commandLine.prompt), mode).toBe(taken)
+    }
+  })
+
+  it("rolls over the curve a pick takes as every single pick does (desktop arrays/d03-1)", () => {
+    const cad = createHarness({ entities: [pathLine(), circle()] })
+    cad.select("C").command("ARRAYPATH").moveTo(p(150, 150))
+    expect(pathStrokes(cad)).toEqual([])
+    cad.moveTo(p(50, 0))
+    expect(pathStrokes(cad)).toEqual([{ color: THEME.entityHover, width: 2 }])
+  })
+
+  it("draws the items over the path left as it is (desktop arrays/d03-2)", () => {
+    expect(pathStrokes(pathArray())).toEqual([])
+  })
+})
+
+describe("ARRAYPATH's prompts", () => {
+  it("asks again in silence at a point or a number typed at the main prompt (probes arrays/p328, p329)", () => {
+    for (const text of ["150,150", "0", "-1"]) {
+      const cad = pathArray()
+      const lines = cad.commandLog().length
+      answer(cad, text)
+      expect(cad.commandLog().length - lines, text).toBe(1)
+      expect(cad.state().commandLine.prompt, text).toMatch(PATH_MAIN)
+    }
+  })
+
+  it("refuses at its prompts as AutoCAD's console does, keeping each answer at Enter (probes arrays/p327, p330–p332, p336, p375)", () => {
+    const tail = (cad: CadHarness, n: number) => cad.commandLog().slice(-n)
+
+    const main = pathArray()
+    answer(main, "FOO")
+    expect(tail(main, 1)).toEqual(["Point or option keyword required."])
+
+    const method = pathArray()
+    answer(method, "_M", "", "_M", "FOO")
+    expect(tail(method, 2)).toEqual([
+      "Enter path method [Divide/Measure] <Measure>: FOO",
+      "Invalid option keyword.",
+    ])
+
+    const count = pathArray()
+    answer(count, "_M", "_D", "_I", "0", "2.5", "FOO", "5")
+    expect(tail(count, 7)).toEqual([
+      "Enter number of items along path <17>: 0",
+      "Value must be positive and nonzero.",
+      "Enter number of items along path <17>: 2.5",
+      "Requires a positive nonzero integer or option keyword.",
+      "Enter number of items along path <17>: FOO",
+      "Requires a positive nonzero integer or option keyword.",
+      "Enter number of items along path <17>: 5",
+    ])
+
+    const spacing = pathArray()
+    answer(spacing, "_I", "-5", "FOO", "1/2")
+    expect(tail(spacing, 5)).toEqual([
+      "Value must be positive and nonzero.",
+      "Specify the distance between items along path <6>: FOO",
+      "Requires numeric distance, two points, or option keyword.",
+      "Specify the distance between items along path <6>: 1/2",
+      "Maximum items = 201",
+    ])
+
+    const align = pathArray()
+    answer(align, "_A", "", "_A", "FOO")
+    expect(tail(align, 2)).toEqual([
+      "Align arrayed items to path? [Yes/No] <Yes>: FOO",
+      "Invalid option keyword.",
+    ])
+
+    const kept = pathArray()
+    answer(kept, "_I", "10", "3", "_I", "5")
+    expect(kept.state().commandLine.prompt).toBe(
+      "ARRAYPATH Specify number of items or [Fill entire path] <3>:"
+    )
+  })
+
+  it("writes the defaults without trailing zeros (probes arrays/p307, p334)", () => {
+    const cad = pathArray()
+    answer(cad, "_I")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPATH Specify the distance between items along path <6>:"
+    )
+    answer(cad, "")
+    expect(cad.commandLog().at(-1)).toBe("Maximum items = 17")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYPATH Specify number of items or [Fill entire path] <17>:"
+    )
+
+    const divided = pathArray()
+    answer(divided, "_M", "_D", "_I", "5", "_M", "_M", "_I")
+    expect(divided.state().commandLine.prompt).toBe(
+      "ARRAYPATH Specify the distance between items along path <25>:"
+    )
+    answer(divided, "")
+    expect(divided.commandLog().at(-1)).toBe("Maximum items = 5")
+  })
+
+  it("says Maximum items again after a refusal of the count (probe arrays/p373)", () => {
+    for (const [locale, maximum] of [
+      [undefined, "Maximum items = 11"],
+      [es, "Número máximo de elementos = 11"],
+    ] as const) {
+      const cad = pathArray("30,0", locale)
+      answer(cad, "_I", "10")
+      for (const refused of ["0", "-1", "FOO", "2.5"]) {
+        answer(cad, refused)
+        expect(cad.commandLog().at(-1), refused).toBe(maximum)
+      }
+      answer(cad, "20", "_X")
+      expect(centres(cad)).toHaveLength(11)
+    }
+  })
+
+  it("resumes the path pick after 'ZOOM, and refuses 'LINE at the main prompt (probes arrays/p366, p368)", () => {
+    const cad = createHarness({ entities: [pathLine(), circle()] })
+    cad.select("C")
+    answer(cad, "ARRAYPATH", "'_ZOOM", "_E")
+    expect(cad.state().commandLine.prompt).toBe("ARRAYPATH Select path curve:")
+    answer(cad, "30,0", "'_LINE")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "** That command may not be invoked transparently **",
+      "Point or option keyword required.",
+    ])
+    expect(cad.state().commandLine.prompt).toMatch(PATH_MAIN)
+  })
+
+  it("says Maximum items again as a transparent ZOOM resumes the count (probe arrays/p367)", () => {
+    const cad = pathArray()
+    answer(cad, "_I", "'_ZOOM", "_E")
+    expect(cad.commandLog().at(-1)).toBe("Resuming ARRAYPATH command.")
+    answer(cad, "10", "'_ZOOM", "_E")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Resuming ARRAYPATH command.",
+      "Maximum items = 11",
+    ])
+    answer(cad, "5", "_X")
+    expect(centres(cad)).toHaveLength(5)
   })
 })

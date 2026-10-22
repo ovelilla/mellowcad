@@ -743,8 +743,8 @@ describe("Select objects' modes", () => {
 })
 
 // AutoCAD's console: a mode at a single object's pick takes one of what it
-// finds — BREAK the oldest (2027's, probes pieces/p125–p132, p144), UCS and
-// ARRAYPATH the newest (2023's).
+// finds — BREAK the oldest (2027's, probes pieces/p125–p132, p144), ARRAYPATH
+// the newest (2027's, arrays/p340, p341, p353), UCS the newest (2023's).
 describe("a single object's pick takes the modes", () => {
   it("BREAK takes the oldest object a mode finds, and asks its first point", () => {
     const cad = createHarness({ entities: drawing() })
@@ -836,7 +836,7 @@ describe("a single object's pick takes the modes", () => {
     })
   })
 
-  it("ARRAYPATH's path takes the newest curve and leaves out what is arrayed", () => {
+  it("ARRAYPATH's path takes the newest curve and leaves out what is arrayed (probes arrays/p341, p353)", () => {
     const cad = createHarness({ entities: drawing() })
     cad.select("C").command("ARRAYPATH")
     answer(cad, "L")
@@ -1037,8 +1037,9 @@ function lineEnds(cad: CadHarness): [number, number][][] {
 }
 
 // AutoCAD's console: a point typed at a single object's pick is a pick there,
-// of the newest object under it — BREAK's in 2027's (probes pieces/p100,
-// p122, p123, p144, p161, p179), UCS's and ARRAYPATH's in 2023's (acc/bk).
+// of the newest object under it — BREAK's (2027's, probes pieces/p100, p122,
+// p123, p144, p161, p179), ARRAYPATH's (2027's, arrays/p345, p347, p348,
+// p357), UCS's (2023's, acc/bk).
 describe("a point typed at a single object's pick", () => {
   it("is BREAK's pick and first break point; on nothing No object found", () => {
     for (const [locale, command, select, second, none, invalid, expects] of [
@@ -1243,7 +1244,7 @@ describe("a point typed at a single object's pick", () => {
     cad.escape()
   })
 
-  it("is ARRAYPATH's path pick, which leaves LASTPOINT; on nothing a window starts", () => {
+  it("is ARRAYPATH's path pick, which leaves LASTPOINT; on nothing a window starts (probes arrays/p347, p348, p357)", () => {
     for (const [locale, arrayed, filtered, select, opposite] of [
       [
         undefined,

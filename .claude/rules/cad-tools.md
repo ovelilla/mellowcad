@@ -34,10 +34,11 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
   `noneFound` (EXPLODE's lines) and `onAdded` (STRETCH's frames); a preselection goes through
   `preselect`. Never re-implement a pick, a box or a mode. A **single object's pick** that takes the
   modes (BREAK's `Select object:`, UCS OBject's, ARRAYPATH's path) holds one too, with `modes`
-  (`ONE_OBJECT_MODES`) and `one` (`take`, given the `ModeFind`; `newest`, `pair`, `silent`,
-  `locked`: said per locked one found, never taken): it keeps its pick (the newest under the box,
-  locked or not: `lockedObjectAt`) and Enter, the rest to the selector while `inMode()`; a typed
-  point is a pick (`typedPick`), or where AUto is offered one on nothing a window (`startWindow`).
+  (`ONE_OBJECT_MODES`) and `one` (`take`, given the `ModeFind` and its `last` point; `newest`,
+  `pair`, `silent`, `locked`: said per locked one found, never taken): it keeps its pick (the
+  newest under the box, locked or not: `lockedObjectAt`) and Enter, the rest to the selector while
+  `inMode()`; a typed point is its pick (`typedPick`; on nothing, where AUto is offered, it calls
+  `startWindow`).
 - `SelectionActionTool` — one action over a set, noun-verb and verb-noun (Erase, Explode, Join,
   COPYCLIP). A command that asks something **before** the set (COPYBASE's base point) overrides
   `onActivate` and calls `begin(ctx)` once it has the answer, rather than forking the class.
@@ -87,10 +88,9 @@ chooses among overlapping objects.
 
 A prompt that asks "which object?" owes a rollover highlight in `buildOverlay` (update the state
 only when the hovered id changes): a **set** prompt → `THEME.entityHover`, width 2, skipping
-objects already in the set (ERASE's fades it and the set instead, `fadedEntityIds`), as is
-BREAK's and FILLET's one object (`rollover`, pieces/d01-1, corners/d01-1); a path curve →
-`THEME.selected`, width 2–2.5 (OFFSET's pick is a set's, offset/d01-4); under an implied
-Tangent (Ttr), a marker (`snapMarker`).
+objects already in the set (ERASE's fades it and the set instead, `fadedEntityIds`), as is a
+single object's (`rollover`: BREAK's, FILLET's, ARRAYPATH's path; pieces/d01-1, corners/d01-1,
+arrays/d03-1); under an implied Tangent (Ttr), a marker (`snapMarker`).
 
 **A set prompt counts all it finds**: refuse under the count (`refuse`) or leave it out when
 acting (HATCH's open objects); `accept` only where AutoCAD's prompt filters too (DIMSPACE,

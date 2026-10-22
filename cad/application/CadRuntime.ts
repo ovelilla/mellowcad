@@ -1211,6 +1211,7 @@ export class CadRuntime extends Observable {
   private resume(): void {
     this.restoreSuspended()
     this.writeResuming()
+    this.activeTool.onAskAgain?.(this.toolContext)
     this.replayRestingPointer()
     this.invalidateState()
     this.host.focusSurface()
@@ -1412,6 +1413,7 @@ export class CadRuntime extends Observable {
         if (clear) this.dynamicInput.clearTexts()
         command.run()
         this.writeResuming()
+        this.activeTool.onAskAgain?.(this.toolContext)
         return true
       }
       if (
@@ -1522,6 +1524,7 @@ export class CadRuntime extends Observable {
     )
     if (lines === null) return false
     for (const line of lines) this.commandLine.write("error", line)
+    if (asking === this.activeTool) asking.onAskAgain?.(this.toolContext)
     this.restartAngleMeasure()
     this.invalidateState()
     return true
