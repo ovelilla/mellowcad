@@ -453,8 +453,8 @@
       "SAVEAS": ["SAVEAS"],
       "OPEN": ["OPEN"],
       "PASTECLIP": ["PASTECLIP"],
-      "DIMSTYLE": ["DIMSTYLE", "D"],
-      "STYLE": ["STYLE", "ST"],
+      "DIMSTYLE": ["DIMSTYLE", "D", "DIMSTY", "DST", "DDIM"],
+      "STYLE": ["STYLE", "ST", "DDSTYLE"],
       "BLOCKSPALETTE": ["BLOCKSPALETTE"],
       "PURGE": ["PURGE", "PU"],
       "LAYER": ["LAYER", "LA", "DDLMODES"],
@@ -1509,6 +1509,7 @@
       "notA2dPolyline": "Object selected is not a 2D polyline",
       "cornersSkipped": "{parallel, plural, =0 {} one {# was parallel    } other {# were parallel    }}{tooShort, plural, =0 {} one {# was too short    } other {# were too short    }}{divergent, plural, =0 {} one {# was divergent    } other {# were divergent    }}",
       "invalid": "*Invalid*",
+      "styleNameInUse": "A {table, select, dimension {dimension style} other {text style}} named \"{name}\" already exists.",
       "splineSettingsFit": "Current settings: Method=Fit   Knots={knots, select, chord {Chord} sqrtChord {Square root} other {Uniform}}",
       "splineSettingsCv": "Current settings: Method=CV   Degree={degree}",
       "requiresIntegerBetween": "Requires an integer between {min} and {max}.",
@@ -1727,6 +1728,7 @@
     },
     "defaults": {
       "layer": "Layer{n}",
+      "textStyle": "style{n}",
       "copyOf": "Copy of {name}",
       "fileName": "drawing-{date}"
     }

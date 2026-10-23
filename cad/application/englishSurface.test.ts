@@ -1655,6 +1655,12 @@ describe("the engine's English surface", () => {
         cad.runtime.suggestedFileName().replace(/\d/g, "#"),
       ].join("\n")
     )
+    const from = cad.commandLog().length
+    cad.runtime.updateTextStyle(textStyle, { name: "STANDARD" })
+    cad.runtime.updateDimStyle(dimStyle, { name: "iso-25" })
+    surfaces.push(
+      ["## style names refused", ...cad.commandLog().slice(from)].join("\n")
+    )
   })
 
   it("is written down", async () => {

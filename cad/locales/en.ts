@@ -813,11 +813,15 @@ export const en: EngineCatalog = {
       ],
       "DIMSTYLE": [
         "DIMSTYLE",
-        "D"
+        "D",
+        "DIMSTY",
+        "DST",
+        "DDIM"
       ],
       "STYLE": [
         "STYLE",
-        "ST"
+        "ST",
+        "DDSTYLE"
       ],
       "BLOCKSPALETTE": [
         "BLOCKSPALETTE"
@@ -2570,6 +2574,22 @@ export const en: EngineCatalog = {
         ]
       ],
       "invalid": "*Invalid*",
+      "styleNameInUse": [
+        "A ",
+        [
+          "table",
+          1,
+          {
+            "dimension": "dimension style",
+            "other": "text style"
+          }
+        ],
+        " named \"",
+        [
+          "name"
+        ],
+        "\" already exists."
+      ],
       "splineSettingsFit": [
         "Current settings: Method=Fit   Knots=",
         [
@@ -3413,6 +3433,12 @@ export const en: EngineCatalog = {
     "defaults": {
       "layer": [
         "Layer",
+        [
+          "n"
+        ]
+      ],
+      "textStyle": [
+        "style",
         [
           "n"
         ]

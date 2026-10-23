@@ -99,6 +99,7 @@ import {
   RemoveLayerCommand,
   SetCurrentLayerCommand,
 } from "./commands/layerCommands"
+import { AddTextStyleCommand } from "./commands/textStyleCommands"
 import { NewDrawingCommand } from "./commands/entityCommands"
 import { MACRO_PAUSE, PointerInput, Tool, ToolContext } from "./tools/Tool"
 import { InsertTool } from "./tools/InsertTool"
@@ -210,7 +211,9 @@ import {
 } from "./runtimeProperties"
 import {
   createDimStyle,
-  createTextStyle,
+  newTextStyle,
+  removeTextStyle,
+  setCurrentTextStyle,
   setSelectionDimStyle,
   setSelectionTextStyle,
   updateDimStyle,
@@ -4236,8 +4239,10 @@ export class CadRuntime extends Observable {
     )
   }
 
+  /** A change to a dimension style; a name in use is refused at the prompt. */
   updateDimStyle(id: DimStyleId, patch: Partial<Omit<DimStyle, "id">>): void {
-    updateDimStyle(this.document, id, patch)
+    const refusal = updateDimStyle(this.document, id, patch)
+    if (refusal !== null) this.refuseStyleName("dimension", patch.name)
   }
 
   setCurrentDimStyle(id: DimStyleId): void {
@@ -4252,7 +4257,6 @@ export class CadRuntime extends Observable {
     return this.document.removeDimStyle(id)
   }
 
-  /** Puts every selected dimension on style `id` (individually undoable). */
   /** Puts the dimensions the Properties palette edits on style `id`. */
   setSelectionDimStyle(id: DimStyleId): void {
     this.outside(this.propertyStep("properties"), () =>
@@ -4265,30 +4269,74 @@ export class CadRuntime extends Observable {
     )
   }
 
+  /**
+   * A new text style copied from `basedOn`, current with `makeCurrent`: a step
+   * of the Text Style dialog's. Unnamed, it is the dialog's `style1`.
+   */
   createTextStyle(
     name?: string,
     basedOn?: TextStyleId,
     makeCurrent = true
   ): TextStyleId {
-    return createTextStyle(this.document, name, basedOn, makeCurrent, (base) =>
-      this.text.copyName(base)
+    const style = newTextStyle(this.document, name, basedOn, (n) =>
+      this.text.defaultTextStyleName(n)
     )
+    this.styleStep(new AddTextStyleCommand(style, makeCurrent))
+    return style.id
   }
 
+  /** A change to a text style; a name in use is refused at the prompt. */
   updateTextStyle(
     id: TextStyleId,
     patch: Partial<Omit<TextStyle, "id">>
   ): void {
-    updateTextStyle(this.document, id, patch)
+    const refusal = updateTextStyle(
+      this.document,
+      (command) => this.styleStep(command),
+      id,
+      patch
+    )
+    if (refusal !== null) this.refuseStyleName("text", patch.name)
   }
 
   setCurrentTextStyle(id: TextStyleId): void {
-    this.document.setCurrentTextStyle(id)
+    setCurrentTextStyle(this.document, (command) => this.styleStep(command), id)
   }
 
   /** Removes an unused text style. Returns whether it was removed. */
   removeTextStyle(id: TextStyleId): boolean {
-    return this.document.removeTextStyle(id)
+    return removeTextStyle(
+      this.document,
+      (command) => this.styleStep(command),
+      id
+    )
+  }
+
+  /**
+   * One of the Text Style dialog's edits, a step U names `STYLE` (desktop
+   * d07; -STYLE's is `-STYLE`, text/p320). WHY the dialog's name for the
+   * Styles palette: it stands in for that dialog (TEXT-D58). Mid-command, a
+   * TEXT's Style option, it joins that command's step.
+   */
+  private styleStep(command: Command): void {
+    this.executeOutside(command, this.text.commandNames("STYLE")[0])
+  }
+
+  /**
+   * A rename onto a name another style has, any case: AutoCAD's words
+   * (text/p323, p336; table 21392 with 26363 or 26367), at the prompt.
+   */
+  private refuseStyleName(
+    table: "text" | "dimension",
+    name: string | undefined
+  ): void {
+    this.commandLine.write(
+      "error",
+      this.text.message("styleNameInUse", { table, name: name?.trim() ?? "" })
+    )
+    this.commandLine.write("error", this.text.message("invalid"))
+    this.commandLineVisible = true
+    this.invalidateState()
   }
 
   /** Puts the text objects the Properties palette edits on style `id`. */

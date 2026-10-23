@@ -171,16 +171,23 @@ export function registerCommands(
       void runtime.pasteFromClipboard()
     },
   })
-  // Both open the same manager on their own table, as AutoCAD's Dimension
-  // Style Manager and Text Style dialog do. D and ST are the aliases
-  // Autodesk's own shortcut guide lists; DDIM / DIMSTY / DST are not on it,
-  // so they stay unregistered rather than invented.
+  // Both open the Styles palette on their own table, standing in for AutoCAD's
+  // Dimension Style Manager and Text Style dialog. WHY not the Text Style
+  // dialog: the palette tab already hosts DIMSTYLE's table, and replacing it
+  // is a change of the palette panel's own (TEXT-D58, dimensions.md Missing).
   const showStyles = (table: StylesPanelTab) => {
     runtime.setStylesTable(table)
     runtime.showPalette("styles")
   }
   register({ id: "DIMSTYLE", run: () => showStyles("dimension") })
-  register({ id: "STYLE", run: () => showStyles("text") })
+  register({
+    id: "STYLE",
+    run: () => {
+      // The Text Style dialog drops a preselection (text/p160, desktop d07).
+      runtime.selection.clear()
+      showStyles("text")
+    },
+  })
   // No alias: Autodesk's shortcut guide lists none for BLOCKSPALETTE, and B
   // and I are already BLOCK and INSERT.
   register({ id: "BLOCKSPALETTE", run: () => runtime.showPalette("blocks") })

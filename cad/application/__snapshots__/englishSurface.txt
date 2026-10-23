@@ -96,8 +96,8 @@ QSAVE ["SAVE"] "Save the drawing to a file"
 SAVEAS [] "Save the drawing to a file under a new name"
 OPEN [] "Open a drawing file"
 PASTECLIP [] "Paste the clipboard into the drawing"
-DIMSTYLE ["D"] "Create and modify dimension styles"
-STYLE ["ST"] "Create and modify text styles"
+DIMSTYLE ["D","DIMSTY","DST","DDIM"] "Create and modify dimension styles"
+STYLE ["ST","DDSTYLE"] "Create and modify text styles"
 BLOCKSPALETTE [] "Show the blocks palette"
 LAYER ["LA","DDLMODES"] "Manage layers and layer properties"
 LAYERCLOSE [] "Close the Layer Properties Manager"
@@ -5765,5 +5765,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 Layer1
 Layer2
 Copy of ISO-25
-Copy of Standard
+style1
 drawing-####-##-##.ecad.json
+
+## style names refused
+A text style named "STANDARD" already exists.
+*Invalid*
+A dimension style named "iso-25" already exists.
+*Invalid*

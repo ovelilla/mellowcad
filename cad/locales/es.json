@@ -441,8 +441,8 @@
       "SAVEAS": ["GUARDARCOMO"],
       "OPEN": ["ABRE"],
       "PASTECLIP": ["PEGAPP"],
-      "DIMSTYLE": ["ACOESTIL", "ACES", "ACOEST", "AES"],
-      "STYLE": ["ESTILO", "EST"],
+      "DIMSTYLE": ["ACOESTIL", "ACES", "ACOEST", "AES", "DCOTA"],
+      "STYLE": ["ESTILO", "EST", "ESTILODD"],
       "BLOCKSPALETTE": ["PALETABLOQUES"],
       "PURGE": ["LIMPIA", "LI"],
       "LAYER": ["CAPA", "CA", "LAYER", "DDLMODES"],
@@ -1540,6 +1540,7 @@
       "notA2dPolyline": "El objeto designado no es una polilínea 2D.",
       "cornersSkipped": "{parallel, plural, =0 {} one {# resulta paralela(s)    } other {# resultan paralela(s)    }}{tooShort, plural, =0 {} one {# resulta demasiado corta(s)    } other {# resultan demasiado corta(s)    }}{divergent, plural, =0 {} one {# resulta divergente(s)    } other {# resultan divergente(s)    }}",
       "invalid": "*No válido*",
+      "styleNameInUse": "Ya existe un {table, select, dimension {estilo de cota} other {estilo de texto}} con el nombre \"{name}\".",
       "splineSettingsFit": "Parámetros actuales: Método=Ajustar Nudos={knots, select, chord {Cuerda} sqrtChord {Raíz cuadrada} other {Uniforme}}",
       "splineSettingsCv": "Parámetros actuales: Método=VC   Grado={degree}",
       "requiresIntegerBetween": "Requiere un nº entero entre {min} y {max}.",
@@ -1758,6 +1759,7 @@
     },
     "defaults": {
       "layer": "Capa{n}",
+      "textStyle": "Estilo{n}",
       "copyOf": "Copia de {name}",
       "fileName": "dibujo-{date}"
     }

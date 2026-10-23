@@ -341,14 +341,29 @@ export class CadDocument extends Observable implements DocumentReader {
    * by an object stay. Returns whether the style was removed.
    */
   removeTextStyle(id: TextStyleId): boolean {
-    if (id === DEFAULT_TEXT_STYLE_ID || id === this.currentTextStyleId) {
-      return false
-    }
-    if (!this.textStyles.has(id)) return false
-    if (this.textStyleInUse(id)) return false
+    if (!this.canRemoveTextStyle(id)) return false
     this.textStyles.delete(id)
     this.emit()
     return true
+  }
+
+  canRemoveTextStyle(id: TextStyleId): boolean {
+    return (
+      id !== DEFAULT_TEXT_STYLE_ID &&
+      id !== this.currentTextStyleId &&
+      this.textStyles.has(id) &&
+      !this.textStyleInUse(id)
+    )
+  }
+
+  /** Puts a removed text style back at `index` in the table's order. */
+  restoreTextStyle(style: TextStyle, index: number): void {
+    const entries = [...this.textStyles.values()].filter(
+      (s) => s.id !== style.id
+    )
+    entries.splice(index, 0, style)
+    this.textStyles = new Map(entries.map((s) => [s.id, s]))
+    this.emit()
   }
 
   textStyleInUse(id: TextStyleId): boolean {

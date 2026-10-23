@@ -802,11 +802,13 @@ export const es: EngineLocale = {
         "ACOESTIL",
         "ACES",
         "ACOEST",
-        "AES"
+        "AES",
+        "DCOTA"
       ],
       "STYLE": [
         "ESTILO",
-        "EST"
+        "EST",
+        "ESTILODD"
       ],
       "BLOCKSPALETTE": [
         "PALETABLOQUES"
@@ -2940,6 +2942,22 @@ export const es: EngineLocale = {
         ]
       ],
       "invalid": "*No válido*",
+      "styleNameInUse": [
+        "Ya existe un ",
+        [
+          "table",
+          1,
+          {
+            "dimension": "estilo de cota",
+            "other": "estilo de texto"
+          }
+        ],
+        " con el nombre \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
       "splineSettingsFit": [
         "Parámetros actuales: Método=Ajustar Nudos=",
         [
@@ -3787,6 +3805,12 @@ export const es: EngineLocale = {
     "defaults": {
       "layer": [
         "Capa",
+        [
+          "n"
+        ]
+      ],
+      "textStyle": [
+        "Estilo",
         [
           "n"
         ]

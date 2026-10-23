@@ -1,16 +1,33 @@
 import { describe, expect, it } from "vitest"
-import { createHarness } from "../../test/harness"
-import { circleOf, p } from "../../test/builders"
+import { type CadHarness, createHarness } from "../../test/harness"
+import { circleOf, lineOf, p } from "../../test/builders"
 import {
   createDimension,
   createText,
   DimensionEntity,
   dimensionGeometry,
+  MTextEntity,
   dimensionText,
   TextEntity,
 } from "../domain/entities"
 import { DEFAULT_DIM_STYLE } from "../domain/dimStyles"
 import { parseDrawingFile } from "../serialization/drawingFile"
+import { es } from "../locales/es"
+
+/** What typing `texts` at the prompt adds to the history. */
+function written(cad: CadHarness, ...texts: string[]): string[] {
+  const from = cad.commandLog().length
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad.commandLog().slice(from)
+}
+
+/** The text styles' names, in the table's order. */
+function textStyleNames(cad: CadHarness): string[] {
+  return cad.state().textStyles.map((style) => style.name)
+}
 
 /** A drawing holding one dimension and one text, so styles have users. */
 function annotated() {
@@ -55,6 +72,21 @@ describe("dimension style table", () => {
     cad.runtime.createDimStyle("Plans")
     expect(cad.runtime.createDimStyle("Plans")).toBe("Plans (2)")
     expect(cad.state().dimStyles).toHaveLength(3)
+  })
+
+  it("compares names case-blind: a new iso-25 is a copy, a rename onto one refused", () => {
+    const cad = createHarness()
+    expect(cad.runtime.createDimStyle("iso-25")).toBe("iso-25 (2)")
+    const from = cad.commandLog().length
+    cad.runtime.updateDimStyle("iso-25 (2)", { name: "ISO-25", textHeight: 9 })
+
+    // Table 21392 with 26367, as text/p323 words it for a text style.
+    expect(cad.commandLog().slice(from)).toEqual([
+      'A dimension style named "ISO-25" already exists.',
+      "*Invalid*",
+    ])
+    const style = cad.state().dimStyles.find((s) => s.id === "iso-25 (2)")
+    expect([style?.name, style?.textHeight]).toEqual(["iso-25 (2)", 2.5])
   })
 
   it("edits a style through a patch, leaving the rest alone", () => {
@@ -149,6 +181,21 @@ describe("dimension style table", () => {
     cad.command("DIMRADIUS").click(p(50, 0)).click(p(30, 0))
 
     expect(cad.only<DimensionEntity>("dimension").styleId).toBe("Plans")
+  })
+
+  it("puts two dimensions on another style in one step (TEXT-D46)", () => {
+    const cad = annotated()
+    cad.runtime.document.add(
+      createDimension("linear", p(0, 0), p(50, 0), p(25, -80), { id: "D2" })
+    )
+    cad.runtime.createDimStyle("Plans", undefined, false)
+    cad.select("D1", "D2")
+    cad.runtime.setSelectionDimStyle("Plans")
+    cad.escape()
+
+    expect(written(cad, "_U")).toEqual(["U", "Modify Property"])
+    expect(cad.byId<DimensionEntity>("D1").styleId).toBe("ISO-25")
+    expect(cad.byId<DimensionEntity>("D2").styleId).toBe("ISO-25")
   })
 
   it("puts the selected dimensions on another style, undoably", () => {
@@ -258,6 +305,194 @@ describe("text style table", () => {
     cad.enter().type("HI").enter().escape()
     expect(cad.only<TextEntity>("text").height).toBe(8)
   })
+  it("a style with a fixed height gives MTEXT its height (p321: <3>)", () => {
+    const cad = createHarness()
+    cad.runtime.createTextStyle("S2")
+    cad.runtime.updateTextStyle("S2", { height: 3 })
+    cad.command("-MTEXT").type("0,0").enter().type("20,-10").enter()
+    cad.type("A").enter().enter()
+
+    const mtext = cad.only<MTextEntity>("mtext")
+    expect([mtext.styleId, mtext.height]).toEqual(["S2", 3])
+  })
+})
+
+describe("the text style table through the history (STY-01, TEXT-D45)", () => {
+  // AutoCAD's U takes back a style the Text Style dialog made and puts
+  // TEXTSTYLE back, naming STYLE (desktop d07; -STYLE's U, text/p320).
+  it("U takes back a new style and the current style it set (d07, p320)", () => {
+    const cad = createHarness()
+    cad.runtime.createTextStyle("S2")
+    expect(cad.state().currentTextStyleId).toBe("S2")
+
+    expect(written(cad, "_U")).toEqual(["U", "STYLE"])
+    expect(textStyleNames(cad)).toEqual(["Standard"])
+    expect(cad.state().currentTextStyleId).toBe("Standard")
+
+    expect(written(cad, "_REDO")).toEqual([
+      "REDO",
+      "STYLE",
+      "Everything has been redone",
+    ])
+    expect(textStyleNames(cad)).toEqual(["Standard", "S2"])
+    expect(cad.state().currentTextStyleId).toBe("S2")
+  })
+
+  it("U takes back a height edit (p320: 7 back to 0)", () => {
+    const cad = createHarness()
+    cad.runtime.updateTextStyle("Standard", { height: 7 })
+    expect(written(cad, "_U")).toEqual(["U", "STYLE"])
+    expect(cad.state().textStyles[0].height).toBe(0)
+  })
+
+  it("U after LINE and a new style takes back the style, not the LINE (p320)", () => {
+    const cad = createHarness()
+    cad.command("LINE").type("0,0").enter().type("10,0").enter().enter()
+    cad.runtime.createTextStyle("S2")
+
+    expect(written(cad, "_U")).toEqual(["U", "STYLE"])
+    expect(cad.entities()).toHaveLength(1)
+    expect(textStyleNames(cad)).toEqual(["Standard"])
+  })
+
+  it("U takes back a current-style change and a rename", () => {
+    const cad = createHarness()
+    cad.runtime.createTextStyle("S2", undefined, false)
+    cad.runtime.setCurrentTextStyle("S2")
+    cad.runtime.updateTextStyle("S2", { name: "Titles" })
+
+    expect(written(cad, "_U")).toEqual(["U", "STYLE"])
+    expect(textStyleNames(cad)).toEqual(["Standard", "S2"])
+    expect(written(cad, "_U")).toEqual(["U", "STYLE"])
+    expect(cad.state().currentTextStyleId).toBe("Standard")
+  })
+
+  it("U puts a deleted style back in its place", () => {
+    const cad = createHarness()
+    cad.runtime.createTextStyle("A", undefined, false)
+    cad.runtime.createTextStyle("B", undefined, false)
+    expect(cad.runtime.removeTextStyle("A")).toBe(true)
+
+    expect(written(cad, "_U")).toEqual(["U", "STYLE"])
+    expect(textStyleNames(cad)).toEqual(["Standard", "A", "B"])
+  })
+
+  it("an edit that changes nothing makes no step", () => {
+    const cad = createHarness()
+    cad.runtime.setCurrentTextStyle("Standard")
+    cad.runtime.updateTextStyle("Standard", { height: 0 })
+    expect(written(cad, "_U")).toEqual(["U", "Everything has been undone"])
+  })
+
+  it("a style made mid-command joins that command's step", () => {
+    const cad = createHarness()
+    cad.command("LINE").type("0,0").enter()
+    cad.runtime.createTextStyle("S2")
+    cad.type("10,0").enter().enter()
+
+    expect(written(cad, "_U")).toEqual(["U", "LINE"])
+    expect(cad.entities()).toHaveLength(0)
+    expect(textStyleNames(cad)).toEqual(["Standard"])
+  })
+
+  // es unverified: d07 was the English profile; U names a command by its
+  // Spanish name (BORRA, erase/p320).
+  it("names the step ESTILO in Spanish", () => {
+    const cad = createHarness({ locale: es })
+    cad.runtime.createTextStyle("S2")
+    expect(written(cad, "H")).toEqual(["H", "ESTILO"])
+  })
+})
+
+describe("text style names (STY-03, STY-08)", () => {
+  it("are case-blind: a new STANDARD is a copy, never a second Standard (p324)", () => {
+    const cad = createHarness()
+    expect(cad.runtime.createTextStyle("STANDARD")).toBe("STANDARD (2)")
+    expect(textStyleNames(cad)).toEqual(["Standard", "STANDARD (2)"])
+  })
+
+  it("refuse a rename onto a name in use, any case, with AutoCAD's words (p323, p336)", () => {
+    const cad = createHarness()
+    cad.runtime.createTextStyle("S2")
+    const from = cad.commandLog().length
+    cad.runtime.updateTextStyle("S2", { name: "standard", height: 3 })
+
+    expect(cad.commandLog().slice(from)).toEqual([
+      'A text style named "standard" already exists.',
+      "*Invalid*",
+    ])
+    expect(textStyleNames(cad)).toEqual(["Standard", "S2"])
+    expect(cad.state().textStyles[1].height).toBe(0)
+    // Nothing was done, so U takes back the new style.
+    expect(written(cad, "_U")).toEqual(["U", "STYLE"])
+  })
+
+  it("refuse it in Spanish AutoCAD's words (p336; tables 21392, 26363)", () => {
+    const cad = createHarness({ locale: es })
+    cad.runtime.createTextStyle("S2")
+    const from = cad.commandLog().length
+    cad.runtime.updateTextStyle("S2", { name: "STANDARD" })
+    expect(cad.commandLog().slice(from)).toEqual([
+      'Ya existe un estilo de texto con el nombre "STANDARD".',
+      "*No válido*",
+    ])
+  })
+
+  it("let a style change its own name's case", () => {
+    const cad = createHarness()
+    cad.runtime.createTextStyle("Titles")
+    cad.runtime.updateTextStyle("Titles", { name: "TITLES" })
+    expect(textStyleNames(cad)).toEqual(["Standard", "TITLES"])
+  })
+
+  it("give a name freed by a rename back, under an id of its own", () => {
+    const cad = createHarness()
+    cad.runtime.createTextStyle("Titles")
+    cad.runtime.updateTextStyle("Titles", { name: "Headings" })
+    const id = cad.runtime.createTextStyle("Titles")
+
+    expect(id).not.toBe("Titles")
+    expect(textStyleNames(cad)).toEqual(["Standard", "Headings", "Titles"])
+  })
+
+  it("New proposes style1, style2…, the first free, as the dialog does (d07-2)", () => {
+    const cad = createHarness()
+    cad.runtime.updateTextStyle("Standard", { height: 4 })
+    const first = cad.runtime.createTextStyle(undefined, "Standard")
+    cad.runtime.createTextStyle("STYLE2")
+    const third = cad.runtime.createTextStyle()
+
+    expect([first, third]).toEqual(["style1", "style3"])
+    // A copy of the selected style, made current (d07-2, d07-3).
+    expect(cad.state().textStyles.find((s) => s.id === "style1")?.height).toBe(
+      4
+    )
+    expect(cad.state().currentTextStyleId).toBe("style3")
+  })
+
+  it("New proposes Estilo1 in Spanish (table 9391)", () => {
+    const cad = createHarness({ locale: es })
+    expect(cad.runtime.createTextStyle()).toBe("Estilo1")
+  })
+})
+
+describe("the text style drop-down (STY-02, TEXT-D46)", () => {
+  it("puts two texts on a style in one step (scratch c/styledrop)", () => {
+    const cad = createHarness({
+      entities: [
+        createText(p(0, 0), "A", { id: "A" }),
+        createText(p(0, 50), "B", { id: "B" }),
+      ],
+    })
+    cad.runtime.createTextStyle("S2", undefined, false)
+    cad.select("A", "B")
+    cad.runtime.setSelectionTextStyle("S2")
+    cad.escape()
+
+    expect(written(cad, "_U")).toEqual(["U", "Modify Property"])
+    expect(cad.byId<TextEntity>("A").styleId).toBe("Standard")
+    expect(cad.byId<TextEntity>("B").styleId).toBe("Standard")
+  })
 })
 
 describe("the style managers", () => {
@@ -272,6 +507,33 @@ describe("the style managers", () => {
     cad.command("STYLE")
     expect(cad.state().palette).toEqual({ open: true, tab: "styles" })
     expect(cad.state().stylesTable).toBe("text")
+  })
+
+  it("answer to acad.pgp's DST, DIMSTY, DDIM and DDSTYLE, es DCOTA and ESTILODD", () => {
+    for (const [locale, table, names] of [
+      [undefined, "dimension", ["DST", "DIMSTY", "DDIM"]],
+      [undefined, "text", ["DDSTYLE"]],
+      [es, "dimension", ["DCOTA"]],
+      [es, "text", ["ESTILODD"]],
+    ] as const) {
+      for (const name of names) {
+        const cad = createHarness({ locale })
+        cad.runtime.setStylesTable(table === "text" ? "dimension" : "text")
+        cad.command(name)
+        expect([name, cad.state().stylesTable]).toEqual([name, table])
+        expect(cad.state().palette.open).toBe(true)
+      }
+    }
+  })
+
+  it("STYLE drops the preselection, as the Text Style dialog does (p160, d07)", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+    cad.select("L1")
+    cad.command("STYLE")
+    expect(cad.selectedIds()).toEqual([])
+    expect(cad.state().palette).toEqual({ open: true, tab: "styles" })
   })
 
   it("fold when their trigger is pressed while they show", () => {

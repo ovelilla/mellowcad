@@ -103,21 +103,53 @@ pair; DIMADEC formatting
 
 **Missing:** Quadrant (deferred), DIMAUNIT, chaining and spacing (see DIMBASELINE/DIMSPACE)
 
-### `DIMSTYLE` · es `ACOESTIL` / `ACES`† / `ACOEST`† / `AES`†
+### `DIMSTYLE` / `D` / `DIMSTY` / `DST` / `DDIM` · es `ACOESTIL` / `ACES` / `ACOEST` / `AES` / `DCOTA`
 
-**Implemented:** style manager, set current, New with Start-With copy and auto-name, rename, delete
-guarded against in-use/current, edit Lines/Symbols and Arrows/Text/Fit/Primary Units, assign per
-selection
+**Implemented:** style manager, set current, New with Start-With copy and auto-name (`Copy of
+ISO-25`), rename, delete guarded against in-use/current, edit Lines/Symbols and Arrows/Text/Fit/
+Primary Units, assign per selection (the Properties palette's drop-down: one undo step). Names are
+case-blind: a new `iso-25` is `iso-25 (2)`, and a rename onto a name in use is refused at the
+prompt with `A dimension style named "X" already exists.` / `*Invalid*` (tables 21392, 26367, the
+text style's wording, text/p323).
 
-**Missing:** Override, Compare, "Use For" sub-styles, Description, All/In-use filter
+**Missing:** Override, Compare, "Use For" sub-styles, Description, All/In-use filter; U of a style
+edit (only the drop-down's assignment is undone)
 
-### `STYLE` · es `ESTILO` / `EST`†
+### `STYLE` / `ST` / `DDSTYLE` · es `ESTILO` / `EST` / `ESTILODD`
 
-**Implemented:** text-style manager, set current, assign per selection, delete guarded against
-in-use/current; every style draws in Arial (Standard's font), measured from its advance widths
+**Implemented:** text-style manager (the Styles palette's text table), set current, assign per
+selection (the drop-down: one undo step over every text, TEXT-D46), delete guarded against
+in-use/current; every style draws in Arial (Standard's font), measured from its advance widths.
+Every creation, edit, deletion and current-style change is undone by U, which names it `STYLE`
+(`ESTILO` in Spanish, unverified) and puts TEXTSTYLE back (desktop d07; -STYLE's U, text/p320); one
+made mid-command joins that command's step. Names are unique and case-blind (`STANDARD` is
+Standard, p324): a new name in use gets ` (2)`, and a rename onto one, any case, is refused at the
+prompt with `A text style named "X" already exists.` / `*Invalid*` (es `Ya existe un estilo de texto
+con el nombre "X".` / `*No válido*`; p323, p336). New proposes `style1`, `style2`…, the first free
+(es `Estilo1`, table 9391), a copy of the selected style, made current (d07-2, d07-3). STYLE drops
+a preselection, as the dialog does (p160, d07).
 
-**Missing:** font choice, width factor, oblique angle, DIMTXSTY interaction with DIMTXT; a machine
-with no Arial-metric face falls back to `sans-serif`
+**Missing:**
+
+- **The Text Style dialog.** STYLE opens the Styles palette's text table instead (TEXT-D58: WHY,
+  the palette tab already hosts DIMSTYLE's table, and replacing it is a change of the palette panel
+  of its own, the Workspace review's). The dialog (d07-1): the Styles list with its All styles
+  filter and a preview; Font Name, Font Style, Use Big Font; Size: Annotative, Match text
+  orientation to layout, Height; Effects: Upside down, Backwards, Vertical, Width Factor, Oblique
+  Angle; Set Current, New…, Delete, Apply, Cancel (Close once applied), Help.
+- **-STYLE**, and STYLE typed in the console, which asks the same (p310–p322): `Enter name of text
+  style or [?] <Standard>:` (`New style.` / `Existing style. Full font name = Arial`), `Specify font
+  name or font filename (for SHX) <txt>:`, `Specify height of text or [Annotative] <0.0000>:`,
+  `Specify width factor <1.0000>:`, `Specify obliquing angle <0>:`, `Display text backwards?
+  [Yes/No] <No>:`, `Display text upside-down? [Yes/No] <No>:`, `Vertical? [Yes/No] <No>:` (SHX
+  fonts only), then `"X" is now the current text style.`; U names it `-STYLE` (p320).
+- **TEXTSTYLE typed** as a variable: `Enter new value for TEXTSTYLE <"Standard">:`; an unknown name
+  is rejected (p322).
+- Font choice, width factor, oblique angle, and the backwards, upside-down and vertical flags (DXF
+  41, 50, 71, 70), which every style here leaves at their defaults; DIMTXSTY interaction with
+  DIMTXT; a machine with no Arial-metric face falls back to `sans-serif`.
+- **The Annotative style** a new drawing holds beside Standard (`Anotativo` in Spanish, p311).
+  Annotative scaling does not exist here, so the style would be inert (TEXT-D50).
 
 **DIMSTYLE variables honoured**: DIMTXT, DIMASZ, DIMEXE, DIMEXO, DIMGAP, DIMDEC, DIMSCALE, DIMDLI,
 DIMCEN (positive/mark branch), DIMADEC.
@@ -125,6 +157,6 @@ DIMCEN (positive/mark branch), DIMADEC.
 DIMCONTINUEMODE (always 1: the base's style and layer), DIMAUNIT, DIMTXSTY height override, DIMPOST
 (kept empty).
 
-`DIMSTYLE` and `STYLE` take only `D` and `ST`, the aliases Autodesk's shortcut guide lists;
-`DDIM`, `DIMSTY` and `DST` could not be verified against acad.pgp, and an unverified alias is worse
-than none.
+Aliases from 2027's `acad.pgp`: `DST` and `DIMSTY` are DIMSTYLE's in its main section; `DDIM`,
+`DDSTYLE`, es `DCOTA` and `ESTILODD` in its "discontinued in 2004" section, which still runs them
+(DDSTYLE p335, ESTILODD p334).

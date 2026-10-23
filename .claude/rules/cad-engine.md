@@ -163,8 +163,8 @@ visible in the viewport, so the _tool_ filters). Give it a cap: pairwise work is
 - A `DIMxxx` variable the Dimension Style Manager holds belongs on **`DimStyle`, not
   `DocumentSettings`**; a plotted size, distance or offset is folded into `scaledDimStyle`;
   `clampDimStyle` is the single gate every edit passes.
-- A style is created by copying another, names are the identity, and **a style that is current, in
-  use or the base cannot be deleted**.
+- A new style copies another, names are the identity (case-blind), and **one that is
+  current, in use or the base cannot be deleted**.
 - A **fragment** (the clipboard, tomorrow WBLOCK) carries every table entry its objects reference,
   through block definitions, as a one-off drawing (`clipboardFile.ts`). Landing it (`planPaste`): **a
   name the target already has wins**, and **only layers and anonymous blocks are remapped** (a

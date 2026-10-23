@@ -342,6 +342,11 @@ export class EngineText {
     return this.format(this.commands.defaults.layer, { n })
   }
 
+  /** The Text Style dialog's New…, `style1` (table 9391). */
+  defaultTextStyleName(n: number): string {
+    return this.format(this.commands.defaults.textStyle, { n })
+  }
+
   copyName(name: string): string {
     return this.format(this.commands.defaults.copyOf, { name })
   }
