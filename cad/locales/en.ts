@@ -1764,6 +1764,8 @@ export const en: EngineCatalog = {
         "  OFFSETGAPTYPE=0"
       ],
       "objectOnLockedLayer": "The object is on a locked layer.",
+      "matchpropSettings": "Current active settings:  Color Layer Ltype Lineweight Thickness Dim Text Hatch",
+      "matchpropLockedDestination": "Destination object on a locked layer. Cannot be updated.",
       "invalidThroughPoint": "Invalid through point.",
       "cannotOffsetObject": "Cannot offset that object.",
       "cannotOffsetAtViewDirection": "Cannot offset that object at current view direction.",

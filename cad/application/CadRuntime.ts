@@ -3519,11 +3519,15 @@ export class CadRuntime extends Observable {
 
   /**
    * Whether a pick takes a locked layer's objects: at `Command:` it selects
-   * them (desktop properties/d02-1); a command's own pick passes over them,
+   * them (desktop properties/d02-1), and a command may take them too
+   * (`Tool.picksLocked`); otherwise a command's own pick passes over them,
    * each saying so in its words (`lockedObjectAt`).
    */
   private picksLocked(): boolean {
-    return this.activeTool.id === "select"
+    return (
+      this.activeTool.id === "select" ||
+      this.activeTool.picksLocked?.() === true
+    )
   }
 
   /**

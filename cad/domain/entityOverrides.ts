@@ -190,17 +190,57 @@ export function carryPiece<T extends Entity>(source: Entity, piece: T): T {
 }
 
 /**
- * Gives `target` the general properties of `source` — layer, colour, linetype,
- * lineweight and thickness — keeping its own geometry and identity. This is MATCHPROP:
- * an override the source does *not* have is cleared on the target, so the two
- * end up drawn the same way rather than merely sharing what was set.
+ * Gives `target` the properties of `source` MATCHPROP's Property Settings copy
+ * by default — layer, colour, linetype, lineweight and thickness, then the
+ * Text, Dimension and Hatch special properties between objects of that kind —
+ * keeping its own geometry and identity. An override the source does *not*
+ * have is cleared on the target, so the two end up drawn the same way rather
+ * than merely sharing what was set.
  */
 export function matchEntityProperties(source: Entity, target: Entity): Entity {
   const onLayer = assignEntityLayer(target, source.layerId)
   const withColor = assignEntityColor(onLayer, source.color)
-  const withLinetype = assignEntityLinetype(withColor, source.linetype)
+  // "Linetype … Available for all objects except attributes, hatches,
+  // multiline text, points, and viewports" (help, Property Settings, 2027).
+  const withLinetype =
+    withColor.type === "hatch" ||
+    withColor.type === "mtext" ||
+    withColor.type === "attdef"
+      ? withColor
+      : assignEntityLinetype(withColor, source.linetype)
   const matched = assignEntityLineweight(withLinetype, source.lineweight)
-  return hasThickness(source) && hasThickness(matched)
-    ? withThickness(matched, entityThickness(source))
-    : matched
+  return matchSpecialProperties(
+    source,
+    hasThickness(source) && hasThickness(matched)
+      ? withThickness(matched, entityThickness(source))
+      : matched
+  )
+}
+
+/**
+ * Property Settings' Text ("single-line and multiline text objects"), Dimension
+ * and Hatch special properties, on by default (help, 2027; desktop
+ * properties/d07-6): the text style, the dimension style, a hatch's pattern,
+ * scale and angle. Annotative scaling is not modelled; a hatch's origin is
+ * left, as the help says ("To match the hatch origin, use Inherit Properties").
+ */
+function matchSpecialProperties(source: Entity, target: Entity): Entity {
+  if (
+    (source.type === "text" || source.type === "mtext") &&
+    (target.type === "text" || target.type === "mtext")
+  ) {
+    return assignTextStyle(target, source.styleId)
+  }
+  if (source.type === "dimension" && target.type === "dimension") {
+    return assignDimStyle(target, source.styleId)
+  }
+  if (source.type === "hatch" && target.type === "hatch") {
+    return {
+      ...target,
+      patternId: source.patternId,
+      patternScale: source.patternScale,
+      patternAngle: source.patternAngle,
+    }
+  }
+  return target
 }

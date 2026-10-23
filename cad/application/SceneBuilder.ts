@@ -127,9 +127,10 @@ export interface UcsIconInput {
  * A command's badge beside the cursor: TRIM's red ✕ where a click trims
  * (desktop trim/d01-1, d03-1), the circle-and-slash where it is refused
  * (d09-1, d09-2), the padlock over a locked layer's object at `Command:`
- * (properties/d01-1).
+ * (properties/d01-1), MATCHPROP's paintbrush at its destination prompt
+ * (properties/d07-1).
  */
-export type CursorBadge = "trim" | "refused" | "locked"
+export type CursorBadge = "trim" | "refused" | "locked" | "paint"
 
 /**
  * Everything needed to describe one frame. The builder is a pure function of
@@ -288,6 +289,8 @@ export function buildScene(input: SceneInput): Scene {
     pushRefusedBadge(primitives, input.cursorBadge.at)
   } else if (input.cursorBadge?.kind === "locked") {
     pushLockedBadge(primitives, input.cursorBadge.at)
+  } else if (input.cursorBadge?.kind === "paint") {
+    pushPaintBadge(primitives, input.cursorBadge.at)
   }
   if (input.tracking && !input.snap) {
     pushTrackedPointMarker(primitives, aid.worldToScreen(input.tracking.point))
@@ -2233,6 +2236,45 @@ function pushLockedBadge(out: ScenePrimitive[], at: Vec2): void {
     width: 8,
     height: 7,
     fill: THEME.lockedBadge,
+  })
+}
+
+/**
+ * MATCHPROP's paintbrush: white bristles 6 px up and right of the pick box's
+ * middle, the handle running on up and right to 18 px, ringed dark so it reads
+ * over a line (desktop properties/d07-1, d07-4).
+ */
+function pushPaintBadge(out: ScenePrimitive[], at: Vec2): void {
+  const x = Math.round(at.x)
+  const y = Math.round(at.y)
+  const bristles = [
+    { x: x + 5.5, y: y - 8 },
+    { x: x + 10.5, y: y - 8 },
+    { x: x + 14.5, y: y - 12.5 },
+    { x: x + 13.5, y: y - 14.5 },
+    { x: x + 11.5, y: y - 14.5 },
+    { x: x + 5.5, y: y - 9 },
+  ]
+  const handle = (stroke: StrokeStyle) =>
+    out.push({
+      kind: "segment",
+      a: { x: x + 14, y: y - 14 },
+      b: { x: x + 18, y: y - 18.5 },
+      stroke,
+    })
+  handle({ color: THEME.background, width: 4 })
+  out.push({
+    kind: "path",
+    points: bristles,
+    closed: true,
+    stroke: { color: THEME.background, width: 2 },
+  })
+  handle({ color: THEME.paintBadge, width: 2 })
+  out.push({
+    kind: "path",
+    points: bristles,
+    closed: true,
+    fill: THEME.paintBadge,
   })
 }
 

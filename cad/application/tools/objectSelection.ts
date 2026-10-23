@@ -27,6 +27,7 @@ import {
 } from "./boxSelection"
 import { CommandOption, PointerInput, QuestionInput, ToolContext } from "./Tool"
 import { typedPick } from "./typedPick"
+import { lockedObjectAt } from "./lockedPick"
 
 /** Screen-pixel movement past which a press-drag becomes a lasso. */
 const DRAG_THRESHOLD_PX = 4
@@ -209,6 +210,14 @@ export interface ObjectSelectorOptions {
   }
   /** Said when Enter closes an empty set: EXPLODE's `None found.` (p205). */
   readonly noneFound?: MessageId
+  /**
+   * Said for each object on a locked layer a selection finds, in place of
+   * `n was on a locked layer.`, and by a pick on one, which then starts no
+   * window and the prompt is asked again: MATCHPROP's `Destination object on a
+   * locked layer. Cannot be updated.` (desktop properties/d07; a window's
+   * answer unverified).
+   */
+  readonly locked?: MessageId
   /**
    * Called as objects join the set, a duplicate not among them, with how they
    * were found: STRETCH's frames, JOIN's order.
@@ -525,7 +534,9 @@ export class ObjectSelector {
         PICKED,
         ctx
       )
-    } else {
+    } else if (
+      !this.saysLockedPick(ctx.viewport.worldToScreen(point), false, ctx)
+    ) {
       this.startWindow(at, ctx)
     }
     ctx.requestRender()
@@ -646,6 +657,8 @@ export class ObjectSelector {
           kind: "objects",
           hover: this.rolloverAt(input.world, ctx),
         }
+      } else if (this.saysLockedPick(input.screen, step.subtract, ctx)) {
+        this.step = { kind: "objects", hover: null }
       } else {
         // A pick on nothing starts a window, finished by the next one.
         this.step = {
@@ -1102,9 +1115,29 @@ export class ObjectSelector {
     return { kept, locked, refused }
   }
 
+  /**
+   * Whether a pick at `screen` that took nothing is on an object of a locked
+   * layer the command words ({@link ObjectSelectorOptions.locked}), said.
+   */
+  private saysLockedPick(
+    screen: Vec2,
+    subtract: boolean,
+    ctx: ToolContext
+  ): boolean {
+    const message = this.options.locked
+    if (!message || subtract || this.removing || this.subobject) return false
+    if (!lockedObjectAt(screen, ctx)) return false
+    ctx.report(ctx.text.message(message), "error")
+    return true
+  }
+
   /** The lines under a count: the locked layer's, then the command's. */
   private sayRefused(sifted: Sifted, ctx: ToolContext): void {
-    if (sifted.locked > 0) {
+    const locked = this.options.locked
+    for (let i = 0; locked && i < sifted.locked; i++) {
+      ctx.report(ctx.text.message(locked), "error")
+    }
+    if (sifted.locked > 0 && !locked) {
       ctx.report(ctx.text.message("onLockedLayer", { count: sifted.locked }))
     }
     const refuse = this.options.refuse

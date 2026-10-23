@@ -1386,6 +1386,8 @@
       "chamferSettings": "(TRIM mode) Current chamfer Dist1 = {dist1}, Dist2 = {dist2}",
       "offsetSettings": "Current settings: Erase source={erase, select, yes {Yes} other {No}}  Layer={layer, select, current {Current} other {Source}}  OFFSETGAPTYPE=0",
       "objectOnLockedLayer": "The object is on a locked layer.",
+      "matchpropSettings": "Current active settings:  Color Layer Ltype Lineweight Thickness Dim Text Hatch",
+      "matchpropLockedDestination": "Destination object on a locked layer. Cannot be updated.",
       "invalidThroughPoint": "Invalid through point.",
       "cannotOffsetObject": "Cannot offset that object.",
       "cannotOffsetAtViewDirection": "Cannot offset that object at current view direction.",

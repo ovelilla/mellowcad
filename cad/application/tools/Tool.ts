@@ -743,6 +743,13 @@ export interface Tool {
   cursorBadge?(): CursorBadge | null
 
   /**
+   * Whether `ctx.pick` takes an object on a locked layer, as `Command:`'s
+   * pick does: MATCHPROP's source (desktop properties/d08-3). Defaults to
+   * `false`, a command's pick passing over them (`lockedObjectAt`).
+   */
+  picksLocked?(): boolean
+
+  /**
    * Whether the selected objects glow: not once ROTATE or SCALE has its base
    * point, where AutoCAD draws them as they are. Defaults to `true`.
    */

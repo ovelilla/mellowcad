@@ -3506,6 +3506,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > source
   prompt: MATCHPROP Select destination object(s):
   prompt| Select source object:
+  info| Current active settings:  Color Layer Ltype Lineweight Thickness Dim Text Hatch
 > escape
   prompt: Command:
   prompt| Select destination object(s): *Cancel*

@@ -30,6 +30,8 @@ export const THEME = {
   refusedBadge: "#ffffff",
   /** The padlock beside the cursor over a locked layer's object (desktop properties/d01-1). */
   lockedBadge: "#ffffff",
+  /** MATCHPROP's paintbrush beside the pick box (desktop properties/d07-1). */
+  paintBadge: "#ffffff",
   /** The AutoSnap marker, AutoCAD's green as its dark theme draws it (desktop d05, d21). */
   snap: "#00a500",
   /** The cursor's tooltips (a snap's name, Polar's reading): AutoCAD's light grey box. */

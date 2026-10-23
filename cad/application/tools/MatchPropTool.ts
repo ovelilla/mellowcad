@@ -2,6 +2,7 @@ import { Entity, EntityId, matchEntityProperties } from "../../domain/entities"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import type { PromptId } from "../../locales/types"
+import type { CursorBadge } from "../SceneBuilder"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { UpdateEntitiesCommand } from "../commands/entityCommands"
 import { ObjectSelector } from "./objectSelection"
@@ -15,15 +16,17 @@ import {
 } from "./Tool"
 
 /**
- * MATCHPROP. `Select source object:`, then its general properties — layer,
- * colour, linetype and lineweight — are painted onto the objects each
- * selection at `Select destination object(s):` takes (picks, windows and the
- * selection modes, as every set is selected), until Enter or Escape.
+ * MATCHPROP. `Select source object:` — one object selected before the command
+ * is the source instead (desktop properties/d08-1), and a locked layer's is
+ * taken (d08-3) — then `Current active settings:` and `Select destination
+ * object(s):`, whose every selection (picks, windows and the selection modes)
+ * is painted as it is made with what `matchEntityProperties` copies, until
+ * Enter or Escape. A destination on a locked layer is said and left
+ * (acmatchRes 28, d07).
  *
- * The Settings dialog is not implemented: every property we model is matched,
- * which is what its defaults do anyway, so the prompt offers no `[Settings]`
- * and no `Current active settings:` line is written (its list is not
- * documented word for word).
+ * WHY no `[Settings]` (acmatchRes 13 lists it): the Property Settings dialog it
+ * opens does not exist, and every property modelled is matched, which is what
+ * its defaults do; the settings line names only those (PROPS-D46, D68).
  */
 type MatchState =
   | { readonly phase: "source"; readonly hover: Entity | null }
@@ -39,6 +42,7 @@ export class MatchPropTool implements Tool {
       ctx.selection.clear()
       ctx.endCommand()
     },
+    locked: "matchpropLockedDestination",
     // AutoCAD paints each selection as it is made.
     onAdded: (ids, _frame, ctx) => {
       if (this.state.phase === "destination") {
@@ -50,7 +54,14 @@ export class MatchPropTool implements Tool {
   onActivate(ctx: ToolContext): void {
     this.state = { phase: "source", hover: null }
     ctx.setCursor("crosshair")
+    const preselected = ctx.selection.toArray()
     ctx.selection.clear()
+    // PROPS-D71: several objects selected are dropped and the source asked
+    // (unverified: acmatchRes 11 `Only one entity can be selected as source
+    // object.` suggests AutoCAD refuses them).
+    const source =
+      preselected.length === 1 ? ctx.document.get(preselected[0]) : undefined
+    if (source) this.takeSource(source, ctx)
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -85,6 +96,18 @@ export class MatchPropTool implements Tool {
     return this.state.phase === "destination" && this.selector.wantsSnap()
   }
 
+  /** The source may be on a locked layer (desktop properties/d08-3). */
+  picksLocked(): boolean {
+    return this.state.phase === "source"
+  }
+
+  /** The paintbrush beside the pick box while destinations are picked (d07-1). */
+  cursorBadge(): CursorBadge | null {
+    return this.state.phase === "destination" && !this.selector.wantsSnap()
+      ? "paint"
+      : null
+  }
+
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     if (this.state.phase === "destination") {
       this.selector.onPointerMove(input, ctx)
@@ -104,10 +127,7 @@ export class MatchPropTool implements Tool {
     }
     if (input.button !== 0) return
     const hit = ctx.pick(input.world)
-    if (!hit) return
-    this.state = { phase: "destination", source: hit }
-    this.selector.start()
-    ctx.requestRender()
+    if (hit) this.takeSource(hit, ctx)
   }
 
   answerTyped(text: string, ctx: ToolContext): boolean {
@@ -151,6 +171,14 @@ export class MatchPropTool implements Tool {
       ),
       ...this.selector.buildOverlay(ctx),
     ]
+  }
+
+  /** The source taken: the settings line (acmatchRes 18; d07, e02), then the destinations. */
+  private takeSource(source: Entity, ctx: ToolContext): void {
+    this.state = { phase: "destination", source }
+    this.selector.start()
+    ctx.report(ctx.text.message("matchpropSettings"))
+    ctx.requestRender()
   }
 
   /** Paints the source's properties on the objects a selection took. */

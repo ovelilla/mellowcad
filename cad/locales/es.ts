@@ -719,7 +719,7 @@ export const es: EngineLocale = {
       "MATCHPROP": [
         "IGUALARPROP",
         "IP",
-        "COPARPROP"
+        "COPIARPROP"
       ],
       "COPYCLIP": [
         "COPIAPP"
@@ -1663,8 +1663,8 @@ export const es: EngineLocale = {
       "polylineStartingHalfWidth": "Precise mitad de grosor inicial",
       "polylineEndingHalfWidth": "Precise mitad de grosor final",
       "fillMode": "Indique modo",
-      "matchpropSource": "Seleccione el objeto de origen",
-      "matchpropDestination": "Seleccione objeto(s) de destino",
+      "matchpropSource": "Designe objeto de origen",
+      "matchpropDestination": "Designe objeto(s) de destino",
       "viewPoint": "Precise un punto de vista",
       "specifyViewPointOr": "Precise un punto de vista o",
       "attributeVisibilitySetting": "Indique parámetro de visibilidad de atributo",
@@ -2133,6 +2133,8 @@ export const es: EngineLocale = {
         "  OFFSETGAPTYPE=0"
       ],
       "objectOnLockedLayer": "El objeto está en una capa bloqueada.",
+      "matchpropSettings": "Parámetros activos actuales:  Color Capa Tlínea Grosor de línea Alt-objeto Acota Texto Sombreado",
+      "matchpropLockedDestination": "El objeto de destino no puede actualizarse porque se encuentra en una capa bloqueada.",
       "invalidThroughPoint": "Punto a atravesar no válido.",
       "cannotOffsetObject": "Imposible transponer este objeto.",
       "cannotOffsetAtViewDirection": "Imposible transponer este objeto en la dirección de la vista actual.",

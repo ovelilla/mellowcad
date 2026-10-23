@@ -915,6 +915,77 @@ describe("Z", () => {
     const text = textOf(p(0, 0), "A")
     expect(matchEntityProperties(source, text)).not.toHaveProperty("thickness")
   })
+
+  // The help's Property Settings (MATCHPROP, 2027): "Linetype … Available for
+  // all objects except attributes, hatches, multiline text, points, and
+  // viewports".
+  it("gives no linetype to a hatch, a multiline text or an attribute definition", () => {
+    const source = { ...lineOf(p(0, 0), p(1, 0)), linetype: "Dashed" }
+    const kept = [
+      { ...createHatch([loopOf(p(0, 0), p(1, 1))]), linetype: "Hidden" },
+      createMText(p(0, 0), "A"),
+      createAttributeDefinition(p(0, 0), "TAG"),
+    ]
+    for (const target of kept) {
+      expect(matchEntityProperties(source, target).linetype).toBe(
+        target.linetype
+      )
+    }
+    expect(matchEntityProperties(source, textOf(p(0, 0), "A")).linetype).toBe(
+      "Dashed"
+    )
+  })
+
+  // Property Settings' special properties (help, 2027; on by default,
+  // desktop properties/d07-6): Text, Dimension and Hatch, between objects of
+  // that kind.
+  it("matches the text style between single-line and multiline text", () => {
+    const text = textOf(p(0, 0), "A", { styleId: "Two" })
+    const mtext = createMText(p(0, 0), "B", { styleId: "Three" })
+    expect(matchEntityProperties(text, textOf(p(0, 5), "C"))).toMatchObject({
+      styleId: "Two",
+    })
+    expect(matchEntityProperties(text, mtext)).toMatchObject({
+      styleId: "Two",
+    })
+    expect(matchEntityProperties(mtext, text)).toMatchObject({
+      styleId: "Three",
+    })
+    expect(
+      matchEntityProperties(text, createAttributeDefinition(p(0, 0), "T"))
+    ).toMatchObject({ styleId: "Standard" })
+  })
+
+  it("matches the dimension style between dimensions", () => {
+    const source = createDimension("linear", p(0, 0), p(10, 0), p(5, 5), {
+      styleId: "Arch",
+    })
+    const target = createDimension("aligned", p(0, 0), p(0, 10), p(5, 5))
+    expect(matchEntityProperties(source, target)).toMatchObject({
+      styleId: "Arch",
+      kind: "aligned",
+    })
+  })
+
+  it("matches a hatch's pattern, scale and angle, not its origin or boundary", () => {
+    const source = createHatch([loopOf(p(0, 0), p(1, 1))], {
+      patternId: "ANSI37",
+      patternScale: 2,
+      patternAngle: Math.PI / 4,
+      origin: p(7, 7),
+    })
+    const target = createHatch([loopOf(p(10, 10), p(20, 20))], {
+      patternId: "SOLID",
+    })
+    const matched = matchEntityProperties(source, target)
+    expect(matched).toMatchObject({
+      patternId: "ANSI37",
+      patternScale: 2,
+      patternAngle: Math.PI / 4,
+      loops: target.loops,
+    })
+    expect((matched as typeof target).origin).toBeCloseToPoint(target.origin)
+  })
 })
 
 describe("arc orientation", () => {

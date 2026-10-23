@@ -1246,17 +1246,36 @@ p188 does not settle (PIECES-D10); the ghost under a far Endpoint marker trails 
 AutoCAD while the click takes the marker (desktop d13), here it follows the point the click takes
 (PIECES-D30)
 
-### `MATCHPROP` / `MA` · es `IGUALARPROP` / `IP`† / `COPARPROP`†
+### `MATCHPROP` / `MA` / `PAINTER` · es `IGUALARPROP` / `IP` / `COPIARPROP`
 
-**Implemented:** `Select source object:`, then `Select destination object(s):` with the selection
-modes and counts, each selection painted as it is made, Enter ending (AutoCAD 2026's help; es
-`Seleccione el objeto de origen`, `Seleccione objeto(s) de destino`, the help's words —
-**unverified** in the program's); layer, colour, linetype, lineweight (clears unset overrides),
-thickness between objects that have one
+**Implemented:** `Select source object:` (es `Designe objeto de origen:`, acmatchRes 15), a pick
+that takes an object on a locked layer too (desktop properties/d08-3), Enter there ending it
+silently (e02); one object selected before the command is the source, the prompt not asked
+(d08-1); then `Current active settings:  Color Layer Ltype Lineweight Thickness Dim Text Hatch` (es
+`Parámetros activos actuales:  Color Capa Tlínea Grosor de línea Alt-objeto Acota Texto Sombreado`,
+acmatchRes 18–26, 35: AutoCAD's line, in its order, naming only what is matched here, d07, e02) and
+`Select destination object(s):` (es `Designe objeto(s) de destino:`, acmatchRes 13 without its
+option) with the selection modes and counts, each selection painted as it is made, Enter ending;
+a destination on a locked layer is left and said, `Destination object on a locked layer. Cannot be
+updated.` (es `El objeto de destino no puede actualizarse porque se encuentra en una capa
+bloqueada.`, acmatchRes 28), a pick on one starting no window and the prompt asked again (d07), a
+window saying it for each one it found (**unverified**: the window was not probed); one step U names
+`MATCHPROP` (d07). What it copies, as the Property Settings' defaults (help, 2027; d07-6): layer,
+colour, lineweight; linetype to all but hatches, multiline text and attribute definitions;
+thickness between objects that have one (overrides the source lacks are cleared); the text style
+between single-line and multiline text (text to multiline text **unverified**: the help names both),
+the dimension style between dimensions, a hatch's pattern, scale and angle (not its origin, as the
+help's dialog page says; its "Have You Tried" page says the origin is copied: **unverified**). The
+cursor is the pick box with AutoCAD's paintbrush at its upper right at the destination prompt
+(d07-1, d07-4; the crosshair's arms stay, as at every `Select objects:`, drafting-aids.md)
 
-**Missing:** settings dialog to choose which properties to match (so the destination prompt offers
-no `[Settings]`), the `Current active settings:` line (its list is not documented word for word),
-the Polyline special property (a polyline's widths are not matched)
+**Missing:** `[Settings]` and the Property Settings dialog (acmatchRes 13's option; the prompt
+leaves it out while the dialog does not exist); Linetype Scale, Transparency and Plot Style (not
+modelled); the Polyline (widths), Viewport, Table, Material, Multileader and Center object special
+properties, and the annotative properties of Text, Dimension and Hatch; several objects selected
+before it (**unverified**: acmatchRes 11 `Only one entity can be selected as source object.`
+suggests a refusal; here they are dropped and the source asked); Command Preview's preview of the
+change under the cursor
 
 ### `TEXTEDIT` / `ED` · es `EDITARTEXTO` / `ED`† / `DDEDIC`†
 
