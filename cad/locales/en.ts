@@ -913,10 +913,14 @@ export const en: EngineCatalog = {
       ],
       "LINETYPE": [
         "LINETYPE",
-        "LT"
+        "LT",
+        "LTYPE",
+        "DDLTYPE"
       ],
       "-LINETYPE": [
-        "-LINETYPE"
+        "-LINETYPE",
+        "-LT",
+        "-LTYPE"
       ],
       "LWEIGHT": [
         "LWEIGHT",
@@ -2295,7 +2299,7 @@ export const en: EngineCatalog = {
         [
           "name"
         ],
-        "\" not found in acadiso.lin.\nYou can use the \"Load\" option to load it from another file."
+        "\" not found in acad.lin.\nYou can use the \"Load\" option to load it from another file."
       ],
       "loadedLinetypes": "ByLayer, ByBlock, or one of these loaded linetypes:",
       "linetypeColumns": "      Name          Description\n---------------- ------------------",

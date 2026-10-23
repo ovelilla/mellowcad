@@ -4,7 +4,7 @@ import { PointerInput, Tool, ToolContext, ToolQuestion } from "./Tool"
 
 /**
  * AutoCAD's LTSCALE: `Enter new linetype scale factor <1.0000>:`, offering the
- * current one. LTSCALE is saved in the drawing ("The linetype scale factor
+ * current one with four decimals. LTSCALE is saved in the drawing ("The linetype scale factor
  * cannot equal zero"); changing it regenerates the drawing. A factor that is
  * not above zero is refused, `Value must be positive and nonzero.`, and the
  * prompt stays.
@@ -42,7 +42,9 @@ export class LtScaleTool implements Tool {
   }
 
   question(): ToolQuestion {
-    return { id: "ltscaleFactor", enter: this.current }
+    // WHY not the drawing's precision: the table's `<%.4f>` (20988) is
+    // written so whatever LUPREC (properties/p234).
+    return { id: "ltscaleFactor", enter: { name: this.current.toFixed(4) } }
   }
 
   private answer(value: number, ctx: ToolContext): void {

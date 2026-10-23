@@ -33,7 +33,10 @@ export const LINETYPE_BYLAYER = "ByLayer"
 /**
  * The built-in linetypes, in the order shown by the pickers. Each is
  * acadiso.lin's, the file a metric drawing (MEASUREMENT 1) loads from: probe
- * line/p202 reads them back with `tblsearch`. A dash of 0 is a dot.
+ * line/p202 reads them back with `tblsearch`. A dash of 0 is a dot. WHY all
+ * six loaded in every drawing, where AutoCAD's new one holds Continuous alone
+ * (properties/p221) and loads the rest from the file: there is no Load option
+ * or Linetype Manager here to load one.
  */
 export const LINETYPES: readonly LinetypeDef[] = [
   { id: "Continuous", pattern: [] },

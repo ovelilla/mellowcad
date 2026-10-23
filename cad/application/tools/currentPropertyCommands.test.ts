@@ -160,6 +160,18 @@ describe("the Properties panel's drop-downs", () => {
     cad.runtime.setCurrentColor("#F00")
     expect(cad.state().currentColor).toBe(RED)
   })
+
+  it("give a selection no linetype that is not loaded, as with nothing selected", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+
+    cad.select("L1")
+    cad.runtime.applyLinetypeControl("Zigzag")
+
+    expect(cad.byId("L1").linetype).toBeUndefined()
+    expect(cad.state().canUndo).toBe(false)
+  })
 })
 
 describe("-COLOR", () => {
@@ -484,39 +496,88 @@ describe("-LINETYPE", () => {
     expect(cad.activeToolId()).toBe("select")
   })
 
-  it("lists the linetypes with ? at either prompt", () => {
+  it("offers the current linetype at Set, and goes back to the option prompt on Enter (probes properties/p226, p220)", () => {
+    const cad = createHarness()
+    answer(cad, "-LINETYPE", "S", "Continuous", "S")
+    expect(cad.state().commandLine.prompt).toBe(
+      "-LINETYPE Specify linetype name or [?] <Continuous>:"
+    )
+
+    answer(cad, "")
+
+    expect(cad.commandLog().at(-1)).toBe(
+      "Specify linetype name or [?] <Continuous>:"
+    )
+    expect(cad.state().commandLine.prompt).toBe(
+      "-LINETYPE Enter an option [?/Set]:"
+    )
+    expect(cad.state().currentLinetype).toBe("Continuous")
+  })
+
+  it("lists acadiso.lin's linetypes at the option prompt, in the file's order and without Continuous (probe properties/p202)", () => {
     const cad = createHarness()
 
     // probe line/p205: a metric drawing's file is acadiso.lin
     cad.command("LT").option("?")
-    expect(cad.commandLog().at(-1)).toContain(
-      'Linetypes defined in file acadiso.lin:\n\n      Name          Description\n---------------- -------------------\n"Continuous"     Solid line\n"Dashed"'
-    )
-    cad.option("Set").option("?")
-    expect(cad.state().commandLine.prompt).toBe(
-      "LINETYPE Enter linetype name(s) to list <*>:"
-    )
-    cad.type("d*").enter()
     expect(cad.commandLog().at(-1)).toBe(
-      'ByLayer, ByBlock, or one of these loaded linetypes:\n\n      Name          Description\n---------------- ------------------\n"Dashed"\n"DashDot"'
+      'Linetypes defined in file acadiso.lin:\n\n      Name          Description\n---------------- -------------------\n"Center"\n"DashDot"\n"Dashed"\n"Hidden"\n"Phantom"'
     )
     expect(cad.state().commandLine.prompt).toBe(
       "LINETYPE Enter an option [?/Set]:"
     )
   })
 
-  it("says a linetype it does not have is not in acadiso.lin, and asks the option again", () => {
+  it("lists the loaded linetypes at Set's ?, sorted by name whatever their case (probe properties/p217)", () => {
     const cad = createHarness()
 
-    // table 20995 names the file, acadiso.lin in a metric drawing (p205),
-    // which has no FOO
+    cad.command("LT").option("Set").option("?")
+    expect(cad.state().commandLine.prompt).toBe(
+      "LINETYPE Enter linetype name(s) to list <*>:"
+    )
+    cad.type("D*,C*").enter()
+    expect(cad.commandLog().at(-1)).toBe(
+      'ByLayer, ByBlock, or one of these loaded linetypes:\n\n      Name          Description\n---------------- ------------------\n"Center"\n"Continuous"     Solid line\n"DashDot"\n"Dashed"'
+    )
+    expect(cad.state().commandLine.prompt).toBe(
+      "LINETYPE Enter an option [?/Set]:"
+    )
+  })
+
+  it("writes the heading and the no-match words on the dashes' line (probe properties/p218)", () => {
+    const cad = answer(createHarness(), "-LINETYPE", "S", "?", "NOPE*")
+    const sp = answer(
+      createHarness({ locale: es }),
+      "-TIPOLIN",
+      "D",
+      "?",
+      "NOPE*"
+    )
+
+    expect(cad.commandLog().at(-1)).toBe(
+      "ByLayer, ByBlock, or one of these loaded linetypes:\n\n      Name          Description\n---------------- ------------------  No matching linetype names found."
+    )
+    expect(sp.commandLog().at(-1)).toBe(
+      "porCapa, porBloque o uno de estos tipos de línea cargados:\n\n      Nombre         Descripción\n---------------- ------------------  Tipo de línea no encontrado."
+    )
+  })
+
+  it("says a linetype it does not have is not in acad.lin, and asks the option again (probe properties/p213)", () => {
+    const cad = createHarness()
+
+    // WHY acad.lin in a metric drawing: AutoCAD 2027 names it so (p213),
+    // where its `?` offers acadiso.lin (p202).
     cad.command("LINETYPE").option("Set").type("FOO").enter()
 
     expect(cad.commandLog().at(-1)).toBe(
-      'Linetype "FOO" not found in acadiso.lin.\nYou can use the "Load" option to load it from another file.'
+      'Linetype "FOO" not found in acad.lin.\nYou can use the "Load" option to load it from another file.'
     )
     expect(cad.activeToolId()).toBe("linetype")
     expect(cad.state().currentLinetype).toBe("ByLayer")
+
+    const sp = answer(createHarness({ locale: es }), "-TIPOLIN", "D", "NOPE")
+    expect(sp.commandLog().at(-1)).toBe(
+      'Tipo de línea "NOPE" no encontrado en acad.lin.\nPuede utilizar la opción "Cargar" para cargarlo desde otro archivo.'
+    )
   })
 
   it("goes back to ByLayer, one undo step", () => {
@@ -530,17 +591,174 @@ describe("-LINETYPE", () => {
     expect(cad.state().currentLinetype).toBe("Center")
   })
 
-  it.each(["TIPOLIN", "-TIPOLIN"])("runs as %s in Spanish", (name) => {
-    const cad = createHarness({ locale: es })
+  it.each<[string, readonly string[]]>([
+    ["English", ["BYLAYER", "bylayer", "BYL", "_BYL", "_BYLAYER"]],
+    ["Spanish", ["BYLAYER", "bylayer", "_BYL", "C", "PORCAPA", "porcapa"]],
+  ])(
+    "takes ByLayer at Set in %s: the table's name whole, the keyword, the global word (probes properties/p224, p225, p228, p229)",
+    (language, typed) => {
+      for (const name of typed) {
+        const cad = createHarness(language === "Spanish" ? { locale: es } : {})
+        cad.runtime.setCurrentLinetype("Center")
 
-    cad.command(name)
-    expect(cad.commandLog().at(-1)).toBe('Tipo de línea actual: "PorCapa"')
-    expect(cad.state().commandLine.prompt).toContain(
-      "Indique una opción [?/Definir]:"
+        answer(cad, "_-LINETYPE", "_S", name)
+
+        expect(cad.state().currentLinetype, name).toBe("ByLayer")
+      }
+    }
+  )
+
+  it.each(["BYL", "POR"])(
+    "refuses %s in Spanish as a linetype not found (probes properties/p223, p228)",
+    (typed) => {
+      const cad = createHarness({ locale: es })
+      cad.runtime.setCurrentLinetype("Center")
+
+      answer(cad, "-TIPOLIN", "D", typed)
+
+      expect(cad.commandLog().at(-1)).toBe(
+        `Tipo de línea "${typed}" no encontrado en acad.lin.\nPuede utilizar la opción "Cargar" para cargarlo desde otro archivo.`
+      )
+      expect(cad.state().currentLinetype).toBe("Center")
+    }
+  )
+
+  it("is taken back by U and put back by REDO, each naming it (probe properties/p246)", () => {
+    const cad = answer(createHarness(), "-LINETYPE", "S", "Continuous", "")
+
+    expect(written(cad, "U")).toEqual(["U", "-LINETYPE"])
+    expect(cad.state().currentLinetype).toBe("ByLayer")
+    expect(written(cad, "REDO")).toEqual([
+      "REDO",
+      "-LINETYPE",
+      "Everything has been redone",
+    ])
+    expect(cad.state().currentLinetype).toBe("Continuous")
+
+    const sp = answer(
+      createHarness({ locale: es }),
+      "-TIPOLIN",
+      "D",
+      "Continuous",
+      ""
     )
-    cad.option("Set").type("hidden").enter()
+    expect(written(sp, "H")).toEqual(["H", "-TIPOLIN"])
+  })
 
-    expect(cad.state().currentLinetype).toBe("Hidden")
+  it("is a step U names when it changed nothing (probe properties/p247)", () => {
+    const cad = answer(createHarness(), "-LINETYPE", "")
+
+    expect(written(cad, "U")).toEqual(["U", "-LINETYPE"])
+  })
+
+  it("takes back two Sets of one run with one U (probe properties/p248)", () => {
+    // p248's second Set is _BYBLOCK, not modelled here: Center stands in.
+    const cad = answer(
+      createHarness(),
+      "-LINETYPE",
+      "S",
+      "Continuous",
+      "S",
+      "Center",
+      ""
+    )
+
+    expect(written(cad, "U")).toEqual(["U", "-LINETYPE"])
+    expect(cad.state().currentLinetype).toBe("ByLayer")
+  })
+
+  it("is taken back by UNDO 2 with LTSCALE and put back by REDO, each naming both (probe properties/p249)", () => {
+    const cad = answer(
+      createHarness(),
+      "-LINETYPE",
+      "S",
+      "Continuous",
+      "",
+      "LTSCALE",
+      "2"
+    )
+
+    expect(written(cad, "UNDO", "2").at(-1)).toBe(
+      "LTSCALE -LINETYPE Regenerating model."
+    )
+    expect(cad.state()).toMatchObject({
+      currentLinetype: "ByLayer",
+      ltScale: 1,
+    })
+    expect(written(cad, "REDO").slice(1)).toEqual([
+      "-LINETYPE LTSCALE",
+      "Everything has been redone",
+      "Regenerating model.",
+    ])
+    expect(cad.state()).toMatchObject({
+      currentLinetype: "Continuous",
+      ltScale: 2,
+    })
+  })
+
+  it("gives each LINE segment run through it the linetype current as it starts (probes properties/p250, p251)", () => {
+    const cad = answer(createHarness(), "LINE", "0,0", "10,0")
+
+    expect(
+      written(cad, "'-LINETYPE", "S", "Continuous", "", "20,0", "")
+    ).toEqual([
+      "Specify next point or [Undo]: '-LINETYPE",
+      'Current line type:  "ByLayer"',
+      ">>Enter an option [?/Set]: S",
+      ">>Specify linetype name or [?] <ByLayer>: Continuous",
+      ">>Enter an option [?/Set]:",
+      "Resuming LINE command.",
+      "Specify next point or [Undo]: 20,0",
+      "Specify next point or [Close/Undo]:",
+    ])
+    expect(cad.entities().map((e) => e.linetype)).toEqual([
+      undefined,
+      "Continuous",
+    ])
+
+    const first = answer(
+      createHarness(),
+      "LINE",
+      "0,0",
+      "'-LINETYPE",
+      "S",
+      "Continuous",
+      "",
+      "10,0",
+      ""
+    )
+    expect(first.entities().map((e) => e.linetype)).toEqual(["Continuous"])
+  })
+
+  it.each(["LTYPE", "-LT", "-LTYPE", "DDLTYPE"])(
+    "runs as %s in English (probe properties/p253)",
+    (name) => {
+      const cad = answer(createHarness(), name)
+
+      expect(cad.activeToolId()).toBe("linetype")
+    }
+  )
+
+  it.each(["TIPOLIN", "-TIPOLIN", "TL", "-TL", "TLINEA", "-TLINEA", "DDLTYPE"])(
+    "runs as %s in Spanish (probe properties/p253)",
+    (name) => {
+      const cad = createHarness({ locale: es })
+
+      cad.command(name)
+      expect(cad.commandLog().at(-1)).toBe('Tipo de línea actual: "PorCapa"')
+      expect(cad.state().commandLine.prompt).toContain(
+        "Indique una opción [?/Definir]:"
+      )
+      cad.option("Set").type("hidden").enter()
+
+      expect(cad.state().currentLinetype).toBe("Hidden")
+    }
+  )
+
+  it("does not run as LT in Spanish, which is LIST there (probe properties/p254)", () => {
+    const cad = answer(createHarness({ locale: es }), "LT")
+
+    expect(cad.activeToolId()).not.toBe("linetype")
   })
 })
 

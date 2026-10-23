@@ -1,5 +1,10 @@
 import { Vec2 } from "../../geometry/Vec2"
-import { LINETYPE_BYLAYER, LINETYPES, LinetypeId } from "../../domain/linetypes"
+import {
+  DEFAULT_LINETYPE_ID,
+  LINETYPE_BYLAYER,
+  LINETYPES,
+  LinetypeId,
+} from "../../domain/linetypes"
 import { matchesWildcard } from "../../shared/wildcard"
 import type { PromptId } from "../../locales/types"
 import { UpdateSettingsCommand } from "../commands/settingsCommands"
@@ -12,7 +17,20 @@ import {
   ToolQuestion,
 } from "./Tool"
 
-const BY_LAYER = "BYLAYER"
+/**
+ * Set's ByLayer keyword, by the global word `_` selects: `_BYL` (properties/p229).
+ * WHY not the table's `BYLAYER`: an id is its global word, and that one has
+ * no abbreviation short of itself.
+ */
+const BY_LAYER = "BYLayer"
+
+/**
+ * The loaded linetypes as Set's `?` lists them: by name, case aside
+ * (`CENTER`, `Continuous`, `DASHDOT`, properties/p217).
+ */
+const BY_NAME = [...LINETYPES].sort((a, b) =>
+  a.id.toUpperCase() < b.id.toUpperCase() ? -1 : 1
+)
 
 /** The width AutoCAD's listing gives a quoted name before its description. */
 const NAME_COLUMN = 17
@@ -23,11 +41,13 @@ const NAME_COLUMN = 17
  * [?/Create/Load/Set]:`, asked again after each answer until Enter. Set
  * (`Specify linetype name or [?] <ByLayer>:`) sets CELTYPE, the linetype new
  * objects take, saved in the drawing and undone with U: a linetype's name,
- * or `bylayer`; its `?` lists the loaded linetypes. Every linetype this build
- * ships is loaded, so `?` at the first prompt — the linetypes of a LIN file,
- * acadiso.lin's, a metric drawing's (probe line/p205) — lists the same ones. A
- * name that is not one of them says it is not in acadiso.lin (table 20995)
- * and asks for the option again.
+ * or ByLayer; its `?` lists the loaded linetypes, sorted by name. Every
+ * linetype this build ships is loaded, so `?` at the first prompt — the
+ * linetypes of a LIN file, acadiso.lin's, a metric drawing's (probe
+ * line/p205) — lists the same ones but Continuous, which is no file's
+ * (properties/p202). A name that is not one of them says it is not in
+ * acad.lin, as 2027 says even in a metric drawing (table 20995, p213), and
+ * asks for the option again.
  *
  * Not done: Create and Load (there is no LIN file to read or write), ByBlock,
  * the file `?` asks for and its paging (`Press ENTER to continue:`, p205).
@@ -145,12 +165,16 @@ export class LinetypeTool implements Tool {
   private answerName(typed: string, ctx: ToolContext): void {
     if (typed === "?") return this.askList(ctx)
     if (typed === "") return this.askOption(ctx)
-    const linetype: LinetypeId | null =
+    // The table's name `ByLayer` is taken whole in any language, beside the
+    // keyword of the command language (Spanish `BYLAYER`, p224).
+    const byLayer =
+      typed.toUpperCase() === LINETYPE_BYLAYER.toUpperCase() ||
       ctx.text.resolveKeyword(typed, [BY_LAYER]) === BY_LAYER
-        ? LINETYPE_BYLAYER
-        : (LINETYPES.find(
-            (entry) => entry.id.toLowerCase() === typed.toLowerCase()
-          )?.id ?? null)
+    const linetype: LinetypeId | null = byLayer
+      ? LINETYPE_BYLAYER
+      : (LINETYPES.find(
+          (entry) => entry.id.toUpperCase() === typed.toUpperCase()
+        )?.id ?? null)
     if (linetype === null) {
       ctx.report(ctx.text.message("linetypeNotFound", { name: typed }))
       return this.askOption(ctx)
@@ -164,29 +188,42 @@ export class LinetypeTool implements Tool {
   /** Set's `?`: the loaded linetypes matching `patterns`, as AutoCAD lists them. */
   private listLoaded(patterns: string, ctx: ToolContext): void {
     const wanted = patterns.split(",").map((part) => part.trim())
-    const matching = LINETYPES.filter((entry) =>
+    const matching = BY_NAME.filter((entry) =>
       wanted.some((pattern) => matchesWildcard(entry.id, pattern))
     )
+    // WHY the blank line under the heading, which the console leaves out
+    // (p214): the desktop's is unverified (PROPS-D27).
+    const heading = [ctx.text.message("loadedLinetypes"), ""]
+    // No match: the words follow the dashes on their line (p218).
     ctx.report(
       matching.length === 0
-        ? ctx.text.message("noMatchingLinetypes")
+        ? [
+            ...heading,
+            ctx.text.message("linetypeColumns") +
+              ctx.text.message("noMatchingLinetypes"),
+          ].join("\n")
         : [
-            ctx.text.message("loadedLinetypes"),
-            "",
+            ...heading,
             ctx.text.message("linetypeColumns"),
             ...this.rows(matching, ctx),
           ].join("\n")
     )
   }
 
-  /** The first prompt's `?`: acadiso.lin's linetypes, every one of them loaded. */
+  /**
+   * The first prompt's `?`: acadiso.lin's linetypes, every one of them
+   * loaded, in the file's order, which is by name for these (p202).
+   */
   private listFile(ctx: ToolContext): void {
     ctx.report(
       [
         ctx.text.message("linetypesInFile", { file: "acadiso.lin" }),
         "",
         ctx.text.message("fileLinetypeColumns"),
-        ...this.rows(LINETYPES, ctx),
+        ...this.rows(
+          BY_NAME.filter((entry) => entry.id !== DEFAULT_LINETYPE_ID),
+          ctx
+        ),
       ].join("\n")
     )
   }
@@ -201,7 +238,7 @@ export class LinetypeTool implements Tool {
   ): string[] {
     return entries.map((entry) => {
       const name = `"${entry.id}"`
-      return entry.id === "Continuous"
+      return entry.id === DEFAULT_LINETYPE_ID
         ? name.padEnd(NAME_COLUMN) + ctx.text.message("solidLine")
         : name
     })

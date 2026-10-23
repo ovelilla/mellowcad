@@ -1218,9 +1218,11 @@ describe("the engine's English surface", () => {
     walk("-LINETYPE", createHarness(), (s) =>
       s
         .do("-LINETYPE", (c) => c.command("-LINETYPE"))
-        .do("?", (c) => c.type("?").enter())
+        .do("?", (c) => answer(c, "?"))
         .do("S", (c) => answer(c, "S"))
         .do("?", (c) => c.type("?").enter())
+        .do("pattern", (c) => c.type("C*").enter())
+        .do("S", (c) => answer(c, "S"))
         .do("name", (c) => c.type("Center").enter())
         .do("enter", (c) => c.enter())
         .do("unknown", (c) =>

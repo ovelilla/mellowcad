@@ -893,10 +893,15 @@ export const es: EngineLocale = {
         "-COLOR"
       ],
       "LINETYPE": [
-        "TIPOLIN"
+        "TIPOLIN",
+        "TL",
+        "TLINEA",
+        "DDLTYPE"
       ],
       "-LINETYPE": [
-        "-TIPOLIN"
+        "-TIPOLIN",
+        "-TL",
+        "-TLINEA"
       ],
       "LWEIGHT": [
         "GROSORLIN"
@@ -1404,7 +1409,8 @@ export const es: EngineLocale = {
       "LINETYPE": {
         "?": "?",
         "Set": "Definir",
-        "BYLAYER": "porCapa"
+        "BYLAYER": "porCapa",
+        "BYLayer": "porCapa"
       },
       "LWEIGHT": {
         "?": "?",
@@ -2663,7 +2669,7 @@ export const es: EngineLocale = {
         [
           "name"
         ],
-        "\" no encontrado en acadiso.lin.\nPuede utilizar la opción \"Cargar\" para cargarlo desde otro archivo."
+        "\" no encontrado en acad.lin.\nPuede utilizar la opción \"Cargar\" para cargarlo desde otro archivo."
       ],
       "loadedLinetypes": "porCapa, porBloque o uno de estos tipos de línea cargados:",
       "linetypeColumns": "      Nombre         Descripción\n---------------- ------------------",

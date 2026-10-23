@@ -12,8 +12,7 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
 
 ## Reuse before writing
 
-- `PlacementTool` — select → base point → second point or Displacement (MOVE, COPY, STRETCH); its
-  hooks are in its class JSDoc.
+- `PlacementTool` — select → base point → second point or Displacement (MOVE, COPY, STRETCH).
 - `EdgeEditTool` — TRIM and EXTEND; its modes, edges, fences and eRase are in its class JSDoc.
   Where no closed form gives a crossing (an ellipse with a circle, anything with a spline),
   `curveCrossings.ts` scans one curve's parameter (`parametricCurve`) for the sign changes of the
@@ -139,7 +138,8 @@ its name in every language, resumes as SETVAR and sets the settings through
 `UpdateSettingsCommand`. It is in `TRANSPARENT_COMMANDS`, as every AutoCAD system variable is. One
 whose name is a non-transparent command's ('AREA, 'UCSICON) is a `variable(…)` in
 `registerCommands`, never a command; a read-only one says `readOnlyVariable`. An angle is written
-with `formatAngle` (AUPREC), a length with `formatLength` (LUPREC): never one precision for both.
+with `formatAngle` (AUPREC), a length with `formatLength` (LUPREC): never one precision for both;
+LTSCALE's factor `%.4f` always (properties/p234).
 
 Where a value lives is the console's OPEN test, never the help's "Saved in:" (RECTANG-D40).
 **Saved in the drawing** (FILLETRAD): a `DocumentSettings` field, set in the run by

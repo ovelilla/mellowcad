@@ -602,7 +602,7 @@ describe("PLINE's arc options as the console draws them", () => {
     const ltscale = arcFromLine("R", "'LTSCALE", "2", "10", "20,10", "")
     expect(ltscale.commandLog()).toEqual(
       expect.arrayContaining([
-        ">>Enter new linetype scale factor <1.00>: 2",
+        ">>Enter new linetype scale factor <1.0000>: 2",
         "Resuming PLINE command.",
         "Specify radius of arc: 10",
       ])

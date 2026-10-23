@@ -50,7 +50,7 @@ describe("the other commands AutoCAD runs transparently", () => {
     const cad = lineThen(cad0(), "'LTSCALE", "2", "'ATTDISP", "ON")
     expect(cad.commandLog().slice(-8)).toEqual([
       "Specify next point or [Undo]: 'LTSCALE",
-      ">>Enter new linetype scale factor <1.00>: 2",
+      ">>Enter new linetype scale factor <1.0000>: 2",
       "Regen queued.",
       "Resuming LINE command.",
       "Specify next point or [Undo]: 'ATTDISP",
@@ -67,7 +67,7 @@ describe("the other commands AutoCAD runs transparently", () => {
     // The same value changes nothing, so nothing is regenerated.
     lineThen(cad, "'LTSCALE", "2")
     expect(cad.commandLog().slice(-2)).toEqual([
-      ">>Enter new linetype scale factor <2.00>: 2",
+      ">>Enter new linetype scale factor <2.0000>: 2",
       "Resuming LINE command.",
     ])
     cad.escape()
@@ -169,7 +169,7 @@ describe("the other commands AutoCAD runs transparently", () => {
     const cad = lineThen(createHarness({ locale: es }), "'EC", "2")
     expect(cad.commandLog().slice(-4)).toEqual([
       "Precise punto siguiente o [desHacer]: 'EC 'ESCALATL",
-      ">>Indique nuevo factor de escala del tipo de línea <1.00>: 2",
+      ">>Indique nuevo factor de escala del tipo de línea <1.0000>: 2",
       "La regeneración está en espera.",
       "Reanudando el comando LINEA.",
     ])

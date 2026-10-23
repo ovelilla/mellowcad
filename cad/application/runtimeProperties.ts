@@ -115,6 +115,13 @@ export function setSelectionLinetype(
   history: CommandHistory,
   linetype: LinetypeId | typeof LINETYPE_BYLAYER
 ): void {
+  // A linetype that is not loaded is refused, as `setCurrentProperties` does.
+  if (
+    linetype !== LINETYPE_BYLAYER &&
+    !LINETYPES.some((entry) => entry.id === linetype)
+  ) {
+    return
+  }
   const next = linetype === LINETYPE_BYLAYER ? undefined : linetype
   updateSelection(document, ids, history, (entity) =>
     entity.linetype === next ? null : assignEntityLinetype(entity, next)

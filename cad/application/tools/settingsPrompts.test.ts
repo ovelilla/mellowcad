@@ -18,23 +18,26 @@ function answer(cad: CadHarness, ...texts: string[]): CadHarness {
 // this build has (no Create or Load, no COlorbook); one a 2027 probe holds
 // cites it.
 describe("the settings commands ask as AutoCAD 2026", () => {
+  // Held on 2027 by probes properties/p231 and p234 (`<1.0000>` whatever
+  // the precision).
   it("LTSCALE offers the current factor and refuses what is no positive number", () => {
     const cad = createHarness()
     cad.command("LTSCALE")
     answer(cad, "FOO", "-1", "0", "2")
     expect(cad.commandLog()).toEqual([
       "LTSCALE",
-      "Enter new linetype scale factor <1.00>: FOO",
+      "Enter new linetype scale factor <1.0000>: FOO",
       "Requires numeric value.",
-      "Enter new linetype scale factor <1.00>: -1",
+      "Enter new linetype scale factor <1.0000>: -1",
       "Value must be positive and nonzero.",
-      "Enter new linetype scale factor <1.00>: 0",
+      "Enter new linetype scale factor <1.0000>: 0",
       "Value must be positive and nonzero.",
-      "Enter new linetype scale factor <1.00>: 2",
+      "Enter new linetype scale factor <1.0000>: 2",
       "Regenerating model.",
     ])
   })
 
+  // Held on 2027 by probes properties/p201 and p213 (`acad.lin`).
   it("-LINETYPE says the current one, refuses a keyword it lacks and a name it cannot find", () => {
     const cad = createHarness()
     cad.command("-LINETYPE")
@@ -46,7 +49,7 @@ describe("the settings commands ask as AutoCAD 2026", () => {
       "Invalid option keyword.",
       "Enter an option [?/Set]: S",
       "Specify linetype name or [?] <ByLayer>: FOO",
-      'Linetype "FOO" not found in acadiso.lin.\nYou can use the "Load" option to load it from another file.',
+      'Linetype "FOO" not found in acad.lin.\nYou can use the "Load" option to load it from another file.',
     ])
     expect(cad.state().commandLine.prompt).toBe(
       "-LINETYPE Enter an option [?/Set]:"
@@ -118,7 +121,7 @@ describe("the settings commands ask as AutoCAD 2026", () => {
     const cad = createHarness({ locale: es })
     cad.command("ESCALATL")
     expect(cad.state().commandLine.prompt).toBe(
-      "ESCALATL Indique nuevo factor de escala del tipo de línea <1.00>:"
+      "ESCALATL Indique nuevo factor de escala del tipo de línea <1.0000>:"
     )
     cad.escape()
     cad.command("-TIPOLIN")
@@ -127,7 +130,7 @@ describe("the settings commands ask as AutoCAD 2026", () => {
       'Tipo de línea actual: "PorCapa"',
       "Indique una opción [?/Definir]: D",
       "Precise nombre de tipo de línea o [?] <PorCapa>: FOO",
-      'Tipo de línea "FOO" no encontrado en acadiso.lin.\nPuede utilizar la opción "Cargar" para cargarlo desde otro archivo.',
+      'Tipo de línea "FOO" no encontrado en acad.lin.\nPuede utilizar la opción "Cargar" para cargarlo desde otro archivo.',
     ])
     cad.escape()
     cad.command("-GROSORLIN")

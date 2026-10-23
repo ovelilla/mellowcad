@@ -75,10 +75,12 @@ the drop-downs' answer to a set holding locked objects (only the palette's was p
 same here, PROPS-D61), the padlock and the faded look at `Select objects:` (seen only at
 `Command:`; here neither the padlock nor any fade but ERASE's)
 
-### Linetypes · `LTSCALE` / `LTS` · `LINETYPE` / `LT` · `-LINETYPE` · es `ESCALATL` / `EC`† · `TIPOLIN` · `-TIPOLIN`
+### Linetypes · `LTSCALE` / `LTS` · `LINETYPE` / `LT` / `LTYPE` / `DDLTYPE` · `-LINETYPE` / `-LT` / `-LTYPE` · es `ESCALATL` / `EC` · `TIPOLIN` / `TL` / `TLINEA` / `DDLTYPE` · `-TIPOLIN` / `-TL` / `-TLINEA`
 
 **Implemented:** Continuous and acadiso.lin's DASHED, HIDDEN, CENTER, PHANTOM and DASHDOT, the
-metric drawing's file (MEASUREMENT 1, p202), DASHDOT's dash of 0 drawn as a dot; ByLayer and
+metric drawing's file (MEASUREMENT 1, line/p202), DASHDOT's dash of 0 drawn as a dot, all six loaded
+in every drawing, where AutoCAD's new drawing holds Continuous alone (p221) — WHY (at `LINETYPES`):
+there is no Load option or Linetype Manager to load one; ByLayer and
 ByObject; a line's pattern laid as AutoCAD lays it (p207): centred, beginning and ending on equal
 dashes of `(L − m·period + first dash) / 2` with m whole periods (longer than the first dash when
 the remainder is), and solid under one period; a polyline's straight segments each laid so, the
@@ -97,27 +99,40 @@ elliptical arc's centred over its length as an arc's, each dash a piece of the e
 its length, solid under one period (ellipse/p330 on the plot; the screen **unverified**, as the
 arc's was alike); LTSCALE asks
 `Enter new linetype scale factor <current>:` (es
-`Indique nuevo factor de escala del tipo de línea`), offering the current factor at the drawing's
-precision (`<1.00>`, where AutoCAD's LUPREC 4 writes `<1.0000>`); anything but a number
-`Requires numeric value.` (es `Requiere un valor numérico.`); a factor above zero (0 or less:
-`Value must be positive and nonzero.`, es `El valor debe ser positivo y diferente de cero.`, and
-asked again); saved in the drawing (initial 1.0000), one undo step, `Regenerating model.` when it
-changes; CELTYPE, the linetype new objects take (saved in the drawing, initial ByLayer; one undo
+`Indique nuevo factor de escala del tipo de línea`), offering the current factor with four
+decimals whatever the drawing's precision (`<1.0000>`, `<1.2346>`, table 20988, p234); anything but
+a number `Requires numeric value.` (es `Requiere un valor numérico.`); a factor above zero (0 or
+less: `Value must be positive and nonzero.`, es `El valor debe ser positivo y diferente de cero.`,
+and asked again), `1e3` and `1/2` read (p231, p233); saved in the drawing (initial 1.0000),
+`Regenerating model.` when it changes; one undo step U names `LTSCALE Regenerating model.` and
+REDO `LTSCALE` / `Everything has been redone` / `Regenerating model.` (es `ESCALATL Regenerando
+modelo.`, p236), a step U names even when Enter kept the factor (p237); run transparently inside
+LINE, `Regen queued.` and `Regenerating model.` when LINE ends (p235); CELTYPE, the linetype new objects take (saved in the drawing, initial ByLayer; one undo
 step, as UNDO steps past "the command or system variable"): -LINETYPE, which LINETYPE runs too (WHY:
 the Linetype Manager does not exist), opens with `Current line type:  "ByLayer"` and asks
 `Enter an option [?/Set]:` again after each answer until Enter (`Invalid option keyword.`), as
 AutoCAD 2027's console does (p205); its `?` lists acadiso.lin's linetypes, a metric drawing's file,
-as AutoCAD lays them out (`Linetypes defined in file acadiso.lin:`, where AutoCAD writes the file's
-full path; `Name` / `Description` columns), without asking the file's name (every linetype this
-build ships is loaded); Set asks `Specify linetype name or [?] <ByLayer>:`
-and takes a linetype's name or `BYLayer`, its `?` asks `Enter linetype name(s) to list <*>:` and
-lists `ByLayer, ByBlock, or one of these loaded linetypes:` with their columns, then the option
-prompt again; a name it does not have says `Linetype "X" not found in acadiso.lin.` /
-`You can use the "Load" option to load it from another file.` and asks the option again; es
-`Tipo de línea actual: "PorCapa"`, `Indique una opción [?/Definir]`,
-`Precise nombre de tipo de línea o [?] <PorCapa>`, `porCapa`,
-`Tipo de línea "X" no encontrado en acadiso.lin.`; LT is the shortcut guide's alias (LTYPE, -LT and
--LTYPE could not be verified; es none)
+in the file's order and without Continuous, which is no file's (p202), as AutoCAD lays them out
+(`Linetypes defined in file acadiso.lin:`, where AutoCAD writes the file's full path; `Name` /
+`Description` columns), without asking the file's name (every linetype this build ships is
+loaded); Set asks `Specify linetype name or [?] <ByLayer>:`, offering CELTYPE as stored
+(`<Continuous>`, p226), Enter going back to the option prompt (p220), and takes a linetype's name
+or ByLayer: `BYLayer` (`BYL`), the table's name `ByLayer` whole in any language (p224) and the
+global `_BYL` (p229); its `?` asks `Enter linetype name(s) to list <*>:` and lists `ByLayer,
+ByBlock, or one of these loaded linetypes:` with their columns, sorted by name whatever the case
+(p217), then the option prompt again; no match writes the heading and `No matching linetype names
+found.` on the dashes' line (p218); a blank line under the heading, which the console leaves out
+(the desktop's **unverified**); a name it does not have says `Linetype "X" not found in acad.lin.` /
+`You can use the "Load" option to load it from another file.`, `acad.lin` even in a metric drawing
+as 2027 says (p213), and asks the option again; one undo step for the whole run, two Sets
+included, U and REDO naming `-LINETYPE` (es `-TIPOLIN`), even a run that changed nothing (p246–p248),
+UNDO 2 with LTSCALE `LTSCALE -LINETYPE Regenerating model.` (p249); run transparently inside LINE,
+each segment takes the linetype current as it starts (p250, p251); es `Tipo de línea actual:
+"PorCapa"`, `Indique una opción [?/Definir]`, `Precise nombre de tipo de línea o [?] <PorCapa>`,
+`porCapa` (`C`; the English `BYL` and `POR` are no linetype, p223, p228), `Tipo de línea "X" no
+encontrado en acad.lin.`, no match `Tipo de línea no encontrado.`; the acad.pgp aliases (p253): LT,
+LTYPE and DDLTYPE run LINETYPE, -LT and -LTYPE -LINETYPE; es TL, TLINEA and DDLTYPE TIPOLIN, -TL and
+-TLINEA -TIPOLIN (Spanish LT is LIST, p254, not built)
 
 **Missing:** the listings' descriptions but Continuous's `Solid line` (acadiso.lin's are not
 shipped to quote); the first `?`'s `Enter name of linetype file to list <acadiso.lin>:` (es
@@ -126,9 +141,10 @@ listing's pages, `Press ENTER to continue:` (es `Pulse INTRO para continuar:`, p
 linetypes of acadiso.lin, which Set finds there (the refusal names the file searched, table
 20995); Spanish AutoCAD's acadiso.lin, whose linetypes are named in Spanish (`LÍNEAS_OCULTAS`,
 `CENTRO`, `TRAZOS`, `TRAZO_Y_PUNTO`, `VALS`, p205): a linetype's name is drawing data, English in
-every language here; per-object ltscale (CELTSCALE), the Linetype Manager (its Details' Global Scale
+every language here; the names as acadiso.lin writes them, in capitals (Set's `dashed` makes CELTYPE
+`DASHED`, which the next run names, p209): the stored ids stay `Dashed`, drawing data; per-object ltscale (CELTSCALE), the Linetype Manager (its Details' Global Scale
 Factor is LTSCALE), PSLTSCALE / MSLTSCALE (no paper space), Create and Load (there is no LIN file to
-read or write), ByBlock, the Linetype Manager, the drop-down's Other…; PLINEGEN (a polyline lays
+read or write), ByBlock (so Set's `BY` is no `BYBlock or BYLayer?`, p228), the Linetype Manager, the drop-down's Other…; PLINEGEN (a polyline lays
 its pattern segment by segment, PLINEGEN 0's; PEDIT's Ltype gen is not built); **unverified**: how
 AutoCAD lays a pattern on a polyline's arc segment: ours runs from its start; a dashed tilted or
 thick arc (not plotted, laid as in plan); a line off the plan is centred on its length as drawn,

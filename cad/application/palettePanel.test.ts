@@ -171,8 +171,8 @@ describe("the Properties palette's object type drop-down", () => {
     // Mixed over the whole selection: the circle stayed on 0.
     expect(cad.state().selectionLayerId).toBeNull()
 
-    cad.runtime.setSelectionLinetype("DASHED")
-    expect(cad.entities().every((entity) => entity.linetype === "DASHED")).toBe(
+    cad.runtime.setSelectionLinetype("Dashed")
+    expect(cad.entities().every((entity) => entity.linetype === "Dashed")).toBe(
       true
     )
   })

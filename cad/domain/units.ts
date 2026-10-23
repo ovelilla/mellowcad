@@ -105,9 +105,10 @@ export interface SavedView {
 export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   unit: LengthUnit.Millimeter,
   // WHY 2, not acadiso.dwt's LUPREC 4: a starting drawing's precision is the
-  // template's choice, not a command's behaviour — every prompt's `<…>` and
-  // report follows the drawing's precision as AutoCAD's follows LUPREC, and
-  // UNITS sets 4 for AutoCAD's look.
+  // template's choice, not a command's behaviour — every length's `<…>` and
+  // report follows the drawing's precision as AutoCAD's follows LUPREC (not
+  // LTSCALE's factor, `%.4f` always: properties/p234), and UNITS sets 4 for
+  // AutoCAD's look.
   precision: 2,
   // AutoCAD's AUPREC starts at 0 in acadiso.dwt as in acad.dwt: `<90>`.
   anglePrecision: 0,

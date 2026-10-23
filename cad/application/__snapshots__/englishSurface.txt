@@ -77,14 +77,14 @@ MREDO [] "Multiple redo"
 -OSNAP ["-OS"] "Object snap modes"
 SNAP ["SN"] "Snap mode"
 COLOR ["COL","COLOUR"] "Color"
-LINETYPE ["LT"] "Linetype"
+LINETYPE ["LT","LTYPE","DDLTYPE"] "Linetype"
 LWEIGHT ["LW","LINEWEIGHT"] "Lineweight"
 U [] "Undo the last action"
 -MTEXT [] "Multiline text"
 REDO [] "Redo the last undone action"
 -ATTDEF [] "Define attributes"
 -COLOR [] "Color"
--LINETYPE [] "Linetype"
+-LINETYPE ["-LT","-LTYPE"] "Linetype"
 -LWEIGHT [] "Lineweight"
 -VPOINT ["-VP"] "Viewpoint"
 -VIEW ["-V"] "Preset views"
@@ -4397,24 +4397,24 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   properties: -
   cycling: -
 > LTSCALE
-  prompt: LTSCALE Enter new linetype scale factor <1.00>:
+  prompt: LTSCALE Enter new linetype scale factor <1.0000>:
   asks: "Enter new linetype scale factor"
   tip: Enter new linetype scale factor
   dyn: "Enter new linetype scale factor"=""|1|*
   command| LTSCALE
 > zero
-  prompt| Enter new linetype scale factor <1.00>: 0
+  prompt| Enter new linetype scale factor <1.0000>: 0
   error| Value must be positive and nonzero.
 > factor
   prompt: Command:
   asks: -
   tip: -
   dyn: -
-  prompt| Enter new linetype scale factor <1.00>: 2.5
+  prompt| Enter new linetype scale factor <1.0000>: 2.5
   info| Regenerating model.
 > LTS enter
   command| LTS LTSCALE
-  prompt| Enter new linetype scale factor <2.50>:
+  prompt| Enter new linetype scale factor <2.5000>:
 
 ## -COLOR
 > start
@@ -4483,26 +4483,64 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   command| -LINETYPE
   info| Current line type:  "ByLayer"
 > ?
+  prompt| Enter an option [?/Set]: ?
+  info| Linetypes defined in file acadiso.lin:
+        
+              Name          Description
+        ---------------- -------------------
+        "Center"
+        "DashDot"
+        "Dashed"
+        "Hidden"
+        "Phantom"
+> S
+  prompt: -LINETYPE Specify linetype name or [?] <ByLayer>:
+  asks: "Specify linetype name or"
+  tip: Specify linetype name or
+  dyn: "Specify linetype name or"=""||*
+  options: [?] ?
+  prompt| Enter an option [?/Set]: S
+> ?
+  prompt: -LINETYPE Enter linetype name(s) to list <*>:
+  asks: "Enter linetype name(s) to list"
+  tip: Enter linetype name(s) to list
+  dyn: "Enter linetype name(s) to list"=""||*
+  options: -
+  prompt| Specify linetype name or [?] <ByLayer>: ?
+> pattern
+  prompt: -LINETYPE Enter an option [?/Set]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [S] Set
+  prompt| Enter linetype name(s) to list <*>: C*
+  info| ByLayer, ByBlock, or one of these loaded linetypes:
+        
+              Name          Description
+        ---------------- ------------------
+        "Center"
+        "Continuous"     Solid line
+> S
+  prompt: -LINETYPE Specify linetype name or [?] <ByLayer>:
+  asks: "Specify linetype name or"
+  tip: Specify linetype name or
+  dyn: "Specify linetype name or"=""||*
+  options: [?] ?
+  prompt| Enter an option [?/Set]: S
+> name
+  prompt: -LINETYPE Enter an option [?/Set]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [?] ?, [S] Set
+  prompt| Specify linetype name or [?] <ByLayer>: Center
+> enter
   prompt: Command:
   asks: -
   tip: -
   dyn: -
   options: -
   prompt| Enter an option [?/Set]:
-> S
-  prompt: STRETCH Select objects:
-  command| S STRETCH
-  info| Select objects to stretch by crossing-window or crossing-polygon...
-> ?
-  prompt: Command:
-  prompt| Select objects:
-> name
-  prompt: STRETCH Select objects:
-  command| STRETCH
-  info| Select objects to stretch by crossing-window or crossing-polygon...
-> enter
-  prompt: Command:
-  prompt| Select objects:
 > unknown
   prompt: LINETYPE Enter an option [?/Set]:
   asks: 
@@ -4510,10 +4548,10 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   dyn: 
   options: [?] ?, [S] Set
   command| LT LINETYPE
-  info| Current line type:  "ByLayer"
+  info| Current line type:  "Center"
   prompt| Enter an option [?/Set]: S
-  prompt| Specify linetype name or [?] <ByLayer>: NOPE
-  info| Linetype "NOPE" not found in acadiso.lin.
+  prompt| Specify linetype name or [?] <Center>: NOPE
+  info| Linetype "NOPE" not found in acad.lin.
         You can use the "Load" option to load it from another file.
 
 ## -LWEIGHT
