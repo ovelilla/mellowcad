@@ -22,7 +22,7 @@ ATTDEF ["ATT"] "Define attributes"
 ATTDISP [] "Attribute display"
 TEXT ["DT","DTEXT"] "Text"
 MTEXT ["T","MT"] "Multiline text"
-TEXTEDIT ["DDEDIT","ED"] "Edit text"
+TEXTEDIT ["DDEDIT","ED","TEDIT"] "Edit text"
 DIMLINEAR ["DIMLIN","DLI"] "Linear"
 DIMALIGNED ["DIMALI","DAL"] "Aligned"
 DIMRADIUS ["DIMRAD","DRA"] "Radius"
@@ -1839,6 +1839,7 @@ lweight "Lineweight" LW
   options: [U] Undo, [M] Mode
 > U
   prompt| Select an annotation object or [Undo/Mode]: U
+  info| Command has been completely undone.
 > M
   prompt: TEXTEDIT Enter a text edit mode option [Single/Multiple] <Multiple>:
   tip: Enter a text edit mode option
@@ -1859,9 +1860,11 @@ lweight "Lineweight" LW
   options: -
   prompt| Select an annotation object or [Undo/Mode]:
 > escape
-  prompt: Command:
-  asks: -
-  dyn: -
+  prompt: TEXTEDIT Select an annotation object or [Undo/Mode]:
+  asks: 
+  tip: Select an annotation object or
+  dyn: 
+  options: [U] Undo, [M] Mode
 
 ## MTEXT
 > start
@@ -2111,7 +2114,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   prompt: TEXTEDIT:
   asks: "Text"
   dyn: "Text"="OLD\nLINES"||*
-  info| Current settings: Edit mode = Multiple
+  command| _mtedit
 > escape
   prompt: Command:
   asks: -

@@ -614,7 +614,8 @@ export const es: EngineLocale = {
       "TEXTEDIT": [
         "EDITARTEXTO",
         "ED",
-        "DDEDIC"
+        "DDEDIC",
+        "TEDIT"
       ],
       "DIMLINEAR": [
         "ACOLINEAL",
@@ -3397,6 +3398,20 @@ export const es: EngineLocale = {
         "Requiere un punto o ",
         [
           "keywords"
+        ]
+      ],
+      "textEditExpectsPoint": [
+        "Requiere un punto o úLTimo/",
+        [
+          "keywords"
+        ],
+        [
+          "mode",
+          1,
+          {
+            "single": "]:",
+            "other": ""
+          }
         ]
       ],
       "selectionModes": [

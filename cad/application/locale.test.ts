@@ -1054,7 +1054,7 @@ describe("Spanish AutoCAD's command language", () => {
     )
   })
 
-  it("asks EDITARTEXTO's modes as Autodesk's table names them", () => {
+  it("asks EDITARTEXTO's modes as Autodesk's table names them (text/p249, table 21789)", () => {
     const cad = createHarness({ locale: es })
     cad.command("EDITARTEXTO").option("Mode")
     expect(cad.state().commandOptions.map((option) => option.label)).toEqual([

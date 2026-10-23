@@ -649,6 +649,14 @@ export interface Tool {
   hasUnsavedText?(ctx: ToolContext): boolean
 
   /**
+   * Escape steps back inside the command instead of ending it: `true` when
+   * the tool took it so, and the command goes on with no `*Cancel*`
+   * (TEXTEDIT's single-line editor drops its edit and asks for the next
+   * object, desktop text/d06-6).
+   */
+  onEscape?(ctx: ToolContext): boolean
+
+  /**
    * Handles Enter as a command confirmation while the canvas holds focus.
    * Returns `true` when the tool consumes it to advance its own flow (e.g. MOVE
    * confirming the selection set), keeping the command running; `false` (the

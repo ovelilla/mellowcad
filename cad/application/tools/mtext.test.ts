@@ -329,6 +329,40 @@ describe("editing MTEXT", () => {
     cad.escape()
   })
 
+  it("runs as MTEDIT on a double-click: `_mtedit`, no settings line, ends with the editor (desktop text/d06, DoubleClickRoot.cui)", () => {
+    const cad = withMText()
+    cad.doubleClick(p(10, -5))
+
+    expect(cad.commandLog()).toEqual(["_mtedit"])
+    cad.type("NEW").enter()
+    expect(cad.byId<MTextEntity>("M1").contents).toBe("NEW")
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.commandLog()).toEqual(["_mtedit"])
+
+    // WHY TEXTEDIT: MTEDIT is not built, so the run is TEXTEDIT's.
+    answer(cad, "U")
+    expect(cad.byId<MTextEntity>("M1").contents).toBe("OLD\\PLINES")
+    expect(cad.commandLog().at(-1)).toBe("TEXTEDIT")
+  })
+
+  it("ends at a click outside the editor after a double-click", () => {
+    const cad = withMText()
+    cad.doubleClick(p(10, -5)).type("NEW").click(p(500, 500))
+
+    expect(cad.byId<MTextEntity>("M1").contents).toBe("NEW")
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("asks to save a changed wording after a double-click, and ends (desktop text/d05-5)", () => {
+    const cad = withMText()
+    cad.doubleClick(p(10, -5)).type("NEW").escape()
+    expect(cad.state().unsavedTextDialog).toBe(true)
+    cad.runtime.answerUnsavedText("yes")
+
+    expect(cad.byId<MTextEntity>("M1").contents).toBe("NEW")
+    expect(cad.activeToolId()).toBe("select")
+  })
+
   it("writes the new paragraphs back", () => {
     const cad = withMText()
     cad.command("TEXTEDIT").click(p(10, -5)).type("NEW\nTEXT").enter()

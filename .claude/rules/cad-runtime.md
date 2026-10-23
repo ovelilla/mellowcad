@@ -303,9 +303,9 @@ with the cursor is also declared to the host's hook (`ui.md`). Rendering is on d
 
 ## Double-click
 
-`CadRuntime.doubleClick` is AutoCAD's DBLCLKEDIT, only at the neutral prompt: a text, multiline
-text or attribute definition opens TEXTEDIT, a block reference with attributes opens EATTEDIT.
-Extend that one method for each newly editable type rather than adding another adapter listener.
+`CadRuntime.doubleClick` is AutoCAD's DBLCLKEDIT, only at `Command:`: a text or attribute
+definition runs `_textedit`, an MTEXT `_mtedit` (TEXTEDIT as MTEDIT), a block reference with
+attributes EATTEDIT. Extend that one method per editable type, never another adapter listener.
 
 ## Adapters
 

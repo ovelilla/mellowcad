@@ -476,11 +476,15 @@ describe("editing attributes", () => {
     expect(cad.byId<InsertEntity>("I1").attributes?.[0].value).toBe("P-7")
   })
 
-  it("a double-click on a loose definition edits its tag, prompt and default", () => {
+  it("a double-click on a loose definition runs `_textedit` on its tag, prompt and default (DoubleClickRoot.cui)", () => {
     const cad = createHarness({ entities: [partDefinition()] })
     cad.doubleClick(p(2, 12))
 
     expect(cad.activeToolId()).toBe("textedit")
+    expect(cad.commandLog()).toEqual([
+      "_textedit",
+      "Current settings: Edit mode = Multiple",
+    ])
     cad
       .type("code", "tag")
       .type("Code", "prompt")

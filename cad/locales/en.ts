@@ -620,7 +620,8 @@ export const en: EngineCatalog = {
       "TEXTEDIT": [
         "TEXTEDIT",
         "DDEDIT",
-        "ED"
+        "ED",
+        "TEDIT"
       ],
       "DIMLINEAR": [
         "DIMLINEAR",
@@ -3026,6 +3027,20 @@ export const en: EngineCatalog = {
         "Expects a point or ",
         [
           "keywords"
+        ]
+      ],
+      "textEditExpectsPoint": [
+        "Expects a point or Last/",
+        [
+          "keywords"
+        ],
+        [
+          "mode",
+          1,
+          {
+            "single": "]:",
+            "other": ""
+          }
         ]
       ],
       "selectionModes": [

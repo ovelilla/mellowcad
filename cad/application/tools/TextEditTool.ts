@@ -11,6 +11,7 @@ import {
   mtextPlainText,
 } from "../../domain/entities"
 import { UpdateEntityCommand } from "../commands/entityCommands"
+import { SessionSettingCommand } from "../commands/settingsCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
@@ -26,6 +27,8 @@ import {
   ToolContext,
 } from "./Tool"
 import { lastObject } from "./objectSelection"
+import { lockedObjectAt } from "./lockedPick"
+import { typedPick } from "./typedPick"
 
 /**
  * AutoCAD's TEXTEDIT: retype what an existing annotation says.
@@ -34,14 +37,18 @@ import { lastObject } from "./objectSelection"
  * itself is hidden while the edit runs, so what you see on the drawing is the
  * new wording, not the old one behind it. The command repeats until Escape or
  * Enter, which is AutoCAD's default (TEXTEDITMODE 0); the Mode keyword asks
- * which of that and editing a single object and ending.
+ * which of that and editing a single object and ending. One annotation object
+ * selected before it opens at once (text/p159).
  *
  * Double-clicking a text object starts this command on it, the gesture users
- * actually reach for.
+ * actually reach for; on a multiline text it stands in for MTEDIT
+ * ({@link startOn}).
  *
- * A multiline text opens in the multi-line editor MTEXT uses, where Escape
- * discards the edit, asking first when the wording changed (desktop
- * text/d05-5), and a click inside the object stays in the editor.
+ * Escape in a single-line text's editor drops that edit and asks for the next
+ * object (desktop text/d06-6). A multiline text opens in the multi-line
+ * editor MTEXT uses, where Escape discards the edit, asking first when the
+ * wording changed (desktop text/d05-5), and a click inside the object stays
+ * in the editor.
  *
  * An attribute definition that is not yet in a block opens AutoCAD's Edit
  * Attribute Definition dialog instead — its Tag, Prompt and Default, one field
@@ -51,21 +58,59 @@ export class TextEditTool implements Tool {
   readonly id = "textedit"
 
   private state: TextEditToolState = { phase: "select", hover: null }
-  /** AutoCAD's TEXTEDITMODE: repeat until cancelled, or edit one and stop. */
+  /**
+   * AutoCAD's TEXTEDITMODE: repeat until cancelled, or edit one and stop. A
+   * profile's setting (text/p246), so NEW and OPEN keep it; Mode sets it
+   * through a {@link SessionSettingCommand}, which U takes back (text/p249).
+   */
   private multiple = true
-  /** Edits made in this run, so Undo only ever backs out our own commands. */
-  private edits = 0
+  /**
+   * Where the history stood before each edit of this run still standing, so
+   * Undo backs out our own commands only.
+   */
+  private marks: number[] = []
+  /** The object a double-click starts the run on, and whether as MTEDIT. */
+  private starting: { target: EditableText; mtedit: boolean } | null = null
+  /** This run is MTEDIT's: one object, no settings line, ended with the editor. */
+  private mtedit = false
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
+    const starting = this.starting
+    this.starting = null
+    const preselected = starting ? null : this.preselected(ctx)
     ctx.selection.clear()
-    this.edits = 0
-    this.reportMode(ctx)
+    this.marks = []
+    this.mtedit = starting?.mtedit ?? false
+    if (!this.mtedit) this.reportMode(ctx)
     this.enterSelect(ctx)
+    if (starting) this.beginEdit(starting.target, ctx)
+    else if (preselected) this.open(preselected, ctx)
   }
 
   /**
-   * AutoCAD 2023's prompts. WHY the editor names none: AutoCAD edits in place,
+   * The run a double-click starts opens `text` at once; as MTEDIT, which
+   * the double-click on a multiline text runs (DoubleClickRoot.cui), it
+   * writes no settings line and ends when the editor closes (desktop
+   * text/d06). Called before the tool is activated.
+   */
+  startOn(text: EditableText, mtedit: boolean): void {
+    this.starting = { target: text, mtedit }
+  }
+
+  /**
+   * The one annotation object selected before the command; a set holding
+   * anything else is dropped and the prompt asked (text/p159, p146).
+   */
+  private preselected(ctx: ToolContext): EditableText | null {
+    const ids = ctx.selection.toArray()
+    if (ids.length !== 1) return null
+    const entity = ctx.document.get(ids[0])
+    return entity && isEditable(entity) ? entity : null
+  }
+
+  /**
+   * AutoCAD 2027's prompts. WHY the editor names none: AutoCAD edits in place,
    * with no question at the command line.
    */
   question(): PromptId | null {
@@ -79,9 +124,26 @@ export class TextEditTool implements Tool {
     }
   }
 
-  /** As AutoCAD 2023's console refuses its pick. */
+  /**
+   * TEXTEDIT's own refusal, which lists Undo in Multiple mode and Mode, with
+   * a stray `]:`, in Single (text/p241, p274).
+   */
   takes(): QuestionInput | null {
-    return this.state.phase === "select" ? "objectOrLast" : null
+    if (this.state.phase !== "select") return null
+    return {
+      refusal: ["invalidSelection", "textEditExpectsPoint"],
+      values: { mode: this.multiple ? "multiple" : "single" },
+      keywords: { ids: [this.multiple ? "Undo" : "Mode"] },
+    }
+  }
+
+  /** A point typed at the pick is a pick there; one finding no text asks again in silence (text/p243). */
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    if (this.state.phase !== "select") return false
+    const point = typedPick(text, ctx)
+    if (point === null) return false
+    this.pickAt(point, ctx.viewport.worldToScreen(point), ctx)
+    return true
   }
 
   defaultOption(): string | null {
@@ -103,19 +165,31 @@ export class TextEditTool implements Tool {
     ctx.dynamicInput.close()
   }
 
-  /** Starts editing `text` straight away — the double-click entry point. */
+  /** Starts editing `text` straight away. */
   beginEdit(text: EditableText, ctx: ToolContext): void {
     this.commitEdit(ctx)
     this.state = { phase: "edit", target: text }
     this.openEditInput(ctx, text)
   }
 
+  /**
+   * Escape in a single-line text's editor discards that edit and asks for the
+   * next object; a second Escape ends the command (desktop text/d06-5, d06-6).
+   */
+  onEscape(ctx: ToolContext): boolean {
+    if (this.state.phase !== "edit" || this.state.target.type !== "text") {
+      return false
+    }
+    this.enterSelect(ctx)
+    return true
+  }
+
+  /**
+   * The MTEXT editor's Escape discards; the attribute definition's dialog's
+   * is Cancel.
+   */
   onKeyDown(input: KeyInput): void {
-    if (
-      input.key === "Escape" &&
-      this.state.phase === "edit" &&
-      this.state.target.type !== "text"
-    ) {
+    if (input.key === "Escape" && this.state.phase === "edit") {
       this.state = { phase: "select", hover: null }
     }
   }
@@ -146,8 +220,7 @@ export class TextEditTool implements Tool {
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
     if (this.state.phase === "select") {
-      const target = this.pickText(input.world, ctx)
-      if (target) this.beginEdit(target, ctx)
+      this.pickAt(input.world, input.screen, ctx)
       return
     }
     if (this.state.phase !== "edit") return
@@ -162,9 +235,12 @@ export class TextEditTool implements Tool {
     }
     // A click elsewhere accepts the edit and moves on to the next object.
     this.commitEdit(ctx)
-    const next = this.pickText(input.world, ctx)
-    if (next) this.beginEdit(next, ctx)
-    else this.enterSelect(ctx)
+    if (this.endsAfterEdit()) {
+      ctx.endCommand()
+      return
+    }
+    this.enterSelect(ctx)
+    this.pickAt(input.world, input.screen, ctx)
     ctx.requestRender()
   }
 
@@ -191,30 +267,42 @@ export class TextEditTool implements Tool {
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase === "mode") {
       if (id !== "Single" && id !== "Multiple") return "unhandled"
-      this.multiple = id === "Multiple"
+      const multiple = id === "Multiple"
+      if (multiple !== this.multiple) {
+        ctx.execute(
+          new SessionSettingCommand(
+            (value: boolean) => {
+              this.multiple = value
+            },
+            this.multiple,
+            multiple
+          )
+        )
+      }
       this.reportMode(ctx)
       this.enterSelect(ctx)
       return "continue"
     }
     if (this.state.phase !== "select") return "unhandled"
     switch (id) {
-      case "Undo":
+      case "Undo": {
         if (!this.multiple) return "unhandled"
-        // With nothing of its own to take back it says so, as AutoCAD's does.
-        if (this.edits === 0) {
+        // With nothing of its own left to take back it says so, as AutoCAD's
+        // does, also as it takes back the last (text/p241, p285).
+        const mark = this.marks.pop()
+        if (mark !== undefined) ctx.undoTo(mark)
+        if (this.marks.length === 0) {
           ctx.report(ctx.text.message("commandCompletelyUndone"))
-          return "continue"
         }
-        this.edits -= 1
-        ctx.undo()
         return "continue"
+      }
       case "Mode":
         this.state = { phase: "mode" }
         ctx.dynamicInput.open({ fields: [], commit: () => {} })
         return "continue"
       case "Last": {
         const last = lastObject(ctx)
-        if (last && isEditable(last)) this.beginEdit(last, ctx)
+        if (last) this.open(last, ctx)
         return "continue"
       }
       default:
@@ -277,11 +365,38 @@ export class TextEditTool implements Tool {
     return hit && isEditable(hit) ? hit : null
   }
 
+  /**
+   * The pick at `world`, clicked or typed: an object on a locked layer is
+   * refused in words (text/p244, TEXT-D31), anything but an annotation
+   * object in silence (p243).
+   */
+  private pickAt(world: Vec2, screen: Vec2, ctx: ToolContext): void {
+    const hit = ctx.pick(world)
+    if (lockedObjectAt(screen, ctx, hit)) {
+      ctx.report(ctx.text.message("objectOnLockedLayer"), "error")
+      return
+    }
+    if (hit && isEditable(hit)) this.beginEdit(hit, ctx)
+  }
+
+  /** Opens `entity` if it is an annotation object one may edit (text/p244). */
+  private open(entity: Entity, ctx: ToolContext): void {
+    if (!ctx.document.isEntityEditable(entity)) {
+      ctx.report(ctx.text.message("objectOnLockedLayer"), "error")
+    } else if (isEditable(entity)) {
+      this.beginEdit(entity, ctx)
+    }
+  }
+
+  private endsAfterEdit(): boolean {
+    return this.mtedit || !this.multiple
+  }
+
   private openEditInput(ctx: ToolContext, target: EditableText): void {
     const commitRaw = (commitCtx: ToolContext) => {
       this.commitEdit(commitCtx)
-      if (this.multiple) this.enterSelect(commitCtx)
-      else commitCtx.endCommand()
+      if (this.endsAfterEdit()) commitCtx.endCommand()
+      else this.enterSelect(commitCtx)
       return true
     }
     if (target.type === "attdef") {
@@ -337,7 +452,7 @@ export class TextEditTool implements Tool {
       ) {
         return
       }
-      this.edits += 1
+      this.marks.push(ctx.historyDepth())
       ctx.execute(new UpdateEntityCommand(next))
       return
     }
@@ -349,14 +464,14 @@ export class TextEditTool implements Tool {
     if (target.type === "mtext") {
       // Unchanged wording keeps the contents as they were, formatting included.
       if (value === mtextPlainText(target.contents)) return
-      this.edits += 1
+      this.marks.push(ctx.historyDepth())
       ctx.execute(
         new UpdateEntityCommand({ ...target, contents: mtextContents(value) })
       )
       return
     }
     if (value === target.value) return
-    this.edits += 1
+    this.marks.push(ctx.historyDepth())
     ctx.execute(new UpdateEntityCommand({ ...target, value }))
   }
 }

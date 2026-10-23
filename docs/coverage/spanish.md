@@ -100,10 +100,11 @@ origen/Origen` from the 2026 help and the same captures;
   where the help and the product disagree on capitals, the product wins (`punto a Atravesar`,
   `RAdio`, `jUstificar`, `ángUlo`, `EScala`). TEXTOM's corner prompts,
   `[Altura/Justificar/Interlineado/Rotación/Estilo/aNchura]`, `[Al menos/Exactamente]` (declared
-  `Almenos`) and `textoM:` are the 2027 console's (text/p200, p202, p215). **Unverified** (no source found; worded in
+  `Almenos`) and `textoM:` are the 2027 console's (text/p200, p202, p215), EDITARTEXTO's `[Simple/Múltiple]` too
+  (table 21789, text/p249). **Unverified** (no source found; worded in
   Autodesk's style): CIRCULO's `Diámetro`, ELLIPSE's `ángulo Incluido` and its centre/arc prompts,
   POLYGON's `Tipo` switch
-  (ours), TEXTEDIT's `Única`/`Múltiple` capitals, OFFSET's Yes/No, Current/Source
+  (ours), OFFSET's Yes/No, Current/Source
   (`Actual`/`Origen`),
   On/Off (`ACT`/`DES`, as SNAP prints them) and `Distancia`, HATCH's pattern name, scale and angle
   prompts, DIMLINEAR's Angle and Rotated sub-prompts, the reference sub-prompts of ROTATE and SCALE,

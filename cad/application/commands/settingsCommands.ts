@@ -67,3 +67,31 @@ export class SetAttributeDisplayCommand implements Command {
     doc.setAttributeDisplay(this.previous)
   }
 }
+
+/**
+ * A value kept by the program rather than the drawing (TEXTEDITMODE, a
+ * profile's: text/p246), set inside a run so that U puts it back as it does
+ * a drawing's (text/p249). It brings nothing into the drawing, and NEW and
+ * OPEN leave it as it is.
+ */
+export class SessionSettingCommand<T> implements Command {
+  readonly label = "session-setting"
+
+  constructor(
+    private readonly set: (value: T) => void,
+    private readonly before: T,
+    private readonly after: T
+  ) {}
+
+  mapEntities(): Command {
+    return this
+  }
+
+  execute(): void {
+    this.set(this.after)
+  }
+
+  undo(): void {
+    this.set(this.before)
+  }
+}

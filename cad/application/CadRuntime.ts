@@ -1012,8 +1012,16 @@ export class CadRuntime extends Observable {
       return
     }
     const command = next.ribbonMacro?.()?.command ?? TOOL_COMMANDS[id]
+    this.startEchoed(id, command ?? id, command)
+  }
+
+  /**
+   * Starts `id` echoed `_echo`, as a macro runs it, and a run of `command`
+   * (Enter repeats it, U names it) when given.
+   */
+  private startEchoed(id: string, echo: string, command?: string): void {
     this.echoMark = this.commandLine.mark()
-    this.commandLine.write("command", `_${(command ?? id).toLowerCase()}`)
+    this.commandLine.write("command", `_${echo.toLowerCase()}`)
     if (command !== undefined) {
       const [name] = this.text.commandNames(command)
       this.commandLine.pushHistory(name)
@@ -4158,7 +4166,7 @@ export class CadRuntime extends Observable {
       this.host.focusSurface()
       return
     }
-    if (this.asksToSaveText()) return
+    if (this.asksToSaveText() || this.escapesWithin()) return
     this.cancelInput()
   }
 
@@ -4174,6 +4182,17 @@ export class CadRuntime extends Observable {
     })
     this.host.requestRender()
     this.host.focusSurface()
+  }
+
+  /** An Escape the running tool takes as a step back ({@link Tool.onEscape}). */
+  private escapesWithin(): boolean {
+    if (!(this.activeTool.onEscape?.(this.toolContext) ?? false)) return false
+    this.resetTracking()
+    this.snapping.clearOverride()
+    this.invalidateState()
+    this.host.focusSurface()
+    this.host.requestRender()
+    return true
   }
 
   /**
@@ -5133,13 +5152,17 @@ export class CadRuntime extends Observable {
     if (hit?.type === "insert" && (hit.attributes?.length ?? 0) > 0) {
       this.switchTool(this.attEdit.id)
       this.attEdit.beginEdit(hit, this.toolContext)
-    } else if (
-      hit?.type === "text" ||
-      hit?.type === "mtext" ||
-      hit?.type === "attdef"
-    ) {
-      this.switchTool(this.textEdit.id)
-      this.textEdit.beginEdit(hit, this.toolContext)
+    } else if (hit?.type === "text" || hit?.type === "attdef") {
+      // `^C^C_textedit` (DoubleClickRoot.cui; desktop text/d06).
+      this.textEdit.startOn(hit, false)
+      this.startEchoed(this.textEdit.id, "TEXTEDIT", "TEXTEDIT")
+    } else if (hit?.type === "mtext") {
+      // WHY TEXTEDIT under `_mtedit`: AutoCAD's macro runs MTEDIT, which is
+      // not built here, so TEXTEDIT edits that one object as MTEDIT does —
+      // no settings line, ended with the editor (desktop text/d06) — and
+      // the run is TEXTEDIT's for U and Enter.
+      this.textEdit.startOn(hit, true)
+      this.startEchoed(this.textEdit.id, "MTEDIT", "TEXTEDIT")
     } else {
       return false
     }
@@ -5483,7 +5506,9 @@ export class CadRuntime extends Observable {
       }
     }
 
-    if (e.key === "Escape" && this.asksToSaveText()) return true
+    if (e.key === "Escape" && (this.asksToSaveText() || this.escapesWithin())) {
+      return true
+    }
 
     // Escape also drops any acquired tracking references and the one-shot snap
     // override before the tool aborts.

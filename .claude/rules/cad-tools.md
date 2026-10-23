@@ -116,7 +116,7 @@ per input function, and per command at `Select objects:`.
 
 - Every answer goes through the runtime's `answering`, which writes `question answer` in the
   history. `ctx.answer(text)` completes the answered line after the fact (what a `Select
-  objects:` pick found), only a line written since the running command started.
+objects:` pick found), only a line written since the running command started.
 - **A tool never reads a bare number in its point box.** A number typed at a lone `coordinate`
   box is direct distance from `toolAnchor()`, else LASTPOINT, towards the cursor, given to the
   tool as a pick wherever it `wantsSnap()` or its box says where from
@@ -145,8 +145,9 @@ Where a value lives is the console's OPEN test, never the help's "Saved in:" (RE
 **Saved in the drawing** (FILLETRAD): a `DocumentSettings` field, set in the run by
 `setCommandSettings` so U undoes it. **Per drawing, unsaved** (CIRCLERAD): a tool field
 `onNewDrawing` resets; one U restores (TEXT's rotation), a `DocumentSettings` field not saved.
-**Program-wide** or **registry** (OSMODE): a session tool field, noted in the coverage entry.
-`onActivate` resets none AutoCAD keeps; a shared one is one object `defaultTools` hands each.
+**Program-wide** or **registry** (OSMODE): a session tool field, noted in the coverage entry; one U
+restores via `SessionSettingCommand` (TEXTEDITMODE). `onActivate` resets none AutoCAD keeps; a
+shared one is one object `defaultTools` hands each.
 
 ## What a new object wears
 
@@ -197,11 +198,12 @@ layer.
   no command and stay out.
 - A tool offering its own **Undo keyword** counts its own edits and refuses when there are none
   (SPLINE's at one point does nothing, spline/p125; TRIM's says all undone after any answer,
-  trim/p380), or `ctx.undo()` backs out an earlier command. Offer it from the first point a prompt
-  holds. A transparent command run since a step ('LTSCALE) goes back with it: mark
-  `ctx.historyDepth()` per step, take back with `ctx.undoTo(mark)`. A looping command restores
-  its state **whatever the undo returns**: under UNDO Control None it pops nothing and LINE still
-  steps back, while PLINE, which commits at its end, keeps its chain (pline/p42).
+  trim/p380; TEXTEDIT's also as it undoes the last, text/p285), or `ctx.undo()` backs out an
+  earlier command. Offer it from the first point a prompt holds. A transparent command run since a
+  step ('LTSCALE) goes back with it: mark `ctx.historyDepth()` per step, take back with
+  `ctx.undoTo(mark)`. A looping command restores its state **whatever the undo returns**: under
+  UNDO Control None it pops nothing and LINE still steps back, while PLINE, which commits at its
+  end, keeps its chain (pline/p42).
 - **Preview must equal commit**: one resolver shared by `buildOverlay` and the pointer / Enter
   paths, so a typed value locks the click as it locks the rubber band. An expensive preview (a
   hatch's pattern) is built into the state when its inputs change, never per frame.
@@ -270,8 +272,6 @@ returns `true`; `false` ends the command.
   deliberate deviation from AutoCAD's session scope, the one that survives a reload. Only which end
   of an arc was drawn last is read off LASTPOINT (`continuePoint`, `lastDrawnDirection`), before
   the first point's answer moves it: an arc is stored counter-clockwise.
-- `endCommand()` for single-shot commands; `onEnter()` returning `true` consumes Enter and keeps
-  the command running.
 
 ## Points, snapping, constraints
 

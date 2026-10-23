@@ -1277,23 +1277,41 @@ before it (**unverified**: acmatchRes 11 `Only one entity can be selected as sou
 suggests a refusal; here they are dropped and the source asked); Command Preview's preview of the
 change under the cursor
 
-### `TEXTEDIT` / `ED` · es `EDITARTEXTO` / `ED`† / `DDEDIC`†
+### `TEXTEDIT` / `ED` / `DDEDIT` / `TEDIT` · es `EDITARTEXTO` / `ED` / `DDEDIC` / `TEDIT`
 
-**Implemented:** `Current settings: Edit mode = Multiple` (es
-`Parámetros actuales: Editar modo = Múltiple`), then `Select an annotation object or [Undo/Mode]:`
-(`[Mode]` in Single mode; es `Designe un objeto de anotación o [desHacer/Modo]`), a pick or `Last`;
-Mode asks `Enter a text edit mode option [Single/Multiple] <Multiple>:` (es
-`Indique una opción de modo de edición de texto [Simple/Múltiple]`) and says the settings again when
-answered, the mode kept for the session; Undo backs out its own edits, and with none says
-`Command has been completely undone.`; refusals as AutoCAD 2023's console words them
-(`*Invalid selection*` / `Expects a point or Last/Undo/Mode`, `Invalid option keyword.`); retype in
-place, double-click to edit (the settings line first, as the command runs), multiline text in
-MTEXT's editor (Escape discards, unchanged wording keeps its formatting), a loose attribute
-definition as Edit Attribute Definition's Tag / Prompt / Default (Escape cancels)
+**Implemented** (AutoCAD 2027's console, text/p241–p249, p274, p282–p285; desktop text/d06):
+`Current settings: Edit mode = Multiple` (es `Parámetros actuales: Editar modo = Múltiple`; es mode
+names `Múltiple` / `Simple`, table 21789), then `Select an annotation object or [Undo/Mode]:`
+(`[Mode]` in Single mode; es `Designe un objeto de anotación o [desHacer/Modo]`), a pick, a typed
+point (read as a pick) or `Last`; Mode asks `Enter a text edit mode option [Single/Multiple]
+<Multiple>:` (`<Single>` once Single; es `Indique una opción de modo de edición de texto
+[Simple/Múltiple]`) and says the settings again when answered. TEXTEDITMODE is a profile's
+(text/p246): NEW and OPEN keep it, and U after the run puts back the mode Mode changed (p249). Undo
+backs out its own edits, saying `Command has been completely undone.` with none and as it takes
+back the last (p241, p285; with two, the first is silent, p284). Refusals: `*Invalid selection*` /
+`Expects a point or Last/Undo` (Single: `Expects a point or Last/Mode]:`, the stray `]:`
+AutoCAD's; es `*Designación no válida*` / `Requiere un punto o úLTimo/desHacer`, `…/Modo]:`, p241,
+p274), `Invalid option keyword.` at Mode; `Last` or a pick on an object on a locked layer says `The
+object is on a locked layer.` (es `El objeto está en una capa bloqueada.`) and asks again (p244); a
+typed point on nothing or on a non-annotation object, and `Last` with nothing, ask again in
+silence (p242, p243). One annotation object (text, MTEXT, attribute definition) selected before it
+opens at once after the settings line (p159); a set holding anything else is dropped and the prompt
+asked (p146). U names it `TEXTEDIT` (es `EDITARTEXTO`, p249, p282). Retype in place; Escape in a
+single-line text's editor discards that edit and asks for the next object, a second Escape ending
+the command (desktop d06-5, d06-6); multiline text in MTEXT's editor (Escape asks to save a changed
+wording, unchanged wording keeps its formatting), a loose attribute definition as Edit Attribute
+Definition's Tag / Prompt / Default (Escape cancels). A double-click (DoubleClickRoot.cui) on a
+text or an attribute definition runs `_textedit`, settings line and all, and goes on as TEXTEDIT
+does (d06); on an MTEXT it runs `_mtedit`: no settings line, the one object, ended with the editor
+(d06). **WHY** under the hood that is TEXTEDIT's run, so U names it `TEXTEDIT` and Enter repeats
+TEXTEDIT: MTEDIT is not built (U's name after AutoCAD's MTEDIT is **unverified**). Whether a
+locked object that is no annotation object is refused in words or in silence is **unverified**
+(here: in words, as every locked pick).
 
 **Missing:** palette content edit, dimension targets, a question while the editor is open (AutoCAD
-edits in place and asks none, so the prompt reads `TEXTEDIT:`), the es mode name in the settings
-line (**unverified**: the keyword's word, `Múltiple`, is assumed)
+edits in place and asks none, so the prompt reads `TEXTEDIT:`); MTEDIT (es EDITTXTM) typed, with its
+`Select an MTEXT object:` (es `Designe un objeto TextoM:`) and `Expects a point or Last` (p289), and
+-MTEDIT
 
 ### `PURGE` / `PU` · es `LIMPIA` / `LI`†
 

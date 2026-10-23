@@ -1,7 +1,14 @@
 import { describe, expect, it } from "vitest"
 import { CadHarness, createHarness } from "../../../test/harness"
-import { lineOf, p, textOf } from "../../../test/builders"
-import { TextEntity, textCorners } from "../../domain/entities"
+import { layerOf, lineOf, p, textOf } from "../../../test/builders"
+import {
+  AttributeDefinitionEntity,
+  MTextEntity,
+  TextEntity,
+  createAttributeDefinition,
+  createMText,
+  textCorners,
+} from "../../domain/entities"
 import { DEFAULT_TEXT_HEIGHT } from "../../domain/textStyles"
 import { createTextStyle } from "../../domain/textStyles"
 import { es } from "../../locales/es"
@@ -835,11 +842,18 @@ describe("TEXTEDIT", () => {
     cad.escape()
   })
 
-  it("keeps the edit when the command is cancelled", () => {
+  it("discards a single-line edit at Escape and asks again; a second Escape ends (desktop text/d06-5, d06-6)", () => {
     const cad = withText()
-    cad.command("TEXTEDIT").click(p(20, 5)).type("KEPT").escape()
+    cad.command("TEXTEDIT").click(p(20, 5)).type("XY").escape()
 
-    expect(edited(cad).value).toBe("KEPT")
+    expect(edited(cad).value).toBe("OLD")
+    expect(cad.activeToolId()).toBe("textedit")
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXTEDIT Select an annotation object or [Undo/Mode]:"
+    )
+    cad.escape()
+    expect(cad.activeToolId()).toBe("select")
+    expect(edited(cad).value).toBe("OLD")
   })
 
   it("leaves the text alone when the box is emptied", () => {
@@ -885,14 +899,17 @@ describe("TEXTEDIT", () => {
     cad.escape()
   })
 
-  // AutoCAD 2023's console answering the same input.
-  it("asks as AutoCAD 2026, and refuses what it cannot take", () => {
+  it("asks and refuses as AutoCAD 2027's console, in each mode (text/p241, p274)", () => {
     const cad = createHarness({
       entities: [textOf(p(0, 0), "OLD", { height: 10, id: "T1" })],
     })
     cad.command("TEXTEDIT")
     answer(cad, "FOO", "M", "FOO", "")
-    answer(cad, "M", "S")
+    answer(cad, "M", "S", "FOO", "M")
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXTEDIT Enter a text edit mode option [Single/Multiple] <Single>:"
+    )
+    answer(cad, "")
     expect(cad.state().commandLine.prompt).toBe(
       "TEXTEDIT Select an annotation object or [Mode]:"
     )
@@ -906,7 +923,7 @@ describe("TEXTEDIT", () => {
       "Current settings: Edit mode = Multiple",
       "Select an annotation object or [Undo/Mode]: FOO",
       "*Invalid selection*",
-      "Expects a point or Last/Undo/Mode",
+      "Expects a point or Last/Undo",
       "Select an annotation object or [Undo/Mode]: M",
       "Enter a text edit mode option [Single/Multiple] <Multiple>: FOO",
       "Invalid option keyword.",
@@ -914,27 +931,40 @@ describe("TEXTEDIT", () => {
       "Select an annotation object or [Undo/Mode]: M",
       "Enter a text edit mode option [Single/Multiple] <Multiple>: S",
       "Current settings: Edit mode = Single",
+      "Select an annotation object or [Mode]: FOO",
+      "*Invalid selection*",
+      "Expects a point or Last/Mode]:",
+      "Select an annotation object or [Mode]: M",
+      "Enter a text edit mode option [Single/Multiple] <Single>:",
       "Select an annotation object or [Mode]: L",
     ])
   })
 
-  it("asks in Autodesk's Spanish", () => {
+  it("asks and refuses in Autodesk's Spanish (text/p241, p274, p248)", () => {
     const cad = createHarness({
       locale: es,
       entities: [textOf(p(0, 0), "OLD", { height: 10 })],
     })
     cad.command("EDITARTEXTO")
-    answer(cad, "M")
+    answer(cad, "H", "FOO", "M")
     expect(cad.state().commandLine.prompt).toBe(
       "EDITARTEXTO Indique una opción de modo de edición de texto [Simple/Múltiple] <Múltiple>:"
     )
-    answer(cad, "S")
+    answer(cad, "S", "FOO")
     expect(cad.commandLog()).toEqual([
       "EDITARTEXTO",
       "Parámetros actuales: Editar modo = Múltiple",
+      "Designe un objeto de anotación o [desHacer/Modo]: H",
+      "Todos los efectos del comando han sido deshechos.",
+      "Designe un objeto de anotación o [desHacer/Modo]: FOO",
+      "*Designación no válida*",
+      "Requiere un punto o úLTimo/desHacer",
       "Designe un objeto de anotación o [desHacer/Modo]: M",
       "Indique una opción de modo de edición de texto [Simple/Múltiple] <Múltiple>: S",
       "Parámetros actuales: Editar modo = Simple",
+      "Designe un objeto de anotación o [Modo]: FOO",
+      "*Designación no válida*",
+      "Requiere un punto o úLTimo/Modo]:",
     ])
     cad.escape()
   })
@@ -948,7 +978,7 @@ describe("TEXTEDIT", () => {
         },
       ],
     })
-    cad.command("TEXTEDIT").click(p(20, 5)).type("NEW").escape()
+    cad.command("TEXTEDIT").click(p(20, 5)).type("NEW").enter().escape()
 
     expect(edited(cad).id).toBe("T1")
     expect(edited(cad).color).toBe("#ff0000")
@@ -956,22 +986,32 @@ describe("TEXTEDIT", () => {
 
   it("undoes one edit per step", () => {
     const cad = withText()
-    cad.command("TEXTEDIT").click(p(20, 5)).type("NEW").escape()
+    cad.command("TEXTEDIT").click(p(20, 5)).type("NEW").enter().escape()
 
     cad.undo()
     expect(edited(cad).value).toBe("OLD")
   })
 
-  it("starts from a double-click on the text", () => {
+  it("starts from a double-click on the text as `_textedit`, and goes on (desktop text/d06, DoubleClickRoot.cui)", () => {
     const cad = withText()
     cad.doubleClick(p(20, 5))
 
     expect(cad.activeToolId()).toBe("textedit")
     expect(cad.state().dynamicInput?.fields[0].value).toBe("OLD")
+    expect(cad.commandLog()).toEqual([
+      "_textedit",
+      "Current settings: Edit mode = Multiple",
+    ])
 
     cad.type("BY DOUBLE CLICK").enter()
     expect(edited(cad).value).toBe("BY DOUBLE CLICK")
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXTEDIT Select an annotation object or [Undo/Mode]:"
+    )
     cad.escape()
+    answer(cad, "U")
+    expect(edited(cad).value).toBe("OLD")
+    expect(cad.commandLog().at(-1)).toBe("TEXTEDIT")
   })
 
   it("ignores a double-click on anything else", () => {
@@ -979,6 +1019,216 @@ describe("TEXTEDIT", () => {
     cad.doubleClick(p(-150, -200))
 
     expect(cad.activeToolId()).toBe("select")
+  })
+})
+
+describe("TEXTEDIT against AutoCAD 2027's console", () => {
+  const OLD = () => textOf(p(0, 0), "OLD", { height: 10, id: "T1" })
+  const value = (cad: CadHarness) => cad.byId<TextEntity>("T1").value
+  /** The text on layer L1, locked, as p244's -LAYER LOck left it. */
+  const locked = () => {
+    const cad = createHarness()
+    cad.runtime.document.load([{ ...OLD(), layerId: "L1" }], {
+      layers: [layerOf("0"), layerOf("L1", { locked: true })],
+    })
+    return cad
+  }
+
+  it("refuses Last on a locked layer and asks again (text/p244)", () => {
+    const cad = locked()
+    answer(cad, "TEXTEDIT", "L")
+
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select an annotation object or [Undo/Mode]: L",
+      "The object is on a locked layer.",
+    ])
+    expect(cad.state().dynamicInput?.fields ?? []).toHaveLength(0)
+    expect(cad.activeToolId()).toBe("textedit")
+    cad.escape()
+    expect(value(cad)).toBe("OLD")
+  })
+
+  it("refuses a pick on a locked layer in the same words (text/p244, TEXT-D31)", () => {
+    const cad = locked()
+    cad.command("TEXTEDIT").click(p(5, 5))
+
+    expect(cad.commandLog().at(-1)).toBe("The object is on a locked layer.")
+    expect(cad.state().dynamicInput?.fields ?? []).toHaveLength(0)
+    cad.escape()
+  })
+
+  it("says it in Spanish (text/p244)", () => {
+    const cad = createHarness({ locale: es })
+    cad.runtime.document.load([{ ...OLD(), layerId: "L1" }], {
+      layers: [layerOf("0"), layerOf("L1", { locked: true })],
+    })
+    answer(cad, "EDITARTEXTO", "LT")
+
+    expect(cad.commandLog().at(-1)).toBe(
+      "El objeto está en una capa bloqueada."
+    )
+    cad.escape()
+  })
+
+  it("asks again in silence at Last with nothing, Last on a line and a typed point on a line or on nothing (text/p242, p243)", () => {
+    const empty = createHarness()
+    answer(empty, "TEXTEDIT", "L")
+    expect(empty.commandLog().at(-1)).toBe(
+      "Select an annotation object or [Undo/Mode]: L"
+    )
+    empty.escape()
+
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(10, 0), { id: "L1" })],
+    })
+    answer(cad, "TEXTEDIT", "L", "5,0", "100,100")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Select an annotation object or [Undo/Mode]: L",
+      "Select an annotation object or [Undo/Mode]: 5,0",
+      "Select an annotation object or [Undo/Mode]: 100,100",
+    ])
+    expect(cad.activeToolId()).toBe("textedit")
+    cad.escape()
+  })
+
+  it("opens the text a typed point finds", () => {
+    const cad = createHarness({ entities: [OLD()] })
+    answer(cad, "TEXTEDIT", "5,5")
+
+    expect(cad.state().dynamicInput?.fields[0].value).toBe("OLD")
+    cad.escape().escape()
+  })
+
+  it("says the command is completely undone when Undo takes back its last edit (text/p285, p284)", () => {
+    const cad = createHarness({ entities: [OLD()] })
+    cad.command("TEXTEDIT").click(p(5, 5)).type("TWO").enter()
+    cad.click(p(5, 5)).type("THREE").enter()
+    const before = cad.commandLog().length
+    answer(cad, "U")
+    expect(value(cad)).toBe("TWO")
+    expect(cad.commandLog().slice(before)).toEqual([
+      "Select an annotation object or [Undo/Mode]: U",
+    ])
+
+    answer(cad, "U")
+    expect(value(cad)).toBe("OLD")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select an annotation object or [Undo/Mode]: U",
+      "Command has been completely undone.",
+    ])
+    cad.escape()
+  })
+
+  it("U after the run names TEXTEDIT and puts the mode back (text/p249)", () => {
+    const cad = createHarness()
+    answer(cad, "TEXTEDIT", "")
+    answer(cad, "U")
+    expect(cad.commandLog().at(-1)).toBe("TEXTEDIT")
+
+    answer(cad, "TEXTEDIT", "M", "S", "")
+    answer(cad, "U")
+    expect(cad.commandLog().at(-1)).toBe("TEXTEDIT")
+    answer(cad, "TEXTEDIT")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Current settings: Edit mode = Multiple"
+    )
+    cad.escape()
+  })
+
+  it("keeps the mode across a new drawing, a profile's setting (text/p246)", () => {
+    const cad = createHarness()
+    answer(cad, "TEXTEDIT", "M", "S", "")
+    cad.runtime.newDrawing()
+    answer(cad, "TEXTEDIT")
+
+    expect(cad.commandLog().at(-1)).toBe("Current settings: Edit mode = Single")
+    cad.escape()
+  })
+
+  it("U names it EDITARTEXTO in Spanish (text/p249, p282)", () => {
+    const cad = createHarness({ locale: es })
+    answer(cad, "EDITARTEXTO", "M", "S", "")
+    answer(cad, "H")
+
+    expect(cad.commandLog().at(-1)).toBe("EDITARTEXTO")
+  })
+
+  it.each(["TEXTEDIT", "ED", "DDEDIT", "TEDIT"])(
+    "runs as %s (text/p247, acad.pgp)",
+    (name) => {
+      const cad = createHarness()
+      answer(cad, name)
+
+      expect(cad.activeToolId()).toBe("textedit")
+      expect(cad.commandLog().at(-1)).toBe(
+        "Current settings: Edit mode = Multiple"
+      )
+      cad.escape()
+    }
+  )
+
+  it.each(["EDITARTEXTO", "ED", "DDEDIC", "TEDIT"])(
+    "runs as %s in Spanish (text/p248, acad.pgp)",
+    (name) => {
+      const cad = createHarness({ locale: es })
+      answer(cad, name)
+
+      expect(cad.activeToolId()).toBe("textedit")
+      cad.escape()
+    }
+  )
+
+  it("opens the one text preselected at once, after the settings line (text/p159)", () => {
+    const cad = createHarness({ entities: [OLD()] })
+    cad.select("T1")
+    answer(cad, "TEXTEDIT")
+
+    expect(cad.commandLog()).toEqual([
+      "TEXTEDIT",
+      "Current settings: Edit mode = Multiple",
+    ])
+    expect(cad.state().dynamicInput?.fields[0].value).toBe("OLD")
+    cad.type("NEW").enter()
+    expect(value(cad)).toBe("NEW")
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXTEDIT Select an annotation object or [Undo/Mode]:"
+    )
+    cad.escape()
+  })
+
+  it("opens a preselected MTEXT or attribute definition too", () => {
+    const cad = createHarness({
+      entities: [
+        createMText(p(0, 0), "MT", { height: 10, id: "M1" }),
+        createAttributeDefinition(p(0, 100), "TAG", { value: "V", id: "A1" }),
+      ],
+    })
+    cad.select("M1")
+    answer(cad, "TEXTEDIT")
+    expect(cad.state().dynamicInput?.fields[0].value).toBe("MT")
+    cad.type("NEW").enter()
+    expect(cad.byId<MTextEntity>("M1").contents).toBe("NEW")
+    cad.escape()
+
+    cad.select("A1")
+    answer(cad, "TEXTEDIT")
+    expect(cad.state().dynamicInput?.fields[0].value).toBe("TAG")
+    cad.escape()
+    expect(cad.byId<AttributeDefinitionEntity>("A1").tag).toBe("TAG")
+  })
+
+  it("ignores a preselected set holding other objects and asks (text/p146)", () => {
+    const cad = createHarness({
+      entities: [OLD(), lineOf(p(0, 50), p(100, 50), { id: "L1" })],
+    })
+    cad.select("T1", "L1")
+    answer(cad, "TEXTEDIT")
+
+    expect(cad.state().dynamicInput?.fields ?? []).toHaveLength(0)
+    expect(cad.state().commandLine.prompt).toBe(
+      "TEXTEDIT Select an annotation object or [Undo/Mode]:"
+    )
+    cad.escape()
   })
 })
 
