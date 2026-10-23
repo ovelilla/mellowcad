@@ -467,3 +467,97 @@ describe("ERASE undone and redone", () => {
     expect(cad.entities().map((entity) => entity.id)).toEqual(["A", "B"])
   })
 })
+
+// U and REDO name an edit made outside a command by where it was made: the
+// top bar's drop-downs on objects CHPROP (desktop properties/d05-2, d05-3b;
+// es CAMBPROP, table 52586), the Properties palette Modify Property (desktop
+// arrays/d20), a grip Grip Edit (arrays/d14; es table 6001). CECOLOR set
+// from a drop-down with nothing selected names nothing (properties/d05-3).
+describe("an edit made outside a command", () => {
+  const selected = (locale?: typeof es) => {
+    const cad = createHarness({
+      locale,
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+    cad.select("L1")
+    return cad
+  }
+
+  it("the Layers drop-down moving a selection is CHPROP (desktop properties/d05-2)", () => {
+    const cad = selected()
+    const walls = cad.runtime.createLayer("Walls", "#ff0000", false)
+    cad.select("L1")
+    cad.runtime.applyLayerControl(walls)
+    expect(written(cad, "_U", "_REDO")).toEqual([
+      "U",
+      "CHPROP",
+      "REDO",
+      "CHPROP",
+      "Everything has been redone",
+    ])
+    expect(cad.byId<LineEntity>("L1").layerId).toBe(walls)
+  })
+
+  // The linetype's and the lineweight's drop-downs, unprobed, as the colour's.
+  it("the Object Color drop-down on a selection is CHPROP (desktop properties/d05-3b)", () => {
+    for (const edit of [
+      (cad: CadHarness) => cad.runtime.applyColorControl("#ff0000"),
+      (cad: CadHarness) => cad.runtime.applyLinetypeControl("Dashed"),
+      (cad: CadHarness) => cad.runtime.applyLineweightControl(0.5),
+    ]) {
+      const cad = selected()
+      edit(cad)
+      expect(written(cad, "_U")).toEqual(["U", "CHPROP"])
+      const { color, linetype, lineweight } = cad.byId<LineEntity>("L1")
+      expect([color, linetype, lineweight]).toEqual([
+        undefined,
+        undefined,
+        undefined,
+      ])
+    }
+  })
+
+  it("names the drop-downs' step CAMBPROP in Spanish (table 52586)", () => {
+    const cad = selected(es)
+    cad.runtime.applyColorControl("#ff0000")
+    expect(written(cad, "H")).toEqual(["H", "CAMBPROP"])
+  })
+
+  it("a drop-down setting CECOLOR with nothing selected names nothing (desktop properties/d05-3)", () => {
+    const cad = createHarness()
+    cad.runtime.applyColorControl("#ff0000")
+    expect(written(cad, "_U")).toEqual(["U"])
+    expect(cad.state().currentColor).toBe("ByLayer")
+  })
+
+  // es unverified (PROPS-D65): the English words until a probe.
+  it("a Properties palette edit is Modify Property (desktop arrays/d20)", () => {
+    for (const locale of [undefined, es]) {
+      const cad = selected(locale)
+      expect(cad.runtime.setSelectionProperty("endX", "250")).toBe(true)
+      cad.runtime.setSelectionColor("#00ff00", "properties")
+      expect(written(cad, locale ? "H" : "_U")).toEqual([
+        locale ? "H" : "U",
+        "Modify Property",
+      ])
+      expect(written(cad, locale ? "H" : "_U")).toEqual([
+        locale ? "H" : "U",
+        "Modify Property",
+      ])
+      expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(100, 0))
+    }
+  })
+
+  it("a grip's edit is Grip Edit, Editar pinzamiento in Spanish (desktop arrays/d14; table 6001)", () => {
+    for (const [locale, u, name] of [
+      [undefined, "_U", "Grip Edit"],
+      [es, "H", "Editar pinzamiento"],
+    ] as const) {
+      const cad = selected(locale)
+      cad.click(p(100, 0)).click(p(150, 20))
+      expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(150, 20))
+      expect(written(cad, u)).toEqual([u.replace("_", ""), name])
+      expect(cad.byId<LineEntity>("L1").end).toBeCloseToPoint(p(100, 0))
+    }
+  })
+})

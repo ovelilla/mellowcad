@@ -9,7 +9,12 @@ import type {
   LineEntity,
   SplineEntity,
 } from "../domain/entities"
-import { createSpline } from "../domain/entities"
+import {
+  createBlockDefinition,
+  createInsert,
+  createSpline,
+} from "../domain/entities"
+import type { InsertEntity } from "../domain/entities"
 import { es } from "../locales/es"
 
 describe("the palette panel", () => {
@@ -195,19 +200,113 @@ describe("the Properties palette's object type drop-down", () => {
     expect(cad.state().properties.filters[0].label).toBe("All (2)")
   })
 
-  it("names its entries in the interface language", () => {
+  /**
+   * Picked in this order: `circles` circles, `lines` lines, `references`
+   * references of a block, and a rectangular array of one more circle.
+   */
+  const withArray = (
+    circles: number,
+    lines: number,
+    references: number,
+    locale?: typeof es
+  ) => {
     const cad = createHarness({
-      locale: es,
+      locale,
+      blocks: [createBlockDefinition("B", p(0, 0), [lineOf(p(0, 0), p(5, 0))])],
       entities: [
-        lineOf(p(0, 0), p(100, 0), { id: "L1" }),
-        circleOf(p(50, 50), 10, { id: "C1" }),
+        ...Array.from({ length: circles }, (_, i) =>
+          circleOf(p(200, 40 * i), 5, { id: `C${i}` })
+        ),
+        ...Array.from({ length: lines }, (_, i) =>
+          lineOf(p(0, 10 * i), p(100, 10 * i), { id: `L${i}` })
+        ),
+        ...Array.from({ length: references }, (_, i) =>
+          createInsert("B", p(300, 20 * i), { id: `I${i}` })
+        ),
+        circleOf(p(10, -100), 2, { id: "S" }),
       ],
     })
+    for (const text of ["_ARRAYRECT", "_L", "", "_X"]) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
     cad.selectAll()
+    return cad
+  }
+
+  // desktop properties/d06-2: an array is a type of its own, named by its
+  // kind; the types by count, most first, whatever order they were picked
+  // in. Ties keep the order picked (unverified, PROPS-D64).
+  it("lists an array apart from the block references, the types by count (desktop properties/d06-2)", () => {
+    const cad = withArray(2, 4, 3)
+    expect(cad.state().properties.filters).toEqual([
+      { type: null, label: "All (10)" },
+      { type: "line", label: "Line (4)" },
+      { type: "insert", label: "Block Reference (3)" },
+      { type: "circle", label: "Circle (2)" },
+      { type: "rectangularArray", label: "Array (Rectangular) (1)" },
+    ])
+  })
+
+  // desktop properties/e01 (the drop-down read with CB_GETLBTEXT).
+  it("names its entries in the interface language (desktop properties/e01)", () => {
+    const cad = withArray(1, 3, 2, es)
     expect(cad.state().properties.filters.map((entry) => entry.label)).toEqual([
-      "Todo (2)",
-      "Línea (1)",
+      "Todos (7)",
+      "Línea (3)",
+      "Referencia a bloque (2)",
       "Círculo (1)",
+      "Matriz (rectangular) (1)",
+    ])
+  })
+
+  // The polar's and the path's names are the same table's (AcArrayRes 39923,
+  // 887), unseen in the drop-down.
+  it("names a polar and a path array by their kind", () => {
+    for (const [run, label] of [
+      [["_ARRAYPOLAR", "_L", "", "0,0", "_X"], "Matriz (polar) (1)"],
+      [["_ARRAYPATH", "_L", "", "50,0", "_X"], "Matriz (de ruta) (1)"],
+    ] as const) {
+      const cad = createHarness({
+        locale: es,
+        entities: [
+          lineOf(p(0, 0), p(80, 0), { id: "P" }),
+          circleOf(p(10, 10), 2, { id: "S" }),
+        ],
+      })
+      for (const text of run) {
+        cad.runtime.setCommandLineText(text)
+        cad.runtime.submitCommandLine()
+      }
+      cad.selectAll()
+      expect(
+        cad.state().properties.filters.map((entry) => entry.label)
+      ).toEqual(["Todos (2)", "Línea (1)", label])
+    }
+  })
+
+  it("edits only the arrays when narrowed to them, only the references when to those", () => {
+    const cad = withArray(0, 1, 2)
+    cad.runtime.setPropertiesFilter("rectangularArray")
+    expect(cad.state().properties.info?.title).toBe("Array (Rectangular)")
+    cad.runtime.setSelectionColor("#ff0000", "properties")
+    cad.runtime.setPropertiesFilter("insert")
+    expect(cad.state().properties.info?.count).toBe(2)
+    cad.runtime.setSelectionColor("#00ff00", "properties")
+
+    const colors = cad
+      .entities()
+      .map((entity) => [
+        entity.type === "insert" && (entity as InsertEntity).array
+          ? "array"
+          : entity.id,
+        entity.color,
+      ])
+    expect(colors).toEqual([
+      ["L0", undefined],
+      ["I0", "#00ff00"],
+      ["I1", "#00ff00"],
+      ["array", "#ff0000"],
     ])
   })
 

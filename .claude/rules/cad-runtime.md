@@ -239,8 +239,9 @@ another command declares `ribbonMacro()`: that command and the answers typed onc
 (`MACRO_PAUSE` waits for the user's), the prompt an answer opens on its line (circle/d01). Inside the group each command stays its own entry, so a tool's Undo keyword
 steps back one; on close they fold into one. A transparent command's change is an entry of the
 group it interrupts, so a tool's Undo takes back to the depth it marked before its commit
-(`CommandHistory.undoTo`), and a regeneration that change queued is done then. A change set from a
-palette mid-command joins it. `loadDrawing` clears the history. A command's undo puts what it
+(`CommandHistory.undoTo`); a regeneration that change queued is done then. A palette's change
+mid-command joins it; at `Command:` U names it by where (`CadRuntime.outside`, `gripEdit`).
+`loadDrawing` clears the history. A command's undo puts what it
 removed back at its index (`placesOf`, `restoreMany`): `ERASE _L` reads that order (pieces/p264).
 
 **A command's end or Escape drops the selection** (`switchTool`, erase/p249): a tool never selects

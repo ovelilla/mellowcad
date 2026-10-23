@@ -66,6 +66,7 @@ export type {
   CleanScreenUi,
   PropertiesUi,
   PropertiesFilterOption,
+  ObjectType,
   SelectionScope,
   SelectionInfo,
   PropertyGroup,

@@ -290,8 +290,8 @@ export const en: EngineCatalog = {
           "count",
           2,
           {
-            "one": "Block reference",
-            "other": "Block references"
+            "one": "Block Reference",
+            "other": "Block References"
           }
         ]
       ]
@@ -2253,6 +2253,9 @@ export const en: EngineCatalog = {
       "undoGroup": "GROUP",
       "dropGeometryStep": "DROPGEOM GROUP",
       "layerManagerStep": "'.-LAYER",
+      "changePropertiesStep": "CHPROP",
+      "modifyPropertyStep": "Modify Property",
+      "gripEditStep": "Grip Edit",
       "uDisabled": "U command disabled.  Use UNDO command to turn it on",
       "redoDisabled": [
         [

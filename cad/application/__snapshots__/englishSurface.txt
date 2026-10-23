@@ -5097,7 +5097,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > select H2
   properties: Hatch (1) [Pattern: Pattern=Solid, Scale=1.00~, Angle=0°~, Boundaries=1] [Geometry: Elevation=0.00~]
 > select I1
-  properties: Block reference (1) [Block: Name=BAR, Scale=1.00~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Block Reference (1) [Block: Name=BAR, Scale=1.00~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select I2
 > select L2
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=10.00~, End Y=10.00~, End Z=0.00~, Delta X=10.00 mm, Delta Y=10.00 mm, Delta Z=0.00 mm, Length=14.14 mm, Angle=45°]
@@ -5106,11 +5106,11 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > select A2
   properties: Arc (1) {Thickness=0.00 mm~} [Geometry: Start X=5.00, Start Y=0.00, Start Z=0.00, Center X=0.00~, Center Y=0.00~, Center Z=0.00~, End X=2.70, End Y=4.21, End Z=0.00, Radius=5.00 mm~, Start angle=0°~, End angle=57°~, Total angle=57°, Arc length=5.00 mm, Area=1.98 mm², Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
 > select everything
-  properties: 32 objects (32) [Selection: Lines=2, Circles=2, Arcs=2, Ellipses=2, Polylines=2, Texts=13, Dimensions=5, Hatches=2, Block references=2]
+  properties: 32 objects (32) [Selection: Lines=2, Circles=2, Arcs=2, Ellipses=2, Polylines=2, Texts=13, Dimensions=5, Hatches=2, Block References=2]
 > select one of each
-  properties: 9 objects (9) [Selection: Line=1, Circle=1, Arc=1, Ellipse=1, Polyline=1, Text=1, Dimension=1, Hatch=1, Block reference=1]
+  properties: 9 objects (9) [Selection: Line=1, Circle=1, Arc=1, Ellipse=1, Polyline=1, Text=1, Dimension=1, Hatch=1, Block Reference=1]
 > select two of each
-  properties: 18 objects (18) [Selection: Lines=2, Circles=2, Arcs=2, Ellipses=2, Polylines=2, Texts=2, Dimensions=2, Hatches=2, Block references=2]
+  properties: 18 objects (18) [Selection: Lines=2, Circles=2, Arcs=2, Ellipses=2, Polylines=2, Texts=2, Dimensions=2, Hatches=2, Block References=2]
 
 ## selection cycling
 > start

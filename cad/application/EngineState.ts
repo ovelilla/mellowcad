@@ -10,6 +10,7 @@ import {
   unitSuffix,
 } from "../domain/units"
 import {
+  ArrayKind,
   AttributeDefinitionEntity,
   BlockDefinition,
   BlockId,
@@ -117,11 +118,25 @@ export interface PaletteUi {
   readonly tab: PaletteTab
 }
 
+/**
+ * An object type of the Properties palette's drop-down: an entity's, but an
+ * array is a type of its own, its kind's, apart from the block references
+ * (`Array (Rectangular)`, desktop properties/d06-2).
+ */
+export type ObjectType = EntityType | `${ArrayKind}Array`
+
+/** The type the Properties palette's drop-down files `entity` under. */
+export function objectType(entity: Entity): ObjectType {
+  return entity.type === "insert" && entity.array
+    ? `${entity.array.kind}Array`
+    : entity.type
+}
+
 /** One entry of the Properties palette's object type drop-down. */
 export interface PropertiesFilterOption {
   /** The type it narrows the palette to; null is All. */
-  readonly type: EntityType | null
-  /** `All (6)`, `Line (5)`. */
+  readonly type: ObjectType | null
+  /** `All (6)`, `Line (5)`, `Array (Rectangular) (1)`. */
   readonly label: string
 }
 
@@ -136,8 +151,11 @@ export interface PropertiesUi {
    * The drop-down's entry: the type picked, the only type when the selection
    * has one, or null for All.
    */
-  readonly filter: EntityType | null
-  /** All first when the selection mixes types, then each type; empty with nothing selected. */
+  readonly filter: ObjectType | null
+  /**
+   * All first when the selection mixes types, then each type, most objects
+   * first; empty with nothing selected.
+   */
   readonly filters: ReadonlyArray<PropertiesFilterOption>
   /** Geometric properties of the objects edited, or null with nothing selected. */
   readonly info: SelectionInfo | null

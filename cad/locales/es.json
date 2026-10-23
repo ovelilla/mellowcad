@@ -182,7 +182,7 @@
       "title": {
         "ellipticalArc": "Arco elíptico",
         "objects": "{count, plural, one {# objeto} other {# objetos}}",
-        "all": "Todo ({count})",
+        "all": "Todos ({count})",
         "type": "{type} ({count})"
       },
       "group": {
@@ -1492,6 +1492,9 @@
       "undoGroup": "GRUPO",
       "dropGeometryStep": "SOLTARGEOM GRUPO",
       "layerManagerStep": "''.-CAPA",
+      "changePropertiesStep": "CAMBPROP",
+      "modifyPropertyStep": "Modify Property",
+      "gripEditStep": "Editar pinzamiento",
       "uDisabled": "Comando H desactivado. Utilice el comando DESHACER para activarlo",
       "redoDisabled": "{command, select, mredo {Comandos REHACER y MREHACER desactivados} other {Comando REHACER desactivado}}. Usar DESHACER C para activarlo.",
       "requiresIntegerValueOrKeyword": "Requiere un valor {value} entero, o una opción.",

@@ -304,7 +304,11 @@ running command ends first and goes whole ("Click Undo on the Quick Access toolb
 entire series of line segments"); U (a command of its own, es `H`) writes what it took back, as
 AutoCAD 2023's console does: the command's name as echoed (`LINE` for `L`, `-LAYER`, `AUPREC`),
 `LTSCALE Regenerating model.` for one that regenerated (-VIEW too, and LINE with a transparent
-LTSCALE in it), and with nothing left `Everything has been undone`, then `Nothing to undo`; REDO
+LTSCALE in it), an edit made outside a command by where it was made — `CHPROP` (es `CAMBPROP`) for
+the top bar's drop-downs on objects, `Modify Property` for the Properties palette, `Grip Edit` (es
+`Editar pinzamiento`) for a grip, `'CLAYER` for the current layer from a drop-down, nothing for
+CECOLOR, CELTYPE or CELWEIGHT set from one (desktop properties/d05-1 to d05-3b, arrays/d14, d20;
+`properties.md`) —, and with nothing left `Everything has been undone`, then `Nothing to undo`; REDO
 only right after a U that took something back, writing the command's name
 (`LTSCALE Regenerating model.` while more is left to redo), then `Everything has been redone` once
 nothing is and `Regenerating model.` last; what ZOOM, PAN, -PAN, -VIEW, VPOINT, PLAN and 3DORBIT do
@@ -370,5 +374,4 @@ and Layer from one session to the next (AutoCAD keeps them in the registry, as i
 here they last the session, as the running object snaps do); the mouse wheel and the wheel button's
 pan as undo steps (no command here or in AutoCAD; whether AutoCAD records them is **unverified**);
 what the top bar's buttons write (nothing here; AutoCAD's are the Quick Access Toolbar's own, not
-macros); the name of an edit made with no command (grips, the Properties palette: U says nothing
-here, **unverified**); Ctrl+Shift+Z still redoes, silently, though AutoCAD binds nothing to it
+macros); Ctrl+Shift+Z still redoes, silently, though AutoCAD binds nothing to it

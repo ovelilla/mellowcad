@@ -103,8 +103,5 @@ a pick or a mode finds (BRP-01, BRP-02, BRP-05: FILLET's and BREAK's; ARRAYPATH'
 UCS review probes its words. A point typed
 at `Select objects:` or a single object's pick off the screen still finds (BRP-04, pieces/p158):
 for the `Select objects:` area. EXPLODE's texts from an MTEXT stand where this layout's metrics put
-each line, not where AutoCAD's font does (EXP-06, pieces/p255): for the Text review. The palette's object
-filter counts an array with the block references, and U after a grip or palette edit writes no
-`Grip Edit` or `Modify Property` (arrays/d14, d20: `docs/plans/arrays-review.md`): for the
-Properties review; the anonymous blocks' purge on save and a block reference's grips, for the
-Blocks review.
+each line, not where AutoCAD's font does (EXP-06, pieces/p255): for the Text review. The anonymous
+blocks' purge on save and a block reference's grips, for the Blocks review.

@@ -315,7 +315,7 @@ export const es: EngineLocale = {
           ]
         ],
         "all": [
-          "Todo (",
+          "Todos (",
           [
             "count"
           ],
@@ -2623,6 +2623,9 @@ export const es: EngineLocale = {
       "undoGroup": "GRUPO",
       "dropGeometryStep": "SOLTARGEOM GRUPO",
       "layerManagerStep": "'.-CAPA",
+      "changePropertiesStep": "CAMBPROP",
+      "modifyPropertyStep": "Modify Property",
+      "gripEditStep": "Editar pinzamiento",
       "uDisabled": "Comando H desactivado. Utilice el comando DESHACER para activarlo",
       "redoDisabled": [
         [

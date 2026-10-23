@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl"
 
 import {
   type CadEngine,
-  type EntityType,
+  type ObjectType,
   type PropertyEdit,
   type PropertyRow,
 } from "@/cad"
@@ -64,7 +64,7 @@ export function PropertiesPanel({
           onValueChange={(value) => {
             if (value == null) return
             engine.setPropertiesFilter(
-              value === ALL ? null : (value as EntityType)
+              value === ALL ? null : (value as ObjectType)
             )
             done()
           }}

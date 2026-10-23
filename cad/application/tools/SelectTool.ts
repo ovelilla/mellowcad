@@ -14,6 +14,7 @@ import {
   translateEntity,
   withLineZ,
 } from "../../domain/entities"
+import type { Command } from "../commands/Command"
 import {
   UpdateEntitiesCommand,
   UpdateEntityCommand,
@@ -1165,7 +1166,7 @@ export class SelectTool implements Tool {
     this.state = { phase: "idle" }
     const before = ctx.document.get(edited.id)
     if (JSON.stringify(before) !== JSON.stringify(edited)) {
-      ctx.execute(new UpdateEntitiesCommand([edited]))
+      gripEdit(ctx, new UpdateEntitiesCommand([edited]))
     }
     ctx.requestRender()
   }
@@ -1201,7 +1202,7 @@ export class SelectTool implements Tool {
   ): void {
     const mtext = ctx.document.get(state.entityId)
     if (mtext?.type === "mtext" && width !== mtext.width) {
-      ctx.execute(new UpdateEntityCommand({ ...mtext, width }))
+      gripEdit(ctx, new UpdateEntityCommand({ ...mtext, width }))
     }
     ctx.dynamicInput.close()
     this.state = { phase: "idle" }
@@ -1414,7 +1415,7 @@ export class SelectTool implements Tool {
         !V.equals(next.start, next.end) ||
         lineStartZ(next) !== lineEndZ(next)
       ) {
-        ctx.execute(new UpdateEntityCommand(next))
+        gripEdit(ctx, new UpdateEntityCommand(next))
       }
     }
     ctx.dynamicInput.close()
@@ -1468,7 +1469,7 @@ export class SelectTool implements Tool {
       )
       const step = state.dragsSelection
         ? ctx.text.message("dropGeometryStep")
-        : undefined
+        : ctx.text.message("gripEditStep")
       if (moved.length > 0) {
         ctx.execute(new UpdateEntitiesCommand(moved), step)
       }
@@ -1493,7 +1494,7 @@ export class SelectTool implements Tool {
   ): void {
     const entity = ctx.document.get(state.entityId)
     const next = entity ? withRadius(entity, radius) : null
-    if (next && radius > 1e-9) ctx.execute(new UpdateEntityCommand(next))
+    if (next && radius > 1e-9) gripEdit(ctx, new UpdateEntityCommand(next))
     ctx.dynamicInput.close()
     this.state = { phase: "idle" }
     ctx.requestRender()
@@ -1518,7 +1519,8 @@ export class SelectTool implements Tool {
     if (arc?.type === "arc") {
       const startAngle = state.end === "start" ? angle : arc.startAngle
       const endAngle = state.end === "end" ? angle : arc.endAngle
-      ctx.execute(
+      gripEdit(
+        ctx,
         new UpdateEntityCommand(
           carryOverrides(
             arc,
@@ -1566,7 +1568,7 @@ export class SelectTool implements Tool {
     const entity = ctx.document.get(state.entityId)
     const moved = entity && withVertexAt(entity, state.index, point)
     if (moved && !V.equals(point, state.origin)) {
-      ctx.execute(new UpdateEntityCommand(moved))
+      gripEdit(ctx, new UpdateEntityCommand(moved))
     }
     ctx.dynamicInput.close()
     this.state = { phase: "idle" }
@@ -1595,7 +1597,7 @@ export class SelectTool implements Tool {
   ): void {
     const dim = ctx.document.get(state.entityId)
     if (dim?.type === "dimension" && !V.equals(point, state.origin)) {
-      ctx.execute(new UpdateEntityCommand(movedDimension(dim, state, point)))
+      gripEdit(ctx, new UpdateEntityCommand(movedDimension(dim, state, point)))
     }
     ctx.dynamicInput.close()
     this.state = { phase: "idle" }
@@ -1628,7 +1630,8 @@ export class SelectTool implements Tool {
   ): void {
     const poly = ctx.document.get(state.entityId)
     if (poly?.type === "polyline" && !V.equals(point, state.origin)) {
-      ctx.execute(
+      gripEdit(
+        ctx,
         new UpdateEntityCommand(
           withSegmentStretched(
             poly,
@@ -1654,7 +1657,7 @@ export class SelectTool implements Tool {
   ): void {
     const arc = ctx.document.get(state.entityId)
     const next = arc?.type === "arc" ? arcStretchedThrough(arc, point) : null
-    if (next) ctx.execute(new UpdateEntityCommand(next))
+    if (next) gripEdit(ctx, new UpdateEntityCommand(next))
     this.state = { phase: "idle" }
     ctx.requestRender()
   }
@@ -1674,7 +1677,7 @@ export class SelectTool implements Tool {
       ellipse?.type === "ellipse"
         ? ellipseGripped(ellipse, state.role, point)
         : null
-    if (next) ctx.execute(new UpdateEntityCommand(next))
+    if (next) gripEdit(ctx, new UpdateEntityCommand(next))
     this.state = { phase: "idle" }
     ctx.requestRender()
   }
@@ -1696,7 +1699,8 @@ export class SelectTool implements Tool {
   ): void {
     const poly = ctx.document.get(state.entityId)
     if (poly?.type === "polyline") {
-      ctx.execute(
+      gripEdit(
+        ctx,
         new UpdateEntityCommand(
           setPolylineBulge(poly, state.segmentIndex, bulge)
         )
@@ -1728,4 +1732,12 @@ function previewOf(
 /** The lasso's line, as it starts and at each Space (desktop erase/d04-cl3). */
 function sayLasso(lasso: Lasso, ctx: ToolContext): void {
   ctx.report(ctx.text.message("lassoMode", { mode: lasso.mode }))
+}
+
+/**
+ * A grip's edit at `Command:`: a step U and REDO name `Grip Edit` (desktop
+ * arrays/d14; es `Editar pinzamiento`, table 6001).
+ */
+function gripEdit(ctx: ToolContext, command: Command): void {
+  ctx.execute(command, ctx.text.message("gripEditStep"))
 }

@@ -231,8 +231,8 @@ layer, colour, lineweight and Z (p164, p166), the source kept; one undo step (U 
 
 The array object (the three commands'): one block reference, named for its kind — `Array
 (Rectangular)`, `Array (Polar)`, `Array (Path)` (es `Matriz (rectangular)`, `Matriz (polar)`,
-`Matriz (de ruta)`; AcArrayRes 9575, 39923, 887) in the palette's title, the rollover and the
-selection list — to an anonymous block `*U<n>` holding the source where it stood, the source
+`Matriz (de ruta)`; AcArrayRes 9575, 39923, 887) in the palette's title, the rollover, the
+selection list and the palette's object filter, a type of its own there (properties/d06-2) — to an anonymous block `*U<n>` holding the source where it stood, the source
 consumed into it (p01–p03, p400); on the current layer, colour, linetype and lineweight, the
 objects inside keeping theirs, those on layer 0 shown on its layer as in any block (p403); at the
 source's extents centre (p403, p404), ARRAYPOLAR's at the centre, the extents centre its base point
@@ -250,7 +250,7 @@ the base point, arrows at the second column and row and at the last column and r
 them, a square at the far corner; polar — squares at the base point and the centre, an arrow at the
 second item's base point pointing round the ring, the ring drawn grey through the base point; path —
 a square at the path's start and, by Measure, an arrow the spacing along the path. Their default
-drags, each one undo step (d14–d16): the base square and the ring's centre move the array; a count
+drags, each one undo step U names `Grip Edit` (d14–d16): the base square and the ring's centre move the array; a count
 arrow sets `floor(|d| / s) + 1`, `d` the cursor's projection on its axis from the base, the spacing
 taking d's sign (43 and 47 at 8 are 6 columns, `13,6` too, −10 is 2 at −8; d14a–d14c, d14e, d14k),
 the corner both counts (d14g); a spacing arrow the projection itself (d14i, d14j); the polar base the
@@ -287,7 +287,7 @@ rectangular `Columns`, `Column spacing`, `Rows`, `Row spacing`, `Row elevation i
 is 36 apart), `Rotate items` (Yes / No); path `Method` (`Divide`, `Measure`, Measure going on from
 Divide's spacing), `Items` (by Measure no more than fit: d20g **unverified**), `Item spacing` (the
 items as many as fit, d20h: 10 is 9; by Divide its even share, read-only: **unverified**), `Align
-items` (Yes / No); each edit one undo step; es `Columnas`, `Espacio entre columnas`, `Filas`,
+items` (Yes / No); each edit one undo step, which U names `Modify Property` (d20); es `Columnas`, `Espacio entre columnas`, `Filas`,
 `Espacio entre filas`, `Incremento de elevación de filas`, `Incluye el ángulo del eje`, `Centro X`,
 `Radio`, `Dirección` (`En el sentido antihorario`, `En el sentido horario`), `Elementos`,
 `Ángulo entre elementos`, `Ángulo de relleno`, `Girar objetos`, `Longitud de trayectoria`, `Método`
@@ -318,13 +318,11 @@ the main prompt, as no grip writes its own here — `** COLUMN COUNT **`, `Colum
 `Specify radius or [Base point/Copy/Undo/eXit]:`; `** ANGLE BETWEEN ITEMS **`,
 `Specify angle between items:`; `** ITEM SPACING **`, `Distance between items or [Base point]:`
 (d14–d16, spaced as AutoCAD writes them) —; a number typed at the corner, and a point typed while a
-move grip is hot at the main prompt; U echoing `Grip Edit`
-after a grip edit and `Modify Property` after a palette edit (d14, d20), here nothing; the
+move grip is hot at the main prompt; the
 palette's Base X and Base Y edits, which move the base point alone, the items staying (d20b: the
 Base point option), and Center X, Y and Z edits (**unverified**); the palette's rows of options not
 built — Levels, Level spacing, a ring's or a path array's Rows, Row spacing and Row elevation
-increment, Start offset, Fill entire path (d13); the palette's object filter counting it with the
-block references; LIST's `ARRAY` report (p401, p403–p406); ARRAYEDIT (p419–p421) and
+increment, Start offset, Fill entire path (d13); LIST's `ARRAY` report (p401, p403–p406); ARRAYEDIT (p419–p421) and
 ARRAYCLOSE; no cap on the items but 32767 each way, a large array costing what as many loose
 copies cost to draw and pick; Unit cell's rubber band dashed, as the trace's UseDashedLine 1 says (p123;
 solid here: **unverified** on the desktop); Base point (`Specify base point or [Key point] <centroid>:`, es

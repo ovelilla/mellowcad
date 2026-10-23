@@ -2730,8 +2730,9 @@ describe("the array's grips (AYG-01)", () => {
     }
   })
 
-  // desktop arrays/d14 history: one step each, which U takes back.
-  it("is one undo step", () => {
+  // desktop arrays/d14 history: one step each, which U takes back naming
+  // `Grip Edit`.
+  it("is one undo step, which U names Grip Edit", () => {
     const cad = figure("rectangular")
     const before = arrayOf(cad)
 
@@ -2739,6 +2740,7 @@ describe("the array's grips (AYG-01)", () => {
     expect(arrayOf(cad).array).toMatchObject({ columns: 6 })
     answer(cad, "_U")
 
+    expect(cad.commandLog().slice(-2)).toEqual(["U", "Grip Edit"])
     expect(arrayOf(cad)).toEqual(before)
   })
 
@@ -2959,7 +2961,8 @@ describe("the array's palette (AYG-02)", () => {
     ])
   })
 
-  // desktop arrays/d20a: Columns 5; one step, U taking it back.
+  // desktop arrays/d20a: Columns 5; one step, U taking it back naming
+  // `Modify Property`.
   it("retypes a grid's counts and spacings", () => {
     const cad = figure("rectangular")
     const before = arrayOf(cad)
@@ -2976,6 +2979,7 @@ describe("the array's palette (AYG-02)", () => {
     expect(retype(cad, "Column spacing", "0")).toBe(false)
 
     answer(cad, "_U", "_U", "_U")
+    expect(cad.commandLog().slice(-2)).toEqual(["U", "Modify Property"])
     expect(arrayOf(cad)).toEqual(before)
   })
 

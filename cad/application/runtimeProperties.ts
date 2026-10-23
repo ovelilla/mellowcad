@@ -9,7 +9,6 @@ import {
   Entity,
   EntityId,
   EntityProperty,
-  EntityType,
   entityPointToWorld,
   worldToEntity,
   isZProperty,
@@ -43,6 +42,8 @@ import type { EngineText } from "./EngineText"
 import {
   buildSelectionInfo,
   commonStyleId,
+  objectType,
+  type ObjectType,
   type PropertiesFilterOption,
   type PropertiesUi,
 } from "./EngineState"
@@ -444,34 +445,40 @@ export function commonSelectionLineweight(
  */
 export function filterByType(
   entities: readonly Entity[],
-  type: EntityType | null
+  type: ObjectType | null
 ): readonly Entity[] {
   if (type === null) return entities
-  const kept = entities.filter((entity) => entity.type === type)
+  const kept = entities.filter((entity) => objectType(entity) === type)
   return kept.length === 0 ? entities : kept
 }
 
 /**
  * The Properties palette's state: the object type drop-down (All first when
- * the selection mixes types, then each type in the order it was picked) and
- * every value over the objects that drop-down leaves.
+ * the selection mixes types, then each type, most objects first: desktop
+ * properties/d06-2, e01) and every value over the objects that drop-down
+ * leaves.
  */
 export function buildPropertiesUi(
   entities: readonly Entity[],
-  filter: EntityType | null,
+  filter: ObjectType | null,
   settings: DocumentSettings,
   text: EngineText,
   vertex = 0,
   blocks?: BlockLookup
 ): PropertiesUi {
-  const counts = new Map<EntityType, number>()
+  const counts = new Map<ObjectType, number>()
   for (const entity of entities) {
-    counts.set(entity.type, (counts.get(entity.type) ?? 0) + 1)
+    const type = objectType(entity)
+    counts.set(type, (counts.get(type) ?? 0) + 1)
   }
-  const types: PropertiesFilterOption[] = [...counts].map(([type, count]) => ({
-    type,
-    label: text.propertiesFilter(type, count),
-  }))
+  // A stable sort: types of one count keep the order they were picked in
+  // (unverified, PROPS-D64).
+  const types: PropertiesFilterOption[] = [...counts]
+    .sort(([, a], [, b]) => b - a)
+    .map(([type, count]) => ({
+      type,
+      label: text.propertiesFilter(type, count),
+    }))
   const filters: PropertiesFilterOption[] =
     types.length > 1
       ? [

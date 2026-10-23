@@ -15,11 +15,13 @@ import type {
   PromptId,
 } from "../locales/types"
 import type {
+  ArrayKind,
   DimensionKind,
   Entity,
   EntityType,
   TextJustify,
 } from "../domain/entities"
+import type { ObjectType } from "./EngineState"
 import type { SnapType } from "./snapping/types"
 import type { ViewPreset } from "./tools/viewPresets"
 import type { CompassLetter, ViewCubeFace } from "./viewCube"
@@ -159,12 +161,17 @@ export class EngineText {
     return this.format(this.ui.property.title[id], { count })
   }
 
-  /** An entry of the Properties palette's object type drop-down: `All (6)`, `Line (5)`. */
-  propertiesFilter(type: EntityType | null, count: number): string {
+  /**
+   * An entry of the Properties palette's object type drop-down: `All (6)`,
+   * `Line (5)`, `Array (Rectangular) (1)`.
+   */
+  propertiesFilter(type: ObjectType | null, count: number): string {
     const title = this.ui.property.title
-    return type === null
-      ? this.format(title.all, { count })
-      : this.format(title.type, { type: this.entity(type, 1), count })
+    if (type === null) return this.format(title.all, { count })
+    const name = type.endsWith("Array")
+      ? this.format(this.ui.array[type.slice(0, -"Array".length) as ArrayKind])
+      : this.entity(type as EntityType, 1)
+    return this.format(title.type, { type: name, count })
   }
 
   propertyGroup(id: keyof Property["group"]): string {

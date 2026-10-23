@@ -9,7 +9,6 @@ import {
   Entity,
   EntityId,
   EntityProperty,
-  EntityType,
   closestOnEntity,
   entityPointToWorld,
   splineDataPoints,
@@ -150,6 +149,7 @@ import {
   buildTextStyleInfos,
   CommandOptionUi,
   EngineState,
+  ObjectType,
   RolloverUi,
   PaletteTab,
   SelectionScope,
@@ -483,7 +483,7 @@ export class CadRuntime extends Observable {
   private paletteOpen: boolean
   private paletteTab: PaletteTab = "properties"
   // The Properties palette's object type filter; null is All.
-  private propertiesFilter: EntityType | null = null
+  private propertiesFilter: ObjectType | null = null
   // The Properties palette's current vertex of a polyline (its Vertex row).
   private paletteVertex = 0
   // Whether the Drawing Units dialog (UNITS) is showing.
@@ -2756,8 +2756,9 @@ export class CadRuntime extends Observable {
   /**
    * How U and REDO name a step: its command (`LINE`), consecutive ZOOMs or
    * a group with its commands, last first when taken back (`ZOOM 'ZOOM`,
-   * `GROUP CIRCLE LINE`); a mark, or an edit made with no command, nothing,
-   * but a selection dragged (`DROPGEOM GROUP`).
+   * `GROUP CIRCLE LINE`); an edit made outside a command by where it was
+   * made (`CHPROP`, `Grip Edit`, `DROPGEOM GROUP`); a mark, or CECOLOR set
+   * from a drop-down, nothing (desktop properties/d05-3).
    */
   private stepName(step: Step, undone: boolean): string | null {
     if (step.kind === "mark") return null
@@ -3679,22 +3680,36 @@ export class CadRuntime extends Observable {
     )
   }
 
+  private executeOutside(command: Command, name: string): void {
+    this.outside(name, () => this.history.execute(command))
+  }
+
   /**
    * A change made from a bar or a palette: at `Command:` a step of its own,
    * named `name`; while a command runs it joins that command's step, as a
    * palette's change does.
    */
-  private executeOutside(command: Command, name: string): void {
-    if (this.activeTool.id !== "select") {
-      this.history.execute(command)
-      return
-    }
+  private outside<T>(name: string, edit: () => T): T {
+    if (this.activeTool.id !== "select") return edit()
     this.history.nameCommand(name)
     try {
-      this.history.execute(command)
+      return edit()
     } finally {
       this.history.nameCommand(null)
     }
+  }
+
+  /**
+   * What U and REDO name an edit of the selected objects made outside a
+   * command: the top bar's drop-downs' `CHPROP` (desktop properties/d05-2,
+   * d05-3b), the Properties palette's `Modify Property` (arrays/d20). WHY
+   * the English words for the palette's in Spanish too: no Spanish palette
+   * edit was probed (PROPS-D65).
+   */
+  private propertyStep(scope: SelectionScope): string {
+    return this.text.message(
+      scope === "selection" ? "changePropertiesStep" : "modifyPropertyStep"
+    )
   }
 
   /**
@@ -3739,7 +3754,14 @@ export class CadRuntime extends Observable {
   }
 
   setSelectionLayer(id: LayerId, scope: SelectionScope = "selection"): void {
-    setSelectionLayer(this.document, this.editableIds(scope), this.history, id)
+    this.outside(this.propertyStep(scope), () =>
+      setSelectionLayer(
+        this.document,
+        this.editableIds(scope),
+        this.history,
+        id
+      )
+    )
   }
 
   /**
@@ -3756,11 +3778,13 @@ export class CadRuntime extends Observable {
     color: EntityColor | typeof COLOR_BYLAYER,
     scope: SelectionScope = "selection"
   ): void {
-    setSelectionColor(
-      this.document,
-      this.editableIds(scope),
-      this.history,
-      color
+    this.outside(this.propertyStep(scope), () =>
+      setSelectionColor(
+        this.document,
+        this.editableIds(scope),
+        this.history,
+        color
+      )
     )
   }
 
@@ -3768,11 +3792,13 @@ export class CadRuntime extends Observable {
     linetype: LinetypeId | typeof LINETYPE_BYLAYER,
     scope: SelectionScope = "selection"
   ): void {
-    setSelectionLinetype(
-      this.document,
-      this.editableIds(scope),
-      this.history,
-      linetype
+    this.outside(this.propertyStep(scope), () =>
+      setSelectionLinetype(
+        this.document,
+        this.editableIds(scope),
+        this.history,
+        linetype
+      )
     )
   }
 
@@ -3780,11 +3806,13 @@ export class CadRuntime extends Observable {
     lineweight: Lineweight | typeof LINEWEIGHT_BYLAYER,
     scope: SelectionScope = "selection"
   ): void {
-    setSelectionLineweight(
-      this.document,
-      this.editableIds(scope),
-      this.history,
-      lineweight
+    this.outside(this.propertyStep(scope), () =>
+      setSelectionLineweight(
+        this.document,
+        this.editableIds(scope),
+        this.history,
+        lineweight
+      )
     )
   }
 
@@ -3840,13 +3868,15 @@ export class CadRuntime extends Observable {
     if (property === "vertex") {
       return this.setPaletteVertex(this.scopeIds("properties"), text)
     }
-    return setSelectionProperty(
-      this.document,
-      this.editableIds("properties"),
-      this.history,
-      property,
-      text,
-      this.paletteVertex
+    return this.outside(this.propertyStep("properties"), () =>
+      setSelectionProperty(
+        this.document,
+        this.editableIds("properties"),
+        this.history,
+        property,
+        text,
+        this.paletteVertex
+      )
     )
   }
 
@@ -4221,11 +4251,13 @@ export class CadRuntime extends Observable {
   /** Puts every selected dimension on style `id` (individually undoable). */
   /** Puts the dimensions the Properties palette edits on style `id`. */
   setSelectionDimStyle(id: DimStyleId): void {
-    setSelectionDimStyle(
-      this.document,
-      this.editableIds("properties"),
-      this.history,
-      id
+    this.outside(this.propertyStep("properties"), () =>
+      setSelectionDimStyle(
+        this.document,
+        this.editableIds("properties"),
+        this.history,
+        id
+      )
     )
   }
 
@@ -4257,11 +4289,13 @@ export class CadRuntime extends Observable {
 
   /** Puts the text objects the Properties palette edits on style `id`. */
   setSelectionTextStyle(id: TextStyleId): void {
-    setSelectionTextStyle(
-      this.document,
-      this.editableIds("properties"),
-      this.history,
-      id
+    this.outside(this.propertyStep("properties"), () =>
+      setSelectionTextStyle(
+        this.document,
+        this.editableIds("properties"),
+        this.history,
+        id
+      )
     )
   }
 
@@ -4270,7 +4304,7 @@ export class CadRuntime extends Observable {
    * widens it to all with null ("modify the properties of a single object
    * type at a time"). The selection itself is kept.
    */
-  setPropertiesFilter(type: EntityType | null): void {
+  setPropertiesFilter(type: ObjectType | null): void {
     if (this.propertiesFilter === type) return
     this.propertiesFilter = type
     this.invalidateState()

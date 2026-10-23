@@ -1,7 +1,7 @@
 import { Listener } from "../shared/Observable"
 import { Vec2 } from "../geometry/Vec2"
 import { Layer, LayerNameRefusal } from "../domain/layers"
-import { EntityId, EntityProperty, EntityType } from "../domain/entities"
+import { EntityId, EntityProperty } from "../domain/entities"
 import { LengthUnit } from "../domain/units"
 import { Scene } from "../scene/types"
 import { DimStyle } from "../domain/dimStyles"
@@ -13,6 +13,7 @@ import {
 } from "../application/CadRuntime"
 import {
   EngineState,
+  ObjectType,
   PaletteTab,
   SelectionScope,
   ShortcutMenuAction,
@@ -389,7 +390,7 @@ export class CadEngine {
   }
 
   /** Narrows the Properties palette to one object type, or to all with null. */
-  setPropertiesFilter(type: EntityType | null): void {
+  setPropertiesFilter(type: ObjectType | null): void {
     this.runtime.setPropertiesFilter(type)
   }
 

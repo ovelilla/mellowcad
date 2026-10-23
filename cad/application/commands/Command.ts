@@ -38,7 +38,11 @@ export interface Replayed {
  */
 export interface Step {
   readonly kind: "command" | "group" | "mark"
-  /** The command that made it (`LINE`), or null for an edit made outside one. */
+  /**
+   * The command that made it (`LINE`), or the gesture an edit made outside
+   * one is named by (`Grip Edit`); null for one U names nothing (CECOLOR set
+   * from a drop-down).
+   */
   readonly name: string | null
   /** A group's commands, or consecutive ZOOMs', in the order they ran. */
   readonly names: readonly string[]

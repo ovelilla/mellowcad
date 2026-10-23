@@ -183,7 +183,7 @@
       "attdef": "{count, plural, one {Attribute Definition} other {Attribute Definitions}}",
       "dimension": "{count, plural, one {Dimension} other {Dimensions}}",
       "hatch": "{count, plural, one {Hatch} other {Hatches}}",
-      "insert": "{count, plural, one {Block reference} other {Block references}}"
+      "insert": "{count, plural, one {Block Reference} other {Block References}}"
     },
     "array": {
       "rectangular": "Array (Rectangular)",
@@ -1461,6 +1461,9 @@
       "undoGroup": "GROUP",
       "dropGeometryStep": "DROPGEOM GROUP",
       "layerManagerStep": "''.-LAYER",
+      "changePropertiesStep": "CHPROP",
+      "modifyPropertyStep": "Modify Property",
+      "gripEditStep": "Grip Edit",
       "uDisabled": "U command disabled.  Use UNDO command to turn it on",
       "redoDisabled": "{command, select, mredo {REDO and MREDO commands disabled} other {REDO command disabled}}. Use UNDO C to turn it on.",
       "requiresIntegerValueOrKeyword": "Requires an integer value {value}, or option keyword.",

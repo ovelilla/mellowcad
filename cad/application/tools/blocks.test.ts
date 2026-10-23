@@ -666,7 +666,8 @@ describe("the properties palette", () => {
     cad.select("I1")
 
     const info = cad.state().properties.info
-    expect(info?.title).toBe("Block reference")
+    // AutoCAD's name, capital R (desktop properties/d06-2).
+    expect(info?.title).toBe("Block Reference")
     const rows = info?.groups.flatMap((group) => group.rows) ?? []
     expect(rows.find((row) => row.label === "Name")?.value).toBe("BAR")
     expect(rows.find((row) => row.label === "Scale")?.edit?.property).toBe(

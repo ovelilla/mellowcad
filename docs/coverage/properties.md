@@ -232,10 +232,12 @@ TEXTLAYER (all "use current" initially, which is what everything does here), CET
 
 **Implemented:** the Properties panel's Match Properties, Object Color, Lineweight and Linetype, in
 that order: with objects selected they show their value (empty when mixed — **unverified**: the help
-documents only the Properties palette's `*VARIES*`) and a choice changes them in one undo step; with
-nothing selected they show the current settings, CECOLOR, CELWEIGHT and CELTYPE ("If no objects are
-selected, the drop-down lists … display the current settings for the drawing"), and a choice sets
-it, one undo step
+documents only the Properties palette's `*VARIES*`) and a choice changes them in one undo step, which
+U and REDO name `CHPROP` (es `CAMBPROP`, table 52586; desktop d05-2 for the Layers drop-down, d05-3b
+for Object Color; the Linetype and Lineweight drop-downs' unprobed, the same); with nothing selected
+they show the current settings, CECOLOR, CELWEIGHT and CELTYPE ("If no objects are selected, the
+drop-down lists … display the current settings for the drawing"), and a choice sets it, one undo
+step U names nothing (d05-3)
 
 **Missing:** Select Colors (the swatch beside the colour opens the browser's picker instead), the
 linetype list's Other… and the lineweight list's Lineweight Settings…, ByBlock and Default in the
@@ -249,14 +251,22 @@ CHAFLAN), and Ctrl+1 shows and hides it, as AutoCAD's does; WHY at the inline en
 documents no default side ("docked to either side of the drawing window"), and AutoCAD does not show
 the palette at first start ("not displayed by default"); here it is open from 1600 px of window,
 folded below, and the panel's width and fold are remembered; the object type drop-down at its top —
-`All (n)` and one entry per type with its count (`Line (5)`), only the type when the selection has
-one — narrows what the palette shows and edits ("modify the properties of a single object type at a
-time") and keeps the selection; it goes back to All when the selection changes; `No selection`
+`All (n)` and one entry per type with its count, the types by count, most first (`All (10)`,
+`Line (4)`, `Block Reference (3)`, `Circle (2)`, `Array (Rectangular) (1)`, desktop d06-2; es
+`Todos (7)`, `Línea (3)`, `Referencia a bloque (2)`, `Círculo (1)`, `Matriz (rectangular) (1)`,
+e01), an array a type of its own named by its kind (`Array (Polar)`, `Array (Path)`, es
+`Matriz (polar)`, `Matriz (de ruta)`: AcArrayRes 39923, 887, unseen in the drop-down), only the type
+when the selection has one — narrows what the palette shows and edits ("modify the properties of a
+single object type at a time") and keeps the selection; it goes back to All when the selection
+changes; an edit in the palette is one undo step U and REDO name `Modify Property` (desktop
+arrays/d20), a palette edit while a command runs that command's; `No selection`
 without one, when General shows the current settings ("When no objects are selected, only the
 current settings of general properties are displayed"): the current layer, which can be changed
 there, and the current colour, linetype and lineweight, each set there too ("you can view and change
 the current properties to be used for all new objects"), one undo step; General's Color, Layer,
-Linetype, Lineweight and Thickness in AutoCAD's order (desktop line/d16); geometry rows per entity
+Linetype, Lineweight and Thickness in AutoCAD's order (desktop line/d16), `*VARIES*` where the
+values differ (d06-1), in Spanish the desktop's own words (`General`, `Color`, `Capa`, `Tipo de
+línea`, `Grosor de línea`, `*VARIOS*`, `PorCapa`, e01-2); geometry rows per entity
 type, editable (retype a value), coordinates read and retyped in the current UCS, closed-polyline
 area; a line's one Geometry group in AutoCAD's order, Start X, Y, Z and End X, Y, Z retyped, Delta
 X, Y, Z, Length and Angle read-only (greyed there; es `Inicio X`, `Fin X`, `Incremento X`,
@@ -300,11 +310,10 @@ stepped and moved as a polyline's current vertex, the rest read-only, the Englis
 Material (d16); a polyline's Misc Linetype generation (`Disabled`, d08; PLINEGEN is not built, and
 a row is shown only where it can be changed as there); the width a closing segment takes from Closed
 (the polyline's constant width here, else none; **unverified**: AutoCAD keeps the last vertex's
-widths, which nothing stores here); the Spanish desktop's own labels (**unverified**, only the help
-page read); the current vertex's marker in the drawing, what Global width shows where the widths
+widths, which nothing stores here); the current vertex's marker in the drawing, what Global width shows where the widths
 vary (blank here, **unverified**), the geometry rows of several objects of one type (`*VARIES*`),
 text content, editing attribute values, MTEXT's rotation in the UCS
 (AutoCAD shows that one row there), a dimension's Z, the Normal rows on the other
-types (**unverified** which ones AutoCAD shows), the drop-down's order of types and its wording for
-a single object (**unverified**: `All (n)` and `Line (5)` are only in the help's screenshots), Quick
-Select, Toggle PICKADD, the Auto-hide and Allow Docking options, floating the palette
+types (**unverified** which ones AutoCAD shows), the drop-down's order for types of one count (the
+order picked here, **unverified**), `Modify Property`'s Spanish name (the English words here,
+**unverified**: no Spanish palette edit was probed), Quick Select, Toggle PICKADD, the Auto-hide and Allow Docking options, floating the palette
