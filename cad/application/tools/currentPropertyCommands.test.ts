@@ -14,6 +14,22 @@ import { es } from "../../locales/es"
 
 const RED = "#ff0000"
 
+/** Each answer typed at the command line and confirmed, as the console types it. */
+function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
+
+/** The lines `texts` add to the history. */
+function written(cad: CadHarness, ...texts: string[]): string[] {
+  const from = cad.commandLog().length
+  answer(cad, ...texts)
+  return cad.commandLog().slice(from)
+}
+
 /** The question the dynamic-input box is asking right now. */
 const asking = (cad: CadHarness) => cad.state().dynamicInput?.fields[0]
 
@@ -210,15 +226,70 @@ describe("-COLOR", () => {
     expect(asking(cad)?.label).toBe("Red,Green,Blue")
     cad.type("210,155,300").enter()
     expect(cad.activeToolId()).toBe("color")
-    cad.type("210, 155, 95").enter()
+    cad.type("210,155,95").enter()
 
     expect(cad.state().currentColor).toBe("#d29b5f")
     cad.command("-COLOR")
     expect(asking(cad)?.placeholder).toBe("210,155,95")
   })
 
-  it.each(["0", "8", "byblock", "pink"])(
-    "asks again for %s, which it cannot draw",
+  it("refuses at Red,Green,Blue two values, one past 255, spaces and Enter (probes properties/p119, p120, p139s, p124)", () => {
+    const cad = createHarness()
+    answer(cad, "-COLOR", "_T")
+
+    // A space is the prompt's Enter in AutoCAD: `210, 155, 95` answers
+    // `210,` there, which it refuses (p139s).
+    expect(written(cad, "255,0", "300,0,0", "210, 155, 95", "")).toEqual([
+      "Red,Green,Blue: 255,0",
+      "Invalid color.  Type three comma separated values from 0 to 255.",
+      "Red,Green,Blue: 300,0,0",
+      "Invalid color.  Type three comma separated values from 0 to 255.",
+      "Red,Green,Blue: 210, 155, 95",
+      "Invalid color.  Type three comma separated values from 0 to 255.",
+      "Red,Green,Blue:",
+      "Invalid color.  Type three comma separated values from 0 to 255.",
+    ])
+    expect(written(cad, "1,2,3")).toEqual(["Red,Green,Blue: 1,2,3"])
+    answer(cad, "-COLOR")
+    expect(cad.state().commandLine.prompt).toBe(
+      "-COLOR Enter default object color [Truecolor] <1,2,3>:"
+    )
+  })
+
+  it.each([
+    ["0", "p100"],
+    ["256", "p105"],
+    ["-1", "p106"],
+  ])(
+    "refuses %s as an invalid colour number (probe properties/%s)",
+    (typed) => {
+      const cad = createHarness()
+      answer(cad, "-COLOR")
+
+      expect(written(cad, typed)).toEqual([
+        `Enter default object color [Truecolor] <BYLAYER>: ${typed}`,
+        "Invalid color number.",
+      ])
+      expect(cad.activeToolId()).toBe("color")
+    }
+  )
+
+  it("needs a colour number or name for 1.5 and FOO (probes properties/p135, p116)", () => {
+    const cad = createHarness()
+    answer(cad, "-COLOR")
+
+    expect(written(cad, "1.5", "FOO")).toEqual([
+      "Enter default object color [Truecolor] <BYLAYER>: 1.5",
+      "A color number or standard color name is required.",
+      "Enter default object color [Truecolor] <BYLAYER>: FOO",
+      "A color number or standard color name is required.",
+    ])
+  })
+
+  // WHY asked again: AutoCAD takes 8 (p103) and ByBlock (p114, p115); this
+  // build has no RGB for 8–255 and does not model ByBlock.
+  it.each(["8", "byblock", "_BYBLOCK"])(
+    "asks again for %s, which AutoCAD takes and this build cannot draw",
     (typed) => {
       const cad = createHarness()
 
@@ -229,16 +300,93 @@ describe("-COLOR", () => {
     }
   )
 
-  it("keeps the colour with Enter, and is one undo step either way", () => {
+  it("asks which of BYBlock and BYLayer BY means (probe properties/p139t)", () => {
+    const cad = createHarness()
+    cad.runtime.setCurrentColor(RED)
+    answer(cad, "-COLOR")
+
+    expect(written(cad, "BY", "BYL")).toEqual([
+      "Enter default object color [Truecolor] <1 (red)>: BY",
+      "Ambiguous response, please clarify...",
+      "BYBlock or BYLayer? BYL",
+    ])
+    expect(cad.state().currentColor).toBe("ByLayer")
+  })
+
+  it("keeps the colour with Enter, and is one undo step either way (probes properties/p129, p128)", () => {
     const cad = createHarness()
     cad.command("-COLOR").enter()
-    // A run that changes nothing is a step U names (move/p235).
+    // A run that changes nothing is a step U names.
     cad.command("_U")
     expect(cad.commandLog().at(-1)).toBe("-COLOR")
 
     cad.command("-COLOR").type("2").enter().undo()
 
     expect(cad.state().currentColor).toBe("ByLayer")
+  })
+
+  it("is taken back by UNDO 2 and put back by REDO, each naming the steps (probe properties/p130)", () => {
+    const cad = createHarness()
+    answer(cad, "-COLOR", "1", "-COLOR", "2")
+
+    expect(written(cad, "UNDO", "2").at(-1)).toBe("-COLOR -COLOR")
+    expect(cad.state().currentColor).toBe("ByLayer")
+    expect(written(cad, "REDO")).toEqual([
+      "REDO",
+      "-COLOR -COLOR",
+      "Everything has been redone",
+    ])
+    expect(cad.state().currentColor).toBe("#ffff00")
+  })
+
+  it("runs 'ZOOM at its prompt and resumes, at the command line and in the box (probe properties/p134)", () => {
+    const cad = createHarness()
+    answer(cad, "-COLOR")
+
+    expect(written(cad, "'ZOOM", "E")).toEqual([
+      "Enter default object color [Truecolor] <BYLAYER>: 'ZOOM",
+      // ZOOM's own prompt, as this build words it (its options: view.md).
+      ">>Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: E",
+      "** Requires a regen, cannot be transparent.",
+      "Resuming -COLOR command.",
+    ])
+    cad.type("'ZOOM").enter()
+    expect(cad.activeToolId()).toBe("zoom")
+    cad.type("E").enter()
+    expect(cad.commandLog().at(-1)).toBe("Resuming -COLOR command.")
+    cad.type("1").enter()
+    expect(cad.state().currentColor).toBe(RED)
+  })
+
+  it("gives each LINE segment run through it the colour current as it starts (probe properties/p126)", () => {
+    const cad = createHarness()
+    answer(cad, "LINE", "0,0")
+
+    expect(
+      written(cad, "'-COLOR", "1", "@10,0", "'-COLOR", "2", "@0,10", "")
+    ).toEqual([
+      "Specify next point or [Undo]: '-COLOR",
+      ">>Enter default object color [Truecolor] <BYLAYER>: 1",
+      "Resuming LINE command.",
+      "Specify next point or [Undo]: @10,0",
+      "Specify next point or [Undo]: '-COLOR",
+      ">>Enter default object color [Truecolor] <1 (red)>: 2",
+      "Resuming LINE command.",
+      "Specify next point or [Undo]: @0,10",
+      "Specify next point or [Close/Undo]:",
+    ])
+    expect(cad.entities().map((e) => e.color)).toEqual([RED, "#ffff00"])
+  })
+
+  it("runs as COLOUR in English, not in Spanish (probes properties/p137, p137b)", () => {
+    const cad = createHarness()
+    expect(written(cad, "COLOUR")[0]).toBe("COLOUR COLOR")
+    expect(cad.activeToolId()).toBe("color")
+
+    const spanish = createHarness({ locale: es })
+    expect(written(spanish, "COLOUR")).toEqual([
+      'Comando "COLOUR" desconocido. Pulse F1 para obtener ayuda.',
+    ])
   })
 
   it.each(["COLOR", "-COLOR"])("runs as %s in Spanish", (name) => {
@@ -254,6 +402,62 @@ describe("-COLOR", () => {
 
     cad.command(name).type("co").enter().type("0,0,255").enter()
     expect(cad.state().currentColor).toBe("#0000ff")
+  })
+  it("runs as COL in Spanish, and offers <1 (rojo)> after 1 (probes properties/p136, p101)", () => {
+    const cad = createHarness({ locale: es })
+    answer(cad, "COL", "1", "-COLOR")
+
+    expect(cad.state().commandLine.prompt).toBe(
+      "-COLOR Indique el color de objeto por defecto [COlorverdadero] <1 (rojo)>:"
+    )
+  })
+
+  it("takes porCapa's C in Spanish, at the command line and in the box (probe properties/p113c)", () => {
+    const cad = createHarness({ locale: es })
+    cad.runtime.setCurrentColor("#00ff00")
+    answer(cad, "-COLOR", "C")
+    expect(cad.state().currentColor).toBe("ByLayer")
+
+    cad.runtime.setCurrentColor("#00ff00")
+    cad.command("-COLOR").type("C").enter()
+    expect(cad.state().currentColor).toBe("ByLayer")
+  })
+
+  it.each([
+    ["RED", RED, "p107b"],
+    ["BYLAYER", "ByLayer", "p113b"],
+    ["PORC", "ByLayer", "p113d"],
+  ])("takes %s in Spanish as %s (probe properties/%s)", (typed, color) => {
+    const cad = createHarness({ locale: es })
+    cad.runtime.setCurrentColor("#00ff00")
+
+    answer(cad, "-COLOR", typed)
+
+    expect(cad.state().currentColor).toBe(color)
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("refuses in Spanish the English words short: BY, BYL (probe properties/p139t)", () => {
+    const cad = createHarness({ locale: es })
+    answer(cad, "-COLOR")
+
+    expect(written(cad, "BY", "BYL")).toEqual([
+      "Indique el color de objeto por defecto [COlorverdadero] <PORCAPA>: BY",
+      "Se necesita un número o nombre de color normalizado.",
+      "Indique el color de objeto por defecto [COlorverdadero] <PORCAPA>: BYL",
+      "Se necesita un número o nombre de color normalizado.",
+    ])
+  })
+
+  // WHY asked again: AutoCAD takes it (p115), ByBlock is not modelled.
+  it("asks again for BYBLOCK in Spanish", () => {
+    const cad = createHarness({ locale: es })
+    answer(cad, "-COLOR", "BYBLOCK")
+
+    expect(cad.commandLog().at(-1)).toBe(
+      "Se necesita un número o nombre de color normalizado."
+    )
+    expect(cad.activeToolId()).toBe("color")
   })
 })
 

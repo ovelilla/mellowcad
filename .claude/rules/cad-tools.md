@@ -212,20 +212,20 @@ One session at a time:
 
 - **Coordinate prompt** — one `"coordinate"` field, collapsed to an `X,Y` / `Dist<Ang` box. Typed
   expressions (`@30,0`, `100<45`, `#x,y`) arrive via `session.commitRaw`, not `resolveValues`;
-  the runtime refuses `#` typed at the command line before it reaches the box (`answerPrompt`).
+  the runtime refuses `#` typed at the command line before it reaches the box.
 - **Keyword-only prompt** — `fields: []`: the option chips, focus left on the canvas (MIRROR's
-  Erase, FILLET's and OFFSET's object prompts); a test answers it as `testing.md` says.
+  Erase, OFFSET's object prompt); a test answers it as `testing.md` says.
 - **One value at a time** — a box holds one value (a point's two aside, LINE's and RECTANG's):
   ARRAYRECT's values are prompts its keywords open, CHAMFER's distances two prompts. The offered
   value is the question's `enter`, taken in `commitRaw` when nothing is typed.
-- **Free-text prompt** — one `"text"` field: never a value (`resolveValues` refuses it), skipped by
-  the coordinate collapse, and **no keyword is dispatched from it**. A name prompt that also offers
-  keywords lists them in `commandOptions()` and reads the box with `ctx.text.resolveKeyword(typed,
-ids)`; a prompt that takes keywords alone (TEXT's Justify) is keyword-only, never a text field.
-  Editing a value preloads it with `setText` after `open` and hides the object
-  (`hiddenEntityIds`); a question opened inside a `commitRaw` may preload its default too. A field
-  the drawing words (an attribute's prompt) sets `label` instead of `prompt`.
-- **Multi-line text** — one `"paragraphs"` field (MTEXT's editor): a content field like `"text"`
+- **Free-text prompt** — one `"text"` field: never a value, skipped by the coordinate collapse, and
+  **no keyword is dispatched from it** (box or command line). A name prompt offering keywords lists
+  them in `commandOptions()` and reads them with `ctx.text.resolveKeyword(typed, ids)`; keywords
+  alone (TEXT's Justify) are keyword-only. A value that is also a word (-COLOR, -LWEIGHT) is
+  `askValueOrWord`, so `'ZOOM` runs there. Editing a value preloads it with `setText` after `open`
+  and hides the object (`hiddenEntityIds`); a question opened inside a `commitRaw` may preload its
+  default too. A field the drawing words (an attribute's prompt) sets `label` instead of `prompt`.
+- **Multi-line text** — one `"paragraphs"` field: a content field like `"text"`
   (test with `isContentField`, never `kind === "text"`); Enter breaks a line, Ctrl+Enter reaches
   `commitRaw`.
 

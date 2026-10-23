@@ -905,7 +905,8 @@ export const en: EngineCatalog = {
       ],
       "COLOR": [
         "COLOR",
-        "COL"
+        "COL",
+        "COLOUR"
       ],
       "-COLOR": [
         "-COLOR"
@@ -1030,7 +1031,8 @@ export const en: EngineCatalog = {
         "CYAN": "Cyan",
         "BLUE": "Blue",
         "MAGENTA": "Magenta",
-        "WHITE": "White"
+        "WHITE": "White",
+        "BYBLOCK": "BYBlock"
       },
       "LINETYPE": {
         "BYLAYER": "BYLayer"

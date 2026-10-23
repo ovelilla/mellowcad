@@ -170,27 +170,33 @@ plan is outlined, as AutoCAD fills one only seen along its extrusion direction
 **unverified**); the change shows at once rather than at the next regeneration (WHY in the tool:
 nothing here keeps a regenerated display apart); FILLMODE typed as a system variable
 
-### Colour · `COLOR` / `COL` · `-COLOR` · es `COLOR` · `-COLOR`
+### Colour · `COLOR` / `COL` / `COLOUR` · `-COLOR` · es `COLOR` / `COL` · `-COLOR`
 
 **Implemented:** ByLayer and ByObject per-object override; CECOLOR, the colour new objects take
-(saved in the drawing, initial ByLayer, one undo step): -COLOR, which COLOR runs too (WHY: the
+(saved in the drawing, initial ByLayer, one undo step that U, UNDO 2 and REDO name, `-COLOR -COLOR`,
+properties/p128–p130, also a run that changed nothing): -COLOR, which COLOR runs too (WHY: the
 Select Color dialog does not exist), asks `Enter default object color [Truecolor] <BYLAYER>:`
-offering the current one as AutoCAD 2023's console does (`BYLAYER`, `1 (red)`, `210,155,95`) and
-takes an index colour's number (1–7) or name by its keyword (`Red` / `R` … `White`, `BYLayer`; es
-`Rojo`, `Amarillo`, `Verde`, `cIán`, `aZul`, `Magenta`, `bLanco`, `porCapa`), or with Truecolor
-`Red,Green,Blue:` three values from 0 to 255 separated by commas (es
-`Indique el color de objeto por defecto [COlorverdadero]`, `Rojo,Verde,Azul`); a word it cannot read
-says `A color number or standard color name is required.` (es
-`Se necesita un número o nombre de color normalizado.`), a number past 255 `Invalid color number.`
-(es `Número de color no válido.`), a bad true colour
-`Invalid color.  Type three comma separated values from 0 to 255.` (es
-`Color no válido. Escriba tres valores separados por comas comprendidos entre 0 y 255.`), and asks
-again; Enter keeps it; es offers `<PORCAPA>` (p200); **unverified**: es `1 (rojo)`; COL is the
-shortcut guide's alias (COLOUR could not be verified)
+offering the current one as AutoCAD 2027's console does (`BYLAYER`, `1 (red)`, es `1 (rojo)`,
+`210,155,95`; p101, p117, p119) and takes an index colour's number (1–7) or name by its keyword
+(`Red` / `R` … `White`, `BYLayer`; es `Rojo`, `Amarillo`, `Verde`, `cIán`, `aZul`, `Magenta`,
+`bLanco`, `porCapa`: table 26289, whose words are its hidden keywords, so es `C` is porCapa, p113c,
+and `BY` asks `BYBlock or BYLayer?`, p139t), in Spanish also the English names whole (`RED`,
+`BYLAYER`, p107b, p113b; `BYL` refused, p139t), or with Truecolor `Red,Green,Blue:` three values
+from 0 to 255 separated by commas, no space (Space is Enter there, p139s; the box keeps one and
+refuses it) (es `Indique el color de objeto por defecto [COlorverdadero]`, `Rojo,Verde,Azul`); a
+word it cannot read or a fraction says `A color number or standard color name is required.` (es `Se
+necesita un número o nombre de color normalizado.`; p116, p135), 0, a negative number or one past
+255 `Invalid color number.` (es `Número de color no válido.`; p100, p105, p106), a bad true colour
+or Enter there `Invalid color.  Type three comma separated values from 0 to 255.` (es `Color no
+válido. Escriba tres valores separados por comas comprendidos entre 0 y 255.`; p119, p120, p124),
+and asks again; Enter keeps it; es offers `<PORCAPA>` (line/p200); transparent (`'-COLOR` mid-LINE
+gives each segment the colour current as it starts, p126), and `'ZOOM` runs at its prompt and
+resumes it (p134); COL is an alias in both languages (p136), COLOUR in English only (p137, p137b)
 
-**Missing:** the index colours 8–255 (their RGB values are not in the help), ByBlock (not modelled),
-a true colour apart from the index colour of its RGB (`Truecolor` 255,0,0 reads back as `1 (red)`,
-where AutoCAD keeps `255,0,0` on the object and in -COLOR's `<255,0,0>`, p200: an object stores one
+**Missing:** the index colours 8–255 (their RGB values are not in the help, p103: asked again),
+ByBlock (not modelled: `BYBlock`, es `porBloque`, `BYBLOCK` asked again, p114, p115), a true
+colour apart from the index colour of its RGB (`Truecolor` 255,0,0 reads back as `1 (red)`, where
+AutoCAD keeps `255,0,0` on the object and in -COLOR's `<255,0,0>`, line/p200: an object stores one
 RGB here),
 Colorbook, CECOLOR's `RGB:` and HSL forms, the Select Color dialog, typing CECOLOR, CELTYPE or
 CELWEIGHT as a system variable (no SETVAR), the per-type defaults HPLAYER and HPCOLOR, DIMLAYER,

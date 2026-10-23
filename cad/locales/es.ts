@@ -886,7 +886,8 @@ export const es: EngineLocale = {
         "LIMPIAPANTDES"
       ],
       "COLOR": [
-        "COLOR"
+        "COLOR",
+        "COL"
       ],
       "-COLOR": [
         "-COLOR"
@@ -1397,7 +1398,8 @@ export const es: EngineLocale = {
         "CYAN": "cIán",
         "BLUE": "aZul",
         "MAGENTA": "Magenta",
-        "WHITE": "bLanco"
+        "WHITE": "bLanco",
+        "BYBLOCK": "porBloque"
       },
       "LINETYPE": {
         "?": "?",

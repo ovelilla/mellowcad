@@ -478,7 +478,7 @@
       "SETVAR": ["SETVAR"],
       "CLEANSCREENON": ["CLEANSCREENON"],
       "CLEANSCREENOFF": ["CLEANSCREENOFF"],
-      "COLOR": ["COLOR", "COL"],
+      "COLOR": ["COLOR", "COL", "COLOUR"],
       "-COLOR": ["-COLOR"],
       "LINETYPE": ["LINETYPE", "LT"],
       "-LINETYPE": ["-LINETYPE"],
@@ -907,7 +907,8 @@
         "CYAN": "Cyan",
         "BLUE": "Blue",
         "MAGENTA": "Magenta",
-        "WHITE": "White"
+        "WHITE": "White",
+        "BYBLOCK": "BYBlock"
       },
       "LINETYPE": { "?": "?", "Set": "Set", "BYLAYER": "BYLayer" },
       "LWEIGHT": { "?": "?", "BYLAYER": "BYLayer" }

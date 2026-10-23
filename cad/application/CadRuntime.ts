@@ -1370,7 +1370,10 @@ export class CadRuntime extends Observable {
       return
     }
     if (this.pointModifierFirst(text)) return
-    if (this.invokeToolOption(text)) return
+    // A free-text prompt reads its own keywords, as its box does
+    // (`commitDynamicInput`): the runtime's looser match would take a
+    // word's start as a keyword there.
+    if (!this.takesText() && this.invokeToolOption(text)) return
     if (this.clarifyingWords() !== null) {
       this.answering(text, () => this.unclarified(false))
       return

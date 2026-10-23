@@ -15,7 +15,8 @@ function answer(cad: CadHarness, ...texts: string[]): CadHarness {
 
 // Each transcript is AutoCAD 2023's console answering the same input, with
 // the drawing's precision (2 here, 4 in AutoCAD's template) and the options
-// this build has (no Create or Load, no COlorbook).
+// this build has (no Create or Load, no COlorbook); one a 2027 probe holds
+// cites it.
 describe("the settings commands ask as AutoCAD 2026", () => {
   it("LTSCALE offers the current factor and refuses what is no positive number", () => {
     const cad = createHarness()
@@ -69,6 +70,8 @@ describe("the settings commands ask as AutoCAD 2026", () => {
     ])
   })
 
+  // Held on 2027 by probes properties/p116 (FOO), p105 (past 255) and p124
+  // (any text at Red,Green,Blue).
   it("-COLOR offers the current colour and refuses a number past 255", () => {
     const cad = createHarness()
     cad.command("-COLOR")

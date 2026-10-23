@@ -10,15 +10,28 @@ import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
   ToolQuestion,
 } from "./Tool"
+import { askValueOrWord } from "./valueWordPrompt"
 
 /** The words -COLOR reads as a colour: ByLayer and the first seven index colours, by name. */
 const BY_LAYER = "BYLAYER"
+const BY_BLOCK = "BYBLOCK"
 const NAMES: readonly string[] = STANDARD_COLORS.map((color) =>
   color.id.toUpperCase()
+)
+
+/**
+ * Table 26289's words, which the prompt declares and leaves out of its list,
+ * hidden and in its order so that a letter answers the one AutoCAD's does:
+ * Spanish `C` is porCapa, not COlorverdadero (properties/p113c), and `BY`
+ * asks `BYBlock or BYLayer?` (p139t). ByBlock is not modelled: refused.
+ */
+const HIDDEN: readonly CommandOption[] = [...NAMES, BY_BLOCK, BY_LAYER].map(
+  (id) => ({ id, hidden: true })
 )
 
 /**
@@ -31,6 +44,9 @@ const NAMES: readonly string[] = STANDARD_COLORS.map((color) =>
  *
  * Not done: the index colours 8–255 (their RGB values are not in the help),
  * ByBlock (not modelled), Colorbook. Anything else asks again.
+ *
+ * Its prompt is an integer prompt that takes words (properties/p113c's
+ * trace), so its box is a value's, not a text's: `askValueOrWord`.
  */
 export class ColorTool implements Tool {
   readonly id = "color"
@@ -65,27 +81,37 @@ export class ColorTool implements Tool {
       : "trueColor"
   }
 
+  takes(): QuestionInput | null {
+    return this.phase === "color" ? { refusal: "colorRequired" } : null
+  }
+
   commandOptions(): readonly CommandOption[] {
-    return this.phase === "color" ? [{ id: "Truecolor" }] : []
+    return this.phase === "color" ? [{ id: "Truecolor" }, ...HIDDEN] : []
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    if (this.phase !== "color" || id !== "Truecolor") return "unhandled"
-    this.askTrueColor(ctx)
+    if (this.phase !== "color") return "unhandled"
+    if (id === "Truecolor") this.askTrueColor(ctx)
+    else if (id === BY_LAYER) this.finish(COLOR_BYLAYER, ctx)
+    else if (NAMES.includes(id)) {
+      this.finish(STANDARD_COLORS[NAMES.indexOf(id)].value, ctx)
+    } else return "unhandled"
     return "continue"
   }
 
   private askColor(ctx: ToolContext): void {
     this.phase = "color"
     this.current = this.colorWord(ctx)
-    ctx.dynamicInput.open({
-      fields: [{ id: "color", prompt: "defaultObjectColor", kind: "text" }],
-      commit: () => {},
-      commitRaw: (commitCtx) => this.answerColor(commitCtx),
-    })
-    ctx.dynamicInput.setLiveText("color", this.colorWord(ctx))
-    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
-    ctx.requestRender()
+    askValueOrWord(
+      ctx,
+      {
+        field: "color",
+        prompt: "defaultObjectColor",
+        shown: this.current,
+        at: this.lastScreen,
+      },
+      (typed, answerCtx) => this.answerColor(typed, answerCtx)
+    )
   }
 
   private askTrueColor(ctx: ToolContext): void {
@@ -108,40 +134,30 @@ export class ColorTool implements Tool {
     ctx.requestRender()
   }
 
-  private answerColor(ctx: ToolContext): boolean {
-    const typed = ctx.dynamicInput.getText("color").trim()
-    if (typed === "") {
-      ctx.endCommand()
-      return true
-    }
-    const index = /^\d+$/.test(typed) ? Number(typed) : null
-    if (index !== null) {
+  private answerColor(typed: string, ctx: ToolContext): void {
+    if (typed === "") return ctx.endCommand()
+    // A signed integer is a colour number, as AutoCAD's integer prompt reads
+    // it: −1 is refused as one (p106).
+    if (/^[-+]?\d+$/.test(typed)) {
+      const index = Number(typed)
       const standard = STANDARD_COLORS[index - 1]
-      if (standard) this.finish(standard.value, ctx)
-      else {
-        // WHY nothing said for 8 to 255: AutoCAD takes them, and only their
-        // RGB values are missing here.
-        if (index < 1 || index > 255) {
-          ctx.report(ctx.text.message("invalidColorNumber"), "error")
-        }
-        this.askColor(ctx)
+      if (standard) return this.finish(standard.value, ctx)
+      // WHY nothing said for 8 to 255: AutoCAD takes them, and only their
+      // RGB values are missing here.
+      if (index < 1 || index > 255) {
+        ctx.report(ctx.text.message("invalidColorNumber"), "error")
       }
-      return true
+      return this.askColor(ctx)
     }
-    const word = ctx.text.resolveKeyword(typed, [
-      "Truecolor",
-      BY_LAYER,
-      ...NAMES,
-    ])
-    if (word === "Truecolor") this.askTrueColor(ctx)
-    else if (word === BY_LAYER) this.finish(COLOR_BYLAYER, ctx)
-    else if (word !== null) {
-      this.finish(STANDARD_COLORS[NAMES.indexOf(word)].value, ctx)
-    } else {
-      ctx.report(ctx.text.message("colorRequired"), "error")
-      this.askColor(ctx)
+    // Spanish AutoCAD takes the standard names whole in English too, bare:
+    // `RED`, `BYLAYER` (p107b, p113b). Every other word is a hidden option.
+    const english = typed.toUpperCase()
+    if (english === BY_LAYER) return this.finish(COLOR_BYLAYER, ctx)
+    if (NAMES.includes(english)) {
+      return this.finish(STANDARD_COLORS[NAMES.indexOf(english)].value, ctx)
     }
-    return true
+    ctx.report(ctx.text.message("colorRequired"), "error")
+    this.askColor(ctx)
   }
 
   private finish(
@@ -171,9 +187,12 @@ export class ColorTool implements Tool {
   }
 }
 
-/** `210,155,95` → `#d29b5f`; null unless three integers from 0 to 255. */
+/**
+ * `210,155,95` → `#d29b5f`; null unless three integers from 0 to 255. No
+ * space between them: AutoCAD's Space is the prompt's Enter (p139s).
+ */
 function parseRgb(text: string): EntityColor | null {
-  const parts = text.split(",").map((part) => part.trim())
+  const parts = text.trim().split(",")
   if (parts.length !== 3 || !parts.every((part) => /^\d{1,3}$/.test(part))) {
     return null
   }

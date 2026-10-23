@@ -466,7 +466,7 @@
       "SETVAR": ["MODIVAR"],
       "CLEANSCREENON": ["LIMPIAPANTACT"],
       "CLEANSCREENOFF": ["LIMPIAPANTDES"],
-      "COLOR": ["COLOR"],
+      "COLOR": ["COLOR", "COL"],
       "-COLOR": ["-COLOR"],
       "LINETYPE": ["TIPOLIN"],
       "-LINETYPE": ["-TIPOLIN"],
@@ -938,7 +938,8 @@
         "CYAN": "cIán",
         "BLUE": "aZul",
         "MAGENTA": "Magenta",
-        "WHITE": "bLanco"
+        "WHITE": "bLanco",
+        "BYBLOCK": "porBloque"
       },
       "LINETYPE": { "?": "?", "Set": "Definir", "BYLAYER": "porCapa" },
       "LWEIGHT": { "?": "?", "BYLAYER": "porCapa" }
