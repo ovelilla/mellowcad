@@ -1,666 +1,114 @@
 # Text review (TEXT, MTEXT, -MTEXT, TEXTEDIT, STYLE)
 
-> **Status:** plan, 2026-10-23 — phases 0–4 in one session with skill `command-review`, the
-> seventeenth review of `docs/coverage/roadmap.md`'s order. It owns **the text objects and their
-> editors** (TEXT and MTEXT, their layout, grips, palette rows, the in-place editors, the text style
-> table). Commands: TEXT (DTEXT, DT), MTEXT (T, MT), -MTEXT, TEXTEDIT (ED, DDEDIT), STYLE (ST).
-> Executed in the same session, block by block (§12).
+> **Status:** done, 2026-10-23. Reviewed and executed in one session with skill `command-review`,
+> the seventeenth review of `docs/coverage/roadmap.md`'s order.
+>
+> It owns **the text objects and their editors**: TEXT and MTEXT, their layout, grips and palette
+> rows, the in-place editors, and the text style table. Commands: TEXT (DTEXT, DT), MTEXT (T, MT),
+> -MTEXT, TEXTEDIT (ED, DDEDIT), STYLE (ST).
+>
+> The full plan is in git: `git show 4936e05:docs/plans/text-review.md`. It holds the matrices,
+> the findings, decisions TEXT-D1 to D58, the refuted suspicions, and coverage and rules ↔ code.
 
-## 1. Summary
+## Summary
 
-0 critical, 9 high, 30 medium and 21 low findings over five blocks.
+There were 0 critical, 9 high, 30 medium and 21 low findings over five blocks, and all were
+executed.
 
-The worst three:
+The highs:
 
-- **TEXT's layout is not AutoCAD's** (TXO-01, TXO-02, TXT-02). AutoCAD scales Arial by the H
-  glyph's ink height (1466 units) and places text by its ink and its descent. Three ways this
-  shows here:
-  - a Bottom-justified text's box sits 0.296·h below its glyphs (p302: the BL baseline is at
-    +2.96044 for h 10);
-  - TL, Middle and BL texts are drawn where the browser's em box falls (SVG TL baseline −11.168
-    where AutoCAD's is −10);
-  - Enter in TEXT starts the next line 5/3·h down where Arial's spacing is 1.60641·h. The console
-    shows it (p122) and so does the desktop's in-place editor (d01-4).
-- **Escape does the opposite of AutoCAD's in both text editors.** In TEXT's editor AutoCAD keeps
-  the finished lines and drops the line being typed (d01-2); mellowcad commits it (TXT-22). In
-  TEXTEDIT on a single-line text, AutoCAD discards the edit and asks for the next object (d06-5,
-  d06-6); mellowcad keeps the edit (TED-07). MTEXT's Escape with changes asks
-  `Do you want to save your text changes?` (d05-5); mellowcad discards in silence (MTX-12).
-- **Style edits and the style drop-down break undo** (STY-01, STY-02):
-  - a new style or a style edit is not undoable, and U takes back the command before it, where
-    AutoCAD's U takes back the style (`-STYLE` p320, `STYLE` d07);
-  - the drop-down over N texts is N undo steps;
-  - TEXTEDIT's Last edits a text on a locked layer (TED-01, p244).
+- **TEXT's layout was not AutoCAD's.** AutoCAD scales Arial by the H glyph's ink height, 1466
+  units, and places text by its ink and its descent. Here:
+  - a Bottom-justified text's box sat 0.296·h below its glyphs (TXO-01, p302);
+  - TL, Middle and BL texts were drawn at the browser's em-box anchors (TXO-02);
+  - Enter in TEXT went 5/3·h down, where Arial's line is 1.60641·h (TXT-02, p122, d01-4).
+- **Escape did the opposite of AutoCAD's.**
+  - In TEXT's editor AutoCAD drops the line being typed; it was committed here (TXT-22, d01-2).
+  - In TEXTEDIT on a single-line text AutoCAD discards the edit; it was kept here (TED-07, d06).
+- **Undo:**
+  - text style edits were not undoable (STY-01, p320, d07);
+  - the style drop-down over N objects was N undo steps (STY-02);
+  - Enter at TEXT's Justify ended the command (TXT-01, p156).
+- **Locked layers:** TEXTEDIT's Last edited a text on a locked layer (TED-01, p244).
 
-The analogues left by earlier reviews both held:
-- **EXP-06**: an exploded MTEXT's lines stand where this layout puts them. AutoCAD lays MTEXT out
-  by ink extents (TXO-03, p303, p327, p332).
-- **MATCHPROP's Text special property** copies more than the style. TEXT→TEXT also copies height,
-  rotation, justification, width factor and oblique angle; TEXT↔MTEXT copies style, height and
-  rotation (TXO-09, d08).
+The analogues left by earlier reviews held, and both were fixed:
 
-| Block | Critical | High | Medium | Low |
-| --- | --- | --- | --- | --- |
-| STY — STYLE, the text style table, the style drop-down | 0 | 2 | 4 | 2 |
-| TXT — TEXT, DTEXT, -TEXT and TEXT's in-place editor | 0 | 3 | 11 | 9 |
-| MTX — MTEXT, -MTEXT and MTEXT's editor | 0 | 0 | 7 | 6 |
-| TED — TEXTEDIT, the double-click | 0 | 2 | 5 | 1 |
-| TXO — the text objects: metrics, layout, render, grips, palette, snaps, MATCHPROP, EXPLODE | 0 | 2 | 3 | 3 |
+- EXPLODE's texts from an MTEXT now land where AutoCAD's do: MTEXT is laid out by ink. This
+  closes EXP-06 (TXO-03).
+- MATCHPROP's Text property also copies height and rotation, and TEXT's justification (TXO-09,
+  d08).
 
-(TXT-18, a preselection at TEXTEDIT, is executed in TED; TXT-19, STYLE's, in STY.)
-
-Evidence:
-- about 190 console probes in es-ES and en-US (p00, p100–p166, p200–p289, p300–p336);
-- a desktop pass in the English profile (d01–d08), the only one: the Spanish words come from the
-  traces and the tables;
-- the tables `acmtedRes`, `texteditRes` and `acadres`;
-- `acad.pgp` (en and es);
-- `DoubleClickRoot.cui`;
+**Evidence:**
+- about 190 console probes in es-ES and en-US (p00, p100–p166, p200–p289, p300–p338);
+- a desktop pass in the English profile (d01–d08);
+- the `acmtedRes`, `texteditRes` and `acadres` tables;
+- `acad.pgp`, `DoubleClickRoot.cui`;
 - a plot of AutoCAD's text to PNG (p325).
 
-## 2. Inventory
+## Probes
 
-- **Commit** `a81a9bc`; AutoCAD 2027 `26.0`, `X.118.0.0`; tables `research/strings/` of
-  2026-10-20 (the build of the two reviews before).
-- **Tools**: `cad/application/tools/TextTool.ts`, `MTextTool.ts`, `TextEditTool.ts`; helpers
-  `currentProperties.ts`, `commandSettings.ts`, `objectSelection.ts` (`lastObject`),
-  `selectToolGrips.ts` / `selectToolEdits.ts` (text and MTEXT grips), `ExplodeTool.ts` (MTEXT →
-  TEXT), `MatchPropTool.ts`.
-- **Runtime**: `runtimeStyles.ts` (create, update, remove, the drop-down), `CadRuntime.ts`
-  (`createTextStyle`, `updateTextStyle`, `setCurrentTextStyle`, `doubleClick`), `EngineState.ts`
-  (text and MTEXT palette rows), `promptRefusal.ts` (`objectOrLast`), `runtimeCommands.ts`
-  (`-MTEXT`, `STYLE` → `showStyles("text")`).
-- **Domain**: `text.ts` (`measureTextWidth`, `textCorners`, the extents, `TEXT_LINE_SPACING_FACTOR`),
-  `mtext.ts` (`mtextLayout`, `wrapParagraph`, `mtextLineTexts`), `textStyles.ts`,
-  `textFontMetrics.ts` (generated by `scripts/fonts/metrics.ts`), `entityTypes.ts`,
-  `entityOverrides.ts` (`matchEntityProperties`), `Document.ts` (the style table).
-- **Scene**: `SceneBuilder.ts` (`textBaselineOf`), `SvgScenePresenter.ts`, `CanvasScenePresenter.ts`.
-- **Serialization**: `drawingFile.ts` (text, MTEXT, the style table).
-- **Registration**: `cad/locales/{en,es,ar}.json`. Names: TEXT `DT`, `DTEXT`; MTEXT `T`, `MT`;
-  -MTEXT; TEXTEDIT `DDEDIT`, `ED`; STYLE `ST`. es: TEXTO `T`; TEXTOM; -TEXTOM; EDITARTEXTO `ED`,
-  `DDEDIC`; ESTILO `EST`. Also the prompts, keywords, `keywordLabels` and `promptKeywords`.
-- **UI**: `components/cad/styles-control.tsx` (the Styles palette's text table), the rail entries,
-  the dynamic input's `paragraphs` field (MTEXT's editor), `content/commands.ts`.
-- **Tests**: `text.test.ts`, `mtext.test.ts`, `cad/domain/mtext.test.ts`, the text parts of
-  `entities.test.ts`, `styles.test.ts`, `attributes.test.ts`, `currentProperties.test.ts`,
-  `savedSettings.test.ts`, `ambiguousKeywords.test.ts`, `dynamicInputEnter.test.ts`,
-  `locale.test.ts`, `englishSurface.test.ts`, `drawingFile.test.ts`, `clipboard.test.ts`,
-  `SvgScenePresenter.test.ts`, `ucs.test.ts`.
-- **Knowledge**:
-  - coverage: `docs/coverage/draw.md` (TEXT, MTEXT), `modify.md` (TEXTEDIT, MATCHPROP's Text,
-    EXPLODE), `dimensions.md` (STYLE), `spanish.md`;
-  - rules: `cad-tools.md`, `cad-runtime.md` (double-click, settings split), `cad-engine.md`
-    (text measured by the engine, MTEXT contents, style tables), `cad-scene.md` (text anchors),
-    `cad-catalogs.md`.
-- **Related, reviewed for their part**:
-  - EXPLODE of an MTEXT (EXP-06, `docs/plans/pieces-review.md`);
-  - MATCHPROP's Text property (`docs/plans/properties-review.md`);
-  - ATTDEF's TEXT prompts, only as far as TEXT's own;
-  - MIRROR with MIRRTEXT;
-  - STRETCH of a justified text;
-  - the double-click (DBLCLKEDIT).
-- **Areas owned**: the text objects and their editors. **Cited** (only the contract was checked):
-  - the command line, point input, snaps, transparency, undo and grips (LINE review);
-  - `Select objects:` and the preselection (ERASE review);
-  - the Reference options (Transforms review);
-  - the style tables' general rules (Properties review).
-- **Not built, recorded only**:
-  - -STYLE, TEXTSTYLE typed as a variable, MTEDIT;
-  - Align and Fit, MTEXT's Columns;
-  - the Text Formatting tab, the Text Style dialog.
-
-## 3. Probes
-
-Console inputs are `scripts/research/probes/text/<id>.txt` (`.plain` untraced, `.es`/`.en` one
-locale), run with `scripts/research/probe.sh text <ids>`. The desktop pass is
-`scripts/research/probes/text/d01-d08.sh` with `lib-dsk-en.sh`. Transcripts, dumps and
-screenshots are in `research/probes/text/` (gitignored).
+Console inputs are `scripts/research/probes/text/<id>.txt`: `.plain` runs untraced, `.es` / `.en`
+in one locale. Run them with `scripts/research/probe.sh text <ids>`. The desktop pass is
+`scripts/research/probes/text/d01-d08.sh` with `lib-dsk-en.sh`. Transcripts and screenshots are in
+`research/probes/text/` (gitignored).
 
 | Id | What it asks |
 | --- | --- |
-| p00 | the version and the text variables (TEXTSTYLE, TEXTSIZE, TEXTEDITMODE, MTEXTFIXED, MTJIGSTRING, DTEXTED, TSPACEFAC, TSPACETYPE, MIRRTEXT…) |
-| p100–p166 | TEXT and -TEXT. Covers: every prompt; the 15 justifications and how the Current line names them; FOO, 0, negatives and Enter at each prompt; `?`; Style and its Current line; continuing below with Enter after LINE, ERASE, OPEN and U; the line spacing for Arial and txt.shx; U of TEXTSIZE, the justification, the rotation and TEXTSTYLE; an empty run; properties, ELEVATION and the UCS; point forms; snaps; transparency; the preselection of the five commands; the es names and keywords; ATTDEF's stacking |
-| p200–p289 | MTEXT and -MTEXT: the console's MTEXT, each option and its refusals, Columns, LASTPOINT, U and REDO, TEXTSTYLE under U, transparency, `MText:` with codes, properties and UCS, LUPREC, the declared keywords; TEXTEDIT: the settings line, Undo, Mode, Last on nothing, a line, a locked text, TEXTEDITMODE's storage and U, the aliases, attribute definitions, MTEDIT |
-| p300–p336 | the objects and STYLE. Covers: Standard's font in every template; `(textbox)` of 20 strings; the 13 justifications' DXF 10; 13 MTEXTs exploded; STRETCH; the Insertion, Endpoint and Node snaps; -STYLE's prompts, `?`, refusals and U; -RENAME; -PURGE; the fixed-height style at MTEXT and ATTDEF; TEXTSTYLE typed; a plot to PNG; a turned UCS; MIRROR; the wrap threshold; MATCHPROP in the console; ESTILODD / DDSTYLE |
-| d01 | TEXT's in-place editor: Enter between lines (txt.shx and Arial), Escape mid-line, an empty line, the dashed band, an empty run's TEXTSIZE |
-| d02 | the grips of Left, Right, MC, BL and TL texts; a drag of the DXF 10 grip |
-| d03 | MTEXT grips: two corners, Width with MC, BR |
-| d04 | the Properties palette on a TEXT and an MTEXT |
-| d05 | MTEXT: the jig, the editor, Escape with changes, Enter at the first corner |
-| d06 | a pick inside a text's box off its strokes; double-click on a TEXT and on an MTEXT; Escape in TEXTEDIT's editor |
-| d07 | STYLE's dialog with a preselection: New…, Close, U |
-| d08 | MATCHPROP TEXT→MTEXT, MTEXT→TEXT, TEXT→TEXT |
+| p00 | the version and the text variables |
+| p100–p166 | TEXT and -TEXT: every prompt, every justification, refusals, Style and `?`, Enter to continue, the line spacing, U of the settings, an empty run, properties and UCS, points, snaps, transparency, the preselection of the five commands, Spanish |
+| p200–p289 | MTEXT and -MTEXT: options and refusals, Columns, U, codes, LUPREC, the declared words. TEXTEDIT: settings, Undo, Mode, Last, locked, TEXTEDITMODE, aliases, MTEDIT |
+| p300–p338 | the objects and STYLE: Standard's font, `(textbox)`, the justifications' DXF 10, MTEXT layouts exploded, STRETCH, snaps, -STYLE, -RENAME, -PURGE, U of a style, a plot, MIRROR, the wrap threshold, aliases |
+| d01–d08 | en-US desktop: TEXT's editor, text and MTEXT grips, the palette, MTEXT's editor and Escape, picking and double-clicking text, TEXTEDIT's Escape, the Text Style dialog and U, MATCHPROP between texts |
 
-## 4. Matrix
+## Findings
 
-Each subagent's full report, with every cell's two citations and its scratch test, is kept with the
-transcripts. These are the cells that do not hold, or hold untested:
-
-### STY — the style table and STYLE
-
-| Row | Cell | State |
-| --- | --- | --- |
-| A | STYLE / ST, es ESTILO / EST | match · p334, p335 |
-| A | DDSTYLE, es ESTILODD (acad.pgp, discontinued section) | differs STY-05 · p334, p335 |
-| A | -STYLE, TEXTSTYLE typed | differs STY-04 (not in coverage) · p310–p322 |
-| B | the dialog (d07: Styles, Font, Size, Effects, Set Current, New…, Delete, Apply, Cancel→Close) against the Styles palette tab | differs STY-07 |
-| B | New…: `style1`, made current, a copy of the selected style | made current: match; name: differs STY-08 · d07-2, d07-3 |
-| B | rename onto a name in use, any case | differs STY-03 · p323, p324, p336 |
-| B | delete Standard, the current style, one in use | match · p319 · `styles.test.ts:224` |
-| F | U after a new style or an edit (`-STYLE`, `STYLE`) | differs STY-01 · p320, d07 |
-| F | the drop-down over two texts | differs STY-02 · scratch `c/styledrop` |
-| H | what a style holds (font, height, width, oblique, backwards, upside down, vertical) | known for font, width and oblique; the flags are missing from Missing · p310 |
-| H | a new drawing's Annotative style | differs STY-06 (to Missing) · p311 |
-| — | the preselection, kept by STYLE | differs TXT-19 · p160, d07 |
-| J | file and paste | match · `drawingFile.test.ts:189`, `clipboard.test.ts:290` |
-
-### TXT — TEXT
-
-| Row | Cell | State |
-| --- | --- | --- |
-| A | TEXT, DT, DTEXT, es TEXTO, T | match · p149, p151, p152 · `englishSurface.test.ts:577`, `locale.test.ts:819` |
-| A | es TEXTODIN | differs TXT-14 · p150 |
-| A | -TEXT / -TEXTO | differs TXT-13 · p101, p148 |
-| A | repeat; `'_-TEXT` refused | untested · p153 |
-| B | the Current line: Left; others in en | match · p101, p106 · `text.test.ts:124, 166` |
-| B | the Current line in es (`SI`, not `SIZ`) | differs TXT-08 · p106 |
-| B | the Current line with a fixed-height style | differs TXT-07 · p121 |
-| B | written again after Style | differs TXT-05 · p110, p156, p126 |
-| B | `?` returns to the start prompt | differs TXT-06 · p109 |
-| B | Enter at Justify | differs TXT-01 · p156 |
-| B | Enter at the start with nothing to continue | differs TXT-03 · p120 |
-| B | continuing after NEW, OPEN and U | differs TXT-04 · p125, p128 |
-| B | height 0 or negative | differs TXT-09 · p111, p112 |
-| B | rotation −30 (stored as 330), `S` (270°) | differs TXT-15, TXT-17 · p115, p117 |
-| B | FOO at each prompt; `_U`; `'_LINE` | untested · p102, p113, p116, p137–p142 |
-| C | `@`, `x,y,z`, polar, `*` in a UCS, a bare number; LASTPOINT stays on the start point | untested · p133–p135, p158 |
-| D | `_MID` at the start, `_END` at height and rotation | untested · p136 |
-| E | `'TEXTSIZE`, `'ORTHOMODE` | owned (Workspace) · p137–p139 |
-| F | U of TEXTSIZE and the justification | match · p127 · `savedSettings.test.ts:104` |
-| F | U of the rotation and of TEXTSTYLE | differs TXT-10 · p127, p162 |
-| F | an empty run | differs TXT-11 · p163, d01 |
-| G | Escape in the editor: finished lines kept, the line being typed dropped | differs TXT-22 · d01-2 |
-| G | an empty line ends | match · d01-1 · `text.test.ts:73` |
-| H | layer, colour, lineweight, ELEVATION | untested · p130 |
-| H | UCS Z 30 and X 90 | untested · p131, p132, p164 |
-| H | a colour typed transparently mid-command | differs TXT-12 · p165 |
-| H | line spacing on Enter | differs TXT-02 · p122, d01-4 |
-| M | the height and rotation bands are dashed | differs TXT-23 · d01-5, d01-6 |
-| — | the preselection: TEXT and -MTEXT drop it | match · p143, p144 |
-| — | TEXTEDIT with one text preselected opens it | differs TXT-18 · p159 |
-| K | `textHeight` 20617, `enterAnOption` 21617, `enterStyleNameOr` 21621, `enterText` 21601 | match · p101, p103, p110 |
-| N | `text.test.ts`, others | TXT-20 |
-
-### MTX — MTEXT and -MTEXT
-
-| Row | Cell | State |
-| --- | --- | --- |
-| A | MTEXT, T, MT, -MTEXT, es TEXTOM, -TEXTOM | match / untested · p259, p261, p262 |
-| A | -T, es TXM, -TXM, MTEXT (acad.pgp) | differs MTX-13 |
-| B | the Current line's height `2.5`, `5`, `3` (no trailing zeros) | differs MTX-03 · p202, p264, d05-6 |
-| B | Enter at the first corner | differs MTX-01 · p201, d05-6 |
-| B | Enter at Width | differs MTX-02 · p269, p273 |
-| B | Height 0 / −1, Width −5 | differs MTX-04 · p209, p210, p228 |
-| B | FOO at Justify and the spacing type | differs MTX-05 · p213, p215 |
-| B | the spacing value: −1, a point | differs MTX-06 · p221, p265 |
-| B | `Linespacing`, `Atleast`, `Nocolumns` declared | differs MTX-08 · p200, p263 |
-| B | `/Columns` and its prompts | known · p231, p232 |
-| B | OC refusals, the rotation's, the style's | untested · p203, p222, p226 |
-| C | Z kept; `@`; LASTPOINT is the opposite corner | untested · p206, p207, p250 |
-| F | U names `-MTEXT`, puts TEXTSIZE back | untested · p250 |
-| F | U puts TEXTSTYLE back | differs MTX-07 · p226c |
-| G | Escape in the editor with changes | differs MTX-12 · d05-5 |
-| H | -MTEXT's codes kept raw; no line | differs MTX-09, MTX-10 · p255, p268 |
-| H | properties, UCS | untested · p257, p258, p270 |
-| K | the Height box's label | differs MTX-11 |
-| K | acmtedRes 1065–1073 | match · p202–p228 es |
-| M | the jig (`abc`, the box, the arrow) | match · d05-1, d05-2 |
-
-### TED — TEXTEDIT
-
-| Row | Cell | State |
-| --- | --- | --- |
-| A | TEXTEDIT, ED, DDEDIT, es EDITARTEXTO, ED, DDEDIC | untested · p247, p248 |
-| A | TEDIT (en and es acad.pgp) | differs TED-08 |
-| A | a double-click on an MTEXT runs `_mtedit`; on a TEXT `_textedit` is echoed | differs TED-06 · `DoubleClickRoot.cui`, d06 |
-| B | the settings line, es `Múltiple` / `Simple` | match · p241 · `text.test.ts:418, 450` |
-| B | FOO's refusal (2027) | differs TED-04 · p241, p274 |
-| B | a typed point on nothing or on a line | differs TED-05 · p243 |
-| B | Last on a locked text | differs TED-01 · p244 |
-| F | Undo with none | match · p241 · `text.test.ts:404` |
-| F | the Undo that empties the run | differs TED-02 · p285 |
-| F | U after the run: TEXTEDITMODE back | differs TED-03 · p249 |
-| G | Escape in the TEXT editor discards and asks again | differs TED-07 · d06-5, d06-6 |
-| — | one text preselected | differs TXT-18 · p159 |
-
-### TXO — the text objects
-
-| Row | Cell | State |
-| --- | --- | --- |
-| H | Standard is Arial (acad.dwt and acadiso.dwt, en and es) | match · p300, p311 |
-| H | the cap height 1466, not 1467 | differs TXO-04 · p301, p302 |
-| H | TEXT's horizontal justification by advance widths | match within 0.07% (TXO-04) · p302 |
-| H | Bottom justifications: the baseline 0.29604·h above the point | differs TXO-01 · p302, p331 |
-| H | Middle centred on the ink | differs TXO-05 · p302, p327 |
-| H | MTEXT laid out by ink (wrap, line x, first line, overshoot, descent, Exactly) | differs TXO-03 · p303, p327, p332 |
-| H | a UCS turned 30° | untested (refuted suspicion) · p326 |
-| I | grips: a justified TEXT has two, both moving it | differs TXO-06 · d02-1 |
-| I | MTEXT width grips on both sides for a centred attachment; the column-height grip | differs TXO-07 / known · d03-1 |
-| I | the palette rows | differs TXO-08 · d04 |
-| I | Insertion snap on TEXT and MTEXT | untested · p305, p306 |
-| I | Endpoint and Node on TEXT find nothing | match · p308, p309 |
-| I | Node on MTEXT: the frame's four corners | known · p307, p329, p330 |
-| I | STRETCH of a justified text | untested · p304 |
-| I | MIRROR of a BL text | differs TXO-01 · p331 |
-| I | MATCHPROP's Text special property | differs TXO-09 · d08 |
-| I | EXPLODE of an MTEXT: positions | differs TXO-03 (closes EXP-06) · p303 |
-| O | a pick off the strokes, inside the box | differs TXO-10 · d06-3 |
-| M | TL, M and BL drawn off AutoCAD's place | differs TXO-02 · p302, p325 |
-| J | save, open, copy and paste | match · `drawingFile.test.ts:189`, `clipboard.test.ts:290` |
-
-## 5. Findings
-
-### High
-
-#### TXT-01 — Enter at Justify's `Enter an option` ends TEXT
-
-- **Severity:** high · **Row:** B/G · **Status:** verified (by the reviewer)
-- **Where:** `TextTool.ts` Justify state (a keyword box with no Enter of its own)
-- **AutoCAD:** p156: Enter → `Invalid option keyword.` (es `Opción no válida.`) and the prompt again; AllowNone 0 (p103)
-- **mellowcad:** scratch `a/prompts`: the command ends
-- **Fix:** Enter at Justify refuses with `invalidOptionKeyword`
-- **Regression test:** `text.test.ts`, p156
-
-#### TXT-02 — A new line goes 5/3·h below; Arial's spacing is 1.60641·h
-
-- **Severity:** high · **Row:** H · **Status:** verified (p122; desktop d01-4: HHH at y 1.96794 below GGG at 10, h 5)
-- **Where:** `text.ts` `TEXT_LINE_SPACING_FACTOR`, `TextTool.ts` `lineBelow`
-- **AutoCAD:** Arial: (ascent + descent + line gap) / 1466 = 2355/1466 = 1.60641; txt.shx 5/3 (p122, d01-1); ATTDEF's stacking the same (p154)
-- **Fix:** TEXT-D4. **Regression test:** `text.test.ts` (both Enter paths) at −16.06412 for h 10
-
-#### TXT-22 — Escape in TEXT's editor commits the line being typed
-
-- **Severity:** high · **Row:** G · **Status:** verified (desktop d01-2: CCC kept, DDD typed then Escape is gone)
-- **Where:** `TextTool.onDeactivate` → `commitPending`
-- **Scenario:** typing a note, Escape to abandon the current line → mellowcad adds it
-- **Fix:** TEXT-D8: Escape drops the pending line and keeps those already entered; Enter on an empty line and a click elsewhere still commit.
-- **Regression test:** `text.test.ts`, d01
-
-#### TED-01 — TEXTEDIT's Last edits a text on a locked layer
-
-- **Severity:** high · **Row:** B · **Status:** verified (by the reviewer, p244)
-- **Where:** `TextEditTool.ts` Last path
-- **AutoCAD:** `The object is on a locked layer.` (es `El objeto está en una capa bloqueada.`), the prompt again
-- **Fix:** TEXT-D31. **Regression test:** `text.test.ts`, p244
-
-#### TED-07 — Escape in TEXTEDIT's single-line editor keeps the edit
-
-- **Severity:** high · **Row:** G · **Status:** verified (desktop d06-5, d06-6: `XY` typed over `HHHH`, Escape, the text reads `HHHH` and `Select an annotation object or` is asked)
-- **Where:** `TextEditTool.ts`; `text.test.ts:367` asserts the opposite
-- **Fix:** TEXT-D40: Escape in the editor discards that edit and returns to the pick (a second Escape ends the command)
-- **Regression test:** `text.test.ts:367` rewritten, citing d06
-
-#### STY-01 — A text style edit is not undoable; U takes back the command before it
-
-- **Severity:** high · **Row:** F · **Status:** verified (by the reviewer, p320; desktop d07: `STYLE`'s New… then U echoes `STYLE`, removes `style1`, TEXTSTYLE back to Standard)
-- **Where:** `runtimeStyles.ts` `createTextStyle`, `updateTextStyle`, removal; `CadRuntime.ts:4268–4292`
-- **Fix:** TEXT-D45. **Rule:** `cad-runtime.md` "Settings are split on purpose" (style table edits not undoable) is stale
-
-#### STY-02 — The text-style drop-down over N texts is N undo steps
-
-- **Severity:** high · **Row:** F · **Status:** verified (scratch `c/styledrop`)
-- **Where:** `runtimeStyles.ts:130–147`; `setSelectionDimStyle` (`:76`) has the same fault
-- **Fix:** TEXT-D46 (both, one `UpdateEntitiesCommand`: the AGENTS.md invariant)
-
-#### TXO-01 — A Bottom-justified TEXT's box sits 0.296·h below its text
-
-- **Severity:** high · **Row:** H, I · **Status:** verified (by the reviewer, p302: BL/BC/BR DXF 10 at y +2.96044, h 10)
-- **Where:** `text.ts` `verticalExtent`
-- **Also:** MIRROR of a BL text about y = 20 lands at 27.019 in AutoCAD, at 30 here (p331)
-- **Fix:** TEXT-D41
-
-#### TXO-02 — TL, Middle and Bottom TEXT are drawn at the em box's anchors
-
-- **Severity:** high · **Row:** M · **Status:** verified (scratch `c/render`: SVG TL baseline −11.168, M −4.188, BL +2.792 against −10, −3.530, +2.960, p302, p325)
-- **Where:** `SceneBuilder.ts` `textBaselineOf`, `SvgScenePresenter.ts` (`EM_ASCENT`), `CanvasScenePresenter.ts` (`textBaseline`)
-- **Fix:** TEXT-D43. **Rule:** `cad-scene.md`'s em-box anchors for drawing text become stale
-
-### Medium
-
-| Id | Finding | Evidence | Fix |
+| Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| TXT-03 | Enter at the start with nothing to continue ends TEXT; AutoCAD `Point or option keyword required.` (es `Se requiere un punto o una opción.`) | p120 | refuse |
-| TXT-04 | Enter at the start continues after NEW, OPEN and below a line U took back | p125, p128 | TEXT-D3 |
-| TXT-05 | after Style (a name or Enter) the Current line is not written again | p110, p156, p126, rectang/p313 | TEXT-D1 |
-| TXT-06 | after `?` the style name is asked again; AutoCAD lists (`Enter text style(s) to list <*>:`, `Press ENTER to continue:`), writes the Current line and asks the start point | p109 | back to the start prompt; the filter and pages stay Missing |
-| TXT-07 | with a fixed-height style the Current line shows TEXTSIZE, not the style's height | p121 | the style's height |
-| TXT-09 | height 0 or negative refused in silence; AutoCAD `Value must be positive and nonzero.` | p111, p112 | refuse with the words |
-| TXT-10 | U does not put back the rotation default nor the style TEXT's Style made current | p127, p162 | TEXT-D6 |
-| TXT-11 | an empty run (Escape or an empty line with nothing typed) sets TEXTSIZE and the rotation | p163, d01 | TEXT-D5 |
-| TXT-12 | a colour typed transparently mid-command reaches the text | p165 | TEXT-D9: properties read at the start point |
-| TXT-13 | -TEXT (es -TEXTO) unknown and not in the coverage | p101, p148 | TEXT-D2 |
-| TXT-18 | TEXTEDIT with one text preselected asks instead of opening it (a mixed set is ignored) | p159, p146 | open it |
-| MTX-01 | Enter at the first corner ends MTEXT; AutoCAD `Invalid point.` | p201, d05-6 | TEXT-D23 |
-| MTX-02 | Enter at Width ends; AutoCAD takes width 0 and asks the text | p269, p273 | TEXT-D24 |
-| MTX-04 | Height 0 / −1 and Width −5 refused in silence (`Value must be positive and nonzero.`, `Value must be positive.`) | p209, p210, p228 | TEXT-D35 |
-| MTX-05 | FOO at Justify and the spacing type gets the point refusal; AutoCAD `Invalid option keyword.` | p213, p215 | keyword-only `takes()` |
-| MTX-06 | the spacing value: −1 gets the range message (AutoCAD `Value must be positive.`); `5,9` is read 5.9 (AutoCAD: a point, its distance from the first corner); a click is ignored | p221, p265 | TEXT-D25 |
-| MTX-07 | U does not put back the style MTEXT's Style made current | p226c | TEXT-D34 |
-| MTX-12 | Escape in MTEXT's editor with changes discards in silence; AutoCAD asks `Do you want to save your text changes?` (Yes / No / Cancel) | d05-5 | TEXT-D39 |
-| TED-02 | the Undo that empties the run does not say `Command has been completely undone.` | p285, p284 | TEXT-D29 |
-| TED-03 | U after the run does not put TEXTEDITMODE back | p249 | TEXT-D30 |
-| TED-04 | FOO's refusal is 2023's; 2027: `*Invalid selection*` / `Expects a point or Last/Undo` (Single: `Expects a point or Last/Mode]:`) | p241, p274 | TEXT-D21 |
-| TED-05 | a typed point on nothing or on a non-text object says the refusal; AutoCAD asks again in silence | p243 | TEXT-D33 |
-| TED-06 | a double-click on an MTEXT runs TEXTEDIT (asks again after the edit, prints the settings line); AutoCAD's runs MTEDIT (`_mtedit`, no settings line, ends with the editor). On a TEXT AutoCAD echoes `_textedit`, mellowcad no line | cuix, d06 | TEXT-D32 |
-| STY-03 | style names are neither unique nor case-blind; AutoCAD `A text style named "X" already exists.` / `*Invalid*` | p323, p324, p336 | TEXT-D47 |
-| STY-04 | -STYLE and TEXTSTYLE typed do not exist, and the coverage does not say so | p310–p322 | TEXT-D48 |
-| STY-05 | DDSTYLE (en), ESTILODD (es) and DIMSTYLE's DST, DIMSTY, DDIM, es DCOTA are in acad.pgp; coverage calls them unverifiable | acad.pgp, p334, p335 | TEXT-D49 |
-| STY-07 | STYLE opens the Styles palette tab; AutoCAD opens the modal Text Style dialog (d07-1: Styles, Font, Size, Effects, Set Current, New…, Delete, Apply, Close) | d07 | TEXT-D58 |
-| TXO-03 | MTEXT is laid out by advances and the cap height; AutoCAD by ink extents (wrap at ink width, line x by the first glyph's bearing, first line max(h, ink top), overshoot in the pitch, last line's descent, Exactly's half gap); EXPLODE inherits it (EXP-06) | p303, p327, p332 | TEXT-D44 |
-| TXO-06 | a justified TEXT has one grip; AutoCAD shows the insertion point (DXF 10) too, and dragging either moves the text | d02-1 | TEXT-D53 |
-| TXO-09 | MATCHPROP's Text property copies the style only; AutoCAD TEXT→TEXT also height, rotation, justification (the destination's point stays as its new justification point), width factor, oblique; TEXT↔MTEXT style, height, rotation | d08 | TEXT-D54 |
-| TXO-10 | a click inside a text's box but off its strokes selects it; AutoCAD's misses | d06-3 | TEXT-D52 (Missing) |
+| STY-01, STY-02 | style edits not undoable; the drop-downs N steps | history commands, U names `STYLE`; one step (DIMSTYLE's too) | `b96d772` |
+| STY-03 | names neither unique nor case-blind | refused with the table's words | `b96d772` |
+| STY-04, STY-06, STY-07 | -STYLE, TEXTSTYLE, Annotative, the Text Style dialog | Missing, with their prompts and controls | `b96d772` |
+| STY-05, STY-08, TXT-19 | acad.pgp aliases; `Copy of`; STYLE kept the preselection | DDSTYLE, DST, DIMSTY, DDIM, es ESTILODD, DCOTA; `style1`; dropped | `b96d772` |
+| TXT-01, TXT-03, TXT-09 | Enter at Justify and at an empty start; silent height refusals | refused in the console's words | `95931f7` |
+| TXT-02 | 5/3 line spacing | Arial's 2355/1466 (MTEXT keeps 5/3) | `95931f7` |
+| TXT-04 | continuing across NEW, OPEN and U | per session, read from the document | `95931f7` |
+| TXT-05 to TXT-08 | Current line after Style and `?`, a fixed height, es words | as the console | `95931f7` |
+| TXT-10, TXT-11, TXT-12 | U of the rotation and style; an empty run; mid-command colour | restored; first line commits; start's properties | `95931f7` |
+| TXT-13 to TXT-17 | -TEXT, TEXTODIN, negative rotation, leading spaces, `S` | built; added; normalised; kept; recorded | `95931f7` |
+| TXT-20 to TXT-23 | tests, coverage, Escape in the editor, solid bands | rewritten; drops the line; dashed | `95931f7` |
+| MTX-01 to MTX-13 | Enter at the corner and Width, numbers' zeros, refusals, spacing by a point, declared words, -MTEXT codes and empty run, labels, Escape's Unsaved Changes dialog, aliases | as the console and d05 | `9e563b2` |
+| TED-01 to TED-08, TXT-18 | locked Last, Undo's message, U of the mode, 2027 refusals, silent misses, the double-click (`_textedit`, `_mtedit`), Escape, TEDIT, one preselected text | as the console and d06 | `8611dab` |
+| TXO-01, TXO-02, TXO-04 to TXO-06 | the TEXT box, the baselines, 1466, Middle, the insertion grip | ink metrics, alphabetic baseline, two grips | `97a6d8b` |
+| TXO-03, TXO-07 to TXO-10 | MTEXT by ink (EXP-06), centred width grips, palette rows, MATCHPROP, picking by strokes | laid out by ink; both sides; Text alignment; d08; Missing | `97a6d8b` |
 
-### Low
+## Still open
 
-| Id | Finding | Evidence | Fix |
-| --- | --- | --- | --- |
-| TXT-08 | es Current line `Justificar:  SIZ`; AutoCAD `SI` (acmtedRes 57676 words SI SC SD MI MC MD II IC ID) | p106 | a word table of its own |
-| TXT-14 | es TEXTODIN missing; T's † can go | p150, acad.pgp | add |
-| TXT-15 | a negative rotation is stored as typed; AutoCAD stores 330 | p115 | normalise |
-| TXT-16 | leading spaces typed at the command line are trimmed (the box keeps them) | p155 | keep them at `Enter text:` |
-| TXT-17 | `S` at the rotation prompt is 270° in AutoCAD; refused here | p117 | TEXT-D7 (recorded) |
-| TXT-19 | STYLE keeps a preselection; AutoCAD's drops it | p160, d07 | drop it |
-| TXT-20 | `text.test.ts`: 5/3 pinned (:61, :103), `?`'s wrong flow (:200), no Current line after Style (:182), `toContain` too weak (:166), uncited values | §7 | rewrite with probes |
-| TXT-21 | coverage drift: 2023 citations, `<0.00>` (it is `<0>`), the † on T, the Justify naming settled | p101, p106 | coverage |
-| TXT-23 | the height and rotation bands are solid; AutoCAD's dashed (UseDashedLine, d01-5) | d01-5, d01-6 | dashed |
-| MTX-03 | MTEXT's heights drop trailing zeros (`2.5`, `<4>`, `20 (4x)`); TEXT's keep LUPREC's | p202, p264, p266, p272, d05-6 | TEXT-D22 |
-| MTX-08 | the declared words `Linespacing`, `Atleast` (es `Almenos`), `Nocolumns` are not accepted | p200, p263 | TEXT-D26 |
-| MTX-09 | -MTEXT escapes `\`, `{`, `}`; AutoCAD keeps a typed line's codes raw | p255 | TEXT-D27 |
-| MTX-10 | -MTEXT with no line makes nothing; AutoCAD an empty MTEXT | p268 | TEXT-D28 |
-| MTX-11 | the Height box's label is TEXT's (`Precise altura`); MTEXT's prompt is `Indique la altura` | acmtedRes 1070 | TEXT-D36 |
-| MTX-13 | aliases -T (en), TXM, -TXM, MTEXT (es) missing | acad.pgp | add |
-| TED-08 | the alias TEDIT (en and es) is missing | acad.pgp | add |
-| STY-06 | a new drawing has no Annotative style | p311 | TEXT-D50 (Missing) |
-| STY-08 | New names the copy `Copy of Standard`; the Text Style dialog proposes `style1` | d07-2 | `style1`, `style2`… |
-| TXO-04 | the cap height is 1467 (OS/2); AutoCAD scales by the H glyph's 1466: widths 0.068% narrow | p301, p302 | TEXT-D42 |
-| TXO-05 | Middle is centred on the cap height; AutoCAD centres the ink (Agh −3.530) | p302, p327 | TEXT-D41 |
-| TXO-07 | a centred MTEXT shows one width grip; AutoCAD both sides | d03-1 | TEXT-D56 |
-| TXO-08 | palette rows: TEXT lacks Text alignment X/Y/Z (Position is DXF 10, read-only when justified), Width factor, Obliquing, Upside down, Backward, Annotative; MTEXT says Height for Text height and lacks Direction, Defined height, Columns, Background mask, Text frame | d04 | TEXT-D55 |
+What stays **unverified** or **Missing** is in the coverage: `docs/coverage/draw.md` (TEXT, MTEXT),
+`modify.md` (TEXTEDIT, MATCHPROP, MIRROR) and `dimensions.md` (STYLE). The points worth a later
+probe:
 
-## 6. Decisions taken
+- the Spanish words of the palette's Text alignment rows and of the Unsaved Changes dialog;
+- U's name after a double-click on an MTEXT (`TEXTEDIT` here, MTEDIT not built);
+- a click outside the editor in Single mode;
+- a TEXT Left's palette;
+- MTEXT→MTEXT under MATCHPROP;
+- Exactly's ink, and a negative bearing at a centred MTEXT line;
+- the canvas presenter's baselines in a browser (the SVG is tested).
 
-- **TEXT-D1:** the Current line after Style is written as the console writes it: the old name with
-  the new height (p126, p313, p162). Not after a refused name (p142).
-- **TEXT-D2:** -TEXT / -TEXTO is TEXT run in a single-line mode, the way -MTEXT switches MTEXT
-  (`runtimeCommands.ts`):
-  - one `Enter text:`, then the end;
-  - an empty line adds nothing;
-  - U names it `-TEXT`.
-- **TEXT-D3:** Enter at the start continues below the last line this drawing session wrote,
-  read from the document at Enter time; NEW and OPEN forget it, and a line U took back or erased
-  is not continued (p125, p128).
-- **TEXT-D4:** TEXT's line spacing is the font's: Arial's (ascent + descent + line gap) / H's
-  height, from the generated metrics (2355/1466). 5/3 stays the MTEXT single spacing (p303).
-- **TEXT-D5:** TEXTSIZE and the rotation default are committed with the first line written; the
-  justification at its answer (p163, d01).
-- **TEXT-D6:** the rotation default and the style TEXT's Style makes current are restored by U.
-  They go through `UpdateSettingsCommand` inside the run (p127, p162). The rotation is per drawing
-  and not saved.
-- **TEXT-D7:** `S` as 270° at an angle prompt (p117) is recorded under the angle input's
-  coverage. It is not built: N, E and W were not probed, and it is an area of the LINE review's.
-- **TEXT-D8:** Escape in TEXT's editor drops the line being typed and keeps the lines already
-  entered (d01-2).
-- **TEXT-D9:** TEXT's current properties are read when the start point is given (p165, PLINE's
-  pattern).
-- **TEXT-D21:** TEXTEDIT gets a refusal of its own, verbatim from 2027, the stray `]:` of Single
-  mode included. The shared `objectOrLast` is left alone: DIMSPACE, DIMCONTINUE and MEASURE are
-  unprobed.
-- **TEXT-D22:** MTEXT's numbers are written at the drawing's precision with trailing zeros
-  dropped: the Current line, `<height>` and the range message. TEXT's keep LUPREC's zeros.
-- **TEXT-D23:** Enter at MTEXT's first corner says `Invalid point.` and asks again (p201, d05-6).
-- **TEXT-D24:** Enter at Width is width 0, no wrap, and goes to the text (p273).
-- **TEXT-D25:** the spacing value takes a point, typed or picked, as its distance from the first
-  corner; −1 gets `Value must be positive.` (p221, p265).
-- **TEXT-D26:** the declared words `Linespacing`, `Atleast`, `Nocolumns` (es `Interlineado`,
-  `Almenos`) get `keywordLabels` for the spaced labels; the keyword ids stay.
-- **TEXT-D27:** -MTEXT keeps a typed line's codes raw, joined with `\P`; the in-place editor keeps
-  escaping.
-- **TEXT-D28:** -MTEXT with no line adds an empty MTEXT (p268).
-- **TEXT-D29:** the Undo that empties TEXTEDIT's run also says `commandCompletelyUndone` (p285).
-- **TEXT-D30:** TEXTEDITMODE stays a session field (PerProfile, p246), restored by U through a
-  command inside the run (p249).
-- **TEXT-D31:** TEXTEDIT's Last, and its pick, refuse an object on a locked layer with
-  `objectOnLockedLayer` (p244).
-- **TEXT-D32:** a double-click on an MTEXT stays TEXTEDIT, as a WHY deviation (MTEDIT is not
-  built), but it behaves as MTEDIT does:
-  - it echoes `_mtedit`;
-  - it writes no settings line;
-  - it ends with the editor.
+**Analogues for the reviews that follow** (roadmap):
 
-  A double-click on a TEXT echoes `_textedit` (d06). MTEDIT goes to Missing.
-- **TEXT-D33:** at TEXTEDIT's pick a typed point that finds nothing, or a non-text object, asks
-  again in silence (p243).
-- **TEXT-D34:** MTEXT's Style sets TEXTSTYLE inside the run, so U restores it (p226c).
-- **TEXT-D35:** Height refuses with `Value must be positive and nonzero.` and Width with
-  `Value must be positive.`. Justify and the spacing type refuse with `Invalid option keyword.`.
-- **TEXT-D36:** each MTEXT box's label is its own prompt id.
-- **TEXT-D37:** Columns stays Missing; the coverage records its 2027 prompts (p231, p232).
-- **TEXT-D39:** Escape in MTEXT's editor with changes opens AutoCAD's task dialog, as the Layer
-  Properties Manager's task dialogs are built (LAY-03). It reads `Multiline Text - Unsaved Changes`
-  / `Do you want to save your text changes?` with Yes (keep), No (discard) and Cancel (back to the
-  editor). Without changes Escape closes at once (d06). `Always perform my current choice` goes to
-  Missing: it is a profile setting.
-- **TEXT-D40:** Escape in TEXTEDIT's single-line editor discards that edit and returns to
-  `Select an annotation object` (d06-6).
-- **TEXT-D41:** the engine gets Arial's per-glyph ink bounds (xMin, xMax, yMin, yMax) and
-  winDescent 434, generated next to the advances by `scripts/fonts/metrics.ts` from `arial.ttf`.
-  They are numbers, not outlines. With them the box, Middle, the Bottom justifications, MTEXT and
-  MIRROR follow AutoCAD's rules (p302, p303, p331). Arimo's outlines differ (caps 1409), so the
-  numbers come from Arial.
-- **TEXT-D42:** the cap height is 1466, H's ink height (p301).
-- **TEXT-D43:** the scene anchors every drawing text at the alphabetic baseline, at an offset the
-  domain computes (`capMiddle` is the precedent). The em anchors are dropped for drawing text.
-- **TEXT-D44:** MTEXT lays out as p303, p327 and p332 show; EXPLODE follows, and EXP-06 closes.
-- **TEXT-D45:** each text style creation, edit, deletion and current-style change is a history
-  command. U names it `STYLE` from the palette (d07). -STYLE does not exist here.
-- **TEXT-D46:** the text-style and dimension-style drop-downs make one `UpdateEntitiesCommand` per
-  gesture. DIMSTYLE's is the same function family and the same invariant; the Dimensions review is
-  told.
-- **TEXT-D47:** style names are unique and compared case-blind. A taken name is refused with the
-  table's words (21392, 26363).
-- **TEXT-D48:** -STYLE and TEXTSTYLE go to STYLE's Missing with p310–p322's wording. Building them
-  is a new command.
-- **TEXT-D49:** aliases added: en DDSTYLE, DST, DIMSTY, DDIM; es ESTILODD, DCOTA. Also TEXTODIN,
-  TXM, -TXM, es MTEXT, -T and TEDIT (TXT-14, MTX-13, TED-08).
-- **TEXT-D50:** no inert Annotative style; Missing, with p311.
-- **TEXT-D51:** Node on MTEXT stays Missing; the coverage records the frame's four corners (p307,
-  p329, p330).
-- **TEXT-D52:** picking a text by its strokes needs glyph outlines. Arial's cannot ship, and the
-  bundled faces' differ. The box stays the hit area, recorded in Missing with d06-3.
-- **TEXT-D53:** a justified TEXT shows its insertion-point grip (DXF 10, from the layout) beside
-  the justification point's. Dragging either moves the text (d02).
-- **TEXT-D54:** MATCHPROP's Text property copies as d08 shows:
-  - TEXT→TEXT: style, height, rotation and justification, with the destination's insertion point
-    kept as its new justification point;
-  - TEXT↔MTEXT: style, height and rotation.
+- the Blocks review: ATTDEF's Current line still writes es `SIZ` (TXT-08's words) and attributes
+  share TEXT's layout;
+- the Dimensions review: DIMSTYLE's style edits are still not undoable (only its drop-down was
+  fixed);
+- the Workspace review: the Styles palette against AutoCAD's Text Style and Dimension Style
+  dialogs (TEXT-D58), and TEXTSIZE and TEXTSTYLE typed as variables.
 
-  Width factor and oblique angle are not modelled.
-- **TEXT-D55:** a justified TEXT's palette shows Text alignment X/Y/Z, editable, and Position
-  X/Y/Z, read-only (DXF 10); MTEXT's height row is `Text height`. The rows of what is not modelled
-  go to Missing. The style stays the General picker: a presentation of ours, already in the
-  coverage.
-- **TEXT-D56:** a centred MTEXT shows a width grip on both sides.
-- **TEXT-D57:** New in the Styles palette proposes `style1`, `style2`… for a text style, as the
-  Text Style dialog does (d07-2). DIMSTYLE's `Copy of Standard` is AutoCAD's own and stays.
-- **TEXT-D58:** STYLE keeps opening the Styles palette tab. The Text Style dialog (d07-1) goes to
-  STYLE's Missing, with its controls listed: the tab already hosts DIMSTYLE's table, and replacing
-  it is a UI change of its own (the Workspace review, which owns the palette panel, is told).
+## Template improvements
 
-## 7. Tests proposed
+Applied on 2026-10-23 at the review's close (`annex-probes.md` §4, template §4.1):
 
-Regression tests first, each citing its probe:
-
-- `text.test.ts`:
-  - TXT-01, 02, 03, 04, 05, 06, 07, 09, 10, 11, 12, 13, 15, 16, 22, 23;
-  - TED-01, 02, 03, 04, 05, 07;
-  - TXT-18.
-- `mtext.test.ts`: MTX-01, 02, 04, 05, 06, 07, 09, 10, 12. `:245` is rewritten to p201.
-- `styles.test.ts`: STY-01, 02, 03; TXT-19.
-- `entities.test.ts` / `cad/domain/mtext.test.ts`:
-  - TXO-01 (p302's three Bottom positions, p331's mirror);
-  - TXO-03 (p303's cases, p332's threshold);
-  - TXO-04, TXO-05;
-  - the MIRROR table against AutoCAD's points.
-- `SvgScenePresenter.test.ts`: TXO-02 (the baselines of p302).
-- `properties.test.ts`: TXO-09 (d08). A grips test for TXO-06 and TXO-07.
-- **Untested cells** (the scratch tests move as they are):
-  - TEXT's refusals at H and R, `_U`, LASTPOINT, the point forms, snaps, the UCS, properties;
-  - MTEXT's refusals at FC, OC, R and W; Z, `@`, LASTPOINT; U's echo and TEXTSIZE;
-    properties; UCS;
-  - TEXTEDIT's names and U's echo;
-  - Insertion snap on TEXT and MTEXT (p305, p306), STRETCH of a justified text (p304).
-- **Old citations re-probed**:
-  - `ambiguousKeywords.test.ts:153`: acc/t1, t3, t5 → p166;
-  - `text.test.ts:418`: 2023 → p241, p274;
-  - `rectang/p313`'s `3.00` → `3`.
-
-## 8. What is not tested and why
-
-- The look of the in-place editors (the grey box, the caret, the spell-check underline): it is
-  presentation, and our editor is the dynamic-input box (Missing).
-- The font's look: the presenters draw Arial or a face with its metrics. What is tested is where
-  the baseline lands and the box.
-- The canvas presenter's baselines: what the canvas draws is checked in a browser, once, after
-  TEXT-D43 (skill `browser-verify`). The harness checks the SVG.
-
-## 9. What could not be reviewed and why
-
-- **Spanish labels on the desktop.** The pass ran in the English profile only. The palette's and
-  the Text Style dialog's Spanish labels stay unverified; mellowcad's come from the glossary.
-- **The Text Editor ribbon tab, the ruler and the right button inside the editor:** not modelled
-  (Missing).
-- **MATCHPROP's Settings dialog for Text:** owned by the Properties review's Missing.
-- **The hover menus of text grips:** not captured.
-- **A preselection at MTEXT** (the console hangs, p145): left unverified.
-
-## 10. Refuted in the adversarial pass
-
-- **TEXT and MTEXT placed in a UCS turned 30°:** they match (p326).
-- **-MTEXT MC from two corners:** the location is the box centre in both (p306).
-- **The STRETCH rule for a justified text:** it matches (p304).
-- **MTEXT's pitch for flat-topped lines:** 5/3 in both (p303).
-- **TEXTEDIT asking at the command line on an attribute definition:** a console artefact. The
-  desktop opens the dialog.
-- **The two-line alias echo:** owned by the command line.
-- **Enter at the start after the last text was erased** (p124, a line at 0,0 with the erased
-  line's height): an odd console result, kept out.
-- **COPYCLIP's paste position in a scratch test:** the test's setup, a Clipboard review matter.
-- **Typed `NOD` refused:** the snaps area. Node is not modelled.
-
-## 11. Coverage ↔ code ↔ AutoCAD, rules ↔ code
-
-Rows that do not hold:
-
-- **`draw.md` TEXT:**
-  - "as AutoCAD 2023's console asks it" holds on 2027: re-cite it;
-  - `<0.00>` is `<0>`;
-  - the † on T goes;
-  - TEXTODIN and -TEXT are missing from the entry;
-  - "U leaves it (unverified)" is false (p162);
-  - the Justify naming is settled (p106).
-- **`draw.md` MTEXT:**
-  - `/Columns` is listed in 2027;
-  - `2.5` against `<2.50>`;
-  - "word wrap from Arial's widths" and "single spacing 5/3" are false at the edges (p303, p332);
-  - "Escape discards" (d05-5);
-  - "what a click with no drag does" makes a width-0 object (p204);
-  - Node is settled (p307).
-- **`modify.md` TEXTEDIT:**
-  - the refusals are 2023's;
-  - Undo and Mode's U are missing;
-  - the es mode name is settled (`Múltiple` / `Simple`);
-  - double-click on MTEXT;
-  - the † on `ED` and `DDEDIC` goes.
-- **`modify.md` MATCHPROP:** "text to multiline text unverified" is settled (d08), and the copied
-  properties too.
-- **`dimensions.md` STYLE:**
-  - "could not be verified against acad.pgp" is false;
-  - Missing lacks -STYLE, TEXTSTYLE, the flags, Annotative and the dialog.
-- **`spanish.md`:** TEXTOM's `Mínimo` is `Al menos` (`Almenos` declared); TEXTEDIT's `Única` is
-  `Simple`.
-- **Rules:**
-  - `cad-runtime.md`, "Settings are split on purpose": the style table edits are not undoable.
-    Stale (STY-01).
-  - `cad-runtime.md`, "Double-click": MTEXT opens TEXTEDIT. Becomes the MTEDIT-like behaviour
-    (TED-06).
-  - `cad-engine.md`, "Locked: never edited": broken (TED-01).
-  - `cad-engine.md`, "names are the identity": broken (STY-03).
-  - `cad-engine.md`, single spacing `TEXT_LINE_SPACING_FACTOR` for TEXT and MTEXT alike: stale
-    (TXT-02).
-  - `cad-engine.md`, "Text is measured by the engine": gains the ink bounds (TEXT-D41).
-  - `cad-scene.md`, glyph metrics and the em-box anchors: stale (TXO-02).
-  - `cad-catalogs.md`, "initget against the list": broken (MTX-08).
-  - `cad-tools.md`, "A distance or an angle takes a point too": broken (MTX-06).
-  - `cad-tools.md`, "What a new object wears": broken (TXT-12).
-  - `cad-tools.md`, "Where a value lives": lacks a session or per-drawing value that U restores
-    (TXT-10, TED-03).
-  - `cad-tools.md`, a tool's own Undo: gains TEXTEDIT's message on the last edit (TED-02).
-
-Checked and holding:
-- Standard is Arial (p300);
-- delete is guarded (p319);
-- a rotation is relative to the UCS (p326, p131);
-- LASTPOINT after TEXT (p135);
-- TEXT takes no THICKNESS (p130);
-- -MTEXT is no tool;
-- TEXTEDIT's settings line and Mode (p241).
-
-## 12. Order of execution and estimate
-
-Blocks one after another; each subagent gets its findings, decisions, scratch tests and probes.
-
-1. **STY** (about 1 h): the style table through the history, unique names, the drop-downs,
-   aliases, `style1`, the preselection. TXT and MTX's style undo lean on it.
-2. **TXT** (about 2 h): TEXT's prompts, Escape, -TEXT, the line spacing (needs the metrics' line
-   gap, generated here, ahead of TXO), undo of its settings.
-3. **MTX** (about 1.5 h): MTEXT's prompts and refusals, -MTEXT, the Unsaved Changes dialog.
-4. **TED** (about 1 h): TEXTEDIT's refusals, locked, Undo, Escape, the double-click, the
-   preselection.
-5. **TXO** (about 3 h): the ink metrics, the cap height, the TEXT box and baselines, the MTEXT
-   layout and EXPLODE, the render, the grips, the palette rows, MATCHPROP.
-
-## 13. Changes to coverage, rules, catalogs and roadmap
-
-- **Coverage:**
-  - `draw.md` TEXT and MTEXT, `modify.md` TEXTEDIT and MATCHPROP, `dimensions.md` STYLE and
-    `spanish.md`, as §11 says;
-  - the new Missing: -STYLE, TEXTSTYLE, the Text Style dialog, MTEDIT, the Unsaved Changes
-    dialog's "Always perform", picking by strokes, text grips' hover menus, the palette rows of
-    what is not modelled, Annotative.
-- **Rules:** the rows of §11.
-- **Catalogs:** the refusals, labels and aliases above; `npm run locales`; the English surface
-  snapshot read before `-u`.
-- **Roadmap:**
-  - row 17 done; the areas owned: the text objects and their editors;
-  - analogues for later reviews:
-    - the Dimensions review's DIMSTYLE drop-down (fixed here) and its text's baselines (TEXT-D43
-      applies to dimension text);
-    - the Blocks review's ATTDEF and attribute text, which share TEXT's layout;
-    - the Workspace review's Styles palette against AutoCAD's dialogs (TEXT-D58), and TEXTSIZE /
-      TEXTSTYLE typed as variables.
-
-## 14. Template improvements
-
-Proposed:
-
-- **annex-probes §4:** `com send` locks on a prompt that takes spaces (-STYLE's font, -TEXT's
-  style name). Type each answer with `\n` instead.
-- **annex-probes §4:** the English profile's new drawing (acad.dwt) has Standard on txt.shx, where
-  the console's has Arial. Set `arial.ttf` before measuring text on the desktop.
-- **annex-probes §4:** UIA cannot press the Text Style dialog's buttons. `acad.sh children <hwnd>`
-  gives their rectangles for a click.
-- **annex-probes §4:** a pick on text needs a stroke, since a click off the glyphs misses: aim at
-  a stem or a crossbar.
-- **template §4.1:** an editor's Escape is a matrix cell of its own, with and without changes:
-  three of this review's highs and mediums were Escape (TXT-22, TED-07, MTX-12).
+- answers to a prompt that takes spaces are typed, not sent through COM;
+- the English profile's Standard is txt.shx;
+- dialog buttons UIA cannot press are clicked by their rectangle;
+- a pick on text needs a stroke;
+- an editor's Escape, with and without changes, is a matrix cell of its own.

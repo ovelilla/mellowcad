@@ -206,6 +206,11 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   (`shot <hwnd>`) and a combo box's items with `CB_GETLBTEXT`. A task dialog's command link
   (`CommandLink_<id>`) is pressed with TDM_CLICK_BUTTON as `uia.ps1` presses its push buttons; a
   dialog whose Cancel UIA cannot invoke closes with a posted `WM_COMMAND IDCANCEL` (Properties review).
+- A prompt that takes spaces (-STYLE's font, TEXT's style name) swallows the rest of a `com send`
+  and locks COM: type each answer with `type` and `\n`. The English profile's new drawing has
+  Standard on txt.shx (the console's has Arial): set `arial.ttf` before measuring text. Buttons UIA
+  cannot press (the Text Style dialog's) are clicked at the rectangle `acad.sh children <hwnd>`
+  gives. A click on a text off its strokes selects nothing: aim at a stem (Text review).
 
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).

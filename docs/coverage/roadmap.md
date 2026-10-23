@@ -71,7 +71,7 @@ with the area. The order puts first the commands whose review settles what the l
 | 14  | Pieces           | BREAK, BREAKATPOINT, JOIN, EXPLODE                                                                                       | a single object's pick with modes                                                                                                                                                                                                  | done  |
 | 15  | Arrays           | ARRAYRECT, ARRAYPOLAR, ARRAYPATH                                                                                         | the array object                                                                                                                                                                                                                   | done  |
 | 16  | Properties       | LAYER, LAYERCLOSE, COLOR, -COLOR, LINETYPE, -LINETYPE, LTSCALE, LWEIGHT, -LWEIGHT, PROPERTIES, PROPERTIESCLOSE, FILL, MATCHPROP | the style tables (layers, colours, linetypes, lineweights)                                                                                                                                                                         | done  |
-| 17  | Text             | TEXT, MTEXT, -MTEXT, TEXTEDIT, STYLE                                                                                     | the text objects and their editors                                                                                                                                                                                                 |       |
+| 17  | Text             | TEXT, MTEXT, -MTEXT, TEXTEDIT, STYLE                                                                                     | the text objects and their editors                                                                                                                                                                                                 | done  |
 | 18  | HATCH            | HATCH                                                                                                                    | the hatch object                                                                                                                                                                                                                   |       |
 | 19  | Blocks           | BLOCK, INSERT, ATTDEF, -ATTDEF, ATTEDIT, EATTEDIT, ATTDISP, BLOCKSPALETTE, PURGE                                         | blocks and attributes                                                                                                                                                                                                              |       |
 | 20  | Dimensions       | DIMLINEAR, DIMALIGNED, DIMBASELINE, DIMCONTINUE, DIMSPACE, DIMRADIUS, DIMDIAMETER, DIMANGULAR, DIMSTYLE                  | the dimension objects and styles                                                                                                                                                                                                   |       |
@@ -102,8 +102,13 @@ a pick or a mode finds (BRP-01, BRP-02, BRP-05: FILLET's and BREAK's; ARRAYPATH'
 `1 was on a locked layer.`, APA-03); UCS OBject's passes none and still says nothing of one: the
 UCS review probes its words. A point typed
 at `Select objects:` or a single object's pick off the screen still finds (BRP-04, pieces/p158):
-for the `Select objects:` area. EXPLODE's texts from an MTEXT stand where this layout's metrics put
-each line, not where AutoCAD's font does (EXP-06, pieces/p255): for the Text review. The anonymous
+for the `Select objects:` area. EXPLODE's texts from an MTEXT now stand where AutoCAD's do, MTEXT laid out by
+ink (EXP-06 closed by TXO-03: `docs/plans/text-review.md`); ATTDEF's Current line still writes es
+`SIZ` where TEXT's writes `SI` (TXT-08), and attributes share TEXT's layout: for the Blocks review.
+DIMSTYLE's style edits are still not undoable (only its drop-down is one step, STY-02): for the
+Dimensions review. The Styles palette stands in for AutoCAD's Text Style and Dimension Style
+dialogs (TEXT-D58), and TEXTSIZE and TEXTSTYLE are not typable variables: for the Workspace review.
+The anonymous
 blocks' purge on save and a block reference's grips, for the Blocks review. Objects on a locked
 layer are selected at `Command:`, edits refuse them and a command given them as a preselection
 says `1 was on a locked layer.` (LKD-01: `docs/plans/properties-review.md`); 2027's -BLOCK converts

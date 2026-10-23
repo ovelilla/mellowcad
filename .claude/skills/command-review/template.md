@@ -165,6 +165,8 @@ the review, not an "n/a".
   echo: AutoCAD names it (`CHPROP`, `Modify Property`, `Grip Edit`; properties/d05-2).
 - Read what each command leaves selected (`(ssget "_I")` after it ends or is cancelled): a set
   left behind is the next command's preselection (ERASE's SEL-43).
+- An editor's Escape is a cell of its own, with and without changes: it keeps, drops or asks
+  (TEXT's drops the line being typed, TEXTEDIT's the edit, MTEXT's asks; text/d01, d05, d06).
 
 ### 4.2 Probes
 
@@ -380,3 +382,6 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
 - 2026-10-23, after the Properties review: the whole monitor captured before a click, a pass
   without the mouse, task dialogs' links and Cancel (annex-probes.md §4), U's echo for an edit
   made outside a command (§4.1), the resource DLLs the tables lack (annex-catalogs.md §3).
+- 2026-10-23, after the Text review: an editor's Escape (§4.1); answers typed where a prompt
+  takes spaces, the English profile's txt.shx, dialog buttons by their rectangle, text picked on a
+  stroke (annex-probes.md §4).
