@@ -1,0 +1,12 @@
+_TEXTEDIT
+_U
+FOO
+_M
+
+_M
+FOO
+_S
+_M
+_M
+
+(getvar "TEXTEDITMODE")

@@ -1,0 +1,12 @@
+_-TEXT
+5,5
+
+
+HELLO WORLD
+_-TEXT
+5,15
+
+
+  LEAD
+_MPDUMP
+-

@@ -1,0 +1,16 @@
+_-TEXT
+5,5
+'_ZOOM
+_E
+'TEXTSIZE
+7
+'_-PAN
+0,0
+1,1
+'_LINE
+
+
+A
+_MPDUMP
+-
+(getvar "TEXTSIZE")

@@ -1,0 +1,16 @@
+_-STYLE
+BIG
+
+7
+
+
+
+
+
+_-TEXT
+5,5
+
+A
+_MPDUMP
+-
+(getvar "TEXTSIZE")

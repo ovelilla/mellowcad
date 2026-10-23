@@ -1,0 +1,19 @@
+_-LAYER
+_M
+L1
+
+(setvar "CECOLOR" "1")
+(setvar "CELWEIGHT" 30)
+(setvar "CELTSCALE" 2.0)
+_ELEVATION
+5
+_THICKNESS
+2
+_-TEXT
+5,5
+
+
+A
+_MPDUMP
+-
+(getvar "LASTPOINT")

@@ -1,0 +1,21 @@
+_-STYLE
+S2
+arial.ttf
+0
+1
+0
+_N
+_N
+_-TEXT
+0,0
+2.5
+0
+A
+_-RENAME
+_ST
+S2
+S3
+(tblsearch "STYLE" "S3")
+(getvar "TEXTSTYLE")
+MPDUMP
+-

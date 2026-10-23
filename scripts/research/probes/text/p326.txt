@@ -1,0 +1,15 @@
+_UCS
+_Z
+30
+_-TEXT
+0,0
+5
+0
+Hola
+_-MTEXT
+0,20
+40,10
+Uno
+
+MPDUMP
+-

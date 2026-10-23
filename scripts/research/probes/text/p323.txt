@@ -1,0 +1,13 @@
+_-STYLE
+S2
+arial.ttf
+0
+1
+0
+_N
+_N
+_-RENAME
+_ST
+S2
+Annotative
+(tblsearch "STYLE" "S2")

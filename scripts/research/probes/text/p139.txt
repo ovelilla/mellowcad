@@ -1,0 +1,12 @@
+_-TEXT
+5,5
+
+'_ZOOM
+_E
+'ORTHOMODE
+1
+'_LINE
+
+A
+_MPDUMP
+-

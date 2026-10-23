@@ -1,0 +1,17 @@
+_-ATTDEF
+
+T1
+P1
+V1
+_J
+_A
+0,0
+30,0
+_-ATTDEF
+
+T2
+P2
+V2
+
+_MPDUMP
+-

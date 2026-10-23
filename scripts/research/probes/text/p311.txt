@@ -1,0 +1,9 @@
+(setq e (tblnext "STYLE" T))
+(setq e (tblnext "STYLE"))
+(setq e (tblnext "STYLE"))
+_.OPEN
+C:\Users\oveli\AppData\Local\Temp\mctxc\espiso.dwt
+(setq e (tblnext "STYLE" T))
+(setq e (tblnext "STYLE"))
+(setq e (tblnext "STYLE"))
+(getvar "TEXTSTYLE")

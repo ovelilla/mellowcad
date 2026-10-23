@@ -1,0 +1,8 @@
+_-MTEXT
+5,5
+_LINESPACING
+_ATLEAST
+
+25,25
+A
+

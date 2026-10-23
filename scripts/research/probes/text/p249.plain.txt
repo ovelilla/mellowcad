@@ -1,0 +1,9 @@
+_TEXTEDIT
+
+_U
+_TEXTEDIT
+_M
+_S
+
+_U
+(getvar "TEXTEDITMODE")

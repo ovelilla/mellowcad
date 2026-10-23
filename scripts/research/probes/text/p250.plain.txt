@@ -1,0 +1,13 @@
+_-MTEXT
+5,5
+_H
+4
+25,25
+A
+
+(getvar "LASTPOINT")
+_U
+(getvar "TEXTSIZE")
+_REDO
+_UNDO
+1

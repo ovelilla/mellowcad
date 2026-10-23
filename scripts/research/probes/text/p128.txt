@@ -1,0 +1,16 @@
+_-TEXT
+0,0
+10
+0
+A
+_-TEXT
+0,50
+5
+0
+B
+_U
+_-TEXT
+
+C
+_MPDUMP
+-

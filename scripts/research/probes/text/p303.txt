@@ -1,0 +1,20 @@
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 1000.0 0.0) (cons 40 10) (cons 41 0.0) (cons 71 1) (cons 1 "HHH\\PHHH") ))
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 900.0 0.0) (cons 40 10) (cons 41 0.0) (cons 71 1) (cons 1 "OOO\\PHHH") ))
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 800.0 0.0) (cons 40 10) (cons 41 0.0) (cons 71 1) (cons 1 "HHH\\POOO") ))
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 700.0 0.0) (cons 40 10) (cons 41 0.0) (cons 71 1) (cons 1 "ggg\\PHHH") ))
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 600.0 0.0) (cons 40 10) (cons 41 0.0) (cons 71 1) (cons 1 "xxx\\Pxxx") ))
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 500.0 0.0) (cons 40 10) (cons 41 0.0) (cons 71 1) (cons 1 "H\\PH\\PH") ))
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 400.0 0.0) (cons 40 2.5) (cons 41 0.0) (cons 71 1) (cons 1 "HHH\\PHHH") ))
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 300.0 0.0) (cons 40 10) (cons 41 100.0) (cons 71 1) (cons 1 "The quick brown fox jumps over the lazy dog") ))
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 200.0 0.0) (cons 40 10) (cons 41 0.0) (cons 71 5) (cons 1 "HHH\\PHHH") ))
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 100.0 0.0) (cons 40 10) (cons 41 0.0) (cons 71 9) (cons 1 "HHH\\PHHH") ))
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 0.0 0.0) (cons 40 10) (cons 41 0.0) (cons 71 1) (cons 1 "HHH\\PHHH") (cons 44 2.0)))
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 -100.0 0.0) (cons 40 10) (cons 41 0.0) (cons 71 1) (cons 1 "HHH\\PHHH") (cons 73 2)))
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 -200.0 0.0) (cons 40 10) (cons 41 0.0) (cons 71 1) (cons 1 "W\\PiiiiW") ))
+MPDUMP
+-
+_EXPLODE
+_ALL
+
+MPDUMP
+-

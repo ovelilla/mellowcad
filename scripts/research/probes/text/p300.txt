@@ -1,0 +1,18 @@
+(entget (tblobjname "STYLE" "Standard"))
+(getvar "MEASUREMENT")
+(getvar "DWGNAME")
+_.OPEN
+C:\Users\oveli\AppData\Local\Temp\mctxc\enuiso.dwt
+(entget (tblobjname "STYLE" "Standard"))
+(getvar "MEASUREMENT")
+(getvar "TEXTSIZE")
+(getvar "DWGNAME")
+_.OPEN
+C:\Users\oveli\AppData\Local\Temp\mctxc\enuacad.dwt
+(entget (tblobjname "STYLE" "Standard"))
+(getvar "TEXTSIZE")
+_.OPEN
+C:\Users\oveli\AppData\Local\Temp\mctxc\espiso.dwt
+(entget (tblobjname "STYLE" "Standard"))
+(getvar "TEXTSIZE")
+(getvar "DWGNAME")

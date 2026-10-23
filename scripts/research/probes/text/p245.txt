@@ -1,0 +1,16 @@
+_TEXTEDIT
+_M
+_S
+
+(getvar "TEXTEDITMODE")
+_.SAVEAS
+2018
+ted1
+_TEXTEDIT
+
+(setvar "TEXTEDITMODE" 0)
+_.OPEN
+ted1
+(getvar "TEXTEDITMODE")
+_TEXTEDIT
+

@@ -1,0 +1,9 @@
+_-TEXT
+5,5
+
+
+HELLO
+_MPDUMP
+-
+(getvar "LASTPOINT")
+(getvar "TEXTSIZE")

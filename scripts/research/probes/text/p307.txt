@@ -1,0 +1,19 @@
+(getvar "OSNAPNODELEGACY")
+_ZOOM
+_W
+-50,-50
+200,200
+_-MTEXT
+50,50
+_J
+_MC
+90,40
+Hola
+
+_LINE
+_NOD
+70,45
+@0,20
+
+MPDUMP
+-

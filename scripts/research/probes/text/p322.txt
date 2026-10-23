@@ -1,0 +1,5 @@
+(setvar "TEXTSTYLE" "NOPE")
+(getvar "TEXTSTYLE")
+_TEXTSTYLE
+Annotative
+(getvar "TEXTSTYLE")

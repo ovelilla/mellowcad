@@ -1,0 +1,16 @@
+_-TEXT
+0,0
+0,7
+10,10
+A
+_MPDUMP
+-
+(getvar "LASTPOINT")
+_-TEXT
+20,0
+@0,4
+@1,1
+B
+_MPDUMP
+-
+(getvar "LASTPOINT")

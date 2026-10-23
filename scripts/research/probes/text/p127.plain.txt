@@ -1,0 +1,15 @@
+_-TEXT
+_J
+_MC
+5,5
+3
+15
+A
+_U
+(getvar "TEXTSIZE")
+_-TEXT
+0,0
+
+
+B
+(sslength (ssget "_X"))

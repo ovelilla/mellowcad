@@ -1,0 +1,10 @@
+_-STYLE
+Standard
+
+
+
+
+
+
+(getvar "TEXTSTYLE")
+(entget (tblobjname "STYLE" "Standard"))

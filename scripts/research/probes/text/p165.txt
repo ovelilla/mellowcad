@@ -1,0 +1,12 @@
+_-TEXT
+5,5
+'_-COLOR
+1
+
+'_ELEVATION
+3
+
+A
+_MPDUMP
+-
+(getvar "CECOLOR")

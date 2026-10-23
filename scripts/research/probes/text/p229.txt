@@ -1,0 +1,9 @@
+_-MTEXT
+5,5
+_W
+FOO
+40
+A
+
+MPDUMP
+-

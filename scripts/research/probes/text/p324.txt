@@ -1,0 +1,12 @@
+_-STYLE
+STANDARD
+
+
+
+
+
+
+(tblnext "STYLE" T)
+(tblnext "STYLE")
+(tblnext "STYLE")
+(getvar "TEXTSTYLE")

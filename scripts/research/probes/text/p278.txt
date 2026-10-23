@@ -1,0 +1,6 @@
+_LINE
+0,0
+'_-MTEXT
+'_MTEXT
+10,0
+

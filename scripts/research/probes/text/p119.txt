@@ -1,0 +1,13 @@
+_-TEXT
+_J
+_MC
+5,5
+4
+30
+ONE
+_-TEXT
+
+TWO
+_MPDUMP
+-
+(getvar "LASTPOINT")

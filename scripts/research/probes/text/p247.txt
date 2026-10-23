@@ -1,0 +1,14 @@
+_ED
+
+_DDEDIT
+
+_.TEXTEDIT
+
+'_TEXTEDIT
+
+_LINE
+0,0
+'_TEXTEDIT
+
+10,0
+

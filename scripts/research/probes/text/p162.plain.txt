@@ -1,0 +1,25 @@
+_-STYLE
+S2
+
+
+
+
+
+
+
+(setvar "TEXTSTYLE" "Standard")
+_-TEXT
+_S
+S2
+5,5
+
+
+A
+(getvar "TEXTSTYLE")
+_U
+(getvar "TEXTSTYLE")
+_-TEXT
+0,0
+
+
+B

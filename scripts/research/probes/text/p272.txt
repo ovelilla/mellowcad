@@ -1,0 +1,10 @@
+(setvar "TEXTSIZE" 3)
+_-MTEXT
+5,5
+_L
+
+5x
+1x
+25,25
+A
+

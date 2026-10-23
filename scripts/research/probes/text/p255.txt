@@ -1,0 +1,11 @@
+_-MTEXT
+5,5
+25,25
+'_ZOOM
+%%d45
+a\b{c}
+\P
+A B C
+
+MPDUMP
+-

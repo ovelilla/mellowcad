@@ -1,0 +1,27 @@
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 0.0 0.0) (cons 40 10.0) (cons 41 0.0) (cons 71 7) (cons 1 "HHH\\PHHH") (cons 73 2)))
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 100.0 0.0) (cons 40 10.0) (cons 41 0.0) (cons 71 4) (cons 1 "HHH\\PHHH") (cons 73 2)))
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 200.0 0.0) (cons 40 10.0) (cons 41 0.0) (cons 71 7) (cons 1 "HHH\\Pggg") ))
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 300.0 0.0) (cons 40 10.0) (cons 41 0.0) (cons 71 4) (cons 1 "HHH\\Pggg") ))
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 400.0 0.0) (cons 40 10.0) (cons 41 0.0) (cons 71 7) (cons 1 "ggg") ))
+(entmake (list (cons 0 "MTEXT") (cons 100 "AcDbEntity") (cons 100 "AcDbMText") (list 10 0.0 500.0 0.0) (cons 40 10.0) (cons 41 0.0) (cons 71 7) (cons 1 "HHH") ))
+_-TEXT
+_J
+_M
+0,-100
+10
+0
+HHH
+_-TEXT
+_J
+_M
+0,-200
+10
+0
+ggg
+MPDUMP
+-
+_EXPLODE
+_ALL
+
+MPDUMP
+-

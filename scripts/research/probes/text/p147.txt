@@ -1,0 +1,26 @@
+_LINE
+0,0
+100,0
+
+_LINE
+0,50
+100,50
+
+_ZOOM
+_W
+-50,-50
+200,200
+(sssetfirst nil (ssget "_X"))
+_STYLE
+(ssget "_I")
+(sssetfirst nil (ssget "_X"))
+_-STYLE
+
+
+
+
+
+
+
+
+(ssget "_I")

@@ -1,0 +1,20 @@
+_-TEXT
+0,0
+
+
+A
+_-TEXT
+0,10
+
+
+B
+_UNDO
+2
+(ssget "_X")
+_REDO
+(sslength (ssget "_X"))
+_U
+_U
+_MREDO
+1
+(sslength (ssget "_X"))

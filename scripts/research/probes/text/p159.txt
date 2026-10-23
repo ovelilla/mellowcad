@@ -1,0 +1,18 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+200,200
+_-TEXT
+5,5
+
+
+OLD
+(sssetfirst nil (ssget "_X" (list (cons 0 "TEXT"))))
+_TEXTEDIT
+NEW
+
+(ssget "_I")

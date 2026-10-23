@@ -1,0 +1,11 @@
+_-STYLE
+S3
+txt
+0
+1
+0
+_N
+_N
+_N
+(entget (tblobjname "STYLE" "S3"))
+(getvar "TEXTSTYLE")

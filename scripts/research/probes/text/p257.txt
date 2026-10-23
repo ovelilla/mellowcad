@@ -1,0 +1,11 @@
+_UCS
+_Z
+30
+_-MTEXT
+0,0
+20,-10
+A
+
+MPDUMP
+-
+(getvar "LASTPOINT")

@@ -1,0 +1,9 @@
+_MTEXT
+5,5
+25,25
+ONE
+TWO
+
+MPDUMP
+-
+(getvar "LASTPOINT")

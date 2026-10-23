@@ -1,0 +1,10 @@
+-TEXTO
+U
+S
+
+FOO
+SIZQ
+5,5
+
+
+A

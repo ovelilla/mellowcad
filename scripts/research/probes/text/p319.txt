@@ -1,0 +1,37 @@
+_-STYLE
+S2
+arial.ttf
+0
+1
+0
+_N
+_N
+_-TEXT
+0,0
+2.5
+0
+A
+_-STYLE
+S4
+arial.ttf
+0
+1
+0
+_N
+_N
+_-STYLE
+S5
+arial.ttf
+0
+1
+0
+_N
+_N
+_-PURGE
+_ST
+*
+_N
+(tblsearch "STYLE" "S2")
+(tblsearch "STYLE" "S4")
+(tblsearch "STYLE" "S5")
+(getvar "TEXTSTYLE")

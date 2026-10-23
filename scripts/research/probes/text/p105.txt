@@ -1,0 +1,18 @@
+_-TEXT
+_J
+_F
+0,0
+30,0
+5
+FI
+_MPDUMP
+-
+(getvar "LASTPOINT")
+(getvar "TEXTSIZE")
+_-TEXT
+_J
+_L
+0,20
+
+
+B

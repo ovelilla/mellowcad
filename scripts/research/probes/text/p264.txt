@@ -1,0 +1,16 @@
+(setvar "LUPREC" 2)
+(setvar "TEXTSIZE" 3.14159265)
+_-MTEXT
+5,5
+_H
+
+_L
+
+5x
+1x
+_W
+12.3456789
+A
+
+MPDUMP
+-

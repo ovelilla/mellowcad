@@ -1,0 +1,16 @@
+_-TEXT
+_J
+_MC
+5,5
+7
+20
+
+(getvar "TEXTSIZE")
+_-TEXT
+0,0
+
+
+B
+_U
+_U
+(getvar "TEXTSIZE")

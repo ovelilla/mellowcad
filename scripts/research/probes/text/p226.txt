@@ -1,0 +1,8 @@
+_-MTEXT
+5,5
+_S
+FOO
+Standard
+25,25
+A
+

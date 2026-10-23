@@ -1,0 +1,14 @@
+_-TEXT
+'_ZOOM
+_E
+'ORTHOMODE
+1
+'TEXTSIZE
+7
+'_LINE
+5,5
+
+
+A
+(getvar "ORTHOMODE")
+(getvar "TEXTSIZE")

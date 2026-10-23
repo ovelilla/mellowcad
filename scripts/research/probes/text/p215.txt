@@ -1,0 +1,11 @@
+_-MTEXT
+5,5
+_L
+FOO
+_E
+2x
+25,25
+A
+
+MPDUMP
+-

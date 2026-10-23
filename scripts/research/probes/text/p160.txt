@@ -1,0 +1,29 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+200,200
+(sssetfirst nil (ssget "_X"))
+_STYLE
+S3
+
+
+
+
+
+
+
+(ssget "_I")
+(sssetfirst nil (ssget "_X"))
+_-STYLE
+
+
+
+
+
+
+
+(ssget "_I")

@@ -1,0 +1,6 @@
+_-RENAME
+_ST
+Standard
+X1
+(tblsearch "STYLE" "X1")
+(tblsearch "STYLE" "Standard")

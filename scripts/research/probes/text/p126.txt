@@ -1,0 +1,24 @@
+_-STYLE
+BIG
+
+7
+
+
+
+
+
+(getvar "TEXTSIZE")
+(setvar "TEXTSTYLE" "Standard")
+_-TEXT
+_S
+BIG
+5,5
+
+A
+(getvar "TEXTSIZE")
+(setvar "TEXTSTYLE" "Standard")
+_-TEXT
+0,20
+
+
+B
