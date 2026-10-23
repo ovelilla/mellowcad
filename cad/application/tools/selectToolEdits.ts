@@ -73,20 +73,37 @@ export function withSegmentStretched(
 }
 
 /**
- * Where a multiline text's width grip sits: at the top of the edge that moves
- * when the width changes — the right one, or the left one for right-aligned
- * text, whose right edge is pinned to its attachment point.
+ * The sides of a multiline text's box that carry a width grip: those that
+ * move when the width changes — the right one, the left one for right-aligned
+ * text, whose right edge is pinned to its attachment point, and both for a
+ * centred one (desktop text/d03-1: arrows on both sides of an MC text).
  */
-export function mtextWidthGrip(mtext: MTextEntity): Vec2 {
-  const { x0, x1, y1 } = mtextLayout(mtext)
-  return mtextToWorld(
-    mtext,
-    mtextAlign(mtext.attachment) === "right" ? x0 : x1,
-    y1
-  )
+export function mtextWidthSides(
+  mtext: MTextEntity
+): readonly ("left" | "right")[] {
+  switch (mtextAlign(mtext.attachment)) {
+    case "left":
+      return ["right"]
+    case "right":
+      return ["left"]
+    case "center":
+      return ["left", "right"]
+  }
 }
 
-/** The width that puts the moving edge of `mtext`'s box through `point`. */
+/** Where a multiline text's width grip on `side` sits: the top of that edge. */
+export function mtextWidthGrip(
+  mtext: MTextEntity,
+  side: "left" | "right"
+): Vec2 {
+  const { x0, x1, y1 } = mtextLayout(mtext)
+  return mtextToWorld(mtext, side === "left" ? x0 : x1, y1)
+}
+
+/**
+ * The width that puts the moving edge of `mtext`'s box through `point`: a
+ * centred text's either edge, the other moving with it about the attachment.
+ */
 export function mtextWidthThrough(mtext: MTextEntity, point: Vec2): number {
   const x = mtextFromWorld(mtext, point).x
   switch (mtextAlign(mtext.attachment)) {

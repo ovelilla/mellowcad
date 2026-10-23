@@ -109,12 +109,12 @@ export type ScenePrimitive =
        * the size and angle the drawing gives it, so it zooms and rotates with
        * the geometry.
        *
-       * The presenter draws it with a transform and resolves the justification
-       * through the renderer's own alignment — the engine stays free of glyph
-       * metrics, which it could not measure without a DOM.
+       * The presenter draws it with a transform, aligned along the baseline
+       * by the renderer; where the baseline lies is the engine's, which
+       * places a drawing text by Arial's metrics, not the font's em box.
        */
       readonly kind: "text"
-      /** Screen position of the justification point. */
+      /** Screen position of the point on the alphabetic baseline it is aligned to. */
       readonly at: Vec2
       readonly text: string
       /** Capital-letter height in screen pixels. */
@@ -128,7 +128,6 @@ export type ScenePrimitive =
        */
       readonly matrix?: readonly [number, number, number, number]
       readonly align: TextAlign
-      readonly baseline: TextBaseline
       readonly color: string
       /** Font family; the presenter supplies a default. */
       readonly font?: string
@@ -136,15 +135,6 @@ export type ScenePrimitive =
 
 /** Horizontal alignment of a `text` primitive around its point. */
 export type TextAlign = "left" | "center" | "right"
-
-/**
- * Vertical alignment of a `text` primitive around its point. The names follow
- * the renderer's own baselines, plus `capMiddle` — the midpoint of the capital
- * letters, which AutoCAD's MC/ML/MR justifications use and which `middle` (the
- * midpoint of *all* text, descenders included) deliberately differs from.
- */
-export type TextBaseline =
-  "top" | "middle" | "capMiddle" | "alphabetic" | "bottom"
 
 export interface Scene {
   /** Frame size in CSS pixels. */

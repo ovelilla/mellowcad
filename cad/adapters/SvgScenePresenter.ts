@@ -1,9 +1,4 @@
-import {
-  Scene,
-  ScenePrimitive,
-  StrokeStyle,
-  TextBaseline,
-} from "../scene/types"
+import { Scene, ScenePrimitive, StrokeStyle } from "../scene/types"
 import { DRAWING_FONT, THEME } from "../scene/theme"
 import { clipSegment } from "./clipSegment"
 import { dashPhase, drawnDash } from "./dashPattern"
@@ -11,15 +6,6 @@ import { TEXT_FONT_CAP_RATIO } from "../domain/text"
 
 /** Chrome labels, as the canvas draws them. */
 const LABEL_FONT = "11px ui-monospace, monospace"
-
-/**
- * Where the em box sits around the alphabetic baseline, for the canvas-style
- * `top` / `middle` / `bottom` anchors. The 0.8 / 0.2 split is the conventional
- * em box; placing the baseline arithmetically, rather than through
- * `dominant-baseline`, renders the same in every browser and rasteriser.
- */
-const EM_ASCENT = 0.8
-const EM_DESCENT = 0.2
 
 const FULL_TURN = Math.PI * 2
 
@@ -274,7 +260,6 @@ export class SvgScenePresenter {
             transform: `translate(${this.n(p.at.x)} ${this.n(
               p.at.y
             )})${rotation}`,
-            y: this.n(baselineOffset(p.baseline, p.height, fontSize)),
             "font-family": p.font ?? this.fontFamily,
             "font-size": this.n(fontSize),
             "text-anchor":
@@ -399,29 +384,6 @@ export class SvgScenePresenter {
 function sweepOf(raw: number): number {
   if (raw >= FULL_TURN) return FULL_TURN
   return ((raw % FULL_TURN) + FULL_TURN) % FULL_TURN
-}
-
-/**
- * The baseline's offset from the anchor. A CAD text's height is its capitals,
- * so `capMiddle` sits half of it below; the em-box anchors use the em split.
- */
-function baselineOffset(
-  baseline: TextBaseline,
-  capHeight: number,
-  fontSize: number
-): number {
-  switch (baseline) {
-    case "alphabetic":
-      return 0
-    case "capMiddle":
-      return capHeight / 2
-    case "top":
-      return fontSize * EM_ASCENT
-    case "bottom":
-      return -fontSize * EM_DESCENT
-    case "middle":
-      return (fontSize * (EM_ASCENT - EM_DESCENT)) / 2
-  }
 }
 
 /**

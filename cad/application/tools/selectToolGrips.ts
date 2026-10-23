@@ -17,13 +17,14 @@ import {
   planeAxes,
   PolylineSegmentGeometry,
   polylineSegmentGeometries,
+  textInsertionPoint,
 } from "../../domain/entities"
 import { normalizeAngle, polarPoint } from "../../geometry/primitives"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { ToolContext } from "./Tool"
 import { Grip, GripShape } from "./selectToolState"
-import { mtextWidthGrip } from "./selectToolEdits"
+import { mtextWidthGrip, mtextWidthSides } from "./selectToolEdits"
 import { arrayGrips } from "./arrayGrips"
 import { arrayPlacement } from "../../domain/arrayEdits"
 
@@ -163,12 +164,21 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
         })
         break
       case "text":
-        // One grip on the justification point, as AutoCAD gives text.
+        // The justification point's grip and, for a justified text, the
+        // insertion point's (DXF 10) too; either moves the text (desktop
+        // text/d02-1).
         grips.push({
           entityId: id,
           role: { kind: "move" },
           world: entity.position,
         })
+        if (entity.justify !== "left") {
+          grips.push({
+            entityId: id,
+            role: { kind: "move" },
+            world: textInsertionPoint(entity),
+          })
+        }
         break
       case "mtext":
         grips.push({
@@ -176,11 +186,13 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
           role: { kind: "move" },
           world: entity.position,
         })
-        grips.push({
-          entityId: id,
-          role: { kind: "mtextWidth" },
-          world: mtextWidthGrip(entity),
-        })
+        for (const side of mtextWidthSides(entity)) {
+          grips.push({
+            entityId: id,
+            role: { kind: "mtextWidth", side },
+            world: mtextWidthGrip(entity, side),
+          })
+        }
         break
       case "dimension": {
         // AutoCAD's draggable definition points: the two measured origins,

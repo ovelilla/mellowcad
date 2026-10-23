@@ -4,8 +4,10 @@ import type {
   CircleEntity,
   EllipseEntity,
   LineEntity,
+  MTextEntity,
   PolylineEntity,
   SplineEntity,
+  TextEntity,
 } from "../../domain/entities"
 import {
   assignEntityColor,
@@ -613,6 +615,84 @@ describe("a selection dragged with no command", () => {
 })
 
 describe("grips", () => {
+  const gripCentres = (cad: CadHarness) =>
+    cad
+      .scene()
+      .primitives.flatMap((q) =>
+        q.kind === "rect" && "fill" in q && q.fill === THEME.grip
+          ? [
+              cad.runtime.viewport.screenToWorld(
+                p(q.min.x + q.width / 2, q.min.y + q.height / 2)
+              ),
+            ]
+          : []
+      )
+
+  // desktop text/d02-1: a justified TEXT shows the justification point's grip
+  // and the insertion point's (DXF 10, the baseline's left end); a Left one
+  // only one. Dragging either moves the whole text by the drag (TXO-06).
+  it("gives a justified text a second grip at its insertion point, both moving it", () => {
+    const right = textOf(p(100, 0), "Agh", {
+      height: 10,
+      justify: "right",
+      id: "R",
+    })
+    const left = textOf(p(0, 100), "Agh", { height: 10, id: "L" })
+    const cad = createHarness({ entities: [right, left] })
+
+    cad.select("L")
+    cad.moveTo(p(500, 500))
+    expect(gripCentres(cad)).toHaveLength(1)
+
+    cad.escape().select("R")
+    cad.moveTo(p(500, 500))
+    const grips = gripCentres(cad)
+    expect(grips).toHaveLength(2)
+    expect(grips[0]).toBeCloseToPoint(p(100, 0), 0)
+    expect(grips[1]).toBeCloseToPoint(p(100 - 24.85675306957708, 0), 0)
+
+    cad.drag(p(100 - 24.85675306957708, 0), p(100 - 24.85675306957708 + 10, 20))
+    expect(cad.byId<TextEntity>("R").position).toBeCloseToPoint(p(110, 20))
+    cad.drag(p(110, 20), p(120, 20))
+    expect(cad.byId<TextEntity>("R").position).toBeCloseToPoint(p(120, 20))
+  })
+
+  // desktop text/d03-1: an MC text with a width shows width arrows on both
+  // sides; a Top left one only the right (TXO-07). Either drag sets the width
+  // about the attachment point, so the other side moves with it.
+  it("gives a centred MTEXT a width grip on each side, both widening it symmetrically", () => {
+    const centred = createMText(p(0, 0), "HHH", {
+      height: 10,
+      width: 100,
+      attachment: "mc",
+      id: "C",
+    })
+    const left = createMText(p(0, 200), "HHH", {
+      height: 10,
+      width: 100,
+      id: "L",
+    })
+    const cad = createHarness({ entities: [centred, left] })
+
+    cad.select("L")
+    cad.moveTo(p(500, 500))
+    expect(gripCentres(cad)).toHaveLength(2)
+    expect(gripCentres(cad)[1]).toBeCloseToPoint(p(100, 200), 0)
+
+    cad.escape().select("C")
+    cad.moveTo(p(500, 500))
+    const grips = gripCentres(cad)
+    expect(grips).toHaveLength(3)
+    expect(grips[1]).toBeCloseToPoint(p(-50, 5), 0)
+    expect(grips[2]).toBeCloseToPoint(p(50, 5), 0)
+
+    cad.drag(p(-50, 5), p(-70, 5))
+    expect(cad.byId<MTextEntity>("C").width).toBeCloseTo(140)
+    expect(cad.byId<MTextEntity>("C").position).toBeCloseToPoint(p(0, 0))
+    cad.drag(p(70, 5), p(60, 5))
+    expect(cad.byId<MTextEntity>("C").width).toBeCloseTo(120)
+  })
+
   it("stretches a line from its endpoint grip", () => {
     const cad = createHarness({ entities: [SHORT] })
     cad.select("L1")

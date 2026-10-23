@@ -23,12 +23,7 @@ import {
 import { insertFlatGeometry } from "./blocks"
 import { attributeDefinitionText } from "./attributes"
 import { hatchLoopSegments, hatchLoopRing, pointInsideHatch } from "./hatch"
-import {
-  textWidth,
-  textCorners,
-  horizontalExtent,
-  verticalExtent,
-} from "./text"
+import { textBox, textCorners } from "./text"
 import { mtextCorners, mtextFromWorld, mtextLayout } from "./mtext"
 import { DimensionGeometry, dimensionGeometry } from "./dimensions"
 import { ellipseBounds, ellipseSegments } from "./ellipses"
@@ -94,8 +89,7 @@ function pointInsideText(text: TextEntity, point: Vec2): boolean {
   const dy = point.y - text.position.y
   const x = dx * cos - dy * sin
   const y = dx * sin + dy * cos
-  const [x0, x1] = horizontalExtent(text.justify, textWidth(text))
-  const [y0, y1] = verticalExtent(text.justify, text.height)
+  const { x0, x1, y0, y1 } = textBox(text.justify, text.value, text.height)
   return x >= x0 && x <= x1 && y >= y0 && y <= y1
 }
 

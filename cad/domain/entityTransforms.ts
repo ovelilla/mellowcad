@@ -37,13 +37,7 @@ import {
 } from "./entityFactories"
 import { createEllipse, ellipseWithSpan } from "./ellipses"
 import { mapSplinePoints, splineCopy } from "./splines"
-import {
-  TextOptions,
-  createText,
-  horizontalExtent,
-  measureTextWidth,
-  verticalExtent,
-} from "./text"
+import { TextOptions, createText, measureTextWidth, textBox } from "./text"
 import { MTextOptions, createMText } from "./mtext"
 import { createAttributeDefinition } from "./attributes"
 import {
@@ -1192,13 +1186,14 @@ function readableMirror(
 }
 
 /**
- * A TEXT or ATTDEF mirrored with MIRRTEXT 0: its box reflects and the text in
- * it reads as before ({@link readableMirror}), its justification kept, so the
- * point goes to the image of the box's far end along the baseline, or across
- * it. AutoCAD's box is the glyphs' extents, this engine's
- * {@link measureTextWidth} by the capital height: p283's Hola is 14.628 wide
- * there, 14.356 here, and flipped across its baseline it sits 0.08 higher
- * there (p291).
+ * A TEXT or ATTDEF mirrored with MIRRTEXT 0: its box (the ink's,
+ * {@link textBox}) reflects and the text is refitted in it reading as before
+ * ({@link readableMirror}), its justification kept, so the point goes to the
+ * image of the box's far end along the baseline, or across it (p283, p291;
+ * text/p331: a BL Agh at 0,0 about y = 20 lands at 27.019; text/p338).
+ * Turned back along the baseline, Right and Middle are the exceptions
+ * (text/p337, p283): Right's point goes to the image of the baseline's start,
+ * Middle's to its own image, whatever the ink.
  */
 function mirroredText(
   text: TextEntity | AttributeDefinitionEntity,
@@ -1209,17 +1204,16 @@ function mirroredText(
   const turned = readableMirror(text.rotation, a, b)
   const cos = Math.cos(text.rotation)
   const sin = Math.sin(text.rotation)
-  let far: Vec2
-  if (turned.backward) {
-    const [x0, x1] = horizontalExtent(
-      text.justify,
-      measureTextWidth(shown, text.height)
-    )
-    far = { x: (x0 + x1) * cos, y: (x0 + x1) * sin }
-  } else {
-    const [y0, y1] = verticalExtent(text.justify, text.height)
-    far = { x: -(y0 + y1) * sin, y: (y0 + y1) * cos }
-  }
+  const { x0, x1, y0, y1 } = textBox(text.justify, shown, text.height)
+  const along =
+    text.justify === "right"
+      ? -measureTextWidth(shown, text.height)
+      : text.justify === "middle"
+        ? 0
+        : x0 + x1
+  const far: Vec2 = turned.backward
+    ? { x: along * cos, y: along * sin }
+    : { x: -(y0 + y1) * sin, y: (y0 + y1) * cos }
   return {
     position: mirrorPoint(V.add(text.position, far), a, b),
     rotation: turned.rotation,

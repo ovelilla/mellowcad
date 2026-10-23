@@ -61,6 +61,7 @@ import {
   lineMidpoint,
   lineStartZ,
   matchEntityProperties,
+  measureTextInk,
   measureTextWidth,
   mirrorEntity,
   mirrorEntityCopy,
@@ -85,8 +86,9 @@ import {
   splineEndPoint,
   splineStartPoint,
   stretchEntity,
+  textBox,
   textCorners,
-  textWidth,
+  textInsertionPoint,
   translateEntity,
   withElevation,
   withThickness,
@@ -160,7 +162,8 @@ describe("text", () => {
     "%s: mirrored about %s, a text at %s° reads at %s°, its box mirrored",
     (_, line, from, to) => {
       const [a, b] = MIRROR_LINES[line]
-      for (const justify of ["left", "right", "tl", "mc", "br"] as const) {
+      // Not Right nor Middle, whose point AutoCAD mirrors otherwise (p337).
+      for (const justify of ["left", "center", "tl", "mc", "br"] as const) {
         const text = textOf(p(10, 20), "Hola", {
           height: 5,
           rotation: deg(from),
@@ -184,28 +187,102 @@ describe("text", () => {
   )
 
   // probe transforms/p283: Hola, BaseLeft at 10,10, 30°, mirrored about x = 0
-  // starts at the image of its baseline's end: (-22.668, 17.314) by AutoCAD's
-  // width (14.628), its own here; a right-justified one is aligned at the
-  // image of its baseline's start, (-32.527, 40) for Adios.
-  it("lands where AutoCAD's MIRRTEXT 0 puts it, by the engine's widths", () => {
+  // starts at the image of its ink box's end: (-22.668, 17.314), the ink
+  // spanning 14.628 from the point; a right-justified one is aligned at the
+  // image of its ink's start, (-32.527, 40) for Adios.
+  it("lands where AutoCAD's MIRRTEXT 0 puts it (transforms/p283)", () => {
     const hola = mirrorEntity(
       textOf(p(10, 10), "Hola", { height: 5, rotation: deg(30) }),
       p(0, 0),
       p(0, 10)
     )
-    const w = measureTextWidth("Hola", 5)
     expect(hola.type === "text" && hola.position).toBeCloseToPoint(
-      p(-10 - w * Math.cos(deg(30)), 10 + w * Math.sin(deg(30))),
-      9
+      p(-22.668, 17.314),
+      3
     )
     const adios = mirrorEntity(
       textOf(p(50, 40), "Adios", { height: 5, justify: "right" }),
       p(0, 0),
       p(0, 10)
     )
-    expect(adios.type === "text" && adios.position.x).toBeCloseTo(-32.527, 1)
+    expect(adios.type === "text" && adios.position.x).toBeCloseTo(-32.527, 3)
     expect(adios.type === "text" && adios.position.y).toBeCloseTo(40, 9)
   })
+
+  // probe text/p337: Adios and Hola at 5, each justification's point at x 40,
+  // mirrored about x = 0, turned back to read: refitted in the mirrored ink
+  // box, but Right's point goes to the image of the baseline's start and
+  // Middle's to its own image.
+  it.each([
+    ["left", "Adios", -57.19304229195089],
+    ["left", "Hola", -54.62824010914052],
+    ["center", "Adios", -39.73055934515689],
+    ["center", "Hola", -40.26261937244202],
+    ["right", "Adios", -22.527285129604365],
+    ["right", "Hola", -25.6343792633015],
+    ["middle", "Adios", -40],
+    ["middle", "Hola", -40],
+    ["tl", "Adios", -57.19304229195089],
+    ["mc", "Hola", -40.26261937244202],
+    ["br", "Adios", -22.247612551159623],
+    ["br", "Hola", -25.89699863574352],
+    ["bc", "Adios", -39.73055934515689],
+  ] as const)(
+    "puts a %s %s mirrored back along its baseline where AutoCAD does (text/p337)",
+    (justify, value, x) => {
+      const mirrored = mirrorEntity(
+        textOf(p(40, 15), value, { height: 5, justify }),
+        p(0, 0),
+        p(0, 10)
+      )
+      if (mirrored.type !== "text") throw new Error("not a text")
+      expect(mirrored.position.x).toBeCloseTo(x, 4)
+      expect(mirrored.position.y).toBeCloseTo(15, 9)
+      expect(mirrored.rotation).toBeCloseToAngle(0, 9)
+    }
+  )
+
+  // probe text/p338: flipped across the baseline (about y = 0), Right and
+  // Middle refit in the ink box like the rest: Right Agh at y 10 → −13.530.
+  it.each([
+    ["right", "Agh", -13.530013642564802],
+    ["right", "HHH", -15],
+    ["middle", "Agh", -10],
+    ["center", "Agh", -13.530013642564802],
+  ] as const)(
+    "flips a %s %s across its baseline as AutoCAD (text/p338)",
+    (justify, value, y) => {
+      const mirrored = mirrorEntity(
+        textOf(p(-85, 10), value, { height: 5, justify }),
+        p(0, 0),
+        p(10, 0)
+      )
+      if (mirrored.type !== "text") throw new Error("not a text")
+      expect(mirrored.position).toBeCloseToPoint(p(-85, y), 4)
+    }
+  )
+
+  // probe text/p331: Agh at 10, BL at 0,0, TL at 60,0, Middle at 120,0,
+  // mirrored about y = 20: each is refitted in its reflected ink box, so the
+  // BL point lands at 27.019, not at 30 (TXO-01).
+  it.each([
+    ["bl", p(0, 0), p(0, 27.01909959072306), p(0, 29.97953615279673)],
+    ["tl", p(60, 0), p(60, 52.93997271487039), p(60, 42.93997271487039)],
+    ["middle", p(120, 0), p(120, 40), p(107.5818553888131, 36.4699863574352)],
+  ] as const)(
+    "refits a %s text in its mirrored ink box (text/p331)",
+    (justify, at, point, insertion) => {
+      const mirrored = mirrorEntity(
+        textOf(at, "Agh", { height: 10, justify }),
+        p(0, 20),
+        p(10, 20)
+      )
+      if (mirrored.type !== "text") throw new Error("not a text")
+      expect(mirrored.position).toBeCloseToPoint(point, 4)
+      expect(textInsertionPoint(mirrored)).toBeCloseToPoint(insertion, 4)
+      expect(mirrored.rotation).toBeCloseToAngle(0, 9)
+    }
+  )
 
   // probes transforms/p283, p290, p291, p292: MTEXT's attachment point
   // reflects, and its attachment swaps sides as TEXT turns back: TopLeft
@@ -265,16 +342,96 @@ describe("text", () => {
   it("bounds the box its justification places", () => {
     const text = textOf(p(0, 0), "ABCD", { height: 10, justify: "left" })
     const bounds = entityBounds(text)
-    expect(bounds.min).toBeCloseToPoint(p(0, 0))
-    expect(bounds.max).toBeCloseToPoint(p(textWidth(text), 10))
+    const ink = measureTextInk("ABCD", 10)
+    expect(bounds.min).toBeCloseToPoint(p(ink.x0, ink.y0))
+    expect(bounds.max).toBeCloseToPoint(p(ink.x1, ink.y1))
     expect(textCorners(text)).toHaveLength(4)
   })
 
-  it("measures with Arial's advance widths, scaled by the capital height", () => {
-    // Arial: W 1933, i 455 font units; capitals 1467 units tall.
-    expect(measureTextWidth("W", 1467)).toBeCloseTo(1933)
-    expect(measureTextWidth("i", 1467)).toBeCloseTo(455)
-    expect(measureTextWidth("Wi", 2.5)).toBeCloseTo(((1933 + 455) / 1467) * 2.5)
+  it("measures with Arial's advance widths, scaled by H's ink height (text/p301, p302)", () => {
+    // Arial: W 1933, i 455 font units; H 1466 units tall, not OS/2's 1467
+    // (TXO-04): H's advance at 10 is 10.0887, Agh's 24.85675.
+    expect(measureTextWidth("W", 1466)).toBeCloseTo(1933)
+    expect(measureTextWidth("i", 1466)).toBeCloseTo(455)
+    expect(measureTextWidth("Wi", 2.5)).toBeCloseTo(((1933 + 455) / 1466) * 2.5)
+    expect(measureTextWidth("H", 10)).toBeCloseTo((99.7613 - 19.0518) / 8, 4)
+    expect(measureTextWidth("Agh", 10)).toBeCloseTo(24.85675306957708, 9)
+  })
+
+  // probe text/p301: AutoCAD's (textbox) at 10, the ink box from the
+  // baseline's left end.
+  it.each([
+    ["H", 1.11869, 0, 8.96317, 10],
+    ["HHHHHHHHHH", 1.11869, 0, 99.7613, 10],
+    ["x", 0.102319, 0, 6.88267, 7.2442],
+    ["g", 0.450205, -2.93997, 6.83492, 7.40791],
+    ["OLD", 0.675307, -0.170532, 27.9809, 10.1774],
+    ["Hola", 1.11869, -0.163711, 28.1378, 10],
+    ["Ag", -0.0204638, -2.93997, 16.1528, 10],
+    ["The quick brown fox", 0.327422, -2.77626, 124.911, 10.1705],
+    ["ñÁé", 0.920873, -0.163711, 24.2769, 12.5239],
+  ] as const)(
+    "boxes %s as AutoCAD's textbox (text/p301)",
+    (value, x0, y0, x1, y1) => {
+      const ink = measureTextInk(value, 10)
+      expect(ink.x0).toBeCloseTo(x0, 4)
+      expect(ink.y0).toBeCloseTo(y0, 4)
+      expect(ink.x1).toBeCloseTo(x1, 3)
+      expect(ink.y1).toBeCloseTo(y1, 4)
+    }
+  )
+
+  // probe text/p302: Agh at 10 at 0,0, AutoCAD's DXF 10 per justification.
+  // Bottom puts the baseline Arial's descent above the point (TXO-01),
+  // Middle centres the ink (TXO-05), and Center halves the span from A's
+  // overhang to the advance's end.
+  it.each([
+    ["left", 0, 0],
+    ["center", -12.418144611186904, 0],
+    ["right", -24.85675306957708, 0],
+    ["middle", -12.418144611186904, -3.530013642564802],
+    ["tl", 0, -10],
+    ["tc", -12.418144611186904, -10],
+    ["tr", -24.85675306957708, -10],
+    ["ml", 0, -5],
+    ["mc", -12.418144611186904, -5],
+    ["mr", -24.85675306957708, -5],
+    ["bl", 0, 2.96043656207367],
+    ["bc", -12.418144611186904, 2.96043656207367],
+    ["br", -24.85675306957708, 2.96043656207367],
+  ] as const)(
+    "places a %s text's baseline as AutoCAD (text/p302)",
+    (justify, x, y) => {
+      const text = textOf(p(0, 0), "Agh", { height: 10, justify })
+      expect(textInsertionPoint(text)).toBeCloseToPoint(p(x, y), 6)
+      // The box is the ink's where the glyphs stand: a BL text's covers them.
+      const box = textBox(justify, "Agh", 10)
+      expect(box.y0).toBeCloseTo(y - 2.93997, 4)
+      expect(box.y1).toBeCloseTo(y + 10, 4)
+    }
+  )
+
+  // probe text/p327: Middle at 0,-100 and 0,-200 puts HHH's baseline 5 below,
+  // ggg's 2.234: the ink's middle on the point, its advance centred.
+  it.each([
+    ["HHH", p(-15.133015006821283, -105)],
+    ["ggg", p(-11.654160982264667, -202.23396998635744)],
+  ] as const)(
+    "centres a Middle %s on its ink (text/p327)",
+    (value, insertion) => {
+      const at = p(0, value === "HHH" ? -100 : -200)
+      const text = textOf(at, value, { height: 10, justify: "middle" })
+      expect(textInsertionPoint(text)).toBeCloseToPoint(insertion, 6)
+    }
+  )
+
+  it("turns its insertion point with the text", () => {
+    const text = textOf(p(10, 10), "Agh", {
+      height: 10,
+      justify: "tl",
+      rotation: deg(90),
+    })
+    expect(textInsertionPoint(text)).toBeCloseToPoint(p(20, 10), 9)
   })
 
   it("measures every printable ASCII and Spanish character from the font", () => {
@@ -939,20 +1096,59 @@ describe("Z", () => {
   // Property Settings' special properties (help, 2027; on by default,
   // desktop properties/d07-6): Text, Dimension and Hatch, between objects of
   // that kind.
-  it("matches the text style between single-line and multiline text", () => {
-    const text = textOf(p(0, 0), "A", { styleId: "Two" })
-    const mtext = createMText(p(0, 0), "B", { styleId: "Three" })
-    expect(matchEntityProperties(text, textOf(p(0, 5), "C"))).toMatchObject({
-      styleId: "Two",
+  // desktop text/d08: SRC, a TEXT in S2, MC at 20,30, height 7, rotation 15;
+  // SRCM, an MTEXT BR, height 4, rotation 0, Standard.
+  it("matches a text's style, height and rotation, and TEXT to TEXT its justification (desktop text/d08)", () => {
+    const src = textOf(p(20, 30), "SRC", {
+      styleId: "S2",
+      justify: "mc",
+      height: 7,
+      rotation: deg(15),
     })
-    expect(matchEntityProperties(text, mtext)).toMatchObject({
-      styleId: "Two",
+    const srcm = createMText(p(50, 10), "SRCM", {
+      height: 4,
+      attachment: "br",
     })
-    expect(matchEntityProperties(mtext, text)).toMatchObject({
-      styleId: "Three",
+
+    // TEXT → MTEXT: the attachment is kept.
+    expect(
+      matchEntityProperties(src, createMText(p(50, 40), "DST", { height: 4 }))
+    ).toMatchObject({
+      styleId: "S2",
+      height: 7,
+      rotation: deg(15),
+      attachment: "tl",
+      position: { x: 50, y: 40 },
+    })
+    // MTEXT → TEXT: the justification is kept.
+    expect(
+      matchEntityProperties(
+        srcm,
+        textOf(p(20, 0), "DSTT", {
+          styleId: "S2",
+          justify: "mc",
+          height: 7,
+          rotation: deg(15),
+        })
+      )
+    ).toMatchObject({
+      styleId: "Standard",
+      height: 4,
+      rotation: 0,
+      justify: "mc",
+    })
+    // TEXT → TEXT: a Left text at 70,20 turns MC about 70,20.
+    expect(
+      matchEntityProperties(src, textOf(p(70, 20), "TT", { height: 3 }))
+    ).toMatchObject({
+      styleId: "S2",
+      height: 7,
+      rotation: deg(15),
+      justify: "mc",
+      position: { x: 70, y: 20 },
     })
     expect(
-      matchEntityProperties(text, createAttributeDefinition(p(0, 0), "T"))
+      matchEntityProperties(src, createAttributeDefinition(p(0, 0), "T"))
     ).toMatchObject({ styleId: "Standard" })
   })
 
@@ -1654,6 +1850,10 @@ describe("entityBounds", () => {
     fc.assert(
       fc.property(entityArb, (entity) => {
         const bounds = entityBounds(entity)
+        // Nor a text's point: its extents are its ink, which a Bottom
+        // justification's point lies below and a first glyph's bearing
+        // beside (text/p301, p302).
+        if (entity.type === "text" || entity.type === "attdef") return
         for (const q of characteristicPoints(entity)) {
           if (entity.type === "circle" || entity.type === "arc") continue
           expect(q.x).toBeGreaterThanOrEqual(bounds.min.x - 1e-9)

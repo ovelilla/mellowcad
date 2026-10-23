@@ -1663,10 +1663,10 @@ describe("MIRROR", () => {
 
   // probe transforms/p283 (MIRRTEXT 0, mirror line x = 0): each text keeps
   // reading left to right in its box's reflection. AutoCAD: Hola, BaseLeft
-  // at 10,10, 30°, starts at (-22.668, 17.314), 330°, by its font's width
-  // (14.628; the engine's is measureTextWidth's); Adios, right-justified at
-  // 50,40, is aligned at (-32.527, 40); the MTEXT TopLeft at 10,80 is TopRight
-  // at (-10, 80). Yes flips them so in place.
+  // at 10,10, 30°, starts at (-22.668, 17.314), 330°, by its ink (14.628 from
+  // the point); Adios, right-justified at 50,40, is aligned at (-32.527, 40);
+  // the MTEXT TopLeft at 10,80 is TopRight at (-10, 80). Yes flips them so in
+  // place.
   it.each([["_N"], ["_Y"]])(
     "mirrors TEXT and MTEXT readable, Erase %s",
     (erase) => {
@@ -1691,10 +1691,9 @@ describe("MIRROR", () => {
         TextEntity,
         MTextEntity,
       ]
-      const w = measureTextWidth("Hola", 5)
       expect(hola.position).toBeCloseToPoint(
-        p(-10 - w * Math.cos(deg(30)), 10 + w * Math.sin(deg(30))),
-        9
+        p(-22.66842754717414, 17.31412005457026),
+        6
       )
       expect(hola.rotation).toBeCloseToAngle(deg(330), 9)
       expect(hola.justify).toBe("left")
@@ -1702,7 +1701,7 @@ describe("MIRROR", () => {
         p(measureTextWidth("Adios", 5) - 50, 40),
         9
       )
-      expect(adios.position.x).toBeCloseTo(-32.527, 1)
+      expect(adios.position.x).toBeCloseTo(-32.527285129604365, 6)
       expect(adios.rotation).toBeCloseToAngle(0, 9)
       expect(adios.justify).toBe("right")
       expect(mtext.position).toBeCloseToPoint(p(-10, 80), 9)
@@ -2136,6 +2135,20 @@ describe("STRETCH", () => {
     const line = cad.byId<LineEntity>("L1")
     expect(line.start).toBeCloseToPoint(p(0, 50))
     expect(line.end).toBeCloseToPoint(p(200, 50))
+  })
+
+  // probe text/p304: two Right texts HolaHola, h5, aligned at 100,0 and
+  // 100,50. A crossing over the alignment point moves the text; one over its
+  // insertion point (DXF 10, 71.269,50) alone leaves it.
+  it("moves a justified text only when its justification point is caught (text/p304)", () => {
+    const text = (id: string, y: number) =>
+      createText(p(100, y), "HolaHola", { height: 5, justify: "right", id })
+    const cad = createHarness({ entities: [text("A", 0), text("B", 50)] })
+    typed(cad, "_STRETCH", "_C", "95,-5", "105,5", "", "0,0", "10,0")
+    typed(cad, "_STRETCH", "_C", "65,45", "75,55", "", "0,0", "10,0")
+
+    expect(cad.byId<TextEntity>("A").position).toBeCloseToPoint(p(110, 0))
+    expect(cad.byId<TextEntity>("B").position).toBeCloseToPoint(p(100, 50))
   })
 })
 

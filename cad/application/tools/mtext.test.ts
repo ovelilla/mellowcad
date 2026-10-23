@@ -3,7 +3,6 @@ import { CadHarness, createHarness } from "../../../test/harness"
 import { layerOf, lineOf, p } from "../../../test/builders"
 import {
   createMText,
-  measureTextWidth,
   MTextEntity,
   MTEXT_LINE_SPACING_FACTOR,
   TextEntity,
@@ -397,8 +396,8 @@ describe("editing MTEXT", () => {
   })
 
   // probe pieces/p255: Top left at 10,50, h10, on L1 red → TEXT OLD and
-  // LINES, BaseLeft, on L1 red (their positions differ by the font's metrics,
-  // EXP-06, the Text review's).
+  // LINES, BaseLeft, on L1 red, at 9.324693,39.822647 and 8.976808,22.985448:
+  // set by the ink (text/p303).
   it("explodes into one text per line (pieces/p255)", () => {
     const cad = createHarness()
     cad.runtime.document.load(
@@ -429,7 +428,8 @@ describe("editing MTEXT", () => {
       ["text", "OLD", "left", "L1", "#ff0000"],
       ["text", "LINES", "left", "L1", "#ff0000"],
     ])
-    expect(texts[0].position).toBeCloseToPoint(p(10, 40))
+    expect(texts[0].position).toBeCloseToPoint(p(9.324693, 39.822647), 5)
+    expect(texts[1].position).toBeCloseToPoint(p(8.976808, 22.985448), 5)
   })
 
   // probe pieces/p256: Middle center at 10,50 → OLD BaseLeft at
@@ -449,9 +449,8 @@ describe("editing MTEXT", () => {
 
     const [old, lines] = cad.entities() as TextEntity[]
     expect([old.justify, lines.justify]).toEqual(["left", "left"])
-    expect(old.position.x).toBeCloseTo(10 - measureTextWidth("OLD", 10) / 2)
-    expect(lines.position.x).toBeCloseTo(10 - measureTextWidth("LINES", 10) / 2)
-    expect(old.position.x).toBeCloseTo(-4.328104, 0)
+    expect(old.position).toBeCloseToPoint(p(-4.328104, 53.415189), 5)
+    expect(lines.position).toBeCloseToPoint(p(-10.334243, 36.57799), 5)
   })
 
   it("is picked anywhere inside its box", () => {

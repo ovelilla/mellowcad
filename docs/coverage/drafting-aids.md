@@ -315,7 +315,8 @@ sub-object pick, desktop move/d09); the right-button drag's menu (workspace.md)
 (STRETCH, the default grip mode; desktop line/d15), and a number typed while it is hot is the line's
 resulting length towards the cursor (the first of DYNDIVIS's default two fields, help 2027
 "Dimension Input Settings"); every move grip (a line's midpoint, a centre, an insertion point) moves
-its own object only, whatever else is selected (d15, `** ESTIRAR **` with two lines selected);
+its own object only, whatever else is selected (d15, `** ESTIRAR **` with two lines selected), a
+justified TEXT's insertion point (DXF 10) beside its justification point (text/d02-1);
 radius, MTEXT width; an arc's middle grip, Stretch its default (desktop arc/d07, d08): the arc bent
 through its two ends and the point, stored counter-clockwise (40,25 → 50,30 → 60,25 dragged to its
 middle at 50,33.98 is centre 50,23.9245, radius 10.0577, d09), left as it was, with nothing said,

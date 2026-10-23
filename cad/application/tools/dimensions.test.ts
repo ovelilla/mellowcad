@@ -267,9 +267,13 @@ describe("dimension geometry", () => {
     // chain across the neighbouring dimension line — DIMTXT + DIMGAP is only
     // just under DIMDLI, so there is nothing to spare.
     const cad = dimension("DIMLINEAR", p(0, 0), p(100, 0), p(50, 50))
+    const g = dimensionGeometry(cad.only<DimensionEntity>("dimension"), style)
     const text = cad.scene().primitives.find((prim) => prim.kind === "text")
 
-    expect(text && text.kind === "text" && text.baseline).toBe("alphabetic")
+    // A text primitive's point is on its alphabetic baseline.
+    expect(text?.kind === "text" && text.at).toBeCloseToPoint(
+      cad.runtime.viewport.worldToScreen(g.textPosition)
+    )
   })
 
   it("never reads upside down", () => {

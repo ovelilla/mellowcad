@@ -616,12 +616,26 @@ style Style made current (TEXTSTYLE, which MTEXT and ATTDEF then list, rectang/p
 lines (p127, p162). The layer, colour, linetype and lineweight are those current at the start
 point (p130, p165); ELEVATION is its Z, THICKNESS none (p130). The height and rotation bands are
 dashed (desktop d01-5, d01-6). -TEXT (es -TEXTO) asks the same and one line, then ends; an empty
-line adds nothing; U, UNDO and REDO name it `-TEXT` (p101, p118, p127, p129)
+line adds nothing; U, UNDO and REDO name it `-TEXT` (p101, p118, p127, p129). Laid out as AutoCAD
+lays out Arial, scaled by its H's ink height (1466 units, p301): along the baseline by the
+advances, from A's overhang when it has one (Center of Agh −12.418, p302, p327); Top the height
+below the point, ML/MC/MR half of it, BL/BC/BR Arial's descent above it (434/1466 of the height),
+Middle the ink's vertical middle on it (p302, p327). Its box (pick, bounds, windows, TRIM's edges,
+MIRROR) is the ink's, AutoCAD's `(textbox)` (p301). A justified text has two grips, the point and
+its insertion point (DXF 10), either moving it (desktop d02-1); Insertion snaps to the point (p305);
+STRETCH moves it when the point is caught (p304). The palette's Text rows are Contents, Justify,
+Height, Rotation and, for a justified text, Text alignment X/Y/Z (the point, editable), with
+Position X/Y/Z greyed at the insertion point (desktop d04-1); a Left text shows Position alone,
+editable (whether AutoCAD shows Text alignment greyed for it is unverified; es
+`Alineación de texto X`, unverified). MATCHPROP's Text property: `modify.md`
 
 **Missing:** Align and Fit justifications (en labels `Align` / `Fit`, es `Alinear` / `Ajustar`
 when built), `?`'s `Enter text style(s) to list <*>:` and its `Press ENTER to continue:` pages
 (p109), in-place caret editing (the text is typed in the box: `Enter text:` is DTEXT's
-command-line prompt), content edit from the palette
+command-line prompt), content edit from the palette, the palette's Annotative, Width factor,
+Obliquing, Upside down and Backward rows (desktop d04-1; not modelled), picking by the strokes
+(AutoCAD's click inside the box but off the glyphs selects nothing, desktop d06-3; here the box is
+the hit area: Arial's outlines cannot ship and the bundled faces' differ)
 
 ### `MTEXT` / `T` / `MT` / `-MTEXT` / `-T` · es `TEXTOM` / `TXM` / `MTEXT` / `-TEXTOM` / `-TXM`
 
@@ -660,8 +674,15 @@ on the opposite corner (p206, p207, p270, p279); in a UCS the box squares up to 
 p258). es from Autodesk's MTEXT table (`Precise la primera esquina`, `Indique la esquina opuesta
 o`, `Indique la altura`, `Indique la justificación`, `Indique el tipo de interlineado [Al
 menos/Exactamente]`, `Indique el ángulo de rotación`, `Indique la anchura`, `Nombre de estilo no
-válido`), each box labelled by its own prompt (acmtedRes 1070); word wrap from Arial's widths (a
-longer word overflows), single spacing 5/3 of the height; MTJIGSTRING `abc` jig and flow arrow
+válido`), each box labelled by its own prompt (acmtedRes 1070); laid out by Arial's ink as AutoCAD
+lays it out (p303, p327, p332): a word wraps when the line's ink would pass the width ("HHH HHH"
+at 10, ink 62.169, one line at 63, two at 62; a longer word overflows), each line's ink set
+against the frame's edge (a first glyph's positive bearing left out, a negative one sticking out)
+or centred in it, the first baseline the height or the first line's ink top below the top, At
+least's single spacing 5/3 of the height plus the next line's ink above the height (OOO 16.844 at
+10), the frame ending at the last line's ink bottom, Exactly's half the gap between lines below the
+last baseline (30 for two lines at 10; ink past the height under Exactly not probed); the frame is
+the defined width, or the widest line's ink, by that height (ActualWidth, ActualHeight); MTJIGSTRING `abc` jig and flow arrow
 (desktop d05-1, d05-2); the editor is the dynamic-input box made multi-line and drawn in place
 (Enter breaks a paragraph, Ctrl+Enter or a click outside the frame keeps; Escape with something
 typed asks AutoCAD's task dialog `Multiline Text - Unsaved Changes` / `Do you want to save your text
@@ -670,8 +691,11 @@ nothing typed it closes at once, d06; TEXTEDIT on an MTEXT asks the same when th
 `-MTEXT` takes the lines at `MText:` (es `textoM:`), each kept as typed, codes and all (`\P` a
 break, `%%d`, `\`, `{`, `}`), joined by `\P`, and no line at all adds an empty MTEXT (p255, p268);
 contents kept as AutoCAD's string (`\P`, escapes; inline codes survive but are not drawn);
-Insertion snap, width grip, palette rows (line space factor/distance/style, defined width),
-TEXTEDIT and double-click, EXPLODE to TEXT. Aliases from acad.pgp: `-T`; es `TXM`, `-TXM` and
+Insertion snap; a grip at the attachment point and a width grip on the side that moves, both
+sides for TC, MC and BC, each widening it about the attachment (desktop d03-1); palette rows
+Contents, Justify, Text height, Rotation, Line space factor/distance/style, Defined width
+(desktop d04-2; es `Altura de texto`, unverified); TEXTEDIT and double-click; EXPLODE to one Left
+TEXT per line where AutoCAD's stand (p303; pieces/p255, p256). Aliases from acad.pgp: `-T`; es `TXM`, `-TXM` and
 `MTEXT` (es `T` is TEXTO and `MT` nothing, p259, p260). The es title of the Unsaved Changes dialog,
 `Texto de líneas múltiples - Cambios sin guardar`, and its question,
 `¿Desea guardar los cambios del texto?`, are unverified (the tables hold only 25268,
@@ -685,8 +709,10 @@ p231, p232; the keyword is not offered), the Unsaved Changes dialog's
 `Always perform my current choice` (a profile setting), drawing inline formatting (height, font,
 colour, stacking, underline…), the editor's ruler, tabs, indents and lists, background mask, text
 frame, the Text Editor ribbon tab, MTEXTFIXED 2 (horizontal while typing; here always as drawn), a
-caret on the canvas, Node snap on MTEXT (OSNAPNODELEGACY 0; where its points fall is
-undocumented), defined height and the column-height grip, Annotative, `?`'s 2027
+caret on the canvas, Node snap on MTEXT (OSNAPNODELEGACY 0: AutoCAD's finds the frame's four
+corners, the defined width by the actual height, p307, p329, p330), defined height and the
+column-height grip, Annotative, the palette's Direction, Defined height, Columns, Background mask
+and Text frame rows (desktop d04-2), picking by the strokes (TEXT's), `?`'s 2027
 `Enter style name(s) to list <*>:` and its own listing (p225; here TEXT's: MTEXT's table words it
 `Style name: … Font files: …`), a preselection at MTEXT (the console hangs, p145)
 

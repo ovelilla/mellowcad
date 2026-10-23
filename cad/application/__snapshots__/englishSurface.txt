@@ -2002,7 +2002,7 @@ lweight "Lineweight" LW
   dyn: -
 > select
   properties: MText (1) [Text: Contents=FIRST LINE
-SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space factor=1.5x~, Line space distance=25.00 mm~, Line space style=Exactly, Defined width=120.00 mm~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space factor=1.5x~, Line space distance=25.00 mm~, Line space style=Exactly, Defined width=120.00 mm~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 
 ## -TEXT
 > start
@@ -5118,29 +5118,29 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
 > select T-left
   properties: Text (1) [Text: Contents=NOTE, Justify=Left, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select T-center
-  properties: Text (1) [Text: Contents=NOTE, Justify=Center, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Center, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-4.85, Y=0.00, Z=0.00]
 > select T-right
-  properties: Text (1) [Text: Contents=NOTE, Justify=Right, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Right, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-9.70, Y=0.00, Z=0.00]
 > select T-middle
-  properties: Text (1) [Text: Contents=NOTE, Justify=Middle, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Middle, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-4.85, Y=-1.25, Z=0.00]
 > select T-tl
-  properties: Text (1) [Text: Contents=NOTE, Justify=Top left, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Top left, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=0.00, Y=-2.50, Z=0.00]
 > select T-tc
-  properties: Text (1) [Text: Contents=NOTE, Justify=Top center, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Top center, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-4.85, Y=-2.50, Z=0.00]
 > select T-tr
-  properties: Text (1) [Text: Contents=NOTE, Justify=Top right, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Top right, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-9.70, Y=-2.50, Z=0.00]
 > select T-ml
-  properties: Text (1) [Text: Contents=NOTE, Justify=Middle left, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Middle left, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=0.00, Y=-1.25, Z=0.00]
 > select T-mc
-  properties: Text (1) [Text: Contents=NOTE, Justify=Middle center, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Middle center, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-4.85, Y=-1.25, Z=0.00]
 > select T-mr
-  properties: Text (1) [Text: Contents=NOTE, Justify=Middle right, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Middle right, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-9.70, Y=-1.25, Z=0.00]
 > select T-bl
-  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom left, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom left, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=0.00, Y=0.74, Z=0.00]
 > select T-bc
-  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom center, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom center, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-4.85, Y=0.74, Z=0.00]
 > select T-br
-  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom right, Height=2.50 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Bottom right, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-9.70, Y=0.74, Z=0.00]
 > select D1
   properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Linear, Rotation=0°~] [Definition points: First X=0.00, First Y=0.00, Second X=100.00, Second Y=0.00]
 > select D2

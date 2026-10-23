@@ -1233,14 +1233,21 @@ describe("TEXTEDIT against AutoCAD 2027's console", () => {
 })
 
 describe("text geometry", () => {
-  it("hangs its box off the justification point", () => {
-    const left = textOf(p(0, 0), "AB", { height: 10, justify: "left" })
-    const right = textOf(p(0, 0), "AB", { height: 10, justify: "right" })
+  // probe text/p301, p302: the box is the ink's where the justification sets
+  // the glyphs: a Left HHH's starts at H's bearing, a Right one's ends at the
+  // last H's ink, short of the point by its bearing.
+  it("hangs its ink box off the justification point (text/p301, p302)", () => {
+    const left = textOf(p(0, 0), "HHH", { height: 10, justify: "left" })
+    const right = textOf(p(0, 0), "HHH", { height: 10, justify: "right" })
 
-    const leftCorners = textCorners(left)
-    const rightCorners = textCorners(right)
-    expect(Math.min(...leftCorners.map((c) => c.x))).toBeCloseTo(0)
-    expect(Math.max(...rightCorners.map((c) => c.x))).toBeCloseTo(0)
+    expect(Math.min(...textCorners(left).map((c) => c.x))).toBeCloseTo(
+      1.11869,
+      4
+    )
+    expect(Math.max(...textCorners(right).map((c) => c.x))).toBeCloseTo(
+      -(10.0887 - 8.96317),
+      3
+    )
   })
 
   it("is picked anywhere on the lettering, not just on its edge", () => {
@@ -1251,5 +1258,33 @@ describe("text geometry", () => {
     cad.click(p(20, 5))
 
     expect(cad.selectedIds()).toEqual(["T1"])
+  })
+
+  // probe text/p302: a BL text's capitals stand 0.29604 of the height above
+  // its point, so its box runs from 29.6 to 129.6 at 100 (TXO-01).
+  it("is picked where a Bottom text's glyphs stand, not below them (text/p302)", () => {
+    const bl = () =>
+      textOf(p(0, 0), "HHH", { height: 100, justify: "bl", id: "T" })
+    const top = createHarness({ entities: [bl()] })
+    top.click(p(50, 120))
+    expect(top.selectedIds()).toEqual(["T"])
+
+    const below = createHarness({ entities: [bl()] })
+    below.click(p(50, 10))
+    expect(below.selectedIds()).toEqual([])
+  })
+
+  // probe text/p305: Insertion on a Right text takes its alignment point
+  // (DXF 11), 100,0, not the baseline's start.
+  it("snaps Insertion to a justified text's justification point (text/p305)", () => {
+    const cad = createHarness({
+      entities: [
+        textOf(p(100, 0), "Hola", { height: 5, justify: "right", id: "T" }),
+      ],
+    })
+    answer(cad, "_LINE", "_INS", "92,2", "@0,20", "")
+
+    const line = cad.entities().find((e) => e.type === "line")
+    expect(line?.type === "line" && line.start).toBeCloseToPoint(p(100, 0))
   })
 })

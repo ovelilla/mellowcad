@@ -141,12 +141,7 @@ function textBox(p: Extract<ScenePrimitive, { kind: "text" }>): Vec2[] {
       : p.align === "right"
         ? [-width, 0]
         : [-width / 2, width / 2]
-  const [y0, y1] =
-    p.baseline === "top"
-      ? [0, p.height]
-      : p.baseline === "middle" || p.baseline === "capMiddle"
-        ? [-p.height / 2, p.height / 2]
-        : [-p.height, 0]
+  const [y0, y1] = [-p.height, 0]
   const [a, b, c, d] = p.matrix ?? [
     Math.cos(p.rotation),
     Math.sin(p.rotation),

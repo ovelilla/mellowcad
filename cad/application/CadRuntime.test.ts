@@ -2,6 +2,7 @@ import { afterEach, describe, expect, it, vi } from "vitest"
 import type { CircleEntity, Entity, LineEntity } from "../domain/entities"
 import type { PropertyRow } from "./EngineState"
 import {
+  createMText,
   entityElevation,
   lineEndZ,
   lineStartZ,
@@ -19,6 +20,7 @@ import {
 } from "../../test/harness"
 import {
   circleOf,
+  deg,
   hatchOf,
   lineOf,
   loopOf,
@@ -702,6 +704,57 @@ describe("property editing", () => {
         ],
       ],
     ])
+  })
+
+  // desktop text/d04-1: Agh, Middle center at 30,-10, height 5, rotation 15:
+  // Text alignment X/Y/Z the point, Position X/Y/Z greyed at DXF 10
+  // (24.6495, -14.0218). d04-2: an MTEXT's height row is Text height.
+  it("lists a justified text's Text alignment, and its Position read-only at the insertion point", () => {
+    const cad = createHarness({
+      entities: [
+        textOf(p(30, -10), "Agh", {
+          id: "T",
+          justify: "mc",
+          height: 5,
+          rotation: deg(15),
+        }),
+        textOf(p(0, 100), "Left", { id: "L", height: 5 }),
+        createMText(p(60, 40), "Line one", { id: "M", height: 4, width: 30 }),
+      ],
+    })
+    const shown = () =>
+      cad
+        .state()
+        .properties.info!.groups.map((g) => [
+          g.title,
+          g.rows
+            .filter((r) => r.id !== "contents" && r.id !== "justify")
+            .map((r) => `${r.label}=${r.value}${r.edit ? "*" : ""}`),
+        ])
+
+    cad.select("T")
+    expect(shown()).toEqual([
+      [
+        "Text",
+        [
+          "Height=5.00 mm*",
+          "Rotation=15°*",
+          "Text alignment X=30.00*",
+          "Text alignment Y=-10.00*",
+          "Text alignment Z=0.00*",
+        ],
+      ],
+      ["Position", ["X=24.65", "Y=-14.02", "Z=0.00"]],
+    ])
+
+    cad.escape().select("L")
+    expect(shown()).toEqual([
+      ["Text", ["Height=5.00 mm*", "Rotation=0°*"]],
+      ["Position", ["X=0.00*", "Y=100.00*", "Z=0.00*"]],
+    ])
+
+    cad.escape().select("M")
+    expect(shown()[0][1]).toContain("Text height=4.00 mm*")
   })
 
   it("offers the editable rows in the selection info", () => {

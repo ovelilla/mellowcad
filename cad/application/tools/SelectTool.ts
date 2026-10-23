@@ -236,7 +236,7 @@ export class SelectTool implements Tool {
           this.beginDimPointMove(grip, grip.role.point, input.screen, ctx)
           break
         case "mtextWidth":
-          this.beginMTextWidth(grip, input.screen, ctx)
+          this.beginMTextWidth(grip, grip.role.side, input.screen, ctx)
           break
         case "array":
           this.beginArrayGrip(grip, grip.role.grip, input.screen, ctx)
@@ -1172,12 +1172,18 @@ export class SelectTool implements Tool {
   }
 
   /** Makes a multiline text's width grip hot and opens the width input. */
-  private beginMTextWidth(grip: Grip, screen: Vec2, ctx: ToolContext): void {
+  private beginMTextWidth(
+    grip: Grip,
+    side: "left" | "right",
+    screen: Vec2,
+    ctx: ToolContext
+  ): void {
     const mtext = ctx.document.get(grip.entityId)
     if (mtext?.type !== "mtext") return
     this.state = {
       phase: "mtextWidth",
       entityId: grip.entityId,
+      side,
       origin: grip.world,
       width: mtext.width,
       pressScreen: screen,

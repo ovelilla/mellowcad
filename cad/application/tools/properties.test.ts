@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
-import type { LineEntity } from "../../domain/entities"
+import type { LineEntity, TextEntity } from "../../domain/entities"
 import { createHarness, type CadHarness } from "../../../test/harness"
-import { layerOf, lineOf, p } from "../../../test/builders"
+import { deg, layerOf, lineOf, p, textOf } from "../../../test/builders"
 import { es } from "../../locales/es"
 import { THEME } from "../../scene/theme"
 
@@ -30,6 +30,30 @@ describe("MATCHPROP", () => {
 
     expect(cad.byId("dst").layerId).toBe("red")
     expect(cad.byId("src").layerId).toBe("red")
+  })
+
+  // desktop text/d08: TEXT to TEXT copies the height, the rotation and the
+  // justification; the Left destination at 70,20 becomes MC about 70,20.
+  it("copies a text's height, rotation and justification about the destination's point (desktop text/d08)", () => {
+    const cad = createHarness({
+      entities: [
+        textOf(p(20, 30), "SRC", {
+          id: "src",
+          justify: "mc",
+          height: 7,
+          rotation: deg(15),
+        }),
+        textOf(p(70, 20), "TT", { id: "dst", height: 3 }),
+      ],
+    })
+
+    paint(cad).click(p(20, 30)).click(p(71.5, 21.5)).enter()
+
+    const destination = cad.byId<TextEntity>("dst")
+    expect(destination.justify).toBe("mc")
+    expect(destination.height).toBe(7)
+    expect(destination.rotation).toBeCloseTo(deg(15))
+    expect(destination.position).toBeCloseToPoint(p(70, 20))
   })
 
   it("copies colour, linetype and lineweight overrides", () => {

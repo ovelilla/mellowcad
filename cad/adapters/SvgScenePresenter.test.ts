@@ -2,9 +2,11 @@ import { describe, expect, it } from "vitest"
 import type { ArcEntity, EllipseEntity } from "../domain/entities"
 import {
   arcMidpoint,
+  createText,
   ellipseEndPoint,
   ellipsePointAt,
   ellipseStartPoint,
+  measureTextWidth,
 } from "../domain/entities"
 import type { Scene, ScenePrimitive } from "../scene/types"
 import { THEME } from "../scene/theme"
@@ -293,7 +295,7 @@ describe("markup", () => {
     expect(svg).toContain('&lt;b&gt; &amp; "x"</text>')
   })
 
-  it("sizes drawing text by its capitals and anchors it like the canvas", () => {
+  it("sizes drawing text by its capitals and anchors it on its baseline", () => {
     const svg = new SvgScenePresenter({ capHeightRatio: 0.7 }).elements([
       {
         kind: "text",
@@ -302,16 +304,53 @@ describe("markup", () => {
         height: 7,
         rotation: -Math.PI / 2,
         align: "center",
-        baseline: "capMiddle",
         color: "#fff",
       },
     ])
     expect(attribute(svg, "font-size")).toBe("10")
     expect(attribute(svg, "text-anchor")).toBe("middle")
     expect(attribute(svg, "transform")).toBe("translate(50 40) rotate(-90)")
-    // Half the capital height below the anchor puts the anchor mid-capitals.
-    expect(attribute(svg, "y")).toBe("3.5")
+    // SVG's default baseline is the alphabetic one: no offset to place.
+    expect(svg).not.toContain(' y="')
   })
+
+  // probe text/p302: Agh at 10 high at 0,0, DXF 10 per justification. The
+  // baseline is drawn where AutoCAD's is (TEXT-D43), not at the em box's
+  // anchors (TL −11.168, M −4.188, BL +2.792 before, TXO-02).
+  it.each([
+    ["left", 0, 0],
+    ["tl", 0, -10],
+    ["mc", -12.418144611186904, -5],
+    ["middle", -12.418144611186904, -3.530013642564802],
+    ["bl", 0, 2.96043656207367],
+    ["br", -24.85675306957708, 2.96043656207367],
+  ] as const)(
+    "draws a %s text's baseline where AutoCAD's lies (text/p302)",
+    (justify, x, y) => {
+      const cad = createHarness({
+        entities: [createText(p(0, 0), "Agh", { height: 10, justify })],
+      })
+      const prim = cad.scene().primitives.find((q) => q.kind === "text")!
+      const svg = new SvgScenePresenter({ precision: 6 }).elements([prim])
+      const [, sx, sy] = /translate\(([^ ]+) ([^)]+)\)/
+        .exec(attribute(svg, "transform")!)!
+        .map(Number)
+      const viewport = cad.runtime.viewport
+      const at = viewport.screenToWorld(p(sx, sy))
+      // Drawn from the left end: the presenter adds no offset of its own.
+      const anchor = attribute(svg, "text-anchor")
+      const width = measureTextWidth("Agh", 10)
+      const left =
+        anchor === "start"
+          ? at.x
+          : anchor === "middle"
+            ? at.x - width / 2
+            : at.x - width
+      expect(left).toBeCloseTo(x, 4)
+      expect(at.y).toBeCloseTo(y, 4)
+      expect(svg).not.toContain(' y="')
+    }
+  )
 
   it("keeps every text left-to-right, whatever the page around it", () => {
     const svg = new SvgScenePresenter().elements([
@@ -323,7 +362,6 @@ describe("markup", () => {
         height: 5,
         rotation: 0,
         align: "left",
-        baseline: "alphabetic",
         color: "#fff",
       },
     ])

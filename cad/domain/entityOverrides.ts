@@ -220,16 +220,32 @@ export function matchEntityProperties(source: Entity, target: Entity): Entity {
 /**
  * Property Settings' Text ("single-line and multiline text objects"), Dimension
  * and Hatch special properties, on by default (help, 2027; desktop
- * properties/d07-6): the text style, the dimension style, a hatch's pattern,
- * scale and angle. Annotative scaling is not modelled; a hatch's origin is
- * left, as the help says ("To match the hatch origin, use Inherit Properties").
+ * properties/d07-6): the dimension style, a hatch's pattern, scale and angle,
+ * and a text's as desktop text/d08 shows:
+ * - between any two texts, the style, height and rotation (MTEXT to MTEXT
+ *   was not probed: the same three, by analogy);
+ * - TEXT to TEXT also the justification, about the destination's point: a
+ *   Left text at 70,20 turned MC keeps its alignment point at 70,20. A
+ *   justified destination was not probed. Width factor and obliquing are not
+ *   modelled; an MTEXT's attachment is never copied.
+ * Annotative scaling is not modelled; a hatch's origin is left, as the help
+ * says ("To match the hatch origin, use Inherit Properties").
  */
 function matchSpecialProperties(source: Entity, target: Entity): Entity {
   if (
     (source.type === "text" || source.type === "mtext") &&
     (target.type === "text" || target.type === "mtext")
   ) {
-    return assignTextStyle(target, source.styleId)
+    const { styleId, height, rotation } = source
+    return target.type === "mtext"
+      ? { ...target, styleId, height, rotation }
+      : {
+          ...target,
+          styleId,
+          height,
+          rotation,
+          justify: source.type === "text" ? source.justify : target.justify,
+        }
   }
   if (source.type === "dimension" && target.type === "dimension") {
     return assignDimStyle(target, source.styleId)

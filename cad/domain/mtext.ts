@@ -16,6 +16,7 @@ import { nextEntityId } from "./entityFactories"
 import {
   createText,
   horizontalExtent,
+  measureTextInk,
   measureTextWidth,
   MTEXT_LINE_SPACING_FACTOR,
   verticalExtent,
@@ -136,15 +137,21 @@ export function mtextContents(text: string): string {
 
 export interface MTextLine {
   readonly value: string
-  /** Where the line is anchored, in the object's own frame. */
+  /**
+   * Where the line is anchored, in the object's own frame: its baseline's
+   * left end, middle or right end by its advance, as {@link MTextLayout.align}.
+   */
   readonly x: number
+  /** The left end of its baseline: an exploded line's insertion point. */
+  readonly start: number
   /** The line's baseline, in the object's own frame. */
   readonly y: number
 }
 
 /**
  * An MTEXT as drawn, in its own frame: origin on the attachment point, X along
- * the rotation. The box is the lines' extent, which the width only widens.
+ * the rotation. The box is the defined width, widened to the widest line's
+ * ink, by the lines' height (AutoCAD's ActualHeight).
  */
 export interface MTextLayout {
   readonly lines: readonly MTextLine[]
@@ -155,35 +162,86 @@ export interface MTextLayout {
   readonly y1: number
 }
 
-/** The distance between baselines. */
+/** The distance between baselines, AutoCAD's LineSpaceDistance. */
 export function mtextLinePitch(mtext: MTextEntity): number {
   return mtext.lineSpacingFactor * MTEXT_LINE_SPACING_FACTOR * mtext.height
 }
 
+/**
+ * A line's ink along its baseline, from its left end: AutoCAD sets a line by
+ * it (text/p303). A positive bearing of the first glyph is left out (HHH
+ * starts 1.11869 in at 10), a negative one is not counted ('j' stays at the
+ * edge and its hook sticks out: "jumps over the" at x 0, ActualWidth 91.044).
+ */
+function lineInk(
+  value: string,
+  height: number
+): { left: number; right: number } {
+  const ink = measureTextInk(value, height)
+  return { left: Math.max(ink.x0, 0), right: ink.x1 }
+}
+
+/**
+ * AutoCAD's layout, by ink rather than advances (text/p303, p327, p332):
+ * - a word wraps when the line's ink would pass the width ({@link wrapParagraph});
+ * - each line's ink touches the box's edge, or is centred in it;
+ * - the first baseline is max(height, the first line's ink top) below the top;
+ * - At least: each next baseline one pitch lower, plus that line's ink above
+ *   the height (OOO 16.844, "brown fox" 16.837 at 10, against 16.667);
+ *   the box ends at the last line's ink bottom (ggg 2.940 below its baseline);
+ * - Exactly: the pitch alone, and the box ends half the gap between lines
+ *   below the last baseline (30 for two lines at 10, p303 l, p327). Ink above
+ *   the height and below the baseline is not probed under it: read as the
+ *   fixed spacing it promises.
+ */
 export function mtextLayout(mtext: MTextEntity): MTextLayout {
+  const h = mtext.height
   const rows = mtextPlainText(mtext.contents)
     .split("\n")
-    .flatMap((paragraph) => wrapParagraph(paragraph, mtext.width, mtext.height))
+    .flatMap((paragraph) => wrapParagraph(paragraph, mtext.width, h))
+    .map((value) => {
+      const ink = measureTextInk(value, h)
+      return { value, ink, along: lineInk(value, h) }
+    })
   const widest = Math.max(
-    ...rows.map((row) => measureTextWidth(row, mtext.height))
+    ...rows.map((row) => row.along.right - row.along.left)
   )
   const pitch = mtextLinePitch(mtext)
+  const exactly = mtext.lineSpacingStyle === "exactly"
+  // Baselines measured down from the top of the box.
+  const depths: number[] = []
+  rows.forEach((row, i) => {
+    const above = exactly ? h : Math.max(h, row.ink.y1)
+    depths.push(i === 0 ? above : depths[i - 1] + pitch + (above - h))
+  })
+  const last = rows[rows.length - 1].ink
+  const below = exactly ? Math.max((pitch - h) / 2, 0) : Math.max(-last.y0, 0)
   const [x0, x1] = horizontalExtent(
     mtext.attachment,
     Math.max(mtext.width, widest)
   )
   const [y0, y1] = verticalExtent(
     mtext.attachment,
-    mtext.height + (rows.length - 1) * pitch
+    depths[depths.length - 1] + below
   )
   const align = mtextAlign(mtext.attachment)
-  const x = align === "left" ? x0 : align === "right" ? x1 : (x0 + x1) / 2
+  const share = { left: 0, center: 0.5, right: 1 }[align]
   return {
-    lines: rows.map((value, i) => ({
-      value,
-      x,
-      y: y1 - mtext.height - i * pitch,
-    })),
+    lines: rows.map((row, i) => {
+      const { left, right } = row.along
+      const start =
+        align === "left"
+          ? x0 - left
+          : align === "right"
+            ? x1 - right
+            : (x0 + x1 - left - right) / 2
+      return {
+        value: row.value,
+        x: start + share * measureTextWidth(row.value, h),
+        start,
+        y: y1 - depths[i],
+      }
+    }),
     align,
     x0,
     x1,
@@ -206,8 +264,10 @@ export function mtextAlign(
 }
 
 /**
- * Greedy word wrap at spaces. A word wider than the box is never broken — it
- * "will extend beyond the given width", as AutoCAD's does.
+ * Greedy word wrap at spaces, by the line's ink: "HHH HHH" at 10, ink 62.169
+ * and advance 64.413, stays one line at widths 63 and 64.3 and breaks at 62
+ * (text/p332). A word wider than the box is never broken — it "will extend
+ * beyond the given width", as AutoCAD's does.
  */
 function wrapParagraph(
   paragraph: string,
@@ -220,7 +280,8 @@ function wrapParagraph(
   let row = words[0]
   for (const word of words.slice(1)) {
     const candidate = `${row} ${word}`
-    if (row.length > 0 && measureTextWidth(candidate, height) > width + 1e-9) {
+    const ink = lineInk(candidate, height)
+    if (row.length > 0 && ink.right - ink.left > width + 1e-9) {
       rows.push(row)
       row = word
     } else {
@@ -265,23 +326,20 @@ export function mtextCorners(
 }
 
 /**
- * The single-line text objects EXPLODE turns an MTEXT into: one per line as
- * drawn, each Left at its baseline's drawn left end whatever the attachment
- * (pieces/p255, p256). Blank lines leave nothing.
+ * The single-line text objects EXPLODE turns an MTEXT into: one Left text per
+ * line, at its baseline's left end as the layout sets it, whatever the
+ * attachment (text/p303; pieces/p255, p256). Blank lines leave nothing.
  */
 export function mtextLineTexts(mtext: MTextEntity): TextEntity[] {
-  const layout = mtextLayout(mtext)
-  const share = { left: 0, center: 0.5, right: 1 }[layout.align]
-  return layout.lines
-    .filter((line) => line.value.trim().length > 0)
-    .map((line) => {
-      const left = line.x - share * measureTextWidth(line.value, mtext.height)
-      return createText(mtextToWorld(mtext, left, line.y), line.value, {
+  return mtextLayout(mtext)
+    .lines.filter((line) => line.value.trim().length > 0)
+    .map((line) =>
+      createText(mtextToWorld(mtext, line.start, line.y), line.value, {
         height: mtext.height,
         rotation: mtext.rotation,
         justify: "left",
         styleId: mtext.styleId,
         layerId: mtext.layerId,
       })
-    })
+    )
 }

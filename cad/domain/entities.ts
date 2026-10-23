@@ -137,15 +137,21 @@ export {
   pointInsideHatch,
 } from "./hatch"
 
-export type { TextOptions } from "./text"
+export type { TextBox, TextOptions } from "./text"
 export {
   createText,
   measureTextWidth,
+  measureTextInk,
   MTEXT_LINE_SPACING_FACTOR,
   TEXT_FONT_CAP_RATIO,
   TEXT_LINE_SPACING_FACTOR,
+  textAlong,
+  textBaselinePoint,
+  textBox,
   textWidth,
   textCorners,
+  textInsertionPoint,
+  textStartOffset,
 } from "./text"
 
 export type { MTextOptions, MTextLine, MTextLayout } from "./mtext"

@@ -25,7 +25,8 @@ export type DimensionPoint = "first" | "second" | "line" | "vertex"
  * - `dimPoint` — a dimension's definition point: an extension-line origin, an
  *   angular one's vertex, or the dimension line itself, which slides the whole
  *   assembly.
- * - `mtextWidth` — a multiline text's width arrow: rewrap it to a new width.
+ * - `mtextWidth` — a multiline text's width arrow on one `side` of its box:
+ *   rewrap it to a new width.
  * - `ellipseAxis` — an ellipse's quadrant, its axis end at a quarter-turn
  *   `quadrant` of its parameter: that half-axis to the cursor's distance.
  * - `ellipseEnd` — an elliptical arc's end: swing it round the ellipse.
@@ -42,7 +43,7 @@ export type GripRole =
   | { readonly kind: "stretchSegment"; readonly segmentIndex: number }
   | { readonly kind: "bulge"; readonly segmentIndex: number }
   | { readonly kind: "dimPoint"; readonly point: DimensionPoint }
-  | { readonly kind: "mtextWidth" }
+  | { readonly kind: "mtextWidth"; readonly side: "left" | "right" }
   | { readonly kind: "ellipseAxis"; readonly quadrant: 0 | 1 | 2 | 3 }
   | { readonly kind: "ellipseEnd"; readonly end: LineEnd }
   | { readonly kind: "array"; readonly grip: ArrayEditRole }
@@ -233,6 +234,7 @@ export type SelectToolState =
       /** A multiline text's width grip is hot: the text rewraps as it moves. */
       readonly phase: "mtextWidth"
       readonly entityId: EntityId
+      readonly side: "left" | "right"
       readonly origin: Vec2
       /** Live width the text wraps to. */
       readonly width: number

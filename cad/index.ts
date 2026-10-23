@@ -312,7 +312,6 @@ export type {
   StrokeStyle,
   CameraTransform,
   TextAlign,
-  TextBaseline,
 } from "./scene/types"
 export { THEME } from "./scene/theme"
 export { buildScene } from "./application/SceneBuilder"

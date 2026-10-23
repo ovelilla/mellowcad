@@ -43,9 +43,10 @@ import {
   polylineSegmentGeometries,
   splineLengthTable,
   splinePolyline,
-  TextJustify,
   measureTextWidth,
   TEXT_FONT_CAP_RATIO,
+  textAlong,
+  textBaselinePoint,
 } from "../domain/entities"
 import {
   DEFAULT_DIM_STYLE,
@@ -74,7 +75,6 @@ import {
   CameraTransform,
   StrokeStyle,
   TextAlign,
-  TextBaseline,
 } from "../scene/types"
 import { DRAWING_FONT, drawnColor, THEME } from "../scene/theme"
 import {
@@ -966,12 +966,13 @@ function planarPrimitives(
             },
       ]
     case "text":
+      // On the baseline the domain places by Arial's metrics (text/p302): a
+      // font's em-box anchors (top, middle, bottom) fall elsewhere.
       return [
-        textPrimitive(camera, entity.position, entity.value, {
+        textPrimitive(camera, textBaselinePoint(entity), entity.value, {
           height: entity.height,
           angle: entity.rotation,
-          align: textAlignOf(entity.justify),
-          baseline: textBaselineOf(entity.justify),
+          align: textAlong(entity.justify),
           color: stroke.color,
         }),
       ]
@@ -986,7 +987,6 @@ function planarPrimitives(
             height: entity.height,
             angle: entity.rotation,
             align: layout.align,
-            baseline: "alphabetic",
             color: stroke.color,
           }
         )
@@ -1120,11 +1120,10 @@ function dimensionPrimitives(
       align: "center",
       // The measurement sits on top of the dimension line, ISO's DIMTAD 1, with
       // DIMGAP between the two. That gap is measured to the *glyphs*, so the
-      // anchor is the alphabetic baseline: canvas's "bottom" is the em box, whose
-      // descender space digits never use, and the resulting extra height pushed
-      // the number across the neighbouring dimension line of a baseline chain
-      // (DIMTXT + DIMGAP is deliberately only just under DIMDLI).
-      baseline: "alphabetic",
+      // point is on the baseline (as every text primitive's): an em box's
+      // bottom has descender space digits never use, and the extra height
+      // pushed the number across the neighbouring dimension line of a baseline
+      // chain (DIMTXT + DIMGAP is deliberately only just under DIMDLI).
       color: stroke.color,
     })
   )
@@ -1135,7 +1134,6 @@ interface TextLook {
   readonly height: number
   readonly angle: number
   readonly align: TextAlign
-  readonly baseline: TextBaseline
   readonly color: string
 }
 
@@ -1150,7 +1148,7 @@ function textPrimitive(
   text: string,
   look: TextLook
 ): ScenePrimitive {
-  const { height, angle, align, baseline, color } = look
+  const { height, angle, align, color } = look
   if (!isPlaneCamera(camera)) {
     return {
       kind: "text",
@@ -1159,7 +1157,6 @@ function textPrimitive(
       height: Math.max(camera.worldToScreenDistance(height), 0.01),
       rotation: screenRotation(camera, angle),
       align,
-      baseline,
       color,
     }
   }
@@ -1179,7 +1176,6 @@ function textPrimitive(
       down.y / pixels,
     ],
     align,
-    baseline,
     color,
   }
 }
@@ -1199,48 +1195,6 @@ function mapped(camera: PlaneCamera, direction: Vec2): Vec2 {
  */
 function screenRotation(camera: CameraTransform, radians: number): number {
   return -(radians - camera.twist)
-}
-
-/** How a justification places the text horizontally around its point. */
-function textAlignOf(justify: TextJustify): TextAlign {
-  switch (justify) {
-    case "left":
-    case "tl":
-    case "ml":
-    case "bl":
-      return "left"
-    case "right":
-    case "tr":
-    case "mr":
-    case "br":
-      return "right"
-    default:
-      return "center"
-  }
-}
-
-/** How a justification places the text vertically around its point. */
-function textBaselineOf(justify: TextJustify): TextBaseline {
-  switch (justify) {
-    case "tl":
-    case "tc":
-    case "tr":
-      return "top"
-    // AutoCAD's Middle straddles all the text, descenders included; MC/ML/MR
-    // straddle only the capitals.
-    case "middle":
-      return "middle"
-    case "ml":
-    case "mc":
-    case "mr":
-      return "capMiddle"
-    case "bl":
-    case "bc":
-    case "br":
-      return "bottom"
-    default:
-      return "alphabetic"
-  }
 }
 
 /**

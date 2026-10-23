@@ -319,14 +319,13 @@ export async function ogImage({
                 ? width
                 : 0
           const baseline = EM_ASCENT * size
-          const drop = text.baseline === "capMiddle" ? text.height / 2 : 0
           return (
             <span
               key={index}
               style={{
                 position: "absolute",
                 left: text.at.x - anchorX,
-                top: text.at.y + drop - baseline,
+                top: text.at.y - baseline,
                 width,
                 height: size,
                 fontFamily: "Geist Mono",

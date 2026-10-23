@@ -1,15 +1,19 @@
 /**
- * Writes `cad/domain/textFontMetrics.ts`: the advance widths of the drawing's
- * text font, which the engine measures text with (it has no DOM to ask).
+ * Writes `cad/domain/textFontMetrics.ts`: the advance widths and ink bounds of
+ * the drawing's text font, which the engine measures and places text with (it
+ * has no DOM to ask).
  *
  * The font is Arial, AutoCAD's Standard text style. Its widths are read from
  * Arimo, which is metric-compatible with Arial and under the SIL OFL 1.1:
  *
  *   https://github.com/google/fonts/raw/main/ofl/arimo/Arimo%5Bwght%5D.ttf
  *
- * Arial's own vertical numbers (the line height, the H's ink) are read from
- * arial.ttf, which cannot ship but can be measured where it is installed
- * (`/mnt/c/Windows/Fonts/arial.ttf` under WSL): Arimo's capitals differ.
+ * Arial's own vertical numbers (the line height, the descent, the H's ink) and
+ * every glyph's ink bounds are read from arial.ttf, which cannot ship but can be
+ * measured where it is installed (`/mnt/c/Windows/Fonts/arial.ttf` under WSL):
+ * only numbers are written, never an outline. Arimo shares Arial's advances but
+ * not its outlines (its capitals are 1409 units tall, Arial's H 1466), and
+ * AutoCAD places TEXT by Arial's ink (text/p301, p302, p331).
  *
  * Run:  node scripts/fonts/metrics.ts path/to/Arimo[wght].ttf path/to/arial.ttf
  * (Node runs the TypeScript directly; the output is committed.)
@@ -64,12 +68,6 @@ function tableOf({ bytes, view }: Font, tag: string): number {
 const arimo = load(path)
 const view = arimo.view
 const table = (tag: string): number => tableOf(arimo, tag)
-
-/**
- * Arial's OS/2 sCapHeight. Arimo shares Arial's advances but not its capitals
- * (1409), and a CAD height is the capitals', so this is what turns it into an em.
- */
-const ARIAL_CAP_HEIGHT = 1467
 
 const unitsPerEm = view.getUint16(table("head") + 18)
 const averageAdvance = view.getInt16(table("OS/2") + 2)
@@ -144,63 +142,105 @@ function lineHeight(font: Font): number {
   )
 }
 
-/** The ink height of a glyph (glyf's yMax − yMin), AutoCAD's scale for Arial. */
-function inkHeight(font: Font, codePoint: number): number {
+/** A glyph's ink box (glyf's xMin, xMax, yMin, yMax), or null when it has no outline. */
+function inkBounds(
+  font: Font,
+  glyph: number
+): readonly [number, number, number, number] | null {
   const { view } = font
-  const glyph = glyphMap(font)(codePoint)
   const longOffsets = view.getInt16(tableOf(font, "head") + 50) === 1
   const loca = tableOf(font, "loca")
-  const offset = longOffsets
-    ? view.getUint32(loca + glyph * 4)
-    : view.getUint16(loca + glyph * 2) * 2
+  const offsetOf = (index: number): number =>
+    longOffsets
+      ? view.getUint32(loca + index * 4)
+      : view.getUint16(loca + index * 2) * 2
+  const offset = offsetOf(glyph)
+  if (offsetOf(glyph + 1) === offset) return null
   const header = tableOf(font, "glyf") + offset
-  return view.getInt16(header + 8) - view.getInt16(header + 4)
+  return [
+    view.getInt16(header + 2),
+    view.getInt16(header + 6),
+    view.getInt16(header + 4),
+    view.getInt16(header + 8),
+  ]
 }
 
 const arial = load(arialPath)
 const arialLineHeight = lineHeight(arial)
-const arialHHeight = inkHeight(arial, 0x48)
+const arialGlyphOf = glyphMap(arial)
+const arialH = inkBounds(arial, arialGlyphOf(0x48))
+if (!arialH) throw new Error("Arial's H has no outline")
+/**
+ * The ink height of Arial's H, by which AutoCAD scales the font: 1466, not
+ * OS/2's sCapHeight 1467 (text/p301: H's advance 10.0887 = 1479/1466 at 10).
+ */
+const capHeight = arialH[3] - arialH[2]
+/** OS/2 usWinDescent: how far a Bottom justification's point sits below the baseline. */
+const descent = arial.view.getUint16(tableOf(arial, "OS/2") + 76)
 
 const glyphOf = glyphMap(arimo)
 const entries: string[] = []
+const inkEntries: string[] = []
 for (const [first, last] of RANGES) {
   for (let codePoint = first; codePoint <= last; codePoint++) {
     const glyph = glyphOf(codePoint)
-    if (glyph !== 0) entries.push(`${codePoint}:${advance(glyph)}`)
+    if (glyph === 0) continue
+    entries.push(`${codePoint}:${advance(glyph)}`)
+    // A symbol Arial lacks (℃, ⁴) is drawn by another face: Arimo's ink
+    // stands in for it.
+    const arialGlyph = arialGlyphOf(codePoint)
+    const ink =
+      arialGlyph === 0 ? inkBounds(arimo, glyph) : inkBounds(arial, arialGlyph)
+    if (ink) inkEntries.push(`${codePoint}:[${ink.join(",")}]`)
   }
 }
 
-const lines: string[] = []
-let line = " "
-for (const entry of entries) {
-  if (line.length + entry.length + 2 > 80) {
-    lines.push(line)
-    line = " "
+function wrap(items: readonly string[]): string {
+  const lines: string[] = []
+  let line = " "
+  for (const item of items) {
+    if (line.length + item.length + 2 > 80) {
+      lines.push(line)
+      line = " "
+    }
+    line += ` ${item},`
   }
-  line += ` ${entry},`
+  lines.push(line)
+  return lines.join("\n")
 }
-lines.push(line)
 
 writeFileSync(
   OUTPUT,
   `// Generated by scripts/fonts/metrics.ts from Arimo (SIL OFL 1.1), whose
-// advance widths are Arial's, and from Arial's line height and H. Do not edit
-// by hand.
+// advance widths are Arial's, and from Arial's vertical metrics and ink bounds.
+// Do not edit by hand.
 
 export const TEXT_FONT_UNITS_PER_EM = ${unitsPerEm}
-export const TEXT_FONT_CAP_HEIGHT = ${ARIAL_CAP_HEIGHT}
+/** The ink height of Arial's H, by which AutoCAD scales the font. */
+export const TEXT_FONT_CAP_HEIGHT = ${capHeight}
 export const TEXT_FONT_AVERAGE_ADVANCE = ${averageAdvance}
 /** Arial's hhea ascender − descender + line gap. */
 export const TEXT_FONT_LINE_HEIGHT = ${arialLineHeight}
-/** The ink height of Arial's H, by which AutoCAD scales the font. */
-export const TEXT_FONT_H_HEIGHT = ${arialHHeight}
+/** Arial's OS/2 usWinDescent. */
+export const TEXT_FONT_DESCENT = ${descent}
 
 /** Advance width by code point, in font units. */
 export const TEXT_FONT_ADVANCES: Readonly<Record<number, number>> = {
-${lines.join("\n")}
+${wrap(entries)}
+}
+
+/**
+ * Arial's ink box by code point (Arimo's where Arial lacks the glyph), [xMin,
+ * xMax, yMin, yMax] in font units from its origin on the baseline; a glyph
+ * with no outline has none.
+ */
+export const TEXT_FONT_INK: Readonly<
+  Record<number, readonly [number, number, number, number]>
+> = {
+${wrap(inkEntries)}
 }
 `
 )
 console.log(
-  `${entries.length} glyphs, ${unitsPerEm} units/em, cap height ${ARIAL_CAP_HEIGHT}, line ${arialLineHeight}, H ${arialHHeight}`
+  `${entries.length} glyphs, ${inkEntries.length} with ink, ${unitsPerEm} units/em, cap height ${capHeight}, line ${arialLineHeight}, descent ${descent}`
 )

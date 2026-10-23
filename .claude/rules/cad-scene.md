@@ -74,17 +74,14 @@ axes)`): a circle becomes an ellipse (`affineEllipse`), text gets a matrix; when
   text, anchors spelled out): the drawing never mirrors. And in the command language: `Scene.lang`
   (`EngineText.commandTag`) becomes `ctx.lang` and every SVG text's `lang`, because the page's
   language picks the font a generic family resolves to.
-- **Glyph metrics are the presenter's job**: the scene says _what_ to align to, not where the pixels
-  land. The engine measures text with Arial's widths (`cad-engine.md`), so the presenters keep
-  `DRAWING_FONT` (Arial or a face with its widths), **Arial's cap ratio rather than a measured
-  one** (Liberation Sans has Arial's widths but shorter capitals) and **no kerning**. Change any
-  of the three alone and the box stops fitting the text. A glyph outside the table (CJK, Arabic)
-  is drawn by a fallback face and measured as an average one.
-- A CAD text height is the **capitals'** height, so canvas text needs two corrections: the font
-  size divided by the cap-height ratio, **and the alphabetic baseline as the anchor** — canvas's
-  `"bottom"` is the em box, whose descender space makes text taller than the drawing says (DIMTXT +
-  DIMGAP is just under DIMDLI, so it pushes a chain's number across its neighbour's line).
-  Dimension text sits _above_ the line (ISO's DIMTAD 1).
+- **Where a text stands is the engine's**: a `text` primitive's point is on its alphabetic
+  baseline, which the domain places (`textBaselinePoint`), never a font's em box. The presenters
+  keep `DRAWING_FONT` (Arial or a
+  face with its widths), **Arial's cap ratio rather than a measured one** (Liberation Sans has
+  Arial's widths but shorter capitals) and **no kerning**. Change any of the three alone and the
+  box stops fitting the text. A glyph outside the table (CJK, Arabic) is drawn by a fallback face
+  and measured as an average one.
+- A CAD text height is the **capitals'** height, so the font size is divided by the cap-height
+  ratio. Dimension text sits _above_ the line (ISO's DIMTAD 1), its gap measured to the glyphs.
 - The SVG presenter differs from the canvas one only where SVG must: a **fixed** cap-height ratio,
-  since it cannot measure a font, and the canvas's em-box baselines placed arithmetically rather
-  than with `dominant-baseline`, which rasterisers disagree about.
+  since it cannot measure a font.

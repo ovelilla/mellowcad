@@ -56,6 +56,7 @@ import {
   mtextLinePitch,
   mtextPlainText,
   planeAxes,
+  textInsertionPoint,
 } from "../domain/entities"
 import { objectArea } from "../domain/objectArea"
 import type {
@@ -1417,6 +1418,12 @@ function singleEntityInfo(
       }
     }
     case "text": {
+      // A justified text's point is its Text alignment, editable; Position
+      // is then DXF 10, the baseline's left end, greyed (desktop text/d04-1).
+      // A Left text shows Position alone, editable: whether AutoCAD greys
+      // Text alignment rows for it was not seen.
+      const justified = entity.justify !== "left"
+      const insertion = at(textInsertionPoint(entity))
       return {
         title: title("text"),
         count: 1,
@@ -1433,12 +1440,40 @@ function singleEntityInfo(
               "rotation",
               normalizeDegrees((entity.rotation * 180) / Math.PI)
             ),
+            ...(justified
+              ? [
+                  coordRow(
+                    "textAlignmentX",
+                    "positionX",
+                    at(entity.position).x
+                  ),
+                  coordRow(
+                    "textAlignmentY",
+                    "positionY",
+                    at(entity.position).y
+                  ),
+                  {
+                    ...planeRowAt("positionZ", entity.position),
+                    id: "textAlignmentZ",
+                    label: text.propertyRow("textAlignmentZ"),
+                  },
+                ]
+              : []),
           ]),
-          group("position", [
-            coordRow("x", "positionX", at(entity.position).x),
-            coordRow("y", "positionY", at(entity.position).y),
-            planeRowAt("positionZ", entity.position),
-          ]),
+          group(
+            "position",
+            justified
+              ? [
+                  row("x", coord(insertion.x)),
+                  row("y", coord(insertion.y)),
+                  row("z", coord(insertion.z)),
+                ]
+              : [
+                  coordRow("x", "positionX", at(entity.position).x),
+                  coordRow("y", "positionY", at(entity.position).y),
+                  planeRowAt("positionZ", entity.position),
+                ]
+          ),
         ],
       }
     }
@@ -1450,7 +1485,7 @@ function singleEntityInfo(
           group("text", [
             row("contents", mtextPlainText(entity.contents)),
             row("justify", text.justify(entity.attachment)),
-            lengthRow("height", "textHeight", entity.height),
+            lengthRow("textHeight", "textHeight", entity.height),
             angleRow(
               "rotation",
               "rotation",

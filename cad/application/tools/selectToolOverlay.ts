@@ -521,7 +521,10 @@ export function buildMTextWidthEdit(
   const stroke: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
   return [
     ...entityScenePrimitive(viewport, preview, stroke),
-    ...gripPrimitives(viewport.worldToScreen(mtextWidthGrip(preview)), true),
+    ...gripPrimitives(
+      viewport.worldToScreen(mtextWidthGrip(preview, state.side)),
+      true
+    ),
   ]
 }
 

@@ -182,13 +182,8 @@ export class CanvasScenePresenter {
         ctx.fontKerning = "none"
         ctx.textAlign = p.align
         ctx.fillStyle = p.color
-        if (p.baseline === "capMiddle") {
-          ctx.textBaseline = "alphabetic"
-          ctx.fillText(p.text, 0, p.height / 2)
-        } else {
-          ctx.textBaseline = p.baseline
-          ctx.fillText(p.text, 0, 0)
-        }
+        ctx.textBaseline = "alphabetic"
+        ctx.fillText(p.text, 0, 0)
         ctx.restore()
         break
       }

@@ -143,9 +143,11 @@ point again) says `Points must be distinct.` (es `Los puntos tienen que ser dist
 pick order, so ERASE Last takes the later one's (p284); LASTPOINT is the second point, No and Yes
 (p239); each run is one step U names (p246, p247); the mirror plane holds the two points and the
 UCS's Z (p286); MIRRTEXT 0's result: a TEXT, MTEXT or ATTDEF keeps reading as it did in the
-reflection of its box, its justification kept — one the reflection moves to the other side of the
-half-plane of directions in (−90°, 90°] turns half round, its point at the image of the box's far
-end along the baseline; one it stands on its head flips across the baseline; a right angle counts
+reflection of its box (a TEXT's the ink's), its justification kept — one the reflection moves to
+the other side of the half-plane of directions in (−90°, 90°] turns half round, its point at the
+image of the box's far end along the baseline (Right's at the image of the baseline's start,
+Middle's at its own image, text/p337); one it stands on its head flips across the baseline (a BL
+Agh at 0,0 about y = 20 at 27.019, text/p331, p338); a right angle counts
 by that half-plane too, 90° rightward and 270° leftward, so about y = x a text at 270° reads at
 180°, about y = −x at 0°, and two mirrors give it back (trim/p01, p02); MTEXT's attachment swaps
 left and right, or top and bottom (p283, p290–p294); a mirrored spline keeps its +Z normal, as
@@ -153,9 +155,7 @@ AutoCAD's does (spline/p320), unlike an ellipse; the reflection drags as MOVE's 
 keeping the selection's glow, the amber dashed line from the first point, both still drawn at
 `Erase source objects?` (desktop d10); `SI` from the Spanish `acad.pgp` (p221)
 
-**Missing:** MIRRTEXT, the variable: 0 only, never mirrored text; the box a text turns back in is
-the engine's (`measureTextWidth`, the capital height), AutoCAD's its glyphs' extents (p283's Hola
-is 14.628 wide there, 14.356 here; flipped across its baseline it sits 0.08 higher there, p291); a
+**Missing:** MIRRTEXT, the variable: 0 only, never mirrored text; a
 text inside a mirrored block reference, which AutoCAD mirrors with the block whatever MIRRTEXT
 (Autodesk's support article), turns back here as a loose one; a mirrored hatch's pattern angle:
 AutoCAD keeps 0° mirrored about the Y axis (p282), here 180°, the rule **unverified** (no hatch at
@@ -1262,9 +1262,11 @@ bloqueada.`, acmatchRes 28), a pick on one starting no window and the prompt ask
 window saying it for each one it found (**unverified**: the window was not probed); one step U names
 `MATCHPROP` (d07). What it copies, as the Property Settings' defaults (help, 2027; d07-6): layer,
 colour, lineweight; linetype to all but hatches, multiline text and attribute definitions;
-thickness between objects that have one (overrides the source lacks are cleared); the text style
-between single-line and multiline text (text to multiline text **unverified**: the help names both),
-the dimension style between dimensions, a hatch's pattern, scale and angle (not its origin, as the
+thickness between objects that have one (overrides the source lacks are cleared); between texts
+the style, height and rotation, TEXT to TEXT also the justification about the destination's point
+(a Left text at 70,20 made MC keeps its alignment point at 70,20), an MTEXT's attachment and a
+TEXT's justification from an MTEXT kept (desktop text/d08; MTEXT to MTEXT and a justified TEXT
+destination **unverified**), the dimension style between dimensions, a hatch's pattern, scale and angle (not its origin, as the
 help's dialog page says; its "Have You Tried" page says the origin is copied: **unverified**). The
 cursor is the pick box with AutoCAD's paintbrush at its upper right at the destination prompt
 (d07-1, d07-4; the crosshair's arms stay, as at every `Select objects:`, drafting-aids.md)
@@ -1272,7 +1274,8 @@ cursor is the pick box with AutoCAD's paintbrush at its upper right at the desti
 **Missing:** `[Settings]` and the Property Settings dialog (acmatchRes 13's option; the prompt
 leaves it out while the dialog does not exist); Linetype Scale, Transparency and Plot Style (not
 modelled); the Polyline (widths), Viewport, Table, Material, Multileader and Center object special
-properties, and the annotative properties of Text, Dimension and Hatch; several objects selected
+properties, the Text property's width factor and obliquing angle (copied TEXT to TEXT, d08; not
+modelled), and the annotative properties of Text, Dimension and Hatch; several objects selected
 before it (**unverified**: acmatchRes 11 `Only one entity can be selected as source object.`
 suggests a refusal; here they are dropped and the source asked); Command Preview's preview of the
 change under the cursor
