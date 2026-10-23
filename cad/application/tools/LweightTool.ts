@@ -12,15 +12,17 @@ import {
   CommandOption,
   CommandOptionOutcome,
   PointerInput,
+  QuestionInput,
   Tool,
   ToolContext,
 } from "./Tool"
+import { askValueOrWord } from "./valueWordPrompt"
 
 const BY_LAYER = "BYLAYER"
 
 /**
- * The `?` listing's columns, as AutoCAD 2023's console lays them out: six
- * lineweights a line, spaced in threes.
+ * The `?` listing's columns, as AutoCAD 2027's console lays them out
+ * (properties/p151): six lineweights a line, spaced in threes.
  */
 const GAPS = [" ", "  ", "    ", " ", "  "]
 
@@ -30,8 +32,13 @@ const GAPS = [" ", "  ", "    ", " ", "  "]
  * `Enter default lineweight for new objects or [?]:` and sets CELWEIGHT, the
  * lineweight new objects take, saved in the drawing and undone with U. A
  * value in millimetres "that is not valid" is set to "the nearest valid
- * value"; `bylayer` is ByLayer; `?` lists the valid ones and asks again; Enter
- * keeps the current one.
+ * value", a negative one refused (properties/p146); `bylayer` is ByLayer; `?`
+ * lists the valid ones and asks again; Enter keeps the current one.
+ *
+ * Its prompt is a real prompt that takes words (p154's trace), so its box is
+ * a value's, not a text's: `askValueOrWord`, and `'ZOOM` runs there (p165).
+ * The words are no `initget` keywords there but text the command reads
+ * itself: `resolveKeyword`.
  *
  * Not done: ByBlock and Default (neither is modelled), inches.
  */
@@ -46,8 +53,8 @@ export class LweightTool implements Tool {
       ctx.document.getSettings().currentLineweight,
       ctx
     )
-    // WHY headed twice transparently: AutoCAD 2023's console writes it as
-    // two prompts, `>>Current lineweight: >>BYLAYER`.
+    // WHY headed twice transparently: AutoCAD 2027's console writes it as
+    // two prompts, `>>Current lineweight: >>BYLAYER` (properties/p154).
     if (ctx.runsTransparently()) {
       ctx.report(
         ctx.text.message("currentLineweight", {
@@ -78,6 +85,10 @@ export class LweightTool implements Tool {
     return "defaultLineweight"
   }
 
+  takes(): QuestionInput {
+    return { refusal: "lineweightRequired" }
+  }
+
   commandOptions(): readonly CommandOption[] {
     return [{ id: "?" }]
   }
@@ -90,23 +101,19 @@ export class LweightTool implements Tool {
   }
 
   private ask(ctx: ToolContext): void {
-    ctx.dynamicInput.open({
-      fields: [{ id: "lineweight", prompt: "defaultLineweight", kind: "text" }],
-      commit: () => {},
-      commitRaw: (commitCtx) => {
-        this.answer(
-          commitCtx.dynamicInput.getText("lineweight").trim(),
-          commitCtx
-        )
-        return true
+    askValueOrWord(
+      ctx,
+      {
+        field: "lineweight",
+        prompt: "defaultLineweight",
+        shown: this.lineweightWord(
+          ctx.document.getSettings().currentLineweight,
+          ctx
+        ),
+        at: this.lastScreen,
       },
-    })
-    ctx.dynamicInput.setLiveText(
-      "lineweight",
-      this.lineweightWord(ctx.document.getSettings().currentLineweight, ctx)
+      (typed, answerCtx) => this.answer(typed, answerCtx)
     )
-    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
-    ctx.requestRender()
   }
 
   private answer(typed: string, ctx: ToolContext): void {
@@ -116,6 +123,10 @@ export class LweightTool implements Tool {
       return this.ask(ctx)
     }
     const value = parseNumber(typed)
+    if (value !== null && value < 0) {
+      ctx.report(ctx.text.message("invalidLineweightNumber"), "error")
+      return this.ask(ctx)
+    }
     const lineweight =
       value !== null
         ? nearestLineweight(value)
@@ -143,25 +154,39 @@ export class LweightTool implements Tool {
     lineweight: Lineweight | typeof LINEWEIGHT_BYLAYER,
     ctx: ToolContext
   ): string {
-    return lineweight === LINEWEIGHT_BYLAYER
-      ? ctx.text.keywordList([BY_LAYER]).toUpperCase()
+    // WHY not the keyword's word: Spanish AutoCAD writes BYLAYER and None's
+    // `Ninguno` here, not `PORCAPA` (properties/p140).
+    if (lineweight === LINEWEIGHT_BYLAYER) {
+      return ctx.text.message("lineweightByLayer")
+    }
+    return lineweight === 0
+      ? ctx.text.message("lineweightNone")
       : lineweightLabel(lineweight)
   }
 }
 
-/** The valid lineweight nearest `value`, in millimetres; the thinner on a tie. */
+const TIE_TOLERANCE = 1e-9
+
+/**
+ * The valid lineweight nearest `value`, in millimetres; the thinner on a tie
+ * (0.325 is 0.30, properties/p143), measured with a tolerance: in floating
+ * point 0.35 is nearer 0.325 than 0.30 is.
+ */
 export function nearestLineweight(value: number): Lineweight {
   return LINEWEIGHTS.reduce((best, candidate) =>
-    Math.abs(candidate - value) < Math.abs(best - value) ? candidate : best
+    Math.abs(candidate - value) < Math.abs(best - value) - TIE_TOLERANCE
+      ? candidate
+      : best
   )
 }
 
 /**
- * The valid lineweights as `?` lists them, after ByLayer. WHY not ByBlock
- * and Default, which AutoCAD's listing names first: neither is modelled.
+ * The valid lineweights as `?` lists them, after ByLayer, written so in
+ * Spanish too (properties/p151). WHY not ByBlock and Default, which AutoCAD's
+ * listing names first: neither is modelled.
  */
 function listing(ctx: ToolContext): string {
-  const lines = [ctx.text.message("linetypeByLayer")]
+  const lines = [ctx.text.message("lineweightListByLayer")]
   for (let at = 0; at < LINEWEIGHTS.length; at += GAPS.length + 1) {
     const row = LINEWEIGHTS.slice(at, at + GAPS.length + 1).map(lineweightLabel)
     lines.push(

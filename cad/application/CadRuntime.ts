@@ -4360,9 +4360,18 @@ export class CadRuntime extends Observable {
     this.updateDimStyle(this.document.getCurrentDimStyleId(), { scale })
   }
 
-  /** Shows or hides real lineweight thickness (AutoCAD's LWDISPLAY). */
+  /**
+   * Shows or hides real lineweight thickness (AutoCAD's LWDISPLAY, which U
+   * puts back naming it, properties/p157b). WHY `LWDISPLAY` for the status
+   * bar's button too: only the variable typed was probed.
+   */
   toggleLineweightDisplay(): void {
-    this.document.setLwDisplay(!this.document.getSettings().lwDisplay)
+    this.executeOutside(
+      new UpdateSettingsCommand({
+        lwDisplay: !this.document.getSettings().lwDisplay,
+      }),
+      "LWDISPLAY"
+    )
   }
 
   /** Serialises the current drawing to a downloadable JSON string. */

@@ -614,6 +614,19 @@ describe("document settings", () => {
 
     expect(cad.state().lwDisplay).toBe(!before)
   })
+
+  // U after LWDISPLAY typed echoes `LWDISPLAY` in both languages (probe
+  // properties/p157b); after the status bar's button, unprobed: the same.
+  it("takes the lineweight display's toggle back with U, naming LWDISPLAY", () => {
+    const cad = createHarness()
+    const before = cad.state().lwDisplay
+
+    cad.runtime.toggleLineweightDisplay()
+    cad.command("_U")
+
+    expect(cad.commandLog().at(-1)).toBe("LWDISPLAY")
+    expect(cad.state().lwDisplay).toBe(before)
+  })
 })
 
 describe("property editing", () => {

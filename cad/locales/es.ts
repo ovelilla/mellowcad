@@ -3240,6 +3240,10 @@ export const es: EngineLocale = {
           "value"
         ]
       ],
+      "invalidLineweightNumber": "Número de grosor de línea no válido.",
+      "lineweightNone": "Ninguno",
+      "lineweightByLayer": "BYLAYER",
+      "lineweightListByLayer": "ByLayer",
       "colorRequired": "Se necesita un número o nombre de color normalizado.",
       "invalidTrueColor": "Color no válido. Escriba tres valores separados por comas comprendidos entre 0 y 255.",
       "invalidOsnapModes": "Modos no válidos de referencia a objetos.",

@@ -545,7 +545,9 @@ describe("-LINETYPE", () => {
 })
 
 describe("-LWEIGHT", () => {
-  it("shows the current lineweight and asks the new one", () => {
+  const PROMPT = "Enter default lineweight for new objects or [?]:"
+
+  it("shows the current lineweight and asks the new one (probes properties/p140, p164)", () => {
     const cad = createHarness()
 
     cad.command("-LWEIGHT")
@@ -562,22 +564,82 @@ describe("-LWEIGHT", () => {
     expect(cad.commandLog().at(-1)).toBe("Current lineweight: 0.50 mm")
   })
 
+  it.each<[string, number | string, string]>([
+    ["0.25", 0.25, "p141"],
+    ["2.11", 2.11, "p144"],
+    ["0.33", 0.35, "p142"],
+    ["3", 2.11, "p145"],
+    ["25", 2.11, "p160"],
+    ["bylayer", "ByLayer", "p148"],
+  ])(
+    "sets %s to %s, the nearest valid lineweight (probe properties/%s)",
+    (typed, lineweight) => {
+      const cad = createHarness()
+      cad.runtime.setCurrentLineweight(1)
+
+      cad.command("LW").type(typed).enter()
+
+      expect(cad.state().currentLineweight).toBe(lineweight)
+    }
+  )
+
   it.each([
-    ["0.33", 0.35],
-    ["0.31", 0.3],
-    ["7", 2.11],
-    ["-1", 0],
-    ["bylayer", "ByLayer"],
-  ])("sets %s to the nearest valid lineweight", (typed, lineweight) => {
+    ["0.325", 0.3, "0.30 mm", "p143"],
+    ["0.07", 0.05, "0.05 mm", "p161"],
+  ])(
+    "takes the thinner on a tie: %s is %s, written %s (probe properties/%s)",
+    (typed, lineweight, label) => {
+      const cad = createHarness()
+      answer(cad, "-LWEIGHT")
+
+      expect(written(cad, typed)).toEqual([
+        `${PROMPT} ${typed}`,
+        `Lineweight rounded to nearest valid value of ${label}`,
+      ])
+      expect(cad.state().currentLineweight).toBe(lineweight)
+    }
+  )
+
+  it("refuses -1 as an invalid lweight number and asks again (probe properties/p146)", () => {
     const cad = createHarness()
-    cad.runtime.setCurrentLineweight(1)
+    answer(cad, "-LWEIGHT")
 
-    cad.command("LW").type(typed).enter()
+    expect(written(cad, "-1", "_-LWEIGHT")).toEqual([
+      `${PROMPT} -1`,
+      "Invalid lweight number.",
+      `${PROMPT} _-LWEIGHT`,
+      "A weight in lineweight units is required.",
+    ])
+    expect(cad.activeToolId()).toBe("lweight")
+    expect(cad.state().currentLineweight).toBe("ByLayer")
 
-    expect(cad.state().currentLineweight).toBe(lineweight)
+    const spanish = createHarness({ locale: es })
+    answer(spanish, "-GROSORLIN", "-1")
+    expect(spanish.commandLog().at(-1)).toBe(
+      "Número de grosor de línea no válido."
+    )
   })
 
-  it("says it rounds to a valid lineweight, and what it needs", () => {
+  it("names 0 None, in its heading and transparently, and rounds to 0.00 mm (probes properties/p140, p140b)", () => {
+    const cad = createHarness()
+    answer(cad, "-LWEIGHT")
+    expect(written(cad, "0.02")).toEqual([
+      `${PROMPT} 0.02`,
+      "Lineweight rounded to nearest valid value of 0.00 mm",
+    ])
+    expect(cad.state().currentLineweight).toBe(0)
+
+    expect(written(cad, "-LWEIGHT").at(-1)).toBe("Current lineweight: None")
+    expect(asking(cad)?.placeholder).toBe("None")
+    answer(cad, "", "LINE", "0,0")
+    expect(written(cad, "'-LWEIGHT")[1]).toBe(">>Current lineweight: >>None")
+
+    const spanish = createHarness({ locale: es })
+    answer(spanish, "-GROSORLIN", "0", "-GROSORLIN")
+    expect(spanish.commandLog().at(-1)).toBe("Grosor de línea actual: Ninguno")
+  })
+
+  it("says it rounds to a valid lineweight, and what it needs (probes properties/p142, p147)", () => {
     const cad = createHarness()
 
     cad.command("-LWEIGHT").type("thin").enter()
@@ -591,7 +653,25 @@ describe("-LWEIGHT", () => {
     )
   })
 
-  it("lists the valid lineweights with ? and asks again", () => {
+  it.each([
+    ["_BYLAYER", "en", "p148"],
+    ["BYL", "en", "p148"],
+    ["_BYLAYER", "es", "p148"],
+    ["PORC", "es", "p148c"],
+    ["C", "es", "p148d"],
+  ])("takes %s (%s) as ByLayer (probe properties/%s)", (typed, language) => {
+    const cad = createHarness(language === "es" ? { locale: es } : {})
+    cad.runtime.setCurrentLineweight(0.5)
+
+    answer(cad, "_-LWEIGHT", typed)
+
+    expect(cad.state().currentLineweight).toBe("ByLayer")
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  // The first line names ByLayer alone (ByBlock and Default are not
+  // modelled), in English in Spanish too, as p151's es-ES console writes it.
+  it("lists the valid lineweights with ? and asks again (probe properties/p151)", () => {
     const cad = createHarness()
 
     cad.command("LWEIGHT").type("?").enter()
@@ -606,12 +686,15 @@ describe("-LWEIGHT", () => {
       ].join("\n")
     )
     expect(cad.activeToolId()).toBe("lweight")
+
+    const spanish = createHarness({ locale: es })
+    answer(spanish, "-GROSORLIN", "?")
+    expect(spanish.commandLog().at(-1)?.split("\n")[0]).toBe("ByLayer")
   })
 
-  it("keeps the lineweight with Enter, and is one undo step either way", () => {
+  it("keeps the lineweight with Enter, and is one undo step either way (probes properties/p156, p155)", () => {
     const cad = createHarness()
     cad.command("-LWEIGHT").enter()
-    // A run that changes nothing is a step U names (move/p236).
     cad.command("_U")
     expect(cad.commandLog().at(-1)).toBe("-LWEIGHT")
 
@@ -620,13 +703,82 @@ describe("-LWEIGHT", () => {
     expect(cad.state().currentLineweight).toBe("ByLayer")
   })
 
-  it.each(["GROSORLIN", "-GROSORLIN"])("runs as %s in Spanish", (name) => {
+  it("is the step U names -GROSORLIN in Spanish, typed either way (probes properties/p155, p156)", () => {
     const cad = createHarness({ locale: es })
+    answer(cad, "_-LWEIGHT", "0.5")
+    expect(written(cad, "H")).toEqual(["H", "-GROSORLIN"])
+    expect(cad.state().currentLineweight).toBe("ByLayer")
 
-    cad.command(name)
-    expect(cad.commandLog().at(-1)).toBe("Grosor de línea actual: PORCAPA")
-    cad.type("0.25").enter()
+    answer(cad, "-GROSORLIN", "")
+    expect(written(cad, "H")).toEqual(["H", "-GROSORLIN"])
+  })
 
-    expect(cad.state().currentLineweight).toBe(0.25)
+  it("runs 'ZOOM at its prompt and resumes (probe properties/p165)", () => {
+    const cad = createHarness()
+    answer(cad, "-LWEIGHT")
+
+    const lines = written(cad, "'ZOOM", "E")
+    expect(lines[1]).toMatch(/^>>Specify corner of window/)
+    expect(lines.at(-1)).toBe("Resuming -LWEIGHT command.")
+    answer(cad, "0.5")
+    expect(cad.state().currentLineweight).toBe(0.5)
+
+    const spanish = createHarness({ locale: es })
+    answer(spanish, "-GROSORLIN", "'ZOOM", "E")
+    expect(spanish.commandLog().at(-1)).toBe(
+      "Reanudando el comando -GROSORLIN."
+    )
+  })
+
+  it("gives each LINE segment run through it the lineweight current as it starts (probe properties/p154)", () => {
+    const cad = createHarness()
+    answer(cad, "LINE", "0,0")
+
+    expect(
+      written(cad, "'-LWEIGHT", "0.5", "@10,0", "'-LWEIGHT", "0.7", "@0,10", "")
+    ).toEqual([
+      "Specify next point or [Undo]: '-LWEIGHT",
+      ">>Current lineweight: >>BYLAYER",
+      ">>Enter default lineweight for new objects or [?]: 0.5",
+      "Resuming LINE command.",
+      "Specify next point or [Undo]: @10,0",
+      "Specify next point or [Undo]: '-LWEIGHT",
+      ">>Current lineweight: >>0.50 mm",
+      ">>Enter default lineweight for new objects or [?]: 0.7",
+      "Resuming LINE command.",
+      "Specify next point or [Undo]: @0,10",
+      "Specify next point or [Close/Undo]:",
+    ])
+    expect(cad.entities().map((e) => e.lineweight)).toEqual([0.5, 0.7])
+  })
+
+  it("runs as LINEWEIGHT in English (probe properties/p162)", () => {
+    const cad = createHarness()
+    expect(written(cad, "LINEWEIGHT")[0]).toBe("LINEWEIGHT LWEIGHT")
+    expect(cad.activeToolId()).toBe("lweight")
+  })
+
+  // Spanish AutoCAD writes BYLAYER, not PORCAPA, in its heading (p140 es-ES).
+  it.each(["GROSORLIN", "-GROSORLIN"])(
+    "runs as %s in Spanish (probes properties/p163, p140)",
+    (name) => {
+      const cad = createHarness({ locale: es })
+
+      cad.command(name)
+      expect(cad.commandLog().at(-1)).toBe("Grosor de línea actual: BYLAYER")
+      expect(asking(cad)?.placeholder).toBe("BYLAYER")
+      cad.type("0.25").enter()
+
+      expect(cad.state().currentLineweight).toBe(0.25)
+    }
+  )
+
+  it("is written >>Grosor de línea actual: >>BYLAYER transparently in Spanish (probe properties/p154)", () => {
+    const cad = createHarness({ locale: es })
+    answer(cad, "LINEA", "0,0")
+
+    expect(written(cad, "'_-LWEIGHT")[1]).toBe(
+      ">>Grosor de línea actual: >>BYLAYER"
+    )
   })
 })

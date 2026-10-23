@@ -920,7 +920,8 @@ export const en: EngineCatalog = {
       ],
       "LWEIGHT": [
         "LWEIGHT",
-        "LW"
+        "LW",
+        "LINEWEIGHT"
       ],
       "-LWEIGHT": [
         "-LWEIGHT"
@@ -2867,6 +2868,10 @@ export const en: EngineCatalog = {
           "value"
         ]
       ],
+      "invalidLineweightNumber": "Invalid lweight number.",
+      "lineweightNone": "None",
+      "lineweightByLayer": "BYLAYER",
+      "lineweightListByLayer": "ByLayer",
       "colorRequired": "A color number or standard color name is required.",
       "invalidTrueColor": "Invalid color.  Type three comma separated values from 0 to 255.",
       "invalidOsnapModes": "Invalid object snap modes.",

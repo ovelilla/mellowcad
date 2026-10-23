@@ -134,28 +134,37 @@ AutoCAD lays a pattern on a polyline's arc segment: ours runs from its start; a 
 thick arc (not plotted, laid as in plan); a line off the plan is centred on its length as drawn,
 its pattern not foreshortened; a circle's dot is drawn as a line's, a run as long as the stroke is wide
 
-### Lineweights + `LWDISPLAY` · `LWEIGHT` / `LW` · `-LWEIGHT` · es `GROSORLIN` · `-GROSORLIN`
+### Lineweights + `LWDISPLAY` · `LWEIGHT` / `LW` / `LINEWEIGHT` · `-LWEIGHT` · es `GROSORLIN` · `-GROSORLIN`
 
 **Implemented:** 24 standard values, ByLayer and ByObject; CELWEIGHT, the lineweight new objects
-take (saved in the drawing, initial ByLayer, one undo step): -LWEIGHT, which LWEIGHT runs too (WHY:
-the Lineweight Settings dialog does not exist), shows `Current lineweight: BYLAYER` (or `0.50 mm`;
-"The current lineweight value is displayed") and asks
-`Enter default lineweight for new objects or [?]:`, in millimetres: any other value is set to the
-nearest valid value (the thinner on a tie) and says so,
-`Lineweight rounded to nearest valid value of 0.35 mm` (es
-`Grosor de línea redondeado al valor válido más cercano de 0.35 mm`), anything else
-`A weight in lineweight units is required.` (es
-`Se precisa un grosor en unidades de grosor de línea.`), `BYLayer` (es `porCapa`) is ByLayer, `?`
-lists ByLayer and the 24 as AutoCAD 2023's console lays them out (six to a line, spaced in threes)
-and asks again, Enter keeps it; es `Grosor de línea actual: …`,
-`Indique el grosor de línea por defecto para los nuevos objetos o [?]`; LW is the shortcut guide's
-alias (LINEWEIGHT could not be verified); "wide polylines display lineweights only when displayed
-outside of plan view": in plan their width is drawn, hairline at its edges; LWDISPLAY starts on,
-where AutoCAD's starts at 0 (p204) — WHY: with no layouts or plotting here, the screen is the only
-place a lineweight shows
+take (saved in the drawing, initial ByLayer, one undo step U names `-LWEIGHT`, es `-GROSORLIN`,
+even when Enter kept it: p155, p156): -LWEIGHT, which LWEIGHT runs too (WHY: the Lineweight
+Settings dialog does not exist), shows `Current lineweight: BYLAYER` (or `0.50 mm`, and `None` for
+0.00 mm; es `Grosor de línea actual: BYLAYER`, `Ninguno`, the English word as Spanish AutoCAD
+writes it: p140, p140b) and asks `Enter default lineweight for new objects or [?]:`, in
+millimetres: any other value is set to the nearest valid value (the thinner on a tie: 0.325 is
+0.30, 0.07 is 0.05, p143, p161) and says so, `Lineweight rounded to nearest valid value of 0.35 mm`
+(es `Grosor de línea redondeado al valor válido más cercano de 0.35 mm`; 0.00 mm, not None, p140b),
+a negative one `Invalid lweight number.` (es `Número de grosor de línea no válido.`, p146; −1 was
+probed) and asks again, any other word `A weight in lineweight units is required.` (es
+`Se precisa un grosor en unidades de grosor de línea.`), `BYLayer` (es `porCapa`: `C`, `PORC`,
+p148c, p148d; `_BYLAYER`, p148) is ByLayer, `?` lists ByLayer and the 24 as the console lays them
+out (six to a line, spaced in threes; `ByLayer` in Spanish too, p151) and asks again, Enter keeps
+it; `'ZOOM` at its prompt runs and -LWEIGHT resumes (p165); run transparently, its heading is
+`>>Current lineweight: >>BYLAYER` and each LINE segment takes the lineweight current as it starts
+(p154); es `Indique el grosor de línea por defecto para los nuevos objetos o [?]`; LW and
+LINEWEIGHT in English (p164, p162; Spanish has no LW, p164, and LINEWEIGHT is **unverified**
+there, so not added); "wide polylines display lineweights
+only when displayed outside of plan view": in plan their width is drawn, hairline at its edges;
+LWDISPLAY starts on, where AutoCAD's starts at 0 (p204) — WHY: with no layouts or plotting here,
+the screen is the only place a lineweight shows; the status bar's Lineweight toggles it as a step U
+takes back naming `LWDISPLAY`, as it names the variable typed (p157b; after the button
+**unverified**)
 
 **Missing:** ByBlock and Default (LWDEFAULT; so the `?` listing's first line names ByLayer alone),
-inches, the Lineweight Settings dialog and the drop-down's Lineweight Settings…
+inches, the Lineweight Settings dialog and the drop-down's Lineweight Settings…; LWDISPLAY typed
+(`Enter new value for LWDISPLAY <OFF>:`, saved in the drawing, p157, p157c), with SETVAR's other
+variables (roadmap row 24)
 
 ### `FILL` · es `RELLENAR`
 
