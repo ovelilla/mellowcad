@@ -931,7 +931,7 @@ the zero-length arc the console leaves at the origin where a cap would turn the 
 the refusal's words in the cursor's tooltip before the click, over a pair that makes no corner
 (`Imposible empalmar esos dos objetos.` in place of the prompt, desktop corners/d06-1: the dynamic
 prompt here shows the prompt alone); the padlock beside the pick box over an object on a locked
-layer and the locked layers' fade (LAYLOCKFADECTL, d04-4), left to the Properties review;
+layer (d04-4; here only at `Command:`, `properties.md` Layers, whose fade is drawn here too);
 **unverified**: whether the first object, a polyline's segment, glows at the second prompt as that
 segment alone (as the rollover; seen only with a line, d01-4), the circle-and-slash over the first
 object again or a radius too large (shown here, as over d06-1's pair), whether a circle a mode

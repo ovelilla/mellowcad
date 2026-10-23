@@ -79,6 +79,8 @@ export type SelectToolState =
       readonly hoverGrip?: Grip | null
       /** The unselected entity under the cursor to preview-highlight, if any. */
       readonly hoverEntityId?: EntityId | null
+      /** Whether the object under the cursor is on a locked layer: the padlock. */
+      readonly hoverLocked?: boolean
     }
   | {
       readonly phase: "pressed"

@@ -28,6 +28,8 @@ export const THEME = {
   trimBadge: "#eb5555",
   /** The circle-and-slash beside the cursor where a pick is refused (desktop trim/d09-1). */
   refusedBadge: "#ffffff",
+  /** The padlock beside the cursor over a locked layer's object (desktop properties/d01-1). */
+  lockedBadge: "#ffffff",
   /** The AutoSnap marker, AutoCAD's green as its dark theme draws it (desktop d05, d21). */
   snap: "#00a500",
   /** The cursor's tooltips (a snap's name, Polar's reading): AutoCAD's light grey box. */

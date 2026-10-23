@@ -31,6 +31,7 @@ import {
 } from "./boxSelection"
 import { riseAlongCursor, showRise } from "./directDistance"
 import { KeyInput, PointerInput, Tool, ToolContext } from "./Tool"
+import type { CursorBadge } from "../SceneBuilder"
 import {
   ArrayEditRole,
   DimensionPoint,
@@ -444,12 +445,16 @@ export class SelectTool implements Tool {
         // separately via magneticCursor(). Also track the unselected entity
         // under the cursor for AutoCAD's selection-preview (rollover) highlight.
         const hoverGrip = hitGrip(input.screen, ctx)
-        const hoverEntityId = pickRolloverEntity(input, ctx)
+        const { id: hoverEntityId, locked: hoverLocked } = pickRolloverEntity(
+          input,
+          ctx
+        )
         const gripChanged = !sameGrip(hoverGrip, this.state.hoverGrip ?? null)
         const entityChanged =
-          hoverEntityId !== (this.state.hoverEntityId ?? null)
+          hoverEntityId !== (this.state.hoverEntityId ?? null) ||
+          hoverLocked !== (this.state.hoverLocked ?? false)
         if (gripChanged || entityChanged) {
-          this.state = { phase: "idle", hoverGrip, hoverEntityId }
+          this.state = { phase: "idle", hoverGrip, hoverEntityId, hoverLocked }
           ctx.requestRender()
         }
         break
@@ -781,6 +786,13 @@ export class SelectTool implements Tool {
     return this.state.originals.map((entity) => entity.id)
   }
 
+  /** The padlock over a locked layer's object at `Command:` (desktop properties/d01-1). */
+  cursorBadge(): CursorBadge | null {
+    return this.state.phase === "idle" && this.state.hoverLocked
+      ? "locked"
+      : null
+  }
+
   rolloverEntityId(): EntityId | null {
     return this.state.phase === "idle"
       ? (this.state.hoverEntityId ?? null)
@@ -875,11 +887,18 @@ export class SelectTool implements Tool {
     ctx.requestRender()
   }
 
-  /** Whether the press landed on an object that is already selected. */
+  /**
+   * Whether the press landed on an object that is already selected and can
+   * be moved: a drag from a locked one boxes, as from nothing.
+   */
   private pressedOnSelection(input: PointerInput, ctx: ToolContext): boolean {
     if (ctx.selection.isEmpty()) return false
     const hit = ctx.pick(input.world)
-    return hit !== null && ctx.selection.has(hit.id)
+    return (
+      hit !== null &&
+      ctx.selection.has(hit.id) &&
+      ctx.document.isEntityEditable(hit)
+    )
   }
 
   /**
@@ -889,10 +908,12 @@ export class SelectTool implements Tool {
    * there (desktop move/d08-1), so no box opens.
    */
   private beginSelectionDrag(base: Vec2, screen: Vec2, ctx: ToolContext): void {
+    // A locked object stays where it is, as MOVE leaves it (properties/p381).
     const originals = ctx.selection
       .toArray()
       .map((id) => ctx.document.get(id))
       .filter((e): e is Entity => e !== undefined)
+      .filter((e) => ctx.document.isEntityEditable(e))
     if (originals.length === 0) return
     const origin = withZ(base, ctx.ucs.origin.z + ctx.elevation)
     this.state = {

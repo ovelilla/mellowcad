@@ -247,7 +247,10 @@ the command refuses, also left out (EXPLODE's `1 was not able to be exploded.`, 
 objects:` neither is said (p243, p247). A set selected before the command is counted on the line
 of an alias's expansion or a macro's echo (`E ERASE 1 found`, the Delete key's `_.erase 1 found`),
 on a line of its own after a name typed whole (`ERASE` / `1 found`, desktop erase/d11; console p01),
-and sifted the same way; with nothing left the command asks `Select objects:`, closing the set at
+and sifted the same way — one on a locked layer, which `Command:` selects, counted and left out
+(MOVE's `2 found` / `1 was on a locked layer.`, Previous holding the other, properties/p381), by
+every command taking a set, as its own `Select objects:` leaves a window's locked finds out
+(COPYCLIP's too, which changes nothing; ZOOM Object frames a preselection whole, counting nothing); with nothing left the command asks `Select objects:`, closing the set at
 the first selection that adds something (EXPLODE's, p241, p242). The set is dropped as the command
 ends or is cancelled, so the next one asks `Select objects:` — `(ssget "_I")` is nil after MOVE,
 COPY, ROTATE, SCALE, MIRROR, STRETCH, JOIN, ARRAYRECT, EXPLODE, -BLOCK, and LINE, ID and ZOOM started
@@ -268,7 +271,9 @@ so `S` is Subobjeto there; after a global `_S` the question names the global wor
 counted at Enter, `2 selected, 2 found`, p135); SUbobject's faces, edges and vertices and the Ctrl+pick that
 selects them (no object here has sub-objects); a pick or a typed point on an object on a locked
 layer (here it finds nothing and starts a window; AutoCAD says `1 found` / `1 was on a locked
-layer.`, erase/p211, p257); a point typed there or at a single object's pick tests the whole
+layer.`, erase/p211, p257; at `Command:` it is selected, properties/d02-1); **unverified** whether
+the commands that change nothing (COPYCLIP, ZOOM Object) leave locked finds out at `Select
+objects:` as the edits do (the console never gave them one); a point typed there or at a single object's pick tests the whole
 drawing, where AutoCAD tests only what the view shows (`No object found` off the screen, LASTPOINT
 moved all the same: pieces/p158, p159; on it, p176); PICKFIRST (a set selected before the command is always taken; with
 PICKFIRST 0 AutoCAD ignores it, erase/p230); the lasso `pick/drag cursor` offers at a fence's or

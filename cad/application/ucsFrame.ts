@@ -173,10 +173,15 @@ class FramedDocument implements DocumentReader {
 
   pickAllBy(
     distanceOf: (entity: Entity) => number,
-    tolerance: number
+    tolerance: number,
+    locked = false
   ): Entity[] {
     return this.source
-      .pickAllBy((entity) => distanceOf(this.toFrame(entity)), tolerance)
+      .pickAllBy(
+        (entity) => distanceOf(this.toFrame(entity)),
+        tolerance,
+        locked
+      )
       .map((entity) => this.toFrame(entity))
   }
 
@@ -247,6 +252,10 @@ class FramedDocument implements DocumentReader {
 
   isEntitySelectable(entity: Entity): boolean {
     return this.source.isEntitySelectable(entity)
+  }
+
+  isEntityEditable(entity: Entity): boolean {
+    return this.source.isEntityEditable(entity)
   }
 
   private toFrame(entity: Entity): Entity {

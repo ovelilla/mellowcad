@@ -40,7 +40,8 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
   const grips: (Omit<Grip, "world"> & { readonly world: Vec2 | Vec3 })[] = []
   for (const id of ctx.selection.toArray()) {
     const entity = ctx.document.get(id)
-    if (!entity) continue
+    // A locked object is selected with no grips (desktop properties/d02-1).
+    if (!entity || !ctx.document.isEntityEditable(entity)) continue
     switch (entity.type) {
       case "line": {
         const start = withZ(entity.start, lineStartZ(entity))

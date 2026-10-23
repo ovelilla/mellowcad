@@ -12,6 +12,8 @@ import { bsplineDomain, bsplineLength } from "../geometry/nurbs"
 import {
   assignEntityLinetype,
   closestPointOnSpline,
+  createBlockDefinition,
+  createInsert,
   createSpline,
   splineCurve,
   splineLength,
@@ -148,15 +150,35 @@ describe("entity rendering", () => {
     expect(strokes(cad.scene().primitives, THEME.entity)).toHaveLength(0)
   })
 
-  it("still draws locked geometry", () => {
-    const cad = createHarness()
-    const locked = cad.runtime.createLayer("Locked")
+  // LAYLOCKFADECTL 50, the default (p00): a locked layer's objects fade half
+  // way into the background (desktop properties/d00-2), a block reference's
+  // whole, and as they were once unlocked.
+  it("draws a locked layer's objects faded to half (properties/p00, d00-2)", () => {
+    const cad = createHarness({
+      blocks: [
+        createBlockDefinition("BAR", p(0, 0), [
+          lineOf(p(0, 0), p(10, 0), { id: "bar-line", layerId: "red" }),
+        ]),
+      ],
+    })
+    const locked = cad.runtime.createLayer("Locked", "#00ff00")
     cad.runtime.document.load([
       lineOf(p(0, 0), p(100, 0), { id: "L1", layerId: locked }),
+      createInsert("BAR", p(0, 50), { id: "I1", layerId: locked }),
     ])
     cad.runtime.updateLayer(locked, { locked: true })
+    cad.moveTo(p(400, 400))
 
-    expect(strokes(cad.scene().primitives, THEME.entity)).toHaveLength(1)
+    expect(strokes(cad.scene().primitives, "#00ff00")).toEqual([])
+    expect(
+      strokes(cad.scene().primitives, "rgba(0, 255, 0, 0.5)")
+    ).toHaveLength(1)
+    expect(
+      strokes(cad.scene().primitives, "rgba(226, 232, 240, 0.5)")
+    ).toHaveLength(1)
+
+    cad.runtime.updateLayer(locked, { locked: false })
+    expect(strokes(cad.scene().primitives, "#00ff00")).toHaveLength(1)
   })
 })
 

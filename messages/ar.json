@@ -529,7 +529,13 @@
       "currentLayerLabel": "الطبقة الحالية",
       "currentColorLabel": "اللون الحالي",
       "currentLinetypeLabel": "نوع الخط الحالي",
-      "currentLineweightLabel": "وزن الخط الحالي"
+      "currentLineweightLabel": "وزن الخط الحالي",
+      "lockedObjects": {
+        "title": "الخصائص - عناصر مقفلة",
+        "instruction": "عنصر محدد واحد أو أكثر مقفل ولا يمكن تحديثه.",
+        "content": "عدد العناصر المزالة من مجموعة التحديد: {count, number}",
+        "close": "إغلاق"
+      }
     },
     "Palette": {
       "label": "اللوحات",

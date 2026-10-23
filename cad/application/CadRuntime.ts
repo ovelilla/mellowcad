@@ -488,6 +488,9 @@ export class CadRuntime extends Observable {
   private paletteVertex = 0
   // Whether the Drawing Units dialog (UNITS) is showing.
   private unitsDialog = false
+  // The Properties palette's task dialog for locked objects left out of an
+  // edit, with how many: null while it is not showing.
+  private lockedObjectsDialog: { readonly removed: number } | null = null
   // Whether the command prompt is shown. Hiding it is purely visual: typing
   // still feeds the prompt, which reappears while there is text to show.
   private commandLineVisible = true
@@ -3465,12 +3468,17 @@ export class CadRuntime extends Observable {
   /**
    * The object a pick at `world`, a point of the frame, resolves to, as the
    * frame reads it. The topmost under the pick box unless the user cycled to
-   * another of the objects it covers.
+   * another of the objects it covers. A locked layer's objects count only at
+   * `Command:` by default ({@link picksLocked}).
    */
-  private pickEntity(world: Vec2, tolerance?: number): Entity | null {
+  private pickEntity(
+    world: Vec2,
+    tolerance?: number,
+    locked = this.picksLocked()
+  ): Entity | null {
     const worldTolerance =
       tolerance ?? this.viewport.screenToWorldDistance(PICK_TOLERANCE_PX)
-    const hits = this.pickAllAt(world, worldTolerance)
+    const hits = this.pickAllAt(world, worldTolerance, locked)
     return this.cycling.isEnabled()
       ? this.cycling.choose(hits)
       : (hits[0] ?? null)
@@ -3481,13 +3489,18 @@ export class CadRuntime extends Observable {
    * the frame), topmost first, as the frame reads it. Off the plan the box is
    * on the screen, where the objects are drawn at their own heights.
    */
-  private pickAllAt(world: Vec2 | Vec3, worldTolerance: number): Entity[] {
+  private pickAllAt(
+    world: Vec2 | Vec3,
+    worldTolerance: number,
+    locked: boolean
+  ): Entity[] {
     const { document, viewport } = this.frame
     const blocks = document.blockLookup()
     if (viewport.isPlan) {
       return document.pickAllBy(
         (entity) => planDistanceToEntity(viewport, entity, world, blocks),
-        worldTolerance
+        worldTolerance,
+        locked
       )
     }
     const screen = viewport.worldToScreen(
@@ -3495,8 +3508,18 @@ export class CadRuntime extends Observable {
     )
     return document.pickAllBy(
       (entity) => screenDistanceToEntity(viewport, entity, screen, blocks),
-      viewport.worldToScreenDistance(worldTolerance)
+      viewport.worldToScreenDistance(worldTolerance),
+      locked
     )
+  }
+
+  /**
+   * Whether a pick takes a locked layer's objects: at `Command:` it selects
+   * them (desktop properties/d02-1); a command's own pick passes over them,
+   * each saying so in its words (`lockedObjectAt`).
+   */
+  private picksLocked(): boolean {
+    return this.activeTool.id === "select"
   }
 
   /**
@@ -3542,7 +3565,9 @@ export class CadRuntime extends Observable {
       return
     }
     const tolerance = this.viewport.screenToWorldDistance(PICK_TOLERANCE_PX)
-    this.cycling.observe(this.pickAllAt(this.cursorWorld, tolerance))
+    this.cycling.observe(
+      this.pickAllAt(this.cursorWorld, tolerance, this.picksLocked())
+    )
   }
 
   /** Feeds the cursor's last known position through the active tool again. */
@@ -3684,8 +3709,34 @@ export class CadRuntime extends Observable {
     )
   }
 
+  /**
+   * The objects of `scope` an edit from a palette or a drop-down changes: a
+   * locked layer's are left unchanged and leave the selection, and a task
+   * dialog says how many (desktop properties/d03-5, d03-6). Only the
+   * palette's answer was probed; the drop-downs give the same (PROPS-D61).
+   */
+  private editableIds(scope: SelectionScope): EntityId[] {
+    const ids = this.scopeIds(scope)
+    const locked = ids.filter((id) => {
+      const entity = this.document.get(id)
+      return entity !== undefined && !this.document.isEntityEditable(entity)
+    })
+    if (locked.length === 0) return ids
+    for (const id of locked) this.selection.remove(id)
+    this.lockedObjectsDialog = { removed: locked.length }
+    this.invalidateState()
+    return ids.filter((id) => !locked.includes(id))
+  }
+
+  /** Closes the task dialog saying which locked objects an edit left out. */
+  closeLockedObjectsDialog(): void {
+    if (this.lockedObjectsDialog === null) return
+    this.lockedObjectsDialog = null
+    this.invalidateState()
+  }
+
   setSelectionLayer(id: LayerId, scope: SelectionScope = "selection"): void {
-    setSelectionLayer(this.document, this.scopeIds(scope), this.history, id)
+    setSelectionLayer(this.document, this.editableIds(scope), this.history, id)
   }
 
   /**
@@ -3702,7 +3753,12 @@ export class CadRuntime extends Observable {
     color: EntityColor | typeof COLOR_BYLAYER,
     scope: SelectionScope = "selection"
   ): void {
-    setSelectionColor(this.document, this.scopeIds(scope), this.history, color)
+    setSelectionColor(
+      this.document,
+      this.editableIds(scope),
+      this.history,
+      color
+    )
   }
 
   setSelectionLinetype(
@@ -3711,7 +3767,7 @@ export class CadRuntime extends Observable {
   ): void {
     setSelectionLinetype(
       this.document,
-      this.scopeIds(scope),
+      this.editableIds(scope),
       this.history,
       linetype
     )
@@ -3723,7 +3779,7 @@ export class CadRuntime extends Observable {
   ): void {
     setSelectionLineweight(
       this.document,
-      this.scopeIds(scope),
+      this.editableIds(scope),
       this.history,
       lineweight
     )
@@ -3777,11 +3833,13 @@ export class CadRuntime extends Observable {
 
   /** Retypes a geometry value of the one object the Properties palette edits. */
   setSelectionProperty(property: EntityProperty, text: string): boolean {
-    const ids = this.scopeIds("properties")
-    if (property === "vertex") return this.setPaletteVertex(ids, text)
+    // Stepping through the vertices changes nothing: no refusal.
+    if (property === "vertex") {
+      return this.setPaletteVertex(this.scopeIds("properties"), text)
+    }
     return setSelectionProperty(
       this.document,
-      ids,
+      this.editableIds("properties"),
       this.history,
       property,
       text,
@@ -4162,7 +4220,7 @@ export class CadRuntime extends Observable {
   setSelectionDimStyle(id: DimStyleId): void {
     setSelectionDimStyle(
       this.document,
-      this.scopeIds("properties"),
+      this.editableIds("properties"),
       this.history,
       id
     )
@@ -4198,7 +4256,7 @@ export class CadRuntime extends Observable {
   setSelectionTextStyle(id: TextStyleId): void {
     setSelectionTextStyle(
       this.document,
-      this.scopeIds("properties"),
+      this.editableIds("properties"),
       this.history,
       id
     )
@@ -4922,7 +4980,8 @@ export class CadRuntime extends Observable {
    */
   doubleClick(e: PointerEventData): boolean {
     if (this.activeTool.id !== "select") return false
-    const hit = this.pickEntity(this.screenToWork(e.screen))
+    // A locked object is selected at Command:, never opened for editing.
+    const hit = this.pickEntity(this.screenToWork(e.screen), undefined, false)
     if (hit?.type === "insert" && (hit.attributes?.length ?? 0) > 0) {
       this.switchTool(this.attEdit.id)
       this.attEdit.beginEdit(hit, this.toolContext)
@@ -5910,6 +5969,7 @@ export class CadRuntime extends Observable {
       ),
       palette: { open: this.paletteOpen, tab: this.paletteTab },
       unitsDialog: this.unitsDialog,
+      lockedObjectsDialog: this.lockedObjectsDialog,
       cleanScreen: {
         active: this.cleanScreen,
         palette: this.cleanScreenPalette,

@@ -11,8 +11,8 @@ export type LayerId = string
 
 /**
  * A drawing layer. `visible` maps to AutoCAD's On/Off; `locked` maps to
- * Lock/Unlock (locked geometry is still shown and can be snapped to, but cannot
- * be selected or edited).
+ * Lock/Unlock (locked geometry is drawn faded, snappable and selectable at
+ * `Command:`, never edited).
  */
 export interface Layer {
   readonly id: LayerId
@@ -25,7 +25,7 @@ export interface Layer {
   readonly lineweight: Lineweight
   /** On/Off — hidden layers are neither drawn, picked nor snapped. */
   readonly visible: boolean
-  /** Locked layers are drawn and snappable but cannot be selected/edited. */
+  /** Locked: drawn faded and snappable, selectable, never edited. */
   readonly locked: boolean
 }
 

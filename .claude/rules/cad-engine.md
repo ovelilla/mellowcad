@@ -36,7 +36,7 @@ reads: keep it true when a public contract changes.
 - **Every word the engine shows is in `cad/locales/en.json`**: a tool names prompts and keywords by
   id and reads them through `ctx.text`; displayed text is read only through `EngineText` (the
   compiled `cad/locales/en.ts`). `CadDriver` imports `en.json` only to check that a keyword id
-  exists. After editing a catalog run `npm run locales` and commit both files.
+  exists.
 - **`domain/` exposes ids, never display names** (colours, linetypes, hatch patterns, `ByLayer`);
   data names stay data (layer, style and block names). A failure a user reads is a code
   (`DrawingFileError.code`). Lengths and angles never go through `Intl`: `formatLength` /
@@ -96,6 +96,7 @@ Dependencies run types → per-type modules → overrides → transforms → que
 
 ## Modelling
 
+- **Locked: drawn, snapped, selected, never edited** (`isEntityEditable`).
 - An entity that is an **area** (text, hatch) hit-tests as filled, by the even-odd rule that fills
   it: a nested loop is a hole for picking as for painting.
 - **Store a direction-and-size as one vector** (an ellipse's vector to the major-axis endpoint):

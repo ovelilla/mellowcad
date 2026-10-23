@@ -52,9 +52,14 @@ export interface DocumentReader {
   pickAll(point: Vec2, tolerance: number): Entity[]
   /**
    * {@link pickAll} with the distance measured by `distanceOf` (a view off
-   * the plan measures on screen) and `tolerance` in the same units.
+   * the plan measures on screen) and `tolerance` in the same units; with
+   * `locked`, a locked layer's objects too, as a pick at `Command:` takes them.
    */
-  pickAllBy(distanceOf: (entity: Entity) => number, tolerance: number): Entity[]
+  pickAllBy(
+    distanceOf: (entity: Entity) => number,
+    tolerance: number,
+    locked?: boolean
+  ): Entity[]
   /** All layers in creation order (the base layer `0` first). */
   getLayers(): Layer[]
   getLayer(id: LayerId): Layer | undefined
@@ -86,8 +91,13 @@ export interface DocumentReader {
   resolveEntityLineweight(entity: Entity): Lineweight
   /** True when the entity's layer is on (visible). */
   isEntityVisible(entity: Entity): boolean
-  /** True when the entity can be selected/edited (visible and not locked). */
+  /**
+   * True when the entity can be selected at `Command:`: its layer is on. A
+   * locked layer's objects are selected too (desktop properties/d02-1).
+   */
   isEntitySelectable(entity: Entity): boolean
+  /** True when the entity can be edited: selectable, its layer not locked. */
+  isEntityEditable(entity: Entity): boolean
 }
 
 /**
@@ -514,6 +524,10 @@ export class CadDocument extends Observable implements DocumentReader {
   }
 
   isEntitySelectable(entity: Entity): boolean {
+    return this.isEntityVisible(entity)
+  }
+
+  isEntityEditable(entity: Entity): boolean {
     const layer = this.layers.get(entity.layerId)
     if (!layer) return true
     return layer.visible && !layer.locked
@@ -729,13 +743,20 @@ export class CadDocument extends Observable implements DocumentReader {
 
   pickAllBy(
     distanceOf: (entity: Entity) => number,
-    tolerance: number
+    tolerance: number,
+    locked = false
   ): Entity[] {
     const hits: { entity: Entity; order: number }[] = []
     let order = 0
     for (const entity of this.entities.values()) {
       order += 1
-      if (!this.isEntitySelectable(entity)) continue
+      if (
+        !(locked
+          ? this.isEntitySelectable(entity)
+          : this.isEntityEditable(entity))
+      ) {
+        continue
+      }
       if (distanceOf(entity) <= tolerance) hits.push({ entity, order })
     }
     hits.sort(

@@ -38,8 +38,8 @@ export function nextLayerName(
  * AutoCAD refuses (returned, nothing changed). What the layer already has is
  * left out, and a change of nothing makes no step. A lock or an unlock
  * regenerates (p302: U says `Regenerating model.`; an Off does not, p303).
- * Turning a layer off or locking it drops any now-unselectable entities from
- * the current selection.
+ * Turning a layer off drops its objects from the selection; locking it keeps
+ * them (desktop properties/d09-4, d09-5).
  */
 export function updateLayer(
   document: CadDocument,
@@ -65,8 +65,7 @@ export function updateLayer(
   if (Object.keys(changed).length === 0) return null
   execute(new UpdateLayerCommand(id, changed), changed.locked !== undefined)
 
-  // Objects that just became hidden or locked can no longer stay selected.
-  if (changed.visible === false || changed.locked === true) {
+  if (changed.visible === false) {
     const drop = selection
       .toArray()
       .map((entityId) => document.get(entityId))

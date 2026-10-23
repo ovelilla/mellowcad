@@ -290,7 +290,8 @@ erase/p249–p251, desktop d10), while a grip edit, no command, leaves it; a pre
 object off its grips, dragged, drags the set as itself, solid in its colours, the originals faded
 where they were, with no grip, rubber band or tooltip (desktop move/d08-1), and released moves it
 by the drag, writes nothing and drops the set, one step U and REDO name `DROPGEOM GROUP` (es
-`SOLTARGEOM GRUPO`, d08); Shift held over a selected
+`SOLTARGEOM GRUPO`, d08) — a locked layer's objects in it stay where they are, and a press on one
+boxes (**unverified**: AutoCAD's drag of a locked object was not probed); Shift held over a selected
 object shows a minus badge beside the crosshair, and only there: none over nothing or an object not
 selected, none at `Select objects:` (desktop erase/d14-1 to d14-6); a selected object keeps its colour and glows blue (the
 selection effect, desktop line/d15); the crosshair is CURSORSIZE 5's, 5 % of the screen end to end

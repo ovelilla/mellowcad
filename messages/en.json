@@ -529,7 +529,13 @@
       "currentLayerLabel": "Current layer",
       "currentColorLabel": "Current color",
       "currentLinetypeLabel": "Current linetype",
-      "currentLineweightLabel": "Current lineweight"
+      "currentLineweightLabel": "Current lineweight",
+      "lockedObjects": {
+        "title": "Properties - Locked objects",
+        "instruction": "One or more selected objects are locked and cannot be updated.",
+        "content": "Number of objects removed from the selection set: {count, number}",
+        "close": "Close"
+      }
     },
     "Palette": {
       "label": "Palettes",

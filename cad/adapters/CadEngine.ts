@@ -646,6 +646,10 @@ export class CadEngine {
     this.runtime.setUnitsDialog(open)
   }
 
+  closeLockedObjectsDialog(): void {
+    this.runtime.closeLockedObjectsDialog()
+  }
+
   insertBlock(id: string): void {
     this.runtime.insertBlock(id)
   }

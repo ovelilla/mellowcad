@@ -504,16 +504,25 @@ describe("Ctrl+A", () => {
     expect(cad.selectedIds().sort()).toEqual(["L1", "L2"])
   })
 
-  it("skips objects on a locked or hidden layer", () => {
+  // A locked layer's objects are selected at Command: (desktop
+  // properties/d02-1, d02-3; ALL decided alike, PROPS-D60), an Off one's not.
+  it("takes objects on a locked layer, never on an Off one", () => {
     const cad = createHarness()
     cad.runtime.document.load(
       [
         lineOf(p(0, 0), p(100, 0), { id: "L1" }),
         lineOf(p(0, 10), p(100, 10), { id: "LOCKED", layerId: "frozen" }),
+        lineOf(p(0, 20), p(100, 20), { id: "OFF", layerId: "off" }),
       ],
-      { layers: [layerOf("0"), layerOf("frozen", { locked: true })] }
+      {
+        layers: [
+          layerOf("0"),
+          layerOf("frozen", { locked: true }),
+          layerOf("off", { visible: false }),
+        ],
+      }
     )
     cad.press("a", { ctrlKey: true })
-    expect(cad.selectedIds()).toEqual(["L1"])
+    expect(cad.selectedIds()).toEqual(["L1", "LOCKED"])
   })
 })

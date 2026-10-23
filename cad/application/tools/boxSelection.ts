@@ -36,8 +36,8 @@ export function boxSelect(
   current: Vec2,
   viewport: Viewport
 ): EntityId[] {
-  // Objects on hidden or locked layers cannot be selected (AutoCAD rule) —
-  // the same filter single-click picking applies in Document.pick.
+  // An Off layer's objects cannot be selected; a locked layer's can, at
+  // `Command:` (desktop properties/d02-3), as a click there takes them.
   return objectsInWindow(
     document,
     start,

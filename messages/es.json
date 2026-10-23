@@ -529,7 +529,13 @@
       "currentLayerLabel": "Capa actual",
       "currentColorLabel": "Color actual",
       "currentLinetypeLabel": "Tipo de línea actual",
-      "currentLineweightLabel": "Grosor de línea actual"
+      "currentLineweightLabel": "Grosor de línea actual",
+      "lockedObjects": {
+        "title": "Propiedades: objetos bloqueados",
+        "instruction": "Uno o varios objetos seleccionados están bloqueados y no se pueden actualizar.",
+        "content": "Número de objetos eliminados del conjunto de selección: {count, number}",
+        "close": "Cerrar"
+      }
     },
     "Palette": {
       "label": "Paletas",

@@ -29,6 +29,7 @@ import {
 } from "../../test/builders"
 import { serializeDrawing } from "../serialization/drawingFile"
 import { es } from "../locales/es"
+import { THEME } from "../scene/theme"
 
 /**
  * The runtime is the application's imperative shell: it owns the tools, the
@@ -365,6 +366,19 @@ describe("layers", () => {
     expect(cad.state().currentLayerId).toBe(DEFAULT_LAYER_ID)
   })
 
+  it("keeps a locked layer's objects selected (desktop properties/d09-4)", () => {
+    const cad = createHarness()
+    const walls = cad.runtime.createLayer("Walls")
+    cad.runtime.document.load([
+      lineOf(p(0, 0), p(100, 0), { id: "L1", layerId: walls }),
+    ])
+    cad.select("L1")
+
+    cad.runtime.updateLayer(walls, { locked: true })
+
+    expect(cad.selectedIds()).toEqual(["L1"])
+  })
+
   it("deselects objects whose layer is turned off (desktop d09-5)", () => {
     const cad = createHarness()
     const walls = cad.runtime.createLayer("Walls")
@@ -421,6 +435,73 @@ describe("selection properties", () => {
   })
 })
 
+// The palette's answer to a locked object (desktop properties/d03-5, d03-6):
+// nothing on it changes, it leaves the set and a task dialog says how many
+// left. The drop-downs' answer was not probed: the same (PROPS-D61).
+describe("an edit of a set holding locked objects", () => {
+  function mixed(): CadHarness {
+    const cad = createHarness()
+    const locked = cad.runtime.createLayer("Locked")
+    cad.runtime.setCurrentLayer(DEFAULT_LAYER_ID)
+    cad.runtime.document.load([
+      lineOf(p(0, 0), p(100, 0), { id: "PLAIN" }),
+      lineOf(p(0, 40), p(100, 40), { id: "LOCKED", layerId: locked }),
+    ])
+    cad.runtime.updateLayer(locked, { locked: true })
+    return cad
+  }
+
+  it("refuses a retyped value on a locked object and drops it from the set (d03-5, d03-6)", () => {
+    const cad = mixed()
+    cad.click(p(50, 40))
+    expect(cad.selectedIds()).toEqual(["LOCKED"])
+    expect(cad.state().properties.info).not.toBeNull()
+
+    expect(cad.runtime.setSelectionProperty("thickness", "5")).toBe(false)
+
+    expect(cad.byId<LineEntity>("LOCKED").thickness).toBeUndefined()
+    expect(cad.selectedIds()).toEqual([])
+    expect(cad.state().lockedObjectsDialog).toEqual({ removed: 1 })
+
+    cad.runtime.closeLockedObjectsDialog()
+    expect(cad.state().lockedObjectsDialog).toBeNull()
+  })
+
+  it.each([
+    ["colour", (cad: CadHarness) => cad.runtime.applyColorControl("#ff0000")],
+    [
+      "layer",
+      (cad: CadHarness) =>
+        cad.runtime.applyLayerControl(
+          cad.state().layers.find((layer) => layer.name === "Walls")!.id
+        ),
+    ],
+    [
+      "palette's linetype",
+      (cad: CadHarness) =>
+        cad.runtime.setSelectionLinetype("Dashed", "properties"),
+    ],
+  ])(
+    "changes the others of a mixed set from the %s, the locked ones left out",
+    (_, change) => {
+      const cad = mixed()
+      const before = cad.byId<LineEntity>("LOCKED")
+      cad.runtime.createLayer("Walls")
+      cad.runtime.setCurrentLayer(DEFAULT_LAYER_ID)
+      cad.select("PLAIN", "LOCKED")
+
+      change(cad)
+
+      expect(cad.byId<LineEntity>("LOCKED")).toEqual(before)
+      expect(cad.byId<LineEntity>("PLAIN")).not.toEqual(
+        lineOf(p(0, 0), p(100, 0), { id: "PLAIN" })
+      )
+      expect(cad.selectedIds()).toEqual(["PLAIN"])
+      expect(cad.state().lockedObjectsDialog).toEqual({ removed: 1 })
+    }
+  )
+})
+
 // desktop d20: hovering a line at `Comando:` shows `Línea`, Color PorCapa,
 // Capa 0, Tipo de línea PorCapa (ROLLOVERTIPS 1).
 describe("rollover tooltip", () => {
@@ -465,6 +546,35 @@ describe("rollover tooltip", () => {
     })
     cad.command("LINE").moveTo(p(50, 1))
     expect(cad.state().rollover).toBeNull()
+  })
+
+  it("describes a locked object too, beside the padlock and with no glow (desktop properties/d01-1, d01-3)", () => {
+    const cad = createHarness()
+    const locked = cad.runtime.createLayer("Locked", "#00ff00")
+    cad.runtime.document.load([
+      lineOf(p(0, 0), p(100, 0), { id: "L1", layerId: locked }),
+    ])
+    cad.runtime.updateLayer(locked, { locked: true })
+    const padlock = () =>
+      cad
+        .scene()
+        .primitives.filter(
+          (q) => q.kind === "rect" && q.fill === THEME.lockedBadge
+        )
+
+    cad.moveTo(p(40, 1))
+
+    expect(cad.state().rollover).toMatchObject({ id: "L1", layer: "Locked" })
+    expect(padlock()).toHaveLength(1)
+    const glow = cad
+      .scene()
+      .primitives.filter(
+        (q) => "stroke" in q && q.stroke?.color === THEME.entityHover
+      )
+    expect(glow).toEqual([])
+
+    cad.moveTo(p(40, 200))
+    expect(padlock()).toEqual([])
   })
 })
 

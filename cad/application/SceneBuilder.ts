@@ -126,9 +126,10 @@ export interface UcsIconInput {
 /**
  * A command's badge beside the cursor: TRIM's red ✕ where a click trims
  * (desktop trim/d01-1, d03-1), the circle-and-slash where it is refused
- * (d09-1, d09-2).
+ * (d09-1, d09-2), the padlock over a locked layer's object at `Command:`
+ * (properties/d01-1).
  */
-export type CursorBadge = "trim" | "refused"
+export type CursorBadge = "trim" | "refused" | "locked"
 
 /**
  * Everything needed to describe one frame. The builder is a pure function of
@@ -285,6 +286,8 @@ export function buildScene(input: SceneInput): Scene {
     pushTrimBadge(primitives, input.cursorBadge.at)
   } else if (input.cursorBadge?.kind === "refused") {
     pushRefusedBadge(primitives, input.cursorBadge.at)
+  } else if (input.cursorBadge?.kind === "locked") {
+    pushLockedBadge(primitives, input.cursorBadge.at)
   }
   if (input.tracking && !input.snap) {
     pushTrackedPointMarker(primitives, aid.worldToScreen(input.tracking.point))
@@ -1726,17 +1729,27 @@ function pushEntities(
     (a, b) => entityDrawOrder(a) - entityDrawOrder(b)
   )
 
-  const draw = (entity: Entity, isSelected: boolean, isFaded: boolean) => {
+  const draw = (
+    entity: Entity,
+    isSelected: boolean,
+    isFaded: boolean,
+    inLocked = false
+  ) => {
     const layer = layerById.get(entity.layerId)
     // Entities on a hidden (Off) layer are not drawn at all.
     if (layer && !layer.visible) return
-    const stroke = entityStroke(
+    const locked = inLocked || layer?.locked === true
+    const drawn = entityStroke(
       camera,
       entity,
       layer,
       { ltScale, lwDisplay },
       isFaded
     )
+    const stroke =
+      locked && !isFaded
+        ? { ...drawn, color: fadedColor(drawn.color, LOCKED_LAYER_OPACITY) }
+        : drawn
     if (entity.type === "insert") {
       // Each object inside the block keeps its own colour, linetype and
       // lineweight, so a reference is not painted flat: the reference's layer
@@ -1747,7 +1760,7 @@ function pushEntities(
         blocks,
         attributeDisplay
       )) {
-        draw(nested, isSelected, isFaded)
+        draw(nested, isSelected, isFaded, locked)
       }
       return
     }
@@ -1833,13 +1846,20 @@ export function selectionGlow(
  */
 const FADED_OPACITY = 0.22
 
-/** An object's colour as ERASE's preview fades it. */
-export function fadedColor(color: string): string {
+/**
+ * How much of its colour a locked layer's object keeps: LAYLOCKFADECTL's 50,
+ * its default (p00), fades it half way into the background (desktop
+ * properties/d00-2). LAYLOCKFADECTL cannot be typed here.
+ */
+const LOCKED_LAYER_OPACITY = 0.5
+
+/** An object's colour as ERASE's preview fades it, or as `opacity` keeps it. */
+export function fadedColor(color: string, opacity = FADED_OPACITY): string {
   const hex = normalizeColor(color) ?? THEME.entity
   const [r, g, b] = [1, 3, 5].map((at) =>
     Number.parseInt(hex.slice(at, at + 2), 16)
   )
-  return `rgba(${r}, ${g}, ${b}, ${FADED_OPACITY})`
+  return `rgba(${r}, ${g}, ${b}, ${opacity})`
 }
 
 /** The hairline width every entity gets before its lineweight is applied. */
@@ -2168,6 +2188,52 @@ function pushRefusedBadge(out: ScenePrimitive[], at: Vec2): void {
       stroke,
     })
   }
+}
+
+/**
+ * The padlock over a locked layer's object: white, ringed dark, its body
+ * 8 px wide 10 px up and right of the pick box's middle, the shackle above
+ * (desktop properties/d01-1, d01-3).
+ */
+function pushLockedBadge(out: ScenePrimitive[], at: Vec2): void {
+  const x = Math.round(at.x) + 13
+  const top = Math.round(at.y) - 16
+  const shackle = (stroke: StrokeStyle) => {
+    const r = 2.5
+    out.push({
+      kind: "arc",
+      center: { x, y: top - 1.5 },
+      radius: r,
+      startAngle: Math.PI,
+      endAngle: 2 * Math.PI,
+      counterclockwise: false,
+      stroke,
+    })
+    for (const side of [-r, r]) {
+      out.push({
+        kind: "segment",
+        a: { x: x + side, y: top - 1.5 },
+        b: { x: x + side, y: top },
+        stroke,
+      })
+    }
+  }
+  shackle({ color: THEME.background, width: 3.25 })
+  out.push({
+    kind: "rect",
+    min: { x: x - 5, y: top - 1 },
+    width: 10,
+    height: 9,
+    fill: THEME.background,
+  })
+  shackle({ color: THEME.lockedBadge, width: 1.25 })
+  out.push({
+    kind: "rect",
+    min: { x: x - 4, y: top },
+    width: 8,
+    height: 7,
+    fill: THEME.lockedBadge,
+  })
 }
 
 /** The point a tracking path gives: a small ✕ in the crosshair's colour (desktop d12, d13). */

@@ -4,6 +4,7 @@ import {
   assignEntityColor,
   assignEntityLinetype,
   createDimension,
+  type Entity,
 } from "./entities"
 import { DEFAULT_LAYER_ID, createLayer } from "./layers"
 import { DEFAULT_DIM_STYLE_ID, createDimStyle } from "./dimStyles"
@@ -188,6 +189,28 @@ describe("picking", () => {
 
     expect(document.pick(p(50, 0), 8)).toBeNull()
   })
+
+  it("takes a locked layer's object only when asked, as a pick at Command: does (properties/d02-1)", () => {
+    const document = documentWith(
+      [
+        lineOf(p(0, 0), p(100, 0), { id: "HIDDEN", layerId: "hidden" }),
+        lineOf(p(0, 1), p(100, 1), { id: "LOCKED", layerId: "locked" }),
+      ],
+      {
+        layers: [
+          layerOf("hidden", { visible: false }),
+          layerOf("locked", { locked: true }),
+        ],
+      }
+    )
+    const distance = (entity: Entity) =>
+      Math.abs(entity.type === "line" ? entity.start.y : 99)
+
+    expect(document.pickAllBy(distance, 8)).toEqual([])
+    expect(document.pickAllBy(distance, 8, true).map((e) => e.id)).toEqual([
+      "LOCKED",
+    ])
+  })
 })
 
 describe("pickAll (selection cycling candidates)", () => {
@@ -348,10 +371,13 @@ describe("layers", () => {
 
     expect(document.isEntityVisible(hidden)).toBe(false)
     expect(document.isEntitySelectable(hidden)).toBe(false)
+    expect(document.isEntityEditable(hidden)).toBe(false)
 
-    // Locked geometry is still drawn and snappable — just not editable.
+    // Locked geometry is drawn, snappable and selectable at Command: — never
+    // edited (properties/d02-1, d03-6).
     expect(document.isEntityVisible(locked)).toBe(true)
-    expect(document.isEntitySelectable(locked)).toBe(false)
+    expect(document.isEntitySelectable(locked)).toBe(true)
+    expect(document.isEntityEditable(locked)).toBe(false)
   })
 })
 

@@ -314,8 +314,8 @@ describe("FILLET's and CHAMFER's first prompt rollover", () => {
   })
 })
 
-// Desktop corners/d04-4: a locked object gets no rollover (its padlock and
-// LAYLOCKFADECTL's fade are the Properties review's, CORNERS-D61).
+// Desktop corners/d04-4: a locked object gets no rollover, drawn faded as
+// LAYLOCKFADECTL 50 leaves it (properties/d00-2).
 describe("FILLET and CHAMFER over an object on a locked layer", () => {
   it("draw no rollover at the first prompt", () => {
     for (const command of ["FILLET", "CHAMFER"]) {
@@ -332,7 +332,7 @@ describe("FILLET and CHAMFER over an object on a locked layer", () => {
         .click(p(200, 101))
         .moveTo(p(250, 451))
       expect(strokesAt(cad, p(150, 450), p(350, 450)), command).toEqual([
-        plain(),
+        { ...plain(), color: fadedColor(THEME.entity, 0.5) },
       ])
       expect(strokesOf(cad, "segment"), command).toContainEqual(glow)
       expect(refusedBadges(cad), command).toBe(0)

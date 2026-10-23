@@ -553,6 +553,12 @@ export interface EngineState {
   readonly palette: PaletteUi
   /** Whether the Drawing Units dialog (UNITS) is showing. */
   readonly unitsDialog: boolean
+  /**
+   * The task dialog `Properties - Locked objects`, with how many objects on a
+   * locked layer an edit left out of the selection, or null while it is not
+   * showing (desktop properties/d03-6).
+   */
+  readonly lockedObjectsDialog: { readonly removed: number } | null
   /** Clean Screen (CLEANSCREENON / CLEANSCREENOFF, Ctrl+0). */
   readonly cleanScreen: CleanScreenUi
   /**

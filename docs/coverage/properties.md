@@ -2,8 +2,23 @@
 
 ### Layers · `LAYER` / `LA` / `DDLMODES` · `LAYERCLOSE` · es `CAPA` / `CA` / `LAYER` / `DDLMODES` · `CERRARCAPA`
 
-**Implemented:** colour, visibility, lock, current layer, ByLayer resolution, selection respects
-hidden/locked; layer 0 and a new layer are index colour 7, white, Continuous (p300), drawn in the
+**Implemented:** colour, visibility, lock, current layer, ByLayer resolution; an Off layer's
+objects are neither drawn, picked nor snapped (p323), and turning a layer off drops them from the
+selection (d09-5); a locked layer's are drawn faded half way into the background, as
+LAYLOCKFADECTL's default 50 (p00, d00-2; a block reference on one, whole), snapped (p322) and
+selected at `Command:` by a pick, a window, a crossing, a lasso and Ctrl+A, drawn selected with no
+grips (d02-1, d02-3; the crossing, the lasso and Ctrl+A decided alike), and locking a layer keeps
+them selected (d09-4); the cursor over one at `Command:` shows a padlock up and right of the pick
+box, no rollover glow, and the rollover tooltip as over any object (d01-1, d01-3); dragging a
+selection leaves them where they are, and a double-click opens none for editing; a command given
+them in a preselection counts them and leaves them out, `2 found` / `1 was on a locked layer.` (es
+`2 encontrados` / `1 estaba en una capa bloqueada.`, p381, `command-line.md`); an edit from the
+Properties palette or the drop-downs of a set holding them changes the others, drops them from the
+selection and says so in AutoCAD's task dialog, `Properties - Locked objects` / `One or more
+selected objects are locked and cannot be updated.` / `Number of objects removed from the selection
+set: 1` (d03-5, d03-6; es `Propiedades: objetos bloqueados` / `Uno o varios objetos seleccionados
+están bloqueados y no se pueden actualizar.` / `Número de objetos eliminados del conjunto de
+selección:`, `AcTaskDialogs.resources.dll`'s TaskDialog_181); layer 0 and a new layer are index colour 7, white, Continuous (p300), drawn in the
 screen's foreground as an object set to 7 is (a drawing saved before stored `#e2e8f0` for them,
 read as 7); LAYER (and DDLMODES, acad.pgp in both languages) opens the Layer Properties Manager
 as a modeless palette ("It can remain open as you work", LAYERDLGMODE 1), a tab of the palette
@@ -46,7 +61,8 @@ its refusals `Cannot rename layer "0".`, `"A<B" is an invalid layer name.`,
 `'.-LAYER LAYER Regenerating model.`, d04-2; here LAYER makes no step), the drop-down's On / Freeze /
 Lock icons, Make Object's Layer Current, Match Layer, Layer Previous and the rest of the Layers
 panel, freezing, Freeze / Plot / Transparency / Plot Style / New VP Freeze / Description columns,
-column reordering, layer filters and the tree, the manager's settings dialog, the task dialogs'
+column reordering, layer filters and the tree, the manager's settings dialog, LAYLOCKFADECTL
+typed (SETVAR, roadmap row 24; here always 50), the task dialogs'
 look (here a dialog of the editor's with their words; their Show details is left out, the details
 shown), the new row placed under the selected one until it is renamed (here sorted at once),
 layer 0's lineweight Default (p300: 370 -3; here 0.25 mm, Default is not modelled);
@@ -54,7 +70,10 @@ layer 0's lineweight Default (p300: 370 -3; here 0.25 mm, Default is not modelle
 `'.-CAPA` and `'CLAYER` (the Spanish desktop pass ran without the mouse), the Spanish title
 `Capa` of the invalid-characters dialog and `Capa` in `Capa - El nombre ya existe` (the table's
 `%ObjectName%`), what a colour that is not an index colour writes beside its swatch (AutoCAD writes
-its RGB; here the swatch alone), the Arabic words (worded by the project, `docs/i18n-glossary.md`)
+its RGB; here the swatch alone), the Arabic words (worded by the project, `docs/i18n-glossary.md`),
+the drop-downs' answer to a set holding locked objects (only the palette's was probed, d03-5: the
+same here, PROPS-D61), the padlock and the faded look at `Select objects:` (seen only at
+`Command:`; here neither the padlock nor any fade but ERASE's)
 
 ### Linetypes · `LTSCALE` / `LTS` · `LINETYPE` / `LT` · `-LINETYPE` · es `ESCALATL` / `EC`† · `TIPOLIN` · `-TIPOLIN`
 

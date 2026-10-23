@@ -80,16 +80,26 @@ export function buildGrips(
   ctx: ToolContext
 ): ScenePrimitive[] {
   const out: ScenePrimitive[] = []
+  // A locked object glows not, its padlock saying why (desktop
+  // properties/d01-1).
   if (state.phase === "idle" && state.hoverEntityId) {
     const entity = ctx.document.get(state.hoverEntityId)
-    if (entity) pushRolloverHighlight(out, entity, ctx)
+    if (entity && ctx.document.isEntityEditable(entity)) {
+      pushRolloverHighlight(out, entity, ctx)
+    }
   }
   const hover = state.phase === "idle" ? (state.hoverGrip ?? null) : null
-  for (const id of ctx.selection.toArray()) {
-    const entity = ctx.document.get(id)
+  const editable = ctx.selection
+    .toArray()
+    .map((id) => ctx.document.get(id))
+    .filter(
+      (entity): entity is Entity =>
+        entity !== undefined && ctx.document.isEntityEditable(entity)
+    )
+  for (const entity of editable) {
     // A CV spline shows its control frame along with the vertex grips,
     // dashed as SPLINE draws it (desktop spline/d09-1, SPLINE-D61).
-    if (entity?.type === "spline" && entity.method === "cv") {
+    if (entity.type === "spline" && entity.method === "cv") {
       out.push({
         kind: "path",
         points: entity.points.map((p) => ctx.viewport.worldToScreen(p)),
@@ -98,9 +108,8 @@ export function buildGrips(
       })
     }
   }
-  for (const id of ctx.selection.toArray()) {
-    const entity = ctx.document.get(id)
-    if (entity?.type === "insert") out.push(...arrayRing(entity, ctx))
+  for (const entity of editable) {
+    if (entity.type === "insert") out.push(...arrayRing(entity, ctx))
   }
   for (const grip of selectedGrips(ctx)) {
     const at = ctx.viewport.worldToScreen(grip.world)
@@ -218,19 +227,23 @@ export function buildArrayGripEdit(
 }
 
 /**
- * The unselected entity under the cursor, if any, whose preview should be
- * highlighted. Objects already in the selection are skipped: they already
- * read as selected (and show grips), so previewing them would be redundant —
- * exactly like AutoCAD, whose selection preview only previews what a click
- * would *add* to the selection.
+ * What the cursor is over at `Command:`: the unselected entity whose preview
+ * should be highlighted, if any, and whether the object under it is on a
+ * locked layer (its padlock). Objects already in the selection are skipped:
+ * they already read as selected (and show grips), so previewing them would
+ * be redundant — exactly like AutoCAD, whose selection preview only previews
+ * what a click would *add* to the selection.
  */
 export function pickRolloverEntity(
   input: PointerInput,
   ctx: ToolContext
-): EntityId | null {
+): { readonly id: EntityId | null; readonly locked: boolean } {
   const hit = ctx.pick(input.world)
-  if (!hit) return null
-  return ctx.selection.has(hit.id) ? null : hit.id
+  if (!hit) return { id: null, locked: false }
+  return {
+    id: ctx.selection.has(hit.id) ? null : hit.id,
+    locked: !ctx.document.isEntityEditable(hit),
+  }
 }
 
 /**

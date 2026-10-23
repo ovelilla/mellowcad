@@ -241,9 +241,9 @@ describe("box selection", () => {
     expect(cad.selectedIds().sort()).toEqual(["INSIDE", "OUTSIDE"])
   })
 
-  it("never selects objects on a hidden or locked layer", () => {
-    // Regression: the box path used to iterate the document directly and so
-    // ignored the selectability rules that single-click picking respected.
+  // AutoCAD 2027 selects a locked layer's objects at Command: — the glow, no
+  // grips — and never an Off one's (desktop properties/d02-1, d02-3).
+  function lockedFigure(): CadHarness {
     const cad = createHarness()
     const hidden = cad.runtime.createLayer("Hidden")
     const locked = cad.runtime.createLayer("Locked")
@@ -254,23 +254,110 @@ describe("box selection", () => {
     ])
     cad.runtime.updateLayer(hidden, { visible: false })
     cad.runtime.updateLayer(locked, { locked: true })
+    return cad
+  }
 
-    cad.click(p(200, 200)).click(p(-50, -50))
+  it("takes a locked layer's objects in a window and a crossing, never an Off one's (properties/d02-3)", () => {
+    const window = lockedFigure()
+    window.click(p(-50, -50)).click(p(200, 200))
+    expect(window.selectedIds().sort()).toEqual(["ON_LOCKED", "VISIBLE"])
 
-    expect(cad.selectedIds()).toEqual(["VISIBLE"])
+    const crossing = lockedFigure()
+    crossing.click(p(50, 60)).click(p(40, -10))
+    expect(crossing.selectedIds().sort()).toEqual(["ON_LOCKED", "VISIBLE"])
   })
 
-  it("cannot single-click an object on a locked layer either", () => {
-    const cad = createHarness()
-    const locked = cad.runtime.createLayer("Locked")
+  it("takes a locked layer's objects with Ctrl+A and a lasso", () => {
+    const all = lockedFigure()
+    all.runtime.selectAll()
+    expect(all.selectedIds().sort()).toEqual(["ON_LOCKED", "VISIBLE"])
+
+    const lasso = lockedFigure()
+    lasso.lasso([
+      p(-50, -50),
+      p(200, -50),
+      p(200, 120),
+      p(-50, 120),
+      p(-60, -40),
+    ])
+    expect(lasso.selectedIds().sort()).toEqual(["ON_LOCKED", "VISIBLE"])
+  })
+
+  it("selects a locked line with a click, drawn selected with no grips (properties/d02-1)", () => {
+    const cad = lockedFigure()
+
+    cad.click(p(50, 40)).moveTo(p(400, 400))
+
+    expect(cad.selectedIds()).toEqual(["ON_LOCKED"])
+    const grips = cad
+      .scene()
+      .primitives.filter((q) => q.kind === "rect" && q.fill === THEME.grip)
+    expect(grips).toEqual([])
+
+    cad.click(p(50, 0)).moveTo(p(400, 400))
+    const gripsOfPlain = cad
+      .scene()
+      .primitives.filter((q) => q.kind === "rect" && q.fill === THEME.grip)
+    expect(gripsOfPlain).toHaveLength(3)
+  })
+
+  it("leaves a locked object where it is when the selection is dragged", () => {
+    const cad = lockedFigure()
+    cad.select("VISIBLE", "ON_LOCKED")
+
+    cad.drag(p(25, 0), p(25, 30))
+    expect(cad.byId<LineEntity>("VISIBLE").start).toBeCloseToPoint(p(0, 30))
+    expect(cad.byId<LineEntity>("ON_LOCKED").start).toBeCloseToPoint(p(0, 40))
+  })
+
+  it("never opens a locked text for editing on a double-click", () => {
+    const cad = lockedFigure()
+    const locked = cad.state().layers.find((l) => l.name === "Locked")!.id
     cad.runtime.document.load([
-      lineOf(p(0, 0), p(100, 0), { id: "ON_LOCKED", layerId: locked }),
+      textOf(p(0, 60), "Locked", { id: "T", layerId: locked }),
+    ])
+
+    cad.doubleClick(p(2, 61))
+
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("leaves a preselection's locked objects out of MOVE, said under the count (properties/p381)", () => {
+    const cad = lockedFigure()
+    cad.select("VISIBLE", "ON_LOCKED")
+
+    cad.command("MOVE").type("10,0").enter().type("20,0").enter()
+
+    expect(cad.commandLog().slice(0, 3)).toEqual([
+      "MOVE",
+      "2 found",
+      "1 was on a locked layer.",
+    ])
+    expect(cad.byId<LineEntity>("VISIBLE").start.x).toBeGreaterThan(0)
+    expect(cad.byId<LineEntity>("ON_LOCKED").start).toBeCloseToPoint(p(0, 40))
+    cad.command("ERASE")
+    cad.runtime.setCommandLineText("P")
+    cad.runtime.submitCommandLine()
+    expect(cad.commandLog().slice(-2)).toEqual(["Select objects: P", "1 found"])
+  })
+
+  it("says the locked layer's line in Spanish (properties/p381 es)", () => {
+    const cad = createHarness({ locale: es })
+    const locked = cad.runtime.createLayer("Bloq")
+    cad.runtime.document.load([
+      lineOf(p(0, 0), p(100, 0), { id: "A" }),
+      lineOf(p(0, 40), p(100, 40), { id: "B", layerId: locked }),
     ])
     cad.runtime.updateLayer(locked, { locked: true })
+    cad.select("A", "B")
 
-    cad.click(p(50, 0))
+    cad.command("DESPLAZA")
 
-    expect(cad.selectedIds()).toEqual([])
+    expect(cad.commandLog()).toEqual([
+      "DESPLAZA",
+      "2 encontrados",
+      "1 estaba en una capa bloqueada.",
+    ])
   })
 })
 
