@@ -1,0 +1,6 @@
+_-LINETYPE
+_L
+DASHED
+
+
+(tblsearch "LTYPE" "DASHED")

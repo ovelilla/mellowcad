@@ -1,0 +1,6 @@
+(setq e (tblnext "LTYPE" T))
+(setq e (tblnext "LTYPE"))
+(setq e (tblnext "LTYPE"))
+(setq e (tblnext "LTYPE"))
+(setq e (tblnext "LTYPE"))
+(getvar "MEASUREMENT")

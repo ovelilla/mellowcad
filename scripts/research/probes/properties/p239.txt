@@ -1,0 +1,12 @@
+_CELTSCALE
+FOO
+0
+-1
+2
+(getvar "CELTSCALE")
+_LINE
+0,0
+10,0
+
+MPDUMP
+-

@@ -1,0 +1,7 @@
+_-LAYER
+_OFF
+0
+FOO
+_N
+
+(cdr (assoc 62 (tblsearch "LAYER" "0")))

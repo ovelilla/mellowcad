@@ -1,0 +1,6 @@
+_-LINETYPE
+_S
+Dashed
+
+(getvar "CELTYPE")
+(cdr (assoc 2 (tblsearch "LTYPE" "DASHED")))

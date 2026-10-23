@@ -1,0 +1,3 @@
+_LTSCALE
+_LINE
+(getvar "LTSCALE")

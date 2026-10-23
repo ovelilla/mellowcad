@@ -1,0 +1,5 @@
+_-LWEIGHT
+_BYLAYER
+(getvar "CELWEIGHT")
+_-LWEIGHT
+

@@ -1,0 +1,11 @@
+_-LINETYPE
+_L
+TRAZOS,TRAZO_Y_PUNTO,CENTRO,PUNTOS
+
+_S
+?
+T*,C*
+_S
+?
+t?az*
+

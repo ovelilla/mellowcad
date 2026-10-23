@@ -1,0 +1,9 @@
+-TIPOLIN
+D
+PORCAPA
+D
+C
+D
+porBloque
+
+(getvar "CELTYPE")

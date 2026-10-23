@@ -1,0 +1,10 @@
+_LINE
+0,0
+'_-LINETYPE
+_S
+Continuous
+
+10,0
+
+MPDUMP
+-

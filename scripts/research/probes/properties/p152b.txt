@@ -1,0 +1,9 @@
+_LINE
+0,0
+10,0
+
+(sssetfirst nil (ssget "_X"))
+(if (ssget "_I") (sslength (ssget "_I")) 0)
+_-LWEIGHT
+0.5
+(if (ssget "_I") (sslength (ssget "_I")) 0)

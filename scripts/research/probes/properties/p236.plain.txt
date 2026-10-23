@@ -1,0 +1,6 @@
+_LTSCALE
+2
+_U
+(getvar "LTSCALE")
+_REDO
+(getvar "LTSCALE")

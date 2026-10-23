@@ -1,0 +1,12 @@
+_LINE
+0,0
+10,0
+'_-LINETYPE
+_S
+Continuous
+
+20,0
+
+(getvar "CELTYPE")
+MPDUMP
+-

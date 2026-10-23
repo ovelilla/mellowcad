@@ -1,0 +1,7 @@
+_-LINETYPE
+_S
+Continuous
+_S
+_BYL
+
+(getvar "CELTYPE")

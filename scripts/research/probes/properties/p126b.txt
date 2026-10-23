@@ -1,0 +1,9 @@
+_LINE
+0,0
+'_COLOR
+1
+'_LWEIGHT
+0.5
+@10,0
+
+(list (getvar "CECOLOR") (getvar "CELWEIGHT"))

@@ -1,0 +1,16 @@
+_UNDO
+_C
+_L
+_N
+_-LAYER
+_N
+L1
+
+_-LAYER
+_S
+L1
+
+(getvar "CLAYER")
+_U
+(getvar "CLAYER")
+(tblsearch "LAYER" "L1")

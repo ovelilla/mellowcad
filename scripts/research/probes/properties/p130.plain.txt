@@ -1,0 +1,9 @@
+_-COLOR
+1
+_-COLOR
+2
+_UNDO
+2
+(getvar "CECOLOR")
+_REDO
+(getvar "CECOLOR")

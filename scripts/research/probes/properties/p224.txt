@@ -1,0 +1,9 @@
+_-LINETYPE
+_S
+BYLAYER
+_S
+bylayer
+_S
+BYBLOCK
+
+(getvar "CELTYPE")

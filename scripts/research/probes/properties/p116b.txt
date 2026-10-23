@@ -1,0 +1,4 @@
+_-COLOR
+_LINE
+2
+(getvar "CECOLOR")

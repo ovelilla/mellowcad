@@ -1,0 +1,5 @@
+_-COLOR
+BYLAYER
+(getvar "CECOLOR")
+_-COLOR
+

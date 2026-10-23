@@ -1,0 +1,18 @@
+_-LAYER
+_M
+L2
+
+_LINE
+0,0
+100,0
+
+_-LAYER
+_S
+0
+
+_-LAYER
+_DEL
+L2
+
+(tblsearch "LAYER" "L2")
+(sslength (ssget "_X"))

@@ -1,0 +1,11 @@
+_-LINETYPE
+_L
+DASHED,DASHDOT,CENTER,HIDDEN
+
+_S
+?
+D*,C*
+_S
+?
+d?sh*
+

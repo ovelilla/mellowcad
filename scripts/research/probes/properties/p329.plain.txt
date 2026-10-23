@@ -1,0 +1,17 @@
+_-LAYER
+_N
+L1
+
+_LINE
+0,0
+100,0
+
+_-LAYER
+_S
+L1
+
+_U
+(getvar "CLAYER")
+_U
+(tblsearch "LAYER" "L1")
+(entlast)

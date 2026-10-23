@@ -1,0 +1,9 @@
+LTS
+2
+LTSCALE
+3
+_LTS
+4
+_.LTSCALE
+5
+(getvar "LTSCALE")

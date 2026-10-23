@@ -1,0 +1,10 @@
+_-LWEIGHT
+0.02
+_-LWEIGHT
+
+_LINE
+0,0
+'_-LWEIGHT
+
+@10,0
+

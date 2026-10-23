@@ -1,0 +1,5 @@
+_-COLOR
+HSL:0,100,50
+(getvar "CECOLOR")
+_-COLOR
+

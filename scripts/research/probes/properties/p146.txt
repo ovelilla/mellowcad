@@ -1,0 +1,5 @@
+_-LWEIGHT
+-1
+(getvar "CELWEIGHT")
+_-LWEIGHT
+

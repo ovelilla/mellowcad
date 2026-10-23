@@ -1,0 +1,4 @@
+_CELWEIGHT
+FOO
+50
+(getvar "CELWEIGHT")

@@ -1,0 +1,8 @@
+_-LINETYPE
+_S
+Continuous
+
+_U
+(getvar "CELTYPE")
+_REDO
+(getvar "CELTYPE")

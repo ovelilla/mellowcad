@@ -1,0 +1,6 @@
+_FILL
+FOO
+_OFF
+(getvar "FILLMODE")
+_FILL
+

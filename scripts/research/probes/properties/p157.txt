@@ -1,0 +1,4 @@
+(getvar "LWDISPLAY")
+_LWDISPLAY
+1
+(getvar "LWDISPLAY")

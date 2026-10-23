@@ -1,0 +1,5 @@
+_-COLOR
+'_ZOOM
+_E
+1
+(getvar "CECOLOR")

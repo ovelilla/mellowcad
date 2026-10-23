@@ -1,0 +1,7 @@
+_LINE
+0,0
+'_FILL
+_OFF
+@10,0
+
+(getvar "FILLMODE")

@@ -1,0 +1,23 @@
+_-COLOR
+1
+_-LWEIGHT
+0.5
+_FILL
+_OFF
+_FILEDIA
+0
+_.SAVEAS
+2018
+kepP
+_-COLOR
+3
+_-LWEIGHT
+0.7
+_FILL
+_ON
+_.SAVEAS
+2018
+kepQ
+_.OPEN
+kepP
+(list (getvar "CECOLOR") (getvar "CELWEIGHT") (getvar "FILLMODE") (getvar "DWGNAME"))

@@ -1,0 +1,7 @@
+_-LAYER
+_LO
+0
+
+(cdr (assoc 70 (tblsearch "LAYER" "0")))
+_U
+(cdr (assoc 70 (tblsearch "LAYER" "0")))

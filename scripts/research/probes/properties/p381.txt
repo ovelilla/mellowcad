@@ -1,0 +1,30 @@
+_ZOOM
+_W
+-10,-10
+60,40
+_LINE
+0,0
+40,0
+
+_-LAYER
+_N
+LK
+
+_CLAYER
+LK
+_LINE
+0,20
+40,20
+
+_CLAYER
+0
+_-LAYER
+_LO
+LK
+
+(sssetfirst nil (ssget "_X"))
+(sslength (cadr (ssgetfirst)))
+_MOVE
+10,0
+20,0
+(sslength (ssget "_P"))

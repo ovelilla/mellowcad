@@ -1,0 +1,4 @@
+_-COLOR
+1
+_U
+(getvar "CECOLOR")

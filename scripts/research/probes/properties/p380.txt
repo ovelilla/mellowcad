@@ -1,0 +1,27 @@
+_-LAYER
+_N
+L1
+
+_CLAYER
+L1
+_CIRCLE
+0,0
+5
+_CLAYER
+0
+_-BLOCK
+B
+0,0
+_L
+
+(sslength (ssget "_X"))
+(tblsearch "BLOCK" "B")
+_ERASE
+_ALL
+
+(ssget "_X")
+_-LAYER
+_DEL
+L1
+
+(if (tblsearch "LAYER" "L1") "L1 kept" "L1 gone")

@@ -1,0 +1,6 @@
+-GROSORLIN
+0.5
+(getvar "CELWEIGHT")
+GROSORLIN
+0.7
+(getvar "CELWEIGHT")

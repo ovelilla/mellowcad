@@ -1,0 +1,8 @@
+_-LINETYPE
+_S
+DASHED
+
+(tblsearch "LTYPE" "DASHED")
+(getvar "MEASUREMENT")
+(findfile "acad.lin")
+(findfile "acadiso.lin")

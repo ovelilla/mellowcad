@@ -1,0 +1,5 @@
+_-COLOR
+_BYBLOCK
+(getvar "CECOLOR")
+_-COLOR
+

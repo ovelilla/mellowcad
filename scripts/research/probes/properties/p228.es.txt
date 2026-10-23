@@ -1,0 +1,17 @@
+_-LINETYPE
+_S
+Continuous
+_S
+C
+
+(getvar "CELTYPE")
+_-LINETYPE
+_S
+B
+
+(getvar "CELTYPE")
+_-LINETYPE
+_S
+POR
+
+(getvar "CELTYPE")

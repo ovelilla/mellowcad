@@ -1,0 +1,14 @@
+_LTSCALE
+2.5
+_-LINETYPE
+_S
+DASHED
+
+_.SAVEAS
+2018
+ltyB
+_.OPEN
+ltyB
+(getvar "DWGNAME")
+(getvar "LTSCALE")
+(getvar "CELTYPE")

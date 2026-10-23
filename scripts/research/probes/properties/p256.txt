@@ -1,0 +1,6 @@
+_CELTYPE
+Continuous
+(getvar "CELTYPE")
+_CELTYPE
+NOPE
+(getvar "CELTYPE")

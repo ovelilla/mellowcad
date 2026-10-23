@@ -1,0 +1,12 @@
+_-LINETYPE
+_S
+Continuous
+
+_LTSCALE
+2
+_UNDO
+2
+(getvar "CELTYPE")
+(getvar "LTSCALE")
+_REDO
+(getvar "LTSCALE")

@@ -1,0 +1,11 @@
+_LINE
+0,0
+'_-LWEIGHT
+0.5
+@10,0
+'_-LWEIGHT
+0.7
+@0,10
+
+MPDUMP
+-

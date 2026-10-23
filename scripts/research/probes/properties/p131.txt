@@ -1,0 +1,4 @@
+_CECOLOR
+FOO
+3
+(getvar "CECOLOR")

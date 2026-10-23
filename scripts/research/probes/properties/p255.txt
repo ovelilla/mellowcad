@@ -1,0 +1,3 @@
+_CELTYPE
+
+(getvar "CELTYPE")
