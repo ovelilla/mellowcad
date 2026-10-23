@@ -84,6 +84,8 @@ const FROM_SCRATCH: ReadonlyArray<
     (c) =>
       c.command("POLYGON").enter().click(p(200, 0)).enter().type("20").enter(),
   ],
+  // probe text/p130: the current layer, colour and lineweight; text/p165:
+  // those of the start point.
   [
     "TEXT",
     (c) =>

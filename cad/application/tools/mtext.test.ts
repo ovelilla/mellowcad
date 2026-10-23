@@ -5,7 +5,7 @@ import {
   createMText,
   measureTextWidth,
   MTextEntity,
-  TEXT_LINE_SPACING_FACTOR,
+  MTEXT_LINE_SPACING_FACTOR,
   TextEntity,
 } from "../../domain/entities"
 import { createTextStyle } from "../../domain/textStyles"
@@ -85,7 +85,7 @@ describe("MTEXT", () => {
 
     cad.command("MTEXT").click(p(0, 0)).option("Line spacing")
     cad.option("At least")
-    cad.type(String(3 * TEXT_LINE_SPACING_FACTOR * 10)).enter()
+    cad.type(String(3 * MTEXT_LINE_SPACING_FACTOR * 10)).enter()
     cad.click(p(100, -50)).type("Y").enter()
     const distance = cad.entities()[1] as MTextEntity
     expect(distance.lineSpacingStyle).toBe("atLeast")

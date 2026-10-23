@@ -230,6 +230,7 @@ describe("round trip", () => {
       chamferDistance2: 1,
       textSize: 3.5,
       textJustify: "mc" as const,
+      textRotation: 0,
       orthoMode: true,
       snapMode: true,
       snapUnit: { x: 5, y: 2.5 },
@@ -239,6 +240,14 @@ describe("round trip", () => {
       serializeDrawing(snapshotOf([], { settings }))
     )
     expect(parsed.settings).toEqual(settings)
+  })
+
+  it("leaves TEXT's rotation out: per drawing, never saved (rectang/p311)", () => {
+    const settings = { ...DEFAULT_DOCUMENT_SETTINGS, textRotation: 1 }
+    const file = serializeDrawing(snapshotOf([], { settings }))
+
+    expect(file).not.toContain("textRotation")
+    expect(parseDrawingFile(file).settings.textRotation).toBe(0)
   })
 
   // What AutoCAD saves in the drawing, read back after OPEN (rectang/p302,

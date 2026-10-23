@@ -17,7 +17,7 @@ import {
   createText,
   horizontalExtent,
   measureTextWidth,
-  TEXT_LINE_SPACING_FACTOR,
+  MTEXT_LINE_SPACING_FACTOR,
   verticalExtent,
 } from "./text"
 
@@ -157,7 +157,7 @@ export interface MTextLayout {
 
 /** The distance between baselines. */
 export function mtextLinePitch(mtext: MTextEntity): number {
-  return mtext.lineSpacingFactor * TEXT_LINE_SPACING_FACTOR * mtext.height
+  return mtext.lineSpacingFactor * MTEXT_LINE_SPACING_FACTOR * mtext.height
 }
 
 export function mtextLayout(mtext: MTextEntity): MTextLayout {

@@ -816,7 +816,8 @@ describe("Spanish AutoCAD's command language", () => {
     )
   })
 
-  it("justifies TEXTO by SIZ and the other two-letter codes", () => {
+  // Spanish 2027's console: SIZ, E, MC and I answered at TEXTO (text/p148).
+  it("justifies TEXTO by SIZ and the other two-letter codes (text/p148)", () => {
     const cad = createHarness({ locale: es })
     cad.command("TEXTO")
     expect(cad.commandLog().at(-1)).toBe(

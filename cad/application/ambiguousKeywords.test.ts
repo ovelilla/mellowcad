@@ -150,8 +150,9 @@ describe("an answer that starts several keywords", () => {
     ])
   })
 
-  // AutoCAD 2023's console (acc/t1, t3, t5): it asks in the words its
-  // keywords are declared with, in their declared order.
+  // AutoCAD's console (TEXT 2027's, text/p166; ATTDEF and ATTDISP 2023's,
+  // acc/t3, t5): it asks in the words its keywords are declared with, in
+  // their declared order.
   it("names the declared words, which the prompt lists otherwise", () => {
     const text = createHarness()
     text.command("TEXT")

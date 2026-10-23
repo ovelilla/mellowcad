@@ -1359,9 +1359,10 @@ export class CadRuntime extends Observable {
    * ({@link refuse}); a command name runs only at the Command prompt.
    */
   submitCommandLine(): void {
-    const text = this.commandLine.getBuffer().trim()
+    const buffer = this.commandLine.getBuffer()
+    const text = buffer.trim()
     this.commandLine.setBuffer("")
-    this.submitText(text)
+    this.submitText(text !== "" && this.takesVerbatim() ? buffer : text)
   }
 
   /** {@link submitCommandLine} of `text`, typed or a macro's. */
@@ -1464,6 +1465,15 @@ export class CadRuntime extends Observable {
     const prompt = askedPrompt(this.activeTool)
     return (
       questionInput({ tool: this.activeTool, prompt, session }) === "point2d"
+    )
+  }
+
+  /** Whether the box's field takes the command line's text untrimmed. */
+  private takesVerbatim(): boolean {
+    const id = this.dynamicInput.getActiveFieldId()
+    return (
+      this.dynamicInput.getSession()?.fields.find((field) => field.id === id)
+        ?.verbatim === true
     )
   }
 

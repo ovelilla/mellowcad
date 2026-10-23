@@ -141,6 +141,7 @@ export type { TextOptions } from "./text"
 export {
   createText,
   measureTextWidth,
+  MTEXT_LINE_SPACING_FACTOR,
   TEXT_FONT_CAP_RATIO,
   TEXT_LINE_SPACING_FACTOR,
   textWidth,

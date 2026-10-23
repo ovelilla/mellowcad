@@ -578,30 +578,50 @@ JOIN / OFFSET / FILLET / HATCH / DIM on a spline or against one; Geometric Cente
 spline's, p311: 10,10 and 40,10; none on an open one, p310, p312), Perpendicular and Tangent on a
 spline (p313, p315, p316) (SPLINE-D51); PEDIT Spline, BLEND
 
-### `TEXT` / `DTEXT` / `DT` · es `TEXTO` / `T`†
+### `TEXT` / `DTEXT` / `DT` / `-TEXT` · es `TEXTO` / `T` / `TEXTODIN` / `-TEXTO`
 
-**Implemented:** single-line text, 13 justifications, text styles table, as AutoCAD 2023's console
-asks it: `Current text style:  "Standard"  Text height:  2.5000  Annotative:  No  Justify:  Left`
-(es `Estilo de texto actual:  … Altura de texto: … Anotativo: … Justificar:`),
-`Specify start point of text or [Justify/Style]:` — the point the justification names,
+**Implemented:** single-line text, 13 justifications, text styles table, as AutoCAD 2027's console
+asks it (text/p101, p103, p106): `Current text style:  "Standard"  Text height:  2.5000
+Annotative:  No  Justify:  Left` (es `Estilo de texto actual:  … Altura de texto: … Anotativo: …
+Justificar:`; the justification named by its label in English, `TL`…`BR`, and by acmtedRes
+57673–57684's words in Spanish, `Izquierda`…`SI`…`ID`, p106; a fixed-height style's height,
+p121), `Specify start point of text or [Justify/Style]:` — the point the justification names,
 `Specify middle point of text`, `Specify top-left point of text`… (es
 `Precise punto inicial de texto`, `Precise punto medio de texto`…), without the keywords after
 Justify, whose `Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]:` (es
 `[Izquierda/Centro/Derecha/Medio/SIZ/…]`) is also answered unlisted at the first prompt (`MC` there
-asks the middle point at once) —, Style's `Enter style name or [?] <Standard>:` (Enter keeps it;
-`Cannot find text style "NAME".`, es `No se puede encontrar estilo de texto "NAME".`; `?` lists the
-styles as the console lists them, `Text styles:` … `Current text style: "Standard"`),
-`Specify height <2.50>:`, `Specify rotation angle of text <0.00>:`, then `Enter text:` (es
-`Escriba el texto`) a line at a time; the height is TEXTSIZE, which MTEXT and ATTDEF share, and it
-and the justification are saved in the drawing and set inside the run, so U takes them back
-(rectang/p311, p313, p317); the rotation is per drawing, not saved, `<0>` again at NEW and OPEN
-(p311); Style makes the style current (TEXTSTYLE), which MTEXT and ATTDEF then list (p313) — a
-style table edit here, so U leaves it (**unverified** in AutoCAD)
+asks the middle point at once) and refuses Enter and a wrong word with `Invalid option keyword.`
+(es `Opción no válida.`, p156) —, Style's `Enter style name or [?] <Standard>:` (Enter keeps it;
+`Cannot find text style "NAME".`, es `No se puede encontrar estilo de texto "NAME".`, and asked
+again; a name or Enter writes the Current line again as the console does, the old style's name
+with the new one's height, p110, p126, p156, p162, but not after a refused name, p142; `?` lists
+the styles as the console lists them, `Text styles:` … `Current text style: "Standard"`, then the
+Current line and the start point, p109), `Specify height <2.50>:` (0 or below:
+`Value must be positive and nonzero.`, es `El valor debe ser positivo y diferente de cero.`, p111,
+p112), `Specify rotation angle of text <0>:` (a negative one stored normalised, −30 as 330, p115),
+then `Enter text:` (es `Escriba el texto`) a line at a time, leading spaces typed at the command
+line kept (p155). Enter starts the next line Arial's line below, (ascent + descent + line gap) /
+H = 2355/1466 = 1.60641 of the height (p122, desktop d01-4; MTEXT's single spacing stays 5/3), an
+empty line ends, a click elsewhere starts another run, and Escape keeps the lines entered and
+drops the one being typed (desktop d01-2); another command taking over keeps it. Enter at the
+start point continues below the newest line this drawing session wrote that is still in the
+drawing, forgotten at NEW and OPEN, not below one U took back or ERASE removed (p125, p128); with
+none, `Point or option keyword required.` (es `Se requiere un punto o una opción.`) and the prompt
+again (p120). The height is TEXTSIZE, which MTEXT and ATTDEF share; it and the justification are
+saved in the drawing (rectang/p311, p313), the rotation is per drawing, not saved, `<0>` again at
+NEW and OPEN (rectang/p311), kept from the UCS X axis (p131, p164). TEXTSIZE and the rotation are
+set with the first line written, so a run that writes none leaves them (p163, desktop d01); the
+justification is set at its answer. U takes back TEXTSIZE, the justification, the rotation and the
+style Style made current (TEXTSTYLE, which MTEXT and ATTDEF then list, rectang/p313) with the
+lines (p127, p162). The layer, colour, linetype and lineweight are those current at the start
+point (p130, p165); ELEVATION is its Z, THICKNESS none (p130). The height and rotation bands are
+dashed (desktop d01-5, d01-6). -TEXT (es -TEXTO) asks the same and one line, then ends; an empty
+line adds nothing; U, UNDO and REDO name it `-TEXT` (p101, p118, p127, p129)
 
-**Missing:** Align and Fit justifications, `?`'s `Enter text style(s) to list <*>:` and its pages,
-in-place caret editing (the text is typed in the box: `Enter text:` is DTEXT's command-line prompt),
-content edit from the palette; **unverified**: how the `Current text style` line names a
-justification other than Left (its keyword here, `Justify:  MC`)
+**Missing:** Align and Fit justifications (en labels `Align` / `Fit`, es `Alinear` / `Ajustar`
+when built), `?`'s `Enter text style(s) to list <*>:` and its `Press ENTER to continue:` pages
+(p109), in-place caret editing (the text is typed in the box: `Enter text:` is DTEXT's
+command-line prompt), content edit from the palette
 
 ### `MTEXT` / `T` / `MT` / `-MTEXT` · es `TEXTOM` / `-TEXTOM`
 

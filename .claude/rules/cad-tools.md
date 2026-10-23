@@ -144,9 +144,9 @@ LTSCALE's factor `%.4f` always (properties/p234).
 Where a value lives is the console's OPEN test, never the help's "Saved in:" (RECTANG-D40).
 **Saved in the drawing** (FILLETRAD): a `DocumentSettings` field, set in the run by
 `setCommandSettings` so U undoes it. **Per drawing, unsaved** (CIRCLERAD): a tool field
-`onNewDrawing` resets. **Program-wide** or **registry** (OSMODE): a tool field for the session,
-noted in the coverage entry. `onActivate` resets none AutoCAD keeps; a shared one is one object
-`defaultTools` hands each.
+`onNewDrawing` resets; one U restores (TEXT's rotation), a `DocumentSettings` field not saved.
+**Program-wide** or **registry** (OSMODE): a session tool field, noted in the coverage entry.
+`onActivate` resets none AutoCAD keeps; a shared one is one object `defaultTools` hands each.
 
 ## What a new object wears
 
@@ -173,8 +173,8 @@ layer.
   `EngineState`, `commandOptions()` included, so state bumped afterwards lags by one action.
 - **Never clear accumulated state in `onKeyDown`** when `onDeactivate` is the commit point: the
   runtime calls `onKeyDown` first, so Escape would discard it. Exceptions, on purpose: an
-  editor whose Escape _is_ discard (MTEXT's, TEXTEDIT on an MTEXT) and SPLINE, whose Escape
-  cancels the whole curve.
+  editor whose Escape _is_ discard (MTEXT's, TEXT's line typed, TEXTEDIT on an MTEXT) and
+  SPLINE, whose Escape cancels the whole curve.
 - **One commit, one command.** A split or a multi-entity edit is one `ReplaceEntitiesCommand` /
   `UpdateEntitiesCommand`. A split keeps the object as the piece from its start (AutoCAD's handle
   stays on it): give that piece the object's id, and only a piece that is no part of it a new id.
@@ -264,8 +264,7 @@ returns `true`; `false` ends the command.
 - A command that **creates a block reference** (INSERT, BLOCK's Convert) asks attribute values
   through `AttributeValuePrompts` (`tools/attributeValues.ts`) and adds the reference only in its
   `onDone`: one undo step that Escape cancels.
-- A bracketed `<Default>` is taken in the prompt's `commitRaw`: **empty text means Enter**. Never
-  spend a keyword letter on what Enter does.
+- **Empty text in `commitRaw` is Enter**: never spend a keyword letter on what Enter does.
 - A command that continues from what was drawn (LINE's Continue, DIMBASELINE, DIMCONTINUE) reads
   the drawing through a `lastDrawnPoint`-style helper, not runtime state: document order is the
   deliberate deviation from AutoCAD's session scope, the one that survives a reload. Only which end

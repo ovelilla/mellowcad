@@ -51,6 +51,11 @@ export interface DynamicField {
    */
   readonly label?: string
   readonly kind: DynamicFieldKind
+  /**
+   * The command line hands it what was typed with its spaces, where it trims
+   * every other answer: TEXT's `Enter text:` keeps leading spaces (text/p155).
+   */
+  readonly verbatim?: boolean
 }
 
 /**

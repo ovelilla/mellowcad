@@ -605,6 +605,9 @@ export const en: EngineCatalog = {
         "DT",
         "DTEXT"
       ],
+      "-TEXT": [
+        "-TEXT"
+      ],
       "MTEXT": [
         "MTEXT",
         "T",
@@ -3111,6 +3114,27 @@ export const en: EngineCatalog = {
         "  Annotative:  No  Justify:  ",
         [
           "justify"
+        ]
+      ],
+      "textJustifyName": [
+        [
+          "justify",
+          1,
+          {
+            "center": "Center",
+            "right": "Right",
+            "middle": "Middle",
+            "tl": "TL",
+            "tc": "TC",
+            "tr": "TR",
+            "ml": "ML",
+            "mc": "MC",
+            "mr": "MR",
+            "bl": "BL",
+            "bc": "BC",
+            "br": "BR",
+            "other": "Left"
+          }
         ]
       ],
       "textStylesHeader": "Text styles:",

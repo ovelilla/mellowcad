@@ -1,15 +1,16 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, withZ } from "../../geometry/Vec3"
-import { normalizeDegrees } from "../../geometry/primitives"
+import { normalizeAngle, normalizeDegrees } from "../../geometry/primitives"
 import {
   createText,
+  EntityId,
   onPlaneOf,
   TextEntity,
   TextJustify,
   TEXT_LINE_SPACING_FACTOR,
 } from "../../domain/entities"
-import { DEFAULT_TEXT_HEIGHT, TextStyleId } from "../../domain/textStyles"
-import { formatLength } from "../../domain/units"
+import { TextStyleId } from "../../domain/textStyles"
+import { DEFAULT_DOCUMENT_SETTINGS, formatLength } from "../../domain/units"
 import { ucsAngleToWorld, worldAngleToUcs } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -24,28 +25,36 @@ import { THEME } from "../../scene/theme"
 import {
   CommandOption,
   CommandOptionOutcome,
+  KeyInput,
   PointerInput,
   QuestionInput,
   Tool,
   ToolContext,
   ToolQuestion,
 } from "./Tool"
-import { withCurrentProperties } from "./currentProperties"
+import {
+  type CurrentProperties,
+  currentProperties,
+  wearingProperties,
+} from "./currentProperties"
 import { setCommandSettings } from "./commandSettings"
 
 /**
- * AutoCAD's TEXT / DTEXT: single-line text, one object per line.
+ * AutoCAD's TEXT / DTEXT: single-line text, one object per line; -TEXT is
+ * the same asking one line (TEXT-D2).
  *
- * The prompt sequence is AutoCAD's, as its 2023 console asks it — `Current text
- * style:  "Standard"  Text height:  2.5000  Annotative:  No  Justify:  Left`,
- * `Specify start point of text or [Justify/Style]:` (the point named by the
- * justification: `Specify middle point of text`…), Justify's `Enter an option
- * [Left/Center/…/BR]:`, Style's `Enter style name or [?] <Standard>:`, then
- * `Specify height` and `Specify rotation angle of text`, then `Enter text:`,
- * with Enter dropping to a fresh line directly beneath the previous one and a
- * click elsewhere starting a new run of lines. The height prompt is skipped when the
- * current style fixes a height, and pressing Enter at the start point continues
- * beneath the last line this command wrote, skipping height and rotation too.
+ * The prompt sequence is AutoCAD 2027's console's (text/p101, p103, p106):
+ * `Current text style:  "Standard"  Text height:  2.5000  Annotative:  No
+ * Justify:  Left`, `Specify start point of text or [Justify/Style]:` (the
+ * point named by the justification: `Specify middle point of text`…),
+ * Justify's `Enter an option [Left/Center/…/BR]:`, Style's `Enter style name
+ * or [?] <Standard>:`, then `Specify height` and `Specify rotation angle of
+ * text`, then `Enter text:`, with Enter dropping to a fresh line Arial's line
+ * below (text/p122) and a click elsewhere starting a new run of lines. The
+ * height prompt is skipped when the current style fixes a height, and Enter
+ * at the start point continues beneath the last line this drawing session
+ * wrote that is still there, skipping height and rotation too (text/p125,
+ * p128).
  *
  * Typing happens in the dynamic-input box rather than in an on-canvas caret:
  * the box is a real focused input, so the browser's own text editing and IME
@@ -60,37 +69,40 @@ export class TextTool implements Tool {
   private state: TextToolState = { phase: "start", keywords: true }
   /** The current style's name, offered as Style's `<default>`. */
   private styleName: string | null = null
+  /** -TEXT: one `Enter text:`, then the end (text/p101, p118). */
+  private oneLine = false
 
   /**
-   * TEXTSIZE and the justification, saved in the drawing (rectang/p311), as
-   * the command found them or set them.
+   * TEXTSIZE and the justification, saved in the drawing (rectang/p311), and
+   * the rotation, per drawing (`textRotation`): the defaults offered, as the
+   * command found them. The height and rotation are set only with the first
+   * line written (text/p163), the justification at its answer.
    */
-  private height = DEFAULT_TEXT_HEIGHT
+  private height = DEFAULT_DOCUMENT_SETTINGS.textSize
   private justify: TextJustify = "left"
-  /**
-   * The last rotation, the next one's `<default>`: per drawing, not saved
-   * (rectang/p311). Kept from the UCS X axis, as it is asked.
-   */
   private rotation = 0
 
-  /** The last line written, so Enter at the start prompt continues below it. */
-  private lastLine: TextEntity | null = null
+  /**
+   * The lines this drawing session wrote, the newest last: Enter at the start
+   * continues below the newest still in the drawing (text/p125, p128).
+   */
+  private written: EntityId[] = []
   private lastScreen: Vec2 | null = null
+
+  /** Makes this run -TEXT's. */
+  singleLine(): void {
+    this.oneLine = true
+  }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
+    this.oneLine = false
     const settings = ctx.document.getSettings()
     this.height = settings.textSize
     this.justify = settings.textJustify
-    const style = ctx.document.getTextStyle(this.currentStyleId(ctx))
-    ctx.report(
-      ctx.text.message("currentTextStyle", {
-        style: style?.name ?? this.currentStyleId(ctx),
-        height: formatLength(this.height, ctx.document.getSettings()),
-        justify: ctx.text.keyword(JUSTIFY_KEYWORD_OF[this.justify]),
-      })
-    )
+    this.rotation = settings.textRotation
+    this.writeCurrentLine(ctx, this.currentStyleName(ctx))
     this.state = { phase: "start", keywords: true }
     this.openStartInput(ctx)
   }
@@ -127,14 +139,30 @@ export class TextTool implements Tool {
   }
 
   onNewDrawing(): void {
-    this.rotation = 0
+    this.written = []
+  }
+
+  onKeyDown(input: KeyInput): void {
+    // Escape drops the line being typed and keeps those already entered
+    // (desktop text/d01-2): onDeactivate follows and finds nothing to add.
+    if (input.key === "Escape" && this.state.phase === "entry") {
+      this.state = { phase: "start", keywords: true }
+    }
+  }
+
+  onEnter(ctx: ToolContext): boolean {
+    if (this.state.phase !== "justify") return false
+    // Justify takes no Enter (text/p156, AllowNone 0 in p103's trace).
+    ctx.report(ctx.text.message("invalidOptionKeyword"), "error")
+    return true
   }
 
   onDeactivate(ctx: ToolContext): void {
-    // Every exit route — Escape, Enter, switching tools — comes through here,
-    // and AutoCAD keeps whatever you had typed, so this is the commit point.
+    // Leaving any way but Escape — Enter, a click elsewhere, another
+    // command — keeps the line being typed.
     this.commitPending(ctx)
     this.state = { phase: "start", keywords: true }
+    this.oneLine = false
     ctx.dynamicInput.close()
   }
 
@@ -154,21 +182,23 @@ export class TextTool implements Tool {
       case "start":
         this.beginAt(input.point, ctx)
         break
-      case "height": {
-        const height = V.distance(this.state.position, input.point)
-        if (height > 0) this.enterRotation(this.state.position, height, ctx)
+      case "height":
+        this.commitHeight(V.distance(this.state.position, input.point), ctx)
         break
-      }
       case "rotation": {
         const offset = V.sub(input.point, this.state.position)
         const rotation =
           V.length(offset) > 1e-9
-            ? worldAngleToUcs(ctx.ucs, Math.atan2(offset.y, offset.x))
+            ? normalizeAngle(
+                worldAngleToUcs(ctx.ucs, Math.atan2(offset.y, offset.x))
+              )
             : 0
-        this.enterEntry(this.state.position, this.state.height, rotation, ctx)
+        this.enterEntry(this.state, rotation, ctx)
         break
       }
       case "entry":
+        // -TEXT asks its one line at the command line.
+        if (this.oneLine) break
         // "Click elsewhere in a drawing to start a new set of rows of
         // single-line text" — the current line is kept and a new run begins.
         this.commitPending(ctx)
@@ -253,25 +283,28 @@ export class TextTool implements Tool {
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const { viewport } = ctx
-    const rubber = { color: THEME.rubberBand, width: 1 }
 
     switch (this.state.phase) {
       case "height":
       case "rotation":
         // The pointing guide: its length is the height, its direction the
-        // rotation, depending on which is being specified.
+        // rotation. Amber and dashed (desktop text/d01-5, d01-6; the trace's
+        // UseDashedLine).
         return [
           {
             kind: "segment",
             a: viewport.worldToScreen(this.state.position),
             b: viewport.worldToScreen(this.state.cursor),
-            stroke: rubber,
+            stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
           },
         ]
       case "entry": {
         const value = ctx.dynamicInput.getText("value")
         if (value.length === 0) return []
-        return entityScenePrimitive(viewport, this.pendingText(value), rubber)
+        return entityScenePrimitive(viewport, this.pendingText(value), {
+          color: THEME.rubberBand,
+          width: 1,
+        })
       }
       default:
         return []
@@ -291,14 +324,37 @@ export class TextTool implements Tool {
     })
   }
 
-  /** Starts a text object at `position`, asking only for what is still unknown. */
+  /**
+   * `Current text style:  "Standard"  Text height:  2.5000 …`, naming
+   * `style`: after Style the console names the style it was before, with the
+   * new one's height (text/p126, p162). A fixed-height style's height is its
+   * own (text/p121).
+   */
+  private writeCurrentLine(ctx: ToolContext, style: string): void {
+    const settings = ctx.document.getSettings()
+    ctx.report(
+      ctx.text.message("currentTextStyle", {
+        style,
+        height: formatLength(this.styleHeight(ctx) ?? this.height, settings),
+        justify: ctx.text.message("textJustifyName", {
+          justify: this.justify,
+        }),
+      })
+    )
+  }
+
+  /**
+   * Starts a text object at `position`, asking only for what is still
+   * unknown. The current properties are the start point's (text/p165).
+   */
   private beginAt(position: Vec3, ctx: ToolContext): void {
+    const properties = currentProperties(ctx)
     const fixed = this.styleHeight(ctx)
     if (fixed !== null) {
-      this.enterRotation(position, fixed, ctx)
+      this.enterRotation({ position, properties }, fixed, ctx)
       return
     }
-    this.state = { phase: "height", position, cursor: position }
+    this.state = { phase: "height", position, properties, cursor: position }
     this.openHeightInput(ctx)
   }
 
@@ -312,30 +368,52 @@ export class TextTool implements Tool {
     return ctx.document.getCurrentTextStyleId()
   }
 
+  private currentStyleName(ctx: ToolContext): string {
+    const id = this.currentStyleId(ctx)
+    return ctx.document.getTextStyle(id)?.name ?? id
+  }
+
+  /** A height typed or pointed: refused unless above zero (text/p111, p112). */
+  private commitHeight(height: number, ctx: ToolContext): void {
+    if (this.state.phase !== "height") return
+    if (!(height > 0)) {
+      ctx.report(ctx.text.message("positiveNonzero"), "error")
+      return
+    }
+    this.enterRotation(this.state, height, ctx)
+  }
+
   private enterRotation(
-    position: Vec3,
+    { position, properties }: StartedText,
     height: number,
     ctx: ToolContext
   ): void {
-    this.height = height
-    this.state = { phase: "rotation", position, height, cursor: position }
-    setCommandSettings({ textSize: height }, ctx)
+    this.state = {
+      phase: "rotation",
+      position,
+      properties,
+      height,
+      cursor: position,
+    }
     this.openRotationInput(ctx)
   }
 
-  /** `rotation` is the one asked for: radians from the UCS X axis. */
+  /**
+   * `rotation` is the one asked for, radians from the UCS X axis, stored
+   * normalised (text/p115: −30 is 330).
+   */
   private enterEntry(
-    position: Vec3,
-    height: number,
+    { position, properties, height }: StartedText & { readonly height: number },
     rotation: number,
     ctx: ToolContext
   ): void {
-    this.rotation = rotation
     this.state = {
       phase: "entry",
       position,
+      properties,
       height,
-      rotation: ucsAngleToWorld(ctx.ucs, rotation),
+      ucsRotation: rotation,
+      rotation: normalizeAngle(ucsAngleToWorld(ctx.ucs, rotation)),
       styleId: this.currentStyleId(ctx),
     }
     this.openEntryInput(ctx)
@@ -343,24 +421,32 @@ export class TextTool implements Tool {
 
   /**
    * Commits the line being typed, if any. Returns the entity so the caller can
-   * place the next line beneath it.
+   * place the next line beneath it. TEXTSIZE and the rotation are set with
+   * it, so a run that writes nothing leaves them (text/p163, desktop d01).
    */
   private commitPending(ctx: ToolContext): TextEntity | null {
-    if (this.state.phase !== "entry") return null
+    const state = this.state
+    if (state.phase !== "entry") return null
     const value = ctx.dynamicInput.getText("value")
     if (value.trim().length === 0) return null
     const text = onPlaneOf(
-      createText(this.state.position, value, {
-        height: this.state.height,
-        rotation: this.state.rotation,
+      createText(state.position, value, {
+        height: state.height,
+        rotation: state.rotation,
         justify: this.justify,
-        styleId: this.state.styleId,
-        layerId: ctx.document.getCurrentLayerId(),
+        styleId: state.styleId,
+        layerId: state.properties.layerId,
       }),
-      this.state.position
+      state.position
     )
-    this.lastLine = text
-    ctx.execute(new AddEntityCommand(withCurrentProperties(text, ctx)))
+    this.written.push(text.id)
+    this.height = state.height
+    this.rotation = state.ucsRotation
+    setCommandSettings(
+      { textSize: state.height, textRotation: state.ucsRotation },
+      ctx
+    )
+    ctx.execute(new AddEntityCommand(wearingProperties(text, state.properties)))
     return text
   }
 
@@ -368,14 +454,25 @@ export class TextTool implements Tool {
   private commitLine(ctx: ToolContext): boolean {
     if (this.state.phase !== "entry") return false
     const committed = this.commitPending(ctx)
-    if (!committed) {
-      // Enter on an empty line ends the command, as DTEXT always has.
+    if (!committed || this.oneLine) {
+      // Enter on an empty line ends the command, as DTEXT always has; -TEXT
+      // asks one line. Nothing is left for onDeactivate to add.
+      this.state = { phase: "start", keywords: true }
       ctx.endCommand()
       return true
     }
     this.state = { ...this.state, position: lineBelow(committed) }
     this.openEntryInput(ctx)
     return true
+  }
+
+  /** The newest line this session wrote that is still in the drawing. */
+  private lineToContinue(ctx: ToolContext): TextEntity | null {
+    for (let i = this.written.length - 1; i >= 0; i--) {
+      const entity = ctx.document.get(this.written[i])
+      if (entity?.type === "text") return entity
+    }
+    return null
   }
 
   private openStartInput(ctx: ToolContext): void {
@@ -389,20 +486,31 @@ export class TextTool implements Tool {
   }
 
   private commitStart(ctx: ToolContext): boolean {
+    if (this.state.phase !== "start") return false
     const text = ctx.dynamicInput.getText("point").trim()
     if (text.length === 0) {
       // Enter at the start prompt continues under the previous line, skipping
-      // the height and rotation prompts; with nothing to continue it ends.
-      if (!this.lastLine) {
-        ctx.endCommand()
+      // the height and rotation prompts; with nothing to continue it is
+      // refused and asked again (text/p120).
+      const previous = this.lineToContinue(ctx)
+      if (!previous) {
+        ctx.report(
+          ctx.text.message(
+            this.state.keywords ? "pointOrKeywordRequired" : "invalidPoint"
+          ),
+          "error"
+        )
         return true
       }
-      const previous = this.lastLine
       this.state = {
         phase: "entry",
         position: lineBelow(previous),
+        properties: currentProperties(ctx),
         height: previous.height,
         rotation: previous.rotation,
+        ucsRotation: normalizeAngle(
+          worldAngleToUcs(ctx.ucs, previous.rotation)
+        ),
         styleId: previous.styleId,
       }
       this.openEntryInput(ctx)
@@ -423,11 +531,8 @@ export class TextTool implements Tool {
   private openHeightInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
       fields: [{ id: "height", prompt: "textHeight", kind: "distance" }],
-      commit: (values, commitCtx) => {
-        if (this.state.phase !== "height") return
-        if (!(values.height > 0)) return
-        this.enterRotation(this.state.position, values.height, commitCtx)
-      },
+      commit: (values, commitCtx) =>
+        this.commitHeight(values.height, commitCtx),
     }
     ctx.dynamicInput.open(session)
     // The live value stays on the remembered height so Enter takes AutoCAD's
@@ -448,9 +553,8 @@ export class TextTool implements Tool {
       commit: (values, commitCtx) => {
         if (this.state.phase !== "rotation") return
         this.enterEntry(
-          this.state.position,
-          this.state.height,
-          (values.rotation * Math.PI) / 180,
+          this.state,
+          normalizeAngle((values.rotation * Math.PI) / 180),
           commitCtx
         )
       },
@@ -465,7 +569,7 @@ export class TextTool implements Tool {
 
   private openEntryInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
-      fields: [{ id: "value", prompt: "text", kind: "text" }],
+      fields: [{ id: "value", prompt: "text", kind: "text", verbatim: true }],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitLine(commitCtx),
     }
@@ -494,6 +598,7 @@ export class TextTool implements Tool {
       this.listStyles(ctx)
       return true
     }
+    const before = this.styleName ?? this.currentStyleName(ctx)
     // Empty is Enter, which keeps the `<current>` style.
     if (typed !== "") {
       const style = ctx.document
@@ -509,15 +614,21 @@ export class TextTool implements Tool {
       }
       ctx.setCurrentTextStyle(style.id)
     }
+    this.writeCurrentLine(ctx, before)
     this.state = { phase: "start", keywords: true }
     this.openStartInput(ctx)
     return true
   }
 
-  /** `?`: every style as AutoCAD lists it, then the current one; asked again. */
+  /**
+   * `?`: every style as AutoCAD lists it, then the current one; then the
+   * Current line and the start point (text/p109).
+   */
   private listStyles(ctx: ToolContext): void {
     listTextStyles(this.currentStyleId(ctx), ctx)
-    this.openStyleInput(ctx)
+    this.writeCurrentLine(ctx, this.currentStyleName(ctx))
+    this.state = { phase: "start", keywords: true }
+    this.openStartInput(ctx)
   }
 }
 
@@ -592,10 +703,6 @@ export const JUSTIFY_BY_KEYWORD: Readonly<Record<string, TextJustify>> = {
 
 export const JUSTIFY_KEYWORDS = Object.keys(JUSTIFY_BY_KEYWORD)
 
-const JUSTIFY_KEYWORD_OF = Object.fromEntries(
-  Object.entries(JUSTIFY_BY_KEYWORD).map(([id, justify]) => [justify, id])
-) as Readonly<Record<TextJustify, string>>
-
 /**
  * Where the next line of text starts: one line below, measured along the text's
  * own down direction so a rotated run stays stacked square to itself, and at
@@ -614,6 +721,13 @@ export function lineBelow(
   )
 }
 
+/** What a text being started holds once its point is given. */
+interface StartedText {
+  readonly position: Vec3
+  /** The current layer and properties at the start point (text/p165). */
+  readonly properties: CurrentProperties
+}
+
 type TextToolState =
   /**
    * Awaiting the start point — or, at the first prompt, a Justify / Style
@@ -624,22 +738,22 @@ type TextToolState =
   | { readonly phase: "justify" }
   /** Typing a style name. */
   | { readonly phase: "style" }
-  | {
+  | (StartedText & {
       readonly phase: "height"
-      readonly position: Vec3
       readonly cursor: Vec2
-    }
-  | {
+    })
+  | (StartedText & {
       readonly phase: "rotation"
-      readonly position: Vec3
       readonly height: number
       readonly cursor: Vec2
-    }
+    })
   /** Typing the text itself. */
-  | {
+  | (StartedText & {
       readonly phase: "entry"
-      readonly position: Vec3
       readonly height: number
+      /** The world's, the text's own. */
       readonly rotation: number
+      /** As asked, from the UCS X axis: the next one's `<default>`. */
+      readonly ucsRotation: number
       readonly styleId: string
-    }
+    })

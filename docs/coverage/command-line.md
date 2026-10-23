@@ -133,7 +133,9 @@ d08-2), the other commands' **unverified**
 
 **Missing:** the `.` prefix (`._LINE`, `_.ERASE`, which the 2027 console runs, erase/p04: refused
 here as an unknown command, since nothing can be redefined), `_`
-with a global alias (`_` selects global command names; aliases belong to each language's acad.pgp)
+with a global alias (`_` selects global command names; aliases belong to each language's acad.pgp),
+a compass letter at an angle prompt (2027 reads `S` at TEXT's rotation as 270°, text/p117; here
+refused as no angle; N, E and W **unverified**, TEXT-D7)
 
 ### Keywords
 

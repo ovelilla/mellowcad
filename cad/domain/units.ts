@@ -66,6 +66,12 @@ export interface DocumentSettings {
   readonly textSize: number
   /** TEXT's justification, the last one chosen, which AutoCAD saves too (rectang/p311). */
   readonly textJustify: TextJustify
+  /**
+   * TEXT's last rotation, the next one's `<default>`, in radians from the UCS
+   * X axis. Per drawing and never saved (rectang/p311), but U takes it back
+   * (text/p127), so it lives here and the file leaves it out.
+   */
+  readonly textRotation: number
   /** ORTHOMODE (F8). */
   readonly orthoMode: boolean
   /** SNAPMODE (F9). */
@@ -137,6 +143,7 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   chamferDistance2: 0,
   textSize: DEFAULT_TEXT_HEIGHT,
   textJustify: "left",
+  textRotation: 0,
   orthoMode: false,
   snapMode: false,
   snapUnit: { x: 10, y: 10 },

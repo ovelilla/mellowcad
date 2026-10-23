@@ -381,7 +381,8 @@ export interface ToolContext {
 
   /**
    * Makes a text style current (TEXTSTYLE), as TEXT's, MTEXT's and ATTDEF's
-   * Style do (rectang/p313). A style table edit, so no undo step.
+   * Style do (rectang/p313): part of the running command's undo step, which
+   * U takes back (text/p162).
    */
   setCurrentTextStyle(id: TextStyleId): void
 

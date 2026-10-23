@@ -577,16 +577,16 @@ describe("the engine's English surface", () => {
     walk("TEXT", createHarness(), (s) =>
       s
         .do("TEXT", (c) => c.command("DT"))
-        .do("J", (c) => answer(c, "J"))
-        .do("nope", (c) => c.type("nope"))
-        .do("enter", (c) => c.enter())
-        .do("tc", (c) => c.type("tc"))
         .do("enter", (c) => c.enter())
         .do("S", (c) => answer(c, "S"))
         .do("missing style", (c) => c.type("Fancy"))
         .do("enter", (c) => c.enter())
         .do("Standard", (c) => c.type("Standard"))
         .do("enter", (c) => c.enter())
+        .do("J", (c) => answer(c, "J"))
+        .do("nope", (c) => answer(c, "nope"))
+        .do("enter", (c) => c.enter())
+        .do("tc", (c) => answer(c, "tc"))
         .do("start", (c) => c.click(at(0, 0)))
         .do("height", (c) => c.type("5"))
         .do("enter", (c) => c.enter())
@@ -641,6 +641,18 @@ describe("the engine's English surface", () => {
         .do("content", (c) => c.type("FIRST LINE\nSECOND"))
         .do("ctrl+enter", (c) => c.enter())
         .do("select", (c) => c.select(c.latest().id))
+    )
+    walk("-TEXT", createHarness(), (s) =>
+      s
+        .do("-TEXT", (c) => c.command("-TEXT"))
+        .do("enter", (c) => c.enter())
+        .do("start", (c) => c.click(at(0, 0)))
+        .do("height", (c) => c.type("0"))
+        .do("enter", (c) => c.enter())
+        .do("enter", (c) => c.enter())
+        .do("enter", (c) => c.enter())
+        .do("content", (c) => c.type("ONE"))
+        .do("enter", (c) => c.enter())
     )
     walk("-MTEXT", createHarness(), (s) =>
       s

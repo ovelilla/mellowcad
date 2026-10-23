@@ -10,7 +10,7 @@ import {
   mtextLayout,
   mtextLineTexts,
   mtextPlainText,
-  TEXT_LINE_SPACING_FACTOR,
+  MTEXT_LINE_SPACING_FACTOR,
 } from "./entities"
 
 describe("MTEXT contents", () => {
@@ -49,7 +49,7 @@ describe("MTEXT contents", () => {
 
 describe("MTEXT layout", () => {
   const pitch = (height: number, factor = 1) =>
-    factor * TEXT_LINE_SPACING_FACTOR * height
+    factor * MTEXT_LINE_SPACING_FACTOR * height
 
   it("sets one line per paragraph when there is no width", () => {
     const layout = mtextLayout(

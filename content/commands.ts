@@ -67,6 +67,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   MATCHPROP: { group: "modify" },
 
   TEXT: { group: "annotate" },
+  "-TEXT": { group: "annotate" },
   MTEXT: { group: "annotate" },
   "-MTEXT": { group: "annotate" },
   TEXTEDIT: { group: "annotate" },

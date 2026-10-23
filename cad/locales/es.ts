@@ -596,7 +596,11 @@ export const es: EngineLocale = {
       ],
       "TEXT": [
         "TEXTO",
-        "T"
+        "T",
+        "TEXTODIN"
+      ],
+      "-TEXT": [
+        "-TEXTO"
       ],
       "MTEXT": [
         "TEXTOM"
@@ -3483,6 +3487,27 @@ export const es: EngineLocale = {
         "  Anotativo:  No  Justificar:  ",
         [
           "justify"
+        ]
+      ],
+      "textJustifyName": [
+        [
+          "justify",
+          1,
+          {
+            "center": "Centro",
+            "right": "Derecha",
+            "middle": "Medio",
+            "tl": "SI",
+            "tc": "SC",
+            "tr": "SD",
+            "ml": "MI",
+            "mc": "MC",
+            "mr": "MD",
+            "bl": "II",
+            "bc": "IC",
+            "br": "ID",
+            "other": "Izquierda"
+          }
         ]
       ],
       "textStylesHeader": "Estilos de texto:",

@@ -93,7 +93,8 @@ origen/Origen` from the 2026 help and the same captures;
   other commands (`EX` is EXPORTAR). In Spanish `U` is UNIR and `H` undoes. `TEXTOM` has no alias:
   the Spanish shortcut guide gives it `T` and `MT`, but that page is a translation of the English
   one
-  (it also lists `DT` for TEXTO), and the transcriptions of the file keep `T` on TEXTO.
+  (it also lists `DT` for TEXTO), and the transcriptions of the file keep `T` on TEXTO, as the
+  2027 console and `acad.pgp` do, with `TEXTODIN` (text/p149, p150).
 - **Prompts and keywords:** from Spanish product captures (2012–2020) and the 2011–2026 Spanish
   help;
   where the help and the product disagree on capitals, the product wins (`punto a Atravesar`,

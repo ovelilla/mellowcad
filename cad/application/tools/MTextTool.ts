@@ -15,7 +15,7 @@ import {
   mtextLayout,
   mtextToWorld,
   onPlaneOf,
-  TEXT_LINE_SPACING_FACTOR,
+  MTEXT_LINE_SPACING_FACTOR,
 } from "../../domain/entities"
 import { formatLength, parseNumber } from "../../domain/units"
 import { DEFAULT_TEXT_HEIGHT, TextStyleId } from "../../domain/textStyles"
@@ -747,7 +747,7 @@ export class MTextTool implements Tool {
    */
   private spacingRange(ctx: ToolContext): string {
     const settings = ctx.document.getSettings()
-    const single = TEXT_LINE_SPACING_FACTOR * this.currentHeight(ctx)
+    const single = MTEXT_LINE_SPACING_FACTOR * this.currentHeight(ctx)
     return ctx.text.message("lineSpacingRange", {
       min: formatLength(MIN_LINE_SPACING_FACTOR * single, settings),
       minFactor: String(MIN_LINE_SPACING_FACTOR),
@@ -788,7 +788,7 @@ export class MTextTool implements Tool {
     if (value === null || !Number.isFinite(value)) return null
     const factor = multiple
       ? value
-      : value / (TEXT_LINE_SPACING_FACTOR * this.currentHeight(ctx))
+      : value / (MTEXT_LINE_SPACING_FACTOR * this.currentHeight(ctx))
     if (
       factor < MIN_LINE_SPACING_FACTOR - 1e-9 ||
       factor > MAX_LINE_SPACING_FACTOR + 1e-9

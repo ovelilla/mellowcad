@@ -80,6 +80,7 @@ COLOR ["COL","COLOUR"] "Color"
 LINETYPE ["LT","LTYPE","DDLTYPE"] "Linetype"
 LWEIGHT ["LW","LINEWEIGHT"] "Lineweight"
 U [] "Undo the last action"
+-TEXT [] "Text"
 -MTEXT [] "Multiline text"
 REDO [] "Redo the last undone action"
 -ATTDEF [] "Define attributes"
@@ -1723,30 +1724,9 @@ lweight "Lineweight" LW
   options: [J] Justify, [S] Style
   command| DT TEXT
   info| Current text style:  "Standard"  Text height:  2.50  Annotative:  No  Justify:  Left
-> J
-  prompt: TEXT Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]:
-  asks: 
-  tip: Enter an option
-  dyn: 
-  options: [L] Left, [C] Center, [R] Right, [M] Middle, [TL] TL, [TC] TC, [TR] TR, [ML] ML, [MC] MC, [MR] MR, [BL] BL, [BC] BC, [BR] BR
-  prompt| Specify start point of text or [Justify/Style]: J
-> nope
 > enter
-  prompt: Command:
-  asks: -
-  tip: -
-  dyn: -
-  options: -
-  prompt| Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]:
-> tc
-> enter
-  prompt: TEXT Specify start point of text or [Justify/Style]:
-  asks: ""
-  tip: Specify start point of text or
-  dyn: "X,Y"=""||*
-  options: [J] Justify, [S] Style
-  command| TEXT
-  info| Current text style:  "Standard"  Text height:  2.50  Annotative:  No  Justify:  Left
+  prompt| Specify start point of text or [Justify/Style]:
+  error| Point or option keyword required.
 > S
   prompt: TEXT Enter style name or [?] <Standard>:
   asks: "Style name"
@@ -1769,13 +1749,33 @@ lweight "Lineweight" LW
   dyn: "X,Y"=""||*
   options: [J] Justify, [S] Style
   prompt| Enter style name or [?] <Standard>: Standard
+  info| Current text style:  "Standard"  Text height:  2.50  Annotative:  No  Justify:  Left
+> J
+  prompt: TEXT Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [L] Left, [C] Center, [R] Right, [M] Middle, [TL] TL, [TC] TC, [TR] TR, [ML] ML, [MC] MC, [MR] MR, [BL] BL, [BC] BC, [BR] BR
+  prompt| Specify start point of text or [Justify/Style]: J
+> nope
+  prompt| Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]: nope
+  error| Invalid option keyword.
+> enter
+  prompt| Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]:
+  error| Invalid option keyword.
+> tc
+  prompt: TEXT Specify top-center point of text:
+  asks: ""
+  tip: Specify top-center point of text:
+  dyn: "X,Y"=""||*
+  options: -
+  prompt| Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]: tc
 > start
   prompt: TEXT Specify height <2.50>:
   asks: "Specify height"
   tip: Specify height
   dyn: "Specify height"=""|2.50|mm*
-  options: -
-  prompt| Specify start point of text or [Justify/Style]:
+  prompt| Specify top-center point of text:
 > height
   dyn: "Specify height"="5"|2.50|mm*
 > enter
@@ -2000,6 +2000,61 @@ lweight "Lineweight" LW
 > select
   properties: MText (1) [Text: Contents=FIRST LINE
 SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space factor=1.5x~, Line space distance=25.00 mm~, Line space style=Exactly, Defined width=120.00 mm~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
+
+## -TEXT
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> -TEXT
+  prompt: -TEXT Specify start point of text or [Justify/Style]:
+  asks: ""
+  tip: Specify start point of text or
+  dyn: "X,Y"=""||*
+  options: [J] Justify, [S] Style
+  command| -TEXT
+  info| Current text style:  "Standard"  Text height:  2.50  Annotative:  No  Justify:  Left
+> enter
+  prompt| Specify start point of text or [Justify/Style]:
+  error| Point or option keyword required.
+> start
+  prompt: -TEXT Specify height <2.50>:
+  asks: "Specify height"
+  tip: Specify height
+  dyn: "Specify height"=""|2.50|mm*
+  options: -
+  prompt| Specify start point of text or [Justify/Style]:
+> height
+  dyn: "Specify height"="0"|2.50|mm*
+> enter
+  dyn: "Specify height"=""|2.50|mm*
+  prompt| Specify height <2.50>: 0
+  error| Value must be positive and nonzero.
+> enter
+  prompt: -TEXT Specify rotation angle of text <0>:
+  asks: "Specify rotation angle of text"
+  tip: Specify rotation angle of text
+  dyn: "Specify rotation angle of text"=""|0|°*
+  prompt| Specify height <2.50>:
+> enter
+  prompt: -TEXT Enter text:
+  asks: "Text"
+  tip: Enter text:
+  dyn: "Text"=""||*
+  prompt| Specify rotation angle of text <0>:
+> content
+  dyn: "Text"="ONE"||*
+> enter
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter text: ONE
 
 ## -MTEXT
 > start

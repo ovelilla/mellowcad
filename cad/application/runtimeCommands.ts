@@ -14,6 +14,7 @@ import { formatAngle, formatLength } from "../domain/units"
 import { MeasureTool } from "./tools/MeasureTool"
 import type { DocumentSettings } from "../domain/units"
 import { MTextTool } from "./tools/MTextTool"
+import { TextTool } from "./tools/TextTool"
 import { AttEditTool } from "./tools/AttEditTool"
 
 /**
@@ -106,6 +107,17 @@ export function registerCommands(
   })
 
   register({ id: "U", run: () => runtime.undo(true) })
+  // -TEXT is TEXT asking for one line at the command line (TEXT-D2), so it
+  // runs the same tool and switches its entry, as -MTEXT does.
+  register({
+    id: "-TEXT",
+    tool: "text",
+    run: () => {
+      startTool("text")
+      const tool = runtime.listTools().find((t) => t.id === "text")
+      if (tool instanceof TextTool) tool.singleLine()
+    },
+  })
   // -MTEXT is MTEXT with the text typed at the command line, so it runs the
   // same tool and switches its entry.
   register({

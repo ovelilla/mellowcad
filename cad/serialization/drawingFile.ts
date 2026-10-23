@@ -151,6 +151,7 @@ export interface DrawingSnapshot {
 export type StoredSettings = Omit<
   DocumentSettings,
   | SavedCommandSetting
+  | "textRotation"
   | "fillMode"
   | "polylineWidth"
   | "anglePrecision"
@@ -703,6 +704,7 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     chamferDistance2,
     textSize,
     textJustify,
+    textRotation,
     orthoMode,
     snapMode,
     snapUnit,
@@ -721,6 +723,8 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     currentLineweight,
     ...rest
   } = settings
+  // TEXT's rotation is per drawing, never saved (rectang/p311).
+  void textRotation
   return {
     ...rest,
     ...(currentColor !== COLOR_BYLAYER ? { currentColor } : {}),
@@ -860,6 +864,7 @@ function parseSettings(value: unknown): DocumentSettings {
     textJustify:
       TEXT_JUSTIFICATIONS.find((justify) => justify === value.textJustify) ??
       DEFAULT_DOCUMENT_SETTINGS.textJustify,
+    textRotation: DEFAULT_DOCUMENT_SETTINGS.textRotation,
     orthoMode: value.orthoMode === true,
     snapMode: value.snapMode === true,
     snapUnit: parseSnapUnit(value.snapUnit),
