@@ -623,37 +623,72 @@ when built), `?`'s `Enter text style(s) to list <*>:` and its `Press ENTER to co
 (p109), in-place caret editing (the text is typed in the box: `Enter text:` is DTEXT's
 command-line prompt), content edit from the palette
 
-### `MTEXT` / `T` / `MT` / `-MTEXT` · es `TEXTOM` / `-TEXTOM`
+### `MTEXT` / `T` / `MT` / `-MTEXT` / `-T` · es `TEXTOM` / `TXM` / `MTEXT` / `-TEXTOM` / `-TXM`
 
-**Implemented:** two corners or Width; as AutoCAD 2023's console asks it:
-`Current text style:  "Standard"  Text height:  2.5  Annotative:  No`, `Specify first corner:`,
-`Specify opposite corner or [Height/Justify/Line spacing/Rotation/Style/Width]:` and its keywords'
-`Specify height <2.50>:`, `Enter justification [TL/TC/TR/ML/MC/MR/BL/BC/BR] <TL>:` (nine
-attachments; the box hangs off the attachment point however it was dragged),
-`Enter line spacing type [At least/Exactly] <At least>:` and
-`Enter line spacing factor or distance <1x>:` (a factor `nx` or a distance, 0.25x–4x, else
-`Please specify a line spacing value between 1.04 (0.25x) and 16.67 (4x), inclusive.`),
-`Specify rotation angle <0.00>:` and `Enter style name or [?] <Standard>:` (`Invalid style name`)
-looping back to the corner, Width's `Specify width:`; the height is TEXT's TEXTSIZE, saved in the
-drawing, Style makes the style current, and Justify, Rotation and Line spacing start again at
-`<TL>`, `<0>`, `<At least>` and `<1x>` every run, Enter at the spacing type asking the factor
-(rectang/p312, p313); es from Autodesk's MTEXT table
-(`Precise la primera esquina`, `Indique la esquina opuesta o`, `Indique la altura`,
-`Indique la justificación`, `Indique el tipo de interlineado [Al menos/Exactamente]`,
-`Indique el ángulo de rotación`, `Indique la anchura`, `Nombre de estilo no válido`); word wrap from
-Arial's widths (a longer word overflows), single spacing 5/3 of the height; MTJIGSTRING `abc` jig
-and flow arrow; the editor is the dynamic-input box made multi-line and drawn in place (Enter breaks
-a paragraph, Ctrl+Enter or a click outside the frame keeps, Escape discards); `-MTEXT` takes the
-lines at `MText:` (es `textoM:`); contents kept as AutoCAD's string (`P`, escapes; inline codes
-survive but are not drawn); Insertion snap, width grip, palette rows (line space
-factor/distance/style, defined width), TEXTEDIT and double-click, EXPLODE to TEXT
+**Implemented:** two corners or Width; as AutoCAD 2027's console asks it (text/p202, p213):
+`Current text style:  "Standard"  Text height:  2.5  Annotative:  No`, `Specify first corner:`
+(Enter or a word: `Invalid point.`, es `Punto no válido.`, and asked again, p201, p202, desktop
+d05-6), `Specify opposite corner or [Height/Justify/Line spacing/Rotation/Style/Width]:` (a word,
+a Z or another prompt's keyword: `2D point or option keyword required.`, es
+`Se requiere un punto 2D o una opción.`, p203, p205, p214, p251; the first corner again, as a
+click with no drag gives, makes a width-0 object, p204) and its keywords' `Specify height <2.5>:` (a point is its distance from the first
+corner, p212; 0 or below `Value must be positive and nonzero.`, es
+`El valor debe ser positivo y diferente de cero.`, p209, p210),
+`Enter justification [TL/TC/TR/ML/MC/MR/BL/BC/BR] <TL>:` (nine attachments; the box hangs off the
+attachment point however it was dragged, p208, p213),
+`Enter line spacing type [At least/Exactly] <At least>:` (a wrong word at either:
+`Invalid option keyword.`, es `Opción no válida.`, p213, p215) and
+`Enter line spacing factor or distance <1x>:` (a factor `nx`, a distance, or a point typed or
+picked, its distance from the first corner, p220, p265; 0.25x–4x, else
+`Please specify a line spacing value between 1.04 (0.25x) and 16.67 (4x), inclusive.`, p216–p219;
+below zero `Value must be positive.`, es `El valor debe ser positivo.`, p221),
+`Specify rotation angle <0>:` (`<90>` after a point straight above, 400 as `<40>`, −30 as `<330>`,
+p222–p224) and `Enter style name or [?] <Standard>:` (`Invalid style name`, p226) looping back to
+the corner, Width's `Specify width:` (0 taken, Enter is 0 and asks the text, a point its distance,
+−5 `Value must be positive.`, p227–p230, p269, p273). The declared words `Linespacing` and
+`Atleast` (es `Interlineado`, `Almenos`) answer too, `_LINESPACING` and `_ATLEAST` in any language
+(p200, p263). Heights, `<default>` and the range are written at the drawing's precision with
+trailing zeros dropped: `2.5`, `3`, `3.14` and `1.31 (0.25x) and 20.94 (4x)` at LUPREC 2,
+`<2.123457>` at 6, where TEXT keeps them (p202, p264, p266, p272). The bands at Height, Rotation,
+Width and the spacing run dashed from the first corner (UseDashedLine in p209, p222, p228, p265).
+The height is TEXT's TEXTSIZE, saved in the drawing, Style makes the style current (TEXTSTYLE),
+and U takes both back with the object, naming `-MTEXT` (p226c, p250); Justify, Rotation and Line
+spacing start again at `<TL>`, `<0>`, `<At least>` and `<1x>` every run, Enter at the spacing type
+asking the factor (rectang/p312, p313). The first corner keeps its Z, ELEVATION its height, `@` at
+the first corner reads LASTPOINT and at the opposite one the first corner, which leaves LASTPOINT
+on the opposite corner (p206, p207, p270, p279); in a UCS the box squares up to its axes (p257,
+p258). es from Autodesk's MTEXT table (`Precise la primera esquina`, `Indique la esquina opuesta
+o`, `Indique la altura`, `Indique la justificación`, `Indique el tipo de interlineado [Al
+menos/Exactamente]`, `Indique el ángulo de rotación`, `Indique la anchura`, `Nombre de estilo no
+válido`), each box labelled by its own prompt (acmtedRes 1070); word wrap from Arial's widths (a
+longer word overflows), single spacing 5/3 of the height; MTJIGSTRING `abc` jig and flow arrow
+(desktop d05-1, d05-2); the editor is the dynamic-input box made multi-line and drawn in place
+(Enter breaks a paragraph, Ctrl+Enter or a click outside the frame keeps; Escape with something
+typed asks AutoCAD's task dialog `Multiline Text - Unsaved Changes` / `Do you want to save your text
+changes?`, Yes keeping, No discarding and making nothing, Cancel back to the editor, d05-5; with
+nothing typed it closes at once, d06; TEXTEDIT on an MTEXT asks the same when the wording changed);
+`-MTEXT` takes the lines at `MText:` (es `textoM:`), each kept as typed, codes and all (`\P` a
+break, `%%d`, `\`, `{`, `}`), joined by `\P`, and no line at all adds an empty MTEXT (p255, p268);
+contents kept as AutoCAD's string (`\P`, escapes; inline codes survive but are not drawn);
+Insertion snap, width grip, palette rows (line space factor/distance/style, defined width),
+TEXTEDIT and double-click, EXPLODE to TEXT. Aliases from acad.pgp: `-T`; es `TXM`, `-TXM` and
+`MTEXT` (es `T` is TEXTO and `MT` nothing, p259, p260). The es title of the Unsaved Changes dialog,
+`Texto de líneas múltiples - Cambios sin guardar`, and its question,
+`¿Desea guardar los cambios del texto?`, are unverified (the tables hold only 25268,
+`TEXTOM – Cambios sin guardar`)
 
-**Missing:** Columns (the keyword is not offered), drawing inline formatting (height, font, colour,
-stacking, underline…), the editor's ruler, tabs, indents and lists, background mask, text frame, the
-Text Formatting toolbar, MTEXTFIXED 2 (horizontal while typing; here always as drawn), a caret on
-the canvas, Node snap on MTEXT (OSNAPNODELEGACY 0; where its points fall is undocumented), defined
-height and the column-height grip, Annotative, `?`'s own listing (here TEXT's: MTEXT's table words
-it `Style name: … Font files: …`), what a click with no drag does (undocumented)
+**Missing:** Columns, listed in 2027 (`[…/Width/Columns]`; its
+`Enter column type [Dynamic/Static/No columns] <Dynamic>:`, es
+`Indique el tipo de columna [Dinámico/Estático/Sin columnas] <Dinámico>:`, then
+`Specify column width: <75>:`, `Specify gutter width: <12.5>:`, `Specify column height: <25>:`,
+p231, p232; the keyword is not offered), the Unsaved Changes dialog's
+`Always perform my current choice` (a profile setting), drawing inline formatting (height, font,
+colour, stacking, underline…), the editor's ruler, tabs, indents and lists, background mask, text
+frame, the Text Editor ribbon tab, MTEXTFIXED 2 (horizontal while typing; here always as drawn), a
+caret on the canvas, Node snap on MTEXT (OSNAPNODELEGACY 0; where its points fall is
+undocumented), defined height and the column-height grip, Annotative, `?`'s 2027
+`Enter style name(s) to list <*>:` and its own listing (p225; here TEXT's: MTEXT's table words it
+`Style name: … Font files: …`), a preselection at MTEXT (the console hangs, p145)
 
 ### `HATCH` / `H` / `BH` · es `SOMBREA` / `SB`† / `SMB`†
 

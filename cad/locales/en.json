@@ -401,7 +401,7 @@
       "TEXT": ["TEXT", "DT", "DTEXT"],
       "-TEXT": ["-TEXT"],
       "MTEXT": ["MTEXT", "T", "MT"],
-      "-MTEXT": ["-MTEXT"],
+      "-MTEXT": ["-MTEXT", "-T"],
       "TEXTEDIT": ["TEXTEDIT", "DDEDIT", "ED"],
       "DIMLINEAR": ["DIMLINEAR", "DIMLIN", "DLI"],
       "DIMALIGNED": ["DIMALIGNED", "DIMALI", "DAL"],
@@ -649,7 +649,7 @@
       "MTEXT": {
         "Height": "Height",
         "Justify": "Justify",
-        "Line spacing": "Line spacing",
+        "Line spacing": "Linespacing",
         "Rotation": "Rotation",
         "Style": "Style",
         "?": "?",
@@ -663,7 +663,7 @@
         "BL": "BL",
         "BC": "BC",
         "BR": "BR",
-        "At least": "At least",
+        "At least": "Atleast",
         "Exactly": "Exactly"
       },
       "TEXTEDIT": {
@@ -1669,6 +1669,7 @@
       "DIST": { "Multiple": "Multiple points", "Second pt": "Second pt" },
       "RECTANG": { "Pick": "Pick points" },
       "AREA": { "Add": "Add area", "Subtract": "Subtract area" },
+      "MTEXT": { "Line spacing": "Line spacing", "At least": "At least" },
       "TEXT": {
         "TL": "TL",
         "TC": "TC",

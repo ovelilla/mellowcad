@@ -167,6 +167,17 @@ export function formatLength(
   return value.toFixed(settings.precision)
 }
 
+/**
+ * A formatted number without its trailing zeros: `6.00` as `6`, `4.50` as
+ * `4.5`, `-0.00` as `0` — as MTEXT writes its heights and the arrays their
+ * defaults (text/p202, arrays/p116).
+ */
+export function withoutTrailingZeros(value: string): string {
+  if (!value.includes(".")) return value
+  const trimmed = value.replace(/\.?0+$/, "")
+  return trimmed === "-0" ? "0" : trimmed
+}
+
 export function formatAngle(
   degrees: number,
   settings: DocumentSettings

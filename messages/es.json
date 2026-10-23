@@ -537,6 +537,15 @@
         "close": "Cerrar"
       }
     },
+    "MText": {
+      "unsavedChanges": {
+        "title": "Texto de líneas múltiples - Cambios sin guardar",
+        "instruction": "¿Desea guardar los cambios del texto?",
+        "yes": "Sí",
+        "no": "No",
+        "cancel": "Cancelar"
+      }
+    },
     "Palette": {
       "label": "Paletas",
       "fold": "Plegar las paletas",

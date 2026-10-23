@@ -90,25 +90,26 @@ origen/Origen` from the 2026 help and the same captures;
   transcriptions of it (2012–2021) that agree with each other and with
   a screenshot of the file's start in the 2026 help. The 2026 Spanish "Hitchhiker's Guide" uses some
   English letters instead (M, O, TR, EX, MI, S, F, X); not followed, since the file maps them to
-  other commands (`EX` is EXPORTAR). In Spanish `U` is UNIR and `H` undoes. `TEXTOM` has no alias:
-  the Spanish shortcut guide gives it `T` and `MT`, but that page is a translation of the English
-  one
-  (it also lists `DT` for TEXTO), and the transcriptions of the file keep `T` on TEXTO, as the
-  2027 console and `acad.pgp` do, with `TEXTODIN` (text/p149, p150).
+  other commands (`EX` is EXPORTAR). In Spanish `U` is UNIR and `H` undoes. `TEXTOM`'s aliases are
+  `acad.pgp`'s `TXM` and `MTEXT` (`-TXM` for -TEXTOM): the Spanish shortcut guide gives it `T` and
+  `MT`, but that page is a translation of the English one (it also lists `DT` for TEXTO), and the
+  file keeps `T` on TEXTO, as the 2027 console does (`MT` is no command there), with `TEXTODIN`
+  (text/p149, p150, p259, p260).
 - **Prompts and keywords:** from Spanish product captures (2012–2020) and the 2011–2026 Spanish
   help;
   where the help and the product disagree on capitals, the product wins (`punto a Atravesar`,
-  `RAdio`, `jUstificar`, `ángUlo`, `EScala`). **Unverified** (no source found; worded in
+  `RAdio`, `jUstificar`, `ángUlo`, `EScala`). TEXTOM's corner prompts,
+  `[Altura/Justificar/Interlineado/Rotación/Estilo/aNchura]`, `[Al menos/Exactamente]` (declared
+  `Almenos`) and `textoM:` are the 2027 console's (text/p200, p202, p215). **Unverified** (no source found; worded in
   Autodesk's style): CIRCULO's `Diámetro`, ELLIPSE's `ángulo Incluido` and its centre/arc prompts,
   POLYGON's `Tipo` switch
   (ours), TEXTEDIT's `Única`/`Múltiple` capitals, OFFSET's Yes/No, Current/Source
   (`Actual`/`Origen`),
   On/Off (`ACT`/`DES`, as SNAP prints them) and `Distancia`, HATCH's pattern name, scale and angle
   prompts, DIMLINEAR's Angle and Rotated sub-prompts, the reference sub-prompts of ROTATE and SCALE,
-  the clipboard base-point prompt, TEXTOM's line-spacing words and capitals (`Mínimo`/`Exactamente`,
-  `TextoM`; its corner prompts and `[Altura/Justificar/Interlineado/Rotación/Estilo/aNchura]` are
-  aCADemia's 2011 and 2013 captures, its justification codes `SI`…`ID` the -TEXTOM help page's),
-  SCP's
+  the clipboard base-point prompt, the title and question of TEXTOM's Unsaved Changes dialog
+  (`Texto de líneas múltiples - Cambios sin guardar`; the tables hold only 25268, `TEXTOM – Cambios
+  sin guardar`), SCP's
   `Sí`/`No` before replacing a saved UCS, the palette rows of TEXTOM and SPLINE (`Factor de
 interlineado`, `Anchura definida`, `Método`, `Grado`…), the prompts of POL, CIRCULO and ARCO their
   rows mark,

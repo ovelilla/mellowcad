@@ -494,6 +494,8 @@ export class CadRuntime extends Observable {
   // The Properties palette's task dialog for locked objects left out of an
   // edit, with how many: null while it is not showing.
   private lockedObjectsDialog: { readonly removed: number } | null = null
+  // Whether MTEXT's editor asks `Do you want to save your text changes?`.
+  private unsavedTextDialog = false
   // Whether the command prompt is shown. Hiding it is purely visual: typing
   // still feeds the prompt, which reappears while there is text to show.
   private commandLineVisible = true
@@ -4156,6 +4158,12 @@ export class CadRuntime extends Observable {
       this.host.focusSurface()
       return
     }
+    if (this.asksToSaveText()) return
+    this.cancelInput()
+  }
+
+  /** The Escape that cancels the running command from its box. */
+  private cancelInput(): void {
     this.resetTracking()
     this.snapping.clearOverride()
     this.answering(this.text.message("commandCancelled"), () => {
@@ -4166,6 +4174,38 @@ export class CadRuntime extends Observable {
     })
     this.host.requestRender()
     this.host.focusSurface()
+  }
+
+  /**
+   * Escape in a multiline text editor holding changes: the command stays and
+   * AutoCAD's task dialog asks (`Multiline Text - Unsaved Changes`, desktop
+   * text/d05-5), answered by {@link answerUnsavedText}.
+   */
+  private asksToSaveText(): boolean {
+    if (!(this.activeTool.hasUnsavedText?.(this.toolContext) ?? false)) {
+      return false
+    }
+    this.unsavedTextDialog = true
+    this.invalidateState()
+    this.host.requestRender()
+    return true
+  }
+
+  /**
+   * The Unsaved Changes dialog's answer: Yes keeps the text as Ctrl+Enter
+   * does, No is the Escape it held back (nothing is made), Cancel goes back
+   * to the editor as it was (desktop text/d05-5). Its `Always perform my
+   * current choice` is not offered.
+   */
+  answerUnsavedText(answer: "yes" | "no" | "cancel"): void {
+    if (!this.unsavedTextDialog) return
+    this.unsavedTextDialog = false
+    if (this.activeTool.hasUnsavedText?.(this.toolContext) ?? false) {
+      if (answer === "yes") this.commitDynamicInput()
+      else if (answer === "no") this.cancelInput()
+    }
+    this.invalidateState()
+    this.host.requestRender()
   }
 
   /**
@@ -5443,6 +5483,8 @@ export class CadRuntime extends Observable {
       }
     }
 
+    if (e.key === "Escape" && this.asksToSaveText()) return true
+
     // Escape also drops any acquired tracking references and the one-shot snap
     // override before the tool aborts.
     if (e.key === "Escape") {
@@ -6078,6 +6120,7 @@ export class CadRuntime extends Observable {
       palette: { open: this.paletteOpen, tab: this.paletteTab },
       unitsDialog: this.unitsDialog,
       lockedObjectsDialog: this.lockedObjectsDialog,
+      unsavedTextDialog: this.unsavedTextDialog,
       cleanScreen: {
         active: this.cleanScreen,
         palette: this.cleanScreenPalette,

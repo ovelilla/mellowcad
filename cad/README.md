@@ -33,7 +33,8 @@ As in AutoCAD's language packs, a language has two parts:
 Spanish has both, from Spanish AutoCAD 2026 (`LINEA`, `DESFASE`, `[Cerrar/desHacer]`). Arabic has
 only the interface: there is no Arabic AutoCAD, so its command language is the global one, as for
 whoever drafts in Arabic in the English product. In every language `_` and a global name or
-keyword reaches the global vocabulary (`_LINE`, `_C`), as AutoCAD scripts rely on.
+keyword reaches the global vocabulary (`_LINE`, `_C`), as AutoCAD scripts rely on; a keyword id
+with a space is typed as one word there (`_LINESPACING` for MTEXT's `Line spacing`).
 
 The command language is always drawn left to right; `state.commandLine.lang` is its BCP 47 tag, for
 the `lang` of whatever shows it.

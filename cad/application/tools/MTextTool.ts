@@ -17,7 +17,11 @@ import {
   onPlaneOf,
   MTEXT_LINE_SPACING_FACTOR,
 } from "../../domain/entities"
-import { formatLength, parseNumber } from "../../domain/units"
+import {
+  formatLength,
+  parseNumber,
+  withoutTrailingZeros,
+} from "../../domain/units"
 import { DEFAULT_TEXT_HEIGHT, TextStyleId } from "../../domain/textStyles"
 import { ucsRotation } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
@@ -45,23 +49,26 @@ import { setCommandSettings } from "./commandSettings"
 
 /**
  * AutoCAD's MTEXT: a box from two corners, then the text, which wraps to the
- * box's width. As AutoCAD 2023's console asks it: `Current text style:
- * "Standard"  Text height:  2.5  Annotative:  No`, `Specify first corner:`,
- * `Specify opposite corner or [Height/Justify/Line spacing/Rotation/Style/
- * Width]:`, whose keywords ask `Specify height`, `Enter justification
- * [TL/…/BR] <TL>`, `Enter line spacing type [At least/Exactly]` and `Enter
- * line spacing factor or distance <1x>`, `Specify rotation angle`, `Enter
- * style name or [?]` and return to it; Width's `Specify width` replaces the
- * corner and goes straight to the text. Columns are not implemented.
+ * box's width. As AutoCAD 2027's console asks it (text/p202, p213):
+ * `Current text style:  "Standard"  Text height:  2.5  Annotative:  No`,
+ * `Specify first corner:`, `Specify opposite corner or [Height/Justify/Line
+ * spacing/Rotation/Style/Width]:`, whose keywords ask `Specify height`,
+ * `Enter justification [TL/…/BR] <TL>`, `Enter line spacing type [At
+ * least/Exactly]` and `Enter line spacing factor or distance <1x>`, `Specify
+ * rotation angle`, `Enter style name or [?]` and return to it; Width's
+ * `Specify width` replaces the corner and goes straight to the text. 2027's
+ * `/Columns` is not implemented. Its heights are written at the drawing's
+ * precision without trailing zeros, where TEXT keeps them (text/p264, p266).
  *
  * The in-place editor is the dynamic-input box turned multi-line, with what is
  * typed drawn in place, wrapped, inside its frame — the same deviation TEXT
  * makes, because a real focused field keeps the browser's own editing and IME.
  * Enter breaks a paragraph; Ctrl+Enter or a click outside the frame keeps the
- * text; Escape throws it away, as AutoCAD's editor does.
+ * text; Escape with something typed asks whether to keep it (the runtime's
+ * Unsaved Changes dialog, desktop text/d05-5), with nothing typed it closes.
  *
  * `-MTEXT` runs the same prompts and then asks for the text a line at a time,
- * ending on an empty line.
+ * ending on an empty line; a line's codes are kept as typed (text/p255).
  */
 export class MTextTool implements Tool {
   readonly id = "mtext"
@@ -107,10 +114,7 @@ export class MTextTool implements Tool {
     ctx.report(
       ctx.text.message("currentMTextStyle", {
         style: this.styleNameOf(ctx),
-        height: formatLength(
-          this.currentHeight(ctx),
-          ctx.document.getSettings()
-        ),
+        height: this.length(this.currentHeight(ctx), ctx),
       })
     )
     this.enterCorner(ctx)
@@ -124,7 +128,7 @@ export class MTextTool implements Tool {
       case "opposite":
         return "mtextOppositeCornerOr"
       case "height":
-        return { id: "mtextHeight", enter: this.heightOffered }
+        return { id: "mtextHeight", enter: this.heightOffered, trimmed: true }
       case "justify":
         return "enterJustification"
       case "spacingType":
@@ -149,9 +153,38 @@ export class MTextTool implements Tool {
     }
   }
 
-  /** The opposite corner is a 2D point, as AutoCAD 2023's console refuses it. */
+  /**
+   * The opposite corner is a 2D point (text/p203, p205); Justify and the
+   * spacing type take their keywords only (text/p213, p215). The spacing is a
+   * distance that takes anything typed (AllowArbitraryInput, text/p265): its
+   * refusals are its own.
+   */
   takes(): QuestionInput | null {
-    return this.state.phase === "opposite" ? "point2d" : null
+    switch (this.state.phase) {
+      case "opposite":
+        return "point2d"
+      case "justify":
+      case "spacingType":
+        return "keyword"
+      case "spacingValue":
+        return "distance"
+      default:
+        return null
+    }
+  }
+
+  /**
+   * Escape in the in-place editor with something typed: AutoCAD asks
+   * `Do you want to save your text changes?` before throwing it away
+   * (desktop text/d05-5); with nothing typed it closes (d06). -MTEXT's lines
+   * are typed at the command line, where Escape just cancels.
+   */
+  hasUnsavedText(ctx: ToolContext): boolean {
+    return (
+      this.state.phase === "edit" &&
+      !this.atCommandLine &&
+      ctx.dynamicInput.getText("value") !== ""
+    )
   }
 
   defaultOption(): string | null {
@@ -207,6 +240,9 @@ export class MTextTool implements Tool {
         V.distance(state.first, input.point)
       )
     }
+    if (state.phase === "spacingValue") {
+      ctx.dynamicInput.setLive("spacing", V.distance(state.first, input.point))
+    }
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
   }
@@ -221,13 +257,13 @@ export class MTextTool implements Tool {
       case "opposite":
         this.enterEdit(this.boxFrom(state.first, input.point), ctx)
         break
-      case "height": {
-        const height = V.distance(state.first, input.point)
-        if (height > 0) this.height = height
-        this.enterOpposite(state.first, ctx)
-        setCommandSettings({ textSize: this.height }, ctx)
+      case "height":
+        this.commitHeight(V.distance(state.first, input.point), ctx)
         break
-      }
+      case "spacingValue":
+        // A point is the spacing distance from the first corner (text/p265).
+        this.commitSpacing(V.distance(state.first, input.point), false, ctx)
+        break
       case "rotation":
         if (!V.equals(state.first, input.point)) {
           const offset = V.sub(input.point, state.first)
@@ -288,7 +324,7 @@ export class MTextTool implements Tool {
       if (id !== "At least" && id !== "Exactly") return "unhandled"
       this.lineSpacingStyle = id === "Exactly" ? "exactly" : "atLeast"
       this.state = { phase: "spacingValue", first: state.first }
-      this.openTextInput(ctx, "mtextLineSpacing")
+      this.openSpacingInput(ctx)
       return "continue"
     }
     return "unhandled"
@@ -304,7 +340,7 @@ export class MTextTool implements Tool {
       case "Height":
         this.heightOffered = this.currentHeight(ctx)
         this.state = { phase: "height", first }
-        this.openValueInput(ctx, "height", "textHeight", "distance")
+        this.openValueInput(ctx, "height", "mtextHeight", "distance")
         return "continue"
       case "Justify":
         this.state = { phase: "justify", first }
@@ -321,7 +357,7 @@ export class MTextTool implements Tool {
       case "Style":
         this.styleOffered = this.styleNameOf(ctx)
         this.state = { phase: "style", first }
-        this.openTextInput(ctx, "styleName")
+        this.openTextInput(ctx, "mtextStyleNameOr")
         return "continue"
       case "Width":
         this.state = { phase: "width", first }
@@ -338,6 +374,7 @@ export class MTextTool implements Tool {
       case "height":
       case "rotation":
       case "width":
+      case "spacingValue":
         return this.state.first
       default:
         return null
@@ -362,7 +399,10 @@ export class MTextTool implements Tool {
       case "height":
       case "rotation":
       case "width":
-        return cursor ? [segment(ctx, state.first, cursor)] : []
+      case "spacingValue":
+        // Amber and dashed: UseDashedLine in the trace of each (text/p209,
+        // p222, p228, p265).
+        return cursor ? [segment(ctx, state.first, cursor, DASHED)] : []
       case "edit": {
         const entity = this.editedEntity(ctx)
         return [
@@ -419,40 +459,45 @@ export class MTextTool implements Tool {
     return true
   }
 
-  /** Adds the text being edited, if there is any, as one undo step. */
+  /**
+   * Adds the text being edited as one undo step: what the editor holds, if
+   * anything, and whatever -MTEXT was given, no line included (text/p268).
+   */
   private commitPending(ctx: ToolContext): void {
     if (this.state.phase !== "edit") return
-    const text = this.typedText(ctx)
-    const entity =
-      text.trim().length > 0
-        ? this.pendingEntity(ctx, text, ctx.document.getCurrentLayerId())
-        : null
+    const keeps =
+      this.atCommandLine || ctx.dynamicInput.getText("value").trim().length > 0
+    const entity = keeps
+      ? this.pendingEntity(ctx, ctx.document.getCurrentLayerId())
+      : null
     this.state = { phase: "corner" }
     if (entity) {
       ctx.execute(new AddEntityCommand(withCurrentProperties(entity, ctx)))
     }
   }
 
-  private typedText(ctx: ToolContext): string {
+  /**
+   * The contents typed: the editor's text escaped, -MTEXT's lines as typed,
+   * codes and all, joined by `\P` (text/p255, TEXT-D27).
+   */
+  private typedContents(ctx: ToolContext): string {
     if (this.state.phase !== "edit") return ""
-    if (!this.atCommandLine) return ctx.dynamicInput.getText("value")
+    if (!this.atCommandLine) {
+      return mtextContents(ctx.dynamicInput.getText("value"))
+    }
     const current = ctx.dynamicInput.getText("line")
-    return [...this.state.lines, ...(current ? [current] : [])].join("\n")
+    return [...this.state.lines, ...(current ? [current] : [])].join("\\P")
   }
 
   private editedEntity(ctx: ToolContext): MTextEntity {
-    return this.pendingEntity(ctx, this.typedText(ctx))
+    return this.pendingEntity(ctx)
   }
 
-  private pendingEntity(
-    ctx: ToolContext,
-    text: string,
-    layerId?: string
-  ): MTextEntity {
+  private pendingEntity(ctx: ToolContext, layerId?: string): MTextEntity {
     if (this.state.phase !== "edit") throw new Error("no text is being edited")
     const { box } = this.state
     return onPlaneOf(
-      createMText(box.position, mtextContents(text), {
+      createMText(box.position, this.typedContents(ctx), {
         ...this.settings(ctx),
         width: box.width,
         ...(layerId ? { layerId } : { id: MTEXT_PREVIEW_ID }),
@@ -608,9 +653,10 @@ export class MTextTool implements Tool {
     const text = ctx.dynamicInput.getText("point").trim()
     const state = this.state
     if (text.length === 0) {
-      // Enter at the first corner ends the command, as it does in AutoCAD.
+      // The first corner takes no Enter (AllowNone false): it is refused and
+      // asked again (text/p201, desktop text/d05-6).
       if (state.phase !== "corner") return false
-      ctx.endCommand()
+      ctx.report(ctx.text.message("invalidPoint"), "error")
       return true
     }
     if (!isCoordinateExpression(text)) return false
@@ -639,12 +685,15 @@ export class MTextTool implements Tool {
       fields: [{ id, prompt, kind }],
       commit: (values, commitCtx) => this.commitValue(values[id], commitCtx),
       // Enter with nothing typed keeps the `<default>` the prompt offers,
-      // whatever the cursor reads in the box; Width offers none.
+      // whatever the cursor reads in the box; at Width it is width 0, no
+      // wrap, and the text is asked (text/p269, p273).
       commitRaw: (commitCtx) => {
-        if (id === "width" || commitCtx.dynamicInput.hasTypedText()) {
-          return false
-        }
+        if (commitCtx.dynamicInput.hasTypedText()) return false
         const state = this.state
+        if (state.phase === "width") {
+          this.enterEdit({ position: state.first, width: 0 }, commitCtx)
+          return true
+        }
         if (state.phase === "rotation" || state.phase === "height") {
           if (state.phase === "height") this.height = this.heightOffered
           this.enterOpposite(state.first, commitCtx)
@@ -664,20 +713,97 @@ export class MTextTool implements Tool {
     const state = this.state
     switch (state.phase) {
       case "height":
-        if (!(value > 0)) return
-        this.height = value
-        this.enterOpposite(state.first, ctx)
-        setCommandSettings({ textSize: value }, ctx)
+        this.commitHeight(value, ctx)
         return
       case "rotation":
         this.rotation = (value * Math.PI) / 180
         this.enterOpposite(state.first, ctx)
         return
       case "width":
-        if (!(value >= 0)) return
+        // Width takes 0 but nothing below it (text/p227, p228).
+        if (!(value >= 0)) {
+          ctx.report(ctx.text.message("valueMustBePositive"), "error")
+          return
+        }
         this.enterEdit({ position: state.first, width: value }, ctx)
         return
     }
+  }
+
+  /** A height typed or pointed: above zero, or refused (text/p209, p210). */
+  private commitHeight(height: number, ctx: ToolContext): void {
+    if (this.state.phase !== "height") return
+    if (!(height > 0)) {
+      ctx.report(ctx.text.message("positiveNonzero"), "error")
+      return
+    }
+    this.height = height
+    this.enterOpposite(this.state.first, ctx)
+    setCommandSettings({ textSize: height }, ctx)
+  }
+
+  /**
+   * The spacing prompt's box: a distance, which a point answers from the
+   * first corner (text/p265), or a factor typed with its `x`, read raw. A
+   * number field, not a distance one, so no unit follows `1.5x`.
+   */
+  private openSpacingInput(ctx: ToolContext): void {
+    const session: DynamicInputSession = {
+      fields: [{ id: "spacing", prompt: "mtextLineSpacing", kind: "number" }],
+      commit: (values, commitCtx) =>
+        this.commitSpacing(values.spacing, false, commitCtx),
+      commitRaw: (commitCtx) => this.commitSpacingText(commitCtx),
+    }
+    ctx.dynamicInput.open(session)
+    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+  }
+
+  /** `2x`, a word, or Enter, which keeps the `<1x>` offered. */
+  private commitSpacingText(ctx: ToolContext): boolean {
+    if (this.state.phase !== "spacingValue") return false
+    const typed = ctx.dynamicInput.getText("spacing").trim()
+    if (typed.length === 0) {
+      this.enterOpposite(this.state.first, ctx)
+      return true
+    }
+    const multiple = /x$/i.test(typed)
+    const value = parseNumber(multiple ? typed.slice(0, -1) : typed)
+    if (value === null || !Number.isFinite(value)) {
+      ctx.report(this.spacingRange(ctx), "error")
+      return true
+    }
+    this.commitSpacing(value, multiple, ctx)
+    return true
+  }
+
+  /**
+   * "Enter a spacing factor as a number followed by x"; a bare number is a
+   * distance in drawing units, which amounts to a factor at the current
+   * height. Below zero is refused as no distance can be (text/p221), the
+   * rest out of 0.25x–4x with the range (p216–p219).
+   */
+  private commitSpacing(
+    value: number,
+    multiple: boolean,
+    ctx: ToolContext
+  ): void {
+    if (this.state.phase !== "spacingValue") return
+    if (value < 0) {
+      ctx.report(ctx.text.message("valueMustBePositive"), "error")
+      return
+    }
+    const factor = multiple
+      ? value
+      : value / (MTEXT_LINE_SPACING_FACTOR * this.currentHeight(ctx))
+    if (
+      factor < MIN_LINE_SPACING_FACTOR - 1e-9 ||
+      factor > MAX_LINE_SPACING_FACTOR + 1e-9
+    ) {
+      ctx.report(this.spacingRange(ctx), "error")
+      return
+    }
+    this.lineSpacingFactor = clampLineSpacingFactor(factor)
+    this.enterOpposite(this.state.first, ctx)
   }
 
   /** A keyword-only prompt: the options are chips, typed and confirmed. */
@@ -699,19 +825,6 @@ export class MTextTool implements Tool {
   private commitAnswer(ctx: ToolContext): boolean {
     const state = this.state
     const typed = ctx.dynamicInput.getText("answer").trim()
-    if (state.phase === "spacingValue") {
-      if (typed.length > 0) {
-        const factor = this.spacingFactorOf(typed, ctx)
-        if (factor === null) {
-          ctx.report(this.spacingRange(ctx), "error")
-          this.openTextInput(ctx, "mtextLineSpacing")
-          return true
-        }
-        this.lineSpacingFactor = factor
-      }
-      this.enterOpposite(state.first, ctx)
-      return true
-    }
     if (state.phase === "style") {
       // The box holds a name, not a keyword: `?` is read here.
       if (ctx.text.resolveKeyword(typed, ["?"]) === "?") {
@@ -724,7 +837,7 @@ export class MTextTool implements Tool {
           .find((s) => s.name.toLowerCase() === typed.toLowerCase())
         if (!style) {
           ctx.report(ctx.text.message("invalidStyleName"), "error")
-          this.openTextInput(ctx, "styleName")
+          this.openTextInput(ctx, "mtextStyleNameOr")
           return true
         }
         ctx.setCurrentTextStyle(style.id)
@@ -743,17 +856,24 @@ export class MTextTool implements Tool {
 
   /**
    * AutoCAD's refusal of a spacing out of range, in distances at the current
-   * height and as factors.
+   * height and as factors (text/p264, p272).
    */
   private spacingRange(ctx: ToolContext): string {
-    const settings = ctx.document.getSettings()
     const single = MTEXT_LINE_SPACING_FACTOR * this.currentHeight(ctx)
     return ctx.text.message("lineSpacingRange", {
-      min: formatLength(MIN_LINE_SPACING_FACTOR * single, settings),
+      min: this.length(MIN_LINE_SPACING_FACTOR * single, ctx),
       minFactor: String(MIN_LINE_SPACING_FACTOR),
-      max: formatLength(MAX_LINE_SPACING_FACTOR * single, settings),
+      max: this.length(MAX_LINE_SPACING_FACTOR * single, ctx),
       maxFactor: String(MAX_LINE_SPACING_FACTOR),
     })
+  }
+
+  /**
+   * A length as MTEXT writes it: at the drawing's precision without trailing
+   * zeros, `2.5` and `3` where TEXT writes `2.50` (text/p202, p264, p272).
+   */
+  private length(value: number, ctx: ToolContext): string {
+    return withoutTrailingZeros(formatLength(value, ctx.document.getSettings()))
   }
 
   /** `?`: the styles listed as TEXT lists them, then asked again. */
@@ -775,27 +895,7 @@ export class MTextTool implements Tool {
         }),
       ].join("\n")
     )
-    this.openTextInput(ctx, "styleName")
-  }
-
-  /**
-   * "Enter a spacing factor as a number followed by x"; a bare number is a
-   * distance in drawing units, which amounts to a factor at the current height.
-   */
-  private spacingFactorOf(typed: string, ctx: ToolContext): number | null {
-    const multiple = /x$/i.test(typed)
-    const value = parseNumber(multiple ? typed.slice(0, -1) : typed)
-    if (value === null || !Number.isFinite(value)) return null
-    const factor = multiple
-      ? value
-      : value / (MTEXT_LINE_SPACING_FACTOR * this.currentHeight(ctx))
-    if (
-      factor < MIN_LINE_SPACING_FACTOR - 1e-9 ||
-      factor > MAX_LINE_SPACING_FACTOR + 1e-9
-    ) {
-      return null
-    }
-    return clampLineSpacingFactor(factor)
+    this.openTextInput(ctx, "mtextStyleNameOr")
   }
 }
 
@@ -806,6 +906,12 @@ const MTJIGSTRING = "abc"
 const MTEXT_PREVIEW_ID = "__mtext_preview__"
 
 const RUBBER: StrokeStyle = { color: THEME.rubberBand, width: 1 }
+
+const DASHED: StrokeStyle = {
+  color: THEME.dashedRubberBand,
+  width: 1,
+  dash: [2, 3],
+}
 
 /** The opposite-corner prompt's keywords, in AutoCAD's order. */
 const OPPOSITE_KEYWORDS = [
@@ -841,12 +947,17 @@ function localOffset(from: Vec2, to: Vec2, rotation: number): Vec2 {
   )
 }
 
-function segment(ctx: ToolContext, a: Vec2, b: Vec2): ScenePrimitive {
+function segment(
+  ctx: ToolContext,
+  a: Vec2,
+  b: Vec2,
+  stroke: StrokeStyle = RUBBER
+): ScenePrimitive {
   return {
     kind: "segment",
     a: ctx.viewport.worldToScreen(a),
     b: ctx.viewport.worldToScreen(b),
-    stroke: RUBBER,
+    stroke,
   }
 }
 

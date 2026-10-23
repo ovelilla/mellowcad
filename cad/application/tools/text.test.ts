@@ -719,8 +719,9 @@ describe("-TEXT", () => {
 })
 
 // TEXT, MTEXT and ATTDEF share TEXTSIZE and TEXTSTYLE: after `-TEXT _S S2 …
-// 3`, -MTEXT lists `"S2"  Text height:  3` and -ATTDEF `"S2"  Text height:
-// 3.0000` (rectang/p313); MTEXT's Height 4 makes TEXTSIZE 4 (p312).
+// 3`, -MTEXT lists `"S2"  Text height:  3`, its zeros dropped (text/p272),
+// and -ATTDEF `"S2"  Text height:  3.0000` (rectang/p313); MTEXT's Height 4
+// makes TEXTSIZE 4 (p312).
 describe("TEXTSIZE and TEXTSTYLE, shared by TEXT, MTEXT and ATTDEF", () => {
   /** What -ATTDEF writes once its tag, prompt and value are given. */
   function attdefStyle(cad: CadHarness): string | undefined {
@@ -747,7 +748,7 @@ describe("TEXTSIZE and TEXTSTYLE, shared by TEXT, MTEXT and ATTDEF", () => {
     answer(cad, "_TEXT", "5,5", "3", "0", "A", "")
 
     expect(mtextStyle(cad)).toBe(
-      'Current text style:  "Standard"  Text height:  3.00  Annotative:  No'
+      'Current text style:  "Standard"  Text height:  3  Annotative:  No'
     )
     expect(attdefStyle(cad)).toBe(
       'Current text style:  "Standard"  Text height:  3.00  Justify:  Left'
@@ -770,7 +771,7 @@ describe("TEXTSIZE and TEXTSTYLE, shared by TEXT, MTEXT and ATTDEF", () => {
 
     expect(cad.runtime.document.getCurrentTextStyleId()).toBe("S2")
     expect(mtextStyle(cad)).toBe(
-      'Current text style:  "S2"  Text height:  3.00  Annotative:  No'
+      'Current text style:  "S2"  Text height:  3  Annotative:  No'
     )
     expect(attdefStyle(cad)).toBe(
       'Current text style:  "S2"  Text height:  3.00  Justify:  Left'

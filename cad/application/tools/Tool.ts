@@ -640,6 +640,15 @@ export interface Tool {
   onKeyDown?(input: KeyInput, ctx: ToolContext): void
 
   /**
+   * Whether Escape finds a multiline text editor holding changes, which
+   * AutoCAD asks about before throwing them away (`Multiline Text - Unsaved
+   * Changes`, desktop text/d05-5): the runtime then keeps the command and
+   * opens that dialog, whose Yes commits the editor as Ctrl+Enter does and
+   * whose No is the Escape it held back.
+   */
+  hasUnsavedText?(ctx: ToolContext): boolean
+
+  /**
    * Handles Enter as a command confirmation while the canvas holds focus.
    * Returns `true` when the tool consumes it to advance its own flow (e.g. MOVE
    * confirming the selection set), keeping the command running; `false` (the

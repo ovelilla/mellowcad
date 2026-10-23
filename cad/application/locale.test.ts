@@ -847,7 +847,7 @@ describe("Spanish AutoCAD's command language", () => {
     const cad = createHarness({ locale: es })
     cad.command("TEXTOM")
     expect(cad.commandLog().at(-1)).toBe(
-      'Estilo de texto actual:  "Standard"  Altura del texto:  2.50  Anotativo:  No'
+      'Estilo de texto actual:  "Standard"  Altura del texto:  2.5  Anotativo:  No'
     )
     expect(cad.state().commandLine.prompt).toBe(
       "TEXTOM Precise la primera esquina:"

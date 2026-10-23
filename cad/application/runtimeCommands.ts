@@ -10,7 +10,11 @@ import {
 import { type Keyword, offerKeywords } from "../i18n/keywords"
 import { type CommandOption, Tool, type ToolQuestion } from "./tools/Tool"
 import type { PromptId } from "../locales/types"
-import { formatAngle, formatLength } from "../domain/units"
+import {
+  formatAngle,
+  formatLength,
+  withoutTrailingZeros,
+} from "../domain/units"
 import { MeasureTool } from "./tools/MeasureTool"
 import type { DocumentSettings } from "../domain/units"
 import { MTextTool } from "./tools/MTextTool"
@@ -339,13 +343,6 @@ function enterValue(
   return [enter.x, enter.y, enter.z]
     .map((value) => formatLength(value, settings))
     .join(", ")
-}
-
-/** `6.00` as `6`, `4.50` as `4.5`, `-0.00` as `0`. */
-function withoutTrailingZeros(value: string): string {
-  if (!value.includes(".")) return value
-  const trimmed = value.replace(/\.?0+$/, "")
-  return trimmed === "-0" ? "0" : trimmed
 }
 
 /**

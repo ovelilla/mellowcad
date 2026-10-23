@@ -603,10 +603,13 @@ export const es: EngineLocale = {
         "-TEXTO"
       ],
       "MTEXT": [
-        "TEXTOM"
+        "TEXTOM",
+        "TXM",
+        "MTEXT"
       ],
       "-MTEXT": [
-        "-TEXTOM"
+        "-TEXTOM",
+        "-TXM"
       ],
       "TEXTEDIT": [
         "EDITARTEXTO",
@@ -1127,7 +1130,7 @@ export const es: EngineLocale = {
         "BL": "II",
         "BC": "IC",
         "BR": "ID",
-        "At least": "Al menos",
+        "At least": "Almenos",
         "Exactly": "Exactamente"
       },
       "TEXTEDIT": {
@@ -3731,6 +3734,10 @@ export const es: EngineLocale = {
       "AREA": {
         "Add": "Añadir área",
         "Subtract": "Sustraer área"
+      },
+      "MTEXT": {
+        "Line spacing": "Interlineado",
+        "At least": "Al menos"
       },
       "TEXT": {
         "TL": "SIZ",

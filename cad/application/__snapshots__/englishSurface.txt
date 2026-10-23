@@ -81,7 +81,7 @@ LINETYPE ["LT","LTYPE","DDLTYPE"] "Linetype"
 LWEIGHT ["LW","LINEWEIGHT"] "Lineweight"
 U [] "Undo the last action"
 -TEXT [] "Text"
--MTEXT [] "Multiline text"
+-MTEXT ["-T"] "Multiline text"
 REDO [] "Redo the last undone action"
 -ATTDEF [] "Define attributes"
 -COLOR [] "Color"
@@ -1879,14 +1879,14 @@ lweight "Lineweight" LW
   tip: Specify first corner:
   dyn: "X,Y"=""||*
   command| T MTEXT
-  info| Current text style:  "Standard"  Text height:  2.50  Annotative:  No
+  info| Current text style:  "Standard"  Text height:  2.5  Annotative:  No
 > first corner
   prompt: MTEXT Specify opposite corner or [Height/Justify/Line spacing/Rotation/Style/Width]:
   tip: Specify opposite corner or
   options: [H] Height, [J] Justify, [L] Line spacing, [R] Rotation, [S] Style, [W] Width
   prompt| Specify first corner:
 > H
-  prompt: MTEXT Specify height <2.50>:
+  prompt: MTEXT Specify height <2.5>:
   asks: "Specify height"
   tip: Specify height
   dyn: "Specify height"=""||mm*
@@ -1900,7 +1900,7 @@ lweight "Lineweight" LW
   tip: Specify opposite corner or
   dyn: "X,Y"=""||*
   options: [H] Height, [J] Justify, [L] Line spacing, [R] Rotation, [S] Style, [W] Width
-  prompt| Specify height <2.50>: 10
+  prompt| Specify height <2.5>: 10
 > J
   prompt: MTEXT Enter justification [TL/TC/TR/ML/MC/MR/BL/BC/BR] <TL>:
   asks: 
@@ -1956,19 +1956,19 @@ lweight "Lineweight" LW
   prompt| Specify rotation angle <0>: 0
 > S
   prompt: MTEXT Enter style name or [?] <Standard>:
-  asks: "Style name"
+  asks: "Enter style name or"
   tip: Enter style name or
-  dyn: "Style name"=""||*
+  dyn: "Enter style name or"=""||*
   options: [?] ?
   prompt| Specify opposite corner or [Height/Justify/Line spacing/Rotation/Style/Width]: S
 > missing style
-  dyn: "Style name"="Fancy"||*
+  dyn: "Enter style name or"="Fancy"||*
 > enter
-  dyn: "Style name"=""||*
+  dyn: "Enter style name or"=""||*
   prompt| Enter style name or [?] <Standard>: Fancy
   error| Invalid style name
 > Standard
-  dyn: "Style name"="Standard"||*
+  dyn: "Enter style name or"="Standard"||*
 > enter
   prompt: MTEXT Specify opposite corner or [Height/Justify/Line spacing/Rotation/Style/Width]:
   asks: ""
@@ -2072,7 +2072,7 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   tip: Specify first corner:
   dyn: "X,Y"=""||*
   command| -MTEXT
-  info| Current text style:  "Standard"  Text height:  2.50  Annotative:  No
+  info| Current text style:  "Standard"  Text height:  2.5  Annotative:  No
 > first corner
   prompt: -MTEXT Specify opposite corner or [Height/Justify/Line spacing/Rotation/Style/Width]:
   tip: Specify opposite corner or

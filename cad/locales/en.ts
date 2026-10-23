@@ -614,7 +614,8 @@ export const en: EngineCatalog = {
         "MT"
       ],
       "-MTEXT": [
-        "-MTEXT"
+        "-MTEXT",
+        "-T"
       ],
       "TEXTEDIT": [
         "TEXTEDIT",
@@ -999,6 +1000,10 @@ export const en: EngineCatalog = {
         "BL": "BLeft",
         "BC": "BCenter",
         "BR": "BRight"
+      },
+      "MTEXT": {
+        "Line spacing": "Linespacing",
+        "At least": "Atleast"
       },
       "ARRAYRECT": {
         "Unit cell": "Unit"
@@ -3358,6 +3363,10 @@ export const en: EngineCatalog = {
       "AREA": {
         "Add": "Add area",
         "Subtract": "Subtract area"
+      },
+      "MTEXT": {
+        "Line spacing": "Line spacing",
+        "At least": "At least"
       },
       "TEXT": {
         "TL": "TL",

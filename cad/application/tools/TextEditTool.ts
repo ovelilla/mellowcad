@@ -40,7 +40,8 @@ import { lastObject } from "./objectSelection"
  * actually reach for.
  *
  * A multiline text opens in the multi-line editor MTEXT uses, where Escape
- * discards the edit and a click inside the object stays in the editor.
+ * discards the edit, asking first when the wording changed (desktop
+ * text/d05-5), and a click inside the object stays in the editor.
  *
  * An attribute definition that is not yet in a block opens AutoCAD's Edit
  * Attribute Definition dialog instead — its Tag, Prompt and Default, one field
@@ -117,6 +118,19 @@ export class TextEditTool implements Tool {
     ) {
       this.state = { phase: "select", hover: null }
     }
+  }
+
+  /**
+   * An MTEXT's wording changed in its editor: Escape asks before discarding
+   * it, as MTEXT's own editor does (desktop text/d05-5).
+   */
+  hasUnsavedText(ctx: ToolContext): boolean {
+    return (
+      this.state.phase === "edit" &&
+      this.state.target.type === "mtext" &&
+      ctx.dynamicInput.getText("value") !==
+        mtextPlainText(this.state.target.contents)
+    )
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {

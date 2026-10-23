@@ -577,6 +577,12 @@ export interface EngineState {
    * showing (desktop properties/d03-6).
    */
   readonly lockedObjectsDialog: { readonly removed: number } | null
+  /**
+   * The task dialog `Multiline Text - Unsaved Changes`: Escape in MTEXT's
+   * editor, or TEXTEDIT's on an MTEXT, found changes (desktop text/d05-5).
+   * Answered with `answerUnsavedText`.
+   */
+  readonly unsavedTextDialog: boolean
   /** Clean Screen (CLEANSCREENON / CLEANSCREENOFF, Ctrl+0). */
   readonly cleanScreen: CleanScreenUi
   /**

@@ -537,6 +537,15 @@
         "close": "Close"
       }
     },
+    "MText": {
+      "unsavedChanges": {
+        "title": "Multiline Text - Unsaved Changes",
+        "instruction": "Do you want to save your text changes?",
+        "yes": "Yes",
+        "no": "No",
+        "cancel": "Cancel"
+      }
+    },
     "Palette": {
       "label": "Palettes",
       "fold": "Fold the palettes",

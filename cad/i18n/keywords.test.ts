@@ -64,6 +64,19 @@ describe("resolving what was typed", () => {
     expect(resolveKeyword("_", spanish)).toBeNull()
   })
 
+  // AutoCAD 2027's console takes MTEXT's `_LINESPACING` and `_ATLEAST`,
+  // declared as one word each (text/p263).
+  it("reads a global id listed with a space as the one word it declares", () => {
+    const mtext: Keyword[] = [
+      { id: "Line spacing", word: "Interlineado", global: "Line spacing" },
+      { id: "At least", word: "Almenos", global: "At least" },
+    ]
+    expect(resolveKeyword("_LINESPACING", mtext)).toBe("Line spacing")
+    expect(matchKeywords("_atleast", mtext)).toEqual(["At least"])
+    expect(matchKeywords("_At least", mtext)).toEqual(["At least"])
+    expect(matchKeywords("_L", mtext)).toEqual(["Line spacing"])
+  })
+
   // AutoCAD 2023's console: `EXI` ends ARRAYRECT, `OB` is UCS ZAxis's Object.
   it("takes the start of the word as far as its capitals and on", () => {
     const array = [english("COUnt"), english("COLumns"), english("eXit")]

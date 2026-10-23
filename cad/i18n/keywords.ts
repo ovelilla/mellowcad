@@ -74,9 +74,10 @@ export function resolveKeyword(
   const text = upper(input.trim())
   if (text === "") return null
   const global = text.startsWith("_")
-  const typed = global ? text.slice(1) : text
+  const typed = global ? globalWord(text.slice(1)) : text
   if (typed === "") return null
-  const wordOf = (keyword: Keyword) => (global ? keyword.global : keyword.word)
+  const wordOf = (keyword: Keyword) =>
+    global ? globalWord(keyword.global) : keyword.word
   const byAbbreviation = keywords.find(
     (keyword) => upper(abbreviationOf(wordOf(keyword))) === typed
   )
@@ -110,9 +111,10 @@ export function matchKeywords(
 ): string[] {
   const text = upper(input.trim())
   const global = text.startsWith("_")
-  const typed = global ? text.slice(1) : text
+  const typed = global ? globalWord(text.slice(1)) : text
   if (typed === "") return []
-  const wordOf = (keyword: Keyword) => (global ? keyword.global : keyword.word)
+  const wordOf = (keyword: Keyword) =>
+    global ? globalWord(keyword.global) : keyword.word
   const exact =
     keywords.find(
       (keyword) => upper(abbreviationOf(wordOf(keyword))) === typed
@@ -138,6 +140,15 @@ export function matchKeywords(
   const leading = covered.find((keyword) => isCapital([...wordOf(keyword)][0]))
   if (covered.length > 0) return [(leading ?? covered[0]).id]
   return [...new Set(started.map((keyword) => keyword.id))]
+}
+
+/**
+ * A global word as `initget` declares it: an id listed with a space (MTEXT's
+ * `Line spacing`, `At least`) is declared as one word, which `_` types
+ * (`_LINESPACING`, `_ATLEAST`; text/p263).
+ */
+function globalWord(word: string): string {
+  return word.replace(/ /g, "")
 }
 
 /**

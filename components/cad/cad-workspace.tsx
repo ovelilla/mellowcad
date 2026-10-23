@@ -18,6 +18,7 @@ import { ToolRail } from "./tool-rail"
 import { StatusBar } from "./status-bar"
 import { UnitsDialog } from "./units-dialog"
 import { LockedObjectsDialog } from "./locked-objects-dialog"
+import { UnsavedTextDialog } from "./unsaved-text-dialog"
 import { DynamicInput } from "./dynamic-input"
 import { RolloverTooltip } from "./rollover-tooltip"
 import { PalettePanel, PaletteResizeHandle } from "./palette-panel"
@@ -200,6 +201,7 @@ export function CadWorkspace({
           <SelectionCyclingList engine={engine} state={state} />
           <UnitsDialog engine={engine} state={state} />
           <LockedObjectsDialog engine={engine} state={state} />
+          <UnsavedTextDialog engine={engine} state={state} />
         </>
       )}
     </main>

@@ -651,6 +651,10 @@ export class CadEngine {
     this.runtime.closeLockedObjectsDialog()
   }
 
+  answerUnsavedText(answer: "yes" | "no" | "cancel"): void {
+    this.runtime.answerUnsavedText(answer)
+  }
+
   insertBlock(id: string): void {
     this.runtime.insertBlock(id)
   }

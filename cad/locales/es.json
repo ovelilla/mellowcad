@@ -388,8 +388,8 @@
       "ATTDISP": ["ATRVIS"],
       "TEXT": ["TEXTO", "T", "TEXTODIN"],
       "-TEXT": ["-TEXTO"],
-      "MTEXT": ["TEXTOM"],
-      "-MTEXT": ["-TEXTOM"],
+      "MTEXT": ["TEXTOM", "TXM", "MTEXT"],
+      "-MTEXT": ["-TEXTOM", "-TXM"],
       "TEXTEDIT": ["EDITARTEXTO", "ED", "DDEDIC"],
       "DIMLINEAR": ["ACOLINEAL", "ACOLIN", "DIMLIN"],
       "DIMALIGNED": ["ACOALINEADA", "ACOALI"],
@@ -662,7 +662,7 @@
         "BL": "II",
         "BC": "IC",
         "BR": "ID",
-        "At least": "Al menos",
+        "At least": "Almenos",
         "Exactly": "Exactamente"
       },
       "TEXTEDIT": {
@@ -1700,6 +1700,7 @@
       "DIST": { "Multiple": "puntos Múltiples", "Second pt": "Segundo pto." },
       "RECTANG": { "Pick": "Designar puntos" },
       "AREA": { "Add": "Añadir área", "Subtract": "Sustraer área" },
+      "MTEXT": { "Line spacing": "Interlineado", "At least": "Al menos" },
       "TEXT": {
         "TL": "SIZ",
         "TC": "SC",
