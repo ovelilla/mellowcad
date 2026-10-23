@@ -68,6 +68,21 @@ describe("entity rendering", () => {
     expect(kinds(drawn)).toEqual(new Set(["segment", "circle", "arc", "path"]))
   })
 
+  it("draws colour 7 as layer 0's objects are drawn, ByLayer or set (p300: layer 0 is 7)", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(-100, 0), p(100, 0), { id: "BYLAYER" }),
+        {
+          ...lineOf(p(-100, 50), p(100, 50), { id: "SEVEN" }),
+          color: "#ffffff",
+        },
+      ],
+    })
+    cad.moveTo(p(0, 400))
+
+    expect(strokes(cad.scene().primitives, THEME.entity)).toHaveLength(2)
+  })
+
   it("draws an elliptical arc's ends where the camera puts them", () => {
     // The Y flip both turns the major axis's angle round and runs the
     // parametrisation backwards, so this reconstructs the canvas call and

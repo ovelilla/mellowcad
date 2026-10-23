@@ -67,6 +67,16 @@ export const THEME = {
 } as const
 
 /**
+ * The colour an object's own colour is drawn in. AutoCAD draws index colour 7
+ * (`#ffffff`: layer 0's, a new layer's, `-COLOR 7`) in the screen's
+ * foreground, white on its dark background; here that is {@link THEME.entity},
+ * so an object set to 7 reads as one on layer 0 does.
+ */
+export function drawnColor(color: string): string {
+  return color.toLowerCase() === "#ffffff" ? THEME.entity : color
+}
+
+/**
  * The face drawing text is set in: Arial, AutoCAD's Standard style, or one
  * with its advance widths — the widths `measureTextWidth` measures with.
  */

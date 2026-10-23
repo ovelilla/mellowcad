@@ -817,7 +817,9 @@ export const es: EngineLocale = {
       ],
       "LAYER": [
         "CAPA",
-        "CA"
+        "CA",
+        "LAYER",
+        "DDLMODES"
       ],
       "LAYERCLOSE": [
         "CERRARCAPA"
@@ -2612,6 +2614,7 @@ export const es: EngineLocale = {
       "startOfGroup": "Se ha encontrado el comienzo del Grupo.\nPara retroceder aún más, utilice DESHACER FIN.",
       "undoGroup": "GRUPO",
       "dropGeometryStep": "SOLTARGEOM GRUPO",
+      "layerManagerStep": "'.-CAPA",
       "uDisabled": "Comando H desactivado. Utilice el comando DESHACER para activarlo",
       "redoDisabled": [
         [

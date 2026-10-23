@@ -2,7 +2,7 @@ import { Vec2 } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
 import { Entity } from "../../domain/entities"
 import { ScenePrimitive } from "../../scene/types"
-import { THEME } from "../../scene/theme"
+import { drawnColor, THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { ToolContext } from "./Tool"
 
@@ -26,7 +26,10 @@ export function transformDrag(
       ...entityScenePrimitive(
         viewport,
         transform(entity),
-        { color: ctx.document.resolveEntityColor(entity), width: 1 },
+        {
+          color: drawnColor(ctx.document.resolveEntityColor(entity)),
+          width: 1,
+        },
         { blocks: ctx.blocks }
       )
     )

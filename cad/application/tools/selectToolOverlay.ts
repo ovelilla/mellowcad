@@ -14,8 +14,7 @@ import {
 } from "../../domain/entities"
 import { polarPoint } from "../../geometry/primitives"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
-import { THEME } from "../../scene/theme"
-import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
+import { drawnColor, THEME } from "../../scene/theme"
 import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
 import {
   buildLassoOverlay,
@@ -292,7 +291,10 @@ export function buildMoveEdit(
       entityScenePrimitive(
         viewport,
         translateEntity(entity, delta),
-        { color: ctx.document.resolveEntityColor(entity), width: 1 },
+        {
+          color: drawnColor(ctx.document.resolveEntityColor(entity)),
+          width: 1,
+        },
         { blocks: ctx.blocks }
       )
     )
@@ -377,10 +379,7 @@ export function buildArcStretch(
   const arc = ctx.document.get(state.entityId)
   if (arc?.type !== "arc") return []
   const preview = arcStretchedThrough(arc, state.current)
-  const color =
-    arc.color ??
-    ctx.document.getLayer(arc.layerId)?.color ??
-    DEFAULT_LAYER_COLOR
+  const color = drawnColor(ctx.document.resolveEntityColor(arc))
   return [
     ...(preview
       ? entityScenePrimitive(viewport, preview, { color, width: 1 })
@@ -402,10 +401,7 @@ export function buildEllipseGripEdit(
   const ellipse = ctx.document.get(state.entityId)
   if (ellipse?.type !== "ellipse") return []
   const preview = ellipseGripped(ellipse, state.role, state.current)
-  const color =
-    ellipse.color ??
-    ctx.document.getLayer(ellipse.layerId)?.color ??
-    DEFAULT_LAYER_COLOR
+  const color = drawnColor(ctx.document.resolveEntityColor(ellipse))
   return [
     ...(preview
       ? entityScenePrimitive(viewport, preview, { color, width: 1 })

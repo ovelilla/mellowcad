@@ -1464,13 +1464,21 @@ function parseLayers(value: unknown): Layer[] {
   return layers
 }
 
+/**
+ * What layer 0 and every new layer stored before they took colour 7: the stand-in
+ * for it (the theme's foreground), which no picker offered, so it reads as 7.
+ */
+const LEGACY_LAYER_COLOR = "#e2e8f0"
+
 function parseLayer(raw: unknown): Layer | null {
   if (!isRecord(raw)) return null
   if (typeof raw.id !== "string" || raw.id.length === 0) return null
   const name =
     typeof raw.name === "string" && raw.name.length > 0 ? raw.name : raw.id
   const color =
-    typeof raw.color === "string" && raw.color.length > 0
+    typeof raw.color === "string" &&
+    raw.color.length > 0 &&
+    raw.color !== LEGACY_LAYER_COLOR
       ? raw.color
       : DEFAULT_LAYER_COLOR
   const visible = typeof raw.visible === "boolean" ? raw.visible : true

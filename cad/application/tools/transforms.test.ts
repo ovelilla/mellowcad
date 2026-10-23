@@ -30,7 +30,6 @@ import {
 import { type CadHarness, createHarness } from "../../../test/harness"
 import { THEME } from "../../scene/theme"
 import type { Scene, ScenePrimitive } from "../../scene/types"
-import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
 import { fadedColor } from "../SceneBuilder"
 import { es } from "../../locales/es"
 import {
@@ -615,14 +614,14 @@ describe("the drag of MOVE and COPY", () => {
     cad.select("A").command("MOVE").click(p(30, 15)).moveTo(p(40, 30))
 
     expect(segmentsAt(cad, p(40, 30), p(65, 30))).toEqual([
-      { color: DEFAULT_LAYER_COLOR, width: 1 },
+      { color: THEME.entity, width: 1 },
     ])
     expect(segmentsAt(cad, p(30, 15), p(40, 30))).toEqual([
       { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
     ])
     expect(
       segmentsAt(cad, p(30, 15), p(55, 15)).map((stroke) => stroke.color)
-    ).toEqual([fadedColor(DEFAULT_LAYER_COLOR)])
+    ).toEqual([fadedColor(THEME.entity)])
     expect(colours(cad.scene())).not.toContain(THEME.selected)
     expect(colours(cad.scene())).not.toContain(THEME.preview)
   })
@@ -638,7 +637,7 @@ describe("the drag of MOVE and COPY", () => {
     cad.select("I").command("MOVE").click(p(0, 0)).moveTo(p(200, 0))
 
     expect(segmentsAt(cad, p(170, 0), p(230, 0))).toEqual([
-      { color: DEFAULT_LAYER_COLOR, width: 1 },
+      { color: THEME.entity, width: 1 },
     ])
   })
 

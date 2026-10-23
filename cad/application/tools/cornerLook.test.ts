@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest"
 import type { Entity, LineEntity } from "../../domain/entities"
-import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
 import type { Vec2 } from "../../geometry/Vec2"
 import { THEME } from "../../scene/theme"
 import type { ScenePrimitive, StrokeStyle } from "../../scene/types"
@@ -63,11 +62,11 @@ function withLocked(): CadHarness {
   return cad
 }
 
-const plain = (color = DEFAULT_LAYER_COLOR): StrokeStyle => ({
+const plain = (color: string = THEME.entity): StrokeStyle => ({
   color,
   width: 1.25,
 })
-const faded = (color = DEFAULT_LAYER_COLOR): StrokeStyle => ({
+const faded = (color: string = THEME.entity): StrokeStyle => ({
   color: fadedColor(color),
   width: 1.25,
 })

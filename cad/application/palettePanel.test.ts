@@ -29,6 +29,8 @@ describe("the palette panel", () => {
     ["MO", "properties"],
     ["_LAYER", "layers"],
     ["_PROPERTIES", "properties"],
+    // acad.pgp: `DDLMODES, *LAYER`.
+    ["DDLMODES", "layers"],
   ])("%s opens it on its palette", (command, tab) => {
     const cad = createHarness()
     cad.command(command)
@@ -42,6 +44,9 @@ describe("the palette panel", () => {
     ["PR", "properties"],
     ["_LAYER", "layers"],
     ["_PROPERTIES", "properties"],
+    // es acad.pgp: `LAYER, *CAPA` and `DDLMODES, *CAPA`.
+    ["LAYER", "layers"],
+    ["DDLMODES", "layers"],
   ])("%s opens it in Spanish", (command, tab) => {
     const cad = createHarness({ locale: es })
     cad.command(command)

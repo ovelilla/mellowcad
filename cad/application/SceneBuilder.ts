@@ -76,7 +76,7 @@ import {
   TextAlign,
   TextBaseline,
 } from "../scene/types"
-import { DRAWING_FONT, THEME } from "../scene/theme"
+import { DRAWING_FONT, drawnColor, THEME } from "../scene/theme"
 import {
   PlaneCamera,
   affineEllipse,
@@ -1800,7 +1800,7 @@ export function entityStroke(
     isWidePolyline(entity) &&
     camera.isPlan &&
     !isTilted(entity)
-  const color = entity.color ?? layer?.color ?? DEFAULT_LAYER_COLOR
+  const color = drawnColor(entity.color ?? layer?.color ?? DEFAULT_LAYER_COLOR)
   return {
     color: faded ? fadedColor(color) : color,
     width: widthFor(lineweight, look.lwDisplay && !wideInPlan),
@@ -1835,7 +1835,7 @@ const FADED_OPACITY = 0.22
 
 /** An object's colour as ERASE's preview fades it. */
 export function fadedColor(color: string): string {
-  const hex = normalizeColor(color) ?? DEFAULT_LAYER_COLOR
+  const hex = normalizeColor(color) ?? THEME.entity
   const [r, g, b] = [1, 3, 5].map((at) =>
     Number.parseInt(hex.slice(at, at + 2), 16)
   )

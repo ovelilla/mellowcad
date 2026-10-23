@@ -417,14 +417,47 @@
       "locked": "Locked",
       "deleteLabel": "Delete layer {name}",
       "delete": "Delete layer",
-      "deleteBase": "Layer 0 cannot be deleted",
-      "deleteInUse": "Layer is in use",
-      "deleteCurrent": "Cannot delete the current layer",
       "rename": "Click the selected layer's name again to rename it",
       "renameLabel": "Rename layer {name}",
       "list": "Layer list",
       "nextColumns": "Next columns",
       "previousColumns": "Previous columns",
+      "dialog": {
+        "close": "Close",
+        "notDeleted": {
+          "title": "Layer - Not Deleted",
+          "instruction": "The selected layer was not deleted.",
+          "content": "The following layers cannot be deleted:",
+          "base": "Layers 0 and Defpoints",
+          "current": "The current layer",
+          "inUse": "Layers containing objects",
+          "xref": "Xref-dependent layers"
+        },
+        "currentOff": {
+          "title": "Layer - Current Layer Off",
+          "instruction": "The current layer will be turned off. What do you want to do?",
+          "turnOff": "Turn the current layer off",
+          "turnOffNote": "Objects that you create from now on will not be displayed in the drawing until you turn the layer back on.",
+          "keepOn": "Keep the current layer on"
+        },
+        "nameInUse": {
+          "title": "Layer - Name Already Exists",
+          "instruction": "The name, {name}, is already in use.",
+          "content": "You will need to enter a different name."
+        },
+        "invalidName": {
+          "title": "Layer",
+          "instruction": "Invalid characters in layer name.",
+          "content": "The following characters are not valid in layer names:"
+        },
+        "cannotRename": {
+          "title": "Layer - Rename",
+          "instruction": "The selected layer cannot be renamed.",
+          "content": "The following layers cannot be renamed:",
+          "base": "Layer 0",
+          "xref": "Xref-dependent layers"
+        }
+      },
       "columns": {
         "status": "Status",
         "name": "Name",

@@ -1,6 +1,5 @@
 import { describe, expect, it } from "vitest"
 import type { ArcEntity, Entity, LineEntity } from "../../domain/entities"
-import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
 import type { Vec2 } from "../../geometry/Vec2"
 import { THEME } from "../../scene/theme"
 import type { ScenePrimitive, StrokeStyle } from "../../scene/types"
@@ -39,9 +38,9 @@ function figure(): CadHarness {
   return cad
 }
 
-const plain: StrokeStyle = { color: DEFAULT_LAYER_COLOR, width: 1.25 }
+const plain: StrokeStyle = { color: THEME.entity, width: 1.25 }
 const faded: StrokeStyle = {
-  color: fadedColor(DEFAULT_LAYER_COLOR),
+  color: fadedColor(THEME.entity),
   width: 1.25,
 }
 const glow: StrokeStyle = { color: THEME.selected, width: 5.25 }
@@ -135,7 +134,7 @@ describe("BREAK's ghost at the second break point", () => {
   it("draws the object in the glow where the break would do nothing", () => {
     const cad = figure().command("BREAK").click(p(700, 101)).moveTo(p(700, 100))
     expect(strokesAt(cad, p(100, 100), p(700, 100))).toEqual([plain, glow])
-    expect(colours(cad)).not.toContain(fadedColor(DEFAULT_LAYER_COLOR))
+    expect(colours(cad)).not.toContain(fadedColor(THEME.entity))
   })
 
   it("keeps a circle's arc counter-clockwise from the cursor to the pick, and the click makes it (d02-1)", () => {
@@ -198,6 +197,6 @@ describe("BREAKATPOINT's look at Specify break point", () => {
       .click(p(250, 101))
       .moveTo(p(450, 85))
     expect(strokesAt(cad, p(100, 100), p(700, 100))).toEqual([plain, glow])
-    expect(colours(cad)).not.toContain(fadedColor(DEFAULT_LAYER_COLOR))
+    expect(colours(cad)).not.toContain(fadedColor(THEME.entity))
   })
 })

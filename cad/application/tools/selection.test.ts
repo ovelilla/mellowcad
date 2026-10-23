@@ -25,7 +25,6 @@ import {
 import { polarPoint } from "../../geometry/primitives"
 import type { Vec2 } from "../../geometry/Vec2"
 import { THEME } from "../../scene/theme"
-import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
 import { fadedColor } from "../SceneBuilder"
 import { es } from "../../locales/es"
 import { type CadHarness, createHarness } from "../../../test/harness"
@@ -1391,16 +1390,16 @@ describe("ERASE", () => {
     const faded = colours(erase)
     expect(faded).not.toContain(THEME.selected)
     expect(faded).not.toContain(THEME.entityHover)
-    expect(faded).not.toContain(DEFAULT_LAYER_COLOR)
+    expect(faded).not.toContain(THEME.entity)
     expect(
-      faded.filter((colour) => colour === fadedColor(DEFAULT_LAYER_COLOR))
+      faded.filter((colour) => colour === fadedColor(THEME.entity))
     ).toHaveLength(2)
 
     const move = createHarness({ entities: [SHORT, FAR] })
     move.command("MOVE").click(p(50, 0)).moveTo(p(450, 400))
     expect(colours(move)).toContain(THEME.selected)
     expect(colours(move)).toContain(THEME.entityHover)
-    expect(colours(move)).not.toContain(fadedColor(DEFAULT_LAYER_COLOR))
+    expect(colours(move)).not.toContain(fadedColor(THEME.entity))
   })
 
   it("erases nothing when Escape ends the prompt (erase/d10)", () => {

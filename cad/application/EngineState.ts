@@ -82,7 +82,12 @@ import { isCoordinateExpression } from "./input/coordinateInput"
 import { CommandLineEntry, CommandSuggestion } from "./CommandLine"
 import { SaveState } from "./Autosave"
 import { EngineNames, EngineText, PromptSegment } from "./EngineText"
-import { DEFAULT_LAYER_COLOR, Layer, LayerId } from "../domain/layers"
+import {
+  compareLayerNames,
+  DEFAULT_LAYER_COLOR,
+  Layer,
+  LayerId,
+} from "../domain/layers"
 import { EntityColor, STANDARD_COLORS } from "../domain/colors"
 import { LinetypeId } from "../domain/linetypes"
 import { Lineweight } from "../domain/lineweights"
@@ -574,7 +579,8 @@ export interface EngineState {
 
 /**
  * Builds the layer manager view-model: every layer paired with the number of
- * entities living on it (so the UI can warn before deleting a used layer, etc.).
+ * entities living on it, sorted by name as AutoCAD's Layer Properties
+ * Manager and Layers drop-down list them (`compareLayerNames`).
  */
 export function buildLayerInfos(
   layers: ReadonlyArray<Layer>,
@@ -584,7 +590,7 @@ export function buildLayerInfos(
   for (const entity of entities) {
     counts.set(entity.layerId, (counts.get(entity.layerId) ?? 0) + 1)
   }
-  return layers.map((layer) => ({
+  return [...layers].sort(compareLayerNames).map((layer) => ({
     ...layer,
     entityCount: counts.get(layer.id) ?? 0,
   }))

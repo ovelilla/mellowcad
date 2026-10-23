@@ -334,7 +334,8 @@ kept (no ZOOMs joined) and UNDO asks `Enter an option [Control] <1>:`
 `Combine layer dialog operations? [Yes/No] <Yes>:` offer Yes whatever the setting
 (`Yes or No, please.`; es `¿Combinar operaciones de zoom y encuadre? [Sí/No] <Sí>`,
 `¿Combinar operaciones de cuadro de diálogo de capa?`), and with Combine No each ZOOM is its own
-step; Auto's `Enter UNDO Auto mode [ON/OFF] <On>:` offers the setting (es
+step, with Layer No each edit of the Layer Properties Manager (p315; with Yes consecutive ones are
+one step, `'.-LAYER '.-LAYER`, desktop d04-3, `properties.md` Layers); Auto's `Enter UNDO Auto mode [ON/OFF] <On>:` offers the setting (es
 `Indique modo automático de DESHACER [ACT/DES] <ACT>`); the settings line says them all (es
 `Auto = Des, Control = Ninguna, Combinar = No, Capa = Sí`), per drawing and not saved, so NEW and
 OPEN bring `Auto = On, Control = All, Combine = Yes, Layer = Yes` back (UNDOCTL, rectang/p305); once None or One has dropped the steps
@@ -358,9 +359,8 @@ writes; es from the table (`Ya se ha deshecho todo`, `Todo repetido`, `Nada que 
 `REHACER debe ir directamente a continuación del comando H o DESHACER.`,
 `No hay nada que se pueda deshacer`)
 
-**Missing:** what Auto and Layer join (WHY: Auto makes one step of a menu macro's commands, and no
-menu here runs more than one; Layer joins the Layer Properties Manager's changes, which the console
-cannot show — LAYER hangs it — so each change from the Layers palette stays its own step), Combine
+**Missing:** what Auto joins (WHY: Auto makes one step of a menu macro's commands, and no menu here
+runs more than one), Combine
 and Layer from one session to the next (AutoCAD keeps them in the registry, as its console shows;
 here they last the session, as the running object snaps do); the mouse wheel and the wheel button's
 pan as undo steps (no command here or in AutoCAD; whether AutoCAD records them is **unverified**);

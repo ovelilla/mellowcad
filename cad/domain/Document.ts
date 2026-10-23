@@ -440,19 +440,49 @@ export class CadDocument extends Observable implements DocumentReader {
   }
 
   /**
-   * Removes a layer. The base layer `0`, the current layer and any layer that
-   * still owns geometry cannot be removed (matching AutoCAD). Returns whether
-   * the layer was removed.
+   * Whether an object holds the layer: one in the drawing, an attribute of a
+   * reference, or one in a block definition, which counts even with no
+   * reference left (p380; nested blocks are definitions of their own).
    */
-  removeLayer(id: LayerId): boolean {
-    if (id === DEFAULT_LAYER_ID || id === this.currentLayerId) return false
-    if (!this.layers.has(id)) return false
-    for (const entity of this.entities.values()) {
-      if (entity.layerId === id) return false
+  layerInUse(id: LayerId): boolean {
+    const on = (entity: Entity) =>
+      entity.layerId === id ||
+      (entity.type === "insert" &&
+        (entity.attributes ?? []).some((a) => a.layerId === id))
+    for (const entity of this.entities.values()) if (on(entity)) return true
+    for (const block of this.blocks.values()) {
+      if (block.entities.some(on)) return true
     }
+    return false
+  }
+
+  /**
+   * Whether a layer may be removed: never the base layer `0`, the current
+   * layer or one in use ({@link layerInUse}), as AutoCAD refuses them.
+   */
+  canRemoveLayer(id: LayerId): boolean {
+    return (
+      id !== DEFAULT_LAYER_ID &&
+      id !== this.currentLayerId &&
+      this.layers.has(id) &&
+      !this.layerInUse(id)
+    )
+  }
+
+  /** Removes a layer if {@link canRemoveLayer}; returns whether it did. */
+  removeLayer(id: LayerId): boolean {
+    if (!this.canRemoveLayer(id)) return false
     this.layers.delete(id)
     this.emit()
     return true
+  }
+
+  /** Puts a removed layer back at `index` in the table's order. */
+  restoreLayer(layer: Layer, index: number): void {
+    const entries = [...this.layers.values()].filter((l) => l.id !== layer.id)
+    entries.splice(index, 0, layer)
+    this.layers = new Map(entries.map((l) => [l.id, l]))
+    this.emit()
   }
 
   resolveEntityColor(entity: Entity): string {

@@ -323,11 +323,12 @@ export * from "./domain/entities"
 export {
   DEFAULT_LAYER_ID,
   DEFAULT_LAYER_COLOR,
+  INVALID_LAYER_NAME_CHARACTERS,
   createLayer,
   createDefaultLayer,
   nextLayerId,
 } from "./domain/layers"
-export type { Layer, LayerId } from "./domain/layers"
+export type { Layer, LayerId, LayerNameRefusal } from "./domain/layers"
 export { STANDARD_COLORS, COLOR_BYLAYER, normalizeColor } from "./domain/colors"
 export type { EntityColor, ColorDef } from "./domain/colors"
 export {

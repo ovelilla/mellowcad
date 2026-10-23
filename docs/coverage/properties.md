@@ -1,28 +1,60 @@
 # Properties and tables
 
-### Layers · `LAYER` / `LA` · `LAYERCLOSE` · es `CAPA` / `CA` · `CERRARCAPA`
+### Layers · `LAYER` / `LA` / `DDLMODES` · `LAYERCLOSE` · es `CAPA` / `CA` / `LAYER` / `DDLMODES` · `CERRARCAPA`
 
 **Implemented:** colour, visibility, lock, current layer, ByLayer resolution, selection respects
-hidden/locked; LAYER opens the Layer Properties Manager as a modeless palette ("It can remain open
-as you work", LAYERDLGMODE 1), a tab of the palette panel, and LAYERCLOSE closes it — WHY folding
-the panel only while Layers is the tab shown: AutoCAD's palettes are separate windows, here they
-share one panel, so closing the layer manager leaves another palette where it is; the manager's
-columns in the reference page's order — Status (the check mark on the current layer), Name, On,
-Lock, Color, Linetype, Lineweight — then the object count, scrolled sideways in the panel; New,
-Delete (refused for 0, the current layer and one in use, with the reason) and Set Current act on the
-selected row, and a double-click on a row makes it current ("Select a layer and click Set Current …
-or double-click the name of the layer", 2026 onboarding); a click on the selected name renames it;
-the Layers panel's drop-down in the top bar shows the selection's layer (empty when it is mixed:
-**unverified** what the ribbon shows) or, with nothing selected, the current one; choosing a layer
-moves the selected objects to it in one undo step and keeps the current layer, or with nothing
-selected makes it current ("If no objects are selected, the drop-down lists … display the current
-settings", 2026)
+hidden/locked; layer 0 and a new layer are index colour 7, white, Continuous (p300), drawn in the
+screen's foreground as an object set to 7 is (a drawing saved before stored `#e2e8f0` for them,
+read as 7); LAYER (and DDLMODES, acad.pgp in both languages) opens the Layer Properties Manager
+as a modeless palette ("It can remain open as you work", LAYERDLGMODE 1), a tab of the palette
+panel, and LAYERCLOSE closes it — WHY folding the panel only while Layers is the tab shown:
+AutoCAD's palettes are separate windows, here they share one panel, so closing the layer manager
+leaves another palette where it is; the manager's columns in the reference page's order — Status
+(the check mark on the current layer), Name, On, Lock, Color (the swatch and, for an index colour,
+its name in lower case, `white`, `red`, es `blanco`, `rojo`: d04-1, e02-1), Linetype, Lineweight —
+then the object count, scrolled sideways in the panel; the rows, and the Layers drop-down's, sorted
+by name whatever the case, re-sorted after a rename (d04-1, d04-9, d05-1); New makes `Layer1` (es
+`Capa1`) with the selected layer's colour, linetype and lineweight, its name open for editing, and
+leaves the current layer as it is (d04-4); Delete stays enabled and a layer it cannot delete — 0, the
+current one, one holding objects, in a block definition too (p324–p326, p380) — answers with
+AutoCAD's `Layer - Not Deleted` (d04-6); Set Current, or a double-click on a row, makes it current
+("Select a layer and click Set Current … or double-click the name of the layer", 2026 onboarding);
+turning the current layer off asks `Layer - Current Layer Off` first (d04-7); a click on the
+selected name, or F2 while the list has the keyboard (the help), renames it, and a name in use in
+any case (`Layer - Name Already Exists`, d04-11, d04-14), one with `<>/\":;?*|,=` or a backquote
+(`Invalid characters in layer name.`, d04-13) or a rename of layer 0 (`Layer - Rename`, d04-16) is
+refused with AutoCAD's dialog and the name stays — the engine refuses them too (p319–p321); the
+dialogs' Spanish is `AcTaskDialogs.resources.dll`'s and `AcLayer.resources.dll`'s; every edit in the
+manager is a step U takes back, named `'.-LAYER` as the manager runs it (d04-2; es `'.-CAPA`), a
+lock or an unlock adding `Regenerating model.` (p302), and with UNDO's Layer on (the default)
+consecutive ones are one step, U naming each (`'.-LAYER '.-LAYER '.-LAYER Regenerating model.`,
+d04-3; consecutive -LAYER runs fold so too, p303, p306), each its own with Layer No (p315), parted by
+any command between (p329); made while a command runs, an edit joins its step; the Layers panel's
+drop-down in the top bar shows the selection's layer (empty when it is mixed, as the ribbon's is,
+d06-1) or, with nothing selected, the current one; choosing a layer moves the selected objects to
+it in one undo step and keeps the current layer, or with nothing selected makes it current
+("If no objects are selected, the drop-down lists … display the current settings", 2026), a step U
+names `'CLAYER` (d05-1) and never joins the manager's (p308); the Properties palette's Layer with
+nothing selected sets it so too
 
-**Missing:** the drop-down's On / Freeze / Lock icons, Make Object's Layer Current, Match Layer,
-Layer Previous and the rest of the Layers panel, freezing, Freeze / Plot / Transparency / Plot Style
-/ New VP Freeze / Description columns, column reordering, layer filters and the tree, F2 to rename
-(F2 is the command history here), New Layer leaving the current layer as it is (here the new layer
-becomes current), the manager's settings dialog
+**Missing:** -LAYER (`-LA`, es `-CA`; p300, p314: `Current layer:  "0"` and
+`Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/TRansparency/MATerial/Plot/Freeze/Thaw/LOck/Unlock/stAte/Description/rEconcile/Xref]:`,
+es `[?/Establ/Def/CRear/RENombrar/ACT/DES/COlor/Tlínea/Grosorl/tranSParencia/MATerial/TRazar/Inut/Reut/Bloq/desbLoq/eStado/DESCr/REConciliar/refX]`;
+its refusals `Cannot rename layer "0".`, `"A<B" is an invalid layer name.`,
+`The selected layers could not be deleted.`, p319–p326), LAYDEL, CLAYER typed (SETVAR, roadmap row
+24), LAYER as a step of its own, which the manager's edits join (U after LAYER and a lock says
+`'.-LAYER LAYER Regenerating model.`, d04-2; here LAYER makes no step), the drop-down's On / Freeze /
+Lock icons, Make Object's Layer Current, Match Layer, Layer Previous and the rest of the Layers
+panel, freezing, Freeze / Plot / Transparency / Plot Style / New VP Freeze / Description columns,
+column reordering, layer filters and the tree, the manager's settings dialog, the task dialogs'
+look (here a dialog of the editor's with their words; their Show details is left out, the details
+shown), the new row placed under the selected one until it is renamed (here sorted at once),
+layer 0's lineweight Default (p300: 370 -3; here 0.25 mm, Default is not modelled);
+**unverified**: the manager's Set Current named `'.-LAYER` (only an edit's name was seen), es
+`'.-CAPA` and `'CLAYER` (the Spanish desktop pass ran without the mouse), the Spanish title
+`Capa` of the invalid-characters dialog and `Capa` in `Capa - El nombre ya existe` (the table's
+`%ObjectName%`), what a colour that is not an index colour writes beside its swatch (AutoCAD writes
+its RGB; here the swatch alone), the Arabic words (worded by the project, `docs/i18n-glossary.md`)
 
 ### Linetypes · `LTSCALE` / `LTS` · `LINETYPE` / `LT` · `-LINETYPE` · es `ESCALATL` / `EC`† · `TIPOLIN` · `-TIPOLIN`
 

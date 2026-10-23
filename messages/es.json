@@ -417,14 +417,47 @@
       "locked": "Bloqueada",
       "deleteLabel": "Suprimir la capa {name}",
       "delete": "Suprimir capa",
-      "deleteBase": "La capa 0 no se puede suprimir",
-      "deleteInUse": "La capa está en uso",
-      "deleteCurrent": "No se puede suprimir la capa actual",
       "rename": "Pulse otra vez el nombre de la capa designada para cambiarle el nombre",
       "renameLabel": "Cambiar el nombre de la capa {name}",
       "list": "Lista de capas",
       "nextColumns": "Columnas siguientes",
       "previousColumns": "Columnas anteriores",
+      "dialog": {
+        "close": "Cerrar",
+        "notDeleted": {
+          "title": "Capa - Sin suprimir",
+          "instruction": "La capa designada no se ha suprimido.",
+          "content": "Las siguientes capas no se pueden suprimir:",
+          "base": "Capas 0 y DEFPOINTS",
+          "current": "La capa actual",
+          "inUse": "Capas que contienen objetos",
+          "xref": "Capas que dependen de refX"
+        },
+        "currentOff": {
+          "title": "Capa - Capa actual desactivada",
+          "instruction": "La capa actual se desactivará. ¿Qué desea hacer?",
+          "turnOff": "Desactivar la capa actual",
+          "turnOffNote": "Los objetos que cree a partir de ahora no se mostrarán en el dibujo hasta que vuelva a activar la capa.",
+          "keepOn": "Mantener la capa actual activada"
+        },
+        "nameInUse": {
+          "title": "Capa - El nombre ya existe",
+          "instruction": "El nombre {name} ya está en uso.",
+          "content": "Debe indicar un nombre diferente."
+        },
+        "invalidName": {
+          "title": "Capa",
+          "instruction": "Caracteres no válidos en nombre de capa.",
+          "content": "Los caracteres siguientes no son válidos en nombres de capa:"
+        },
+        "cannotRename": {
+          "title": "Capa - Cambiar nombre",
+          "instruction": "No se puede cambiar el nombre de la capa seleccionada.",
+          "content": "No se puede cambiar el nombre de las siguientes capas:",
+          "base": "Capa 0",
+          "xref": "Capas que dependen de refX"
+        }
+      },
       "columns": {
         "status": "Estado",
         "name": "Nombre",

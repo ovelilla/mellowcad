@@ -38,7 +38,7 @@ import type { MessageId } from "../EngineText"
 import type { Viewport } from "../Viewport"
 import type { PromptId } from "../../locales/types"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
-import { THEME } from "../../scene/theme"
+import { drawnColor, THEME } from "../../scene/theme"
 import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
 import {
   CommandOption,
@@ -506,7 +506,7 @@ export class OffsetTool implements Tool {
       const offset = this.resolve(this.state, cursor, ctx)
       if (!isRefusal(offset)) {
         const stroke = {
-          color: ctx.document.resolveEntityColor(source),
+          color: drawnColor(ctx.document.resolveEntityColor(source)),
           width: 1,
         }
         for (const copy of this.copiesOf(

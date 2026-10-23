@@ -828,7 +828,8 @@ export const en: EngineCatalog = {
       ],
       "LAYER": [
         "LAYER",
-        "LA"
+        "LA",
+        "DDLMODES"
       ],
       "LAYERCLOSE": [
         "LAYERCLOSE"
@@ -2244,6 +2245,7 @@ export const en: EngineCatalog = {
       "startOfGroup": "Start of Group encountered.\nMust enter UNDO END to go back further.",
       "undoGroup": "GROUP",
       "dropGeometryStep": "DROPGEOM GROUP",
+      "layerManagerStep": "'.-LAYER",
       "uDisabled": "U command disabled.  Use UNDO command to turn it on",
       "redoDisabled": [
         [

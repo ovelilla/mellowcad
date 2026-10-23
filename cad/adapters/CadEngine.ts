@@ -1,6 +1,6 @@
 import { Listener } from "../shared/Observable"
 import { Vec2 } from "../geometry/Vec2"
-import { Layer } from "../domain/layers"
+import { Layer, LayerNameRefusal } from "../domain/layers"
 import { EntityId, EntityProperty, EntityType } from "../domain/entities"
 import { LengthUnit } from "../domain/units"
 import { Scene } from "../scene/types"
@@ -302,6 +302,10 @@ export class CadEngine {
     return this.runtime.createLayer(name, color, makeCurrent)
   }
 
+  newLayer(like?: string): string {
+    return this.runtime.newLayer(like)
+  }
+
   updateLayer(
     id: string,
     patch: Partial<
@@ -310,12 +314,12 @@ export class CadEngine {
         "name" | "color" | "linetype" | "lineweight" | "visible" | "locked"
       >
     >
-  ): void {
-    this.runtime.updateLayer(id, patch)
+  ): LayerNameRefusal | null {
+    return this.runtime.updateLayer(id, patch)
   }
 
-  setCurrentLayer(id: string): void {
-    this.runtime.setCurrentLayer(id)
+  setCurrentLayer(id: string, from?: "control" | "manager"): void {
+    this.runtime.setCurrentLayer(id, from)
   }
 
   removeLayer(id: string): boolean {

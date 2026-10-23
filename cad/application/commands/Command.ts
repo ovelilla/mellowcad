@@ -59,6 +59,8 @@ interface Entry extends Omit<Step, "kind" | "regeneratesRedone"> {
    * when doing it again (acc/z4, z29, z32–z38 of the MREDO session).
    */
   readonly combines?: true
+  /** A layer-table edit made outside a command, which the next one joins (UNDO Layer). */
+  readonly layer?: true
 }
 
 /** How a group closes: as a ZOOM's, joining the ZOOM before it or not. */
@@ -127,6 +129,45 @@ export class CommandHistory extends Observable {
       names: [],
       regenerates: this.regenerated,
     })
+  }
+
+  /**
+   * A layer-table edit made outside a command (the Layer Properties Manager),
+   * a step named `name`. With UNDO's Layer on, it joins the step just below
+   * when that is one too, U naming them all (`'.-LAYER '.-LAYER`: desktop
+   * d04-3; consecutive -LAYER runs fold so too, p303, p306), unless Control
+   * keeps fewer than all (as ZOOMs combine). Inside an open group it is that
+   * group's, as a palette's change mid-command is.
+   */
+  executeLayerEdit(command: Command, name: string, regenerates: boolean): void {
+    if (this.groupStart !== null) {
+      this.execute(command)
+      return
+    }
+    command.execute(this.document)
+    const entry: Entry = {
+      kind: "command",
+      command,
+      name,
+      names: [],
+      regenerates,
+      layer: true,
+    }
+    const below = this.undoStack.at(-1)
+    const { control, layer } = this.undoSettings
+    if (layer && control === "all" && below?.layer && below.command) {
+      this.undoStack[this.undoStack.length - 1] = {
+        ...below,
+        command: new GroupCommand([below.command, command]),
+        name: null,
+        names: [...namesOf(below), name],
+        regenerates: below.regenerates || regenerates,
+      }
+      this.redoStack = []
+      this.emit()
+      return
+    }
+    this.push(entry)
   }
 
   private push(entry: Entry): void {

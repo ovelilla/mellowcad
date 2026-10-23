@@ -215,7 +215,7 @@ describe("pickAll (selection cycling candidates)", () => {
     expect(candidates[0].id).toBe(document.pick(p(50, 0), 8)?.id)
   })
 
-  it("skips hidden and locked layers, like pick", () => {
+  it("skips layers that are off, like pick", () => {
     const document = documentWith(
       [
         lineOf(p(0, 0), p(100, 0), { id: "HIDDEN", layerId: "hidden" }),
@@ -262,6 +262,46 @@ describe("layers", () => {
 
     document.setCurrentLayer(DEFAULT_LAYER_ID)
     expect(document.removeLayer("free")).toBe(true)
+  })
+
+  it("refuses to remove a layer only a block definition uses, nested too (p380)", () => {
+    const document = documentWith([], {
+      layers: [layerOf("L1"), layerOf("L2"), layerOf("free")],
+    })
+    document.addBlock({
+      id: "INNER",
+      name: "INNER",
+      basePoint: p(0, 0),
+      entities: [lineOf(p(0, 0), p(1, 0), { id: "A", layerId: "L2" })],
+    })
+    document.addBlock({
+      id: "OUTER",
+      name: "OUTER",
+      basePoint: p(0, 0),
+      entities: [lineOf(p(0, 0), p(1, 0), { id: "B", layerId: "L1" })],
+    })
+
+    expect(document.removeLayer("L1")).toBe(false)
+    expect(document.removeLayer("L2")).toBe(false)
+    expect(document.removeLayer("free")).toBe(true)
+  })
+
+  it("puts a removed layer back where it stood", () => {
+    const document = documentWith([], {
+      layers: [layerOf("A"), layerOf("B"), layerOf("C")],
+    })
+    const removed = document.getLayer("B")!
+    const index = document.getLayers().indexOf(removed)
+    document.removeLayer("B")
+
+    document.restoreLayer(removed, index)
+
+    expect(document.getLayers().map((layer) => layer.id)).toEqual([
+      "0",
+      "A",
+      "B",
+      "C",
+    ])
   })
 
   it("resolves appearance ByObject first, then ByLayer", () => {

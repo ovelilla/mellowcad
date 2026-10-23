@@ -170,6 +170,22 @@ describe("round trip", () => {
     expect(parsed.currentLayerId).toBe("walls")
   })
 
+  it("reads the old default layer colour as index 7, keeping any other", () => {
+    // Before 2026-10-23 layer 0 and new layers stored #e2e8f0, the stand-in
+    // for AutoCAD's colour 7 (p300).
+    const layers = [
+      layerOf("0", { color: "#e2e8f0" }),
+      layerOf("walls", { color: "#ff0000" }),
+    ]
+    const parsed = parseDrawingFile(
+      serializeDrawing(snapshotOf([], { layers }))
+    )
+    expect(parsed.layers.map((layer) => layer.color)).toEqual([
+      "#ffffff",
+      "#ff0000",
+    ])
+  })
+
   it("preserves the text-style table and the current style", () => {
     const textStyles = [createDefaultTextStyle(), createTextStyle("Title", 20)]
     const parsed = parseDrawingFile(

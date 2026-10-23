@@ -350,7 +350,7 @@ describe("layers", () => {
     expect(cad.byId<CircleEntity>("C1").layerId).toBe(DEFAULT_LAYER_ID)
   })
 
-  it("makes the layer chosen in the drop-down current with nothing selected", () => {
+  it("makes the layer chosen in the drop-down current with nothing selected, undoably (desktop d05-1)", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
     })
@@ -360,10 +360,12 @@ describe("layers", () => {
     cad.runtime.applyLayerControl(walls)
     expect(cad.state().currentLayerId).toBe(walls)
     expect(cad.byId<LineEntity>("L1").layerId).toBe(DEFAULT_LAYER_ID)
-    expect(cad.state().canUndo).toBe(false)
+
+    cad.undo()
+    expect(cad.state().currentLayerId).toBe(DEFAULT_LAYER_ID)
   })
 
-  it("deselects objects whose layer is turned off or locked", () => {
+  it("deselects objects whose layer is turned off (desktop d09-5)", () => {
     const cad = createHarness()
     const walls = cad.runtime.createLayer("Walls")
     cad.runtime.document.load([

@@ -8,6 +8,7 @@ import {
 } from "../../domain/entities"
 import { COLOR_BYLAYER } from "../../domain/colors"
 import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
+import { drawnColor } from "../../scene/theme"
 import { LINETYPE_BYLAYER } from "../../domain/linetypes"
 import { LINEWEIGHT_BYLAYER } from "../../domain/lineweights"
 import type { DocumentSettings } from "../../domain/units"
@@ -108,8 +109,11 @@ export function currentColor(
   > = currentProperties(ctx)
 ): string {
   const { currentColor, layerId } = properties
-  if (currentColor !== COLOR_BYLAYER) return currentColor
-  return ctx.document.getLayer(layerId)?.color ?? DEFAULT_LAYER_COLOR
+  return drawnColor(
+    currentColor !== COLOR_BYLAYER
+      ? currentColor
+      : (ctx.document.getLayer(layerId)?.color ?? DEFAULT_LAYER_COLOR)
+  )
 }
 
 /** THICKNESS as LINE, CIRCLE, ARC, PLINE and POLYGON give it; RECTANG and TEXT do not. */

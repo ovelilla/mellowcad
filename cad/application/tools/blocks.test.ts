@@ -16,7 +16,6 @@ import {
   serializeDrawing,
 } from "../../serialization/drawingFile"
 import { THEME } from "../../scene/theme"
-import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
 
 /** A one-line block: a 100-unit run along +X from its base point. */
 const barBlock = (name = "BAR") =>
@@ -247,8 +246,7 @@ describe("a block reference in the drawing", () => {
     const segments = cad
       .scene()
       .primitives.filter(
-        (prim) =>
-          prim.kind === "segment" && prim.stroke.color === DEFAULT_LAYER_COLOR
+        (prim) => prim.kind === "segment" && prim.stroke.color === THEME.entity
       )
 
     expect(segments).toHaveLength(1)

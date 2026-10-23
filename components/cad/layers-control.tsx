@@ -1,7 +1,9 @@
 "use client"
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { Dialog } from "@base-ui/react/dialog"
 import {
+  ArrowRight,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -22,15 +24,22 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { CadEngine, EngineNames, LayerInfo } from "@/cad"
+import {
+  CadEngine,
+  DEFAULT_LAYER_ID,
+  EngineNames,
+  INVALID_LAYER_NAME_CHARACTERS,
+  LayerInfo,
+  LayerNameRefusal,
+  STANDARD_COLORS,
+} from "@/cad"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { LinetypeSelect } from "./linetype-select"
 import { LineweightSelect } from "./lineweight-select"
 
 /**
  * How long a second click on a selected name waits for a double-click, which
- * still makes the layer current. F2, AutoCAD's other rename key, is the
- * command history here.
+ * still makes the layer current. F2 renames too, while the list has focus.
  */
 const RENAME_DELAY_MS = 400
 
@@ -41,7 +50,9 @@ const RENAME_DELAY_MS = 400
  * than the panel and scrolled sideways as AutoCAD's docked manager is. A row
  * is selected with a click; Set Current — or a double-click on the row —
  * makes it the current layer, and New and Delete act beside it. A click on
- * the selected layer's name renames it.
+ * the selected layer's name, or F2, renames it. The rows are sorted by name
+ * (the engine's order), and what AutoCAD refuses or asks is one of its task
+ * dialogs (`LayerDialog`).
  *
  * At the panel's 280 px half the columns are out of sight, and a scroll bar
  * alone goes unnoticed (macOS hides it, a wheel only scrolls down), so the
@@ -60,6 +71,8 @@ export function LayersControl({
 }) {
   const t = useTranslations("Editor.Layers")
   const [selectedId, setSelectedId] = useState<string | null>(null)
+  const [renamingId, setRenamingId] = useState<string | null>(null)
+  const [dialog, setDialog] = useState<LayerDialogKind | null>(null)
   const { scrollRef, frozenRef, before, after, gutters, track, page } =
     useSidewaysScroll()
   const selected =
@@ -68,22 +81,24 @@ export function LayersControl({
     state.layers[0]
   const done = () => engine.focusSurface()
   const setCurrent = (id: string) => {
-    engine.setCurrentLayer(id)
+    engine.setCurrentLayer(id, "manager")
     done()
   }
-
-  const isBase = selected.id === "0"
-  const canDelete =
-    !isBase &&
-    selected.id !== state.currentLayerId &&
-    selected.entityCount === 0
-  const deleteReason = canDelete
-    ? t("delete")
-    : isBase
-      ? t("deleteBase")
-      : selected.entityCount > 0
-        ? t("deleteInUse")
-        : t("deleteCurrent")
+  // Layer 0's name is refused before an edit opens, as AutoCAD's manager
+  // answers the attempt (desktop d04-16).
+  const startRename = (layer: LayerInfo) => {
+    setSelectedId(layer.id)
+    if (layer.id === DEFAULT_LAYER_ID) setDialog({ kind: "base" })
+    else setRenamingId(layer.id)
+  }
+  const rename = (layer: LayerInfo, name: string | null) => {
+    setRenamingId(null)
+    if (name === null) return done()
+    const refusal = engine.updateLayer(layer.id, { name })
+    if (refusal === null) done()
+    else if (refusal === "inUse") setDialog({ kind: refusal, name })
+    else setDialog({ kind: refusal })
+  }
 
   return (
     <div className="flex min-h-0 flex-1 flex-col">
@@ -95,19 +110,23 @@ export function LayersControl({
         <ToolbarButton
           label={t("new")}
           onClick={() => {
-            setSelectedId(engine.createLayer())
-            done()
+            // Its name opens for editing, as AutoCAD's New Layer leaves it.
+            const id = engine.newLayer(selected.id)
+            setSelectedId(id)
+            setRenamingId(id)
           }}
         >
           <Plus />
         </ToolbarButton>
+        {/* Never disabled: AutoCAD answers a refused delete with its task
+            dialog (desktop d04-6). */}
         <ToolbarButton
-          label={deleteReason}
-          disabled={!canDelete}
+          label={t("delete")}
           onClick={() => {
-            engine.removeLayer(selected.id)
-            setSelectedId(null)
-            done()
+            if (engine.removeLayer(selected.id)) {
+              setSelectedId(null)
+              done()
+            } else setDialog({ kind: "notDeleted" })
           }}
         >
           <Trash2 />
@@ -123,13 +142,24 @@ export function LayersControl({
 
       <div className="flex min-h-0 flex-1 flex-col">
         <div className="relative flex min-h-0 flex-col">
+          {/* Focusable, so a click on a row gives the list the keyboard and
+              F2 renames there, as the help says; F2 elsewhere is the
+              history. Stopped here, it never reaches the engine's listener
+              on the document. */}
           <div
             ref={scrollRef}
+            tabIndex={-1}
+            onKeyDown={(event) => {
+              if (event.key !== "F2") return
+              event.preventDefault()
+              event.stopPropagation()
+              if (renamingId === null) startRename(selected)
+            }}
             onScroll={track}
             data-scrolled={before || undefined}
             // Columns snap against the frozen Name, never cut in half by it.
             style={{ scrollPaddingInlineStart: gutters.frozen }}
-            className="group/scroll min-h-0 snap-x snap-mandatory overflow-auto"
+            className="group/scroll min-h-0 snap-x snap-mandatory overflow-auto outline-none"
           >
             <table
               aria-label={t("list")}
@@ -146,7 +176,7 @@ export function LayersControl({
                   </Header>
                   <Header className="w-9">{t("columns.on")}</Header>
                   <Header className="w-9">{t("columns.lock")}</Header>
-                  <Header className="w-12">{t("columns.color")}</Header>
+                  <Header className="w-24">{t("columns.color")}</Header>
                   <Header className="w-28">{t("columns.linetype")}</Header>
                   <Header className="w-24">{t("columns.lineweight")}</Header>
                   <Header className="w-14 text-end">
@@ -163,8 +193,14 @@ export function LayersControl({
                     names={state.names}
                     isCurrent={layer.id === state.currentLayerId}
                     isSelected={layer.id === selected.id}
+                    renaming={layer.id === renamingId}
                     onSelect={() => setSelectedId(layer.id)}
                     onSetCurrent={() => setCurrent(layer.id)}
+                    onStartRename={() => startRename(layer)}
+                    onRename={(name) => rename(layer, name)}
+                    onTurnOffCurrent={() =>
+                      setDialog({ kind: "currentOff", id: layer.id })
+                    }
                   />
                 ))}
               </tbody>
@@ -205,6 +241,12 @@ export function LayersControl({
           )}
         </div>
       </div>
+      <LayerDialog
+        dialog={dialog}
+        onTurnOff={(id) => engine.updateLayer(id, { visible: false })}
+        onClose={() => setDialog(null)}
+        onClosed={done}
+      />
     </div>
   )
 }
@@ -370,16 +412,25 @@ function LayerRow({
   names,
   isCurrent,
   isSelected,
+  renaming,
   onSelect,
   onSetCurrent,
+  onStartRename,
+  onRename,
+  onTurnOffCurrent,
 }: {
   engine: CadEngine
   layer: LayerInfo
   names: EngineNames
   isCurrent: boolean
   isSelected: boolean
+  renaming: boolean
   onSelect: () => void
   onSetCurrent: () => void
+  onStartRename: () => void
+  onRename: (name: string | null) => void
+  /** Turning the current layer off asks first (desktop d04-7). */
+  onTurnOffCurrent: () => void
 }) {
   const t = useTranslations("Editor.Layers")
   const done = () => engine.focusSurface()
@@ -419,10 +470,11 @@ function LayerRow({
       <td className={cn("max-w-32 px-0.5", frozen, FROZEN_EDGE)}>
         <NameField
           name={layer.name}
-          editable={layer.id !== "0"}
+          editing={renaming}
           selected={isSelected}
           onSetCurrent={onSetCurrent}
-          onRename={(name) => engine.updateLayer(layer.id, { name })}
+          onStartRename={onStartRename}
+          onRename={onRename}
         />
       </td>
 
@@ -434,6 +486,10 @@ function LayerRow({
           OnIcon={Eye}
           OffIcon={EyeOff}
           onToggle={() => {
+            if (isCurrent && layer.visible) {
+              onTurnOffCurrent()
+              return
+            }
             engine.updateLayer(layer.id, { visible: !layer.visible })
             done()
           }}
@@ -455,12 +511,16 @@ function LayerRow({
       </td>
 
       <td className="px-1.5">
+        {/* The colour's name beside its swatch for an index colour, as
+            AutoCAD's manager writes it (`white`, `red`; desktop d04-1, es
+            e02-1); another colour shows its swatch alone. */}
         <label
-          className="relative inline-flex cursor-pointer align-middle"
+          className="relative flex cursor-pointer items-center gap-1.5"
           aria-label={t("colorLabel", { name: layer.name })}
           title={t("color")}
         >
           <LayerSwatch color={layer.color} />
+          <span className="truncate">{colorName(layer.color, names)}</span>
           <input
             type="color"
             value={normalizeHex(layer.color)}
@@ -548,27 +608,29 @@ function IconToggle({
 }
 
 /**
- * The layer's name. A click on the selected row's name renames it, after a
- * pause so that a double-click still sets the layer current; Enter or blur
- * commits, Escape reverts.
+ * The layer's name. A click on the selected row's name asks to rename it,
+ * after a pause so that a double-click still sets the layer current; while
+ * `editing`, Enter or blur commits, Escape gives up (`onRename(null)`).
  */
 function NameField({
   name,
-  editable,
+  editing,
   selected,
   onSetCurrent,
+  onStartRename,
   onRename,
 }: {
   name: string
-  editable: boolean
+  editing: boolean
   selected: boolean
   onSetCurrent: () => void
-  onRename: (name: string) => void
+  onStartRename: () => void
+  onRename: (name: string | null) => void
 }) {
   const t = useTranslations("Editor.Layers")
-  const [draft, setDraft] = useState(name)
-  const [editing, setEditing] = useState(false)
   const pending = useRef<ReturnType<typeof setTimeout> | null>(null)
+  // Escape unmounts the field: its blur must not commit what was typed.
+  const cancelled = useRef(false)
 
   const cancelPending = () => {
     if (pending.current !== null) clearTimeout(pending.current)
@@ -581,21 +643,23 @@ function NameField({
       <input
         autoFocus
         aria-label={t("renameLabel", { name })}
-        value={draft}
-        onChange={(event) => setDraft(event.target.value)}
+        defaultValue={name}
+        onFocus={(event) => {
+          cancelled.current = false
+          event.currentTarget.select()
+        }}
         onClick={(event) => event.stopPropagation()}
         onDoubleClick={(event) => event.stopPropagation()}
-        onBlur={() => {
-          setEditing(false)
-          const trimmed = draft.trim()
-          if (trimmed && trimmed !== name) onRename(trimmed)
-          else setDraft(name)
+        onBlur={(event) => {
+          if (cancelled.current) return
+          const typed = event.currentTarget.value.trim()
+          onRename(typed && typed !== name ? typed : null)
         }}
         onKeyDown={(event) => {
           if (event.key === "Enter") event.currentTarget.blur()
           else if (event.key === "Escape") {
-            setDraft(name)
-            setEditing(false)
+            cancelled.current = true
+            onRename(null)
           }
         }}
         className="w-full min-w-0 rounded border border-ring bg-background px-1 py-0.5 outline-none"
@@ -606,15 +670,14 @@ function NameField({
   return (
     <button
       type="button"
-      title={editable ? t("rename") : name}
+      title={t("rename")}
       onClick={(event) => {
         // Only a click on a row already selected renames it.
-        if (!editable || !selected || event.detail !== 1) return
+        if (!selected || event.detail !== 1) return
         cancelPending()
         pending.current = setTimeout(() => {
           pending.current = null
-          setDraft(name)
-          setEditing(true)
+          onStartRename()
         }, RENAME_DELAY_MS)
       }}
       onDoubleClick={(event) => {
@@ -625,6 +688,198 @@ function NameField({
       className="block w-full cursor-default truncate rounded px-1 py-0.5 text-start"
     >
       {name}
+    </button>
+  )
+}
+
+/** An index colour's name as AutoCAD's manager writes it, in lower case. */
+function colorName(color: string, names: EngineNames): string | null {
+  const standard = STANDARD_COLORS.find((entry) => entry.value === color)
+  return standard ? names.colors[standard.id].toLowerCase() : null
+}
+
+/** What the manager refuses or asks, each one of AutoCAD's task dialogs. */
+type LayerDialogKind =
+  | { readonly kind: "notDeleted" }
+  | { readonly kind: "currentOff"; readonly id: string }
+  | { readonly kind: "inUse"; readonly name: string }
+  | { readonly kind: Exclude<LayerNameRefusal, "inUse"> }
+
+/**
+ * AutoCAD's task dialogs for the manager, in its words: a delete refused
+ * (`Layer - Not Deleted`, desktop d04-6), the current layer turned off
+ * (`Layer - Current Layer Off`, d04-7), a name in use (d04-11, d04-14), one
+ * with invalid characters (d04-13), layer 0 renamed (`Layer - Rename`,
+ * d04-16). Local to the manager, as AutoCAD's are to its palette; focus goes
+ * back to the drawing once one closes.
+ */
+function LayerDialog({
+  dialog,
+  onTurnOff,
+  onClose,
+  onClosed,
+}: {
+  dialog: LayerDialogKind | null
+  onTurnOff: (id: string) => void
+  onClose: () => void
+  onClosed: () => void
+}) {
+  // Kept while the popup animates out, so its words do not blank first.
+  const [shown, setShown] = useState(dialog)
+  if (dialog !== null && dialog !== shown) setShown(dialog)
+
+  return (
+    <Dialog.Root
+      open={dialog !== null}
+      onOpenChange={(open) => {
+        if (!open) onClose()
+      }}
+      onOpenChangeComplete={(open) => {
+        if (!open) onClosed()
+      }}
+    >
+      <Dialog.Portal>
+        <Dialog.Backdrop className="fixed inset-0 z-50 bg-background/60" />
+        {/* aria-modal: the engine leaves a modal dialog's keys to it. */}
+        <Dialog.Popup
+          aria-modal="true"
+          finalFocus={false}
+          className="fixed inset-0 z-50 m-auto h-fit w-96 rounded-lg border bg-card p-3 text-popover-foreground shadow-lg outline-none"
+        >
+          {shown && (
+            <LayerDialogBody
+              dialog={shown}
+              onTurnOff={(id) => {
+                onTurnOff(id)
+                onClose()
+              }}
+              onClose={onClose}
+            />
+          )}
+        </Dialog.Popup>
+      </Dialog.Portal>
+    </Dialog.Root>
+  )
+}
+
+function LayerDialogBody({
+  dialog,
+  onTurnOff,
+  onClose,
+}: {
+  dialog: LayerDialogKind
+  onTurnOff: (id: string) => void
+  onClose: () => void
+}) {
+  const t = useTranslations("Editor.Layers.dialog")
+  if (dialog.kind === "currentOff") {
+    return (
+      <>
+        <Dialog.Title className="mb-2 text-title text-muted-foreground">
+          {t("currentOff.title")}
+        </Dialog.Title>
+        <Dialog.Description className="mb-2">
+          {t("currentOff.instruction")}
+        </Dialog.Description>
+        <div className="flex flex-col gap-1">
+          <CommandLink
+            label={t("currentOff.turnOff")}
+            note={t("currentOff.turnOffNote")}
+            onClick={() => onTurnOff(dialog.id)}
+          />
+          <CommandLink label={t("currentOff.keepOn")} onClick={onClose} />
+        </div>
+      </>
+    )
+  }
+  const words =
+    dialog.kind === "notDeleted"
+      ? {
+          title: t("notDeleted.title"),
+          instruction: t("notDeleted.instruction"),
+          content: t("notDeleted.content"),
+          items: [
+            t("notDeleted.base"),
+            t("notDeleted.current"),
+            t("notDeleted.inUse"),
+            t("notDeleted.xref"),
+          ],
+        }
+      : dialog.kind === "base"
+        ? {
+            title: t("cannotRename.title"),
+            instruction: t("cannotRename.instruction"),
+            content: t("cannotRename.content"),
+            items: [t("cannotRename.base"), t("cannotRename.xref")],
+          }
+        : dialog.kind === "inUse"
+          ? {
+              title: t("nameInUse.title"),
+              instruction: t("nameInUse.instruction", { name: dialog.name }),
+              content: t("nameInUse.content"),
+              items: [],
+            }
+          : {
+              title: t("invalidName.title"),
+              instruction: t("invalidName.instruction"),
+              content: t("invalidName.content"),
+              items: [],
+            }
+  return (
+    <>
+      <Dialog.Title className="mb-2 text-title text-muted-foreground">
+        {words.title}
+      </Dialog.Title>
+      <Dialog.Description className="mb-2">
+        {words.instruction}
+      </Dialog.Description>
+      <p>{words.content}</p>
+      {words.items.length > 0 && (
+        <ul className="list-disc ps-5">
+          {words.items.map((item) => (
+            <li key={item}>{item}</li>
+          ))}
+        </ul>
+      )}
+      {dialog.kind === "invalid" && (
+        <p dir="ltr" className="text-start font-mono">
+          {INVALID_LAYER_NAME_CHARACTERS}
+        </p>
+      )}
+      <div className="mt-4 flex justify-end">
+        <Dialog.Close
+          render={
+            <Button type="button" variant="outline">
+              {t("close")}
+            </Button>
+          }
+        />
+      </div>
+    </>
+  )
+}
+
+/** A task dialog's command link: an arrow, its words and a note under them. */
+function CommandLink({
+  label,
+  note,
+  onClick,
+}: {
+  label: string
+  note?: string
+  onClick: () => void
+}) {
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="flex w-full items-start gap-2 rounded-md px-2 py-1.5 text-start outline-none hover:bg-muted focus-visible:ring-3 focus-visible:ring-ring/50"
+    >
+      <ArrowRight className="mt-px size-4 shrink-0 text-muted-foreground rtl:-scale-x-100" />
+      <span className="flex flex-col">
+        <span>{label}</span>
+        {note && <span className="text-muted-foreground">{note}</span>}
+      </span>
     </button>
   )
 }
@@ -641,5 +896,5 @@ export function LayerSwatch({ color }: { color: string }) {
 
 /** Coerces arbitrary colour strings to a `#rrggbb` value the picker accepts. */
 function normalizeHex(color: string): string {
-  return /^#[0-9a-fA-F]{6}$/.test(color) ? color : "#e2e8f0"
+  return /^#[0-9a-fA-F]{6}$/.test(color) ? color : "#ffffff"
 }

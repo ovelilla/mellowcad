@@ -8,7 +8,6 @@ import {
   type PolylineEntity,
   type PolylineWidth,
 } from "../../domain/entities"
-import { DEFAULT_LAYER_COLOR } from "../../domain/layers"
 import { THEME } from "../../scene/theme"
 import { es } from "../../locales/es"
 
@@ -544,8 +543,7 @@ describe("FILL", () => {
       cad
         .scene()
         .primitives.flatMap((primitive) =>
-          primitive.kind === "path" &&
-          primitive.stroke?.color === DEFAULT_LAYER_COLOR
+          primitive.kind === "path" && primitive.stroke?.color === THEME.entity
             ? [primitive.fill !== undefined]
             : []
         )

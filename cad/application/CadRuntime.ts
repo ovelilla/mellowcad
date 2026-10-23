@@ -18,8 +18,8 @@ import { COLOR_BYLAYER, EntityColor } from "../domain/colors"
 import {
   createLayer,
   DEFAULT_LAYER_COLOR,
-  Layer,
   LayerId,
+  LayerNameRefusal,
 } from "../domain/layers"
 import { LINETYPE_BYLAYER, LinetypeId } from "../domain/linetypes"
 import { DimStyle, DimStyleId } from "../domain/dimStyles"
@@ -95,6 +95,11 @@ import { Command, CommandHistory, Step } from "./commands/Command"
 import type { UndoHistory } from "./tools/Tool"
 import { UpdateSettingsCommand } from "./commands/settingsCommands"
 import { ViewChangeCommand } from "./commands/viewCommands"
+import {
+  AddLayerCommand,
+  RemoveLayerCommand,
+  SetCurrentLayerCommand,
+} from "./commands/layerCommands"
 import { NewDrawingCommand } from "./commands/entityCommands"
 import { MACRO_PAUSE, PointerInput, Tool, ToolContext } from "./tools/Tool"
 import { InsertTool } from "./tools/InsertTool"
@@ -158,7 +163,7 @@ import {
   SHORTCUT_MENU_COMMANDS,
 } from "./runtimeShortcutMenu"
 import { Clipboard, DrawingStore, EngineHost, FileTransport } from "./ports"
-import { nextLayerName, updateLayer } from "./runtimeLayers"
+import { LayerPatch, nextLayerName, updateLayer } from "./runtimeLayers"
 import { buildBlockPreview, purgeBlocks } from "./runtimeBlocks"
 import {
   CommandPrompt,
@@ -3560,9 +3565,9 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * Creates a new layer and (by default) makes it the current one so the next
-   * geometry lands on it, matching AutoCAD's "New Layer + Set Current" flow.
-   * Returns the new layer's id.
+   * Creates a new layer and (by default) makes it the current one, as
+   * -LAYER's Make does: one step of the Layer Properties Manager's. Returns
+   * the new layer's id.
    */
   createLayer(
     name?: string,
@@ -3574,33 +3579,94 @@ export class CadRuntime extends Observable {
         nextLayerName(this.document, (n) => this.text.defaultLayerName(n)),
       color
     )
-    this.document.addLayer(layer)
-    if (makeCurrent) this.document.setCurrentLayer(layer.id)
+    this.layerStep(new AddLayerCommand(layer, makeCurrent))
     return layer.id
   }
 
-  updateLayer(
-    id: LayerId,
-    patch: Partial<
-      Pick<
-        Layer,
-        "name" | "color" | "linetype" | "lineweight" | "visible" | "locked"
-      >
-    >
-  ): void {
-    updateLayer(this.document, this.selection, id, patch)
+  /**
+   * The Layer Properties Manager's New Layer: `Layer1` with the colour,
+   * linetype and lineweight of `like` (the layer selected in it), or the
+   * defaults with none, and the current layer kept (desktop d04-4).
+   */
+  newLayer(like?: LayerId): LayerId {
+    const from = like === undefined ? undefined : this.document.getLayer(like)
+    const layer = createLayer(
+      nextLayerName(this.document, (n) => this.text.defaultLayerName(n)),
+      from?.color,
+      from?.linetype,
+      from?.lineweight
+    )
+    this.layerStep(new AddLayerCommand(layer, false))
+    return layer.id
   }
 
-  setCurrentLayer(id: LayerId): void {
-    this.document.setCurrentLayer(id)
+  /**
+   * A change to a layer, one step of the Layer Properties Manager's. A name
+   * AutoCAD refuses changes nothing and says why (`LayerNameRefusal`).
+   */
+  updateLayer(id: LayerId, patch: LayerPatch): LayerNameRefusal | null {
+    return updateLayer(
+      this.document,
+      this.selection,
+      (command, regenerates) => this.layerStep(command, regenerates),
+      id,
+      patch
+    )
+  }
+
+  /**
+   * Makes a layer current: CLAYER set from the Layers drop-down or the
+   * Properties palette, a step U names `'CLAYER` (desktop d05-1), or from the
+   * Layer Properties Manager (`manager`), one of its steps.
+   */
+  setCurrentLayer(id: LayerId, from: "control" | "manager" = "control"): void {
+    const document = this.document
+    if (id === document.getCurrentLayerId() || !document.getLayer(id)) return
+    const command = new SetCurrentLayerCommand(id)
+    if (from === "manager") this.layerStep(command)
+    else this.executeOutside(command, this.text.transparentCommand("CLAYER"))
   }
 
   /**
    * Removes a layer if allowed (never the base layer `0`, the current layer, or
-   * a layer that still owns geometry). Returns whether it was removed.
+   * a layer that holds an object, in a block definition too), one step of the
+   * Layer Properties Manager's. Returns whether it was removed.
    */
   removeLayer(id: LayerId): boolean {
-    return this.document.removeLayer(id)
+    if (!this.document.canRemoveLayer(id)) return false
+    this.layerStep(new RemoveLayerCommand(id))
+    return true
+  }
+
+  /**
+   * One of the Layer Properties Manager's edits: a step U names `'.-LAYER`,
+   * which runs it so (desktop d04-2), joining the edits just before it
+   * ({@link CommandHistory.executeLayerEdit}).
+   */
+  private layerStep(command: Command, regenerates = false): void {
+    this.history.executeLayerEdit(
+      command,
+      this.text.message("layerManagerStep"),
+      regenerates
+    )
+  }
+
+  /**
+   * A change made from a bar or a palette: at `Command:` a step of its own,
+   * named `name`; while a command runs it joins that command's step, as a
+   * palette's change does.
+   */
+  private executeOutside(command: Command, name: string): void {
+    if (this.activeTool.id !== "select") {
+      this.history.execute(command)
+      return
+    }
+    this.history.nameCommand(name)
+    try {
+      this.history.execute(command)
+    } finally {
+      this.history.nameCommand(null)
+    }
   }
 
   /**

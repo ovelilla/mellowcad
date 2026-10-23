@@ -252,10 +252,11 @@ Settings are split on purpose. What AutoCAD's U undoes goes through a command
 executes nothing): ATTMODE, the UCS and its table, UCSICON, ELEVATION, THICKNESS, LTSCALE, AUPREC,
 UNITS (`applyDrawingUnits`), CECOLOR / CELTYPE / CELWEIGHT (`setCurrentProperties`). A setting
 another implies belongs in the same patch (the WCS puts ELEVATION to 0). A host's own setters
-(`setDocumentUnit`, `setDocumentPrecision`, `setLtScale`, the style and layer table edits in
-`runtimeStyles.ts` / `runtimeLayers.ts`) write the document directly and are not undoable. NAVVCUBE's
-setting is a `CadDocument` setter reached through `setViewCubeVisible`, so U leaves it, where
-AutoCAD's puts it back (move/p238, view.md Missing).
+(`setDocumentUnit`, `setDocumentPrecision`, `setLtScale`, the style table edits in
+`runtimeStyles.ts`) write the document directly and are not undoable. The layer table and CLAYER
+are commands; the Layer Properties Manager's go through `executeLayerEdit` (UNDO Layer folds them).
+NAVVCUBE's setting is a `CadDocument` setter reached through `setViewCubeVisible`, so U leaves it,
+where AutoCAD's puts it back (move/p238, view.md Missing).
 
 A command that adds **table entries alongside geometry** (BLOCK's definition, PASTECLIP's layers,
 styles and blocks) carries them through the history and undoes them in reverse order (the tables

@@ -32,8 +32,52 @@ export interface Layer {
 /** The always-present base layer, matching AutoCAD's layer `0`. */
 export const DEFAULT_LAYER_ID: LayerId = "0"
 
-/** Default entity colour, used by the base layer (matches the entity theme). */
-export const DEFAULT_LAYER_COLOR = "#e2e8f0"
+/**
+ * Layer 0's colour and a new layer's: AutoCAD's index colour 7, white (p300:
+ * group 62 is 7), drawn in the screen's foreground (`drawnColor`).
+ */
+export const DEFAULT_LAYER_COLOR = "#ffffff"
+
+/**
+ * What a layer name may not hold, as AutoCAD's Layer Properties Manager lists
+ * it (desktop d04-13, the string in `AcLayer.resources.dll`).
+ */
+export const INVALID_LAYER_NAME_CHARACTERS = '<>/\\":;?*|,=`'
+
+/**
+ * Why a layer cannot take a name: it is layer 0 (`base`, d04-16, p319),
+ * another layer has it in any case (`inUse`, d04-11, d04-14, p320), or it
+ * holds a character AutoCAD refuses (`invalid`, d04-13, p321).
+ */
+export type LayerNameRefusal = "base" | "inUse" | "invalid"
+
+/** Whether layer `id` may be called `name` among `layers`; null when it may. */
+export function layerNameRefusal(
+  layers: readonly Layer[],
+  id: LayerId,
+  name: string
+): LayerNameRefusal | null {
+  if (id === DEFAULT_LAYER_ID) return "base"
+  if ([...name].some((c) => INVALID_LAYER_NAME_CHARACTERS.includes(c))) {
+    return "invalid"
+  }
+  const key = name.toUpperCase()
+  if (layers.some((l) => l.id !== id && l.name.toUpperCase() === key)) {
+    return "inUse"
+  }
+  return null
+}
+
+/**
+ * The order AutoCAD's Layer Properties Manager and Layers drop-down list
+ * layers in: by name, case aside (d04-1, d05-1). Layer `0` comes first as any
+ * name sorts it.
+ */
+export function compareLayerNames(a: Layer, b: Layer): number {
+  const x = a.name.toUpperCase()
+  const y = b.name.toUpperCase()
+  return x < y ? -1 : x > y ? 1 : 0
+}
 
 let layerIdCounter = 0
 
