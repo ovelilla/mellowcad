@@ -4416,6 +4416,56 @@ SECOND, Justify=Middle center, Height=10.00 mm~, Rotation=0°~, Line space facto
   command| LTS LTSCALE
   prompt| Enter new linetype scale factor <2.5000>:
 
+## FILL
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> FILL
+  prompt: FILL Enter mode [ON/OFF] <ON>:
+  asks: 
+  tip: Enter mode
+  dyn: 
+  options: [ON] ON, [OF] OFF
+  command| FILL
+> FOO
+  prompt| Enter mode [ON/OFF] <ON>: FOO
+  error| Invalid option keyword.
+> O
+  prompt: FILL ON or OFf?
+  tip: ON or OFf?
+  prompt| Enter mode [ON/OFF] <ON>: O
+  error| Ambiguous response, please clarify...
+> OF
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| ON or OFf? OF
+> FILL again
+  prompt: FILL Enter mode [ON/OFF] <OFF>:
+  asks: 
+  tip: Enter mode
+  dyn: 
+  options: [ON] ON, [OF] OFF
+  command| FILL
+> 1
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Enter mode [ON/OFF] <OFF>: 1
+> U
+  command| U
+  info| FILL
+
 ## -COLOR
 > start
   prompt: Command:

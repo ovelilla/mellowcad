@@ -184,11 +184,12 @@ variables (roadmap row 24)
 
 ### `FILL` · es `RELLENAR`
 
-**Implemented:** `Enter mode [ON/OFF] <ON>:` (es `Indique modo [ACT/DES]`, the table's; the Spanish
-name is CAD Forum's, **unverified** in Autodesk's help), offering the current FILLMODE, which the
-drawing keeps: wide polylines filled or outlined, each segment's band closed; `1` and `0` (declared,
-unlisted) are ON and OFF, `O` asks `ON or OFf?`, FOO `Invalid option keyword.`, transparent
-(`'FILL`), and U takes it back, as AutoCAD 2023's console (acc/w22, w24); a wide polyline off the
+**Implemented:** `Enter mode [ON/OFF] <ON>:` (es `Indique modo [ACT/DES]`, the table's; RELLENAR
+runs it in Spanish, p176), offering the current FILLMODE, which the drawing keeps: wide polylines
+filled or outlined, each segment's band closed; `1` and `0` (declared, unlisted) are ON and OFF
+(p168, p169), `O` asks `ON or OFf?` (p170), FOO `Invalid option keyword.` (es `Opción no válida.`,
+p171), transparent (`'FILL`, p178), and U takes it back naming `FILL` (es `RELLENAR`), even when
+Enter kept it (p174, p175), as AutoCAD 2027's console does; a wide polyline off the
 plan is outlined, as AutoCAD fills one only seen along its extrusion direction
 
 **Missing:** solid hatches and fills stay filled (what a solid hatch shows with FILL off is

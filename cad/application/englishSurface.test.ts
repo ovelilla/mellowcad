@@ -1206,6 +1206,16 @@ describe("the engine's English surface", () => {
         .do("factor", (c) => c.type("2.5").enter())
         .do("LTS enter", (c) => c.command("LTS").enter())
     )
+    walk("FILL", createHarness(), (s) =>
+      s
+        .do("FILL", (c) => c.command("FILL"))
+        .do("FOO", (c) => answer(c, "FOO"))
+        .do("O", (c) => answer(c, "O"))
+        .do("OF", (c) => answer(c, "OF"))
+        .do("FILL again", (c) => c.command("FILL"))
+        .do("1", (c) => answer(c, "1"))
+        .do("U", (c) => c.command("U"))
+    )
     walk("-COLOR", createHarness(), (s) =>
       s
         .do("-COLOR", (c) => c.command("-COLOR"))

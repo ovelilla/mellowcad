@@ -13,8 +13,8 @@ import { es } from "../../locales/es"
 
 // AutoCAD's console is the reference for every prompt, refusal and width
 // below: what the same answers draw there, read back with MPDUMP — 2027's for
-// PLINE (probes pline/p200–p225) and RECTANG (rectang/…), 2023's for the
-// other commands (acc/w8–w24).
+// PLINE (probes pline/p200–p225), RECTANG (rectang/…) and FILL
+// (properties/p166–p178), 2023's for the other commands (acc/w8–w23).
 
 /** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
 function answer(cad: CadHarness, ...answers: string[]): CadHarness {
@@ -23,6 +23,13 @@ function answer(cad: CadHarness, ...answers: string[]): CadHarness {
     cad.runtime.submitCommandLine()
   }
   return cad
+}
+
+/** The lines `answers` add to the history. */
+function written(cad: CadHarness, ...answers: string[]): string[] {
+  const from = cad.commandLog().length
+  answer(cad, ...answers)
+  return cad.commandLog().slice(from)
 }
 
 const round = (n: number) => Math.round(n * 10000) / 10000
@@ -496,17 +503,12 @@ describe("in Spanish", () => {
 })
 
 describe("FILL", () => {
-  it("sets FILLMODE, offering it, and U takes it back (acc/w22, w24)", () => {
+  it("sets FILLMODE, offering it, 1 and 0 too (probes properties/p168, p169)", () => {
     const cad = createHarness()
     cad.command("FILL")
     expect(cad.state().commandLine.prompt).toBe(
       "FILL Enter mode [ON/OFF] <ON>:"
     )
-    answer(cad, "FOO")
-    expect(cad.commandLog().slice(-2)).toEqual([
-      "Enter mode [ON/OFF] <ON>: FOO",
-      "Invalid option keyword.",
-    ])
     answer(cad, "0")
     expect(cad.runtime.document.getSettings().fillMode).toBe(false)
     cad.command("FILL")
@@ -515,18 +517,56 @@ describe("FILL", () => {
     )
     answer(cad, "1")
     expect(cad.runtime.document.getSettings().fillMode).toBe(true)
-    cad.command("FILL")
-    answer(cad, "O")
-    expect(cad.commandLog().at(-1)).toBe(
-      "Ambiguous response, please clarify..."
-    )
-    answer(cad, "OF")
-    expect(cad.runtime.document.getSettings().fillMode).toBe(false)
-    cad.command("U")
-    expect(cad.runtime.document.getSettings().fillMode).toBe(true)
   })
 
-  it("is transparent (acc/w22)", () => {
+  it("asks ON or OFf? after O (probe properties/p170)", () => {
+    const cad = createHarness()
+    cad.command("FILL")
+
+    expect(written(cad, "O")).toEqual([
+      "Enter mode [ON/OFF] <ON>: O",
+      "Ambiguous response, please clarify...",
+    ])
+    expect(cad.state().commandLine.prompt).toBe("FILL ON or OFf?")
+    expect(written(cad, "OF")).toEqual(["ON or OFf? OF"])
+    expect(cad.runtime.document.getSettings().fillMode).toBe(false)
+  })
+
+  it("refuses FOO and asks again, in English and in Spanish (probe properties/p171)", () => {
+    const cad = createHarness()
+    cad.command("FILL")
+    expect(written(cad, "FOO")).toEqual([
+      "Enter mode [ON/OFF] <ON>: FOO",
+      "Invalid option keyword.",
+    ])
+    answer(cad, "_OFF")
+    expect(cad.runtime.document.getSettings().fillMode).toBe(false)
+
+    const sp = createHarness({ locale: es })
+    sp.command("RELLENAR")
+    expect(written(sp, "FOO")).toEqual([
+      "Indique modo [ACT/DES] <ACT>: FOO",
+      "Opción no válida.",
+    ])
+  })
+
+  it("is taken back by U, which names it, also when Enter kept it (probes properties/p174, p175)", () => {
+    const cad = createHarness()
+    answer(cad, "FILL", "OFF")
+    expect(written(cad, "U")).toEqual(["U", "FILL"])
+    expect(cad.runtime.document.getSettings().fillMode).toBe(true)
+    answer(cad, "FILL", "")
+    expect(written(cad, "U")).toEqual(["U", "FILL"])
+
+    const sp = createHarness({ locale: es })
+    answer(sp, "RELLENAR", "DES")
+    expect(written(sp, "H")).toEqual(["H", "RELLENAR"])
+    expect(sp.runtime.document.getSettings().fillMode).toBe(true)
+    answer(sp, "RELLENAR", "")
+    expect(written(sp, "H")).toEqual(["H", "RELLENAR"])
+  })
+
+  it("is transparent (probe properties/p178)", () => {
     const cad = createHarness()
     cad.command("LINE")
     answer(cad, "0,0", "'FILL", "OFF")

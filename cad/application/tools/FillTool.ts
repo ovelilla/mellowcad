@@ -5,8 +5,8 @@ import { CommandOption, CommandOptionOutcome, Tool, ToolContext } from "./Tool"
 /**
  * AutoCAD's FILL: `Enter mode [ON/OFF] <ON>:`, the current FILLMODE offered,
  * which the drawing keeps and U takes back. Its table declares `ON OFf 1 0`
- * (25955): typed, `1` is ON and `0` OFF, as AutoCAD 2023's console takes
- * them (acc/w24). WHY the drawing shows it at once: AutoCAD fills or outlines
+ * (25955): typed, `1` is ON and `0` OFF, as AutoCAD 2027's console takes
+ * them (properties/p168, p169). WHY the drawing shows it at once: AutoCAD fills or outlines
  * what it already drew only at the next regeneration, and nothing here keeps
  * a regenerated display apart from the drawing.
  */
