@@ -42,6 +42,9 @@ how a string is worded, the console which string a prompt uses.
 - **`--interface`** matches short words loosely (`Top`, `Radius`): most of its hits are noise. The
   palettes' and ribbon's labels come from `ax26res.dll` and `acappres.dll`, which the tables do
   not hold; a label is compared with the desktop's screenshot instead.
+- Some commands keep their words in DLLs the tables do not merge: MATCHPROP's in `acmatchRes.dll`
+  (read it with `strtable.mjs`), the Layer Properties Manager's dialogs in
+  AcTaskDialogs.resources.dll, a .NET resource read by string search (Properties review).
 - **Arabic** has no AutoCAD language pack: its command language is the global one, and the sweep
   does not apply. Its interface is checked against `docs/i18n-glossary.md`.
 

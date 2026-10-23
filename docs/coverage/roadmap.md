@@ -70,7 +70,7 @@ with the area. The order puts first the commands whose review settles what the l
 | 13  | Corners          | FILLET, CHAMFER                                                                                                          | corners of lines, arcs and polylines                                                                                                                                                                                               | done  |
 | 14  | Pieces           | BREAK, BREAKATPOINT, JOIN, EXPLODE                                                                                       | a single object's pick with modes                                                                                                                                                                                                  | done  |
 | 15  | Arrays           | ARRAYRECT, ARRAYPOLAR, ARRAYPATH                                                                                         | the array object                                                                                                                                                                                                                   | done  |
-| 16  | Properties       | LAYER, LAYERCLOSE, COLOR, -COLOR, LINETYPE, -LINETYPE, LTSCALE, LWEIGHT, -LWEIGHT, PROPERTIES, PROPERTIESCLOSE, FILL, MATCHPROP | the style tables (layers, colours, linetypes, lineweights)                                                                                                                                                                         |       |
+| 16  | Properties       | LAYER, LAYERCLOSE, COLOR, -COLOR, LINETYPE, -LINETYPE, LTSCALE, LWEIGHT, -LWEIGHT, PROPERTIES, PROPERTIESCLOSE, FILL, MATCHPROP | the style tables (layers, colours, linetypes, lineweights)                                                                                                                                                                         | done  |
 | 17  | Text             | TEXT, MTEXT, -MTEXT, TEXTEDIT, STYLE                                                                                     | the text objects and their editors                                                                                                                                                                                                 |       |
 | 18  | HATCH            | HATCH                                                                                                                    | the hatch object                                                                                                                                                                                                                   |       |
 | 19  | Blocks           | BLOCK, INSERT, ATTDEF, -ATTDEF, ATTEDIT, EATTEDIT, ATTDISP, BLOCKSPALETTE, PURGE                                         | blocks and attributes                                                                                                                                                                                                              |       |
@@ -93,8 +93,8 @@ the drawn pick box) and `1 was on a locked layer.` (TRP-01 to TRP-03: `docs/plan
 FILLET's, CHAMFER's and BREAK's picks are checked for the same, and for their refusals said.
 FILLET's and CHAMFER's took them too, and no single object's pick takes a locked find any more,
 BREAK's included, which says nothing for one yet (CRP-01, CRP-03: `docs/plans/corners-review.md`):
-the Pieces review probes BREAK's words, and the Properties review the locked layers' fade and
-padlock the corners' desktop showed (d04-4). JOIN reads a window's or a crossing's find newest first, `ssget`'s
+the Pieces review probes BREAK's words; the Properties review drew the locked layers' fade and
+padlock at `Command:` (LKD-02), at the commands' prompts they are still missing. JOIN reads a window's or a crossing's find newest first, `ssget`'s
 order (pieces/p390); every other set keeps the drawing's, which `Select objects:` checks per
 command (JNG-05: `docs/plans/pieces-review.md`). A single object's pick tests the newest object
 under the pick box, locked or not, and a command passing `locked` says it once per locked object
@@ -104,4 +104,10 @@ UCS review probes its words. A point typed
 at `Select objects:` or a single object's pick off the screen still finds (BRP-04, pieces/p158):
 for the `Select objects:` area. EXPLODE's texts from an MTEXT stand where this layout's metrics put
 each line, not where AutoCAD's font does (EXP-06, pieces/p255): for the Text review. The anonymous
-blocks' purge on save and a block reference's grips, for the Blocks review.
+blocks' purge on save and a block reference's grips, for the Blocks review. Objects on a locked
+layer are selected at `Command:`, edits refuse them and a command given them as a preselection
+says `1 was on a locked layer.` (LKD-01: `docs/plans/properties-review.md`); 2027's -BLOCK converts
+what it takes into a reference by default (`Object conversion=Convert`, properties/p380), and a
+layer a block definition uses cannot be deleted (LAY-02): for the Blocks review, BLOCK's and
+PURGE's sides. LWDISPLAY, LAYLOCKFADECTL, CECOLOR, CELTYPE and CELWEIGHT typed as variables: for
+the Workspace review (SETVAR).

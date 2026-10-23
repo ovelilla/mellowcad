@@ -201,6 +201,12 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
 - When the command's object is not modelled yet, its desktop pass of grips, menus and palette goes
   in the review's first session anyway: it sizes the object's block before the plan (Arrays).
 
+- Before any desktop click, capture the whole monitor AutoCAD is on: another window can cover it
+  and take the click (properties/e01-1). Without the mouse, read a palette by its handle
+  (`shot <hwnd>`) and a combo box's items with `CB_GETLBTEXT`. A task dialog's command link
+  (`CommandLink_<id>`) is pressed with TDM_CLICK_BUTTON as `uia.ps1` presses its push buttons; a
+  dialog whose Cancel UIA cannot invoke closes with a posted `WM_COMMAND IDCANCEL` (Properties review).
+
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).
 

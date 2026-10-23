@@ -161,6 +161,8 @@ the review, not an "n/a".
   claim of the entry (Implemented and Missing) into a matrix cell to check (§4.4).
 - Draw the matrix's columns from the tool's `question()` states and the console's prompts: a
   prompt AutoCAD has and the tool lacks is already a finding.
+- An edit made outside a command (a palette, a drop-down, a grip) is a row of its own for U's
+  echo: AutoCAD names it (`CHPROP`, `Modify Property`, `Grip Edit`; properties/d05-2).
 - Read what each command leaves selected (`(ssget "_I")` after it ends or is cancelled): a set
   left behind is the next command's preselection (ERASE's SEL-43).
 
@@ -375,3 +377,6 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
 - 2026-10-22, after the Arrays review: picks off the command line's band, registry keywords put
   back, a reading by handle with two U, snaps off while a drag is measured, keys into the
   palette's window, the object's desktop pass before its plan (annex-probes.md §4).
+- 2026-10-23, after the Properties review: the whole monitor captured before a click, a pass
+  without the mouse, task dialogs' links and Cancel (annex-probes.md §4), U's echo for an edit
+  made outside a command (§4.1), the resource DLLs the tables lack (annex-catalogs.md §3).
