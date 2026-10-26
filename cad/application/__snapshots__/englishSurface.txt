@@ -1464,9 +1464,9 @@ lweight "Lineweight" LW
   dyn: "X,Y"=""||*
   options: [P] Properties, [S] Select objects
   command| H HATCH
-  info| Current hatch pattern:  ANSI31
+  info| Current hatch pattern:  ANGLE
 > P
-  prompt: HATCH Enter a pattern name or [?/Solid] <ANSI31>:
+  prompt: HATCH Enter a pattern name or [?/Solid] <ANGLE>:
   asks: "Enter a pattern name"
   tip: Enter a pattern name or
   dyn: "Enter a pattern name"=""||*
@@ -1476,14 +1476,36 @@ lweight "Lineweight" LW
   dyn: "Enter a pattern name"="?"||*
 > enter
   dyn: "Enter a pattern name"=""||*
-  prompt| Enter a pattern name or [?/Solid] <ANSI31>: ?
+  prompt| Enter a pattern name or [?/Solid] <ANGLE>: ?
   info| SOLID  Solid fill
+        ANGLE  Angle steel
         ANSI31  ANSI Iron, Brick, Stone masonry
+        ANSI32  ANSI Steel
+        ANSI33  ANSI Bronze, Brass, Copper
+        ANSI34  ANSI Plastic, Rubber
+        ANSI35  ANSI Fire brick, Refractory material
+        ANSI36  ANSI Marble, Slate, Glass
+        ANSI37  ANSI Lead, Zinc, Magnesium, Sound/Heat/Elec Insulation
+        ANSI38  ANSI Aluminum
+        LINE  Parallel horizontal lines
+        NET  Horizontal / vertical grid
+        NET3  Network pattern 0-60-120
+        DASH  Dashed lines
+        SQUARE  Small aligned squares
+        STEEL  Steel material
+        BRICK  Brick or masonry-type surface
+        CROSS  A series of crosses
+        ZIGZAG  Staircase effect
+        HONEY  Honeycomb pattern
+        EARTH  Earth or ground (subterranean)
+        DOTS  A series of dots
+        AR-SAND  random dot pattern
+        AR-CONC  random dot and stone pattern
 > unknown pattern
   dyn: "Enter a pattern name"="NOPE"||*
 > enter
   dyn: "Enter a pattern name"=""||*
-  prompt| Enter a pattern name or [?/Solid] <ANSI31>: NOPE
+  prompt| Enter a pattern name or [?/Solid] <ANGLE>: NOPE
   error| Unknown pattern name.
 > ANSI31
   dyn: "Enter a pattern name"="ANSI31"||*
@@ -1493,7 +1515,7 @@ lweight "Lineweight" LW
   tip: Specify a scale for the pattern
   dyn: "Specify a scale for the pattern"=""||*
   options: -
-  prompt| Enter a pattern name or [?/Solid] <ANSI31>: ANSI31
+  prompt| Enter a pattern name or [?/Solid] <ANGLE>: ANSI31
 > scale
   dyn: "Specify a scale for the pattern"="0.0001"||*
 > enter
@@ -5152,9 +5174,9 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
 > select D5
   properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Diameter] [Definition points: First X=0.00, First Y=0.00, Second X=50.00, Second Y=0.00]
 > select H1
-  properties: Hatch (1) [Pattern: Pattern=ANSI31, Scale=1.00~, Angle=0°~, Boundaries=1] [Geometry: Elevation=0.00~]
+  properties: Hatch (1) [Pattern: Type=Predefined, Pattern name=ANGLE, Annotative=No, Angle=0°~, Scale=1.00~, Origin X=0.00~, Origin Y=0.00~, Associative=No, Island detection style=Outer] [Geometry: Elevation=0.00~, Area=10000.00 mm², Cumulative Area=10000.00 mm²]
 > select H2
-  properties: Hatch (1) [Pattern: Pattern=Solid, Scale=1.00~, Angle=0°~, Boundaries=1] [Geometry: Elevation=0.00~]
+  properties: Hatch (1) [Pattern: Type=Predefined, Pattern name=Solid, Annotative=No, Angle=0°~, Scale=1.00~, Origin X=0.00~, Origin Y=0.00~, Associative=No, Island detection style=Outer] [Geometry: Elevation=0.00~, Area=10000.00 mm², Cumulative Area=10000.00 mm²]
 > select I1
   properties: Block Reference (1) [Block: Name=BAR, Scale=1.00~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~]
 > select I2

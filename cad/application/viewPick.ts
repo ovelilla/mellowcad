@@ -128,7 +128,8 @@ export function screenDistanceToEntity(
   const onPlane = (z: number) => {
     const plane = planeCamera(camera, z, axes)
     const closest = closestOnEntity(entity, plane.screenToWorld(screen), blocks)
-    // Inside an area (a text, a hatch) the closest point is on its edge.
+    // Inside an area (a text's box, a SOLID hatch) the closest point is on
+    // its edge; a pattern hatch is picked by its lines.
     if (closest.distance === 0) return 0
     const at = plane.worldToScreen(closest.point)
     return Math.hypot(at.x - screen.x, at.y - screen.y)

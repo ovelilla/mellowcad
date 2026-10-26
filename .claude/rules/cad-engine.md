@@ -59,8 +59,8 @@ capability the app has belongs to the engine, behind a port; only the _mechanism
 ## Conventions
 
 - `geometry/` and `domain/` are pure: no I/O, no mutation of inputs, no hidden state — **except
-  the id counters** (`nextEntityId`, `nextLayerId`: a module-level counter plus `Date.now`). Entity
-  helpers return new objects and either keep the id (in-place edit) or mint one (`*Copy` helpers).
+  the id counters** (`nextEntityId`, `nextLayerId`) and `hatchGeometry`'s memo. Entity helpers
+  return new objects and either keep the id (in-place edit) or mint one (`*Copy` helpers).
 - Angles are **radians CCW from +X** in `geometry/` and `domain/`; degrees only at the UI boundary.
   Normalise with `normalizeAngle` / `normalizeDegrees` (`geometry/primitives`): a hand-rolled
   `deg < 0 ? deg + 360 : deg` lands a tiny negative angle on exactly 360 (ESLint fails on it).
@@ -97,8 +97,8 @@ Dependencies run types → per-type modules → overrides → transforms → que
 ## Modelling
 
 - **Locked: drawn, snapped, selected, never edited** (`isEntityEditable`).
-- An entity that is an **area** (text, hatch) hit-tests as filled, by the even-odd rule that fills
-  it: a nested loop is a hole for picking as for painting.
+- An **area** (a text's box, a SOLID hatch) hit-tests as filled, by the even-odd rule that fills
+  it (a nested loop is a hole); a pattern hatch by its lines (`hatchGeometry`).
 - **Store a direction-and-size as one vector** (an ellipse's vector to the major-axis endpoint):
   it transforms exactly like a point.
 - **A pair of optional fields is a trap TypeScript cannot see.** An elliptical arc's `startParam`

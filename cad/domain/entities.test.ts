@@ -94,6 +94,7 @@ import {
   withThickness,
 } from "./entities"
 import { DEFAULT_LAYER_ID } from "./layers"
+import { SOLID_HATCH_PATTERN_ID } from "./hatchPatterns"
 import {
   angle,
   distinctPoints,
@@ -1163,6 +1164,8 @@ describe("Z", () => {
     })
   })
 
+  // Desktop hatch/d07: MATCHPROP copies an ANSI31 2/30 hatch's name, angle
+  // and scale onto an ANGLE hatch; its pattern base (DXF 43/44) stays 0,0.
   it("matches a hatch's pattern, scale and angle, not its origin or boundary", () => {
     const source = createHatch([loopOf(p(0, 0), p(1, 1))], {
       patternId: "ANSI37",
@@ -2130,12 +2133,27 @@ describe("hatch", () => {
     expect(hatchLoopSegments({ vertices: [p(0, 0)] })).toHaveLength(0)
   })
 
-  it("picks as a filled area, not as an outline", () => {
-    const hatch = createHatch([square])
-    expect(distanceToEntity(hatch, p(50, 50))).toBe(0)
-    expect(distanceToEntity(hatch, p(120, 50))).toBeCloseTo(20)
-    expect(pointInsideHatch(hatch, p(50, 50))).toBe(true)
-    expect(pointInsideHatch(hatch, p(150, 50))).toBe(false)
+  // HATCH-D64: a pattern hatch by its lines (desktop hatch/d06-2, d06-3,
+  // probes p322, p327), a SOLID by its area (d06-5).
+  it("picks a pattern by its lines and a SOLID as a filled area", () => {
+    // ANSI31 at scale 10: 45° lines 31.75 apart, one through the origin.
+    const pattern = createHatch([square], {
+      patternId: "ANSI31",
+      patternScale: 10,
+    })
+    expect(distanceToEntity(pattern, p(50, 50))).toBeCloseTo(0, 9)
+    expect(distanceToEntity(pattern, p(30, 10))).toBeCloseTo(
+      Math.SQRT1_2 * 20,
+      9
+    )
+    // On the boundary off the lines: nothing there either (p327).
+    expect(distanceToEntity(pattern, p(78, 0))).toBeGreaterThan(5)
+
+    const solid = createHatch([square], { patternId: SOLID_HATCH_PATTERN_ID })
+    expect(distanceToEntity(solid, p(30, 10))).toBe(0)
+    expect(distanceToEntity(solid, p(120, 50))).toBeCloseTo(20)
+    expect(pointInsideHatch(solid, p(50, 50))).toBe(true)
+    expect(pointInsideHatch(solid, p(150, 50))).toBe(false)
   })
 
   it("treats a nested loop as a hole", () => {
@@ -2155,11 +2173,19 @@ describe("hatch", () => {
     })
   })
 
-  it("is crossed by a box drawn wholly inside it", () => {
-    const hatch = createHatch([square])
-    expect(entityCrossesRect(hatch, p(40, 40), p(60, 60))).toBe(true)
-    expect(entityCrossesRect(hatch, p(-50, -50), p(-10, -10))).toBe(false)
-    expect(entityCrossesRect(hatch, p(90, 40), p(150, 60))).toBe(true)
+  // HATCH-D64, probes hatch/p322, p326: a crossing between a pattern's lines
+  // finds nothing; one wholly inside a SOLID takes it.
+  it("is crossed by a box on its lines, or anywhere inside a SOLID", () => {
+    const pattern = createHatch([square], {
+      patternId: "ANSI31",
+      patternScale: 10,
+    })
+    expect(entityCrossesRect(pattern, p(25, 5), p(35, 15))).toBe(false)
+    expect(entityCrossesRect(pattern, p(45, 45), p(55, 55))).toBe(true)
+    expect(entityCrossesRect(pattern, p(90, 40), p(150, 60))).toBe(true)
+    const solid = createHatch([square], { patternId: SOLID_HATCH_PATTERN_ID })
+    expect(entityCrossesRect(solid, p(25, 5), p(35, 15))).toBe(true)
+    expect(entityCrossesRect(solid, p(-50, -50), p(-10, -10))).toBe(false)
   })
 
   it("retypes its pattern scale and angle, and refuses the rest", () => {
@@ -2172,6 +2198,10 @@ describe("hatch", () => {
     ).toBeCloseTo(Math.PI / 2)
     expect(applyEntityProperty(hatch, "patternScale", 0)).toBeNull()
     expect(applyEntityProperty(hatch, "radius", 5)).toBeNull()
+    // Its Origin X and Y (desktop hatch/d05-1).
+    const moved = applyEntityProperty(hatch, "originX", 5)
+    const both = moved && applyEntityProperty(moved, "originY", 3)
+    expect(both && both.type === "hatch" && both.origin).toEqual({ x: 5, y: 3 })
   })
 
   it("draws nothing for a pattern it does not ship", () => {

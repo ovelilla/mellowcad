@@ -117,7 +117,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 31
+export const DRAWING_FILE_VERSION = 32
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -987,6 +987,20 @@ function endTangentOf(value: unknown, version: number): Vec2 | undefined {
     : undefined
 }
 
+/**
+ * Before 32 the registry held acad.pat's imperial ANSI31 (spacing 0.125); it
+ * holds acadiso.pat's (3.175) since (HATCH-D63). An older ANSI31 hatch is read
+ * at its scale over 25.4, so it draws as it was saved.
+ */
+function hatchScaleOf(
+  patternId: string,
+  value: unknown,
+  version: number
+): number {
+  const scale = isFiniteNumber(value) && value > 0 ? value : DEFAULT_HATCH_SCALE
+  return version < 32 && patternId === "ANSI31" ? scale / 25.4 : scale
+}
+
 function parseEntityShape(raw: unknown, version: number): Entity | null {
   if (!isRecord(raw)) return null
   const id =
@@ -1197,17 +1211,19 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
     case "hatch": {
       const loops = parseHatchLoops(raw.loops)
       if (loops.length === 0) return null
+      // Before 32 a hatch without a name was the default then, ANSI31.
+      const patternId = parseId(
+        raw.patternId,
+        version < 32 ? "ANSI31" : DEFAULT_HATCH_PATTERN_ID
+      )
       return {
         id,
         type: "hatch",
         layerId,
         ...overrides,
         loops,
-        patternId: parseId(raw.patternId, DEFAULT_HATCH_PATTERN_ID),
-        patternScale:
-          isFiniteNumber(raw.patternScale) && raw.patternScale > 0
-            ? raw.patternScale
-            : DEFAULT_HATCH_SCALE,
+        patternId,
+        patternScale: hatchScaleOf(patternId, raw.patternScale, version),
         patternAngle: isFiniteNumber(raw.patternAngle)
           ? raw.patternAngle
           : DEFAULT_HATCH_ANGLE,

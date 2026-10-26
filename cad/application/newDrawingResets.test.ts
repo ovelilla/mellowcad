@@ -84,13 +84,11 @@ describe.each(RESETS)("after %s", (_, reset) => {
     cad.escape()
   })
 
-  it("HATCH offers ANSI31 (HPNAME, rectang/p303)", () => {
+  it("HATCH offers ANGLE (HPNAME, hatch/p00, rectang/p303)", () => {
     const cad = answer(session(), "_HATCH", "_P", "SOLID", "")
     reset(cad)
     answer(cad, "_HATCH", "_P")
-    expect(prompt(cad)).toBe(
-      "HATCH Enter a pattern name or [?/Solid] <ANSI31>:"
-    )
+    expect(prompt(cad)).toBe("HATCH Enter a pattern name or [?/Solid] <ANGLE>:")
     cad.escape()
   })
 

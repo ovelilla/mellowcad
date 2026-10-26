@@ -84,7 +84,7 @@ script — updates it in the same change.
   _about_ an aid. End a live script mid-gesture (a `moveTo`, a `down` without `up`). A still with
   dimensions sets `frame`: extents know a dimension's definition points, not how far its text runs.
 - Scripts are real input: a point after the first is **relative** under dynamic input
-  (DYNPICOORDS), so write `@`, or `#` for absolute; ANSI31 needs HPSCALE in a millimetre drawing;
+  (DYNPICOORDS), so write `@`, or `#` for absolute; HATCH starts on ANGLE, so name the pattern;
   OTRACK acquires by dwelling, so use `hover`, which waits for the engine's timer.
 - `content/figures.test.ts` replays every figure (no error lines, something drawn) and holds the
   hero to 8–12 s and ≤ 600 primitives.

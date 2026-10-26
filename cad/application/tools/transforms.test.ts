@@ -2361,7 +2361,7 @@ describe("EXPLODE", () => {
   )
 
   // probe pieces/p259: ANSI31 at scale 1 in a metric drawing (acadiso.pat's
-  // `45, 0,0, 0,3.175`, here ANSI31 at 25.4) over -50,-25 → 50,25, its
+  // `45, 0,0, 0,3.175`) over -50,-25 → 50,25, its
   // boundary erased → 33 LINEs at 45°, from -50,21.842 → -46.842,25 to the
   // far corner, each `Continuous`; the hatch gone.
   it("explodes a pattern hatch into its pattern's lines, clipped to its boundary (pieces/p259)", () => {
@@ -2369,7 +2369,6 @@ describe("EXPLODE", () => {
       entities: [
         hatchOf([loopOf(p(-50, -25), p(50, 25))], {
           patternId: "ANSI31",
-          patternScale: 25.4,
         }),
       ],
     })
@@ -2411,7 +2410,7 @@ describe("EXPLODE", () => {
           ...hatchOf([loopOf(p(-50, -25), p(50, 25))], {
             id: "H",
             layerId: "L1",
-            patternScale: 25.4,
+            patternId: "ANSI31",
           }),
           color: "#ff0000",
           linetype: "Dashed",

@@ -425,6 +425,13 @@ export const en: EngineCatalog = {
         "pattern": "Pattern",
         "scale": "Scale",
         "boundaries": "Boundaries",
+        "patternName": "Pattern name",
+        "annotative": "Annotative",
+        "originX": "Origin X",
+        "originY": "Origin Y",
+        "associative": "Associative",
+        "islandDetectionStyle": "Island detection style",
+        "cumulativeArea": "Cumulative Area",
         "name": "Name",
         "tag": "Tag",
         "prompt": "Prompt",
@@ -492,7 +499,9 @@ export const en: EngineCatalog = {
         "counterClockwise": "Counter-clockwise",
         "clockwise": "Clockwise",
         "divide": "Divide",
-        "measure": "Measure"
+        "measure": "Measure",
+        "predefined": "Predefined",
+        "outer": "Outer"
       },
       "justify": {
         "left": "Left",
@@ -3479,7 +3488,29 @@ export const en: EngineCatalog = {
       ],
       "hatchPatternDescription": {
         "SOLID": "Solid fill",
-        "ANSI31": "ANSI Iron, Brick, Stone masonry"
+        "ANGLE": "Angle steel",
+        "ANSI31": "ANSI Iron, Brick, Stone masonry",
+        "ANSI32": "ANSI Steel",
+        "ANSI33": "ANSI Bronze, Brass, Copper",
+        "ANSI34": "ANSI Plastic, Rubber",
+        "ANSI35": "ANSI Fire brick, Refractory material",
+        "ANSI36": "ANSI Marble, Slate, Glass",
+        "ANSI37": "ANSI Lead, Zinc, Magnesium, Sound/Heat/Elec Insulation",
+        "ANSI38": "ANSI Aluminum",
+        "LINE": "Parallel horizontal lines",
+        "NET": "Horizontal / vertical grid",
+        "NET3": "Network pattern 0-60-120",
+        "DASH": "Dashed lines",
+        "SQUARE": "Small aligned squares",
+        "STEEL": "Steel material",
+        "BRICK": "Brick or masonry-type surface",
+        "CROSS": "A series of crosses",
+        "ZIGZAG": "Staircase effect",
+        "HONEY": "Honeycomb pattern",
+        "EARTH": "Earth or ground (subterranean)",
+        "DOTS": "A series of dots",
+        "AR-SAND": "random dot pattern",
+        "AR-CONC": "random dot and stone pattern"
       }
     },
     "defaults": {

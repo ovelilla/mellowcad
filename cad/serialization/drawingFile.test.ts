@@ -22,6 +22,7 @@ import {
 } from "../domain/hatchPatterns"
 import {
   Entity,
+  HatchEntity,
   createBlockDefinition,
   createDimension,
   createHatch,
@@ -1276,6 +1277,33 @@ describe("hatches", () => {
     expect(entity.patternAngle).toBe(DEFAULT_HATCH_ANGLE)
     expect(entity.origin).toEqual({ x: 0, y: 0 })
     expect(entity.loops[0].bulges).toBeUndefined()
+  })
+
+  // HATCH-D63: until version 31 the registry held acad.pat's imperial ANSI31
+  // (spacing 0.125), since 32 acadiso.pat's (3.175, probe hatch/p300).
+  it("version 31 — an ANSI31 hatch keeps the spacing it was drawn with", () => {
+    const old = (patternId?: string) =>
+      parseDrawingFile(
+        JSON.stringify({
+          type: DRAWING_FILE_TYPE,
+          version: 31,
+          entities: [
+            {
+              id: "h1",
+              type: "hatch",
+              loops: [{ vertices: [p(0, 0), p(100, 0), p(100, 50)] }],
+              ...(patternId ? { patternId } : {}),
+              patternScale: 20,
+            },
+          ],
+        })
+      ).entities[0] as HatchEntity
+    expect(old("ANSI31").patternScale).toBeCloseTo(20 / 25.4, 12)
+    // A hatch saved without a name was the default of its day, ANSI31.
+    expect(old().patternId).toBe("ANSI31")
+    expect(old().patternScale).toBeCloseTo(20 / 25.4, 12)
+    expect(old("SOLID").patternScale).toBe(20)
+    expect(DRAWING_FILE_VERSION).toBeGreaterThanOrEqual(32)
   })
 
   it("version 14 — a drawing from before hatches still opens", () => {

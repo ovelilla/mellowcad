@@ -118,7 +118,12 @@ function placeInReference(
     z: -(block.baseElevation ?? 0),
   })
   if (insert.mirrored) {
-    placed = mirrorEntity(placed, BLOCK_ORIGIN, BLOCK_MIRROR_AXIS)
+    placed = mirrorEntity(
+      placed,
+      BLOCK_ORIGIN,
+      BLOCK_MIRROR_AXIS,
+      "patternReflected"
+    )
   }
   if (insert.scale !== 1) {
     placed = scaleEntity(placed, BLOCK_ORIGIN, insert.scale)

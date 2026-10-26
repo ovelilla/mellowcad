@@ -9,8 +9,6 @@ import {
   carryOverrides,
   lineEndZ,
   lineStartZ,
-  polylineSegmentGeometries,
-  setPolylineBulge,
   translateEntity,
   withLineZ,
 } from "../../domain/entities"
@@ -54,6 +52,8 @@ import {
   radiusHandle,
   toDegrees,
   withRadius,
+  gripSegments,
+  withSegmentBulge,
   withSegmentStretched,
   withVertexAt,
 } from "./selectToolEdits"
@@ -1038,7 +1038,13 @@ export class SelectTool implements Tool {
     ctx: ToolContext
   ): void {
     const poly = ctx.document.get(grip.entityId)
-    if (poly?.type !== "polyline" && poly?.type !== "spline") return
+    if (
+      poly?.type !== "polyline" &&
+      poly?.type !== "spline" &&
+      poly?.type !== "hatch"
+    ) {
+      return
+    }
     this.state = {
       phase: "moveVertex",
       entityId: grip.entityId,
@@ -1223,7 +1229,7 @@ export class SelectTool implements Tool {
     ctx: ToolContext
   ): void {
     const poly = ctx.document.get(grip.entityId)
-    if (poly?.type !== "polyline") return
+    if (poly?.type !== "polyline" && poly?.type !== "hatch") return
     this.state = {
       phase: "stretchSegment",
       entityId: grip.entityId,
@@ -1244,8 +1250,8 @@ export class SelectTool implements Tool {
     ctx: ToolContext
   ): void {
     const poly = ctx.document.get(grip.entityId)
-    if (poly?.type !== "polyline") return
-    const seg = polylineSegmentGeometries(poly)[segmentIndex]
+    if (poly?.type !== "polyline" && poly?.type !== "hatch") return
+    const seg = gripSegments(poly)[segmentIndex]
     if (!seg) return
     this.state = {
       phase: "bulgeEdit",
@@ -1634,19 +1640,16 @@ export class SelectTool implements Tool {
     point: Vec2,
     ctx: ToolContext
   ): void {
-    const poly = ctx.document.get(state.entityId)
-    if (poly?.type === "polyline" && !V.equals(point, state.origin)) {
-      gripEdit(
-        ctx,
-        new UpdateEntityCommand(
-          withSegmentStretched(
-            poly,
+    const entity = ctx.document.get(state.entityId)
+    const moved =
+      entity && !V.equals(point, state.origin)
+        ? withSegmentStretched(
+            entity,
             state.segmentIndex,
             V.sub(point, state.origin)
           )
-        )
-      )
-    }
+        : null
+    if (moved) gripEdit(ctx, new UpdateEntityCommand(moved))
     ctx.dynamicInput.close()
     this.state = { phase: "idle" }
     ctx.requestRender()
@@ -1703,15 +1706,9 @@ export class SelectTool implements Tool {
     bulge: number,
     ctx: ToolContext
   ): void {
-    const poly = ctx.document.get(state.entityId)
-    if (poly?.type === "polyline") {
-      gripEdit(
-        ctx,
-        new UpdateEntityCommand(
-          setPolylineBulge(poly, state.segmentIndex, bulge)
-        )
-      )
-    }
+    const entity = ctx.document.get(state.entityId)
+    const bent = entity && withSegmentBulge(entity, state.segmentIndex, bulge)
+    if (bent) gripEdit(ctx, new UpdateEntityCommand(bent))
     ctx.dynamicInput.close()
     this.state = { phase: "idle" }
     ctx.requestRender()

@@ -438,6 +438,13 @@ export const ar: EngineLocale = {
         "pattern": "النقش",
         "scale": "المقياس",
         "boundaries": "الحدود",
+        "patternName": "اسم النقش",
+        "annotative": "توضيحي",
+        "originX": "نقطة الأصل X",
+        "originY": "نقطة الأصل Y",
+        "associative": "ترابطي",
+        "islandDetectionStyle": "نمط اكتشاف الجزر",
+        "cumulativeArea": "المساحة التراكمية",
         "name": "الاسم",
         "tag": "المعرّف",
         "prompt": "المطالبة",
@@ -505,7 +512,9 @@ export const ar: EngineLocale = {
         "counterClockwise": "عكس اتجاه عقارب الساعة",
         "clockwise": "مع اتجاه عقارب الساعة",
         "divide": "تقسيم",
-        "measure": "قياس"
+        "measure": "قياس",
+        "predefined": "معرّف مسبقًا",
+        "outer": "خارجي"
       },
       "justify": {
         "left": "يسار",

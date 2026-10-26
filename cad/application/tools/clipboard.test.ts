@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest"
 import { createHarness, MemoryClipboard } from "../../../test/harness"
-import { layerOf, lineOf, p, textOf } from "../../../test/builders"
+import { layerOf, lineOf, loopOf, p, textOf } from "../../../test/builders"
 import {
   createBlockDefinition,
+  createHatch,
   createInsert,
+  HatchEntity,
   InsertEntity,
   LineEntity,
   TextEntity,
@@ -75,6 +77,45 @@ describe("COPYCLIP", () => {
     })
     copy(cad, "L1")
     expect(cad.selectedIds()).toEqual(["L1"])
+  })
+})
+
+describe("a hatch through the clipboard", () => {
+  // HATCH review (HOB-11): its pattern settings and loops arrive whole, the
+  // pattern carried along with it as COPY carries it (probe hatch/p311).
+  it("keeps its pattern, scale, angle and loops, its origin moved with it", async () => {
+    const hatch = createHatch(
+      [
+        loopOf(p(0, 0), p(100, 50)),
+        { vertices: [p(60, 25), p(40, 25)], bulges: [1, 1] },
+      ],
+      {
+        patternId: "ANSI31",
+        patternScale: 20,
+        patternAngle: 0.5,
+        origin: p(3, 4),
+        id: "H",
+      }
+    )
+    const cad = createHarness({ entities: [{ ...hatch, color: "#ff0000" }] })
+    copy(cad, "H")
+    await pasteAt(cad, p(200, 0))
+
+    const pasted = cad
+      .entities()
+      .find((entity) => entity.id !== "H") as HatchEntity
+    expect(pasted.patternId).toBe("ANSI31")
+    expect(pasted.patternScale).toBe(20)
+    expect(pasted.patternAngle).toBe(0.5)
+    expect(pasted.origin).toBeCloseToPoint(p(203, 4))
+    expect(pasted.color).toBe("#ff0000")
+    expect(pasted.loops[0].vertices).toBeCloseToPoints([
+      p(200, 0),
+      p(300, 0),
+      p(300, 50),
+      p(200, 50),
+    ])
+    expect(pasted.loops[1].bulges).toEqual([1, 1])
   })
 })
 

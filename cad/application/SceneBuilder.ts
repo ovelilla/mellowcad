@@ -14,7 +14,6 @@ import {
   Entity,
   EntityId,
   HatchEntity,
-  HatchGeometry,
   LineEntity,
   PolylineEntity,
   ThickEntity,
@@ -1007,7 +1006,7 @@ function planarPrimitives(
         options.dimStyle ?? DEFAULT_DIM_STYLE
       )
     case "hatch":
-      return hatchPrimitives(camera, entity, stroke)
+      return hatchPrimitives(camera, entity, stroke, options)
     case "insert":
       // A ghost or rollover draws the whole reference in one colour; the real
       // scene resolves each nested object's own appearance (see pushEntities).
@@ -1020,32 +1019,21 @@ function planarPrimitives(
 }
 
 /**
- * Cached hatch geometry. Clipping the pattern happens in *world* space, so the
- * result depends only on the (immutable) entity and not on the camera — which
- * makes panning and zooming free without the scene builder ceasing to be a pure
- * function of its input.
- */
-const hatchGeometryCache = new WeakMap<HatchEntity, HatchGeometry>()
-
-function hatchGeometryOf(hatch: HatchEntity): HatchGeometry {
-  const cached = hatchGeometryCache.get(hatch)
-  if (cached) return cached
-  const geometry = hatchGeometry(hatch)
-  hatchGeometryCache.set(hatch, geometry)
-  return geometry
-}
-
-/**
  * A hatch: one filled path for a solid, otherwise the pattern's already-clipped
  * lines as ordinary segments. The boundary itself is not drawn — the objects it
- * was traced from are their own entities.
+ * was traced from are their own entities. With FILL off nothing is drawn,
+ * SOLID or pattern (probe hatch/p341).
  */
 function hatchPrimitives(
   camera: CameraTransform,
   hatch: HatchEntity,
-  stroke: StrokeStyle
+  stroke: StrokeStyle,
+  options: EntityDrawOptions
 ): ScenePrimitive[] {
-  const geometry = hatchGeometryOf(hatch)
+  if (options.fill === false) return []
+  // Cached per entity by the domain: clipping happens in world space, so the
+  // result does not depend on the camera and panning and zooming are free.
+  const geometry = hatchGeometry(hatch)
   if (geometry.rings.length === 0) return []
   if (geometry.solid) {
     const [first, ...rest] = geometry.rings
@@ -1059,12 +1047,18 @@ function hatchPrimitives(
       },
     ]
   }
-  return geometry.lines.map(([a, b]) => ({
-    kind: "segment" as const,
-    a: camera.worldToScreen(a),
-    b: camera.worldToScreen(b),
-    stroke,
-  }))
+  // Pattern lines draw continuous whatever the object's linetype, in its
+  // colour and lineweight (probe hatch/p340).
+  const solid: StrokeStyle = { color: stroke.color, width: stroke.width }
+  return geometry.lines.map(([a, b]) => {
+    const from = camera.worldToScreen(a)
+    // A dot is a run as long as the stroke is wide, as a linetype's dot is
+    // drawn (`drawnDash`).
+    const to = V.equals(a, b)
+      ? { x: from.x + Math.max(stroke.width, 1), y: from.y }
+      : camera.worldToScreen(b)
+    return { kind: "segment" as const, a: from, b: to, stroke: solid }
+  })
 }
 
 /**

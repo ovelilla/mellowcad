@@ -419,6 +419,13 @@ export const es: EngineLocale = {
         "pattern": "Patrón",
         "scale": "Escala",
         "boundaries": "Contornos",
+        "patternName": "Nombre de patrón",
+        "annotative": "Anotativo",
+        "originX": "Origen X",
+        "originY": "Origen Y",
+        "associative": "Asociativo",
+        "islandDetectionStyle": "Estilo de detección de islas",
+        "cumulativeArea": "Área acumulativa",
         "name": "Nombre",
         "tag": "Identificador",
         "prompt": "Solicitud",
@@ -486,7 +493,9 @@ export const es: EngineLocale = {
         "counterClockwise": "En el sentido antihorario",
         "clockwise": "En el sentido horario",
         "divide": "Dividir",
-        "measure": "Medir"
+        "measure": "Medir",
+        "predefined": "Predefinido",
+        "outer": "Exterior"
       },
       "justify": {
         "left": "Izquierda",
@@ -2368,7 +2377,7 @@ export const es: EngineLocale = {
         "\" no está definido."
       ],
       "hatchPatternUnknown": "Nombre de patrón desconocido.",
-      "hatchTooDense": "El intervalo de sombreado es demasiado denso o el trazo demasiado pequeño.",
+      "hatchTooDense": "Intervalo de sombreado demasiado denso o trazo demasiado pequeño.",
       "hatchNoBoundary": "No se ha encontrado un contorno de sombreado válido.",
       "noBoundaryToUndo": "Ningún contorno por deshacer.",
       "textStyleUndefined": [
@@ -3850,7 +3859,29 @@ export const es: EngineLocale = {
       ],
       "hatchPatternDescription": {
         "SOLID": "Relleno sólido",
-        "ANSI31": "ANSI hierro, ladrillo, mampostería de piedra"
+        "ANGLE": "acero angular",
+        "ANSI31": "ANSI albañilería de acero, ladrillo, piedra",
+        "ANSI32": "ANSI acero",
+        "ANSI33": "ANSI bronce, latón, cobre",
+        "ANSI34": "ANSI plástico, goma",
+        "ANSI35": "ANSI ladrillo o material refractario",
+        "ANSI36": "ANSI mármol, esquisto, vidrio",
+        "ANSI37": "ANSI plomo, cinc, magnesio, aislamiento térmico/fónico/eléct",
+        "ANSI38": "ANSI aluminio",
+        "LINE": "líneas paralelas horizontales",
+        "NET": "rejilla",
+        "NET3": "rejilla triangular 0-60-120",
+        "DASH": "líneas de trazos",
+        "SQUARE": "pequeños cuadrados alineados",
+        "STEEL": "acero",
+        "BRICK": "superficie de ladrillos o albañilería",
+        "CROSS": "serie de cruces",
+        "ZIGZAG": "efecto de escalera",
+        "HONEY": "panal",
+        "EARTH": "tierra o subsuelo",
+        "DOTS": "serie de puntos",
+        "AR-SAND": "patrón aleatorio de puntos",
+        "AR-CONC": "patrón aleatorio de puntos y piedras"
       }
     },
     "defaults": {

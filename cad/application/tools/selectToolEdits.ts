@@ -27,6 +27,12 @@ import {
   ellipseWithSpan,
   splineWithPoint,
   stretchPolylineVertices,
+  createPolyline,
+  HatchEntity,
+  hatchLoopSegments,
+  PolylineSegmentGeometry,
+  polylineSegmentGeometries,
+  setPolylineBulge,
 } from "../../domain/entities"
 import type { BlockLookup, InsertEntity } from "../../domain/entities"
 import { arrayPlacement } from "../../domain/arrayEdits"
@@ -51,26 +57,104 @@ export function withVertexAt(
   if (entity.type === "polyline") {
     return stretchPolylineVertices(entity, new Map([[index, point]]))
   }
+  if (entity.type === "hatch") {
+    return withLoopEdited(entity, index, (loop, at) =>
+      stretchPolylineVertices(loop, new Map([[at, point]]))
+    )
+  }
   if (entity.type === "spline") return splineWithPoint(entity, index, point)
   return null
 }
 
 /**
- * `poly` with segment `segmentIndex` moved by `delta`, both its ends: its
- * midpoint grip's Stretch (desktop pline/d09).
+ * The object with segment `segmentIndex` moved by `delta`, both its ends: a
+ * polyline's or a hatch loop's midpoint grip's Stretch (desktop pline/d09,
+ * hatch/d03-4). `null` for anything else.
  */
 export function withSegmentStretched(
-  poly: PolylineEntity,
+  entity: Entity,
   segmentIndex: number,
   delta: Vec2
-): PolylineEntity {
-  const n = poly.vertices.length
-  const ends = [segmentIndex, (segmentIndex + 1) % n]
-  return stretchPolylineVertices(
-    poly,
-    new Map(ends.map((i) => [i, V.add(poly.vertices[i], delta)]))
-  )
+): Entity | null {
+  const stretch = (poly: PolylineEntity, index: number) => {
+    const ends = [index, (index + 1) % poly.vertices.length]
+    return stretchPolylineVertices(
+      poly,
+      new Map(ends.map((i) => [i, V.add(poly.vertices[i], delta)]))
+    )
+  }
+  if (entity.type === "polyline") return stretch(entity, segmentIndex)
+  if (entity.type === "hatch") {
+    return withLoopEdited(entity, segmentIndex, stretch)
+  }
+  return null
 }
+
+/** The object with segment `segmentIndex` bent to `bulge` (its arc grip). */
+export function withSegmentBulge(
+  entity: Entity,
+  segmentIndex: number,
+  bulge: number
+): Entity | null {
+  if (entity.type === "polyline") {
+    return setPolylineBulge(entity, segmentIndex, bulge)
+  }
+  if (entity.type === "hatch") {
+    return withLoopEdited(entity, segmentIndex, (loop, at) =>
+      setPolylineBulge(loop, at, bulge)
+    )
+  }
+  return null
+}
+
+/**
+ * The segments whose midpoints carry grips: a polyline's, or a hatch's loops'
+ * one after another, so a grip's index runs on from loop to loop.
+ */
+export function gripSegments(entity: Entity): PolylineSegmentGeometry[] {
+  if (entity.type === "polyline") return polylineSegmentGeometries(entity)
+  if (entity.type === "hatch") return entity.loops.flatMap(hatchLoopSegments)
+  return []
+}
+
+/**
+ * `hatch` with the loop holding its `index`th vertex (or segment, the same
+ * count on a closed loop), counted loop after loop, edited as the closed
+ * polyline it is shaped like: a hatch's boundary grips are a polyline's
+ * (desktop hatch/d03-3, d03-4).
+ */
+function withLoopEdited(
+  hatch: HatchEntity,
+  index: number,
+  edit: (loop: PolylineEntity, at: number) => PolylineEntity
+): HatchEntity | null {
+  let at = index
+  const which = hatch.loops.findIndex((loop) => {
+    if (at < loop.vertices.length) return true
+    at -= loop.vertices.length
+    return false
+  })
+  if (which < 0 || at < 0) return null
+  const loop = hatch.loops[which]
+  const edited = edit(
+    createPolyline(loop.vertices, true, hatch.layerId, loop.bulges, LOOP_ID),
+    at
+  )
+  return {
+    ...hatch,
+    loops: hatch.loops.map((other, i) =>
+      i === which
+        ? {
+            vertices: edited.vertices.map(planar),
+            ...(edited.bulges ? { bulges: edited.bulges.slice() } : {}),
+          }
+        : other
+    ),
+  }
+}
+
+/** The id a hatch loop takes while edited as a polyline: never minted. */
+const LOOP_ID = "hatch-loop"
 
 /**
  * The sides of a multiline text's box that carry a width grip: those that

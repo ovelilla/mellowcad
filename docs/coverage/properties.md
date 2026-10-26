@@ -190,10 +190,10 @@ filled or outlined, each segment's band closed; `1` and `0` (declared, unlisted)
 (p168, p169), `O` asks `ON or OFf?` (p170), FOO `Invalid option keyword.` (es `Opción no válida.`,
 p171), transparent (`'FILL`, p178), and U takes it back naming `FILL` (es `RELLENAR`), even when
 Enter kept it (p174, p175), as AutoCAD 2027's console does; a wide polyline off the
-plan is outlined, as AutoCAD fills one only seen along its extrusion direction
+plan is outlined, as AutoCAD fills one only seen along its extrusion direction; with FILL off a
+hatch draws nothing, SOLID or pattern alike (hatch/p341, plotted)
 
-**Missing:** solid hatches and fills stay filled (what a solid hatch shows with FILL off is
-**unverified**); the change shows at once rather than at the next regeneration (WHY in the tool:
+**Missing:** the change shows at once rather than at the next regeneration (WHY in the tool:
 nothing here keeps a regenerated display apart); FILLMODE typed as a system variable
 
 ### Colour · `COLOR` / `COL` / `COLOUR` · `-COLOR` · es `COLOR` / `COL` · `-COLOR`

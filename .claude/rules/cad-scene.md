@@ -23,9 +23,9 @@ two presenters touch a rendering API: `CanvasScenePresenter`, which the editor p
   scene carry only styled shapes. The one concession is `path.subpaths`, filled even-odd, because a
   solid fill and a line pattern must agree about which side of a nested loop is inside.
 - **Derived geometry is computed in world coordinates, never at paint time in screen ones.** That
-  is what lets `SceneBuilder` cache a hatch's clipped pattern in a `WeakMap` keyed on the immutable
-  entity: the result cannot depend on the camera, so panning and zooming stay free and the builder
-  stays a pure function of its input. Anything expensive and camera-independent goes on that side.
+  is what lets the domain cache a hatch's clipped pattern per immutable entity (`hatchGeometry`):
+  the result cannot depend on the camera, so panning and zooming stay free and the builder stays a
+  pure function of its input. Anything expensive and camera-independent goes on that side.
 - The `label` primitive is chrome: screen-space, fixed size, never rotated. Anything that belongs
   to the **drawing** uses `text`, which carries a world-derived size and angle. A world angle
   becomes a screen rotation through `screenRotation(camera, radians)` (the Y flip and the view's
@@ -59,7 +59,7 @@ axes)`): a circle becomes an ellipse (`affineEllipse`), text gets a matrix; when
   (`SceneInput.fillMode`, `EntityDrawOptions.fill`, on when absent so a ghost fills too); off the
   plan, or with FILL off, its bands are outlined. In plan its lineweight is not drawn ("wide
   polylines display lineweights only when displayed outside of plan view"), so `pushEntities` gives
-  it the hairline.
+  it the hairline. With FILL off a hatch draws nothing, SOLID or pattern (hatch/p341).
 
 ## The presenters
 

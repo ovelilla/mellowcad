@@ -1039,19 +1039,37 @@ export function mirrorPoint(point: Vec2, a: Vec2, b: Vec2): Vec2 {
 }
 
 /**
+ * What a reflection does to a hatch's pattern: MIRROR keeps its angle, origin
+ * and scale and reflects only its loops (MIRRHATCH 0, probes hatch/p314,
+ * p316); a reflected frame — a mirrored block reference, an object turned
+ * over — reflects the pattern with the rest.
+ */
+export type HatchMirroring = "patternKept" | "patternReflected"
+
+/**
  * Returns a copy of `entity` reflected across the mirror line through `a`,`b`
  * (preserves its id) — MIRROR when the source is erased. A circle keeps its
  * radius; only its centre reflects.
  */
-export function mirrorEntity(entity: Entity, a: Vec2, b: Vec2): Entity {
+export function mirrorEntity(
+  entity: Entity,
+  a: Vec2,
+  b: Vec2,
+  hatch: HatchMirroring = "patternKept"
+): Entity {
   if (isTilted(entity)) {
     const reflection = reflectionAcross(a, b)
     return reflection ? transformEntity(entity, reflection) : entity
   }
-  return mirrorFlat(entity, a, b)
+  return mirrorFlat(entity, a, b, hatch)
 }
 
-function mirrorFlat(entity: Entity, a: Vec2, b: Vec2): Entity {
+function mirrorFlat(
+  entity: Entity,
+  a: Vec2,
+  b: Vec2,
+  hatch: HatchMirroring
+): Entity {
   switch (entity.type) {
     case "line":
       return {
@@ -1115,8 +1133,12 @@ function mirrorFlat(entity: Entity, a: Vec2, b: Vec2): Entity {
           // Reflection reverses the loop's turn, so each arc's bulge flips.
           negateBulges
         ),
-        patternAngle: mirrorAngle(entity.patternAngle, a, b),
-        origin: mirrorPoint(entity.origin, a, b),
+        ...(hatch === "patternReflected"
+          ? {
+              patternAngle: mirrorAngle(entity.patternAngle, a, b),
+              origin: mirrorPoint(entity.origin, a, b),
+            }
+          : {}),
       }
     case "insert":
       return { ...entity, ...mirroredInsert(entity, a, b) }
@@ -1325,13 +1347,10 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
           }
         )
       case "hatch":
+        // MIRRHATCH 0: the pattern keeps its angle, origin and scale.
         return hatchLike(
           entity,
-          mapHatchLoops(entity, (p) => mirrorPoint(p, a, b), negateBulges),
-          {
-            patternAngle: mirrorAngle(entity.patternAngle, a, b),
-            origin: mirrorPoint(entity.origin, a, b),
-          }
+          mapHatchLoops(entity, (p) => mirrorPoint(p, a, b), negateBulges)
         )
       case "insert": {
         const reflected = mirroredInsert(entity, a, b)
@@ -1465,10 +1484,12 @@ export function transformEntity(entity: Entity, map: Similarity3): Entity {
   let placed =
     alongX.x * alongY.y - alongX.y * alongY.x >= 0
       ? rotateFlat(entity, origin, turn)
-      : mirrorFlat(entity, origin, {
-          x: Math.cos(turn / 2),
-          y: Math.sin(turn / 2),
-        })
+      : mirrorFlat(
+          entity,
+          origin,
+          { x: Math.cos(turn / 2), y: Math.sin(turn / 2) },
+          "patternReflected"
+        )
   if (map.scale !== 1)
     placed = scaleFlat(placed, { x: 0, y: 0, z: 0 }, map.scale)
   placed = translateFlat(placed, worldToAxes(to, map.translation))
@@ -1523,7 +1544,12 @@ function freshCopy(entity: Entity): Entity {
 export function turnedOver(entity: Entity): Entity {
   const down = (entity.normal?.z ?? 1) < 0
   let turned = withElevation(
-    mirrorEntity(withNormal(entity, WORLD_Z), { x: 0, y: 0 }, { x: 0, y: 1 }),
+    mirrorEntity(
+      withNormal(entity, WORLD_Z),
+      { x: 0, y: 0 },
+      { x: 0, y: 1 },
+      "patternReflected"
+    ),
     -entityElevation(entity)
   )
   if (hasThickness(turned) && turned.thickness) {

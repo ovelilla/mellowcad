@@ -52,7 +52,7 @@ const PREVIEW_ID: EntityId = "__hatch_preview__"
  * AutoCAD's HATCH, at the command line as -HATCH asks it (WHY: the Hatch
  * Creation tab and the Hatch and Gradient dialog, where HATCH sets its
  * properties, do not exist here; -HATCH is the command line's own): `Current
- * hatch pattern:  ANSI31`, then `Specify internal point or [Properties/Select
+ * hatch pattern:  ANGLE`, then `Specify internal point or [Properties/Select
  * objects]:` until Enter makes the hatch. Its two boundary routes are the two
  * the prompt offers, in the same order:
  *

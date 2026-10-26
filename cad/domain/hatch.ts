@@ -71,8 +71,10 @@ export function hatchLoopSegments(loop: HatchLoop): PolylineSegmentGeometry[] {
 
 /**
  * The largest number of pattern segments one hatch generates before the fill is
- * abandoned — AutoCAD's HPMAXLINES, whose initial value this is. Past it the
- * pattern is too dense to be either drawable or meaningful.
+ * abandoned: a safety cap, so a typo in the scale cannot hang the editor. It is
+ * not HPMAXLINES, as AutoCAD refuses a hatch far below that and makes one
+ * above it (probes hatch/p363, p364); AutoCAD refused ANSI31 over 0,0–100,50
+ * between about 27 800 and 32 100 members (p365, p367), by a rule not found.
  */
 export const MAX_HATCH_LINES = 100_000
 
@@ -91,7 +93,10 @@ export interface HatchGeometry {
   readonly rings: readonly (readonly Vec2[])[]
   /** Whether the area is a solid fill rather than a family of lines. */
   readonly solid: boolean
-  /** The pattern's line work, already clipped to the boundary. */
+  /**
+   * The pattern's line work, already clipped to the boundary; a dot (a `0`
+   * dash) is a segment from a point to itself.
+   */
   readonly lines: readonly [Vec2, Vec2][]
   /** True when generation stopped at {@link MAX_HATCH_LINES}. */
   readonly truncated: boolean
@@ -109,6 +114,22 @@ export interface HatchGeometry {
  * ordinary segments.
  */
 export function hatchGeometry(hatch: HatchEntity): HatchGeometry {
+  const cached = geometryCache.get(hatch)
+  if (cached) return cached
+  const geometry = generateHatchGeometry(hatch)
+  geometryCache.set(hatch, geometry)
+  return geometry
+}
+
+/**
+ * {@link hatchGeometry} per entity object. WHY a memo in a pure layer: the
+ * pattern is what a hatch is drawn and picked by (HATCH-D64), asked of every
+ * hatch at each pointer move, and an entity is immutable, so the answer for one
+ * object never changes.
+ */
+const geometryCache = new WeakMap<HatchEntity, HatchGeometry>()
+
+function generateHatchGeometry(hatch: HatchEntity): HatchGeometry {
   const rings = hatch.loops
     .map(hatchLoopRing)
     .filter((ring) => ring.length >= 3)
@@ -236,8 +257,55 @@ function insideRuns(
       runs.push([crossings[i], crossings[i + 1]])
     }
   }
-  return runs
+  return withoutEdges(runs, origin, dir, rings)
 }
+
+/**
+ * `runs` less where the line runs along a loop's edge: AutoCAD leaves out a
+ * pattern member lying on the boundary (probe hatch/p301, ANGLE's members on
+ * y = 0 and x = 0 of a rectangle from the origin).
+ */
+function withoutEdges(
+  runs: [number, number][],
+  origin: Vec2,
+  dir: Vec2,
+  rings: readonly (readonly Vec2[])[]
+): [number, number][] {
+  let kept = runs
+  for (const ring of rings) {
+    for (let i = 0; i < ring.length; i++) {
+      const a = ring[i]
+      const b = ring[(i + 1) % ring.length]
+      const tolerance = ON_EDGE * Math.max(1, V.distance(a, b))
+      if (
+        Math.abs(V.cross(dir, V.sub(a, origin))) > tolerance ||
+        Math.abs(V.cross(dir, V.sub(b, origin))) > tolerance
+      ) {
+        continue
+      }
+      const ta = V.dot(V.sub(a, origin), dir)
+      const tb = V.dot(V.sub(b, origin), dir)
+      const lo = Math.min(ta, tb)
+      const hi = Math.max(ta, tb)
+      kept = kept.flatMap(([from, to]): [number, number][] =>
+        hi <= from || lo >= to
+          ? [[from, to]]
+          : [
+              ...(lo > from ? [[from, lo] as [number, number]] : []),
+              ...(hi < to ? [[hi, to] as [number, number]] : []),
+            ]
+      )
+    }
+  }
+  return kept.filter(([from, to]) => to - from > ON_EDGE)
+}
+
+/**
+ * How near a loop's edge, relative to its length, a member counts as lying on
+ * it: the float error of a member placed by `k · delta-y`, far below anything
+ * drawn.
+ */
+const ON_EDGE = 1e-9
 
 /** Emits `[from, to]` broken by the dash cycle, or whole when continuous. */
 function pushDashedRun(
@@ -264,6 +332,10 @@ function pushDashedRun(
         const start = Math.max(t, from)
         const end = Math.min(next, to)
         if (end > start) out.push([at(start), at(end)])
+      } else if (run === 0 && t >= from && t <= to) {
+        // A dot, drawn as a linetype's is (`drawnDash`).
+        const dot = at(t)
+        out.push([dot, dot])
       }
       t = next
       if (t >= to) break
@@ -273,8 +345,8 @@ function pushDashedRun(
 
 /**
  * Whether a point lies inside the hatched area, under the same even-odd rule
- * the pattern is clipped with — so a hatch picks as the *area* it is, not as
- * the outline of its boundary.
+ * the pattern is clipped with — so a SOLID hatch picks as the *area* it is
+ * (desktop hatch/d06-5).
  */
 export function pointInsideHatch(hatch: HatchEntity, point: Vec2): boolean {
   let inside = false

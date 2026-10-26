@@ -68,14 +68,17 @@ describe("objectArea", () => {
     expect(objectArea(rectOf(p(0, 0), p(10, 10)))?.measured).toBe("perimeter")
   })
 
-  it("leaves an island out of a hatch's area", () => {
+  // probe hatch/p320: a hatch over 0,0–100,50 with a circle r 10 at 50,25 as
+  // island, AREA Object → `Area = 4685.8407, Perimeter = 362.8319`: the island
+  // left out, its perimeter added.
+  it("leaves an island out of a hatch's area (hatch/p320)", () => {
     const hatch = hatchOf([
-      loopOf(p(0, 0), p(10, 10)),
-      loopOf(p(2, 2), p(4, 4)),
+      loopOf(p(0, 0), p(100, 50)),
+      { vertices: [p(60, 25), p(40, 25)], bulges: [1, 1] },
     ])
     expect(objectArea(hatch)).toEqual({
-      area: 96,
-      around: 48,
+      area: expect.closeTo(4685.8407, 4),
+      around: expect.closeTo(362.8319, 4),
       measured: "perimeter",
     })
   })

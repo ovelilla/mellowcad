@@ -153,13 +153,15 @@ by that half-plane too, 90° rightward and 270° leftward, so about y = x a text
 left and right, or top and bottom (p283, p290–p294); a mirrored spline keeps its +Z normal, as
 AutoCAD's does (spline/p320), unlike an ellipse; the reflection drags as MOVE's set, the originals
 keeping the selection's glow, the amber dashed line from the first point, both still drawn at
-`Erase source objects?` (desktop d10); `SI` from the Spanish `acad.pgp` (p221)
+`Erase source objects?` (desktop d10); `SI` from the Spanish `acad.pgp` (p221); a hatch's loops
+reflect, its bulges negated, and its pattern keeps its angle, origin and scale, as MIRRHATCH 0
+(hatch/p314, p316, p350–p354; p282 its 0° about the Y axis)
 
-**Missing:** MIRRTEXT, the variable: 0 only, never mirrored text; a
-text inside a mirrored block reference, which AutoCAD mirrors with the block whatever MIRRTEXT
-(Autodesk's support article), turns back here as a loose one; a mirrored hatch's pattern angle:
-AutoCAD keeps 0° mirrored about the Y axis (p282), here 180°, the rule **unverified** (no hatch at
-another angle probed); the drag's ghost as MOVE's (each object's colour only); an ellipse's
+**Missing:** MIRRTEXT, the variable: 0 only, never mirrored text; MIRRHATCH, the variable: 0 only,
+a pattern never reflected (a hatch in a mirrored block reference is: the block's reflection is the
+frame's); a text inside a mirrored block reference, which AutoCAD mirrors with the block whatever
+MIRRTEXT (Autodesk's support article), turns back here as a loose one; a hatch tilted to the UCS,
+whose pattern is reflected with it; the drag's ghost as MOVE's (each object's colour only); an ellipse's
 normal: AutoCAD turns a mirrored ellipse over, its normal −Z, its parameters kept and its major
 axis on the mirrored end (ellipse/p320, p321), where this app keeps +Z and reflects the range, the same curve — its Start angle and End angle (260° and 350°
 where AutoCAD reads 10° and 100°), and BREAK of it keeping the other piece (p329: AutoCAD keeps
@@ -1109,7 +1111,8 @@ pieces as the Previous set (`ERASE _P` → `2 found`, p236, p258)
 **Missing:** a dimension, which 2027 explodes into its LINEs, a SOLID per arrowhead and an MTEXT
 (pieces/p258): refused, as there is no SOLID object here (WHY at `ExplodeTool`'s refusal); a hatch
 of a pattern this build does not ship is named like a SOLID one; the pattern's lines are made in
-the generator's order, not AutoCAD's (p259 runs from the far corner); `Hatch boundary associativity
+the generator's order, not AutoCAD's (p259 runs from the far corner); a pattern's dot (DOTS,
+AR-SAND) becomes a zero-length LINE, what AutoCAD makes of one **unverified**; `Hatch boundary associativity
 removed.` (es `Asociatividad del contorno del sombreado eliminada.`, p263), as no hatch is
 associative here; exploded MTEXT's positions differ by the font's metrics (EXP-06, p255: OLD at
 9.324693,39.822647 in AutoCAD, 10,40 here); ByBlock resolution, non-uniform-scale → ellipse
@@ -1266,8 +1269,8 @@ thickness between objects that have one (overrides the source lacks are cleared)
 the style, height and rotation, TEXT to TEXT also the justification about the destination's point
 (a Left text at 70,20 made MC keeps its alignment point at 70,20), an MTEXT's attachment and a
 TEXT's justification from an MTEXT kept (desktop text/d08; MTEXT to MTEXT and a justified TEXT
-destination **unverified**), the dimension style between dimensions, a hatch's pattern, scale and angle (not its origin, as the
-help's dialog page says; its "Have You Tried" page says the origin is copied: **unverified**). The
+destination **unverified**), the dimension style between dimensions, a hatch's pattern, scale and angle, not its origin (desktop hatch/d07: the destination's
+pattern base, DXF 43/44, stays 0,0). The
 cursor is the pick box with AutoCAD's paintbrush at its upper right at the destination prompt
 (d07-1, d07-4; the crosshair's arms stay, as at every `Select objects:`, drafting-aids.md)
 

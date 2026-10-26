@@ -22,7 +22,8 @@ and total again; Enter at the first corner writes the total and ends; the first 
 two words it declares but does not list: Entity (es `Entidad`), Object under its old name, and eXit
 (es `SAlir`), which ends the command without a word, the total unsaid; Object (Enter at the first
 corner) picks one object, or `Last`, and reports a circle's area and `Circumference`, an ellipse's,
-a closed polyline's or spline's and a hatch's (its islands left out) `Perimeter`, and an open
+a closed polyline's or spline's and a hatch's (its islands left out, their perimeters added:
+hatch/p320) `Perimeter`, and an open
 polyline's, spline's or elliptical arc's `Length` with the area its chord closes; anything else
 `Selected object does not have an area` (es `El objeto seleccionado no tiene área`), asked again;
 DIST asks `Specify first point:` (es `Precise primer punto`; `Invalid point.`) and
@@ -57,7 +58,7 @@ does
 
 **Missing:** pick-an-existing-object modes, Radius, Angle, Volume, Arc and Length at its next point
 and its green fill, an object at an angle to the UCS (not highlighted here; AutoCAD says
-`Object not parallel with UCS.`), a hatch's islands (**unverified**: the console checked one loop),
+`Object not parallel with UCS.`),
 angles at the drawing's precision (`53.13`, where AUPREC 0 writes `53`), Arc's CEnter → Angle
 reading a number as a point (2027's console asks it as a point, `90` there a distance along the
 cursor, p145: degrees here, until the desktop shows it), the Spanish report in the table's words (`Distancia = …, Ángulo en el plano XY = …, Ángulo a partir del plano XY = …` /

@@ -1,22 +1,21 @@
 import { describe, expect, it } from "vitest"
-import { V } from "../../geometry/Vec2"
+import { V, type Vec2 } from "../../geometry/Vec2"
 import {
   HatchEntity,
+  MAX_HATCH_LINES,
   createHatch,
   hatchGeometry,
   hatchLoopFromEntity,
   mirrorEntity,
   pointInsideHatch,
-  translateEntity,
 } from "../../domain/entities"
 import {
   DEFAULT_HATCH_PATTERN_ID,
+  HATCH_PATTERNS,
   SOLID_HATCH_PATTERN_ID,
+  hatchPattern,
 } from "../../domain/hatchPatterns"
-import {
-  parseDrawingFile,
-  serializeDrawing,
-} from "../../serialization/drawingFile"
+import { parseDrawingFile } from "../../serialization/drawingFile"
 import { THEME } from "../../scene/theme"
 import {
   circleOf,
@@ -28,6 +27,7 @@ import {
 } from "../../../test/builders"
 import { createHarness } from "../../../test/harness"
 import { es } from "../../locales/es"
+import { EXPLODED_LINES } from "./hatching.probes"
 
 /** The square boundary most of these tests hatch. */
 const SQUARE = rectOf(p(0, 0), p(100, 100), { id: "sq" })
@@ -149,13 +149,6 @@ describe("HATCH boundary by Pick internal point", () => {
 // its internal point (table 25032) without listing it.
 describe("HATCH's unlisted Undo", () => {
   const SMALL = rectOf(p(200, 0), p(250, 50), { id: "small" })
-  const typed = (h: ReturnType<typeof createHarness>, ...texts: string[]) => {
-    for (const text of texts) {
-      h.runtime.setCommandLineText(text)
-      h.runtime.submitCommandLine()
-    }
-    return h
-  }
   const filled = (h: ReturnType<typeof createHarness>) => {
     const hatch = hatchOnly(h.entities())
     return [p(50, 50), p(225, 25)].map((at) => pointInsideHatch(hatch, at))
@@ -171,13 +164,13 @@ describe("HATCH's unlisted Undo", () => {
     )
     expect(h.commandLog().slice(-2)).toEqual([
       "Specify internal point or [Properties/Select objects]: U",
-      "Current hatch pattern:  ANSI31",
+      "Current hatch pattern:  ANGLE",
     ])
     typed(h, "UNDO", "U")
     expect(h.commandLog().slice(-3)).toEqual([
       "Specify internal point or [Properties/Select objects]: U",
       "No boundary to Undo.",
-      "Current hatch pattern:  ANSI31",
+      "Current hatch pattern:  ANGLE",
     ])
     typed(h, "225,25", "")
     expect(filled(h)).toEqual([false, true])
@@ -224,7 +217,7 @@ describe("HATCH's unlisted Undo", () => {
     expect(spanish.commandLog().slice(-5)).toEqual([
       "Precise punto interno o [Propiedades/Designar objetos]: DESHACER",
       "Ningún contorno por deshacer.",
-      "Patrón de sombreado actual:  ANSI31",
+      "Patrón de sombreado actual:  ANGLE",
       "Precise punto interno o [Propiedades/Designar objetos]: FOO",
       "Se requiere un punto 2D o una opción.",
     ])
@@ -399,13 +392,13 @@ describe("HATCH Properties", () => {
   it("asks -HATCH's questions and writes them answered", () => {
     const h = createHarness({ entities: [SQUARE] })
     h.command("HATCH")
-    expect(h.commandLog().at(-1)).toBe("Current hatch pattern:  ANSI31")
+    expect(h.commandLog().at(-1)).toBe("Current hatch pattern:  ANGLE")
     expect(h.state().commandLine.prompt).toBe(
       "HATCH Specify internal point or [Properties/Select objects]:"
     )
     h.option("Properties")
     expect(h.state().commandLine.prompt).toBe(
-      "HATCH Enter a pattern name or [?/Solid] <ANSI31>:"
+      "HATCH Enter a pattern name or [?/Solid] <ANGLE>:"
     )
     h.enter()
     expect(h.state().commandLine.prompt).toBe(
@@ -422,23 +415,23 @@ describe("HATCH Properties", () => {
 
     expect(h.commandLog()).toEqual([
       "HATCH",
-      "Current hatch pattern:  ANSI31",
+      "Current hatch pattern:  ANGLE",
       "Specify internal point or [Properties/Select objects]: P",
-      "Enter a pattern name or [?/Solid] <ANSI31>:",
+      "Enter a pattern name or [?/Solid] <ANGLE>:",
       "Specify a scale for the pattern <1.00>: 0",
       "Value must be positive and nonzero.",
       "Specify a scale for the pattern <1.00>: 2",
       "Specify an angle for the pattern <0>: 45",
-      "Current hatch pattern:  ANSI31",
+      "Current hatch pattern:  ANGLE",
       "Specify internal point or [Properties/Select objects]:",
       "Selecting everything...",
       "Selecting everything visible...",
       "Analyzing the selected data...",
       "Analyzing internal islands...",
-      "Current hatch pattern:  ANSI31",
+      "Current hatch pattern:  ANGLE",
       "Specify internal point or [Properties/Select objects]: S",
       "Select objects:",
-      "Current hatch pattern:  ANSI31",
+      "Current hatch pattern:  ANGLE",
       "Specify internal point or [Properties/Select objects]:",
     ])
     expect(hatchOnly(h.entities()).patternScale).toBe(2)
@@ -447,13 +440,13 @@ describe("HATCH Properties", () => {
   it("asks in the words of Autodesk's Spanish table", () => {
     const h = createHarness({ locale: es, entities: [SQUARE] })
     h.command("SOMBREA")
-    expect(h.commandLog().at(-1)).toBe("Patrón de sombreado actual:  ANSI31")
+    expect(h.commandLog().at(-1)).toBe("Patrón de sombreado actual:  ANGLE")
     expect(h.state().commandLine.prompt).toBe(
       "SOMBREA Precise punto interno o [Propiedades/Designar objetos]:"
     )
     h.option("Properties")
     expect(h.state().commandLine.prompt).toBe(
-      "SOMBREA Indique nombre de patrón o [?/Sólido] <ANSI31>:"
+      "SOMBREA Indique nombre de patrón o [?/Sólido] <ANGLE>:"
     )
     h.type("NADA").enter()
     expect(h.commandLog().at(-1)).toBe("Nombre de patrón desconocido.")
@@ -471,7 +464,7 @@ describe("HATCH Properties", () => {
       "Designando todo lo visible...",
       "Analizando los datos designados...",
       "Analizando islas internas...",
-      "Patrón de sombreado actual:  ANSI31",
+      "Patrón de sombreado actual:  ANGLE",
     ])
     h.option("Properties").option("Solid").option("Properties")
     expect(h.state().commandLine.prompt).toBe(
@@ -548,7 +541,7 @@ describe("HATCH Properties", () => {
     h.command("HATCH").option("Properties").type("NOPE").enter()
 
     expect(h.commandLog().slice(-2)).toEqual([
-      "Enter a pattern name or [?/Solid] <ANSI31>: NOPE",
+      "Enter a pattern name or [?/Solid] <ANGLE>: NOPE",
       "Unknown pattern name.",
     ])
     expect(h.state().dynamicInput?.fields[0].label).toBe("Enter a pattern name")
@@ -563,62 +556,145 @@ describe("HATCH Properties", () => {
   })
 })
 
-describe("hatch pattern geometry", () => {
-  const hatchAt = (
-    scale: number,
-    angle = 0,
-    loops = [loopOf(p(0, 0), p(100, 100))]
-  ) =>
-    hatchGeometry(
-      createHatch(loops, { patternScale: scale, patternAngle: angle })
+/** Typed at the command line, one answer after another, as -HATCH is driven. */
+function typed(h: ReturnType<typeof createHarness>, ...texts: string[]) {
+  for (const text of texts) {
+    h.runtime.setCommandLineText(text)
+    h.runtime.submitCommandLine()
+  }
+  return h
+}
+
+/** The rectangle of probes hatch/p300–p316, 0,0 → 100,50. */
+const RECT = [loopOf(p(0, 0), p(100, 50))]
+
+/** AutoCAD's exploded lines of `probe` (`hatching.probes.ts`). */
+function probed(probe: string): [Vec2, Vec2][] {
+  const n = EXPLODED_LINES[probe]
+  const lines: [Vec2, Vec2][] = []
+  for (let i = 0; i < n.length; i += 4) {
+    lines.push([p(n[i], n[i + 1]), p(n[i + 2], n[i + 3])])
+  }
+  return lines
+}
+
+/**
+ * `hatch` generates the very lines AutoCAD's EXPLODE left of `probe`'s, one
+ * for one, either way round, to the fixture's rounding.
+ */
+function expectProbedLines(hatch: HatchEntity, probe: string): void {
+  const near = (a: Vec2, b: Vec2) =>
+    Math.abs(a.x - b.x) < 2e-6 && Math.abs(a.y - b.y) < 2e-6
+  const ours = [...hatchGeometry(hatch).lines]
+  const theirs = probed(probe)
+  expect(ours).toHaveLength(theirs.length)
+  const missing = theirs.filter(([a, b]) => {
+    const i = ours.findIndex(
+      ([c, d]) => (near(a, c) && near(b, d)) || (near(a, d) && near(b, c))
     )
+    if (i >= 0) ours.splice(i, 1)
+    return i < 0
+  })
+  expect(missing).toEqual([])
+}
 
-  it("draws ANSI31 as a family of 45° lines spaced by 0.125 × the scale", () => {
-    const g = hatchAt(20)
-    expect(g.solid).toBe(false)
-    expect(g.lines.length).toBeGreaterThan(10)
-
-    for (const [a, b] of g.lines) {
-      const dir = V.normalize(V.sub(b, a))
-      expect(Math.abs(dir.x - dir.y)).toBeLessThan(1e-9) // 45°
-      for (const point of [a, b]) {
-        expect(point.x).toBeGreaterThanOrEqual(-1e-9)
-        expect(point.x).toBeLessThanOrEqual(100 + 1e-9)
-        expect(point.y).toBeGreaterThanOrEqual(-1e-9)
-        expect(point.y).toBeLessThanOrEqual(100 + 1e-9)
-      }
-    }
-
-    // Perpendicular spacing between neighbouring lines = 0.125 × 20.
-    const normal = { x: -Math.SQRT1_2, y: Math.SQRT1_2 }
-    const offsets = g.lines.map(([a]) => V.dot(a, normal)).sort((x, y) => x - y)
-    const gaps = offsets
-      .slice(1)
-      .map((value, i) => value - offsets[i])
-      .filter((gap) => gap > 1e-6)
-    expect(Math.min(...gaps)).toBeCloseTo(2.5, 6)
+describe("hatch pattern geometry (acadiso.pat, probes hatch/p300–p307)", () => {
+  it("ships acadiso.pat's patterns and starts on ANGLE (HPNAME, p00)", () => {
+    expect(DEFAULT_HATCH_PATTERN_ID).toBe("ANGLE")
+    expect(HATCH_PATTERNS.map((pattern) => pattern.id)).toEqual([
+      "SOLID",
+      "ANGLE",
+      ...["ANSI31", "ANSI32", "ANSI33", "ANSI34", "ANSI35", "ANSI36"],
+      ...["ANSI37", "ANSI38", "LINE", "NET", "NET3", "DASH", "SQUARE"],
+      ...["STEEL", "BRICK", "CROSS", "ZIGZAG", "HONEY", "EARTH", "DOTS"],
+      ...["AR-SAND", "AR-CONC"],
+    ])
+    // The metric spacing, `45, 0, 0, 0, 3.175`, not acad.pat's 0.125.
+    expect(hatchPattern("ANSI31")?.lines[0].deltaY).toBe(3.175)
   })
 
-  it("halving the scale doubles the number of lines", () => {
-    expect(hatchAt(10).lines.length).toBeGreaterThan(
-      hatchAt(20).lines.length * 1.8
+  it("draws ANSI31 at scale 1 as AutoCAD explodes it (p300: 34 lines)", () => {
+    expectProbedLines(createHatch(RECT, { patternId: "ANSI31" }), "p300")
+  })
+
+  it("leaves out ANGLE's members lying on the boundary (p301: 217 lines)", () => {
+    const hatch = createHatch(RECT)
+    expect(hatch.patternId).toBe("ANGLE")
+    expectProbedLines(hatch, "p301")
+    // The dashes along y = 0 and x = 0 would be 23 more (HATCH-D68).
+    for (const [a, b] of hatchGeometry(hatch).lines) {
+      expect(a.y === 0 && b.y === 0).toBe(false)
+      expect(a.x === 0 && b.x === 0).toBe(false)
+    }
+  })
+
+  it("scales and turns the pattern about its origin (p302: ANSI31 2 / 30°)", () => {
+    expectProbedLines(
+      createHatch(RECT, {
+        patternId: "ANSI31",
+        patternScale: 2,
+        patternAngle: deg(30),
+      }),
+      "p302"
     )
   })
 
-  it("rotates the whole family with HPANG", () => {
-    for (const [a, b] of hatchAt(20, deg(45)).lines) {
-      const dir = V.normalize(V.sub(b, a))
-      // 45° pattern line + 45° HPANG = vertical.
-      expect(Math.abs(dir.x)).toBeLessThan(1e-9)
-    }
+  it("keeps the dash phase of a turned, scaled ANGLE (p307: ANGLE 2 / 30°)", () => {
+    expectProbedLines(
+      createHatch(RECT, { patternScale: 2, patternAngle: deg(30) }),
+      "p307"
+    )
+  })
+
+  it("starts the pattern at HPORIGIN (p306: 5,3)", () => {
+    expectProbedLines(
+      createHatch(RECT, { patternId: "ANSI31", origin: p(5, 3) }),
+      "p306"
+    )
+  })
+
+  it("starts the pattern at a moved UCS's origin (p303: UCS origin 10,7)", () => {
+    const h = createHarness({ entities: [rectOf(p(0, 0), p(100, 50))] })
+    typed(h, "UCS", "10,7", "")
+    typed(h, "HATCH", "P", "ANSI31", "1", "0", "40,18", "")
+    expectProbedLines(h.only<HatchEntity>("hatch"), "p303")
+  })
+
+  it("turns the pattern with a turned UCS (p304: UCS Z 30)", () => {
+    const h = createHarness({ entities: [rectOf(p(0, 0), p(100, 50))] })
+    typed(h, "UCS", "Z", "30")
+    typed(h, "HATCH", "P", "ANSI31", "1", "0")
+    h.click(p(50, 25)).enter()
+    expectProbedLines(h.only<HatchEntity>("hatch"), "p304")
+  })
+
+  // HATCH-D62: DOTS is `0, 0,0, 0.79375,1.5875, 0,-1.5875`.
+  it("generates a 0 dash as a dot, a segment from a point to itself", () => {
+    const { lines } = hatchGeometry(
+      createHatch([loopOf(p(0, 0), p(10, 10))], { patternId: "DOTS" })
+    )
+    expect(lines.length).toBeGreaterThan(20)
+    for (const [a, b] of lines) expect(b).toBe(a)
+    const at = (x: number, y: number) =>
+      lines.some(([a]) => Math.abs(a.x - x) < 1e-9 && Math.abs(a.y - y) < 1e-9)
+    expect(at(0.79375, 1.5875)).toBe(true)
+    expect(at(2.38125, 1.5875)).toBe(true)
+    expect(at(1.5875, 3.175)).toBe(true)
+    // The row on y = 0 lies on the boundary (HATCH-D68).
+    expect(lines.some(([a]) => a.y === 0)).toBe(false)
   })
 
   it("leaves an island unfilled (the even-odd rule)", () => {
-    const g = hatchAt(20, 0, [
-      loopOf(p(0, 0), p(100, 100)),
-      loopOf(p(40, 40), p(60, 60)),
-    ])
-    for (const [a, b] of g.lines) {
+    const { lines } = hatchGeometry(
+      createHatch(
+        [loopOf(p(0, 0), p(100, 100)), loopOf(p(40, 40), p(60, 60))],
+        {
+          patternId: "ANSI31",
+        }
+      )
+    )
+    expect(lines.length).toBeGreaterThan(0)
+    for (const [a, b] of lines) {
       for (const t of [0, 0.25, 0.5, 0.75, 1]) {
         const point = V.lerp(a, b, t)
         const insideHole =
@@ -642,55 +718,198 @@ describe("hatch pattern geometry", () => {
     expect(g.rings[0]).toHaveLength(4)
   })
 
-  it("gives up past the line budget instead of generating forever", () => {
-    // 0.125 × 0.0005 spacing over a 100-unit square: far past HPMAXLINES.
-    const g = hatchAt(0.0005)
+  // HATCH-D69: MAX_HATCH_LINES is a safety cap, not HPMAXLINES (p363, p364);
+  // ANSI31 at 0.0001 over 100 × 100 is 445 000 members, far past it.
+  it("gives up past its safety cap instead of generating forever", () => {
+    const g = hatchGeometry(
+      createHatch([loopOf(p(0, 0), p(100, 100))], {
+        patternId: "ANSI31",
+        patternScale: 0.0001,
+      })
+    )
     expect(g.truncated).toBe(true)
+    expect(g.lines.length).toBeLessThanOrEqual(MAX_HATCH_LINES + 1)
   })
 
-  it("refuses to create a hatch that is too dense, and says so", () => {
-    const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH")
-      .option("Properties")
-      .type("ANSI31")
-      .enter()
-      .type("0.0005")
-      .enter()
-      .type("0")
-      .enter()
-      .option("Select objects")
-      .click(p(50, 0))
-      .enter()
-      .enter()
-
+  // Probe hatch/p305: the console's words, en and es (tables 20134, 20772).
+  it("refuses to create a hatch that is too dense, and says so (p305)", () => {
+    const tooDense = ["P", "ANSI31", "0.0001", "0", "50,25", ""]
+    const h = typed(createHarness({ entities: [SQUARE] }), "HATCH", ...tooDense)
     expect(h.typeCounts().hatch).toBeUndefined()
-    expect(h.commandLog().some((line) => line.includes("too dense"))).toBe(true)
+    expect(h.commandLog()).toContain(
+      "Hatch spacing too dense, or dash size too small."
+    )
+    const es_ = typed(
+      createHarness({ locale: es, entities: [SQUARE] }),
+      "SOMBREA",
+      ...tooDense
+    )
+    expect(es_.commandLog()).toContain(
+      "Intervalo de sombreado demasiado denso o trazo demasiado pequeño."
+    )
   })
 })
 
+/** The grips drawn on the selection, by shape, in the world, rounded. */
+function drawnGrips(h: ReturnType<typeof createHarness>) {
+  const grips = {
+    round: [] as Vec2[],
+    square: [] as Vec2[],
+    segment: [] as Vec2[],
+  }
+  for (const prim of h.scene().primitives) {
+    const fill = "fill" in prim ? prim.fill : undefined
+    if (fill !== THEME.grip && fill !== THEME.gripHot) continue
+    if (prim.kind === "circle") grips.round.push(prim.center)
+    if (prim.kind === "rect") {
+      grips.square.push({
+        x: prim.min.x + prim.width / 2,
+        y: prim.min.y + prim.height / 2,
+      })
+    }
+    if (prim.kind === "path") {
+      grips.segment.push(
+        V.scale(
+          prim.points.reduce((sum, point) => V.add(sum, point), p(0, 0)),
+          1 / prim.points.length
+        )
+      )
+    }
+  }
+  const world = (points: Vec2[]) =>
+    points
+      .map((screen) => h.runtime.viewport.screenToWorld(screen))
+      .map((w) => [+w.x.toFixed(2) + 0, +w.y.toFixed(2) + 0])
+      .sort((a, b) => a[0] - b[0] || a[1] - b[1])
+  return {
+    round: world(grips.round),
+    square: world(grips.square),
+    segment: world(grips.segment),
+  }
+}
+
 describe("hatch as an object", () => {
-  it("picks anywhere inside the area, not just on its boundary", () => {
-    const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH").option("Select objects").click(p(50, 0)).enter().enter()
-    const hatch = hatchOnly(h.entities())
+  /** p322–p327's hatch: ANSI31 at 10, 45° lines 31.75 apart through 0,0. */
+  const pattern = () =>
+    createHatch(RECT, { patternId: "ANSI31", patternScale: 10, id: "h" })
+  const solid = () =>
+    createHatch(RECT, { patternId: SOLID_HATCH_PATTERN_ID, id: "h" })
+  /** p310–p313's hatch: ANSI31 at scale 1. */
+  const ansi31 = () => createHatch(RECT, { patternId: "ANSI31", id: "h" })
+  const boundary = () => rectOf(p(0, 0), p(100, 50), { id: "r" })
 
-    // The command has already dropped back to Select.
-    h.click(p(50, 50))
-    expect(h.selectedIds()).toContain(hatch.id)
+  // HATCH-D64, desktop hatch/d06-1 to d06-3, probes p322, p324.
+  it("is picked on its pattern lines, never between them", () => {
+    const h = createHarness({ entities: [boundary(), pattern()] })
+    h.click(p(30, 10))
+    expect(h.selectedIds()).toEqual([])
+    // The click started a window (p324's `Specify opposite corner:`).
+    h.escape()
+    h.click(p(20, 20))
+    expect(h.selectedIds()).toEqual(["h"])
   })
 
-  it("carries its pattern origin along when it moves", () => {
-    const hatch = createHatch([loopOf(p(0, 0), p(10, 10))])
-    const moved = translateEntity(hatch, p(5, 7)) as HatchEntity
-    expect(moved.origin).toBeCloseToPoint(p(5, 7))
+  // Probe hatch/p327: its boundary erased, a pick on that edge off the lines.
+  it("is not picked on its boundary off its lines", () => {
+    const h = createHarness({ entities: [pattern()] })
+    h.click(p(78, 0))
+    expect(h.selectedIds()).toEqual([])
   })
 
-  it("flips its bulges and pattern angle when mirrored", () => {
+  // Desktop hatch/d06-5: the console's nil (p323) is its own artefact.
+  it("is picked anywhere inside when SOLID", () => {
+    const h = createHarness({ entities: [boundary(), solid()] })
+    h.click(p(30, 10))
+    expect(h.selectedIds()).toEqual(["h"])
+  })
+
+  // Probes hatch/p322, p326: a crossing between the lines finds nothing.
+  it("is taken by a crossing only on its lines, a SOLID anywhere inside", () => {
+    const crossing = ["ERASE", "C", "25,5", "35,15", ""]
+    const between = typed(
+      createHarness({ entities: [boundary(), pattern()] }),
+      ...crossing
+    )
+    expect(between.entities().map((e) => e.id)).toEqual(["r", "h"])
+    const filled = typed(
+      createHarness({ entities: [boundary(), solid()] }),
+      ...crossing
+    )
+    expect(filled.entities().map((e) => e.id)).toEqual(["r"])
+  })
+
+  it("is taken by a fence that crosses its lines, not one between them", () => {
+    const fence = (...points: string[]) =>
+      typed(
+        createHarness({ entities: [pattern()] }),
+        "ERASE",
+        "F",
+        ...points,
+        "",
+        ""
+      ).entities()
+    expect(fence("25,5", "35,5")).toHaveLength(1)
+    expect(fence("10,5", "50,5")).toHaveLength(0)
+  })
+
+  it("moves with its pattern (p310: MOVE 0,0 → 10,5)", () => {
+    const h = createHarness({ entities: [boundary(), ansi31()] })
+    typed(h, "MOVE", "L", "", "0,0", "10,5")
+    expectProbedLines(h.only<HatchEntity>("hatch"), "p310")
+  })
+
+  it("copies with its pattern (p311: COPY 0,0 → 10,5, 34 lines each)", () => {
+    const h = createHarness({ entities: [boundary(), ansi31()] })
+    typed(h, "COPY", "L", "", "0,0", "10,5", "")
+    const [source, copy] = h
+      .entities()
+      .filter((e): e is HatchEntity => e.type === "hatch")
+    expect(copy.id).not.toBe(source.id)
+    // The copy is where MOVE put the hatch of p310, line for line.
+    expectProbedLines(copy, "p310")
+    expectProbedLines(source, "p300")
+  })
+
+  it("turns its pattern with it (p312: ROTATE 30 about 20,10)", () => {
+    const h = createHarness({ entities: [boundary(), ansi31()] })
+    typed(h, "ROTATE", "L", "", "20,10", "30")
+    expectProbedLines(h.only<HatchEntity>("hatch"), "p312")
+  })
+
+  it("scales its pattern with it (p313: SCALE 2 about 20,10)", () => {
+    const h = createHarness({ entities: [boundary(), ansi31()] })
+    typed(h, "SCALE", "L", "", "20,10", "2")
+    const scaled = h.only<HatchEntity>("hatch")
+    expect(scaled.patternScale).toBe(2)
+    expectProbedLines(scaled, "p313")
+  })
+
+  // HATCH-D65, MIRRHATCH 0: only the loops reflect; angle, origin and scale
+  // are kept (probes p314, p316; p350–p354 the same with other axes).
+  it("mirrors its boundary and keeps its pattern (p314, p316)", () => {
+    const at30 = () =>
+      createHatch(RECT, { patternId: "ANSI31", patternAngle: deg(30) })
+    for (const [axis, probe] of [
+      ["120,10", "p314"],
+      ["10,10", "p316"],
+    ]) {
+      const from = probe === "p314" ? "120,0" : "0,0"
+      const h = createHarness({ entities: [at30()] })
+      typed(h, "MIRROR", "L", "", from, axis, "N")
+      const copy = h.entities()[1] as HatchEntity
+      expect(copy.patternAngle).toBeCloseToAngle(deg(30))
+      expect(copy.origin).toBeCloseToPoint(p(0, 0))
+      expectProbedLines(copy, probe)
+    }
+  })
+
+  it("flips its bulges and keeps its pattern angle when mirrored in place", () => {
     const loop = hatchLoopFromEntity(circleOf(p(0, 0), 10))!
     const hatch = createHatch([loop], { patternAngle: deg(30) })
     const flipped = mirrorEntity(hatch, p(0, 0), p(1, 0)) as HatchEntity
     expect(flipped.loops[0].bulges).toEqual([-1, -1])
-    expect(flipped.patternAngle).toBeCloseToAngle(deg(-30))
+    expect(flipped.patternAngle).toBeCloseToAngle(deg(30))
+    expect(flipped.origin).toBeCloseToPoint(p(0, 0))
   })
 
   it("survives a save and reload", () => {
@@ -708,43 +927,163 @@ describe("hatch as an object", () => {
       .enter()
       .enter()
 
-    const parsed = parseDrawingFile(
-      serializeDrawing({
-        settings: h.runtime.document.getSettings(),
-        layers: h.runtime.document.getLayers(),
-        currentLayerId: h.runtime.document.getCurrentLayerId(),
-        textStyles: h.runtime.document.getTextStyles(),
-        currentTextStyleId: h.runtime.document.getCurrentTextStyleId(),
-        dimStyles: h.runtime.document.getDimStyles(),
-        currentDimStyleId: h.runtime.document.getCurrentDimStyleId(),
-        blocks: h.runtime.document.getBlocks(),
-        entities: h.entities(),
-      })
-    )
+    const parsed = parseDrawingFile(h.runtime.serializeDrawing())
     const reloaded = hatchOnly(parsed.entities)
+    expect(reloaded.patternId).toBe("ANSI31")
     expect(reloaded.patternScale).toBe(20)
     expect(reloaded.patternAngle).toBeCloseToAngle(deg(30))
     expect(reloaded.loops[0].vertices).toBeCloseToPoints(SQUARE.vertices)
   })
 
-  it("shows its pattern in the Properties palette, scale and angle editable", () => {
-    const h = createHarness({ entities: [SQUARE] })
-    h.command("HATCH").option("Select objects").click(p(50, 0)).enter().enter()
-    h.click(p(50, 50))
+  // HATCH-D72, desktop hatch/d03-1, d03-5, d04.
+  it("shows a round centre grip, a square per vertex and one per edge's middle", () => {
+    const h = createHarness({ entities: [pattern()] })
+    h.click(p(20, 20)).moveTo(p(400, 400))
+    expect(drawnGrips(h)).toEqual({
+      // The extents' centre, not the centroid (d03-5).
+      round: [[50, 25]],
+      square: [
+        [0, 0],
+        [0, 50],
+        [100, 0],
+        [100, 50],
+      ],
+      // A thin rectangle along each edge, as a polyline's (d03-1).
+      segment: [
+        [0, 25],
+        [50, 0],
+        [50, 50],
+        [100, 25],
+      ],
+    })
+  })
 
-    const rows = h.state().properties.info?.groups[0].rows ?? []
+  it("moves by its centre grip, pattern and all (d04)", () => {
+    const h = createHarness({ entities: [pattern()] })
+    h.click(p(20, 20)).click(p(50, 25)).click(p(50, 35))
+    const moved = h.only<HatchEntity>("hatch")
+    expect(moved.loops[0].vertices[0]).toBeCloseToPoint(p(0, 10))
+    expect(moved.origin).toBeCloseToPoint(p(0, 10))
+  })
+
+  it("stretches a vertex and an edge of its boundary by their grips", () => {
+    const h = createHarness({ entities: [pattern()] })
+    h.click(p(20, 20)).click(p(100, 50)).click(p(120, 60))
+    expect(h.only<HatchEntity>("hatch").loops[0].vertices).toBeCloseToPoints([
+      p(0, 0),
+      p(100, 0),
+      p(120, 60),
+      p(0, 50),
+    ])
+    h.escape().click(p(20, 20)).click(p(50, 0)).click(p(50, -10))
+    const stretched = h.only<HatchEntity>("hatch")
+    expect(stretched.loops[0].vertices).toBeCloseToPoints([
+      p(0, -10),
+      p(100, -10),
+      p(120, 60),
+      p(0, 50),
+    ])
+    expect(stretched.origin).toBeCloseToPoint(p(0, 0))
+  })
+
+  it("bends an arc segment of a loop by its middle grip, keeping the rest", () => {
+    const loop = hatchLoopFromEntity(circleOf(p(0, 0), 50))!
+    const h = createHarness({
+      entities: [createHatch([loop], { patternId: SOLID_HATCH_PATTERN_ID })],
+    })
+    h.click(p(0, 0)).moveTo(p(400, 400))
+    expect(drawnGrips(h).segment).toEqual([
+      [0, -50],
+      [0, 50],
+    ])
+    h.click(p(0, 50)).click(p(0, 25))
+    const bent = h.only<HatchEntity>("hatch").loops[0]
+    expect(bent.vertices).toBeCloseToPoints([p(50, 0), p(-50, 0)])
+    expect(bent.bulges?.[0]).toBeCloseTo(0.5, 9)
+    expect(bent.bulges?.[1]).toBe(1)
+  })
+
+  // HATCH-D73, desktop hatch/d05-1.
+  it("lists AutoCAD's Pattern and Geometry rows in the palette", () => {
+    const h = createHarness({
+      entities: [createHatch([loopOf(p(0, 0), p(40, 40))], { id: "h" })],
+    })
+    h.select("h")
+    const groups = h.state().properties.info?.groups ?? []
     expect(h.state().properties.info?.title).toBe("Hatch")
-    expect(rows.find((row) => row.label === "Pattern")?.value).toBe("ANSI31")
-    expect(rows.find((row) => row.label === "Scale")?.edit?.property).toBe(
-      "patternScale"
-    )
-    expect(rows.find((row) => row.label === "Angle")?.edit?.property).toBe(
-      "patternAngle"
-    )
+    expect(
+      groups.map((group) => [
+        group.title,
+        group.rows.map((row) => [row.label, row.value]),
+      ])
+    ).toEqual([
+      [
+        "Pattern",
+        [
+          ["Type", "Predefined"],
+          ["Pattern name", "ANGLE"],
+          ["Annotative", "No"],
+          ["Angle", "0°"],
+          ["Scale", "1.00"],
+          ["Origin X", "0.00"],
+          ["Origin Y", "0.00"],
+          ["Associative", "No"],
+          ["Island detection style", "Outer"],
+        ],
+      ],
+      [
+        "Geometry",
+        [
+          ["Elevation", "0.00"],
+          ["Area", "1600.00 mm²"],
+          ["Cumulative Area", "1600.00 mm²"],
+        ],
+      ],
+    ])
+    const editable = groups
+      .flatMap((group) => group.rows)
+      .filter((row) => row.edit)
+      .map((row) => row.edit?.property)
+    expect(editable).toEqual([
+      "patternAngle",
+      "patternScale",
+      "originX",
+      "originY",
+      "elevation",
+    ])
+    expect(h.runtime.setSelectionProperty("originX", "5")).toBe(true)
+    expect(h.runtime.setSelectionProperty("originY", "3")).toBe(true)
+    expect(h.only<HatchEntity>("hatch").origin).toBeCloseToPoint(p(5, 3))
+  })
+
+  it("reads its origin in the UCS, as the palette's other coordinates", () => {
+    const h = createHarness({
+      entities: [createHatch([loopOf(p(0, 0), p(40, 40))], { id: "h" })],
+    })
+    typed(h, "UCS", "10,7", "")
+    h.select("h")
+    const row = (label: string) =>
+      h
+        .state()
+        .properties.info?.groups.flatMap((group) => group.rows)
+        .find((r) => r.label === label)?.value
+    expect([row("Origin X"), row("Origin Y")]).toEqual(["-10.00", "-7.00"])
+    h.runtime.setSelectionProperty("originX", "0")
+    expect(h.only<HatchEntity>("hatch").origin).toBeCloseToPoint(p(10, 0))
   })
 })
 
 describe("hatch in the scene", () => {
+  /** Drawn red, to tell its segments from the grid's and the UCS icon's. */
+  const RED = "#ff0000"
+  const red = (hatch: HatchEntity): HatchEntity => ({ ...hatch, color: RED })
+  const segments = (h: ReturnType<typeof createHarness>) =>
+    h
+      .scene()
+      .primitives.filter(
+        (prim) => prim.kind === "segment" && prim.stroke.color === RED
+      )
+
   it("draws a solid fill as one filled path with the islands as subpaths", () => {
     const h = createHarness({
       entities: [
@@ -766,18 +1105,78 @@ describe("hatch in the scene", () => {
     expect(paths[0].kind === "path" && paths[0].subpaths).toHaveLength(1)
   })
 
-  it("draws a pattern as ordinary segments, so nothing downstream needs a clip", () => {
+  it("draws a pattern as its lines, one segment each, so nothing needs a clip", () => {
     const h = createHarness({
-      entities: [
-        createHatch([loopOf(p(0, 0), p(100, 100))], { patternScale: 20 }),
-      ],
+      entities: [red(createHatch(RECT, { patternId: "ANSI31" }))],
     })
-    const segments = h
-      .scene()
-      .primitives.filter((prim) => prim.kind === "segment")
-    expect(segments.length).toBeGreaterThan(10)
+    h.moveTo(p(400, 400))
+    expect(segments(h)).toHaveLength(probed("p300").length)
     expect(
       h.scene().primitives.some((prim) => prim.kind === "path" && prim.fill)
     ).toBe(false)
+  })
+
+  // HATCH-D66, probe hatch/p340: a DASHED hatch plots its lines continuous,
+  // in its colour and lineweight.
+  it("draws its pattern lines continuous whatever its linetype", () => {
+    const h = createHarness({
+      entities: [
+        {
+          ...createHatch(RECT, { patternId: "ANSI31", patternScale: 10 }),
+          color: RED,
+          linetype: "Dashed",
+          lineweight: 0.5,
+        },
+      ],
+    })
+    h.moveTo(p(400, 400))
+    const drawn = segments(h)
+    expect(drawn.length).toBeGreaterThan(0)
+    for (const segment of drawn) {
+      if (segment.kind !== "segment") continue
+      expect(segment.stroke.dash).toBeUndefined()
+      expect(segment.stroke.dashOffset).toBeUndefined()
+      expect(segment.stroke.width).toBeGreaterThan(1)
+    }
+  })
+
+  // HATCH-D67, probe hatch/p341: FILL off hides a SOLID and a pattern alike.
+  it("draws nothing with FILL off", () => {
+    const h = createHarness({
+      entities: [
+        red(createHatch(RECT, { patternId: SOLID_HATCH_PATTERN_ID })),
+        red(
+          createHatch([loopOf(p(120, 0), p(220, 100))], { patternId: "ANSI31" })
+        ),
+      ],
+    })
+    const filled = () =>
+      h
+        .scene()
+        .primitives.filter((prim) => prim.kind === "path" && prim.fill === RED)
+    h.moveTo(p(400, 400))
+    expect([filled().length, segments(h).length > 0]).toEqual([1, true])
+    typed(h, "FILL", "OFF")
+    expect([filled().length, segments(h).length]).toEqual([0, 0])
+  })
+
+  // HATCH-D62: as a linetype's dot is drawn (`drawnDash`), a run as long as
+  // the stroke is wide.
+  it("draws a dot as a run as long as the stroke is wide", () => {
+    const h = createHarness({
+      entities: [
+        red(createHatch([loopOf(p(0, 0), p(10, 10))], { patternId: "DOTS" })),
+      ],
+    })
+    h.moveTo(p(400, 400))
+    const drawn = segments(h)
+    expect(drawn.length).toBeGreaterThan(20)
+    for (const segment of drawn) {
+      if (segment.kind !== "segment") continue
+      expect(V.distance(segment.a, segment.b)).toBeCloseTo(
+        Math.max(segment.stroke.width, 1),
+        9
+      )
+    }
   })
 })

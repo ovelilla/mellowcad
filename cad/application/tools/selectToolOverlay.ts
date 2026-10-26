@@ -7,9 +7,6 @@ import {
   entityPointToWorld,
   insertFlatGeometry,
   planeAxes,
-  PolylineEntity,
-  polylineSegmentGeometries,
-  setPolylineBulge,
   translateEntity,
 } from "../../domain/entities"
 import { polarPoint } from "../../geometry/primitives"
@@ -39,7 +36,9 @@ import {
   ellipseGripped,
   movedDimension,
   mtextWidthGrip,
+  gripSegments,
   withRadius,
+  withSegmentBulge,
   withSegmentStretched,
   withVertexAt,
 } from "./selectToolEdits"
@@ -116,7 +115,7 @@ export function buildGrips(
     const hot = sameGrip(grip, hover)
     const entity = ctx.document.get(grip.entityId)
     if (
-      entity?.type === "polyline" &&
+      entity &&
       (grip.role.kind === "stretchSegment" || grip.role.kind === "bulge")
     ) {
       const along = segmentOnScreen(entity, grip.role.segmentIndex, ctx)
@@ -456,12 +455,14 @@ export function buildSegmentStretch(
 ): ScenePrimitive[] {
   const { viewport } = ctx
   const poly = ctx.document.get(state.entityId)
-  if (poly?.type !== "polyline") return []
-  const preview = withSegmentStretched(
-    poly,
-    state.segmentIndex,
-    V.sub(state.current, state.origin)
-  )
+  const preview =
+    poly &&
+    withSegmentStretched(
+      poly,
+      state.segmentIndex,
+      V.sub(state.current, state.origin)
+    )
+  if (!poly || !preview) return []
   const stroke: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
   const out = entityScenePrimitive(viewport, preview, stroke)
   pushSegmentGrip(
@@ -474,15 +475,18 @@ export function buildSegmentStretch(
 }
 
 /**
- * The screen direction a polyline segment's midpoint grip lies along: its
- * chord, which an arc's tangent at its midpoint runs parallel to.
+ * The screen direction a polyline's or a hatch loop's segment midpoint grip
+ * lies along: its chord, which an arc's tangent at its midpoint runs parallel
+ * to.
  */
 function segmentOnScreen(
-  poly: PolylineEntity,
+  poly: Entity,
   segmentIndex: number,
   ctx: ToolContext
 ): Vec2 {
-  const { a, b } = polylineSegmentGeometries(poly)[segmentIndex]
+  const segment = gripSegments(poly)[segmentIndex]
+  if (!segment) return { x: 1, y: 0 }
+  const { a, b } = segment
   return V.sub(
     ctx.viewport.worldToScreen(entityPointToWorld(poly, b)),
     ctx.viewport.worldToScreen(entityPointToWorld(poly, a))
@@ -496,8 +500,9 @@ export function buildBulgeEdit(
 ): ScenePrimitive[] {
   const { viewport } = ctx
   const poly = ctx.document.get(state.entityId)
-  if (poly?.type !== "polyline") return []
-  const preview = setPolylineBulge(poly, state.segmentIndex, state.bulge)
+  const preview =
+    poly && withSegmentBulge(poly, state.segmentIndex, state.bulge)
+  if (!poly || !preview) return []
   const stroke: StrokeStyle = { color: THEME.preview, width: 1, dash: [6, 4] }
   const out = entityScenePrimitive(viewport, preview, stroke)
   pushSegmentGrip(

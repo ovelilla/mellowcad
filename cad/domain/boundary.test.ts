@@ -145,7 +145,7 @@ describe("traceBoundaryLoops", () => {
 
   it("fills the whole traced area with pattern lines", () => {
     const loops = traceBoundaryLoops(p(50, 50), looseSquare(100))
-    const geometry = hatchGeometry(createHatch(loops!, { patternScale: 20 }))
+    const geometry = hatchGeometry(createHatch(loops!, { patternId: "ANSI31" }))
 
     expect(geometry.lines.length).toBeGreaterThan(10)
     for (const [a, b] of geometry.lines) {

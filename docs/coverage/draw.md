@@ -720,7 +720,7 @@ and Text frame rows (desktop d04-2), picking by the strokes (TEXT's), `?`'s 2027
 
 **Implemented:** -HATCH's command line for both names (WHY: the Hatch Creation tab and the Hatch and
 Gradient dialog, where HATCH sets its properties, do not exist here):
-`Current hatch pattern:  ANSI31` (es `Patrón de sombreado actual:`), then
+`Current hatch pattern:  ANGLE` (es `Patrón de sombreado actual:`), then
 `Specify internal point or [Properties/Select objects]:` (es
 `Precise punto interno o [Propiedades/Designar objetos]`) until Enter makes the hatch — each
 internal point says `Selecting everything...`, `Selecting everything visible...`,
@@ -732,11 +732,11 @@ which the hatch leaves out, saying nothing (what AutoCAD says of it was not prob
 the prompt declares but does not list (es `desHacer`), takes back the last internal point's
 boundaries without a word and asks again, leaving what Select objects took, and with no internal
 point left says `No boundary to Undo.` (es `Ningún contorno por deshacer.`); Properties asks
-`Enter a pattern name or [?/Solid] <ANSI31>:` (`Unknown pattern name.`), then for a pattern
+`Enter a pattern name or [?/Solid] <ANGLE>:` (`Unknown pattern name.`), then for a pattern
 `Specify a scale for the pattern <1.00>:` and `Specify an angle for the pattern <0.00>:` (es
 `Indique nombre de patrón o [?/Sólido]`, `Nombre de patrón desconocido.`,
-`Precise escala del patrón`, `Precise ángulo del patrón`); SOLID + ANSI31, live preview, single
-undo, paint order behind the boundary, area hit-test, single grip; the hatch lies at the height of
+`Precise escala del patrón`, `Precise ángulo del patrón`); live preview, single undo, paint order
+behind the boundary; the hatch lies at the height of
 its boundary: the object nearest an internal point (-HATCH's Nearest ray casting) or the first
 object selected fixes it, and objects at another height are neither traced nor taken ("enclosed
 areas can be hatched only if they are in a plane parallel to the XY plane of the current UCS";
@@ -745,13 +745,45 @@ the plane is **unverified**; objects at an angle to the UCS's XY plane are not t
 scale and angle given are the next hatch's, per drawing and not saved (HPNAME, HPSCALE, HPANG: NEW
 and OPEN bring the defaults back, rectang/p303)
 
-**Missing:** the metric pattern file (acadiso.pat defines ANSI31 at 3.175 spacing; the imperial
-0.125 is used, so a millimetre drawing needs HPSCALE ≈ 25), chained open-object boundaries,
-HPGAPTOL, HPASSOC, HPSEPARATE=1, Normal/Ignore island styles, -HATCH's other keywords (draW
-boundary, remove Boundaries, Advanced, DRaw order, Origin, ANnotative, hatch COlor, LAyer,
-Transparency) and `?`'s `Enter pattern(s) to list <*>:` with its pages, HATCHEDIT/HE, gradients,
-user-defined patterns + Double, Origin, `-HATCH` draw order/colour/layer/transparency, annotative,
-the other ~70 predefined patterns
+**Implemented, the object (HATCH review, block HOB):** acadiso.pat's metric definitions of SOLID,
+ANGLE, ANSI31–ANSI38, LINE, NET, NET3, DASH, SQUARE, STEEL, BRICK, CROSS, ZIGZAG, HONEY, EARTH, DOTS,
+AR-SAND and AR-CONC, each `.pat` line quoted beside its data, HPNAME starting on ANGLE (p00), the
+`?` listing's descriptions from en and es acadiso.pat; the pattern generated line for line as
+AutoCAD's EXPLODE leaves it, dash phase included, for scale, angle, HPORIGIN and a moved or turned
+UCS (p300–p307), a member lying on a loop edge left out (p301), a `0` dash a dot, drawn as a
+linetype's dot is; MOVE, COPY, ROTATE, SCALE carry the pattern (p310–p313), MIRROR reflects the
+loops and keeps angle, origin and scale (MIRRHATCH 0, p314, p316, p350–p354); a pattern hatch is
+picked, crossed and fenced by its lines only — a click between them or on its boundary off them
+starts a window (desktop d06-1 to d06-3, p322, p324, p326, p327) — and a SOLID anywhere inside
+(d06-5); grips of a non-associative hatch (d03-1): a round centre grip at the extents' centre that
+moves it (d03-5, d04), a square per loop vertex and a segment-middle grip per edge that stretch them
+(an arc's bends, as a polyline's); the palette's Pattern rows Type (`Predefined`), Pattern name,
+Annotative (`No`), Angle, Scale, Origin X, Origin Y (editable, read in the UCS), Associative
+(`No`), Island detection style (`Outer`) and Geometry's Elevation, Area, Cumulative Area (d05-1;
+the Spanish labels `Nombre de patrón`, `Origen X`, `Área acumulativa`… are glossary words,
+**unverified** on the desktop); pattern lines drawn continuous in the object's colour and
+lineweight whatever its linetype (p340); nothing drawn with FILL off, SOLID or pattern (p341);
+MATCHPROP copies name, angle and scale and leaves the origin (d07); a drawing saved before file
+version 32 reads an ANSI31 hatch at its scale over 25.4, as it was drawn with acad.pat's imperial
+definition; the es too-dense message is the console's `Intervalo de sombreado demasiado denso o
+trazo demasiado pequeño.` (p305 es). WHY a safety cap of 100 000 pattern segments
+(`MAX_HATCH_LINES`): it is not HPMAXLINES (p363, p364); AutoCAD refused ANSI31 over 0,0–100,50
+between about 27 800 and 32 100 members (p365, p367), by a rule **unverified**, so a hatch between
+that and the cap is made here and refused there
+
+**Missing:** chained open-object boundaries, HPGAPTOL, HPASSOC, HPSEPARATE=1, Normal/Ignore island
+styles, -HATCH's other keywords (draW boundary, remove Boundaries, Advanced, DRaw order, Origin,
+ANnotative, hatch COlor, LAyer, Transparency) and `?`'s `Enter pattern(s) to list <*>:` with its
+pages, gradients, user-defined patterns + Double, `-HATCH` draw order/colour/layer/transparency,
+annotative; the object: acadiso.pat's other ~60 patterns; what EXPLODE makes of a dot
+(**unverified**: here a zero-length LINE); MIRRHATCH 1; the angle as typed in a turned UCS (DXF
+52: AutoCAD keeps the angle typed, here its world angle is stored and shown, p369, p330) and
+HPORIGIN's readout after a MOVE (the palette's Origin stays 0,0 there, d05-1; here it moves with
+the hatch); the grips' hover menus (Stretch / Origin Point / Hatch Angle / Hatch Scale at the
+centre, Add / Remove Vertex at a vertex, Add Vertex / Convert to Arc at an edge, d03-2 to d03-4);
+the palette's Spacing, ISO pen width, Double and Background color rows (greyed for a predefined
+pattern); a double-click, which in AutoCAD opens the Hatch Editor tab and Quick Properties
+(d08-2): HATCHEDIT/HE, the Hatch Editor and Quick Properties
 
 ### `BLOCK` / `B` / `-BLOCK` · es `BLOQUE` / `BQ`†
 

@@ -82,6 +82,9 @@ export type EntityProperty =
   | "dimensionRotation"
   | "patternScale"
   | "patternAngle"
+  /** A hatch's pattern origin (DXF 43, 44), where its lines start. */
+  | "originX"
+  | "originY"
   | "insertScale"
   /** The palette's current vertex of a polyline, or point of a spline, 1-based: the runtime's, no geometry. */
   | "vertex"
@@ -176,13 +179,19 @@ export function applyEntityProperty(
         ? { ...entity, rotation: toRadians(value) }
         : null
     case "hatch":
-      // The pattern's scale and angle are AutoCAD's editable hatch rows; the
-      // boundary is geometry the palette has no way to retype.
+      // The pattern's angle, scale and origin are AutoCAD's editable hatch
+      // rows; the boundary is geometry the palette has no way to retype.
       if (property === "patternScale") {
         return value > 0 ? { ...entity, patternScale: value } : null
       }
       if (property === "patternAngle") {
         return { ...entity, patternAngle: toRadians(value) }
+      }
+      if (property === "originX") {
+        return { ...entity, origin: { x: value, y: entity.origin.y } }
+      }
+      if (property === "originY") {
+        return { ...entity, origin: { x: entity.origin.x, y: value } }
       }
       return null
     case "polyline":

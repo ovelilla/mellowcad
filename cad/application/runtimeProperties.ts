@@ -232,7 +232,7 @@ const COORDINATE_ROWS: Readonly<
     Record<
       EntityProperty,
       {
-        readonly point: "start" | "end" | "center" | "position"
+        readonly point: "start" | "end" | "center" | "position" | "origin"
         readonly axis: "x" | "y"
         readonly x: EntityProperty
         readonly y: EntityProperty
@@ -248,6 +248,8 @@ const COORDINATE_ROWS: Readonly<
   centerY: { point: "center", axis: "y", x: "centerX", y: "centerY" },
   positionX: { point: "position", axis: "x", x: "positionX", y: "positionY" },
   positionY: { point: "position", axis: "y", x: "positionX", y: "positionY" },
+  originX: { point: "origin", axis: "x", x: "originX", y: "originY" },
+  originY: { point: "origin", axis: "y", x: "originX", y: "originY" },
 }
 
 /**
@@ -371,9 +373,11 @@ function applyOffPlane(
 
 function rowPoint(
   entity: Entity,
-  point: "start" | "end" | "center" | "position"
+  point: "start" | "end" | "center" | "position" | "origin"
 ): Vec2 | null {
   switch (point) {
+    case "origin":
+      return entity.type === "hatch" ? entity.origin : null
     case "start":
       return entity.type === "line" ? entity.start : null
     case "end":

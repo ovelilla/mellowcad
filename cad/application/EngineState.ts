@@ -1590,23 +1590,39 @@ function singleEntityInfo(
       }
     }
     case "hatch": {
+      // AutoCAD's rows for a predefined, non-associative hatch, in its order
+      // (desktop hatch/d05-1). Spacing, ISO pen width, Double and Background
+      // color, greyed there for a predefined pattern, are not built.
+      const no = text.propertyValue("no")
+      const surface = objectArea(entity)?.area ?? 0
+      const origin = at(entity.origin)
       return {
         title: title("hatch"),
         count: 1,
         groups: [
           group("pattern", [
+            row("type", text.propertyValue("predefined")),
             // The pattern name is a picker in AutoCAD's palette, not a number,
             // so it stays read-only until there is one here.
-            row("pattern", text.hatchPattern(entity.patternId)),
-            coordRow("scale", "patternScale", entity.patternScale),
+            row("patternName", text.hatchPattern(entity.patternId)),
+            row("annotative", no),
             angleRow(
               "angle",
               "patternAngle",
               normalizeDegrees((entity.patternAngle * 180) / Math.PI)
             ),
-            row("boundaries", String(entity.loops.length)),
+            coordRow("scale", "patternScale", entity.patternScale),
+            coordRow("originX", "originX", origin.x),
+            coordRow("originY", "originY", origin.y),
+            row("associative", no),
+            row("islandDetectionStyle", text.propertyValue("outer")),
           ]),
-          group("geometry", [planeRow("elevation", "elevation")]),
+          group("geometry", [
+            planeRow("elevation", "elevation"),
+            row("area", area(surface)),
+            // One hatch: its own area (AutoCAD's sums a selection's).
+            row("cumulativeArea", area(surface)),
+          ]),
         ],
       }
     }

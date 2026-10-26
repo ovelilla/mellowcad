@@ -24,7 +24,11 @@ import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { ToolContext } from "./Tool"
 import { Grip, GripShape } from "./selectToolState"
-import { mtextWidthGrip, mtextWidthSides } from "./selectToolEdits"
+import {
+  gripSegments,
+  mtextWidthGrip,
+  mtextWidthSides,
+} from "./selectToolEdits"
 import { arrayGrips } from "./arrayGrips"
 import { arrayPlacement } from "../../domain/arrayEdits"
 
@@ -224,14 +228,37 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
         break
       }
       case "hatch": {
-        // AutoCAD gives a hatch one grip in the middle of its area, which
-        // moves the whole fill; the boundary is edited on the objects it was
-        // traced from.
+        // A non-associative hatch's grips (desktop hatch/d03-1): a round one
+        // at its extents' centre that moves it (d03-5, d04), and its loops'
+        // as a polyline's — a square per vertex, a segment's midpoint that
+        // stretches a straight edge or bends an arc — numbered loop after
+        // loop. The hover menus' Origin Point, Hatch Angle, Hatch Scale,
+        // Add / Remove Vertex and Convert to Arc are not built.
         const b = entityBounds(entity, ctx.blocks)
         grips.push({
           entityId: id,
           role: { kind: "move" },
           world: V.midpoint(b.min, b.max),
+          shape: "round",
+        })
+        entity.loops
+          .flatMap((loop) => loop.vertices)
+          .forEach((vertex, index) => {
+            grips.push({
+              entityId: id,
+              role: { kind: "vertex", index },
+              world: vertex,
+            })
+          })
+        gripSegments(entity).forEach((seg, segmentIndex) => {
+          grips.push({
+            entityId: id,
+            role:
+              seg.kind === "arc"
+                ? { kind: "bulge", segmentIndex }
+                : { kind: "stretchSegment", segmentIndex },
+            world: segmentGripPoint(seg),
+          })
         })
         break
       }

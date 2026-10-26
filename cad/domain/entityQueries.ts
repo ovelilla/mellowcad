@@ -22,7 +22,12 @@ import {
 } from "./entityTypes"
 import { insertFlatGeometry } from "./blocks"
 import { attributeDefinitionText } from "./attributes"
-import { hatchLoopSegments, hatchLoopRing, pointInsideHatch } from "./hatch"
+import {
+  hatchGeometry,
+  hatchLoopSegments,
+  hatchLoopRing,
+  pointInsideHatch,
+} from "./hatch"
 import { textBox, textCorners } from "./text"
 import { mtextCorners, mtextFromWorld, mtextLayout } from "./mtext"
 import { DimensionGeometry, dimensionGeometry } from "./dimensions"
@@ -240,8 +245,23 @@ export function closestOnEntity(
       return best
     }
     case "hatch": {
-      // A hatch is an area, so it picks solid: clicking anywhere in the fill
-      // selects it, not only along the boundary it was traced from.
+      const geometry = hatchGeometry(entity)
+      if (!geometry.solid) {
+        // A pattern hatch is picked on its lines only: a click between them,
+        // or on its boundary off them, starts a window (desktop hatch/d06-2,
+        // probes p322, p327).
+        let best: ClosestResult = {
+          point: entity.loops[0]?.vertices[0] ?? point,
+          distance: Infinity,
+          t: 0,
+        }
+        for (const [a, b] of geometry.lines) {
+          const candidate = closestPointOnSegment(a, b, point)
+          if (candidate.distance < best.distance) best = candidate
+        }
+        return best
+      }
+      // A SOLID is an area, picked anywhere inside it (desktop hatch/d06-5).
       let best: ClosestResult = {
         point: entity.loops[0]?.vertices[0] ?? point,
         distance: Infinity,
@@ -639,8 +659,19 @@ export function entityCrossesRect(
       return false
     }
     case "hatch": {
-      // A box drawn wholly inside the fill still crosses it: the hatch is the
-      // area, not just its outline.
+      const geometry = hatchGeometry(entity)
+      if (!geometry.solid) {
+        // By its pattern lines: a crossing wholly between them finds nothing
+        // (probes hatch/p322, p326).
+        for (const [a, b] of geometry.lines) {
+          if (pointInRect(a, min, max) || pointInRect(b, min, max)) return true
+          for (const [e1, e2] of edges) {
+            if (segmentSegmentIntersection(a, b, e1, e2)) return true
+          }
+        }
+        return false
+      }
+      // A box drawn wholly inside a SOLID still crosses it: it is the area.
       for (const corner of [min, max, { x: min.x, y: max.y }]) {
         if (pointInsideHatch(entity, corner)) return true
       }

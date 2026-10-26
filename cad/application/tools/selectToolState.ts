@@ -17,11 +17,13 @@ export type DimensionPoint = "first" | "second" | "line" | "vertex"
  * - `arcEnd`   — an arc endpoint: swing it around, changing the sweep.
  * - `arcMiddle` — an arc's midpoint: stretch the arc through the cursor, its
  *   ends kept.
- * - `vertex`   — a polyline vertex, or a spline's fit point or control
- *   vertex: stretch it, reshaping the curve.
- * - `stretchSegment` — a straight polyline segment's midpoint: move both its
- *   ends by the drag.
- * - `bulge`    — an arc polyline segment's midpoint: change its curvature.
+ * - `vertex`   — a polyline vertex, a spline's fit point or control vertex,
+ *   or a hatch loop's vertex (counted loop after loop): stretch it,
+ *   reshaping the curve.
+ * - `stretchSegment` — a straight polyline or hatch loop segment's midpoint:
+ *   move both its ends by the drag.
+ * - `bulge`    — an arc segment's midpoint (a polyline's, a hatch loop's):
+ *   change its curvature.
  * - `dimPoint` — a dimension's definition point: an extension-line origin, an
  *   angular one's vertex, or the dimension line itself, which slides the whole
  *   assembly.
@@ -63,8 +65,9 @@ export interface Grip {
   /** In the WCS, on its object: at its height there and in its plane. */
   readonly world: Vec3
   /**
-   * How it is drawn: round at a CV spline's vertices, an arrow at an array's
-   * spacing, count and angle grips (desktop arrays/d11), else a square.
+   * How it is drawn: round at a CV spline's vertices and a hatch's centre
+   * (desktop hatch/d03-1), an arrow at an array's spacing, count and angle
+   * grips (desktop arrays/d11), else a square.
    */
   readonly shape?: GripShape
   /** Where an arrow points, a unit vector in the WCS's plan. */
