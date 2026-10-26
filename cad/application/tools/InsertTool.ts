@@ -8,6 +8,7 @@ import {
   EntityId,
   InsertEntity,
   createInsert,
+  findBlockNamed,
   isAnonymousBlock,
   onPlaneOf,
 } from "../../domain/entities"
@@ -251,7 +252,11 @@ export class InsertTool implements Tool {
         }
         // Enter with nothing typed keeps the last block, the `<default>`.
         const name = typed.length === 0 ? this.blockId : typed
-        if (isAnonymousBlock(name) || !commitCtx.document.getBlock(name)) {
+        // Case-blind, as every block name is: `b1` inserts B1 (p210).
+        const block = isAnonymousBlock(name)
+          ? undefined
+          : findBlockNamed(commitCtx.document.getBlocks(), name)
+        if (!block) {
           commitCtx.report(
             commitCtx.text.message("blockUndefined", { name }),
             "error"
@@ -259,7 +264,7 @@ export class InsertTool implements Tool {
           this.enterName(commitCtx)
           return true
         }
-        this.blockId = name
+        this.blockId = block.id
         this.enterPoint(commitCtx)
         return true
       },

@@ -20,6 +20,7 @@ INSERT ["I"] "Insert block"
 ATTEDIT ["ATE"] "Edit attributes"
 ATTDEF ["ATT"] "Define attributes"
 ATTDISP [] "Attribute display"
+PURGE ["PU"] "Purge"
 TEXT ["DT","DTEXT"] "Text"
 MTEXT ["T","MT"] "Multiline text"
 TEXTEDIT ["DDEDIT","ED","TEDIT"] "Edit text"
@@ -84,6 +85,7 @@ U [] "Undo the last action"
 -MTEXT ["-T"] "Multiline text"
 REDO [] "Redo the last undone action"
 -ATTDEF [] "Define attributes"
+-PURGE ["-PU"] "Purge"
 -HATCH ["-H","-BH","-BHATCH"] "Hatch"
 -COLOR [] "Color"
 -LINETYPE ["-LT","-LTYPE"] "Linetype"
@@ -108,7 +110,6 @@ PROPERTIESCLOSE [] "Close the Properties palette"
 UNITS ["UN"] "Control the precision and display format of coordinates and distances"
 CLEANSCREENON [] "Clear toolbars and palettes from the screen"
 CLEANSCREENOFF [] "Restore the display as it was before Clean Screen"
-PURGE ["PU"] "Remove unused block definitions"
 ## tools
 select "Select" s
 line "Line" L
@@ -134,6 +135,7 @@ insert "Insert block" I
 attedit "Edit attributes" ATE
 attdef "Define attributes" ATT
 attdisp "Attribute display" ATTDISP
+purge "Purge" PU
 text "Text" DT
 mtext "Multiline text" T
 textedit "Edit text" ED
@@ -267,11 +269,43 @@ lweight "Lineweight" LW
 > PROPERTIESCLOSE
   command| PROPERTIESCLOSE
 > PURGE with nothing
+  prompt: PURGE Enter type of unused objects to purge [Blocks]:
+  asks: 
+  tip: Enter type of unused objects to purge
+  dyn: 
+  options: [B] Blocks
   command| PU PURGE
-  info| No unused blocks.
+  info| Nested items = Off    Orphaned data = Off
+> B
+  prompt: PURGE Enter name(s) to purge <*>:
+  asks: "Enter name(s) to purge"
+  tip: Enter name(s) to purge
+  dyn: "Enter name(s) to purge"=""||*
+  options: -
+  prompt| Enter type of unused objects to purge [Blocks]: B
+> names
+  prompt: PURGE Verify each name to be purged? [Yes/No] <Y>:
+  asks: 
+  tip: Verify each name to be purged?
+  dyn: 
+  options: [Y] Yes, [N] No
+  prompt| Enter name(s) to purge <*>:
+> N
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Verify each name to be purged? [Yes/No] <Y>: N
+  info| No unreferenced blocks found.
 > Enter repeats
+  prompt: PURGE Enter type of unused objects to purge [Blocks]:
+  asks: 
+  tip: Enter type of unused objects to purge
+  dyn: 
+  options: [B] Blocks
   command| PURGE
-  info| No unused blocks.
+  info| Nested items = Off    Orphaned data = Off
 
 ## erase two
 > start
@@ -298,8 +332,37 @@ lweight "Lineweight" LW
   properties: -
   cycling: -
 > PURGE two
+  prompt: PURGE Enter type of unused objects to purge [Blocks]:
+  asks: 
+  tip: Enter type of unused objects to purge
+  dyn: 
+  options: [B] Blocks
   command| PURGE
-  info| 2 blocks purged.
+  info| Nested items = Off    Orphaned data = Off
+> B
+  prompt: PURGE Enter name(s) to purge <*>:
+  asks: "Enter name(s) to purge"
+  tip: Enter name(s) to purge
+  dyn: "Enter name(s) to purge"=""||*
+  options: -
+  prompt| Enter type of unused objects to purge [Blocks]: B
+> names
+  prompt: PURGE Verify each name to be purged? [Yes/No] <Y>:
+  asks: 
+  tip: Verify each name to be purged?
+  dyn: 
+  options: [Y] Yes, [N] No
+  prompt| Enter name(s) to purge <*>:
+> N
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Verify each name to be purged? [Yes/No] <Y>: N
+  info| Deleting block "BAR".
+  info| Deleting block "NUT".
+  info| 2 blocks deleted.
 
 ## purge one
 > start
@@ -311,9 +374,44 @@ lweight "Lineweight" LW
   canvas: -
   properties: -
   cycling: -
-> PURGE one
-  command| PURGE
-  info| 1 block purged.
+> -PURGE one
+  prompt: -PURGE Enter type of unused objects to purge [Blocks]:
+  asks: 
+  tip: Enter type of unused objects to purge
+  dyn: 
+  options: [B] Blocks
+  command| -PURGE
+  info| Nested items = Off    Orphaned data = Off
+> B
+  prompt: -PURGE Enter name(s) to purge <*>:
+  asks: "Enter name(s) to purge"
+  tip: Enter name(s) to purge
+  dyn: "Enter name(s) to purge"=""||*
+  options: -
+  prompt| Enter type of unused objects to purge [Blocks]: B
+> names
+  dyn: "Enter name(s) to purge"="bar"||*
+> enter
+  prompt: -PURGE Verify each name to be purged? [Yes/No] <Y>:
+  asks: 
+  tip: Verify each name to be purged?
+  dyn: 
+  options: [Y] Yes, [N] No
+  prompt| Enter name(s) to purge <*>: bar
+> verify
+  prompt: -PURGE Purge block "BAR"? <N>
+  tip: Purge block "BAR"?
+  options: -
+  prompt| Verify each name to be purged? [Yes/No] <Y>:
+> FOO
+  prompt| Purge block "BAR"? <N> FOO
+  error| Yes or No, please.
+> Y
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Purge block "BAR"? <N> Y
 
 ## open not JSON
 > start

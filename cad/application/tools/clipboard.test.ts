@@ -393,6 +393,36 @@ describe("the fragment's tables", () => {
     expect(target.runtime.document.getBlocks()).toHaveLength(1)
   })
 
+  it("lands on the target's definition named in another case (probe blocks/p210)", async () => {
+    const clipboard = new MemoryClipboard()
+    const source = createHarness({
+      clipboard,
+      blocks: [
+        createBlockDefinition("bar", p(0, 0), [
+          lineOf(p(0, 0), p(100, 0), { id: "a" }),
+        ]),
+      ],
+      entities: [createInsert("bar", p(0, 0), { id: "I1" })],
+    })
+    copy(source, "I1")
+
+    const target = createHarness({
+      clipboard,
+      blocks: [
+        createBlockDefinition("BAR", p(0, 0), [
+          lineOf(p(0, 0), p(7, 0), { id: "b" }),
+          lineOf(p(0, 0), p(0, 7), { id: "c" }),
+        ]),
+      ],
+    })
+    await pasteAt(target, p(0, 0))
+
+    expect(target.runtime.document.getBlocks().map((b) => b.name)).toEqual([
+      "BAR",
+    ])
+    expect(target.only<InsertEntity>("insert").blockId).toBe("BAR")
+  })
+
   it("takes the tables it added back out on undo", async () => {
     const clipboard = new MemoryClipboard()
     const source = createHarness({ clipboard })

@@ -3,8 +3,11 @@ import { CadDocument } from "./Document"
 import {
   assignEntityColor,
   assignEntityLinetype,
+  createBlockDefinition,
   createDimension,
+  createInsert,
   type Entity,
+  findBlockNamed,
 } from "./entities"
 import { DEFAULT_LAYER_ID, createLayer } from "./layers"
 import { DEFAULT_DIM_STYLE_ID, createDimStyle } from "./dimStyles"
@@ -378,6 +381,41 @@ describe("layers", () => {
     expect(document.isEntityVisible(locked)).toBe(true)
     expect(document.isEntitySelectable(locked)).toBe(true)
     expect(document.isEntityEditable(locked)).toBe(false)
+  })
+})
+
+describe("blocks", () => {
+  // B1 is a line; B2 holds a reference to B1 and nothing else.
+  const nested = () => [
+    createBlockDefinition("B1", p(0, 0), [lineOf(p(0, 0), p(10, 0))]),
+    createBlockDefinition("B2", p(0, 0), [createInsert("B1", p(0, 0))]),
+  ]
+
+  it("holds a block used only inside a referenced block as in use (probe blocks/p150)", () => {
+    const document = new CadDocument()
+    document.load([createInsert("B2", p(0, 0), { id: "I2" })], {
+      blocks: nested(),
+    })
+
+    expect(document.blockInUse("B1")).toBe(true)
+    expect(document.removeBlock("B1")).toBe(false)
+    expect(document.getBlock("B1")).toBeDefined()
+  })
+
+  it("holds a block used only inside an unused block as unused (probe blocks/p142)", () => {
+    const document = new CadDocument()
+    document.load([], { blocks: nested() })
+
+    expect(document.blockInUse("B1")).toBe(false)
+    expect(document.blockInUse("B2")).toBe(false)
+  })
+
+  it("finds a block by its name in any case, as it was spelled (probes blocks/p115, p210)", () => {
+    const blocks = nested()
+
+    expect(findBlockNamed(blocks, "b1")?.name).toBe("B1")
+    expect(findBlockNamed(blocks, "B2")?.name).toBe("B2")
+    expect(findBlockNamed(blocks, "B3")).toBeUndefined()
   })
 })
 

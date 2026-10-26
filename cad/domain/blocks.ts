@@ -5,6 +5,7 @@ import { DEFAULT_LAYER_ID } from "./layers"
 import {
   AttributeDisplay,
   BlockDefinition,
+  BlockId,
   BlockLookup,
   InsertEntity,
   Entity,
@@ -39,10 +40,79 @@ const BLOCK_MIRROR_AXIS: Vec2 = { x: 0, y: 1 }
 /**
  * Whether a block is anonymous, as an array's is (`*U2`, probe arrays/p400):
  * the drawing makes and names it, so no list a user reads shows it and no
- * name a user types reaches it.
+ * name a user types reaches it; only -PURGE's wild cards do (blocks/p147).
  */
 export function isAnonymousBlock(name: string): boolean {
   return name.startsWith("*")
+}
+
+/**
+ * The block named `name`, whatever its case: a block's name is matched
+ * case-blind and keeps the spelling it was defined with (probes blocks/p115,
+ * p210), as every symbol table's name is.
+ */
+export function findBlockNamed(
+  blocks: Iterable<BlockDefinition>,
+  name: string
+): BlockDefinition | undefined {
+  const wanted = name.toUpperCase()
+  for (const block of blocks) {
+    if (block.name.toUpperCase() === wanted) return block
+  }
+  return undefined
+}
+
+/**
+ * The blocks in use: placed by a reference among `entities`, or by one in the
+ * definition of a block in use, at any depth. A block nested only in unused
+ * ones is unused, so PURGE takes a whole chain in one run (probes blocks/p142,
+ * p150). The one test of "in use": the block table and PURGE ask it alike.
+ */
+export function blocksInUse(
+  entities: Iterable<Entity>,
+  lookup: BlockLookup
+): Set<BlockId> {
+  const used = new Set<BlockId>()
+  const pending: BlockId[] = []
+  const reach = (entity: Entity) => {
+    if (entity.type !== "insert" || used.has(entity.blockId)) return
+    used.add(entity.blockId)
+    pending.push(entity.blockId)
+  }
+  for (const entity of entities) reach(entity)
+  for (let id = pending.pop(); id !== undefined; id = pending.pop()) {
+    for (const entity of lookup(id)?.entities ?? []) reach(entity)
+  }
+  return used
+}
+
+/**
+ * The blocks of the table `blocks` a purge of those `wanted` takes, in the
+ * table's order: each one `entities` (a drawing's) leave unused, anonymous
+ * ones included (probe blocks/p147), and that no definition the purge keeps
+ * holds at any depth, so no reference left draws nothing (p150). A chain of
+ * unused blocks all wanted goes in one run (p142).
+ */
+export function purgeableBlocks(
+  blocks: readonly BlockDefinition[],
+  entities: Iterable<Entity>,
+  wanted: (block: BlockDefinition) => boolean = () => true
+): BlockDefinition[] {
+  const table = new Map(blocks.map((block) => [block.id, block]))
+  const lookup = (id: BlockId) => table.get(id)
+  const used = blocksInUse(entities, lookup)
+  const asked = new Set(
+    blocks
+      .filter((block) => !used.has(block.id) && wanted(block))
+      .map((block) => block.id)
+  )
+  const held = blocksInUse(
+    blocks
+      .filter((block) => !asked.has(block.id))
+      .flatMap((block) => block.entities),
+    lookup
+  )
+  return blocks.filter((block) => asked.has(block.id) && !held.has(block.id))
 }
 
 /** The lowest `*U<n>` no block in `blocks` is named. */

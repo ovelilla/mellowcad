@@ -223,6 +223,9 @@ describe("the engine's English surface", () => {
         .do("PROPERTIES", (c) => c.command("PR"))
         .do("PROPERTIESCLOSE", (c) => c.command("PROPERTIESCLOSE"))
         .do("PURGE with nothing", (c) => c.command("PU"))
+        .do("B", (c) => answer(c, "B"))
+        .do("names", (c) => c.enter())
+        .do("N", (c) => answer(c, "N"))
         .do("Enter repeats", (c) => c.press("Enter"))
     )
     walk(
@@ -237,10 +240,22 @@ describe("the engine's English surface", () => {
       createHarness({
         blocks: [bar(), createBlockDefinition("NUT", p(0, 0), [line()])],
       }),
-      (s) => s.do("PURGE two", (c) => c.command("PURGE"))
+      (s) =>
+        s
+          .do("PURGE two", (c) => c.command("PURGE"))
+          .do("B", (c) => answer(c, "B"))
+          .do("names", (c) => c.enter())
+          .do("N", (c) => answer(c, "N"))
     )
     walk("purge one", createHarness({ blocks: [bar()] }), (s) =>
-      s.do("PURGE one", (c) => c.command("PURGE"))
+      s
+        .do("-PURGE one", (c) => c.command("-PURGE"))
+        .do("B", (c) => answer(c, "B"))
+        .do("names", (c) => c.type("bar"))
+        .do("enter", (c) => c.enter())
+        .do("verify", (c) => c.enter())
+        .do("FOO", (c) => answer(c, "FOO"))
+        .do("Y", (c) => answer(c, "Y"))
     )
   })
 

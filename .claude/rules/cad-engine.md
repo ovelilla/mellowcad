@@ -121,11 +121,10 @@ Dependencies run types → per-type modules → overrides → transforms → que
 
 ## Blocks
 
-- An entity whose shape lives in a **table** (`insert`) makes `closestOnEntity`, `entityBounds`,
-  `entityCrossesRect`, `entityWithinRect`, `entitiesBounds` and `entityScenePrimitive` take an
-  optional `BlockLookup`. A forgotten call site compiles, so the degraded answer is deliberately
-  _visible_ (the insertion point). Pass `document.blockLookup()` (`ctx.blocks`) wherever a real
-  object is measured, picked or drawn. `MAX_BLOCK_NESTING` stops a block nested in itself.
+- An entity whose shape lives in a **table** (`insert`) makes every query that measures, picks or
+  draws it (`entityBounds`, `entityScenePrimitive`…) take an optional `BlockLookup`. A forgotten
+  call site compiles, so the degraded answer is deliberately _visible_ (the insertion point). Pass
+  `document.blockLookup()` (`ctx.blocks`) wherever a real object is measured, picked or drawn.
 - Objects on layer 0 **inherit the reference's layer**; others keep what they had. **ByBlock is not
   modelled**: `resolveEntityColor` and its twins know ByObject and ByLayer, and a third mode
   touches all three.
@@ -163,12 +162,13 @@ visible in the viewport, so the _tool_ filters). Give it a cap: pairwise work is
 - A `DIMxxx` variable the Dimension Style Manager holds belongs on **`DimStyle`, not
   `DocumentSettings`**; a plotted size, distance or offset is folded into `scaledDimStyle`;
   `clampDimStyle` is the single gate every edit passes.
-- A new style copies another, names are the identity (case-blind), and **one that is
-  current, in use or the base cannot be deleted**.
+- A new style copies another, names are the identity (case-blind; blocks: `findBlockNamed`), and
+  **one that is current, in use (a block's is transitive, `blocksInUse`) or the base cannot be
+  deleted**.
 - A **fragment** (the clipboard, tomorrow WBLOCK) carries every table entry its objects reference,
   through block definitions, as a one-off drawing (`clipboardFile.ts`). Landing it (`planPaste`): **a
-  name the target already has wins**, and **only layers and anonymous blocks are remapped** (a
-  layer's id is not its name).
+  name the target already has wins**, and **only layers and anonymous or other-case blocks are
+  remapped** (a layer's id is not its name).
 - A _registry_ is per build (`linetypes.ts`, `hatchPatterns.ts`): an entity stores the **name**,
   and an unknown one draws nothing rather than failing the load. Transcribe a definition from
   AutoCAD's, quoted verbatim beside the data; adding one is data only, or the model is wrong.

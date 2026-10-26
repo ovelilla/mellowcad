@@ -13,6 +13,7 @@ import {
   BlockId,
   copyEntity,
   Entity,
+  findBlockNamed,
   isAnonymousBlock,
   MAX_BLOCK_NESTING,
 } from "../domain/entities"
@@ -114,9 +115,10 @@ export interface PastePlan {
  *
  * A **name that already exists in the target wins**: the objects join the layer
  * or use the style and block definition that are already there, and only names
- * the drawing has never heard of are added. That is AutoCAD's rule — pasting
- * never redefines the drawing it lands in — and it is also what makes a paste
- * back into the drawing it was copied from a plain duplicate. An anonymous
+ * the drawing has never heard of are added (a block's in any case, p210).
+ * That is AutoCAD's rule — pasting never redefines the drawing it lands in —
+ * and it is also what makes a paste back into the drawing it was copied from
+ * a plain duplicate. An anonymous
  * block (an array's) is no name at all: it lands as a fresh `*U<n>`, as COPY
  * makes a second array of its own (probe arrays/p410).
  */
@@ -131,11 +133,11 @@ export function planPaste(
     document
   )
   const layerOf = (id: LayerId) => layerIds.get(id) ?? DEFAULT_LAYER_ID
-  const anonymous = renameAnonymousBlocks(fragment.drawing.blocks, document)
+  const renamed = blockRenames(fragment.drawing.blocks, document)
   const onLayer = (entity: Entity): Entity => {
-    const placed = withAnonymousRenamed(
+    const placed = withBlockRenamed(
       assignEntityLayer(entity, layerOf(entity.layerId)),
-      anonymous
+      renamed
     )
     return placed.type === "insert" && placed.attributes
       ? {
@@ -155,8 +157,8 @@ export function planPaste(
       onLayer(copyEntity(entity, delta))
     ),
     layers,
-    // A style's and a block's name *is* its id, so an exact miss is the whole
-    // test — there is nothing to remap, only entries to add.
+    // A style's name *is* its id, so an exact miss is the whole test — there
+    // is nothing to remap, only entries to add.
     textStyles: fragment.drawing.textStyles.filter(
       (style) => !document.getTextStyle(style.id)
     ),
@@ -165,10 +167,12 @@ export function planPaste(
     ),
     blocks: fragment.drawing.blocks
       .filter(
-        (block) => anonymous.has(block.id) || !document.getBlock(block.id)
+        (block) =>
+          isAnonymousBlock(block.name) ||
+          !findBlockNamed(document.getBlocks(), block.name)
       )
       .map((block) => {
-        const name = anonymous.get(block.id)
+        const name = renamed.get(block.id)
         return {
           ...block,
           ...(name ? { id: name, name } : {}),
@@ -178,23 +182,34 @@ export function planPaste(
   }
 }
 
-/** A fresh `*U<n>` for each anonymous block of a fragment, none the target has. */
-function renameAnonymousBlocks(
+/**
+ * The fragment's block ids the target knows otherwise: a fresh `*U<n>` for
+ * each anonymous block, none the target has, and the target's own block for
+ * a name it holds in another case, names being case-blind (p210).
+ */
+function blockRenames(
   blocks: readonly BlockDefinition[],
   document: DocumentReader
 ): Map<BlockId, BlockId> {
-  const taken = document.getBlocks().map((block) => ({ name: block.name }))
+  const table = document.getBlocks()
+  const taken = table.map((block) => ({ name: block.name }))
   const renamed = new Map<BlockId, BlockId>()
   for (const block of blocks) {
-    if (!isAnonymousBlock(block.name)) continue
-    const name = anonymousBlockName(taken)
-    taken.push({ name })
-    renamed.set(block.id, name)
+    if (isAnonymousBlock(block.name)) {
+      const name = anonymousBlockName(taken)
+      taken.push({ name })
+      renamed.set(block.id, name)
+      continue
+    }
+    const existing = findBlockNamed(table, block.name)
+    if (existing && existing.id !== block.id) {
+      renamed.set(block.id, existing.id)
+    }
   }
   return renamed
 }
 
-function withAnonymousRenamed(
+function withBlockRenamed(
   entity: Entity,
   renamed: ReadonlyMap<BlockId, BlockId>
 ): Entity {

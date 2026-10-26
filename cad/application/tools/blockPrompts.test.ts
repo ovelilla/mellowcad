@@ -3,6 +3,7 @@ import { describe, expect, it } from "vitest"
 import { type CadHarness, createHarness } from "../../../test/harness"
 import { lineOf, p } from "../../../test/builders"
 import { es } from "../../locales/es"
+import { createBlockDefinition } from "../../domain/entities"
 
 /** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
 function answer(cad: CadHarness, ...texts: string[]): CadHarness {
@@ -149,5 +150,129 @@ describe("ATTDEF, BLOCK and INSERT ask as AutoCAD 2026", () => {
     cad.enter()
     answer(cad, "")
     expect(cad.commandLog().at(-1)).toBe("El identificador no puede ser nulo")
+  })
+})
+
+const bar = (name: string) =>
+  createBlockDefinition(name, p(0, 0), [lineOf(p(0, 0), p(10, 0))])
+
+const PURGE_SETTINGS = "Nested items = Off    Orphaned data = Off"
+const PURGE_TYPE = "Enter type of unused objects to purge [Blocks]:"
+
+// AutoCAD 2027's console, offering only the one type built: Blocks.
+describe("PURGE asks -PURGE's prompts, as AutoCAD 2027", () => {
+  it("asks the type, the names and Verify, then names each block it deletes (probes blocks/p04, p154, erase/p326)", () => {
+    const cad = createHarness({ blocks: [bar("B1"), bar("B2")] })
+    answer(cad, "-PURGE", "FOO", "B", "b*", "FOO", "N")
+
+    expect(cad.commandLog()).toEqual([
+      "-PURGE",
+      PURGE_SETTINGS,
+      `${PURGE_TYPE} FOO`,
+      "Invalid option keyword.",
+      `${PURGE_TYPE} B`,
+      "Enter name(s) to purge <*>: b*",
+      "Verify each name to be purged? [Yes/No] <Y>: FOO",
+      "Yes or No, please.",
+      "Verify each name to be purged? [Yes/No] <Y>: N",
+      'Deleting block "B1".',
+      'Deleting block "B2".',
+      "2 blocks deleted.",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("asks each name when verifying, and reports nothing after (probe blocks/p141)", () => {
+    const cad = createHarness({ blocks: [bar("B1"), bar("B2")] })
+    answer(cad, "PURGE", "B", "*", "", "FOO", "Y", "N")
+
+    expect(cad.commandLog()).toEqual([
+      "PURGE",
+      PURGE_SETTINGS,
+      `${PURGE_TYPE} B`,
+      "Enter name(s) to purge <*>: *",
+      "Verify each name to be purged? [Yes/No] <Y>:",
+      'Purge block "B1"? <N> FOO',
+      "Yes or No, please.",
+      'Purge block "B1"? <N> Y',
+      'Purge block "B2"? <N> N',
+    ])
+    expect(cad.runtime.document.getBlocks().map((b) => b.name)).toEqual(["B2"])
+  })
+
+  it("takes Enter at the names as all of them, and says when none is unused (probes blocks/p04, p146)", () => {
+    const cad = createHarness()
+    answer(cad, "PU", "B", "", "N")
+
+    expect(cad.commandLog()).toEqual([
+      "PU PURGE",
+      PURGE_SETTINGS,
+      `${PURGE_TYPE} B`,
+      "Enter name(s) to purge <*>:",
+      "Verify each name to be purged? [Yes/No] <Y>: N",
+      "No unreferenced blocks found.",
+    ])
+  })
+
+  it("ends at Enter on the type (probe blocks/p04)", () => {
+    const cad = createHarness({ blocks: [bar("B1")] })
+    answer(cad, "-PU", "")
+
+    expect(cad.commandLog()).toEqual(["-PU -PURGE", PURGE_SETTINGS, PURGE_TYPE])
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.runtime.document.getBlocks()).toHaveLength(1)
+  })
+
+  it("is refused transparently (probe blocks/p103)", () => {
+    const cad = createHarness()
+    cad.command("LINE").click(p(0, 0))
+    answer(cad, "'-PURGE")
+
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "** That command may not be invoked transparently **",
+      "Point or option keyword required.",
+    ])
+  })
+
+  it("is LIMPIA, LI, -LIMPIA and -LI in Spanish (probe blocks/p151)", () => {
+    for (const name of ["LIMPIA", "LI", "-LIMPIA", "-LI"]) {
+      const cad = createHarness({ locale: es })
+      answer(cad, name)
+      expect(cad.state().commandLine.prompt, name).toBe(
+        `${name.startsWith("-") ? "-LIMPIA" : "LIMPIA"} Indique un tipo de objetos sin utilizar para limpiar [Bloques]:`
+      )
+    }
+  })
+
+  it("asks and reports in Autodesk's Spanish (probes blocks/p141, erase/p326)", () => {
+    const cad = createHarness({ locale: es, blocks: [bar("B1"), bar("B2")] })
+    answer(cad, "-LIMPIA", "B", "", "N")
+
+    expect(cad.commandLog()).toEqual([
+      "-LIMPIA",
+      "Elementos anidados = DES Datos huérfanos = DES",
+      "Indique un tipo de objetos sin utilizar para limpiar [Bloques]: B",
+      "Indique nombres que limpiar <*>:",
+      "Verifique cada nombre que se va a limpiar? [Sí/No] <S>: N",
+      'Suprimiendo bloque "B1".',
+      'Suprimiendo bloque "B2".',
+      "2 bloque suprimido(s).",
+    ])
+
+    const verified = createHarness({ locale: es, blocks: [bar("B1")] })
+    answer(verified, "-LIMPIA", "B", "", "", "FOO", "S")
+    expect(verified.commandLog().slice(-4)).toEqual([
+      "Verifique cada nombre que se va a limpiar? [Sí/No] <S>:",
+      'Limpiar bloque "B1"? <N> FOO',
+      "Sí o No.",
+      'Limpiar bloque "B1"? <N> S',
+    ])
+    expect(verified.runtime.document.getBlocks()).toHaveLength(0)
+
+    const none = createHarness({ locale: es })
+    answer(none, "LIMPIA", "B", "", "N")
+    expect(none.commandLog().at(-1)).toBe(
+      "No se ha encontrado ningún elemento sin referencia bloque."
+    )
   })
 })

@@ -261,6 +261,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   attedit: "ATTEDIT",
   attdef: "ATTDEF",
   attdisp: "ATTDISP",
+  purge: "PURGE",
   text: "TEXT",
   mtext: "MTEXT",
   textedit: "TEXTEDIT",

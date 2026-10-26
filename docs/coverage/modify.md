@@ -245,8 +245,9 @@ second array, p410), ROTATE, SCALE, MIRROR, STRETCH and its move grips carry it 
 gives each item's objects, item by item, on their own layers (p402, p415, p418); U puts the source
 back with its id (p409); the file keeps it (p411a, p411b); PASTECLIP lands it with an anonymous
 block of its own. Its block is in no list of blocks (INSERT's `?` and default, BLOCK's `?`, the
-Blocks palette, PURGE), a typed `*U1` is no block INSERT finds, and a drawing is saved without one
-no reference places any more (AutoCAD's own purge of them: **unverified**). Selected at `Command:` it
+Blocks palette), a typed `*U1` is no block INSERT finds, -PURGE's `*` deletes it by name once unused
+(blocks/p147), and a drawing is saved without one no reference places any more (whether AutoCAD's
+save drops it: **unverified**). Selected at `Command:` it
 wears the array's grips, not an insertion grip (desktop d11; es d04–d06): rectangular — a square at
 the base point, arrows at the second column and row and at the last column and row, pointing along
 them, a square at the far corner; polar — squares at the base point and the centre, an arrow at the
@@ -1319,11 +1320,25 @@ edits in place and asks none, so the prompt reads `TEXTEDIT:`); MTEDIT (es EDITT
 `Select an MTEXT object:` (es `Designe un objeto TextoM:`) and `Expects a point or Last` (p289), and
 -MTEDIT
 
-### `PURGE` / `PU` · es `LIMPIA` / `LI`†
+### `PURGE` / `PU`, `-PURGE` / `-PU` · es `LIMPIA` / `LI`, `-LIMPIA` / `-LI`
 
-**Implemented:** unreferenced block definitions, all or by id, undoable, per-block delete in the
-palette disabled with a reason when in use; an array's anonymous block is none of them (the drawing
-is saved without it once unused, ARRAYRECT's entry)
+**Implemented:** PURGE asks -PURGE's prompts, as AutoCAD's console runs it (blocks/p151, p152): the
+line `Nested items = Off    Orphaned data = Off` (es `Elementos anidados = DES Datos huérfanos =
+DES`), `Enter type of unused objects to purge [Blocks]:` offering only Blocks, the one type built
+(Enter ends, p04), `Enter name(s) to purge <*>:` (wild cards, case-blind, commas between names;
+Enter is `*`; p140, p146, p154) and `Verify each name to be purged? [Yes/No] <Y>:` (FOO says `Yes
+or No, please.`). No names each block, `Deleting block "B1".`, then `2 blocks deleted.` (es
+`Suprimiendo bloque "B1".`, `2 bloque suprimido(s).`; erase/p326, p327); Yes asks `Purge block
+"B1"? <N>` of each and reports nothing after (p141). None to take: `No unreferenced blocks found.`
+(es `No se ha encontrado ningún elemento sin referencia bloque.`). A block is in use when a reference
+in the drawing places it or the definition of a block in use holds it, at any depth (p150): a chain
+of unused blocks goes in one run (p142), and one a kept block still holds is never taken. `*` takes
+an erased array's anonymous block too, by name (p147). Each run is one undo step, named as typed
+(p138); not transparent (p103). The Blocks palette deletes nothing, as AutoCAD's (desktop
+blocks/d06-4).
 
-**Missing:** layers / text styles / dim styles, the Purge dialog, "one level at a time", Purge
-Nested Items, unnamed objects
+**Missing:** the Purge dialog (d07); the other types (DEtailviewstyles, Dimstyles, Groups, LAyers,
+LTypes, MAterials, MUltileaderstyles, Plotstyles, SHapes, textSTyles, Mlinestyles,
+SEctionviewstyles, Tablestyles, Visualstyles, Regapps, Zero-length geometry, Empty text objects,
+Orphaned data, All); the Nested items and Orphaned data settings. Whether Yes at Verify with nothing
+to take says `No unreferenced blocks found.` is **unverified** (it does here).

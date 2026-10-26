@@ -5,6 +5,7 @@ import {
   CircleEntity,
   createBlockDefinition,
   createInsert,
+  insertFlatGeometry,
   insertGeometry,
   entityBounds,
   InsertEntity,
@@ -616,42 +617,151 @@ describe("the blocks palette", () => {
 
     expect(cad.activeToolId()).toBe("select")
   })
+})
 
-  it("purges only the blocks nothing references", () => {
-    const cad = withBlocks()
-    // DOOR is placed once, WINDOW is not.
-    cad.command("PURGE")
+/** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
+function answer(cad: ReturnType<typeof createHarness>, ...texts: string[]) {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
 
-    expect(cad.runtime.document.getBlocks().map((b) => b.name)).toEqual([
-      "DOOR",
-    ])
-    expect(cad.commandLog()).toContain("1 block purged.")
+/** A block holding one reference to `inner`, and nothing else. */
+const holding = (name: string, inner: string) =>
+  createBlockDefinition(name, p(0, 0), [
+    createInsert(inner, p(0, 0), { id: `${name}-${inner}` }),
+  ])
+
+const blockNames = (cad: ReturnType<typeof createHarness>) =>
+  cad.runtime.document.getBlocks().map((block) => block.name)
+
+describe("PURGE", () => {
+  it("keeps a block used only inside a referenced block, which still draws it (probe blocks/p150)", () => {
+    const cad = createHarness({
+      blocks: [barBlock("B1"), holding("B2", "B1")],
+      entities: [createInsert("B2", p(0, 0), { id: "I2" })],
+    })
+    answer(cad, "-PURGE", "B", "*", "N")
+
+    expect(blockNames(cad)).toEqual(["B1", "B2"])
+    expect(cad.commandLog().at(-1)).toBe("No unreferenced blocks found.")
+    const shown = insertFlatGeometry(
+      cad.byId<InsertEntity>("I2"),
+      cad.runtime.document.blockLookup()
+    )
+    expect(shown).toHaveLength(1)
   })
 
-  it("refuses to purge a block that is in use", () => {
-    const cad = withBlocks()
+  it("takes a chain of unused nested blocks in one run (probe blocks/p142)", () => {
+    const cad = createHarness({
+      blocks: [barBlock("B1"), holding("B2", "B1")],
+    })
+    answer(cad, "-PURGE", "B", "*", "N")
+
+    expect(blockNames(cad)).toEqual([])
+    expect(cad.commandLog().slice(-3)).toEqual([
+      'Deleting block "B1".',
+      'Deleting block "B2".',
+      "2 blocks deleted.",
+    ])
+  })
+
+  it("takes an erased array's anonymous block, by its name (probe blocks/p147)", () => {
+    const cad = createHarness({
+      blocks: [
+        createBlockDefinition("*U1", p(0, 0), [lineOf(p(0, 0), p(1, 0))]),
+      ],
+    })
+    answer(cad, "-PURGE", "B", "*", "N")
+
+    expect(blockNames(cad)).toEqual([])
+    expect(cad.commandLog().slice(-2)).toEqual([
+      'Deleting block "*U1".',
+      "1 block deleted.",
+    ])
+  })
+
+  it("keeps a block in use, whatever the names (probe blocks/p145)", () => {
+    const cad = createHarness({
+      blocks: [barBlock("DOOR"), barBlock("WINDOW")],
+      entities: [createInsert("DOOR", p(0, 0), { id: "I1" })],
+    })
+    answer(cad, "PURGE", "B", "DOOR", "N")
+
+    expect(blockNames(cad)).toEqual(["DOOR", "WINDOW"])
     expect(cad.runtime.purgeBlocks(["DOOR"])).toBe(0)
-    expect(cad.runtime.getState().blocks).toHaveLength(2)
   })
 
-  it("purges what the drawing stops referencing, and one undo brings it back", () => {
-    const cad = withBlocks()
+  it("matches the names case-blind (probes blocks/p140, p154)", () => {
+    const cad = createHarness({
+      blocks: [barBlock("B1"), barBlock("B2"), barBlock("C1")],
+    })
+    answer(cad, "-PURGE", "B", "b*", "N")
+
+    expect(blockNames(cad)).toEqual(["C1"])
+  })
+
+  it("asks each name when verifying, and takes those answered Yes (probe blocks/p141)", () => {
+    const cad = createHarness({ blocks: [barBlock("B1"), barBlock("B2")] })
+    answer(cad, "-PURGE", "B", "*", "", "Y", "")
+
+    expect(blockNames(cad)).toEqual(["B2"])
+  })
+
+  it("never takes a block that one kept still holds", () => {
+    // B2 holds B1; answering Yes to B1 and No to B2 would leave B2 drawing
+    // nothing, the outcome probe blocks/p150 rules out.
+    const cad = createHarness({
+      blocks: [barBlock("B1"), holding("B2", "B1")],
+    })
+    answer(cad, "-PURGE", "B", "*", "Y", "Y", "N")
+
+    expect(blockNames(cad)).toEqual(["B1", "B2"])
+  })
+
+  it("is one undo step, named as the command was typed (probe blocks/p138)", () => {
+    const cad = createHarness({ blocks: [barBlock("B1"), barBlock("B2")] })
+    answer(cad, "-PU", "B", "*", "N")
+    expect(blockNames(cad)).toEqual([])
+
+    cad.command("U")
+    expect(cad.commandLog().at(-1)).toBe("-PURGE")
+    expect(blockNames(cad)).toEqual(["B1", "B2"])
+  })
+
+  it("purges what the drawing stops referencing", () => {
+    const cad = createHarness({
+      blocks: [barBlock("DOOR")],
+      entities: [createInsert("DOOR", p(0, 0), { id: "I1" })],
+    })
     cad.select("I1").press("Delete")
-    cad.command("PURGE")
+    answer(cad, "PURGE", "B", "", "N")
 
-    expect(cad.runtime.document.getBlocks()).toHaveLength(0)
-    cad.undo()
-    expect(cad.runtime.document.getBlocks().map((b) => b.name)).toEqual([
-      "DOOR",
-      "WINDOW",
-    ])
+    expect(blockNames(cad)).toEqual([])
+  })
+})
+
+describe("block names", () => {
+  it("INSERT takes b1 for B1 (probe blocks/p210)", () => {
+    const cad = createHarness({ blocks: [barBlock("B1")] })
+    answer(cad, "INSERT", "b1", "5,5")
+
+    expect(cad.latest()).toMatchObject({ type: "insert", blockId: "B1" })
   })
 
-  it("says so when there is nothing to purge", () => {
-    const cad = createHarness()
-    cad.command("PU")
+  it("BLOCK b1 beside B1 leaves one block, named B1 (probe blocks/p115)", () => {
+    const cad = createHarness({
+      blocks: [barBlock("B1")],
+      entities: [lineOf(p(0, 0), p(0, 50), { id: "L1" })],
+    })
+    answer(cad, "BLOCK", "b1", "0,0", "L")
+    cad.enter()
 
-    expect(cad.commandLog()).toContain("No unused blocks.")
+    expect(blockNames(cad)).toEqual(["B1"])
+    expect(cad.runtime.document.getBlock("B1")?.entities).toHaveLength(1)
+    expect(cad.only<InsertEntity>("insert").blockId).toBe("B1")
   })
 })
 

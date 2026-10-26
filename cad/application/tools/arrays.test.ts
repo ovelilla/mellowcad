@@ -2457,14 +2457,19 @@ describe("the array object (AYO-01)", () => {
     answer(cad, "*U1")
     expect(cad.commandLog().at(-1)).toBe('Block "*U1" is not defined.')
     cad.escape()
-    answer(cad, "_ERASE", "_ALL", "", "_PURGE")
-    expect(cad.commandLog().at(-1)).toBe("No unused blocks.")
-    expect(cad.runtime.document.getBlock("*U1")).toBeDefined()
+    answer(cad, "_ERASE", "_ALL", "")
     // Saved, an unreferenced anonymous block is left out.
     const saved = JSON.parse(cad.runtime.serializeDrawing()) as {
       blocks: unknown[]
     }
     expect(saved.blocks).toEqual([])
+    // -PURGE's `*` takes it, by its name (probe blocks/p147).
+    answer(cad, "_-PURGE", "_B", "*", "_N")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      'Deleting block "*U1".',
+      "1 block deleted.",
+    ])
+    expect(cad.runtime.document.getBlock("*U1")).toBeUndefined()
   })
 
   // probe arrays/p410's second array, through the clipboard: a pasted array

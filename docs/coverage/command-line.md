@@ -92,7 +92,7 @@ PANTTEXT), COMMANDLINE / COMMANDLINEHIDE (es LINEACOM / OCULTARLINEACOM), CLIPRO
 variable, floating, resizing, transparency and the window's Customize menu, the dynamic prompt's
 Down-arrow list, the system variables typed by name but those built as commands (ORTHOMODE,
 SNAPMODE, POLARANG, OSMODE…: `'ORTHOMODE` at LINE's prompt asks `>>Enter new value for ORTHOMODE <0>:`,
-probe line/p19, and here is a wrong answer; SETVAR, roadmap row 24), **unverified** whether AutoCAD runs VIEW, LAYER, PROPERTIES, MATCHPROP, PURGE,
+probe line/p19, and here is a wrong answer; SETVAR, roadmap row 24), **unverified** whether AutoCAD runs VIEW, LAYER, PROPERTIES, MATCHPROP,
 BLOCKSPALETTE and EATTEDIT transparently (the console does not know them, or hangs on LAYER; refused
 here), **unverified**: the prompt line's head while one runs (`'ZOOM >>Specify first corner:` here;
 the console shows no head) and the dynamic prompt's `>>`, the selection modes `Expects a point or`

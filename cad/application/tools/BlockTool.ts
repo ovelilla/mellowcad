@@ -6,6 +6,7 @@ import {
   Entity,
   createBlockDefinition,
   createInsert,
+  findBlockNamed,
   onPlaneOf,
   rotateEntity,
 } from "../../domain/entities"
@@ -195,7 +196,10 @@ export class BlockTool implements Tool {
           this.enterName(commitCtx)
           return true
         }
-        this.name = typed
+        // A name the table has in another case is that block, its spelling
+        // kept (p115).
+        this.name =
+          findBlockNamed(commitCtx.document.getBlocks(), typed)?.name ?? typed
         this.enterBase(commitCtx)
         return true
       },

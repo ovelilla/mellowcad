@@ -1,11 +1,9 @@
 "use client"
 
 import { useEffect, useMemo, useRef, useState } from "react"
-import { Trash2 } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
 import { CadEngine, CanvasScenePresenter, matchesWildcard } from "@/cad"
 import type { EditorState } from "@/hooks/useCadEngine"
 
@@ -21,7 +19,8 @@ const THUMBNAIL_PX = 64
  * the same block, is one of the palette's option checkboxes, not built.
  *
  * Not here: the Recent, Favorites and Libraries tabs, which list blocks from
- * *other* drawings and so need file access and a stored history.
+ * *other* drawings and so need file access and a stored history. No delete
+ * either: AutoCAD's palette has none (desktop blocks/d06-4), PURGE deletes.
  */
 export function BlocksControl({
   engine,
@@ -59,46 +58,25 @@ export function BlocksControl({
       ) : (
         <div className="grid min-h-0 grid-cols-3 content-start gap-1 overflow-y-auto">
           {shown.map((block) => (
-            <div key={block.id} className="group relative">
-              <button
-                type="button"
-                onClick={() => {
-                  engine.insertBlock(block.id)
-                  engine.focusSurface()
-                }}
-                title={t("references", {
-                  name: block.name,
-                  count: block.referenceCount,
-                })}
-                className={cn(
-                  "flex w-full flex-col items-center gap-1 rounded-sm p-1",
-                  "hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
-                )}
-              >
-                <BlockThumbnail engine={engine} id={block.id} />
-                <span className="w-full truncate text-center">
-                  {block.name}
-                </span>
-              </button>
-              <Button
-                size="icon"
-                variant="ghost"
-                disabled={block.referenceCount > 0}
-                onClick={() => {
-                  engine.purgeBlocks([block.id])
-                  engine.focusSurface()
-                }}
-                aria-label={t("purge", { name: block.name })}
-                title={
-                  block.referenceCount > 0
-                    ? t("inUse")
-                    : t("purge", { name: block.name })
-                }
-                className="absolute inset-e-0 top-0 opacity-0 group-hover:opacity-100 focus-visible:opacity-100 disabled:opacity-0"
-              >
-                <Trash2 />
-              </Button>
-            </div>
+            <button
+              key={block.id}
+              type="button"
+              onClick={() => {
+                engine.insertBlock(block.id)
+                engine.focusSurface()
+              }}
+              title={t("references", {
+                name: block.name,
+                count: block.referenceCount,
+              })}
+              className={cn(
+                "flex w-full flex-col items-center gap-1 rounded-sm p-1",
+                "hover:bg-accent focus-visible:bg-accent focus-visible:outline-none"
+              )}
+            >
+              <BlockThumbnail engine={engine} id={block.id} />
+              <span className="w-full truncate text-center">{block.name}</span>
+            </button>
           ))}
         </div>
       )}

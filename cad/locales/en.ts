@@ -29,6 +29,7 @@ export const en: EngineCatalog = {
       "attedit": "Edit attributes",
       "attdef": "Define attributes",
       "attdisp": "Attribute display",
+      "purge": "Purge",
       "text": "Text",
       "mtext": "Multiline text",
       "textedit": "Edit text",
@@ -855,6 +856,10 @@ export const en: EngineCatalog = {
         "PURGE",
         "PU"
       ],
+      "-PURGE": [
+        "-PURGE",
+        "-PU"
+      ],
       "LAYER": [
         "LAYER",
         "LA",
@@ -1178,6 +1183,16 @@ export const en: EngineCatalog = {
       "patternScale": "Specify a scale for the pattern",
       "patternAngle": "Specify an angle for the pattern",
       "blockName": "Enter block name or",
+      "purgeType": "Enter type of unused objects to purge",
+      "purgeNames": "Enter name(s) to purge",
+      "purgeVerify": "Verify each name to be purged?",
+      "purgeBlock": [
+        "Purge block \"",
+        [
+          "name"
+        ],
+        "\"?"
+      ],
       "insertionBasePoint": "Specify insertion base point",
       "insertionPoint": "Specify insertion point or",
       "specifyInsertionPoint": "Specify insertion point",
@@ -2008,6 +2023,31 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "purgeSettings": "Nested items = Off    Orphaned data = Off",
+      "deletingBlock": [
+        "Deleting block \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "blocksDeleted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " block deleted."
+            ],
+            "other": [
+              0,
+              " blocks deleted."
+            ]
+          }
+        ]
+      ],
+      "noUnreferencedBlocks": "No unreferenced blocks found.",
       "noBlocks": "No blocks defined.",
       "blockUndefined": [
         "Block \"",

@@ -29,6 +29,7 @@ export const es: EngineLocale = {
       "attedit": "Editar atributos",
       "attdef": "Definir atributos",
       "attdisp": "Visualización de atributos",
+      "purge": "Limpiar",
       "text": "Texto",
       "mtext": "Texto de líneas múltiples",
       "textedit": "Editar texto",
@@ -842,6 +843,10 @@ export const es: EngineLocale = {
         "LIMPIA",
         "LI"
       ],
+      "-PURGE": [
+        "-LIMPIA",
+        "-LI"
+      ],
       "LAYER": [
         "CAPA",
         "CA",
@@ -1107,6 +1112,11 @@ export const es: EngineLocale = {
         "OFF": "DES",
         "Normal": "Normal",
         "ON": "ACT"
+      },
+      "PURGE": {
+        "Blocks": "Bloques",
+        "Yes": "Sí",
+        "No": "No"
       },
       "SNAP": {
         "ON": "ACT",
@@ -1543,6 +1553,16 @@ export const es: EngineLocale = {
       "patternScale": "Precise escala del patrón",
       "patternAngle": "Precise ángulo del patrón",
       "blockName": "Indique nombre de bloque o",
+      "purgeType": "Indique un tipo de objetos sin utilizar para limpiar",
+      "purgeNames": "Indique nombres que limpiar",
+      "purgeVerify": "Verifique cada nombre que se va a limpiar?",
+      "purgeBlock": [
+        "Limpiar bloque \"",
+        [
+          "name"
+        ],
+        "\"?"
+      ],
       "insertionBasePoint": "Especifique un punto base de inserción",
       "specifyInsertionPoint": "Precise punto de inserción",
       "insertionPoint": "Precise punto de inserción o",
@@ -2372,6 +2392,27 @@ export const es: EngineLocale = {
           }
         ]
       ],
+      "purgeSettings": "Elementos anidados = DES Datos huérfanos = DES",
+      "deletingBlock": [
+        "Suprimiendo bloque \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "blocksDeleted": [
+        [
+          "count",
+          2,
+          {
+            "other": [
+              0,
+              " bloque suprimido(s)."
+            ]
+          }
+        ]
+      ],
+      "noUnreferencedBlocks": "No se ha encontrado ningún elemento sin referencia bloque.",
       "noBlocks": "No hay bloques definidos.",
       "blockUndefined": [
         "El bloque \"",

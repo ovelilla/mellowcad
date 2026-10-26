@@ -503,9 +503,7 @@
       "filterLabel": "Filtrar bloques",
       "empty": "No hay bloques definidos. Dibuje algo y ejecute BLOQUE.",
       "noMatch": "Ningún bloque coincide con el filtro.",
-      "references": "{name} — {count, plural, other {# en el dibujo}}",
-      "purge": "Limpiar {name}",
-      "inUse": "En uso: borre antes sus referencias"
+      "references": "{name} — {count, plural, other {# en el dibujo}}"
     },
     "Properties": {
       "noSelection": "Sin selección",

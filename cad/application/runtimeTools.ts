@@ -17,6 +17,7 @@ import { TextEditTool } from "./tools/TextEditTool"
 import { AttDefTool } from "./tools/AttDefTool"
 import { AttEditTool } from "./tools/AttEditTool"
 import { AttDispTool } from "./tools/AttDispTool"
+import { PurgeTool } from "./tools/PurgeTool"
 import { DimensionTool } from "./tools/DimensionTool"
 import { DimensionChainTool } from "./tools/DimensionChainTool"
 import { RadialDimensionTool } from "./tools/RadialDimensionTool"
@@ -115,6 +116,7 @@ export function defaultTools(
     attEdit,
     new AttDefTool(),
     new AttDispTool(),
+    new PurgeTool(),
     new TextTool(),
     new MTextTool(),
     textEdit,

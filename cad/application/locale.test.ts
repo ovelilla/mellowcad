@@ -1099,12 +1099,21 @@ describe("Spanish AutoCAD's command language", () => {
 
   it("lists the commands by their Spanish names, described in Spanish", () => {
     expect(
+      commandCatalog(es).find((command) => command.id === "DIMSTYLE")
+    ).toEqual(
+      expect.objectContaining({
+        name: "ACOESTIL",
+        aliases: ["ACES", "ACOEST", "AES", "DCOTA"],
+        description: "Crear y modificar estilos de cota",
+      })
+    )
+    expect(
       commandCatalog(es).find((command) => command.id === "PURGE")
     ).toEqual(
       expect.objectContaining({
         name: "LIMPIA",
         aliases: ["LI"],
-        description: "Eliminar las definiciones de bloque no utilizadas",
+        description: "Limpiar",
       })
     )
   })

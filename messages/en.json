@@ -503,9 +503,7 @@
       "filterLabel": "Filter blocks",
       "empty": "No blocks defined. Draw something and run BLOCK.",
       "noMatch": "No block matches the filter.",
-      "references": "{name} — {count, plural, other {# in drawing}}",
-      "purge": "Purge {name}",
-      "inUse": "In use — erase its references first"
+      "references": "{name} — {count, plural, other {# in drawing}}"
     },
     "Properties": {
       "noSelection": "No selection",

@@ -29,6 +29,7 @@ export const ar: EngineLocale = {
       "attedit": "تحرير السمات",
       "attdef": "تعريف السمات",
       "attdisp": "عرض السمات",
+      "purge": "تنظيف",
       "text": "نص",
       "mtext": "نص متعدد الأسطر",
       "textedit": "تحرير النص",

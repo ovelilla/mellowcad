@@ -26,7 +26,7 @@ import { HatchTool } from "./tools/HatchTool"
  * The commands built here that AutoCAD 2023's console runs transparently
  * (`'DIST` at LINE's prompt asks `>>Specify first point:`). Left out: what it
  * refuses (`** That command may not be invoked transparently **`), what it
- * does not know and so cannot show (VIEW, PURGE, PROPERTIES, MATCHPROP,
+ * does not know and so cannot show (VIEW, PROPERTIES, MATCHPROP,
  * BLOCKSPALETTE, EATTEDIT, LAYER, whose dialog hangs it), and AREA and
  * UCSICON, which typed so read the system variables of their names
  * ({@link registerCommands}' variables).
@@ -138,6 +138,9 @@ export function registerCommands(
   // AutoCAD's ATTDEF opens a dialog; here it asks at the command line, so
   // -ATTDEF is the same tool under its own name.
   register({ id: "-ATTDEF", tool: "attdef", run: () => startTool("attdef") })
+  // PURGE asks -PURGE's prompts here, as AutoCAD's console runs it (no Purge
+  // dialog, BLOCKS-D2), so -PURGE is the same tool under its own name.
+  register({ id: "-PURGE", tool: "purge", run: () => startTool("purge") })
   // HATCH asks -HATCH's prompts here (no ribbon, HATCH-D31), so -HATCH is the
   // same tool under its own name; only its Escape differs (HATCH-D45).
   register({
@@ -233,19 +236,6 @@ export function registerCommands(
   register({ id: "UNITS", run: () => runtime.setUnitsDialog(true) })
   register({ id: "CLEANSCREENON", run: () => runtime.setCleanScreen(true) })
   register({ id: "CLEANSCREENOFF", run: () => runtime.setCleanScreen(false) })
-  // Only block definitions so far: layers and styles are purged from their
-  // own managers, which already refuse a base, current or in-use entry.
-  register({
-    id: "PURGE",
-    run: () => {
-      const purged = runtime.purgeBlocks()
-      say(
-        purged === 0
-          ? runtime.text.message("noUnusedBlocks")
-          : runtime.text.message("blocksPurged", { count: purged })
-      )
-    },
-  })
 }
 
 /**

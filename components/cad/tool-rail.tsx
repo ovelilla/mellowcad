@@ -323,6 +323,9 @@ const RAIL_EXCLUDED = new Set([
   "color",
   "linetype",
   "lweight",
+  // PURGE is typed: AutoCAD files it in the Application menu and the Manage
+  // tab, neither of which this editor has.
+  "purge",
 ])
 
 interface ToolMeta {

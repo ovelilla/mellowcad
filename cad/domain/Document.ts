@@ -8,6 +8,7 @@ import {
   BlockDefinition,
   BlockId,
   BlockLookup,
+  blocksInUse,
   distanceToEntity,
   entityDrawOrder,
   Entity,
@@ -288,12 +289,12 @@ export class CadDocument extends Observable implements DocumentReader {
     return block
   }
 
-  /** Whether any reference in the drawing still places this block. */
+  /**
+   * Whether the block is in use: placed by a reference in the drawing, or
+   * nested in the definition of a block in use (`blocksInUse`).
+   */
   blockInUse(id: BlockId): boolean {
-    for (const entity of this.entities.values()) {
-      if (entity.type === "insert" && entity.blockId === id) return true
-    }
-    return false
+    return blocksInUse(this.entities.values(), this.lookup).has(id)
   }
 
   /** Removes a block definition. A block still referenced stays (PURGE's rule). */
