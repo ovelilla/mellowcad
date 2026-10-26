@@ -1,4 +1,5 @@
-import { Vec2 } from "../../geometry/Vec2"
+import { V, Vec2 } from "../../geometry/Vec2"
+import { normalizeAngle } from "../../geometry/primitives"
 import { textIslandBox, traceBoundaryLoops } from "../../domain/boundary"
 import {
   Bounds,
@@ -6,8 +7,10 @@ import {
   EntityId,
   HatchEntity,
   HatchLoop,
+  PolylineEntity,
   closestOnEntity,
   createHatch,
+  createPolyline,
   entityBounds,
   entityElevation,
   hatchGeometry,
@@ -18,11 +21,10 @@ import {
   withElevation,
 } from "../../domain/entities"
 import {
-  DEFAULT_HATCH_ANGLE,
   DEFAULT_HATCH_PATTERN_ID,
-  DEFAULT_HATCH_SCALE,
   HATCH_PATTERNS,
   HatchPatternId,
+  SOLID_HATCH_PATTERN_ID,
   isSolidHatchPattern,
   resolveHatchPatternId,
 } from "../../domain/hatchPatterns"
@@ -44,18 +46,22 @@ import {
   ToolContext,
   ToolQuestion,
 } from "./Tool"
-import { withCurrentProperties } from "./currentProperties"
+import { currentColor, withCurrentProperties } from "./currentProperties"
+import { setCommandSettings } from "./commandSettings"
+import { askValueOrWord } from "./valueWordPrompt"
 
 /** Reused so preview frames don't burn entity ids. */
 const PREVIEW_ID: EntityId = "__hatch_preview__"
+const QUICK_PREVIEW_ID: EntityId = "__hatch_quick_preview__"
+const OUTLINE_ID: EntityId = "__hatch_outline__"
 
 /**
- * AutoCAD's HATCH, at the command line as -HATCH asks it (WHY: the Hatch
- * Creation tab and the Hatch and Gradient dialog, where HATCH sets its
- * properties, do not exist here; -HATCH is the command line's own): `Current
- * hatch pattern:  ANGLE`, then `Specify internal point or [Properties/Select
- * objects]:` until Enter makes the hatch. Its two boundary routes are the two
- * the prompt offers, in the same order:
+ * AutoCAD's HATCH and -HATCH, both asking at the command line as -HATCH asks
+ * (WHY for HATCH: the Hatch Creation tab and the Hatch and Gradient dialog,
+ * where HATCH sets its properties, do not exist here; -HATCH is the command
+ * line's own, HATCH-D31): `Current hatch pattern:  ANGLE`, then `Specify
+ * internal point or [Properties/Select objects]:` until Enter makes the hatch.
+ * Its two boundary routes are the two the prompt offers, in the same order:
  *
  * - **Pick internal point** (the default): "Determines a boundary from existing
  *   objects that form an enclosed area around the specified point" — so an area
@@ -66,8 +72,12 @@ const PREVIEW_ID: EntityId = "__hatch_preview__"
  *
  * The other option is **Properties**, which sets the pattern name and then, for
  * a real pattern, its scale and angle — the HPNAME / HPSCALE / HPANG system
- * variables, which AutoCAD keeps per drawing without saving them: fields on
- * the tool, back to their defaults at NEW and OPEN (rectang/p303).
+ * variables, kept per drawing and not saved (`DocumentSettings`), set inside
+ * the run so that U takes them back with it (probes hatch/p242, p243).
+ *
+ * The two names differ where the ribbon's HATCH differs from -HATCH: HATCH
+ * draws the hatch at each pick and keeps it at Escape, -HATCH only highlights
+ * the boundaries and drops them (desktop d01, d02; HATCH-D45, D46).
  *
  * Several boundaries make **one** hatch (HPSEPARATE's initial value is 0) and
  * the fill is **not associative** (a documented deviation from HPASSOC 1 — see
@@ -79,10 +89,14 @@ export class HatchTool implements Tool {
   private state: HatchState = { phase: "point" }
   private readonly selector = new ObjectSelector({
     takes: () => "wholeObjects",
+    leavesPrevious: true,
     done: (ctx) => this.enterPoint(ctx),
   })
   private lastScreen: Vec2 | null = null
+  /** The hatch the boundaries gathered make, rebuilt as they change. */
   private preview: HatchEntity | null = null
+  /** The internal points' boundaries, highlighted as AutoCAD highlights them. */
+  private outlines: PolylineEntity[] = []
   /** Boundaries traced from internal points, those of each point together. */
   private picked: HatchLoop[][] = []
   /**
@@ -91,40 +105,62 @@ export class HatchTool implements Tool {
    * hatch/p104, p119).
    */
   private gathered = false
+  /** Started as -HATCH, whose Escape drops what was gathered (desktop d02). */
+  private dash = false
+  /** The run has made its hatch, or said why not: its end makes nothing. */
+  private ended = false
+  /**
+   * HPQUICKPREVIEW's hatch of the area under the cursor (desktop d01-1,
+   * d02-1), with the face it fills, reused while the cursor stays in it.
+   */
+  private hover: { face: HatchEntity; hatch: HatchEntity } | null = null
+  /** Where on the screen the last trace under the cursor found no area. */
+  private missedAt: Vec2 | null = null
 
-  // HPNAME / HPSCALE / HPANG: the next hatch starts from the settings of the
-  // last one in the drawing, which AutoCAD does not save (rectang/p303).
-  private patternId: HatchPatternId = DEFAULT_HATCH_PATTERN_ID
-  private patternScale = DEFAULT_HATCH_SCALE
-  private patternAngle = DEFAULT_HATCH_ANGLE
+  // HPNAME / HPSCALE / HPANG as the drawing holds them, for the questions,
+  // which are asked with no context.
+  private patternName = DEFAULT_HATCH_PATTERN_ID
+  private patternScale = 1
+  private patternAngle = 0
 
-  onNewDrawing(): void {
-    this.patternId = DEFAULT_HATCH_PATTERN_ID
-    this.patternScale = DEFAULT_HATCH_SCALE
-    this.patternAngle = DEFAULT_HATCH_ANGLE
+  /** Started by the name -HATCH (`runtimeCommands`), after `onActivate`. */
+  dashForm(): void {
+    this.dash = true
   }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("default")
     // "Each time you click Select Objects, HATCH clears the previous selection
-    // set" — the boundary set starts empty every time.
+    // set" — the boundary set starts empty every time, a set selected before
+    // the command ignored and dropped (probes hatch/p229–p232).
     ctx.selection.clear()
     this.picked = []
     this.gathered = false
+    this.dash = false
+    this.ended = false
+    this.forgetHover()
+    this.readSettings(ctx)
     this.enterPoint(ctx)
   }
 
   onDeactivate(ctx: ToolContext): void {
+    // WHY: the ribbon's HATCH has made the hatch at each pick, so Escape
+    // leaves it made, where -HATCH's drops it (desktop d01-3, d02). With no
+    // ribbon here, HATCH makes it as it ends (HATCH-D45).
+    if (!this.dash && !this.ended) this.make(ctx)
     this.state = { phase: "point" }
     this.preview = null
+    this.outlines = []
     this.picked = []
     this.gathered = false
+    this.forgetHover()
     ctx.dynamicInput.close()
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
     if (this.state.phase === "select") this.selector.onPointerMove(input, ctx)
+    if (this.state.phase === "point") this.hoverAt(input, ctx)
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
   }
@@ -177,11 +213,15 @@ export class HatchTool implements Tool {
         return this.selector.question()
       case "pattern":
         // SOLID is offered as the keyword that names it (`<Solid>`).
-        return isSolidHatchPattern(this.patternId)
+        return isSolidHatchPattern(this.patternId())
           ? "enterPatternNameOr"
-          : { id: "enterPatternNameOr", enter: { name: this.patternId } }
+          : { id: "enterPatternNameOr", enter: { name: this.patternName } }
       case "scale":
-        return { id: "patternScale", enter: this.patternScale }
+        // `<%.4f>` whatever LUPREC (table 25481, probe hatch/p259).
+        return {
+          id: "patternScale",
+          enter: { name: this.patternScale.toFixed(4) },
+        }
       case "angle":
         return {
           id: "patternAngle",
@@ -191,12 +231,13 @@ export class HatchTool implements Tool {
   }
 
   defaultOption(): string | null {
-    return this.state.phase === "pattern" && isSolidHatchPattern(this.patternId)
+    return this.state.phase === "pattern" &&
+      isSolidHatchPattern(this.patternId())
       ? "Solid"
       : null
   }
 
-  /** As AutoCAD 2023's console refuses -HATCH's answers. */
+  /** As AutoCAD 2027's console refuses -HATCH's answers (probes hatch/p208, p210, p234). */
   takes(): QuestionInput | null {
     switch (this.state.phase) {
       case "point":
@@ -211,7 +252,8 @@ export class HatchTool implements Tool {
           values: { points: "two", keyword: "no" },
         }
       case "pattern":
-        return null
+        // What a command refused there leaves (`'LINE`, p234).
+        return { refusal: "hatchPatternUnknown" }
     }
   }
 
@@ -233,10 +275,15 @@ export class HatchTool implements Tool {
     }
   }
 
-  invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+  invokeOption(
+    id: string,
+    ctx: ToolContext,
+    typed?: string
+  ): CommandOptionOutcome {
     if (this.state.phase === "pattern") {
       if (id === "?") this.listPatterns(ctx)
-      else if (id === "Solid") this.setPattern(SOLID, ctx)
+      // `_S` is HPNAME `_SOLID` (probe hatch/p207).
+      else if (id === "Solid") this.setPattern(asTyped(typed, SOLID), ctx)
       else return "unhandled"
       return "continue"
     }
@@ -275,13 +322,26 @@ export class HatchTool implements Tool {
     return this.state.phase === "point"
   }
 
+  /**
+   * The area under the cursor, in the object's colour (HPQUICKPREVIEW,
+   * desktop d01-1, d02-1); what was gathered: HATCH's hatch as it will be made
+   * (d01-2), and the internal points' boundaries highlighted, all -HATCH shows
+   * (d02-2). Select objects' boundaries glow as the selection.
+   */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const out: ScenePrimitive[] = []
-    if (this.preview) {
+    const stroke = { color: currentColor(ctx), width: 1 }
+    if (this.hover) {
+      out.push(...entityScenePrimitive(ctx.viewport, this.hover.hatch, stroke))
+    }
+    if (this.preview && !this.dash) {
+      out.push(...entityScenePrimitive(ctx.viewport, this.preview, stroke))
+    }
+    for (const outline of this.outlines) {
       out.push(
-        ...entityScenePrimitive(ctx.viewport, this.preview, {
-          color: THEME.preview,
-          width: 1,
+        ...entityScenePrimitive(ctx.viewport, outline, {
+          color: THEME.selected,
+          width: 2,
         })
       )
     }
@@ -291,13 +351,72 @@ export class HatchTool implements Tool {
     return out
   }
 
+  /** The registry's pattern HPNAME names, its `_` aside. */
+  private patternId(): HatchPatternId {
+    return (
+      resolveHatchPatternId(withoutUnderscore(this.patternName)) ??
+      DEFAULT_HATCH_PATTERN_ID
+    )
+  }
+
+  private readSettings(ctx: ToolContext): void {
+    const settings = ctx.document.getSettings()
+    this.patternName = settings.hatchPatternName
+    this.patternScale = settings.hatchPatternScale
+    this.patternAngle = settings.hatchPatternAngle
+  }
+
+  /**
+   * Quick preview under the cursor, traced only as it leaves the face it
+   * found, or a few pixels past a point that found none: a trace is the
+   * expensive part, never run per frame.
+   */
+  private hoverAt(input: PointerInput, ctx: ToolContext): void {
+    const point = input.world
+    if (this.hover && pointInsideHatch(this.hover.face, point)) return
+    if (
+      !this.hover &&
+      this.missedAt !== null &&
+      V.distance(this.missedAt, input.screen) < QUICK_PREVIEW_MISS_PX
+    ) {
+      return
+    }
+    this.hover = null
+    this.missedAt = input.screen
+    if (this.inPickedArea(point)) return
+    const candidates = this.candidates(ctx)
+    if (candidates.some((e) => onObject(e, point))) return
+    const loops = traceBoundaryLoops(point, candidates)
+    if (!loops) return
+    this.missedAt = null
+    this.hover = {
+      face: createHatch(loops),
+      hatch: withCurrentProperties(
+        this.build(loops, ctx, QUICK_PREVIEW_ID),
+        ctx
+      ),
+    }
+  }
+
+  private forgetHover(): void {
+    this.hover = null
+    this.missedAt = null
+  }
+
+  private inPickedArea(point: Vec2): boolean {
+    return this.picked.some((loops) =>
+      pointInsideHatch(createHatch(loops), point)
+    )
+  }
+
   /**
    * The boundaries of what Select objects took, in the plane of the first
    * that bounds an area (HATCH-D40). It finds every object, one that closes no
    * area too (`1 found` for an open line, -hatch in erase/p222), and what
-   * cannot bound the hatch is left out here; what AutoCAD says of it was not
-   * probed, so nothing is said. A TEXT or MTEXT inside a boundary taken is
-   * its island box, as at an internal point (p228).
+   * cannot bound the hatch is left out here, silently beside a boundary
+   * (p222), else said at Enter (`Unable to hatch the boundary.`, p223). A TEXT
+   * or MTEXT inside a boundary taken is its island box, as at an internal
+   * point (p228).
    */
   private selectedLoops(ctx: ToolContext): HatchLoop[] {
     let plane: number | null = null
@@ -348,12 +467,8 @@ export class HatchTool implements Tool {
       for (const id of GATHERING_MESSAGES) ctx.report(ctx.text.message(id))
       this.gathered = true
     }
-    const candidates = this.boundarySet(ctx).filter(
-      (e) => isLevel(e) && readsInPlan(e) && BOUNDARY_TYPES.has(e.type)
-    )
-    if (
-      this.picked.some((loops) => pointInsideHatch(createHatch(loops), point))
-    ) {
+    const candidates = this.candidates(ctx)
+    if (this.inPickedArea(point)) {
       ctx.report(ctx.text.message("areaAlreadySpecified"), "error")
     } else if (candidates.some((e) => onObject(e, point))) {
       ctx.report(ctx.text.message("pointOnObject"), "error")
@@ -366,8 +481,16 @@ export class HatchTool implements Tool {
         ctx.report(ctx.text.message("hatchNoBoundary"), "error")
       }
     }
+    this.forgetHover()
     this.enterPoint(ctx)
     ctx.requestRender()
+  }
+
+  /** What an internal point traces: the boundary set's objects that can bound. */
+  private candidates(ctx: ToolContext): Entity[] {
+    return this.boundarySet(ctx).filter(
+      (e) => isLevel(e) && readsInPlan(e) && BOUNDARY_TYPES.has(e.type)
+    )
   }
 
   /**
@@ -424,6 +547,7 @@ export class HatchTool implements Tool {
     if (!this.picked.pop()) {
       ctx.report(ctx.text.message("noBoundaryToUndo"), "error")
     }
+    this.forgetHover()
     this.enterPoint(ctx)
     ctx.requestRender()
   }
@@ -440,7 +564,7 @@ export class HatchTool implements Tool {
     // (probes hatch/p167, p168, p245, p250, p251, p261).
     return withElevation(
       createHatch(loops, {
-        patternId: this.patternId,
+        patternId: this.patternId(),
         patternScale: this.patternScale,
         patternAngle: ucsAngleToWorld(ctx.ucs, this.patternAngle),
         origin: ctx.ucs.origin,
@@ -451,18 +575,34 @@ export class HatchTool implements Tool {
     )
   }
 
-  private commit(ctx: ToolContext): void {
-    const hatch = this.build(this.allLoops(ctx), ctx)
+  /**
+   * Adds the hatch of the boundaries gathered, if any; one too dense is
+   * refused in AutoCAD's words ("the program may reject the hatch and display
+   * a message indicating that the hatch scale is too small or its dash length
+   * too short"). Either way the run has ended.
+   */
+  private make(ctx: ToolContext): void {
+    this.ended = true
+    const loops = this.allLoops(ctx)
+    if (loops.length === 0) return
+    const hatch = this.build(loops, ctx)
     if (hatchGeometry(hatch).truncated) {
-      // What AutoCAD says when a pattern generates more line work than it will
-      // draw ("the program may reject the hatch and display a message
-      // indicating that the hatch scale is too small or its dash length too
-      // short").
       ctx.report(ctx.text.message("hatchTooDense"), "error")
-      ctx.endCommand()
       return
     }
     ctx.execute(new AddEntityCommand(withCurrentProperties(hatch, ctx)))
+  }
+
+  /**
+   * Enter at the internal point: the hatch, or `Unable to hatch the
+   * boundary.` where Select objects found objects and none bounds an area; an
+   * empty run ends silently (probes hatch/p204, p223, p226, p227).
+   */
+  private finish(ctx: ToolContext): void {
+    if (this.allLoops(ctx).length === 0 && !ctx.selection.isEmpty()) {
+      ctx.report(ctx.text.message("unableToHatchBoundary"), "error")
+    }
+    this.make(ctx)
     // The boundary objects were only the answer to a prompt: HATCH leaves
     // nothing selected, so the palette does not go on describing them.
     ctx.selection.clear()
@@ -470,13 +610,29 @@ export class HatchTool implements Tool {
   }
 
   /**
-   * Rebuilds the live preview. Done on every change rather than every frame:
-   * clipping the pattern is the expensive part of a hatch and nothing about it
-   * depends on the camera.
+   * Rebuilds the hatch and outlines of what was gathered. Done on every change
+   * rather than every frame: clipping the pattern is the expensive part of a
+   * hatch and nothing about it depends on the camera.
    */
   private refreshPreview(ctx: ToolContext): void {
     const loops = this.allLoops(ctx)
-    this.preview = loops.length > 0 ? this.build(loops, ctx, PREVIEW_ID) : null
+    this.preview =
+      loops.length > 0
+        ? withCurrentProperties(this.build(loops, ctx, PREVIEW_ID), ctx)
+        : null
+    const boxes =
+      this.picked.length === 0
+        ? []
+        : this.candidates(ctx).flatMap((e) => {
+            const box = textIslandBox(e)
+            return box ? [box] : []
+          })
+    this.outlines = this.picked
+      .flat()
+      .filter((loop) => !isTextBox(loop, boxes))
+      .map((loop) =>
+        createPolyline(loop.vertices, true, undefined, loop.bulges, OUTLINE_ID)
+      )
   }
 
   /** The main prompt, after the pattern it will use. */
@@ -484,7 +640,7 @@ export class HatchTool implements Tool {
     this.state = { phase: "point" }
     this.refreshPreview(ctx)
     ctx.report(
-      ctx.text.message("currentHatchPattern", { name: this.patternId })
+      ctx.text.message("currentHatchPattern", { name: this.patternName })
     )
     ctx.dynamicInput.open({
       fields: [{ id: "point", kind: "coordinate" }],
@@ -496,8 +652,7 @@ export class HatchTool implements Tool {
         const typed = commitCtx.dynamicInput.getText("point").trim()
         // Enter with nothing typed accepts the boundaries gathered so far.
         if (typed.length === 0) {
-          if (this.allLoops(commitCtx).length > 0) this.commit(commitCtx)
-          else commitCtx.endCommand()
+          this.finish(commitCtx)
           return true
         }
         const point = parseCoordinate(typed, {
@@ -517,6 +672,7 @@ export class HatchTool implements Tool {
 
   private enterSelect(ctx: ToolContext): void {
     this.state = { phase: "select" }
+    this.forgetHover()
     this.selector.start()
     this.refreshPreview(ctx)
     // No field: the canvas keeps focus, so Enter reaches `onEnter` to close
@@ -525,66 +681,77 @@ export class HatchTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
+  /**
+   * The pattern name: a value's box, not a text's, so `?` and Solid are read
+   * as keywords and a transparent command typed there runs (`'ZOOM`, probes
+   * hatch/p234, p238).
+   */
   private enterPattern(ctx: ToolContext): void {
     this.state = { phase: "pattern" }
-    const session: DynamicInputSession = {
-      fields: [{ id: "pattern", prompt: "patternName", kind: "text" }],
-      commit: () => {},
-      commitRaw: (commitCtx) => {
-        const typed = commitCtx.dynamicInput.getText("pattern").trim()
-        // The keywords are read here: the box holds a name, not a keyword.
-        const keyword = commitCtx.text.resolveKeyword(typed, ["?", "Solid"])
-        if (keyword === "?") {
-          this.listPatterns(commitCtx)
-          return true
-        }
-        const resolved =
-          keyword === "Solid"
-            ? SOLID
-            : typed.length === 0
-              ? this.patternId
-              : resolveHatchPatternId(typed)
-        if (!resolved) {
-          commitCtx.report(
-            commitCtx.text.message("hatchPatternUnknown"),
-            "error"
-          )
-          this.enterPattern(commitCtx)
-          return true
-        }
-        this.setPattern(resolved, commitCtx)
-        return true
+    this.forgetHover()
+    askValueOrWord(
+      ctx,
+      {
+        field: "pattern",
+        prompt: "patternName",
+        shown: this.patternName,
+        at: this.lastScreen,
       },
-    }
-    ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
-    ctx.requestRender()
+      (typed, answerCtx) => this.answerPattern(typed, answerCtx)
+    )
   }
 
+  /**
+   * A name in any case, `_` before it or not: HPNAME keeps the `_` and the
+   * registry's spelling (`_ANSI31`, `ANSI31` for `ansi31`; probes hatch/p217,
+   * p248), the object the registry's id. Enter keeps the current one.
+   */
+  private answerPattern(typed: string, ctx: ToolContext): void {
+    if (typed.length === 0) {
+      this.setPattern(this.patternName, ctx)
+      return
+    }
+    const id = resolveHatchPatternId(withoutUnderscore(typed))
+    if (!id) {
+      ctx.report(ctx.text.message("hatchPatternUnknown"), "error")
+      this.enterPattern(ctx)
+      return
+    }
+    this.setPattern(asTyped(typed, id), ctx)
+  }
+
+  /** `?`: the listing, then back at the internal point (probes hatch/p212, p221). */
   private listPatterns(ctx: ToolContext): void {
     ctx.report(
       HATCH_PATTERNS.map((p) => ctx.text.hatchPatternListing(p.id)).join("\n")
     )
-    this.enterPattern(ctx)
+    this.enterPoint(ctx)
   }
 
-  private setPattern(id: HatchPatternId, ctx: ToolContext): void {
-    this.patternId = id
+  private setPattern(name: string, ctx: ToolContext): void {
+    this.patternName = name
+    setCommandSettings({ hatchPatternName: name }, ctx)
     // A solid fill has no spacing or direction to ask about.
-    if (isSolidHatchPattern(id)) this.enterPoint(ctx)
+    if (isSolidHatchPattern(this.patternId())) this.enterPoint(ctx)
     else this.enterScale(ctx)
   }
 
+  /**
+   * A distance: two points are measured by the runtime (` Specify second
+   * point:`, probe hatch/p209); zero and below refused in the console's words
+   * (p208).
+   */
   private enterScale(ctx: ToolContext): void {
     this.state = { phase: "scale" }
     const session: DynamicInputSession = {
-      fields: [{ id: "scale", prompt: "patternScale", kind: "number" }],
+      fields: [{ id: "scale", prompt: "patternScale", kind: "distance" }],
       commit: (values, commitCtx) => {
         if (!(values.scale > 0)) {
           commitCtx.report(commitCtx.text.message("positiveNonzero"), "error")
           return
         }
         this.patternScale = values.scale
+        setCommandSettings({ hatchPatternScale: values.scale }, commitCtx)
         this.enterAngle(commitCtx)
       },
       commitRaw: (commitCtx) => {
@@ -599,12 +766,14 @@ export class HatchTool implements Tool {
     ctx.requestRender()
   }
 
+  /** HPANG kept in [0, 360°): `-30` is 330 (probes hatch/p210, p262). */
   private enterAngle(ctx: ToolContext): void {
     this.state = { phase: "angle" }
     const session: DynamicInputSession = {
       fields: [{ id: "angle", prompt: "patternAngle", kind: "angle" }],
       commit: (values, commitCtx) => {
-        this.patternAngle = (values.angle * Math.PI) / 180
+        this.patternAngle = normalizeAngle((values.angle * Math.PI) / 180)
+        setCommandSettings({ hatchPatternAngle: this.patternAngle }, commitCtx)
         this.enterPoint(commitCtx)
       },
       commitRaw: (commitCtx) => {
@@ -620,7 +789,13 @@ export class HatchTool implements Tool {
   }
 }
 
-const SOLID: HatchPatternId = "SOLID"
+const SOLID: HatchPatternId = SOLID_HATCH_PATTERN_ID
+
+/**
+ * How far, in pixels, the cursor moves from where a trace found no area
+ * before the quick preview traces again: there is no face to stay inside.
+ */
+const QUICK_PREVIEW_MISS_PX = 8
 
 /** What -HATCH says as it gathers the boundary set, once per run. */
 const GATHERING_MESSAGES = [
@@ -628,6 +803,24 @@ const GATHERING_MESSAGES = [
   "selectingEverythingVisible",
   "analyzingSelectedData",
 ] as const
+
+function withoutUnderscore(name: string): string {
+  return name.startsWith("_") ? name.slice(1) : name
+}
+
+/** HPNAME for pattern `id` answered as `typed`: its `_` kept (p207, p248). */
+function asTyped(typed: string | undefined, id: HatchPatternId): string {
+  return typed?.startsWith("_") ? `_${id}` : id
+}
+
+/** Whether `loop` is the island box of a text (one of `boxes`), no boundary drawn. */
+function isTextBox(loop: HatchLoop, boxes: readonly Vec2[][]): boolean {
+  return boxes.some(
+    (box) =>
+      box.length === loop.vertices.length &&
+      box.every((corner, i) => V.distance(corner, loop.vertices[i]) < 1e-9)
+  )
+}
 
 /**
  * Whether `point` lies on `entity`, which no internal point may: within the

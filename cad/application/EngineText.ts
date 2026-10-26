@@ -332,8 +332,10 @@ export class EngineText {
     const description = compiledTable(
       this.commands.listing.hatchPatternDescription
     )[id]
+    // AutoCAD pads the name to 15 columns before ` - ` and the description as
+    // the .pat file writes it, its leading space kept (probe hatch/p221).
     return this.format(this.commands.listing.hatchPattern, {
-      name: id,
+      name: id.padEnd(15),
       description: description === undefined ? "" : this.format(description),
     })
   }

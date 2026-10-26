@@ -1867,7 +1867,7 @@ export class CadRuntime extends Observable {
       if (ids.length === 1) {
         this.clarifying = null
         if (this.shortDoesNothing(typed, ids[0])) return true
-        return this.invokeOption(ids[0])
+        return this.invokeOption(ids[0], typed.trim())
       }
       this.commandLine.write("error", this.text.message("ambiguousResponse"))
       this.clarifying = {
@@ -4253,9 +4253,9 @@ export class CadRuntime extends Observable {
     )
   }
 
-  private invokeOption(id: string): boolean {
+  private invokeOption(id: string, typed?: string): boolean {
     const outcome =
-      this.activeTool.invokeOption?.(id, this.toolContext) ?? "unhandled"
+      this.activeTool.invokeOption?.(id, this.toolContext, typed) ?? "unhandled"
     if (outcome === "unhandled") return false
     if (outcome === "end") {
       this.resetTracking()

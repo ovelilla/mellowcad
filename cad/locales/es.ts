@@ -580,7 +580,11 @@ export const es: EngineLocale = {
       "HATCH": [
         "SOMBREA",
         "SB",
-        "SMB"
+        "SMB",
+        "-SMB"
+      ],
+      "-HATCH": [
+        "-SOMBREA"
       ],
       "BLOCK": [
         "BLOQUE",
@@ -2381,6 +2385,7 @@ export const es: EngineLocale = {
       "hatchNoBoundary": "No se ha encontrado un contorno de sombreado válido.",
       "noBoundaryToUndo": "Ningún contorno por deshacer.",
       "areaAlreadySpecified": "Esta área ya se ha especificado.",
+      "unableToHatchBoundary": "Imposible sombrear el contorno.",
       "pointOnObject": "El punto está directamente sobre un objeto.",
       "textStyleUndefined": [
         "No se puede encontrar estilo de texto \"",
@@ -3854,27 +3859,27 @@ export const es: EngineLocale = {
         [
           "name"
         ],
-        "  ",
+        " - ",
         [
           "description"
         ]
       ],
       "hatchPatternDescription": {
-        "SOLID": "Relleno sólido",
-        "ANGLE": "acero angular",
-        "ANSI31": "ANSI albañilería de acero, ladrillo, piedra",
-        "ANSI32": "ANSI acero",
-        "ANSI33": "ANSI bronce, latón, cobre",
-        "ANSI34": "ANSI plástico, goma",
-        "ANSI35": "ANSI ladrillo o material refractario",
-        "ANSI36": "ANSI mármol, esquisto, vidrio",
-        "ANSI37": "ANSI plomo, cinc, magnesio, aislamiento térmico/fónico/eléct",
-        "ANSI38": "ANSI aluminio",
+        "SOLID": " Relleno sólido",
+        "ANGLE": " acero angular",
+        "ANSI31": " ANSI albañilería de acero, ladrillo, piedra",
+        "ANSI32": " ANSI acero",
+        "ANSI33": " ANSI bronce, latón, cobre",
+        "ANSI34": " ANSI plástico, goma",
+        "ANSI35": " ANSI ladrillo o material refractario",
+        "ANSI36": " ANSI mármol, esquisto, vidrio",
+        "ANSI37": " ANSI plomo, cinc, magnesio, aislamiento térmico/fónico/eléct",
+        "ANSI38": " ANSI aluminio",
         "LINE": "líneas paralelas horizontales",
         "NET": "rejilla",
         "NET3": "rejilla triangular 0-60-120",
         "DASH": "líneas de trazos",
-        "SQUARE": "pequeños cuadrados alineados",
+        "SQUARE": " pequeños cuadrados alineados",
         "STEEL": "acero",
         "BRICK": "superficie de ladrillos o albañilería",
         "CROSS": "serie de cruces",
@@ -3882,8 +3887,8 @@ export const es: EngineLocale = {
         "HONEY": "panal",
         "EARTH": "tierra o subsuelo",
         "DOTS": "serie de puntos",
-        "AR-SAND": "patrón aleatorio de puntos",
-        "AR-CONC": "patrón aleatorio de puntos y piedras"
+        "AR-SAND": " patrón aleatorio de puntos",
+        "AR-CONC": " patrón aleatorio de puntos y piedras"
       }
     },
     "defaults": {

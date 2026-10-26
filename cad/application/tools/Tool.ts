@@ -691,8 +691,14 @@ export interface Tool {
    * Invokes a command option by its global keyword (`"Close"`), however the
    * user typed it, returning the outcome so the runtime knows whether the
    * command continues or has ended. Omit when the tool exposes no options.
+   * `typed` is the answer as typed, where one was (`_S`): HATCH's HPNAME
+   * keeps its `_` (probe hatch/p207).
    */
-  invokeOption?(id: string, ctx: ToolContext): CommandOptionOutcome
+  invokeOption?(
+    id: string,
+    ctx: ToolContext,
+    typed?: string
+  ): CommandOptionOutcome
 
   /**
    * The base point that drawing constraints (Ortho, Polar, ...) restrict

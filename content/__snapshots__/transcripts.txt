@@ -36,7 +36,7 @@ idle: Command:
 7836 +0 info |  | Current hatch pattern:  ANGLE
 8003 +87 input | Specify internal point or [Properties/Select objects]: | P
 8090 +187 input | Enter a pattern name or [?/Solid] <ANGLE>: | ANSI31
-8277 +127 input | Specify a scale for the pattern <1.00>: | 0.8
+8277 +127 input | Specify a scale for the pattern <1.0000>: | 0.8
 8404 +67 input | Specify an angle for the pattern <0>: | 
 8404 +0 info |  | Current hatch pattern:  ANSI31
 8471 +124 input | Specify internal point or [Properties/Select objects]: | 
@@ -200,7 +200,7 @@ command |  | HATCH
 info |  | Current hatch pattern:  ANGLE
 input | Specify internal point or [Properties/Select objects]: | P
 input | Enter a pattern name or [?/Solid] <ANGLE>: | ANSI31
-input | Specify a scale for the pattern <1.00>: | 0.5
+input | Specify a scale for the pattern <1.0000>: | 0.5
 input | Specify an angle for the pattern <0>: | 
 info |  | Current hatch pattern:  ANSI31
 input | Specify internal point or [Properties/Select objects]: | 

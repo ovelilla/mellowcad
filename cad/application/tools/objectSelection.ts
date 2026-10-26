@@ -231,6 +231,11 @@ export interface ObjectSelectorOptions {
   /** The modes the prompt takes; by default those {@link takes} lists. */
   readonly modes?: readonly SelectionMode[]
   /**
+   * The set closed is not kept as the Previous one: HATCH's boundary set
+   * (probe hatch/p256).
+   */
+  readonly leavesPrevious?: true
+  /**
    * A single object's pick rather than a set: what a mode finds is not added
    * to the selection nor counted, the command takes one of it — the oldest or
    * the newest in the drawing, as its pick in AutoCAD 2023's console does —
@@ -1227,7 +1232,9 @@ export class ObjectSelector {
       }
       return false
     }
-    ctx.rememberSelection(ctx.selection.toArray())
+    if (!this.options.leavesPrevious) {
+      ctx.rememberSelection(ctx.selection.toArray())
+    }
     this.options.done(ctx)
     return true
   }

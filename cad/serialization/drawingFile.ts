@@ -152,6 +152,9 @@ export type StoredSettings = Omit<
   DocumentSettings,
   | SavedCommandSetting
   | "textRotation"
+  | "hatchPatternName"
+  | "hatchPatternScale"
+  | "hatchPatternAngle"
   | "fillMode"
   | "polylineWidth"
   | "anglePrecision"
@@ -705,6 +708,9 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     textSize,
     textJustify,
     textRotation,
+    hatchPatternName,
+    hatchPatternScale,
+    hatchPatternAngle,
     orthoMode,
     snapMode,
     snapUnit,
@@ -723,8 +729,12 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     currentLineweight,
     ...rest
   } = settings
-  // TEXT's rotation is per drawing, never saved (rectang/p311).
+  // TEXT's rotation and the HP variables are per drawing, never saved
+  // (rectang/p311, p303).
   void textRotation
+  void hatchPatternName
+  void hatchPatternScale
+  void hatchPatternAngle
   return {
     ...rest,
     ...(currentColor !== COLOR_BYLAYER ? { currentColor } : {}),
@@ -865,6 +875,9 @@ function parseSettings(value: unknown): DocumentSettings {
       TEXT_JUSTIFICATIONS.find((justify) => justify === value.textJustify) ??
       DEFAULT_DOCUMENT_SETTINGS.textJustify,
     textRotation: DEFAULT_DOCUMENT_SETTINGS.textRotation,
+    hatchPatternName: DEFAULT_DOCUMENT_SETTINGS.hatchPatternName,
+    hatchPatternScale: DEFAULT_DOCUMENT_SETTINGS.hatchPatternScale,
+    hatchPatternAngle: DEFAULT_DOCUMENT_SETTINGS.hatchPatternAngle,
     orthoMode: value.orthoMode === true,
     snapMode: value.snapMode === true,
     snapUnit: parseSnapUnit(value.snapUnit),

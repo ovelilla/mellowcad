@@ -20,6 +20,7 @@ import type { DocumentSettings } from "../domain/units"
 import { MTextTool } from "./tools/MTextTool"
 import { TextTool } from "./tools/TextTool"
 import { AttEditTool } from "./tools/AttEditTool"
+import { HatchTool } from "./tools/HatchTool"
 
 /**
  * The commands built here that AutoCAD 2023's console runs transparently
@@ -137,6 +138,17 @@ export function registerCommands(
   // AutoCAD's ATTDEF opens a dialog; here it asks at the command line, so
   // -ATTDEF is the same tool under its own name.
   register({ id: "-ATTDEF", tool: "attdef", run: () => startTool("attdef") })
+  // HATCH asks -HATCH's prompts here (no ribbon, HATCH-D31), so -HATCH is the
+  // same tool under its own name; only its Escape differs (HATCH-D45).
+  register({
+    id: "-HATCH",
+    tool: "hatch",
+    run: () => {
+      startTool("hatch")
+      const tool = runtime.listTools().find((t) => t.id === "hatch")
+      if (tool instanceof HatchTool) tool.dashForm()
+    },
+  })
   // COLOR, LINETYPE and LWEIGHT open dialogs in AutoCAD (Select Color, the
   // Linetype Manager, Lineweight Settings); here they ask at the command line,
   // so their dash forms are the same tools under their own names.

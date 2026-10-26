@@ -586,7 +586,14 @@ export const en: EngineCatalog = {
       "HATCH": [
         "HATCH",
         "H",
-        "BH"
+        "BH",
+        "BHATCH"
+      ],
+      "-HATCH": [
+        "-HATCH",
+        "-H",
+        "-BH",
+        "-BHATCH"
       ],
       "BLOCK": [
         "BLOCK",
@@ -2014,6 +2021,7 @@ export const en: EngineCatalog = {
       "hatchNoBoundary": "Valid hatch boundary not found.",
       "noBoundaryToUndo": "No boundary to Undo.",
       "areaAlreadySpecified": "This area has already been specified.",
+      "unableToHatchBoundary": "Unable to hatch the boundary.",
       "pointOnObject": "Point is directly on an object.",
       "textStyleUndefined": [
         "Cannot find text style \"",
@@ -3483,13 +3491,13 @@ export const en: EngineCatalog = {
         [
           "name"
         ],
-        "  ",
+        " - ",
         [
           "description"
         ]
       ],
       "hatchPatternDescription": {
-        "SOLID": "Solid fill",
+        "SOLID": " Solid fill",
         "ANGLE": "Angle steel",
         "ANSI31": "ANSI Iron, Brick, Stone masonry",
         "ANSI32": "ANSI Steel",
@@ -3511,8 +3519,8 @@ export const en: EngineCatalog = {
         "HONEY": "Honeycomb pattern",
         "EARTH": "Earth or ground (subterranean)",
         "DOTS": "A series of dots",
-        "AR-SAND": "random dot pattern",
-        "AR-CONC": "random dot and stone pattern"
+        "AR-SAND": " random dot pattern",
+        "AR-CONC": " random dot and stone pattern"
       }
     },
     "defaults": {

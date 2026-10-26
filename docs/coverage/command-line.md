@@ -182,7 +182,7 @@ prompt keeps the listed word, which AutoCAD declares `RAdio` (only `R` differs, 
 there); a declared order other than the listed one is kept only where two offered words can be
 ambiguous (TEXT, ATTDEF, ATTDISP, ARRAYPOLAR) — CIRCLE's `2P 3P Ttr`, ZOOM's, ROTATE's `Reference Copy`,
 FILLET's and CHAMFER's orders have no such pair; unlisted declared words of options not built here:
-HATCH `Undo`, VPOINT `Tripod`, FILLET's and CHAMFER's second-object
+VPOINT `Tripod`, FILLET's and CHAMFER's second-object
 `Polyline`/`mUltiple`/`uNdo`/`Trim`, AREA `Entity`
 
 ### `Select objects:` · selection modes

@@ -108,6 +108,8 @@ const FROM_SCRATCH: ReadonlyArray<
         .type("HELLO")
         .enter(),
   ],
+  // The current colour, linetype, lineweight and layer, not the boundary's
+  // (probes hatch/p245, p246).
   [
     "HATCH",
     (c) => c.command("HATCH").click(p(50, 25)).enter(),

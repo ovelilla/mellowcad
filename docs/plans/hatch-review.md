@@ -385,6 +385,22 @@ The owner does not answer technical questions (AGENTS.md); each is the most stan
   a boundary, or the pick inside a text's box, stays **unverified**.
 - **HATCH-D80:** "already specified" is tested against the internal points' loops only, not what
   Select objects took (no probe mixes them).
+- **HATCH-D81:** HPNAME (as typed), HPSCALE and HPANG are `DocumentSettings` fields the file leaves
+  out, TEXT's rotation's pattern; each is set as it is answered, so an Escape mid-Properties keeps
+  those answered (p260 cancels after all three: the order within is **unverified**).
+- **HATCH-D82:** the pattern name's box is `askValueOrWord`'s, so `?` and Solid are the runtime's
+  keywords and an apostrophe command runs there; the keyword's answer as typed reaches the tool
+  (`invokeOption`'s `typed`), which keeps `_S`'s `_`. A shortcut-menu Solid, typed `_Solid` by the
+  runtime, is `_SOLID` too (what AutoCAD's menu sends is **unverified**).
+- **HATCH-D83:** the registry is in acadiso.pat's order, which `?` lists (p221).
+- **HATCH-D84:** the quick preview is not drawn over an area already picked, and after a trace that
+  found no area it traces again only once the cursor has moved 8 px; the internal points'
+  boundaries are highlighted as their loops (the objects AutoCAD highlights are not kept), a text's
+  island box not.
+- **HATCH-D85:** Escape under HATCH makes what Select objects took as well as the internal points'
+  areas (d01 tried a pick only).
+- **HATCH-D86:** the scale's box is a distance's, so it shows the drawing's unit as every distance
+  box does; BHATCH, -BHATCH and -BH are aliases here, echoed as such (Missing).
 
 ## 7. Tests proposed
 

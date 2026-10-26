@@ -4,6 +4,11 @@ import { LINETYPE_BYLAYER, LinetypeId } from "./linetypes"
 import { LINEWEIGHT_BYLAYER, Lineweight } from "./lineweights"
 import { NamedUcs, OrthographicUcs, Ucs, WORLD_UCS } from "./ucs"
 import { DEFAULT_TEXT_HEIGHT } from "./textStyles"
+import {
+  DEFAULT_HATCH_ANGLE,
+  DEFAULT_HATCH_PATTERN_ID,
+  DEFAULT_HATCH_SCALE,
+} from "./hatchPatterns"
 import { Vec2 } from "../geometry/Vec2"
 import { Vec3 } from "../geometry/Vec3"
 
@@ -72,6 +77,15 @@ export interface DocumentSettings {
    * (text/p127), so it lives here and the file leaves it out.
    */
   readonly textRotation: number
+  /**
+   * HATCH's HPNAME as typed (`_ANSI31`, probe hatch/p248), HPSCALE and HPANG
+   * (radians from the UCS X axis), which the next hatch takes. Per drawing and
+   * never saved (rectang/p303), but U takes them back with the run that set
+   * them (hatch/p242, p243), so they live here and the file leaves them out.
+   */
+  readonly hatchPatternName: string
+  readonly hatchPatternScale: number
+  readonly hatchPatternAngle: number
   /** ORTHOMODE (F8). */
   readonly orthoMode: boolean
   /** SNAPMODE (F9). */
@@ -144,6 +158,9 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   textSize: DEFAULT_TEXT_HEIGHT,
   textJustify: "left",
   textRotation: 0,
+  hatchPatternName: DEFAULT_HATCH_PATTERN_ID,
+  hatchPatternScale: DEFAULT_HATCH_SCALE,
+  hatchPatternAngle: DEFAULT_HATCH_ANGLE,
   orthoMode: false,
   snapMode: false,
   snapUnit: { x: 10, y: 10 },

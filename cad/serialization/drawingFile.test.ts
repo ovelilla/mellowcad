@@ -232,6 +232,9 @@ describe("round trip", () => {
       textSize: 3.5,
       textJustify: "mc" as const,
       textRotation: 0,
+      hatchPatternName: "ANGLE",
+      hatchPatternScale: 1,
+      hatchPatternAngle: 0,
       orthoMode: true,
       snapMode: true,
       snapUnit: { x: 5, y: 2.5 },
@@ -249,6 +252,19 @@ describe("round trip", () => {
 
     expect(file).not.toContain("textRotation")
     expect(parseDrawingFile(file).settings.textRotation).toBe(0)
+  })
+
+  it("leaves HPNAME, HPSCALE and HPANG out: per drawing, never saved (rectang/p303)", () => {
+    const settings = {
+      ...DEFAULT_DOCUMENT_SETTINGS,
+      hatchPatternName: "_ANSI31",
+      hatchPatternScale: 5,
+      hatchPatternAngle: 0.5,
+    }
+    const file = serializeDrawing(snapshotOf([], { settings }))
+
+    expect(file).not.toMatch(/hatchPattern(Name|Scale|Angle)/)
+    expect(parseDrawingFile(file).settings).toEqual(DEFAULT_DOCUMENT_SETTINGS)
   })
 
   // What AutoCAD saves in the drawing, read back after OPEN (rectang/p302,

@@ -425,7 +425,8 @@
       "SPLINE": ["SPLINE", "SPL"],
       "RECTANG": ["RECTANG", "REC", "RECTANGLE"],
       "POLYGON": ["POLYGON", "POL"],
-      "HATCH": ["HATCH", "H", "BH"],
+      "HATCH": ["HATCH", "H", "BH", "BHATCH"],
+      "-HATCH": ["-HATCH", "-H", "-BH", "-BHATCH"],
       "BLOCK": ["BLOCK", "B"],
       "INSERT": ["INSERT", "I"],
       "ATTEDIT": ["ATTEDIT", "ATE"],
@@ -1468,6 +1469,7 @@
       "hatchNoBoundary": "Valid hatch boundary not found.",
       "noBoundaryToUndo": "No boundary to Undo.",
       "areaAlreadySpecified": "This area has already been specified.",
+      "unableToHatchBoundary": "Unable to hatch the boundary.",
       "pointOnObject": "Point is directly on an object.",
       "textStyleUndefined": "Cannot find text style \"{name}\".",
       "textJustifyOptions": "Enter an option [{keywords}]:",
@@ -1761,9 +1763,9 @@
       "OFFSET": { "Through": "Through" }
     },
     "listing": {
-      "hatchPattern": "{name}  {description}",
+      "hatchPattern": "{name} - {description}",
       "hatchPatternDescription": {
-        "SOLID": "Solid fill",
+        "SOLID": " Solid fill",
         "ANGLE": "Angle steel",
         "ANSI31": "ANSI Iron, Brick, Stone masonry",
         "ANSI32": "ANSI Steel",
@@ -1785,8 +1787,8 @@
         "HONEY": "Honeycomb pattern",
         "EARTH": "Earth or ground (subterranean)",
         "DOTS": "A series of dots",
-        "AR-SAND": "random dot pattern",
-        "AR-CONC": "random dot and stone pattern"
+        "AR-SAND": " random dot pattern",
+        "AR-CONC": " random dot and stone pattern"
       }
     },
     "defaults": {

@@ -716,46 +716,71 @@ and Text frame rows (desktop d04-2), picking by the strokes (TEXT's), `?`'s 2027
 `Enter style name(s) to list <*>:` and its own listing (p225; here TEXT's: MTEXT's table words it
 `Style name: … Font files: …`), a preselection at MTEXT (the console hangs, p145)
 
-### `HATCH` / `H` / `BH` · es `SOMBREA` / `SB`† / `SMB`†
+### `HATCH` / `H` / `BH` / `BHATCH`, `-HATCH` / `-H` / `-BH` / `-BHATCH` · es `SOMBREA` / `SB` / `SMB` / `-SMB`, `-SOMBREA`
 
-**Implemented:** -HATCH's command line for both names (WHY: the Hatch Creation tab and the Hatch and
-Gradient dialog, where HATCH sets its properties, do not exist here):
-`Current hatch pattern:  ANGLE` (es `Patrón de sombreado actual:`), then
-`Specify internal point or [Properties/Select objects]:` (es
-`Precise punto interno o [Propiedades/Designar objetos]`) until Enter makes the hatch. **The
-internal point** (hatch/p100–p168): the run's first says `Selecting everything...`, `Selecting
-everything visible...`, `Analyzing the selected data...` (es `Seleccionándolo todo...` …), found
-or not, and no later one, Undo or not (p104, p119); a point inside an area already picked says
-`This area has already been specified.` (es `Esta área ya se ha especificado.`, p157), one on a
-boundary object `Point is directly on an object.` (es `El punto está directamente sobre un
-objeto.`, p143, p122: within 1e-6, the desktop's pickbox for a click **unverified**), and neither
-adds anything; else the area is traced (boundary tracing, Outer island style) from every visible
-object parallel to the UCS whatever its height, as if flattened (p153–p155), saying `Analyzing
-internal islands...`, or `Valid hatch boundary not found.`; an off layer is not traced, a locked
-one is (p151, p152), a hatch never (p159); a TEXT or MTEXT in the area is an island box kept clear
-(p166, p134): a TEXT's ink across its baseline and its advance along it plus 0.2585·h each side
-(p123, p125), an MTEXT's lines' advances by Arial's ascent and descent plus 0.25·h (p127), the
-rule behind both margins **unverified**; a typed object snap override moves the point (p120), the
-running snaps leave a click alone (d09); a bare number is direct distance from LASTPOINT towards
-the cursor (p102, p117); `x,y`, `@dx,dy`, `@`, `d<a` are read as the console reads them, `x,y,z`,
-`#x,y`, `*x,y` refused (p110–p116), and the point sets LASTPOINT (p111, p113, p118). Select objects
-asks `Select objects:`
-(MOVE's counts and modes, of whole objects) and goes back to the internal point, with an empty set
-too; it finds every object, one that closes no area too (`1 found` for an open line, erase/p222),
-which the hatch leaves out, saying nothing (what AutoCAD says of it was not probed); a TEXT or
-MTEXT it takes inside a boundary it takes is an island box (p228); Undo, which
-the prompt declares but does not list (es `desHacer`), takes back the last internal point's
-boundaries without a word and asks again, leaving what Select objects took, and with no internal
-point left says `No boundary to Undo.` (es `Ningún contorno por deshacer.`); Properties asks
-`Enter a pattern name or [?/Solid] <ANGLE>:` (`Unknown pattern name.`), then for a pattern
-`Specify a scale for the pattern <1.00>:` and `Specify an angle for the pattern <0.00>:` (es
-`Indique nombre de patrón o [?/Sólido]`, `Nombre de patrón desconocido.`,
-`Precise escala del patrón`, `Precise ángulo del patrón`); live preview, one undo step (U echoes
-the name typed, p128, p160), paint order behind the boundary; the hatch lies at ELEVATION by
-either route (p167, p168, p245, p250, p251, p261); Select objects takes only objects in the plane
-of the first that bounds an area, and no route objects at an angle to the UCS's XY plane; the pattern,
-scale and angle given are the next hatch's, per drawing and not saved (HPNAME, HPSCALE, HPANG: NEW
-and OPEN bring the defaults back, rectang/p303)
+**Implemented:** both names run one tool asking -HATCH's command line, headed and echoed by the
+name typed (`-SMB` is SOMBREA, acad.pgp; p200–p202, p255; WHY HATCH asks -HATCH's prompts: the
+Hatch Creation tab and the Hatch and Gradient dialog, where HATCH sets its properties, do not exist
+here, and the console's HATCH offers no Properties, p01): `Current hatch pattern:  ANGLE` (es
+`Patrón de sombreado actual:`), then `Specify internal point or [Properties/Select objects]:` (es
+`Precise punto interno o [Propiedades/Designar objetos]`) until Enter makes the hatch; Enter at
+`Command:` repeats it by the name it ran as (p204), neither runs transparently (p205), and a run is
+one undo step U, REDO and UNDO name so, one that made nothing too (p239–p241, p247). **Escape**
+under HATCH makes the hatch of the boundaries gathered, at any prompt, in the run's step, and
+under -HATCH drops them (desktop d01-3, d02; WHY: the ribbon's HATCH has made the hatch at each
+pick, which Escape leaves; with no ribbon here it is made as the run ends, HATCH-D45). **The
+preview** (HPQUICKPREVIEW 1): at the internal point the area under the cursor shows hatched in the
+object's colour before a pick, traced as the cursor leaves the area it found (d01-1, d02-1); after
+a pick HATCH draws the hatch as it will be made and highlights the internal points' boundaries,
+-HATCH only highlights them (d01-2, d02-2); Select objects' boundaries glow as the selection.
+**The internal point** (hatch/p100–p168): the run's first says `Selecting everything...`,
+`Selecting everything visible...`, `Analyzing the selected data...` (es `Seleccionándolo
+todo...` …), found or not, and no later one, Undo or not (p104, p119); a point inside an area
+already picked says `This area has already been specified.` (es `Esta área ya se ha
+especificado.`, p157), one on a boundary object `Point is directly on an object.` (es `El punto
+está directamente sobre un objeto.`, p143, p122: within 1e-6, the desktop's pickbox for a click
+**unverified**), and neither adds anything; else the area is traced (boundary tracing, Outer
+island style) from every visible object parallel to the UCS whatever its height, as if flattened
+(p153–p155), saying `Analyzing internal islands...`, or `Valid hatch boundary not found.`; an off
+layer is not traced, a locked one is (p151, p152), a hatch never (p159); a TEXT or MTEXT in the
+area is an island box kept clear (p166, p134): a TEXT's ink across its baseline and its advance
+along it plus 0.2585·h each side (p123, p125), an MTEXT's lines' advances by Arial's ascent and
+descent plus 0.25·h (p127), the rule behind both margins **unverified**; a typed object snap
+override moves the point (p120), the running snaps leave a click alone (d09); a bare number is
+direct distance from LASTPOINT towards the cursor (p102, p117); `x,y`, `@dx,dy`, `@`, `d<a` are
+read as the console reads them, `x,y,z`, `#x,y`, `*x,y` refused (p110–p116), and the point sets
+LASTPOINT (p111, p113, p118); another command's name typed there is a wrong answer (p244).
+**Select objects** asks `Select objects:` (MOVE's counts and modes, of whole objects, a Window too,
+p225) and goes back to the internal point, with an empty set too; a set selected before the command
+is ignored and dropped, and nothing is left selected after it (p229–p232); its set never becomes the
+Previous one, nor do internal points (p256, p257); it finds every object, one that closes no area
+too (`1 found` for an open line, erase/p222), which the hatch leaves out silently beside a boundary
+(p222), while Enter ending a run whose set bounds no area says `Unable to hatch the boundary.` (es
+`Imposible sombrear el contorno.`, table 20770; an open line, a TEXT, an MTEXT alone: p223, p226,
+p227), an empty run nothing (p224, p204); a TEXT or MTEXT it takes inside a boundary it takes is an
+island box (p228). Undo, which the prompt declares but does not list (es `desHacer`), takes back
+the last internal point's boundaries without a word and asks again, leaving what Select objects
+took, and with no internal point left says `No boundary to Undo.` (es `Ningún contorno por
+deshacer.`). **Properties** asks `Enter a pattern name or [?/Solid] <ANGLE>:` (`Unknown pattern
+name.`, p03): a name in any case (`ansi31` is ANSI31, p217), a leading `_` read without it and kept
+in HPNAME as typed (`Current hatch pattern:  _ANSI31`, `_S` is `_SOLID`; p207, p248, p254; the
+object stores the pattern's own name), `Solid`/`S` (`<Solid>` once current, p215, p263), and `?`,
+which lists the patterns shipped as acadiso.pat's `?` writes them, in the file's order, the name
+padded to 15 columns, ` - ` and the file's description, its leading space kept (es from es
+acadiso.pat, p221), and goes back to the internal point (p212, p220); a transparent command runs there (`'ZOOM`, `'-PAN`, p234, p238), one
+that is not one is refused and then `Unknown pattern name.` (p234), as at every other prompt with
+its own refusal (p233, p235–p237). For a pattern it then asks `Specify a scale for the pattern
+<1.0000>:` — a distance, two points measured (` Specify second point:`, p209), zero and below
+`Value must be positive and nonzero.`, a word `Requires a distance (or numberX).` (p208), the
+default `%.4f` whatever LUPREC (table 25481, p259) — and `Specify an angle for the pattern <0>:`,
+by two points too (p211), kept in [0, 360°) (`-30` is 330, p210, p262), at AUPREC (es `Indique
+nombre de patrón o [?/Sólido]`, `Nombre de patrón desconocido.`, `Precise escala del patrón`,
+`Precise ángulo del patrón`). HPNAME, HPSCALE and HPANG are set as each is answered, inside the run:
+one U takes them back with it, an Escape keeps them (p242, p243, p260); they are the next hatch's,
+per drawing and not saved (NEW and OPEN bring the defaults back, rectang/p303). Paint order behind
+the boundary; the hatch lies at ELEVATION by either route (p167, p168, p245, p250, p251, p261), on
+the current layer with the current properties (p245, p246); Select objects takes only objects in
+the plane of the first that bounds an area, and no route objects at an angle to the UCS's XY plane
 
 **Implemented, the object (HATCH review, block HOB):** acadiso.pat's metric definitions of SOLID,
 ANGLE, ANSI31–ANSI38, LINE, NET, NET3, DASH, SQUARE, STEEL, BRICK, CROSS, ZIGZAG, HONEY, EARTH, DOTS,
@@ -791,7 +816,10 @@ several MTEXT lines, an attribute, a text across a boundary or a pick inside a t
 plane, **unverified**); chained open-object boundaries, HPGAPTOL, HPASSOC, HPSEPARATE=1, Normal/Ignore island
 styles, -HATCH's other keywords (draW boundary, remove Boundaries, Advanced, DRaw order, Origin,
 ANnotative, hatch COlor, LAyer, Transparency) and `?`'s `Enter pattern(s) to list <*>:` with its
-pages, gradients, user-defined patterns + Double, `-HATCH` draw order/colour/layer/transparency,
+pages (HATCH-D32), the console HATCH's own prompt (`Pick internal point or [Select objects/remove
+Boundaries]:`, p200) and the ribbon's (`[Select objects/Draw/Undo/seTtings]`, d01), BHATCH and
+-BHATCH as commands of their own (typed whole they echo nothing more, and `-BH` echoes `-BHATCH`,
+p201, p255; here aliases: `BHATCH HATCH`, `-BH -HATCH`), gradients, user-defined patterns + Double, `-HATCH` draw order/colour/layer/transparency,
 annotative; the object: acadiso.pat's other ~60 patterns; what EXPLODE makes of a dot
 (**unverified**: here a zero-length LINE); MIRRHATCH 1; the angle as typed in a turned UCS (DXF
 52: AutoCAD keeps the angle typed, here its world angle is stored and shown, p369, p330) and

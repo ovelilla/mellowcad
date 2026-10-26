@@ -14,7 +14,7 @@ ELLIPSEARC [] "Elliptical arc"
 SPLINE ["SPL"] "Spline"
 RECTANG ["REC","RECTANGLE"] "Rectangle"
 POLYGON ["POL"] "Polygon"
-HATCH ["H","BH"] "Hatch"
+HATCH ["H","BH","BHATCH"] "Hatch"
 BLOCK ["B"] "Create block"
 INSERT ["I"] "Insert block"
 ATTEDIT ["ATE"] "Edit attributes"
@@ -84,6 +84,7 @@ U [] "Undo the last action"
 -MTEXT ["-T"] "Multiline text"
 REDO [] "Redo the last undone action"
 -ATTDEF [] "Define attributes"
+-HATCH ["-H","-BH","-BHATCH"] "Hatch"
 -COLOR [] "Color"
 -LINETYPE ["-LT","-LTYPE"] "Linetype"
 -LWEIGHT [] "Lineweight"
@@ -1465,65 +1466,78 @@ lweight "Lineweight" LW
   options: [P] Properties, [S] Select objects
   command| H HATCH
   info| Current hatch pattern:  ANGLE
+> quick preview
 > P
   prompt: HATCH Enter a pattern name or [?/Solid] <ANGLE>:
   asks: "Enter a pattern name"
   tip: Enter a pattern name or
-  dyn: "Enter a pattern name"=""||*
+  dyn: "Enter a pattern name"=""|ANGLE|*
   options: [?] ?, [S] Solid
   prompt| Specify internal point or [Properties/Select objects]: P
 > ?
-  dyn: "Enter a pattern name"="?"||*
+  dyn: "Enter a pattern name"="?"|ANGLE|*
 > enter
-  dyn: "Enter a pattern name"=""||*
+  prompt: HATCH Specify internal point or [Properties/Select objects]:
+  asks: ""
+  tip: Specify internal point or
+  dyn: "X,Y"=""||*
+  options: [P] Properties, [S] Select objects
   prompt| Enter a pattern name or [?/Solid] <ANGLE>: ?
-  info| SOLID  Solid fill
-        ANGLE  Angle steel
-        ANSI31  ANSI Iron, Brick, Stone masonry
-        ANSI32  ANSI Steel
-        ANSI33  ANSI Bronze, Brass, Copper
-        ANSI34  ANSI Plastic, Rubber
-        ANSI35  ANSI Fire brick, Refractory material
-        ANSI36  ANSI Marble, Slate, Glass
-        ANSI37  ANSI Lead, Zinc, Magnesium, Sound/Heat/Elec Insulation
-        ANSI38  ANSI Aluminum
-        LINE  Parallel horizontal lines
-        NET  Horizontal / vertical grid
-        NET3  Network pattern 0-60-120
-        DASH  Dashed lines
-        SQUARE  Small aligned squares
-        STEEL  Steel material
-        BRICK  Brick or masonry-type surface
-        CROSS  A series of crosses
-        ZIGZAG  Staircase effect
-        HONEY  Honeycomb pattern
-        EARTH  Earth or ground (subterranean)
-        DOTS  A series of dots
-        AR-SAND  random dot pattern
-        AR-CONC  random dot and stone pattern
+  info| SOLID           -  Solid fill
+        ANGLE           - Angle steel
+        ANSI31          - ANSI Iron, Brick, Stone masonry
+        ANSI32          - ANSI Steel
+        ANSI33          - ANSI Bronze, Brass, Copper
+        ANSI34          - ANSI Plastic, Rubber
+        ANSI35          - ANSI Fire brick, Refractory material
+        ANSI36          - ANSI Marble, Slate, Glass
+        ANSI37          - ANSI Lead, Zinc, Magnesium, Sound/Heat/Elec Insulation
+        ANSI38          - ANSI Aluminum
+        AR-CONC         -  random dot and stone pattern
+        AR-SAND         -  random dot pattern
+        BRICK           - Brick or masonry-type surface
+        CROSS           - A series of crosses
+        DASH            - Dashed lines
+        DOTS            - A series of dots
+        EARTH           - Earth or ground (subterranean)
+        HONEY           - Honeycomb pattern
+        LINE            - Parallel horizontal lines
+        NET             - Horizontal / vertical grid
+        NET3            - Network pattern 0-60-120
+        SQUARE          - Small aligned squares
+        STEEL           - Steel material
+        ZIGZAG          - Staircase effect
+  info| Current hatch pattern:  ANGLE
+> P
+  prompt: HATCH Enter a pattern name or [?/Solid] <ANGLE>:
+  asks: "Enter a pattern name"
+  tip: Enter a pattern name or
+  dyn: "Enter a pattern name"=""|ANGLE|*
+  options: [?] ?, [S] Solid
+  prompt| Specify internal point or [Properties/Select objects]: P
 > unknown pattern
-  dyn: "Enter a pattern name"="NOPE"||*
+  dyn: "Enter a pattern name"="NOPE"|ANGLE|*
 > enter
-  dyn: "Enter a pattern name"=""||*
+  dyn: "Enter a pattern name"=""|ANGLE|*
   prompt| Enter a pattern name or [?/Solid] <ANGLE>: NOPE
   error| Unknown pattern name.
 > ANSI31
-  dyn: "Enter a pattern name"="ANSI31"||*
+  dyn: "Enter a pattern name"="ANSI31"|ANGLE|*
 > enter
-  prompt: HATCH Specify a scale for the pattern <1.00>:
+  prompt: HATCH Specify a scale for the pattern <1.0000>:
   asks: "Specify a scale for the pattern"
   tip: Specify a scale for the pattern
-  dyn: "Specify a scale for the pattern"=""||*
+  dyn: "Specify a scale for the pattern"=""||mm*
   options: -
   prompt| Enter a pattern name or [?/Solid] <ANGLE>: ANSI31
 > scale
-  dyn: "Specify a scale for the pattern"="0.0001"||*
+  dyn: "Specify a scale for the pattern"="0.0001"||mm*
 > enter
   prompt: HATCH Specify an angle for the pattern <0>:
   asks: "Specify an angle for the pattern"
   tip: Specify an angle for the pattern
   dyn: "Specify an angle for the pattern"=""||°*
-  prompt| Specify a scale for the pattern <1.00>: 0.0001
+  prompt| Specify a scale for the pattern <1.0000>: 0.0001
 > angle
   dyn: "Specify an angle for the pattern"="0"||°*
 > enter
@@ -1563,6 +1577,74 @@ lweight "Lineweight" LW
   options: [P] Properties, [S] Select objects
   prompt| Select objects:
   info| Current hatch pattern:  ANSI31
+
+## -HATCH
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> -HATCH
+  prompt: -HATCH Specify internal point or [Properties/Select objects]:
+  asks: ""
+  tip: Specify internal point or
+  dyn: "X,Y"=""||*
+  options: [P] Properties, [S] Select objects
+  command| -H -HATCH
+  info| Current hatch pattern:  ANGLE
+> pick inside
+  prompt| Specify internal point or [Properties/Select objects]:
+  info| Selecting everything...
+  info| Selecting everything visible...
+  info| Analyzing the selected data...
+  info| Analyzing internal islands...
+  info| Current hatch pattern:  ANGLE
+> escape
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify internal point or [Properties/Select objects]: *Cancel*
+> -HATCH again
+  prompt: -HATCH Specify internal point or [Properties/Select objects]:
+  asks: ""
+  tip: Specify internal point or
+  dyn: "X,Y"=""||*
+  options: [P] Properties, [S] Select objects
+  command| -HATCH
+  info| Current hatch pattern:  ANGLE
+> S
+  prompt: -HATCH Select objects:
+  asks: 
+  tip: Select objects:
+  dyn: 
+  options: -
+  prompt| Specify internal point or [Properties/Select objects]: S
+> pick line
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  prompt| Select objects: 1 found
+> enter
+  prompt: -HATCH Specify internal point or [Properties/Select objects]:
+  asks: ""
+  tip: Specify internal point or
+  dyn: "X,Y"=""||*
+  options: [P] Properties, [S] Select objects
+  prompt| Select objects:
+  info| Current hatch pattern:  ANGLE
+> enter
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  properties: -
+  prompt| Specify internal point or [Properties/Select objects]:
+  error| Unable to hatch the boundary.
 
 ## BLOCK
 > start

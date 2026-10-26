@@ -43,6 +43,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   RECTANG: { group: "draw" },
   POLYGON: { group: "draw" },
   HATCH: { group: "draw" },
+  "-HATCH": { group: "draw" },
 
   MOVE: { group: "modify" },
   COPY: { group: "modify" },

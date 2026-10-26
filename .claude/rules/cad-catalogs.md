@@ -108,4 +108,4 @@ letter breaks when the language changes. Every keyword a tool offers is in its c
 - The runtime matches answers (`matchKeywords`), and two keywords of one prompt may share their
   first letters — AutoCAD asks which (`CEnter or CLose?`): never re-letter one for that, nor for an
   object snap's name (`CEN` at a point prompt is Center). `resolveKeyword` is the stricter match
-  for words a tool reads itself (a pattern name, `?`).
+  for words a tool reads itself (a style name, `?`).

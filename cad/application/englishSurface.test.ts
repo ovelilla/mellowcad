@@ -509,9 +509,11 @@ describe("the engine's English surface", () => {
     walk("HATCH", createHarness({ entities: square() }), (s) =>
       s
         .do("HATCH", (c) => c.command("H"))
+        .do("quick preview", (c) => c.moveTo(at(50, 50)))
         .do("P", (c) => answer(c, "P"))
         .do("?", (c) => c.type("?"))
         .do("enter", (c) => c.enter())
+        .do("P", (c) => answer(c, "P"))
         .do("unknown pattern", (c) => c.type("NOPE"))
         .do("enter", (c) => c.enter())
         .do("ANSI31", (c) => c.type("ANSI31"))
@@ -524,6 +526,17 @@ describe("the engine's English surface", () => {
         .do("pick outside", (c) => c.click(at(500, 500)))
         .do("S", (c) => answer(c, "S"))
         .do("pick object", (c) => c.click(at(50, 0)))
+        .do("enter", (c) => c.enter())
+    )
+    walk("-HATCH", createHarness({ entities: square() }), (s) =>
+      s
+        .do("-HATCH", (c) => c.command("-H"))
+        .do("pick inside", (c) => c.click(at(50, 50)))
+        .do("escape", (c) => c.escape())
+        .do("-HATCH again", (c) => c.command("-HATCH"))
+        .do("S", (c) => answer(c, "S"))
+        .do("pick line", (c) => c.click(at(50, 0)))
+        .do("enter", (c) => c.enter())
         .do("enter", (c) => c.enter())
     )
   })

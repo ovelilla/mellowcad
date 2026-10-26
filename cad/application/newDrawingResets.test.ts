@@ -96,7 +96,7 @@ describe.each(RESETS)("after %s", (_, reset) => {
     const cad = answer(session(), "_HATCH", "_P", "ANSI31", "2", "30", "")
     reset(cad)
     answer(cad, "_HATCH", "_P", "")
-    expect(prompt(cad)).toBe("HATCH Specify a scale for the pattern <1.00>:")
+    expect(prompt(cad)).toBe("HATCH Specify a scale for the pattern <1.0000>:")
     answer(cad, "")
     expect(prompt(cad)).toBe("HATCH Specify an angle for the pattern <0>:")
     cad.escape()
