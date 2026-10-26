@@ -212,6 +212,13 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   cannot press (the Text Style dialog's) are clicked at the rectangle `acad.sh children <hwnd>`
   gives. A click on a text off its strokes selects nothing: aim at a stem (Text review).
 
+- When MellowProbe will not NETLOAD on the desktop (`loadmgd` in the command line), AutoCAD's
+  own log reads the history: `LOGFILEMODE 1`, put back to 0; it lands in AutoCAD's working
+  directory, the repo's root, and is moved to `research/probes/<command>/` at once. An object is
+  picked without the mouse by its handle, `(handent "D8")` typed at an entsel or `Select objects:`
+  prompt through COM (MATCHPROP's source and destination). A hatch's pattern is compared line for
+  line by EXPLODE in the console (hatch/p300–p307) (HATCH review).
+
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).
 

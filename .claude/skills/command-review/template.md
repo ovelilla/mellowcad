@@ -385,3 +385,6 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
 - 2026-10-23, after the Text review: an editor's Escape (§4.1); answers typed where a prompt
   takes spaces, the English profile's txt.shx, dialog buttons by their rectangle, text picked on a
   stroke (annex-probes.md §4).
+- 2026-10-26, after the HATCH review: a ribbon twin's Escape and preview under each name
+  (matrix.md G); AutoCAD's log for the history, objects by handle, a pattern by EXPLODE
+  (annex-probes.md §4).

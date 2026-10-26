@@ -70,7 +70,9 @@ and the command's prompt written again on return.
 
 **G. Ending and cancelling** — Enter, Space and the right button at each prompt (SHORTCUTMENU
 off, and with the menu), Escape (once, twice), another command typed mid-prompt, closing options
-(Close, Continue); what is kept and what LASTPOINT is afterwards.
+(Close, Continue); what is kept and what LASTPOINT is afterwards. A command with a ribbon twin
+(HATCH and -HATCH) answers Escape, its preview and the look after a pick under each name
+(hatch/d01, d02).
 
 **H. What it produces** — read with MPDUMP and with the harness's `latest()`:
 
