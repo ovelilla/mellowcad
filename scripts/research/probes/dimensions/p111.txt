@@ -1,0 +1,14 @@
+_PLINE
+0,0
+60,0
+_A
+60,60
+
+_ZOOM
+_E
+_DIMLINEAR
+
+90,30
+150,30
+MPDUMP
+-

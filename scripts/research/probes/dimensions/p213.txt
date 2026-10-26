@@ -1,0 +1,9 @@
+_DIMLINEAR
+0,0
+100,0
+50,-30
+_DIMBASELINE
+_U
+
+
+(princ (sslength (ssget "_X")))

@@ -1,0 +1,12 @@
+_DIMLINEAR
+-200,0
+-100,0
+-150,-30
+_DIMBASELINE
+_S
+_L
+50,0
+
+
+MPDUMP
+-

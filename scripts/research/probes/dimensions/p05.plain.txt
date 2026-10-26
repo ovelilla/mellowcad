@@ -1,0 +1,7 @@
+_-DIMSTYLE
+_S
+Plans
+(getvar "DIMSTYLE")
+_U
+(getvar "DIMSTYLE")
+(tblsearch "DIMSTYLE" "Plans")

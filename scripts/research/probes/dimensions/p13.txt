@@ -1,0 +1,9 @@
+_LINE
+0,0
+10,0
+
+_SELECT
+_L
+
+_DIMSTYLE
+(sslength (ssget "_I"))

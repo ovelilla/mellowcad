@@ -1,0 +1,50 @@
+_DIMLINEAR
+0,0
+12.5,0
+6,10
+_EXPLODE
+_L
+
+(progn (setq ss (ssget "_P") i 0) (repeat (sslength ss) (setq e (entget (ssname ss i))) (if (member (cdr (assoc 0 e)) (list "MTEXT" "TEXT")) (print (cdr (assoc 1 e)))) (setq i (1+ i))) (princ))
+_DIMLINEAR
+0,0
+100,0
+50,10
+_EXPLODE
+_L
+
+(progn (setq ss (ssget "_P") i 0) (repeat (sslength ss) (setq e (entget (ssname ss i))) (if (member (cdr (assoc 0 e)) (list "MTEXT" "TEXT")) (print (cdr (assoc 1 e)))) (setq i (1+ i))) (princ))
+_DIMLINEAR
+0,0
+0.004,0
+6,10
+_EXPLODE
+_L
+
+(progn (setq ss (ssget "_P") i 0) (repeat (sslength ss) (setq e (entget (ssname ss i))) (if (member (cdr (assoc 0 e)) (list "MTEXT" "TEXT")) (print (cdr (assoc 1 e)))) (setq i (1+ i))) (princ))
+_DIMLINEAR
+0,0
+0.5,0
+6,10
+_EXPLODE
+_L
+
+(progn (setq ss (ssget "_P") i 0) (repeat (sslength ss) (setq e (entget (ssname ss i))) (if (member (cdr (assoc 0 e)) (list "MTEXT" "TEXT")) (print (cdr (assoc 1 e)))) (setq i (1+ i))) (princ))
+_DIMLINEAR
+0,0
+1234.567,0
+6,10
+_EXPLODE
+_L
+
+(progn (setq ss (ssget "_P") i 0) (repeat (sslength ss) (setq e (entget (ssname ss i))) (if (member (cdr (assoc 0 e)) (list "MTEXT" "TEXT")) (print (cdr (assoc 1 e)))) (setq i (1+ i))) (princ))
+_DIMANGULAR
+
+0,0
+10,0
+10,10.0001
+20,20
+_EXPLODE
+_L
+
+(progn (setq ss (ssget "_P") i 0) (repeat (sslength ss) (setq e (entget (ssname ss i))) (if (member (cdr (assoc 0 e)) (list "MTEXT" "TEXT")) (print (cdr (assoc 1 e)))) (setq i (1+ i))) (princ))

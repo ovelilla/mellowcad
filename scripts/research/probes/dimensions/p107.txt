@@ -1,0 +1,12 @@
+_LINE
+0,0
+100,40
+
+_ZOOM
+_E
+_DIMLINEAR
+
+50,20
+50,90
+MPDUMP
+-

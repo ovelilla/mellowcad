@@ -1,0 +1,10 @@
+_DIMLINEAR
+0,0
+100,0
+50,-30
+(princ (getvar "LASTPOINT"))
+_DIMBASELINE
+180,0
+
+
+(princ (getvar "LASTPOINT"))

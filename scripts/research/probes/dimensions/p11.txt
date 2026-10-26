@@ -1,0 +1,20 @@
+_DIMLINEAR
+0,0
+10,0
+5,5
+_-DIMSTYLE
+_S
+B
+_-DIMSTYLE
+_R
+ISO-25
+_-DIMSTYLE
+_A
+_L
+
+(cdr (assoc 3 (entget (entlast))))
+_-DIMSTYLE
+_R
+FOO
+_-DIMSTYLE
+_FOO

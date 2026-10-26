@@ -1,0 +1,19 @@
+_DIMLINEAR
+0,0
+100,0
+50,-40
+_DIMLINEAR
+0,0
+200,0
+100,-60
+_DIMLINEAR
+0,0
+300,0
+150,-100
+_ZOOM
+_E
+(sssetfirst nil (ssget "_X"))
+_DIMSPACE
+50,-40
+
+(princ (if (setq s (ssget "_I")) (sslength s) 0))

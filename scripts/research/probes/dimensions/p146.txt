@@ -1,0 +1,13 @@
+_DIMANGULAR
+
+0,0
+10,0
+0,10
+_T
+ABC
+_A
+FOO
+30
+20,20
+MPDUMP
+-

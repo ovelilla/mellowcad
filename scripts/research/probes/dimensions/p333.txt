@@ -1,0 +1,10 @@
+(defun dd (/ e) (setq e (entget (entlast))) (print (mapcar (quote (lambda (k) (assoc k e))) (quote (0 8 70 1 10 11 13 14 15 16 40 42 50 53 210)))) (princ))
+_CIRCLE
+0,0
+50
+_ZOOM
+_E
+_DIMRADIUS
+50,0
+
+(setq n (ssget "_X" (list (cons 0 "DIMENSION"))))

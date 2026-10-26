@@ -1,0 +1,14 @@
+_CIRCLE
+0,0
+50
+_ZOOM
+_E
+_DIMRADIUS
+50,0
+80,0
+_U
+(sslength (ssget "_X" (list (cons 0 "DIMENSION"))))
+_DIMDIAMETER
+50,0
+80,0
+_U

@@ -1,0 +1,13 @@
+_DIMALIGNED
+0,0
+60,80
+_T
+ABC
+_A
+FOO
+30
+_A
+
+-40,60
+MPDUMP
+-

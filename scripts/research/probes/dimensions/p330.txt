@@ -1,0 +1,21 @@
+(defun dd (/ e) (setq e (entget (entlast))) (print (mapcar (quote (lambda (k) (assoc k e))) (quote (0 8 62 6 370 70 1 10 11 13 14 15 16 40 42 50 53 210)))) (princ))
+(defun dp (/ ss i e) (setq ss (ssget "_P") i 0) (repeat (sslength ss) (setq e (entget (ssname ss i))) (print (mapcar (quote (lambda (k) (assoc k e))) (quote (0 10 11 12 13 40 50 51 1 71)))) (setq i (1+ i))) (princ))
+_ELEVATION
+12
+_CIRCLE
+0,0
+50
+_ZOOM
+_E
+_ELEVATION
+0
+_DIMRADIUS
+50,0
+80,0
+(dd)
+MPDUMP
+-
+_EXPLODE
+_L
+
+(dp)

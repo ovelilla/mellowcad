@@ -1,0 +1,10 @@
+_DIMLINEAR
+'_ZOOM
+_E
+0,0
+'_ZOOM
+_E
+100,0
+'_ZOOM
+_E
+50,10

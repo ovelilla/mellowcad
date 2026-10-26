@@ -1,0 +1,14 @@
+_DIMSCALE
+2
+_U
+(getvar "DIMSCALE")
+_DIMTXT
+5
+(getvar "DIMSTYLE")
+_-DIMSTYLE
+_ST
+_-DIMSTYLE
+_S
+ISO-25
+_Y
+(getvar "DIMSTYLE")

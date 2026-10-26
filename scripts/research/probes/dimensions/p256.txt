@@ -1,0 +1,17 @@
+_DIMALIGNED
+0,0
+(polar (list 0. 0.) (/ pi 6) 100)
+(polar (list 0. 0.) (/ pi -3) 10)
+_DIMALIGNED
+0,0
+(polar (list 0. 0.) (/ pi 6) 200)
+(polar (list 0. 0.) (/ pi -3) 30)
+_ZOOM
+_E
+_DIMSPACE
+(polar (polar (list 0. 0.) (/ pi -3) 10) (/ pi 6) 50)
+(polar (polar (list 0. 0.) (/ pi -3) 30) (/ pi 6) 150)
+
+10
+MPDUMP
+-

@@ -1,0 +1,11 @@
+_LINE
+0,0
+80,0
+
+_ZOOM
+_E
+_DIMLINEAR
+
+FOO
+40,0
+40,50

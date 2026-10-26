@@ -1,0 +1,12 @@
+_ARC
+_C
+0,0
+50,0
+0,50
+_ZOOM
+_E
+(sssetfirst nil (ssget "_X"))
+_DIMANGULAR
+35.35534,35.35534
+60,60
+(if (ssget "_I") (sslength (ssget "_I")) "none")

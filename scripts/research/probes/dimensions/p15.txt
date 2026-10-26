@@ -1,0 +1,16 @@
+_DIMLINEAR
+0,0
+12.5,0
+_T
+
+6,10
+_DIMLINEAR
+0,0
+12.5,0
+_T
+<> mm
+6,10
+_EXPLODE
+_L
+
+(progn (setq ss (ssget "_P") i 0) (repeat (sslength ss) (setq e (entget (ssname ss i))) (if (= (cdr (assoc 0 e)) "MTEXT") (print (cdr (assoc 1 e)))) (setq i (1+ i))) (princ))

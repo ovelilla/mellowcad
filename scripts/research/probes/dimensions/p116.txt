@@ -1,0 +1,10 @@
+_ELLIPSE
+0,0
+100,0
+20
+_ZOOM
+_E
+_DIMLINEAR
+
+100,0
+

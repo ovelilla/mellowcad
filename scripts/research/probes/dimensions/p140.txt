@@ -1,0 +1,16 @@
+_LINE
+0,0
+80,0
+
+_ZOOM
+_E
+_DIMLINEAR
+0,0
+100,0
+50,10
+(trans (getvar "LASTPOINT") 1 0)
+_DIMLINEAR
+
+40,0
+40,50
+(trans (getvar "LASTPOINT") 1 0)

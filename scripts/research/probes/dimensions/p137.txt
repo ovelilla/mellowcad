@@ -1,0 +1,12 @@
+_DIMLINEAR
+0,0
+100,0
+_R
+30
+_H
+_T
+ABC
+_V
+50,40
+MPDUMP
+-

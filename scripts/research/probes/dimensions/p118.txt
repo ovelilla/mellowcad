@@ -1,0 +1,11 @@
+_-TEXT
+0,0
+10
+0
+ABCDEF
+_ZOOM
+_E
+_DIMLINEAR
+
+10,5
+

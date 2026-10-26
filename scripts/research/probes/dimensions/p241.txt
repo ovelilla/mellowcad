@@ -1,0 +1,15 @@
+_DIMLINEAR
+100,0
+0,0
+50,-30
+_UCS
+_O
+-300,0
+_DIMCONTINUE
+_S
+_L
+500,0
+
+
+MPDUMP
+-

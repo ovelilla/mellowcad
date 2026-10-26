@@ -1,0 +1,8 @@
+_DIMLINEAR
+0,0
+100,0
+50,10
+_EXPLODE
+_L
+
+(progn (setq ss (ssget "_P") i 0) (repeat (sslength ss) (setq e (entget (ssname ss i))) (print (vl-remove-if-not (function (lambda (x) (member (car x) (list 0 8 10 11 12 13 40 41 42 50 62 71 72 1)))) e)) (setq i (1+ i))) (princ))

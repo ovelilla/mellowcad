@@ -1,0 +1,10 @@
+_DIMLINEAR
+0,0
+100,0
+50,-30
+(sssetfirst nil (ssget "_X"))
+_DIMBASELINE
+180,0
+
+
+(princ (if (setq s (ssget "_I")) (sslength s) 0))

@@ -1,0 +1,21 @@
+_-DIMSTYLE
+_S
+B
+_DIMLINEAR
+0,0
+10,0
+5,5
+_-DIMSTYLE
+_R
+ISO-25
+_-DIMSTYLE
+_A
+_L
+
+(cdr (assoc 3 (entget (entlast))))
+_-DIMSTYLE
+_R
+
+_L
+
+(getvar "DIMSTYLE")
