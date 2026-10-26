@@ -24,15 +24,15 @@ type Path = Extract<ArrayParameters, { kind: "path" }>
 /**
  * How a reference lays its block's coordinates, where an array's parameters
  * are (ARRAYS-D8), into its own: the block's base point onto `position`,
- * mirrored, scaled and turned about it, as `insertGeometry` places objects.
+ * scaled on X and Y and turned about it, as `insertGeometry` places objects.
  */
 export interface ArrayPlacement {
   /** The block's base point. */
   readonly origin: Vec2
   readonly position: Vec2
   readonly rotation: number
-  readonly scale: number
-  readonly mirrored?: boolean
+  readonly scaleX: number
+  readonly scaleY: number
 }
 
 /** A reference's placement of its block (the block missing, its base point taken as the position's). */
@@ -44,15 +44,23 @@ export function arrayPlacement(
     origin: block?.basePoint ?? insert.position,
     position: insert.position,
     rotation: insert.rotation,
-    scale: insert.scale,
-    mirrored: insert.mirrored,
+    scaleX: insert.scaleX,
+    scaleY: insert.scaleY,
   }
+}
+
+/** A length of the block's, in the reference's units: at X's scale. */
+export function placedLength(place: ArrayPlacement, length: number): number {
+  return length * Math.abs(place.scaleX)
 }
 
 /** A direction of the block's, in the reference's coordinates (its length scaled). */
 export function placeArrayVector(place: ArrayPlacement, v: Vec2): Vec2 {
-  const reflected = place.mirrored ? { x: -v.x, y: v.y } : v
-  return rotatePoint(V.scale(reflected, place.scale), ORIGIN, place.rotation)
+  return rotatePoint(
+    { x: v.x * place.scaleX, y: v.y * place.scaleY },
+    ORIGIN,
+    place.rotation
+  )
 }
 
 /** A point of the block's, where the reference puts it. */
@@ -65,11 +73,8 @@ export function placeArrayPoint(place: ArrayPlacement, point: Vec2): Vec2 {
 
 /** A point of the reference's coordinates, in its block's. */
 export function arrayPointOf(place: ArrayPlacement, point: Vec2): Vec2 {
-  const v = V.scale(
-    rotatePoint(V.sub(point, place.position), ORIGIN, -place.rotation),
-    1 / place.scale
-  )
-  return V.add(place.origin, place.mirrored ? { x: -v.x, y: v.y } : v)
+  const v = rotatePoint(V.sub(point, place.position), ORIGIN, -place.rotation)
+  return V.add(place.origin, { x: v.x / place.scaleX, y: v.y / place.scaleY })
 }
 
 /** Whether `n` is a count an array takes: an integer from 1 to 32767 (probe arrays/p279). */

@@ -1,5 +1,6 @@
 import { Vec2, V } from "../geometry/Vec2"
 import { polarPoint } from "../geometry/primitives"
+import { Linear2, applyLinear, inverseLinear } from "../geometry/linear"
 import {
   HatchPatternLine,
   hatchPatternLines,
@@ -138,11 +139,26 @@ function generateHatchGeometry(hatch: HatchEntity): HatchGeometry {
     return { rings, solid, lines: [], truncated: false }
   }
 
-  const lines: [Vec2, Vec2][] = []
+  const frame = hatch.patternFrame
+  const inverse = frame && inverseLinear(frame)
+  if (frame && !inverse) return { rings, solid, lines: [], truncated: false }
+  // WHY generated inside the frame: a pattern is a family of lines, which the
+  // frame's linear map keeps lines, so clipping the unframed pattern to the
+  // boundary taken back through it and mapping the runs out is exact.
+  const about = (map: Linear2) => (point: Vec2) =>
+    V.add(hatch.origin, applyLinear(map, V.sub(point, hatch.origin)))
+  const clipped = inverse
+    ? rings.map((ring) => ring.map(about(inverse)))
+    : rings
+  let lines: [Vec2, Vec2][] = []
   let truncated = false
   for (const line of hatchPatternLines(hatch.patternId)) {
     if (truncated) break
-    truncated = pushPatternFamily(lines, hatch, line, rings)
+    truncated = pushPatternFamily(lines, hatch, line, clipped)
+  }
+  if (frame) {
+    const out = about(frame)
+    lines = lines.map(([a, b]) => [out(a), out(b)])
   }
   return { rings, solid, lines, truncated }
 }

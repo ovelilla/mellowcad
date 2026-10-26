@@ -2,6 +2,7 @@ import { Vec2, V } from "../geometry/Vec2"
 import { Vec3, WORLD_Z, add3, scale3, sub3, withZ, zOf } from "../geometry/Vec3"
 import { bulgeToArc, normalizeAngle } from "../geometry/primitives"
 import { sameHeightBulge } from "../geometry/bulgeArcs"
+import { Linear2, composeLinear, rotationLinear } from "../geometry/linear"
 import {
   Axes3,
   arbitraryAxis,
@@ -93,12 +94,12 @@ function hatchLike(
 function insertLike(
   insert: InsertEntity,
   position: Vec2,
-  overrides: Pick<InsertOptions, "scale" | "rotation" | "mirrored"> = {}
+  overrides: Pick<InsertOptions, "scaleX" | "scaleY" | "rotation"> = {}
 ): InsertEntity {
   return createInsert(insert.blockId, position, {
-    scale: overrides.scale ?? insert.scale,
+    scaleX: overrides.scaleX ?? insert.scaleX,
+    scaleY: overrides.scaleY ?? insert.scaleY,
     rotation: overrides.rotation ?? insert.rotation,
-    mirrored: overrides.mirrored ?? insert.mirrored,
     attributes: insert.attributes,
     layerId: insert.layerId,
     array: insert.array,
@@ -716,7 +717,16 @@ function rotateFlat(entity: Entity, pivot: Vec2, radians: number): Entity {
       return {
         ...entity,
         loops: mapHatchLoops(entity, (p) => rotatePoint(p, pivot, radians)),
-        patternAngle: entity.patternAngle + radians,
+        // A frame already over the pattern turns with it; under it the
+        // angle would turn the pattern inside the frame instead.
+        ...(entity.patternFrame
+          ? {
+              patternFrame: composeLinear(
+                rotationLinear(radians),
+                entity.patternFrame
+              ),
+            }
+          : { patternAngle: entity.patternAngle + radians }),
         origin: rotatePoint(entity.origin, pivot, radians),
       }
     case "insert":
@@ -933,7 +943,8 @@ function scalePlanar(entity: Entity, base: Vec2, factor: number): Entity {
       return {
         ...entity,
         position: scalePoint(entity.position, base, factor),
-        scale: entity.scale * factor,
+        scaleX: entity.scaleX * factor,
+        scaleY: entity.scaleY * factor,
       }
   }
 }
@@ -1016,7 +1027,8 @@ export function scaleEntityCopy(
         )
       case "insert":
         return insertLike(entity, scalePoint(entity.position, base, factor), {
-          scale: entity.scale * factor,
+          scaleX: entity.scaleX * factor,
+          scaleY: entity.scaleY * factor,
         })
     }
   })()
@@ -1041,8 +1053,10 @@ export function mirrorPoint(point: Vec2, a: Vec2, b: Vec2): Vec2 {
 /**
  * What a reflection does to a hatch's pattern: MIRROR keeps its angle, origin
  * and scale and reflects only its loops (MIRRHATCH 0, probes hatch/p314,
- * p316); a reflected frame — a mirrored block reference, an object turned
- * over — reflects the pattern with the rest.
+ * p316); a reflected frame — an object turned over, a tilted one in a
+ * reflected reference — reflects its angle and origin with the rest, and a
+ * `patternFrame` exactly. What a reflected reference shows of a level hatch
+ * is `insertFlatGeometry`'s frame (probe blocks/p230).
  */
 export type HatchMirroring = "patternKept" | "patternReflected"
 
@@ -1135,7 +1149,14 @@ function mirrorFlat(
         ),
         ...(hatch === "patternReflected"
           ? {
-              patternAngle: mirrorAngle(entity.patternAngle, a, b),
+              ...(entity.patternFrame
+                ? {
+                    patternFrame: composeLinear(
+                      reflectionLinear(a, b),
+                      entity.patternFrame
+                    ),
+                  }
+                : { patternAngle: mirrorAngle(entity.patternAngle, a, b) }),
               origin: mirrorPoint(entity.origin, a, b),
             }
           : {}),
@@ -1145,22 +1166,28 @@ function mirrorFlat(
   }
 }
 
+/** The reflection across the direction of `a`→`b`, as a linear map. */
+function reflectionLinear(a: Vec2, b: Vec2): Linear2 {
+  const angle = 2 * Math.atan2(b.y - a.y, b.x - a.x)
+  return [Math.cos(angle), Math.sin(angle), Math.sin(angle), -Math.cos(angle)]
+}
+
 /**
- * How a block reference reflects. AutoCAD mirrors a reference by negating its X
- * scale, which is what {@link InsertEntity.mirrored} carries here. Composing the
- * reflection with the reference's own transform gives, for either starting
- * value of `mirrored`, the same pair: the rotation reflects and turns a further
- * half turn, and the reflection flag flips — so mirroring twice is the identity.
+ * How a block reference reflects: AutoCAD negates its X scale, and the
+ * rotation reflects and turns a further half turn (probe blocks/p332: one at
+ * 30° mirrored about the Y axis reads 330°). A reflection F about a line at φ
+ * composed with the reference's R(θ)·S(x, y) is R(2φ − θ + π)·S(−x, y), Y
+ * whatever its size, so mirroring twice is the identity.
  */
 function mirroredInsert(
   insert: InsertEntity,
   a: Vec2,
   b: Vec2
-): Pick<InsertEntity, "position" | "rotation" | "mirrored"> {
+): Pick<InsertEntity, "position" | "rotation" | "scaleX"> {
   return {
     position: mirrorPoint(insert.position, a, b),
     rotation: mirrorAngle(insert.rotation, a, b) + Math.PI,
-    mirrored: !insert.mirrored,
+    scaleX: -insert.scaleX,
   }
 }
 
@@ -1356,7 +1383,7 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
         const reflected = mirroredInsert(entity, a, b)
         return insertLike(entity, reflected.position, {
           rotation: reflected.rotation,
-          mirrored: reflected.mirrored,
+          scaleX: reflected.scaleX,
         })
       }
     }

@@ -530,23 +530,24 @@ export const insertEntity: fc.Arbitrary<InsertEntity> = fc
   .tuple(
     point,
     positiveLength,
+    fc.oneof(fc.constant(null), positiveLength),
     angle,
+    fc.boolean(),
     fc.boolean(),
     fc.array(blockAttribute, { maxLength: 3 }),
     fc.option(arrayParameters, { freq: 3, nil: undefined })
   )
-  .map(([position, scale, rotation, mirrored, attributes, array]) =>
+  .map(([position, x, y, rotation, flipX, flipY, attributes, array]) =>
     withId<InsertEntity>(
       {
         type: "insert",
         layerId: DEFAULT_LAYER_ID,
         blockId: "BLOCK",
         position,
-        scale,
+        // Either sign on either axis, and X and Y often one size.
+        scaleX: flipX ? -x : x,
+        scaleY: (flipY ? -1 : 1) * (y ?? x),
         rotation,
-        // Reflection is stored only when it applies, so the round-trip has to
-        // survive the field being absent as well as present.
-        ...(mirrored ? { mirrored: true } : {}),
         ...(attributes.length > 0 ? { attributes } : {}),
         ...(array ? { array } : {}),
       },

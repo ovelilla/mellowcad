@@ -716,11 +716,11 @@ function expectSameShape(actual: Entity, expected: Entity, precision = 6) {
   } else if (actual.type === "insert" && expected.type === "insert") {
     expect(actual.blockId).toBe(expected.blockId)
     expect(actual.position).toBeCloseToPoint(expected.position, precision)
-    expect(actual.scale).toBeCloseTo(expected.scale, precision)
+    // A negative factor is a reflection MIRROR toggles, so a lost sign means a
+    // reference that silently came back the wrong way round.
+    expect(actual.scaleX).toBeCloseTo(expected.scaleX, precision)
+    expect(actual.scaleY).toBeCloseTo(expected.scaleY, precision)
     expect(actual.rotation).toBeCloseToAngle(expected.rotation, precision)
-    // Reflection is what MIRROR toggles, so a lost flag means a reference that
-    // silently came back the wrong way round.
-    expect(actual.mirrored ?? false).toBe(expected.mirrored ?? false)
     // Held in the block's frame, so no transform of the reference may touch them.
     expect(actual.attributes).toEqual(expected.attributes)
   }
@@ -2255,5 +2255,63 @@ describe("hatch", () => {
     const copy = copyEntity(hatch, p(1, 1))
     expect(copy.color).toBe("#ff0000")
     expect(copy.id).not.toBe(hatch.id)
+  })
+})
+
+// What a reference that reflects or stretches a hatch shows of it (probe
+// blocks/p230): its pattern under a frame, which turns and reflects with it.
+describe("a hatch's pattern frame", () => {
+  const framed = {
+    ...createHatch([{ vertices: [p(0, 0), p(40, 0), p(40, 30), p(0, 30)] }], {
+      patternId: "ANSI31",
+    }),
+    patternFrame: [1, 0, 0, -1] as const,
+  }
+  const sorted = (lines: readonly (readonly [Vec2, Vec2])[]) =>
+    lines
+      .flat()
+      .map((point) =>
+        [point.x, point.y].map((n) => Math.round(n * 1e6) / 1e6 + 0)
+      )
+      .sort((a, b) => a[0] - b[0] || a[1] - b[1])
+
+  it("reflects the pattern it lies over", () => {
+    for (const [a, b] of hatchGeometry(framed).lines) {
+      // ANSI31's 45° lines, reflected to 135°.
+      expect((b.y - a.y) / (b.x - a.x)).toBeCloseTo(-1)
+    }
+  })
+
+  it("turns and reflects with the hatch", () => {
+    const turn = Math.PI / 3
+    const turned = rotateEntity(framed, p(5, 5), turn)
+    expect(sorted(hatchGeometry(turned as typeof framed).lines)).toEqual(
+      sorted(
+        hatchGeometry(framed).lines.map(
+          ([a, b]) =>
+            [
+              rotatePoint(a, p(5, 5), turn),
+              rotatePoint(b, p(5, 5), turn),
+            ] as const
+        )
+      )
+    )
+    const reflected = mirrorEntity(framed, p(0, 0), p(1, 1), "patternReflected")
+    expect(sorted(hatchGeometry(reflected as typeof framed).lines)).toEqual(
+      sorted(
+        hatchGeometry(framed).lines.map(
+          ([a, b]) =>
+            [
+              mirrorPoint(a, p(0, 0), p(1, 1)),
+              mirrorPoint(b, p(0, 0), p(1, 1)),
+            ] as const
+        )
+      )
+    )
+  })
+
+  it("draws nothing under a frame that flattens it", () => {
+    const flat = { ...framed, patternFrame: [1, 0, 2, 0] as const }
+    expect(hatchGeometry(flat).lines).toEqual([])
   })
 })

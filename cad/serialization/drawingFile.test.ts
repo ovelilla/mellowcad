@@ -23,6 +23,7 @@ import {
 import {
   Entity,
   HatchEntity,
+  InsertEntity,
   createBlockDefinition,
   createDimension,
   createHatch,
@@ -1374,8 +1375,9 @@ describe("blocks", () => {
     expect(parsed.blocks.map((block) => block.name)).toEqual(["BAR"])
   })
 
-  it("fills a reference's missing scale and rotation", () => {
+  const reference = (fields: Record<string, unknown>, version?: number) => {
     const parsed = file({
+      ...(version === undefined ? {} : { version }),
       blocks: [{ name: "BAR", entities: bar }],
       entities: [
         {
@@ -1383,17 +1385,42 @@ describe("blocks", () => {
           type: "insert",
           blockId: "BAR",
           position: { x: 5, y: 6 },
-          scale: -2,
-          rotation: "sideways",
+          ...fields,
         },
       ],
     })
     const entity = parsed.entities[0]
-    expect(entity.type).toBe("insert")
-    if (entity.type !== "insert") return
-    expect(entity.scale).toBe(1)
-    expect(entity.rotation).toBe(0)
-    expect(entity.mirrored).toBeUndefined()
+    if (entity?.type !== "insert") throw new Error("no reference read")
+    return entity
+  }
+  const factors = (entity: InsertEntity) => [entity.scaleX, entity.scaleY]
+
+  it("fills a reference's missing or unusable factors and rotation", () => {
+    expect(factors(reference({}))).toEqual([1, 1])
+    const damaged = reference({
+      scaleX: 0,
+      scaleY: "tall",
+      rotation: "sideways",
+    })
+    expect(factors(damaged)).toEqual([1, 1])
+    expect(damaged.rotation).toBe(0)
+    // A factor missing reads as the other's size.
+    expect(factors(reference({ scaleX: -2 }))).toEqual([-2, 2])
+  })
+
+  it("keeps a negative or unequal factor on either axis", () => {
+    expect(factors(reference({ scaleX: 2, scaleY: -3 }))).toEqual([2, -3])
+  })
+
+  it("reads a file before version 33's one scale and its mirror flag", () => {
+    expect(factors(reference({ scale: 3 }, 32))).toEqual([3, 3])
+    expect(factors(reference({ scale: 3, mirrored: true }, 32))).toEqual([
+      -3, 3,
+    ])
+    // That scale was always positive: anything else read as 1.
+    expect(factors(reference({ scale: -2, mirrored: "yes" }, 32))).toEqual([
+      1, 1,
+    ])
   })
 
   it("reads an array's parameters, and keeps a damaged one's reference plain", () => {

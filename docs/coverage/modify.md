@@ -155,11 +155,13 @@ AutoCAD's does (spline/p320), unlike an ellipse; the reflection drags as MOVE's 
 keeping the selection's glow, the amber dashed line from the first point, both still drawn at
 `Erase source objects?` (desktop d10); `SI` from the Spanish `acad.pgp` (p221); a hatch's loops
 reflect, its bulges negated, and its pattern keeps its angle, origin and scale, as MIRRHATCH 0
-(hatch/p314, p316, p350–p354; p282 its 0° about the Y axis)
+(hatch/p314, p316, p350–p354; p282 its 0° about the Y axis); a block reference negates its X scale
+and its rotation reflects and turns half round, so one at 30° about the Y axis reads 330°
+(blocks/p332), its attributes kept readable
 
 **Missing:** MIRRTEXT, the variable: 0 only, never mirrored text; MIRRHATCH, the variable: 0 only,
-a pattern never reflected (a hatch in a mirrored block reference is: the block's reflection is the
-frame's); a text inside a mirrored block reference, which AutoCAD mirrors with the block whatever
+a pattern never reflected (a hatch inside a mirrored block reference is drawn reflected with it, its
+reflection the reference's, as AutoCAD's, blocks/p230; EXPLODE keeps its pattern, p227); a text inside a mirrored block reference, which AutoCAD mirrors with the block whatever
 MIRRTEXT (Autodesk's support article), turns back here as a loose one; a hatch tilted to the UCS,
 whose pattern is reflected with it; the drag's ghost as MOVE's (each object's colour only); an ellipse's
 normal: AutoCAD turns a mirrored ellipse over, its normal −Z, its parameters kept and its major
@@ -1116,8 +1118,8 @@ the generator's order, not AutoCAD's (p259 runs from the far corner); a pattern'
 AR-SAND) becomes a zero-length LINE, what AutoCAD makes of one **unverified**; `Hatch boundary associativity
 removed.` (es `Asociatividad del contorno del sombreado eliminada.`, p263), as no hatch is
 associative here; exploded MTEXT's positions differ by the font's metrics (EXP-06, p255: OLD at
-9.324693,39.822647 in AutoCAD, 10,40 here); ByBlock resolution, non-uniform-scale → ellipse
-conversion
+9.324693,39.822647 in AutoCAD, 10,40 here); ByBlock resolution; a reference scaled unequally gives
+its pieces as it draws them, its texts at X's size (INSERT's Missing)
 
 ### `JOIN` / `J` · es `UNIR` / `U`†
 

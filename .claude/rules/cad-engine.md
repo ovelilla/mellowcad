@@ -44,10 +44,10 @@ reads: keep it true when a public contract changes.
 
 ## No import-time side effects
 
-`package.json` declares `"sideEffects": ["**/*.css"]`, which lets a page import one helper from the
-barrel (`readSavedDrawingSummary`, `matchCommands`) without shipping the engine. A top-level
-registration, patch or global write would be silently dropped from any bundle that does not use the
-module's exports. The locale, likewise, is passed explicitly, never held in a module-level registry.
+`package.json` declares `"sideEffects": ["**/*.css"]`, so a page imports one helper from the barrel
+(`readSavedDrawingSummary`, `matchCommands`) without the engine. A top-level registration, patch or
+global write is silently dropped from a bundle not using the module's exports. The locale is passed
+explicitly, never held in a module-level registry.
 
 ## Ports
 
@@ -63,7 +63,7 @@ capability the app has belongs to the engine, behind a port; only the _mechanism
   return new objects and either keep the id (in-place edit) or mint one (`*Copy` helpers).
 - Angles are **radians CCW from +X** in `geometry/` and `domain/`; degrees only at the UI boundary.
   Normalise with `normalizeAngle` / `normalizeDegrees` (`geometry/primitives`): a hand-rolled
-  `deg < 0 ? deg + 360 : deg` lands a tiny negative angle on exactly 360 (ESLint fails on it).
+  `deg + 360` lands a tiny negative angle on exactly 360 (ESLint).
 - `ArcEntity` is **always CCW from `startAngle` to `endAngle`**: a transform that reverses
   orientation (mirror) reflects _and swaps_ the angles.
 - Polyline `bulges[i]` is AutoCAD's `tan(θ/4)` for segment `i`; mirroring negates them.
@@ -121,18 +121,20 @@ Dependencies run types → per-type modules → overrides → transforms → que
 
 ## Blocks
 
-- An entity whose shape lives in a **table** (`insert`) makes every query that measures, picks or
-  draws it (`entityBounds`, `entityScenePrimitive`…) take an optional `BlockLookup`. A forgotten
-  call site compiles, so the degraded answer is deliberately _visible_ (the insertion point). Pass
-  `document.blockLookup()` (`ctx.blocks`) wherever a real object is measured, picked or drawn.
+- A reference's shape lives in a **table**, so every query that measures, picks or draws it
+  (`entityBounds`, `entityScenePrimitive`…) takes an optional `BlockLookup`: pass
+  `document.blockLookup()` (`ctx.blocks`) for every real object. A forgotten one compiles and
+  degrades _visibly_, to the insertion point.
 - Objects on layer 0 **inherit the reference's layer**; others keep what they had. **ByBlock is not
   modelled**: `resolveEntityColor` and its twins know ByObject and ByLayer, and a third mode
   touches all three.
 - `insertGeometry` is what EXPLODE returns, attribute definitions included; what a reference
-  **shows** is `insertFlatGeometry` (values in place of definitions, filtered by ATTMODE, carried
-  by `document.blockLookup()`). Attributes and an array's parameters (`arrayItems`) are in the
-  **block's** coordinates, so no transform knows they exist; what needs one in the drawing
-  (`insertAttributePoints`, `placeArrayPoint`) places it as `insertFlatGeometry` does.
+  **shows** is `insertFlatGeometry` (values for definitions, ATTMODE applied). Attributes and an
+  array's parameters (`arrayItems`) are in the **block's** coordinates, so no transform knows
+  them; what needs one in the drawing (`insertAttributePoints`, `placeArrayPoint`) places it so.
+- A reference scales X and Y apart (Z is |X|); one negative reflects (`insertReflects`). Unequal
+  ones place through `linearEntity` (text at X's size); a hatch shown reflected or stretched
+  wears `patternFrame`, never stored.
 
 ## Algorithms over a set of entities
 

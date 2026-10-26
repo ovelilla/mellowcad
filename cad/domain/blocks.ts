@@ -1,10 +1,17 @@
-import { Vec2 } from "../geometry/Vec2"
+import { Vec2, V } from "../geometry/Vec2"
 import { Vec3 } from "../geometry/Vec3"
-import { entityAxes, entityPointToWorld } from "./elevation"
+import { Linear2, applyLinear } from "../geometry/linear"
+import {
+  entityAxes,
+  entityPointToWorld,
+  isTilted,
+  scaleEntityZ,
+} from "./elevation"
 import { DEFAULT_LAYER_ID } from "./layers"
 import {
   AttributeDisplay,
   BlockDefinition,
+  HatchEntity,
   BlockId,
   BlockLookup,
   InsertEntity,
@@ -24,6 +31,7 @@ import {
   blockAttributeText,
 } from "./attributes"
 import { arrayItems, arraySourceItem, placeArrayItem } from "./arrays"
+import { framedPattern, insertLinear, linearEntity } from "./entityAffine"
 
 /**
  * How deep block references may nest before the expansion gives up. AutoCAD
@@ -34,8 +42,11 @@ export const MAX_BLOCK_NESTING = 8
 
 const BLOCK_ORIGIN: Vec2 = { x: 0, y: 0 }
 
-/** The +Y axis through the origin: reflecting across it negates X. */
-const BLOCK_MIRROR_AXIS: Vec2 = { x: 0, y: 1 }
+/** A point on the +Y axis: reflecting across it negates X. */
+const BLOCK_Y_AXIS: Vec2 = { x: 0, y: 1 }
+
+/** A point on the +X axis: reflecting across it negates Y. */
+const BLOCK_X_AXIS: Vec2 = { x: 1, y: 0 }
 
 /**
  * Whether a block is anonymous, as an array's is (`*U2`, probe arrays/p400):
@@ -171,36 +182,43 @@ export function insertGeometry(
   if (!block) return []
   const inheritLayer = options.inheritLayer ?? true
   return referencedObjects(insert, block).map((entity) =>
-    placeInReference(entity, insert, block, inheritLayer)
+    placeInReference(entity, insert, block, inheritLayer, "exploded")
   )
 }
+
+/**
+ * What a hatch's pattern does in a reference that reflects or stretches its
+ * block: `"shown"`, it is drawn through the reference's map with the rest
+ * (plots blocks/p230, p231: ANSI31's lines at 135° in one at X −1); `"exploded"`,
+ * the hatch EXPLODE leaves keeps its own angle and lattice (p227, p228:
+ * PatternAngle 0, its lines on the lattice through the origin).
+ */
+type PatternPlacement = "shown" | "exploded"
 
 /** One object of `block`'s own coordinates, where `insert` puts it. */
 function placeInReference(
   entity: Entity,
   insert: InsertEntity,
   block: BlockDefinition,
-  inheritLayer: boolean
+  inheritLayer: boolean,
+  pattern: PatternPlacement
 ): Entity {
   let placed = translateEntity(entity, {
     x: -block.basePoint.x,
     y: -block.basePoint.y,
     z: -(block.baseElevation ?? 0),
   })
-  if (insert.mirrored) {
-    placed = mirrorEntity(
-      placed,
-      BLOCK_ORIGIN,
-      BLOCK_MIRROR_AXIS,
-      "patternReflected"
-    )
-  }
-  if (insert.scale !== 1) {
-    placed = scaleEntity(placed, BLOCK_ORIGIN, insert.scale)
-  }
-  if (insert.rotation !== 0) {
-    placed = rotateEntity(placed, BLOCK_ORIGIN, insert.rotation)
-  }
+  const { scaleX, scaleY } = insert
+  const scale = Math.abs(scaleX)
+  const reflects = scaleX * scaleY < 0
+  // WHY the similarity path whenever it applies: it keeps every uniform
+  // reference to the bit (the landing's snapshots), and is the one that knows
+  // MIRRTEXT's readable text.
+  const linear =
+    scale !== Math.abs(scaleY) || (reflects && placed.type === "hatch")
+      ? linearInReference(placed, insert, pattern)
+      : null
+  placed = linear ?? similarInReference(placed, scaleX, scaleY, insert.rotation)
   placed = translateEntity(placed, {
     ...insert.position,
     z: insert.elevation ?? 0,
@@ -214,9 +232,121 @@ function placeInReference(
       translation: { x: 0, y: 0, z: 0 },
     })
   }
+  if (
+    linear &&
+    pattern === "exploded" &&
+    placed.type === "hatch" &&
+    entity.type === "hatch"
+  ) {
+    placed = keptPattern(placed, entity, scale)
+  }
   return inheritLayer && placed.layerId === DEFAULT_LAYER_ID
     ? assignEntityLayer(placed, insert.layerId)
     : placed
+}
+
+/**
+ * `entity` of the block, about its base point, through a reference whose map
+ * is no similarity (or reflects a hatch): the affine map where the type has a
+ * closed form, its Z at X's scale (the Z factor is |X|, probe blocks/p203).
+ * Text, an MTEXT, an attribute and anything tilted are drawn at X's scale
+ * instead, their point where the map puts it: a gap (INSERT's Missing).
+ */
+function linearInReference(
+  entity: Entity,
+  insert: InsertEntity,
+  pattern: PatternPlacement
+): Entity {
+  const { scaleX, scaleY, rotation } = insert
+  const scale = Math.abs(scaleX)
+  const map = insertLinear(rotation, scaleX, scaleY)
+  const mapped = isTilted(entity) ? null : linearEntity(entity, map, scale)
+  if (mapped === null) return atScaleOfX(entity, insert, map)
+  const placed = scaleEntityZ(mapped, 0, scale)
+  return placed.type === "hatch" &&
+    entity.type === "hatch" &&
+    pattern === "shown"
+    ? { ...placed, patternFrame: framedPattern(entity, map) }
+    : placed
+}
+
+/**
+ * The hatch EXPLODE leaves of `source`, a hatch of the block, from a
+ * reference that reflects or stretches it: its loops placed, its pattern the
+ * definition's own angle and origin, unmoved (probes blocks/p227, p228: the
+ * lines on the lattice through the origin, wherever the reference stands).
+ */
+function keptPattern(
+  placed: HatchEntity,
+  source: HatchEntity,
+  scale: number
+): HatchEntity {
+  return {
+    ...placed,
+    patternAngle: source.patternAngle,
+    origin: source.origin,
+    // WHY scaled: unverified, p227's reference being at X −1; the lattice
+    // follows the size the reference draws at.
+    patternScale: source.patternScale * scale,
+  }
+}
+
+/**
+ * `entity` reflected as the factors' signs say, scaled by X's size and turned
+ * by `rotation`: a reference whose X and Y are one size.
+ */
+function similarInReference(
+  entity: Entity,
+  scaleX: number,
+  scaleY: number,
+  rotation: number
+): Entity {
+  let placed = entity
+  if (scaleX * scaleY < 0) {
+    // A hatch arrives here only tilted, which `linearEntity` does not map.
+    placed = mirrorEntity(
+      placed,
+      BLOCK_ORIGIN,
+      scaleX < 0 ? BLOCK_Y_AXIS : BLOCK_X_AXIS,
+      "patternReflected"
+    )
+  }
+  const scale = Math.abs(scaleX)
+  if (scale !== 1) placed = scaleEntity(placed, BLOCK_ORIGIN, scale)
+  // Both negative is a half turn (probe blocks/p205: Scale −2).
+  const turn = rotation + (scaleX < 0 && scaleY < 0 ? Math.PI : 0)
+  return turn !== 0 ? rotateEntity(placed, BLOCK_ORIGIN, turn) : placed
+}
+
+/**
+ * `entity` placed at X's size, reflected as the reference reflects, and
+ * moved so its anchor lands where the affine `map` puts it.
+ */
+function atScaleOfX(
+  entity: Entity,
+  insert: InsertEntity,
+  map: Linear2
+): Entity {
+  const { scaleX, scaleY, rotation } = insert
+  const placed = similarInReference(
+    entity,
+    scaleX,
+    Math.sign(scaleY) * Math.abs(scaleX),
+    rotation
+  )
+  const anchor = textAnchor(entity)
+  const moved = textAnchor(placed)
+  if (!anchor || !moved) return placed
+  return translateEntity(placed, V.sub(applyLinear(map, anchor), moved))
+}
+
+/** The point a text-like object hangs off, which the affine map places. */
+function textAnchor(entity: Entity): Vec2 | null {
+  return entity.type === "text" ||
+    entity.type === "mtext" ||
+    entity.type === "attdef"
+    ? entity.position
+    : null
 }
 
 /**
@@ -234,7 +364,7 @@ function insertDisplayGeometry(
   const out: Entity[] = []
   for (const entity of referencedObjects(insert, block)) {
     if (entity.type !== "attdef") {
-      out.push(placeInReference(entity, insert, block, true))
+      out.push(placeInReference(entity, insert, block, true, "shown"))
     } else if (
       entity.modes.constant &&
       attributeShown(entity.modes.invisible, display)
@@ -244,7 +374,8 @@ function insertDisplayGeometry(
           attributeDefinitionText(entity, entity.value),
           insert,
           block,
-          true
+          true,
+          "shown"
         )
       )
     }
@@ -256,7 +387,8 @@ function insertDisplayGeometry(
         blockAttributeText(attribute, `${insert.id}:${index}`),
         insert,
         block,
-        true
+        true,
+        "shown"
       )
     )
   }
@@ -277,7 +409,8 @@ export function insertAttributePoints(
         blockAttributeText(attribute, insert.id),
         insert,
         block,
-        true
+        true,
+        "shown"
       )
       return placed.type === "text"
         ? entityPointToWorld(placed, placed.position)

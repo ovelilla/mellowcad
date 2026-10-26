@@ -1,8 +1,26 @@
 import { describe, expect, it } from "vitest"
 import { createHarness } from "../../../test/harness"
-import { circleOf, layerOf, lineOf, p, textOf } from "../../../test/builders"
 import {
+  arcOf,
+  circleOf,
+  hatchOf,
+  layerOf,
+  lineOf,
+  loopOf,
+  p,
+  textOf,
+} from "../../../test/builders"
+import type { Vec2 } from "../../geometry/Vec2"
+import { normalizeDegrees } from "../../geometry/primitives"
+import {
+  blockAttribute,
   CircleEntity,
+  EllipseEntity,
+  HatchEntity,
+  ellipseEndPoint,
+  ellipseStartPoint,
+  ellipseSweepParams,
+  hatchGeometry,
   createAttributeDefinition,
   createBlockDefinition,
   createInsert,
@@ -55,7 +73,7 @@ describe("BLOCK", () => {
     const insert = cad.only<InsertEntity>("insert")
     expect(insert.blockId).toBe("BAR")
     expect(insert.position).toBeCloseToPoint(p(0, 0))
-    expect(insert.scale).toBeCloseTo(1)
+    expect([insert.scaleX, insert.scaleY]).toEqual([1, 1])
     expect(insert.rotation).toBeCloseTo(0)
   })
 
@@ -148,7 +166,15 @@ describe("INSERT", () => {
 
   it("places a reference at the picked point", () => {
     const cad = withBar()
-    cad.command("-INSERT").type("BAR").enter().click(p(300, 50))
+    // The X scale, the Y scale and the rotation at their defaults (p02).
+    cad
+      .command("-INSERT")
+      .type("BAR")
+      .enter()
+      .click(p(300, 50))
+      .enter()
+      .enter()
+      .enter()
 
     const insert = cad.only<InsertEntity>("insert")
     expect(insert.blockId).toBe("BAR")
@@ -166,9 +192,11 @@ describe("INSERT", () => {
       .type("2")
       .enter()
       .click(p(0, 0))
+      // Scale skips the X and Y scale; the rotation is still asked (p205).
+      .enter()
 
     const insert = cad.only<InsertEntity>("insert")
-    expect(insert.scale).toBeCloseTo(2)
+    expect([insert.scaleX, insert.scaleY]).toEqual([2, 2])
     const drawn = insertGeometry(insert, cad.runtime.document.getBlock("BAR"))
     expect((drawn[0] as LineEntity).end).toBeCloseToPoint(p(200, 0))
   })
@@ -183,6 +211,9 @@ describe("INSERT", () => {
       .type("90")
       .enter()
       .click(p(0, 0))
+      // Rotate skips the rotation; the X and Y scale are still asked (p206).
+      .enter()
+      .enter()
 
     const insert = cad.only<InsertEntity>("insert")
     expect(insert.rotation).toBeCloseTo(Math.PI / 2)
@@ -219,7 +250,7 @@ describe("INSERT", () => {
     cad.enter().click(p(0, 300))
 
     const placed = cad.latest() as InsertEntity
-    expect(placed.scale).toBe(1)
+    expect([placed.scaleX, placed.scaleY]).toEqual([1, 1])
     expect(placed.rotation).toBe(0)
   })
 
@@ -258,7 +289,8 @@ describe("INSERT", () => {
     expect(ghost.map((prim) => prim.kind).sort()).toEqual(["segment", "text"])
     expect(ghost).toContainEqual(expect.objectContaining({ text: "def1" }))
 
-    cad.click(p(120, 60)).enter().moveTo(p(900, 700))
+    // The X scale, the Y scale, the rotation, then the attribute's default.
+    cad.click(p(120, 60)).enter().enter().enter().enter().moveTo(p(900, 700))
     expect(cad.only<InsertEntity>("insert").position).toBeCloseToPoint(
       p(120, 60)
     )
@@ -364,7 +396,8 @@ describe("a block reference in the drawing", () => {
     expect(cad.byId<InsertEntity>("I1").rotation).toBeCloseTo(Math.PI / 2)
 
     cad.select("I1").command("SCALE").click(p(0, 40)).type("2").enter()
-    expect(cad.byId<InsertEntity>("I1").scale).toBeCloseTo(2)
+    const scaled = cad.byId<InsertEntity>("I1")
+    expect([scaled.scaleX, scaled.scaleY]).toEqual([2, 2])
   })
 
   // probe transforms/p282: the reference reflected about the Y axis.
@@ -383,6 +416,41 @@ describe("a block reference in the drawing", () => {
     expect((drawn[0] as LineEntity).end).toBeCloseToPoint(p(-100, 0))
   })
 
+  it("MIRROR negates its X scale and turns its rotation, as AutoCAD's (probe blocks/p332)", () => {
+    const cad = createHarness({
+      blocks: [barBlock()],
+      entities: [
+        createInsert("BAR", p(100, 0), {
+          id: "I1",
+          scaleX: 2,
+          scaleY: 3,
+          rotation: Math.PI / 6,
+        }),
+      ],
+    })
+    const mirror = () =>
+      cad
+        .select(cad.only<InsertEntity>("insert").id)
+        .command("MIRROR")
+        .click(p(0, 0))
+        .click(p(0, 100))
+        .option("Yes")
+
+    mirror()
+    const once = cad.only<InsertEntity>("insert")
+    expect(once.position).toBeCloseToPoint(p(-100, 0))
+    expect(once.rotation).toBeCloseToAngle((330 * Math.PI) / 180)
+    expect([once.scaleX, once.scaleY]).toEqual([-2, 3])
+    // Drawn where the reflection of the original lies.
+    const end = (insertGeometry(once, barBlock())[0] as LineEntity).end
+    expect(end).toBeCloseToPoint(p(-100 - 200 * Math.cos(Math.PI / 6), 100))
+
+    mirror()
+    const twice = cad.only<InsertEntity>("insert")
+    expect([twice.scaleX, twice.scaleY]).toEqual([2, 3])
+    expect(twice.rotation).toBeCloseToAngle(Math.PI / 6)
+  })
+
   it("snaps to the geometry inside the block", () => {
     const cad = createHarness({
       snap: true,
@@ -393,6 +461,166 @@ describe("a block reference in the drawing", () => {
     cad.command("LINE").click(p(97, 3)).click(p(300, 300)).escape()
 
     expect(cad.only<LineEntity>("line").start).toBeCloseToPoint(p(100, 0))
+  })
+})
+
+describe("a reference scaled apart on X and Y (probes blocks/p02, p219)", () => {
+  const shapes = createBlockDefinition("SHAPES", p(0, 0), [
+    lineOf(p(0, 0), p(10, 10), { id: "s-line" }),
+    circleOf(p(0, 0), 10, { id: "s-circle" }),
+    arcOf(p(0, 0), 10, 0, Math.PI / 2, { id: "s-arc" }),
+  ])
+  const lookup = (id: string) => (id === "SHAPES" ? shapes : undefined)
+
+  it("maps each object through its affine map: a circle becomes an ellipse", () => {
+    const insert = createInsert("SHAPES", p(100, 0), { scaleX: 2, scaleY: 3 })
+    const [line, circle, arc] = insertFlatGeometry(insert, lookup)
+
+    expect((line as LineEntity).end).toBeCloseToPoint(p(120, 30))
+    expect(circle.type).toBe("ellipse")
+    const ellipse = circle as EllipseEntity
+    expect(ellipse.center).toBeCloseToPoint(p(100, 0))
+    expect(Math.hypot(ellipse.majorAxis.x, ellipse.majorAxis.y)).toBeCloseTo(30)
+    expect(Math.abs(ellipse.majorAxis.x)).toBeCloseTo(0)
+    expect(ellipse.ratio).toBeCloseTo(2 / 3)
+    expect(arc.type).toBe("ellipse")
+    expect(ellipseStartPoint(arc as EllipseEntity)).toBeCloseToPoint(p(120, 0))
+    expect(ellipseEndPoint(arc as EllipseEntity)).toBeCloseToPoint(p(100, 30))
+  })
+
+  it("draws an arc the right way round under a reflection that stretches", () => {
+    const insert = createInsert("SHAPES", p(0, 0), { scaleX: -2, scaleY: 3 })
+    const arc = insertFlatGeometry(insert, lookup)[2] as EllipseEntity
+    // The quarter from +X to +Y lands from −X to +Y: still the short way.
+    const ends = [ellipseStartPoint(arc), ellipseEndPoint(arc)]
+    expect(ends).toEqual(
+      expect.arrayContaining([
+        expect.objectContaining({
+          x: expect.closeTo(-20),
+          y: expect.closeTo(0),
+        }),
+        expect.objectContaining({
+          x: expect.closeTo(0),
+          y: expect.closeTo(30),
+        }),
+      ])
+    )
+    expect(ellipseSweepParams(arc).sweep).toBeCloseTo(Math.PI / 2)
+  })
+
+  it("draws a text at X's scale, its point where the map puts it (INSERT's Missing)", () => {
+    const labelled = createBlockDefinition("LABEL", p(0, 0), [
+      textOf(p(10, 10), "A", { height: 2.5 }),
+    ])
+    const insert = createInsert("LABEL", p(0, 0), { scaleX: 2, scaleY: 3 })
+    const [text] = insertFlatGeometry(insert, () => labelled) as TextEntity[]
+    expect(text.position).toBeCloseToPoint(p(20, 30))
+    expect(text.height).toBeCloseTo(5)
+    expect(text.rotation).toBeCloseTo(0)
+  })
+
+  it("places a nested reference through the outer one's map", () => {
+    const inner = barBlock()
+    const outer = createBlockDefinition("OUTER", p(0, 0), [
+      createInsert("BAR", p(10, 10), { scaleX: 2, scaleY: 2 }),
+    ])
+    const lookup = (id: string) =>
+      id === "OUTER" ? outer : id === "BAR" ? inner : undefined
+    const insert = createInsert("OUTER", p(0, 0), { scaleX: 3, scaleY: -1 })
+    const [line] = insertFlatGeometry(insert, lookup) as LineEntity[]
+    expect(line.start).toBeCloseToPoint(p(30, -10))
+    expect(line.end).toBeCloseToPoint(p(630, -10))
+  })
+
+  it("draws a hatch's pattern stretched with its loops", () => {
+    const hatched = createBlockDefinition("HB", p(0, 0), [
+      hatchOf([loopOf(p(0, 0), p(100, 50))], { patternId: "ANSI31" }),
+    ])
+    const insert = createInsert("HB", p(0, 0), { scaleX: 1, scaleY: 2 })
+    const [hatch] = insertFlatGeometry(insert, () => hatched) as HatchEntity[]
+    expect(hatch.loops[0].vertices).toBeCloseToPoints([
+      p(0, 0),
+      p(100, 0),
+      p(100, 100),
+      p(0, 100),
+    ])
+    const { lines } = hatchGeometry(hatch)
+    expect(lines.length).toBeGreaterThan(0)
+    for (const [a, b] of lines) {
+      // ANSI31's 45° lines, twice as steep.
+      expect((b.y - a.y) / (b.x - a.x)).toBeCloseTo(2)
+      expect(a.x).toBeGreaterThanOrEqual(-1e-9)
+      expect(a.y).toBeLessThanOrEqual(100 + 1e-9)
+    }
+  })
+
+  it("keeps the uniform path for equal factors", () => {
+    const insert = createInsert("SHAPES", p(0, 0), { scaleX: 2, scaleY: 2 })
+    expect(insertFlatGeometry(insert, lookup)[1].type).toBe("circle")
+  })
+})
+
+describe("a hatch in a reflected reference (probes blocks/p227–p231)", () => {
+  // ANSI31 over 0,0–100,50, as -HATCH drew it in the probes: 45° lines 3.175
+  // apart, on the lattice through the origin.
+  const hatched = createBlockDefinition("HB", p(0, 0), [
+    hatchOf([loopOf(p(0, 0), p(100, 50))], { patternId: "ANSI31" }),
+  ])
+  /** Whether a 45° line through `at` lies on the lattice through `origin`. */
+  const onLattice = (at: Vec2, origin: Vec2) => {
+    const steps = (at.y - origin.y - (at.x - origin.x)) / (3.175 * Math.SQRT2)
+    return Math.abs(steps - Math.round(steps)) < 1e-6
+  }
+  /** The world slopes, in whole degrees, of the segments the scene draws. */
+  const slopes = (scaleX: number) => {
+    const cad = createHarness({
+      blocks: [hatched],
+      entities: [createInsert("HB", p(200, 0), { id: "I1", scaleX })],
+    })
+    cad.moveTo(p(-400, -300))
+    const found = new Set<number>()
+    for (const prim of cad.scene().primitives) {
+      if (prim.kind !== "segment" || prim.stroke.color !== THEME.entity)
+        continue
+      const angle = Math.atan2(prim.a.y - prim.b.y, prim.b.x - prim.a.x)
+      found.add(Math.round(normalizeDegrees((angle * 180) / Math.PI)) % 180)
+    }
+    return [...found]
+  }
+
+  it("draws its pattern reflected with the reference (plots p230, p231)", () => {
+    expect(slopes(1)).toEqual([45])
+    expect(slopes(-1)).toEqual([135])
+  })
+
+  it("EXPLODE keeps the pattern's angle and its lattice through the origin (probes blocks/p227, p228)", () => {
+    const cad = createHarness({
+      blocks: [hatched],
+      entities: [createInsert("HB", p(200, 0), { id: "I1", scaleX: -1 })],
+    })
+    cad.select("I1").command("EXPLODE")
+    const hatch = cad.only<HatchEntity>("hatch")
+    expect(hatch.patternAngle).toBe(0)
+    expect(hatch.origin).toBeCloseToPoint(p(0, 0))
+    expect(hatch.loops[0].vertices).toBeCloseToPoints([
+      p(200, 0),
+      p(100, 0),
+      p(100, 50),
+      p(200, 50),
+    ])
+    const { lines } = hatchGeometry(hatch)
+    expect(lines.length).toBeGreaterThan(0)
+    expect(lines.every(([a]) => onLattice(a, p(0, 0)))).toBe(true)
+  })
+
+  it("EXPLODE of one not reflected moves the lattice with it (probe blocks/p229)", () => {
+    const cad = createHarness({
+      blocks: [hatched],
+      entities: [createInsert("HB", p(300, 0), { id: "I1" })],
+    })
+    cad.select("I1").command("EXPLODE")
+    const { lines } = hatchGeometry(cad.only<HatchEntity>("hatch"))
+    expect(lines.every(([a]) => onLattice(a, p(300, 0)))).toBe(true)
   })
 })
 
@@ -438,11 +666,9 @@ describe("EXPLODE of a block reference", () => {
       InsertEntity,
       TextEntity,
     ]
-    expect([first.blockId, first.scale, first.rotation]).toEqual([
-      "B0",
-      2,
-      Math.PI / 6,
-    ])
+    expect([first.blockId, first.scaleX, first.scaleY, first.rotation]).toEqual(
+      ["B0", 2, 2, Math.PI / 6]
+    )
     expect(first.position).toBeCloseToPoint(p(10, 10))
     expect(line.start).toBeCloseToPoint(p(10, 10))
     expect(line.end).toBeCloseToPoint(p(44.641016, 30))
@@ -536,27 +762,26 @@ describe("blocks in the drawing file", () => {
     entities: cad.entities(),
   })
 
-  it("survives a save and reload", () => {
-    const cad = createHarness({
-      blocks: [barBlock()],
-      entities: [
-        createInsert("BAR", p(10, 20), {
-          id: "I1",
-          scale: 3,
-          rotation: 1,
-          mirrored: true,
-        }),
-      ],
-    })
+  it("survives a save and reload, with its two factors, its height, colour and attributes", () => {
+    const reference: InsertEntity = {
+      ...createInsert("BAR", p(10, 20), {
+        id: "I1",
+        scaleX: -3,
+        scaleY: 2,
+        rotation: 1,
+        attributes: [
+          blockAttribute(createAttributeDefinition(p(0, 5), "T1"), "V1"),
+        ],
+      }),
+      elevation: 7,
+      color: RED,
+    }
+    const cad = createHarness({ blocks: [barBlock()], entities: [reference] })
     const parsed = parseDrawingFile(serializeDrawing(snapshot(cad)))
 
     expect(parsed.blocks).toHaveLength(1)
     expect(parsed.blocks[0].entities).toHaveLength(1)
-    const insert = parsed.entities[0] as InsertEntity
-    expect(insert.position).toBeCloseToPoint(p(10, 20))
-    expect(insert.scale).toBeCloseTo(3)
-    expect(insert.rotation).toBeCloseTo(1)
-    expect(insert.mirrored).toBe(true)
+    expect(parsed.entities[0]).toEqual(reference)
   })
 
   it("drops a reference whose block the file does not define", () => {
@@ -614,9 +839,9 @@ describe("the blocks palette", () => {
     cad.command("BLOCKSPALETTE")
 
     cad.runtime.insertBlock("WINDOW")
-    cad.click(p(250, 0))
+    cad.click(p(250, 0)).enter().enter().enter()
     cad.runtime.insertBlock("DOOR")
-    cad.click(p(500, 0))
+    cad.click(p(500, 0)).enter().enter().enter()
 
     expect(cad.state().palette).toEqual({ open: true, tab: "blocks" })
     expect(
@@ -647,7 +872,7 @@ describe("the blocks palette", () => {
     // Straight to the insertion point: the name prompt has been answered.
     expect(cad.state().dynamicInput?.fields[0].label).toBe("X,Y")
 
-    cad.click(p(250, 0))
+    cad.click(p(250, 0)).enter().enter().enter()
     expect(cad.latest()).toMatchObject({ type: "insert", blockId: "WINDOW" })
   })
 
@@ -660,9 +885,12 @@ describe("the blocks palette", () => {
     )
     expect(cad.commandLog()).toEqual([])
 
-    answer(cad, "250,0", "U", "REDO")
+    answer(cad, "250,0", "", "", "", "U", "REDO")
     expect(cad.commandLog()).toEqual([
       "Specify insertion point or [Scale/Rotate]: 250,0",
+      "Enter X scale factor, specify opposite corner, or [Corner/XYZ] <1>:",
+      "Enter Y scale factor <use X scale factor>:",
+      "Specify rotation angle <0>:",
       "U",
       "-INSERT",
       "REDO",
@@ -806,7 +1034,7 @@ describe("PURGE", () => {
 describe("block names", () => {
   it("INSERT takes b1 for B1 (probe blocks/p210)", () => {
     const cad = createHarness({ blocks: [barBlock("B1")] })
-    answer(cad, "-INSERT", "b1", "5,5")
+    answer(cad, "-INSERT", "b1", "5,5", "", "", "")
 
     expect(cad.latest()).toMatchObject({ type: "insert", blockId: "B1" })
   })
@@ -826,11 +1054,24 @@ describe("block names", () => {
 })
 
 describe("the properties palette", () => {
-  it("describes a block reference by name, scale and rotation", () => {
+  // desktop blocks/d03-2 (B1 at 30,10 with TAG2 and TAG1) and d03-3 (the one
+  // inserted at X −1, Y 1).
+  it("files a reference under Geometry, Misc and Attributes, in AutoCAD's order", () => {
+    const tagged = createBlockDefinition("B1", p(0, 0), [
+      lineOf(p(0, 0), p(20, 0)),
+    ])
     const cad = createHarness({
-      blocks: [barBlock()],
+      blocks: [tagged],
       entities: [
-        createInsert("BAR", p(5, 6), { id: "I1", scale: 2, rotation: 0 }),
+        createInsert("B1", p(80, 10), {
+          id: "I1",
+          scaleX: -1,
+          scaleY: 1,
+          attributes: [
+            blockAttribute(createAttributeDefinition(p(2, 1), "TAG2"), "def2"),
+            blockAttribute(createAttributeDefinition(p(2, 4), "TAG1"), "def1"),
+          ],
+        }),
       ],
     })
     cad.select("I1")
@@ -838,21 +1079,49 @@ describe("the properties palette", () => {
     const info = cad.state().properties.info
     // AutoCAD's name, capital R (desktop properties/d06-2).
     expect(info?.title).toBe("Block Reference")
+    expect(
+      info?.groups.map((group) => [
+        group.title,
+        group.rows.map((row) => `${row.label}=${row.value}`),
+      ])
+    ).toEqual([
+      [
+        "Geometry",
+        [
+          "Position X=80.00",
+          "Position Y=10.00",
+          "Position Z=0.00",
+          "Scale X=-1.00",
+          "Scale Y=1.00",
+          "Scale Z=1.00",
+        ],
+      ],
+      ["Misc", ["Name=B1", "Rotation=0°"]],
+      ["Attributes", ["TAG2=def2", "TAG1=def1"]],
+    ])
     const rows = info?.groups.flatMap((group) => group.rows) ?? []
-    expect(rows.find((row) => row.label === "Name")?.value).toBe("BAR")
-    expect(rows.find((row) => row.label === "Scale")?.edit?.property).toBe(
-      "insertScale"
-    )
+    const editable = rows.filter((row) => row.edit).map((row) => row.label)
+    expect(editable).toEqual([
+      "Position X",
+      "Position Y",
+      "Position Z",
+      "Scale X",
+      "Scale Y",
+      "Rotation",
+    ])
   })
 
-  it("retypes the scale in place", () => {
+  it("retypes the X and Y scale in place, refusing 0", () => {
     const cad = createHarness({
       blocks: [barBlock()],
       entities: [createInsert("BAR", p(0, 0), { id: "I1" })],
     })
     cad.select("I1")
-    cad.runtime.setSelectionProperty("insertScale", "4")
+    cad.runtime.setSelectionProperty("insertScaleX", "4")
+    cad.runtime.setSelectionProperty("insertScaleY", "-2")
+    cad.runtime.setSelectionProperty("insertScaleY", "0")
 
-    expect(cad.byId<InsertEntity>("I1").scale).toBeCloseTo(4)
+    const insert = cad.byId<InsertEntity>("I1")
+    expect([insert.scaleX, insert.scaleY]).toEqual([4, -2])
   })
 })

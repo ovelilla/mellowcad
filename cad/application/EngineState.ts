@@ -57,6 +57,7 @@ import {
   mtextPlainText,
   planeAxes,
   textInsertionPoint,
+  insertReflects,
 } from "../domain/entities"
 import { objectArea } from "../domain/objectArea"
 import type {
@@ -69,6 +70,7 @@ import {
   pathArrayCount,
   pathArraySpacing,
   placeArrayPoint,
+  placedLength,
 } from "../domain/arrayEdits"
 import { polarAngleBetween } from "../domain/arrays"
 import { SnapType } from "./snapping/types"
@@ -1027,7 +1029,7 @@ function singleEntityInfo(
     array: ArrayParameters
   ): PropertyGroup[] => {
     const place = arrayPlacement(insert, blocks?.(insert.blockId))
-    const scaled = (value: number) => value * insert.scale
+    const scaled = (value: number) => placedLength(place, value)
     const base = at(
       array.kind === "polar"
         ? placeArrayPoint(place, array.basePoint)
@@ -1083,7 +1085,7 @@ function singleEntityInfo(
             choiceRow(
               "direction",
               "arrayClockwise",
-              array.clockwise !== Boolean(insert.mirrored),
+              array.clockwise !== insertReflects(insert),
               [
                 text.propertyValue("counterClockwise"),
                 text.propertyValue("clockwise"),
@@ -1634,30 +1636,36 @@ function singleEntityInfo(
           groups: arrayGroups(entity, entity.array),
         }
       }
+      // AutoCAD's sections and order (desktop blocks/d03-2, d03-3): Scale Z
+      // is |X| here, never stored, so it reads but takes nothing; Annotative,
+      // Block Unit and Unit factor are not built.
+      const position = at(entity.position)
       return {
         title: text.entityName(entity),
         count: 1,
         groups: [
+          group("geometry", [
+            coordRow("positionX", "positionX", position.x),
+            coordRow("positionY", "positionY", position.y),
+            coordRow("positionZ", "positionZ", position.z),
+            coordRow("scaleX", "insertScaleX", entity.scaleX),
+            coordRow("scaleY", "insertScaleY", entity.scaleY),
+            row("scaleZ", coord(Math.abs(entity.scaleX))),
+          ]),
           // The block is chosen when the reference is inserted; swapping one
           // for another is BREPLACE, not a palette row.
-          group("block", [
+          group("misc", [
             row("name", entity.blockId),
-            coordRow("scale", "insertScale", entity.scale),
             angleRow(
               "rotation",
               "rotation",
               normalizeDegrees((entity.rotation * 180) / Math.PI)
             ),
           ]),
-          group("position", [
-            coordRow("x", "positionX", at(entity.position).x),
-            coordRow("y", "positionY", at(entity.position).y),
-            planeRowAt("positionZ", entity.position),
-          ]),
           ...(entity.attributes
             ? [
                 // Labelled by tag, which is the drawing's data, as AutoCAD's
-                // Attributes section is.
+                // Attributes section is; read-only (ATTEDIT's Missing).
                 group(
                   "attributes",
                   entity.attributes.map((attribute, index) => ({

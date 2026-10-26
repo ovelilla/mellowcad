@@ -139,9 +139,11 @@ function cloneHatchLoop(loop: HatchLoop): HatchLoop {
 
 /** The optional settings of a block reference. */
 export interface InsertOptions {
+  /** X and Y at once, -INSERT's Scale (probe blocks/p205). */
   readonly scale?: number
+  readonly scaleX?: number
+  readonly scaleY?: number
   readonly rotation?: number
-  readonly mirrored?: boolean
   readonly attributes?: readonly BlockAttribute[]
   readonly layerId?: LayerId
   readonly id?: EntityId
@@ -153,22 +155,33 @@ export function createInsert(
   position: Vec2,
   options: InsertOptions = {}
 ): InsertEntity {
-  const scale = options.scale
   return {
     id: options.id ?? nextEntityId(),
     type: "insert",
     layerId: options.layerId ?? DEFAULT_LAYER_ID,
     blockId,
     position: { x: position.x, y: position.y },
-    scale:
-      Number.isFinite(scale) && (scale as number) > 0 ? (scale as number) : 1,
+    scaleX: insertFactor(options.scaleX ?? options.scale),
+    scaleY: insertFactor(options.scaleY ?? options.scale),
     rotation: Number.isFinite(options.rotation) ? options.rotation! : 0,
-    ...(options.mirrored ? { mirrored: true } : {}),
     ...(options.attributes && options.attributes.length > 0
       ? { attributes: options.attributes.slice() }
       : {}),
     ...(options.array ? { array: options.array } : {}),
   }
+}
+
+/** A scale factor a reference takes: any finite one but 0, else 1. */
+function insertFactor(factor: number | undefined): number {
+  return Number.isFinite(factor) && factor !== 0 ? (factor as number) : 1
+}
+
+/**
+ * Whether a reference reflects its block: one of its factors negative, as
+ * MIRROR leaves it (probe blocks/p332) or -INSERT's X `-1` and Y `1` (p227).
+ */
+export function insertReflects(insert: InsertEntity): boolean {
+  return insert.scaleX * insert.scaleY < 0
 }
 
 export function createBlockDefinition(

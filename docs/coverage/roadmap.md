@@ -38,8 +38,8 @@ Deferrable indefinitely at no extra cost: PASTEBLOCK/PASTEORIG/CUTBASE, DIMARC, 
 modern `DIM` command, POINT with DIVIDE/MEASURE, XLINE/RAY, GROUP, LENGTHEN, ALIGN, per-object
 ltscale, isometric drafting mode.
 
-Blocks family, not on the near-term path: ByBlock resolution, non-uniform scale (the ellipse exists
-now; what is left is a per-axis scale vocabulary), inserting external drawing files + INSUNITS,
+Blocks family, not on the near-term path: ByBlock resolution, inserting external drawing files +
+INSUNITS,
 `-BLOCK` Mode keywords, `-INSERT` Basepoint/Corner/XYZ/Explode/Repeat, BASE, WBLOCK, BEDIT, MINSERT,
 XREF, BREPLACE, dynamic blocks, DIVIDE/MEASURE with a block, a block table manager, ATTSYNC,
 BATTMAN, ATTEXT / DATAEXTRACTION, multiline attributes.
@@ -116,6 +116,6 @@ what it takes into a reference by default (`Object conversion=Convert`, properti
 layer a block definition uses cannot be deleted (LAY-02): for the Blocks review, BLOCK's and
 PURGE's sides. LWDISPLAY, LAYLOCKFADECTL, CECOLOR, CELTYPE and CELWEIGHT typed as variables: for
 the Workspace review (SETVAR). A hatch inside a block, mirrored with its reference, reflects its
-pattern (HATCH-D75), and LIST of a hatch has its words in hatch/p320 and p369: for the Blocks and
-Inquiry reviews; HPNAME, HPSCALE, HPANG and HPORIGIN typed as variables, for the Workspace review
+pattern (HATCH-D75, built by the Blocks review: BOB-01, BOB-02), and LIST of a hatch has its words
+in hatch/p320 and p369: for the Inquiry review; HPNAME, HPSCALE, HPANG and HPORIGIN typed as variables, for the Workspace review
 (`docs/plans/hatch-review.md`).

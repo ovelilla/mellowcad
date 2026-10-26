@@ -117,7 +117,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 32
+export const DRAWING_FILE_VERSION = 33
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -549,9 +549,9 @@ function cloneEntityShape(entity: Entity): Entity {
         ...overrides,
         blockId: entity.blockId,
         position: { x: entity.position.x, y: entity.position.y },
-        scale: entity.scale,
+        scaleX: entity.scaleX,
+        scaleY: entity.scaleY,
         rotation: entity.rotation,
-        ...(entity.mirrored ? { mirrored: true } : {}),
         ...(entity.attributes
           ? { attributes: entity.attributes.map(cloneBlockAttribute) }
           : {}),
@@ -1256,9 +1256,8 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         ...overrides,
         blockId: raw.blockId,
         position,
-        scale: isFiniteNumber(raw.scale) && raw.scale > 0 ? raw.scale : 1,
+        ...insertScalesOf(raw),
         rotation: isFiniteNumber(raw.rotation) ? raw.rotation : 0,
-        ...(raw.mirrored === true ? { mirrored: true } : {}),
         ...parseBlockAttributes(raw.attributes),
         ...parseArray(raw.array),
       }
@@ -1266,6 +1265,24 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
     default:
       return null
   }
+}
+
+/**
+ * A reference's X and Y scale. Before version 33 a file held one positive
+ * `scale` and a `mirrored` flag, a negative X: read into the two, as a field
+ * missing or 0 reads as the other factor, or 1.
+ */
+function insertScalesOf(raw: Record<string, unknown>): {
+  scaleX: number
+  scaleY: number
+} {
+  const factor = (value: unknown) =>
+    isFiniteNumber(value) && value !== 0 ? value : null
+  const legacy =
+    isFiniteNumber(raw.scale) && raw.scale > 0 ? (raw.scale as number) : 1
+  const scaleX =
+    factor(raw.scaleX) ?? (raw.mirrored === true ? -legacy : legacy)
+  return { scaleX, scaleY: factor(raw.scaleY) ?? Math.abs(scaleX) }
 }
 
 /** The height, rotation, justification and style every text-like object carries. */

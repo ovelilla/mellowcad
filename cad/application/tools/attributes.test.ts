@@ -336,8 +336,17 @@ describe("BLOCK with attributes", () => {
 })
 
 describe("INSERT with attributes", () => {
+  // The X scale, the Y scale and the rotation at their defaults, then the
+  // values (probe blocks/p303).
   const insertTag = (cad: Harness) =>
-    cad.command("-INSERT").type("TAG").enter().click(p(300, 0))
+    cad
+      .command("-INSERT")
+      .type("TAG")
+      .enter()
+      .click(p(300, 0))
+      .enter()
+      .enter()
+      .enter()
 
   it("asks each value with its prompt and the default in the box", () => {
     const cad = createHarness({ blocks: [taggedBlock()] })
@@ -365,6 +374,7 @@ describe("INSERT with attributes", () => {
   it("offers the default after a typed insertion point", () => {
     const cad = createHarness({ blocks: [taggedBlock()] })
     cad.command("-INSERT").type("TAG").enter().type("300,0").enter()
+    cad.enter().enter().enter()
 
     expect(cad.state().dynamicInput?.fields[0]?.value).toBe("X-0")
   })

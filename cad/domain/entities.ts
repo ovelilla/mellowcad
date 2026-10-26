@@ -56,6 +56,7 @@ export {
   createPolyline,
   createHatch,
   createInsert,
+  insertReflects,
   createBlockDefinition,
 } from "./entityFactories"
 

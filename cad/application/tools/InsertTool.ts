@@ -1,4 +1,4 @@
-import { Vec2 } from "../../geometry/Vec2"
+import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
 import { DocumentReader } from "../../domain/Document"
 import {
@@ -33,6 +33,8 @@ import {
   ToolQuestion,
 } from "./Tool"
 import { withCurrentProperties } from "./currentProperties"
+import { headingInUcs } from "./ucsHeading"
+import { THEME } from "../../scene/theme"
 import { drawn } from "./ghostLook"
 
 /** Reused so preview frames don't burn entity ids. */
@@ -43,8 +45,13 @@ type InsertState =
   /** `?`'s `Enter block(s) to list <*>:`. */
   | { readonly phase: "list" }
   | { readonly phase: "point"; readonly cursor: Vec2 }
+  /** The Scale and Rotate keywords' prompts, back to the point after. */
   | { readonly phase: "scale" }
   | { readonly phase: "rotation" }
+  /** What AutoCAD asks after the point: the X scale, the Y scale, the angle. */
+  | { readonly phase: "scaleX"; readonly at: Vec3 }
+  | { readonly phase: "scaleY"; readonly at: Vec3 }
+  | { readonly phase: "angle"; readonly at: Vec3; readonly cursor: Vec2 | null }
   | {
       readonly phase: "attributes"
       readonly at: Vec3
@@ -58,9 +65,9 @@ type InsertState =
  * as -BLOCK's does), then the insertion point, with **Scale** and **Rotate**
  * offered as the keywords -INSERT lists — each sets its value and returns to
  * the point prompt, so the reference is dragged in at the size and angle it
- * will keep. Each run starts at 1 and 0 (probe blocks/p204).
- *
- * Scale is uniform (see {@link InsertEntity}).
+ * will keep. After the point it asks the X scale, the Y scale and the
+ * rotation, leaving out what Scale or Rotate gave (probes blocks/p02, p203,
+ * p205–p207, p219). Each run starts at 1 and 0 (p204).
  *
  * A block with attributes then asks for their values at the command line
  * (ATTDIA 0), and the reference is added only once they are all given: one
@@ -68,7 +75,8 @@ type InsertState =
  *
  * Not done: inserting an external drawing file (there is no file to browse to
  * here, which is also what makes INSUNITS moot — a block defined in this
- * drawing is already in its units); Basepoint, Corner, XYZ, Explode and Repeat.
+ * drawing is already in its units); Basepoint, X, Y, Z, Explode and Repeat at
+ * the point; Corner and XYZ at the X scale.
  */
 export class InsertTool implements Tool {
   readonly id = "insert"
@@ -77,16 +85,24 @@ export class InsertTool implements Tool {
   private lastScreen: Vec2 | null = null
   /** INSNAME: per drawing, not saved (rectang/p303). */
   private blockId = ""
-  private scale = 1
+  private scaleX = 1
+  private scaleY = 1
+  /** Radians from the UCS's X axis. */
   private rotation = 0
+  /** Whether Scale or Rotate answered, so the point skips their prompts. */
+  private scaleGiven = false
+  private rotationGiven = false
 
   onNewDrawing(): void {
     this.blockId = ""
   }
 
   onActivate(ctx: ToolContext): void {
-    this.scale = 1
+    this.scaleX = 1
+    this.scaleY = 1
     this.rotation = 0
+    this.scaleGiven = false
+    this.rotationGiven = false
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.enterName(ctx)
@@ -111,6 +127,8 @@ export class InsertTool implements Tool {
     this.lastScreen = input.screen
     if (this.state.phase === "point") {
       this.state = { phase: "point", cursor: input.point }
+    } else if (this.state.phase === "angle") {
+      this.state = { ...this.state, cursor: input.point }
     }
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
@@ -121,11 +139,6 @@ export class InsertTool implements Tool {
     this.place(input.point, ctx)
   }
 
-  /**
-   * -INSERT's questions. The X scale, Y scale and rotation AutoCAD asks after
-   * the point are not asked yet (INSERT's Missing): the point places the
-   * reference at Scale's and Rotate's values, 1 and 0 unless given.
-   */
   question(): PromptId | ToolQuestion {
     switch (this.state.phase) {
       case "name":
@@ -137,25 +150,46 @@ export class InsertTool implements Tool {
       case "point":
         return "insertionPoint"
       case "scale":
-        return { id: "insertScale", enter: { name: factorText(this.scale) } }
+        return {
+          id: "insertScale",
+          enter: { name: factorText(this.scaleX) },
+        }
       case "rotation":
         return {
           id: "insertRotation",
           enter: { angle: (this.rotation * 180) / Math.PI },
         }
+      // WHY the list in the prompt's text: AutoCAD writes `[Corner/XYZ]` into
+      // the message itself (table 20819, probe blocks/p219), and neither
+      // keyword is built here.
+      case "scaleX":
+        return { id: "insertXScale", enter: { name: factorText(1) } }
+      case "scaleY":
+        return { id: "insertYScale", enter: "useXScaleFactor" }
+      case "angle":
+        return { id: "insertRotation", enter: { angle: 0 } }
       case "attributes":
         return this.state.prompts.question()
     }
   }
 
-  /** As AutoCAD 2027's console refuses -INSERT's scale (probe blocks/p205). */
+  /**
+   * As AutoCAD 2027's console refuses -INSERT's scale (probe blocks/p205) and
+   * its X scale (p219, table 26313, its `X` the console's own). The Y scale
+   * and the angle refuse as a number and an angle from the point do.
+   */
   takes(): QuestionInput | null {
-    return this.state.phase === "scale"
-      ? {
+    switch (this.state.phase) {
+      case "scale":
+        return {
           refusal: "requiresDistance",
           values: { points: "two", keyword: "no" },
         }
-      : null
+      case "scaleX":
+        return { refusal: "x2dCornerPointOrKeyword" }
+      default:
+        return null
+    }
   }
 
   commandOptions(): readonly CommandOption[] {
@@ -188,37 +222,89 @@ export class InsertTool implements Tool {
   }
 
   /**
-   * WHY none at Scale and Rotate: the runtime measures their two points,
-   * asking ` Specify second point:` after the first (probe blocks/p236).
+   * WHY none past the point: the runtime measures Scale's and Rotate's two
+   * points, asking ` Specify second point:` after the first (probe
+   * blocks/p236), and the angle's one from the insertion point (p219:
+   * UseBasePoint); the X scale's opposite corner is not built.
    */
   wantsSnap(): boolean {
-    return this.state.phase !== "scale" && this.state.phase !== "rotation"
+    switch (this.state.phase) {
+      case "scale":
+      case "rotation":
+      case "scaleX":
+      case "scaleY":
+      case "angle":
+        return false
+      default:
+        return true
+    }
   }
 
-  getConstraintAnchor(): Vec2 | null {
-    return null
+  getConstraintAnchor(): Vec3 | null {
+    return this.state.phase === "angle" ? this.state.at : null
   }
 
   /**
    * The reference as it will be drawn: each object in its own colour, the
-   * attributes showing their defaults, then the values given (desktop d06-7).
+   * attributes showing their defaults, then the values given (desktop d06-7);
+   * at the angle, turned towards the cursor from the insertion point.
    */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const state = this.state
-    if (state.phase !== "point" && state.phase !== "attributes") return []
-    const preview =
-      state.phase === "point"
-        ? this.pending(
-            state.cursor,
-            ctx,
-            PREVIEW_ID,
-            defaultAttributes(ctx.document.getBlock(this.blockId))
-          )
-        : this.pending(state.at, ctx, PREVIEW_ID, state.prompts.attributes())
-    return insertFlatGeometry(
-      withCurrentProperties(preview, ctx),
-      ctx.blocks
-    ).flatMap((piece) => drawn(ctx, piece, "plain"))
+    const defaults = () =>
+      defaultAttributes(ctx.document.getBlock(this.blockId))
+    let preview: InsertEntity
+    const extra: ScenePrimitive[] = []
+    switch (state.phase) {
+      case "point":
+        preview = this.pending(state.cursor, ctx, PREVIEW_ID, defaults())
+        break
+      case "scaleX":
+      case "scaleY":
+        preview = this.pending(state.at, ctx, PREVIEW_ID, defaults())
+        break
+      case "angle": {
+        const turn = state.cursor && this.headingTo(state.at, state.cursor, ctx)
+        preview = this.pending(state.at, ctx, PREVIEW_ID, defaults(), turn)
+        if (state.cursor) {
+          extra.push({
+            kind: "segment",
+            a: ctx.viewport.worldToScreen(state.at),
+            b: ctx.viewport.worldToScreen(state.cursor),
+            stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
+          })
+        }
+        break
+      }
+      case "attributes":
+        preview = this.pending(
+          state.at,
+          ctx,
+          PREVIEW_ID,
+          state.prompts.attributes()
+        )
+        break
+      default:
+        return []
+    }
+    return [
+      ...insertFlatGeometry(
+        withCurrentProperties(preview, ctx),
+        ctx.blocks
+      ).flatMap((piece) => drawn(ctx, piece, "plain")),
+      ...extra,
+    ]
+  }
+
+  /**
+   * The angle a point gives at the rotation prompt, in radians from the UCS's
+   * X axis: what the runtime measures from the insertion point for a click,
+   * so the drag and the click agree.
+   */
+  private headingTo(at: Vec2, cursor: Vec2, ctx: ToolContext): number | null {
+    const direction = V.sub(cursor, at)
+    if (V.length(direction) < 1e-9) return null
+    return (headingInUcs(ctx.ucs, direction) * Math.PI) / 180
   }
 
   /** The reference as it stands at `at`. Shared by the preview and the commit. */
@@ -226,12 +312,14 @@ export class InsertTool implements Tool {
     at: Vec2 | Vec3,
     ctx: ToolContext,
     id?: EntityId,
-    attributes?: readonly BlockAttribute[]
+    attributes?: readonly BlockAttribute[],
+    rotation: number | null = this.rotation
   ): InsertEntity {
     return onPlaneOf(
       createInsert(this.blockId, at, {
-        scale: this.scale,
-        rotation: ucsAngleToWorld(ctx.ucs, this.rotation),
+        scaleX: this.scaleX,
+        scaleY: this.scaleY,
+        rotation: ucsAngleToWorld(ctx.ucs, rotation ?? this.rotation),
         layerId: ctx.document.getCurrentLayerId(),
         attributes,
         id,
@@ -240,7 +328,18 @@ export class InsertTool implements Tool {
     )
   }
 
+  /** The point given: the questions Scale and Rotate left, then the values. */
   private place(at: Vec3, ctx: ToolContext): void {
+    if (!this.scaleGiven) this.enterScaleX(at, ctx)
+    else this.afterScale(at, ctx)
+  }
+
+  private afterScale(at: Vec3, ctx: ToolContext): void {
+    if (!this.rotationGiven) this.enterAngle(at, ctx)
+    else this.enterAttributes(at, ctx)
+  }
+
+  private enterAttributes(at: Vec3, ctx: ToolContext): void {
     const block = ctx.document.getBlock(this.blockId)
     if (!block) return
     const prompts = new AttributeValuePrompts(block, (attributes, doneCtx) => {
@@ -341,54 +440,108 @@ export class InsertTool implements Tool {
 
   private enterScale(ctx: ToolContext): void {
     this.state = { phase: "scale" }
-    ctx.dynamicInput.open({
-      fields: [{ id: "scale", prompt: "insertScale", kind: "number" }],
-      commit: (values, commitCtx) => {
-        if (values.scale > 0) this.scale = values.scale
-        this.enterPoint(commitCtx)
-      },
-      commitRaw: (commitCtx) => {
-        // Enter with nothing typed keeps the current factor, the `<default>`.
-        if (!commitCtx.dynamicInput.hasTypedText()) {
-          this.enterPoint(commitCtx)
-          return true
-        }
-        const typed = parseNumber(commitCtx.dynamicInput.getText("scale"))
-        if (typed === null || !(typed > 0)) return false
-        this.scale = typed
-        this.enterPoint(commitCtx)
-        return true
-      },
+    this.askFactor(ctx, "insertScale", this.scaleX, (factor, commitCtx) => {
+      this.scaleX = factor
+      this.scaleY = factor
+      this.scaleGiven = true
+      this.enterPoint(commitCtx)
     })
-    ctx.dynamicInput.setDefault("scale", this.scale)
-    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
-    ctx.requestRender()
   }
 
   private enterRotation(ctx: ToolContext): void {
     this.state = { phase: "rotation" }
+    this.askAngle(ctx, (degrees, commitCtx) => {
+      this.rotation = (degrees * Math.PI) / 180
+      this.rotationGiven = true
+      this.enterPoint(commitCtx)
+    })
+  }
+
+  private enterScaleX(at: Vec3, ctx: ToolContext): void {
+    this.state = { phase: "scaleX", at }
+    this.askFactor(ctx, "insertXScale", 1, (factor, commitCtx) => {
+      this.scaleX = factor
+      this.enterScaleY(at, commitCtx)
+    })
+  }
+
+  private enterScaleY(at: Vec3, ctx: ToolContext): void {
+    this.state = { phase: "scaleY", at }
+    // Enter is `<use X scale factor>`: a negative X gives a negative Y too
+    // (probe blocks/p203: X −1 then Enter is (−1, −1)).
+    this.askFactor(ctx, "insertYScale", this.scaleX, (factor, commitCtx) => {
+      this.scaleY = factor
+      this.afterScale(at, commitCtx)
+    })
+  }
+
+  private enterAngle(at: Vec3, ctx: ToolContext): void {
+    this.state = { phase: "angle", at, cursor: null }
+    this.askAngle(ctx, (degrees, commitCtx) => {
+      this.rotation = (degrees * Math.PI) / 180
+      this.enterAttributes(at, commitCtx)
+    })
+  }
+
+  /**
+   * A scale factor's box: Enter keeps `enter`, `0` is refused in AutoCAD's
+   * words and asked again, a negative is taken (probes blocks/p205, p219).
+   */
+  private askFactor(
+    ctx: ToolContext,
+    prompt: PromptId,
+    enter: number,
+    give: (factor: number, ctx: ToolContext) => void
+  ): void {
+    const take = (factor: number, commitCtx: ToolContext) => {
+      if (factor === 0) {
+        commitCtx.report(commitCtx.text.message("valueMustBeNonzero"), "error")
+        return
+      }
+      give(factor, commitCtx)
+    }
+    ctx.dynamicInput.open({
+      fields: [{ id: "factor", prompt, kind: "number" }],
+      commit: (values, commitCtx) => take(values.factor, commitCtx),
+      commitRaw: (commitCtx) => {
+        if (!commitCtx.dynamicInput.hasTypedText()) {
+          take(enter, commitCtx)
+          return true
+        }
+        const typed = parseNumber(commitCtx.dynamicInput.getText("factor"))
+        if (typed === null) return false
+        take(typed, commitCtx)
+        return true
+      },
+    })
+    ctx.dynamicInput.setDefault("factor", enter)
+    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+    ctx.requestRender()
+  }
+
+  /** A rotation's box: Enter keeps the angle the prompt offers. */
+  private askAngle(
+    ctx: ToolContext,
+    give: (degrees: number, ctx: ToolContext) => void
+  ): void {
+    const enter = (this.rotation * 180) / Math.PI
     ctx.dynamicInput.open({
       fields: [{ id: "rotation", prompt: "insertRotation", kind: "angle" }],
-      commit: (values, commitCtx) => {
-        this.rotation = (values.rotation * Math.PI) / 180
-        this.enterPoint(commitCtx)
-      },
+      commit: (values, commitCtx) => give(values.rotation, commitCtx),
       commitRaw: (commitCtx) => {
-        // Enter with nothing typed keeps the current angle, the `<default>`.
         if (!commitCtx.dynamicInput.hasTypedText()) {
-          this.enterPoint(commitCtx)
+          give(enter, commitCtx)
           return true
         }
         const typed = parseAngleDegrees(
           commitCtx.dynamicInput.getText("rotation")
         )
         if (typed === null) return false
-        this.rotation = (typed * Math.PI) / 180
-        this.enterPoint(commitCtx)
+        give(typed, commitCtx)
         return true
       },
     })
-    ctx.dynamicInput.setDefault("rotation", (this.rotation * 180) / Math.PI)
+    ctx.dynamicInput.setDefault("rotation", enter)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }

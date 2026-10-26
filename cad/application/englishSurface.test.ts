@@ -627,6 +627,17 @@ describe("the engine's English surface", () => {
           .do("rotation", (c) => c.type("90"))
           .do("enter", (c) => c.enter())
           .do("place", (c) => c.click(at(300, 50)))
+          .do("-INSERT for X, Y and rotation", (c) => c.command("-I"))
+          .do("enter", (c) => c.enter())
+          .do("point", (c) => c.click(at(300, 150)))
+          .do("X FOO", (c) => answer(c, "FOO"))
+          .do("X 0", (c) => answer(c, "0"))
+          .do("X", (c) => c.type("2"))
+          .do("enter", (c) => c.enter())
+          .do("Y FOO", (c) => answer(c, "FOO"))
+          .do("Y enter", (c) => c.enter())
+          .do("rotation FOO", (c) => answer(c, "FOO"))
+          .do("rotation by a point", (c) => c.click(at(400, 250)))
     )
     walk("BLOCK ? with none", createHarness(), (s) =>
       s

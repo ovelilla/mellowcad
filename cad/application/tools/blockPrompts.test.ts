@@ -658,11 +658,15 @@ describe("-INSERT asks as AutoCAD 2027", () => {
 
   it("is repeated by Enter, and refused transparently (probe blocks/p202)", () => {
     const cad = withB1()
-    answer(cad, "-INSERT", "B1", "0,0", "", "", "10,0")
-    expect(cad.commandLog().slice(-3)).toEqual([
+    answer(cad, "-INSERT", "B1", "0,0", "", "", "")
+    answer(cad, "", "", "10,0", "", "", "")
+    expect(cad.commandLog().slice(-6)).toEqual([
       "-INSERT",
       "Enter block name or [?] <B1>:",
       "Specify insertion point or [Scale/Rotate]: 10,0",
+      "Enter X scale factor, specify opposite corner, or [Corner/XYZ] <1>:",
+      "Enter Y scale factor <use X scale factor>:",
+      "Specify rotation angle <0>:",
     ])
     expect(cad.typeCounts().insert).toBe(2)
 
@@ -675,8 +679,8 @@ describe("-INSERT asks as AutoCAD 2027", () => {
 
   it("asks the point again at Enter (probe blocks/p216)", () => {
     const cad = withB1()
-    answer(cad, "-INSERT", "B1", "", "5,5")
-    expect(cad.commandLog()).toEqual([
+    answer(cad, "-INSERT", "B1", "", "5,5", "", "", "")
+    expect(cad.commandLog().slice(0, 5)).toEqual([
       "-INSERT",
       "Enter block name or [?] <B1>: B1",
       "Specify insertion point or [Scale/Rotate]:",
@@ -714,7 +718,7 @@ describe("-INSERT asks as AutoCAD 2027", () => {
 
   it("ends at Enter on the name once the block inserted last is purged (probe blocks/p217)", () => {
     const cad = withB1()
-    answer(cad, "-INSERT", "B1", "5,5")
+    answer(cad, "-INSERT", "B1", "5,5", "", "", "")
     answer(cad, "ERASE", "ALL", "")
     answer(cad, "-PURGE", "B", "*", "N")
     expect(cad.runtime.document.getBlocks()).toEqual([])
@@ -736,7 +740,8 @@ describe("-INSERT asks as AutoCAD 2027", () => {
     answer(cad, "S", "0,0", "3,4", "50,50")
 
     const reference = cad.only<InsertEntity>("insert")
-    expect(reference.scale).toBeCloseTo(5)
+    expect(reference.scaleX).toBeCloseTo(5)
+    expect(reference.scaleY).toBeCloseTo(5)
     expect(reference.rotation).toBeCloseTo(Math.PI / 4)
     expect(reference.position).toBeCloseToPoint(p(50, 50))
   })
@@ -747,13 +752,13 @@ describe("-INSERT asks as AutoCAD 2027", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "-INSERT Designe segundo punto:"
     )
-    answer(cad, "10,10", "5,5")
+    answer(cad, "10,10", "5,5", "", "")
     expect(cad.only<InsertEntity>("insert").rotation).toBeCloseTo(Math.PI / 4)
   })
 
   it("reads a typed angle in degrees, minutes and seconds (probe blocks/p237)", () => {
     const cad = withB1()
-    answer(cad, "-INSERT", "B1", "R", "45d30'", "5,5")
+    answer(cad, "-INSERT", "B1", "R", "45d30'", "5,5", "", "")
     expect(cad.only<InsertEntity>("insert").rotation).toBeCloseTo(
       (45.5 * Math.PI) / 180
     )
@@ -775,6 +780,169 @@ describe("-INSERT asks as AutoCAD 2027", () => {
       "Precise ángulo de rotación <0>: 30",
       "Especifique un punto de inserción o [Escala/Girar]: 5,5",
     ])
+  })
+})
+
+const X_SCALE =
+  "Enter X scale factor, specify opposite corner, or [Corner/XYZ] <1>:"
+const Y_SCALE = "Enter Y scale factor <use X scale factor>:"
+const ROTATION = "Specify rotation angle <0>:"
+
+// After the point AutoCAD 2027 asks the X scale, the Y scale and the rotation
+// (probes blocks/p02, p203, p205–p207, p219). Corner and XYZ are not built, so
+// the X prompt lists no keywords and a point there is refused.
+describe("-INSERT asks the X scale, Y scale and rotation after the point, as AutoCAD 2027", () => {
+  const withB1 = (locale?: typeof es) =>
+    createHarness({ ...(locale ? { locale } : {}), blocks: [bar("B1")] })
+
+  it("asks them in turn, refusing as the console does (probe blocks/p219)", () => {
+    const cad = withB1()
+    answer(cad, "-INSERT", "B1", "5,5", "FOO", "0", "2")
+    answer(cad, "FOO", "0", "3", "FOO", "10")
+    expect(cad.commandLog()).toEqual([
+      "-INSERT",
+      "Enter block name or [?] <B1>: B1",
+      "Specify insertion point or [Scale/Rotate]: 5,5",
+      `${X_SCALE} FOO`,
+      "X2D corner point, or option keyword.",
+      `${X_SCALE} 0`,
+      "Value must be nonzero.",
+      `${X_SCALE} 2`,
+      `${Y_SCALE} FOO`,
+      "Requires numeric value.",
+      `${Y_SCALE} 0`,
+      "Value must be nonzero.",
+      `${Y_SCALE} 3`,
+      `${ROTATION} FOO`,
+      "Requires valid numeric angle or second point.",
+      `${ROTATION} 10`,
+    ])
+    const reference = cad.only<InsertEntity>("insert")
+    expect(reference.position).toBeCloseToPoint(p(5, 5))
+    expect(reference.scaleX).toBe(2)
+    expect(reference.scaleY).toBe(3)
+    expect(reference.rotation).toBeCloseTo((10 * Math.PI) / 180)
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("asks them in Autodesk's Spanish (probe blocks/p219)", () => {
+    const cad = withB1(es)
+    answer(cad, "-INSERT", "B1", "5,5", "FOO", "0", "2", "FOO", "3", "FOO")
+    expect(cad.commandLog().slice(3)).toEqual([
+      "Indique factor de escala X, precise esquina opuesta, o [Esquina/XYZ] <1>: FOO",
+      "Xuna esquina 2D o una opción.",
+      "Indique factor de escala X, precise esquina opuesta, o [Esquina/XYZ] <1>: 0",
+      "El valor debe ser diferente de cero.",
+      "Indique factor de escala X, precise esquina opuesta, o [Esquina/XYZ] <1>: 2",
+      "Indique factor de escala Y <usar factor de escala X>: FOO",
+      "Requiere un valor numérico.",
+      "Indique factor de escala Y <usar factor de escala X>: 3",
+      "Precise ángulo de rotación <0>: FOO",
+      "Requiere un ángulo numérico válido o un segundo punto.",
+    ])
+  })
+
+  it("takes Enter as 1, X's factor and 0, a negative X giving a negative Y (probe blocks/p203)", () => {
+    const cad = withB1()
+    answer(cad, "-INSERT", "B1", "5,5", "-1", "", "")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      `${X_SCALE} -1`,
+      Y_SCALE,
+      ROTATION,
+    ])
+    const reference = cad.only<InsertEntity>("insert")
+    expect([reference.scaleX, reference.scaleY]).toEqual([-1, -1])
+    expect(reference.rotation).toBe(0)
+
+    answer(cad, "-INSERT", "B1", "9,9", "", "", "")
+    const plain = cad.latest() as InsertEntity
+    expect([plain.scaleX, plain.scaleY, plain.rotation]).toEqual([1, 1, 0])
+  })
+
+  it("skips X and Y after Scale, refusing 0 and taking a negative factor (probe blocks/p205)", () => {
+    const cad = withB1()
+    answer(cad, "-INSERT", "B1", "S", "0", "-2", "5,5", "7")
+    expect(cad.commandLog().slice(3)).toEqual([
+      "Specify scale factor for XYZ axes <1>: 0",
+      "Value must be nonzero.",
+      "Specify scale factor for XYZ axes <1>: -2",
+      "Specify insertion point or [Scale/Rotate]: 5,5",
+      `${ROTATION} 7`,
+    ])
+    const reference = cad.only<InsertEntity>("insert")
+    expect([reference.scaleX, reference.scaleY]).toEqual([-2, -2])
+    expect(reference.rotation).toBeCloseTo((7 * Math.PI) / 180)
+  })
+
+  it("skips the rotation after Rotate, even one left at its default (probes blocks/p206, p207)", () => {
+    const cad = withB1()
+    answer(cad, "-INSERT", "B1", "R", "30", "5,5", "3", "")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Specify insertion point or [Scale/Rotate]: 5,5",
+      `${X_SCALE} 3`,
+      Y_SCALE,
+    ])
+    const turned = cad.only<InsertEntity>("insert")
+    expect([turned.scaleX, turned.scaleY]).toEqual([3, 3])
+    expect(turned.rotation).toBeCloseTo(Math.PI / 6)
+
+    answer(cad, "-INSERT", "B1", "R", "", "9,9", "", "")
+    expect(cad.activeToolId()).toBe("select")
+    expect((cad.latest() as InsertEntity).rotation).toBe(0)
+  })
+
+  it("measures the rotation from the insertion point to a point given (probe blocks/p219: UseBasePoint)", () => {
+    const cad = withB1()
+    answer(cad, "-INSERT", "B1", "5,5", "", "")
+    cad.click(p(15, 15))
+    expect(cad.only<InsertEntity>("insert").rotation).toBeCloseTo(Math.PI / 4)
+  })
+
+  it("reads the point in the UCS, its Z and ELEVATION kept, and leaves LASTPOINT on it (probes blocks/p212–p214)", () => {
+    const turned = withB1()
+    answer(turned, "UCS", "Z", "30")
+    answer(turned, "-INSERT", "B1", "R", "0", "20,0", "", "")
+    const reference = turned.only<InsertEntity>("insert")
+    expect(reference.position).toBeCloseToPoint(p(17.3205, 10), 4)
+    expect(reference.rotation).toBeCloseTo(Math.PI / 6)
+
+    const raised = withB1()
+    answer(raised, "ELEV", "5", "0")
+    answer(raised, "-INSERT", "B1", "1,1", "", "", "")
+    answer(raised, "-INSERT", "B1", "2,2,7", "", "", "")
+    expect(
+      raised.entities().map((entity) => (entity as InsertEntity).elevation)
+    ).toEqual([5, 7])
+
+    const relative = withB1()
+    answer(relative, "LINE", "0,20", "30,20", "")
+    answer(relative, "-INSERT", "B1", "@5,0", "", "", "")
+    expect(relative.only<InsertEntity>("insert").position).toBeCloseToPoint(
+      p(35, 20)
+    )
+    answer(relative, "ID", "@")
+    expect(relative.commandLog().at(-1)).toContain("X = 35.00")
+  })
+
+  it("STRETCH moves a reference whose insertion point it catches, and only then (probe blocks/p224)", () => {
+    const cad = createHarness({
+      blocks: [bar("B1")],
+      entities: [createInsert("B1", p(100, 0), { id: "I1" })],
+    })
+    answer(cad, "STRETCH", "C", "95,-5", "105,5", "", "0,0", "0,20")
+    expect(cad.byId<InsertEntity>("I1").position).toBeCloseToPoint(p(100, 20))
+    answer(cad, "STRETCH", "C", "105,15", "111,25", "", "0,0", "0,20")
+    expect(cad.byId<InsertEntity>("I1").position).toBeCloseToPoint(p(100, 20))
+  })
+
+  it("refuses a typed point at the X scale, its Corner not built", () => {
+    const cad = withB1()
+    answer(cad, "-INSERT", "B1", "5,5", "20,30")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      `${X_SCALE} 20,30`,
+      "X2D corner point, or option keyword.",
+    ])
+    expect(cad.typeCounts().insert ?? 0).toBe(0)
   })
 })
 

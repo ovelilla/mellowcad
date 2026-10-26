@@ -863,7 +863,8 @@ the values, Escape keeps the defaults — the Edit Attributes dialog the desktop
 (redefining leaves existing attributes as they were, as AutoCAD does). In a turned UCS AutoCAD
 2027 moves the converted objects, its reference landing at the base point turned twice (p155,
 desktop d09); here they stay where they were, a deviation (BLOCKS-D14): copying a defect that moves
-the user's geometry is no muscle memory
+the user's geometry is no muscle memory. ByBlock: an object drawn ByBlock inside a block takes the
+reference's colour, linetype or lineweight in AutoCAD; it is not modelled here (`cad-engine.md`)
 
 ### `INSERT` / `I`, `-INSERT` / `-I` · es `INSERT` / `IN`, `-INSERT` / `-IN`
 
@@ -885,25 +886,48 @@ User Blocks and Unnamed Blocks, and ends (p02, p208, p238); `Specify insertion p
 through ` Specify second point:` (p236) and back to the point; every run starts at scale 1 and
 angle 0 (p204) (es `Indique nombre de bloque o [?]`, `Especifique un punto de inserción o
 [Escala/Girar]` — the console's, p02, p200, over table 20813's `Precise` —, `Precise factor de
-escala para ejes XYZ`, `Precise ángulo de rotación`, ` Designe segundo punto`). The reference is
-dragged in as it will be drawn: each object in its own colour, the attributes showing their
-defaults, then the values given (desktop d06-7). Mirrored flag; attribute values at the command
-line (ATTDIA 0, ATTREQ 1): `Enter attribute values` (es `Indique valores de atributo`), each asked
+escala para ejes XYZ`, `Precise ángulo de rotación`, ` Designe segundo punto`). After the point,
+what Scale and Rotate left (p02, p203, p205–p207, p219): `Enter X scale factor, specify opposite
+corner, or [Corner/XYZ] <1>:` (the list is part of AutoCAD's message, table 20819; Corner and XYZ
+are not built; `FOO` says the console's `X2D corner
+point, or option keyword.`, table 26313 with the console's `X`), `Enter Y scale factor <use X scale
+factor>:` (`Requires numeric value.`; Enter takes X's, so X −1 then Enter is (−1, −1), p203) and
+`Specify rotation angle <0>:` (`Requires valid numeric angle or second point.`; a point gives the
+angle from the insertion point, as UseBasePoint does, the ghost turning with the cursor along a
+dashed line); Scale skips X and Y, Rotate the rotation, even left at its default (p205–p207). At
+Scale, X and Y, `0` says `Value must be nonzero.` and asks again, and a negative factor is taken
+(Scale −2 is (−2, −2), p205) (es `Indique factor de escala X, precise esquina opuesta, o [Esquina/XYZ]`, `Xuna
+esquina 2D o una opción.`, `Indique factor de escala Y <usar factor de escala X>`, `Requiere un
+valor numérico.`, `El valor debe ser diferente de cero.`, `Requiere un ángulo numérico válido o un
+segundo punto.`, p219). The reference keeps an X and a Y scale, its Z being |X| (p203, p205); a
+negative one reflects it, and unequal ones draw a circle as an ellipse, an arc as an elliptical
+arc, and map lines, polylines, splines, ellipses, a dimension's points and a hatch's loops and
+pattern. The reference is dragged in as it will be drawn: each object in its own
+colour, the attributes showing their defaults, then the values given (desktop d06-7). A hatch
+inside a reflected reference draws its pattern reflected (plots p230, p231); EXPLODE keeps its
+angle and its lattice through the origin (p227, p228; the scale it takes is the reference's,
+**unverified**). The Properties palette files it under Geometry (Position X/Y/Z, Scale X/Y/Z, each
+typed but Scale Z, which is |X| here), Misc (Name, read-only, and Rotation) and Attributes (a row
+per tag, read-only) (desktop d03-2, d03-3; es `Posición X`, `Escala X` **unverified**). Attribute
+values at the command line (ATTDIA 0, ATTREQ 1), after the rotation (p303): `Enter attribute values` (es `Indique valores de atributo`), each asked
 by its prompt (its tag when it has none) with its default, `Prompt one <def1>:`, `Verify attribute
 values` (es `Verificar valores de atributo`) for Verify mode, Preset takes its default, Constant is
 drawn from the block; the reference is added once all are given (one undo step, Escape cancels the
 whole insertion)
 
-**Missing:** the X scale, Y scale and rotation AutoCAD asks after the point when Scale and Rotate
-were not given (`Enter X scale factor, specify opposite corner, or [Corner/XYZ] <1>:`, `Enter Y
-scale factor <use X scale factor>:`, `Specify rotation angle <0>:`, p02, p203, p205–p207: here the
-point places the reference at once, at Scale's and Rotate's values); a scale of 0 or below
-(`Value must be nonzero.`; a negative one mirrors, p205) and non-uniform X/Y/Z scale (this needs
-`InsertEntity.scale` split into X and Y); `Units: Millimeters   Conversion:    1.0000`; a name not
-in the drawing (AutoCAD searches for a drawing file, `"FOO.dwg": Can't find file in search path:` …
-`*Invalid*`; here `Block "FOO" is not defined.` and the name again); Basepoint, X, Y, Z, Explode and
-REpeat; inserting an external drawing + INSUNITS; ATTDIA 1 (the Edit Attributes dialog at
-insertion); ATTREQ 0
+**Missing:** Corner and XYZ at the X scale, and a point there, its opposite corner (the box
+ignores a click and refuses a typed point); text, an MTEXT, attributes and a polyline's arc
+segments under unequal X and Y: AutoCAD maps them (a text stretched, an arc an elliptical one),
+here they are drawn at X's size, their point where the map puts it, and the arcs stay arcs between
+the mapped vertices; a reference nested in one rotated inside an unequally scaled one drops the
+shear AutoCAD shows; a negative X typed at -INSERT draws its text and attributes backwards in
+AutoCAD (desktop d02-1), here readable as MIRROR leaves them (MIRRTEXT 0, p332), since no text is
+drawn backwards; the Properties palette's Annotative, Block Unit and Unit factor (d03-2); ByBlock
+(not modelled, `cad-engine.md`); `Units: Millimeters   Conversion:    1.0000`; a name not in the
+drawing (AutoCAD searches for a drawing file, `"FOO.dwg": Can't find file in search path:` …
+`*Invalid*`; here `Block "FOO" is not defined.` and the name again); Basepoint, X, Y, Z, Explode
+and REpeat at the point; inserting an external drawing + INSUNITS; ATTDIA 1 (the Edit Attributes
+dialog at insertion); ATTREQ 0
 
 ### `ATTDEF` / `ATT` / `DDATTDEF` / `-ATTDEF` / `-ATT` · es `ATRDEF` / `AT` / `-ATRDEF` / `-AT`
 

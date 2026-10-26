@@ -15,6 +15,7 @@ import {
   withPathSpacing,
   withRingAngleBetween,
   withRingRadius,
+  placedLength,
 } from "../../domain/arrayEdits"
 import { rotatePoint } from "../../domain/entityTransforms"
 import { normalizeDegrees } from "../../geometry/primitives"
@@ -275,7 +276,7 @@ export function typedArrayGrip(
   role: ArrayGripRole,
   value: number
 ): ArrayParameters | null {
-  const length = value / place.scale
+  const length = value / placedLength(place, 1)
   switch (array.kind) {
     case "rectangular":
       switch (role) {
@@ -313,18 +314,18 @@ export function arrayGripValue(
         case "rowCount":
           return array.rows
         case "columnSpacing":
-          return array.colSpacing * place.scale
+          return placedLength(place, array.colSpacing)
         case "rowSpacing":
-          return array.rowSpacing * place.scale
+          return placedLength(place, array.rowSpacing)
         default:
           return null
       }
     case "polar":
       if (role === "radius") {
-        return V.distance(array.basePoint, array.center) * place.scale
+        return placedLength(place, V.distance(array.basePoint, array.center))
       }
       return role === "angleBetween" ? polarAngleBetween(array) : null
     case "path":
-      return role === "itemSpacing" ? array.spacing * place.scale : null
+      return role === "itemSpacing" ? placedLength(place, array.spacing) : null
   }
 }

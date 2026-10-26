@@ -220,7 +220,8 @@ export class ArrayPromptGrips {
       origin: base,
       position: V.add(base, this.offset),
       rotation: 0,
-      scale: 1,
+      scaleX: 1,
+      scaleY: 1,
     }
   }
 

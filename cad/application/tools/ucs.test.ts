@@ -326,7 +326,14 @@ describe("what follows the UCS", () => {
     })
     cad.command("UCS").option("Z").enter()
     cad.command("-INSERT").type("B").enter().click(p(50, 50))
+    cad.enter().enter().enter()
     expect(cad.only<InsertEntity>("insert").rotation).toBeCloseTo(Math.PI / 2)
+    // A point at the rotation is read from the insertion point in the UCS:
+    // straight up the world is its X axis, 0 (probe blocks/p219).
+    cad.command("-INSERT").type("B").enter().click(p(150, 50))
+    cad.enter().enter().click(p(150, 80))
+    expect((cad.latest() as InsertEntity).rotation).toBeCloseTo(Math.PI / 2)
+    cad.command("ERASE").type("ALL").enter().enter()
     cad.command("MTEXT").click(p(0, 0)).click(p(-50, 100)).type("A").enter()
     expect(cad.only<MTextEntity>("mtext").rotation).toBeCloseTo(Math.PI / 2)
   })

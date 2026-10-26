@@ -1,6 +1,7 @@
 import { Vec2 } from "../geometry/Vec2"
 import { Vec3 } from "../geometry/Vec3"
 import { KnotParameterization } from "../geometry/nurbs"
+import type { Linear2 } from "../geometry/linear"
 import { EntityColor } from "./colors"
 import { LayerId } from "./layers"
 import { LinetypeId } from "./linetypes"
@@ -468,6 +469,13 @@ export interface HatchEntity extends BaseEntity {
   readonly patternAngle: number
   /** Where pattern generation starts (HPORIGIN); the UCS origin by default. */
   readonly origin: Vec2
+  /**
+   * The linear map (`[a, b, c, d]`: x' = a·x + c·y, y' = b·x + d·y) laid over
+   * the pattern about {@link origin}: what a reference that reflects or
+   * stretches its block shows of a hatch inside it (probe blocks/p230). Set
+   * only on what `insertFlatGeometry` gives, never stored.
+   */
+  readonly patternFrame?: Linear2
 }
 
 /** A block definition's name, which is also its identity, as in AutoCAD. */
@@ -507,23 +515,24 @@ export interface BlockLookup {
  * A block reference (AutoCAD's INSERT object): one placement of a
  * {@link BlockDefinition}, positioned, scaled and rotated as a whole.
  *
- * **Uniform scale only.** AutoCAD stores an X, Y and Z scale; unequal ones turn
- * a circle into an ellipse and an arc into an elliptical arc — objects this
- * engine does not have, and which AutoCAD itself warns "might explode into
- * unexpected objects". {@link mirrored} carries the one non-uniform case that
- * matters, a negative X scale, which is how MIRROR reflects a reference.
+ * AutoCAD stores an X, a Y and a Z scale; -INSERT makes the Z |X| (probes
+ * blocks/p203, p205: `(41 . -1.0) (42 . -1.0) (43 . 1.0)`), and with no 3D
+ * here the Z is derived, never stored. A negative factor is a reflected axis:
+ * one negative reflects the block (MIRROR negates X, `insertReflects`), two
+ * turn it half round. Unequal magnitudes draw through the affine map
+ * (`insertFlatGeometry`).
  */
 export interface InsertEntity extends BaseEntity {
   readonly type: "insert"
   readonly blockId: BlockId
   /** Where the definition's base point lands. */
   readonly position: Vec2
-  /** Uniform scale factor; always positive. */
-  readonly scale: number
+  /** The block's X scale (DXF 41), never 0. */
+  readonly scaleX: number
+  /** The block's Y scale (DXF 42), never 0. */
+  readonly scaleY: number
   /** Rotation about the insertion point, radians CCW from +X. */
   readonly rotation: number
-  /** Reflected across its own Y axis before rotating (a negative X scale). */
-  readonly mirrored?: boolean
   /** The values given to the block's attribute definitions, in prompt order. */
   readonly attributes?: readonly BlockAttribute[]
   /**

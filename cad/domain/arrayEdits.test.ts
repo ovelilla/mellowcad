@@ -50,8 +50,8 @@ describe("an array's placement", () => {
       origin: p(10, 10),
       position: p(100, 0),
       rotation: Math.PI / 2,
-      scale: 2,
-      mirrored: true,
+      scaleX: -2,
+      scaleY: 2,
     }
     // 3 to the right of the base: mirrored left, twice as far, turned up…
     const placed = placeArrayPoint(place, p(13, 10))

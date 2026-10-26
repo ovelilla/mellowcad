@@ -51,6 +51,7 @@ import {
   withThickness,
 } from "./elevation"
 import { splineDataPoints, splineWithPoint } from "./splines"
+import { insertReflects } from "./entityFactories"
 
 /** A geometry value that can be retyped directly on a selected entity. */
 export type EntityProperty =
@@ -85,7 +86,9 @@ export type EntityProperty =
   /** A hatch's pattern origin (DXF 43, 44), where its lines start. */
   | "originX"
   | "originY"
-  | "insertScale"
+  /** A reference's Scale X and Scale Y (desktop blocks/d03-2); its Z is |X|, read-only. */
+  | "insertScaleX"
+  | "insertScaleY"
   /** The palette's current vertex of a polyline, or point of a spline, 1-based: the runtime's, no geometry. */
   | "vertex"
   | "vertexX"
@@ -494,7 +497,7 @@ function applyInsertProperty(
     return array && { ...insert, array }
   }
   if (insert.array?.kind === "polar" && property === "radius") {
-    const ring = withRingRadius(insert.array, value / insert.scale)
+    const ring = withRingRadius(insert.array, value / Math.abs(insert.scaleX))
     return ring && { ...insert, array: ring }
   }
   switch (property) {
@@ -502,8 +505,11 @@ function applyInsertProperty(
       return { ...insert, position: { x: value, y: insert.position.y } }
     case "positionY":
       return { ...insert, position: { x: insert.position.x, y: value } }
-    case "insertScale":
-      return value > 0 ? { ...insert, scale: value } : null
+    // Any factor but 0, a negative one reflecting that axis.
+    case "insertScaleX":
+      return value !== 0 ? { ...insert, scaleX: value } : null
+    case "insertScaleY":
+      return value !== 0 ? { ...insert, scaleY: value } : null
     case "rotation":
       return { ...insert, rotation: toRadians(value) }
     default:
@@ -523,7 +529,7 @@ function applyArrayProperty(
   property: EntityProperty,
   value: number
 ): ArrayParameters | null {
-  const length = value / insert.scale
+  const length = value / Math.abs(insert.scaleX)
   const choice = value === 0 || value === 1 ? value === 1 : null
   switch (array.kind) {
     case "rectangular":
@@ -553,7 +559,7 @@ function applyArrayProperty(
           // A mirrored reference turns its ring the other way round.
           return choice === null
             ? null
-            : { ...array, clockwise: choice !== Boolean(insert.mirrored) }
+            : { ...array, clockwise: choice !== insertReflects(insert) }
         case "arrayRotateItems":
           return choice === null ? null : { ...array, rotate: choice }
         default:
