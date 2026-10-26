@@ -106,6 +106,7 @@ export const es: EngineLocale = {
       "PASTECLIP": "Pegar el portapapeles en el dibujo",
       "DIMSTYLE": "Crear y modificar estilos de cota",
       "STYLE": "Crear y modificar estilos de texto",
+      "INSERT": "Insertar un bloque desde la paleta de bloques",
       "BLOCKSPALETTE": "Mostrar la paleta Bloques",
       "PURGE": "Eliminar las definiciones de bloque no utilizadas",
       "LAYER": "Administrar las capas y sus propiedades",
@@ -602,6 +603,10 @@ export const es: EngineLocale = {
       "INSERT": [
         "INSERT",
         "IN"
+      ],
+      "-INSERT": [
+        "-INSERT",
+        "-IN"
       ],
       "ATTEDIT": [
         "ATREDIT",
@@ -1586,7 +1591,7 @@ export const es: EngineLocale = {
       ],
       "insertionBasePoint": "Especifique un punto base de inserción",
       "specifyInsertionPoint": "Precise punto de inserción",
-      "insertionPoint": "Precise punto de inserción o",
+      "insertionPoint": "Especifique un punto de inserción o",
       "insertScale": "Precise factor de escala para ejes XYZ",
       "insertRotation": "Precise ángulo de rotación",
       "attributeTag": "Indique nombre de identificador de atributo",

@@ -106,6 +106,7 @@ export const en: EngineCatalog = {
       "PASTECLIP": "Paste the clipboard into the drawing",
       "DIMSTYLE": "Create and modify dimension styles",
       "STYLE": "Create and modify text styles",
+      "INSERT": "Insert a block from the Blocks palette",
       "BLOCKSPALETTE": "Show the blocks palette",
       "PURGE": "Remove unused block definitions",
       "LAYER": "Manage layers and layer properties",
@@ -610,6 +611,10 @@ export const en: EngineCatalog = {
       "INSERT": [
         "INSERT",
         "I"
+      ],
+      "-INSERT": [
+        "-INSERT",
+        "-I"
       ],
       "ATTEDIT": [
         "ATTEDIT",

@@ -104,7 +104,7 @@ describe("ATTDEF, BLOCK and INSERT ask as AutoCAD 2027", () => {
     expect(cad.typeCounts().insert).toBe(1)
   })
 
-  it("INSERT offers the last block, sets Scale and Rotate, then asks the attribute values", () => {
+  it("-INSERT offers the last block, sets Scale and Rotate, then asks the attribute values (probes blocks/p02, p205, p207, p303)", () => {
     const cad = createHarness()
     cad.command("ATTDEF")
     cad.enter()
@@ -115,17 +115,17 @@ describe("ATTDEF, BLOCK and INSERT ask as AutoCAD 2027", () => {
     cad.enter().enter()
     const lines = cad.commandLog().length
 
-    cad.command("INSERT")
+    cad.command("-INSERT")
     answer(cad, "B1", "FOO", "S", "FOO", "2", "R", "FOO", "30", "5,5", "val1")
     expect(cad.commandLog().slice(lines)).toEqual([
-      "INSERT",
+      "-INSERT",
       "Enter block name or [?] <B1>: B1",
       "Specify insertion point or [Scale/Rotate]: FOO",
       "Point or option keyword required.",
       "Specify insertion point or [Scale/Rotate]: S",
-      "Specify scale factor for XYZ axes <1.00>: FOO",
+      "Specify scale factor for XYZ axes <1>: FOO",
       "Requires numeric distance or two points.",
-      "Specify scale factor for XYZ axes <1.00>: 2",
+      "Specify scale factor for XYZ axes <1>: 2",
       "Specify insertion point or [Scale/Rotate]: R",
       "Specify rotation angle <0>: FOO",
       "Requires valid numeric angle or two points.",
@@ -558,12 +558,12 @@ describe("? lists the blocks, as AutoCAD 2027", () => {
     )
   })
 
-  it("INSERT lists them in its own table (probes blocks/p02, p208, p238)", () => {
+  it("-INSERT lists them in its own table (probes blocks/p02, p208, p238)", () => {
     const cad = withBlocks()
-    answer(cad, "INSERT", "?", "")
+    answer(cad, "-INSERT", "?", "")
 
     expect(cad.commandLog()).toEqual([
-      "INSERT",
+      "-INSERT",
       "Enter block name or [?] <C1>: ?",
       "Enter block(s) to list <*>:",
       [
@@ -593,7 +593,7 @@ describe("? lists the blocks, as AutoCAD 2027", () => {
     ])
 
     const inserting = withBlocks(es)
-    answer(inserting, "INSERT", "?", "")
+    answer(inserting, "-INSERT", "?", "")
     expect(inserting.commandLog().at(-1)).toBe(
       [
         "Bloques definidos.",
@@ -604,6 +604,177 @@ describe("? lists the blocks, as AutoCAD 2027", () => {
         "    2            2",
       ].join("\n")
     )
+  })
+})
+
+describe("-INSERT asks as AutoCAD 2027", () => {
+  const withB1 = (locale?: typeof es) =>
+    createHarness({ ...(locale ? { locale } : {}), blocks: [bar("B1")] })
+
+  it("is -INSERT and -I, while INSERT and I open the Blocks palette (probes blocks/p05, p201; desktop d06)", () => {
+    for (const name of ["-INSERT", "-I"]) {
+      const cad = withB1()
+      answer(cad, name)
+      expect(cad.activeToolId(), name).toBe("insert")
+      expect(cad.state().commandLine.prompt).toBe(
+        "-INSERT Enter block name or [?] <B1>:"
+      )
+    }
+    for (const name of ["INSERT", "I"]) {
+      const cad = withB1()
+      answer(cad, name)
+      expect(cad.activeToolId(), name).toBe("select")
+      expect(cad.state().palette).toEqual({ open: true, tab: "blocks" })
+      // Nothing after the echo: the console's `*Insert a block from the
+      // Blocks palette` is not written on the desktop (d06-1).
+      expect(cad.commandLog().at(-1)).toBe(name === "I" ? "I INSERT" : "INSERT")
+    }
+  })
+
+  it("is -INSERT and -IN in Spanish, while INSERT and IN open the palette (probe blocks/p200)", () => {
+    for (const name of ["-INSERT", "-IN"]) {
+      const cad = withB1(es)
+      answer(cad, name)
+      expect(cad.activeToolId(), name).toBe("insert")
+      expect(cad.state().commandLine.prompt).toBe(
+        "-INSERT Indique nombre de bloque o [?] <B1>:"
+      )
+    }
+    for (const name of ["INSERT", "IN"]) {
+      const cad = withB1(es)
+      answer(cad, name)
+      expect(cad.activeToolId(), name).toBe("select")
+      expect(cad.state().palette).toEqual({ open: true, tab: "blocks" })
+    }
+  })
+
+  it("the rail's Insert opens the palette as INSERT does (desktop d06)", () => {
+    const cad = withB1()
+    cad.runtime.setActiveTool("insert")
+
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.state().palette).toEqual({ open: true, tab: "blocks" })
+  })
+
+  it("is repeated by Enter, and refused transparently (probe blocks/p202)", () => {
+    const cad = withB1()
+    answer(cad, "-INSERT", "B1", "0,0", "", "", "10,0")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "-INSERT",
+      "Enter block name or [?] <B1>:",
+      "Specify insertion point or [Scale/Rotate]: 10,0",
+    ])
+    expect(cad.typeCounts().insert).toBe(2)
+
+    answer(cad, "LINE", "20,0", "'-INSERT")
+    expect(cad.commandLog()).toContain(
+      "** That command may not be invoked transparently **"
+    )
+    expect(cad.activeToolId()).toBe("line")
+  })
+
+  it("asks the point again at Enter (probe blocks/p216)", () => {
+    const cad = withB1()
+    answer(cad, "-INSERT", "B1", "", "5,5")
+    expect(cad.commandLog()).toEqual([
+      "-INSERT",
+      "Enter block name or [?] <B1>: B1",
+      "Specify insertion point or [Scale/Rotate]:",
+      "Point or option keyword required.",
+      "Specify insertion point or [Scale/Rotate]: 5,5",
+    ])
+    expect(cad.typeCounts().insert).toBe(1)
+
+    const spanish = withB1(es)
+    answer(spanish, "-INSERT", "B1", "", "5,5")
+    expect(spanish.commandLog().slice(2, 4)).toEqual([
+      "Especifique un punto de inserción o [Escala/Girar]:",
+      "Se requiere un punto o una opción.",
+    ])
+  })
+
+  it("ends at Enter on the name with no block to offer (probes blocks/p217, p238)", () => {
+    const cad = createHarness()
+    answer(cad, "-INSERT", "")
+    expect(cad.commandLog()).toEqual([
+      "-INSERT",
+      "Enter block name or [?]:",
+      "Invalid block name.",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+
+    const spanish = createHarness({ locale: es })
+    answer(spanish, "-INSERT", "")
+    expect(spanish.commandLog().slice(1)).toEqual([
+      "Indique nombre de bloque o [?]:",
+      "Nombre de bloque no válido.",
+    ])
+    expect(spanish.activeToolId()).toBe("select")
+  })
+
+  it("ends at Enter on the name once the block inserted last is purged (probe blocks/p217)", () => {
+    const cad = withB1()
+    answer(cad, "-INSERT", "B1", "5,5")
+    answer(cad, "ERASE", "ALL", "")
+    answer(cad, "-PURGE", "B", "*", "N")
+    expect(cad.runtime.document.getBlocks()).toEqual([])
+
+    answer(cad, "-INSERT", "")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Enter block name or [?]:",
+      "Invalid block name.",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("measures Scale and Rotate between two points (probe blocks/p236)", () => {
+    const cad = withB1()
+    answer(cad, "-INSERT", "B1", "R", "0,0", "10,10")
+    expect(cad.state().commandLine.prompt).toBe(
+      "-INSERT Specify insertion point or [Scale/Rotate]:"
+    )
+    answer(cad, "S", "0,0", "3,4", "50,50")
+
+    const reference = cad.only<InsertEntity>("insert")
+    expect(reference.scale).toBeCloseTo(5)
+    expect(reference.rotation).toBeCloseTo(Math.PI / 4)
+    expect(reference.position).toBeCloseToPoint(p(50, 50))
+  })
+
+  it("asks the second point in Autodesk's Spanish (probe blocks/p236)", () => {
+    const cad = withB1(es)
+    answer(cad, "-INSERT", "B1", "G", "0,0")
+    expect(cad.state().commandLine.prompt).toBe(
+      "-INSERT Designe segundo punto:"
+    )
+    answer(cad, "10,10", "5,5")
+    expect(cad.only<InsertEntity>("insert").rotation).toBeCloseTo(Math.PI / 4)
+  })
+
+  it("reads a typed angle in degrees, minutes and seconds (probe blocks/p237)", () => {
+    const cad = withB1()
+    answer(cad, "-INSERT", "B1", "R", "45d30'", "5,5")
+    expect(cad.only<InsertEntity>("insert").rotation).toBeCloseTo(
+      (45.5 * Math.PI) / 180
+    )
+  })
+
+  it("asks in Autodesk's Spanish (probes blocks/p02, p207)", () => {
+    const cad = withB1(es)
+    answer(cad, "-INSERT", "B1", "FOO", "E", "2", "G", "FOO", "30", "5,5")
+    expect(cad.commandLog()).toEqual([
+      "-INSERT",
+      "Indique nombre de bloque o [?] <B1>: B1",
+      "Especifique un punto de inserción o [Escala/Girar]: FOO",
+      "Se requiere un punto o una opción.",
+      "Especifique un punto de inserción o [Escala/Girar]: E",
+      "Precise factor de escala para ejes XYZ <1>: 2",
+      "Especifique un punto de inserción o [Escala/Girar]: G",
+      "Precise ángulo de rotación <0>: FOO",
+      "Requiere un ángulo numérico válido o dos puntos.",
+      "Precise ángulo de rotación <0>: 30",
+      "Especifique un punto de inserción o [Escala/Girar]: 5,5",
+    ])
   })
 })
 

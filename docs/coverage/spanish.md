@@ -85,7 +85,7 @@ origen/Origen` from the 2026 help and the same captures;
   and DERECHA on the cube, the roll and triangle tooltips, and Vista personalizada (the only
   Spanish source, a 2026 "¿Ha probado…?" page, shows `[Personalizada]`).
 - **Aliases:** verified in Autodesk's 2026 Spanish material: `L`, `C`, `A`, `REC`, `CP`, `DI`, `AA`,
-  `Z`, `B`, `H`; in AutoCAD 2027's Spanish console: `MP`, `CH` (corners/p103), `P` (pieces/p140), `DP` (pieces/p243), `BQ` and `-BQ` (blocks/p151); in the 2027 `acad.pgp` (the
+  `Z`, `B`, `H`; in AutoCAD 2027's Spanish console: `MP`, `CH` (corners/p103), `P` (pieces/p140), `DP` (pieces/p243), `BQ` and `-BQ` (blocks/p151), `IN` and `-IN` (blocks/p200); in the 2027 `acad.pgp` (the
   install's): `MODBLQ`, `BMAKE`, `BMOD` and `ACADBLOCKDIALOG` for BLOQUE. **† = unverified
   for 2026:** the Spanish `acad.pgp` ships only with the language pack; these come from three
   transcriptions of it (2012–2021) that agree with each other and with

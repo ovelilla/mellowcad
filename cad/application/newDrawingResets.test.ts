@@ -104,9 +104,9 @@ describe.each(RESETS)("after %s", (_, reset) => {
 
   // With INSNAME empty INSERT offers the last block defined, if any.
   it("INSERT no longer offers the block inserted (INSNAME, rectang/p303)", () => {
-    const cad = answer(session(), "_INSERT", "BAR", "20,20")
+    const cad = answer(session(), "_-INSERT", "BAR", "20,20")
     reset(cad)
-    answer(cad, "_INSERT")
+    answer(cad, "_-INSERT")
     expect(prompt(cad)).not.toContain("<BAR>")
     cad.escape()
   })

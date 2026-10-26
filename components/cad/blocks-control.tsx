@@ -12,9 +12,9 @@ const THUMBNAIL_PX = 64
 /**
  * AutoCAD's Blocks palette, Current Drawing tab, a tab of the palette panel:
  * the blocks defined in the drawing shown as previews, filtered by name, and
- * inserted by "clicking and placing them" — which starts INSERT with the block
- * already chosen, so the insertion point, scale and rotation are answered
- * exactly as when typed. The panel is modeless, so one block after another is
+ * inserted by "clicking and placing them" — which starts -INSERT with the
+ * block already chosen, so the insertion point, scale and rotation are
+ * answered exactly as when typed. INSERT opens it. The panel is modeless, so one block after another is
  * a click on each; Repeat Placement, which keeps prompting for points with
  * the same block, is one of the palette's option checkboxes, not built.
  *

@@ -865,32 +865,45 @@ the values, Escape keeps the defaults — the Edit Attributes dialog the desktop
 desktop d09); here they stay where they were, a deviation (BLOCKS-D14): copying a defect that moves
 the user's geometry is no muscle memory
 
-### `INSERT` / `I` / `-INSERT` · es `INSERT` / `IN`†
+### `INSERT` / `I`, `-INSERT` / `-I` · es `INSERT` / `IN`, `-INSERT` / `-IN`
 
-**Implemented:** -INSERT's command line: `Enter block name or [?] <B1>:` (the last block inserted,
-or else the last named one defined — an array's anonymous `*U<n>` neither listed by `?` nor found
-by name —; names found case-blind, `b1` inserts B1, p210 —, INSNAME's: per drawing, not saved, so NEW and OPEN forget the block
-inserted, rectang/p303); `?` lists as -BLOCK's does, with -INSERT's table of User Blocks and
-Unnamed Blocks, and ends (p02, p208, p238); `Specify insertion point or [Scale/Rotate]:`, Scale's
-`Specify scale factor for XYZ axes <1.00>:` (uniform; `Requires numeric distance or two points.`)
-and Rotate's `Specify rotation angle <0.00>:` (`Requires valid numeric angle or two points.`), each
-back to the point (es `Indique nombre de bloque o [?]`,
-`Precise punto de inserción o [Escala/Girar]`, `Precise factor de escala para ejes XYZ`,
-`Precise ángulo de rotación`); mirrored flag; attribute values at the command line (ATTDIA 0, ATTREQ
-1): `Enter attribute values` (es `Indique valores de atributo`), each asked by its prompt (its tag
-when it has none) with its default, `Prompt one <def1>:`, `Verify attribute values` (es
-`Verificar valores de atributo`) for Verify mode, Preset takes its default, Constant is drawn from
-the block; the reference is added once all are given (one undo step, Escape cancels the whole
-insertion)
+**Implemented:** INSERT opens the Blocks palette, as 2027's does, and writes nothing more (the
+console's `*Insert a block from the Blocks palette` is the console's, p05; desktop d06); the rail's
+Insert button runs it. A click on a block there asks -INSERT's point with the block chosen, writing
+only the prompt line, and U and REDO name the step `-INSERT` (d06-6, d06-9). -INSERT's command line
+(aliases from the 2027 `acad.pgp` and console, p200, p201; Enter repeats it, `'-INSERT` is refused,
+p202): `Enter block name or [?] <B1>:` (the last block inserted, or else the last named one
+defined — an array's anonymous `*U<n>` neither listed by `?` nor found by name —; names found
+case-blind, `b1` inserts B1, p210 —, INSNAME's: per drawing, not saved, so NEW and OPEN forget the
+block inserted, rectang/p303); Enter with no block to offer says `Invalid block name.` (es `Nombre
+de bloque no válido.`) and ends (p217, p238); `?` lists as -BLOCK's does, with -INSERT's table of
+User Blocks and Unnamed Blocks, and ends (p02, p208, p238); `Specify insertion point or
+[Scale/Rotate]:`, where Enter or a word says `Point or option keyword required.` and asks again
+(p02, p216); Scale's `Specify scale factor for XYZ axes <1>:` (uniform, its default written as
+`%g`; `Requires numeric distance or two points.`, p205) and Rotate's `Specify rotation angle <0>:`
+(`Requires valid numeric angle or two points.`, p207; `45d30'` read, p237), each taking two points
+through ` Specify second point:` (p236) and back to the point; every run starts at scale 1 and
+angle 0 (p204) (es `Indique nombre de bloque o [?]`, `Especifique un punto de inserción o
+[Escala/Girar]` — the console's, p02, p200, over table 20813's `Precise` —, `Precise factor de
+escala para ejes XYZ`, `Precise ángulo de rotación`, ` Designe segundo punto`). The reference is
+dragged in as it will be drawn: each object in its own colour, the attributes showing their
+defaults, then the values given (desktop d06-7). Mirrored flag; attribute values at the command
+line (ATTDIA 0, ATTREQ 1): `Enter attribute values` (es `Indique valores de atributo`), each asked
+by its prompt (its tag when it has none) with its default, `Prompt one <def1>:`, `Verify attribute
+values` (es `Verificar valores de atributo`) for Verify mode, Preset takes its default, Constant is
+drawn from the block; the reference is added once all are given (one undo step, Escape cancels the
+whole insertion)
 
 **Missing:** the X scale, Y scale and rotation AutoCAD asks after the point when Scale and Rotate
-were not given (here the point places the reference at the session's scale and angle),
-`Units: Millimeters   Conversion:    1.0000`, a name not in the drawing (AutoCAD searches for a
-drawing file, `"FOO.dwg": Can't find file in search path:` … `*Invalid*`; here
-`Block "FOO" is not defined.` and the name again), Basepoint/Corner/XYZ/Explode/Repeat, non-uniform
-X/Y/Z scale (the ellipse exists now, but this also needs `InsertEntity.scale` split into X/Y and a
-per-axis `scaleEntity`), inserting an external drawing + INSUNITS, ATTDIA 1 (the Edit Attributes
-dialog at insertion), ATTREQ 0
+were not given (`Enter X scale factor, specify opposite corner, or [Corner/XYZ] <1>:`, `Enter Y
+scale factor <use X scale factor>:`, `Specify rotation angle <0>:`, p02, p203, p205–p207: here the
+point places the reference at once, at Scale's and Rotate's values); a scale of 0 or below
+(`Value must be nonzero.`; a negative one mirrors, p205) and non-uniform X/Y/Z scale (this needs
+`InsertEntity.scale` split into X and Y); `Units: Millimeters   Conversion:    1.0000`; a name not
+in the drawing (AutoCAD searches for a drawing file, `"FOO.dwg": Can't find file in search path:` …
+`*Invalid*`; here `Block "FOO" is not defined.` and the name again); Basepoint, X, Y, Z, Explode and
+REpeat; inserting an external drawing + INSUNITS; ATTDIA 1 (the Edit Attributes dialog at
+insertion); ATTREQ 0
 
 ### `ATTDEF` / `ATT` / `DDATTDEF` / `-ATTDEF` / `-ATT` · es `ATRDEF` / `AT` / `-ATRDEF` / `-AT`
 

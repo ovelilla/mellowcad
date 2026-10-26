@@ -2453,11 +2453,11 @@ describe("the array object (AYO-01)", () => {
 
     expect(cad.state().blocks).toEqual([])
     // Counted, never named (probe blocks/p156).
-    answer(cad, "_INSERT", "?", "")
+    answer(cad, "_-INSERT", "?", "")
     expect(cad.commandLog().at(-1)).toBe(
       "Defined blocks.\nUser     Unnamed\nBlocks   Blocks\n    0        1"
     )
-    answer(cad, "_INSERT", "*U1")
+    answer(cad, "_-INSERT", "*U1")
     expect(cad.commandLog().at(-1)).toBe('Block "*U1" is not defined.')
     cad.escape()
     answer(cad, "_ERASE", "_ALL", "")

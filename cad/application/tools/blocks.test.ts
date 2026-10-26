@@ -3,6 +3,7 @@ import { createHarness } from "../../../test/harness"
 import { circleOf, layerOf, lineOf, p, textOf } from "../../../test/builders"
 import {
   CircleEntity,
+  createAttributeDefinition,
   createBlockDefinition,
   createInsert,
   insertFlatGeometry,
@@ -17,6 +18,9 @@ import {
   serializeDrawing,
 } from "../../serialization/drawingFile"
 import { THEME } from "../../scene/theme"
+import type { ScenePrimitive } from "../../scene/types"
+
+const RED = "#ff0000"
 
 /** A one-line block: a 100-unit run along +X from its base point. */
 const barBlock = (name = "BAR") =>
@@ -144,7 +148,7 @@ describe("INSERT", () => {
 
   it("places a reference at the picked point", () => {
     const cad = withBar()
-    cad.command("INSERT").type("BAR").enter().click(p(300, 50))
+    cad.command("-INSERT").type("BAR").enter().click(p(300, 50))
 
     const insert = cad.only<InsertEntity>("insert")
     expect(insert.blockId).toBe("BAR")
@@ -155,7 +159,7 @@ describe("INSERT", () => {
   it("takes a scale factor from the Scale keyword", () => {
     const cad = withBar()
     cad
-      .command("INSERT")
+      .command("-INSERT")
       .type("BAR")
       .enter()
       .option("Scale")
@@ -172,7 +176,7 @@ describe("INSERT", () => {
   it("takes an angle from the Rotate keyword", () => {
     const cad = withBar()
     cad
-      .command("INSERT")
+      .command("-INSERT")
       .type("BAR")
       .enter()
       .option("Rotate")
@@ -186,25 +190,42 @@ describe("INSERT", () => {
     expect((drawn[0] as LineEntity).end).toBeCloseToPoint(p(0, 100))
   })
 
-  it("keeps the scale and angle for the next insertion", () => {
+  it("starts each run at scale 1 and angle 0 (probe blocks/p204)", () => {
     const cad = withBar()
     cad
-      .command("INSERT")
+      .command("-INSERT")
       .type("BAR")
       .enter()
       .option("Scale")
       .type("3")
       .enter()
+      .option("Rotate")
+      .type("30")
+      .enter()
       .click(p(0, 0))
     // Enter at the name prompt takes the last block, as its <default>.
-    cad.command("INSERT").enter().click(p(0, 300))
+    cad.command("-INSERT").enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "-INSERT Specify insertion point or [Scale/Rotate]:"
+    )
+    cad.option("Scale")
+    expect(cad.state().commandLine.prompt).toBe(
+      "-INSERT Specify scale factor for XYZ axes <1>:"
+    )
+    cad.enter().option("Rotate")
+    expect(cad.state().commandLine.prompt).toBe(
+      "-INSERT Specify rotation angle <0>:"
+    )
+    cad.enter().click(p(0, 300))
 
-    expect((cad.latest() as InsertEntity).scale).toBeCloseTo(3)
+    const placed = cad.latest() as InsertEntity
+    expect(placed.scale).toBe(1)
+    expect(placed.rotation).toBe(0)
   })
 
   it("reports a name that is not defined and asks again", () => {
     const cad = withBar()
-    cad.command("INSERT").type("NOPE").enter()
+    cad.command("-INSERT").type("NOPE").enter()
 
     expect(cad.commandLog().join("\n")).toContain(
       'Block "NOPE" is not defined.'
@@ -213,25 +234,40 @@ describe("INSERT", () => {
     expect(cad.entityCount).toBe(0)
   })
 
-  it("previews exactly what it commits", () => {
-    const cad = withBar()
-    cad.command("INSERT").type("BAR").enter().moveTo(p(120, 60))
-    const preview = cad
-      .scene()
-      .primitives.filter(
-        (prim) => "stroke" in prim && prim.stroke?.color === THEME.rubberBand
-      )
-    expect(preview).toHaveLength(1)
+  it("previews exactly what it commits, drawn as the reference will be (desktop d06-7)", () => {
+    // A red line and an attribute whose default the ghost shows.
+    const cad = createHarness({
+      blocks: [
+        createBlockDefinition("TAGGED", p(0, 0), [
+          { ...lineOf(p(0, 0), p(100, 0), { id: "red-line" }), color: RED },
+          createAttributeDefinition(p(0, 10), "T1", {
+            prompt: "Prompt one",
+            value: "def1",
+            id: "tag-def",
+          }),
+        ]),
+      ],
+    })
+    cad.command("-INSERT").type("TAGGED").enter().moveTo(p(120, 60))
+    // The reference's own: its red line and its attribute's text, not the
+    // cursor's crosshair.
+    const shown = (prim: ScenePrimitive) =>
+      prim.kind === "text" ||
+      (prim.kind === "segment" && prim.stroke.color === RED)
+    const ghost = cad.scene().primitives.filter(shown)
+    expect(ghost.map((prim) => prim.kind).sort()).toEqual(["segment", "text"])
+    expect(ghost).toContainEqual(expect.objectContaining({ text: "def1" }))
 
-    cad.click(p(120, 60))
+    cad.click(p(120, 60)).enter().moveTo(p(900, 700))
     expect(cad.only<InsertEntity>("insert").position).toBeCloseToPoint(
       p(120, 60)
     )
+    expect(cad.scene().primitives.filter(shown)).toEqual(ghost)
   })
 
   it("is one undo step", () => {
     const cad = withBar()
-    cad.command("INSERT").type("BAR").enter().click(p(0, 0))
+    cad.command("-INSERT").type("BAR").enter().click(p(0, 0))
     cad.undo()
 
     expect(cad.entityCount).toBe(0)
@@ -615,6 +651,26 @@ describe("the blocks palette", () => {
     expect(cad.latest()).toMatchObject({ type: "insert", blockId: "WINDOW" })
   })
 
+  it("asks -INSERT's point with no echo, and U and REDO name it -INSERT (desktop d06-6, d06-9)", () => {
+    const cad = withBlocks()
+    cad.runtime.insertBlock("WINDOW")
+
+    expect(cad.state().commandLine.prompt).toBe(
+      "-INSERT Specify insertion point or [Scale/Rotate]:"
+    )
+    expect(cad.commandLog()).toEqual([])
+
+    answer(cad, "250,0", "U", "REDO")
+    expect(cad.commandLog()).toEqual([
+      "Specify insertion point or [Scale/Rotate]: 250,0",
+      "U",
+      "-INSERT",
+      "REDO",
+      "-INSERT",
+      "Everything has been redone",
+    ])
+  })
+
   it("ignores a block that is not defined", () => {
     const cad = withBlocks()
     cad.runtime.insertBlock("NOPE")
@@ -750,7 +806,7 @@ describe("PURGE", () => {
 describe("block names", () => {
   it("INSERT takes b1 for B1 (probe blocks/p210)", () => {
     const cad = createHarness({ blocks: [barBlock("B1")] })
-    answer(cad, "INSERT", "b1", "5,5")
+    answer(cad, "-INSERT", "b1", "5,5")
 
     expect(cad.latest()).toMatchObject({ type: "insert", blockId: "B1" })
   })

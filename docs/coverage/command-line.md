@@ -83,7 +83,7 @@ SPLINE, MOVE, COPY, STRETCH, ERASE, EXPLODE, JOIN, COPYCLIP, CUTCLIP, COPYBASE, 
 MIRROR, OFFSET, TRIM, EXTEND, FILLET, CHAMFER, BREAK, BREAKATPOINT, ARRAY, ARRAYRECT, ARRAYPOLAR,
 ARRAYPATH, HATCH, TEXT, MTEXT, the dimension commands, UCS, UCSICON, PLAN, ZOOM, -VIEW, LTSCALE,
 -LINETYPE, -LWEIGHT, -COLOR, -OSNAP, ATTDISP, NAVVCUBE, ELEV, DIST, AREA, ID, VPOINT, PAN, TEXTEDIT,
-ATTDEF, BLOCK, INSERT, PASTECLIP and MATCHPROP (`Select objects:` and its counts, COPYBASE's
+ATTDEF, BLOCK, -INSERT, PASTECLIP and MATCHPROP (`Select objects:` and its counts, COPYBASE's
 `Specify base point:` first) (the others show their name and keywords, `ATTEDIT:`, and write no
 prompt lines), what was typed for a command's whole name or `_` and its global name (AutoCAD keeps
 `line` and `_line` as typed; here they echo the command language's name — WHY: the landing's scripts

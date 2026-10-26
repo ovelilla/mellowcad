@@ -16,7 +16,7 @@ RECTANG ["REC","RECTANGLE"] "Rectangle"
 POLYGON ["POL"] "Polygon"
 HATCH ["H","BH","BHATCH"] "Hatch"
 BLOCK ["B","ACADBLOCKDIALOG","BMAKE","BMOD"] "Create block"
-INSERT ["I"] "Insert block"
+INSERT ["I"] "Insert a block from the Blocks palette"
 ATTEDIT ["ATE","DDATTE"] "Edit attributes"
 ATTDEF ["ATT","DDATTDEF"] "Define attributes"
 ATTDISP [] "Attribute display"
@@ -104,6 +104,7 @@ PASTECLIP [] "Paste the clipboard into the drawing"
 DIMSTYLE ["D","DIMSTY","DST","DDIM"] "Create and modify dimension styles"
 STYLE ["ST","DDSTYLE"] "Create and modify text styles"
 BLOCKSPALETTE [] "Show the blocks palette"
+-INSERT ["-I"] "Insert block"
 LAYER ["LA","DDLMODES"] "Manage layers and layer properties"
 LAYERCLOSE [] "Close the Layer Properties Manager"
 PROPERTIES ["PR","CH","MO"] "Show the properties of the selected objects"
@@ -1924,16 +1925,18 @@ lweight "Lineweight" LW
   properties: -
   cycling: -
 > INSERT
-  prompt: INSERT Enter block name or [?] <NUT>:
+  command| I INSERT
+> -INSERT
+  prompt: -INSERT Enter block name or [?] <NUT>:
   asks: "Enter block name or"
   tip: Enter block name or
   dyn: "Enter block name or"=""||*
   options: [?] ?
-  command| I INSERT
+  command| -I -INSERT
 > ?
   dyn: "Enter block name or"="?"||*
 > enter
-  prompt: INSERT Enter block(s) to list <*>:
+  prompt: -INSERT Enter block(s) to list <*>:
   asks: "Enter block(s) to list"
   tip: Enter block(s) to list
   dyn: "Enter block(s) to list"=""||*
@@ -1952,13 +1955,13 @@ lweight "Lineweight" LW
         User     Unnamed
         Blocks   Blocks
             1        0
-> INSERT again
-  prompt: INSERT Enter block name or [?] <NUT>:
+> -INSERT again
+  prompt: -INSERT Enter block name or [?] <NUT>:
   asks: "Enter block name or"
   tip: Enter block name or
   dyn: "Enter block name or"=""||*
   options: [?] ?
-  command| I INSERT
+  command| -I -INSERT
 > unknown
   dyn: "Enter block name or"="NOPE"||*
 > enter
@@ -1968,30 +1971,56 @@ lweight "Lineweight" LW
 > name
   dyn: "Enter block name or"="BAR"||*
 > enter
-  prompt: INSERT Specify insertion point or [Scale/Rotate]:
+  prompt: -INSERT Specify insertion point or [Scale/Rotate]:
   asks: "Specify insertion point or"
   tip: Specify insertion point or
   dyn: "X,Y"=""||*
   options: [S] Scale, [R] Rotate
   prompt| Enter block name or [?] <NUT>: BAR
+> enter at the point
+  prompt| Specify insertion point or [Scale/Rotate]:
+  error| Point or option keyword required.
 > S
-  prompt: INSERT Specify scale factor for XYZ axes <1.00>:
+  prompt: -INSERT Specify scale factor for XYZ axes <1>:
   asks: "Specify scale factor for XYZ axes"
   tip: Specify scale factor for XYZ axes
   dyn: "Specify scale factor for XYZ axes"=""|1|*
   options: -
   prompt| Specify insertion point or [Scale/Rotate]: S
-> scale
-  dyn: "Specify scale factor for XYZ axes"="2"|1|*
+> first point
+  dyn: "X,Y"="0,0"||*
 > enter
-  prompt: INSERT Specify insertion point or [Scale/Rotate]:
+  prompt: -INSERT Specify second point:
+  tip: Specify second point:
+  dyn: "Specify scale factor for XYZ axes"=""|0|*
+  prompt| Specify scale factor for XYZ axes <1>: 0,0
+> second point
+  dyn: "X,Y"="3,4"||*
+> enter
+  prompt: -INSERT Specify insertion point or [Scale/Rotate]:
   asks: "Specify insertion point or"
   tip: Specify insertion point or
   dyn: "X,Y"=""||*
   options: [S] Scale, [R] Rotate
-  prompt| Specify scale factor for XYZ axes <1.00>: 2
+  prompt|  Specify second point: @3,4
+> S
+  prompt: -INSERT Specify scale factor for XYZ axes <5>:
+  asks: "Specify scale factor for XYZ axes"
+  tip: Specify scale factor for XYZ axes
+  dyn: "Specify scale factor for XYZ axes"=""|5|*
+  options: -
+  prompt| Specify insertion point or [Scale/Rotate]: S
+> scale
+  dyn: "Specify scale factor for XYZ axes"="2"|5|*
+> enter
+  prompt: -INSERT Specify insertion point or [Scale/Rotate]:
+  asks: "Specify insertion point or"
+  tip: Specify insertion point or
+  dyn: "X,Y"=""||*
+  options: [S] Scale, [R] Rotate
+  prompt| Specify scale factor for XYZ axes <5>: 2
 > R
-  prompt: INSERT Specify rotation angle <0>:
+  prompt: -INSERT Specify rotation angle <0>:
   asks: "Specify rotation angle"
   tip: Specify rotation angle
   dyn: "Specify rotation angle"=""|0|°*
@@ -2000,7 +2029,7 @@ lweight "Lineweight" LW
 > rotation
   dyn: "Specify rotation angle"="90"|0|°*
 > enter
-  prompt: INSERT Specify insertion point or [Scale/Rotate]:
+  prompt: -INSERT Specify insertion point or [Scale/Rotate]:
   asks: "Specify insertion point or"
   tip: Specify insertion point or
   dyn: "X,Y"=""||*
@@ -2051,17 +2080,17 @@ lweight "Lineweight" LW
         User     External     Dependent   Unnamed
         Blocks   References   Blocks      Blocks
             0         0           0           0
-> INSERT
-  prompt: INSERT Enter block name or [?]:
+> -INSERT
+  prompt: -INSERT Enter block name or [?]:
   asks: "Enter block name or"
   tip: Enter block name or
   dyn: "Enter block name or"=""||*
   options: [?] ?
-  command| INSERT
+  command| -INSERT
 > ?
   dyn: "Enter block name or"="?"||*
 > enter
-  prompt: INSERT Enter block(s) to list <*>:
+  prompt: -INSERT Enter block(s) to list <*>:
   asks: "Enter block(s) to list"
   tip: Enter block(s) to list
   dyn: "Enter block(s) to list"=""||*
@@ -2077,6 +2106,23 @@ lweight "Lineweight" LW
         User     Unnamed
         Blocks   Blocks
             0        0
+> -INSERT with none
+  prompt: -INSERT Enter block name or [?]:
+  asks: "Enter block name or"
+  tip: Enter block name or
+  dyn: "Enter block name or"=""||*
+  options: [?] ?
+  command| -INSERT
+> enter
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Enter block name or [?]:
+  error| Invalid block name.
+> INSERT
+  command| INSERT
 
 ## ATTDEF
 > start

@@ -225,6 +225,12 @@ export function registerCommands(
   // No alias: Autodesk's shortcut guide lists none for BLOCKSPALETTE, and B
   // and I are already BLOCK and INSERT.
   register({ id: "BLOCKSPALETTE", run: () => runtime.showPalette("blocks") })
+  // 2027's INSERT opens the Blocks palette, writing nothing more on the
+  // desktop (the console's `*Insert a block from the Blocks palette`, p05, is
+  // the console's), and -INSERT asks at the command line (BLOCKS-D30, d06).
+  // The insert tool is -INSERT's; INSERT, registered with it, is replaced here.
+  register({ id: "INSERT", run: () => runtime.showPalette("blocks") })
+  register({ id: "-INSERT", tool: "insert", run: () => startTool("insert") })
   // PR, CH and MO, as Autodesk's shortcut guide lists them; Ctrl+1 toggles
   // it too (`keyDown`). The palettes share one panel, so a CLOSE command
   // folds it only while its palette is the one shown.

@@ -149,7 +149,7 @@ const FROM_SCRATCH: ReadonlyArray<
     (c) => c.command("DIMBASELINE").click(p(200, 0)).escape(),
     [BASE_DIMENSION],
   ],
-  ["INSERT", (c) => c.command("INSERT").type("BAR").enter().click(p(300, 0))],
+  ["INSERT", (c) => c.command("-INSERT").type("BAR").enter().click(p(300, 0))],
   // probe arrays/p403: the array object is on CLAYER and CECOLOR, the objects
   // inside keep their own (DERIVED's rows, which answer `_AS _N`).
   [

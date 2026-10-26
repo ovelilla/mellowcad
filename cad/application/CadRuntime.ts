@@ -1013,6 +1013,13 @@ export class CadRuntime extends Observable {
       return
     }
     const command = next.ribbonMacro?.()?.command ?? TOOL_COMMANDS[id]
+    // A command that no longer starts its tool (INSERT opens the Blocks
+    // palette, the tool being -INSERT's) runs as its button's macro does.
+    const definition = command && this.commands.get(command)
+    if (definition && definition.tool === undefined) {
+      this.runCommandAs(`_${command}`, { echo: `_${command.toLowerCase()}` })
+      return
+    }
     this.startEchoed(id, command ?? id, command)
   }
 
@@ -4528,13 +4535,24 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * Starts INSERT with the block already chosen — the palette's "clicking and
-   * placing them", which skips only the name prompt so the insertion point,
-   * scale and rotation are answered exactly as they are when typed.
+   * Starts -INSERT with the block already chosen — the palette's "clicking
+   * and placing them", which skips only the name prompt so the insertion
+   * point, scale and rotation are answered exactly as they are when typed.
+   * WHY no echo: AutoCAD writes only -INSERT's point prompt, and U and REDO
+   * name the step -INSERT (desktop d06-6, d06-9).
    */
   insertBlock(id: BlockId): void {
     if (!this.document.getBlock(id)) return
-    this.startTool("insert")
+    const command = "-INSERT"
+    this.starting = command
+    this.startingName = this.text.commandNames(command)[0]
+    this.commandStarts(command)
+    try {
+      this.startTool("insert")
+    } finally {
+      this.starting = null
+      this.startingName = null
+    }
     this.insert.beginInsert(id, this.toolContext)
     this.invalidateState()
     this.host.requestRender()

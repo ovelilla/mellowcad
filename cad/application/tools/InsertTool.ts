@@ -7,18 +7,19 @@ import {
   BlockId,
   EntityId,
   InsertEntity,
+  blockAttribute,
   createInsert,
   findBlockNamed,
+  insertFlatGeometry,
   isAnonymousBlock,
   onPlaneOf,
+  variableAttributes,
 } from "../../domain/entities"
-import { parseNumber } from "../../domain/units"
+import { parseAngleDegrees, parseNumber } from "../../domain/units"
 import { ucsAngleToWorld } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { parseCoordinate } from "../input/coordinateInput"
-import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
-import { THEME } from "../../scene/theme"
 import { AttributeValuePrompts } from "./attributeValues"
 import { BLOCKS_TO_LIST, askBlocksToList } from "./blockListing"
 import type { PromptId } from "../../locales/types"
@@ -32,6 +33,7 @@ import {
   ToolQuestion,
 } from "./Tool"
 import { withCurrentProperties } from "./currentProperties"
+import { drawn } from "./ghostLook"
 
 /** Reused so preview frames don't burn entity ids. */
 const PREVIEW_ID: EntityId = "__insert_preview__"
@@ -50,15 +52,15 @@ type InsertState =
     }
 
 /**
- * AutoCAD's INSERT: places a reference to a block already defined in the
- * drawing. The block is named first (`?` lists what is defined and ends, as
- * -BLOCK's does), then the
- * insertion point, with **Scale** and **Rotate** offered as the keywords
- * -INSERT lists — each sets its value and returns to the point prompt, so the
- * reference is dragged in at the size and angle it will keep.
+ * AutoCAD's -INSERT (2027's INSERT opens the Blocks palette, whose click
+ * starts it at the point): places a reference to a block already defined in
+ * the drawing. The block is named first (`?` lists what is defined and ends,
+ * as -BLOCK's does), then the insertion point, with **Scale** and **Rotate**
+ * offered as the keywords -INSERT lists — each sets its value and returns to
+ * the point prompt, so the reference is dragged in at the size and angle it
+ * will keep. Each run starts at 1 and 0 (probe blocks/p204).
  *
- * Scale is uniform (see {@link InsertEntity}) and both values persist for the
- * session, so a run of identical symbols is placed by clicking.
+ * Scale is uniform (see {@link InsertEntity}).
  *
  * A block with attributes then asks for their values at the command line
  * (ATTDIA 0), and the reference is added only once they are all given: one
@@ -83,6 +85,8 @@ export class InsertTool implements Tool {
   }
 
   onActivate(ctx: ToolContext): void {
+    this.scale = 1
+    this.rotation = 0
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.enterName(ctx)
@@ -118,9 +122,9 @@ export class InsertTool implements Tool {
   }
 
   /**
-   * -INSERT's questions. WHY no X scale, Y scale and rotation after the point:
-   * the point places the reference at the session's scale and angle, which
-   * Scale and Rotate set beforehand.
+   * -INSERT's questions. The X scale, Y scale and rotation AutoCAD asks after
+   * the point are not asked yet (INSERT's Missing): the point places the
+   * reference at Scale's and Rotate's values, 1 and 0 unless given.
    */
   question(): PromptId | ToolQuestion {
     switch (this.state.phase) {
@@ -133,7 +137,7 @@ export class InsertTool implements Tool {
       case "point":
         return "insertionPoint"
       case "scale":
-        return { id: "insertScale", enter: this.scale }
+        return { id: "insertScale", enter: { name: factorText(this.scale) } }
       case "rotation":
         return {
           id: "insertRotation",
@@ -144,7 +148,7 @@ export class InsertTool implements Tool {
     }
   }
 
-  /** As AutoCAD 2023's console refuses -INSERT's scale. */
+  /** As AutoCAD 2027's console refuses -INSERT's scale (probe blocks/p205). */
   takes(): QuestionInput | null {
     return this.state.phase === "scale"
       ? {
@@ -183,23 +187,38 @@ export class InsertTool implements Tool {
     }
   }
 
+  /**
+   * WHY none at Scale and Rotate: the runtime measures their two points,
+   * asking ` Specify second point:` after the first (probe blocks/p236).
+   */
+  wantsSnap(): boolean {
+    return this.state.phase !== "scale" && this.state.phase !== "rotation"
+  }
+
   getConstraintAnchor(): Vec2 | null {
     return null
   }
 
+  /**
+   * The reference as it will be drawn: each object in its own colour, the
+   * attributes showing their defaults, then the values given (desktop d06-7).
+   */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const state = this.state
     if (state.phase !== "point" && state.phase !== "attributes") return []
     const preview =
       state.phase === "point"
-        ? this.pending(state.cursor, ctx, PREVIEW_ID)
+        ? this.pending(
+            state.cursor,
+            ctx,
+            PREVIEW_ID,
+            defaultAttributes(ctx.document.getBlock(this.blockId))
+          )
         : this.pending(state.at, ctx, PREVIEW_ID, state.prompts.attributes())
-    return entityScenePrimitive(
-      ctx.viewport,
-      preview,
-      { color: THEME.rubberBand, width: 1 },
-      { blocks: ctx.blocks }
-    )
+    return insertFlatGeometry(
+      withCurrentProperties(preview, ctx),
+      ctx.blocks
+    ).flatMap((piece) => drawn(ctx, piece, "plain"))
   }
 
   /** The reference as it stands at `at`. Shared by the preview and the commit. */
@@ -254,7 +273,13 @@ export class InsertTool implements Tool {
           this.enterList(commitCtx)
           return true
         }
-        // Enter with nothing typed keeps the last block, the `<default>`.
+        // Enter with nothing typed keeps the last block, the `<default>`;
+        // with none to offer it ends the command (probes blocks/p217, p238).
+        if (typed.length === 0 && !this.blockId) {
+          commitCtx.report(commitCtx.text.message("invalidBlockName"), "error")
+          commitCtx.endCommand()
+          return true
+        }
         const name = typed.length === 0 ? this.blockId : typed
         // Case-blind, as every block name is: `b1` inserts B1 (p210).
         const block = isAnonymousBlock(name)
@@ -291,15 +316,21 @@ export class InsertTool implements Tool {
       fields: [{ id: "point", prompt: "insertionPoint", kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
-        const point = parseCoordinate(
-          commitCtx.dynamicInput.getText("point").trim(),
-          {
-            lastPoint: commitCtx.lastPoint,
-            relativeByDefault: false,
-            ucs: commitCtx.ucs,
-            elevation: commitCtx.elevation,
-          }
-        )
+        const typed = commitCtx.dynamicInput.getText("point").trim()
+        // Enter is refused, and the point asked again (probe blocks/p216).
+        if (typed === "") {
+          commitCtx.report(
+            commitCtx.text.message("pointOrKeywordRequired"),
+            "error"
+          )
+          return true
+        }
+        const point = parseCoordinate(typed, {
+          lastPoint: commitCtx.lastPoint,
+          relativeByDefault: false,
+          ucs: commitCtx.ucs,
+          elevation: commitCtx.elevation,
+        })
         if (!point) return false
         this.place(point, commitCtx)
         return true
@@ -348,7 +379,9 @@ export class InsertTool implements Tool {
           this.enterPoint(commitCtx)
           return true
         }
-        const typed = parseNumber(commitCtx.dynamicInput.getText("rotation"))
+        const typed = parseAngleDegrees(
+          commitCtx.dynamicInput.getText("rotation")
+        )
         if (typed === null) return false
         this.rotation = (typed * Math.PI) / 180
         this.enterPoint(commitCtx)
@@ -359,6 +392,28 @@ export class InsertTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }
+}
+
+/**
+ * The attributes a reference of `block` takes, at their defaults: what the
+ * insertion's ghost shows before any value is asked.
+ */
+function defaultAttributes(
+  block: BlockDefinition | undefined
+): BlockAttribute[] | undefined {
+  return block
+    ? variableAttributes(block).map((definition) =>
+        blockAttribute(definition, definition.value)
+      )
+    : undefined
+}
+
+/**
+ * A scale factor as -INSERT's `<default>` writes it, C's `%g`: `<1>`,
+ * `<2.5>`, six significant digits (probes blocks/p02, p204).
+ */
+function factorText(factor: number): string {
+  return String(Number(factor.toPrecision(6)))
 }
 
 /** The blocks a user names: an array's anonymous block is none of them. */

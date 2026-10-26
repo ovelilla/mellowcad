@@ -325,7 +325,7 @@ describe("what follows the UCS", () => {
       ],
     })
     cad.command("UCS").option("Z").enter()
-    cad.command("INSERT").type("B").enter().click(p(50, 50))
+    cad.command("-INSERT").type("B").enter().click(p(50, 50))
     expect(cad.only<InsertEntity>("insert").rotation).toBeCloseTo(Math.PI / 2)
     cad.command("MTEXT").click(p(0, 0)).click(p(-50, 100)).type("A").enter()
     expect(cad.only<MTextEntity>("mtext").rotation).toBeCloseTo(Math.PI / 2)
