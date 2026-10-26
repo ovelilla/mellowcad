@@ -1,0 +1,23 @@
+_RECTANG
+0,0
+100,50
+_ZOOM
+_E
+_ZOOM
+_W
+-500,-500
+500,500
+_-HATCH
+'_ZOOM
+_E
+'ORTHOMODE
+1
+'_-OSNAP
+_END
+'_-PAN
+0,0
+1,1
+'_LINE
+50,25
+
+(sslength (ssget "_X"))

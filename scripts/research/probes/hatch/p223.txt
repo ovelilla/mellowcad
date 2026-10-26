@@ -1,0 +1,12 @@
+_LINE
+0,80
+100,80
+
+_ZOOM
+_E
+_-HATCH
+_S
+50,80
+
+
+(sslength (ssget "_X"))

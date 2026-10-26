@@ -1,0 +1,13 @@
+_RECTANG
+0,0
+100,50
+_ZOOM
+_E
+_ID
+50,25
+_-HATCH
+@
+
+_MPDUMP
+-
+(getvar "LASTPOINT")

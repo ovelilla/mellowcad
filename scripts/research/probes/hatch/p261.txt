@@ -1,0 +1,21 @@
+_ELEVATION
+5
+_RECTANG
+0,0
+100,50
+_ZOOM
+_E
+_ELEVATION
+0
+_-HATCH
+50,25
+
+(cdr (assoc 10 (entget (entlast))))
+_ELEVATION
+7
+_-HATCH
+_S
+50,0
+
+
+(cdr (assoc 10 (entget (entlast))))

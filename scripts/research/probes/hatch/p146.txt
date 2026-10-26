@@ -1,0 +1,27 @@
+_LINE
+-20,0
+120,0
+
+_LINE
+100,-20
+100,120
+
+_LINE
+120,100
+-20,100
+
+_LINE
+0,120
+0,-20
+
+_ZOOM
+_W
+0,0
+60,10
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+_-HATCH
+30,5
+
+_MPDUMP
+-

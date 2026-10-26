@@ -1,0 +1,2 @@
+(progn (command "_-HATCH" "_P" "ANSI31" "5" "30") (command) (princ (list (getvar "CMDACTIVE") (getvar "HPNAME") (getvar "HPSCALE") (getvar "HPANG"))) (princ))
+(list (getvar "HPNAME") (getvar "HPSCALE") (getvar "HPANG"))

@@ -1,0 +1,16 @@
+_ELLIPSE
+_C
+0,0
+60,0
+30
+_LINE
+-100,0
+100,0
+
+_ZOOM
+_E
+_-HATCH
+0,10
+
+_MPDUMP
+-

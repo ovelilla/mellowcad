@@ -1,0 +1,15 @@
+_RECTANG
+0,0
+200,100
+_CIRCLE
+100,50
+40
+_RECTANG
+85,35
+115,65
+_ZOOM
+_E
+_-HATCH
+10,10
+
+(entget (entlast))

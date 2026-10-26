@@ -1,0 +1,25 @@
+HPASSOC
+0
+_RECTANG
+0,0
+100,50
+_ZOOM
+_W
+-10,-10
+110,60
+_-HATCH
+_P
+ANSI31
+10
+0
+50,25
+
+_ERASE
+_ALL
+_R
+_L
+
+(ssget '(78.0 0.0))
+(ssget '(100.0 25.0))
+(ssget '(89.8026 0.0))
+(sslength (ssget "_X"))

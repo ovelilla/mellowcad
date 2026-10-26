@@ -1,0 +1,16 @@
+(vl-load-com)
+HPASSOC
+0
+_RECTANG
+0,0
+100,50
+_ZOOM
+_E
+_-HATCH
+_P
+ANSI31
+0.003
+0
+50,25
+
+(if (setq s (ssget "_X" (quote ((0 . "HATCH"))))) (vlax-get (vlax-ename->vla-object (ssname s 0)) 'NumberOfHatchLines) "none")

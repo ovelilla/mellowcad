@@ -1,0 +1,15 @@
+HPASSOC
+0
+_RECTANG
+0,0
+1000,500
+_ZOOM
+_E
+_-HATCH
+_P
+ANSI31
+0.01
+0
+500,250
+
+(if (ssget "_X" (quote ((0 . "HATCH")))) "made" "none")

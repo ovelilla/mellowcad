@@ -1,0 +1,12 @@
+_RECTANG
+0,0
+100,50
+_ZOOM
+_E
+_-HATCH
+_S
+50,0
+
+
+(if (ssget "_I") (sslength (ssget "_I")) 0)
+(if (ssget "_P") (sslength (ssget "_P")) 0)

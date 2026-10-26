@@ -1,0 +1,16 @@
+_LUPREC
+2
+_AUPREC
+2
+_-HATCH
+_P
+ANSI31
+
+30
+
+_-HATCH
+_P
+
+
+
+

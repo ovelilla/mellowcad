@@ -1,0 +1,15 @@
+_RECTANG
+0,0
+100,50
+_ZOOM
+_E
+_-HATCH
+_P
+_ANSI31
+
+
+50,25
+
+(getvar "HPNAME")
+_MPDUMP
+-

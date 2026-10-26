@@ -1,0 +1,9 @@
+_-HATCH
+_P
+ANSI31
+5
+30
+
+(list (getvar "HPNAME") (getvar "HPSCALE") (getvar "HPANG"))
+_U
+(list (getvar "HPNAME") (getvar "HPSCALE") (getvar "HPANG"))

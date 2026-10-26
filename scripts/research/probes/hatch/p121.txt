@@ -1,0 +1,17 @@
+_RECTANG
+0,0
+100,50
+_RECTANG
+100,0
+300,50
+_LINE
+50,10
+99.5,10
+
+_ZOOM
+_E
+(getvar "APERTURE")
+(getvar "VIEWSIZE")
+_ID
+_END
+100.5,10

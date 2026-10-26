@@ -1,0 +1,5 @@
+_-HATCH
+_P
+SOLID
+
+(getvar "HPNAME")

@@ -1,0 +1,17 @@
+_RECTANG
+_E
+10
+40,10
+60,40
+_RECTANG
+_E
+0
+0,0
+100,50
+_ZOOM
+_E
+_-HATCH
+50,25
+
+_MPDUMP
+-

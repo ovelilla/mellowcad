@@ -1,0 +1,16 @@
+_RECTANG
+0,0
+100,50
+_RECTANG
+200,0
+300,50
+_ZOOM
+_E
+_-HATCH
+50,25
+250,25
+_U
+
+_U
+(sslength (ssget "_X" '((0 . "HATCH"))))
+(sslength (ssget "_X"))

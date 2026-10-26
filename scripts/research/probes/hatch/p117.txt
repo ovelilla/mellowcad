@@ -1,0 +1,15 @@
+_RECTANG
+0,0
+100,50
+_ZOOM
+_E
+_ID
+50,25
+_-HATCH
+10
+
+_MPDUMP
+-
+(getvar "LASTPOINT")
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")

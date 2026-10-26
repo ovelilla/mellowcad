@@ -1,0 +1,10 @@
+_RECTANG
+0,0
+100,50
+_ZOOM
+_E
+(sssetfirst nil (ssget "_X"))
+_-HATCH
+
+(if (ssget "_I") (sslength (ssget "_I")) 0)
+(sslength (ssget "_X"))

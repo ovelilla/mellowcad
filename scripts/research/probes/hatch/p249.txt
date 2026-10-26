@@ -1,0 +1,12 @@
+_RECTANG
+0,0
+100,50
+_ZOOM
+_E
+_CETRANSPARENCY
+30
+_-HATCH
+50,25
+
+(cdr (assoc 440 (entget (entlast))))
+(getvar "HPTRANSPARENCY")

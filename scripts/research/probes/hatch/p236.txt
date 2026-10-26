@@ -1,0 +1,17 @@
+_-HATCH
+_P
+ANSI31
+
+'_ZOOM
+_E
+'ORTHOMODE
+1
+'_-OSNAP
+_END
+'_-PAN
+0,0
+1,1
+'_LINE
+30
+
+(getvar "HPANG")

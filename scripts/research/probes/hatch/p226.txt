@@ -1,0 +1,13 @@
+_-TEXT
+10,10
+5
+0
+ABC
+_ZOOM
+_E
+_-HATCH
+_S
+_L
+
+
+(sslength (ssget "_X"))

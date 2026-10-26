@@ -1,0 +1,18 @@
+HPASSOC
+0
+HPMAXLINES
+1000
+_RECTANG
+0,0
+100,50
+_ZOOM
+_E
+_-HATCH
+_P
+ANSI31
+0.01
+0
+50,25
+
+(if (ssget "_X" (quote ((0 . "HATCH")))) "made" "none")
+(getvar "HPMAXLINES")

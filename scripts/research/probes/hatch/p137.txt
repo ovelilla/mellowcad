@@ -1,0 +1,10 @@
+_CIRCLE
+0,0
+50
+_ZOOM
+_E
+_-HATCH
+0,0
+
+_MPDUMP
+-

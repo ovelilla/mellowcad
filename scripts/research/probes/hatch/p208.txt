@@ -1,0 +1,10 @@
+_-HATCH
+_P
+ANSI31
+0
+-2
+FOO
+2
+
+
+(getvar "HPSCALE")

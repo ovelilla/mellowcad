@@ -1,0 +1,32 @@
+_RECTANG
+0,0
+200,100
+(entmake '((0 . "TEXT") (10 80.0 45.0 0.0) (40 . 10.0) (1 . "ABC")))
+_ZOOM
+_E
+_-HATCH
+_P
+ANSI31
+2
+0
+10,10
+
+_ZOOM
+_E
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mc-hatch-p147.png
+_N
+_Y

@@ -1,0 +1,13 @@
+(entmake '((0 . "TEXT") (10 80.0 45.0 0.0) (40 . 10.0) (1 . "ABC")))
+(textbox (entget (entlast)))
+(entmake '((0 . "TEXT") (10 80.0 45.0 0.0) (40 . 20.0) (1 . "ABC")))
+(textbox (entget (entlast)))
+_RECTANG
+0,0
+200,100
+_ZOOM
+_E
+_-HATCH
+10,10
+
+(entget (entlast))

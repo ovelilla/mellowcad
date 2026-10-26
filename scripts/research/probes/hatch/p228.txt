@@ -1,0 +1,17 @@
+_RECTANG
+0,0
+100,50
+_ZOOM
+_E
+_-TEXT
+10,10
+5
+0
+ABC
+_-HATCH
+_S
+_ALL
+
+
+_MPDUMP
+-
