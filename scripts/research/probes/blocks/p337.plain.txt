@@ -1,0 +1,5 @@
+_ATTDISP
+_ON
+(getvar "ATTMODE")
+_U
+(getvar "ATTMODE")

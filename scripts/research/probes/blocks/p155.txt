@@ -1,0 +1,21 @@
+_UCS
+_Z
+30
+_LINE
+0,0
+10,0
+
+(cdr (assoc 11 (entget (entlast))))
+_-BLOCK
+B1
+5,0
+_L
+
+(cdr (assoc 10 (entget (entlast))))
+_UCS
+_W
+(cdr (assoc 10 (entget (entlast))))
+_EXPLODE
+_L
+
+(cdr (assoc 11 (entget (entlast))))

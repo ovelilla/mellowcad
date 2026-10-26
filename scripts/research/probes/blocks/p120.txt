@@ -1,0 +1,15 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+B1
+_MO
+FOO
+_R
+0,0
+_L
+
+(sslength (ssget "_X"))
+_-BLOCK
+

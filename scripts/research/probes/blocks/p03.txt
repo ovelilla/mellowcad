@@ -1,0 +1,13 @@
+_-ATTDEF
+FOO
+_V
+
+TAG1
+Prompt one
+def1
+FOO
+0,5
+FOO
+2.5
+FOO
+0

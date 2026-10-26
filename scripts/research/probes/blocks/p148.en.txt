@@ -1,0 +1,16 @@
+_LINE
+0,0
+10,0
+
+_ARRAYRECT
+_L
+
+
+_ERASE
+_ALL
+
+(progn (setq b (tblnext "BLOCK" T) l nil) (while b (setq l (cons (cdr (assoc 2 b)) l) b (tblnext "BLOCK"))) l)
+_.SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mc-blocks-p148.dwg
+_Y

@@ -1,0 +1,21 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+B1
+0,0
+_L
+
+_-INSERT
+B1
+5,5
+FOO
+0
+2
+FOO
+0
+3
+FOO
+10
+(entget (entlast))

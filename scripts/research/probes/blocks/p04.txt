@@ -1,0 +1,12 @@
+_ATTDISP
+FOO
+_ON
+_ATTDISP
+
+_-PURGE
+
+_-PURGE
+FOO
+_B
+*
+_N

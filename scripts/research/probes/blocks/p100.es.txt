@@ -1,0 +1,17 @@
+_LINE
+0,0
+10,0
+
+-BLOQUE
+
+-BQ
+
+BLOQUE
+BQ
+MODBLQ
+-LIMPIA
+
+-LI
+
+LIMPIA
+LI

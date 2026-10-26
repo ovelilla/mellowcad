@@ -1,0 +1,29 @@
+_LINE
+0,0
+10,0
+
+_-ATTDEF
+
+T1
+P1
+D1
+0,5
+
+
+_-BLOCK
+B1
+0,0
+_ALL
+
+ATTDIA
+0
+_-INSERT
+B1
+100,0
+1
+1
+0
+V1
+(sslength (ssget "_X" (list (cons 0 "INSERT"))))
+_U
+(sslength (ssget "_X" (list (cons 0 "INSERT"))))

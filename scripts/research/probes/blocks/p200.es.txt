@@ -1,0 +1,24 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+B1
+0,0
+_L
+
+INSERT
+-IN
+B1
+5,5
+
+
+
+IN
+-INSERT
+B1
+6,6
+
+
+
+(getvar "INSNAME")

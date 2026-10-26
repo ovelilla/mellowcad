@@ -1,0 +1,16 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+B1
+0,0
+_L
+
+_-INSERT
+b1
+5,5
+
+
+
+(cdr (assoc 2 (entget (entlast))))

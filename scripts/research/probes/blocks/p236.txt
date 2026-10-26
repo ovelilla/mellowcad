@@ -1,0 +1,20 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+B1
+0,0
+_L
+
+_-INSERT
+B1
+_R
+0,0
+10,10
+_S
+0,0
+3,4
+50,50
+(entget (entlast))
+(getvar "LASTPOINT")

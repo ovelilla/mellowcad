@@ -1,0 +1,1 @@
+(progn (setq b (tblnext "BLOCK" T) l nil) (while b (setq l (cons (cdr (assoc 2 b)) l) b (tblnext "BLOCK"))) l)

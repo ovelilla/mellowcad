@@ -1,0 +1,11 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+B1
+0,0
+_L
+
+(ssget "_I")
+(ssget "_P")

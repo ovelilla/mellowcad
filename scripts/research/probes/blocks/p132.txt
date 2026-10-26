@@ -1,0 +1,11 @@
+_LINE
+0,0
+10,0
+
+(sssetfirst nil (ssget "_L"))
+_-BLOCK
+B1
+0,0
+(ssget "_I")
+
+(tblsearch "BLOCK" "B1")

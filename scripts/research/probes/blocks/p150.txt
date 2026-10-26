@@ -1,0 +1,20 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+B1
+0,0
+_L
+
+_-BLOCK
+B2
+0,0
+_L
+
+(sslength (ssget "_X"))
+_-PURGE
+_B
+*
+_N
+(tblsearch "BLOCK" "B1")

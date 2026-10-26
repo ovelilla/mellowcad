@@ -1,0 +1,30 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+B1
+0,0
+_L
+
+_LINE
+0,5
+10,5
+
+_-BLOCK
+B2
+0,0
+_L
+
+_ERASE
+_ALL
+
+_-PURGE
+_B
+*
+
+FOO
+_Y
+_N
+(tblsearch "BLOCK" "B1")
+(tblsearch "BLOCK" "B2")

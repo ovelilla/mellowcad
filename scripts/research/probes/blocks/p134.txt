@@ -1,0 +1,26 @@
+_ATTDIA
+0
+_-ATTDEF
+
+T1
+P1
+D1
+0,0
+
+
+_-ATTDEF
+
+T2
+P2
+D2
+0,5
+
+
+_-BLOCK
+B1
+0,0
+_ALL
+
+V1
+V2
+(entget (entnext (entlast)))

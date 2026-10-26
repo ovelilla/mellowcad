@@ -1,0 +1,12 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+B1
+'_ZOOM
+_E
+'_-PURGE
+0,0
+_L
+

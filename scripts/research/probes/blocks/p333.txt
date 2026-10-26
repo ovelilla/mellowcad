@@ -1,0 +1,16 @@
+_-ATTDEF
+
+T1
+P1
+D1
+0,20
+
+
+_MIRROR
+_L
+
+0,0
+0,10
+_N
+MPDUMP
+-

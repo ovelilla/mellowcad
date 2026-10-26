@@ -1,0 +1,26 @@
+_-LAYER
+_N
+L1
+
+_CLAYER
+L1
+_LINE
+0,0
+10,0
+
+_CLAYER
+0
+_-BLOCK
+B1
+0,0
+_L
+
+_ERASE
+_ALL
+
+_-PURGE
+_ALL
+*
+_N
+(tblsearch "LAYER" "L1")
+(tblsearch "BLOCK" "B1")

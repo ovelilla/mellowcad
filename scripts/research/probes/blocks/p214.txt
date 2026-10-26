@@ -1,0 +1,21 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+B1
+0,0
+_L
+
+_LINE
+0,20
+30,20
+
+_-INSERT
+B1
+@5,0
+
+
+
+(cdr (assoc 10 (entget (entlast))))
+(getvar "LASTPOINT")

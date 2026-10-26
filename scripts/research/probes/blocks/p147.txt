@@ -1,0 +1,18 @@
+_LINE
+0,0
+10,0
+
+_ARRAYRECT
+_L
+
+
+(cdr (assoc 2 (tblnext "BLOCK" T)))
+_ERASE
+_ALL
+
+(cdr (assoc 2 (tblnext "BLOCK" T)))
+_-PURGE
+_B
+*
+_N
+(tblnext "BLOCK" T)

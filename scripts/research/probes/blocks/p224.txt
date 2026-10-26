@@ -1,0 +1,35 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+B1
+0,0
+_L
+
+_ZOOM
+_W
+-300,-300
+300,300
+_-INSERT
+B1
+100,0
+
+
+
+_STRETCH
+_C
+95,-5
+105,5
+
+0,0
+0,20
+(cdr (assoc 10 (entget (entlast))))
+_STRETCH
+_C
+105,15
+111,25
+
+0,0
+0,20
+(cdr (assoc 10 (entget (entlast))))

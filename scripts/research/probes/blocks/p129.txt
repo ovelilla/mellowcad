@@ -1,0 +1,14 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+B1
+@
+_L
+
+(cdr (assoc 10 (tblsearch "BLOCK" "B1")))
+(entget (entlast))
+(entget (cdr (assoc -2 (tblsearch "BLOCK" "B1"))))
+_ID
+@

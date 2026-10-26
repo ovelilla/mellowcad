@@ -1,0 +1,47 @@
+_-ATTDEF
+
+TA
+PA
+DA
+0,30
+
+
+(setq ea (entlast))
+_-ATTDEF
+
+TB
+PB
+DB
+0,20
+
+
+(setq eb (entlast))
+_-ATTDEF
+
+TC
+PC
+DC
+0,10
+
+
+(setq ec (entlast))
+_-BLOCK
+B1
+0,0
+!ec
+!ea
+!eb
+
+ATTDIA
+0
+_-INSERT
+B1
+100,0
+1
+1
+0
+V1
+V2
+V3
+MPDUMP
+-

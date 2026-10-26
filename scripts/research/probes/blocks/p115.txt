@@ -1,0 +1,26 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+B1
+0,0
+_L
+
+_-INSERT
+B1
+0,0
+
+
+
+_LINE
+0,5
+10,5
+
+_-BLOCK
+b1
+_Y
+0,0
+_L
+
+(cdr (assoc 2 (tblnext "BLOCK" T)))

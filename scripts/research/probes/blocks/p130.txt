@@ -1,0 +1,24 @@
+_LINE
+0,0
+10,0
+
+_-LAYER
+_N
+L1
+
+_CLAYER
+L1
+_CECOLOR
+1
+_CELWEIGHT
+30
+_CELTYPE
+Continuous
+_-BLOCK
+B1
+0,0
+_L
+
+(cdr (assoc 10 (tblsearch "BLOCK" "B1")))
+(entget (entlast))
+(entget (cdr (assoc -2 (tblsearch "BLOCK" "B1"))))

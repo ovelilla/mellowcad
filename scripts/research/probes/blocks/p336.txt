@@ -1,0 +1,7 @@
+_LINE
+0,0
+'_ATTDISP
+_ON
+10,0
+
+(getvar "ATTMODE")

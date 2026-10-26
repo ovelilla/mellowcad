@@ -1,0 +1,30 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+B1
+0,0
+_L
+
+_CIRCLE
+50,50
+2
+_-BLOCK
+B2
+50,50
+_L
+
+_LINE
+100,0
+110,0
+
+_ARRAYRECT
+_L
+
+_X
+_-INSERT
+?
+
+(princ "MARK")
+(getvar "CMDNAMES")

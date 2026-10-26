@@ -1,0 +1,14 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+B1
+_MO
+_D
+0,0
+_L
+
+(ssget "_X")
+_-BLOCK
+

@@ -1,0 +1,21 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+B1
+0,0
+_L
+
+_LINE
+100,0
+110,0
+
+_ARRAYRECT
+_L
+
+_X
+(cdr (assoc 2 (entget (entlast))))
+_-INSERT
+*U1
+(princ "MARK")
