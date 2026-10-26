@@ -309,7 +309,7 @@ first)`, later points projected (`withZOf(point, first)`); SPLINE by limitation 
 - **A grip drags to a point like any click**; only a line's end grip writes that Z into the
   object, every other grip stores `planar(point)`.
 - **An edit that needs coplanar objects refuses with AutoCAD's message** (`coplanar`,
-  `linesNonCoplanar`). JOIN discards instead (pieces/p346); HATCH takes the first boundary's plane.
+  `linesNonCoplanar`). JOIN discards instead (pieces/p346), HATCH's Select objects too.
 - **THICKNESS is given by LINE, CIRCLE, ARC, PLINE and POLYGON only** (`withCurrentThickness`);
   RECTANG has its own, TEXT none, a rebuilt object carries the source's (not OFFSET's of a circle
   or arc).
@@ -317,7 +317,7 @@ first)`, later points projected (`withZOf(point, first)`); SPLINE by limitation 
   rotation via `ucsAngleToWorld`; HATCH's angle and origin; DIMLINEAR's axes; RECTANG's sides;
   ARRAYRECT's rows). A new orientation default starts at the UCS X axis.
 - `wantsSnap()` — true only while prompting for a point. False for an **area** prompt (HATCH's
-  internal pick): read `input.world` there, since a snapped point lands on the boundary.
+  internal pick): read `input.world` there, `input.point` under a typed snap (`takesSnapOverride`).
 - **A distance or an angle takes a point too.** A lone `distance` / `length` / `angle` box gets it
   one of two ways, and `wantsSnap()` says which. True: the tool measures its own pick
   (CIRCLE's radius, POLYGON's, TEXT's height; SCALE's factor is the distance over half the set's

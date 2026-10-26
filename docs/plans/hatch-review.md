@@ -376,6 +376,15 @@ The owner does not answer technical questions (AGENTS.md); each is the most stan
   to Missing; their Spanish labels are glossary words, **unverified** (English pass only).
 - **HATCH-D74:** a double-click on a hatch stays nothing; HATCHEDIT, the Hatch Editor tab and
   Quick Properties are Missing.
+- **HATCH-D78:** a TEXT's island box runs along its baseline from the ink's start to the
+  advance's end, not the ink's: p125's right side, 0.3138·h past the ink, is 0.2585·h past the
+  advance, as every other side is past the ink (p123 at 20 too). An MTEXT's spans its lines'
+  advances by Arial's ascent and descent plus 0.25·h, which p127 measures to 1e-3.
+- **HATCH-D79:** a text box is an island only wholly inside the traced face and not inside one of
+  its islands (Outer); at Select objects, only wholly inside a boundary taken (p228). A text across
+  a boundary, or the pick inside a text's box, stays **unverified**.
+- **HATCH-D80:** "already specified" is tested against the internal points' loops only, not what
+  Select objects took (no probe mixes them).
 
 ## 7. Tests proposed
 

@@ -2,11 +2,22 @@ import { describe, expect, it } from "vitest"
 import { traceBoundaryLoops } from "./boundary"
 import {
   createHatch,
+  createMText,
   hatchGeometry,
   hatchLoopSegments,
   pointInsideHatch,
 } from "./entities"
-import { arcOf, circleOf, deg, lineOf, p, rectOf } from "../../test/builders"
+import {
+  arcOf,
+  circleOf,
+  deg,
+  hatchOf,
+  lineOf,
+  loopOf,
+  p,
+  rectOf,
+  textOf,
+} from "../../test/builders"
 
 /** The area a set of loops covers, sampled through the hatch's own parity rule. */
 function covers(
@@ -159,6 +170,88 @@ describe("traceBoundaryLoops", () => {
   })
 
   it("ignores objects that are not boundary geometry", () => {
-    expect(traceBoundaryLoops(p(50, 50), [])).toBeNull()
+    // An existing hatch bounds nothing (probe hatch/p159).
+    const square = [loopOf(p(0, 0), p(100, 100))]
+    expect(traceBoundaryLoops(p(50, 50), [hatchOf(square)])).toBeNull()
+  })
+})
+
+describe("traceBoundaryLoops: text islands (probes hatch/p123, p125, p127)", () => {
+  const ROOM = rectOf(p(0, 0), p(200, 100))
+
+  it("boxes a TEXT inside the area as AutoCAD's text-box loop (p125)", () => {
+    const loops = traceBoundaryLoops(p(10, 10), [
+      ROOM,
+      textOf(p(80, 45), "ABC", { height: 10 }),
+    ])
+
+    expect(loops).toHaveLength(2)
+    expect(loops![1].vertices).toBeCloseToPoints(
+      [
+        p(77.3943, 42.2442),
+        p(111.31, 42.2442),
+        p(111.31, 57.7558),
+        p(77.3943, 57.7558),
+      ],
+      3
+    )
+    expect(covers(loops, p(10, 10))).toBe(true)
+    expect(covers(loops, p(95, 50))).toBe(false)
+  })
+
+  it("scales the margin with the height (p123: ABC at 20)", () => {
+    const loops = traceBoundaryLoops(p(10, 10), [
+      ROOM,
+      textOf(p(80, 45), "ABC", { height: 20 }),
+    ])
+
+    expect(loops![1].vertices).toBeCloseToPoints(
+      [
+        p(74.7885, 39.4884),
+        p(142.619, 39.4884),
+        p(142.619, 70.5116),
+        p(74.7885, 70.5116),
+      ],
+      3
+    )
+  })
+
+  it("gives each text its own box", () => {
+    const loops = traceBoundaryLoops(p(10, 10), [
+      ROOM,
+      textOf(p(20, 45), "ABC", { height: 10 }),
+      textOf(p(120, 45), "ABC", { height: 10 }),
+    ])
+
+    expect(loops).toHaveLength(3)
+  })
+
+  it("boxes an MTEXT by its lines' ascent and descent (p127)", () => {
+    const loops = traceBoundaryLoops(p(10, 10), [
+      ROOM,
+      createMText(p(80, 60), "ABC", { width: 60 }),
+    ])
+
+    expect(loops).toHaveLength(2)
+    expect(loops![1].vertices).toBeCloseToPoints(
+      [
+        p(79.3699, 56.0923),
+        p(87.8061, 56.0923),
+        p(87.8061, 61.244),
+        p(79.3699, 61.244),
+      ],
+      3
+    )
+  })
+
+  it("leaves out a text outside the area, or inside one of its islands", () => {
+    const loops = traceBoundaryLoops(p(10, 10), [
+      ROOM,
+      rectOf(p(100, 20), p(190, 80)),
+      textOf(p(120, 45), "ABC", { height: 10 }),
+      textOf(p(300, 45), "ABC", { height: 10 }),
+    ])
+
+    expect(loops).toHaveLength(2)
   })
 })

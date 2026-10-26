@@ -722,26 +722,38 @@ and Text frame rows (desktop d04-2), picking by the strokes (TEXT's), `?`'s 2027
 Gradient dialog, where HATCH sets its properties, do not exist here):
 `Current hatch pattern:  ANGLE` (es `Patrón de sombreado actual:`), then
 `Specify internal point or [Properties/Select objects]:` (es
-`Precise punto interno o [Propiedades/Designar objetos]`) until Enter makes the hatch — each
-internal point says `Selecting everything...`, `Selecting everything visible...`,
-`Analyzing the selected data...`, `Analyzing internal islands...` (es `Seleccionándolo todo...` …)
-and traces the area (boundary tracing, Outer island style), Select objects asks `Select objects:`
+`Precise punto interno o [Propiedades/Designar objetos]`) until Enter makes the hatch. **The
+internal point** (hatch/p100–p168): the run's first says `Selecting everything...`, `Selecting
+everything visible...`, `Analyzing the selected data...` (es `Seleccionándolo todo...` …), found
+or not, and no later one, Undo or not (p104, p119); a point inside an area already picked says
+`This area has already been specified.` (es `Esta área ya se ha especificado.`, p157), one on a
+boundary object `Point is directly on an object.` (es `El punto está directamente sobre un
+objeto.`, p143, p122: within 1e-6, the desktop's pickbox for a click **unverified**), and neither
+adds anything; else the area is traced (boundary tracing, Outer island style) from every visible
+object parallel to the UCS whatever its height, as if flattened (p153–p155), saying `Analyzing
+internal islands...`, or `Valid hatch boundary not found.`; an off layer is not traced, a locked
+one is (p151, p152), a hatch never (p159); a TEXT or MTEXT in the area is an island box kept clear
+(p166, p134): a TEXT's ink across its baseline and its advance along it plus 0.2585·h each side
+(p123, p125), an MTEXT's lines' advances by Arial's ascent and descent plus 0.25·h (p127), the
+rule behind both margins **unverified**; a typed object snap override moves the point (p120), the
+running snaps leave a click alone (d09); a bare number is direct distance from LASTPOINT towards
+the cursor (p102, p117); `x,y`, `@dx,dy`, `@`, `d<a` are read as the console reads them, `x,y,z`,
+`#x,y`, `*x,y` refused (p110–p116), and the point sets LASTPOINT (p111, p113, p118). Select objects
+asks `Select objects:`
 (MOVE's counts and modes, of whole objects) and goes back to the internal point, with an empty set
 too; it finds every object, one that closes no area too (`1 found` for an open line, erase/p222),
-which the hatch leaves out, saying nothing (what AutoCAD says of it was not probed); Undo, which
+which the hatch leaves out, saying nothing (what AutoCAD says of it was not probed); a TEXT or
+MTEXT it takes inside a boundary it takes is an island box (p228); Undo, which
 the prompt declares but does not list (es `desHacer`), takes back the last internal point's
 boundaries without a word and asks again, leaving what Select objects took, and with no internal
 point left says `No boundary to Undo.` (es `Ningún contorno por deshacer.`); Properties asks
 `Enter a pattern name or [?/Solid] <ANGLE>:` (`Unknown pattern name.`), then for a pattern
 `Specify a scale for the pattern <1.00>:` and `Specify an angle for the pattern <0.00>:` (es
 `Indique nombre de patrón o [?/Sólido]`, `Nombre de patrón desconocido.`,
-`Precise escala del patrón`, `Precise ángulo del patrón`); live preview, single undo, paint order
-behind the boundary; the hatch lies at the height of
-its boundary: the object nearest an internal point (-HATCH's Nearest ray casting) or the first
-object selected fixes it, and objects at another height are neither traced nor taken ("enclosed
-areas can be hatched only if they are in a plane parallel to the XY plane of the current UCS";
-objects "not all at the same elevation" give `Valid hatch boundary not found.`); which object fixes
-the plane is **unverified**; objects at an angle to the UCS's XY plane are not taken; the pattern,
+`Precise escala del patrón`, `Precise ángulo del patrón`); live preview, one undo step (U echoes
+the name typed, p128, p160), paint order behind the boundary; the hatch lies at ELEVATION by
+either route (p167, p168, p245, p250, p251, p261); Select objects takes only objects in the plane
+of the first that bounds an area, and no route objects at an angle to the UCS's XY plane; the pattern,
 scale and angle given are the next hatch's, per drawing and not saved (HPNAME, HPSCALE, HPANG: NEW
 and OPEN bring the defaults back, rectang/p303)
 
@@ -771,7 +783,12 @@ trazo demasiado pequeño.` (p305 es). WHY a safety cap of 100 000 pattern segmen
 between about 27 800 and 32 100 members (p365, p367), by a rule **unverified**, so a hatch between
 that and the cap is made here and refused there
 
-**Missing:** chained open-object boundaries, HPGAPTOL, HPASSOC, HPSEPARATE=1, Normal/Ignore island
+**Missing:** ellipse and spline boundaries at the internal point (p138–p141: AutoCAD traces them;
+here they bound nothing); Outer's third loop (p130: AutoCAD stores the island's island as a loop of
+its own, flagged not outermost, filling the same area: here 2 loops); a text box's rule for
+several MTEXT lines, an attribute, a text across a boundary or a pick inside a text's box
+(**unverified**); a tilted UCS at the internal point (p156: the console refuses a point off the
+plane, **unverified**); chained open-object boundaries, HPGAPTOL, HPASSOC, HPSEPARATE=1, Normal/Ignore island
 styles, -HATCH's other keywords (draW boundary, remove Boundaries, Advanced, DRaw order, Origin,
 ANnotative, hatch COlor, LAyer, Transparency) and `?`'s `Enter pattern(s) to list <*>:` with its
 pages, gradients, user-defined patterns + Double, `-HATCH` draw order/colour/layer/transparency,

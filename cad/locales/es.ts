@@ -2380,6 +2380,8 @@ export const es: EngineLocale = {
       "hatchTooDense": "Intervalo de sombreado demasiado denso o trazo demasiado pequeño.",
       "hatchNoBoundary": "No se ha encontrado un contorno de sombreado válido.",
       "noBoundaryToUndo": "Ningún contorno por deshacer.",
+      "areaAlreadySpecified": "Esta área ya se ha especificado.",
+      "pointOnObject": "El punto está directamente sobre un objeto.",
       "textStyleUndefined": [
         "No se puede encontrar estilo de texto \"",
         [

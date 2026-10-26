@@ -15,6 +15,7 @@ import {
   entityPointToWorld,
   lineEndZ,
   lineStartZ,
+  pointInsideHatch,
   withDeltaZ,
   withElevation,
   withNormal,
@@ -738,36 +739,85 @@ describe("editing commands", () => {
     })
   })
 
+  // The internal point traces every object parallel to the UCS whatever its
+  // height, as if flattened, and the hatch lies at ELEVATION by both routes
+  // (probes hatch/p153–p155, p167, p168, p245, p250, p251, p261).
   describe("HATCH", () => {
-    const square = (z: number) =>
-      [
-        lineOf(p(0, 0), p(100, 0)),
-        lineOf(p(100, 0), p(100, 100)),
-        lineOf(p(100, 100), p(0, 100)),
-        lineOf(p(0, 100), p(0, 0)),
-      ].map((line) => withElevation(line, z))
+    const ROOM = () => rectOf(p(0, 0), p(100, 50), { id: "ROOM" })
+    const hatchZ = (cad: CadHarness) =>
+      entityElevation(cad.only<HatchEntity>("hatch"))
 
-    it("traces only objects at the height of the nearest, and lies there", () => {
-      const cad = createHarness({
-        entities: [...square(5), lineOf(p(50, -50), p(50, 150))],
-      })
+    it("traces an island at another height, and lies at ELEVATION (p153, p154)", () => {
+      const island = () => withElevation(rectOf(p(40, 10), p(60, 40)), 10)
+      const around = answer(
+        createHarness({ entities: [ROOM(), island()] }),
+        "HATCH",
+        "10,25",
+        ""
+      )
+      expect(around.only<HatchEntity>("hatch").loops).toHaveLength(2)
+      expect(hatchZ(around)).toBe(0)
 
-      cad.command("HATCH").click(p(20, 50)).enter()
-
-      const hatch = cad.only<HatchEntity>("hatch")
-      expect(entityElevation(hatch)).toBe(5)
-      // The line at Z 0 crossing the square does not split it.
-      expect(hatch.loops[0].vertices).toHaveLength(4)
+      const inside = answer(
+        createHarness({ entities: [ROOM(), island()] }),
+        "HATCH",
+        "50,25",
+        ""
+      )
+      const hatch = inside.only<HatchEntity>("hatch")
+      expect(hatch.loops).toHaveLength(1)
+      expect(pointInsideHatch(hatch, p(50, 25))).toBe(true)
+      expect(pointInsideHatch(hatch, p(10, 25))).toBe(false)
+      expect(hatchZ(inside)).toBe(0)
     })
 
-    it("finds no boundary when the nearest object's plane encloses nothing", () => {
-      const cad = createHarness({
-        entities: [...square(5), lineOf(p(50, -50), p(50, 150))],
-      })
+    it("is not held to the height of the object nearest the point (p155)", () => {
+      const cad = answer(
+        createHarness({
+          entities: [ROOM(), withElevation(lineOf(p(45, 20), p(55, 20)), 10)],
+        }),
+        "HATCH",
+        "50,22",
+        ""
+      )
+      expect(cad.only<HatchEntity>("hatch").loops).toHaveLength(1)
+      expect(hatchZ(cad)).toBe(0)
+    })
 
-      cad.command("HATCH").click(p(45, 50))
+    it("lies at ELEVATION, not at its boundary's height (p167, p168, p245, p251)", () => {
+      const raised = answer(
+        createHarness({ entities: [withElevation(ROOM(), 10)] }),
+        "HATCH",
+        "50,25",
+        ""
+      )
+      expect(hatchZ(raised)).toBe(0)
 
-      expect(cad.commandLog()).toContain("Valid hatch boundary not found.")
+      const atFive = answer(
+        createHarness({ entities: [ROOM()] }),
+        "ELEV",
+        "5",
+        "0",
+        "HATCH",
+        "50,25",
+        ""
+      )
+      expect(hatchZ(atFive)).toBe(5)
+    })
+
+    it("lies at ELEVATION by Select objects too (p250, p261)", () => {
+      const cad = answer(
+        createHarness({ entities: [withElevation(ROOM(), 5)] }),
+        "ELEV",
+        "7",
+        "0",
+        "HATCH",
+        "S",
+        "50,0",
+        "",
+        ""
+      )
+      expect(hatchZ(cad)).toBe(7)
     })
 
     it("Select objects takes only objects at the first one's height", () => {
@@ -788,7 +838,7 @@ describe("editing commands", () => {
 
       const hatch = cad.only<HatchEntity>("hatch")
       expect(hatch.loops).toHaveLength(1)
-      expect(entityElevation(hatch)).toBe(3)
+      expect(entityElevation(hatch)).toBe(0)
     })
   })
 

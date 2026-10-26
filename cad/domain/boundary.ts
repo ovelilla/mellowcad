@@ -11,8 +11,13 @@ import {
   Bounds,
   Entity,
   HatchLoop,
+  measureTextInk,
+  measureTextWidth,
+  mtextLayout,
   polylineSegmentGeometries,
+  textStartOffset,
 } from "./entities"
+import { TEXT_FONT_CAP_HEIGHT, TEXT_FONT_DESCENT } from "./textFontMetrics"
 
 /**
  * Tracing the boundary of the enclosed area around a point — what AutoCAD's
@@ -27,7 +32,8 @@ import {
  * Islands come out of the same walk. AutoCAD's initial island style is **Outer**
  * (HPISLANDDETECTION 1, "hatches only areas outside of islands"), so what is
  * returned is the enclosing face plus the areas *directly* inside it — anything
- * nested deeper stays part of the island and is left blank.
+ * nested deeper stays part of the island and is left blank. A TEXT or MTEXT in
+ * the face is an island too, by a box round it ({@link textIslandBox}).
  */
 
 /** Two points closer than this are the same node of the boundary graph. */
@@ -47,6 +53,22 @@ const FACET_ANGLE = Math.PI / 18
 
 /** Below this a face is a sliver between overlapping objects, not an area. */
 const AREA_EPSILON = 1e-9
+
+/**
+ * How far a TEXT's island box reaches past its ink and advance, as a share of
+ * its height, on every side: 2.5853 at 10 and 5.1706 at 20 (probes hatch/p123,
+ * p125). Measured, not documented: the rule behind it is **unverified**.
+ */
+const TEXT_BOX_MARGIN = 0.25853
+
+/** An MTEXT's, past its lines' ascent and descent (p127: 0.625 at 2.5). */
+const MTEXT_BOX_MARGIN = 0.25
+
+/**
+ * Arial's OS/2 usWinAscent, in font units: with `TEXT_FONT_DESCENT` what an
+ * MTEXT line spans across its baseline in its island box (p127).
+ */
+const FONT_ASCENT = 1854
 
 /**
  * A piece of boundary geometry, parametrised over `t` in `[0, 1]`. Arcs always
@@ -94,8 +116,10 @@ interface Region {
  * boundary first, then its islands. `null` when the point is not enclosed by
  * the geometry given — AutoCAD's "Valid hatch boundary not found."
  *
- * `entities` is the boundary set the caller chose to consider; anything that is
- * not a line, arc, circle or polyline is ignored.
+ * `entities` is the boundary set the caller chose to consider. Lines, arcs,
+ * circles and polylines bound the area; a TEXT or MTEXT lying in it becomes an
+ * island box (AutoCAD's text-box loop, flagged `92 . 24`, probe hatch/p125);
+ * anything else is ignored.
  */
 export function traceBoundaryLoops(
   point: Vec2,
@@ -151,9 +175,86 @@ export function traceBoundaryLoops(
       )
   )
 
-  return [face, ...islands].map((region) =>
+  const loops = [face, ...islands].map((region) =>
     cycleLoop(region.cycle, directed, edges, nodes.points)
   )
+  for (const entity of entities) {
+    const box = textIslandBox(entity)
+    if (!box || !box.every((corner) => pointInRing(face.ring, corner))) continue
+    // Outer: a text inside an island stays part of it, blank already.
+    const centre = V.lerp(box[0], box[2], 0.5)
+    if (islands.some((island) => pointInRing(island.ring, centre))) continue
+    loops.push({ vertices: box })
+  }
+  return loops
+}
+
+/**
+ * The box a TEXT or MTEXT keeps clear of a hatch traced round it, in order
+ * round it, or `null` for anything else. A TEXT's spans its ink across the
+ * baseline and its advance along it (from the ink's start where a glyph
+ * overhangs it, as `textStartOffset` sets it), plus {@link TEXT_BOX_MARGIN}:
+ * ABC at 80,45, height 10, is 77.3943,42.2442–111.31,57.7558 (p125), its right
+ * side 0.3138·h past the ink, 0.2585·h past the advance. An MTEXT's spans its
+ * lines' advances by the font's ascent and descent, plus
+ * {@link MTEXT_BOX_MARGIN} (p127, one line; several are **unverified**).
+ */
+export function textIslandBox(entity: Entity): Vec2[] | null {
+  if (entity.type === "text") {
+    const { value, height } = entity
+    const start = textStartOffset(entity.justify, value, height)
+    const ink = measureTextInk(value, height)
+    const margin = TEXT_BOX_MARGIN * height
+    return boxCorners(entity.position, entity.rotation, {
+      x0: start.x + Math.min(0, ink.x0) - margin,
+      x1: start.x + Math.max(measureTextWidth(value, height), ink.x1) + margin,
+      y0: start.y + ink.y0 - margin,
+      y1: start.y + ink.y1 + margin,
+    })
+  }
+  if (entity.type !== "mtext") return null
+  const h = entity.height
+  const lines = mtextLayout(entity).lines.filter(
+    (line) => line.value.trim().length > 0
+  )
+  if (lines.length === 0) return null
+  const box = { x0: Infinity, x1: -Infinity, y0: Infinity, y1: -Infinity }
+  for (const line of lines) {
+    const ink = measureTextInk(line.value, h)
+    const width = measureTextWidth(line.value, h)
+    box.x0 = Math.min(box.x0, line.start + Math.min(0, ink.x0))
+    box.x1 = Math.max(box.x1, line.start + Math.max(width, ink.x1))
+    box.y0 = Math.min(
+      box.y0,
+      line.y - (TEXT_FONT_DESCENT / TEXT_FONT_CAP_HEIGHT) * h
+    )
+    box.y1 = Math.max(box.y1, line.y + (FONT_ASCENT / TEXT_FONT_CAP_HEIGHT) * h)
+  }
+  const margin = MTEXT_BOX_MARGIN * h
+  return boxCorners(entity.position, entity.rotation, {
+    x0: box.x0 - margin,
+    x1: box.x1 + margin,
+    y0: box.y0 - margin,
+    y1: box.y1 + margin,
+  })
+}
+
+/** A box of an object's own frame, its four corners in the plan, anticlockwise. */
+function boxCorners(
+  origin: Vec2,
+  rotation: number,
+  box: { x0: number; x1: number; y0: number; y1: number }
+): Vec2[] {
+  const along = { x: Math.cos(rotation), y: Math.sin(rotation) }
+  const across = V.perpendicular(along)
+  const at = (x: number, y: number) =>
+    V.add(origin, V.add(V.scale(along, x), V.scale(across, y)))
+  return [
+    at(box.x0, box.y0),
+    at(box.x1, box.y0),
+    at(box.x1, box.y1),
+    at(box.x0, box.y1),
+  ]
 }
 
 function collectCurves(entities: readonly Entity[]): Curve[] | null {

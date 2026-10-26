@@ -1467,6 +1467,8 @@
       "hatchTooDense": "Hatch spacing too dense, or dash size too small.",
       "hatchNoBoundary": "Valid hatch boundary not found.",
       "noBoundaryToUndo": "No boundary to Undo.",
+      "areaAlreadySpecified": "This area has already been specified.",
+      "pointOnObject": "Point is directly on an object.",
       "textStyleUndefined": "Cannot find text style \"{name}\".",
       "textJustifyOptions": "Enter an option [{keywords}]:",
       "attributeModes": "Current attribute modes:\nInvisible={invisible, select, yes {Y} other {N}}  Constant={constant, select, yes {Y} other {N}}  Verify={verify, select, yes {Y} other {N}}  Preset={preset, select, yes {Y} other {N}}  Lock position={lockPosition, select, yes {Y} other {N}}  Annotative=N  Multiple line=N",

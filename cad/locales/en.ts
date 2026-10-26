@@ -2013,6 +2013,8 @@ export const en: EngineCatalog = {
       "hatchTooDense": "Hatch spacing too dense, or dash size too small.",
       "hatchNoBoundary": "Valid hatch boundary not found.",
       "noBoundaryToUndo": "No boundary to Undo.",
+      "areaAlreadySpecified": "This area has already been specified.",
+      "pointOnObject": "Point is directly on an object.",
       "textStyleUndefined": [
         "Cannot find text style \"",
         [

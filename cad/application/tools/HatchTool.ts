@@ -1,5 +1,5 @@
 import { Vec2 } from "../../geometry/Vec2"
-import { traceBoundaryLoops } from "../../domain/boundary"
+import { textIslandBox, traceBoundaryLoops } from "../../domain/boundary"
 import {
   Bounds,
   Entity,
@@ -13,6 +13,7 @@ import {
   hatchGeometry,
   hatchLoopFromEntity,
   isLevel,
+  pointInsideHatch,
   readsInPlan,
   withElevation,
 } from "../../domain/entities"
@@ -84,10 +85,12 @@ export class HatchTool implements Tool {
   private preview: HatchEntity | null = null
   /** Boundaries traced from internal points, those of each point together. */
   private picked: HatchLoop[][] = []
-  /** The plane the traced boundaries lie in, fixed by the first one found. */
-  private pickedPlane: number | null = null
-  /** The plane before each internal point, for its Undo. */
-  private planesBefore: (number | null)[] = []
+  /**
+   * Whether this run has gathered its boundary set: once, at its first
+   * internal point, found or not, and never again, Undo or not (probes
+   * hatch/p104, p119).
+   */
+  private gathered = false
 
   // HPNAME / HPSCALE / HPANG: the next hatch starts from the settings of the
   // last one in the drawing, which AutoCAD does not save (rectang/p303).
@@ -107,8 +110,7 @@ export class HatchTool implements Tool {
     // set" — the boundary set starts empty every time.
     ctx.selection.clear()
     this.picked = []
-    this.pickedPlane = null
-    this.planesBefore = []
+    this.gathered = false
     this.enterPoint(ctx)
   }
 
@@ -116,8 +118,7 @@ export class HatchTool implements Tool {
     this.state = { phase: "point" }
     this.preview = null
     this.picked = []
-    this.pickedPlane = null
-    this.planesBefore = []
+    this.gathered = false
     ctx.dynamicInput.close()
   }
 
@@ -131,9 +132,9 @@ export class HatchTool implements Tool {
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
     if (this.state.phase === "point") {
-      // The raw world point, not the snapped one: this asks which *area* the
-      // fill goes in, and a point pulled onto an endpoint is on the boundary.
-      this.addInternalPoint(input.world, ctx)
+      // The raw world point where no override snapped it: the running snaps
+      // stay off at an area's prompt (desktop hatch/d09).
+      this.addInternalPoint(input.snap ? input.point : input.world, ctx)
       return
     }
     if (this.state.phase !== "select") return
@@ -265,6 +266,15 @@ export class HatchTool implements Tool {
     return this.state.phase === "select" && this.selector.wantsSnap()
   }
 
+  /**
+   * A typed object snap moves the internal point, `_END` then `100.5,10` onto
+   * the line's end at 99.5,10 (probe hatch/p120), where the running ones
+   * leave a click alone (desktop d09).
+   */
+  takesSnapOverride(): boolean {
+    return this.state.phase === "point"
+  }
+
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const out: ScenePrimitive[] = []
     if (this.preview) {
@@ -282,20 +292,31 @@ export class HatchTool implements Tool {
   }
 
   /**
-   * The boundaries of what Select objects took. It finds every object, one
-   * that closes no area too (`1 found` for an open line, -hatch in
-   * erase/p222), and what cannot bound the hatch is left out here; what
-   * AutoCAD says of it was not probed, so nothing is said.
+   * The boundaries of what Select objects took, in the plane of the first
+   * that bounds an area (HATCH-D40). It finds every object, one that closes no
+   * area too (`1 found` for an open line, -hatch in erase/p222), and what
+   * cannot bound the hatch is left out here; what AutoCAD says of it was not
+   * probed, so nothing is said. A TEXT or MTEXT inside a boundary taken is
+   * its island box, as at an internal point (p228).
    */
   private selectedLoops(ctx: ToolContext): HatchLoop[] {
-    let plane = this.pickedPlane
+    let plane: number | null = null
     const loops: HatchLoop[] = []
+    const texts: Vec2[][] = []
     for (const id of ctx.selection.toArray()) {
       const entity = ctx.document.get(id)
+      const box = entity && readsInPlan(entity) ? textIslandBox(entity) : null
+      if (box) texts.push(box)
       const loop = entity ? hatchLoopFromEntity(entity) : null
       if (!entity || !loop || !this.canBound(entity, plane)) continue
       plane ??= entityElevation(entity)
       loops.push(loop)
+    }
+    const areas = loops.map((loop) => createHatch([loop]))
+    for (const box of texts) {
+      if (areas.some((a) => box.every((c) => pointInsideHatch(a, c)))) {
+        loops.push({ vertices: box })
+      }
     }
     return loops
   }
@@ -304,7 +325,7 @@ export class HatchTool implements Tool {
    * Whether `entity` closes an area on its own in `plane`: "enclosed areas can
    * be hatched only if they are in a plane parallel to the XY plane of the
    * current UCS", so an object at an angle to it is left out, and once the
-   * hatch has a plane an object at another height is too.
+   * set has a plane an object at another height is too.
    */
   private canBound(entity: Entity, plane: number | null): boolean {
     return (
@@ -315,43 +336,35 @@ export class HatchTool implements Tool {
   }
 
   /**
-   * The height of the hatch being built: that of the first boundary found, by
-   * either route.
-   */
-  private plane(ctx: ToolContext): number | null {
-    if (this.pickedPlane !== null) return this.pickedPlane
-    for (const id of ctx.selection.toArray()) {
-      const entity = ctx.document.get(id)
-      if (entity && this.canBound(entity, null)) return entityElevation(entity)
-    }
-    return null
-  }
-
-  /**
    * Traces the area around an internal point and adds it to the boundary set,
-   * or says that no boundary was found there.
+   * or says why not, in the console's order (probes hatch/p104, p119, p143,
+   * p144, p157): the boundary set gathered at the run's first point; a point
+   * in an area already picked, or on an object, refused; `Analyzing internal
+   * islands...` only for an area found. Every object parallel to the UCS is
+   * traced, whatever its height, as if flattened (p153–p155, HATCH-D4).
    */
   private addInternalPoint(point: Vec2, ctx: ToolContext): void {
-    // What -HATCH says while it gathers the boundary set and traces.
-    for (const id of ANALYSIS_MESSAGES) ctx.report(ctx.text.message(id))
+    if (!this.gathered) {
+      for (const id of GATHERING_MESSAGES) ctx.report(ctx.text.message(id))
+      this.gathered = true
+    }
     const candidates = this.boundarySet(ctx).filter(
       (e) => isLevel(e) && readsInPlan(e) && BOUNDARY_TYPES.has(e.type)
     )
-    const plane = this.plane(ctx) ?? nearestPlane(point, candidates)
-    const loops =
-      plane === null
-        ? null
-        : traceBoundaryLoops(
-            point,
-            candidates.filter((e) => samePlane(entityElevation(e), plane))
-          )
-    if (!loops) {
-      // What AutoCAD answers when an internal point is not enclosed by anything.
-      ctx.report(ctx.text.message("hatchNoBoundary"), "error")
+    if (
+      this.picked.some((loops) => pointInsideHatch(createHatch(loops), point))
+    ) {
+      ctx.report(ctx.text.message("areaAlreadySpecified"), "error")
+    } else if (candidates.some((e) => onObject(e, point))) {
+      ctx.report(ctx.text.message("pointOnObject"), "error")
     } else {
-      this.picked.push(loops)
-      this.planesBefore.push(this.pickedPlane)
-      this.pickedPlane = plane
+      const loops = traceBoundaryLoops(point, candidates)
+      if (loops) {
+        ctx.report(ctx.text.message("analyzingInternalIslands"))
+        this.picked.push(loops)
+      } else {
+        ctx.report(ctx.text.message("hatchNoBoundary"), "error")
+      }
     }
     this.enterPoint(ctx)
     ctx.requestRender()
@@ -402,15 +415,13 @@ export class HatchTool implements Tool {
   }
 
   /**
-   * Undo, as AutoCAD 2023's console takes it at -HATCH's internal point
-   * (acc/h1–h23 of 2026-10-14): the boundaries of the last internal point
-   * go, silently; what Select objects took stays, and with no internal point
-   * left it says `No boundary to Undo.`
+   * Undo, as 2027's console takes it at -HATCH's internal point (probes
+   * hatch/p103, p104, p106, p107, p162, p164): the boundaries of the last
+   * internal point go, silently; what Select objects took stays, and with no
+   * internal point left it says `No boundary to Undo.`
    */
   private undoInternalPoint(ctx: ToolContext): void {
-    if (this.picked.pop()) {
-      this.pickedPlane = this.planesBefore.pop() ?? null
-    } else {
+    if (!this.picked.pop()) {
       ctx.report(ctx.text.message("noBoundaryToUndo"), "error")
     }
     this.enterPoint(ctx)
@@ -424,7 +435,9 @@ export class HatchTool implements Tool {
     id?: EntityId
   ): HatchEntity {
     // HPANG is measured from the UCS X axis and HPORIGIN (0,0) is the UCS
-    // origin, so a pattern lines up with the UCS it was drawn in.
+    // origin, so a pattern lines up with the UCS it was drawn in. The hatch
+    // lies at ELEVATION whatever its boundaries' height, by either route
+    // (probes hatch/p167, p168, p245, p250, p251, p261).
     return withElevation(
       createHatch(loops, {
         patternId: this.patternId,
@@ -434,7 +447,7 @@ export class HatchTool implements Tool {
         layerId: ctx.document.getCurrentLayerId(),
         id,
       }),
-      this.plane(ctx) ?? 0
+      ctx.ucs.origin.z + ctx.elevation
     )
   }
 
@@ -475,6 +488,9 @@ export class HatchTool implements Tool {
     )
     ctx.dynamicInput.open({
       fields: [{ id: "point", kind: "coordinate" }],
+      // A bare number is direct distance from LASTPOINT towards the cursor
+      // (probes hatch/p102, p117), though the prompt snaps nothing.
+      directDistance: "lastPoint",
       commit: () => {},
       commitRaw: (commitCtx) => {
         const typed = commitCtx.dynamicInput.getText("point").trim()
@@ -606,13 +622,27 @@ export class HatchTool implements Tool {
 
 const SOLID: HatchPatternId = "SOLID"
 
-/** -HATCH's report of a pick, in order, before the trace's outcome. */
-const ANALYSIS_MESSAGES = [
+/** What -HATCH says as it gathers the boundary set, once per run. */
+const GATHERING_MESSAGES = [
   "selectingEverything",
   "selectingEverythingVisible",
   "analyzingSelectedData",
-  "analyzingInternalIslands",
 ] as const
+
+/**
+ * Whether `point` lies on `entity`, which no internal point may: within the
+ * trace's own tolerance, a typed point's (the desktop's pickbox for a click is
+ * **unverified**, HATCH-D2).
+ */
+function onObject(entity: Entity, point: Vec2): boolean {
+  return (
+    entity.type !== "text" &&
+    entity.type !== "mtext" &&
+    closestOnEntity(entity, point).distance <= ON_OBJECT_TOLERANCE
+  )
+}
+
+const ON_OBJECT_TOLERANCE = 1e-6
 
 /** Overlap test in world coordinates, for the visible boundary set. */
 function overlaps(a: Bounds, b: Bounds): boolean {
@@ -628,34 +658,15 @@ function samePlane(a: number, b: number): boolean {
   return Math.abs(a - b) <= 1e-9
 }
 
-/** What a trace builds a boundary from (`traceBoundaryLoops` ignores the rest). */
+/** What a trace builds a boundary from, or keeps clear (`traceBoundaryLoops`). */
 const BOUNDARY_TYPES = new Set<Entity["type"]>([
   "line",
   "circle",
   "arc",
   "polyline",
+  "text",
+  "mtext",
 ])
-
-/**
- * The height of the object nearest `point`: -HATCH's default ray casting "runs
- * a line from the point you specify to the nearest object and then traces the
- * boundary", so the first object found fixes the plane the boundary lies in.
- */
-function nearestPlane(
-  point: Vec2,
-  candidates: readonly Entity[]
-): number | null {
-  let best: Entity | null = null
-  let bestDistance = Infinity
-  for (const entity of candidates) {
-    const distance = closestOnEntity(entity, point).distance
-    if (distance < bestDistance) {
-      bestDistance = distance
-      best = entity
-    }
-  }
-  return best ? entityElevation(best) : null
-}
 
 type HatchState =
   | { readonly phase: "point" }

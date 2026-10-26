@@ -1,9 +1,11 @@
 import { describe, expect, it } from "vitest"
 import { V, type Vec2 } from "../../geometry/Vec2"
 import {
+  Entity,
   HatchEntity,
   MAX_HATCH_LINES,
   createHatch,
+  createMText,
   hatchGeometry,
   hatchLoopFromEntity,
   mirrorEntity,
@@ -15,15 +17,20 @@ import {
   SOLID_HATCH_PATTERN_ID,
   hatchPattern,
 } from "../../domain/hatchPatterns"
+import { objectArea } from "../../domain/objectArea"
 import { parseDrawingFile } from "../../serialization/drawingFile"
 import { THEME } from "../../scene/theme"
 import {
+  arcOf,
   circleOf,
   deg,
+  layerOf,
   lineOf,
   loopOf,
   p,
+  polylineOf,
   rectOf,
+  textOf,
 } from "../../../test/builders"
 import { createHarness } from "../../../test/harness"
 import { es } from "../../locales/es"
@@ -48,15 +55,17 @@ function looseSquare(min: number, max: number) {
   ]
 }
 
+// The internal point against AutoCAD 2027's console, probes hatch/p100–p168:
+// -HATCH, whose prompt HATCH keeps here (HATCH-D31).
 describe("HATCH boundary by Pick internal point", () => {
-  it("is the prompt the command opens with", () => {
+  it("is the prompt the command opens with (p100)", () => {
     const h = createHarness({ entities: [SQUARE] })
     h.command("HATCH")
 
     expect(h.optionAbbreviations()).toEqual(["P", "S"])
   })
 
-  it("fills an area enclosed by loose lines", () => {
+  it("fills an area enclosed by loose lines (p135)", () => {
     const h = createHarness({ entities: looseSquare(0, 100) })
     h.command("HATCH").click(p(50, 50)).enter()
 
@@ -79,7 +88,7 @@ describe("HATCH boundary by Pick internal point", () => {
     expect(pointInsideHatch(hatch, p(50, 50))).toBe(false)
   })
 
-  it("makes one hatch out of several internal points", () => {
+  it("makes one hatch out of several internal points (p158)", () => {
     const h = createHarness({
       entities: [...looseSquare(0, 100), ...looseSquare(200, 300)],
     })
@@ -105,7 +114,7 @@ describe("HATCH boundary by Pick internal point", () => {
     expect(h.typeCounts().hatch).toBeUndefined()
   })
 
-  it("only traces what is visible, as AutoCAD's boundary set does", () => {
+  it("only traces what is visible, as AutoCAD's boundary set does (p146)", () => {
     // The default 1000×800 viewport shows x/y within ±500/±400 at scale 1.
     const h = createHarness({ entities: looseSquare(2000, 2100) })
     h.command("HATCH").click(p(2050, 2050))
@@ -127,7 +136,7 @@ describe("HATCH boundary by Pick internal point", () => {
     expect(previews()).toBeGreaterThan(0)
   })
 
-  it("ends without creating anything when nothing was picked", () => {
+  it("ends without creating anything when nothing was picked (p100)", () => {
     const h = createHarness({ entities: looseSquare(0, 100) })
     h.command("HATCH").enter()
 
@@ -145,8 +154,9 @@ describe("HATCH boundary by Pick internal point", () => {
   })
 })
 
-// AutoCAD 2023's console (acc/h1–h23 of 2026-10-14): -HATCH declares Undo at
-// its internal point (table 25032) without listing it.
+// -HATCH declares Undo at its internal point (table 25032) without listing it;
+// 2027's console takes it so (probes hatch/p103, p104, p106, p107, p124, p162,
+// p164).
 describe("HATCH's unlisted Undo", () => {
   const SMALL = rectOf(p(200, 0), p(250, 50), { id: "small" })
   const filled = (h: ReturnType<typeof createHarness>) => {
@@ -154,7 +164,7 @@ describe("HATCH's unlisted Undo", () => {
     return [p(50, 50), p(225, 25)].map((at) => pointInsideHatch(hatch, at))
   }
 
-  it("takes back the last internal point's boundary, silently", () => {
+  it("takes back the last internal point's boundary, silently (p104, p162)", () => {
     const h = typed(
       createHarness({ entities: [SQUARE, SMALL] }),
       "HATCH",
@@ -176,7 +186,7 @@ describe("HATCH's unlisted Undo", () => {
     expect(filled(h)).toEqual([false, true])
   })
 
-  it("leaves what Select objects took", () => {
+  it("leaves what Select objects took (p106, p107, p164)", () => {
     const window = ["S", "W", "190,-10", "260,60", ""]
     const picked = typed(
       createHarness({ entities: [SQUARE, SMALL] }),
@@ -199,7 +209,7 @@ describe("HATCH's unlisted Undo", () => {
     expect(filled(selected)).toEqual([false, true])
   })
 
-  it("refuses anything else, and is answered in Autodesk's Spanish", () => {
+  it("refuses anything else, and is answered in Autodesk's Spanish (p101, p124)", () => {
     const h = typed(createHarness({ entities: [SQUARE] }), "HATCH", "FOO")
     expect(h.commandLog().slice(-2)).toEqual([
       "Specify internal point or [Properties/Select objects]: FOO",
@@ -221,6 +231,295 @@ describe("HATCH's unlisted Undo", () => {
       "Precise punto interno o [Propiedades/Designar objetos]: FOO",
       "Se requiere un punto 2D o una opción.",
     ])
+  })
+})
+
+/** The rectangle of the internal point's probes, hatch/p100–p168. */
+const ROOM = rectOf(p(0, 0), p(100, 50), { id: "room" })
+const PROMPT = "Specify internal point or [Properties/Select objects]:"
+
+/** The lines `texts`, typed and confirmed one by one, add to the history. */
+function written(h: ReturnType<typeof createHarness>, ...texts: string[]) {
+  const from = h.commandLog().length
+  typed(h, ...texts)
+  return h.commandLog().slice(from)
+}
+
+/** LASTPOINT, as `ID @` reports it at the console's LUPREC 4. */
+function lastPointOf(h: ReturnType<typeof createHarness>): Vec2 {
+  h.runtime.setDocumentPrecision(4)
+  const line = written(h, "ID", "@").at(-1) ?? ""
+  const match = /X = (\S+)\s+Y = (\S+)/.exec(line)
+  expect(match).not.toBeNull()
+  return { x: Number(match![1]), y: Number(match![2]) }
+}
+
+describe("HATCH's internal point against AutoCAD 2027 (probes hatch/p100–p168)", () => {
+  it("gathers the boundary set once per run, and analyses islands only for an area found (p104, p119, p144)", () => {
+    const h = typed(
+      createHarness({ entities: [ROOM, rectOf(p(200, 0), p(300, 50))] }),
+      "HATCH"
+    )
+    expect(written(h, "150,25")).toEqual([
+      `${PROMPT} 150,25`,
+      "Selecting everything...",
+      "Selecting everything visible...",
+      "Analyzing the selected data...",
+      "Valid hatch boundary not found.",
+      "Current hatch pattern:  ANGLE",
+    ])
+    expect(written(h, "50,25")).toEqual([
+      `${PROMPT} 50,25`,
+      "Analyzing internal islands...",
+      "Current hatch pattern:  ANGLE",
+    ])
+    // Not gathered again after Undo took every point back (p104).
+    typed(h, "U")
+    expect(written(h, "250,25")).toEqual([
+      `${PROMPT} 250,25`,
+      "Analyzing internal islands...",
+      "Current hatch pattern:  ANGLE",
+    ])
+  })
+
+  it("says an area picked twice is specified already, and gathers nothing (p157)", () => {
+    const h = typed(createHarness({ entities: [ROOM] }), "HATCH", "50,25")
+    expect(written(h, "60,30")).toEqual([
+      `${PROMPT} 60,30`,
+      "This area has already been specified.",
+      "Current hatch pattern:  ANGLE",
+    ])
+    typed(h, "")
+    const hatch = hatchOnly(h.entities())
+    expect(hatch.loops).toHaveLength(1)
+    expect(pointInsideHatch(hatch, p(50, 25))).toBe(true)
+    expect(hatchGeometry(hatch).lines.length).toBeGreaterThan(0)
+
+    const spanish = typed(
+      createHarness({ locale: es, entities: [ROOM] }),
+      "SOMBREA",
+      "50,25",
+      "60,30"
+    )
+    expect(spanish.commandLog()).toContain("Esta área ya se ha especificado.")
+  })
+
+  it("takes a click in an island of an area picked as a new area (HATCH-D1: even-odd)", () => {
+    const h = createHarness({ entities: [ROOM, rectOf(p(40, 10), p(60, 40))] })
+    h.command("HATCH").click(p(10, 10)).click(p(50, 25)).enter()
+
+    const hatch = hatchOnly(h.entities())
+    expect(hatch.loops).toHaveLength(3)
+  })
+
+  it("refuses a point on an object, after the gathering lines (p143, p122)", () => {
+    const h = typed(
+      createHarness({ entities: [ROOM, rectOf(p(100, 0), p(300, 50))] }),
+      "HATCH"
+    )
+    expect(written(h, "100,25")).toEqual([
+      `${PROMPT} 100,25`,
+      "Selecting everything...",
+      "Selecting everything visible...",
+      "Analyzing the selected data...",
+      "Point is directly on an object.",
+      "Current hatch pattern:  ANGLE",
+    ])
+    typed(h, "")
+    expect(h.typeCounts().hatch).toBeUndefined()
+
+    const spanish = typed(
+      createHarness({ locale: es, entities: [ROOM] }),
+      "SOMBREA",
+      "100,25"
+    )
+    expect(spanish.commandLog()).toContain(
+      "El punto está directamente sobre un objeto."
+    )
+  })
+
+  it("honours a typed object snap override (p120)", () => {
+    const h = typed(
+      createHarness({
+        entities: [
+          ROOM,
+          rectOf(p(100, 0), p(300, 50)),
+          lineOf(p(50, 10), p(99.5, 10)),
+        ],
+      }),
+      "HATCH",
+      "_END",
+      "100.5,10"
+    )
+    expect(h.commandLog()).toContain("Point is directly on an object.")
+    typed(h, "")
+    expect(h.typeCounts().hatch).toBeUndefined()
+    expect(lastPointOf(h)).toBeCloseToPoint(p(99.5, 10))
+  })
+
+  it("leaves the running snaps off a click (desktop d09)", () => {
+    const h = createHarness({ entities: [ROOM], snap: true })
+    h.command("HATCH").click(p(98, 48)).enter()
+
+    expect(h.typeCounts().hatch).toBe(1)
+  })
+
+  it("reads a bare number as direct distance from LASTPOINT (p102, p117)", () => {
+    const zero = typed(createHarness({ entities: [ROOM] }), "ID", "10,10")
+    typed(zero, "HATCH", "0", "")
+    expect(zero.typeCounts().hatch).toBe(1)
+    expect(lastPointOf(zero)).toBeCloseToPoint(p(10, 10))
+
+    const ten = typed(createHarness({ entities: [ROOM] }), "ID", "50,25")
+    // Where the console's cursor stood: 10 from 50,25 lands on 41.2971,20.0745.
+    ten.moveTo(p(50 - 87.029, 25 - 49.255))
+    typed(ten, "HATCH", "10", "")
+    expect(ten.typeCounts().hatch).toBe(1)
+    expect(lastPointOf(ten)).toBeCloseToPoint(p(41.2971, 20.0745), 3)
+  })
+
+  it("leaves a TEXT and an MTEXT in the area clear (p166, p134)", () => {
+    const h = createHarness({
+      entities: [
+        rectOf(p(0, 0), p(200, 100)),
+        textOf(p(20, 45), "ABC", { height: 10 }),
+        createMText(p(120, 60), "ABC", { width: 60 }),
+      ],
+    })
+    h.command("HATCH").click(p(10, 10)).enter()
+
+    const hatch = hatchOnly(h.entities())
+    expect(hatch.loops).toHaveLength(3)
+    expect(pointInsideHatch(hatch, p(35, 50))).toBe(false)
+    expect(pointInsideHatch(hatch, p(123, 58))).toBe(false)
+    expect(pointInsideHatch(hatch, p(10, 10))).toBe(true)
+  })
+
+  it("leaves a TEXT that Select objects took with the boundary clear (p228)", () => {
+    const h = createHarness({
+      entities: [ROOM, textOf(p(10, 10), "ABC", { height: 5 })],
+    })
+    typed(h, "HATCH", "S", "ALL", "", "")
+
+    const hatch = hatchOnly(h.entities())
+    expect(hatch.loops).toHaveLength(2)
+    expect(pointInsideHatch(hatch, p(12, 12))).toBe(false)
+  })
+
+  it("reads the point forms the console reads (p110–p116)", () => {
+    const hatched = (...texts: string[]) => {
+      const h = typed(createHarness({ entities: [ROOM] }), ...texts, "")
+      return h.typeCounts().hatch ?? 0
+    }
+    const refused = (text: string, ...before: string[]) => {
+      const h = typed(createHarness({ entities: [ROOM] }), ...before, "HATCH")
+      return written(h, text).at(-1)
+    }
+    expect(refused("50,25,7")).toBe("2D point or option keyword required.")
+    expect(hatched("ID", "10,10", "HATCH", "@40,15")).toBe(1)
+    expect(hatched("ID", "50,25", "HATCH", "@")).toBe(1)
+    expect(hatched("HATCH", "30<20")).toBe(1)
+    expect(refused("#50,25")).toBe("2D point or option keyword required.")
+    expect(refused("*90,10", "UCS", "Z", "30")).toBe(
+      "2D point or option keyword required."
+    )
+    const turned = typed(
+      createHarness({ entities: [ROOM] }),
+      "UCS",
+      "Z",
+      "30",
+      "HATCH"
+    )
+    expect(written(turned, "90,10")).toContain(
+      "Valid hatch boundary not found."
+    )
+  })
+
+  it("sets LASTPOINT to the internal point (p111, p113, p118)", () => {
+    const h = typed(createHarness({ entities: [ROOM] }), "ID", "7,7")
+    typed(h, "HATCH", "50,25", "")
+    expect(lastPointOf(h)).toBeCloseToPoint(p(50, 25))
+
+    const polar = typed(
+      createHarness({ entities: [ROOM] }),
+      "HATCH",
+      "30<20",
+      ""
+    )
+    expect(lastPointOf(polar)).toBeCloseToPoint(p(28.1908, 10.2606), 3)
+
+    const clicked = typed(createHarness({ entities: [ROOM] }), "ID", "7,7")
+    clicked.command("HATCH").click(p(50, 25)).enter()
+    expect(lastPointOf(clicked)).toBeCloseToPoint(p(50, 25))
+  })
+
+  it("traces an island on a locked layer, not one on a layer turned off (p151, p152)", () => {
+    const traced = (patch: { visible?: boolean; locked?: boolean }) => {
+      const h = createHarness()
+      h.runtime.document.load(
+        [ROOM, rectOf(p(40, 10), p(60, 40), { layerId: "F" })],
+        { layers: [layerOf("F", patch)] }
+      )
+      typed(h, "HATCH", "10,10", "")
+      return hatchOnly(h.entities()).loops.length
+    }
+    expect(traced({ visible: false })).toBe(1)
+    expect(traced({ locked: true })).toBe(2)
+  })
+
+  it("does not take an existing hatch as a boundary (p159)", () => {
+    const h = typed(
+      createHarness({ entities: [ROOM] }),
+      "HATCH",
+      "50,25",
+      "",
+      "HATCH",
+      "50,25",
+      ""
+    )
+    const hatches = h.entities().filter((e) => e.type === "hatch")
+    expect(hatches.map((e) => (e as HatchEntity).loops.length)).toEqual([1, 1])
+  })
+
+  it("traces circles, arcs and arc segments (p136, p137, p142)", () => {
+    const area = (entities: Entity[], at: string) => {
+      const h = typed(createHarness({ entities }), "HATCH", at, "")
+      return objectArea(hatchOnly(h.entities()))?.area
+    }
+    expect(
+      area(
+        [arcOf(p(0, 0), 50, 0, Math.PI), lineOf(p(-60, 0), p(60, 0))],
+        "0,20"
+      )
+    ).toBeCloseTo(3926.9908, 3)
+    expect(area([circleOf(p(0, 0), 50)], "0,0")).toBeCloseTo(7853.9816, 3)
+    expect(
+      area(
+        [
+          polylineOf([p(0, 0), p(100, 0), p(100, 50), p(0, 50)], {
+            closed: true,
+            bulges: [0, 1, 0, 0],
+          }),
+        ],
+        "50,25"
+      )
+    ).toBeCloseTo(5981.7477, 3)
+  })
+
+  it("is undone by one U, which echoes the name typed (p128, p160)", () => {
+    const h = typed(createHarness({ entities: [ROOM] }), "HATCH", "50,25", "")
+    expect(written(h, "U").at(-1)).toBe("HATCH")
+    expect(h.typeCounts().hatch).toBeUndefined()
+    expect(written(h, "REDO")).toContain("HATCH")
+    expect(h.typeCounts().hatch).toBe(1)
+
+    const spanish = typed(
+      createHarness({ locale: es, entities: [ROOM] }),
+      "SOMBREA",
+      "50,25",
+      ""
+    )
+    expect(written(spanish, "H").at(-1)).toBe("SOMBREA")
   })
 })
 
