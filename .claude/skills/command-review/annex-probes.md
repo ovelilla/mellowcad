@@ -219,6 +219,14 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   prompt through COM (MATCHPROP's source and destination). A hatch's pattern is compared line for
   line by EXPLODE in the console (hatch/p300–p307) (HATCH review).
 
+- The console skips a dialog a command opens midway: -BLOCK's Convert asked nothing there (p134,
+  p305), where the desktop opens Edit Attributes (d00, d01). A console run that ends without a
+  prompt after a step that may open a dialog is rerun on the desktop through COM, and `acad.sh wins`
+  lists the dialog. A modal dialog locks COM: send its command in the background (`com send … &`),
+  read it with `uia` or `shot <hwnd>`, close it with `acad.sh post <hwnd>` (IDCANCEL). Words a
+  desktop refusal shows that the merged tables lack are found by their UTF-16 text in the
+  install's `en-US/*.dll`, then read with `strtable.mjs` (atteditRes.dll; Blocks review).
+
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).
 

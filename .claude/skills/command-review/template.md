@@ -235,7 +235,8 @@ deviation without a `WHY` and a coverage note is a finding.
   such as a zero vector, goes to one of them, or MOVE's turned up under three ids), the finding format
   (§5.1), its prefix and a range of decision ids of its own (the Undo keyword's listing and steps
   at every prompt, the preselection and the review of the
-  existing tests go to one subagent by name: OFFSET's turned up three times), the order to claim nothing about
+  existing tests go to one subagent by name: OFFSET's turned up three times; so does a path two
+  commands share, BLOCK's Convert asking INSERT's values: found twice), the order to claim nothing about
   AutoCAD without a probe id the reviewer gave it, and the patterns found earlier in the review
   (with their IDs) to look for analogues.
 - They return the cells they answered, what they could not check, and the tests they read, as
@@ -388,3 +389,6 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
 - 2026-10-26, after the HATCH review: a ribbon twin's Escape and preview under each name
   (matrix.md G); AutoCAD's log for the history, objects by handle, a pattern by EXPLODE
   (annex-probes.md §4).
+- 2026-10-27, after the Blocks review: a dialog the console skips, a modal dialog closed with
+  `acad.sh post`, words outside the merged tables (annex-probes.md §4); a path two commands share
+  to one subagent by name (§4.8).

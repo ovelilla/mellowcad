@@ -23,7 +23,8 @@ Windows desktop.
   same `com send` (end it with `\n`), or answer it with `acad.sh type`.
 - **A dialog locks it too**: an untrusted DLL's security task dialog, a .NET exception dialog.
   `acad.sh wins` lists the open windows, `acad.sh uia <hwnd>` reads one (fields included) and
-  `acad.sh uia <hwnd> "<button>"` presses a button.
+  `acad.sh uia <hwnd> "<button>"` presses a button; `acad.sh post <hwnd>` closes one UIA cannot
+  press (WM_COMMAND IDCANCEL).
 
 ## How each part works
 

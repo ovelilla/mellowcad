@@ -1,11 +1,11 @@
 # The Blocks review's desktop pass, 2026-10-26: the owner's AutoCAD launched with
 # `acad.sh launch "" en-US` (its English profile), on the second monitor, a drawing of the review's
 # own (`acad.sh com new`), the view ZOOM C 50,25 120. Helpers: lib-dsk-en.sh; a dialog COM cannot
-# close is closed with post.ps1 (WM_COMMAND IDCANCEL). Read before and put back at the end: OSMODE
-# 4133 (0 for the pass), ATTDIA 1, ATTREQ 1 (0 for d02 on); DYNMODE stayed -1. Run step by step:
-# a modal dialog or a pending prompt locks COM.
+# close is closed with `acad.sh post <hwnd>` (WM_COMMAND IDCANCEL). Read before and put back at the
+# end: OSMODE 4133 (0 for the pass), ATTDIA 1, ATTREQ 1 (0 for d02 on); DYNMODE stayed -1. Run
+# step by step: a modal dialog or a pending prompt locks COM.
 . "$(dirname "${BASH_SOURCE[0]}")/lib-dsk-en.sh"
-P="powershell.exe -NoProfile -ExecutionPolicy Bypass -File $(wslpath -w scripts/research/probes/blocks/post.ps1)"
+P="$A post"
 $A com eval '(setvar "OSMODE" 0)'; cs "_ZOOM _C 50,25 120\n"
 
 # d00/d01 -BLOCK's Convert with attribute definitions opens the Edit Attributes dialog, its fields
