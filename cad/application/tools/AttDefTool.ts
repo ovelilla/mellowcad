@@ -1,9 +1,10 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
-import { normalizeDegrees } from "../../geometry/primitives"
+import { normalizeAngle, normalizeDegrees } from "../../geometry/primitives"
 import {
   AttributeDefinitionEntity,
   AttributeModes,
+  EntityId,
   DEFAULT_ATTRIBUTE_MODES,
   TextJustify,
   attributeInput,
@@ -11,8 +12,8 @@ import {
   createAttributeDefinition,
   onPlaneOf,
 } from "../../domain/entities"
-import { DEFAULT_TEXT_HEIGHT, TextStyleId } from "../../domain/textStyles"
-import { formatLength } from "../../domain/units"
+import { TextStyleId } from "../../domain/textStyles"
+import { DEFAULT_DOCUMENT_SETTINGS } from "../../domain/units"
 import { ucsAngleToWorld, ucsRotation, worldAngleToUcs } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
 import type { PromptId } from "../../locales/types"
@@ -26,8 +27,10 @@ import {
   JUSTIFY_BY_KEYWORD,
   JUSTIFY_KEYWORDS,
   POINT_PROMPT,
+  fixedTextHeight,
   lineBelow,
   listTextStyles,
+  writeCurrentTextLine,
 } from "./TextTool"
 import {
   CommandOption,
@@ -48,12 +51,6 @@ const MODE_BY_KEYWORD: Readonly<Record<string, keyof AttributeModes>> = {
   Preset: "preset",
   "Lock position": "lockPosition",
 }
-
-/** The justification keyword of each justification, as TEXT reports it. */
-const JUSTIFY_KEYWORD_OF: Readonly<Record<TextJustify, string>> =
-  Object.fromEntries(
-    Object.entries(JUSTIFY_BY_KEYWORD).map(([id, justify]) => [justify, id])
-  ) as Record<TextJustify, string>
 
 type AttDefState =
   | { readonly phase: "modes" }
@@ -81,9 +78,12 @@ type AttDefState =
  * the attribute tag instead of requesting a text string", after `Current text
  * style:  "Standard"  Text height:  2.50  Justify:  Left`.
  *
- * Enter at the start point places the definition one line below the previous
- * one, which is how -ATTDEF stacks a block's attributes and what the dialog
- * calls "Align below previous attribute definition".
+ * TEXTSIZE, the justification and the rotation are TEXT's, shared through
+ * the drawing settings both ways (probes blocks/p326, p327). Enter at the
+ * start point places the definition one line below the newest this session
+ * defined that is still in the drawing, which is how -ATTDEF stacks a block's
+ * attributes and what the dialog calls "Align below previous attribute
+ * definition"; with none it is refused, as TEXT's (p321, p322, p324).
  *
  * The modes are AFLAGS, which AutoCAD does not save: they live on the tool for
  * the session. Annotative and Multiple lines are not offered.
@@ -96,22 +96,36 @@ export class AttDefTool implements Tool {
   private tag = ""
   private prompt = ""
   private value = ""
-  /** TEXTSIZE, which TEXT and MTEXT share (rectang/p313). */
-  private height = DEFAULT_TEXT_HEIGHT
+  /**
+   * TEXTSIZE, the justification and the rotation (radians from the UCS X
+   * axis) as the command found them in the drawing settings, TEXT's.
+   */
+  private height = DEFAULT_DOCUMENT_SETTINGS.textSize
   private rotation = 0
   private justify: TextJustify = "left"
   /** The current style's name, offered as Style's `<default>`. */
   private styleName = ""
-  private previous: AttributeDefinitionEntity | null = null
+  /**
+   * The definitions this drawing session wrote, the newest last: Enter at
+   * the start continues below the newest still in the drawing (p320, p324).
+   */
+  private written: EntityId[] = []
   private lastScreen: Vec2 | null = null
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.state = { phase: "modes" }
-    this.height = ctx.document.getSettings().textSize
+    const settings = ctx.document.getSettings()
+    this.height = settings.textSize
+    this.justify = settings.textJustify
+    this.rotation = settings.textRotation
     this.reportModes(ctx)
     ctx.dynamicInput.open({ fields: [], commit: () => {} })
+  }
+
+  onNewDrawing(): void {
+    this.written = []
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -227,14 +241,14 @@ export class AttDefTool implements Tool {
       const justify = JUSTIFY_BY_KEYWORD[id]
       if (justify === undefined) return "unhandled"
       this.justify = justify
+      setCommandSettings({ textJustify: justify }, ctx)
       // The point the justification names, asked without the keywords.
       this.enterStart(ctx, false)
       return "continue"
     }
     if (state.phase === "style") {
       if (id !== "?") return "unhandled"
-      listTextStyles(this.currentStyleId(ctx), ctx)
-      this.enterStyle(ctx)
+      this.listStyles(ctx)
       return "continue"
     }
     if (state.phase !== "start" || !state.keywords) return "unhandled"
@@ -303,9 +317,17 @@ export class AttDefTool implements Tool {
     this.openText(ctx, prompt)
   }
 
+  /** The tag's answer ends at a space (AllowSpaces off, probe blocks/p313). */
   private openText(ctx: ToolContext, prompt: PromptId): void {
     ctx.dynamicInput.open({
-      fields: [{ id: "text", prompt, kind: "text" }],
+      fields: [
+        {
+          id: "text",
+          prompt,
+          kind: "text",
+          ...(this.state.phase === "tag" ? { endsAtSpace: true } : {}),
+        },
+      ],
       commit: () => {},
       commitRaw: (commitCtx) => this.commitText(commitCtx),
     })
@@ -316,11 +338,10 @@ export class AttDefTool implements Tool {
     const typed = ctx.dynamicInput.getText("text")
     switch (this.state.phase) {
       case "tag": {
+        // Only an empty tag is refused: a space has ended it already.
         const tag = attributeTag(typed)
         if (!tag) {
-          if (typed.trim() === "") {
-            ctx.report(ctx.text.message("tagCannotBeNull"), "error")
-          }
+          ctx.report(ctx.text.message("tagCannotBeNull"), "error")
           this.enterText(ctx, "tag", "attributeTag")
           return true
         }
@@ -339,24 +360,17 @@ export class AttDefTool implements Tool {
         return true
       case "value": {
         this.value = attributeInput(typed)
-        const style = ctx.document.getTextStyle(this.currentStyleId(ctx))
-        ctx.report(
-          ctx.text.message("attdefTextStyle", {
-            style: style?.name ?? this.currentStyleId(ctx),
-            height: formatLength(this.height, ctx.document.getSettings()),
-            justify: ctx.text.keyword(JUSTIFY_KEYWORD_OF[this.justify]),
-          })
-        )
+        this.writeCurrentLine(ctx, this.currentStyleName(ctx))
         this.enterStart(ctx, true)
         return true
       }
       case "style": {
         const name = typed.trim()
         if (ctx.text.resolveKeyword(name, ["?"]) === "?") {
-          listTextStyles(this.currentStyleId(ctx), ctx)
-          this.enterStyle(ctx)
+          this.listStyles(ctx)
           return true
         }
+        const before = this.styleName
         // Empty is Enter, which keeps the `<current>` style.
         if (name !== "") {
           const style = ctx.document
@@ -372,6 +386,9 @@ export class AttDefTool implements Tool {
           }
           ctx.setCurrentTextStyle(style.id)
         }
+        // TEXT's path: the Current line again, naming the style it was before
+        // (p325; text/p126).
+        this.writeCurrentLine(ctx, before)
         this.enterStart(ctx, true)
         return true
       }
@@ -380,9 +397,37 @@ export class AttDefTool implements Tool {
     }
   }
 
+  /**
+   * `Current text style:  "Standard"  Text height:  2.50  Justify:  Left`,
+   * TEXT's line without its Annotative (probe blocks/p03).
+   */
+  private writeCurrentLine(ctx: ToolContext, style: string): void {
+    writeCurrentTextLine(
+      "attdefTextStyle",
+      style,
+      this.height,
+      this.justify,
+      ctx
+    )
+  }
+
+  /**
+   * Style's `?`: the styles, then the Current line and the start point, as
+   * TEXT's (p325; text/p109).
+   */
+  private listStyles(ctx: ToolContext): void {
+    listTextStyles(this.currentStyleId(ctx), ctx)
+    this.writeCurrentLine(ctx, this.currentStyleName(ctx))
+    this.enterStart(ctx, true)
+  }
+
+  private currentStyleName(ctx: ToolContext): string {
+    const id = this.currentStyleId(ctx)
+    return ctx.document.getTextStyle(id)?.name ?? id
+  }
+
   private enterStyle(ctx: ToolContext): void {
-    const current = ctx.document.getTextStyle(this.currentStyleId(ctx))
-    this.styleName = current?.name ?? this.currentStyleId(ctx)
+    this.styleName = this.currentStyleName(ctx)
     this.state = { phase: "style" }
     this.openText(ctx, "enterStyleNameOr")
   }
@@ -405,17 +450,27 @@ export class AttDefTool implements Tool {
   }
 
   private commitStart(ctx: ToolContext): boolean {
+    if (this.state.phase !== "start") return false
     const typed = ctx.dynamicInput.getText("point").trim()
     if (typed.length === 0) {
-      const previous = this.previous
-      if (!previous) return true
-      this.justify = previous.justify
+      const previous = this.definitionToContinue(ctx)
+      if (!previous) {
+        // As TEXT's: the console's refusal, and the prompt asked again.
+        ctx.report(
+          ctx.text.message(
+            this.state.keywords ? "pointOrKeywordRequired" : "invalidPoint"
+          ),
+          "error"
+        )
+        return true
+      }
       this.finish(
         lineBelow(previous),
         previous.height,
         previous.rotation,
         ctx,
-        previous.styleId
+        previous.styleId,
+        previous.justify
       )
       return true
     }
@@ -431,15 +486,26 @@ export class AttDefTool implements Tool {
     return true
   }
 
+  /** The newest definition this session wrote that is still in the drawing. */
+  private definitionToContinue(
+    ctx: ToolContext
+  ): AttributeDefinitionEntity | null {
+    for (let i = this.written.length - 1; i >= 0; i--) {
+      const entity = ctx.document.get(this.written[i])
+      if (entity?.type === "attdef") return entity
+    }
+    return null
+  }
+
   private currentStyleId(ctx: ToolContext): TextStyleId {
     return ctx.document.getCurrentTextStyleId()
   }
 
   /** The height prompt is skipped when the style fixes one, as TEXT's is. */
   private beginAt(position: Vec3, ctx: ToolContext): void {
-    const style = ctx.document.getTextStyle(this.currentStyleId(ctx))
-    if (style && style.height > 0) {
-      this.enterRotation(position, style.height, ctx)
+    const fixed = fixedTextHeight(ctx)
+    if (fixed !== null) {
+      this.enterRotation(position, fixed, ctx)
       return
     }
     this.state = { phase: "height", position, cursor: position }
@@ -459,9 +525,7 @@ export class AttDefTool implements Tool {
     height: number,
     ctx: ToolContext
   ): void {
-    this.height = height
     this.state = { phase: "rotation", position, height, cursor: position }
-    setCommandSettings({ textSize: height }, ctx)
     ctx.dynamicInput.open({
       fields: [{ id: "rotation", prompt: "textRotation", kind: "angle" }],
       commit: (values, commitCtx) => {
@@ -482,17 +546,21 @@ export class AttDefTool implements Tool {
   }
 
   /**
-   * `rotation` is the object's own, in the WCS; the next prompt offers it from
-   * the UCS X axis. Aligned below the previous one, its style goes on.
+   * `rotation` is the object's own, in the WCS; the next prompt, TEXT's too,
+   * offers it from the UCS X axis. Aligned below the previous one, its style
+   * and justification go on. TEXTSIZE and the rotation are set with the
+   * definition, as TEXT sets them with its first line (text/p163).
    */
   private finish(
     position: Vec3,
     height: number,
     rotation: number,
     ctx: ToolContext,
-    styleId = this.currentStyleId(ctx)
+    styleId = this.currentStyleId(ctx),
+    justify = this.justify
   ): void {
-    this.rotation = worldAngleToUcs(ctx.ucs, rotation)
+    this.height = height
+    this.rotation = normalizeAngle(worldAngleToUcs(ctx.ucs, rotation))
     const definition = withCurrentProperties(
       onPlaneOf(
         createAttributeDefinition(position, this.tag, {
@@ -501,7 +569,7 @@ export class AttDefTool implements Tool {
           modes: this.modes,
           height,
           rotation,
-          justify: this.justify,
+          justify,
           styleId,
           layerId: ctx.document.getCurrentLayerId(),
         }),
@@ -509,7 +577,8 @@ export class AttDefTool implements Tool {
       ),
       ctx
     )
-    this.previous = definition
+    this.written.push(definition.id)
+    setCommandSettings({ textSize: height, textRotation: this.rotation }, ctx)
     ctx.execute(new AddEntityCommand(definition))
     ctx.endCommand()
   }

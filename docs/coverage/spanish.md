@@ -33,11 +33,11 @@ explains):
   stay English: the Spanish file gives `CH` to CHAFLAN.
 - **Attributes:** `ATRDEF`, `-ATRDEF`, `ATREDIT`, `EDITATR` and `ATRVIS` from the Spanish pages with
   the English GUIDs, as are the keywords Invisible, Constante, Verificable, Predefinido and Bloquear
-  posición. From aCADemia's 2013 captures of the Spanish product ("Bloques", 11.ª and 13.ª
-  partes): -ATRDEF's tag, prompt and default prompts, the modes line with `S`/`N` and its two
-  spaces, the alias `AT` / `-AT`† (2013; no 2026 source lists them), and ATRVIS's
-  `[Normal/ACT/DES] <Normal>`. `ATE` has no Spanish alias. **Unverified:** INSERT's
-  `Indique los valores de atributo` and the Edit Attribute Definition labels.
+  posición. The aliases `AT`, `-AT`, `ATR` and `DDATTE` are the 2027 `acad.pgp`'s (`-ATR` is
+  -ATREDIT's, not built). -ATRDEF's prompts, the modes line with `S`/`N` and its two spaces,
+  INSERT's `Indique valores de atributo` and ATRVIS's `[Normal/ACT/DES] <Normal>` are 2027's console's
+  (blocks/p03, p311, p335); ATREDIT's and EDITATR's question and refusals are atteditRes.dll's and
+  AcEAtteditRes.dll's (es-ES). **Unverified:** the Edit Attribute Definition labels.
 - **SPLINE:** the name from the Spanish page with the English GUID (`SPLINE`; SPLINEDIT is
   `EDITSPLINE`); `SPL`, the keywords `Método`, `Nudos`, `Grado`, `Ajustar`, `VC`,
   `iniciar Tangencia`,

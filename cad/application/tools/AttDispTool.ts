@@ -58,10 +58,11 @@ export class AttDispTool implements Tool {
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     const display = DISPLAY_BY_KEYWORD[id]
     if (!display) return "unhandled"
-    // AutoCAD 2023's console regenerates only when the setting changes.
+    // AutoCAD 2027's console regenerates only when the setting changes
+    // (probe blocks/p04), and its U writes `ATTDISP` alone (p337).
     if (display !== this.current) {
       ctx.execute(new SetAttributeDisplayCommand(display))
-      ctx.regenerate()
+      ctx.regenerate("once")
     }
     return "end"
   }

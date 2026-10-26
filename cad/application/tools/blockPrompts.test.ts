@@ -4,10 +4,13 @@ import { type CadHarness, createHarness } from "../../../test/harness"
 import { lineOf, p } from "../../../test/builders"
 import { es } from "../../locales/es"
 import {
+  AttributeDefinitionEntity,
   InsertEntity,
+  createAttributeDefinition,
   createBlockDefinition,
   createInsert,
 } from "../../domain/entities"
+import { createTextStyle } from "../../domain/textStyles"
 
 /** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
 function answer(cad: CadHarness, ...texts: string[]): CadHarness {
@@ -601,5 +604,278 @@ describe("? lists the blocks, as AutoCAD 2027", () => {
         "    2            2",
       ].join("\n")
     )
+  })
+})
+
+const CURRENT = (height: string, justify: string) =>
+  `Current text style:  "Standard"  Text height:  ${height}  Justify:  ${justify}`
+
+/** ATTDEF from its modes to its start point: tag, prompt and default. */
+function toStartPoint(cad: CadHarness, tag = "T1"): CadHarness {
+  cad.command("ATTDEF")
+  cad.enter()
+  return answer(cad, tag, "P1", "D1")
+}
+
+describe("ATTDEF asks TEXT's prompts with TEXT's settings, as AutoCAD 2027", () => {
+  it("takes TEXT's height and rotation as its defaults (probe blocks/p326)", () => {
+    const cad = createHarness()
+    cad.command("-TEXT")
+    answer(cad, "0,0", "7", "30", "A")
+    toStartPoint(cad)
+    expect(cad.commandLog().at(-1)).toBe(CURRENT("7.00", "Left"))
+    answer(cad, "0,20")
+    expect(cad.state().commandLine.prompt).toBe("ATTDEF Specify height <7.00>:")
+    cad.enter()
+    expect(cad.state().commandLine.prompt).toBe(
+      "ATTDEF Specify rotation angle of text <30>:"
+    )
+  })
+
+  it("shares the justification with TEXT, both ways (probe blocks/p327)", () => {
+    const cad = createHarness()
+    cad.command("-TEXT")
+    answer(cad, "J", "MC", "0,0", "", "", "A")
+    toStartPoint(cad)
+    expect(cad.commandLog().at(-1)).toBe(CURRENT("2.50", "MC"))
+    expect(cad.state().commandLine.prompt).toBe(
+      "ATTDEF Specify middle point of text or [Justify/Style]:"
+    )
+    answer(cad, "J", "TR", "0,20", "", "")
+    cad.command("-TEXT")
+    expect(cad.commandLog().at(-1)).toBe(
+      'Current text style:  "Standard"  Text height:  2.50  Annotative:  No  Justify:  TR'
+    )
+  })
+
+  it("refuses Enter at the start point with nothing to continue, after a TEXT too (probes blocks/p321, p322)", () => {
+    const cad = createHarness()
+    cad.command("-TEXT")
+    answer(cad, "0,0", "", "", "HELLO")
+    toStartPoint(cad)
+    answer(cad, "")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify start point of text or [Justify/Style]:",
+      "Point or option keyword required.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "ATTDEF Specify start point of text or [Justify/Style]:"
+    )
+    answer(cad, "J", "TL", "")
+    expect(cad.commandLog().at(-1)).toBe("Invalid point.")
+    expect(cad.typeCounts().attdef).toBeUndefined()
+  })
+
+  it("continues below the newest definition still in the drawing, never one U took back or a NEW left behind (probes blocks/p320, p324)", () => {
+    const cad = createHarness()
+    toStartPoint(cad)
+    answer(cad, "J", "TL", "0,0", "", "")
+    toStartPoint(cad, "T2")
+    expect(cad.commandLog().at(-1)).toBe(CURRENT("2.50", "TL"))
+    expect(cad.state().commandLine.prompt).toBe(
+      "ATTDEF Specify top-left point of text or [Justify/Style]:"
+    )
+    answer(cad, "")
+    const below = cad.latest() as AttributeDefinitionEntity
+    expect(below.tag).toBe("T2")
+    expect(below.justify).toBe("tl")
+    expect(below.position).toBeCloseToPoint(p(0, -4.016030013642565), 6)
+
+    cad.undo()
+    cad.undo()
+    toStartPoint(cad, "T3")
+    answer(cad, "")
+    expect(cad.commandLog().at(-1)).toBe("Point or option keyword required.")
+    cad.escape()
+
+    toStartPoint(cad, "T4")
+    answer(cad, "0,50", "", "")
+    cad.runtime.newDrawing()
+    toStartPoint(cad, "T5")
+    answer(cad, "")
+    expect(cad.commandLog().at(-1)).toBe("Point or option keyword required.")
+  })
+
+  it("writes the Current line again after Style, and lists at `?` as TEXT does (probe blocks/p325)", () => {
+    const cad = createHarness()
+    toStartPoint(cad)
+    answer(cad, "S", "")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Specify start point of text or [Justify/Style]: S",
+      "Enter style name or [?] <Standard>:",
+      CURRENT("2.50", "Left"),
+    ])
+    answer(cad, "S", "?")
+    expect(cad.commandLog().at(-3)).toBe(
+      "Enter style name or [?] <Standard>: ?"
+    )
+    expect(cad.commandLog().at(-2)).toContain("Text styles:")
+    expect(cad.commandLog().at(-1)).toBe(CURRENT("2.50", "Left"))
+    expect(cad.state().commandLine.prompt).toBe(
+      "ATTDEF Specify start point of text or [Justify/Style]:"
+    )
+  })
+
+  it("writes a fixed-height style's height on the Current line (text/p321)", () => {
+    const cad = createHarness()
+    cad.runtime.document.addTextStyle(createTextStyle("BIG", 7))
+    cad.runtime.document.setCurrentTextStyle("BIG")
+    toStartPoint(cad)
+    expect(cad.commandLog().at(-1)).toBe(
+      'Current text style:  "BIG"  Text height:  7.00  Justify:  Left'
+    )
+  })
+
+  it("names a justification in Spanish AutoCAD's words: SI after SIZ (probe blocks/p320)", () => {
+    const cad = createHarness({ locale: es })
+    cad.command("ATRDEF")
+    cad.enter()
+    answer(cad, "T1", "P1", "D1", "U", "SIZ", "0,0", "", "")
+    cad.command("ATRDEF")
+    cad.enter()
+    answer(cad, "T2", "P2", "D2")
+    expect(cad.commandLog().at(-1)).toBe(
+      'Estilo de texto actual:  "Standard"  Altura del texto:  2.50  Justificar:  SI'
+    )
+  })
+
+  it("ends the tag at a space, the rest answering the prompt, and takes `!` (probes blocks/p313, p314)", () => {
+    const cad = createHarness()
+    cad.command("ATTDEF")
+    cad.enter()
+    answer(cad, "A B")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Enter attribute tag name: A",
+      "Enter attribute prompt: B",
+    ])
+    answer(cad, "P", "0,0", "", "")
+    const definition = cad.only<AttributeDefinitionEntity>("attdef")
+    expect(definition.tag).toBe("A")
+    expect(definition.prompt).toBe("B")
+    expect(definition.value).toBe("P")
+
+    const bang = createHarness()
+    toStartPoint(bang, "A!B")
+    answer(bang, "0,0", "", "")
+    expect(bang.only<AttributeDefinitionEntity>("attdef").tag).toBe("A!B")
+  })
+
+  it("keeps a leading backslash unless it escapes a backslash or a blank (probes blocks/p315, p329)", () => {
+    const cad = createHarness()
+    cad.command("ATTDEF")
+    cad.enter()
+    answer(cad, "abc", "\\X", "\\Y", "0,0", "", "")
+    const definition = cad.only<AttributeDefinitionEntity>("attdef")
+    expect(definition.tag).toBe("ABC")
+    expect(definition.prompt).toBe("\\X")
+    expect(definition.value).toBe("\\Y")
+
+    const escaped = createHarness()
+    escaped.command("ATTDEF")
+    escaped.enter()
+    answer(escaped, "abc", "", "\\\\D", "0,0", "", "")
+    expect(escaped.only<AttributeDefinitionEntity>("attdef").value).toBe("\\D")
+  })
+})
+
+describe("ATTEDIT and EATTEDIT ask for the reference, as AutoCAD 2027", () => {
+  const drawing = (locale?: typeof es) =>
+    createHarness({
+      ...(locale ? { locale } : {}),
+      blocks: [
+        createBlockDefinition("TAG", p(0, 0), [
+          lineOf(p(0, 0), p(100, 0)),
+          createAttributeDefinition(p(0, 10), "PART", {
+            prompt: "Part number",
+            value: "X-0",
+            height: 5,
+          }),
+        ]),
+        bar("BARE"),
+      ],
+      entities: [
+        createInsert("TAG", p(0, 0), {
+          id: "I1",
+          attributes: [
+            {
+              tag: "PART",
+              value: "P-7",
+              position: p(0, 10),
+              height: 5,
+              rotation: 0,
+              justify: "left",
+              styleId: "Standard",
+              invisible: false,
+              layerId: "0",
+            },
+          ],
+        }),
+        createInsert("BARE", p(0, 100), { id: "I2" }),
+        lineOf(p(0, 200), p(100, 200), { id: "L" }),
+      ],
+    })
+
+  it("ATTEDIT refuses a line and a block with no attributes in its own words, then asks again (desktop d05; atteditRes 1, 3, 4)", () => {
+    const cad = drawing()
+    cad.command("ATTEDIT")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ATTEDIT Select block reference:"
+    )
+    cad.click(p(50, 200)).click(p(5, 100))
+    expect(cad.commandLog()).toEqual([
+      "ATTEDIT",
+      "Select block reference:",
+      " That object is not a block.",
+      "Select block reference:",
+      " That block has no editable attributes.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "ATTEDIT Select block reference:"
+    )
+    cad.click(p(50, 0))
+    expect(cad.state().dynamicInput?.fields[0]?.label).toBe("Part number")
+  })
+
+  it("EATTEDIT refuses them in the Enhanced Attribute Editor's words (desktop d05; AcEAtteditRes 37, 38, 43)", () => {
+    const cad = drawing()
+    cad.command("EATTEDIT")
+    expect(cad.state().commandLine.prompt).toBe("EATTEDIT Select a block:")
+    cad.click(p(50, 200)).click(p(5, 100))
+    expect(cad.commandLog().slice(1)).toEqual([
+      "Select a block:",
+      "The selected entity is not a block.",
+      "Select a block:",
+      "The selected block has no editable attributes.",
+    ])
+  })
+
+  it("asks and refuses in Autodesk's Spanish (atteditRes and AcEAtteditRes, es-ES)", () => {
+    const cad = drawing(es)
+    cad.command("ATREDIT")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ATREDIT Designe referencia a bloque:"
+    )
+    cad.click(p(50, 200)).click(p(5, 100))
+    expect(cad.commandLog()).toEqual([
+      "ATREDIT",
+      "Designe referencia a bloque:",
+      " Este objeto no es un bloque.",
+      "Designe referencia a bloque:",
+      " Este bloque no tiene atributos editables.",
+    ])
+
+    const enhanced = drawing(es)
+    enhanced.command("EDITATR")
+    expect(enhanced.state().commandLine.prompt).toBe(
+      "EDITATR Designe un bloque:"
+    )
+    enhanced.click(p(50, 200)).click(p(5, 100))
+    expect(enhanced.commandLog()).toEqual([
+      "EDITATR",
+      "Designe un bloque:",
+      "La entidad seleccionada no es un bloque.",
+      "Designe un bloque:",
+      " El bloque seleccionado no contiene atributos editables.",
+    ])
   })
 })

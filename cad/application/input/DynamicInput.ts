@@ -56,6 +56,12 @@ export interface DynamicField {
    * every other answer: TEXT's `Enter text:` keeps leading spaces (text/p155).
    */
   readonly verbatim?: boolean
+  /**
+   * A space ends the answer, as at a prompt AutoCAD asks with AllowSpaces off
+   * (ATTDEF's tag, probe blocks/p313): what follows it answers the next
+   * question, typed in the box or at the command line.
+   */
+  readonly endsAtSpace?: boolean
 }
 
 /**

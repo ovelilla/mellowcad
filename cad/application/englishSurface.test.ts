@@ -19,6 +19,7 @@ import {
   textOf,
 } from "../../test/builders"
 import {
+  createAttributeDefinition,
   createBlockDefinition,
   createDimension,
   createInsert,
@@ -630,6 +631,76 @@ describe("the engine's English surface", () => {
         .do("?", (c) => c.type("?"))
         .do("enter", (c) => c.enter())
         .do("list", (c) => c.enter())
+    )
+    walk("ATTDEF", createHarness(), (s) =>
+      s
+        .do("ATTDEF", (c) => c.command("ATT"))
+        .do("done", (c) => c.enter())
+        .do("no tag", (c) => c.enter())
+        .do("tag and prompt", (c) => c.type("PART NO"))
+        .do("enter", (c) => c.enter())
+        .do("default", (c) => c.type("X-0").enter())
+        .do("no start", (c) => c.enter())
+        .do("S", (c) => answer(c, "S"))
+        .do("?", (c) => c.type("?").enter())
+        .do("J", (c) => answer(c, "J"))
+        .do("TL", (c) => answer(c, "TL"))
+        .do("start", (c) => c.click(at(0, 0)))
+        .do("height", (c) => c.type("5").enter())
+        .do("rotation", (c) => c.enter())
+        .do("select it", (c) => c.select(c.latest()!.id))
+        .do("escape", (c) => c.escape())
+    )
+    walk(
+      "ATTEDIT",
+      createHarness({
+        blocks: [
+          bar(),
+          createBlockDefinition("TAG", p(0, 0), [
+            line(),
+            createAttributeDefinition(p(0, 10), "PART", {
+              prompt: "Part number",
+              value: "X-0",
+              height: 5,
+            }),
+          ]),
+        ],
+        entities: [
+          createInsert("TAG", at(0, 0), {
+            attributes: [
+              {
+                tag: "PART",
+                value: "P-7",
+                position: p(0, 10),
+                height: 5,
+                rotation: 0,
+                justify: "left",
+                styleId: "Standard",
+                invisible: false,
+                layerId: "0",
+              },
+            ],
+          }),
+          createInsert("BAR", at(0, 100)),
+          lineOf(p(0, 200), p(100, 200)),
+        ],
+      }),
+      (s) =>
+        s
+          .do("ATTEDIT", (c) => c.command("ATE"))
+          .do("a line", (c) => c.click(at(50, 200)))
+          .do("no attributes", (c) => c.click(at(50, 100)))
+          .do("the reference", (c) => c.click(at(50, 0)))
+          .do("escape", (c) => c.escape())
+          .do("EATTEDIT", (c) => c.command("EATTEDIT"))
+          .do("a line", (c) => c.click(at(50, 200)))
+          .do("no attributes", (c) => c.click(at(50, 100)))
+          .do("escape", (c) => c.escape())
+          .do("double-click", (c) => c.doubleClick(at(50, 0)))
+          .do("escape", (c) => c.escape())
+          .do("ATTDISP", (c) => c.command("ATTDISP"))
+          .do("ON", (c) => answer(c, "ON"))
+          .do("U", (c) => c.command("U"))
     )
   })
 

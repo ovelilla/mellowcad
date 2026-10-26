@@ -399,7 +399,7 @@ export class BlockTool implements Tool {
     if (existing) {
       ctx.report(ctx.text.message("blockRedefined", { name: block.name }))
       // AutoCAD says nothing now, but its U regenerates (probe blocks/p137).
-      ctx.regenerate(true)
+      ctx.regenerate("silently")
     }
     if (!reference?.attributes?.length) {
       ctx.endCommand()

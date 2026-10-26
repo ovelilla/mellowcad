@@ -604,7 +604,9 @@ export const es: EngineLocale = {
         "IN"
       ],
       "ATTEDIT": [
-        "ATREDIT"
+        "ATREDIT",
+        "ATR",
+        "DDATTE"
       ],
       "EATTEDIT": [
         "EDITATR"
@@ -1735,6 +1737,8 @@ export const es: EngineLocale = {
       "specifyViewPointOr": "Precise un punto de vista o",
       "attributeVisibilitySetting": "Indique parámetro de visibilidad de atributo",
       "selectAnnotationObjectOr": "Designe un objeto de anotación o",
+      "selectBlockReference": "Designe referencia a bloque",
+      "selectABlock": "Designe un bloque",
       "textEditModeOption": "Indique una opción de modo de edición de texto",
       "viewAngleInPlane": "Ángulo a partir del eje X en el plano XY",
       "viewAngleFromPlane": "Ángulo a partir del plano XY",
@@ -2199,6 +2203,10 @@ export const es: EngineLocale = {
         "  OFFSETGAPTYPE=0"
       ],
       "objectOnLockedLayer": "El objeto está en una capa bloqueada.",
+      "objectNotABlock": " Este objeto no es un bloque.",
+      "blockHasNoEditableAttributes": " Este bloque no tiene atributos editables.",
+      "selectedEntityNotABlock": "La entidad seleccionada no es un bloque.",
+      "selectedBlockHasNoEditableAttributes": " El bloque seleccionado no contiene atributos editables.",
       "matchpropSettings": "Parámetros activos actuales:  Color Capa Tlínea Grosor de línea Alt-objeto Acota Texto Sombreado",
       "matchpropLockedDestination": "El objeto de destino no puede actualizarse porque se encuentra en una capa bloqueada.",
       "invalidThroughPoint": "Punto a atravesar no válido.",

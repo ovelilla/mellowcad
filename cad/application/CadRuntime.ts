@@ -670,9 +670,9 @@ export class CadRuntime extends Observable {
         if (!this.answeringPrompt) this.openLine = this.reportedPrompt
       },
       runsTransparently: () => this.suspended !== null,
-      regenerate: (silently) => {
-        this.history.markRegenerated()
-        if (silently) return
+      regenerate: (how) => {
+        if (how !== "once") this.history.markRegenerated()
+        if (how === "silently") return
         if (this.suspended === null) {
           this.commandLine.write("info", this.text.message("regeneratingModel"))
           return
@@ -1373,7 +1373,34 @@ export class CadRuntime extends Observable {
     const buffer = this.commandLine.getBuffer()
     const text = buffer.trim()
     this.commandLine.setBuffer("")
+    const words = this.spaceEnded(null, text)
+    if (words !== null) {
+      this.submitText(words.answer)
+      this.commandLine.setBuffer(words.rest)
+      this.submitCommandLine()
+      return
+    }
     this.submitText(text !== "" && this.takesVerbatim() ? buffer : text)
+  }
+
+  /**
+   * `text` cut at its first blank where the box's field (`fieldId`, else the
+   * active one) ends its answer at a space, as AutoCAD's prompt does (an
+   * AllowSpaces-off string, ATTDEF's tag): the answer, then what answers the
+   * next question. Null where it takes the whole text.
+   */
+  private spaceEnded(
+    fieldId: string | null,
+    text: string
+  ): { readonly answer: string; readonly rest: string } | null {
+    const at = text.search(/\s/)
+    if (at < 0) return null
+    const id = fieldId ?? this.dynamicInput.getActiveFieldId()
+    const field = this.dynamicInput
+      .getSession()
+      ?.fields.find((f) => f.id === id)
+    if (!field?.endsAtSpace) return null
+    return { answer: text.slice(0, at), rest: text.slice(at + 1).trimStart() }
   }
 
   /** {@link submitCommandLine} of `text`, typed or a macro's. */
@@ -3934,6 +3961,16 @@ export class CadRuntime extends Observable {
   setDynamicInputText(text: string, fieldId?: string): void {
     const id = fieldId ?? this.dynamicInput.getActiveFieldId()
     if (!id) return
+    const words = this.spaceEnded(id, text)
+    if (words !== null) {
+      // The space typed is the box's Enter, and the rest the next answer's
+      // start (probe blocks/p313).
+      this.dynamicInput.setText(id, words.answer)
+      this.commitDynamicInput()
+      if (words.rest !== "") this.setDynamicInputText(words.rest)
+      this.invalidateState()
+      return
+    }
     this.optionList = null
     this.dynamicInput.setText(id, text)
     // A typed value hard-locks that field, so the tool's preview (rubber-band)
@@ -5149,10 +5186,21 @@ export class CadRuntime extends Observable {
   doubleClick(e: PointerEventData): boolean {
     if (this.activeTool.id !== "select") return false
     // A locked object is selected at Command:, never opened for editing.
-    const hit = this.pickEntity(this.screenToWork(e.screen), undefined, false)
+    const at = this.screenToWork(e.screen)
+    const hit = this.pickEntity(at, undefined, false)
     if (hit?.type === "insert" && (hit.attributes?.length ?? 0) > 0) {
-      this.switchTool(this.attEdit.id)
-      this.attEdit.beginEdit(hit, this.toolContext)
+      // `^C^C_eattedit` answered with the point picked, as AutoCAD writes it
+      // (`Select a block: 40.004639,19.953271,0.000000`, desktop d04).
+      this.attEdit.startOn()
+      this.startEchoed(this.attEdit.id, "EATTEDIT", "EATTEDIT")
+      const ucs = worldPointToUcs(this.frame.ucs, at)
+      this.answering(
+        [ucs.x, ucs.y, ucs.z].map((value) => value.toFixed(6)).join(","),
+        () => {
+          this.attEdit.beginEdit(hit, this.toolContext)
+          return true
+        }
+      )
     } else if (hit?.type === "text" || hit?.type === "attdef") {
       // `^C^C_textedit` (DoubleClickRoot.cui; desktop text/d06).
       this.textEdit.startOn(hit, false)

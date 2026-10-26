@@ -613,17 +613,20 @@ export const en: EngineCatalog = {
       ],
       "ATTEDIT": [
         "ATTEDIT",
-        "ATE"
+        "ATE",
+        "DDATTE"
       ],
       "EATTEDIT": [
         "EATTEDIT"
       ],
       "ATTDEF": [
         "ATTDEF",
-        "ATT"
+        "ATT",
+        "DDATTDEF"
       ],
       "-ATTDEF": [
-        "-ATTDEF"
+        "-ATTDEF",
+        "-ATT"
       ],
       "ATTDISP": [
         "ATTDISP"
@@ -1362,6 +1365,8 @@ export const en: EngineCatalog = {
       "specifyViewPointOr": "Specify a view point or",
       "attributeVisibilitySetting": "Enter attribute visibility setting",
       "selectAnnotationObjectOr": "Select an annotation object or",
+      "selectBlockReference": "Select block reference",
+      "selectABlock": "Select a block",
       "textEditModeOption": "Enter a text edit mode option",
       "viewAngleInPlane": "Enter angle in XY plane from X axis",
       "viewAngleFromPlane": "Enter angle from XY plane",
@@ -1828,6 +1833,10 @@ export const en: EngineCatalog = {
         "  OFFSETGAPTYPE=0"
       ],
       "objectOnLockedLayer": "The object is on a locked layer.",
+      "objectNotABlock": " That object is not a block.",
+      "blockHasNoEditableAttributes": " That block has no editable attributes.",
+      "selectedEntityNotABlock": "The selected entity is not a block.",
+      "selectedBlockHasNoEditableAttributes": "The selected block has no editable attributes.",
       "matchpropSettings": "Current active settings:  Color Layer Ltype Lineweight Thickness Dim Text Hatch",
       "matchpropLockedDestination": "Destination object on a locked layer. Cannot be updated.",
       "invalidThroughPoint": "Invalid through point.",

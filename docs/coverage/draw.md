@@ -892,45 +892,74 @@ X/Y/Z scale (the ellipse exists now, but this also needs `InsertEntity.scale` sp
 per-axis `scaleEntity`), inserting an external drawing + INSUNITS, ATTDIA 1 (the Edit Attributes
 dialog at insertion), ATTREQ 0
 
-### `ATTDEF` / `ATT` / `-ATTDEF` · es `ATRDEF` / `AT`† / `-ATRDEF` / `-AT`†
+### `ATTDEF` / `ATT` / `DDATTDEF` / `-ATTDEF` / `-ATT` · es `ATRDEF` / `AT` / `-ATRDEF` / `-AT`
 
-**Implemented:** -ATTDEF's command-line sequence for both names (ATTDEF's dialog is not built, as
-BLOCK's is not): the modes line on two lines, as AutoCAD 2023's console prints it
-(`Current attribute modes:` /
+**Implemented:** -ATTDEF's command-line sequence for every name (ATTDEF's dialog is not built, as
+BLOCK's is not; aliases from the 2027 `acad.pgp`, p300, p301): the modes line on two lines, as
+AutoCAD 2027's console prints it (`Current attribute modes:` /
 `Invisible=N  Constant=N  Verify=N  Preset=N  Lock position=Y  Annotative=N  Multiple line=N`, then
 `Enter an option to change [Invisible/Constant/Verify/Preset/Lock position] <done>:`, es
 `Indique una opción para modificar [Invisible/Constante/Verificable/Predefinido/Bloquear posición] <terminado>`;
 es `Modos de atributo actuales:` / `Invisible=N  Constante=N … Anotativo=N  línea Múltiple=N`, the
-last two always N here) and Invisible / Constant / Verify / Preset / Lock position toggles (AFLAGS,
-per session, initially Lock position), `Enter attribute tag name:` (uppercased; Enter says
-`Tag cannot be null`, es `El identificador no puede ser nulo`; spaces and `!` refused),
+last two always N here; p03) and Invisible / Constant / Verify / Preset / Lock position toggles
+(AFLAGS, per session, initially Lock position). `Enter attribute tag name:` takes no spaces, as
+AutoCAD's: a space ends the tag, typed in the box or at the command line, and what follows answers
+the next question (`A B` is tag A and prompt B, p313); `!` is taken (p314), lower case upper-cased,
+and only Enter is refused, `Tag cannot be null` (es `El identificador no puede ser nulo`, p315).
 `Enter attribute prompt:` (Enter = the tag), `Enter default attribute value:` or, for Constant,
-`Enter attribute value:`, a leading `\` keeps blanks; then
+`Enter attribute value:`; there and at INSERT's values a leading `\` escapes only a `\` or a blank
+(`\X` stays `\X`, `\\Y` is `\Y`, `\ Z` is ` Z`, p311, p315, p329). Then
 `Current text style:  "Standard"  Text height:  2.50  Justify:  Left` (es
-`Estilo de texto actual:  "Standard"  Altura del texto: …`) and TEXT's prompts in TEXT's words and
-refusals (Justify, Style, start point, height, rotation) with Enter at the start point stacking
-below the previous definition, the height TEXT's TEXTSIZE and Style making the style current
-(rectang/p313); a loose definition shows its tag, always (ATTMODE governs references
-only), has Insertion snap, palette rows and TEXTEDIT / double-click for Tag, Prompt and Default
+`Estilo de texto actual:  "Standard"  Altura del texto: …  Justificar:  SI` after TL, p320; a
+fixed-height style's height, text/p321) and TEXT's prompts in TEXT's words and refusals (Justify,
+Style, start point, height, rotation). TEXTSIZE, the justification and the rotation are TEXT's,
+shared both ways through the drawing (p326, p327). Style's Enter or a name writes the Current line
+again, and `?` lists the styles, writes it and asks the start point, as TEXT's (p325). Enter at the
+start point places the definition one line below the newest this drawing session defined that is
+still in the drawing (its height, rotation, style and justification, p320); with none — U took it
+back, NEW or OPEN came since, or only a TEXT was written — it says `Point or option keyword
+required.` (after a justification `Invalid point.`, as TEXT's) and asks again (p321, p322, p324).
+Style makes the style current (rectang/p313). A loose definition shows its tag, always (ATTMODE
+governs references only), has TEXT's grips — one at a Left one's point, a justified one's two
+(desktop d03-5, text/d02-1) —, Insertion snap, palette rows and TEXTEDIT / double-click for Tag,
+Prompt and Default
 
-**Missing:** Multiple lines (ATTMULTI) and Annotative (not offered), fields, Align/Fit (as TEXT),
-the Attribute Definition dialog
+**Missing:** 2027's modes prompt lists seven keywords
+(`[Invisible/Constant/Verify/Preset/Lock position/Annotative/Multiple lines]`, es
+`[…/aNotativo/líneas Múltiples]`, p319); Annotative and Multiple lines (ATTMULTI) are not offered,
+nor Multiple lines' `Next line or <done>:` and `Specify location of multiline attribute:` (es
+`Siguiente línea o <terminado>:`, `Indique la ubicación del atributo de líneas múltiples:`, p319);
+fields, Align/Fit (as TEXT), `?`'s `Enter text style(s) to list <*>:` and its pages (as TEXT,
+p325), the Attribute Definition dialog
 
-### `ATTEDIT` / `ATE` / `EATTEDIT` · es `ATREDIT` / `EDITATR`
+### `ATTEDIT` / `ATE` / `DDATTE` / `EATTEDIT` · es `ATREDIT` / `ATR` / `DDATTE` / `EDITATR`
 
-**Implemented:** pick a reference with attributes and edit its values in the dynamic-input box (not
-asked through the command line's question: the pick's prompt is not in the string tables extracted,
-so it keeps `ATTEDIT:`), one field per attribute labelled by prompt (ATTEDIT's Edit Attributes) or
-by tag (EATTEDIT's Attribute tab); Tab moves, Enter is OK, Escape Cancel; one undo step;
-double-click on a reference with attributes opens EATTEDIT
+**Implemented:** ATTEDIT asks `Select block reference:` (es `Designe referencia a bloque:`) and
+EATTEDIT `Select a block:` (es `Designe un bloque:`), words of atteditRes.dll (1) and
+AcEAtteditRes.dll (43), which the merged tables lack. The pick takes the object under the box, the
+rollover highlighting whatever it covers; anything but a reference is refused with ` That object is
+not a block.` (es ` Este objeto no es un bloque.`) or, at EATTEDIT, `The selected entity is not a
+block.` (es `La entidad seleccionada no es un bloque.`), a reference with no attributes with ` That
+block has no editable attributes.` (es ` Este bloque no tiene atributos editables.`) or `The
+selected block has no editable attributes.` (es ` El bloque seleccionado no contiene atributos
+editables.`, the table's leading space kept), and the question is asked again (desktop d05;
+atteditRes 3, 4; AcEAtteditRes 38, 37). A pick on nothing asks again in silence (the table's ` No
+object found.`, atteditRes 2, is **unverified** there). Then the values are edited in the
+dynamic-input box, one field per attribute labelled by prompt (ATTEDIT's Edit Attributes) or by tag
+(EATTEDIT's Attribute tab); Tab moves, Enter is OK, Escape Cancel; one undo step. A double-click on
+a reference with attributes writes `_eattedit` and `Select a block: 40.004639,19.953271,0.000000`
+(the point picked, in the UCS) and opens EATTEDIT's box (desktop d04)
 
-**Missing:** -ATTEDIT, ATTIPEDIT and Ctrl+double-click, EATTEDIT's Text Options and Properties tabs
-and Select Block button, moving an unlocked attribute with grips, attribute rows editable in the
-Properties palette
+**Missing:** -ATTEDIT (p330) and its aliases `-ATE`, `ATTE` (es `-ATR`), unknown here; ATTIPEDIT
+and Ctrl+double-click; the dialogs' other parts: Edit Attributes' Previous, Next and Block name,
+EATTEDIT's Text Options and Properties tabs and Select Block button; an unlocked attribute's own
+grip on a reference (desktop d02-1); attribute rows editable in the Properties palette
 
 ### `ATTDISP` · es `ATRVIS`
 
 **Implemented:** `Enter attribute visibility setting [Normal/ON/OFF] <Normal>:` (the current one; es
 `Indique parámetro de visibilidad de atributo [Normal/ACT/DES]`), `Invalid option keyword.` for
-anything else; Normal / ON / OFF (ATTMODE, saved in the drawing, undoable), `Regenerating model.`
-when it changes, as AutoCAD 2023's console says it; Enter keeps the setting
+anything else, `O` asking `OFf or ON?`; Normal / ON / OFF (ATTMODE, saved in the drawing, undoable),
+`Regenerating model.` when it changes, as AutoCAD 2027's console says it (p04, p334–p336;
+transparently `Regen queued.`); Enter keeps the setting; U writes `ATTDISP` alone, with no
+regeneration (p337)

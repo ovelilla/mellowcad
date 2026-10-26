@@ -17,8 +17,8 @@ POLYGON ["POL"] "Polygon"
 HATCH ["H","BH","BHATCH"] "Hatch"
 BLOCK ["B","ACADBLOCKDIALOG","BMAKE","BMOD"] "Create block"
 INSERT ["I"] "Insert block"
-ATTEDIT ["ATE"] "Edit attributes"
-ATTDEF ["ATT"] "Define attributes"
+ATTEDIT ["ATE","DDATTE"] "Edit attributes"
+ATTDEF ["ATT","DDATTDEF"] "Define attributes"
 ATTDISP [] "Attribute display"
 PURGE ["PU"] "Purge"
 TEXT ["DT","DTEXT"] "Text"
@@ -84,7 +84,7 @@ U [] "Undo the last action"
 -TEXT [] "Text"
 -MTEXT ["-T"] "Multiline text"
 REDO [] "Redo the last undone action"
--ATTDEF [] "Define attributes"
+-ATTDEF ["-ATT"] "Define attributes"
 -BLOCK ["-B"] "Create block"
 -PURGE ["-PU"] "Purge"
 -HATCH ["-H","-BH","-BHATCH"] "Hatch"
@@ -2077,6 +2077,195 @@ lweight "Lineweight" LW
         User     Unnamed
         Blocks   Blocks
             0        0
+
+## ATTDEF
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> ATTDEF
+  prompt: ATTDEF Enter an option to change [Invisible/Constant/Verify/Preset/Lock position] <done>:
+  asks: 
+  tip: Enter an option to change
+  dyn: 
+  options: [I] Invisible, [C] Constant, [V] Verify, [P] Preset, [L] Lock position
+  command| ATT ATTDEF
+  info| Current attribute modes:
+        Invisible=N  Constant=N  Verify=N  Preset=N  Lock position=Y  Annotative=N  Multiple line=N
+> done
+  prompt: ATTDEF Enter attribute tag name:
+  asks: "Enter attribute tag name"
+  tip: Enter attribute tag name:
+  dyn: "Enter attribute tag name"=""||*
+  options: -
+  prompt| Enter an option to change [Invisible/Constant/Verify/Preset/Lock position] <done>:
+> no tag
+  prompt| Enter attribute tag name:
+  error| Tag cannot be null
+> tag and prompt
+  prompt: ATTDEF Enter attribute prompt:
+  asks: "Enter attribute prompt"
+  tip: Enter attribute prompt:
+  dyn: "Enter attribute prompt"="NO"||*
+  prompt| Enter attribute tag name: PART
+> enter
+  prompt: ATTDEF Enter default attribute value:
+  asks: "Enter default attribute value"
+  tip: Enter default attribute value:
+  dyn: "Enter default attribute value"=""||*
+  prompt| Enter attribute prompt: NO
+> default
+  prompt: ATTDEF Specify start point of text or [Justify/Style]:
+  asks: "Specify start point of text or"
+  tip: Specify start point of text or
+  dyn: "X,Y"=""||*
+  options: [J] Justify, [S] Style
+  prompt| Enter default attribute value: X-0
+  info| Current text style:  "Standard"  Text height:  2.50  Justify:  Left
+> no start
+  prompt| Specify start point of text or [Justify/Style]:
+  error| Point or option keyword required.
+> S
+  prompt: ATTDEF Enter style name or [?] <Standard>:
+  asks: "Enter style name or"
+  tip: Enter style name or
+  dyn: "Enter style name or"=""||*
+  options: [?] ?
+  prompt| Specify start point of text or [Justify/Style]: S
+> ?
+  prompt: ATTDEF Specify start point of text or [Justify/Style]:
+  asks: "Specify start point of text or"
+  tip: Specify start point of text or
+  dyn: "X,Y"=""||*
+  options: [J] Justify, [S] Style
+  prompt| Enter style name or [?] <Standard>: ?
+  info| Text styles:
+        Style name: "Standard"    Font typeface: Arial
+           Height: 0.00  Width factor: 1.00  Obliquing angle: 0
+           Generation: Normal
+        Current text style: "Standard"
+  info| Current text style:  "Standard"  Text height:  2.50  Justify:  Left
+> J
+  prompt: ATTDEF Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [L] Left, [C] Center, [R] Right, [M] Middle, [TL] TL, [TC] TC, [TR] TR, [ML] ML, [MC] MC, [MR] MR, [BL] BL, [BC] BC, [BR] BR
+  prompt| Specify start point of text or [Justify/Style]: J
+> TL
+  prompt: ATTDEF Specify top-left point of text:
+  asks: "Specify top-left point of text"
+  tip: Specify top-left point of text:
+  dyn: "X,Y"=""||*
+  options: -
+  prompt| Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]: TL
+> start
+  prompt: ATTDEF Specify height <2.50>:
+  asks: "Specify height"
+  tip: Specify height
+  dyn: "Specify height"=""|2.50|mm*
+  prompt| Specify top-left point of text:
+> height
+  prompt: ATTDEF Specify rotation angle of text <0>:
+  asks: "Specify rotation angle of text"
+  tip: Specify rotation angle of text
+  dyn: "Specify rotation angle of text"=""|0|°*
+  prompt| Specify height <2.50>: 5
+> rotation
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Specify rotation angle of text <0>:
+> select it
+  properties: Attribute Definition (1) [Text: Tag=PART, Prompt=NO, Value=X-0, Justify=Top left, Height=5.00 mm~, Rotation=0°~] [Position: X=0.00~, Y=0.00~, Z=0.00~] [Misc: Invisible=No, Constant=No, Verify=No, Preset=No, Lock position=Yes]
+> escape
+  properties: -
+  command| *Cancel*
+
+## ATTEDIT
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> ATTEDIT
+  prompt: ATTEDIT Select block reference:
+  asks: 
+  tip: Select block reference:
+  dyn: 
+  command| ATE ATTEDIT
+> a line
+  prompt| Select block reference:
+  error|  That object is not a block.
+> no attributes
+  prompt| Select block reference:
+  error|  That block has no editable attributes.
+> the reference
+  prompt: ATTEDIT:
+  asks: ""
+  tip: -
+  dyn: "Part number"="P-7"||*
+  prompt| Select block reference:
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+> EATTEDIT
+  prompt: EATTEDIT Select a block:
+  asks: 
+  tip: Select a block:
+  dyn: 
+  command| EATTEDIT
+> a line
+  prompt| Select a block:
+  error| The selected entity is not a block.
+> no attributes
+  prompt| Select a block:
+  error| The selected block has no editable attributes.
+> escape
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Select a block: *Cancel*
+> double-click
+  prompt: EATTEDIT:
+  asks: ""
+  dyn: "PART"="P-7"||*
+  command| _eattedit
+  prompt| Select a block: 50.000000,0.000000,0.000000
+> escape
+  prompt: Command:
+  asks: -
+  dyn: -
+> ATTDISP
+  prompt: ATTDISP Enter attribute visibility setting [Normal/ON/OFF] <Normal>:
+  asks: 
+  tip: Enter attribute visibility setting
+  dyn: 
+  options: [N] Normal, [ON] ON, [OF] OFF
+  command| ATTDISP
+> ON
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Enter attribute visibility setting [Normal/ON/OFF] <Normal>: ON
+  info| Regenerating model.
+> U
+  command| U
+  info| ATTDISP
 
 ## TEXT
 > start

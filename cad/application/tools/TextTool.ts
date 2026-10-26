@@ -327,19 +327,15 @@ export class TextTool implements Tool {
   /**
    * `Current text style:  "Standard"  Text height:  2.5000 …`, naming
    * `style`: after Style the console names the style it was before, with the
-   * new one's height (text/p126, p162). A fixed-height style's height is its
-   * own (text/p121).
+   * new one's height (text/p126, p162).
    */
   private writeCurrentLine(ctx: ToolContext, style: string): void {
-    const settings = ctx.document.getSettings()
-    ctx.report(
-      ctx.text.message("currentTextStyle", {
-        style,
-        height: formatLength(this.styleHeight(ctx) ?? this.height, settings),
-        justify: ctx.text.message("textJustifyName", {
-          justify: this.justify,
-        }),
-      })
+    writeCurrentTextLine(
+      "currentTextStyle",
+      style,
+      this.height,
+      this.justify,
+      ctx
     )
   }
 
@@ -349,19 +345,13 @@ export class TextTool implements Tool {
    */
   private beginAt(position: Vec3, ctx: ToolContext): void {
     const properties = currentProperties(ctx)
-    const fixed = this.styleHeight(ctx)
+    const fixed = fixedTextHeight(ctx)
     if (fixed !== null) {
       this.enterRotation({ position, properties }, fixed, ctx)
       return
     }
     this.state = { phase: "height", position, properties, cursor: position }
     this.openHeightInput(ctx)
-  }
-
-  /** The current style's fixed height, or null when it leaves it free. */
-  private styleHeight(ctx: ToolContext): number | null {
-    const style = ctx.document.getTextStyle(this.currentStyleId(ctx))
-    return style && style.height > 0 ? style.height : null
   }
 
   private currentStyleId(ctx: ToolContext): TextStyleId {
@@ -630,6 +620,36 @@ export class TextTool implements Tool {
     this.state = { phase: "start", keywords: true }
     this.openStartInput(ctx)
   }
+}
+
+/** The current style's fixed height, or null when it leaves it free. */
+export function fixedTextHeight(ctx: ToolContext): number | null {
+  const style = ctx.document.getTextStyle(ctx.document.getCurrentTextStyleId())
+  return style && style.height > 0 ? style.height : null
+}
+
+/**
+ * The Current line TEXT and ATTDEF write (`message`), naming `style`, with
+ * TEXTSIZE or a fixed-height style's own height (text/p121) and the
+ * justification in the command language's words (TXT-08: es `SI` for TL).
+ */
+export function writeCurrentTextLine(
+  message: "currentTextStyle" | "attdefTextStyle",
+  style: string,
+  height: number,
+  justify: TextJustify,
+  ctx: ToolContext
+): void {
+  ctx.report(
+    ctx.text.message(message, {
+      style,
+      height: formatLength(
+        fixedTextHeight(ctx) ?? height,
+        ctx.document.getSettings()
+      ),
+      justify: ctx.text.message("textJustifyName", { justify }),
+    })
+  )
 }
 
 /**

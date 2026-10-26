@@ -4,6 +4,7 @@ import {
   arcEndPoint,
   arcMidpoint,
   arcStartPoint,
+  attributeDefinitionText,
   dimensionGeometry,
   Entity,
   ellipseEndPoint,
@@ -168,22 +169,26 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
         })
         break
       case "text":
+      case "attdef": {
         // The justification point's grip and, for a justified text, the
         // insertion point's (DXF 10) too; either moves the text (desktop
-        // text/d02-1).
+        // text/d02-1). An attribute definition has TEXT's (desktop d03-5).
+        const text =
+          entity.type === "text" ? entity : attributeDefinitionText(entity)
         grips.push({
           entityId: id,
           role: { kind: "move" },
-          world: entity.position,
+          world: text.position,
         })
-        if (entity.justify !== "left") {
+        if (text.justify !== "left") {
           grips.push({
             entityId: id,
             role: { kind: "move" },
-            world: textInsertionPoint(entity),
+            world: textInsertionPoint(text),
           })
         }
         break
+      }
       case "mtext":
         grips.push({
           entityId: id,
@@ -288,8 +293,6 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
             ...(grip.along ? { shape: "arrow", along: grip.along } : {}),
           })
         }
-        break
-      case "attdef":
         break
       default: {
         const unhandled: never = entity

@@ -60,22 +60,24 @@ export function createAttributeDefinition(
 }
 
 /**
- * A tag as AutoCAD keeps it: "any characters except spaces or exclamation
- * marks (!). Lowercase letters are automatically changed to uppercase." Null
- * when what was typed cannot be one.
+ * A tag as AutoCAD keeps it, upper-cased ("Lowercase letters are
+ * automatically changed to uppercase"). Null when empty or holding a blank:
+ * the command line ends a tag at its first space. WHY `!` is taken, where the
+ * help says it is not: 2027's -ATTDEF keeps `A!B` (probe blocks/p314).
  */
 export function attributeTag(typed: string): string | null {
   const tag = typed.trim().toUpperCase()
-  return tag.length === 0 || /[\s!]/.test(tag) ? null : tag
+  return tag.length === 0 || /\s/.test(tag) ? null : tag
 }
 
 /**
  * A prompt or value as typed at the command line, where leading blanks are
- * dropped: "start the string with a backslash (\) … To make the first character
- * a backslash, start the string with two backslashes."
+ * dropped. A leading backslash escapes only what follows it when that is a
+ * backslash or a blank: `\\Y` is `\Y`, `\ Z` is ` Z`, and `\X` stays `\X`
+ * (probes blocks/p311, p315, p329).
  */
 export function attributeInput(typed: string): string {
-  return typed.startsWith("\\") ? typed.slice(1) : typed.trimStart()
+  return /^\\[\\\s]/.test(typed) ? typed.slice(1) : typed.trimStart()
 }
 
 /** What INSERT asks for a definition: its prompt, or its tag when it has none. */
