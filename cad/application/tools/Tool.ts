@@ -341,9 +341,11 @@ export interface ToolContext {
   /**
    * Says `Regenerating model.` after a change AutoCAD regenerates for
    * (LTSCALE, ATTDISP); inside another command `Regen queued.`, and
-   * `Regenerating model.` once the one it interrupted ends.
+   * `Regenerating model.` once the one it interrupted ends. `silently`: a
+   * change that says nothing as it is made but whose U and REDO regenerate
+   * (a block redefined, probes blocks/p113, p137).
    */
-  regenerate(): void
+  regenerate(silently?: boolean): void
 
   /**
    * Says what an answer found where AutoCAD says it: on the line of the

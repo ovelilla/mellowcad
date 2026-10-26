@@ -562,11 +562,38 @@ describe("the engine's English surface", () => {
         .do("BLOCK", (c) => c.command("B"))
         .do("?", (c) => c.type("?"))
         .do("enter", (c) => c.enter())
+        .do("list", (c) => c.enter())
+        .do("BLOCK again", (c) => c.command("BLOCK"))
+        .do("no name", (c) => c.enter())
         .do("name", (c) => c.type("BAR"))
         .do("enter", (c) => c.enter())
+        .do("no base", (c) => c.enter())
         .do("base", (c) => c.click(at(0, 0)))
         .do("pick", (c) => c.click(at(50, 0)))
         .do("enter", (c) => c.enter())
+    )
+    walk(
+      "-BLOCK redefined",
+      createHarness({
+        blocks: [bar()],
+        entities: [line(), createInsert("BAR", at(0, 200))],
+      }),
+      (s) =>
+        s
+          .do("-BLOCK", (c) => c.command("-B"))
+          .do("name", (c) => c.type("bar").enter())
+          .do("FOO", (c) => answer(c, "FOO"))
+          .do("Y", (c) => answer(c, "Y"))
+          .do("raised base", (c) => c.type("0,0,5").enter())
+          .do("pick", (c) => c.click(at(50, 0)))
+          .do("enter", (c) => c.enter())
+          .do("U", (c) => c.command("U"))
+          .do("-BLOCK again", (c) => c.command("-BLOCK"))
+          .do("name", (c) => c.type("BAR").enter())
+          .do("Y", (c) => answer(c, "Y"))
+          .do("base", (c) => c.type("0,0").enter())
+          .do("pick its reference", (c) => c.click(at(50, 200)))
+          .do("enter", (c) => c.enter())
     )
     walk(
       "INSERT",
@@ -578,6 +605,9 @@ describe("the engine's English surface", () => {
           .do("INSERT", (c) => c.command("I"))
           .do("?", (c) => c.type("?"))
           .do("enter", (c) => c.enter())
+          .do("pattern", (c) => c.type("N*"))
+          .do("enter", (c) => c.enter())
+          .do("INSERT again", (c) => c.command("I"))
           .do("unknown", (c) => c.type("NOPE"))
           .do("enter", (c) => c.enter())
           .do("name", (c) => c.type("BAR"))
@@ -595,9 +625,11 @@ describe("the engine's English surface", () => {
         .do("BLOCK", (c) => c.command("BLOCK"))
         .do("?", (c) => c.type("?"))
         .do("enter", (c) => c.enter())
+        .do("list", (c) => c.enter())
         .do("INSERT", (c) => c.command("INSERT"))
         .do("?", (c) => c.type("?"))
         .do("enter", (c) => c.enter())
+        .do("list", (c) => c.enter())
     )
   })
 

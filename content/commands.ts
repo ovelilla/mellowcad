@@ -84,6 +84,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   STYLE: { group: "annotate" },
 
   BLOCK: { group: "organize" },
+  "-BLOCK": { group: "organize" },
   INSERT: { group: "organize" },
   ATTDEF: { group: "organize" },
   "-ATTDEF": { group: "organize" },

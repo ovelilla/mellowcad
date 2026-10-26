@@ -263,9 +263,9 @@ returns `true`; `false` ends the command.
   starts the tool and switches its entry (`MTextTool.useCommandLine()`); the runtime heads the
   prompts with the name typed (`startedAs`). One that asks otherwise (-PAN) is a tool of its own:
   a transparent command starts its tool by id and never runs its definition's `run`.
-- A command that **creates a block reference** (INSERT, BLOCK's Convert) asks attribute values
-  through `AttributeValuePrompts` (`tools/attributeValues.ts`) and adds the reference only in its
-  `onDone`: one undo step that Escape cancels.
+- INSERT asks attribute values through `AttributeValuePrompts` (`tools/attributeValues.ts`) and
+  adds the reference in `onDone` (Escape cancels); BLOCK's Convert adds it with the defaults, then
+  opens `AttributeEditBox` (Escape keeps them).
 - **Empty text in `commitRaw` is Enter**: never spend a keyword letter on what Enter does.
 - A command that continues from what was drawn (LINE's Continue, DIMBASELINE, DIMCONTINUE) reads
   the drawing through a `lastDrawnPoint`-style helper, not runtime state: document order is the

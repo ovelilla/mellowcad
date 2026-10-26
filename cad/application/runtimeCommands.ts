@@ -138,6 +138,9 @@ export function registerCommands(
   // AutoCAD's ATTDEF opens a dialog; here it asks at the command line, so
   // -ATTDEF is the same tool under its own name.
   register({ id: "-ATTDEF", tool: "attdef", run: () => startTool("attdef") })
+  // AutoCAD's BLOCK opens the Block Definition dialog; here it asks -BLOCK's
+  // prompts, so -BLOCK is the same tool under its own name (BLOCKS-D1).
+  register({ id: "-BLOCK", tool: "block", run: () => startTool("block") })
   // PURGE asks -PURGE's prompts here, as AutoCAD's console runs it (no Purge
   // dialog, BLOCKS-D2), so -PURGE is the same tool under its own name.
   register({ id: "-PURGE", tool: "purge", run: () => startTool("purge") })

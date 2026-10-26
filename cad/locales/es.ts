@@ -589,7 +589,15 @@ export const es: EngineLocale = {
       ],
       "BLOCK": [
         "BLOQUE",
-        "BQ"
+        "BQ",
+        "MODBLQ",
+        "ACADBLOCKDIALOG",
+        "BMAKE",
+        "BMOD"
+      ],
+      "-BLOCK": [
+        "-BLOQUE",
+        "-BQ"
       ],
       "INSERT": [
         "INSERT",
@@ -1083,7 +1091,9 @@ export const es: EngineLocale = {
         "Rotate": "Girar"
       },
       "BLOCK": {
-        "?": "?"
+        "?": "?",
+        "Yes": "Sí",
+        "No": "No"
       },
       "ATTDEF": {
         "Invisible": "Invisible",
@@ -1553,6 +1563,15 @@ export const es: EngineLocale = {
       "patternScale": "Precise escala del patrón",
       "patternAngle": "Precise ángulo del patrón",
       "blockName": "Indique nombre de bloque o",
+      "blockExists": [
+        "El bloque \"",
+        [
+          "name"
+        ],
+        "\" ya existe. ¿Desea redefinirlo?"
+      ],
+      "redefineIt": "¿Desea redefinirlo?",
+      "blocksToList": "Indique bloque(s) a enumerar",
       "purgeType": "Indique un tipo de objetos sin utilizar para limpiar",
       "purgeNames": "Indique nombres que limpiar",
       "purgeVerify": "Verifique cada nombre que se va a limpiar?",
@@ -2777,6 +2796,58 @@ export const es: EngineLocale = {
       ],
       "blockConversion": "Parámetros actuales: conversión de objetos=Convertir",
       "invalidBlockName": "Nombre de bloque no válido.",
+      "invalidNewBlockName": "Nombre bloque no válido.",
+      "blockReferencesItself": [
+        "El bloque \"",
+        [
+          "name"
+        ],
+        "\" hace referencia a sí mismo"
+      ],
+      "blockRedefined": [
+        "Bloque \"",
+        [
+          "name"
+        ],
+        "\" redefinido"
+      ],
+      "zBaseNotZero": "Cuidado, la base de inserción de Z no es cero.",
+      "definedBlocks": "Bloques definidos.",
+      "definedBlock": [
+        "  \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "blockCounts": [
+        "Bloques     Referencias     Bloques          Bloques\nusuario     externas        dependientes     sin nombre\n",
+        [
+          "user"
+        ],
+        "      ",
+        [
+          "external"
+        ],
+        "           ",
+        [
+          "dependent"
+        ],
+        "            ",
+        [
+          "unnamed"
+        ]
+      ],
+      "insertBlockCounts": [
+        "Bloques      Bloques\nusuario      sin nombre\n",
+        [
+          "user"
+        ],
+        "        ",
+        [
+          "unnamed"
+        ]
+      ],
       "rectangleModes": [
         "Modos de rectángulo actuales:",
         [

@@ -364,12 +364,13 @@ most standard option, with one line on why.
 - **D5:** block names are matched case-blind and keep their first spelling (p112, p115). Ids are
   unchanged, so the file format does not change.
 - **D6:** a set that reaches the block being defined, directly or nested, is refused in AutoCAD's
-  three lines and the command starts again (p117, p119).
+  three lines and the command ends (p117, p119: the `-BLOCK` after them is the probe's Enter
+  repeating it).
 - **D7:** the redefine question, built for BLK-01:
   - `Block "%s" already exists. Redefine it? [Yes/No] <N>:` (es
     `El bloque "%s" ya existe. ¿Desea redefinirlo? [Sí/No] <N>:`).
-  - No or Enter starts the command again (p114). FOO says `Yes or No, please.` and then
-    `Redefine it? [Yes/No] <N>:` (p118).
+  - No or Enter ends the command (p114: the `-BLOCK` after it is the probe's Enter repeating it).
+    FOO says `Yes or No, please.` and then `Redefine it? [Yes/No] <N>:` (p118).
   - After the set it reports `Block "B1" redefined`, and U writes `Regenerating model.` (p137).
 - **D8:** replaced by D90.
 - **D9:** BLOCK takes a preselection: after the base point, `N found` and the end (p132).

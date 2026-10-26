@@ -3,7 +3,11 @@ import { describe, expect, it } from "vitest"
 import { type CadHarness, createHarness } from "../../../test/harness"
 import { lineOf, p } from "../../../test/builders"
 import { es } from "../../locales/es"
-import { createBlockDefinition } from "../../domain/entities"
+import {
+  InsertEntity,
+  createBlockDefinition,
+  createInsert,
+} from "../../domain/entities"
 
 /** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
 function answer(cad: CadHarness, ...texts: string[]): CadHarness {
@@ -19,10 +23,11 @@ const MODES =
 const modesLine = (verify: "Y" | "N") =>
   `Current attribute modes:\nInvisible=N  Constant=N  Verify=${verify}  Preset=N  Lock position=Y  Annotative=N  Multiple line=N`
 
-// Each transcript is AutoCAD 2023's console answering the same input, with
-// the options this build offers (no Annotative or Multiple lines, no
-// Basepoint, X, Y, Z, Explode or REpeat) and the drawing's precision.
-describe("ATTDEF, BLOCK and INSERT ask as AutoCAD 2026", () => {
+// Each transcript is AutoCAD 2027's console answering the same input (probes
+// blocks/p03, p01, p02, p303), with the options this build offers (no
+// Annotative or Multiple lines, no Basepoint, X, Y, Z, Explode or REpeat) and
+// the drawing's precision.
+describe("ATTDEF, BLOCK and INSERT ask as AutoCAD 2027", () => {
   it("ATTDEF asks the modes, the tag, prompt and default, then TEXT's prompts", () => {
     const cad = createHarness()
     cad.command("ATTDEF")
@@ -74,7 +79,7 @@ describe("ATTDEF, BLOCK and INSERT ask as AutoCAD 2026", () => {
     )
   })
 
-  it("BLOCK says its conversion, refuses a bad name and asks Select objects", () => {
+  it("BLOCK says its conversion, refuses a bad name and asks Select objects (probes blocks/p01, p106)", () => {
     const cad = createHarness({ entities: [lineOf(p(0, 0), p(10, 0))] })
     cad.command("BLOCK")
     answer(cad, "a<b", "B1", "FOO", "0,0", "L")
@@ -87,7 +92,7 @@ describe("ATTDEF, BLOCK and INSERT ask as AutoCAD 2026", () => {
       "Invalid block name.",
       "Enter block name or [?]: B1",
       "Specify insertion base point: FOO",
-      "Invalid point.",
+      "Point or option keyword required.",
       "Specify insertion base point: 0,0",
       "Select objects: L",
       "1 found",
@@ -129,17 +134,21 @@ describe("ATTDEF, BLOCK and INSERT ask as AutoCAD 2026", () => {
     expect(cad.typeCounts().insert).toBe(2)
   })
 
-  it("asks in Autodesk's Spanish", () => {
+  it("asks in Autodesk's Spanish (probes blocks/p01, p100, p03)", () => {
     const cad = createHarness({
       locale: es,
       entities: [lineOf(p(0, 0), p(10, 0))],
     })
     cad.command("BLOQUE")
-    answer(cad, "B1", "0,0")
+    answer(cad, "a<b", "B1", "FOO", "0,0")
     expect(cad.commandLog()).toEqual([
       "BLOQUE",
       "Parámetros actuales: conversión de objetos=Convertir",
+      "Indique nombre de bloque o [?]: a<b",
+      "Nombre bloque no válido.",
       "Indique nombre de bloque o [?]: B1",
+      "Especifique un punto base de inserción: FOO",
+      "Se requiere un punto o una opción.",
       "Especifique un punto base de inserción: 0,0",
     ])
     cad.escape()
@@ -273,6 +282,324 @@ describe("PURGE asks -PURGE's prompts, as AutoCAD 2027", () => {
     answer(none, "LIMPIA", "B", "", "N")
     expect(none.commandLog().at(-1)).toBe(
       "No se ha encontrado ningún elemento sin referencia bloque."
+    )
+  })
+})
+
+const BLOCK_HEAD = [
+  "-BLOCK",
+  "Current settings: Object conversion=Convert",
+] as const
+
+// AutoCAD 2027's console; its base point offers Annotative and mOde, which
+// are not built.
+describe("-BLOCK asks as AutoCAD 2027", () => {
+  const line = () => lineOf(p(0, 5), p(10, 5), { id: "L1" })
+  const withB1 = () =>
+    createHarness({
+      blocks: [bar("B1")],
+      entities: [createInsert("B1", p(0, 20), { id: "I1" }), line()],
+    })
+
+  it("is -BLOCK and -B, BLOCK's aliases are BMAKE, BMOD and ACADBLOCKDIALOG (probes blocks/p101, p152; acad.pgp)", () => {
+    for (const name of ["-BLOCK", "-B", "BMAKE", "BMOD", "ACADBLOCKDIALOG"]) {
+      const cad = createHarness()
+      answer(cad, name)
+      expect(cad.activeToolId(), name).toBe("block")
+    }
+    const dashed = createHarness()
+    answer(dashed, "-B")
+    expect(dashed.state().commandLine.prompt).toBe(
+      "-BLOCK Enter block name or [?]:"
+    )
+  })
+
+  it("is -BLOQUE and -BQ in Spanish, BLOQUE's aliases MODBLQ, BMAKE, BMOD and ACADBLOCKDIALOG (probes blocks/p100, p151; acad.pgp)", () => {
+    for (const name of [
+      "-BLOQUE",
+      "-BQ",
+      "MODBLQ",
+      "BMAKE",
+      "BMOD",
+      "ACADBLOCKDIALOG",
+    ]) {
+      const cad = createHarness({ locale: es })
+      answer(cad, name)
+      expect(cad.activeToolId(), name).toBe("block")
+    }
+  })
+
+  it("asks the name again at Enter and the base point again at Enter (probes blocks/p100–p102, p124; desktop d09)", () => {
+    const cad = createHarness({ entities: [line()] })
+    answer(cad, "-BLOCK", "", "B1", "", "?", "0,0", "L", "")
+
+    expect(cad.commandLog()).toEqual([
+      ...BLOCK_HEAD,
+      "Enter block name or [?]:",
+      "Invalid block name.",
+      "Enter block name or [?]: B1",
+      "Specify insertion base point:",
+      "Point or option keyword required.",
+      "Specify insertion base point: ?",
+      "Point or option keyword required.",
+      "Specify insertion base point: 0,0",
+      "Select objects: L",
+      "1 found",
+      "Select objects:",
+    ])
+    expect(cad.typeCounts().insert).toBe(1)
+  })
+
+  it("asks to redefine a block it holds, in any case, and says it redefined it (probes blocks/p113, p115, p118)", () => {
+    const cad = withB1()
+    answer(cad, "-BLOCK", "b1", "FOO", "Y", "0,0", "L", "")
+
+    expect(cad.commandLog()).toEqual([
+      ...BLOCK_HEAD,
+      "Enter block name or [?]: b1",
+      'Block "B1" already exists. Redefine it? [Yes/No] <N>: FOO',
+      "Yes or No, please.",
+      "Redefine it? [Yes/No] <N>: Y",
+      "Specify insertion base point: 0,0",
+      "Select objects: L",
+      "1 found",
+      "Select objects:",
+      'Block "B1" redefined',
+    ])
+    expect(cad.runtime.document.getBlocks().map((b) => b.name)).toEqual(["B1"])
+    const [kept] = cad.runtime.document.getBlock("B1")?.entities ?? []
+    expect(kept?.type === "line" && kept.start.y).toBeCloseTo(5)
+  })
+
+  it("ends at No or Enter to the redefine question, the block unchanged (probe blocks/p114)", () => {
+    for (const reply of ["N", ""]) {
+      const cad = withB1()
+      answer(cad, "-BLOCK", "B1", reply)
+
+      expect(cad.commandLog().at(-1)).toBe(
+        `Block "B1" already exists. Redefine it? [Yes/No] <N>:${reply ? ` ${reply}` : ""}`
+      )
+      expect(cad.activeToolId()).toBe("select")
+      expect(cad.byId("L1")).toBeDefined()
+    }
+  })
+
+  it("U after a redefinition regenerates (probe blocks/p137)", () => {
+    const cad = withB1()
+    answer(cad, "-BLOCK", "B1", "Y", "0,0", "L", "", "U")
+
+    expect(cad.commandLog().at(-1)).toBe("-BLOCK Regenerating model.")
+    const [line] = cad.runtime.document.getBlock("B1")?.entities ?? []
+    expect(line?.type === "line" && line.end.x).toBeCloseTo(10)
+    expect(line?.type === "line" && line.start.y).toBeCloseTo(0)
+  })
+
+  it("refuses a set holding the block itself, directly or nested, and ends (probes blocks/p117, p119)", () => {
+    const nested = createHarness({
+      blocks: [
+        bar("B1"),
+        createBlockDefinition("B2", p(0, 0), [createInsert("B1", p(0, 0))]),
+      ],
+      entities: [createInsert("B2", p(0, 20), { id: "I2" })],
+    })
+    for (const [cad, id] of [
+      [withB1(), "I1"],
+      [nested, "I2"],
+    ] as const) {
+      answer(cad, "-BLOCK", "B1", "Y", "0,0")
+      cad.click(p(5, 20)).enter()
+
+      expect(cad.commandLog().slice(-4)).toEqual([
+        "Select objects:",
+        'Block "B1" references itself',
+        "Regenerating model.",
+        "*Invalid*",
+      ])
+      expect(cad.activeToolId()).toBe("select")
+      expect(cad.byId(id)).toBeDefined()
+      expect(
+        cad.runtime.document.getBlock("B1")?.entities.map((e) => e.type)
+      ).toEqual(["line"])
+    }
+  })
+
+  it("says it in Autodesk's Spanish (probes blocks/p113, p117, p118)", () => {
+    const cad = createHarness({
+      locale: es,
+      blocks: [bar("B1")],
+      entities: [createInsert("B1", p(0, 20), { id: "I1" })],
+    })
+    answer(cad, "-BQ", "B1", "FOO", "S", "0,0")
+    cad.click(p(5, 20)).enter()
+
+    expect(cad.commandLog()).toEqual([
+      "-BQ -BLOQUE",
+      "Parámetros actuales: conversión de objetos=Convertir",
+      "Indique nombre de bloque o [?]: B1",
+      'El bloque "B1" ya existe. ¿Desea redefinirlo? [Sí/No] <N>: FOO',
+      "Sí o No.",
+      "¿Desea redefinirlo? [Sí/No] <N>: S",
+      "Especifique un punto base de inserción: 0,0",
+      "Designe objetos: 1 encontrados",
+      "Designe objetos:",
+      'El bloque "B1" hace referencia a sí mismo',
+      "Regenerando modelo.",
+      "*No válido*",
+    ])
+  })
+
+  it("warns of a base point off Z 0, ELEVATION included (probes blocks/p126, p127)", () => {
+    const cad = createHarness({ entities: [line()] })
+    answer(cad, "-BLOCK", "B1", "5,5,3")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify insertion base point: 5,5,3",
+      "Beware, Z insertion base is not zero.",
+    ])
+    answer(cad, "L", "")
+    expect(cad.only<InsertEntity>("insert").elevation).toBeCloseTo(3)
+
+    const raised = createHarness({ entities: [line()] })
+    answer(raised, "ELEV", "2", "0", "-BLOCK", "B1", "5,5")
+    expect(raised.commandLog().at(-1)).toBe(
+      "Beware, Z insertion base is not zero."
+    )
+
+    const es_ = createHarness({ locale: es, entities: [line()] })
+    answer(es_, "-BLOQUE", "B1", "5,5,3")
+    expect(es_.commandLog().at(-1)).toBe(
+      "Cuidado, la base de inserción de Z no es cero."
+    )
+  })
+
+  it("takes a set selected before it, counted after the base point (probe blocks/p132)", () => {
+    const cad = createHarness({ entities: [line()] })
+    cad.select("L1")
+    answer(cad, "-BLOCK", "B1", "0,0")
+
+    expect(cad.commandLog()).toEqual([
+      ...BLOCK_HEAD,
+      "Enter block name or [?]: B1",
+      "Specify insertion base point: 0,0",
+      "1 found",
+    ])
+    expect(cad.typeCounts()).toEqual({ insert: 1 })
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.selectedIds()).toEqual([])
+  })
+
+  it("defines an empty block at an empty Select objects, one undo step (probes blocks/p131, p139; desktop d09)", () => {
+    const cad = createHarness({ entities: [line()] })
+    answer(cad, "-BLOCK", "B1", "0,0", "")
+
+    expect(cad.runtime.document.getBlock("B1")?.entities).toEqual([])
+    expect(cad.typeCounts()).toEqual({ line: 1 })
+    answer(cad, "U")
+    expect(cad.commandLog().at(-1)).toBe("-BLOCK")
+    expect(cad.runtime.document.getBlock("B1")).toBeUndefined()
+    expect(cad.typeCounts()).toEqual({ line: 1 })
+  })
+})
+
+const anonymous = (name: string) =>
+  createBlockDefinition(name, p(0, 0), [lineOf(p(0, 0), p(1, 0))])
+
+// WHY no `Press ENTER to continue:`: the console's pager, which a history that
+// scrolls has no use for.
+describe("? lists the blocks, as AutoCAD 2027", () => {
+  const withBlocks = (locale?: typeof es) =>
+    createHarness({
+      ...(locale ? { locale } : {}),
+      blocks: [bar("B1"), bar("C1"), anonymous("*U1"), anonymous("*U2")],
+    })
+
+  it("-BLOCK asks which, lists them quoted and counts them, then ends (probes blocks/p104, p105, p156)", () => {
+    const cad = withBlocks()
+    answer(cad, "-BLOCK", "?", "")
+
+    expect(cad.commandLog()).toEqual([
+      ...BLOCK_HEAD,
+      "Enter block name or [?]: ?",
+      "Enter block(s) to list <*>:",
+      [
+        "Defined blocks.",
+        '  "B1"',
+        '  "C1"',
+        "User     External     Dependent   Unnamed",
+        "Blocks   References   Blocks      Blocks",
+        "    2         0           0           2",
+      ].join("\n"),
+    ])
+    expect(cad.activeToolId()).toBe("select")
+
+    const filtered = withBlocks()
+    answer(filtered, "-BLOCK", "?", "b*")
+    expect(filtered.commandLog().at(-1)).toBe(
+      [
+        "Defined blocks.",
+        '  "B1"',
+        "User     External     Dependent   Unnamed",
+        "Blocks   References   Blocks      Blocks",
+        "    1         0           0           2",
+      ].join("\n")
+    )
+
+    const none = createHarness()
+    answer(none, "-BLOCK", "?", "")
+    expect(none.commandLog().at(-1)).toBe(
+      [
+        "Defined blocks.",
+        "User     External     Dependent   Unnamed",
+        "Blocks   References   Blocks      Blocks",
+        "    0         0           0           0",
+      ].join("\n")
+    )
+  })
+
+  it("INSERT lists them in its own table (probes blocks/p02, p208, p238)", () => {
+    const cad = withBlocks()
+    answer(cad, "INSERT", "?", "")
+
+    expect(cad.commandLog()).toEqual([
+      "INSERT",
+      "Enter block name or [?] <C1>: ?",
+      "Enter block(s) to list <*>:",
+      [
+        "Defined blocks.",
+        '  "B1"',
+        '  "C1"',
+        "User     Unnamed",
+        "Blocks   Blocks",
+        "    2        2",
+      ].join("\n"),
+    ])
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("lists in Autodesk's Spanish (probes blocks/p02, p104, p156)", () => {
+    const cad = withBlocks(es)
+    answer(cad, "-BLOQUE", "?", "C*")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Indique bloque(s) a enumerar <*>: C*",
+      [
+        "Bloques definidos.",
+        '  "C1"',
+        "Bloques     Referencias     Bloques          Bloques",
+        "usuario     externas        dependientes     sin nombre",
+        "    1           0               0                2",
+      ].join("\n"),
+    ])
+
+    const inserting = withBlocks(es)
+    answer(inserting, "INSERT", "?", "")
+    expect(inserting.commandLog().at(-1)).toBe(
+      [
+        "Bloques definidos.",
+        '  "B1"',
+        '  "C1"',
+        "Bloques      Bloques",
+        "usuario      sin nombre",
+        "    2            2",
+      ].join("\n")
     )
   })
 })

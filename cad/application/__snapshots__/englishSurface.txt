@@ -15,7 +15,7 @@ SPLINE ["SPL"] "Spline"
 RECTANG ["REC","RECTANGLE"] "Rectangle"
 POLYGON ["POL"] "Polygon"
 HATCH ["H","BH","BHATCH"] "Hatch"
-BLOCK ["B"] "Create block"
+BLOCK ["B","ACADBLOCKDIALOG","BMAKE","BMOD"] "Create block"
 INSERT ["I"] "Insert block"
 ATTEDIT ["ATE"] "Edit attributes"
 ATTDEF ["ATT"] "Define attributes"
@@ -85,6 +85,7 @@ U [] "Undo the last action"
 -MTEXT ["-T"] "Multiline text"
 REDO [] "Redo the last undone action"
 -ATTDEF [] "Define attributes"
+-BLOCK ["-B"] "Create block"
 -PURGE ["-PU"] "Purge"
 -HATCH ["-H","-BH","-BHATCH"] "Hatch"
 -COLOR [] "Color"
@@ -1765,9 +1766,33 @@ lweight "Lineweight" LW
 > ?
   dyn: "Enter block name or"="?"||*
 > enter
-  dyn: "Enter block name or"=""||*
+  prompt: BLOCK Enter block(s) to list <*>:
+  asks: "Enter block(s) to list"
+  tip: Enter block(s) to list
+  dyn: "Enter block(s) to list"=""||*
+  options: -
   prompt| Enter block name or [?]: ?
-  info| No blocks defined.
+> list
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter block(s) to list <*>:
+  info| Defined blocks.
+        User     External     Dependent   Unnamed
+        Blocks   References   Blocks      Blocks
+            0         0           0           0
+> BLOCK again
+  prompt: BLOCK Enter block name or [?]:
+  asks: "Enter block name or"
+  tip: Enter block name or
+  dyn: "Enter block name or"=""||*
+  options: [?] ?
+  command| BLOCK
+  info| Current settings: Object conversion=Convert
+> no name
+  prompt| Enter block name or [?]:
+  error| Invalid block name.
 > name
   dyn: "Enter block name or"="BAR"||*
 > enter
@@ -1777,6 +1802,9 @@ lweight "Lineweight" LW
   dyn: "X,Y"=""||*
   options: -
   prompt| Enter block name or [?]: BAR
+> no base
+  prompt| Specify insertion base point:
+  error| Point or option keyword required.
 > base
   prompt: BLOCK Select objects:
   asks: -
@@ -1790,6 +1818,100 @@ lweight "Lineweight" LW
   prompt: Command:
   properties: -
   prompt| Select objects:
+
+## -BLOCK redefined
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> -BLOCK
+  prompt: -BLOCK Enter block name or [?]:
+  asks: "Enter block name or"
+  tip: Enter block name or
+  dyn: "Enter block name or"=""||*
+  options: [?] ?
+  command| -B -BLOCK
+  info| Current settings: Object conversion=Convert
+> name
+  prompt: -BLOCK Block "BAR" already exists. Redefine it? [Yes/No] <N>:
+  asks: 
+  tip: Block "BAR" already exists. Redefine it?
+  dyn: 
+  options: [Y] Yes, [N] No
+  prompt| Enter block name or [?]: bar
+> FOO
+  prompt: -BLOCK Redefine it? [Yes/No] <N>:
+  tip: Redefine it?
+  prompt| Block "BAR" already exists. Redefine it? [Yes/No] <N>: FOO
+  error| Yes or No, please.
+> Y
+  prompt: -BLOCK Specify insertion base point:
+  asks: "Specify insertion base point"
+  tip: Specify insertion base point:
+  dyn: "X,Y"=""||*
+  options: -
+  prompt| Redefine it? [Yes/No] <N>: Y
+> raised base
+  prompt: -BLOCK Select objects:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Specify insertion base point: 0,0,5
+  info| Beware, Z insertion base is not zero.
+> pick
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  prompt| Select objects: 1 found
+> enter
+  prompt: Command:
+  properties: -
+  prompt| Select objects:
+  info| Block "BAR" redefined
+> U
+  command| U
+  info| -BLOCK Regenerating model.
+> -BLOCK again
+  prompt: -BLOCK Enter block name or [?]:
+  asks: "Enter block name or"
+  tip: Enter block name or
+  dyn: "Enter block name or"=""||*
+  options: [?] ?
+  command| -BLOCK
+  info| Current settings: Object conversion=Convert
+> name
+  prompt: -BLOCK Block "BAR" already exists. Redefine it? [Yes/No] <N>:
+  asks: 
+  tip: Block "BAR" already exists. Redefine it?
+  dyn: 
+  options: [Y] Yes, [N] No
+  prompt| Enter block name or [?]: BAR
+> Y
+  prompt: -BLOCK Specify insertion base point:
+  asks: "Specify insertion base point"
+  tip: Specify insertion base point:
+  dyn: "X,Y"=""||*
+  options: -
+  prompt| Block "BAR" already exists. Redefine it? [Yes/No] <N>: Y
+> base
+  prompt: -BLOCK Select objects:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Specify insertion base point: 0,0
+> pick its reference
+  properties: Block Reference (1) [Block: Name=BAR, Scale=1.00~, Rotation=0°~] [Position: X=0.00~, Y=200.00~, Z=0.00~]
+  prompt| Select objects: 1 found
+> enter
+  prompt: Command:
+  properties: -
+  prompt| Select objects:
+  error| Block "BAR" references itself
+  info| Regenerating model.
+  error| *Invalid*
 
 ## INSERT
 > start
@@ -1811,10 +1933,32 @@ lweight "Lineweight" LW
 > ?
   dyn: "Enter block name or"="?"||*
 > enter
-  dyn: "Enter block name or"=""||*
+  prompt: INSERT Enter block(s) to list <*>:
+  asks: "Enter block(s) to list"
+  tip: Enter block(s) to list
+  dyn: "Enter block(s) to list"=""||*
+  options: -
   prompt| Enter block name or [?] <NUT>: ?
-  info| BAR
-        NUT
+> pattern
+  dyn: "Enter block(s) to list"="N*"||*
+> enter
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter block(s) to list <*>: N*
+  info| Defined blocks.
+          "NUT"
+        User     Unnamed
+        Blocks   Blocks
+            1        0
+> INSERT again
+  prompt: INSERT Enter block name or [?] <NUT>:
+  asks: "Enter block name or"
+  tip: Enter block name or
+  dyn: "Enter block name or"=""||*
+  options: [?] ?
+  command| I INSERT
 > unknown
   dyn: "Enter block name or"="NOPE"||*
 > enter
@@ -1891,18 +2035,48 @@ lweight "Lineweight" LW
 > ?
   dyn: "Enter block name or"="?"||*
 > enter
-  dyn: "Enter block name or"=""||*
+  prompt: BLOCK Enter block(s) to list <*>:
+  asks: "Enter block(s) to list"
+  tip: Enter block(s) to list
+  dyn: "Enter block(s) to list"=""||*
+  options: -
   prompt| Enter block name or [?]: ?
-  info| No blocks defined.
+> list
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter block(s) to list <*>:
+  info| Defined blocks.
+        User     External     Dependent   Unnamed
+        Blocks   References   Blocks      Blocks
+            0         0           0           0
 > INSERT
   prompt: INSERT Enter block name or [?]:
+  asks: "Enter block name or"
+  tip: Enter block name or
+  dyn: "Enter block name or"=""||*
+  options: [?] ?
   command| INSERT
 > ?
   dyn: "Enter block name or"="?"||*
 > enter
-  dyn: "Enter block name or"=""||*
+  prompt: INSERT Enter block(s) to list <*>:
+  asks: "Enter block(s) to list"
+  tip: Enter block(s) to list
+  dyn: "Enter block(s) to list"=""||*
+  options: -
   prompt| Enter block name or [?]: ?
-  info| No blocks defined.
+> list
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter block(s) to list <*>:
+  info| Defined blocks.
+        User     Unnamed
+        Blocks   Blocks
+            0        0
 
 ## TEXT
 > start

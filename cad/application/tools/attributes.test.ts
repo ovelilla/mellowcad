@@ -149,8 +149,11 @@ describe("ATTDEF", () => {
   })
 })
 
+// WHY ATTEDIT's box: the desktop opens Edit Attributes on the new reference
+// whatever ATTDIA, and Cancel keeps the defaults (desktop d00, d01); the
+// console, which shows no dialog, asks nothing (probes blocks/p134, p305).
 describe("BLOCK with attributes", () => {
-  it("files the definitions and converts with the values asked for", () => {
+  const convert = () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" }), partDefinition()],
     })
@@ -162,10 +165,19 @@ describe("BLOCK with attributes", () => {
       .click(p(-10, -10))
       .click(p(200, 50))
       .enter()
-      .moveTo(p(300, 300))
+    return cad
+  }
 
-    expect(cad.commandLog()).toContain("Enter attribute values")
+  it("converts with the defaults and opens ATTEDIT's box on the reference (desktop d00)", () => {
+    const cad = convert()
+
+    expect(cad.commandLog()).not.toContain("Enter attribute values")
+    expect(cad.state().commandLine.prompt).toBe("BLOCK:")
     expect(asking(cad)).toBe("Part number")
+    expect(cad.state().dynamicInput?.fields[0]?.value).toBe("X-0")
+    expect(cad.only<InsertEntity>("insert").attributes).toEqual([
+      expect.objectContaining({ tag: "PART", value: "X-0" }),
+    ])
     cad.type("P-7").enter()
 
     const block = cad.runtime.document.getBlock("TAG")
@@ -173,14 +185,30 @@ describe("BLOCK with attributes", () => {
       "attdef",
       "line",
     ])
-    const insert = cad.only<InsertEntity>("insert")
-    expect(insert.attributes).toEqual([
+    expect(cad.only<InsertEntity>("insert").attributes).toEqual([
       expect.objectContaining({ tag: "PART", value: "P-7" }),
     ])
     expect(cad.typeCounts().attdef).toBeUndefined()
+    expect(cad.activeToolId()).toBe("select")
+
+    // The definition, the conversion and the values are one step.
+    cad.undo()
+    expect(cad.runtime.document.getBlock("TAG")).toBeUndefined()
+    expect(cad.typeCounts()).toEqual({ line: 1, attdef: 1 })
   })
 
-  it("asks in the order the definitions were picked", () => {
+  it("keeps the defaults at Escape, the Cancel of Edit Attributes (desktop d01)", () => {
+    const cad = convert()
+    cad.type("P-7").escape()
+
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.only<InsertEntity>("insert").attributes).toEqual([
+      expect.objectContaining({ tag: "PART", value: "X-0" }),
+    ])
+    expect(cad.runtime.document.getBlock("TAG")).toBeDefined()
+  })
+
+  it("lists the attributes by prompt in the order the definitions were picked (probes blocks/p307–p309)", () => {
     const first = createAttributeDefinition(p(0, 10), "FIRST", {
       height: 5,
       id: "A1",
@@ -193,9 +221,10 @@ describe("BLOCK with attributes", () => {
     cad.command("BLOCK").type("TWO").enter().click(p(0, 0))
     cad.click(p(2, 32)).click(p(2, 12)).enter()
 
-    expect(asking(cad)).toBe("SECOND")
-    cad.enter()
-    expect(asking(cad)).toBe("FIRST")
+    expect(cad.state().dynamicInput?.fields.map((f) => f.label)).toEqual([
+      "SECOND",
+      "FIRST",
+    ])
   })
 })
 

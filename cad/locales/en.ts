@@ -598,7 +598,14 @@ export const en: EngineCatalog = {
       ],
       "BLOCK": [
         "BLOCK",
-        "B"
+        "B",
+        "ACADBLOCKDIALOG",
+        "BMAKE",
+        "BMOD"
+      ],
+      "-BLOCK": [
+        "-BLOCK",
+        "-B"
       ],
       "INSERT": [
         "INSERT",
@@ -1183,6 +1190,15 @@ export const en: EngineCatalog = {
       "patternScale": "Specify a scale for the pattern",
       "patternAngle": "Specify an angle for the pattern",
       "blockName": "Enter block name or",
+      "blockExists": [
+        "Block \"",
+        [
+          "name"
+        ],
+        "\" already exists. Redefine it?"
+      ],
+      "redefineIt": "Redefine it?",
+      "blocksToList": "Enter block(s) to list",
       "purgeType": "Enter type of unused objects to purge",
       "purgeNames": "Enter name(s) to purge",
       "purgeVerify": "Verify each name to be purged?",
@@ -2412,6 +2428,58 @@ export const en: EngineCatalog = {
       ],
       "blockConversion": "Current settings: Object conversion=Convert",
       "invalidBlockName": "Invalid block name.",
+      "invalidNewBlockName": "Invalid block name.",
+      "blockReferencesItself": [
+        "Block \"",
+        [
+          "name"
+        ],
+        "\" references itself"
+      ],
+      "blockRedefined": [
+        "Block \"",
+        [
+          "name"
+        ],
+        "\" redefined"
+      ],
+      "zBaseNotZero": "Beware, Z insertion base is not zero.",
+      "definedBlocks": "Defined blocks.",
+      "definedBlock": [
+        "  \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "blockCounts": [
+        "User     External     Dependent   Unnamed\nBlocks   References   Blocks      Blocks\n",
+        [
+          "user"
+        ],
+        "    ",
+        [
+          "external"
+        ],
+        "       ",
+        [
+          "dependent"
+        ],
+        "       ",
+        [
+          "unnamed"
+        ]
+      ],
+      "insertBlockCounts": [
+        "User     Unnamed\nBlocks   Blocks\n",
+        [
+          "user"
+        ],
+        "    ",
+        [
+          "unnamed"
+        ]
+      ],
       "rectangleModes": [
         "Current rectangle modes:",
         [

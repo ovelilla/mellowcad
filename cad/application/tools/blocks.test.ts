@@ -80,13 +80,16 @@ describe("BLOCK", () => {
     expect(cad.typeCounts().insert).toBeUndefined()
   })
 
-  it("lists what is already defined at the ? prompt", () => {
+  it("lists what is already defined at the ? prompt, then ends (probe blocks/p104)", () => {
     const cad = createHarness({ blocks: [barBlock()] })
-    cad.command("BLOCK").type("?").enter()
+    cad.command("BLOCK").option("?")
+    expect(cad.state().commandLine.prompt).toBe(
+      "BLOCK Enter block(s) to list <*>:"
+    )
+    cad.enter()
 
-    expect(cad.commandLog().join("\n")).toContain("BAR")
-    // Still asking for a name.
-    expect(cad.activeToolId()).toBe("block")
+    expect(cad.commandLog().at(-1)).toContain('  "BAR"')
+    expect(cad.activeToolId()).toBe("select")
   })
 
   it("previews the object a click would add to the set", () => {
@@ -117,7 +120,7 @@ describe("BLOCK", () => {
     expect(cad.byId<LineEntity>("L1")).toBeDefined()
   })
 
-  it("redefining a block updates every reference to it", () => {
+  it("redefining a block updates every reference to it (probe blocks/p113)", () => {
     const cad = createHarness({
       blocks: [barBlock()],
       entities: [
@@ -125,7 +128,8 @@ describe("BLOCK", () => {
         lineOf(p(0, 0), p(40, 0), { id: "L1" }),
       ],
     })
-    startBlock(cad, "BAR").click(p(20, 0)).enter()
+    cad.command("BLOCK").type("BAR").enter().option("Yes")
+    cad.click(p(0, 0)).click(p(20, 0)).enter()
 
     const drawn = insertGeometry(
       cad.byId<InsertEntity>("I1"),
@@ -756,7 +760,7 @@ describe("block names", () => {
       blocks: [barBlock("B1")],
       entities: [lineOf(p(0, 0), p(0, 50), { id: "L1" })],
     })
-    answer(cad, "BLOCK", "b1", "0,0", "L")
+    answer(cad, "BLOCK", "b1", "Y", "0,0", "L")
     cad.enter()
 
     expect(blockNames(cad)).toEqual(["B1"])

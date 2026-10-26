@@ -830,30 +830,48 @@ the palette's Spacing, ISO pen width, Double and Background color rows (greyed f
 pattern); a double-click, which in AutoCAD opens the Hatch Editor tab and Quick Properties
 (d08-2): HATCHEDIT/HE, the Hatch Editor and Quick Properties
 
-### `BLOCK` / `B` / `-BLOCK` · es `BLOQUE` / `BQ`†
+### `BLOCK` / `B` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOCK` / `-B` · es `BLOQUE` / `BQ` / `MODBLQ` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOQUE` / `-BQ`
 
-**Implemented:** -BLOCK's command line: `Current settings: Object conversion=Convert`,
-`Enter block name or [?]:` (Enter ends; a name with `<>/\":;?*|,=` and the like says
-`Invalid block name.`; a name the table holds in another case is that block, its spelling kept,
-p115), `Specify insertion base point:` (`Invalid point.`), then `Select objects:`
-with its modes and counts (es `Parámetros actuales: conversión de objetos=Convertir` — the word
-**unverified** —, `Indique nombre de bloque o [?]`, `Especifique un punto base de inserción`,
-`Nombre de bloque no válido.`); `?` list (an array's anonymous `*U<n>` left out, arrays/p400),
-Convert mode, layer-0 inheritance on insert; attribute
-definitions ask in pick order (a window or crossing picks them in reverse order of creation), and
-the converted reference asks their values as INSERT does
+**Implemented:** -BLOCK's command line, which BLOCK asks too (p151, p152; aliases from the 2027
+`acad.pgp`): `Current settings: Object conversion=Convert` (es `Parámetros actuales: conversión de
+objetos=Convertir`, p01); `Enter block name or [?]:`, where Enter, a name with one of `<>/\":;?*|,=` or a
+backquote, `*U1` or over 255 characters says `Invalid block name.` (es `Nombre bloque no válido.`, -BLOCK's
+own; INSERT's is `Nombre de bloque no válido.`) and asks again (p100–p111, desktop d09). A name the
+table holds, in any case, keeps its spelling and asks `Block "B1" already exists. Redefine it?
+[Yes/No] <N>:` (es `El bloque "B1" ya existe. ¿Desea redefinirlo? [Sí/No] <N>:`): No or Enter
+ends, another answer says `Yes or No, please.` and asks `Redefine it? [Yes/No] <N>:` (p113–p118);
+after the set, `Block "B1" redefined`, and its U writes `Regenerating model.` (p137). A set that
+holds the block being redefined, at any depth, is refused with `Block "B1" references itself`,
+`Regenerating model.`, `*Invalid*`, and the command ends (p117, p119). `?` asks `Enter block(s) to
+list <*>:` (es `Indique bloque(s) a enumerar`), writes `Defined blocks.`, the names it matches
+quoted, the table of User Blocks, External References, Dependent Blocks and Unnamed Blocks
+(anonymous blocks counted, never named, whatever the pattern), and ends (p104, p105, p156); the
+console's `Press ENTER to continue:` is its pager, left out where the history scrolls.
+`Specify insertion base point:`: Enter or a word says `Point or option keyword required.` and asks
+again (p01, p124, p125); a Z off 0, ELEVATION's too, says `Beware, Z insertion base is not zero.`
+(es `Cuidado, la base de inserción de Z no es cero.`, p126, p127). Then `Select objects:` with its
+modes and counts; a set selected before the command is counted after the base point and taken
+(p132); Enter at an empty set defines an empty block and converts nothing (p131, p139). Convert
+mode, layer-0 inheritance on insert; attribute definitions join in pick order (a window or crossing
+picks them in reverse order of creation, p307–p309). The reference is converted with their
+defaults and ATTEDIT's box opens on it, a field per attribute labelled by its prompt: Enter applies
+the values, Escape keeps the defaults — the Edit Attributes dialog the desktop opens whatever ATTDIA
+(d00, d01; the console, which shows no dialog, asks nothing, p134, p305). One undo step.
 
-**Missing:** the base point's Annotative and mOde (Retain/Delete), `?`'s
-`Enter block(s) to list <*>:` and AutoCAD's table of counts (here the names), "block already exists"
-redefine prompt, ATTSYNC / ATTREDEF / BATTMAN / BATTORDER (redefining leaves existing attributes as
-they were, as AutoCAD does)
+**Missing:** the base point's Annotative and mOde (Retain/Delete); BLOCK's Block Definition dialog
+(d08); ATTREQ 0, which skips the values' dialog; ATTSYNC / ATTREDEF / BATTMAN / BATTORDER
+(redefining leaves existing attributes as they were, as AutoCAD does). In a turned UCS AutoCAD
+2027 moves the converted objects, its reference landing at the base point turned twice (p155,
+desktop d09); here they stay where they were, a deviation (BLOCKS-D14): copying a defect that moves
+the user's geometry is no muscle memory
 
 ### `INSERT` / `I` / `-INSERT` · es `INSERT` / `IN`†
 
 **Implemented:** -INSERT's command line: `Enter block name or [?] <B1>:` (the last block inserted,
 or else the last named one defined — an array's anonymous `*U<n>` neither listed by `?` nor found
 by name —; names found case-blind, `b1` inserts B1, p210 —, INSNAME's: per drawing, not saved, so NEW and OPEN forget the block
-inserted, rectang/p303), `Specify insertion point or [Scale/Rotate]:`, Scale's
+inserted, rectang/p303); `?` lists as -BLOCK's does, with -INSERT's table of User Blocks and
+Unnamed Blocks, and ends (p02, p208, p238); `Specify insertion point or [Scale/Rotate]:`, Scale's
 `Specify scale factor for XYZ axes <1.00>:` (uniform; `Requires numeric distance or two points.`)
 and Rotate's `Specify rotation angle <0.00>:` (`Requires valid numeric angle or two points.`), each
 back to the point (es `Indique nombre de bloque o [?]`,

@@ -17,7 +17,7 @@ export type AttributeEditor = "attedit" | "eattedit"
 
 type AttEditState =
   | { readonly phase: "select"; readonly hover: InsertEntity | null }
-  | { readonly phase: "edit"; readonly target: InsertEntity }
+  | { readonly phase: "edit"; readonly box: AttributeEditBox }
 
 /**
  * AutoCAD's ATTEDIT and EATTEDIT: pick a block reference and change the values
@@ -61,8 +61,7 @@ export class AttEditTool implements Tool {
   /** Opens `insert` straight away — the double-click entry point. */
   beginEdit(insert: InsertEntity, ctx: ToolContext): void {
     this.editor = "eattedit"
-    this.state = { phase: "edit", target: insert }
-    this.openEditor(insert, ctx)
+    this.beginEditing(insert, ctx)
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -86,7 +85,7 @@ export class AttEditTool implements Tool {
   }
 
   hiddenEntityIds(): readonly EntityId[] {
-    return this.state.phase === "edit" ? [this.state.target.id] : []
+    return this.state.phase === "edit" ? [this.state.box.target.id] : []
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
@@ -100,17 +99,20 @@ export class AttEditTool implements Tool {
           )
         : []
     }
-    return entityScenePrimitive(
-      ctx.viewport,
-      this.edited(this.state.target, ctx),
-      { color: THEME.rubberBand, width: 1 },
-      { blocks: ctx.blocks }
-    )
+    return this.state.box.buildOverlay(ctx)
   }
 
   private beginEditing(target: InsertEntity, ctx: ToolContext): void {
-    this.state = { phase: "edit", target }
-    this.openEditor(target, ctx)
+    const box = new AttributeEditBox(
+      target,
+      this.editor === "eattedit" ? "tag" : "prompt"
+    )
+    this.state = { phase: "edit", box }
+    box.open(ctx, (doneCtx) => {
+      this.state = { phase: "select", hover: null }
+      box.commit(doneCtx)
+      doneCtx.endCommand()
+    })
     ctx.requestRender()
   }
 
@@ -125,10 +127,24 @@ export class AttEditTool implements Tool {
       ? hit
       : null
   }
+}
 
-  private openEditor(target: InsertEntity, ctx: ToolContext): void {
-    const block = ctx.document.getBlock(target.blockId)
-    const attributes = target.attributes ?? []
+/**
+ * ATTEDIT's box on one reference: a field per attribute, in the reference's
+ * order, labelled by its prompt (Edit Attributes) or its tag (the Enhanced
+ * Attribute Editor), each holding its value. Enter is OK; Escape, Cancel,
+ * leaves the reference as it was. BLOCK's Convert opens it too (BLOCKS-D90).
+ */
+export class AttributeEditBox {
+  constructor(
+    readonly target: InsertEntity,
+    private readonly labels: "prompt" | "tag"
+  ) {}
+
+  /** Opens the box; `onOk` runs at Enter. */
+  open(ctx: ToolContext, onOk: (ctx: ToolContext) => void): void {
+    const block = ctx.document.getBlock(this.target.blockId)
+    const attributes = this.target.attributes ?? []
     ctx.dynamicInput.open({
       fields: attributes.map((attribute, index) => {
         const definition = block?.entities.find(
@@ -137,7 +153,7 @@ export class AttEditTool implements Tool {
         return {
           id: fieldId(index),
           label:
-            this.editor === "eattedit" || definition?.type !== "attdef"
+            this.labels === "tag" || definition?.type !== "attdef"
               ? attribute.tag
               : attributePrompt(definition),
           kind: "text" as const,
@@ -145,8 +161,7 @@ export class AttEditTool implements Tool {
       }),
       commit: () => {},
       commitRaw: (commitCtx) => {
-        this.commit(commitCtx)
-        commitCtx.endCommand()
+        onOk(commitCtx)
         return true
       },
     })
@@ -155,26 +170,35 @@ export class AttEditTool implements Tool {
     )
   }
 
+  /** The reference as the box would leave it, drawn in place of the original. */
+  buildOverlay(ctx: ToolContext): ScenePrimitive[] {
+    return entityScenePrimitive(
+      ctx.viewport,
+      this.edited(ctx),
+      { color: THEME.rubberBand, width: 1 },
+      { blocks: ctx.blocks }
+    )
+  }
+
+  /** Applies the values in the box, if any changed. */
+  commit(ctx: ToolContext): void {
+    const next = this.edited(ctx)
+    const changed = (next.attributes ?? []).some(
+      (attribute, index) =>
+        attribute.value !== this.target.attributes?.[index].value
+    )
+    if (changed) ctx.execute(new UpdateEntityCommand(next))
+  }
+
   /** The reference with the values in the box. */
-  private edited(target: InsertEntity, ctx: ToolContext): InsertEntity {
+  private edited(ctx: ToolContext): InsertEntity {
     return {
-      ...target,
-      attributes: (target.attributes ?? []).map((attribute, index) => ({
+      ...this.target,
+      attributes: (this.target.attributes ?? []).map((attribute, index) => ({
         ...attribute,
         value: attributeInput(ctx.dynamicInput.getText(fieldId(index))),
       })),
     }
-  }
-
-  private commit(ctx: ToolContext): void {
-    if (this.state.phase !== "edit") return
-    const target = this.state.target
-    const next = this.edited(target, ctx)
-    this.state = { phase: "select", hover: null }
-    const changed = (next.attributes ?? []).some(
-      (attribute, index) => attribute.value !== target.attributes?.[index].value
-    )
-    if (changed) ctx.execute(new UpdateEntityCommand(next))
   }
 }
 

@@ -20,6 +20,7 @@ import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { AttributeValuePrompts } from "./attributeValues"
+import { BLOCKS_TO_LIST, askBlocksToList } from "./blockListing"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -37,6 +38,8 @@ const PREVIEW_ID: EntityId = "__insert_preview__"
 
 type InsertState =
   | { readonly phase: "name" }
+  /** `?`'s `Enter block(s) to list <*>:`. */
+  | { readonly phase: "list" }
   | { readonly phase: "point"; readonly cursor: Vec2 }
   | { readonly phase: "scale" }
   | { readonly phase: "rotation" }
@@ -48,7 +51,8 @@ type InsertState =
 
 /**
  * AutoCAD's INSERT: places a reference to a block already defined in the
- * drawing. The block is named first (`?` lists what is defined), then the
+ * drawing. The block is named first (`?` lists what is defined and ends, as
+ * -BLOCK's does), then the
  * insertion point, with **Scale** and **Rotate** offered as the keywords
  * -INSERT lists — each sets its value and returns to the point prompt, so the
  * reference is dragged in at the size and angle it will keep.
@@ -124,6 +128,8 @@ export class InsertTool implements Tool {
         return this.blockId
           ? { id: "blockName", enter: { name: this.blockId } }
           : "blockName"
+      case "list":
+        return BLOCKS_TO_LIST
       case "point":
         return "insertionPoint"
       case "scale":
@@ -161,8 +167,7 @@ export class InsertTool implements Tool {
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase === "name" && id === "?") {
-      this.listBlocks(ctx)
-      this.enterName(ctx)
+      this.enterList(ctx)
       return "continue"
     }
     if (this.state.phase !== "point") return "unhandled"
@@ -246,8 +251,7 @@ export class InsertTool implements Tool {
       commitRaw: (commitCtx) => {
         const typed = commitCtx.dynamicInput.getText("name").trim()
         if (typed === "?") {
-          this.listBlocks(commitCtx)
-          this.enterName(commitCtx)
+          this.enterList(commitCtx)
           return true
         }
         // Enter with nothing typed keeps the last block, the `<default>`.
@@ -272,13 +276,10 @@ export class InsertTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
-  private listBlocks(ctx: ToolContext): void {
-    const blocks = namedBlocks(ctx.document)
-    ctx.report(
-      blocks.length === 0
-        ? ctx.text.message("noBlocks")
-        : blocks.map((block) => block.name).join("\n")
-    )
+  private enterList(ctx: ToolContext): void {
+    this.state = { phase: "list" }
+    askBlocksToList(ctx, "insert")
+    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
   private enterPoint(ctx: ToolContext): void {

@@ -670,8 +670,9 @@ export class CadRuntime extends Observable {
         if (!this.answeringPrompt) this.openLine = this.reportedPrompt
       },
       runsTransparently: () => this.suspended !== null,
-      regenerate: () => {
+      regenerate: (silently) => {
         this.history.markRegenerated()
+        if (silently) return
         if (this.suspended === null) {
           this.commandLine.write("info", this.text.message("regeneratingModel"))
           return
