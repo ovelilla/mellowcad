@@ -382,9 +382,7 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
   SPLINE, ERASE (desktop traps, storage by the OPEN test, disjoint prompts, the preselection).
 - 2026-10-22: MOVE and COPY, Transforms, OFFSET, TRIM, Corners and Pieces (shared cases and the
   Undo keyword to one subagent, ranges by weight, desktop traps, matrix.md Q, annex §3–§5).
-- 2026-10-22, after the Arrays review: picks off the command line's band, registry keywords put
-  back, a reading by handle with two U, snaps off while a drag is measured, keys into the
-  palette's window, the object's desktop pass before its plan (annex-probes.md §4).
+- 2026-10-22, after the Arrays review: desktop traps and the object's desktop pass first (annex §4).
 - 2026-10-23, after the Properties review: the whole monitor captured before a click, a pass
   without the mouse, task dialogs' links and Cancel (annex-probes.md §4), U's echo for an edit
   made outside a command (§4.1), the resource DLLs the tables lack (annex-catalogs.md §3).
@@ -403,3 +401,4 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
 - 2026-10-27, after the Inquiry review: the ribbon button's macro read in Phase 1 (§1.1); the
   read-only variables a command sets (matrix.md H); after its desktop block, Escape at a keyword's
   sub-prompt (matrix.md G), overlay colours and DYNMODE's profiles (annex-probes.md §4).
+- 2026-10-27, View's console blocks: `acad.pgp` (matrix.md A); hangs and U/REDO (annex §1, §2).

@@ -1,10 +1,10 @@
 # View review (ZOOM, PAN, -PAN, PLAN, VPOINT, -VPOINT, VIEW, -VIEW, 3DORBIT, NAVVCUBE)
 
 > **Status:** plan, 2026-10-27. The twenty-second review of `docs/coverage/roadmap.md`'s order, with
-> skill `command-review`. Phases 0–4 were done in one session with console probes only. Blocks ZOM, VUN
-> and VDR are executed in that same session. Block VWD (the ViewCube, the viewport controls, the
-> navigation bar, the wheel, real-time PAN and 3DORBIT) needs the desktop and the owner's mouse, so it
-> is planned here and probed in a session of its own.
+> skill `command-review`. Phases 0–4 and blocks ZOM, VUN and PAN + VDR were done in one session with
+> console probes only (index below). Block VWD (the ViewCube, the viewport controls, the navigation
+> bar, the wheel, real-time PAN and 3DORBIT) needs the desktop and the owner's mouse: it is planned
+> below and probed in a session of its own. Once it is executed, the plan shrinks to its index.
 >
 > It owns **the view and its undo**. That covers which view runs are undo steps, how consecutive
 > ZOOMs join, `Regenerating model.` on U and REDO, ZOOM Previous's list, and a transparent view
@@ -37,6 +37,18 @@ The worst three:
 **Evidence:** 210 console probes in es-ES and en-US (p100–p169, p200–p269, p300–p369) on AutoCAD
 2027 (ACADVER 26.0, X.118); the `acadres` tables of 2026-10-20; `acad.cuix`'s menu macros; the
 installed `acad.pgp` of each language. There are 200 scratch tests in `research/review/view/{a,b,c}/`.
+
+## Executed
+
+| Block | Findings | Commit |
+| --- | --- | --- |
+| ZOM | ZOM-01 to ZOM-11 (the existing `invalid` message for `*Invalid*`; one 3 px margin, `EXTENTS_MARGIN_PX`) | `2df6cff` |
+| VUN | VUN-01 to VUN-06 (`viewStep` gone; `ViewChangeCommand.turns()` decides U's regeneration) | `c04194e` |
+| PAN + VDR | PAN-01, VDR-01 to VDR-05, VDR-20, VDR-21, VDR-23, VDR-24 (no Arabic catalog: its command language is the global one) | `eb19b47` |
+| VWD | the desktop: d01–d09, e01; VDR-22, VDR-25 | — |
+
+Left by the execution for VWD: whether -VPOINT writes `*** Returning to the UCS ***` at Escape;
+whether a twist alone regenerates on U; PAN's and 3DORBIT's undo steps with no drag.
 
 ## Inventory
 

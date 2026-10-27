@@ -7,7 +7,8 @@ is how a review uses them.
 ## 1. Ids, inputs and transcripts
 
 - A probe is `<command>/<id>`: `p01`, `p02`… for the console, `d01`… for the desktop, numbered in
-  the order written and never renumbered. A test or a comment cites it as
+  the order written and never renumbered; a probe that hangs keeps its id and the retry takes the
+  next free one (View's p201, p203, p238 were rewritten). A test or a comment cites it as
   `probe line/p07` (adding `es-ES` or `en-US` when only one language shows it).
 - **The input is committed**: `scripts/research/probes/<command>/<id>.txt` for the console (one
   answer per line, as `runacc.sh` takes it), `<id>.sh` for the desktop (the `acad.sh` calls, in
@@ -39,6 +40,9 @@ Writing one (the traps of `console.md` hold; these are the review's):
   silently in LINE's first probes.
 - **An empty line at `Command:` repeats the last command**: end a probe on the command's own last
   answer, not on an extra Enter (FILLET ran twice in LINE's p60).
+- A command that hangs the console (real-time PAN, 3DORBIT) goes last, in a probe of its own: every
+  answer after it is lost. Between U and REDO read with `getvar` only: an `(ssget "_X")` there left
+  REDO `Nothing to redo` (View review).
 - Typed coordinates are taken as typed: with the console's OSMODE 4133 and OSNAPCOORD 2, a point
   typed beside an endpoint was not snapped (checked 2026-10-21). A snap is probed with a typed
   override (`_END`) and a point inside the aperture.

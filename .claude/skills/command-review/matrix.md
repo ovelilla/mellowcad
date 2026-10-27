@@ -23,7 +23,8 @@ plan each block has its table, a cell reading `match · p07 · LineTool.test.ts:
 **A. Invocation**
 
 - The name, every alias, in `en` and `es` (Spanish names and `acad.pgp` aliases), the `_` global
-  form and `_.`; abbreviations that are another command's.
+  form and `_.`; abbreviations that are another command's. The catalog's names are diffed against
+  the installed `acad.pgp` of each language in Phase 1: View found seven missing (view/p201, p335).
 - Repeating it: Enter or Space at `Command:`, the right button's Repeat, the recent commands.
 - Typed transparently (`'LINE`): refused as AutoCAD refuses it, or run as it runs.
 - The rail entry and any shortcut key.
