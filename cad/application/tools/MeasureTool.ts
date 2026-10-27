@@ -25,7 +25,7 @@ import {
   unitSuffix,
 } from "../../domain/units"
 import { Ucs, worldDirectionToUcs } from "../../domain/ucs"
-import { Entity, readsInPlan } from "../../domain/entities"
+import { Entity, isWidePolyline, readsInPlan } from "../../domain/entities"
 import { objectArea } from "../../domain/objectArea"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
@@ -48,6 +48,7 @@ import { rollover } from "./ghostLook"
 import type { PromptId } from "../../locales/types"
 import { ARC_SEGMENT_OPTIONS, ArcSegmentInput } from "./arcSegmentInput"
 import { lastDrawnDirection } from "./lastDrawnPoint"
+import { typedPick } from "./typedPick"
 
 /**
  * MEASURE (AutoCAD's DIST and AREA). Creates no geometry — the result is a
@@ -126,11 +127,16 @@ export class MeasureTool implements Tool {
 
   private state: MeasureState = { phase: "first" }
   private lastScreen: Vec2 | null = null
-  /** The AREA system variable: the last area measured, kept for the session. */
+  /**
+   * The AREA system variable, kept for the session: the last area measured,
+   * or in Add area or Subtract area the total (probes inquiry/p211–p214).
+   */
   private area = 0
   private areaMode: AreaMode = "plain"
   /** Add area's and Subtract area's total so far. */
   private total = 0
+  /** Whether the run has a total yet, which eXit and Enter then say. */
+  private totalled = false
   /** The last measurement in the mode and the total then, said again at its first corner. */
   private shown: (AreaReport & { readonly total: string }) | null = null
   /** Multiple points' Arc options, the prompts PLINE's ask. */
@@ -140,7 +146,7 @@ export class MeasureTool implements Tool {
     ctrlAtCenterAngle: false,
   })
 
-  /** The last area AREA measured, 0 until it has. */
+  /** The AREA system variable, 0 until AREA has measured. */
   lastArea(): number {
     return this.area
   }
@@ -161,6 +167,7 @@ export class MeasureTool implements Tool {
   private reset(origin: Vec2): void {
     this.areaMode = "plain"
     this.total = 0
+    this.totalled = false
     this.shown = null
     this.state =
       this.mode === "area"
@@ -194,14 +201,9 @@ export class MeasureTool implements Tool {
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
     if (this.state.phase === "areaObject") {
-      const picked = this.pickArea(input.world, ctx)
-      if (
-        picked &&
-        this.reportObject(picked, ctx) &&
-        this.areaMode === "plain"
-      ) {
-        ctx.endCommand()
-      }
+      // Under a typed object snap the pick is where it found its point
+      // (probe inquiry/p228).
+      this.pickObject(input.snap ? input.point : input.world, ctx)
     } else if (this.state.phase === "multiple" && this.arc.active) {
       this.arc.onPointerDown(input, ctx)
     } else {
@@ -452,10 +454,10 @@ export class MeasureTool implements Tool {
    * its second measures to the first (LASTPOINT again), as AutoCAD's do, Multiple points'
    * next point takes `<Total>` and its Length refuses it; AREA's first corner
    * takes `<Object>`, from the third point it takes `<Total>`, and before that
-   * AutoCAD 2023's console refuses it as a missing point. In Add area or
-   * Subtract area the first corner's Enter writes the total and ends, and
-   * `Select objects:`'s goes back to the first corner, saying the last
-   * measurement again.
+   * AutoCAD 2027's console refuses it as a missing point (probe inquiry/p208).
+   * In Add area or Subtract area the first corner's Enter ends, writing the
+   * total once there is one (p212, p258), and `Select objects:`'s goes back
+   * to the first corner, saying the last measurement again (p215).
    */
   private enter(ctx: ToolContext): boolean {
     switch (this.state.phase) {
@@ -486,7 +488,7 @@ export class MeasureTool implements Tool {
           ctx.report(ctx.text.message("pointOrKeywordRequired"), "error")
         } else if (this.areaMode === "plain") this.askObject(ctx)
         else {
-          this.reportTotal(ctx)
+          this.endTotal(ctx)
           ctx.endCommand()
         }
         return true
@@ -535,17 +537,6 @@ export class MeasureTool implements Tool {
    */
   takes(): QuestionInput | null {
     if (this.state.phase === "areaObject") return "objectOrLast"
-    if (
-      this.state.phase === "area" &&
-      this.state.points.length === 0 &&
-      this.areaMode !== "plain" &&
-      this.shown
-    ) {
-      return {
-        refusal: ["pointOrKeywordRequired", "areaReport", "totalArea"],
-        values: this.shown,
-      }
-    }
     if (this.state.phase === "multiple") {
       if (this.arc.active) return this.arc.takes()
       const { arcMode, points, total } = this.state
@@ -564,10 +555,12 @@ export class MeasureTool implements Tool {
   /**
    * DIST's second point keeps LASTPOINT at its first, where Multiple
    * points' set it, as AutoCAD 2027's console shows (probes inquiry/p356,
-   * p358).
+   * p358); AREA's `Select objects:` sets it to the pick, which Last leaves
+   * (p253).
    */
   setsLastPoint(): boolean | null {
     if (this.state.phase === "second") return false
+    if (this.state.phase === "areaObject") return true
     return this.state.phase === "multiple" && !this.arc.active ? true : null
   }
 
@@ -586,6 +579,47 @@ export class MeasureTool implements Tool {
     return this.enter(ctx)
   }
 
+  /**
+   * In Add area or Subtract area the first corner says the last measurement
+   * and the total again whenever it is asked again: after its refusal and
+   * after `Resuming AREA command.` (probes inquiry/p213, p255).
+   */
+  onAskAgain(ctx: ToolContext): void {
+    if (this.state.phase === "area" && this.state.points.length === 0) {
+      this.reportShown(ctx)
+    }
+  }
+
+  /**
+   * A point typed at `Select objects:` picks there, as a click does, a
+   * number its direct distance; on nothing, or off the screen, it is asked
+   * again without a word (probes circle/p241, inquiry/p218, p219, p240).
+   */
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    if (this.state.phase !== "areaObject") return false
+    const point = typedPick(text, ctx)
+    if (!point) return false
+    const { x, y } = ctx.viewport.worldToScreen(point)
+    const { width, height } = ctx.viewport
+    if (x >= 0 && y >= 0 && x <= width && y <= height) {
+      this.pickObject(point, ctx)
+    }
+    return true
+  }
+
+  /** A typed object snap picks at its point (probe inquiry/p228). */
+  takesSnapOverride(): boolean {
+    return this.state.phase === "areaObject"
+  }
+
+  /**
+   * `Select objects:` takes an object on a locked layer (p217's trace,
+   * `AllowObjectOnLockedLayer`; p220).
+   */
+  picksLocked(): boolean {
+    return this.state.phase === "areaObject"
+  }
+
   /** While marking an area, Backspace removes the last placed vertex too. */
   onKeyDown(input: KeyInput, ctx: ToolContext): void {
     if (input.key === "Backspace" && this.state.phase === "area") {
@@ -596,8 +630,9 @@ export class MeasureTool implements Tool {
   /**
    * WHY no Arc and Length at AREA's next point: not built
    * (docs/coverage/inquiry.md). In Add area the first corner lists Subtract
-   * area and takes Add area unlisted, as AutoCAD 2023's console does, and
-   * the other way round. DIST's Arc lists PLINE's arc options.
+   * area and takes Add area unlisted, as AutoCAD 2027's console does, and
+   * the other way round (probes inquiry/p212, p215). DIST's Arc lists PLINE's
+   * arc options.
    */
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase === "areaObject") {
@@ -632,7 +667,8 @@ export class MeasureTool implements Tool {
     const { length } = this.state.points
     if (length === 0) {
       // The first corner also declares Entity (Object's old name) and eXit
-      // unlisted (table 20164), which AutoCAD 2023's console takes.
+      // unlisted (table 20164), which AutoCAD 2027's console takes (probe
+      // inquiry/p215).
       const unlisted: CommandOption[] = [
         { id: "Entity", hidden: true },
         { id: "eXit", hidden: true },
@@ -674,12 +710,13 @@ export class MeasureTool implements Tool {
         if (this.state.phase !== "area") return "unhandled"
         this.askObject(ctx)
         return "continue"
-      // WHY no `Total area = …`, which Enter says in Add or Subtract area:
-      // the console's eXit ends without a word (acc/ar3, ar5 of 2026-10-14).
+      // eXit says the total as Enter does (probes inquiry/p215, p254).
       case "eXit":
-        return this.state.phase === "area" && this.state.points.length === 0
-          ? "end"
-          : "unhandled"
+        if (this.state.phase !== "area" || this.state.points.length > 0) {
+          return "unhandled"
+        }
+        this.endTotal(ctx)
+        return "end"
       case "Add":
       case "Subtract": {
         if (this.state.phase !== "area" || this.state.points.length > 0) {
@@ -782,7 +819,7 @@ export class MeasureTool implements Tool {
 
   /**
    * AREA's Undo takes back the last point; the first corner it keeps, saying
-   * so as AutoCAD 2023's console does.
+   * so as AutoCAD 2027's console does (probe inquiry/p241).
    */
   private undoPoint(ctx: ToolContext): boolean {
     if (this.state.phase !== "area" || this.state.points.length === 0) {
@@ -821,6 +858,14 @@ export class MeasureTool implements Tool {
     return this.state.phase === "area" ? this.state.cursor : { x: 0, y: 0 }
   }
 
+  /** The object picked at `world`, measured; the command ends with a plain one. */
+  private pickObject(world: Vec2, ctx: ToolContext): void {
+    const picked = this.pickArea(world, ctx)
+    if (picked && this.reportObject(picked, ctx) && this.areaMode === "plain") {
+      ctx.endCommand()
+    }
+  }
+
   /** Whether the object has an area, which was then reported. */
   private reportObject(entity: Entity, ctx: ToolContext): boolean {
     const measured = objectArea(entity)
@@ -829,6 +874,10 @@ export class MeasureTool implements Tool {
       return false
     }
     this.measure(measured.area, measured.measured, measured.around, ctx)
+    // Only a closed one is probed (inquiry/p222).
+    if (entity.type === "polyline" && entity.closed && isWidePolyline(entity)) {
+      ctx.report(ctx.text.message("polylineWidthIgnored"))
+    }
     return true
   }
 
@@ -871,6 +920,8 @@ export class MeasureTool implements Tool {
     ctx.report(ctx.text.message("areaReport", report))
     if (this.areaMode === "plain") return
     this.total += this.areaMode === "add" ? area : -area
+    this.area = this.total
+    this.totalled = true
     this.shown = { ...report, total: formatLength(this.total, settings) }
     this.reportTotal(ctx)
   }
@@ -879,6 +930,11 @@ export class MeasureTool implements Tool {
     if (!this.shown) return
     ctx.report(ctx.text.message("areaReport", this.shown))
     ctx.report(ctx.text.message("totalArea", this.shown))
+  }
+
+  /** Leaving Add area or Subtract area: the total, once there is one. */
+  private endTotal(ctx: ToolContext): void {
+    if (this.totalled) this.reportTotal(ctx)
   }
 
   private reportTotal(ctx: ToolContext): void {

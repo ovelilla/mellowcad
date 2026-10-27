@@ -14,9 +14,9 @@ import { splineArea, splineLength } from "./splines"
 
 /**
  * What AREA's Object option reports for an object: its area and the length
- * around it, under the word AutoCAD 2023 prints it with — a circle's
+ * around it, under the word AutoCAD 2027 prints it with — a circle's
  * `Circumference`, an open curve's `Length` (its area is the one its chord
- * closes), and `Perimeter` otherwise.
+ * closes), and `Perimeter` otherwise (probes inquiry/p215, p223, p225).
  */
 export interface ObjectArea {
   readonly area: number

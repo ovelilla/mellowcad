@@ -565,8 +565,10 @@ describe("DIST's Multiple points", () => {
 })
 
 /** A harness at the console's LUPREC 4. */
-function console4(): CadHarness {
-  const cad = createHarness()
+function console4(
+  options: Parameters<typeof createHarness>[0] = {}
+): CadHarness {
+  const cad = createHarness(options)
   cad.runtime.setDocumentPrecision(4)
   return cad
 }
@@ -950,7 +952,8 @@ describe("AREA", () => {
     ])
   })
 
-  // AutoCAD 2023's console (acc/ar1–ar3.txt).
+  // AutoCAD 2027's console: probes inquiry/p212, p213 (the refusal says the
+  // last measurement and the total again).
   it("adds and subtracts areas to a running total until Enter", () => {
     const cad = createHarness({ entities: [circleOf(p(5, 5), 2)] })
 
@@ -1026,8 +1029,8 @@ describe("AREA", () => {
     ])
   })
 
-  // AutoCAD 2023's console (acc/ar1–ar6 of 2026-10-14): the first corner
-  // declares Entity and eXit unlisted (table 20164).
+  // AutoCAD 2027's console (probe inquiry/p215): the first corner declares
+  // Entity and eXit unlisted (table 20164), and eXit says the total there is.
   it("takes Entity as Object and eXit to end, without listing them", () => {
     const cad = createHarness({ entities: [circleOf(p(5, 5), 2)] })
 
@@ -1051,7 +1054,7 @@ describe("AREA", () => {
 
     cad.command("AREA")
     answer(cad, "A", "ENTITY", "L", "", "EXIT")
-    expect(cad.commandLog().slice(-8)).toEqual([
+    expect(cad.commandLog().slice(-9)).toEqual([
       "Specify first corner point or [Object/Subtract area]: ENTITY",
       "(ADD mode) Select objects: L",
       "Area = 12.57, Circumference = 12.57",
@@ -1060,6 +1063,7 @@ describe("AREA", () => {
       "Area = 12.57, Circumference = 12.57",
       "Total area = 12.57",
       "Specify first corner point or [Object/Subtract area]: EXIT",
+      "Total area = 12.57",
     ])
     expect(cad.activeToolId()).toBe("select")
   })
@@ -1157,5 +1161,314 @@ describe("AREA", () => {
       "Designe objetos: LT",
       "Área = 78.54, Circunferencia = 31.42",
     ])
+  })
+})
+
+/** A harness at LUPREC 4 framing the probes' `ZOOM W -20,-20 20,20`. */
+function consoleWindow(
+  options: Parameters<typeof createHarness>[0] = {}
+): CadHarness {
+  return answer(console4(options), "ZOOM", "W", "-20,-20", "20,20")
+}
+
+// AutoCAD 2027's console, the same input.
+describe("AREA's Select objects, as AutoCAD 2027's", () => {
+  // probe circle/p241
+  it("takes a typed point as its pick", () => {
+    const cad = console4({ entities: [circleOf(p(0, 0), 10)] })
+    answer(cad, "ZOOM", "W", "-30,-30", "50,40", "AREA", "O", "10,0")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Specify first corner point or [Object/Add area/Subtract area] <Object>: O",
+      "Select objects: 10,0",
+      "Area = 314.1593, Circumference = 62.8319",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  // probes inquiry/p218, p240: a point on nothing or off the screen is asked
+  // again without a word; the selection modes are no answer there.
+  it("asks again, silent, at a point on nothing or off the screen", () => {
+    const cad = consoleWindow({
+      entities: [circleOf(p(500, 500), 5), circleOf(p(0, 0), 5)],
+    })
+    answer(cad, "AREA", "O", "FOO", "W", "U", "15,15", "505,500", "L")
+    expect(cad.commandLog().slice(-13)).toEqual([
+      "Select objects: FOO",
+      "*Invalid selection*",
+      "Expects a point or Last",
+      "Select objects: W",
+      "*Invalid selection*",
+      "Expects a point or Last",
+      "Select objects: U",
+      "*Invalid selection*",
+      "Expects a point or Last",
+      "Select objects: 15,15",
+      "Select objects: 505,500",
+      "Select objects: L",
+      "Area = 78.5398, Circumference = 31.4159",
+    ])
+  })
+
+  // probe inquiry/p219: LASTPOINT 0,0, the cursor south-west of it
+  it("picks at a number's distance from LASTPOINT towards the cursor", () => {
+    const cad = consoleWindow({ entities: [circleOf(p(0, 0), 5)] })
+    answer(cad, "ID", "0,0", "AREA", "O")
+    cad.moveTo(p(-12, -9))
+    answer(cad, "5")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select objects: 5",
+      "Area = 78.5398, Circumference = 31.4159",
+    ])
+  })
+
+  // probe inquiry/p228: the centre is no point of the circle, so nothing is
+  // found there and the prompt is asked again, nothing measured.
+  it("picks where a typed object snap finds its point", () => {
+    const objects = [lineOf(p(0, 0), p(10, 0)), circleOf(p(0, 10), 2)]
+    const typed = consoleWindow({ entities: objects })
+    answer(typed, "AREA", "O", "CEN", "2,10")
+    expect(typed.activeToolId()).toBe("measurearea")
+    expect(typed.commandLog().at(-1)).toBe("Select objects: CEN of 2,10")
+    answer(typed, "L")
+    expect(typed.commandLog().at(-1)).toBe(
+      "Area = 12.5664, Circumference = 12.5664"
+    )
+
+    const clicked = consoleWindow({ entities: objects })
+    answer(clicked, "AREA", "O", "CEN")
+    clicked.click(p(2, 10))
+    expect(clicked.activeToolId()).toBe("measurearea")
+    expect(
+      clicked.commandLog().filter((line) => line.startsWith("Area ="))
+    ).toEqual([])
+  })
+
+  // probes inquiry/p220 (`5,0` typed), p217's trace
+  // (`AllowObjectOnLockedLayer: true`)
+  it("measures an object on a locked layer", () => {
+    for (const pick of ["typed", "clicked", "Last"] as const) {
+      const cad = consoleWindow({ entities: [circleOf(p(0, 0), 5)] })
+      cad.runtime.updateLayer("0", { locked: true })
+      answer(cad, "AREA", "O")
+      if (pick === "clicked") cad.click(p(5, 0))
+      else answer(cad, pick === "typed" ? "5,0" : "L")
+      expect(cad.commandLog().at(-1)).toBe(
+        "Area = 78.5398, Circumference = 31.4159"
+      )
+    }
+  })
+
+  // probe inquiry/p253: the pick is LASTPOINT; Last leaves it
+  it("puts LASTPOINT at the pick, where Last leaves it", () => {
+    const entities = [circleOf(p(0, 0), 5), lineOf(p(20, 20), p(30, 30))]
+    const typed = consoleWindow({ entities })
+    answer(typed, "AREA", "O", "5,0")
+    expect(lastPoint(typed)).toBe(at("5.0000", "0.0000"))
+
+    const clicked = consoleWindow({ entities })
+    answer(clicked, "AREA", "O")
+    clicked.click(p(5, 0))
+    expect(lastPoint(clicked)).toBe(at("5.0000", "0.0000"))
+
+    answer(clicked, "AREA", "O", "L", "")
+    expect(clicked.commandLog().slice(-3)).toEqual([
+      "Select objects: L",
+      "Selected object does not have an area",
+      "Select objects:",
+    ])
+    expect(lastPoint(clicked)).toBe(at("5.0000", "0.0000"))
+  })
+
+  // probe inquiry/p217
+  it("ends without a word at Enter", () => {
+    const cad = console4({ entities: [circleOf(p(0, 0), 5)] })
+    answer(cad, "AREA", "", "")
+    expect(cad.commandLog()).toEqual([
+      "AREA",
+      "Specify first corner point or [Object/Add area/Subtract area] <Object>:",
+      "Select objects:",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  // probe inquiry/p222
+  it("says a wide polyline's width is left out", () => {
+    const wide = polylineOf([p(0, 0), p(10, 0), p(10, 10), p(0, 10)], {
+      closed: true,
+      bulges: [0, 1, 0, 0],
+      widths: [
+        [2, 2],
+        [2, 2],
+        [2, 2],
+        [2, 2],
+      ],
+    })
+    const en = console4({ entities: [wide] })
+    answer(en, "AREA", "O", "L")
+    expect(en.commandLog().slice(-2)).toEqual([
+      "Area = 139.2699, Perimeter = 45.7080",
+      "Polyline's width ignored in area calculation.",
+    ])
+
+    const spanish = console4({ locale: es, entities: [wide] })
+    answer(spanish, "AREA", "O", "LT")
+    expect(spanish.commandLog().slice(-2)).toEqual([
+      "Área = 139.2699, Perímetro = 45.7080",
+      "Grosor de polilínea ignorado en cálculo de área.",
+    ])
+  })
+})
+
+describe("AREA's Add area and Subtract area, as AutoCAD 2027's", () => {
+  // probes inquiry/p215, p254, p258: the total once there is one
+  it("says the total at eXit and at Enter once it has measured", () => {
+    const measured = console4({ entities: [circleOf(p(0, 0), 5)] })
+    answer(measured, "AREA", "A", "E", "L", "", "X")
+    expect(measured.commandLog().slice(-8)).toEqual([
+      "(ADD mode) Select objects: L",
+      "Area = 78.5398, Circumference = 31.4159",
+      "Total area = 78.5398",
+      "(ADD mode) Select objects:",
+      "Area = 78.5398, Circumference = 31.4159",
+      "Total area = 78.5398",
+      "Specify first corner point or [Object/Subtract area]: X",
+      "Total area = 78.5398",
+    ])
+    expect(measured.activeToolId()).toBe("select")
+
+    const exited = console4()
+    answer(exited, "AREA", "A", "O", "", "X")
+    expect(exited.commandLog().slice(1)).toEqual([
+      "Specify first corner point or [Object/Add area/Subtract area] <Object>: A",
+      "Specify first corner point or [Object/Subtract area]: O",
+      "(ADD mode) Select objects:",
+      "Specify first corner point or [Object/Subtract area]: X",
+    ])
+    expect(exited.activeToolId()).toBe("select")
+
+    const entered = console4()
+    answer(entered, "AREA", "A", "")
+    expect(entered.commandLog().slice(1)).toEqual([
+      "Specify first corner point or [Object/Add area/Subtract area] <Object>: A",
+      "Specify first corner point or [Object/Subtract area]:",
+    ])
+    expect(entered.activeToolId()).toBe("select")
+  })
+
+  // probe inquiry/p216 es
+  it("says it at SAlir in Autodesk's Spanish", () => {
+    const cad = console4({ locale: es, entities: [circleOf(p(0, 0), 5)] })
+    answer(cad, "AREA", "A", "O", "LT", "", "S", "O", "LT", "", "SA")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Precise primer punto de esquina o [Objeto/Añadir área]: SA",
+      "Área total = 0.0000",
+    ])
+  })
+
+  // probes inquiry/p212 (87.5), p213 (0), p214 (-12.5); a plain run's own
+  // area, p211, p248
+  it("leaves the running total in AREA", () => {
+    const area = (cad: CadHarness) => {
+      answer(cad, "'AREA")
+      return cad.commandLog().at(-1)
+    }
+    const both = console4()
+    answer(both, "AREA", "A", "0,0", "10,0", "10,10", "0,10", "")
+    answer(both, "S", "0,0", "5,0", "5,5", "", "")
+    expect(area(both)).toBe("AREA = 87.5000 (read only)")
+
+    const none = console4({ entities: [circleOf(p(5, 5), 2)] })
+    answer(none, "AREA", "A", "O", "L", "", "S", "O", "L", "", "")
+    expect(area(none)).toBe("AREA = 0.0000 (read only)")
+
+    const below = console4()
+    answer(below, "AREA", "S", "0,0", "5,0", "5,5", "", "")
+    expect(area(below)).toBe("AREA = -12.5000 (read only)")
+
+    const plain = console4({ entities: [circleOf(p(0, 0), 1)] })
+    answer(plain, "AREA", "0,0", "10,0", "10,10", "")
+    expect(area(plain)).toBe("AREA = 50.0000 (read only)")
+    answer(plain, "AREA", "O", "L")
+    expect(area(plain)).toBe("AREA = 3.1416 (read only)")
+  })
+
+  // probe inquiry/p255
+  it("says the last area and the total again after 'AREA at the first corner", () => {
+    const cad = console4()
+    answer(cad, "AREA", "A", "0,0", "10,0", "10,10", "", "'AREA")
+    expect(cad.commandLog().slice(-5)).toEqual([
+      "Specify first corner point or [Object/Subtract area]: 'AREA",
+      "AREA = 50.0000 (read only)",
+      "Resuming AREA command.",
+      "Area = 50.0000, Perimeter = 34.1421",
+      "Total area = 50.0000",
+    ])
+    answer(cad, "X")
+    expect(cad.commandLog().at(-1)).toBe("Total area = 50.0000")
+  })
+})
+
+describe("AREA's corners, as AutoCAD 2027's", () => {
+  // probes inquiry/p206, p207: a number is direct distance from LASTPOINT
+  it("takes a number at the first corner from LASTPOINT", () => {
+    const zero = console4()
+    answer(zero, "AREA", "0", "10,0", "10,10", "")
+    expect(zero.commandLog().at(-1)).toBe("Area = 50.0000, Perimeter = 34.1421")
+
+    const back = console4()
+    back.moveTo(CONSOLE_CURSOR)
+    answer(back, "AREA")
+    back.moveTo(CONSOLE_CURSOR)
+    answer(back, "-5", "10,0", "10,10", "")
+    expect(back.commandLog().at(-1)).toBe("Area = 73.2033, Perimeter = 43.6010")
+  })
+
+  // probe inquiry/p241: only the last Undo, at the first corner, says so
+  it("undoes back to the first corner from three points", () => {
+    const cad = console4()
+    answer(cad, "AREA", "0,0", "10,0", "10,10", "U", "U", "U", "10,0", "10,10")
+    answer(cad, "")
+    expect(cad.commandLog().slice(4)).toEqual([
+      "Specify next point or [Undo/Total] <Total>: U",
+      "Specify next point or [Undo]: U",
+      "Specify next point or [Undo]: U",
+      "All segments already undone.",
+      "Command has been completely undone.",
+      "Specify next point or [Undo]: 10,0",
+      "Specify next point or [Undo]: 10,10",
+      "Specify next point or [Undo/Total] <Total>:",
+      "Area = 50.0000, Perimeter = 34.1421",
+    ])
+  })
+
+  // probes inquiry/p231 (UCS Z 30), p232 (UCS X 90), p233 (a bow-tie)
+  it("measures in the UCS, and a bow-tie as nothing", () => {
+    const turned = console4()
+    answer(turned, "UCS", "Z", "30", "AREA", "0,0", "10,0", "10,10", "0,10", "")
+    expect(turned.commandLog().at(-1)).toBe(
+      "Area = 100.0000, Perimeter = 40.0000"
+    )
+    expect(lastPoint(turned)).toBe(at("0.0000", "10.0000"))
+
+    const tilted = console4()
+    answer(tilted, "UCS", "X", "90", "AREA", "0,0", "10,0", "10,5", "")
+    expect(tilted.commandLog().at(-1)).toBe(
+      "Area = 25.0000, Perimeter = 26.1803"
+    )
+    expect(lastPoint(tilted)).toBe(at("10.0000", "5.0000"))
+
+    const bowTie = console4()
+    answer(bowTie, "AREA", "0,0", "10,10", "10,0", "0,10", "")
+    expect(bowTie.commandLog().at(-1)).toBe(
+      "Area = 0.0000, Perimeter = 48.2843"
+    )
+  })
+
+  // probes inquiry/p208, p357: LASTPOINT is the last corner, whatever was
+  // before
+  it("leaves LASTPOINT at the last corner", () => {
+    const cad = console4()
+    answer(cad, "ID", "7,8", "AREA", "0,0", "10,0", "10,10", "")
+    expect(lastPoint(cad)).toBe(at("10.0000", "10.0000"))
   })
 })

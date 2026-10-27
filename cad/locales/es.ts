@@ -3058,6 +3058,7 @@ export const es: EngineLocale = {
         ]
       ],
       "objectHasNoArea": "El objeto seleccionado no tiene área",
+      "polylineWidthIgnored": "Grosor de polilínea ignorado en cálculo de área.",
       "allSegmentsUndone": "Ya están deshechos todos los segmentos.",
       "distanceTotal": [
         "Distancia = ",

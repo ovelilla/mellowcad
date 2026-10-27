@@ -12,7 +12,8 @@ import {
 import { objectArea } from "./objectArea"
 import { createSpline } from "./splines"
 
-// The figures AutoCAD 2023's console reports for the same objects.
+// The figures AutoCAD 2027's console reports for the same objects (probes
+// inquiry/p215, p221, p223, and those named at a test).
 describe("objectArea", () => {
   it("measures a circle's circumference", () => {
     expect(objectArea(circleOf(p(0, 0), 5))).toEqual({

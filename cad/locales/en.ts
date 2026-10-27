@@ -2670,6 +2670,7 @@ export const en: EngineCatalog = {
         ]
       ],
       "objectHasNoArea": "Selected object does not have an area",
+      "polylineWidthIgnored": "Polyline's width ignored in area calculation.",
       "allSegmentsUndone": "All segments already undone.",
       "distanceTotal": [
         "Distance = ",

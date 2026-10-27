@@ -6,25 +6,36 @@
 `Specify first corner point or [Object/Add area/Subtract area] <Object>:`,
 `Specify next point or [Undo]:` and from the third point `[Undo/Total] <Total>:` (es
 `Precise primer punto de esquina o [Objeto/Añadir área/Sustraer área] <Objeto>`,
-`Precise punto siguiente o [desHacer/Total] <Total>`), its points picked or typed, Enter before the
-third refused (`Point or option keyword required.`), Undo taking back a point and keeping the first
-corner with AutoCAD's `All segments already undone.` / `Command has been completely undone.`, the
+`Precise punto siguiente o [desHacer/Total] <Total>`; AutoCAD 2027 lists `[Arc/Length/Undo]`
+there, p206, whose Arc and Length are missing), its points picked or typed (a bare number at the
+first corner from LASTPOINT, p206, p207; in the UCS, p231, p232; a bow-tie's area 0, p233), Enter
+before the third refused (`Point or option keyword required.`, p208), Undo taking back a point and
+keeping the first corner with AutoCAD's `All segments already undone.` /
+`Command has been completely undone.` (p241), LASTPOINT left at the last corner (p208, p357), the
 live area and perimeter on the readout; Total or Enter reports `Area = …, Perimeter = …` (es
 `Área = …, Perímetro = …`) and ends, as AutoCAD's does; Add area and Subtract area keep a running
-total, as AutoCAD 2023's console does: the first corner asks `[Object/Subtract area]` or
+total, as AutoCAD 2027's console does (p212–p216): the first corner asks `[Object/Subtract area]` or
 `[Object/Add area]` with no default (the mode's own keyword taken unlisted), the points
 ` (ADD mode)Specify next point or [Undo]:` and Object `(SUBTRACT mode) Select objects:` (es
-`(modo AÑADIR) Designe objetos`, `(modo SUSTRAER)`; the points' es
-` (modo AÑADIR)Precise punto siguiente o` composed as the English, **unverified**), each area
-reported then `Total area = …` (es `Área total = …`, below zero when more is subtracted); Object
-goes on picking until Enter, which, as a refusal at the first corner does, says the mode's last area
-and total again; Enter at the first corner writes the total and ends; the first corner also takes
-two words it declares but does not list: Entity (es `Entidad`), Object under its old name, and eXit
-(es `SAlir`), which ends the command without a word, the total unsaid; Object (Enter at the first
-corner) picks one object, or `Last`, and reports a circle's area and `Circumference`, an ellipse's,
+`(modo AÑADIR) Designe objetos`, `(modo SUSTRAER)`, ` (modo AÑADIR)Precise punto siguiente o`,
+p212 es), each area reported then `Total area = …` (es `Área total = …`, below zero when more is
+subtracted); Object goes on picking until Enter, which, as a refusal at the first corner and
+`Resuming AREA command.` after `'AREA` there do (p213, p255), says the mode's last area and total
+again; Enter at the first corner ends; the first corner also takes two words it declares but does
+not list: Entity (es `Entidad`), Object under its old name, and eXit (es `SAlir`), which ends the
+command as Enter does: both write the total once the run has measured something, and nothing before
+(p215, p216, p254, p258); Object (Enter at the first corner) picks one object — clicked, a point
+typed (circle/p241), a bare number at that distance from LASTPOINT towards the cursor (p219), where
+a typed object snap finds its point (p228), or `Last` —, an object on a locked layer too (p220); a
+point on nothing or off the screen is asked again without a word, anything else but `Last` refused
+with `*Invalid selection*` / `Expects a point or Last` (p218, p240); a pick puts LASTPOINT there,
+`Last` leaves it (p253); Enter there ends without a word (p217); it reports a circle's area and
+`Circumference`, an ellipse's,
 a closed polyline's or spline's and a hatch's (its islands left out, their perimeters added:
 hatch/p320) `Perimeter`, and an open
-polyline's, spline's or elliptical arc's `Length` with the area its chord closes; anything else
+polyline's, spline's or elliptical arc's `Length` with the area its chord closes; a closed wide
+polyline's report is followed by `Polyline's width ignored in area calculation.` (es
+`Grosor de polilínea ignorado en cálculo de área.`, p222; an open one's unprobed); anything else
 `Selected object does not have an area` (es `El objeto seleccionado no tiene área`), asked again;
 DIST asks `Specify first point:` (es `Precise primer punto`; `Invalid point.`) and
 `Specify second point or [Multiple points]:` (es `Especifique segundo punto o [puntos Múltiples]`;
@@ -61,7 +72,8 @@ the angles at AUPREC (p142), and the command ends, as DIST does; a bare number a
 runs towards the cursor as Ortho bends it from the first (p141), a typed point left alone (p140);
 the object snaps and FROM typed at either point (p135–p138); `'AREA` or
 `'_AREA`, at the Command prompt or mid-command, reads the AREA system variable, the last area AREA
-measured in the session: `AREA = 50.00 (read only)` (es `AREA = 50.00 (sólo lectura)`), as AutoCAD
+measured in the session, or after Add area or Subtract area the total (p211–p214, p248):
+`AREA = 50.00 (read only)` (es `AREA = 50.00 (sólo lectura)`), as AutoCAD
 2027's console does (p324, p325, p359)
 
 **Missing:** MEASUREGEOM (es MEDIRGEOM), another command with DIST's and AREA's prompts inside a
@@ -71,7 +83,12 @@ p106), then after each measure `Enter an option [...] <Distance>:` until eXit (p
 Radius, Angle, Volume and Quick; the ribbon's Distance and Area buttons run it
 (`^C^C_MEASUREGEOM _distance`, `_area`), the rail DIST and AREA, whose prompts are its Distance and
 Area word for word; the DISTANCE system variable, which DIST sets to the distance measured (p100:
-`(getvar "DISTANCE")` → `5.0`); AREA's Arc and Length at its next point and its green fill, an
+`(getvar "DISTANCE")` → `5.0`), and PERIMETER, which AREA sets to the last perimeter measured, not
+a total (p257: `PERIMETER = 34.1421 (read only)`; p212); AREA's corners off the UCS's XY plane,
+which AutoCAD measures in 3D (p256: `Area = 61.2372, Perimeter = 36.5028`) and of which it refuses
+some later ones with `Lines are not coplanar.` by a rule p249–p252 do not settle (a coplanar one
+refused, p251, one off the plane taken, p252): mellowcad measures their plan; AREA's Arc and Length
+at its next point and its green fill, an
 object at an angle to the UCS (not highlighted here; AutoCAD says `Object not parallel with UCS.`),
 Arc's CEnter → Angle reading a number as a point (2027's console asks it as a point, `90` there a
 distance along the cursor, p145: degrees here, until the desktop shows it)
