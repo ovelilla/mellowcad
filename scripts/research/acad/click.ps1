@@ -1,7 +1,7 @@
 # click.ps1 <screenX> <screenY> [button] [count] [hold] : moves the real mouse cursor there and
 # clicks it (button left, right, middle, none to only move, or wheel with count the notches,
-# negative towards the user; count 2 is a double-click; hold "shift" or "ctrl" held during the
-# click), then leaves the cursor where it is,
+# negative towards the user, named as `-count -1` since a bare -1 reads as a switch; count 2 is
+# a double-click; hold "shift" or "ctrl" held during the click), then leaves the cursor where it is,
 # so what hovering shows stays on the screen for shot.ps1. It moves the owner's mouse: a session
 # that clicks asks the owner first (.claude/skills/command-review/annex-probes.md, the desktop).
 # A click in the drawing area is also what gives AutoCAD's keyboard focus to its prompt, which
@@ -31,7 +31,7 @@ if ($holdVk) { [Cl]::Key([uint16]$holdVk, $false); Start-Sleep -Milliseconds 60 
 # Two moves: AutoCAD redraws on a change of position, not on arrival.
 [Cl]::SetCursorPos($x - 3, $y - 3) | Out-Null; Start-Sleep -Milliseconds 120
 [Cl]::SetCursorPos($x, $y) | Out-Null; Start-Sleep -Milliseconds 250
-if ($button -eq "wheel") { [Cl]::Button(0x800, [uint32](120 * $count -band 0xFFFFFFFF)) }
+if ($button -eq "wheel") { [Cl]::Button(0x800, [BitConverter]::ToUInt32([BitConverter]::GetBytes([int](120 * $count)), 0)) }
 elseif ($flags.Count) {
   for ($i = 0; $i -lt $count; $i++) {
     [Cl]::Button($flags[0]); Start-Sleep -Milliseconds 40; [Cl]::Button($flags[1]); Start-Sleep -Milliseconds 80

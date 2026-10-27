@@ -3,8 +3,8 @@
 > **Status:** plan, 2026-10-27. The twenty-second review of `docs/coverage/roadmap.md`'s order, with
 > skill `command-review`. Phases 0–4 and blocks ZOM, VUN and PAN + VDR were done in one session with
 > console probes only (index below). Block VWD (the ViewCube, the viewport controls, the navigation
-> bar, the wheel, real-time PAN and 3DORBIT) needs the desktop and the owner's mouse: it is planned
-> below and probed in a session of its own. Once it is executed, the plan shrinks to its index.
+> bar, the wheel, real-time PAN and 3DORBIT) was probed on the desktop with the owner's mouse in a
+> session of its own; its findings are below. Once it is executed, the plan shrinks to its index.
 >
 > It owns **the view and its undo**. That covers which view runs are undo steps, how consecutive
 > ZOOMs join, `Regenerating model.` on U and REDO, ZOOM Previous's list, and a transparent view
@@ -12,15 +12,15 @@
 
 ## Summary
 
-There are no critical and no high findings: 16 medium and 12 low, in three console blocks, plus one
-unverified (VDR-25) and a desktop block still to probe.
+The console blocks found no critical and no high: 16 medium and 12 low. The desktop block found 2
+high, 11 medium and 5 low (VWD below); VDR-25 became VWD-08.
 
 | Block | Prefix | Medium | Low |
 | --- | --- | --- | --- |
 | ZOOM | ZOM | 5 (ZOM-01, ZOM-02, ZOM-03, ZOM-05, ZOM-06) | 6 (ZOM-04, ZOM-07 to ZOM-11) |
 | The view's undo | VUN | 4 (VUN-01 to VUN-04) | 2 (VUN-05, VUN-06) |
 | PAN, PLAN, VPOINT, -VIEW, 3DORBIT, NAVVCUBE | PAN, VDR | 7 (PAN-01, VDR-01, VDR-03, VDR-04, VDR-20, VDR-21, VDR-23) | 4 (VDR-02, VDR-05, VDR-22, VDR-24) |
-| Desktop | VWD | to probe | to probe |
+| Desktop | VWD | 11 (VWD-03 to VWD-13) | 5 (VWD-14 to VWD-18), and 2 high (VWD-01, VWD-02) |
 
 The worst three:
 
@@ -599,23 +599,204 @@ holds. The `2023's console` citations are now 2027's probes.
 The three console blocks share the catalogs and the English surface snapshot, so they go one after
 another.
 
-### VWD, the desktop block (planned)
+### VWD, the desktop block
 
-Each probe runs in the English profile (`launch "" en-US`), and the labels again in the Spanish one.
-The owner is asked before the session starts and told when the mouse is free.
+Probed on 2026-10-27 in the English profile (d01–d09) and the Spanish one (e01), with the owner's
+mouse; the steps and what each showed are in `scripts/research/probes/view/d01-e01.sh`, the
+screenshots in `research/probes/view/`. The scratch tests are `research/review/view/d/vwd.test.ts`:
+22, all failing on mellowcad. No critical; 2 high, 11 medium, 5 low.
 
-| Id | What it asks |
-| --- | --- |
-| d01 | The wheel: one notch's factor (VIEWSIZE before and after, ZOOMFACTOR 60), zoom about the cursor, the history line, U after a burst (a step? its name?), ZOOM Previous after a burst |
-| d02 | The wheel button: a drag's pan (step? history?), its double-click (the history's echo, the margin, a step?), Shift with the wheel button (orbit, its undo) |
-| d03 | Real-time PAN: the cursor, a drag, Enter and Escape, the right-click menu's items, U after it, two PANs in a row (joined?) |
-| d04 | 3DORBIT: the cursor, a drag across and up, Enter and Escape, the right-click menu, U after it, `'3DORBIT` at LINE's prompt (VDR-25) |
-| d05 | The ViewCube: a face, edge and corner click (VIEWDIR, fit or not, U after it, the history), a drag, the roll arrows, Home, the compass letters and ring, its menu, its opacity, the cube's Bottom, the UCS after a side face (UCSORTHO) |
-| d06 | The viewport controls: the labels `[-][Top][2D Wireframe]`, the view list's order, what a choice echoes (VDR-22), Custom View |
-| d07 | The navigation bar: the Zoom split button's members, their order and macros' echoes, whether the face remembers the last member, In and Out's factor, Pan and Orbit, U after each |
-| d08 | ZOOM: the window's rubber band (solid or dashed), Object's rollover, Enter's real time, dynamic input at the first prompt, Escape at each prompt and the preselection after it, ZOOM Previous's depth (20?) |
-| d09 | -PAN's rubber band, Ortho on a picked second point, dynamic input; VPOINT (no dash) and VIEW opening their dialogs; Escape at VPOINT in a turned UCS (VDR-03's notices) |
-| e01 | The Spanish profile: the ViewCube's faces and menu, the viewport controls' labels, the navigation bar's tooltips |
+The pattern: **every navigation gesture is an undo step in AutoCAD 2027**, named, regenerating and
+joined as a command would be, and inside a command it is an entry of the running one. Here the
+wheel, the wheel button, the ViewCube and the navigation bar's direct zooms leave no step, so U
+after them takes back the command before (VWD-01 is the worst case).
+
+#### VWD-01 — The wheel and the wheel button's pan are no undo step; U after them takes back the command before
+
+- **Severity:** high · **Row:** F · **Status:** verified
+- **Where:** `CadRuntime.wheel`, `pointerDown` / `pointerUp` (the wheel button), `recordView`'s
+  comment ("The wheel … are no command").
+- **AutoCAD:** d01, d02. Each wheel burst is an undo step `INTELLIZOOM`, a wheel-button press
+  `INTELLIPAN` (a click that never moved the view too, with its ZOOM Previous step). UNDO Combine
+  joins them with each other and with ZOOM and PAN: U writes `INTELLIZOOM INTELLIZOOM INTELLIZOOM`,
+  `INTELLIZOOM ZOOM ZOOM`, `INTELLIPAN ZOOM INTELLIPAN ZOOM INTELLIZOOM ZOOM`, and the LINE before
+  them stays. Inside LINE, its Undo takes the wheel's zoom back with the segment (as VUN-04's
+  `'ZOOM`). Spanish names them the same (e01).
+- **mellowcad:** `vwd.test.ts` "U takes a wheel zoom back": U writes `LINE` and erases the line.
+- **Scenario:** draw a line, scroll in, press U to get the view back → the line goes.
+- **Fix:** a wheel burst and a wheel-button press are a view step of their own at `Command:`
+  (`ViewChangeCommand` named `INTELLIZOOM` / `INTELLIPAN`), joined as typed ZOOMs are; inside a
+  command, an entry of its group, as a transparent ZOOM's (VIEW-D43). The burst's later notches
+  widen the same step. No echo (d01).
+- **Regression test:** `viewUndo.test.ts`, citing d01, d02.
+- **Coverage, rules:** `command-line.md` Missing ("whether AutoCAD records them is unverified")
+  settled; `workspace.md` Wheel; `cad-tools.md` "The wheel, the wheel button's pan and the ViewCube
+  are no command and stay out" goes.
+
+#### VWD-02 — A wheel notch zooms 1.1×; AutoCAD's zooms 1.5978×, and the wheel's size is ignored
+
+- **Severity:** high · **Row:** H · **Status:** verified
+- **Where:** `CadRuntime.wheel` (`1.1` per event, whatever `deltaY`), `CadEngine.onWheel`.
+- **AutoCAD:** d01: one notch (delta 120) takes VIEWSIZE 120 → 75.102 in and → 191.944 out, about
+  the cursor (ZOOMFACTOR 60). A single event of three notches zooms three notches' worth.
+- **mellowcad:** `vwd.test.ts` "one notch": 1.1.
+- **Scenario:** a user rolls one notch to get closer → mellowcad moves a sixth as far; five notches
+  for AutoCAD's one. A trackpad's many small events each zoom 1.1×, far too fast.
+- **Fix:** `factor = 1.5978 ^ (−deltaY / 100)`: a Windows browser's notch is `deltaY` 100 in
+  pixels; the adapter turns lines and pages into pixels (`deltaMode`) before the runtime sees it
+  (VIEW-D60).
+- **Coverage:** `workspace.md` Missing's ZOOMFACTOR item ("a notch is 10 % here, unverified")
+  settled: the default 60 is built, the variable stays missing.
+
+#### VWD-03 — A wheel burst ends after 400 ms; AutoCAD's lasts until a second's pause
+
+- **Severity:** medium · **Row:** H · **Status:** verified
+- **AutoCAD:** d01: two notches 940 ms apart are one ZOOM Previous step (and one `INTELLIZOOM`);
+  1000 ms apart, two.
+- **mellowcad:** `vwd.test.ts` "under a second apart": two steps. `WHEEL_BURST_MS` is 400.
+- **Fix:** `WHEEL_BURST_MS` 1000 (VIEW-D61).
+
+#### VWD-04 — A double-click of the wheel button zooms silently and is no step
+
+- **Severity:** medium · **Row:** L, F · **Status:** verified
+- **AutoCAD:** d02: `Command: '_.zoom`, then ZOOM's first prompt answered `_e`; U writes
+  `'.ZOOM INTELLIPAN`, the press before it joined.
+- **mellowcad:** `vwd.test.ts` "a double-click": nothing written, no step.
+- **Fix:** the double-click runs `'_.zoom` `_e` through the command line as a macro does
+  (transparent inside a command, as `navigate` runs), named `'.ZOOM`, joined as a typed ZOOM.
+
+#### VWD-05 — Shift + the wheel button orbits silently and is no step
+
+- **Severity:** medium · **Row:** L, F · **Status:** verified
+- **AutoCAD:** d02, e01: on release ` Regenerating model.`; U `GROUP menu item Regenerating model.`
+  (es `GRUPO menu item Regenerando modelo.`), the view back.
+- **mellowcad:** `vwd.test.ts` "Shift + drag": nothing, no step.
+- **Fix:** the orbit is a view step named so (a new message, `menuItemStep`; `GROUP` is table
+  52656), regenerating on release, on U and on REDO.
+
+#### VWD-06 — PAN is never joined with the ZOOMs and pans round it
+
+- **Severity:** medium · **Row:** F · **Status:** verified
+- **AutoCAD:** d03: `ZOOM 2X`, PAN with a drag, `ZOOM 0.5X`, then U: `ZOOM PAN ZOOM`; PAN with no
+  drag after a ZOOM: `PAN ZOOM`; two PANs: `PAN PAN`. -PAN still joins nothing (p354–p356).
+- **mellowcad:** `vwd.test.ts` "real-time PAN joins": `ZOOM`.
+- **Fix:** typed PAN combines as typed ZOOM does (`typedZoom` covers both); the coverage's
+  "never joined with ZOOMs (unverified)" goes.
+
+#### VWD-07 — 3DORBIT ends silently; AutoCAD says `Regenerating model.` as it ends and on U, dragged or not
+
+- **Severity:** medium · **Row:** L, F · **Status:** verified
+- **AutoCAD:** d04, e01: Enter after no drag writes `Regenerating model.`; U
+  `3DORBIT Regenerating model.` (es `3DORBITA Regenerando modelo.`), joined with nothing (a ZOOM
+  before it stays).
+- **mellowcad:** `vwd.test.ts` "3DORBIT says Regenerating model.": not written.
+- **Fix:** OrbitTool regenerates as it ends; its step regenerates on U and REDO whether or not the
+  line of sight turned (VIEW-D62).
+
+#### VWD-08 — `'3DORBIT` is refused at a prompt; AutoCAD runs it there (was VDR-25)
+
+- **Severity:** medium · **Row:** E · **Status:** verified
+- **AutoCAD:** d04: at LINE's next point, `'3DORBIT` writes its exit words with no `>>`, then
+  `Regenerating model.` and `Resuming LINE command.`; U after LINE `LINE Regenerating model.`.
+- **mellowcad:** `vwd.test.ts` "'3DORBIT runs": refused.
+- **Fix:** 3DORBIT joins `TRANSPARENT_COMMANDS`; its exit words are a plain report, not a prompt,
+  so they take no `>>` (VIEW-D63). The navigation bar's Orbit runs it transparently too, as
+  acad.cuix's `'_3dorbit`.
+
+#### VWD-09 — A ViewCube click is no undo step; AutoCAD's is `'.VIEWCUBEACTION`, transparent in a command
+
+- **Severity:** medium · **Row:** F, E · **Status:** verified
+- **AutoCAD:** d05, e01: a face, an edge, a corner, Home, a triangle, a letter or a roll arrow
+  writes ` Regenerating model.` and is a step U names `'.VIEWCUBEACTION Regenerating model.`,
+  joined with nothing; inside LINE, ` Regenerating model.` and `Resuming LINE command.`, and
+  LINE's Undo takes it back with the segment.
+- **mellowcad:** `vwd.test.ts` "a click is an undo step": U `ZOOM`.
+- **Fix:** each cube action is a view step `'.VIEWCUBEACTION`, regenerating always (VIEW-D62),
+  an entry of the running command inside one. Set Current View as Home stays no step. The drag
+  is a step too (VIEW-D64).
+
+#### VWD-10 — The ViewCube fits the extents; AutoCAD fits their sphere, and after a roll too
+
+- **Severity:** medium · **Row:** H · **Status:** verified
+- **AutoCAD:** d05: Front, Top, Home and S all leave VIEWSIZE 425.677, the diagonal of the extents
+  box 0,0,0–301,301,0, centred on it; a roll arrow after `ZOOM 2X` fits again.
+- **mellowcad:** `vwd.test.ts` "fits the extents' bounding sphere": 169 against 290; the roll
+  keeps the zoom.
+- **Fix:** the cube's views fit the sphere round the extents' box (or the selection's) to the
+  view's smaller side, centred (VIEW-D65); the roll fits too.
+
+#### VWD-11 — A compass letter keeps the view's elevation, and from the plan only turns it; AutoCAD looks level from that side
+
+- **Severity:** medium · **Row:** H · **Status:** verified
+- **AutoCAD:** d05: S from Top and from SW Isometric both give VIEWDIR 0,−1,0, Front's.
+- **mellowcad:** `vwd.test.ts` "a compass letter": the plan, turned.
+- **Fix:** `compassView` returns the level view from that side, upright, fitted.
+
+#### VWD-12 — The viewport control's view runs `-VIEW` as typed and ends the running command (VDR-22)
+
+- **Severity:** medium · **Row:** L, F, E · **Status:** verified
+- **AutoCAD:** d06, e01: `Command: '_-view Enter an option […]: _swiso Regenerating model.`; U
+  `'-VIEW Regenerating model.` (es `'-VISTA`). While a command runs the label does not answer:
+  the click is the command's point.
+- **mellowcad:** `vwd.test.ts` "a preset echoes": `-VIEW` / `_SWiso`, U `-VIEW`;
+  `applyViewPreset` runs `_-VIEW`, which ends LINE.
+- **Fix:** the control runs `'_-view` and the lowercase global preset; it takes no pointer while a
+  command runs, so the click reaches the drawing (VIEW-D66).
+
+#### VWD-13 — The navigation bar's Extents, Previous, In and Out act at once and leave no step; AutoCAD's are `'_zoom` macros
+
+- **Severity:** medium · **Row:** F, L, H · **Status:** verified
+- **AutoCAD:** d07: In doubles the view (VIEWSIZE 120 → 60), writes ZOOM's first prompt and is a
+  step U names `'ZOOM GROUP`, joined with neither a typed ZOOM nor another In; Pan's step is
+  `'PAN GROUP`. The face shows the last member used. acad.cuix's macros: `'_zoom _e`, `'_zoom _p`,
+  `'_zoom 2x`, `'_zoom .5x`.
+- **mellowcad:** `vwd.test.ts` "Zoom In doubles": 1.2×, no step; "Pan is 'PAN GROUP": `'PAN`.
+- **Fix:** every Zoom member runs its macro through `navigate` (In `2X`, Out `.5X`); a menu's
+  step is named `<command> GROUP` (es `GRUPO`, 52656).
+
+#### Low
+
+- **VWD-14 — Escape at -VPOINT in a turned UCS leaves out `*** Returning to the UCS ***`** after
+  `*Cancel*`, at the view point and at Rotate's angles (d09; `vwd.test.ts`). The fix is in
+  `VPointTool.onDeactivate`. VDR-03's last open case.
+- **VWD-15 — ZOOM's window is dashed blue; AutoCAD's is solid white. -PAN's band is solid white;
+  AutoCAD's is amber and dashed** (d08-1, d09-2). `ZoomTool.ts:284` takes `THEME.rubberBand`, and
+  `DashPanTool.ts:76` the dashed amber of MOVE's displacement.
+- **VWD-16 — The Zoom list's Spanish words differ** (e01): Extensión, Zoom ventana, Previo,
+  Acercar, Alejar, where `messages/es.json` has Zoom extensión, Zoom previo, Ampliar, Reducir.
+- **VWD-17 — A ViewCube drag let go near a view lands on it; AutoCAD's stays** (d05: 1.7° and 6.6°
+  off Top stay there). `endCubeDrag`'s landing goes (VIEW-D67).
+- **VWD-18 — The coverage lacks what d03–d07 settled**: PAN's menu starts with Exit, and Escape
+  with it open ends PAN; the split button keeps the last member (verified); the Zoom list's other
+  members, in order (Realtime, All, Dynamic, Scale, Center, Object); the cube's side views leave the
+  UCS (UCSORTHO, verified); the cube's menu; VPOINT's dialog on the desktop.
+
+#### Decisions
+
+- **VIEW-D60:** the wheel's factor is 1.5978 per 100 px of `deltaY` (d01), so a trackpad zooms in
+  proportion; lines are 100/3 px and a page the view's height, Chrome's own conversions.
+- **VIEW-D61:** a burst lasts while notches come under a second apart (d01: 940 ms joins, 1000
+  parts).
+- **VIEW-D62:** 3DORBIT's, the Shift orbit's and the ViewCube's steps regenerate on U and REDO
+  always, as AutoCAD's do after a 3DORBIT with no drag (d04); `turns()` still decides the rest.
+- **VIEW-D63:** 3DORBIT's exit words take no `>>` when transparent (d04), unlike PAN's.
+- **VIEW-D64:** a ViewCube drag is a `'.VIEWCUBEACTION` step as its clicks are; the drag's own
+  undo was not read (d05).
+- **VIEW-D65:** the cube fits the sphere to the smaller side of the view; d05 shows the height of
+  a wide view only.
+- **VIEW-D66:** the viewport control lets clicks through while a command runs, rather than ending
+  it (d06).
+- **VIEW-D67:** no landing after a cube drag (d05); the ViewCube Settings' Snap to closest view
+  is not built.
+
+#### Refuted
+
+- **The navigation bar's Zoom list order:** mellowcad's five keep AutoCAD's order (d07-3).
+- **The roll arrows' directions:** counterclockwise left (VIEWTWIST 90) and clockwise right (270)
+  match `rolledView` and the cube's buttons (d05).
+- **The cube's Spanish faces, compass `O` and `SCU`, the viewport list's names:** match (e01).
+- **PAN, 3DORBIT and the cube's menus:** their missing items are in Missing already.
+- **VPOINT's Viewpoint Presets dialog and VIEW's View Manager:** in Missing (d09).
 
 ## Changes to coverage, rules, catalogs and roadmap
 
