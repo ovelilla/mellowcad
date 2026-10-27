@@ -402,3 +402,4 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
   read-only variables a command sets (matrix.md H); after its desktop block, Escape at a keyword's
   sub-prompt (matrix.md G), overlay colours and DYNMODE's profiles (annex-probes.md §4).
 - 2026-10-27, View's console blocks: `acad.pgp` (matrix.md A); hangs and U/REDO (annex §1, §2).
+- 2026-10-27, View's desktop block: gestures as undo steps (matrix.md F); U before evals (annex §4).

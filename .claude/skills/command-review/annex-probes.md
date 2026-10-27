@@ -240,6 +240,11 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   (AREA's green, inquiry/d03-1). What dynamic input shows depends on the profile's DYNMODE
   features, not only its sign: probe it with DYNMODE 3 too (inquiry/d02-1 against e01-1).
 
+- Read U's echo with `com hist` before any `com eval` or `get`: each writes lines of its own and
+  pushes the echo out. `click … wheel -count -1` turns the wheel towards the user (a bare `-1`
+  reads as a switch); gaps under a second between wheel events come from one process
+  (`scripts/research/probes/view/burst.ps1`), never from separate calls (View review, d01).
+
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).
 

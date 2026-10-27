@@ -68,6 +68,9 @@ and the command's prompt written again on return.
 - After: one U undoes the whole command; UNDO `n`; REDO and MREDO; the step's name echoed; undo
   after an Escape halfway (what was committed stays); U after a run that changed nothing (an empty
   set, a zero vector, an inquiry): AutoCAD takes back that run and names it (move/p07).
+- A gesture that runs no command (the wheel, the wheel button, the ViewCube, a toolbar's button)
+  is a row of its own: 2027 makes each a named step (`INTELLIZOOM`, `'.VIEWCUBEACTION`,
+  `'ZOOM GROUP`), and inside a command an entry its Undo keyword takes back (view/d01–d07).
 
 **G. Ending and cancelling** — Enter, Space and the right button at each prompt (SHORTCUTMENU
 off, and with the menu), Escape (once, twice), another command typed mid-prompt, closing options
