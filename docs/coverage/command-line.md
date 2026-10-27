@@ -51,8 +51,8 @@ in the tooltip — runs inside the running one as AutoCAD 2023's console runs it
 `>>` (`>>Specify first corner:`), echoed as typed (`Specify next point or [Undo]: 'z 'ZOOM`), then
 `Resuming LINE command.` (es `Reanudando el comando LINEA.`) and the running command's question
 again, its preview, box, selection set and undo step as they were (ZOOM Object asks a
-`>>Select objects:` of its own; LINE's next point is still from its own last point after `'ID` or
-`'DIST`); what the transparent one reports is not headed (`Distance = …`,
+`>>Select objects:` of its own, then refuses, view/p145; LINE's next point is still from its own
+last point after `'ID` or `'DIST`); what the transparent one reports is not headed (`Distance = …`,
 `Current osnap modes: End`; -LWEIGHT's `>>Current lineweight: >>BYLAYER` is, as the console writes
 it); a change AutoCAD regenerates for (LTSCALE, ATTDISP) says `Regen queued.` (es
 `La regeneración está en espera.`), and once the interrupted command ends `Regenerating model.`;

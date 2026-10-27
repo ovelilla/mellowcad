@@ -44,15 +44,14 @@ describe("the view as an undo step", () => {
     expect(cad.entities()).toHaveLength(1)
   })
 
-  it("joins consecutive ZOOMs, regenerating as the view goes back", () => {
+  // Extents on what is drawn regenerates no more (probe view/p100), so
+  // neither does its U.
+  it("joins consecutive ZOOMs", () => {
     const cad = answer(createHarness(), ...LINE)
     const before = camera(cad)
     answer(cad, "ZOOM", "E", "ZOOM", "2X", "ZOOM", "0.5X")
     const after = camera(cad)
-    expect(written(cad, "U")).toEqual([
-      "U",
-      "ZOOM ZOOM ZOOM Regenerating model.",
-    ])
+    expect(written(cad, "U")).toEqual(["U", "ZOOM ZOOM ZOOM"])
     expect(camera(cad)).toEqual(before)
     expect(written(cad, "REDO")).toEqual([
       "REDO",
@@ -138,6 +137,6 @@ describe("the view as an undo step", () => {
   it("speaks Autodesk's Spanish", () => {
     const cad = createHarness({ locale: es })
     answer(cad, "LINEA", "0,0", "10,0", "", "ZOOM", "E", "ZOOM", "2X")
-    expect(written(cad, "H")).toEqual(["H", "ZOOM ZOOM Regenerando modelo."])
+    expect(written(cad, "H")).toEqual(["H", "ZOOM ZOOM"])
   })
 })

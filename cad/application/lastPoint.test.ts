@@ -766,17 +766,20 @@ describe("A number typed for a point", () => {
     )
   })
 
+  // probe view/p135: the factor leaves LASTPOINT where ID put it.
   it("is ZOOM's factor at its first prompt, no point", () => {
-    const cad = createHarness()
+    const cad = answer(createHarness(), "ID", "7,8")
     answer(cad, "ZOOM", "2")
     expect(cad.runtime.viewport.scale).toBeCloseTo(2)
     expect(cad.activeToolId()).toBe("select")
+    expect(lastPoint(cad)).toBe(" X = 7.00     Y = 8.00     Z = 0.00")
   })
 })
 
-// AutoCAD 2023's console (acc/wn1–wn57): a number is a direct distance at a
-// window's corner too, and where objects are picked. Its cursor stands
-// where `5` gives 14.6175,1.91807 from 10,0 and 104.9817,100.4275 from 100,100.
+// AutoCAD 2027's console (probes view/p127–p130 at ZOOM's corners): a number
+// is a direct distance at a window's corner too, and where objects are picked.
+// Its cursor stands where `5` gives 14.6175,1.91807 from 10,0 and
+// 104.9817,100.4275 from 100,100.
 describe("A number typed at a window's corner or where objects are picked", () => {
   const CURSOR = p(289.985, 116.3034)
 

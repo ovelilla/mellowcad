@@ -6,32 +6,51 @@
 `Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]:`
 (es
 `Precise esquina de ventana, indique un factor de escala (nX o nXP), o [Todo/Extensión/Previo/EScala/Ventana/Objeto]`;
-`Requires a distance, numberX, or option keyword.`): a corner picked or typed there starts a window
-(`Specify opposite corner:`, on the line of a picked first corner; a wrong one
-`Invalid window specification.` and the same corner again), a factor typed there zooms by it (`2X`
-from the current view, `2` from ZOOM All's); Window's `Specify first corner:` /
-`Specify opposite corner:` (click-click or drag; a wrong corner or Enter
-`Invalid window specification.` and the first corner again); a number typed at a corner is a direct
-distance towards the cursor, Window's first corner's from LASTPOINT, an opposite corner's from the
-first corner, as `@` there is (AutoCAD 2023's console; the corners leave LASTPOINT); Extents and All
-(`Regenerating model.`; transparently nothing, as AutoCAD's transparent ZOOM says when it needs no
-regeneration, since nothing is generated ahead here to leave — but with nothing drawn they refuse
-with `** Requires a regen, cannot be transparent.` (es
-`** Regeneración necesaria, no puede ser transparente.`) and leave the view, as 2027's console does;
-a factor still zooms then); Previous (bounded history; `No previous view saved.`); Scale's
+`Requires a distance, numberX, or option keyword.`; a factor of zero or less
+`Value must be positive and nonzero.`, es `El valor debe ser positivo y diferente de cero.`, and
+asked again, p105, p106): a corner picked or typed there starts a window (`Specify opposite
+corner:`, on the line of a picked first corner; a wrong one `Invalid window specification.` and the
+same corner again), a factor typed there zooms by it about the view's centre (`2X` from the current
+view, `2` at ZOOM All's scale, p158; `nXP` is `nX`, as model space takes it, p110); Window's
+`Specify first corner:` / `Specify opposite corner:` (click-click or drag; a wrong corner or Enter
+`Invalid window specification.` and the first corner again; a corner typed as `x,y`, `@`, `@`
+alone, polar or `*x,y`, `#` refused, p122–p126); a window is framed exactly (p138), one of no width
+or no height by the other (p156, p157), one of no size ends ZOOM with `*Invalid*` (es
+`*No válido*`) and the view left (p120, p121); a number typed at a corner is a direct distance
+towards the cursor, Window's first corner's from LASTPOINT, an opposite corner's from the first
+corner, as `@` there is (p127–p130; the corners and a factor leave LASTPOINT, a point at the first
+prompt sets it, p121, p131, p135); Extents and All frame what is drawn with about 3 px a side
+(p100, p108), silently, since 2027 regenerates only when the view leaves what it generated and
+nothing is generated ahead here (p100, p108, p161); with nothing drawn they say
+`Regenerating model.` (p136, p137), and transparently refuse with
+`** Requires a regen, cannot be transparent.` (es
+`** Regeneración necesaria, no puede ser transparente.`) and leave the view (a factor still zooms
+then); Previous (20 views back, p162; `No previous view saved.`, p141); Scale's
 `Enter a scale factor (nX or nXP):` (es `Indique factor de escala (nX o nXP)`;
-`Requires a distance (or numberX).`); Object's `Select objects:` with its modes and counts (a set
-selected before it framed at once; `Regenerating model.`); transparent, `'ZOOM` / `'Z` typed
-mid-command (below, Command window); an undo step, consecutive ZOOMs one (UNDO Combine, as AutoCAD
-2023's console joins them): U names them last first (`ZOOM 'ZOOM`), puts back the view and ZOOM
-Previous's list, and says `Regenerating model.` after them when one regenerated and the view goes
-elsewhere (not after Extents and Previous back to the same view); REDO never says it; another
-command, a mark or the navigation bar's Window (a menu's, never joined) parts them; a transparent
-ZOOM is part of the command it ran in (U of LINE takes it back too)
+`Requires a distance (or numberX).`; zero or less refused as at the first prompt, p114, p116;
+Enter ends ZOOM, p115); Object's `Select objects:` with its modes and counts (a set selected
+before it counted, `1 found`, and framed at once, p147; Enter with nothing ends it silently, p152;
+`Regenerating model.` always, p139; transparently, it refuses with
+`** Requires a regen, cannot be transparent.` after its set and leaves the view, p145); every ZOOM
+drops a set selected before it (p147–p150); transparent, `'ZOOM` / `'Z` typed mid-command (below,
+Command window); an undo step, consecutive ZOOMs one (UNDO Combine, as AutoCAD 2023's console joins
+them): U names them last first (`ZOOM 'ZOOM`), puts back the view and ZOOM Previous's list, and says
+`Regenerating model.` after them when one regenerated and the view goes elsewhere (not after
+Extents and Previous back to the same view); REDO never says it; another command, a mark or the
+navigation bar's Window (a menu's, never joined) parts them; a transparent ZOOM is part of the
+command it ran in (U of LINE takes it back too)
 
-**Missing:** Realtime (so the first prompt offers no `<real time>`, and its Enter ends ZOOM) and
-Dynamic (mitigated by the mouse wheel), Center, `nXP` (no paper space); the first prompt written on
-one line (AutoCAD breaks it before its keywords)
+**Missing:** Realtime (so the first prompt offers no `<real time>`, and its Enter ends ZOOM where
+AutoCAD starts it and says `Press ESC or ENTER to exit, or right-click to display shortcut menu.`,
+p103) and Dynamic (mitigated by the mouse wheel); Center (`Specify center point:` / es
+`Precise centro:`, `FOO` `Invalid point.` / `Punto no válido.`; then `Enter magnification or height
+<57.0024>:` / es `Indique factor de ampliación o Altura <57.0024>:`, the view's height as the
+default, Enter keeping it, `FOO` `Requires a distance (or numberX).`; the centre point is LASTPOINT,
+p153, p154, p165); the hidden Left (`Lower left corner point:` / es `Esquina inferior izquierda:`,
+then the same magnification prompt; the corner is LASTPOINT, p163) and Vmax (the widest view
+without a regeneration, p164), refused here as any answer; the regeneration when Extents leaves
+what was generated (there is no virtual screen); the first prompt written on one line (AutoCAD
+breaks it before its keywords)
 
 ### `PAN` / `P` / `-PAN` · es `ENCUADRE` / `E`† / `-ENCUADRE`
 

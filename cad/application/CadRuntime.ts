@@ -42,6 +42,7 @@ import {
 import { isBlankDrawing } from "../serialization/drawingSummary"
 import { Scene, ScenePrimitive } from "../scene/types"
 import {
+  EXTENTS_MARGIN_PX,
   Viewport,
   type ViewState,
   entitiesViewBounds,
@@ -2931,7 +2932,7 @@ export class CadRuntime extends Observable {
     return this.viewport.restorePrevious()
   }
 
-  zoomToFit(padding = 40): void {
+  zoomToFit(padding = EXTENTS_MARGIN_PX): void {
     this.viewport.pushHistory()
     const bounds = entitiesViewBounds(
       this.document.getEntities(),

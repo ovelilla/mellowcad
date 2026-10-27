@@ -94,6 +94,14 @@ interface ViewAxes {
 /** Below this a component of a camera axis read in a frame is taken as none. */
 const FRAME_SNAP = 1e-12
 
+/**
+ * The screen margin ZOOM Extents leaves round what it frames, in pixels a
+ * side: probes view/p100 and p108 frame 57.0024 and 300.337 where the exact
+ * fit is 56.6419 and 297, about 6 px across a 942 px screen. ZOOM All and
+ * Object, PLAN, the preset views and the wheel's double-click leave it too.
+ */
+export const EXTENTS_MARGIN_PX = 3
+
 export class Viewport extends Observable {
   private core: ViewCore = {
     scale: 1,
@@ -112,7 +120,8 @@ export class Viewport extends Observable {
 
   private static readonly MIN_SCALE = 1e-4
   private static readonly MAX_SCALE = 1e6
-  private static readonly MAX_HISTORY = 10
+  /** ZOOM Previous's depth: 20 steps back in 2027's console (probe view/p162). */
+  private static readonly MAX_HISTORY = 20
 
   /**
    * The same view, with every point and direction it takes or gives in
@@ -421,16 +430,21 @@ export class Viewport extends Observable {
    * rectangle. The smaller of the two axis scales is used, so all of it fits.
    */
   zoomToViewBounds(min: Vec2, max: Vec2, padding = 0): void {
+    this.core.scale = this.fitScale(min, max, padding)
+    this.centerOn(
+      this.viewToWorld({ x: (min.x + max.x) / 2, y: (min.y + max.y) / 2 })
+    )
+  }
+
+  /** The scale {@link zoomToViewBounds} frames that rectangle at, the view left. */
+  fitScale(min: Vec2, max: Vec2, padding = 0): number {
     const worldWidth = Math.max(max.x - min.x, 1e-6)
     const worldHeight = Math.max(max.y - min.y, 1e-6)
     const scale = Math.min(
       (this.core.width - padding * 2) / worldWidth,
       (this.core.height - padding * 2) / worldHeight
     )
-    this.core.scale = clamp(scale, Viewport.MIN_SCALE, Viewport.MAX_SCALE)
-    this.centerOn(
-      this.viewToWorld({ x: (min.x + max.x) / 2, y: (min.y + max.y) / 2 })
-    )
+    return clamp(scale, Viewport.MIN_SCALE, Viewport.MAX_SCALE)
   }
 
   /** Resets pan/zoom so world origin sits at the centre with unit scale. */

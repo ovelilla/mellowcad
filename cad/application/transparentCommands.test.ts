@@ -195,7 +195,7 @@ function cad0(): CadHarness {
   return createHarness()
 }
 
-// AutoCAD 2023's console: `'ZOOM` typed at LINE's prompt asks ZOOM's
+// AutoCAD 2027's console (probes view/p143, p144): `'ZOOM` typed at LINE's prompt asks ZOOM's
 // questions headed `>>`, and once ZOOM is done says `Resuming LINE command.`
 // and asks LINE's again.
 describe("a transparent command", () => {
@@ -274,6 +274,7 @@ describe("a transparent command", () => {
     expect(cad.activeToolId()).toBe("line")
   })
 
+  // probe view/p145: Object always regenerates, so a transparent one refuses.
   it("keeps the running command's selection set", () => {
     const cad = createHarness({
       entities: [
@@ -287,11 +288,12 @@ describe("a transparent command", () => {
     expect(cad.state().commandLine.prompt).toBe("'ZOOM >>Select objects:")
     answerLine(cad, "ALL")
     cad.enter()
-    expect(cad.commandLog().slice(-5)).toEqual([
+    expect(cad.commandLog().slice(-6)).toEqual([
       `${ZOOM_PROMPT} O`,
       ">>Select objects: ALL",
       "2 found",
       ">>Select objects:",
+      "** Requires a regen, cannot be transparent.",
       "Resuming MOVE command.",
     ])
     expect(cad.activeToolId()).toBe("move")
@@ -355,10 +357,43 @@ describe("a transparent command", () => {
     }
   })
 
+  // probe view/p145, both languages: Object refuses, the view left.
+  it("refuses a transparent Object, which needs a regen", () => {
+    for (const [locale, line, refusal, resuming] of [
+      [
+        undefined,
+        "LINE",
+        "** Requires a regen, cannot be transparent.",
+        "Resuming LINE command.",
+      ],
+      [
+        es,
+        "LINEA",
+        "** Regeneración necesaria, no puede ser transparente.",
+        "Reanudando el comando LINEA.",
+      ],
+    ] as const) {
+      const cad = createHarness({
+        locale,
+        entities: [lineOf(p(0, 0), p(100, 50))],
+      })
+      answerLine(cad, "_ZOOM")
+      answerLine(cad, "_E")
+      const scale = cad.state().scale
+      const center = cad.runtime.viewport.worldCenter()
+      for (const typed of [line, "0,0", "'_ZOOM", "_O", "_L", ""])
+        answerLine(cad, typed)
+      expect(cad.commandLog().slice(-2)).toEqual([refusal, resuming])
+      expect(cad.state().scale).toBe(scale)
+      expect(cad.runtime.viewport.worldCenter()).toBeCloseToPoint(center)
+      expect(cad.activeToolId()).toBe("line")
+    }
+  })
+
   // AutoCAD's transparent ZOOM cannot regenerate: it zooms without a word
   // when it needs no regeneration, which here is whenever something is drawn
   // (probe line/p112).
-  it("zooms to the extents, all or an object without regenerating", () => {
+  it("zooms to the extents or all without regenerating", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(1000, 500), { id: "A" })],
     })
@@ -378,9 +413,11 @@ describe("a transparent command", () => {
       "Resuming LINE command.",
     ])
     cad.escape()
-    // Not transparently, it still regenerates.
+    // Not transparently, Object still regenerates (probe view/p139).
     answerLine(cad, "ZOOM")
-    answerLine(cad, "E")
+    answerLine(cad, "O")
+    answerLine(cad, "L")
+    cad.enter()
     expect(cad.commandLog().at(-1)).toBe("Regenerating model.")
   })
 

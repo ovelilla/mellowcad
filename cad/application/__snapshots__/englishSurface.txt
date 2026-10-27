@@ -4564,7 +4564,6 @@ Specify next point or
   dyn: -
   options: -
   prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: A
-  info| Regenerating model.
 > ZOOM E
   prompt: ZOOM Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]:
   asks: "Specify corner of window, enter a scale factor (nX or nXP), or"
@@ -4579,7 +4578,6 @@ Specify next point or
   dyn: -
   options: -
   prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: E
-  info| Regenerating model.
 > ZOOM P
   prompt: ZOOM Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]:
   asks: "Specify corner of window, enter a scale factor (nX or nXP), or"

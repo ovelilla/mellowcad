@@ -1115,8 +1115,9 @@ describe("viewport", () => {
       vi.advanceTimersByTime(200)
       cad.click(p(100, 100), { button: 1 })
 
-      expect(cad.toScreen(p(-2000, 0)).x).toBeCloseTo(40)
-      expect(cad.toScreen(p(2000, 0)).x).toBeCloseTo(960)
+      // ZOOM Extents' margin of about 3 px a side (probes view/p100, p108).
+      expect(cad.toScreen(p(-2000, 0)).x).toBeCloseTo(3)
+      expect(cad.toScreen(p(2000, 0)).x).toBeCloseTo(997)
       expect(cad.activeToolId()).toBe("line")
       expect(cad.runtime.zoomPrevious()).toBe(true)
       expect(cad.state().scale).toBe(1)

@@ -1,7 +1,7 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Ucs, WORLD_UCS, ucsZAxis } from "../../domain/ucs"
 import type { PromptId } from "../../locales/types"
-import { entitiesViewBounds } from "../Viewport"
+import { EXTENTS_MARGIN_PX, entitiesViewBounds } from "../Viewport"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -16,9 +16,6 @@ type PlanState =
   | { readonly phase: "option" }
   | { readonly phase: "name" }
   | { readonly phase: "list" }
-
-/** Screen margin left round the extents, as ZOOM Extents leaves it. */
-const PADDING_PX = 40
 
 /**
  * AutoCAD's PLAN: `[Current ucs/Ucs/World] <Current>`. It looks down the
@@ -147,7 +144,8 @@ export class PlanTool implements Tool {
       viewport,
       ctx.blocks
     )
-    if (bounds) viewport.zoomToViewBounds(bounds.min, bounds.max, PADDING_PX)
+    if (bounds)
+      viewport.zoomToViewBounds(bounds.min, bounds.max, EXTENTS_MARGIN_PX)
     ctx.regenerate()
   }
 

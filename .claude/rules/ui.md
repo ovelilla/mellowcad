@@ -218,7 +218,7 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   navigation bar, the dynamic input, the rollover tooltip, the menus at the cursor. A new control finds its zone. What
   sits there takes the pointer only where it is drawn: the ViewCube's column and SVG box are
   `pointer-events-none` and only its buttons, zones, compass and triangles set
-  `pointer-events-auto` — ZOOM Extents frames up to 40 px from the edge, so a grip can land under
+  `pointer-events-auto` — ZOOM Extents frames up to 3 px from the edge, so a grip can land under
   the cube's box and must stay pickable.
 - **After acting in a palette or bar, focus returns to the drawing** (`engine.focusSurface()`) — a
   tab, a strip icon, a toggle, a pick in a drop-down — so the next key types a command. Arrow keys

@@ -458,7 +458,8 @@ describe("PLAN", () => {
     const a = cad.toScreen(p(0, 0))
     const b = cad.toScreen(p(0, 500))
     expect(a.y).toBeCloseTo(b.y)
-    expect(b.x - a.x).toBeCloseTo(1000 - 80)
+    // ZOOM Extents' margin, 3 px a side (probes view/p100, p108).
+    expect(b.x - a.x).toBeCloseTo(1000 - 6)
   })
 
   it("World, a saved UCS by name, and ZOOM Previous back through them", () => {

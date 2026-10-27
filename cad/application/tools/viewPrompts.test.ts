@@ -18,9 +18,10 @@ const ZOOM =
 
 const drawing = () => [lineOf(p(0, 0), p(100, 0), { id: "A" })]
 
-// Each transcript is AutoCAD 2023's console answering the same input (Center,
+// Each transcript is AutoCAD 2027's console answering the same input (Center,
 // Dynamic and the real-time default are not offered here).
-describe("ZOOM asks as AutoCAD 2026", () => {
+describe("ZOOM asks as AutoCAD 2027", () => {
+  // probe view/p104
   it("refuses what is neither a corner, a factor nor a keyword", () => {
     const cad = createHarness({ entities: drawing() })
     cad.command("ZOOM")
@@ -33,6 +34,7 @@ describe("ZOOM asks as AutoCAD 2026", () => {
     ])
   })
 
+  // probes view/p117–p119
   it("asks Window's corners again after a wrong one, and a point's corner in place", () => {
     const cad = createHarness({ entities: drawing() })
     cad.command("ZOOM")
@@ -67,6 +69,7 @@ describe("ZOOM asks as AutoCAD 2026", () => {
     ])
   })
 
+  // probe view/p113
   it("takes a factor at its first prompt and at Scale's", () => {
     const cad = createHarness({ entities: drawing() })
     const scale = () => cad.runtime.viewport.scale
@@ -85,22 +88,78 @@ describe("ZOOM asks as AutoCAD 2026", () => {
     ])
   })
 
+  // probes view/p141; p100 and p108 (Extents and All on what is drawn say
+  // nothing), p136 and p137 (with nothing drawn they regenerate).
   it("says what Extents and Previous did", () => {
     const cad = createHarness({ entities: drawing() })
     cad.command("ZOOM")
     answer(cad, "P")
     cad.command("ZOOM")
     answer(cad, "E")
+    cad.command("ZOOM")
+    answer(cad, "A")
     expect(cad.commandLog()).toEqual([
       "ZOOM",
       `${ZOOM} P`,
       "No previous view saved.",
       "ZOOM",
       `${ZOOM} E`,
-      "Regenerating model.",
+      "ZOOM",
+      `${ZOOM} A`,
     ])
+    for (const option of ["E", "A"]) {
+      const empty = createHarness()
+      empty.command("ZOOM")
+      answer(empty, option)
+      expect(empty.commandLog().at(-1)).toBe("Regenerating model.")
+    }
   })
 
+  // probes view/p105, p106 (the first prompt), p114, p116 (Scale's)
+  it("refuses a factor of zero or less, and asks again", () => {
+    for (const [locale, message] of [
+      [undefined, "Value must be positive and nonzero."],
+      [es, "El valor debe ser positivo y diferente de cero."],
+    ] as const) {
+      for (const typed of ["0", "-2"]) {
+        const cad = createHarness({ locale, entities: drawing() })
+        const scale = cad.runtime.viewport.scale
+        cad.command("ZOOM")
+        answer(cad, typed)
+        expect(cad.commandLog().at(-1)).toBe(message)
+        expect(cad.activeToolId()).toBe("zoom")
+        answer(cad, locale ? "ES" : "S", typed)
+        expect(cad.commandLog().at(-1)).toBe(message)
+        expect(cad.activeToolId()).toBe("zoom")
+        expect(cad.runtime.viewport.scale).toBe(scale)
+      }
+    }
+    const cad = createHarness({ entities: drawing() })
+    cad.command("ZOOM")
+    answer(cad, "S", "-2", "2X")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Enter a scale factor (nX or nXP): -2",
+      "Value must be positive and nonzero.",
+      "Enter a scale factor (nX or nXP): 2X",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  // probe view/p110: model space takes nXP as nX.
+  it("takes nXP as nX at its first prompt and at Scale's", () => {
+    const cad = createHarness({ entities: drawing() })
+    const scale = () => cad.runtime.viewport.scale
+    const before = scale()
+    cad.command("ZOOM")
+    answer(cad, "2XP")
+    expect(scale()).toBeCloseTo(before * 2)
+    cad.command("ZOOM")
+    answer(cad, "S", "0.5xp")
+    expect(scale()).toBeCloseTo(before)
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  // probe view/p151
   it("frames the objects Select objects closes", () => {
     const cad = createHarness({ entities: drawing() })
     cad.command("ZOOM")
@@ -119,6 +178,7 @@ describe("ZOOM asks as AutoCAD 2026", () => {
     expect(cad.runtime.viewport.worldCenter()).toBeCloseToPoint(p(50, 0))
   })
 
+  // probes view/p104, p113 (es-ES)
   it("asks and refuses in Autodesk's Spanish", () => {
     const cad = createHarness({ locale: es, entities: drawing() })
     cad.command("ZOOM")

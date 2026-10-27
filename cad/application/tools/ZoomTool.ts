@@ -3,7 +3,7 @@ import { Entity } from "../../domain/entities"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import type { PromptId } from "../../locales/types"
-import { entitiesViewBounds } from "../Viewport"
+import { EXTENTS_MARGIN_PX, entitiesViewBounds } from "../Viewport"
 import {
   isCoordinateExpression,
   parseCoordinate,
@@ -26,11 +26,11 @@ import {
  *
  * WHY All behaves like Extents: AutoCAD's All frames the drawing limits when
  * the geometry fits inside them, and there is no LIMITS here — so the two
- * coincide, and a factor without its `X`, relative to the limits, is relative
- * to that view. Both are kept because `Z A` and `Z E` are equally worn-in
- * muscle memory. Center, Dynamic and the real-time default are not
- * implemented (the wheel covers real-time zooming), so the first prompt
- * offers no `<real time>`.
+ * coincide, and a factor without its `X`, relative to the limits, is taken
+ * at that view's scale (about the view's own centre, probe view/p158). Both
+ * are kept because `Z A` and `Z E` are equally worn-in muscle memory.
+ * Center, Dynamic and the real-time default are not implemented (the wheel
+ * covers real-time zooming), so the first prompt offers no `<real time>`.
  */
 type ZoomState =
   | { readonly phase: "main" }
@@ -49,11 +49,12 @@ type ZoomState =
 /** Pixels the press must travel for a drag to count as the whole window. */
 const DRAG_THRESHOLD_PX = 4
 
-/** Screen margin left around the framed geometry, as in `zoomToFit`. */
-const PADDING_PX = 40
-
-/** `2`, `2X` or `0.5x`: a factor, relative to the current view with its X. */
-const FACTOR = /^(\d+(?:\.\d*)?|\.\d+)\s*(x?)$/i
+/**
+ * `2`, `2X` or `0.5x`: a factor, relative to the current view with its X.
+ * `nXP` is `nX`, as model space takes it (probe view/p110); a sign is read
+ * so that `-2` is refused as a factor (p106).
+ */
+const FACTOR = /^([+-]?(?:\d+(?:\.\d*)?|\.\d+))\s*(xp?)?$/i
 
 export class ZoomTool implements Tool {
   readonly id = "zoom"
@@ -64,8 +65,7 @@ export class ZoomTool implements Tool {
   private readonly selector = new ObjectSelector({
     takes: () => "wholeObjects",
     done: (ctx) => {
-      this.frame(selectedEntities(ctx), ctx)
-      regenerated(ctx)
+      this.frameObjects(ctx)
       ctx.endCommand()
     },
   })
@@ -101,7 +101,7 @@ export class ZoomTool implements Tool {
     return this.state.phase === "main" ? true : null
   }
 
-  /** As AutoCAD 2023's console refuses ZOOM's answers. */
+  /** As AutoCAD 2027's console refuses them (probes view/p104, p113, p117–p119, p151). */
   takes(): QuestionInput {
     switch (this.state.phase) {
       case "main":
@@ -224,14 +224,17 @@ export class ZoomTool implements Tool {
     switch (id) {
       case "All":
       case "Extents":
-        if (
-          !this.frame(ctx.document.getEntities(), ctx) &&
-          ctx.runsTransparently()
-        ) {
+        // WHY silent with something drawn: 2027 regenerates only when the
+        // view leaves what it last generated (p100, p108, p161), and nothing
+        // is generated ahead here. With nothing drawn it frames the limits and
+        // always regenerates (p136, p137), which a transparent ZOOM cannot
+        // (line/p19, line/p209; with objects it zooms, line/p112).
+        if (this.frame(ctx.document.getEntities(), ctx)) return "end"
+        if (ctx.runsTransparently()) {
           ctx.report(ctx.text.message("requiresRegen"))
-          return "end"
+        } else {
+          ctx.regenerate()
         }
-        regenerated(ctx)
         return "end"
       case "Previous":
         if (!ctx.viewport.restorePrevious()) {
@@ -245,21 +248,21 @@ export class ZoomTool implements Tool {
         this.state = { phase: "scale" }
         ctx.dynamicInput.open({
           fields: [{ id: "factor", prompt: "zoomScaleFactor", kind: "number" }],
-          commit: (values, commitCtx) =>
-            this.zoomBy(values.factor, false, commitCtx),
+          commit: (values, commitCtx) => {
+            this.zoomBy(values.factor, false, commitCtx)
+          },
           commitRaw: (commitCtx) => this.commitFactor("factor", commitCtx),
         })
         this.place(ctx)
         return "continue"
       case "Object":
-        // A pre-selected set is what the user already pointed at, so honour it
-        // instead of asking again.
-        if (this.frame(selectedEntities(ctx), ctx)) {
-          regenerated(ctx)
-          return "end"
-        }
         this.state = { phase: "object" }
         this.selector.start()
+        // A set selected before ZOOM is counted and framed (probe view/p147).
+        if (this.selector.preselect(ctx)) {
+          this.frameObjects(ctx)
+          return "end"
+        }
         ctx.dynamicInput.close()
         return "continue"
       default:
@@ -286,9 +289,9 @@ export class ZoomTool implements Tool {
   /**
    * Asks the corner and factor prompts with a box, so a point or a factor
    * typed there answers them; a keyword typed in it still runs. A number at
-   * a corner is a direct distance (AutoCAD 2023's console, acc/wn1–wn6):
-   * Window's first corner from LASTPOINT, the opposite one from the first,
-   * which the console makes LASTPOINT while it asks (`@` too, wn42).
+   * a corner is a direct distance (probes view/p127–p130): Window's first
+   * corner from LASTPOINT, the opposite one from the first, which the console
+   * makes LASTPOINT while it asks (`@` too, p122).
    */
   private ask(state: ZoomState, ctx: ToolContext): void {
     this.state = state
@@ -365,10 +368,11 @@ export class ZoomTool implements Tool {
     const b = ctx.viewport.worldToView(second)
     const min = { x: Math.min(a.x, b.x), y: Math.min(a.y, b.y) }
     const max = { x: Math.max(a.x, b.x), y: Math.max(a.y, b.y) }
-    // A stray click (an empty window) would zoom to an absurd scale; keep
-    // prompting instead, as AutoCAD does.
-    if (max.x - min.x < 1e-9 || max.y - min.y < 1e-9) {
-      this.ask({ phase: "main" }, ctx)
+    // A window of no size ends ZOOM (p120, p121); one of no width or no
+    // height alone frames the other (p156, p157).
+    if (max.x - min.x < 1e-9 && max.y - min.y < 1e-9) {
+      ctx.report(ctx.text.message("invalid"), "error")
+      ctx.endCommand()
       return
     }
     ctx.viewport.pushHistory()
@@ -382,22 +386,56 @@ export class ZoomTool implements Tool {
    */
   private commitFactor(id: string, ctx: ToolContext): boolean {
     const match = FACTOR.exec(ctx.dynamicInput.getText(id).trim())
-    return match !== null && this.zoomBy(Number(match[1]), match[2] !== "", ctx)
+    if (match === null) return false
+    this.zoomBy(Number(match[1]), match[2] !== undefined, ctx)
+    return true
   }
 
-  /** Zooms by `factor`, from the current view or, not `relative`, ZOOM All's. */
-  private zoomBy(factor: number, relative: boolean, ctx: ToolContext): boolean {
-    if (!(factor > 0)) return false
-    const center = {
-      x: ctx.viewport.width / 2,
-      y: ctx.viewport.height / 2,
+  /**
+   * Zooms by `factor` about the view's centre: from the current view or, not
+   * `relative`, from ZOOM All's scale (p158; the current view's in an empty
+   * drawing, which has no extents, p135). Zero or less is refused and asked
+   * again, at the first prompt as at Scale's (p105, p106, p114, p116).
+   */
+  private zoomBy(factor: number, relative: boolean, ctx: ToolContext): void {
+    if (!(factor > 0)) {
+      ctx.report(ctx.text.message("positiveNonzero"), "error")
+      return
     }
-    if (relative || !this.frame(ctx.document.getEntities(), ctx)) {
-      ctx.viewport.pushHistory()
-    }
-    ctx.viewport.zoomAt(center, factor)
+    const { viewport } = ctx
+    const all = relative ? null : this.allScale(ctx)
+    viewport.pushHistory()
+    viewport.zoomAt(
+      { x: viewport.width / 2, y: viewport.height / 2 },
+      all === null ? factor : (all * factor) / viewport.scale
+    )
     ctx.endCommand()
-    return true
+  }
+
+  /** The scale ZOOM All frames the drawing at, or null with nothing drawn. */
+  private allScale(ctx: ToolContext): number | null {
+    const bounds = entitiesViewBounds(
+      ctx.document.getEntities(),
+      ctx.viewport,
+      ctx.blocks
+    )
+    return bounds
+      ? ctx.viewport.fitScale(bounds.min, bounds.max, EXTENTS_MARGIN_PX)
+      : null
+  }
+
+  /**
+   * Object's set framed. WHY refused transparently: Object always regenerates
+   * (p139, p161), which a transparent ZOOM cannot, so 2027 says so and leaves
+   * the view (p145).
+   */
+  private frameObjects(ctx: ToolContext): void {
+    if (ctx.runsTransparently()) {
+      ctx.report(ctx.text.message("requiresRegen"))
+      return
+    }
+    this.frame(selectedEntities(ctx), ctx)
+    ctx.regenerate()
   }
 
   /** Frames `entities` as the view shows them; false when there are none. */
@@ -405,7 +443,7 @@ export class ZoomTool implements Tool {
     const bounds = entitiesViewBounds(entities, ctx.viewport, ctx.blocks)
     if (!bounds) return false
     ctx.viewport.pushHistory()
-    ctx.viewport.zoomToViewBounds(bounds.min, bounds.max, PADDING_PX)
+    ctx.viewport.zoomToViewBounds(bounds.min, bounds.max, EXTENTS_MARGIN_PX)
     return true
   }
 
@@ -413,21 +451,6 @@ export class ZoomTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }
-}
-
-/**
- * `Regenerating model.` after Extents, All and Object. WHY not transparently:
- * AutoCAD 2023's console regenerates only when the zoom leaves what it last
- * generated, and a transparent ZOOM, which cannot regenerate, then refuses
- * (`** Requires a regen, cannot be transparent.`), zooming without a word
- * when it needs none. Nothing is generated ahead here, so a transparent zoom
- * needs a regeneration only where 2027's console always asks for one: Extents
- * or All with nothing drawn (probes line/p19, p209; with objects it zooms, p112; a
- * factor always zooms, p210).
- */
-function regenerated(ctx: ToolContext): void {
-  if (ctx.runsTransparently()) return
-  ctx.regenerate()
 }
 
 function selectedEntities(ctx: ToolContext): Entity[] {

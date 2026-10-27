@@ -1,11 +1,8 @@
 import { Vec3, WORLD_X, length3, normalize3 } from "../../geometry/Vec3"
 import { arbitraryAxis } from "../../geometry/ocs"
-import { Viewport, entitiesViewBounds } from "../Viewport"
+import { EXTENTS_MARGIN_PX, Viewport, entitiesViewBounds } from "../Viewport"
 import { BlockLookup, Entity } from "../../domain/entities"
 import { ToolContext } from "./Tool"
-
-/** Screen margin left round the extents, as ZOOM Extents leaves it. */
-const PADDING_PX = 40
 
 /**
  * AutoCAD's preset views: where the viewer stands, looking back at the origin.
@@ -104,5 +101,6 @@ export function fitExtents(
   blocks?: BlockLookup
 ): void {
   const bounds = entitiesViewBounds(entities, viewport, blocks)
-  if (bounds) viewport.zoomToViewBounds(bounds.min, bounds.max, PADDING_PX)
+  if (bounds)
+    viewport.zoomToViewBounds(bounds.min, bounds.max, EXTENTS_MARGIN_PX)
 }
