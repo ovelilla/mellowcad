@@ -2,7 +2,8 @@
 
 > **Status:** plan, 2026-10-27. The twenty-first review of `docs/coverage/roadmap.md`'s order, with
 > skill `command-review`. Blocks IDP+INQ, DST and ARE are executed (index below); block IQD (the
-> desktop) waits for a session with the owner's mouse, after which the plan shrinks to its index.
+> desktop) was probed on 2026-10-27 (d01–d09 en-US, e01–e03 es-ES) and is planned below; once it is
+> executed the plan shrinks to its index.
 >
 > It owns no cross-cutting area. It settles the analogues left for it: AREA Object of a hatch
 > (hatch/p320) and of a block reference with attributes (Blocks review), and the circle review's
@@ -10,14 +11,14 @@
 
 ## Summary
 
-No critical and no high finding. 15 medium and 11 low, in four blocks:
+No critical and no high finding. 18 medium and 13 low, in four blocks:
 
 | Block | Prefix | Medium | Low |
 | --- | --- | --- | --- |
 | ID and the shared cells | IDP, INQ | 3 (IDP-01, INQ-01, INQ-04) | 5 (IDP-02, INQ-03, INQ-06 to INQ-08) |
 | DIST | DST | 6 (DST-01 to DST-05, DST-07) | 2 (DST-06, DST-08) |
 | AREA | ARE | 6 (ARE-01 to ARE-05, ARE-07) | 4 (ARE-06, ARE-08, ARE-10, ARE-12) |
-| Desktop | IQD | — | — (to probe) |
+| Desktop | IQD | 3 (IQD-01, IQD-02, IQD-04) | 2 (IQD-03, IQD-05) |
 
 The worst three:
 
@@ -30,7 +31,8 @@ The worst three:
 
 **Evidence:** 180 console probes in es-ES and en-US (p100–p169, p200–p258, p300–p361) on AutoCAD
 2027 (ACADVER 26.0, X.118); the `acadres` tables of 2026-10-20; `acad.cuix`'s ribbon macros; 170
-scratch tests in `research/review/inquiry/{a,b,c}/`. No desktop probe yet.
+scratch tests in `research/review/inquiry/{a,b,c}/`. The desktop: d01–d09 (en-US) and e01–e03
+(es-ES), with 25 scratch tests in `research/review/inquiry/d/`.
 
 ## Executed
 
@@ -39,7 +41,7 @@ scratch tests in `research/review/inquiry/{a,b,c}/`. No desktop probe yet.
 | IDP + INQ | IDP-01, IDP-02, INQ-01, INQ-03, INQ-04, INQ-06 to INQ-08 | `d9de70d` |
 | DST | DST-01 to DST-08 (p170–p172 added: Ortho's base and Arc's LASTPOINT) | `65a7baa` |
 | ARE | ARE-01 to ARE-08, ARE-10 (through `onAskAgain`), ARE-12; COB-03 closed | `f36ebf7` |
-| IQD | the desktop: open | — |
+| IQD | IQD-01 to IQD-05 | — |
 
 Left by the execution: ATTDISP's and MATCHPROP's buttons are apostrophe macros too
 (`'_attdisp`, `'_matchprop`) and do not say `transparentMacro` yet; where a closed wide
@@ -100,6 +102,11 @@ Inputs in `scripts/research/probes/inquiry/` (`.plain` untraced, `.es` one local
 | p340–p344 | U, `UNDO 2`, REDO after each (untraced) |
 | p345–p358 | the preselection at start and what is left selected; an override finding nothing; LUPREC 0 rounding; LASTPOINT after each |
 | p359–p361 | `'_AREA` at Command:; `MEASUREGEOM _distance` and `_area` (the ribbon's macros) |
+| d01–d04 | (desktop, en) what DIST, Multiple points, AREA and MEASUREGEOM show, DYNMODE 0 and 3 |
+| d05 | (desktop, en) Escape at every prompt, Length's and Arc's sub-prompts included |
+| d06, d07 | (desktop, en) `<30` then a number at DIST and ID; Ortho and Polar at AREA's and Multiple's next point |
+| d08, d09 | (desktop, en) AREA Object's rollover; the right button at DIST's and AREA's prompts |
+| e01–e03 | (desktop, es) the Spanish look, Escape at Length, ID's `<45`; the run's total with DYNMODE 3; ID's badge |
 
 ## Matrix
 
@@ -112,15 +119,17 @@ A row the same at every prompt takes one cell. `a`, `b`, `c` are the scratch fol
 | --- | --- | --- | --- | --- |
 | A | match · p100–p104 · a/dist:29, :63, :70; `_.DIST` known (command-line.md); MEASUREGEOM differs DST-05 | | | |
 | B | match · p107 · inquiry.test.ts:177 | match · p108–p111 · a/dist:103–137 | match · p112–p114, p122, p123 · a/dist:146–212 | differs DST-06 (`0`) · p115, p162 |
-| C | match · p124–p133 | match · p124–p133; `<a` unverified (desktop) · p134 | differs DST-01 (`@`, number) · p160, p165–p167 | differs DST-01, DST-03 · p157, p158, p164 |
+| C | match · p124–p133 | match · p124–p133; `<a` · match · d06-1, e01-2 | differs DST-01 (`@`, number) · p160, p165–p167 | differs DST-01, DST-03 · p157, p158, p164 |
 | C LASTPOINT | match · p107 | match · p111, p356 · lastPoint.test.ts:123 | differs DST-02 (Undo) · p169; match after Arc's Undo · p168 | match · p116, p118 |
-| D | match · p135–p138; M2P known | match; Ortho with a number differs DST-04 · p141 | unverified (desktop) | n/a: a length |
+| D | match · p135–p138; M2P known | match; Ortho with a number differs DST-04 · p141 | Ortho, Polar · match · d07-2 · d/desktop | n/a: a length |
 | E | match · p321, p323, p329, p330 (subagent C) | | | |
 | F | match · p341, p343 · undoEcho (ID only: untested for DIST) | | Undo · match · p120, p152 | |
 | H | nothing made; the report to full precision, 3D, UCS Z30 and X90, ELEVATION, AUPREC, LUPREC · match · p124, p142, p144, p146–p151 · a/dist:561–597; DISTANCE differs DST-07 | | | |
 | K | match · p100 es, p112 es, p115 es · a/dist:38, :612 | | | |
 | L | match · p100, p107, p108, p112, p115, p134 | | | |
-| M, P, Q | the readout chip: no source (IQD) | | | |
+| G | Escape · match · d05 · d/desktop | | Escape · match; at the arc's endpoint too · d05 | Escape, and at Arc's Second pt: differs IQD-04 · d05, e01 |
+| M, P, Q | the readout chip and the dashed band differ IQD-01 · d01-1 to d01-3 | | the run's total differs IQD-03 · d02-1, e02-1 | |
+| Menu | the right button · match (Workspace's missing entries) · d09-3 | match · d09-1 | | |
 
 ### AREA
 
@@ -128,16 +137,18 @@ A row the same at every prompt takes one cell. `a`, `b`, `c` are the scratch fol
 | --- | --- | --- | --- | --- |
 | A | match · p200–p202 · b/pr:30, b/rp:5 | | | match · p203, p204 |
 | B | match · p205–p207, p212, p217; Enter in Add before a measure differs ARE-02 · p258; eXit after a measure differs ARE-02 · p215 | `[Arc/Length/Undo]` known; Enter, refusals match · p208, p209; Undo match · p241 | match · p213, p217, p218 | — |
-| C | match · p206, p207, p234 | match · p234; Z differs ARE-05 · p249–p256 | typed point, number: differs ARE-01 · circle/p241, p219, p240 | — |
+| C | match · p206, p207, p234 | match · p234; Z differs ARE-05 · p249–p256; Ortho, Polar · match · d07-1, d07-3 | typed point, number: differs ARE-01 · circle/p241, p219, p240 | — |
 | C LASTPOINT | match · p208, p357 | match · p211 | a pick: differs ARE-06 · p253 | — |
 | D | match · p227 | match · p227 | `_CEN` differs ARE-01 · p228; locked differs ARE-04 · p220 | — |
 | E | `'AREA` in a mode differs ARE-10 · p255 | match · p331 | | `'_AREA` differs INQ-01 · p325, p359 |
 | F | U after AREA · match · p342, p343 · b, c scratch | Undo · match · p241 · inquiry.test.ts:563 | | |
 | H | | UCS, bow-tie · match · p231–p233; LUPREC 0 · p237 | every type · match · p215, p221–p225, p242–p246, hatch/p320 · objectArea.test.ts; wide polyline's warning differs ARE-08 · p222 | after Add or Subtract differs ARE-03 · p212–p214; PERIMETER differs ARE-07 · p257 |
-| I, M | | | rollover colour differs INQ-03 | |
+| G | Escape · match · d05 | Escape · match; Length's not built · d05 | Escape, in Add mode too · match · d05 | |
+| I, M | | the fill differs IQD-02 · d03-1 to d03-3 | the rollover · match (INQ-03 executed) · d08-1 | |
 | K | match · p212 es, p216 · inquiry.test.ts:738, :767 | | | |
 | L | match but the findings above | | | |
-| Q | the green fill known; the readout chip IQD | | | |
+| Q | | the readout chip differs IQD-01 · d03-1 | | |
+| Menu | | the right button · match (Arc, Length not built) · d09-2 | | |
 
 ### ID and shared
 
@@ -145,7 +156,7 @@ A row the same at every prompt takes one cell. `a`, `b`, `c` are the scratch fol
 | --- | --- |
 | A | match · p300, p301, p354; `_.ID` known; the rail's ID ends the running command differs INQ-04 |
 | B | match · p302–p304 · inquiry.test.ts:201, :214 |
-| C | match · p305–p309 · c/id.test.ts; `<a` unverified (desktop) |
+| C | match · p305–p309 · c/id.test.ts; `<45` refused `Invalid point.`, a bare number from LASTPOINT to the cursor · match · d06-2, e01 |
 | D | match · p310–p314, p352 · c/id.test.ts |
 | E | `'ID`, `'DIST` at LINE and CIRCLE, `'ZOOM`, `'-OSNAP` at the three · match · p320–p333 · transparentCommands.test.ts:28 |
 | F | U, `UNDO 2`, REDO name each run · match · p340–p344 · undoEcho.test.ts:252 (ID) |
@@ -153,6 +164,8 @@ A row the same at every prompt takes one cell. `a`, `b`, `c` are the scratch fol
 | Preselection | DIST, AREA drop it · match · p350, p351; ID keeps it differs IDP-02 · p349; nothing left after · match · p345–p348 |
 | K | match · p302 es, p315 es; ar: interface only |
 | L | match; `ID` echoed for `_ID` is the command line's convention (owned) |
+| G | Escape · match · d05 |
+| Badge | the `?` beside the cursor at DIST's, AREA's and ID's prompts: missing IQD-05 · d01-2, d08-1, e03-1 |
 
 ### Catalog sweep (`--from` MeasureTool.ts, IdTool.ts, runtimeCommands.ts)
 
@@ -160,7 +173,8 @@ A row the same at every prompt takes one cell. `a`, `b`, `c` are the scratch fol
 (31581, p321), `specifyFirstPoint`, `specifyNextPointOr`, `specifyFirstCornerPointOr` (p324);
 `selectObjects`, `allSegmentsUndone`, `commandCompletelyUndone` match their transcripts (p213,
 p241, p152). `no-source` settled: `idReport` (p315), `distanceReport` (p321), `areaReport` (p324),
-`keywordLabels.DIST.Multiple` (p321). The `feedback.measure*` readout keys stay no-source (IQD).
+`keywordLabels.DIST.Multiple` (p321). The `feedback.measure*` readout keys have no source and no
+AutoCAD counterpart (IQD-01): unused once it lands, they stay (template §8.3).
 
 ## Findings
 
@@ -320,6 +334,53 @@ p241, p152). `no-source` settled: `idReport` (p315), `distanceReport` (p321), `a
 - **Fix:** `formatLength` writes a zero result unsigned (INQUIRY-D31). It reaches every report.
 - **Regression test:** `units.test.ts` and the ID report, citing p315, p355.
 
+#### IQD-01 — DIST's and AREA's readout chip and dashed band are invented; AutoCAD shows a solid band and no readout
+
+- **Severity:** medium (a look an AutoCAD user does not recognise) · **Row:** M, P, Q · **Status:** verified
+- **Where:** `MeasureTool.ts` `drawDistance`, `drawRun`, `drawArea`, `pushTick`, `placeAndPushReadout`
+- **AutoCAD:** DIST's second point draws a solid rubber band in the crosshair's white (the trace's
+  `UseDashedLine: false`, p134), no marker at the first point and no readout: with dynamic input, an
+  aligned dimension of the length and the prompt tooltip; with DYNMODE 0 the band alone (d01-1 to
+  d01-3). Multiple points draws the run as a solid polyline to the cursor (d02-1); AREA neither
+  Area nor Perimeter (d03-1 to d03-3). MEASUREGEOM's Distance and Area look the same (d04).
+- **mellowcad:** d/desktop: a dashed `THEME.selected` band, square ticks at each point, a chip
+  `Dist / Angle / ΔX / ΔY / ΔZ` (`Area / Perim` at AREA, `Dist` at Multiple).
+- **Fix:** the band and the run in `THEME.rubberBand`, width 1, solid; no ticks, no chip
+  (INQUIRY-D40). The `feedback.measure*` keys stay, unused.
+- **Regression test:** `inquiry.test.ts`: no label and no dash at DIST's second point, Multiple's
+  next point and AREA's corners, citing d01–d03; the readout tests (`inquiry.test.ts:25` on) go.
+- **Coverage:** "on the readout while the second point is picked", "the live area and perimeter on
+  the readout" are no longer true.
+
+#### IQD-02 — AREA's corners are not filled; AutoCAD fills them translucent green
+
+- **Severity:** medium (in Missing, now settled) · **Row:** I/Q · **Status:** verified
+- **Where:** `MeasureTool.ts` `drawArea`; `cad/scene/theme.ts`
+- **AutoCAD:** the polygon closed through the cursor, filled (25,91,37) over the background's
+  (33,40,48), `#00ff00` at about 24 %, under a solid white outline, with and without dynamic input,
+  in both languages (d03-1 to d03-3, e01-3); MEASUREGEOM's Area the same (d04-2).
+- **mellowcad:** a dashed outline, no fill (d/desktop `d03 fills`).
+- **Fix:** a closed path filled `THEME.measureAreaFill` (`rgba(0, 255, 0, 0.24)`, new) under the
+  `THEME.rubberBand` outline, from the second point (INQUIRY-D41).
+- **Regression test:** `inquiry.test.ts`, the fill at AREA's next point, citing d03-1.
+- **Coverage:** Missing loses "its green fill".
+
+#### IQD-04 — Escape at a prompt a keyword opened ends DIST; AutoCAD goes back to the prompt that opened it
+
+- **Severity:** medium · **Row:** G · **Status:** verified
+- **Where:** `MeasureTool.ts` (the `length` phase; `ArcSegmentInput`'s sub-prompts while `active`)
+- **AutoCAD:** d05 `_DIST 0,0 _M 10,0 _L` Esc → `Specify length of line: *Cancel*`,
+  `Distance = 10.0000`, `Specify next point or [Arc/Close/Length/Undo/Total] <Total>:` again (es
+  `Precise longitud de línea: *Cancelado*`, e01); `_A _S` Esc → `Specify second point on arc:
+  *Cancel*`, `Distance = 10.0000`, the arc's endpoint prompt again; Escape at the arc's endpoint
+  prompt itself cancels the command. AREA's Length goes back the same way (not built here).
+- **mellowcad:** d/desktop: both end the command.
+- **Fix:** `onEscape` (`Tool.ts`) in MeasureTool: at Length, and at an arc sub-prompt
+  (`ArcSegmentInput` exposes whether it is past its endpoint prompt), write `*Cancel*` on the
+  answered line, go back and ask again through `onAskAgain` (INQUIRY-D42). PLINE's own Escape is
+  the PLINE review's and stays.
+- **Regression test:** `inquiry.test.ts`, the two cases and the endpoint's cancel, citing d05.
+
 ### Low
 
 - **DST-06** — Length `0` adds a point of no length; AutoCAD adds none (p115, p162). Fix:
@@ -350,6 +411,14 @@ p241, p152). `no-source` settled: `idReport` (p315), `distanceReport` (p321), `a
   `runtimeCommands.ts:26`, `MeasureTool.ts:553`, `transparentCommands.test.ts:25`,
   `lastPoint.test.ts:27, :123, :484`, `settingsPrompts.test.ts:277`, `inquiry.test.ts:175, :232`
   (its describe says "2026") → p302, p308, p315, p320, p321, p324, p356.
+- **IQD-03** — Multiple points' total is on a chip at the run's end; AutoCAD writes it as the
+  dynamic prompt's first line, `Distance = 45.0546` above `Specify next point or`, the run to the
+  cursor with dimensional input on (d02-1, e02-1, e02-2; the total at the prompt with pointer input
+  alone, e01-1). Fix: a `Tool` hook giving the dynamic prompt a lead line, the run's total to the
+  cursor, which `DynamicInputUi.prompt` carries on a line of its own (INQUIRY-D43).
+- **IQD-05** — No `?` badge beside the cursor at DIST's, AREA's and ID's prompts (d01-2, d08-1,
+  e03-1). Fix: a Missing line, in drafting-aids.md's cursor badges (CURSORBADGE), with a pointer
+  from the entry (INQUIRY-D44).
 - **INQ-08** — `lastPoint.test.ts:466` is titled for a transparent command it never runs;
   `inquiry.test.ts:275` passes by coincidence (both readings give 5, DST-01); the AutoCAD values
   of `inquiry.test.ts:75–163, :476–795` cite no probe.
@@ -376,10 +445,21 @@ p241, p152). `no-source` settled: `idReport` (p315), `distanceReport` (p321), `a
 - **INQUIRY-D33** — ID drops the preselection as DIST and AREA do.
 - **INQUIRY-D34** — A rail entry with an apostrophe macro runs transparently.
 - **INQUIRY-D35** — The `"d"` hint goes.
+- **INQUIRY-D40** — DIST and AREA draw what AutoCAD's do: the rubber band, solid, nothing more; the
+  dimensional input's dimension of the length (d01-1) is the dynamic input's (drafting-aids.md), not
+  DIST's.
+- **INQUIRY-D41** — The fill is `#00ff00` at 24 %, sampled from d03-1, over mellowcad's own
+  background: styling may differ a little, the green must read as AutoCAD's.
+- **INQUIRY-D42** — Escape steps back where AutoCAD's does, through `Tool.onEscape`, as TEXTEDIT's.
+- **INQUIRY-D43** — The run's total to the cursor, as with DYNMODE 3 (AutoCAD's initial value); the
+  pointer-input-only reading is a profile's variant.
+- **INQUIRY-D44** — The `?` badge goes to Missing with the other badges: CURSORBADGE is one feature.
 
 ## Tests proposed
 
-Each finding's regression test above, in `inquiry.test.ts` unless named. Then the untested cells:
+Each finding's regression test above, in `inquiry.test.ts` unless named; IQD's cells that match
+(Escape at every other prompt, `<30` at DIST, ID's `<45` and bare number, Ortho and Polar at AREA's
+and Multiple's next point, d05–d07) in `inquiry.test.ts`, citing their probes. Then the untested cells:
 DIST's LASTPOINT after Multiple, Close and Arc (p121, p154, p155); its typed overrides and tilted UCS
 (p135–p138, p147); ID's Enter, overrides, UCS and units (p303, p310–p317); U, `UNDO 2` and REDO
 after DIST and AREA (`undoEcho.test.ts`, p341–p343); the preselection at each start (p349–p351);
@@ -394,12 +474,8 @@ TypeScript guarantees of the states.
 
 ## What could not be reviewed and why
 
-Desktop only, block IQD: the on-screen feedback of DIST and AREA (mellowcad's readout chip —
-Distance, Angle, ΔX, ΔY, ΔZ; Area, Perimeter — has no source: is it what AutoCAD shows, and is
-AutoCAD's green fill under AREA what MEASUREGEOM shows), the rollover at AREA's `Select objects:`,
-`<a` then a number at DIST and ID (the console's fixed cursor, p134, p309), Ortho and Polar at
-AREA's next point (its trace says `UseBasePoint: false`, the code anchors them at the last point),
-Escape at each prompt and what it leaves selected, the shortcut menus.
+Nothing left: the desktop cells were probed in block IQD (d01–d09, e01–e03). The dynamic input's
+dimension at DIST's second point (d01-1) belongs to drafting-aids.md.
 
 ## Refuted in the adversarial pass
 
@@ -435,7 +511,7 @@ of DIST's second point (p356); `'AREA`'s words (p324); the AREA Object reports b
 2. **DST**: DST-01 to DST-04, DST-06; DST-05, DST-07, DST-08 in the entry. Medium.
 3. **ARE**: ARE-01, ARE-04, ARE-06 (one pick path), ARE-02, ARE-03, ARE-08, ARE-10, ARE-12;
    ARE-05, ARE-07 in the entry. Medium.
-4. **IQD**: a desktop session with the owner's mouse; its findings, if any, a block of their own.
+4. **IQD**: IQD-01 and IQD-02 (one drawing path), IQD-04, IQD-03, IQD-05 in the docs. Small.
 
 ## Changes to coverage, rules, catalogs and roadmap
 
@@ -444,6 +520,9 @@ of DIST's second point (p356); `'AREA`'s words (p324); the AREA Object reports b
 - `cad/locales/{en,es,ar}.json`: `polylineWidthIgnored` (ARE-08).
 - `cad-runtime.md`: the rail's apostrophe macros run transparently whatever the command (INQ-04).
 - The roadmap: Inquiry `plan`, then `done`; COB-03 closed; LIST's analogues left for LIST.
+- IQD: `inquiry.md` loses the readout and Missing's green fill, gains Escape's step back and the
+  run's total in the dynamic prompt; `drafting-aids.md`'s cursor badges gain the inquiry's `?`;
+  `cad/scene/theme.ts` gains `measureAreaFill`.
 
 ## Template improvements
 
