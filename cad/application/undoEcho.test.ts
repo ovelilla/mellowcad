@@ -255,6 +255,60 @@ describe("a command that changed nothing is a step U names", () => {
     expect(cad.entityCount).toBe(1)
   })
 
+  // probes inquiry/p340 es, p341, p342, p344
+  it("U names ID, DIST and AREA, and REDO puts ID back", () => {
+    for (const [run, name] of [
+      [["_DIST", "0,0", "3,4"], "DIST"],
+      [["_AREA", "0,0", "10,0", "10,10", ""], "AREA"],
+    ] as const) {
+      const cad = answer(createHarness(), ...LINE, ...run)
+      expect(written(cad, "_U")).toEqual(["U", name])
+      expect(cad.entityCount).toBe(1)
+    }
+    const cad = answer(createHarness(), ...LINE, "_ID", "5,5")
+    expect(written(cad, "_U", "_REDO")).toEqual([
+      "U",
+      "ID",
+      "REDO",
+      "ID",
+      "Everything has been redone",
+    ])
+    const spanish = answer(createHarness({ locale: es }), ...LINE, "_ID", "5,5")
+    expect(written(spanish, "_U")).toEqual(["H", "ID"])
+  })
+
+  // probe inquiry/p343
+  it("UNDO 2 and REDO name the inquiries in turn", () => {
+    const cad = answer(
+      createHarness(),
+      ...LINE,
+      "_ID",
+      "5,5",
+      "_DIST",
+      "0,0",
+      "3,4",
+      "_AREA",
+      "0,0",
+      "10,0",
+      "10,10",
+      ""
+    )
+    expect(written(cad, "_UNDO", "2", "_REDO", "_U", "_U")).toEqual([
+      "UNDO",
+      "Current settings: Auto = On, Control = All, Combine = Yes, Layer = Yes",
+      "Enter the number of operations to undo or [Auto/Control/BEgin/End/Mark/Back] <1>: 2",
+      "AREA DIST",
+      "REDO",
+      "DIST AREA",
+      "Everything has been redone",
+      "U",
+      "AREA",
+      "U",
+      "DIST",
+    ])
+    expect(cad.entityCount).toBe(1)
+  })
+
   it("U takes back an ERASE of nothing, BORRA in Spanish (move/p07)", () => {
     const cad = answer(createHarness(), ...LINE, "_ERASE", "")
     expect(written(cad, "_U")).toEqual(["U", "ERASE"])

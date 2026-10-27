@@ -1026,6 +1026,10 @@ export class CadRuntime extends Observable {
       return
     }
     const command = next.ribbonMacro?.()?.command ?? TOOL_COMMANDS[id]
+    if (next.transparentMacro && command !== undefined) {
+      this.runTransparentMacro(command)
+      return
+    }
     // A command that no longer starts its tool (INSERT opens the Blocks
     // palette, the tool being -INSERT's) runs as its button's macro does.
     const definition = command && this.commands.get(command)
@@ -1034,6 +1038,20 @@ export class CadRuntime extends Observable {
       return
     }
     this.startEchoed(id, command ?? id, command)
+  }
+
+  /**
+   * A button whose macro is `'_id `: inside the running command as if typed
+   * so, else the command itself, echoed as the macro is.
+   */
+  private runTransparentMacro(command: string): void {
+    const typed = `'_${command}`
+    const echo = `'_${command.toLowerCase()}`
+    const started =
+      this.activeTool.id === "select"
+        ? this.runCommandAs(typed, { echo })
+        : this.runTransparently(typed, false, echo)
+    if (started) this.host.focusSurface()
   }
 
   /**
@@ -1465,16 +1483,23 @@ export class CadRuntime extends Observable {
 
   /**
    * Runs `typed` (`'ZOOM`) inside the running command, or refuses it there.
-   * `clear`: what was typed in the box was this answer, so it goes.
+   * `clear`: what was typed in the box was this answer, so it goes; `given`:
+   * the echo of a macro, as it runs.
    */
-  private runTransparently(typed: string, clear: boolean): boolean {
+  private runTransparently(
+    typed: string,
+    clear: boolean,
+    given?: string
+  ): boolean {
     const named = this.commandNamed(typed)
     const variable = named?.transparent ? undefined : this.variableNamed(typed)
     const command = variable ?? named
     if (!command) return false
-    const echo = variable
-      ? this.text.transparentCommand(variable.id)
-      : this.commandEcho(typed, command)
+    const echo =
+      given ??
+      (variable
+        ? this.text.transparentCommand(variable.id)
+        : this.commandEcho(typed, command))
     return this.answering(echo, () => {
       if (
         command.transparent &&
@@ -1507,10 +1532,11 @@ export class CadRuntime extends Observable {
 
   /**
    * The system variable `typed` names, an apostrophe before it or not: by
-   * its own name in every language, never `_` and a global one.
+   * its own name in every language, `_` before it or not (`'_AREA`, probes
+   * inquiry/p325, p359).
    */
   private variableNamed(typed: string): CommandDefinition | undefined {
-    return this.variables.get(bareCommand(typed))
+    return this.variables.get(bareCommand(typed).replace(/^_/, ""))
   }
 
   /** A coordinate with a Z or `*` typed where the tool asks a 2D point. */

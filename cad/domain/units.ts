@@ -181,7 +181,10 @@ export function formatLength(
   value: number,
   settings: DocumentSettings
 ): string {
-  return value.toFixed(settings.precision)
+  const text = value.toFixed(settings.precision)
+  // AutoCAD writes a value that rounds to zero unsigned, where toFixed keeps
+  // the sign: -0.00004 is 0.0000 (inquiry/p315), -0.4 at LUPREC 0 is 0 (p355).
+  return /^-0(\.0*)?$/.test(text) ? text.slice(1) : text
 }
 
 /**

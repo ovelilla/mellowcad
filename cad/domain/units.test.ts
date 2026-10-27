@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import {
   DEFAULT_DOCUMENT_SETTINGS,
+  formatLength,
   parseAngleDegrees,
   parseDecimalNumber,
   parseNumber,
@@ -11,6 +12,22 @@ describe("DEFAULT_DOCUMENT_SETTINGS", () => {
     // probe line/p204: a new drawing's LWDISPLAY is 0. On here because there
     // are no layouts or plotting to see them in (docs/coverage/properties.md).
     expect(DEFAULT_DOCUMENT_SETTINGS.lwDisplay).toBe(true)
+  })
+})
+
+describe("formatLength", () => {
+  it("writes a value that rounds to zero unsigned", () => {
+    const at = (precision: number) => ({
+      ...DEFAULT_DOCUMENT_SETTINGS,
+      precision,
+    })
+    // probe inquiry/p315: -0.00004 at LUPREC 4 is 0.0000
+    expect(formatLength(-0.00004, at(4))).toBe("0.0000")
+    expect(formatLength(-0, at(4))).toBe("0.0000")
+    // probe inquiry/p355: LUPREC 0 writes -0.4 as 0, -2.5 as -3
+    expect(formatLength(-0.4, at(0))).toBe("0")
+    expect(formatLength(-2.5, at(0))).toBe("-3")
+    expect(formatLength(-2.25, at(4))).toBe("-2.2500")
   })
 })
 

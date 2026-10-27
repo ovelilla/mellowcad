@@ -168,7 +168,8 @@ in AutoCAD's console** (`>>` prompts, or `** That command may not be invoked tra
 new "end everything" path calls `endCommands`, not `returnToNeutralTool`, which only resumes. A
 change AutoCAD regenerates for is `ctx.regenerate()`, never a `regeneratingModel` report: run
 transparently it is `Regen queued.`. A button whose macro starts with an apostrophe runs through
-`navigate` (the same `runTransparently`), never `setActiveTool`, which ends the running command.
+`runTransparently` (`navigate`; a rail tool says `transparentMacro`), never a plain start, which
+ends the running command.
 
 ## Selection cycling
 

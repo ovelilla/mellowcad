@@ -275,9 +275,11 @@ describe("AUPREC asks as AutoCAD 2026", () => {
   })
 })
 
-// AutoCAD 2023's console (acc/sv1.txt, tr/area.txt, tr/ucsicon.txt): with an
-// apostrophe AREA and UCSICON name their system variables, not the commands.
+// AutoCAD's console (AREA 2027's, probes inquiry/p324, p325, p359; UCSICON
+// 2023's, acc/sv1.txt, tr/ucsicon.txt): with an apostrophe AREA and UCSICON
+// name their system variables, not the commands.
 describe("'AREA and 'UCSICON read and set their system variables", () => {
+  // probe inquiry/p324
   it("reads AREA, the last area AREA measured, at a prompt and at the Command prompt", () => {
     const cad = createHarness()
     answer(cad, "'AREA", "AREA", "0,0", "10,0", "10,10", "")
@@ -295,6 +297,21 @@ describe("'AREA and 'UCSICON read and set their system variables", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "LINE Specify next point or [Undo]:"
     )
+  })
+
+  // probes inquiry/p359 (Command:), p325 (LINE), en-US and es-ES
+  it("reads AREA by its global name too, at the Command prompt and at LINE's", () => {
+    for (const [locale, readOnly, resuming] of [
+      [undefined, "AREA = 0.00 (read only)", "Resuming LINE command."],
+      [es, "AREA = 0.00 (sólo lectura)", "Reanudando el comando LINEA."],
+    ] as const) {
+      const cad = createHarness({ locale })
+      answer(cad, "'_AREA")
+      expect(cad.commandLog()).toEqual(["'AREA", readOnly])
+      answer(cad, "_LINE", "0,0", "'_AREA")
+      expect(cad.commandLog().slice(-2)).toEqual([readOnly, resuming])
+      expect(cad.activeToolId()).toBe("line")
+    }
   })
 
   it("sets UCSICON from 0 to 3, the icon shown and at the origin", () => {

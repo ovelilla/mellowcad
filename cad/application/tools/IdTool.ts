@@ -14,11 +14,15 @@ import { PointerInput, Tool, ToolContext } from "./Tool"
  */
 export class IdTool implements Tool {
   readonly id = "id"
+  readonly transparentMacro = true
 
   private lastScreen: Vec2 | null = null
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
+    // AutoCAD drops a preselection as ID starts, as DIST and AREA do (probe
+    // inquiry/p349).
+    ctx.selection.clear()
     ctx.dynamicInput.open({
       fields: [{ id: "point", prompt: "idPoint", kind: "coordinate" }],
       commit: () => {},

@@ -158,7 +158,7 @@ export function defaultTools(
     new CopyClipTool("cut", "cutclip"),
     new CopyClipTool("base", "copybase"),
     paste,
-    new MeasureTool("distance", "measure", "d"),
+    new MeasureTool("distance", "measure"),
     new MeasureTool("area", "measurearea"),
     new IdTool(),
     new ZoomTool(),

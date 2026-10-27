@@ -5032,7 +5032,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   options: [O] Object
   prompt| Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: ZA
 > origin
-  prompt: UCS Specify point on positive portion of Z-axis <-0.00,0.00,1.00>:
+  prompt: UCS Specify point on positive portion of Z-axis <0.00,0.00,1.00>:
   asks: "Specify point on positive portion of Z-axis"
   tip: Specify point on positive portion of Z-axis
   options: -
@@ -5044,7 +5044,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   asks: -
   tip: -
   dyn: -
-  prompt| Specify point on positive portion of Z-axis <-0.00,0.00,1.00>: @1,0,0
+  prompt| Specify point on positive portion of Z-axis <0.00,0.00,1.00>: @1,0,0
 > UCS ZA O
   prompt: UCS Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
   asks: "Specify origin of UCS or"

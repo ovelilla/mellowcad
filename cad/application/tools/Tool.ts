@@ -512,6 +512,11 @@ export interface Tool {
    */
   ribbonMacro?(): RibbonMacro | null
   /**
+   * Its button's macro starts with an apostrophe (acad.cuix's `'_id `): the
+   * rail runs it inside a running command, as if typed so, never ending it.
+   */
+  readonly transparentMacro?: boolean
+  /**
    * The system variable the tool sets (AUPREC): it heads the prompt as it
    * is named in every language, and AutoCAD resumes it as SETVAR.
    */

@@ -22,9 +22,11 @@ function lineThen(cad: CadHarness, ...texts: string[]): CadHarness {
   return cad
 }
 
-// AutoCAD 2023's console typing each at LINE's `Specify next point or
-// [Undo]:`; the reports a transparent command writes are not headed `>>`.
+// AutoCAD's console typing each at LINE's `Specify next point or [Undo]:`
+// (2023's; DIST and ID 2027's); the reports a transparent command writes are
+// not headed `>>`.
 describe("the other commands AutoCAD runs transparently", () => {
+  // probes inquiry/p321, p320
   it("measures with DIST and ID, and LINE goes on from its own point", () => {
     const cad = lineThen(cad0(), "'DIST", "0,0", "3,4")
     expect(cad.commandLog().slice(-5)).toEqual([
@@ -606,6 +608,35 @@ describe("a transparent command", () => {
     cad.escape()
     cad.runtime.navigate("ZOOM", "W")
     expect(cad.state().commandLine.prompt).toBe("ZOOM Specify first corner:")
+  })
+
+  // acad.cuix (en-us, es-es) ID_Id is `'_id `: the rail's ID runs inside
+  // LINE as `'_ID` typed there does (probe inquiry/p320).
+  it("is what the rail's ID runs, LINE resuming from its own point", () => {
+    const cad = createHarness()
+    cad.command("LINE").click(p(0, 0))
+    cad.tool("id")
+    expect(cad.activeToolId()).toBe("id")
+    expect(cad.state().commandLine.prompt).toBe("'ID >>Specify point:")
+    answerLine(cad, "10,10")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Specify next point or [Undo]: '_id",
+      ">>Specify point: 10,10",
+      " X = 10.00     Y = 10.00     Z = 0.00",
+      "Resuming LINE command.",
+    ])
+    expect(cad.activeToolId()).toBe("line")
+    answerLine(cad, "@5,0")
+    expect(cad.entities()[0]).toMatchObject({ end: { x: 5, y: 0 } })
+    cad.escape()
+
+    cad.tool("id")
+    expect(cad.commandLog().at(-1)).toBe("'_id")
+    answerLine(cad, "1,2")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify point: 1,2",
+      " X = 1.00     Y = 2.00     Z = 0.00",
+    ])
   })
 
   it("asks and resumes in Spanish", () => {

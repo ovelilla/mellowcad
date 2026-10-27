@@ -24,7 +24,8 @@ function lastPoint(cad: CadHarness): string | undefined {
   return cad.commandLog().at(-1)
 }
 
-// AutoCAD 2023's console, each command followed by ID @ (acc/lp1–lp7.txt).
+// AutoCAD's console, each command followed by ID @ (2023's, acc/lp1–lp7.txt;
+// ID, DIST and AREA 2027's, probes inquiry/p320–p323, p332, p356).
 describe("LASTPOINT", () => {
   it("starts at 0,0,0, and `@` at a first point is from it", () => {
     const cad = createHarness()
@@ -121,6 +122,7 @@ describe("LASTPOINT", () => {
     expect(lastPoint(cad)).toBe(" X = 30.00     Y = 0.00     Z = 0.00")
   })
 
+  // DIST's second point: probe inquiry/p356
   it("is not a window's corner, nor DIST's second point, nor a copy's", () => {
     const cad = createHarness({ entities: [lineOf(p(1, 1), p(2, 2))] })
     answer(cad, "ID", "7,8", "ZOOM", "W", "0,0", "50,50")
@@ -241,10 +243,21 @@ describe("LASTPOINT", () => {
     expect(lastPoint(cad)).toBe(" X = 3.00     Y = 3.00     Z = 0.00")
   })
 
+  // probes inquiry/p332, p320 ('ID), p321 ('DIST)
   it("is kept for the command a transparent one interrupts", () => {
     const cad = createHarness()
-    answer(cad, "LINE", "0,0", "'ID", "5,6", "")
-    expect(lastPoint(cad)).toBe(" X = 0.00     Y = 0.00     Z = 0.00")
+    answer(cad, "LINE", "0,0", "'ID", "@")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      ">>Specify point: @",
+      " X = 0.00     Y = 0.00     Z = 0.00",
+      "Resuming LINE command.",
+    ])
+    answer(cad, "'ID", "10,10", "@5,0", "")
+    expect(cad.entities().at(-1)).toMatchObject({
+      start: { x: 0, y: 0 },
+      end: { x: 5, y: 0 },
+    })
+    expect(lastPoint(cad)).toBe(" X = 5.00     Y = 0.00     Z = 0.00")
     answer(cad, "LINE", "1,1", "'DIST", "", "4,5")
     expect(cad.commandLog().slice(-2)).toEqual([
       "Distance = 5.00,  Angle in XY Plane = 53,  Angle from XY Plane = 0\nDelta X = 3.00,  Delta Y = 4.00,   Delta Z = 0.00",
@@ -252,6 +265,22 @@ describe("LASTPOINT", () => {
     ])
     answer(cad, "'ZOOM", "W", "100,100", "150,150", "@1,0", "")
     expect(cad.entities().at(-1)).toMatchObject({ end: { x: 2, y: 1 } })
+  })
+
+  // probes inquiry/p322, p323
+  it("is CIRCLE's centre after a transparent ID or DIST at its radius", () => {
+    for (const between of [
+      ["'ID", "10,0"],
+      ["'DIST", "0,0", "3,4"],
+    ]) {
+      const cad = answer(createHarness(), "CIRCLE", "0,0", ...between, "5")
+      expect(cad.commandLog().slice(-2)).toEqual([
+        "Resuming CIRCLE command.",
+        "Specify radius of circle or [Diameter]: 5",
+      ])
+      expect(cad.only<CircleEntity>("circle").radius).toBe(5)
+      expect(lastPoint(cad)).toBe(" X = 0.00     Y = 0.00     Z = 0.00")
+    }
   })
 
   it("is the new UCS's origin once the UCS changes", () => {
@@ -488,11 +517,11 @@ describe("LASTPOINT", () => {
   })
 })
 
-// AutoCAD 2023's console (acc/dd1–dd23), LINE's first point again in 2027's
-// (probe line/p159): a number typed for a point is a direct distance from
-// LASTPOINT, or the prompt's base, towards the cursor. The console's cursor
-// stands where `100` from 10,0 gives 102.3493,38.3614; p159 to p161 put it at
-// 289.98397,116.30379.
+// AutoCAD 2023's console (acc/dd1–dd23), LINE's first point and ID's again
+// in 2027's (probes line/p159, inquiry/p308): a number typed for a point is a
+// direct distance from LASTPOINT, or the prompt's base, towards the cursor.
+// The console's cursor stands where `100` from 10,0 gives 102.3493,38.3614;
+// p159 to p161 put it at 289.98397,116.30379.
 describe("A number typed for a point", () => {
   const CURSOR = p(102.3493, 38.3614)
   const CONSOLE = p(289.98397, 116.30379)

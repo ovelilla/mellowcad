@@ -51,10 +51,10 @@ two points picked or typed (one without a Z at the current elevation), the 3D di
 and from the UCS's XY plane (0–360, as AutoCAD prints them) and ΔX / ΔY / ΔZ in the UCS, on the
 readout while the second point is picked and then at the command prompt in AutoCAD's words
 (`Distance = …,  Angle in XY Plane = …,  Angle from XY Plane = …` /
-`Delta X = …,  Delta Y = …,   Delta Z = …`), and the command ends, as DIST does; `'AREA`, at the
-Command prompt or mid-command, reads the AREA system variable, the last area AREA measured in the
-session: `AREA = 50.00 (read only)` (es `AREA = 50.00 (sólo lectura)`), as AutoCAD 2023's console
-does
+`Delta X = …,  Delta Y = …,   Delta Z = …`), and the command ends, as DIST does; `'AREA` or
+`'_AREA`, at the Command prompt or mid-command, reads the AREA system variable, the last area AREA
+measured in the session: `AREA = 50.00 (read only)` (es `AREA = 50.00 (sólo lectura)`), as AutoCAD
+2027's console does (p324, p325, p359)
 
 **Missing:** pick-an-existing-object modes, Radius, Angle, Volume, Arc and Length at its next point
 and its green fill, an object at an angle to the UCS (not highlighted here; AutoCAD says
@@ -67,6 +67,9 @@ cursor, p145: degrees here, until the desktop shows it), the Spanish report in t
 ### `ID` · es `ID`
 
 **Implemented:** `Specify point:` (es `Precise punto`; `Invalid point.`), picked, snapped or typed,
-then ` X = …     Y = …     Z = …` (one space ahead, as AutoCAD 2023's console writes it) in the
-current UCS at the command prompt; the Z is the object's with an object snap and the elevation
-plane's otherwise
+then ` X = …     Y = …     Z = …` (one space ahead, a value that rounds to zero unsigned, as AutoCAD
+2027's console writes it, p315, p355) in the current UCS at the command prompt (p316, p317); the Z
+is the object's with an object snap and the elevation plane's otherwise (p313); Enter ends it
+without a word (p303); a preselection is dropped as it starts, as DIST and AREA drop it (p349–p351);
+the rail's ID is its button's macro `'_id`, run inside a running command as `'ID` typed there
+(acad.cuix, p320)

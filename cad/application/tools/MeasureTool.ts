@@ -33,7 +33,6 @@ import {
   isCoordinateExpression,
   parseCoordinate,
 } from "../input/coordinateInput"
-import { entityScenePrimitive } from "../SceneBuilder"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -45,6 +44,7 @@ import {
   ToolQuestion,
 } from "./Tool"
 import { lastObject } from "./objectSelection"
+import { rollover } from "./ghostLook"
 import type { PromptId } from "../../locales/types"
 import { ARC_SEGMENT_OPTIONS, ArcSegmentInput } from "./arcSegmentInput"
 import { lastDrawnDirection } from "./lastDrawnPoint"
@@ -121,8 +121,7 @@ interface Measurement {
 export class MeasureTool implements Tool {
   constructor(
     private readonly mode: MeasureMode,
-    readonly id: string,
-    readonly shortcut?: string
+    readonly id: string
   ) {}
 
   private state: MeasureState = { phase: "first" }
@@ -552,7 +551,8 @@ export class MeasureTool implements Tool {
 
   /**
    * DIST's second point keeps LASTPOINT at its first, where Multiple
-   * points' set it, as AutoCAD 2023's console shows.
+   * points' set it, as AutoCAD 2027's console shows (probes inquiry/p356,
+   * p358).
    */
   setsLastPoint(): boolean | null {
     if (this.state.phase === "second") return false
@@ -901,12 +901,7 @@ export class MeasureTool implements Tool {
       this.drawArea(out, ctx, this.state.points, this.state.cursor, settings)
     }
     if (this.state.phase === "areaObject" && this.state.hover) {
-      out.push(
-        ...entityScenePrimitive(ctx.viewport, this.state.hover, {
-          color: THEME.selected,
-          width: 2,
-        })
-      )
+      out.push(...rollover(ctx, this.state.hover))
     }
     return out
   }

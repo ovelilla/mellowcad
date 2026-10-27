@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { withElevation } from "../../domain/entities"
 import type { ScenePrimitive } from "../../scene/types"
+import { THEME } from "../../scene/theme"
 import { createHarness, type CadHarness } from "../../../test/harness"
 import { circleOf, lineOf, p, polylineOf } from "../../../test/builders"
 import { es } from "../../locales/es"
@@ -146,6 +147,7 @@ describe("ID", () => {
     expect(cad.entityCount).toBe(0)
   })
 
+  // probe inquiry/p313
   it("takes the Z of the object snapped to, and the elevation otherwise", () => {
     const raised = withElevation(lineOf(p(0, 0), p(100, 0)), 10)
     const cad = createHarness({ entities: [raised], snap: true })
@@ -161,6 +163,88 @@ describe("ID", () => {
       " X = 50.00     Y = 80.00     Z = 4.00"
     )
   })
+
+  // probe inquiry/p303
+  it("ends at Enter without a word", () => {
+    const cad = createHarness()
+    answer(cad, "_ID", "")
+    expect(cad.commandLog()).toEqual(["ID", "Specify point:"])
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  // probes inquiry/p310, p311, p312
+  it("takes an object snap typed at its prompt", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0)), circleOf(p(50, 50), 20)],
+    })
+    const reports = (...texts: string[]) =>
+      answer(cad, "_ID", ...texts)
+        .commandLog()
+        .at(-1)
+    expect(reports("_END", "99,1")).toBe(
+      " X = 100.00     Y = 0.00     Z = 0.00"
+    )
+    expect(reports("_MID", "49,1")).toBe(" X = 50.00     Y = 0.00     Z = 0.00")
+    expect(reports("_CEN", "70,50")).toBe(
+      " X = 50.00     Y = 50.00     Z = 0.00"
+    )
+    expect(reports("_NEA", "50,71")).toBe(
+      " X = 50.00     Y = 70.00     Z = 0.00"
+    )
+    expect(reports("_FRO", "10,10", "@5,5")).toBe(
+      " X = 15.00     Y = 15.00     Z = 0.00"
+    )
+  })
+
+  // probes inquiry/p316 (UCS Z 30), p317 (UCS X 90), at LUPREC 4
+  it("reports in a rotated and in a tilted UCS", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+    cad.runtime.setDocumentPrecision(4)
+    answer(cad, "_UCS", "_Z", "30", "_ID", "10,0", "_ID", "_END", "*99,1")
+    expect(cad.commandLog().filter((line) => line.startsWith(" X"))).toEqual([
+      " X = 10.0000     Y = 0.0000     Z = 0.0000",
+      " X = 86.6025     Y = -50.0000     Z = 0.0000",
+    ])
+    answer(cad, "_UCS", "_W", "_UCS", "_X", "90", "_ID", "10,20")
+    answer(cad, "_ID", "*10,20,5")
+    expect(cad.commandLog().slice(-5)).toEqual([
+      "Specify point: 10,20",
+      " X = 10.0000     Y = 20.0000     Z = 0.0000",
+      "ID",
+      "Specify point: *10,20,5",
+      " X = 10.0000     Y = 5.0000     Z = -20.0000",
+    ])
+  })
+
+  it("writes a value that rounds to zero unsigned", () => {
+    const cad = createHarness()
+    // probe inquiry/p315, LUPREC 4
+    cad.runtime.setDocumentPrecision(4)
+    answer(cad, "_ID", "1.5,-2.25,3", "_ID", "12345.6789,-0.00004")
+    // probe inquiry/p355, LUPREC 0: half rounds away from zero
+    cad.runtime.setDocumentPrecision(0)
+    answer(cad, "_ID", "12.5,30,-3", "_ID", "0.2,-0.4", "_ID", "13.5,-2.5")
+    expect(cad.commandLog().filter((line) => line.startsWith(" X"))).toEqual([
+      " X = 1.5000     Y = -2.2500     Z = 3.0000",
+      " X = 12345.6789     Y = 0.0000     Z = 0.0000",
+      " X = 13     Y = 30     Z = -3",
+      " X = 0     Y = 0     Z = 0",
+      " X = 14     Y = -3     Z = 0",
+    ])
+  })
+
+  // probes inquiry/p349 (ID), p350 (DIST), p351 (AREA): `(ssget "_I")` at
+  // the first prompt finds no set.
+  it("drops a preselection as it starts, as DIST and AREA do", () => {
+    for (const command of ["_ID", "_DIST", "_AREA"]) {
+      const cad = createHarness({
+        entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+      })
+      cad.select("A")
+      answer(cad, command)
+      expect(cad.selectedIds()).toEqual([])
+    }
+  })
 })
 
 /** Typed at the command line and confirmed, as AutoCAD's prompt reads it. */
@@ -172,8 +256,9 @@ function answer(cad: CadHarness, ...texts: string[]): CadHarness {
   return cad
 }
 
-// AutoCAD 2023's console answering the same input.
-describe("DIST and ID ask as AutoCAD 2026", () => {
+// AutoCAD 2027's console answering the same input.
+describe("DIST and ID ask as AutoCAD 2027", () => {
+  // probes inquiry/p107, p108, p111
   it("DIST asks its two points, and Enter at the second measures to the first", () => {
     const cad = createHarness()
     cad.command("DIST")
@@ -198,6 +283,7 @@ describe("DIST and ID ask as AutoCAD 2026", () => {
     ])
   })
 
+  // probe inquiry/p302
   it("ID asks its point and refuses what is none", () => {
     const cad = createHarness()
     cad.command("ID")
@@ -211,6 +297,7 @@ describe("DIST and ID ask as AutoCAD 2026", () => {
     ])
   })
 
+  // probes inquiry/p100 es, p302 es
   it("asks in Autodesk's Spanish", () => {
     const cad = createHarness({ locale: es })
     cad.command("DIST")
@@ -229,8 +316,8 @@ describe("DIST and ID ask as AutoCAD 2026", () => {
   })
 })
 
-// AutoCAD 2023's console, the same input: the run so far before each next
-// point, Arc left out (not built).
+// AutoCAD 2027's console, the same input (probes inquiry/p112, p115, p118,
+// p120): the run so far before each next point.
 describe("DIST's Multiple points", () => {
   it("adds up the run, says it again after a refusal and undoes a point", () => {
     const cad = createHarness()
@@ -540,6 +627,21 @@ describe("AREA", () => {
       "Area = 78.54, Circumference = 31.42",
     ])
     expect(cad.activeToolId()).toBe("select")
+  })
+
+  // cad-tools.md "Pick feedback": a single object's pick wears the rollover
+  it("rolls over the object under the cursor at Object's prompt", () => {
+    const cad = createHarness({ entities: [circleOf(p(50, 50), 20)] })
+    cad.command("AREA").enter().moveTo(p(70, 50))
+    const strokes = cad
+      .scene()
+      .primitives.flatMap((primitive) =>
+        "stroke" in primitive && primitive.stroke
+          ? [`${primitive.stroke.color}/${primitive.stroke.width}`]
+          : []
+      )
+    expect(strokes).toContain(`${THEME.entityHover}/2`)
+    expect(strokes).not.toContain(`${THEME.selected}/2`)
   })
 
   it("closes an open curve and reports its length, as AutoCAD's does", () => {
