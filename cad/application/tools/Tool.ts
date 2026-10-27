@@ -669,9 +669,18 @@ export interface Tool {
    * Escape steps back inside the command instead of ending it: `true` when
    * the tool took it so, and the command goes on with no `*Cancel*`
    * (TEXTEDIT's single-line editor drops its edit and asks for the next
-   * object, desktop text/d06-6).
+   * object, desktop text/d06-6); `"cancelled"` when the prompt it leaves is
+   * written answered `*Cancel*` first, ahead of what the step back says (DIST
+   * at Length, desktop inquiry/d05).
    */
-  onEscape?(ctx: ToolContext): boolean
+  onEscape?(ctx: ToolContext): boolean | "cancelled"
+
+  /**
+   * A line the dynamic prompt shows above the question, which moves with the
+   * cursor: DIST's Multiple points' `Distance = 45.0546` above `Specify next
+   * point or` (desktop inquiry/d02-1, e02-1). Null for none.
+   */
+  dynamicPromptLead?(ctx: ToolContext): string | null
 
   /**
    * Handles Enter as a command confirmation while the canvas holds focus.

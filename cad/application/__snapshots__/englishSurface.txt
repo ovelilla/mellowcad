@@ -4384,17 +4384,14 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   asks: "Second point"
   tip: Specify second point or
   options: [M] Multiple points
-  canvas: "Dist  0.00 mm" "Angle 0°" "ΔX    0.00" "ΔY    0.00" "ΔZ    0.00"
   prompt| Specify first point:
 > move
-  canvas: "Dist  500.00 mm" "Angle 53°" "ΔX    300.00" "ΔY    400.00" "ΔZ    0.00"
 > second
   prompt: Command:
   asks: -
   tip: -
   dyn: -
   options: -
-  canvas: -
   prompt| Specify second point or [Multiple points]:
   info| Distance = 500.00,  Angle in XY Plane = 53,  Angle from XY Plane = 0
         Delta X = 300.00,  Delta Y = 400.00,   Delta Z = 0.00
@@ -4409,7 +4406,6 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   asks: "Second point"
   tip: Specify second point or
   options: [M] Multiple points
-  canvas: "Dist  500.00 mm" "Angle 53°" "ΔX    300.00" "ΔY    400.00" "ΔZ    0.00"
   prompt| Specify first point: 0,0
 > typed second
   prompt: Command:
@@ -4417,7 +4413,6 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: -
   dyn: -
   options: -
-  canvas: -
   prompt| Specify second point or [Multiple points]: @30,40,120
   info| Distance = 130.00,  Angle in XY Plane = 53,  Angle from XY Plane = 67
         Delta X = 30.00,  Delta Y = 40.00,   Delta Z = 120.00
@@ -4427,35 +4422,35 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: Specify second point or
   dyn: "X,Y"=""||*
   options: [M] Multiple points
-  canvas: "Dist  0.00 mm" "Angle 0°" "ΔX    0.00" "ΔY    0.00" "ΔZ    0.00"
   command| DIST
   prompt| Specify first point:
 > Multiple
   prompt: DIST Specify next point or [Arc/Length/Undo/Total] <Total>:
   tip: Specify next point or
   options: [A] Arc, [L] Length, [U] Undo, [T] Total
-  canvas: "Dist  0.00 mm"
   prompt| Specify second point or [Multiple points]: M
 > next
   prompt: DIST Specify next point or [Arc/Close/Length/Undo/Total] <Total>:
+  tip: Distance = 300.00
+Specify next point or
   options: [A] Arc, [C] Close, [L] Length, [U] Undo, [T] Total
-  canvas: "Dist  300.00 mm"
   prompt| Specify next point or [Arc/Length/Undo/Total] <Total>:
   info| Distance = 300.00
 > Length
   prompt: DIST Specify length of line:
   asks: "Length"
-  tip: Specify length of line:
+  tip: Distance = 300.00
+Specify length of line:
   dyn: "Length"=""||mm*
   options: -
   prompt| Specify next point or [Arc/Close/Length/Undo/Total] <Total>: L
 > length
   prompt: DIST Specify next point or [Arc/Close/Length/Undo/Total] <Total>:
   asks: "Second point"
-  tip: Specify next point or
+  tip: Distance = 500.00
+Specify next point or
   dyn: "X,Y"=""||*
   options: [A] Arc, [C] Close, [L] Length, [U] Undo, [T] Total
-  canvas: "Dist  500.00 mm"
   prompt| Specify length of line: 100
   info| Distance = 400.00
 > Total
@@ -4464,7 +4459,6 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: -
   dyn: -
   options: -
-  canvas: -
   prompt| Specify next point or [Arc/Close/Length/Undo/Total] <Total>:
   info| Distance = 400.00
 > AREA
@@ -4479,23 +4473,17 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   asks: "Second point"
   tip: Specify next point or
   options: [U] Undo
-  canvas: "Area  0.00 mm²" "Perim 0.00 mm"
   prompt| Specify first corner point or [Object/Add area/Subtract area] <Object>:
 > second
-  canvas: "Area  0.00 mm²" "Perim 200.00 mm"
   prompt| Specify next point or [Undo]:
 > move
-  canvas: "Area  5000.00 mm²" "Perim 341.42 mm"
 > U
-  canvas: "Area  0.00 mm²" "Perim 282.84 mm"
   prompt| Specify next point or [Undo]: U
 > second
-  canvas: "Area  0.00 mm²" "Perim 200.00 mm"
   prompt| Specify next point or [Undo]:
 > third
   prompt: AREA Specify next point or [Undo/Total] <Total>:
   options: [U] Undo, [T] Total
-  canvas: "Area  5000.00 mm²" "Perim 341.42 mm"
   prompt| Specify next point or [Undo]:
 > enter
   prompt: Command:
@@ -4503,7 +4491,6 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: -
   dyn: -
   options: -
-  canvas: -
   prompt| Specify next point or [Undo/Total] <Total>:
   info| Area = 5000.00, Perimeter = 341.42
 > AREA Object

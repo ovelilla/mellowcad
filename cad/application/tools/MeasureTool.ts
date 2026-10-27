@@ -18,16 +18,11 @@ import {
   segmentExitTangent,
   tangentArcBulge,
 } from "../../geometry/bulgeArcs"
-import {
-  DocumentSettings,
-  formatAngle,
-  formatLength,
-  unitSuffix,
-} from "../../domain/units"
+import { formatAngle, formatLength } from "../../domain/units"
 import { Ucs, worldDirectionToUcs } from "../../domain/ucs"
 import { Entity, isWidePolyline, readsInPlan } from "../../domain/entities"
 import { objectArea } from "../../domain/objectArea"
-import { ScenePrimitive } from "../../scene/types"
+import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import {
   isCoordinateExpression,
@@ -51,19 +46,18 @@ import { lastDrawnDirection } from "./lastDrawnPoint"
 import { typedPick } from "./typedPick"
 
 /**
- * MEASURE (AutoCAD's DIST and AREA). Creates no geometry — the result is a
- * transient overlay (measurement guide + a readout chip that follows the
- * cursor) and disappears with the tool. Two modes:
+ * MEASURE (AutoCAD's DIST and AREA). Creates no geometry: while it asks it
+ * draws AutoCAD's rubber band, and what it measures is said on the command
+ * line. Two modes:
  *
  * - **Distance**: pick two points → AutoCAD's DIST: the 3D distance, the angle
- *   in and from the UCS's XY plane and the ΔX/ΔY/ΔZ between them, on the
- *   readout while the second is picked and then on the command line, and the
+ *   in and from the UCS's XY plane and the ΔX/ΔY/ΔZ between them, and the
  *   command ends, as AutoCAD's DIST does.
- * - **Area**: AutoCAD's AREA — a run of points, the enclosed area and perimeter
- *   of the (implicitly closed) polygon updating live with the cursor as a
- *   tentative vertex, or one object's (Object, the prompt's default); the
- *   command reports it and ends, as AutoCAD's does — or, under Add area or
- *   Subtract area, adds it to or takes it from a total and asks again.
+ * - **Area**: AutoCAD's AREA — a run of points, the (implicitly closed)
+ *   polygon drawn filled through the cursor as a tentative vertex, or one
+ *   object's (Object, the prompt's default); the command reports its area and
+ *   perimeter and ends, as AutoCAD's does — or, under Add area or Subtract
+ *   area, adds it to or takes it from a total and asks again.
  */
 export type MeasureMode = "distance" | "area"
 
@@ -177,7 +171,6 @@ export class MeasureTool implements Tool {
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
-    ctx.dynamicInput.setPosition(input.screen)
     if (this.state.phase === "multiple") {
       this.state = {
         ...this.state,
@@ -195,6 +188,9 @@ export class MeasureTool implements Tool {
         this.state = { phase: "areaObject", hover }
       }
     }
+    // After the cursor is taken: moving the box rebuilds the dynamic prompt,
+    // whose lead reads it.
+    ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
   }
 
@@ -620,6 +616,26 @@ export class MeasureTool implements Tool {
     return this.state.phase === "areaObject"
   }
 
+  /**
+   * Escape at a prompt a keyword opened goes back to the prompt that opened
+   * it, `*Cancel*` on the line it leaves and the run said again: DIST's
+   * Length, and any prompt of an Arc option, back to the arc's endpoint
+   * (desktop inquiry/d05, e01). Everywhere else it cancels the command.
+   */
+  onEscape(ctx: ToolContext): boolean | "cancelled" {
+    const run = this.state
+    if (run.phase === "length") {
+      this.walk(run, ctx)
+      return "cancelled"
+    }
+    if (run.phase === "multiple" && this.arc.active) {
+      this.arc.cancel()
+      this.walk(run, ctx)
+      return "cancelled"
+    }
+    return false
+  }
+
   /** While marking an area, Backspace removes the last placed vertex too. */
   onKeyDown(input: KeyInput, ctx: ToolContext): void {
     if (input.key === "Backspace" && this.state.phase === "area") {
@@ -956,72 +972,86 @@ export class MeasureTool implements Tool {
     return this.basePoint(ctx)
   }
 
-  buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    const out: ScenePrimitive[] = []
-    const settings = ctx.document.getSettings()
-    if (this.state.phase === "second") {
-      this.drawDistance(out, ctx, this.state.base, this.state.cursor, settings)
-    }
-    if (this.state.phase === "multiple" || this.state.phase === "length") {
-      this.drawRun(out, ctx, this.runWithCursor(this.state, ctx), settings)
-    }
-    if (this.state.phase === "area" && this.state.points.length > 0) {
-      this.drawArea(out, ctx, this.state.points, this.state.cursor, settings)
-    }
-    if (this.state.phase === "areaObject" && this.state.hover) {
-      out.push(...rollover(ctx, this.state.hover))
-    }
-    return out
+  /**
+   * Multiple points' total heads the dynamic prompt, `Distance = 45.0546`
+   * above `Specify next point or`: the run to the cursor, as with dynamic
+   * input on (desktop inquiry/d02-1, e02-1); at Length the run so far.
+   */
+  dynamicPromptLead(ctx: ToolContext): string | null {
+    const run = this.state
+    if (run.phase !== "multiple" && run.phase !== "length") return null
+    // WHY from the first segment on: the console says the run once it has
+    // one, and no screenshot shows the tooltip before it.
+    if (run.points.length < 2) return null
+    const { points, bulges } = this.runWithCursor(run, ctx)
+    return ctx.text.message("distanceTotal", {
+      value: formatLength(
+        pathLength(points, bulges),
+        ctx.document.getSettings()
+      ),
+    })
   }
 
-  private drawDistance(
-    out: ScenePrimitive[],
-    ctx: ToolContext,
-    base: Vec3,
-    tip: Vec3,
-    settings: DocumentSettings
-  ): void {
+  /**
+   * What AutoCAD's DIST and AREA draw: the rubber band, solid, and AREA's
+   * corners filled translucent green through the cursor; no marks and no
+   * readout (desktop inquiry/d01–d04).
+   */
+  buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const { viewport } = ctx
-    const a = viewport.worldToScreen(base)
-    const b = viewport.worldToScreen(tip)
-    out.push({
-      kind: "segment",
-      a,
-      b,
-      stroke: {
-        color: THEME.selected,
-        width: 1.5,
-        dash: [6, 4],
-      },
-    })
-    pushTick(out, a)
-    pushTick(out, b)
-
-    const measured = measure(base, tip, settings.ucs)
-    const suffix = unitSuffix(settings.unit)
-    const { text } = ctx
-    const lines = [
-      text.feedback("measureDistance", {
-        value: formatLength(measured.distance, settings),
-        unit: suffix,
-      }),
-      text.feedback("measureAngle", {
-        value: formatAngle(measured.angleInPlane, settings),
-      }),
-      text.feedback("measureDeltaX", {
-        value: formatLength(measured.deltaX, settings),
-      }),
-      text.feedback("measureDeltaY", {
-        value: formatLength(measured.deltaY, settings),
-      }),
-      text.feedback("measureDeltaZ", {
-        value: formatLength(measured.deltaZ, settings),
-      }),
-    ]
-    // The readout follows the tip (like AutoCAD's dimensional input), placed
-    // above-right of it clear of the object-snap tooltip (which sits below-right
-    // of the cursor), then clamped inside the viewport.
-    placeAndPushReadout(out, b, lines, viewport)
+    const screen = (points: readonly Vec2[]) =>
+      points.map((point) => viewport.worldToScreen(point))
+    switch (this.state.phase) {
+      case "second":
+        return [
+          {
+            kind: "segment",
+            a: viewport.worldToScreen(this.state.base),
+            b: viewport.worldToScreen(this.state.cursor),
+            stroke: RUBBER_BAND,
+          },
+        ]
+      case "multiple":
+      case "length": {
+        const { points, bulges } = this.runWithCursor(this.state, ctx)
+        return [
+          {
+            kind: "path",
+            points: screen(runOutline(points, bulges)),
+            closed: false,
+            stroke: RUBBER_BAND,
+          },
+        ]
+      }
+      case "area": {
+        const { points, cursor } = this.state
+        if (points.length === 0) return []
+        const corners = screen([...points, cursor])
+        if (points.length === 1) {
+          return [
+            {
+              kind: "segment",
+              a: corners[0],
+              b: corners[1],
+              stroke: RUBBER_BAND,
+            },
+          ]
+        }
+        return [
+          {
+            kind: "path",
+            points: corners,
+            closed: true,
+            fill: THEME.measureAreaFill,
+            stroke: RUBBER_BAND,
+          },
+        ]
+      }
+      case "areaObject":
+        return this.state.hover ? rollover(ctx, this.state.hover) : []
+      default:
+        return []
+    }
   }
 
   /**
@@ -1046,76 +1076,10 @@ export class MeasureTool implements Tool {
       bulges: [...run.bulges, segment.bulge],
     }
   }
-
-  /** Multiple points' run, the cursor's point last, with its length. */
-  private drawRun(
-    out: ScenePrimitive[],
-    ctx: ToolContext,
-    run: RunPath,
-    settings: DocumentSettings
-  ): void {
-    const { viewport } = ctx
-    const { points, bulges } = run
-    const screen = runOutline(points, bulges).map((point) =>
-      viewport.worldToScreen(point)
-    )
-    out.push({
-      kind: "path",
-      points: screen,
-      closed: false,
-      stroke: { color: THEME.selected, width: 1.5, dash: [6, 4] },
-    })
-    for (const p of points) pushTick(out, viewport.worldToScreen(p))
-    const lines = [
-      ctx.text.feedback("measureDistance", {
-        value: formatLength(pathLength(points, bulges), settings),
-        unit: unitSuffix(settings.unit),
-      }),
-    ]
-    placeAndPushReadout(out, screen[screen.length - 1], lines, viewport)
-  }
-
-  private drawArea(
-    out: ScenePrimitive[],
-    ctx: ToolContext,
-    points: readonly Vec2[],
-    cursor: Vec2,
-    settings: DocumentSettings
-  ): void {
-    const { viewport } = ctx
-    const vertices = [...points, cursor]
-    const screen = vertices.map((v) => viewport.worldToScreen(v))
-    if (screen.length >= 2) {
-      out.push({
-        kind: "path",
-        points: screen,
-        closed: true,
-        stroke: {
-          color: THEME.selected,
-          width: 1.5,
-          dash: [6, 4],
-        },
-      })
-    }
-    for (const p of screen) pushTick(out, p)
-
-    const suffix = unitSuffix(settings.unit)
-    const area = polygonArea(vertices)
-    const perimeter = polygonPerimeter(vertices)
-    const { text } = ctx
-    const lines = [
-      text.feedback("measureArea", {
-        value: formatLength(area, settings),
-        unit: suffix,
-      }),
-      text.feedback("measurePerimeter", {
-        value: formatLength(perimeter, settings),
-        unit: suffix,
-      }),
-    ]
-    placeAndPushReadout(out, viewport.worldToScreen(cursor), lines, viewport)
-  }
 }
+
+/** DIST's and AREA's band, as every other command's (desktop inquiry/d01-1). */
+const RUBBER_BAND: StrokeStyle = { color: THEME.rubberBand, width: 1 }
 
 interface DistanceMeasure {
   readonly distance: number
@@ -1184,7 +1148,7 @@ function pathLength(
   return total
 }
 
-/** The run's outline, its arcs as short chords, for the dashed preview. */
+/** The run's outline, its arcs as short chords, for the rubber band. */
 function runOutline(
   points: readonly Vec3[],
   bulges: readonly number[]
@@ -1209,91 +1173,6 @@ function runOutline(
     outline.push(points[i])
   }
   return outline
-}
-
-/** A small filled square marking a measured point. */
-function pushTick(out: ScenePrimitive[], p: Vec2): void {
-  const s = 3
-  out.push({
-    kind: "rect",
-    min: { x: p.x - s, y: p.y - s },
-    width: s * 2,
-    height: s * 2,
-    fill: THEME.selected,
-  })
-}
-
-/** Places the readout near `anchor` (above-right, clear of the snap tooltip)
- * and pushes its chip + lines. */
-function placeAndPushReadout(
-  out: ScenePrimitive[],
-  anchor: Vec2,
-  lines: readonly string[],
-  viewport: { width: number; height: number }
-): void {
-  const size = readoutSize(lines)
-  const at = placeReadout(anchor, size, viewport)
-  out.push({
-    kind: "rect",
-    min: at,
-    width: size.width,
-    height: size.height,
-    fill: THEME.snapTooltipBg,
-    stroke: { color: THEME.snapTooltipBorder, width: 1 },
-  })
-  lines.forEach((line, i) => {
-    out.push({
-      kind: "label",
-      at: {
-        x: at.x + READOUT_PAD_X,
-        y: at.y + READOUT_PAD_Y + 11 + i * READOUT_LINE_H,
-      },
-      text: line,
-      color: THEME.snapTooltipText,
-      font: "11px ui-monospace, monospace",
-    })
-  })
-}
-
-const READOUT_PAD_X = 6
-const READOUT_PAD_Y = 4
-const READOUT_LINE_H = 14
-const READOUT_CHAR_W = 6.4 // ~width of one 11px monospace glyph
-
-/** The pixel size of the readout chip for the given lines. */
-function readoutSize(lines: readonly string[]): {
-  width: number
-  height: number
-} {
-  const longest = Math.max(...lines.map((l) => l.length))
-  return {
-    width: Math.ceil(longest * READOUT_CHAR_W) + READOUT_PAD_X * 2,
-    height: lines.length * READOUT_LINE_H + READOUT_PAD_Y * 2,
-  }
-}
-
-/**
- * The top-left of the readout chip: above-right of the anchor (the object-snap
- * tooltip occupies the space below-right of the cursor, so this stays clear),
- * flipped below-left if it would clip the top edge, then clamped into the view.
- */
-function placeReadout(
-  anchor: Vec2,
-  size: { width: number; height: number },
-  viewport: { width: number; height: number }
-): Vec2 {
-  const gap = 12
-  let x = anchor.x + 16
-  let y = anchor.y - size.height - gap
-  if (y < 4) {
-    // Would clip the top: drop below and swing left, away from the snap tooltip.
-    x = anchor.x - size.width - 16
-    y = anchor.y + gap
-  }
-  return {
-    x: Math.max(4, Math.min(x, viewport.width - size.width - 4)),
-    y: Math.max(4, Math.min(y, viewport.height - size.height - 4)),
-  }
 }
 
 /** Signed-area (shoelace) magnitude of the closed polygon through `points`. */

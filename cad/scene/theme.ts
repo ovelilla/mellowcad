@@ -53,6 +53,11 @@ export const THEME = {
    */
   rubberBand: "#e2e8f0",
   /**
+   * AREA's corners: AutoCAD's translucent green, sampled (25,91,37) over
+   * (33,40,48) (desktop inquiry/d03-1).
+   */
+  measureAreaFill: "rgba(0, 255, 0, 0.24)",
+  /**
    * The dashed line PLINE draws from its last vertex at the width prompts and
    * along its arc's chord: amber beside a white polyline, so not the object's
    * colour (desktop pline/d03, d06).

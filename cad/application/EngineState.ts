@@ -233,7 +233,8 @@ export interface DynamicInputUi {
   readonly screen: Vec2
   /**
    * The dynamic prompt: the running command's question without its name,
-   * `Specify first point:`; null when it names none.
+   * `Specify first point:`; null when it names none. A line a command shows
+   * above the question comes first, after it a `\n` (DIST's `Distance = …`).
    */
   readonly prompt: string | null
   readonly fields: ReadonlyArray<DynamicInputFieldUi>

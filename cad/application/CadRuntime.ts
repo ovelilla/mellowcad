@@ -1912,6 +1912,17 @@ export class CadRuntime extends Observable {
       : keywordChoicePrompt(prompt, this.text, words, this.suspended !== null)
   }
 
+  /**
+   * The dynamic prompt, headed by the running tool's lead line
+   * ({@link Tool.dynamicPromptLead}).
+   */
+  private dynamicPrompt(question: string | null): string | null {
+    if (question === null || this.asking() !== this.activeTool) return question
+    if (this.clarifyingWords() !== null) return question
+    const lead = this.activeTool.dynamicPromptLead?.(this.toolContext) ?? null
+    return lead === null ? question : `${lead}\n${question}`
+  }
+
   /** The words of the keywords AutoCAD asks to choose from, while it asks. */
   private clarifyingWords(): string[] | null {
     const clarifying = this.clarifying
@@ -4329,9 +4340,19 @@ export class CadRuntime extends Observable {
     this.host.focusSurface()
   }
 
-  /** An Escape the running tool takes as a step back ({@link Tool.onEscape}). */
+  /**
+   * An Escape the running tool takes as a step back ({@link Tool.onEscape}),
+   * the prompt it leaves answered `*Cancel*` where the tool says so.
+   */
   private escapesWithin(): boolean {
-    if (!(this.activeTool.onEscape?.(this.toolContext) ?? false)) return false
+    const tool = this.activeTool
+    if (!tool.onEscape) return false
+    let stepped: boolean | "cancelled" = false
+    this.answering(this.text.message("commandCancelled"), () => {
+      stepped = tool.onEscape?.(this.toolContext) ?? false
+      return stepped === "cancelled"
+    })
+    if (stepped === false) return false
     this.resetTracking()
     this.snapping.clearOverride()
     this.invalidateState()
@@ -6291,7 +6312,7 @@ export class CadRuntime extends Observable {
         this.dynamicInput,
         settings,
         this.text,
-        prompt.dynamic,
+        this.dynamicPrompt(prompt.dynamic),
         ((this.currentSnap || this.snapMarker ? 1 : 0) +
           (this.buildPolarGuide() ? 1 : 0)) *
           CURSOR_TOOLTIP_ROW

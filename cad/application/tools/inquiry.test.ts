@@ -7,12 +7,12 @@ import { circleOf, lineOf, p, polylineOf } from "../../../test/builders"
 import { es } from "../../locales/es"
 
 /**
- * The inquiry commands. MEASURE creates no geometry at all — its whole output
- * is the on-screen readout — so the scene's label primitives are its
- * observable contract.
+ * The inquiry commands. MEASURE creates no geometry: what it shows is the
+ * rubber band AutoCAD's DIST and AREA draw (and AREA's green fill), and what
+ * it says is on the command line.
  */
 
-function readout(cad: CadHarness): string[] {
+function labels(cad: CadHarness): string[] {
   return cad
     .scene()
     .primitives.filter(
@@ -22,31 +22,21 @@ function readout(cad: CadHarness): string[] {
     .map((label) => label.text)
 }
 
-describe("DIST", () => {
-  it("reads distance, angle and the deltas while the second point is picked", () => {
-    const cad = createHarness()
-
-    cad.command("DIST").click(p(0, 0)).moveTo(p(300, 0))
-
-    const lines = readout(cad)
-    expect(lines.some((line) => /Dist\s+300\.00 mm/.test(line))).toBe(true)
-    expect(lines.some((line) => /Angle\s+0°/.test(line))).toBe(true)
-    expect(lines.some((line) => /ΔX\s+300\.00/.test(line))).toBe(true)
-    expect(lines.some((line) => /ΔY\s+0\.00/.test(line))).toBe(true)
-  })
-
-  it("measures a diagonal", () => {
-    const cad = createHarness()
-
-    cad.command("DIST").click(p(0, 0)).moveTo(p(300, 400))
-
-    const lines = readout(cad)
-    expect(lines.some((line) => /Dist\s+500\.00 mm/.test(line))).toBe(true)
-    expect(lines.some((line) => new RegExp(`Angle\\s+53°`).test(line))).toBe(
-      true
+/** The strokes of the scene, `color/width`, a dashed one marked. */
+function strokes(cad: CadHarness): string[] {
+  return cad
+    .scene()
+    .primitives.flatMap((primitive) =>
+      "stroke" in primitive && primitive.stroke
+        ? [
+            `${primitive.stroke.color}/${primitive.stroke.width}` +
+              (primitive.stroke.dash?.length ? "/dashed" : ""),
+          ]
+        : []
     )
-  })
+}
 
+describe("DIST", () => {
   it("creates no geometry", () => {
     const cad = createHarness()
 
@@ -55,22 +45,13 @@ describe("DIST", () => {
     expect(cad.entityCount).toBe(0)
   })
 
-  it("follows the document's unit and precision", () => {
-    const cad = createHarness()
-    cad.runtime.setDocumentPrecision(0)
-
-    cad.command("DIST").click(p(0, 0)).moveTo(p(300, 0))
-
-    expect(readout(cad).some((line) => /Dist\s+300 mm/.test(line))).toBe(true)
-  })
-
-  it("ends after one pair, its readout with it, as AutoCAD's DIST does", () => {
+  it("ends after one pair, its rubber band with it, as AutoCAD's DIST does", () => {
     const cad = createHarness()
 
     cad.command("DIST").click(p(0, 0)).click(p(300, 0))
 
     expect(cad.activeToolId()).toBe("select")
-    expect(readout(cad)).toEqual([])
+    expect(strokes(cad)).not.toContain(`${THEME.rubberBand}/1`)
   })
 
   it("writes AutoCAD's report at the command prompt", () => {
@@ -89,7 +70,6 @@ describe("DIST", () => {
     cad.command("ELEV").type("5").enter().type("0").enter()
 
     cad.command("DIST").type("0,0,-7").enter().moveTo(p(3, 4))
-    expect(readout(cad)).toContain("ΔZ    12.00")
     cad.type("3,4").enter()
 
     expect(cad.commandLog().at(-1)).toBe(
@@ -390,12 +370,20 @@ describe("DIST's Multiple points", () => {
     expect(lastPoint(cad)).toBe(" X = 10.00     Y = 0.00     Z = 0.00")
   })
 
-  it("reads the run on screen as it goes", () => {
+  // desktop inquiry/d02-1, e02-1: the run's total to the cursor heads the
+  // dynamic prompt, `Distance = 45.0546` above `Specify next point or`
+  it("heads the dynamic prompt with the run's total to the cursor", () => {
     const cad = createHarness()
     cad.command("DIST").click(p(0, 0))
     answer(cad, "M")
     cad.click(p(300, 0)).moveTo(p(300, 400))
-    expect(readout(cad)).toEqual(["Dist  700.00 mm"])
+    expect(cad.state().dynamicInput?.prompt).toBe(
+      "Distance = 700.00\nSpecify next point or"
+    )
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIST Specify next point or [Arc/Close/Length/Undo/Total] <Total>:"
+    )
+    expect(labels(cad)).toEqual([])
   })
 
   it("asks in Autodesk's Spanish", () => {
@@ -544,14 +532,16 @@ describe("DIST's Multiple points", () => {
     expect(spanish.state().commandLine.prompt).toMatch(/<90>:$/)
   })
 
-  it("draws the arc on screen as it goes", () => {
+  it("heads the dynamic prompt with the run to the cursor in Arc too", () => {
     const cad = createHarness()
     cad.command("DIST").click(p(0, 0))
     answer(cad, "M")
     cad.click(p(100, 0))
     answer(cad, "A")
     cad.moveTo(p(100, 100))
-    expect(readout(cad)).toEqual(["Dist  257.08 mm"])
+    expect(cad.state().dynamicInput?.prompt).toBe(
+      "Distance = 257.08\nSpecify endpoint of arc (hold Ctrl to switch direction) or"
+    )
   })
 
   it("asks Arc in Autodesk's Spanish", () => {
@@ -835,10 +825,6 @@ describe("AREA", () => {
       .click(p(100, 0))
       .click(p(100, 100))
       .moveTo(p(0, 100))
-
-    const lines = readout(cad)
-    expect(lines.some((line) => /Area\s+10000\.00 mm²/.test(line))).toBe(true)
-    expect(lines.some((line) => /Perim\s+400\.00 mm/.test(line))).toBe(true)
 
     cad.click(p(0, 100)).enter()
     expect(cad.commandLog().at(-1)).toBe("Area = 10000.00, Perimeter = 400.00")
@@ -1470,5 +1456,238 @@ describe("AREA's corners, as AutoCAD 2027's", () => {
     const cad = console4()
     answer(cad, "ID", "7,8", "AREA", "0,0", "10,0", "10,10", "")
     expect(lastPoint(cad)).toBe(at("10.0000", "10.0000"))
+  })
+})
+
+// AutoCAD 2027's desktop (DYNMODE 3 and 0): what DIST and AREA draw is the
+// rubber band, solid, and AREA's corners filled translucent green.
+describe("DIST and AREA on screen, as AutoCAD 2027's desktop", () => {
+  const selected = (cad: CadHarness) =>
+    cad
+      .scene()
+      .primitives.filter(
+        (primitive) =>
+          ("fill" in primitive && primitive.fill === THEME.selected) ||
+          ("stroke" in primitive && primitive.stroke?.color === THEME.selected)
+      )
+
+  // desktop inquiry/d01-1 to d01-3
+  it("draws DIST's second point as a solid band, no readout or marks", () => {
+    const cad = console4()
+    answer(cad, "_DIST", "0,0")
+    cad.moveTo(p(40, 20))
+    expect(labels(cad)).toEqual([])
+    expect(strokes(cad)).toContain(`${THEME.rubberBand}/1`)
+    expect(strokes(cad).filter((stroke) => stroke.endsWith("dashed"))).toEqual(
+      []
+    )
+    expect(selected(cad)).toEqual([])
+  })
+
+  // desktop inquiry/d02-1
+  it("draws Multiple points' run as a solid polyline to the cursor", () => {
+    const cad = console4()
+    answer(cad, "_DIST", "0,0", "_M", "20,0")
+    cad.moveTo(p(35, 20))
+    expect(labels(cad)).toEqual([])
+    const run = cad
+      .scene()
+      .primitives.find(
+        (primitive) =>
+          primitive.kind === "path" &&
+          primitive.stroke?.color === THEME.rubberBand
+      )
+    expect(run).toMatchObject({ closed: false, stroke: { width: 1 } })
+    expect(run?.kind === "path" && run.points).toHaveLength(3)
+    expect(strokes(cad).filter((stroke) => stroke.endsWith("dashed"))).toEqual(
+      []
+    )
+    expect(selected(cad)).toEqual([])
+  })
+
+  // desktop inquiry/d03-1 to d03-3
+  it("draws AREA's corners as a solid outline, no readout or marks", () => {
+    const cad = console4()
+    answer(cad, "_AREA", "0,0")
+    cad.moveTo(p(40, 0))
+    expect(strokes(cad)).toContain(`${THEME.rubberBand}/1`)
+    answer(cad, "40,0")
+    cad.moveTo(p(30, 20))
+    expect(labels(cad)).toEqual([])
+    expect(strokes(cad).filter((stroke) => stroke.endsWith("dashed"))).toEqual(
+      []
+    )
+    expect(selected(cad)).toEqual([])
+  })
+
+  // desktop inquiry/d03-1: (25,91,37) over (33,40,48), #00ff00 at about 24 %,
+  // under a solid outline, from the second point
+  it("fills AREA's corners through the cursor translucent green", () => {
+    const cad = console4()
+    answer(cad, "_AREA", "0,0")
+    cad.moveTo(p(40, 0))
+    const fills = () =>
+      cad
+        .scene()
+        .primitives.filter(
+          (primitive) =>
+            primitive.kind === "path" &&
+            primitive.fill === THEME.measureAreaFill
+        )
+    expect(fills()).toEqual([])
+    answer(cad, "40,0")
+    cad.moveTo(p(30, 20))
+    const [area, ...more] = fills()
+    expect(more).toEqual([])
+    expect(area).toMatchObject({
+      closed: true,
+      stroke: { color: THEME.rubberBand, width: 1 },
+    })
+    expect(area.kind === "path" && area.points).toHaveLength(3)
+  })
+})
+
+// AutoCAD 2027's desktop: Escape cancels everywhere but at a prompt a keyword
+// opened, where it goes back to the prompt that opened it.
+describe("Escape in DIST and AREA, as AutoCAD 2027's desktop", () => {
+  // desktop inquiry/d05
+  it("goes back from DIST's Length to Multiple points' next point", () => {
+    const cad = console4()
+    answer(cad, "_DIST", "0,0", "_M", "10,0", "_L")
+    cad.escape()
+    expect(cad.activeToolId()).toBe("measure")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify length of line: *Cancel*",
+      "Distance = 10.0000",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIST Specify next point or [Arc/Close/Length/Undo/Total] <Total>:"
+    )
+    answer(cad, "10,5", "")
+    expect(cad.commandLog().at(-1)).toBe("Distance = 15.0000")
+  })
+
+  // desktop inquiry/e01: es writes `*Cancelado*`
+  it("goes back from Length in Autodesk's Spanish", () => {
+    const cad = console4({ locale: es })
+    answer(cad, "_DIST", "0,0", "_M", "10,0", "_L")
+    cad.escape()
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Precise longitud de línea: *Cancelado*",
+      "Distancia = 10.0000",
+    ])
+  })
+
+  // desktop inquiry/d05
+  it("goes back from an arc option's prompt to the arc's endpoint", () => {
+    const cad = console4()
+    answer(cad, "_DIST", "0,0", "_M", "10,0", "_A", "_S")
+    cad.escape()
+    expect(cad.activeToolId()).toBe("measure")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify second point on arc: *Cancel*",
+      "Distance = 10.0000",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIST Specify endpoint of arc (hold Ctrl to switch direction) or [Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]:"
+    )
+    cad.escape()
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  // desktop inquiry/d05
+  it("goes back from a later step of an arc option too", () => {
+    const cad = console4()
+    answer(cad, "_DIST", "0,0", "_M", "10,0", "_A", "_S", "15,5")
+    cad.escape()
+    expect(cad.activeToolId()).toBe("measure")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify end point of arc: *Cancel*",
+      "Distance = 10.0000",
+    ])
+  })
+
+  // desktop inquiry/d05
+  for (const steps of [
+    ["_DIST"],
+    ["_DIST", "0,0"],
+    ["_DIST", "0,0", "_M", "10,0"],
+    ["_DIST", "0,0", "_M", "10,0", "_A"],
+    ["_AREA"],
+    ["_AREA", "0,0", "10,0"],
+    ["_AREA", "0,0", "10,0", "10,10"],
+    ["_AREA", "_O"],
+    ["_AREA", "_A", "0,0", "10,0"],
+    ["_ID"],
+  ]) {
+    it(`cancels at ${steps.join(" ")}`, () => {
+      const cad = console4()
+      answer(cad, ...steps)
+      cad.escape()
+      expect(cad.activeToolId()).toBe("select")
+      expect(cad.commandLog().at(-1)).toMatch(/: \*Cancel\*$/)
+    })
+  }
+
+  // desktop inquiry/d05: no total said again
+  it("writes only *Cancel* at Add area's Select objects after a measure", () => {
+    const cad = console4({ entities: [circleOf(p(80, 30), 5)] })
+    answer(cad, "_AREA", "_A", "_O")
+    cad.click(p(85, 30))
+    cad.escape()
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Total area = 78.5398",
+      "(ADD mode) Select objects: *Cancel*",
+    ])
+  })
+})
+
+describe("DIST, AREA and ID's aids, as AutoCAD 2027's desktop", () => {
+  // desktop inquiry/d06-1 (the console ignores `<30`, p134)
+  it("honours `<30` at DIST's second point", () => {
+    const cad = console4()
+    answer(cad, "_DIST", "0,0", "<30")
+    cad.moveTo(p(40, 30))
+    answer(cad, "10")
+    expect(cad.commandLog().at(-1)).toMatch(
+      /Delta X = 8\.6603, {2}Delta Y = 5\.0000/
+    )
+  })
+
+  // desktop inquiry/d06-2
+  it("refuses `<45` at ID's point", () => {
+    const cad = console4()
+    answer(cad, "_ID", "<45")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify point: <45",
+      "Invalid point.",
+    ])
+  })
+
+  // desktop inquiry/d07-1 to d07-3: bent from the last point
+  it("bends AREA's next point and Multiple points' with Ortho", () => {
+    const area = console4()
+    area.press("F8")
+    answer(area, "_AREA", "0,0", "10,5")
+    area.click(p(14, 25))
+    answer(area, "")
+    expect(area.commandLog().at(-1)).toMatch(/^Area = 100\.0000/)
+
+    const run = console4()
+    run.press("F8")
+    answer(run, "_DIST", "0,0", "_M", "10,5")
+    run.click(p(14, 25))
+    answer(run, "")
+    expect(run.commandLog().at(-1)).toBe("Distance = 31.1803")
+  })
+
+  // desktop inquiry/d07
+  it("bends AREA's next point with Polar", () => {
+    const cad = console4()
+    cad.press("F10")
+    answer(cad, "_AREA", "0,0", "10,5")
+    cad.moveTo(p(10.3, 25)).click(p(10.3, 25))
+    answer(cad, "")
+    expect(cad.commandLog().at(-1)).toMatch(/^Area = 100\.0000/)
   })
 })

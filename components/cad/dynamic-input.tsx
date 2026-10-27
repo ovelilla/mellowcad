@@ -69,10 +69,11 @@ export function DynamicInput({
       className="pointer-events-none absolute z-[5] flex flex-wrap gap-1"
       style={{ left: di.screen.x + 16, top: di.screen.y + 20 + di.clearance }}
     >
-      {/* The dynamic prompt: the question alone, its keywords in the chips. */}
+      {/* The dynamic prompt: the question alone, its keywords in the chips;
+          a lead line above it (DIST's `Distance = …`) on a line of its own. */}
       {di.prompt !== null && (
         <div className="flex basis-full">
-          <span className="rounded-md border border-border/60 bg-card/95 px-2 py-1 text-muted-foreground shadow-lg backdrop-blur">
+          <span className="rounded-md border border-border/60 bg-card/95 px-2 py-1 whitespace-pre-line text-muted-foreground shadow-lg backdrop-blur">
             {di.prompt}
           </span>
         </div>

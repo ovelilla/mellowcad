@@ -12,7 +12,9 @@ first corner from LASTPOINT, p206, p207; in the UCS, p231, p232; a bow-tie's are
 before the third refused (`Point or option keyword required.`, p208), Undo taking back a point and
 keeping the first corner with AutoCAD's `All segments already undone.` /
 `Command has been completely undone.` (p241), LASTPOINT left at the last corner (p208, p357), the
-live area and perimeter on the readout; Total or Enter reports `Area = …, Perimeter = …` (es
+corners drawn as AutoCAD's desktop draws them: the rubber band, solid, and from the second point the
+polygon closed through the cursor filled translucent green under it, no area or perimeter shown
+(desktop d03-1 to d03-3); Total or Enter reports `Area = …, Perimeter = …` (es
 `Área = …, Perímetro = …`) and ends, as AutoCAD's does; Add area and Subtract area keep a running
 total, as AutoCAD 2027's console does (p212–p216): the first corner asks `[Object/Subtract area]` or
 `[Object/Add area]` with no default (the mode's own keyword taken unlisted), the points
@@ -44,9 +46,13 @@ measuring to the first (LASTPOINT again), as AutoCAD's do; Multiple points asks
 `Specify next point or [Arc/Close/Length/Undo/Total] <Total>:` (es
 `Precise punto siguiente o [Arco/Cerrar/Longitud/desHacer/Total] <Total>`; Close once there is a
 segment), writing the run so far before each (`Distance = 10.00`, es `Distancia = …`) and again
-after a refusal; Close goes back to the first point, Close, Total and Enter write the run and end;
+after a refusal, and the run to the cursor heading the dynamic prompt once it has a segment
+(`Distance = 45.0546` above `Specify next point or`, at Length the run so far; desktop d02-1, e02-1),
+the run drawn as a solid rubber band to the cursor, no readout (d02-1); Close goes back to the first point, Close, Total and Enter write the run and end;
 Length asks `Specify length of line:` (es `Precise longitud de línea`;
-`Requires numeric distance or second point.`, Enter too) and goes on along the last segment (back
+`Requires numeric distance or second point.`, Enter too; Escape there goes back to the next point,
+`Specify length of line: *Cancel*` and the run said again, es `*Cancelado*`, desktop d05, e01) and
+goes on along the last segment (back
 for a negative length; before there is one the way a first arc leaves, along what was drawn last,
 else the WCS's east, p157, p164), a point there giving the length from LASTPOINT (p118, p158), and
 `0` adding no point, the run said again once it has a segment (p115, p162); Undo takes back a point
@@ -57,18 +63,23 @@ was (p160, p165–p167, p169–p171), and which switching to Arc and an arc's Un
 PLINE's arc prompt and options, `[Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]` with no
 `<Total>` (es `[ángUlo/cEntro/Cerrar/Dirección/líNea/Radio/Segundo pto./desHacer]`), each arc's
 length added to `Distance = …`, said again on switching to Arc or Line, its refusal
-`2D point or option keyword required.` and the run (Total too, pline/p146); its CLose closes with
+`2D point or option keyword required.` and the run (Total too, pline/p146); Escape at a prompt an
+arc option opened (`Specify second point on arc: *Cancel*`) goes back to the arc's endpoint prompt,
+saying the run again, and at that prompt cancels (desktop d05); its CLose closes with
 the tangent arc, straight and silent where none leaves that way (p146, p147), and Undo stays in Arc
 whatever the segment left (p148), CEnter's included angle `Specify included angle:` with no Ctrl
 clause (p145), as AutoCAD 2027's console does (the first arc leaves as PLINE's does, the way the
 last line, arc or polyline drawn ends heading — a clockwise arc the way it was drawn, `<270>`,
 p115 —, else east — the chord's `<0>` or `<90>` after Angle and Radius); its
 two points picked or typed (one without a Z at the current elevation), the 3D distance, the angle in
-and from the UCS's XY plane (0–360, as AutoCAD prints them) and ΔX / ΔY / ΔZ in the UCS, on the
-readout while the second point is picked and then at the command prompt in AutoCAD's words
+and from the UCS's XY plane (0–360, as AutoCAD prints them) and ΔX / ΔY / ΔZ in the UCS, at the
+command prompt in AutoCAD's words
 (`Distance = …,  Angle in XY Plane = …,  Angle from XY Plane = …` /
 `Delta X = …,  Delta Y = …,   Delta Z = …`; es `Distancia = …, Ángulo en el plano XY = …, …`, p100),
-the angles at AUPREC (p142), and the command ends, as DIST does; a bare number at the second point
+the angles at AUPREC (p142), and the command ends, as DIST does; while the second point is picked
+the rubber band alone, solid, from the first, no marker or readout (desktop d01-1 to d01-3; the
+dimension of its length that AutoCAD's dimensional input adds is drafting-aids.md's); Escape cancels
+at every prompt but those a keyword opened (desktop d05); a bare number at the second point
 runs towards the cursor as Ortho bends it from the first (p141), a typed point left alone (p140);
 the object snaps and FROM typed at either point (p135–p138); `'AREA` or
 `'_AREA`, at the Command prompt or mid-command, reads the AREA system variable, the last area AREA
@@ -88,10 +99,11 @@ a total (p257: `PERIMETER = 34.1421 (read only)`; p212); AREA's corners off the 
 which AutoCAD measures in 3D (p256: `Area = 61.2372, Perimeter = 36.5028`) and of which it refuses
 some later ones with `Lines are not coplanar.` by a rule p249–p252 do not settle (a coplanar one
 refused, p251, one off the plane taken, p252): mellowcad measures their plan; AREA's Arc and Length
-at its next point and its green fill, an
+at its next point (AutoCAD's Length steps back at Escape as DIST's does, desktop d05), an
 object at an angle to the UCS (not highlighted here; AutoCAD says `Object not parallel with UCS.`),
 Arc's CEnter → Angle reading a number as a point (2027's console asks it as a point, `90` there a
-distance along the cursor, p145: degrees here, until the desktop shows it)
+distance along the cursor, p145: degrees here, until the desktop shows it); the `?` badge beside the
+cursor at DIST's and AREA's prompts is with the other cursor badges in drafting-aids.md
 
 ### `ID` · es `ID`
 

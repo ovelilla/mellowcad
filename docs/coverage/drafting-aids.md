@@ -303,7 +303,8 @@ over it (es `Línea`, `Color PorCapa`, `Capa 0`, `Tipo de línea PorCapa`, d20),
 
 **Missing:** the command line's `Specify opposite corner or [Fence/WPolygon/CPolygon]:` and its
 lasso options; PICKADD, PICKAUTO and PICKDRAG as variables, and the Properties palette's Toggle
-PICKADD; CURSORBADGE and the other cursor badges (MOVE's, COPY's…); whether a `+` badge shows with
+PICKADD; CURSORBADGE and the other cursor badges (MOVE's, COPY's…, and the `?` beside the cursor at
+DIST's, AREA's and ID's prompts, desktop inquiry/d01-2, d08-1, e03-1); whether a `+` badge shows with
 PICKADD 0 (**unverified**); the crosshair hidden at `Select objects:` (AutoCAD shows the pick box
 alone there, desktop erase/d09-1); the rollover tooltip on a selected object, its other rows (QPMODE's
 properties per type, CUI's Rollover Tooltips), ROLLOVERTIPS and CURSORSIZE as variables; a copy by
