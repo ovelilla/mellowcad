@@ -74,7 +74,8 @@ Walk the whole list and write "n/a" where it does not apply; never trim it from 
 - **The object it makes**: its entity in `cad/domain/`, its scene in `SceneBuilder`, its grips in
   `selectToolGrips.ts`, its palette rows, its part of the file in `cad/serialization/`.
 - **The UI**: the rail (`components/cad/tool-rail.tsx`), the shortcut menus, the landing's filing
-  (`content/commands.ts`).
+  (`content/commands.ts`); the ribbon button's macro in acad.cuix, which may run another command
+  or run it transparently (DIST's runs MEASUREGEOM, ID's is `'_id`: inquiry, DST-05, INQ-04).
 - **Tests**: its own, every one that runs it (`git grep -l '"<COMMAND>"'`), the English surface
   walk, its row in `currentProperties.test.ts`.
 - **Knowledge**: its coverage entry, the rules whose `paths:` match its files, the skills citing it.
@@ -399,3 +400,5 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
 - 2026-10-27, after the Dimensions review: the shared contracts swept by one subagent (§4.8); a
   scratch test asserts, never only dumps (§4.3); `com send` and LINE, the palette's folds
   (annex-probes.md §4).
+- 2026-10-27, after the Inquiry review: the ribbon button's macro read in Phase 1 (§1.1); the
+  read-only variables a command sets (matrix.md H).

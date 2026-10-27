@@ -80,6 +80,7 @@ off, and with the menu), Escape (once, twice), another command typed mid-prompt,
   move/p201), its geometry to full precision.
 - Layer (CLAYER), colour (CECOLOR), linetype (CELTYPE), lineweight (CELWEIGHT), linetype scale,
   ELEVATION and the Z of each point, THICKNESS, the normal; drawn in a rotated and in a tilted UCS.
+- The read-only system variables the run sets (AREA, PERIMETER, DISTANCE), `(getvar …)` after it.
 - The same settings changed mid-command, transparently (`'-COLOR`, `'ELEVATION`): AutoCAD fixes
   them when the object starts (PLINE's p39), not when the command ends.
 

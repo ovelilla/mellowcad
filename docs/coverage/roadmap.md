@@ -117,10 +117,12 @@ layer a block definition uses cannot be deleted (LAY-02): for the Blocks review,
 PURGE's sides. LWDISPLAY, LAYLOCKFADECTL, CECOLOR, CELTYPE and CELWEIGHT typed as variables: for
 the Workspace review (SETVAR). A hatch inside a block, mirrored with its reference, reflects its
 pattern (HATCH-D75, built by the Blocks review: BOB-01, BOB-02), and LIST of a hatch has its words
-in hatch/p320 and p369: for the Inquiry review; HPNAME, HPSCALE, HPANG and HPORIGIN typed as variables, for the Workspace review
+in hatch/p320 and p369, for whoever builds LIST (INQUIRY-D1); HPNAME, HPSCALE, HPANG and HPORIGIN typed as variables, for the Workspace review
 (`docs/plans/hatch-review.md`). The Blocks review settled what was left for it
 above (`docs/plans/blocks-review.md`); it leaves ATTDIA, ATTREQ, AFLAGS, ATTMODE and INSNAME typed
-as variables to the Workspace review, LIST of a block reference and its attributes to the Inquiry
-review, and the Edit Attributes dialog's stand-in (ATTEDIT's box, BLOCKS-D90) to whichever review
+as variables to the Workspace review, LIST of a block reference and its attributes to whoever builds
+LIST (INQUIRY-D1: `docs/plans/inquiry-review.md`, which closed the circle review's COB-03), and the Edit Attributes dialog's stand-in (ATTEDIT's box, BLOCKS-D90) to whichever review
 builds a dialog for it. The Dimensions review (`docs/plans/dimensions-review.md`) leaves angular
-chaining, dimension overrides and the Dimension Style Manager in `dimensions.md`'s Missing.
+chaining, dimension overrides and the Dimension Style Manager in `dimensions.md`'s Missing. The Inquiry
+review leaves the rail's other apostrophe macros (ATTDISP's, MATCHPROP's: `transparentMacro`) to
+the Workspace review.

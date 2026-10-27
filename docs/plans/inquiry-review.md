@@ -1,8 +1,8 @@
 # Inquiry review (DIST, AREA, ID)
 
 > **Status:** plan, 2026-10-27. The twenty-first review of `docs/coverage/roadmap.md`'s order, with
-> skill `command-review`. Blocks IDP+INQ, DST and ARE run in this session; block IQD (the desktop)
-> waits for a session with the owner's mouse.
+> skill `command-review`. Blocks IDP+INQ, DST and ARE are executed (index below); block IQD (the
+> desktop) waits for a session with the owner's mouse, after which the plan shrinks to its index.
 >
 > It owns no cross-cutting area. It settles the analogues left for it: AREA Object of a hatch
 > (hatch/p320) and of a block reference with attributes (Blocks review), and the circle review's
@@ -31,6 +31,19 @@ The worst three:
 **Evidence:** 180 console probes in es-ES and en-US (p100–p169, p200–p258, p300–p361) on AutoCAD
 2027 (ACADVER 26.0, X.118); the `acadres` tables of 2026-10-20; `acad.cuix`'s ribbon macros; 170
 scratch tests in `research/review/inquiry/{a,b,c}/`. No desktop probe yet.
+
+## Executed
+
+| Block | Findings | Commit |
+| --- | --- | --- |
+| IDP + INQ | IDP-01, IDP-02, INQ-01, INQ-03, INQ-04, INQ-06 to INQ-08 | `d9de70d` |
+| DST | DST-01 to DST-08 (p170–p172 added: Ortho's base and Arc's LASTPOINT) | `65a7baa` |
+| ARE | ARE-01 to ARE-08, ARE-10 (through `onAskAgain`), ARE-12; COB-03 closed | `f36ebf7` |
+| IQD | the desktop: open | — |
+
+Left by the execution: ATTDISP's and MATCHPROP's buttons are apostrophe macros too
+(`'_attdisp`, `'_matchprop`) and do not say `transparentMacro` yet; where a closed wide
+polyline's line falls in Add area against `Total area` is unprobed.
 
 ## Inventory
 
@@ -433,6 +446,8 @@ of DIST's second point (p356); `'AREA`'s words (p324); the AREA Object reports b
 - The roadmap: Inquiry `plan`, then `done`; COB-03 closed; LIST's analogues left for LIST.
 
 ## Template improvements
+
+Applied on 2026-10-27 (template §1.1, matrix.md H):
 
 - A command whose ribbon button runs another command (DIST's runs MEASUREGEOM) is found by reading
   the button's macro in acad.cuix in Phase 1, not at the end (INQ-04, DST-05): add it to §1.1's UI.
