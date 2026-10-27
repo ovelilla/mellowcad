@@ -72,7 +72,8 @@ and the command's prompt written again on return.
 off, and with the menu), Escape (once, twice), another command typed mid-prompt, closing options
 (Close, Continue); what is kept and what LASTPOINT is afterwards. A command with a ribbon twin
 (HATCH and -HATCH) answers Escape, its preview and the look after a pick under each name
-(hatch/d01, d02).
+(hatch/d01, d02). Escape also at each prompt a keyword opens: AutoCAD can step back to the prompt
+that opened it instead of cancelling (DIST's Length, inquiry/d05).
 
 **H. What it produces** — read with MPDUMP and with the harness's `latest()`:
 

@@ -231,6 +231,11 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   draw with PLINE. The Properties palette's groups fold by the arrow at the header's right, and the
   fold persists in the profile: unfold them before closing (Dimensions review).
 
+- An overlay's colour is read from the screenshot's pixels (a few lines of Python with `zlib`: PIL
+  is not installed) beside the background's, which tells a translucent fill from a solid one
+  (AREA's green, inquiry/d03-1). What dynamic input shows depends on the profile's DYNMODE
+  features, not only its sign: probe it with DYNMODE 3 too (inquiry/d02-1 against e01-1).
+
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).
 

@@ -401,4 +401,5 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
   scratch test asserts, never only dumps (§4.3); `com send` and LINE, the palette's folds
   (annex-probes.md §4).
 - 2026-10-27, after the Inquiry review: the ribbon button's macro read in Phase 1 (§1.1); the
-  read-only variables a command sets (matrix.md H).
+  read-only variables a command sets (matrix.md H); after its desktop block, Escape at a keyword's
+  sub-prompt (matrix.md G), overlay colours and DYNMODE's profiles (annex-probes.md §4).
