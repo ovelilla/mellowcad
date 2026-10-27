@@ -72,6 +72,7 @@ export const es: EngineLocale = {
       "zoom": "Zoom",
       "pan": "Encuadre",
       "dashpan": "Encuadre por puntos",
+      "dashdimstyle": "Estilo de cota (línea de comandos)",
       "ucs": "SCP",
       "ucsicon": "Icono SCP",
       "fill": "Rellenar",
@@ -872,6 +873,9 @@ export const es: EngineLocale = {
         "AES",
         "DCOTA"
       ],
+      "-DIMSTYLE": [
+        "-ACOESTIL"
+      ],
       "STYLE": [
         "ESTILO",
         "EST",
@@ -1243,6 +1247,16 @@ export const es: EngineLocale = {
       },
       "DIMSPACE": {
         "Auto": "Auto"
+      },
+      "-DIMSTYLE": {
+        "Save": "Guardar",
+        "Restore": "Restituir",
+        "STatus": "Estado",
+        "Variables": "Variables",
+        "Apply": "Aplicar",
+        "?": "?",
+        "Yes": "Sí",
+        "No": "No"
       },
       "OFFSET": {
         "Through": "Atravesar",
@@ -1979,6 +1993,13 @@ export const es: EngineLocale = {
       "selectContinuedDimension": "Designe cota continua",
       "spaceBaseDimension": "Designar cota base",
       "selectDimensionsToSpace": "Designe cotas para intervalo",
+      "dimStyleOption": "Indique una opción de estilo de cota",
+      "dimStyleSaveName": "Indique nombre para estilo de cota nuevo o",
+      "dimStyleRedefine": "Este nombre está ya en uso; ¿redefinirlo?",
+      "dimStyleName": "Indique un nombre de estilo de cota, [?] o",
+      "dimStyleSelectDimension": "designar cota",
+      "dimStylesToList": "Indique estilo(s) de cota a enumerar",
+      "selectDimension": "Designe una cota",
       "enterValueOr": "Indique valor o"
     },
     "format": {
@@ -3140,6 +3161,16 @@ export const es: EngineLocale = {
         ],
         "\"."
       ],
+      "currentDimStyle": [
+        "Estilo de cota actual: ",
+        [
+          "name"
+        ],
+        "   Anotativo: No"
+      ],
+      "unknownDimStyle": "Estilo de cota desconocido.",
+      "namedDimStyles": "Estilos de cota guardados:",
+      "noMatchingDimStyles": "  Estilo de cota no encontrado.",
       "splineSettingsFit": [
         "Parámetros actuales: Método=Ajustar Nudos=",
         [
@@ -4010,6 +4041,32 @@ export const es: EngineLocale = {
       }
     },
     "listing": {
+      "dimVariable": [
+        [
+          "name"
+        ],
+        [
+          "value"
+        ],
+        [
+          "description"
+        ]
+      ],
+      "dimVariableDescription": {
+        "DIMSTYLE": "Estilo de cota actual (de sólo lectura)",
+        "DIMADEC": "Decimales angulares",
+        "DIMASZ": "Tamaño de la flecha",
+        "DIMCEN": "Tamaño de la marca de centro",
+        "DIMDEC": "Precisión decimal",
+        "DIMDLI": "Intervalo para continuar la línea de cota",
+        "DIMDSEP": "Separador decimal",
+        "DIMEXE": "Extensión sobre la línea de cota",
+        "DIMEXO": "Desfase línea de referencia - origen",
+        "DIMGAP": "Distancia entre el texto y la línea de cota",
+        "DIMSCALE": "Factor de escala general",
+        "DIMTXT": "Altura del texto",
+        "DIMZIN": "Supresión de ceros"
+      },
       "hatchPattern": [
         [
           "name"

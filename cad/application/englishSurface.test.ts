@@ -1403,6 +1403,38 @@ describe("the engine's English surface", () => {
           c.command("LT").option("Set").type("NOPE").enter()
         )
     )
+    walk(
+      "-DIMSTYLE",
+      createHarness({
+        entities: [
+          createDimension("linear", p(0, 0), p(10, 0), p(5, 5), { id: "D1" }),
+        ],
+      }),
+      (s) =>
+        s
+          .do("-DIMSTYLE", (c) => c.command("-DIMSTYLE"))
+          .do("S", (c) => answer(c, "S"))
+          .do("?", (c) => c.type("?").enter())
+          .do("list", (c) => c.enter())
+          .do("name", (c) => c.type("Plans").enter())
+          .do("S again", (c) => c.command("-DIMSTYLE").option("Save"))
+          .do("in use", (c) => c.type("PLANS").enter())
+          .do("N", (c) => answer(c, "N"))
+          .do("escape", (c) => c.escape())
+          .do("R", (c) => c.command("-DIMSTYLE").option("Restore"))
+          .do("unknown", (c) => c.type("FOO").enter())
+          .do("Enter", (c) => c.command("-DIMSTYLE").enter())
+          .do("select dimension", (c) => c.enter())
+          .do("pick", (c) => c.click(at(5, 5)))
+          .do("ST", (c) => c.command("-DIMSTYLE").option("STatus"))
+          .do("V", (c) => c.command("-DIMSTYLE").option("Variables"))
+          .do("name", (c) => c.type("Plans").enter())
+          .do("A", (c) => c.command("-DIMSTYLE").option("Apply"))
+          .do("pick", (c) => c.click(at(5, 5)))
+          .do("enter", (c) => c.enter())
+          .do("?", (c) => c.command("-DIMSTYLE").option("?"))
+          .do("all", (c) => c.enter())
+    )
     walk("-LWEIGHT", createHarness(), (s) =>
       s
         .do("-LWEIGHT", (c) => c.command("-LWEIGHT"))

@@ -81,6 +81,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   DIMCONTINUE: { group: "annotate" },
   DIMSPACE: { group: "annotate" },
   DIMSTYLE: { group: "annotate" },
+  "-DIMSTYLE": { group: "annotate" },
   STYLE: { group: "annotate" },
 
   BLOCK: { group: "organize" },

@@ -417,14 +417,29 @@ export class CadDocument extends Observable implements DocumentReader {
    * `ISO-25` always stays. Returns whether the style was removed.
    */
   removeDimStyle(id: DimStyleId): boolean {
-    if (id === DEFAULT_DIM_STYLE_ID || id === this.currentDimStyleId) {
-      return false
-    }
-    if (!this.dimStyles.has(id)) return false
-    if (this.dimStyleInUse(id)) return false
+    if (!this.canRemoveDimStyle(id)) return false
     this.dimStyles.delete(id)
     this.emit()
     return true
+  }
+
+  canRemoveDimStyle(id: DimStyleId): boolean {
+    return (
+      id !== DEFAULT_DIM_STYLE_ID &&
+      id !== this.currentDimStyleId &&
+      this.dimStyles.has(id) &&
+      !this.dimStyleInUse(id)
+    )
+  }
+
+  /** Puts a removed dimension style back at `index` in the table's order. */
+  restoreDimStyle(style: DimStyle, index: number): void {
+    const entries = [...this.dimStyles.values()].filter(
+      (s) => s.id !== style.id
+    )
+    entries.splice(index, 0, style)
+    this.dimStyles = new Map(entries.map((s) => [s.id, s]))
+    this.emit()
   }
 
   dimStyleInUse(id: DimStyleId): boolean {

@@ -432,6 +432,8 @@ export interface ToolText {
   feedback(id: FeedbackId, values?: MessageValues): string
   /** One line of HATCH's `?` listing. */
   hatchPatternListing(id: string): string
+  /** One line of -DIMSTYLE's STatus and Variables listings. */
+  dimVariableListing(name: string, value: string): string
   /**
    * The keyword `input` names among `ids`, for a prompt whose keywords the
    * tool reads from a free-text field itself (TEXT's Justify).

@@ -342,6 +342,22 @@ export class EngineText {
     })
   }
 
+  /**
+   * One line of -DIMSTYLE's STatus and Variables: the name in 12 columns, the
+   * value in 21, the description (probes dimensions/p06, p07). A name longer
+   * runs into its value, as `DIMTXTDIRECTIONOff` does there.
+   */
+  dimVariableListing(name: string, value: string): string {
+    const description = compiledTable(
+      this.commands.listing.dimVariableDescription
+    )[name]
+    return this.format(this.commands.listing.dimVariable, {
+      name: name.padEnd(12),
+      value: value.padEnd(21),
+      description: description === undefined ? "" : this.format(description),
+    })
+  }
+
   defaultLayerName(n: number): string {
     return this.format(this.commands.defaults.layer, { n })
   }

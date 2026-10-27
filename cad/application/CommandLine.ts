@@ -303,6 +303,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   zoom: "ZOOM",
   pan: "PAN",
   dashpan: "-PAN",
+  dashdimstyle: "-DIMSTYLE",
   ucs: "UCS",
   ucsicon: "UCSICON",
   plan: "PLAN",

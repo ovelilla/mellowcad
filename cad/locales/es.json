@@ -68,6 +68,7 @@
       "zoom": "Zoom",
       "pan": "Encuadre",
       "dashpan": "Encuadre por puntos",
+      "dashdimstyle": "Estilo de cota (línea de comandos)",
       "ucs": "SCP",
       "ucsicon": "Icono SCP",
       "fill": "Rellenar",
@@ -487,6 +488,7 @@
       "OPEN": ["ABRE"],
       "PASTECLIP": ["PEGAPP"],
       "DIMSTYLE": ["ACOESTIL", "ACES", "ACOEST", "AES", "DCOTA"],
+      "-DIMSTYLE": ["-ACOESTIL"],
       "STYLE": ["ESTILO", "EST", "ESTILODD"],
       "BLOCKSPALETTE": ["PALETABLOQUES"],
       "PURGE": ["LIMPIA", "LI"],
@@ -750,6 +752,16 @@
       },
       "DIMSPACE": {
         "Auto": "Auto"
+      },
+      "-DIMSTYLE": {
+        "Save": "Guardar",
+        "Restore": "Restituir",
+        "STatus": "Estado",
+        "Variables": "Variables",
+        "Apply": "Aplicar",
+        "?": "?",
+        "Yes": "Sí",
+        "No": "No"
       },
       "OFFSET": {
         "Through": "Atravesar",
@@ -1424,6 +1436,13 @@
       "selectContinuedDimension": "Designe cota continua",
       "spaceBaseDimension": "Designar cota base",
       "selectDimensionsToSpace": "Designe cotas para intervalo",
+      "dimStyleOption": "Indique una opción de estilo de cota",
+      "dimStyleSaveName": "Indique nombre para estilo de cota nuevo o",
+      "dimStyleRedefine": "Este nombre está ya en uso; ¿redefinirlo?",
+      "dimStyleName": "Indique un nombre de estilo de cota, [?] o",
+      "dimStyleSelectDimension": "designar cota",
+      "dimStylesToList": "Indique estilo(s) de cota a enumerar",
+      "selectDimension": "Designe una cota",
       "enterValueOr": "Indique valor o"
     },
     "format": {
@@ -1619,6 +1638,10 @@
       "cornersSkipped": "{parallel, plural, =0 {} one {# resulta paralela(s)    } other {# resultan paralela(s)    }}{tooShort, plural, =0 {} one {# resulta demasiado corta(s)    } other {# resultan demasiado corta(s)    }}{divergent, plural, =0 {} one {# resulta divergente(s)    } other {# resultan divergente(s)    }}",
       "invalid": "*No válido*",
       "styleNameInUse": "Ya existe un {table, select, dimension {estilo de cota} other {estilo de texto}} con el nombre \"{name}\".",
+      "currentDimStyle": "Estilo de cota actual: {name}   Anotativo: No",
+      "unknownDimStyle": "Estilo de cota desconocido.",
+      "namedDimStyles": "Estilos de cota guardados:",
+      "noMatchingDimStyles": "  Estilo de cota no encontrado.",
       "splineSettingsFit": "Parámetros actuales: Método=Ajustar Nudos={knots, select, chord {Cuerda} sqrtChord {Raíz cuadrada} other {Uniforme}}",
       "splineSettingsCv": "Parámetros actuales: Método=VC   Grado={degree}",
       "requiresIntegerBetween": "Requiere un nº entero entre {min} y {max}.",
@@ -1833,6 +1856,22 @@
       "OFFSET": { "Through": "punto a Atravesar" }
     },
     "listing": {
+      "dimVariable": "{name}{value}{description}",
+      "dimVariableDescription": {
+        "DIMSTYLE": "Estilo de cota actual (de sólo lectura)",
+        "DIMADEC": "Decimales angulares",
+        "DIMASZ": "Tamaño de la flecha",
+        "DIMCEN": "Tamaño de la marca de centro",
+        "DIMDEC": "Precisión decimal",
+        "DIMDLI": "Intervalo para continuar la línea de cota",
+        "DIMDSEP": "Separador decimal",
+        "DIMEXE": "Extensión sobre la línea de cota",
+        "DIMEXO": "Desfase línea de referencia - origen",
+        "DIMGAP": "Distancia entre el texto y la línea de cota",
+        "DIMSCALE": "Factor de escala general",
+        "DIMTXT": "Altura del texto",
+        "DIMZIN": "Supresión de ceros"
+      },
       "hatchPattern": "{name} - {description}",
       "hatchPatternDescription": {
         "SOLID": " Relleno sólido",

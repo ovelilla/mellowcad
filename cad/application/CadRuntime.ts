@@ -99,6 +99,7 @@ import {
   RemoveLayerCommand,
   SetCurrentLayerCommand,
 } from "./commands/layerCommands"
+import { AddDimStyleCommand } from "./commands/dimStyleCommands"
 import { AddTextStyleCommand } from "./commands/textStyleCommands"
 import { NewDrawingCommand } from "./commands/entityCommands"
 import { MACRO_PAUSE, PointerInput, Tool, ToolContext } from "./tools/Tool"
@@ -211,9 +212,11 @@ import {
   setSelectionProperty,
 } from "./runtimeProperties"
 import {
-  createDimStyle,
+  newDimStyle,
   newTextStyle,
+  removeDimStyle,
   removeTextStyle,
+  setCurrentDimStyle,
   setCurrentTextStyle,
   setSelectionDimStyle,
   setSelectionTextStyle,
@@ -723,6 +726,8 @@ export class CadRuntime extends Observable {
         message: (id, values) => this.text.message(id, values),
         feedback: (id, values) => this.text.feedback(id, values),
         hatchPatternListing: (id) => this.text.hatchPatternListing(id),
+        dimVariableListing: (name, value) =>
+          this.text.dimVariableListing(name, value),
         resolveKeyword: (input, ids) =>
           resolveKeyword(
             input,
@@ -4389,24 +4394,39 @@ export class CadRuntime extends Observable {
     this.document.setLtScale(ltScale)
   }
 
+  /**
+   * A new dimension style copied from `basedOn`, current with `makeCurrent`:
+   * a step of the Dimension Style Manager's. Unnamed, it is `Copy of ISO-25`.
+   */
   createDimStyle(
     name?: string,
     basedOn?: DimStyleId,
     makeCurrent = true
   ): DimStyleId {
-    return createDimStyle(this.document, name, basedOn, makeCurrent, (base) =>
+    const style = newDimStyle(this.document, name, basedOn, (base) =>
       this.text.copyName(base)
     )
+    this.dimStyleStep(new AddDimStyleCommand(style, makeCurrent))
+    return style.id
   }
 
   /** A change to a dimension style; a name in use is refused at the prompt. */
   updateDimStyle(id: DimStyleId, patch: Partial<Omit<DimStyle, "id">>): void {
-    const refusal = updateDimStyle(this.document, id, patch)
+    const refusal = updateDimStyle(
+      this.document,
+      (command) => this.dimStyleStep(command),
+      id,
+      patch
+    )
     if (refusal !== null) this.refuseStyleName("dimension", patch.name)
   }
 
   setCurrentDimStyle(id: DimStyleId): void {
-    this.document.setCurrentDimStyle(id)
+    setCurrentDimStyle(
+      this.document,
+      (command) => this.dimStyleStep(command),
+      id
+    )
   }
 
   /**
@@ -4414,7 +4434,21 @@ export class CadRuntime extends Observable {
    * style, or one still in use). Returns whether it was removed.
    */
   removeDimStyle(id: DimStyleId): boolean {
-    return this.document.removeDimStyle(id)
+    return removeDimStyle(
+      this.document,
+      (command) => this.dimStyleStep(command),
+      id
+    )
+  }
+
+  /**
+   * One of the Dimension Style Manager's edits, a step U names `DIMSTYLE`
+   * (desktop d05; -DIMSTYLE's is `-DIMSTYLE`, p05). WHY the dialog's name for
+   * the Styles palette: it stands in for that dialog (TEXT-D58). Mid-command
+   * it joins that command's step.
+   */
+  private dimStyleStep(command: Command): void {
+    this.executeOutside(command, this.text.commandNames("DIMSTYLE")[0])
   }
 
   /** Puts the dimensions the Properties palette edits on style `id`. */

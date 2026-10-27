@@ -205,3 +205,36 @@ export function createDimStyle(
 ): DimStyle {
   return { ...DEFAULT_DIM_STYLE, ...overrides, id, name }
 }
+
+/** A dimension variable as -DIMSTYLE's STatus and Variables list it. */
+export interface DimVariable {
+  /** Its name, `DIMASZ`: an id, which the listing's description is keyed by. */
+  readonly name: string
+  readonly value: string
+}
+
+/**
+ * The style's variables this model holds, in the alphabetical order and the
+ * formats AutoCAD's listing writes them (`2.5000`, `2`, `,`; probes
+ * dimensions/p06, p07): a distance or a factor with four places whatever
+ * DIMDEC or LUPREC, a count and DIMZIN as integers. WHY only these: a variable
+ * not modelled has no value of its own here to list (DIMS-D7).
+ */
+export function dimStyleVariables(style: DimStyle): readonly DimVariable[] {
+  const real = (value: number) => value.toFixed(4)
+  return [
+    { name: "DIMADEC", value: String(style.angleDecimals) },
+    { name: "DIMASZ", value: real(style.arrowSize) },
+    { name: "DIMCEN", value: real(style.centerMark) },
+    { name: "DIMDEC", value: String(style.decimals) },
+    { name: "DIMDLI", value: real(style.baselineSpacing) },
+    { name: "DIMDSEP", value: style.decimalSeparator },
+    { name: "DIMEXE", value: real(style.extensionBeyond) },
+    { name: "DIMEXO", value: real(style.extensionOffset) },
+    { name: "DIMGAP", value: real(style.textGap) },
+    { name: "DIMSCALE", value: real(style.scale) },
+    { name: "DIMTXT", value: real(style.textHeight) },
+    // DIMZIN's 8 is the only bit modelled (`suppressTrailingZeros`).
+    { name: "DIMZIN", value: style.suppressTrailingZeros ? "8" : "0" },
+  ]
+}

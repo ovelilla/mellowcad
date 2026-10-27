@@ -239,6 +239,100 @@ describe("dimension style table", () => {
   })
 })
 
+/** The dimension styles' names, in the table's order. */
+function dimStyleNames(cad: CadHarness): string[] {
+  return cad.state().dimStyles.map((style) => style.name)
+}
+
+describe("the dimension style table through the history (DSY-01, DIMS-D6)", () => {
+  // AutoCAD's U takes back a style the Dimension Style Manager made and puts
+  // DIMSTYLE back, naming DIMSTYLE (desktop d05; -DIMSTYLE's U, p05).
+  it("U takes back a new style and the current style it set (d05, p05)", () => {
+    const cad = createHarness()
+    cad.runtime.createDimStyle("Plans")
+    expect(cad.state().currentDimStyleId).toBe("Plans")
+
+    expect(written(cad, "_U")).toEqual(["U", "DIMSTYLE"])
+    expect(dimStyleNames(cad)).toEqual(["ISO-25"])
+    expect(cad.state().currentDimStyleId).toBe("ISO-25")
+
+    expect(written(cad, "_REDO")).toEqual([
+      "REDO",
+      "DIMSTYLE",
+      "Everything has been redone",
+    ])
+    expect(dimStyleNames(cad)).toEqual(["ISO-25", "Plans"])
+    expect(cad.state().currentDimStyleId).toBe("Plans")
+  })
+
+  it("U takes back an edit of a style (scratch r)", () => {
+    const cad = createHarness()
+    cad.runtime.updateDimStyle("ISO-25", { textHeight: 5 })
+    expect(written(cad, "_U")).toEqual(["U", "DIMSTYLE"])
+    expect(cad.state().dimStyles[0].textHeight).toBe(2.5)
+  })
+
+  it("U after LINE and a new style takes back the style, not the LINE (p05)", () => {
+    const cad = createHarness()
+    cad.command("LINE").type("0,0").enter().type("10,0").enter().enter()
+    cad.runtime.createDimStyle("Plans")
+
+    expect(written(cad, "_U")).toEqual(["U", "DIMSTYLE"])
+    expect(cad.entities()).toHaveLength(1)
+    expect(dimStyleNames(cad)).toEqual(["ISO-25"])
+  })
+
+  it("U takes back a current-style change and a rename", () => {
+    const cad = createHarness()
+    cad.runtime.createDimStyle("Plans", undefined, false)
+    cad.runtime.setCurrentDimStyle("Plans")
+    cad.runtime.updateDimStyle("Plans", { name: "Sections" })
+
+    expect(written(cad, "_U")).toEqual(["U", "DIMSTYLE"])
+    expect(dimStyleNames(cad)).toEqual(["ISO-25", "Plans"])
+    expect(written(cad, "_U")).toEqual(["U", "DIMSTYLE"])
+    expect(cad.state().currentDimStyleId).toBe("ISO-25")
+  })
+
+  it("U puts a deleted style back in its place", () => {
+    const cad = createHarness()
+    cad.runtime.createDimStyle("A", undefined, false)
+    cad.runtime.createDimStyle("B", undefined, false)
+    expect(cad.runtime.removeDimStyle("A")).toBe(true)
+
+    expect(written(cad, "_U")).toEqual(["U", "DIMSTYLE"])
+    expect(dimStyleNames(cad)).toEqual(["ISO-25", "A", "B"])
+  })
+
+  it("an edit that changes nothing, or is refused, makes no step", () => {
+    const cad = createHarness()
+    cad.runtime.setCurrentDimStyle("ISO-25")
+    cad.runtime.updateDimStyle("ISO-25", { textHeight: 2.5 })
+    cad.runtime.updateDimStyle("ISO-25", { name: "" })
+    expect(cad.runtime.removeDimStyle("ISO-25")).toBe(false)
+    expect(written(cad, "_U")).toEqual(["U", "Everything has been undone"])
+  })
+
+  it("a style made mid-command joins that command's step", () => {
+    const cad = createHarness()
+    cad.command("LINE").type("0,0").enter()
+    cad.runtime.createDimStyle("Plans")
+    cad.type("10,0").enter().enter()
+
+    expect(written(cad, "_U")).toEqual(["U", "LINE"])
+    expect(cad.entities()).toHaveLength(0)
+    expect(dimStyleNames(cad)).toEqual(["ISO-25"])
+  })
+
+  // es unverified: d05 was the English profile; U names a command by its
+  // Spanish name (BORRA, erase/p320).
+  it("names the step ACOESTIL in Spanish", () => {
+    const cad = createHarness({ locale: es })
+    cad.runtime.createDimStyle("Plans")
+    expect(written(cad, "H")).toEqual(["H", "ACOESTIL"])
+  })
+})
+
 describe("text style table", () => {
   it("ships with Standard current and its height free", () => {
     const cad = createHarness()

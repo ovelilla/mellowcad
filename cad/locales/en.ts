@@ -72,6 +72,7 @@ export const en: EngineCatalog = {
       "zoom": "Zoom",
       "pan": "Pan",
       "dashpan": "Pan by points",
+      "dashdimstyle": "Dimension style (command line)",
       "ucs": "UCS",
       "ucsicon": "UCS icon",
       "fill": "Fill",
@@ -885,6 +886,9 @@ export const en: EngineCatalog = {
         "DST",
         "DDIM"
       ],
+      "-DIMSTYLE": [
+        "-DIMSTYLE"
+      ],
       "STYLE": [
         "STYLE",
         "ST",
@@ -1607,6 +1611,13 @@ export const en: EngineCatalog = {
       "selectContinuedDimension": "Select continued dimension",
       "spaceBaseDimension": "Select base dimension",
       "selectDimensionsToSpace": "Select dimensions to space",
+      "dimStyleOption": "Enter a dimension style option",
+      "dimStyleSaveName": "Enter name for new dimension style or",
+      "dimStyleRedefine": "That name is already in use, redefine it?",
+      "dimStyleName": "Enter a dimension style name, [?] or",
+      "dimStyleSelectDimension": "select dimension",
+      "dimStylesToList": "Enter dimension style(s) to list",
+      "selectDimension": "Select dimension",
       "enterValueOr": "Enter value or"
     },
     "format": {
@@ -2773,6 +2784,16 @@ export const en: EngineCatalog = {
         ],
         "\" already exists."
       ],
+      "currentDimStyle": [
+        "Current dimension style: ",
+        [
+          "name"
+        ],
+        "   Annotative: No"
+      ],
+      "unknownDimStyle": "Unknown dimension style.",
+      "namedDimStyles": "Named dimension styles:",
+      "noMatchingDimStyles": "  No matching dimension styles found.",
       "splineSettingsFit": [
         "Current settings: Method=Fit   Knots=",
         [
@@ -3639,6 +3660,32 @@ export const en: EngineCatalog = {
       }
     },
     "listing": {
+      "dimVariable": [
+        [
+          "name"
+        ],
+        [
+          "value"
+        ],
+        [
+          "description"
+        ]
+      ],
+      "dimVariableDescription": {
+        "DIMSTYLE": "Current dimension style (read-only)",
+        "DIMADEC": "Angular decimal places",
+        "DIMASZ": "Arrow size",
+        "DIMCEN": "Center mark size",
+        "DIMDEC": "Decimal places",
+        "DIMDLI": "Dimension line spacing",
+        "DIMDSEP": "Decimal separator",
+        "DIMEXE": "Extension above dimension line",
+        "DIMEXO": "Extension line origin offset",
+        "DIMGAP": "Gap from dimension line to text",
+        "DIMSCALE": "Overall scale factor",
+        "DIMTXT": "Text height",
+        "DIMZIN": "Zero suppression"
+      },
       "hatchPattern": [
         [
           "name"

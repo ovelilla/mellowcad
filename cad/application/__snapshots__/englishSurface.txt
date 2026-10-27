@@ -62,6 +62,7 @@ ID [] "ID Point"
 ZOOM ["Z"] "Zoom"
 PAN ["P"] "Pan"
 -PAN [] "Pan by points"
+-DIMSTYLE [] "Dimension style (command line)"
 UCS [] "UCS"
 UCSICON [] "UCS icon"
 PLAN [] "Plan view"
@@ -149,6 +150,7 @@ dimangular "Angular" DAN
 dimbaseline "Baseline" DBA
 dimcontinue "Continue" DCO
 dimspace "Adjust space" DIMSPACE
+dashdimstyle "Dimension style (command line)" -DIMSTYLE
 offset "Offset" O
 move "Move" M
 copy "Copy" CO
@@ -5314,6 +5316,193 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Specify linetype name or [?] <Center>: NOPE
   info| Linetype "NOPE" not found in acad.lin.
         You can use the "Load" option to load it from another file.
+
+## -DIMSTYLE
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> -DIMSTYLE
+  prompt: -DIMSTYLE Enter a dimension style option [Save/Restore/STatus/Variables/Apply/?] <Restore>:
+  asks: 
+  tip: Enter a dimension style option
+  dyn: 
+  options: [S] Save, [R] Restore, [ST] STatus, [V] Variables, [A] Apply, [?] ?
+  command| -DIMSTYLE
+  info| Current dimension style: ISO-25   Annotative: No
+> S
+  prompt: -DIMSTYLE Enter name for new dimension style or [?]:
+  asks: "Enter name for new dimension style or"
+  tip: Enter name for new dimension style or
+  dyn: "Enter name for new dimension style or"=""||*
+  options: [?] ?
+  prompt| Enter a dimension style option [Save/Restore/STatus/Variables/Apply/?] <Restore>: S
+> ?
+  prompt: -DIMSTYLE Enter dimension style(s) to list <*>:
+  asks: "Enter dimension style(s) to list"
+  tip: Enter dimension style(s) to list
+  dyn: "Enter dimension style(s) to list"=""||*
+  options: -
+  prompt| Enter name for new dimension style or [?]: ?
+> list
+  prompt: -DIMSTYLE Enter name for new dimension style or [?]:
+  asks: "Enter name for new dimension style or"
+  tip: Enter name for new dimension style or
+  dyn: "Enter name for new dimension style or"=""||*
+  options: [?] ?
+  prompt| Enter dimension style(s) to list <*>:
+  info| Named dimension styles:
+        
+          ISO-25
+> name
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Enter name for new dimension style or [?]: Plans
+> S again
+  prompt: -DIMSTYLE Enter name for new dimension style or [?]:
+  asks: "Enter name for new dimension style or"
+  tip: Enter name for new dimension style or
+  dyn: "Enter name for new dimension style or"=""||*
+  options: [?] ?
+  command| -DIMSTYLE
+  info| Current dimension style: Plans   Annotative: No
+  prompt| Enter a dimension style option [Save/Restore/STatus/Variables/Apply/?] <Restore>: S
+> in use
+  prompt: -DIMSTYLE That name is already in use, redefine it? <N>:
+  asks: 
+  tip: That name is already in use, redefine it?
+  dyn: 
+  options: -
+  prompt| Enter name for new dimension style or [?]: PLANS
+> N
+  prompt: -DIMSTYLE Enter name for new dimension style or [?]:
+  asks: "Enter name for new dimension style or"
+  tip: Enter name for new dimension style or
+  dyn: "Enter name for new dimension style or"=""||*
+  options: [?] ?
+  prompt| That name is already in use, redefine it? <N>: N
+> escape
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Enter name for new dimension style or [?]: *Cancel*
+> R
+  prompt: -DIMSTYLE Enter a dimension style name, [?] or <select dimension>:
+  asks: "Enter a dimension style name, [?] or"
+  tip: Enter a dimension style name, [?] or
+  dyn: "Enter a dimension style name, [?] or"=""||*
+  command| -DIMSTYLE
+  info| Current dimension style: Plans   Annotative: No
+  prompt| Enter a dimension style option [Save/Restore/STatus/Variables/Apply/?] <Restore>: R
+> unknown
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter a dimension style name, [?] or <select dimension>: FOO
+  info| Unknown dimension style.
+  info| Current dimension style: Plans   Annotative: No
+> Enter
+  prompt: -DIMSTYLE Enter a dimension style name, [?] or <select dimension>:
+  asks: "Enter a dimension style name, [?] or"
+  tip: Enter a dimension style name, [?] or
+  dyn: "Enter a dimension style name, [?] or"=""||*
+  command| -DIMSTYLE
+  info| Current dimension style: Plans   Annotative: No
+  prompt| Enter a dimension style option [Save/Restore/STatus/Variables/Apply/?] <Restore>:
+> select dimension
+  prompt: -DIMSTYLE Select dimension:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter a dimension style name, [?] or <select dimension>:
+> pick
+  prompt: Command:
+  prompt| Select dimension:
+  info| Current dimension style: ISO-25   Annotative: No
+> ST
+  command| -DIMSTYLE
+  info| Current dimension style: ISO-25   Annotative: No
+  prompt| Enter a dimension style option [Save/Restore/STatus/Variables/Apply/?] <Restore>: ST
+  info| DIMSTYLE    ISO-25               Current dimension style (read-only)
+        DIMADEC     0                    Angular decimal places
+        DIMASZ      2.5000               Arrow size
+        DIMCEN      2.5000               Center mark size
+        DIMDEC      2                    Decimal places
+        DIMDLI      3.7500               Dimension line spacing
+        DIMDSEP     ,                    Decimal separator
+        DIMEXE      1.2500               Extension above dimension line
+        DIMEXO      0.6250               Extension line origin offset
+        DIMGAP      0.6250               Gap from dimension line to text
+        DIMSCALE    1.0000               Overall scale factor
+        DIMTXT      2.5000               Text height
+        DIMZIN      8                    Zero suppression
+> V
+  prompt: -DIMSTYLE Enter a dimension style name, [?] or <select dimension>:
+  asks: "Enter a dimension style name, [?] or"
+  tip: Enter a dimension style name, [?] or
+  dyn: "Enter a dimension style name, [?] or"=""||*
+  command| -DIMSTYLE
+  info| Current dimension style: ISO-25   Annotative: No
+  prompt| Enter a dimension style option [Save/Restore/STatus/Variables/Apply/?] <Restore>: V
+> name
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter a dimension style name, [?] or <select dimension>: Plans
+  info| DIMADEC     0                    Angular decimal places
+        DIMASZ      2.5000               Arrow size
+        DIMCEN      2.5000               Center mark size
+        DIMDEC      2                    Decimal places
+        DIMDLI      3.7500               Dimension line spacing
+        DIMDSEP     ,                    Decimal separator
+        DIMEXE      1.2500               Extension above dimension line
+        DIMEXO      0.6250               Extension line origin offset
+        DIMGAP      0.6250               Gap from dimension line to text
+        DIMSCALE    1.0000               Overall scale factor
+        DIMTXT      2.5000               Text height
+        DIMZIN      8                    Zero suppression
+> A
+  prompt: -DIMSTYLE Select objects:
+  command| -DIMSTYLE
+  info| Current dimension style: ISO-25   Annotative: No
+  prompt| Enter a dimension style option [Save/Restore/STatus/Variables/Apply/?] <Restore>: A
+> pick
+  properties: Rotated Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=5.00~, Text position Y=6.88~, Text rotation=0°~, Measurement=10, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
+  prompt| Select objects: 1 found
+> enter
+  prompt: Command:
+  properties: -
+  prompt| Select objects:
+> ?
+  prompt: -DIMSTYLE Enter dimension style(s) to list <*>:
+  asks: "Enter dimension style(s) to list"
+  tip: Enter dimension style(s) to list
+  dyn: "Enter dimension style(s) to list"=""||*
+  command| -DIMSTYLE
+  info| Current dimension style: ISO-25   Annotative: No
+  prompt| Enter a dimension style option [Save/Restore/STatus/Variables/Apply/?] <Restore>: ?
+> all
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter dimension style(s) to list <*>:
+  info| Named dimension styles:
+        
+          ISO-25
+          Plans
 
 ## -LWEIGHT
 > start

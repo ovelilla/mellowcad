@@ -68,6 +68,7 @@
       "zoom": "Zoom",
       "pan": "Pan",
       "dashpan": "Pan by points",
+      "dashdimstyle": "Dimension style (command line)",
       "ucs": "UCS",
       "ucsicon": "UCS icon",
       "fill": "Fill",
@@ -521,6 +522,7 @@
       "OPEN": ["OPEN"],
       "PASTECLIP": ["PASTECLIP"],
       "DIMSTYLE": ["DIMSTYLE", "D", "DIMSTY", "DST", "DDIM"],
+      "-DIMSTYLE": ["-DIMSTYLE"],
       "STYLE": ["STYLE", "ST", "DDSTYLE"],
       "BLOCKSPALETTE": ["BLOCKSPALETTE"],
       "PURGE": ["PURGE", "PU"],
@@ -754,6 +756,16 @@
       "DIMBASELINE": { "Undo": "Undo", "Select": "Select" },
       "DIMCONTINUE": { "Undo": "Undo", "Select": "Select" },
       "DIMSPACE": { "Auto": "Auto" },
+      "-DIMSTYLE": {
+        "Save": "Save",
+        "Restore": "Restore",
+        "STatus": "STatus",
+        "Variables": "Variables",
+        "Apply": "Apply",
+        "?": "?",
+        "Yes": "Yes",
+        "No": "No"
+      },
       "OFFSET": {
         "Through": "Through",
         "Thru": "Thru",
@@ -1415,6 +1427,13 @@
       "selectContinuedDimension": "Select continued dimension",
       "spaceBaseDimension": "Select base dimension",
       "selectDimensionsToSpace": "Select dimensions to space",
+      "dimStyleOption": "Enter a dimension style option",
+      "dimStyleSaveName": "Enter name for new dimension style or",
+      "dimStyleRedefine": "That name is already in use, redefine it?",
+      "dimStyleName": "Enter a dimension style name, [?] or",
+      "dimStyleSelectDimension": "select dimension",
+      "dimStylesToList": "Enter dimension style(s) to list",
+      "selectDimension": "Select dimension",
       "enterValueOr": "Enter value or"
     },
     "format": {
@@ -1610,6 +1629,10 @@
       "cornersSkipped": "{parallel, plural, =0 {} one {# was parallel    } other {# were parallel    }}{tooShort, plural, =0 {} one {# was too short    } other {# were too short    }}{divergent, plural, =0 {} one {# was divergent    } other {# were divergent    }}",
       "invalid": "*Invalid*",
       "styleNameInUse": "A {table, select, dimension {dimension style} other {text style}} named \"{name}\" already exists.",
+      "currentDimStyle": "Current dimension style: {name}   Annotative: No",
+      "unknownDimStyle": "Unknown dimension style.",
+      "namedDimStyles": "Named dimension styles:",
+      "noMatchingDimStyles": "  No matching dimension styles found.",
       "splineSettingsFit": "Current settings: Method=Fit   Knots={knots, select, chord {Chord} sqrtChord {Square root} other {Uniform}}",
       "splineSettingsCv": "Current settings: Method=CV   Degree={degree}",
       "requiresIntegerBetween": "Requires an integer between {min} and {max}.",
@@ -1824,6 +1847,22 @@
       "OFFSET": { "Through": "Through" }
     },
     "listing": {
+      "dimVariable": "{name}{value}{description}",
+      "dimVariableDescription": {
+        "DIMSTYLE": "Current dimension style (read-only)",
+        "DIMADEC": "Angular decimal places",
+        "DIMASZ": "Arrow size",
+        "DIMCEN": "Center mark size",
+        "DIMDEC": "Decimal places",
+        "DIMDLI": "Dimension line spacing",
+        "DIMDSEP": "Decimal separator",
+        "DIMEXE": "Extension above dimension line",
+        "DIMEXO": "Extension line origin offset",
+        "DIMGAP": "Gap from dimension line to text",
+        "DIMSCALE": "Overall scale factor",
+        "DIMTXT": "Text height",
+        "DIMZIN": "Zero suppression"
+      },
       "hatchPattern": "{name} - {description}",
       "hatchPatternDescription": {
         "SOLID": " Solid fill",

@@ -162,12 +162,73 @@ pair; DIMADEC formatting
 ISO-25`), rename, delete guarded against in-use/current, edit Lines/Symbols and Arrows/Text/Fit/
 Primary Units (Precision, Decimal separator, Suppress trailing zeros, Angular precision), assign per
 selection (the Properties palette's drop-down and the Edit menu's Dimension Style ▸: one undo
-step). Names are case-blind: a new `iso-25` is `iso-25 (2)`, and a rename onto a name in use is
-refused at the prompt with `A dimension style named "X" already exists.` / `*Invalid*` (tables
-21392, 26367, the text style's wording, text/p323).
+step). Every creation, edit, rename, deletion and current-style change is undone by U, which names
+it `DIMSTYLE` (`ACOESTIL` in Spanish, unverified) and puts the current style back (desktop d05;
+-DIMSTYLE's U, p05); one made mid-command joins that command's step (DSY-01). Names are case-blind:
+a new `iso-25` is `iso-25 (2)`, and a rename onto a name in use is refused at the prompt with `A
+dimension style named "X" already exists.` / `*Invalid*` (tables 21392, 26367, the text style's
+wording, text/p323).
 
-**Missing:** Override, Compare, "Use For" sub-styles, Description, All/In-use filter; U of a style
-edit (only the drop-down's assignment is undone)
+**Missing:**
+
+- **The Dimension Style Manager.** DIMSTYLE opens the Styles palette's dimension table instead
+  (TEXT-D58, DIMS-D10). The dialog (d05-1, d05-4): `Current dimension style: ISO-25`, the Styles
+  list (Annotative with its icon, then ISO-25), the List filter (All styles) and `Don't list styles
+  in Xrefs`, Preview of the selected style, its Description, Set Current, New…, Modify…,
+  Override…, Compare…, Close, Help. New… opens Create New Dimension Style (d05-2): New Style Name
+  (`Copy of ISO-25`), Start With, Annotative, Use for (All dimensions), Continue / Cancel / Help;
+  Continue opens New Dimension Style: Copy of ISO-25 (d05-3) on its tabs Lines, Symbols and
+  Arrows, Text, Fit, Primary Units, Alternate Units, Tolerances, with a preview, OK / Cancel /
+  Help. The style made is current once the manager closes (d05-4).
+- Override, Compare, "Use For" sub-styles, Description, the All/In-use filter.
+- **Dimension overrides.** A DIMxxx variable typed as a command (`DIMSCALE`, `DIMTXT`) sets an
+  override of the current style, which U takes back naming the variable (p06), and -DIMSTYLE then
+  says `Current dimension overrides:` with each one (p06); not modelled (DIMS-D9: the variables
+  typed are the Workspace review's).
+- **Standard and Annotative**, the two styles beside ISO-25 a new metric drawing holds (p07, p10,
+  p14, d05-1). Annotative is inert without annotative scaling (TEXT-D50); Standard's look (DIMTXT
+  0.18, DIMTAD 0, DIMTIH On) needs DIMTAD and DIMTIH, which are not modelled (DIMS-D8).
+
+### `-DIMSTYLE` · es `-ACOESTIL`
+
+**Implemented** (p04–p11, p16): `Current dimension style: ISO-25   Annotative: No` (es `Estilo de
+cota actual: ISO-25   Anotativo: No`), then `Enter a dimension style option
+[Save/Restore/STatus/Variables/Apply/?] <Restore>:` (es `Indique una opción de estilo de cota
+[Guardar/Restituir/Estado/Variables/Aplicar/?] <Restituir>:`), answered once; a word it does not
+take says `Invalid option keyword.` and asks again (p11).
+
+- **Save**: `Enter name for new dimension style or [?]:` names a new style holding the current
+  style's settings, made current (p08). A name in use, any case, asks `That name is already in
+  use, redefine it? <N>:` (es `Este nombre está ya en uso; ¿redefinirlo? <N>:`); No or Enter asks
+  the name again (p08), Yes gives that style the current settings and makes it current (p06 on the
+  current style's own name; on another style, unverified).
+- **Restore** (Enter's): `Enter a dimension style name, [?] or <select dimension>:` makes the named
+  style current and says the Current line (p11); an unknown name says `Unknown dimension style.`,
+  the Current line, and ends (p04, p08, p11). Enter asks `Select dimension:` (es `Designe una
+  cota:`), whose pick, typed point or `L` makes that dimension's style current (p16); another object
+  says `Selected object is not a dimension.` and asks again (table AcDimRes 5307; what follows it
+  unverified).
+- **STatus** lists `DIMSTYLE    ISO-25               Current dimension style (read-only)` and the
+  current style's variables; **Variables** asks for a style the way Restore does and lists its
+  variables (p06, p07). Both list only the variables modelled (DIMADEC, DIMASZ, DIMCEN, DIMDEC,
+  DIMDLI, DIMDSEP, DIMEXE, DIMEXO, DIMGAP, DIMSCALE, DIMTXT, DIMZIN), in AutoCAD's columns and
+  words, both languages.
+- **Apply**: `Select objects:`; the dimensions selected take the current style (p16).
+- **`?`**: `Enter dimension style(s) to list <*>:`, then `Named dimension styles:` (es `Estilos de
+  cota guardados:`) and the styles matching, in the table's order (p07, p10), or `No matching
+  dimension styles found.` (table AcDimRes 5300). The blank line under the heading is the table's;
+  the console leaves it out.
+- U names the run `-DIMSTYLE` (es `-ACOESTIL`, p05). `'-DIMSTYLE` is refused: `** That command may
+  not be invoked transparently **` (p09).
+
+**Missing:**
+
+- **ANnotative**, left out of the list: annotative scaling does not exist here (DIMS-D7, D8).
+- The variables not modelled, in STatus and Variables; `Current dimension overrides:` (above).
+- Unverified, not probed: Save's and Restore's `?` asking the name again after the listing, Enter
+  at Save's name (it ends the command here), a name AutoCAD refuses (`Invalid style name.`, table
+  AcDimRes 5301), the redefinition prompt's refusal of a word other than Yes or No, and Apply on a
+  preselection (the selection is dropped here).
 
 ### `STYLE` / `ST` / `DDSTYLE` · es `ESTILO` / `EST` / `ESTILODD`
 

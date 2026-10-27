@@ -290,6 +290,8 @@ const RAIL_EXCLUDED = new Set([
   "zoom",
   "pan",
   "dashpan",
+  // -DIMSTYLE is typed; the Styles palette stands in for its manager.
+  "dashdimstyle",
   "orbit",
   "copyclip",
   "cutclip",

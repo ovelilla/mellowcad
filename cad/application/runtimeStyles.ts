@@ -11,12 +11,18 @@ import {
   DimStyle,
   DimStyleId,
 } from "../domain/dimStyles"
+import { newStyleIdentity, sameStyleName } from "../domain/styleNames"
 import {
   createDefaultTextStyle,
   TextStyle,
   TextStyleId,
 } from "../domain/textStyles"
 import { Command, CommandHistory } from "./commands/Command"
+import {
+  RemoveDimStyleCommand,
+  SetCurrentDimStyleCommand,
+  UpdateDimStyleCommand,
+} from "./commands/dimStyleCommands"
 import { UpdateEntitiesCommand } from "./commands/entityCommands"
 import {
   RemoveTextStyleCommand,
@@ -27,87 +33,46 @@ import {
 /** Why a style's new name is refused: another style of the table has it. */
 export type StyleNameRefusal = "inUse"
 
-/** Whether two names are one, compared as AutoCAD compares table names (p324). */
-function sameName(a: string, b: string): boolean {
-  return a.toUpperCase() === b.toUpperCase()
-}
-
-/**
- * `name`, or `name (2)`… when taken: creating a style twice never overwrites
- * the first. Case-blind, as AutoCAD's tables are (`STANDARD` is Standard,
- * text/p324).
- */
-function freeName(name: string, taken: readonly string[]): string {
-  const free = (candidate: string) =>
-    !taken.some((other) => sameName(other, candidate))
-  if (free(name)) return name
-  let n = 2
-  while (!free(`${name} (${n})`)) n += 1
-  return `${name} (${n})`
-}
-
-/**
- * A new style's name, free in the table, and its id: the name too, unless a
- * renamed style still holds that id.
- */
-function newStyleIdentity(
-  name: string,
-  styles: ReadonlyArray<{ readonly id: string; readonly name: string }>
-): { id: string; name: string } {
-  const styleName = freeName(
-    name,
-    styles.map((style) => style.name)
-  )
-  return {
-    id: freeName(
-      styleName,
-      styles.map((style) => style.id)
-    ),
-    name: styleName,
-  }
-}
-
 /** Whether another style than `id` is named `name`, any case. */
 function nameTaken(
   styles: ReadonlyArray<{ readonly id: string; readonly name: string }>,
   id: string,
   name: string
 ): boolean {
-  return styles.some((style) => style.id !== id && sameName(style.name, name))
+  return styles.some(
+    (style) => style.id !== id && sameStyleName(style.name, name)
+  )
 }
 
 /**
- * Creates a dimension style copied from `basedOn` — AutoCAD's Create New
- * Dimension Style dialog, which names the style and "sets a style to use as a
- * basis for the new one". Returns the new style's id.
+ * A dimension style copied from `basedOn`, not yet in the table — AutoCAD's
+ * Create New Dimension Style dialog, which names the style and "sets a style
+ * to use as a basis for the new one".
  */
-export function createDimStyle(
+export function newDimStyle(
   document: CadDocument,
   name: string | undefined,
   basedOn: DimStyleId | undefined,
-  makeCurrent: boolean,
   copyName: (base: string) => string
-): DimStyleId {
+): DimStyle {
   const base =
     document.getDimStyle(basedOn ?? document.getCurrentDimStyleId()) ??
     DEFAULT_DIM_STYLE
-  const style: DimStyle = {
+  return {
     ...base,
     ...newStyleIdentity(name ?? copyName(base.name), document.getDimStyles()),
   }
-  document.addDimStyle(style)
-  if (makeCurrent) document.setCurrentDimStyle(style.id)
-  return style.id
 }
 
 /**
- * Applies a partial change to a dimension style — every control of the
- * Dimension Style Manager goes through this one patch. Editing a dimension
- * style is not undoable yet (the Dimensions review's). A new name another
- * style has, any case, is refused and changes nothing.
+ * Applies a partial change to a dimension style through `execute`, one step
+ * — every control of the Dimension Style Manager goes through this one patch.
+ * A new name another style has, any case, is refused and changes nothing; a
+ * change of nothing makes no step.
  */
 export function updateDimStyle(
   document: CadDocument,
+  execute: (command: Command) => void,
   id: DimStyleId,
   patch: Partial<Omit<DimStyle, "id">>
 ): StyleNameRefusal | null {
@@ -115,8 +80,35 @@ export function updateDimStyle(
   if (!style) return null
   const name = patch.name?.trim() || style.name
   if (nameTaken(document.getDimStyles(), id, name)) return "inUse"
-  document.updateDimStyle(clampDimStyle({ ...style, ...patch, name }))
+  const next = clampDimStyle({ ...style, ...patch, name })
+  const changed = (Object.keys(next) as (keyof DimStyle)[]).some(
+    (key) => next[key] !== style[key]
+  )
+  if (changed) execute(new UpdateDimStyleCommand(next))
   return null
+}
+
+/** Makes `id` the current dimension style through `execute`, when it is not already. */
+export function setCurrentDimStyle(
+  document: CadDocument,
+  execute: (command: Command) => void,
+  id: DimStyleId
+): void {
+  if (id === document.getCurrentDimStyleId() || !document.getDimStyle(id)) {
+    return
+  }
+  execute(new SetCurrentDimStyleCommand(id))
+}
+
+/** Deletes an unused dimension style through `execute`. Returns whether it did. */
+export function removeDimStyle(
+  document: CadDocument,
+  execute: (command: Command) => void,
+  id: DimStyleId
+): boolean {
+  if (!document.canRemoveDimStyle(id)) return false
+  execute(new RemoveDimStyleCommand(id))
+  return true
 }
 
 /** Puts every selected dimension on style `id`: one step. */
@@ -155,7 +147,7 @@ export function newTextStyle(
   let n = 1
   while (
     name === undefined &&
-    styles.some((style) => sameName(style.name, defaultName(n)))
+    styles.some((style) => sameStyleName(style.name, defaultName(n)))
   ) {
     n += 1
   }

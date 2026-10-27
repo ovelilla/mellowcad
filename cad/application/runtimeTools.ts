@@ -23,6 +23,7 @@ import { DimensionChainTool } from "./tools/DimensionChainTool"
 import { RadialDimensionTool } from "./tools/RadialDimensionTool"
 import { AngularDimensionTool } from "./tools/AngularDimensionTool"
 import { DimSpaceTool } from "./tools/DimSpaceTool"
+import { DimStyleTool } from "./tools/DimStyleTool"
 import { OffsetTool } from "./tools/OffsetTool"
 import { MoveTool } from "./tools/MoveTool"
 import { CopyTool } from "./tools/CopyTool"
@@ -128,6 +129,7 @@ export function defaultTools(
     new DimensionChainTool("baseline", "dimbaseline"),
     new DimensionChainTool("continue", "dimcontinue"),
     new DimSpaceTool(),
+    new DimStyleTool(),
     new OffsetTool(),
     new MoveTool(),
     new CopyTool(),
