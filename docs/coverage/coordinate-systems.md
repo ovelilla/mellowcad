@@ -195,11 +195,10 @@ draws has a Z at each end; a flat object (PLINE, SPLINE, CIRCLE, ARC, ELLIPSE, R
 TEXT, MTEXT, ATTDEF, INSERT) lies in the plane of the first point that fixed it,
 and the others are projected onto it — what AutoCAD's PLINE does, and its CIRCLE 3P and ARC
 through points at different heights (circle/p189, arc/p06). A dimension
-lies at the height of the point that places its dimension line, whatever its origins': snapped on
-objects above the plane, AutoCAD's is still "created at the current elevation" (Autodesk forum 2016,
-AUGI 2010); DIMBASELINE / DIMCONTINUE take the base dimension's, and a location snapped to an object
-its Z (**unverified**). Its origins' own Z is not kept (one elevation per dimension here; AutoCAD
-keeps each definition point's).
+lies at the current ELEVATION, whatever the Z of its origins or of its location, typed or snapped
+(dimensions/p158, p169, p324); DIMBASELINE / DIMCONTINUE take the base dimension's
+(**unverified**). Its origins' own Z is not kept (one elevation per dimension here; AutoCAD keeps
+each definition point's).
 MOVE, COPY, STRETCH and PASTECLIP displace in 3D, SCALE scales about a 3D base point, and BLOCK's
 base point and the clipboard's have a Z. LINE, CIRCLE, ARC, PLINE and POLYGON give what they draw
 the THICKNESS; RECTANG uses its own and TEXT none. The editing commands keep the Z: TRIM, EXTEND and

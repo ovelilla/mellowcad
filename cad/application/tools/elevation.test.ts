@@ -396,7 +396,7 @@ describe("BLOCK and INSERT", () => {
 })
 
 describe("dimensions", () => {
-  it("DIMLINEAR lies at the height of its dimension line, not of its origins", () => {
+  it("DIMLINEAR lies at the current ELEVATION, not at its origins' height", () => {
     const cad = createHarness({ entities: [RAISED], snap: true })
 
     cad.command("DIMLINEAR").click(p(0, 0)).click(p(100, 0)).click(p(50, -30))
@@ -404,7 +404,7 @@ describe("dimensions", () => {
     expect(entityElevation(drawnDimension(cad))).toBe(0)
   })
 
-  it("DIMLINEAR on a picked object lies at the elevation of the location", () => {
+  it("DIMLINEAR on a picked object lies at the current ELEVATION", () => {
     const cad = createHarness({ entities: [RAISED] })
 
     cad.command("ELEV").type("3").enter().type("0").enter()
@@ -413,7 +413,7 @@ describe("dimensions", () => {
     expect(entityElevation(drawnDimension(cad))).toBe(3)
   })
 
-  it("DIMLINEAR takes the height of a location snapped to an object", () => {
+  it("DIMLINEAR leaves the height of a location snapped to an object (probe dimensions/p169)", () => {
     const cad = createHarness({
       entities: [
         lineOf(p(0, 0), p(100, 0), { id: "REF-A" }),
@@ -424,10 +424,10 @@ describe("dimensions", () => {
 
     cad.command("DIMLINEAR").click(p(0, 0)).click(p(100, 0)).click(p(0, -40))
 
-    expect(entityElevation(drawnDimension(cad))).toBe(7)
+    expect(entityElevation(drawnDimension(cad))).toBe(0)
   })
 
-  it("DIMRADIUS lies at the height of its location, not of the circle", () => {
+  it("DIMRADIUS lies at the current ELEVATION, not at the circle's height", () => {
     const cad = createHarness({
       entities: [withElevation(circleOf(p(0, 0), 20, { id: "REF-C" }), 12)],
     })
@@ -437,7 +437,17 @@ describe("dimensions", () => {
     expect(entityElevation(drawnDimension(cad))).toBe(0)
   })
 
-  it("DIMANGULAR lies at the height of its arc's location", () => {
+  it("DIMDIAMETER leaves the Z typed for its location (probe dimensions/p324)", () => {
+    const cad = createHarness({
+      entities: [withElevation(circleOf(p(0, 0), 50, { id: "REF-C" }), 12)],
+    })
+
+    cad.command("DIMDIAMETER").click(p(50, 0)).type("40,40,5").enter()
+
+    expect(entityElevation(drawnDimension(cad))).toBe(0)
+  })
+
+  it("DIMANGULAR lies at the current ELEVATION, as every dimension (probes dimensions/p158, p324)", () => {
     const cad = createHarness({
       entities: [
         RAISED,
@@ -448,6 +458,12 @@ describe("dimensions", () => {
     cad.command("DIMANGULAR").click(p(50, 0)).click(p(0, 50)).click(p(30, 30))
 
     expect(entityElevation(drawnDimension(cad))).toBe(0)
+
+    cad.command("ELEV").type("4").enter().type("0").enter()
+    cad.command("DIMANGULAR").click(p(50, 0)).click(p(0, 50))
+    cad.type("30,30,9").enter()
+
+    expect(entityElevation(cad.entities().at(-1)!)).toBe(4)
   })
 
   it("DIMCONTINUE lies in the plane of the dimension it continues", () => {

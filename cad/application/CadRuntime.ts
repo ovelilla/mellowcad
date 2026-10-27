@@ -2195,14 +2195,17 @@ export class CadRuntime extends Observable {
    */
   private angleOverride(text: string): boolean {
     const match = /^<\s*(\S+)$/.exec(text.trim())
-    if (!match || this.toolAnchor() === null) return false
+    if (!match) return false
     const degrees = parseAngleDegrees(match[1])
     if (degrees === null) return false
+    // Answering the box needs no base point: DIMLINEAR's text angle has none
+    // (probe dimensions/p130).
     const box = this.loneAngleField()
     if (box !== null && this.activeTool.answersAngleOverride?.() === true) {
       this.dynamicInput.setText(box.field.id, match[1])
       return this.commitBox(box.session, box.field)
     }
+    if (this.toolAnchor() === null) return false
     if (this.resolver.hasAngleOverride()) {
       this.holdAngle(null)
       return this.refuse()

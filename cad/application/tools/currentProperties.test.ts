@@ -126,6 +126,35 @@ const FROM_SCRATCH: ReadonlyArray<
       c.command("DIMALIGNED").click(p(0, 0)).click(p(100, 0)).click(p(50, -30)),
   ],
   [
+    "DIMHORIZONTAL",
+    (c) =>
+      c
+        .command("DIMHORIZONTAL")
+        .click(p(0, 0))
+        .click(p(100, 0))
+        .click(p(50, -30)),
+  ],
+  [
+    "DIMVERTICAL",
+    (c) =>
+      c
+        .command("DIMVERTICAL")
+        .click(p(0, 0))
+        .click(p(0, 100))
+        .click(p(-30, 50)),
+  ],
+  [
+    "DIMROTATED",
+    (c) =>
+      c
+        .command("DIMROTATED")
+        .type("30")
+        .enter()
+        .click(p(0, 0))
+        .click(p(100, 0))
+        .click(p(50, -30)),
+  ],
+  [
     "DIMRADIUS",
     (c) => c.command("DIMRADIUS").click(p(20, 0)).click(p(40, 40)),
     [circleOf(p(0, 0), 20, { id: "C" })],

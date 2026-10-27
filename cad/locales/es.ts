@@ -35,6 +35,9 @@ export const es: EngineLocale = {
       "textedit": "Editar texto",
       "dimlinear": "Lineal",
       "dimaligned": "Alineada",
+      "dimhorizontal": "Horizontal",
+      "dimvertical": "Vertical",
+      "dimrotated": "Girada",
       "dimradius": "Radio",
       "dimdiameter": "Diámetro",
       "dimangular": "Angular",
@@ -686,6 +689,15 @@ export const es: EngineLocale = {
         "ACOALINEADA",
         "ACOALI"
       ],
+      "DIMHORIZONTAL": [
+        "ACOHORIZONTAL"
+      ],
+      "DIMVERTICAL": [
+        "ACOVERTICAL"
+      ],
+      "DIMROTATED": [
+        "ACOGIRADA"
+      ],
       "DIMRADIUS": [
         "ACORADIO",
         "ACORAD"
@@ -1222,6 +1234,18 @@ export const es: EngineLocale = {
         "Rotated": "Girar"
       },
       "DIMALIGNED": {
+        "Text": "Texto",
+        "Angle": "ángUlo"
+      },
+      "DIMHORIZONTAL": {
+        "Text": "Texto",
+        "Angle": "ángUlo"
+      },
+      "DIMVERTICAL": {
+        "Text": "Texto",
+        "Angle": "ángUlo"
+      },
+      "DIMROTATED": {
         "Text": "Texto",
         "Angle": "ángUlo"
       },
@@ -3813,6 +3837,7 @@ export const es: EngineLocale = {
       ],
       "lastKeyword": "úLTimo",
       "noObjectSelected": "No se ha designado ningún objeto.",
+      "notLineArcOrCircleToDimension": "El objeto designado no es ni una línea ni un círculo.",
       "associativeDimensionRequired": "Requiere una cota asociativa lineal, de coordenada o angular.",
       "selectedObjectNotDimension": "El objeto designado no es una cota.",
       "negativeSpacing": "Valor de intervalo no válido, el valor de intervalo no puede ser negativo."

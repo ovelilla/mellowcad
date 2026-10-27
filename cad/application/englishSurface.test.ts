@@ -852,6 +852,23 @@ describe("the engine's English surface", () => {
         .do("second", (c) => c.click(at(60, 80)))
         .do("location", (c) => c.click(at(-40, 60)))
     )
+    walk("DIMHORIZONTAL, DIMVERTICAL and DIMROTATED", createHarness(), (s) =>
+      s
+        .do("DIMHORIZONTAL", (c) => c.command("DIMHORIZONTAL"))
+        .do("first", (c) => c.click(at(0, 0)))
+        .do("second", (c) => c.click(at(100, 40)))
+        .do("location", (c) => c.click(at(150, 20)))
+        .do("DIMVERTICAL", (c) => c.command("DIMVERTICAL"))
+        .do("first", (c) => c.click(at(0, 0)))
+        .do("second", (c) => c.click(at(100, 40)))
+        .do("location", (c) => c.click(at(50, 80)))
+        .do("DIMROTATED", (c) => c.command("DIMROTATED"))
+        .do("angle", (c) => c.type("30"))
+        .do("enter", (c) => c.enter())
+        .do("first", (c) => c.click(at(0, 0)))
+        .do("second", (c) => c.click(at(100, 0)))
+        .do("location", (c) => c.click(at(50, 40)))
+    )
     walk(
       "DIMLINEAR select object",
       createHarness({ entities: [line()] }),

@@ -26,6 +26,9 @@ MTEXT ["T","MT"] "Multiline text"
 TEXTEDIT ["DDEDIT","ED","TEDIT"] "Edit text"
 DIMLINEAR ["DIMLIN","DLI"] "Linear"
 DIMALIGNED ["DIMALI","DAL"] "Aligned"
+DIMHORIZONTAL [] "Horizontal"
+DIMVERTICAL [] "Vertical"
+DIMROTATED [] "Rotated"
 DIMRADIUS ["DIMRAD","DRA"] "Radius"
 DIMDIAMETER ["DIMDIA","DDI"] "Diameter"
 DIMANGULAR ["DIMANG","DAN"] "Angular"
@@ -144,6 +147,9 @@ mtext "Multiline text" T
 textedit "Edit text" ED
 dimlinear "Linear" DLI
 dimaligned "Aligned" DAL
+dimhorizontal "Horizontal" DIMHORIZONTAL
+dimvertical "Vertical" DIMVERTICAL
+dimrotated "Rotated" DIMROTATED
 dimradius "Radius" DRA
 dimdiameter "Diameter" DDI
 dimangular "Angular" DAN
@@ -2877,6 +2883,103 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   options: -
   prompt| Specify dimension line location or [Text/Angle]:
   info| Dimension text = 100
+
+## DIMHORIZONTAL, DIMVERTICAL and DIMROTATED
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> DIMHORIZONTAL
+  prompt: DIMHORIZONTAL Specify first extension line origin or <select object>:
+  asks: "Specify first extension line origin or <select object>"
+  tip: Specify first extension line origin or <select object>:
+  dyn: "X,Y"=""||*
+  command| DIMHORIZONTAL
+> first
+  prompt: DIMHORIZONTAL Specify second extension line origin:
+  asks: "Specify second extension line origin"
+  tip: Specify second extension line origin:
+  prompt| Specify first extension line origin or <select object>:
+> second
+  prompt: DIMHORIZONTAL Specify dimension line location or [Text/Angle]:
+  asks: "Specify dimension line location"
+  tip: Specify dimension line location or
+  options: [T] Text, [A] Angle
+  prompt| Specify second extension line origin:
+  info| Non-associative dimension created.
+> location
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify dimension line location or [Text/Angle]:
+  info| Dimension text = 100
+> DIMVERTICAL
+  prompt: DIMVERTICAL Specify first extension line origin or <select object>:
+  asks: "Specify first extension line origin or <select object>"
+  tip: Specify first extension line origin or <select object>:
+  dyn: "X,Y"=""||*
+  command| DIMVERTICAL
+> first
+  prompt: DIMVERTICAL Specify second extension line origin:
+  asks: "Specify second extension line origin"
+  tip: Specify second extension line origin:
+  prompt| Specify first extension line origin or <select object>:
+> second
+  prompt: DIMVERTICAL Specify dimension line location or [Text/Angle]:
+  asks: "Specify dimension line location"
+  tip: Specify dimension line location or
+  options: [T] Text, [A] Angle
+  prompt| Specify second extension line origin:
+  info| Non-associative dimension created.
+> location
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify dimension line location or [Text/Angle]:
+  info| Dimension text = 40
+> DIMROTATED
+  prompt: DIMROTATED Specify angle of dimension line <0>:
+  asks: "Specify angle of dimension line"
+  tip: Specify angle of dimension line
+  dyn: "Specify angle of dimension line"=""||°*
+  command| DIMROTATED
+> angle
+  dyn: "Specify angle of dimension line"="30"||°*
+> enter
+  prompt: DIMROTATED Specify first extension line origin or <select object>:
+  asks: "Specify first extension line origin or <select object>"
+  tip: Specify first extension line origin or <select object>:
+  dyn: "X,Y"=""||*
+  prompt| Specify angle of dimension line <0>: 30
+> first
+  prompt: DIMROTATED Specify second extension line origin:
+  asks: "Specify second extension line origin"
+  tip: Specify second extension line origin:
+  prompt| Specify first extension line origin or <select object>:
+> second
+  prompt: DIMROTATED Specify dimension line location or [Text/Angle]:
+  asks: "Specify dimension line location"
+  tip: Specify dimension line location or
+  options: [T] Text, [A] Angle
+  prompt| Specify second extension line origin:
+  info| Non-associative dimension created.
+> location
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify dimension line location or [Text/Angle]:
+  info| Dimension text = 86.6
 
 ## DIMLINEAR select object
 > start

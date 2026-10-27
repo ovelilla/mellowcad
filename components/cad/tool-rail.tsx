@@ -292,6 +292,10 @@ const RAIL_EXCLUDED = new Set([
   "dashpan",
   // -DIMSTYLE is typed; the Styles palette stands in for its manager.
   "dashdimstyle",
+  // DIMHORIZONTAL, DIMVERTICAL and DIMROTATED are typed: no panel offers them.
+  "dimhorizontal",
+  "dimvertical",
+  "dimrotated",
   "orbit",
   "copyclip",
   "cutclip",

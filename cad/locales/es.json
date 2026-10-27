@@ -31,6 +31,9 @@
       "textedit": "Editar texto",
       "dimlinear": "Lineal",
       "dimaligned": "Alineada",
+      "dimhorizontal": "Horizontal",
+      "dimvertical": "Vertical",
+      "dimrotated": "Girada",
       "dimradius": "Radio",
       "dimdiameter": "Diámetro",
       "dimangular": "Angular",
@@ -438,6 +441,9 @@
       "TEXTEDIT": ["EDITARTEXTO", "ED", "DDEDIC", "TEDIT"],
       "DIMLINEAR": ["ACOLINEAL", "ACOLIN", "DIMLIN"],
       "DIMALIGNED": ["ACOALINEADA", "ACOALI"],
+      "DIMHORIZONTAL": ["ACOHORIZONTAL"],
+      "DIMVERTICAL": ["ACOVERTICAL"],
+      "DIMROTATED": ["ACOGIRADA"],
       "DIMRADIUS": ["ACORADIO", "ACORAD"],
       "DIMDIAMETER": ["ACODIAMETRO", "ACODIA"],
       "DIMANGULAR": ["ACOANGULO", "ACOANG", "ACOANGULAR"],
@@ -727,6 +733,18 @@
         "Rotated": "Girar"
       },
       "DIMALIGNED": {
+        "Text": "Texto",
+        "Angle": "ángUlo"
+      },
+      "DIMHORIZONTAL": {
+        "Text": "Texto",
+        "Angle": "ángUlo"
+      },
+      "DIMVERTICAL": {
+        "Text": "Texto",
+        "Angle": "ángUlo"
+      },
+      "DIMROTATED": {
         "Text": "Texto",
         "Angle": "ángUlo"
       },
@@ -1754,6 +1772,7 @@
       "expectsCornerObject": "Requiere un punto o Ventana/úLTimo/Captura/MArco/Borde/polígonOV/polígonOC/{set, select, fillet {Deshacer/Polilínea/RAdio} filletRadius {Radio]:} chamfer {desHacer/Polilínea/Distancia} other {Distancia}}",
       "lastKeyword": "úLTimo",
       "noObjectSelected": "No se ha designado ningún objeto.",
+      "notLineArcOrCircleToDimension": "El objeto designado no es ni una línea ni un círculo.",
       "associativeDimensionRequired": "Requiere una cota asociativa lineal, de coordenada o angular.",
       "selectedObjectNotDimension": "El objeto designado no es una cota.",
       "negativeSpacing": "Valor de intervalo no válido, el valor de intervalo no puede ser negativo."

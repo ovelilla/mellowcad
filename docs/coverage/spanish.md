@@ -108,7 +108,7 @@ origen/Origen` from the 2026 help and the same captures;
   (ours), OFFSET's Yes/No, Current/Source
   (`Actual`/`Origen`),
   On/Off (`ACT`/`DES`, as SNAP prints them) and `Distancia`, HATCH's pattern name, scale and angle
-  prompts, DIMLINEAR's Angle and Rotated sub-prompts, the reference sub-prompts of ROTATE and SCALE,
+  prompts, the reference sub-prompts of ROTATE and SCALE,
   the clipboard base-point prompt, the title and question of TEXTOM's Unsaved Changes dialog
   (`Texto de líneas múltiples - Cambios sin guardar`; the tables hold only 25268, `TEXTOM – Cambios
   sin guardar`), SCP's

@@ -55,30 +55,76 @@
 
 ### `DIMLINEAR` / `DIMLIN` / `DLI` · es `ACOLINEAL` / `ACOLIN`† / `DIMLIN`†
 
-**Implemented:** the prompts AutoCAD 2023's console asks, written answered:
-`Specify first extension line origin or <select object>:` (Enter: `Select object to dimension:`,
-`No object selected.` on nothing), `Specify second extension line origin:`,
-`Non-associative dimension created.` (origins given as points; no dimension is associative here),
-`Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]:` (`[Text/Angle]` once
-Horizontal or Vertical is set, through Text and Angle too; after Rotated the whole list again;
-DIMALIGNED's `[Text/Angle]` throughout), Text's `Enter dimension text <100>:`, Angle's
-`Specify angle of dimension text:`, Rotated's `Specify angle of dimension line <0.00>:`, then
-`Dimension text = 100`; refusals `Invalid point input.`, `Invalid Input.`, `*Invalid selection*`
-/ `Expects a single object.`; es from Autodesk's dimension table
-(`Especifique el origen de la primera línea de referencia o <designar objeto>`,
-`Especifique una ubicación de línea de cota o`, `Designe ángulo de texto de cota`,
-`Texto de cota = `); Text, Angle, Horizontal, Vertical, Rotated, object selection (line/arc
-endpoints, circle diameter, nearest polyline segment), H/V inferred from drag, DIMEXO/DIMEXE offsets
+**Implemented:** the prompts AutoCAD 2027's console asks, written answered (p01, p104, p126, p129,
+p137): `Specify first extension line origin or <select object>:` (Enter: `Select object to
+dimension:`), `Specify second extension line origin:`, `Non-associative dimension created.`
+(origins given as points; no dimension is associative here), `Specify dimension line location or
+[Text/Angle/Horizontal/Vertical/Rotated]:` (`[Text/Angle]` once Horizontal or Vertical is set,
+through Text and Angle too; after Rotated the whole list again), Text's `Enter dimension text
+<100>:`, Angle's `Specify angle of dimension text:`, Rotated's `Specify angle of dimension line
+<0>:`, then `Dimension text = 100`; refusals `Invalid point input.`, `Invalid Input.`, `*Invalid
+selection*` / `Expects a single object.` (p106, p125); es from the console and Autodesk's dimension
+table (`Especifique el origen de la primera línea de referencia o <designar objeto>`, `Especifique
+una ubicación de línea de cota o`, `Designe ángulo de texto de cota`, `Designe ángulo de línea de
+cota`, `Texto de cota = `).
+
+- **The object pick** takes a line's or an arc's endpoints, a polyline's picked segment's, and a
+  circle's diameter along the direction the location settles on, the first origin towards it
+  (p109, p114, p115); a typed point picks there (p104), a locked layer's object too (p121), and so
+  does an object inside a block reference, as the reference shows it (p148). A miss says `No object
+  selected.`, a text too (p118); an ellipse, a spline or a dimension `Object selected is not a
+  line, arc or circle.` (es `El objeto designado no es ni una línea ni un círculo.`, table 18669;
+  p116, p117, p120). The object under the cursor rolls over in the hover glow. Enter there ends
+  with nothing made (p105).
+- **The direction**, left free: a location above or below the origins, within their X extent,
+  measures horizontally; beside them, within their Y extent, vertically; inside their box or at a
+  corner the last band's choice holds, horizontal first, as the jig is dragged (p139, p141, p142,
+  desktop d06). A circle's bands are its extent (**unverified**: p109 and p114 stand in both).
+- **Text** starts empty, and Enter with nothing typed clears an override (p164); **Angle** 0, or
+  Enter before any angle, leaves the text in its own direction, Enter after one keeps it (p132,
+  p143, p163), and `<30` is 30 (p130); **Rotated** always offers `<0>`, where Enter keeps a
+  rotation already set (p165).
+- LASTPOINT is the location after (p140); the dimension lies at the current ELEVATION (p158,
+  p169); Enter at the second origin or the location ends with nothing made (p123, p124); a
+  preselection is dropped and nothing is left selected (p149). The location has no base point
+  (the trace's UseBasePoint false, p01): Ortho and Polar leave it alone (**unverified** on the
+  desktop, which decides where a command draws its own jig).
 
 **Missing:** Mtext (a dimension's text is one line); AutoCAD breaks the location prompt after its
-`or`, written here on one line
+`or`, written here on one line; with an explicit Angle, AutoCAD centres the text on the dimension
+line (p129, p168), drawn here above it as without one; a hatch picked says `No object selected.`
+(**unverified**: not probed).
 
 ### `DIMALIGNED` / `DAL` · es `ACOALINEADA` / `ACOALI`†
 
-**Implemented:** DIMLINEAR's prompts with `[Text/Angle]` (es `Precise ángulo de texto de cota`: the
-table words DIMALIGNED's Angle otherwise); Text, Angle, object selection
+**Implemented:** DIMLINEAR's prompts with `[Text/Angle]` (p01, p143), its object pick, Text and
+Angle (es `Designe ángulo de texto de cota`, as the console asks, though the table words
+DIMALIGNED's otherwise, p143); a circle's diameter through the pick (p147, p167).
 
-**Missing:** Mtext (a dimension's text is one line)
+**Missing:** Mtext (a dimension's text is one line); the text centred under an explicit Angle, as
+DIMLINEAR's.
+
+### `DIMHORIZONTAL` · es `ACOHORIZONTAL`
+
+**Implemented:** DIMLINEAR measuring horizontally whatever the location, its location prompt
+offering `[Text/Angle]` (p100, p101, p113). Typed only: no ribbon panel offers it.
+
+**Missing:** as DIMLINEAR's.
+
+### `DIMVERTICAL` · es `ACOVERTICAL`
+
+**Implemented:** DIMLINEAR measuring vertically whatever the location, `[Text/Angle]` (p100, p101,
+p113). Typed only.
+
+**Missing:** as DIMLINEAR's.
+
+### `DIMROTATED` · es `ACOGIRADA`
+
+**Implemented:** `Specify angle of dimension line <0>:` first (a number, or two points: ` Specify
+second point:`), then DIMLINEAR's prompts measuring along that angle, `[Text/Angle]` at the location
+(p100, p101, p112). Typed only.
+
+**Missing:** as DIMLINEAR's.
 
 ### `DIMBASELINE` / `DBA` · es `ACOLINEABASE` / `ACOLINE`†
 

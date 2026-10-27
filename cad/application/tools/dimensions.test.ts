@@ -1,17 +1,42 @@
 import { describe, expect, it } from "vitest"
-import { createHarness } from "../../../test/harness"
-import { lineOf, p, polylineOf, circleOf } from "../../../test/builders"
+import { type CadHarness, createHarness } from "../../../test/harness"
+import {
+  arcOf,
+  circleOf,
+  ellipseOf,
+  layerOf,
+  lineOf,
+  p,
+  polylineOf,
+  textOf,
+} from "../../../test/builders"
 import { V } from "../../geometry/Vec2"
 import {
+  createBlockDefinition,
   createDimension,
+  createInsert,
+  createSpline,
   DimensionEntity,
   dimensionGeometry,
   dimensionMeasurement,
   dimensionText,
+  entityElevation,
 } from "../../domain/entities"
 import { DEFAULT_DIM_STYLE } from "../../domain/dimStyles"
 import { parseDrawingFile } from "../../serialization/drawingFile"
 import { THEME } from "../../scene/theme"
+import { es } from "../../locales/es"
+
+function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
+
+/** The console's fixed cursor in its initial view (`console.md`). */
+const CONSOLE_CURSOR = p(289.98397, 116.30379)
 
 /** Places a linear/aligned dimension over two points by clicking three times. */
 function dimension(
@@ -177,24 +202,41 @@ describe("DIMLINEAR", () => {
     expect(dim.second).toBeCloseToPoint(p(60, 90))
   })
 
-  it("uses the diameter through the pick point of a circle", () => {
-    const cad = createHarness({ entities: [circleOf(p(0, 0), 50)] })
-    cad.command("DIMLINEAR").enter().click(p(50, 0)).click(p(0, 90))
-
-    const dim = cad.only<DimensionEntity>("dimension")
-    expect(dimensionMeasurement(dim)).toBeCloseTo(100)
+  // The pick at 45° (p109): a diameter through it would measure 70.71.
+  it("measures a circle's diameter along the direction it settles on (probes dimensions/p109, p114, p115)", () => {
+    const placed = (...answers: string[]) => {
+      const cad = createHarness({ entities: [circleOf(p(0, 0), 50)] })
+      cad.command("DIMLINEAR").enter().moveTo(CONSOLE_CURSOR)
+      answer(cad, "35.35534,35.35534", ...answers)
+      return cad.only<DimensionEntity>("dimension")
+    }
+    const above = placed("0,90")
+    expect([above.first, above.second]).toBeCloseToPoints([p(50, 0), p(-50, 0)])
+    expect(dimensionMeasurement(above)).toBeCloseTo(100)
+    const beside = placed("90,0")
+    expect([beside.first, beside.second]).toBeCloseToPoints([
+      p(0, 50),
+      p(0, -50),
+    ])
+    const rotated = placed("R", "30", "0,90")
+    expect([rotated.first, rotated.second]).toBeCloseToPoints([
+      p(43.30127, 25),
+      p(-43.30127, -25),
+    ])
+    expect(dimensionMeasurement(rotated)).toBeCloseTo(100)
   })
 
-  it("highlights the object it would measure while hovering", () => {
+  it("rolls the object it would measure over in the hover glow (DLN-16)", () => {
     const cad = createHarness({ entities: [lineOf(p(0, 0), p(80, 0))] })
     cad.command("DIMLINEAR").enter().moveTo(p(40, 0))
 
-    const highlighted = cad
+    const strokes = cad
       .scene()
-      .primitives.filter(
-        (prim) => "stroke" in prim && prim.stroke?.color === THEME.selected
+      .primitives.flatMap((prim) =>
+        "stroke" in prim && prim.stroke ? [prim.stroke] : []
       )
-    expect(highlighted.length).toBeGreaterThan(0)
+    expect(strokes).toContainEqual({ color: THEME.entityHover, width: 2 })
+    expect(strokes.some((s) => s.color === THEME.selected)).toBe(false)
   })
 
   it("is one undo step", () => {
@@ -225,6 +267,21 @@ describe("DIMALIGNED", () => {
     const cad = createHarness()
     cad.command("DIMALIGNED").click(p(0, 0)).click(p(60, 80)).moveTo(p(-40, 60))
     expect(cad.optionAbbreviations()).toEqual(["T", "A"])
+  })
+
+  it("keeps a circle's diameter through the pick (probes dimensions/p147, p167)", () => {
+    const cad = createHarness({ entities: [circleOf(p(200, 0), 50)] })
+    cad.command("DIMALIGNED").enter()
+    answer(cad, "235.35534,35.35534", "250,100")
+    const dim = cad.only<DimensionEntity>("dimension")
+    expect([dim.first, dim.second]).toBeCloseToPoints(
+      [p(235.35534, 35.35534), p(164.64466, -35.35534)],
+      4
+    )
+    expect(dimensionGeometry(dim).lineEnd).toBeCloseToPoint(
+      p(139.64466, -10.35534),
+      4
+    )
   })
 
   it("keeps measuring the origins even when they are moved", () => {
@@ -696,5 +753,342 @@ describe("the measurement's format", () => {
       suppressTrailingZeros: false,
     }
     expect(dimensionText(dim, style)).toBe("12.50")
+  })
+})
+
+/** LASTPOINT, as `ID @` reports it. */
+function lastPointOf(cad: CadHarness): string | undefined {
+  answer(cad, "ID", "@")
+  return cad.commandLog().at(-1)
+}
+
+describe("DIMLINEAR and DIMALIGNED against AutoCAD 2027's console", () => {
+  const rotationOf = (
+    first: string,
+    second: string,
+    location: string
+  ): number => {
+    const cad = createHarness()
+    answer(cad, "DIMLINEAR", first, second)
+    cad.moveTo(CONSOLE_CURSOR)
+    answer(cad, location)
+    return Math.round(
+      (cad.only<DimensionEntity>("dimension").rotation * 180) / Math.PI
+    )
+  }
+
+  // The console's cursor stands beside the first pair, in a corner, so the
+  // first direction holds; beside the second, in its horizontal band, so a
+  // corner or the box keeps measuring vertically.
+  it("measures horizontally or vertically by the bands, a corner keeping the last (probes dimensions/p139, p141, p142)", () => {
+    const first = [
+      ["5,2", 0],
+      ["5,30", 0],
+      ["50,20", 0],
+      ["95,2", 0],
+      ["95,38", 0],
+      ["120,60", 0],
+      ["130,50", 0],
+      ["150,45", 0],
+      ["-30,-10", 0],
+      ["200,41", 0],
+      ["50,-5", 0],
+      ["50,45", 0],
+      ["-5,20", 90],
+      ["105,20", 90],
+    ] as const
+    for (const [location, rotation] of first) {
+      expect(rotationOf("0,0", "100,40", location), location).toBe(rotation)
+    }
+    const second = [
+      ["300,141", 90],
+      ["130,150", 90],
+      ["-50,99", 90],
+      ["110,145", 90],
+      ["50,120", 90],
+      ["10,130", 90],
+      ["-5,120", 90],
+      ["105,120", 90],
+      ["50,141", 0],
+      ["50,99", 0],
+    ] as const
+    for (const [location, rotation] of second) {
+      expect(rotationOf("0,100", "100,140", location), location).toBe(rotation)
+    }
+    expect(rotationOf("0,200", "100,240", "90,205")).toBe(0)
+  })
+
+  it("keeps the last band's direction while the cursor crosses a corner (desktop dimensions/d06-1 to d06-3)", () => {
+    const cad = createHarness()
+    cad.command("DIMLINEAR").click(p(0, 0)).click(p(40, 20))
+    const measured = () =>
+      cad
+        .scene()
+        .primitives.flatMap((prim) => (prim.kind === "text" ? [prim.text] : []))
+    cad.moveTo(p(60, 30))
+    expect(measured()).toEqual(["40"])
+    cad.moveTo(p(20, 35)).moveTo(p(60, 30))
+    expect(measured()).toEqual(["40"])
+    cad.moveTo(p(60, 10)).moveTo(p(60, 30))
+    expect(measured()).toEqual(["20"])
+    cad.click(p(60, 30))
+    expect(cad.commandLog().at(-1)).toBe("Dimension text = 20")
+  })
+
+  it("leaves the location to Ortho, which has no base point there (probe dimensions/p01's trace)", () => {
+    const cad = createHarness()
+    cad.press("F8")
+    cad.command("DIMLINEAR").click(p(0, 0)).click(p(100, 40)).click(p(60, 55))
+    expect(
+      dimensionGeometry(cad.only<DimensionEntity>("dimension")).lineStart
+    ).toBeCloseToPoint(p(0, 55))
+  })
+
+  it("picks with a point typed at the object prompt (probes dimensions/p104, p106)", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(80, 0))] })
+    answer(cad, "DIMLINEAR", "", "500,500", "FOO", "40,0", "40,50")
+    expect(cad.commandLog()).toEqual([
+      "DIMLINEAR",
+      "Specify first extension line origin or <select object>:",
+      "Select object to dimension: 500,500",
+      "No object selected.",
+      "Select object to dimension: FOO",
+      "*Invalid selection*",
+      "Expects a single object.",
+      "Select object to dimension: 40,0",
+      "Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: 40,50",
+      "Dimension text = 80",
+    ])
+  })
+
+  it("takes an object on a locked layer (probe dimensions/p121)", () => {
+    const cad = createHarness()
+    cad.runtime.document.load([lineOf(p(0, 0), p(80, 0), { layerId: "K" })], {
+      layers: [layerOf("0"), layerOf("K", { locked: true })],
+    })
+    cad.command("DIMLINEAR").enter().click(p(40, 0)).click(p(40, 50))
+    expect(cad.commandLog().at(-1)).toBe("Dimension text = 80")
+  })
+
+  it("takes a line inside a block reference (probe dimensions/p148)", () => {
+    const block = createBlockDefinition("B1", p(0, 0), [
+      lineOf(p(0, 0), p(80, 0)),
+    ])
+    const cad = createHarness({
+      entities: [createInsert(block.id, p(100, 100), { scale: 2, id: "I" })],
+      blocks: [block],
+    })
+    cad.command("DIMLINEAR").enter()
+    answer(cad, "180,100", "180,150")
+    const dim = cad.only<DimensionEntity>("dimension")
+    expect([dim.first, dim.second]).toBeCloseToPoints([
+      p(100, 100),
+      p(260, 100),
+    ])
+    expect(cad.commandLog().at(-1)).toBe("Dimension text = 160")
+  })
+
+  it("says an ellipse, a spline or a dimension is no line, arc or circle (probes dimensions/p116–p118, p120)", () => {
+    const refused = [
+      [ellipseOf(p(50, 0), p(50, 0), 0.4), "100,0"],
+      [createSpline("fit", [p(0, 0), p(50, 30), p(100, 0)]), "100,0"],
+      [
+        createDimension("linear", p(0, 0), p(100, 0), p(50, 20), {
+          rotation: 0,
+        }),
+        "50,20",
+      ],
+    ] as const
+    for (const [entity, at] of refused) {
+      const cad = createHarness({ entities: [entity] })
+      answer(cad, "DIMLINEAR", "", at)
+      expect(cad.commandLog().slice(-1), entity.type).toEqual([
+        "Object selected is not a line, arc or circle.",
+      ])
+      expect(cad.state().commandLine.prompt).toBe(
+        "DIMLINEAR Select object to dimension:"
+      )
+    }
+    const text = createHarness({
+      entities: [textOf(p(0, 0), "ABCDEF", { height: 10 })],
+    })
+    answer(text, "DIMLINEAR", "", "10,5")
+    expect(text.commandLog().at(-1)).toBe("No object selected.")
+    const spanish = createHarness({
+      locale: es,
+      entities: [ellipseOf(p(50, 0), p(50, 0), 0.4)],
+    })
+    answer(spanish, "ACOLINEAL", "", "100,0")
+    expect(spanish.commandLog().at(-1)).toBe(
+      "El objeto designado no es ni una línea ni un círculo."
+    )
+  })
+
+  it("leaves LASTPOINT at the location (probe dimensions/p140)", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(80, 0))] })
+    answer(cad, "DIMLINEAR", "0,0", "100,0", "50,10")
+    expect(lastPointOf(cad)).toBe(" X = 50.00     Y = 10.00     Z = 0.00")
+    answer(cad, "DIMLINEAR", "", "40,0", "40,50")
+    expect(lastPointOf(cad)).toBe(" X = 40.00     Y = 50.00     Z = 0.00")
+  })
+
+  it("lies at the current ELEVATION, whatever the location's Z (probes dimensions/p158, p169)", () => {
+    const cad = createHarness()
+    answer(cad, "ELEV", "5", "0")
+    answer(cad, "DIMLINEAR", "0,100,30", "100,100", "50,110,7")
+    expect(entityElevation(cad.only<DimensionEntity>("dimension"))).toBe(5)
+  })
+
+  it("ends with nothing made at Enter after the first prompt (probes dimensions/p105, p123, p124)", () => {
+    const select = createHarness({ entities: [lineOf(p(0, 0), p(80, 0))] })
+    answer(select, "DIMLINEAR", "", "")
+    const second = answer(createHarness(), "DIMLINEAR", "0,0", "")
+    const location = answer(createHarness(), "DIMLINEAR", "0,0", "100,0", "")
+    for (const cad of [select, second, location]) {
+      expect(cad.activeToolId()).toBe("select")
+      expect(cad.entities().filter((e) => e.type === "dimension")).toEqual([])
+    }
+    expect(location.commandLog().at(-1)).toBe(
+      "Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]:"
+    )
+  })
+
+  it("drops a preselection and leaves nothing selected (probes dimensions/p149–p153)", () => {
+    const runs = [
+      (c: CadHarness) => c.command("DIMLINEAR").enter().click(p(0, 50)),
+      (c: CadHarness) => c.command("DIMALIGNED").enter().click(p(0, 50)),
+      (c: CadHarness) => c.command("DIMRADIUS").click(p(50, 0)),
+      (c: CadHarness) => c.command("DIMDIAMETER").click(p(50, 0)),
+      (c: CadHarness) => c.command("DIMANGULAR").click(p(35.35534, 35.35534)),
+    ]
+    for (const run of runs) {
+      const cad = createHarness({
+        entities: [arcOf(p(0, 0), 50, 0, Math.PI / 2, { id: "C" })],
+      })
+      cad.select("C")
+      run(cad)
+      expect(cad.selectedIds()).toEqual([])
+      cad.click(p(80, 80))
+      expect(cad.activeToolId()).toBe("select")
+      expect(cad.selectedIds()).toEqual([])
+    }
+  })
+
+  it("stores no text angle for Angle 0, or Enter with none set (probes dimensions/p132, p163)", () => {
+    for (const angle of ["0", ""]) {
+      const cad = createHarness()
+      answer(cad, "DIMLINEAR", "0,0", "0,100", "A", angle, "-20,50")
+      const dim = cad.only<DimensionEntity>("dimension")
+      expect(dim.textAngle, angle).toBeUndefined()
+      expect(dimensionGeometry(dim).textAngle).toBeCloseTo(Math.PI / 2)
+    }
+  })
+
+  it("keeps the text angle at Enter once one is set (probe dimensions/p143)", () => {
+    const cad = createHarness()
+    answer(cad, "DIMALIGNED", "0,0", "60,80", "A", "30", "A", "", "-40,60")
+    expect(cad.only<DimensionEntity>("dimension").textAngle).toBeCloseTo(
+      Math.PI / 6
+    )
+  })
+
+  it("takes <30 at Angle as 30 (probe dimensions/p130)", () => {
+    const cad = createHarness()
+    answer(cad, "DIMLINEAR", "0,0", "100,0", "A", "<30", "50,10")
+    expect(cad.commandLog().slice(-4)).toEqual([
+      "Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: A",
+      "Specify angle of dimension text: <30",
+      "Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: 50,10",
+      "Dimension text = 100",
+    ])
+    expect(cad.only<DimensionEntity>("dimension").textAngle).toBeCloseTo(
+      Math.PI / 6
+    )
+  })
+
+  it("clears a Text override at a second Text's Enter (probe dimensions/p164)", () => {
+    const typed = createHarness()
+    answer(typed, "DIMLINEAR", "0,0", "100,0", "T", "ABC", "T", "", "50,10")
+    expect(typed.only<DimensionEntity>("dimension").text).toBeUndefined()
+    const box = createHarness()
+    box.command("DIMLINEAR").click(p(0, 0)).click(p(100, 0)).moveTo(p(50, 10))
+    box.option("Text").type("ABC").enter().option("Text").enter()
+    box.click(p(50, 10))
+    expect(box.only<DimensionEntity>("dimension").text).toBeUndefined()
+  })
+
+  it("offers <0> at a second Rotated, and Enter keeps the rotation (probe dimensions/p165)", () => {
+    const cad = createHarness()
+    answer(cad, "DIMLINEAR", "0,0", "100,0", "R", "30", "R")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMLINEAR Specify angle of dimension line <0>:"
+    )
+    answer(cad, "", "50,40")
+    expect(cad.only<DimensionEntity>("dimension").rotation).toBeCloseTo(
+      Math.PI / 6
+    )
+    expect(cad.commandLog().at(-1)).toBe("Dimension text = 86.6")
+  })
+})
+
+describe("DIMHORIZONTAL, DIMVERTICAL and DIMROTATED", () => {
+  it("measure along their own direction, offering Text and Angle (probes dimensions/p100, p113)", () => {
+    const cad = createHarness()
+    answer(cad, "DIMHORIZONTAL", "0,100", "100,140")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMHORIZONTAL Specify dimension line location or [Text/Angle]:"
+    )
+    answer(cad, "150,120")
+    expect(cad.commandLog().at(-1)).toBe("Dimension text = 100")
+    answer(cad, "DIMVERTICAL", "0,200", "100,240", "50,300")
+    expect(cad.commandLog().at(-1)).toBe("Dimension text = 40")
+    const [horizontal, vertical] = cad
+      .entities()
+      .filter((e): e is DimensionEntity => e.type === "dimension")
+    expect(horizontal.rotation).toBeCloseTo(0)
+    expect(vertical.rotation).toBeCloseTo(Math.PI / 2)
+  })
+
+  it("DIMROTATED asks its angle first (probes dimensions/p100, p112)", () => {
+    const cad = createHarness()
+    answer(cad, "DIMROTATED")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMROTATED Specify angle of dimension line <0>:"
+    )
+    answer(cad, "30", "0,0", "100,0")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMROTATED Specify dimension line location or [Text/Angle]:"
+    )
+    answer(cad, "50,40")
+    expect(cad.commandLog()).toEqual([
+      "DIMROTATED",
+      "Specify angle of dimension line <0>: 30",
+      "Specify first extension line origin or <select object>: 0,0",
+      "Specify second extension line origin: 100,0",
+      "Non-associative dimension created.",
+      "Specify dimension line location or [Text/Angle]: 50,40",
+      "Dimension text = 86.6",
+    ])
+    const twoPoints = createHarness()
+    answer(twoPoints, "DIMROTATED", "0,400")
+    expect(twoPoints.state().commandLine.prompt).toBe(
+      "DIMROTATED Specify second point:"
+    )
+    answer(twoPoints, "100,400", "0,500", "100,500", "50,510")
+    expect(twoPoints.only<DimensionEntity>("dimension").rotation).toBeCloseTo(0)
+  })
+
+  it("are named in Spanish (probe dimensions/p101)", () => {
+    const cad = createHarness({ locale: es })
+    answer(cad, "ACOHORIZONTAL", "0,100", "100,140")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ACOHORIZONTAL Especifique una ubicación de línea de cota o [Texto/ángUlo]:"
+    )
+    answer(cad, "150,120", "ACOVERTICAL", "0,200", "100,240", "50,300")
+    expect(cad.commandLog().at(-1)).toBe("Texto de cota = 40")
+    answer(cad, "ACOGIRADA")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ACOGIRADA Designe ángulo de línea de cota <0>:"
+    )
   })
 })

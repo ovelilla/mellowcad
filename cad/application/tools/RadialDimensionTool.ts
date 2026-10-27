@@ -10,7 +10,7 @@ import {
   DimensionEntity,
   Entity,
   entityElevation,
-  onPlaneOf,
+  withElevation,
   polylineSegmentGeometries,
   readsInPlan,
 } from "../../domain/entities"
@@ -162,15 +162,10 @@ export class RadialDimensionTool implements Tool {
           ctx
         )
         this.state = { ...this.state, prompt: "text" }
-        openDimensionTextInput(
-          ctx,
-          this.lastScreen,
-          this.text,
-          (text, commitCtx) => {
-            this.text = text
-            this.returnToLocation(commitCtx)
-          }
-        )
+        openDimensionTextInput(ctx, this.lastScreen, (text, commitCtx) => {
+          this.text = text
+          this.returnToLocation(commitCtx)
+        })
         return "continue"
       case "Angle":
         this.state = { ...this.state, prompt: "textAngle" }
@@ -229,7 +224,8 @@ export class RadialDimensionTool implements Tool {
   /**
    * The dimension as it stands with the location at `at`. Shared by the live
    * preview and by both commit paths, so what is drawn is what is created. It
-   * lies at the location's height, as DIMLINEAR's does.
+   * lies at the current ELEVATION, whatever the location's Z (probe
+   * dimensions/p324).
    */
   private pending(
     target: MeasuredCircle,
@@ -238,7 +234,7 @@ export class RadialDimensionTool implements Tool {
     id?: string
   ): DimensionEntity {
     const dir = measuredDirection(target, at)
-    return onPlaneOf(
+    return withElevation(
       createDimension(
         this.kind,
         target.center,
@@ -252,7 +248,7 @@ export class RadialDimensionTool implements Tool {
           ...(id !== undefined ? { id } : {}),
         }
       ),
-      at
+      ctx.elevation
     )
   }
 

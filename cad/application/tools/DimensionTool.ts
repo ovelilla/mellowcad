@@ -1,9 +1,6 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, withZ } from "../../geometry/Vec3"
-import {
-  closestPointOnSegment,
-  normalizeDegrees,
-} from "../../geometry/primitives"
+import { closestPointOnSegment } from "../../geometry/primitives"
 import {
   arcEndPoint,
   arcStartPoint,
@@ -13,10 +10,11 @@ import {
   dimensionMeasurement,
   dimensionMeasurementText,
   Entity,
+  entityElevation,
   entityZAt,
-  onPlaneOf,
   polylineSegmentGeometries,
   readsInPlan,
+  withElevation,
 } from "../../domain/entities"
 import { ucsAngleToWorld, worldPointToUcs } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
@@ -43,27 +41,37 @@ import {
   ToolQuestion,
 } from "./Tool"
 import { withCurrentProperties } from "./currentProperties"
+import { rollover } from "./ghostLook"
+import { pickNested } from "./nestedPick"
+import { typedPick } from "./typedPick"
+
+/** The direction DIMHORIZONTAL, DIMVERTICAL or DIMROTATED fixes from the start. */
+export type DimensionDirection = "horizontal" | "vertical" | "rotated"
 
 /**
  * AutoCAD's DIMLINEAR and DIMALIGNED, one class parameterised by which of them
  * it is — they share every prompt, and differ only in what sets the direction
- * measured along and in which keywords the location prompt offers.
+ * measured along and in which keywords the location prompt offers. DIMLINEAR's
+ * undocumented siblings DIMHORIZONTAL, DIMVERTICAL and DIMROTATED are it with
+ * the direction fixed, DIMROTATED asking its angle first (probes
+ * dimensions/p100, p112, p113).
  *
- * The prompt sequence is AutoCAD's, as its 2023 console asks it: `Specify
- * first extension line origin or <select object>:` (Enter: `Select object to
- * dimension:`, its endpoints taken), `Specify second extension line origin:`
- * and `Non-associative dimension created.`, then `Specify dimension line
- * location or [Text/Angle/Horizontal/Vertical/Rotated]:` — DIMALIGNED, and
- * DIMLINEAR once Horizontal or Vertical has set the direction, offering only
- * `[Text/Angle]`; after Rotated the whole list again —, whose Text asks `Enter dimension text
- * <100.00>:`, Angle `Specify angle of dimension text:` and Rotated `Specify
- * angle of dimension line <0>:`. The command ends the moment the location is
- * picked, saying `Dimension text = 100.00`.
+ * The prompt sequence is AutoCAD's, as its 2027 console asks it (probes
+ * dimensions/p01, p104, p126, p129, p137): `Specify first extension line
+ * origin or <select object>:` (Enter: `Select object to dimension:`, its
+ * endpoints taken), `Specify second extension line origin:` and
+ * `Non-associative dimension created.`, then `Specify dimension line location
+ * or [Text/Angle/Horizontal/Vertical/Rotated]:` — DIMALIGNED, and DIMLINEAR
+ * once Horizontal or Vertical has set the direction, offering only
+ * `[Text/Angle]`; after Rotated the whole list again —, whose Text asks `Enter
+ * dimension text <100>:`, Angle `Specify angle of dimension text:` and
+ * Rotated `Specify angle of dimension line <0>:`. The command ends the moment
+ * the location is picked, saying `Dimension text = 100`.
  *
  * Left free until Horizontal, Vertical or Rotated says otherwise, a linear
- * dimension picks its direction from where the location is dragged: pull the
- * dimension line up or down and it measures horizontally, pull it left or right
- * and it measures vertically. That is the default gesture users rely on.
+ * dimension takes its direction from where the location is dragged: above or
+ * below the origins it measures horizontally, beside them vertically, and
+ * anywhere else it keeps the direction it last had ({@link bandAt}).
  *
  * AutoCAD's **Mtext** keyword is absent: it edits the dimension text in the
  * multiline editor, and a dimension's text here is a single line. The
@@ -76,12 +84,14 @@ export class DimensionTool implements Tool {
   private text: string | undefined
   private textAngle: number | undefined
   /**
-   * The measurement direction, or null while it still follows the cursor.
-   * Aligned dimensions ignore it entirely.
+   * The measurement direction in the UCS, or null while it still follows the
+   * cursor. Aligned dimensions ignore it entirely.
    */
   private rotation: number | null = null
-  /** Horizontal or Vertical set the direction, which only they leave fixed. */
+  /** The direction set by the command or by Horizontal or Vertical, which leave it fixed. */
   private straight = false
+  /** The direction the location's band last chose, in the UCS: horizontal first (desktop d06-1). */
+  private band = 0
 
   private lastScreen: Vec2 | null = null
   /** The measurement Text offers as its `<default>`. */
@@ -89,18 +99,30 @@ export class DimensionTool implements Tool {
 
   constructor(
     private readonly kind: DimensionKind,
-    readonly id: string
+    readonly id: string,
+    private readonly direction: DimensionDirection | null = null
   ) {}
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
-    this.state = { phase: "first" }
     this.text = undefined
     this.textAngle = undefined
-    this.rotation = null
-    this.straight = false
-    this.openFirstInput(ctx)
+    this.rotation =
+      this.direction === "horizontal"
+        ? 0
+        : this.direction === "vertical"
+          ? Math.PI / 2
+          : null
+    this.straight = this.direction !== null
+    this.band = 0
+    if (this.direction === "rotated") {
+      this.state = { phase: "rotated", origins: null }
+      this.openRotatedInput(ctx)
+    } else {
+      this.state = { phase: "first" }
+      this.openFirstInput(ctx)
+    }
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -125,24 +147,21 @@ export class DimensionTool implements Tool {
               enter: { name: this.measured },
             }
           case "textAngle":
-            return this.kind === "aligned"
-              ? "dimensionTextAngle"
-              : "specifyAngleOfDimensionText"
+            // DIMALIGNED's too: the table's entry for it says `Precise`, the
+            // Spanish console asks `Designe` (probe dimensions/p143).
+            return "specifyAngleOfDimensionText"
           case null:
             return "dimensionLineLocationOr"
         }
         break
       case "rotated":
-        return {
-          id: "dimensionLineAngle",
-          enter: {
-            angle: normalizeDegrees(((this.rotation ?? 0) * 180) / Math.PI),
-          },
-        }
+        // Always `<0>`, a second Rotated too, where Enter keeps the rotation
+        // set (probe dimensions/p165).
+        return { id: "dimensionLineAngle", enter: { angle: 0 } }
     }
   }
 
-  /** As AutoCAD 2023's console refuses a dimension's answers. */
+  /** As AutoCAD 2027's console refuses a dimension's answers (p106, p125). */
   takes(): QuestionInput | null {
     const state = this.state
     switch (state.phase) {
@@ -160,15 +179,58 @@ export class DimensionTool implements Tool {
     }
   }
 
+  /**
+   * The origins and the location are LASTPOINT once given, which their
+   * refusal of its own would hide from the runtime (probe dimensions/p140).
+   */
+  setsLastPoint(): boolean | null {
+    const state = this.state
+    return state.phase === "first" ||
+      state.phase === "second" ||
+      (state.phase === "line" && state.prompt === null)
+      ? true
+      : null
+  }
+
+  /** `Select object to dimension:` takes a locked layer's objects (probe dimensions/p121). */
+  picksLocked(): boolean {
+    return this.state.phase === "select"
+  }
+
+  /** `<30` at Angle is that angle (probe dimensions/p130). */
+  answersAngleOverride(): boolean {
+    return this.state.phase === "line" && this.state.prompt === "textAngle"
+  }
+
+  /**
+   * A point typed at `Select object to dimension:` picks there, as a click
+   * does (probes dimensions/p104, p106).
+   */
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    if (this.state.phase !== "select") return false
+    const point = typedPick(text, ctx)
+    if (!point) return false
+    this.pickAt(point, ctx)
+    return true
+  }
+
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
-    if (this.state.phase === "select") {
-      const hover = this.pickMeasurable(input, ctx)
-      if (hover?.id !== this.state.hover?.id) {
-        this.state = { ...this.state, hover: hover ?? null }
+    const state = this.state
+    if (state.phase === "select") {
+      const hover = this.pickAt(input.world, ctx, false)?.entity ?? null
+      if (hover?.id !== state.hover?.id) {
+        this.state = { ...state, hover }
       }
-    } else if (this.state.phase === "second" || this.state.phase === "line") {
-      this.state = { ...this.state, cursor: input.point }
+    } else if (state.phase === "second") {
+      this.state = { ...state, cursor: input.point }
+    } else if (state.phase === "line") {
+      // The location prompt is a jig: every position it is dragged through
+      // may turn the direction, so a corner keeps what the last band chose.
+      if (state.prompt === null) {
+        this.band = this.bandAt(state, input.point, ctx) ?? this.band
+      }
+      this.state = { ...state, cursor: input.point }
     }
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
@@ -181,12 +243,9 @@ export class DimensionTool implements Tool {
       case "first":
         this.enterSecond(input.point, ctx)
         break
-      case "select": {
-        const origins = this.pickOrigins(input, ctx)
-        if (origins) this.enterLine(origins[0], origins[1], ctx)
-        else ctx.report(ctx.text.message("noObjectSelected"))
+      case "select":
+        this.pickAt(input.world, ctx)
         break
-      }
       case "second":
         this.enterLineFromPoints(this.state.first, input.point, ctx)
         break
@@ -200,8 +259,8 @@ export class DimensionTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     if (this.state.phase !== "line" || this.state.prompt !== null) return []
     const options: CommandOption[] = [{ id: "Text" }, { id: "Angle" }]
-    // AutoCAD 2023's console: after Horizontal or Vertical the prompt offers
-    // the text keywords alone, after Rotated every keyword again.
+    // After Horizontal or Vertical the prompt offers the text keywords alone,
+    // after Rotated every keyword again (probe dimensions/p137).
     if (this.kind === "linear" && !this.straight) {
       options.push({ id: "Horizontal" }, { id: "Vertical" }, { id: "Rotated" })
     }
@@ -232,8 +291,8 @@ export class DimensionTool implements Tool {
         return "continue"
       case "Rotated": {
         if (this.kind !== "linear") return "unhandled"
-        const { first, second } = this.state
-        this.state = { phase: "rotated", first, second }
+        const { first, second, circle } = this.state
+        this.state = { phase: "rotated", origins: { first, second, circle } }
         this.openRotatedInput(ctx)
         return "continue"
       }
@@ -242,11 +301,14 @@ export class DimensionTool implements Tool {
     }
   }
 
+  /**
+   * Only the second origin has a base point (the first). The location has
+   * none (the console's trace: UseBasePoint false, probe dimensions/p01), so
+   * Ortho and Polar leave it alone: held to a ray from an origin, it put the
+   * dimension line on the origins.
+   */
   getConstraintAnchor(): Vec2 | null {
-    if (this.measuresAngle()) return null
-    if (this.state.phase === "second") return this.state.first
-    if (this.state.phase === "line") return this.state.first
-    return null
+    return this.state.phase === "second" ? this.state.first : null
   }
 
   wantsSnap(): boolean {
@@ -270,12 +332,7 @@ export class DimensionTool implements Tool {
 
     switch (this.state.phase) {
       case "select":
-        return this.state.hover
-          ? entityScenePrimitive(viewport, this.state.hover, {
-              color: THEME.selected,
-              width: 2,
-            })
-          : []
+        return this.state.hover ? rollover(ctx, this.state.hover) : []
       case "second":
         return [
           {
@@ -288,19 +345,22 @@ export class DimensionTool implements Tool {
       case "line":
         return entityScenePrimitive(
           viewport,
-          this.pending(this.state, this.state.cursor, ctx),
+          this.pending(this.state, this.state.cursor, ctx, DIM_PREVIEW_ID),
           rubber,
           { dimStyle: this.style(ctx) }
         )
-      case "rotated":
+      case "rotated": {
+        const origins = this.state.origins
+        if (origins === null || origins.circle !== null) return []
         return [
           {
             kind: "segment",
-            a: viewport.worldToScreen(this.state.first),
-            b: viewport.worldToScreen(this.state.second),
+            a: viewport.worldToScreen(origins.first),
+            b: viewport.worldToScreen(origins.second),
             stroke: rubber,
           },
         ]
+      }
       default:
         return []
     }
@@ -311,11 +371,8 @@ export class DimensionTool implements Tool {
    * while the cursor still sits on the origins and that measures nothing —
    * the one along their longer extent, which is what the drag will measure.
    */
-  private offered(
-    state: Extract<DimensionToolState, { phase: "line" }>,
-    ctx: ToolContext
-  ): DimensionEntity {
-    const pending = this.pending(state, state.cursor, ctx)
+  private offered(state: LineState, ctx: ToolContext): DimensionEntity {
+    const pending = this.pending(state, state.cursor, ctx, DIM_PREVIEW_ID)
     if (this.kind !== "linear" || this.rotation !== null) return pending
     if (dimensionMeasurement(pending) > 1e-9) return pending
     const first = worldPointToUcs(ctx.ucs, state.first)
@@ -327,58 +384,78 @@ export class DimensionTool implements Tool {
     return { ...pending, rotation: ucsAngleToWorld(ctx.ucs, local) }
   }
 
-  /** The dimension as it stands while the location is dragged. */
+  /**
+   * The dimension with its line through `linePoint`: the preview and the
+   * commit, so what is drawn is what is created. It lies at the current
+   * ELEVATION, whatever the height of the location or of its origins (probes
+   * dimensions/p158, p169).
+   */
   private pending(
-    state: Extract<DimensionToolState, { phase: "line" }>,
+    state: LineState,
     linePoint: Vec2,
-    ctx: ToolContext
+    ctx: ToolContext,
+    id?: string
   ): DimensionEntity {
-    return createDimension(this.kind, state.first, state.second, linePoint, {
-      rotation: this.resolveRotation(state, linePoint, ctx),
-      text: this.text,
-      textAngle: this.textAngle,
-      styleId: ctx.document.getCurrentDimStyleId(),
-      layerId: ctx.document.getCurrentLayerId(),
-      id: DIM_PREVIEW_ID,
-    })
+    const rotation = this.resolveRotation(state, linePoint, ctx)
+    const [first, second] = originsAlong(state, rotation)
+    return withElevation(
+      createDimension(this.kind, first, second, linePoint, {
+        rotation,
+        text: this.text,
+        textAngle: this.textAngle,
+        styleId: ctx.document.getCurrentDimStyleId(),
+        layerId: ctx.document.getCurrentLayerId(),
+        ...(id !== undefined ? { id } : {}),
+      }),
+      ctx.elevation
+    )
   }
 
   /**
-   * The measurement direction. A keyword (Horizontal / Vertical / Rotated) wins;
-   * otherwise the drag decides, as AutoCAD's DIMLINEAR does: pulling the
-   * location out to the side of the two origins measures vertically, pulling it
-   * above or below them measures horizontally.
-   *
-   * What is compared is how far the location escapes the *box* the origins span,
-   * not its offset from their midpoint. For a vertical pair that box has no
-   * width, so any sideways drag immediately means "measure the height"; a
-   * midpoint comparison instead kept reading the (zero) width until the drag
-   * grew past half the line, leaving nothing to preview.
-   *
-   * Horizontal and vertical are the UCS's, and a Rotated angle is measured
-   * from its X axis; what is returned is the world direction.
+   * The measurement direction, in the world. A keyword or the command
+   * (Horizontal / Vertical / Rotated) wins; otherwise the location's band,
+   * or the direction the last band chose. Horizontal and vertical are the
+   * UCS's, and a Rotated angle is measured from its X axis.
    */
   private resolveRotation(
-    state: Extract<DimensionToolState, { phase: "line" }>,
+    state: LineState,
     linePoint: Vec2,
     ctx: ToolContext
   ): number {
-    if (this.rotation !== null) return ucsAngleToWorld(ctx.ucs, this.rotation)
-    const first = worldPointToUcs(ctx.ucs, state.first)
-    const second = worldPointToUcs(ctx.ucs, state.second)
-    const at = worldPointToUcs(ctx.ucs, linePoint)
-    const escapeX = distanceOutside(at.x, first.x, second.x)
-    const escapeY = distanceOutside(at.y, first.y, second.y)
-    let local: number
-    if (escapeX === 0 && escapeY === 0) {
-      // Still between the origins: neither axis is indicated yet, so fall back
-      // to whichever the cursor leans towards.
-      const mid = V.midpoint(first, second)
-      local = Math.abs(at.y - mid.y) >= Math.abs(at.x - mid.x) ? 0 : Math.PI / 2
-    } else {
-      local = escapeY >= escapeX ? 0 : Math.PI / 2
-    }
+    const local =
+      this.rotation ?? this.bandAt(state, linePoint, ctx) ?? this.band
     return ucsAngleToWorld(ctx.ucs, local)
+  }
+
+  /**
+   * AutoCAD's choice of direction for a linear dimension's location (probes
+   * dimensions/p139, p141, p142; desktop d06): above or below the origins,
+   * within their X extent, measures horizontally; beside them, within their Y
+   * extent, vertically; inside the box they span or out at a corner, null,
+   * the direction the last band chose holding. A circle's band is its extent.
+   */
+  private bandAt(
+    state: LineState,
+    point: Vec2,
+    ctx: ToolContext
+  ): number | null {
+    const at = worldPointToUcs(ctx.ucs, point)
+    let inX: boolean
+    let inY: boolean
+    if (state.circle) {
+      const center = worldPointToUcs(ctx.ucs, state.circle.center)
+      const reach = state.circle.radius + BAND_EPSILON
+      inX = Math.abs(at.x - center.x) <= reach
+      inY = Math.abs(at.y - center.y) <= reach
+    } else {
+      const a = worldPointToUcs(ctx.ucs, state.first)
+      const b = worldPointToUcs(ctx.ucs, state.second)
+      inX = within(at.x, a.x, b.x)
+      inY = within(at.y, a.y, b.y)
+    }
+    if (inX && !inY) return 0
+    if (inY && !inX) return Math.PI / 2
+    return null
   }
 
   private style(ctx: ToolContext) {
@@ -390,55 +467,48 @@ export class DimensionTool implements Tool {
     this.openSecondInput(ctx)
   }
 
-  private enterLine(first: Vec3, second: Vec2, ctx: ToolContext): void {
-    this.state = { phase: "line", first, second, cursor: second, prompt: null }
+  private enterLine(origins: Origins, ctx: ToolContext): void {
+    this.state = {
+      phase: "line",
+      ...origins,
+      cursor: origins.second,
+      prompt: null,
+    }
     this.openLineInput(ctx)
   }
 
   /** Origins given as points: nothing ties the dimension to an object. */
   private enterLineFromPoints(
     first: Vec3,
-    second: Vec2,
+    second: Vec3,
     ctx: ToolContext
   ): void {
     ctx.report(ctx.text.message("nonAssociativeDimension"))
-    this.enterLine(first, second, ctx)
+    this.band = 0
+    this.enterLine({ first, second, circle: null }, ctx)
   }
 
   private setRotation(rotation: number, ctx: ToolContext): void {
     this.rotation = rotation
     if (this.state.phase === "rotated") {
-      this.enterLine(this.state.first, this.state.second, ctx)
+      const origins = this.state.origins
+      if (origins === null) {
+        this.state = { phase: "first" }
+        this.openFirstInput(ctx)
+      } else {
+        this.enterLine(origins, ctx)
+      }
     } else if (this.state.phase === "line") {
       this.state = { ...this.state, prompt: null }
       this.openLineInput(ctx)
     }
   }
 
-  /**
-   * Creates the dimension and ends the command, as AutoCAD does. It lies at
-   * the height of the point that places its dimension line, not at its
-   * origins': "the dimension is always created at the current elevation" when
-   * the origins are snapped on objects above it.
-   */
+  /** Creates the dimension and ends the command, as AutoCAD does. */
   private place(linePoint: Vec3, ctx: ToolContext): void {
     if (this.state.phase !== "line") return
-    const dim = onPlaneOf(
-      createDimension(
-        this.kind,
-        this.state.first,
-        this.state.second,
-        linePoint,
-        {
-          rotation: this.resolveRotation(this.state, linePoint, ctx),
-          text: this.text,
-          textAngle: this.textAngle,
-          styleId: ctx.document.getCurrentDimStyleId(),
-          layerId: ctx.document.getCurrentLayerId(),
-        }
-      ),
-      linePoint
-    )
+    this.band = this.bandAt(this.state, linePoint, ctx) ?? this.band
+    const dim = this.pending(this.state, linePoint, ctx)
     ctx.execute(new AddEntityCommand(withCurrentProperties(dim, ctx)))
     ctx.report(
       ctx.text.message("dimensionTextIs", { text: measurementOf(dim, ctx) })
@@ -447,22 +517,98 @@ export class DimensionTool implements Tool {
   }
 
   /**
-   * The object under the cursor whose endpoints a dimension can be taken from:
-   * one in a plane parallel to the UCS's XY plane, where the dimension lies.
+   * `Select object to dimension:` at `world`, inside block references too
+   * (probe dimensions/p148), in a plane parallel to the UCS's XY plane, where
+   * the dimension lies. Given `take`, the origins found start the location
+   * prompt, and a miss or a refusal is said as AutoCAD says it.
    */
-  private pickMeasurable(input: PointerInput, ctx: ToolContext): Entity | null {
-    const hit = ctx.pick(input.world)
-    return hit && readsInPlan(hit) && measurableOrigins(hit, input.world)
-      ? hit
-      : null
+  private pickAt(
+    world: Vec2,
+    ctx: ToolContext,
+    take = true
+  ): { readonly entity: Entity; readonly origins: Origins | null } | null {
+    const hit = pickNested(world, ctx)
+    const picked = hit && readsInPlan(hit) ? this.originsOf(hit, world) : null
+    if (!take) return picked
+    if (picked === null) {
+      ctx.report(ctx.text.message("noObjectSelected"))
+    } else if (picked.origins === null) {
+      ctx.report(ctx.text.message("notLineArcOrCircleToDimension"))
+    } else {
+      this.band = 0
+      this.enterLine(picked.origins, ctx)
+    }
+    return picked
   }
 
-  private pickOrigins(
-    input: PointerInput,
-    ctx: ToolContext
-  ): [Vec3, Vec3] | null {
-    const hit = this.pickMeasurable(input, ctx)
-    return hit ? measurableOrigins(hit, input.world) : null
+  /**
+   * The origins a whole object supplies, following AutoCAD's object
+   * selection: a line or arc gives its endpoints, a polyline the endpoints of
+   * the segment picked ("only the individual line and arc segments are
+   * dimensioned"), and a circle its diameter — along the direction DIMLINEAR
+   * settles on (probes dimensions/p109, p114, p115), through the pick for
+   * DIMALIGNED (p147, p167). An ellipse, a spline or a dimension is refused
+   * in words (`origins` null, p116, p117, p120); a text gives nothing at all
+   * (p118). Each origin is at the object's height there.
+   */
+  private originsOf(
+    entity: Entity,
+    at: Vec2
+  ): { readonly entity: Entity; readonly origins: Origins | null } | null {
+    const pair = (a: Vec2, b: Vec2): Origins => ({
+      first: withZ(a, entityZAt(entity, a)),
+      second: withZ(b, entityZAt(entity, b)),
+      circle: null,
+    })
+    switch (entity.type) {
+      case "line":
+        return { entity, origins: pair(entity.start, entity.end) }
+      case "arc":
+        return {
+          entity,
+          origins: pair(arcStartPoint(entity), arcEndPoint(entity)),
+        }
+      case "circle": {
+        const offset = V.sub(at, entity.center)
+        const dir =
+          V.length(offset) < 1e-9 ? { x: 1, y: 0 } : V.normalize(offset)
+        const origins = pair(
+          V.add(entity.center, V.scale(dir, entity.radius)),
+          V.sub(entity.center, V.scale(dir, entity.radius))
+        )
+        if (this.kind === "aligned") return { entity, origins }
+        const circle = {
+          center: entity.center,
+          radius: entity.radius,
+          z: entityElevation(entity),
+        }
+        return { entity, origins: { ...origins, circle } }
+      }
+      case "polyline": {
+        let best: [Vec2, Vec2] | null = null
+        let bestDistance = Infinity
+        for (const seg of polylineSegmentGeometries(entity)) {
+          const distance = closestPointOnSegment(seg.a, seg.b, at).distance
+          if (distance < bestDistance) {
+            bestDistance = distance
+            best = [seg.a, seg.b]
+          }
+        }
+        return best && { entity, origins: pair(best[0], best[1]) }
+      }
+      case "ellipse":
+      case "spline":
+      case "dimension":
+        return { entity, origins: null }
+      // WHY no refusal for a hatch: unprobed, so it says nothing was found,
+      // as a text does (p118).
+      case "text":
+      case "mtext":
+      case "attdef":
+      case "hatch":
+      case "insert":
+        return null
+    }
   }
 
   private openFirstInput(ctx: ToolContext): void {
@@ -508,15 +654,10 @@ export class DimensionTool implements Tool {
   }
 
   private openTextInput(ctx: ToolContext): void {
-    openDimensionTextInput(
-      ctx,
-      this.lastScreen,
-      this.text,
-      (text, commitCtx) => {
-        this.text = text
-        this.returnToLine(commitCtx)
-      }
-    )
+    openDimensionTextInput(ctx, this.lastScreen, (text, commitCtx) => {
+      this.text = text
+      this.returnToLine(commitCtx)
+    })
   }
 
   private openTextAngleInput(ctx: ToolContext): void {
@@ -540,21 +681,18 @@ export class DimensionTool implements Tool {
 
   private openRotatedInput(ctx: ToolContext): void {
     const session: DynamicInputSession = {
-      fields: [
-        {
-          id: "angle",
-          prompt: "dimensionLineAngle",
-          kind: "angle",
-        },
-      ],
+      fields: [{ id: "angle", prompt: "dimensionLineAngle", kind: "angle" }],
       commit: (values, commitCtx) =>
         this.setRotation((values.angle * Math.PI) / 180, commitCtx),
+      // The `<0>` offered is not what Enter does once a rotation is set: it
+      // keeps that one (probe dimensions/p165).
+      commitRaw: (commitCtx) => {
+        if (commitCtx.dynamicInput.hasTypedText()) return false
+        this.setRotation(this.rotation ?? 0, commitCtx)
+        return true
+      },
     }
     ctx.dynamicInput.open(session)
-    ctx.dynamicInput.setDefault(
-      "angle",
-      normalizeDegrees(((this.rotation ?? 0) * 180) / Math.PI)
-    )
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
@@ -591,6 +729,9 @@ export class DimensionTool implements Tool {
 /** Preview frames reuse one id so drawing them never burns entity ids. */
 const DIM_PREVIEW_ID = "__dimension_preview__"
 
+/** How far outside an extent a location may stand and still be in its band. */
+const BAND_EPSILON = 1e-9
+
 /**
  * The measurement alone, as AutoCAD offers and reports it: no prefix, no
  * override, a point and no trailing zeros whatever DIMDSEP draws (p01, p15).
@@ -600,70 +741,47 @@ export function measurementOf(dim: DimensionEntity, ctx: ToolContext): string {
   return dimensionMeasurementText(dim, style, "reported")
 }
 
+/** Whether `value` lies within the interval spanned by `a` and `b`. */
+function within(value: number, a: number, b: number): boolean {
+  return (
+    value >= Math.min(a, b) - BAND_EPSILON &&
+    value <= Math.max(a, b) + BAND_EPSILON
+  )
+}
+
 /**
- * The two extension-line origins a whole object supplies, following AutoCAD's
- * object selection: a line or arc gives its endpoints, a circle the endpoints
- * of the diameter through the pick point, and a polyline the endpoints of the
- * segment picked ("only the individual line and arc segments are dimensioned").
- * Objects with no such pair — text, another dimension — give nothing. Each
- * origin is at the object's height there.
+ * The extension-line origins along `rotation` (the world's): a circle's
+ * diameter in that direction, the first towards it (probes dimensions/p109,
+ * p114, p115), else the origins given.
  */
-function measurableOrigins(entity: Entity, at: Vec2): [Vec3, Vec3] | null {
-  const pair = planOrigins(entity, at)
-  return pair
-    ? [
-        withZ(pair[0], entityZAt(entity, pair[0])),
-        withZ(pair[1], entityZAt(entity, pair[1])),
-      ]
-    : null
+function originsAlong(state: LineState, rotation: number): [Vec3, Vec3] {
+  const circle = state.circle
+  if (!circle) return [state.first, state.second]
+  const radius = V.scale(
+    { x: Math.cos(rotation), y: Math.sin(rotation) },
+    circle.radius
+  )
+  return [
+    withZ(V.add(circle.center, radius), circle.z),
+    withZ(V.sub(circle.center, radius), circle.z),
+  ]
 }
 
-function planOrigins(entity: Entity, at: Vec2): [Vec2, Vec2] | null {
-  switch (entity.type) {
-    case "line":
-      return [entity.start, entity.end]
-    case "arc":
-      return [arcStartPoint(entity), arcEndPoint(entity)]
-    case "circle": {
-      const offset = V.sub(at, entity.center)
-      const dir = V.length(offset) < 1e-9 ? { x: 1, y: 0 } : V.normalize(offset)
-      return [
-        V.add(entity.center, V.scale(dir, entity.radius)),
-        V.sub(entity.center, V.scale(dir, entity.radius)),
-      ]
-    }
-    case "polyline": {
-      let best: [Vec2, Vec2] | null = null
-      let bestDistance = Infinity
-      for (const seg of polylineSegmentGeometries(entity)) {
-        const distance = closestPointOnSegment(seg.a, seg.b, at).distance
-        if (distance < bestDistance) {
-          bestDistance = distance
-          best = [seg.a, seg.b]
-        }
-      }
-      return best
-    }
-    case "ellipse":
-    case "spline":
-    case "text":
-    case "mtext":
-    case "attdef":
-    case "dimension":
-    case "hatch":
-    case "insert":
-      return null
-  }
+/** A circle DIMLINEAR measures, whose origins wait for the direction. */
+interface MeasuredCircle {
+  readonly center: Vec2
+  readonly radius: number
+  readonly z: number
 }
 
-/** How far `value` falls outside the interval spanned by `a` and `b`; 0 inside. */
-function distanceOutside(value: number, a: number, b: number): number {
-  const min = Math.min(a, b)
-  const max = Math.max(a, b)
-  if (value < min) return min - value
-  if (value > max) return value - max
-  return 0
+/** What the location prompt measures between. */
+interface Origins {
+  readonly first: Vec3
+  readonly second: Vec3
+  readonly circle: MeasuredCircle | null
 }
+
+type LineState = Extract<DimensionToolState, { phase: "line" }>
 
 type DimensionToolState =
   /** Awaiting the first extension line origin, or Enter to pick an object. */
@@ -675,17 +793,14 @@ type DimensionToolState =
       readonly first: Vec3
       readonly cursor: Vec2
     }
-  | {
+  | ({
       readonly phase: "line"
-      readonly first: Vec3
-      readonly second: Vec2
       readonly cursor: Vec2
       /** Which sub-prompt is open, so its answer returns here. */
       readonly prompt: "text" | "textAngle" | null
-    }
-  /** Specifying the angle of the dimension line (the Rotated option). */
-  | {
-      readonly phase: "rotated"
-      readonly first: Vec3
-      readonly second: Vec2
-    }
+    } & Origins)
+  /**
+   * Specifying the angle of the dimension line: the Rotated option, or
+   * DIMROTATED's first question (no origins yet).
+   */
+  | { readonly phase: "rotated"; readonly origins: Origins | null }

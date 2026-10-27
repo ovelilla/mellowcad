@@ -13,12 +13,12 @@ import { ToolContext } from "./Tool"
 /**
  * Text: "Customizes the dimension text at the Command prompt. The generated
  * dimension measurement is displayed within angle brackets." Enter with nothing
- * typed clears the override and takes the generated measurement back.
+ * typed clears the override and takes the generated measurement back, a second
+ * Text's too (probe dimensions/p164), so the box starts empty.
  */
 export function openDimensionTextInput(
   ctx: ToolContext,
   at: Vec2 | null,
-  current: string | undefined,
   apply: (text: string | undefined, ctx: ToolContext) => void
 ): void {
   const session: DynamicInputSession = {
@@ -31,21 +31,32 @@ export function openDimensionTextInput(
     },
   }
   ctx.dynamicInput.open(session)
-  if (current !== undefined) ctx.dynamicInput.setText("value", current)
   ctx.dynamicInput.setPosition(at ?? { x: 0, y: 0 })
 }
 
-/** Angle: "Changes the angle of the dimension text." */
+/**
+ * Angle: "Changes the angle of the dimension text." 0 is no angle, the text
+ * left in its own direction (a vertical dimension's stays vertical, probe
+ * dimensions/p163), and so is Enter before any angle is set (p132); after one,
+ * Enter keeps it (p143).
+ */
 export function openDimensionTextAngleInput(
   ctx: ToolContext,
   at: Vec2 | null,
   current: number | undefined,
-  apply: (radians: number, ctx: ToolContext) => void
+  apply: (radians: number | undefined, ctx: ToolContext) => void
 ): void {
   const session: DynamicInputSession = {
-    fields: [{ id: "angle", prompt: "dimensionTextAngle", kind: "angle" }],
+    fields: [
+      { id: "angle", prompt: "specifyAngleOfDimensionText", kind: "angle" },
+    ],
     commit: (values, commitCtx) =>
-      apply((values.angle * Math.PI) / 180, commitCtx),
+      apply(
+        normalizeDegrees(values.angle) === 0
+          ? undefined
+          : (values.angle * Math.PI) / 180,
+        commitCtx
+      ),
   }
   ctx.dynamicInput.open(session)
   ctx.dynamicInput.setDefault(

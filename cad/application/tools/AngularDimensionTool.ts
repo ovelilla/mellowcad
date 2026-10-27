@@ -12,7 +12,7 @@ import {
   DimensionEntity,
   Entity,
   entityElevation,
-  onPlaneOf,
+  withElevation,
   polylineSegmentGeometries,
   readsInPlan,
 } from "../../domain/entities"
@@ -236,15 +236,10 @@ export class AngularDimensionTool implements Tool {
         )
         this.measured = pending ? measurementOf(pending, ctx) : ""
         this.state = { ...this.state, prompt: "text" }
-        openDimensionTextInput(
-          ctx,
-          this.lastScreen,
-          this.text,
-          (text, commitCtx) => {
-            this.text = text
-            this.returnToLocation(commitCtx)
-          }
-        )
+        openDimensionTextInput(ctx, this.lastScreen, (text, commitCtx) => {
+          this.text = text
+          this.returnToLocation(commitCtx)
+        })
         return "continue"
       }
       case "Angle":
@@ -336,7 +331,8 @@ export class AngularDimensionTool implements Tool {
    * The dimension as it stands with the arc through `at`. Shared by the live
    * preview and the commit, so what is drawn is what is created. Null while the
    * gesture is degenerate — a location on the vertex has no arc to draw. It
-   * lies at the location's height, as DIMLINEAR's does.
+   * lies at the current ELEVATION, as every dimension (probes dimensions/p158,
+   * p324).
    */
   private pending(
     target: AngularTarget,
@@ -346,7 +342,7 @@ export class AngularDimensionTool implements Tool {
   ): DimensionEntity | null {
     const origins = resolveOrigins(target, at)
     if (!origins) return null
-    return onPlaneOf(
+    return withElevation(
       createDimension("angular", origins.first, origins.second, at, {
         vertex: target.vertex,
         text: this.text,
@@ -355,7 +351,7 @@ export class AngularDimensionTool implements Tool {
         layerId: ctx.document.getCurrentLayerId(),
         ...(id !== undefined ? { id } : {}),
       }),
-      at
+      ctx.elevation
     )
   }
 

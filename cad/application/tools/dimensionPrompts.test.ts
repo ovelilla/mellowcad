@@ -12,8 +12,9 @@ function answer(cad: CadHarness, text: string): CadHarness {
 }
 
 /**
- * The dimension commands' questions, as AutoCAD 2023's console asks them, in
- * English and in the words of Autodesk's Spanish table.
+ * The dimension commands' questions, as AutoCAD 2027's console asks them, in
+ * English and in Spanish (DIMLINEAR's and DIMALIGNED's: probes dimensions/p01,
+ * p104, p126, p129, p137, p143).
  */
 describe("DIMLINEAR's questions", () => {
   it("are AutoCAD's, written answered", () => {
@@ -51,9 +52,9 @@ describe("DIMLINEAR's questions", () => {
     expect(cad.commandLog().at(-1)).toBe("Dimension text = 100")
   })
 
-  // AutoCAD 2023's console: Rotated leaves every keyword on offer, Horizontal
-  // and Vertical the text ones alone, through Text and Angle too; DIMALIGNED
-  // offers those alone throughout.
+  // Rotated leaves every keyword on offer, Horizontal and Vertical the text
+  // ones alone, through Text and Angle too; DIMALIGNED offers those alone
+  // throughout (probe dimensions/p137).
   it("offers the text keywords alone once Horizontal or Vertical is set", () => {
     const cad = createHarness()
     cad.command("DIMLINEAR").click(p(0, 0)).click(p(100, 0))
@@ -130,8 +131,9 @@ describe("DIMLINEAR's questions", () => {
     )
     cad.escape().command("ACOALINEADA").click(p(0, 0)).click(p(100, 0))
     cad.option("Angle")
+    // The table's DIMALIGNED entry says Precise; the console asks so (p143).
     expect(cad.state().commandLine.prompt).toBe(
-      "ACOALINEADA Precise ángulo de texto de cota:"
+      "ACOALINEADA Designe ángulo de texto de cota:"
     )
   })
 })

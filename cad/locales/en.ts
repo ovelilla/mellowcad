@@ -35,6 +35,9 @@ export const en: EngineCatalog = {
       "textedit": "Edit text",
       "dimlinear": "Linear",
       "dimaligned": "Aligned",
+      "dimhorizontal": "Horizontal",
+      "dimvertical": "Vertical",
+      "dimrotated": "Rotated",
       "dimradius": "Radius",
       "dimdiameter": "Diameter",
       "dimangular": "Angular",
@@ -695,6 +698,15 @@ export const en: EngineCatalog = {
         "DIMALIGNED",
         "DIMALI",
         "DAL"
+      ],
+      "DIMHORIZONTAL": [
+        "DIMHORIZONTAL"
+      ],
+      "DIMVERTICAL": [
+        "DIMVERTICAL"
+      ],
+      "DIMROTATED": [
+        "DIMROTATED"
       ],
       "DIMRADIUS": [
         "DIMRADIUS",
@@ -3432,6 +3444,7 @@ export const en: EngineCatalog = {
       ],
       "lastKeyword": "Last",
       "noObjectSelected": "No object selected.",
+      "notLineArcOrCircleToDimension": "Object selected is not a line, arc or circle.",
       "associativeDimensionRequired": "Linear, ordinate, or angular associative dimension required.",
       "selectedObjectNotDimension": "Selected object is not a dimension.",
       "negativeSpacing": "Invalid spacing value, spacing value cannot be negative."

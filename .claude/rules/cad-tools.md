@@ -303,8 +303,8 @@ base)`, because every `V` helper returns a `Vec2`. Type a state field that feeds
   creation as `Vec3`, so a dropped Z fails to compile. A displacement is `sub3(to, from)`.
 - **A flat object lies in the plane of the first point that fixed it**: `onPlaneOf(createX(...),
 first)`, later points projected (`withZOf(point, first)`); SPLINE by limitation (spline/p200).
-  `createLine` reads both ends' Z. A dimension lies at the height of the point placing its
-  dimension line, whatever its origins'. Three points too (arc/p06, circle/p189). FILLET and
+  `createLine` reads both ends' Z. Three points too (arc/p06, circle/p189). A dimension lies
+  at the current ELEVATION, whatever its points' Z (dimensions/p158). FILLET and
   CHAMFER resolve two lines with `lineCorner` (`lineCorner.ts`).
 - **A grip drags to a point like any click**; only a line's end grip writes that Z into the
   object, every other grip stores `planar(point)`.
