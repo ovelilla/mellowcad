@@ -180,7 +180,8 @@ Every cell's mellowcad answer comes from the harness (`createHarness`), never fr
 - An existing test that already pins the cell is cited (`file:line`), after reading it.
 - Otherwise the reviewer writes a **scratch test** in `research/review/<command>/` (gitignored, so
   no other session's hook runs it), with the config of annex-probes.md §5. It reproduces the
-  probe's input and asserts AutoCAD's answer: a failure is a `differs`, a pass an `untested`. In the
+  probe's input and asserts AutoCAD's answer: a failure is a `differs`, a pass an `untested`. One
+  that only dumps values proves nothing a plan can cite (DLN's first pass, Dimensions). In the
   execution it becomes the regression test, in its proper file.
 - What only a browser shows (canvas pixels, focus, the shortcut menu's DOM): skill `browser-verify`,
   only after the harness cannot answer.
@@ -239,6 +240,9 @@ deviation without a `WHY` and a coverage note is a finding.
   commands share, BLOCK's Convert asking INSERT's values: found twice), the order to claim nothing about
   AutoCAD without a probe id the reviewer gave it, and the patterns found earlier in the review
   (with their IDs) to look for analogues.
+- In Phase 1 the reviewer greps the rules' shared contracts (`setsLastPoint`, `typedPick`,
+  `picksLocked`, `THEME.entityHover`) across all the review's tools and gives that sweep to one
+  subagent by name: three found LASTPOINT broken, each in its own tools (Dimensions).
 - They return the cells they answered, what they could not check, and the tests they read, as
   text: a subagent cannot write a report file, so the reviewer keeps it in the scratchpad.
 - Their high and critical findings are verified by the reviewer, in person, before the plan.
@@ -392,3 +396,6 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
 - 2026-10-27, after the Blocks review: a dialog the console skips, a modal dialog closed with
   `acad.sh post`, words outside the merged tables (annex-probes.md §4); a path two commands share
   to one subagent by name (§4.8).
+- 2026-10-27, after the Dimensions review: the shared contracts swept by one subagent (§4.8); a
+  scratch test asserts, never only dumps (§4.3); `com send` and LINE, the palette's folds
+  (annex-probes.md §4).

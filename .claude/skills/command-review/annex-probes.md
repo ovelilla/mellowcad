@@ -227,6 +227,10 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   desktop refusal shows that the merged tables lack are found by their UTF-16 text in the
   install's `en-US/*.dll`, then read with `strtable.mjs` (atteditRes.dll; Blocks review).
 
+- A `com send` ending in a space leaves LINE waiting for its next point: end it with `\n\n`, or
+  draw with PLINE. The Properties palette's groups fold by the arrow at the header's right, and the
+  fold persists in the profile: unfold them before closing (Dimensions review).
+
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).
 
