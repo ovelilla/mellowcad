@@ -128,7 +128,7 @@ objects:` pick found), only a line written since the running command started.
   differently then (ZOOM leaves out `Regenerating model.`, -VIEW refuses views). A change AutoCAD
   regenerates for is said with `ctx.regenerate()`, never by reporting `regeneratingModel`: the
   runtime writes `Regen queued.` or `Regenerating model.` and marks the undo step, which U and
-  REDO repeat.
+  REDO repeat (a view step, only if its line of sight turned: view/p339, p350).
 
 ## System variables
 
@@ -192,10 +192,9 @@ layer.
   `commands/Command.ts`. Any command but U, UNDO, REDO and MREDO drops the redo stack, even one
   that changes nothing.
 - **The view is undone with the command that changed it.** A tool that changes the view says
-  `changesView`: the runtime saves the view as it starts and puts the change into the step
-  (`ViewChangeCommand`), so a tool never records a view change; a view left where it was makes no
-  step unless `viewStep()` says so (-PAN). The wheel, the wheel button's pan and the ViewCube are
-  no command and stay out.
+  `changesView`: the runtime, never the tool, puts the change into the step (`ViewChangeCommand`);
+  a run leaving the view is a step too (view/p364). The wheel, the wheel button's pan and the
+  ViewCube are no command and stay out.
 - A tool offering its own **Undo keyword** counts its own edits and refuses when there are none
   (SPLINE's at one point does nothing, spline/p125; TRIM's says all undone after any answer,
   trim/p380, DIMBASELINE's too, dimensions/p213; TEXTEDIT's also as it undoes the last,

@@ -108,8 +108,8 @@ export class ViewTool implements Tool {
   }
 
   private show(preset: ViewPreset, ctx: ToolContext): boolean {
-    // Every view here turns the view direction, which AutoCAD 2023's console
-    // regenerates for, and a transparent -VIEW cannot.
+    // Every view here regenerates, the one already shown too (view/p350),
+    // which a transparent -VIEW cannot (p324, p334).
     if (ctx.runsTransparently()) {
       ctx.report(ctx.text.message("requiresRegen"))
       return true

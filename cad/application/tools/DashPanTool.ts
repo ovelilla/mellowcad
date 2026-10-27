@@ -7,8 +7,8 @@ import { parseCoordinate } from "../input/coordinateInput"
 import { PointerInput, QuestionInput, Tool, ToolContext } from "./Tool"
 
 /**
- * AutoCAD's -PAN, as AutoCAD 2023's console answers it (acc/z6, z16, z17,
- * g1–g25 of the -PAN session): `Specify base point or displacement:`, then
+ * AutoCAD's -PAN, as AutoCAD 2027's console answers it (probes view/p204–p220,
+ * p338, p354–p356, p368): `Specify base point or displacement:`, then
  * the measuring prompt's ` Specify second point:`. The drawing moves by the
  * second point less the first or, at Enter, by the first read as a
  * displacement in the UCS; Enter at the first is refused. Neither point
@@ -21,13 +21,11 @@ export class DashPanTool implements Tool {
 
   private base: Vec3 | null = null
   private cursor: Vec3 | null = null
-  private panned = false
   private lastScreen: Vec2 | null = null
 
   onActivate(ctx: ToolContext): void {
     this.base = null
     this.cursor = null
-    this.panned = false
     ctx.setCursor("crosshair")
     this.open(ctx)
   }
@@ -66,10 +64,6 @@ export class DashPanTool implements Tool {
 
   getConstraintAnchor(): Vec3 | null {
     return this.base
-  }
-
-  viewStep(): boolean {
-    return this.panned
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
@@ -131,7 +125,6 @@ export class DashPanTool implements Tool {
     const b = ctx.viewport.worldToScreen(to)
     ctx.viewport.pushHistory()
     ctx.viewport.panByScreen({ x: b.x - a.x, y: b.y - a.y })
-    this.panned = true
     ctx.endCommand()
   }
 }

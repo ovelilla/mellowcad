@@ -16,7 +16,7 @@ wording (skill `autocad-research`). How a tool is written: `.claude/rules/cad-to
    tool of its own.
 2. **A runtime hook, if it needs one.** Something new it asks the runtime, or the runtime asks it,
    is an optional member of `Tool` or a method of `ToolContext` / `UndoHistory` in `Tool.ts`, wired
-   in `CadRuntime.ts`: -PAN's `viewStep` (68cbaf5), MREDO's `redo` (c9d972c).
+   in `CadRuntime.ts`: COPYCLIP's `keepsSelection` (6d1e433), MREDO's `redo` (c9d972c).
 3. **`defaultTools`** in `cad/application/runtimeTools.ts`: `new XTool()` in rail order. A tool the
    runtime drives directly (a `CadRuntime` field) is passed in instead. (Every command commit.)
 4. **`TOOL_COMMANDS`** in `cad/application/CommandLine.ts`: tool id → the command's global name.

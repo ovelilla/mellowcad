@@ -133,7 +133,10 @@ describe("the other commands AutoCAD runs transparently", () => {
       "** Requires a regen, cannot be transparent.",
       "Resuming LINE command.",
     ])
-    expect(cad.runtime.viewport.up).toEqual({ x: 0, y: 1, z: 0 })
+    const { up } = cad.runtime.viewport
+    expect([up.x, up.y, up.z]).toEqual(
+      [0, 1, 0].map((v) => expect.closeTo(v, 12))
+    )
   })
 
   // SNAP asks its spacing (2027's console, probe line/p158); UNITS' dialog
@@ -217,9 +220,12 @@ describe("a transparent command", () => {
     )
     cad.click(p(100, 0)).click(p(100, 100)).escape()
     expect(cad.typeCounts().line).toBe(2)
-    // The zoom is no step of LINE's: U takes back the two lines.
+    // The zoom is part of LINE's step: U takes back the two lines and the
+    // zoom (probe view/p358).
+    const zoomed = cad.runtime.viewport.scale
     cad.undo()
     expect(cad.typeCounts().line ?? 0).toBe(0)
+    expect(cad.runtime.viewport.scale).toBeCloseTo(zoomed / 2, 9)
   })
 
   it("is typed by its alias, echoed with its name", () => {

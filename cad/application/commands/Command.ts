@@ -46,22 +46,16 @@ export interface Step {
   readonly name: string | null
   /** A group's commands, or consecutive ZOOMs', in the order they ran. */
   readonly names: readonly string[]
-  /** Whether taking it back regenerates the drawing (LTSCALE, -VIEW). */
+  /** Whether taking it back or doing it again regenerates the drawing (LTSCALE, -VIEW). */
   readonly regenerates: boolean
-  /** Whether doing it again does. */
-  readonly regeneratesRedone: boolean
 }
 
-interface Entry extends Omit<Step, "kind" | "regeneratesRedone"> {
+interface Entry extends Omit<Step, "kind"> {
   /** `begin`: where an UNDO group still open starts, which no undo passes. */
   readonly kind: Step["kind"] | "begin"
   /** What it does and undoes; null for a mark, a group's start or an empty group. */
   readonly command: Command | null
-  /**
-   * A ZOOM's view change, which the next ZOOM joins (UNDO Combine). Whether
-   * it regenerated is said only when taking it back moves the view, never
-   * when doing it again (acc/z4, z29, z32–z38 of the MREDO session).
-   */
+  /** A ZOOM's view change, which the next ZOOM joins (UNDO Combine). */
   readonly combines?: true
   /** A layer-table edit made outside a command, which the next one joins (UNDO Layer). */
   readonly layer?: true
@@ -489,16 +483,12 @@ export class CommandHistory extends Observable {
   }
 
   private step(entry: Entry): Step {
-    const view = entry.combines ? entry.command : null
     return {
       // Only an open group's start is a `begin`, and no undo passes it.
       kind: entry.kind === "begin" ? "group" : entry.kind,
       name: entry.name,
       names: entry.names,
-      regenerates:
-        entry.regenerates &&
-        (!(view instanceof ViewChangeCommand) || view.moves()),
-      regeneratesRedone: entry.regenerates && view === null,
+      regenerates: entry.regenerates,
     }
   }
 

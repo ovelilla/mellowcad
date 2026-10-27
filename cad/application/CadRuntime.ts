@@ -682,7 +682,11 @@ export class CadRuntime extends Observable {
       },
       runsTransparently: () => this.suspended !== null,
       regenerate: (how) => {
-        if (how !== "once") this.history.markRegenerated()
+        // WHY not for a view command: its step regenerates on U and REDO only
+        // when its line of sight turned, whatever the run said (recordView).
+        if (how !== "once" && !this.activeTool.changesView) {
+          this.history.markRegenerated()
+        }
         if (how === "silently") return
         if (this.suspended === null) {
           this.commandLine.write("info", this.text.message("regeneratingModel"))
@@ -1116,12 +1120,11 @@ export class CadRuntime extends Observable {
     this.commandStart = this.echoMark ?? this.commandLine.mark()
     this.activeTool = next
     this.startedAs = this.starting
-    // A run that changes nothing is a step too (move/p07), but for a view
-    // left where it was and the undo commands' own.
+    // A run that changes nothing is a step too (move/p07), a view left where
+    // it was included (view/p364–p369), but for the undo commands' own.
     if (next.id !== "select") {
       this.history.beginGroup(
-        !next.changesView &&
-          !UNDO_COMMANDS.has(TOOL_COMMANDS[next.id] ?? next.id)
+        !UNDO_COMMANDS.has(TOOL_COMMANDS[next.id] ?? next.id)
       )
     }
     // A tool started from the rail is its command too.
@@ -1244,6 +1247,7 @@ export class CadRuntime extends Observable {
       cursor: this.toolCursor,
       lastPoint: this.lastPoint,
       measuring: this.measuring,
+      changesView: this.viewBefore !== null,
     }
     // WHY a set of its own: ZOOM Object asks `>>Select objects:` and
     // AutoCAD's MOVE still moves its own set after it.
@@ -1255,10 +1259,13 @@ export class CadRuntime extends Observable {
     this.commandStart = this.commandLine.mark()
     this.activeTool = tool
     this.startedAs = command.id
-    // What it does to the view goes with the command it runs in (acc/z12).
-    if (tool.changesView && this.viewBefore === null) {
-      this.viewBefore = this.viewport.saveView()
-    }
+    // WHY an entry of its own in the running command's group: its Undo
+    // takes a view change back with the segment before it (view/p360), and
+    // U still takes the whole command back (p358). What the interrupted
+    // command did to the view so far goes in first, so each entry undoes to
+    // where the one before it left the view.
+    if (this.viewBefore !== null) this.recordView()
+    this.viewBefore = tool.changesView ? this.viewport.saveView() : null
     tool.onActivate?.(this.toolContext)
     this.replayRestingPointer()
     this.invalidateState()
@@ -1313,6 +1320,8 @@ export class CadRuntime extends Observable {
     if (suspended === null) return
     this.suspended = null
     this.activeTool.onDeactivate?.(this.toolContext)
+    this.recordView()
+    this.viewBefore = suspended.changesView ? this.viewport.saveView() : null
     this.activeTool = suspended.tool
     this.startedAs = suspended.startedAs
     this.commandStart = suspended.commandStart
@@ -2734,12 +2743,12 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * Puts what the ending command did to the view into its undo step, from
-   * when a tool that changes it started (ZOOM, PAN, -PAN, -VIEW, VPOINT,
-   * PLAN, 3DORBIT, typed or transparent), unless the view is where it was
-   * and the tool makes no step of that (`viewStep`). The wheel, the ViewCube
-   * and the navigation bar's direct zooms are no command, and stay out of
-   * it. Returns whether it did.
+   * Puts what the ending command did to the view into the open undo group,
+   * from when a tool that changes it started (ZOOM, PAN, -PAN, -VIEW,
+   * VPOINT, PLAN, 3DORBIT, typed or transparent), unless the view and ZOOM
+   * Previous's list are where they were: the run is a step all the same.
+   * The wheel, the ViewCube and the navigation bar's direct zooms are no
+   * command, and stay out of it. Returns whether it did.
    */
   private recordView(): boolean {
     const before = this.viewBefore
@@ -2747,7 +2756,6 @@ export class CadRuntime extends Observable {
     if (before === null) return false
     const after = this.viewport.saveView()
     if (
-      !(this.activeTool.viewStep?.() ?? false) &&
       sameCamera(before.camera, after.camera) &&
       before.previous.length === after.previous.length &&
       before.previous.every((camera, i) =>
@@ -2756,7 +2764,13 @@ export class CadRuntime extends Observable {
     ) {
       return false
     }
-    this.history.execute(new ViewChangeCommand(this.viewport, before, after))
+    const change = new ViewChangeCommand(this.viewport, before, after)
+    // WHY: U and REDO of a view step say `Regenerating model.` only when its
+    // line of sight turned: never after a ZOOM, nor after PLAN in plan or
+    // -VIEW to the view shown, though their runs said it (view/p337, p339,
+    // p349, p350, p369). A twist alone is unprobed.
+    if (change.turns()) this.history.markRegenerated()
+    this.history.execute(change)
     return true
   }
 
@@ -2843,7 +2857,7 @@ export class CadRuntime extends Observable {
       if (!step) break
       const name = this.stepName(step, false)
       if (name !== null) names.push(name)
-      regenerates ||= step.regeneratesRedone
+      regenerates ||= step.regenerates
     }
     if (done > 0) {
       this.selection.clear()
@@ -6428,6 +6442,8 @@ interface SuspendedCommand {
   readonly cursor: string | null
   readonly lastPoint: Vec3
   readonly measuring: Measuring | null
+  /** Whether the interrupted command changes the view (its `viewBefore`). */
+  readonly changesView: boolean
 }
 
 interface Measuring {

@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { withDeltaZ, withElevation, withThickness } from "../../domain/entities"
+import type { Vec3 } from "../../geometry/Vec3"
 import type { ScenePrimitive } from "../../scene/types"
 import { createHarness, type CadHarness } from "../../../test/harness"
 import { circleOf, lineOf, p, textOf } from "../../../test/builders"
@@ -9,6 +10,13 @@ const ROOT3 = Math.sqrt(3)
 
 function direction(cad: CadHarness) {
   return cad.runtime.viewport.direction
+}
+
+/** `v` against x, y, z coordinate by coordinate, so a -0 reads as 0. */
+function expectVector(v: Vec3, x: number, y: number, z: number): void {
+  expect(v.x).toBeCloseTo(x, 12)
+  expect(v.y).toBeCloseTo(y, 12)
+  expect(v.z).toBeCloseTo(z, 12)
 }
 
 function screenOf(cad: CadHarness, x: number, y: number, z: number) {
@@ -110,7 +118,7 @@ describe("-VIEW", () => {
     cad.command("VIEW").option("Orthographic").enter()
 
     expect(cad.runtime.viewport.isPlan).toBe(true)
-    expect(cad.runtime.viewport.right).toEqual({ x: 1, y: 0, z: 0 })
+    expectVector(cad.runtime.viewport.right, 1, 0, 0)
   })
 
   // AutoCAD 2023's console (acc/v1, y1 of the hidden UCS words session):
@@ -119,7 +127,7 @@ describe("-VIEW", () => {
   it("shows Bottom with the X to the left, as twist 0 does", () => {
     const cad = createHarness()
     cad.command("-VIEW").option("Orthographic").option("Bottom")
-    expect(cad.runtime.viewport.right).toEqual({ x: -1, y: 0, z: 0 })
+    expectVector(cad.runtime.viewport.right, -1, 0, 0)
     const { xAxis, yAxis } = cad.runtime.document.getSettings().ucs
     expect([xAxis, yAxis]).toEqual([
       { x: -1, y: 0, z: 0 },
@@ -129,7 +137,7 @@ describe("-VIEW", () => {
 
     const vpoint = createHarness()
     vpoint.command("VPOINT").type("0,0,-1").enter()
-    expect(vpoint.runtime.viewport.right).toEqual({ x: -1, y: 0, z: 0 })
+    expectVector(vpoint.runtime.viewport.right, -1, 0, 0)
     vpoint.command("VPOINT").type("0.01,0,-1").enter()
     const right = vpoint.runtime.viewport.right
     expect([right.x, right.y, right.z].map((v) => +v.toFixed(4) + 0)).toEqual([

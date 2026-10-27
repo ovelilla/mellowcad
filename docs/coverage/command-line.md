@@ -295,8 +295,9 @@ box's chips show each abbreviation
 **Implemented:** one step per command: what a command draws and sets folds into one ("The effects of
 the last command (Line) will be undone, removing all 3 of the lines created by it"); a command that
 changed nothing is a step too, which U and REDO name and which takes nothing back: ID, an ERASE or
-MOVE of an empty set, -COLOR kept with Enter, a command cancelled (move/p07, p233, p235, p237), but
-not a view left where it was, nor UNDO and MREDO cancelled (p239, p240); Ctrl+Z inside a
+MOVE of an empty set, -COLOR kept with Enter, a command cancelled (move/p07, p233, p235, p237), a
+view command that leaves the view (view/p364–p369), but not UNDO and MREDO cancelled (p239,
+p240); Ctrl+Z inside a
 command is acad.cuix's `_u` typed at its prompt and written so
 (`Specify next point or [Close/Undo]: _u`), and the command goes on: LINE's Undo keyword ("only the
 previous line segment is undone because you are still in the Line Command"), a refusal where the
@@ -305,8 +306,9 @@ point.` at `Length of line:`; desktop d09, probes p103, p115); from the Quick Ac
 running command ends first and goes whole ("Click Undo on the Quick Access toolbar to cancel the
 entire series of line segments"); U (a command of its own, es `H`) writes what it took back, as
 AutoCAD 2023's console does: the command's name as echoed (`LINE` for `L`, `-LAYER`, `AUPREC`),
-`LTSCALE Regenerating model.` for one that regenerated (-VIEW too, and LINE with a transparent
-LTSCALE in it), an edit made outside a command by where it was made — `CHPROP` (es `CAMBPROP`) for
+`LTSCALE Regenerating model.` for one that regenerated (LINE with a transparent LTSCALE in it too,
+and -VIEW, VPOINT and PLAN only when they turned the line of sight, never ZOOM: view/p337, p339,
+p340–p343, p349, p350), an edit made outside a command by where it was made — `CHPROP` (es `CAMBPROP`) for
 the top bar's drop-downs on objects, `Modify Property` for the Properties palette, `Grip Edit` (es
 `Editar pinzamiento`) for a grip, `'CLAYER` for the current layer from a drop-down, nothing for
 CECOLOR, CELTYPE or CELWEIGHT set from one (desktop properties/d05-1 to d05-3b, arrays/d14, d20;
@@ -314,7 +316,8 @@ CECOLOR, CELTYPE or CELWEIGHT set from one (desktop properties/d05-1 to d05-3b, 
 only right after a U that took something back, writing the command's name
 (`LTSCALE Regenerating model.` while more is left to redo), then `Everything has been redone` once
 nothing is and `Regenerating model.` last; what ZOOM, PAN, -PAN, -VIEW, VPOINT, PLAN and 3DORBIT do
-to the view is part of their step, or of the command a transparent ZOOM ran in (rows above);
+to the view is part of their step, or an entry of the command a transparent ZOOM or -PAN ran in,
+which its Undo keyword takes back too (view/p358–p360);
 otherwise `REDO must immediately follow the U or UNDO command.`, or `Nothing to redo` once another
 command ran or nothing is left; UNDO says
 `Current settings: Auto = On, Control = All, Combine = Yes, Layer = Yes` and asks

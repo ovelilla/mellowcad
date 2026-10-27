@@ -33,12 +33,14 @@ before it counted, `1 found`, and framed at once, p147; Enter with nothing ends 
 `Regenerating model.` always, p139; transparently, it refuses with
 `** Requires a regen, cannot be transparent.` after its set and leaves the view, p145); every ZOOM
 drops a set selected before it (p147–p150); transparent, `'ZOOM` / `'Z` typed mid-command (below,
-Command window); an undo step, consecutive ZOOMs one (UNDO Combine, as AutoCAD 2023's console joins
-them): U names them last first (`ZOOM 'ZOOM`), puts back the view and ZOOM Previous's list, and says
-`Regenerating model.` after them when one regenerated and the view goes elsewhere (not after
-Extents and Previous back to the same view); REDO never says it; another command, a mark or the
-navigation bar's Window (a menu's, never joined) parts them; a transparent ZOOM is part of the
-command it ran in (U of LINE takes it back too)
+Command window); every run an undo step, one that leaves the view too (U `ZOOM` after
+`No previous view saved.`, p364, p365), consecutive ZOOMs one (UNDO Combine, p347, p348;
+`[LINE][ZOOM][ZOOM]` UNDO 2 `ZOOM ZOOM LINE`, p345): U names them last first (`ZOOM 'ZOOM`, p361),
+puts back the view and ZOOM Previous's list (p362, p363), and neither it, REDO nor MREDO says
+`Regenerating model.` (p336, p337, p347); another command (CIRCLE, ID, -PAN: p347, p355–p357), a
+mark or the navigation bar's Window (a menu's, never joined) parts them; a transparent ZOOM is an
+entry of the command it ran in: U takes it back with LINE (p358), LINE's Undo with the segment
+before it (p360)
 
 **Missing:** Realtime (so the first prompt offers no `<real time>`, and its Enter ends ZOOM where
 AutoCAD starts it and says `Press ESC or ENTER to exit, or right-click to display shortcut menu.`,
@@ -50,7 +52,9 @@ p153, p154, p165); the hidden Left (`Lower left corner point:` / es `Esquina inf
 then the same magnification prompt; the corner is LASTPOINT, p163) and Vmax (the widest view
 without a regeneration, p164), refused here as any answer; the regeneration when Extents leaves
 what was generated (there is no virtual screen); the first prompt written on one line (AutoCAD
-breaks it before its keywords)
+breaks it before its keywords); UNDO n stopping inside a joined pair (after
+`[ZOOM E + 2X][CIRCLE][ZOOM 2X]`, UNDO 2 writes `ZOOM CIRCLE ZOOM` and leaves the view at Extents',
+p346, where U takes the pair whole; here UNDO 2 takes `ZOOM CIRCLE` and stops before the pair)
 
 ### `PAN` / `P` / `-PAN` · es `ENCUADRE` / `E`† / `-ENCUADRE`
 
@@ -67,9 +71,10 @@ first, `Requires two points, or a displacement followed by ENTER.`, es
 `Requiere dos puntos o un desplazamiento seguido por INTRO.`): the drawing moves by the second point
 less the first or, at Enter, by the first read as a displacement in the UCS, `@` from LASTPOINT at
 the first and from the first at the second, neither point becoming LASTPOINT; transparent
-(`>>Specify base point or displacement:`, `Resuming LINE command.`, taken back with LINE); its own
-undo step, joined with nothing, by nothing too (U `-PAN`, `'-PAN` when typed so), as AutoCAD 2023's
-console does; es `-ENCUADRE` **unverified** (no Spanish source names it)
+(`>>Specify base point or displacement:`, `Resuming LINE command.`, taken back with LINE, p359);
+its own undo step, joined with nothing (p354–p356), by nothing too (p368): U, REDO and MREDO name
+it (`-PAN`, `'-PAN` when typed so; es `-ENCUADRE`, p269, p338) and never say
+`Regenerating model.` (p338)
 
 **Missing:** the real-time shortcut menu's Pan / Zoom / 3D Orbit / Zoom Window / Zoom Original /
 Zoom Extents items
@@ -81,8 +86,10 @@ Zoom Extents items
 (Enter's default) / Ucs (`Enter name of UCS or [?]:`, es `Indique nombre de SCP o`: a saved one by
 name, `Cannot find UCS "NAME".`, `?` lists as UCS does, Enter ends) / World: looks down that UCS's Z
 with its X axis pointing right (VIEWTWIST), fits the extents and says `Regenerating model.`; the UCS
-stays; ZOOM Previous steps back; U takes it back (`PLAN Regenerating model.`) and REDO does it
-again, regenerating last
+stays; ZOOM Previous steps back; U takes it back and REDO and MREDO do it again, saying
+`Regenerating model.` (`PLAN Regenerating model.`, REDO's last) only when it turned the line of
+sight (p349): PLAN in plan says it as it runs, not on U, REDO or MREDO (p339), nor here after a
+view only untwisted (unprobed)
 
 ### `-VPOINT` / `VPOINT` / `-VP` / `VP` · es `-PTOVISTA` / `-PV`† / `PTOVISTA`
 
@@ -96,8 +103,8 @@ arbitrary-axis X drawn right (`0,0,-1` has the X to the left, `0.01,0,-1` X = -1
 View then reads in the console); what is no point refused with `Invalid input. Try again.` and the
 current direction again (es `Entrada no válida. Vuelva a intentarlo.`), what is no angle with
 `Requires valid numeric angle or second point.`, as AutoCAD 2023's console does;
-`Regenerating model.`; fits the extents; ZOOM Previous steps back; VPOINT runs the same sequence; U
-and REDO as PLAN's (`VPOINT Regenerating model.`)
+`Regenerating model.`; fits the extents; ZOOM Previous steps back; VPOINT runs the same sequence; U,
+REDO and MREDO as PLAN's (`VPOINT Regenerating model.`, p340, p341)
 
 **Missing:** the compass and tripod (Enter leaves the view, so the prompt shows no
 `<display compass and tripod>`; Tripod, which the prompt declares but does not list — es `trípode` —
@@ -120,18 +127,22 @@ step, and names it as UCS orthoGraphic does (`*FRONT*`); each view at twist 0, t
 arbitrary-axis X drawn right, so Bottom has the X to the left and its UCS X = -1,0,0 (AutoCAD 2023's
 console); an isometric one leaves the UCS; `'-VIEW` mid-command asks the same, and every view, which
 turns the view, says `** Requires a regen, cannot be transparent.` and changes nothing, as the
-console does; VIEW runs -VIEW; U takes the view back with its UCS (`-VIEW Regenerating model.`),
-REDO regenerating last
+console does; VIEW runs -VIEW; U takes the view back with its UCS (`-VIEW Regenerating model.`,
+p342, p343), REDO and MREDO regenerating last, only when the line of sight turned: the view already
+shown says it as it runs, not on U or REDO (Top in Top, SW Isometric twice, p350, p369); Enter at
+the first prompt is an undo step too (p366)
 
 **Missing:** `?`, Delete, Restore, Save, sEttings, Window (no saved views), the View Manager,
-UCSORTHO and UCSBASE as variables, the aligned UCS in UCS Previous's list
+UCSORTHO and UCSBASE as variables, the aligned UCS in UCS Previous's list; the UCS named `*TOP*`
+after U of an orthographic preset from the WCS (AutoCAD keeps the WCS's axes under that name, p351;
+here `*WORLD*`)
 
 ### `3DORBIT` / `3DO` / `ORBIT` · es `3DORBITA`
 
 **Implemented:** dragging across turns the camera about the WCS's Z, dragging up and down raises or
 lowers it, about the middle of the drawing under the centre of the screen, in parallel projection;
 no editing while it runs; Enter or Escape ends it; each drag is a ZOOM Previous step; the run an
-undo step (**unverified**: 3DORBIT stops AutoCAD 2023's console); Shift + the wheel button held
+undo step, with no drag too (**unverified**: 3DORBIT hangs AutoCAD 2027's console, p329); Shift + the wheel button held
 orbits from any command; Orbit on the navigation bar
 
 **Missing:** the right-click menu (projection, visual styles, other navigation modes), orbiting
@@ -142,7 +153,8 @@ about the selection only, perspective, 3DFORBIT, 3DCORBIT and the rest of 3D nav
 **Implemented:** `Enter an option [ON/OFF] <ON>:` (the current value; es
 `Indique una opción [ACT/DES] <ACT>`; `CUBE` from Autodesk's shortcut guide),
 `Invalid option keyword.` for anything else, as AutoCAD 2023's console says it; saved in the drawing
-as NAVVCUBEDISPLAY 3 or 0; an undo step U and REDO name (move/p238), which takes nothing back
+as NAVVCUBEDISPLAY 3 or 0; an undo step U, REDO and MREDO name, Enter alone too (move/p238,
+view/p344, p367), which takes nothing back
 
 **Missing:** Settings (the ViewCube Settings dialog; not offered, so the prompt lists `[ON/OFF]`),
 NAVVCUBEDISPLAY's 1 and 2 (no visual styles); U and REDO putting NAVVCUBEDISPLAY back and forth,
