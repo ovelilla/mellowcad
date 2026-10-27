@@ -1617,7 +1617,9 @@ export class CadRuntime extends Observable {
             : [],
         // WHY the tool's: at the second of two measuring points the console
         // still requires "two points".
-        hasBase: (this.activeTool.getConstraintAnchor?.() ?? null) !== null,
+        hasBase:
+          (this.activeTool.getConstraintAnchor?.(this.toolContext) ?? null) !==
+          null,
         keyword: (id, declared) => {
           const command = toolCommand(this.activeTool)
           const word = this.text.keyword(
@@ -1992,7 +1994,8 @@ export class CadRuntime extends Observable {
     const field = this.pointMeasuredField()
     const session = this.dynamicInput.getSession()
     if (field === null || session === null) return false
-    const anchor = this.activeTool.getConstraintAnchor?.() ?? null
+    const anchor =
+      this.activeTool.getConstraintAnchor?.(this.toolContext) ?? null
     const from =
       this.measuringFrom() ??
       (anchor === null ? null : withZ(anchor, zOf(anchor)))
@@ -4176,7 +4179,7 @@ export class CadRuntime extends Observable {
     this.placePoint(
       held
         ? this.alongHeld(base, held, distance)
-        : this.atDistance(base, distance),
+        : this.atDistance(base, distance, anchor),
       true
     )
     return true
@@ -4200,11 +4203,21 @@ export class CadRuntime extends Observable {
 
   /**
    * The point `distance` from `base` towards the cursor's last place on the
-   * drawing, in the frame (`pointAtDistance`).
+   * drawing, in the frame (`pointAtDistance`). With the tool's `anchor`, the
+   * cursor as the resolver bends it from there, Ortho and Polar included, as
+   * LINE's length runs along its bent cursor (inquiry/p141, p170).
    */
-  private atDistance(base: Vec3, distance: number): Vec3 {
-    const cursor =
+  private atDistance(
+    base: Vec3,
+    distance: number,
+    anchor: Vec2 | Vec3 | null = null
+  ): Vec3 {
+    const raw =
       this.heldCursorScreen && this.screenToWork(this.heldCursorScreen)
+    const cursor =
+      raw && anchor !== null
+        ? this.resolver.resolve(raw, null, anchor, this.pointerShift).point
+        : raw
     return pointAtDistance({ ucs: this.frame.ucs }, base, cursor, distance)
   }
 
@@ -5827,7 +5840,9 @@ export class CadRuntime extends Observable {
   /** The active tool's constraint anchor, in the frame, with its Z when it has one. */
   private toolAnchor(): Vec2 | Vec3 | null {
     const anchor =
-      this.measuringFrom() ?? this.activeTool.getConstraintAnchor?.() ?? null
+      this.measuringFrom() ??
+      this.activeTool.getConstraintAnchor?.(this.toolContext) ??
+      null
     if (anchor === null || !this.activeTool.inWorld) return anchor
     return this.frame.pointToFrame(withZ(anchor, zOf(anchor)))
   }

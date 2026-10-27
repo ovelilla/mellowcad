@@ -118,9 +118,9 @@ per input function, and per command at `Select objects:`.
   history. `ctx.answer(text)` completes the answered line after the fact (what a `Select
 objects:` pick found), only a line written since the running command started.
 - **A tool never reads a bare number in its point box.** A number typed at a lone `coordinate`
-  box is direct distance from `toolAnchor()`, else LASTPOINT, towards the cursor, given to the
-  tool as a pick wherever it `wantsSnap()` or its box says where from
-  (`DynamicInputSession.directDistance`). Where the tool picks no point, the number reaches its
+  box is direct distance from `toolAnchor()`, else LASTPOINT, towards the cursor as Ortho bends
+  it (inquiry/p141), given to the tool as a pick wherever it `wantsSnap()` or its box says where
+  from (`DynamicInputSession.directDistance`). Where the tool picks no point, the number reaches its
   `commitRaw` (ZOOM's factor); a box whose number is no point says `"typed"`. With no box
   (`Select objects:`, a single object's pick), `typedPick` reads it through `ctx.pointAtDistance`.
 - Run transparently (`'ZOOM`), a tool's own prompt written with `ctx.report(text, "prompt")` gets

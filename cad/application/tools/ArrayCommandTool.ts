@@ -162,8 +162,8 @@ export class ArrayCommandTool implements Tool {
     return this.chosen?.tool.hiddenEntityIds?.() ?? []
   }
 
-  getConstraintAnchor(): Vec2 | Vec3 | null {
-    return this.chosen?.tool.getConstraintAnchor?.() ?? null
+  getConstraintAnchor(ctx: ToolContext): Vec2 | Vec3 | null {
+    return this.chosen?.tool.getConstraintAnchor?.(ctx) ?? null
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {

@@ -1,6 +1,6 @@
 # Measurement and inquiry
 
-### `DIST` / `MEASUREGEOM` · es `DIST` / `DI` · `AREA` / `AA`
+### `DIST` · es `DIST` / `DI` · `AREA` / `AA`
 
 **Implemented:** Distance and Area modes; AREA asks
 `Specify first corner point or [Object/Add area/Subtract area] <Object>:`,
@@ -36,8 +36,13 @@ segment), writing the run so far before each (`Distance = 10.00`, es `Distancia 
 after a refusal; Close goes back to the first point, Close, Total and Enter write the run and end;
 Length asks `Specify length of line:` (es `Precise longitud de línea`;
 `Requires numeric distance or second point.`, Enter too) and goes on along the last segment (back
-for a negative length; the UCS's X axis before there is one), a point there giving the length from
-the last one; Undo takes back a point (`All segments already undone.` at the first); Arc asks
+for a negative length; before there is one the way a first arc leaves, along what was drawn last,
+else the WCS's east, p157, p164), a point there giving the length from LASTPOINT (p118, p158), and
+`0` adding no point, the run said again once it has a segment (p115, p162); Undo takes back a point
+(`All segments already undone.` at the first); a typed `@`, a bare number and Ortho at the next
+point read from LASTPOINT, which each point given moves and Length and a line's Undo leave where it
+was (p160, p165–p167, p169–p171), and which switching to Arc and an arc's Undo put at the run's end
+(p168, p172); Close leaves it at the last point given (p121); Arc asks
 PLINE's arc prompt and options, `[Angle/CEnter/CLose/Direction/Line/Radius/Second pt/Undo]` with no
 `<Total>` (es `[ángUlo/cEntro/Cerrar/Dirección/líNea/Radio/Segundo pto./desHacer]`), each arc's
 length added to `Distance = …`, said again on switching to Arc or Line, its refusal
@@ -51,18 +56,25 @@ two points picked or typed (one without a Z at the current elevation), the 3D di
 and from the UCS's XY plane (0–360, as AutoCAD prints them) and ΔX / ΔY / ΔZ in the UCS, on the
 readout while the second point is picked and then at the command prompt in AutoCAD's words
 (`Distance = …,  Angle in XY Plane = …,  Angle from XY Plane = …` /
-`Delta X = …,  Delta Y = …,   Delta Z = …`), and the command ends, as DIST does; `'AREA` or
+`Delta X = …,  Delta Y = …,   Delta Z = …`; es `Distancia = …, Ángulo en el plano XY = …, …`, p100),
+the angles at AUPREC (p142), and the command ends, as DIST does; a bare number at the second point
+runs towards the cursor as Ortho bends it from the first (p141), a typed point left alone (p140);
+the object snaps and FROM typed at either point (p135–p138); `'AREA` or
 `'_AREA`, at the Command prompt or mid-command, reads the AREA system variable, the last area AREA
 measured in the session: `AREA = 50.00 (read only)` (es `AREA = 50.00 (sólo lectura)`), as AutoCAD
 2027's console does (p324, p325, p359)
 
-**Missing:** pick-an-existing-object modes, Radius, Angle, Volume, Arc and Length at its next point
-and its green fill, an object at an angle to the UCS (not highlighted here; AutoCAD says
-`Object not parallel with UCS.`),
-angles at the drawing's precision (`53.13`, where AUPREC 0 writes `53`), Arc's CEnter → Angle
-reading a number as a point (2027's console asks it as a point, `90` there a distance along the
-cursor, p145: degrees here, until the desktop shows it), the Spanish report in the table's words (`Distancia = …, Ángulo en el plano XY = …, Ángulo a partir del plano XY = …` /
-`Incremento X = …, Incremento Y = …,   Incremento Z = …`)
+**Missing:** MEASUREGEOM (es MEDIRGEOM), another command with DIST's and AREA's prompts inside a
+loop: `Move cursor or [Distance/Radius/Angle/ARea/Volume/Quick/Mode/eXit] <eXit>:` (es
+`Desplace el cursor o [Distancia/RAdio/ángUlo/áRea/Volumen/ráPido/Modo/Salir] <Salir>:`, p105,
+p106), then after each measure `Enter an option [...] <Distance>:` until eXit (p360, p361), with
+Radius, Angle, Volume and Quick; the ribbon's Distance and Area buttons run it
+(`^C^C_MEASUREGEOM _distance`, `_area`), the rail DIST and AREA, whose prompts are its Distance and
+Area word for word; the DISTANCE system variable, which DIST sets to the distance measured (p100:
+`(getvar "DISTANCE")` → `5.0`); AREA's Arc and Length at its next point and its green fill, an
+object at an angle to the UCS (not highlighted here; AutoCAD says `Object not parallel with UCS.`),
+Arc's CEnter → Angle reading a number as a point (2027's console asks it as a point, `90` there a
+distance along the cursor, p145: degrees here, until the desktop shows it)
 
 ### `ID` · es `ID`
 

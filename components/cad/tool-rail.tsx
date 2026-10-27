@@ -269,6 +269,10 @@ const PALETTE: readonly PaletteSection[] = [
     id: "utilities",
     folds: true,
     // The ribbon's Utilities panel keeps ID Point beside the Measure drop-down.
+    // WHY DIST and AREA, where the ribbon's Distance and Area run MEASUREGEOM
+    // (`^C^C_MEASUREGEOM _distance`, `_area`): their prompts are MEASUREGEOM's
+    // Distance and Area word for word, and MEASUREGEOM, whose loop asks again
+    // after each measure, is not built (docs/coverage/inquiry.md).
     items: [flyout("measure", ["measure", "measurearea"]), "id"],
   },
 ]

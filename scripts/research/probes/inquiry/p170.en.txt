@@ -1,0 +1,11 @@
+ORTHOMODE
+1
+_DIST
+0,0
+_M
+280,100
+_L
+-200
+5
+_T
+(getvar "LASTPOINT")

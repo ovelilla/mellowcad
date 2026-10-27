@@ -50,7 +50,7 @@ import { ARC_SEGMENT_OPTIONS, ArcSegmentInput } from "./arcSegmentInput"
 import { lastDrawnDirection } from "./lastDrawnPoint"
 
 /**
- * MEASURE (AutoCAD's DIST / MEASUREGEOM). Creates no geometry — the result is a
+ * MEASURE (AutoCAD's DIST and AREA). Creates no geometry — the result is a
  * transient overlay (measurement guide + a readout chip that follows the
  * cursor) and disappears with the tool. Two modes:
  *
@@ -256,8 +256,8 @@ export class MeasureTool implements Tool {
       )
       return
     } else if (this.state.phase === "length") {
-      // A point there gives the length from the last one, as AutoCAD's does.
-      this.extend(length3(sub3(point, lastOf(this.state.points))), ctx)
+      // The length from LASTPOINT, Length's base (p118's trace, p158).
+      this.extend(length3(sub3(point, ctx.lastPoint)), ctx)
       return
     } else if (this.state.phase === "area") {
       this.state = {
@@ -301,11 +301,16 @@ export class MeasureTool implements Tool {
 
   /**
    * Length's segment: on along the last one (a negative length back), the
-   * way an arc ends heading, or along the UCS's X axis before there is one.
+   * way an arc ends heading, or before there is one the way a first arc
+   * would leave (p157, p164). A length of 0 adds no point (p115, p162).
    */
   private extend(length: number, ctx: ToolContext): void {
     if (this.state.phase !== "length" || !Number.isFinite(length)) return
     const run = this.state
+    if (length === 0) {
+      this.walk(run, ctx)
+      return
+    }
     const { points } = run
     const last = lastOf(points)
     const n = points.length
@@ -317,7 +322,7 @@ export class MeasureTool implements Tool {
       : n > 1
         ? normalize3(sub3(last, points[n - 2]))
         : null
-    const direction = along ?? ctx.ucs.xAxis
+    const direction = along ?? { ...run.startTangent, z: 0 }
     this.walk(
       {
         ...run,
@@ -373,7 +378,7 @@ export class MeasureTool implements Tool {
         const text = commitCtx.dynamicInput.getText("distance").trim()
         if (!isCoordinateExpression(text)) return false
         const point = parseCoordinate(text, {
-          lastPoint: this.basePoint() ?? commitCtx.lastPoint,
+          lastPoint: this.basePoint(commitCtx) ?? commitCtx.lastPoint,
           relativeByDefault: false,
           ucs: commitCtx.ucs,
           elevation: commitCtx.elevation,
@@ -407,7 +412,7 @@ export class MeasureTool implements Tool {
         const text = commitCtx.dynamicInput.getText("point").trim()
         if (text === "") return this.enter(commitCtx)
         const point = parseCoordinate(text, {
-          lastPoint: this.basePoint() ?? commitCtx.lastPoint,
+          lastPoint: this.basePoint(commitCtx) ?? commitCtx.lastPoint,
           relativeByDefault: false,
           ucs: commitCtx.ucs,
           elevation: commitCtx.elevation,
@@ -421,15 +426,22 @@ export class MeasureTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
-  private basePoint(): Vec3 | null {
+  /**
+   * What `@`, a bare number, Ortho and Polar read from. Multiple points'
+   * line prompts and Length read LASTPOINT, which Length and a line's Undo
+   * leave where it was (p160, p165–p167, p170); Arc's prompt the run's end,
+   * where switching to it puts LASTPOINT (p168, p172).
+   */
+  private basePoint(ctx: ToolContext): Vec3 | null {
     switch (this.state.phase) {
       case "second":
         return this.state.base
       case "area":
         return this.state.points.at(-1) ?? null
       case "multiple":
+        return this.state.arcMode ? lastOf(this.state.points) : ctx.lastPoint
       case "length":
-        return lastOf(this.state.points)
+        return ctx.lastPoint
       default:
         return null
     }
@@ -881,11 +893,11 @@ export class MeasureTool implements Tool {
     return this.state.phase !== "areaObject"
   }
 
-  getConstraintAnchor(): Vec2 | null {
+  getConstraintAnchor(ctx: ToolContext): Vec2 | null {
     if (this.state.phase === "multiple" && this.arc.active) {
       return this.arc.anchor()
     }
-    return this.basePoint()
+    return this.basePoint(ctx)
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {

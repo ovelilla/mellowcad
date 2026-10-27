@@ -77,6 +77,7 @@ Inputs in `scripts/research/probes/inquiry/` (`.plain` untraced, `.es` one local
 | p142–p151 | AUPREC, LUNITS, LUPREC, AUNITS; rotated and tilted UCS; ELEVATION; zero vector |
 | p152–p156 | DIST's Arc: Undo, Enter, CLose, LASTPOINT |
 | p157–p169 | Length's first direction; `@`, a bare number and LASTPOINT after Length and Undo |
+| p170–p172 | (DST execution, en only) Ortho's base at Multiple's next point after a Length; LASTPOINT after Arc follows a Length |
 | p200–p211 | AREA: names, repeat, `'AREA`, refusals, Enter and Undo at each depth, Total |
 | p212–p218 | Add and Subtract by points and objects; Entity, eXit; es words; `Select objects:` refusals |
 | p219–p229 | Object: a bare number, a locked layer, each type (arc, wide and open polylines, hatch, ...), typed snaps, the newest |

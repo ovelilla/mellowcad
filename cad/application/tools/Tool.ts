@@ -722,8 +722,10 @@ export interface Tool {
    * against — typically the last confirmed point of an in-progress operation.
    * Returns `null` when the tool has no anchor yet, disabling constraints.
    * Its Z, when it has one, is where a 3D view's `+Z` / `-Z` guide starts.
+   * `ctx` for an anchor that is LASTPOINT, which only the runtime keeps
+   * (DIST's Multiple points, inquiry/p170).
    */
-  getConstraintAnchor?(): Vec2 | Vec3 | null
+  getConstraintAnchor?(ctx: ToolContext): Vec2 | Vec3 | null
 
   /**
    * Whether the tool is currently acquiring a point and therefore wants object

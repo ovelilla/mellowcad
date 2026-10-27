@@ -359,7 +359,10 @@ describe("DIST's Multiple points", () => {
     expect(cad.activeToolId()).toBe("select")
   })
 
-  it("goes on by a length, along the last segment or the X axis", () => {
+  // probes inquiry/p115, p118: Length's point is measured from LASTPOINT,
+  // 10,0, which no Length moves; `@0,5` gives 5 from the run's end too, which
+  // p158 tells apart.
+  it("goes on by a length, along the last segment, else east", () => {
     const cad = createHarness()
     cad.command("DIST")
     answer(cad, "0,0", "M", "L", "7", "10,0", "L", "FOO")
@@ -384,6 +387,7 @@ describe("DIST's Multiple points", () => {
       "Specify next point or [Arc/Close/Length/Undo/Total] <Total>: T",
       "Distance = 19.00",
     ])
+    expect(lastPoint(cad)).toBe(" X = 10.00     Y = 0.00     Z = 0.00")
   })
 
   it("reads the run on screen as it goes", () => {
@@ -556,6 +560,265 @@ describe("DIST's Multiple points", () => {
     answer(cad, "0,0", "M", "10,0", "A")
     expect(cad.state().commandLine.prompt).toBe(
       "DIST Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección) o [ángUlo/cEntro/Cerrar/Dirección/líNea/Radio/Segundo pto./desHacer]:"
+    )
+  })
+})
+
+/** A harness at the console's LUPREC 4. */
+function console4(): CadHarness {
+  const cad = createHarness()
+  cad.runtime.setDocumentPrecision(4)
+  return cad
+}
+
+/** LASTPOINT as `ID @` writes it. */
+function lastPoint(cad: CadHarness): string {
+  answer(cad, "ID", "@")
+  return cad.commandLog().at(-1) ?? ""
+}
+
+/** The point `ID` writes, at LUPREC 4. */
+const at = (x: string, y: string, z = "0.0000") =>
+  ` X = ${x}     Y = ${y}     Z = ${z}`
+
+/** DIST's report, at LUPREC 4. */
+const report = (
+  d: string,
+  a: string,
+  f: string,
+  x: string,
+  y: string,
+  z: string
+) =>
+  `Distance = ${d},  Angle in XY Plane = ${a},  Angle from XY Plane = ${f}\n` +
+  `Delta X = ${x},  Delta Y = ${y},   Delta Z = ${z}`
+
+/** Where the console's fixed cursor stands in its initial view. */
+const CONSOLE_CURSOR = { x: 289.98397, y: 116.30379 }
+
+// AutoCAD 2027's console, the same input: Multiple points reads `@`, a bare
+// number, Length's point and Ortho from LASTPOINT, which Length and a line's
+// Undo leave where it was (p118's trace: Length's BasePoint is LASTPOINT).
+describe("DIST's Multiple points reads LASTPOINT", () => {
+  // probe inquiry/p158
+  it("measures Length's point from LASTPOINT", () => {
+    const cad = console4()
+    answer(cad, "DIST", "0,0", "M", "10,0", "L", "-4", "L", "6,5", "T")
+    expect(cad.commandLog().at(-1)).toBe("Distance = 20.4031")
+  })
+
+  // probes inquiry/p160, p165
+  it("reads `@` from LASTPOINT after a Length and after Undo", () => {
+    const length = console4()
+    answer(length, "DIST", "0,0", "M", "10,0", "L", "5", "@0,5", "T")
+    expect(length.commandLog().at(-1)).toBe("Distance = 22.0711")
+
+    const undo = console4()
+    answer(undo, "DIST", "0,0", "M", "10,0", "U", "@0,5", "T")
+    expect(undo.commandLog().at(-1)).toBe("Distance = 11.1803")
+    expect(lastPoint(undo)).toBe(at("10.0000", "5.0000"))
+  })
+
+  // probes inquiry/p166, p167, p171
+  it("runs a bare number from LASTPOINT after a Length and after Undo", () => {
+    const length = console4()
+    answer(length, "DIST", "0,0", "M", "10,0", "L", "5")
+    length.moveTo(CONSOLE_CURSOR)
+    answer(length, "5", "T")
+    expect(length.commandLog().at(-1)).toBe("Distance = 16.9558")
+
+    const undo = console4()
+    answer(undo, "DIST", "0,0", "M", "10,0", "20,0", "U")
+    undo.moveTo(CONSOLE_CURSOR)
+    answer(undo, "5", "T")
+    expect(undo.commandLog().at(-1)).toBe("Distance = 24.7255")
+
+    const back = console4()
+    answer(back, "DIST", "0,0", "M", "280,100", "L", "-200")
+    back.moveTo(CONSOLE_CURSOR)
+    answer(back, "5", "T")
+    expect(back.commandLog().at(-1)).toBe("Distance = 701.2387")
+    // (getvar "LASTPOINT") → (282.611 104.264 0.0)
+    expect(lastPoint(back)).toBe(at("282.6112", "104.2640"))
+  })
+
+  // probe inquiry/p170: from LASTPOINT the cursor is nearer the Y axis, from
+  // the run's end nearer the X.
+  it("bends a bare number with Ortho from LASTPOINT", () => {
+    const cad = console4()
+    cad.press("F8")
+    answer(cad, "DIST", "0,0", "M", "280,100", "L", "-200")
+    cad.moveTo(CONSOLE_CURSOR)
+    answer(cad, "5", "T")
+    expect(cad.commandLog().at(-1)).toBe("Distance = 699.0580")
+    expect(lastPoint(cad)).toBe(at("280.0000", "105.0000"))
+  })
+
+  // probes inquiry/p169, p168
+  it("keeps LASTPOINT at a line's Undo, and puts it at the run's end at an arc's", () => {
+    const line = console4()
+    answer(line, "DIST", "0,0", "M", "10,0", "U", "T")
+    expect(line.commandLog().at(-1)).toBe("Distance = 0.0000")
+    expect(lastPoint(line)).toBe(at("10.0000", "0.0000"))
+
+    const arc = console4()
+    answer(arc, "DIST", "0,0", "M", "10,0", "A", "20,10", "U", "L", "T")
+    expect(arc.commandLog().at(-1)).toBe("Distance = 10.0000")
+    expect(lastPoint(arc)).toBe(at("10.0000", "0.0000"))
+  })
+
+  // probe inquiry/p172
+  it("puts LASTPOINT at the run's end when Arc follows a Length", () => {
+    const cad = console4()
+    answer(cad, "DIST", "0,0", "M", "10,0", "L", "5", "A", "L", "T")
+    expect(cad.commandLog().at(-1)).toBe("Distance = 15.0000")
+    expect(lastPoint(cad)).toBe(at("15.0000", "0.0000"))
+  })
+
+  // probes inquiry/p121, p154, p155, p119
+  it("leaves LASTPOINT at the last point given, at Close and at an arc's end", () => {
+    const close = console4()
+    answer(close, "DIST", "0,0", "M", "10,0", "10,10", "C")
+    expect(close.commandLog().at(-1)).toBe("Distance = 34.1421")
+    expect(lastPoint(close)).toBe(at("10.0000", "10.0000"))
+
+    const relative = console4()
+    answer(relative, "DIST", "0,0", "M", "3,4", "@3,4", "T")
+    expect(relative.commandLog().at(-1)).toBe("Distance = 10.0000")
+    expect(lastPoint(relative)).toBe(at("6.0000", "8.0000"))
+
+    const arc = console4()
+    answer(arc, "DIST", "0,0", "M", "10,0", "A", "20,10", "L", "T")
+    expect(arc.commandLog().at(-1)).toBe("Distance = 25.7080")
+    expect(lastPoint(arc)).toBe(at("20.0000", "10.0000"))
+
+    const length = console4()
+    answer(length, "DIST", "0,0", "M", "10,0", "A", "20,10", "L", "L", "5")
+    answer(length, "T")
+    expect(length.commandLog().at(-1)).toBe("Distance = 30.7080")
+    expect(lastPoint(length)).toBe(at("20.0000", "10.0000"))
+  })
+
+  // probes inquiry/p157, p164
+  it("runs the first Length along what was drawn last, else the WCS's east", () => {
+    const rotated = console4()
+    answer(rotated, "UCS", "Z", "30")
+    answer(rotated, "DIST", "0,0", "M", "L", "10", "10,10", "T")
+    expect(rotated.commandLog().at(-1)).toBe("Distance = 25.0597")
+
+    const drawn = console4()
+    answer(drawn, "LINE", "50,50", "50,60", "")
+    answer(drawn, "DIST", "0,0", "M", "L", "10", "10,0", "T")
+    expect(drawn.commandLog().at(-1)).toBe("Distance = 24.1421")
+  })
+
+  // probes inquiry/p115, p162
+  it("adds no point at a Length of 0", () => {
+    const first = console4()
+    answer(first, "DIST", "0,0", "M", "L", "0")
+    expect(first.commandLog().at(-1)).toBe("Specify length of line: 0")
+    expect(first.state().commandLine.prompt).toBe(
+      "DIST Specify next point or [Arc/Length/Undo/Total] <Total>:"
+    )
+
+    const later = console4()
+    answer(later, "DIST", "0,0", "M", "3,4", "L", "0")
+    expect(later.commandLog().slice(-2)).toEqual([
+      "Specify length of line: 0",
+      "Distance = 5.0000",
+    ])
+    answer(later, "U")
+    expect(later.state().commandLine.prompt).toBe(
+      "DIST Specify next point or [Arc/Length/Undo/Total] <Total>:"
+    )
+    answer(later, "T")
+    expect(later.commandLog().at(-1)).toBe("Distance = 0.0000")
+  })
+})
+
+describe("DIST's points and aids, as AutoCAD 2027's console", () => {
+  // probe inquiry/p141
+  it("bends a bare number at the second point with Ortho", () => {
+    const cad = console4()
+    cad.press("F8")
+    answer(cad, "DIST", "0,0")
+    cad.moveTo(CONSOLE_CURSOR)
+    answer(cad, "5")
+    expect(cad.commandLog().at(-1)).toBe(
+      report("5.0000", "0", "0", "5.0000", "0.0000", "0.0000")
+    )
+  })
+
+  // probe inquiry/p140
+  it("leaves a typed point alone under Ortho", () => {
+    const cad = console4()
+    cad.press("F8")
+    answer(cad, "DIST", "0,0", "3,4")
+    expect(cad.commandLog().at(-1)).toBe(
+      report("5.0000", "53", "0", "3.0000", "4.0000", "0.0000")
+    )
+  })
+
+  // probe inquiry/p131
+  it("refuses `#` at the command line", () => {
+    const cad = console4()
+    answer(cad, "UCS", "Z", "30", "DIST", "1,1", "#4,5")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify second point or [Multiple points]: #4,5",
+      "Point or option keyword required.",
+    ])
+  })
+
+  // probes inquiry/p135–p138
+  it("takes the object snaps and FROM typed at its points", () => {
+    const raised = createHarness({
+      entities: [withElevation(lineOf(p(0, 0), p(10, 0)), 5)],
+    })
+    raised.runtime.setDocumentPrecision(4)
+    answer(raised, "DIST", "END", "9.9,0.1", "MID", "4.9,0.1")
+    expect(raised.commandLog().at(-1)).toBe(
+      report("5.0000", "180", "0", "-5.0000", "0.0000", "0.0000")
+    )
+    answer(raised, "DIST", "END", "9.9,0.1", "10,5")
+    expect(raised.commandLog().at(-1)).toBe(
+      report("7.0711", "90", "315", "0.0000", "5.0000", "-5.0000")
+    )
+
+    const shapes = createHarness({
+      entities: [lineOf(p(0, 0), p(10, 0)), circleOf(p(5, 10), 3)],
+    })
+    shapes.runtime.setDocumentPrecision(4)
+    answer(shapes, "DIST", "CEN", "8,10.05", "PER", "3,0.05")
+    expect(shapes.commandLog().at(-1)).toBe(
+      report("10.0000", "270", "0", "0.0000", "-10.0000", "0.0000")
+    )
+    answer(shapes, "DIST", "0,10", "TAN", "3.2,12.4")
+    expect(shapes.commandLog().at(-1)).toBe(
+      report("4.0000", "37", "0", "3.2000", "2.4000", "0.0000")
+    )
+
+    const from = console4()
+    answer(from, "DIST", "0,0", "FRO", "10,0", "@0,5")
+    expect(from.commandLog().at(-1)).toBe(
+      report("11.1803", "27", "0", "10.0000", "5.0000", "0.0000")
+    )
+  })
+
+  // probe inquiry/p147
+  it("reports in a tilted UCS", () => {
+    const cad = console4()
+    answer(cad, "UCS", "X", "90", "DIST", "*0,0,0", "*3,4,5")
+    expect(cad.commandLog().at(-1)).toBe(
+      report("7.0711", "59", "326", "3.0000", "5.0000", "-4.0000")
+    )
+  })
+
+  // probe inquiry/p142
+  it("writes its angles at AUPREC", () => {
+    const cad = console4()
+    answer(cad, "AUPREC", "2", "DIST", "0,0", "3,4")
+    expect(cad.commandLog().at(-1)).toBe(
+      report("5.0000", "53.13", "0.00", "3.0000", "4.0000", "0.0000")
     )
   })
 })
