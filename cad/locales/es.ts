@@ -829,7 +829,8 @@ export const es: EngineLocale = {
         "E"
       ],
       "-PAN": [
-        "-ENCUADRE"
+        "-ENCUADRE",
+        "-E"
       ],
       "ERASE": [
         "BORRA",
@@ -935,23 +936,30 @@ export const es: EngineLocale = {
         "ELEV"
       ],
       "VPOINT": [
-        "PTOVISTA"
+        "PTOVISTA",
+        "PV",
+        "DDVPOINT"
       ],
       "-VPOINT": [
         "-PTOVISTA",
         "-PV"
       ],
       "VIEW": [
-        "VISTA"
+        "VISTA",
+        "VI"
       ],
       "-VIEW": [
-        "-VISTA"
+        "-VISTA",
+        "-VI"
       ],
       "3DORBIT": [
-        "3DORBITA"
+        "3DORBITA",
+        "3DO",
+        "ORBIT"
       ],
       "NAVVCUBE": [
-        "NAVVCUBE"
+        "NAVVCUBE",
+        "CUBE"
       ],
       "UNITS": [
         "UNIDADES",
@@ -2731,6 +2739,13 @@ export const es: EngineLocale = {
         ],
         "\"."
       ],
+      "planUcsNotFound": [
+        "No se puede encontrar SCP \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
       "noMatchingUcs": "  No se ha encontrado ningún SCP con ese nombre.",
       "ucsDeleted": [
         "Suprimidos ",
@@ -3437,6 +3452,7 @@ export const es: EngineLocale = {
         ]
       ],
       "panExit": "Pulse Esc o Intro para salir, o haga clic con el botón derecho para activar el menú contextual.",
+      "orbitExit": "Pulse ESC o INTRO para salir, o haga clic con el botón derecho para ver el menú contextual.",
       "requiresTwoPointsOrDisplacement": "Requiere dos puntos o un desplazamiento seguido por INTRO.",
       "currentViewDirection": [
         "Dirección de vista actual:  VIEWDIR=",
@@ -3452,6 +3468,8 @@ export const es: EngineLocale = {
           "z"
         ]
       ],
+      "switchingToWcs": "*** Cambiando al SCU ***",
+      "returningToUcs": "*** Volviendo al SCP ***",
       "invalidInputTryAgain": "Entrada no válida. Vuelva a intentarlo.",
       "regeneratingModel": "Regenerando modelo.",
       "regenQueued": "La regeneración está en espera.",

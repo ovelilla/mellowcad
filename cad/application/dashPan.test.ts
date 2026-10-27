@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { p } from "../../test/builders"
+import { lineOf, p } from "../../test/builders"
 import { type CadHarness, createHarness } from "../../test/harness"
 import type { Vec2 } from "../geometry/Vec2"
 import { es } from "../locales/es"
@@ -30,8 +30,8 @@ const BASE = "Specify base point or displacement:"
 const SECOND = " Specify second point:"
 const REFUSED = "Requires two points, or a displacement followed by ENTER."
 
-// AutoCAD 2023's console (acc/z6, z16, z17, g1–g25, k15, k16 of the -PAN
-// session).
+// AutoCAD 2027's console: probes view/p204–p220 (the points, Enter, FOO,
+// LASTPOINT, transparency), p338 (U, REDO), p354–p356, p368 (its steps).
 describe("-PAN", () => {
   it("moves the drawing from the base point to the second", () => {
     const cad = answer(createHarness(), ...LINE)
@@ -148,5 +148,92 @@ describe("-PAN", () => {
       "Precise punto base de desplazamiento: 0,0",
       " Designe segundo punto: 5,5",
     ])
+  })
+})
+
+/** How far the centre of the view moved (AutoCAD's VIEWCTR after less before). */
+function panned(cad: CadHarness, ...texts: string[]): Vec2 {
+  const before = cad.runtime.viewport.worldCenter()
+  answer(cad, ...texts)
+  const after = cad.runtime.viewport.worldCenter()
+  return p(after.x - before.x, after.y - before.y)
+}
+
+describe("-PAN against AutoCAD 2027's console", () => {
+  // probe view/p217: VIEWCTR 2630.05,1440.68 → 2620.77,1436.96.
+  it("reads a bare number at the second point from the base towards the cursor", () => {
+    const cad = answer(createHarness(), "ID", "7,8")
+    cad.moveTo(p(289.98397, 116.30379))
+    expect(panned(cad, "-PAN", "0,0", "10")).toBeCloseToPoint(
+      p(-9.28, -3.72),
+      1
+    )
+    expect(written(cad, "ID", "@").at(-1)).toBe(
+      " X = 7.00     Y = 8.00     Z = 0.00"
+    )
+  })
+
+  // probe view/p219
+  it("refuses FOO at the second point and asks it again", () => {
+    const cad = createHarness()
+    expect(written(cad, "-PAN", "0,0", "FOO")).toEqual([
+      "-PAN",
+      `${BASE} 0,0`,
+      `${SECOND} FOO`,
+      REFUSED,
+    ])
+    expect(panned(cad, "1,1")).toBeCloseToPoint(p(-1, -1))
+  })
+
+  // probe view/p221
+  it("refuses a transparent ZOOM Extents with nothing drawn, and resumes", () => {
+    const cad = createHarness()
+    expect(written(cad, "-PAN", "'ZOOM", "E")).toEqual([
+      "-PAN",
+      `${BASE} 'ZOOM`,
+      ">>Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: E",
+      "** Requires a regen, cannot be transparent.",
+      "Resuming -PAN command.",
+    ])
+    expect(written(cad, "0,0", "1,1")).toEqual([`${BASE} 0,0`, `${SECOND} 1,1`])
+  })
+
+  // probe view/p222
+  it("runs real-time PAN transparently at the base point", () => {
+    const cad = createHarness()
+    expect(written(cad, "-PAN", "'PAN")).toEqual([
+      "-PAN",
+      `${BASE} 'PAN`,
+      ">>Press ESC or ENTER to exit, or right-click to display shortcut menu.",
+    ])
+    expect(cad.activeToolId()).toBe("pan")
+  })
+
+  // probe view/p224
+  it("takes an object snap typed at the base point", () => {
+    const cad = createHarness({ entities: [lineOf(p(3, 4), p(20, 4))] })
+    expect(panned(cad, "-PAN", "END", "20.2,4.1", "0,0")).toBeCloseToPoint(
+      p(20, 4)
+    )
+  })
+
+  // probe view/p225
+  it("leaves a typed second point unbent by Ortho", () => {
+    const cad = createHarness()
+    cad.press("F8")
+    expect(cad.state().orthoActive).toBe(true)
+    cad.moveTo(p(289.98397, 116.30379))
+    expect(panned(cad, "-PAN", "0,0", "10,5")).toBeCloseToPoint(p(-10, -5))
+  })
+
+  // probe view/p226
+  it("drops a preselection", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 50), { id: "A" })],
+    })
+    cad.click(p(50, 25))
+    expect(cad.selectedIds()).toEqual(["A"])
+    answer(cad, "-PAN", "0,0", "1,1")
+    expect(cad.selectedIds()).toEqual([])
   })
 })

@@ -946,6 +946,9 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "PLANTA Indique nombre de SCP o [?]:"
     )
+    // probe view/p236 (es-ES): PLAN's words, not UCS Restore's table string.
+    cad.type("NONE").enter()
+    expect(cad.commandLog().at(-1)).toBe('No se puede encontrar SCP "NONE".')
   })
 
   it("sets the elevation with ELEV, and RECTANG's Alt-objeto on its A", () => {
@@ -1044,6 +1047,28 @@ describe("Spanish AutoCAD's command language", () => {
     expect(cad.runtime.text.prompt("viewAngleInPlane")).toBe(
       "Ángulo a partir del eje X en el plano XY"
     )
+  })
+
+  // probes view/p201 (-E, PV, DDVPOINT; en -P, DDVPOINT), view/p265 (CUBE),
+  // view/p335 (-VI): the installed acad.pgp of each language.
+  it("starts the view commands by their acad.pgp aliases", () => {
+    for (const [locale, alias, tool] of [
+      [undefined, "-P", "dashpan"],
+      [undefined, "DDVPOINT", "vpoint"],
+      [es, "-E", "dashpan"],
+      [es, "PV", "vpoint"],
+      [es, "DDVPOINT", "vpoint"],
+      [es, "CUBE", "navvcube"],
+      [es, "-VI", "view"],
+      [es, "VI", "view"],
+      [es, "3DO", "orbit"],
+      [es, "ORBIT", "orbit"],
+    ] as const) {
+      const cad = createHarness({ locale })
+      cad.runtime.setCommandLineText(alias)
+      cad.runtime.submitCommandLine()
+      expect([alias, cad.activeToolId()]).toEqual([alias, tool])
+    }
   })
 
   it("defines an attribute with AT, its modes line as the product prints it", () => {

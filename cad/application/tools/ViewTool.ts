@@ -34,8 +34,8 @@ const ISOMETRIC: readonly ViewPreset[] = ["SWiso", "SEiso", "NEiso", "NWiso"]
  * views (`?`, Delete, Restore, Save, sEttings, Window) wait for saved views.
  * An orthographic view also aligns the UCS's XY plane with the screen, as
  * UCSORTHO's initial 1 does, from the WCS (UCSBASE's initial value), and
- * names it as UCS orthoGraphic does (`*FRONT*`, AutoCAD 2023's console). It works
- * in the WCS, the presets' reference.
+ * names it as UCS orthoGraphic does (`*FRONT*`, view/p304–p309). It works in
+ * the WCS, the presets' reference.
  */
 export class ViewTool implements Tool {
   readonly id = "view"

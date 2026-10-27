@@ -239,8 +239,8 @@ describe("-VIEW asks as AutoCAD 2026", () => {
   })
 })
 
-// AutoCAD 2023's console answering the same input (the compass and tripod,
-// Enter's default at the view point, is not offered).
+// AutoCAD 2027's console answering the same input, view/p244, p248, p250 (the
+// compass and tripod, Enter's default at the view point, is not offered).
 describe("VPOINT asks as AutoCAD 2026", () => {
   it("asks as AutoCAD 2026, and refuses what it cannot take", () => {
     const cad = createHarness()
@@ -288,9 +288,62 @@ describe("VPOINT asks as AutoCAD 2026", () => {
     )
   })
 
+  // probe view/p253 (en-US, es-ES): VPOINT, UCS Z 30, then -VPOINT. From 1,0,0,
+  // as VIEWDIR keeps the length typed there (p254), which is not built.
+  it("switches to the WCS in another UCS, reporting VIEWDIR there", () => {
+    const cad = createHarness({ entities: drawing() })
+    cad.runtime.setDocumentPrecision(4)
+    answer(cad, "-VPOINT", "1,0,0", "UCS", "Z", "30")
+    const from = cad.commandLog().length
+    answer(cad, "-VPOINT", "0,0,1")
+    expect(cad.commandLog().slice(from)).toEqual([
+      "-VPOINT",
+      "*** Switching to the WCS ***",
+      "Current view direction:  VIEWDIR=1.0000,0.0000,0.0000",
+      "Specify a view point or [Rotate]: 0,0,1",
+      "*** Returning to the UCS ***",
+      "Regenerating model.",
+    ])
+    answer(cad, "-VPOINT", "R", "0", "0")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Enter angle from XY plane <90>: 0",
+      "*** Returning to the UCS ***",
+      "Regenerating model.",
+    ])
+
+    const spanish = createHarness({ locale: es, entities: drawing() })
+    spanish.runtime.setDocumentPrecision(4)
+    answer(spanish, "-PTOVISTA", "1,0,0", "SCP", "Z", "30")
+    const start = spanish.commandLog().length
+    answer(spanish, "-PTOVISTA", "0,0,1")
+    expect(spanish.commandLog().slice(start)).toEqual([
+      "-PTOVISTA",
+      "*** Cambiando al SCU ***",
+      "Dirección de vista actual:  VIEWDIR=1.0000,0.0000,0.0000",
+      "Precise un punto de vista o [Rotación]: 0,0,1",
+      "*** Volviendo al SCP ***",
+      "Regenerando modelo.",
+    ])
+  })
+
+  // probe view/p252: neither program writes `-0.0000` (b/negzero's sweep).
+  it("writes no negative zero in VIEWDIR", () => {
+    const cad = createHarness()
+    cad.runtime.setDocumentPrecision(4)
+    answer(cad, "-VPOINT", "0,0,-1", "-VPOINT")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Current view direction:  VIEWDIR=0.0000,0.0000,-1.0000"
+    )
+    answer(cad, "", "-VPOINT", "-1,0,0", "UCS", "X", "90", "-VPOINT")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Current view direction:  VIEWDIR=-1.0000,0.0000,0.0000"
+    )
+  })
+
   // WHY: the prompt declares Tripod unlisted (table 32848, es `trípode`),
   // and the console opens the compass and tripod with it (acc/vp1, vp2,
-  // vp5 of 2026-10-14), which is not built: it is refused as any answer.
+  // vp5 of 2026-10-14; view/p256), which is not built: it is refused as any
+  // answer.
   it("refuses Tripod, which opens the compass and tripod", () => {
     const cad = createHarness()
     cad.command("VPOINT")

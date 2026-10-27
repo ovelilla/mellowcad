@@ -64,13 +64,13 @@ AREA ["AA"] "Area"
 ID [] "ID Point"
 ZOOM ["Z"] "Zoom"
 PAN ["P"] "Pan"
--PAN [] "Pan by points"
+-PAN ["-P"] "Pan by points"
 -DIMSTYLE [] "Dimension style (command line)"
 UCS [] "UCS"
 UCSICON [] "UCS icon"
 PLAN [] "Plan view"
 ELEV [] "Elevation"
-VPOINT ["VP"] "Viewpoint"
+VPOINT ["VP","DDVPOINT"] "Viewpoint"
 VIEW ["V"] "Preset views"
 3DORBIT ["3DO","ORBIT"] "3D Orbit"
 NAVVCUBE ["CUBE"] "ViewCube"
@@ -187,7 +187,7 @@ measurearea "Area" AA
 id "ID Point" ID
 zoom "Zoom" Z
 pan "Pan" P
-dashpan "Pan by points" -PAN
+dashpan "Pan by points" -P
 ucs "UCS" UCS
 ucsicon "UCS icon" UCSICON
 plan "Plan view" PLAN

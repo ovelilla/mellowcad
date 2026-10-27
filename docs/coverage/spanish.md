@@ -68,16 +68,20 @@ origen/Origen` from the 2026 help and the same captures;
   the English GUIDs. From aCADemia's 2014 captures of the Spanish product ("Entorno de trabajo en
   3D", 1.ª parte; "Coordenadas", 9.ª parte), which beat the help where they differ: -PTOVISTA's
   `Dirección de vista actual:  VIEWDIR=…`, `Precise un punto de vista o [Rotación]` (the help says
-  Girar), `Ángulo a partir del eje X en el plano XY`, `Ángulo a partir del plano XY` and the alias
-  `-PV`† (`PV` ran PTOVISTA only before 2015); the orthographic list
-  `[SUperior/Inferior/Frontal/Posterior/IZquierda/Derecha]` (two letters for Superior). Neither
-  language's file gives VISTA or 3DORBITA a Spanish alias. **Unverified:** the isometric keywords
-  `isoSO` / `isoSE` / `isoNE` / `isoNO` (ours, from the help's Isométrica SO…),
-  `Regenerando modelo.` and the edge-on message. `NAVVCUBE` keeps its English name, with
-  `[ACT/DES] <ACT>` (the 2026 Spanish
-  help: `Indique una opción [ACT/DES/Propiedades] <ACT>:`); no Spanish alias — the Spanish
-  shortcut guide lists `CUBE`, but it is a translation of the English one. From the Spanish help's
-  captures: the view menu (Superior, Inferior, Izquierda, Derecha, Frontal, Posterior, Isométrica
+  Girar), `Ángulo a partir del eje X en el plano XY`, `Ángulo a partir del plano XY`. AutoCAD
+  2027's Spanish console settles the rest (view/p230, p236, p253, p300, p329): the orthographic
+  list `[sUperior/Inferior/Frontal/Posterior/IZquierda/Derecha]<sUperior>`, the isometric keywords
+  the first prompt declares unlisted, `SOIso` / `SEIso` / `NEIso` / `NOIso`,
+  `Regenerando modelo.`, `*** Cambiando al SCU ***` / `*** Volviendo al SCP ***` (the table's other
+  string says `Conmutando a SCU`), PLANTA's `No se puede encontrar SCP "NOMBRE".` (the table's
+  `Imposible encontrar el SCP`, UCS Restore's, is not what PLANTA writes) and 3DORBITA's
+  `Pulse ESC o INTRO para salir…`, in capitals where ENCUADRE's says `Esc o Intro`. Its installed
+  `acad.pgp` and console give the aliases `-PV`, `PV` and `DDVPOINT` (PTOVISTA, p201, p260), `-VI`
+  and `VI` (-VISTA and VISTA, p335), `3DO` and `ORBIT` (3DORBITA), `CUBE` (NAVVCUBE, p265), `E`
+  and `-E` (ENCUADRE and -ENCUADRE, p201, p269). **Unverified:** the edge-on message. `NAVVCUBE`
+  keeps its English name, with `[ACT/DES] <ACT>` (the console lists
+  `Indique una opción [ACT/DES/Parámetros] <ACT>:`, p265; Parámetros is not built). From the
+  Spanish help's captures: the view menu (Superior, Inferior, Izquierda, Derecha, Frontal, Posterior, Isométrica
   SO / SE / NE / NO), the cube's SUPERIOR, FRONTAL and IZQUIERDA and its compass's `O`; the menus
   (Inicio, Paralelo, Definir vista actual como inicio, SCU, Nuevo SCP, Sin nombre) from its pages.
   The cube's faces and compass and the preset views are the engine's words (`interface.viewCube`,

@@ -1,7 +1,7 @@
 import { Vec2 } from "../../geometry/Vec2"
-import { Vec3, vec3 } from "../../geometry/Vec3"
+import { Vec3, length3, vec3 } from "../../geometry/Vec3"
 import { normalizeDegrees } from "../../geometry/primitives"
-import { WORLD_UCS, worldDirectionToUcs } from "../../domain/ucs"
+import { WORLD_UCS, isWorldUcs } from "../../domain/ucs"
 import { formatLength } from "../../domain/units"
 import { parseCoordinate } from "../input/coordinateInput"
 import { lookFrom } from "./viewPresets"
@@ -23,11 +23,11 @@ type VPointState =
 
 /**
  * AutoCAD's -VPOINT, which VPOINT runs too (its Viewpoint Presets dialog is
- * not built): the current VIEWDIR (expressed in the UCS, as the variable is),
- * then a view point — the viewer looks from it back at the origin — or
- * Rotate's two angles. Input is in the WCS (WORLDVIEW 1), so the tool works
- * there. The view is fitted to the drawing's extents, and ZOOM Previous steps
- * back through it.
+ * not built): the current VIEWDIR, then a view point — the viewer looks from
+ * it back at the origin — or Rotate's two angles. Input is in the WCS
+ * (WORLDVIEW 1), so the tool works there; in any other UCS it says so as it
+ * starts and as it ends, and reports VIEWDIR in the WCS (view/p253). The view
+ * is fitted to the drawing's extents, and ZOOM Previous steps back through it.
  */
 export class VPointTool implements Tool {
   readonly id = "vpoint"
@@ -40,14 +40,15 @@ export class VPointTool implements Tool {
   private direction: MessageValues = {}
   /** The current view's two angles, which Rotate's prompts offer. */
   private angles = { inPlane: 0, fromPlane: 0 }
+  /** Whether the run started in a UCS other than the WCS (WORLDUCS 0). */
+  private switched = false
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     const settings = ctx.document.getSettings()
-    const { x, y, z } = worldDirectionToUcs(ctx.ucs, ctx.viewport.direction)
-    const value = (n: number) => formatLength(n, settings)
-    this.direction = { x: value(x), y: value(y), z: value(z) }
     const world = ctx.viewport.direction
+    const value = (n: number) => formatLength(n, settings)
+    this.direction = { x: value(world.x), y: value(world.y), z: value(world.z) }
     this.angles = {
       // Straight down the Z axis there is no heading; AutoCAD offers 270,
       // the plan's own (PLAN is VPOINT 270 / 90).
@@ -58,6 +59,8 @@ export class VPointTool implements Tool {
       fromPlane:
         (Math.asin(Math.max(-1, Math.min(1, world.z))) * 180) / Math.PI,
     }
+    this.switched = !isWorldUcs(ctx.ucs)
+    if (this.switched) ctx.report(ctx.text.message("switchingToWcs"))
     ctx.report(ctx.text.message("currentViewDirection", this.direction))
     this.askViewPoint(ctx)
   }
@@ -81,8 +84,9 @@ export class VPointTool implements Tool {
   }
 
   /**
-   * As AutoCAD 2023's console refuses them: a view point by reporting the
-   * current direction again, an angle as one that a second point could give.
+   * As AutoCAD's console refuses them (view/p244, p250): a view point by
+   * reporting the current direction again, an angle as one that a second
+   * point could give.
    */
   takes(): QuestionInput {
     return this.state.phase === "viewPoint"
@@ -111,8 +115,8 @@ export class VPointTool implements Tool {
   }
 
   /**
-   * Rotate's angles are measured from the origin by one point, as AutoCAD
-   * 2023's console takes `10,10` for 45 there.
+   * Rotate's angles are measured from the origin by one point, as AutoCAD's
+   * console takes `10,10` for 45 there (view/p251).
    */
   getConstraintAnchor(): Vec3 | null {
     return this.state.phase === "viewPoint" ? null : vec3(0, 0, 0)
@@ -192,7 +196,11 @@ export class VPointTool implements Tool {
   }
 
   private view(point: Vec3, ctx: ToolContext): boolean {
-    if (!lookFrom(point, ctx)) return false
+    // WHY: AutoCAD takes 0,0,0 as the WCS plan, fitted (view/p203, p245);
+    // -VIEW and the ViewCube never give one, so `lookFrom` keeps refusing it.
+    const from = length3(point) === 0 ? vec3(0, 0, 1) : point
+    if (!lookFrom(from, ctx)) return false
+    if (this.switched) ctx.report(ctx.text.message("returningToUcs"))
     ctx.regenerate()
     ctx.endCommand()
     return true

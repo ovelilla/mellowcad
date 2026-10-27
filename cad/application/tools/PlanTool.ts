@@ -20,9 +20,9 @@ type PlanState =
 /**
  * AutoCAD's PLAN: `[Current ucs/Ucs/World] <Current>`. It looks down the
  * chosen UCS's Z axis with its X axis pointing right and fits the drawing's
- * extents; the current UCS stays as it was. ZOOM Previous steps back through
- * it; U does not, as it does not undo ZOOM here either. It works in the WCS,
- * where the UCSs it names are.
+ * extents; the current UCS stays as it was. ZOOM Previous and U step back
+ * through it. It works in the WCS, where the UCSs it names are, yet writes
+ * none of VPOINT's `*** Switching to the WCS ***` notices (view/p232).
  */
 export class PlanTool implements Tool {
   readonly id = "plan"
@@ -127,7 +127,7 @@ export class PlanTool implements Tool {
     if (typed === "") return ctx.endCommand()
     const entry = findNamed(ctx.document.getSettings().namedUcs, typed)
     if (!entry) {
-      ctx.report(ctx.text.message("ucsUndefined", { name: typed }), "error")
+      ctx.report(ctx.text.message("planUcsNotFound", { name: typed }), "error")
       return this.ask("name", ctx)
     }
     this.plan(entry.ucs, ctx)

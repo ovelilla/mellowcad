@@ -108,7 +108,11 @@ export interface UcsIconSetting {
 }
 
 export interface ViewCubeSetting {
-  /** NAVVCUBEDISPLAY 3 (shown) or 0; its 1 and 2 are per visual style, which there are none of. */
+  /**
+   * NAVVCUBEDISPLAY 3 shown. Its bits are per kind of visual style, and OFF
+   * clears the current one's: 2027 writes 1 under 2D Wireframe (view/p262).
+   * With no visual styles here, one flag.
+   */
   readonly visible: boolean
   /** The Home view, in the WCS, or `null` for the default "Top/Left/Front" one. */
   readonly home: SavedView | null

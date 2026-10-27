@@ -18,9 +18,11 @@ export class OrbitTool implements Tool {
 
   private drag: { last: Vec2; target: Vec3 } | null = null
 
+  /** It asks nothing: it says how to leave, in its own words (view/p329). */
   onActivate(ctx: ToolContext): void {
     this.drag = null
     ctx.setCursor("move")
+    ctx.report(ctx.text.message("orbitExit"), "prompt")
   }
 
   onDeactivate(ctx: ToolContext): void {

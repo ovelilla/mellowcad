@@ -56,12 +56,12 @@ breaks it before its keywords); UNDO n stopping inside a joined pair (after
 `[ZOOM E + 2X][CIRCLE][ZOOM 2X]`, UNDO 2 writes `ZOOM CIRCLE ZOOM` and leaves the view at Extents',
 p346, where U takes the pair whole; here UNDO 2 takes `ZOOM CIRCLE` and stops before the pair)
 
-### `PAN` / `P` / `-PAN` · es `ENCUADRE` / `E`† / `-ENCUADRE`
+### `PAN` / `P` / `-PAN` / `-P` · es `ENCUADRE` / `E` / `-ENCUADRE` / `-E`
 
 **Implemented:** `Press ESC or ENTER to exit, or right-click to display shortcut menu.` when it
-starts, as AutoCAD 2023's console says it (es
-`Pulse Esc o Intro para salir, o haga clic con el botón derecho para activar el menú contextual.`),
-and no question after it (the prompt reads `PAN:`); left-drag pan, hand cursor, Previous, Escape; an
+starts (p200, p202; es
+`Pulse Esc o Intro para salir, o haga clic con el botón derecho para activar el menú contextual.`,
+p269), and no question after it (the prompt reads `PAN:`); left-drag pan, hand cursor, Previous, Escape; an
 undo step (U `PAN`), never joined with ZOOMs (**unverified**: the console cannot drag; its -PAN is a
 step of its own, joined with nothing); transparent, `'PAN` / `'P` typed mid-command
 (`>>Press ESC or ENTER to exit…`; below, Command window). -PAN asks
@@ -70,11 +70,14 @@ step of its own, joined with nothing); transparent, `'PAN` / `'P` typed mid-comm
 first, `Requires two points, or a displacement followed by ENTER.`, es
 `Requiere dos puntos o un desplazamiento seguido por INTRO.`): the drawing moves by the second point
 less the first or, at Enter, by the first read as a displacement in the UCS, `@` from LASTPOINT at
-the first and from the first at the second, neither point becoming LASTPOINT; transparent
-(`>>Specify base point or displacement:`, `Resuming LINE command.`, taken back with LINE, p359);
-its own undo step, joined with nothing (p354–p356), by nothing too (p368): U, REDO and MREDO name
-it (`-PAN`, `'-PAN` when typed so; es `-ENCUADRE`, p269, p338) and never say
-`Regenerating model.` (p338)
+the first and from the first at the second, a bare number at the second from the first towards
+the cursor, `*` read in the WCS, a typed object snap, a typed second point unbent by Ortho,
+neither point becoming LASTPOINT (p204–p219, p224, p225); transparent
+(`>>Specify base point or displacement:`, `Resuming LINE command.`, taken back with LINE, p220,
+p359), and `'PAN` and `'ZOOM` run at its prompts (`'ZOOM E` with nothing drawn refused, p221,
+p222); the preselection dropped (p226); its own undo step, joined with nothing (p354–p356), by
+nothing too (p368): U, REDO and MREDO name it (`-PAN`, `'-PAN` when typed so; es `-ENCUADRE`,
+p269, p338) and never say `Regenerating model.` (p338)
 
 **Missing:** the real-time shortcut menu's Pan / Zoom / 3D Orbit / Zoom Window / Zoom Original /
 Zoom Extents items
@@ -84,36 +87,45 @@ Zoom Extents items
 **Implemented:** `Enter an option [Current ucs/Ucs/World] <Current>:` (es
 `Indique una opción [scp Actual/SCP/Universal] <Actual>`; `Invalid option keyword.`): Current ucs
 (Enter's default) / Ucs (`Enter name of UCS or [?]:`, es `Indique nombre de SCP o`: a saved one by
-name, `Cannot find UCS "NAME".`, `?` lists as UCS does, Enter ends) / World: looks down that UCS's Z
-with its X axis pointing right (VIEWTWIST), fits the extents and says `Regenerating model.`; the UCS
-stays; ZOOM Previous steps back; U takes it back and REDO and MREDO do it again, saying
-`Regenerating model.` (`PLAN Regenerating model.`, REDO's last) only when it turned the line of
-sight (p349): PLAN in plan says it as it runs, not on U, REDO or MREDO (p339), nor here after a
-view only untwisted (unprobed)
+name, `Cannot find UCS "NAME".`, es `No se puede encontrar SCP "NAME".`, p236; `?` lists as UCS
+does, Enter ends) / World: looks down that UCS's Z with its X axis pointing right (VIEWTWIST; UCS
+Z 30 and X 90, p232, p233), fits the extents and says `Regenerating model.`, without VPOINT's
+switch notices (p232); the UCS stays; ZOOM Previous steps back; U takes it back and REDO and MREDO
+do it again, saying `Regenerating model.` (`PLAN Regenerating model.`, REDO's last) only when it
+turned the line of sight (p349): PLAN in plan says it as it runs, not on U, REDO or MREDO (p339),
+nor here after a view only untwisted (unprobed)
 
-### `-VPOINT` / `VPOINT` / `-VP` / `VP` · es `-PTOVISTA` / `-PV`† / `PTOVISTA`
+**Missing:** with nothing drawn the zoom stays where it was, where AutoCAD frames LIMITS (p238: no
+LIMITS here)
 
-**Implemented:** `Current view direction:  VIEWDIR=…` (in the UCS, as the variable is), then
+### `-VPOINT` / `VPOINT` / `-VP` / `VP` / `DDVPOINT` · es `-PTOVISTA` / `-PV` / `PTOVISTA` / `PV` / `DDVPOINT`
+
+**Implemented:** `Current view direction:  VIEWDIR=…` (es `Dirección de vista actual:`), then
 `Specify a view point or [Rotate]:` (es `Precise un punto de vista o [Rotación]`), a view point
-typed in the WCS (WORLDVIEW 1) — the viewer looks from it back at the origin — or Rotate's
-`Enter angle in XY plane from X axis <…>:` and `Enter angle from XY plane <…>:` (es
+typed in the WCS (WORLDVIEW 1) — the viewer looks from it back at the origin, `0,0,0` the WCS's
+plan (p203, p245) — or Rotate's `Enter angle in XY plane from X axis <…>:` and
+`Enter angle from XY plane <…>:` (es
 `Ángulo a partir del eje X en el plano XY`, `Ángulo a partir del plano XY`), each offering the
 current view's (270 / 90 in plan, as AutoCAD's); the view at twist 0, the line of sight's
 arbitrary-axis X drawn right (`0,0,-1` has the X to the left, `0.01,0,-1` X = -1,0,-0.01, as UCS
-View then reads in the console); what is no point refused with `Invalid input. Try again.` and the
+View then reads in the console, p246, p247); in a UCS that is not the WCS,
+`*** Switching to the WCS ***` before the direction, given in the WCS, and
+`*** Returning to the UCS ***` after the answer (es `*** Cambiando al SCU ***`,
+`*** Volviendo al SCP ***`, p253); what is no point refused with `Invalid input. Try again.` and the
 current direction again (es `Entrada no válida. Vuelva a intentarlo.`), what is no angle with
-`Requires valid numeric angle or second point.`, as AutoCAD 2023's console does;
-`Regenerating model.`; fits the extents; ZOOM Previous steps back; VPOINT runs the same sequence; U,
-REDO and MREDO as PLAN's (`VPOINT Regenerating model.`, p340, p341)
+`Requires valid numeric angle or second point.` (p244, p250); `Regenerating model.`; fits the
+extents (p243); ZOOM Previous steps back; VPOINT runs the same sequence; U, REDO and MREDO as
+PLAN's (`VPOINT Regenerating model.`, p340, p341)
 
 **Missing:** the compass and tripod (Enter leaves the view, so the prompt shows no
 `<display compass and tripod>`; Tripod, which the prompt declares but does not list — es `trípode` —
 and which opens them in the console, is refused as any answer), VPOINT's Viewpoint Presets dialog,
 VIEWDIR as typed (AutoCAD keeps `1.0000,-1.0000,1.0000`; here the unit direction),
 `Regenerating model.` after Rotate's two defaults (AutoCAD leaves the view and says nothing),
-WORLDVIEW 0
+WORLDVIEW 0, whether Escape in another UCS says `*** Returning to the UCS ***` (desktop); with
+nothing drawn the zoom stays where it was, where AutoCAD frames LIMITS (p249: no LIMITS here)
 
-### `-VIEW` / `VIEW` / `-V` / `V` · es `-VISTA` / `VISTA`
+### `-VIEW` / `VIEW` / `-V` / `V` · es `-VISTA` / `VISTA` / `-VI` / `VI`
 
 **Implemented:** `Enter an option [Orthographic]:` (es `Indique una opción [Ortogonal]`), then
 `Enter an option [Top/Bottom/Front/BAck/Left/Right]<Top>:` (es
@@ -124,40 +136,67 @@ table spells them there (`Top` … `RIght`, `SWIso` / `SEIso` / `NEIso` / `NWIso
 answered); fits the extents and says `Regenerating model.`; an orthographic preset also aligns the
 UCS with the view from the WCS (UCSORTHO 1, UCSBASE the WCS), its origin at 0,0,0, in the same undo
 step, and names it as UCS orthoGraphic does (`*FRONT*`); each view at twist 0, the line of sight's
-arbitrary-axis X drawn right, so Bottom has the X to the left and its UCS X = -1,0,0 (AutoCAD 2023's
-console); an isometric one leaves the UCS; `'-VIEW` mid-command asks the same, and every view, which
+arbitrary-axis X drawn right, so Bottom has the X to the left and its UCS X = -1,0,0 (p305, p332);
+the UCS names in Spanish `*SUPERIOR*` … `*DERECHA*` (p304–p309); an isometric one leaves the UCS,
+also a turned one, looking from the WCS's corner (p310–p313, p331), and an orthographic one aligns
+from the WCS whatever the UCS (p330); `'-VIEW` mid-command asks the same, and every view, which
 turns the view, says `** Requires a regen, cannot be transparent.` and changes nothing, as the
-console does; VIEW runs -VIEW; U takes the view back with its UCS (`-VIEW Regenerating model.`,
+console does (p324, p334); VIEW runs -VIEW; U takes the view back with its UCS (`-VIEW Regenerating model.`,
 p342, p343), REDO and MREDO regenerating last, only when the line of sight turned: the view already
 shown says it as it runs, not on U or REDO (Top in Top, SW Isometric twice, p350, p369); Enter at
 the first prompt is an undo step too (p366)
 
-**Missing:** `?`, Delete, Restore, Save, sEttings, Window (no saved views), the View Manager,
-UCSORTHO and UCSBASE as variables, the aligned UCS in UCS Previous's list; the UCS named `*TOP*`
-after U of an orthographic preset from the WCS (AutoCAD keeps the WCS's axes under that name, p351;
-here `*WORLD*`)
+**Missing:** the named views, refused as any word: `?` (`Enter view name(s) to list <*>:`,
+`Saved views:`, `  No matching views found.`; es `Indique nombre(s) de vista a listar <*>:`,
+`Vistas guardadas:`, `  No se han encontrado las vistas.`, p316), Save
+(`Enter view name to save:`, then `UCSVIEW = 1  UCS will be saved with view`; es
+`Indique nombre de vista a guardar:`, `UCSVIEW = 1  SCP se guardará con la vista`, p317), Restore
+(`Enter view name to restore:`, es `Indique nombre de vista a restituir:`, p318), Delete
+(`Enter view name(s) to delete:`, es `Indique nombre(s) de vista a suprimir:`, p319), Window (the
+name, then `Specify first corner:` and `Specify opposite corner:`, es `Designe primera esquina:`,
+`Designe esquina opuesta:`, p320), sEttings
+(`Enter an option [Background/Categorize/Layer snapshot/live Section/Ucs/Visual style]:`, es
+`[Fondo/Categorizar/Instantánea de capa/sección Automática/Scp/Estilo visual]`, p315); the hidden
+Categorize (`Enter view name to Categorize or [?]:`, es
+`Indique nombre de vista a categorizar o [?]:`, p321), lAyer
+(`Enter view name to edit Layer snapshot or [?]:`, es
+`Indique nombre de vista para editar instantánea de capa o [?]:`; both refusing an unknown name
+with `No matching view names found.`, es `Nombres de vista no encontrados.`, p322) and Ucs
+(`Save current UCS with named views?[Yes/No]<Yes>:`, es
+`¿Guardar SCP actual con vistas mencionadas? [Sí/No]<Sí>:`, p323); so the first prompt lists only
+`[Orthographic]` where AutoCAD's lists `[?/Delete/Orthographic/Restore/Save/sEttings/Window]`
+(es `[?/Suprimir/Ortogonal/Restituir/Guardar/PArámetros/Ventana]`); with nothing drawn a preset
+leaves the zoom where AutoCAD frames LIMITS (p333: no LIMITS here); the View Manager (VIEW runs
+-VIEW: the console knows no VIEW, p326), UCSORTHO and UCSBASE as variables, the aligned UCS in UCS
+Previous's list; the UCS named `*TOP*` after U of an orthographic preset from the WCS (AutoCAD
+keeps the WCS's axes under that name, p351; here `*WORLD*`)
 
-### `3DORBIT` / `3DO` / `ORBIT` · es `3DORBITA`
+### `3DORBIT` / `3DO` / `ORBIT` · es `3DORBITA` / `3DO` / `ORBIT`
 
-**Implemented:** dragging across turns the camera about the WCS's Z, dragging up and down raises or
-lowers it, about the middle of the drawing under the centre of the screen, in parallel projection;
-no editing while it runs; Enter or Escape ends it; each drag is a ZOOM Previous step; the run an
-undo step, with no drag too (**unverified**: 3DORBIT hangs AutoCAD 2027's console, p329); Shift + the wheel button held
-orbits from any command; Orbit on the navigation bar
+**Implemented:** `Press ESC or ENTER to exit, or right-click to display shortcut-menu.` when it
+starts, hyphen and all (es
+`Pulse ESC o INTRO para salir, o haga clic con el botón derecho para ver el menú contextual.`,
+p329); dragging across turns the camera about the WCS's Z, dragging up and down raises or lowers
+it, about the middle of the drawing under the centre of the screen, in parallel projection; no
+editing while it runs; Enter or Escape ends it; each drag is a ZOOM Previous step; the run an undo
+step, with no drag too (**unverified**: 3DORBIT hangs AutoCAD 2027's console, p329); Shift + the
+wheel button held orbits from any command; Orbit on the navigation bar
 
 **Missing:** the right-click menu (projection, visual styles, other navigation modes), orbiting
 about the selection only, perspective, 3DFORBIT, 3DCORBIT and the rest of 3D navigation
 
-### `NAVVCUBE` / `CUBE` · es `NAVVCUBE`
+### `NAVVCUBE` / `CUBE` · es `NAVVCUBE` / `CUBE`
 
 **Implemented:** `Enter an option [ON/OFF] <ON>:` (the current value; es
-`Indique una opción [ACT/DES] <ACT>`; `CUBE` from Autodesk's shortcut guide),
-`Invalid option keyword.` for anything else, as AutoCAD 2023's console says it; saved in the drawing
-as NAVVCUBEDISPLAY 3 or 0; an undo step U, REDO and MREDO name, Enter alone too (move/p238,
-view/p344, p367), which takes nothing back
+`Indique una opción [ACT/DES] <ACT>`; `CUBE` in both languages, p265, p266),
+`Invalid option keyword.` for anything else (es `Opción no válida.`, p262–p264); saved in the
+drawing, NAVVCUBEDISPLAY 3 when on (off, 2027 writes 1 under 2D Wireframe, clearing only that
+visual style's bit, p262; here the cube is just hidden); an undo step U, REDO and MREDO name, Enter
+alone too (move/p238, view/p344, p367), which takes nothing back
 
-**Missing:** Settings (the ViewCube Settings dialog; not offered, so the prompt lists `[ON/OFF]`),
-NAVVCUBEDISPLAY's 1 and 2 (no visual styles); U and REDO putting NAVVCUBEDISPLAY back and forth,
+**Missing:** Settings (the ViewCube Settings dialog; not offered, so the prompt lists `[ON/OFF]`
+where AutoCAD's lists `[ON/OFF/Settings]`, es `[ACT/DES/Parámetros]`, p262, p265), NAVVCUBEDISPLAY
+per visual style (none here); U and REDO putting NAVVCUBEDISPLAY back and forth,
 as AutoCAD 2027's console does (move/p238)
 
 ### ViewCube (top right)

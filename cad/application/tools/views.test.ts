@@ -5,6 +5,7 @@ import type { ScenePrimitive } from "../../scene/types"
 import { createHarness, type CadHarness } from "../../../test/harness"
 import { circleOf, lineOf, p, textOf } from "../../../test/builders"
 import { entityScreenOutline } from "../viewOutline"
+import { es } from "../../locales/es"
 
 const ROOT3 = Math.sqrt(3)
 
@@ -17,6 +18,23 @@ function expectVector(v: Vec3, x: number, y: number, z: number): void {
   expect(v.x).toBeCloseTo(x, 12)
   expect(v.y).toBeCloseTo(y, 12)
   expect(v.z).toBeCloseTo(z, 12)
+}
+
+/** Typed at the command line and confirmed, as the console types it. */
+function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
+
+/** The UCS's name, as UCS's first line reads it. */
+function ucsName(cad: CadHarness): string | undefined {
+  answer(cad, "_UCS")
+  const name = cad.commandLog().at(-1)
+  cad.escape()
+  return name
 }
 
 function screenOf(cad: CadHarness, x: number, y: number, z: number) {
@@ -72,15 +90,30 @@ describe("VPOINT", () => {
     expect(cad.runtime.viewport.isPlan).toBe(true)
   })
 
-  it("asks again for a zero view point, and Enter leaves the view", () => {
-    const cad = createHarness()
+  // probes view/p203, p245: 0,0,0 gives VIEWDIR 0,0,1, twist 0, the extents
+  // fitted and `Regenerating model.`, and the command ends.
+  it("takes a zero view point as the WCS plan, fitted", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 50))] })
+    cad.command("VPOINT").type("1,-1,1").enter()
 
     cad.command("VPOINT").type("0,0,0").enter()
-    expect(cad.activeToolId()).toBe("vpoint")
-    cad.type("").enter()
 
+    expect(cad.commandLog().at(-1)).toBe("Regenerating model.")
     expect(cad.activeToolId()).toBe("select")
     expect(cad.runtime.viewport.isPlan).toBe(true)
+    expectVector(cad.runtime.viewport.right, 1, 0, 0)
+    expect(cad.runtime.viewport.worldCenter()).toBeCloseToPoint(p(50, 25))
+  })
+
+  it("leaves the view at Enter", () => {
+    const cad = createHarness()
+    cad.command("VPOINT").type("1,1,1").enter()
+    const before = cad.runtime.viewport.direction
+
+    cad.command("VPOINT").type("").enter()
+
+    expect(cad.activeToolId()).toBe("select")
+    expectVector(cad.runtime.viewport.direction, before.x, before.y, before.z)
   })
 
   it("is stepped back through by ZOOM Previous", () => {
@@ -104,11 +137,9 @@ describe("-VIEW", () => {
     const start = screenOf(cad, 0, 0, 50)
     const end = screenOf(cad, 100, 0, 50)
     expect(start.y).toBeCloseTo(end.y, 9)
-    expect(end.x).toBeGreaterThan(start.x)
-    for (const point of [start, end]) {
-      expect(point.x).toBeGreaterThanOrEqual(0)
-      expect(point.x).toBeLessThanOrEqual(1000)
-    }
+    // Fitted as ZOOM Extents frames it, a 3 px margin a side (view/p100, p304).
+    expect(start.x).toBeCloseTo(3, 6)
+    expect(end.x).toBeCloseTo(997, 6)
   })
 
   it("takes Enter at Orthographic as Top, the plan of the WCS", () => {
@@ -121,9 +152,9 @@ describe("-VIEW", () => {
     expectVector(cad.runtime.viewport.right, 1, 0, 0)
   })
 
-  // AutoCAD 2023's console (acc/v1, y1 of the hidden UCS words session):
-  // -VIEW Bottom, then UCSXDIR / UCSYDIR, and VPOINT then UCS View, read the
-  // screen's horizontal — twist 0 is the line of sight's arbitrary-axis X.
+  // probes view/p246, p247, p305, p332: -VIEW Bottom, then UCSXDIR / UCSYDIR,
+  // and VPOINT then UCS View, read the screen's horizontal — twist 0 is the
+  // line of sight's arbitrary-axis X.
   it("shows Bottom with the X to the left, as twist 0 does", () => {
     const cad = createHarness()
     cad.command("-VIEW").option("Orthographic").option("Bottom")
@@ -169,6 +200,102 @@ describe("PLAN", () => {
     cad.command("PLAN").option("World")
 
     expect(cad.runtime.viewport.isPlan).toBe(true)
+  })
+
+  // probe view/p232: VIEWTWIST 330, the extents' middle 50,25 in the centre.
+  it("draws a UCS turned 30 about Z with its X to the right", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 50))] })
+    answer(cad, "UCS", "Z", "30", "PLAN", "")
+    const { right, direction } = cad.runtime.viewport
+    expectVector(direction, 0, 0, 1)
+    expectVector(right, Math.cos(Math.PI / 6), 0.5, 0)
+    expect(cad.runtime.viewport.worldCenter()).toBeCloseToPoint(p(50, 25))
+  })
+
+  // probe view/p233: looking down the UCS's Z (the WCS's -Y), its X right.
+  it("looks down a UCS tilted 90 about X", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 50))] })
+    answer(cad, "UCS", "X", "90", "PLAN", "")
+    expectVector(cad.runtime.viewport.direction, 0, -1, 0)
+    expectVector(cad.runtime.viewport.right, 1, 0, 0)
+  })
+})
+
+// AutoCAD 2027's console after LINE 0,0 100,50 and ZOOM E: VIEWDIR (read in
+// the aligned UCS), UCSXDIR, UCSYDIR and UCSNAME, en-US and es-ES.
+describe("-VIEW's presets", () => {
+  const drawn = (locale?: typeof es) =>
+    createHarness({ locale, entities: [lineOf(p(0, 0), p(100, 50))] })
+  const ucs = (cad: CadHarness) => cad.runtime.document.getSettings().ucs
+
+  type Axis = readonly [number, number, number]
+  // probes view/p304–p309
+  const ORTHOGRAPHIC: readonly (readonly [
+    string,
+    Axis,
+    Axis,
+    Axis,
+    string,
+    string,
+  ])[] = [
+    ["_TOP", [0, 0, 1], [1, 0, 0], [0, 1, 0], "*TOP*", "*SUPERIOR*"],
+    ["_BOTTOM", [0, 0, -1], [-1, 0, 0], [0, 1, 0], "*BOTTOM*", "*INFERIOR*"],
+    ["_FRONT", [0, -1, 0], [1, 0, 0], [0, 0, 1], "*FRONT*", "*FRONTAL*"],
+    ["_BACK", [0, 1, 0], [-1, 0, 0], [0, 0, 1], "*BACK*", "*POSTERIOR*"],
+    ["_LEFT", [-1, 0, 0], [0, -1, 0], [0, 0, 1], "*LEFT*", "*IZQUIERDA*"],
+    ["_RIGHT", [1, 0, 0], [0, 1, 0], [0, 0, 1], "*RIGHT*", "*DERECHA*"],
+  ]
+  for (const [preset, view, x, y, en, spanish] of ORTHOGRAPHIC) {
+    it(`${preset} aligns the UCS with the screen and names it`, () => {
+      const cad = answer(drawn(), "_-VIEW", preset)
+      expect(cad.commandLog().at(-1)).toBe("Regenerating model.")
+      expectVector(direction(cad), ...view)
+      expectVector(cad.runtime.viewport.right, ...x)
+      expectVector(ucs(cad).xAxis, ...x)
+      expectVector(ucs(cad).yAxis, ...y)
+      expect(ucsName(cad)).toBe(`Current ucs name:  ${en}`)
+      const inSpanish = answer(drawn(es), "_-VIEW", preset)
+      expect(ucsName(inSpanish)).toBe(`Nombre de scp actual:  ${spanish}`)
+    })
+  }
+
+  // probes view/p310–p313
+  for (const preset of ["_SWISO", "_SEISO", "_NEISO", "_NWISO"]) {
+    it(`${preset} looks from its corner and leaves the WCS`, () => {
+      const cad = answer(drawn(), "_-VIEW", preset)
+      const sign = { SW: [-1, -1], SE: [1, -1], NE: [1, 1], NW: [-1, 1] }[
+        preset.slice(1, 3) as "SW" | "SE" | "NE" | "NW"
+      ]
+      expectVector(direction(cad), sign[0] / ROOT3, sign[1] / ROOT3, 1 / ROOT3)
+      expect(ucsName(cad)).toBe("Current ucs name:  *WORLD*")
+    })
+  }
+
+  // probes view/p304, p310: Top's VIEWSIZE is ZOOM Extents', an iso view's
+  // is its own fit, which ZOOM Extents then keeps.
+  it("fits the extents", () => {
+    const cad = answer(drawn(), "_ZOOM", "_E")
+    const extents = cad.runtime.viewport.scale
+    answer(cad, "_-VIEW", "_TOP")
+    expect(cad.runtime.viewport.scale / extents).toBeCloseTo(1, 6)
+    answer(cad, "_-VIEW", "_SWISO")
+    const iso = cad.runtime.viewport.scale
+    answer(cad, "_ZOOM", "_E")
+    expect(cad.runtime.viewport.scale / iso).toBeCloseTo(1, 6)
+  })
+
+  // probe view/p330: from the WCS, whatever the UCS before.
+  it("aligns an orthographic view's UCS from the WCS after UCS Z 30", () => {
+    const cad = answer(drawn(), "UCS", "Z", "30", "_-VIEW", "_FRONT")
+    expectVector(ucs(cad).xAxis, 1, 0, 0)
+    expectVector(ucs(cad).yAxis, 0, 0, 1)
+  })
+
+  // probe view/p331
+  it("keeps the UCS at an iso view after UCS Z 30, looking from the WCS's SW", () => {
+    const cad = answer(drawn(), "UCS", "Z", "30", "_-VIEW", "_SWISO")
+    expectVector(direction(cad), -1 / ROOT3, -1 / ROOT3, 1 / ROOT3)
+    expectVector(ucs(cad).xAxis, Math.cos(Math.PI / 6), 0.5, 0)
   })
 })
 

@@ -8,6 +8,7 @@ import {
 } from "../../domain/entities"
 import { createHarness, type CadHarness } from "../../../test/harness"
 import { circleOf, lineOf, p } from "../../../test/builders"
+import { es } from "../../locales/es"
 import { SnapType } from "../snapping/types"
 
 function isometric(cad: CadHarness): CadHarness {
@@ -158,6 +159,19 @@ describe("picking off the plan", () => {
 })
 
 describe("3DORBIT", () => {
+  // probe view/p329 (en-US, es-ES): as it starts, with a hyphen PAN's lacks.
+  it("says how to leave it as it starts", () => {
+    const cad = createHarness().command("3DORBIT")
+    expect(cad.commandLog()).toEqual([
+      "3DORBIT",
+      "Press ESC or ENTER to exit, or right-click to display shortcut-menu.",
+    ])
+    const spanish = createHarness({ locale: es }).command("3DORBITA")
+    expect(spanish.commandLog().at(-1)).toBe(
+      "Pulse ESC o INTRO para salir, o haga clic con el botón derecho para ver el menú contextual."
+    )
+  })
+
   it("turns the camera about the world's Z, the drawing's middle kept in place", () => {
     const circle = circleOf(p(0, 0), 50)
     const cad = createHarness({ entities: [circle] })

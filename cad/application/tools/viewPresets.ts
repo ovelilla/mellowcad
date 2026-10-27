@@ -45,8 +45,8 @@ const SAME_AXIS = 1e-6
  * The direction drawn right when looking from `viewPoint`, AutoCAD's twist 0:
  * the X of the arbitrary-axis frame of the line of sight — the world's Z drawn
  * up, and looking along Z the WCS's Y up, so Bottom has the X to the left
- * (AutoCAD 2023's console: VPOINT 0,0,-1 and -VIEW Bottom, then UCS View, give
- * X = -1,0,0; VPOINT 0.01,0,-1 gives -1,0,-0.01).
+ * (view/p246, p305, p332: VPOINT 0,0,-1 and -VIEW Bottom, then UCS View, give
+ * X = -1,0,0; p247: VPOINT 0.01,0,-1 gives -0.99995,0,-0.0099995).
  */
 function presetRight(viewPoint: Vec3): Vec3 {
   return arbitraryAxis(viewPoint)?.x ?? WORLD_X

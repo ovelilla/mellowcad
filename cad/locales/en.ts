@@ -841,7 +841,8 @@ export const en: EngineCatalog = {
         "P"
       ],
       "-PAN": [
-        "-PAN"
+        "-PAN",
+        "-P"
       ],
       "ERASE": [
         "ERASE",
@@ -951,7 +952,8 @@ export const en: EngineCatalog = {
       ],
       "VPOINT": [
         "VPOINT",
-        "VP"
+        "VP",
+        "DDVPOINT"
       ],
       "-VPOINT": [
         "-VPOINT",
@@ -2343,6 +2345,13 @@ export const en: EngineCatalog = {
         ],
         "\"."
       ],
+      "planUcsNotFound": [
+        "Cannot find UCS \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
       "noMatchingUcs": "  No matching UCS names found.",
       "ucsDeleted": [
         "Deleted ",
@@ -3058,11 +3067,14 @@ export const en: EngineCatalog = {
           "z"
         ]
       ],
+      "switchingToWcs": "*** Switching to the WCS ***",
+      "returningToUcs": "*** Returning to the UCS ***",
       "invalidInputTryAgain": "Invalid input. Try again.",
       "regeneratingModel": "Regenerating model.",
       "regenQueued": "Regen queued.",
       "requiresRegen": "** Requires a regen, cannot be transparent.",
       "panExit": "Press ESC or ENTER to exit, or right-click to display shortcut menu.",
+      "orbitExit": "Press ESC or ENTER to exit, or right-click to display shortcut-menu.",
       "requiresTwoPointsOrDisplacement": "Requires two points, or a displacement followed by ENTER.",
       "currentOsnapModes": [
         "Current osnap modes: ",
