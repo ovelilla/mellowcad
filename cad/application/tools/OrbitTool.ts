@@ -18,16 +18,22 @@ export class OrbitTool implements Tool {
 
   private drag: { last: Vec2; target: Vec3 } | null = null
 
-  /** It asks nothing: it says how to leave, in its own words (view/p329). */
+  /**
+   * It asks nothing: it says how to leave, in its own words (view/p329), a
+   * report rather than a prompt, so run transparently it takes no `>>`
+   * (desktop view/d04, VIEW-D63).
+   */
   onActivate(ctx: ToolContext): void {
     this.drag = null
     ctx.setCursor("move")
-    ctx.report(ctx.text.message("orbitExit"), "prompt")
+    ctx.report(ctx.text.message("orbitExit"))
   }
 
+  /** It regenerates as it ends, dragged or not (desktop view/d04). */
   onDeactivate(ctx: ToolContext): void {
     this.drag = null
     ctx.setCursor("default")
+    ctx.regenerate("view")
   }
 
   /** The orbit cursor replaces the crosshair, as AutoCAD's does. */

@@ -275,11 +275,11 @@
     "NavigationBar": {
       "label": "Barra de navegación",
       "zoom": "Zoom",
-      "extents": "Zoom extensión",
+      "extents": "Extensión",
       "window": "Zoom ventana",
-      "previous": "Zoom previo",
-      "in": "Ampliar",
-      "out": "Reducir"
+      "previous": "Previo",
+      "in": "Acercar",
+      "out": "Alejar"
     },
     "Viewport": {
       "view": "Controles de vista: {name}"

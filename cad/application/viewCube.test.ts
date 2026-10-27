@@ -90,7 +90,9 @@ describe("the ViewCube's parts", () => {
     cad.runtime.viewCubePick("front")
 
     expect(isWorldUcs(cad.runtime.document.getSettings().ucs)).toBe(true)
-    expect(cad.state().canUndo).toBe(false)
+    // The view's undo step only (desktop view/d05: the UCS stays the WCS).
+    expect(written(cad, "U")).toEqual(["U", `'.VIEWCUBEACTION ${REGEN}`])
+    expect(isWorldUcs(cad.runtime.document.getSettings().ucs)).toBe(true)
   })
 })
 
@@ -193,10 +195,10 @@ describe("Home", () => {
     // -VIEW is an undo step of its own; setting Home is none.
     cad.runtime.history.clear()
     cad.runtime.setHomeFromCurrentView()
+    expect(cad.state().canUndo).toBe(false)
     cad.runtime.viewCubePick("top")
     cad.runtime.viewCubeHome()
     expectDirection(cad, 1, 1, 1)
-    expect(cad.state().canUndo).toBe(false)
 
     const reopened = createHarness()
     reopened.runtime.loadDrawing(cad.runtime.serializeDrawing())
@@ -206,7 +208,8 @@ describe("Home", () => {
 })
 
 describe("dragging the ViewCube", () => {
-  it("orbits, and lands on a view let go of near it", () => {
+  // Desktop view/d05: let go 1.7° and 6.6° off Top, it stays (VIEW-D67).
+  it("orbits, and stays where it is let go however near a view", () => {
     const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
     cad.runtime.viewCubePick("front")
 
@@ -215,7 +218,7 @@ describe("dragging the ViewCube", () => {
     expect(cad.state().viewCube.current).toBeNull()
     cad.runtime.viewCubeDrag("end", { x: 12, y: 5 })
 
-    expect(cad.state().viewCube.current).toBe("front")
+    expect(cad.state().viewCube.current).toBeNull()
   })
 
   it("stays where it is let go far from any, one step of ZOOM Previous", () => {
@@ -265,22 +268,20 @@ describe("dragging the ViewCube", () => {
 })
 
 describe("the compass", () => {
-  it("looks from a point of the compass at the view's elevation", () => {
+  // Desktop view/d05: S from Top and from SW Isometric give VIEWDIR 0,-1,0.
+  it("looks level from that side, upright, from the plan too", () => {
     const cad = createHarness()
     cad.runtime.viewCubePick("top-left-front")
 
     cad.runtime.compassPick("N")
 
-    expectDirection(cad, 0, Math.SQRT2, 1)
-  })
+    expectDirection(cad, 0, 1, 0)
+    expect(cad.runtime.viewport.up.z).toBeCloseTo(1, 12)
 
-  it("turns the plan so the letter is at the bottom", () => {
-    const cad = createHarness()
-
-    cad.runtime.compassPick("E")
-
-    expectDirection(cad, 0, 0, 1)
-    expect(cad.runtime.viewport.up.x).toBeCloseTo(-1, 12)
+    const plan = createHarness()
+    plan.runtime.compassPick("E")
+    expectDirection(plan, 1, 0, 0)
+    expect(plan.runtime.viewport.up.z).toBeCloseTo(1, 12)
   })
 
   it("puts its letters round the cube with North on the Y", () => {
@@ -412,5 +413,103 @@ describe("the UCS menu", () => {
 
     cad.undo()
     expect(cad.state().ucsMenu.world).toBe(true)
+  })
+})
+
+// AutoCAD 2027's desktop (research/probes/view d05, VWD): each action is an
+// undo step `'.VIEWCUBEACTION` that regenerates, transparent inside a command.
+function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
+
+function written(cad: CadHarness, ...texts: string[]): string[] {
+  const from = cad.commandLog().length
+  answer(cad, ...texts)
+  return cad.commandLog().slice(from)
+}
+
+const scale = (cad: CadHarness) => cad.runtime.viewport.scale
+const dir = (cad: CadHarness) => {
+  const d = cad.runtime.viewport.direction
+  return [d.x, d.y, d.z].map((n) => +n.toFixed(6) + 0)
+}
+const REGEN = "Regenerating model."
+
+function drawing(): CadHarness {
+  return answer(
+    createHarness({ entities: [lineOf(p(0, 0), p(100, 50))] }),
+    "_LINE",
+    "200,200",
+    "210,200",
+    ""
+  )
+}
+
+describe("the ViewCube's undo and fit (desktop view/d05)", () => {
+  it("a click is an undo step VIEWCUBEACTION, apart from ZOOM", () => {
+    const cad = answer(drawing(), "ZOOM", "2X")
+    cad.runtime.viewCubePick("front")
+    expect(written(cad, "U")).toEqual(["U", `'.VIEWCUBEACTION ${REGEN}`])
+    expect(dir(cad)).toEqual([0, 0, 1])
+  })
+
+  // VIEW-D62, D64: REDO regenerates too; a drag is a step as a click is.
+  it("REDO regenerates, and a drag is a step too", () => {
+    const cad = drawing()
+    cad.runtime.viewCubePick("front")
+    answer(cad, "U")
+    expect(written(cad, "REDO")).toEqual([
+      "REDO",
+      "'.VIEWCUBEACTION",
+      "Everything has been redone",
+      REGEN,
+    ])
+    cad.runtime.viewCubeDrag("start", { x: 0, y: 0 })
+    cad.runtime.viewCubeDrag("move", { x: 30, y: 10 })
+    const from = cad.commandLog().length
+    cad.runtime.viewCubeDrag("end", { x: 30, y: 10 })
+    expect(cad.commandLog().slice(from)).toEqual([REGEN])
+    expect(written(cad, "U")).toEqual(["U", `'.VIEWCUBEACTION ${REGEN}`])
+    expect(dir(cad)).toEqual([0, -1, 0])
+  })
+
+  it("inside LINE it resumes LINE, and LINE's Undo takes it with the segment", () => {
+    const cad = answer(drawing(), "_LINE", "0,0", "10,0")
+    const from = cad.commandLog().length
+    cad.runtime.viewCubePick("front")
+    expect(cad.commandLog().slice(from)).toEqual([
+      REGEN,
+      "Resuming LINE command.",
+    ])
+    answer(cad, "_U")
+    expect(dir(cad)).toEqual([0, 0, 1])
+  })
+
+  it("fits the extents' bounding sphere: the view's height is the box's diagonal", () => {
+    const cad = drawing()
+    cad.runtime.viewCubePick("front")
+    const height = cad.runtime.viewport.height / scale(cad)
+    expect(height).toBeCloseTo(Math.hypot(210, 200), 3)
+  })
+
+  it("the roll arrows fit too", () => {
+    const cad = drawing()
+    const fitted = (cad.runtime.viewCubePick("top"), scale(cad))
+    answer(cad, "ZOOM", "2X")
+    cad.runtime.viewCubeRoll("clockwise")
+    expect(scale(cad)).toBeCloseTo(fitted, 9)
+  })
+
+  it("a compass letter looks level from that side, from the plan too", () => {
+    const cad = drawing()
+    cad.runtime.compassPick("S")
+    expect(dir(cad)).toEqual([0, -1, 0])
+    answer(cad, "-VIEW", "SWISO")
+    cad.runtime.compassPick("S")
+    expect(dir(cad)).toEqual([0, -1, 0])
   })
 })

@@ -1,6 +1,6 @@
-import { describe, expect, it } from "vitest"
+import { afterEach, describe, expect, it, vi } from "vitest"
 
-import { p } from "../../test/builders"
+import { lineOf, p } from "../../test/builders"
 import { type CadHarness, createHarness } from "../../test/harness"
 import { es } from "../locales/es"
 
@@ -92,9 +92,9 @@ describe("the view as an undo step", () => {
     }
     // The navigation bar's are a menu's, never joined.
     const bar = answer(createHarness(), ...LINE, "ZOOM", "2X")
-    bar.runtime.navigate("ZOOM", "Window")
+    bar.runtime.navigate("ZOOM", "_w")
     bar.click(p(0, 0)).click(p(5, 5))
-    expect(written(bar, "U", "U")).toEqual(["U", "'ZOOM", "U", "ZOOM"])
+    expect(written(bar, "U", "U")).toEqual(["U", "'ZOOM GROUP", "U", "ZOOM"])
   })
 
   // Probes view/p362, p363.
@@ -152,15 +152,6 @@ describe("the view as an undo step", () => {
     expect(written(cad, "_U")).toEqual(["U", "LINE"])
     expect(cad.entities()).toHaveLength(2)
     expect(camera(cad)).toEqual(before)
-  })
-
-  it("the wheel is no command, and stays out of it", () => {
-    const cad = answer(createHarness(), ...LINE)
-    answer(cad, "LINE", "0,0")
-    cad.wheel(p(0, 0), -100)
-    const wheeled = camera(cad)
-    answer(cad, "5,5", "", "U")
-    expect(camera(cad)).toEqual(wheeled)
   })
 
   // Probe view/p347 (es-ES).
@@ -291,5 +282,184 @@ describe("a view command that leaves the view where it was is still a step", () 
     expect(written(cad, "_-VIEW", "_SWISO").at(-1)).toBe(REGEN)
     expect(written(cad, "_U")).toEqual(["U", "-VIEW"])
     expect(cad.entities()).toHaveLength(2)
+  })
+})
+
+// The desktop's gestures (research/probes/view d01–d04, VWD): each is an undo
+// step of its own at the Command prompt, and an entry of the running command
+// inside one.
+const scale = (cad: CadHarness) => cad.runtime.viewport.scale
+const direction = (cad: CadHarness) => {
+  const d = cad.runtime.viewport.direction
+  return [d.x, d.y, d.z].map((n) => +n.toFixed(6) + 0)
+}
+
+/** The desktop probes' drawing: a line there, and one LINE run before the gesture. */
+function drawing(): CadHarness {
+  return answer(
+    createHarness({ entities: [lineOf(p(0, 0), p(100, 50))] }),
+    "_LINE",
+    "200,200",
+    "210,200",
+    ""
+  )
+}
+
+let now = 1_000_000
+function clock(): void {
+  vi.spyOn(Date, "now").mockImplementation(() => now)
+}
+
+describe("the wheel (desktop view/d01)", () => {
+  afterEach(() => vi.restoreAllMocks())
+
+  it("one notch zooms 1.5978× about the cursor", () => {
+    const cad = drawing()
+    const before = scale(cad)
+    cad.wheel(p(50, 25), -100)
+    expect(scale(cad) / before).toBeCloseTo(120 / 75.102, 3)
+  })
+
+  it("U takes a wheel zoom back as INTELLIZOOM, the line kept", () => {
+    clock()
+    const cad = drawing()
+    const before = scale(cad)
+    cad.wheel(p(50, 25), -100)
+    now += 1200
+    cad.wheel(p(50, 25), -100)
+    expect(written(cad, "U")).toEqual(["U", "INTELLIZOOM INTELLIZOOM"])
+    expect(scale(cad)).toBeCloseTo(before, 9)
+    expect(cad.entities()).toHaveLength(2)
+  })
+
+  it("joins a typed ZOOM before it", () => {
+    const cad = answer(drawing(), "ZOOM", "2X")
+    cad.wheel(p(50, 25), -100)
+    expect(written(cad, "U")).toEqual(["U", "INTELLIZOOM ZOOM"])
+  })
+
+  it("notches under a second apart are one ZOOM Previous step", () => {
+    clock()
+    const cad = drawing()
+    const before = scale(cad)
+    cad.wheel(p(50, 25), -100)
+    now += 900
+    cad.wheel(p(50, 25), -100)
+    answer(cad, "ZOOM", "P")
+    expect(scale(cad)).toBeCloseTo(before, 9)
+  })
+
+  it("LINE's Undo takes a wheel zoom back with the segment", () => {
+    const cad = drawing()
+    answer(cad, "_LINE", "0,0", "10,0")
+    const before = scale(cad)
+    cad.wheel(p(50, 25), -100)
+    answer(cad, "_U")
+    expect(scale(cad)).toBeCloseTo(before, 9)
+  })
+})
+
+describe("a wheel burst", () => {
+  // Its later notches widen its step only while nothing else came between.
+  it("parts at a segment drawn between its notches", () => {
+    const cad = answer(drawing(), "_LINE", "0,0", "10,0")
+    cad.wheel(p(50, 25), -100)
+    const first = scale(cad)
+    answer(cad, "20,0")
+    cad.wheel(p(50, 25), -100)
+    answer(cad, "_U")
+    expect(scale(cad)).toBeCloseTo(first, 9)
+    expect(cad.entities()).toHaveLength(3)
+  })
+})
+
+describe("the wheel button (desktop view/d02)", () => {
+  afterEach(() => vi.restoreAllMocks())
+
+  it("a drag's pan is INTELLIPAN, joined with ZOOMs", () => {
+    const cad = answer(drawing(), "ZOOM", "2X")
+    cad.drag(p(50, 25), p(30, 15), { button: 1 })
+    expect(written(cad, "U")).toEqual(["U", "INTELLIPAN ZOOM"])
+  })
+
+  it("a click without a move is a step too", () => {
+    const cad = drawing()
+    cad.click(p(50, 25), { button: 1 })
+    expect(written(cad, "U")).toEqual(["U", "INTELLIPAN"])
+  })
+
+  it("a double-click is ZOOM Extents, echoed, and U names it", () => {
+    const cad = drawing()
+    const from = cad.commandLog().length
+    cad.click(p(50, 25), { button: 1 })
+    cad.click(p(50, 25), { button: 1 })
+    expect(cad.commandLog().slice(from)).toEqual([
+      "'_.zoom",
+      "Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: _e",
+    ])
+    expect(written(cad, "U")).toEqual(["U", "'.ZOOM INTELLIPAN"])
+  })
+
+  it("Shift + drag orbits, regenerates, and U names a menu group", () => {
+    const cad = drawing()
+    const from = cad.commandLog().length
+    cad.drag(p(50, 25), p(60, 22), { button: 1, shiftKey: true })
+    expect(cad.commandLog().slice(from)).toEqual([REGEN])
+    expect(written(cad, "U")).toEqual(["U", `GROUP menu item ${REGEN}`])
+    expect(direction(cad)).toEqual([0, 0, 1])
+  })
+})
+
+describe("real-time PAN (desktop view/d03)", () => {
+  it("joins the ZOOMs round it", () => {
+    const cad = answer(drawing(), "ZOOM", "2X", "PAN")
+    cad.drag(p(50, 25), p(40, 20))
+    answer(cad, "", "ZOOM", "0.5X")
+    expect(written(cad, "U")).toEqual(["U", "ZOOM PAN ZOOM"])
+  })
+
+  it("is a step without a drag, joined", () => {
+    const cad = answer(drawing(), "ZOOM", "2X", "PAN")
+    cad.escape()
+    expect(written(cad, "U")).toEqual(["U", "PAN ZOOM"])
+  })
+})
+
+describe("3DORBIT's step (desktop view/d04)", () => {
+  it("says Regenerating model. as it ends, and U too, with no drag", () => {
+    const cad = answer(drawing(), "ZOOM", "2X")
+    expect(written(cad, "3DORBIT", "")).toEqual([
+      "3DORBIT",
+      "Press ESC or ENTER to exit, or right-click to display shortcut-menu.",
+      REGEN,
+    ])
+    expect(written(cad, "U")).toEqual(["U", `3DORBIT ${REGEN}`])
+  })
+})
+
+describe("the gestures' steps in Spanish (desktop view/e01)", () => {
+  it("keep INTELLIZOOM, INTELLIPAN and '.VIEWCUBEACTION, and say GRUPO and 3DORBITA", () => {
+    const cad = () =>
+      answer(createHarness({ locale: es }), "_LINE", "0,0", "100,50", "")
+    const wheeled = cad()
+    wheeled.wheel(p(50, 25), -100)
+    expect(written(wheeled, "H")).toEqual(["H", "INTELLIZOOM"])
+    const panned = cad()
+    panned.drag(p(50, 25), p(30, 15), { button: 1 })
+    expect(written(panned, "H")).toEqual(["H", "INTELLIPAN"])
+    const cubed = cad()
+    cubed.runtime.viewCubePick("front")
+    expect(written(cubed, "H")).toEqual([
+      "H",
+      "'.VIEWCUBEACTION Regenerando modelo.",
+    ])
+    const orbited = cad()
+    orbited.drag(p(50, 25), p(60, 22), { button: 1, shiftKey: true })
+    expect(written(orbited, "H")).toEqual([
+      "H",
+      "GRUPO menu item Regenerando modelo.",
+    ])
+    const orbit = answer(cad(), "3DORBITA", "")
+    expect(written(orbit, "H")).toEqual(["H", "3DORBITA Regenerando modelo."])
   })
 })

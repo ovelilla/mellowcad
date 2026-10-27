@@ -118,9 +118,6 @@ const COMPASS_RADIUS = 1.55
 /** Below this a camera direction is taken as a part's. */
 const SAME_DIRECTION = 1e-6
 
-/** How far, in degrees, a dragged view snaps to the nearest part (V7). */
-export const SNAP_DEGREES = 10
-
 /** The integer direction a part's name stands for, e.g. `top-left-front` → (-1, -1, 1). */
 function partVector(part: ViewCubePart): Vec3 | null {
   let x = 0
@@ -217,10 +214,7 @@ export function partAt(direction: Vec3): ViewCubePart | null {
 }
 
 /** The part whose view lies within `degrees` of `direction`, nearest first. */
-export function nearestPart(
-  direction: Vec3,
-  degrees = SNAP_DEGREES
-): ViewCubePart | null {
+function nearestPart(direction: Vec3, degrees: number): ViewCubePart | null {
   let best: ViewCubePart | null = null
   let bestCos = Math.cos((degrees * Math.PI) / 180)
   for (const part of VIEW_CUBE_PARTS) {
@@ -298,23 +292,13 @@ function compassDirection(letter: CompassLetter, north: Vec3): Vec3 {
 }
 
 /**
- * Looking from a point of the compass at the elevation the view has (V6): the
- * viewer stands at that letter. From straight above or below it turns the
- * plan so that letter is at the bottom of the screen.
+ * Looking level from a point of the compass, upright: the viewer stands at
+ * that letter, whatever the view was — S from the plan and from SW Isometric
+ * alike look along VIEWDIR 0,-1,0 (desktop view/d05).
  */
-export function compassView(
-  camera: CubeCamera,
-  letter: CompassLetter,
-  north: Vec3
-): CubeView {
+export function compassView(letter: CompassLetter, north: Vec3): CubeView {
   const toward = compassDirection(letter, north)
-  const rise = Math.max(-1, Math.min(1, camera.direction.z))
-  const level = Math.sqrt(1 - rise * rise)
-  const direction =
-    level < SAME_DIRECTION
-      ? camera.direction
-      : add3(scale3(toward, level), scale3(WORLD_Z, rise))
-  return { direction, right: normalize3(cross3(WORLD_Z, toward))! }
+  return { direction: toward, right: normalize3(cross3(WORLD_Z, toward))! }
 }
 
 /** The axes of the cube's frame: the current UCS's. */

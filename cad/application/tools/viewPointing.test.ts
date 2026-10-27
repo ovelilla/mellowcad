@@ -222,6 +222,22 @@ describe("3DORBIT", () => {
     expect(cad.runtime.viewport.isPlan).toBe(false)
     expect(cad.activeToolId()).toBe("line")
   })
+
+  // The wheel button inside PAN and 3DORBIT gives the tool its cursor back,
+  // never its start again: AutoCAD writes their words once (view/p200, p329).
+  it("writes its words once when the wheel button is used inside it", () => {
+    for (const command of ["3DORBIT", "PAN"]) {
+      const cad = createHarness({ entities: [circleOf(p(0, 0), 50)] })
+      cad.command(command)
+      const from = cad.commandLog().length
+      cad.drag(p(0, 0), p(20, 10), { button: 1 })
+      cad.drag(p(0, 0), p(20, 10), { button: 1, shiftKey: true })
+      expect(cad.commandLog().slice(from)).not.toContain(
+        cad.commandLog()[from - 1]
+      )
+      expect(cad.activeToolId()).not.toBe("select")
+    }
+  })
 })
 
 describe("object snaps off the plan", () => {

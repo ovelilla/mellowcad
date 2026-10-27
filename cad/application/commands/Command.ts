@@ -109,6 +109,7 @@ export class CommandHistory extends Observable {
   /** Steps dropped off the bottom of the stack, which {@link depth} still counts. */
   private dropped = 0
   private undoSettings: UndoSettings = DEFAULT_UNDO_SETTINGS
+  private changes = 0
 
   constructor(
     private readonly document: CadDocument,
@@ -249,15 +250,25 @@ export class CommandHistory extends Observable {
     this.groupStart = null
     this.regenerated = false
     if (start === null) return
+    // The fold below emits nothing, yet the steps have changed.
+    this.changes += 1
     if (this.undoStack.length === start) {
       if (this.groupSteps && this.commandName !== null) {
-        this.push({
+        const entry: Entry = {
           kind: "command",
           command: null,
           name: this.commandName,
           names: [],
           regenerates: regenerated,
-        })
+        }
+        // WHY a ZOOM or PAN that left the view joins too: U after ZOOM 2X
+        // and a PAN with no drag writes `PAN ZOOM` (desktop view/d03).
+        if (zoom && this.joinZoom(entry, zoom)) {
+          this.redoStack = []
+          this.emit()
+          return
+        }
+        this.push(zoom ? { ...entry, combines: true } : entry)
       }
       return
     }
@@ -290,25 +301,65 @@ export class CommandHistory extends Observable {
       this.undoStack.push(entry)
       return
     }
+    if (!this.joinZoom(entry, zoom)) {
+      this.undoStack.push({ ...entry, combines: true })
+    }
+  }
+
+  /**
+   * Joins `entry`, a ZOOM's view change or none, to the ZOOM's just below
+   * when `withLast`, U naming them both (`ZOOM 'ZOOM`), unless UNDO Combine
+   * is No or Control One (acc/k15, h33). Whether it did.
+   */
+  private joinZoom(entry: Entry, zoom: ZoomStep): boolean {
     const below = this.undoStack.at(-1)
     const { control, combine } = this.undoSettings
-    if (
-      zoom.withLast &&
-      control === "all" &&
-      combine &&
-      below?.combines &&
-      below.command instanceof ViewChangeCommand
-    ) {
-      this.undoStack[this.undoStack.length - 1] = {
-        ...below,
-        command: below.command.then(command),
-        name: null,
-        names: [...namesOf(below), ...namesOf(entry)],
-        regenerates: below.regenerates || entry.regenerates,
-      }
-      return
+    if (!zoom.withLast || control !== "all" || !combine || !below?.combines) {
+      return false
     }
-    this.undoStack.push({ ...entry, combines: true })
+    this.undoStack[this.undoStack.length - 1] = {
+      ...below,
+      command: joinViews(below.command, entry.command),
+      name: null,
+      names: [...namesOf(below), ...namesOf(entry)],
+      regenerates: below.regenerates || entry.regenerates,
+    }
+    return true
+  }
+
+  /**
+   * Widens the last step, a view's, by `change`, made after it: a wheel
+   * burst's later notches are one step with its first (desktop view/d01).
+   * False, changing nothing, when the last step is not a view's.
+   */
+  widenView(change: ViewChangeCommand): boolean {
+    const last = this.undoStack.at(-1)
+    if (
+      last === undefined ||
+      !(last.command === null || last.command instanceof ViewChangeCommand)
+    ) {
+      return false
+    }
+    this.undoStack[this.undoStack.length - 1] = {
+      ...last,
+      command: last.command === null ? change : last.command.then(change),
+    }
+    this.redoStack = []
+    this.emit()
+    return true
+  }
+
+  /**
+   * Counts every change to the steps kept, so a caller can tell that none
+   * came since it last looked.
+   */
+  get revision(): number {
+    return this.changes
+  }
+
+  protected override emit(): void {
+    this.changes += 1
+    super.emit()
   }
 
   /** UNDO Mark: a place Back, U and UNDO's number stop at. */
@@ -517,6 +568,19 @@ export class CommandHistory extends Observable {
 function namesOf(entry: Entry): readonly string[] {
   if (entry.names.length > 0) return entry.names
   return entry.name === null ? [] : [entry.name]
+}
+
+/** Two joined ZOOMs' view changes, either of which may have left the view. */
+function joinViews(
+  below: Command | null,
+  above: Command | null
+): Command | null {
+  if (below === null) return above
+  if (above === null) return below
+  return below instanceof ViewChangeCommand &&
+    above instanceof ViewChangeCommand
+    ? below.then(above)
+    : new GroupCommand([below, above])
 }
 
 /** The commands of one group, done in order and undone in reverse. */

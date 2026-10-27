@@ -46,7 +46,7 @@ and
 `Requiere un punto o Ventana/úLTimo/…`, `Opción no válida.`). A transparent command — what AutoCAD
 2023's console runs so of what exists here: ZOOM, PAN, DIST, ID, LTSCALE, ATTDISP, ELEV, -OSNAP,
 COLOR / -COLOR, LINETYPE / -LINETYPE, LWEIGHT / -LWEIGHT, -VIEW, AUPREC, SNAP, UNITS, DIMSTYLE and
-STYLE, `'ZOOM`, `'Z`, `'PAN`, `'P` (es `'ENCUADRE`, `'E`) typed mid-command at the command line or
+STYLE, and 3DORBIT (AutoCAD 2027's desktop, view/d04), `'ZOOM`, `'Z`, `'PAN`, `'P` (es `'ENCUADRE`, `'E`) typed mid-command at the command line or
 in the tooltip — runs inside the running one as AutoCAD 2023's console runs it: its prompts headed
 `>>` (`>>Specify first corner:`), echoed as typed (`Specify next point or [Undo]: 'z 'ZOOM`), then
 `Resuming LINE command.` (es `Reanudando el comando LINEA.`) and the running command's question
@@ -317,7 +317,10 @@ only right after a U that took something back, writing the command's name
 (`LTSCALE Regenerating model.` while more is left to redo), then `Everything has been redone` once
 nothing is and `Regenerating model.` last; what ZOOM, PAN, -PAN, -VIEW, VPOINT, PLAN and 3DORBIT do
 to the view is part of their step, or an entry of the command a transparent ZOOM or -PAN ran in,
-which its Undo keyword takes back too (view/p358–p360);
+which its Undo keyword takes back too (view/p358–p360); the wheel, the wheel button and the ViewCube
+are steps of their own at the Command prompt (`INTELLIZOOM`, `INTELLIPAN`, `'.VIEWCUBEACTION`,
+`GROUP menu item`) and entries of the running command inside one (desktop view/d01, d02, d05;
+`workspace.md`, `view.md`);
 otherwise `REDO must immediately follow the U or UNDO command.`, or `Nothing to redo` once another
 command ran or nothing is left; UNDO says
 `Current settings: Auto = On, Control = All, Combine = Yes, Layer = Yes` and asks
@@ -376,7 +379,5 @@ writes; es from the table (`Ya se ha deshecho todo`, `Todo repetido`, `Nada que 
 **Missing:** what Auto joins (WHY: Auto makes one step of a menu macro's commands, and no menu here
 runs more than one), Combine
 and Layer from one session to the next (AutoCAD keeps them in the registry, as its console shows;
-here they last the session, as the running object snaps do); the mouse wheel and the wheel button's
-pan as undo steps (no command here or in AutoCAD; whether AutoCAD records them is **unverified**);
-what the top bar's buttons write (nothing here; AutoCAD's are the Quick Access Toolbar's own, not
+here they last the session, as the running object snaps do); what the top bar's buttons write (nothing here; AutoCAD's are the Quick Access Toolbar's own, not
 macros); Ctrl+Shift+Z still redoes, silently, though AutoCAD binds nothing to it

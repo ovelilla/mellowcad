@@ -1,13 +1,21 @@
 import { Vec2 } from "../geometry/Vec2"
-import { Vec3, WORLD_Z, cross3, normalize3 } from "../geometry/Vec3"
+import {
+  Vec3,
+  WORLD_Z,
+  add3,
+  cross3,
+  length3,
+  normalize3,
+  scale3,
+  sub3,
+} from "../geometry/Vec3"
 import { worldToAxes } from "../geometry/ocs"
 import { CadDocument } from "../domain/Document"
 import { Entity } from "../domain/entities"
 import { SavedView } from "../domain/units"
 import { Selection } from "./Selection"
 import { Viewport } from "./Viewport"
-import { drawingMiddle, orbitTarget, orbitView } from "./orbit"
-import { fitExtents } from "./tools/viewPresets"
+import { drawingBox, drawingMiddle, orbitTarget, orbitView } from "./orbit"
 import {
   CompassLetter,
   CubeCamera,
@@ -22,7 +30,6 @@ import {
   compassView,
   cubeAxes,
   isFace,
-  nearestPart,
   partAt,
   partView,
   rolledView,
@@ -74,25 +81,43 @@ function selectedEntities(ctx: CubeContext): Entity[] {
     .filter((entity): entity is Entity => entity !== undefined)
 }
 
-/** One step of ZOOM Previous, the view, then the extents when the click asks for them. */
-function show(ctx: CubeContext, view: CubeView, fit: boolean): void {
+/** One step of ZOOM Previous, the view, then the fit every click makes. */
+function show(ctx: CubeContext, view: CubeView): void {
   ctx.viewport.pushHistory()
   if (!cubeViewport(ctx).setView(view.direction, view.right)) return
-  if (fit) fitExtents(ctx.viewport, framed(ctx), ctx.document.blockLookup())
+  fitSphere(ctx)
+}
+
+/**
+ * Frames the sphere round the 3D box of what the cube frames, its diameter
+ * the box's diagonal, across the view's smaller side and centred on it:
+ * Front, Top, Home and S all leave VIEWSIZE the diagonal of the extents' box
+ * (desktop view/d05, VIEW-D65). Nothing drawn leaves the zoom.
+ */
+function fitSphere(ctx: CubeContext): void {
+  const box = drawingBox(framed(ctx), ctx.document.blockLookup())
+  if (!box) return
+  const { viewport } = ctx
+  const radius = length3(sub3(box.max, box.min)) / 2
+  const center = viewport.worldToView(scale3(add3(box.min, box.max), 0.5))
+  viewport.zoomToViewBounds(
+    { x: center.x - radius, y: center.y - radius },
+    { x: center.x + radius, y: center.y + radius }
+  )
 }
 
 /** A click on a face, an edge or a corner: its view, fitted. The UCS stays (D10). */
 export function pickPart(ctx: CubeContext, part: ViewCubePart): void {
   const view = partView(part)
-  if (view) show(ctx, view, true)
+  if (view) show(ctx, view)
 }
 
-/** A roll arrow: a quarter turn about the centre of a face view. */
+/** A roll arrow: a quarter turn about the centre of a face view, fitted (d05). */
 export function rollCube(ctx: CubeContext, turn: ViewCubeRoll): void {
   const camera = cameraOf(cubeViewport(ctx))
   const part = partAt(camera.direction)
   if (part === null || !isFace(part)) return
-  show(ctx, rolledView(camera, turn), false)
+  show(ctx, rolledView(camera, turn))
 }
 
 /** A triangle: the neighbouring face, fitted. Only from a face view. */
@@ -100,14 +125,13 @@ export function turnToAdjacent(ctx: CubeContext, side: ViewCubeSide): void {
   const camera = cameraOf(cubeViewport(ctx))
   const part = partAt(camera.direction)
   if (part === null || !isFace(part)) return
-  show(ctx, adjacentView(camera, side), true)
+  show(ctx, adjacentView(camera, side))
 }
 
-/** A letter of the compass: the view from that side, fitted. */
+/** A letter of the compass: the level view from that side, fitted. */
 export function pickCompass(ctx: CubeContext, letter: CompassLetter): void {
-  const view = cubeViewport(ctx)
   const north = compassNorth(cubeAxes(ctx.document.getSettings().ucs))
-  show(ctx, compassView(cameraOf(view), letter, north), true)
+  show(ctx, compassView(letter, north))
 }
 
 /** Home: the drawing's Home view, in the WCS, fitted. */
@@ -117,7 +141,7 @@ export function goHome(ctx: CubeContext): void {
   if (!ctx.viewport.setView(home.direction, cross3(home.up, home.direction))) {
     return
   }
-  fitExtents(ctx.viewport, framed(ctx), ctx.document.blockLookup())
+  fitSphere(ctx)
 }
 
 /** Set Current View as Home: its orientation, saved in the drawing (no undo step). */
@@ -151,7 +175,11 @@ export function startCubeDrag(
   }
 }
 
-/** The orbit 3DORBIT does, with the cube's Z kept up; the ring turns the azimuth only. */
+/**
+ * The orbit 3DORBIT does, with the cube's Z kept up; the ring turns the
+ * azimuth only. WHY no landing on the nearest view when let go: AutoCAD's
+ * stays 1.7° and 6.6° off Top (desktop view/d05, VIEW-D67).
+ */
 export function moveCubeDrag(
   ctx: CubeContext,
   drag: CubeDrag,
@@ -170,16 +198,6 @@ export function moveCubeDrag(
 function keepPivot(view: Viewport, drag: CubeDrag): void {
   const now = view.worldToScreen(drag.target)
   view.panByScreen({ x: drag.at.x - now.x, y: drag.at.y - now.y })
-}
-
-/** Letting go of the cube near one of its 26 views lands on it ("Snap to closest view"). */
-export function endCubeDrag(ctx: CubeContext, drag: CubeDrag): void {
-  if (drag.ring) return
-  const view = cubeViewport(ctx)
-  const part = nearestPart(view.direction)
-  const snapped = part === null ? null : partView(part)
-  if (!snapped || partAt(view.direction) === part) return
-  if (view.setView(snapped.direction, snapped.right)) keepPivot(view, drag)
 }
 
 /** The ViewCube as the current camera and UCS show it. */

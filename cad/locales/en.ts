@@ -2422,6 +2422,16 @@ export const en: EngineCatalog = {
       "startOfGroup": "Start of Group encountered.\nMust enter UNDO END to go back further.",
       "undoGroup": "GROUP",
       "dropGeometryStep": "DROPGEOM GROUP",
+      "menuStep": [
+        [
+          "command"
+        ],
+        " GROUP"
+      ],
+      "menuItemStep": "GROUP menu item",
+      "intelliZoomStep": "INTELLIZOOM",
+      "intelliPanStep": "INTELLIPAN",
+      "viewCubeStep": "'.VIEWCUBEACTION",
       "layerManagerStep": "'.-LAYER",
       "changePropertiesStep": "CHPROP",
       "modifyPropertyStep": "Modify Property",

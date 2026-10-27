@@ -193,8 +193,8 @@ layer.
   that changes nothing.
 - **The view is undone with the command that changed it.** A tool that changes the view says
   `changesView`: the runtime, never the tool, puts the change into the step (`ViewChangeCommand`);
-  a run leaving the view is a step too (view/p364). The wheel, the wheel button's pan and the
-  ViewCube are no command and stay out.
+  a run leaving the view is a step too (view/p364). So are the wheel, the wheel button and the
+  ViewCube (`viewGesture`).
 - A tool offering its own **Undo keyword** counts its own edits and refuses when there are none
   (SPLINE's at one point does nothing, spline/p125; TRIM's says all undone after any answer,
   trim/p380, DIMBASELINE's too, dimensions/p213; TEXTEDIT's also as it undoes the last,

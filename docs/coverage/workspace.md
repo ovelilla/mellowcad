@@ -161,14 +161,27 @@ apart, in task pages, and the order is the product's)
 
 ### Wheel and wheel button
 
-**Implemented:** the wheel zooms about the cursor, forward to zoom in (ZOOMWHEEL 0), a burst of it
-one ZOOM Previous step; the wheel button held pans (MBUTTONPAN 1, "panning when you hold and drag
-the button or wheel"), one step per drag (none for a click that never moved the view), and with
-Shift orbits (the transparent 3DORBIT); a double-click of it is ZOOM Extents ("Double-click the
-wheel button"), inside a command too, one ZOOM Previous step — WHY two clicks within 500 ms: a
-browser fires `dblclick` for the primary button only and does not tell the system's double-click
-time, so Windows' default stands in; the right button no longer pans
+**Implemented:** the wheel zooms about the cursor, forward to zoom in (ZOOMWHEEL 0), 1.5978× a
+notch (ZOOMFACTOR's 60: VIEWSIZE 120 → 75.102 in, → 191.944 out, desktop view/d01), in proportion
+to the wheel's `deltaY` — a notch is 100 px, the adapter turning lines (100/3 px) and pages (the
+view's height) into pixels, so a trackpad's small events zoom little (VIEW-D60); a burst of it
+(notches under a second apart: 940 ms join, 1000 ms part, d01, VIEW-D61) is one ZOOM Previous step
+and one undo step U names `INTELLIZOOM`; the wheel button held pans (MBUTTONPAN 1, "panning when you
+hold and drag the button or wheel"), one ZOOM Previous step and one undo step `INTELLIPAN` per
+press, a click that never moved the view too (d02), and with Shift orbits (the transparent
+3DORBIT), saying ` Regenerating model.` on release, a step U names `GROUP menu item Regenerating
+model.` (es `GRUPO menu item Regenerando modelo.`, d02, e01) that regenerates on U and REDO always
+(VIEW-D62); a double-click of it is ZOOM Extents ("Double-click the wheel button") run as
+AutoCAD's mouse macro: `'_.zoom`, ZOOM's first prompt answered `_e`, transparently inside a
+command, a step U names `'.ZOOM` (d02) — WHY two clicks within 500 ms: a browser fires `dblclick`
+for the primary button only and does not tell the system's double-click time, so Windows' default
+stands in; at the Command prompt each step is its own, joined with the typed ZOOMs and PANs and
+with one another as consecutive ZOOMs are (`INTELLIZOOM INTELLIZOOM`, `INTELLIZOOM ZOOM ZOOM`,
+`INTELLIPAN ZOOM INTELLIPAN ZOOM INTELLIZOOM ZOOM`, `'.ZOOM INTELLIPAN`; the LINE before them stays,
+es the same names, d01, d02, e01), none echoed; inside a command an entry of its step, which its
+Undo takes back with the segment before it (d01; in a command that changes the view itself, that
+command's step); the right button no longer pans
 
-**Missing:** ZOOMFACTOR (60: "each increment in the wheel rotation changes the zoom level by 60
-percent"; a notch is 10 % here, **unverified** what AutoCAD's 60 makes of one), Ctrl and the wheel
-button (joystick pan), MBUTTONPAN 0
+**Missing:** ZOOMFACTOR as a variable (its default, 60, is built), Ctrl and the wheel button
+(joystick pan), MBUTTONPAN 0; whether the Shift orbit inside a command says
+`Resuming LINE command.` as the ViewCube does (not probed: here only ` Regenerating model.`)

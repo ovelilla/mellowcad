@@ -121,7 +121,6 @@ import {
 import {
   CubeContext,
   CubeDrag,
-  endCubeDrag,
   goHome,
   homeFromView,
   moveCubeDrag,
@@ -235,6 +234,7 @@ export interface PointerEventData {
 
 export interface WheelEventData {
   readonly screen: Vec2
+  /** How far the wheel turned, in pixels: a notch is 100 (see {@link WHEEL_NOTCH_FACTOR}). */
   readonly deltaY: number
 }
 
@@ -260,8 +260,23 @@ export interface CadRuntimeOptions {
   readonly paletteOpen?: boolean
 }
 
-/** Wheel events closer together than this belong to the same zoom gesture. */
-const WHEEL_BURST_MS = 400
+/**
+ * Wheel events closer together than this belong to the same zoom gesture:
+ * notches 940 ms apart are one ZOOM Previous step and one undo step, 1000 ms
+ * apart two (desktop view/d01, VIEW-D61).
+ */
+const WHEEL_BURST_MS = 1000
+
+/**
+ * What a notch of the wheel zooms, per {@link WHEEL_NOTCH_PX} of `deltaY`:
+ * AutoCAD's VIEWSIZE goes 120 → 75.102 in and → 191.944 out at ZOOMFACTOR's
+ * 60 (desktop view/d01). WHY by the pixel: a trackpad's many small events
+ * then zoom in proportion (VIEW-D60).
+ */
+const WHEEL_NOTCH_FACTOR = 1.5978
+
+/** A notch of the wheel in a Windows browser's `deltaY`. */
+const WHEEL_NOTCH_PX = 100
 
 /** Movement past this (screen px) makes a press a drag rather than a click. */
 const DRAG_THRESHOLD_PX = 4
@@ -399,9 +414,12 @@ export class CadRuntime extends Observable {
    * command says so itself (acc/h2, h3).
    */
   private startSteps = true
-  /** Whether the running tool is a ZOOM typed, which UNDO Combine joins. */
+  /** Whether the running tool is a ZOOM or PAN typed, which UNDO Combine joins. */
   private typedZoom = false
-  /** Whether the last step is a typed ZOOM's, which the next one joins. */
+  /**
+   * Whether the last step is a typed ZOOM's or PAN's or a wheel's, which the
+   * next one joins.
+   */
   private zoomCombines = false
   /** Set while the navigation bar starts its command. */
   private navigating = false
@@ -520,12 +538,18 @@ export class CadRuntime extends Observable {
   private lastPanScreen: Vec2 | null = null
   /** Whether this drag of the wheel button has taken its ZOOM Previous step. */
   private panPushed = false
+  /** The view as the wheel button's press found it, which its step takes back. */
+  private panBefore: ViewState | null = null
   /** The last click of the wheel button, which a second one makes a double. */
   private lastWheelButtonClick: { at: Vec2; time: number } | null = null
   /** A transparent orbit under way (Shift + the wheel button held). */
-  private orbiting: { last: Vec2; target: Vec3 } | null = null
-  /** A drag on the ViewCube or its compass ring under way. */
-  private cubeDrag: CubeDrag | null = null
+  private orbiting: {
+    readonly last: Vec2
+    readonly target: Vec3
+    readonly before: ViewState
+  } | null = null
+  /** A drag on the ViewCube or its compass ring under way, and the view it started from. */
+  private cubeDrag: { drag: CubeDrag; before: ViewState } | null = null
   /** The ViewCube as last projected, kept until the camera's axes or the UCS change. */
   private viewCubeCache: {
     readonly direction: Vec3
@@ -534,8 +558,12 @@ export class CadRuntime extends Observable {
     readonly ucs: Ucs
     readonly ui: ViewCubeUi
   } | null = null
-  /** When the last wheel event arrived, to group a scroll burst as one view. */
-  private lastWheelAt = 0
+  /**
+   * When the last wheel event arrived, to group a scroll burst as one view,
+   * and the history as its step left it, which the next notch widens; null
+   * when that notch made no step of its own.
+   */
+  private wheelBurst: { at: number; revision: number | null } | null = null
 
   // Where to pop the object-snap override menu (screen coords), or null when it
   // is closed. Opened with Shift+right-click during a point prompt.
@@ -682,6 +710,10 @@ export class CadRuntime extends Observable {
       },
       runsTransparently: () => this.suspended !== null,
       regenerate: (how) => {
+        if (how === "view") {
+          this.regenerateView()
+          return
+        }
         // WHY not for a view command: its step regenerates on U and REDO only
         // when its line of sight turned, whatever the run said (recordView).
         if (how !== "once" && !this.activeTool.changesView) {
@@ -1050,13 +1082,20 @@ export class CadRuntime extends Observable {
    * so, else the command itself, echoed as the macro is.
    */
   private runTransparentMacro(command: string): void {
-    const typed = `'_${command}`
     const echo = `'_${command.toLowerCase()}`
-    const started =
-      this.activeTool.id === "select"
-        ? this.runCommandAs(typed, { echo })
-        : this.runTransparently(typed, false, echo)
-    if (started) this.host.focusSurface()
+    if (this.runMacro(command, { echo })) this.host.focusSurface()
+  }
+
+  /**
+   * A macro that starts `'_command`: inside the running command as if typed
+   * so — whatever its prompt takes, as a macro types no text there — and the
+   * command itself at the Command prompt. Whether it started.
+   */
+  private runMacro(command: string, macro: Macro = {}): boolean {
+    const typed = `'_${command}`
+    return this.activeTool.id === "select"
+      ? this.runCommandAs(typed, macro)
+      : this.runTransparently(typed, false, macro.echo)
   }
 
   /**
@@ -1108,8 +1147,8 @@ export class CadRuntime extends Observable {
     }
     // A command is one undo step, closed only once its tool has committed
     // what it holds on deactivation, with what it did to the view.
-    const zoom =
-      this.activeTool.id !== "select" && this.recordView() && this.typedZoom
+    if (this.activeTool.id !== "select") this.recordView()
+    const zoom = this.activeTool.id !== "select" && this.typedZoom
     this.history.endGroup(zoom ? { withLast: this.zoomCombines } : undefined)
     if (this.typedZoom) this.zoomCombines = zoom
     this.history.nameCommand(next.id === "select" ? null : this.startingName)
@@ -1119,6 +1158,7 @@ export class CadRuntime extends Observable {
     this.answerPrefix = null
     this.commandStart = this.echoMark ?? this.commandLine.mark()
     this.activeTool = next
+    this.toolCursor = null
     this.startedAs = this.starting
     // A run that changes nothing is a step too (move/p07), a view left where
     // it was included (view/p364–p369), but for the undo commands' own.
@@ -1132,8 +1172,10 @@ export class CadRuntime extends Observable {
       this.commandStarts(TOOL_COMMANDS[next.id] ?? next.id)
     }
     this.viewBefore = next.changesView ? this.viewport.saveView() : null
-    // Menu-started zooms are never combined (UNDO's help).
-    this.typedZoom = next.id === "zoom" && !this.navigating
+    // Menu-started zooms and pans are never combined (UNDO's help, desktop
+    // view/d03, d07).
+    this.typedZoom =
+      (next.id === "zoom" || next.id === "pan") && !this.navigating
     next.onActivate?.(this.toolContext)
     this.replayRestingPointer()
     this.invalidateState()
@@ -2312,10 +2354,7 @@ export class CadRuntime extends Observable {
    * Runs a command as {@link runCommand}, or as a menu or key macro runs it
    * (`macro`): echoed as given, when given.
    */
-  private runCommandAs(
-    text: string,
-    macro: { readonly echo?: string } | null
-  ): boolean {
+  private runCommandAs(text: string, macro: Macro | null): boolean {
     const typed = text.trim()
     if (bareCommand(typed) === "") return false
     const named = this.commandNamed(typed)
@@ -2363,10 +2402,11 @@ export class CadRuntime extends Observable {
       typed.startsWith("'") && !variable
         ? this.text.transparentCommand(name)
         : name
-    this.startingName = said
+    const step = macro?.step?.(said) ?? said
+    this.startingName = step
     this.commandStarts(command.id)
     // One run in place makes its steps here; a tool's, once it starts.
-    if (this.activeTool.id === "select") this.history.nameCommand(said)
+    if (this.activeTool.id === "select") this.history.nameCommand(step)
     // WHY: a name typed whole echoes nothing more, and AutoCAD counts a
     // preselection on the next line; an alias's expansion or a macro's echo
     // takes it (desktop erase/d11).
@@ -2395,7 +2435,7 @@ export class CadRuntime extends Observable {
     if (UNDO_COMMANDS.has(command)) return
     this.undoing = null
     this.history.dropRedo()
-    if (command !== "ZOOM") this.zoomCombines = false
+    if (command !== "ZOOM" && command !== "PAN") this.zoomCombines = false
   }
 
   /** Repeats the last command, AutoCAD's Enter/Space at the neutral prompt. */
@@ -2406,56 +2446,58 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * A preset view chosen from the view menu, run the way AutoCAD's own menus
-   * run it (`_-VIEW _SWISO`): echoed at the prompt, fitting the extents, and an
-   * orthographic one aligning the UCS (UCSORTHO).
+   * A preset view chosen from the viewport controls, run as AutoCAD's menu
+   * runs it (`'_-view _swiso`, desktop view/d06): echoed at the prompt,
+   * fitting the extents, and an orthographic one aligning the UCS
+   * (UCSORTHO); U names it `'-VIEW`.
    */
   applyViewPreset(preset: ViewPreset): boolean {
-    return this.runCommand("_-VIEW") && this.invokeToolOption(`_${preset}`)
+    return (
+      this.runMacro("-VIEW", { echo: "'_-view" }) &&
+      this.invokeToolOption(`_${preset.toLowerCase()}`)
+    )
   }
 
   /**
-   * The navigation bar's Pan or Zoom Window, which run AutoCAD's macros
-   * `'_pan` and `'_zoom _w`: inside the running command as if typed with the
-   * apostrophe — whatever its prompt takes, as a button types no text there —
-   * and as the command itself at the Command prompt.
+   * The navigation bar's Pan, Zoom members and Orbit, which run AutoCAD's
+   * macros (`'_pan`, `'_zoom _w`, `'_zoom 2x`, `'_3dorbit`): `command`, then
+   * `answer` typed at its first prompt as the macro types it. A step U names
+   * as a menu's, `'ZOOM GROUP`, never joined (desktop view/d07).
    */
-  navigate(command: "PAN" | "ZOOM", option?: string): boolean {
-    const typed = `'_${command}`
+  navigate(command: "PAN" | "ZOOM" | "3DORBIT", answer?: string): boolean {
     this.navigating = true
     let started: boolean
     try {
-      started =
-        this.activeTool.id === "select"
-          ? this.runCommand(typed)
-          : this.runTransparently(typed, false)
+      started = this.runMacro(command, {
+        step: (said) => this.text.message("menuStep", { command: said }),
+      })
     } finally {
       this.navigating = false
     }
-    if (started) this.host.focusSurface()
-    return (
-      started && (option === undefined || this.invokeToolOption(`_${option}`))
-    )
+    if (!started) return false
+    this.host.focusSurface()
+    if (answer !== undefined) this.submitText(answer)
+    return true
   }
 
   /** A click on a face, an edge or a corner of the ViewCube. */
   viewCubePick(part: ViewCubePart): void {
-    pickPart(this.cubeContext, part)
+    this.cubeAction(() => pickPart(this.cubeContext, part))
   }
 
   /** A roll arrow of the ViewCube, offered in a face view. */
   viewCubeRoll(turn: ViewCubeRoll): void {
-    rollCube(this.cubeContext, turn)
+    this.cubeAction(() => rollCube(this.cubeContext, turn))
   }
 
   /** A triangle of the ViewCube: the face next to the one viewed. */
   viewCubeAdjacent(side: ViewCubeSide): void {
-    turnToAdjacent(this.cubeContext, side)
+    this.cubeAction(() => turnToAdjacent(this.cubeContext, side))
   }
 
   /** The ViewCube's Home button (and its menu's Home). */
   viewCubeHome(): void {
-    goHome(this.cubeContext)
+    this.cubeAction(() => goHome(this.cubeContext))
   }
 
   /** The ViewCube menu's Set Current View as Home. */
@@ -2465,13 +2507,13 @@ export class CadRuntime extends Observable {
 
   /** A letter of the ViewCube's compass. */
   compassPick(letter: CompassLetter): void {
-    pickCompass(this.cubeContext, letter)
+    this.cubeAction(() => pickCompass(this.cubeContext, letter))
   }
 
   /**
-   * A drag on the ViewCube (an orbit, snapping to the nearest of its views
-   * when let go) or, with `ring`, on its compass (the azimuth alone). One
-   * step of ZOOM Previous for the whole drag.
+   * A drag on the ViewCube (an orbit) or, with `ring`, on its compass (the
+   * azimuth alone). One step of ZOOM Previous and one undo step for the whole
+   * drag (VIEW-D64).
    */
   viewCubeDrag(
     phase: "start" | "move" | "end",
@@ -2479,15 +2521,43 @@ export class CadRuntime extends Observable {
     ring = false
   ): void {
     if (phase === "start") {
-      this.cubeDrag = startCubeDrag(this.cubeContext, screen, ring)
+      const before = this.viewport.saveView()
+      this.cubeDrag = {
+        drag: startCubeDrag(this.cubeContext, screen, ring),
+        before,
+      }
       return
     }
     if (!this.cubeDrag) return
-    this.cubeDrag = moveCubeDrag(this.cubeContext, this.cubeDrag, screen)
-    if (phase === "end") {
-      endCubeDrag(this.cubeContext, this.cubeDrag)
-      this.cubeDrag = null
+    const { before } = this.cubeDrag
+    this.cubeDrag = {
+      drag: moveCubeDrag(this.cubeContext, this.cubeDrag.drag, screen),
+      before,
     }
+    if (phase === "end") {
+      this.cubeDrag = null
+      this.cubeStep(before)
+    }
+  }
+
+  /** One action of the ViewCube's, a step of its own. */
+  private cubeAction(act: () => void): void {
+    const before = this.viewport.saveView()
+    act()
+    this.cubeStep(before)
+  }
+
+  /**
+   * What a ViewCube action leaves since `before`: ` Regenerating model.` and
+   * a step U names `'.VIEWCUBEACTION`, joined with nothing; inside a command
+   * it resumes it, an entry of its step (desktop view/d05, VIEW-D64).
+   */
+  private cubeStep(before: ViewState): void {
+    this.viewGesture(before, {
+      name: this.text.message("viewCubeStep"),
+      regenerates: true,
+      resumes: true,
+    })
   }
 
   /** NAVVCUBE: shows or hides the ViewCube; saved in the drawing, never undone. */
@@ -2747,23 +2817,15 @@ export class CadRuntime extends Observable {
    * from when a tool that changes it started (ZOOM, PAN, -PAN, -VIEW,
    * VPOINT, PLAN, 3DORBIT, typed or transparent), unless the view and ZOOM
    * Previous's list are where they were: the run is a step all the same.
-   * The wheel, the ViewCube and the navigation bar's direct zooms are no
-   * command, and stay out of it. Returns whether it did.
+   * The wheel, the wheel button and the ViewCube make steps of their own
+   * ({@link viewGesture}). Returns whether it did.
    */
   private recordView(): boolean {
     const before = this.viewBefore
     this.viewBefore = null
     if (before === null) return false
     const after = this.viewport.saveView()
-    if (
-      sameCamera(before.camera, after.camera) &&
-      before.previous.length === after.previous.length &&
-      before.previous.every((camera, i) =>
-        sameCamera(camera, after.previous[i])
-      )
-    ) {
-      return false
-    }
+    if (sameView(before, after)) return false
     const change = new ViewChangeCommand(this.viewport, before, after)
     // WHY: U and REDO of a view step say `Regenerating model.` only when its
     // line of sight turned: never after a ZOOM, nor after PLAN in plan or
@@ -2772,6 +2834,55 @@ export class CadRuntime extends Observable {
     if (change.turns()) this.history.markRegenerated()
     this.history.execute(change)
     return true
+  }
+
+  /**
+   * The undo step of a view gesture made since `before` — a wheel burst, the
+   * wheel button, the ViewCube —, which AutoCAD 2027 records as a command
+   * (desktop view/d01, d02, d05): at the Command prompt a step of its own,
+   * named, joined as typed ZOOMs are when it `combines`; inside a command an
+   * entry of its step, which its Undo takes back with the segment before it
+   * (as a transparent ZOOM's, VIEW-D43), or none where the running command
+   * changes the view itself and takes it in its own. Whether it made one.
+   */
+  private viewGesture(before: ViewState, gesture: ViewGesture): boolean {
+    const after = this.viewport.saveView()
+    if (sameView(before, after)) return false
+    const change = new ViewChangeCommand(this.viewport, before, after)
+    if (this.activeTool.id !== "select") {
+      if (gesture.regenerates) this.regenerateView()
+      const recorded = this.viewBefore === null
+      if (recorded) this.history.execute(change)
+      if (gesture.resumes) {
+        this.writeResuming()
+        this.activeTool.onAskAgain?.(this.toolContext)
+      }
+      return recorded
+    }
+    this.undoing = null
+    this.history.beginGroup()
+    this.history.nameCommand(gesture.name)
+    try {
+      if (gesture.regenerates) this.regenerateView()
+      this.history.execute(change)
+      this.history.endGroup(
+        gesture.combines ? { withLast: this.zoomCombines } : undefined
+      )
+    } finally {
+      this.history.nameCommand(null)
+    }
+    this.zoomCombines = gesture.combines === true
+    return true
+  }
+
+  /**
+   * A view's own regeneration (3DORBIT's, the ViewCube's): `Regenerating
+   * model.` at once, inside another command too, and on U and REDO whether
+   * its line of sight turned or not (desktop view/d04, d05, VIEW-D62).
+   */
+  private regenerateView(): void {
+    this.history.markRegenerated()
+    this.commandLine.write("info", this.text.message("regeneratingModel"))
   }
 
   /** Whether the last undo already said `Everything has been undone`. */
@@ -5132,8 +5243,10 @@ export class CadRuntime extends Observable {
     // Shift and the wheel button held orbit the view from inside any command,
     // AutoCAD's transparent 3DORBIT; the wheel button alone pans.
     if (e.button === 1 && e.shiftKey) {
+      const before = this.viewport.saveView()
       this.viewport.pushHistory()
       this.orbiting = {
+        before,
         last: e.screen,
         target: orbitTarget(
           this.viewport,
@@ -5150,6 +5263,7 @@ export class CadRuntime extends Observable {
     // the button or wheel").
     if (e.button === 1) {
       this.panning = true
+      this.panBefore = this.viewport.saveView()
       this.panFrom = e.screen
       this.lastPanScreen = e.screen
       this.crosshairScreen = null // native grab cursor takes over while panning
@@ -5233,8 +5347,8 @@ export class CadRuntime extends Observable {
         y: e.screen.y - this.lastPanScreen.y,
       }
       if (delta.x === 0 && delta.y === 0) return
-      // One ZOOM Previous step per drag, taken when the view first moves: a
-      // click of the wheel button that never moved it leaves none.
+      // One ZOOM Previous step per drag, taken when the view first moves (a
+      // click takes its own as it is let go).
       if (!this.panPushed) {
         this.viewport.pushHistory()
         this.panPushed = true
@@ -5274,24 +5388,44 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * A click of the wheel button; a second one close by is ZOOM Extents
-   * ("Double-click the wheel button"), in any command, as AutoCAD's is.
+   * Gives the running tool its cursor back after the wheel button: the
+   * crosshair, or the one a view tool set (PAN's hand). WHY not its
+   * `onActivate`: that starts it again, and PAN and 3DORBIT write their words
+   * once (view/p200, p329).
    */
-  private wheelButtonClick(screen: Vec2): void {
+  private restoreToolCursor(): void {
+    const crosshair = this.activeTool.usesCrosshair?.() ?? true
+    this.host.setCursor(crosshair ? "none" : (this.toolCursor ?? "default"))
+  }
+
+  /**
+   * Whether a click of the wheel button is the second of a double-click,
+   * which is ZOOM Extents ("Double-click the wheel button") in any command,
+   * as AutoCAD's mouse macro runs it: `'_.zoom` answered `_e`, a step U
+   * names `'.ZOOM`, joined as a typed ZOOM (desktop view/d02).
+   */
+  private wheelButtonDouble(screen: Vec2): boolean {
     const now = Date.now()
     const last = this.lastWheelButtonClick
     if (
-      last !== null &&
-      now - last.time <= DOUBLE_CLICK_MS &&
-      Math.hypot(screen.x - last.at.x, screen.y - last.at.y) < DRAG_THRESHOLD_PX
+      last === null ||
+      now - last.time > DOUBLE_CLICK_MS ||
+      Math.hypot(screen.x - last.at.x, screen.y - last.at.y) >=
+        DRAG_THRESHOLD_PX
     ) {
-      this.lastWheelButtonClick = null
-      this.zoomToFit()
-      this.updateSnap(screen)
-      this.host.requestRender()
-      return
+      this.lastWheelButtonClick = { at: screen, time: now }
+      return false
     }
-    this.lastWheelButtonClick = { at: screen, time: now }
+    this.lastWheelButtonClick = null
+    const dotted = this.text.transparentCommand(
+      `.${this.text.commandNames("ZOOM")[0]}`
+    )
+    if (this.runMacro("ZOOM", { echo: "'_.zoom", step: () => dotted })) {
+      this.submitText("_e")
+    }
+    this.updateSnap(screen)
+    this.host.requestRender()
+    return true
   }
 
   /**
@@ -5313,21 +5447,40 @@ export class CadRuntime extends Observable {
 
   pointerUp(e: PointerEventData): void {
     if (this.orbiting && e.button === 1) {
+      const { before } = this.orbiting
       this.orbiting = null
-      this.activeTool.onActivate?.(this.toolContext) // restore tool cursor
+      this.restoreToolCursor()
+      // Desktop view/d02, e01: ` Regenerating model.` on release, and a step
+      // U names `GROUP menu item Regenerating model.`.
+      this.viewGesture(before, {
+        name: this.text.message("menuItemStep"),
+        regenerates: true,
+      })
       return
     }
     if (this.panning && e.button === 1) {
       const from = this.panFrom
+      const before = this.panBefore
+      const pushed = this.panPushed
       this.panning = false
       this.panFrom = null
+      this.panBefore = null
       this.lastPanScreen = null
       this.panPushed = false
-      this.activeTool.onActivate?.(this.toolContext) // restore tool cursor
+      this.restoreToolCursor()
       const moved = from
         ? Math.hypot(e.screen.x - from.x, e.screen.y - from.y)
         : Infinity
-      if (moved < DRAG_THRESHOLD_PX) this.wheelButtonClick(e.screen)
+      if (moved < DRAG_THRESHOLD_PX && this.wheelButtonDouble(e.screen)) return
+      // WHY a click that never moved the view is a step too, with its ZOOM
+      // Previous step (desktop view/d02).
+      if (!pushed) this.viewport.pushHistory()
+      if (before !== null) {
+        this.viewGesture(before, {
+          name: this.text.message("intelliPanStep"),
+          combines: true,
+        })
+      }
       return
     }
     if (e.button === 2) {
@@ -5425,13 +5578,33 @@ export class CadRuntime extends Observable {
 
   wheel(e: WheelEventData): void {
     // One continuous scroll is one gesture, so ZOOM Previous steps back to
-    // where the scrolling started rather than one notch at a time.
+    // where the scrolling started rather than one notch at a time, and U
+    // takes it back whole as one INTELLIZOOM (desktop view/d01).
     const now = Date.now()
-    if (now - this.lastWheelAt > WHEEL_BURST_MS) this.viewport.pushHistory()
-    this.lastWheelAt = now
-
-    const factor = e.deltaY < 0 ? 1.1 : 1 / 1.1
-    this.viewport.zoomAt(e.screen, factor)
+    const burst = this.wheelBurst
+    const continues = burst !== null && now - burst.at < WHEEL_BURST_MS
+    const before = this.viewport.saveView()
+    if (!continues) this.viewport.pushHistory()
+    this.viewport.zoomAt(
+      e.screen,
+      WHEEL_NOTCH_FACTOR ** (-e.deltaY / WHEEL_NOTCH_PX)
+    )
+    const widened =
+      continues &&
+      burst.revision === this.history.revision &&
+      this.history.widenView(
+        new ViewChangeCommand(this.viewport, before, this.viewport.saveView())
+      )
+    const recorded =
+      widened ||
+      this.viewGesture(before, {
+        name: this.text.message("intelliZoomStep"),
+        combines: true,
+      })
+    this.wheelBurst = {
+      at: now,
+      revision: recorded ? this.history.revision : null,
+    }
     this.updateSnap(e.screen)
     this.host.requestRender()
   }
@@ -6419,6 +6592,36 @@ export class CadRuntime extends Observable {
       names: this.text.names(),
     }
   }
+}
+
+/**
+ * How a menu or mouse macro runs its command: echoed as given, and the undo
+ * step named from the name U would give it.
+ */
+interface Macro {
+  readonly echo?: string
+  readonly step?: (said: string) => string
+}
+
+/** How a view gesture's undo step is made ({@link CadRuntime.viewGesture}). */
+interface ViewGesture {
+  /** What U names it at the Command prompt. */
+  readonly name: string
+  /** Whether it joins the typed ZOOMs and PANs and wheel steps round it. */
+  readonly combines?: boolean
+  /** Whether it says `Regenerating model.`, as its U and REDO do. */
+  readonly regenerates?: boolean
+  /** Whether a command it ran inside resumes, saying so. */
+  readonly resumes?: boolean
+}
+
+/** Whether two views, ZOOM Previous's lists with them, are the same. */
+function sameView(a: ViewState, b: ViewState): boolean {
+  return (
+    sameCamera(a.camera, b.camera) &&
+    a.previous.length === b.previous.length &&
+    a.previous.every((camera, i) => sameCamera(camera, b.previous[i]))
+  )
 }
 
 /** A command as typed, without the apostrophe that asks for it transparently. */

@@ -6,11 +6,13 @@ import { useTranslations } from "next-intl"
 
 import { VIEW_MENU, type CadEngine } from "@/cad"
 import type { EditorState } from "@/hooks/useCadEngine"
+import { cn } from "@/lib/utils"
 
 /**
  * The viewport controls at the drawing's top left (VPCONTROL 1), of which
  * only the view control exists: `[Top]`, naming the view the engine says the
- * camera shows, opens the preset views and runs the one chosen.
+ * camera shows, opens the preset views and runs the one chosen as AutoCAD's
+ * `'_-view _swiso`.
  */
 export function ViewportControls({
   engine,
@@ -23,6 +25,9 @@ export function ViewportControls({
   const names = state.names.views
   const current = state.view.preset
   const name = names[current ?? "custom"]
+  // WHY: while a command runs AutoCAD's label does not answer, and the click
+  // is the command's point (desktop view/d06, VIEW-D66).
+  const running = state.commandLine.command !== null
 
   return (
     <Menu.Root>
@@ -30,7 +35,10 @@ export function ViewportControls({
           not words. */}
       <Menu.Trigger
         aria-label={t("view", { name })}
-        className="pointer-events-auto rounded-sm px-1 py-0.5 text-muted-foreground outline-none select-none before:content-['['] after:content-[']'] hover:bg-card/60 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-popup-open:bg-card/60 data-popup-open:text-foreground"
+        className={cn(
+          "pointer-events-auto rounded-sm px-1 py-0.5 text-muted-foreground outline-none select-none before:content-['['] after:content-[']'] hover:bg-card/60 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring data-popup-open:bg-card/60 data-popup-open:text-foreground",
+          running && "pointer-events-none"
+        )}
       >
         {name}
       </Menu.Trigger>

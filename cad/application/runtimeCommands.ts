@@ -51,6 +51,7 @@ const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set([
   "LWEIGHT",
   "-LWEIGHT",
   "-VIEW",
+  "3DORBIT",
   "SNAP",
   "UNITS",
   "DIMSTYLE",

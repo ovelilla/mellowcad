@@ -29,31 +29,22 @@ interface ZoomMember {
   readonly id: ZoomId
   readonly icon: LucideIcon
   readonly mirrored?: boolean
-  readonly run: (engine: CadEngine) => void
+  /** What its macro answers ZOOM's first prompt (`'_zoom 2x`). */
+  readonly answer: string
 }
 
 /**
  * The Zoom drop-down's members that exist here, in the ribbon's order
  * (Extents, Window, Previous, …, In, Out); Realtime, All, Dynamic, Scale,
- * Center and Object are not offered. Except Window, which runs AutoCAD's
- * `'_zoom _w` (transparent mid-command), they act on the view at once, so
- * they work in the middle of a command as AutoCAD's transparent zooms do.
+ * Center and Object are not offered. Each runs its acad.cuix macro, inside
+ * the running command as a transparent ZOOM.
  */
 const ZOOM: readonly ZoomMember[] = [
-  { id: "extents", icon: Maximize, run: (engine) => engine.zoomToFit() },
-  {
-    id: "window",
-    icon: Search,
-    run: (engine) => engine.navigate("ZOOM", "W"),
-  },
-  {
-    id: "previous",
-    icon: ZoomPreviousIcon,
-    mirrored: true,
-    run: (engine) => engine.zoomPrevious(),
-  },
-  { id: "in", icon: ZoomIn, run: (engine) => engine.zoomIn() },
-  { id: "out", icon: ZoomOut, run: (engine) => engine.zoomOut() },
+  { id: "extents", icon: Maximize, answer: "_e" },
+  { id: "window", icon: Search, answer: "_w" },
+  { id: "previous", icon: ZoomPreviousIcon, mirrored: true, answer: "_p" },
+  { id: "in", icon: ZoomIn, answer: "2x" },
+  { id: "out", icon: ZoomOut, answer: ".5x" },
 ]
 
 /**
@@ -97,7 +88,7 @@ export function NavigationBar({
           shortcut={orbit?.shortcut?.toUpperCase()}
           side="inline-start"
           active={state.activeToolId === "orbit"}
-          onClick={() => engine.setActiveTool("orbit")}
+          onClick={() => engine.navigate("3DORBIT")}
         />
       </div>
     </TooltipProvider>
@@ -125,7 +116,7 @@ function ZoomSplitButton({
   const windowActive = state.activeToolId === "zoom"
   const use = (member: ZoomMember) => {
     setFace(member.id)
-    member.run(engine)
+    engine.navigate("ZOOM", member.answer)
   }
 
   return (

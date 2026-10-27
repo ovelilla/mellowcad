@@ -100,9 +100,15 @@ export class VPointTool implements Tool {
         }
   }
 
+  /**
+   * Ended without a view, after `*Cancel*`, it still says it is back in the
+   * UCS, at the view point and at Rotate's angles (desktop view/d09).
+   */
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "viewPoint" }
     ctx.dynamicInput.close()
+    if (this.switched) ctx.report(ctx.text.message("returningToUcs"))
+    this.switched = false
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -201,6 +207,7 @@ export class VPointTool implements Tool {
     const from = length3(point) === 0 ? vec3(0, 0, 1) : point
     if (!lookFrom(from, ctx)) return false
     if (this.switched) ctx.report(ctx.text.message("returningToUcs"))
+    this.switched = false
     ctx.regenerate()
     ctx.endCommand()
     return true

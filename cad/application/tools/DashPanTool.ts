@@ -68,12 +68,13 @@ export class DashPanTool implements Tool {
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     if (this.base === null || this.cursor === null) return []
+    // Amber and dashed, as MOVE's displacement (desktop view/d09-2).
     return [
       {
         kind: "segment",
         a: ctx.viewport.worldToScreen(this.base),
         b: ctx.viewport.worldToScreen(this.cursor),
-        stroke: { color: THEME.rubberBand, width: 1 },
+        stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
       },
     ]
   }

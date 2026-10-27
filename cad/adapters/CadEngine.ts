@@ -445,14 +445,18 @@ export class CadEngine {
     return this.runtime.runCommand(name)
   }
 
-  /** A preset view from the view menu, run as `_-VIEW _<preset>`. */
+  /** A preset view from the viewport controls, run as `'_-view _<preset>`. */
   applyViewPreset(preset: ViewPreset): boolean {
     return this.runtime.applyViewPreset(preset)
   }
 
-  /** The navigation bar's Pan or Zoom Window, transparent mid-command. */
-  navigate(command: "PAN" | "ZOOM", option?: string): boolean {
-    return this.runtime.navigate(command, option)
+  /**
+   * The navigation bar's Pan, Zoom members and Orbit, run as their macros
+   * (`'_zoom 2x`): `answer` typed at the command's first prompt as the macro
+   * types it. Transparent mid-command.
+   */
+  navigate(command: "PAN" | "ZOOM" | "3DORBIT", answer?: string): boolean {
+    return this.runtime.navigate(command, answer)
   }
 
   viewCubePick(part: ViewCubePart): void {
@@ -877,7 +881,19 @@ export class CadEngine {
     // over it. Until it is in use the wheel stays the page's.
     if (!this.active) return
     e.preventDefault()
-    this.runtime.wheel({ screen: this.screenFromEvent(e), deltaY: e.deltaY })
+    // WHY in pixels: the runtime zooms by the pixel (VIEW-D60), and Firefox
+    // reports a mouse's notches in lines; a line is 100/3 px and a page the
+    // view's height, as Chrome converts them.
+    const unit =
+      e.deltaMode === DOM_DELTA_LINE
+        ? 100 / 3
+        : e.deltaMode === DOM_DELTA_PAGE
+          ? this.runtime.viewport.height
+          : 1
+    this.runtime.wheel({
+      screen: this.screenFromEvent(e),
+      deltaY: e.deltaY * unit,
+    })
   }
 
   private onContextMenu = (e: MouseEvent): void => {
@@ -949,6 +965,10 @@ export class CadEngine {
     }
   }
 }
+
+/** `WheelEvent.deltaMode`'s lines and pages (the class is the browser's, not Node's). */
+const DOM_DELTA_LINE = 1
+const DOM_DELTA_PAGE = 2
 
 /** Elements whose keys and context menu belong to the text in them. */
 const EDITABLE = 'input, textarea, select, [contenteditable="true"]'

@@ -75,6 +75,15 @@ export function drawingMiddle(
   entities: readonly Entity[],
   blocks?: BlockLookup
 ): Vec3 | null {
+  const box = drawingBox(entities, blocks)
+  return box && scale3(add3(box.min, box.max), 0.5)
+}
+
+/** The box round what the drawing holds, in space, or `null` for an empty one. */
+export function drawingBox(
+  entities: readonly Entity[],
+  blocks?: BlockLookup
+): { readonly min: Vec3; readonly max: Vec3 } | null {
   const bounds = entitiesBounds(entities, blocks)
   if (!bounds) return null
   let low = Number.POSITIVE_INFINITY
@@ -89,8 +98,7 @@ export function drawingMiddle(
     }
   }
   return {
-    x: (bounds.min.x + bounds.max.x) / 2,
-    y: (bounds.min.y + bounds.max.y) / 2,
-    z: (low + high) / 2,
+    min: { x: bounds.min.x, y: bounds.min.y, z: low },
+    max: { x: bounds.max.x, y: bounds.max.y, z: high },
   }
 }

@@ -366,3 +366,26 @@ describe("VPOINT asks as AutoCAD 2026", () => {
     ])
   })
 })
+
+// AutoCAD 2027's desktop (research/probes/view d09, VWD-14).
+describe("-VPOINT's Escape in a turned UCS", () => {
+  it("says it returns to the UCS after *Cancel*", () => {
+    const cad = answer(
+      createHarness({ entities: [lineOf(p(0, 0), p(100, 50))] }),
+      "_LINE",
+      "200,200",
+      "210,200",
+      "",
+      "UCS",
+      "Z",
+      "30",
+      "-VPOINT"
+    )
+    const from = cad.commandLog().length
+    cad.escape()
+    expect(cad.commandLog().slice(from)).toEqual([
+      "Specify a view point or [Rotate]: *Cancel*",
+      "*** Returning to the UCS ***",
+    ])
+  })
+})

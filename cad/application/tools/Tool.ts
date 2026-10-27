@@ -345,9 +345,12 @@ export interface ToolContext {
    * step regenerate too, unless `how` says otherwise. `"silently"`: a change
    * that says nothing as it is made but whose U and REDO regenerate (a block
    * redefined, probes blocks/p113, p137). `"once"`: said as it is made, but
-   * not by its U (ATTDISP, probe blocks/p337).
+   * not by its U (ATTDISP, probe blocks/p337). `"view"`: a view's own
+   * (3DORBIT's), `Regenerating model.` at once inside another command too,
+   * and by its U and REDO whether its line of sight turned or not (desktop
+   * view/d04, VIEW-D62).
    */
-  regenerate(how?: "silently" | "once"): void
+  regenerate(how?: "silently" | "once" | "view"): void
 
   /**
    * Says what an answer found where AutoCAD says it: on the line of the

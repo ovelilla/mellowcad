@@ -618,17 +618,18 @@ describe("a transparent command", () => {
     expect(cad.typeCounts().line).toBe(1)
   })
 
-  // The navigation bar's buttons run AutoCAD's macros '_pan and '_zoom _w.
+  // The navigation bar's buttons run AutoCAD's macros '_pan and '_zoom _w,
+  // the answer typed as the macro types it.
   it("is what the navigation bar's Pan and Zoom Window run", () => {
     const cad = createHarness()
     cad.command("LINE").click(p(0, 0)).moveTo(p(10, 10))
     cad.type("12")
-    cad.runtime.navigate("ZOOM", "W")
+    cad.runtime.navigate("ZOOM", "_w")
     expect(cad.state().commandLine.prompt).toBe("'ZOOM >>Specify first corner:")
     cad.click(p(0, 0)).click(p(50, 50))
     expect(cad.commandLog().slice(-4)).toEqual([
       "Specify next point or [Undo]: 'ZOOM",
-      `${ZOOM_PROMPT} _W`,
+      `${ZOOM_PROMPT} _w`,
       ">>Specify first corner: >>Specify opposite corner:",
       "Resuming LINE command.",
     ])
@@ -649,7 +650,7 @@ describe("a transparent command", () => {
       "Press ESC or ENTER to exit, or right-click to display shortcut menu.",
     ])
     cad.escape()
-    cad.runtime.navigate("ZOOM", "W")
+    cad.runtime.navigate("ZOOM", "_w")
     expect(cad.state().commandLine.prompt).toBe("ZOOM Specify first corner:")
   })
 
@@ -700,7 +701,7 @@ describe("a transparent command", () => {
       ">>Pulse Esc o Intro para salir, o haga clic con el botón derecho para activar el menú contextual.",
     ])
     cad.enter()
-    cad.runtime.navigate("ZOOM", "W")
+    cad.runtime.navigate("ZOOM", "_w")
     expect(cad.state().commandLine.prompt).toBe(
       "'ZOOM >>Designe primera esquina:"
     )
@@ -712,5 +713,39 @@ describe("a transparent command", () => {
       "Designe primera esquina: 'ZOOM",
       "Designación de ventana no válida.",
     ])
+  })
+})
+
+// AutoCAD 2027's desktop (research/probes/view d04, VWD-08): its exit words
+// are a report, not a prompt, so they take no `>>`.
+describe("'3DORBIT", () => {
+  it("runs at LINE's prompt and U takes it with LINE", () => {
+    const answer = (cad: CadHarness, ...texts: string[]) => {
+      for (const text of texts) answerLine(cad, text)
+      return cad
+    }
+    const written = (cad: CadHarness, ...texts: string[]) => {
+      const from = cad.commandLog().length
+      answer(cad, ...texts)
+      return cad.commandLog().slice(from)
+    }
+    const cad = answer(
+      createHarness({ entities: [lineOf(p(0, 0), p(100, 50))] }),
+      "_LINE",
+      "200,200",
+      "210,200",
+      "",
+      "_LINE",
+      "0,0",
+      "10,0"
+    )
+    expect(written(cad, "'3DORBIT", "")).toEqual([
+      "Specify next point or [Undo]: '3DORBIT",
+      "Press ESC or ENTER to exit, or right-click to display shortcut-menu.",
+      "Regenerating model.",
+      "Resuming LINE command.",
+    ])
+    answer(cad, "20,0", "")
+    expect(written(cad, "U")).toEqual(["U", "LINE Regenerating model."])
   })
 })

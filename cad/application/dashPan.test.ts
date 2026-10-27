@@ -4,6 +4,7 @@ import { lineOf, p } from "../../test/builders"
 import { type CadHarness, createHarness } from "../../test/harness"
 import type { Vec2 } from "../geometry/Vec2"
 import { es } from "../locales/es"
+import { THEME } from "../scene/theme"
 
 /** Each answer typed at the command line and confirmed, as the console types it. */
 function answer(cad: CadHarness, ...texts: string[]): CadHarness {
@@ -235,5 +236,32 @@ describe("-PAN against AutoCAD 2027's console", () => {
     expect(cad.selectedIds()).toEqual(["A"])
     answer(cad, "-PAN", "0,0", "1,1")
     expect(cad.selectedIds()).toEqual([])
+  })
+})
+
+// AutoCAD 2027's desktop (research/probes/view d08-1, d09-2, VWD-15).
+describe("the bands -PAN and ZOOM draw", () => {
+  it("-PAN's is amber and dashed, as MOVE's displacement", () => {
+    const cad = answer(createHarness(), "-PAN", "0,0").moveTo(p(30, 20))
+    const base = shown(cad, p(0, 0))
+    const band = cad
+      .scene()
+      .primitives.find(
+        (q) => q.kind === "segment" && q.a.x === base.x && q.a.y === base.y
+      )
+    expect(band?.kind === "segment" && band.stroke).toEqual({
+      color: THEME.dashedRubberBand,
+      width: 1,
+      dash: [2, 3],
+    })
+  })
+
+  it("ZOOM's window is a solid white rectangle", () => {
+    const cad = answer(createHarness(), "ZOOM", "0,0").moveTo(p(30, 20))
+    const window = cad.scene().primitives.find((q) => q.kind === "rect")
+    expect(window?.kind === "rect" && window.stroke).toEqual({
+      color: THEME.rubberBand,
+      width: 1,
+    })
   })
 })

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 import { VIEW_MENU } from "./viewPresets"
 import { isWorldUcs } from "../../domain/ucs"
-import { createHarness } from "../../../test/harness"
+import { type CadHarness, createHarness } from "../../../test/harness"
 import { lineOf, p } from "../../../test/builders"
 import { es } from "../../locales/es"
 
@@ -28,8 +28,8 @@ describe("the view menu", () => {
       expect(cad.runtime.applyViewPreset(preset)).toBe(true)
       expect(cad.state().view.preset).toBe(preset)
       expect(cad.commandLog().slice(-3)).toEqual([
-        "-VIEW",
-        `Enter an option [Orthographic]: _${preset}`,
+        "'_-view",
+        `Enter an option [Orthographic]: _${preset.toLowerCase()}`,
         "Regenerating model.",
       ])
       expect(cad.activeToolId()).toBe("select")
@@ -94,16 +94,120 @@ describe("the view menu", () => {
     expect(cad.state().view.preset).toBeNull()
   })
 
-  it("runs in the command language, echoing its name", () => {
+  it("runs in the command language, echoing its macro", () => {
     const cad = createHarness({ locale: es })
 
     expect(cad.runtime.applyViewPreset("NWiso")).toBe(true)
 
     expect(cad.state().view.preset).toBe("NWiso")
     expect(cad.commandLog().slice(-3)).toEqual([
-      cad.runtime.text.commandNames("-VIEW")[0],
-      "Indique una opción [Ortogonal]: _NWiso",
+      "'_-view",
+      "Indique una opción [Ortogonal]: _nwiso",
       "Regenerando modelo.",
     ])
+  })
+})
+
+// AutoCAD 2027's desktop (research/probes/view d06, d07, e01, VWD).
+function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
+
+function written(cad: CadHarness, ...texts: string[]): string[] {
+  const from = cad.commandLog().length
+  answer(cad, ...texts)
+  return cad.commandLog().slice(from)
+}
+
+const scale = (cad: CadHarness) => cad.runtime.viewport.scale
+const REGEN = "Regenerating model."
+
+function drawing(): CadHarness {
+  return answer(
+    createHarness({ entities: [lineOf(p(0, 0), p(100, 50))] }),
+    "_LINE",
+    "200,200",
+    "210,200",
+    ""
+  )
+}
+
+describe("the viewport controls and the navigation bar (desktop view/d06, d07, e01)", () => {
+  it("a preset echoes AutoCAD's lowercase macro and U names '-VIEW", () => {
+    const cad = drawing()
+    const from = cad.commandLog().length
+    cad.runtime.applyViewPreset("SWiso")
+    expect(cad.commandLog().slice(from).join(" ")).toBe(
+      `'_-view Enter an option [Orthographic]: _swiso ${REGEN}`
+    )
+    expect(written(cad, "U")).toEqual(["U", `'-VIEW ${REGEN}`])
+    const spanish = answer(
+      createHarness({ locale: es }),
+      "_LINE",
+      "0,0",
+      "1,1",
+      ""
+    )
+    spanish.runtime.applyViewPreset("SWiso")
+    expect(written(spanish, "H")).toEqual(["H", "'-VISTA Regenerando modelo."])
+  })
+
+  // The bar's In runs acad.cuix's `'_zoom 2x`.
+  it("Zoom In doubles, a menu step 'ZOOM GROUP never joined", () => {
+    const cad = answer(drawing(), "ZOOM", "0.5X")
+    const before = scale(cad)
+    cad.runtime.navigate("ZOOM", "2x")
+    expect(scale(cad) / before).toBeCloseTo(2, 9)
+    cad.runtime.navigate("ZOOM", "2x")
+    expect(written(cad, "U")).toEqual(["U", "'ZOOM GROUP"])
+    expect(scale(cad) / before).toBeCloseTo(2, 9)
+  })
+
+  // acad.cuix's `'_zoom .5x`, `'_zoom _e`, `'_zoom _p`, each a menu's step.
+  it("Out halves, Extents and Previous answer ZOOM's prompt, never joined", () => {
+    const cad = drawing()
+    const before = scale(cad)
+    cad.runtime.navigate("ZOOM", ".5x")
+    expect(scale(cad) / before).toBeCloseTo(0.5, 9)
+    cad.runtime.navigate("ZOOM", "_e")
+    cad.runtime.navigate("ZOOM", "_p")
+    expect(scale(cad) / before).toBeCloseTo(0.5, 9)
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "'ZOOM",
+      "Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: _p",
+    ])
+    expect(written(cad, "U", "U", "U")).toEqual([
+      "U",
+      "'ZOOM GROUP",
+      "U",
+      "'ZOOM GROUP",
+      "U",
+      "'ZOOM GROUP",
+    ])
+    expect(scale(cad)).toBeCloseTo(before, 9)
+  })
+
+  // acad.cuix's `'_3dorbit`: transparent, as `'3DORBIT` typed (VWD-08).
+  it("Orbit runs inside the running command", () => {
+    const cad = answer(drawing(), "_LINE", "0,0")
+    cad.runtime.navigate("3DORBIT")
+    expect(cad.activeToolId()).toBe("orbit")
+    cad.enter()
+    expect(cad.commandLog().slice(-2)).toEqual([
+      REGEN,
+      "Resuming LINE command.",
+    ])
+    expect(cad.activeToolId()).toBe("line")
+  })
+
+  it("Pan is 'PAN GROUP", () => {
+    const cad = drawing()
+    cad.runtime.navigate("PAN")
+    cad.escape()
+    expect(written(cad, "U")).toEqual(["U", "'PAN GROUP"])
   })
 })

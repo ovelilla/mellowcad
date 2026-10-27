@@ -1107,6 +1107,7 @@ describe("viewport", () => {
       return cad
     }
 
+    // The first click is a ZOOM Previous step of its own (desktop view/d02).
     it("is ZOOM Extents, one ZOOM Previous step, in a command too", () => {
       const cad = framed()
       cad.command("LINE").click(p(0, 0))
@@ -1119,8 +1120,14 @@ describe("viewport", () => {
       expect(cad.toScreen(p(-2000, 0)).x).toBeCloseTo(3)
       expect(cad.toScreen(p(2000, 0)).x).toBeCloseTo(997)
       expect(cad.activeToolId()).toBe("line")
+      expect(cad.commandLog().slice(-3)).toEqual([
+        "Specify next point or [Undo]: '_.zoom",
+        ">>Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: _e",
+        "Resuming LINE command.",
+      ])
       expect(cad.runtime.zoomPrevious()).toBe(true)
       expect(cad.state().scale).toBe(1)
+      expect(cad.runtime.zoomPrevious()).toBe(true)
       expect(cad.runtime.zoomPrevious()).toBe(false)
     })
 
@@ -1132,6 +1139,8 @@ describe("viewport", () => {
       cad.click(p(100, 100), { button: 1 })
 
       expect(cad.state().scale).toBe(1)
+      expect(cad.runtime.zoomPrevious()).toBe(true)
+      expect(cad.runtime.zoomPrevious()).toBe(true)
       expect(cad.runtime.zoomPrevious()).toBe(false)
     })
 

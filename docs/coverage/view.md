@@ -38,9 +38,11 @@ Command window); every run an undo step, one that leaves the view too (U `ZOOM` 
 `[LINE][ZOOM][ZOOM]` UNDO 2 `ZOOM ZOOM LINE`, p345): U names them last first (`ZOOM 'ZOOM`, p361),
 puts back the view and ZOOM Previous's list (p362, p363), and neither it, REDO nor MREDO says
 `Regenerating model.` (p336, p337, p347); another command (CIRCLE, ID, -PAN: p347, p355–p357), a
-mark or the navigation bar's Window (a menu's, never joined) parts them; a transparent ZOOM is an
-entry of the command it ran in: U takes it back with LINE (p358), LINE's Undo with the segment
-before it (p360)
+mark, the navigation bar's members (a menu's, never joined: `'ZOOM GROUP`, desktop view/d07) or the
+ViewCube parts them, while a typed PAN, the wheel's and the wheel button's steps and its
+double-click join them (`INTELLIZOOM ZOOM ZOOM`, `ZOOM PAN ZOOM`, desktop d01–d03); a transparent ZOOM
+is an entry of the command it ran in: U takes it back with LINE (p358), LINE's Undo with the
+segment before it (p360); Window's rectangle solid white, as AutoCAD's (desktop d08-1)
 
 **Missing:** Realtime (so the first prompt offers no `<real time>`, and its Enter ends ZOOM where
 AutoCAD starts it and says `Press ESC or ENTER to exit, or right-click to display shortcut menu.`,
@@ -62,8 +64,9 @@ p346, where U takes the pair whole; here UNDO 2 takes `ZOOM CIRCLE` and stops be
 starts (p200, p202; es
 `Pulse Esc o Intro para salir, o haga clic con el botón derecho para activar el menú contextual.`,
 p269), and no question after it (the prompt reads `PAN:`); left-drag pan, hand cursor, Previous, Escape; an
-undo step (U `PAN`), never joined with ZOOMs (**unverified**: the console cannot drag; its -PAN is a
-step of its own, joined with nothing); transparent, `'PAN` / `'P` typed mid-command
+undo step (U `PAN`), dragged or not, joined with the typed ZOOMs and PANs round it as consecutive
+ZOOMs are (`ZOOM PAN ZOOM`, `PAN ZOOM`, `PAN PAN`, desktop view/d03); the navigation bar's a menu's,
+never joined (`'PAN GROUP`, d07); transparent, `'PAN` / `'P` typed mid-command
 (`>>Press ESC or ENTER to exit…`; below, Command window). -PAN asks
 `Specify base point or displacement:`, then ` Specify second point:` (es
 `Precise punto base de desplazamiento`, ` Designe segundo punto`; what is no point, and Enter at the
@@ -77,10 +80,11 @@ neither point becoming LASTPOINT (p204–p219, p224, p225); transparent
 p359), and `'PAN` and `'ZOOM` run at its prompts (`'ZOOM E` with nothing drawn refused, p221,
 p222); the preselection dropped (p226); its own undo step, joined with nothing (p354–p356), by
 nothing too (p368): U, REDO and MREDO name it (`-PAN`, `'-PAN` when typed so; es `-ENCUADRE`,
-p269, p338) and never say `Regenerating model.` (p338)
+p269, p338) and never say `Regenerating model.` (p338); -PAN's band amber and dashed, as MOVE's
+displacement (desktop d09-2)
 
-**Missing:** the real-time shortcut menu's Pan / Zoom / 3D Orbit / Zoom Window / Zoom Original /
-Zoom Extents items
+**Missing:** the real-time shortcut menu (desktop d03-2: Exit · Pan, checked, Zoom, 3D Orbit · Zoom
+Window, Zoom Original, Zoom Extents; Escape with it open closes it and ends PAN)
 
 ### `PLAN` · es `PLANTA`
 
@@ -111,7 +115,8 @@ arbitrary-axis X drawn right (`0,0,-1` has the X to the left, `0.01,0,-1` X = -1
 View then reads in the console, p246, p247); in a UCS that is not the WCS,
 `*** Switching to the WCS ***` before the direction, given in the WCS, and
 `*** Returning to the UCS ***` after the answer (es `*** Cambiando al SCU ***`,
-`*** Volviendo al SCP ***`, p253); what is no point refused with `Invalid input. Try again.` and the
+`*** Volviendo al SCP ***`, p253), and after `*Cancel*` when Escape ends it, at the view point and
+at Rotate's angles (desktop view/d09); what is no point refused with `Invalid input. Try again.` and the
 current direction again (es `Entrada no válida. Vuelva a intentarlo.`), what is no angle with
 `Requires valid numeric angle or second point.` (p244, p250); `Regenerating model.`; fits the
 extents (p243); ZOOM Previous steps back; VPOINT runs the same sequence; U, REDO and MREDO as
@@ -122,7 +127,7 @@ PLAN's (`VPOINT Regenerating model.`, p340, p341)
 and which opens them in the console, is refused as any answer), VPOINT's Viewpoint Presets dialog,
 VIEWDIR as typed (AutoCAD keeps `1.0000,-1.0000,1.0000`; here the unit direction),
 `Regenerating model.` after Rotate's two defaults (AutoCAD leaves the view and says nothing),
-WORLDVIEW 0, whether Escape in another UCS says `*** Returning to the UCS ***` (desktop); with
+WORLDVIEW 0; with
 nothing drawn the zoom stays where it was, where AutoCAD frames LIMITS (p249: no LIMITS here)
 
 ### `-VIEW` / `VIEW` / `-V` / `V` · es `-VISTA` / `VISTA` / `-VI` / `VI`
@@ -178,12 +183,17 @@ starts, hyphen and all (es
 `Pulse ESC o INTRO para salir, o haga clic con el botón derecho para ver el menú contextual.`,
 p329); dragging across turns the camera about the WCS's Z, dragging up and down raises or lowers
 it, about the middle of the drawing under the centre of the screen, in parallel projection; no
-editing while it runs; Enter or Escape ends it; each drag is a ZOOM Previous step; the run an undo
-step, with no drag too (**unverified**: 3DORBIT hangs AutoCAD 2027's console, p329); Shift + the
-wheel button held orbits from any command; Orbit on the navigation bar
+editing while it runs; Enter or Escape ends it, saying `Regenerating model.`, dragged or not; each
+drag is a ZOOM Previous step; the run an undo step, with no drag too, joined with nothing, whose U
+and REDO always regenerate (`3DORBIT Regenerating model.`, es `3DORBITA Regenerando modelo.`, desktop
+view/d04, e01; VIEW-D62); transparent, `'3DORBIT` mid-command: its exit words with no `>>` (a
+report, not a prompt), `Regenerating model.` and `Resuming LINE command.`, U after LINE
+`LINE Regenerating model.` (d04, VIEW-D63); Shift + the wheel button held orbits from any command
+(Wheel and wheel button, `workspace.md`); Orbit on the navigation bar runs acad.cuix's `'_3dorbit`
 
-**Missing:** the right-click menu (projection, visual styles, other navigation modes), orbiting
-about the selection only, perspective, 3DFORBIT, 3DCORBIT and the rest of 3D navigation
+**Missing:** the right-click menu (projection, visual styles, other navigation modes; Escape with
+it open closes it and ends 3DORBIT, d04), orbiting about the selection only, perspective, 3DFORBIT,
+3DCORBIT and the rest of 3D navigation
 
 ### `NAVVCUBE` / `CUBE` · es `NAVVCUBE` / `CUBE`
 
@@ -203,58 +213,70 @@ as AutoCAD 2027's console does (move/p238)
 
 **Implemented:** the 26 parts, oriented to the current UCS (NAVVCUBEORIENT 1): a click looks along
 the part with the UCS's Z up (Top and Bottom as -VIEW shows them, Top with the X to the right and
-Bottom to the left — the cube's own Bottom is **unverified**), fits the extents or what is selected
-(V13 **unverified**), is a ZOOM Previous step and no undo step (a click is no command;
-**unverified**) and leaves the UCS as it is (UCSORTHO not applied: **unverified**, sources disagree
-— a 2018 forum thread has the plane edge-on after the cube's side views, a 2026 article says it
-"may" align — so after `-VIEW` Front, whose UCS faces the view, the cube shows TOP); a solid outline
-on one of the 26, dashed off them; dragging orbits as 3DORBIT about the centre of the view, or of
-the extents of what is selected, which stays where it is drawn ("About Reorienting the View"),
-landing on a part let go within 10° of it (**unverified** threshold), one ZOOM Previous step, no
-fit; in a face view the roll arrows (a quarter turn about the line of sight, offered on every face,
-no fit: **unverified**) and four triangles pointing at it (the face on that side, a side face
-upright, the top or bottom keeping the roll); Home above the cube and in its menu restores the
-drawing's Home view and fits — its orientation only, in the WCS, saved in the drawing,
-Top/Left/Front (SW Isometric) until set (**unverified**); the compass round its foot, North on the
-WCS's Y: a letter looks from that side at the view's elevation (**unverified**), from the plan
-turning that letter to the bottom, and dragging the ring turns the azimuth alone; the right-click
-menu: Home, Parallel (checked, the only projection), Set Current View as Home (no undo step); the
+Bottom to the left — the cube's own Bottom is **unverified**), fits the sphere round the 3D box of
+the extents or of what is selected — its diameter the box's diagonal across the view's smaller
+side, centred on it (desktop view/d05: Front, Top, Home and S leave VIEWSIZE the diagonal; VIEW-D65,
+d05 showing a wide view's height only) —, is a ZOOM Previous step, and leaves the UCS as it is
+(UCSORTHO not applied, d05; so after `-VIEW` Front, whose UCS faces the view, the cube shows TOP);
+every action — a part, a roll arrow, a triangle, a compass letter, Home, a drag — writes
+` Regenerating model.` and is an undo step U names `'.VIEWCUBEACTION Regenerating model.` (es the
+same, e01), joined with nothing, regenerating on REDO too (VIEW-D62); inside a command it is
+transparent: ` Regenerating model.`, `Resuming LINE command.`, an entry of LINE's step that its
+Undo takes back with the segment before it (d05; the drag's own undo was not read, VIEW-D64); a
+solid outline on one of the 26, dashed off them; dragging orbits as 3DORBIT about the centre of the
+view, or of the extents of what is selected, which stays where it is drawn ("About Reorienting the
+View"), and stays where it is let go however near a view (d05: 1.7° and 6.6° off Top, VIEW-D67),
+one ZOOM Previous step; in a face view the roll arrows (a quarter turn about the line of sight,
+counterclockwise left, clockwise right, VIEWTWIST 90 and 270, offered on every face, fitted, d05)
+and four triangles pointing at it (the face on that side, a side face upright, the top or bottom
+keeping the roll); Home above the cube and in its menu restores the drawing's Home view and fits —
+its orientation only, in the WCS, saved in the drawing, Top/Left/Front (SW Isometric) until set
+(**unverified**); the compass round its foot, North on the WCS's Y: a letter looks level from that
+side, upright, from the plan too (d05: S gives VIEWDIR 0,-1,0 from Top and from SW Isometric), and
+dragging the ring turns the azimuth alone; the right-click menu: Home, Parallel (checked, the only
+projection), Set Current View as Home (no undo step); the
 UCS menu under it: WCS, the saved UCSs, New UCS, run as UCS World / NAmed Restore / UCS, echoed and
 undone like them (`*NO NAME*` reads Unnamed); 50 % opacity until the cursor is over it; in a
 right-to-left page its column sits top left with the palettes (no AutoCAD is right to left), the
 cube itself unmirrored
 
-**Missing:** Perspective and Perspective with Ortho Faces, ViewCube Settings and Help in the menu,
-smooth transitions, NAVVCUBELOCATION / NAVVCUBEOPACITY / NAVVCUBESIZE / NAVVCUBEORIENT as variables
+**Missing:** Perspective and Perspective with Ortho Faces, ViewCube Settings (its Snap to closest
+view among them) and Help in the menu (d05: Home · Parallel, Perspective, Perspective with Ortho
+Faces · Set Current View as Home · ViewCube Settings... · Help), smooth transitions, NAVVCUBELOCATION / NAVVCUBEOPACITY / NAVVCUBESIZE / NAVVCUBEORIENT as variables
 (fixed at top right, 50 %, one size, the current UCS), NORTHDIRECTION, orienting to the WCS
 
 ### Viewport controls (top left)
 
 **Implemented:** the view control `[Top]` (VPCONTROL 1; top right in a right-to-left page, opposite
 the ViewCube): the ten presets in its order — Top, Bottom, Left, Right, Front, Back, then SW / SE /
-NE / NW Isometric ("Have You Tried: Viewing 3D Models", both languages) — each run as AutoCAD's
-menus run it (`_-VIEW _SWISO`: echoed, fitted, an orthographic one aligning the UCS); its label is
-the preset the camera looks along (a turned plan is none), else Custom View / es Vista personalizada
-(**unverified**); the list opens downwards (**unverified**)
+NE / NW Isometric ("Have You Tried: Viewing 3D Models", both languages; es Superior … Isométrica NO,
+desktop view/e01) — each run as AutoCAD's menu runs it (`'_-view` answered `_swiso`: echoed,
+`Regenerating model.`, fitted, an orthographic one aligning the UCS, desktop d06), a step U names
+`'-VIEW Regenerating model.` (es `'-VISTA`, e01); while a command runs the label takes no pointer
+and the click is the command's (d06, VIEW-D66); its label is the preset the camera looks along (a
+turned plan is none), else Custom View / es Vista personalizada (**unverified**); the list opens
+downwards (**unverified**)
 
-**Missing:** the `[+]` and visual style controls, VPCONTROL as a variable, Custom Model Views,
-Parallel / Perspective and the View Manager in the list
+**Missing:** the `[−]` and visual style controls (`[-][Top][2D Wireframe]`, d06), VPCONTROL as a
+variable, Custom Model Views, Parallel / Perspective and the View Manager in the list
 
 ### Navigation bar
 
 **Implemented:** vertical, linked under the ViewCube (NAVBARDISPLAY 1): Pan, the Zoom split button
 and Orbit, as the 2026 tour orders them; the split button runs the member it shows — the last one
-used, Extents at first (**unverified** that AutoCAD's remembers it) — and its arrow lists Extents,
-Window, Previous, In and Out (**unverified** order: the 2026 help names only Extents); Pan and
-Window run the macros AutoCAD's buttons run (`'_pan`, `'_zoom _W`, as acad.cuix's Pan Realtime and
-Zoom Window): transparently in the middle of a command (`Specify next point or [Undo]: 'PAN`, then
-`Resuming LINE command.`), keeping what was typed in the box, and as the command at the Command
-prompt, an undo step a typed ZOOM never joins (`'ZOOM`; "started from the menu are not combined");
-the others act on the view at once, so they work inside a command as AutoCAD's transparent zooms do;
-its lists open towards the middle of the drawing
+used, Extents at first (d07) — and its arrow lists Extents, Window, Previous, In and Out, in
+AutoCAD's order (d07-3; es Extensión, Zoom ventana, Previo, Acercar, Alejar, e01); each runs the
+macro AutoCAD's button runs (acad.cuix: `'_pan`, `'_zoom _e`, `'_zoom _w`, `'_zoom _p`,
+`'_zoom 2x`, `'_zoom .5x`, `'_3dorbit`): transparently in the middle of a command
+(`Specify next point or [Undo]: 'PAN`, then `Resuming LINE command.`), keeping what was typed in the
+box, and as the command at the Command prompt, writing ZOOM's first prompt with its answer, a step
+U names as a menu's and nothing joins (`'ZOOM GROUP`, `'PAN GROUP`, es `GRUPO`; In doubles the view,
+VIEWSIZE 120 → 60, d07; "started from the menu are not combined"); its lists open towards the
+middle of the drawing
 
 **Missing:** SteeringWheels and ShowMotion, Realtime, All, Dynamic, Scale, Center and Object in the
-Zoom list, the Orbit list (Free and Continuous Orbit), NAVBAR and NAVBARDISPLAY as a command and a
+Zoom list (AutoCAD's: Zoom Extents, Window, Previous, Realtime, All, Dynamic, Scale, Center, Object,
+In, Out; d07-3), the Orbit list (Free and Continuous Orbit), NAVBAR and NAVBARDISPLAY as a command and a
 variable, the bar's menu (docking positions, unlinking from the ViewCube, customising its tools)
 
 A view is a parallel projection from any direction (there is no perspective). Window and crossing

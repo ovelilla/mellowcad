@@ -275,13 +275,14 @@ export class ZoomTool implements Tool {
     if (this.state.phase !== "opposite") return []
     const a = ctx.viewport.worldToScreen(this.state.first)
     const b = ctx.viewport.worldToScreen(this.state.cursor)
+    // A solid white rectangle, as AutoCAD's (desktop view/d08-1).
     return [
       {
         kind: "rect",
         min: { x: Math.min(a.x, b.x), y: Math.min(a.y, b.y) },
         width: Math.abs(b.x - a.x),
         height: Math.abs(b.y - a.y),
-        stroke: { color: THEME.preview, width: 1, dash: [6, 4] },
+        stroke: { color: THEME.rubberBand, width: 1 },
       },
     ]
   }

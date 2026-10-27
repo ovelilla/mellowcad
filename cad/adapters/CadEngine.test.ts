@@ -312,7 +312,29 @@ describe("CadEngine owning the document (the editor)", () => {
     })
 
     expect(wheel.defaultPrevented).toBe(true)
-    expect(engine.getState().scale).toBeGreaterThan(1)
+    expect(engine.getState().scale).toBeCloseTo(1.5978, 9)
+  })
+
+  // A notch is 100 px in Chrome on Windows; Firefox counts it in lines.
+  it("reads the wheel's lines and pages in pixels", () => {
+    const engine = engineOn()
+    dispatch(page.canvas, "wheel", page.canvas, {
+      deltaY: -3,
+      deltaMode: 1,
+      clientX: 200,
+      clientY: 150,
+    })
+    expect(engine.getState().scale).toBeCloseTo(1.5978, 9)
+
+    // A page is the view's height, which the drawing fills.
+    const height = page.canvas.getBoundingClientRect().height
+    dispatch(page.canvas, "wheel", page.canvas, {
+      deltaY: 100 / height,
+      deltaMode: 2,
+      clientX: 200,
+      clientY: 150,
+    })
+    expect(engine.getState().scale).toBeCloseTo(1, 9)
   })
 
   it("keeps the native context menu from opening anywhere but a field", () => {

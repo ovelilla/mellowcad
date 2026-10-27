@@ -2816,6 +2816,16 @@ export const es: EngineLocale = {
       "startOfGroup": "Se ha encontrado el comienzo del Grupo.\nPara retroceder aún más, utilice DESHACER FIN.",
       "undoGroup": "GRUPO",
       "dropGeometryStep": "SOLTARGEOM GRUPO",
+      "menuStep": [
+        [
+          "command"
+        ],
+        " GRUPO"
+      ],
+      "menuItemStep": "GRUPO menu item",
+      "intelliZoomStep": "INTELLIZOOM",
+      "intelliPanStep": "INTELLIPAN",
+      "viewCubeStep": "'.VIEWCUBEACTION",
       "layerManagerStep": "'.-CAPA",
       "changePropertiesStep": "CAMBPROP",
       "modifyPropertyStep": "Modify Property",
