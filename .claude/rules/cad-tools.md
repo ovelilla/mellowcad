@@ -70,7 +70,7 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
 - `dimensionTextOptions.ts` — the Text and Angle keywords every dimension command shares. When two
   commands offer the same AutoCAD keyword, the prompt belongs in a shared helper: identical wording
   is fidelity. `measurementOf` (`DimensionTool.ts`) is the measurement at Text's `<default>` and in
-  the report after placing. TEXT's `POINT_PROMPT` and `listTextStyles` are ATTDEF's too.
+  `Dimension text =`. TEXT's `POINT_PROMPT` and `listTextStyles` are ATTDEF's too.
 - **Ghosts and overlays draw through `SceneBuilder.entityScenePrimitive`**, the single source of
   truth for how an entity draws, so a new type renders everywhere for free. It returns a
   **list**: spread it, and never add a nesting "group" primitive — tests, selection cycling and

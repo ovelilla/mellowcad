@@ -1,9 +1,11 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, withZ } from "../../geometry/Vec3"
 import {
+  angleWithinSweep,
   closestPointOnArc,
   closestPointOnSegment,
   infiniteLineIntersection,
+  normalizeAngle,
 } from "../../geometry/primitives"
 import {
   arcEndPoint,
@@ -41,6 +43,8 @@ import {
 } from "./Tool"
 import { measurementOf } from "./DimensionTool"
 import { withCurrentProperties } from "./currentProperties"
+import { rollover } from "./ghostLook"
+import { typedPick } from "./typedPick"
 
 /**
  * AutoCAD's DIMANGULAR: "measures the angle between selected geometric objects
@@ -57,9 +61,15 @@ import { withCurrentProperties } from "./currentProperties"
  *   for a second endpoint which "does not have to lie on the circle";
  * - a **line**, then a second line — "using each line as a vector for the angle
  *   and the intersection of the lines for the angle vertex". "The arc is always
- *   less than 180 degrees", which is why each line's ray is taken towards the
- *   side the location is on;
+ *   less than 180 degrees": of the four sectors the two lines make, the one
+ *   the location is in (probes dimensions/p344–p348). The same line twice, or
+ *   parallel lines, end the command with `Lines are parallel.` (p349, p350);
  * - **Enter** — the three-point form: vertex, then both angle endpoints.
+ *
+ * Any other object is refused in words, `Object selected is not a line, arc
+ * or circle.`, and anything but a line at the second, `Object selected is
+ * not a line.` (p354, p355, p358). The prompts are AutoCAD 2027's (p340,
+ * p342, p361); Enter at the location ends with nothing (p369).
  *
  * The location prompt then "specifies the placement of the dimension line and
  * determines the direction to draw the extension lines": two sweeps join the
@@ -126,12 +136,9 @@ export class AngularDimensionTool implements Tool {
       case "select":
         this.selectFirst(input.world, ctx)
         break
-      case "secondLine": {
-        const hit = this.pickMeasurable(input.world, ctx)
-        const line = hit && pickedLine(hit, input.world)
-        if (line) this.beginLinePair(this.state.line, line, ctx)
+      case "secondLine":
+        this.selectSecond(input.world, ctx)
         break
-      }
       case "vertex":
         this.enterFirstEndpoint(input.point, ctx)
         break
@@ -139,16 +146,7 @@ export class AngularDimensionTool implements Tool {
         this.enterSecondEndpoint(this.state.vertex, input.point, ctx)
         break
       case "secondEndpoint":
-        this.reportByPoints(ctx)
-        this.enterLocation(
-          {
-            kind: "points",
-            vertex: this.state.vertex,
-            first: this.state.first,
-            second: input.point,
-          },
-          ctx
-        )
+        this.endpointsGiven(input.point, ctx)
         break
       case "location":
         this.place(input.point, ctx)
@@ -188,7 +186,10 @@ export class AngularDimensionTool implements Tool {
       case "firstEndpoint":
         return "firstAngleEndpoint"
       case "secondEndpoint":
-        return "secondAngleEndpoint"
+        // The circle form's own string, worded apart in Spanish (p342 es).
+        return state.circle === null
+          ? "secondAngleEndpoint"
+          : "circleSecondAngleEndpoint"
       case "location":
         switch (state.prompt) {
           case "text":
@@ -201,7 +202,7 @@ export class AngularDimensionTool implements Tool {
     }
   }
 
-  /** As AutoCAD 2023's console refuses a dimension's answers. */
+  /** As AutoCAD 2027's console refuses a dimension's answers (p353, p358). */
   takes(): QuestionInput | null {
     const state = this.state
     switch (state.phase) {
@@ -217,6 +218,37 @@ export class AngularDimensionTool implements Tool {
       default:
         return { refusal: "invalidPointInput" }
     }
+  }
+
+  /**
+   * The picks, the points and the location are LASTPOINT once given, which
+   * their refusal of its own would hide from the runtime (probes
+   * dimensions/p335, p340, p362).
+   */
+  setsLastPoint(): boolean | null {
+    const state = this.state
+    return state.phase !== "location" || state.prompt === null ? true : null
+  }
+
+  /** The object prompts take a locked layer's objects, as DIMRADIUS's (p315). */
+  picksLocked(): boolean {
+    return this.state.phase === "select" || this.state.phase === "secondLine"
+  }
+
+  /** `<30` at Angle is that angle (probe dimensions/p130, DIMLINEAR's). */
+  answersAngleOverride(): boolean {
+    return this.state.phase === "location" && this.state.prompt === "textAngle"
+  }
+
+  /** A point typed at either object prompt picks there (probe dimensions/p335). */
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    const phase = this.state.phase
+    if (phase !== "select" && phase !== "secondLine") return false
+    const point = typedPick(text, ctx)
+    if (!point) return false
+    if (phase === "select") this.selectFirst(point, ctx)
+    else this.selectSecond(point, ctx)
+    return true
   }
 
   commandOptions(): readonly CommandOption[] {
@@ -259,16 +291,16 @@ export class AngularDimensionTool implements Tool {
     }
   }
 
+  /**
+   * The vertex at the endpoints (UseBasePoint true, probe dimensions/p362);
+   * none at the location (false, p340), which a point typed there reads from
+   * LASTPOINT.
+   */
   getConstraintAnchor(): Vec2 | null {
     switch (this.state.phase) {
       case "firstEndpoint":
-        return this.state.vertex
       case "secondEndpoint":
         return this.state.vertex
-      case "location":
-        return this.state.prompt === "textAngle"
-          ? null
-          : this.state.target.vertex
       default:
         return null
     }
@@ -291,12 +323,7 @@ export class AngularDimensionTool implements Tool {
     switch (this.state.phase) {
       case "select":
       case "secondLine":
-        return this.state.hover
-          ? entityScenePrimitive(viewport, this.state.hover, {
-              color: THEME.selected,
-              width: 2,
-            })
-          : []
+        return this.state.hover ? rollover(ctx, this.state.hover) : []
       case "firstEndpoint":
       case "secondEndpoint":
         return [
@@ -366,46 +393,75 @@ export class AngularDimensionTool implements Tool {
     ctx.endCommand()
   }
 
-  /** Dispatches on what the object prompt was answered with. */
+  /**
+   * `Select arc, circle, line, or <specify vertex>:` at `world`: nothing is
+   * passed over in silence, an object with no angle refused in words (probes
+   * dimensions/p354, p355). WHY a block reference is silent: AutoCAD's prompt
+   * picks inside one, which is not built here.
+   */
   private selectFirst(world: Vec2, ctx: ToolContext): void {
-    const hit = this.pickMeasurable(world, ctx)
-    if (!hit) return
-    const sweep = pickedSweep(hit, world)
-    if (sweep) {
-      this.enterLocation(sweep, ctx)
-      return
-    }
-    if (hit.type === "circle") {
-      // The pick point is the first endpoint; the second is asked for next and
-      // need not lie on the circle.
-      const offset = V.sub(world, hit.center)
-      const dir = V.length(offset) < 1e-9 ? { x: 1, y: 0 } : V.normalize(offset)
+    const hit = ctx.pick(world)
+    if (!hit || !readsInPlan(hit) || hit.type === "insert") return
+    const picked = anglePick(hit, world)
+    if (picked === null) {
+      ctx.report(ctx.text.message("notLineArcOrCircle"))
+    } else if (picked.kind === "sweep") {
+      this.enterLocation(picked.target, ctx)
+    } else if (picked.kind === "line") {
+      this.enterSecondLine(picked.line, ctx)
+    } else {
+      // The pick, onto the circle, is the first endpoint; the second is asked
+      // for next and taken onto the circle too (probes dimensions/p342, p343).
+      const { center, radius } = picked
       this.enterSecondEndpoint(
-        withZ(hit.center, entityElevation(hit)),
-        V.add(hit.center, V.scale(dir, hit.radius)),
-        ctx
+        withZ(center, entityElevation(hit)),
+        onCircle(center, radius, world),
+        ctx,
+        radius
       )
-      return
     }
-    const line = pickedLine(hit, world)
-    if (line) this.enterSecondLine(line, ctx)
   }
 
-  /** The object under the cursor DIMANGULAR can take an angle from, in the UCS's plane. */
+  /**
+   * `Select second line:` at `world`: anything but a line is refused, and the
+   * same segment again or a parallel one ends the command (probes
+   * dimensions/p349, p350, p358).
+   */
+  private selectSecond(world: Vec2, ctx: ToolContext): void {
+    if (this.state.phase !== "secondLine") return
+    const first = this.state.line
+    const hit = ctx.pick(world)
+    if (!hit || !readsInPlan(hit) || hit.type === "insert") return
+    const picked = anglePick(hit, world)
+    if (picked?.kind !== "line") {
+      ctx.report(ctx.text.message("notALine"))
+      return
+    }
+    const second = picked.line
+    const crossing =
+      second.id === first.id && second.segment === first.segment
+        ? null
+        : infiniteLineIntersection(first.a, first.b, second.a, second.b)
+    if (!crossing) {
+      ctx.report(ctx.text.message("dimLinesParallel"))
+      ctx.endCommand()
+      return
+    }
+    this.enterLocation(
+      { kind: "lines", vertex: crossing.point, a: first, b: second },
+      ctx
+    )
+  }
+
+  /** What the cursor is over that the prompt takes, for its rollover. */
   private pickMeasurable(world: Vec2, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(world)
     if (!hit || !readsInPlan(hit)) return null
+    const picked = anglePick(hit, world)
     if (this.state.phase === "secondLine") {
-      // Two lines are needed, and not the same one twice.
-      return hit.id !== this.state.line.id && pickedLine(hit, world)
-        ? hit
-        : null
+      return picked?.kind === "line" ? hit : null
     }
-    return pickedSweep(hit, world) ||
-      hit.type === "circle" ||
-      pickedLine(hit, world)
-      ? hit
-      : null
+    return picked ? hit : null
   }
 
   /** Three points: nothing ties the dimension to an object, as AutoCAD says. */
@@ -428,21 +484,6 @@ export class AngularDimensionTool implements Tool {
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
-  private beginLinePair(a: PickedLine, b: PickedLine, ctx: ToolContext): void {
-    const crossing = infiniteLineIntersection(a.a, a.b, b.a, b.b)
-    // Parallel lines subtend no angle, so the prompt simply stays open.
-    if (!crossing) return
-    this.enterLocation(
-      {
-        kind: "lines",
-        vertex: crossing.point,
-        a,
-        b,
-      },
-      ctx
-    )
-  }
-
   private enterFirstEndpoint(vertex: Vec3, ctx: ToolContext): void {
     this.state = { phase: "firstEndpoint", vertex, cursor: vertex }
     this.openCoordinate(ctx, "firstAngleEndpoint", (commitCtx) => {
@@ -454,28 +495,46 @@ export class AngularDimensionTool implements Tool {
     })
   }
 
+  /** `circle`: the radius the circle form takes the second endpoint onto. */
   private enterSecondEndpoint(
     vertex: Vec3,
     first: Vec2,
-    ctx: ToolContext
+    ctx: ToolContext,
+    circle: number | null = null
   ): void {
-    this.state = { phase: "secondEndpoint", vertex, first, cursor: first }
-    this.openCoordinate(ctx, "secondAngleEndpoint", (commitCtx) => {
-      if (this.state.phase !== "secondEndpoint") return false
-      const point = this.parsePoint(commitCtx, this.state.first)
-      if (!point) return false
-      this.reportByPoints(commitCtx)
-      this.enterLocation(
-        {
-          kind: "points",
-          vertex: this.state.vertex,
-          first: this.state.first,
-          second: point,
-        },
-        commitCtx
-      )
-      return true
-    })
+    this.state = {
+      phase: "secondEndpoint",
+      vertex,
+      first,
+      circle,
+      cursor: first,
+    }
+    this.openCoordinate(
+      ctx,
+      circle === null ? "secondAngleEndpoint" : "circleSecondAngleEndpoint",
+      (commitCtx) => {
+        if (this.state.phase !== "secondEndpoint") return false
+        const point = this.parsePoint(commitCtx, this.state.first)
+        if (!point) return false
+        this.endpointsGiven(point, commitCtx)
+        return true
+      }
+    )
+  }
+
+  private endpointsGiven(second: Vec2, ctx: ToolContext): void {
+    if (this.state.phase !== "secondEndpoint") return
+    const { vertex, first, circle } = this.state
+    this.reportByPoints(ctx)
+    this.enterLocation(
+      {
+        kind: "points",
+        vertex,
+        first,
+        second: circle === null ? second : onCircle(vertex, circle, second),
+      },
+      ctx
+    )
   }
 
   private enterLocation(target: AngularTarget, ctx: ToolContext): void {
@@ -497,7 +556,7 @@ export class AngularDimensionTool implements Tool {
   private openLocationInput(ctx: ToolContext): void {
     this.openCoordinate(ctx, "dimensionArcLocation", (commitCtx) => {
       if (this.state.phase !== "location") return false
-      const point = this.parsePoint(commitCtx, this.state.target.vertex)
+      const point = this.parsePoint(commitCtx, null)
       if (!point) return false
       this.place(point, commitCtx)
       return true
@@ -536,18 +595,22 @@ export class AngularDimensionTool implements Tool {
 /** Preview frames reuse one id so drawing them never burns entity ids. */
 const ANGULAR_PREVIEW_ID = "__angular_dimension_preview__"
 
-/** One line of a line pair, kept with its object so the second pick can exclude it. */
+/**
+ * One line of a line pair: the segment picked, which the second pick may not
+ * repeat (a polyline's other segments it may, probe dimensions/p367).
+ */
 interface PickedLine {
   readonly id: string
-  readonly entity: Entity
+  /** Which of a polyline's segments; −1 for a LINE. */
+  readonly segment: number
   readonly a: Vec2
   readonly b: Vec2
 }
 
 /**
  * What the angle is being taken from. A line pair keeps the lines rather than
- * two endpoints, because which end of each counts depends on where the location
- * is dragged — the rule that keeps the measured arc under 180°.
+ * two endpoints, because which side of the vertex each counts on depends on
+ * where the location is dragged.
  */
 type AngularTarget =
   | {
@@ -569,100 +632,134 @@ function resolveOrigins(
   at: Vec2
 ): { first: Vec2; second: Vec2 } | null {
   if (target.kind === "points") return target
-  const offset = V.sub(at, target.vertex)
+  const { vertex } = target
+  const offset = V.sub(at, vertex)
   if (V.length(offset) < 1e-9) return null
-  const towards = V.normalize(offset)
-  const first = rayEndpoint(target.a, target.vertex, towards)
-  const second = rayEndpoint(target.b, target.vertex, towards)
-  return first && second ? { first, second } : null
-}
-
-/**
- * The end of `line` that lies on the same side of the vertex as the location.
- * Both rays then sit within 90° of it, so the angle between them — the one the
- * dimension measures — is always less than 180°, as AutoCAD specifies for the
- * two-line form.
- */
-function rayEndpoint(
-  line: PickedLine,
-  vertex: Vec2,
-  towards: Vec2
-): Vec2 | null {
-  let best: Vec2 | null = null
-  let bestDot = -Infinity
-  for (const end of [line.a, line.b]) {
-    const offset = V.sub(end, vertex)
-    const distance = V.length(offset)
-    // An end sitting on the vertex gives no direction; the other one does.
-    if (distance < 1e-9) continue
-    const alignment = V.dot(V.scale(offset, 1 / distance), towards)
-    if (alignment > bestDot) {
-      bestDot = alignment
-      best = end
-    }
-  }
-  return best
-}
-
-/**
- * The angle an arc supplies directly: "the center of the arc is the angle
- * vertex, the arc endpoints become the origin points of the extension lines" —
- * for a standalone arc or an arc segment of a polyline.
- */
-function pickedSweep(entity: Entity, at: Vec2): AngularTarget | null {
-  if (entity.type === "arc") {
-    return {
-      kind: "points",
-      vertex: entity.center,
-      first: arcStartPoint(entity),
-      second: arcEndPoint(entity),
-    }
-  }
-  if (entity.type !== "polyline") return null
-  let best: AngularTarget | null = null
-  let bestDistance = Infinity
-  for (const seg of polylineSegmentGeometries(entity)) {
-    if (seg.kind !== "arc") continue
-    const distance = closestPointOnArc(
-      seg.center,
-      seg.radius,
-      seg.startAngle,
-      seg.endAngle,
-      at
-    ).distance
-    if (distance < bestDistance) {
-      bestDistance = distance
-      best = {
-        kind: "points",
-        vertex: seg.center,
-        first: seg.a,
-        second: seg.b,
+  const bearing = Math.atan2(offset.y, offset.x)
+  const radius = V.length(offset)
+  const along = (line: PickedLine): Vec2 => V.normalize(V.sub(line.b, line.a))
+  const a = along(target.a)
+  const b = along(target.b)
+  // The two lines make four sectors, each bounded by a ray of either and
+  // under 180°: the one holding the location's bearing is measured
+  // (probes dimensions/p344–p348).
+  for (const ra of [a, V.scale(a, -1)]) {
+    for (const rb of [b, V.scale(b, -1)]) {
+      const from = Math.atan2(ra.y, ra.x)
+      const to = Math.atan2(rb.y, rb.x)
+      const [start, end] =
+        normalizeAngle(to - from) <= Math.PI ? [from, to] : [to, from]
+      if (angleWithinSweep(start, end, bearing)) {
+        return {
+          first: rayPoint(target.a, vertex, ra, radius),
+          second: rayPoint(target.b, vertex, rb, radius),
+        }
       }
     }
   }
-  return best
+  return null
 }
 
 /**
- * The straight run under the cursor: a line, or the nearest straight segment of
- * a polyline ("two lines or polyline segments").
+ * The angle endpoint on the ray from `vertex` along `ray` for an arc at
+ * `radius`: the point of `line` nearest the arc, so an extension line is
+ * drawn only where the arc misses the line, outward past its far end or
+ * inward short of its near one, and none where it crosses it (probes
+ * dimensions/p344, p346: no LINE in the exploded dimension). WHY a point
+ * rather than the line's end: the dimension stores points, not the lines,
+ * so an arc moved later is not re-measured against them as AutoCAD's is.
+ * A line not reaching that side of the vertex gives the arc's own point.
  */
-function pickedLine(entity: Entity, at: Vec2): PickedLine | null {
-  if (entity.type === "line") {
-    return { id: entity.id, entity, a: entity.start, b: entity.end }
-  }
-  if (entity.type !== "polyline") return null
-  let best: PickedLine | null = null
-  let bestDistance = Infinity
-  for (const seg of polylineSegmentGeometries(entity)) {
-    if (seg.kind !== "line") continue
-    const distance = closestPointOnSegment(seg.a, seg.b, at).distance
-    if (distance < bestDistance) {
-      bestDistance = distance
-      best = { id: entity.id, entity, a: seg.a, b: seg.b }
+function rayPoint(
+  line: PickedLine,
+  vertex: Vec2,
+  ray: Vec2,
+  radius: number
+): Vec2 {
+  const reach = (end: Vec2) => V.dot(V.sub(end, vertex), ray)
+  const far = Math.max(reach(line.a), reach(line.b))
+  const near = Math.max(Math.min(reach(line.a), reach(line.b)), 0)
+  const distance = far <= 1e-9 ? radius : Math.min(Math.max(radius, near), far)
+  return V.add(vertex, V.scale(ray, distance))
+}
+
+/** `point` taken radially onto the circle about `center`; itself at the centre. */
+function onCircle(center: Vec2, radius: number, point: Vec2): Vec2 {
+  const offset = V.sub(point, center)
+  const distance = V.length(offset)
+  return distance < 1e-9
+    ? point
+    : V.add(center, V.scale(offset, radius / distance))
+}
+
+/** What a pick on `entity` gives DIMANGULAR's first prompt; null refuses it. */
+type AnglePick =
+  | { readonly kind: "sweep"; readonly target: AngularTarget }
+  | { readonly kind: "circle"; readonly center: Vec2; readonly radius: number }
+  | { readonly kind: "line"; readonly line: PickedLine }
+
+/**
+ * An arc gives its angle directly — "the center of the arc is the angle
+ * vertex, the arc endpoints become the origin points of the extension lines"
+ * —, a circle its centre and the pick, a line itself; a polyline as the
+ * segment picked is ("two lines or polyline segments", p367, p368).
+ */
+function anglePick(entity: Entity, at: Vec2): AnglePick | null {
+  switch (entity.type) {
+    case "arc":
+      return {
+        kind: "sweep",
+        target: {
+          kind: "points",
+          vertex: entity.center,
+          first: arcStartPoint(entity),
+          second: arcEndPoint(entity),
+        },
+      }
+    case "circle":
+      return { kind: "circle", center: entity.center, radius: entity.radius }
+    case "line":
+      return {
+        kind: "line",
+        line: { id: entity.id, segment: -1, a: entity.start, b: entity.end },
+      }
+    case "polyline": {
+      let best: AnglePick | null = null
+      let bestDistance = Infinity
+      polylineSegmentGeometries(entity).forEach((seg, segment) => {
+        const distance =
+          seg.kind === "arc"
+            ? closestPointOnArc(
+                seg.center,
+                seg.radius,
+                seg.startAngle,
+                seg.endAngle,
+                at
+              ).distance
+            : closestPointOnSegment(seg.a, seg.b, at).distance
+        if (distance >= bestDistance) return
+        bestDistance = distance
+        best =
+          seg.kind === "arc"
+            ? {
+                kind: "sweep",
+                target: {
+                  kind: "points",
+                  vertex: seg.center,
+                  first: seg.a,
+                  second: seg.b,
+                },
+              }
+            : {
+                kind: "line",
+                line: { id: entity.id, segment, a: seg.a, b: seg.b },
+              }
+      })
+      return best
     }
+    default:
+      return null
   }
-  return best
 }
 
 type AngularToolState =
@@ -685,6 +782,8 @@ type AngularToolState =
       readonly phase: "secondEndpoint"
       readonly vertex: Vec3
       readonly first: Vec2
+      /** The circle form's radius, which the second endpoint is taken onto. */
+      readonly circle: number | null
       readonly cursor: Vec2
     }
   | {

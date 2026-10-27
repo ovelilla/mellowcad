@@ -1036,11 +1036,24 @@ describe("opens drawings written by every earlier schema", () => {
     expect(parsed.dimStyles[0].suppressTrailingZeros).toBe(true)
   })
 
-  it("keeps a style's separator and zeros, and a moved dimension text", () => {
+  it("version 34 — a style from before DIMTOFL reads ISO-25's On (probe dimensions/p06)", () => {
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: 34,
+        dimStyles: [{ id: "ISO-25", name: "ISO-25", forceLineInside: "no" }],
+        entities: [],
+      })
+    )
+    expect(parsed.dimStyles[0].forceLineInside).toBe(true)
+  })
+
+  it("keeps a style's separator, zeros and DIMTOFL, and a moved dimension text", () => {
     const style = {
       ...createDefaultDimStyle(),
       decimalSeparator: ".",
       suppressTrailingZeros: false,
+      forceLineInside: false,
     }
     const moved = createDimension("linear", p(0, 0), p(40, 0), p(30, 20), {
       textPoint: p(30, 20),

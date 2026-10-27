@@ -118,7 +118,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 34
+export const DRAWING_FILE_VERSION = 35
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -1638,6 +1638,11 @@ function parseDimStyles(value: unknown): DimStyle[] {
           typeof raw.suppressTrailingZeros === "boolean"
             ? raw.suppressTrailingZeros
             : DEFAULT_DIM_STYLE.suppressTrailingZeros,
+        // Before 35 every style drew ISO-25's DIMTOFL On unread.
+        forceLineInside:
+          typeof raw.forceLineInside === "boolean"
+            ? raw.forceLineInside
+            : DEFAULT_DIM_STYLE.forceLineInside,
         scale:
           isFiniteNumber(raw.scale) && raw.scale > 0
             ? clampDimScale(raw.scale)

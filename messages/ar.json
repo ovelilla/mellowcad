@@ -491,6 +491,7 @@
       "offsetFromDimLine": "الإزاحة عن خط البُعد",
       "fit": "الملاءمة",
       "overallScale": "استخدام مقياس عام قدره",
+      "drawDimLineBetween": "رسم خط البُعد بين خطوط الامتداد",
       "primaryUnits": "الوحدات الأساسية",
       "precision": "الدقة",
       "angularPrecision": "الدقة الزاوية",

@@ -1301,6 +1301,7 @@ export const en: EngineCatalog = {
       "angleVertex": "Specify angle vertex",
       "firstAngleEndpoint": "Specify first angle endpoint",
       "secondAngleEndpoint": "Specify second angle endpoint",
+      "circleSecondAngleEndpoint": "Specify second angle endpoint",
       "dimensionArcLocation": "Specify dimension arc line location",
       "dimensionSpacing": "Enter value",
       "offsetDistance": "Offset distance",
@@ -3447,6 +3448,10 @@ export const en: EngineCatalog = {
       "notLineArcOrCircleToDimension": "Object selected is not a line, arc or circle.",
       "associativeDimensionRequired": "Linear, ordinate, or angular associative dimension required.",
       "selectedObjectNotDimension": "Selected object is not a dimension.",
+      "notCircleOrArc": "Object selected is not a circle or arc.",
+      "notLineArcOrCircle": "Object selected is not a line, arc or circle.",
+      "notALine": "Object selected is not a line.",
+      "dimLinesParallel": "Lines are parallel.",
       "negativeSpacing": "Invalid spacing value, spacing value cannot be negative."
     },
     "feedback": {
@@ -3684,6 +3689,8 @@ export const en: EngineCatalog = {
           "description"
         ]
       ],
+      "dimVariableOn": "On",
+      "dimVariableOff": "Off",
       "dimVariableDescription": {
         "DIMSTYLE": "Current dimension style (read-only)",
         "DIMADEC": "Angular decimal places",
@@ -3696,6 +3703,7 @@ export const en: EngineCatalog = {
         "DIMEXO": "Extension line origin offset",
         "DIMGAP": "Gap from dimension line to text",
         "DIMSCALE": "Overall scale factor",
+        "DIMTOFL": "Force line inside extension lines",
         "DIMTXT": "Text height",
         "DIMZIN": "Zero suppression"
       },

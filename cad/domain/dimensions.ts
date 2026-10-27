@@ -14,6 +14,7 @@ import {
   scaledDimStyle,
 } from "./dimStyles"
 import { EntityId, DimensionKind, DimensionEntity } from "./entityTypes"
+import { measureTextInk } from "./text"
 import { nextEntityId } from "./entityFactories"
 
 /** The optional settings of a dimension; enough of them to want a bag. */
@@ -163,20 +164,19 @@ export function dimensionMeasurement(dim: DimensionEntity): number {
  * its style, never stored — so the number can never drift from the geometry. A
  * radial measurement carries AutoCAD's radius or diameter symbol in front of
  * it. An explicit `text` override replaces the lot, with `<>` standing in for
- * the bare measurement exactly as AutoCAD's Text option does (`12,5 mm`, p15).
+ * the measurement as drawn, symbol and all, exactly as AutoCAD's Text option
+ * does (`12,5 mm`, p15; `R50 TYP`, p320).
  */
 export function dimensionText(
   dim: DimensionEntity,
   style: DimStyle = DEFAULT_DIM_STYLE
 ): string {
-  const measured = dimensionMeasurementText(dim, style)
-  return dim.text === undefined
-    ? radialPrefix(dim.kind) + measured
-    : dim.text.replace(/<>/g, measured)
+  const measured = radialPrefix(dim.kind) + dimensionMeasurementText(dim, style)
+  return dim.text === undefined ? measured : dim.text.replace(/<>/g, measured)
 }
 
 /**
- * The measurement as a string. An angular one is written in degrees with the
+ * The measurement as a string. A drawn angle is written in degrees with the
  * degree sign, which is part of how the value itself reads rather than a
  * prefix — so `<>` in a Text override substitutes it complete.
  *
@@ -184,7 +184,8 @@ export function dimensionText(
  * trailing zeros dropped under DIMZIN 8 (`12,5`, `100`, `0,5`; p02) while an
  * angle keeps them (DIMAZIN 0: `22,50°`, p366). `reported` is what the command
  * line writes (`Dimension text = 12.5`, p01) and Text offers (`<12.5>`, p15):
- * a point, and the zeros dropped from an angle too (`22.5`, p366).
+ * a point, the zeros dropped from an angle too (`22.5`, p366), and no degree
+ * sign (`Dimension text = 90`, `<90>`; p342, p359).
  *
  * Angular dimensions count their decimals with DIMADEC rather than DIMDEC, so
  * the two can be set apart: AutoCAD ships with DIMADEC 0, which is why a fresh
@@ -202,7 +203,13 @@ export function dimensionMeasurementText(
   if (dimensionMeasurementUnit(dim.kind) === "angle") {
     const degrees = (measured * 180) / Math.PI
     const suppress = !drawn && style.suppressTrailingZeros
-    return `${decimalNumber(degrees, angleDecimalsOf(style), suppress, separator)}\u00b0`
+    const value = decimalNumber(
+      degrees,
+      angleDecimalsOf(style),
+      suppress,
+      separator
+    )
+    return drawn ? `${value}\u00b0` : value
   }
   return decimalNumber(
     measured,
@@ -226,9 +233,10 @@ function decimalNumber(
 }
 
 /**
- * The symbol AutoCAD puts in front of a radial measurement. The diameter sign
- * is written with U+00D8 rather than the typographically correct U+2300, which
- * the UI fonts do not reliably carry — a missing glyph would render as a box.
+ * The symbol AutoCAD puts in front of a radial measurement. WHY U+00D8 for
+ * the diameter where AutoCAD writes ∅ (U+2205, p302): the drawing font (Arial's
+ * metrics, Arimo) has no ∅, which a fallback face would draw and measure
+ * otherwise; Ø's ink is the box AutoCAD lays out (8.235 wide for `∅100`, p302).
  */
 function radialPrefix(kind: DimensionKind): string {
   if (kind === "radius") return "R"
@@ -237,9 +245,9 @@ function radialPrefix(kind: DimensionKind): string {
 
 /** Everything a dimension draws, resolved from its definition points. */
 export interface DimensionGeometry {
-  /** Where the dimension line starts; for a radial one, its inner end. */
+  /** Where the dimension line starts; for a radial one, the text's far end. */
   readonly lineStart: Vec2
-  /** Where it ends: the far extension line, or the measured arc. */
+  /** Where it ends: the far extension line, or a radial one's arrow base. */
   readonly lineEnd: Vec2
   /**
    * Halfway along the dimension line — around the arc when there is one, which
@@ -258,7 +266,8 @@ export interface DimensionGeometry {
   }
   /**
    * Every other straight run the dimension draws: the two extension lines of a
-   * linear dimension, or a radial one's centre mark and outside arrow stub.
+   * linear dimension, or a radial one's DIMTOFL line or centre mark and a
+   * diameter's outside arrow stub.
    */
   readonly lines: readonly (readonly [Vec2, Vec2])[]
   /** Filled arrowhead outlines, tips on the dimension line's ends. */
@@ -374,8 +383,10 @@ function bearingFrom(from: Vec2, to: Vec2): number {
 /**
  * An angular dimension. "The dimension line is drawn as an arc between the
  * extension lines. The extension lines are drawn from the angle endpoints to
- * the intersection of the dimension line" — so an extension line exists only
- * where the arc has been pulled past that endpoint, and the arrowheads sit
+ * the intersection of the dimension line" — outward where the arc is beyond
+ * an endpoint, inward where it is short of it, DIMEXO off the endpoint and
+ * DIMEXE past the arc either way (probes dimensions/p340: 50.625→71.25 to an
+ * arc at 70; p342: 49.375→41.18 to one at 42.43) — and the arrowheads sit
  * tangent to the arc at its two ends.
  */
 function angularGeometry(
@@ -394,7 +405,7 @@ function angularGeometry(
     [dim.first, frame.firstAngle],
     [dim.second, frame.secondAngle],
   ] as const) {
-    if (radius > V.distance(vertex, origin) + 1e-9)
+    if (Math.abs(radius - V.distance(vertex, origin)) > 1e-9)
       lines.push(extensionLine(origin, at(angle), sized))
   }
 
@@ -465,16 +476,19 @@ function angularTextPlacement(
 }
 
 /**
- * A radius or diameter dimension. The dimension line runs along the radius
- * through `second`: from the centre (or, for a diameter, right across from the
- * far side) out to the measured point when the text was placed inside the
- * circle, and as a leader coming in from the text when it was placed outside —
- * where AutoCAD also marks the centre it no longer reaches (DIMCEN).
+ * A radius or diameter dimension, laid out as AutoCAD's exploded ones are
+ * (probes dimensions/p300–p303, p306, p320, p321). The text is centred on the
+ * location, pinned to the radial line through `second`, so the assembly reads
+ * straight however the location has since been dragged; one run goes from the
+ * far end of the text to the base of the one arrowhead on the rim, inside the
+ * circle or out (`LINE 26.39→47.5` under `R50` at 30, p300). The text's
+ * extent is its ink with DIMGAP each side (`R50 TYP`: 13.74 + 2 × 0.625,
+ * p320). Under an explicit Angle the text's middle sits on the line and the
+ * run stops at that box (p321).
  *
- * A simplification: AutoCAD's leader ends in a horizontal landing under the
- * text, whose length depends on how wide the text is. This engine has no glyph
- * metrics, so the text sits above the end of the leader, as it does on every
- * other dimension here.
+ * Outside, DIMTOFL draws the line across from the centre (a diameter's from
+ * the far rim, its second arrowhead outside on a stub; p301, p303) and off,
+ * the centre mark DIMCEN instead (p306).
  */
 function radialGeometry(
   dim: DimensionEntity,
@@ -485,45 +499,71 @@ function radialGeometry(
   const radius = V.length(offset)
   const dir = radius < 1e-9 ? { x: 1, y: 0 } : V.scale(offset, 1 / radius)
   const at = (distance: number): Vec2 => V.add(center, V.scale(dir, distance))
+  const lineAngle = Math.atan2(dir.y, dir.x)
 
   const arcPoint = at(radius)
-  const far = at(-radius)
-  // The text is pinned to the radial line, so the assembly always reads
-  // straight however the location has since been dragged.
   const along = V.dot(V.sub(dim.linePoint, center), dir)
   const outside = along > radius
-  const textAnchor = at(outside ? along : Math.max(along, 0))
+  const textAlong = outside ? along : Math.max(along, 0)
+  const textAnchor = at(textAlong)
+  // Along the line from the text towards the arrowhead on the rim.
+  const toward = outside ? -1 : 1
+  const arrowBase = at(radius - toward * sized.arrowSize)
+
+  const text = dimensionText(dim, sized)
+  const ink = measureTextInk(text, sized.textHeight)
+  const halfLong = (ink.x1 - ink.x0) / 2 + sized.textGap
+  const halfAcross = (ink.y1 - ink.y0) / 2 + sized.textGap
+  let lineStart: Vec2
+  let placed: ReturnType<typeof textPlacement>
+  if (dim.textAngle === undefined) {
+    lineStart = at(textAlong - toward * halfLong)
+    placed = textPlacement(dim, lineAngle, textAnchor, sized)
+  } else {
+    const turn = dim.textAngle - lineAngle
+    const reach = Math.min(
+      halfLong / Math.max(Math.abs(Math.cos(turn)), 1e-9),
+      halfAcross / Math.max(Math.abs(Math.sin(turn)), 1e-9)
+    )
+    lineStart = at(textAlong + toward * reach)
+    const up = { x: -Math.sin(dim.textAngle), y: Math.cos(dim.textAngle) }
+    placed = {
+      textPosition: V.sub(textAnchor, V.scale(up, (ink.y0 + ink.y1) / 2)),
+      textPoint: textAnchor,
+      textAngle: dim.textAngle,
+      textHeight: sized.textHeight,
+      text,
+    }
+  }
 
   const lines: [Vec2, Vec2][] = []
-  const arrows: Vec2[][] = []
-  let lineStart: Vec2
-
+  const arrows: Vec2[][] = [
+    arrowHead(arcPoint, at(radius - toward), sized.arrowSize),
+  ]
   if (outside) {
-    // A leader coming in from the text, with the arrowhead against the circle.
-    lineStart = textAnchor
-    arrows.push(arrowHead(arcPoint, textAnchor, sized.arrowSize))
+    const far = at(-radius)
     if (dim.kind === "diameter") {
-      // The opposite arrowhead sits outside too, on a stub of its own.
-      const stub = at(-radius - 2 * sized.arrowSize)
-      lines.push([far, stub])
-      arrows.push(arrowHead(far, stub, sized.arrowSize))
+      // The far arrowhead outside too, on a stub as long as it (p303).
+      arrows.push(arrowHead(far, at(-radius - 1), sized.arrowSize))
+      lines.push([
+        at(-radius - sized.arrowSize),
+        at(-radius - 2 * sized.arrowSize),
+      ])
     }
-    if (sized.centerMark > 0)
+    if (sized.forceLineInside) {
+      lines.push([dim.kind === "diameter" ? far : center, arcPoint])
+    } else if (sized.centerMark > 0) {
       lines.push(...centerMark(center, sized.centerMark))
-  } else {
-    lineStart = dim.kind === "diameter" ? far : center
-    arrows.push(arrowHead(arcPoint, lineStart, sized.arrowSize))
-    if (dim.kind === "diameter")
-      arrows.push(arrowHead(far, arcPoint, sized.arrowSize))
+    }
   }
 
   return {
     lineStart,
-    lineEnd: arcPoint,
-    lineMidpoint: V.midpoint(lineStart, arcPoint),
+    lineEnd: arrowBase,
+    lineMidpoint: V.midpoint(lineStart, arrowBase),
     lines,
     arrows,
-    ...textPlacement(dim, Math.atan2(dir.y, dir.x), textAnchor, sized),
+    ...placed,
     textPoint: textAnchor,
   }
 }

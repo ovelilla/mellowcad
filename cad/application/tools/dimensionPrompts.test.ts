@@ -138,6 +138,10 @@ describe("DIMLINEAR's questions", () => {
   })
 })
 
+/**
+ * DIMRADIUS's and DIMANGULAR's, as AutoCAD 2027's console asks them (probes
+ * dimensions/p300, p342, p359, p361; es p300, p334, p342, p361).
+ */
 describe("DIMRADIUS's and DIMANGULAR's questions", () => {
   it("are AutoCAD's, written answered", () => {
     const cad = createHarness({
@@ -148,11 +152,15 @@ describe("DIMRADIUS's and DIMANGULAR's questions", () => {
       "DIMRADIUS Select arc or circle:"
     )
     cad.click(p(50, 0))
+    // The measurement is said after the pick, before the location (p300).
+    expect(cad.commandLog().at(-1)).toBe("Dimension text = 50")
     expect(cad.state().commandLine.prompt).toBe(
       "DIMRADIUS Specify dimension line location or [Text/Angle]:"
     )
     cad.click(p(80, 0))
-    expect(cad.commandLog().at(-1)).toBe("Dimension text = 50")
+    expect(cad.commandLog().filter((l) => l.startsWith("Dimension"))).toEqual([
+      "Dimension text = 50",
+    ])
 
     cad.command("DIMANGULAR")
     expect(cad.state().commandLine.prompt).toBe(
@@ -167,8 +175,27 @@ describe("DIMRADIUS's and DIMANGULAR's questions", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "DIMANGULAR Specify dimension arc line location or [Text/Angle]:"
     )
-    cad.click(p(260, 60))
-    expect(cad.commandLog().at(-1)).toBe("Dimension text = 90°")
+    cad.moveTo(p(260, 60)).option("Text")
+    // No degree sign in Text's default nor in the report (p342, p359).
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMANGULAR Enter dimension text <90>:"
+    )
+    cad.enter().click(p(260, 60))
+    expect(cad.commandLog().at(-1)).toBe("Dimension text = 90")
+  })
+
+  it("ask the circle form's second endpoint with a prompt of its own (p342)", () => {
+    const circle = [circleOf(p(0, 0), 50, { id: "C" })]
+    const cad = createHarness({ entities: circle })
+    cad.command("DIMANGULAR").click(p(50, 0))
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMANGULAR Specify second angle endpoint:"
+    )
+    const spanish = createHarness({ entities: circle, locale: es })
+    spanish.command("ACOANGULAR").click(p(50, 0))
+    expect(spanish.state().commandLine.prompt).toBe(
+      "ACOANGULAR Precise segundo punto final del ángulo:"
+    )
   })
 
   it("ask in Spanish", () => {
@@ -177,18 +204,32 @@ describe("DIMRADIUS's and DIMANGULAR's questions", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "ACORADIO Designe un arco o un círculo:"
     )
-    cad.escape().command("ACOANGULO")
+    cad.escape().command("ACOANGULAR")
     expect(cad.state().commandLine.prompt).toBe(
-      "ACOANGULO Designe arco, círculo, línea o <designar vértice>:"
+      "ACOANGULAR Designe arco, círculo, línea o <designar vértice>:"
     )
     cad.enter().click(p(0, 0)).click(p(100, 0))
     expect(cad.state().commandLine.prompt).toBe(
-      "ACOANGULO Designe segundo punto final del ángulo:"
+      "ACOANGULAR Designe segundo punto final del ángulo:"
     )
     cad.click(p(0, 100))
     expect(cad.state().commandLine.prompt).toBe(
-      "ACOANGULO Designe ubicación del arco de línea de cota o [Texto/ángUlo]:"
+      "ACOANGULAR Designe ubicación del arco de línea de cota o [Texto/ángUlo]:"
     )
+  })
+
+  it("name ACOANGULAR in Spanish, ACOANG its alias; ACOANGULO is unknown (p334, p363 es)", () => {
+    const cad = createHarness({ locale: es })
+    answer(cad, "ACOANGULO")
+    expect(cad.commandLog().at(-1)).toBe(
+      'Comando "ACOANGULO" desconocido. Pulse F1 para obtener ayuda.'
+    )
+    answer(cad, "ACOANG")
+    expect(cad.activeToolId()).toBe("dimangular")
+    answer(cad, "")
+    for (const point of ["0,0", "10,0", "0,10", "20,20"]) answer(cad, point)
+    answer(cad, "H")
+    expect(cad.commandLog().at(-1)).toBe("ACOANGULAR")
   })
 })
 

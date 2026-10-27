@@ -3,6 +3,7 @@ import { Vec3, withZ } from "../../geometry/Vec3"
 import {
   angleWithinSweep,
   closestPointOnArc,
+  closestPointOnSegment,
   normalizeAngle,
 } from "../../geometry/primitives"
 import {
@@ -39,6 +40,8 @@ import {
 } from "./Tool"
 import { withCurrentProperties } from "./currentProperties"
 import { measurementOf } from "./DimensionTool"
+import { rollover } from "./ghostLook"
+import { typedPick } from "./typedPick"
 
 /** Which measurement a radial dimension reports. */
 export type RadialDimensionKind = "radius" | "diameter"
@@ -48,16 +51,16 @@ export type RadialDimensionKind = "radius" | "diameter"
  * it is — they run the identical two prompts and differ only in the number they
  * report and the symbol in front of it ("R" or "Ø").
  *
- * The prompts are AutoCAD's: `Select arc or circle:` — "specifies a circle,
- * arc, or arc segment on a polyline" — then `Specify dimension line location
- * or [Text/Angle]:`, which "determines the angle of the dimension line and the
- * location of the dimension text", its Text asking `Enter dimension text
- * <10.00>:` and Angle `Specify angle of dimension text:`. The command ends
- * the moment the location is picked, saying `Dimension text = 10.00`.
- *
- * Placing the location inside the circle draws the dimension line across the
- * object; placing it outside turns it into a leader and marks the centre
- * (DIMCEN), which is the whole of the difference the two placements make.
+ * The prompts are AutoCAD 2027's (probes dimensions/p300, p309, p320,
+ * p321): `Select arc or circle:` — "specifies a circle, arc, or arc segment
+ * on a polyline", anything else refused as `Object selected is not a circle
+ * or arc.` —, `Dimension text = 50` said at once, then `Specify dimension
+ * line location or [Text/Angle]:`, which "determines the angle of the
+ * dimension line and the location of the dimension text", its Text asking
+ * `Enter dimension text <50>:` and Angle `Specify angle of dimension text:`.
+ * The command ends the moment the location is picked, or at Enter, which
+ * places it at the cursor (p317, p333). How each placement draws is
+ * `dimensionGeometry`'s.
  *
  * AutoCAD's **Mtext** keyword is absent: it edits the dimension text in the
  * multiline editor, and a dimension's text here is a single line.
@@ -112,9 +115,7 @@ export class RadialDimensionTool implements Tool {
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
     if (this.state.phase === "select") {
-      const hit = this.pickMeasurable(input.world, ctx)
-      const target = hit && measuredCircle(hit, input.world)
-      if (target) this.enterLocation(target, ctx)
+      this.pickAt(input.world, ctx)
     } else {
       this.place(input.point, ctx)
     }
@@ -134,7 +135,7 @@ export class RadialDimensionTool implements Tool {
     }
   }
 
-  /** As AutoCAD 2023's console refuses a dimension's answers. */
+  /** As AutoCAD 2027's console refuses a dimension's answers (p307, p316). */
   takes(): QuestionInput | null {
     const state = this.state
     if (state.phase === "select") return "singleObject"
@@ -146,6 +147,34 @@ export class RadialDimensionTool implements Tool {
       case null:
         return { refusal: "invalidPointInput" }
     }
+  }
+
+  /**
+   * The pick and the location are LASTPOINT once given, which their refusal
+   * of its own would hide from the runtime (probes dimensions/p300, p336).
+   */
+  setsLastPoint(): boolean | null {
+    const state = this.state
+    return state.phase === "select" || state.prompt === null ? true : null
+  }
+
+  /** `Select arc or circle:` takes a locked layer's objects (probe dimensions/p315). */
+  picksLocked(): boolean {
+    return this.state.phase === "select"
+  }
+
+  /** `<30` at Angle is that angle (probe dimensions/p130, DIMLINEAR's). */
+  answersAngleOverride(): boolean {
+    return this.state.phase === "location" && this.state.prompt === "textAngle"
+  }
+
+  /** A point typed at `Select arc or circle:` picks there (probe dimensions/p300). */
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    if (this.state.phase !== "select") return false
+    const point = typedPick(text, ctx)
+    if (!point) return false
+    this.pickAt(point, ctx)
+    return true
   }
 
   commandOptions(): readonly CommandOption[] {
@@ -184,12 +213,13 @@ export class RadialDimensionTool implements Tool {
     }
   }
 
+  /**
+   * None: the location has no base point (the console's trace: UseBasePoint
+   * false, probe dimensions/p300), so Ortho and Polar leave it alone and a
+   * point typed there reads from LASTPOINT.
+   */
   getConstraintAnchor(): Vec2 | null {
-    // The centre: Ortho and Polar then lock the direction the leader runs in.
-    const state = this.state
-    return state.phase === "location" && state.prompt !== "textAngle"
-      ? state.target.center
-      : null
+    return null
   }
 
   /** The text's angle is two points the runtime measures. */
@@ -199,12 +229,7 @@ export class RadialDimensionTool implements Tool {
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     if (this.state.phase === "select") {
-      return this.state.hover
-        ? entityScenePrimitive(ctx.viewport, this.state.hover, {
-            color: THEME.selected,
-            width: 2,
-          })
-        : []
+      return this.state.hover ? rollover(ctx, this.state.hover) : []
     }
     return entityScenePrimitive(
       ctx.viewport,
@@ -252,14 +277,29 @@ export class RadialDimensionTool implements Tool {
     )
   }
 
-  private place(at: Vec3, ctx: ToolContext): void {
+  private place(at: Vec2, ctx: ToolContext): void {
     if (this.state.phase !== "location") return
     const dim = this.pending(this.state.target, at, ctx)
     ctx.execute(new AddEntityCommand(withCurrentProperties(dim, ctx)))
-    ctx.report(
-      ctx.text.message("dimensionTextIs", { text: measurementOf(dim, ctx) })
-    )
     ctx.endCommand()
+  }
+
+  /**
+   * `Select arc or circle:` at `world`: a circle or arc starts the location
+   * prompt, any other object is refused in words and nothing is passed over
+   * in silence (probes dimensions/p309–p314). WHY a block reference is
+   * silent: AutoCAD's prompt picks inside one (a nested pick, p300's trace),
+   * which is not built here.
+   */
+  private pickAt(world: Vec2, ctx: ToolContext): void {
+    const hit = ctx.pick(world)
+    if (!hit || !readsInPlan(hit) || hit.type === "insert") return
+    const target = measuredCircle(hit, world)
+    if (target) {
+      this.enterLocation(target, ctx)
+    } else {
+      ctx.report(ctx.text.message("notCircleOrArc"))
+    }
   }
 
   /** The object under the cursor a radial dimension can be taken from, in the UCS's plane. */
@@ -275,6 +315,7 @@ export class RadialDimensionTool implements Tool {
     ctx.dynamicInput.open({ fields: [], commit: () => {} })
   }
 
+  /** The measurement is said as the object is taken (probe dimensions/p300). */
   private enterLocation(target: MeasuredCircle, ctx: ToolContext): void {
     this.state = {
       phase: "location",
@@ -282,6 +323,10 @@ export class RadialDimensionTool implements Tool {
       cursor: target.center,
       prompt: null,
     }
+    const dim = this.pending(target, target.center, ctx)
+    ctx.report(
+      ctx.text.message("dimensionTextIs", { text: measurementOf(dim, ctx) })
+    )
     this.openLocationInput(ctx)
   }
 
@@ -304,10 +349,16 @@ export class RadialDimensionTool implements Tool {
       commitRaw: (commitCtx) => {
         if (this.state.phase !== "location") return false
         const typed = commitCtx.dynamicInput.getText("point").trim()
+        // Enter places it at the cursor, the jig's point (probes
+        // dimensions/p317, p333; desktop d06).
+        if (typed === "") {
+          this.place(this.state.cursor, commitCtx)
+          return true
+        }
         if (!isCoordinateExpression(typed)) return false
         const point = parseCoordinate(typed, {
-          lastPoint: this.state.target.center,
-          relativeByDefault: true,
+          lastPoint: commitCtx.lastPoint,
+          relativeByDefault: false,
           ucs: commitCtx.ucs,
           elevation: commitCtx.elevation,
         })
@@ -356,25 +407,31 @@ function measuredCircle(entity: Entity, at: Vec2): MeasuredCircle | null {
         endAngle: entity.endAngle,
       }
     case "polyline": {
+      // The segment picked, which a straight one refuses (probe dimensions/p314).
       let best: MeasuredCircle | null = null
       let bestDistance = Infinity
       for (const seg of polylineSegmentGeometries(entity)) {
-        if (seg.kind !== "arc") continue
-        const distance = closestPointOnArc(
-          seg.center,
-          seg.radius,
-          seg.startAngle,
-          seg.endAngle,
-          at
-        ).distance
+        const distance =
+          seg.kind === "arc"
+            ? closestPointOnArc(
+                seg.center,
+                seg.radius,
+                seg.startAngle,
+                seg.endAngle,
+                at
+              ).distance
+            : closestPointOnSegment(seg.a, seg.b, at).distance
         if (distance < bestDistance) {
           bestDistance = distance
-          best = {
-            center: withZ(seg.center, entityElevation(entity)),
-            radius: seg.radius,
-            startAngle: seg.startAngle,
-            endAngle: seg.endAngle,
-          }
+          best =
+            seg.kind === "arc"
+              ? {
+                  center: withZ(seg.center, entityElevation(entity)),
+                  radius: seg.radius,
+                  startAngle: seg.startAngle,
+                  endAngle: seg.endAngle,
+                }
+              : null
         }
       }
       return best

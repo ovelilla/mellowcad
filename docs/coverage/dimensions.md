@@ -6,9 +6,10 @@
 
 - **The measurement** as ISO-25 writes it: DIMDSEP's comma and DIMZIN 8's trailing zeros dropped
   from a length (`12,5`, `100`, `0`, `0,5`, `1234,57`; p02), an angle keeping its zeros (DIMAZIN 0:
-  `22,50°` at DIMADEC 2, p366); a Text override's `<>` drawn so (`12,5 mm`, p15). The command line
-  writes it with a point and no trailing zeros, an angle's too: `Dimension text = 12.5`, Text's
-  `<12.5>` (p01, p15, p366). A style's separator (`,`, `.`, space) and trailing zeros are set in
+  `22,50°` at DIMADEC 2, p366); a Text override's `<>` drawn so (`12,5 mm`, p15), a radial one's
+  with its symbol (`R50 TYP`, p320, p329). The command line writes it with a point and no trailing
+  zeros, an angle's too and no degree sign: `Dimension text = 12.5`, Text's `<12.5>`, `<90>` (p01,
+  p15, p342, p359, p366). A style's separator (`,`, `.`, space) and trailing zeros are set in
   the Styles palette's Primary units; a file before version 34 reads ISO-25's.
 - **Grips** as AutoCAD's (desktop d01-1): a linear or aligned one's two origins, its dimension
   line's two ends and its text; a radius's centre, rim point and text; a diameter's two rim points
@@ -170,24 +171,35 @@ design)
 
 ### `DIMRADIUS` / `DIMRAD` / `DRA` · es `ACORADIO` / `ACORAD`†
 
-**Implemented:** `Select arc or circle:` (es `Designe un arco o un círculo`;
-`Expects a single object.`), `Specify dimension line location or [Text/Angle]:`, then
-`Dimension text = 10`; Text, Angle, arc/circle/polyline-arc-segment selection, DIMCEN centre
-mark, direction from the picked location
+**Implemented:** `Select arc or circle:` (es `Designe un arco o un círculo`; FOO `Expects a single
+object.`, p307), a circle, arc or polyline arc segment picked, on a locked layer too (p315), or a
+point typed there (p300); any other object `Object selected is not a circle or arc.` (es `El objeto
+designado no es ni un círculo ni un arco.`) and asked again, nothing asked again in silence
+(p309–p314). `Dimension text = 50` right after the pick, then `Specify dimension line location or
+[Text/Angle]:` (es `Especifique una ubicación de línea de cota o`, p300 es); Text, Angle (`<30`
+too); the direction from the location; Enter places it at the cursor (p317, p333, desktop d06). The
+pick and the location are LASTPOINT, and `@` at the location reads from the pick (p318, p336). The
+location has no base point: no Ortho or Polar there (UseBasePoint false). Drawn as the exploded
+dimension (p300, p301, p306, p321): the text centred on the location, one run from its far end to
+the base of the one arrowhead on the rim, inside or out, measured by the text's ink and DIMGAP;
+outside, DIMTOFL's line from the centre (ISO-25) or DIMCEN's mark (DIMTOFL off); under an Angle the
+text's middle on the line, the run stopping at its box.
 
-**Missing:** Mtext, extension beyond the arc sweep (clamped to the sweep), DIMCEN negative
-centrelines; **unverified**: es of the location prompt (the table has two wordings;
-`Especifique una ubicación de línea de cota o` here)
+**Missing:** Mtext, extension beyond the arc sweep (clamped to the sweep), a pick inside a block
+reference (the prompt is a nested pick, p300's trace), DIMCEN negative centrelines, DIMATFIT and
+DIMTOH (ISO-25 writes the text along the leader with no landing, desktop d04).
 
 ### `DIMDIAMETER` / `DIMDIA` / `DDI` · es `ACODIAMETRO` / `ACODIA`†
 
-**Implemented:** DIMRADIUS's prompts; Text, Angle, Ø symbol, centre mark, opposite-side stub with
-arrowhead
+**Implemented:** DIMRADIUS's prompts, refusals and placement, reporting the diameter; inside one
+run to one arrowhead (p302); outside DIMTOFL's line across from rim to rim, the far arrowhead
+outside on a stub as long as it (p303). The sign is drawn Ø (U+00D8) where AutoCAD writes ∅
+(U+2205): the drawing font has no ∅, and Ø's ink is the width AutoCAD lays out (p302, p329).
 
-**Missing:** Mtext, leader landing segment (needs text measurement), DIMTOFL/DIMATFIT, DIMCEN
-negative centrelines; **unverified**: es of the location prompt, as DIMRADIUS's
+**Missing:** what DIMRADIUS lacks; **unverified**: outside with DIMTOFL off (the centre mark and
+the far arrowhead on its stub, not probed).
 
-### `DIMANGULAR` / `DIMANG` / `DAN` · es `ACOANGULO` / `ACOANGULAR` / `ACOANG`†
+### `DIMANGULAR` / `DIMANG` / `DAN` · es `ACOANGULAR` / `ACOANG`†
 
 **Implemented:** `Select arc, circle, line, or <specify vertex>:` (es
 `Designe arco, círculo, línea o <designar vértice>`), `Select second line:`, Enter's
@@ -195,12 +207,26 @@ negative centrelines; **unverified**: es of the location prompt, as DIMRADIUS's
 `Designe vértice del ángulo`,
 `Designe primer punto final del ángulo`, `Designe segundo punto final del ángulo` — the 2027
 console's words since its update; the release's language pack said `primer extremo`) and
-`Non-associative dimension created.`, `Specify dimension arc line location or [Text/Angle]:` (es
-`Designe ubicación del arco de línea de cota o`), then `Dimension text = 90°`; arc, circle, line
-pair and three-point vertex forms; Text, Angle; reflex angle chosen by location; <180° for a line
-pair; DIMADEC formatting
+`Non-associative dimension created.`; the circle form's own `Specify second angle endpoint:` (es
+`Precise segundo punto final del ángulo`, p342 es), its two endpoints taken onto the circle (p342,
+p343); `Specify dimension arc line location or [Text/Angle]:` (es `Designe ubicación del arco de
+línea de cota o`), then `Dimension text = 90` (Text's `<90>`, no degree sign; p342, p359); arc,
+circle, line pair (two segments of one polyline too, p367) and three-point vertex forms; Text,
+Angle; reflex angle chosen by location; a line pair measures the sector of the four holding the
+location (p344–p348). Refusals: `Object selected is not a line, arc or circle.` (p354, p355),
+`Object selected is not a line.` at the second (p358), and the same segment again or a parallel line
+says `Lines are parallel.` and ends (p349, p350). Locked lines are taken (DIMRADIUS's p315; for
+DIMANGULAR **unverified**) and a point typed at either object prompt picks there; every pick and
+point is LASTPOINT and `@` at the location reads it (p335, p362). The location has no base point (UseBasePoint false, p340). Extension lines run out
+to an arc beyond an endpoint or in to one short of it, DIMEXO and DIMEXE either way (p340, p342); a
+line pair's none where its arc crosses the lines (p344, p346). Enter at the location ends with
+nothing, as the console's (p369). DIMADEC formatting.
 
-**Missing:** Quadrant (deferred), DIMAUNIT, chaining and spacing (see DIMBASELINE/DIMSPACE)
+**Missing:** Quadrant (deferred), DIMAUNIT, chaining and spacing (see DIMBASELINE/DIMSPACE), a pick
+inside a block reference. A line pair's dimension keeps the points where its arc met the lines, not
+the lines: an arc moved later keeps its extension lines from there, where AutoCAD re-measures
+against the lines; where a line does not reach the location's side of the vertex, what AutoCAD
+takes is **unverified**.
 
 ### `DIMSTYLE` / `D` / `DIMSTY` / `DST` / `DDIM` · es `ACOESTIL` / `ACES` / `ACOEST` / `AES` / `DCOTA`
 
@@ -313,8 +339,9 @@ a preselection, as the dialog does (p160, d07).
   Annotative scaling does not exist here, so the style would be inert (TEXT-D50).
 
 **DIMSTYLE variables honoured**: DIMTXT, DIMASZ, DIMEXE, DIMEXO, DIMGAP, DIMDEC, DIMSCALE, DIMDLI,
-DIMCEN (positive/mark branch), DIMADEC, DIMDSEP, DIMZIN (8, trailing zeros).
-**Not modelled**: DIMCEN negative (centrelines), DIMTOFL and DIMATFIT (text-fit logic), DIMASSOC,
+DIMCEN (positive/mark branch), DIMADEC, DIMDSEP, DIMZIN (8, trailing zeros), DIMTOFL (a radial
+dimension's line outside; the Styles palette's Fit, a file before version 35 reads On).
+**Not modelled**: DIMCEN negative (centrelines), DIMATFIT (text-fit logic), DIMASSOC,
 DIMZIN's other bits, DIMAZIN (0: an angle keeps its zeros), DIMTMOVE (always 0),
 DIMCONTINUEMODE (always 1: the base's style and layer), DIMAUNIT, DIMTXSTY height override, DIMPOST
 (kept empty).

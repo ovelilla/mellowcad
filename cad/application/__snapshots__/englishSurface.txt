@@ -3042,6 +3042,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: "X,Y"=""||*
   options: [T] Text, [A] Angle
   prompt| Select arc or circle:
+  info| Dimension text = 50
 > T
   prompt: DIMRADIUS Enter dimension text <50>:
   asks: "Enter dimension text"
@@ -3081,7 +3082,6 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: -
   options: -
   prompt| Specify dimension line location or [Text/Angle]:
-  info| Dimension text = 50
 > DIMDIAMETER
   prompt: DIMDIAMETER Select arc or circle:
   asks: 
@@ -3095,6 +3095,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: "X,Y"=""||*
   options: [T] Text, [A] Angle
   prompt| Select arc or circle:
+  info| Dimension text = 100
 > location
   prompt: Command:
   asks: -
@@ -3102,7 +3103,6 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: -
   options: -
   prompt| Specify dimension line location or [Text/Angle]:
-  info| Dimension text = 100
 
 ## DIMANGULAR
 > start
@@ -3144,7 +3144,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Specify second angle endpoint:
   info| Non-associative dimension created.
 > T
-  prompt: DIMANGULAR Enter dimension text <90°>:
+  prompt: DIMANGULAR Enter dimension text <90>:
   asks: "Enter dimension text"
   tip: Enter dimension text
   dyn: "Enter dimension text"=""||*
@@ -3158,7 +3158,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: Specify dimension arc line location or
   dyn: "X,Y"=""||*
   options: [T] Text, [A] Angle
-  prompt| Enter dimension text <90°>: <> TYP
+  prompt| Enter dimension text <90>: <> TYP
 > A
   prompt: DIMANGULAR Specify angle of dimension text:
   asks: "Specify angle of dimension text"
@@ -3182,7 +3182,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: -
   options: -
   prompt| Specify dimension arc line location or [Text/Angle]:
-  info| Dimension text = 90°
+  info| Dimension text = 90
 
 ## DIMANGULAR lines
 > start
@@ -5548,6 +5548,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
         DIMEXO      0.6250               Extension line origin offset
         DIMGAP      0.6250               Gap from dimension line to text
         DIMSCALE    1.0000               Overall scale factor
+        DIMTOFL     On                   Force line inside extension lines
         DIMTXT      2.5000               Text height
         DIMZIN      8                    Zero suppression
 > V
@@ -5574,6 +5575,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
         DIMEXO      0.6250               Extension line origin offset
         DIMGAP      0.6250               Gap from dimension line to text
         DIMSCALE    1.0000               Overall scale factor
+        DIMTOFL     On                   Force line inside extension lines
         DIMTXT      2.5000               Text height
         DIMZIN      8                    Zero suppression
 > A

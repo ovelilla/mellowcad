@@ -181,6 +181,16 @@ function DimStyles({
             step={1}
             onCommit={(scale) => set({ scale })}
           />
+          {/* DIMTOFL: a radial dimension placed outside keeps its line. */}
+          <ChoiceField
+            label={t("drawDimLineBetween")}
+            value={selected.forceLineInside ? "yes" : "no"}
+            choices={{ yes: t("yes"), no: t("no") }}
+            onChoose={(choice) => {
+              set({ forceLineInside: choice === "yes" })
+              engine.focusSurface()
+            }}
+          />
         </Group>
 
         <Group title={t("primaryUnits")}>

@@ -491,6 +491,7 @@
       "offsetFromDimLine": "Offset from dim line",
       "fit": "Fit",
       "overallScale": "Use overall scale of",
+      "drawDimLineBetween": "Draw dim line between ext lines",
       "primaryUnits": "Primary units",
       "precision": "Precision",
       "angularPrecision": "Angular precision",

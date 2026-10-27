@@ -4,9 +4,12 @@ import {
   arcOf,
   circleOf,
   deg,
+  ellipseOf,
+  layerOf,
   lineOf,
   p,
   polylineOf,
+  textOf,
 } from "../../../test/builders"
 import {
   DimensionEntity,
@@ -21,6 +24,25 @@ import {
 import { DEFAULT_DIM_STYLE } from "../../domain/dimStyles"
 import { parseDrawingFile } from "../../serialization/drawingFile"
 import { THEME } from "../../scene/theme"
+
+function answer(cad: CadHarness, text: string): CadHarness {
+  cad.runtime.setCommandLineText(text)
+  cad.runtime.submitCommandLine()
+  return cad
+}
+
+/** The point `r` from the origin at `degrees`. */
+function polar(r: number, degrees: number) {
+  return p(r * Math.cos(deg(degrees)), r * Math.sin(deg(degrees)))
+}
+
+/** L1 along X through the origin, L2 at 30° through it (p344–p350). */
+function crossing() {
+  return [
+    lineOf(p(-100, 0), p(100, 0), { id: "L1" }),
+    lineOf(p(-86.60254, -50), p(86.60254, 50), { id: "L2" }),
+  ]
+}
 
 function dim(cad: CadHarness): DimensionEntity {
   return cad.only<DimensionEntity>("dimension")
@@ -143,17 +165,31 @@ describe("angular dimension geometry", () => {
     expect(g.lineMidpoint).toBeCloseToPoint(p(diagonal, diagonal))
   })
 
-  it("extends an endpoint only when the arc runs past it", () => {
-    // The arc at radius 150 clears the endpoint 100 out but not the one 200 out.
-    const cad = threePoint(p(0, 0), p(100, 0), p(0, 200), p(150, 0))
+  it("runs an extension line out to an arc beyond its endpoint (probe dimensions/p340)", () => {
+    const cad = createHarness({
+      entities: [arcOf(p(0, 0), 50, 0, deg(60), { id: "A" })],
+    })
+    cad.command("DIMANGULAR").click(polar(50, 30)).click(p(60.621778, 35))
     const g = dimensionGeometry(dim(cad))
 
-    expect(g.lines).toHaveLength(1)
-    const [start, end] = g.lines[0]
-    expect(start).toBeCloseToPoint(
-      p(100 + DEFAULT_DIM_STYLE.extensionOffset, 0)
-    )
-    expect(end).toBeCloseToPoint(p(150 + DEFAULT_DIM_STYLE.extensionBeyond, 0))
+    // LINE 50.625→71.25 to the arc at 70.
+    expect(g.lines[0][0]).toBeCloseToPoint(p(50.625, 0))
+    expect(g.lines[0][1]).toBeCloseToPoint(p(71.25, 0))
+  })
+
+  it("runs an extension line in to an arc short of its endpoint (probe dimensions/p342)", () => {
+    const cad = createHarness({
+      entities: [circleOf(p(0, 0), 50, { id: "C" })],
+    })
+    cad.command("DIMANGULAR").click(p(50, 0)).click(p(0, 40)).click(p(30, 30))
+    const g = dimensionGeometry(dim(cad))
+
+    // Two LINEs 49.375→41.1764 to the arc at 42.4264.
+    expect(g.lines).toHaveLength(2)
+    expect(g.lines[0][0]).toBeCloseToPoint(p(49.375, 0))
+    expect(g.lines[0][1]).toBeCloseToPoint(p(41.1764, 0), 4)
+    expect(g.lines[1][0]).toBeCloseToPoint(p(0, 49.375))
+    expect(g.lines[1][1]).toBeCloseToPoint(p(0, 41.1764), 4)
   })
 
   it("puts an arrowhead tangent to each end of the arc", () => {
@@ -236,17 +272,18 @@ describe("DIMANGULAR object selection", () => {
     expect(dimensionMeasurement(dim(cad))).toBeCloseTo(Math.PI)
   })
 
-  it("uses a circle's pick point as the first endpoint and asks for the second", () => {
+  it("uses a circle's pick as the first endpoint, and takes the second onto the circle (probes dimensions/p342, p343)", () => {
     const cad = createHarness({
-      entities: [circleOf(p(0, 0), 100, { id: "C1" })],
+      entities: [circleOf(p(0, 0), 50, { id: "C1" })],
     })
-    // Pick the rim at 0°, then an endpoint that need not lie on the circle.
-    cad.command("DIMANGULAR").click(p(100, 0)).click(p(0, 40)).click(p(60, 60))
+    // Picked off the rim at 50.2, then an endpoint inside: DXF 13 (50,0) and
+    // 14 (0,50).
+    cad.command("DIMANGULAR").click(p(50.2, 0)).click(p(0, 40)).click(p(30, 30))
     const angular = dim(cad)
 
     expect(angular.vertex).toBeCloseToPoint(p(0, 0))
-    expect(angular.first).toBeCloseToPoint(p(100, 0))
-    expect(angular.second).toBeCloseToPoint(p(0, 40))
+    expect(angular.first).toBeCloseToPoint(p(50, 0))
+    expect(angular.second).toBeCloseToPoint(p(0, 50))
     expect(dimensionMeasurement(angular)).toBeCloseTo(Math.PI / 2)
   })
 
@@ -285,23 +322,157 @@ describe("DIMANGULAR object selection", () => {
     expect(angular.second.y).toBeLessThan(0)
   })
 
-  it("ignores an object it cannot take an angle from", () => {
+  it("asks again in silence on nothing", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
     })
     cad.command("DIMANGULAR").click(p(500, 500))
 
     expect(cad.entityCount).toBe(1)
+    expect(cad.commandLog().join("\n")).not.toContain("Object selected")
     expect(cad.activeToolId()).toBe("dimangular")
   })
 
-  it("never pairs a line with itself", () => {
+  it("refuses a text or an ellipse in AutoCAD's words (probes dimensions/p354, p355)", () => {
     const cad = createHarness({
-      entities: [lineOf(p(0, 0), p(200, 0), { id: "L1" })],
+      entities: [
+        textOf(p(-20, -80), "ABC", { id: "T", height: 5 }),
+        ellipseOf(p(0, -150), p(50, 0), 0.4, { id: "E" }),
+      ],
     })
-    cad.command("DIMANGULAR").click(p(100, 0)).click(p(50, 0))
+    cad.command("DIMANGULAR").click(p(-19, -79))
+    expect(cad.commandLog().at(-1)).toBe(
+      "Object selected is not a line, arc or circle."
+    )
+    cad.click(p(50, -150))
+    expect(cad.commandLog().at(-1)).toBe(
+      "Object selected is not a line, arc or circle."
+    )
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMANGULAR Select arc, circle, line, or <specify vertex>:"
+    )
+  })
 
-    expect(cad.typeCounts().dimension ?? 0).toBe(0)
+  it("refuses a circle as the second line and asks again (probe dimensions/p358)", () => {
+    const cad = createHarness({
+      entities: [circleOf(p(0, -200), 50, { id: "C" }), ...crossing()],
+    })
+    cad.command("DIMANGULAR").click(p(60, 0)).click(p(50, -200))
+    expect(cad.commandLog().at(-1)).toBe("Object selected is not a line.")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMANGULAR Select second line:"
+    )
+    cad.click(polar(60, 30)).click(polar(40, 15))
+    expect(dimensionMeasurement(dim(cad))).toBeCloseTo(deg(30))
+  })
+
+  it("says the same line twice is parallel and ends (probe dimensions/p349)", () => {
+    const cad = createHarness({ entities: crossing() })
+    cad.command("DIMANGULAR").click(p(60, 0)).click(p(-60, 0))
+
+    expect(cad.commandLog().at(-1)).toBe("Lines are parallel.")
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.typeCounts().dimension).toBeUndefined()
+  })
+
+  it("says parallel lines are parallel and ends (probe dimensions/p350)", () => {
+    const cad = createHarness({
+      entities: [
+        lineOf(p(-100, 0), p(100, 0), { id: "L1" }),
+        lineOf(p(-100, 20), p(100, 20), { id: "L3" }),
+      ],
+    })
+    cad.command("DIMANGULAR").click(p(60, 0)).click(p(60, 20))
+
+    expect(cad.commandLog().at(-1)).toBe("Lines are parallel.")
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("pairs two straight segments of one polyline (probe dimensions/p367)", () => {
+    const cad = createHarness({
+      entities: [polylineOf([p(0, 0), p(100, 0), p(100, 100)], { id: "P" })],
+    })
+    cad.command("DIMANGULAR").click(p(50, 0)).click(p(100, 50)).click(p(80, 20))
+
+    expect(dim(cad).vertex).toBeCloseToPoint(p(100, 0))
+    expect(dimensionMeasurement(dim(cad))).toBeCloseTo(Math.PI / 2)
+  })
+
+  it("takes the sector of a line pair the location is in (probes dimensions/p344–p348)", () => {
+    for (const [bearing, expected] of [
+      [15, 30],
+      [100, 150],
+      [160, 150],
+      [195, 30],
+      [280, 150],
+    ] as const) {
+      const cad = createHarness({ entities: crossing() })
+      cad
+        .command("DIMANGULAR")
+        .click(p(60, 0))
+        .click(polar(60, 30))
+        .click(polar(40, bearing))
+      expect(dimensionMeasurement(dim(cad))).toBeCloseTo(deg(expected))
+    }
+  })
+
+  it("draws no extension line where its arc crosses the lines (probes dimensions/p344, p346)", () => {
+    const cad = createHarness({ entities: crossing() })
+    cad
+      .command("DIMANGULAR")
+      .click(p(60, 0))
+      .click(polar(60, 30))
+      .click(p(38.637033, 10.352762))
+    const g = dimensionGeometry(dim(cad))
+
+    // The exploded dimension: an ARC at 40, two SOLIDs, the MTEXT, no LINE.
+    expect(g.arc!.radius).toBeCloseTo(40)
+    expect(g.lines).toHaveLength(0)
+  })
+
+  it("takes lines on a locked layer, and points typed at both object prompts (probes dimensions/p315, p335)", () => {
+    const cad = createHarness()
+    cad.runtime.document.load(
+      crossing().map((line) => ({ ...line, layerId: "K" })),
+      { layers: [layerOf("0"), layerOf("K", { locked: true })] }
+    )
+    cad.command("DIMANGULAR")
+    answer(cad, "60,0")
+    answer(cad, "51.961524,30")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMANGULAR Specify dimension arc line location or [Text/Angle]:"
+    )
+    // @ from the second pick (p335: 150 at 56.96,35).
+    answer(cad, "@5,5")
+    expect(dim(cad).linePoint).toBeCloseToPoint(p(56.961524, 35))
+    expect(dimensionMeasurement(dim(cad))).toBeCloseTo(deg(150))
+  })
+
+  it("reads @ at the location from the last endpoint, and leaves LASTPOINT there (probe dimensions/p362)", () => {
+    const cad = createHarness()
+    answer(cad, "POINT")
+    answer(cad, "7,8")
+    answer(cad, "DIMANGULAR")
+    answer(cad, "")
+    for (const point of ["0,0", "10,0", "0,10", "@5,5"]) answer(cad, point)
+    expect(dim(cad).linePoint).toBeCloseToPoint(p(5, 15))
+    answer(cad, "ID")
+    answer(cad, "@")
+    expect(cad.commandLog().at(-1)).toBe(" X = 5.00     Y = 15.00     Z = 0.00")
+  })
+
+  it("ends with nothing at Enter at the location (probe dimensions/p369)", () => {
+    const cad = createHarness({ entities: crossing() })
+    cad
+      .command("DIMANGULAR")
+      .click(p(60, 0))
+      .click(polar(60, 30))
+      .moveTo(polar(40, 15))
+      .enter()
+
+    // The console appends no DIMENSION there, where DIMRADIUS's Enter does.
+    expect(cad.typeCounts().dimension).toBeUndefined()
+    expect(cad.activeToolId()).toBe("select")
   })
 
   it("highlights the object under the cursor while picking", () => {
@@ -314,7 +485,9 @@ describe("DIMANGULAR object selection", () => {
         .scene()
         .primitives.filter(
           (primitive) =>
-            "stroke" in primitive && primitive.stroke?.color === THEME.selected
+            "stroke" in primitive &&
+            primitive.stroke?.color === THEME.entityHover &&
+            primitive.stroke.width === 2
         ).length
 
     cad.moveTo(p(500, 500))

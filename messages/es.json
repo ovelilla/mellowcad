@@ -491,6 +491,7 @@
       "offsetFromDimLine": "Desfase de línea cota",
       "fit": "Ajustar",
       "overallScale": "Usar escala general",
+      "drawDimLineBetween": "Dibujar línea de cota entre líneas de referencia",
       "primaryUnits": "Unidades principales",
       "precision": "Precisión",
       "angularPrecision": "Precisión angular",

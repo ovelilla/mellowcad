@@ -154,9 +154,16 @@ const FROM_SCRATCH: ReadonlyArray<
         .click(p(100, 0))
         .click(p(50, -30)),
   ],
+  // probe dimensions/p323: CLAYER, CECOLOR and CELWEIGHT; DIMDIAMETER is the
+  // same tool, its other mode.
   [
     "DIMRADIUS",
     (c) => c.command("DIMRADIUS").click(p(20, 0)).click(p(40, 40)),
+    [circleOf(p(0, 0), 20, { id: "C" })],
+  ],
+  [
+    "DIMDIAMETER",
+    (c) => c.command("DIMDIAMETER").click(p(20, 0)).click(p(40, 40)),
     [circleOf(p(0, 0), 20, { id: "C" })],
   ],
   [

@@ -62,6 +62,13 @@ export interface DimStyle {
    */
   readonly suppressTrailingZeros: boolean
   /**
+   * Whether the dimension line is drawn between the measured points even when
+   * the text and arrowheads are outside them (DIMTOFL). ISO-25 sets it: a
+   * radial dimension placed outside draws its line from the centre to the rim
+   * and no centre mark (p301, p303); off, the centre mark instead (p306).
+   */
+  readonly forceLineInside: boolean
+  /**
    * Overall scale factor applied to every *size* above (DIMSCALE) — never to the
    * measurement, which always reports the true distance.
    *
@@ -92,6 +99,7 @@ export const DEFAULT_DIM_STYLE: DimStyle = {
   angleDecimals: 0,
   decimalSeparator: ",",
   suppressTrailingZeros: true,
+  forceLineInside: true,
   scale: 1,
 }
 
@@ -193,6 +201,10 @@ export function clampDimStyle(style: DimStyle): DimStyle {
       typeof style.suppressTrailingZeros === "boolean"
         ? style.suppressTrailingZeros
         : DEFAULT_DIM_STYLE.suppressTrailingZeros,
+    forceLineInside:
+      typeof style.forceLineInside === "boolean"
+        ? style.forceLineInside
+        : DEFAULT_DIM_STYLE.forceLineInside,
     scale: clampDimScale(style.scale),
   }
 }
@@ -210,7 +222,8 @@ export function createDimStyle(
 export interface DimVariable {
   /** Its name, `DIMASZ`: an id, which the listing's description is keyed by. */
   readonly name: string
-  readonly value: string
+  /** As written, or a switch, which the listing words (`On`, es `ACT`; p06). */
+  readonly value: string | boolean
 }
 
 /**
@@ -233,6 +246,7 @@ export function dimStyleVariables(style: DimStyle): readonly DimVariable[] {
     { name: "DIMEXO", value: real(style.extensionOffset) },
     { name: "DIMGAP", value: real(style.textGap) },
     { name: "DIMSCALE", value: real(style.scale) },
+    { name: "DIMTOFL", value: style.forceLineInside },
     { name: "DIMTXT", value: real(style.textHeight) },
     // DIMZIN's 8 is the only bit modelled (`suppressTrailingZeros`).
     { name: "DIMZIN", value: style.suppressTrailingZeros ? "8" : "0" },

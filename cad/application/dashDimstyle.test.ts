@@ -272,6 +272,7 @@ describe("-DIMSTYLE's listings (p06, p07, p10)", () => {
         "DIMEXO      0.6250               Extension line origin offset",
         "DIMGAP      0.6250               Gap from dimension line to text",
         "DIMSCALE    1.0000               Overall scale factor",
+        "DIMTOFL     On                   Force line inside extension lines",
         "DIMTXT      2.5000               Text height",
         "DIMZIN      8                    Zero suppression",
       ].join("\n")
@@ -308,6 +309,10 @@ describe("-DIMSTYLE's listings (p06, p07, p10)", () => {
     )
     expect(lines).toContain(
       "DIMEXO      0.6250               Desfase línea de referencia - origen"
+    )
+    // A switch is a word of the command language.
+    expect(lines).toContain(
+      "DIMTOFL     ACT                  Forzar línea dentro de las líneas de referencia"
     )
   })
 })

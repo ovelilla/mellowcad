@@ -9,11 +9,11 @@ state of each piece (`cad/locales/es.json`; each GUID resolves as `docs/i18n-glo
 explains):
 
 - **Names:** every one from the title of Autodesk's 2026 Spanish help page with the English page's
-  GUID — verified. `DIMANGULAR`'s page says ACOANGULAR while its metadata, the `acad.pgp` and every
-  transcript say ACOANGULO, so both run it. Our own commands take the Spanish base name and the
-  initials of their Spanish construction: `CIRCULOD`, `CIRCULO2P`, `CIRCULO3P`, `ARCOICF`
-  (Inicio, Centro, Fin), `ARCOCIF`, `ELIPSEC`, `ELIPSEARCO`. Rows without their own line:
-  `UNDO` `DESHACER`, `U` → `H` (a command of its own in Spanish, "equivale a
+  GUID — verified. `DIMANGULAR` is ACOANGULAR, ACOANG its alias: AutoCAD 2027's console answers
+  ACOANGULO, which older transcripts gave, as an unknown command (dimensions/p334, p363). Our own
+  commands take the Spanish base name and the initials of their Spanish construction: `CIRCULOD`,
+  `CIRCULO2P`, `CIRCULO3P`, `ARCOICF` (Inicio, Centro, Fin), `ARCOCIF`, `ELIPSEC`, `ELIPSEARCO`.
+  Rows without their own line: `UNDO` `DESHACER`, `U` → `H` (a command of its own in Spanish, "equivale a
   deshacer 1"), `REDO` `REHACER`, `SNAP` `FORZCURSOR` / `FC`†, `FROM` `DESDE`,
   `BLOCKSPALETTE` `PALETABLOQUES`.
 - **Workspace:** `UNIDADES`, `ESCALATL`, `LIMPIAPANTACT` and `LIMPIAPANTDES` from the Spanish pages

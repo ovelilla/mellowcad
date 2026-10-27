@@ -707,9 +707,8 @@ export const es: EngineLocale = {
         "ACODIA"
       ],
       "DIMANGULAR": [
-        "ACOANGULO",
-        "ACOANG",
-        "ACOANGULAR"
+        "ACOANGULAR",
+        "ACOANG"
       ],
       "DIMBASELINE": [
         "ACOLINEABASE",
@@ -1695,6 +1694,7 @@ export const es: EngineLocale = {
       "angleVertex": "Designe vértice del ángulo",
       "firstAngleEndpoint": "Designe primer punto final del ángulo",
       "secondAngleEndpoint": "Designe segundo punto final del ángulo",
+      "circleSecondAngleEndpoint": "Precise segundo punto final del ángulo",
       "dimensionArcLocation": "Designe ubicación del arco de línea de cota",
       "dimensionSpacing": "Indique valor",
       "offsetDistance": "Distancia de desfase",
@@ -3840,6 +3840,10 @@ export const es: EngineLocale = {
       "notLineArcOrCircleToDimension": "El objeto designado no es ni una línea ni un círculo.",
       "associativeDimensionRequired": "Requiere una cota asociativa lineal, de coordenada o angular.",
       "selectedObjectNotDimension": "El objeto designado no es una cota.",
+      "notCircleOrArc": "El objeto designado no es ni un círculo ni un arco.",
+      "notLineArcOrCircle": "El objeto designado no es ni una línea, un arco ni un círculo.",
+      "notALine": "El objeto seleccionado no es una línea.",
+      "dimLinesParallel": "Las líneas son paralelas.",
       "negativeSpacing": "Valor de intervalo no válido, el valor de intervalo no puede ser negativo."
     },
     "feedback": {
@@ -4077,6 +4081,8 @@ export const es: EngineLocale = {
           "description"
         ]
       ],
+      "dimVariableOn": "ACT",
+      "dimVariableOff": "DES",
       "dimVariableDescription": {
         "DIMSTYLE": "Estilo de cota actual (de sólo lectura)",
         "DIMADEC": "Decimales angulares",
@@ -4089,6 +4095,7 @@ export const es: EngineLocale = {
         "DIMEXO": "Desfase línea de referencia - origen",
         "DIMGAP": "Distancia entre el texto y la línea de cota",
         "DIMSCALE": "Factor de escala general",
+        "DIMTOFL": "Forzar línea dentro de las líneas de referencia",
         "DIMTXT": "Altura del texto",
         "DIMZIN": "Supresión de ceros"
       },
