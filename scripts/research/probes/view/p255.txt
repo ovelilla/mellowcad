@@ -1,0 +1,8 @@
+_WORLDVIEW
+0
+_UCS
+_Z
+90
+_-VPOINT
+1,0,1
+(list (getvar "VIEWDIR") (getvar "VIEWCTR") (getvar "VIEWSIZE") (getvar "VIEWTWIST") (getvar "UCSXDIR"))

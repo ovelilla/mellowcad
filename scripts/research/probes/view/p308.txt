@@ -1,0 +1,16 @@
+_LINE
+0,0
+100,50
+
+_ZOOM
+_E
+_-VIEW
+_LEFT
+(getvar "VIEWDIR")
+(getvar "VIEWTWIST")
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "UCSXDIR")
+(getvar "UCSYDIR")
+(getvar "UCSORG")
+(getvar "UCSNAME")

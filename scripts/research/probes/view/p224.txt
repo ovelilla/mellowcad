@@ -1,0 +1,13 @@
+_LINE
+3,4
+20,4
+
+_ZOOM
+_C
+10,4
+30
+_-PAN
+_END
+20.2,4.1
+0,0
+(getvar "VIEWCTR")

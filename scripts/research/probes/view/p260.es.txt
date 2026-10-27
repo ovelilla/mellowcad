@@ -1,0 +1,6 @@
+-PTOVISTA
+1,-1,1
+-PV
+0,0,1
+PTOVISTA
+1,1,1

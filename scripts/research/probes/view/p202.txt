@@ -1,0 +1,7 @@
+_LINE
+0,0
+'_PAN
+
+10,0
+
+(getvar "LASTPOINT")

@@ -1,0 +1,11 @@
+_ID
+7,8
+_-VIEW
+_O
+_F
+(getvar "LASTPOINT")
+_UCS
+_W
+_NAVVCUBE
+_OFF
+(getvar "LASTPOINT")

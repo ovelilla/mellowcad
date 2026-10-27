@@ -1,0 +1,9 @@
+_PLAN
+'_ZOOM
+_E
+'_PAN
+
+'ORTHOMODE
+1
+
+(getvar "ORTHOMODE")

@@ -1,0 +1,5 @@
+_-PAN
+FOO
+0,0
+1,1
+(getvar "VIEWCTR")

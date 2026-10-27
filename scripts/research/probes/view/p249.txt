@@ -1,0 +1,7 @@
+_-VPOINT
+1,-1,1
+_-VPOINT
+_R
+
+
+(list (getvar "VIEWDIR") (getvar "VIEWCTR") (getvar "VIEWSIZE") (getvar "VIEWTWIST") (getvar "UCSXDIR"))

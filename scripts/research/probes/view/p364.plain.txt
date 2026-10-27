@@ -1,0 +1,15 @@
+_LINE
+0,0
+100,50
+
+_ZOOM
+_P
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")
+(sslength (ssget "_X"))
+_U
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")
+(sslength (ssget "_X"))

@@ -1,0 +1,50 @@
+_LINE
+0,0
+100,50
+
+_ZOOM
+_E
+(getvar "NAVVCUBEDISPLAY")
+_CIRCLE
+50,25
+10
+_NAVVCUBE
+_OFF
+(getvar "NAVVCUBEDISPLAY")
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")
+(getvar "UCSNAME")
+(getvar "NAVVCUBEDISPLAY")
+_U
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")
+(getvar "UCSNAME")
+(getvar "NAVVCUBEDISPLAY")
+_REDO
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")
+(getvar "UCSNAME")
+(getvar "NAVVCUBEDISPLAY")
+_U
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")
+(getvar "UCSNAME")
+(getvar "NAVVCUBEDISPLAY")
+_MREDO
+1
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")
+(getvar "UCSNAME")
+(getvar "NAVVCUBEDISPLAY")
+_UNDO
+2
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")
+(getvar "UCSNAME")
+(getvar "NAVVCUBEDISPLAY")

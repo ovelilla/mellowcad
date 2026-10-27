@@ -1,0 +1,163 @@
+_ZOOM
+_W
+0,0
+1000,1000
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+1.5X
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")
+_ZOOM
+_P
+(getvar "VIEWSIZE")

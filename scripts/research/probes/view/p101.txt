@@ -1,0 +1,9 @@
+ZOOM
+_E
+Z
+_E
+_.ZOOM
+_E
+
+_E
+(getvar "VIEWSIZE")

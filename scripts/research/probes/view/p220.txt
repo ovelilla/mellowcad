@@ -1,0 +1,9 @@
+_LINE
+0,0
+'_-PAN
+0,0
+10,5
+10,0
+
+(getvar "VIEWCTR")
+(getvar "LASTPOINT")

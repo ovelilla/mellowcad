@@ -1,0 +1,44 @@
+_LINE
+0,0
+100,50
+
+_ZOOM
+_E
+_ZOOM
+2X
+_CIRCLE
+50,25
+10
+_-VPOINT
+1,1,1
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")
+(getvar "UCSNAME")
+_U
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")
+(getvar "UCSNAME")
+_REDO
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")
+(getvar "UCSNAME")
+_U
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")
+(getvar "UCSNAME")
+_MREDO
+1
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")
+(getvar "UCSNAME")
+_UNDO
+2
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")
+(getvar "UCSNAME")

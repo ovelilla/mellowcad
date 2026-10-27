@@ -1,0 +1,7 @@
+_ZOOM
+_A
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "LASTPOINT")
+(getvar "SCREENSIZE")
+(getvar "LIMMAX")

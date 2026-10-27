@@ -1,0 +1,8 @@
+_UCS
+_Z
+30
+_-PAN
+10,0
+
+(getvar "VIEWCTR")
+(getvar "LASTPOINT")

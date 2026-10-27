@@ -1,0 +1,7 @@
+_ZOOM
+_C
+500,500
+10
+_PLAN
+
+(list (getvar "VIEWDIR") (getvar "VIEWCTR") (getvar "VIEWSIZE") (getvar "VIEWTWIST") (getvar "UCSXDIR"))

@@ -1,0 +1,22 @@
+_LINE
+0,0
+100,50
+
+_ZOOM
+_E
+_CIRCLE
+50,25
+10
+_-VIEW
+_TOP
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")
+_U
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")
+_REDO
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")

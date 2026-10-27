@@ -1,0 +1,16 @@
+_LINE
+0,0
+100,50
+
+_ZOOM
+2X
+_ZOOM
+2X
+_UNDO
+2
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "VIEWDIR")
+(ssget "_X")
+_PAN
+

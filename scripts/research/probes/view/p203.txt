@@ -1,0 +1,9 @@
+_LINE
+0,0
+100,50
+
+_-VPOINT
+1,-1,1
+_-VPOINT
+0,0,0
+(list (getvar "VIEWDIR") (getvar "VIEWCTR") (getvar "VIEWSIZE") (getvar "VIEWTWIST") (getvar "UCSXDIR"))

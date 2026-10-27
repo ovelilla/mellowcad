@@ -1,0 +1,33 @@
+_LINE
+-100000,-100000
+100000,100000
+
+_ZOOM
+_E
+_ZOOM
+_W
+0,0
+1,1
+_ZOOM
+_E
+_ZOOM
+_W
+0,0
+1,1
+_ZOOM
+_O
+_L
+
+_ZOOM
+_W
+0,0
+1,1
+_ZOOM
+_A
+_ZOOM
+_P
+_ZOOM
+_P
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "LASTPOINT")

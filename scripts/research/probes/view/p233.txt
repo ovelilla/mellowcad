@@ -1,0 +1,10 @@
+_LINE
+0,0
+100,50
+
+_UCS
+_X
+90
+_PLAN
+
+(list (getvar "VIEWDIR") (getvar "VIEWCTR") (getvar "VIEWSIZE") (getvar "VIEWTWIST") (getvar "UCSXDIR"))

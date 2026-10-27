@@ -1,0 +1,14 @@
+_LINE
+0,0
+100,50
+
+_ZOOM
+_E
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "LASTPOINT")
+(getvar "SCREENSIZE")
+(getvar "LIMMIN")
+(getvar "LIMMAX")
+(getvar "EXTMIN")
+(getvar "EXTMAX")

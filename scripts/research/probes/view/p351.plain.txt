@@ -1,0 +1,24 @@
+_LINE
+0,0
+100,50
+
+_ZOOM
+_E
+_CIRCLE
+50,25
+10
+(getvar "UCSNAME")
+(getvar "WORLDUCS")
+_-VIEW
+_FRONT
+_U
+(getvar "UCSNAME")
+(getvar "UCSXDIR")
+(getvar "UCSYDIR")
+(getvar "WORLDUCS")
+_UCS
+_Z
+10
+_UCS
+_P
+(getvar "UCSNAME")

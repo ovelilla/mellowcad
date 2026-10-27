@@ -1,0 +1,14 @@
+_LINE
+0,0
+100,50
+
+_ZOOM
+_E
+_LINE
+0,0
+'_-VIEW
+_O
+
+10,0
+
+(getvar "VIEWSIZE")

@@ -1,0 +1,6 @@
+_ORTHOMODE
+1
+_-PAN
+0,0
+10,5
+(getvar "VIEWCTR")

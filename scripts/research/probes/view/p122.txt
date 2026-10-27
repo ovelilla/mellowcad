@@ -1,0 +1,15 @@
+_LINE
+0,0
+100,50
+
+_ZOOM
+_E
+_ID
+10,10
+_ZOOM
+_W
+@5,5
+@50,25
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "LASTPOINT")

@@ -1,0 +1,5 @@
+_ZOOM
+_E
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "LASTPOINT")

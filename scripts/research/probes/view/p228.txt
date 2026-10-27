@@ -1,0 +1,8 @@
+_LINE
+0,0
+10,0
+
+(sssetfirst nil (ssget "_X"))
+_-VPOINT
+1,-1,1
+(if (ssget "_I") (sslength (ssget "_I")) 0)

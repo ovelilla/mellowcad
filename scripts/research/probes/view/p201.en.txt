@@ -1,0 +1,6 @@
+-P
+0,0
+1,1
+(getvar "VIEWCTR")
+DDVPOINT
+1,-1,1

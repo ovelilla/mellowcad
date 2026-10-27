@@ -1,0 +1,12 @@
+_LINE
+0,0
+100,50
+
+_ZOOM
+_E
+(sssetfirst nil (ssget "_L"))
+_ZOOM
+_W
+0,0
+50,50
+(ssget "_I")

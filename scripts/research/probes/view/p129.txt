@@ -1,0 +1,9 @@
+_ID
+10,0
+_ZOOM
+100,100
+FOO
+5
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "LASTPOINT")
