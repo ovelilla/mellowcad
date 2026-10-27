@@ -1,0 +1,12 @@
+_DIMLINEAR
+0,0
+100,0
+50,-30
+_.SAVEAS
+2018
+kepD
+_.OPEN
+kepD
+(getvar "DWGNAME")
+_DIMBASELINE
+
