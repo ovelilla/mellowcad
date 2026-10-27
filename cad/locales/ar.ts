@@ -351,7 +351,12 @@ export const ar: EngineLocale = {
             "count"
           ],
           ")"
-        ]
+        ],
+        "linearDimension": "بُعد مُدار",
+        "alignedDimension": "بُعد محاذٍ",
+        "angularDimension": "بُعد زاوي",
+        "radiusDimension": "بُعد نصف قطري",
+        "diameterDimension": "بُعد قطري"
       },
       "group": {
         "geometry": "الهندسة",
@@ -366,7 +371,10 @@ export const ar: EngineLocale = {
         "attributes": "السمات",
         "misc": "متفرقات",
         "dataPoints": "نقاط البيانات",
-        "selection": "التحديد"
+        "selection": "التحديد",
+        "linesArrows": "الخطوط والأسهم",
+        "fit": "الملاءمة",
+        "primaryUnits": "الوحدات الأساسية"
       },
       "row": {
         "length": "الطول",
@@ -502,7 +510,19 @@ export const ar: EngineLocale = {
         "fillAngle": "زاوية التعبئة",
         "rotateItems": "تدوير العناصر",
         "itemSpacing": "تباعد العناصر",
-        "alignItems": "محاذاة العناصر"
+        "alignItems": "محاذاة العناصر",
+        "arrowSize": "حجم السهم",
+        "centerMarkSize": "حجم علامة المركز",
+        "extLineExt": "امتداد خط الامتداد",
+        "extLineOffset": "إزاحة خط الامتداد",
+        "textOffset": "إزاحة النص",
+        "textPositionX": "موضع النص X",
+        "textPositionY": "موضع النص Y",
+        "textRotation": "دوران النص",
+        "dimScaleOverall": "المقياس الكلي للبُعد",
+        "decimalSeparator": "الفاصل العشري",
+        "suppressTrailingZeros": "حذف الأصفار اللاحقة",
+        "precision": "الدقة"
       },
       "value": {
         "yes": "نعم",

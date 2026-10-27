@@ -1057,8 +1057,9 @@ p331)
 end in the window: AutoCAD moves that end and keeps the other, the arc an affine image of itself
 with its parameter sweep kept (ellipse/p324, p333, p336–p338; p332 moved an end lying 0.14 outside
 the window), whose rule no probe has fixed yet (ELLIPSE-D44); here the arc moves whole with its
-centre in the window, else stays. A dimension's text position (DXF 11), which a window over the
-text alone moves with the line (p275), is not modelled. A non-associative hatch caught in part
+centre in the window, else stays. A dimension's text caught alone moves with its line (p275) once
+it has been moved (dimensions.md, "The dimension object"); one at its default place stays, its
+place needing the style. A non-associative hatch caught in part
 stays in AutoCAD (p277): associativity is not modelled (MOVE-D11). **Unverified:** Previous, which
 stretches nothing here as Last; a preselection, which moves whole (p289 runs noun-verb STRETCH, not
 its geometry); a dimension with both origins caught and its own point out (its line stays); an

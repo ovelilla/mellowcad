@@ -62,6 +62,7 @@ const CLIPBOARD: ShortcutMenuEntry = {
  * do: Recent Input, Isolate, transparent Pan and real-time Zoom, SteeringWheels,
  * Action Recorder, Subobject Selection Filter, Quick Select, QuickCalc, Find,
  * Options, Draw Order, Add Selected, Select Similar and Quick Properties.
+ * Over dimensions alone the Edit menu adds their Dimension Style ▸ (d07-1).
  */
 export function buildShortcutMenu(
   mode: ShortcutMenuMode,
@@ -72,6 +73,11 @@ export function buildShortcutMenu(
     readonly options: ReadonlyArray<CommandOptionUi>
     /** Whether the running question takes a point, which Snap Overrides needs. */
     readonly takesPoint: boolean
+    /** Dimension Style ▸, when every selected object is a dimension. */
+    readonly dimensionStyle?: Extract<
+      ShortcutMenuEntry,
+      { kind: "dimensionStyle" }
+    > | null
   }
 ): ShortcutMenuUi {
   const groups: ShortcutMenuEntry[][] =
@@ -87,6 +93,12 @@ export function buildShortcutMenu(
         ]
       : [
           context.repeat !== null ? [action("repeat")] : [],
+          // The dimensions' own group (desktop d07-1); Precision ▸, Remove
+          // Style Overrides and Annotative Object Scale ▸ need overrides and
+          // annotative scaling, not modelled.
+          mode === "edit" && context.dimensionStyle
+            ? [context.dimensionStyle]
+            : [],
           [CLIPBOARD],
           mode === "edit"
             ? [

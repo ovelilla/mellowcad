@@ -399,7 +399,8 @@
       "properties": "Properties",
       "enter": "Enter",
       "cancel": "Cancel",
-      "snapOverrides": "Snap Overrides"
+      "snapOverrides": "Snap Overrides",
+      "dimensionStyle": "Dimension Style"
     },
     "Layers": {
       "title": "Layers",
@@ -493,6 +494,13 @@
       "primaryUnits": "Primary units",
       "precision": "Precision",
       "angularPrecision": "Angular precision",
+      "decimalSeparator": "Decimal separator",
+      "comma": "',' (Comma)",
+      "period": "'.' (Period)",
+      "space": "' ' (Space)",
+      "suppressTrailingZeros": "Suppress trailing zeros",
+      "yes": "Yes",
+      "no": "No",
       "size": "Size",
       "height": "Height",
       "heightHint": "A height of 0 leaves it free, so TEXT asks for one each time."

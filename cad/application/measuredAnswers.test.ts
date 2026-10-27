@@ -261,7 +261,7 @@ describe("a point at a distance or an angle prompt", () => {
       "Specify angle of dimension line <0>: 10,10",
       " Specify second point: 50,-20",
       "Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]: 0,30",
-      "Dimension text = 80.00",
+      "Dimension text = 80",
     ])
   })
 

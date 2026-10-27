@@ -4,6 +4,8 @@ import {
   assignEntityColor,
   BlockLookup,
   assignEntityLayer,
+  dimensionGeometry,
+  dimensionWithTextAt,
   assignEntityLinetype,
   assignEntityLineweight,
   Entity,
@@ -35,6 +37,7 @@ import {
   ucsPointToWorld,
   worldPointToUcs,
 } from "../domain/ucs"
+import { DimStyle, DimStyleId } from "../domain/dimStyles"
 import { Vec2 } from "../geometry/Vec2"
 import { Vec3, planar, sub3 } from "../geometry/Vec3"
 import { CommandHistory } from "./commands/Command"
@@ -212,8 +215,43 @@ export function setSelectionProperty(
   if (ids.length !== 1) return false
   const entity = document.get(ids[0])
   if (!entity) return false
+  if (entity.type === "dimension" && property === "dimensionText") {
+    // Empty is no override: the measurement again, as AutoCAD's palette.
+    const { text: _old, ...rest } = entity
+    void _old
+    if ((text === "" ? undefined : text) === entity.text) return false
+    history.execute(
+      new UpdateEntityCommand(text === "" ? rest : { ...entity, text })
+    )
+    return true
+  }
   const value = parseNumber(text)
   if (value === null) return false
+  if (
+    entity.type === "dimension" &&
+    (property === "textPositionX" || property === "textPositionY")
+  ) {
+    // WHY here and not in applyEntityProperty: where a text not yet moved
+    // stands depends on its style's sizes. The point is read in the UCS and
+    // put as the text grip puts it (Move with Dim Line, DIMTMOVE 0).
+    const ucs = document.getSettings().ucs
+    const style = document.getDimStyle(entity.styleId)
+    const from = worldPointToUcs(
+      ucs,
+      entityPointToWorld(entity, dimensionGeometry(entity, style).textPoint)
+    )
+    const target = worldToEntity(
+      entity,
+      ucsPointToWorld(ucs, {
+        ...from,
+        [property === "textPositionX" ? "x" : "y"]: value,
+      })
+    )
+    history.execute(
+      new UpdateEntityCommand(dimensionWithTextAt(entity, target))
+    )
+    return true
+  }
   const updated = applyInUcs(
     entity,
     property,
@@ -468,7 +506,8 @@ export function buildPropertiesUi(
   settings: DocumentSettings,
   text: EngineText,
   vertex = 0,
-  blocks?: BlockLookup
+  blocks?: BlockLookup,
+  dimStyles?: (id: DimStyleId) => DimStyle | undefined
 ): PropertiesUi {
   const counts = new Map<ObjectType, number>()
   for (const entity of entities) {
@@ -496,7 +535,7 @@ export function buildPropertiesUi(
     // With one type there is no All entry: the type is the whole selection.
     filter: shown ?? (types.length === 1 ? types[0].type : null),
     filters,
-    info: buildSelectionInfo(edited, settings, text, vertex, blocks),
+    info: buildSelectionInfo(edited, settings, text, vertex, blocks, dimStyles),
     layerId: commonSelectionLayer(edited),
     color: commonSelectionColor(edited),
     linetype: commonSelectionLinetype(edited),

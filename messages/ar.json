@@ -399,7 +399,8 @@
       "properties": "الخصائص",
       "enter": "Enter",
       "cancel": "إلغاء",
-      "snapOverrides": "تجاوزات الالتقاط"
+      "snapOverrides": "تجاوزات الالتقاط",
+      "dimensionStyle": "نمط البُعد"
     },
     "Layers": {
       "title": "الطبقات",
@@ -493,6 +494,13 @@
       "primaryUnits": "الوحدات الأساسية",
       "precision": "الدقة",
       "angularPrecision": "الدقة الزاوية",
+      "decimalSeparator": "الفاصل العشري",
+      "comma": "',' (فاصلة)",
+      "period": "'.' (نقطة)",
+      "space": "' ' (مسافة)",
+      "suppressTrailingZeros": "حذف الأصفار اللاحقة",
+      "yes": "نعم",
+      "no": "لا",
       "size": "الحجم",
       "height": "الارتفاع",
       "heightHint": "الارتفاع 0 يتركه حرًا، فيسأل \u2068TEXT\u2069 عنه في كل مرة."

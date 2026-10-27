@@ -155,6 +155,7 @@ import {
   PaletteTab,
   SelectionScope,
   ShortcutMenuAction,
+  ShortcutMenuEntry,
   ShortcutMenuMode,
   StylesPanelTab,
 } from "./EngineState"
@@ -3019,6 +3020,51 @@ export class CadRuntime extends Observable {
     if (!this.runCommand("_MREDO")) return
     this.setCommandLineText("1")
     this.submitCommandLine()
+  }
+
+  /**
+   * Dimension Style ▸ of the Edit menu, offered when every selected object is
+   * a dimension (desktop d07-1): the table's styles, theirs marked.
+   */
+  private shortcutMenuDimensionStyle(): Extract<
+    ShortcutMenuEntry,
+    { kind: "dimensionStyle" }
+  > | null {
+    const selected = this.selection.toArray().map((id) => this.document.get(id))
+    if (
+      selected.length === 0 ||
+      !selected.every((entity) => entity?.type === "dimension")
+    ) {
+      return null
+    }
+    const ids = new Set(
+      selected.map((entity) =>
+        entity?.type === "dimension" ? entity.styleId : ""
+      )
+    )
+    return {
+      kind: "dimensionStyle",
+      styles: this.document
+        .getDimStyles()
+        .map((style) => ({ id: style.id, name: style.name })),
+      current: ids.size === 1 ? [...ids][0] : null,
+    }
+  }
+
+  /**
+   * A style of the Edit menu's Dimension Style ▸, chosen: the selected
+   * dimensions take it in one step, named as the drop-downs' edits are.
+   */
+  chooseShortcutMenuDimStyle(id: DimStyleId): void {
+    this.closeShortcutMenu()
+    this.outside(this.propertyStep("selection"), () =>
+      setSelectionDimStyle(
+        this.document,
+        this.editableIds("selection"),
+        this.history,
+        id
+      )
+    )
   }
 
   /** A keyword of the prompt, chosen from the Command menu. */
@@ -6131,6 +6177,7 @@ export class CadRuntime extends Observable {
           repeat: this.commandLine.getLastCommand(),
           options,
           takesPoint: this.wantsPoint(),
+          dimensionStyle: this.shortcutMenuDimensionStyle(),
         }),
       orthoActive: this.constraints.isEnabled(ConstraintType.Ortho),
       polarActive: this.constraints.isEnabled(ConstraintType.Polar),
@@ -6188,7 +6235,8 @@ export class CadRuntime extends Observable {
         settings,
         this.text,
         this.paletteVertex,
-        this.document.blockLookup()
+        this.document.blockLookup(),
+        (id) => this.document.getDimStyle(id)
       ),
       selectionLayerId: commonSelectionLayer(selectedEntities),
       selectionColor: commonSelectionColor(selectedEntities),

@@ -410,9 +410,10 @@ export const dimensionEntity: fc.Arbitrary<DimensionEntity> = fc
     point,
     point,
     angle,
-    fc.constantFrom("linear", "aligned", "angular", "radius", "diameter")
+    fc.constantFrom("linear", "aligned", "angular", "radius", "diameter"),
+    fc.option(point, { nil: undefined })
   )
-  .map(([first, second, linePoint, vertex, rotation, kind]) =>
+  .map(([first, second, linePoint, vertex, rotation, kind, textPoint]) =>
     withId<DimensionEntity>(
       {
         type: "dimension",
@@ -424,6 +425,10 @@ export const dimensionEntity: fc.Arbitrary<DimensionEntity> = fc
         // Only an angular dimension carries a vertex, and it is the point every
         // transform is most likely to forget.
         ...(kind === "angular" ? { vertex } : {}),
+        // A moved text's point is optional too, so every transform must map it.
+        ...(textPoint && kind !== "radius" && kind !== "diameter"
+          ? { textPoint }
+          : {}),
         rotation,
         styleId: DEFAULT_DIM_STYLE_ID,
       },

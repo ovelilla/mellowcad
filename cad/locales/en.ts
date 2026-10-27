@@ -338,7 +338,12 @@ export const en: EngineCatalog = {
             "count"
           ],
           ")"
-        ]
+        ],
+        "linearDimension": "Rotated Dimension",
+        "alignedDimension": "Aligned Dimension",
+        "angularDimension": "Angular Dimension",
+        "radiusDimension": "Radial Dimension",
+        "diameterDimension": "Diametric Dimension"
       },
       "group": {
         "geometry": "Geometry",
@@ -353,7 +358,10 @@ export const en: EngineCatalog = {
         "attributes": "Attributes",
         "misc": "Misc",
         "dataPoints": "Data Points",
-        "selection": "Selection"
+        "selection": "Selection",
+        "linesArrows": "Lines & Arrows",
+        "fit": "Fit",
+        "primaryUnits": "Primary Units"
       },
       "row": {
         "length": "Length",
@@ -489,7 +497,19 @@ export const en: EngineCatalog = {
         "fillAngle": "Fill angle",
         "rotateItems": "Rotate items",
         "itemSpacing": "Item spacing",
-        "alignItems": "Align items"
+        "alignItems": "Align items",
+        "arrowSize": "Arrow size",
+        "centerMarkSize": "Center mark size",
+        "extLineExt": "Ext line ext",
+        "extLineOffset": "Ext line offset",
+        "textOffset": "Text offset",
+        "textPositionX": "Text position X",
+        "textPositionY": "Text position Y",
+        "textRotation": "Text rotation",
+        "dimScaleOverall": "Dim scale overall",
+        "decimalSeparator": "Decimal separator",
+        "suppressTrailingZeros": "Suppress trailing zeros",
+        "precision": "Precision"
       },
       "value": {
         "yes": "Yes",

@@ -106,6 +106,7 @@ describe("dimension style table", () => {
       decimals: 99,
       angleDecimals: -7,
       scale: 0,
+      decimalSeparator: "12",
     })
     const style = cad.state().dimStyles[0]
 
@@ -115,6 +116,8 @@ describe("dimension style table", () => {
     expect(style.angleDecimals).toBe(-1)
     // DIMSCALE 0 means "derive from the viewport", which is 1 without layouts.
     expect(style.scale).toBe(1)
+    // DIMDSEP is one character, never a digit.
+    expect(style.decimalSeparator).toBe(",")
   })
 
   it("redraws every dimension on the style when it changes", () => {
@@ -147,7 +150,7 @@ describe("dimension style table", () => {
 
     expect(dimensionText(angular, cad.state().dimStyles[0])).toBe("90°")
     cad.runtime.updateDimStyle("ISO-25", { angleDecimals: 2 })
-    expect(dimensionText(angular, cad.state().dimStyles[0])).toBe("90.00°")
+    expect(dimensionText(angular, cad.state().dimStyles[0])).toBe("90,00°")
   })
 
   it("refuses to delete the base style, the current one or one in use", () => {

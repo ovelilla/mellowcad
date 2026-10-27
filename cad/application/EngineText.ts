@@ -170,7 +170,9 @@ export class EngineText {
     if (type === null) return this.format(title.all, { count })
     const name = type.endsWith("Array")
       ? this.format(this.ui.array[type.slice(0, -"Array".length) as ArrayKind])
-      : this.entity(type as EntityType, 1)
+      : type.endsWith("Dimension")
+        ? this.propertyTitle(type as `${DimensionKind}Dimension`)
+        : this.entity(type as EntityType, 1)
     return this.format(title.type, { type: name, count })
   }
 

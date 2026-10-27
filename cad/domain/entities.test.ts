@@ -33,6 +33,7 @@ import {
   createMText,
   createPolyline,
   dimensionAxisAngle,
+  dimensionGeometry,
   dimensionMeasurement,
   dimensionText,
   distanceToEntity,
@@ -470,7 +471,8 @@ describe("dimension", () => {
 
   it("derives the measurement from its definition points", () => {
     expect(dimensionMeasurement(dim())).toBeCloseTo(100)
-    expect(dimensionText(dim())).toBe("100.00")
+    // ISO-25 drops the zeros (DIMZIN 8, probe dimensions/p02).
+    expect(dimensionText(dim())).toBe("100")
   })
 
   it("projects a linear measurement onto its own direction", () => {
@@ -490,7 +492,7 @@ describe("dimension", () => {
     const overridden = createDimension("linear", p(0, 0), p(50, 0), p(25, 20), {
       text: "<> max",
     })
-    expect(dimensionText(overridden)).toBe("50.00 max")
+    expect(dimensionText(overridden)).toBe("50 max")
   })
 
   it("moves rigidly and keeps its id", () => {
@@ -498,6 +500,55 @@ describe("dimension", () => {
     expect(moved.id).toBe("D1")
     expect(moved.first).toBeCloseToPoint(p(10, -5))
     expect(moved.linePoint).toBeCloseToPoint(p(60, 35))
+  })
+
+  it("carries a moved text through every transform (desktop dimensions/d03-1)", () => {
+    const moved = createDimension("linear", p(0, 0), p(100, 0), p(50, 40), {
+      textPoint: p(70, 40),
+    })
+    const pivot = p(10, 20)
+    const textOf = (entity: Entity) => asDimension(entity).textPoint
+    expect(textOf(translateEntity(moved, p(5, -5)))).toBeCloseToPoint(p(75, 35))
+    for (const turned of [
+      rotateEntity(moved, pivot, deg(90)),
+      rotateEntityCopy(moved, pivot, deg(90)),
+    ]) {
+      expect(textOf(turned)).toBeCloseToPoint(
+        rotatePoint(p(70, 40), pivot, deg(90))
+      )
+    }
+    for (const scaled of [
+      scaleEntity(moved, pivot, 2),
+      scaleEntityCopy(moved, pivot, 2),
+    ]) {
+      expect(textOf(scaled)).toBeCloseToPoint(scalePoint(p(70, 40), pivot, 2))
+    }
+    for (const mirrored of [
+      mirrorEntity(moved, ORIGIN, p(1, 1)),
+      mirrorEntityCopy(moved, ORIGIN, p(1, 1)),
+    ]) {
+      expect(textOf(mirrored)).toBeCloseToPoint(p(40, 70))
+    }
+    // Draws above the line where it was put, not at the line's middle.
+    expect(dimensionGeometry(moved).textPosition.x).toBeCloseTo(70)
+  })
+
+  it("takes its line along when STRETCH catches a moved text alone (probe transforms/p275)", () => {
+    const moved = createDimension(
+      "linear",
+      p(0, 300),
+      p(100, 300),
+      p(50, 320),
+      {
+        textPoint: p(50, 320),
+      }
+    )
+    const box = (q: Vec2) => q.x >= 45 && q.x <= 55 && q.y >= 318 && q.y <= 330
+    const stretched = asDimension(stretchEntity(moved, p(10, 5), box))
+    // DXF 10 and 11 at one height after, the line through the text.
+    expect(stretched.textPoint).toBeCloseToPoint(p(60, 325))
+    expect(dimensionGeometry(stretched).lineEnd).toBeCloseToPoint(p(100, 325))
+    expect(stretched.second).toBeCloseToPoint(p(100, 300))
   })
 
   it("turns its measurement direction with a rotation", () => {

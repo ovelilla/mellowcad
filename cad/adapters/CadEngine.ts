@@ -231,6 +231,10 @@ export class CadEngine {
     this.runtime.chooseShortcutMenuOption(id)
   }
 
+  chooseShortcutMenuDimStyle(id: string): void {
+    this.runtime.chooseShortcutMenuDimStyle(id)
+  }
+
   toggleSelectionCycling(): void {
     this.runtime.toggleSelectionCycling()
   }

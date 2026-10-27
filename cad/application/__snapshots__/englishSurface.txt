@@ -2801,7 +2801,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Specify second extension line origin:
   info| Non-associative dimension created.
 > T
-  prompt: DIMLINEAR Enter dimension text <100.00>:
+  prompt: DIMLINEAR Enter dimension text <100>:
   asks: "Enter dimension text"
   tip: Enter dimension text
   dyn: "Enter dimension text"=""||*
@@ -2815,7 +2815,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: Specify dimension line location or
   dyn: "X,Y"=""||*
   options: [T] Text, [A] Angle, [H] Horizontal, [V] Vertical, [R] Rotated
-  prompt| Enter dimension text <100.00>: <> TYP
+  prompt| Enter dimension text <100>: <> TYP
 > A
   prompt: DIMLINEAR Specify angle of dimension text:
   asks: "Specify angle of dimension text"
@@ -2847,7 +2847,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: -
   options: -
   prompt| Specify dimension line location or [Text/Angle]: 30
-  info| Dimension text = 100.00
+  info| Dimension text = 100
 > location
 > DIMALIGNED
   prompt: DIMALIGNED Specify first extension line origin or <select object>:
@@ -2874,7 +2874,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: -
   options: -
   prompt| Specify dimension line location or [Text/Angle]:
-  info| Dimension text = 100.00
+  info| Dimension text = 100
 
 ## DIMLINEAR select object
 > start
@@ -2912,7 +2912,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: -
   options: -
   prompt| Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]:
-  info| Dimension text = 100.00
+  info| Dimension text = 100
 
 ## DIMRADIUS and DIMDIAMETER
 > start
@@ -2938,7 +2938,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   options: [T] Text, [A] Angle
   prompt| Select arc or circle:
 > T
-  prompt: DIMRADIUS Enter dimension text <50.00>:
+  prompt: DIMRADIUS Enter dimension text <50>:
   asks: "Enter dimension text"
   tip: Enter dimension text
   dyn: "Enter dimension text"=""||*
@@ -2952,7 +2952,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: Specify dimension line location or
   dyn: "X,Y"=""||*
   options: [T] Text, [A] Angle
-  prompt| Enter dimension text <50.00>: R<>
+  prompt| Enter dimension text <50>: R<>
 > A
   prompt: DIMRADIUS Specify angle of dimension text:
   asks: "Specify angle of dimension text"
@@ -2976,7 +2976,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: -
   options: -
   prompt| Specify dimension line location or [Text/Angle]:
-  info| Dimension text = 50.00
+  info| Dimension text = 50
 > DIMDIAMETER
   prompt: DIMDIAMETER Select arc or circle:
   asks: 
@@ -2997,7 +2997,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: -
   options: -
   prompt| Specify dimension line location or [Text/Angle]:
-  info| Dimension text = 100.00
+  info| Dimension text = 100
 
 ## DIMANGULAR
 > start
@@ -3133,7 +3133,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   command| DBA DIMBASELINE
 > second origin
   prompt| Specify second extension line origin or [Select/Undo] <Select>:
-  info| Dimension text = 180.00
+  info| Dimension text = 180
 > U
   prompt| Specify second extension line origin or [Select/Undo] <Select>: U
 > S
@@ -3166,7 +3166,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   command| DCO DIMCONTINUE
 > second origin
   prompt| Specify second extension line origin or [Select/Undo] <Select>:
-  info| Dimension text = 80.00
+  info| Dimension text = 80
 > escape
   prompt: Command:
   asks: -
@@ -3204,7 +3204,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: Select dimensions to space:
   prompt| Select base dimension:
 > pick
-  properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Linear, Rotation=0°~] [Definition points: First X=0.00, First Y=0.00, Second X=100.00, Second Y=0.00]
+  properties: Rotated Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=50.00~, Text position Y=26.88~, Text rotation=0°~, Measurement=100, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
   prompt| Select dimensions to space: 1 found
 > pick
   properties: 2 objects (2) [Selection: Dimensions=2]
@@ -5622,7 +5622,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   properties: -
   command| *Cancel*
 > select dimension
-  properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Linear, Rotation=0°~] [Definition points: First X=300.00, First Y=0.00, Second X=400.00, Second Y=0.00]
+  properties: Rotated Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=350.00~, Text position Y=-38.13~, Text rotation=0°~, Measurement=100, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
 > grab definition point
   asks: "Move"
   dyn: "Move"=""|0.00|mm*
@@ -5631,7 +5631,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
 > release
   asks: -
   dyn: -
-  properties: Dimension (1) [Dimension: Measurement=110.00 mm, Text override=—, Type=Linear, Rotation=0°~] [Definition points: First X=290.00, First Y=0.00, Second X=400.00, Second Y=0.00]
+  properties: Rotated Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=345.00~, Text position Y=-38.13~, Text rotation=0°~, Measurement=110, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
 > escape
   properties: -
   command| *Cancel*
@@ -5794,15 +5794,15 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
 > select T-br
   properties: Text (1) [Text: Contents=NOTE, Justify=Bottom right, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-9.70, Y=0.74, Z=0.00]
 > select D1
-  properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Linear, Rotation=0°~] [Definition points: First X=0.00, First Y=0.00, Second X=100.00, Second Y=0.00]
+  properties: Rotated Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=50.00~, Text position Y=31.88~, Text rotation=0°~, Measurement=100, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
 > select D2
-  properties: Dimension (1) [Dimension: Measurement=90°, Text override=—, Type=Angular] [Definition points: Vertex X=0.00, Vertex Y=0.00, First X=100.00, First Y=0.00, Second X=0.00, Second Y=100.00]
+  properties: Angular Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=61.33~, Text position Y=61.33~, Text rotation=0°~, Measurement=90°, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
 > select D3
-  properties: Dimension (1) [Dimension: Measurement=50.00 mm, Text override=R<>, Type=Radius] [Definition points: First X=0.00, First Y=0.00, Second X=50.00, Second Y=0.00]
+  properties: Radial Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Center mark size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=80.00~, Text position Y=0.00~, Text rotation=0°~, Measurement=50, Text override=R<>~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
 > select D4
-  properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Aligned] [Definition points: First X=0.00, First Y=0.00, Second X=60.00, Second Y=80.00]
+  properties: Aligned Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=-25.90~, Text position Y=81.93~, Text rotation=0°~, Measurement=100, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
 > select D5
-  properties: Dimension (1) [Dimension: Measurement=100.00 mm, Text override=—, Type=Diameter] [Definition points: First X=0.00, First Y=0.00, Second X=50.00, Second Y=0.00]
+  properties: Diametric Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Center mark size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=80.00~, Text position Y=0.00~, Text rotation=0°~, Measurement=100, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
 > select H1
   properties: Hatch (1) [Pattern: Type=Predefined, Pattern name=ANGLE, Annotative=No, Angle=0°~, Scale=1.00~, Origin X=0.00~, Origin Y=0.00~, Associative=No, Island detection style=Outer] [Geometry: Elevation=0.00~, Area=10000.00 mm², Cumulative Area=10000.00 mm²]
 > select H2

@@ -38,7 +38,7 @@ describe("DIMRADIUS", () => {
 
     expect(radius.kind).toBe("radius")
     expect(dimensionMeasurement(radius)).toBeCloseTo(50)
-    expect(dimensionText(radius)).toBe("R50.00")
+    expect(dimensionText(radius)).toBe("R50")
   })
 
   it("takes the direction of the dimension line from the location", () => {
@@ -93,7 +93,7 @@ describe("DIMDIAMETER", () => {
 
     expect(diameter.kind).toBe("diameter")
     expect(dimensionMeasurement(diameter)).toBeCloseTo(100)
-    expect(dimensionText(diameter)).toBe("\u00d8100.00")
+    expect(dimensionText(diameter)).toBe("\u00d8100")
   })
 
   it("draws right across the circle, with an arrow at each end", () => {
@@ -188,7 +188,7 @@ describe("radial dimensions", () => {
       .enter()
       .click(p(30, 0))
 
-    expect(dimensionText(dim(cad))).toBe("R50.00 TYP")
+    expect(dimensionText(dim(cad))).toBe("R50 TYP")
   })
 
   it("Angle turns the text", () => {
@@ -216,7 +216,7 @@ describe("radial dimensions", () => {
     cad.command("DIMDIAMETER").click(p(50, 0)).moveTo(p(30, 0))
 
     const preview = cad.scene().primitives.find((prim) => prim.kind === "text")
-    expect(preview && preview.kind === "text" && preview.text).toBe("Ø100.00")
+    expect(preview && preview.kind === "text" && preview.text).toBe("Ø100")
     expect(cad.typeCounts().dimension).toBeUndefined()
   })
 
@@ -250,8 +250,11 @@ describe("radial dimensions", () => {
     const cad = radial("DIMDIAMETER", p(30, 0))
     cad.select(dim(cad).id)
 
-    const rows = cad.state().properties.info?.groups[0].rows ?? []
-    expect(rows.find((row) => row.label === "Type")?.value).toBe("Diameter")
+    // In the title, as AutoCAD's (desktop dimensions/d04-5), with the centre
+    // mark among the lines and arrows.
+    expect(cad.state().properties.info?.title).toBe("Diametric Dimension")
+    const rows = cad.state().properties.info?.groups[1].rows ?? []
+    expect(rows.map((row) => row.label)).toContain("Center mark size")
   })
 
   it("survives a save and reload", () => {

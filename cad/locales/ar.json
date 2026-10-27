@@ -190,7 +190,12 @@
         "ellipticalArc": "قوس قطع ناقص",
         "objects": "{count, plural, zero {لا عناصر} one {عنصر واحد} two {عنصران} few {# عناصر} many {# عنصرًا} other {# عنصر}}",
         "all": "الكل ({count})",
-        "type": "{type} ({count})"
+        "type": "{type} ({count})",
+        "linearDimension": "بُعد مُدار",
+        "alignedDimension": "بُعد محاذٍ",
+        "angularDimension": "بُعد زاوي",
+        "radiusDimension": "بُعد نصف قطري",
+        "diameterDimension": "بُعد قطري"
       },
       "group": {
         "geometry": "الهندسة",
@@ -205,7 +210,10 @@
         "attributes": "السمات",
         "misc": "متفرقات",
         "dataPoints": "نقاط البيانات",
-        "selection": "التحديد"
+        "selection": "التحديد",
+        "linesArrows": "الخطوط والأسهم",
+        "fit": "الملاءمة",
+        "primaryUnits": "الوحدات الأساسية"
       },
       "row": {
         "length": "الطول",
@@ -341,7 +349,19 @@
         "fillAngle": "زاوية التعبئة",
         "rotateItems": "تدوير العناصر",
         "itemSpacing": "تباعد العناصر",
-        "alignItems": "محاذاة العناصر"
+        "alignItems": "محاذاة العناصر",
+        "arrowSize": "حجم السهم",
+        "centerMarkSize": "حجم علامة المركز",
+        "extLineExt": "امتداد خط الامتداد",
+        "extLineOffset": "إزاحة خط الامتداد",
+        "textOffset": "إزاحة النص",
+        "textPositionX": "موضع النص X",
+        "textPositionY": "موضع النص Y",
+        "textRotation": "دوران النص",
+        "dimScaleOverall": "المقياس الكلي للبُعد",
+        "decimalSeparator": "الفاصل العشري",
+        "suppressTrailingZeros": "حذف الأصفار اللاحقة",
+        "precision": "الدقة"
       },
       "value": {
         "yes": "نعم",

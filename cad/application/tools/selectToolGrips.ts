@@ -24,8 +24,9 @@ import { normalizeAngle, polarPoint } from "../../geometry/primitives"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { ToolContext } from "./Tool"
-import { Grip, GripShape } from "./selectToolState"
+import { DimensionPoint, Grip, GripShape } from "./selectToolState"
 import {
+  diameterFarRim,
   gripSegments,
   mtextWidthGrip,
   mtextWidthSides,
@@ -204,32 +205,40 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
         }
         break
       case "dimension": {
-        // AutoCAD's draggable definition points: the two measured origins,
-        // plus the dimension line, grabbed halfway along it. An angular
-        // dimension adds the vertex it turns about.
-        const g = dimensionGeometry(entity)
-        grips.push({
-          entityId: id,
-          role: { kind: "dimPoint", point: "first" },
-          world: entity.first,
-        })
-        grips.push({
-          entityId: id,
-          role: { kind: "dimPoint", point: "second" },
-          world: entity.second,
-        })
-        if (entity.vertex) {
-          grips.push({
-            entityId: id,
-            role: { kind: "dimPoint", point: "vertex" },
-            world: entity.vertex,
-          })
+        // AutoCAD's grips per kind (desktop d01-1): a linear or aligned one's
+        // two origins, its dimension line's two ends and its text; a radius's
+        // centre, rim point and text; a diameter's two rim points and text; an
+        // angular one's vertex, two endpoints, a point on its arc and text.
+        const g = dimensionGeometry(
+          entity,
+          ctx.document.getDimStyle(entity.styleId)
+        )
+        const dimGrip = (point: DimensionPoint, world: Vec2) =>
+          grips.push({ entityId: id, role: { kind: "dimPoint", point }, world })
+        switch (entity.kind) {
+          case "linear":
+          case "aligned":
+            dimGrip("first", entity.first)
+            dimGrip("second", entity.second)
+            dimGrip("line", g.lineStart)
+            dimGrip("line", g.lineEnd)
+            break
+          case "radius":
+            dimGrip("first", entity.first)
+            dimGrip("second", entity.second)
+            break
+          case "diameter":
+            dimGrip("rim", entity.second)
+            dimGrip("rim", diameterFarRim(entity))
+            break
+          case "angular":
+            if (entity.vertex) dimGrip("vertex", entity.vertex)
+            dimGrip("first", entity.first)
+            dimGrip("second", entity.second)
+            dimGrip("line", g.lineMidpoint)
+            break
         }
-        grips.push({
-          entityId: id,
-          role: { kind: "dimPoint", point: "line" },
-          world: g.lineMidpoint,
-        })
+        dimGrip("text", g.textPoint)
         break
       }
       case "hatch": {

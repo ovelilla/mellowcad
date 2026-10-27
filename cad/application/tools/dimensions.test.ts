@@ -1,7 +1,9 @@
 import { describe, expect, it } from "vitest"
 import { createHarness } from "../../../test/harness"
 import { lineOf, p, polylineOf, circleOf } from "../../../test/builders"
+import { V } from "../../geometry/Vec2"
 import {
+  createDimension,
   DimensionEntity,
   dimensionGeometry,
   dimensionMeasurement,
@@ -54,7 +56,7 @@ describe("DIMLINEAR", () => {
       .moveTo(p(15, -90))
 
     const preview = cad.scene().primitives.find((prim) => prim.kind === "text")
-    expect(preview && preview.kind === "text" && preview.text).toBe("200.00")
+    expect(preview && preview.kind === "text" && preview.text).toBe("200")
 
     cad.click(p(15, -90))
     expect(
@@ -131,7 +133,7 @@ describe("DIMLINEAR", () => {
 
     const dim = cad.only<DimensionEntity>("dimension")
     expect(dim.text).toBe("approx <>")
-    expect(dimensionText(dim)).toBe("approx 100.00")
+    expect(dimensionText(dim)).toBe("approx 100")
   })
 
   it("Angle sets the text angle without touching the measurement", () => {
@@ -258,7 +260,7 @@ describe("dimension geometry", () => {
 
     expect(g.textPosition).toBeCloseToPoint(p(50, 50 + style.textGap))
     expect(g.textAngle).toBeCloseTo(0)
-    expect(g.text).toBe("100.00")
+    expect(g.text).toBe("100")
   })
 
   it("anchors the text on its baseline, not the em box", () => {
@@ -336,7 +338,7 @@ describe("DIMSCALE", () => {
   it("never touches the measurement — DIMSCALE is not a unit factor", () => {
     const { dim, geometry } = measured(50)
     expect(dimensionMeasurement(dim)).toBeCloseTo(100)
-    expect(geometry.text).toBe("100.00")
+    expect(geometry.text).toBe("100")
     // The dimension line still spans the real distance.
     expect(geometry.lineEnd.x - geometry.lineStart.x).toBeCloseTo(100)
   })
@@ -368,15 +370,86 @@ describe("dimension grips", () => {
     return { cad, dim }
   }
 
-  it("shows a grip on each origin and on the dimension line", () => {
-    const { cad } = placed()
-    // Three square grips: the two origins and the dimension line's midpoint.
-    const grips = cad
+  /** The world points of the grips drawn, read back from their squares. */
+  function gripsOf(cad: ReturnType<typeof createHarness>) {
+    return cad
       .scene()
       .primitives.filter(
         (prim) => prim.kind === "rect" && prim.fill === THEME.grip
       )
-    expect(grips).toHaveLength(3)
+      .map((prim) =>
+        prim.kind === "rect"
+          ? cad.toWorld({
+              x: prim.min.x + prim.width / 2,
+              y: prim.min.y + prim.height / 2,
+            })
+          : p(0, 0)
+      )
+  }
+
+  /** Points as sorted text to a thousandth, comparable whatever the order. */
+  function keyed(points: readonly { x: number; y: number }[]): string[] {
+    const at = (v: number) => (Math.round(v * 1000) / 1000 + 0).toFixed(3)
+    return points.map((q) => `${at(q.x)},${at(q.y)}`).sort()
+  }
+
+  /** One dimension, selected, as the desktop pass drew them (d01). */
+  function selected(dim: DimensionEntity) {
+    const cad = createHarness({ entities: [dim] })
+    cad.tool("select").select(dim.id)
+    return cad
+  }
+
+  it("are the origins, the dimension line's ends and the text (desktop dimensions/d01-1)", () => {
+    const { cad } = placed()
+    // The text's grip is its middle: DIMGAP and half DIMTXT over the line
+    // (d04-2: Text position Y 11.875 over a line at 10).
+    expect(keyed(gripsOf(cad))).toEqual(
+      keyed([p(0, 0), p(100, 0), p(0, 50), p(100, 50), p(50, 51.875)])
+    )
+  })
+
+  it("are a radius's centre, rim point and text (desktop dimensions/d01-1)", () => {
+    const toward = V.normalize(p(20, 5))
+    const radius = createDimension(
+      "radius",
+      p(20, 40),
+      V.add(p(20, 40), V.scale(toward, 10)),
+      p(40, 45),
+      { id: "R" }
+    )
+    expect(keyed(gripsOf(selected(radius)))).toEqual(
+      keyed([p(20, 40), radius.second, p(40, 45)])
+    )
+  })
+
+  it("are a diameter's two rim points and text (desktop dimensions/d01-1)", () => {
+    const diameter = createDimension(
+      "diameter",
+      p(70, 40),
+      p(80, 40),
+      p(75, 40),
+      { id: "D" }
+    )
+    expect(keyed(gripsOf(selected(diameter)))).toEqual(
+      keyed([p(80, 40), p(60, 40), p(75, 40)])
+    )
+  })
+
+  it("are an angular one's vertex, endpoints, arc and text (desktop dimensions/d01-1)", () => {
+    const angular = createDimension(
+      "angular",
+      p(30, -20),
+      p(20, -5),
+      p(30, -10),
+      { id: "A", vertex: p(0, -20) }
+    )
+    const g = dimensionGeometry(angular)
+    const grips = gripsOf(selected(angular))
+    expect(grips).toHaveLength(5)
+    expect(keyed(grips)).toEqual(
+      keyed([p(0, -20), p(30, -20), p(20, -5), g.lineMidpoint, g.textPoint])
+    )
   })
 
   it("dragging an origin restates the measurement", () => {
@@ -388,14 +461,66 @@ describe("dimension grips", () => {
     expect(dimensionMeasurement(edited)).toBeCloseTo(160)
   })
 
-  it("dragging the dimension line slides it without changing the measurement", () => {
+  it("dragging an end of the dimension line moves the line through it", () => {
     const { cad, dim } = placed()
-    cad.drag(p(50, 50), p(50, 90))
+    cad.drag(p(0, 50), p(0, 90))
 
     const edited = cad.byId<DimensionEntity>(dim.id)
     expect(dimensionGeometry(edited).lineStart).toBeCloseToPoint(p(0, 90))
     expect(dimensionMeasurement(edited)).toBeCloseTo(100)
     expect(edited.first).toBeCloseToPoint(dim.first)
+  })
+
+  it("dragging the text moves it with its line, where it was put (desktop dimensions/d03-1)", () => {
+    const cad = dimension("DIMLINEAR", p(0, 0), p(40, 0), p(20, 10))
+    const dim = cad.only<DimensionEntity>("dimension")
+    cad.tool("select").select(dim.id)
+    cad.drag(p(20, 11.875), p(30, 20))
+
+    const edited = cad.byId<DimensionEntity>(dim.id)
+    const g = dimensionGeometry(edited)
+    // The line goes through the point and the text stays there, above it.
+    expect(g.lineStart).toBeCloseToPoint(p(0, 20))
+    expect(edited.textPoint).toBeCloseToPoint(p(30, 20))
+    expect(g.textPosition).toBeCloseToPoint(p(30, 20.625))
+    expect(dimensionMeasurement(edited)).toBeCloseTo(40)
+    expect(keyed(gripsOf(cad))).toContain(keyed([p(30, 20)])[0])
+
+    // A later move of the line keeps the text at its place along it.
+    cad.drag(p(40, 20), p(40, 30))
+    const again = cad.byId<DimensionEntity>(dim.id)
+    expect(dimensionGeometry(again).textPosition).toBeCloseToPoint(
+      p(30, 30.625)
+    )
+
+    cad.undo().undo()
+    expect(cad.byId<DimensionEntity>(dim.id).textPoint).toBeUndefined()
+  })
+
+  it("dragging a radial one's text swings its leader round to it", () => {
+    const radius = createDimension("radius", p(0, 0), p(10, 0), p(20, 0), {
+      id: "R",
+    })
+    const cad = selected(radius)
+    cad.drag(p(20, 0), p(0, 30))
+
+    const edited = cad.byId<DimensionEntity>("R")
+    expect(edited.second).toBeCloseToPoint(p(0, 10))
+    expect(edited.linePoint).toBeCloseToPoint(p(0, 30))
+    expect(dimensionMeasurement(edited)).toBeCloseTo(10)
+  })
+
+  it("dragging a diameter's rim point turns its line about the centre", () => {
+    const diameter = createDimension("diameter", p(0, 0), p(10, 0), p(5, 0), {
+      id: "D",
+    })
+    const cad = selected(diameter)
+    cad.drag(p(-10, 0), p(0, -30))
+
+    const edited = cad.byId<DimensionEntity>("D")
+    expect(edited.second).toBeCloseToPoint(p(0, 10))
+    expect(edited.linePoint).toBeCloseToPoint(p(0, 5))
+    expect(dimensionMeasurement(edited)).toBeCloseTo(20)
   })
 
   it("a grip edit is one undo step and keeps the id", () => {
@@ -409,28 +534,167 @@ describe("dimension grips", () => {
 })
 
 describe("dimension properties palette", () => {
-  it("shows the measurement read-only and the direction editable", () => {
-    const cad = dimension("DIMLINEAR", p(0, 0), p(100, 0), p(50, 50))
-    cad.tool("select").select(cad.only<DimensionEntity>("dimension").id)
+  /** The DIMLINEAR of the desktop pass (d04), selected. */
+  function palette(command = "DIMLINEAR") {
+    const cad = dimension(command, p(0, 0), p(40, 0), p(20, 10))
+    const dim = cad.only<DimensionEntity>("dimension")
+    cad.tool("select").select(dim.id)
+    return { cad, dim }
+  }
 
-    const rows = cad
-      .state()
-      .properties.info!.groups.flatMap((group) => group.rows)
-    const measurement = rows.find((row) => row.label === "Measurement")!
-    expect(measurement.value).toContain("100.00")
-    expect(measurement.edit).toBeUndefined()
-    expect(rows.find((row) => row.label === "Rotation")?.edit?.property).toBe(
-      "dimensionRotation"
+  const groupsOf = (cad: ReturnType<typeof createHarness>) =>
+    cad.state().properties.info!.groups
+
+  const rowOf = (cad: ReturnType<typeof createHarness>, label: string) =>
+    groupsOf(cad)
+      .flatMap((group) => group.rows)
+      .find((row) => row.label === label)
+
+  it("files its rows under AutoCAD's title and groups (desktop dimensions/d04-1 to d04-3)", () => {
+    const { cad } = palette()
+    expect(cad.state().properties.info!.title).toBe("Rotated Dimension")
+    expect(
+      groupsOf(cad).map(
+        (group) =>
+          `${group.title}: ${group.rows.map((row) => `${row.label}=${row.value}`).join(", ")}`
+      )
+    ).toEqual([
+      "Misc: Annotative=No",
+      "Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625",
+      `Text: Text height=2.5, Text offset=0.625, Text position X=${rowOf(cad, "Text position X")!.value}, Text position Y=${rowOf(cad, "Text position Y")!.value}, Text rotation=${rowOf(cad, "Text rotation")!.value}, Measurement=40, Text override=`,
+      "Fit: Dim scale overall=1",
+      "Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00",
+    ])
+    // The text's middle, as d04-2 reads it: 20 and 11.875.
+    expect(Number(rowOf(cad, "Text position X")!.edit!.text)).toBeCloseTo(20)
+    expect(Number(rowOf(cad, "Text position Y")!.edit!.text)).toBeCloseTo(
+      11.875,
+      1
+    )
+    expect(rowOf(cad, "Measurement")!.edit).toBeUndefined()
+  })
+
+  it("names each kind as AutoCAD's title does (desktop dimensions/d04-4 to d04-7)", () => {
+    const titled = (dim: DimensionEntity) => {
+      const cad = createHarness({ entities: [dim] })
+      cad.tool("select").select(dim.id)
+      return cad.state().properties.info!.title
+    }
+    expect(
+      titled(createDimension("aligned", p(0, 0), p(30, 20), p(10, 25)))
+    ).toBe("Aligned Dimension")
+    expect(titled(createDimension("radius", p(0, 0), p(10, 0), p(20, 0)))).toBe(
+      "Radial Dimension"
+    )
+    expect(
+      titled(createDimension("diameter", p(0, 0), p(10, 0), p(5, 0)))
+    ).toBe("Diametric Dimension")
+    expect(
+      titled(
+        createDimension("angular", p(30, 0), p(0, 30), p(20, 20), {
+          vertex: p(0, 0),
+        })
+      )
+    ).toBe("Angular Dimension")
+  })
+
+  it("puts the text, and the line with it, where Text position is typed", () => {
+    const { cad, dim } = palette()
+    cad.runtime.setSelectionProperty("textPositionY", "20")
+
+    const edited = cad.byId<DimensionEntity>(dim.id)
+    expect(dimensionGeometry(edited).lineStart).toBeCloseToPoint(p(0, 20))
+    expect(edited.textPoint).toBeCloseToPoint(p(20, 20))
+    cad.undo()
+    expect(cad.byId<DimensionEntity>(dim.id).textPoint).toBeUndefined()
+  })
+
+  it("takes a Text override and gives the measurement back when emptied", () => {
+    const { cad, dim } = palette()
+    cad.runtime.setSelectionProperty("dimensionText", "<> mm")
+    expect(dimensionText(cad.byId<DimensionEntity>(dim.id))).toBe("40 mm")
+
+    cad.runtime.setSelectionProperty("dimensionText", "")
+    expect(cad.byId<DimensionEntity>(dim.id).text).toBeUndefined()
+  })
+
+  it("turns the text by Text rotation, 0 being its own direction", () => {
+    const { cad, dim } = palette()
+    cad.runtime.setSelectionProperty("dimensionTextRotation", "30")
+    expect(cad.byId<DimensionEntity>(dim.id).textAngle).toBeCloseTo(Math.PI / 6)
+    cad.runtime.setSelectionProperty("dimensionTextRotation", "0")
+    expect(cad.byId<DimensionEntity>(dim.id).textAngle).toBeUndefined()
+  })
+})
+
+describe("the measurement's format", () => {
+  /** A DIMLINEAR from 0,0 to `x`,0, placed at 6,10 as the probe's was. */
+  function measured(x: number) {
+    const cad = createHarness()
+    cad.command("DIMLINEAR").click(p(0, 0)).click(p(x, 0)).click(p(6, 10))
+    return cad
+  }
+
+  it("draws ISO-25's decimal comma with the trailing zeros dropped (probe dimensions/p02)", () => {
+    const drawn = (x: number) =>
+      dimensionText(measured(x).only<DimensionEntity>("dimension"))
+    expect(drawn(12.5)).toBe("12,5")
+    expect(drawn(100)).toBe("100")
+    expect(drawn(0.004)).toBe("0")
+    expect(drawn(0.5)).toBe("0,5")
+    expect(drawn(1234.567)).toBe("1234,57")
+  })
+
+  it("reports it with a point and no trailing zeros (probe dimensions/p01)", () => {
+    expect(measured(12.5).commandLog().at(-1)).toBe("Dimension text = 12.5")
+    expect(measured(100).commandLog().at(-1)).toBe("Dimension text = 100")
+    expect(measured(33.333).commandLog().at(-1)).toBe("Dimension text = 33.33")
+  })
+
+  it("offers it so at Text, and <> draws it as the dimension does (probe dimensions/p15)", () => {
+    const cad = createHarness()
+    cad.command("DIMLINEAR").click(p(0, 0)).click(p(12.5, 0)).option("Text")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMLINEAR Enter dimension text <12.5>:"
+    )
+    cad.type("<> mm").enter().click(p(6, 10))
+    expect(dimensionText(cad.only<DimensionEntity>("dimension"))).toBe(
+      "12,5 mm"
     )
   })
 
-  it("has no editable direction when it is aligned", () => {
-    const cad = dimension("DIMALIGNED", p(0, 0), p(60, 80), p(-40, 60))
-    cad.tool("select").select(cad.only<DimensionEntity>("dimension").id)
+  it("keeps an angle's trailing zeros, DIMAZIN being 0 (probe dimensions/p366)", () => {
+    const cad = createHarness()
+    cad.runtime.updateDimStyle("ISO-25", { angleDecimals: 2 })
+    const polar = (r: number, degrees: number) =>
+      p(
+        r * Math.cos((degrees * Math.PI) / 180),
+        r * Math.sin((degrees * Math.PI) / 180)
+      )
+    cad
+      .command("DIMANGULAR")
+      .enter()
+      .click(p(0, 0))
+      .click(p(10, 0))
+      .click(polar(10, 22.5))
+      .click(polar(20, 10))
+    const dim = cad.only<DimensionEntity>("dimension")
+    expect(dimensionText(dim, cad.state().dimStyles[0])).toBe("22,50°")
+    expect(cad.commandLog().at(-1)).toMatch(/^Dimension text = 22\.5\b/)
+  })
 
-    const rows = cad
-      .state()
-      .properties.info!.groups.flatMap((group) => group.rows)
-    expect(rows.find((row) => row.label === "Rotation")).toBeUndefined()
+  it("follows a style's own separator and zeros", () => {
+    const dim = createHarness()
+      .command("DIMLINEAR")
+      .click(p(0, 0))
+      .click(p(12.5, 0))
+      .click(p(6, 10))
+      .only<DimensionEntity>("dimension")
+    const style = {
+      ...DEFAULT_DIM_STYLE,
+      decimalSeparator: ".",
+      suppressTrailingZeros: false,
+    }
+    expect(dimensionText(dim, style)).toBe("12.50")
   })
 })

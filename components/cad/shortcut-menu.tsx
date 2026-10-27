@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Menu } from "@base-ui/react/menu"
-import { ChevronRight } from "lucide-react"
+import { Check, ChevronRight } from "lucide-react"
 import { useTranslations } from "next-intl"
 
 import type { CadEngine, ShortcutMenuAction, ShortcutMenuEntry } from "@/cad"
@@ -54,6 +54,8 @@ function entryKey(entry: ShortcutMenuEntry): string {
       return entry.submenu
     case "snapOverrides":
       return "snapOverrides"
+    case "dimensionStyle":
+      return "dimensionStyle"
   }
 }
 
@@ -167,6 +169,31 @@ export function ShortcutMenu({
         return (
           <Submenu key={entryKey(item)} label={t("snapOverrides")}>
             <SnapOverrideItems engine={engine} state={state} />
+          </Submenu>
+        )
+      case "dimensionStyle":
+        return (
+          <Submenu key={entryKey(item)} label={t("dimensionStyle")}>
+            <Menu.RadioGroup
+              value={item.current}
+              onValueChange={(id: string) =>
+                engine.chooseShortcutMenuDimStyle(id)
+              }
+            >
+              {item.styles.map((style) => (
+                <Menu.RadioItem
+                  key={style.id}
+                  value={style.id}
+                  closeOnClick
+                  className={ITEM}
+                >
+                  {style.name}
+                  <Menu.RadioItemIndicator>
+                    <Check className="absolute inset-e-2 size-4 text-primary" />
+                  </Menu.RadioItemIndicator>
+                </Menu.RadioItem>
+              ))}
+            </Menu.RadioGroup>
           </Submenu>
         )
     }

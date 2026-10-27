@@ -332,7 +332,12 @@ export const es: EngineLocale = {
             "count"
           ],
           ")"
-        ]
+        ],
+        "linearDimension": "Cota girada",
+        "alignedDimension": "Cota alineada",
+        "angularDimension": "Cota angular",
+        "radiusDimension": "Cota radial",
+        "diameterDimension": "Cota diametral"
       },
       "group": {
         "geometry": "Geometría",
@@ -347,7 +352,10 @@ export const es: EngineLocale = {
         "attributes": "Atributos",
         "misc": "Varios",
         "dataPoints": "Puntos auxiliares",
-        "selection": "Selección"
+        "selection": "Selección",
+        "linesArrows": "Líneas y flechas",
+        "fit": "Ajustar",
+        "primaryUnits": "Unidades principales"
       },
       "row": {
         "length": "Longitud",
@@ -483,7 +491,19 @@ export const es: EngineLocale = {
         "fillAngle": "Ángulo de relleno",
         "rotateItems": "Girar objetos",
         "itemSpacing": "Espaciado entre elementos",
-        "alignItems": "Alinear elementos"
+        "alignItems": "Alinear elementos",
+        "arrowSize": "Tamaño de flecha",
+        "centerMarkSize": "Tamaño de marca de centro",
+        "extLineExt": "Ampliación de línea de ref.",
+        "extLineOffset": "Desfase de línea de ref.",
+        "textOffset": "Desfase de texto",
+        "textPositionX": "Posición X de texto",
+        "textPositionY": "Posición Y de texto",
+        "textRotation": "Rotación de texto",
+        "dimScaleOverall": "Escala global de cota",
+        "decimalSeparator": "Separador decimal",
+        "suppressTrailingZeros": "Suprimir ceros finales",
+        "precision": "Precisión"
       },
       "value": {
         "yes": "Sí",

@@ -138,7 +138,7 @@ The top bar's Undo ends the running command first; the Default menu's is `^C^C_u
 
 **A right-click's Enter is `pressEnter`, and so is the Command menu's Enter**: one path with the
 keyboard's. `rightClickResponse` (SHORTCUTMENU 11) picks the menu. Every entry runs through
-`chooseShortcutMenuAction` / `chooseShortcutMenuOption`, which close the menu first; a fixed entry
+`chooseShortcutMenuAction` / `…Option` / `…DimStyle`, which close the menu first; a fixed entry
 that is a command runs it by its global name (`SHORTCUT_MENU_COMMANDS`) so it echoes, repeats and
 undoes as typed, and an option goes through `invokeToolOption`. A new entry is an action there, a
 case in the host's `ShortcutMenu` and its entry in `docs/coverage/`; an entry whose command

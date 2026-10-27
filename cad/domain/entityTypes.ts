@@ -420,6 +420,14 @@ export interface DimensionEntity extends BaseEntity {
    */
   readonly vertex?: Vec2
   /**
+   * Where the user put the measurement text with its grip (DXF 11 with flag
+   * 70's 128, desktop d03-1); absent while the text keeps its default place.
+   * A linear or aligned dimension draws it above its line at this point's
+   * projection, an angular one at its bearing; a radial one's text follows
+   * `linePoint` and never stores one.
+   */
+  readonly textPoint?: Vec2
+  /**
    * Direction measured along, radians CCW from +X. Ignored by every kind but
    * `linear`; the others take their direction from `first`→`second`.
    */

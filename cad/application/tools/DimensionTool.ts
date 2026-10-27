@@ -11,7 +11,7 @@ import {
   DimensionEntity,
   DimensionKind,
   dimensionMeasurement,
-  dimensionText,
+  dimensionMeasurementText,
   Entity,
   entityZAt,
   onPlaneOf,
@@ -591,10 +591,13 @@ export class DimensionTool implements Tool {
 /** Preview frames reuse one id so drawing them never burns entity ids. */
 const DIM_PREVIEW_ID = "__dimension_preview__"
 
-/** The measurement alone, as AutoCAD offers and reports it: no prefix, no override. */
+/**
+ * The measurement alone, as AutoCAD offers and reports it: no prefix, no
+ * override, a point and no trailing zeros whatever DIMDSEP draws (p01, p15).
+ */
 export function measurementOf(dim: DimensionEntity, ctx: ToolContext): string {
   const style = ctx.document.getDimStyle(dim.styleId)
-  return dimensionText({ ...dim, text: "<>" }, style)
+  return dimensionMeasurementText(dim, style, "reported")
 }
 
 /**

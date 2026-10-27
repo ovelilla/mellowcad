@@ -9,6 +9,14 @@ import { Button } from "@/components/ui/button"
 import { CadEngine, DimStyleInfo, TextStyleInfo } from "@/cad"
 import type { EditorState } from "@/hooks/useCadEngine"
 
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select"
+
 import { DecimalInput } from "./decimal-input"
 
 /**
@@ -181,6 +189,28 @@ function DimStyles({
             value={selected.decimals}
             step={1}
             onCommit={(decimals) => set({ decimals })}
+          />
+          <ChoiceField
+            label={t("decimalSeparator")}
+            value={selected.decimalSeparator}
+            choices={{
+              ",": t("comma"),
+              ".": t("period"),
+              " ": t("space"),
+            }}
+            onChoose={(decimalSeparator) => {
+              set({ decimalSeparator })
+              engine.focusSurface()
+            }}
+          />
+          <ChoiceField
+            label={t("suppressTrailingZeros")}
+            value={selected.suppressTrailingZeros ? "yes" : "no"}
+            choices={{ yes: t("yes"), no: t("no") }}
+            onChoose={(choice) => {
+              set({ suppressTrailingZeros: choice === "yes" })
+              engine.focusSurface()
+            }}
           />
           {/* DIMADEC: −1 means "use the linear precision above". */}
           <NumberField
@@ -407,6 +437,46 @@ function Group({
     <div>
       <div className="mb-1 text-title text-muted-foreground">{title}</div>
       <div className="flex flex-col gap-1">{children}</div>
+    </div>
+  )
+}
+
+/** A labelled drop-down of a few fixed values, as the manager's lists are. */
+function ChoiceField({
+  label,
+  value,
+  choices,
+  onChoose,
+}: {
+  label: string
+  value: string
+  choices: Record<string, string>
+  onChoose: (value: string) => void
+}) {
+  return (
+    <div className="flex items-center justify-between gap-2">
+      <span className="text-muted-foreground">{label}</span>
+      <Select
+        items={choices}
+        value={value}
+        onValueChange={(chosen) => {
+          if (chosen != null) onChoose(chosen as string)
+        }}
+      >
+        <SelectTrigger
+          aria-label={label}
+          className="w-28 bg-background dark:bg-background"
+        >
+          <SelectValue />
+        </SelectTrigger>
+        <SelectContent>
+          {Object.entries(choices).map(([choice, text]) => (
+            <SelectItem key={choice} value={choice}>
+              {text}
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
     </div>
   )
 }

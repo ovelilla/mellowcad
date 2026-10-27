@@ -73,6 +73,7 @@ import {
   TextStyleId,
 } from "../domain/textStyles"
 import {
+  clampDecimalSeparator,
   clampDimScale,
   createDefaultDimStyle,
   DEFAULT_DIM_STYLE,
@@ -117,7 +118,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 33
+export const DRAWING_FILE_VERSION = 34
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -518,6 +519,9 @@ function cloneEntityShape(entity: Entity): Entity {
         linePoint: { x: entity.linePoint.x, y: entity.linePoint.y },
         ...(entity.vertex
           ? { vertex: { x: entity.vertex.x, y: entity.vertex.y } }
+          : {}),
+        ...(entity.textPoint
+          ? { textPoint: { x: entity.textPoint.x, y: entity.textPoint.y } }
           : {}),
         rotation: entity.rotation,
         ...(entity.text !== undefined ? { text: entity.text } : {}),
@@ -1205,6 +1209,7 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
       const linePoint = parseVec2(raw.linePoint)
       if (!first || !second || !linePoint) return null
       const vertex = parseVec2(raw.vertex)
+      const textPoint = parseVec2(raw.textPoint)
       return {
         id,
         type: "dimension",
@@ -1215,6 +1220,8 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         second,
         linePoint,
         ...(vertex ? { vertex } : {}),
+        // Before 34 no text had been moved: absent, it keeps its place.
+        ...(textPoint ? { textPoint } : {}),
         rotation: isFiniteNumber(raw.rotation) ? raw.rotation : 0,
         ...(typeof raw.text === "string" ? { text: raw.text } : {}),
         ...(isFiniteNumber(raw.textAngle) ? { textAngle: raw.textAngle } : {}),
@@ -1625,6 +1632,12 @@ function parseDimStyles(value: unknown): DimStyle[] {
         angleDecimals: isFiniteNumber(raw.angleDecimals)
           ? Math.max(-1, Math.min(8, Math.round(raw.angleDecimals)))
           : DEFAULT_DIM_STYLE.angleDecimals,
+        // Before 34 every style drew ISO-25's DIMDSEP and DIMZIN 8 unread.
+        decimalSeparator: clampDecimalSeparator(raw.decimalSeparator),
+        suppressTrailingZeros:
+          typeof raw.suppressTrailingZeros === "boolean"
+            ? raw.suppressTrailingZeros
+            : DEFAULT_DIM_STYLE.suppressTrailingZeros,
         scale:
           isFiniteNumber(raw.scale) && raw.scale > 0
             ? clampDimScale(raw.scale)

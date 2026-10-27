@@ -50,6 +50,18 @@ export interface DimStyle {
    */
   readonly angleDecimals: number
   /**
+   * The character written for the decimal point in the drawn measurement
+   * (DIMDSEP). ISO-25's is a comma, so a fresh dimension reads `12,5`; the
+   * command line's `Dimension text =` still writes a point (p02).
+   */
+  readonly decimalSeparator: string
+  /**
+   * Whether a length drops its trailing zeros (DIMZIN's 8): ISO-25 sets it, so
+   * 100 reads `100` and 12.5 `12,5`. Angles keep theirs, DIMAZIN being 0
+   * (p366: `22,50°` at DIMADEC 2).
+   */
+  readonly suppressTrailingZeros: boolean
+  /**
    * Overall scale factor applied to every *size* above (DIMSCALE) — never to the
    * measurement, which always reports the true distance.
    *
@@ -78,6 +90,8 @@ export const DEFAULT_DIM_STYLE: DimStyle = {
   centerMark: 2.5,
   decimals: 2,
   angleDecimals: 0,
+  decimalSeparator: ",",
+  suppressTrailingZeros: true,
   scale: 1,
 }
 
@@ -126,10 +140,22 @@ export function clampDimScale(scale: number): number {
 }
 
 /**
+ * A DIMDSEP: one character that is not a digit, or ISO-25's comma.
+ * AutoCAD's dialog offers a period, a comma and a space.
+ */
+export function clampDecimalSeparator(value: unknown): string {
+  return typeof value === "string" &&
+    [...value].length === 1 &&
+    !/\d/.test(value)
+    ? value
+    : DEFAULT_DIM_STYLE.decimalSeparator
+}
+
+/**
  * Folds a style's numbers into usable ranges before it is stored: every plotted
  * size is a non-negative distance, DIMDEC counts 0–8 places and DIMADEC 0–8 or
- * the −1 that defers to DIMDEC. Anything unusable keeps the ISO-25 value rather
- * than collapsing the annotation.
+ * the −1 that defers to DIMDEC, DIMDSEP is one character. Anything unusable
+ * keeps the ISO-25 value rather than collapsing the annotation.
  */
 export function clampDimStyle(style: DimStyle): DimStyle {
   const size = (value: number, fallback: number) =>
@@ -162,6 +188,11 @@ export function clampDimStyle(style: DimStyle): DimStyle {
       DEFAULT_DIM_STYLE.angleDecimals,
       -1
     ),
+    decimalSeparator: clampDecimalSeparator(style.decimalSeparator),
+    suppressTrailingZeros:
+      typeof style.suppressTrailingZeros === "boolean"
+        ? style.suppressTrailingZeros
+        : DEFAULT_DIM_STYLE.suppressTrailingZeros,
     scale: clampDimScale(style.scale),
   }
 }

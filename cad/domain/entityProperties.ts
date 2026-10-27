@@ -81,6 +81,16 @@ export type EntityProperty =
   | "lineSpaceFactor"
   | "lineSpaceDistance"
   | "dimensionRotation"
+  /** A dimension's Text rotation (DXF 53): 0 is the default orientation. */
+  | "dimensionTextRotation"
+  /**
+   * A dimension's Text position X / Y (DXF 11) and Text override (DXF 1):
+   * the runtime's, since where the text stands depends on its style, and an
+   * override is text, not a number.
+   */
+  | "textPositionX"
+  | "textPositionY"
+  | "dimensionText"
   | "patternScale"
   | "patternAngle"
   /** A hatch's pattern origin (DXF 43, 44), where its lines start. */
@@ -174,13 +184,23 @@ export function applyEntityProperty(
       return applyTextProperty(entity, property, value)
     case "mtext":
       return applyMTextProperty(entity, property, value)
-    case "dimension":
-      // Only the measurement direction is a value: the definition points are
-      // edited with grips and the measurement itself is derived, so AutoCAD
-      // shows it read-only too.
-      return property === "dimensionRotation" && entity.kind === "linear"
-        ? { ...entity, rotation: toRadians(value) }
-        : null
+    case "dimension": {
+      // The definition points are edited with grips and the measurement is
+      // derived, so AutoCAD shows it read-only too.
+      if (property === "dimensionRotation" && entity.kind === "linear") {
+        return { ...entity, rotation: toRadians(value) }
+      }
+      if (property !== "dimensionTextRotation") return null
+      // WHY 0 stores nothing: AutoCAD's 0 is the text's default orientation
+      // along its line, not horizontal (DXF 53).
+      const angle = normalizeAngle(toRadians(value))
+      if (angle < 1e-12 || angle > 2 * Math.PI - 1e-12) {
+        const { textAngle, ...rest } = entity
+        void textAngle
+        return rest
+      }
+      return { ...entity, textAngle: angle }
+    }
     case "hatch":
       // The pattern's angle, scale and origin are AutoCAD's editable hatch
       // rows; the boundary is geometry the palette has no way to retype.

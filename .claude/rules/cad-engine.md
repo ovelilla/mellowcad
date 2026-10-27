@@ -145,12 +145,12 @@ visible in the viewport, so the _tool_ filters). Give it a cap: pairwise work is
 
 ## Dimensions
 
-- **Every transform maps the points through `mapDimensionPoints`**: an optional point (angular's
-  `vertex`) is otherwise inherited untouched, which TypeScript cannot flag.
+- **Every transform maps the points through `mapDimensionPoints`**: an optional point (`vertex`,
+  `textPoint`) is otherwise inherited untouched, which TypeScript cannot flag.
 - `DimensionGeometry` is **one dimension line plus a list of other runs** (`lines`), no per-kind
   field; a line that **curves** sets `arc`, and its grip is `lineMidpoint`, halfway _along_ it.
-- `dimensionMeasurement` is **not always a length** (radians for angular): ask
-  `dimensionMeasurementUnit` before formatting; decimals come from `angleDecimalsOf`.
+- `dimensionMeasurement` is **not always a length** (radians for angular): write it through
+  `dimensionMeasurementText`, `drawn` or `reported`.
 - A kind that is not linear is **excluded where two extension-line origins are assumed**
   (`lastDimension`, `DimensionChainTool`, `DimSpaceTool`); where AutoCAD accepts it and we do not,
   say so in a comment on the filter.

@@ -22,6 +22,8 @@ export interface DimensionOptions {
   readonly rotation?: number
   /** The angle vertex; `angular` dimensions only. */
   readonly vertex?: Vec2
+  /** Where the user put the text (DXF 11 with flag 70's 128); absent when centred. */
+  readonly textPoint?: Vec2
   readonly text?: string
   readonly textAngle?: number
   readonly styleId?: DimStyleId
@@ -47,6 +49,9 @@ export function createDimension(
     ...(options.vertex
       ? { vertex: { x: options.vertex.x, y: options.vertex.y } }
       : {}),
+    ...(options.textPoint
+      ? { textPoint: { x: options.textPoint.x, y: options.textPoint.y } }
+      : {}),
     rotation: options.rotation ?? 0,
     ...(options.text !== undefined ? { text: options.text } : {}),
     ...(options.textAngle !== undefined
@@ -56,22 +61,27 @@ export function createDimension(
   }
 }
 
-/** The definition points of a dimension: three, or four for an angular one. */
+/**
+ * The definition points of a dimension: three, or four for an angular one,
+ * and the text's own point once the user has moved it.
+ */
 export interface DimensionPoints {
   readonly first: Vec2
   readonly second: Vec2
   readonly linePoint: Vec2
   readonly vertex?: Vec2
+  readonly textPoint?: Vec2
 }
 
 /**
- * Every definition point of `dim` put through `map`, including the vertex only
- * when there is one.
+ * Every definition point of `dim` put through `map`, including the vertex and
+ * the text's point only when there is one.
  *
  * The single place that knows how many points a dimension has. Every transform
  * spreads its result, because spreading the entity and naming the points by
- * hand silently drops the optional vertex — TypeScript cannot catch a field
- * that is merely inherited from `...entity`.
+ * hand silently drops an optional point — TypeScript cannot catch a field that
+ * is merely inherited from `...entity`, and a moved dimension would leave its
+ * text behind.
  */
 export function mapDimensionPoints(
   dim: DimensionEntity,
@@ -82,7 +92,35 @@ export function mapDimensionPoints(
     second: map(dim.second),
     linePoint: map(dim.linePoint),
     ...(dim.vertex ? { vertex: map(dim.vertex) } : {}),
+    ...(dim.textPoint ? { textPoint: map(dim.textPoint) } : {}),
   }
+}
+
+/**
+ * The dimension with its text put at `point` as Move with Dim Line puts it,
+ * the default of the text grip and of DIMTMOVE 0 (desktop d03-1): the line
+ * goes through the point and the text stays there (DXF 11, flag 70's 128). A
+ * radial one's leader swings round to the point instead, its radius kept.
+ */
+export function dimensionWithTextAt(
+  dim: DimensionEntity,
+  point: Vec2
+): DimensionEntity {
+  const at = { x: point.x, y: point.y }
+  if (dim.kind === "radius" || dim.kind === "diameter") {
+    const out = V.sub(at, dim.first)
+    const reach = V.length(out)
+    const radius = V.distance(dim.first, dim.second)
+    return {
+      ...dim,
+      second:
+        reach < 1e-9
+          ? dim.second
+          : V.add(dim.first, V.scale(out, radius / reach)),
+      linePoint: at,
+    }
+  }
+  return { ...dim, linePoint: at, textPoint: at }
 }
 
 /** The direction a dimension measures along, radians CCW from +X. */
@@ -121,18 +159,17 @@ export function dimensionMeasurement(dim: DimensionEntity): number {
 }
 
 /**
- * What a dimension reads. Derived from the definition points and formatted to
- * the style's decimal places, never stored — so the number can never drift from
- * the geometry. A radial measurement carries AutoCAD's radius or diameter
- * symbol in front of it. An explicit `text` override replaces the lot, with
- * `<>` standing in for the bare measurement exactly as AutoCAD's Text option
- * does.
+ * What a dimension reads. Derived from the definition points and formatted by
+ * its style, never stored — so the number can never drift from the geometry. A
+ * radial measurement carries AutoCAD's radius or diameter symbol in front of
+ * it. An explicit `text` override replaces the lot, with `<>` standing in for
+ * the bare measurement exactly as AutoCAD's Text option does (`12,5 mm`, p15).
  */
 export function dimensionText(
   dim: DimensionEntity,
   style: DimStyle = DEFAULT_DIM_STYLE
 ): string {
-  const measured = formatMeasurement(dim, style)
+  const measured = dimensionMeasurementText(dim, style)
   return dim.text === undefined
     ? radialPrefix(dim.kind) + measured
     : dim.text.replace(/<>/g, measured)
@@ -143,17 +180,49 @@ export function dimensionText(
  * degree sign, which is part of how the value itself reads rather than a
  * prefix — so `<>` in a Text override substitutes it complete.
  *
+ * `drawn` is the dimension's own text: DIMDSEP's separator, and a length's
+ * trailing zeros dropped under DIMZIN 8 (`12,5`, `100`, `0,5`; p02) while an
+ * angle keeps them (DIMAZIN 0: `22,50°`, p366). `reported` is what the command
+ * line writes (`Dimension text = 12.5`, p01) and Text offers (`<12.5>`, p15):
+ * a point, and the zeros dropped from an angle too (`22.5`, p366).
+ *
  * Angular dimensions count their decimals with DIMADEC rather than DIMDEC, so
  * the two can be set apart: AutoCAD ships with DIMADEC 0, which is why a fresh
- * angular dimension reads whole degrees while a linear one keeps two places.
- * AutoCAD's angular unit formats (DIMAUNIT) are not modelled — only decimal
- * degrees.
+ * angular dimension reads whole degrees. AutoCAD's angular unit formats
+ * (DIMAUNIT) are not modelled — only decimal degrees.
  */
-function formatMeasurement(dim: DimensionEntity, style: DimStyle): string {
+export function dimensionMeasurementText(
+  dim: DimensionEntity,
+  style: DimStyle = DEFAULT_DIM_STYLE,
+  form: "drawn" | "reported" = "drawn"
+): string {
   const measured = dimensionMeasurement(dim)
-  return dimensionMeasurementUnit(dim.kind) === "angle"
-    ? `${((measured * 180) / Math.PI).toFixed(angleDecimalsOf(style))}\u00b0`
-    : measured.toFixed(style.decimals)
+  const drawn = form === "drawn"
+  const separator = drawn ? style.decimalSeparator : "."
+  if (dimensionMeasurementUnit(dim.kind) === "angle") {
+    const degrees = (measured * 180) / Math.PI
+    const suppress = !drawn && style.suppressTrailingZeros
+    return `${decimalNumber(degrees, angleDecimalsOf(style), suppress, separator)}\u00b0`
+  }
+  return decimalNumber(
+    measured,
+    style.decimals,
+    style.suppressTrailingZeros,
+    separator
+  )
+}
+
+/** `value` to `places` decimals, its trailing zeros dropped if `suppress`. */
+function decimalNumber(
+  value: number,
+  places: number,
+  suppress: boolean,
+  separator: string
+): string {
+  const fixed = value.toFixed(places)
+  const text =
+    suppress && fixed.includes(".") ? fixed.replace(/\.?0+$/, "") : fixed
+  return text.replace(".", separator)
 }
 
 /**
@@ -196,6 +265,12 @@ export interface DimensionGeometry {
   readonly arrows: readonly (readonly Vec2[])[]
   /** Justification point of the measurement text (it sits above the line). */
   readonly textPosition: Vec2
+  /**
+   * DXF 11, where the text's grip sits: the point the user put the text at,
+   * else the text's middle (d04-2: Text position Y 11.875 over a line at 10),
+   * or a radial one's the end of its leader, under the text (desktop d01-1).
+   */
+  readonly textPoint: Vec2
   /** Text baseline angle, radians CCW — always kept readable. */
   readonly textAngle: number
   /** Capital height of the measurement text, DIMSCALE already applied. */
@@ -229,6 +304,9 @@ export function dimensionGeometry(
   const lineStart = project(dim.first)
   const lineEnd = project(dim.second)
   const mid = V.midpoint(lineStart, lineEnd)
+  // A text the user moved stays where it was put along the line, still above
+  // it (ISO-25's DIMTAD 1, d03-1).
+  const anchor = dim.textPoint ? project(dim.textPoint) : mid
 
   return {
     lineStart,
@@ -242,7 +320,7 @@ export function dimensionGeometry(
       arrowHead(lineStart, lineEnd, sized.arrowSize),
       arrowHead(lineEnd, lineStart, sized.arrowSize),
     ],
-    ...textPlacement(dim, angle, mid, sized),
+    ...textPlacement(dim, angle, anchor, sized),
   }
 }
 
@@ -345,7 +423,12 @@ function angularGeometry(
         sized.arrowSize
       ),
     ],
-    ...angularTextPlacement(dim, frame, midAngle, sized),
+    ...angularTextPlacement(
+      dim,
+      frame,
+      dim.textPoint ? bearingFrom(vertex, dim.textPoint) : midAngle,
+      sized
+    ),
   }
 }
 
@@ -364,14 +447,17 @@ function angularTextPlacement(
   sized: DimStyle
 ): Pick<
   DimensionGeometry,
-  "textPosition" | "textAngle" | "textHeight" | "text"
+  "textPosition" | "textPoint" | "textAngle" | "textHeight" | "text"
 > {
   const readable = readableAngle(midAngle - Math.PI / 2)
   const up = { x: -Math.sin(readable), y: Math.cos(readable) }
   const outward = { x: Math.cos(midAngle), y: Math.sin(midAngle) }
   const gap = sized.textGap + (V.dot(up, outward) >= 0 ? 0 : sized.textHeight)
+  const textPosition = polarPoint(frame.vertex, frame.radius + gap, midAngle)
   return {
-    textPosition: polarPoint(frame.vertex, frame.radius + gap, midAngle),
+    textPosition,
+    textPoint:
+      dim.textPoint ?? V.add(textPosition, V.scale(up, sized.textHeight / 2)),
     textAngle: dim.textAngle ?? readable,
     textHeight: sized.textHeight,
     text: dimensionText(dim, sized),
@@ -438,6 +524,7 @@ function radialGeometry(
     lines,
     arrows,
     ...textPlacement(dim, Math.atan2(dir.y, dir.x), textAnchor, sized),
+    textPoint: textAnchor,
   }
 }
 
@@ -463,12 +550,15 @@ function textPlacement(
   sized: DimStyle
 ): Pick<
   DimensionGeometry,
-  "textPosition" | "textAngle" | "textHeight" | "text"
+  "textPosition" | "textPoint" | "textAngle" | "textHeight" | "text"
 > {
   const readable = readableAngle(angle)
   const up = { x: -Math.sin(readable), y: Math.cos(readable) }
   return {
     textPosition: V.add(anchor, V.scale(up, sized.textGap)),
+    textPoint:
+      dim.textPoint ??
+      V.add(anchor, V.scale(up, sized.textGap + sized.textHeight / 2)),
     textAngle: dim.textAngle ?? readable,
     textHeight: sized.textHeight,
     text: dimensionText(dim, sized),

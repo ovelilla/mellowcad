@@ -6,8 +6,13 @@ import type { ArrayGripRole } from "./arrayGrips"
 
 export type LineEnd = "start" | "end"
 
-/** Which of a dimension's definition points a grip drags. */
-export type DimensionPoint = "first" | "second" | "line" | "vertex"
+/**
+ * Which of a dimension's grips is dragged: an origin, the vertex, the
+ * dimension line (an end of it, an angular one's arc), the text, or either of
+ * a diameter's rim points.
+ */
+export type DimensionPoint =
+  "first" | "second" | "line" | "vertex" | "text" | "rim"
 
 /**
  * What editing a grip does, mirroring AutoCAD's per-object grips:
@@ -24,9 +29,9 @@ export type DimensionPoint = "first" | "second" | "line" | "vertex"
  *   move both its ends by the drag.
  * - `bulge`    — an arc segment's midpoint (a polyline's, a hatch loop's):
  *   change its curvature.
- * - `dimPoint` — a dimension's definition point: an extension-line origin, an
- *   angular one's vertex, or the dimension line itself, which slides the whole
- *   assembly.
+ * - `dimPoint` — a dimension's grip: an extension-line origin, an angular
+ *   one's vertex, the dimension line, which slides the whole assembly, the text
+ *   (Move with Dim Line) or a diameter's rim point.
  * - `mtextWidth` — a multiline text's width arrow on one `side` of its box:
  *   rewrap it to a new width.
  * - `ellipseAxis` — an ellipse's quadrant, its axis end at a quarter-turn

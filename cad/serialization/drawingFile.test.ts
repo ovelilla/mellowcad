@@ -1023,6 +1023,35 @@ describe("opens drawings written by every earlier schema", () => {
     )
   })
 
+  it("version 33 — a style from before DIMDSEP and DIMZIN reads ISO-25's (probe dimensions/p02)", () => {
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: 33,
+        dimStyles: [{ id: "ISO-25", name: "ISO-25", decimals: 3 }],
+        entities: [],
+      })
+    )
+    expect(parsed.dimStyles[0].decimalSeparator).toBe(",")
+    expect(parsed.dimStyles[0].suppressTrailingZeros).toBe(true)
+  })
+
+  it("keeps a style's separator and zeros, and a moved dimension text", () => {
+    const style = {
+      ...createDefaultDimStyle(),
+      decimalSeparator: ".",
+      suppressTrailingZeros: false,
+    }
+    const moved = createDimension("linear", p(0, 0), p(40, 0), p(30, 20), {
+      textPoint: p(30, 20),
+    })
+    const parsed = parseDrawingFile(
+      serializeDrawing({ ...snapshotOf([moved]), dimStyles: [style] })
+    )
+    expect(parsed.dimStyles[0]).toEqual(style)
+    expect(parsed.entities[0]).toEqual(moved)
+  })
+
   it("version 12 — a dimension from before angular ones has no vertex", () => {
     const parsed = parseDrawingFile(
       JSON.stringify({

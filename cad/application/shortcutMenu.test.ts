@@ -2,7 +2,11 @@ import { describe, expect, it } from "vitest"
 
 import { createHarness } from "../../test/harness"
 import { lineOf, p } from "../../test/builders"
-import type { LineEntity } from "../domain/entities"
+import {
+  createDimension,
+  type DimensionEntity,
+  type LineEntity,
+} from "../domain/entities"
 import { es } from "../locales/es"
 import type { ShortcutMenuEntry, ShortcutMenuUi } from "./EngineState"
 import { SnapType } from "./snapping/types"
@@ -24,7 +28,9 @@ function entriesOf(menu: ShortcutMenuUi | null): string[] {
         ? `option:${entry.option.label}`
         : entry.kind === "submenu"
           ? `${entry.submenu}(${entry.entries.map(name).join(",")})`
-          : "snapOverrides"
+          : entry.kind === "dimensionStyle"
+            ? "dimensionStyle"
+            : "snapOverrides"
   return (menu?.groups ?? []).map((group) => group.map(name).join(" "))
 }
 
@@ -146,6 +152,42 @@ describe("the Edit menu", () => {
     cad.rightClick(CLEAR)
     cad.runtime.chooseShortcutMenuAction("properties")
     expect(cad.state().palette).toEqual({ open: true, tab: "properties" })
+  })
+  it("offers Dimension Style over dimensions alone, and puts them on one in a step (desktop dimensions/d07-1)", () => {
+    const cad = createHarness({
+      entities: [
+        createDimension("linear", p(0, 0), p(40, 0), p(20, 10), { id: "D" }),
+        lineOf(p(0, 50), p(100, 50), { id: "L" }),
+      ],
+    })
+    cad.runtime.createDimStyle("Plans", undefined, false)
+    cad.select("D")
+
+    cad.rightClick(CLEAR)
+    // Before the Clipboard, as AutoCAD's (no Repeat yet).
+    const group = cad.state().shortcutMenu?.groups[0]
+    expect(entriesOf(cad.state().shortcutMenu).slice(0, 2)).toEqual([
+      "dimensionStyle",
+      "clipboard(cut,copy,copyBase,paste)",
+    ])
+    expect(group?.[0]).toEqual({
+      kind: "dimensionStyle",
+      styles: [
+        { id: "ISO-25", name: "ISO-25" },
+        { id: "Plans", name: "Plans" },
+      ],
+      current: "ISO-25",
+    })
+
+    cad.runtime.chooseShortcutMenuDimStyle("Plans")
+    expect(cad.byId<DimensionEntity>("D").styleId).toBe("Plans")
+    cad.undo()
+    expect(cad.byId<DimensionEntity>("D").styleId).toBe("ISO-25")
+
+    // A line among them: the plain Edit menu.
+    cad.select("D", "L")
+    cad.rightClick(CLEAR)
+    expect(entriesOf(cad.state().shortcutMenu)).not.toContain("dimensionStyle")
   })
 })
 

@@ -33,7 +33,7 @@ describe("DIMLINEAR's questions", () => {
     )
     cad.moveTo(p(50, 30)).option("Text")
     expect(cad.state().commandLine.prompt).toBe(
-      "DIMLINEAR Enter dimension text <100.00>:"
+      "DIMLINEAR Enter dimension text <100>:"
     )
     cad.type("<> mm").enter().option("Angle")
     expect(cad.state().commandLine.prompt).toBe(
@@ -48,7 +48,7 @@ describe("DIMLINEAR's questions", () => {
       "DIMLINEAR Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]:"
     )
     cad.click(p(50, 30))
-    expect(cad.commandLog().at(-1)).toBe("Dimension text = 100.00")
+    expect(cad.commandLog().at(-1)).toBe("Dimension text = 100")
   })
 
   // AutoCAD 2023's console: Rotated leaves every keyword on offer, Horizontal
@@ -150,7 +150,7 @@ describe("DIMRADIUS's and DIMANGULAR's questions", () => {
       "DIMRADIUS Specify dimension line location or [Text/Angle]:"
     )
     cad.click(p(80, 0))
-    expect(cad.commandLog().at(-1)).toBe("Dimension text = 50.00")
+    expect(cad.commandLog().at(-1)).toBe("Dimension text = 50")
 
     cad.command("DIMANGULAR")
     expect(cad.state().commandLine.prompt).toBe(

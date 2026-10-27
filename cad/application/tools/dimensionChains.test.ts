@@ -358,7 +358,7 @@ describe("dimension chain preview", () => {
     const cad = createHarness({ entities: [base()] })
     cad.command("DIMBASELINE").moveTo(p(180, 0))
 
-    expect(dimensionTexts(cad)).toContain("180.00")
+    expect(dimensionTexts(cad)).toContain("180")
 
     cad.click(p(180, 0))
     expect(dimensionMeasurement(added(cad)[0])).toBeCloseTo(180)
@@ -368,8 +368,8 @@ describe("dimension chain preview", () => {
     const cad = createHarness({ entities: [base()] })
     cad.command("DIMCONTINUE").moveTo(p(100, 0))
 
-    // A zero-length link would read "0.00": the base's own text is the only one.
-    expect(dimensionTexts(cad)).toEqual(["100.00"])
+    // A zero-length link would read "0": the base's own text is the only one.
+    expect(dimensionTexts(cad)).toEqual(["100"])
   })
 })
 

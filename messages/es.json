@@ -399,7 +399,8 @@
       "properties": "Propiedades",
       "enter": "Intro",
       "cancel": "Cancelar",
-      "snapOverrides": "Modificaciones de REFENT"
+      "snapOverrides": "Modificaciones de REFENT",
+      "dimensionStyle": "Estilo de cota"
     },
     "Layers": {
       "title": "Capas",
@@ -493,6 +494,13 @@
       "primaryUnits": "Unidades principales",
       "precision": "Precisión",
       "angularPrecision": "Precisión angular",
+      "decimalSeparator": "Separador decimal",
+      "comma": "',' (Coma)",
+      "period": "'.' (Punto)",
+      "space": "' ' (Espacio)",
+      "suppressTrailingZeros": "Suprimir ceros finales",
+      "yes": "Sí",
+      "no": "No",
       "size": "Tamaño",
       "height": "Altura",
       "heightHint": "Una altura de 0 la deja libre, y TEXTO la pide cada vez."

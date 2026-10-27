@@ -1,5 +1,58 @@
 # Dimensions
 
+### The dimension object
+
+**Implemented:**
+
+- **The measurement** as ISO-25 writes it: DIMDSEP's comma and DIMZIN 8's trailing zeros dropped
+  from a length (`12,5`, `100`, `0`, `0,5`, `1234,57`; p02), an angle keeping its zeros (DIMAZIN 0:
+  `22,50°` at DIMADEC 2, p366); a Text override's `<>` drawn so (`12,5 mm`, p15). The command line
+  writes it with a point and no trailing zeros, an angle's too: `Dimension text = 12.5`, Text's
+  `<12.5>` (p01, p15, p366). A style's separator (`,`, `.`, space) and trailing zeros are set in
+  the Styles palette's Primary units; a file before version 34 reads ISO-25's.
+- **Grips** as AutoCAD's (desktop d01-1): a linear or aligned one's two origins, its dimension
+  line's two ends and its text; a radius's centre, rim point and text; a diameter's two rim points
+  and text; an angular one's vertex, two endpoints, a point on its arc and text. The text's grip is
+  its middle until moved (d04-2: Text position Y 11.875 over a line at 10), a radial one's the end
+  of its leader. An origin's drag restates the measurement; a dimension line end's moves the line
+  through the point; the text's is Move with Dim Line: the line goes through the point and the text
+  stays where it was put, above it (d03-1, DXF 11 with flag 70's 128), a radial one's leader
+  swinging round to it; a diameter's rim point turns its line about the centre. Each is one undo
+  step. A moved text goes with every transform, DIMSPACE and a later move of its line; STRETCH
+  catching it alone takes the line along (transforms/p275).
+- **The Properties palette** (desktop d04-1 to d04-7): the title per kind (Rotated, Aligned,
+  Radial, Diametric, Angular Dimension), also in the object type drop-down; Dim style is General's
+  picker (as the text's); Misc's Annotative (No); Lines & Arrows' Arrow size, Center mark size (a
+  radial one's), Ext line ext, Ext line offset; Text's Text height, Text offset, Text position X
+  and Y (typeable: Move with Dim Line, DIMTMOVE 0), Text rotation (typeable, 0 the line's own
+  direction), Measurement as drawn, greyed, Text override (typeable, empty gives the measurement
+  back); Fit's Dim scale overall; Primary Units' Decimal separator, Suppress trailing zeros,
+  Precision. No definition point row, as AutoCAD's.
+- **The shortcut menu** over dimensions alone (d07-1): Dimension Style ▸ lists the table's styles,
+  theirs checked, and puts them on the one chosen in one step (U names it as the drop-downs'
+  `CHPROP`, unverified for this entry).
+
+**Missing:**
+
+- **The grips' hover menus** (d02): the text's Stretch, Move with Dim Line, Move Text Only, Move
+  with Leader, Above Dim Line, Center Vertically, Reset Text Position (d02-1); a dimension line
+  end's Stretch, Continue Dimension, Baseline Dimension, Flip Arrow (d02-2); an origin has none
+  (d02-3). The plain drag is each one's default (Move with Dim Line, Stretch). Ctrl-cycling the
+  grip modes is not built either.
+- **The shortcut menu's** Precision ▸ and Remove Style Overrides (dimension style overrides are not
+  modelled), Annotative Object Scale ▸ (greyed there; no annotative scaling); what Dimension Style
+  ▸ lists beyond the styles was not seen.
+- **The palette's** rows for what is not modelled: Associative, Arrow 1 and 2, the dimension and
+  extension lines' lineweights, colours, linetypes and suppression, Ext line fixed, Fill color,
+  Fractional type, Text color, Text outside / inside align, Text pos hor / vert, Text style, Text
+  view direction, the Fit rows but Dim scale overall, the Primary Units rows but the three, Alternate
+  Units and Tolerances. The style's rows are read-only: an edit there is an override AutoCAD keeps
+  on the object. A fractional Measurement (d04 showed `40`) and an angular one's Precision row
+  (DIMDEC here) are **unverified**; so are the Spanish and Arabic titles, groups and rows.
+- A text at its default place caught alone by STRETCH stays (its place needs the style); DIMZIN's
+  other bits (leading zeros, feet and inches), DIMAZIN, DIMTMOVE (always 0: the text keeps its
+  line).
+
 ### `DIMLINEAR` / `DIMLIN` / `DLI` · es `ACOLINEAL` / `ACOLIN`† / `DIMLIN`†
 
 **Implemented:** the prompts AutoCAD 2023's console asks, written answered:
@@ -8,9 +61,9 @@
 `Non-associative dimension created.` (origins given as points; no dimension is associative here),
 `Specify dimension line location or [Text/Angle/Horizontal/Vertical/Rotated]:` (`[Text/Angle]` once
 Horizontal or Vertical is set, through Text and Angle too; after Rotated the whole list again;
-DIMALIGNED's `[Text/Angle]` throughout), Text's `Enter dimension text <100.00>:`, Angle's
+DIMALIGNED's `[Text/Angle]` throughout), Text's `Enter dimension text <100>:`, Angle's
 `Specify angle of dimension text:`, Rotated's `Specify angle of dimension line <0.00>:`, then
-`Dimension text = 100.00`; refusals `Invalid point input.`, `Invalid Input.`, `*Invalid selection*`
+`Dimension text = 100`; refusals `Invalid point input.`, `Invalid Input.`, `*Invalid selection*`
 / `Expects a single object.`; es from Autodesk's dimension table
 (`Especifique el origen de la primera línea de referencia o <designar objeto>`,
 `Especifique una ubicación de línea de cota o`, `Designe ángulo de texto de cota`,
@@ -73,7 +126,7 @@ design)
 
 **Implemented:** `Select arc or circle:` (es `Designe un arco o un círculo`;
 `Expects a single object.`), `Specify dimension line location or [Text/Angle]:`, then
-`Dimension text = 10.00`; Text, Angle, arc/circle/polyline-arc-segment selection, DIMCEN centre
+`Dimension text = 10`; Text, Angle, arc/circle/polyline-arc-segment selection, DIMCEN centre
 mark, direction from the picked location
 
 **Missing:** Mtext, extension beyond the arc sweep (clamped to the sweep), DIMCEN negative
@@ -107,10 +160,11 @@ pair; DIMADEC formatting
 
 **Implemented:** style manager, set current, New with Start-With copy and auto-name (`Copy of
 ISO-25`), rename, delete guarded against in-use/current, edit Lines/Symbols and Arrows/Text/Fit/
-Primary Units, assign per selection (the Properties palette's drop-down: one undo step). Names are
-case-blind: a new `iso-25` is `iso-25 (2)`, and a rename onto a name in use is refused at the
-prompt with `A dimension style named "X" already exists.` / `*Invalid*` (tables 21392, 26367, the
-text style's wording, text/p323).
+Primary Units (Precision, Decimal separator, Suppress trailing zeros, Angular precision), assign per
+selection (the Properties palette's drop-down and the Edit menu's Dimension Style ▸: one undo
+step). Names are case-blind: a new `iso-25` is `iso-25 (2)`, and a rename onto a name in use is
+refused at the prompt with `A dimension style named "X" already exists.` / `*Invalid*` (tables
+21392, 26367, the text style's wording, text/p323).
 
 **Missing:** Override, Compare, "Use For" sub-styles, Description, All/In-use filter; U of a style
 edit (only the drop-down's assignment is undone)
@@ -152,8 +206,9 @@ a preselection, as the dialog does (p160, d07).
   Annotative scaling does not exist here, so the style would be inert (TEXT-D50).
 
 **DIMSTYLE variables honoured**: DIMTXT, DIMASZ, DIMEXE, DIMEXO, DIMGAP, DIMDEC, DIMSCALE, DIMDLI,
-DIMCEN (positive/mark branch), DIMADEC.
+DIMCEN (positive/mark branch), DIMADEC, DIMDSEP, DIMZIN (8, trailing zeros).
 **Not modelled**: DIMCEN negative (centrelines), DIMTOFL and DIMATFIT (text-fit logic), DIMASSOC,
+DIMZIN's other bits, DIMAZIN (0: an angle keeps its zeros), DIMTMOVE (always 0),
 DIMCONTINUEMODE (always 1: the base's style and layer), DIMAUNIT, DIMTXSTY height override, DIMPOST
 (kept empty).
 

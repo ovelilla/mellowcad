@@ -12,6 +12,9 @@ import {
   createCircle,
   carryOverrides,
   DimensionEntity,
+  dimensionAxisAngle,
+  dimensionVertex,
+  dimensionWithTextAt,
   EllipseEntity,
   Entity,
   MTextEntity,
@@ -33,6 +36,7 @@ import {
   PolylineSegmentGeometry,
   polylineSegmentGeometries,
   setPolylineBulge,
+  rotatePoint,
 } from "../../domain/entities"
 import type { BlockLookup, InsertEntity } from "../../domain/entities"
 import { arrayPlacement } from "../../domain/arrayEdits"
@@ -201,9 +205,12 @@ export function mtextWidthThrough(mtext: MTextEntity, point: Vec2): number {
 }
 
 /**
- * The dimension with one definition point dragged to `point`. Moving an
- * extension-line origin restates what is measured; moving the dimension line
- * slides the whole assembly, which is what its midpoint grip is for.
+ * The dimension with one of its grips dragged to `point` (desktop d01-1,
+ * d03-1). An origin or vertex restates what is measured. A dimension line's
+ * end moves the line through the point, a moved text keeping its place along
+ * it. The text grip's drag is Move with Dim Line, the default of its hover
+ * menu (`dimensionWithTextAt`). A diameter's rim grips turn its line about the
+ * centre.
  */
 export function movedDimension(
   dim: DimensionEntity,
@@ -219,16 +226,62 @@ export function movedDimension(
     case "vertex":
       return { ...dim, vertex: at }
     case "line":
-      // An angular dimension's arc passes through its location, so the grip
-      // sets it outright — which is also how dragging across a ray gives the
-      // reflex angle. Every other kind slides its line by the drag instead,
-      // because only the location's projection is drawn.
       return dim.kind === "angular"
-        ? { ...dim, linePoint: at }
-        : {
-            ...dim,
-            linePoint: V.add(dim.linePoint, V.sub(point, state.origin)),
-          }
+        ? angularArcMoved(dim, at)
+        : lineMoved(dim, V.sub(point, state.origin))
+    case "text":
+      return dimensionWithTextAt(dim, at)
+    case "rim": {
+      const turn =
+        Math.atan2(at.y - dim.first.y, at.x - dim.first.x) -
+        Math.atan2(state.origin.y - dim.first.y, state.origin.x - dim.first.x)
+      return {
+        ...dim,
+        second: rotatePoint(dim.second, dim.first, turn),
+        linePoint: rotatePoint(dim.linePoint, dim.first, turn),
+      }
+    }
+  }
+}
+
+/** A diameter's rim point opposite its `second`, across the centre. */
+export function diameterFarRim(dim: DimensionEntity): Vec2 {
+  return V.sub(V.scale(dim.first, 2), dim.second)
+}
+
+/**
+ * A linear or aligned dimension's line slid by `delta`: only its move across
+ * the line counts, and a moved text goes with it at its place along the line.
+ */
+function lineMoved(dim: DimensionEntity, delta: Vec2): DimensionEntity {
+  const angle = dimensionAxisAngle(dim)
+  const normal = { x: -Math.sin(angle), y: Math.cos(angle) }
+  const across = V.scale(normal, V.dot(delta, normal))
+  return {
+    ...dim,
+    linePoint: V.add(dim.linePoint, delta),
+    ...(dim.textPoint ? { textPoint: V.add(dim.textPoint, across) } : {}),
+  }
+}
+
+/**
+ * An angular dimension's arc put through `at`, which sets its location
+ * outright — which is also how dragging across a ray gives the reflex angle. A
+ * moved text keeps its bearing and its distance off the arc.
+ */
+function angularArcMoved(dim: DimensionEntity, at: Vec2): DimensionEntity {
+  const vertex = dimensionVertex(dim)
+  if (!dim.textPoint) return { ...dim, linePoint: at }
+  const grown = V.distance(vertex, at) - V.distance(vertex, dim.linePoint)
+  const out = V.sub(dim.textPoint, vertex)
+  const reach = V.length(out)
+  return {
+    ...dim,
+    linePoint: at,
+    textPoint:
+      reach < 1e-9
+        ? dim.textPoint
+        : V.add(vertex, V.scale(out, Math.max(reach + grown, 0) / reach)),
   }
 }
 

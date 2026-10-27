@@ -46,6 +46,7 @@ import {
   createDimension,
   DimensionPoints,
   dimensionGeometry,
+  dimensionWithTextAt,
   mapDimensionPoints,
 } from "./dimensions"
 import { arcEndPoint, arcStartPoint } from "./entityMeasures"
@@ -191,6 +192,7 @@ function dimensionLike(
     points.linePoint,
     {
       ...(points.vertex ? { vertex: points.vertex } : {}),
+      ...(points.textPoint ? { textPoint: points.textPoint } : {}),
       rotation: overrides.rotation ?? dim.rotation,
       ...(dim.text !== undefined ? { text: dim.text } : {}),
       ...(overrides.textAngle !== undefined
@@ -500,6 +502,17 @@ function stretchPlanar(
         ? inFrame(line)
         : !V.equals(moved.first, entity.first) &&
           !V.equals(moved.second, entity.second)
+      // A moved text caught alone takes its line with it, DXF 10 and 11 at
+      // one height after (p275). One at its default place needs the style to
+      // be found, which STRETCH is not given: Missing.
+      if (
+        entity.textPoint &&
+        moved.textPoint &&
+        !lineMoves &&
+        inFrame(entity.textPoint)
+      ) {
+        return dimensionWithTextAt({ ...entity, ...moved }, moved.textPoint)
+      }
       return {
         ...entity,
         ...moved,

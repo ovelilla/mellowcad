@@ -278,9 +278,12 @@ export class DimSpaceTool implements Tool {
         const offset = offsetOf(dim)
         const target = side * (index + 1) * spacing
         if (Math.abs(target - offset) < COINCIDENT) return
+        const shift = V.scale(normal, target - offset)
         out.push({
           ...dim,
-          linePoint: V.add(dim.linePoint, V.scale(normal, target - offset)),
+          linePoint: V.add(dim.linePoint, shift),
+          // A moved text goes with its line, as Move with Dim Line keeps it.
+          ...(dim.textPoint ? { textPoint: V.add(dim.textPoint, shift) } : {}),
         })
       })
     }

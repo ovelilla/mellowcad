@@ -74,9 +74,9 @@ describe("DIMANGULAR three-point form", () => {
     const oneEighth = { ...DEFAULT_DIM_STYLE, angleDecimals: 3 }
     const inherited = { ...DEFAULT_DIM_STYLE, angleDecimals: -1 }
 
-    expect(dimensionText(angular, oneEighth)).toBe("90.000°")
+    expect(dimensionText(angular, oneEighth)).toBe("90,000°")
     // DIMDEC is 2, and −1 means "display the places specified by DIMDEC".
-    expect(dimensionText(angular, inherited)).toBe("90.00°")
+    expect(dimensionText(angular, inherited)).toBe("90,00°")
   })
 
   it("measures the reflex angle when the arc is placed on the other side", () => {
@@ -427,8 +427,10 @@ describe("angular dimensions elsewhere in the app", () => {
       .properties.info!.groups.flatMap((group) => group.rows)
 
     expect(rows.find((row) => row.label === "Measurement")?.value).toBe("90°")
-    expect(rows.find((row) => row.label === "Type")?.value).toBe("Angular")
-    expect(rows.find((row) => row.label === "Vertex X")).toBeDefined()
+    // AutoCAD names the kind in the title and has no definition point row
+    // (desktop dimensions/d04-7).
+    expect(cad.state().properties.info!.title).toBe("Angular Dimension")
+    expect(rows.find((row) => row.label === "Vertex X")).toBeUndefined()
   })
 
   it("cannot serve as the base of a dimension chain", () => {

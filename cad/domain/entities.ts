@@ -187,7 +187,9 @@ export {
   dimensionVertex,
   dimensionMeasurementUnit,
   dimensionMeasurement,
+  dimensionMeasurementText,
   dimensionText,
+  dimensionWithTextAt,
   dimensionGeometry,
 } from "./dimensions"
 

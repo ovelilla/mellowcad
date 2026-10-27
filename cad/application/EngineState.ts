@@ -42,8 +42,8 @@ import {
   polylineWidth,
   splineArea,
   splineDataPoints,
-  dimensionMeasurement,
-  dimensionMeasurementUnit,
+  dimensionGeometry,
+  dimensionMeasurementText,
   entityElevation,
   entityNormal,
   entityPointToWorld,
@@ -63,6 +63,7 @@ import { objectArea } from "../domain/objectArea"
 import type {
   ArrayParameters,
   BlockLookup,
+  DimensionKind,
   InsertEntity,
 } from "../domain/entities"
 import {
@@ -96,7 +97,7 @@ import { EntityColor, STANDARD_COLORS } from "../domain/colors"
 import { LinetypeId } from "../domain/linetypes"
 import { Lineweight } from "../domain/lineweights"
 import { TextStyle, TextStyleId } from "../domain/textStyles"
-import { DimStyle, DimStyleId } from "../domain/dimStyles"
+import { DEFAULT_DIM_STYLE, DimStyle, DimStyleId } from "../domain/dimStyles"
 
 /** Which of the two style tables the manager is showing. */
 export type StylesPanelTab = "dimension" | "text"
@@ -126,13 +127,19 @@ export interface PaletteUi {
  * array is a type of its own, its kind's, apart from the block references
  * (`Array (Rectangular)`, desktop properties/d06-2).
  */
-export type ObjectType = EntityType | `${ArrayKind}Array`
+export type ObjectType =
+  EntityType | `${ArrayKind}Array` | `${DimensionKind}Dimension`
 
-/** The type the Properties palette's drop-down files `entity` under. */
+/**
+ * The type the Properties palette's drop-down files `entity` under: an array
+ * by its kind, and a dimension by its kind, as AutoCAD's objects are of
+ * different classes (`Rotated Dimension`, `Radial Dimension`, desktop d04).
+ */
 export function objectType(entity: Entity): ObjectType {
-  return entity.type === "insert" && entity.array
-    ? `${entity.array.kind}Array`
-    : entity.type
+  if (entity.type === "insert" && entity.array)
+    return `${entity.array.kind}Array`
+  if (entity.type === "dimension") return `${entity.kind}Dimension`
+  return entity.type
 }
 
 /** One entry of the Properties palette's object type drop-down. */
@@ -427,6 +434,18 @@ export type ShortcutMenuEntry =
     }
   /** Snap Overrides: the object-snap menu Shift+right-click opens. */
   | { readonly kind: "snapOverrides" }
+  /**
+   * Dimension Style ▸ over a selection of dimensions: the table's styles, the
+   * one they share marked (null when they differ).
+   */
+  | {
+      readonly kind: "dimensionStyle"
+      readonly styles: ReadonlyArray<{
+        readonly id: DimStyleId
+        readonly name: string
+      }>
+      readonly current: DimStyleId | null
+    }
 
 /** The shortcut menu a right-click opened on the drawing. */
 export interface ShortcutMenuUi {
@@ -880,12 +899,20 @@ export function buildSelectionInfo(
   settings: DocumentSettings,
   text: EngineText,
   vertex = 0,
-  blocks?: BlockLookup
+  blocks?: BlockLookup,
+  dimStyles?: (id: DimStyleId) => DimStyle | undefined
 ): SelectionInfo | null {
   if (entities.length === 0) return null
   if (entities.length === 1) {
     return {
-      ...singleEntityInfo(entities[0], settings, text, vertex, blocks),
+      ...singleEntityInfo(
+        entities[0],
+        settings,
+        text,
+        vertex,
+        blocks,
+        dimStyles
+      ),
       general: generalRows(entities[0], settings, text),
     }
   }
@@ -919,7 +946,8 @@ function singleEntityInfo(
   settings: DocumentSettings,
   text: EngineText,
   vertex: number,
-  blocks?: BlockLookup
+  blocks?: BlockLookup,
+  dimStyles?: (id: DimStyleId) => DimStyle | undefined
 ): Omit<SelectionInfo, "general"> {
   const length = (value: number) =>
     `${formatLength(value, settings)} ${unitSuffix(settings.unit)}`
@@ -1551,42 +1579,57 @@ function singleEntityInfo(
       }
     }
     case "dimension": {
+      // AutoCAD's title per kind and its groups, with the rows the model has
+      // (desktop d04-1 to d04-7); no definition point is a row there. The
+      // style's values are read-only: an edit there is an override AutoCAD
+      // keeps on the object, and overrides are not modelled (DIMS-D3). The Dim
+      // style row is the General section's picker, as the text's style is.
+      const style = dimStyles?.(entity.styleId) ?? DEFAULT_DIM_STYLE
+      const g = dimensionGeometry(entity, style)
+      const textAt = at(g.textPoint)
+      const plain = (value: number) => String(Number(value.toFixed(8)))
+      const radial = entity.kind === "radius" || entity.kind === "diameter"
       return {
-        title: title("dimension"),
+        title: text.propertyTitle(`${entity.kind}Dimension`),
         count: 1,
         groups: [
-          group("dimension", [
-            // The measurement is derived from the definition points, so it is
-            // read-only here exactly as it is in AutoCAD's palette.
-            row(
-              "measurement",
-              dimensionMeasurementUnit(entity.kind) === "angle"
-                ? degrees((dimensionMeasurement(entity) * 180) / Math.PI)
-                : length(dimensionMeasurement(entity))
-            ),
-            row("textOverride", entity.text ?? text.propertyValue("none")),
-            row("type", text.dimensionKind(entity.kind)),
-            ...(entity.kind === "linear"
-              ? [
-                  angleRow(
-                    "rotation",
-                    "dimensionRotation",
-                    normalizeDegrees((entity.rotation * 180) / Math.PI)
-                  ),
-                ]
-              : []),
+          group("misc", [row("annotative", text.propertyValue("no"))]),
+          group("linesArrows", [
+            row("arrowSize", plain(style.arrowSize)),
+            ...(radial ? [row("centerMarkSize", plain(style.centerMark))] : []),
+            row("extLineExt", plain(style.extensionBeyond)),
+            row("extLineOffset", plain(style.extensionOffset)),
           ]),
-          group("definitionPoints", [
-            ...(entity.vertex
-              ? [
-                  row("vertexX", coord(at(entity.vertex).x)),
-                  row("vertexY", coord(at(entity.vertex).y)),
-                ]
-              : []),
-            row("firstX", coord(at(entity.first).x)),
-            row("firstY", coord(at(entity.first).y)),
-            row("secondX", coord(at(entity.second).x)),
-            row("secondY", coord(at(entity.second).y)),
+          group("text", [
+            row("textHeight", plain(style.textHeight)),
+            row("textOffset", plain(style.textGap)),
+            coordRow("textPositionX", "textPositionX", textAt.x),
+            coordRow("textPositionY", "textPositionY", textAt.y),
+            angleRow(
+              "textRotation",
+              "dimensionTextRotation",
+              normalizeDegrees(((entity.textAngle ?? 0) * 180) / Math.PI)
+            ),
+            // Derived from the definition points, so greyed in AutoCAD's
+            // palette too; it reads as the dimension draws it (d04-2: `40`).
+            row("measurement", dimensionMeasurementText(entity, style)),
+            {
+              ...row("textOverride", entity.text ?? ""),
+              edit: {
+                property: "dimensionText",
+                text: entity.text ?? "",
+                unit: "",
+              },
+            },
+          ]),
+          group("fit", [row("dimScaleOverall", plain(style.scale))]),
+          group("primaryUnits", [
+            row("decimalSeparator", style.decimalSeparator),
+            row(
+              "suppressTrailingZeros",
+              text.propertyValue(style.suppressTrailingZeros ? "yes" : "no")
+            ),
+            row("precision", (0).toFixed(style.decimals)),
           ]),
         ],
       }
