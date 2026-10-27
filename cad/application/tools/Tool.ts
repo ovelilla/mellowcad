@@ -366,6 +366,12 @@ export interface ToolContext {
    */
   previousSelection(): readonly EntityId[]
   rememberSelection(ids: readonly EntityId[]): void
+  /**
+   * Whether the object was made since the drawing was opened: AutoCAD's
+   * "current session", over which DIMBASELINE's Last ranges (probe
+   * dimensions/p400). One the opened file held is not.
+   */
+  madeThisSession(id: EntityId): boolean
 
   /** The command language, for what a tool writes or draws itself. */
   readonly text: ToolText

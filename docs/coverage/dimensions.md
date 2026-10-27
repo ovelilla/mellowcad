@@ -130,44 +130,56 @@ second point:`), then DIMLINEAR's prompts measuring along that angle, `[Text/Ang
 ### `DIMBASELINE` / `DBA` · es `ACOLINEABASE` / `ACOLINE`†
 
 **Implemented:** `Specify second extension line origin or [Select/Undo] <Select>:` (Undo offered
-with nothing to undo too, as AutoCAD's), `Dimension text = …` after each, `Select base dimension:`
-(`No object selected.`; `Expects a point or Last`), a pick or `Last` (the chain grows from the
-extension line nearer the WCS origin, as AutoCAD 2023's console does; not a dimension it chains,
-`Linear, ordinate, or angular associative dimension required.`, es
-`Requiere una cota asociativa lineal, de coordenada o angular.`); es
+with nothing to undo too, as AutoCAD's; with nothing left, `Command has been completely undone.`,
+p213, p215), `Dimension text = …` after each, `@` read from LASTPOINT, which the chain's points
+leave where it was (p229–p231), `Select base dimension:` (`No object selected.`;
+`Expects a point or Last`), a pick, a point typed there (p208, p227) or `Last` (the chain grows
+from the extension line nearer the WCS origin, whatever the UCS, p222, p241); a radial dimension
+picked or Last, `Linear, ordinate, or angular associative dimension required.`, es
+`Requiere una cota asociativa lineal, de coordenada o angular.`, and asked again (p237, p401); es
 `Especifique un origen de la segunda línea de referencia o [Designar/desHacer] <Designar>`,
-`Designe cota base`; Select, Undo, chains from the first extension-line origin, DIMDLI spacing,
-inherits kind/rotation/style and layer (DIMCONTINUEMODE 1) and takes the current colour, linetype
+`Designe cota base`. Opens on the last dimension made since the drawing was opened or started
+(p400: a drawing reopened asks Select), a radial one skipped (p223). Chains from the first
+extension-line origin, spaced by the current style's DIMDLI at the base style's DIMSCALE (p233,
+p242–p244, p264); makes rotated dimensions along the base's axis, an aligned base's too (p240,
+p219), in the base's style and layer (DIMCONTINUEMODE 1, p232) with the current colour, linetype
 and lineweight
 
 **Missing:** DIMASSOC associativity (id-stability cost, deferred), ordinate chaining, angular
-chaining
+chaining: AutoCAD chains an angular dimension made last or picked (p224, p236); here one made last
+opens at Select, and one picked or Last is refused as a radial one is (the WHY on `isChainable`).
+**Unverified:** what AutoCAD says to a pick on an object that is no dimension (here
+`No object selected.`); whether a dimension copied, pasted or exploded counts as made in the
+session (here it does: any object the opened file did not hold)
 
 ### `DIMCONTINUE` / `DCO` · es `ACOCONTINUA` / `ACOCONT`†
 
-**Implemented:** DIMBASELINE's prompts, its own `Select continued dimension:` (es
-`Designe cota continua`); Select, Undo, chains from the second extension-line origin, DIMDLI
-spacing, inherits kind/rotation/style and layer (DIMCONTINUEMODE 1) and takes the current colour,
-linetype and lineweight
+**Implemented:** DIMBASELINE's prompts and bases, its own `Select continued dimension:` (es
+`Designe cota continua`; a radial picked refused, p402); `@` from LASTPOINT (p230); chains from
+the second extension-line origin on the base's dimension line, rotated dimensions along the base's
+axis in its style and layer (DIMCONTINUEMODE 1) with the current colour, linetype and lineweight
 
-**Missing:** DIMASSOC associativity (deferred), ordinate chaining, angular chaining
+**Missing:** as DIMBASELINE's
 
 ### `DIMSPACE` · es `ACOESPAC`
 
-**Implemented:** `Select base dimension:` (es `Designar cota base`) — a pick or `Last`
-(`Selected object is not a dimension.`, es `El objeto designado no es una cota.`;
-`No object selected.`; a point typed there picks, erase/p221, p256) —,
-`Select dimensions to space:` with MOVE's counts (es `Designe cotas para intervalo`), finding every
-dimension, one at an angle to the base too, which spacing leaves where it is, and saying `0 found`
-for what is no dimension, which starts the total (`0 found, 0 total`, erase/p221, p244, p256),
-`Enter value or [Auto] <Auto>:` (es
-`Indique valor o [Auto] <Auto>`; a negative one
-`Invalid spacing value, spacing value cannot be negative.`); Select base dimension, select
-dimensions to space, numeric value, Auto (2×DIMTXT, DIMSCALE-aware), 0 = line up, per-side ranking,
-linear + aligned
+**Implemented:** `Select base dimension:` (es `Designar cota base`) — a pick, a point typed there
+(erase/p221, p256) or `Last` (p257); one that is no dimension `Selected object is not a dimension.`
+(es `El objeto designado no es una cota.`, p258), nothing `No object selected.` (p259), and asked
+again —, `Select dimensions to space:` with MOVE's counts (es `Designe cotas para intervalo`),
+finding every dimension, one at an angle to the base too, which spacing leaves where it is, and
+saying `0 found` for what is no dimension, which starts the total (`0 found, 0 total`, erase/p221,
+p244, p256); Enter on an empty set ends (p262). A set selected before the command is the set,
+counted with the base after its pick (`3 found`), the value asked next (p246, p239).
+`Enter value or [Auto] <Auto>:` (es `Indique valor o [Auto] <Auto>`) is a keyword prompt read by
+its leading number (`FOO` 0, `7FOO` 7, `12,10` 12, p251, p268, p225), no point or distance; a
+negative one `Invalid spacing value, spacing value cannot be negative.` (p250); Auto (2×DIMTXT,
+DIMSCALE-aware, p266), 0 = line up, per-side ranking, linear and aligned together (p263), aligned
+at an angle spaced along their normal (p256)
 
 **Missing:** angular dimensions, "if necessary" collision-only respacing (always respaces, by
-design)
+design). **Unverified:** what AutoCAD says to a radial or angular base (here it is passed over in
+silence)
 
 ### `DIMRADIUS` / `DIMRAD` / `DRA` · es `ACORADIO` / `ACORAD`†
 

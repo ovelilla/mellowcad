@@ -18,6 +18,7 @@ import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import type { PromptId } from "../../locales/types"
+import { rollover } from "./ghostLook"
 import { ObjectSelector, lastObject } from "./objectSelection"
 import { typedPick } from "./typedPick"
 import {
@@ -53,14 +54,16 @@ const COINCIDENT = 1e-9
  * shared axis, so the whole adjustment is one `UpdateEntitiesCommand` and one
  * undo step.
  *
- * AutoCAD also spaces angular dimensions "that share a common vertex"; there is
- * no angular dimension here yet, so only the parallel-linear half exists.
+ * AutoCAD also spaces angular dimensions "that share a common vertex"; only
+ * the parallel-linear half exists here (see `isSpaceable`).
  */
 export class DimSpaceTool implements Tool {
   readonly id = "dimspace"
 
   private state: DimSpaceState = { phase: "base", hover: null }
   private lastScreen: Vec2 | null = null
+  /** A set selected before the command, which is the set (p246). */
+  private preselected = false
   private readonly selector = new ObjectSelector({
     takes: () => "wholeObjects",
     done: (ctx) => {
@@ -76,12 +79,13 @@ export class DimSpaceTool implements Tool {
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
-    ctx.selection.clear()
+    this.preselected = ctx.selection.size > 0
     this.enterBase(ctx)
   }
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "base", hover: null }
+    this.preselected = false
     ctx.dynamicInput.close()
   }
 
@@ -106,11 +110,9 @@ export class DimSpaceTool implements Tool {
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
     switch (this.state.phase) {
-      case "base": {
-        const base = this.pickDimension(input.world, ctx)
-        if (base) this.enterSelect(base, ctx)
+      case "base":
+        this.pickBase(input.world, ctx)
         break
-      }
       case "select":
         this.selector.onPointerDown(input, ctx)
         break
@@ -121,7 +123,7 @@ export class DimSpaceTool implements Tool {
   /**
    * A point typed at either prompt, which AutoCAD's console takes as a pick
    * there: the base dimension's too (`Select base dimension:50,-10`,
-   * erase/p221, p256).
+   * erase/p221, p256; dimensions/p258).
    */
   answerTyped(text: string, ctx: ToolContext): boolean {
     if (this.state.phase === "select") {
@@ -130,8 +132,7 @@ export class DimSpaceTool implements Tool {
     if (this.state.phase !== "base") return false
     const point = typedPick(text, ctx)
     if (!point) return false
-    const base = this.pickDimension(point, ctx)
-    if (base) this.enterSelect(base, ctx)
+    this.pickBase(point, ctx)
     ctx.requestRender()
     return true
   }
@@ -161,7 +162,7 @@ export class DimSpaceTool implements Tool {
     }
   }
 
-  /** As AutoCAD 2023's console refuses DIMSPACE's picks. */
+  /** As AutoCAD's console refuses DIMSPACE's picks (p257). */
   takes(): QuestionInput | null {
     switch (this.state.phase) {
       case "base":
@@ -211,7 +212,7 @@ export class DimSpaceTool implements Tool {
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const out: ScenePrimitive[] = []
     if (this.state.phase === "base") {
-      if (this.state.hover) out.push(...this.outline(this.state.hover, ctx))
+      if (this.state.hover) out.push(...rollover(ctx, this.state.hover))
       return out
     }
 
@@ -292,10 +293,10 @@ export class DimSpaceTool implements Tool {
 
   /** The value being previewed: what is typed, or the Auto default. */
   private resolveSpacing(base: DimensionEntity, ctx: ToolContext): number {
-    const typed = parseNumber(ctx.dynamicInput.getText("spacing"))
-    return typed !== null && Number.isFinite(typed)
-      ? typed
-      : autoSpacing(this.styleOf(base, ctx))
+    const typed = ctx.dynamicInput.getText("spacing").trim()
+    return typed === ""
+      ? autoSpacing(this.styleOf(base, ctx))
+      : Math.max(0, leadingNumber(typed))
   }
 
   private apply(
@@ -307,13 +308,25 @@ export class DimSpaceTool implements Tool {
     if (moved.length > 0) ctx.execute(new UpdateEntitiesCommand(moved))
   }
 
-  /** Last at the base prompt, answered as AutoCAD 2023's console answers it. */
+  /** Last at the base prompt, answered as AutoCAD's console answers it (p257). */
   private takeLast(ctx: ToolContext): void {
-    const last = lastObject(ctx)
-    if (!last) ctx.report(ctx.text.message("noObjectSelected"))
-    else if (last.type !== "dimension") {
+    this.takeBase(lastObject(ctx), ctx)
+  }
+
+  /** A pick at the base prompt, refused as Last is (probes dimensions/p258, p259). */
+  private pickBase(world: Vec2, ctx: ToolContext): void {
+    this.takeBase(ctx.pick(world) ?? undefined, ctx)
+  }
+
+  /**
+   * The base, once found. WHY a radial or angular one is passed over in
+   * silence: AutoCAD's answer to one was not probed (see `isSpaceable`).
+   */
+  private takeBase(found: Entity | undefined, ctx: ToolContext): void {
+    if (!found) ctx.report(ctx.text.message("noObjectSelected"))
+    else if (found.type !== "dimension") {
       ctx.report(ctx.text.message("selectedObjectNotDimension"))
-    } else if (isSpaceable(last)) this.enterSelect(last, ctx)
+    } else if (isSpaceable(found)) this.enterSelect(found, ctx)
   }
 
   private pickDimension(world: Vec2, ctx: ToolContext): DimensionEntity | null {
@@ -339,23 +352,52 @@ export class DimSpaceTool implements Tool {
     this.openPrompt(ctx)
   }
 
+  /**
+   * After the base, the set: a preselection is it, counted with the base and
+   * answered at once by the value (probes dimensions/p246, p239).
+   */
   private enterSelect(base: DimensionEntity, ctx: ToolContext): void {
     this.state = { phase: "select", base }
     this.selector.start()
+    if (this.preselected) {
+      this.preselected = false
+      if (this.selector.preselect(ctx)) {
+        this.enterValue(base, ctx)
+        return
+      }
+    }
+    ctx.selection.clear()
     this.openPrompt(ctx)
   }
 
+  /**
+   * `Enter value or [Auto] <Auto>:` is a keyword prompt taking any word, read
+   * by its leading number (`FOO` 0, `7FOO` 7, `12,10` 12; probes
+   * dimensions/p251, p268, p225): a number field, no point or distance.
+   */
   private enterValue(base: DimensionEntity, ctx: ToolContext): void {
     this.state = { phase: "value", base }
+    const commit = (spacing: number, commitCtx: ToolContext): void => {
+      if (spacing < 0) {
+        commitCtx.report(commitCtx.text.message("negativeSpacing"), "error")
+        return
+      }
+      this.apply(base, spacing, commitCtx)
+      commitCtx.endCommand()
+    }
     const session: DynamicInputSession = {
-      fields: [{ id: "spacing", prompt: "dimensionSpacing", kind: "distance" }],
-      commit: (values, commitCtx) => {
-        if (values.spacing < 0) {
-          commitCtx.report(commitCtx.text.message("negativeSpacing"), "error")
-          return
-        }
-        this.apply(base, values.spacing, commitCtx)
-        commitCtx.endCommand()
+      fields: [{ id: "spacing", prompt: "dimensionSpacing", kind: "number" }],
+      commit: (values, commitCtx) => commit(values.spacing, commitCtx),
+      commitRaw: (commitCtx) => {
+        // WHY without `#`: the box's absolute prefix, which the runtime puts
+        // before a coordinate typed at the command line (`12,10`).
+        const typed = commitCtx.dynamicInput
+          .getText("spacing")
+          .trim()
+          .replace(/^#/, "")
+        if (typed === "") return false
+        commit(leadingNumber(typed), commitCtx)
+        return true
       },
     }
     ctx.dynamicInput.open(session)
@@ -382,6 +424,16 @@ export class DimSpaceTool implements Tool {
  */
 function autoSpacing(style: DimStyle): number {
   return 2 * scaledDimStyle(style).textHeight
+}
+
+/**
+ * What a value typed reads as: its leading number, as C's `atof` reads it,
+ * 0 with none.
+ */
+function leadingNumber(text: string): number {
+  const match = /^[+-]?(\d+\.?\d*|\.\d+)(e[+-]?\d+)?/i.exec(text)
+  const value = match ? parseNumber(match[0]) : null
+  return value !== null && Number.isFinite(value) ? value : 0
 }
 
 /** The direction dimension lines are spaced along: normal to the shared axis. */
@@ -418,7 +470,8 @@ function spaceable(
  *
  * KNOWN GAP: DIMSPACE also applies "to angular dimensions that share a common
  * vertex", where equal spacing means stepping the arc radius rather than
- * sliding along a normal. That is a rule of its own and is not implemented.
+ * sliding along a normal. That is a rule of its own and is not implemented;
+ * neither is probed, nor what AutoCAD says to a radial base.
  * A dimension in a plane at an angle to the UCS's is not spaced: DIMSPACE
  * works in the UCS's plane.
  */

@@ -3318,7 +3318,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt: DIMSPACE Enter value or [Auto] <Auto>:
   asks: "Enter value"
   tip: Enter value or
-  dyn: "Enter value"=""|5.00|mm*
+  dyn: "Enter value"=""|5|*
   options: [A] Auto
   prompt| Select dimensions to space:
 > A

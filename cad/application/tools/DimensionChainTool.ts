@@ -1,15 +1,9 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import {
-  DEFAULT_DIM_STYLE,
-  DimStyle,
-  DimStyleId,
-  scaledDimStyle,
-} from "../../domain/dimStyles"
+import { DEFAULT_DIM_STYLE, DimStyle, DimStyleId } from "../../domain/dimStyles"
 import {
   createDimension,
   DimensionEntity,
   dimensionAxisAngle,
-  DimensionKind,
   entityElevation,
   readsInPlan,
   withElevation,
@@ -23,6 +17,7 @@ import {
 import { entityScenePrimitive } from "../SceneBuilder"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
+import { rollover } from "./ghostLook"
 import { lastDimension } from "./lastDimension"
 import { lastObject } from "./objectSelection"
 import type { PromptId } from "../../locales/types"
@@ -36,8 +31,9 @@ import {
 } from "./Tool"
 import { measurementOf } from "./DimensionTool"
 import { withCurrentProperties } from "./currentProperties"
+import { typedPick } from "./typedPick"
 import { LayerId } from "../../domain/layers"
-import { worldPointToUcs } from "../../domain/ucs"
+import { normalizeAngle } from "../../geometry/primitives"
 
 /** Which end of the base dimension a chain grows from. */
 export type DimensionChainMode = "baseline" | "continue"
@@ -53,12 +49,13 @@ export type DimensionChainMode = "baseline" | "continue"
  * - **DIMCONTINUE** takes the base's *second* extension line origin as the next
  *   first origin and reuses its dimension line, so the chain runs end to end.
  *
- * Neither creates a new kind of object: both emit ordinary linear or aligned
- * dimensions, inheriting the base's kind, direction and style (AutoCAD's
- * DIMCONTINUEMODE 0 default), placed automatically from the base.
+ * Neither creates a new kind of object: both emit ordinary rotated (linear)
+ * dimensions measured along the base's axis, an aligned base's too (probe
+ * dimensions/p240), with the base's style and layer (DIMCONTINUEMODE 1, p00),
+ * placed automatically from the base.
  *
- * The prompt loop is AutoCAD's, as its 2023 console asks it: with a base
- * already in hand `Specify second extension line origin or [Select/Undo]
+ * The prompt loop is AutoCAD's, as its 2027 console asks it (p202): with a
+ * base already in hand `Specify second extension line origin or [Select/Undo]
  * <Select>:` over and over, each placed one saying `Dimension text =
  * 106.07`; Select, or Enter, asks `Select base dimension:` (DIMCONTINUE's
  * `Select continued dimension:`). With no base it opens at that prompt.
@@ -84,7 +81,7 @@ export class DimensionChainTool implements Tool {
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.history = []
-    const base = lastDimension(ctx.document)
+    const base = lastDimension(ctx.document, (id) => ctx.madeThisSession(id))
     if (base) this.enterSecond(this.chainFrom(base, null, ctx), ctx)
     else this.enterSelect(ctx)
   }
@@ -98,7 +95,7 @@ export class DimensionChainTool implements Tool {
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
     if (this.state.phase === "select") {
-      const hover = this.pickDimension(input, ctx)
+      const hover = this.chainableAt(input.world, ctx)
       if (hover?.id !== this.state.hover?.id) {
         this.state = { ...this.state, hover: hover ?? null }
       }
@@ -112,11 +109,7 @@ export class DimensionChainTool implements Tool {
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
     if (this.state.phase === "select") {
-      const base = this.pickDimension(input, ctx)
-      // Explicitly selecting a base overrides the default end: the chain grows
-      // from whichever extension line was picked closest.
-      if (base) this.enterSecond(this.chainFrom(base, input.world, ctx), ctx)
-      else ctx.report(ctx.text.message("noObjectSelected"))
+      this.pickAt(input.world, ctx)
     } else {
       this.place(this.state.chain, input.point, ctx)
     }
@@ -130,7 +123,7 @@ export class DimensionChainTool implements Tool {
       : "selectContinuedDimension"
   }
 
-  /** As AutoCAD 2023's console refuses the loop's answers. */
+  /** As AutoCAD's console refuses the loop's answers (p226, p228). */
   takes(): QuestionInput {
     return this.state.phase === "second"
       ? { refusal: "invalidPointInput" }
@@ -166,6 +159,19 @@ export class DimensionChainTool implements Tool {
     }
   }
 
+  /**
+   * A point typed at the Select prompt picks there, as a click does (probes
+   * dimensions/p208, p227).
+   */
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    if (this.state.phase !== "select") return false
+    const point = typedPick(text, ctx)
+    if (!point) return false
+    this.pickAt(point, ctx)
+    ctx.requestRender()
+    return true
+  }
+
   getConstraintAnchor(): Vec2 | null {
     return this.state.phase === "second" ? this.state.chain.origin : null
   }
@@ -178,14 +184,7 @@ export class DimensionChainTool implements Tool {
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     if (this.state.phase === "select") {
-      return this.state.hover
-        ? entityScenePrimitive(
-            ctx.viewport,
-            this.state.hover,
-            { color: THEME.selected, width: 2 },
-            { dimStyle: this.styleOf(this.state.hover, ctx) }
-          )
-        : []
+      return this.state.hover ? rollover(ctx, this.state.hover) : []
     }
     const pending = this.pending(
       this.state.chain,
@@ -215,7 +214,7 @@ export class DimensionChainTool implements Tool {
   ): DimensionEntity | null {
     if (V.distance(chain.origin, point) < 1e-9) return null
     return withElevation(
-      createDimension(chain.kind, chain.origin, point, chain.linePoint, {
+      createDimension("linear", chain.origin, point, chain.linePoint, {
         rotation: chain.rotation,
         styleId: chain.styleId,
         layerId: chain.layerId,
@@ -238,23 +237,46 @@ export class DimensionChainTool implements Tool {
   }
 
   /**
-   * Last at the Select prompt, answered as AutoCAD 2023's console answers
-   * it. With no pick to be nearer to, the console grows the chain from the
-   * extension line nearer the WCS origin, whatever the UCS: Last picks there.
+   * Last at the Select prompt, answered as AutoCAD's console answers it
+   * (p211, p237). With no pick to be nearer to, the console grows the chain
+   * from the extension line nearer the WCS origin, whatever the UCS (p222,
+   * p241): Last picks there. The frame is a rotation of the WCS, so that
+   * origin is the frame's.
    */
   private takeLast(ctx: ToolContext): void {
     const last = lastObject(ctx)
     if (!last) ctx.report(ctx.text.message("noObjectSelected"))
     else if (last.type === "dimension" && isChainable(last)) {
-      const origin = worldPointToUcs(ctx.ucs, { x: 0, y: 0 })
-      this.enterSecond(this.chainFrom(last, origin, ctx), ctx)
+      this.enterSecond(this.chainFrom(last, { x: 0, y: 0 }, ctx), ctx)
     } else ctx.report(ctx.text.message("associativeDimensionRequired"))
   }
 
-  /** The Undo keyword: backs out the last dimension *this run* created. */
+  /**
+   * A pick at the Select prompt: a dimension that cannot be chained is
+   * refused in the words Last's is (probes dimensions/p401, p402), and the
+   * prompt asks again.
+   */
+  private pickAt(world: Vec2, ctx: ToolContext): void {
+    const hit = ctx.pick(world)
+    if (hit?.type === "dimension" && isChainable(hit)) {
+      // Explicitly selecting a base overrides the default end: the chain
+      // grows from whichever extension line was picked closest.
+      this.enterSecond(this.chainFrom(hit, world, ctx), ctx)
+    } else if (hit?.type === "dimension") {
+      ctx.report(ctx.text.message("associativeDimensionRequired"))
+    } else ctx.report(ctx.text.message("noObjectSelected"))
+  }
+
+  /**
+   * The Undo keyword: backs out the last dimension *this run* created, or
+   * says there is none (probes dimensions/p213, p215).
+   */
   private undoLast(ctx: ToolContext): void {
     const previous = this.history.pop()
-    if (!previous) return
+    if (!previous) {
+      ctx.report(ctx.text.message("commandCompletelyUndone"))
+      return
+    }
     this.enterSecond(previous, ctx)
     ctx.undo()
   }
@@ -276,7 +298,13 @@ export class DimensionChainTool implements Tool {
     // baseline chain has to keep going that way or it would run back over the
     // geometry. A line straight through the origin has no side, so pick one.
     const side = V.dot(V.sub(base.linePoint, base.first), normal) < 0 ? -1 : 1
-    const spacing = scaledDimStyle(this.styleOf(base, ctx)).baselineSpacing
+    // The current style's DIMDLI at the base's DIMSCALE (probes
+    // dimensions/p233, p242–p244, p264).
+    const current =
+      ctx.document.getDimStyle(ctx.document.getCurrentDimStyleId()) ??
+      DEFAULT_DIM_STYLE
+    const scale = this.styleOf(base, ctx).scale
+    const spacing = current.baselineSpacing * (scale > 0 ? scale : 1)
     const step = V.scale(normal, side * spacing)
 
     const origin =
@@ -287,8 +315,10 @@ export class DimensionChainTool implements Tool {
           : base.second
 
     return {
-      kind: base.kind,
-      rotation: base.rotation,
+      // An aligned base chains rotated dimensions at its axis, run from its
+      // second origin to its first (p240's DXF 50 at 233.13° for 0,0→60,80).
+      rotation:
+        base.kind === "linear" ? base.rotation : normalizeAngle(axis + Math.PI),
       styleId: base.styleId,
       layerId: base.layerId,
       elevation: entityElevation(base),
@@ -303,13 +333,9 @@ export class DimensionChainTool implements Tool {
     return ctx.document.getDimStyle(dim.styleId) ?? DEFAULT_DIM_STYLE
   }
 
-  private pickDimension(
-    input: PointerInput,
-    ctx: ToolContext
-  ): DimensionEntity | null {
-    const hit = ctx.pick(input.world)
-    // Only a linear or aligned dimension has extension line origins to chain
-    // from; a radial one measures a circle and has no second datum.
+  /** The dimension a pick at `world` would chain from: what the rollover shows. */
+  private chainableAt(world: Vec2, ctx: ToolContext): DimensionEntity | null {
+    const hit = ctx.pick(world)
     return hit?.type === "dimension" && isChainable(hit) ? hit : null
   }
 
@@ -334,9 +360,11 @@ export class DimensionChainTool implements Tool {
           return true
         }
         if (!isCoordinateExpression(typed)) return false
+        // `@` is from LASTPOINT, which the chain's points leave at the
+        // command before's (probes dimensions/p229–p231).
         const point = parseCoordinate(typed, {
-          lastPoint: this.state.chain.origin,
-          relativeByDefault: true,
+          lastPoint: commitCtx.lastPoint,
+          relativeByDefault: false,
           ucs: commitCtx.ucs,
           elevation: commitCtx.elevation,
         })
@@ -376,13 +404,14 @@ function nearerOrigin(base: DimensionEntity, pickPoint: Vec2): Vec2 {
 }
 
 /**
- * Whether a dimension can be chained from: linear and aligned ones can.
+ * Whether a dimension can be chained from: linear and aligned ones can; a
+ * radial one measures a circle and has no second datum.
  *
- * KNOWN GAP: AutoCAD's DIMBASELINE also "creates a linear, angular, or ordinate
- * dimension". Chaining an angular one steps the *radius* of its arc rather than
- * offsetting a straight line perpendicularly, so it is a different placement
- * rule and separate work; angular dimensions are left out until it exists
- * rather than chained wrongly. One in a plane at an angle to the UCS's is not
+ * KNOWN GAP: AutoCAD also chains an angular dimension (p224, p236): it steps
+ * the *radius* of its arc rather than offsetting a straight line, a placement
+ * rule of its own not built yet. WHY refused with Last's words rather than
+ * chained wrongly: an angular picked or Last is then said, as AutoCAD says a
+ * radial one (p237, p401). One in a plane at an angle to the UCS's is not
  * chained either: the chain is drawn in the UCS's plane.
  */
 function isChainable(dim: DimensionEntity): boolean {
@@ -391,8 +420,7 @@ function isChainable(dim: DimensionEntity): boolean {
 
 /** Everything the next link of the chain needs, carried between placements. */
 interface Chain {
-  readonly kind: DimensionKind
-  /** Measurement direction inherited from the base (`linear` dimensions only). */
+  /** Measurement direction of the rotated dimensions: the base's axis. */
   readonly rotation: number
   readonly styleId: DimStyleId
   /**

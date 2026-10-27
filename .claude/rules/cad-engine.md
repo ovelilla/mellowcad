@@ -151,9 +151,8 @@ visible in the viewport, so the _tool_ filters). Give it a cap: pairwise work is
   field; a line that **curves** sets `arc`, and its grip is `lineMidpoint`, halfway _along_ it.
 - `dimensionMeasurement` is **not always a length** (radians for angular): write it through
   `dimensionMeasurementText`, `drawn` or `reported`.
-- A kind that is not linear is **excluded where two extension-line origins are assumed**
-  (`lastDimension`, `DimensionChainTool`, `DimSpaceTool`); where AutoCAD accepts it and we do not,
-  say so in a comment on the filter.
+- **Only linear and aligned dimensions are chained or spaced** (`isChainable`, `isSpaceable`;
+  `lastDimension` stops at an angular one); where AutoCAD takes another kind, say so on the filter.
 
 ## Style tables and registries
 

@@ -11,9 +11,11 @@ import { parseDrawingFile } from "../../serialization/drawingFile"
 import { THEME } from "../../scene/theme"
 import { es } from "../../locales/es"
 
-function answer(cad: CadHarness, text: string): CadHarness {
-  cad.runtime.setCommandLineText(text)
-  cad.runtime.submitCommandLine()
+function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
   return cad
 }
 
@@ -37,12 +39,19 @@ function chained(command: string, ...points: { x: number; y: number }[]) {
   return cad
 }
 
-/** Every dimension the run added, in creation order. */
+/** A fresh drawing with one dimension made by `command`, typed as the probes type it. */
+function drawn(command: string, ...answers: string[]): CadHarness {
+  const cad = createHarness()
+  answer(cad.command(command), ...answers)
+  return cad
+}
+
+/** Every dimension after the drawing's first, the base, in creation order. */
 function added(cad: ReturnType<typeof createHarness>): DimensionEntity[] {
   return cad
     .entities()
     .filter((e): e is DimensionEntity => e.type === "dimension")
-    .filter((dim) => dim.id !== "D1")
+    .slice(1)
 }
 
 /** Measurement text on screen: the drawn dimensions plus any live preview. */
@@ -84,7 +93,7 @@ describe("DIMBASELINE", () => {
     expect(added(cad)[0].linePoint.y).toBeCloseTo(30 + SPACING)
   })
 
-  it("inherits the base's kind, direction and style", () => {
+  it("measures along the base's direction, in its style", () => {
     const cad = createHarness({
       entities: [
         createDimension("linear", p(0, 0), p(0, 100), p(-30, 50), {
@@ -102,18 +111,59 @@ describe("DIMBASELINE", () => {
     expect(dimensionMeasurement(dim)).toBeCloseTo(180)
   })
 
-  it("chains an aligned base as aligned dimensions", () => {
-    const cad = createHarness({
-      entities: [
-        createDimension("aligned", p(0, 0), p(60, 80), p(-40, 60), {
-          id: "D1",
-        }),
-      ],
-    })
-    cad.command("DIMBASELINE").click(p(120, 160))
+  // probe dimensions/p240, p219: an aligned base chains rotated dimensions
+  // measured along its axis, DXF 50 at 233.13°.
+  it("chains an aligned base as rotated dimensions along its axis", () => {
+    const cad = drawn("DIMALIGNED", "0,0", "60,80", "-40,60")
+    answer(cad.command("DIMBASELINE"), "200,0")
+    const [dim] = added(cad)
 
-    expect(added(cad)[0].kind).toBe("aligned")
-    expect(dimensionMeasurement(added(cad)[0])).toBeCloseTo(200)
+    expect(dim.kind).toBe("linear")
+    expect((dim.rotation * 180) / Math.PI).toBeCloseTo(233.13, 2)
+    expect(dimensionMeasurement(dim)).toBeCloseTo(120)
+    expect(cad.commandLog().at(-1)).toBe("Dimension text = 120")
+
+    const along = drawn("DIMALIGNED", "0,0", "60,80", "-40,60")
+    answer(along.command("DIMBASELINE"), "120,160")
+    expect(dimensionMeasurement(added(along)[0])).toBeCloseTo(200)
+  })
+
+  // probe dimensions/p233, p242: the spacing is the current style's DIMDLI,
+  // the style the link takes the base's.
+  it("spaces by the current style's DIMDLI", () => {
+    const cad = createHarness()
+    const s2 = cad.runtime.createDimStyle("S2", undefined, true)
+    cad.runtime.updateDimStyle(s2, { baselineSpacing: 10 })
+    answer(cad.command("DIMLINEAR"), "0,0", "100,0", "50,-30")
+    cad.runtime.setCurrentDimStyle("ISO-25")
+    answer(cad.command("DIMBASELINE"), "180,0")
+    expect(added(cad)[0].styleId).toBe(s2)
+    expect(added(cad)[0].linePoint.y).toBeCloseTo(-33.75)
+
+    const current = drawn("DIMLINEAR", "0,0", "100,0", "50,-30")
+    const s3 = current.runtime.createDimStyle("S3", undefined, true)
+    current.runtime.updateDimStyle(s3, { baselineSpacing: 10 })
+    answer(current.command("DIMBASELINE"), "180,0")
+    expect(added(current)[0].styleId).toBe("ISO-25")
+    expect(added(current)[0].linePoint.y).toBeCloseTo(-40)
+  })
+
+  // probe dimensions/p244, p264: scaled by the base's DIMSCALE, not the
+  // current one's.
+  it("scales the spacing by the base's DIMSCALE", () => {
+    const cad = createHarness()
+    const s2 = cad.runtime.createDimStyle("S2", undefined, true)
+    cad.runtime.updateDimStyle(s2, { scale: 10 })
+    answer(cad.command("DIMLINEAR"), "0,0", "100,0", "50,-30")
+    cad.runtime.setCurrentDimStyle("ISO-25")
+    answer(cad.command("DIMBASELINE"), "180,0")
+    expect(added(cad)[0].linePoint.y).toBeCloseTo(-67.5)
+
+    const current = drawn("DIMLINEAR", "0,0", "100,0", "50,-30")
+    const s3 = current.runtime.createDimStyle("S3", undefined, true)
+    current.runtime.updateDimStyle(s3, { scale: 10 })
+    answer(current.command("DIMBASELINE"), "180,0")
+    expect(added(current)[0].linePoint.y).toBeCloseTo(-33.75)
   })
 })
 
@@ -171,17 +221,45 @@ describe("dimension chain prompts", () => {
     const cad = createHarness({ entities: [base()] })
     cad.command("DIMBASELINE").option("Select")
 
-    const amber = () =>
+    const hovered = () =>
       cad
         .scene()
         .primitives.filter(
-          (prim) => "stroke" in prim && prim.stroke?.color === THEME.selected
+          (prim) =>
+            "stroke" in prim &&
+            prim.stroke?.color === THEME.entityHover &&
+            prim.stroke.width === 2
         ).length
 
     cad.moveTo(p(400, 400))
-    expect(amber()).toBe(0)
+    expect(hovered()).toBe(0)
     cad.moveTo(p(50, -30))
-    expect(amber()).toBeGreaterThan(0)
+    expect(hovered()).toBeGreaterThan(0)
+  })
+
+  it("rolls a base over in its own style's sizes", () => {
+    const cad = createHarness()
+    const s2 = cad.runtime.createDimStyle("S2", undefined, true)
+    cad.runtime.updateDimStyle(s2, { scale: 10 })
+    answer(cad.command("DIMLINEAR"), "0,0", "100,0", "50,-30")
+    cad.command("DIMBASELINE").option("Select").moveTo(p(50, -30))
+
+    const segments = (hover: boolean) =>
+      cad
+        .scene()
+        .primitives.flatMap((prim) =>
+          prim.kind === "segment" &&
+          (prim.stroke.color === THEME.entityHover) === hover
+            ? [
+                [prim.a, prim.b]
+                  .map((q) => `${q.x.toFixed(3)},${q.y.toFixed(3)}`)
+                  .join(" "),
+              ]
+            : []
+        )
+    const drawn = new Set(segments(false))
+    expect(segments(true).length).toBeGreaterThan(0)
+    for (const segment of segments(true)) expect(drawn).toContain(segment)
   })
 
   it("takes the extension line nearest the pick when a base is selected", () => {
@@ -197,7 +275,7 @@ describe("dimension chain prompts", () => {
     expect(added(cad)[0].first).toBeCloseToPoint(p(100, 0))
   })
 
-  // AutoCAD 2023's console: `Select continued dimension: L` grows the chain
+  // probe dimensions/p211, p212: `Select continued dimension: L` grows the chain
   // from the extension line nearer the WCS origin, as a pick there would.
   it("takes Last at the Select prompt, from the end nearer the origin", () => {
     const cad = createHarness({ entities: [base()] })
@@ -302,11 +380,20 @@ describe("dimension chain prompts", () => {
     expect(cad.activeToolId()).toBe("select")
   })
 
-  it("places a link from a typed relative coordinate", () => {
-    const cad = createHarness({ entities: [base()] })
-    cad.command("DIMCONTINUE").type("@80,0").enter()
+  // probe dimensions/p229, p230, p231: `@` is relative to LASTPOINT, the
+  // DIMLINEAR's location, which the chain's points leave where it is.
+  it("reads a typed relative coordinate from LASTPOINT", () => {
+    const cad = drawn("DIMLINEAR", "0,0", "100,0", "50,-30")
+    answer(cad.command("DIMBASELINE"), "@80,0")
+    expect(added(cad)[0].second).toBeCloseToPoint(p(130, -30))
+    expect(cad.commandLog().at(-1)).toBe("Dimension text = 130")
 
-    expect(added(cad)[0].second).toBeCloseToPoint(p(180, 0))
+    const continued = drawn("DIMLINEAR", "0,0", "100,0", "50,-30")
+    answer(continued.command("DIMCONTINUE"), "@80,0", "@50,0")
+    expect(added(continued).map((dim) => dim.second)).toEqual([
+      p(130, -30),
+      p(100, -30),
+    ])
   })
 
   it("ends on Escape without placing anything", () => {
@@ -315,6 +402,113 @@ describe("dimension chain prompts", () => {
 
     expect(added(cad)).toHaveLength(0)
     expect(cad.activeToolId()).toBe("select")
+  })
+})
+
+describe("the base a chain takes", () => {
+  // probe dimensions/p400: Last is the last dimension made since the drawing
+  // was opened, so a drawing reopened asks for one.
+  it("asks for a base in a drawing just opened", () => {
+    const cad = drawn("DIMLINEAR", "0,0", "100,0", "50,-30")
+    cad.runtime.loadDrawing(cad.runtime.serializeDrawing())
+    cad.command("DIMBASELINE")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMBASELINE Select base dimension:"
+    )
+
+    answer(cad.command("DIMLINEAR"), "0,50", "100,50", "50,80")
+    cad.command("DIMBASELINE")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMBASELINE Specify second extension line origin or [Select/Undo] <Select>:"
+    )
+  })
+
+  // probe dimensions/p224, p223: AutoCAD chains an angular dimension made
+  // last, which is not built here, so the Select prompt asks rather than
+  // chaining the linear before it; a radial made last is skipped.
+  it("asks for a base after an angular dimension, skips a radial one", () => {
+    const cad = drawn("DIMLINEAR", "0,0", "100,0", "50,-30")
+    answer(cad.command("DIMANGULAR"), "", "300,0", "310,0", "303,4", "320,20")
+    cad.command("DIMBASELINE")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMBASELINE Select base dimension:"
+    )
+    answer(cad, "L")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Linear, ordinate, or angular associative dimension required."
+    )
+    // p236's pick on its arc, which AutoCAD chains.
+    answer(cad, "326.131,10.8239")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select base dimension: 326.131,10.8239",
+      "Linear, ordinate, or angular associative dimension required.",
+    ])
+
+    const radial = drawn("DIMLINEAR", "0,0", "100,0", "50,-30")
+    answer(radial.command("CIRCLE"), "300,0", "50")
+    answer(radial.command("DIMRADIUS"), "350,0", "380,0")
+    answer(radial.command("DIMBASELINE"), "180,0")
+    const link = radial
+      .entities()
+      .filter((e): e is DimensionEntity => e.type === "dimension")
+      .at(-1)
+    expect(link?.first).toBeCloseToPoint(p(0, 0))
+    expect(link?.linePoint.y).toBeCloseTo(-33.75)
+  })
+
+  // probe dimensions/p208, p227: a point typed at the Select prompt picks there.
+  it("takes a typed point at the Select prompt as its pick", () => {
+    const cad = drawn("DIMLINEAR", "0,0", "100,0", "50,-30")
+    answer(cad.command("DIMBASELINE"), "S", "95,-30", "180,0")
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Select base dimension: 95,-30",
+      "Specify second extension line origin or [Select/Undo] <Select>: 180,0",
+      "Dimension text = 80",
+    ])
+
+    const empty = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+    answer(empty.command("DIMBASELINE"), "50,50")
+    expect(empty.commandLog().slice(-2)).toEqual([
+      "Select base dimension: 50,50",
+      "No object selected.",
+    ])
+  })
+
+  // probe dimensions/p401, p402: a radial dimension picked is refused in
+  // AutoCAD's words and the prompt asks again.
+  it("refuses a radial dimension picked as the base", () => {
+    for (const [command, prompt] of [
+      ["DIMBASELINE", "Select base dimension:"],
+      ["DIMCONTINUE", "Select continued dimension:"],
+    ]) {
+      const cad = createHarness()
+      answer(cad.command("CIRCLE"), "300,0", "50")
+      answer(cad.command("DIMRADIUS"), "350,0", "380,0")
+      answer(cad.command(command), "325,0")
+      expect(cad.commandLog().slice(-2)).toEqual([
+        `${prompt} 325,0`,
+        "Linear, ordinate, or angular associative dimension required.",
+      ])
+      expect(cad.state().commandLine.prompt).toBe(`${command} ${prompt}`)
+    }
+    const es_ = createHarness({ locale: es })
+    answer(es_.command("CIRCULO"), "300,0", "50")
+    answer(es_.command("ACORADIO"), "350,0", "380,0")
+    answer(es_.command("ACOLINEABASE"), "325,0")
+    expect(es_.commandLog().at(-1)).toBe(
+      "Requiere una cota asociativa lineal, de coordenada o angular."
+    )
+  })
+
+  // probe dimensions/p222, p241: Last grows from the end nearer the WCS's
+  // origin, whatever the UCS's.
+  it("takes Last from the end nearer the WCS origin under an offset UCS", () => {
+    const cad = drawn("DIMLINEAR", "100,0", "0,0", "50,-30")
+    answer(cad.command("UCS"), "O", "-300,0")
+    answer(cad.command("DIMCONTINUE"), "S", "L", "500,0")
+
+    expect(added(cad)[0].first).toBeCloseToPoint(p(0, 0))
+    expect(cad.commandLog().at(-1)).toBe("Dimension text = 200")
   })
 })
 
@@ -332,11 +526,27 @@ describe("dimension chain Undo keyword", () => {
     expect(last.linePoint.y).toBeCloseTo(-30 - 2 * SPACING)
   })
 
-  it("does nothing when the run has placed nothing", () => {
+  // probe dimensions/p213, p215: with nothing left to take back it says so
+  // and asks again.
+  it("says all is undone when the run has placed nothing", () => {
     const cad = createHarness({ entities: [base()] })
     cad.command("DIMBASELINE").option("Undo")
 
     expect(cad.typeCounts().dimension).toBe(1)
+    expect(cad.commandLog().at(-1)).toBe("Command has been completely undone.")
+    expect(cad.state().commandLine.prompt).toBe(
+      "DIMBASELINE Specify second extension line origin or [Select/Undo] <Select>:"
+    )
+
+    const once = createHarness({ entities: [base()] })
+    answer(once.command("DIMBASELINE"), "180,0")
+    once.option("Undo").option("Undo")
+    expect(
+      once
+        .commandLog()
+        .filter((line) => line === "Command has been completely undone.")
+    ).toHaveLength(1)
+    expect(once.typeCounts().dimension).toBe(1)
   })
 
   it("steps back a link with Ctrl+Z, and U undoes the whole run", () => {

@@ -601,6 +601,12 @@ export class CadRuntime extends Observable {
    * says no.
    */
   private clipboardFallback: string | null = null
+  /**
+   * The objects the drawing held as it was opened, which a session's "last
+   * made" never names (`ToolContext.madeThisSession`). WHY ids, not a log of
+   * what was made: undoing an erase of one brings back the opened object.
+   */
+  private openedIds: ReadonlySet<EntityId> = new Set()
 
   constructor(
     host: EngineHost,
@@ -690,6 +696,7 @@ export class CadRuntime extends Observable {
       rememberSelection: (ids) => {
         this.previousSet = [...ids]
       },
+      madeThisSession: (id) => !this.openedIds.has(id),
       setViewCubeVisible: (visible) => this.setViewCubeVisible(visible),
       setCurrentTextStyle: (id) => this.setCurrentTextStyle(id),
       snapOverride: () => this.snapping.getOverride(),
@@ -4791,6 +4798,7 @@ export class CadRuntime extends Observable {
     this.selection.clear()
     this.resetTracking()
     applyDrawingFile(this.document, parsed)
+    this.openedIds = new Set(parsed.entities.map((entity) => entity.id))
     this.lastPoint = vec3(0, 0, 0)
     this.history.clear() // a loaded file is a fresh undo baseline
     this.startDrawingValues()
@@ -4811,6 +4819,7 @@ export class CadRuntime extends Observable {
       }
       if (isBlankDrawing(summary)) return
       applyDrawingFile(this.document, parsed)
+      this.openedIds = new Set(parsed.entities.map((entity) => entity.id))
       this.autosave.markRestored()
       this.pendingFit = true
       this.invalidateState()

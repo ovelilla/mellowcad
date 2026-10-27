@@ -39,13 +39,18 @@ export function drawn(
 
 /**
  * A single object's pick's rollover: the object a pick there takes, in the
- * plain hover glow (desktop corners/d01-1, pieces/d01-1).
+ * plain hover glow (desktop corners/d01-1, pieces/d01-1); a dimension in its
+ * own style's sizes (DIMBASELINE's base).
  */
 export function rollover(ctx: ToolContext, entity: Entity): ScenePrimitive[] {
+  const dimStyle =
+    entity.type === "dimension"
+      ? ctx.document.getDimStyle(entity.styleId)
+      : undefined
   return entityScenePrimitive(
     ctx.viewport,
     entity,
     { color: THEME.entityHover, width: 2 },
-    { blocks: ctx.blocks }
+    { blocks: ctx.blocks, ...(dimStyle ? { dimStyle } : {}) }
   )
 }

@@ -198,8 +198,8 @@ layer.
   no command and stay out.
 - A tool offering its own **Undo keyword** counts its own edits and refuses when there are none
   (SPLINE's at one point does nothing, spline/p125; TRIM's says all undone after any answer,
-  trim/p380; TEXTEDIT's also as it undoes the last, text/p285), or `ctx.undo()` backs out an
-  earlier command. Offer it from the first point a prompt holds. A transparent command run since a
+  trim/p380, DIMBASELINE's too, dimensions/p213; TEXTEDIT's also as it undoes the last,
+  text/p285), or `ctx.undo()` backs out an earlier command. Offer it from the first point a prompt holds. A transparent command run since a
   step ('LTSCALE) goes back with it: mark `ctx.historyDepth()` per step, take back with
   `ctx.undoTo(mark)`. A looping command restores its state **whatever the undo returns**: under
   UNDO Control None it pops nothing and LINE still steps back, while PLINE, which commits at its
@@ -267,11 +267,11 @@ returns `true`; `false` ends the command.
   adds the reference in `onDone` (Escape cancels); BLOCK's Convert adds it with the defaults, then
   opens `AttributeEditBox` (Escape keeps them).
 - **Empty text in `commitRaw` is Enter**: never spend a keyword letter on what Enter does.
-- A command that continues from what was drawn (LINE's Continue, DIMBASELINE, DIMCONTINUE) reads
-  the drawing through a `lastDrawnPoint`-style helper, not runtime state: document order is the
-  deliberate deviation from AutoCAD's session scope, the one that survives a reload. Only which end
-  of an arc was drawn last is read off LASTPOINT (`continuePoint`, `lastDrawnDirection`), before
-  the first point's answer moves it: an arc is stored counter-clockwise.
+- A command that continues from what was drawn (LINE's Continue) reads the drawing through a
+  `lastDrawnPoint`-style helper (document order, which survives a reload); DIMBASELINE's Last is
+  the session's (`ctx.madeThisSession`, dimensions/p400). Only which end of an arc was drawn last
+  is read off LASTPOINT (`continuePoint`, `lastDrawnDirection`), before the first point's answer
+  moves it: an arc is stored counter-clockwise.
 
 ## Points, snapping, constraints
 
