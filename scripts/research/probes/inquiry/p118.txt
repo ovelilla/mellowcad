@@ -1,0 +1,10 @@
+_DIST
+0,0
+_M
+10,0
+_L
+-4
+_L
+@0,5
+_T
+(getvar "LASTPOINT")

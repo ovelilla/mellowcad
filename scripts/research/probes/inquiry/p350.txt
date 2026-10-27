@@ -1,0 +1,13 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-200,-200
+300,300
+(sssetfirst nil (ssget "_X"))
+_DIST
+(princ (if (ssget "_I") "SETKEPT" "SETGONE"))
+0,0
+3,4

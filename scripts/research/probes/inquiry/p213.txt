@@ -1,0 +1,16 @@
+_CIRCLE
+5,5
+2
+_AREA
+_A
+_O
+_L
+
+_S
+_O
+_L
+
+FOO
+
+(getvar "AREA")
+(getvar "PERIMETER")

@@ -1,0 +1,7 @@
+_MEASUREGEOM
+_area
+0,0
+10,0
+10,10
+
+_X

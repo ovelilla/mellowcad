@@ -1,0 +1,13 @@
+_CIRCLE
+0,0
+5
+_ZOOM
+_W
+-20,-20
+20,20
+(getvar "LASTPOINT")
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+_AREA
+_O
+5

@@ -1,0 +1,14 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-200,-200
+300,300
+(sssetfirst nil (ssget "_X"))
+(ssget "_I")
+_DIST
+0,0
+3,4
+(ssget "_I")

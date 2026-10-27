@@ -1,0 +1,6 @@
+(getvar "AREA")
+_LINE
+0,0
+'AREA
+10,0
+

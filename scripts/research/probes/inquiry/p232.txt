@@ -1,0 +1,10 @@
+_UCS
+_X
+90
+_AREA
+0,0
+10,0
+10,5
+
+(rtos (getvar "AREA") 2 16)
+(trans (getvar "LASTPOINT") 1 0)

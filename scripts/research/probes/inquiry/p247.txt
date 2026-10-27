@@ -1,0 +1,14 @@
+_PLINE
+0,0
+10,0
+10,10
+0,10
+_C
+_AREA
+_A
+_O
+_L
+
+_X
+(getvar "AREA")
+'AREA

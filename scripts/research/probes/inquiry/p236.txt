@@ -1,0 +1,10 @@
+_LUNITS
+4
+_AREA
+0,0
+120,0
+120,120
+0,120
+
+'AREA
+(getvar "AREA")

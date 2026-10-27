@@ -1,0 +1,10 @@
+_UCS
+_Z
+30
+_DIST
+0,0
+_M
+_L
+10
+_T
+(trans (getvar "LASTPOINT") 1 0)

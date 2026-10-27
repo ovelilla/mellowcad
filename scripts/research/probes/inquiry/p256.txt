@@ -1,0 +1,7 @@
+_AREA
+0,0,0
+10,0,5
+10,10,0
+
+(rtos (getvar "AREA") 2 16)
+(rtos (getvar "PERIMETER") 2 16)

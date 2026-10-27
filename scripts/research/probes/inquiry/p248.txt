@@ -1,0 +1,13 @@
+_AREA
+0,0
+10,0
+10,10
+
+(getvar "AREA")
+_CIRCLE
+0,0
+1
+_AREA
+_O
+_L
+(getvar "AREA")

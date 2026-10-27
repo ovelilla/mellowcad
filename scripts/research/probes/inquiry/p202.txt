@@ -1,0 +1,6 @@
+_AREA
+_X
+
+_X
+_.AREA
+_X

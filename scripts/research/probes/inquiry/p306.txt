@@ -1,0 +1,11 @@
+_ID
+10,20
+_ID
+@
+_ID
+@5,5
+_ID
+10<30
+_ID
+@10<90
+(getvar "LASTPOINT")

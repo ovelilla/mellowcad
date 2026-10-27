@@ -1,0 +1,16 @@
+_PLINE
+0,0
+_W
+2
+2
+10,0
+_A
+10,10
+_L
+0,10
+_C
+_AREA
+_O
+_L
+(rtos (getvar "AREA") 2 16)
+(rtos (getvar "PERIMETER") 2 16)

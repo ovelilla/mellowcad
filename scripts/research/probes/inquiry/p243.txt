@@ -1,0 +1,9 @@
+_-TEXT
+0,0
+2.5
+0
+hello
+_AREA
+_O
+_L
+

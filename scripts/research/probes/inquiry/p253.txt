@@ -1,0 +1,19 @@
+_CIRCLE
+0,0
+5
+_LINE
+20,20
+30,30
+
+_ZOOM
+_W
+-20,-20
+40,40
+_AREA
+_O
+5,0
+(getvar "LASTPOINT")
+_AREA
+_O
+_L
+(getvar "LASTPOINT")

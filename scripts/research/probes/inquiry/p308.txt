@@ -1,0 +1,12 @@
+_ZOOM
+_W
+-200,-200
+300,300
+_ID
+0,0
+_ID
+50
+(getvar "LASTPOINT")
+(getvar "VIEWCTR")
+(getvar "VIEWSIZE")
+(getvar "SCREENSIZE")

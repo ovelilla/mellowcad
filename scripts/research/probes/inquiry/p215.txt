@@ -1,0 +1,14 @@
+_CIRCLE
+0,0
+5
+_AREA
+_E
+_L
+_AREA
+_A
+_E
+_L
+
+_X
+_AREA
+_X

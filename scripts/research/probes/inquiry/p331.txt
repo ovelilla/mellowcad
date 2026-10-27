@@ -1,0 +1,11 @@
+_AREA
+'_ZOOM
+_E
+0,0
+'ORTHOMODE
+1
+10,0
+'_-OSNAP
+_NON
+10,10
+

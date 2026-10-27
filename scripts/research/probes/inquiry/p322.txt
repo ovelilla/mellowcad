@@ -1,0 +1,7 @@
+_CIRCLE
+0,0
+'_ID
+10,0
+5
+(getvar "LASTPOINT")
+(getvar "CIRCLERAD")

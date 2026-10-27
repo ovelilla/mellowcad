@@ -1,0 +1,11 @@
+_UCS
+_Z
+30
+_AREA
+0,0
+10,0
+10,10
+0,10
+
+(getvar "LASTPOINT")
+(trans (getvar "LASTPOINT") 1 0)

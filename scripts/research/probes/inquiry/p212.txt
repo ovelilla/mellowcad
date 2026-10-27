@@ -1,0 +1,15 @@
+_AREA
+_A
+0,0
+10,0
+10,10
+0,10
+
+_S
+0,0
+5,0
+5,5
+
+
+(getvar "AREA")
+(getvar "PERIMETER")

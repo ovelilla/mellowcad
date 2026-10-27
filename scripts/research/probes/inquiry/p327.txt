@@ -1,0 +1,5 @@
+_ID
+'ORTHOMODE
+1
+1,2
+(getvar "ORTHOMODE")

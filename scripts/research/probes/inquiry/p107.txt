@@ -1,0 +1,7 @@
+_ID
+1,1
+_DIST
+FOO
+
+4,5
+(getvar "LASTPOINT")

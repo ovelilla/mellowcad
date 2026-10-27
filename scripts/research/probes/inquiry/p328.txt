@@ -1,0 +1,5 @@
+_ID
+'_-OSNAP
+_END
+1,2
+(getvar "OSMODE")
