@@ -60,43 +60,63 @@ The X / Y / Z and ZAxis prompts are AutoCAD 2023's console's
 `Specify point on positive portion of Z-axis`; es `Precise ángulo de rotación sobre eje X`,
 `Precise punto en parte positiva del eje Z`); a name Restore cannot find says
 `Cannot find UCS "NAME".` (es `Imposible encontrar el SCP "NAME".`) and asks again; the words the
-first prompt declares and does not list (its `initget`, table 25652), answered as AutoCAD 2023's
-console answers them: Origin (`O`, `Specify new origin point <0,0,0>:`, the axes kept,
-`Invalid point.`), 3point (`Specify new origin point <0,0,0>:`,
+first prompt declares and does not list (its `initget`, p200), answered as AutoCAD 2027's console
+answers them (p200–p227, p263–p269, in both languages): Origin (`O`, `Specify new origin point
+<0,0,0>:`, the axes kept, `Invalid point.`; its answer sets the UCS again, so its Enter, and Origin
+or New at the current origin, drop a saved or orthographic name, p227, p265), 3point (`3` or `3P`,
+p205, p206; `Specify new origin point <0,0,0>:`,
 `Specify point on positive portion of X-axis <101.0000,0.0000,0.0000>:`,
 `Specify point on positive-Y portion of the UCS XY plane <99.5528,0.8944,0.0000>:` — a unit along
-the current X, then square to the new X in the current XY plane, written in the current UCS;
-`Coincident with first point`, `Points are colinear`, which the first prompt's points now say too),
-Entity (OBject's older name), Move (`Specify new origin point or [Zdepth]<0,0,0>:`, the default
-against the list as the string writes it; Zdepth `Specify Zdepth<0>:`, a distance or two points
-along the current Z, `Requires numeric distance or two points.`), orthoGraphic
+the current X, then square to the new X in the current XY plane, written in the current UCS at
+LUPREC, p207; `Coincident with first point`, `Points are colinear`, which the first prompt's points
+now say too), Entity (OBject's older name), Move (`Specify new origin point or [Zdepth]<0,0,0>:`,
+the default against the list as the string writes it; Zdepth `Specify Zdepth<0>:`, a distance or
+two points along the current Z, `Requires numeric distance or two points.`; both keep the UCS's
+name, orthographic or saved, and a saved one's entry takes the moved UCS in the same undo step, so a
+later Restore gives it; no displacement changes nothing, p227, p265, p266), Face
+(`Select face of solid, surface, or mesh:`, es `Designe la cara del sólido, la superficie o la
+malla:`, also from New, `F` or `FA`: there are no solids, so a pick, clicked or typed, says
+`No 3D solid, surface or mesh detected.` (es `No hay ningún sólido, superficie o malla 3D.`) and
+ends with LASTPOINT at it, p268, p424; its unlisted Crossing, Fence and CPolygon find no face, the
+crossing window saying so, the fence and the polygon ending in silence, p421–p423, p426; `FOO`
+`*Invalid selection*` + `Expects a point or Crossing/Fence/CPolygon`, p420; Enter ends, p221),
+orthoGraphic
 (`Enter an option [Top/Bottom/Front/BAck/Left/Right]<Top>:`, its default the orthographic UCS the
 current one was set as, else Top) and its six views typed straight (`T`, `B`, `FR`, `BA`, `L`,
 `RI`): at the WCS's origin with the console's axes (Bottom's X is -1,0,0), the UCS named `*TOP*` …
 `*RIGHT*` until another is set (saved in the drawing; -VIEW's orthographic views name it too),
 Restore, Save, Delete and `?` (NAmed's prompts; the listing asks the first prompt again), New
-(`Specify origin of new UCS or [ZAxis/3point/OBject/View/X/Y/Z] <0,0,0>:`: a point moves the origin,
-Enter is World whatever its `<0,0,0>` says, its words and the unlisted Origin and Entity do what the
-first prompt's do); es from the table (`ORigen`, `3p`, `Entidad`, `DEsplazar`, `Ortogonal` — so `O`
-is Ortogonal there —, `Nuevo`, `SUperior` … `Derecha`, `profundidadZ`, `*SUPERIOR*`,
-`Precise nuevo punto de origen o [profundidadZ]<0,0,0>`; **unverified**, no Spanish console);
+(`Specify origin of new UCS or [ZAxis/3point/OBject/Face/View/X/Y/Z] <0,0,0>:`, p218: a point moves
+the origin, Enter is World, named `*WORLD*`, whatever its `<0,0,0>` says, p223; its words and the
+unlisted Origin and Entity do what the first prompt's do); es as the console's (`ORigen`, `Cara`,
+`3p`, `Entidad`, `DEsplazar`, `Ortogonal` — so `O` is Ortogonal there —, `Nuevo`, `SUperior` …
+`Derecha`, `profundidadZ`, `*SUPERIOR*`, `Precise nuevo punto de origen o [profundidadZ]<0,0,0>`,
+`[ejEZ/3p/oBjeto/Cara/Vista/X/Y/Z]`);
 LASTPOINT where the console leaves it — the WCS's origin as UCS starts (so `@` and a number at its
 first prompt and at OBject's pick are from there), then the last point given: an origin (3point's
 and ZAxis' Enter giving the current one), ZAxis' Z point, 3point's third point, OBject's pick, the
 first prompt's third point, typed or clicked (`*100,100` is the WCS's 100,100, p401) — never a
-point on X, an angle given by a point, nor Enter at Origin, Move or New; U the WCS's origin, but
+point on X, an angle given by a point, Zdepth (p211, p213), nor Enter at Origin, Move or New; a pick
+at Face too; U the WCS's origin, but
 where a UCS made at the first prompt left it, REDO where the UCS left it (p163, p164); U after a
-run that changed nothing but moved it (OBject on nothing) the WCS's origin too (p166)
+run that changed nothing but moved it (OBject on nothing, Face's pick) the WCS's origin too (p166,
+p424)
 
 **Missing:** the listing's `Press ENTER to continue:` (the console pauses there; no page is
 long enough here), Group at OBject's picks, **unverified**: where OBject reads an ellipse, a
-polyline or a spline taken by a mode (at its start here), a point default at the drawing's precision
-(`<5.00,5.00,1.00>`, where AutoCAD's LUPREC 4 writes `<5.0000,5.0000,1.0000>`); **unverified**: es's
+polyline or a spline taken by a mode (at its start here); **unverified**: es's
 replace prompt, composed from the table's `El SCP "AA" ya existe. Reemplácelo.` and the yes-or-no
-question's `? <N>`; Face (no solids; listed at the first prompt and declared at New's, `F` is
-refused rather than read as `FRont`), Apply, the Zdepth an orthographic UCS keeps (UCSBASE,
+question's `? <N>`; Face's UCS on a solid's, surface's or mesh's face (there are none here: its
+pick, modes and refusals are built, every one finding none); Apply
+(`Pick viewport to apply current UCS or [All]<current>:`, es
+`Designe ventana en la que aplicar SCP actual o [Todas]<actual>:`, `FOO` `Invalid option keyword.`,
+p222, p269: one viewport here) and SEction (`Select section object to align UCS:`, es
+`Seleccione objeto de sección para alinear SCP:`, the selection modes, `FOO` `*Invalid selection*`
++ `Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group`, Enter ends, p224,
+p269: no section objects), both declared at the first prompt and refused here, as no other word's
+letters answer them; the Zdepth an orthographic UCS keeps (UCSBASE,
 ORTHOGRAPHICUCS), Previous after 3point's Enter left the UCS as it was (the console steps back to
-that same UCS), the name New's Enter leaves (**unverified**), OBject on a dimension (its UCS at
+that same UCS), OBject on a dimension (its UCS at
 creation is not stored) or a hatch, UCSMAN, the icon's grips (UCSSELECTMODE), UCSFOLLOW, UCSVP,
 UCSDETECT, the crosshair turning with the UCS (it stays upright on screen; PLAN makes the two agree)
 

@@ -390,8 +390,22 @@ describe("LASTPOINT", () => {
     expect(lastPoint(cad)).toBe(" X = 0.00     Y = 0.00     Z = 0.00")
   })
 
-  // AutoCAD 2023's console (acc/u1–u30, p1–p33, q1–q24 of the hidden UCS
-  // words session), each read with ID @ at LUPREC 4.
+  // probe ucs/p424: Face's pick on no solid moves it to the pick, and U takes
+  // the run back as UCS, LASTPOINT to the WCS's origin, as OBject's.
+  it("goes to the WCS's origin at U after Face found no solid", () => {
+    const cad = answer(createHarness(), "LINE", "0,0", "10,5", "")
+    answer(cad, "ID", "7,8,9", "UCS", "F", "100,100")
+    expect(lastPoint(cad)).toBe(" X = 100.00     Y = 100.00     Z = 0.00")
+    answer(cad, "UCS", "F", "5,2.5")
+    const from = cad.commandLog().length
+    answer(cad, "_U")
+    expect(cad.commandLog().slice(from)).toEqual(["U", "UCS"])
+    expect(cad.entityCount).toBe(1)
+    expect(lastPoint(cad)).toBe(" X = 0.00     Y = 0.00     Z = 0.00")
+  })
+
+  // probes ucs/p200, p203, p204, p208, p210–p214, p218, p263, p264, each
+  // read with ID @ at LUPREC 4.
   it("goes where UCS's unlisted words put it", () => {
     const at = (...texts: string[]) => {
       const cad = createHarness()
@@ -497,7 +511,7 @@ describe("LASTPOINT", () => {
     expect(at("-VIEW", "O", "T", "U")).toBe(reads("5.0000", "5.0000"))
   })
 
-  // AutoCAD 2023's console (acc/q6, ul31, ul35): New's Enter is World.
+  // probes ucs/p218, p223: New's Enter is World.
   it("is the WCS's origin after New's Enter, which is World", () => {
     const cad = createHarness()
     answer(cad, "UCS", "O", "30,0", "UCS", "Z", "30", "ID", "5,5")

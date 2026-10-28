@@ -1766,6 +1766,7 @@ export const es: EngineLocale = {
       "ucsBack": "Posterior",
       "ucsLeft": "Izquierda",
       "ucsRight": "Derecha",
+      "ucsSelectFace": "Designe la cara del sólido, la superficie o la malla",
       "undoCount": "Indique el número de operaciones a deshacer o",
       "undoEverything": "Esto lo deshará todo. ¿De acuerdo?",
       "mredoCount": "Indique número de acciones o",
@@ -2767,6 +2768,7 @@ export const es: EngineLocale = {
       "coincidentWithFirstPoint": "Coincide con el primer punto",
       "pointsAreColinear": "Puntos colineales",
       "pointsAreCoincident": "Los puntos coinciden",
+      "noSolidSurfaceOrMesh": "No hay ningún sólido, superficie o malla 3D.",
       "noPreviousUcs": "No hay ningún sistema de coordenadas guardado.",
       "everythingUndone": "Ya se ha deshecho todo",
       "nothingToUndo": "No hay nada que se pueda deshacer",
@@ -3685,6 +3687,7 @@ export const es: EngineLocale = {
             "pathCurve": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo/Previo/AUto",
             "crossingObjects": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico",
             "wholeObjects": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico",
+            "faceSet": "Captura/Borde/polígonOC",
             "other": "Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Grupo/Añadir/Eliminar/Múltiple/Previo/desHacer/AUto/úNico/Subobjeto/Objeto"
           }
         ]

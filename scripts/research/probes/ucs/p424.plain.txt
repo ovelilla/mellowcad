@@ -1,0 +1,18 @@
+_LINE
+0,0
+10,5
+
+_ZOOM
+_E
+_ID
+7,8,9
+_UCS
+_F
+100,100
+(getvar "LASTPOINT")
+_UCS
+_F
+5,2.5
+(getvar "LASTPOINT")
+_U
+(getvar "LASTPOINT")

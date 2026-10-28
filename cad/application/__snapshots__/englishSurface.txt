@@ -4850,6 +4850,28 @@ Specify next point or
   tip: -
   dyn: -
   prompt| Select object to align UCS:
+> UCS F
+  prompt: UCS Specify origin of UCS or [Face/NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:
+  asks: "Specify origin of UCS or"
+  tip: Specify origin of UCS or
+  dyn: "X,Y"=""||*
+  options: [F] Face, [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
+  command| UCS
+  info| Current ucs name:  *NO NAME*
+> F
+  prompt: UCS Select face of solid, surface, or mesh:
+  asks: 
+  tip: Select face of solid, surface, or mesh:
+  dyn: 
+  options: -
+  prompt| Specify origin of UCS or [Face/NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: F
+> pick
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Select face of solid, surface, or mesh:
+  info| No 3D solid, surface or mesh detected.
 > UCSICON
   prompt: UCSICON Enter an option [ON/OFF/Noorigin/ORigin] <ON>:
   asks: 

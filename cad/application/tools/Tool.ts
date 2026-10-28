@@ -171,7 +171,8 @@ export interface UndoHistory {
  * (`*Invalid selection*` and the selection modes it expects: with sub-objects
  * as MOVE's, and in their SUbobject mode, of whole objects as MIRROR's and
  * JOIN's, STRETCH's crossing one,
- * BREAK's set of one object, UCS OBject's, which takes a group, or ARRAYPATH's path curve), one object picked (`*Invalid selection*` and
+ * BREAK's set of one object, UCS OBject's, which takes a group, UCS Face's,
+ * which takes Crossing, Fence and CPolygon only, or ARRAYPATH's path curve), one object picked (`*Invalid selection*` and
  * its keywords, `Last` first for a plain pick as DIMSPACE's base dimension, or
  * `Expects a single object.` for the dimension commands' picks), or a
  * command's own refusal (CIRCLE's radius, POLYGON's sides), a line each when
@@ -192,6 +193,7 @@ export type QuestionInput =
   | "crossingObjects"
   | "oneObject"
   | "singleSet"
+  | "faceSet"
   | "pathCurve"
   | "object"
   | "objectOrLast"

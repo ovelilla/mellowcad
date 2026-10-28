@@ -79,6 +79,7 @@ export function promptRefusal(
     case "crossingObjects":
     case "oneObject":
     case "singleSet":
+    case "faceSet":
     case "pathCurve":
       return [
         text.message("invalidSelection"),

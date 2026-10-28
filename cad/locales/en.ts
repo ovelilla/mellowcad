@@ -1367,6 +1367,7 @@ export const en: EngineCatalog = {
       "ucsBack": "Back",
       "ucsLeft": "Left",
       "ucsRight": "Right",
+      "ucsSelectFace": "Select face of solid, surface, or mesh",
       "undoCount": "Enter the number of operations to undo or",
       "undoEverything": "This will undo everything. OK?",
       "mredoCount": "Enter number of actions or",
@@ -2373,6 +2374,7 @@ export const en: EngineCatalog = {
       "coincidentWithFirstPoint": "Coincident with first point",
       "pointsAreColinear": "Points are colinear",
       "pointsAreCoincident": "Points are coincident",
+      "noSolidSurfaceOrMesh": "No 3D solid, surface or mesh detected.",
       "noPreviousUcs": "No previous coordinate system saved.",
       "everythingUndone": "Everything has been undone",
       "nothingToUndo": "Nothing to undo",
@@ -3287,6 +3289,7 @@ export const en: EngineCatalog = {
             "pathCurve": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Previous/AUto",
             "crossingObjects": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Add/Remove/Multiple/Previous/Undo/AUto/SIngle",
             "wholeObjects": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle",
+            "faceSet": "Crossing/Fence/CPolygon",
             "other": "Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object"
           }
         ]

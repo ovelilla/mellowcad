@@ -66,8 +66,8 @@ export const ORTHOGRAPHIC_UCS = Object.keys(
 
 /**
  * An orthographic UCS: at the WCS's origin (UCSBASE's initial World) with
- * the axes AutoCAD 2023's console gives it (UCSXDIR, UCSYDIR), whatever
- * the UCS was before.
+ * the axes AutoCAD's console gives it (UCSXDIR, UCSYDIR), whatever the UCS
+ * was before (probes ucs/p215, p216).
  */
 export function orthographicUcs(kind: OrthographicUcs): Ucs {
   return { origin: { x: 0, y: 0, z: 0 }, ...ORTHOGRAPHIC_AXES[kind] }

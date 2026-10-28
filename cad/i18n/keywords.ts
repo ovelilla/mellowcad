@@ -41,16 +41,20 @@ function isCapital(char: string): boolean {
 export function abbreviationOf(word: string): string {
   if (word === "?") return word
   const chars = [...word]
-  const required = (char: string) => isCapital(char) || isDigit(char)
-  const start = chars.findIndex(required)
+  const start = chars.findIndex(isRequired)
   if (start === -1) return ""
   let end = start
-  while (end < chars.length && required(chars[end])) end += 1
+  while (end < chars.length && isRequired(chars[end])) end += 1
   return chars.slice(start, end).join("")
 }
 
 function isDigit(char: string): boolean {
   return char >= "0" && char <= "9"
+}
+
+/** A letter a keyword's abbreviation is made of: a capital, or a digit. */
+function isRequired(char: string): boolean {
+  return isCapital(char) || isDigit(char)
 }
 
 /** Works out each keyword's abbreviation. */
@@ -123,7 +127,9 @@ export function matchKeywords(
   if (Number.isFinite(Number(typed))) return []
   const started = keywords.filter((keyword) => {
     const word = wordOf(keyword)
-    const first = [...word].findIndex(isCapital)
+    // WHY a digit too, as the abbreviation counts it: `3P` at UCS's first
+    // prompt is 3point, in both languages (probe ucs/p206).
+    const first = [...word].findIndex(isRequired)
     return first !== -1 && typed.length > first && upper(word).startsWith(typed)
   })
   // WHY the first whose capitals are all typed, not a question: AutoCAD 2023's
@@ -137,7 +143,7 @@ export function matchKeywords(
     const abbreviation = abbreviationOf(word)
     return typed.length >= word.indexOf(abbreviation) + abbreviation.length
   })
-  const leading = covered.find((keyword) => isCapital([...wordOf(keyword)][0]))
+  const leading = covered.find((keyword) => isRequired([...wordOf(keyword)][0]))
   if (covered.length > 0) return [(leading ?? covered[0]).id]
   return [...new Set(started.map((keyword) => keyword.id))]
 }

@@ -258,6 +258,11 @@ export interface ObjectSelectorOptions {
     /** Finding none says nothing: the prompt is asked again (FILLET's). */
     readonly silent?: boolean
     /**
+     * Taking none, the command's own answer in place of every other: UCS
+     * Face's, whose modes find no face here (there are no solids).
+     */
+    readonly none?: (ctx: ToolContext, find: ModeFind) => void
+    /**
      * Said once for each object on a locked layer the mode found, whatever
      * else it found, before what is taken (FILLET's and BREAK's `The object
      * is on a locked layer.`, probes corners/p274, pieces/p102, p178, p395;
@@ -1196,6 +1201,7 @@ export class ObjectSelector {
         find
       )
     } else if (taken) one.take(taken, ctx, find)
+    else if (one.none) one.none(ctx, find)
     else if (one.silent) ctx.requestRender()
     else if (filtered > 0) {
       ctx.report(ctx.text.message("filteredOut", { count: filtered }))

@@ -131,6 +131,26 @@ describe("resolving what was typed", () => {
     expect(matchKeywords("CE", english)).toEqual(["Center"])
   })
 
+  // AutoCAD 2027's console (ucs/p205, p206, both languages): `3` and `3P` at
+  // UCS's first prompt are 3point, whose capital is its digit.
+  it("counts a digit as a capital where a word starts, so 3P is 3point", () => {
+    const ucs = [english("Origin"), english("3point"), english("Previous")]
+    expect(matchKeywords("3", ucs)).toEqual(["3point"])
+    expect(matchKeywords("3P", ucs)).toEqual(["3point"])
+    expect(matchKeywords("3p", ucs)).toEqual(["3point"])
+    expect(matchKeywords("3point", ucs)).toEqual(["3point"])
+    expect(matchKeywords("_3P", ucs)).toEqual(["3point"])
+    expect(matchKeywords("3X", ucs)).toEqual([])
+    const scp: Keyword[] = [
+      { id: "Origin", word: "ORigen", global: "Origin" },
+      { id: "3point", word: "3p", global: "3point" },
+      { id: "Previous", word: "PRev", global: "Previous" },
+    ]
+    expect(matchKeywords("3", scp)).toEqual(["3point"])
+    expect(matchKeywords("3P", scp)).toEqual(["3point"])
+    expect(matchKeywords("_3POINT", scp)).toEqual(["3point"])
+  })
+
   it("hands back the global id however it was typed", () => {
     expect(resolveKeyword("Cerrar", spanish)).toBe("Close")
     expect(resolveKeyword("_C", spanish)).toBe("Close")

@@ -90,6 +90,7 @@ type UcsState =
   | { readonly phase: "delete" }
   | { readonly phase: "list"; readonly back: ListBack }
   | { readonly phase: "object"; readonly hover: EntityId | null }
+  | { readonly phase: "face" }
 
 /** The prompt a `?` listing asks again once it is written. */
 type ListBack = "origin" | "named" | "restore" | "save"
@@ -129,7 +130,11 @@ const ORTHOGRAPHIC_NAMES: Readonly<Record<OrthographicUcs, PromptId>> = {
   right: "ucsRight",
 }
 
-/** The words the first prompt declares and does not list, in its `initget`'s order. */
+/**
+ * The words the first prompt declares and does not list, in 2027's `initget`
+ * order (probe ucs/p200). Apply and SEction, declared too, are left out: they
+ * are not built, and no other word's letters would answer them.
+ */
 const HIDDEN_OPTIONS = [
   "Origin",
   "3point",
@@ -144,19 +149,34 @@ const HIDDEN_OPTIONS = [
   ...Object.keys(ORTHOGRAPHIC_OPTIONS),
 ] as const
 
-/** New's `Specify origin of new UCS or [ZAxis/3point/OBject/View/X/Y/Z]`. */
-const NEW_UCS_OPTIONS = ["ZAxis", "3point", "OBject", "View", "X", "Y", "Z"]
-/** What New's `initget` declares and does not list (table 25627). */
-const NEW_UCS_HIDDEN = ["Origin", "Face", "Entity"]
+/**
+ * New's `Specify origin of new UCS or [ZAxis/3point/OBject/Face/View/X/Y/Z]`
+ * (probe ucs/p218).
+ */
+const NEW_UCS_OPTIONS = [
+  "ZAxis",
+  "3point",
+  "OBject",
+  "Face",
+  "View",
+  "X",
+  "Y",
+  "Z",
+]
+/** What New's `initget` declares and does not list (probe ucs/p218). */
+const NEW_UCS_HIDDEN = ["Origin", "Entity"]
+
+/** The modes Face's pick declares, unlisted (probes ucs/p220, p420). */
+const FACE_MODES = ["Crossing", "Fence", "CPolygon"] as const
 
 /**
  * AutoCAD's UCS: the origin and the three points, the X, Y and Z turns,
  * ZAxis (with its Object), OBject, View, World, Previous and the named UCSs,
  * and the words its first prompt takes unlisted — Origin, 3point, Entity,
  * Move, orthoGraphic and its six views, Restore, Save, Delete, `?` and New,
- * the older prompts AutoCAD 2023's console still answers them with. Face is
- * listed and refused: there are no solids. It works in the WCS, since it is
- * what places the UCS the other commands work in.
+ * each with the prompts AutoCAD 2027's console answers it with. Face asks
+ * for a solid's face, which nothing here has: there are no solids. It works
+ * in the WCS, since it is what places the UCS the other commands work in.
  */
 export class UcsTool implements Tool {
   readonly id = "ucs"
@@ -202,10 +222,47 @@ export class UcsTool implements Tool {
     },
   })
 
+  /**
+   * Face's pick, `Select face of solid, surface, or mesh:`: its modes find no
+   * face, for there are no solids; a crossing window says so, a fence or a
+   * crossing polygon ends in silence (probes ucs/p421–p423, p426).
+   */
+  private readonly faces = new ObjectSelector({
+    takes: () => "faceSet",
+    done: () => {},
+    question: () => "ucsSelectFace",
+    modes: FACE_MODES,
+    accept: () => [],
+    one: {
+      take: () => {},
+      newest: true,
+      none: (ctx) => {
+        if (this.faceMode === "Crossing") {
+          ctx.report(ctx.text.message("noSolidSurfaceOrMesh"))
+        }
+        ctx.endCommand()
+      },
+      pick: (point, ctx) => this.pickFace(point, ctx),
+    },
+  })
+  /** The mode last typed at Face's pick. */
+  private faceMode: string | null = null
+
+  /** The selector asking now: an object's pick's, or Face's. */
+  private selector(): ObjectSelector | null {
+    const { phase } = this.state
+    return phase === "object" || phase === "zObject" || phase === "face"
+      ? this.selectorOf(phase)
+      : null
+  }
+
+  private selectorOf(phase: "object" | "zObject" | "face"): ObjectSelector {
+    return phase === "face" ? this.faces : this.modes
+  }
+
   /** Whether a selection mode's own prompt is asking, at an object's pick. */
   private inMode(): boolean {
-    const { phase } = this.state
-    return (phase === "object" || phase === "zObject") && this.modes.inMode()
+    return this.selector()?.inMode() ?? false
   }
 
   onActivate(ctx: ToolContext): void {
@@ -234,7 +291,7 @@ export class UcsTool implements Tool {
     this.cursor = input.point
     this.lastScreen = input.screen
     if (this.inMode()) {
-      this.modes.onPointerMove(input, ctx)
+      this.selector()?.onPointerMove(input, ctx)
       return
     }
     const state = this.state
@@ -260,7 +317,7 @@ export class UcsTool implements Tool {
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
     if (this.inMode()) {
-      this.modes.onPointerDown(input, ctx)
+      this.selector()?.onPointerDown(input, ctx)
       return
     }
     const state = this.state
@@ -272,10 +329,12 @@ export class UcsTool implements Tool {
         this.enterXAxis(input.point, true, ctx)
         return
       case "newUcs":
-      case "shift":
         this.finish({ ...ctx.ucs, origin: input.point }, null, ctx, {
           lastPoint: input.point,
         })
+        return
+      case "shift":
+        this.shiftTo(input.point, state.move, ctx, input.point)
         return
       case "xAxis":
         this.enterXYPlane(state.origin, input.point, state.three !== null, ctx)
@@ -305,7 +364,25 @@ export class UcsTool implements Tool {
       case "object":
       case "zObject":
         this.pickObject(input.world, input.screen, ctx)
+        return
+      case "face":
+        this.pickFace(input.world, ctx)
     }
+  }
+
+  /**
+   * Face's pick, clicked or typed: there is no solid to take a face of, so
+   * it says so and ends, the UCS kept and LASTPOINT at the pick, which U
+   * takes back to the WCS's origin (probes ucs/p268, p424).
+   */
+  private pickFace(point: Vec3, ctx: ToolContext): void {
+    ctx.report(ctx.text.message("noSolidSurfaceOrMesh"))
+    const settings = ctx.document.getSettings()
+    this.finish(settings.ucs, settings.ucsName, ctx, {
+      remember: false,
+      orthographic: settings.ucsOrthographic,
+      lastPoint: point,
+    })
   }
 
   /**
@@ -334,11 +411,7 @@ export class UcsTool implements Tool {
   }
 
   answerTyped(text: string, ctx: ToolContext): boolean {
-    const { phase } = this.state
-    return (
-      (phase === "object" || phase === "zObject") &&
-      this.modes.answerTyped(text, ctx)
-    )
+    return this.selector()?.answerTyped(text, ctx) ?? false
   }
 
   question(): PromptId | ToolQuestion {
@@ -381,7 +454,8 @@ export class UcsTool implements Tool {
         return { id: "ucsZAxisPoint", enter: { name: state.enter } }
       case "zObject":
       case "object":
-        return this.modes.question()
+      case "face":
+        return this.selectorOf(state.phase).question()
       case "named":
         return "enterAnOption"
       case "restore":
@@ -417,7 +491,8 @@ export class UcsTool implements Tool {
         }
       case "object":
       case "zObject":
-        return this.modes.takes()
+      case "face":
+        return this.selectorOf(this.state.phase).takes()
       case "replace":
         return { refusal: "yesOrNoPlease" }
       case "zdepth":
@@ -434,8 +509,7 @@ export class UcsTool implements Tool {
     switch (this.state.phase) {
       case "origin":
         return [
-          // WHY listed though not built: 2027 lists it (probes ucs/p100,
-          // p101); unhandled, so `F` is refused rather than read as FRont.
+          // Listed first, as 2027 lists it (probes ucs/p100, p101).
           { id: "Face" },
           { id: "NAmed" },
           { id: "OBject" },
@@ -461,7 +535,8 @@ export class UcsTool implements Tool {
         return [{ id: "Object" }]
       case "object":
       case "zObject":
-        return this.modes.commandOptions()
+      case "face":
+        return this.selectorOf(this.state.phase).commandOptions()
       case "named":
         return [
           { id: "Restore" },
@@ -498,8 +573,12 @@ export class UcsTool implements Tool {
       this.setOrthographic(ORTHOGRAPHIC_OPTIONS[id], ctx)
       return "end"
     }
-    if (state.phase === "object" || state.phase === "zObject") {
-      return this.modes.invokeOption(id, ctx) ? "continue" : "unhandled"
+    if (state.phase === "face" && FACE_MODES.some((mode) => mode === id)) {
+      this.faceMode = id
+    }
+    const selector = this.selector()
+    if (selector) {
+      return selector.invokeOption(id, ctx) ? "continue" : "unhandled"
     }
     if (state.phase === "zOrigin" && id === "Object") {
       this.modes.start()
@@ -556,7 +635,7 @@ export class UcsTool implements Tool {
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
-    if (this.inMode()) this.modes.onPointerUp(input, ctx)
+    if (this.inMode()) this.selector()?.onPointerUp(input, ctx)
   }
 
   /** Enter in a mode's prompt is the mode's; orthoGraphic's takes its default. */
@@ -566,11 +645,11 @@ export class UcsTool implements Tool {
       ctx.endCommand()
       return true
     }
-    return this.inMode() && this.modes.onEnter(ctx)
+    return this.inMode() && (this.selector()?.onEnter(ctx) ?? false)
   }
 
   wantsSnap(): boolean {
-    if (this.inMode()) return this.modes.wantsSnap()
+    if (this.inMode()) return this.selector()?.wantsSnap() ?? false
     switch (this.state.phase) {
       case "origin":
       case "newUcs":
@@ -590,7 +669,7 @@ export class UcsTool implements Tool {
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const state = this.state
-    if (this.inMode()) return this.modes.buildOverlay(ctx)
+    if (this.inMode()) return this.selector()?.buildOverlay(ctx) ?? []
     if (state.phase === "object" || state.phase === "zObject") {
       const hovered = state.hover ? ctx.document.get(state.hover) : undefined
       return hovered
@@ -702,7 +781,7 @@ export class UcsTool implements Tool {
         return "continue"
       case "orthoGraphic":
         // Its default is the orthographic UCS the current one was set as,
-        // else Top (AutoCAD 2023's console, acc/p4, q12, q13, q21).
+        // else Top (probes ucs/p214, p217).
         this.state = {
           phase: "orthographic",
           current: ctx.document.getSettings().ucsOrthographic ?? "top",
@@ -725,7 +804,13 @@ export class UcsTool implements Tool {
       case "New":
         this.enterNewUcs(ctx)
         return "continue"
-      // Face opens a solid's face, which is not built: refused.
+      case "Face":
+        this.faces.start()
+        this.faceMode = null
+        this.state = { phase: "face" }
+        ctx.dynamicInput.open({ fields: [], commit: () => {} })
+        this.place(ctx)
+        return "continue"
       default:
         return "unhandled"
     }
@@ -753,8 +838,8 @@ export class UcsTool implements Tool {
 
   /**
    * New's `Specify origin of new UCS or [ZAxis/3point/…] <0,0,0>`: a point
-   * moves the origin, as Origin does; Enter is World, whatever its
-   * `<0,0,0>` says (AutoCAD 2023's console, acc/q6, ul31, ul35).
+   * moves the origin, as Origin does; Enter is World, named `*WORLD*`,
+   * whatever its `<0,0,0>` says (probes ucs/p218, p223).
    */
   private enterNewUcs(ctx: ToolContext): void {
     this.state = { phase: "newUcs" }
@@ -768,7 +853,8 @@ export class UcsTool implements Tool {
 
   /**
    * Origin's `Specify new origin point <0,0,0>` and Move's, which offers
-   * Zdepth: the axes kept. Enter changes nothing (acc/p2, q2).
+   * Zdepth: the axes kept. Origin's Enter sets the current UCS again, which
+   * drops its name; Move's changes nothing (probes ucs/p203, p227, p246).
    */
   private enterShift(move: boolean, ctx: ToolContext): void {
     this.state = { phase: "shift", move }
@@ -776,13 +862,34 @@ export class UcsTool implements Tool {
       move ? "ucsMoveOrigin" : "ucsNewOrigin",
       ctx,
       (point, commitCtx) => {
-        if (point)
-          this.finish({ ...commitCtx.ucs, origin: point }, null, commitCtx, {
-            lastPoint: point,
-          })
-        else commitCtx.endCommand()
+        if (point) this.shiftTo(point, move, commitCtx, point)
+        else if (move) commitCtx.endCommand()
+        else this.finish(commitCtx.ucs, null, commitCtx)
       }
     )
+  }
+
+  /**
+   * The UCS moved to `origin`, its axes kept. Origin's answer drops the name;
+   * Move's and Zdepth's keep it, orthographic or saved, and a saved one's
+   * entry takes the moved UCS in the same step, so a later Restore gives it
+   * (probes ucs/p227, p265, p266).
+   */
+  private shiftTo(
+    origin: Vec3,
+    move: boolean,
+    ctx: ToolContext,
+    lastPoint?: Vec3
+  ): void {
+    const ucs = { ...ctx.ucs, origin }
+    const given = lastPoint ? { lastPoint } : {}
+    if (!move) return this.finish(ucs, null, ctx, given)
+    const settings = ctx.document.getSettings()
+    this.finish(ucs, settings.ucsName, ctx, {
+      ...given,
+      orthographic: settings.ucsOrthographic,
+      rewritesSaved: true,
+    })
   }
 
   /** Move's Zdepth: the origin along the current Z, a distance or two points. */
@@ -790,8 +897,11 @@ export class UcsTool implements Tool {
     this.state = { phase: "zdepth" }
     const depthBy = (depth: number, commitCtx: ToolContext) => {
       const ucs = commitCtx.ucs
-      const origin = add3(ucs.origin, scale3(ucsZAxis(ucs), depth))
-      this.finish({ ...ucs, origin }, null, commitCtx)
+      this.shiftTo(
+        add3(ucs.origin, scale3(ucsZAxis(ucs), depth)),
+        true,
+        commitCtx
+      )
     }
     ctx.dynamicInput.open({
       fields: [{ id: "depth", prompt: "ucsZdepth", kind: "distance" }],
@@ -807,7 +917,7 @@ export class UcsTool implements Tool {
 
   /**
    * 3point's `Specify new origin point <0,0,0>`, Enter the current origin —
-   * given, as AutoCAD 2023's console takes it for LASTPOINT (acc/ul23).
+   * given, as AutoCAD's console takes it for LASTPOINT (probe ucs/p263).
    */
   private enterThreeOrigin(ctx: ToolContext): void {
     this.state = { phase: "threeOrigin" }
@@ -1173,8 +1283,9 @@ export class UcsTool implements Tool {
   /**
    * Makes `ucs` current, one undo step, remembering the one it replaces
    * unless `remember` is false (Previous); `lastPoint` the point the
-   * answer gave, where LASTPOINT goes, `orthographic` the view it is, and
-   * `resetsElevation` World's ELEVATION back to 0.
+   * answer gave, where LASTPOINT goes, `orthographic` the view it is,
+   * `resetsElevation` World's ELEVATION back to 0, and `rewritesSaved`
+   * Move's saved entry of `name`, rewritten in the same patch.
    */
   private apply(
     ucs: Ucs,
@@ -1185,6 +1296,7 @@ export class UcsTool implements Tool {
       readonly lastPoint?: Vec3
       readonly orthographic?: OrthographicUcs | null
       readonly resetsElevation?: boolean
+      readonly rewritesSaved?: boolean
     } = {}
   ): void {
     const {
@@ -1192,12 +1304,23 @@ export class UcsTool implements Tool {
       lastPoint,
       orthographic = null,
       resetsElevation = false,
+      rewritesSaved = false,
     } = options
     if (lastPoint) ctx.setLastPoint(lastPoint)
     const settings = ctx.document.getSettings()
-    const patch = ucsChange(settings, ucs, name, orthographic, {
+    const change = ucsChange(settings, ucs, name, orthographic, {
       resetsElevation,
     })
+    const saved = rewritesSaved && name !== null ? name.toUpperCase() : null
+    const patch =
+      change && saved !== null
+        ? {
+            ...change,
+            namedUcs: settings.namedUcs.map((entry) =>
+              entry.name.toUpperCase() === saved ? { ...entry, ucs } : entry
+            ),
+          }
+        : change
     // WHY: AutoCAD's console: U leaves LASTPOINT where a UCS made at the
     // first prompt left it, and puts it at the WCS's origin after any other
     // way; REDO puts it where the UCS left it (probes ucs/p163, p164). A run
@@ -1274,7 +1397,7 @@ export function currentName(settings: DocumentSettings): {
 } {
   if (settings.ucsName !== null)
     return { kind: "named", name: settings.ucsName }
-  // The WCS set as Top is `*TOP*` (probes ucs/p106, p153).
+  // The WCS set as Top is `*TOP*` (probes ucs/p106, p153, p202, p217).
   if (settings.ucsOrthographic !== null)
     return { kind: settings.ucsOrthographic, name: "" }
   return { kind: isWorldUcs(settings.ucs) ? "world" : "unnamed", name: "" }

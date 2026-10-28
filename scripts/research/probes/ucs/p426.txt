@@ -1,0 +1,16 @@
+_ZOOM
+_E
+_UCS
+_F
+_C
+500,500
+510,510
+
+(getvar "UCSNAME")
+_UCS
+_F
+_F
+500,500
+510,500
+
+(getvar "LASTPOINT")

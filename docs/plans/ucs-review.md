@@ -104,6 +104,7 @@ Every probe ran in es-ES and en-US unless its name says otherwise. Scratch tests
 | p359–p360 | UCSICON, ELEVATION and THICKNESS saved and opened (`p360a`–`c`, one locale at a time) |
 | p361–p369 | ELEV: Enter, negatives, `FOO`, two points, in a raised UCS, `'ELEV` in LINE, U and REDO, `'ZOOM`, `1e1` and `.5` |
 | p400–p403 | (the reviewer) ELEVATION after -VIEW Front, Top, SWIso, PLAN and a restored WCS-equal UCS; the third point typed `*x,y`; X / Y by a point in a moved UCS |
+| p420–p426 | (block UCH) Face's pick: `FOO`, Crossing, Fence, CPolygon (on a line and on nothing), a pick on nothing and LASTPOINT after U (`p424`, untraced), `FA` and `FOO` from New |
 
 ## 4. Matrix
 
