@@ -25,12 +25,12 @@ import { HatchTool } from "./tools/HatchTool"
 /**
  * The commands built here that AutoCAD's console runs transparently (2023's;
  * DIST and ID 2027's: `'DIST` at LINE's prompt asks `>>Specify first point:`,
- * probes inquiry/p320, p321). Left out: what it refuses (`** That command may
- * not be invoked transparently **`), what it does not know and so cannot show
- * (VIEW, PROPERTIES, MATCHPROP, BLOCKSPALETTE, EATTEDIT, LAYER, whose dialog
- * hangs it), and AREA and UCSICON, which typed so read the system variables
- * of their names ({@link registerCommands}' variables; AREA's, probes
- * inquiry/p324, p325).
+ * probes inquiry/p320, p321; ELEV 2027's, ucs/p366). Left out: what it
+ * refuses (`** That command may not be invoked transparently **`), what it
+ * does not know and so cannot show (VIEW, PROPERTIES, MATCHPROP,
+ * BLOCKSPALETTE, EATTEDIT, LAYER, whose dialog hangs it), and AREA and
+ * UCSICON, which typed so read the system variables of their names
+ * ({@link registerCommands}' variables; AREA's, probes inquiry/p324, p325).
  */
 const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set([
   "ZOOM",

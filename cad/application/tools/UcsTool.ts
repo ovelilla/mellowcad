@@ -19,7 +19,6 @@ import {
 import { DocumentSettings, formatLength } from "../../domain/units"
 import { matchesWildcard } from "../../shared/wildcard"
 import { UpdateSettingsCommand } from "../commands/settingsCommands"
-import { entityScenePrimitive } from "../SceneBuilder"
 import { Viewport } from "../Viewport"
 import { cursorOnEntityPlane } from "../viewPick"
 import { THEME } from "../../scene/theme"
@@ -45,9 +44,11 @@ import {
   hasEnds,
   ucsAlongZ,
   ucsAtEnd,
+  ucsFromFound,
   ucsFromObject,
-  unpickedStart,
 } from "./ucsObjects"
+import { rollover } from "./ghostLook"
+import { lockedObjectAt } from "./lockedPick"
 
 type Axis = "x" | "y" | "z"
 
@@ -216,32 +217,51 @@ export class UcsTool implements Tool {
   private cursor: Vec3 | null = null
   private lastScreen: Vec2 | null = null
   /**
-   * The selection modes typed at OBject's and ZAxis Object's picks; AutoCAD
-   * 2023's console takes the newest object found, and reads OBject's at its
-   * start and ZAxis's at the end nearer the WCS origin, as with no pick.
+   * The selection modes typed at OBject's pick: AutoCAD 2027's console takes
+   * the newest object found, locked or not and in silence, read with no pick
+   * (`ucsFromFound`); finding none, `No object found` ends UCS (probes
+   * ucs/p314–p326, p339, p340, p317).
    */
-  private readonly modes = new ObjectSelector({
+  private readonly objects = new ObjectSelector({
     takes: () => "singleSet",
     done: () => {},
-    question: () =>
-      this.state.phase === "zObject" ? "selectObject" : "ucsAlignObject",
+    question: () => "ucsAlignObject",
     modes: ONE_OBJECT_MODES,
     accept: (ids, ctx) =>
-      ids.filter((id) => {
-        const entity = ctx.document.get(id) ?? null
-        return this.state.phase === "zObject"
-          ? hasEnds(entity)
-          : alignable(entity) !== null
-      }),
+      ids.filter((id) => alignable(ctx.document.get(id) ?? null) !== null),
     one: {
       take: (entity, ctx) => {
-        const ucs =
-          this.state.phase === "zObject"
-            ? ucsAtEnd(entity, { x: 0, y: 0, z: 0 })
-            : ucsFromObject(entity, unpickedStart(entity))
+        const ucs = ucsFromFound(entity)
         if (ucs) this.finish(ucs, null, ctx)
       },
       newest: true,
+      takesLocked: true,
+      notFound: (ctx) => this.keep(ctx),
+      pick: (point, ctx) =>
+        this.pickObject(point, ctx.viewport.worldToScreen(point), ctx),
+    },
+  })
+
+  /**
+   * The selection modes typed at ZAxis Object's pick: the newest object
+   * found, at its end nearer the WCS's origin (probe ucs/p336). A locked one
+   * is refused as BREAK's mode refuses it, by analogy with its pick (p341):
+   * no probe reached a mode there.
+   */
+  private readonly zObjects = new ObjectSelector({
+    takes: () => "singleSet",
+    done: () => {},
+    question: () => "selectObject",
+    modes: ONE_OBJECT_MODES,
+    accept: (ids, ctx) =>
+      ids.filter((id) => hasEnds(ctx.document.get(id) ?? null)),
+    one: {
+      take: (entity, ctx) => {
+        const ucs = ucsAtEnd(entity, WCS_ORIGIN)
+        if (ucs) this.finish(ucs, null, ctx)
+      },
+      newest: true,
+      locked: "objectOnLockedLayer",
       pick: (point, ctx) =>
         this.pickObject(point, ctx.viewport.worldToScreen(point), ctx),
     },
@@ -282,7 +302,8 @@ export class UcsTool implements Tool {
   }
 
   private selectorOf(phase: "object" | "zObject" | "face"): ObjectSelector {
-    return phase === "face" ? this.faces : this.modes
+    if (phase === "face") return this.faces
+    return phase === "object" ? this.objects : this.zObjects
   }
 
   /** Whether a selection mode's own prompt is asking, at an object's pick. */
@@ -402,37 +423,65 @@ export class UcsTool implements Tool {
    */
   private pickFace(point: Vec3, ctx: ToolContext): void {
     ctx.report(ctx.text.message("noSolidSurfaceOrMesh"))
+    this.keep(ctx, point)
+  }
+
+  /** Ends UCS with the UCS as it was, LASTPOINT at `lastPoint` if given. */
+  private keep(ctx: ToolContext, lastPoint?: Vec3): void {
     const settings = ctx.document.getSettings()
     this.finish(settings.ucs, settings.ucsName, ctx, {
       remember: false,
       orthographic: settings.ucsOrthographic,
-      lastPoint: point,
+      ...(lastPoint ? { lastPoint } : {}),
     })
   }
 
   /**
-   * OBject's and ZAxis Object's pick, clicked or typed — AutoCAD 2023's
+   * OBject's and ZAxis Object's pick, clicked or typed — AutoCAD 2027's
    * console takes a typed point as a pick there and leaves LASTPOINT at it
-   * (acc/bk12–bk18, bk51, bk53): on nothing `No object found`, which ends
-   * OBject with the UCS as it was and asks ZAxis Object again (bk13, bk16).
+   * (probes ucs/p300, p330, p343). On nothing `No object found`, which ends
+   * OBject with the UCS as it was, LASTPOINT at the pick (p327, p328), and
+   * asks ZAxis Object again (p329). OBject takes an object on a locked layer
+   * in silence (p338, {@link picksLocked}) and refuses a hatch, which ends it
+   * too (p311); ZAxis Object refuses a locked one in BREAK's words, the
+   * newest under the pick box tested (p341), and one without ends in its
+   * own (p335), asking again.
    */
   private pickObject(world: Vec3, screen: Vec2, ctx: ToolContext): void {
     const zAxis = this.state.phase === "zObject"
     const hit = ctx.pick(world)
+    if (zAxis && lockedObjectAt(screen, ctx, hit)) {
+      ctx.report(ctx.text.message("objectOnLockedLayer"), "error")
+      ctx.report(ctx.text.message("noObjectFound"))
+      return
+    }
     if (!hit) {
       ctx.report(ctx.text.message("noObjectFound"))
-      if (zAxis) return
-      const settings = ctx.document.getSettings()
-      return this.finish(settings.ucs, settings.ucsName, ctx, {
-        remember: false,
-        orthographic: settings.ucsOrthographic,
-      })
+      // WHY a click too: only a typed point is probed (p327, p328); the
+      // console cannot click (desktop d06).
+      if (!zAxis) this.keep(ctx, world)
+      return
     }
-    const entity = zAxis ? (hasEnds(hit) ? hit : null) : alignable(hit)
+    if (zAxis && !hasEnds(hit)) {
+      ctx.report(ctx.text.message("zAxisNotSupported"))
+      return
+    }
+    if (!zAxis && hit.type === "hatch") {
+      // WHY once: the console writes it twice, taken for its artefact
+      // until the desktop says otherwise (UCS-D63, d06).
+      ctx.report(ctx.text.message("ucsNoCoordinateSystem"))
+      return this.keep(ctx, world)
+    }
+    const entity = zAxis ? hit : alignable(hit)
     if (!entity) return
     const at = pickOn(ctx.viewport, entity, screen)
     const ucs = zAxis ? ucsAtEnd(entity, at) : ucsFromObject(entity, at)
     if (ucs) this.finish(ucs, null, ctx, { lastPoint: world })
+  }
+
+  /** OBject's pick takes objects on locked layers (probe ucs/p338). */
+  picksLocked(): boolean {
+    return this.state.phase === "object"
   }
 
   answerTyped(text: string, ctx: ToolContext): boolean {
@@ -608,7 +657,7 @@ export class UcsTool implements Tool {
       return selector.invokeOption(id, ctx) ? "continue" : "unhandled"
     }
     if (state.phase === "zOrigin" && id === "Object") {
-      this.modes.start()
+      this.zObjects.start()
       this.state = { phase: "zObject", hover: null }
       ctx.dynamicInput.open({ fields: [], commit: () => {} })
       this.place(ctx)
@@ -659,8 +708,13 @@ export class UcsTool implements Tool {
   /**
    * Enter in a mode's prompt is the mode's; orthoGraphic's takes its default,
    * NAmed's is the first prompt's World, though it shows none (probe ucs/p227).
+   * ZAxis Object's pick asks again (AllowNone false), OBject's ends (p317).
    */
   onEnter(ctx: ToolContext): boolean {
+    if (this.state.phase === "zObject" && !this.inMode()) {
+      ctx.requestRender()
+      return true
+    }
     if (this.state.phase === "orthographic") {
       this.setOrthographic(this.state.current, ctx)
       ctx.endCommand()
@@ -697,14 +751,7 @@ export class UcsTool implements Tool {
     if (this.inMode()) return this.selector()?.buildOverlay(ctx) ?? []
     if (state.phase === "object" || state.phase === "zObject") {
       const hovered = state.hover ? ctx.document.get(state.hover) : undefined
-      return hovered
-        ? entityScenePrimitive(
-            ctx.viewport,
-            hovered,
-            { color: THEME.selected, width: 2 },
-            { blocks: ctx.blocks }
-          )
-        : []
+      return hovered ? rollover(ctx, hovered) : []
     }
     if (
       (state.phase === "xAxis" ||
@@ -790,7 +837,7 @@ export class UcsTool implements Tool {
       case "OBject":
       // Entity is OBject's older name, which the console still takes.
       case "Entity":
-        this.modes.start()
+        this.objects.start()
         this.state = { phase: "object", hover: null }
         ctx.dynamicInput.open({ fields: [], commit: () => {} })
         this.place(ctx)

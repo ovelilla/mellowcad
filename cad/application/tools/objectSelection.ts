@@ -258,6 +258,11 @@ export interface ObjectSelectorOptions {
     /** Finding none says nothing: the prompt is asked again (FILLET's). */
     readonly silent?: boolean
     /**
+     * After `No object found`, the command's next step in place of the prompt
+     * again: UCS OBject ends (probe ucs/p317).
+     */
+    readonly notFound?: (ctx: ToolContext) => void
+    /**
      * Taking none, the command's own answer in place of every other: UCS
      * Face's, whose modes find no face here (there are no solids).
      */
@@ -277,6 +282,11 @@ export interface ObjectSelectorOptions {
      * goes on to `No object found`.
      */
     readonly lockedAsksAgain?: boolean
+    /**
+     * Objects on a locked layer are taken like any other, in silence: UCS
+     * OBject's, which edits nothing (probes ucs/p339, p340).
+     */
+    readonly takesLocked?: boolean
     /**
      * What Previous and ALL found, before one of it is taken: the command's
      * lines about it, and whether it said them, the count of what was left
@@ -998,7 +1008,8 @@ export class ObjectSelector {
       const entity = ctx.document.get(id)
       return (
         entity !== undefined &&
-        !ctx.document.getLayer(entity.layerId)?.locked &&
+        (this.options.one?.takesLocked === true ||
+          !ctx.document.getLayer(entity.layerId)?.locked) &&
         !ctx.selection.has(id)
       )
     })
@@ -1176,9 +1187,9 @@ export class ObjectSelector {
     const all = ctx.document
       .getEntities()
       .filter((entity) => found.has(entity.id))
-    const inOrder = all.filter(
-      (entity) => !ctx.document.getLayer(entity.layerId)?.locked
-    )
+    const inOrder = one.takesLocked
+      ? all
+      : all.filter((entity) => !ctx.document.getLayer(entity.layerId)?.locked)
     if (one.locked) {
       for (let i = inOrder.length; i < all.length; i++) {
         ctx.report(ctx.text.message(one.locked, { count: 1 }), "error")
@@ -1206,7 +1217,10 @@ export class ObjectSelector {
     else if (filtered > 0) {
       ctx.report(ctx.text.message("filteredOut", { count: filtered }))
     } else if (implied) ctx.requestRender()
-    else ctx.report(ctx.text.message("noObjectFound"))
+    else {
+      ctx.report(ctx.text.message("noObjectFound"))
+      one.notFound?.(ctx)
+    }
   }
 
   /**

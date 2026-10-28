@@ -33,11 +33,11 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
   `noneFound` (EXPLODE's lines) and `onAdded` (STRETCH's frames); a preselection goes through
   `preselect`. Never re-implement a pick, a box or a mode. A **single object's pick** that takes the
   modes (BREAK's `Select object:`, UCS OBject's, ARRAYPATH's path) holds one too, with `modes`
-  (`ONE_OBJECT_MODES`) and `one` (`take`, given the `ModeFind` and its `last` point; `newest`,
-  `pair`, `silent`, `locked`: said per locked one found, never taken): it keeps its pick (the
-  newest under the box, locked or not: `lockedObjectAt`) and Enter, the rest to the selector while
-  `inMode()`; a typed point is its pick (`typedPick`; on nothing, where AUto is offered, it calls
-  `startWindow`).
+  (`ONE_OBJECT_MODES`) and `one` (`take`, given the `ModeFind`, its `last` point; `newest`, `pair`,
+  `silent`, `locked`: said per locked one found, never taken; UCS OBject's `takesLocked`): it keeps
+  its pick (the newest under the box, locked or not: `lockedObjectAt`) and Enter, the rest to the
+  selector while `inMode()`; a typed point is its pick (`typedPick`; on nothing, where AUto is
+  offered, `startWindow`).
 - `SelectionActionTool` — one action over a set, noun-verb and verb-noun (Erase, Explode, Join,
   COPYCLIP). A command that asks something **before** the set (COPYBASE's base point) overrides
   `onActivate` and calls `begin(ctx)` once it has the answer, rather than forking the class.

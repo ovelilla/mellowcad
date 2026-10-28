@@ -2375,6 +2375,8 @@ export const en: EngineCatalog = {
       "pointsAreColinear": "Points are colinear",
       "pointsAreCoincident": "Points are coincident",
       "noSolidSurfaceOrMesh": "No 3D solid, surface or mesh detected.",
+      "ucsNoCoordinateSystem": "This object does not define a coordinate system",
+      "zAxisNotSupported": "Z axis option not supported for selected object.",
       "noPreviousUcs": "No previous coordinate system saved.",
       "everythingUndone": "Everything has been undone",
       "nothingToUndo": "Nothing to undo",

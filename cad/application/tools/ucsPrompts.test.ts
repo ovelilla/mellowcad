@@ -559,3 +559,50 @@ describe("UCSICON and PLAN ask as AutoCAD 2026", () => {
     )
   })
 })
+
+// AutoCAD 2027's console answering the same input, en and es.
+describe("UCSICON sets the variable as AutoCAD 2027's console", () => {
+  const icon = (cad: CadHarness) => {
+    const { visible, atOrigin } = cad.runtime.document.getSettings().ucsIcon
+    return (visible ? 1 : 0) + (atOrigin ? 2 : 0)
+  }
+
+  it("OFF is 2, then the default; Noorigin 1, ON the default again; ORigin 3 (probes ucs/p346–p348)", () => {
+    const cad = createHarness()
+    expect(icon(cad)).toBe(3)
+    answer(cad, "UCSICON", "OFF")
+    expect(icon(cad)).toBe(2)
+    answer(cad, "UCSICON")
+    expect(cad.state().commandLine.prompt).toMatch(/ <OFF>:$/)
+    cad.enter()
+    expect(icon(cad)).toBe(2)
+
+    const moved = answer(createHarness(), "UCSICON", "N")
+    expect(icon(moved)).toBe(1)
+    answer(moved, "UCSICON")
+    expect(moved.state().commandLine.prompt).toMatch(/ <ON>:$/)
+    answer(moved, "OR")
+    expect(icon(moved)).toBe(3)
+  })
+
+  it("takes Spanish's capitals: Sin origen by S or SIN (probe ucs/p346)", () => {
+    for (const word of ["S", "SIN"]) {
+      const cad = answer(createHarness({ locale: es }), "SIMBSCP", word)
+      expect(icon(cad), word).toBe(1)
+    }
+  })
+
+  it("is one step, U and REDO echoing its local name (probe ucs/p358)", () => {
+    for (const [locale, name, off, undo, redo, redone] of [
+      [undefined, "UCSICON", "OFF", "U", "REDO", "Everything has been redone"],
+      [es, "SIMBSCP", "DES", "H", "REHACER", "Todo repetido"],
+    ] as const) {
+      const cad = answer(createHarness({ locale }), name, off, undo)
+      expect(cad.commandLog().slice(-2), name).toEqual([undo, name])
+      expect(icon(cad), name).toBe(3)
+      answer(cad, redo)
+      expect(cad.commandLog().slice(-3), name).toEqual([redo, name, redone])
+      expect(icon(cad), name).toBe(2)
+    }
+  })
+})

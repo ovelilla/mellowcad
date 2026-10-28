@@ -67,7 +67,8 @@ export class UcsIconTool implements Tool {
  * The UCSICON system variable, typed with an apostrophe ('UCSICON) or bare in a
  * language whose command has another name: `Enter new value for UCSICON
  * <3>:`, 1 for the icon shown and 2 for it at the origin, "Requires an
- * integer between 0 and 3." for anything else, as AutoCAD 2023's console asks.
+ * integer between 0 and 3." for anything else, as AutoCAD 2027's console asks
+ * (probes ucs/p353–p356).
  */
 export class UcsIconVariableTool extends SystemVariableTool {
   readonly id = "ucsiconvariable"

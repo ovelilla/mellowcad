@@ -47,8 +47,13 @@ the new X (`100,20` after that X keeps Z up, p151; `0,-10` after X along `10,0` 
 the third Y is laid in the current XY plane); NAmed Restore / Save (asks Yes/No before replacing) / Delete (commas and wildcards; deleting
 the current one leaves it `*NO NAME*`) / `?` (origin and axes relative to the current UCS); OBject
 (line, circle, arc, ellipse, polyline segment, spline, text, multiline text, attribute definition,
-block reference, as aCADemia's table gives them; the origin at the object's Z there, the Z its
-normal — a line's, its extrusion, the line in the new XZ plane); Previous (10, per session, with
+block reference, as aCADemia's table gives them and p300–p309 confirm; the origin at the object's Z
+there, the Z its normal — a line's, its extrusion, the line in the new XZ plane; an object on a
+locked layer taken, picked or found, in silence, p338–p340; a hatch refused,
+`This object does not define a coordinate system` — es `Este objeto no define un sistema de
+coordenadas`, table 25599 — and UCS ended, the UCS kept and LASTPOINT at the pick, p311: said once
+where the console writes it twice, taken for its artefact until the desktop says otherwise);
+Previous (10, per session, with
 their names, a restored and an orthographic one among them, p245, p262); View (XY square to the line of sight, X and Y along the screen's horizontal and
 vertical, the origin kept); World (Enter's default); X / Y / Z (UCSAXISANG 90 by default, typed, or
 one point, clicked or typed, its heading from the UCS's origin in its XY plane, 0 on the origin,
@@ -57,13 +62,24 @@ one, then a point on the positive Z, Enter keeping the Z, one on the origin `Poi
 — es `Los puntos coinciden` — and asked again, p129; X laid parallel to the WCS's XY plane by the
 arbitrary-axis rule, as aCADemia's captures show) and its Object (a line, circular or elliptical
 arc, open polyline or spline: the origin at the end nearest the pick, Z along the tangent pointing
-away); at OBject's and ZAxis Object's picks the selection modes (Window, Last, Crossing, BOX, ALL,
-Fence, WPolygon, CPolygon) take the newest object found, read with no pick as AutoCAD 2023's console
-reads it — OBject at the object's start (a line's first end, a circle's angle 0, an arc's start),
-ZAxis Object at the end nearest the WCS origin; a point typed there is a pick of the newest object
-under it, as a click is, LASTPOINT staying at that point, and on nothing — typed or clicked —
-`No object found`, which ends OBject with the UCS as it was and asks ZAxis Object again; one undo
-step; saved in the drawing; World (its keyword and the first prompt's Enter) puts ELEVATION back
+away, p330–p334; any other object `Z axis option not supported for selected object.` — es
+`No se admite la opción de eje Z para el objeto seleccionado.`, table 33775 — and asked again,
+p335; one on a locked layer `The object is on a locked layer.` and `No object found`, asked again,
+p341, and by a mode as BREAK's, by analogy: no probe reached it; Enter asks again, p317); at
+OBject's and ZAxis Object's picks the selection modes (Window, Last, Crossing, BOX, ALL, Fence,
+WPolygon, CPolygon) take the newest object found (p319–p326), read with no pick as AutoCAD 2027's
+console reads each kind (p314–p318) — OBject a line at its first end, a circle at angle 0, an arc at
+its start, a full ellipse with X through its point nearest the WCS's origin, an elliptical arc and a
+spline at their end nearer it, X towards the other, a polyline ending in a line at its first vertex,
+X towards its last, one ending in an arc at that arc's centre, X towards its first vertex, LASTPOINT
+left at the WCS's origin (p319); ZAxis Object at the end nearest the WCS origin (p336); a mode
+finding nothing at OBject `No object found` and UCS ends (p317) — and the pick's hover is the
+single object's rollover, over the locked objects OBject takes (as BREAK's: **unverified** on
+the desktop here); a point typed there is a pick of
+the newest object under it, as a click is, LASTPOINT staying at that point, and on nothing — typed
+or clicked — `No object found`, which ends OBject with the UCS as it was and LASTPOINT at the point
+(a click's **unverified**: the console types, p327, p328), and asks ZAxis Object again (p329);
+OBject's Enter ends UCS (p317); one undo step; saved in the drawing; World (its keyword and the first prompt's Enter) puts ELEVATION back
 to 0, the WCS current or not, in the same undo step, as -VIEW's orthographic views do; Previous,
 a restored name and orthoGraphic reaching the WCS keep it, as an iso -VIEW and PLAN do (p152,
 p153, p400, p403).
@@ -116,8 +132,7 @@ run that changed nothing but moved it (OBject on nothing, Face's pick) the WCS's
 p424)
 
 **Missing:** the listing's `Press ENTER to continue:` (the console pauses there; no page is
-long enough here), Group at OBject's picks, **unverified**: where OBject reads an ellipse, a
-polyline or a spline taken by a mode (at its start here); Face's UCS on a solid's, surface's or mesh's face (there are none here: its
+long enough here), Group at OBject's picks (p325); Face's UCS on a solid's, surface's or mesh's face (there are none here: its
 pick, modes and refusals are built, every one finding none); Apply
 (`Pick viewport to apply current UCS or [All]<current>:`, es
 `Designe ventana en la que aplicar SCP actual o [Todas]<actual>:`, `FOO` `Invalid option keyword.`,
@@ -128,7 +143,7 @@ p269: no section objects), both declared at the first prompt and refused here, a
 letters answer them; the Zdepth an orthographic UCS keeps (UCSBASE,
 ORTHOGRAPHICUCS), Previous after 3point's Enter left the UCS as it was (the console steps back to
 that same UCS), OBject on a dimension (its UCS at
-creation is not stored) or a hatch, UCSMAN, the icon's grips (UCSSELECTMODE), UCSFOLLOW, UCSVP,
+creation is not stored; 2027 puts the origin at its text's middle, p310), UCSMAN, the icon's grips (UCSSELECTMODE), UCSFOLLOW, UCSVP,
 UCSDETECT, the crosshair turning with the UCS (it stays upright on screen; PLAN makes the two agree)
 
 ### `UCSICON` · es `SIMBSCP`

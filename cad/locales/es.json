@@ -1593,6 +1593,8 @@
       "pointsAreColinear": "Puntos colineales",
       "pointsAreCoincident": "Los puntos coinciden",
       "noSolidSurfaceOrMesh": "No hay ningún sólido, superficie o malla 3D.",
+      "ucsNoCoordinateSystem": "Este objeto no define un sistema de coordenadas",
+      "zAxisNotSupported": "No se admite la opción de eje Z para el objeto seleccionado.",
       "noPreviousUcs": "No hay ningún sistema de coordenadas guardado.",
       "everythingUndone": "Ya se ha deshecho todo",
       "nothingToUndo": "No hay nada que se pueda deshacer",

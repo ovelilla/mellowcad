@@ -11,11 +11,11 @@ import {
 
 /**
  * A system variable saved in the drawing, typed as a command (AUPREC) or with
- * an apostrophe ('UCSICON, which typed bare is the command), as AutoCAD 2023's
- * console asks it: `Enter new value for AUPREC <0>:`, a whole number from 0
+ * an apostrophe ('UCSICON, which typed bare is the command), as AutoCAD 2027's
+ * console asks it: `Enter new value for UCSICON <3>:`, a whole number from 0
  * to its largest. Anything else is refused in the console's words, `Requires
- * an integer between 0 and 8.`, and the prompt stays. Its prompt is headed by
- * its name, the same in every language.
+ * an integer between 0 and 3.`, and the prompt stays (probes ucs/p353–p356).
+ * Its prompt is headed by its name, the same in every language.
  */
 export abstract class SystemVariableTool implements Tool {
   abstract readonly id: string

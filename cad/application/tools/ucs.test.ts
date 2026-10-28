@@ -6,7 +6,6 @@ import {
   deg,
   lineOf,
   p,
-  polylineOf,
   rectOf,
   textOf,
 } from "../../../test/builders"
@@ -339,50 +338,97 @@ describe("UCS", () => {
     })
   })
 
+  // AutoCAD 2027's console, each object picked where the probe picks it, the
+  // UCS put back to the WCS between picks (probes ucs/p300–p309).
   describe("OBject", () => {
-    const align = (cad: Harness, at: ReturnType<typeof p>) =>
-      cad.command("UCS").option("OBject").click(at)
+    /** Picks `at` at OBject, checks the UCS made, and goes back to World. */
+    const aligns = (
+      cad: Harness,
+      at: [number, number] | "L",
+      origin: [number, number],
+      x: [number, number]
+    ) => {
+      if (at === "L") answer(cad, "UCS", "OB", "L")
+      else
+        cad
+          .command("UCS")
+          .option("OBject")
+          .click(p(...at))
+      expect(ucsOf(cad).origin).toBeCloseToPoint(p(...origin))
+      expect(ucsOf(cad).xAxis).toBeCloseToPoint(p(...x))
+      answer(cad, "UCS", "W")
+    }
 
-    it("puts a line's origin on the nearer end, X towards the other", () => {
-      const cad = createHarness({ entities: [lineOf(p(0, 0), p(0, 100))] })
-      align(cad, p(0, 90))
-      expect(ucsOf(cad).origin).toBeCloseToPoint(p(0, 100))
-      expect(ucsOf(cad).xAxis).toBeCloseToPoint(p(0, -1))
+    it("puts a line's origin on the nearer end, X towards the other (p300)", () => {
+      const cad = createHarness({ entities: [lineOf(p(10, 10), p(110, 60))] })
+      aligns(cad, [80, 45], [110, 60], [-0.894427191, -0.4472135955])
+      aligns(cad, [20, 15], [10, 10], [0.894427191, 0.4472135955])
     })
 
-    it("centres on a circle, X through the pick", () => {
-      const cad = createHarness({ entities: [circleOf(p(0, 0), 50)] })
-      align(cad, p(0, -50))
-      expect(ucsOf(cad).origin).toBeCloseToPoint(p(0, 0))
-      expect(ucsOf(cad).xAxis).toBeCloseToPoint(p(0, -1))
+    it("centres on a circle, X through the pick (p301)", () => {
+      const cad = createHarness({ entities: [circleOf(p(50, 50), 30)] })
+      aligns(cad, [50, 80], [50, 50], [0, 1])
+      aligns(cad, [80, 50], [50, 50], [1, 0])
     })
 
-    it("centres on an arc, X to the nearer end", () => {
+    it("centres on an arc, X to the nearer end (p302)", () => {
       const cad = createHarness({
-        entities: [arcOf(p(0, 0), 50, 0, Math.PI / 2)],
+        entities: [arcOf(p(50, 50), 30, 0, Math.PI / 2)],
       })
-      align(cad, p(10, 49))
-      expect(ucsOf(cad).xAxis).toBeCloseToPoint(p(0, 1))
+      aligns(cad, [78.1907786, 60.2606043], [50, 50], [1, 0])
+      aligns(cad, [60.2606043, 78.1907786], [50, 50], [0, 1])
     })
 
-    it("takes the picked polyline segment", () => {
-      const cad = createHarness({
-        entities: [polylineOf([p(0, 0), p(100, 0), p(100, 100)])],
-      })
-      align(cad, p(100, 80))
-      expect(ucsOf(cad).origin).toBeCloseToPoint(p(100, 100))
-      expect(ucsOf(cad).xAxis).toBeCloseToPoint(p(0, -1))
+    it("centres on an ellipse, X through the pick, and on an elliptical arc, X to the nearer end (p303)", () => {
+      const cad = answer(createHarness(), "ELLIPSE", "C", "0,0", "40,0", "20")
+      aligns(cad, [0, 20], [0, 0], [0, 1])
+      answer(cad, "ELLIPSE", "A", "C", "100,0", "140,0", "20", "0", "120")
+      aligns(cad, [137.5877048, 6.8404029], [100, 0], [1, 0])
+      aligns(cad, [93.0540729, 19.6961551], [100, 0], [-0.5, 0.8660254038])
     })
 
-    it("follows a text's rotation from its insertion point", () => {
+    it("takes the picked polyline segment: a line's nearer end, an arc's centre (p304)", () => {
+      const cad = answer(
+        createHarness(),
+        ...["PLINE", "0,0", "60,0", "A", "60,40", "L", "0,40", ""]
+      )
+      aligns(cad, [10, 0], [0, 0], [1, 0])
+      aligns(cad, [50, 0], [60, 0], [-1, 0])
+      aligns(cad, [70, 2.6794919], [60, 20], [0, -1])
+      aligns(cad, [70, 37.3205081], [60, 20], [0, 1])
+    })
+
+    it("puts a spline's origin on the nearer end, X towards the other (p305)", () => {
+      const cad = answer(
+        createHarness(),
+        ...["SPLINE", "0,0", "30,30", "60,0", "90,30", ""]
+      )
+      aligns(cad, [30, 30], [0, 0], [0.9486832981, 0.316227766])
+      aligns(cad, [60, 0], [90, 30], [-0.9486832981, -0.316227766])
+    })
+
+    it("follows a text's and a block reference's rotation from its insertion point, picked or Last (p306, p309)", () => {
       const cad = createHarness({
         entities: [
-          textOf(p(10, 10), "ABC", { height: 10, rotation: Math.PI / 2 }),
+          textOf(p(10, 10), "Hello", { height: 5, rotation: deg(30) }),
         ],
       })
-      align(cad, p(5, 15))
-      expect(ucsOf(cad).origin).toBeCloseToPoint(p(10, 10))
-      expect(ucsOf(cad).xAxis).toBeCloseToPoint(p(0, 1))
+      aligns(cad, "L", [10, 10], [0.8660254038, 0.5])
+      aligns(cad, [10, 10], [10, 10], [0.8660254038, 0.5])
+
+      const block = createHarness({
+        blocks: [
+          createBlockDefinition("B1", p(0, 0), [lineOf(p(0, 0), p(40, 0))]),
+        ],
+      })
+      answer(block, "-INSERT", "B1", "30,40", "", "", "45")
+      aligns(block, "L", [30, 40], [0.7071067812, 0.7071067812])
+      aligns(
+        block,
+        [44.1421356, 54.1421356],
+        [30, 40],
+        [0.7071067812, 0.7071067812]
+      )
     })
   })
 })

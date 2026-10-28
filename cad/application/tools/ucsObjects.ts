@@ -12,7 +12,7 @@ import {
 } from "../../geometry/Vec3"
 import { arbitraryAxis, axesToWorld } from "../../geometry/ocs"
 import { bsplineDerivative, bsplineDomain } from "../../geometry/nurbs"
-import { polarPoint } from "../../geometry/primitives"
+import { closestPointOnEllipse, polarPoint } from "../../geometry/primitives"
 import {
   Entity,
   LineEntity,
@@ -32,6 +32,7 @@ import {
   polylineSegmentGeometries,
   splineCurve,
   splinePolyline,
+  worldToEntity,
 } from "../../domain/entities"
 import { Ucs, createUcs, ucsFromAxes } from "../../domain/ucs"
 
@@ -50,7 +51,11 @@ export function alignable(entity: Entity | null): Entity | null {
  */
 export function ucsFromObject(entity: Entity, pick: Vec2 | Vec3): Ucs | null {
   if (entity.type === "line") return ucsAlongLine(entity, pick)
-  const level = levelUcsFromObject(entity, pick)
+  return inPlane(entity, levelUcsFromObject(entity, pick))
+}
+
+/** A UCS read in the object's own coordinates, taken to the WCS. */
+function inPlane(entity: Entity, level: Ucs | null): Ucs | null {
   const axes = planeAxes(entity)
   if (!level || !axes) return level
   return {
@@ -58,6 +63,14 @@ export function ucsFromObject(entity: Entity, pick: Vec2 | Vec3): Ucs | null {
     xAxis: axesToWorld(axes, level.xAxis),
     yAxis: axesToWorld(axes, level.yAxis),
   }
+}
+
+/** The level UCS at `origin` of the object, its X axis towards `target`. */
+function toward(entity: Entity, origin: Vec2, target: Vec2): Ucs | null {
+  return createUcs(
+    withZ(origin, entityZAt(entity, origin)),
+    V.sub(target, origin)
+  )
 }
 
 /** A line's ends, the one nearer `pick` (a point along it) first. */
@@ -81,22 +94,22 @@ function ucsAlongLine(line: LineEntity, pick: Vec2 | Vec3): Ucs | null {
 
 /** UCS OBject read in the object's own coordinates, where its plane is level. */
 function levelUcsFromObject(entity: Entity, pick: Vec2): Ucs | null {
-  const toward = (origin: Vec2, target: Vec2) =>
-    createUcs(withZ(origin, entityZAt(entity, origin)), V.sub(target, origin))
   const nearer = (a: Vec2, b: Vec2) =>
     V.distance(pick, a) <= V.distance(pick, b) ? a : b
   switch (entity.type) {
     case "circle":
-      return toward(entity.center, pick)
+      return toward(entity, entity.center, pick)
     case "arc":
       return toward(
+        entity,
         entity.center,
         nearer(arcStartPoint(entity), arcEndPoint(entity))
       )
     case "ellipse":
       return isFullEllipse(entity)
-        ? toward(entity.center, pick)
+        ? toward(entity, entity.center, pick)
         : toward(
+            entity,
             entity.center,
             nearer(ellipseStartPoint(entity), ellipseEndPoint(entity))
           )
@@ -113,16 +126,16 @@ function levelUcsFromObject(entity: Entity, pick: Vec2): Ucs | null {
       }
       if (!best) return null
       const end = nearer(best.a, best.b)
-      if (best.kind === "arc") return toward(best.center, end)
-      return toward(end, end === best.a ? best.b : best.a)
+      if (best.kind === "arc") return toward(entity, best.center, end)
+      return toward(entity, end, end === best.a ? best.b : best.a)
     }
     case "spline": {
       const points = splinePolyline(entity)
       const first = points[0]
       const last = points[points.length - 1]
-      if (entity.closed) return toward(first, pick)
+      if (entity.closed) return toward(entity, first, pick)
       const origin = nearer(first, last)
-      return toward(origin, origin === first ? last : first)
+      return toward(entity, origin, origin === first ? last : first)
     }
     case "text":
     case "mtext":
@@ -317,31 +330,62 @@ function segmentTangent(
 }
 
 /**
- * Where UCS OBject reads an object a selection mode took, which leaves no
- * pick: at its start — a line's first end, a circle's angle 0, an arc's start
- * point — as AutoCAD 2023's console aligns those three.
+ * UCS OBject on an object a selection mode found, which leaves no pick:
+ * AutoCAD 2027's console reads each kind its own way (probes ucs/p314–p318),
+ * LASTPOINT left at the WCS's origin (p319).
  */
-export function unpickedStart(entity: Entity): Vec2 | Vec3 {
+export function ucsFromFound(entity: Entity): Ucs | null {
+  const wcsOrigin = worldToEntity(entity, { x: 0, y: 0, z: 0 })
   switch (entity.type) {
+    // WHY its first end, where a pick takes the nearer: the line from
+    // 100,100 to 10,20 aligns at 100,100 (p317).
     case "line":
-      return { ...entity.start, z: lineStartZ(entity) }
+      return ucsFromObject(entity, { ...entity.start, z: lineStartZ(entity) })
+    // WHY X at angle 0 and at the arc's start, wherever the WCS's origin is
+    // (p317's circle and arc about 50,50).
     case "circle":
-      return polarPoint(entity.center, entity.radius, 0)
+      return ucsFromObject(entity, polarPoint(entity.center, entity.radius, 0))
     case "arc":
-      return arcStartPoint(entity)
+      return ucsFromObject(entity, arcStartPoint(entity))
+    // WHY: a full ellipse takes X through its point nearest the WCS's origin
+    // (p314, p317: not towards the origin itself), an elliptical arc and a
+    // spline the end nearer it, X towards the other (p315, p317, p318) — as
+    // if picked there.
     case "ellipse":
-      return ellipseStartPoint(entity)
-    case "polyline":
-      return entity.vertices[0]
+      return ucsFromObject(
+        entity,
+        isFullEllipse(entity)
+          ? closestPointOnEllipse(
+              entity.center,
+              entity.majorAxis,
+              entity.ratio,
+              wcsOrigin
+            ).point
+          : wcsOrigin
+      )
     case "spline":
-      return splinePolyline(entity)[0]
+      return ucsFromObject(entity, wcsOrigin)
+    // WHY: no pick reads it, nor the WCS's origin: ending in a line, the
+    // first vertex, X towards the last; ending in an arc, that arc's centre,
+    // X towards the first vertex (p316, p317).
+    case "polyline": {
+      const last = polylineSegmentGeometries(entity).at(-1)
+      const first = entity.vertices[0]
+      if (!last || !first) return null
+      return inPlane(
+        entity,
+        last.kind === "arc"
+          ? toward(entity, last.center, first)
+          : toward(entity, first, entity.vertices[entity.vertices.length - 1])
+      )
+    }
     case "text":
     case "mtext":
     case "attdef":
+    case "insert":
     case "dimension":
     case "hatch":
-    case "insert":
-      return { x: 0, y: 0 }
+      return ucsFromObject(entity, wcsOrigin)
     default: {
       const unhandled: never = entity
       return unhandled
