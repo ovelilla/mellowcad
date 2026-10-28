@@ -46,6 +46,11 @@ Writing one (the traps of `console.md` hold; these are the review's):
 - Typed coordinates are taken as typed: with the console's OSMODE 4133 and OSNAPCOORD 2, a point
   typed beside an endpoint was not snapped (checked 2026-10-21). A snap is probed with a typed
   override (`_END`) and a point inside the aperture.
+- A batched probe's fallback answer is a number: a word that lands at `Command:` can run a command
+  (AutoComplete turned `ANGLE` into MEASUREMENT, es `ByLayer` ran SETBYLAYERMODE). The traced
+  runner types `_SECURELOAD` itself, which becomes SETVAR's default, and filters its lines: probe
+  SETVAR's default untraced. The trace's `AllowSpaces` is false even at -TEXT's `Enter text:`, and
+  the console takes each line whole: whether a name takes a space is a desktop cell (Workspace).
 - What a result is: `MPDUMP` with `-` after the command (every property, full precision);
   `(getvar "LASTPOINT")` for LASTPOINT; `QAFLAGS 2` before LIST.
 - A setting the cell needs is set inside the probe (`CECOLOR`, `-LAYER`, `_ELEVATION`,

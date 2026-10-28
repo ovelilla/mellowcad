@@ -2,7 +2,17 @@
 
 > **Status:** plan, 2026-10-28. Phases 0–4 in one session with skill `command-review`, the
 > twenty-fourth review of `docs/coverage/roadmap.md`'s order; the console blocks (SVA, SVR, UNT,
-> MAC) execute in the same session, the desktop block (WSD) in a later one with the owner's mouse.
+> MAC) executed in the same session, the desktop block (WSD, §12) open for a session with the
+> owner's mouse.
+>
+> Executed: SVA-01 to SVA-06, SVR-01's drawing variables and SVR-05 in `5911d19`; SVR-01's
+> program variables to SVR-04 in `1165751`; UNT-01 to UNT-05 in `5d9175c`; MAC-01, MAC-02, MAC-04,
+> MAC-05, MAC-07 to MAC-09 in `9d0e428`. Open for WSD: MAC-03, MAC-06, UNT-02's Cancel, the echo's
+> case of MAC-01's keys, MAC-09's browser check, SVR-02's stepping on the desktop, and §12's probes.
+> Beyond the plan: AFLAGS 32 and POLARANG 0 are refused with their WHY (p223, p224); NAVVCUBEDISPLAY
+> keeps its bit 2 only and SNAPMODE 2 reads back 1 (Missing: a file-format change); UNITS is a
+> tool (`UnitsTool`), so Cancel is a step too (**unverified**); Ctrl+Shift+S runs `^C^C_saveas`;
+> COMMANDLINE and COMMANDLINEHIDE are not typable (Missing); the Command menu's Pan stays Missing.
 >
 > It owns **system variables typed as commands** (SETVAR included). It takes what the roadmap left
 > it: TEXTSIZE, TEXTSTYLE, the DIMxxx variables, HPNAME / HPSCALE / HPANG / HPORIGIN, ATTDIA /

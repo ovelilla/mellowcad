@@ -168,6 +168,8 @@ the review, not an "n/a".
   prompt AutoCAD has and the tool lacks is already a finding.
 - An edit made outside a command (a palette, a drop-down, a grip) is a row of its own for U's
   echo: AutoCAD names it (`CHPROP`, `Modify Property`, `Grip Edit`; properties/d05-2).
+- The chrome's keys, menus and buttons are read in acad.cuix first (AcceleratorRoot, PopMenuRoot,
+  RibbonRoot): order, labels, macros (`^C^C` cancels, `'` is transparent; Workspace, MAC-01).
 - Read what each command leaves selected (`(ssget "_I")` after it ends or is cancelled): a set
   left behind is the next command's preselection (ERASE's SEL-43).
 - A look (a hover, a band, an icon) is changed by a rule's analogy only after the desktop pass:
@@ -398,3 +400,5 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
   citations counted (§4.1); findings numbered without gaps (§4.8).
 - 2026-10-28, UCS's desktop block: a look waits for the desktop (§4.1), so does a refutation as
   the console's artefact (§5.3); matrix D's relative box at a prompt with a base.
+- 2026-10-28, Workspace's console blocks: acad.cuix before the desktop (§4.1); a batched probe's
+  numeric fallback, SETVAR's default untraced, `AllowSpaces` no evidence (annex-probes.md §2).

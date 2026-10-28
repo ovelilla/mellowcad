@@ -131,4 +131,8 @@ UCS-D43), and leaves AutoCAD's `<command> GROUP` undo names for the other toolba
 to the Workspace review. The UCS review (`docs/plans/ucs-review.md`) leaves the landing's own UCS
 icon (`components/marketing/ucs-icon.tsx`, still the 2D colours) to the landing, and to the
 Workspace review the other chrome menus' echo (2027's ViewCube menu writes its prompts without the
-answers, UCD-07) and every name prompt that may hold spaces (`takesSpaces`, UCD-05).
+answers, UCD-07) and every name prompt that may hold spaces (`takesSpaces`, UCD-05). The Workspace review
+(`docs/plans/workspace-review.md`) settled the variables typed by name and SETVAR, those the
+reviews before it left (the DIMxxx stay Missing: typed they make an override), and the rail's
+apostrophe macros; its desktop block (WSD) takes the `<command> GROUP` undo names, the chrome menus'
+echo, MATCHPROP's button and the name prompts with spaces.
