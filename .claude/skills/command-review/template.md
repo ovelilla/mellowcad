@@ -157,7 +157,11 @@ the review, not an "n/a".
 ### 4.1 Before probing
 
 - Start from the analogues the previous review left (its plan's index and the roadmap): each is
-  a probe to run first (LINE's list gave PLINE's first three highs in an hour).
+  a probe to run first (LINE's list gave PLINE's first three highs in an hour), and grep the previous
+  review's transcripts for this command's prompts (view/p351 already printed UCS's `[Face/…]`).
+- Count each file's old citations (`grep -o 'acc/[a-z]*[0-9]*'`): where the code cites 2023
+  almost everywhere, re-probing it is the review; each subagent gets its list and a range of 100,
+  and the reviewer keeps `p400` up for what they leave open (UCS).
 - Read the coverage entry, the rules of the area and the command's tests **whole**. Turn each
   claim of the entry (Implemented and Missing) into a matrix cell to check (§4.4).
 - Draw the matrix's columns from the tool's `question()` states and the console's prompts: a
@@ -244,8 +248,8 @@ deviation without a `WHY` and a coverage note is a finding.
 - In Phase 1 the reviewer greps the rules' shared contracts (`setsLastPoint`, `typedPick`,
   `picksLocked`, `THEME.entityHover`) across all the review's tools and gives that sweep to one
   subagent by name: three found LASTPOINT broken, each in its own tools (Dimensions).
-- They return the cells they answered, what they could not check, and the tests they read, as
-  text: a subagent cannot write a report file, so the reviewer keeps it in the scratchpad.
+- They return the cells they answered (findings numbered without gaps), what they could not
+  check, and the tests they read, as text: a subagent cannot write a report file, so the reviewer keeps it in the scratchpad.
 - Their high and critical findings are verified by the reviewer, in person, before the plan.
 - A desktop surprise goes at once to the subagent owning that prompt (SendMessage): the console
   then settles it case by case (SCALE's factor, transforms/d06 → p219, within the hour).
@@ -376,30 +380,15 @@ review's close (the owner waived the wait for approval on 2026-10-21), each with
 
 Applied (each change's detail is in `git log -- .claude/skills/command-review`):
 
-- 2026-10-21: LINE (subagents' ranges, untraced undo, COM input; one subagent per block, unused
-  keys stay, the next session's prompt); the matrix's P, Q and snaps three ways (owner); PLINE
-  (analogues first, row H, the review's own execution); CIRCLE, ARC, RECTANG and POLYGON, ELLIPSE,
-  SPLINE, ERASE (desktop traps, storage by the OPEN test, disjoint prompts, the preselection).
-- 2026-10-22: MOVE and COPY, Transforms, OFFSET, TRIM, Corners and Pieces (shared cases and the
-  Undo keyword to one subagent, ranges by weight, desktop traps, matrix.md Q, annex §3–§5).
-- 2026-10-22, after the Arrays review: desktop traps and the object's desktop pass first (annex §4).
-- 2026-10-23, after the Properties review: the whole monitor captured before a click, a pass
-  without the mouse, task dialogs' links and Cancel (annex-probes.md §4), U's echo for an edit
-  made outside a command (§4.1), the resource DLLs the tables lack (annex-catalogs.md §3).
-- 2026-10-23, after the Text review: an editor's Escape (§4.1); answers typed where a prompt
-  takes spaces, the English profile's txt.shx, dialog buttons by their rectangle, text picked on a
-  stroke (annex-probes.md §4).
-- 2026-10-26, after the HATCH review: a ribbon twin's Escape and preview under each name
-  (matrix.md G); AutoCAD's log for the history, objects by handle, a pattern by EXPLODE
-  (annex-probes.md §4).
-- 2026-10-27, after the Blocks review: a dialog the console skips, a modal dialog closed with
-  `acad.sh post`, words outside the merged tables (annex-probes.md §4); a path two commands share
-  to one subagent by name (§4.8).
-- 2026-10-27, after the Dimensions review: the shared contracts swept by one subagent (§4.8); a
-  scratch test asserts, never only dumps (§4.3); `com send` and LINE, the palette's folds
-  (annex-probes.md §4).
-- 2026-10-27, after the Inquiry review: the ribbon button's macro read in Phase 1 (§1.1); the
-  read-only variables a command sets (matrix.md H); after its desktop block, Escape at a keyword's
-  sub-prompt (matrix.md G), overlay colours and DYNMODE's profiles (annex-probes.md §4).
-- 2026-10-27, View's console blocks: `acad.pgp` (matrix.md A); hangs and U/REDO (annex §1, §2).
-- 2026-10-27, View's desktop block: gestures as undo steps (matrix.md F); U before evals (annex §4).
+- 2026-10-21: LINE, PLINE, CIRCLE, ARC, RECTANG and POLYGON, ELLIPSE, SPLINE, ERASE; the matrix's
+  P, Q and snaps three ways (owner).
+- 2026-10-22: MOVE and COPY, Transforms, OFFSET, TRIM, Corners, Arrays (desktop traps, the object's
+  desktop pass first).
+- 2026-10-23: Properties (the whole monitor before a click, U's echo of an edit outside a command,
+  resource DLLs), Text (an editor's Escape, spaces in answers, txt.shx).
+- 2026-10-26, 10-27: HATCH (a ribbon twin, AutoCAD's log), Blocks (a skipped dialog, a path two
+  commands share), Dimensions (the shared contracts' sweep, asserting scratch tests), Inquiry (the
+  ribbon's macro, read-only variables, Escape at a sub-prompt), View (`acad.pgp`, hangs, gestures
+  as undo steps, U before evals).
+- 2026-10-28, UCS's console blocks: the previous review's transcripts and each file's old
+  citations counted (§4.1); findings numbered without gaps (§4.8).

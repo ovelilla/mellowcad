@@ -1,13 +1,36 @@
 # UCS review (UCS, UCSICON, ELEV)
 
-> **Status:** plan, 2026-10-28. Phases 0–4 in one session with skill `command-review`, the
-> twenty-third review of `docs/coverage/roadmap.md`'s order; the console blocks (UCO, UCH, UCN,
-> UCB, UIE) execute in the same session, the desktop block (UCD) in a later one with the owner's
-> mouse.
+> **Status:** plan, 2026-10-28. Phases 0–4 and the five console blocks (UCO, UCH, UCN, UCB, UIE)
+> done in one session with skill `command-review`, the twenty-third review of
+> `docs/coverage/roadmap.md`'s order (index below). The desktop block (UCD, §12) needs the owner's
+> mouse and is probed in a session of its own; once it is executed, the plan shrinks to its index.
 >
 > It owns no cross-cutting area. It takes what the View review left it: UCS Restore's not-found
 > words (`ucsUndefined`, VIEW-D23), the `*TOP*` name after U of an orthographic -VIEW (VUN-06), and
 > the roadmap's "UCS OBject's passes none [locked objects] and still says nothing of one".
+
+## Executed
+
+| Block | Findings | Commit |
+| --- | --- | --- |
+| UCO | UCO-01 to UCO-08 (UCO-08: LINE's typed length with no cursor heading was the runtime's, not the harness's) | `8ddbc70` |
+| UCH | UCH-01 to UCH-06 (Face's pick probed further: p420–p426) | `f5a23ff` |
+| UCN | UCN-01 to UCN-07 (VIEW-D23 settled) | `0bb97de` |
+| UIE | UCI-01, ELV-01 | `52b0853` |
+| UCB | UCB-01 to UCB-10 (UCB-08's click unverified until d06) | `a2c5e2f` |
+
+Decisions added in the execution:
+
+- **UCO:** `ucsChange` takes `{ resetsElevation }`, passed by World and -VIEW's orthographic views;
+  World with the WCS current changes ELEVATION only and pushes no Previous.
+- **UCH:** Face's pick is an `ObjectSelector` with `one.none`: Crossing writes
+  `No 3D solid, surface or mesh detected.` whatever it finds, Fence and CPolygon end in silence
+  (p420–p426). Apply and SEction are not declared: no other word answers their letters.
+- **UCN:** a replaced entry keeps its place in the table; Restore checks a name's characters, not
+  its length.
+- **UCB:** OBject and ZAxis Object hold one selector each (`takesLocked` for OBject only); a mode
+  finding nothing ends OBject through `one.notFound`; a closed spline found by a mode is read as if
+  picked at the WCS's origin (unprobed, the rule that fits the ellipse and the open spline).
 
 ## 1. Summary
 
@@ -608,7 +631,8 @@ Regression tests are in each finding. Besides them, the untested cells, by file:
   ids left; UCD d06 through COM).
 - SEction's and Face's picks on real objects (no sections, solids or meshes here).
 - U after `'UCSICON`; `'ZOOM` at UCSICON's prompt; snap overrides at OBject's pick (`_END`: UCS
-  declares no `takesSnapOverride`) — left for the execution's subagent to probe from p404.
+  declares no `takesSnapOverride`); a mode at OBject finding only a hatch (here `1 was filtered
+  out`); a closed spline found by a mode — console probes from p430, in the UCD session.
 
 ## 10. Refuted in the adversarial pass
 
@@ -702,6 +726,7 @@ the English snapshot):
    - d07 UCSICON's Properties dialog (look only), the ribbon's Coordinates panel (hidden by default,
      the rail's comment).
    - e01 the Spanish profile: d02's and d03's menus, Face at the prompt.
+   - Console, before the desktop: §9's open cells, from p430.
 
 ## 13. Changes to coverage, rules, catalogs and roadmap
 
