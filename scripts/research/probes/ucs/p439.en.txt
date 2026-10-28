@@ -1,0 +1,10 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_SPLINE
+20,20
+60,20
+60,60
+_C
+(foreach g (entget (entlast)) (if (member (car g) (quote (10 11 70 71 72 73 74))) (print g)))

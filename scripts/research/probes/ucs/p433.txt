@@ -1,0 +1,31 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_RECTANG
+0,0
+60,60
+_-HATCH
+_P
+SOLID
+30,30
+
+_ERASE
+5,0
+
+_LINE
+0,-30
+100,-30
+
+_UCS
+_OB
+_W
+-10,-10
+70,70
+(progn (princ "\n=UCS ") (foreach v (list (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR") (trans (getvar "LASTPOINT") 1 0)) (princ (mapcar (quote (lambda (x) (rtos x 2 10))) v))) (princ (getvar "UCSNAME")) (princ))
+_UCS
+_OB
+_W
+-10,-10
+70,70
+(progn (princ "\n=UCS ") (foreach v (list (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR") (trans (getvar "LASTPOINT") 1 0)) (princ (mapcar (quote (lambda (x) (rtos x 2 10))) v))) (princ (getvar "UCSNAME")) (princ))

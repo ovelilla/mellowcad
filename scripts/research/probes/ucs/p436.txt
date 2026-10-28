@@ -1,0 +1,19 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_CIRCLE
+50,50
+10
+_LINE
+10,-30
+60,-30
+
+_UCS
+_ZA
+_O
+_W
+30,30
+70,70
+30,-30
+(progn (princ "\n=UCS ") (foreach v (list (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR") (trans (getvar "LASTPOINT") 1 0)) (princ (mapcar (quote (lambda (x) (rtos x 2 10))) v))) (princ (getvar "UCSNAME")) (princ))

@@ -1,0 +1,13 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_SPLINE
+20,20
+60,20
+60,60
+_C
+(vl-load-com)
+(setq o (entlast))
+(vlax-curve-getFirstDeriv o (vlax-curve-getStartParam o))
+(vlax-curve-getStartPoint o)

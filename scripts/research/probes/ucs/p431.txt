@@ -1,0 +1,9 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_UCSICON
+'_ZOOM
+_E
+_OFF
+(progn (princ "\n=ICON ") (princ (getvar "UCSICON")) (princ))

@@ -128,6 +128,7 @@ Every probe ran in es-ES and en-US unless its name says otherwise. Scratch tests
 | p361–p369 | ELEV: Enter, negatives, `FOO`, two points, in a raised UCS, `'ELEV` in LINE, U and REDO, `'ZOOM`, `1e1` and `.5` |
 | p400–p403 | (the reviewer) ELEVATION after -VIEW Front, Top, SWIso, PLAN and a restored WCS-equal UCS; the third point typed `*x,y`; X / Y by a point in a moved UCS |
 | p420–p426 | (block UCH) Face's pick: `FOO`, Crossing, Fence, CPolygon (on a line and on nothing), a pick on nothing and LASTPOINT after U (`p424`, untraced), `FA` and `FOO` from New |
+| p430–p439 | (after the console blocks) U and REDO after `'UCSICON`; `'ZOOM` at UCSICON; `_END` and `_MID` at OBject's pick; a mode at OBject finding only a hatch; a closed spline by `_L`, its start tangent and control points (`p439`, en only); ZAxis Object's mode on a locked line, a circle, nothing |
 
 ## 4. Matrix
 
@@ -630,9 +631,19 @@ Regression tests are in each finding. Besides them, the untested cells, by file:
 - ZAxis Object's modes finding a locked object or a circle, and its mode finding nothing (no probe
   ids left; UCD d06 through COM).
 - SEction's and Face's picks on real objects (no sections, solids or meshes here).
-- U after `'UCSICON`; `'ZOOM` at UCSICON's prompt; snap overrides at OBject's pick (`_END`: UCS
-  declares no `takesSnapOverride`); a mode at OBject finding only a hatch (here `1 was filtered
-  out`); a closed spline found by a mode — console probes from p430, in the UCD session.
+- Settled after the console blocks (p430–p439), each a match the UCD session pins with a test:
+  U and REDO after `'UCSICON` echo `'UCSICON` (p430); `'ZOOM E` at UCSICON's prompt resumes it
+  (p431); `_END` and `_MID` at OBject's pick are taken, LASTPOINT at the snapped point (p432);
+  ZAxis Object's mode on a locked line says BREAK's words and asks again (p435), on nothing asks
+  again (p437). Three differ, UCD's console findings:
+  - **UCB-11** (low): a mode at OBject finding only a hatch says `This object does not define a
+    coordinate system` and ends (p433); here `1 was filtered out`, asked again.
+  - **UCB-12** (low): a mode at ZAxis Object finding only a circle says `Z axis option not
+    supported for selected object.` and asks again (p436); here `1 was filtered out`.
+  - **UCB-13** (low, **unverified** rule): a closed spline found by `_L` takes its first point as
+    origin, as here, but X (0.5364, −0.8440) (p434), which is neither its start tangent (p438: the
+    same as mellowcad's, (0.4148, −0.9099)) nor towards a control point (p439). Stays in Missing
+    until a rule fits.
 
 ## 10. Refuted in the adversarial pass
 
@@ -726,7 +737,8 @@ the English snapshot):
    - d07 UCSICON's Properties dialog (look only), the ribbon's Coordinates panel (hidden by default,
      the rail's comment).
    - e01 the Spanish profile: d02's and d03's menus, Face at the prompt.
-   - Console, before the desktop: §9's open cells, from p430.
+   - Console first: UCB-11 and UCB-12 fixed, p430–p432, p435 and p437 pinned (§9), UCB-13 in
+     Missing.
 
 ## 13. Changes to coverage, rules, catalogs and roadmap
 
