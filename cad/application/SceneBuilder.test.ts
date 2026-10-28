@@ -1084,6 +1084,68 @@ describe("frame composition", () => {
     ).toBeGreaterThan(0)
   })
 
+  // mellowcad's own look, no AutoCAD probe (desktop d01 is to check it):
+  // the icon, its corner placement and the broken pencil.
+  describe("the UCS icon", () => {
+    const xArm = (cad: ReturnType<typeof createHarness>) =>
+      strokes(cad.scene().primitives, THEME.ucsIconX).find(
+        (primitive) => primitive.kind === "segment"
+      )
+    const pencil = (cad: ReturnType<typeof createHarness>) =>
+      strokes(cad.scene().primitives, THEME.crosshair).filter(
+        (primitive) =>
+          primitive.kind === "path" && primitive.points.length === 5
+      )
+
+    it("becomes the broken pencil when the XY plane is seen edge-on", () => {
+      const cad = createHarness({ ucsIcon: true })
+      expect(xArm(cad)).toBeDefined()
+      expect(pencil(cad)).toHaveLength(0)
+
+      // UCS X 90 in the plan view: the view looks along the new XY plane.
+      cad.command("UCS").option("X").type("90").enter()
+
+      expect(xArm(cad)).toBeUndefined()
+      expect(strokes(cad.scene().primitives, THEME.ucsIconY)).toHaveLength(0)
+      expect(pencil(cad)).toHaveLength(2)
+    })
+
+    it("sits on the origin while it fits, in the lower-left corner when not", () => {
+      const cad = createHarness({ ucsIcon: true, width: 1000, height: 800 })
+      const arm = xArm(cad)
+      expect(arm?.kind === "segment" && arm.a).toBeCloseToPoint(
+        cad.runtime.viewport.worldToScreen(p(0, 0))
+      )
+
+      cad.command("UCS").type("100000,100000").enter().enter()
+      const moved = xArm(cad)
+
+      // Where Noorigin puts it: the same corner whatever the origin.
+      const noOrigin = createHarness({
+        ucsIcon: true,
+        width: 1000,
+        height: 800,
+      })
+      noOrigin.command("UCSICON").option("Noorigin")
+      const corner = xArm(noOrigin)
+      expect(moved?.kind === "segment" && corner?.kind === "segment").toBe(true)
+      if (moved?.kind !== "segment" || corner?.kind !== "segment") return
+      expect(moved.a).toBeCloseToPoint(corner.a)
+      expect(moved.a.x).toBeLessThan(100)
+      expect(moved.a.y).toBeGreaterThan(800 / 2)
+    })
+
+    it("is not drawn at UCSICON 0", () => {
+      const cad = createHarness({ ucsIcon: true })
+
+      cad.command("'UCSICON").type("0").enter()
+
+      expect(cad.runtime.document.getSettings().ucsIcon.visible).toBe(false)
+      expect(strokes(cad.scene().primitives, THEME.ucsIconX)).toHaveLength(0)
+      expect(strokes(cad.scene().primitives, THEME.ucsIconY)).toHaveLength(0)
+    })
+  })
+
   it("stays a pure function of the model — building twice is identical", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],

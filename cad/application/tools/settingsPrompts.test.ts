@@ -147,8 +147,10 @@ describe("the settings commands ask as AutoCAD 2026", () => {
   })
 })
 
-// AutoCAD 2023's console answering the same input.
-describe("ELEV asks as AutoCAD 2026", () => {
+// AutoCAD 2027's console answering the same input (probes ucs/p361–p363,
+// en-US and es-ES), at the drawing's precision (2 here, 4 in AutoCAD's
+// template).
+describe("ELEV asks as AutoCAD 2027", () => {
   it("offers the current values and refuses what is no distance", () => {
     const cad = createHarness()
     cad.command("ELEV")
@@ -275,9 +277,9 @@ describe("AUPREC asks as AutoCAD 2026", () => {
   })
 })
 
-// AutoCAD's console (AREA 2027's, probes inquiry/p324, p325, p359; UCSICON
-// 2023's, acc/sv1.txt, tr/ucsicon.txt): with an apostrophe AREA and UCSICON
-// name their system variables, not the commands.
+// AutoCAD 2027's console (probes inquiry/p324, p325, p359; ucs/p353–p356):
+// with an apostrophe AREA and UCSICON name their system variables, not the
+// commands.
 describe("'AREA and 'UCSICON read and set their system variables", () => {
   // probe inquiry/p324
   it("reads AREA, the last area AREA measured, at a prompt and at the Command prompt", () => {
@@ -314,6 +316,7 @@ describe("'AREA and 'UCSICON read and set their system variables", () => {
     }
   })
 
+  // probes ucs/p353 (FOO), p354 (4), p355 (at LINE's prompt)
   it("sets UCSICON from 0 to 3, the icon shown and at the origin", () => {
     const cad = createHarness()
     answer(cad, "'UCSICON", "2", "'UCSICON")
@@ -363,6 +366,7 @@ describe("'AREA and 'UCSICON read and set their system variables", () => {
     )
   })
 
+  // probes ucs/p353 es-ES (FOO), p356 (bare)
   it("names them in English in Spanish too, bare where the command is named otherwise", () => {
     const cad = createHarness({ locale: es })
     answer(cad, "'AREA", "UCSICON", "FOO", "0")

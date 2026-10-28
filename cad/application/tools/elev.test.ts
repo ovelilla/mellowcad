@@ -14,6 +14,7 @@ import {
 } from "../../domain/entities"
 import { createHarness, type CadHarness } from "../../../test/harness"
 import { lineOf, p } from "../../../test/builders"
+import { es } from "../../locales/es"
 
 /**
  * ELEV sets ELEVATION and THICKNESS, saved in the drawing: a point without a Z
@@ -27,6 +28,21 @@ function settings(cad: CadHarness) {
 
 function elev(cad: CadHarness, elevation: string, thickness: string) {
   return cad.command("ELEV").type(elevation).enter().type(thickness).enter()
+}
+
+/** Typed at the command line and confirmed, as AutoCAD's console reads it. */
+function answer(cad: CadHarness, ...texts: string[]): CadHarness {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
+
+/** What `ID @` says LASTPOINT is. */
+function lastPoint(cad: CadHarness): string | undefined {
+  answer(cad, "ID", "@")
+  return cad.commandLog().at(-1)
 }
 
 describe("ELEV", () => {
@@ -69,12 +85,156 @@ describe("ELEV", () => {
     expect(settings(cad)).toMatchObject({ elevation: 0, thickness: 0 })
   })
 
+  // probe ucs/p367, en-US and es-ES: U and REDO name ELEV.
+  it("is undone and redone by its name", () => {
+    for (const [locale, undo, redo, redone] of [
+      [undefined, "U", "REDO", "Everything has been redone"],
+      [es, "H", "REHACER", "Todo repetido"],
+    ] as const) {
+      const cad = answer(createHarness({ locale }), "ELEV", "5", "3", "_U")
+      expect(cad.commandLog().slice(-2)).toEqual([undo, "ELEV"])
+      expect(settings(cad)).toMatchObject({ elevation: 0, thickness: 0 })
+
+      answer(cad, "_REDO")
+      expect(cad.commandLog().slice(-3)).toEqual([redo, "ELEV", redone])
+      expect(settings(cad)).toMatchObject({ elevation: 5, thickness: 3 })
+    }
+  })
+
   it("changes nothing when cancelled at the thickness", () => {
     const cad = createHarness()
 
     cad.command("ELEV").type("5").enter().escape()
 
     expect(settings(cad).elevation).toBe(0)
+  })
+
+  // probe ucs/p364, en-US and es-ES: ELEVATION 7 and THICKNESS 4 from two
+  // points each; LASTPOINT stays at 0,0,0. AutoCAD writes `<0.0000>` at its
+  // template's LUPREC 4.
+  it("takes two points at each prompt, leaving LASTPOINT alone", () => {
+    for (const [locale, elevation, thickness, second, point] of [
+      [
+        undefined,
+        "Specify new default elevation <0.00>: 0,0",
+        "Specify new default thickness <0.00>: 3,0",
+        " Specify second point: ",
+        "Specify point: @",
+      ],
+      [
+        es,
+        "Precise nueva elevación por defecto <0.00>: 0,0",
+        "Precise nueva altura de objeto por defecto <0.00>: 3,0",
+        " Designe segundo punto: ",
+        "Precise punto: @",
+      ],
+    ] as const) {
+      const cad = answer(
+        createHarness({ locale }),
+        "ELEV",
+        "0,0",
+        "0,7",
+        "3,0",
+        "3,4"
+      )
+
+      expect(cad.commandLog()).toEqual([
+        "ELEV",
+        elevation,
+        `${second}0,7`,
+        thickness,
+        `${second}3,4`,
+      ])
+      expect(settings(cad)).toMatchObject({ elevation: 7, thickness: 4 })
+      expect(lastPoint(cad)).toBe(" X = 0.00     Y = 0.00     Z = 0.00")
+      expect(cad.commandLog().at(-2)).toBe(point)
+    }
+  })
+
+  // probe ucs/p369
+  it("reads an exponent and a leading point as numbers", () => {
+    const cad = answer(createHarness(), "ELEV", "5", "3", "ELEV", "1e1", ".5")
+
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify new default elevation <5.00>: 1e1",
+      "Specify new default thickness <3.00>: .5",
+    ])
+    expect(settings(cad)).toMatchObject({ elevation: 10, thickness: 0.5 })
+  })
+
+  // probe ucs/p368, en-US and es-ES: ZOOM Extents refused as transparent,
+  // then the prompt it interrupted asked again.
+  it("resumes after 'ZOOM at its prompt", () => {
+    for (const [locale, regen, resuming, prompt] of [
+      [
+        undefined,
+        "** Requires a regen, cannot be transparent.",
+        "Resuming ELEV command.",
+        "Specify new default thickness <0.00>: 2",
+      ],
+      [
+        es,
+        "** Regeneración necesaria, no puede ser transparente.",
+        "Reanudando el comando ELEV.",
+        "Precise nueva altura de objeto por defecto <0.00>: 2",
+      ],
+    ] as const) {
+      const cad = answer(
+        createHarness({ locale }),
+        "ELEV",
+        "5",
+        "'_ZOOM",
+        "_E",
+        "2"
+      )
+
+      expect(cad.commandLog().slice(-3)).toEqual([regen, resuming, prompt])
+      expect(settings(cad)).toMatchObject({ elevation: 5, thickness: 2 })
+    }
+  })
+
+  // probe ucs/p366, en-US and es-ES: the segment drawn after it takes the
+  // thickness, and its end the elevation; its start stays where it was given.
+  it("runs transparently in LINE, for the segments drawn after it", () => {
+    for (const [locale, next, elevation, thickness, resuming] of [
+      [
+        undefined,
+        "Specify next point or [Undo]: 'ELEV",
+        ">>Specify new default elevation <0.00>: 5",
+        ">>Specify new default thickness <0.00>: 2",
+        "Resuming LINE command.",
+      ],
+      [
+        es,
+        "Precise punto siguiente o [desHacer]: 'ELEV",
+        ">>Precise nueva elevación por defecto <0.00>: 5",
+        ">>Precise nueva altura de objeto por defecto <0.00>: 2",
+        "Reanudando el comando LINEA.",
+      ],
+    ] as const) {
+      const cad = answer(
+        createHarness({ locale }),
+        "_LINE",
+        "0,0",
+        "'_ELEV",
+        "5",
+        "2",
+        "10,10",
+        ""
+      )
+
+      expect(cad.commandLog().slice(2, 6)).toEqual([
+        next,
+        elevation,
+        thickness,
+        resuming,
+      ])
+      const line = cad.only<LineEntity>("line")
+      expect(lineStartZ(line)).toBe(0)
+      expect(lineEndZ(line)).toBe(5)
+      expect(entityThickness(line)).toBe(2)
+      expect(lastPoint(cad)).toBe(" X = 10.00     Y = 10.00     Z = 5.00")
+    }
   })
 
   it("is saved with the drawing", () => {
@@ -108,6 +268,31 @@ describe("ELEVATION", () => {
     cad.command("CIRCLE").type("0,0").enter().type("10").enter()
 
     expect(entityElevation(cad.only<CircleEntity>("circle"))).toBe(8)
+  })
+
+  // probe ucs/p365: UCS ORigin 0,0,10 and ELEVATION 5 put a LINE at Z 15.
+  it("raises a LINE above a raised UCS", () => {
+    const cad = answer(
+      createHarness(),
+      "UCS",
+      "O",
+      "0,0,10",
+      "ELEV",
+      "5",
+      "0",
+      "LINE",
+      "0,0",
+      "10,0",
+      ""
+    )
+
+    const line = cad.only<LineEntity>("line")
+    expect(lineStartZ(line)).toBe(15)
+    expect(lineEndZ(line)).toBe(15)
+    expect(line.start).toBeCloseToPoint(p(0, 0))
+    expect(line.end).toBeCloseToPoint(p(10, 0))
+    answer(cad, "UCS", "W")
+    expect(settings(cad).elevation).toBe(0)
   })
 
   it("does not move a point snapped to an object or typed with a Z", () => {
