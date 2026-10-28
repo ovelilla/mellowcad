@@ -1,0 +1,6 @@
+(princ)
+_SETVAR
+ELEVATION
+FOO
+-3
+(getvar "ELEVATION")

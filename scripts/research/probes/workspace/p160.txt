@@ -1,0 +1,10 @@
+(princ)
+_LINE
+0,0
+10,0
+
+(sssetfirst nil (ssget "_X"))
+ORTHOMODE
+1
+(ssget "_I")
+(getvar "LASTPOINT")

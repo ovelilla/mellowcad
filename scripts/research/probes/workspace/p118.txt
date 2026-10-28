@@ -1,0 +1,6 @@
+(princ)
+_AUPREC
+'_ZOOM
+_E
+2
+(getvar "AUPREC")

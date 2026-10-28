@@ -1,0 +1,5 @@
+(princ)
+(setvar "QAFLAGS" 2)
+_SETVAR
+?
+

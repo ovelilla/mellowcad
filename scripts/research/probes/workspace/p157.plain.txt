@@ -1,0 +1,11 @@
+(princ)
+_LINE
+0,0
+10,0
+'ORTHOMODE
+1
+_U
+
+(getvar "ORTHOMODE")
+_U
+(getvar "ORTHOMODE")

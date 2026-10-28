@@ -1,0 +1,8 @@
+(princ)
+_LINE
+0,0
+'_SETVAR
+ORTHOMODE
+1
+10,5
+

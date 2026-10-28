@@ -1,0 +1,40 @@
+_CECOLOR
+1
+2
+(getvar "CECOLOR")
+_CECOLOR
+red
+2
+(getvar "CECOLOR")
+_CECOLOR
+BYBLOCK
+2
+(getvar "CECOLOR")
+_CECOLOR
+255,0,0
+2
+(getvar "CECOLOR")
+_CECOLOR
+RGB:255,0,0
+2
+(getvar "CECOLOR")
+_CECOLOR
+bylayer
+2
+(getvar "CECOLOR")
+_CECOLOR
+256
+2
+(getvar "CECOLOR")
+_CECOLOR
+0
+2
+(getvar "CECOLOR")
+_CECOLOR
+257
+2
+(getvar "CECOLOR")
+_CECOLOR
+FOO
+2
+(getvar "CECOLOR")

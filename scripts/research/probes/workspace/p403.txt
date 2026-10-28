@@ -1,0 +1,10 @@
+_-LINETYPE
+_L
+DASHED HIDDEN
+
+
+_-LINETYPE
+_S
+HIDDEN
+
+(getvar "CELTYPE")

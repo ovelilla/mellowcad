@@ -1,0 +1,100 @@
+_LUNITS
+6
+2
+(getvar "LUNITS")
+_LUNITS
+1
+2
+(getvar "LUNITS")
+_LUNITS
+0
+2
+(getvar "LUNITS")
+_LUPREC
+9
+2
+(getvar "LUPREC")
+_LUPREC
+-1
+2
+(getvar "LUPREC")
+_ATTMODE
+3
+0
+(getvar "ATTMODE")
+_LWDISPLAY
+2
+0
+(getvar "LWDISPLAY")
+_LWDISPLAY
+ON
+0
+(getvar "LWDISPLAY")
+_NAVVCUBEDISPLAY
+4
+3
+(getvar "NAVVCUBEDISPLAY")
+_NAVVCUBEDISPLAY
+0
+3
+(getvar "NAVVCUBEDISPLAY")
+_NAVVCUBEDISPLAY
+1
+3
+(getvar "NAVVCUBEDISPLAY")
+_FILLMODE
+2
+0
+(getvar "FILLMODE")
+_ORTHOMODE
+2
+1
+(getvar "ORTHOMODE")
+_SNAPMODE
+2
+1
+(getvar "SNAPMODE")
+_GRIDMODE
+2
+0
+(getvar "GRIDMODE")
+_INSUNITS
+21
+6
+(getvar "INSUNITS")
+_INSUNITS
+25
+6
+(getvar "INSUNITS")
+_INSUNITS
+0
+6
+(getvar "INSUNITS")
+_POLYSIDES
+2
+5
+(getvar "POLYSIDES")
+_POLYSIDES
+1025
+5
+(getvar "POLYSIDES")
+_POLYSIDES
+1024
+5
+(getvar "POLYSIDES")
+_ATTDIA
+2
+0
+(getvar "ATTDIA")
+_ATTREQ
+2
+0
+(getvar "ATTREQ")
+_AFLAGS
+64
+0
+(getvar "AFLAGS")
+_AFLAGS
+63
+0
+(getvar "AFLAGS")

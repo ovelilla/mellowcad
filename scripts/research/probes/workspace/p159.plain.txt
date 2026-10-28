@@ -1,0 +1,9 @@
+(princ)
+_LINE
+0,0
+10,0
+
+_AUPREC
+
+_U
+(sslength (ssget "_X"))

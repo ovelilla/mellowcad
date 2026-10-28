@@ -1,0 +1,14 @@
+(command "_.-LAYER" "_N" "L1" "")
+_.SAVEAS
+2018
+kepB
+(progn (setvar "CECOLOR" "3") (setvar "CELTYPE" "Continuous") (setvar "CELWEIGHT" 50) (setvar "CLAYER" "L1") (setvar "INSUNITS" 6) (setvar "LUNITS" 3) (setvar "NAVVCUBEDISPLAY" 0) (setvar "LAYLOCKFADECTL" 20) (setvar "ZOOMFACTOR" 50) (setvar "PICKBOX" 7) (setvar "CLIPROMPTLINES" 6) (setvar "TEXTEDITMODE" 1) (setvar "ATTDIA" 0) (setvar "ATTREQ" 0) (setvar "HPORIGIN" (list 5.0 5.0)) (setvar "POLARDIST" 5.0) (setvar "LASTPOINT" (list 7.0 7.0 0.0)) (setvar "MBUTTONPAN" 0) (setvar "LWDEFAULT" 50) (setvar "SHORTCUTMENU" 1) (setvar "APERTURE" 12) (princ))
+_.SAVEAS
+2018
+kepX
+_.OPEN
+kepB
+(foreach v (list "DWGNAME" "CECOLOR" "CELTYPE" "CELWEIGHT" "CLAYER" "INSUNITS" "LUNITS" "NAVVCUBEDISPLAY" "LAYLOCKFADECTL" "ZOOMFACTOR" "PICKBOX" "CLIPROMPTLINES" "TEXTEDITMODE" "ATTDIA" "ATTREQ" "HPORIGIN" "POLARDIST" "LASTPOINT" "MBUTTONPAN" "LWDEFAULT" "SHORTCUTMENU" "APERTURE") (princ (strcat "\nV " v " = ")) (prin1 (getvar v)))
+_.OPEN
+kepX
+(foreach v (list "DWGNAME" "CECOLOR" "CELTYPE" "CELWEIGHT" "CLAYER" "INSUNITS" "LUNITS" "NAVVCUBEDISPLAY" "LAYLOCKFADECTL" "ZOOMFACTOR" "PICKBOX" "CLIPROMPTLINES" "TEXTEDITMODE" "ATTDIA" "ATTREQ" "HPORIGIN" "POLARDIST" "LASTPOINT" "MBUTTONPAN" "LWDEFAULT" "SHORTCUTMENU" "APERTURE") (princ (strcat "\nV " v " = ")) (prin1 (getvar v)))

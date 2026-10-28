@@ -1,0 +1,76 @@
+_TEXTSIZE
+0
+3
+(getvar "TEXTSIZE")
+_TEXTSIZE
+-1
+3
+(getvar "TEXTSIZE")
+_FILLETRAD
+-1
+2
+(getvar "FILLETRAD")
+_CHAMFERA
+-1
+2
+(getvar "CHAMFERA")
+_CHAMFERB
+-1
+2
+(getvar "CHAMFERB")
+_PLINEWID
+-1
+2
+(getvar "PLINEWID")
+_THICKNESS
+-1
+2
+(getvar "THICKNESS")
+_ELEVATION
+-1
+2
+(getvar "ELEVATION")
+_HPSCALE
+0
+2
+(getvar "HPSCALE")
+_HPSCALE
+-1
+2
+(getvar "HPSCALE")
+_HPANG
+30
+45
+(getvar "HPANG")
+_HPANG
+-30
+45
+(getvar "HPANG")
+_HPANG
+400
+45
+(getvar "HPANG")
+_CIRCLERAD
+-1
+2
+(getvar "CIRCLERAD")
+_CIRCLERAD
+0
+2
+(getvar "CIRCLERAD")
+_OFFSETDIST
+-1
+2
+(getvar "OFFSETDIST")
+_OFFSETDIST
+-2
+3
+(getvar "OFFSETDIST")
+_OFFSETDIST
+0
+2
+(getvar "OFFSETDIST")
+_POLARDIST
+-1
+2
+(getvar "POLARDIST")

@@ -1,0 +1,56 @@
+_CLAYER
+FOO
+0
+(getvar "CLAYER")
+_CLAYER
+Defpoints
+0
+(getvar "CLAYER")
+_TEXTSTYLE
+FOO
+Standard
+(getvar "TEXTSTYLE")
+_TEXTSTYLE
+standard
+Annotative
+(getvar "TEXTSTYLE")
+_INSNAME
+FOO
+.
+(getvar "INSNAME")
+_INSNAME
+.
+FOO
+(getvar "INSNAME")
+_HPNAME
+_ANSI31
+ANGLE
+(getvar "HPNAME")
+_HPNAME
+ANSI31
+ANGLE
+(getvar "HPNAME")
+_HPNAME
+ansi31
+ANGLE
+(getvar "HPNAME")
+_HPNAME
+SOLID
+ANGLE
+(getvar "HPNAME")
+_HPNAME
+_SOLID
+ANGLE
+(getvar "HPNAME")
+_HPNAME
+FOO
+ANGLE
+(getvar "HPNAME")
+_HPNAME
+.
+ANGLE
+(getvar "HPNAME")
+_HPNAME
+_USER
+ANGLE
+(getvar "HPNAME")

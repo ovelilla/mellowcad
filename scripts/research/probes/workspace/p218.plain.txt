@@ -1,0 +1,212 @@
+_CECOLOR
+1
+_U
+(getvar "CECOLOR")
+_CELTYPE
+Continuous
+_U
+(getvar "CELTYPE")
+_CELWEIGHT
+50
+_U
+(getvar "CELWEIGHT")
+_TEXTSIZE
+5
+_U
+(getvar "TEXTSIZE")
+_HPNAME
+SOLID
+_U
+(getvar "HPNAME")
+_HPANG
+30
+_U
+(getvar "HPANG")
+_HPSCALE
+2
+_U
+(getvar "HPSCALE")
+_HPORIGIN
+5,5
+_U
+(getvar "HPORIGIN")
+_INSNAME
+FOO
+_U
+(getvar "INSNAME")
+_LASTPOINT
+5,5
+_U
+(getvar "LASTPOINT")
+_CIRCLERAD
+3
+_U
+(getvar "CIRCLERAD")
+_OFFSETDIST
+4
+_U
+(getvar "OFFSETDIST")
+_POLYSIDES
+6
+_U
+(getvar "POLYSIDES")
+_PLINEWID
+1
+_U
+(getvar "PLINEWID")
+_FILLETRAD
+2
+_U
+(getvar "FILLETRAD")
+_CHAMFERA
+2
+_U
+(getvar "CHAMFERA")
+_ELEVATION
+5
+_U
+(getvar "ELEVATION")
+_THICKNESS
+2
+_U
+(getvar "THICKNESS")
+_FILLMODE
+0
+_U
+(getvar "FILLMODE")
+_LWDISPLAY
+1
+_U
+(getvar "LWDISPLAY")
+_ATTMODE
+0
+_U
+(getvar "ATTMODE")
+_NAVVCUBEDISPLAY
+0
+_U
+(getvar "NAVVCUBEDISPLAY")
+_LUPREC
+2
+_U
+(getvar "LUPREC")
+_LUNITS
+3
+_U
+(getvar "LUNITS")
+_INSUNITS
+6
+_U
+(getvar "INSUNITS")
+_ORTHOMODE
+1
+_U
+(getvar "ORTHOMODE")
+_SNAPMODE
+1
+_U
+(getvar "SNAPMODE")
+_SNAPUNIT
+5,5
+_U
+(getvar "SNAPUNIT")
+_GRIDMODE
+0
+_U
+(getvar "GRIDMODE")
+_OSMODE
+1
+_U
+(getvar "OSMODE")
+_AUTOSNAP
+63
+_U
+(getvar "AUTOSNAP")
+_POLARANG
+45
+_U
+(getvar "POLARANG")
+_POLARDIST
+5
+_U
+(getvar "POLARDIST")
+_POLARMODE
+1
+_U
+(getvar "POLARMODE")
+_DYNMODE
+1
+_U
+(getvar "DYNMODE")
+_SELECTIONCYCLING
+1
+_U
+(getvar "SELECTIONCYCLING")
+_SHORTCUTMENU
+1
+_U
+(getvar "SHORTCUTMENU")
+_PICKBOX
+5
+_U
+(getvar "PICKBOX")
+_ZOOMFACTOR
+50
+_U
+(getvar "ZOOMFACTOR")
+_LAYLOCKFADECTL
+20
+_U
+(getvar "LAYLOCKFADECTL")
+_CLIPROMPTLINES
+5
+_U
+(getvar "CLIPROMPTLINES")
+_TRIMEXTENDMODE
+0
+_U
+(getvar "TRIMEXTENDMODE")
+_EDGEMODE
+1
+_U
+(getvar "EDGEMODE")
+_TEXTEDITMODE
+1
+_U
+(getvar "TEXTEDITMODE")
+_SPLMETHOD
+1
+_U
+(getvar "SPLMETHOD")
+_SPLKNOTS
+1
+_U
+(getvar "SPLKNOTS")
+_SPLDEGREE
+4
+_U
+(getvar "SPLDEGREE")
+_ARRAYASSOCIATIVITY
+0
+_U
+(getvar "ARRAYASSOCIATIVITY")
+_ATTDIA
+0
+_U
+(getvar "ATTDIA")
+_ATTREQ
+0
+_U
+(getvar "ATTREQ")
+_AFLAGS
+3
+_U
+(getvar "AFLAGS")
+_MBUTTONPAN
+0
+_U
+(getvar "MBUTTONPAN")
+_LWDEFAULT
+50
+_U
+(getvar "LWDEFAULT")

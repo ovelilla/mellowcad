@@ -1,0 +1,8 @@
+(princ)
+_SETVAR
+USERS1
+abc
+_SETVAR
+USERS1
+.
+(getvar "USERS1")

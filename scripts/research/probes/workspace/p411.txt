@@ -1,0 +1,9 @@
+(princ)
+_LINE
+0,0
+'AUPREC
+'_ZOOM
+_E
+3
+10,0
+

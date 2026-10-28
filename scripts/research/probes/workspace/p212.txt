@@ -1,0 +1,44 @@
+_SNAPUNIT
+5
+7,7
+(getvar "SNAPUNIT")
+_SNAPUNIT
+5,8
+7,7
+(getvar "SNAPUNIT")
+_SNAPUNIT
+0,0
+7,7
+(getvar "SNAPUNIT")
+_SNAPUNIT
+-5,5
+7,7
+(getvar "SNAPUNIT")
+_SNAPUNIT
+0,5
+7,7
+(getvar "SNAPUNIT")
+_LASTPOINT
+10,20
+1,1
+(getvar "LASTPOINT")
+_LASTPOINT
+1,2,3
+1,1
+(getvar "LASTPOINT")
+_HPORIGIN
+10,20
+1,1
+(getvar "HPORIGIN")
+_HPORIGIN
+1,2,3
+1,1
+(getvar "HPORIGIN")
+_HPORIGIN
+FOO
+1,1
+(getvar "HPORIGIN")
+_LASTPOINT
+@5,0
+1,1
+(getvar "LASTPOINT")

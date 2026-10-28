@@ -1,0 +1,17 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+AB CD
+0,0
+_L
+
+(tblsearch "BLOCK" "AB CD")
+_-INSERT
+AB CD
+0,0
+1
+1
+0
+(cdr (assoc 2 (entget (entlast))))

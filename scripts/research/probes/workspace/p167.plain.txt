@@ -1,0 +1,5 @@
+(princ)
+_SHORTCUTMENU
+0
+_U
+(getvar "SHORTCUTMENU")

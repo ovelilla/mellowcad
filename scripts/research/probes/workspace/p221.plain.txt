@@ -1,0 +1,18 @@
+_CIRCLE
+0,0
+5
+_U
+(getvar "CIRCLERAD")
+_POLYGON
+6
+0,0
+_I
+5
+_U
+(getvar "POLYSIDES")
+_FILLET
+_R
+2
+
+_U
+(getvar "FILLETRAD")

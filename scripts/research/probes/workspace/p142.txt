@@ -1,0 +1,5 @@
+(princ)
+_SETVAR
+LASTPOINT
+1,2,3
+(getvar "LASTPOINT")

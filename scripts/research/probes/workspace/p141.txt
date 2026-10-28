@@ -1,0 +1,6 @@
+(princ)
+_SETVAR
+SNAPUNIT
+FOO
+3,4
+(getvar "SNAPUNIT")

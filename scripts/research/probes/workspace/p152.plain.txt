@@ -1,0 +1,10 @@
+(princ)
+_LINE
+0,0
+10,0
+
+_SETVAR
+ORTHOMODE
+
+_U
+(sslength (ssget "_X"))

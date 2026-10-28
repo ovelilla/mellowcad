@@ -1,0 +1,8 @@
+(princ)
+LINEA
+0,0
+'MODIVAR
+ORTHOMODE
+1
+10,5
+

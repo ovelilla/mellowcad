@@ -1,0 +1,7 @@
+(princ)
+_AUPREC
+3
+_U
+(getvar "AUPREC")
+_REDO
+(getvar "AUPREC")

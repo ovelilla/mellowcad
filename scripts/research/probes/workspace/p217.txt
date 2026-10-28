@@ -1,0 +1,26 @@
+_CELWEIGHT
+26
+2
+(getvar "CELWEIGHT")
+_CELWEIGHT
+33
+2
+(getvar "CELWEIGHT")
+_CECOLOR
+1
+_CELTYPE
+Continuous
+_LINE
+0,0
+10,0
+
+_MPDUMP
+-
+_TEXTSIZE
+5
+_-TEXT
+0,20
+
+0
+A
+(cdr (assoc 40 (entget (entlast))))

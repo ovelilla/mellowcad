@@ -1,0 +1,7 @@
+(princ)
+_SETVAR
+OSMODE
+99999
+FOO
+37
+(getvar "OSMODE")

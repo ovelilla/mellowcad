@@ -1,0 +1,5 @@
+(princ)
+'AUPREC
+3
+_U
+(getvar "AUPREC")

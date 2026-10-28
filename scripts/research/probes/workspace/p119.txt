@@ -1,0 +1,8 @@
+(princ)
+_LINE
+0,0
+'_ZOOM
+'ORTHOMODE
+_E
+10,0
+

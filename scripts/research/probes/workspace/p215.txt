@@ -1,0 +1,44 @@
+_CELTYPE
+Continuous
+2
+(getvar "CELTYPE")
+_CELTYPE
+DASHED
+2
+(getvar "CELTYPE")
+_CELTYPE
+BYBLOCK
+2
+(getvar "CELTYPE")
+_CELTYPE
+bylayer
+2
+(getvar "CELTYPE")
+_CELTYPE
+FOO
+2
+(getvar "CELTYPE")
+_CELTYPE
+PORBLOQUE
+2
+(getvar "CELTYPE")
+_CELTYPE
+PORCAPA
+2
+(getvar "CELTYPE")
+_CECOLOR
+PORBLOQUE
+2
+(getvar "CECOLOR")
+_CECOLOR
+rojo
+2
+(getvar "CECOLOR")
+_CECOLOR
+PORCAPA
+2
+(getvar "CECOLOR")
+_CECOLOR
+red
+2
+(getvar "CECOLOR")

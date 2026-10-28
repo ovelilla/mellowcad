@@ -1,0 +1,4 @@
+(princ)
+_ORTHOMODE
+1
+(getvar "ORTHOMODE")

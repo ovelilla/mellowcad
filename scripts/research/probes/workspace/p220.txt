@@ -1,0 +1,6 @@
+_DIMSCALE
+2
+(getvar "DIMSTYLE")
+_-DIMSTYLE
+_?
+

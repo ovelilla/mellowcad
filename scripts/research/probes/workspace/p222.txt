@@ -1,0 +1,56 @@
+_SNAPMODE
+3
+0
+(getvar "SNAPMODE")
+_SNAPMODE
+-1
+0
+(getvar "SNAPMODE")
+_SNAPMODE
+65535
+0
+(getvar "SNAPMODE")
+_INSUNITS
+1
+4
+(getvar "INSUNITS")
+_INSUNITS
+2
+4
+(getvar "INSUNITS")
+_INSUNITS
+5
+4
+(getvar "INSUNITS")
+_INSUNITS
+20
+4
+(getvar "INSUNITS")
+_INSUNITS
+22
+4
+(getvar "INSUNITS")
+_INSUNITS
+24
+4
+(getvar "INSUNITS")
+_ORTHOMODE
+-1
+0
+(getvar "ORTHOMODE")
+_GRIDMODE
+-1
+0
+(getvar "GRIDMODE")
+_TEXTSIZE
+-2.5
+3
+(getvar "TEXTSIZE")
+_PLINEWID
+0
+2
+(getvar "PLINEWID")
+_FILLETRAD
+0
+2
+(getvar "FILLETRAD")

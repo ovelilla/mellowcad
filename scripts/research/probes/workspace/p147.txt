@@ -1,0 +1,8 @@
+(princ)
+_SETVAR
+USERI1
+FOO
+1.5
+99999999
+5
+(getvar "USERI1")

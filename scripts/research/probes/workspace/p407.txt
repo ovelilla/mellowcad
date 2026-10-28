@@ -1,0 +1,14 @@
+_LINE
+0,0
+10,0
+
+_-BLOCK
+AB CD
+0,0
+_L
+
+_-PURGE
+_B
+AB CD
+_N
+(tblsearch "BLOCK" "AB CD")

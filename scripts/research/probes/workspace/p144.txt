@@ -1,0 +1,5 @@
+(princ)
+_DISTANCE
+(getvar "CMDNAMES")
+'_DISTANCE
+(getvar "CMDNAMES")

@@ -1,0 +1,8 @@
+(princ)
+_LINE
+0,0
+'AUPREC
+2
+10,0
+
+(getvar "AUPREC")

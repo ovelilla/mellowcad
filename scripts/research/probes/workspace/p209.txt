@@ -1,0 +1,52 @@
+_CELTYPE
+Continuous
+ByLayer
+(getvar "CELTYPE")
+_CELTYPE
+DASHED
+Continuous
+(getvar "CELTYPE")
+_CELTYPE
+BYBLOCK
+Continuous
+(getvar "CELTYPE")
+_CELTYPE
+bylayer
+Continuous
+(getvar "CELTYPE")
+_CELTYPE
+FOO
+Continuous
+(getvar "CELTYPE")
+_CELWEIGHT
+-2
+-1
+(getvar "CELWEIGHT")
+_CELWEIGHT
+-3
+-1
+(getvar "CELWEIGHT")
+_CELWEIGHT
+25
+-1
+(getvar "CELWEIGHT")
+_CELWEIGHT
+0.25
+-1
+(getvar "CELWEIGHT")
+_CELWEIGHT
+30
+-1
+(getvar "CELWEIGHT")
+_CELWEIGHT
+-4
+-1
+(getvar "CELWEIGHT")
+_CELWEIGHT
+211
+-1
+(getvar "CELWEIGHT")
+_CELWEIGHT
+200
+-1
+(getvar "CELWEIGHT")

@@ -1,0 +1,60 @@
+_CLAYER
+FOO
+2
+(getvar "CLAYER")
+_TEXTSTYLE
+FOO
+2
+(getvar "TEXTSTYLE")
+_TEXTSTYLE
+standard
+2
+(getvar "TEXTSTYLE")
+_INSNAME
+FOO
+2
+(getvar "INSNAME")
+_INSNAME
+.
+2
+(getvar "INSNAME")
+_HPNAME
+_ANSI31
+2
+(getvar "HPNAME")
+_HPNAME
+ANSI31
+2
+(getvar "HPNAME")
+_HPNAME
+ansi31
+2
+(getvar "HPNAME")
+_HPNAME
+SOLID
+2
+(getvar "HPNAME")
+_HPNAME
+_SOLID
+2
+(getvar "HPNAME")
+_HPNAME
+FOO
+2
+(getvar "HPNAME")
+_HPNAME
+.
+2
+(getvar "HPNAME")
+_HPNAME
+_USER
+2
+(getvar "HPNAME")
+_HPNAME
+USER
+2
+(getvar "HPNAME")
+_HPNAME
+_ANSI31,_O
+2
+(getvar "HPNAME")

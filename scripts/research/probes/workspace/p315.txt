@@ -1,0 +1,5 @@
+_LINE
+0,0
+_CLEANSCREENON
+10,0
+

@@ -1,0 +1,11 @@
+_UCS
+_NA
+_S
+AB CD
+_PLAN
+_U
+AB CD
+_UCS
+_NA
+_D
+AB CD

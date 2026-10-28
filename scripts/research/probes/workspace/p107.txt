@@ -1,0 +1,7 @@
+(princ)
+_SETVAR
+ORTHOMODE
+1
+
+
+

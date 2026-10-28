@@ -1,0 +1,5 @@
+(princ)
+_ZOOMFACTOR
+40
+_U
+(getvar "ZOOMFACTOR")

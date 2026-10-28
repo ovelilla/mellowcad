@@ -1,0 +1,9 @@
+(princ)
+_SETVAR
+
+(getvar "CMDNAMES")
+ORTHOMODE
+1
+
+
+0

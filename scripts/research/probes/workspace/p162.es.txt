@@ -1,0 +1,7 @@
+(princ)
+AUPREC
+2
+MODIVAR
+
+3
+(getvar "AUPREC")

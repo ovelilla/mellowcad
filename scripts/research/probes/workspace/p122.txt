@@ -1,0 +1,4 @@
+(princ)
+_SETVAR
+_LINE
+(getvar "CMDNAMES")

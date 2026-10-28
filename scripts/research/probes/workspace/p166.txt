@@ -1,0 +1,7 @@
+(princ)
+_SETVAR
+UCSICON
+
+_SETVAR
+ELEV
+(getvar "CMDNAMES")

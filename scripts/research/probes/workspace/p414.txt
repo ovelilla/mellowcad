@@ -1,0 +1,6 @@
+(princ)
+_AUPREC
+'ORTHOMODE
+1
+3
+(getvar "ORTHOMODE")

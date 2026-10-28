@@ -1,0 +1,7 @@
+(getvar "ACADVER")
+(getvar "_VERNUM")
+_AUPREC
+
+_SETVAR
+_ORTHOMODE
+

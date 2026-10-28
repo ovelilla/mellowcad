@@ -1,0 +1,9 @@
+(princ)
+ORTHOMODE
+1
+_AUPREC
+3
+_UNDO
+2
+(getvar "ORTHOMODE")
+(getvar "AUPREC")

@@ -1,0 +1,6 @@
+(princ)
+_SETVAR
+AUPREC
+9
+3
+(getvar "AUPREC")

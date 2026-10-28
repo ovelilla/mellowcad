@@ -1,0 +1,17 @@
+_-STYLE
+AB CD
+
+0
+1
+0
+_N
+_N
+_N
+(getvar "TEXTSTYLE")
+_-TEXT
+_S
+AB CD
+0,0
+2.5
+0
+X

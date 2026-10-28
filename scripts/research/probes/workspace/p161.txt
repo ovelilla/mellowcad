@@ -1,0 +1,11 @@
+(princ)
+_LINE
+0,0
+10,0
+
+(sssetfirst nil (ssget "_X"))
+_SETVAR
+AUPREC
+2
+(ssget "_I")
+(getvar "LASTPOINT")
