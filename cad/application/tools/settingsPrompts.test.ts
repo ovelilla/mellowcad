@@ -352,6 +352,24 @@ describe("'AREA and 'UCSICON read and set their system variables", () => {
     })
   })
 
+  // probe ucs/p430, en-US and es-ES
+  it("is one step after a command, U and REDO echoing 'UCSICON", () => {
+    for (const [locale, line, undo, redo, redone] of [
+      [undefined, "LINE", "U", "REDO", "Everything has been redone"],
+      [es, "LINEA", "H", "REHACER", "Todo repetido"],
+    ] as const) {
+      const cad = answer(createHarness({ locale }), line, "0,0", "10,0", "")
+      answer(cad, "'_UCSICON", "1", undo)
+      const icon = () => cad.runtime.document.getSettings().ucsIcon
+      expect(cad.commandLog().slice(-2)).toEqual([undo, "'UCSICON"])
+      expect(icon()).toEqual({ visible: true, atOrigin: true })
+      answer(cad, redo)
+      expect(cad.commandLog().slice(-3)).toEqual([redo, "'UCSICON", redone])
+      expect(icon()).toEqual({ visible: true, atOrigin: false })
+      expect(cad.entities()).toHaveLength(1)
+    }
+  })
+
   it("runs the commands when typed bare", () => {
     const cad = createHarness()
     answer(cad, "'UCSICON", "2", "UCSICON")

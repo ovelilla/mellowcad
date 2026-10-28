@@ -1448,14 +1448,52 @@ describe("UCS OBject's and ZAxis Object's picks", () => {
       answer(cad, "30,-30")
       at(cad, [10, -30], [0, -1])
     }
-    // By a mode, as BREAK's (no probe left for it: by analogy).
-    const found = withLocked([lockedLine()])
-    answer(found, "UCS", "ZA", "O", "W", "-10,-10", "100,100")
-    expect(found.commandLog().slice(-2)).toEqual([
-      "The object is on a locked layer.",
-      "No object found",
-    ])
-    expect(found.state().commandLine.prompt).toBe("UCS Select object:")
+  })
+
+  it("ZAxis Object's mode asks again on a locked line, in BREAK's words, and on nothing (p435, p437)", () => {
+    for (const [locale, ucs, zAxis, window, locked, none, select] of [
+      [
+        undefined,
+        "UCS",
+        "ZA",
+        "W",
+        "The object is on a locked layer.",
+        "No object found",
+        "Select object:",
+      ],
+      [
+        es,
+        "SCP",
+        "EZ",
+        "V",
+        "El objeto está en una capa bloqueada.",
+        "No se ha encontrado ningún objeto",
+        "Designe objeto:",
+      ],
+    ] as const) {
+      for (const [probe, corners, said] of [
+        ["p435", ["-10,-10", "100,100"], [locked, none]],
+        ["p437", ["150,150", "190,190"], [none]],
+      ] as const) {
+        const cad = withLocked(
+          [lockedLine(), lineOf(p(10, -30), p(60, -30))],
+          locale
+        )
+        answer(cad, ucs, zAxis, "O", window, ...corners)
+        expect(cad.commandLog().slice(-said.length - 1), probe).toEqual([
+          expect.stringMatching(new RegExp(`${corners[1]}$`)),
+          ...said,
+        ])
+        expect(cad.state().commandLine.prompt, probe).toMatch(
+          new RegExp(` ${select}$`)
+        )
+        answer(cad, "30,-30")
+        at(cad, [10, -30], [0, -1])
+        expect(lastPoint(cad), probe).toMatch(
+          /X = 0[.,]00 +Y = 0[.,]00 +Z = -20[.,]00/
+        )
+      }
+    }
   })
 
   it("OBject on a hatch says it defines no coordinate system, once, and ends (p311)", () => {
@@ -1473,6 +1511,102 @@ describe("UCS OBject's and ZAxis Object's picks", () => {
       expect(cad.activeToolId()).toBe("select")
       at(cad, [0, 0], [1, 0])
       expect(lastPoint(cad)).toMatch(/ 30[.,]00 .* 30[.,]00 /)
+    }
+  })
+
+  it("OBject's mode takes the newest found, a hatch too, which it refuses and ends (p433, p440)", () => {
+    for (const [locale, ucs, object, window, words] of [
+      [
+        undefined,
+        "UCS",
+        "OB",
+        "W",
+        "This object does not define a coordinate system",
+      ],
+      [es, "SCP", "B", "V", "Este objeto no define un sistema de coordenadas"],
+    ] as const) {
+      // p433: the hatch alone in the window, its boundary erased.
+      const alone = createHarness({
+        locale,
+        entities: [
+          hatchOf([loopOf(p(0, 0), p(60, 60))]),
+          lineOf(p(0, -30), p(100, -30)),
+        ],
+      })
+      answer(alone, ucs, object, window, "-10,-10", "70,70")
+      expect(alone.commandLog().at(-1)).toBe(words)
+      expect(alone.activeToolId()).toBe("select")
+      at(alone, [0, 0], [1, 0])
+      expect(lastPoint(alone)).toMatch(/ 0[.,]00 .* 0[.,]00 .* 0[.,]00/)
+
+      // p440: a line, then a newer hatch, both in the window: the hatch is
+      // taken and refused; then a newer line is taken.
+      const cad = createHarness({
+        locale,
+        entities: [
+          lineOf(p(-5, -5), p(65, -5)),
+          hatchOf([loopOf(p(0, 0), p(60, 60))]),
+        ],
+      })
+      answer(cad, ucs, object, window, "-10,-10", "70,70")
+      expect(cad.commandLog().at(-1)).toBe(words)
+      expect(cad.activeToolId()).toBe("select")
+      at(cad, [0, 0], [1, 0])
+      answer(cad, locale ? "LINEA" : "LINE", "-5,80", "65,80", "")
+      answer(cad, ucs, object, window, "-10,-10", "70,90")
+      at(cad, [-5, 80], [1, 0])
+      answer(cad, locale ? "LINEA" : "LINE", "@", "@10,0", "")
+      expect((cad.latest() as LineEntity).start).toBeCloseToPoint(p(0, 0))
+    }
+  })
+
+  it("ZAxis Object's mode takes the newest found, refusing one without ends and asking again (p436, p441)", () => {
+    for (const [locale, ucs, zAxis, window, words, select] of [
+      [
+        undefined,
+        "UCS",
+        "ZA",
+        "W",
+        "Z axis option not supported for selected object.",
+        "Select object:",
+      ],
+      [
+        es,
+        "SCP",
+        "EZ",
+        "V",
+        "No se admite la opción de eje Z para el objeto seleccionado.",
+        "Designe objeto:",
+      ],
+    ] as const) {
+      for (const [probe, entities, corners] of [
+        [
+          "p436",
+          [circleOf(p(50, 50), 10), lineOf(p(10, -30), p(60, -30))],
+          ["30,30", "70,70"],
+        ],
+        [
+          "p441",
+          [
+            lineOf(p(10, -30), p(60, -30)),
+            lineOf(p(30, 30), p(70, 70)),
+            circleOf(p(50, 50), 10),
+          ],
+          ["20,20", "80,80"],
+        ],
+      ] as const) {
+        const cad = createHarness({ locale, entities: [...entities] })
+        answer(cad, ucs, zAxis, "O", window, ...corners)
+        expect(cad.commandLog().at(-1), probe).toBe(words)
+        expect(cad.state().commandLine.prompt, probe).toMatch(
+          new RegExp(` ${select}$`)
+        )
+        answer(cad, "30,-30")
+        at(cad, [10, -30], [0, -1])
+        expect(lastPoint(cad), probe).toMatch(
+          /X = 0[.,]00 +Y = 0[.,]00 +Z = -20[.,]00/
+        )
+      }
     }
   })
 
@@ -1535,6 +1669,22 @@ describe("UCS OBject's and ZAxis Object's picks", () => {
     expect(cad.commandLog().at(-1)).toBe("No object found")
     expect(cad.activeToolId()).toBe("select")
     expect(lastPoint(cad)).toMatch(/ 150[.,]00 .* 150[.,]00 /)
+  })
+
+  it("OBject's pick takes _END and _MID, LASTPOINT at the snapped point (p432)", () => {
+    const cad = createHarness({
+      entities: [lineOf(p(10, 10), p(60, 40)), lineOf(p(0, -30), p(100, -30))],
+    })
+    answer(cad, "UCS", "OB", "_END", "58,39")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Select object to align UCS: _END of 58,39"
+    )
+    at(cad, [60, 40], [-0.8574929257, -0.5144957554])
+    expect(lastPoint(cad)).toMatch(/X = 0[.,]00 +Y = 0[.,]00 +Z = 0[.,]00/)
+
+    answer(cad, "UCS", "W", "UCS", "OB", "_MID", "50,-30")
+    at(cad, [0, -30], [1, 0])
+    expect(lastPoint(cad)).toMatch(/X = 50[.,]00 +Y = 0[.,]00 +Z = 0[.,]00/)
   })
 
   it("drops the preselection and resumes after 'ZOOM (p342, p344)", () => {

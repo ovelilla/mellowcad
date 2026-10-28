@@ -65,20 +65,27 @@ arc, open polyline or spline: the origin at the end nearest the pick, Z along th
 away, p330–p334; any other object `Z axis option not supported for selected object.` — es
 `No se admite la opción de eje Z para el objeto seleccionado.`, table 33775 — and asked again,
 p335; one on a locked layer `The object is on a locked layer.` and `No object found`, asked again,
-p341, and by a mode as BREAK's, by analogy: no probe reached it; Enter asks again, p317); at
+p341, and by a mode too, p435; Enter asks again, p317); at
 OBject's and ZAxis Object's picks the selection modes (Window, Last, Crossing, BOX, ALL, Fence,
-WPolygon, CPolygon) take the newest object found (p319–p326), read with no pick as AutoCAD 2027's
+WPolygon, CPolygon) take the newest object found whatever its type, then answer as a pick on it
+does (p319–p326): at OBject a hatch says `This object does not define a coordinate system` and ends
+UCS, the UCS kept and LASTPOINT at the WCS's origin, even with an older line in the window (p433,
+p440; a dimension is left out, OBject on one is Missing), at ZAxis Object one without ends
+`Z axis option not supported for selected object.`, asked again (p436, p441); read with no pick as AutoCAD 2027's
 console reads each kind (p314–p318) — OBject a line at its first end, a circle at angle 0, an arc at
 its start, a full ellipse with X through its point nearest the WCS's origin, an elliptical arc and a
 spline at their end nearer it, X towards the other, a polyline ending in a line at its first vertex,
 X towards its last, one ending in an arc at that arc's centre, X towards its first vertex, LASTPOINT
 left at the WCS's origin (p319); ZAxis Object at the end nearest the WCS origin (p336); a mode
-finding nothing at OBject `No object found` and UCS ends (p317) — and the pick's hover is the
+finding nothing at OBject `No object found` and UCS ends (p317), at ZAxis Object asked again (p437)
+— and the pick's hover is the
 single object's rollover, over the locked objects OBject takes (as BREAK's: **unverified** on
 the desktop here); a point typed there is a pick of
 the newest object under it, as a click is, LASTPOINT staying at that point, and on nothing — typed
 or clicked — `No object found`, which ends OBject with the UCS as it was and LASTPOINT at the point
-(a click's **unverified**: the console types, p327, p328), and asks ZAxis Object again (p329);
+(a click's **unverified**: the console types, p327, p328), and asks ZAxis Object again (p329); an
+object snap typed at OBject's pick (`_END`, `_MID`) picks at the snapped point, LASTPOINT there
+(p432);
 OBject's Enter ends UCS (p317); one undo step; saved in the drawing; World (its keyword and the first prompt's Enter) puts ELEVATION back
 to 0, the WCS current or not, in the same undo step, as -VIEW's orthographic views do; Previous,
 a restored name and orthoGraphic reaching the WCS keep it, as an iso -VIEW and PLAN do (p152,
@@ -144,20 +151,25 @@ letters answer them; the Zdepth an orthographic UCS keeps (UCSBASE,
 ORTHOGRAPHICUCS), Previous after 3point's Enter left the UCS as it was (the console steps back to
 that same UCS), OBject on a dimension (its UCS at
 creation is not stored; 2027 puts the origin at its text's middle, p310), UCSMAN, the icon's grips (UCSSELECTMODE), UCSFOLLOW, UCSVP,
-UCSDETECT, the crosshair turning with the UCS (it stays upright on screen; PLAN makes the two agree)
+UCSDETECT, the crosshair turning with the UCS (it stays upright on screen; PLAN makes the two agree),
+the X axis of a closed spline a mode finds at OBject (UCB-13): its first point is the origin, as here,
+but 2027's X on p434's is (0.5364, −0.8440), which is neither its start tangent (p438, here's
+(0.4148, −0.9099)) nor towards a control point (p439); no rule found yet
 
 ### `UCSICON` · es `SIMBSCP`
 
 **Implemented:** `Enter an option [ON/OFF/Noorigin/ORigin] <ON>:` (es
 `Indique una opción [ACT/DES/Sin origen/Origen] <ACT>`; `Invalid option keyword.`), the current
 state as the default: ON / OFF / Noorigin / ORigin (UCSICON, saved in the drawing, undoable, 3 by
-default); the icon of 2D wireframe — X and Y arms with their letters, a square at the origin when
+default; a transparent ZOOM at the prompt resumes it, Extents of an empty drawing refused with
+`** Requires a regen, cannot be transparent.`, p431); the icon of 2D wireframe — X and Y arms with their letters, a square at the origin when
 the UCS is the WCS — on the origin while it fits, else in the lower-left corner (lifted clear of the
 status readout); off the plan its arms are projected, and with the XY plane seen edge-on it is the
 broken pencil (**unverified** for a 2D icon); `'UCSICON`, at the Command prompt or mid-command (es
 also bare, `UCSICON`, its command being SIMBSCP), sets the system variable as AutoCAD 2023's console
 asks it: `Enter new value for UCSICON <3>:` (es `Indique nuevo valor para UCSICON <3>`), 1 for the
 icon shown plus 2 for it at the origin (else `Requires an integer between 0 and 3.`), one undo step
+that U and REDO echo as `'UCSICON` (p430)
 
 **Missing:** All, Selectable, Properties (the UCS Icon dialog: style, size, colour)
 

@@ -220,7 +220,11 @@ export class UcsTool implements Tool {
    * The selection modes typed at OBject's pick: AutoCAD 2027's console takes
    * the newest object found, locked or not and in silence, read with no pick
    * (`ucsFromFound`); finding none, `No object found` ends UCS (probes
-   * ucs/p314–p326, p339, p340, p317).
+   * ucs/p314–p326, p339, p340, p317). WHY whatever its type (UCS-D100): the
+   * newest is taken and then answered as a pick on it, so a hatch says it
+   * defines no coordinate system and ends UCS, even beside an older line in
+   * the window (p433, p440). A dimension stays filtered out: OBject on one
+   * is not built (UCS-D64).
    */
   private readonly objects = new ObjectSelector({
     takes: () => "singleSet",
@@ -228,9 +232,13 @@ export class UcsTool implements Tool {
     question: () => "ucsAlignObject",
     modes: ONE_OBJECT_MODES,
     accept: (ids, ctx) =>
-      ids.filter((id) => alignable(ctx.document.get(id) ?? null) !== null),
+      ids.filter((id) => ctx.document.get(id)?.type !== "dimension"),
     one: {
       take: (entity, ctx) => {
+        if (entity.type === "hatch") {
+          ctx.report(ctx.text.message("ucsNoCoordinateSystem"))
+          return this.keep(ctx)
+        }
         const ucs = ucsFromFound(entity)
         if (ucs) this.finish(ucs, null, ctx)
       },
@@ -245,18 +253,23 @@ export class UcsTool implements Tool {
   /**
    * The selection modes typed at ZAxis Object's pick: the newest object
    * found, at its end nearer the WCS's origin (probe ucs/p336). A locked one
-   * is refused as BREAK's mode refuses it, by analogy with its pick (p341):
-   * no probe reached a mode there.
+   * is refused in BREAK's words, then `No object found`, and asked again
+   * (p435). WHY whatever its type (UCS-D100): the newest unlocked one is
+   * taken and answered as a pick on it, so one without ends says the option
+   * is not supported and asks again, even beside an older line in the window
+   * (p436, p441).
    */
   private readonly zObjects = new ObjectSelector({
     takes: () => "singleSet",
     done: () => {},
     question: () => "selectObject",
     modes: ONE_OBJECT_MODES,
-    accept: (ids, ctx) =>
-      ids.filter((id) => hasEnds(ctx.document.get(id) ?? null)),
     one: {
       take: (entity, ctx) => {
+        if (!hasEnds(entity)) {
+          ctx.report(ctx.text.message("zAxisNotSupported"))
+          return
+        }
         const ucs = ucsAtEnd(entity, WCS_ORIGIN)
         if (ucs) this.finish(ucs, null, ctx)
       },
@@ -409,6 +422,10 @@ export class UcsTool implements Tool {
         return
       case "object":
       case "zObject":
+        if (input.snap) {
+          const screen = ctx.viewport.worldToScreen(input.point)
+          return this.pickObject(input.point, screen, ctx)
+        }
         this.pickObject(input.world, input.screen, ctx)
         return
       case "face":
@@ -482,6 +499,15 @@ export class UcsTool implements Tool {
   /** OBject's pick takes objects on locked layers (probe ucs/p338). */
   picksLocked(): boolean {
     return this.state.phase === "object"
+  }
+
+  /**
+   * WHY at OBject's pick: a typed object snap picks there, LASTPOINT at the
+   * snapped point (probe ucs/p432); a mode's points are points already.
+   * ZAxis Object's is unprobed.
+   */
+  takesSnapOverride(): boolean {
+    return this.state.phase === "object" && !this.inMode()
   }
 
   answerTyped(text: string, ctx: ToolContext): boolean {

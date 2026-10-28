@@ -592,6 +592,35 @@ describe("UCSICON sets the variable as AutoCAD 2027's console", () => {
     }
   })
 
+  it("refuses 'ZOOM Extents of an empty drawing at its prompt and resumes (probe ucs/p431)", () => {
+    for (const [locale, name, prompt, refusal, resuming] of [
+      [
+        undefined,
+        "UCSICON",
+        "Enter an option [ON/OFF/Noorigin/ORigin] <ON>:",
+        "** Requires a regen, cannot be transparent.",
+        "Resuming UCSICON command.",
+      ],
+      [
+        es,
+        "SIMBSCP",
+        "Indique una opción [ACT/DES/Sin origen/Origen] <ACT>:",
+        "** Regeneración necesaria, no puede ser transparente.",
+        "Reanudando el comando SIMBSCP.",
+      ],
+    ] as const) {
+      // An empty drawing, as the probe's: its extents need a regen.
+      const cad = createHarness({ locale })
+      const scale = cad.runtime.viewport.scale
+      answer(cad, name, "'_ZOOM", "_E")
+      expect(cad.commandLog().slice(-2), name).toEqual([refusal, resuming])
+      expect(cad.state().commandLine.prompt, name).toBe(`${name} ${prompt}`)
+      expect(cad.runtime.viewport.scale, name).toBe(scale)
+      answer(cad, "_OFF")
+      expect(icon(cad), name).toBe(2)
+    }
+  })
+
   it("is one step, U and REDO echoing its local name (probe ucs/p358)", () => {
     for (const [locale, name, off, undo, redo, redone] of [
       [undefined, "UCSICON", "OFF", "U", "REDO", "Everything has been redone"],
