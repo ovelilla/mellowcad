@@ -235,7 +235,7 @@ function ApplicationMenu({ engine }: { engine: CadEngine }) {
             {item(SaveAll, t("saveAs"), () => engine.runCommand("_SAVEAS"))}
             <Menu.Separator className="-mx-1 my-1 h-px bg-border" />
             {/* Drawing Utilities > Units, as the help files it. */}
-            {item(Ruler, t("units"), () => engine.runCommand("_UNITS"))}
+            {item(Ruler, t("units"), () => engine.openDrawingUnits())}
             {links.length > 0 && (
               <>
                 <Menu.Separator className="-mx-1 my-1 h-px bg-border" />

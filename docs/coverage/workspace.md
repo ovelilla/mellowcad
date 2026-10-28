@@ -23,24 +23,37 @@ menus' "… Settings" items (the Drafting Settings dialog: Snap mode's spacing i
 instead), the right-click menus of Grid, Object Snap Tracking and Lineweight, the Coordinates menu
 (Relative, Geographic, Specific)
 
-### `UNITS` / `UN` · es `UNIDADES` / `UNS`†
+### `UNITS` / `UN` / `DDUNITS` · es `UNIDADES` / `UNS` / `DDUNITS`
 
-**Implemented:** the Drawing Units dialog (es "Unidades de dibujo"), modal, opened by the command,
-the application menu's Drawing Units and the status bar's Units: Length's Type (Decimal, the only
-one: LUNITS 2) and Precision (LUPREC, 0 to 8 places, listed as `0.0000`; **unverified** that the
-list writes them so), Insertion Scale (INSUNITS: Millimeters, Centimeters, Meters — what a drawing
-unit is here, shown by the status bar and the dynamic input), Sample Output (a point as X,Y,Z and as
-distance<angle,Z, at the chosen precision, the angle at AUPREC's); OK as one undo step
-(**unverified**: no page says whether U undoes UNITS; it undoes what other commands set), Cancel or
-Escape changing nothing
+**Implemented:** the Drawing Units dialog (es "Unidades de dibujo"), modal, opened by the command
+(the aliases from both `acad.pgp` files, en:417, :505, es:284, :513; `DDUNITS` probe
+workspace/p311), the application menu's Drawing Units and the status bar's Units, which run its
+macro `'_units` (acad.cuix ID_Units: inside a command, transparently; **unverified** for the
+application menu, which acad.cuix does not hold, and what U names after the macro at `Command:`,
+`'UNITS` here): Length's Type (Decimal, the only
+one: LUNITS 2) and Precision (LUPREC, 0 to 8 places as -UNITS asks them, p300, listed as `0.0000`;
+**unverified** that the list writes them so), Insertion Scale (INSUNITS: Millimeters, Centimeters,
+Meters — what a drawing unit is here, shown by the status bar and the dynamic input), Sample Output
+(a point as X,Y,Z and as distance<angle,Z, at the chosen precision, the angle at AUPREC's). The run
+lasts until the dialog closes, one undo step U names `UNITS` (es `UNIDADES`) with OK's change in it
+(p307; -UNITS' change put back, p308), OK with nothing changed a step too (as -UNITS with every
+default, p309), Cancel too (**unverified**: the desktop's; a run is a step whatever it did) — Cancel
+or Escape changing nothing. `'UNITS` runs inside a command, which resumes once the dialog closes
+(p303); its change joins that command's step
 
 **Missing:** the other length types (Architectural, Engineering, Fractional, Scientific), Decimal's
 scientific notation for a huge length (`<1.0000E+20>` at OFFSET's distance, offset/p118; from what
 size is unprobed), the Angle
 group (AUNITS, its Precision list, ANGDIR: angles are decimal degrees, counterclockwise, at AUPREC,
 which is typed), INSUNITS' other values (Unitless, Inches…), Lighting (LIGHTINGUNITS), Direction
-(ANGBASE), Help, -UNITS; the list's own label, "Units to scale inserted content" (**unverified** in
-2026, so the group's title names it)
+(ANGBASE), Help; the list's own label, "Units to scale inserted content" (**unverified** in
+2026, so the group's title names it); -UNITS (`-UN`, es `-UNIDADES` / `-UNS`, p300, p314;
+transparent, p310; U names it, p308), which asks, after a table of report formats, `Enter choice, 1
+to 5 <2>:`, `Enter number of digits to right of decimal point (0 to 8) <4>:` (es `Indique el número
+de dígitos a la derecha del punto decimal (de 0 a 8) <4>:`), after a table of angle systems `Enter
+choice, 1 to 5 <1>:`, `Enter number of fractional places for display of angles (0 to 8) <0>:`, after
+a table of directions `Enter direction for angle 0 <0>:` and `Measure angles clockwise? [Yes/No]
+<N>`, and no insertion scale (p309)
 
 ### `SETVAR` / `SET` · es `MODIVAR` / `MV` · a system variable typed by its name (`AUPREC`…)
 
@@ -120,14 +133,19 @@ Toolbar, the command line and the status bar ("Clean screen does not hide the Qu
 the command window, or the status bar"); the status bar's Clean Screen (es Limpiar pantalla) and
 Ctrl+0 toggle it; a palette opened meanwhile (LAYER, Ctrl+1) shows the panel again (**unverified**);
 not saved (CLEANSCREENSTATE, read only by SETVAR, is Not-saved), so a reload starts without it;
-CLEANSCREENOPTIONS, sometimes cited, is BricsCAD's
+CLEANSCREENOPTIONS, sometimes cited, is BricsCAD's. Typed, each is an undo step U names as invoked
+(es string tables 52590, 52589) and U and REDO toggle back, one that changes nothing too (probes
+workspace/p306, p316); program state, so it leaves the drawing unchanged. Not transparent:
+`'CLEANSCREENON` inside a command is refused, `** That command may not be invoked transparently **`
+(p305)
 
 ### Top bar
 
 **Implemented:** the application menu (New, Open, Save, Save As, then Drawing Units, which the help
 files under Drawing Utilities > Units, and the page's language, which AutoCAD has no menu for) and
 the Quick Access Toolbar in AutoCAD's order — New (QNEW), Open, Save, Save As, Undo, Redo —, each
-run as its command by its global name (`_QSAVE`), so it echoes; the Home tab's Layers and Properties
+run as its command by its global name (`_QSAVE`), so it echoes (Drawing Units as UNITS' macro,
+`'_units`); the Home tab's Layers and Properties
 panels beside them (`Object properties`, `Layers`), and at the end View's palette toggles: Styles,
 Blocks and the command line — WHY one 36 px row instead of the ribbon: a ribbon costs 70–150 px of
 height, which a wide screen is short of

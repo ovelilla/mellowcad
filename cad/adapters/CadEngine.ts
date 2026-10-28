@@ -655,6 +655,10 @@ export class CadEngine {
     this.runtime.setUnitsDialog(open)
   }
 
+  openDrawingUnits(): void {
+    this.runtime.openDrawingUnits()
+  }
+
   closeLockedObjectsDialog(): void {
     this.runtime.closeLockedObjectsDialog()
   }

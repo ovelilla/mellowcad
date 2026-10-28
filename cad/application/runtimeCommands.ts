@@ -20,6 +20,7 @@ import { MTextTool } from "./tools/MTextTool"
 import { TextTool } from "./tools/TextTool"
 import { AttEditTool } from "./tools/AttEditTool"
 import { HatchTool } from "./tools/HatchTool"
+import { UnitsTool } from "./tools/UnitsTool"
 
 /**
  * The commands built here that AutoCAD's console runs transparently (2023's;
@@ -69,7 +70,7 @@ const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set([
  */
 export function registerCommands(
   runtime: CadRuntime,
-  startTool: (id: string) => void,
+  startTool: (tool: string | Tool) => void,
   registerCommand: (definition: CommandDefinition) => void
 ): void {
   const tools = new Set(runtime.listTools().map((tool) => tool.id))
@@ -214,10 +215,11 @@ export function registerCommands(
     id: "PROPERTIESCLOSE",
     run: () => runtime.closePalette("properties"),
   })
-  // UNITS opens the Drawing Units dialog, which the host draws.
-  register({ id: "UNITS", run: () => runtime.setUnitsDialog(true) })
-  register({ id: "CLEANSCREENON", run: () => runtime.setCleanScreen(true) })
-  register({ id: "CLEANSCREENOFF", run: () => runtime.setCleanScreen(false) })
+  // UNITS runs while the Drawing Units dialog, which the host draws, shows.
+  const units = () => new UnitsTool((open) => runtime.setUnitsDialog(open))
+  register({ id: "UNITS", makeTool: units, run: () => startTool(units()) })
+  register({ id: "CLEANSCREENON", run: () => runtime.cleanScreenStep(true) })
+  register({ id: "CLEANSCREENOFF", run: () => runtime.cleanScreenStep(false) })
 }
 
 /**

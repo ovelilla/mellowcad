@@ -114,7 +114,7 @@ LAYER ["LA","DDLMODES"] "Manage layers and layer properties"
 LAYERCLOSE [] "Close the Layer Properties Manager"
 PROPERTIES ["PR","CH","MO"] "Show the properties of the selected objects"
 PROPERTIESCLOSE [] "Close the Properties palette"
-UNITS ["UN"] "Control the precision and display format of coordinates and distances"
+UNITS ["UN","DDUNITS"] "Control the precision and display format of coordinates and distances"
 CLEANSCREENON [] "Clear toolbars and palettes from the screen"
 CLEANSCREENOFF [] "Restore the display as it was before Clean Screen"
 ## tools

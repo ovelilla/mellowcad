@@ -979,7 +979,8 @@ export const en: EngineCatalog = {
       ],
       "UNITS": [
         "UNITS",
-        "UN"
+        "UN",
+        "DDUNITS"
       ],
       "LTSCALE": [
         "LTSCALE",

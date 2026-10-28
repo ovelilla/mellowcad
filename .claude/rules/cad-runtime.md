@@ -252,11 +252,13 @@ erases leaves the Previous set for good (`executeTool`).
 Settings are split on purpose. What AutoCAD's U undoes goes through a command
 (`UpdateSettingsCommand`, restoring exactly the keys it patched; a no-op patch executes nothing,
 bar UCS's for LASTPOINT): every variable SETVAR sets, the UCS and its table, LTSCALE, UNITS
-(`applyDrawingUnits`), `setCurrentProperties`, `toggleLineweightDisplay`. A setting another implies belongs in the same patch (UCS
-World and an orthographic -VIEW zero ELEVATION). Host setters (`setDocumentUnit`,
-`setDocumentPrecision`, `setLtScale`) write the document directly and are not undoable. The layer and style tables, CLAYER, TEXTSTYLE and DIMSTYLE are commands; the Layer Properties Manager's go through
-`executeLayerEdit` (UNDO Layer folds them). NAVVCUBE is a `CadDocument` setter
-(`setViewCubeVisible`), so U leaves it, where AutoCAD's puts it back (move/p238, view.md Missing).
+(`applyDrawingUnits` in `UnitsTool`'s run), `setCurrentProperties`, `toggleLineweightDisplay`,
+CLEANSCREENON / OFF (`SessionSettingCommand`). What another setting implies goes in its patch
+(UCS World and an orthographic -VIEW zero ELEVATION). Host setters (`setDocumentUnit`,
+`setDocumentPrecision`, `setLtScale`) write the document, never undoable. Layer and style tables,
+CLAYER, TEXTSTYLE, DIMSTYLE: commands; the Layer Properties Manager's go through
+`executeLayerEdit` (UNDO Layer folds them). U leaves NAVVCUBE (`setViewCubeVisible`); AutoCAD's
+puts it back (move/p238, view.md Missing).
 
 A command that adds **table entries alongside geometry** (BLOCK's definition, PASTECLIP's layers,
 styles and blocks) carries them through the history and undoes them in reverse order (the tables

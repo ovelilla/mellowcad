@@ -22,8 +22,9 @@ explains):
   `Muestra de salida` and INSUNITS' `Milímetros`, `Centímetros`, `Metros` from 75419F91 and
   A58A87BB, the status bar's `Limpiar pantalla`, `Personalización`, `Espacio modelo` and
   `MODELO` from E3B34B0A and 5FD72B72.
-  `UNS`† and `EC`† come from a transcription of the Spanish `acad.pgp` (datech.es), as no 2026
-  source lists them; ESCALATL's prompt is **unverified**.
+  `UNS` and `DDUNITS` are the 2027 `acad.pgp`'s (:284, :513); `EC`† comes from a transcription of
+  the Spanish `acad.pgp` (datech.es), as no 2026 source lists it; ESCALATL's prompt is
+  **unverified**.
 - **Palettes:** `CAPA` / `CA`, `CERRARCAPA`, `PROPIEDADES` / `PR` and `CERPROP` from the Spanish
   pages with the English GUIDs (9123091A, 9D0D75C7, DC3674C5, 6F265AEA) and the 2026 Spanish
   getting-started pages (`CAPA o CA`, `escriba PR`); the manager's `Estado`, `Nombre`, `Act`,

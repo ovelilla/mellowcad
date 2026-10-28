@@ -139,9 +139,10 @@ describe("the other commands AutoCAD runs transparently", () => {
     )
   })
 
-  // SNAP asks its spacing (2027's console, probe line/p158); UNITS' dialog
-  // asks nothing at the command line.
-  it("asks SNAP's spacing, and runs in place what asks nothing, as UNITS", () => {
+  // SNAP asks its spacing (2027's console, probe line/p158); UNITS' dialog,
+  // modal, asks nothing at the command line and LINE resumes once it closes
+  // (workspace/p303).
+  it("asks SNAP's spacing, and resumes after UNITS' dialog closes", () => {
     const cad = lineThen(cad0(), "'SNAP", "5")
     expect(cad.commandLog().slice(-3)).toEqual([
       "Specify next point or [Undo]: 'SNAP",
@@ -151,6 +152,10 @@ describe("the other commands AutoCAD runs transparently", () => {
     expect(cad.state().snapModeActive).toBe(true)
     answerLine(cad, "'UN")
     expect(cad.state().unitsDialog).toBe(true)
+    expect(cad.commandLog().at(-1)).toBe(
+      "Specify next point or [Undo]: 'UN 'UNITS"
+    )
+    cad.runtime.setUnitsDialog(false)
     expect(cad.commandLog().slice(-2)).toEqual([
       "Specify next point or [Undo]: 'UN 'UNITS",
       "Resuming LINE command.",

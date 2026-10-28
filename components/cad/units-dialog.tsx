@@ -35,7 +35,8 @@ const UNIT_NAMES = {
  * AutoCAD's Drawing Units dialog (UNITS), with what exists here: Length's
  * type (Decimal, the only one) and precision (LUPREC), the insertion scale
  * (INSUNITS: the unit a drawing unit is) and the sample output. OK applies
- * both as one undo step; Cancel and Escape change nothing.
+ * both inside UNITS' undo step, which closing the dialog ends; Cancel and
+ * Escape change nothing.
  */
 export function UnitsDialog({
   engine,

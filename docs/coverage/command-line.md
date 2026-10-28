@@ -57,9 +57,9 @@ last point after `'ID` or `'DIST`); what the transparent one reports is not head
 it); a change AutoCAD regenerates for (LTSCALE, ATTDISP) says `Regen queued.` (es
 `La regeneración está en espera.`), and once the interrupted command ends `Regenerating model.`;
 -VIEW's views turn the view, so transparently they say `** Requires a regen, cannot be transparent.`
-(es `** Regeneración necesaria, no puede ser transparente.`) and change nothing; UNITS, DIMSTYLE
-and STYLE, which ask nothing here (a dialog, a palette), run in place and the
-running command resumes at once; Escape cancels only the transparent one
+(es `** Regeneración necesaria, no puede ser transparente.`) and change nothing; UNITS' modal
+dialog resumes it once closed (workspace/p303); DIMSTYLE and STYLE, which ask nothing here (a
+palette), run in place and the running command resumes at once; Escape cancels only the transparent one
 (`>>Specify first corner: *Cancel*`), the Command menu's Cancel (^C^C) both, as U does; `'LINE` says
 `** That command may not be invoked transparently **` (es
 `** Este comando no funciona de forma transparente **`) before the prompt's own refusal, a second

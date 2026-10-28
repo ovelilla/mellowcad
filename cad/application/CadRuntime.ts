@@ -101,7 +101,10 @@ import type { EngineLocale, PromptId } from "../locales/types"
 import { EngineText, engineText, promptString } from "./EngineText"
 import { Command, CommandHistory, Step } from "./commands/Command"
 import type { UndoHistory } from "./tools/Tool"
-import { UpdateSettingsCommand } from "./commands/settingsCommands"
+import {
+  SessionSettingCommand,
+  UpdateSettingsCommand,
+} from "./commands/settingsCommands"
 import { ViewChangeCommand } from "./commands/viewCommands"
 import {
   AddLayerCommand,
@@ -125,6 +128,7 @@ import { TextEditTool } from "./tools/TextEditTool"
 import { AttEditTool } from "./tools/AttEditTool"
 import { PasteTool } from "./tools/PasteTool"
 import { SystemVariableTool } from "./tools/SystemVariableTool"
+import { UnitsTool } from "./tools/UnitsTool"
 import { formatVariable, systemVariableNamed } from "./systemVariables"
 import { directionFromUcsHeading, headingInUcs } from "./tools/ucsHeading"
 import { pointAtDistance } from "./tools/directDistance"
@@ -2785,6 +2789,21 @@ export class CadRuntime extends Observable {
   }
 
   /**
+   * CLEANSCREENON / CLEANSCREENOFF run: a step U names as invoked and U and
+   * REDO toggle back, one that changes nothing too (probes workspace/p306,
+   * p316). Program state, never the drawing's, so it marks nothing to save.
+   */
+  cleanScreenStep(on: boolean): void {
+    this.history.execute(
+      new SessionSettingCommand(
+        (value: boolean) => this.setCleanScreen(value),
+        this.cleanScreen,
+        on
+      )
+    )
+  }
+
+  /**
    * acad.cuix's Delete key, `^C^C_erase;`: objects selected at the Command
    * prompt are erased by ERASE run as typed, so its echo carries the count, U
    * names it and Enter repeats it (desktop erase/d11). A grip edit under way
@@ -4761,8 +4780,8 @@ export class CadRuntime extends Observable {
 
   /**
    * The Drawing Units dialog's OK: the insertion scale's unit (INSUNITS) and
-   * the length precision (LUPREC), as one undo step, as AutoCAD's U undoes
-   * what a command set.
+   * the length precision (LUPREC, 0 to 8 places, p300), in UNITS' step
+   * (p307, p308), or the step of the command `'UNITS` interrupted.
    */
   applyDrawingUnits(unit: LengthUnit, precision: number): void {
     const settings = this.document.getSettings()
@@ -4771,7 +4790,10 @@ export class CadRuntime extends Observable {
     if (unit !== settings.unit) patch.unit = unit
     if (digits !== settings.precision) patch.precision = digits
     if (Object.keys(patch).length > 0) {
-      this.history.execute(new UpdateSettingsCommand(patch))
+      this.executeOutside(
+        new UpdateSettingsCommand(patch),
+        this.text.commandNames("UNITS")[0]
+      )
     }
   }
 
@@ -4989,11 +5011,25 @@ export class CadRuntime extends Observable {
     else this.closePalette()
   }
 
-  /** Shows or hides the Drawing Units dialog (UNITS). */
+  /**
+   * Shows or hides the Drawing Units dialog. Closed, it ends the UNITS run
+   * it belongs to, resuming the command `'UNITS` interrupted (p303).
+   */
   setUnitsDialog(open: boolean): void {
     if (this.unitsDialog === open) return
     this.unitsDialog = open
+    if (!open && this.activeTool instanceof UnitsTool) {
+      this.returnToNeutralTool()
+    }
     this.invalidateState()
+  }
+
+  /**
+   * The application menu's and the status bar's Units: acad.cuix's `'_units`
+   * (ID_Units), transparent inside a running command (WORKSPACE-D68).
+   */
+  openDrawingUnits(): void {
+    this.runTransparentMacro("UNITS")
   }
 
   purgeBlocks(ids?: readonly BlockId[]): number {

@@ -964,7 +964,8 @@ export const es: EngineLocale = {
       ],
       "UNITS": [
         "UNIDADES",
-        "UNS"
+        "UNS",
+        "DDUNITS"
       ],
       "LTSCALE": [
         "ESCALATL",

@@ -549,7 +549,7 @@
       "-VIEW": ["-VIEW", "-V"],
       "3DORBIT": ["3DORBIT", "3DO", "ORBIT"],
       "NAVVCUBE": ["NAVVCUBE", "CUBE"],
-      "UNITS": ["UNITS", "UN"],
+      "UNITS": ["UNITS", "UN", "DDUNITS"],
       "LTSCALE": ["LTSCALE", "LTS"],
       "AUPREC": ["AUPREC"],
       "SETVAR": ["SETVAR", "SET"],
