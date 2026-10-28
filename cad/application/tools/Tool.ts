@@ -579,6 +579,12 @@ export interface Tool {
    */
   readonly transparentMacro?: boolean
   /**
+   * The command its button runs where that is another command of the tool's
+   * (the ribbon's Edit Attributes ▸ Single, `^C^C_eattedit`): run as that
+   * macro runs it, and advertised by its name. Omitted: the tool's own.
+   */
+  readonly buttonCommand?: string
+  /**
    * The system variable the tool sets (AUPREC), empty while SETVAR asks its
    * name: it heads the prompt as it is named in every language but in a
    * SETVAR run, AutoCAD resumes it as SETVAR, and typed at its own prompt it

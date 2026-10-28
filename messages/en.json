@@ -391,6 +391,7 @@
       "label": "Shortcut menu",
       "repeat": "Repeat {command}",
       "clipboard": "Clipboard",
+      "copyBase": "Copy with Base Point",
       "paste": "Paste",
       "undo": "Undo",
       "redo": "Redo",
@@ -399,7 +400,7 @@
       "properties": "Properties",
       "enter": "Enter",
       "cancel": "Cancel",
-      "snapOverrides": "Snap Overrides",
+      "snapOverrides": "Osnap Overrides",
       "dimensionStyle": "Dimension Style"
     },
     "Layers": {

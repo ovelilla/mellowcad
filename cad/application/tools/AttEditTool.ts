@@ -63,6 +63,8 @@ const WORDS: Readonly<
  */
 export class AttEditTool implements Tool {
   readonly id = "attedit"
+  /** The ribbon's Edit Attributes ▸ Single, `^C^C_eattedit` (ID_EAttEdit). */
+  readonly buttonCommand = "EATTEDIT"
 
   private state: AttEditState = { phase: "select", hover: null }
   private editor: AttributeEditor = "attedit"

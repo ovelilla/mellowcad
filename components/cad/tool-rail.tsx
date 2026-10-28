@@ -239,8 +239,8 @@ const PALETTE: readonly PaletteSection[] = [
     items: [
       // The ribbon's Text split button: Multiline Text first, Single Line after.
       flyout("text", ["mtext", "text"]),
-      // The Annotate tab's Dimensions drop-down, less Arc Length, Jogged and
-      // Ordinate (not built); the Home tab's Linear drop-down is undocumented.
+      // The Annotation panel's Dimension drop-down (acad.cuix RibbonRoot), less
+      // Arc Length, Ordinate and Jogged (not built).
       flyout("dimension", [
         "dimlinear",
         "dimaligned",
@@ -256,9 +256,10 @@ const PALETTE: readonly PaletteSection[] = [
   {
     id: "block",
     folds: true,
-    // The attribute commands share one slot: the ribbon's Edit Attributes
-    // drop-down (Single; Multiple is -ATTEDIT, not built) with the two it
-    // keeps beside it.
+    // The attribute commands share one slot: the Block panel's Edit
+    // Attributes drop-down (Single, EATTEDIT; Multiple is -ATTEDIT, not
+    // built), with Define Attributes and the Attribute Display drop-down
+    // (ATTDISP) of its expanded part.
     items: [
       "insert",
       "block",
@@ -268,7 +269,8 @@ const PALETTE: readonly PaletteSection[] = [
   {
     id: "utilities",
     folds: true,
-    // The ribbon's Utilities panel keeps ID Point beside the Measure drop-down.
+    // The ribbon's Utilities panel keeps ID Point in its expanded part, under
+    // the Measure drop-down.
     // WHY DIST and AREA, where the ribbon's Distance and Area run MEASUREGEOM
     // (`^C^C_MEASUREGEOM _distance`, `_area`): their prompts are MEASUREGEOM's
     // Distance and Area word for word, and MEASUREGEOM, whose loop asks again

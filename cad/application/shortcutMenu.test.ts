@@ -60,6 +60,8 @@ describe("the right button", () => {
 })
 
 describe("the Default menu", () => {
+  // The order is acad.cuix's CMDEFAULT (PopMenuRoot PM_0006), less what is
+  // not built here.
   it("offers Repeat for the last command, and repeats it", () => {
     const cad = createHarness()
     cad.command("LINE").click(p(0, 0)).click(p(100, 0)).escape()
@@ -100,16 +102,28 @@ describe("the Default menu", () => {
     expect(cad.commandLog().slice(-2)).toEqual(["U", "LINE"])
   })
 
-  it("starts PAN from Pan", () => {
+  // acad.cuix MM_1562, the Default menu's Pan: `'_pan`, run as the
+  // navigation bar's Pan is: `'PAN` written, U naming `'PAN GROUP` (desktop
+  // view/d07)
+  it("runs Pan as its macro '_pan, a step U names 'PAN GROUP", () => {
     const cad = createHarness()
 
     cad.rightClick(CLEAR)
     cad.runtime.chooseShortcutMenuAction("pan")
     expect(cad.activeToolId()).toBe("pan")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "'PAN",
+      "Press ESC or ENTER to exit, or right-click to display shortcut menu.",
+    ])
+
+    cad.escape().command("U")
+    expect(cad.commandLog().at(-1)).toBe("'PAN GROUP")
   })
 })
 
 describe("the Edit menu", () => {
+  // The order is acad.cuix's CMEDIT (PopMenuRoot PM_0007), less what is not
+  // built here.
   it("opens with objects selected and acts on them", () => {
     const cad = createHarness({
       entities: [
@@ -210,7 +224,7 @@ describe("during a command", () => {
     expect(cad.only<LineEntity>("line").end).toBeCloseToPoint(p(100, 0))
   })
 
-  it("offers Snap Overrides only where the question takes a point", () => {
+  it("offers Osnap Overrides only where the question takes a point", () => {
     const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
 
     // desktop offset/d04-1: the distance, which two points measure.
@@ -317,7 +331,7 @@ describe("during a command", () => {
     expect(cad.entityCount).toBe(1)
   })
 
-  it("forces an object snap for the next point from Snap Overrides", () => {
+  it("forces an object snap for the next point from Osnap Overrides", () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0))],
       snap: true,

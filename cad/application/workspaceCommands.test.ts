@@ -1,7 +1,11 @@
 import { describe, expect, it } from "vitest"
 
-import { type CadHarness, createHarness } from "../../test/harness"
-import { p } from "../../test/builders"
+import {
+  type CadHarness,
+  createHarness,
+  MemoryFileTransport,
+} from "../../test/harness"
+import { lineOf, p } from "../../test/builders"
 import { LengthUnit } from "../domain/units"
 import { type CommandLineEntryKind, temporaryPromptLines } from "./CommandLine"
 import { es } from "../locales/es"
@@ -224,6 +228,157 @@ describe("Ctrl+1", () => {
     cad.command("LAYER")
     cad.press("1", { ctrlKey: true })
     expect(cad.state().palette).toEqual({ open: true, tab: "properties" })
+  })
+})
+
+/**
+ * acad.cuix's AcceleratorRoot: each key is a macro that starts `^C^C`, so the
+ * running command is cancelled first, then the command runs echoed as the
+ * macro writes it (the echo's case **unverified**: the desktop's, WSD d04).
+ */
+describe("the accelerators' macros", () => {
+  /** LINE running, one line drawn, at its next point. */
+  function inLine(files?: MemoryFileTransport): CadHarness {
+    const cad = createHarness({ files })
+    written(cad, "LINE", "0,0", "10,0")
+    return cad
+  }
+
+  /** What `key` with Ctrl wrote in the history. */
+  function pressed(cad: CadHarness, key: string, shiftKey = false): string[] {
+    const from = cad.commandLog().length
+    expect(cad.press(key, { ctrlKey: true, shiftKey })).toBe(true)
+    return cad.commandLog().slice(from)
+  }
+
+  const CANCEL = "Specify next point or [Undo]: *Cancel*"
+
+  // ID_CleanScreen: `$M=$(if,$(and,$(getvar,CleanScreenState),1),
+  // ^C^C_CleanScreenOFF,^C^C_CleanScreenON)`
+  it("Ctrl+0 ends LINE, then runs CLEANSCREENON or OFF: a step U names", () => {
+    const cad = inLine()
+
+    expect(pressed(cad, "0")).toEqual([CANCEL, "_CleanScreenON"])
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.state().cleanScreen.active).toBe(true)
+    expect(pressed(cad, "0")).toEqual(["_CleanScreenOFF"])
+    expect(cad.state().cleanScreen.active).toBe(false)
+
+    expect(written(cad, "U").at(-1)).toBe("CLEANSCREENOFF")
+    expect(cad.state().cleanScreen.active).toBe(true)
+    expect(written(cad, "U").at(-1)).toBe("CLEANSCREENON")
+    expect(cad.state().cleanScreen.active).toBe(false)
+    expect(cad.entityCount).toBe(1)
+  })
+
+  // ID_Modify: `$M=$(if,$(and,$(>,$(getvar,opmstate),0)),
+  // ^C^C_propertiesclose,^C^C_properties)`
+  it("Ctrl+1 ends LINE, then runs PROPERTIES or PROPERTIESCLOSE", () => {
+    const cad = inLine()
+    cad.runtime.setPaletteOpen(false)
+
+    expect(pressed(cad, "1")).toEqual([CANCEL, "_properties"])
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.state().palette).toEqual({ open: true, tab: "properties" })
+    expect(pressed(cad, "1")).toEqual(["_propertiesclose"])
+    expect(cad.state().palette.open).toBe(false)
+  })
+
+  // ID_CmdLine: `$M=$(if,$(and,$(>,$(getvar,clistate),0)),
+  // ^C^C_commandlinehide,^C^C_commandline)`
+  it("Ctrl+9 ends LINE, then hides or shows the command window", () => {
+    const cad = inLine()
+
+    expect(pressed(cad, "9")).toEqual([CANCEL, "_commandlinehide"])
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.state().commandLine.visible).toBe(false)
+    expect(pressed(cad, "9")).toEqual(["_commandline"])
+    expect(cad.state().commandLine.visible).toBe(true)
+  })
+
+  // ID_Save `^C^C_qsave `, ID_Saveas `^C^C_saveas `, ID_Open `^C^C_open `
+  it.each([
+    ["s", false, "_qsave"],
+    ["s", true, "_saveas"],
+  ])("Ctrl+%s (Shift %s) ends LINE, then saves: %s", (key, shift, echo) => {
+    const files = new MemoryFileTransport()
+    const cad = inLine(files)
+
+    expect(pressed(cad, key, shift)).toEqual([CANCEL, echo])
+    expect(cad.activeToolId()).toBe("select")
+    expect(files.saved).toHaveLength(1)
+    expect(cad.entityCount).toBe(1)
+  })
+
+  it("Ctrl+O ends LINE, then opens", () => {
+    const files = new MemoryFileTransport(null)
+    const cad = inLine(files)
+
+    expect(pressed(cad, "o")).toEqual([CANCEL, "_open"])
+    expect(cad.activeToolId()).toBe("select")
+    expect(files.openCalls).toBe(1)
+  })
+
+  it("cancels a transparent command and the one it interrupted", () => {
+    const cad = inLine(new MemoryFileTransport())
+    written(cad, "'ZOOM")
+
+    cad.press("s", { ctrlKey: true })
+
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.commandLog().at(-1)).toBe("_qsave")
+  })
+
+  it("keeps the selection at the Command prompt, which a macro acts on", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(10, 0))] })
+    cad.selectAll()
+
+    expect(pressed(cad, "1")).toEqual(["_properties"])
+    expect(cad.selectedIds()).toHaveLength(1)
+  })
+})
+
+describe("the tool palette's macros", () => {
+  // acad.cuix ID_AttdispNo/On/Of `'_attdisp _n` / `_on` / `_off`; probe
+  // workspace/p313: `'_attdisp` at LINE's prompt asks `>>Enter attribute
+  // visibility setting [Normal/ON/OFF] <Normal>:` and resumes LINE
+  it("Attribute display runs '_attdisp inside LINE, which resumes", () => {
+    const cad = createHarness()
+    written(cad, "LINE", "0,0")
+
+    cad.tool("attdisp")
+    expect(cad.activeToolId()).toBe("attdisp")
+    expect(cad.state().commandLine.prompt).toBe(
+      "'ATTDISP >>Enter attribute visibility setting [Normal/ON/OFF] <Normal>:"
+    )
+    expect(written(cad, "_N")).toEqual([
+      ">>Enter attribute visibility setting [Normal/ON/OFF] <Normal>: _N",
+      "Resuming LINE command.",
+    ])
+    expect(cad.activeToolId()).toBe("line")
+
+    cad.escape()
+    cad.tool("attdisp")
+    expect(cad.commandLog().at(-1)).toBe("'_attdisp")
+  })
+
+  // RibbonRoot, Home › Block, Edit Attributes ▸ Single: ID_EAttEdit
+  // `^C^C_eattedit ` (Multiple, ID_AtteditGlo, is `^C^C_-attedit `)
+  it("Edit attributes runs EATTEDIT, as the ribbon's Single", () => {
+    const cad = createHarness()
+    written(cad, "LINE", "0,0")
+
+    cad.tool("attedit")
+    expect(cad.commandLog().at(-1)).toBe("_eattedit")
+    expect(cad.activeToolId()).toBe("attedit")
+    expect(cad.state().commandLine.prompt).toMatch(/^EATTEDIT /)
+    expect(
+      cad.state().tools.find((tool) => tool.id === "attedit")?.shortcut
+    ).toBe("EATTEDIT")
+
+    cad.escape()
+    expect(written(cad, "ATTEDIT")).toEqual(["ATTEDIT"])
+    expect(cad.state().commandLine.prompt).toMatch(/^ATTEDIT /)
   })
 })
 

@@ -22,6 +22,8 @@ const DISPLAY_BY_KEYWORD: Readonly<Record<string, AttributeDisplay>> = {
  */
 export class AttDispTool implements Tool {
   readonly id = "attdisp"
+  /** acad.cuix's `'_attdisp _n` / `_on` / `_off` (ID_AttdispNo/On/Of, p313). */
+  readonly transparentMacro = true
 
   private current: AttributeDisplay = "normal"
 

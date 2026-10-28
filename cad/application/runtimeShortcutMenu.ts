@@ -26,7 +26,8 @@ export function rightClickResponse(
 /**
  * The commands behind the fixed entries, run as AutoCAD's menu macros run them
  * (`_erase`): echoed at the prompt, repeated by Enter and undone like a typed
- * one. Redo's macro answers a prompt too (`_mredo 1`), so the runtime runs it.
+ * one. Redo's macro answers a prompt too (`_mredo 1`) and Pan's is
+ * transparent (`'_pan`), so the runtime runs them.
  */
 export const SHORTCUT_MENU_COMMANDS: Partial<
   Readonly<Record<ShortcutMenuAction, string>>
@@ -36,7 +37,6 @@ export const SHORTCUT_MENU_COMMANDS: Partial<
   copyBase: "_COPYBASE",
   paste: "_PASTECLIP",
   undo: "_U",
-  pan: "_PAN",
   erase: "_ERASE",
   move: "_MOVE",
   copySelection: "_COPY",
@@ -71,7 +71,7 @@ export function buildShortcutMenu(
     /** The last command, which Repeat runs; null before the first. */
     readonly repeat: string | null
     readonly options: ReadonlyArray<CommandOptionUi>
-    /** Whether the running question takes a point, which Snap Overrides needs. */
+    /** Whether the running question takes a point, which Osnap Overrides needs. */
     readonly takesPoint: boolean
     /** Dimension Style ▸, when every selected object is a dimension. */
     readonly dimensionStyle?: Extract<

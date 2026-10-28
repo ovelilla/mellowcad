@@ -139,7 +139,7 @@ polygon "Polygon" POL
 hatch "Hatch" H
 block "Create block" B
 insert "Insert block" I
-attedit "Edit attributes" ATE
+attedit "Edit attributes" EATTEDIT
 attdef "Define attributes" ATT
 attdisp "Attribute display" ATTDISP
 purge "Purge" PU

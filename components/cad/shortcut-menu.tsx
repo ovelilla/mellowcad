@@ -29,7 +29,6 @@ const ITEM =
 const TOOL_OF: Partial<Record<ShortcutMenuAction, string>> = {
   cut: "cutclip",
   copy: "copyclip",
-  copyBase: "copybase",
   pan: "pan",
   erase: "erase",
   move: "move",
@@ -98,6 +97,10 @@ export function ShortcutMenu({
     switch (action) {
       case "repeat":
         return t("repeat", { command: menu?.repeat ?? "" })
+      // acad.cuix's PopMenuRoot capitals (`Copy with &Base Point`), where
+      // the tool's name is in sentence case.
+      case "copyBase":
+        return t("copyBase")
       case "paste":
         return t("paste")
       case "undo":

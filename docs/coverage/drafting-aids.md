@@ -182,6 +182,10 @@ rule); ORTHOMODE is saved in the drawing, NEW and a drawing opened bringing thei
 p321), Polar turning it off too; F8 is no undo step (RECTANG-D44: unprobed whether U takes an F8
 back; it takes back the ORTHO command, p317, which is not built here)
 
+**Missing:** Ctrl+L, acad.cuix's `^O` (MM_0005), the same toggle: not bound, **unverified** whether
+Chrome lets a page take it (its own Ctrl+L focuses the address bar; the browser check is the
+Workspace review's, MAC-09)
+
 ### `SNAP` / `SN` · es `FORZCURSOR` / `FC` · snap mode (F9)
 
 **Implemented:** grid snap on the UCS (from its origin, along its axes), the picks rounded to the

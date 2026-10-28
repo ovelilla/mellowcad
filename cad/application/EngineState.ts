@@ -439,7 +439,7 @@ export type ShortcutMenuEntry =
       readonly submenu: "clipboard"
       readonly entries: ReadonlyArray<ShortcutMenuEntry>
     }
-  /** Snap Overrides: the object-snap menu Shift+right-click opens. */
+  /** Osnap Overrides: the object-snap menu Shift+right-click opens. */
   | { readonly kind: "snapOverrides" }
   /**
    * Dimension Style ▸ over a selection of dimensions: the table's styles, the

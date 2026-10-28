@@ -77,7 +77,10 @@ variable from 0 to 50, program-wide, a step U takes back, workspace/p214, p218),
 once the command ends (after 6 s: AutoCAD documents no time); F2, or the arrow at its end, expands
 the whole history up to 12 lines over the drawing ("a list of commands and prompts that you have
 used to expand up … from the command line"), and Escape or a press on the drawing collapses it;
-Ctrl+9 hides and shows it, from a field too, and it comes back while something is typed — WHY docked
+Ctrl+9 hides and shows it, from a field too, as acad.cuix's `^C^C_commandlinehide` /
+`^C^C_commandline` (ID_CmdLine): the running command cancelled and the macro written
+(`_commandlinehide`, its case **unverified**: the desktop's), COMMANDLINE and COMMANDLINEHIDE not
+being commands here; and it comes back while something is typed — WHY docked
 into the workspace's grid: nothing floats on the drawing here, but it behaves as the floating
 one-line window AutoCAD starts with (F2 opens the text window only on a docked one)
 

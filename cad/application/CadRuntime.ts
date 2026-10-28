@@ -1107,15 +1107,20 @@ export class CadRuntime extends Observable {
       this.switchTool(id)
       return
     }
-    const command = next.ribbonMacro?.()?.command ?? TOOL_COMMANDS[id]
+    const command =
+      next.buttonCommand ?? next.ribbonMacro?.()?.command ?? TOOL_COMMANDS[id]
     if (next.transparentMacro && command !== undefined) {
       this.runTransparentMacro(command)
       return
     }
     // A command that no longer starts its tool (INSERT opens the Blocks
-    // palette, the tool being -INSERT's) runs as its button's macro does.
+    // palette, the tool being -INSERT's), or another command of the tool's
+    // (EATTEDIT), runs as its button's macro does.
     const definition = command && this.commands.get(command)
-    if (definition && definition.tool === undefined) {
+    if (
+      definition &&
+      (definition.tool === undefined || next.buttonCommand !== undefined)
+    ) {
       this.runCommandAs(`_${command}`, { echo: `_${command.toLowerCase()}` })
       return
     }
@@ -3315,6 +3320,8 @@ export class CadRuntime extends Observable {
     const command = SHORTCUT_MENU_COMMANDS[action]
     if (command !== undefined) this.runCommandAs(command, {})
     else if (action === "redo") this.runRedoMacro()
+    // MM_1562 `'_pan`, the navigation bar's macro too.
+    else if (action === "pan") this.navigate("PAN")
     else if (action === "repeat") this.repeatLastCommand()
     else if (action === "enter") this.pressEnter()
     // Cancel is AutoCAD's ^C^C; Deselect All is the same Escape at the
@@ -3330,6 +3337,45 @@ export class CadRuntime extends Observable {
   runUndoMacro(): void {
     this.setCommandLineText("_u")
     this.submitCommandLine()
+  }
+
+  /**
+   * What a tool's button advertises: the typed alias of the command it runs
+   * ("L", "AR", "TR"), else the tool's own hint.
+   */
+  private toolShortcut(tool: Tool): string | undefined {
+    const command = tool.buttonCommand ?? TOOL_COMMANDS[tool.id]
+    return (
+      (command !== undefined
+        ? shortestName(this.text.commandNames(command))
+        : undefined) ?? tool.shortcut
+    )
+  }
+
+  /**
+   * An accelerator of acad.cuix's, `^C^C_qsave`: the running command
+   * cancelled (a transparent one and the one it interrupted too), then
+   * `command` run echoed as the macro writes it. At the Command prompt the
+   * `^C^C` leaves the selection, which the command then acts on.
+   */
+  private runAccelerator(command: string, echo: string): void {
+    if (this.activeTool.id !== "select") this.cancelCommand()
+    this.runCommandAs(`_${command}`, { echo })
+  }
+
+  /**
+   * Ctrl+9, `^C^C_commandlinehide` or `^C^C_commandline` (ID_CmdLine). WHY
+   * echoed with no command run: COMMANDLINE and COMMANDLINEHIDE are not built
+   * as commands (workspace.md Missing), so the key writes its macro and
+   * toggles the window itself.
+   */
+  private runCommandLineMacro(): void {
+    if (this.activeTool.id !== "select") this.cancelCommand()
+    this.commandLine.write(
+      "command",
+      this.commandLineVisible ? "_commandlinehide" : "_commandline"
+    )
+    this.toggleCommandLine()
   }
 
   /**
@@ -5986,31 +6032,41 @@ export class CadRuntime extends Observable {
       this.runRedoMacro()
       return true
     }
-    // AutoCAD's window shortcuts. Chrome hands Ctrl+<digit> to the page first
+    // AutoCAD's window shortcuts, acad.cuix's `^C^C` macros (ID_CmdLine,
+    // ID_CleanScreen, ID_Modify). Chrome hands Ctrl+<digit> to the page first
     // and switches tabs or resets the zoom only when it is not prevented.
     if (e.ctrlKey && !e.altKey && e.key === "9") {
-      this.toggleCommandLine()
+      this.runCommandLineMacro()
       return true
     }
     if (e.ctrlKey && !e.altKey && e.key === "0") {
-      this.toggleCleanScreen()
+      const on = !this.cleanScreen
+      this.runAccelerator(
+        on ? "CLEANSCREENON" : "CLEANSCREENOFF",
+        on ? "_CleanScreenON" : "_CleanScreenOFF"
+      )
       return true
     }
     if (e.ctrlKey && !e.altKey && e.key === "1") {
-      this.togglePalette("properties")
+      const shown = this.paletteOpen && this.paletteTab === "properties"
+      this.runAccelerator(
+        shown ? "PROPERTIESCLOSE" : "PROPERTIES",
+        shown ? "_propertiesclose" : "_properties"
+      )
       return true
     }
 
-    // The desktop-CAD file shortcuts (AutoCAD's QSAVE and OPEN). Routed here
-    // rather than from the UI so returning true suppresses the browser's own
-    // Save/Open dialogs and so file access obeys the same order as every other
-    // shortcut.
+    // The file shortcuts, acad.cuix's `^C^C_qsave`, `^C^C_saveas` and
+    // `^C^C_open` (ID_Save, ID_Saveas, ID_Open). Routed here rather than from
+    // the UI so returning true suppresses the browser's own Save/Open dialogs
+    // and so file access obeys the same order as every other shortcut.
     if (e.ctrlKey && !e.altKey && (e.key === "s" || e.key === "S")) {
-      this.saveDrawingToFile()
+      if (e.shiftKey) this.runAccelerator("SAVEAS", "_saveas")
+      else this.runAccelerator("QSAVE", "_qsave")
       return true
     }
     if (e.ctrlKey && !e.altKey && (e.key === "o" || e.key === "O")) {
-      void this.openDrawingFromFile()
+      this.runAccelerator("OPEN", "_open")
       return true
     }
 
@@ -6669,12 +6725,7 @@ export class CadRuntime extends Observable {
       tools: this.listTools().map((t) => ({
         id: t.id,
         label: this.text.tool(t.id),
-        // The typed alias is the real shortcut now, so that is what the UI
-        // advertises ("L", "AR", "TR"), falling back to the tool's own hint.
-        shortcut:
-          (TOOL_COMMANDS[t.id] !== undefined
-            ? shortestName(this.text.commandNames(TOOL_COMMANDS[t.id]))
-            : undefined) ?? t.shortcut,
+        shortcut: this.toolShortcut(t),
       })),
       entityCount: this.document.size,
       selectionCount: this.selection.size,

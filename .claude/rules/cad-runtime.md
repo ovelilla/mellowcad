@@ -129,20 +129,21 @@ With an upright UCS the frame is the identity.
 
 The routing order is the comments in `CadRuntime.keyDown` and `CadRuntime.pointerDown` /
 `pointerUp`: a step inserted above the value box steals keys from running commands, one above the
-command line steals them from typing, and no key runs a keyword on its own (it is typed and
+command line steals them from typing, and no key runs a keyword on its own (typed and
 confirmed). The right button is answered on its release and never reaches a tool.
 
-**Ctrl+Z is acad.cuix's `_u` typed at the running prompt** (`runUndoMacro`, no `^C^C`): a keyword
-where Undo is offered, else that prompt's refusal, and the command goes on; at `Command:` it is U.
-The top bar's Undo ends the running command first; the Default menu's is `^C^C_u`.
+**Ctrl+Z is acad.cuix's `_u` typed at the running prompt** (`runUndoMacro`): Undo where offered,
+else the prompt's refusal; the command goes on; at `Command:` U. Ctrl+S, O, 0, 1, 9 and Y, the top
+bar's Undo and the Default menu's start `^C^C` (`runAccelerator`): the command cancelled, then
+theirs echoed as written.
 
 **A right-click's Enter is `pressEnter`, and so is the Command menu's Enter**: one path with the
 keyboard's. `rightClickResponse` (SHORTCUTMENU 11) picks the menu. Every entry runs through
 `chooseShortcutMenuAction` / `…Option` / `…DimStyle`, which close the menu first; a fixed entry
-that is a command runs it by its global name (`SHORTCUT_MENU_COMMANDS`) so it echoes, repeats and
-undoes as typed, and an option goes through `invokeToolOption`. A new entry is an action there, a
-case in the host's `ShortcutMenu` and its entry in `docs/coverage/`; an entry whose command
-does not exist here is left out, never faked.
+that is a command runs as its macro (`SHORTCUT_MENU_COMMANDS`, by global name) so it echoes,
+repeats and undoes as typed, and an option goes through `invokeToolOption`. A new entry is an action
+there, a case in the host's `ShortcutMenu` and a coverage line; one whose command does not exist
+here is left out, never faked.
 
 ## Answering a prompt
 
@@ -320,7 +321,7 @@ a `scope`, a capture `pointerdown` and a `focusin`.
 
 - `keydown`, so Escape and shortcuts work wherever focus is. It ignores events from
   `input/textarea/select/[contenteditable]` — **except function keys and the global Ctrl
-  shortcuts** (`isGlobalShortcut`: Ctrl+S, Ctrl+O, Ctrl+9, Ctrl+0, Ctrl+1), swallowed so the
+  shortcuts** (`isGlobalShortcut`: Ctrl+S, O, 9, 0, 1), swallowed so the
   browser's own action never runs (Chrome hands Ctrl+<digit> to the page first; Ctrl+N, Ctrl+T and
   Ctrl+W it keeps). Other Ctrl combos stay unforwarded: a global undo from a focused field desyncs
   the running tool, and Ctrl+C/X/V/A in a box or a layer name belong to that **text** — never

@@ -130,9 +130,12 @@ becomes LASTPOINT, refused or not (p212), which it does not here
 **Implemented:** hides the tool palette, the palette panel and the top bar's ribbon parts (the
 Layers and Properties groups, the palette toggles) and keeps the application menu, the Quick Access
 Toolbar, the command line and the status bar ("Clean screen does not hide the Quick Access toolbar,
-the command window, or the status bar"); the status bar's Clean Screen (es Limpiar pantalla) and
-Ctrl+0 toggle it; a palette opened meanwhile (LAYER, Ctrl+1) shows the panel again (**unverified**);
-not saved (CLEANSCREENSTATE, read only by SETVAR, is Not-saved), so a reload starts without it;
+the command window, or the status bar"); Ctrl+0 is acad.cuix's `^C^C_CleanScreenON` /
+`^C^C_CleanScreenOFF` (ID_CleanScreen, by CLEANSCREENSTATE): the running command cancelled, then
+the command run, echoed so (the case **unverified**: the desktop's) and a step U names; the status
+bar's Clean Screen (es Limpiar pantalla) toggles it with no echo and no step (**unverified**: its
+macro is not in acad.cuix, the desktop's); a palette opened meanwhile (LAYER, Ctrl+1) shows the
+panel again (**unverified**); not saved (CLEANSCREENSTATE, read only by SETVAR, is Not-saved), so a reload starts without it;
 CLEANSCREENOPTIONS, sometimes cited, is BricsCAD's. Typed, each is an undo step U names as invoked
 (es string tables 52590, 52589) and U and REDO toggle back, one that changes nothing too (probes
 workspace/p306, p316); program state, so it leaves the drawing unchanged. Not transparent:
@@ -162,16 +165,23 @@ two columns (Continue/Baseline and Adjust Space from the Annotate tab): Circle, 
 Rectangle/Polygon, Ellipse, Trim/Extend, Fillet/Chamfer and Array are drop-downs listing each
 member's icon, name and alias, as the ribbon's are, and Line, Polyline and Hatch single buttons;
 Break, Break at Point and Join (the expanded Modify panel) and Spline (the expanded Draw panel) have
-slots of their own; Dimension lists Linear, Aligned, Angular, Radius and Diameter, the Annotate
-tab's Dimensions list (no 2026 page lists the Home tab's Linear ▾); Ellipse keeps ELLIPSE's order
-(the help names Axis, End and Elliptical Arc, Center only as the command's option); Attributes ▾
-holds Edit (EATTEDIT), Define and Display — neither ATTDISP nor TEXTEDIT has a documented place on
-the ribbon, so Display joins Attributes and Edit Text has a slot; Utilities is Measure ▾ (Distance
-and Area, as 2026 names them) and ID Point; under 700 px of height Annotation, Block and Utilities
-fold to one drop-down each, the ribbon's "Minimize to Panel Buttons" — WHY a palette: as the top bar
+slots of their own; Dimension is the Annotation panel's Dimension drop-down (acad.cuix RibbonRoot:
+Linear, Aligned, Angular | Arc Length, Radius, Diameter | Ordinate, Jogged) with what is built;
+Ellipse keeps ELLIPSE's order (the help names Axis, End and Elliptical Arc, Center only as the
+command's option); Attributes ▾ holds Edit, Define and Display: Edit is the Block panel's Edit
+Attributes ▸ Single, `^C^C_eattedit` (ID_EAttEdit: EATTEDIT, advertised by its name; ATTEDIT stays
+typed), Define the expanded panel's Define Attributes, and Display ATTDISP, which the ribbon offers
+as the Attribute Display drop-down (ATTMODE; Home › Block's expanded part and Insert › Block),
+whose macros are transparent, `'_attdisp _n` / `_on` / `_off` (ID_AttdispNo/On/Of): run so, inside
+a running command too, which resumes (probe workspace/p313); Edit Text has a slot of its own
+(TEXTEDIT's `^C^C_textedit` is on the Text toolbar, not the ribbon); Utilities is Measure ▾
+(Distance and Area, as 2026 names them) and ID Point, `'_id` (the panel's expanded part); under
+700 px of height Annotation, Block and Utilities fold to one drop-down each, the ribbon's "Minimize to Panel Buttons" — WHY a palette: as the top bar
 
 **Missing:** DIM, Arc Length, Jogged and Ordinate in Dimension (the commands do not exist), the
-panels' other expanded tools, Edit Attribute's Multiple (**unverified** that it is there)
+panels' other expanded tools, Edit Attributes ▸ Multiple (`^C^C_-attedit`, ID_AtteditGlo: -ATTEDIT
+is not built), the Attribute Display drop-down's three entries (Display asks ATTDISP's prompt
+instead)
 
 ### Palette panel
 
@@ -206,29 +216,33 @@ Here)
 
 ### Shortcut menus
 
-**Implemented:** at the cursor, with what exists here in AutoCAD's order — Default: Repeat ‹last
-command›, Clipboard ▸ (Cut, Copy, Copy with Base Point and Paste, with their keys), Undo, Redo, Pan
-(labelled as acad.cuix names them, `&Undo` and `Re&do`: only Repeat carries the command,
-`&Repeat %s`; Redo runs its macro, `^C^C_mredo 1`, as MREDO 1); Edit: Repeat, Clipboard ▸, Erase,
+**Implemented:** at the cursor, with what exists here in the order of acad.cuix's CMDEFAULT
+(PopMenuRoot PM_0006), CMEDIT (PM_0007) and CMCOMMAND — Default: Repeat ‹last command›,
+Clipboard ▸ (Cut, Copy, Copy with Base Point and Paste, with their keys), Undo, Redo, Pan (labelled
+as acad.cuix names them, `&Undo` and `Re&do`: only Repeat carries the command, `&Repeat %s`; Undo
+runs `^C^C_u`, Redo `^C^C_mredo 1`, as MREDO 1, Pan `'_pan` (MM_1562) as the navigation bar's Pan,
+`'PAN` written and U naming `'PAN GROUP`, desktop view/d07); Edit: Repeat, Clipboard ▸, Erase,
 Move, Copy Selection, Scale, Rotate, Deselect All, Properties; Command: Enter, Cancel, the prompt's
 options as its brackets word them ("the command's options (keywords within the square brackets) are
-inserted into this menu"), Snap Overrides ▸ (the override menu's entries) only at a prompt that
+inserted into this menu"), Osnap Overrides ▸ (the override menu's entries) only at a prompt that
 takes a point (OFFSET's distance has it, desktop offset/d04-1; `Select object to offset` not,
 d04-2), in the 2027 desktop's order (Intro, Cancelar, Entrada reciente ▸ · options ·
 Modificaciones de REFENT ▸ · Encuadre, Zoom, SteeringWheels · Calculadora rápida, LINE's next
-point, probe line/d07); an entry that is a command runs by its global name, echoed, repeated and undone like it, Deselect All is Escape ("Press
-Esc to deselect all objects"), and an option is answered as typed; Escape or a click outside closes
-the menu, and focus goes back to the drawing; es Repetir, Entrada reciente, Portapapeles, Intro,
-Cancelar, Seleccionar similares, Agregar selección (the help's words), Modificaciones de REFENT (the
+point, probe line/d07); any other entry that is a command runs by its global name, echoed, repeated
+and undone like it, Deselect All is Escape ("Press Esc to deselect all objects"), and an option is
+answered as typed; Escape or a click outside closes the menu, and focus goes back to the drawing;
+the labels acad.cuix's (Copy with Base Point, Osnap Overrides; es Anular selección, Copiar
+selección, Copiar con punto base), es Repetir, Entrada reciente, Portapapeles, Intro, Cancelar,
+Seleccionar similares, Agregar selección (the help's words), Modificaciones de REFENT (the
 desktop's, d07: the help says Modificaciones de referencias)
 
-**Missing:** Recent Input (INPUTHISTORYMODE), Isolate, real-time Zoom and the transparent Pan and
-Zoom, SteeringWheels, Action Recorder, Subobject Selection Filter, Quick Select, QuickCalc, Find,
-Options, Draw Order, Add Selected, Select Similar, Quick Properties, Paste as Block, Paste to
-Original Coordinates, the object and command entries merged into them (OBJECT_…, COMMAND_…), the
-Command menu's Pan and Zoom (d07); **unverified**: the order of the Default and Edit menus and the
-labels Copy Selection and Deselect All (the 2026 help lists no menu whole: each entry is confirmed
-apart, in task pages, and the order is the product's)
+**Missing:** Recent Input (INPUTHISTORYMODE), Isolate, real-time Zoom, SteeringWheels, Action
+Recorder, Subobject Selection Filter, Quick Select, QuickCalc, Count, Find, Options, Draw Order,
+Group ▸, Add Selected, Select Similar, Quick Properties; in Clipboard ▸ Cut with Base Point, Paste
+as Block, Paste as Hyperlink, Paste to Original Coordinates and Paste Special; the object and
+command entries merged into them (OBJECT_…, COMMAND_…), the Command menu's Pan and Zoom (d07);
+**unverified**: what each entry echoes and how U names it (acad.cuix's `^C^C_erase`, Deselect All's
+`^C^C^Pai_deselect ^P`; here `ERASE`, and Deselect All writes `*Cancel*`: the desktop's)
 
 ### Wheel and wheel button
 

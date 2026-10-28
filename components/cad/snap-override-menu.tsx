@@ -60,7 +60,7 @@ const ITEM =
 
 /**
  * The override menu's entries: FROM and the object snaps. The shortcut menu's
- * Snap Overrides submenu lists the same ones.
+ * Osnap Overrides submenu lists the same ones.
  */
 export function SnapOverrideItems({
   engine,

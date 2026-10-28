@@ -27,7 +27,7 @@ TEXTSIZE, ORTHOMODE, SNAPMODE, SNAPUNIT, GRIDMODE… — comes with the drawing
 **Missing:** templates and the Select Template dialog, file tabs (several drawings open), STARTUP's
 Create New Drawing, Ctrl+N (the browser keeps it for a new window)
 
-### `QSAVE` / `SAVEAS` / `OPEN` (Ctrl+S / Ctrl+O) · es `GUARDARR` / `GUARDAR` / `GUARDARCOMO` · `ABRE`
+### `QSAVE` / `SAVEAS` / `OPEN` (Ctrl+S / Ctrl+Shift+S / Ctrl+O) · es `GUARDARR` / `GUARDAR` / `GUARDARCOMO` · `ABRE`
 
 **Implemented:** `FileTransport` port, versioned tolerant JSON, transparent autosave behind the
 `DrawingStore` port (this device's localStorage), its state in the top bar; the file keeps what
@@ -35,7 +35,10 @@ AutoCAD saves in the drawing (FILLETRAD, CHAMFERA/B, TEXTSIZE and TEXT's justifi
 SNAPMODE, SNAPUNIT, GRIDMODE: rectang/p302, p304, p311, p316, p321), and OPEN puts what it keeps
 per drawing unsaved back to its defaults, as NEW does; SAVEAS writes the same
 download as QSAVE, since a browser download always names the file, so saving over the current name
-and prompting for a new one cannot be told apart
+and prompting for a new one cannot be told apart; Ctrl+S, Ctrl+Shift+S and Ctrl+O are acad.cuix's
+`^C^C_qsave`, `^C^C_saveas` and `^C^C_open` (ID_Save, ID_Saveas, ID_Open): the running command
+cancelled, then the command run, echoed `_qsave`, `_saveas`, `_open` (the case **unverified**: the
+desktop's)
 
 **Missing:** File System Access API handles, drag-and-drop open, unsaved-changes prompt, the
-drawing's name and the file tab's unsaved asterisk, Ctrl+Shift+S as SAVEAS (it runs QSAVE)
+drawing's name and the file tab's unsaved asterisk
