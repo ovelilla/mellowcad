@@ -42,20 +42,61 @@ which is typed), INSUNITS' other values (Unitless, Inches…), Lighting (LIGHTIN
 (ANGBASE), Help, -UNITS; the list's own label, "Units to scale inserted content" (**unverified** in
 2026, so the group's title names it)
 
-### `AUPREC` · es `AUPREC`
+### `SETVAR` / `SET` · es `MODIVAR` / `MV` · a system variable typed by its name (`AUPREC`…)
 
-**Implemented:** the system variable typed as a command, as AutoCAD 2023's console asks it:
-`Enter new value for AUPREC <0>:` (es `Indique nuevo valor para AUPREC <0>`), a whole number from 0
-to 8 (else `Requires an integer between 0 and 8.`, es `Requiere un nº entero entre 0 y 8.`, and the
-prompt again), 0 in a new drawing as in AutoCAD's templates, saved in the drawing, one undo step,
-transparent (`'AUPREC`); a transparent command typed at its prompt, or `'AREA` or `'UCSICON`,
-resumes it as SETVAR, which AutoCAD runs for a system variable typed as a command
-(`Resuming SETVAR command.`, es `Reanudando el comando MODIVAR.`), as the UCSICON variable resumes
-too; every angle is written at its places, apart from lengths' — a prompt's `<90>`, DIST's
-`Angle in XY Plane = 45`, ROTATE's `ANGBASE=0`, the tooltip's and the Properties palette's angles
+**Implemented:** AutoCAD 2027's console's (probes workspace/p100–p169, p203–p222, p410–p415):
+`Enter variable name or [?] <ORTHOMODE>:` (es `Indique nombre de variable o [?]`), the default the
+last variable named there or typed by its name this session, none at first (Enter then ends), a name
+case-blind and global only (`_ORTHOMODE` is `Unknown variable name.  Type SETVAR ? for a list of
+variables.`, es on two lines, and ends); `?` asks `Enter variable(s) to list <*>:` and lists those
+the wild card matches, the name in 18 columns, a read-only one's value in 36 then `(read only)`, a
+string quoted and cut at 60; transparent (`'SETVAR`, es `'MODIVAR`), repeated by Enter, a step U
+names `SETVAR` / `MODIVAR`. A variable's name at `Command:` — bare, `_`, `.` or `'` — runs SETVAR
+for it unless a command has the name (LTSCALE, FILL, AREA, UCSICON; es `UCSICON` is the variable,
+its command being SIMBSCP), and with `'` mid-command unless a transparent command has it ('LTSCALE;
+'AREA and 'UCSICON are the variables), echoed and named for U as typed (`ORTHOMODE`, `'AUPREC`),
+Enter repeating it. The value prompt is `Enter new value for X <v>:` (es `Indique nuevo valor para
+X <v>`), by type: an integer (`Requires 0 or 1 only.` for a switch, es `Requiere 0 o sólo 1.`, else
+`Requires an integer between a and b.`, es `Requiere un nº entero entre a y b.`, and the prompt
+again; LWDISPLAY's `<ON>` with its ON/OFF/True/False/Yes/No, es ACT/DES/Verdadero/Falso/Sí/No,
+`Requires 0 or 1 only, or option keyword.`), a distance at LUPREC's places (`Requires numeric
+distance or two points.`), an angle at AUPREC's, a string quoted (`<"0">`), a point
+(`Invalid 2D point.`, es `Punto 2D no válido.`); a value the variable refuses writes `Cannot set X to
+that value.` and `*Invalid*` (es `Imposible dar a X ese valor.`, `*No válido*`) and ends; a read-only
+one writes `AREA = 0.0000 (read only)` and ends; Enter keeps the value, still a step. Another
+variable typed at a variable's prompt or in a transparent command runs inside it, and so does a
+transparent command at a transparent variable's prompt (`Resuming SETVAR command.`, es `Reanudando
+el comando MODIVAR.`, `Resuming ZOOM command.`; the prompt again keeps `>>` only inside a command);
+the variable asked, typed there, is a value its type refuses; a transparent command in another stays
+refused. Inside a command its change is part of the command's step, which the command's Undo takes
+back. The variables: AUPREC (0 to 8, 0 in a new drawing, every angle written at its places — a
+prompt's `<90>`, DIST's `Angle in XY Plane = 45`, ROTATE's `ANGBASE=0`, the tooltip's and the
+Properties palette's), LUPREC, LWDISPLAY, ATTMODE (regenerating), ELEVATION, THICKNESS,
+NAVVCUBEDISPLAY (0–3), FILLMODE, PLINEWID, FILLETRAD, CHAMFERA, CHAMFERB (none negative), TEXTSIZE
+(a negative taken as its size, 0 refused), ORTHOMODE, SNAPMODE (0–2), SNAPUNIT (both above 0),
+GRIDMODE, INSUNITS (0–24), CECOLOR (a number, 256 ByLayer, a name in English or the command
+language, `BYLAYER` / es `PORCAPA`, `r,g,b` and `RGB:r,g,b`; shown `"1"`, `"RGB:255,0,0"`), CELTYPE
+(a linetype case-blind or ByLayer, shown `"BYLAYER"`), CELWEIGHT (hundredths of a millimetre, −1
+ByLayer, the standard values; −3 to 211), CLAYER and TEXTSTYLE (a name case-blind), HPNAME (its `_`
+kept, `.` the default), HPSCALE (above 0), HPANG (degrees, `400` is 40), UCSICON; read only AREA,
+PERIMETER, DISTANCE, UCSNAME, UCSORG, UCSXDIR, UNDOCTL, CLEANSCREENSTATE
 
-**Missing:** the Drawing Units dialog's Angle Precision list, **unverified**: the period of es's
-refusal (the table's string has none; the English console adds it)
+**Missing:** the variables the program or the drawing keeps outside its settings (OSMODE, POLARANG,
+POLARDIST, SELECTIONCYCLING, TRIMEXTENDMODE, EDGEMODE, TEXTEDITMODE, SPLMETHOD, SPLKNOTS,
+SPLDEGREE, ARRAYASSOCIATIVITY, CLIPROMPTLINES, INSNAME, LASTPOINT, CIRCLERAD, OFFSETDIST, POLYSIDES,
+AFLAGS: the review's SVR block); those whose effect is fixed or unmodelled (LUNITS, ATTDIA, ATTREQ,
+HPORIGIN, DYNMODE, SHORTCUTMENU, PICKBOX, APERTURE, AUTOSNAP, POLARMODE, MBUTTONPAN, LWDEFAULT,
+ZOOMFACTOR, LAYLOCKFADECTL); the DIMxxx variables (typed, AutoCAD makes a style override, which is
+not modelled: dimensions.md); `_.SETVAR` (the `.` prefix, command-line.md); values with no
+representation here, refused with `Cannot set` where AutoCAD takes them — CECOLOR's and CELTYPE's
+ByBlock, CECOLOR 0 and 8–255, CELWEIGHT −2 and −3, INSUNITS but 4, 5 and 6, HPNAME's `USER`;
+NAVVCUBEDISPLAY keeps only bit 2, reading back 3 or 1 (WORKSPACE-D39 needs a file-format change),
+SNAPMODE 2 reads back 1; the console's `Press ENTER to continue:` every page of `?` (the history
+scrolls here; the desktop's page length **unverified**); the Drawing Units dialog's Angle Precision
+list; **unverified**: whether a string value takes spaces (USERS1's `a b`, WORKSPACE-D93: here a
+Space is Enter), the prompt line's head while one runs transparently, Escape in a nested variable,
+whether AutoCAD drops a preselection after one (the console does, p161), and whether U steps back a
+read-only variable typed by its name (SETVAR's is a step, p158)
 
 ### `CLEANSCREENON` / `CLEANSCREENOFF` / Ctrl+0 · es `LIMPIAPANTACT` / `LIMPIAPANTDES`
 
@@ -64,10 +105,8 @@ Layers and Properties groups, the palette toggles) and keeps the application men
 Toolbar, the command line and the status bar ("Clean screen does not hide the Quick Access toolbar,
 the command window, or the status bar"); the status bar's Clean Screen (es Limpiar pantalla) and
 Ctrl+0 toggle it; a palette opened meanwhile (LAYER, Ctrl+1) shows the panel again (**unverified**);
-not saved (CLEANSCREENSTATE is Not-saved), so a reload starts without it; CLEANSCREENOPTIONS,
-sometimes cited, is BricsCAD's
-
-**Missing:** CLEANSCREENSTATE as a variable
+not saved (CLEANSCREENSTATE, read only by SETVAR, is Not-saved), so a reload starts without it;
+CLEANSCREENOPTIONS, sometimes cited, is BricsCAD's
 
 ### Top bar
 

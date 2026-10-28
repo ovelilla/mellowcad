@@ -342,8 +342,6 @@ a preselection, as the dialog does (p160, d07).
   `Specify width factor <1.0000>:`, `Specify obliquing angle <0>:`, `Display text backwards?
   [Yes/No] <No>:`, `Display text upside-down? [Yes/No] <No>:`, `Vertical? [Yes/No] <No>:` (SHX
   fonts only), then `"X" is now the current text style.`; U names it `-STYLE` (p320).
-- **TEXTSTYLE typed** as a variable: `Enter new value for TEXTSTYLE <"Standard">:`; an unknown name
-  is rejected (p322).
 - Font choice, width factor, oblique angle, and the backwards, upside-down and vertical flags (DXF
   41, 50, 71, 70), which every style here leaves at their defaults; DIMTXSTY interaction with
   DIMTXT; a machine with no Arial-metric face falls back to `sans-serif`.

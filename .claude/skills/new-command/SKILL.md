@@ -10,10 +10,10 @@ wording (skill `autocad-research`). How a tool is written: `.claude/rules/cad-to
 `.claude/rules/cad-catalogs.md`. **Enforced** marks a step a test fails without.
 
 1. **The tool.** `cad/application/tools/<Name>Tool.ts` implementing `Tool` or extending a base
-   (`cad-tools.md`, "Reuse before writing"). A system variable typed as a command extends
-   `SystemVariableTool`. A dash command that only takes its input differently (`-MTEXT`) is no tool:
-   `runtimeCommands.ts` starts the plain one and switches it; one that asks otherwise (-PAN) is a
-   tool of its own.
+   (`cad-tools.md`, "Reuse before writing"). A system variable is no tool: an entry of
+   `SYSTEM_VARIABLES` (`cad-tools.md`, "System variables"). A dash command that only takes its
+   input differently (`-MTEXT`) is no tool: `runtimeCommands.ts` starts the plain one and switches
+   it; one that asks otherwise (-PAN) is a tool of its own.
 2. **A runtime hook, if it needs one.** Something new it asks the runtime, or the runtime asks it,
    is an optional member of `Tool` or a method of `ToolContext` / `UndoHistory` in `Tool.ts`, wired
    in `CadRuntime.ts`: COPYCLIP's `keepsSelection` (6d1e433), MREDO's `redo` (c9d972c).
@@ -23,9 +23,8 @@ wording (skill `autocad-research`). How a tool is written: `.claude/rules/cad-to
    Dispatch comes from here; `Tool.shortcut` is display-only. (Every command commit.)
 5. **Transparent?** Type it with an apostrophe at LINE's prompt in AutoCAD's console (`>>` prompts,
    or `** That command may not be invoked transparently **`); if it runs, add it to
-   `TRANSPARENT_COMMANDS` in `cad/application/runtimeCommands.ts`. Every system variable is
-   (AUPREC, cb0d9e4; FILL, 6c6c4e2; -PAN, 68cbaf5). A variable whose name is a non-transparent
-   command's is a `variable(…)` in `registerCommands` (0c42959).
+   `TRANSPARENT_COMMANDS` in `cad/application/runtimeCommands.ts` (FILL, 6c6c4e2; -PAN, 68cbaf5).
+   A system variable is transparent by being one.
 6. **The catalogs** (`cad-catalogs.md`):
    - `cad/locales/en.json`: `commands.names.<NAME>` (canonical name first, then aliases),
      `commands.keywords.<NAME>`, `commands.prompts` (one id per `question()`),

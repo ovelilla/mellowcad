@@ -132,14 +132,12 @@ objects:` pick found), only a line written since the running command started.
 
 ## System variables
 
-A system variable typed as a command (AUPREC) extends `SystemVariableTool`: it asks
-`enterNewValueFor`, refuses in the console's words (`requiresIntegerBetween`), heads the prompt with
-its name in every language, resumes as SETVAR and sets the settings through
-`UpdateSettingsCommand`. It is in `TRANSPARENT_COMMANDS`, as every AutoCAD system variable is. One
-whose name is a non-transparent command's ('AREA, 'UCSICON) is a `variable(…)` in
-`registerCommands`, never a command; a read-only one says `readOnlyVariable`. An angle is written
-with `formatAngle` (AUPREC), a length with `formatLength` (LUPREC): never one precision for both;
-LTSCALE's factor `%.4f` always (properties/p234).
+A system variable typed by its name is an entry of `SYSTEM_VARIABLES` (`systemVariables.ts`), no
+tool or command: SETVAR's tool (`SystemVariableTool`) asks and refuses by its `type` and writes it
+with `formatVariable` (a length at LUPREC, an angle at AUPREC; LTSCALE's factor `%.4f` always,
+properties/p234). Its `set` returns the `Command` storing the value, null for `Cannot set`; without
+one it is read only (`inquiry()` for what the runtime keeps). A command of its name wins (AREA);
+AUPREC is one only to be filed on the landing (`AuPrecTool`).
 
 Where a value lives is the console's OPEN test, never the help's "Saved in:" (RECTANG-D40).
 **Saved in the drawing** (FILLETRAD): a `DocumentSettings` field, set in the run by

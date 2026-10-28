@@ -423,12 +423,27 @@ export interface ToolContext {
    */
   snapOverride(): SnapType | "none" | null
 
+  /** The read-only system variables the runtime keeps, which SETVAR reads. */
+  inquiry(): Inquiry
+
   /**
    * Ends the current command and drops back to the neutral Select tool. For
    * single-shot commands (MOVE, COPY, ...) that finish the moment their final
    * point is placed, rather than looping or waiting for Escape.
    */
   endCommand(): void
+}
+
+/** The read-only system variables the runtime keeps (AREA, UNDOCTL…). */
+export interface Inquiry {
+  /** AREA, PERIMETER: the last area AREA measured and the length around it. */
+  readonly area: number
+  readonly perimeter: number
+  /** DISTANCE: the last distance DIST measured. */
+  readonly distance: number
+  readonly cleanScreenState: 0 | 1
+  /** UNDOCTL's bits: 1 on, 2 One, 4 Auto, 8 a group open, 16 Combine, 32 Layer. */
+  readonly undoControl: number
 }
 
 /**
@@ -459,6 +474,8 @@ export interface ToolText {
    * (`NONe` for None), or the label it is listed with (`TL` for TLeft).
    */
   keyword(id: string): string
+  /** A keyword of `command`'s, whichever runs (CECOLOR reads -COLOR's `BYLAYER`). */
+  commandKeyword(command: string, id: string): string
   /** `text` headed as a transparent command's prompt (`>>BYLAYER`). */
   transparentPrompt(text: string): string
   /**
@@ -522,8 +539,10 @@ export interface Tool {
    */
   readonly transparentMacro?: boolean
   /**
-   * The system variable the tool sets (AUPREC): it heads the prompt as it
-   * is named in every language, and AutoCAD resumes it as SETVAR.
+   * The system variable the tool sets (AUPREC), empty while SETVAR asks its
+   * name: it heads the prompt as it is named in every language but in a
+   * SETVAR run, AutoCAD resumes it as SETVAR, and typed at its own prompt it
+   * is a value, not another run (probes workspace/p410, p415).
    */
   systemVariable?(): string
 

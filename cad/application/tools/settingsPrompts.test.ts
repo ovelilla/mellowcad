@@ -186,9 +186,10 @@ describe("ELEV asks as AutoCAD 2027", () => {
   })
 })
 
-// AutoCAD 2023's console: AUPREC typed as a command, then DIST's angles and
-// ROTATE's settings and default at its places, apart from lengths'.
-describe("AUPREC asks as AutoCAD 2026", () => {
+// AutoCAD 2027's console (probes workspace/p100, p132, p133): AUPREC typed
+// by its name, then DIST's angles and ROTATE's settings and default at its
+// places, apart from lengths'.
+describe("AUPREC asks as AutoCAD 2027", () => {
   it("offers the current places and refuses what is no integer from 0 to 8", () => {
     const cad = createHarness()
     cad.command("AUPREC")
@@ -246,6 +247,7 @@ describe("AUPREC asks as AutoCAD 2026", () => {
     )
   })
 
+  // probes workspace/p153 (U names AUPREC), p115 ('AUPREC at LINE's point)
   it("is one undo step, and runs transparently", () => {
     const cad = createHarness()
     cad.command("AUPREC")
@@ -265,6 +267,7 @@ describe("AUPREC asks as AutoCAD 2026", () => {
     )
   })
 
+  // probe workspace/p132 es-ES: the refusal with its period
   it("asks in the words of Autodesk's Spanish table", () => {
     const cad = createHarness({ locale: es })
     cad.command("AUPREC")
@@ -403,8 +406,9 @@ describe("'AREA and 'UCSICON read and set their system variables", () => {
   })
 })
 
-// AutoCAD 2023's console (acc/sv1.txt): a system variable typed as a command
-// runs SETVAR, which a transparent command typed at its prompt resumes.
+// AutoCAD 2027's console (probes workspace/p118, p120, p410): a system
+// variable typed by its name runs SETVAR, which a transparent command or
+// another variable typed at its prompt resumes; itself there is a value.
 describe("a system variable typed as a command resumes as SETVAR", () => {
   it("after a transparent command, a variable read or another set", () => {
     const cad = createHarness()

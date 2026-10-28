@@ -103,11 +103,20 @@ import {
 import { AddDimStyleCommand } from "./commands/dimStyleCommands"
 import { AddTextStyleCommand } from "./commands/textStyleCommands"
 import { NewDrawingCommand } from "./commands/entityCommands"
-import { MACRO_PAUSE, PointerInput, Tool, ToolContext } from "./tools/Tool"
+import {
+  type Inquiry,
+  MACRO_PAUSE,
+  PointerInput,
+  Tool,
+  ToolContext,
+} from "./tools/Tool"
+import { MeasureTool } from "./tools/MeasureTool"
 import { InsertTool } from "./tools/InsertTool"
 import { TextEditTool } from "./tools/TextEditTool"
 import { AttEditTool } from "./tools/AttEditTool"
 import { PasteTool } from "./tools/PasteTool"
+import { SystemVariableTool } from "./tools/SystemVariableTool"
+import { formatVariable, systemVariableNamed } from "./systemVariables"
 import { directionFromUcsHeading, headingInUcs } from "./tools/ucsHeading"
 import { pointAtDistance } from "./tools/directDistance"
 import { ViewPreset, currentViewPreset } from "./tools/viewPresets"
@@ -362,8 +371,6 @@ export class CadRuntime extends Observable {
 
   /** Every command by its global name, in registration order. */
   private readonly commands = new Map<string, CommandDefinition>()
-  /** The system variables typed by name, keyed by it (`registerCommands`). */
-  private readonly variables = new Map<string, CommandDefinition>()
   /** The commands as the command language lists them (drives autocomplete). */
   private commandInfos: CommandInfo[] = []
 
@@ -467,10 +474,15 @@ export class CadRuntime extends Observable {
   /** The cursor the running tool last asked for. */
   private toolCursor: string | null = null
   /**
-   * The command a transparent one (`'ZOOM`) interrupted, kept as it stood
-   * to resume once that one ends.
+   * The commands a transparent one (`'ZOOM`) interrupted, kept as they stood
+   * to resume once it ends: a second where a variable nests (WORKSPACE-D6).
    */
-  private suspended: SuspendedCommand | null = null
+  private readonly suspendedStack: SuspendedCommand[] = []
+
+  /** The command the running transparent one interrupted, or null. */
+  private get suspended(): SuspendedCommand | null {
+    return this.suspendedStack.at(-1) ?? null
+  }
   /**
    * A transparent command changed what AutoCAD regenerates for (`Regen
    * queued.`): `Regenerating model.` once the command it interrupted ends.
@@ -621,6 +633,9 @@ export class CadRuntime extends Observable {
   private readonly insert = new InsertTool()
   // Held as a field so the runtime can hand it the fragment it read.
   private readonly paste = new PasteTool()
+  // SETVAR's, held as a field so a variable typed by its name runs with its
+  // memory (`typedByName`).
+  private readonly setvar = new SystemVariableTool()
 
   private readonly files: FileTransport | null
   private readonly clipboard: Clipboard | null
@@ -736,6 +751,7 @@ export class CadRuntime extends Observable {
       },
       madeThisSession: (id) => !this.openedIds.has(id),
       setViewCubeVisible: (visible) => this.setViewCubeVisible(visible),
+      inquiry: () => this.inquiry(),
       setCurrentTextStyle: (id) => this.setCurrentTextStyle(id),
       snapOverride: () => this.snapping.getOverride(),
       runningSnaps: {
@@ -791,6 +807,7 @@ export class CadRuntime extends Observable {
             this.text.keyword(command, id)
           )
         },
+        commandKeyword: (command, id) => this.text.keyword(command, id),
         transparentPrompt: (text) => this.text.transparentPrompt(text),
         prompt: (id, keywords = []) => {
           const command = toolCommand(this.activeTool)
@@ -883,7 +900,8 @@ export class CadRuntime extends Observable {
       this.textEdit,
       this.insert,
       this.paste,
-      this.attEdit
+      this.attEdit,
+      this.setvar
     )) {
       this.registerTool(tool)
     }
@@ -1119,18 +1137,18 @@ export class CadRuntime extends Observable {
     }
   }
 
-  private switchTool(id: string): void {
+  private switchTool(id: string | Tool): void {
     this.optionList = null
     if (this.suspended !== null) {
       // Ending a transparent command resumes the one it interrupted; starting
-      // another ends both.
+      // another ends them all.
       if (id === "select") {
         this.resume()
         return
       }
-      this.restoreSuspended()
+      while (this.suspended !== null) this.restoreSuspended()
     }
-    const next = this.tools.get(id)
+    const next = typeof id === "string" ? this.tools.get(id) : id
     if (!next || next === this.activeTool) return
     this.macro = null
     this.activeTool.onDeactivate?.(this.toolContext)
@@ -1275,12 +1293,11 @@ export class CadRuntime extends Observable {
    * `command`'s tool asks its own questions, headed `>>`.
    */
   private suspend(command: CommandDefinition, clear: boolean): void {
-    const tool =
-      command.tool === undefined ? undefined : this.tools.get(command.tool)
+    const tool = command.makeTool?.() ?? this.registeredTool(command)
     if (!tool) return
     // What was typed was this answer, not the running command's.
     if (clear) this.dynamicInput.clearTexts()
-    this.suspended = {
+    this.suspendedStack.push({
       tool: this.activeTool,
       startedAs: this.startedAs,
       commandStart: this.commandStart,
@@ -1291,7 +1308,7 @@ export class CadRuntime extends Observable {
       lastPoint: this.lastPoint,
       measuring: this.measuring,
       changesView: this.viewBefore !== null,
-    }
+    })
     // WHY a set of its own: ZOOM Object asks `>>Select objects:` and
     // AutoCAD's MOVE still moves its own set after it.
     this.selection.clear()
@@ -1331,8 +1348,8 @@ export class CadRuntime extends Observable {
 
   /**
    * `Resuming LINE command.`, named as the running command was started; a
-   * system variable typed as a command is SETVAR, which AutoCAD runs for it
-   * (`Resuming SETVAR command.` in its 2023 console).
+   * system variable typed by its name is SETVAR, which AutoCAD runs for it
+   * (`Resuming SETVAR command.`, probes workspace/p118, p120).
    */
   private writeResuming(): void {
     if (this.activeTool.systemVariable !== undefined) {
@@ -1359,9 +1376,8 @@ export class CadRuntime extends Observable {
 
   /** Ends the transparent command and puts back the one it interrupted. */
   private restoreSuspended(): void {
-    const suspended = this.suspended
-    if (suspended === null) return
-    this.suspended = null
+    const suspended = this.suspendedStack.pop()
+    if (suspended === undefined) return
     this.activeTool.onDeactivate?.(this.toolContext)
     this.recordView()
     this.viewBefore = suspended.changesView ? this.viewport.saveView() : null
@@ -1399,9 +1415,9 @@ export class CadRuntime extends Observable {
     }
   }
 
-  /** Ends whatever runs, a command a transparent one interrupted too. */
+  /** Ends whatever runs, the commands a transparent one interrupted too. */
   private endCommands(): void {
-    this.restoreSuspended()
+    while (this.suspended !== null) this.restoreSuspended()
     this.returnToNeutralTool()
   }
 
@@ -1424,8 +1440,7 @@ export class CadRuntime extends Observable {
     registerCommands(
       this,
       (id) => this.startTool(id),
-      (definition) => this.registerCommand(definition),
-      (definition) => this.variables.set(definition.id, definition)
+      (definition) => this.registerCommand(definition)
     )
   }
 
@@ -1438,7 +1453,7 @@ export class CadRuntime extends Observable {
    * running restarts it (AutoCAD behaviour), so drop to neutral first —
    * {@link setActiveTool} ignores a switch to the tool already active.
    */
-  private startTool(id: string): void {
+  private startTool(id: string | Tool): void {
     if (this.activeTool.id === id) this.returnToNeutralTool()
     this.switchTool(id)
   }
@@ -1523,9 +1538,9 @@ export class CadRuntime extends Observable {
   /**
    * A command typed with an apostrophe mid-command (`'ZOOM`, `'Z`): one
    * AutoCAD runs transparently runs inside the running one; any other is
-   * refused, saying why, and so is a second one inside a transparent one or
-   * one inside itself (`'ZOOM` at ZOOM's prompt), as AutoCAD 2023's console
-   * refuses them. Not at a prompt that takes text, where it is the text.
+   * refused, saying why, and so is one inside itself (`'ZOOM` at ZOOM's
+   * prompt) and one where it may not nest ({@link nests}). Not at a prompt
+   * that takes text, where it is the text.
    */
   private transparentCommand(text: string): boolean {
     const typed = text.trim()
@@ -1554,24 +1569,17 @@ export class CadRuntime extends Observable {
         ? this.text.transparentCommand(variable.id)
         : this.commandEcho(typed, command))
     return this.answering(echo, () => {
-      if (
-        command.transparent &&
-        this.suspended === null &&
-        command.tool === undefined
-      ) {
-        // One that asks nothing here (UNITS' dialog, STYLE's palette) runs in
-        // place, and the running command resumes at once.
-        if (clear) this.dynamicInput.clearTexts()
-        command.run()
-        this.writeResuming()
-        this.activeTool.onAskAgain?.(this.toolContext)
-        return true
-      }
-      if (
-        command.transparent &&
-        this.suspended === null &&
-        command.tool !== this.activeTool.id
-      ) {
+      if (this.nests(command)) {
+        if (command.tool === undefined && command.makeTool === undefined) {
+          // One that asks nothing here (UNITS' dialog, STYLE's palette, a
+          // read-only variable) runs in place, and the running command
+          // resumes at once.
+          if (clear) this.dynamicInput.clearTexts()
+          command.run()
+          this.writeResuming()
+          this.activeTool.onAskAgain?.(this.toolContext)
+          return true
+        }
         this.suspend(command, clear)
         return true
       }
@@ -1584,12 +1592,68 @@ export class CadRuntime extends Observable {
   }
 
   /**
+   * Whether the transparent `command` runs inside the running one
+   * (WORKSPACE-D6): one at a time, but a variable, which nests in a
+   * transparent command (`'ORTHOMODE` in a transparent ZOOM, probe
+   * workspace/p119), and anything transparent at a variable's prompt
+   * (`'ORTHOMODE`, `'_ZOOM` at a transparent AUPREC, p120, p411); never one
+   * already running, and never the variable asked, which is a value there
+   * (p410, p415).
+   */
+  private nests(command: CommandDefinition): boolean {
+    if (!command.transparent) return false
+    const asking = this.activeTool.systemVariable?.()
+    if (asking !== undefined && command.id === asking) return false
+    const tool = this.registeredTool(command)
+    const running = [this.activeTool, ...this.suspendedStack.map((s) => s.tool)]
+    if (tool !== undefined && running.includes(tool)) return false
+    if (this.suspended === null) return true
+    return (
+      command.variable === true ||
+      tool?.systemVariable !== undefined ||
+      asking !== undefined
+    )
+  }
+
+  private registeredTool(command: CommandDefinition): Tool | undefined {
+    return command.tool === undefined ? undefined : this.tools.get(command.tool)
+  }
+
+  /**
    * The system variable `typed` names, an apostrophe before it or not: by
-   * its own name in every language, `_` before it or not (`'_AREA`, probes
-   * inquiry/p325, p359).
+   * its own name in every language, `_` or `.` before it or not (`'_AREA`,
+   * probes inquiry/p325, p359; `.ORTHOMODE`, workspace/p110), run by SETVAR
+   * (WORKSPACE-D2).
    */
   private variableNamed(typed: string): CommandDefinition | undefined {
-    return this.variables.get(bareCommand(typed).replace(/^_/, ""))
+    const variable = systemVariableNamed(
+      bareCommand(typed).replace(/^[_.]+/, "")
+    )
+    if (variable === undefined) return undefined
+    const name = variable.name
+    if (variable.set === undefined) {
+      return {
+        id: name,
+        transparent: true,
+        variable: true,
+        run: () =>
+          this.commandLine.write(
+            "info",
+            this.text.message("readOnlyVariable", {
+              name,
+              value: formatVariable(variable, this.toolContext),
+            })
+          ),
+      }
+    }
+    const makeTool = () => this.setvar.typedByName(variable)
+    return {
+      id: name,
+      transparent: true,
+      variable: true,
+      makeTool,
+      run: () => this.startTool(makeTool()),
+    }
   }
 
   /** A coordinate with a Z or `*` typed where the tool asks a 2D point. */
@@ -2374,8 +2438,9 @@ export class CadRuntime extends Observable {
     if (bareCommand(typed) === "") return false
     const named = this.commandNamed(typed)
     // A command of the name runs, unless typed with an apostrophe and not
-    // transparent: then the system variable of the name, as AutoCAD 2023's
-    // console reads 'AREA and 'UCSICON at the Command prompt.
+    // transparent: then the system variable of the name, as 2027's console
+    // reads 'AREA and 'UCSICON at the Command prompt (WORKSPACE-D2; probes
+    // inquiry/p324, ucs/p356, workspace/p164).
     const variable =
       named !== undefined && (!typed.startsWith("'") || named.transparent)
         ? undefined
@@ -2573,6 +2638,26 @@ export class CadRuntime extends Observable {
       regenerates: true,
       resumes: true,
     })
+  }
+
+  /** The read-only variables SETVAR reads from the runtime. */
+  private inquiry(): Inquiry {
+    const area = this.tools.get("measurearea")
+    const dist = this.tools.get("measure")
+    const { control, auto, combine, layer } = this.history.settings
+    return {
+      area: area instanceof MeasureTool ? area.lastArea() : 0,
+      perimeter: area instanceof MeasureTool ? area.lastPerimeter() : 0,
+      distance: dist instanceof MeasureTool ? dist.lastDistance() : 0,
+      cleanScreenState: this.cleanScreen ? 1 : 0,
+      undoControl:
+        (control === "none" ? 0 : 1) +
+        (control === "one" ? 2 : 0) +
+        (auto ? 4 : 0) +
+        (this.history.undoGroupOpen() ? 8 : 0) +
+        (combine ? 16 : 0) +
+        (layer ? 32 : 0),
+    }
   }
 
   /** NAVVCUBE: shows or hides the ViewCube; saved in the drawing, never undone. */
@@ -3368,9 +3453,9 @@ export class CadRuntime extends Observable {
     this.shortcutMenu = null
     this.endFrom()
     this.commandLine.setBuffer("")
-    const transparent = this.suspended !== null
+    const nested = this.suspendedStack.length
     this.cancelOnce()
-    if (transparent) this.cancelOnce()
+    for (let i = 0; i < nested; i++) this.cancelOnce()
     this.invalidateState()
     this.host.requestRender()
   }

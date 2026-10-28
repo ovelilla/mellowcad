@@ -1,4 +1,5 @@
 import { Observable } from "../shared/Observable"
+import type { Tool } from "./tools/Tool"
 
 /**
  * AutoCAD's command line: the keyboard-first way to run commands by name or
@@ -52,6 +53,16 @@ export interface CommandDefinition {
    * line/p211).
    */
   readonly modifier?: boolean
+  /**
+   * A system variable typed by its name (SETVAR runs it): it nests in a
+   * transparent command and in another variable's prompt (WORKSPACE-D6).
+   */
+  readonly variable?: true
+  /**
+   * The tool this run asks with, made for it rather than registered: a
+   * variable's, so that another typed at its prompt has one of its own.
+   */
+  readonly makeTool?: () => Tool
   readonly run: () => void
 }
 
@@ -318,6 +329,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   fill: "FILL",
   ltscale: "LTSCALE",
   auprec: "AUPREC",
+  setvar: "SETVAR",
   undo: "UNDO",
   mredo: "MREDO",
   osnap: "-OSNAP",

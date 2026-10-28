@@ -56,13 +56,12 @@ nothing selected sets it so too
 `Enter an option [?/Make/Set/New/Rename/ON/OFF/Color/Ltype/LWeight/TRansparency/MATerial/Plot/Freeze/Thaw/LOck/Unlock/stAte/Description/rEconcile/Xref]:`,
 es `[?/Establ/Def/CRear/RENombrar/ACT/DES/COlor/Tlínea/Grosorl/tranSParencia/MATerial/TRazar/Inut/Reut/Bloq/desbLoq/eStado/DESCr/REConciliar/refX]`;
 its refusals `Cannot rename layer "0".`, `"A<B" is an invalid layer name.`,
-`The selected layers could not be deleted.`, p319–p326), LAYDEL, CLAYER typed (SETVAR, roadmap row
-24), LAYER as a step of its own, which the manager's edits join (U after LAYER and a lock says
+`The selected layers could not be deleted.`, p319–p326), LAYDEL, LAYER as a step of its own, which the manager's edits join (U after LAYER and a lock says
 `'.-LAYER LAYER Regenerating model.`, d04-2; here LAYER makes no step), the drop-down's On / Freeze /
 Lock icons, Make Object's Layer Current, Match Layer, Layer Previous and the rest of the Layers
 panel, freezing, Freeze / Plot / Transparency / Plot Style / New VP Freeze / Description columns,
 column reordering, layer filters and the tree, the manager's settings dialog, LAYLOCKFADECTL
-typed (SETVAR, roadmap row 24; here always 50), the task dialogs'
+typed (here always 50: workspace.md, SETVAR's Missing), the task dialogs'
 look (here a dialog of the editor's with their words; their Show details is left out, the details
 shown), the new row placed under the selected one until it is renamed (here sorted at once),
 layer 0's lineweight Default (p300: 370 -3; here 0.25 mm, Default is not modelled);
@@ -178,9 +177,7 @@ takes back naming `LWDISPLAY`, as it names the variable typed (p157b; after the 
 **unverified**)
 
 **Missing:** ByBlock and Default (LWDEFAULT; so the `?` listing's first line names ByLayer alone),
-inches, the Lineweight Settings dialog and the drop-down's Lineweight Settings…; LWDISPLAY typed
-(`Enter new value for LWDISPLAY <OFF>:`, saved in the drawing, p157, p157c), with SETVAR's other
-variables (roadmap row 24)
+inches, the Lineweight Settings dialog and the drop-down's Lineweight Settings…
 
 ### `FILL` · es `RELLENAR`
 
@@ -194,7 +191,7 @@ plan is outlined, as AutoCAD fills one only seen along its extrusion direction; 
 hatch draws nothing, SOLID or pattern alike (hatch/p341, plotted)
 
 **Missing:** the change shows at once rather than at the next regeneration (WHY in the tool:
-nothing here keeps a regenerated display apart); FILLMODE typed as a system variable
+nothing here keeps a regenerated display apart)
 
 ### Colour · `COLOR` / `COL` / `COLOUR` · `-COLOR` · es `COLOR` / `COL` · `-COLOR`
 
@@ -224,8 +221,7 @@ ByBlock (not modelled: `BYBlock`, es `porBloque`, `BYBLOCK` asked again, p114, p
 colour apart from the index colour of its RGB (`Truecolor` 255,0,0 reads back as `1 (red)`, where
 AutoCAD keeps `255,0,0` on the object and in -COLOR's `<255,0,0>`, line/p200: an object stores one
 RGB here),
-Colorbook, CECOLOR's `RGB:` and HSL forms, the Select Color dialog, typing CECOLOR, CELTYPE or
-CELWEIGHT as a system variable (no SETVAR), the per-type defaults HPLAYER and HPCOLOR, DIMLAYER,
+Colorbook, CECOLOR's `RGB:` and HSL forms, the Select Color dialog, the per-type defaults HPLAYER and HPCOLOR, DIMLAYER,
 TEXTLAYER (all "use current" initially, which is what everything does here), CETRANSPARENCY
 
 ### Object properties (top bar)

@@ -45,8 +45,8 @@ and
 (`Punto no válido.`, `Se requiere un punto o una opción.`, `*Designación no válida*` /
 `Requiere un punto o Ventana/úLTimo/…`, `Opción no válida.`). A transparent command — what AutoCAD
 2023's console runs so of what exists here: ZOOM, PAN, DIST, ID, LTSCALE, ATTDISP, ELEV, -OSNAP,
-COLOR / -COLOR, LINETYPE / -LINETYPE, LWEIGHT / -LWEIGHT, -VIEW, AUPREC, SNAP, UNITS, DIMSTYLE and
-STYLE, and 3DORBIT (AutoCAD 2027's desktop, view/d04), `'ZOOM`, `'Z`, `'PAN`, `'P` (es `'ENCUADRE`, `'E`) typed mid-command at the command line or
+COLOR / -COLOR, LINETYPE / -LINETYPE, LWEIGHT / -LWEIGHT, -VIEW, SNAP, UNITS, DIMSTYLE and
+STYLE, SETVAR and every system variable (workspace.md), and 3DORBIT (AutoCAD 2027's desktop, view/d04), `'ZOOM`, `'Z`, `'PAN`, `'P` (es `'ENCUADRE`, `'E`) typed mid-command at the command line or
 in the tooltip — runs inside the running one as AutoCAD 2023's console runs it: its prompts headed
 `>>` (`>>Specify first corner:`), echoed as typed (`Specify next point or [Undo]: 'z 'ZOOM`), then
 `Resuming LINE command.` (es `Reanudando el comando LINEA.`) and the running command's question
@@ -63,13 +63,15 @@ running command resumes at once; Escape cancels only the transparent one
 (`>>Specify first corner: *Cancel*`), the Command menu's Cancel (^C^C) both, as U does; `'LINE` says
 `** That command may not be invoked transparently **` (es
 `** Este comando no funciona de forma transparente **`) before the prompt's own refusal, a second
-`'ZOOM` inside one, or `'ZOOM` inside ZOOM, is refused as any answer, `'FOO` too; at the Command
+`'ZOOM` inside one, or `'ZOOM` inside ZOOM, is refused as any answer, `'FOO` too, but a system
+variable nests in a transparent command and anything transparent at a variable's prompt
+(workspace.md, SETVAR); at the Command
 prompt `'ZOOM` runs ZOOM (not transparently: an empty drawing's Extents says `Regenerating model.`),
 `'LINE` and `'_LINE` are refused saying so, and `'FOO`, as `FOO`, says
 `Unknown command "FOO".  Press F1 for help.` (es
 `Comando "FOO" desconocido. Pulse F1 para obtener ayuda.`; the 2027 console);
-`'AREA` and `'UCSICON` name the system variables, not the commands, there and mid-command (the DIST
-/ AREA and UCSICON rows). Above the line, the running command's temporary prompt history
+`'AREA` and `'UCSICON` name the system variables, not the commands, there and mid-command, and
+every other variable SETVAR knows is typed by its name (workspace.md, SETVAR). Above the line, the running command's temporary prompt history
 (CLIPROMPTLINES 3: "displays above the command window while a command is in progress"), which fades
 once the command ends (after 6 s: AutoCAD documents no time); F2, or the arrow at its end, expands
 the whole history up to 12 lines over the drawing ("a list of commands and prompts that you have
@@ -90,9 +92,8 @@ prompt lines), what was typed for a command's whole name or `_` and its global n
 type `_CIRCLE` so that a Spanish reader sees CIRCULO), the text window (Ctrl+F2; TEXTSCR, es
 PANTTEXT), COMMANDLINE / COMMANDLINEHIDE (es LINEACOM / OCULTARLINEACOM), CLIPROMPTLINES as a
 variable, floating, resizing, transparency and the window's Customize menu, the dynamic prompt's
-Down-arrow list, the system variables typed by name but those built as commands (ORTHOMODE,
-SNAPMODE, POLARANG, OSMODE…: `'ORTHOMODE` at LINE's prompt asks `>>Enter new value for ORTHOMODE <0>:`,
-probe line/p19, and here is a wrong answer; SETVAR, roadmap row 24), **unverified** whether AutoCAD runs VIEW, LAYER, PROPERTIES, MATCHPROP,
+Down-arrow list, the system variables SETVAR does not know yet (workspace.md, SETVAR's Missing),
+**unverified** whether AutoCAD runs VIEW, LAYER, PROPERTIES, MATCHPROP,
 BLOCKSPALETTE and EATTEDIT transparently (the console does not know them, or hangs on LAYER; refused
 here), **unverified**: the prompt line's head while one runs (`'ZOOM >>Specify first corner:` here;
 the console shows no head) and the dynamic prompt's `>>`, the selection modes `Expects a point or`

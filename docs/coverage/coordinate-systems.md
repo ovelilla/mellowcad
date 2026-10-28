@@ -191,8 +191,8 @@ origin while it fits, else in the lower-left corner (lifted clear of the status 
 off the plan its arms are projected and a Z arm with its letter shows where the UCS's Z does
 (d01-5, d01-7), an arm seen end-on left out, so the XY plane edge-on draws X and Z (d01-6: no
 broken pencil, the 2D style's); `'UCSICON`, at the Command prompt or mid-command (es
-also bare, `UCSICON`, its command being SIMBSCP), sets the system variable as AutoCAD 2023's console
-asks it: `Enter new value for UCSICON <3>:` (es `Indique nuevo valor para UCSICON <3>`), 1 for the
+also bare, `UCSICON`, its command being SIMBSCP), sets the system variable through SETVAR
+(workspace.md), as 2027's console asks it (ucs/p353–p356): `Enter new value for UCSICON <3>:` (es `Indique nuevo valor para UCSICON <3>`), 1 for the
 icon shown plus 2 for it at the origin (else `Requires an integer between 0 and 3.`), one undo step
 that U and REDO echo as `'UCSICON` (p430)
 
@@ -206,9 +206,8 @@ colour)
 `Precise nueva altura de objeto por defecto`), each offering the current value (a negative thickness
 extrudes down), what is no distance refused with `Requires numeric distance or two points.`, as
 AutoCAD 2023's console does; ELEVATION and THICKNESS are saved in the drawing and change as one undo
-step once both are answered (Escape at the second changes neither)
-
-**Missing:** the variables typed by name (no SETVAR yet)
+step once both are answered (Escape at the second changes neither); typed by their names they are
+SETVAR's (workspace.md)
 
 **The last point (LASTPOINT):** 0,0,0 in a new drawing, then the last point a prompt took — picked,
 snapped, typed, FROM's base until its offset is given (Enter at `<Offset>` leaves it there, probe

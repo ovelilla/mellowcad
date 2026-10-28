@@ -711,13 +711,13 @@ export class HatchTool implements Tool {
       this.setPattern(this.patternName, ctx)
       return
     }
-    const id = resolveHatchPatternId(withoutUnderscore(typed))
-    if (!id) {
+    const name = hatchPatternNameFor(typed)
+    if (name === null) {
       ctx.report(ctx.text.message("hatchPatternUnknown"), "error")
       this.enterPattern(ctx)
       return
     }
-    this.setPattern(asTyped(typed, id), ctx)
+    this.setPattern(name, ctx)
   }
 
   /** `?`: the listing, then back at the internal point (probes hatch/p212, p221). */
@@ -803,6 +803,15 @@ const GATHERING_MESSAGES = [
   "selectingEverythingVisible",
   "analyzingSelectedData",
 ] as const
+
+/**
+ * HPNAME for a pattern typed in any case, `_` before it or not, or null for
+ * no pattern of this build; HATCH's and SETVAR's.
+ */
+export function hatchPatternNameFor(typed: string): string | null {
+  const id = resolveHatchPatternId(withoutUnderscore(typed))
+  return id === null ? null : asTyped(typed, id)
+}
 
 function withoutUnderscore(name: string): string {
   return name.startsWith("_") ? name.slice(1) : name

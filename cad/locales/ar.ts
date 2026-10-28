@@ -88,6 +88,7 @@ export const ar: EngineLocale = {
       "navvcube": "مكعب العرض",
       "ltscale": "مقياس نوع الخط",
       "auprec": "دقة الزوايا",
+      "setvar": "متغيرات النظام",
       "undo": "تراجع",
       "mredo": "إعادة متعددة",
       "osnap": "أوضاع التقاط الكائنات",

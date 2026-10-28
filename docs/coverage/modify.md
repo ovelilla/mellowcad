@@ -344,8 +344,7 @@ and UPdate (the main prompt asked again, p142); the counts' `[Expression]` and t
 `[Total/Expression]`, which AutoCAD lists (p131, p135; English spells the elevation's
 `[Expresson]`); English's `…/eXit]<eXit>:` with no space before the default, Spanish's with one
 (p01, p04; WHY not built: the space is per question here, not per language, and it changes no
-letter typed); 'ORTHOMODE at a count (p155: ORTHOMODE is no variable here, drafting-aids.md);
-MAXARRAY's message (MAXARRAY is nil in 2027, p00: **unverified**); Expression (WHY not built: it
+letter typed); MAXARRAY's message (MAXARRAY is nil in 2027, p00: **unverified**); Expression (WHY not built: it
 ties an associative array to the drawing's parameters, and with no Parameters Manager it would only
 be a calculator; 2027's console: `Enter expression<4>:`, es
 `Introduzca la expresión<4>:`, p134; AutoCAD 2023's: arithmetic with `^`, `%`, parentheses and

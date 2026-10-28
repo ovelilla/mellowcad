@@ -105,6 +105,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   "-PURGE": { group: "organize" },
   LTSCALE: { group: "organize" },
   AUPREC: { group: "organize" },
+  SETVAR: { group: "organize" },
   COLOR: { group: "organize" },
   "-COLOR": { group: "organize" },
   LINETYPE: { group: "organize" },

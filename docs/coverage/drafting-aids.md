@@ -175,10 +175,6 @@ rule); ORTHOMODE is saved in the drawing, NEW and a drawing opened bringing thei
 p321), Polar turning it off too; F8 is no undo step (RECTANG-D44: unprobed whether U takes an F8
 back; it takes back the ORTHO command, p317, which is not built here)
 
-**Missing:** ORTHOMODE as a variable — `'ORTHOMODE` at LINE's prompt asks
-`>>Enter new value for ORTHOMODE <0>:` (probe line/p19) and here is a wrong answer (SETVAR, roadmap
-row 24)
-
 ### `SNAP` / `SN` · es `FORZCURSOR` / `FC` · snap mode (F9)
 
 **Implemented:** grid snap on the UCS (from its origin, along its axes), the picks rounded to the
@@ -200,16 +196,14 @@ not an F9 (RECTANG-D44)
 
 **Missing:** Legacy, Style (isometric snap) and Type (grid or polar: the status bar's Snap menu
 chooses it here) — not listed, as they are not built (WHY: the prompt lists what is, as TRIM's
-leaves out Project) —, the unlisted Rotate (SNAPANG), SNAPBASE, SNAPMODE and SNAPUNIT as variables
-(SETVAR, roadmap row 24)
+leaves out Project) —, the unlisted Rotate (SNAPANG), SNAPBASE
 
 ### Grid (F7)
 
 **Implemented:** F7 shows and hides the grid, which follows the lattice while grid snap is on;
 GRIDMODE is saved in the drawing (rectang/p304, p321), and F7 is no undo step (RECTANG-D44)
 
-**Missing:** GRID, GRIDUNIT (the spacing is the lattice's or the zoom's here), GRIDMODE as a
-variable, F7's echo
+**Missing:** GRID, GRIDUNIT (the spacing is the lattice's or the zoom's here), F7's echo
 
 ### Dynamic input (DYN)
 

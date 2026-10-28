@@ -15,7 +15,6 @@ import {
   formatLength,
   withoutTrailingZeros,
 } from "../domain/units"
-import { MeasureTool } from "./tools/MeasureTool"
 import type { DocumentSettings } from "../domain/units"
 import { MTextTool } from "./tools/MTextTool"
 import { TextTool } from "./tools/TextTool"
@@ -25,18 +24,20 @@ import { HatchTool } from "./tools/HatchTool"
 /**
  * The commands built here that AutoCAD's console runs transparently (2023's;
  * DIST and ID 2027's: `'DIST` at LINE's prompt asks `>>Specify first point:`,
- * probes inquiry/p320, p321; ELEV 2027's, ucs/p366). Left out: what it
- * refuses (`** That command may not be invoked transparently **`), what it
- * does not know and so cannot show (VIEW, PROPERTIES, MATCHPROP,
- * BLOCKSPALETTE, EATTEDIT, LAYER, whose dialog hangs it), and AREA and
- * UCSICON, which typed so read the system variables of their names
- * ({@link registerCommands}' variables; AREA's, probes inquiry/p324, p325).
+ * probes inquiry/p320, p321; ELEV 2027's, ucs/p366; AUPREC and SETVAR
+ * 2027's, workspace/p114, p115, p123). Left out: what it refuses (`** That
+ * command may not be invoked transparently **`), what it does not know and so
+ * cannot show (VIEW, PROPERTIES, MATCHPROP, BLOCKSPALETTE, EATTEDIT, LAYER,
+ * whose dialog hangs it), and AREA and UCSICON, which typed so read the
+ * system variables of their names (inquiry/p324, p325), as every variable
+ * SETVAR knows (`systemVariables.ts`) is typed.
  */
 const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set([
   "ZOOM",
   "PAN",
   "-PAN",
   "AUPREC",
+  "SETVAR",
   "DIST",
   "ID",
   "LTSCALE",
@@ -69,8 +70,7 @@ const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set([
 export function registerCommands(
   runtime: CadRuntime,
   startTool: (id: string) => void,
-  registerCommand: (definition: CommandDefinition) => void,
-  registerVariable: (definition: CommandDefinition) => void
+  registerCommand: (definition: CommandDefinition) => void
 ): void {
   const tools = new Set(runtime.listTools().map((tool) => tool.id))
   const register = (definition: CommandDefinition) =>
@@ -83,35 +83,6 @@ export function registerCommands(
     if (!tools.has(toolId)) continue
     register({ id: command, tool: toolId, run: () => startTool(toolId) })
   }
-
-  const say = (text: string) => runtime.commandLine.write("info", text)
-
-  // The system variables typed by the name of a command that is not
-  // transparent: with an apostrophe in any language, bare where the command
-  // is named otherwise (es `UCSICON`, whose command is SIMBSCP). Every
-  // system variable is transparent. AREA is the last area AREA measured.
-  const variable = (definition: CommandDefinition) =>
-    registerVariable({ ...definition, transparent: true })
-  variable({
-    id: "AREA",
-    run: () => {
-      const area = runtime.listTools().find((tool) => tool.id === "measurearea")
-      say(
-        runtime.text.message("readOnlyVariable", {
-          name: "AREA",
-          value: formatLength(
-            area instanceof MeasureTool ? area.lastArea() : 0,
-            runtime.document.getSettings()
-          ),
-        })
-      )
-    },
-  })
-  variable({
-    id: "UCSICON",
-    tool: "ucsiconvariable",
-    run: () => startTool("ucsiconvariable"),
-  })
 
   register({ id: "U", run: () => runtime.undo(true) })
   // -TEXT is TEXT asking for one line at the command line (TEXT-D2), so it
@@ -384,8 +355,9 @@ export function commandPrompt(
   }
   const command = tool.runningCommand?.() ?? toolCommand(tool)
   const heading = startedAs ?? command
+  // A variable typed by its name heads its prompt; SETVAR's run, SETVAR.
   const named =
-    tool.systemVariable?.() ??
+    (heading === "SETVAR" ? undefined : tool.systemVariable?.()) ??
     (heading !== null
       ? text.commandNames(heading)[0]
       : text.tool(tool.id).toUpperCase())

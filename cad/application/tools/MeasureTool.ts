@@ -126,6 +126,10 @@ export class MeasureTool implements Tool {
    * or in Add area or Subtract area the total (probes inquiry/p211–p214).
    */
   private area = 0
+  /** PERIMETER: the length around the last area measured. */
+  private perimeter = 0
+  /** DISTANCE: the last distance DIST measured between two points. */
+  private distance = 0
   private areaMode: AreaMode = "plain"
   /** Add area's and Subtract area's total so far. */
   private total = 0
@@ -143,6 +147,16 @@ export class MeasureTool implements Tool {
   /** The AREA system variable, 0 until AREA has measured. */
   lastArea(): number {
     return this.area
+  }
+
+  /** The PERIMETER system variable, 0 until AREA has measured. */
+  lastPerimeter(): number {
+    return this.perimeter
+  }
+
+  /** The DISTANCE system variable, 0 until DIST has measured. */
+  lastDistance(): number {
+    return this.distance
   }
 
   onActivate(ctx: ToolContext): void {
@@ -221,7 +235,13 @@ export class MeasureTool implements Tool {
       }
       this.state = { phase: "second", base: point, cursor: point, startTangent }
     } else if (this.state.phase === "second") {
-      ctx.report(distanceReport({ base: this.state.base, tip: point }, ctx))
+      const measurement = { base: this.state.base, tip: point }
+      this.distance = measure(
+        measurement.base,
+        measurement.tip,
+        ctx.document.getSettings().ucs
+      ).distance
+      ctx.report(distanceReport(measurement, ctx))
       ctx.endCommand()
       return
     } else if (this.state.phase === "multiple") {
@@ -927,6 +947,7 @@ export class MeasureTool implements Tool {
     ctx: ToolContext
   ): void {
     this.area = area
+    this.perimeter = around
     const settings = ctx.document.getSettings()
     const report: AreaReport = {
       area: formatLength(area, settings),

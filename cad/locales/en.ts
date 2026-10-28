@@ -88,6 +88,7 @@ export const en: EngineCatalog = {
       "navvcube": "ViewCube",
       "ltscale": "Linetype scale",
       "auprec": "Angle precision",
+      "setvar": "System variables",
       "undo": "Undo",
       "mredo": "Multiple redo",
       "osnap": "Object snap modes",
@@ -988,7 +989,8 @@ export const en: EngineCatalog = {
         "AUPREC"
       ],
       "SETVAR": [
-        "SETVAR"
+        "SETVAR",
+        "SET"
       ],
       "CLEANSCREENON": [
         "CLEANSCREENON"
@@ -1394,6 +1396,15 @@ export const en: EngineCatalog = {
           "name"
         ]
       ],
+      "enterNewValueForOrNone": [
+        "Enter new value for ",
+        [
+          "name"
+        ],
+        ", or . for none"
+      ],
+      "enterVariableName": "Enter variable name or",
+      "enterVariablesToList": "Enter variable(s) to list",
       "osnapModes": "Enter list of object snap modes",
       "snapSpacingOr": "Specify snap spacing or",
       "snapAspect": "A",
@@ -1812,6 +1823,17 @@ export const en: EngineCatalog = {
         ],
         " (read only)"
       ],
+      "readOnlyListed": "(read only)",
+      "unknownVariableName": "Unknown variable name.  Type SETVAR ? for a list of variables.",
+      "cannotSetVariable": [
+        "Cannot set ",
+        [
+          "name"
+        ],
+        " to that value."
+      ],
+      "requiresZeroOrOne": "Requires 0 or 1 only.",
+      "requiresZeroOrOneOrKeyword": "Requires 0 or 1 only, or option keyword.",
       "notTransparent": "** That command may not be invoked transparently **",
       "rotateSettings": [
         "Current positive angle in UCS:  ANGDIR=counterclockwise  ANGBASE=",

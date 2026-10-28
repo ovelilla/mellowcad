@@ -1,8 +1,9 @@
-import type { DocumentSettings, UcsIconSetting } from "../../domain/units"
+import type { UcsIconSetting } from "../../domain/units"
 import { UpdateSettingsCommand } from "../commands/settingsCommands"
 import type { PromptId } from "../../locales/types"
 import { CommandOption, CommandOptionOutcome, Tool, ToolContext } from "./Tool"
-import { SystemVariableTool } from "./SystemVariableTool"
+import { systemVariableNamed } from "../systemVariables"
+import { type SetvarMemory, SystemVariableTool } from "./SystemVariableTool"
 
 const CHANGE_BY_KEYWORD: Readonly<Record<string, Partial<UcsIconSetting>>> = {
   ON: { visible: true },
@@ -64,24 +65,12 @@ export class UcsIconTool implements Tool {
 }
 
 /**
- * The UCSICON system variable, typed with an apostrophe ('UCSICON) or bare in a
- * language whose command has another name: `Enter new value for UCSICON
- * <3>:`, 1 for the icon shown and 2 for it at the origin, "Requires an
- * integer between 0 and 3." for anything else, as AutoCAD 2027's console asks
- * (probes ucs/p353–p356).
+ * The UCSICON system variable, which SETVAR sets for `'UCSICON` (and es
+ * `UCSICON`, its command being SIMBSCP): `Enter new value for UCSICON <3>:`,
+ * 1 for the icon shown plus 2 for it at the origin (probes ucs/p353–p356).
  */
 export class UcsIconVariableTool extends SystemVariableTool {
-  readonly id = "ucsiconvariable"
-  protected readonly variable = "UCSICON"
-  protected readonly max = 3
-
-  protected read({ ucsIcon }: DocumentSettings): number {
-    return (ucsIcon.visible ? 1 : 0) + (ucsIcon.atOrigin ? 2 : 0)
-  }
-
-  protected settingsFor(value: number): Partial<DocumentSettings> {
-    return {
-      ucsIcon: { visible: (value & 1) !== 0, atOrigin: (value & 2) !== 0 },
-    }
+  constructor(memory?: SetvarMemory) {
+    super(memory, systemVariableNamed("UCSICON")!, "ucsiconvariable")
   }
 }

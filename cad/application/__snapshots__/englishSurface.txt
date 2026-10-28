@@ -77,6 +77,7 @@ NAVVCUBE ["CUBE"] "ViewCube"
 FILL [] "Fill"
 LTSCALE ["LTS"] "Linetype scale"
 AUPREC [] "Angle precision"
+SETVAR ["SET"] "System variables"
 UNDO [] "Undo"
 MREDO [] "Multiple redo"
 -OSNAP ["-OS"] "Object snap modes"
@@ -199,9 +200,9 @@ navvcube "ViewCube" CUBE
 fill "Fill" FILL
 ltscale "Linetype scale" LTS
 auprec "Angle precision" AUPREC
+setvar "System variables" SET
 undo "Undo" UNDO
 mredo "Multiple redo" MREDO
-ucsiconvariable "UCS icon (variable)" -
 osnap "Object snap modes" -OS
 snap "Snap mode" SN
 color "Color" COL
@@ -5203,6 +5204,175 @@ Specify next point or
   tip: -
   dyn: -
   prompt| Specify new default elevation <5.00>: *Cancel*
+
+## SETVAR
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> SETVAR
+  prompt: SETVAR Enter variable name or [?]:
+  asks: ""
+  tip: Enter variable name or
+  dyn: ""=""||*
+  options: [?] ?
+  command| SETVAR
+> unknown
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Enter variable name or [?]: FOO
+  error| Unknown variable name.  Type SETVAR ? for a list of variables.
+> SET ?
+  prompt: SETVAR Enter variable name or [?]:
+  asks: ""
+  tip: Enter variable name or
+  dyn: ""=""||*
+  options: [?] ?
+  command| SET SETVAR
+> ?
+  prompt: SETVAR Enter variable(s) to list <*>:
+  tip: Enter variable(s) to list
+  options: -
+  prompt| Enter variable name or [?]: ?
+> A*
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter variable(s) to list <*>: A*
+  info| AREA              0.00                                 (read only)
+        ATTMODE           1
+        AUPREC            0
+> ORTHOMODE
+  prompt: ORTHOMODE Enter new value for ORTHOMODE <0>:
+  asks: ""
+  tip: Enter new value for ORTHOMODE
+  dyn: ""=""||*
+  command| ORTHOMODE
+> 2
+  prompt| Enter new value for ORTHOMODE <0>: 2
+  error| Requires 0 or 1 only.
+> 1
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter new value for ORTHOMODE <0>: 1
+> SETVAR again
+  prompt: SETVAR Enter variable name or [?] <ORTHOMODE>:
+  asks: ""
+  tip: Enter variable name or
+  dyn: ""=""||*
+  options: [?] ?
+  command| SETVAR
+> AREA
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Enter variable name or [?] <ORTHOMODE>: AREA
+  info| AREA = 0.00 (read only)
+> AUPREC
+  prompt: AUPREC Enter new value for AUPREC <0>:
+  asks: ""
+  tip: Enter new value for AUPREC
+  dyn: ""=""||*
+  command| AUPREC
+> 9
+  prompt| Enter new value for AUPREC <0>: 9
+  error| Requires an integer between 0 and 8.
+> 'ORTHOMODE
+  prompt: 'ORTHOMODE >>Enter new value for ORTHOMODE <1>:
+  tip: >>Enter new value for ORTHOMODE
+  prompt| Enter new value for AUPREC <0>: 'ORTHOMODE
+> 0
+  prompt: AUPREC Enter new value for AUPREC <0>:
+  tip: Enter new value for AUPREC
+  prompt| >>Enter new value for ORTHOMODE <1>: 0
+  info| Resuming SETVAR command.
+> enter
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter new value for AUPREC <0>:
+> ELEVATION
+  prompt: ELEVATION Enter new value for ELEVATION <0.00>:
+  asks: ""
+  tip: Enter new value for ELEVATION
+  dyn: ""=""||mm*
+  command| ELEVATION
+> FOO
+  prompt| Enter new value for ELEVATION <0.00>: FOO
+  error| Requires numeric distance or two points.
+> FILLETRAD -1
+  prompt: FILLETRAD Enter new value for FILLETRAD <0.00>:
+  tip: Enter new value for FILLETRAD
+  command| FILLETRAD
+> -1
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter new value for FILLETRAD <0.00>: -1
+  error| Cannot set FILLETRAD to that value.
+  error| *Invalid*
+> CLAYER
+  prompt: CLAYER Enter new value for CLAYER <"0">:
+  asks: ""
+  tip: Enter new value for CLAYER
+  dyn: ""=""||*
+  command| CLAYER
+> FOO
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter new value for CLAYER <"0">: FOO
+  error| Cannot set CLAYER to that value.
+  error| *Invalid*
+> SNAPUNIT
+  prompt: SNAPUNIT Enter new value for SNAPUNIT <10.00,10.00>:
+  asks: ""
+  tip: Enter new value for SNAPUNIT
+  dyn: ""=""||*
+  command| SNAPUNIT
+> FOO
+  prompt| Enter new value for SNAPUNIT <10.00,10.00>: FOO
+  error| Invalid 2D point.
+> escape
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter new value for SNAPUNIT <10.00,10.00>: *Cancel*
+> LWDISPLAY
+  prompt: LWDISPLAY Enter new value for LWDISPLAY <ON>:
+  asks: ""
+  tip: Enter new value for LWDISPLAY
+  dyn: ""=""||*
+  command| LWDISPLAY
+> 2
+  prompt| Enter new value for LWDISPLAY <ON>: 2
+  error| Requires 0 or 1 only, or option keyword.
+> OFF
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter new value for LWDISPLAY <ON>: OFF
+> UNDOCTL
+  command| UNDOCTL
+  info| UNDOCTL = 53 (read only)
 
 ## LTSCALE
 > start

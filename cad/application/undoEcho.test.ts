@@ -102,6 +102,7 @@ describe("U and REDO say what they did", () => {
       "Enter the number of operations to undo or [Auto/Control/BEgin/End/Mark/Back] <1>:",
       "LINE",
     ])
+    // probe workspace/p153: U names AUPREC
     answer(cad, "UCS", "O", "10,0", "AUPREC", "2")
     answer(cad, ...CIRCLE, "ERASE", "L", "")
     expect(written(cad, "U", "U", "U", "U")).toEqual([

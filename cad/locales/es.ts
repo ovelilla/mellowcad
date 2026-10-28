@@ -88,6 +88,7 @@ export const es: EngineLocale = {
       "navvcube": "ViewCube",
       "ltscale": "Escala de tipo de línea",
       "auprec": "Precisión de ángulos",
+      "setvar": "Variables de sistema",
       "undo": "Deshacer",
       "mredo": "Rehacer varias",
       "osnap": "Modos de referencia a objetos",
@@ -973,7 +974,8 @@ export const es: EngineLocale = {
         "AUPREC"
       ],
       "SETVAR": [
-        "MODIVAR"
+        "MODIVAR",
+        "MV"
       ],
       "CLEANSCREENON": [
         "LIMPIAPANTACT"
@@ -1519,6 +1521,15 @@ export const es: EngineLocale = {
         "ON": "ACT",
         "OFF": "DES"
       },
+      "SETVAR": {
+        "?": "?",
+        "ON": "ACT",
+        "OFF": "DES",
+        "True": "Verdadero",
+        "False": "Falso",
+        "Yes": "Sí",
+        "No": "No"
+      },
       "COLOR": {
         "Truecolor": "COlorverdadero",
         "BYLAYER": "porCapa",
@@ -1793,6 +1804,15 @@ export const es: EngineLocale = {
           "name"
         ]
       ],
+      "enterNewValueForOrNone": [
+        "Indique nuevo valor para ",
+        [
+          "name"
+        ],
+        ", o . para ninguno"
+      ],
+      "enterVariableName": "Indique nombre de variable o",
+      "enterVariablesToList": "Indique variable(s) a listar",
       "osnapModes": "Indique lista de modo de referencia a objetos",
       "snapSpacingOr": "Precise distancia de resolución o",
       "snapAspect": "asP",
@@ -2211,6 +2231,17 @@ export const es: EngineLocale = {
         ],
         " (sólo lectura)"
       ],
+      "readOnlyListed": "(sólo lectura)",
+      "unknownVariableName": "Nombre de variable desconocido. Teclee MODIVAR ?\npara ver la lista de variables.",
+      "cannotSetVariable": [
+        "Imposible dar a ",
+        [
+          "name"
+        ],
+        " ese valor."
+      ],
+      "requiresZeroOrOne": "Requiere 0 o sólo 1.",
+      "requiresZeroOrOneOrKeyword": "Requiere 0 o sólo 1, o una opción.",
       "notTransparent": "** Este comando no funciona de forma transparente **",
       "rotateSettings": [
         "Ángulo actual positivo en SCP:  ANGDIR=en sentido horario inverso ANGBASE=",

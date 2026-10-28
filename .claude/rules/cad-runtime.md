@@ -164,12 +164,12 @@ clarify...`): a keyword answers, Enter writes `Invalid option keyword.`, anythin
 
 A command typed with an apostrophe runs **inside** the running one, which is suspended, never ended.
 Add one to `TRANSPARENT_COMMANDS` (`runtimeCommands.ts`) **only after typing it so at LINE's prompt
-in AutoCAD's console** (`>>` prompts, or `** That command may not be invoked transparently **`). A
-new "end everything" path calls `endCommands`, not `returnToNeutralTool`, which only resumes. A
-change AutoCAD regenerates for is `ctx.regenerate()`, never a `regeneratingModel` report: run
-transparently it is `Regen queued.`. A button whose macro starts with an apostrophe runs through
-`runTransparently` (`navigate`; a rail tool says `transparentMacro`), never a plain start, which
-ends the running command.
+in AutoCAD's console** (`>>` prompts, or `** That command may not be invoked transparently **`).
+One at a time, but a variable nests (`nests`, WORKSPACE-D6): in a transparent command, and anything
+transparent at a variable's prompt; the variable asked is a value there. The suspended commands are
+a stack: a new "end everything" path calls `endCommands`, not `returnToNeutralTool`, which
+resumes one. A button whose macro starts with `'` runs through `runTransparently` (`navigate`; a
+rail tool says `transparentMacro`), never a plain start, which ends the running command.
 
 ## Selection cycling
 
@@ -251,9 +251,8 @@ erases leaves the Previous set for good (`executeTool`).
 
 Settings are split on purpose. What AutoCAD's U undoes goes through a command
 (`UpdateSettingsCommand`, restoring exactly the keys it patched; a no-op patch executes nothing,
-bar UCS's for LASTPOINT): ATTMODE, the UCS and its table, UCSICON, ELEVATION, THICKNESS, LTSCALE,
-AUPREC, UNITS (`applyDrawingUnits`), CECOLOR / CELTYPE / CELWEIGHT (`setCurrentProperties`),
-LWDISPLAY (`toggleLineweightDisplay`). A setting another implies belongs in the same patch (UCS
+bar UCS's for LASTPOINT): every variable SETVAR sets, the UCS and its table, LTSCALE, UNITS
+(`applyDrawingUnits`), `setCurrentProperties`, `toggleLineweightDisplay`. A setting another implies belongs in the same patch (UCS
 World and an orthographic -VIEW zero ELEVATION). Host setters (`setDocumentUnit`,
 `setDocumentPrecision`, `setLtScale`) write the document directly and are not undoable. The layer and style tables, CLAYER, TEXTSTYLE and DIMSTYLE are commands; the Layer Properties Manager's go through
 `executeLayerEdit` (UNDO Layer folds them). NAVVCUBE is a `CadDocument` setter

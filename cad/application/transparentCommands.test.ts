@@ -427,11 +427,9 @@ describe("a transparent command", () => {
     expect(cad.commandLog().at(-1)).toBe("Regenerating model.")
   })
 
-  // probes arrays/p155 (a transparent command at ARRAYRECT's count,
-  // getint's, resumes it there) and p154, p158 ('_ZOOM _E at its point and
-  // distance prompts). WHY 'ZOOM here, not p155's 'ORTHOMODE: ORTHOMODE is
-  // no variable yet (drafting-aids, Missing). POLYGON's sides is a number box
-  // too, unprobed.
+  // probe arrays/p155: 'ORTHOMODE at ARRAYRECT's count, getint's, resumes
+  // it there; POLYGON's sides is a number box too, unprobed, with p154's and
+  // p158's 'ZOOM.
   it("runs at a number prompt as at a distance one", () => {
     const cad = createHarness({
       entities: [circleOf(p(10, 10), 2, { id: "C" })],
@@ -440,15 +438,16 @@ describe("a transparent command", () => {
     answerLine(cad, "_L")
     answerLine(cad, "")
     answerLine(cad, "_COU")
-    answerLine(cad, "'_ZOOM")
-    answerLine(cad, "_E")
+    answerLine(cad, "'ORTHOMODE")
+    answerLine(cad, "1")
     answerLine(cad, "3")
     expect(cad.commandLog().slice(-4)).toEqual([
-      "Enter the number of columns <4>: 'ZOOM",
-      `${ZOOM_PROMPT} _E`,
+      "Enter the number of columns <4>: 'ORTHOMODE",
+      ">>Enter new value for ORTHOMODE <0>: 1",
       "Resuming ARRAYRECT command.",
       "Enter the number of columns <4>: 3",
     ])
+    expect(cad.runtime.document.getSettings().orthoMode).toBe(true)
     cad.escape()
 
     answerLine(cad, "_POLYGON")

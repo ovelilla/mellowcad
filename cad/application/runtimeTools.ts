@@ -54,7 +54,7 @@ import { ZoomTool } from "./tools/ZoomTool"
 import { PanTool } from "./tools/PanTool"
 import { DashPanTool } from "./tools/DashPanTool"
 import { UcsTool } from "./tools/UcsTool"
-import { UcsIconTool, UcsIconVariableTool } from "./tools/UcsIconTool"
+import { UcsIconTool } from "./tools/UcsIconTool"
 import { PlanTool } from "./tools/PlanTool"
 import { ElevTool } from "./tools/ElevTool"
 import { VPointTool } from "./tools/VPointTool"
@@ -64,6 +64,7 @@ import { NavVCubeTool } from "./tools/NavVCubeTool"
 import { FillTool } from "./tools/FillTool"
 import { LtScaleTool } from "./tools/LtScaleTool"
 import { AuPrecTool } from "./tools/AuPrecTool"
+import type { SystemVariableTool } from "./tools/SystemVariableTool"
 import { UndoTool } from "./tools/UndoTool"
 import { MredoTool } from "./tools/MredoTool"
 import { OsnapTool } from "./tools/OsnapTool"
@@ -81,7 +82,8 @@ export function defaultTools(
   textEdit: TextEditTool,
   insert: InsertTool,
   paste: PasteTool,
-  attEdit: AttEditTool
+  attEdit: AttEditTool,
+  setvar: SystemVariableTool
 ): Tool[] {
   const circleRadius = { radius: 0 }
   const trimExtendMode: TrimExtendMode = { standard: false, edgeExtend: false }
@@ -174,10 +176,11 @@ export function defaultTools(
     new NavVCubeTool(),
     new FillTool(),
     new LtScaleTool(),
-    new AuPrecTool(),
+    // AUPREC typed names SETVAR's last variable too (p162).
+    new AuPrecTool(setvar.memory),
+    setvar,
     new UndoTool(),
     new MredoTool(),
-    new UcsIconVariableTool(),
     new OsnapTool(),
     new SnapTool(),
     new ColorTool(),

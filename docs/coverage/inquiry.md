@@ -93,9 +93,7 @@ loop: `Move cursor or [Distance/Radius/Angle/ARea/Volume/Quick/Mode/eXit] <eXit>
 p106), then after each measure `Enter an option [...] <Distance>:` until eXit (p360, p361), with
 Radius, Angle, Volume and Quick; the ribbon's Distance and Area buttons run it
 (`^C^C_MEASUREGEOM _distance`, `_area`), the rail DIST and AREA, whose prompts are its Distance and
-Area word for word; the DISTANCE system variable, which DIST sets to the distance measured (p100:
-`(getvar "DISTANCE")` → `5.0`), and PERIMETER, which AREA sets to the last perimeter measured, not
-a total (p257: `PERIMETER = 34.1421 (read only)`; p212); AREA's corners off the UCS's XY plane,
+Area word for word; AREA's corners off the UCS's XY plane,
 which AutoCAD measures in 3D (p256: `Area = 61.2372, Perimeter = 36.5028`) and of which it refuses
 some later ones with `Lines are not coplanar.` by a rule p249–p252 do not settle (a coplanar one
 refused, p251, one off the plane taken, p252): mellowcad measures their plan; AREA's Arc and Length
