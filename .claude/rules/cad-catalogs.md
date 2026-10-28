@@ -104,7 +104,8 @@ letter breaks when the language changes. Every keyword a tool offers is in its c
 - A word the `initget` declares and the list leaves out is a **hidden option**, after the shown
   ones (OFFSET's `Thru`, ELLIPSE's `Centre`), only once the console shows what it does; one opening
   an option not built here stays refused and is noted in the coverage entry. Where its letters would
-  answer another word (UCS's `F`), offer it hidden and leave it `unhandled` in `invokeOption`.
+  answer another word, offer it still (hidden, or listed where AutoCAD lists it) and leave it
+  `unhandled` in `invokeOption`.
 - The runtime matches answers (`matchKeywords`), and two keywords of one prompt may share their
   first letters — AutoCAD asks which (`CEnter or CLose?`): never re-letter one for that, nor for an
   object snap's name (`CEN` at a point prompt is Center). `resolveKeyword` is the stricter match

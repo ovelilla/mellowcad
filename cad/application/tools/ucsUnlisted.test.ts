@@ -29,7 +29,7 @@ function axes(cad: CadHarness) {
 }
 
 const ORIGIN =
-  "Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:"
+  "Specify origin of UCS or [Face/NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:"
 const ORTHOGRAPHIC = "Enter an option [Top/Bottom/Front/BAck/Left/Right]"
 
 // The words UCS's first prompt declares and does not list (table 25652),
@@ -312,7 +312,7 @@ describe("UCS's unlisted words", () => {
     answer(cad, "SCP", "DE", "Z", "5", "SCP", "OR", "100,0")
     answer(cad, "SCP", "3", "", "", "", "SCP", "N")
     const ORIGEN =
-      "Indique origen de SCP o [gUArdado/oBjeto/PRev/Vista/Univ/X/Y/Z/ejEZ] <Univ>:"
+      "Indique origen de SCP o [Cara/gUArdado/oBjeto/PRev/Vista/Univ/X/Y/Z/ejEZ] <Univ>:"
     expect(cad.commandLog()).toEqual([
       "SCP",
       "Nombre de scp actual:  *UNIVERSAL*",

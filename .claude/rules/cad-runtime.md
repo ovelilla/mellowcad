@@ -250,13 +250,12 @@ its result; one whose set AutoCAD keeps says `keepsSelection()` (COPYCLIP, PASTE
 erases leaves the Previous set for good (`executeTool`).
 
 Settings are split on purpose. What AutoCAD's U undoes goes through a command
-(`UpdateSettingsCommand`, which restores exactly the keys it patched; a patch that changes nothing
-executes nothing): ATTMODE, the UCS and its table, UCSICON, ELEVATION, THICKNESS, LTSCALE, AUPREC,
-UNITS (`applyDrawingUnits`), CECOLOR / CELTYPE / CELWEIGHT (`setCurrentProperties`), LWDISPLAY
-(`toggleLineweightDisplay`). A setting another implies belongs in the same patch (the WCS puts
-ELEVATION to 0). A host's own setters (`setDocumentUnit`, `setDocumentPrecision`, `setLtScale`)
-write the document directly and are not undoable. The layer and style tables, CLAYER, TEXTSTYLE
-and DIMSTYLE are commands; the Layer Properties Manager's go through
+(`UpdateSettingsCommand`, restoring exactly the keys it patched; a no-op patch executes nothing,
+bar UCS's for LASTPOINT): ATTMODE, the UCS and its table, UCSICON, ELEVATION, THICKNESS, LTSCALE,
+AUPREC, UNITS (`applyDrawingUnits`), CECOLOR / CELTYPE / CELWEIGHT (`setCurrentProperties`),
+LWDISPLAY (`toggleLineweightDisplay`). A setting another implies belongs in the same patch (UCS
+World and an orthographic -VIEW zero ELEVATION). Host setters (`setDocumentUnit`,
+`setDocumentPrecision`, `setLtScale`) write the document directly and are not undoable. The layer and style tables, CLAYER, TEXTSTYLE and DIMSTYLE are commands; the Layer Properties Manager's go through
 `executeLayerEdit` (UNDO Layer folds them). NAVVCUBE is a `CadDocument` setter
 (`setViewCubeVisible`), so U leaves it, where AutoCAD's puts it back (move/p238, view.md Missing).
 

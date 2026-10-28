@@ -2766,6 +2766,7 @@ export const es: EngineLocale = {
       "invalidUcsName": "Nombre de SCP no válido.",
       "coincidentWithFirstPoint": "Coincide con el primer punto",
       "pointsAreColinear": "Puntos colineales",
+      "pointsAreCoincident": "Los puntos coinciden",
       "noPreviousUcs": "No hay ningún sistema de coordenadas guardado.",
       "everythingUndone": "Ya se ha deshecho todo",
       "nothingToUndo": "No hay nada que se pueda deshacer",

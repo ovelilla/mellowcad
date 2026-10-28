@@ -297,6 +297,22 @@ describe("-VIEW's presets", () => {
     expectVector(direction(cad), -1 / ROOT3, -1 / ROOT3, 1 / ROOT3)
     expectVector(ucs(cad).xAxis, Math.cos(Math.PI / 6), 0.5, 0)
   })
+
+  // probes ucs/p400, p403: an orthographic view puts ELEVATION back to 0, as
+  // UCS World does; an iso view and PLAN World keep it.
+  it("puts ELEVATION back to 0 at an orthographic view only", () => {
+    const elevation = (cad: CadHarness) =>
+      cad.runtime.document.getSettings().elevation
+    const cad = answer(drawn(), "_ELEV", "5", "0", "_-VIEW", "_FRONT")
+    expect(elevation(cad)).toBe(0)
+    answer(cad, "_ELEV", "5", "0", "_-VIEW", "_TOP")
+    expect(elevation(cad)).toBe(0)
+    answer(cad, "_ELEV", "5", "0", "_-VIEW", "_SWISO")
+    expect(elevation(cad)).toBe(5)
+    answer(cad, "_PLAN", "_W")
+    expect(elevation(cad)).toBe(5)
+    expect(ucsName(cad)).toBe("Current ucs name:  *TOP*")
+  })
 })
 
 describe("the scene off the plan", () => {

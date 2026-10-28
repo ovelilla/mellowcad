@@ -122,13 +122,16 @@ export class ViewTool implements Tool {
       ctx.viewport.right,
       ctx.viewport.up
     )
+    // An orthographic view puts ELEVATION back to 0, as UCS World does; an
+    // iso view keeps it (probes ucs/p400, p403).
     const patch =
       ucs &&
       ucsChange(
         ctx.document.getSettings(),
         ucs,
         null,
-        ORTHOGRAPHIC_OPTIONS[preset]
+        ORTHOGRAPHIC_OPTIONS[preset],
+        { resetsElevation: true }
       )
     if (patch) ctx.execute(new UpdateSettingsCommand(patch))
     return true

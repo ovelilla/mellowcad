@@ -291,9 +291,9 @@ describe("LASTPOINT", () => {
     expect(lastPoint(cad)).toBe(" X = 0.00     Y = 0.00     Z = 0.00")
   })
 
-  // AutoCAD 2023's console (acc/u4, u5, u7): Previous and a restored named
-  // UCS put it at the WCS's origin, read in the UCS they make current; U
-  // taking back a UCS whose origin was typed puts it back there.
+  // probes ucs/p153, p234, p163: Previous and a restored named UCS put it at
+  // the WCS's origin, read in the UCS they make current; U taking back a
+  // UCS made at the first prompt leaves it where that UCS left it.
   it("is the WCS's origin after UCS Previous or Restore, and stays after U", () => {
     const previous = createHarness()
     answer(previous, "UCS", "0,50", "", "UCS", "100,0", "", "ID", "5,5")
@@ -320,9 +320,9 @@ describe("LASTPOINT", () => {
     expect(lastPoint(spanish)).toBe(" X = 0.00     Y = -50.00     Z = 0.00")
   })
 
-  // AutoCAD 2023's console (acc/a1–a24 of the elliptical arcs session): U
-  // taking a UCS back puts it at the origin given at UCS's first prompt, and
-  // at the WCS's origin after any other way; REDO where the UCS put it.
+  // probes ucs/p160, p163, p164: U taking a UCS back puts it at the origin
+  // given at UCS's first prompt, and at the WCS's origin after any other
+  // way; REDO where the UCS put it.
   it("goes where U and REDO of a UCS put it", () => {
     const at = (...texts: string[]) =>
       lastPoint(answer(createHarness(), ...texts))
@@ -369,6 +369,25 @@ describe("LASTPOINT", () => {
     expect(lastPoint(spanish)).toBe(wcsOrigin)
     answer(spanish, "SCP", "U", "H", "REHACER")
     expect(lastPoint(spanish)).toBe(origin)
+  })
+
+  // probe ucs/p166: OBject on nothing changes no UCS but moves LASTPOINT to
+  // the point typed; U takes the run back as UCS, LASTPOINT to the WCS's
+  // origin.
+  it("goes to the WCS's origin at U after OBject found nothing", () => {
+    const missed = () => {
+      const cad = answer(createHarness(), "LINE", "0,0", "10,0", "")
+      answer(cad, "UCS", "OB", "5,500")
+      expect(cad.commandLog().at(-1)).toBe("No object found")
+      return cad
+    }
+    expect(lastPoint(missed())).toBe(" X = 5.00     Y = 500.00     Z = 0.00")
+    const cad = missed()
+    const from = cad.commandLog().length
+    answer(cad, "_U")
+    expect(cad.commandLog().slice(from)).toEqual(["U", "UCS"])
+    expect(cad.entityCount).toBe(1)
+    expect(lastPoint(cad)).toBe(" X = 0.00     Y = 0.00     Z = 0.00")
   })
 
   // AutoCAD 2023's console (acc/u1–u30, p1–p33, q1–q24 of the hidden UCS
@@ -428,9 +447,10 @@ describe("LASTPOINT", () => {
     )
   })
 
-  // AutoCAD 2023's console (acc/bk59–bk63, ul1–ul36), from a UCS at 30,0
-  // with LASTPOINT at 35,5: UCS puts it at the WCS's origin as it starts,
-  // and only a point given moves it; -VIEW and PLAN leave it.
+  // probes ucs/p111, p114, p124, p127, p128, p134, p164 (view/p242, p268
+  // for -VIEW and PLAN), from a UCS at 30,0 with LASTPOINT at 35,5: UCS puts
+  // it at the WCS's origin as it starts, and only a point given moves it;
+  // -VIEW and PLAN leave it.
   it("is the WCS's origin as UCS starts, until a point is given", () => {
     const at = (...texts: string[]) => {
       const cad = createHarness({ entities: [lineOf(p(20, 10), p(80, 40))] })
@@ -447,7 +467,7 @@ describe("LASTPOINT", () => {
     expect(at("UCS", "X", "90")).toBe(wcsOrigin)
     expect(at("UCS", "V")).toBe(wcsOrigin)
     expect(at("UCS", "OB", "L")).toBe(reads("-22.3607", "0.0000"))
-    // A point at Z's angle turns the UCS and is no point given (ul32).
+    // A point at Z's angle turns the UCS and is no point given (p124).
     expect(at("UCS", "Z", "40,10")).toBe(reads("-29.1043", "7.2761"))
     // ZAxis' Z point is given, its origin too, Enter there the current one.
     expect(at("UCS", "ZA", "50,0", "50,0,10")).toBe(
@@ -455,7 +475,7 @@ describe("LASTPOINT", () => {
     )
     expect(at("UCS", "ZA", "50,0", "")).toBe(origin)
     expect(at("UCS", "ZA", "", "")).toBe(origin)
-    // A point on X is not (ul9, ul27, ul28).
+    // A point on X is not (p111).
     expect(at("UCS", "50,0", "60,10", "")).toBe(origin)
     expect(at("UCS", "3", "", "60,10", "")).toBe(origin)
     expect(at("UCS", "3", "50,0", "60,10", "")).toBe(origin)
@@ -652,6 +672,24 @@ describe("A number typed for a point", () => {
     const circle = cad.entities()[0] as CircleEntity
     expect(circle.center).toBeCloseToPoint(p(2.3203, 0.9306), 4)
     expect(circle.radius).toBeCloseTo(2.5)
+  })
+
+  // With no cursor on the drawing, or one on the base, the distance runs
+  // along the UCS's X (WHY at `pointAtDistance`), LINE's next point too.
+  it("runs along the UCS's X with the cursor nowhere or on the base", () => {
+    const nowhere = answer(createHarness(), "LINE", "0,0", "30", "")
+    expect(lines(nowhere)[0].end).toBeCloseToPoint(p(30, 0))
+    const back = answer(createHarness(), "LINE", "0,0", "-10", "")
+    expect(lines(back)[0].end).toBeCloseToPoint(p(-10, 0))
+
+    const onBase = createHarness()
+    onBase.command("LINE").click(p(10, 10))
+    answer(onBase, "30")
+    expect(lines(onBase)[0].end).toBeCloseToPoint(p(40, 10))
+
+    const turned = answer(createHarness(), "UCS", "Z", "90")
+    answer(turned, "LINE", "0,0", "30", "")
+    expect(lines(turned)[0].end).toBeCloseToPoint(p(0, 30))
   })
 
   it("is MOVE's destination at its second point, also from the tooltip's distance and angle", () => {

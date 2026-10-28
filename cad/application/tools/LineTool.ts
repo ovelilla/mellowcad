@@ -28,7 +28,7 @@ import {
   withCurrentThickness,
 } from "./currentProperties"
 import { acuteHeading, headingInUcs } from "./ucsHeading"
-import { pointAlongCursor, showRise } from "./directDistance"
+import { pointAlongCursor, pointAtDistance, showRise } from "./directDistance"
 import {
   DeferredPick,
   deferredFrom,
@@ -857,11 +857,11 @@ export class LineTool implements Tool {
     // cursor's path, the Z guide.
     const typedAngle = ctx.dynamicInput.getText("angle").trim() !== ""
     const heading = Number.isFinite(angle) ? angle : null
-    // A length of 0 needs no heading: the cursor on the start gives none.
+    // With no heading from the cursor (none on the drawing, or on the start)
+    // a length runs along the UCS's X, as the runtime's direct distance does.
     const end =
       this.pointAt(start, cursor, distance, typedAngle ? heading : null, ctx) ??
-      (distance === 0 ? start : null)
-    if (end === null) return
+      pointAtDistance(ctx, start, null, distance)
     this.addSegment(end, null, ctx, "typed")
   }
 
@@ -876,10 +876,11 @@ export class LineTool implements Tool {
     if (this.state.phase !== "drawing") return false
     const coordText = ctx.dynamicInput.getText("distance").trim()
     if (!isCoordinateExpression(coordText)) {
-      // With the cursor on the start the angle has no reading, which a
-      // length of 0 does not need (line/p09).
-      if (parseNumber(coordText) !== 0) return false
-      this.commitSegment({ distance: 0, angle: Number.NaN }, ctx)
+      // With the cursor on the start the angle has no reading: the length
+      // runs along the UCS's X, 0 on the start itself (line/p09).
+      const distance = parseNumber(coordText)
+      if (distance === null) return false
+      this.commitSegment({ distance, angle: Number.NaN }, ctx)
       return true
     }
     const end = parseCoordinate(coordText, {

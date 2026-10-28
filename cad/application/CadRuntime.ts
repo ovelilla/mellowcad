@@ -931,14 +931,10 @@ export class CadRuntime extends Observable {
     // Acquired tracking points are in the frame of the UCS they were taken in.
     let ucs = this.document.getSettings().ucs
     this.document.subscribe(() => {
-      const next = this.document.getSettings().ucs
-      if (next === ucs) return
-      ucs = next
-      this.resetTracking()
-      // WHY: a UCS change leaves LASTPOINT, as AutoCAD 2023's console's
-      // -VIEW Top does (acc/ul15, ul16); UCS sets it itself, and U and REDO
-      // of a UCS put it where the change says (acc/a1–a24 of the elliptical
-      // arcs session, ul1–ul34).
+      // WHY: a UCS change leaves LASTPOINT, as AutoCAD's console's -VIEW
+      // does (probe view/p268); UCS sets it itself, and U and REDO of a UCS
+      // run put it where the run says, one that changed no UCS too (probes
+      // ucs/p163, p164, p166).
       const said =
         this.history.replaying?.command instanceof UpdateSettingsCommand
           ? this.history.replaying.command.lastPoint
@@ -948,6 +944,10 @@ export class CadRuntime extends Observable {
           ? said.undone
           : said.redone
       }
+      const next = this.document.getSettings().ucs
+      if (next === ucs) return
+      ucs = next
+      this.resetTracking()
     })
     // A new selection shows every object again, as the palette's drop-down
     // starts at All.

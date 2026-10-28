@@ -29,6 +29,30 @@ type Harness = ReturnType<typeof createHarness>
 
 const ucsOf = (cad: Harness): Ucs => cad.runtime.document.getSettings().ucs
 
+/** Typed at the command line and confirmed, as the console types it. */
+function answer(cad: Harness, ...texts: string[]): Harness {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
+
+/** A drawing written at AutoCAD's LUPREC 4, as the console's is. */
+function four(): Harness {
+  const cad = createHarness()
+  cad.runtime.setDocumentPrecision(4)
+  return cad
+}
+
+/** What ID @ reports: LASTPOINT, in the current UCS. */
+function lastPoint(cad: Harness): string | undefined {
+  answer(cad, "ID", "@")
+  return cad.commandLog().at(-1)
+}
+
+const elevation = (cad: Harness) => cad.runtime.document.getSettings().elevation
+
 /** The UCS at (100, 50) with its X axis along world +Y. */
 function turned(cad: Harness): Harness {
   return cad.command("UCS").click(p(100, 50)).click(p(100, 80)).enter()
@@ -65,18 +89,11 @@ describe("UCS", () => {
     expect(ucsOf(cad).origin).toBeCloseToPoint(p(100, 60))
   })
 
-  // AutoCAD 2023's console (acc/ul37–ul39): the first prompt's point on X
-  // and on the XY plane are read in the UCS moved to the origin given;
+  // probes ucs/p111, p113, p151: the first prompt's point on X is read in
+  // the UCS moved to the origin given, the third along the new X;
   // 3point's in the current UCS.
   it("reads the first prompt's points on X and on the plane from the new origin", () => {
-    const typed = (...texts: string[]) => {
-      const cad = createHarness()
-      for (const text of texts) {
-        cad.runtime.setCommandLineText(text)
-        cad.runtime.submitCommandLine()
-      }
-      return cad
-    }
+    const typed = (...texts: string[]) => answer(createHarness(), ...texts)
     const fromWorld = typed("UCS", "100,0", "200,50", "100,100")
     expect(ucsOf(fromWorld).origin).toBeCloseToPoint(p(100, 0))
     expect(ucsOf(fromWorld).xAxis).toBeCloseToPoint(p(0.970143, 0.242536))
@@ -106,11 +123,69 @@ describe("UCS", () => {
     expect(ucsOf(three).xAxis).toBeCloseToPoint(p(0.707107, 0.707107))
   })
 
+  // probes ucs/p151, p120, p401: the third point is read in the frame of the
+  // new origin and X, its Y the current Z × the new X — so 100,20 above that
+  // X keeps Z up, and 0,-10 below it turns Z down —, and LASTPOINT is the
+  // point given, typed (`*` in the WCS) or clicked.
+  it("reads the first prompt's third point along the new X, LASTPOINT at it", () => {
+    const up = answer(four(), "UCS", "100,0", "200,50", "100,20")
+    expect(ucsOf(up).yAxis).toBeCloseToPoint(p(-0.242536, 0.970143))
+    expect(ucsOf(up).yAxis.z).toBeCloseTo(0, 12)
+    expect(lastPoint(up)).toBe(" X = 100.0000     Y = 20.0000     Z = 0.0000")
+
+    const over = answer(four(), "UCS", "0,0", "10,0", "0,-10")
+    expect(ucsOf(over).yAxis).toBeCloseToPoint(p(0, -1))
+    expect(lastPoint(over)).toBe(" X = 0.0000     Y = 10.0000     Z = 0.0000")
+
+    const world = answer(four(), "UCS", "100,0", "200,50", "*100,100")
+    expect(ucsOf(world).yAxis).toBeCloseToPoint(p(-0.242536, 0.970143))
+    expect(lastPoint(world)).toBe(" X = 24.2536     Y = 97.0143     Z = 0.0000")
+
+    const clicked = four()
+    clicked.command("UCS").click(p(100, 0)).click(p(300, 50)).click(p(100, 100))
+    expect(lastPoint(clicked)).toBe(
+      " X = 24.2536     Y = 97.0143     Z = 0.0000"
+    )
+  })
+
+  // probe ucs/p144: an origin typed without a Z lies ELEVATION above the
+  // current XY plane.
+  it("lays an origin typed without a Z at ELEVATION", () => {
+    const cad = answer(createHarness(), "ELEV", "7", "0", "UCS", "10,0", "")
+    expect(ucsOf(cad).origin).toEqual({ x: 10, y: 0, z: 7 })
+  })
+
   it("Enter at the first prompt is <World>", () => {
     const cad = turned(createHarness())
     cad.command("UCS").enter()
     expect(ucsOf(cad).origin).toBeCloseToPoint(p(0, 0))
     expect(ucsOf(cad).xAxis).toBeCloseToPoint(p(1, 0))
+  })
+
+  // probes ucs/p125, p402: a point at X's or Y's angle is its heading from
+  // the UCS's origin in its XY plane, as at Z's; one on the origin is 0.
+  it("X and Y take one point as their angle, from the UCS's origin", () => {
+    const cad = four()
+    answer(cad, "UCS", "Z", "30", "UCS", "50,0", "", "UCS", "X", "0,10")
+    expect(cad.activeToolId()).toBe("select")
+    expect(ucsOf(cad).origin).toBeCloseToPoint(p(43.3013, 25), 4)
+    expect(ucsOf(cad).xAxis).toBeCloseToPoint(p(0.866025, 0.5))
+    expect(ucsOf(cad).yAxis.z).toBeCloseTo(1, 12)
+
+    answer(cad, "UCS", "P", "UCS", "Y", "10,10")
+    expect(ucsOf(cad).xAxis).toBeCloseToPoint(p(0.612372, 0.353553))
+    expect(ucsOf(cad).xAxis.z).toBeCloseTo(-0.707107, 6)
+    expect(ucsOf(cad).yAxis).toBeCloseToPoint(p(-0.5, 0.866025))
+
+    const still = answer(createHarness(), "UCS", "X", "0,0")
+    expect(still.activeToolId()).toBe("select")
+    expect(ucsOf(still).yAxis).toEqual({ x: 0, y: 1, z: 0 })
+    expect(lastPoint(still)).toBe(" X = 0.00     Y = 0.00     Z = 0.00")
+
+    const clicked = createHarness()
+    clicked.command("UCS").option("X").click(p(0, 10))
+    expect(clicked.activeToolId()).toBe("select")
+    expect(ucsOf(clicked).yAxis.z).toBeCloseTo(1, 12)
   })
 
   it("Z turns about the UCS origin, 90° when Enter takes the default", () => {
@@ -138,6 +213,67 @@ describe("UCS", () => {
     expect(ucsOf(cad).origin).toBeCloseToPoint(p(0, 0))
     cad.redo()
     expect(ucsOf(cad).origin).toBeCloseToPoint(p(100, 50))
+  })
+
+  // probe ucs/p159
+  it("echoes UCS at U and REDO", () => {
+    const cad = answer(createHarness(), "UCS", "Z", "30")
+    const from = cad.commandLog().length
+    answer(cad, "_U")
+    expect(ucsOf(cad).xAxis).toEqual({ x: 1, y: 0, z: 0 })
+    answer(cad, "_REDO")
+    expect(cad.commandLog().slice(from)).toEqual([
+      "U",
+      "UCS",
+      "REDO",
+      "UCS",
+      "Everything has been redone",
+    ])
+    expect(ucsOf(cad).xAxis).toBeCloseToPoint(p(0.866025, 0.5))
+  })
+
+  // probe ucs/p132: Previous steps back through the last ten.
+  it("Previous goes back ten UCSs, then has none", () => {
+    const cad = createHarness()
+    for (let i = 0; i < 12; i++) answer(cad, "UCS", "Z", "10")
+    for (let i = 0; i < 10; i++) answer(cad, "UCS", "P")
+    expect(ucsOf(cad).xAxis).toBeCloseToPoint(
+      p(Math.cos(deg(20)), Math.sin(deg(20)))
+    )
+    answer(cad, "UCS", "P")
+    expect(cad.commandLog().at(-1)).toBe("No previous coordinate system saved.")
+  })
+
+  describe("ELEVATION", () => {
+    // probe ucs/p152: World puts it back to 0 with the WCS current too, a
+    // change U takes back; the first prompt's Enter is World.
+    it("World puts it back to 0, the WCS current or not", () => {
+      const cad = answer(createHarness(), "ELEV", "5", "0", "UCS", "W")
+      expect(elevation(cad)).toBe(0)
+      answer(cad, "_U")
+      expect(elevation(cad)).toBe(5)
+      answer(cad, "UCS", "Z", "30", "UCS", "")
+      expect(elevation(cad)).toBe(0)
+      expect(ucsOf(cad).xAxis).toEqual({ x: 1, y: 0, z: 0 })
+    })
+
+    // probes ucs/p153, p400: Previous back to the WCS, orthoGraphic Top and a
+    // restored UCS equal to the WCS keep it.
+    it("stays when another answer makes the WCS current", () => {
+      const previous = answer(createHarness(), "UCS", "Z", "30")
+      answer(previous, "ELEV", "5", "0", "UCS", "P")
+      expect(elevation(previous)).toBe(5)
+
+      const top = answer(createHarness(), "ELEV", "5", "0", "UCS", "Z", "30")
+      answer(top, "UCS", "G", "T")
+      expect(elevation(top)).toBe(5)
+
+      const restored = answer(createHarness(), "ELEV", "5", "0")
+      answer(restored, "UCS", "NA", "S", "W0", "UCS", "Z", "30")
+      answer(restored, "UCS", "NA", "R", "W0")
+      expect(elevation(restored)).toBe(5)
+      expect(restored.runtime.document.getSettings().ucsName).toBe("W0")
+    })
   })
 
   it("says which UCS is current", () => {

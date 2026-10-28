@@ -12,7 +12,6 @@ import {
   rotateUcs,
   sameUcs,
   ucsFromAxes,
-  ucsPointToWorld,
   ucsZAxis,
   worldDirectionToUcs,
   worldPointToUcs,
@@ -130,14 +129,9 @@ const ORTHOGRAPHIC_NAMES: Readonly<Record<OrthographicUcs, PromptId>> = {
   right: "ucsRight",
 }
 
-/**
- * The words the first prompt declares and does not list, in its `initget`'s
- * order (table 25652): Face, which needs solids, only so that `F` is
- * refused as the console takes it, rather than read as `FRont`.
- */
+/** The words the first prompt declares and does not list, in its `initget`'s order. */
 const HIDDEN_OPTIONS = [
   "Origin",
-  "Face",
   "3point",
   "Entity",
   "Move",
@@ -161,8 +155,8 @@ const NEW_UCS_HIDDEN = ["Origin", "Face", "Entity"]
  * and the words its first prompt takes unlisted — Origin, 3point, Entity,
  * Move, orthoGraphic and its six views, Restore, Save, Delete, `?` and New,
  * the older prompts AutoCAD 2023's console still answers them with. Face is
- * not offered: there are no solids. It works in the WCS, since it is what
- * places the UCS the other commands work in.
+ * listed and refused: there are no solids. It works in the WCS, since it is
+ * what places the UCS the other commands work in.
  */
 export class UcsTool implements Tool {
   readonly id = "ucs"
@@ -223,10 +217,10 @@ export class UcsTool implements Tool {
         currentName(ctx.document.getSettings())
       )
     )
-    // WHY: AutoCAD 2023's console puts LASTPOINT at the WCS's origin as UCS
+    // WHY: AutoCAD's console puts LASTPOINT at the WCS's origin as UCS
     // starts, and only a point given moves it — so after X, Y, Z, View,
     // World, Previous, a name or OBject found by a mode it is still there,
-    // whatever the new origin (acc/bk52, bk57, bk61–bk64, ul1–ul34).
+    // whatever the new origin (probes ucs/p134, p137, p138, p164).
     ctx.setLastPoint(WCS_ORIGIN)
     this.enterOrigin(ctx)
   }
@@ -253,7 +247,7 @@ export class UcsTool implements Tool {
       const hover = hasEnds(hit) ? hit.id : null
       if (hover !== state.hover) this.state = { phase: "zObject", hover }
     }
-    if (state.phase === "rotate" && state.axis === "z") {
+    if (state.phase === "rotate") {
       const offset = sub3(input.point, ctx.ucs.origin)
       if (V.length(worldDirectionToUcs(ctx.ucs, offset)) > 1e-9) {
         ctx.dynamicInput.setLive("angle", headingInUcs(ctx.ucs, offset))
@@ -289,12 +283,17 @@ export class UcsTool implements Tool {
       case "xyPlane":
         this.acceptPlanePoint(state, input.point, ctx)
         return
+      // X, Y and Z alike take one point, its heading from the UCS's origin
+      // in its XY plane: 0 on the origin itself (probes ucs/p124, p125,
+      // p402).
       case "rotate": {
-        if (state.axis !== "z") return
         const offset = sub3(input.point, ctx.ucs.origin)
-        if (V.length(worldDirectionToUcs(ctx.ucs, offset)) > 1e-9) {
-          this.rotate("z", headingInUcs(ctx.ucs, offset), ctx)
-        }
+        const flat = worldDirectionToUcs(ctx.ucs, offset)
+        this.rotate(
+          state.axis,
+          V.length(flat) > 1e-9 ? headingInUcs(ctx.ucs, offset) : 0,
+          ctx
+        )
         return
       }
       case "zOrigin":
@@ -320,8 +319,12 @@ export class UcsTool implements Tool {
     const hit = ctx.pick(world)
     if (!hit) {
       ctx.report(ctx.text.message("noObjectFound"))
-      if (!zAxis) ctx.endCommand()
-      return
+      if (zAxis) return
+      const settings = ctx.document.getSettings()
+      return this.finish(settings.ucs, settings.ucsName, ctx, {
+        remember: false,
+        orthographic: settings.ucsOrthographic,
+      })
     }
     const entity = zAxis ? (hasEnds(hit) ? hit : null) : alignable(hit)
     if (!entity) return
@@ -404,7 +407,7 @@ export class UcsTool implements Tool {
     return this.state.phase === "origin" ? "World" : null
   }
 
-  /** As AutoCAD 2023's console refuses UCS's answers. */
+  /** As AutoCAD's console refuses UCS's answers (probes ucs/p107, p116, p123). */
   takes(): QuestionInput | null {
     switch (this.state.phase) {
       case "rotate":
@@ -431,6 +434,9 @@ export class UcsTool implements Tool {
     switch (this.state.phase) {
       case "origin":
         return [
+          // WHY listed though not built: 2027 lists it (probes ucs/p100,
+          // p101); unhandled, so `F` is refused rather than read as FRont.
+          { id: "Face" },
           { id: "NAmed" },
           { id: "OBject" },
           { id: "Previous" },
@@ -533,7 +539,7 @@ export class UcsTool implements Tool {
     return "unhandled"
   }
 
-  /** A point on X leaves LASTPOINT at the origin (acc/ul9, ul27, ul28). */
+  /** A point on X leaves LASTPOINT at the origin (probes ucs/p111, p114, p264). */
   setsLastPoint(): boolean | null {
     return this.state.phase === "xAxis" ? false : null
   }
@@ -576,7 +582,7 @@ export class UcsTool implements Tool {
       case "zPoint":
         return true
       case "rotate":
-        return this.state.axis === "z"
+        return true
       default:
         return false
     }
@@ -621,7 +627,7 @@ export class UcsTool implements Tool {
     }
     switch (id) {
       case "World":
-        this.apply(WORLD_UCS, null, ctx)
+        this.apply(WORLD_UCS, null, ctx, { resetsElevation: true })
         return "end"
       case "Previous": {
         const previous = this.previous.pop()
@@ -660,7 +666,7 @@ export class UcsTool implements Tool {
           commit: (values, commitCtx) => {
             this.rotate(axis, values.angle, commitCtx)
           },
-          // About Z the box reads the cursor's heading; Enter is still `<90>`.
+          // The box reads the cursor's heading; Enter is still `<90>`.
           commitRaw: (commitCtx) => {
             if (commitCtx.dynamicInput.hasTypedText()) return false
             this.rotate(axis, DEFAULT_AXIS_ANGLE, commitCtx)
@@ -719,7 +725,7 @@ export class UcsTool implements Tool {
       case "New":
         this.enterNewUcs(ctx)
         return "continue"
-      // Face opens a solid's face, which there is none of: refused.
+      // Face opens a solid's face, which is not built: refused.
       default:
         return "unhandled"
     }
@@ -733,7 +739,7 @@ export class UcsTool implements Tool {
       commitRaw: (commitCtx) => {
         const text = commitCtx.dynamicInput.getText("point").trim()
         if (text === "") {
-          this.finish(WORLD_UCS, null, commitCtx)
+          this.finish(WORLD_UCS, null, commitCtx, { resetsElevation: true })
           return true
         }
         const point = this.parse(text, null, commitCtx)
@@ -893,6 +899,15 @@ export class UcsTool implements Tool {
     // Accepted, the new Y axis lies in the current UCS's XY plane.
     const level = cross3(ucsZAxis(ctx.ucs), xAxis)
     const towardsY = length3(level) > 1e-9 ? level : ctx.ucs.yAxis
+    // WHY: the console reads the first prompt's third point in this frame —
+    // the new origin, the new X, Y the current Z × the new X —, not in the
+    // UCS moved there: `100,20` after X along `200,50` keeps Z up (probes
+    // ucs/p120, p148, p150, p151, p401).
+    const frame: Ucs = {
+      origin,
+      xAxis: scale3(xAxis, 1 / length3(xAxis)),
+      yAxis: scale3(towardsY, 1 / length3(towardsY)),
+    }
     const state = {
       phase: "xyPlane" as const,
       origin,
@@ -923,7 +938,7 @@ export class UcsTool implements Tool {
           text,
           origin,
           commitCtx,
-          this.readIn(origin, three, commitCtx)
+          three ? commitCtx.ucs : frame
         )
         if (!point) return false
         this.acceptPlanePoint(state, point, commitCtx)
@@ -933,12 +948,7 @@ export class UcsTool implements Tool {
     this.place(ctx)
   }
 
-  /**
-   * The third point, on the positive Y side of the new XY plane. LASTPOINT
-   * then is that point, where AutoCAD 2023's console puts it: 3point's
-   * where it was given (acc/u5, p17), the first prompt's at the numbers it
-   * was given in, read in the new UCS (q10).
-   */
+  /** The third point, on the positive Y side of the new XY plane, and LASTPOINT. */
   private acceptPlanePoint(
     state: {
       readonly origin: Vec3
@@ -957,14 +967,7 @@ export class UcsTool implements Tool {
       ctx.report(ctx.text.message("pointsAreColinear"), "error")
       return
     }
-    const lastPoint =
-      state.three === null
-        ? ucsPointToWorld(
-            ucs,
-            worldPointToUcs(this.readIn(state.origin, false, ctx), point)
-          )
-        : point
-    this.finish(ucs, null, ctx, { lastPoint })
+    this.finish(ucs, null, ctx, { lastPoint: point })
   }
 
   /** orthoGraphic's views, and the six words typed at the first prompt. */
@@ -988,7 +991,7 @@ export class UcsTool implements Tool {
 
   /**
    * ZAxis: `Specify new origin point or [Object] <0,0,0>`, the current
-   * origin by default — given, as 3point's (acc/ul6).
+   * origin by default — given, as 3point's (probes ucs/p127, p128).
    */
   private enterZOrigin(ctx: ToolContext): void {
     this.state = { phase: "zOrigin" }
@@ -1036,9 +1039,14 @@ export class UcsTool implements Tool {
     this.place(ctx)
   }
 
+  /** The point on Z; one on the origin is refused and asked again (probe ucs/p129). */
   private acceptZPoint(origin: Vec3, point: Vec3, ctx: ToolContext): boolean {
     const ucs = ucsAlongZ(origin, sub3(point, origin))
-    if (!ucs) return false
+    if (!ucs) {
+      if (length3(sub3(point, origin)) > 1e-9) return false
+      ctx.report(ctx.text.message("pointsAreCoincident"), "error")
+      return true
+    }
     this.finish(ucs, null, ctx, { lastPoint: point })
     return true
   }
@@ -1165,7 +1173,8 @@ export class UcsTool implements Tool {
   /**
    * Makes `ucs` current, one undo step, remembering the one it replaces
    * unless `remember` is false (Previous); `lastPoint` the point the
-   * answer gave, where LASTPOINT goes, and `orthographic` the view it is.
+   * answer gave, where LASTPOINT goes, `orthographic` the view it is, and
+   * `resetsElevation` World's ELEVATION back to 0.
    */
   private apply(
     ucs: Ucs,
@@ -1175,14 +1184,35 @@ export class UcsTool implements Tool {
       readonly remember?: boolean
       readonly lastPoint?: Vec3
       readonly orthographic?: OrthographicUcs | null
+      readonly resetsElevation?: boolean
     } = {}
   ): void {
-    const { remember = true, lastPoint, orthographic = null } = options
+    const {
+      remember = true,
+      lastPoint,
+      orthographic = null,
+      resetsElevation = false,
+    } = options
     if (lastPoint) ctx.setLastPoint(lastPoint)
     const settings = ctx.document.getSettings()
-    const patch = ucsChange(settings, ucs, name, orthographic)
-    if (!patch) return
-    if (remember) {
+    const patch = ucsChange(settings, ucs, name, orthographic, {
+      resetsElevation,
+    })
+    // WHY: AutoCAD's console: U leaves LASTPOINT where a UCS made at the
+    // first prompt left it, and puts it at the WCS's origin after any other
+    // way; REDO puts it where the UCS left it (probes ucs/p163, p164). A run
+    // that changes nothing but moved it (OBject on nothing) is still put
+    // back so (p166).
+    const state = this.state
+    const left = ctx.lastPoint
+    const firstPrompt =
+      (state.phase === "xAxis" || state.phase === "xyPlane") &&
+      state.three === null
+    const undone = firstPrompt ? left : WCS_ORIGIN
+    if (!patch && !(length3(sub3(undone, left)) > 1e-9)) return
+    // World with the WCS current changes ELEVATION only: none to step back to.
+    const turns = patch !== null && ucsChange(settings, ucs, name, orthographic)
+    if (turns && remember) {
       this.previous.push({
         ucs: settings.ucs,
         name: settings.ucsName,
@@ -1190,21 +1220,8 @@ export class UcsTool implements Tool {
       })
       if (this.previous.length > MAX_PREVIOUS) this.previous.shift()
     }
-    // WHY: AutoCAD 2023's console: U leaves LASTPOINT where a UCS made at
-    // the first prompt left it (acc/a2, a5, a14 of the elliptical arcs
-    // session, ul8–ul10), and puts it at the WCS's origin after any other
-    // way (a1, a4, a9, a12, a20–a24, u8, ul1–ul7, ul11–ul34); REDO puts it
-    // where the UCS left it (a7, a8, a16, ul*).
-    const state = this.state
-    const left = ctx.lastPoint
-    const firstPrompt =
-      (state.phase === "xAxis" || state.phase === "xyPlane") &&
-      state.three === null
     ctx.execute(
-      new UpdateSettingsCommand(patch, {
-        undone: firstPrompt ? left : WCS_ORIGIN,
-        redone: left,
-      })
+      new UpdateSettingsCommand(patch ?? {}, { undone, redone: left })
     )
   }
 
@@ -1235,10 +1252,10 @@ export class UcsTool implements Tool {
   }
 
   /**
-   * Where the first prompt's point on X and on the XY plane are read: the
-   * UCS moved to the origin given, its axes kept — AutoCAD 2023's console
-   * lays X along `200,50` typed after the origin `100,0` (acc/ul37, ul38);
-   * 3point reads them in the current UCS (ul39).
+   * Where the first prompt's point on X is read: the UCS moved to the origin
+   * given, its axes kept — AutoCAD's console lays X along `200,50` typed
+   * after the origin `100,0` (probes ucs/p111, p113); 3point reads it in the
+   * current UCS. The third point is read otherwise ({@link enterXYPlane}).
    */
   private readIn(origin: Vec3, three: boolean, ctx: ToolContext): Ucs {
     return three ? ctx.ucs : { ...ctx.ucs, origin }
@@ -1257,7 +1274,7 @@ export function currentName(settings: DocumentSettings): {
 } {
   if (settings.ucsName !== null)
     return { kind: "named", name: settings.ucsName }
-  // acc/p32: the WCS set as Top is `*TOP*`.
+  // The WCS set as Top is `*TOP*` (probes ucs/p106, p153).
   if (settings.ucsOrthographic !== null)
     return { kind: settings.ucsOrthographic, name: "" }
   return { kind: isWorldUcs(settings.ucs) ? "world" : "unnamed", name: "" }
@@ -1318,29 +1335,33 @@ export function listNamedUcs(patterns: string, ctx: ToolContext): void {
 
 /**
  * The patch that makes `ucs` current under `name` (or as an `orthographic`
- * one), or `null` when it already is: UCS, and -VIEW aligning the UCS with
- * an orthographic view. Changing to
- * the WCS puts ELEVATION back to 0, as ELEV documents.
+ * one), or `null` when nothing changes: UCS, and -VIEW aligning the UCS with
+ * an orthographic view. ELEVATION goes back to 0 only where the caller says
+ * (`resetsElevation`): UCS World and -VIEW's orthographic views do, even
+ * with that UCS current already; Previous, a restored name or orthoGraphic
+ * reaching the WCS do not (probes ucs/p152, p153, p400, p403).
  */
 export function ucsChange(
   settings: DocumentSettings,
   ucs: Ucs,
   name: string | null,
-  orthographic: OrthographicUcs | null = null
+  orthographic: OrthographicUcs | null = null,
+  { resetsElevation = false }: { readonly resetsElevation?: boolean } = {}
 ): Partial<DocumentSettings> | null {
+  const elevation = resetsElevation && settings.elevation !== 0
   if (
+    !elevation &&
     sameUcs(ucs, settings.ucs) &&
     name === settings.ucsName &&
     orthographic === settings.ucsOrthographic
   ) {
     return null
   }
-  const toWorld = isWorldUcs(ucs) && settings.elevation !== 0
   return {
     ucs,
     ucsName: name,
     ucsOrthographic: orthographic,
-    ...(toWorld ? { elevation: 0 } : {}),
+    ...(elevation ? { elevation: 0 } : {}),
   }
 }
 

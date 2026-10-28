@@ -7,7 +7,8 @@ is drawn in a tilted UCS takes its Z as the normal. The commands work in the UCS
 ### `UCS` · es `SCP`
 
 **Implemented:** `Current ucs name:  *WORLD*` (`*NO NAME*` / the name), then
-`Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:`,
+`Specify origin of UCS or [Face/NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:` (Face
+listed as 2027 lists it, probes ucs/p100, p101),
 `Specify point on X-axis or <accept>:`, `Specify point on the XY plane or <accept>:`, NAmed's
 `Enter an option [Restore/Save/Delete/?]:`, `Enter name of UCS to restore or [?]:`,
 `Enter name to save current UCS or [?]:` (Enter saves none; `Invalid UCS name.`),
@@ -22,23 +23,26 @@ it out (`Current ucs name: "AA"`, `Saved coordinate systems:`, each `"NAME"` wit
 `Requires valid numeric angle or second point.`, `Invalid option keyword.`, OBject's
 `*Invalid selection*` +
 `Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group`); es from Autodesk's
-table (`Indique origen de SCP o [gUArdado/oBjeto/PRev/Vista/Univ/X/Y/Z/ejEZ] <Univ>`,
+table (`Indique origen de SCP o [Cara/gUArdado/oBjeto/PRev/Vista/Univ/X/Y/Z/ejEZ] <Univ>`,
 `Precise punto en eje X o <Aceptar>`, `Precise nuevo punto de origen u [Objeto] <0,0,0>`,
 `Indique una opción [Rest/Guardar/Supr/?]`, `Designe el objeto a alinear con el SCP`,
-`Suprimidos 1 nombre de SCP.`, `Sí o No.`); origin (with its Z; one given without a Z lies on the
-current UCS's plane), then a point on X, then one on the XY plane, each with its Z, both typed in
-the UCS moved to that origin (`100,0`, `200,50` lays X along 200,50, as AutoCAD 2023's console does;
-3point reads its points in the current UCS) (Enter accepts at each: at the X point the axes stay, at
-the third Y is laid in the current XY plane; a third point on the side that would turn Z down is not
-taken); NAmed Restore / Save (asks Yes/No before replacing) / Delete (commas and wildcards; deleting
+`Suprimidos 1 nombre de SCP.`, `Sí o No.`); origin (with its Z; one given without a Z lies at
+ELEVATION above the current UCS's plane, p144), then a point on X, then one on the XY plane, each
+with its Z: the point on X typed in the UCS moved to that origin (`100,0`, `200,50` lays X along
+200,50, p111, p113), the third in the frame of the new origin and the new X, its Y the current Z ×
+the new X (`100,20` after that X keeps Z up, p151; `0,-10` after X along `10,0` turns Z down, p120);
+3point reads its points in the current UCS (Enter accepts at each: at the X point the axes stay, at
+the third Y is laid in the current XY plane); NAmed Restore / Save (asks Yes/No before replacing) / Delete (commas and wildcards; deleting
 the current one leaves it `*NO NAME*`) / `?` (origin and axes relative to the current UCS); OBject
 (line, circle, arc, ellipse, polyline segment, spline, text, multiline text, attribute definition,
 block reference, as aCADemia's table gives them; the origin at the object's Z there, the Z its
 normal — a line's, its extrusion, the line in the new XZ plane); Previous (10, per session, with
 their names); View (XY square to the line of sight, X and Y along the screen's horizontal and
-vertical, the origin kept); World (Enter's default); X / Y / Z (UCSAXISANG 90 by default, typed or
-pointed; turned by the right-hand rule); ZAxis (a new origin, Enter keeping the current one, then a
-point on the positive Z, Enter keeping the Z; X laid parallel to the WCS's XY plane by the
+vertical, the origin kept); World (Enter's default); X / Y / Z (UCSAXISANG 90 by default, typed, or
+one point, clicked or typed, its heading from the UCS's origin in its XY plane, 0 on the origin,
+p124, p125, p402; turned by the right-hand rule); ZAxis (a new origin, Enter keeping the current
+one, then a point on the positive Z, Enter keeping the Z, one on the origin `Points are coincident`
+— es `Los puntos coinciden` — and asked again, p129; X laid parallel to the WCS's XY plane by the
 arbitrary-axis rule, as aCADemia's captures show) and its Object (a line, circular or elliptical
 arc, open polyline or spline: the origin at the end nearest the pick, Z along the tangent pointing
 away); at OBject's and ZAxis Object's picks the selection modes (Window, Last, Crossing, BOX, ALL,
@@ -47,7 +51,10 @@ reads it — OBject at the object's start (a line's first end, a circle's angle 
 ZAxis Object at the end nearest the WCS origin; a point typed there is a pick of the newest object
 under it, as a click is, LASTPOINT staying at that point, and on nothing — typed or clicked —
 `No object found`, which ends OBject with the UCS as it was and asks ZAxis Object again; one undo
-step; saved in the drawing; changing to the WCS puts ELEVATION back to 0 (in the same undo step).
+step; saved in the drawing; World (its keyword and the first prompt's Enter) puts ELEVATION back
+to 0, the WCS current or not, in the same undo step, as -VIEW's orthographic views do; Previous,
+a restored name and orthoGraphic reaching the WCS keep it, as an iso -VIEW and PLAN do (p152,
+p153, p400, p403).
 The X / Y / Z and ZAxis prompts are AutoCAD 2023's console's
 (`Specify rotation angle about X axis <90>:`, `Specify new origin point or [Object] <0,0,0>:`,
 `Specify point on positive portion of Z-axis`; es `Precise ángulo de rotación sobre eje X`,
@@ -76,19 +83,18 @@ is Ortogonal there —, `Nuevo`, `SUperior` … `Derecha`, `profundidadZ`, `*SUP
 LASTPOINT where the console leaves it — the WCS's origin as UCS starts (so `@` and a number at its
 first prompt and at OBject's pick are from there), then the last point given: an origin (3point's
 and ZAxis' Enter giving the current one), ZAxis' Z point, 3point's third point, OBject's pick, the
-first prompt's third point at the numbers it was typed in read in the new UCS — never a point on X,
-an angle given by a point, nor Enter at Origin, Move or New; U the WCS's origin, but where a UCS
-made at the first prompt left it, REDO where the UCS left it
+first prompt's third point, typed or clicked (`*100,100` is the WCS's 100,100, p401) — never a
+point on X, an angle given by a point, nor Enter at Origin, Move or New; U the WCS's origin, but
+where a UCS made at the first prompt left it, REDO where the UCS left it (p163, p164); U after a
+run that changed nothing but moved it (OBject on nothing) the WCS's origin too (p166)
 
-**Missing:** Origin's or Move's Enter and OBject on nothing as an undo step of their own (AutoCAD
-2023's console's U echoes `UCS` and puts LASTPOINT at the WCS's origin, acc/ul34; here U takes back
-the step before), the listing's `Press ENTER to continue:` (the console pauses there; no page is
+**Missing:** the listing's `Press ENTER to continue:` (the console pauses there; no page is
 long enough here), Group at OBject's picks, **unverified**: where OBject reads an ellipse, a
 polyline or a spline taken by a mode (at its start here), a point default at the drawing's precision
 (`<5.00,5.00,1.00>`, where AutoCAD's LUPREC 4 writes `<5.0000,5.0000,1.0000>`); **unverified**: es's
 replace prompt, composed from the table's `El SCP "AA" ya existe. Reemplácelo.` and the yes-or-no
-question's `? <N>`; Face (no solids; `F`, which the first prompt and New's declare, is refused
-rather than read as `FRont`), Apply, the Zdepth an orthographic UCS keeps (UCSBASE,
+question's `? <N>`; Face (no solids; listed at the first prompt and declared at New's, `F` is
+refused rather than read as `FRont`), Apply, the Zdepth an orthographic UCS keeps (UCSBASE,
 ORTHOGRAPHICUCS), Previous after 3point's Enter left the UCS as it was (the console steps back to
 that same UCS), the name New's Enter leaves (**unverified**), OBject on a dimension (its UCS at
 creation is not stored) or a hatch, UCSMAN, the icon's grips (UCSSELECTMODE), UCSFOLLOW, UCSVP,

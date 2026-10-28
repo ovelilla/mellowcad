@@ -2372,6 +2372,7 @@ export const en: EngineCatalog = {
       "invalidUcsName": "Invalid UCS name.",
       "coincidentWithFirstPoint": "Coincident with first point",
       "pointsAreColinear": "Points are colinear",
+      "pointsAreCoincident": "Points are coincident",
       "noPreviousUcs": "No previous coordinate system saved.",
       "everythingUndone": "Everything has been undone",
       "nothingToUndo": "Nothing to undo",

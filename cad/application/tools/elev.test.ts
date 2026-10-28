@@ -126,7 +126,8 @@ describe("ELEVATION", () => {
     expect(lineEndZ(line)).toBe(1)
   })
 
-  it("goes back to 0 when the UCS changes to the WCS, and with it on undo", () => {
+  // probe ucs/p135; only World does so (ucs.test.ts, "ELEVATION").
+  it("goes back to 0 with UCS World, and with it on undo", () => {
     const cad = createHarness()
     cad.command("UCS").type("10,0").enter().enter()
     elev(cad, "5", "0")

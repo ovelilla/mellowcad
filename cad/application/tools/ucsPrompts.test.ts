@@ -13,16 +13,27 @@ function answer(cad: CadHarness, ...texts: string[]): CadHarness {
   return cad
 }
 
+// probes ucs/p100, p101: Face listed first, in both languages (table 33659).
 const ORIGIN =
-  "Specify origin of UCS or [NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:"
+  "Specify origin of UCS or [Face/NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:"
+const ORIGIN_ES =
+  "Indique origen de SCP o [Cara/gUArdado/oBjeto/PRev/Vista/Univ/X/Y/Z/ejEZ] <Univ>:"
 
-// Each transcript is AutoCAD 2023's console answering the same input (Face,
-// which needs solids, is not offered here).
-describe("UCS asks as AutoCAD 2026", () => {
-  it("asks for the origin, then a point on X and one on the XY plane", () => {
+// Each transcript is AutoCAD 2027's console answering the same input.
+describe("UCS asks as AutoCAD 2027", () => {
+  it("lists Face first, in Spanish too", () => {
     const cad = createHarness()
     cad.command("UCS")
     expect(cad.state().commandLine.prompt).toBe(`UCS ${ORIGIN}`)
+    const spanish = createHarness({ locale: es })
+    spanish.command("SCP")
+    expect(spanish.state().commandLine.prompt).toBe(`SCP ${ORIGIN_ES}`)
+  })
+
+  // probes ucs/p107, p116, p117
+  it("asks for the origin, then a point on X and one on the XY plane", () => {
+    const cad = createHarness()
+    cad.command("UCS")
     answer(cad, "FOO", "0,0", "FOO")
     cad.enter()
     cad.command("UCS")
@@ -48,6 +59,7 @@ describe("UCS asks as AutoCAD 2026", () => {
     ])
   })
 
+  // probe ucs/p123
   it("turns about an axis, refusing what is no angle", () => {
     const cad = createHarness()
     cad.command("UCS")
@@ -63,6 +75,7 @@ describe("UCS asks as AutoCAD 2026", () => {
     )
   })
 
+  // probes ucs/p127, p130
   it("asks ZAxis's origin and a point on Z, offering one up the current Z", () => {
     const cad = createHarness()
     cad.command("UCS")
@@ -85,6 +98,29 @@ describe("UCS asks as AutoCAD 2026", () => {
     })
   })
 
+  // probe ucs/p129: `Points are coincident`, no period (table 25611).
+  it("says a point on Z at the new origin is coincident, and asks again", () => {
+    const cad = createHarness()
+    answer(cad, "UCS", "ZA", "10,0", "10,0")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify point on positive portion of Z-axis <10.00,0.00,1.00>: 10,0",
+      "Points are coincident",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "UCS Specify point on positive portion of Z-axis <10.00,0.00,1.00>:"
+    )
+    cad.enter()
+    expect(cad.runtime.document.getSettings().ucs.origin).toEqual({
+      x: 10,
+      y: 0,
+      z: 0,
+    })
+
+    const spanish = createHarness({ locale: es })
+    answer(spanish, "SCP", "EZ", "10,0", "10,0")
+    expect(spanish.commandLog().at(-1)).toBe("Los puntos coinciden")
+  })
+
   it("refuses at OBject's pick with the modes a single selection takes", () => {
     const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
     cad.command("UCS")
@@ -97,6 +133,7 @@ describe("UCS asks as AutoCAD 2026", () => {
     ])
   })
 
+  // probe ucs/p131
   it("says when there is no Previous UCS", () => {
     const cad = createHarness()
     cad.command("UCS")
@@ -194,14 +231,14 @@ describe("UCS asks as AutoCAD 2026", () => {
     expect(cad.commandLog()).toEqual([
       "SCP",
       "Nombre de scp actual:  *UNIVERSAL*",
-      "Indique origen de SCP o [gUArdado/oBjeto/PRev/Vista/Univ/X/Y/Z/ejEZ] <Univ>: FOO",
+      `${ORIGIN_ES} FOO`,
       "Se requiere un punto o una opción.",
-      "Indique origen de SCP o [gUArdado/oBjeto/PRev/Vista/Univ/X/Y/Z/ejEZ] <Univ>: EZ",
+      `${ORIGIN_ES} EZ`,
       "Precise nuevo punto de origen u [Objeto] <0,0,0>: 5,5",
       "Precise punto en parte positiva del eje Z <5.00,5.00,1.00>:",
       "SCP",
       "Nombre de scp actual:  *SIN NOMBRE*",
-      "Indique origen de SCP o [gUArdado/oBjeto/PRev/Vista/Univ/X/Y/Z/ejEZ] <Univ>: UA",
+      `${ORIGIN_ES} UA`,
       "Indique una opción [Rest/Guardar/Supr/?]: FOO",
       "Opción no válida.",
       "Indique una opción [Rest/Guardar/Supr/?]: R",

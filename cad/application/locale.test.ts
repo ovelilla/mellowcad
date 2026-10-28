@@ -896,7 +896,7 @@ describe("Spanish AutoCAD's command language", () => {
       "Nombre de scp actual:  *UNIVERSAL*",
     ])
     expect(cad.state().commandLine.prompt).toBe(
-      "SCP Indique origen de SCP o [gUArdado/oBjeto/PRev/Vista/Univ/X/Y/Z/ejEZ] <Univ>:"
+      "SCP Indique origen de SCP o [Cara/gUArdado/oBjeto/PRev/Vista/Univ/X/Y/Z/ejEZ] <Univ>:"
     )
     cad.click(p(10, 0))
     expect(cad.state().commandLine.prompt).toBe(
@@ -909,6 +909,7 @@ describe("Spanish AutoCAD's command language", () => {
     )
     cad.escape().command("SCP")
     expect(cad.optionAbbreviations()).toEqual([
+      "C",
       "UA",
       "B",
       "PR",
