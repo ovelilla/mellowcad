@@ -37,8 +37,9 @@ per drawing unsaved back to its defaults, as NEW does; SAVEAS writes the same
 download as QSAVE, since a browser download always names the file, so saving over the current name
 and prompting for a new one cannot be told apart; Ctrl+S, Ctrl+Shift+S and Ctrl+O are acad.cuix's
 `^C^C_qsave`, `^C^C_saveas` and `^C^C_open` (ID_Save, ID_Saveas, ID_Open): the running command
-cancelled, then the command run, echoed `_qsave`, `_saveas`, `_open` (the case **unverified**: the
-desktop's)
+cancelled, then the command run, echoed `_qsave`, `_saveas`, `_open` (desktop workspace/d04), Ctrl+S
+a group U names `GROUP QSAVE`, a cancelled save too (d04; Ctrl+Shift+S's `GROUP SAVEAS` by analogy;
+Ctrl+O's none, the drawing opened starting its own history)
 
 **Missing:** File System Access API handles, drag-and-drop open, unsaved-changes prompt, the
 drawing's name and the file tab's unsaved asterisk

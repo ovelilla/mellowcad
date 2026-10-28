@@ -245,8 +245,8 @@ PROPERTIESCLOSE closes it while it is the tab shown (as LAYERCLOSE); PR, CH and 
 of Autodesk's shortcut guide (the 2026 help names only PR, in both languages; in Spanish CH is
 CHAFLAN), and Ctrl+1 shows and hides it as acad.cuix's `^C^C_properties` /
 `^C^C_propertiesclose` (ID_Modify): the running command cancelled, then PROPERTIES or
-PROPERTIESCLOSE run, echoed `_properties` (its case **unverified**: the desktop's), a preselection
-kept; WHY at the inline end: the 2026 help
+PROPERTIESCLOSE run, echoed `_properties` (desktop workspace/d04), a group U names `GROUP
+PROPERTIES` / `GROUP PROPERTIESCLOSE` (d04), a preselection kept; WHY at the inline end: the 2026 help
 documents no default side ("docked to either side of the drawing window"), and AutoCAD does not show
 the palette at first start ("not displayed by default"); here it is open from 1600 px of window,
 folded below, and the panel's width and fold are remembered; the object type drop-down at its top —

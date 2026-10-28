@@ -140,8 +140,8 @@ theirs echoed as written.
 **A right-click's Enter is `pressEnter`, and so is the Command menu's Enter**: one path with the
 keyboard's. `rightClickResponse` (SHORTCUTMENU 11) picks the menu. Every entry runs through
 `chooseShortcutMenuAction` / `…Option` / `…DimStyle`, which close the menu first; a fixed entry
-that is a command runs as its macro (`SHORTCUT_MENU_COMMANDS`, by global name) so it echoes,
-repeats and undoes as typed, and an option goes through `invokeToolOption`. A new entry is an action
+that is a command runs as its macro (`SHORTCUT_MENU_COMMANDS`, by global name) so it echoes and
+repeats as typed, and an option goes through `invokeToolOption`. A new entry is an action
 there, a case in the host's `ShortcutMenu` and a coverage line; one whose command does not exist
 here is left out, never faked.
 
@@ -235,9 +235,9 @@ runtime picks for the tool" feature.
 **Every entity mutation goes through a `Command`** (`history.execute`). **A command is one undo
 step**, as AutoCAD's U undoes "the effects of the last command": `setActiveTool` opens a group
 (`history.beginGroup`) for every tool but Select and closes it after the old tool's `onDeactivate`,
-which may still commit. **A rail start is a command run**: `setActiveTool` echoes the macro
-(`_line`), pushes the command into Enter's repeat and names the step (circle/p192). A mode of
-another command declares `ribbonMacro()`: that command and the answers typed once it starts
+which may still commit. **A chrome start is a menu group** (`menuGroup`): a rail start echoes its
+macro (`_line`) and is Enter's repeat (circle/p192); U names it `LINE GROUP`, or `GROUP
+Properties` with no step (workspace/d02–d05). A mode of another command declares `ribbonMacro()`: that command and the answers typed once it starts
 (`MACRO_PAUSE` waits for the user's), the prompt an answer opens on its line (circle/d01). Inside the group each command stays its own entry, so a tool's Undo keyword
 steps back one; on close they fold into one. A transparent command's change is an entry of the
 group it interrupts, so a tool's Undo takes back to the depth it marked before its commit
@@ -250,16 +250,15 @@ removed back at its index (`placesOf`, `restoreMany`): `ERASE _L` reads that ord
 its result; one whose set AutoCAD keeps says `keepsSelection()` (COPYCLIP, PASTECLIP). What a tool
 erases leaves the Previous set for good (`executeTool`).
 
-Settings are split on purpose. What AutoCAD's U undoes goes through a command
+Settings are split. What AutoCAD's U undoes goes through a command
 (`UpdateSettingsCommand`, restoring exactly the keys it patched; a no-op patch executes nothing,
 bar UCS's for LASTPOINT): every variable SETVAR sets, the UCS and its table, LTSCALE, UNITS
 (`applyDrawingUnits` in `UnitsTool`'s run), `setCurrentProperties`, `toggleLineweightDisplay`,
 CLEANSCREENON / OFF (`SessionSettingCommand`). What another setting implies goes in its patch
 (UCS World and an orthographic -VIEW zero ELEVATION). Host setters (`setDocumentUnit`,
-`setDocumentPrecision`, `setLtScale`) write the document, never undoable. Layer and style tables,
-CLAYER, TEXTSTYLE, DIMSTYLE: commands; the Layer Properties Manager's go through
-`executeLayerEdit` (UNDO Layer folds them). U leaves NAVVCUBE (`setViewCubeVisible`); AutoCAD's
-puts it back (move/p238, view.md Missing).
+`setDocumentPrecision`, `setLtScale`) write the document, never undoable. A drafting toggle joins
+the last step (`executeIntoLast`, workspace/d01). Layer and style tables, CLAYER, TEXTSTYLE,
+DIMSTYLE: commands; the Layer Properties Manager's go through `executeLayerEdit`.
 
 A command that adds **table entries alongside geometry** (BLOCK's definition, PASTECLIP's layers,
 styles and blocks) carries them through the history and undoes them in reverse order (the tables

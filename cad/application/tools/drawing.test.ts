@@ -1178,7 +1178,7 @@ describe("ARC", () => {
       ])
     })
 
-    it("repeats ARC at Enter and undoes as ARC", () => {
+    it("repeats ARC at Enter and undoes as ARC, the rail's as ARC GROUP", () => {
       // probe arc/p149: U names ARC (es ARCO, its `H`).
       for (const [locale, u, name] of [
         [undefined, "U", "ARC"],
@@ -1194,8 +1194,14 @@ describe("ARC", () => {
             `${name} ${locale ? "Precise punto inicial del arco o [Centro]:" : start}`
           )
           cad.escape()
-          // The repeat cancelled is a step of its own (move/p237).
-          expect(written(cad, "_U", "_U")).toEqual([u, name, u, name])
+          // The repeat cancelled is a step of its own (move/p237); the rail's
+          // start a menu group (desktop workspace/d02).
+          expect(written(cad, "_U", "_U")).toEqual([
+            u,
+            name,
+            u,
+            `${name} ${locale ? "GRUPO" : "GROUP"}`,
+          ])
           expect(cad.entityCount).toBe(0)
         }
       }
@@ -2017,7 +2023,7 @@ describe("ELLIPSE", () => {
       ])
     })
 
-    it("repeats ELLIPSE at Enter and undoes as ELLIPSE", () => {
+    it("repeats ELLIPSE at Enter and undoes as ELLIPSE, the rail's as ELLIPSE GROUP", () => {
       for (const [locale, u, name, prompt] of [
         [undefined, "U", "ELLIPSE", first],
         [
@@ -2036,8 +2042,14 @@ describe("ELLIPSE", () => {
           answer(cad, "")
           expect(cad.state().commandLine.prompt).toBe(`${name} ${prompt}`)
           cad.escape()
-          // The repeat cancelled is a step of its own (move/p237).
-          expect(written(cad, "_U", "_U")).toEqual([u, name, u, name])
+          // The repeat cancelled is a step of its own (move/p237); the rail's
+          // start a menu group (desktop workspace/d02).
+          expect(written(cad, "_U", "_U")).toEqual([
+            u,
+            name,
+            u,
+            `${name} ${locale ? "GRUPO" : "GROUP"}`,
+          ])
           expect(cad.entityCount).toBe(0)
         }
       }
@@ -2692,7 +2704,7 @@ describe("SPLINE", () => {
       expect((cv.latest() as SplineEntity).method).toBe("fit")
     })
 
-    it("repeats SPLINE at Enter in the method it set, and undoes as SPLINE", () => {
+    it("repeats SPLINE at Enter in the method it set, and undoes as SPLINE, the rail's as SPLINE GROUP", () => {
       for (const [locale, u] of [
         [undefined, "U"],
         [es, "H"],
@@ -2703,8 +2715,14 @@ describe("SPLINE", () => {
         expect(cad.activeToolId()).toBe("spline")
         expect(cad.commandLog().at(-1)).toMatch(/=VC|=CV/)
         cad.escape()
-        // The repeat cancelled is a step of its own (move/p237).
-        expect(written(cad, "_U", "_U")).toEqual([u, "SPLINE", u, "SPLINE"])
+        // The repeat cancelled is a step of its own (move/p237); the rail's
+        // start a menu group (desktop workspace/d02).
+        expect(written(cad, "_U", "_U")).toEqual([
+          u,
+          "SPLINE",
+          u,
+          `SPLINE ${locale ? "GRUPO" : "GROUP"}`,
+        ])
         expect(cad.entityCount).toBe(0)
       }
     })

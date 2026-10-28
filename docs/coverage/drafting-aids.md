@@ -40,7 +40,13 @@ the snap's name in a light grey box below and to the right of the cursor (d05, d
 dynamic-input box under both — WHY: AutoCAD puts its dynamic-input box in that same place (d11);
 which gives way with both showing is **unverified**; F3 turns object snapping on and off,
 writing `Command:  <Osnap on>` / ` <Osnap off>` (es ` <Refent activado>` / ` <Refent desactivado>`;
-tables 33112, 33113, desktop passes line/d10, d27); OSMODE and AUTOSNAP, as POLARMODE, POLARANG,
+tables 33112, 33113, desktop passes line/d10, d27). Every drafting toggle — F3, F7, F8, F9, F10,
+F11, F4 and their status-bar buttons — echoes at `Command:` on a line of its own and inside a
+command after the prompt asking, which stays (`Specify next point or [Undo]:  <Ortho off>`), and
+its change is recorded into the last undo step: LINE, F7, U writes `LINE` and takes the line and
+the grid back; LINE, Grid, LINE, U takes the second line only, U again the first and the grid;
+inside a command it is that command's step; with nothing to undo it is none; REDO sets it again
+(desktop workspace/d01, d01-2, d01-3; F3's, F10's and F11's by analogy with F7's and F8's); OSMODE and AUTOSNAP, as POLARMODE, POLARANG,
 DYNMODE and SELECTIONCYCLING, are registry variables, which a drawing opened leaves (rectang/p304,
 p321): here they last the session (RECTANG-D46); OSMODE typed (SETVAR, workspace.md) sets the
 running snaps as a step U takes back, NOD's 8 and GCEN's 1024 kept without a snap and 16384
@@ -57,12 +63,7 @@ object is probed), extended Intersection and extended Apparent
 Intersection (picked object by object, as an override), Extension from a polyline's arc end, the
 tooltip's distance and angle (`Extension: 12.00 < 0°`), the snapped object's blue glow while Tab
 cycles (d26), APERTURE and AUTOSNAP's settings as variables, per-entity opt-in still required for every
-new entity type (OSOPTIONS-like, deliberate), Intersection between objects in different planes,
-whether F3, F7, F8, F10 and Ctrl+W are undo steps in AutoCAD (WSD: here they are not, a variable
-typed is), the F-keys' echo inside a command (after
-the prompt asking, `Specify next point or [Undo]:  <Ortho on>`, which stays: **unverified**, the
-desktop passes pressed them at `Command:`) and from the status bar's buttons (they write nothing
-here: **unverified** whether AutoCAD's do)
+new entity type (OSOPTIONS-like, deliberate), Intersection between objects in different planes
 
 ### Object snap overrides
 
@@ -179,8 +180,8 @@ turns it off (desktop passes line/d10, d27); Shift held toggles it ("To turn Ort
 temporarily, hold down the Shift key"; with it off, on), Polar yielding; in a 3D view its Z as a
 third axis, the one drawn nearest the cursor winning (**unverified**: AutoCAD does not publish the
 rule); ORTHOMODE is saved in the drawing, NEW and a drawing opened bringing theirs (rectang/p304,
-p321), Polar turning it off too; F8 is no undo step (RECTANG-D44: unprobed whether U takes an F8
-back; it takes back the ORTHO command, p317, which is not built here)
+p321), Polar turning it off too; F8 is taken back with the last undo step (see Object snaps,
+desktop workspace/d01); U takes back the ORTHO command (p317), which is not built here
 
 **Missing:** Ctrl+L, acad.cuix's `^O` (MM_0005), the same toggle: not bound, **unverified** whether
 Chrome lets a page take it (its own Ctrl+L focuses the address bar; the browser check is the
@@ -206,7 +207,7 @@ prompt stays; transparently its prompts are headed `>>` and `Resuming LINE comma
 console, probes line/p38, p158, p212, p213). F9 toggles it, writing ` <Snap on>` / ` <Snap off>`
 (es ` <Forzcursor activado>` / `desactivado`; desktop passes line/d10, d27). SNAPMODE and SNAPUNIT
 are saved in the drawing (rectang/p304, p321); U takes SNAP back, as it takes ORTHO back (p317), and
-not an F9 (RECTANG-D44)
+an F9 with the last undo step (see Object snaps; by analogy with F7 and F8, desktop workspace/d01)
 
 **Missing:** Legacy, Style (isometric snap) and Type (grid or polar: the status bar's Snap menu
 chooses it here) — not listed, as they are not built (WHY: the prompt lists what is, as TRIM's
@@ -216,9 +217,11 @@ steps by its size here (**unverified**: the desktop's, WSD d08)
 ### Grid (F7)
 
 **Implemented:** F7 shows and hides the grid, which follows the lattice while grid snap is on;
-GRIDMODE is saved in the drawing (rectang/p304, p321), and F7 is no undo step (RECTANG-D44)
+GRIDMODE is saved in the drawing (rectang/p304, p321); F7 writes ` <Grid on>` / ` <Grid off>` (es
+` <Rejilla activado>` / ` <Rejilla desactivado>`, table 16646, desktop workspace/d01, e01) and is
+taken back with the last undo step (see Object snaps, d01)
 
-**Missing:** GRID, GRIDUNIT (the spacing is the lattice's or the zoom's here), F7's echo
+**Missing:** GRID, GRIDUNIT (the spacing is the lattice's or the zoom's here)
 
 ### Dynamic input (DYN)
 
@@ -280,7 +283,9 @@ AutoCAD's last row, None (es `Ninguna`), which selects nothing; the candidate of
 a selection does (desktop erase/d12, d13); SELECTIONCYCLING lasts the session (a registry
 variable: see Object snaps), typed as a variable (SETVAR, workspace.md) from −2 to 2, the sign on
 or off and 2 the list box, a step U takes back (workspace/p214, p218); Ctrl+W from 0 turns on the
-list box too (**unverified**)
+list box too (**unverified**), writing ` <Selection Cycling on>` / ` <Selection Cycling off>` (es
+` <Ciclo de selección activado>`; tables 16646, 4743, desktop workspace/d01) and taken back with the
+last undo step (see Object snaps) — WHY F4 as well: browsers keep Ctrl+W
 
 **Missing:** placement options, subobject filtering, type icons in the list, LEGACYCTRLPICK; whether
 a click after Shift+Space opens the list again (**unverified**: d12-7 opened it, but the probe's

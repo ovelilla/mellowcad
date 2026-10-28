@@ -6344,6 +6344,7 @@ Specify next point or
   cycling: -
 > turn cycling on
   cycling: Line
+  command|  <Selection Cycling on>
 > hover the stack
   cycling: Polyline, Circle, Line
 > shift+space

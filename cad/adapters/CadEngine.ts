@@ -271,6 +271,10 @@ export class CadEngine {
     this.runtime.setPolarAngleStep(step)
   }
 
+  choosePolarAngle(step: number): void {
+    this.runtime.choosePolarAngle(step)
+  }
+
   toggleObjectSnapTracking(): void {
     this.runtime.toggleObjectSnapTracking()
   }
@@ -657,6 +661,10 @@ export class CadEngine {
 
   openDrawingUnits(): void {
     this.runtime.openDrawingUnits()
+  }
+
+  openDrawingUnitsFromMenu(): void {
+    this.runtime.openDrawingUnitsFromMenu()
   }
 
   closeLockedObjectsDialog(): void {

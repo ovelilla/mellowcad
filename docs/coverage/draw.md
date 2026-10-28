@@ -265,7 +265,8 @@ Center, Diameter, 2-Point and 3-Point run the ribbon's macros, `^C^C_circle`, `_
 `_circle _2p`, `_circle _3p`: echoed `_circle`, the centre prompt answered `_2p` or `_3p` (Diameter:
 the radius prompt answered `_d` once the centre is given), the prompt that answer opens written on
 its line (`…: _2p Specify first end point of circle's diameter: 0,0`, desktop circle/d01, d02;
-p105–p107); Enter afterwards repeats CIRCLE and U names it CIRCLE (es CIRCULO; p159, p191, p192);
+p105–p107); Enter afterwards repeats CIRCLE and U names it CIRCLE (es CIRCULO; p159, p191, p192),
+the button's own run `CIRCLE GROUP` (by analogy with LINE's, desktop workspace/d02);
 CIRCLED, CIRCLE2P and CIRCLE3P, this app's names for those buttons (AutoCAD knows none, p21), run
 the same macros typed; Ttr — two lines, circles or arcs (an arc as its whole circle, a line as its
 whole line; p311, p312, p380), picked or typed after `_TAN` (`_TAN to 0,10`, p300), the radius
@@ -353,7 +354,7 @@ Center-Start-End, stored counter-clockwise (p01–p03, p171); the rail's 3-Point
 and Center, Start, End run the ribbon's macros, `^C^C_arc`, `_arc \_c \`, `_arc _c`: echoed
 `_arc`, the second point or the start answered `_c`, the prompt it opens written on its line
 (desktop d03, d04); Enter afterwards repeats ARC by three points and U names it ARC (es ARCO; p101,
-p107, p149); ARCSCE and ARCCSE, this app's names for those buttons (AutoCAD knows neither, p105),
+p107, p149), the button's own run `ARC GROUP` (by analogy with LINE's, desktop workspace/d02); ARCSCE and ARCCSE, this app's names for those buttons (AutoCAD knows neither, p105),
 run the same macros typed (ARC-D3); Enter at the start with nothing drawn to continue says
 `No line or arc to continue.` and `*Invalid*` and ends (es
 `No hay línea o arco que se pueda continuar.`, `*No válido*`, table 20149; p108); Enter at every

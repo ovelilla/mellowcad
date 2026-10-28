@@ -21,8 +21,8 @@ function written(cad: CadHarness, ...texts: string[]): string[] {
 }
 
 /** A harness with one line drawn, LINE ended. */
-function withLine(locale?: typeof es): CadHarness {
-  const cad = createHarness({ locale })
+function withLine(locale?: typeof es, files?: MemoryFileTransport): CadHarness {
+  const cad = createHarness({ locale, files })
   written(cad, "_LINE", "0,0", "10,0", "")
   return cad
 }
@@ -234,7 +234,7 @@ describe("Ctrl+1", () => {
 /**
  * acad.cuix's AcceleratorRoot: each key is a macro that starts `^C^C`, so the
  * running command is cancelled first, then the command runs echoed as the
- * macro writes it (the echo's case **unverified**: the desktop's, WSD d04).
+ * macro writes it (desktop workspace/d04).
  */
 describe("the accelerators' macros", () => {
   /** LINE running, one line drawn, at its next point. */
@@ -255,7 +255,8 @@ describe("the accelerators' macros", () => {
 
   // ID_CleanScreen: `$M=$(if,$(and,$(getvar,CleanScreenState),1),
   // ^C^C_CleanScreenOFF,^C^C_CleanScreenON)`
-  it("Ctrl+0 ends LINE, then runs CLEANSCREENON or OFF: a step U names", () => {
+  // desktop workspace/d04: U names the macro's group `CLEANSCREENON GROUP`.
+  it("Ctrl+0 ends LINE, then runs CLEANSCREENON or OFF: a group U names", () => {
     const cad = inLine()
 
     expect(pressed(cad, "0")).toEqual([CANCEL, "_CleanScreenON"])
@@ -264,9 +265,9 @@ describe("the accelerators' macros", () => {
     expect(pressed(cad, "0")).toEqual(["_CleanScreenOFF"])
     expect(cad.state().cleanScreen.active).toBe(false)
 
-    expect(written(cad, "U").at(-1)).toBe("CLEANSCREENOFF")
+    expect(written(cad, "U").at(-1)).toBe("CLEANSCREENOFF GROUP")
     expect(cad.state().cleanScreen.active).toBe(true)
-    expect(written(cad, "U").at(-1)).toBe("CLEANSCREENON")
+    expect(written(cad, "U").at(-1)).toBe("CLEANSCREENON GROUP")
     expect(cad.state().cleanScreen.active).toBe(false)
     expect(cad.entityCount).toBe(1)
   })
@@ -498,5 +499,203 @@ describe("UNITS", () => {
 
     cad.runtime.applyDrawingUnits(LengthUnit.Millimeter, 12)
     expect(cad.state().documentPrecision).toBe(8)
+  })
+})
+
+/**
+ * The drafting aids' keys and status-bar buttons (desktop workspace/d01,
+ * e01): each echoes ` <Grid on>`, and its change is recorded into the last
+ * undo step, as AutoCAD records the variable.
+ */
+describe("the drafting toggles", () => {
+  /** What `toggle` wrote in the history. */
+  function toggled(cad: CadHarness, toggle: () => void): string[] {
+    const from = cad.commandLog().length
+    toggle()
+    return cad.commandLog().slice(from)
+  }
+
+  // string tables 16646 and 4743; es e01
+  it.each([
+    [" <Grid on>", " <Grid off>", " <Selection Cycling on>", undefined],
+    [
+      " <Rejilla activado>",
+      " <Rejilla desactivado>",
+      " <Ciclo de selección activado>",
+      es,
+    ],
+  ])(
+    "F7 and F4 echo %s, %s, %s at Command:",
+    (gridOn, gridOff, cycling, locale) => {
+      const cad = createHarness({ locale })
+
+      expect(toggled(cad, () => cad.press("F7"))).toEqual([gridOff])
+      expect(toggled(cad, () => cad.press("F7"))).toEqual([gridOn])
+      expect(toggled(cad, () => cad.press("F4"))).toEqual([cycling])
+    }
+  )
+
+  // desktop workspace/d01, d01-2, d01-3: the buttons write as their keys,
+  // after the running prompt inside a command
+  it("the status bar's buttons echo as their keys, at Command: and in LINE", () => {
+    const cad = createHarness()
+    const { runtime } = cad
+
+    expect(toggled(cad, () => runtime.toggleGrid())).toEqual([" <Grid off>"])
+    expect(toggled(cad, () => runtime.toggleOrtho())).toEqual([" <Ortho on>"])
+    expect(toggled(cad, () => runtime.togglePolar())).toEqual([" <Polar on>"])
+    expect(toggled(cad, () => runtime.toggleSnapMode())).toEqual([" <Snap on>"])
+    expect(toggled(cad, () => runtime.toggleSnap())).toEqual([" <Osnap on>"])
+    expect(toggled(cad, () => runtime.toggleObjectSnapTracking())).toEqual([
+      " <Object Snap Tracking off>",
+    ])
+    expect(toggled(cad, () => runtime.toggleSelectionCycling())).toEqual([
+      " <Selection Cycling on>",
+    ])
+
+    written(cad, "_LINE", "0,0")
+    expect(toggled(cad, () => runtime.toggleOrtho())).toEqual([
+      "Specify next point or [Undo]:  <Ortho on>",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "LINE Specify next point or [Undo]:"
+    )
+  })
+
+  // desktop workspace/d01-m: 45 chosen writes nothing and turns Polar on
+  it("choosing a Polar angle writes nothing and turns Polar on", () => {
+    const cad = createHarness()
+
+    expect(toggled(cad, () => cad.runtime.choosePolarAngle(45))).toEqual([])
+    expect(cad.state().polarActive).toBe(true)
+    expect(cad.state().polarAngleStep).toBe(45)
+  })
+
+  // desktop workspace/d01: LINE, F7 → U writes `LINE`, the line and the grid
+  // gone; LINE, F7, F8, Ctrl+W → U puts the three back with the line
+  it("U takes a toggle back with the step before it", () => {
+    const cad = withLine()
+    cad.press("F7")
+    cad.press("F8")
+    cad.press("F4")
+
+    expect(written(cad, "_U")).toEqual(["U", "LINE"])
+    expect(cad.entityCount).toBe(0)
+    expect(cad.state()).toMatchObject({
+      gridVisible: true,
+      orthoActive: false,
+      selectionCycling: { active: false },
+    })
+
+    written(cad, "_REDO")
+    expect(cad.entityCount).toBe(1)
+    expect(cad.state()).toMatchObject({
+      gridVisible: false,
+      orthoActive: true,
+      selectionCycling: { active: true },
+    })
+  })
+
+  // desktop workspace/d01: LINE, Grid, LINE → U the second line only, U
+  // again the first and the grid
+  it("the status bar's Grid joins the step before, not the one after", () => {
+    const cad = withLine()
+    cad.runtime.toggleGrid()
+    written(cad, "_LINE", "0,10", "10,10", "")
+
+    written(cad, "_U")
+    expect(cad.entityCount).toBe(1)
+    expect(cad.state().gridVisible).toBe(false)
+    written(cad, "_U")
+    expect(cad.entityCount).toBe(0)
+    expect(cad.state().gridVisible).toBe(true)
+  })
+
+  it("inside a command joins its step, Polar's turning Ortho off too", () => {
+    const cad = createHarness()
+    cad.press("F8")
+    written(cad, "_LINE", "0,0")
+    cad.press("F10")
+    written(cad, "10,0", "")
+    expect(cad.state()).toMatchObject({ orthoActive: false, polarActive: true })
+
+    expect(written(cad, "_U")).toEqual(["U", "LINE"])
+    expect(cad.entityCount).toBe(0)
+    expect(cad.state()).toMatchObject({ orthoActive: true, polarActive: false })
+  })
+
+  it("is no step with nothing to undo", () => {
+    const cad = createHarness()
+    cad.press("F7")
+
+    written(cad, "_U")
+    expect(cad.state().gridVisible).toBe(false)
+  })
+})
+
+/**
+ * What the chrome starts runs as a menu macro: one undo group U names after
+ * it, `GROUP` first when the group made no step of its own (desktop
+ * workspace/d01–d05).
+ */
+describe("the chrome's undo groups", () => {
+  // desktop workspace/d04: Ctrl+1 twice, then U, U
+  it("Ctrl+1 and Ctrl+S are groups that changed nothing, the line kept", () => {
+    const cad = withLine(undefined, new MemoryFileTransport())
+
+    cad.press("1", { ctrlKey: true })
+    cad.press("1", { ctrlKey: true })
+    cad.press("s", { ctrlKey: true })
+    expect(written(cad, "_U", "_U", "_U")).toEqual([
+      "U",
+      "GROUP QSAVE",
+      "U",
+      "GROUP PROPERTIESCLOSE",
+      "U",
+      "GROUP PROPERTIES",
+    ])
+    expect(cad.entityCount).toBe(1)
+  })
+
+  // desktop workspace/d01: no echo; U names CLEANSCREENON (with RIBBON and
+  // RIBBONCLOSE, the ribbon's own commands, not built)
+  it("the status bar's Clean Screen writes nothing and is a step", () => {
+    const cad = withLine()
+    const from = cad.commandLog().length
+    cad.runtime.toggleCleanScreen()
+    expect(cad.commandLog().slice(from)).toEqual([])
+    expect(cad.state().cleanScreen.active).toBe(true)
+
+    expect(written(cad, "_U")).toEqual(["U", "CLEANSCREENON"])
+    expect(cad.state().cleanScreen.active).toBe(false)
+    expect(cad.entityCount).toBe(1)
+  })
+
+  // desktop workspace/d05-4: the application menu's Units during LINE
+  it("the application menu's Units cancels LINE, runs _UNITS, a group U names", () => {
+    const cad = createHarness()
+    written(cad, "_LINE", "0,0")
+    const from = cad.commandLog().length
+
+    cad.runtime.openDrawingUnitsFromMenu()
+    expect(cad.commandLog().slice(from)).toEqual([
+      "Specify next point or [Undo]: *Cancel*",
+      "_UNITS",
+    ])
+    expect(cad.state().unitsDialog).toBe(true)
+    cad.runtime.setUnitsDialog(false)
+    expect(cad.activeToolId()).toBe("select")
+
+    expect(written(cad, "_U")).toEqual(["U", "UNITS GROUP"])
+  })
+
+  // desktop workspace/d02: the ribbon's Line; a typed LINE stays `LINE`
+  it("a rail start is named LINE GROUP, a typed one LINE", () => {
+    const cad = createHarness()
+    cad.tool("line")
+    written(cad, "0,0", "10,0", "")
+    written(cad, "_LINE", "0,10", "10,10", "")
+
+    expect(written(cad, "_U", "_U")).toEqual(["U", "LINE", "U", "LINE GROUP"])
   })
 })

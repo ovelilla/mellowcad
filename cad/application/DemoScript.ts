@@ -217,8 +217,9 @@ export async function recordDemo(
   })
   try {
     const runtime = driver.runtime
-    // A demo is a drawing, not the editor: no grid behind it.
-    runtime.toggleGrid()
+    // A demo is a drawing, not the editor: no grid behind it, and no F7
+    // echoed into its transcript.
+    runtime.document.setDraftingModes({ gridMode: false })
     const layers = new Map<string, string>(
       runtime.document.getLayers().map((layer) => [layer.name, layer.id])
     )

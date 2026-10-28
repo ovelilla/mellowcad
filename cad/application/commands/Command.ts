@@ -328,6 +328,46 @@ export class CommandHistory extends Observable {
   }
 
   /**
+   * Executes `command` into the last step rather than as one of its own: a
+   * drafting toggle, which AutoCAD records with the step before it (LINE,
+   * F7, U takes the line and the grid back: desktop workspace/d01). Inside
+   * an open group it is that group's; with no step to join it is none.
+   */
+  executeIntoLast(command: Command): void {
+    if (this.groupStart === this.undoStack.length) {
+      this.execute(command)
+      return
+    }
+    command.execute(this.document)
+    const last = this.undoStack.at(-1)
+    if (last === undefined || last.kind === "mark" || last.kind === "begin") {
+      return
+    }
+    this.undoStack[this.undoStack.length - 1] = {
+      ...last,
+      command:
+        last.command === null
+          ? command
+          : new GroupCommand([last.command, command]),
+    }
+    this.emit()
+  }
+
+  /**
+   * A step that changed nothing, named `name`: a menu macro's group whose
+   * command made no step (`GROUP Properties`, desktop workspace/d03).
+   */
+  recordEmpty(name: string): void {
+    this.push({
+      kind: "command",
+      command: null,
+      name,
+      names: [],
+      regenerates: false,
+    })
+  }
+
+  /**
    * Widens the last step, a view's, by `change`, made after it: a wheel
    * burst's later notches are one step with its first (desktop view/d01).
    * False, changing nothing, when the last step is not a view's.

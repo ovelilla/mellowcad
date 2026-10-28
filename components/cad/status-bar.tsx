@@ -151,11 +151,8 @@ export function StatusBar({
           >
             <Menu.RadioGroup
               value={state.polarAngleStep}
-              onValueChange={(deg: number) => {
-                engine.setPolarAngleStep(deg)
-                // Choosing an increment turns polar on, like AutoCAD.
-                if (!state.polarActive) engine.togglePolar()
-              }}
+              // Choosing an increment turns polar on, silently, like AutoCAD.
+              onValueChange={(deg: number) => engine.choosePolarAngle(deg)}
             >
               {POLAR_ANGLES.map((deg) => (
                 <Menu.RadioItem

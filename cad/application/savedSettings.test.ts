@@ -145,7 +145,7 @@ describe("U takes back what a command set", () => {
 
 // ORTHOMODE, SNAPMODE, SNAPUNIT and GRIDMODE: the value after opening the
 // drawing saved with it, the default after opening the blank one (rectang/p304,
-// p321). F7, F8 and F9 are no command, so no undo step (RECTANG-D44).
+// p321). F7, F8 and F9 join the last undo step (desktop workspace/d01).
 describe("ORTHOMODE, SNAPMODE, SNAPUNIT and GRIDMODE are saved in the drawing", () => {
   function aids(cad: CadHarness) {
     const state = cad.state()
@@ -215,13 +215,13 @@ describe("ORTHOMODE, SNAPMODE, SNAPUNIT and GRIDMODE are saved in the drawing", 
     expect(aids(cad)).toMatchObject({ snap: false, spacing: { x: 10, y: 10 } })
   })
 
-  it("an F-key toggle is no undo step", () => {
+  it("an F-key toggle is taken back with the last step (desktop workspace/d01)", () => {
     const cad = createHarness()
     answer(cad, "_LINE", "0,0", "10,0", "")
     cad.press("F8")
     answer(cad, "_U")
 
     expect(cad.entityCount).toBe(0)
-    expect(aids(cad).ortho).toBe(true)
+    expect(aids(cad).ortho).toBe(false)
   })
 })

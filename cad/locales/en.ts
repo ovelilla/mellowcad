@@ -2096,6 +2096,31 @@ export const en: EngineCatalog = {
         ],
         ">"
       ],
+      "gridMode": [
+        " <Grid ",
+        [
+          "state",
+          1,
+          {
+            "on": "on",
+            "other": "off"
+          }
+        ],
+        ">"
+      ],
+      "selectionCyclingMode": [
+        " <Selection Cycling ",
+        [
+          "state",
+          1,
+          {
+            "on": "on",
+            "other": "off"
+          }
+        ],
+        ">"
+      ],
+      "everythingDeselected": "Everything has been deselected",
       "fromNeedsPoint": "FROM needs a point prompt.",
       "fromBase": "FROM: pick the base point.",
       "fromOffset": "FROM: offset from the base point.",
@@ -2455,6 +2480,33 @@ export const en: EngineCatalog = {
           "command"
         ],
         " GROUP"
+      ],
+      "emptyMenuStep": [
+        "GROUP ",
+        [
+          "command"
+        ]
+      ],
+      "shortcutMenuEntry": [
+        [
+          "entry",
+          1,
+          {
+            "erase": "Erase",
+            "move": "Move",
+            "copySelection": "Copy Selection",
+            "scale": "Scale",
+            "rotate": "Rotate",
+            "deselectAll": "Deselect All",
+            "properties": "Properties",
+            "pan": "Pan",
+            "cut": "Cut",
+            "copy": "Copy",
+            "copyBase": "Copy with Base Point",
+            "paste": "Paste",
+            "other": ""
+          }
+        ]
       ],
       "menuItemStep": "GROUP menu item",
       "intelliZoomStep": "INTELLIZOOM",

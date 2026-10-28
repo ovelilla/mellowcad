@@ -1098,8 +1098,8 @@ export class CadRuntime extends Observable {
    * Starts `id` as a button does. Its command is echoed as AutoCAD's ribbon
    * macro `^C^C_line` echoes it, `Command: _line` (desktop line/d19), a mode
    * of another command's as that command (`_circle`, circle/d01), and it is a
-   * command run: Enter repeats it and U names it (probes circle/p159, p191,
-   * p192).
+   * command run Enter repeats (probes circle/p159, p191, p192), in a menu
+   * group U names `LINE GROUP` (desktop workspace/d02).
    */
   setActiveTool(id: string): void {
     const next = this.tools.get(id)
@@ -1121,10 +1121,15 @@ export class CadRuntime extends Observable {
       definition &&
       (definition.tool === undefined || next.buttonCommand !== undefined)
     ) {
-      this.runCommandAs(`_${command}`, { echo: `_${command.toLowerCase()}` })
+      this.menuGroup(null, (step) =>
+        this.runCommandAs(`_${command}`, {
+          echo: `_${command.toLowerCase()}`,
+          step,
+        })
+      )
       return
     }
-    this.startEchoed(id, command ?? id, command)
+    this.startEchoed(id, command ?? id, command, true)
   }
 
   /**
@@ -1133,7 +1138,40 @@ export class CadRuntime extends Observable {
    */
   private runTransparentMacro(command: string): void {
     const echo = `'_${command.toLowerCase()}`
-    if (this.runMacro(command, { echo })) this.host.focusSurface()
+    if (
+      this.menuGroup(null, (step) => this.runMacro(command, { echo, step }))
+    ) {
+      this.host.focusSurface()
+    }
+  }
+
+  /**
+   * Runs a chrome macro as AutoCAD's menus run one: a group U names after
+   * `label`, or after the command as said when null — `LINE GROUP`, `Erase
+   * GROUP`, and `GROUP Properties` when the command made no step of its own
+   * (desktop workspace/d02–d05, e01). Whether it ran.
+   */
+  private menuGroup(
+    label: string | null,
+    run: (step: (said: string) => string) => boolean
+  ): boolean {
+    let named = label
+    const depth = this.history.depth
+    const ran = run((said) => {
+      named ??= said
+      return this.text.message("menuStep", { command: named })
+    })
+    if (
+      ran &&
+      named !== null &&
+      this.activeTool.id === "select" &&
+      this.history.depth === depth
+    ) {
+      this.history.recordEmpty(
+        this.text.message("emptyMenuStep", { command: named })
+      )
+    }
+    return ran
   }
 
   /**
@@ -1150,15 +1188,23 @@ export class CadRuntime extends Observable {
 
   /**
    * Starts `id` echoed `_echo`, as a macro runs it, and a run of `command`
-   * (Enter repeats it, U names it) when given.
+   * (Enter repeats it, U names it) when given; from a menu (`menu`), in a
+   * group U names `LINE GROUP`.
    */
-  private startEchoed(id: string, echo: string, command?: string): void {
+  private startEchoed(
+    id: string,
+    echo: string,
+    command?: string,
+    menu = false
+  ): void {
     this.echoMark = this.commandLine.mark()
     this.commandLine.write("command", `_${echo.toLowerCase()}`)
     if (command !== undefined) {
       const [name] = this.text.commandNames(command)
       this.commandLine.pushHistory(name)
-      this.startingName = name
+      this.startingName = menu
+        ? this.text.message("menuStep", { command: name })
+        : name
     }
     try {
       this.switchTool(id)
@@ -2576,12 +2622,22 @@ export class CadRuntime extends Observable {
    * as a menu's, `'ZOOM GROUP`, never joined (desktop view/d07).
    */
   navigate(command: "PAN" | "ZOOM" | "3DORBIT", answer?: string): boolean {
+    return this.navigateAs(
+      command,
+      { step: (said) => this.text.message("menuStep", { command: said }) },
+      answer
+    )
+  }
+
+  private navigateAs(
+    command: "PAN" | "ZOOM" | "3DORBIT",
+    macro: Macro,
+    answer?: string
+  ): boolean {
     this.navigating = true
     let started: boolean
     try {
-      started = this.runMacro(command, {
-        step: (said) => this.text.message("menuStep", { command: said }),
-      })
+      started = this.runMacro(command, macro)
     } finally {
       this.navigating = false
     }
@@ -2789,8 +2845,25 @@ export class CadRuntime extends Observable {
     this.invalidateState()
   }
 
+  /**
+   * The status bar's Clean Screen: no echo, and a step U names CLEANSCREENON
+   * or CLEANSCREENOFF (desktop workspace/d01). WHY no RIBBON and RIBBONCLOSE
+   * steps beside it, as AutoCAD's makes: they are the ribbon's own commands,
+   * not built here.
+   */
   toggleCleanScreen(): void {
-    this.setCleanScreen(!this.cleanScreen)
+    const on = !this.cleanScreen
+    const command = on ? "CLEANSCREENON" : "CLEANSCREENOFF"
+    const idle = this.activeTool.id === "select"
+    if (idle) {
+      this.commandStarts(command)
+      this.history.nameCommand(this.text.commandNames(command)[0])
+    }
+    try {
+      this.cleanScreenStep(on)
+    } finally {
+      if (idle) this.history.nameCommand(null)
+    }
   }
 
   /**
@@ -3223,8 +3296,10 @@ export class CadRuntime extends Observable {
     this.viewport.zoomToBounds(bounds.min, bounds.max, padding)
   }
 
+  /** Object snap, by F3 or the status bar. */
   toggleSnap(): void {
-    this.snapping.toggleActive()
+    this.toggleAid(() => this.snapping.toggleActive())
+    this.echoAid("osnapMode", this.snapping.isActive())
   }
 
   setSnapEnabled(type: SnapType, enabled: boolean): void {
@@ -3314,19 +3389,47 @@ export class CadRuntime extends Observable {
     this.host.focusSurface()
   }
 
-  /** A fixed entry of the shortcut menu, chosen: what AutoCAD's item runs. */
+  /**
+   * A fixed entry of the shortcut menu, chosen: what AutoCAD's item runs,
+   * echoed as acad.cuix's macro (`_erase`) and, but for Undo, Redo, Repeat,
+   * Enter and Cancel, in a group U names by the entry's label (`Erase
+   * GROUP`, `GROUP Properties`; desktop workspace/d03, e01).
+   */
   chooseShortcutMenuAction(action: ShortcutMenuAction): void {
     this.closeShortcutMenu()
     const command = SHORTCUT_MENU_COMMANDS[action]
-    if (command !== undefined) this.runCommandAs(command, {})
-    else if (action === "redo") this.runRedoMacro()
-    // MM_1562 `'_pan`, the navigation bar's macro too.
-    else if (action === "pan") this.navigate("PAN")
-    else if (action === "repeat") this.repeatLastCommand()
+    const label = this.text.message("shortcutMenuEntry", { entry: action })
+    if (action === "undo") this.runCommandAs("_U", {})
+    else if (command !== undefined) {
+      this.menuGroup(label, (step) =>
+        this.runCommandAs(command, { echo: command.toLowerCase(), step })
+      )
+    } else if (action === "redo") this.runRedoMacro()
+    // MM_1562 `'_pan`; the navigation bar's Pan writes `'PAN` (view/d07).
+    else if (action === "pan") {
+      this.menuGroup(label, (step) =>
+        this.navigateAs("PAN", { echo: "'_pan", step })
+      )
+    } else if (action === "repeat") this.repeatLastCommand()
     else if (action === "enter") this.pressEnter()
-    // Cancel is AutoCAD's ^C^C; Deselect All is the same Escape at the
-    // neutral prompt ("Press Esc to deselect all objects").
+    else if (action === "deselectAll") this.deselectAll(label)
+    // Cancel is AutoCAD's ^C^C.
     else this.cancelCommand()
+  }
+
+  /**
+   * The Edit menu's Deselect All, `^C^C^Pai_deselect ^P`: the menu's echo off,
+   * so only its message, and a step U names `GROUP Deselect All` (desktop
+   * workspace/d03, e01).
+   */
+  private deselectAll(label: string): void {
+    this.commandStarts("AI_DESELECT")
+    this.selection.clear()
+    this.commandLine.write("info", this.text.message("everythingDeselected"))
+    this.history.recordEmpty(
+      this.text.message("emptyMenuStep", { command: label })
+    )
+    this.invalidateState()
   }
 
   /**
@@ -3360,7 +3463,16 @@ export class CadRuntime extends Observable {
    */
   private runAccelerator(command: string, echo: string): void {
     if (this.activeTool.id !== "select") this.cancelCommand()
-    this.runCommandAs(`_${command}`, { echo })
+    // A menu group (`GROUP QSAVE`, `CLEANSCREENON GROUP`: desktop
+    // workspace/d04), but OPEN's: the drawing it opens starts its own history.
+    if (command === "OPEN") {
+      this.runCommandAs(`_${command}`, { echo })
+      return
+    }
+    const [name] = this.text.commandNames(command)
+    this.menuGroup(name, (step) =>
+      this.runCommandAs(`_${command}`, { echo, step })
+    )
   }
 
   /**
@@ -3778,13 +3890,16 @@ export class CadRuntime extends Observable {
     this.fromParkedSession = null
   }
 
+  /** Ortho, by F8 or the status bar. */
   toggleOrtho(): void {
-    this.constraints.toggle(ConstraintType.Ortho)
+    this.toggleAid(() => this.constraints.toggle(ConstraintType.Ortho))
+    this.echoAid("orthoMode", this.constraints.isEnabled(ConstraintType.Ortho))
   }
 
-  /** Toggles Polar tracking (AutoCAD's POLAR / F10). */
+  /** Polar tracking, by F10 or the status bar. */
   togglePolar(): void {
-    this.constraints.toggle(ConstraintType.Polar)
+    this.toggleAid(() => this.constraints.toggle(ConstraintType.Polar))
+    this.echoAid("polarMode", this.constraints.isEnabled(ConstraintType.Polar))
   }
 
   /** Sets the polar tracking angle increment, in degrees. */
@@ -3792,8 +3907,21 @@ export class CadRuntime extends Observable {
     this.constraints.setPolarAngleStep(step)
   }
 
+  /**
+   * An angle chosen from the status bar's Polar menu: the increment set and
+   * Polar turned on, writing nothing (desktop workspace/d01-m).
+   */
+  choosePolarAngle(step: number): void {
+    this.setPolarAngleStep(step)
+    this.toggleAid(() =>
+      this.constraints.setEnabled(ConstraintType.Polar, true)
+    )
+  }
+
+  /** Object snap tracking, by F11 or the status bar. */
   toggleObjectSnapTracking(): void {
-    this.tracking.toggleActive()
+    this.toggleAid(() => this.tracking.toggleActive())
+    this.echoAid("otrackMode", this.tracking.isActive())
   }
 
   /** Drops every acquired object-snap-tracking reference (UI "Clear" button). */
@@ -3802,9 +3930,72 @@ export class CadRuntime extends Observable {
     this.host.requestRender()
   }
 
+  /** The grid, by F7 or the status bar. */
   toggleGrid(): void {
-    const { gridMode } = this.document.getSettings()
-    this.document.setDraftingModes({ gridMode: !gridMode })
+    this.toggleAid(() => {
+      const { gridMode } = this.document.getSettings()
+      this.document.setDraftingModes({ gridMode: !gridMode })
+    })
+    this.echoAid("gridMode", this.document.getSettings().gridMode)
+  }
+
+  private draftingAids(): DraftingAids {
+    return {
+      grid: this.document.getSettings().gridMode,
+      ortho: this.constraints.isEnabled(ConstraintType.Ortho),
+      polar: this.constraints.isEnabled(ConstraintType.Polar),
+      snap: this.snapMode.isActive(),
+      osnap: this.snapping.isActive(),
+      otrack: this.tracking.isActive(),
+      cycling: this.cycling.getValue(),
+    }
+  }
+
+  private setDraftingAids(aids: Partial<DraftingAids>): void {
+    if (aids.grid !== undefined) {
+      this.document.setDraftingModes({ gridMode: aids.grid })
+    }
+    // Ortho and Polar displace each other: whichever goes off goes first.
+    for (const on of [false, true]) {
+      if (aids.ortho === on)
+        this.constraints.setEnabled(ConstraintType.Ortho, on)
+      if (aids.polar === on)
+        this.constraints.setEnabled(ConstraintType.Polar, on)
+    }
+    if (aids.snap !== undefined) this.snapMode.setActive(aids.snap)
+    if (aids.osnap !== undefined) this.snapping.setActive(aids.osnap)
+    if (aids.otrack !== undefined) this.tracking.setActive(aids.otrack)
+    if (aids.cycling !== undefined) {
+      this.cycling.setValue(aids.cycling)
+      this.refreshCycling()
+    }
+    this.refreshSnapAtCursor()
+  }
+
+  /**
+   * A drafting aid toggled by its key or its status-bar button, recorded into
+   * the last undo step as AutoCAD records the variable: LINE, F7, U takes the
+   * line and the grid back; inside a command it is that command's step
+   * (WORKSPACE-D100, desktop workspace/d01). Only what `change` changed is
+   * put back, Ortho displaced by Polar included.
+   */
+  private toggleAid(change: () => void): void {
+    const before = this.draftingAids()
+    change()
+    const after = this.draftingAids()
+    const keys = (Object.keys(after) as (keyof DraftingAids)[]).filter(
+      (key) => before[key] !== after[key]
+    )
+    if (keys.length === 0) return
+    const only = (aids: DraftingAids): Partial<DraftingAids> =>
+      Object.fromEntries(keys.map((key) => [key, aids[key]]))
+    this.history.executeIntoLast(
+      new SessionSettingCommand(
+        (aids: Partial<DraftingAids>) => this.setDraftingAids(aids),
+        only(before),
+        only(after)
+      )
+    )
   }
 
   /** The aids as the drawing has them: every one set before any writes back. */
@@ -3821,14 +4012,22 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * What a drafting aid's function key writes, ` <Ortho on>` (es
+   * What a drafting aid's key or status-bar button writes, ` <Ortho on>` (es
    * ` <Orto activado>`; desktop passes line/d10, d27, tables 33112 and 33113
-   * for F3): at `Command:` on a line of its own; inside a command after the
-   * prompt asking, which stays, and from the status bar's buttons nothing —
-   * both unverified, as the passes pressed the keys at `Command:` only.
+   * for F3, 16646 and 4743 for selection cycling): at `Command:` on a line of
+   * its own, inside a command after the prompt asking, which stays
+   * (`Specify next point or [Undo]:  <Ortho off>`, desktop workspace/d01-2,
+   * d01-3). OSNAP's and OTRACK's buttons by analogy with Grid's and Ortho's.
    */
   private echoAid(
-    id: "osnapMode" | "orthoMode" | "snapMode" | "polarMode" | "otrackMode",
+    id:
+      | "osnapMode"
+      | "orthoMode"
+      | "snapMode"
+      | "polarMode"
+      | "otrackMode"
+      | "gridMode"
+      | "selectionCyclingMode",
     on: boolean
   ): void {
     const text = this.text.message(id, { state: on ? "on" : "off" })
@@ -3844,9 +4043,10 @@ export class CadRuntime extends Observable {
     this.invalidateState()
   }
 
-  /** Toggles snap mode (F9). */
+  /** Snap mode, by F9 or the status bar. */
   toggleSnapMode(): void {
-    this.snapMode.toggleActive()
+    this.toggleAid(() => this.snapMode.toggleActive())
+    this.echoAid("snapMode", this.snapMode.isActive())
     this.refreshSnapAtCursor()
   }
 
@@ -3944,10 +4144,13 @@ export class CadRuntime extends Observable {
     }
   }
 
-  /** Toggles selection cycling (AutoCAD's SELECTIONCYCLING / Ctrl+W). */
+  /** Selection cycling (SELECTIONCYCLING), by F4 or the status bar. */
   toggleSelectionCycling(): void {
-    this.cycling.toggle()
-    this.refreshCycling()
+    this.toggleAid(() => {
+      this.cycling.toggle()
+      this.refreshCycling()
+    })
+    this.echoAid("selectionCyclingMode", this.cycling.isEnabled())
     this.refreshSnapAtCursor()
   }
 
@@ -5071,11 +5274,22 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * The application menu's and the status bar's Units: acad.cuix's `'_units`
-   * (ID_Units), transparent inside a running command (WORKSPACE-D68).
+   * The status bar's Units: acad.cuix's `'_units` (ID_Units), transparent
+   * inside a running command (WORKSPACE-D68). WHY not the application menu's
+   * `^C^C_UNITS`: AutoCAD's status-bar Units is a menu of formats, no dialog,
+   * so the button runs UNITS's own macro.
    */
   openDrawingUnits(): void {
-    this.runTransparentMacro("UNITS")
+    if (this.runMacro("UNITS", { echo: "'_units" })) this.host.focusSurface()
+  }
+
+  /**
+   * The application menu's Drawing Utilities ▸ Units: the running command
+   * cancelled, `_UNITS` echoed, a step U names `UNITS GROUP` (desktop
+   * workspace/d05-4).
+   */
+  openDrawingUnitsFromMenu(): void {
+    this.runAccelerator("UNITS", "_UNITS")
   }
 
   purgeBlocks(ids?: readonly BlockId[]): number {
@@ -5956,7 +6170,6 @@ export class CadRuntime extends Observable {
     // F3 toggles Object snap, matching AutoCAD's shortcut.
     if (e.key === "F3") {
       this.toggleSnap()
-      this.echoAid("osnapMode", this.snapping.isActive())
       this.host.requestRender()
       return true
     }
@@ -5971,10 +6184,6 @@ export class CadRuntime extends Observable {
     // F8 toggles Ortho, matching AutoCAD's shortcut.
     if (e.key === "F8") {
       this.toggleOrtho()
-      this.echoAid(
-        "orthoMode",
-        this.constraints.isEnabled(ConstraintType.Ortho)
-      )
       this.host.requestRender()
       return true
     }
@@ -5982,17 +6191,12 @@ export class CadRuntime extends Observable {
     // F9 toggles snap mode, matching AutoCAD's shortcut.
     if (e.key === "F9") {
       this.toggleSnapMode()
-      this.echoAid("snapMode", this.snapMode.isActive())
       return true
     }
 
     // F10 toggles Polar tracking, matching AutoCAD's shortcut.
     if (e.key === "F10") {
       this.togglePolar()
-      this.echoAid(
-        "polarMode",
-        this.constraints.isEnabled(ConstraintType.Polar)
-      )
       this.host.requestRender()
       return true
     }
@@ -6000,7 +6204,6 @@ export class CadRuntime extends Observable {
     // F11 toggles Object snap tracking, matching AutoCAD's shortcut.
     if (e.key === "F11") {
       this.toggleObjectSnapTracking()
-      this.echoAid("otrackMode", this.tracking.isActive())
       this.host.requestRender()
       return true
     }
@@ -6893,6 +7096,18 @@ export class CadRuntime extends Observable {
 interface Macro {
   readonly echo?: string
   readonly step?: (said: string) => string
+}
+
+/** The drafting aids a key or the status bar toggles, as an undo puts them back. */
+interface DraftingAids {
+  readonly grid: boolean
+  readonly ortho: boolean
+  readonly polar: boolean
+  readonly snap: boolean
+  readonly osnap: boolean
+  readonly otrack: boolean
+  /** SELECTIONCYCLING, its sign on or off. */
+  readonly cycling: number
 }
 
 /** How a view gesture's undo step is made ({@link CadRuntime.viewGesture}). */

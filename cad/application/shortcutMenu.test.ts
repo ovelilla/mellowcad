@@ -102,22 +102,21 @@ describe("the Default menu", () => {
     expect(cad.commandLog().slice(-2)).toEqual(["U", "LINE"])
   })
 
-  // acad.cuix MM_1562, the Default menu's Pan: `'_pan`, run as the
-  // navigation bar's Pan is: `'PAN` written, U naming `'PAN GROUP` (desktop
-  // view/d07)
-  it("runs Pan as its macro '_pan, a step U names 'PAN GROUP", () => {
-    const cad = createHarness()
+  // acad.cuix MM_1562, the Default menu's Pan: `'_pan` written, U naming the
+  // menu's group by its label, `Pan GROUP` (desktop workspace/d03, e01)
+  it.each([
+    ["'_pan", "Pan GROUP", undefined],
+    ["'_pan", "Encuadre GRUPO", es],
+  ])("runs Pan as its macro %s, a group U names %s", (echo, step, locale) => {
+    const cad = createHarness({ locale })
 
     cad.rightClick(CLEAR)
     cad.runtime.chooseShortcutMenuAction("pan")
     expect(cad.activeToolId()).toBe("pan")
-    expect(cad.commandLog().slice(-2)).toEqual([
-      "'PAN",
-      "Press ESC or ENTER to exit, or right-click to display shortcut menu.",
-    ])
+    expect(cad.commandLog().at(-2)).toBe(echo)
 
-    cad.escape().command("U")
-    expect(cad.commandLog().at(-1)).toBe("'PAN GROUP")
+    cad.escape().command("_U")
+    expect(cad.commandLog().at(-1)).toBe(step)
   })
 })
 
@@ -387,5 +386,94 @@ describe("Shift+right-click", () => {
     expect(cad.state().snapOverrideMenu).toBeCloseToPoint(cad.toScreen(CLEAR))
     cad.mouseUp(CLEAR, { button: 2, shiftKey: true })
     expect(cad.state().shortcutMenu).toBeNull()
+  })
+})
+
+/**
+ * The Edit menu's entries run acad.cuix's macros (`^C^C_erase `), echoed so,
+ * each a group U names by the entry's label: `Erase GROUP`, or `GROUP
+ * Properties` when its command made no step (desktop workspace/d03, e01).
+ */
+describe("the menus' macros and their undo groups", () => {
+  function chosen(
+    action: Parameters<
+      ReturnType<typeof createHarness>["runtime"]["chooseShortcutMenuAction"]
+    >[0],
+    locale?: typeof es
+  ) {
+    const cad = createHarness({
+      locale,
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "A" })],
+    })
+    cad.select("A")
+    cad.rightClick(CLEAR)
+    const from = cad.commandLog().length
+    cad.runtime.chooseShortcutMenuAction(action)
+    return { cad, echo: cad.commandLog().slice(from) }
+  }
+
+  it.each([
+    ["_erase 1 found", "Erase GROUP", undefined],
+    ["_erase 1 encontrados", "Borrar GRUPO", es],
+  ])("Erase writes %s, a group U names %s", (echo, step, locale) => {
+    const { cad, echo: written } = chosen("erase", locale)
+    expect(written).toEqual([echo])
+    expect(cad.entityCount).toBe(0)
+
+    cad.command("_U")
+    expect(cad.commandLog().at(-1)).toBe(step)
+    expect(cad.entityCount).toBe(1)
+  })
+
+  it("Move writes _move 1 found (desktop workspace/d03)", () => {
+    expect(chosen("move").echo).toEqual(["_move 1 found"])
+  })
+
+  // Move as the desktop; Copy Selection, Scale and Rotate by analogy
+  it.each([
+    ["move", "_move", "Move GROUP"],
+    ["copySelection", "_copy", "Copy Selection GROUP"],
+    ["scale", "_scale", "Scale GROUP"],
+    ["rotate", "_rotate", "Rotate GROUP"],
+  ] as const)("%s writes %s, a group U names %s", (action, echo, step) => {
+    const { cad, echo: written } = chosen(action)
+    // The count where the command writes it.
+    expect(written[0].split(" ")[0]).toBe(echo)
+
+    cad.escape().command("_U")
+    expect(cad.commandLog().at(-1)).toBe(step)
+  })
+
+  it.each([
+    ["Everything has been deselected", "GROUP Deselect All", undefined],
+    ["Se ha anulado la selección de todo", "GRUPO Anular selección", es],
+  ])(
+    "Deselect All writes no echo, only %s, a group U names %s, the erase kept",
+    (message, step, locale) => {
+      const { cad } = chosen("erase", locale)
+      cad.command("_U")
+      cad.selectAll()
+      cad.rightClick(CLEAR)
+      const from = cad.commandLog().length
+
+      cad.runtime.chooseShortcutMenuAction("deselectAll")
+      expect(cad.commandLog().slice(from)).toEqual([message])
+      expect(cad.selectedIds()).toEqual([])
+
+      cad.command("_U")
+      expect(cad.commandLog().at(-1)).toBe(step)
+      expect(cad.entityCount).toBe(1)
+    }
+  )
+
+  it.each([
+    ["GROUP Properties", undefined],
+    ["GRUPO Propiedades", es],
+  ])("Properties writes _properties, a group U names %s", (step, locale) => {
+    const { cad, echo } = chosen("properties", locale)
+    expect(echo).toEqual(["_properties"])
+
+    cad.command("_U")
+    expect(cad.commandLog().at(-1)).toBe(step)
   })
 })

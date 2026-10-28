@@ -118,11 +118,12 @@ describe("U and REDO say what they did", () => {
   })
 
   it("names a command started from the rail as the ribbon's macro runs it", () => {
-    // probe circle/p159: the ribbon's `_circle` macros undo as CIRCLE (es
-    // CIRCULO); LINE's button, `^C^C_line`, as LINE.
+    // desktop workspace/d02: a ribbon button's macro is a menu group, U
+    // naming LINE's `LINE GROUP` (es `GRUPO`, the group's word); the
+    // `_circle` macros by analogy (probe circle/p159 named the command).
     for (const [locale, u, circle, line] of [
-      [undefined, "U", "CIRCLE", "LINE"],
-      [es, "H", "CIRCULO", "LINEA"],
+      [undefined, "U", "CIRCLE GROUP", "LINE GROUP"],
+      [es, "H", "CIRCULO GRUPO", "LINEA GRUPO"],
     ] as const) {
       const cad = createHarness(locale ? { locale } : {})
       cad.tool("line")

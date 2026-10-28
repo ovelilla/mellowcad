@@ -226,7 +226,8 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
 - **Buttons run commands by global name** (`engine.runCommand("_QSAVE")`), as AutoCAD's macros
   do, so they echo at the prompt; a `'` macro through an engine method that runs it so
   (`openDrawingUnits`, `navigate`). A tool's button is `engine.setActiveTool(id)`, echoing `_line`,
-  repeated by Enter and named by U as that command (`cad-runtime.md`).
+  repeated by Enter, a menu group U names `LINE GROUP` (`cad-runtime.md`); a menu's own path is an
+  engine method of its own (`openDrawingUnitsFromMenu`, `choosePolarAngle`).
 - **The tool palette** holds only commands that act on the drawing, grouped by meaning, never to
   save room (no "more" menu). Unlisted tools fall into a trailing group, so a tool that belongs
   elsewhere in the chrome (view tools, Select, Match Properties) must be listed in `RAIL_EXCLUDED`.

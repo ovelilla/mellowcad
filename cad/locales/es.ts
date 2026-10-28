@@ -2503,6 +2503,31 @@ export const es: EngineLocale = {
         ],
         ">"
       ],
+      "gridMode": [
+        " <Rejilla ",
+        [
+          "state",
+          1,
+          {
+            "on": "activado",
+            "other": "desactivado"
+          }
+        ],
+        ">"
+      ],
+      "selectionCyclingMode": [
+        " <Ciclo de selección ",
+        [
+          "state",
+          1,
+          {
+            "on": "activado",
+            "other": "desactivado"
+          }
+        ],
+        ">"
+      ],
+      "everythingDeselected": "Se ha anulado la selección de todo",
       "fromNeedsPoint": "DESDE necesita una solicitud de punto.",
       "fromBase": "DESDE: precise el punto base.",
       "fromOffset": "DESDE: desfase desde el punto base.",
@@ -2858,6 +2883,33 @@ export const es: EngineLocale = {
           "command"
         ],
         " GRUPO"
+      ],
+      "emptyMenuStep": [
+        "GRUPO ",
+        [
+          "command"
+        ]
+      ],
+      "shortcutMenuEntry": [
+        [
+          "entry",
+          1,
+          {
+            "erase": "Borrar",
+            "move": "Desplazar",
+            "copySelection": "Copiar selección",
+            "scale": "Escala",
+            "rotate": "Girar",
+            "deselectAll": "Anular selección",
+            "properties": "Propiedades",
+            "pan": "Encuadre",
+            "cut": "Cortar",
+            "copy": "Copiar",
+            "copyBase": "Copiar con punto base",
+            "paste": "Pegar",
+            "other": ""
+          }
+        ]
       ],
       "menuItemStep": "GRUPO menu item",
       "intelliZoomStep": "INTELLIZOOM",

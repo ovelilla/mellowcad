@@ -14,7 +14,14 @@ Customization's checklist chooses what shows, the coordinates included, remember
 (AutoCAD keeps it in the profile) — WHY MODEL is a label: in model space the button "display[s] the
 most recently accessed layout", and there are no layouts; WHY Units shows the unit and opens UNITS:
 AutoCAD's shows the length format (LUNITS) and a right-click changes it, and Decimal is the only
-format here
+format here. The modes' buttons echo as their keys, ` <Grid on>` (es ` <Rejilla activado>`), at
+`Command:` on a line of their own and inside a command after the prompt (`Specify next point or
+[Undo]:  <Ortho off>`), and their change joins the last undo step as the keys' does (desktop
+workspace/d01, d01-2, d01-3, e01; Object Snap's and Object Snap Tracking's by analogy); a Polar
+angle chosen writes nothing and turns Polar on (d01-m); Lineweight writes nothing (**unverified**:
+it has no key, and its echo is unprobed); Clean Screen echoes nothing and is a step U names
+CLEANSCREENON / CLEANSCREENOFF (d01) — WHY without AutoCAD's RIBBON and RIBBONCLOSE steps round
+it: the ribbon's own commands, not built here
 
 **Missing:** Paper Space, Infer Constraints, Dynamic Input, Isometric Drafting, Transparency, 3D
 Object Snap, Dynamic UCS, Selection Filtering, Gizmo, the annotation and viewport tools, Workspace
@@ -27,18 +34,18 @@ instead), the right-click menus of Grid, Object Snap Tracking and Lineweight, th
 
 **Implemented:** the Drawing Units dialog (es "Unidades de dibujo"), modal, opened by the command
 (the aliases from both `acad.pgp` files, en:417, :505, es:284, :513; `DDUNITS` probe
-workspace/p311), the application menu's Drawing Units and the status bar's Units, which run its
-macro `'_units` (acad.cuix ID_Units: inside a command, transparently; **unverified** for the
-application menu, which acad.cuix does not hold, and what U names after the macro at `Command:`,
-`'UNITS` here): Length's Type (Decimal, the only
+workspace/p311), the application menu's Drawing Units, which cancels the running command, echoes
+`_UNITS` and is a group U names `UNITS GROUP` (desktop workspace/d05-4), and the status bar's Units,
+which runs UNITS' macro `'_units` (acad.cuix ID_Units: inside a command, transparently; U names
+`'UNITS` at `Command:`) — WHY not the application menu's: AutoCAD's status-bar Units is a menu of
+length formats, no dialog: Length's Type (Decimal, the only
 one: LUNITS 2) and Precision (LUPREC, 0 to 8 places as -UNITS asks them, p300, listed as `0.0000`;
 **unverified** that the list writes them so), Insertion Scale (INSUNITS: Millimeters, Centimeters,
 Meters — what a drawing unit is here, shown by the status bar and the dynamic input), Sample Output
 (a point as X,Y,Z and as distance<angle,Z, at the chosen precision, the angle at AUPREC's). The run
 lasts until the dialog closes, one undo step U names `UNITS` (es `UNIDADES`) with OK's change in it
 (p307; -UNITS' change put back, p308), OK with nothing changed a step too (as -UNITS with every
-default, p309), Cancel too (**unverified**: the desktop's; a run is a step whatever it did) — Cancel
-or Escape changing nothing. `'UNITS` runs inside a command, which resumes once the dialog closes
+default, p309), Cancel too (desktop workspace/d05) — Cancel or Escape changing nothing. `'UNITS` runs inside a command, which resumes once the dialog closes
 (p303); its change joins that command's step
 
 **Missing:** the other length types (Architectural, Engineering, Fractional, Scientific), Decimal's
@@ -132,9 +139,9 @@ Layers and Properties groups, the palette toggles) and keeps the application men
 Toolbar, the command line and the status bar ("Clean screen does not hide the Quick Access toolbar,
 the command window, or the status bar"); Ctrl+0 is acad.cuix's `^C^C_CleanScreenON` /
 `^C^C_CleanScreenOFF` (ID_CleanScreen, by CLEANSCREENSTATE): the running command cancelled, then
-the command run, echoed so (the case **unverified**: the desktop's) and a step U names; the status
-bar's Clean Screen (es Limpiar pantalla) toggles it with no echo and no step (**unverified**: its
-macro is not in acad.cuix, the desktop's); a palette opened meanwhile (LAYER, Ctrl+1) shows the
+the command run, echoed so (desktop workspace/d04), a group U names `CLEANSCREENON GROUP`; the
+status bar's Clean Screen (es Limpiar pantalla) toggles it with no echo, a step U names
+`CLEANSCREENON` (d01; see Status bar); a palette opened meanwhile (LAYER, Ctrl+1) shows the
 panel again (**unverified**); not saved (CLEANSCREENSTATE, read only by SETVAR, is Not-saved), so a reload starts without it;
 CLEANSCREENOPTIONS, sometimes cited, is BricsCAD's. Typed, each is an undo step U names as invoked
 (es string tables 52590, 52589) and U and REDO toggle back, one that changes nothing too (probes
@@ -147,8 +154,8 @@ workspace/p306, p316); program state, so it leaves the drawing unchanged. Not tr
 **Implemented:** the application menu (New, Open, Save, Save As, then Drawing Units, which the help
 files under Drawing Utilities > Units, and the page's language, which AutoCAD has no menu for) and
 the Quick Access Toolbar in AutoCAD's order — New (QNEW), Open, Save, Save As, Undo, Redo —, each
-run as its command by its global name (`_QSAVE`), so it echoes (Drawing Units as UNITS' macro,
-`'_units`); the Home tab's Layers and Properties
+run as its command by its global name (`_QSAVE`), so it echoes (Drawing Units as the desktop's
+application menu runs it, `^C^C_UNITS`: see UNITS); the Home tab's Layers and Properties
 panels beside them (`Object properties`, `Layers`), and at the end View's palette toggles: Styles,
 Blocks and the command line — WHY one 36 px row instead of the ribbon: a ribbon costs 70–150 px of
 height, which a wide screen is short of
@@ -221,16 +228,23 @@ Here)
 Clipboard ▸ (Cut, Copy, Copy with Base Point and Paste, with their keys), Undo, Redo, Pan (labelled
 as acad.cuix names them, `&Undo` and `Re&do`: only Repeat carries the command, `&Repeat %s`; Undo
 runs `^C^C_u`, Redo `^C^C_mredo 1`, as MREDO 1, Pan `'_pan` (MM_1562) as the navigation bar's Pan,
-`'PAN` written and U naming `'PAN GROUP`, desktop view/d07); Edit: Repeat, Clipboard ▸, Erase,
+written so, as the navigation bar's `'PAN` is not, desktop workspace/d03); Edit: Repeat, Clipboard ▸, Erase,
 Move, Copy Selection, Scale, Rotate, Deselect All, Properties; Command: Enter, Cancel, the prompt's
 options as its brackets word them ("the command's options (keywords within the square brackets) are
 inserted into this menu"), Osnap Overrides ▸ (the override menu's entries) only at a prompt that
 takes a point (OFFSET's distance has it, desktop offset/d04-1; `Select object to offset` not,
 d04-2), in the 2027 desktop's order (Intro, Cancelar, Entrada reciente ▸ · options ·
 Modificaciones de REFENT ▸ · Encuadre, Zoom, SteeringWheels · Calculadora rápida, LINE's next
-point, probe line/d07); any other entry that is a command runs by its global name, echoed, repeated
-and undone like it, Deselect All is Escape ("Press Esc to deselect all objects"), and an option is
-answered as typed; Escape or a click outside closes the menu, and focus goes back to the drawing;
+point, probe line/d07); any other entry that is a command runs as acad.cuix's macro, echoed so
+(`_erase 1 found`, es `_erase 1 encontrados`, `_move 1 found`, `_properties`; desktop
+workspace/d03, e01; Copy Selection `_copy`, Scale `_scale`, Rotate `_rotate` and the Clipboard's
+`_cutclip`, `_copyclip`, `_copybase`, `_pasteclip` by analogy) and repeated like it, each but Undo
+and Redo a group U names by the entry's label — `Erase GROUP`, `Move GROUP`, `Pan GROUP` (es
+`Borrar GRUPO`, `Encuadre GRUPO`), and `GROUP` first when its command made no step: `GROUP
+Properties` (es `GRUPO Propiedades`); the others by analogy (`Copy Selection GROUP`) —; Deselect
+All, `^C^C^Pai_deselect ^P`, writes no echo, only `Everything has been deselected` (es `Se ha
+anulado la selección de todo`), a group U names `GROUP Deselect All` (es `GRUPO Anular selección`;
+d03, e01); an option is answered as typed; Escape or a click outside closes the menu, and focus goes back to the drawing;
 the labels acad.cuix's (Copy with Base Point, Osnap Overrides; es Anular selección, Copiar
 selección, Copiar con punto base), es Repetir, Entrada reciente, Portapapeles, Intro, Cancelar,
 Seleccionar similares, Agregar selección (the help's words), Modificaciones de REFENT (the
@@ -240,9 +254,7 @@ desktop's, d07: the help says Modificaciones de referencias)
 Recorder, Subobject Selection Filter, Quick Select, QuickCalc, Count, Find, Options, Draw Order,
 Group ▸, Add Selected, Select Similar, Quick Properties; in Clipboard ▸ Cut with Base Point, Paste
 as Block, Paste as Hyperlink, Paste to Original Coordinates and Paste Special; the object and
-command entries merged into them (OBJECT_…, COMMAND_…), the Command menu's Pan and Zoom (d07);
-**unverified**: what each entry echoes and how U names it (acad.cuix's `^C^C_erase`, Deselect All's
-`^C^C^Pai_deselect ^P`; here `ERASE`, and Deselect All writes `*Cancel*`: the desktop's)
+command entries merged into them (OBJECT_…, COMMAND_…), the Command menu's Pan and Zoom (d07)
 
 ### Wheel and wheel button
 
