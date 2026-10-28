@@ -43,7 +43,7 @@ Decisions added in the execution:
 | UCN | NAmed and the UCS table | 0 | 1 | 6 |
 | UCB | OBject's and ZAxis Object's picks | 1 | 6 | 3 |
 | UIE | UCSICON, 'UCSICON and ELEV | 0 | 0 | 2 |
-| UCD | the desktop (icon, its grips, the ViewCube's UCS menu, the jig, Escape) | planned, §12 | | |
+| UCD | the desktop (icon, its grips, the ViewCube's UCS menu, the jig, Escape) | 1 | 4 | 3 |
 
 The worst:
 
@@ -535,6 +535,95 @@ States as `matrix.md`; `a:`, `b:`, `c:` are `research/review/ucs/{a,b,c}/` scrat
   REDO's echo `ELEV` (p367); `'ZOOM` (p368); `1e1`, `.5` (p369). mellowcad matches each
   (c/uci-elv.test.ts:72–113). · **Fix:** move them into `elev.test.ts` with their probes.
 
+### UCD — the desktop (d01–d07, e01; `scripts/research/probes/ucs/d01-e01.sh`)
+
+Probed 2026-10-28 with the owner's mouse, en-US then es-ES. UCB-11 and UCB-12 (§9) were executed
+first, with p440 and p441 (a mode's newest found, whatever its type: UCS-D100).
+
+#### UCD-01 — Dynamic input at UCS's point prompts shows `X,Y` and reads a typed point absolute; 2027 shows distance and angle from the base and reads it relative
+
+- **Severity:** high · **Row:** C, D · **Status:** verified
+- **AutoCAD:** d04-6, d04-8 (DYNMODE 3): the first prompt and X's show `47.2588 < 32°` from the
+  base (the current UCS's origin; the new origin); `30,0` typed is echoed `@30,0`, and at X's
+  prompt after an origin at 20,10 gives X along +X. The traces say `UseBasePoint` at the first
+  prompt, ZAxis's origin, X, XY and Z (p100, p111, p126).
+- **mellowcad:** d/ucd.test.ts: one `X,Y` field at the first prompt and at X's, read absolute.
+- **Fix:** the point prompts with a base give the Length / Angle pair, a typed `x,y` relative to
+  the base, as LINE's next point does. **Regression test:** `30,0` at X's prompt after 20,10.
+
+#### UCD-02 — The jig's band is solid and drawn at three prompts; 2027's is dashed amber at every point prompt
+
+- **Severity:** medium · **Row:** M · **Status:** verified
+- **AutoCAD:** d04-1 to d04-5: a dashed amber band from the base at the first prompt and ZAxis's
+  origin (from the current UCS's origin), at X, XY and Z (from the new origin) and at the X / Y / Z
+  rotation (from the origin); the traces' `UseDashedLine` (p100, p111, p121, p126).
+- **mellowcad:** d/ucd.test.ts: a solid `THEME.rubberBand` segment at X, XY and Z only.
+- **Fix:** `THEME.dashedRubberBand`, dashed, from the base at each of them. The icon previewing the
+  UCS being made (and the crosshair turned at the XY point) goes to Missing (UCS-D101).
+
+#### UCD-03 — OBject's hover is the white rollover; 2027's is the selection's blue glow, with the padlock over a locked object
+
+- **Severity:** medium · **Row:** M, Q · **Status:** verified (UCB-09 reversed for OBject)
+- **AutoCAD:** d06-1 to d06-3: OBject's hover is the selection's blue glow (a hatch's fill pale
+  blue), the UCS icon placed where the UCS would go, a padlock over a locked object, which it still
+  highlights; BREAK's and ZAxis Object's are the white rollover, a locked one the padlock alone
+  (d06-4 to d06-7).
+- **mellowcad:** UCB-09 made both picks `rollover`.
+- **Fix:** OBject's hover `THEME.selected`, locked objects included, with the padlock; ZAxis
+  Object's stays. The icon's placement goes to Missing with the jig's (UCS-D101).
+
+#### UCD-04 — The UCS icon is red and green with arrowheads and edge-on a broken pencil; 2027's default is the 3D icon, white, a Z arm off the plan
+
+- **Severity:** medium · **Row:** M · **Status:** verified
+- **AutoCAD:** d07-1, UCSICON's Properties: 3D, line width 1, size 50, White in model space;
+  d01-2 to d01-7: white arms without arrowheads, the letters at their ends, the WCS's square; off
+  the plan a third arm Z with its letter; with the XY plane edge-on the X and Z arms, no broken
+  pencil (that is the 2D style's, help: UCS Icon Dialog Box).
+- **mellowcad:** `pushUcsIcon` (`SceneBuilder.ts`): `THEME.ucsIconX` / `ucsIconY`, arrowheads, the
+  broken pencil edge-on, no Z.
+- **Fix:** the 3D icon's look: one colour, no arrowheads, the Z arm where the UCS's Z shows on the
+  screen; no broken pencil. The coverage's **unverified** broken pencil is settled.
+
+#### UCD-05 — A Save name with a space ends at the space; 2027 saves it whole
+
+- **Severity:** medium · **Row:** B (NAmed) · **Status:** verified
+- **AutoCAD:** d05: `AB CD` typed key by key at `Enter name to save current UCS or [?]:` saves
+  `AB CD` (`tblsearch`), though the trace says AllowSpaces false (p237 printed the same: the
+  refuted line of §10 is withdrawn).
+- **mellowcad:** d/ucd.test.ts: the keys save `AB`, then `Unknown command "CD"`.
+- **Fix:** Save's and Restore's name prompts take a space as text (UCS-D102).
+
+#### UCD-06 — The ViewCube's UCS menu reads `*TOP*` as the WCS and lists no unnamed UCS; es `Sin nombre`
+
+- **Severity:** low · **Row:** M (ViewCube) · **Status:** verified
+- **AutoCAD:** d03-1, d03-4, d03-5, d03-8, d03-9: `✓ WCS` · the saved ones · New UCS, separators
+  after WCS and before New UCS; an unnamed UCS, `*FRONT*` and `*TOP*` alike, labelled `Unnamed`
+  and listed checked after the saved ones; es `SCU`, `S-nombre`, `Nuevo SCP` (e01-7, e01-8).
+- **mellowcad:** `ucsMenu` gives `world: true` for `*TOP*`; no `Unnamed` item; no separator after
+  WCS; es `Sin nombre`.
+- **Fix:** `world` only for `*WORLD*`; the `Unnamed` item checked; the separator; es `S-nombre`.
+
+#### UCD-07 — The ViewCube's restore echoes the command and its answers; 2027 writes the prompts alone
+
+- **Severity:** low · **Row:** F · **Status:** verified
+- **AutoCAD:** d03: choosing A or WCS writes `Current ucs name:`, the first prompt, NAmed's and
+  Restore's prompts with no answers and no `UCS` line; U `UCS GROUP`. New UCS writes `_ucs` and
+  asks the first prompt (as here).
+- **Fix:** to Missing (UCS-D103): echoing a menu's prompts without its answers needs a macro
+  echo the runtime does not have (every chrome entry echoes as typed, `cad-runtime.md`).
+
+#### UCD-08 — The icon's grips and its shortcut menu, sized
+
+- **Severity:** low · **Row:** Q · **Status:** known (Missing: the icon's grips)
+- **AutoCAD:** d02-1 to d02-9, e01-1 to e01-5: the menus listed in `d01-e01.sh`; a drag of the
+  origin grip `** MOVE AND ALIGN **`, U `ACUCSEDITACTION`; the menu's World `_ucs` `_w`, U `UCS`.
+- **Fix:** Missing gains the menu and the grips' items, en and es.
+
+Matches the desktop settled: a click on nothing at OBject moves LASTPOINT there (UCB-08, d06,
+`ID @`); the hatch's refusal is said once (UCS-D63, d06); Space at NAmed's prompt is World; the
+first prompt's Down list Face … ZAxis with World marked (d04-7); its right button's menu is the
+command menu (d05-1c, the Workspace review's); the Coordinates panel is not on Home (d01-1).
+
 ## 6. Decisions
 
 - **UCS-D1:** Face is listed at the first prompt, as 2027 and table 33659 list it.
@@ -598,6 +687,14 @@ States as `matrix.md`; `a:`, `b:`, `c:` are `research/review/ucs/{a,b,c}/` scrat
 - **UCS-D70:** p359 runs one locale at a time (its runs share file names).
 - **UCS-D90:** -VIEW's orthographic views put ELEVATION back to 0, through the call they make to
   `ucsChange`; an isometric -VIEW and PLAN do not (p400, p403).
+- **UCS-D100:** a mode at OBject and ZAxis Object takes the newest found whatever its type and
+  answers as a pick on it (p433, p436, p440, p441).
+- **UCS-D101:** the icon previewing the UCS being made (the jig, OBject's hover) and the crosshair
+  turned at the XY point go to Missing: the scene draws one icon, the current UCS's.
+- **UCS-D102:** Save's and Restore's names take a space (d05); Delete's list is left as it is
+  (unprobed).
+- **UCS-D103:** the ViewCube menu's echo goes to Missing (UCD-07): no macro echoes its prompts
+  without its answers here.
 - **UCS-D91:** the desktop cells go in a block of their own (UCD, §12), in a session with the
   owner's mouse; the console blocks do not wait for it.
 
@@ -655,8 +752,8 @@ Regression tests are in each finding. Besides them, the untested cells, by file:
 - `DDUCS`, `UC`, es `DDSCP`, `SP` unknown: they run UCSMAN / ADMINSCP, in Missing.
 - p153's "origin typed back to 0,0" as a WCS case: with ELEVATION 5 the origin lands at Z 10, not
   the WCS; Previous's case carries UCO-03 alone.
-- A name with a space at Save taken whole (p237): the console's artefact (AllowSpaces false: the
-  desktop's space is Enter, d05).
+- ~~A name with a space at Save taken whole (p237): the console's artefact~~ — withdrawn: d05
+  saves it whole (UCD-05).
 
 ## 11. Coverage ↔ code ↔ AutoCAD, rules ↔ code
 
