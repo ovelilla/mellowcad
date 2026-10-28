@@ -1,0 +1,13 @@
+_LINE
+0,0
+10,0
+
+_ID
+50,50
+_UCS
+_O
+
+(trans (getvar "LASTPOINT") 1 0)
+_U
+(trans (getvar "LASTPOINT") 1 0)
+(sslength (ssget "_X"))

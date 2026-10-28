@@ -1,0 +1,6 @@
+_UCS
+0,0
+10,0
+20,0
+0,10
+(list (getvar "UCSNAME") (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR") (getvar "LASTPOINT"))

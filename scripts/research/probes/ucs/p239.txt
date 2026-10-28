@@ -1,0 +1,17 @@
+_UCS
+_NA
+_S
+A-B$_.C
+(getvar "UCSNAME")
+_UCS
+_NA
+_S
+Á'#~1
+(getvar "UCSNAME")
+_UCS
+_NA
+_S
+*
+OK2
+(getvar "UCSNAME")
+(progn (setq e (tblnext "UCS" T)) (while e (princ (cdr (assoc 2 e))) (princ " ") (setq e (tblnext "UCS"))) (princ))

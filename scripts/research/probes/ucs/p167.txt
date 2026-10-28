@@ -1,0 +1,9 @@
+_LINE
+0,0
+10,0
+
+(sssetfirst nil (ssget "_X"))
+(ssget "_I")
+_UCS
+_W
+(ssget "_I")

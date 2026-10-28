@@ -1,0 +1,6 @@
+_UCSICON
+_OFF
+_U
+(progn (princ "\n=ICON ") (princ (getvar "UCSICON")) (princ))
+_REDO
+(progn (princ "\n=ICON ") (princ (getvar "UCSICON")) (princ))

@@ -1,0 +1,9 @@
+_UCS
+_NA
+_S
+AA
+_UCS
+?
+ZZ
+_W
+(getvar "UCSNAME")

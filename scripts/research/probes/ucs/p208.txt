@@ -1,0 +1,11 @@
+_UCS
+_3
+FOO
+0,0,0
+FOO
+0,0,0
+1,0,0
+2,0,0
+0,1,0
+(getvar "UCSXDIR")
+(getvar "LASTPOINT")

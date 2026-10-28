@@ -1,0 +1,40 @@
+_UCS
+_NA
+_S
+AA
+_UCS
+_O
+1,0,0
+_UCS
+_NA
+_S
+AB
+_UCS
+_O
+2,0,0
+_UCS
+_NA
+_S
+BB
+_UCS
+_O
+3,0,0
+_UCS
+_NA
+_S
+CC
+_UCS
+_NA
+_D
+A*,CC
+(getvar "UCSNAME")
+(progn (setq e (tblnext "UCS" T)) (while e (princ (cdr (assoc 2 e))) (princ " ") (setq e (tblnext "UCS"))) (princ))
+_UCS
+_NA
+_D
+ZZ
+_UCS
+_NA
+_D
+
+(progn (setq e (tblnext "UCS" T)) (while e (princ (cdr (assoc 2 e))) (princ " ") (setq e (tblnext "UCS"))) (princ))

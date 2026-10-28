@@ -1,0 +1,15 @@
+_UCS
+_NA
+_S
+AA
+_UCS
+_O
+5,5,0
+_UCS
+_NA
+_S
+aa
+_Y
+(getvar "UCSNAME")
+(progn (setq e (tblnext "UCS" T)) (while e (princ (cdr (assoc 2 e))) (princ " ") (setq e (tblnext "UCS"))) (princ))
+(cdr (assoc 10 (tblsearch "UCS" "AA")))

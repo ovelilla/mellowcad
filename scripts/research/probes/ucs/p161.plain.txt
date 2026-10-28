@@ -1,0 +1,9 @@
+_LINE
+0,0
+10,0
+
+_UCS
+_P
+_U
+(getvar "LASTPOINT")
+(sslength (ssget "_X"))

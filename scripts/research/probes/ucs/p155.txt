@@ -1,0 +1,5 @@
+_UCS
+10,0
+'ORTHOMODE
+1
+

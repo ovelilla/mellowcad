@@ -1,0 +1,8 @@
+_UCS
+_M
+_Z
+'_ZOOM
+_E
+_T
+4
+(getvar "UCSORG")

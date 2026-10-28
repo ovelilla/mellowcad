@@ -1,0 +1,13 @@
+_LINE
+0,0
+10,5
+
+_ZOOM
+_E
+_UCS
+_F
+5,2.5
+0,0
+FOO
+
+(getvar "UCSNAME")

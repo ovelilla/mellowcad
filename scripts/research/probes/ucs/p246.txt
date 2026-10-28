@@ -1,0 +1,18 @@
+(getvar "UCSNAME")
+_-VIEW
+_FRONT
+(list (getvar "UCSNAME") (getvar "UCSXDIR") (getvar "UCSYDIR"))
+_UCS
+_O
+
+_U
+(list (getvar "UCSNAME") (getvar "UCSXDIR") (getvar "UCSYDIR"))
+_UCS
+_O
+
+_-VIEW
+_TOP
+(list (getvar "UCSNAME") (getvar "UCSXDIR"))
+_UCS
+_O
+

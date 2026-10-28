@@ -1,0 +1,24 @@
+_ELEV
+5
+0
+_-VIEW
+_FRONT
+(list (getvar "ELEVATION") (getvar "UCSNAME") (getvar "UCSORG") (getvar "UCSXDIR"))
+_-VIEW
+_TOP
+(list (getvar "ELEVATION") (getvar "UCSNAME") (getvar "UCSORG") (getvar "UCSXDIR"))
+_ELEV
+5
+0
+_UCS
+_NA
+_S
+W0
+_UCS
+_Z
+30
+_UCS
+_NA
+_R
+W0
+(list (getvar "ELEVATION") (getvar "UCSNAME") (getvar "UCSORG") (getvar "UCSXDIR"))

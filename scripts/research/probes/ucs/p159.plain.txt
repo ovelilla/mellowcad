@@ -1,0 +1,7 @@
+_UCS
+_Z
+30
+_U
+(list (getvar "UCSXDIR") (getvar "UCSYDIR") (getvar "UCSORG"))
+_REDO
+(list (getvar "UCSXDIR") (getvar "UCSYDIR") (getvar "UCSORG"))

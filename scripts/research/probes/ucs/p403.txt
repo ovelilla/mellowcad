@@ -1,0 +1,18 @@
+_ELEV
+5
+0
+_-VIEW
+_TOP
+(list (getvar "ELEVATION") (getvar "UCSNAME"))
+_ELEV
+5
+0
+_-VIEW
+_SWISO
+(list (getvar "ELEVATION") (getvar "UCSNAME"))
+_ELEV
+5
+0
+_PLAN
+_W
+(list (getvar "ELEVATION") (getvar "UCSNAME"))

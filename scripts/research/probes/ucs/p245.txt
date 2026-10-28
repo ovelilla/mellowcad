@@ -1,0 +1,19 @@
+_UCS
+_O
+5,5,0
+_UCS
+_NA
+_S
+AA
+_UCS
+_W
+_UCS
+_NA
+_R
+AA
+_UCS
+_P
+(list (getvar "UCSNAME") (getvar "UCSORG"))
+_UCS
+_P
+(list (getvar "UCSNAME") (getvar "UCSORG"))

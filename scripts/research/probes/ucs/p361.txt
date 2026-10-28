@@ -1,0 +1,4 @@
+_ELEV
+
+
+(progn (princ "\n=ELEV ") (princ (list (rtos (getvar "ELEVATION") 2 10) (rtos (getvar "THICKNESS") 2 10) (trans (getvar "LASTPOINT") 1 0))) (princ))

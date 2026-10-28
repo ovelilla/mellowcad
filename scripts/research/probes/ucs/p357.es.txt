@@ -1,0 +1,6 @@
+SIMBSCP
+DES
+(progn (princ "\n=ICON ") (princ (getvar "UCSICON")) (princ))
+SIMBSCP
+
+(progn (princ "\n=ICON ") (princ (getvar "UCSICON")) (princ))

@@ -1,0 +1,13 @@
+(list (getvar "UCSNAME") (getvar "WORLDUCS"))
+_-VIEW
+_FRONT
+(list (getvar "UCSNAME") (getvar "WORLDUCS"))
+_U
+(list (getvar "UCSNAME") (getvar "WORLDUCS"))
+_UCS
+_NA
+
+(list (getvar "UCSNAME") (getvar "WORLDUCS"))
+_-VIEW
+_TOP
+(list (getvar "UCSNAME") (getvar "WORLDUCS"))

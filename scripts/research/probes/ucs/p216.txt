@@ -1,0 +1,13 @@
+(list (getvar "UCSBASE") (getvar "UCSORTHO"))
+_UCS
+_O
+10,20,30
+_UCS
+_FR
+(list (getvar "UCSNAME") (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR"))
+_UCS
+_Z
+30
+_UCS
+_T
+(list (getvar "UCSNAME") (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR"))

@@ -1,0 +1,10 @@
+_ELEV
+5
+0
+_UCS
+_Z
+30
+(getvar "ELEVATION")
+_UCS
+_W
+(getvar "ELEVATION")

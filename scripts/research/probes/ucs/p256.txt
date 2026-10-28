@@ -1,0 +1,7 @@
+_UCS
+_NA
+_S
+'ORTHOMODE
+1
+(getvar "UCSNAME")
+(getvar "ORTHOMODE")

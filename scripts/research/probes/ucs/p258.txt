@@ -1,0 +1,11 @@
+_UCS
+_G
+_LINE
+_T
+_UCS
+_NA
+_LINE
+_R
+_LINE
+
+(getvar "UCSNAME")

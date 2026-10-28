@@ -1,0 +1,15 @@
+_ID
+7,8,9
+_UCS
+_G
+FOO
+_FRONT
+(getvar "UCSORG")
+(getvar "UCSXDIR")
+(getvar "UCSYDIR")
+(getvar "UCSNAME")
+(getvar "LASTPOINT")
+_UCS
+_G
+
+(getvar "UCSNAME")

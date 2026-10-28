@@ -1,0 +1,8 @@
+_UCS
+_X
+90
+(getvar "VIEWDIR")
+_UCS
+_V
+(list (getvar "UCSNAME") (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR") (getvar "LASTPOINT"))
+(getvar "VIEWDIR")

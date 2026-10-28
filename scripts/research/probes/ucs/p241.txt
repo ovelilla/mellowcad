@@ -1,0 +1,18 @@
+_UCS
+_O
+1,0,0
+_UCS
+_NA
+_S
+AA
+_UCS
+_NA
+_D
+aa
+(getvar "UCSNAME")
+(getvar "UCSORG")
+_UCS
+_NA
+_R
+AA
+

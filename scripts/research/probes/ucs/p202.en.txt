@@ -1,0 +1,8 @@
+_UCS
+O
+5,5,0
+(getvar "UCSORG")
+_UCS
+G
+
+(getvar "UCSNAME")

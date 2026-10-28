@@ -1,0 +1,13 @@
+_UCS
+_O
+1,2,3
+_UCS
+_NA
+_S
+AA
+_UCS
+_FR
+(list (getvar "UCSNAME") (getvar "UCSORG") (getvar "UCSXDIR"))
+_.SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mc-ucs-p251.dwg

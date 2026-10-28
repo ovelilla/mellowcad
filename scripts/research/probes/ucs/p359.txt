@@ -1,0 +1,26 @@
+_UCSICON
+_OFF
+_ELEV
+5
+-3
+(progn (princ "\n=ICON ") (princ (getvar "UCSICON")) (princ))
+_.SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mc-ucs-p359a.dwg
+_UCSICON
+_ON
+_UCSICON
+_N
+_ELEV
+0
+0
+(progn (princ "\n=ICON ") (princ (getvar "UCSICON")) (princ))
+_.SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mc-ucs-p359b.dwg
+_UCSICON
+_OFF
+(progn (princ "\n=ICON ") (princ (getvar "UCSICON")) (princ))
+_.SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mc-ucs-p359c.dwg

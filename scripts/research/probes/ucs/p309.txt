@@ -1,0 +1,15 @@
+_ZOOM
+_W
+-200,-200
+200,200
+(progn (entmake (list (cons 0 "BLOCK") (cons 2 "B1") (cons 70 0) (list 10 0.0 0.0 0.0))) (entmake (list (cons 0 "LINE") (list 10 0.0 0.0 0.0) (list 11 40.0 0.0 0.0))) (entmake (list (cons 0 "ENDBLK"))) (entmake (list (cons 0 "INSERT") (cons 2 "B1") (list 10 30.0 40.0 0.0) (cons 50 0.7853981633974483))) (princ))
+_UCS
+_OB
+_L
+(progn (princ "\n=UCS ") (foreach v (list (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR") (trans (getvar "LASTPOINT") 1 0)) (princ (mapcar (quote (lambda (x) (rtos x 2 10))) v))) (princ (getvar "UCSNAME")) (princ))
+_UCS
+_W
+_UCS
+_OB
+44.1421356,54.1421356
+(progn (princ "\n=UCS ") (foreach v (list (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR") (trans (getvar "LASTPOINT") 1 0)) (princ (mapcar (quote (lambda (x) (rtos x 2 10))) v))) (princ (getvar "UCSNAME")) (princ))

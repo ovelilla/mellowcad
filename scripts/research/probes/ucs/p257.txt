@@ -1,0 +1,17 @@
+_UCS
+_G
+'ORTHOMODE
+1
+_T
+_UCS
+_NA
+_S
+AA
+_UCS
+_NA
+_S
+AA
+'ORTHOMODE
+0
+_Y
+(getvar "ORTHOMODE")

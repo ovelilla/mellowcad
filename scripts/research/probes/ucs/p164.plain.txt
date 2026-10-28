@@ -1,0 +1,10 @@
+_ID
+50,50
+_UCS
+_Z
+30
+(trans (getvar "LASTPOINT") 1 0)
+_U
+(trans (getvar "LASTPOINT") 1 0)
+_REDO
+(trans (getvar "LASTPOINT") 1 0)

@@ -1,0 +1,4 @@
+_UCS
+
+(getvar "UCSNAME")
+(getvar "LASTPOINT")

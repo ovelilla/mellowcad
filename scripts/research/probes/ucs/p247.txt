@@ -1,0 +1,21 @@
+_UCS
+_G
+_T
+_UCS
+_O
+
+_UCS
+_Z
+30
+_PLAN
+_C
+(getvar "UCSNAME")
+_UCS
+_O
+
+_-VIEW
+_TOP
+(getvar "UCSNAME")
+_UCS
+_O
+

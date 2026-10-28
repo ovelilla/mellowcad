@@ -1,0 +1,8 @@
+_UCS
+_Z
+30
+_UCS
+10,0,5
+
+(list (getvar "UCSNAME") (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR") (getvar "LASTPOINT"))
+(trans (getvar "LASTPOINT") 1 0)

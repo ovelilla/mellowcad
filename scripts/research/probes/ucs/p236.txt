@@ -1,0 +1,19 @@
+_UCS
+_NA
+_S
+A<B
+A>B
+A/B
+A\B
+A"B
+A:B
+A;B
+A|B
+A,B
+A=B
+A`B
+A*B
+A?B
+GOOD
+(getvar "UCSNAME")
+(progn (setq e (tblnext "UCS" T)) (while e (princ (cdr (assoc 2 e))) (princ " ") (setq e (tblnext "UCS"))) (princ))

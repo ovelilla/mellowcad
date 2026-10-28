@@ -1,0 +1,13 @@
+_LINE
+0,0
+10,5
+
+_ZOOM
+_E
+_UCS
+_E
+_L
+(getvar "UCSORG")
+(getvar "UCSXDIR")
+(getvar "UCSNAME")
+(getvar "LASTPOINT")

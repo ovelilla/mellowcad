@@ -1,0 +1,14 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_LINE
+10,10
+110,60
+
+(sssetfirst nil (ssget "_X"))
+_UCS
+_OB
+80,45
+(progn (princ "\n=UCS ") (foreach v (list (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR") (trans (getvar "LASTPOINT") 1 0)) (princ (mapcar (quote (lambda (x) (rtos x 2 10))) v))) (princ (getvar "UCSNAME")) (princ))
+(princ (ssget "_I"))

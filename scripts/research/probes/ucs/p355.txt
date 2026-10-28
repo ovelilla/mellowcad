@@ -1,0 +1,7 @@
+_LINE
+0,0
+'UCSICON
+0
+10,10
+
+(progn (princ "\n=ICON ") (princ (getvar "UCSICON")) (princ))

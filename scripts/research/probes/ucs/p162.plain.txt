@@ -1,0 +1,12 @@
+_UCS
+_Z
+30
+_UCS
+_X
+90
+_UNDO
+2
+(list (getvar "UCSXDIR") (getvar "UCSYDIR") (getvar "UCSORG"))
+_MREDO
+_A
+(list (getvar "UCSXDIR") (getvar "UCSYDIR") (getvar "UCSORG"))

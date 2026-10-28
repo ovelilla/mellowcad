@@ -1,0 +1,16 @@
+_UCS
+_Z
+30
+_UCS
+50,0
+
+_UCS
+_X
+0,10
+(list (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR"))
+_UCS
+_P
+_UCS
+_Y
+10,10
+(list (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR"))

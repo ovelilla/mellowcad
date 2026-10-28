@@ -1,0 +1,23 @@
+_UCS
+_FR
+_UCS
+_M
+_Z
+0
+(getvar "UCSNAME")
+_UCS
+_M
+0,0,0
+(getvar "UCSNAME")
+_UCS
+_FR
+_UCS
+_O
+0,0,0
+(getvar "UCSNAME")
+_UCS
+_FR
+_UCS
+_N
+0,0,0
+(getvar "UCSNAME")

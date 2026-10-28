@@ -1,0 +1,8 @@
+_ELEV
+7
+0
+_UCS
+10,0
+
+(list (getvar "UCSNAME") (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR") (getvar "LASTPOINT"))
+(getvar "ELEVATION")

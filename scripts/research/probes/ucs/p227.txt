@@ -1,0 +1,41 @@
+_UCS
+_NA
+_S
+AA
+_UCS
+_O
+
+(list (getvar "UCSNAME") (getvar "WORLDUCS"))
+_UCS
+_FR
+_UCS
+_O
+
+(list (getvar "UCSNAME") (getvar "WORLDUCS"))
+_UCS
+_FR
+_UCS
+_M
+
+(list (getvar "UCSNAME") (getvar "WORLDUCS"))
+_UCS
+_FR
+_UCS
+_M
+_Z
+
+(list (getvar "UCSNAME") (getvar "WORLDUCS"))
+_UCS
+_FR
+_UCS
+_NA
+
+(list (getvar "UCSNAME") (getvar "WORLDUCS"))
+_UCS
+_FR
+_UCS
+_3
+
+
+
+(list (getvar "UCSNAME") (getvar "WORLDUCS"))

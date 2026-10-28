@@ -1,0 +1,9 @@
+_ID
+7,8,9
+_UCS
+_M
+FOO
+10,0,0
+(getvar "LASTPOINT")
+(getvar "UCSORG")
+(getvar "UCSNAME")

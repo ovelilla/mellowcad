@@ -1,0 +1,13 @@
+_UCS
+_Z
+30
+(setvar "LUPREC" 2)
+_UCS
+_3
+100,0,0
+
+
+(getvar "UCSORG")
+(getvar "UCSXDIR")
+(getvar "UCSYDIR")
+(getvar "LASTPOINT")

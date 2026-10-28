@@ -1,0 +1,15 @@
+_UCS
+_O
+0,0,10
+_ELEV
+5
+0
+(progn (princ "\n=ELEV ") (princ (list (rtos (getvar "ELEVATION") 2 10) (rtos (getvar "THICKNESS") 2 10) (trans (getvar "LASTPOINT") 1 0))) (princ))
+_LINE
+0,0
+10,0
+
+(princ (entget (entlast)))
+_UCS
+_W
+(progn (princ "\n=ELEV ") (princ (list (rtos (getvar "ELEVATION") 2 10) (rtos (getvar "THICKNESS") 2 10) (trans (getvar "LASTPOINT") 1 0))) (princ))

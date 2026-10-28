@@ -1,0 +1,22 @@
+_UCS
+_NA
+_S
+AA
+_UCS
+_O
+5,5,0
+_UCS
+_NA
+_S
+AA
+S
+(cdr (assoc 10 (tblsearch "UCS" "AA")))
+_UCS
+_O
+7,7,0
+_UCS
+_NA
+_S
+AA
+Y
+(cdr (assoc 10 (tblsearch "UCS" "AA")))

@@ -1,0 +1,9 @@
+_ZOOM
+_W
+-200,-200
+200,200
+(entmake (list (cons 0 "ATTDEF") (cons 100 "AcDbEntity") (cons 100 "AcDbText") (list 10 20.0 10.0 0.0) (cons 40 5.0) (cons 1 "D") (cons 50 0.5) (cons 100 "AcDbAttributeDefinition") (cons 3 "P") (cons 2 "TAG") (cons 70 0)))
+_UCS
+_OB
+_L
+(progn (princ "\n=UCS ") (foreach v (list (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR") (trans (getvar "LASTPOINT") 1 0)) (princ (mapcar (quote (lambda (x) (rtos x 2 10))) v))) (princ (getvar "UCSNAME")) (princ))

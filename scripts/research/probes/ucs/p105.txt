@@ -1,0 +1,9 @@
+_LINE
+0,0
+'_UCS
+_Z
+30
+10,0
+
+(list (getvar "UCSNAME") (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR") (getvar "LASTPOINT"))
+(sslength (ssget "_X"))
