@@ -2,8 +2,8 @@
 
 > **Status:** plan, 2026-10-28. Phases 0–4 in one session with skill `command-review`, the
 > twenty-fourth review of `docs/coverage/roadmap.md`'s order; the console blocks (SVA, SVR, UNT,
-> MAC) executed in the same session, the desktop block (WSD, §12) open for a session with the
-> owner's mouse.
+> MAC) executed in the same session; the desktop block (WSD) probed and executed in a second
+> session, 2026-10-28.
 >
 > Executed: SVA-01 to SVA-06, SVR-01's drawing variables and SVR-05 in `5911d19`; SVR-01's
 > program variables to SVR-04 in `1165751`; UNT-01 to UNT-05 in `5d9175c`; MAC-01, MAC-02, MAC-04,
@@ -23,7 +23,7 @@
 
 ## 1. Summary
 
-25 findings: 0 critical, 1 high, 12 medium, 12 low.
+34 findings: 0 critical, 1 high, 18 medium, 15 low.
 
 | Block | What | High | Medium | Low |
 | --- | --- | --- | --- | --- |
@@ -31,7 +31,7 @@
 | SVR | the roster: each variable mellowcad models, its words, values, storage and undo | 0 | 3 | 2 |
 | UNT | UNITS, CLEANSCREENON, CLEANSCREENOFF | 0 | 2 | 3 |
 | MAC | the chrome's macros against acad.cuix (rail, top bar, keys, shortcut menus) | 0 | 4 | 5 |
-| WSD | the desktop: the chrome's look, echoes and undo names, name prompts with spaces | planned, §12 | | |
+| WSD | the desktop: the chrome's echoes and undo steps, transparency, name prompts with spaces, SETVAR's pages | 0 | 6 | 3 |
 
 The worst:
 
@@ -190,25 +190,41 @@ One row per group; the full table is in §5 (SVR-01). `b:` is `roster.test.ts` (
 | Command menu | CMCOMMAND: Enter, Cancel · Osnap Overrides · Pan, Zoom, SteeringWheels · QuickCalc | en label MAC-07 |
 | Clipboard ▸ | Cut, Cut with Base Point, Copy, Copy with Base Point, Paste, Paste as Block, Paste as Hyperlink, Paste to Original Coordinates, Paste Special | label MAC-07; Missing MAC-08 |
 
-### WSD — name prompts that may hold spaces (from p400–p407)
+### WSD — the desktop (d01–d08, e01; 2026-10-28)
 
-The console takes every answer line whole, and its trace says `AllowSpaces: false` at every name
-prompt — and at -TEXT's `Enter text:` too (p406), which takes spaces: the flag tells nothing, and
-each prompt is a desktop cell. 2027 accepts `AB CD` as a name at -BLOCK, -INSERT, -DIMSTYLE Save and
-Restore, UCS Save and Delete, PLAN and -STYLE (p400–p402, p406). mellowcad's name prompts:
+Probes are `workspace/d01`–`d08` (en-US profile) and `e01` (es-ES), their steps and readings in
+`scripts/research/probes/workspace/d01-e01.sh`, the screenshots in `research/probes/workspace/`;
+`d:` is `research/review/workspace/d/wsd.test.ts`.
 
-| Prompt | Command | `takesSpaces` | State |
+| Row | AutoCAD (probe) | mellowcad (d:) | State |
 | --- | --- | --- | --- |
-| `Enter name to save current UCS or`, `Enter name of UCS to restore or` | UCS NAmed | yes (UCD-05) | match · ucs/d05 |
-| `Enter UCS name(s) to delete`, `… to list` | UCS NAmed | no | WSD |
-| `Enter name of UCS or` | PLAN | no | WSD |
-| `Enter block name or` | -BLOCK, -INSERT | no | WSD |
-| `Enter name(s) to purge` | PURGE | no | WSD |
-| `Enter style name or` | TEXT, MTEXT | no | WSD |
-| `Enter name for new dimension style or`, `Enter a dimension style name, [?] or` | -DIMSTYLE | no | WSD |
-| `Enter linetype(s) to load`, `Specify linetype name or`, list | -LINETYPE | no | WSD |
-| `Enter block(s) to list` | -BLOCK, -INSERT `?` | no | WSD |
-| a string variable's value (`USERS1`, CLAYER, TEXTSTYLE, INSNAME) | SETVAR | — | WSD (SVA's build gives it `takesSpaces` only if d-probe says so) |
+| F7, Ctrl+W echo | ` <Grid on>`, ` <Selection Cycling on>` (table 16646, 4743); es ` <Rejilla activado>` · d01, e01 | nothing (F7, F4) | differs WSD-02 (F7's in Missing) |
+| Status bar toggles' echo | as the keys, at `Command:` and after a running prompt · d01, d01-2, d01-3, e01 | nothing | differs WSD-02 |
+| U after a toggle | taken back with the step before (F7, F8, Ctrl+W, the Grid button) · d01 | stays | differs WSD-01 |
+| Status bar Clean Screen | no echo; steps RIBBON, CLEANSCREENON, RIBBONCLOSE · d01 | no step: U takes the line | differs WSD-03 |
+| Ribbon Line, U | `LINE GROUP` · d02 | `LINE` | differs WSD-03 |
+| Top bar Match Properties in LINE | `'_matchprop`, `>>Select source object:`, Esc resumes LINE · d02-1, d02-3 | `_matchprop`, LINE ended | differs MAC-03 |
+| `'MATCHPROP`, `'PROPERTIES`, `'LAYER`, `'BLOCKSPALETTE` at LINE | run, resume LINE · d02-4, d02-5, d02-t | refused | differs WSD-04 |
+| `'VIEW`, `'EATTEDIT` at LINE | refused, `Point or option keyword required.` · d02-t | the same | match |
+| Ribbon Move during a grip edit | `_move`, `** MOVE **` · d02-8 | grip modes not built | known (drafting-aids.md Missing) |
+| Menu Erase, Move, Deselect All, Properties, Pan | `_erase 1 found`, `_move 1 found`, `Everything has been deselected`, `_properties`, `'_pan` · d03, e01 | `ERASE 1 found`, `*Cancel*`, `PROPERTIES`, `'PAN` | differs MAC-06 |
+| Their U | `Erase GROUP`, `Move GROUP`, `GROUP Deselect All`, `GROUP Properties`, `Pan GROUP`; es `Borrar GRUPO`, `GRUPO Anular selección`, `GRUPO Propiedades`, `Encuadre GRUPO` · d03, e01 | `ERASE`; Deselect All, Properties no step; `'PAN GROUP` | differs WSD-03 |
+| Default menu's Undo, Redo labels | carry the step: `Undo Propertiesclose`, `Undo Grip edit`, es `Deshacer Grupo de comandos` · d03-2, d03-3, e01-2 | `Undo`, `Redo` | to Missing (WORKSPACE-D105) |
+| Ctrl+0, 1, 9, S echo in LINE | `*Cancel*`, `_CleanScreenON`, `_properties`, `_propertiesclose`, `_commandlinehide`, `_qsave` · d04 | the same (MAC-01) | match: the case settled |
+| Their U | `CLEANSCREENON GROUP` (+ RIBBON, RIBBONCLOSE), `GROUP PROPERTIES`, `GROUP PROPERTIESCLOSE`, `GROUP QSAVE` · d04 | `CLEANSCREENON`; Ctrl+1 and Ctrl+S no step | differs WSD-03 |
+| Ctrl+9 | a task dialog asks to close the command line · d04-1 | hides at once | to Missing (WORKSPACE-D106) |
+| Clean Screen on, Ctrl+1 | the palette shows, Clean Screen stays · d04-2 | the panel shows | match |
+| UNITS dialog | Precision `0` … `0.00000000`; `Units to scale inserted content:` · d05-1 | the list matches; no label | differs WSD-08 (label) |
+| UNITS Cancel, U | `UNITS` · d05 | `UNITS` | match (UNT-02's **unverified** settled) |
+| Application menu's Units in LINE | `*Cancel*`, `_UNITS`, U `UNITS GROUP` · d05-4 | `'_units`, transparent | differs UNT-04 |
+| Name prompts with `AB CD` typed | taken whole at UCS Delete, PLAN, -BLOCK and its `?`, -INSERT, -PURGE, TEXT Style, -DIMSTYLE Save and Restore, -LINETYPE Load and Set, SETVAR's string value · d06 | `takesSpaces` false: Space ends the name | differs WSD-05 |
+| SETVAR `?` | 20 variables, then `Press ENTER to continue:` · d07-1 | the whole list at once | differs WSD-06 |
+| Escape in a nested variable | `*Cancel*`, `Resuming SETVAR command.` · d07-2 | the same | match |
+| SETVAR's dynamic input | the last name, the value in the box; the value prompt whole · d07-4, d07-5 | an empty number field | differs WSD-07 |
+| Preselection after a variable typed | dropped · d07 | (console p161) | match |
+| Status bar Snap ▾, Polar ▾ | Polar Snap, Grid Snap; 90, 45, 30, 23, 18, 15, 10, 5 as `90, 180, 270, 360...`; es Referencia polar, Referencia a rejilla · d01-m, e01-3, e01-4 | Grid snap, Polar snap; 90, 60, 45, 30, 22.5° … | differs WSD-09 |
+| PolarSnap, POLARDIST 0, 10, −10 after SNAP 5 | steps 5, 10, 10 · d08 | the same (SVR-02) | match |
+| Ctrl+L | Chrome does not reserve IDC_FOCUS_LOCATION (`accelerator_table.cc` `kReservedCommandIds`, chromium 7f7e075); the page receives its keydown (Playwright) | not bound | differs MAC-09 |
 
 ## 5. Findings
 
@@ -436,6 +452,97 @@ Restore, UCS Save and Delete, PLAN and -STYLE (p400–p402, p406). mellowcad's n
 - **Coverage:** "Attributes ▾ holds Edit (EATTEDIT)" is false; Multiple exists (settles the
   **unverified**; -ATTEDIT is not built: Missing).
 
+#### WSD-01 — U leaves a drafting toggle; AutoCAD takes it back with the step before
+
+- **Severity:** medium · **Row:** F · **Status:** verified
+- **Where:** `CadRuntime.toggleGrid`, `toggleOrtho`, `toggleSnapMode`, `togglePolar`, `toggleSnap`,
+  `toggleObjectSnapTracking`, `toggleSelectionCycling` (keys and status bar alike).
+- **AutoCAD:** d01: LINE, F7 (or the Grid button) → U writes `LINE`, the line gone and GRIDMODE 0;
+  LINE, F7, F8, Ctrl+W → U puts the three back with the line; LINE, Grid, LINE → U the second line
+  only, U again the first line and the grid. A toggle at `Command:` is recorded in the last step.
+- **mellowcad:** b:semantics (SVR-04) and the coverage: F7, F8, F4 stay after U.
+- **Fix:** a toggle at `Command:` joins the last undo step (its undo puts the mode back, its redo
+  sets it again); inside a command it joins that command's step; with nothing to undo it is no
+  step (WORKSPACE-D100). RECTANG-D44's "F7 / F8 no undo step" goes.
+- **Regression test:** `workspaceCommands.test.ts` (or `undoEcho.test.ts`), citing d01.
+- **Coverage:** `drafting-aids.md` (Ortho, Grid, Snap, Polar, Selection cycling).
+
+#### WSD-02 — F7, F4 and the status bar's toggles write nothing; AutoCAD echoes each
+
+- **Severity:** medium · **Row:** K, chrome · **Status:** verified
+- **AutoCAD:** d01: F7 ` <Grid on>` / ` <Grid off>`, Ctrl+W ` <Selection Cycling on>` (table
+  16646; off 4743); the status bar's Grid, Snap, Ortho and Polar write ` <Grid on>`, ` <Snap on>`,
+  ` <Ortho on>`, ` <Polar on>` as their keys do, at `Command:` and after a running prompt
+  (`Specify next point or [Undo]:  <Ortho off>`, d01-2, d01-3); es ` <Rejilla activado>`,
+  ` <Forzcursor activado>`, ` <Orto activado>`, ` <Polar activado>` (e01), ` <Ciclo de selección
+  activado>` (table 16646). Choosing a Polar angle writes nothing, Polar turning on silently.
+- **mellowcad:** d: F7 and F4 write nothing; `toggleGrid`, `toggleOrtho`, `togglePolar`,
+  `toggleSnapMode`, `toggleSelectionCycling` from the status bar write nothing.
+- **Fix:** one echo path (`echoAid`) for the key and the button; F7's and the cycling's words
+  added; the angle menu silent (WORKSPACE-D101). OSNAP and OTRACK's buttons echo as F3 and F11 by
+  analogy; Lineweight's button has no key and its echo is unprobed (no echo, **unverified**).
+- **Regression test:** `workspaceCommands.test.ts`, citing d01, e01 and the tables.
+
+#### WSD-03 — Steps the chrome makes, and how U names them
+
+- **Severity:** medium · **Row:** F, chrome · **Status:** verified
+- **AutoCAD:** a ribbon button, a shortcut-menu entry, an accelerator or the application menu runs
+  as a menu macro, one undo group U names after it: `LINE GROUP` (ribbon Line, d02); `Erase GROUP`,
+  `Move GROUP`, `Pan GROUP` (es `Borrar GRUPO`, `Encuadre GRUPO`), `GROUP Deselect All`, `GROUP
+  Properties` (es `GRUPO Anular selección`, `GRUPO Propiedades`) — the menu's label, after
+  `GROUP` when the group changed nothing (d03, e01); `GROUP PROPERTIES`, `GROUP PROPERTIESCLOSE`,
+  `GROUP QSAVE` (a cancelled save too), `CLEANSCREENON GROUP` (d04); `UNITS GROUP` (application
+  menu, d05-4). The status bar's Clean Screen echoes nothing and makes steps U names RIBBONCLOSE,
+  CLEANSCREENON, RIBBON (d01); Ctrl+0 RIBBONCLOSE, `CLEANSCREENON GROUP`, RIBBON (d04).
+- **mellowcad:** d: the rail's Line `LINE`; the menu's Erase `ERASE`; Deselect All, Properties,
+  Ctrl+1, Ctrl+S and the status bar's Clean Screen make no step, so U after them takes back the
+  line drawn before; Pan `'PAN GROUP`; Ctrl+0 `CLEANSCREENON`.
+- **Scenario:** draw a line → Ctrl+1, Ctrl+1 → U → AutoCAD undoes `GROUP PROPERTIESCLOSE` (nothing
+  visible), mellowcad erases the line.
+- **Fix:** the runtime's menu step (`menuStep`, `{command} GROUP`) for every chrome start: rail
+  and top-bar tools by the command's name, shortcut-menu entries by their label (`Erase`, `Move`,
+  `Pan`, `Deselect All`, `Properties`, es from acad.cuix's), accelerators by their command; a group
+  that changed nothing named `GROUP {command}`. The status bar's Clean Screen a silent step named
+  CLEANSCREENON / OFF; RIBBON and RIBBONCLOSE are the ribbon's own commands, not built (WHY)
+  (WORKSPACE-D102).
+- **Regression test:** `undoEcho.test.ts`, citing d02, d03, d04, d05-4, e01.
+
+#### WSD-04 — `'MATCHPROP`, `'PROPERTIES`, `'LAYER` and `'BLOCKSPALETTE` are transparent
+
+- **Severity:** medium · **Row:** E · **Status:** verified
+- **AutoCAD:** d02-4, d02-5, d02-t: typed at LINE's point each runs — MATCHPROP's `>>Select source
+  object:`, the others open their palette — and LINE resumes (`Resuming LINE command.`); `'VIEW`
+  and `'EATTEDIT` are refused. The top bar's Match Properties is `'_matchprop` (MAC-03, d02-1).
+- **mellowcad:** d: all six refused (`** That command may not be invoked transparently **`).
+- **Fix:** the four in `TRANSPARENT_COMMANDS`; MATCHPROP's change joins the interrupted command's
+  step; the top bar's member says `transparentMacro` (MAC-03); the palettes open and the command
+  resumes (WORKSPACE-D103).
+- **Regression test:** `transparentCommands.test.ts`, citing d02.
+- **Coverage:** `command-line.md`'s **unverified** on VIEW, LAYER, PROPERTIES, MATCHPROP,
+  BLOCKSPALETTE and EATTEDIT settled.
+
+#### WSD-05 — Every name prompt takes spaces; here Space ends the name
+
+- **Severity:** medium · **Row:** B · **Status:** verified
+- **AutoCAD:** d06: `AB CD` typed key by key is one answer at UCS's `Enter UCS name(s) to delete`,
+  PLAN's `Enter name of UCS or`, -BLOCK's and -INSERT's `Enter block name or`, `Enter block(s) to
+  list`, -PURGE's `Enter name(s) to purge`, TEXT's `Enter style name or`, -DIMSTYLE's `Enter name
+  for new dimension style or` and `Enter a dimension style name, [?] or`, -LINETYPE's `Enter
+  linetype(s) to load` and `Specify linetype name or`, and SETVAR's string value (USERS1 `AB CD`).
+- **mellowcad:** d: `takesSpaces` false at each (UCS's Save and Restore names alone hold it).
+- **Fix:** `takesSpaces` on every name or string prompt, a question flag rather than UcsTool's
+  local list (WORKSPACE-D104; WORKSPACE-D93 reversed); UCS's list prompt with them.
+- **Regression test:** `commandLine` spaces test per prompt, citing d06.
+
+#### WSD-06 — SETVAR's `?` pages every 20 variables
+
+- **Severity:** medium · **Row:** B `?` · **Status:** verified
+- **AutoCAD:** d07-1: 20 variables, then `Press ENTER to continue:` (the console's p125–p127 the
+  same); Escape there ends SETVAR.
+- **mellowcad:** d: the whole list in one message, SETVAR ended, so the user's Enter repeats SETVAR.
+- **Fix:** pages of 20 lines with `Press ENTER to continue:` (WORKSPACE-D7 revised).
+- **Regression test:** `setvar` tests, citing d07-1.
+
 ### Low
 
 #### SVA-04 — SETVAR's `?` listing
@@ -538,6 +645,32 @@ Restore, UCS Save and Delete, PLAN and -STYLE (p400–p402, p406). mellowcad's n
 - **Fix:** in WSD's browser check: bound if Chrome lets the page take it, else a deviation in
   `drafting-aids.md` with its WHY.
 
+#### WSD-07 — SETVAR's dynamic input holds no default
+
+- **Severity:** low · **Status:** verified
+- **AutoCAD:** d07-4: `Enter variable name or` with the last variable selected in the box; d07-5
+  `Enter new value for ORTHOMODE <0>:` with `0`.
+- **mellowcad:** d: an empty `number` field at both, no placeholder.
+- **Fix:** the default as the field's placeholder (LTSCALE's way), a text field at the name and
+  at a string value.
+
+#### WSD-08 — The Drawing Units dialog lacks the Insertion scale list's label
+
+- **Severity:** low · **Status:** verified (en); es **unverified**
+- **AutoCAD:** d05-1: `Units to scale inserted content:` above the list (the coverage's
+  **unverified** settled); the Precision list `0` … `0.00000000` holds.
+- **Fix:** the label (es worded in Autodesk's style, **unverified**).
+
+#### WSD-09 — The status bar's Snap and Polar menus differ
+
+- **Severity:** low · **Status:** verified
+- **AutoCAD:** d01-m: Snap ▾ Polar Snap, Grid Snap (es Referencia polar, Referencia a rejilla,
+  e01-3); Polar ▾ 90, 45, 30, 23, 18, 15, 10, 5, each written `90, 180, 270, 360...` (23 is 22.5,
+  `23, 45, 68, 90...`; e01-4).
+- **mellowcad:** Grid snap, Polar snap (es Forzcursor de rejilla, Forzcursor polar); 90, 60, 45,
+  30, 22.5, 18, 15, 10, 5 as `90°`.
+- **Fix:** AutoCAD's order, labels and eight increments (WORKSPACE-D107).
+
 ## 6. Decisions taken
 
 - **WORKSPACE-D1:** one generic system-variable path: a declarative registry of the modelled
@@ -605,6 +738,32 @@ Restore, UCS Save and Delete, PLAN and -STYLE (p400–p402, p406). mellowcad's n
   menus' echo (UCD-07), MAC-03 and MAC-06 go to WSD: only the desktop runs a macro from a menu.
 - **WORKSPACE-D93:** a string variable's value takes no space until WSD shows it does (`USERS1`'s
   `a b`).
+
+- **WORKSPACE-D100:** a drafting toggle at `Command:` joins the last step, inside a command that
+  command's; none with nothing to undo (d01). One rule for every mode the status bar or a key
+  toggles, all of them variables AutoCAD records.
+- **WORKSPACE-D101:** the status bar's toggles echo through the keys' path; F7 and the selection
+  cycling's words from d01 and tables 16646, 4743; the Polar angle menu silent; Lineweight's button
+  silent, **unverified**.
+- **WORKSPACE-D102:** chrome starts are menu groups named as d02–d05 show; RIBBON and RIBBONCLOSE
+  left out (the ribbon's commands are not built: WHY at the status bar's Clean Screen).
+- **WORKSPACE-D103:** MATCHPROP, PROPERTIES, LAYER, BLOCKSPALETTE transparent; VIEW and EATTEDIT
+  stay refused (d02-t).
+- **WORKSPACE-D104:** `takesSpaces` is the question's (`ToolQuestion`), set on every name or string
+  prompt d06 lists; WORKSPACE-D93 reversed.
+- **WORKSPACE-D105:** the Default menu's Undo and Redo labels carrying the step (`Undo
+  Propertiesclose`, es `Deshacer Grupo de comandos`) go to Missing: the rule for a group's label is
+  not settled by three readings.
+- **WORKSPACE-D106:** Ctrl+9's confirmation (a task dialog with "Always close the Command Line
+  window") goes to Missing.
+- **WORKSPACE-D107:** the status bar's menus as d01-m and e01; the ribbon's Move during a grip edit
+  (d02-8) joins the grip modes in `drafting-aids.md`'s Missing.
+- **WORKSPACE-D108:** MAC-03 runs `'_matchprop` (WSD-04); MAC-06's echoes are acad.cuix's macros
+  (`_erase`, `_move`, `_properties`, `'_pan`) and Deselect All writes `Everything has been
+  deselected` (es `Se ha anulado la selección de todo`) with no echo (d03, e01); UNT-04: the
+  application menu's Units is `^C^C_UNITS` (d05-4), the status bar's keeps `'_units` (WHY: its
+  AutoCAD twin is a format menu); MAC-09: Ctrl+L bound as `^O`, F8's toggle and echo, and a global
+  shortcut in fields as F8 is.
 
 ## 7. Tests proposed
 
@@ -695,28 +854,12 @@ and the English snapshot):
 4. **MAC** (MAC-01, MAC-02, MAC-04, MAC-05, MAC-07, MAC-08; MAC-09 to the coverage pending WSD):
    the accelerators' macros, ATTDISP's and EATTEDIT's rail members, the menu's Pan, the labels, the
    coverage. Small to medium.
-5. **WSD** — the desktop, in its own session with the owner's mouse; its findings take this prefix.
-   Probes, each in `scripts/research/probes/workspace/`:
-   - d01 the status bar: each toggle's echo (Grid, Lineweight, Selection Cycling, Clean Screen; F7,
-     Ctrl+W), U after each at `Command:`, the menus' order against the coverage.
-   - d02 the ribbon and the QAT: U after a ribbon button (`LINE` or `LINE GROUP`), the QAT's Undo
-     and Redo (echo, U), Match Properties and the ATTMODE drop-down during LINE (MAC-03), the Insert
-     gallery during LINE, Move during a grip edit.
-   - d03 the shortcut menus: each entry's echo and U name (Erase, Move, Properties, Pan, Deselect
-     All: MAC-06); the echo of a menu's prompts (UCD-07's analogue).
-   - d04 the keys: Ctrl+0, Ctrl+1, Ctrl+9, Ctrl+S inside LINE and at `Command:` (MAC-01's echo);
-     U after Ctrl+0 restoring the interface; with Clean Screen on, LAYER or Ctrl+1 showing the
-     palette (the coverage's **unverified**).
-   - d05 UNITS: the dialog in both languages (the Precision list's `0.0000`, the Insertion scale
-     list's label, capitals), Cancel and an unchanged OK then U (UNT-02), `'UNITS` in LINE
-     resuming after the dialog closes; the application menu's Units during LINE (UNT-04).
-   - d06 the name prompts of §4's WSD table typed key by key with a space (`AB CD`), and a string
-     variable's value (`USERS1`, `a b`).
-   - d07 SETVAR: Escape at its prompts and in a nested variable, the `?` page length, dynamic
-     input's tooltip at its prompts, the preselection after a variable typed.
-   - d08 PolarSnap stepping with POLARDIST 0 after SNAP 5 (SVR-02).
-   - e01 the Spanish profile: d01's and d03's labels and echoes.
-   - The browser (skill `browser-verify`): whether Chrome lets the page take Ctrl+L (MAC-09).
+5. **WSD** — probed 2026-10-28 (§4's WSD table). Executed in two commits, each by one subagent:
+   - **WSD-a** (WSD-01 to WSD-03, MAC-06, UNT-04): the toggles' echo and undo, the chrome's steps
+     and names, the menus' echoes, the application menu's Units. Medium.
+   - **WSD-b** (WSD-04 to WSD-09, MAC-03, MAC-09): transparency, `takesSpaces`, SETVAR's pages and
+     dynamic input, the dialog's label, the status bar's menus, Ctrl+L. Medium. After WSD-a (both
+     touch `CadRuntime.ts` and the English snapshot).
 
 ## 13. Changes to coverage, rules, catalogs and roadmap
 
@@ -749,3 +892,10 @@ and the English snapshot):
 - **acad.cuix settles the chrome before the desktop**: AcceleratorRoot (keys), PopMenuRoot (menus'
   order, labels, macros), RibbonRoot (panels, drop-downs) answered three **unverified** marks and
   found MAC-01 without a click (matrix.md row A, template §1.1's UI line).
+- **WSD (desktop):** a word typed at `Command:` goes through AutoComplete (`AB` + Space ran ABOUT,
+  whose dialog then took every key) and a typed `-BLOCK` was lost: start the command with
+  `com send` in the background and type only the answer. Read U's names in a new drawing
+  (`com new`): earlier steps mix in (Clean Screen's three steps showed only there). A status-bar
+  click right after `com new` is lost: click the drawing first. Playwright's keys never reach
+  Chrome's own accelerators: whether a page may take a shortcut is read in chromium's
+  `kReservedCommandIds` (`accelerator_table.cc`) (annex-probes.md §4, browser-verify).
