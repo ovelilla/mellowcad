@@ -372,6 +372,7 @@
       "precision": "الدقة",
       "decimal": "عشري",
       "insertionScale": "مقياس الإدراج",
+      "insertedContent": "الوحدات لتغيير مقياس المحتوى المُدرج:",
       "millimeters": "مليمترات",
       "centimeters": "سنتيمترات",
       "meters": "أمتار",

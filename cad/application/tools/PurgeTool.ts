@@ -58,7 +58,7 @@ export class PurgeTool implements Tool {
       case "type":
         return "purgeType"
       case "names":
-        return { id: "purgeNames", enter: { name: "*" } }
+        return { id: "purgeNames", enter: { name: "*" }, takesSpaces: true }
       // WHY a phrase: the default is written as the letter, `<Y>` (es `<S>`).
       case "verify":
         return { id: "purgeVerify", enter: "undoYes" }

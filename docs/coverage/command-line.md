@@ -47,7 +47,9 @@ and
 `Requiere un punto o Ventana/úLTimo/…`, `Opción no válida.`). A transparent command — what AutoCAD
 2023's console runs so of what exists here: ZOOM, PAN, DIST, ID, LTSCALE, ATTDISP, ELEV, -OSNAP,
 COLOR / -COLOR, LINETYPE / -LINETYPE, LWEIGHT / -LWEIGHT, -VIEW, SNAP, UNITS, DIMSTYLE and
-STYLE, SETVAR and every system variable (workspace.md), and 3DORBIT (AutoCAD 2027's desktop, view/d04), `'ZOOM`, `'Z`, `'PAN`, `'P` (es `'ENCUADRE`, `'E`) typed mid-command at the command line or
+STYLE, SETVAR and every system variable (workspace.md), 3DORBIT (AutoCAD 2027's desktop, view/d04),
+and MATCHPROP, PROPERTIES, LAYER and BLOCKSPALETTE, which the console does not know (the desktop's,
+workspace/d02-4, d02-5, d02-t), `'ZOOM`, `'Z`, `'PAN`, `'P` (es `'ENCUADRE`, `'E`) typed mid-command at the command line or
 in the tooltip — runs inside the running one as AutoCAD 2023's console runs it: its prompts headed
 `>>` (`>>Specify first corner:`), echoed as typed (`Specify next point or [Undo]: 'z 'ZOOM`), then
 `Resuming LINE command.` (es `Reanudando el comando LINEA.`) and the running command's question
@@ -60,7 +62,11 @@ it); a change AutoCAD regenerates for (LTSCALE, ATTDISP) says `Regen queued.` (e
 -VIEW's views turn the view, so transparently they say `** Requires a regen, cannot be transparent.`
 (es `** Regeneración necesaria, no puede ser transparente.`) and change nothing; UNITS' modal
 dialog resumes it once closed (workspace/p303); DIMSTYLE and STYLE, which ask nothing here (a
-palette), run in place and the running command resumes at once; Escape cancels only the transparent one
+palette), run in place and the running command resumes at once, as PROPERTIES, LAYER and
+BLOCKSPALETTE open their palette's tab and resume it (d02-5, d02-t); MATCHPROP asks `>>Select source
+object:`, its change an entry of the interrupted command's step, Escape there `*Cancel*` and
+`Resuming LINE command.` (d02-3), and the top bar's Match Properties runs it so, its macro `'_matchprop`
+(d02-1); `'VIEW` and `'EATTEDIT` are refused, as the desktop refuses them (d02-t); Escape cancels only the transparent one
 (`>>Specify first corner: *Cancel*`), the Command menu's Cancel (^C^C) both, as U does; `'LINE` says
 `** That command may not be invoked transparently **` (es
 `** Este comando no funciona de forma transparente **`) before the prompt's own refusal, a second
@@ -82,7 +88,7 @@ Ctrl+9 hides and shows it, from a field too, as acad.cuix's `^C^C_commandlinehid
 `^C^C_commandline` (ID_CmdLine): the running command cancelled and the macro written
 (`_commandlinehide`, desktop workspace/d04), COMMANDLINE and COMMANDLINEHIDE not being commands
 here, so no undo group (**unverified**: by analogy with Ctrl+1's `GROUP PROPERTIES` it would be
-`GROUP COMMANDLINEHIDE`, unprobed); and it comes back while something is typed — WHY docked
+`GROUP COMMANDLINEHIDE`, unprobed) and with no question (Missing); and it comes back while something is typed — WHY docked
 into the workspace's grid: nothing floats on the drawing here, but it behaves as the floating
 one-line window AutoCAD starts with (F2 opens the text window only on a docked one)
 
@@ -96,12 +102,13 @@ ATTDEF, BLOCK, -INSERT, PASTECLIP and MATCHPROP (`Select objects:` and its count
 prompt lines), what was typed for a command's whole name or `_` and its global name (AutoCAD keeps
 `line` and `_line` as typed; here they echo the command language's name — WHY: the landing's scripts
 type `_CIRCLE` so that a Spanish reader sees CIRCULO), the text window (Ctrl+F2; TEXTSCR, es
-PANTTEXT), COMMANDLINE / COMMANDLINEHIDE (es LINEACOM / OCULTARLINEACOM), floating, resizing, transparency and the window's Customize menu, the dynamic prompt's
+PANTTEXT), COMMANDLINE / COMMANDLINEHIDE (es LINEACOM / OCULTARLINEACOM), Ctrl+9's task dialog
+asking "Do you want to close the Command Line window?" with "Always close the Command Line window"
+(desktop workspace/d04-1: here it hides at once), floating, resizing, transparency and the window's Customize menu, the dynamic prompt's
 Down-arrow list, the system variables SETVAR does not know yet (workspace.md, SETVAR's Missing),
-**unverified** whether AutoCAD runs VIEW, LAYER, PROPERTIES, MATCHPROP,
-BLOCKSPALETTE and EATTEDIT transparently (the console does not know them, or hangs on LAYER; refused
-here), **unverified**: the prompt line's head while one runs (`'ZOOM >>Specify first corner:` here;
-the console shows no head) and the dynamic prompt's `>>`, the selection modes `Expects a point or`
+the prompt line's head while one runs, the command's name without the apostrophe on the desktop
+(`MATCHPROP >>Select source object:`, workspace/d02-1; `'MATCHPROP >>…` here), **unverified**: the
+dynamic prompt's `>>`, the selection modes `Expects a point or`
 lists but `Select objects:` does not take (Group and Multiple; at a single object's
 pick — BREAK's, UCS OBject's, ARRAYPATH's path — the others are taken, one object of what they
 find), the last keyword AutoCAD 2023 leaves out of a single pick's list (`[Exit/Undo]` expects

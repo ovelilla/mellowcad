@@ -71,8 +71,8 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
   commands offer the same AutoCAD keyword, the prompt belongs in a shared helper: identical wording
   is fidelity. `measurementOf` (`DimensionTool.ts`) is the measurement at Text's `<default>` and in
   `Dimension text =`. TEXT's `POINT_PROMPT` and `listTextStyles` are ATTDEF's too.
-- **Ghosts and overlays draw through `SceneBuilder.entityScenePrimitive`**, the single source of
-  truth for how an entity draws, so a new type renders everywhere for free. It returns a
+- **Ghosts and overlays draw through `SceneBuilder.entityScenePrimitive`**, the one way an
+  entity draws, so a new type renders everywhere for free. It returns a
   **list**: spread it, and never add a nesting "group" primitive — tests, selection cycling and
   pixel checks filter the scene by `kind`. Pass `{ blocks: ctx.blocks }` wherever the entity can
   be one the user selected, or a block reference ghosts as nothing. A preview that needs an entity
@@ -222,9 +222,9 @@ One session at a time:
   **no keyword is dispatched from it** (box or command line). A name prompt offering keywords lists
   them in `commandOptions()` and reads them with `ctx.text.resolveKeyword(typed, ids)`; keywords
   alone (TEXT's Justify) are keyword-only. A value that is also a word (-COLOR, -LWEIGHT) is
-  `askValueOrWord`, so `'ZOOM` runs there. Editing a value preloads it with `setText` after `open`
-  and hides the object (`hiddenEntityIds`); a question opened inside a `commitRaw` may preload its
-  default too. A field the drawing words (an attribute's prompt) sets `label` instead of `prompt`.
+  `askValueOrWord`, so `'ZOOM` runs there; a name, a `"word"` field. Editing a value preloads it
+  with `setText` after `open` and hides the object (`hiddenEntityIds`); a question opened inside a
+  `commitRaw` may preload its default too. A field the drawing words (an attribute's prompt) sets `label` instead of `prompt`.
 - **Multi-line text** — one `"paragraphs"` field: a content field like `"text"`
   (test with `isContentField`, never `kind === "text"`); Enter breaks a line, Ctrl+Enter reaches
   `commitRaw`.

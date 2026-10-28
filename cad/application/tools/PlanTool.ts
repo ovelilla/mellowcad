@@ -62,9 +62,9 @@ export class PlanTool implements Tool {
       case "option":
         return { id: "enterAnOption", enter: "planCurrent" }
       case "name":
-        return "planUcsName"
+        return { id: "planUcsName", takesSpaces: true }
       case "list":
-        return { id: "ucsListNames", enter: { name: "*" } }
+        return { id: "ucsListNames", enter: { name: "*" }, takesSpaces: true }
     }
   }
 

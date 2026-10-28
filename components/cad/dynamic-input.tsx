@@ -84,7 +84,10 @@ export function DynamicInput({
         // AutoCAD's padlock so that state is visible and the unlock is
         // discoverable. A free-text field locks nothing — it *is* content.
         const content = field.kind === "text" || field.kind === "paragraphs"
-        const locked = !content && field.value.trim().length > 0
+        // A word (SETVAR's name) is typed, like text, and drives nothing.
+        const typedAsText = field.kind === "text" || field.kind === "word"
+        const locked =
+          !content && field.kind !== "word" && field.value.trim().length > 0
         return (
           <label
             key={field.id}
@@ -134,7 +137,7 @@ export function DynamicInput({
                 ref={field.active ? inputRef : undefined}
                 value={field.value}
                 placeholder={field.placeholder}
-                inputMode={field.kind === "text" ? "text" : "decimal"}
+                inputMode={typedAsText ? "text" : "decimal"}
                 autoComplete="off"
                 spellCheck={false}
                 onFocus={(e) => {
@@ -149,6 +152,13 @@ export function DynamicInput({
                 }
                 onKeyDown={(e) => {
                   const value = field.kind !== "text"
+                  // A name or string that holds spaces takes one after what
+                  // is typed, as the command line does (desktop workspace/d06).
+                  const spaceEnters =
+                    value &&
+                    !(
+                      state.commandLine.takesSpaces && field.value.trim() !== ""
+                    )
                   if (
                     !e.ctrlKey &&
                     !e.metaKey &&
@@ -157,7 +167,10 @@ export function DynamicInput({
                   ) {
                     // The Down arrow's option list takes its own keys first.
                     e.preventDefault()
-                  } else if (e.key === "Enter" || (e.key === " " && value)) {
+                  } else if (
+                    e.key === "Enter" ||
+                    (e.key === " " && spaceEnters)
+                  ) {
                     // Space is Enter in a value box, as at AutoCAD's prompt.
                     e.preventDefault()
                     engine.commitDynamicInput()
@@ -217,7 +230,7 @@ export function DynamicInput({
                   }
                 }}
                 className={`bg-transparent font-mono text-foreground outline-none placeholder:text-faint-foreground ${
-                  field.kind === "text" ? "w-48" : "w-16"
+                  typedAsText ? "w-48" : "w-16"
                 }`}
               />
             )}

@@ -1814,6 +1814,7 @@ export const es: EngineLocale = {
       ],
       "enterVariableName": "Indique nombre de variable o",
       "enterVariablesToList": "Indique variable(s) a listar",
+      "pressEnterToContinue": "Pulse INTRO para continuar",
       "osnapModes": "Indique lista de modo de referencia a objetos",
       "snapSpacingOr": "Precise distancia de resolución o",
       "snapAspect": "asP",

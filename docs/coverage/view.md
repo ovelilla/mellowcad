@@ -91,7 +91,7 @@ Window, Zoom Original, Zoom Extents; Escape with it open closes it and ends PAN)
 **Implemented:** `Enter an option [Current ucs/Ucs/World] <Current>:` (es
 `Indique una opción [scp Actual/SCP/Universal] <Actual>`; `Invalid option keyword.`): Current ucs
 (Enter's default) / Ucs (`Enter name of UCS or [?]:`, es `Indique nombre de SCP o`: a saved one by
-name, `Cannot find UCS "NAME".`, es `No se puede encontrar SCP "NAME".`, p236; `?` lists as UCS
+name, spaces typed key by key, `AB CD` whole, desktop workspace/d06; `Cannot find UCS "NAME".`, es `No se puede encontrar SCP "NAME".`, p236; `?` lists as UCS
 does, Enter ends) / World: looks down that UCS's Z with its X axis pointing right (VIEWTWIST; UCS
 Z 30 and X 90, p232, p233), fits the extents and says `Regenerating model.`, without VPOINT's
 switch notices (p232); the UCS stays; ZOOM Previous steps back; U takes it back and REDO and MREDO

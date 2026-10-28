@@ -6,6 +6,7 @@ import { ToolContext, ToolQuestion } from "./Tool"
 export const BLOCKS_TO_LIST: ToolQuestion = {
   id: "blocksToList",
   enter: { name: "*" },
+  takesSpaces: true,
 }
 
 /**

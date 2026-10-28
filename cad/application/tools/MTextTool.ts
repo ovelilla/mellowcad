@@ -144,7 +144,11 @@ export class MTextTool implements Tool {
           enter: { angle: normalizeDegrees((this.rotation * 180) / Math.PI) },
         }
       case "style":
-        return { id: "mtextStyleNameOr", enter: { name: this.styleOffered } }
+        return {
+          id: "mtextStyleNameOr",
+          enter: { name: this.styleOffered },
+          takesSpaces: true,
+        }
       case "width":
         return "mtextWidth"
       case "edit":

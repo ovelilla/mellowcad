@@ -5240,6 +5240,7 @@ Specify next point or
 > ?
   prompt: SETVAR Enter variable(s) to list <*>:
   tip: Enter variable(s) to list
+  dyn: ""=""|*|*
   options: -
   prompt| Enter variable name or [?]: ?
 > A*
@@ -5257,7 +5258,7 @@ Specify next point or
   prompt: ORTHOMODE Enter new value for ORTHOMODE <0>:
   asks: ""
   tip: Enter new value for ORTHOMODE
-  dyn: ""=""||*
+  dyn: ""=""|0|*
   command| ORTHOMODE
 > 2
   prompt| Enter new value for ORTHOMODE <0>: 2
@@ -5272,7 +5273,7 @@ Specify next point or
   prompt: SETVAR Enter variable name or [?] <ORTHOMODE>:
   asks: ""
   tip: Enter variable name or
-  dyn: ""=""||*
+  dyn: ""=""|ORTHOMODE|*
   options: [?] ?
   command| SETVAR
 > AREA
@@ -5287,7 +5288,7 @@ Specify next point or
   prompt: AUPREC Enter new value for AUPREC <0>:
   asks: ""
   tip: Enter new value for AUPREC
-  dyn: ""=""||*
+  dyn: ""=""|0|*
   command| AUPREC
 > 9
   prompt| Enter new value for AUPREC <0>: 9
@@ -5295,10 +5296,12 @@ Specify next point or
 > 'ORTHOMODE
   prompt: 'ORTHOMODE >>Enter new value for ORTHOMODE <1>:
   tip: >>Enter new value for ORTHOMODE
+  dyn: ""=""|1|*
   prompt| Enter new value for AUPREC <0>: 'ORTHOMODE
 > 0
   prompt: AUPREC Enter new value for AUPREC <0>:
   tip: Enter new value for AUPREC
+  dyn: ""=""|0|*
   prompt| >>Enter new value for ORTHOMODE <1>: 0
   info| Resuming SETVAR command.
 > enter
@@ -5311,7 +5314,7 @@ Specify next point or
   prompt: ELEVATION Enter new value for ELEVATION <0.00>:
   asks: ""
   tip: Enter new value for ELEVATION
-  dyn: ""=""||mm*
+  dyn: ""=""|0.00|*
   command| ELEVATION
 > FOO
   prompt| Enter new value for ELEVATION <0.00>: FOO
@@ -5332,7 +5335,7 @@ Specify next point or
   prompt: CLAYER Enter new value for CLAYER <"0">:
   asks: ""
   tip: Enter new value for CLAYER
-  dyn: ""=""||*
+  dyn: ""=""|"0"|*
   command| CLAYER
 > FOO
   prompt: Command:
@@ -5346,7 +5349,7 @@ Specify next point or
   prompt: SNAPUNIT Enter new value for SNAPUNIT <10.00,10.00>:
   asks: ""
   tip: Enter new value for SNAPUNIT
-  dyn: ""=""||*
+  dyn: ""=""|10.00,10.00|*
   command| SNAPUNIT
 > FOO
   prompt| Enter new value for SNAPUNIT <10.00,10.00>: FOO
@@ -5361,7 +5364,7 @@ Specify next point or
   prompt: LWDISPLAY Enter new value for LWDISPLAY <ON>:
   asks: ""
   tip: Enter new value for LWDISPLAY
-  dyn: ""=""||*
+  dyn: ""=""|ON|*
   command| LWDISPLAY
 > 2
   prompt| Enter new value for LWDISPLAY <ON>: 2
@@ -5379,7 +5382,7 @@ Specify next point or
   prompt: INSNAME Enter new value for INSNAME, or . for none <"">:
   asks: ""
   tip: Enter new value for INSNAME, or . for none
-  dyn: ""=""||*
+  dyn: ""=""|""|*
   command| INSNAME
 > .
   prompt: Command:
@@ -5391,7 +5394,7 @@ Specify next point or
   prompt: LASTPOINT Enter new value for LASTPOINT <0.00,0.00,0.00>:
   asks: ""
   tip: Enter new value for LASTPOINT
-  dyn: ""=""||*
+  dyn: ""=""|0.00,0.00,0.00|*
   command| LASTPOINT
 > FOO
   prompt| Enter new value for LASTPOINT <0.00,0.00,0.00>: FOO
@@ -5406,7 +5409,7 @@ Specify next point or
   prompt: POLARANG Enter new value for POLARANG <90>:
   asks: ""
   tip: Enter new value for POLARANG
-  dyn: ""=""||°*
+  dyn: ""=""|90|*
   command| POLARANG
 > 0
   prompt: Command:

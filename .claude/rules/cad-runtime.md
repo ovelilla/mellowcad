@@ -165,7 +165,8 @@ clarify...`): a keyword answers, Enter writes `Invalid option keyword.`, anythin
 
 A command typed with an apostrophe runs **inside** the running one, which is suspended, never ended.
 Add one to `TRANSPARENT_COMMANDS` (`runtimeCommands.ts`) **only after typing it so at LINE's prompt
-in AutoCAD's console** (`>>` prompts, or `** That command may not be invoked transparently **`).
+in AutoCAD's console** (`>>` prompts, or `** That command may not be invoked transparently **`), the
+desktop's where it lacks one (MATCHPROP, workspace/d02).
 One at a time, but a variable nests (`nests`, WORKSPACE-D6): in a transparent command, and anything
 transparent at a variable's prompt; the variable asked is a value there. The suspended commands are
 a stack: a new "end everything" path calls `endCommands`, not `returnToNeutralTool`, which
@@ -320,16 +321,15 @@ a `scope`, a capture `pointerdown` and a `focusin`.
 
 - `keydown`, so Escape and shortcuts work wherever focus is. It ignores events from
   `input/textarea/select/[contenteditable]` — **except function keys and the global Ctrl
-  shortcuts** (`isGlobalShortcut`: Ctrl+S, O, 9, 0, 1), swallowed so the
-  browser's own action never runs (Chrome hands Ctrl+<digit> to the page first; Ctrl+N, Ctrl+T and
-  Ctrl+W it keeps). Other Ctrl combos stay unforwarded: a global undo from a focused field desyncs
-  the running tool, and Ctrl+C/X/V/A in a box or a layer name belong to that **text** — never
-  widen `isGlobalShortcut` to the clipboard keys. Nothing inside a modal dialog
+  shortcuts** (`isGlobalShortcut`: Ctrl+S, O, 9, 0, 1, L), swallowed so the browser's own action
+  never runs (Chrome hands Ctrl+<digit> and Ctrl+L to the page first; Ctrl+N, Ctrl+T and Ctrl+W it
+  keeps). Other Ctrl combos stay unforwarded: a global undo from a focused field desyncs the
+  running tool, and Ctrl+C/X/V/A in a box or a layer name belong to that **text** — never widen
+  `isGlobalShortcut` to the clipboard keys. Nothing inside a modal dialog
   (`[role="dialog"][aria-modal="true"]`) or an open menu (`[role="menu"]`) reaches the runtime:
   the Enter that chooses an item would repeat the last command, the arrows would recall commands.
-  For the same reason `mayTakeFocus` never takes focus from a menu or a modal dialog. **A Ctrl
-  combo is read by its physical key** (`shortcutKey`): under Ctrl a key that is not a latin letter
-  or digit is taken from `e.code`. Typed text never is.
+  **A Ctrl combo is read by its physical key** (`shortcutKey`): under Ctrl a key that is not a
+  latin letter or digit is taken from `e.code`. Typed text never is.
 - `contextmenu`, because it fires on the button's _release_, when a portalled backdrop may be the
   target. It is always prevented over the editor but in editable fields.
 

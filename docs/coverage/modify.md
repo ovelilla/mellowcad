@@ -1270,7 +1270,9 @@ a destination on a locked layer is left and said, `Destination object on a locke
 updated.` (es `El objeto de destino no puede actualizarse porque se encuentra en una capa
 bloqueada.`, acmatchRes 28), a pick on one starting no window and the prompt asked again (d07), a
 window saying it for each one it found (**unverified**: the window was not probed); one step U names
-`MATCHPROP` (d07). What it copies, as the Property Settings' defaults (help, 2027; d07-6): layer,
+`MATCHPROP` (d07). `'MATCHPROP` runs inside a running command, `>>Select source object:`, its change an entry of that command's step, Escape resuming it, and
+the top bar's Match Properties runs acad.cuix's `'_matchprop` (ID_Matchprop) so, echoed `'_matchprop`
+(desktop workspace/d02-1, d02-3, d02-4). What it copies, as the Property Settings' defaults (help, 2027; d07-6): layer,
 colour, lineweight; linetype to all but hatches, multiline text and attribute definitions;
 thickness between objects that have one (overrides the source lacks are cleared); between texts
 the style, height and rotation, TEXT to TEXT also the justification about the destination's point
@@ -1332,7 +1334,8 @@ edits in place and asks none, so the prompt reads `TEXTEDIT:`); MTEDIT (es EDITT
 **Implemented:** PURGE asks -PURGE's prompts, as AutoCAD's console runs it (blocks/p151, p152): the
 line `Nested items = Off    Orphaned data = Off` (es `Elementos anidados = DES Datos huérfanos =
 DES`), `Enter type of unused objects to purge [Blocks]:` offering only Blocks, the one type built
-(Enter ends, p04), `Enter name(s) to purge <*>:` (wild cards, case-blind, commas between names;
+(Enter ends, p04), `Enter name(s) to purge <*>:` (wild cards, case-blind, commas between names, spaces typed key by
+key, `AB CD` whole, desktop workspace/d06;
 Enter is `*`; p140, p146, p154) and `Verify each name to be purged? [Yes/No] <Y>:` (FOO says `Yes
 or No, please.`). No names each block, `Deleting block "B1".`, then `2 blocks deleted.` (es
 `Suprimiendo bloque "B1".`, `2 bloque suprimido(s).`; erase/p326, p327); Yes asks `Purge block

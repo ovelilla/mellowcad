@@ -176,14 +176,72 @@ describe("SETVAR asks a variable's name, then its value", () => {
       "ARRAYASSOCIATIVITY 1",
     ])
     const spanish = createHarness({ locale: es })
-    answer(spanish, "MODIVAR", "?", "")
-    const listed = spanish.commandLog().at(-1)?.split("\n") ?? []
+    const listed = written(spanish, "MODIVAR", "?", "", "", "").flatMap(
+      (line) => line.split("\n")
+    )
     expect(listed).toContain('CLAYER            "0"')
     expect(listed).toContain('CECOLOR           "PORCAPA"')
     expect(listed).toContain("LWDISPLAY         ACT")
     expect(listed).toContain(
       "UNDOCTL           53                                   (sólo lectura)"
     )
+  })
+})
+
+// desktop workspace/d07-1: 20 variables, then `Press ENTER to continue:`
+// (table 4054), Enter the next 20, Escape ending SETVAR.
+describe("SETVAR's ? pages every 20 variables", () => {
+  it("pauses after 20, Enter the next page, the last one ending SETVAR", () => {
+    const cad = createHarness()
+    const first = written(cad, "SETVAR", "?", "")
+    expect(first.at(-1)?.split("\n")).toHaveLength(20)
+    expect(prompt(cad)).toBe("SETVAR Press ENTER to continue:")
+    expect(cad.state().dynamicInput).toBeNull()
+    const second = written(cad, "")
+    expect(second[0]).toBe("Press ENTER to continue:")
+    expect(second[1].split("\n")).toHaveLength(20)
+    expect(second[1].split("\n")[0]).toMatch(/^INSNAME /)
+    written(cad, "")
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.state().commandLine.prompt).toBe("Command:")
+  })
+
+  it("ends on Escape at the pause", () => {
+    const cad = createHarness()
+    written(cad, "SETVAR", "?", "")
+    cad.escape()
+    expect(cad.commandLog().at(-1)).toBe("Press ENTER to continue: *Cancel*")
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  it("asks in Spanish", () => {
+    const cad = createHarness({ locale: es })
+    written(cad, "MODIVAR", "?", "")
+    expect(prompt(cad)).toBe("MODIVAR Pulse INTRO para continuar:")
+  })
+})
+
+// desktop workspace/d07-4, d07-5: the box shows what Enter keeps, the last
+// variable named and the value, as LTSCALE's does.
+describe("SETVAR's dynamic input", () => {
+  const field = (cad: CadHarness) => cad.state().dynamicInput?.fields[0]
+
+  it("offers the last variable at the name, a word, and the value at its prompt", () => {
+    const cad = createHarness()
+    answer(cad, "SETVAR")
+    expect(field(cad)).toMatchObject({ kind: "word", placeholder: "" })
+    answer(cad, "ORTHOMODE")
+    expect(field(cad)).toMatchObject({ kind: "number", placeholder: "0" })
+    answer(cad, "")
+    answer(cad, "SETVAR")
+    expect(field(cad)).toMatchObject({ kind: "word", placeholder: "ORTHOMODE" })
+    answer(cad, "CLAYER")
+    expect(field(cad)).toMatchObject({ kind: "word", placeholder: '"0"' })
+    answer(cad, "")
+    answer(cad, "FILLETRAD")
+    expect(field(cad)).toMatchObject({ kind: "distance", placeholder: "0.00" })
+    cad.enter()
+    expect(cad.activeToolId()).toBe("select")
   })
 })
 

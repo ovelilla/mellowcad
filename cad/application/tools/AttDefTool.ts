@@ -185,7 +185,11 @@ export class AttDefTool implements Tool {
       case "justify":
         return "enterAnOption"
       case "style":
-        return { id: "enterStyleNameOr", enter: { name: this.styleName } }
+        return {
+          id: "enterStyleNameOr",
+          enter: { name: this.styleName },
+          takesSpaces: true,
+        }
       case "height":
         return { id: "textHeight", enter: this.height }
       case "rotation":

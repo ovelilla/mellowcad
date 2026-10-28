@@ -34,6 +34,8 @@ type MatchState =
 
 export class MatchPropTool implements Tool {
   readonly id = "matchprop"
+  /** acad.cuix's `'_matchprop ` (ID_Matchprop; desktop workspace/d02-1). */
+  readonly transparentMacro = true
 
   private state: MatchState = { phase: "source", hover: null }
   private readonly selector = new ObjectSelector({

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useId, useState } from "react"
 import { Dialog } from "@base-ui/react/dialog"
 import { useTranslations } from "next-intl"
 
@@ -98,6 +98,7 @@ function UnitsForm({
   const t = useTranslations("Editor.Units")
   const [unit, setUnit] = useState(initialUnit)
   const [precision, setPrecision] = useState(initialPrecision)
+  const insertedContent = useId()
   const sample = unitsSampleOutput({ precision, anglePrecision })
   const units = Object.fromEntries(
     LENGTH_UNITS.map((entry) => [entry, t(UNIT_NAMES[entry])])
@@ -165,6 +166,9 @@ function UnitsForm({
         <legend className="mb-1 text-title text-muted-foreground">
           {t("insertionScale")}
         </legend>
+        <span id={insertedContent} className="mb-1 block text-muted-foreground">
+          {t("insertedContent")}
+        </span>
         <Select
           items={units}
           value={unit}
@@ -172,7 +176,7 @@ function UnitsForm({
             if (value != null) setUnit(value as LengthUnit)
           }}
         >
-          <SelectTrigger aria-label={t("insertionScale")} className="w-full">
+          <SelectTrigger aria-labelledby={insertedContent} className="w-full">
             <SelectValue />
           </SelectTrigger>
           <SelectContent>

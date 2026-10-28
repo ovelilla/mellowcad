@@ -41,13 +41,26 @@ import { IconAction } from "./toolbar-primitives"
 import { DecimalInput } from "./decimal-input"
 import { LineweightIcon, SelectionCyclingIcon, SnapModeIcon } from "./icons"
 
-/** POLARANG's increments, as the help lists them. */
-const POLAR_ANGLES: readonly number[] = [90, 60, 45, 30, 22.5, 18, 15, 10, 5]
+/** POLARANG's increments as the desktop's Polar ▾ offers them (workspace/d01-m). */
+const POLAR_ANGLES: readonly number[] = [90, 45, 30, 22.5, 18, 15, 10, 5]
 
-/** How snap rounds the cursor: onto the lattice, or along alignment paths. */
+/**
+ * An increment as the menu writes it, its first four multiples rounded:
+ * `90, 180, 270, 360...`, 22.5 as `23, 45, 68, 90...` (desktop
+ * workspace/d01-m, e01-4). WHY plain: AutoCAD bolds the first number, and the
+ * type roles have no bold figure (`ui.md`).
+ */
+function polarAngleLabel(step: number): string {
+  return `${[1, 2, 3, 4].map((n) => Math.round(n * step)).join(", ")}...`
+}
+
+/**
+ * How snap rounds the cursor: along alignment paths, or onto the lattice, in
+ * the order of the desktop's Snap ▾ (workspace/d01-m, e01-3).
+ */
 const SNAP_MODE_TYPES = [
-  { type: "grid", label: "gridSnap" },
   { type: "polar", label: "polarSnap" },
+  { type: "grid", label: "gridSnap" },
 ] as const satisfies ReadonlyArray<{ type: SnapModeType; label: string }>
 
 const MENU_POPUP =
@@ -161,7 +174,7 @@ export function StatusBar({
                   closeOnClick
                   className={`${MENU_ITEM} font-mono`}
                 >
-                  {deg}°
+                  {polarAngleLabel(deg)}
                   <Menu.RadioItemIndicator>{CHECK}</Menu.RadioItemIndicator>
                 </Menu.RadioItem>
               ))}

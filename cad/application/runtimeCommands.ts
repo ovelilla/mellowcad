@@ -26,10 +26,11 @@ import { UnitsTool } from "./tools/UnitsTool"
  * The commands built here that AutoCAD's console runs transparently (2023's;
  * DIST and ID 2027's: `'DIST` at LINE's prompt asks `>>Specify first point:`,
  * probes inquiry/p320, p321; ELEV 2027's, ucs/p366; AUPREC and SETVAR
- * 2027's, workspace/p114, p115, p123). Left out: what it refuses (`** That
- * command may not be invoked transparently **`), what it does not know and so
- * cannot show (VIEW, PROPERTIES, MATCHPROP, BLOCKSPALETTE, EATTEDIT, LAYER,
- * whose dialog hangs it), and AREA and UCSICON, which typed so read the
+ * 2027's, workspace/p114, p115, p123), and those the console does not know
+ * that the desktop runs so (MATCHPROP, PROPERTIES, LAYER, BLOCKSPALETTE,
+ * desktop workspace/d02-4, d02-5, d02-t). Left out: what either refuses
+ * (`** That command may not be invoked transparently **`: VIEW and EATTEDIT
+ * on the desktop, d02-t), and AREA and UCSICON, which typed so read the
  * system variables of their names (inquiry/p324, p325), as every variable
  * SETVAR knows (`systemVariables.ts`) is typed.
  */
@@ -58,6 +59,10 @@ const TRANSPARENT_COMMANDS: ReadonlySet<string> = new Set([
   "UNITS",
   "DIMSTYLE",
   "STYLE",
+  "MATCHPROP",
+  "PROPERTIES",
+  "LAYER",
+  "BLOCKSPALETTE",
 ])
 
 /**

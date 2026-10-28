@@ -30,6 +30,13 @@ export type DynamicFieldKind =
    * session using one is committed through {@link DynamicInputSession.commitRaw}.
    */
   | "text"
+  /**
+   * A word typed as text that answers like a value — the prompt's keywords
+   * and a transparent command are read from it, as from a number: SETVAR's
+   * variable name and a string variable's value (desktop workspace/d07-4).
+   * Never read as a number: {@link DynamicInputSession.commitRaw} takes it.
+   */
+  | "word"
   /** Free text over several lines (MTEXT): Enter breaks a line, Ctrl+Enter commits. */
   | "paragraphs"
 
@@ -62,13 +69,6 @@ export interface DynamicField {
    * question, typed in the box or at the command line.
    */
   readonly endsAtSpace?: boolean
-  /**
-   * Space types a space at the command line too, where everywhere else it is
-   * Enter: UCS's Save and Restore names (desktop ucs/d05, `AB CD` saved whole
-   * though the trace says AllowSpaces false). The box's own text field takes
-   * one anyway.
-   */
-  readonly takesSpaces?: boolean
 }
 
 /**
@@ -316,7 +316,7 @@ export class DynamicInputController extends Observable {
       if (!fieldState) return null
       // A free-text field holds content, not a value: even "5" must reach the
       // session's `commitRaw` verbatim rather than being read as a number.
-      if (isContentField(field.kind)) return null
+      if (isContentField(field.kind) || field.kind === "word") return null
       // A coordinate expression (e.g. `@30,0` or `50,100`) is not a plain
       // number — the comma separates X and Y. Fail the numeric resolution so
       // the session's `commitRaw` handler interprets the whole point instead.

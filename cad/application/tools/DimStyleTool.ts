@@ -101,17 +101,25 @@ export class DimStyleTool implements Tool {
       case "option":
         return "dimStyleOption"
       case "save":
-        return "dimStyleSaveName"
+        return { id: "dimStyleSaveName", takesSpaces: true }
       case "redefine":
         return { id: "dimStyleRedefine", enter: { name: "N" } }
       // WHY `[?]` in the words: its default comes after it, `[?] or <select
       // dimension>`, which a prompt's keyword list cannot place.
       case "name":
-        return { id: "dimStyleName", enter: "dimStyleSelectDimension" }
+        return {
+          id: "dimStyleName",
+          enter: "dimStyleSelectDimension",
+          takesSpaces: true,
+        }
       case "dimension":
         return "selectDimension"
       case "list":
-        return { id: "dimStylesToList", enter: { name: "*" } }
+        return {
+          id: "dimStylesToList",
+          enter: { name: "*" },
+          takesSpaces: true,
+        }
       case "apply":
         return this.selector.question()
     }

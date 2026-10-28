@@ -1406,6 +1406,7 @@ export const en: EngineCatalog = {
       ],
       "enterVariableName": "Enter variable name or",
       "enterVariablesToList": "Enter variable(s) to list",
+      "pressEnterToContinue": "Press ENTER to continue",
       "osnapModes": "Enter list of object snap modes",
       "snapSpacingOr": "Specify snap spacing or",
       "snapAspect": "A",

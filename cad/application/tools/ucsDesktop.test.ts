@@ -236,12 +236,16 @@ describe("NAmed's names (desktop ucs/d05)", () => {
     expect(cad.state().commandLine.takesSpaces).toBe(false)
   })
 
-  it("says the command line takes a space only at those prompts", () => {
+  // Delete's names too (desktop workspace/d06); NAmed's option prompt not.
+  it("says the command line takes a space at the name prompts", () => {
     const cad = createHarness()
     answer(cad, "UCS", "NA", "S")
     expect(cad.state().commandLine.takesSpaces).toBe(true)
     cad.escape()
     answer(cad, "UCS", "NA", "D")
+    expect(cad.state().commandLine.takesSpaces).toBe(true)
+    cad.escape()
+    answer(cad, "UCS", "NA")
     expect(cad.state().commandLine.takesSpaces).toBe(false)
   })
 })

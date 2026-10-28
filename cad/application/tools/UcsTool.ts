@@ -590,9 +590,9 @@ export class UcsTool implements Tool {
       case "named":
         return "enterAnOption"
       case "restore":
-        return "ucsRestoreName"
+        return { id: "ucsRestoreName", takesSpaces: true }
       case "save":
-        return "ucsSaveName"
+        return { id: "ucsSaveName", takesSpaces: true }
       // WHY no keyword list: AutoCAD's yes-or-no question lists none, and
       // writes its default as the letter, with no colon (probe ucs/p231).
       case "replace":
@@ -603,9 +603,9 @@ export class UcsTool implements Tool {
           open: true,
         }
       case "delete":
-        return { id: "ucsDeleteNames", enter: "ucsNone" }
+        return { id: "ucsDeleteNames", enter: "ucsNone", takesSpaces: true }
       case "list":
-        return { id: "ucsListNames", enter: { name: "*" } }
+        return { id: "ucsListNames", enter: { name: "*" }, takesSpaces: true }
     }
   }
 
@@ -1366,18 +1366,8 @@ export class UcsTool implements Tool {
   }
 
   private openNameField(prompt: PromptId, ctx: ToolContext): void {
-    // WHY Save's and Restore's names only: `AB CD` typed key by key is saved
-    // whole (desktop ucs/d05, UCS-D102); Delete's list is unprobed.
-    const takesSpaces = prompt === "ucsSaveName" || prompt === "ucsRestoreName"
     ctx.dynamicInput.open({
-      fields: [
-        {
-          id: "name",
-          prompt,
-          kind: "text",
-          ...(takesSpaces && { takesSpaces }),
-        },
-      ],
+      fields: [{ id: "name", prompt, kind: "text" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
         this.answerName(

@@ -1005,8 +1005,12 @@ const SCROLL_KEYS = new Set([
 ])
 
 /**
- * Ctrl+S / Ctrl+O and the window shortcuts Ctrl+9 (command line), Ctrl+0
- * (Clean Screen) and Ctrl+1 (Properties). The other Ctrl combos stay
+ * Ctrl+S / Ctrl+O, the window shortcuts Ctrl+9 (command line), Ctrl+0
+ * (Clean Screen) and Ctrl+1 (Properties), and Ctrl+L (Ortho, as F8 is taken
+ * from a field). WHY Ctrl+L can be taken: Chrome does not reserve it, its
+ * IDC_FOCUS_LOCATION being absent from `kReservedCommandIds`
+ * (`chrome/browser/ui/accelerator_table.cc`, chromium 7f7e075), so the page
+ * receives it first. The other Ctrl combos stay
  * unforwarded from editable fields on purpose (a global undo mid-draw desyncs
  * the running tool), but these are safe from anywhere and the browser must
  * not handle them.
@@ -1020,7 +1024,7 @@ function isGlobalShortcut(e: KeyboardEvent): boolean {
   return GLOBAL_CTRL_KEYS.has(shortcutKey(e).toLowerCase())
 }
 
-const GLOBAL_CTRL_KEYS = new Set(["s", "o", "9", "0", "1"])
+const GLOBAL_CTRL_KEYS = new Set(["s", "o", "9", "0", "1", "l"])
 
 /**
  * The key a Ctrl combination names. WHY: with a layout that is not latin —

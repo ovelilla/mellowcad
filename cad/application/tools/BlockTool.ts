@@ -100,7 +100,7 @@ export class BlockTool implements Tool {
     const state = this.state
     switch (state.phase) {
       case "name":
-        return "blockName"
+        return { id: "blockName", takesSpaces: true }
       case "list":
         return BLOCKS_TO_LIST
       case "redefine":

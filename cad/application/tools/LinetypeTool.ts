@@ -87,9 +87,17 @@ export class LinetypeTool implements Tool {
       case "option":
         return "enterAnOption"
       case "name":
-        return { id: "linetypeName", enter: { name: this.current } }
+        return {
+          id: "linetypeName",
+          enter: { name: this.current },
+          takesSpaces: true,
+        }
       case "list":
-        return { id: "linetypeListNames", enter: { name: "*" } }
+        return {
+          id: "linetypeListNames",
+          enter: { name: "*" },
+          takesSpaces: true,
+        }
     }
   }
 

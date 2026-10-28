@@ -120,6 +120,7 @@ export class TextTool implements Tool {
         return {
           id: "enterStyleNameOr",
           enter: { name: this.styleName ?? "" },
+          takesSpaces: true,
         }
       case "height":
         return { id: "textHeight", enter: this.height }

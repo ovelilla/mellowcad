@@ -26,7 +26,8 @@ a name, p236, p238, p239, p256),
 `UCS "AA" already exists.  Replace it? <N>` (no colon; Yes replaces the entry in place, keeping
 its name as stored, `aa` over `AA` leaving `AA` current, p232; No or Enter ends with nothing saved;
 `Yes or No, please.`, p231, p233), `Enter UCS name(s) to delete <none>:` (`Deleted 1 UCS name.`,
-`  No matching UCS names found.`, p240, p241), `Enter UCS name(s) to list <*>:` and its listing as
+`  No matching UCS names found.`, p240, p241; spaces typed key by key, `AB CD` taken whole, desktop
+workspace/d06, and so at the list's prompt), `Enter UCS name(s) to list <*>:` and its listing as
 AutoCAD lays it out (`Current ucs name: "AA"`, an orthographic UCS left out of that line — `*TOP*`
 listed `*WORLD*`, `*FRONT*` `*NO NAME*`, p219, p253, p261, PLAN's `?` too —,
 `Saved coordinate systems:`, each `"NAME"` with its
@@ -172,7 +173,7 @@ en origen, Propiedades...); its World `_ucs` `_w`, U `UCS`; d02-6c to d02-9, e01
 icon previewing the UCS being made — at the cursor at the origin prompts, turned towards it at X
 and the rotation, placed where OBject's hover would put it — and the crosshair turned to the new
 UCS at the XY point (d04-1 to d04-5, d06-1; the scene draws one icon, the current UCS's,
-UCS-D101), Delete's names with spaces (unprobed: its list is read as typed, UCS-D102), UCSFOLLOW, UCSVP,
+UCS-D101), UCSFOLLOW, UCSVP,
 UCSDETECT, the crosshair turning with the UCS (it stays upright on screen; PLAN makes the two agree),
 the X axis of a closed spline a mode finds at OBject (UCB-13): its first point is the origin, as here,
 but 2027's X on p434's is (0.5364, −0.8440), which is neither its start tangent (p438, here's

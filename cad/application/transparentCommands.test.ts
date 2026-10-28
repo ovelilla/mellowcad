@@ -1,7 +1,7 @@
 import { describe, expect, it } from "vitest"
 
 import { type CadHarness, createHarness } from "../../test/harness"
-import { circleOf, lineOf, p } from "../../test/builders"
+import { circleOf, layerOf, lineOf, p } from "../../test/builders"
 import { es } from "../locales/es"
 import type { LineEntity } from "../domain/entities"
 
@@ -202,6 +202,93 @@ describe("the other commands AutoCAD runs transparently", () => {
 function cad0(): CadHarness {
   return createHarness()
 }
+
+// The desktop typing each at LINE's `Specify next point or [Undo]:` (the
+// console knows none of them): MATCHPROP asks `>>Select source object:`, the
+// palettes open, and LINE resumes; 'VIEW and 'EATTEDIT are refused (desktop
+// workspace/d02-3, d02-4, d02-5, d02-t).
+describe("MATCHPROP and the palettes, transparent on the desktop", () => {
+  function twoLinesThenLine(): CadHarness {
+    const cad = createHarness()
+    cad.runtime.document.load(
+      [
+        lineOf(p(0, 100), p(100, 100), { id: "S", layerId: "red" }),
+        lineOf(p(0, 200), p(100, 200), { id: "D" }),
+      ],
+      { layers: [layerOf("0"), layerOf("red")] }
+    )
+    return lineThen(cad)
+  }
+
+  it("runs 'MATCHPROP inside LINE, its change in LINE's step (d02-4)", () => {
+    const cad = twoLinesThenLine()
+    answerLine(cad, "'MATCHPROP")
+    expect(cad.state().commandLine.prompt).toBe(
+      "'MATCHPROP >>Select source object:"
+    )
+    cad.click(p(50, 100)).click(p(50, 200))
+    expect(cad.byId<LineEntity>("D").layerId).toBe("red")
+    cad.enter()
+    expect(cad.commandLog().at(-1)).toBe("Resuming LINE command.")
+    expect(cad.activeToolId()).toBe("line")
+    cad.click(p(0, 50)).escape()
+    expect(cad.typeCounts().line).toBe(3)
+    cad.undo()
+    expect(cad.typeCounts().line).toBe(2)
+    expect(cad.byId<LineEntity>("D").layerId).toBe("0")
+  })
+
+  it("cancels only MATCHPROP on Escape at its source (d02-3)", () => {
+    const cad = twoLinesThenLine()
+    answerLine(cad, "'MATCHPROP")
+    cad.escape()
+    expect(cad.commandLog().slice(-2)).toEqual([
+      ">>Select source object: *Cancel*",
+      "Resuming LINE command.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "LINE Specify next point or [Undo]:"
+    )
+  })
+
+  it("is what the top bar's Match Properties runs, '_matchprop (d02-1)", () => {
+    const cad = twoLinesThenLine()
+    cad.tool("matchprop")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Specify next point or [Undo]: '_matchprop"
+    )
+    expect(cad.state().commandLine.prompt).toBe(
+      "'MATCHPROP >>Select source object:"
+    )
+    cad.escape()
+    expect(cad.activeToolId()).toBe("line")
+  })
+
+  it.each([
+    ["'PROPERTIES", "properties"],
+    ["'LAYER", "layers"],
+    ["'BLOCKSPALETTE", "blocks"],
+  ] as const)(
+    "opens %s's palette and resumes LINE (d02-5, d02-t)",
+    (typed, tab) => {
+      const cad = lineThen(cad0(), typed)
+      expect(cad.state().palette).toEqual({ open: true, tab })
+      expect(cad.commandLog().slice(-2)).toEqual([
+        `Specify next point or [Undo]: ${typed}`,
+        "Resuming LINE command.",
+      ])
+      expect(cad.activeToolId()).toBe("line")
+    }
+  )
+
+  it("refuses 'EATTEDIT, as 'VIEW (d02-t)", () => {
+    const cad = lineThen(cad0(), "'EATTEDIT")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "** That command may not be invoked transparently **",
+      "Point or option keyword required.",
+    ])
+  })
+})
 
 // AutoCAD 2027's console (probes view/p143, p144): `'ZOOM` typed at LINE's prompt asks ZOOM's
 // questions headed `>>`, and once ZOOM is done says `Resuming LINE command.`

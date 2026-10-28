@@ -595,7 +595,8 @@ p121), `Specify start point of text or [Justify/Style]:` — the point the justi
 Justify, whose `Enter an option [Left/Center/Right/Middle/TL/TC/TR/ML/MC/MR/BL/BC/BR]:` (es
 `[Izquierda/Centro/Derecha/Medio/SIZ/…]`) is also answered unlisted at the first prompt (`MC` there
 asks the middle point at once) and refuses Enter and a wrong word with `Invalid option keyword.`
-(es `Opción no válida.`, p156) —, Style's `Enter style name or [?] <Standard>:` (Enter keeps it;
+(es `Opción no válida.`, p156) —, Style's `Enter style name or [?] <Standard>:` (spaces typed key by key, `AB CD` whole, desktop
+workspace/d06; MTEXT's and -ATTDEF's style by analogy; Enter keeps it;
 `Cannot find text style "NAME".`, es `No se puede encontrar estilo de texto "NAME".`, and asked
 again; a name or Enter writes the Current line again as the console does, the old style's name
 with the new one's height, p110, p126, p156, p162, but not after a refused name, p142; `?` lists
@@ -838,7 +839,8 @@ pattern); a double-click, which in AutoCAD opens the Hatch Editor tab and Quick 
 
 **Implemented:** -BLOCK's command line, which BLOCK asks too (p151, p152; aliases from the 2027
 `acad.pgp`): `Current settings: Object conversion=Convert` (es `Parámetros actuales: conversión de
-objetos=Convertir`, p01); `Enter block name or [?]:`, where Enter, a name with one of `<>/\":;?*|,=` or a
+objetos=Convertir`, p01); `Enter block name or [?]:` (spaces typed key by key, `AB CD` whole, as
+at `?`'s `Enter block(s) to list`, desktop workspace/d06), where Enter, a name with one of `<>/\":;?*|,=` or a
 backquote, `*U1` or over 255 characters says `Invalid block name.` (es `Nombre bloque no válido.`, -BLOCK's
 own; INSERT's is `Nombre de bloque no válido.`) and asks again (p100–p111, desktop d09). A name the
 table holds, in any case, keeps its spelling and asks `Block "B1" already exists. Redefine it?
@@ -877,7 +879,8 @@ console's `*Insert a block from the Blocks palette` is the console's, p05; deskt
 Insert button runs it. A click on a block there asks -INSERT's point with the block chosen, writing
 only the prompt line, and U and REDO name the step `-INSERT` (d06-6, d06-9). -INSERT's command line
 (aliases from the 2027 `acad.pgp` and console, p200, p201; Enter repeats it, `'-INSERT` is refused,
-p202): `Enter block name or [?] <B1>:` (the last block inserted, or else the last named one
+p202): `Enter block name or [?] <B1>:` (spaces typed key by key, `AB CD` whole, desktop
+workspace/d06; the last block inserted, or else the last named one
 defined — an array's anonymous `*U<n>` neither listed by `?` nor found by name —; names found
 case-blind, `b1` inserts B1, p210 —, INSNAME's: per drawing, not saved, so NEW and OPEN forget the
 block inserted, rectang/p303; typed as a variable, SETVAR, `Enter new value for INSNAME, or . for

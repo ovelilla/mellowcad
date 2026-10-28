@@ -133,6 +133,13 @@ export interface ToolQuestion {
    * `<-4.3514>`; probes arrays/p116, p130).
    */
   readonly trimmed?: true
+  /**
+   * A name or a string that may hold spaces: Space typed after something is
+   * a space at the command line and in a value box, Enter ending the answer,
+   * as AutoCAD takes `AB CD` typed key by key at every name prompt (desktop
+   * workspace/d06, ucs/d05).
+   */
+  readonly takesSpaces?: true
 }
 
 /** UNDO's operations on the undo history, which only its tool uses. */

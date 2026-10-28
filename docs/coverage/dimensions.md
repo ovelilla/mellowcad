@@ -281,7 +281,8 @@ cota actual: ISO-25   Anotativo: No`), then `Enter a dimension style option
 [Guardar/Restituir/Estado/Variables/Aplicar/?] <Restituir>:`), answered once; a word it does not
 take says `Invalid option keyword.` and asks again (p11).
 
-- **Save**: `Enter name for new dimension style or [?]:` names a new style holding the current
+- **Save**: `Enter name for new dimension style or [?]:` (spaces typed key by key, `AB CD` whole,
+  as at Restore's and `?`'s names, desktop workspace/d06) names a new style holding the current
   style's settings, made current (p08). A name in use, any case, asks `That name is already in
   use, redefine it? <N>:` (es `Este nombre está ya en uso; ¿redefinirlo? <N>:`); No or Enter asks
   the name again (p08), Yes gives that style the current settings and makes it current (p06 on the

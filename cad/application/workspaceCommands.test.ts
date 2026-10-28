@@ -562,6 +562,19 @@ describe("the drafting toggles", () => {
     )
   })
 
+  // acad.cuix's `^O` (MM_0005): Ctrl+L toggles Ortho as F8, echoing as it
+  // and joining the step before (desktop workspace/d01; MAC-09)
+  it("Ctrl+L toggles Ortho as F8 does", () => {
+    const cad = withLine()
+
+    expect(toggled(cad, () => cad.press("l", { ctrlKey: true }))).toEqual([
+      " <Ortho on>",
+    ])
+    expect(cad.state().orthoActive).toBe(true)
+    expect(written(cad, "_U")).toEqual(["U", "LINE"])
+    expect(cad.state().orthoActive).toBe(false)
+  })
+
   // desktop workspace/d01-m: 45 chosen writes nothing and turns Polar on
   it("choosing a Polar angle writes nothing and turns Polar on", () => {
     const cad = createHarness()
@@ -697,5 +710,57 @@ describe("the chrome's undo groups", () => {
     written(cad, "_LINE", "0,10", "10,10", "")
 
     expect(written(cad, "_U", "_U")).toEqual(["U", "LINE", "U", "LINE GROUP"])
+  })
+})
+
+// `AB CD` typed key by key at the command line is one answer at every name
+// or string prompt, Space a character and Enter its end (desktop
+// workspace/d06; UCS's Save and Restore names, ucs/d05).
+describe("the name prompts take spaces", () => {
+  it.each([
+    [["_UCS", "_NA", "_D"], "Enter UCS name(s) to delete <none>: AB CD"],
+    [["_UCS", "_NA", "?"], "Enter UCS name(s) to list <*>: AB CD"],
+    [["_PLAN", "_U"], "Enter name of UCS or [?]: AB CD"],
+    [["-BLOCK"], "Enter block name or [?]: AB CD"],
+    [["-BLOCK", "?"], "Enter block(s) to list <*>: AB CD"],
+    [["-INSERT"], "Enter block name or [?]: AB CD"],
+    [["-PURGE", "_B"], "Enter name(s) to purge <*>: AB CD"],
+    [["_TEXT", "_S"], "Enter style name or [?] <Standard>: AB CD"],
+    [["-DIMSTYLE", "_S"], "Enter name for new dimension style or [?]: AB CD"],
+    [
+      ["-DIMSTYLE", "_R"],
+      "Enter a dimension style name, [?] or <select dimension>: AB CD",
+    ],
+    [["-LINETYPE", "_S"], "Specify linetype name or [?] <ByLayer>: AB CD"],
+    [
+      ["_SETVAR", "INSNAME"],
+      'Enter new value for INSNAME, or . for none <"">: AB CD',
+    ],
+  ])("at %j (d06)", (texts, line) => {
+    const cad = createHarness()
+    written(cad, ...texts)
+    expect(cad.state().commandLine.takesSpaces).toBe(true)
+    for (const key of "AB CD") cad.press(key)
+    cad.press("Enter")
+    expect(cad.commandLog()).toContain(line)
+  })
+
+  it("sets a string variable whole (d06)", () => {
+    const cad = createHarness()
+    written(cad, "_SETVAR", "INSNAME")
+    for (const key of "AB CD") cad.press(key)
+    cad.press("Enter")
+    written(cad, "INSNAME")
+    expect(cad.state().commandLine.prompt).toBe(
+      'INSNAME Enter new value for INSNAME, or . for none <"AB CD">:'
+    )
+  })
+
+  it("leaves Space as Enter at a prompt asking no name", () => {
+    const cad = createHarness()
+    written(cad, "_SETVAR")
+    expect(cad.state().commandLine.takesSpaces).toBe(false)
+    written(cad, "ORTHOMODE")
+    expect(cad.state().commandLine.takesSpaces).toBe(false)
   })
 })

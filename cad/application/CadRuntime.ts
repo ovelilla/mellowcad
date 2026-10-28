@@ -1755,13 +1755,10 @@ export class CadRuntime extends Observable {
     )
   }
 
-  /** Whether the box's field takes a space typed at the command line. */
+  /** Whether the question asked takes a space typed after something. */
   private takesSpaces(): boolean {
-    const id = this.dynamicInput.getActiveFieldId()
-    return (
-      this.dynamicInput.getSession()?.fields.find((field) => field.id === id)
-        ?.takesSpaces === true
-    )
+    const asked = this.asking().question?.()
+    return typeof asked === "object" && asked?.takesSpaces === true
   }
 
   /** Whether the box asks for text, which takes whatever is typed. */
@@ -6181,8 +6178,12 @@ export class CadRuntime extends Observable {
       return true
     }
 
-    // F8 toggles Ortho, matching AutoCAD's shortcut.
-    if (e.key === "F8") {
+    // F8 toggles Ortho, matching AutoCAD's shortcut, and so does Ctrl+L,
+    // acad.cuix's `^O` (MM_0005).
+    if (
+      e.key === "F8" ||
+      (e.ctrlKey && !e.altKey && !e.shiftKey && e.key.toLowerCase() === "l")
+    ) {
       this.toggleOrtho()
       this.host.requestRender()
       return true
@@ -6309,10 +6310,12 @@ export class CadRuntime extends Observable {
     // box takes focus back only after the next render, and a first key that
     // reached the command line split "100" into "1" there and "00" in the box.
     // Space and Enter are the box's Enter, which only ends the command when
-    // nothing is typed and the prompt has no default to take.
+    // nothing is typed and the prompt has no default to take; after a name
+    // or a string that holds spaces Space is one (desktop workspace/d06).
     if (box !== null && !e.ctrlKey && !e.altKey) {
       const typed = this.dynamicInput.getText(box)
-      const space = e.key === " " && !e.shiftKey
+      const typesSpace = typed.trim() !== "" && this.takesSpaces()
+      const space = e.key === " " && !e.shiftKey && !typesSpace
       if ((e.key === "Enter" || space) && !this.enterFromBox) {
         this.pressEnter()
         return true
@@ -6321,7 +6324,7 @@ export class CadRuntime extends Observable {
         this.setDynamicInputText(typed.slice(0, -1), box)
         return true
       }
-      if (e.key.length === 1 && e.key !== " ") {
+      if (e.key.length === 1 && (e.key !== " " || typesSpace)) {
         this.setDynamicInputText(typed + e.key, box)
         return true
       }
@@ -6365,7 +6368,7 @@ export class CadRuntime extends Observable {
       }
 
       // A name that holds spaces takes one after what is typed (desktop
-      // ucs/d05); at its start Space is still Enter.
+      // workspace/d06, ucs/d05); at its start Space is still Enter.
       if (e.key === " " && typed.trim() !== "" && this.takesSpaces()) {
         this.commandLine.appendChar(" ")
         this.invalidateState()

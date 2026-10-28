@@ -31,10 +31,15 @@ export interface SetvarMemory {
 type SetvarState =
   | { readonly phase: "name" }
   | { readonly phase: "list" }
+  /** `?`'s lines not yet listed, at `Press ENTER to continue:`. */
+  | { readonly phase: "page"; readonly lines: readonly string[] }
   | { readonly phase: "value"; readonly variable: SystemVariable }
 
 /** A string listed longer than this is cut, with `...` (p126). */
 const LISTED_STRING = 60
+
+/** `?` lists this many variables, then pauses (desktop workspace/d07-1). */
+const LISTED_PAGE = 20
 
 /**
  * AutoCAD's SETVAR (es MODIVAR), which runs for every system variable typed
@@ -88,6 +93,7 @@ export class SystemVariableTool implements Tool {
   onAskAgain(ctx: ToolContext): void {
     if (this.state.phase === "value") this.askValue(this.state.variable, ctx)
     else if (this.state.phase === "list") this.askList(ctx)
+    else if (this.state.phase === "page") ctx.dynamicInput.close()
     else this.askName(ctx)
   }
 
@@ -108,15 +114,21 @@ export class SystemVariableTool implements Tool {
           : { id: "enterVariableName", enter: { name: this.memory.last } }
       case "list":
         return { id: "enterVariablesToList", enter: { name: "*" } }
+      // Table 4054; es `Pulse INTRO para continuar:`.
+      case "page":
+        return { id: "pressEnterToContinue" }
       case "value": {
         const { variable } = this.state
+        const string = variable.type === "string"
         return {
           id:
-            variable.type === "string" && variable.nullable
+            string && variable.nullable
               ? "enterNewValueForOrNone"
               : "enterNewValueFor",
           values: { name: variable.name },
           enter: { name: this.shown },
+          // USERS1 `AB CD` typed key by key is set whole (desktop d06).
+          ...(string && { takesSpaces: true as const }),
         }
       }
     }
@@ -135,6 +147,18 @@ export class SystemVariableTool implements Tool {
     return (variable.keywords ?? []).map(({ id }) => ({ id, hidden: true }))
   }
 
+  /** Enter at `Press ENTER to continue:`: the next page. */
+  onEnter(ctx: ToolContext): boolean {
+    if (this.state.phase !== "page") return false
+    this.listPage(this.state.lines, ctx)
+    return true
+  }
+
+  /** Whatever is typed there goes on too, as Enter does (unverified). */
+  answerTyped(_text: string, ctx: ToolContext): boolean {
+    return this.onEnter(ctx)
+  }
+
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.state.phase === "name" && id === "?") {
       this.askList(ctx)
@@ -151,12 +175,16 @@ export class SystemVariableTool implements Tool {
 
   private askName(ctx: ToolContext): void {
     this.state = { phase: "name" }
-    this.openBox(ctx, (typed, answerCtx) => this.answerName(typed, answerCtx))
+    this.openBox(ctx, "word", this.memory.last ?? "", (typed, answerCtx) =>
+      this.answerName(typed, answerCtx)
+    )
   }
 
   private askList(ctx: ToolContext): void {
     this.state = { phase: "list" }
-    this.openBox(ctx, (typed, answerCtx) => this.list(typed, answerCtx))
+    this.openBox(ctx, "word", "*", (typed, answerCtx) =>
+      this.list(typed, answerCtx)
+    )
   }
 
   private askValue(variable: SystemVariable, ctx: ToolContext): void {
@@ -177,17 +205,22 @@ export class SystemVariableTool implements Tool {
       this.askMeasure(variable.type === "real" ? "distance" : "angle", ctx)
       return
     }
-    this.openBox(ctx, (typed, answerCtx) =>
+    const kind = variable.type === "string" ? "word" : "number"
+    this.openBox(ctx, kind, this.shown, (typed, answerCtx) =>
       this.answerValue(variable, typed, answerCtx)
     )
   }
 
   /**
    * A getint's, getstring's or getpoint's box: a value's, so that a
-   * transparent command typed there runs (`'ZOOM`), whatever the type.
+   * transparent command typed there runs (`'ZOOM`), whatever the type; a
+   * name or a string typed as a word. It shows what Enter keeps (desktop
+   * workspace/d07-4, d07-5).
    */
   private openBox(
     ctx: ToolContext,
+    kind: "number" | "word",
+    shown: string,
     answer: (typed: string, ctx: ToolContext) => void
   ): void {
     const take = (commitCtx: ToolContext) => {
@@ -195,10 +228,11 @@ export class SystemVariableTool implements Tool {
       return true
     }
     ctx.dynamicInput.open({
-      fields: [{ id: "value", kind: "number" }],
+      fields: [{ id: "value", kind }],
       commit: (_values, commitCtx) => void take(commitCtx),
       commitRaw: take,
     })
+    if (shown !== "") ctx.dynamicInput.setLiveText("value", shown)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }
@@ -220,6 +254,7 @@ export class SystemVariableTool implements Tool {
         return true
       },
     })
+    ctx.dynamicInput.setLiveText("value", this.shown)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }
@@ -324,9 +359,9 @@ export class SystemVariableTool implements Tool {
 
   /**
    * `?`: each variable `typed`'s wild cards match (`*` for Enter), the name
-   * padded to 18 columns, a read-only one's value to 36 then `(read only)`;
-   * the console's `Press ENTER to continue:` pause is left out: the history
-   * scrolls (WORKSPACE-D7; p125–p127).
+   * padded to 18 columns, a read-only one's value to 36 then `(read only)`
+   * (p125–p127), 20 at a time with `Press ENTER to continue:` between them,
+   * as the desktop pauses (WORKSPACE-D7 revised; desktop workspace/d07-1).
    */
   private list(typed: string, ctx: ToolContext): void {
     const pattern = typed === "" ? "*" : typed
@@ -339,8 +374,21 @@ export class SystemVariableTool implements Tool {
         ? `${head}${value.padEnd(36)} ${ctx.text.message("readOnlyListed")}`
         : `${head}${value}`
     })
-    if (lines.length > 0) ctx.report(lines.join("\n"))
-    ctx.endCommand()
+    this.listPage(lines, ctx)
+  }
+
+  /** One page of `lines`, then the pause if any are left, else the end. */
+  private listPage(lines: readonly string[], ctx: ToolContext): void {
+    const page = lines.slice(0, LISTED_PAGE)
+    const rest = lines.slice(LISTED_PAGE)
+    if (page.length > 0) ctx.report(page.join("\n"))
+    if (rest.length === 0) {
+      ctx.endCommand()
+      return
+    }
+    this.state = { phase: "page", lines: rest }
+    ctx.dynamicInput.close()
+    ctx.requestRender()
   }
 }
 

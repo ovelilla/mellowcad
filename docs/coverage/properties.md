@@ -22,7 +22,8 @@ selección:`, `AcTaskDialogs.resources.dll`'s TaskDialog_181); layer 0 and a new
 screen's foreground as an object set to 7 is (a drawing saved before stored `#e2e8f0` for them,
 read as 7); LAYER (and DDLMODES, acad.pgp in both languages) opens the Layer Properties Manager
 as a modeless palette ("It can remain open as you work", LAYERDLGMODE 1), a tab of the palette
-panel, and LAYERCLOSE closes it — WHY folding the panel only while Layers is the tab shown:
+panel (`'LAYER` opens it inside a running command, which resumes at once, desktop workspace/d02-t),
+and LAYERCLOSE closes it — WHY folding the panel only while Layers is the tab shown:
 AutoCAD's palettes are separate windows, here they share one panel, so closing the layer manager
 leaves another palette where it is; the manager's columns in the reference page's order — Status
 (the check mark on the current layer), Name, On, Lock, Color (the swatch and, for an index colour,
@@ -114,7 +115,8 @@ AutoCAD 2027's console does (p205); its `?` lists acadiso.lin's linetypes, a met
 in the file's order and without Continuous, which is no file's (p202), as AutoCAD lays them out
 (`Linetypes defined in file acadiso.lin:`, where AutoCAD writes the file's full path; `Name` /
 `Description` columns), without asking the file's name (every linetype this build ships is
-loaded); Set asks `Specify linetype name or [?] <ByLayer>:`, offering CELTYPE as stored
+loaded); Set asks `Specify linetype name or [?] <ByLayer>:` (spaces typed key by key, `AB CD`
+whole, as at `?`'s names, desktop workspace/d06), offering CELTYPE as stored
 (`<Continuous>`, p226), Enter going back to the option prompt (p220), and takes a linetype's name
 or ByLayer: `BYLayer` (`BYL`), the table's name `ByLayer` whole in any language (p224) and the
 global `_BYL` (p229); its `?` asks `Enter linetype name(s) to list <*>:` and lists `ByLayer,
@@ -143,7 +145,7 @@ linetypes of acadiso.lin, which Set finds there (the refusal names the file sear
 every language here; the names as acadiso.lin writes them, in capitals (Set's `dashed` makes CELTYPE
 `DASHED`, which the next run names, p209): the stored ids stay `Dashed`, drawing data; per-object ltscale (CELTSCALE), the Linetype Manager (its Details' Global Scale
 Factor is LTSCALE), PSLTSCALE / MSLTSCALE (no paper space), Create and Load (there is no LIN file to
-read or write), ByBlock (so Set's `BY` is no `BYBlock or BYLayer?`, p228), the Linetype Manager, the drop-down's Other…; PLINEGEN (a polyline lays
+read or write; Load's `Enter linetype(s) to load` takes spaces, desktop workspace/d06), ByBlock (so Set's `BY` is no `BYBlock or BYLayer?`, p228), the Linetype Manager, the drop-down's Other…; PLINEGEN (a polyline lays
 its pattern segment by segment, PLINEGEN 0's; PEDIT's Ltype gen is not built); **unverified**: how
 AutoCAD lays a pattern on a polyline's arc segment: ours runs from its start; a dashed tilted or
 thick arc (not plotted, laid as in plan); a line off the plan is centred on its length as drawn,
@@ -246,7 +248,8 @@ of Autodesk's shortcut guide (the 2026 help names only PR, in both languages; in
 CHAFLAN), and Ctrl+1 shows and hides it as acad.cuix's `^C^C_properties` /
 `^C^C_propertiesclose` (ID_Modify): the running command cancelled, then PROPERTIES or
 PROPERTIESCLOSE run, echoed `_properties` (desktop workspace/d04), a group U names `GROUP
-PROPERTIES` / `GROUP PROPERTIESCLOSE` (d04), a preselection kept; WHY at the inline end: the 2026 help
+PROPERTIES` / `GROUP PROPERTIESCLOSE` (d04), a preselection kept; `'PROPERTIES` opens it inside a
+running command, which resumes at once (d02-5); WHY at the inline end: the 2026 help
 documents no default side ("docked to either side of the drawing window"), and AutoCAD does not show
 the palette at first start ("not displayed by default"); here it is open from 1600 px of window,
 folded below, and the panel's width and fold are remembered; the object type drop-down at its top —

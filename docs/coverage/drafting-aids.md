@@ -155,8 +155,10 @@ first point does), Shift to avoid acquiring, Perpendicular or Tangent tracked fr
 
 **Implemented:** F10 turns it on and off, writing ` <Polar on>` / ` <Polar off>` (es
 ` <Polar activado>` / `desactivado`; desktop passes line/d10, d27); angle increments from the UCS X
-axis (the status bar's menu offers POLARANG's 90,
-60, 45, 30, 22.5, 18, 15, 10 and 5, and choosing one turns Polar on), guides, mutually exclusive
+axis (the status bar's menu offers POLARANG's 90, 45, 30, 22.5, 18, 15, 10 and 5 as the desktop
+writes them, `90, 180, 270, 360...`, 22.5 as `23, 45, 68, 90...`, desktop workspace/d01-m, e01-4 —
+its first number plain where AutoCAD bolds it, the type roles having no bold figure — and choosing
+one turns Polar on, silently), guides, mutually exclusive
 with Ortho, Shift override; in a 3D view the `+Z` / `-Z` guide along the UCS's Z, engaged within the
 same 12 px measured on the screen, the guide drawn nearer the cursor winning against a polar angle,
 the Z on a tie (**unverified** rule); readout `Polar: 50.00mm < +Z` (**unverified** wording); the
@@ -181,11 +183,10 @@ temporarily, hold down the Shift key"; with it off, on), Polar yielding; in a 3D
 third axis, the one drawn nearest the cursor winning (**unverified**: AutoCAD does not publish the
 rule); ORTHOMODE is saved in the drawing, NEW and a drawing opened bringing theirs (rectang/p304,
 p321), Polar turning it off too; F8 is taken back with the last undo step (see Object snaps,
-desktop workspace/d01); U takes back the ORTHO command (p317), which is not built here
-
-**Missing:** Ctrl+L, acad.cuix's `^O` (MM_0005), the same toggle: not bound, **unverified** whether
-Chrome lets a page take it (its own Ctrl+L focuses the address bar; the browser check is the
-Workspace review's, MAC-09)
+desktop workspace/d01); Ctrl+L, acad.cuix's `^O` (MM_0005), is F8's toggle and echo, taken from a
+focused field too — Chrome does not reserve it (IDC_FOCUS_LOCATION is not in `accelerator_table.cc`'s
+`kReservedCommandIds`, chromium 7f7e075), so the page receives it before the address bar; U takes
+back the ORTHO command (p317), which is not built here
 
 ### `SNAP` / `SN` · es `FORZCURSOR` / `FC` · snap mode (F9)
 
@@ -209,10 +210,11 @@ console, probes line/p38, p158, p212, p213). F9 toggles it, writing ` <Snap on>`
 are saved in the drawing (rectang/p304, p321); U takes SNAP back, as it takes ORTHO back (p317), and
 an F9 with the last undo step (see Object snaps; by analogy with F7 and F8, desktop workspace/d01)
 
-**Missing:** Legacy, Style (isometric snap) and Type (grid or polar: the status bar's Snap menu
+**Missing:** Legacy, Style (isometric snap) and Type (grid or polar: the status bar's Snap menu,
+Polar Snap then Grid Snap, es Referencia polar, Referencia a rejilla, desktop workspace/d01-m, e01-3,
 chooses it here) — not listed, as they are not built (WHY: the prompt lists what is, as TRIM's
 leaves out Project) —, the unlisted Rotate (SNAPANG), SNAPBASE; PolarSnap with a negative POLARDIST
-steps by its size here (**unverified**: the desktop's, WSD d08)
+steps by its size, as the desktop's does (POLARDIST −10 steps 10, desktop workspace/d08)
 
 ### Grid (F7)
 
@@ -361,7 +363,8 @@ and arrows, and their drags: modify.md, the array object
 and so Lengthen from a grip; an arc's hover menus (desktop arc/d07: the middle grip's `Stretch`,
 `Radius`, an end's `Stretch`, `Lengthen`), so Radius and Lengthen from its grips, and a stretch
 typed while its middle grip is hot; the Length Change field after a Tab (DYNDIVIS) and the angle fields;
-the `** STRETCH **` prompt and its options at the command line; the hover colour apart from the
+the `** STRETCH **` prompt and its options at the command line, and the ribbon's Move during a grip
+edit switching it to `** MOVE **` (`_move` echoed after the STRETCH prompt, desktop workspace/d02-8); the hover colour apart from the
 dragged one (AutoCAD's hovered grip is pink, GRIPHOVER 11, the dragged one red), Enter (and Space)
 cycling the grip modes — Enter keeps the edit hot, tracking-aware radius and angle drag,
 any grip but move on a tilted object (it keeps only its move grips); a polyline's hover menus (d07)

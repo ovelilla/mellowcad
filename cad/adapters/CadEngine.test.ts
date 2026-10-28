@@ -223,6 +223,9 @@ describe("CadEngine owning the document (the editor)", () => {
     expect(engine.getState().cleanScreen.active).toBe(true)
     expect(keyAt(page, page.search, "1", true).defaultPrevented).toBe(true)
     expect(engine.getState().palette.tab).toBe("properties")
+    // Ctrl+L, Ortho as F8 (acad.cuix `^O`): Chrome does not reserve it.
+    expect(keyAt(page, page.search, "l", true).defaultPrevented).toBe(true)
+    expect(engine.getState().orthoActive).toBe(false)
     // Copying out of a field stays the field's.
     expect(keyAt(page, page.search, "c", true).defaultPrevented).toBe(false)
   })

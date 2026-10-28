@@ -872,6 +872,7 @@ function formatFieldValue(
     case "number":
     case "coordinate":
     case "text":
+    case "word":
     case "paragraphs":
       return String(value)
   }
@@ -890,6 +891,7 @@ function fieldUnitSuffix(
     case "number":
     case "coordinate":
     case "text":
+    case "word":
     case "paragraphs":
       return ""
   }

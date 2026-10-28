@@ -63,7 +63,8 @@ runtime builds the rest: `LINE Specify next point or [Undo]:`, the dynamic promp
   keyword Enter keeps is `defaultOption()`'s, unless the prompt names it short (PLAN's
   `<Current>`: a phrase). `tight: true` where the default touches what precedes it
   (`[Zdepth]<0,0,0>:`), `open: true` where no colon follows (`OK? <Y>`): read the table, never
-  assume the space or the colon. A prompt that names something carries it in `values`.
+  assume the space or the colon. A prompt that names something carries it in `values`; a name or
+  string, `takesSpaces` (d06).
 - **A yes-or-no question** lists no keywords: hidden `Yes` and `No`, `enter: { name: "N" }`, and
   `{ refusal: "yesOrNoPlease" }`.
 - The `or` belongs to the text: a state that offers none of the keywords AutoCAD lists there takes

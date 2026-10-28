@@ -155,8 +155,12 @@ export class InsertTool implements Tool {
     switch (this.state.phase) {
       case "name":
         return this.blockId
-          ? { id: "blockName", enter: { name: this.blockId } }
-          : "blockName"
+          ? {
+              id: "blockName",
+              enter: { name: this.blockId },
+              takesSpaces: true,
+            }
+          : { id: "blockName", takesSpaces: true }
       case "list":
         return BLOCKS_TO_LIST
       case "point":

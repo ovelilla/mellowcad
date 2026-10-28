@@ -39,9 +39,10 @@ workspace/p311), the application menu's Drawing Units, which cancels the running
 which runs UNITS' macro `'_units` (acad.cuix ID_Units: inside a command, transparently; U names
 `'UNITS` at `Command:`) — WHY not the application menu's: AutoCAD's status-bar Units is a menu of
 length formats, no dialog: Length's Type (Decimal, the only
-one: LUNITS 2) and Precision (LUPREC, 0 to 8 places as -UNITS asks them, p300, listed as `0.0000`;
-**unverified** that the list writes them so), Insertion Scale (INSUNITS: Millimeters, Centimeters,
-Meters — what a drawing unit is here, shown by the status bar and the dynamic input), Sample Output
+one: LUNITS 2) and Precision (LUPREC, 0 to 8 places as -UNITS asks them, p300, listed `0` …
+`0.00000000`, as the desktop's list, d05-1), Insertion Scale (its list labelled `Units to scale inserted content:`, desktop
+workspace/d05-1, es `Unidades para escalar el contenido insertado:` **unverified**; INSUNITS:
+Millimeters, Centimeters, Meters — what a drawing unit is here, shown by the status bar and the dynamic input), Sample Output
 (a point as X,Y,Z and as distance<angle,Z, at the chosen precision, the angle at AUPREC's). The run
 lasts until the dialog closes, one undo step U names `UNITS` (es `UNIDADES`) with OK's change in it
 (p307; -UNITS' change put back, p308), OK with nothing changed a step too (as -UNITS with every
@@ -53,8 +54,7 @@ scientific notation for a huge length (`<1.0000E+20>` at OFFSET's distance, offs
 size is unprobed), the Angle
 group (AUNITS, its Precision list, ANGDIR: angles are decimal degrees, counterclockwise, at AUPREC,
 which is typed), INSUNITS' other values (Unitless, Inches…), Lighting (LIGHTINGUNITS), Direction
-(ANGBASE), Help; the list's own label, "Units to scale inserted content" (**unverified** in
-2026, so the group's title names it); -UNITS (`-UN`, es `-UNIDADES` / `-UNS`, p300, p314;
+(ANGBASE), Help; -UNITS (`-UN`, es `-UNIDADES` / `-UNS`, p300, p314;
 transparent, p310; U names it, p308), which asks, after a table of report formats, `Enter choice, 1
 to 5 <2>:`, `Enter number of digits to right of decimal point (0 to 8) <4>:` (es `Indique el número
 de dígitos a la derecha del punto decimal (de 0 a 8) <4>:`), after a table of angle systems `Enter
@@ -70,7 +70,9 @@ last variable named there or typed by its name this session, none at first (Ente
 case-blind and global only (`_ORTHOMODE` is `Unknown variable name.  Type SETVAR ? for a list of
 variables.`, es on two lines, and ends); `?` asks `Enter variable(s) to list <*>:` and lists those
 the wild card matches, the name in 18 columns, a read-only one's value in 36 then `(read only)`, a
-string quoted and cut at 60; transparent (`'SETVAR`, es `'MODIVAR`), repeated by Enter, a step U
+string quoted and cut at 60, 20 at a time with `Press ENTER to continue:` (es `Pulse INTRO para
+continuar:`, table 4054) between pages, Enter the next and Escape ending SETVAR (desktop
+workspace/d07-1; anything typed there goes on as Enter, **unverified**); transparent (`'SETVAR`, es `'MODIVAR`), repeated by Enter, a step U
 names `SETVAR` / `MODIVAR`. A variable's name at `Command:` — bare, `_`, `.` or `'` — runs SETVAR
 for it unless a command has the name (LTSCALE, FILL, AREA, UCSICON; es `UCSICON` is the variable,
 its command being SIMBSCP), and with `'` mid-command unless a transparent command has it ('LTSCALE;
@@ -80,11 +82,15 @@ X <v>`), by type: an integer (`Requires 0 or 1 only.` for a switch, es `Requiere
 `Requires an integer between a and b.`, es `Requiere un nº entero entre a y b.`, and the prompt
 again; LWDISPLAY's `<ON>` with its ON/OFF/True/False/Yes/No, es ACT/DES/Verdadero/Falso/Sí/No,
 `Requires 0 or 1 only, or option keyword.`), a distance at LUPREC's places (`Requires numeric
-distance or two points.`), an angle at AUPREC's, a string quoted (`<"0">`), a point
+distance or two points.`), an angle at AUPREC's, a string quoted (`<"0">`) that takes spaces typed
+key by key, Enter ending it (USERS1 `AB CD` set whole, desktop workspace/d06; WORKSPACE-D93
+reversed), a point
 (`Invalid 2D point.`, es `Punto 2D no válido.`; a 3D one `Invalid point.`, es `Punto no válido.`,
 p224); a value the variable refuses writes `Cannot set X to
 that value.` and `*Invalid*` (es `Imposible dar a X ese valor.`, `*No válido*`) and ends; a read-only
-one writes `AREA = 0.0000 (read only)` and ends; Enter keeps the value, still a step. Another
+one writes `AREA = 0.0000 (read only)` and ends; Enter keeps the value, still a step. The dynamic
+input's box shows what Enter keeps: the last variable at the name, typed as a word, and the value at
+its prompt (desktop workspace/d07-4, d07-5; a string as the prompt writes it, `"0"`, **unverified**). Another
 variable typed at a variable's prompt or in a transparent command runs inside it, and so does a
 transparent command at a transparent variable's prompt (`Resuming SETVAR command.`, es `Reanudando
 el comando MODIVAR.`, `Resuming ZOOM command.`; the prompt again keeps `>>` only inside a command);
@@ -123,14 +129,13 @@ ByBlock, CECOLOR 0 and 8–255, CELWEIGHT −2 and −3, INSUNITS but 4, 5 and 6
 POLARANG 0 (polar tracking here needs an increment, p223), AFLAGS' Multiple lines bit 32 (-ATTDEF
 then asks a multiline attribute's lines, p224);
 NAVVCUBEDISPLAY keeps only bit 2, reading back 3 or 1 (WORKSPACE-D39 needs a file-format change),
-SNAPMODE 2 reads back 1; the console's `Press ENTER to continue:` every page of `?` (the history
-scrolls here; the desktop's page length **unverified**); the Drawing Units dialog's Angle Precision
-list; **unverified**: whether a string value takes spaces (USERS1's `a b`, WORKSPACE-D93: here a
-Space is Enter), the prompt line's head while one runs transparently, Escape in a nested variable,
-whether AutoCAD drops a preselection after one (the console does, p161), whether U steps back a
-read-only variable typed by its name (SETVAR's is a step, p158), what PolarSnap does with a negative
-POLARDIST (here it steps by its size; desktop WSD), and that a point typed at SNAPUNIT's prompt
-becomes LASTPOINT, refused or not (p212), which it does not here
+SNAPMODE 2 reads back 1; USERS1 to USERS5; the Drawing Units dialog's
+Angle Precision list; the prompt line's head while one runs transparently, the name without the
+apostrophe on the desktop (command-line.md); **unverified**: whether U steps back a read-only
+variable typed by its name (SETVAR's is a step, p158), and that a point typed at SNAPUNIT's prompt
+becomes LASTPOINT, refused or not (p212), which it does not here. Escape in a nested variable
+(`*Cancel*`, `Resuming SETVAR command.`, d07-2), a preselection dropped after one (d07; the console
+too, p161) and PolarSnap with a negative POLARDIST stepping by its size (d08) hold as here
 
 ### `CLEANSCREENON` / `CLEANSCREENOFF` / Ctrl+0 · es `LIMPIAPANTACT` / `LIMPIAPANTDES`
 
@@ -226,7 +231,7 @@ Here)
 **Implemented:** at the cursor, with what exists here in the order of acad.cuix's CMDEFAULT
 (PopMenuRoot PM_0006), CMEDIT (PM_0007) and CMCOMMAND — Default: Repeat ‹last command›,
 Clipboard ▸ (Cut, Copy, Copy with Base Point and Paste, with their keys), Undo, Redo, Pan (labelled
-as acad.cuix names them, `&Undo` and `Re&do`: only Repeat carries the command, `&Repeat %s`; Undo
+as acad.cuix names them, `&Undo` and `Re&do`, Repeat carrying the command, `&Repeat %s`; Undo
 runs `^C^C_u`, Redo `^C^C_mredo 1`, as MREDO 1, Pan `'_pan` (MM_1562) as the navigation bar's Pan,
 written so, as the navigation bar's `'PAN` is not, desktop workspace/d03); Edit: Repeat, Clipboard ▸, Erase,
 Move, Copy Selection, Scale, Rotate, Deselect All, Properties; Command: Enter, Cancel, the prompt's
@@ -254,7 +259,11 @@ desktop's, d07: the help says Modificaciones de referencias)
 Recorder, Subobject Selection Filter, Quick Select, QuickCalc, Count, Find, Options, Draw Order,
 Group ▸, Add Selected, Select Similar, Quick Properties; in Clipboard ▸ Cut with Base Point, Paste
 as Block, Paste as Hyperlink, Paste to Original Coordinates and Paste Special; the object and
-command entries merged into them (OBJECT_…, COMMAND_…), the Command menu's Pan and Zoom (d07)
+command entries merged into them (OBJECT_…, COMMAND_…), the Command menu's Pan and Zoom (d07); the
+Default menu's Undo and Redo labelled with the step they take or put back, as the desktop writes
+them past acad.cuix's `&Undo` (`Undo Propertiesclose`, `Redo Propertiesclose`, `Undo Grip edit`, es
+`Deshacer Grupo de comandos`; desktop workspace/d03-2, d03-3, e01-2; the rule for a group's label
+is not settled by three readings, WORKSPACE-D105)
 
 ### Wheel and wheel button
 
