@@ -150,6 +150,31 @@ const HIDDEN_OPTIONS = [
 ] as const
 
 /**
+ * What NAmed's `Enter an option [Restore/Save/Delete/?]:` takes and does not
+ * list: its `initget` is the first prompt's (probe ucs/p230), each word doing
+ * what it does there (p228, p229). Apply and SEction are left out, as there.
+ */
+const NAMED_HIDDEN = [
+  "Origin",
+  "Face",
+  "ZAxis",
+  "3point",
+  "Entity",
+  "View",
+  "X",
+  "Y",
+  "Z",
+  "OBject",
+  "Move",
+  "orthoGraphic",
+  "Previous",
+  "World",
+  "New",
+  ...Object.keys(ORTHOGRAPHIC_OPTIONS),
+  "NAmed",
+]
+
+/**
  * New's `Specify origin of new UCS or [ZAxis/3point/OBject/Face/View/X/Y/Z]`
  * (probe ucs/p218).
  */
@@ -463,12 +488,13 @@ export class UcsTool implements Tool {
       case "save":
         return "ucsSaveName"
       // WHY no keyword list: AutoCAD's yes-or-no question lists none, and
-      // writes its default as the letter.
+      // writes its default as the letter, with no colon (probe ucs/p231).
       case "replace":
         return {
           id: "ucsReplace",
           enter: { name: "N" },
           values: { name: state.name },
+          open: true,
         }
       case "delete":
         return { id: "ucsDeleteNames", enter: "ucsNone" }
@@ -543,6 +569,7 @@ export class UcsTool implements Tool {
           { id: "Save" },
           { id: "Delete" },
           { id: "?" },
+          ...NAMED_HIDDEN.map((id) => ({ id, hidden: true as const })),
         ]
       case "restore":
       case "save":
@@ -588,20 +615,11 @@ export class UcsTool implements Tool {
       return "continue"
     }
     if (state.phase === "named") {
-      switch (id) {
-        case "Restore":
-          this.enterNamePrompt("restore", ctx)
-          return "continue"
-        case "Save":
-          this.enterNamePrompt("save", ctx)
-          return "continue"
-        case "Delete":
-          this.enterNamePrompt("delete", ctx)
-          return "continue"
-        case "?":
-          this.enterList("named", ctx)
-          return "continue"
+      if (id === "?") {
+        this.enterList("named", ctx)
+        return "continue"
       }
+      return this.invokeMain(id, ctx)
     }
     if ((state.phase === "restore" || state.phase === "save") && id === "?") {
       this.enterList(state.phase, ctx)
@@ -638,11 +656,18 @@ export class UcsTool implements Tool {
     if (this.inMode()) this.selector()?.onPointerUp(input, ctx)
   }
 
-  /** Enter in a mode's prompt is the mode's; orthoGraphic's takes its default. */
+  /**
+   * Enter in a mode's prompt is the mode's; orthoGraphic's takes its default,
+   * NAmed's is the first prompt's World, though it shows none (probe ucs/p227).
+   */
   onEnter(ctx: ToolContext): boolean {
     if (this.state.phase === "orthographic") {
       this.setOrthographic(this.state.current, ctx)
       ctx.endCommand()
+      return true
+    }
+    if (this.state.phase === "named") {
+      this.finish(WORLD_UCS, null, ctx, { resetsElevation: true })
       return true
     }
     return this.inMode() && (this.selector()?.onEnter(ctx) ?? false)
@@ -1161,7 +1186,7 @@ export class UcsTool implements Tool {
     return true
   }
 
-  /** `Enter an option [Restore/Save/Delete/?]:`, keywords alone. */
+  /** `Enter an option [Restore/Save/Delete/?]:`, keywords alone (ucs/p230). */
   private enterNamed(ctx: ToolContext): void {
     this.state = { phase: "named" }
     ctx.dynamicInput.open({ fields: [], commit: () => {} })
@@ -1204,6 +1229,12 @@ export class UcsTool implements Tool {
       case "restore": {
         if (typed === "?") return this.enterList("restore", ctx)
         if (typed === "") return ctx.endCommand()
+        // A name no entry could hold is refused as a name, before it is
+        // looked up (probe ucs/p235).
+        if (INVALID_NAME.test(typed)) {
+          ctx.report(ctx.text.message("invalidUcsName"), "error")
+          return this.enterNamePrompt("restore", ctx)
+        }
         const entry = findNamed(table, typed)
         if (!entry) {
           ctx.report(ctx.text.message("ucsUndefined", { name: typed }), "error")
@@ -1267,15 +1298,20 @@ export class UcsTool implements Tool {
     this.openNameField("ucsListNames", ctx)
   }
 
+  /**
+   * Saves the current UCS as `name`; a replaced entry keeps its name as
+   * stored and its place, `aa` over `AA` leaving `AA` (probe ucs/p232).
+   */
   private save(name: string, ctx: ToolContext): void {
     const settings = ctx.document.getSettings()
-    const table = settings.namedUcs.filter(
-      (entry) => entry.name.toUpperCase() !== name.toUpperCase()
-    )
+    const stored = findNamed(settings.namedUcs, name)
+    const entry = { name: stored?.name ?? name, ucs: settings.ucs }
     ctx.execute(
       new UpdateSettingsCommand({
-        namedUcs: [...table, { name, ucs: settings.ucs }],
-        ucsName: name,
+        namedUcs: stored
+          ? settings.namedUcs.map((old) => (old === stored ? entry : old))
+          : [...settings.namedUcs, entry],
+        ucsName: entry.name,
       })
     )
   }
@@ -1419,8 +1455,11 @@ export function findNamed(
 export function listNamedUcs(patterns: string, ctx: ToolContext): void {
   const settings = ctx.document.getSettings()
   const wanted = patterns.split(",").map((part) => part.trim())
+  // WHY not currentName: the listing names no orthographic UCS, `*TOP*`
+  // listed `*WORLD*` and `*FRONT*` `*NO NAME*` (probes ucs/p219, p253, p261).
+  const listed = currentName({ ...settings, ucsOrthographic: null })
   const lines = [
-    ctx.text.message("listedUcsName", currentName(settings)),
+    ctx.text.message("listedUcsName", listed),
     "",
     ctx.text.message("savedUcsHeader"),
     "",

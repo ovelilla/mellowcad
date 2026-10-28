@@ -174,7 +174,7 @@ with `No matching view names found.`, es `Nombres de vista no encontrados.`, p32
 leaves the zoom where AutoCAD frames LIMITS (p333: no LIMITS here); the View Manager (VIEW runs
 -VIEW: the console knows no VIEW, p326), UCSORTHO and UCSBASE as variables, the aligned UCS in UCS
 Previous's list; the UCS named `*TOP*` after U of an orthographic preset from the WCS (AutoCAD
-keeps the WCS's axes under that name, p351; here `*WORLD*`)
+keeps the WCS's axes under that name, p351, and 2027 still does, ucs/p260; here `*WORLD*`)
 
 ### `3DORBIT` / `3DO` / `ORBIT` · es `3DORBITA` / `3DO` / `ORBIT`
 

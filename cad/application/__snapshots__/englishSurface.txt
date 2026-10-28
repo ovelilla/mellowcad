@@ -4778,7 +4778,7 @@ Specify next point or
   dyn: "X,Y"=""||*
   options: [F] Face, [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
-  info| Current ucs name:  PLOT
+  info| Current ucs name:  *WORLD*
 > R
   prompt: UCS Enter name of UCS to restore or [?]:
   asks: "Enter name of UCS to restore or"
@@ -4806,7 +4806,7 @@ Specify next point or
   dyn: "X,Y"=""||*
   options: [F] Face, [NA] NAmed, [OB] OBject, [P] Previous, [V] View, [W] World, [X] X, [Y] Y, [Z] Z, [ZA] ZAxis
   command| UCS
-  info| Current ucs name:  PLOT
+  info| Current ucs name:  *WORLD*
 > W
   prompt: Command:
   asks: -

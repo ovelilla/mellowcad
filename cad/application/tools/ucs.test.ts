@@ -291,6 +291,7 @@ describe("UCS", () => {
   })
 
   describe("NAmed", () => {
+    // probes ucs/p234, p240–p243
     it("saves, restores, lists and deletes by name", () => {
       const cad = turned(createHarness())
       cad.command("UCS").option("NAmed").option("Save").type("Site").enter()
@@ -311,17 +312,18 @@ describe("UCS", () => {
       expect(settings.ucs.origin).toBeCloseToPoint(p(100, 50))
     })
 
+    // probes ucs/p231, p232: the entry keeps its name as stored.
     it("asks before replacing a saved UCS", () => {
       const cad = createHarness()
       cad.command("UCS").option("NAmed").option("Save").type("A").enter()
       turned(cad)
       cad.command("UCS").option("NAmed").option("Save").type("a").enter()
       expect(cad.state().commandLine.prompt).toBe(
-        'UCS UCS "a" already exists.  Replace it? <N>:'
+        'UCS UCS "a" already exists.  Replace it? <N>'
       )
       cad.option("Yes")
       const [entry] = cad.runtime.document.getSettings().namedUcs
-      expect(entry.name).toBe("a")
+      expect(entry.name).toBe("A")
       expect(entry.ucs.origin).toBeCloseToPoint(p(100, 50))
     })
 

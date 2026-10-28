@@ -125,6 +125,7 @@ LIST (INQUIRY-D1: `docs/plans/inquiry-review.md`, which closed the circle review
 builds a dialog for it. The Dimensions review (`docs/plans/dimensions-review.md`) leaves angular
 chaining, dimension overrides and the Dimension Style Manager in `dimensions.md`'s Missing. The Inquiry
 review leaves the rail's other apostrophe macros (ATTDISP's, MATCHPROP's: `transparentMacro`) to
-the Workspace review. The View review (`docs/plans/view-review.md`) leaves UCS Restore's not-found
-words (`ucsUndefined`) and the `*TOP*` name after U to the UCS review, and AutoCAD's `<command>
-GROUP` undo names for the other toolbar and menu buttons to the Workspace review.
+the Workspace review. The View review (`docs/plans/view-review.md`) left UCS Restore's not-found
+words (`ucsUndefined`) and the `*TOP*` name after U to the UCS review, which settled them (UCS-D39,
+UCS-D43), and leaves AutoCAD's `<command> GROUP` undo names for the other toolbar and menu buttons
+to the Workspace review.

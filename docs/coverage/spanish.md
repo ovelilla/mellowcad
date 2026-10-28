@@ -60,10 +60,10 @@ positiva del eje Z` and Y's `Precise ángulo de rotación sobre eje Y`; `ACT/DES
 origen/Origen` from the 2026 help and the same captures;
   PLANTA's `[scp Actual/SCP/Universal]` and `Indique nombre de SCP o [?]` from aCADemia's 2014
   capture ("Entorno de trabajo en 3D", 1.ª parte), whose Universal differs from SCP's Univ.
-  **Unverified:** `Precise ángulo de rotación sobre eje X` and `…eje Z` (the capture shows Y's),
-  `*SIN NOMBRE*`
-  in the prompt line (the help's word), the `?` listing and the UCS-not-found message, in both
-  languages. Neither language's `acad.pgp` has an alias for UCS.
+  AutoCAD 2027's Spanish console settles `Precise ángulo de rotación sobre eje X` and `…eje Z`
+  (ucs/p124, p125), `*SIN NOMBRE*` in the prompt line, the `?` listing and Restore's
+  `No se puede encontrar SCP "NOMBRE".`, PLANTA's words (ucs/p231, p234, p243, p253). Neither
+  language's `acad.pgp` has an alias for UCS.
 - **Views:** `PTOVISTA`, `-PTOVISTA`, `VISTA`, `-VISTA` and `3DORBITA` from the Spanish pages with
   the English GUIDs. From aCADemia's 2014 captures of the Spanish product ("Entorno de trabajo en
   3D", 1.ª parte; "Coordenadas", 9.ª parte), which beat the help where they differ: -PTOVISTA's
@@ -74,7 +74,7 @@ origen/Origen` from the 2026 help and the same captures;
   the first prompt declares unlisted, `SOIso` / `SEIso` / `NEIso` / `NOIso`,
   `Regenerando modelo.`, `*** Cambiando al SCU ***` / `*** Volviendo al SCP ***` (the table's other
   string says `Conmutando a SCU`), PLANTA's `No se puede encontrar SCP "NOMBRE".` (the table's
-  `Imposible encontrar el SCP`, UCS Restore's, is not what PLANTA writes) and 3DORBITA's
+  `Imposible encontrar el SCP` is what neither PLANTA nor SCP's Restore writes, ucs/p234) and 3DORBITA's
   `Pulse ESC o INTRO para salir…`, in capitals where ENCUADRE's says `Esc o Intro`. Its installed
   `acad.pgp` and console give the aliases `-PV`, `PV` and `DDVPOINT` (PTOVISTA, p201, p260), `-VI`
   and `VI` (-VISTA and VISTA, p335), `3DO` and `ORBIT` (3DORBITA), `CUBE` (NAVVCUBE, p265), `E`

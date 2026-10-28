@@ -2734,7 +2734,7 @@ export const es: EngineLocale = {
         ">"
       ],
       "ucsUndefined": [
-        "Imposible encontrar el SCP \"",
+        "No se puede encontrar SCP \"",
         [
           "name"
         ],
@@ -2764,7 +2764,7 @@ export const es: EngineLocale = {
         ],
         " de SCP."
       ],
-      "invalidUcsName": "Nombre de SCP no válido.",
+      "invalidUcsName": "Nombre SCP no válido.",
       "coincidentWithFirstPoint": "Coincide con el primer punto",
       "pointsAreColinear": "Puntos colineales",
       "pointsAreCoincident": "Los puntos coinciden",

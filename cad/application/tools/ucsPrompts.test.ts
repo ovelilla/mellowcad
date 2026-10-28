@@ -144,6 +144,7 @@ describe("UCS asks as AutoCAD 2027", () => {
     ])
   })
 
+  // probes ucs/p230, p231: no colon after the replace question's `<N>`.
   it("saves by name and asks before replacing one, ending on No or Enter", () => {
     const cad = createHarness()
     cad.command("UCS")
@@ -163,13 +164,14 @@ describe("UCS asks as AutoCAD 2027", () => {
       `${ORIGIN} NA`,
       "Enter an option [Restore/Save/Delete/?]: S",
       "Enter name to save current UCS or [?]: AA",
-      'UCS "AA" already exists.  Replace it? <N>: FOO',
+      'UCS "AA" already exists.  Replace it? <N> FOO',
       "Yes or No, please.",
-      'UCS "AA" already exists.  Replace it? <N>:',
+      'UCS "AA" already exists.  Replace it? <N>',
     ])
     expect(cad.activeToolId()).toBe("select")
   })
 
+  // probes ucs/p236, p249
   it("refuses a name it cannot save, and Enter saves none", () => {
     const cad = createHarness()
     cad.command("UCS")
@@ -184,6 +186,7 @@ describe("UCS asks as AutoCAD 2027", () => {
     expect(cad.activeToolId()).toBe("select")
   })
 
+  // probes ucs/p234, p235, p240–p243
   it("restores, lists as AutoCAD lays it out and deletes by name", () => {
     const cad = createHarness()
     cad.command("UCS")
@@ -220,6 +223,7 @@ describe("UCS asks as AutoCAD 2027", () => {
     expect(cad.commandLog().at(-1)).toBe("Deleted 1 UCS name.")
   })
 
+  // probes ucs/p107, p127, p230, p234 (es)
   it("asks and refuses in Autodesk's Spanish", () => {
     const cad = createHarness({ locale: es })
     cad.command("SCP")
@@ -243,8 +247,248 @@ describe("UCS asks as AutoCAD 2027", () => {
       "Opción no válida.",
       "Indique una opción [Rest/Guardar/Supr/?]: R",
       "Indique nombre de SCP para restaurarlo o [?]: FOO",
-      'Imposible encontrar el SCP "FOO".',
+      'No se puede encontrar SCP "FOO".',
     ])
+  })
+})
+
+const settings = (cad: CadHarness) => cad.runtime.document.getSettings()
+
+/** UCS's first line, the name it calls the current UCS by. */
+function nameLine(cad: CadHarness): string {
+  answer(cad, "UCS")
+  const line = cad.commandLog().at(-1)!
+  cad.escape()
+  return line
+}
+
+/** The `?` listing's first line, from UCS's first prompt or PLAN's Ucs. */
+function listedLine(cad: CadHarness, ...asked: string[]): string {
+  answer(cad, ...(asked.length > 0 ? asked : ["UCS"]), "?", "")
+  const line = cad.commandLog().at(-1)!.split("\n")[0]
+  cad.escape()
+  return line
+}
+
+describe("UCS's NAmed and its table, as AutoCAD 2027's console", () => {
+  // probe ucs/p227: NAmed's Enter is the first prompt's, World.
+  it("takes NAmed's Enter for World, ELEVATION back to 0", () => {
+    const cad = createHarness()
+    answer(cad, "ELEV", "5", "0", "UCS", "FR", "UCS", "NA")
+    expect(cad.state().commandLine.prompt).toBe(
+      "UCS Enter an option [Restore/Save/Delete/?]:"
+    )
+    cad.enter()
+    expect(cad.activeToolId()).toBe("select")
+    expect(settings(cad).elevation).toBe(0)
+    expect(settings(cad).ucsOrthographic).toBeNull()
+    cad.undo()
+    expect(settings(cad).ucsOrthographic).toBe("front")
+    expect(settings(cad).elevation).toBe(5)
+  })
+
+  // probes ucs/p228, p229, p230: NAmed's `initget` is the first prompt's
+  // 28 words; those it does not list do what they do there.
+  it("answers the first prompt's words at NAmed's prompt", () => {
+    const cad = createHarness()
+    answer(cad, "UCS", "O", "5,5,0", "UCS", "NA", "W")
+    expect(settings(cad).ucs.origin).toEqual({ x: 0, y: 0, z: 0 })
+    answer(cad, "UCS", "NA", "T")
+    expect(nameLine(cad)).toBe("Current ucs name:  *TOP*")
+    answer(cad, "UCS", "NA", "O")
+    expect(cad.state().commandLine.prompt).toBe(
+      "UCS Specify new origin point <0,0,0>:"
+    )
+    cad.escape()
+    const spanish = createHarness({ locale: es })
+    answer(spanish, "SCP", "UA", "SU")
+    expect(settings(spanish).ucsOrthographic).toBe("top")
+  })
+
+  // probe ucs/p232: `aa` replaces `AA` and the entry keeps its name.
+  it("keeps a replaced entry's name as stored", () => {
+    const cad = createHarness()
+    answer(cad, "UCS", "NA", "S", "AA", "UCS", "O", "5,5,0")
+    answer(cad, "UCS", "NA", "S", "aa")
+    expect(cad.state().commandLine.prompt).toBe(
+      'UCS UCS "aa" already exists.  Replace it? <N>'
+    )
+    answer(cad, "Y")
+    expect(settings(cad).namedUcs.map((entry) => entry.name)).toEqual(["AA"])
+    expect(settings(cad).ucsName).toBe("AA")
+    expect(settings(cad).namedUcs[0].ucs.origin).toEqual({ x: 5, y: 5, z: 0 })
+  })
+
+  // probes ucs/p231, p267 (es): `S` replaces, `Y` is no Spanish answer.
+  it("asks before replacing in Spanish, taking S and refusing Y", () => {
+    const cad = createHarness({ locale: es })
+    answer(cad, "SCP", "UA", "G", "AA", "SCP", "OR", "5,5,0")
+    answer(cad, "SCP", "UA", "G", "AA")
+    expect(cad.state().commandLine.prompt).toBe(
+      'SCP El SCP "AA" ya existe. Reemplácelo.? <N>'
+    )
+    answer(cad, "S")
+    expect(settings(cad).namedUcs[0].ucs.origin).toEqual({ x: 5, y: 5, z: 0 })
+    answer(cad, "SCP", "OR", "7,7,0", "SCP", "UA", "G", "AA", "Y")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      'El SCP "AA" ya existe. Reemplácelo.? <N> Y',
+      "Sí o No.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      'SCP El SCP "AA" ya existe. Reemplácelo.? <N>'
+    )
+    cad.enter()
+    expect(settings(cad).namedUcs[0].ucs.origin).toEqual({ x: 5, y: 5, z: 0 })
+  })
+
+  // probe ucs/p234: Restore finds a name whatever its case.
+  it("restores case-blind, the stored name current", () => {
+    const cad = createHarness()
+    answer(cad, "UCS", "O", "5,5,0", "UCS", "NA", "S", "AA", "UCS", "W")
+    answer(cad, "UCS", "NA", "R", "aa")
+    expect(settings(cad).ucsName).toBe("AA")
+    expect(settings(cad).ucs.origin).toEqual({ x: 5, y: 5, z: 0 })
+  })
+
+  // probes ucs/p234, p248, p258 (es): PLAN's words, not table 27139's.
+  it("says in Spanish that Restore cannot find a name, and asks again", () => {
+    const cad = createHarness({ locale: es })
+    answer(cad, "SCP", "UA", "R", "BB")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Indique nombre de SCP para restaurarlo o [?]: BB",
+      'No se puede encontrar SCP "BB".',
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "SCP Indique nombre de SCP para restaurarlo o [?]:"
+    )
+  })
+
+  // probes ucs/p235, p236: a name it could never have saved is refused as
+  // a name before it is looked up, and asked again.
+  it("refuses at Restore a name with characters no name holds", () => {
+    const cad = createHarness()
+    answer(cad, "UCS", "NA", "R", 'A"B')
+    expect(cad.commandLog().slice(-2)).toEqual([
+      'Enter name of UCS to restore or [?]: A"B',
+      "Invalid UCS name.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "UCS Enter name of UCS to restore or [?]:"
+    )
+    const spanish = createHarness({ locale: es })
+    answer(spanish, "SCP", "UA", "R", 'A"B')
+    expect(spanish.commandLog().at(-1)).toBe("Nombre SCP no válido.")
+  })
+
+  // probes ucs/p236, p239 (es)
+  it("refuses a name it cannot save in Spanish", () => {
+    const cad = createHarness({ locale: es })
+    answer(cad, "SCP", "UA", "G", "*")
+    expect(cad.commandLog().at(-1)).toBe("Nombre SCP no válido.")
+  })
+
+  // probes ucs/p236, p238, p239: the characters a name may not hold, 255
+  // characters at most; `-$_.`, accents, `'#~` and digits it may.
+  it("saves the names AutoCAD saves, refusing the rest", () => {
+    const refused = [
+      ...'<>/\\":;|,=`*?'.split("").map((c) => `A${c}B`),
+      "*",
+      "A".repeat(256),
+    ]
+    for (const name of refused) {
+      const cad = createHarness()
+      answer(cad, "UCS", "NA", "S", name)
+      expect(cad.commandLog().at(-1), name).toBe("Invalid UCS name.")
+      expect(settings(cad).namedUcs, name).toEqual([])
+    }
+    for (const name of ["A-B$_.C", "Á'#~1", "B".repeat(255)]) {
+      const cad = createHarness()
+      answer(cad, "UCS", "NA", "S", name)
+      expect(settings(cad).ucsName, name).toBe(name)
+    }
+  })
+
+  // probe ucs/p256: a transparent command typed at Save's name is a name.
+  it("takes an apostrophe and a command at Save's name as the name", () => {
+    const cad = createHarness()
+    answer(cad, "UCS", "NA", "S", "'ORTHOMODE")
+    expect(settings(cad).ucsName).toBe("'ORTHOMODE")
+    expect(cad.activeToolId()).toBe("select")
+  })
+
+  // probes ucs/p240, p241: the current one deleted leaves its UCS unnamed.
+  it("deletes by commas and wildcards, the current one too", () => {
+    const cad = createHarness()
+    answer(cad, "UCS", "NA", "S", "AA", "UCS", "O", "1,0,0")
+    answer(cad, "UCS", "NA", "S", "AB", "UCS", "O", "2,0,0")
+    answer(cad, "UCS", "NA", "S", "BB", "UCS", "O", "3,0,0")
+    answer(cad, "UCS", "NA", "S", "CC")
+    const ucs = settings(cad).ucs
+    answer(cad, "UCS", "NA", "D", "A*,CC")
+    expect(cad.commandLog().at(-1)).toBe("Deleted 3 UCS names.")
+    expect(settings(cad).namedUcs.map((entry) => entry.name)).toEqual(["BB"])
+    expect(settings(cad).ucs).toEqual(ucs)
+    expect(nameLine(cad)).toBe("Current ucs name:  *NO NAME*")
+    answer(cad, "UCS", "NA", "D", "ZZ")
+    expect(cad.commandLog().at(-1)).toBe("  No matching UCS names found.")
+    answer(cad, "UCS", "NA", "D", "")
+    expect(settings(cad).namedUcs.map((entry) => entry.name)).toEqual(["BB"])
+  })
+
+  // probes ucs/p240, p241 (es): `Suprimidos 3 nombres`, `Suprimidos 1 nombre`.
+  it("counts what it deleted in Spanish", () => {
+    const cad = createHarness({ locale: es })
+    answer(cad, "SCP", "UA", "G", "AA", "SCP", "OR", "1,0,0")
+    answer(cad, "SCP", "UA", "G", "AB", "SCP", "OR", "2,0,0")
+    answer(cad, "SCP", "UA", "G", "CC", "SCP", "OR", "3,0,0")
+    answer(cad, "SCP", "UA", "G", "BB")
+    answer(cad, "SCP", "UA", "S", "A*,CC")
+    expect(cad.commandLog().at(-1)).toBe("Suprimidos 3 nombres de SCP.")
+    answer(cad, "SCP", "UA", "S", "bb")
+    expect(cad.commandLog().at(-1)).toBe("Suprimidos 1 nombre de SCP.")
+  })
+
+  // probe ucs/p245: Previous steps back across a restore, and forward
+  // again to the restored name.
+  it("steps Previous back across a restore", () => {
+    const cad = createHarness()
+    answer(cad, "UCS", "O", "5,5,0", "UCS", "NA", "S", "AA", "UCS", "W")
+    answer(cad, "UCS", "NA", "R", "AA", "UCS", "P")
+    expect(settings(cad).ucs.origin).toEqual({ x: 0, y: 0, z: 0 })
+    expect(nameLine(cad)).toBe("Current ucs name:  *WORLD*")
+    answer(cad, "UCS", "P")
+    expect(settings(cad).ucsName).toBe("AA")
+    expect(settings(cad).ucs.origin).toEqual({ x: 5, y: 5, z: 0 })
+  })
+
+  // probe ucs/p262: Previous gives back an orthographic UCS by its name, and
+  // a saved one after an orthographic UCS.
+  it("steps Previous back to an orthographic UCS and to a saved one", () => {
+    const cad = createHarness()
+    answer(cad, "UCS", "FR", "UCS", "Z", "30", "UCS", "P")
+    expect(nameLine(cad)).toBe("Current ucs name:  *FRONT*")
+    answer(cad, "UCS", "NA", "S", "AA", "UCS", "BA", "UCS", "P")
+    expect(nameLine(cad)).toBe("Current ucs name:  AA")
+  })
+
+  // probes ucs/p219, p261, p253 (es): the listing leaves the orthographic
+  // UCS's name out, as UCS's own first line does not.
+  it("lists an orthographic UCS as unnamed, or as the WCS when it is", () => {
+    const front = createHarness()
+    answer(front, "UCS", "FR")
+    expect(listedLine(front)).toBe("Current ucs name: *NO NAME*")
+    expect(listedLine(front, "PLAN", "U")).toBe("Current ucs name: *NO NAME*")
+    const top = createHarness()
+    answer(top, "UCS", "T")
+    expect(listedLine(top)).toBe("Current ucs name: *WORLD*")
+    expect(nameLine(top)).toBe("Current ucs name:  *TOP*")
+    const spanish = createHarness({ locale: es })
+    answer(spanish, "SCP", "SU")
+    expect(listedLine(spanish, "SCP")).toBe("Nombre de scp actual: *UNIVERSAL*")
+    answer(spanish, "SCP", "F")
+    expect(listedLine(spanish, "SCP")).toBe(
+      "Nombre de scp actual: *SIN NOMBRE*"
+    )
   })
 })
 

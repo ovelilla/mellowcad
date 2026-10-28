@@ -10,13 +10,23 @@ is drawn in a tilted UCS takes its Z as the normal. The commands work in the UCS
 `Specify origin of UCS or [Face/NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:` (Face
 listed as 2027 lists it, probes ucs/p100, p101),
 `Specify point on X-axis or <accept>:`, `Specify point on the XY plane or <accept>:`, NAmed's
-`Enter an option [Restore/Save/Delete/?]:`, `Enter name of UCS to restore or [?]:`,
-`Enter name to save current UCS or [?]:` (Enter saves none; `Invalid UCS name.`),
-`UCS "AA" already exists.  Replace it? <N>:` (No or Enter ends with nothing saved;
-`Yes or No, please.`), `Enter UCS name(s) to delete <none>:` (`Deleted 1 UCS name.`,
-`  No matching UCS names found.`), `Enter UCS name(s) to list <*>:` and its listing as AutoCAD lays
-it out (`Current ucs name: "AA"`, `Saved coordinate systems:`, each `"NAME"` with its
-`     Origin = <…>, X Axis = <…>` / `     Y Axis = <…>, Z Axis = <…>` in the drawing's units),
+`Enter an option [Restore/Save/Delete/?]:` (its `initget` is the first prompt's: the words it does
+not list do what they do there, `W` the WCS, `T` `*TOP*`, and its Enter is World, ELEVATION back
+to 0, though it shows no default, p227–p230, p260), `Enter name of UCS to restore or [?]:`
+(case-blind, the name as stored made current, p234; a name with a character no name holds
+`Invalid UCS name.` before it is looked up, p235, and asked again),
+`Enter name to save current UCS or [?]:` (Enter saves none; `Invalid UCS name.` for any of
+`<>/\":;|,=*?` and `` ` `` or over 255 characters, `-$_.`, accents, `'#~` and digits taken, and `'ORTHOMODE`
+a name, p236, p238, p239, p256),
+`UCS "AA" already exists.  Replace it? <N>` (no colon; Yes replaces the entry in place, keeping
+its name as stored, `aa` over `AA` leaving `AA` current, p232; No or Enter ends with nothing saved;
+`Yes or No, please.`, p231, p233), `Enter UCS name(s) to delete <none>:` (`Deleted 1 UCS name.`,
+`  No matching UCS names found.`, p240, p241), `Enter UCS name(s) to list <*>:` and its listing as
+AutoCAD lays it out (`Current ucs name: "AA"`, an orthographic UCS left out of that line — `*TOP*`
+listed `*WORLD*`, `*FRONT*` `*NO NAME*`, p219, p253, p261, PLAN's `?` too —,
+`Saved coordinate systems:`, each `"NAME"` with its
+`     Origin = <…>, X Axis = <…>` / `     Y Axis = <…>, Z Axis = <…>` in the drawing's units, p242,
+p243),
 `Select object to align UCS:`, ZAxis's Object `Select object:`, Previous with none
 `No previous coordinate system saved.`; each refusing as AutoCAD 2023's console does
 (`Point or option keyword required.`, `Invalid point.`,
@@ -26,7 +36,9 @@ it out (`Current ucs name: "AA"`, `Saved coordinate systems:`, each `"NAME"` wit
 table (`Indique origen de SCP o [Cara/gUArdado/oBjeto/PRev/Vista/Univ/X/Y/Z/ejEZ] <Univ>`,
 `Precise punto en eje X o <Aceptar>`, `Precise nuevo punto de origen u [Objeto] <0,0,0>`,
 `Indique una opción [Rest/Guardar/Supr/?]`, `Designe el objeto a alinear con el SCP`,
-`Suprimidos 1 nombre de SCP.`, `Sí o No.`); origin (with its Z; one given without a Z lies at
+`Suprimidos 1 nombre de SCP.`, `Sí o No.`; from the console, which no table holds,
+`Nombre SCP no válido.`, p236, and the replace question `El SCP "AA" ya existe. Reemplácelo.? <N>`,
+answered `S`, `Y` refused, p231, p267); origin (with its Z; one given without a Z lies at
 ELEVATION above the current UCS's plane, p144), then a point on X, then one on the XY plane, each
 with its Z: the point on X typed in the UCS moved to that origin (`100,0`, `200,50` lays X along
 200,50, p111, p113), the third in the frame of the new origin and the new X, its Y the current Z ×
@@ -37,7 +49,7 @@ the current one leaves it `*NO NAME*`) / `?` (origin and axes relative to the cu
 (line, circle, arc, ellipse, polyline segment, spline, text, multiline text, attribute definition,
 block reference, as aCADemia's table gives them; the origin at the object's Z there, the Z its
 normal — a line's, its extrusion, the line in the new XZ plane); Previous (10, per session, with
-their names); View (XY square to the line of sight, X and Y along the screen's horizontal and
+their names, a restored and an orthographic one among them, p245, p262); View (XY square to the line of sight, X and Y along the screen's horizontal and
 vertical, the origin kept); World (Enter's default); X / Y / Z (UCSAXISANG 90 by default, typed, or
 one point, clicked or typed, its heading from the UCS's origin in its XY plane, 0 on the origin,
 p124, p125, p402; turned by the right-hand rule); ZAxis (a new origin, Enter keeping the current
@@ -59,7 +71,8 @@ The X / Y / Z and ZAxis prompts are AutoCAD 2023's console's
 (`Specify rotation angle about X axis <90>:`, `Specify new origin point or [Object] <0,0,0>:`,
 `Specify point on positive portion of Z-axis`; es `Precise ángulo de rotación sobre eje X`,
 `Precise punto en parte positiva del eje Z`); a name Restore cannot find says
-`Cannot find UCS "NAME".` (es `Imposible encontrar el SCP "NAME".`) and asks again; the words the
+`Cannot find UCS "NAME".` (es `No se puede encontrar SCP "NAME".`, PLANTA's words, not table
+27139's, p234, p248) and asks again; the words the
 first prompt declares and does not list (its `initget`, p200), answered as AutoCAD 2027's console
 answers them (p200–p227, p263–p269, in both languages): Origin (`O`, `Specify new origin point
 <0,0,0>:`, the axes kept, `Invalid point.`; its answer sets the UCS again, so its Enter, and Origin
@@ -104,9 +117,7 @@ p424)
 
 **Missing:** the listing's `Press ENTER to continue:` (the console pauses there; no page is
 long enough here), Group at OBject's picks, **unverified**: where OBject reads an ellipse, a
-polyline or a spline taken by a mode (at its start here); **unverified**: es's
-replace prompt, composed from the table's `El SCP "AA" ya existe. Reemplácelo.` and the yes-or-no
-question's `? <N>`; Face's UCS on a solid's, surface's or mesh's face (there are none here: its
+polyline or a spline taken by a mode (at its start here); Face's UCS on a solid's, surface's or mesh's face (there are none here: its
 pick, modes and refusals are built, every one finding none); Apply
 (`Pick viewport to apply current UCS or [All]<current>:`, es
 `Designe ventana en la que aplicar SCP actual o [Todas]<actual>:`, `FOO` `Invalid option keyword.`,

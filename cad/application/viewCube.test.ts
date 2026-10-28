@@ -391,25 +391,42 @@ describe("NAVVCUBE", () => {
   })
 })
 
+const ORIGIN =
+  "Specify origin of UCS or [Face/NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:"
+
 describe("the UCS menu", () => {
   it("restores a saved UCS or the WCS, as UCS does, undoably", () => {
     const cad = createHarness()
     cad.command("UCS").type("10,20,0").enter().enter()
     cad.command("UCS").option("NAmed").option("Save").type("A").enter()
+    let from = cad.commandLog().length
     cad.runtime.restoreUcs(null)
     expect(cad.state().ucsMenu).toEqual({
       world: true,
       name: null,
       named: ["A"],
     })
+    // The menu's macros, `_UCS _World` and `_UCS _NAmed _Restore`, echoed.
+    expect(cad.commandLog().slice(from)).toEqual([
+      "UCS",
+      "Current ucs name:  A",
+      `${ORIGIN} _World`,
+    ])
 
+    from = cad.commandLog().length
     expect(cad.runtime.restoreUcs("A")).toBe(true)
     expect(cad.state().ucsMenu).toEqual({
       world: false,
       name: "A",
       named: ["A"],
     })
-    expect(cad.commandLog()).toContain("UCS")
+    expect(cad.commandLog().slice(from)).toEqual([
+      "UCS",
+      "Current ucs name:  *WORLD*",
+      `${ORIGIN} _NAmed`,
+      "Enter an option [Restore/Save/Delete/?]: _Restore",
+      "Enter name of UCS to restore or [?]: A",
+    ])
 
     cad.undo()
     expect(cad.state().ucsMenu.world).toBe(true)
