@@ -239,7 +239,7 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   `engine.dynamicOptionKey` (the Down arrow's option list, the chips marked from
   `state.commandOptionList`), which the drawing's `keyDown` asks too. It reclaims focus only where
   `engine.mayTakeFocus` allows (not while another field is being typed in). The command line's
-  Space is Enter whatever is typed.
+  Space is Enter whatever is typed, but after a name that holds spaces (`takesSpaces`, ucs/d05).
 - **A dialog** only where AutoCAD has one (UNITS): engine state, opened by the command, applied as
   one undo step through the engine. No command palette (Ctrl+K): the command line is that. No
   product or meta copy in the editor: that is the landing's.

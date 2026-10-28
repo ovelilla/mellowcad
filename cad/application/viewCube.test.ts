@@ -431,6 +431,38 @@ describe("the UCS menu", () => {
     cad.undo()
     expect(cad.state().ucsMenu.world).toBe(true)
   })
+
+  // desktop ucs/d03-4, d03-5, d03-8, d03-9: an unnamed UCS, `*FRONT*` and
+  // `*TOP*` alike, is no WCS, the menu's `Unnamed`.
+  it("reads only *WORLD* as the WCS, an orthographic UCS as unnamed", () => {
+    const cad = createHarness()
+    answer(cad, "UCS", "NA", "S", "A")
+    expect(cad.state().ucsMenu).toEqual({
+      world: false,
+      name: "A",
+      named: ["A"],
+    })
+    for (const view of ["T", "FR"]) {
+      answer(cad, "UCS", "G", view)
+      expect(cad.state().ucsMenu).toEqual({
+        world: false,
+        name: null,
+        named: ["A"],
+      })
+    }
+    answer(cad, "UCS", "5,5", "", "")
+    expect(cad.state().ucsMenu).toEqual({
+      world: false,
+      name: null,
+      named: ["A"],
+    })
+    answer(cad, "UCS", "W")
+    expect(cad.state().ucsMenu).toEqual({
+      world: true,
+      name: null,
+      named: ["A"],
+    })
+  })
 })
 
 // AutoCAD 2027's desktop (research/probes/view d05, VWD): each action is an

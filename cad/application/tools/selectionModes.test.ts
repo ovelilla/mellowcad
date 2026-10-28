@@ -1703,27 +1703,26 @@ describe("UCS OBject's and ZAxis Object's picks", () => {
     at(cad, [110, 60], [-0.894427191, -0.4472135955])
   })
 
-  it("rolls over what each pick takes, as every single pick does: a locked object at OBject only", () => {
-    const hovered = (cad: CadHarness) =>
+  // OBject's hover is the selection's glow, ZAxis Object's the rollover
+  // (desktop ucs/d06-1, d06-6).
+  it("highlights what each pick takes: a locked object at OBject only", () => {
+    const hovered = (cad: CadHarness, color: string) =>
       cad
         .scene()
         .primitives.some(
-          (prim) =>
-            prim.kind === "segment" &&
-            prim.stroke.color === THEME.entityHover &&
-            prim.stroke.width === 2
+          (prim) => prim.kind === "segment" && prim.stroke.color === color
         )
     const cad = withLocked([lockedLine(), lineOf(p(10, -30), p(60, -30))])
     cad.command("UCS").option("OBject").moveTo(p(150, 150))
-    expect(hovered(cad)).toBe(false)
+    expect(hovered(cad, THEME.selected)).toBe(false)
     cad.moveTo(p(35, 35))
-    expect(hovered(cad)).toBe(true)
+    expect(hovered(cad, THEME.selected)).toBe(true)
     cad.escape()
 
     cad.command("UCS").option("ZAxis").option("Object").moveTo(p(35, 35))
-    expect(hovered(cad)).toBe(false)
+    expect(hovered(cad, THEME.entityHover)).toBe(false)
     cad.moveTo(p(35, -30))
-    expect(hovered(cad)).toBe(true)
+    expect(hovered(cad, THEME.entityHover)).toBe(true)
     cad.escape()
   })
 })

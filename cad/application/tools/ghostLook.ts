@@ -54,3 +54,21 @@ export function rollover(ctx: ToolContext, entity: Entity): ScenePrimitive[] {
     { blocks: ctx.blocks, ...(dimStyle ? { dimStyle } : {}) }
   )
 }
+
+/**
+ * The selection's glow over `entity`, as a selected object wears it: UCS
+ * OBject's hover (desktop ucs/d06-1, d06-2).
+ */
+export function glow(ctx: ToolContext, entity: Entity): ScenePrimitive[] {
+  const settings = ctx.document.getSettings()
+  const stroke = entityStroke(
+    ctx.viewport,
+    entity,
+    ctx.document.getLayer(entity.layerId),
+    settings
+  )
+  return selectionGlow(ctx.viewport, entity, stroke, {
+    fill: settings.fillMode,
+    blocks: ctx.blocks,
+  })
+}

@@ -3531,6 +3531,7 @@ export const en: EngineCatalog = {
       "zNegative": "-Z",
       "ucsIconX": "X",
       "ucsIconY": "Y",
+      "ucsIconZ": "Z",
       "measureDistance": [
         "Dist  ",
         [

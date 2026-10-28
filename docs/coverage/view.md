@@ -235,8 +235,11 @@ its orientation only, in the WCS, saved in the drawing, Top/Left/Front (SW Isome
 side, upright, from the plan too (d05: S gives VIEWDIR 0,-1,0 from Top and from SW Isometric), and
 dragging the ring turns the azimuth alone; the right-click menu: Home, Parallel (checked, the only
 projection), Set Current View as Home (no undo step); the
-UCS menu under it: WCS, the saved UCSs, New UCS, run as UCS World / NAmed Restore / UCS, echoed and
-undone like them (`*NO NAME*` reads Unnamed); 50 % opacity until the cursor is over it; in a
+UCS menu under it: its button the current UCS's name (WCS only for `*WORLD*`), then WCS · the saved
+UCSs and an unsaved or orthographic current one, `Unnamed` (es `S-nombre`), checked · New UCS
+(ucs/d03-1, d03-5, d03-9, e01-8), run as UCS World / NAmed Restore / UCS, echoed and undone like them
+(2027 writes the prompts alone, without `UCS` or the answers, and U names `UCS GROUP`: no macro here
+echoes so, UCS-D103); 50 % opacity until the cursor is over it; in a
 right-to-left page its column sits top left with the palettes (no AutoCAD is right to left), the
 cube itself unmirrored
 

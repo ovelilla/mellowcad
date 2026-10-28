@@ -173,7 +173,7 @@ describe("a tilted UCS", () => {
             primitive.kind === "path" &&
             primitive.closed &&
             primitive.points.length === 4 &&
-            primitive.stroke?.color === THEME.crosshair
+            primitive.stroke?.color === THEME.ucsIcon
         ).length
     const cad = createHarness({ ucsIcon: true })
     expect(squares(cad)).toBe(1)

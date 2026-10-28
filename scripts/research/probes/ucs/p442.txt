@@ -1,0 +1,18 @@
+_UCS
+20,10
+
+
+_UCS
+@10,0
+
+(list (getvar "UCSORG") (trans (getvar "LASTPOINT") 1 0))
+_UCS
+_W
+_UCS
+20,10
+
+
+_UCS
+@
+
+(list (getvar "UCSORG") (trans (getvar "LASTPOINT") 1 0))

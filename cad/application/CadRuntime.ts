@@ -111,6 +111,7 @@ import { PasteTool } from "./tools/PasteTool"
 import { directionFromUcsHeading, headingInUcs } from "./tools/ucsHeading"
 import { pointAtDistance } from "./tools/directDistance"
 import { ViewPreset, currentViewPreset } from "./tools/viewPresets"
+import { currentName } from "./tools/UcsTool"
 import {
   CompassLetter,
   ViewCubePart,
@@ -1613,6 +1614,15 @@ export class CadRuntime extends Observable {
     )
   }
 
+  /** Whether the box's field takes a space typed at the command line. */
+  private takesSpaces(): boolean {
+    const id = this.dynamicInput.getActiveFieldId()
+    return (
+      this.dynamicInput.getSession()?.fields.find((field) => field.id === id)
+        ?.takesSpaces === true
+    )
+  }
+
   /** Whether the box asks for text, which takes whatever is typed. */
   private takesText(): boolean {
     return (this.dynamicInput.getSession()?.fields ?? []).some((field) =>
@@ -1846,8 +1856,13 @@ export class CadRuntime extends Observable {
     const text = typed.trim()
     if (!isCoordinateExpression(text)) return null
     const base = this.fromBase ?? this.toolAnchor()
+    const from =
+      this.fromBase === null &&
+      (this.activeTool.relativeFromLastPoint?.() ?? false)
+        ? null
+        : base
     return parseCoordinate(text, {
-      lastPoint: base ?? this.frame.pointToFrame(this.lastPoint),
+      lastPoint: from ?? this.frame.pointToFrame(this.lastPoint),
       relativeByDefault: base !== null,
       ucs: this.frame.ucs,
       elevation: this.document.getSettings().elevation,
@@ -5048,6 +5063,7 @@ export class CadRuntime extends Observable {
               world: isWorldUcs(settings.ucs),
               xLabel: this.text.feedback("ucsIconX"),
               yLabel: this.text.feedback("ucsIconY"),
+              zLabel: this.text.feedback("ucsIconZ"),
             }
           : null,
       ltScale: settings.ltScale,
@@ -5878,6 +5894,14 @@ export class CadRuntime extends Observable {
         return true
       }
 
+      // A name that holds spaces takes one after what is typed (desktop
+      // ucs/d05); at its start Space is still Enter.
+      if (e.key === " " && typed.trim() !== "" && this.takesSpaces()) {
+        this.commandLine.appendChar(" ")
+        this.invalidateState()
+        return true
+      }
+
       // Space is Enter at the command prompt (AutoCAD). With an empty prompt it
       // falls through, because tools use it to confirm a selection set.
       if ((e.key === "Enter" || e.key === " ") && typed.trim() !== "") {
@@ -6447,7 +6471,9 @@ export class CadRuntime extends Observable {
       view: { preset: currentViewPreset(this.viewport) },
       viewCube: this.viewCubeState(),
       ucsMenu: {
-        world: isWorldUcs(settings.ucs),
+        // WHY by name: a saved one is its name, `*TOP*` `Unnamed`, though
+        // either may be the WCS's axes (desktop ucs/d03-3, d03-9).
+        world: currentName(settings).kind === "world",
         name: settings.ucsName,
         named: settings.namedUcs.map((entry) => entry.name),
       },
@@ -6582,6 +6608,7 @@ export class CadRuntime extends Observable {
         question: prompt.echo,
         idlePrompt: this.text.idlePrompt(),
         buffer: this.commandLine.getBuffer(),
+        takesSpaces: this.takesSpaces(),
         lines: this.commandLine.getLines(),
         suggestions: matchCommands(
           this.commandInfos,

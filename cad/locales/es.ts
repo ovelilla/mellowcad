@@ -3929,6 +3929,7 @@ export const es: EngineLocale = {
       "zNegative": "-Z",
       "ucsIconX": "X",
       "ucsIconY": "Y",
+      "ucsIconZ": "Z",
       "measureDistance": [
         "Dist  ",
         [

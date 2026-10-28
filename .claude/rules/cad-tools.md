@@ -85,11 +85,11 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
 **Pick through `ctx.pick(world)`, never `document.pick`**: it is where selection cycling
 chooses among overlapping objects.
 
-A prompt that asks "which object?" owes a rollover highlight in `buildOverlay` (update the state
-only when the hovered id changes): a **set** prompt → `THEME.entityHover`, width 2, skipping
-objects already in the set (ERASE's fades it and the set instead, `fadedEntityIds`), as is a
-single object's (`rollover`: BREAK's, FILLET's, ARRAYPATH's path; pieces/d01-1, corners/d01-1,
-arrays/d03-1); under an implied Tangent (Ttr), a marker (`snapMarker`).
+A prompt that asks "which object?" owes a rollover highlight in `buildOverlay` (its state set
+only as the hovered id changes): a **set** prompt → `THEME.entityHover`, width 2, skipping those
+in the set (ERASE fades it and the set instead, `fadedEntityIds`), as is a single object's
+(`rollover`: BREAK's, FILLET's, ARRAYPATH's; pieces/d01-1, corners/d01-1, arrays/d03-1; UCS
+OBject's `glow`, ucs/d06-1); at an implied Tangent (Ttr) a marker (`snapMarker`).
 
 **A set prompt counts all it finds**: refuse under the count (`refuse`) or leave it out when
 acting (HATCH's open objects); `accept` only where AutoCAD's prompt filters too (DIMSPACE,

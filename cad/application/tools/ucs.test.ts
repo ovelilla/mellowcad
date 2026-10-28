@@ -83,9 +83,14 @@ describe("UCS", () => {
   })
 
   it("reads the points it asks for in the UCS it is changing", () => {
-    const cad = turned(createHarness())
-    cad.command("UCS").type("10,0").enter().enter()
+    const cad = answer(turned(createHarness()), "UCS", "10,0", "")
     expect(ucsOf(cad).origin).toBeCloseToPoint(p(100, 60))
+
+    // The box's `10,0` is `@10,0`, from LASTPOINT, the WCS's origin as UCS
+    // starts, along the UCS's axes (probe ucs/p442, desktop d04-6).
+    const box = turned(createHarness())
+    box.command("UCS").type("10,0").enter().enter()
+    expect(ucsOf(box).origin).toBeCloseToPoint(p(0, 10))
   })
 
   // probes ucs/p111, p113, p151: the first prompt's point on X is read in

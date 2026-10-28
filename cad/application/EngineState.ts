@@ -348,6 +348,12 @@ export interface CommandLineUi {
   readonly idlePrompt: string
   /** What the user has typed so far, whether on the canvas or in the box. */
   readonly buffer: string
+  /**
+   * Whether Space types a space after what is typed rather than answering:
+   * a prompt whose answer holds spaces (UCS's names). Elsewhere the command
+   * line's Space is Enter.
+   */
+  readonly takesSpaces: boolean
   /** Scrollback: commands echoed, results and errors. */
   readonly lines: ReadonlyArray<CommandLineEntry>
   /** Autocomplete matches for the current buffer; empty when nothing typed. */

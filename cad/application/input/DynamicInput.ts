@@ -62,6 +62,13 @@ export interface DynamicField {
    * question, typed in the box or at the command line.
    */
   readonly endsAtSpace?: boolean
+  /**
+   * Space types a space at the command line too, where everywhere else it is
+   * Enter: UCS's Save and Restore names (desktop ucs/d05, `AB CD` saved whole
+   * though the trace says AllowSpaces false). The box's own text field takes
+   * one anyway.
+   */
+  readonly takesSpaces?: boolean
 }
 
 /**

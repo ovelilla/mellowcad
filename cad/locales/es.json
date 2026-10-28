@@ -1820,6 +1820,7 @@
       "zNegative": "-Z",
       "ucsIconX": "X",
       "ucsIconY": "Y",
+      "ucsIconZ": "Z",
       "measureDistance": "Dist  {value} {unit}",
       "measureAngle": "Áng   {value}°",
       "measureDeltaX": "ΔX    {value}",

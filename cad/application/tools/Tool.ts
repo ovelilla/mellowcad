@@ -579,6 +579,13 @@ export interface Tool {
    */
   snapsFromLastPoint?(): boolean
   /**
+   * Whether `@` and the box's relative point are read from LASTPOINT where
+   * the prompt's base is elsewhere: UCS's first prompt and ZAxis's origin,
+   * whose band starts at the UCS's origin (probe ucs/p442). False, the
+   * default: from the base ({@link getConstraintAnchor}).
+   */
+  relativeFromLastPoint?(): boolean
+  /**
    * Whether an object snap override, typed or chosen, answers a question
    * that takes no point ({@link wantsSnap} false): TRIM's and EXTEND's object
    * prompt, FILLET's and CHAMFER's, BREAK's `Select object:`, ARRAYPATH's

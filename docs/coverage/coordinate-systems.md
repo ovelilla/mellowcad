@@ -9,13 +9,18 @@ is drawn in a tilted UCS takes its Z as the normal. The commands work in the UCS
 **Implemented:** `Current ucs name:  *WORLD*` (`*NO NAME*` / the name), then
 `Specify origin of UCS or [Face/NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:` (Face
 listed as 2027 lists it, probes ucs/p100, p101),
-`Specify point on X-axis or <accept>:`, `Specify point on the XY plane or <accept>:`, NAmed's
+`Specify point on X-axis or <accept>:`, `Specify point on the XY plane or <accept>:` (at these, ZAxis's
+origin and its Z point the box is the Length / Angle pair from the base — the current UCS's origin
+at the first prompt and ZAxis's, the new origin after it —, a coordinate typed there read from it
+— at the first prompt and ZAxis's origin from LASTPOINT, as `@` is, p442 — and echoed `@30,0`, the command line's absolute, and a dashed amber band runs from the base, from
+the origin at X / Y / Z's angle too: desktop d04-1 to d04-8), NAmed's
 `Enter an option [Restore/Save/Delete/?]:` (its `initget` is the first prompt's: the words it does
 not list do what they do there, `W` the WCS, `T` `*TOP*`, and its Enter is World, ELEVATION back
 to 0, though it shows no default, p227–p230, p260), `Enter name of UCS to restore or [?]:`
 (case-blind, the name as stored made current, p234; a name with a character no name holds
 `Invalid UCS name.` before it is looked up, p235, and asked again),
-`Enter name to save current UCS or [?]:` (Enter saves none; `Invalid UCS name.` for any of
+`Enter name to save current UCS or [?]:` (its name and Restore's hold spaces, typed key by key at
+the command line too, `AB CD` saved whole, d05; Enter saves none; `Invalid UCS name.` for any of
 `<>/\":;|,=*?` and `` ` `` or over 255 characters, `-$_.`, accents, `'#~` and digits taken, and `'ORTHOMODE`
 a name, p236, p238, p239, p256),
 `UCS "AA" already exists.  Replace it? <N>` (no colon; Yes replaces the entry in place, keeping
@@ -51,8 +56,8 @@ block reference, as aCADemia's table gives them and p300–p309 confirm; the ori
 there, the Z its normal — a line's, its extrusion, the line in the new XZ plane; an object on a
 locked layer taken, picked or found, in silence, p338–p340; a hatch refused,
 `This object does not define a coordinate system` — es `Este objeto no define un sistema de
-coordenadas`, table 25599 — and UCS ended, the UCS kept and LASTPOINT at the pick, p311: said once
-where the console writes it twice, taken for its artefact until the desktop says otherwise);
+coordenadas`, table 25599 — and UCS ended, the UCS kept and LASTPOINT at the pick, p311: said once,
+as the desktop says it, where the console writes it twice, d06);
 Previous (10, per session, with
 their names, a restored and an orthographic one among them, p245, p262); View (XY square to the line of sight, X and Y along the screen's horizontal and
 vertical, the origin kept); World (Enter's default); X / Y / Z (UCSAXISANG 90 by default, typed, or
@@ -78,12 +83,12 @@ spline at their end nearer it, X towards the other, a polyline ending in a line 
 X towards its last, one ending in an arc at that arc's centre, X towards its first vertex, LASTPOINT
 left at the WCS's origin (p319); ZAxis Object at the end nearest the WCS origin (p336); a mode
 finding nothing at OBject `No object found` and UCS ends (p317), at ZAxis Object asked again (p437)
-— and the pick's hover is the
-single object's rollover, over the locked objects OBject takes (as BREAK's: **unverified** on
-the desktop here); a point typed there is a pick of
+— and OBject's hover is the selection's glow, a hatch's and a locked object's too, with the padlock
+over a locked one (d06-1 to d06-3), ZAxis Object's the white rollover, a locked one the padlock
+alone (d06-6, d06-7); a point typed there is a pick of
 the newest object under it, as a click is, LASTPOINT staying at that point, and on nothing — typed
 or clicked — `No object found`, which ends OBject with the UCS as it was and LASTPOINT at the point
-(a click's **unverified**: the console types, p327, p328), and asks ZAxis Object again (p329); an
+(a click's too, `ID @` at it, desktop d06; the console types, p327, p328), and asks ZAxis Object again (p329); an
 object snap typed at OBject's pick (`_END`, `_MID`) picks at the snapped point, LASTPOINT there
 (p432);
 OBject's Enter ends UCS (p317); one undo step; saved in the drawing; World (its keyword and the first prompt's Enter) puts ELEVATION back
@@ -128,8 +133,10 @@ unlisted Origin and Entity do what the first prompt's do); es as the console's (
 `3p`, `Entidad`, `DEsplazar`, `Ortogonal` — so `O` is Ortogonal there —, `Nuevo`, `SUperior` …
 `Derecha`, `profundidadZ`, `*SUPERIOR*`, `Precise nuevo punto de origen o [profundidadZ]<0,0,0>`,
 `[ejEZ/3p/oBjeto/Cara/Vista/X/Y/Z]`);
-LASTPOINT where the console leaves it — the WCS's origin as UCS starts (so `@` and a number at its
-first prompt and at OBject's pick are from there), then the last point given: an origin (3point's
+LASTPOINT where the console leaves it — the WCS's origin as UCS starts (so `@` at the first prompt and
+ZAxis's origin, typed or the box's relative point, and `@` and a number at OBject's pick are from
+there, p442; a bare number at the first prompt is measured here from the band's base, the current
+UCS's origin, **unverified** in a moved UCS), then the last point given: an origin (3point's
 and ZAxis' Enter giving the current one), ZAxis' Z point, 3point's third point, OBject's pick, the
 first prompt's third point, typed or clicked (`*100,100` is the WCS's 100,100, p401) — never a
 point on X, an angle given by a point, Zdepth (p211, p213), nor Enter at Origin, Move or New; a pick
@@ -150,7 +157,22 @@ p269: no section objects), both declared at the first prompt and refused here, a
 letters answer them; the Zdepth an orthographic UCS keeps (UCSBASE,
 ORTHOGRAPHICUCS), Previous after 3point's Enter left the UCS as it was (the console steps back to
 that same UCS), OBject on a dimension (its UCS at
-creation is not stored; 2027 puts the origin at its text's middle, p310), UCSMAN, the icon's grips (UCSSELECTMODE), UCSFOLLOW, UCSVP,
+creation is not stored; 2027 puts the origin at its text's middle, p310), UCSMAN, the icon's grips
+(UCSSELECTMODE; d02-1: a square at the origin, round ones at the arms' ends; the origin's menu Move
+and Align · Move Origin Only · World, es Desplazar y alinear · Mover sólo origen · Universal; X's X
+Axis Direction · Rotate Around Z Axis · Rotate Around Y Axis, es Dirección del eje X · Girar
+alrededor del eje Z · Girar alrededor del eje Y; Y's Y Axis Direction · Rotate Around Z Axis ·
+Rotate Around X Axis; the origin's drag `** MOVE AND ALIGN **` /
+`Specify origin point or align to face, surface, or mesh:`, U `ACUCSEDITACTION`; d02-1 to d02-5,
+e01-4, e01-5), the icon's shortcut menu (World, Previous · Named UCS ▸ (Save, the saved ones) ·
+Origin, 3 Point, Rotate Axis ▸ (X, Y, Z), Z Axis · View, Face, Object · UCS Icon Settings ▸ (Show
+UCS Icon at Origin, Properties...), es Universal, Previo · SCP guardado ▸ (Guardar) · Origen,
+3 puntos, Girar eje ▸, Eje Z · Vista, Cara, Objeto · Parámetros del icono SCP ▸ (Mostrar icono SCP
+en origen, Propiedades...); its World `_ucs` `_w`, U `UCS`; d02-6c to d02-9, e01-1c to e01-3), the
+icon previewing the UCS being made — at the cursor at the origin prompts, turned towards it at X
+and the rotation, placed where OBject's hover would put it — and the crosshair turned to the new
+UCS at the XY point (d04-1 to d04-5, d06-1; the scene draws one icon, the current UCS's,
+UCS-D101), Delete's names with spaces (unprobed: its list is read as typed, UCS-D102), UCSFOLLOW, UCSVP,
 UCSDETECT, the crosshair turning with the UCS (it stays upright on screen; PLAN makes the two agree),
 the X axis of a closed spline a mode finds at OBject (UCB-13): its first point is the origin, as here,
 but 2027's X on p434's is (0.5364, −0.8440), which is neither its start tangent (p438, here's
@@ -162,16 +184,20 @@ but 2027's X on p434's is (0.5364, −0.8440), which is neither its start tangen
 `Indique una opción [ACT/DES/Sin origen/Origen] <ACT>`; `Invalid option keyword.`), the current
 state as the default: ON / OFF / Noorigin / ORigin (UCSICON, saved in the drawing, undoable, 3 by
 default; a transparent ZOOM at the prompt resumes it, Extents of an empty drawing refused with
-`** Requires a regen, cannot be transparent.`, p431); the icon of 2D wireframe — X and Y arms with their letters, a square at the origin when
-the UCS is the WCS — on the origin while it fits, else in the lower-left corner (lifted clear of the
-status readout); off the plan its arms are projected, and with the XY plane seen edge-on it is the
-broken pencil (**unverified** for a 2D icon); `'UCSICON`, at the Command prompt or mid-command (es
+`** Requires a regen, cannot be transparent.`, p431); the icon as 2027 draws it by default, the 3D
+icon (d07-1: line width 1, White in model space) — X and Y arms in one colour, no arrowheads, each
+letter at its arm's end, a square at the origin when the UCS is the WCS (d01-2, d01-3) — on the
+origin while it fits, else in the lower-left corner (lifted clear of the status readout, d01-4);
+off the plan its arms are projected and a Z arm with its letter shows where the UCS's Z does
+(d01-5, d01-7), an arm seen end-on left out, so the XY plane edge-on draws X and Z (d01-6: no
+broken pencil, the 2D style's); `'UCSICON`, at the Command prompt or mid-command (es
 also bare, `UCSICON`, its command being SIMBSCP), sets the system variable as AutoCAD 2023's console
 asks it: `Enter new value for UCSICON <3>:` (es `Indique nuevo valor para UCSICON <3>`), 1 for the
 icon shown plus 2 for it at the origin (else `Requires an integer between 0 and 3.`), one undo step
 that U and REDO echo as `'UCSICON` (p430)
 
-**Missing:** All, Selectable, Properties (the UCS Icon dialog: style, size, colour)
+**Missing:** All, Selectable, Properties (the UCS Icon dialog: the 2D style, size, line width,
+colour)
 
 ### `ELEV` · es `ELEV`
 

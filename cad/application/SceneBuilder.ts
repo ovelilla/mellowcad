@@ -120,6 +120,7 @@ export interface UcsIconInput {
   readonly world: boolean
   readonly xLabel: string
   readonly yLabel: string
+  readonly zLabel: string
 }
 
 /**
@@ -421,11 +422,13 @@ const UCS_ICON_MARGIN = 20
 const UCS_ICON_CORNER_LIFT = 64
 
 /**
- * The UCS icon, 2D wireframe's: the X and Y arms, with a square at the origin
- * when the UCS is the WCS. With UCSICON at ORigin it sits on the origin while
- * the whole icon fits in the view, and in the lower-left corner otherwise. Off
- * the plan the arms lie in the UCS's XY plane, foreshortened as it is; seen
- * edge-on the icon becomes AutoCAD's broken pencil.
+ * The UCS icon, AutoCAD 2027's default 3D one (desktop ucs/d07-1): its arms
+ * in one colour with no arrowheads, each letter at its end, and a square at
+ * the origin when the UCS is the WCS (d01-2). Off the plan a Z arm shows where
+ * the UCS's Z does on the screen (d01-5, d01-7); an arm seen end-on is left
+ * out, so the XY plane edge-on draws X and Z (d01-6). With UCSICON at ORigin
+ * it sits on the origin while the whole icon fits in the view, and in the
+ * lower-left corner otherwise.
  */
 function pushUcsIcon(
   out: ScenePrimitive[],
@@ -435,14 +438,10 @@ function pushUcsIcon(
 ): void {
   const axes = ucsIconAxes(camera, ucs)
   if (!axes) return
-  const { origin, xDir, yDir } = axes
-  const extent = (at: Vec2) => [
-    at,
-    V.add(at, V.scale(xDir, UCS_ICON_ARM)),
-    V.add(at, V.scale(yDir, UCS_ICON_ARM)),
-  ]
+  const { origin, xDir, yDir, zDir } = axes
+  const dirs = [xDir, yDir, zDir]
   const fits = (at: Vec2) =>
-    extent(at).every(
+    [at, ...dirs.map((dir) => V.add(at, V.scale(dir, UCS_ICON_ARM)))].every(
       (point) =>
         point.x >= UCS_ICON_MARGIN &&
         point.x <= camera.width - UCS_ICON_MARGIN &&
@@ -450,40 +449,23 @@ function pushUcsIcon(
         point.y <= camera.height - UCS_ICON_MARGIN
     )
   const at =
-    icon.atOrigin && fits(origin) ? origin : cornerPlacement(camera, xDir, yDir)
+    icon.atOrigin && fits(origin) ? origin : cornerPlacement(camera, dirs)
 
-  if (axes.edgeOn) {
-    pushBrokenPencil(out, at)
-    return
-  }
-  const arm = (dir: Vec2, color: string, letter: string) => {
+  const color = THEME.ucsIcon
+  const arm = (dir: Vec2, letter: string) => {
+    const length = V.length(dir)
+    if (!(length > END_ON)) return
     const end = V.add(at, V.scale(dir, UCS_ICON_ARM))
-    const unit = camera.isPlan ? dir : V.scale(dir, 1 / V.length(dir))
-    const back = V.scale(unit, -7)
-    const side = V.scale({ x: -unit.y, y: unit.x }, 3)
+    const unit = V.scale(dir, 1 / length)
     out.push(
-      { kind: "segment", a: at, b: end, stroke: { color, width: 1.5 } },
-      {
-        kind: "path",
-        points: [
-          end,
-          V.add(V.add(end, back), side),
-          V.sub(V.add(end, back), side),
-        ],
-        closed: true,
-        fill: color,
-      },
-      {
-        kind: "label",
-        at: V.add(end, V.scale(unit, 6)),
-        text: letter,
-        color,
-      }
+      { kind: "segment", a: at, b: end, stroke: { color, width: 1 } },
+      { kind: "label", at: V.add(end, V.scale(unit, 6)), text: letter, color }
     )
   }
-  arm(xDir, THEME.ucsIconX, icon.xLabel)
-  arm(yDir, THEME.ucsIconY, icon.yLabel)
-  if (icon.world) {
+  arm(xDir, icon.xLabel)
+  arm(yDir, icon.yLabel)
+  arm(zDir, icon.zLabel)
+  if (icon.world && V.length(xDir) > END_ON && V.length(yDir) > END_ON) {
     const side = 7
     out.push({
       kind: "path",
@@ -494,89 +476,53 @@ function pushUcsIcon(
         V.add(at, V.scale(yDir, side)),
       ],
       closed: true,
-      stroke: { color: THEME.crosshair, width: 1 },
+      stroke: { color, width: 1 },
     })
   }
 }
 
-/** Below this the angle between the icon's arms on screen reads as edge-on. */
-const EDGE_ON_SINE = 0.02
+/** Below this an arm, the longest of unit length, is seen end-on: not drawn. */
+const END_ON = 0.02
 
 /**
- * The icon's origin on screen and its two arms as screen vectors, the longer
- * one of unit length (the other foreshortened by the view), or `null` when the
- * UCS cannot be drawn at all.
+ * The icon's origin on screen and its three arms as screen vectors, the
+ * longest of unit length (the others foreshortened by the view; Z none in
+ * plan), or `null` when the UCS cannot be drawn at all.
  */
 function ucsIconAxes(
   camera: CameraTransform,
   ucs: Ucs
-): { origin: Vec2; xDir: Vec2; yDir: Vec2; edgeOn: boolean } | null {
+): { origin: Vec2; xDir: Vec2; yDir: Vec2; zDir: Vec2 } | null {
   const origin = camera.worldToScreen(ucs.origin)
+  const none = { x: 0, y: 0 }
   if (camera.isPlan) {
     const tip = camera.worldToScreen(V.add(ucs.origin, ucs.xAxis))
     const length = V.distance(origin, tip)
     if (!(length > 0)) return null
     const xDir = V.scale(V.sub(tip, origin), 1 / length)
     // Y is a quarter turn CCW in the world, which the camera's flip makes CW.
-    return { origin, xDir, yDir: { x: xDir.y, y: -xDir.x }, edgeOn: false }
+    return { origin, xDir, yDir: { x: xDir.y, y: -xDir.x }, zDir: none }
   }
-  const armOf = (direction: Vec2) =>
+  const armOf = (direction: Vec3) =>
     V.sub(camera.worldToScreen(ucsPointToWorld(ucs, direction)), origin)
-  const x = armOf({ x: 1, y: 0 })
-  const y = armOf({ x: 0, y: 1 })
-  const longest = Math.max(V.length(x), V.length(y))
+  const x = armOf({ x: 1, y: 0, z: 0 })
+  const y = armOf({ x: 0, y: 1, z: 0 })
+  const z = armOf({ x: 0, y: 0, z: 1 })
+  const longest = Math.max(V.length(x), V.length(y), V.length(z))
   if (!(longest > 0)) return null
-  const xDir = V.scale(x, 1 / longest)
-  const yDir = V.scale(y, 1 / longest)
-  const sine = Math.abs(V.cross(xDir, yDir))
-  const edgeOn =
-    sine < EDGE_ON_SINE * Math.max(V.length(xDir) * V.length(yDir), 1e-12)
-  return { origin, xDir, yDir, edgeOn }
-}
-
-/** AutoCAD's broken pencil: the UCS's XY plane is seen edge-on, so pointing on it is refused. */
-function pushBrokenPencil(out: ScenePrimitive[], at: Vec2): void {
-  const stroke: StrokeStyle = { color: THEME.crosshair, width: 1.25 }
-  const point = (x: number, y: number): Vec2 => ({ x: at.x + x, y: at.y + y })
-  out.push(
-    {
-      kind: "path",
-      points: [
-        point(0, -6),
-        point(18, -6),
-        point(22, 0),
-        point(18, 6),
-        point(0, 6),
-      ],
-      closed: true,
-      stroke,
-    },
-    {
-      kind: "path",
-      points: [
-        point(26, 6),
-        point(30, -6),
-        point(44, -6),
-        point(52, 0),
-        point(44, 6),
-      ],
-      closed: true,
-      stroke,
-    },
-    { kind: "segment", a: point(44, -6), b: point(44, 6), stroke }
-  )
+  return {
+    origin,
+    xDir: V.scale(x, 1 / longest),
+    yDir: V.scale(y, 1 / longest),
+    zDir: V.scale(z, 1 / longest),
+  }
 }
 
 /** The lower-left spot for the icon, shifted so a turned icon stays in view. */
-function cornerPlacement(
-  camera: CameraTransform,
-  xDir: Vec2,
-  yDir: Vec2
-): Vec2 {
+function cornerPlacement(camera: CameraTransform, dirs: readonly Vec2[]): Vec2 {
   const reach = [
     { x: 0, y: 0 },
-    V.scale(xDir, UCS_ICON_ARM),
-    V.scale(yDir, UCS_ICON_ARM),
+    ...dirs.map((dir) => V.scale(dir, UCS_ICON_ARM)),
   ]
   const minX = Math.min(...reach.map((point) => point.x))
   const maxY = Math.max(...reach.map((point) => point.y))

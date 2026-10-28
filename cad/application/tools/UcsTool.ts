@@ -12,11 +12,17 @@ import {
   rotateUcs,
   sameUcs,
   ucsFromAxes,
+  ucsPointToWorld,
   ucsZAxis,
   worldDirectionToUcs,
   worldPointToUcs,
 } from "../../domain/ucs"
-import { DocumentSettings, formatLength } from "../../domain/units"
+import {
+  DocumentSettings,
+  formatLength,
+  parseAngleDegrees,
+  parseNumber,
+} from "../../domain/units"
 import { matchesWildcard } from "../../shared/wildcard"
 import { UpdateSettingsCommand } from "../commands/settingsCommands"
 import { Viewport } from "../Viewport"
@@ -28,6 +34,7 @@ import {
   isCoordinateExpression,
   parseCoordinate,
 } from "../input/coordinateInput"
+import type { CursorBadge } from "../SceneBuilder"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -37,7 +44,8 @@ import {
   ToolContext,
   ToolQuestion,
 } from "./Tool"
-import { headingInUcs } from "./ucsHeading"
+import { acuteHeading, headingInUcs } from "./ucsHeading"
+import { pointAlongCursor } from "./directDistance"
 import { ONE_OBJECT_MODES, ObjectSelector } from "./objectSelection"
 import {
   alignable,
@@ -47,7 +55,7 @@ import {
   ucsFromFound,
   ucsFromObject,
 } from "./ucsObjects"
-import { rollover } from "./ghostLook"
+import { glow, rollover } from "./ghostLook"
 import { lockedObjectAt } from "./lockedPick"
 
 type Axis = "x" | "y" | "z"
@@ -74,6 +82,8 @@ type UcsState =
       readonly origin: Vec3
       readonly xAxis: Vec3
       readonly three: string | null
+      /** Where its point is read ({@link UcsTool.enterXYPlane}). */
+      readonly readIn: Ucs
     }
   | { readonly phase: "rotate"; readonly axis: Axis }
   | { readonly phase: "zOrigin" }
@@ -83,14 +93,23 @@ type UcsState =
       /** The point Enter keeps, as the prompt shows it: one up the current Z. */
       readonly enter: string
     }
-  | { readonly phase: "zObject"; readonly hover: EntityId | null }
+  /** `locked`: a locked object under the pick box, which its padlock shows. */
+  | {
+      readonly phase: "zObject"
+      readonly hover: EntityId | null
+      readonly locked: boolean
+    }
   | { readonly phase: "named" }
   | { readonly phase: "restore" }
   | { readonly phase: "save" }
   | { readonly phase: "replace"; readonly name: string }
   | { readonly phase: "delete" }
   | { readonly phase: "list"; readonly back: ListBack }
-  | { readonly phase: "object"; readonly hover: EntityId | null }
+  | {
+      readonly phase: "object"
+      readonly hover: EntityId | null
+      readonly locked: boolean
+    }
   | { readonly phase: "face" }
 
 /** The prompt a `?` listing asks again once it is written. */
@@ -355,14 +374,26 @@ export class UcsTool implements Tool {
     }
     const state = this.state
     if (state.phase === "object") {
-      const hover = alignable(ctx.pick(input.world))?.id ?? null
-      if (hover !== state.hover) this.state = { phase: "object", hover }
+      // A hatch glows too, which OBject then refuses (desktop ucs/d06-3).
+      const picked = ctx.pick(input.world)
+      const hit = picked?.type === "dimension" ? null : picked
+      const hover = hit?.id ?? null
+      const locked =
+        hit !== null && ctx.document.getLayer(hit.layerId)?.locked === true
+      if (hover !== state.hover || locked !== state.locked) {
+        this.state = { phase: "object", hover, locked }
+      }
     }
     if (state.phase === "zObject") {
       const hit = ctx.pick(input.world)
       const hover = hasEnds(hit) ? hit.id : null
-      if (hover !== state.hover) this.state = { phase: "zObject", hover }
+      const locked = lockedObjectAt(input.screen, ctx, hit)
+      if (hover !== state.hover || locked !== state.locked) {
+        this.state = { phase: "zObject", hover, locked }
+      }
     }
+    const based = this.basis(ctx)
+    if (based) this.showFromBase(based, input.point, ctx)
     if (state.phase === "rotate") {
       const offset = sub3(input.point, ctx.ucs.origin)
       if (V.length(worldDirectionToUcs(ctx.ucs, offset)) > 1e-9) {
@@ -684,7 +715,7 @@ export class UcsTool implements Tool {
     }
     if (state.phase === "zOrigin" && id === "Object") {
       this.zObjects.start()
-      this.state = { phase: "zObject", hover: null }
+      this.state = { phase: "zObject", hover: null, locked: false }
       ctx.dynamicInput.open({ fields: [], commit: () => {} })
       this.place(ctx)
       return "continue"
@@ -716,15 +747,127 @@ export class UcsTool implements Tool {
     return this.state.phase === "xAxis" ? false : null
   }
 
-  getConstraintAnchor(): Vec2 | null {
-    switch (this.state.phase) {
+  getConstraintAnchor(ctx: ToolContext): Vec2 | null {
+    return this.basis(ctx)?.base ?? null
+  }
+
+  /** The first prompt's and ZAxis's origin read `@` from LASTPOINT (ucs/p442). */
+  relativeFromLastPoint(): boolean {
+    return this.state.phase === "origin" || this.state.phase === "zOrigin"
+  }
+
+  /**
+   * The base of a point prompt that has one, and the UCS its point is read
+   * in: the first prompt's and ZAxis's origin from the current UCS's origin,
+   * X, XY and ZAxis's Z from the new origin — AutoCAD 2027's `UseBasePoint`
+   * there (probes ucs/p100, p111, p126), the band's start and what the box
+   * measures from (desktop ucs/d04-1 to d04-8).
+   */
+  private basis(ctx: ToolContext): { base: Vec3; frame: Ucs } | null {
+    const state = this.state
+    switch (state.phase) {
+      case "origin":
+      case "zOrigin":
+        return { base: ctx.ucs.origin, frame: ctx.ucs }
       case "xAxis":
+        return {
+          base: state.origin,
+          frame: this.readIn(state.origin, state.three !== null, ctx),
+        }
       case "xyPlane":
+        return { base: state.origin, frame: state.readIn }
       case "zPoint":
-        return this.state.origin
+        return { base: state.origin, frame: ctx.ucs }
       default:
         return null
     }
+  }
+
+  /** The length and the acute angle from the base to the cursor, in its frame. */
+  private showFromBase(
+    { base, frame }: { base: Vec3; frame: Ucs },
+    cursor: Vec3,
+    ctx: ToolContext
+  ): void {
+    const offset = worldDirectionToUcs(frame, sub3(cursor, base))
+    const length = Math.hypot(offset.x, offset.y)
+    ctx.dynamicInput.setLive("distance", length)
+    ctx.dynamicInput.setLive(
+      "angle",
+      length > 1e-9 ? acuteHeading(headingInUcs(WORLD_UCS, offset)) : null
+    )
+  }
+
+  /**
+   * A point prompt with a base: the box's Length / Angle pair, as LINE's next
+   * point has (desktop ucs/d04-6, d04-8). A coordinate typed there is
+   * relative by default (`30,0` is echoed `@30,0`), from the base or, at the
+   * origin prompts, LASTPOINT ({@link relativeFromLastPoint}); one typed at
+   * the command line comes with its `#` and stays absolute. A length runs
+   * from the base towards the cursor, or at the angle typed. `answer` takes the point,
+   * `null` for Enter, and returns whether the prompt took it.
+   */
+  private openFromBase(
+    ctx: ToolContext,
+    answer: (point: Vec3 | null, ctx: ToolContext) => boolean
+  ): void {
+    const typed = (commitCtx: ToolContext): Vec3 | null => {
+      const based = this.basis(commitCtx)
+      return based && this.typedFromBase(based, commitCtx)
+    }
+    ctx.dynamicInput.open({
+      fields: [
+        { id: "distance", prompt: "length", kind: "distance" },
+        { id: "angle", prompt: "angle", kind: "angle" },
+      ],
+      commit: (_values, commitCtx) => {
+        const point = typed(commitCtx)
+        if (point) answer(point, commitCtx)
+      },
+      commitRaw: (commitCtx) => {
+        if (!commitCtx.dynamicInput.hasTypedText()) {
+          return answer(null, commitCtx)
+        }
+        const point = typed(commitCtx)
+        return point !== null && answer(point, commitCtx)
+      },
+    })
+    ctx.dynamicInput.setLive("distance", 0)
+    ctx.dynamicInput.setLive("angle", null)
+    this.place(ctx)
+  }
+
+  /** What the box holds as a point, from `base` in `frame`; null if none. */
+  private typedFromBase(
+    { base, frame }: { base: Vec3; frame: Ucs },
+    ctx: ToolContext
+  ): Vec3 | null {
+    const text = ctx.dynamicInput.getText("distance").trim()
+    if (isCoordinateExpression(text)) {
+      return parseCoordinate(text, {
+        lastPoint: this.relativeFromLastPoint() ? ctx.lastPoint : base,
+        relativeByDefault: true,
+        ucs: frame,
+        elevation: ctx.elevation,
+      })
+    }
+    const angleText = ctx.dynamicInput.getText("angle").trim()
+    const distance = text === "" ? null : parseNumber(text)
+    const angle = angleText === "" ? null : parseAngleDegrees(angleText)
+    if (
+      (text !== "" && distance === null) ||
+      (angleText !== "" && angle === null)
+    ) {
+      return null
+    }
+    if (distance === null && angle === null) return null
+    const local = worldPointToUcs(frame, base)
+    const cursor = this.cursor ? worldPointToUcs(frame, this.cursor) : local
+    const along = pointAlongCursor({ ucs: WORLD_UCS }, local, cursor, {
+      distance,
+      angle,
+    }) ?? { x: local.x + (distance ?? 0), y: local.y, z: local.z }
+    return ucsPointToWorld(frame, along)
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
@@ -777,24 +920,38 @@ export class UcsTool implements Tool {
     if (this.inMode()) return this.selector()?.buildOverlay(ctx) ?? []
     if (state.phase === "object" || state.phase === "zObject") {
       const hovered = state.hover ? ctx.document.get(state.hover) : undefined
-      return hovered ? rollover(ctx, hovered) : []
+      if (!hovered) return []
+      // WHY two looks: OBject's hover is the selection's glow, a locked
+      // object's too, ZAxis Object's the white rollover (desktop ucs/d06-1,
+      // d06-2, d06-6).
+      return state.phase === "object"
+        ? glow(ctx, hovered)
+        : rollover(ctx, hovered)
     }
-    if (
-      (state.phase === "xAxis" ||
-        state.phase === "xyPlane" ||
-        state.phase === "zPoint") &&
-      this.cursor
-    ) {
-      return [
-        {
-          kind: "segment",
-          a: ctx.viewport.worldToScreen(state.origin),
-          b: ctx.viewport.worldToScreen(this.cursor),
-          stroke: { color: THEME.rubberBand, width: 1 },
-        },
-      ]
-    }
-    return []
+    const base =
+      state.phase === "rotate" ? ctx.ucs.origin : this.basis(ctx)?.base
+    if (!base || !this.cursor) return []
+    // The dashed band from the base at every point prompt and at the
+    // rotation's angle (desktop ucs/d04-1 to d04-5).
+    return [
+      {
+        kind: "segment",
+        a: ctx.viewport.worldToScreen(base),
+        b: ctx.viewport.worldToScreen(this.cursor),
+        stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
+      },
+    ]
+  }
+
+  /**
+   * The padlock over a locked object at OBject's pick, which takes it, and
+   * at ZAxis Object's, which refuses it (desktop ucs/d06-2, d06-7).
+   */
+  cursorBadge(): CursorBadge | null {
+    const state = this.state
+    if (this.inMode()) return null
+    if (state.phase !== "object" && state.phase !== "zObject") return null
+    return state.locked ? "locked" : null
   }
 
   private invokeMain(id: string, ctx: ToolContext): CommandOptionOutcome {
@@ -864,7 +1021,7 @@ export class UcsTool implements Tool {
       // Entity is OBject's older name, which the console still takes.
       case "Entity":
         this.objects.start()
-        this.state = { phase: "object", hover: null }
+        this.state = { phase: "object", hover: null, locked: false }
         ctx.dynamicInput.open({ fields: [], commit: () => {} })
         this.place(ctx)
         return "continue"
@@ -916,22 +1073,11 @@ export class UcsTool implements Tool {
 
   private enterOrigin(ctx: ToolContext): void {
     this.state = { phase: "origin" }
-    ctx.dynamicInput.open({
-      fields: [{ id: "point", prompt: "ucsOrigin", kind: "coordinate" }],
-      commit: () => {},
-      commitRaw: (commitCtx) => {
-        const text = commitCtx.dynamicInput.getText("point").trim()
-        if (text === "") {
-          this.finish(WORLD_UCS, null, commitCtx, { resetsElevation: true })
-          return true
-        }
-        const point = this.parse(text, null, commitCtx)
-        if (!point) return false
-        this.enterXAxis(point, false, commitCtx)
-        return true
-      },
+    this.openFromBase(ctx, (point, commitCtx) => {
+      if (point) this.enterXAxis(point, false, commitCtx)
+      else this.finish(WORLD_UCS, null, commitCtx, { resetsElevation: true })
+      return true
     })
-    this.place(ctx)
   }
 
   /**
@@ -1062,35 +1208,12 @@ export class UcsTool implements Tool {
       origin,
       three: three ? this.shown(along, ctx) : null,
     }
-    ctx.dynamicInput.open({
-      fields: [
-        {
-          id: "point",
-          prompt: three ? "ucs3XAxisPoint" : "ucsXAxisPoint",
-          kind: "coordinate",
-        },
-      ],
-      commit: () => {},
-      commitRaw: (commitCtx) => {
-        if (this.state.phase !== "xAxis") return false
-        const text = commitCtx.dynamicInput.getText("point").trim()
-        if (text === "") {
-          if (three) this.enterXYPlane(origin, along, true, commitCtx)
-          else this.finish({ ...commitCtx.ucs, origin }, null, commitCtx)
-          return true
-        }
-        const point = this.parse(
-          text,
-          origin,
-          commitCtx,
-          this.readIn(origin, three, commitCtx)
-        )
-        if (!point) return false
-        this.enterXYPlane(origin, point, three, commitCtx)
-        return true
-      },
+    this.openFromBase(ctx, (point, commitCtx) => {
+      if (point) this.enterXYPlane(origin, point, three, commitCtx)
+      else if (three) this.enterXYPlane(origin, along, true, commitCtx)
+      else this.finish({ ...commitCtx.ucs, origin }, null, commitCtx)
+      return true
     })
-    this.place(ctx)
   }
 
   private enterXYPlane(
@@ -1123,37 +1246,18 @@ export class UcsTool implements Tool {
       three: three
         ? this.shown(add3(origin, scale3(towardsY, 1 / length3(towardsY))), ctx)
         : null,
+      readIn: three ? ctx.ucs : frame,
     }
     this.state = state
-    ctx.dynamicInput.open({
-      fields: [
-        {
-          id: "point",
-          prompt: three ? "ucs3XYPlanePoint" : "ucsXYPlanePoint",
-          kind: "coordinate",
-        },
-      ],
-      commit: () => {},
-      commitRaw: (commitCtx) => {
-        if (this.state.phase !== "xyPlane") return false
-        const text = commitCtx.dynamicInput.getText("point").trim()
-        if (text === "") {
-          const ucs = ucsFromAxes(origin, xAxis, towardsY)
-          if (ucs) this.finish(ucs, null, commitCtx)
-          return true
-        }
-        const point = this.parse(
-          text,
-          origin,
-          commitCtx,
-          three ? commitCtx.ucs : frame
-        )
-        if (!point) return false
+    this.openFromBase(ctx, (point, commitCtx) => {
+      if (point) {
         this.acceptPlanePoint(state, point, commitCtx)
         return true
-      },
+      }
+      const ucs = ucsFromAxes(origin, xAxis, towardsY)
+      if (ucs) this.finish(ucs, null, commitCtx)
+      return true
     })
-    this.place(ctx)
   }
 
   /** The third point, on the positive Y side of the new XY plane, and LASTPOINT. */
@@ -1203,20 +1307,11 @@ export class UcsTool implements Tool {
    */
   private enterZOrigin(ctx: ToolContext): void {
     this.state = { phase: "zOrigin" }
-    ctx.dynamicInput.open({
-      fields: [{ id: "point", prompt: "ucsZAxisOrigin", kind: "coordinate" }],
-      commit: () => {},
-      commitRaw: (commitCtx) => {
-        const text = commitCtx.dynamicInput.getText("point").trim()
-        if (text === "") commitCtx.setLastPoint(commitCtx.ucs.origin)
-        const point =
-          text === "" ? commitCtx.ucs.origin : this.parse(text, null, commitCtx)
-        if (!point) return false
-        this.enterZPoint(point, commitCtx)
-        return true
-      },
+    this.openFromBase(ctx, (point, commitCtx) => {
+      if (!point) commitCtx.setLastPoint(commitCtx.ucs.origin)
+      this.enterZPoint(point ?? commitCtx.ucs.origin, commitCtx)
+      return true
     })
-    this.place(ctx)
   }
 
   /**
@@ -1230,21 +1325,11 @@ export class UcsTool implements Tool {
       .map((value) => formatLength(value, settings))
       .join(",")
     this.state = { phase: "zPoint", origin, enter }
-    ctx.dynamicInput.open({
-      fields: [{ id: "point", prompt: "ucsZAxisPoint", kind: "coordinate" }],
-      commit: () => {},
-      commitRaw: (commitCtx) => {
-        const text = commitCtx.dynamicInput.getText("point").trim()
-        if (text === "") {
-          this.finish({ ...commitCtx.ucs, origin }, null, commitCtx)
-          return true
-        }
-        const point = this.parse(text, origin, commitCtx)
-        if (!point) return false
-        return this.acceptZPoint(origin, point, commitCtx)
-      },
+    this.openFromBase(ctx, (point, commitCtx) => {
+      if (point) return this.acceptZPoint(origin, point, commitCtx)
+      this.finish({ ...commitCtx.ucs, origin }, null, commitCtx)
+      return true
     })
-    this.place(ctx)
   }
 
   /** The point on Z; one on the origin is refused and asked again (probe ucs/p129). */
@@ -1281,8 +1366,18 @@ export class UcsTool implements Tool {
   }
 
   private openNameField(prompt: PromptId, ctx: ToolContext): void {
+    // WHY Save's and Restore's names only: `AB CD` typed key by key is saved
+    // whole (desktop ucs/d05, UCS-D102); Delete's list is unprobed.
+    const takesSpaces = prompt === "ucsSaveName" || prompt === "ucsRestoreName"
     ctx.dynamicInput.open({
-      fields: [{ id: "name", prompt, kind: "text" }],
+      fields: [
+        {
+          id: "name",
+          prompt,
+          kind: "text",
+          ...(takesSpaces && { takesSpaces }),
+        },
+      ],
       commit: () => {},
       commitRaw: (commitCtx) => {
         this.answerName(

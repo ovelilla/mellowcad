@@ -371,10 +371,14 @@ export function ViewCube({
   )
 }
 
-/** The UCS menu under the cube: the current UCS, the WCS, the saved ones and New UCS. */
+/**
+ * The UCS menu under the cube: the current UCS, then WCS · the saved ones and
+ * an unnamed current one · New UCS (desktop ucs/d03-1, d03-5).
+ */
 function UcsMenu({ engine, state }: { engine: CadEngine; state: EditorState }) {
   const t = useTranslations("Editor.ViewCube")
   const { world, name, named } = state.ucsMenu
+  const unnamed = !world && name === null
   const label = world ? t("wcs") : (name ?? t("unnamed"))
   const check = (
     <span className="pointer-events-none absolute inset-e-2 flex size-4 items-center justify-center text-primary">
@@ -407,6 +411,9 @@ function UcsMenu({ engine, state }: { engine: CadEngine; state: EditorState }) {
               {t("wcs")}
               {world && check}
             </Menu.Item>
+            {(named.length > 0 || unnamed) && (
+              <Menu.Separator className="-mx-1 my-1 h-px bg-border" />
+            )}
             {named.map((entry) => (
               <Menu.Item
                 key={entry}
@@ -417,6 +424,15 @@ function UcsMenu({ engine, state }: { engine: CadEngine; state: EditorState }) {
                 {!world && name === entry && check}
               </Menu.Item>
             ))}
+            {/* The current UCS, unsaved or orthographic, listed after the
+                saved ones, checked; choosing it changes nothing (desktop
+                ucs/d03-5, d03-9). */}
+            {unnamed && (
+              <Menu.Item className={MENU_ITEM}>
+                {t("unnamed")}
+                {check}
+              </Menu.Item>
+            )}
             <Menu.Separator className="-mx-1 my-1 h-px bg-border" />
             <Menu.Item
               className={MENU_ITEM}

@@ -1084,30 +1084,71 @@ describe("frame composition", () => {
     ).toBeGreaterThan(0)
   })
 
-  // mellowcad's own look, no AutoCAD probe (desktop d01 is to check it):
-  // the icon, its corner placement and the broken pencil.
+  // AutoCAD 2027's default, the 3D icon: line width 1, White in model space
+  // (desktop ucs/d07-1), no arrowheads, the letters at the arms' ends.
   describe("the UCS icon", () => {
-    const xArm = (cad: ReturnType<typeof createHarness>) =>
-      strokes(cad.scene().primitives, THEME.ucsIconX).find(
+    const arms = (cad: ReturnType<typeof createHarness>) =>
+      strokes(cad.scene().primitives, THEME.ucsIcon).filter(
         (primitive) => primitive.kind === "segment"
       )
-    const pencil = (cad: ReturnType<typeof createHarness>) =>
-      strokes(cad.scene().primitives, THEME.crosshair).filter(
-        (primitive) =>
-          primitive.kind === "path" && primitive.points.length === 5
-      )
+    const xArm = (cad: ReturnType<typeof createHarness>) => arms(cad)[0]
+    const letters = (cad: ReturnType<typeof createHarness>) =>
+      cad
+        .scene()
+        .primitives.flatMap((primitive) =>
+          primitive.kind === "label" && primitive.color === THEME.ucsIcon
+            ? [primitive.text]
+            : []
+        )
 
-    it("becomes the broken pencil when the XY plane is seen edge-on", () => {
+    it("draws X and Y in one colour, with no arrowheads, in plan (d01-2)", () => {
       const cad = createHarness({ ucsIcon: true })
-      expect(xArm(cad)).toBeDefined()
-      expect(pencil(cad)).toHaveLength(0)
+      expect(arms(cad)).toHaveLength(2)
+      expect(arms(cad).every((arm) => arm.stroke?.width === 1)).toBe(true)
+      expect(letters(cad)).toEqual(["X", "Y"])
+      expect(
+        cad
+          .scene()
+          .primitives.some(
+            (primitive) =>
+              primitive.kind === "path" && primitive.fill === THEME.ucsIcon
+          )
+      ).toBe(false)
+    })
 
+    it("adds the Z arm where the UCS's Z shows on the screen (d01-5)", () => {
+      const cad = createHarness({ ucsIcon: true })
+      cad.command("UCS").option("X").type("30").enter()
+
+      expect(arms(cad)).toHaveLength(3)
+      expect(letters(cad)).toEqual(["X", "Y", "Z"])
+      const [x, y, z] = arms(cad)
+      if (x.kind !== "segment" || y.kind !== "segment") return
+      if (z.kind !== "segment") return
+      // Y up the screen, foreshortened; Z down it, shorter still.
+      const length = (arm: typeof x) =>
+        Math.hypot(arm.b.x - arm.a.x, arm.b.y - arm.a.y)
+      expect(length(y) / length(x)).toBeCloseTo(Math.cos(Math.PI / 6), 6)
+      expect(length(z) / length(x)).toBeCloseTo(0.5, 6)
+      expect(y.b.y).toBeLessThan(y.a.y)
+      expect(z.b.y).toBeGreaterThan(z.a.y)
+    })
+
+    it("draws X and Z with the XY plane edge-on, no broken pencil (d01-6)", () => {
+      const cad = createHarness({ ucsIcon: true })
       // UCS X 90 in the plan view: the view looks along the new XY plane.
       cad.command("UCS").option("X").type("90").enter()
 
-      expect(xArm(cad)).toBeUndefined()
-      expect(strokes(cad.scene().primitives, THEME.ucsIconY)).toHaveLength(0)
-      expect(pencil(cad)).toHaveLength(2)
+      expect(arms(cad)).toHaveLength(2)
+      expect(letters(cad)).toEqual(["X", "Z"])
+      expect(
+        cad
+          .scene()
+          .primitives.some(
+            (primitive) =>
+              primitive.kind === "path" && primitive.points.length === 5
+          )
+      ).toBe(false)
     })
 
     it("sits on the origin while it fits, in the lower-left corner when not", () => {
@@ -1141,8 +1182,8 @@ describe("frame composition", () => {
       cad.command("'UCSICON").type("0").enter()
 
       expect(cad.runtime.document.getSettings().ucsIcon.visible).toBe(false)
-      expect(strokes(cad.scene().primitives, THEME.ucsIconX)).toHaveLength(0)
-      expect(strokes(cad.scene().primitives, THEME.ucsIconY)).toHaveLength(0)
+      expect(arms(cad)).toHaveLength(0)
+      expect(letters(cad)).toHaveLength(0)
     })
   })
 

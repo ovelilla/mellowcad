@@ -8,7 +8,15 @@ export const THEME = {
   gridMajor: "rgba(148, 163, 184, 0.16)",
   axisX: "rgba(248, 113, 113, 0.55)",
   axisY: "rgba(74, 222, 128, 0.55)",
-  /** The UCS icon's arms: the axis colours, solid, so it reads over the grid. */
+  /**
+   * The UCS icon, AutoCAD 2027's 3D one: White in model space, its arms and
+   * letters alike (desktop ucs/d07-1, d01-2).
+   */
+  ucsIcon: "#ffffff",
+  /**
+   * The 2D icon's axis colours, which the scene no longer draws (the 3D icon
+   * is one colour); kept as THEME is public.
+   */
   ucsIconX: "#f87171",
   ucsIconY: "#4ade80",
   entity: "#e2e8f0",
