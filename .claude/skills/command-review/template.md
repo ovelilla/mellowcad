@@ -400,5 +400,6 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
   citations counted (§4.1); findings numbered without gaps (§4.8).
 - 2026-10-28, UCS's desktop block: a look waits for the desktop (§4.1), so does a refutation as
   the console's artefact (§5.3); matrix D's relative box at a prompt with a base.
-- 2026-10-28, Workspace's console blocks: acad.cuix before the desktop (§4.1); a batched probe's
-  numeric fallback, SETVAR's default untraced, `AllowSpaces` no evidence (annex-probes.md §2).
+- 2026-10-28, Workspace: acad.cuix before the desktop (§4.1); a batched probe's numeric fallback,
+  SETVAR's default untraced, `AllowSpaces` no evidence (annex-probes.md §2); AutoComplete and U's
+  names on the desktop (§4); Chrome's reserved keys (browser-verify).

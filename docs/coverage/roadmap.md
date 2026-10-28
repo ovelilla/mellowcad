@@ -78,7 +78,7 @@ with the area. The order puts first the commands whose review settles what the l
 | 21  | Inquiry          | DIST, AREA, ID                                                                                                           |                                                                                                                                                                                                                                    | done  |
 | 22  | View             | ZOOM, PAN, -PAN, PLAN, VPOINT, -VPOINT, VIEW, -VIEW, 3DORBIT, NAVVCUBE; the ViewCube, the viewport controls, the navigation bar, the wheel | the view and its undo                                                                                                                                                                                                              | done  |
 | 23  | UCS              | UCS, UCSICON, ELEV                                                                                                       |                                                                                                                                                                                                                                    | done  |
-| 24  | Workspace        | UNITS, AUPREC, SETVAR, CLEANSCREENON, CLEANSCREENOFF; the status bar, the top bar, the tool palette, the palette panel, the shortcut menus | system variables typed as commands                                                                                                                                                                                                 | plan  |
+| 24  | Workspace        | UNITS, AUPREC, SETVAR, CLEANSCREENON, CLEANSCREENOFF; the status bar, the top bar, the tool palette, the palette panel, the shortcut menus | system variables typed as commands                                                                                                                                                                                                 | done  |
 | 25  | Clipboard, files | COPYCLIP, CUTCLIP, COPYBASE, PASTECLIP, NEW, QNEW, QSAVE, SAVEAS, OPEN                                                    |                                                                                                                                                                                                                                    |       |
 
 A review's state is `plan` while its plan runs, and `done` once executed, its plan reduced to an
@@ -134,5 +134,7 @@ Workspace review the other chrome menus' echo (2027's ViewCube menu writes its p
 answers, UCD-07) and every name prompt that may hold spaces (`takesSpaces`, UCD-05). The Workspace review
 (`docs/plans/workspace-review.md`) settled the variables typed by name and SETVAR, those the
 reviews before it left (the DIMxxx stay Missing: typed they make an override), and the rail's
-apostrophe macros; its desktop block (WSD) takes the `<command> GROUP` undo names, the chrome menus'
-echo, MATCHPROP's button and the name prompts with spaces.
+apostrophe macros, and on the desktop (WSD) the `<command> GROUP` undo names, the chrome menus'
+echo, the drafting toggles' echo and undo, MATCHPROP's button and the name prompts with spaces;
+it leaves the Default menu's Undo labels, Ctrl+9's confirmation and the ribbon's Move during a grip
+edit in Missing (`workspace.md`, `command-line.md`, `drafting-aids.md`).

@@ -32,6 +32,10 @@ clipboard once shipped a hang no harness test could see.
 - Reproduce a user's bug on the server they use: `next dev`'s HTML belongs to the request it
   answered, so a bug can exist there and never on the production build.
 
+- Playwright's keys never reach Chrome's own accelerators (an unprevented Ctrl+L kept the page
+  focused): whether a page may take a shortcut is chromium's kReservedCommandIds list
+  (`chrome/browser/ui/accelerator_table.cc`), read at its current commit (Workspace, MAC-09).
+
 ## Setting up the page
 
 - **Verify against an empty drawing with default settings**, seeding only the entities the check

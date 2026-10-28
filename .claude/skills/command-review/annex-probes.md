@@ -255,6 +255,12 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   there. A shortcut menu opened from the ViewCube's UCS button can start a command (New UCS) that
   locks COM: a click on the command line gives the keys back for Escape (UCS review).
 
+- A word typed at `Command:` goes through AutoComplete: `AB` + Space ran ABOUT, whose dialog took
+  every key after it, and a typed `-BLOCK` was lost. Start the command with `com send` in the
+  background and type only the answer. Read U's names in a drawing of their own (`com new`):
+  earlier steps mix in. A status-bar click right after `com new` is lost: click the drawing
+  first (Workspace review, WSD).
+
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).
 
