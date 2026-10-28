@@ -245,6 +245,11 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   reads as a switch); gaps under a second between wheel events come from one process
   (`scripts/research/probes/view/burst.ps1`), never from separate calls (View review, d01).
 
+- Each profile places the view otherwise (the es-ES drawing area was 2560 wide and its view
+  lower than `VIEWCTR` says): draw a known rectangle and read its pixels before the first click
+  there. A shortcut menu opened from the ViewCube's UCS button can start a command (New UCS) that
+  locks COM: a click on the command line gives the keys back for Escape (UCS review).
+
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).
 

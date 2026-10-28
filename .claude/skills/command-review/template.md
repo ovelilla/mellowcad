@@ -170,6 +170,8 @@ the review, not an "n/a".
   echo: AutoCAD names it (`CHPROP`, `Modify Property`, `Grip Edit`; properties/d05-2).
 - Read what each command leaves selected (`(ssget "_I")` after it ends or is cancelled): a set
   left behind is the next command's preselection (ERASE's SEL-43).
+- A look (a hover, a band, an icon) is changed by a rule's analogy only after the desktop pass:
+  UCB-09 gave UCS OBject's hover BREAK's rollover, and d06 showed the selection's glow (UCD-03).
 - An editor's Escape is a cell of its own, with and without changes: it keeps, drops or asks
   (TEXT's drops the line being typed, TEXTEDIT's the edit, MTEXT's asks; text/d01, d05, d06).
 
@@ -300,7 +302,9 @@ Before delivering, each finding tries to refute itself:
   variable at its default; the desktop has the owner's settings (DYNMODE 0, the command line
   hidden). A difference between the two is a setting, not a behaviour.
 - Is it the **console's artefact**? The console has no jig, no dynamic input, a fixed cursor
-  (annex-probes.md §2): a jig-only behaviour is settled on the desktop.
+  (annex-probes.md §2): a jig-only behaviour is settled on the desktop. A suspicion **refuted** as the
+  console's artefact waits for the desktop too: UCS's p237 kept a Save name's space, refuted by
+  its trace's AllowSpaces, and the desktop kept it (UCD-05).
 - Is it **2023 against 2027**? Probe 2027 before concluding.
 - Is it **presentation** (allowed to differ) or **behaviour** (not)?
 - Is it **reachable** in the editor (a key the browser keeps, a path no UI leads to)?
@@ -392,3 +396,5 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
   as undo steps, U before evals).
 - 2026-10-28, UCS's console blocks: the previous review's transcripts and each file's old
   citations counted (§4.1); findings numbered without gaps (§4.8).
+- 2026-10-28, UCS's desktop block: a look waits for the desktop (§4.1), so does a refutation as
+  the console's artefact (§5.3); matrix D's relative box at a prompt with a base.

@@ -56,7 +56,8 @@ plan each block has its table, a cell reading `match · p07 · LineTool.test.ts:
 - Ortho (F8, Shift to override), Polar (F10, increment, relative to the last segment), OTRACK
   (acquire, guides, a distance typed along one), snap mode (F9).
 - Dynamic input: pointer and dimensional input, the prompt at the cursor, Tab between fields,
-  the Down arrow's options, Enter in a field.
+  the Down arrow's options, Enter in a field; at a prompt with a base (`UseBasePoint`) which
+  fields show and whether `30,0` typed in the box is relative (UCS's echo `@30,0`, ucs/d04).
 
 **E. Transparent commands** — at every prompt: `'ZOOM`, `'PAN`, a system variable
 (`'ORTHOMODE`), `'-OSNAP`, a non-transparent command typed with an apostrophe; the `>>` prompts
