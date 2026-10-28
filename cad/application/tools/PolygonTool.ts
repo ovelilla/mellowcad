@@ -15,6 +15,7 @@ import { THEME } from "../../scene/theme"
 import {
   CommandOption,
   CommandOptionOutcome,
+  type HeldVariables,
   KeyInput,
   PointerInput,
   Tool,
@@ -88,6 +89,17 @@ export class PolygonTool implements Tool {
   onNewDrawing(): void {
     this.sides = 4
     this.circumscribed = false
+  }
+
+  heldVariables(): Partial<HeldVariables> {
+    return {
+      POLYSIDES: {
+        read: () => this.sides,
+        write: (sides) => {
+          this.sides = sides
+        },
+      },
+    }
   }
 
   onActivate(ctx: ToolContext): void {

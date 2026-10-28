@@ -1413,6 +1413,13 @@ describe("the engine's English surface", () => {
         .do("2", (c) => c.type("2").enter())
         .do("OFF", (c) => answer(c, "OFF"))
         .do("UNDOCTL", (c) => c.command("UNDOCTL"))
+        .do("INSNAME", (c) => c.command("INSNAME"))
+        .do(".", (c) => c.type(".").enter())
+        .do("LASTPOINT", (c) => c.command("LASTPOINT"))
+        .do("FOO", (c) => c.type("FOO").enter())
+        .do("@1,2,3", (c) => c.type("@1,2,3").enter())
+        .do("POLARANG", (c) => c.command("POLARANG"))
+        .do("0", (c) => c.type("0").enter())
     )
     walk("LTSCALE", createHarness(), (s) =>
       s

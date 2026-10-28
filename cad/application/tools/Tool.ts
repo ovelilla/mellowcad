@@ -426,12 +426,52 @@ export interface ToolContext {
   /** The read-only system variables the runtime keeps, which SETVAR reads. */
   inquiry(): Inquiry
 
+  /** A system variable kept outside the drawing's settings, as SETVAR sets it. */
+  held<K extends keyof HeldValues>(name: K): HeldVariable<HeldValues[K]>
+
   /**
    * Ends the current command and drops back to the neutral Select tool. For
    * single-shot commands (MOVE, COPY, ...) that finish the moment their final
    * point is placed, rather than looping or waiting for Escape.
    */
   endCommand(): void
+}
+
+/**
+ * The system variables kept outside the drawing's settings, by a tool
+ * (CIRCLERAD) or by the runtime (OSMODE), each as SETVAR reads and writes it.
+ */
+export interface HeldValues {
+  /** As typed: NOD's 8 and GCEN's 1024 kept, 16384 the running snaps suspended. */
+  readonly OSMODE: number
+  /** Degrees. */
+  readonly POLARANG: number
+  readonly POLARDIST: number
+  readonly SELECTIONCYCLING: number
+  readonly CLIPROMPTLINES: number
+  /** In the UCS. */
+  readonly LASTPOINT: Vec3
+  readonly TRIMEXTENDMODE: number
+  readonly EDGEMODE: number
+  readonly TEXTEDITMODE: number
+  readonly SPLMETHOD: number
+  readonly SPLKNOTS: number
+  readonly SPLDEGREE: number
+  readonly ARRAYASSOCIATIVITY: number
+  readonly INSNAME: string
+  readonly CIRCLERAD: number
+  readonly OFFSETDIST: number
+  readonly POLYSIDES: number
+  readonly AFLAGS: number
+}
+
+export interface HeldVariable<T> {
+  read(): T
+  write(value: T): void
+}
+
+export type HeldVariables = {
+  readonly [K in keyof HeldValues]: HeldVariable<HeldValues[K]>
 }
 
 /** The read-only system variables the runtime keeps (AREA, UNDOCTL…). */
@@ -676,6 +716,8 @@ export interface Tool {
    * p303, p305, p309–p311, p314, p315, p321).
    */
   onNewDrawing?(): void
+  /** The system variables the tool keeps (POLYSIDES), for SETVAR. */
+  heldVariables?(): Partial<HeldVariables>
 
   onPointerDown?(input: PointerInput, ctx: ToolContext): void
   onPointerMove?(input: PointerInput, ctx: ToolContext): void

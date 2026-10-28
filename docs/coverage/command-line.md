@@ -72,7 +72,8 @@ prompt `'ZOOM` runs ZOOM (not transparently: an empty drawing's Extents says `Re
 `Comando "FOO" desconocido. Pulse F1 para obtener ayuda.`; the 2027 console);
 `'AREA` and `'UCSICON` name the system variables, not the commands, there and mid-command, and
 every other variable SETVAR knows is typed by its name (workspace.md, SETVAR). Above the line, the running command's temporary prompt history
-(CLIPROMPTLINES 3: "displays above the command window while a command is in progress"), which fades
+(CLIPROMPTLINES 3: "displays above the command window while a command is in progress"; typed as a
+variable from 0 to 50, program-wide, a step U takes back, workspace/p214, p218), which fades
 once the command ends (after 6 s: AutoCAD documents no time); F2, or the arrow at its end, expands
 the whole history up to 12 lines over the drawing ("a list of commands and prompts that you have
 used to expand up … from the command line"), and Escape or a press on the drawing collapses it;
@@ -90,8 +91,7 @@ ATTDEF, BLOCK, -INSERT, PASTECLIP and MATCHPROP (`Select objects:` and its count
 prompt lines), what was typed for a command's whole name or `_` and its global name (AutoCAD keeps
 `line` and `_line` as typed; here they echo the command language's name — WHY: the landing's scripts
 type `_CIRCLE` so that a Spanish reader sees CIRCULO), the text window (Ctrl+F2; TEXTSCR, es
-PANTTEXT), COMMANDLINE / COMMANDLINEHIDE (es LINEACOM / OCULTARLINEACOM), CLIPROMPTLINES as a
-variable, floating, resizing, transparency and the window's Customize menu, the dynamic prompt's
+PANTTEXT), COMMANDLINE / COMMANDLINEHIDE (es LINEACOM / OCULTARLINEACOM), floating, resizing, transparency and the window's Customize menu, the dynamic prompt's
 Down-arrow list, the system variables SETVAR does not know yet (workspace.md, SETVAR's Missing),
 **unverified** whether AutoCAD runs VIEW, LAYER, PROPERTIES, MATCHPROP,
 BLOCKSPALETTE and EATTEDIT transparently (the console does not know them, or hangs on LAYER; refused

@@ -18,13 +18,14 @@ const MIN_SPACING = 1e-6
  *
  * SNAPMODE and SNAPUNIT are the drawing's, as ORTHOMODE and GRIDMODE are
  * (rectang/p304): the runtime keeps this in step with its settings. SNAPTYPE
- * and the polar distance stay for the session.
+ * and the polar distance (POLARDIST) stay for the session.
  */
 export class SnapMode extends Observable {
   private active = false
   private type: SnapModeType = "grid"
   private spacing: Vec2 = { x: 10, y: 10 }
-  private polarDistance = 10
+  /** POLARDIST: 0 at first (probe workspace/p205), any sign taken (p211). */
+  private polarDistance = 0
 
   isActive(): boolean {
     return this.active
@@ -77,7 +78,7 @@ export class SnapMode extends Observable {
   }
 
   setPolarDistance(distance: number): void {
-    if (!(distance >= MIN_SPACING) || distance === this.polarDistance) return
+    if (!Number.isFinite(distance) || distance === this.polarDistance) return
     this.polarDistance = distance
     this.emit()
   }
@@ -95,7 +96,12 @@ export class SnapMode extends Observable {
   /** Rounds a distance to a polar increment; unchanged unless polar snap is on. */
   snapPolarDistance(distance: number): number {
     if (!this.isPolar()) return distance
-    return roundTo(distance, this.polarDistance)
+    // "If this value is 0, the PolarSnap distance assumes the value for Snap
+    // X Spacing" (help GUID-66D637C9). WHY a negative steps by its size: what
+    // AutoCAD does with one is unverified (p211 only shows it taken).
+    const step =
+      this.polarDistance === 0 ? this.spacing.x : Math.abs(this.polarDistance)
+    return roundTo(distance, step)
   }
 
   /**

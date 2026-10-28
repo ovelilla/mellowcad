@@ -20,6 +20,7 @@ import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
   CommandOptionOutcome,
+  type HeldVariables,
   KeyInput,
   PointerInput,
   QuestionInput,
@@ -73,6 +74,17 @@ export class TextEditTool implements Tool {
   private starting: { target: EditableText; mtedit: boolean } | null = null
   /** This run is MTEDIT's: one object, no settings line, ended with the editor. */
   private mtedit = false
+
+  heldVariables(): Partial<HeldVariables> {
+    return {
+      TEXTEDITMODE: {
+        read: () => (this.multiple ? 0 : 1),
+        write: (value) => {
+          this.multiple = value === 0
+        },
+      },
+    }
+  }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")

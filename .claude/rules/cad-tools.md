@@ -145,7 +145,8 @@ Where a value lives is the console's OPEN test, never the help's "Saved in:" (RE
 `onNewDrawing` resets; one U restores (TEXT's rotation), a `DocumentSettings` field not saved.
 **Program-wide** or **registry** (OSMODE): a session tool field, noted in the coverage entry; one U
 restores via `SessionSettingCommand` (TEXTEDITMODE). `onActivate` resets none AutoCAD keeps; a
-shared one is one object `defaultTools` hands each.
+shared one is one object `defaultTools` hands each. Typed, either is its tool's `heldVariables()`
+entry, set through `ctx.held` (`heldInteger`).
 
 ## What a new object wears
 

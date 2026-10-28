@@ -488,6 +488,7 @@ function SnapMode({
               value={state.snapPolarDistance}
               ariaLabel={t("polarSnapDistance")}
               onCommit={(value) => engine.setSnapPolarDistance(value)}
+              takesZero
             />
           )}
         </PopoverContent>
@@ -496,28 +497,33 @@ function SnapMode({
   )
 }
 
-/** A labelled numeric setting; commits only finite, positive values. */
+/**
+ * A labelled numeric setting; commits only finite, positive values, or 0
+ * where it means something (POLARDIST: Snap X's spacing).
+ */
 function SpacingField({
   label,
   value,
   ariaLabel,
   onCommit,
+  takesZero = false,
 }: {
   label: string
   value: number
   ariaLabel: string
   onCommit: (value: number) => void
+  takesZero?: boolean
 }) {
   return (
     <div className="mt-3 flex items-center justify-between">
       <span className="text-muted-foreground">{label}</span>
       <DecimalInput
         live
-        min={0.001}
+        min={takesZero ? 0 : 0.001}
         step={1}
         value={value}
         aria-label={ariaLabel}
-        valid={(next) => next > 0}
+        valid={(next) => next > 0 || (takesZero && next === 0)}
         onCommit={onCommit}
         className="h-7 w-20 rounded-md border border-input bg-background px-2 font-mono outline-none focus-visible:border-ring"
       />

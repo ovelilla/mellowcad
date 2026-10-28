@@ -7,6 +7,7 @@ import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
   CommandOptionOutcome,
+  type HeldVariables,
   PointerInput,
   QuestionInput,
   Tool,
@@ -53,6 +54,11 @@ export class ArrayCommandTool implements Tool {
   })
 
   constructor(private readonly kinds: Readonly<Record<Kind, ArrayKindTool>>) {}
+
+  /** ARRAYASSOCIATIVITY, which the three share. */
+  heldVariables(): Partial<HeldVariables> {
+    return this.kinds.Rectangular.heldVariables?.() ?? {}
+  }
 
   handedTo(): string | null {
     return this.chosen === null ? null : KINDS[this.chosen.kind]

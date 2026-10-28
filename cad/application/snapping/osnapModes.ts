@@ -24,6 +24,28 @@ export const OSNAP_MODES: Readonly<Record<string, SnapType | "none">> = {
 }
 
 /**
+ * OSMODE's bit for each running snap; Node's 8 and Geometric Center's 1024
+ * have none here, and 16384 is the running snaps suspended (F3).
+ */
+export const OSMODE_BITS: Readonly<Record<SnapType, number>> = {
+  [SnapType.Endpoint]: 1,
+  [SnapType.Midpoint]: 2,
+  [SnapType.Center]: 4,
+  [SnapType.Quadrant]: 16,
+  [SnapType.Intersection]: 32,
+  [SnapType.Insertion]: 64,
+  [SnapType.Perpendicular]: 128,
+  [SnapType.Tangent]: 256,
+  [SnapType.Nearest]: 512,
+  [SnapType.ApparentIntersection]: 2048,
+  [SnapType.Extension]: 4096,
+  [SnapType.Parallel]: 8192,
+}
+
+/** OSMODE's bit for the running snaps suspended. */
+export const OSMODE_SUSPENDED = 16384
+
+/**
  * What the object snap menu sends for each snap, as AutoCAD's own menu macros
  * do (`_endp`), and whether the override then asks `of` or `to`: the
  * history reads `Specify first point: _endp of`, `_tan to` (es `de`, `a`), as

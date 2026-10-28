@@ -199,7 +199,8 @@ without a word (p109, p129); ASsociative asks `Create associative array [Yes/No]
 `Crear matriz asociativa [Sí/No] <Sí>:`, AcArrayRes:5609; p04–p06), its default the answer
 in force, which ARRAYRECT, ARRAYPOLAR and ARRAYPATH share for the session (p364: the next run says
 `Associative = No`; WHY the session and not the drawing: AutoCAD keeps ARRAYASSOCIATIVITY in the
-registry, a drawing saved at 1 opening at 0 after `_AS _N`, p422); COUnt asks `Enter the number of columns <4>:` and
+registry, a drawing saved at 1 opening at 0 after `_AS _N`, p422; typed as a variable too, SETVAR,
+a step U takes back, workspace/p214, p218); COUnt asks `Enter the number of columns <4>:` and
 `Enter the number of rows <3>:`, Spacing
 `Specify the distance between columns or [Unit cell] <15>:` and
 `Specify the distance between rows <1>:` — the defaults without trailing zeros, at the drawing's
@@ -526,7 +527,8 @@ the command, as the console's does; EXTEND has none (`R` is refused); mOde (`O`,
 `Introduzca una opción de modo de recorte [Rápido/Estándar] <Rápido>:`; EXTEND
 `Enter an extend mode option…`, es `…de modo de alargamiento…`), the mode in force its default,
 which Enter keeps, anything else `Invalid option keyword.`; the mode is TRIM's and EXTEND's both
-(TRIMEXTENDMODE) and lasts the session — AutoCAD keeps it in the registry, across sessions; Standard
+(TRIMEXTENDMODE, typed as a variable too: SETVAR, a step U takes back, workspace/p214, p218) and
+lasts the session — AutoCAD keeps it in the registry, across sessions; Standard
 lists Fence and Edge (`[cuTting edges/Fence/Crossing/mOde/Edge/eRase]`, EXTEND
 `[Boundary edges/Fence/Crossing/mOde/Edge]`), starts the command with `Select cutting edges ...` (es
 `Seleccione aristas de corte...`; EXTEND `Select boundary edges ...`, es
@@ -549,7 +551,8 @@ alone — Quick refuses it) asks
 `Enter an implied edge extension mode [Extend/No extend] <No extend>:` (es
 `Indique modo de alargamiento de arista implícito [Alargar/No alargar] <No alargar>:`, No extend
 declared `Noextend`, es `No`), the mode in force its default, Enter keeping it; with Extend
-(EDGEMODE 1, shared and lasting the session as the trim mode does) an edge cuts, and bounds an
+(EDGEMODE 1, shared and lasting the session as the trim mode does, typed as a variable too) an edge
+cuts, and bounds an
 extension, where it would run on — a line both ways, an arc and an elliptical arc round their whole
 curve, an open polyline from its ends along its end segments (an arc end segment round its circle,
 p224) —, never in Quick mode; a choice is
@@ -661,8 +664,8 @@ as Edge's, and the settings saying `Projection=None` or `View`: None cuts only w
 View projects along the line of sight; everything here is worked out projected on the UCS's XY
 plane, which is Ucs, so `P` is refused as an option not built —, the fence dragged
 (`pick/drag cursor`), Shift held for a fence or a window (the console has no Shift: **unverified**),
-PROJMODE, EDGEMODE and TRIMEXTENDMODE as variables (and across sessions, as AutoCAD keeps them in
-the registry), a spline as an edge running on, projecting objects at an angle to the UCS onto its XY
+PROJMODE as a variable, EDGEMODE and TRIMEXTENDMODE across sessions (AutoCAD keeps them in the
+registry), a spline as an edge running on, projecting objects at an angle to the UCS onto its XY
 plane (so Quick deletes what only an object at an angle crosses, where the console cuts it at the
 projection: p221); a pick inside a hatch, which the console takes for none and starts a fence at
 (p196, p197), here the hatch, refused; a spline an edge cuts or an open one EXTEND picks (the console leaves the piece on control
@@ -683,7 +686,8 @@ hover's glow) and whether the ✕ shows while a fence crosses nothing (here it d
 `Specify offset distance or [Through/Erase/Layer] <Through>:` (es
 `Precise distancia de desfase o [punto a Atravesar/Borrar/Capa] <punto a Atravesar>:`) — Enter takes
 OFFSETDIST, `<Through>` in each drawing, then the last distance (per drawing, not saved: NEW and
-OPEN bring `<Through>` back, rectang/p310), and two picks measure it
+OPEN bring `<Through>` back, rectang/p310; typed as a variable, SETVAR, any value, below 0 Through, a
+step U takes back, workspace/p211, p218), and two picks measure it
 (`Specify second point:`, asked again from the same first point when they measure zero, p140); 0
 or a negative distance says `Value must be positive and nonzero.` (es
 `El valor debe ser positivo y diferente de cero.`) and asks again (p113, p114); Erase asks
@@ -1295,7 +1299,8 @@ names `Múltiple` / `Simple`, table 21789), then `Select an annotation object or
 point (read as a pick) or `Last`; Mode asks `Enter a text edit mode option [Single/Multiple]
 <Multiple>:` (`<Single>` once Single; es `Indique una opción de modo de edición de texto
 [Simple/Múltiple]`) and says the settings again when answered. TEXTEDITMODE is a profile's
-(text/p246): NEW and OPEN keep it, and U after the run puts back the mode Mode changed (p249). Undo
+(text/p246): NEW and OPEN keep it, and U after the run puts back the mode Mode changed (p249);
+typed as a variable (SETVAR, 0 Multiple, 1 Single), a step U takes back (workspace/p214, p218). Undo
 backs out its own edits, saying `Command has been completely undone.` with none and as it takes
 back the last (p241, p285; with two, the first is silent, p284). Refusals: `*Invalid selection*` /
 `Expects a point or Last/Undo` (Single: `Expects a point or Last/Mode]:`, the stray `]:`

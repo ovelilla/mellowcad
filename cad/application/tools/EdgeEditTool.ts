@@ -66,6 +66,7 @@ import type { MessageId } from "../EngineText"
 import {
   CommandOption,
   CommandOptionOutcome,
+  type HeldVariables,
   PointerInput,
   Tool,
   ToolContext,
@@ -319,6 +320,24 @@ export abstract class EdgeEditTool implements Tool {
       edgeExtend: false,
     }
   ) {}
+
+  heldVariables(): Partial<HeldVariables> {
+    const mode = this.mode
+    return {
+      TRIMEXTENDMODE: {
+        read: () => (mode.standard ? 0 : 1),
+        write: (value) => {
+          mode.standard = value === 0
+        },
+      },
+      EDGEMODE: {
+        read: () => (mode.edgeExtend ? 1 : 0),
+        write: (value) => {
+          mode.edgeExtend = value === 1
+        },
+      },
+    }
+  }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")

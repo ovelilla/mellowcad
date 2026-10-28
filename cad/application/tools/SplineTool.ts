@@ -25,6 +25,7 @@ import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
   CommandOptionOutcome,
+  type HeldVariables,
   KeyInput,
   PointerInput,
   type RibbonMacro,
@@ -90,6 +91,13 @@ export function defaultSplineSettings(): SplineSettings {
   return { method: "fit", knots: "chord", degree: DEFAULT_SPLINE_DEGREE }
 }
 
+/** SPLKNOTS' values. */
+const SPLKNOTS: readonly KnotParameterization[] = [
+  "chord",
+  "sqrtChord",
+  "uniform",
+]
+
 /** The 16-bit range AutoCAD's integer input names at the Degree prompt (spline/p111). */
 const INTEGER_RANGE = { min: -32768, max: 32767 }
 
@@ -132,6 +140,30 @@ export class SplineTool implements Tool {
     private readonly settings: SplineSettings = defaultSplineSettings()
   ) {
     this.id = id
+  }
+
+  heldVariables(): Partial<HeldVariables> {
+    const settings = this.settings
+    return {
+      SPLMETHOD: {
+        read: () => (settings.method === "cv" ? 1 : 0),
+        write: (value) => {
+          settings.method = value === 1 ? "cv" : "fit"
+        },
+      },
+      SPLKNOTS: {
+        read: () => SPLKNOTS.indexOf(settings.knots),
+        write: (value) => {
+          settings.knots = SPLKNOTS[value]
+        },
+      },
+      SPLDEGREE: {
+        read: () => settings.degree,
+        write: (degree) => {
+          settings.degree = degree
+        },
+      },
+    }
   }
 
   private get method(): SplineMethod {

@@ -1,6 +1,6 @@
 import type { Vec2 } from "../geometry/Vec2"
-import type { Vec3 } from "../geometry/Vec3"
-import { normalizeAngle } from "../geometry/primitives"
+import { type Vec3, withZOf } from "../geometry/Vec3"
+import { normalizeAngle, normalizeDegrees } from "../geometry/primitives"
 import { COLOR_BYLAYER, STANDARD_COLORS } from "../domain/colors"
 import { DEFAULT_HATCH_PATTERN_ID } from "../domain/hatchPatterns"
 import { LINETYPE_BYLAYER, LINETYPES } from "../domain/linetypes"
@@ -15,12 +15,13 @@ import type { AttributeDisplay } from "../domain/entityTypes"
 import type { Command } from "./commands/Command"
 import { SetCurrentLayerCommand } from "./commands/layerCommands"
 import {
+  SessionSettingCommand,
   SetAttributeDisplayCommand,
   UpdateSettingsCommand,
 } from "./commands/settingsCommands"
 import { SetCurrentTextStyleCommand } from "./commands/textStyleCommands"
 import { hatchPatternNameFor } from "./tools/HatchTool"
-import type { ToolContext } from "./tools/Tool"
+import type { HeldValues, ToolContext } from "./tools/Tool"
 
 /**
  * What setting a value does: the command that stores it, run as the step of
@@ -167,6 +168,54 @@ function distance(
 const anyValue = () => true
 const notNegative = (value: number) => value >= 0
 
+/** The step setting a variable kept outside the drawing makes (WORKSPACE-D35). */
+function heldChange<K extends keyof HeldValues>(
+  name: K,
+  value: HeldValues[K],
+  ctx: ToolContext
+): Command {
+  const held = ctx.held(name)
+  return new SessionSettingCommand(
+    (next: HeldValues[K]) => held.write(next),
+    held.read(),
+    value
+  )
+}
+
+type HeldNumber = {
+  [K in keyof HeldValues]: HeldValues[K] extends number ? K : never
+}[keyof HeldValues]
+
+/** An integer kept outside the drawing; `valid` is what SETVAR takes. */
+function heldInteger(
+  name: HeldNumber,
+  min: number,
+  max: number,
+  valid: (value: number) => boolean = anyValue
+): IntegerVariable {
+  return {
+    type: "integer",
+    name,
+    min,
+    max,
+    read: (ctx) => ctx.held(name).read(),
+    set: (value, ctx) => (valid(value) ? heldChange(name, value, ctx) : null),
+  }
+}
+
+/** A distance kept outside the drawing; `valid` is what SETVAR takes. */
+function heldDistance(
+  name: HeldNumber,
+  valid: (value: number) => boolean
+): RealVariable {
+  return {
+    type: "real",
+    name,
+    read: (ctx) => ctx.held(name).read(),
+    set: (value, ctx) => (valid(value) ? heldChange(name, value, ctx) : null),
+  }
+}
+
 const ATTMODE_VALUES: readonly AttributeDisplay[] = ["off", "normal", "on"]
 
 /** INSUNITS' values for the units modelled here (mm, cm, m). */
@@ -179,9 +228,13 @@ const INSUNITS: ReadonlyMap<number, LengthUnit> = new Map([
 /**
  * Every system variable mellowcad models that SETVAR sets or reads, typed by
  * name or at its prompt (WORKSPACE-D1, D30). Its words are AutoCAD 2027's
- * console's (probes workspace/p203–p217, p222).
+ * console's (probes workspace/p203–p224), its order the one `?` lists them in:
+ * the older ones, then the newer, each alphabetical (p127).
  */
 export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
+  // WHY Multiple lines (32) is refused where AutoCAD takes it (p213): -ATTDEF
+  // then asks a multiline attribute's lines (p224), which is not modelled.
+  heldInteger("AFLAGS", 0, 63, (value) => (value & 32) === 0),
   {
     type: "real",
     name: "AREA",
@@ -213,8 +266,6 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
       return color === null ? null : patch({ currentColor: color })
     },
   },
-  distance("CHAMFERA", "chamferDistance1", notNegative),
-  distance("CHAMFERB", "chamferDistance2", notNegative),
   {
     type: "string",
     name: "CELTYPE",
@@ -254,6 +305,10 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
         : patch({ currentLineweight: lineweight })
     }
   ),
+  distance("CHAMFERA", "chamferDistance1", notNegative),
+  distance("CHAMFERB", "chamferDistance2", notNegative),
+  // U after CIRCLE leaves it (RECTANG-D48); typed, it is a step (p218).
+  heldDistance("CIRCLERAD", notNegative),
   {
     type: "string",
     name: "CLAYER",
@@ -269,17 +324,11 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
     },
   },
   {
-    type: "integer",
-    name: "CLEANSCREENSTATE",
-    min: 0,
-    max: 1,
-    read: (ctx) => ctx.inquiry().cleanScreenState,
-  },
-  {
     type: "real",
     name: "DISTANCE",
     read: (ctx) => ctx.inquiry().distance,
   },
+  heldInteger("EDGEMODE", 0, 1),
   distance("ELEVATION", "elevation", anyValue),
   distance("FILLETRAD", "filletRadius", notNegative),
   toggle("FILLMODE", "fillMode"),
@@ -306,6 +355,14 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
     },
   },
   distance("HPSCALE", "hatchPatternScale", (value) => value > 0),
+  {
+    type: "string",
+    name: "INSNAME",
+    nullable: true,
+    read: (ctx) => ctx.held("INSNAME").read(),
+    // A name no block has is taken (p216).
+    set: (value, ctx) => heldChange("INSNAME", value, ctx),
+  },
   integer(
     "INSUNITS",
     0,
@@ -319,6 +376,14 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
       return unit === undefined ? null : patch({ unit })
     }
   ),
+  {
+    type: "point",
+    name: "LASTPOINT",
+    dimensions: 3,
+    // In the UCS, `@` from itself, kept in the WCS (p212, p224; WORKSPACE-D41).
+    read: (ctx) => ctx.held("LASTPOINT").read(),
+    set: (point, ctx) => heldChange("LASTPOINT", withZOf(point, point), ctx),
+  },
   integer(
     "LUPREC",
     0,
@@ -342,13 +407,21 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
         },
       })
   ),
+  // Less than 0 is Through (p211).
+  heldDistance("OFFSETDIST", anyValue),
   toggle("ORTHOMODE", "orthoMode"),
+  // NOD's 8 and GCEN's 1024 are kept without a snap; 16384 suspends the
+  // running snaps as F3 does (p214; WORKSPACE-D40).
+  heldInteger("OSMODE", 0, 32767),
   {
     type: "real",
     name: "PERIMETER",
     read: (ctx) => ctx.inquiry().perimeter,
   },
   distance("PLINEWID", "polylineWidth", notNegative),
+  // 0 is Snap X's spacing (SnapMode); any sign taken (p211; WORKSPACE-D36).
+  heldDistance("POLARDIST", anyValue),
+  heldInteger("POLYSIDES", 3, 1024),
   // SNAPMODE 2 is taken (p222); what it means is SNAP's Type here, so it is
   // snap on.
   integer(
@@ -424,6 +497,32 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
     max: 63,
     read: (ctx) => ctx.inquiry().undoControl,
   },
+  heldInteger("ARRAYASSOCIATIVITY", 0, 1),
+  {
+    type: "integer",
+    name: "CLEANSCREENSTATE",
+    min: 0,
+    max: 1,
+    read: (ctx) => ctx.inquiry().cleanScreenState,
+  },
+  heldInteger("CLIPROMPTLINES", 0, 50),
+  {
+    type: "angle",
+    name: "POLARANG",
+    read: (ctx) => ctx.held("POLARANG").read(),
+    // WHY 0 is refused where AutoCAD takes it (p223): polar tracking here
+    // needs an increment to step by.
+    set: (degrees, ctx) => {
+      const step = normalizeDegrees(degrees)
+      return step === 0 ? null : heldChange("POLARANG", step, ctx)
+    },
+  },
+  heldInteger("SELECTIONCYCLING", -2, 2),
+  heldInteger("SPLDEGREE", 1, 10),
+  heldInteger("SPLKNOTS", 0, 2),
+  heldInteger("SPLMETHOD", 0, 1),
+  heldInteger("TEXTEDITMODE", 0, 1),
+  heldInteger("TRIMEXTENDMODE", 0, 1),
 ]
 
 const BY_NAME = new Map(

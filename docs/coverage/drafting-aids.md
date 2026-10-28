@@ -42,7 +42,9 @@ which gives way with both showing is **unverified**; F3 turns object snapping on
 writing `Command:  <Osnap on>` / ` <Osnap off>` (es ` <Refent activado>` / ` <Refent desactivado>`;
 tables 33112, 33113, desktop passes line/d10, d27); OSMODE and AUTOSNAP, as POLARMODE, POLARANG,
 DYNMODE and SELECTIONCYCLING, are registry variables, which a drawing opened leaves (rectang/p304,
-p321): here they last the session (RECTANG-D46)
+p321): here they last the session (RECTANG-D46); OSMODE typed (SETVAR, workspace.md) sets the
+running snaps as a step U takes back, NOD's 8 and GCEN's 1024 kept without a snap and 16384
+suspending them as F3 does, which it reads back (workspace/p214, p218, p223)
 
 **Missing:** Node and Geometric Center (no POINT object; a dimension's definition points snap as
 Endpoint; Spanish `PUN` and `PUNTO` at OFFSET's distance are Node, `de`, where here PUNTO is refused
@@ -56,7 +58,8 @@ Intersection (picked object by object, as an override), Extension from a polylin
 tooltip's distance and angle (`Extension: 12.00 < 0°`), the snapped object's blue glow while Tab
 cycles (d26), APERTURE and AUTOSNAP's settings as variables, per-entity opt-in still required for every
 new entity type (OSOPTIONS-like, deliberate), Intersection between objects in different planes,
-OSMODE as a variable (`'OSMODE`; SETVAR, roadmap row 24), the F-keys' echo inside a command (after
+whether F3, F7, F8, F10 and Ctrl+W are undo steps in AutoCAD (WSD: here they are not, a variable
+typed is), the F-keys' echo inside a command (after
 the prompt asking, `Specify next point or [Undo]:  <Ortho on>`, which stays: **unverified**, the
 desktop passes pressed them at `Command:`) and from the status bar's buttons (they write nothing
 here: **unverified** whether AutoCAD's do)
@@ -157,10 +160,14 @@ with Ortho, Shift override; in a 3D view the `+Z` / `-Z` guide along the UCS's Z
 same 12 px measured on the screen, the guide drawn nearer the cursor winning against a polar angle,
 the Z on a tie (**unverified** rule); readout `Polar: 50.00mm < +Z` (**unverified** wording); the
 path dashed green from the base point out of the view, a small ✕ on the point, the reading in a
-light grey box below and to the right of the cursor (desktop line/d12)
+light grey box below and to the right of the cursor (desktop line/d12); POLARANG typed (SETVAR,
+workspace.md) in degrees, put in 0–360 (`-30` is 330, `400` is 40), a step U takes back
+(workspace/p218, p223)
 
-**Missing:** additional angles list, "track using all polar angles", POLARANG, POLARMODE (registry
-variables, for the session here: see Object snaps) and TRACKPATH as variables (SETVAR, roadmap row 24), the plane's angles measured in plan off the plan
+**Missing:** additional angles list, "track using all polar angles", POLARANG 0 (taken by AutoCAD,
+p223; refused here: polar tracking needs an increment), POLARMODE (a registry variable, for the
+session here: see Object snaps) and TRACKPATH as variables, the plane's angles measured in plan off
+the plan
 
 ### Ortho (F8)
 
@@ -178,8 +185,11 @@ back; it takes back the ORTHO command, p317, which is not built here)
 ### `SNAP` / `SN` · es `FORZCURSOR` / `FC` · snap mode (F9)
 
 **Implemented:** grid snap on the UCS (from its origin, along its axes), the picks rounded to the
-lattice (SNAPUNIT 10: 13,7 is 10,10, desktop pass line/d23), polar snap; on the `+Z` / `-Z` guide
-PolarSnap rounds the height and the grid leaves it (**unverified**). SNAP asks
+lattice (SNAPUNIT 10: 13,7 is 10,10, desktop pass line/d23), polar snap, stepping by POLARDIST, 0 at
+first and then Snap X's spacing ("If this value is 0, the PolarSnap distance assumes the value for
+Snap X Spacing", help GUID-66D637C9; workspace/p205), program-wide and typed as a variable (any
+sign, p211; a step U takes back, p218; the status bar's Polar distance takes 0 too); on the `+Z` /
+`-Z` guide PolarSnap rounds the height and the grid leaves it (**unverified**). SNAP asks
 `Specify snap spacing or [ON/OFF/Aspect] <10.0000>:` (es
 `Precise distancia de resolución o [ACT/DES/asPecto]`): a spacing, typed or two points apart, sets
 SNAPUNIT's X and Y and turns snap mode on; Enter turns it on; ON and OFF (es ACT, DES); Aspect asks
@@ -196,7 +206,8 @@ not an F9 (RECTANG-D44)
 
 **Missing:** Legacy, Style (isometric snap) and Type (grid or polar: the status bar's Snap menu
 chooses it here) — not listed, as they are not built (WHY: the prompt lists what is, as TRIM's
-leaves out Project) —, the unlisted Rotate (SNAPANG), SNAPBASE
+leaves out Project) —, the unlisted Rotate (SNAPANG), SNAPBASE; PolarSnap with a negative POLARDIST
+steps by its size here (**unverified**: the desktop's, WSD d08)
 
 ### Grid (F7)
 
@@ -263,7 +274,9 @@ status bar by default"), and there is no other readout of the cursor here; Custo
 and at `Select objects:`, the Selection list box (es `Selección`) with the candidates by type and
 AutoCAD's last row, None (es `Ninguna`), which selects nothing; the candidate offered glowing blue as
 a selection does (desktop erase/d12, d13); SELECTIONCYCLING lasts the session (a registry
-variable: see Object snaps)
+variable: see Object snaps), typed as a variable (SETVAR, workspace.md) from −2 to 2, the sign on
+or off and 2 the list box, a step U takes back (workspace/p214, p218); Ctrl+W from 0 turns on the
+list box too (**unverified**)
 
 **Missing:** placement options, subobject filtering, type icons in the list, LEGACYCTRLPICK; whether
 a click after Shift+Space opens the list again (**unverified**: d12-7 opened it, but the probe's

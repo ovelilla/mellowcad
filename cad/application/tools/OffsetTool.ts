@@ -43,6 +43,7 @@ import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
 import {
   CommandOption,
   CommandOptionOutcome,
+  type HeldVariables,
   PointerInput,
   Tool,
   ToolContext,
@@ -182,6 +183,17 @@ export class OffsetTool implements Tool {
 
   onNewDrawing(): void {
     this.offsetDist = -1
+  }
+
+  heldVariables(): Partial<HeldVariables> {
+    return {
+      OFFSETDIST: {
+        read: () => this.offsetDist,
+        write: (distance) => {
+          this.offsetDist = distance
+        },
+      },
+    }
   }
 
   onActivate(ctx: ToolContext): void {

@@ -61,7 +61,8 @@ X <v>`), by type: an integer (`Requires 0 or 1 only.` for a switch, es `Requiere
 again; LWDISPLAY's `<ON>` with its ON/OFF/True/False/Yes/No, es ACT/DES/Verdadero/Falso/Sí/No,
 `Requires 0 or 1 only, or option keyword.`), a distance at LUPREC's places (`Requires numeric
 distance or two points.`), an angle at AUPREC's, a string quoted (`<"0">`), a point
-(`Invalid 2D point.`, es `Punto 2D no válido.`); a value the variable refuses writes `Cannot set X to
+(`Invalid 2D point.`, es `Punto 2D no válido.`; a 3D one `Invalid point.`, es `Punto no válido.`,
+p224); a value the variable refuses writes `Cannot set X to
 that value.` and `*Invalid*` (es `Imposible dar a X ese valor.`, `*No válido*`) and ends; a read-only
 one writes `AREA = 0.0000 (read only)` and ends; Enter keeps the value, still a step. Another
 variable typed at a variable's prompt or in a transparent command runs inside it, and so does a
@@ -78,25 +79,38 @@ GRIDMODE, INSUNITS (0–24), CECOLOR (a number, 256 ByLayer, a name in English o
 language, `BYLAYER` / es `PORCAPA`, `r,g,b` and `RGB:r,g,b`; shown `"1"`, `"RGB:255,0,0"`), CELTYPE
 (a linetype case-blind or ByLayer, shown `"BYLAYER"`), CELWEIGHT (hundredths of a millimetre, −1
 ByLayer, the standard values; −3 to 211), CLAYER and TEXTSTYLE (a name case-blind), HPNAME (its `_`
-kept, `.` the default), HPSCALE (above 0), HPANG (degrees, `400` is 40), UCSICON; read only AREA,
-PERIMETER, DISTANCE, UCSNAME, UCSORG, UCSXDIR, UNDOCTL, CLEANSCREENSTATE
+kept, `.` the default), HPSCALE (above 0), HPANG (degrees, `400` is 40), UCSICON; those kept
+outside the drawing's settings, each one undo step though the program keeps it (p218):
+program-wide, which NEW and OPEN leave, OSMODE (0–32767, the running snaps; NOD's 8 and GCEN's 1024
+kept without a snap, 16384 suspended as F3 does), POLARANG (degrees, put in 0–360), POLARDIST (any
+sign, 0 at first: PolarSnap then steps by Snap X), SELECTIONCYCLING (−2 to 2), CLIPROMPTLINES (0–50,
+the temporary prompt lines), TRIMEXTENDMODE, EDGEMODE, TEXTEDITMODE, SPLMETHOD, SPLKNOTS (0–2),
+SPLDEGREE (1–10), ARRAYASSOCIATIVITY, AFLAGS (0–63); per drawing, which NEW and OPEN put back,
+INSNAME (`Enter new value for INSNAME, or . for none <"">:`, es `Indique nuevo valor para INSNAME, o .
+para ninguno`, a name no block has taken, `.` none; INSERT finds it case-blind), LASTPOINT (typed in
+the UCS, a 2D point at ELEVATION, `@` from itself, kept in the WCS; p212, p224), CIRCLERAD (not
+negative; U after CIRCLE leaves it: draw.md), OFFSETDIST (below 0 Through), POLYSIDES (3–1024); the
+values the probes show taken and refused (p205, p211–p214, p216, p223); read only AREA, PERIMETER,
+DISTANCE, UCSNAME, UCSORG, UCSXDIR, UNDOCTL, CLEANSCREENSTATE. `?` lists them in AutoCAD's order,
+the older ones then the newer (p126, p127)
 
-**Missing:** the variables the program or the drawing keeps outside its settings (OSMODE, POLARANG,
-POLARDIST, SELECTIONCYCLING, TRIMEXTENDMODE, EDGEMODE, TEXTEDITMODE, SPLMETHOD, SPLKNOTS,
-SPLDEGREE, ARRAYASSOCIATIVITY, CLIPROMPTLINES, INSNAME, LASTPOINT, CIRCLERAD, OFFSETDIST, POLYSIDES,
-AFLAGS: the review's SVR block); those whose effect is fixed or unmodelled (LUNITS, ATTDIA, ATTREQ,
+**Missing:** the variables whose effect is fixed or unmodelled (LUNITS, ATTDIA, ATTREQ,
 HPORIGIN, DYNMODE, SHORTCUTMENU, PICKBOX, APERTURE, AUTOSNAP, POLARMODE, MBUTTONPAN, LWDEFAULT,
 ZOOMFACTOR, LAYLOCKFADECTL); the DIMxxx variables (typed, AutoCAD makes a style override, which is
 not modelled: dimensions.md); `_.SETVAR` (the `.` prefix, command-line.md); values with no
 representation here, refused with `Cannot set` where AutoCAD takes them — CECOLOR's and CELTYPE's
-ByBlock, CECOLOR 0 and 8–255, CELWEIGHT −2 and −3, INSUNITS but 4, 5 and 6, HPNAME's `USER`;
+ByBlock, CECOLOR 0 and 8–255, CELWEIGHT −2 and −3, INSUNITS but 4, 5 and 6, HPNAME's `USER`,
+POLARANG 0 (polar tracking here needs an increment, p223), AFLAGS' Multiple lines bit 32 (-ATTDEF
+then asks a multiline attribute's lines, p224);
 NAVVCUBEDISPLAY keeps only bit 2, reading back 3 or 1 (WORKSPACE-D39 needs a file-format change),
 SNAPMODE 2 reads back 1; the console's `Press ENTER to continue:` every page of `?` (the history
 scrolls here; the desktop's page length **unverified**); the Drawing Units dialog's Angle Precision
 list; **unverified**: whether a string value takes spaces (USERS1's `a b`, WORKSPACE-D93: here a
 Space is Enter), the prompt line's head while one runs transparently, Escape in a nested variable,
-whether AutoCAD drops a preselection after one (the console does, p161), and whether U steps back a
-read-only variable typed by its name (SETVAR's is a step, p158)
+whether AutoCAD drops a preselection after one (the console does, p161), whether U steps back a
+read-only variable typed by its name (SETVAR's is a step, p158), what PolarSnap does with a negative
+POLARDIST (here it steps by its size; desktop WSD), and that a point typed at SNAPUNIT's prompt
+becomes LASTPOINT, refused or not (p212), which it does not here
 
 ### `CLEANSCREENON` / `CLEANSCREENOFF` / Ctrl+0 · es `LIMPIAPANTACT` / `LIMPIAPANTDES`
 

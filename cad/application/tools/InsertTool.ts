@@ -26,6 +26,7 @@ import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
   CommandOptionOutcome,
+  type HeldVariables,
   PointerInput,
   QuestionInput,
   Tool,
@@ -95,6 +96,17 @@ export class InsertTool implements Tool {
 
   onNewDrawing(): void {
     this.blockId = ""
+  }
+
+  heldVariables(): Partial<HeldVariables> {
+    return {
+      INSNAME: {
+        read: () => this.blockId,
+        write: (name) => {
+          this.blockId = name
+        },
+      },
+    }
   }
 
   onActivate(ctx: ToolContext): void {
@@ -358,10 +370,10 @@ export class InsertTool implements Tool {
   }
 
   private enterName(ctx: ToolContext): void {
-    // INSNAME: the last block inserted, or else the last one defined.
-    if (!ctx.document.getBlock(this.blockId)) {
-      this.blockId = namedBlocks(ctx.document).at(-1)?.id ?? ""
-    }
+    // INSNAME: the last block inserted, or else the last one defined; typed
+    // by SETVAR, case-blind as every block name is.
+    const named = findBlockNamed(ctx.document.getBlocks(), this.blockId)
+    this.blockId = named?.id ?? namedBlocks(ctx.document).at(-1)?.id ?? ""
     this.state = { phase: "name" }
     ctx.dynamicInput.open({
       fields: [{ id: "name", prompt: "blockName", kind: "text" }],

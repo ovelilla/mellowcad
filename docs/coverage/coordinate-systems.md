@@ -232,7 +232,9 @@ screen, so its heading follows the view). A distance given by a point (CIRCLE's 
 corner (ZOOM Window's first one too), DIST's second point, COPY's second points and a keyword
 (LINE's Close) leave it, and a transparent command keeps the one it interrupts (`@` after `'ID` is
 still from the point before) — AutoCAD 2023's console, each followed by `ID @`. The runtime keeps
-it, so every command shares it.
+it, so every command shares it. Typed as a variable (SETVAR, workspace.md) it is a point in the UCS,
+a 2D one at ELEVATION, `@` from itself, kept in the WCS, a step U takes back (workspace/p212, p218,
+p224).
 
 **What follows the UCS:** typed coordinates (`x,y`, `x,y,z`, `d<a`, cylindrical `d<a,z`, spherical
 `d<a<b`, `@`, `#` from its origin — the tooltip's alone: the command window refuses it, even with

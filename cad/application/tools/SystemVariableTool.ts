@@ -1,4 +1,6 @@
 import { Vec2 } from "../../geometry/Vec2"
+import { WORLD_UCS } from "../../domain/ucs"
+import { parseCoordinate } from "../input/coordinateInput"
 import { matchesWildcard } from "../../shared/wildcard"
 import {
   formatVariable,
@@ -265,6 +267,18 @@ export class SystemVariableTool implements Tool {
         this.set(variable, variable.nullable && typed === "." ? "" : typed, ctx)
         return
       case "point": {
+        if (variable.dimensions === 3) {
+          // As a getpoint reads it, in the UCS LASTPOINT is kept in (p224).
+          const point = parseCoordinate(typed, {
+            lastPoint: ctx.held("LASTPOINT").read(),
+            relativeByDefault: false,
+            ucs: WORLD_UCS,
+            elevation: ctx.elevation,
+          })
+          if (point === null) this.refuse(variable, ctx)
+          else this.set(variable, point, ctx)
+          return
+        }
         const point = /^#?([-+]?[\d.]+),([-+]?[\d.]+)$/.exec(typed)
         const [x, y] = point ? [Number(point[1]), Number(point[2])] : [NaN, NaN]
         if (!Number.isFinite(x) || !Number.isFinite(y)) {
@@ -342,7 +356,7 @@ function listedValue(variable: SystemVariable, ctx: ToolContext): string {
  * The words a type refuses with (p128–p147, p213): a switch `Requires 0 or
  * 1 only.`, with keywords `…, or option keyword.`, a range `Requires an
  * integer between a and b.`, a distance or an angle the runtime's, a point
- * `Invalid 2D point.`.
+ * `Invalid 2D point.`, a 3D one `Invalid point.` (p224).
  */
 function refusalOf(variable: SystemVariable): QuestionInput | null {
   switch (variable.type) {
@@ -363,7 +377,9 @@ function refusalOf(variable: SystemVariable): QuestionInput | null {
     case "angle":
       return "angle"
     case "point":
-      return { refusal: "invalidPoint2d" }
+      return {
+        refusal: variable.dimensions === 3 ? "invalidPoint" : "invalidPoint2d",
+      }
     case "string":
       return null
   }

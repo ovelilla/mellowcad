@@ -35,6 +35,7 @@ import {
 import {
   CommandOption,
   CommandOptionOutcome,
+  type HeldVariables,
   PointerInput,
   Tool,
   ToolContext,
@@ -50,6 +51,15 @@ const MODE_BY_KEYWORD: Readonly<Record<string, keyof AttributeModes>> = {
   Verify: "verify",
   Preset: "preset",
   "Lock position": "lockPosition",
+}
+
+/** AFLAGS' bit for each mode; Multiple lines' 32 is not modelled. */
+const AFLAGS_BIT: Readonly<Record<keyof AttributeModes, number>> = {
+  invisible: 1,
+  constant: 2,
+  verify: 4,
+  preset: 8,
+  lockPosition: 16,
 }
 
 type AttDefState =
@@ -126,6 +136,30 @@ export class AttDefTool implements Tool {
 
   onNewDrawing(): void {
     this.written = []
+  }
+
+  heldVariables(): Partial<HeldVariables> {
+    return {
+      AFLAGS: {
+        read: () =>
+          Object.entries(AFLAGS_BIT).reduce(
+            (flags, [mode, bit]) =>
+              this.modes[mode as keyof AttributeModes] ? flags | bit : flags,
+            0
+          ),
+        write: (flags) => {
+          const on = (mode: keyof AttributeModes) =>
+            (flags & AFLAGS_BIT[mode]) !== 0
+          this.modes = {
+            invisible: on("invisible"),
+            constant: on("constant"),
+            verify: on("verify"),
+            preset: on("preset"),
+            lockPosition: on("lockPosition"),
+          }
+        },
+      },
+    }
   }
 
   onDeactivate(ctx: ToolContext): void {

@@ -28,6 +28,7 @@ import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
   CommandOptionOutcome,
+  type HeldVariables,
   PointerInput,
   QuestionInput,
   Tool,
@@ -146,6 +147,19 @@ export class ArrayTool implements Tool {
   constructor(
     private readonly mode: ArrayAssociativity = { associative: true }
   ) {}
+
+  /** ARRAYPOLAR's and ARRAYPATH's too: one object `defaultTools` hands each. */
+  heldVariables(): Partial<HeldVariables> {
+    const mode = this.mode
+    return {
+      ARRAYASSOCIATIVITY: {
+        read: () => (mode.associative ? 1 : 0),
+        write: (value) => {
+          mode.associative = value === 1
+        },
+      },
+    }
+  }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")

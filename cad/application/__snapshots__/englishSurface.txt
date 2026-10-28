@@ -5248,9 +5248,11 @@ Specify next point or
   tip: -
   dyn: -
   prompt| Enter variable(s) to list <*>: A*
-  info| AREA              0.00                                 (read only)
+  info| AFLAGS            16
+        AREA              0.00                                 (read only)
         ATTMODE           1
         AUPREC            0
+        ARRAYASSOCIATIVITY 1
 > ORTHOMODE
   prompt: ORTHOMODE Enter new value for ORTHOMODE <0>:
   asks: ""
@@ -5373,6 +5375,47 @@ Specify next point or
 > UNDOCTL
   command| UNDOCTL
   info| UNDOCTL = 53 (read only)
+> INSNAME
+  prompt: INSNAME Enter new value for INSNAME, or . for none <"">:
+  asks: ""
+  tip: Enter new value for INSNAME, or . for none
+  dyn: ""=""||*
+  command| INSNAME
+> .
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter new value for INSNAME, or . for none <"">: .
+> LASTPOINT
+  prompt: LASTPOINT Enter new value for LASTPOINT <0.00,0.00,0.00>:
+  asks: ""
+  tip: Enter new value for LASTPOINT
+  dyn: ""=""||*
+  command| LASTPOINT
+> FOO
+  prompt| Enter new value for LASTPOINT <0.00,0.00,0.00>: FOO
+  error| Invalid point.
+> @1,2,3
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter new value for LASTPOINT <0.00,0.00,0.00>: @1,2,3
+> POLARANG
+  prompt: POLARANG Enter new value for POLARANG <90>:
+  asks: ""
+  tip: Enter new value for POLARANG
+  dyn: ""=""||°*
+  command| POLARANG
+> 0
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Enter new value for POLARANG <90>: 0
+  error| Cannot set POLARANG to that value.
+  error| *Invalid*
 
 ## LTSCALE
 > start

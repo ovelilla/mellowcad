@@ -24,7 +24,12 @@ import { LINETYPE_BYLAYER, LinetypeId } from "../domain/linetypes"
 import { DimStyle, DimStyleId } from "../domain/dimStyles"
 import { TextStyle, TextStyleId } from "../domain/textStyles"
 import { LINEWEIGHT_BYLAYER, Lineweight } from "../domain/lineweights"
-import { Ucs, isWorldUcs, worldPointToUcs } from "../domain/ucs"
+import {
+  Ucs,
+  isWorldUcs,
+  ucsPointToWorld,
+  worldPointToUcs,
+} from "../domain/ucs"
 import {
   DraftingModes,
   formatAngle,
@@ -58,6 +63,8 @@ import { SnapEngine } from "./snapping/SnapEngine"
 import { ConstructionGeometry, SnapResult, SnapType } from "./snapping/types"
 import { ParallelReferenceEngine } from "./snapping/ParallelReference"
 import {
+  OSMODE_BITS,
+  OSMODE_SUSPENDED,
   OSNAP_MENU_ANSWERS,
   OSNAP_MODES,
   OSNAP_MODE_IDS,
@@ -80,6 +87,7 @@ import {
   parseCoordinate,
 } from "./input/coordinateInput"
 import {
+  CLIPROMPTLINES,
   CommandDefinition,
   CommandInfo,
   CommandLineController,
@@ -104,6 +112,7 @@ import { AddDimStyleCommand } from "./commands/dimStyleCommands"
 import { AddTextStyleCommand } from "./commands/textStyleCommands"
 import { NewDrawingCommand } from "./commands/entityCommands"
 import {
+  type HeldVariables,
   type Inquiry,
   MACRO_PAUSE,
   PointerInput,
@@ -498,6 +507,12 @@ export class CadRuntime extends Observable {
   private pointTyped: Vec3 | null = null
   /** The tool put LASTPOINT where the answer running leaves it. */
   private lastPointSet = false
+  /** CLIPROMPTLINES, program-wide: NEW and OPEN leave it. */
+  private cliPromptLines = CLIPROMPTLINES
+  /** OSMODE's bits for Node and Geometric Center, kept without a snap. */
+  private osmodeUnmodelled = 0
+  /** The system variables kept outside the drawing's settings, by name. */
+  private readonly heldVariables: HeldVariables
 
   // Magnetic crosshair: where to draw it (screen), positioned on the resolved
   // point so it clings to geometry. `null` means the pointer is off-canvas.
@@ -752,6 +767,7 @@ export class CadRuntime extends Observable {
       madeThisSession: (id) => !this.openedIds.has(id),
       setViewCubeVisible: (visible) => this.setViewCubeVisible(visible),
       inquiry: () => this.inquiry(),
+      held: (name) => this.heldVariables[name],
       setCurrentTextStyle: (id) => this.setCurrentTextStyle(id),
       snapOverride: () => this.snapping.getOverride(),
       runningSnaps: {
@@ -905,6 +921,12 @@ export class CadRuntime extends Observable {
     )) {
       this.registerTool(tool)
     }
+    const held: Partial<HeldVariables> = this.runtimeVariables()
+    for (const tool of this.tools.values()) {
+      Object.assign(held, tool.heldVariables?.())
+    }
+    // Every name is someone's: setvar.test.ts reads each.
+    this.heldVariables = held as HeldVariables
     this.activeTool = this.tools.get("select")!
 
     this.registerCommands()
@@ -3787,6 +3809,74 @@ export class CadRuntime extends Observable {
   private refreshSnapAtCursor(): void {
     if (this.lastPointerScreen) this.updateSnap(this.lastPointerScreen)
     this.host.requestRender()
+  }
+
+  /**
+   * The system variables the runtime keeps outside the drawing's settings,
+   * each program-wide but LASTPOINT, which is per drawing (rectang/p304,
+   * workspace/p219).
+   */
+  private runtimeVariables(): Pick<
+    HeldVariables,
+    | "OSMODE"
+    | "POLARANG"
+    | "POLARDIST"
+    | "SELECTIONCYCLING"
+    | "CLIPROMPTLINES"
+    | "LASTPOINT"
+  > {
+    return {
+      OSMODE: {
+        read: () =>
+          this.snapping
+            .enabledTypes()
+            .reduce(
+              (bits, type) => bits | OSMODE_BITS[type],
+              this.osmodeUnmodelled |
+                (this.snapping.isActive() ? 0 : OSMODE_SUSPENDED)
+            ),
+        write: (value) => {
+          this.osmodeUnmodelled = value & (8 | 1024)
+          for (const type of this.snapping.availableTypes()) {
+            this.snapping.setEnabled(type, (value & OSMODE_BITS[type]) !== 0)
+          }
+          this.snapping.setActive((value & OSMODE_SUSPENDED) === 0)
+        },
+      },
+      POLARANG: {
+        read: () => this.constraints.getPolarAngleStep(),
+        write: (degrees) => this.setPolarAngleStep(degrees),
+      },
+      POLARDIST: {
+        read: () => this.snapMode.getPolarDistance(),
+        write: (distance) => this.setSnapPolarDistance(distance),
+      },
+      SELECTIONCYCLING: {
+        read: () => this.cycling.getValue(),
+        write: (value) => {
+          this.cycling.setValue(value)
+          this.refreshCycling()
+          this.refreshSnapAtCursor()
+        },
+      },
+      CLIPROMPTLINES: {
+        read: () => this.cliPromptLines,
+        write: (count) => {
+          this.cliPromptLines = count
+          this.invalidateState()
+        },
+      },
+      LASTPOINT: {
+        read: () =>
+          worldPointToUcs(this.document.getSettings().ucs, this.lastPoint),
+        write: (point) => {
+          this.lastPoint = ucsPointToWorld(
+            this.document.getSettings().ucs,
+            point
+          )
+        },
+      },
+    }
   }
 
   /** Toggles selection cycling (AutoCAD's SELECTIONCYCLING / Ctrl+W). */
@@ -6686,7 +6776,10 @@ export class CadRuntime extends Observable {
       commandLine: {
         visible: this.commandLineVisible,
         historyOpen: this.commandHistoryOpen,
-        recent: temporaryPromptLines(this.commandLine.getLines()),
+        recent: temporaryPromptLines(
+          this.commandLine.getLines(),
+          this.cliPromptLines
+        ),
         prompt: promptString(prompt.segments),
         promptSegments: prompt.segments,
         command: prompt.command,

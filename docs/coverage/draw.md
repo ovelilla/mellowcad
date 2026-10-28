@@ -217,7 +217,8 @@ asked again (probes polygon/p08, p118, p153); `Specify center of polygon or [Edg
 `Specify radius of circle:` (es `Precise radio de círculo:`); the count (POLYSIDES) and the option
 are the next run's `<default>` (p01, p111), per drawing and not saved: NEW and OPEN bring `<4>` and
 `<I>` back (rectang/p309); U leaves them, where AutoCAD's puts POLYSIDES back (rectang/p317,
-RECTANG-D48); Inscribed puts the vertices on the
+RECTANG-D48); POLYSIDES typed as a variable (SETVAR, 3 to 1024) is a step U takes back
+(workspace/p213, p218); Inscribed puts the vertices on the
 radius, Circumscribed the edges' midpoints; a point at the radius, picked or typed (`@5,0` from the
 centre), sizes and turns it, a vertex there (Inscribed) or an edge's midpoint (Circumscribed),
 LASTPOINT left at the centre (p06, p102, p123); a typed radius draws the bottom edge level in the UCS
@@ -245,7 +246,7 @@ Wording and geometry from AutoCAD 2027's console in both languages (p01–p153);
 Spanish (p108)
 
 **Missing:** SNAPANG (no rotated snap here: a typed radius levels the bottom edge with the UCS,
-where AutoCAD turns it by SNAPANG, p105), POLYSIDES as a variable; `<angle` then a distance at
+where AutoCAD turns it by SNAPANG, p105); `<angle` then a distance at
 Edge's end is unprobed on the desktop (RECTANG-D65)
 
 ### `CIRCLE` / `C` · es `CIRCULO` / `C`
@@ -307,7 +308,8 @@ lost: `Point or option keyword required.` at the centre,
 p109, p114, p119, p126–p130, p306, p309, p310, p376, p377); Enter at the radius or diameter takes
 the last circle's (CIRCLERAD, whichever mode made it, p162; per drawing and not saved, NEW and OPEN
 putting it back to 0, rectang/p301; U leaves it, where AutoCAD's puts it back, rectang/p317,
-RECTANG-D48); a radius or diameter
+RECTANG-D48; typed as a variable, SETVAR, not negative, it is a step U takes back, workspace/p211,
+p218); a radius or diameter
 given by a point is its distance from the centre in space (`3,4,12` from the origin r13, p17, p148,
 p184); in the plane of the centre or of the first 2P or 3P point, with THICKNESS: 2P's and 3P's
 later points are 2D prompts, taken by their X and Y in that plane (a snapped point at another
@@ -514,7 +516,8 @@ A typed length at a next point is direct distance along the cursor, a negative o
 LINE's (p117). Dynamic input at the next points and at both tangents is LINE's Length and Angle
 from the last point (the first at the start tangent; desktop d04-2, d04-4, d04-5, d04-6): the
 tangent is the offset of the point they give, a point typed in it relative to that base. Method,
-Knots and Degree kept for the session (SPLMETHOD / SPLKNOTS / SPLDEGREE, Not-saved; p104); Escape
+Knots and Degree kept for the session (SPLMETHOD / SPLKNOTS / SPLDEGREE, Not-saved; p104; typed
+as variables too, SETVAR, Degree 1 to 10, each a step U takes back, workspace/p214, p218); Escape
 discards the curve; one undo step. The jig as the desktop draws it: at every next point and tangent
 prompt an amber dashed line from the last point (the first at the start tangent) to the cursor,
 alone while one point is held; from two points the ghost in the current colour (CECOLOR red, a red
@@ -876,7 +879,9 @@ only the prompt line, and U and REDO name the step `-INSERT` (d06-6, d06-9). -IN
 p202): `Enter block name or [?] <B1>:` (the last block inserted, or else the last named one
 defined — an array's anonymous `*U<n>` neither listed by `?` nor found by name —; names found
 case-blind, `b1` inserts B1, p210 —, INSNAME's: per drawing, not saved, so NEW and OPEN forget the
-block inserted, rectang/p303); Enter with no block to offer says `Invalid block name.` (es `Nombre
+block inserted, rectang/p303; typed as a variable, SETVAR, `Enter new value for INSNAME, or . for
+none <"">:`, a name no block has taken and `.` none, a step U takes back, workspace/p216, p218);
+Enter with no block to offer says `Invalid block name.` (es `Nombre
 de bloque no válido.`) and ends (p217, p238); `?` lists as -BLOCK's does, with -INSERT's table of
 User Blocks and Unnamed Blocks, and ends (p02, p208, p238); `Specify insertion point or
 [Scale/Rotate]:`, where Enter or a word says `Point or option keyword required.` and asks again
@@ -939,7 +944,9 @@ AutoCAD 2027's console prints it (`Current attribute modes:` /
 `Indique una opción para modificar [Invisible/Constante/Verificable/Predefinido/Bloquear posición] <terminado>`;
 es `Modos de atributo actuales:` / `Invisible=N  Constante=N … Anotativo=N  línea Múltiple=N`, the
 last two always N here; p03) and Invisible / Constant / Verify / Preset / Lock position toggles
-(AFLAGS, per session, initially Lock position). `Enter attribute tag name:` takes no spaces, as
+(AFLAGS, per session, initially Lock position; typed as a variable, SETVAR, 0 to 63, a step U takes
+back, workspace/p213, p218, but Multiple lines' 32, refused: -ATTDEF then asks a multiline
+attribute's lines, p224, not built). `Enter attribute tag name:` takes no spaces, as
 AutoCAD's: a space ends the tag, typed in the box or at the command line, and what follows answers
 the next question (`A B` is tag A and prompt B, p313); `!` is taken (p314), lower case upper-cased,
 and only Enter is refused, `Tag cannot be null` (es `El identificador no puede ser nulo`, p315).

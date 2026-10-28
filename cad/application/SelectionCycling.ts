@@ -12,15 +12,18 @@ import { Entity, EntityId } from "../domain/entities"
  *
  * AutoCAD stores the setting as an integer whose *sign* is the on/off state and
  * whose *magnitude* chooses badge only (1) or badge plus Selection list box
- * (2), so turning the feature off keeps the display preference. That is exactly
- * the shape modelled here: {@link enabled} plus {@link listBox}.
+ * (2), so turning the feature off keeps the display preference; 0 is off with
+ * none. That integer is what is kept here.
  *
  * Session state, like Ortho or SNAP: it describes how picking behaves, not what
  * the drawing contains, so it is not part of the drawing file.
  */
 export class SelectionCycling extends Observable {
-  private enabled = false
-  private listBox = true
+  /**
+   * 0 at first, as the console has it (erase/p01, workspace/p205); turned on
+   * from 0 it shows the list box too (the desktop's Ctrl+W there unverified).
+   */
+  private value = 0
 
   /** The objects under the pick box, topmost first (see `pickAll`). */
   private candidates: readonly Entity[] = []
@@ -30,28 +33,36 @@ export class SelectionCycling extends Observable {
   private resolved = false
 
   isEnabled(): boolean {
-    return this.enabled
+    return this.value > 0
   }
 
   setEnabled(enabled: boolean): void {
-    if (this.enabled === enabled) return
-    this.enabled = enabled
-    if (!enabled) this.clear()
-    this.emit()
+    const size = Math.abs(this.value)
+    this.setValue(enabled ? size || 2 : size === 0 ? 0 : -size)
   }
 
   toggle(): void {
-    this.setEnabled(!this.enabled)
+    this.setEnabled(!this.isEnabled())
   }
 
   /** Whether a click over a stack offers the Selection list box (value 2). */
   showsList(): boolean {
-    return this.enabled && this.listBox
+    return this.value === 2
   }
 
   setShowsList(showList: boolean): void {
-    if (this.listBox === showList) return
-    this.listBox = showList
+    const size = showList ? 2 : 1
+    this.setValue(this.value > 0 ? size : -size)
+  }
+
+  getValue(): number {
+    return this.value
+  }
+
+  setValue(value: number): void {
+    if (this.value === value) return
+    this.value = value
+    if (!this.isEnabled()) this.clear()
     this.emit()
   }
 
@@ -100,7 +111,7 @@ export class SelectionCycling extends Observable {
 
   /** Highlights the next candidate (Shift+Space); false when there is no stack. */
   cycle(): boolean {
-    if (!this.enabled || this.candidates.length < 2) return false
+    if (!this.isEnabled() || this.candidates.length < 2) return false
     const index = this.candidates.findIndex((e) => e.id === this.currentId)
     const next = this.candidates[(index + 1) % this.candidates.length]
     this.currentId = next.id
@@ -119,7 +130,7 @@ export class SelectionCycling extends Observable {
 
   /** The candidate a pick would resolve to right now, or null when off. */
   getCurrentId(): EntityId | null {
-    return this.enabled ? this.currentId : null
+    return this.isEnabled() ? this.currentId : null
   }
 
   /**
@@ -128,7 +139,7 @@ export class SelectionCycling extends Observable {
    * changes which of the objects *actually under the cursor* is picked.
    */
   choose(candidates: readonly Entity[]): Entity | null {
-    if (this.enabled && this.currentId !== null) {
+    if (this.isEnabled() && this.currentId !== null) {
       const cycled = candidates.find((e) => e.id === this.currentId)
       if (cycled) return cycled
     }

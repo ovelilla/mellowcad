@@ -220,13 +220,14 @@ export const CLIPROMPTLINES = 3
 /**
  * AutoCAD's temporary prompt history: the last lines of the most recent
  * command — its echo, its answered prompts and what it reported — at most
- * {@link CLIPROMPTLINES}.
+ * `count` (CLIPROMPTLINES).
  */
 export function temporaryPromptLines(
-  lines: ReadonlyArray<CommandLineEntry>
+  lines: ReadonlyArray<CommandLineEntry>,
+  count: number = CLIPROMPTLINES
 ): ReadonlyArray<CommandLineEntry> {
   let start = lines.length
-  while (start > 0 && lines.length - start < CLIPROMPTLINES) {
+  while (start > 0 && lines.length - start < count) {
     start--
     if (lines[start].kind === "command") break
   }

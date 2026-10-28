@@ -37,6 +37,7 @@ import { entityScenePrimitive } from "../SceneBuilder"
 import {
   CommandOption,
   CommandOptionOutcome,
+  type HeldVariables,
   KeyInput,
   MACRO_PAUSE,
   PointerInput,
@@ -202,6 +203,18 @@ export class CircleTool implements Tool {
   /** CIRCLERAD, which every CIRCLE mode shares, per drawing (rectang/p301). */
   onNewDrawing(): void {
     this.lastRadius.radius = 0
+  }
+
+  heldVariables(): Partial<HeldVariables> {
+    const held = this.lastRadius
+    return {
+      CIRCLERAD: {
+        read: () => held.radius,
+        write: (radius) => {
+          held.radius = radius
+        },
+      },
+    }
   }
 
   onActivate(ctx: ToolContext): void {

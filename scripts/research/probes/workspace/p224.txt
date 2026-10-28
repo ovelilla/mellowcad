@@ -1,0 +1,42 @@
+_UCS
+_O
+10,0
+_LASTPOINT
+1,1
+2
+(getvar "LASTPOINT")
+(trans (getvar "LASTPOINT") 1 0)
+_ELEVATION
+5
+_LASTPOINT
+3,4
+2
+(getvar "LASTPOINT")
+_LASTPOINT
+@
+2
+(getvar "LASTPOINT")
+_LASTPOINT
+@1,1,1
+2
+(getvar "LASTPOINT")
+_AFLAGS
+48
+2
+(getvar "AFLAGS")
+_-ATTDEF
+
+T1
+P
+D
+0,0
+
+0
+_U
+_INSNAME
+FOO
+2
+_-INSERT
+
+2
+2

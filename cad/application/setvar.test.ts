@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import { type CadHarness, createHarness } from "../../test/harness"
 import { lineOf, p } from "../../test/builders"
+import { createBlockDefinition, type LineEntity } from "../domain/entities"
 import { ar } from "../locales/ar"
 import { es } from "../locales/es"
 
@@ -156,7 +157,8 @@ describe("SETVAR asks a variable's name, then its value", () => {
     expect(written(cad, "U")).toEqual(["U", "SETVAR"])
   })
 
-  // probes workspace/p125 (ORTHO*), p126 (A*: the columns, `(read only)`)
+  // probes workspace/p125 (ORTHO*), p126 (A*: the columns, `(read only)`,
+  // the newer variables after the older)
   it("lists the variables a wild card matches, read-only ones marked", () => {
     const cad = createHarness()
     expect(written(cad, "SETVAR", "?", "ORTHO*")).toEqual([
@@ -167,9 +169,11 @@ describe("SETVAR asks a variable's name, then its value", () => {
     ])
     const lines = written(cad, "SETVAR", "?", "A*").at(-1)?.split("\n")
     expect(lines).toEqual([
+      "AFLAGS            16",
       "AREA              0.00                                 (read only)",
       "ATTMODE           1",
       "AUPREC            0",
+      "ARRAYASSOCIATIVITY 1",
     ])
     const spanish = createHarness({ locale: es })
     answer(spanish, "MODIVAR", "?", "")
@@ -666,5 +670,345 @@ describe("each variable takes AutoCAD's values", () => {
       chamferDistance2: 3,
       hatchPatternScale: 2,
     })
+  })
+})
+
+// The variables kept outside the drawing's settings, by a tool or by the
+// runtime (WORKSPACE-D30's rest; probes workspace/p205, p211–p214, p216,
+// p218, p223, p224).
+describe("the variables kept outside the drawing", () => {
+  // probes workspace/p205, p211, p213, p216, p212 (acadiso, the console's
+  // profile for the registry ones)
+  it("asks each with its value", () => {
+    const cad = createHarness({ snap: true })
+    for (const [name, value] of [
+      ["OSMODE", "4133"],
+      ["POLARANG", "90"],
+      ["POLARDIST", "0.00"],
+      ["SELECTIONCYCLING", "0"],
+      ["CLIPROMPTLINES", "3"],
+      ["TRIMEXTENDMODE", "1"],
+      ["EDGEMODE", "0"],
+      ["TEXTEDITMODE", "0"],
+      ["SPLMETHOD", "0"],
+      ["SPLKNOTS", "0"],
+      ["SPLDEGREE", "3"],
+      ["ARRAYASSOCIATIVITY", "1"],
+      ["LASTPOINT", "0.00,0.00,0.00"],
+      ["CIRCLERAD", "0.00"],
+      ["OFFSETDIST", "-1.00"],
+      ["POLYSIDES", "4"],
+      ["AFLAGS", "16"],
+    ]) {
+      answer(cad, name)
+      expect(prompt(cad)).toBe(
+        `${name} Enter new value for ${name} <${value}>:`
+      )
+      cad.escape()
+    }
+    answer(cad, "INSNAME")
+    expect(prompt(cad)).toBe(
+      'INSNAME Enter new value for INSNAME, or . for none <"">:'
+    )
+  })
+
+  // probes workspace/p213, p214, p223: each range, asked again
+  it("refuses a value out of its range and asks again", () => {
+    const cad = createHarness()
+    for (const [name, typed, refusal] of [
+      ["OSMODE", "32768", "Requires an integer between 0 and 32767."],
+      ["SELECTIONCYCLING", "3", "Requires an integer between -2 and 2."],
+      ["SELECTIONCYCLING", "FOO", "Requires an integer between -2 and 2."],
+      ["CLIPROMPTLINES", "51", "Requires an integer between 0 and 50."],
+      ["SPLKNOTS", "3", "Requires an integer between 0 and 2."],
+      ["SPLDEGREE", "11", "Requires an integer between 1 and 10."],
+      ["SPLDEGREE", "0", "Requires an integer between 1 and 10."],
+      ["POLYSIDES", "2", "Requires an integer between 3 and 1024."],
+      ["POLYSIDES", "1025", "Requires an integer between 3 and 1024."],
+      ["AFLAGS", "64", "Requires an integer between 0 and 63."],
+      ["TRIMEXTENDMODE", "2", "Requires 0 or 1 only."],
+      ["EDGEMODE", "2", "Requires 0 or 1 only."],
+      ["TEXTEDITMODE", "2", "Requires 0 or 1 only."],
+      ["SPLMETHOD", "2", "Requires 0 or 1 only."],
+      ["ARRAYASSOCIATIVITY", "2", "Requires 0 or 1 only."],
+      ["POLARANG", "FOO", "Requires valid numeric angle or two points."],
+      ["POLARDIST", "FOO", "Requires numeric distance or two points."],
+      ["CIRCLERAD", "FOO", "Requires numeric distance or two points."],
+      ["OFFSETDIST", "FOO", "Requires numeric distance or two points."],
+      ["LASTPOINT", "FOO", "Invalid point."],
+    ]) {
+      expect(written(cad, name, typed).at(-1)).toBe(refusal)
+      expect(cad.activeToolId()).toBe("setvar")
+      cad.escape()
+    }
+    const spanish = createHarness({ locale: es })
+    expect(written(spanish, "LASTPOINT", "FOO").at(-1)).toBe("Punto no válido.")
+  })
+
+  // probes workspace/p211 (CIRCLERAD -1), p213 (AFLAGS 63), p223 (POLARANG 0),
+  // p224 (AFLAGS 48: -ATTDEF then asks a multiline attribute's lines)
+  it("ends on a value it does not take", () => {
+    const cad = createHarness()
+    for (const [name, typed] of [
+      ["CIRCLERAD", "-1"],
+      ["POLARANG", "0"],
+      ["POLARANG", "360"],
+      ["AFLAGS", "48"],
+    ]) {
+      expect(written(cad, name, typed).slice(-2)).toEqual([
+        `Cannot set ${name} to that value.`,
+        "*Invalid*",
+      ])
+      expect(cad.activeToolId()).toBe("select")
+    }
+    expect(prompt(answer(cad, "AFLAGS"))).toBe(
+      "AFLAGS Enter new value for AFLAGS <16>:"
+    )
+  })
+
+  // probes workspace/p214, p223 (OSMODE 8 and 16384 taken), WORKSPACE-D40
+  it("OSMODE sets the running snaps, keeps NOD and GCEN, suspends at 16384", () => {
+    const cad = createHarness({ snap: true })
+    answer(cad, "OSMODE", "3")
+    expect(cad.runtime.snapping.enabledTypes()).toEqual([
+      "endpoint",
+      "midpoint",
+    ])
+    answer(cad, "OSMODE", "1033")
+    expect(cad.runtime.snapping.enabledTypes()).toEqual(["endpoint"])
+    expect(prompt(answer(cad, "OSMODE"))).toBe(
+      "OSMODE Enter new value for OSMODE <1033>:"
+    )
+    answer(cad, "16385")
+    expect(cad.state().snapActive).toBe(false)
+    answer(cad, "OSMODE", "1")
+    expect(cad.state().snapActive).toBe(true)
+    // F3 is 16384 too.
+    cad.press("F3")
+    expect(prompt(answer(cad, "OSMODE"))).toBe(
+      "OSMODE Enter new value for OSMODE <16385>:"
+    )
+  })
+
+  // probe workspace/p223: degrees, put in 0–360
+  it("POLARANG sets Polar's increment", () => {
+    const cad = answer(createHarness(), "POLARANG", "45")
+    expect(cad.state().polarAngleStep).toBe(45)
+    answer(cad, "POLARANG", "-30")
+    expect(cad.state().polarAngleStep).toBe(330)
+    answer(cad, "POLARANG", "400")
+    expect(cad.state().polarAngleStep).toBeCloseTo(40, 9)
+  })
+
+  // help GUID-66D637C9 ("If this value is 0, the PolarSnap distance assumes
+  // the value for Snap X Spacing"), probes workspace/p205 (0 at first), p211
+  // (a negative taken); WORKSPACE-D36
+  it("POLARDIST 0 steps PolarSnap by Snap X", () => {
+    const cad = createHarness({ polar: true })
+    answer(cad, "SNAP", "5")
+    cad.runtime.setSnapModeType("polar")
+    const along = (x: number) => {
+      cad.command("LINE").click(p(0, 0)).click(p(x, 0.1)).escape()
+      return (cad.latest() as LineEntity).end.x
+    }
+    expect(along(13)).toBeCloseTo(15, 9)
+    answer(cad, "POLARDIST", "4")
+    expect(along(13)).toBeCloseTo(12, 9)
+    answer(cad, "POLARDIST", "-4")
+    expect(cad.state().snapPolarDistance).toBe(-4)
+    answer(cad, "POLARDIST", "0", "SNAP", "3")
+    expect(along(13)).toBeCloseTo(12, 9)
+  })
+
+  // probe workspace/p214: the sign on or off, the size the list box
+  it("SELECTIONCYCLING turns cycling and its list box on and off", () => {
+    const cad = answer(createHarness(), "SELECTIONCYCLING", "2")
+    expect(cad.state().selectionCycling).toMatchObject({
+      active: true,
+      showList: true,
+    })
+    answer(cad, "SELECTIONCYCLING", "-1")
+    expect(cad.state().selectionCycling.active).toBe(false)
+    cad.runtime.toggleSelectionCycling()
+    expect(cad.state().selectionCycling).toMatchObject({
+      active: true,
+      showList: false,
+    })
+    expect(prompt(answer(cad, "SELECTIONCYCLING"))).toBe(
+      "SELECTIONCYCLING Enter new value for SELECTIONCYCLING <1>:"
+    )
+  })
+
+  // probe workspace/p214; command-line.md (the temporary prompt lines)
+  it("CLIPROMPTLINES is how many prompt lines show above the prompt", () => {
+    const cad = answer(createHarness(), "CLIPROMPTLINES", "1")
+    answer(cad, "LINE", "0,0", "1,1")
+    expect(cad.state().commandLine.recent).toHaveLength(1)
+    answer(cad, "", "CLIPROMPTLINES", "0")
+    expect(cad.state().commandLine.recent).toEqual([])
+  })
+
+  // probes workspace/p214 (each switch), trim/p109, spline/p104, text/p246,
+  // arrays/p01: what each command then says
+  it("sets the modes TRIM, SPLINE, TEXTEDIT and the arrays start in", () => {
+    const cad = createHarness()
+    answer(cad, "TRIMEXTENDMODE", "0", "EDGEMODE", "1", "TRIM")
+    expect(cad.commandLog()).toContain(
+      "Current settings: Projection=UCS, Edge=Extend, Mode=Standard"
+    )
+    cad.escape()
+    answer(cad, "SPLMETHOD", "1", "SPLDEGREE", "4", "SPLINE")
+    expect(cad.commandLog()).toContain("Current settings: Method=CV   Degree=4")
+    cad.escape()
+    answer(cad, "SPLMETHOD", "0", "SPLKNOTS", "2", "SPLINE")
+    expect(cad.commandLog().at(-1)).toMatch(/Knots=Uniform/)
+    cad.escape()
+    answer(cad, "TEXTEDITMODE", "1", "TEXTEDIT")
+    expect(cad.commandLog()).toContain("Current settings: Edit mode = Single")
+    cad.escape()
+    const arrays = createHarness({
+      entities: [lineOf(p(0, 0), p(10, 0), { id: "L" })],
+    })
+    answer(arrays, "ARRAYASSOCIATIVITY", "0", "ARRAYRECT", "_L", "")
+    expect(arrays.commandLog()).toContain(
+      "Type = Rectangular  Associative = No"
+    )
+  })
+
+  // probes workspace/p211, p213, p223: the next run's defaults
+  it("sets the defaults CIRCLE, OFFSET, POLYGON and ATTDEF offer", () => {
+    const cad = answer(createHarness(), "CIRCLERAD", "3", "CIRCLE", "0,0")
+    expect(prompt(cad)).toBe(
+      "CIRCLE Specify radius of circle or [Diameter] <3.00>:"
+    )
+    cad.escape()
+    answer(cad, "OFFSETDIST", "-2", "OFFSET")
+    expect(prompt(cad)).toBe(
+      "OFFSET Specify offset distance or [Through/Erase/Layer] <Through>:"
+    )
+    cad.escape()
+    answer(cad, "OFFSETDIST", "0", "OFFSET")
+    expect(prompt(cad)).toMatch(/<0.00>:$/)
+    cad.escape()
+    answer(cad, "POLYSIDES", "1024", "POLYGON")
+    expect(prompt(cad)).toBe("POLYGON Enter number of sides <1024>:")
+    cad.escape()
+    answer(cad, "AFLAGS", "3", "ATTDEF")
+    expect(cad.commandLog().at(-1)).toMatch(
+      /\nInvisible=Y {2}Constant=Y {2}Verify=N {2}Preset=N {2}Lock position=N /
+    )
+  })
+
+  // probe workspace/p216: an undefined name taken, `.` for none; INSERT
+  // finds the one typed case-blind
+  it("INSNAME is the block INSERT offers", () => {
+    const cad = createHarness({
+      blocks: ["B1", "B2"].map((name) =>
+        createBlockDefinition(name, p(0, 0), [lineOf(p(0, 0), p(1, 0))])
+      ),
+    })
+    answer(cad, "INSNAME", "b1", "-INSERT")
+    expect(prompt(cad)).toBe("-INSERT Enter block name or [?] <B1>:")
+    cad.escape()
+    answer(cad, "INSNAME", "FOO", "INSNAME")
+    expect(prompt(cad)).toBe(
+      'INSNAME Enter new value for INSNAME, or . for none <"FOO">:'
+    )
+    answer(cad, ".", "INSNAME")
+    expect(prompt(cad)).toBe(
+      'INSNAME Enter new value for INSNAME, or . for none <"">:'
+    )
+  })
+
+  // probes workspace/p212 (`@5,0` from itself), p224 (in the UCS, a 2D
+  // point at ELEVATION, `@` and `@1,1,1`); WORKSPACE-D41
+  it("LASTPOINT is typed in the UCS, `@` from itself", () => {
+    const cad = answer(createHarness(), "UCS", "_O", "10,0")
+    answer(cad, "LASTPOINT", "1,1")
+    expect(written(cad, "ID", "@").at(-1)).toBe(
+      " X = 1.00     Y = 1.00     Z = 0.00"
+    )
+    // Kept in the WCS: LINE's `@` there.
+    answer(cad, "LINE", "@", "20,0", "")
+    expect((cad.latest() as LineEntity).start).toBeCloseToPoint(p(11, 1), 9)
+    answer(cad, "ELEVATION", "5", "LASTPOINT", "3,4", "LASTPOINT")
+    expect(prompt(cad)).toBe(
+      "LASTPOINT Enter new value for LASTPOINT <3.00,4.00,5.00>:"
+    )
+    answer(cad, "@", "LASTPOINT", "@1,1,1", "LASTPOINT")
+    expect(prompt(cad)).toBe(
+      "LASTPOINT Enter new value for LASTPOINT <4.00,5.00,6.00>:"
+    )
+  })
+
+  // probe workspace/p218: U takes back each, named as typed (WORKSPACE-D35)
+  it("is one undo step whatever keeps it", () => {
+    const cad = createHarness({ snap: true })
+    for (const [name, typed, before] of [
+      ["OSMODE", "1", "4133"],
+      ["POLARANG", "45", "90"],
+      ["POLARDIST", "5", "0.00"],
+      ["SELECTIONCYCLING", "1", "0"],
+      ["CLIPROMPTLINES", "5", "3"],
+      ["TRIMEXTENDMODE", "0", "1"],
+      ["EDGEMODE", "1", "0"],
+      ["TEXTEDITMODE", "1", "0"],
+      ["SPLMETHOD", "1", "0"],
+      ["SPLKNOTS", "1", "0"],
+      ["SPLDEGREE", "4", "3"],
+      ["ARRAYASSOCIATIVITY", "0", "1"],
+      ["INSNAME", "FOO", '""'],
+      ["LASTPOINT", "5,5", "0.00,0.00,0.00"],
+      ["CIRCLERAD", "3", "0.00"],
+      ["OFFSETDIST", "4", "-1.00"],
+      ["POLYSIDES", "6", "4"],
+      ["AFLAGS", "3", "16"],
+    ]) {
+      answer(cad, name, typed)
+      expect(written(cad, "U")).toEqual(["U", name])
+      answer(cad, name)
+      expect(prompt(cad)).toMatch(new RegExp(` <${before}>:$`))
+      cad.escape()
+    }
+  })
+
+  // RECTANG-D48 (rectang/p317): U after CIRCLE leaves CIRCLERAD, where
+  // AutoCAD's puts it back (workspace/p221)
+  it("leaves CIRCLERAD as U after CIRCLE finds it", () => {
+    const cad = answer(createHarness(), "CIRCLE", "0,0", "5", "U", "CIRCLERAD")
+    expect(prompt(cad)).toBe("CIRCLERAD Enter new value for CIRCLERAD <5.00>:")
+  })
+
+  // rectang/p301, p303, p309, p310 (per drawing, unsaved); p304, p219 (the
+  // registry's and the session's, which NEW leaves)
+  it("goes back to its default with NEW where it is the drawing's", () => {
+    const cad = createHarness({ snap: true })
+    const typed: [string, string, string][] = [
+      ["CIRCLERAD", "3", "0.00"],
+      ["OFFSETDIST", "4", "-1.00"],
+      ["POLYSIDES", "6", "4"],
+      ["INSNAME", "FOO", '""'],
+      ["LASTPOINT", "5,5", "0.00,0.00,0.00"],
+      ["OSMODE", "1", "1"],
+      ["POLARANG", "45", "45"],
+      ["POLARDIST", "5", "5.00"],
+      ["SELECTIONCYCLING", "1", "1"],
+      ["CLIPROMPTLINES", "5", "5"],
+      ["TRIMEXTENDMODE", "0", "0"],
+      ["EDGEMODE", "1", "1"],
+      ["TEXTEDITMODE", "1", "1"],
+      ["SPLMETHOD", "1", "1"],
+      ["SPLKNOTS", "1", "1"],
+      ["SPLDEGREE", "4", "4"],
+      ["ARRAYASSOCIATIVITY", "0", "0"],
+      ["AFLAGS", "3", "3"],
+    ]
+    for (const [name, value] of typed) answer(cad, name, value)
+    answer(cad, "_NEW")
+    for (const [name, , after] of typed) {
+      answer(cad, name)
+      expect(prompt(cad)).toMatch(new RegExp(`${name}.* <${after}>:$`))
+      cad.escape()
+    }
   })
 })
