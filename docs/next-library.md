@@ -1,6 +1,6 @@
 # MellowCAD como librería — brief
 
-> **Estado:** fases 1 y 2 hechas (2026-10-29); las demás, sin ejecutar. Sigue la convención de
+> **Estado:** fases 1 y 2 hechas, y la 3(a) (2026-10-29); las demás, sin ejecutar. Sigue la convención de
 > `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El análisis completo, con el
 > inventario medido, las fuentes fechadas, el spike y el pase adversarial, está en
 > https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama local
@@ -93,9 +93,17 @@ son días de sesión.
    hoy en 270 KB gz. `CadDriver` deja de importar el `en.json` crudo (68 KB) y usa una lista de ids
    generada. Un check previo a publicar que instala el tarball en anfitriones ajenos.
 3. **Desacoplar el editor del sitio, en su sitio** — 6–9 días en cuatro entregas, tras la 1.
-   (a) `components/cad/top-bar.tsx` deja de importar `LogoMark` y `useLanguageLinks`: pasan a ser
-   props o slots. Las claves `easycad:*` de `lib/palette-layout.ts` y `lib/status-bar-layout.ts`
-   y el script de cabecera pasan a ser opciones. (b) El catálogo del editor sustituye a next-intl en
+   (a) **Hecha** (61b75e3, b0ddb5a, 7c673de): `CadWorkspace` recibe del anfitrión `mark` y
+   `languages` (la página los calcula en el servidor con `languageLinks`), `layoutStorage` (sin
+   clave no se guarda nada; el sitio pasa las de hoy desde `lib/site.ts`, congeladas por
+   `lib/site.test.ts`; el script de cabecera es `paletteLayoutScript(key)`) y `sheet`, el id y el
+   nombre de la transición de la celda del lienzo. Medido después: en `components/cad/` ya no
+   queda ningún import del sitio salvo next-intl. Lo que queda para las entregas siguientes:
+   next-intl en 23 componentes y el `DirectionProvider` que monta el layout del sitio (b); el
+   `<html>` que escriben `applyPaletteLayout` y el script (`data-palette`, `--palette-width`), la
+   variante `palette-open`, los tokens de `app/[locale]/(app)/globals.css` y los portales a
+   `body` (c); la lógica de §2 (d). `components/ui/`, `lib/utils.ts`, las dos libs de layout y
+   `hooks/useCadEngine.ts` ya son del editor: viajan con él en la fase 4. (b) El catálogo del editor sustituye a next-intl en
    los 23 componentes. (c) Los tokens y la variante `palette-open` quedan acotados a la raíz del
    editor, con un contenedor para los portales, y `--active` se genera de `THEME.grip`. (d) La
    lógica de §2 baja de la línea.
