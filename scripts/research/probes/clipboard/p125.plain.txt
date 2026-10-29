@@ -1,0 +1,9 @@
+_LINE
+0,0
+100,0
+
+(sssetfirst nil (ssget "_X"))
+_CUTCLIP
+_U
+(sslength (ssget "_X"))
+(ssget "_I")

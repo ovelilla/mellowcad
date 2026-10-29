@@ -1,0 +1,9 @@
+_LINE
+0,0
+10,0
+
+_QSAVE
+C:\Users\oveli\AppData\Local\Temp\mcadclip\p215es.dwg
+_SAVE
+C:\Users\oveli\AppData\Local\Temp\mcadclip\p215bes.dwg
+(getvar "DWGNAME")

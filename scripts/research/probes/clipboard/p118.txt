@@ -1,0 +1,15 @@
+_LINE
+0,0
+100,0
+
+_COPYCLIP
+_L
+
+
+_L
+
+_PASTECLIP
+0,10
+
+0,20
+(sslength (ssget "_X"))

@@ -1,0 +1,6 @@
+_LINE
+0,0
+10,0
+
+SALVADXF
+(getvar "CMDNAMES")

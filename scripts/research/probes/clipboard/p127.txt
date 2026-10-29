@@ -1,0 +1,10 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_E
+_COPYBASE
+0,0
+FOO
+

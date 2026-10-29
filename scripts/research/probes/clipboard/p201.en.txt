@@ -1,0 +1,8 @@
+_LINE
+0,0
+10,0
+
+_SAVEAS
+
+C:\Users\oveli\AppData\Local\Temp\mcadclip\p201en.dwg
+(getvar "DWGNAME")

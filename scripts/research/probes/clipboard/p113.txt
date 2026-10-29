@@ -1,0 +1,16 @@
+_LINE
+10,10
+20,30
+
+_CIRCLE
+50,50
+5
+_ZOOM
+_E
+_COPYCLIP
+_ALL
+
+_PASTECLIP
+0,0
+(cdr (assoc 10 (entget (entnext (entnext (entnext (entnext)))))))
+(entget (entlast))

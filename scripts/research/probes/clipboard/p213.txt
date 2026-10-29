@@ -1,0 +1,4 @@
+(getvar "FILEDIA")
+(getvar "CMDDIA")
+(getvar "DWGNAME")
+(getvar "DWGTITLED")

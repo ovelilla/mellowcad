@@ -1,0 +1,12 @@
+_LINE
+0,0
+100,0
+
+_CIRCLE
+50,50
+5
+_CUTCLIP
+_L
+
+_U
+(sslength (ssget "_X"))

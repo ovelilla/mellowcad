@@ -1,0 +1,3 @@
+_QNEW
+(getvar "CMDNAMES")
+(getvar "DWGNAME")

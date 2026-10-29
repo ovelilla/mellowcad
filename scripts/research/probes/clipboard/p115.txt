@@ -1,0 +1,13 @@
+_LINE
+0,0
+10,0
+
+_COPYCLIP
+_L
+
+_UCS
+_Z
+30
+_PASTECLIP
+0,0
+(entget (entlast))

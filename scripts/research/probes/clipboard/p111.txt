@@ -1,0 +1,17 @@
+_LINE
+0,0
+100,0
+
+_COPYCLIP
+_L
+
+_ID
+20,20
+_PASTECLIP
+@10,0
+(getvar "LASTPOINT")
+_PASTECLIP
+@
+_PASTECLIP
+50<90
+(cdr (assoc 10 (entget (entlast))))

@@ -1,0 +1,8 @@
+_LINE
+0,0
+10,0
+
+_QSAVE
+C:\Users\oveli\AppData\Local\Temp\mcadclip\p204en.dwg
+_U
+(sslength (ssget "_X"))

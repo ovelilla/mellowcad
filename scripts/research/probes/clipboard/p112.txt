@@ -1,0 +1,15 @@
+_LINE
+0,0
+100,0
+
+_ZOOM
+_W
+-50,-50
+150,150
+_COPYCLIP
+_L
+
+_PASTECLIP
+_END
+98,1
+(cdr (assoc 10 (entget (entlast))))

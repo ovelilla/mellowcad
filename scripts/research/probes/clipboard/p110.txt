@@ -1,0 +1,10 @@
+_LINE
+0,0
+100,0
+
+_COPYCLIP
+_L
+
+_PASTECLIP
+
+(getvar "CMDNAMES")

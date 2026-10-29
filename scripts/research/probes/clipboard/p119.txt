@@ -1,0 +1,15 @@
+_LINE
+0,0
+100,0
+
+_-LAYER
+_LO
+0
+
+_COPYCLIP
+_L
+
+_CUTCLIP
+_L
+
+(sslength (ssget "_X"))

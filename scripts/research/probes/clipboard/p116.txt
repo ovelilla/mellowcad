@@ -1,0 +1,29 @@
+_-LAYER
+_N
+A
+_C
+1
+A
+
+_LINE
+0,0
+10,0
+
+_CHPROP
+_L
+
+_LA
+A
+
+_CUTCLIP
+_L
+
+_-PURGE
+_LA
+A
+_N
+(tblsearch "LAYER" "A")
+_PASTECLIP
+0,0
+(tblsearch "LAYER" "A")
+(cdr (assoc 8 (entget (entlast))))

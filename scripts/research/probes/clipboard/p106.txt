@@ -1,0 +1,11 @@
+_LINE
+0,0
+100,0
+
+_COPYBASE
+FOO
+10,10
+_L
+
+(getvar "LASTPOINT")
+(ssget "_I")

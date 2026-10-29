@@ -1,0 +1,11 @@
+_LINE
+0,0
+10,0
+
+_COPYBASE
+0,0,10
+_L
+
+_PASTECLIP
+100,0
+(entget (entlast))

@@ -1,0 +1,7 @@
+_LINE
+0,0
+100,0
+
+_COPYBASE
+
+(getvar "CMDNAMES")

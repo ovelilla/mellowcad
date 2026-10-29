@@ -1,0 +1,14 @@
+_LINE
+0,0
+100,0
+
+_CIRCLE
+50,50
+5
+(sssetfirst nil (ssget "_X"))
+_COPYBASE
+0,0
+(ssget "_I")
+(sssetfirst nil (ssget "_X"))
+_CUTCLIP
+(sslength (ssget "_X"))

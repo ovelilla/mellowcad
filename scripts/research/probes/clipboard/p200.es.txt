@@ -1,0 +1,9 @@
+_LINE
+0,0
+10,0
+
+(getvar "DWGTITLED")
+_QSAVE
+C:\Users\oveli\AppData\Local\Temp\mcadclip\p200es.dwg
+(getvar "DWGNAME")
+(getvar "DBMOD")

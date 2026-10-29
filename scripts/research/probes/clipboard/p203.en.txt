@@ -1,0 +1,11 @@
+_LINE
+0,0
+10,0
+
+_QSAVE
+C:\Users\oveli\AppData\Local\Temp\mcadclip\p203en.dwg
+_CIRCLE
+5,5
+2
+_QSAVE
+(getvar "DBMOD")

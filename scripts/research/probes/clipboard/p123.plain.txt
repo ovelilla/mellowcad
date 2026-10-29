@@ -1,0 +1,11 @@
+_LINE
+0,0
+10,0
+
+_CIRCLE
+5,5
+2
+(defun initcommandversion (v) nil)
+_AI_SELALL
+_U
+(sslength (ssget "_X"))
