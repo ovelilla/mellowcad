@@ -41,7 +41,7 @@ export class PasteTool implements Tool {
     return this.state.phase === "point" ? "specifyInsertionPoint" : null
   }
 
-  /** As AutoCAD 2023's console refuses it. */
+  /** `FOO` and `10,10,5` are `Invalid 2D point.` (clipboard/p108, p109). */
   takes(): QuestionInput {
     return "point2d"
   }
@@ -89,8 +89,12 @@ export class PasteTool implements Tool {
       commit: () => {},
       commitRaw: (commitCtx) => {
         const text = commitCtx.dynamicInput.getText("point").trim()
-        // Enter asks again, as AutoCAD 2023's console does.
-        if (text === "") return true
+        // WHY Enter is refused and asked again: the point takes none
+        // (clipboard/p110), worded as what is no 2D point.
+        if (text === "") {
+          commitCtx.report(commitCtx.text.message("invalidPoint2d"), "error")
+          return true
+        }
         const point = parseCoordinate(text, {
           lastPoint: commitCtx.lastPoint,
           relativeByDefault: false,

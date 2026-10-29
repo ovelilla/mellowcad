@@ -414,6 +414,12 @@ export class CadRuntime extends Observable {
   /** Its name as echoed (`LINE` for `L`), which U and REDO say. */
   private startingName: string | null = null
   /**
+   * A command whose tool starts once the host answers (PASTECLIP's read), as
+   * it was asked; anything started, or Escape, meanwhile drops it
+   * (CLIPBOARD-D9).
+   */
+  private waiting: WaitingStart | null = null
+  /**
    * What the last U, UNDO or REDO did, which the next one answers by: how
    * many steps an undo took back, which REDO does again (AutoCAD's REDO
    * follows only the undo just before it); null after any other command.
@@ -1157,11 +1163,18 @@ export class CadRuntime extends Observable {
   ): boolean {
     let named = label
     const depth = this.history.depth
+    const waiting = this.waiting
     const ran = run((said) => {
       named ??= said
       return this.text.message("menuStep", { command: named })
     })
-    if (
+    if (ran && named !== null && this.waiting !== waiting && this.waiting) {
+      // Its command waits on the host: the group is its tool's step, or
+      // this empty one if it starts none.
+      this.waiting.emptyStep = this.text.message("emptyMenuStep", {
+        command: named,
+      })
+    } else if (
       ran &&
       named !== null &&
       this.activeTool.id === "select" &&
@@ -2583,9 +2596,11 @@ export class CadRuntime extends Observable {
    * `command` (its global name) starts: any but U, UNDO, REDO and MREDO,
    * even one that changes nothing (LIST, ID, ZOOM), leaves MREDO `Nothing to
    * redo` in AutoCAD 2023's console (acc/n6–n18), and a ZOOM after it is a
-   * step of its own (acc/z25).
+   * step of its own (acc/z25). It wins over a command still waiting on the
+   * host, whose answer is then dropped.
    */
   private commandStarts(command: string): void {
+    this.waiting = null
     if (UNDO_COMMANDS.has(command)) return
     this.undoing = null
     this.history.dropRedo()
@@ -5420,22 +5435,29 @@ export class CadRuntime extends Observable {
 
   /**
    * AutoCAD's PASTECLIP. Reading is asynchronous, so the fragment is fetched
-   * first and the placement tool is started with it already in hand.
+   * first and the placement tool is started with it already in hand, named
+   * as the command was asked (U says `PASTECLIP`, clipboard/p104) — unless
+   * another command or Escape came first.
    */
   async pasteFromClipboard(): Promise<void> {
+    const waiting = this.awaitHost()
     const fragment = await readClipboardFragment(
       this.clipboard,
       this.clipboardFallback
     )
+    if (!this.stillWaiting(waiting)) return
     if (!fragment) {
       // Not AutoCAD's wording: it pastes foreign text as an MTEXT object,
       // which this paste does not do yet, so there is no message to copy.
       this.commandLine.write("info", this.text.message("clipboardEmpty"))
+      if (waiting.emptyStep !== null) {
+        this.history.recordEmpty(waiting.emptyStep)
+      }
       this.commandLineVisible = true
       this.invalidateState()
       return
     }
-    this.startTool("paste")
+    this.startAsAsked("paste", waiting)
     const { frame } = this
     this.paste.begin(
       {
@@ -5450,6 +5472,38 @@ export class CadRuntime extends Observable {
       this.toolContext
     )
     this.host.requestRender()
+  }
+
+  /** The running command is to wait on the host: how it was asked, kept. */
+  private awaitHost(): WaitingStart {
+    this.waiting = {
+      command: this.starting,
+      step: this.startingName,
+      echoMark: this.echoMark,
+      emptyStep: null,
+    }
+    return this.waiting
+  }
+
+  /** Whether `waiting` stands now the host answered; it is over either way. */
+  private stillWaiting(waiting: WaitingStart): boolean {
+    if (this.waiting !== waiting) return false
+    this.waiting = null
+    return true
+  }
+
+  /** Starts `id` as `waiting` was asked, as `runCommand` starts a tool. */
+  private startAsAsked(id: string, waiting: WaitingStart): void {
+    this.starting = waiting.command
+    this.startingName = waiting.step
+    this.echoMark = waiting.echoMark
+    try {
+      this.startTool(id)
+    } finally {
+      this.starting = null
+      this.startingName = null
+      this.echoMark = null
+    }
   }
 
   /** Ctrl+A: selects every object that can be selected. */
@@ -6414,11 +6468,12 @@ export class CadRuntime extends Observable {
       return true
     }
 
-    // Escape also drops any acquired tracking references and the one-shot snap
-    // override before the tool aborts.
+    // Escape also drops any acquired tracking references, the one-shot snap
+    // override and a read of the host still pending before the tool aborts.
     if (e.key === "Escape") {
       this.resetTracking()
       this.snapping.clearOverride()
+      this.waiting = null
     }
 
     // Space is Enter mid-command, as at AutoCAD's prompt: it confirms a
@@ -7099,6 +7154,17 @@ export class CadRuntime extends Observable {
 interface Macro {
   readonly echo?: string
   readonly step?: (said: string) => string
+}
+
+/**
+ * A command waiting on the host before its tool starts: what `runCommand`
+ * started it as, and the empty step its menu group owes if it starts none.
+ */
+interface WaitingStart {
+  readonly command: string | null
+  readonly step: string | null
+  readonly echoMark: number | null
+  emptyStep: string | null
 }
 
 /** The drafting aids a key or the status bar toggles, as an undo puts them back. */

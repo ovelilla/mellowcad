@@ -37,6 +37,28 @@ async function pasteAt(
   cad.click(at)
 }
 
+/** Lets the clipboard's read settle. */
+function settled() {
+  return new Promise((resolve) => setTimeout(resolve, 0))
+}
+
+/** A clipboard whose read answers only when told to, what it last held. */
+class LateClipboard extends MemoryClipboard {
+  private pending: ((text: string | null) => void) | null = null
+
+  read(): Promise<string | null> {
+    this.readCalls += 1
+    return new Promise((resolve) => {
+      this.pending = resolve
+    })
+  }
+
+  answer(): void {
+    this.pending?.(this.text)
+    this.pending = null
+  }
+}
+
 describe("COPYCLIP", () => {
   it("measures the fragment from the lower-left of its extents", async () => {
     const cad = createHarness({
@@ -338,28 +360,107 @@ describe("PASTECLIP", () => {
     expect(cad.activeToolId()).toBe("select")
   })
 
-  // AutoCAD 2023's console answering the same input.
-  it("asks as AutoCAD 2026: Enter asks again, what is no 2D point is refused", async () => {
+  it("refuses Enter and what is no 2D point, and asks again (p108–p110)", async () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
     })
     copy(cad, "L1")
-    await cad.runtime.pasteFromClipboard()
+    answer(cad, "_PASTECLIP")
+    await settled()
     expect(cad.state().commandLine.prompt).toBe(
       "PASTECLIP Specify insertion point:"
     )
-    for (const text of ["", "FOO", "5,5"]) {
-      cad.runtime.setCommandLineText(text)
-      cad.runtime.submitCommandLine()
-    }
+    answer(cad, "", "FOO", "10,10,5", "5,5")
 
-    expect(cad.commandLog().slice(-4)).toEqual([
+    expect(cad.commandLog().slice(-7)).toEqual([
       "Specify insertion point:",
+      "Invalid 2D point.",
       "Specify insertion point: FOO",
+      "Invalid 2D point.",
+      "Specify insertion point: 10,10,5",
       "Invalid 2D point.",
       "Specify insertion point: 5,5",
     ])
     expect(cad.entityCount).toBe(2)
+  })
+
+  it("refuses Enter in Spanish too (p110)", async () => {
+    const cad = createHarness({
+      locale: es,
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+    answer(cad, "_COPYCLIP", "_L", "", "_PASTECLIP")
+    await settled()
+    answer(cad, "")
+    expect(cad.commandLog().at(-1)).toBe("Punto 2D no válido.")
+    expect(cad.activeToolId()).toBe("paste")
+  })
+
+  it("names the step PASTECLIP at U, PEGAPP in Spanish (p104)", async () => {
+    for (const [locale, name] of [
+      [undefined, "PASTECLIP"],
+      [es, "PEGAPP"],
+    ] as const) {
+      const cad = createHarness({
+        locale,
+        entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+      })
+      answer(cad, "_COPYCLIP", "_L", "", "_PASTECLIP")
+      await settled()
+      answer(cad, "0,50")
+      expect(cad.entityCount).toBe(2)
+
+      answer(cad, "_U")
+      expect(cad.commandLog().at(-1)).toBe(name)
+      expect(cad.entityCount).toBe(1)
+    }
+  })
+
+  it("is repeated by Enter (p118)", async () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+    answer(cad, "_COPYCLIP", "_L", "", "_PASTECLIP")
+    await settled()
+    answer(cad, "0,10", "")
+    await settled()
+    expect(cad.state().commandLine.prompt).toBe(
+      "PASTECLIP Specify insertion point:"
+    )
+    answer(cad, "0,20")
+    expect(cad.entityCount).toBe(3)
+  })
+
+  // The menu's other entries are one group U names by the entry (`Erase
+  // GROUP`, desktop workspace/d03): the read must not split it in two.
+  it("is one step from the shortcut menu, U naming it Paste GROUP", async () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+    answer(cad, "_COPYCLIP", "_L", "", "_CIRCLE", "5,5", "2")
+    cad.runtime.chooseShortcutMenuAction("paste")
+    await settled()
+    answer(cad, "0,50")
+    expect(cad.entityCount).toBe(3)
+
+    answer(cad, "_U")
+    expect(cad.commandLog().at(-1)).toBe("Paste GROUP")
+    expect(cad.entityCount).toBe(2)
+    answer(cad, "_U")
+    expect(cad.commandLog().at(-1)).toBe("CIRCLE")
+    expect(cad.entityCount).toBe(1)
+  })
+
+  it("is an empty step from the shortcut menu with nothing to paste", async () => {
+    const cad = createHarness({ clipboard: null })
+    answer(cad, "_CIRCLE", "5,5", "2")
+    cad.runtime.chooseShortcutMenuAction("paste")
+    await settled()
+    expect(cad.commandLog().at(-1)).toBe("Nothing on the clipboard.")
+
+    answer(cad, "_U")
+    expect(cad.commandLog().at(-1)).toBe("GROUP Paste")
+    expect(cad.entityCount).toBe(1)
   })
 
   it("leaves the pasted objects selected (erase/p263)", async () => {
@@ -622,6 +723,41 @@ describe("the clipboard host", () => {
 
     await pasteAt(cad, p(0, 200))
     expect(cad.entityCount).toBe(2)
+  })
+
+  it("drops the read when a command starts before it answers", async () => {
+    const clipboard = new LateClipboard()
+    const cad = createHarness({
+      clipboard,
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+    copy(cad, "L1")
+    answer(cad, "_PASTECLIP", "_LINE")
+    clipboard.answer()
+    await settled()
+
+    expect(cad.activeToolId()).toBe("line")
+    expect(cad.state().commandLine.prompt).toBe("LINE Specify first point:")
+    expect(cad.commandLog()).not.toContain("Specify insertion point:")
+    answer(cad, "0,0", "10,0", "")
+    expect(cad.entityCount).toBe(2)
+  })
+
+  it("drops the read when Escape is pressed before it answers", async () => {
+    const clipboard = new LateClipboard()
+    const cad = createHarness({
+      clipboard,
+      entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+    })
+    copy(cad, "L1")
+    answer(cad, "_PASTECLIP")
+    cad.escape()
+    clipboard.answer()
+    await settled()
+
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.state().commandLine.prompt).toBe("Command:")
+    expect(cad.entityCount).toBe(1)
   })
 
   it("works with no clipboard port at all", async () => {

@@ -116,7 +116,6 @@ tilted object is measured by its outline on the screen (`planDistanceToEntity`, 
 Tools and the pointer pipeline work in the frame of the UCS's XY plane (`ucsFrame.ts`,
 `CadRuntime.frame`, remade when the UCS changes): `frame.document` reads every object there
 (cached), `frame.viewport` is `Viewport.inFrame(axes)`, `frame.ucs` the UCS as the frame sees it.
-With an upright UCS the frame is the identity.
 
 - The resolver, snaps, tracking, picking, the cursor, the polar guide and the scene's aids read
   `this.frame`; reading `this.viewport`, `this.document` or the UCS directly for anything the cursor
@@ -177,7 +176,7 @@ rail tool says `transparentMacro`), never a plain start, which ends the running 
 
 `SelectionCycling` mirrors SELECTIONCYCLING: sign = on/off, magnitude = badge only vs badge plus
 Selection list box. Candidates are re-observed in `updateSnap` **only while the active tool picks
-objects** (`wantsSnap()` false). Tools reach it through `ToolContext.pick`.
+objects** (`wantsSnap()` false).
 
 With the list box on, a click over a stack is **deferred**: the press is held and the list opens on
 the **release** (a menu opened on the press is dismissed by that release), and its modal backdrop
@@ -268,10 +267,11 @@ re-add the very same ids.
 
 ## Waiting on the host
 
-**Bound every wait on an asynchronous port.** A browser may leave `navigator.clipboard.readText()`
-pending forever behind an unanswered permission prompt: race it against a timeout
-(`CLIPBOARD_READ_TIMEOUT_MS`), fall back, and keep a session-local copy of anything the host might
-refuse to hand back.
+**Bound every wait on an asynchronous port.** `navigator.clipboard.readText()` may hang behind an
+unanswered permission prompt: race it with a timeout (`CLIPBOARD_READ_TIMEOUT_MS`), fall back and
+keep a session copy of what the host may withhold. **What a command was asked as survives the
+wait** (its step's name and menu group: `awaitHost`); anything started meanwhile, or Escape, drops
+the answer.
 
 ## EngineState
 

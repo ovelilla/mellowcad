@@ -7,8 +7,11 @@ is no point with `Invalid point.` and asks again (clipboard/p106, p107); COPYCLI
 a preselection, CUTCLIP drops it (erase/p250, clipboard/p121, p124); their `Select objects:` takes
 whole objects, CUTCLIP's sub-objects too (erase/p259, clipboard/p127); an object on a locked layer
 is found and refused, `1 was on a locked layer.` (p119); PASTECLIP asks `Specify insertion point:` (es
-`Precise punto de inserción`), Enter asking again and what is no point refused with
-`Invalid 2D point.`, as AutoCAD 2023's console does; `Clipboard` port with a session fallback, table
+`Precise punto de inserción`), Enter, what is no point and a Z refused with `Invalid 2D point.` (es
+`Punto 2D no válido.`) and asked again (p108–p110), Enter at `Command:` repeating it (p118), U naming
+it `PASTECLIP` (es `PEGAPP`, p104) and the shortcut menu's Paste one step U names `Paste GROUP` (as
+workspace/d03's `Erase GROUP`), a paste dropped when a command starts or Escape is pressed while the
+clipboard is read (no probe: AutoCAD's read is synchronous); `Clipboard` port with a session fallback, table
 reconciliation across drawings (destination name wins; an array's anonymous block lands under a
 fresh `*U<n>`, arrays/p410), single undo on paste, bounded read timeout,
 editable-field guard for Ctrl+C/X/V/A
