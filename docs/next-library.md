@@ -1,7 +1,6 @@
 # MellowCAD como librería — brief
 
-> **Estado:** fases 1, 2 y 3 hechas (2026-10-29); de la 4, las entregas (a) a (e), de seis; las
-> demás, sin ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
+> **Estado:** fases 1, 2, 3 y 4 hechas (2026-10-29); las demás, sin ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
 > análisis completo, con el inventario medido, las fuentes fechadas, el spike y el pase adversarial,
 > está en https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama
 > local worktree-agent-a498997d3f29c107f (commit b1c7923), sin empujar.
@@ -171,7 +170,7 @@ son días de sesión.
    estado y la paleta, y el desplazamiento del cuadro respecto al cursor. Hallado y sin tocar (el
    aspecto no debía cambiar): en /ar/draw las etiquetas de Polar no son una isla LTR y se leen
    `...360 ,270 ,180 ,90`.
-4. **Los paquetes React** — 4–6 días en seis entregas, tras la 2 y la 3. El sitio los consume desde
+4. **Los paquetes React** — **hecha** (5c0a6f3..3c0cc78). 4–6 días en seis entregas, tras la 2 y la 3. El sitio los consume desde
    el fuente, como al motor. Medido antes de empezar, en a6d96d0:
    - **Lo que cruza.** El editor toma de los hooks `useCadEngine`, `useEngineSelector` y
      `EditorState` (22 módulos, 20 solo el tipo) y 43 nombres del motor; los hooks, `CadEngine`,
@@ -370,11 +369,58 @@ son días de sesión.
    propio preflight para `html` y `body` (el margen del body, la cadena de alturas) y compilar
    sus clases (`size-5`, `antialiased`, `font-sans`); las utilidades sueltas desaparecen. El
    `check:hosts` del editor (fase 5) debería importar la hoja desde el tarball en Vite y en Next.
-   (f) **Las piezas una a una** y `<CadEditor>` con huecos para sustituirlas (`components`, como en
-   tldraw), en el informe de API. ~1 día.
+   (f) **Hecha** (2e44b39, ce9237e, 3c0cc78): **las piezas una a una y `<CadEditor>` con
+   huecos**. Medido antes en 25e8f2f: `CadWorkspace` compone nueve piezas que reciben solo
+   `{ engine, state }` (la barra superior, además, `mark` y `languages`; la de estado, su clave;
+   la entrada dinámica, una etiqueta del catálogo heredada de cuando la landing la incrustaba) y
+   siete internas: los menús contextual, de referencias y de ciclo de selección, los tres
+   diálogos, que el motor abre y de los que espera respuesta (`answerUnsavedText`, el menú que
+   toma la siguiente pulsación), y el tooltip de rollover y el asa de la paleta, que van con su
+   zona. Entre piezas no se comparte estado ni refs: solo la anchura de la paleta, del área de
+   trabajo. tldraw 5.6.0 (2026-10-29): `TLUiComponents` es un registro de
+   `ComponentType<Props> | null` opcionales (ausente, el de serie; `null`, apagado), los de serie
+   se exportan para envolverlos y sus sustitutos leen el estado por contexto (`useEditor`). Lo
+   hecho: `CadWorkspace` pasa a ser `CadEditor` (el sitio era su único llamador) con sus props en
+   `CadEditorProps`, y `components: CadEditorComponents` con nueve huecos por el nombre de su pieza
+   (`TopBar`, `ToolRail`, `PalettePanel`, `CommandLine`, `StatusBar`, `ViewportControls`,
+   `ViewCube`, `NavigationBar`, `DynamicInput`). El sustituto recibe por props lo mismo que la
+   pieza, no por contexto: `PieceProps`, y `TopBarProps` y `StatusBarProps` con lo que el
+   anfitrión le da; con `null` su zona desaparece desde el primer pintado y el lienzo toma el
+   sitio; la zona, su tamaño y su borde siguen siendo del editor. Los menús y diálogos no son
+   huecos: apagarlos dejaría al motor esperando. Se exportan las nueve piezas (para envolver una
+   o ponerla en un sustituto) y los cinco tipos (para tipar un sustituto o guardar los huecos en
+   un módulo); `api.md` los recoge con lo que alcanzan, y añadir un campo a `PieceProps` o
+   cambiar el tipo de un hueco lo hace fallar (probado). `EditorZones` (`@internal`, fuera de
+   `dist`) es la rejilla con sus piezas, para que `cad-editor.test.ts` le dé un motor de
+   pega con el renderizador de servidor: prueba que un sustituto pinta en el sitio de la pieza
+   con el mismo motor, estado y props del anfitrión y que una pieza apagada se lleva su zona
+   desde el primer pintado de `CadEditor` (los dos fallan rompiendo el hueco). Los restos de la
+   (d): `ButtonVariantProps` sale de las claves de un objeto de variantes que Oxc sí infiere;
+   `mark` es `ReactNode` importado; y el informe nombra un parámetro desestructurado por su tipo
+   (`cadEditorProps: CadEditorProps`), no por el patrón (`cad/api.md` cambia en `recordDemo`).
+   Dependencias: ninguna. Medido en producción contra 25e8f2f: los 18 ficheros de JS y CSS de
+   `.next/static` iguales salvo el chunk del editor de /draw (+355 B, +120 B gz); el CSS, igual
+   byte a byte; las páginas de /draw, iguales salvo el build id, ese chunk y la referencia de
+   cliente (`CadEditor`); la landing cambia solo la cifra de tests, que redondea hacia abajo a la
+   centena y pasa de 4.496 a 4.500 con los cuatro tests nuevos (4.400+ → 4.500+, en los tres
+   idiomas). En Chrome, /draw, /es/draw y /ar/draw a 1920 y 1280 en reposo y a 1920 con el menú de
+   aplicación: los 5.067 elementos con sus atributos, cajas y estilos computados iguales, las 9
+   capturas idénticas píxel a píxel y el mismo foco. Un anfitrión de `dist` (rolldown con
+   `sideEffects`, React fuera): `CadEditor` pesa 418,2 KB gz (`CadWorkspace`, 417,6); solo
+   `ViewCube`, 65,2; solo `StatusBar`, 77,0: el barril más grande no arrastra lo que no se
+   importa. La cobertura de líneas baja de 96,1 % a 93,1 % sin bajar de los umbrales: el test
+   carga por primera vez los componentes del editor y v8 cuenta lo que se carga.
 5. **Ejemplos y documentación** — 2–3 días, tras la 4. Un anfitrión headless en Node y otro con
    Vite + React, que sirven también de smoke tests del check previo a publicar. Un README por paquete,
-   a partir de `cad/README.md`.
+   a partir de `cad/README.md`. Hereda de la 4: el `check:hosts` de react y el
+   del editor, que instalan el tarball en Vite y en Next e importan `@mellowcad/editor/styles.css`
+   desde él (webpack la tira con `sideEffects: false`; con la lista, no); un ejemplo que sustituye
+   un hueco y apaga otro, con las clases del sustituto compiladas por el anfitrión (las utilidades
+   son globales: comparten nombre con su Tailwind) y su fuente en `--font-sans`/`--font-mono`; en
+   Next, comprobar que una página de servidor puede pasar en `components` un componente de un
+   módulo `"use client"` (una función normal no cruza la frontera); y que una pieza fuera de
+   `CadEditor` no tiene raíz (ni tokens, ni catálogo, ni contenedor de popups): el README lo
+   dice, o hace falta exportar la raíz, que hoy no es API.
 6. **Publicar el motor 0.1.0** — 2–3 días, tras la 2. Métricas de texto desde una fuente OFL,
    LICENSE MIT, nota de marca, auditoría del historial, Changesets, quitar `private`. Con el sí del
    dueño: repo público, primera publicación desde su máquina con 2FA, trusted publisher, y el CI de
@@ -395,8 +441,9 @@ Bloqueos: 1 → 2 → 6; 1 → 3 → 4 → 5 → 7; la org de npm → 6; 7 → 8
 
 ## 6. Riesgos
 
-- 157 nombres públicos: 146 del motor (eran 642; la 3(d) sumó cinco), 8 de react y 3 del editor
-  (más sus tres catálogos y su hoja, con `data-mellowcad-editor`, sus capas, `--font-sans` y
+- 171 nombres públicos: 146 del motor (eran 642; la 3(d) sumó cinco), 8 de react y 17 del editor
+  (`CadEditor` y sus nueve piezas, cinco tipos, `EditorLocale` y `paletteLayoutScript`; más sus
+  tres catálogos y su hoja, con `data-mellowcad-editor`, sus capas, `--font-sans` y
   `--font-mono`), y lo que sus firmas alcanzan (`cad/api.md`, `packages/react/api.md`,
   `packages/editor/api.md`): cada uno es una promesa de semver.
 - Tres superficies para una persona, sin CI: se publican escalonadas y el hook cubre los paquetes.
