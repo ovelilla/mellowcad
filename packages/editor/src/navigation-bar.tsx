@@ -23,6 +23,7 @@ import { usePortalContainer } from "./ui/portal-container"
 import { ZoomPreviousIcon } from "./icons"
 import { IconAction } from "./toolbar-primitives"
 import { useEditorText } from "./editor-text"
+import type { PieceProps } from "./piece"
 
 /** The Zoom members' icons; `mirrored` for one of time. */
 const ZOOM_ICONS: Record<ZoomOption, { icon: LucideIcon; mirrored?: boolean }> =
@@ -40,13 +41,7 @@ const ZOOM_ICONS: Record<ZoomOption, { icon: LucideIcon; mirrored?: boolean }> =
  * SteeringWheels and ShowMotion do not exist here. Its menus open towards the
  * middle of the drawing, the bar's inline start.
  */
-export function NavigationBar({
-  engine,
-  state,
-}: {
-  engine: CadEngine
-  state: EditorState
-}): ReactElement {
+export function NavigationBar({ engine, state }: PieceProps): ReactElement {
   const t = useEditorText("NavigationBar")
   const tool = (id: string) => state.tools.find((entry) => entry.id === id)
   const pan = tool("pan")

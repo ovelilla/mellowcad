@@ -55,8 +55,9 @@ instance; so is `@mellowcad/react` of the editor.
   `packages/editor/api.md`), every export with its signature and every type of its own they
   reach, written by its `api.test.ts` through `test/apiReport.ts`; any change fails it until
   `-u`. Read its diff as a version: a new name is a minor, a changed or removed one a major. A
-  name joins a barrel only when a host uses it; a public member only the engine's tests need is
-  `/** @internal */`, which the build strips (`stripInternal`), as `CadDriver.runtime` is.
+  name joins a barrel only when a host uses it, or needs it to compose or replace a piece; a
+  public member only the tests need is `/** @internal */`, which the build strips
+  (`stripInternal`), as `CadDriver.runtime` and the editor's `EditorZones` are.
 - **A module that uses React starts with `"use client"`**, kept in its own `dist` module
   (`scripts/packages/client-directive.ts`, in `check`): one with a hook or JSX, which under the
   compiler includes any component (its cache is a hook). `icons.tsx` has none: it only calls

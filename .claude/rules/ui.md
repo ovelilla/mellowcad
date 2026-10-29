@@ -94,9 +94,10 @@ file. Shared bar atoms live in `toolbar-primitives.tsx`, custom glyphs in `icons
 primitives in `ui/`, the catalog in `locales/`. It reaches its own files relatively and the engine
 and the hooks by name (`test/packages.test.ts`): an `@/` import still compiles in the repo, against
 the site. `shadcn add` writes into the editor (`components.json`) with `@/` imports: make them
-relative. `index.ts` exports only what a host uses: each name there is a semver promise. The
-package's build (`engine-package.md`) asks of every module a `"use client"` if it has a hook or
-JSX, and an exported component's return type (`ReactElement`): the hook fails without them.
+relative. `index.ts` exports only what a host uses, or needs to compose or replace a piece: each
+name there is a semver promise. The package's build (`engine-package.md`) asks of every module a
+`"use client"` if it has a hook or JSX, and an exported component's return type (`ReactElement`):
+the hook fails without them.
 
 ## Colour — one scheme, dark
 
@@ -213,6 +214,12 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
 - **The workspace is a grid of named areas** (`CadEditor`): `top`, `tools` · `canvas` · `panel`,
   `command`, `status`. A control goes into a zone, never absolutely over the drawing; the canvas
   takes what is left, so ZOOM Extents frames only what is visible.
+- **A piece a host may replace is a slot** of `CadEditorComponents` (`components`; `null` turns it
+  off and its zone goes too, from the first paint). It takes `PieceProps`, plus only what the host
+  gives `CadEditor` for it (`TopBarProps`, `StatusBarProps`), never state of the workspace: its
+  words come from `useEditorText`, its popups' container from `usePortalContainer`. The zone, its
+  size and border stay the editor's. A menu or dialog the engine opens and waits on is never a
+  slot. `packages/editor/src/cad-editor.test.ts` renders the slots against a stand-in engine.
 - **Every zone has its size in CSS before the engine mounts** (the bars' `h-9`, the palette's
   `w-14.5`, the panel's `w-9` / `palette-open:w-(--palette-width)`, the `short:` variant), never
   from its content: the canvas's first box is its final one, which the landing's view transition

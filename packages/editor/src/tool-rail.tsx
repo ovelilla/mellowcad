@@ -76,6 +76,7 @@ import {
   StretchIcon,
 } from "./icons"
 import { useEditorText } from "./editor-text"
+import type { PieceProps } from "./piece"
 
 /** Maps a tool id to an icon. Unknown/new tools fall back to a generic glyph. */
 const TOOL_ICONS: Record<string, LucideIcon> = {
@@ -356,13 +357,7 @@ const membersOf = (item: PaletteItem): readonly string[] =>
  * drawing. A window too short for it folds the last three into a drop-down
  * each.
  */
-export function ToolRail({
-  engine,
-  state,
-}: {
-  engine: CadEngine
-  state: EditorState
-}): ReactElement {
+export function ToolRail({ engine, state }: PieceProps): ReactElement {
   const metaById = new Map<string, ToolMeta>(
     state.tools.map((tool) => [tool.id, tool])
   )

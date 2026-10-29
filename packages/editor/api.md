@@ -8,6 +8,19 @@ Written by `packages/editor/api.test.ts`; a change to it is a change to the publ
 export { CadEditor }
 export declare function CadEditor(cadEditorProps: CadEditorProps): ReactElement;
 
+export type { CadEditorComponents }
+export interface CadEditorComponents {
+    readonly TopBar?: ComponentType<TopBarProps> | null;
+    readonly ToolRail?: ComponentType<PieceProps> | null;
+    readonly PalettePanel?: ComponentType<PieceProps> | null;
+    readonly CommandLine?: ComponentType<PieceProps> | null;
+    readonly StatusBar?: ComponentType<StatusBarProps> | null;
+    readonly ViewportControls?: ComponentType<PieceProps> | null;
+    readonly ViewCube?: ComponentType<PieceProps> | null;
+    readonly NavigationBar?: ComponentType<PieceProps> | null;
+    readonly DynamicInput?: ComponentType<PieceProps> | null;
+}
+
 export type { CadEditorProps }
 export interface CadEditorProps {
     engineLocale?: EngineLocale;
@@ -17,7 +30,14 @@ export interface CadEditorProps {
     languages?: readonly LanguageLink[];
     layoutStorage?: LayoutStorage;
     sheet?: SheetTransition;
+    components?: CadEditorComponents;
 }
+
+export { CommandLine }
+export declare function CommandLine(pieceProps: PieceProps): ReactElement | null;
+
+export { DynamicInput }
+export declare function DynamicInput(pieceProps: PieceProps): ReactElement | null;
 
 export type { EditorLocale }
 export interface EditorLocale {
@@ -25,8 +45,46 @@ export interface EditorLocale {
     readonly messages: DeepPartial<EditorMessages>;
 }
 
+export { NavigationBar }
+export declare function NavigationBar(pieceProps: PieceProps): ReactElement;
+
 export { paletteLayoutScript }
 export declare const paletteLayoutScript: (key: string) => string;
+
+export { PalettePanel }
+export declare function PalettePanel(pieceProps: PieceProps): ReactElement;
+
+export type { PieceProps }
+export interface PieceProps {
+    readonly engine: CadEngine;
+    readonly state: EditorState;
+}
+
+export { StatusBar }
+export declare function StatusBar(statusBarProps: StatusBarProps): ReactElement;
+
+export type { StatusBarProps }
+export interface StatusBarProps extends PieceProps {
+    readonly storageKey?: string;
+}
+
+export { ToolRail }
+export declare function ToolRail(pieceProps: PieceProps): ReactElement;
+
+export { TopBar }
+export declare function TopBar(topBarProps: TopBarProps): ReactElement;
+
+export type { TopBarProps }
+export interface TopBarProps extends PieceProps {
+    readonly mark?: ReactNode;
+    readonly languages?: readonly LanguageLink[];
+}
+
+export { ViewCube }
+export declare function ViewCube(pieceProps: PieceProps): React.ReactElement | null;
+
+export { ViewportControls }
+export declare function ViewportControls(pieceProps: PieceProps): ReactElement;
 ```
 
 ## ./locales/en

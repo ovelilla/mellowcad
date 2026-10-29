@@ -12,12 +12,7 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
-import {
-  PALETTE_TABS,
-  type CadEngine,
-  type PaletteTab,
-} from "@mellowcad/engine"
-import type { EditorState } from "@mellowcad/react"
+import { PALETTE_TABS, type PaletteTab } from "@mellowcad/engine"
 import { cn } from "./utils"
 import { useDirection } from "./ui/direction"
 import { TooltipProvider } from "./ui/tooltip"
@@ -29,6 +24,7 @@ import { PropertiesPanel } from "./properties-panel"
 import { StylesControl } from "./styles-control"
 import { IconAction } from "./toolbar-primitives"
 import { useEditorText } from "./editor-text"
+import type { PieceProps } from "./piece"
 
 const TAB_ICONS: Record<PaletteTab, LucideIcon> = {
   properties: SlidersHorizontal,
@@ -52,13 +48,7 @@ const TAB_SECTIONS = {
  * insert one block after another. Open, it shows the tab's palette; folded,
  * a strip of the tabs' icons, each of which opens the panel on its palette.
  */
-export function PalettePanel({
-  engine,
-  state,
-}: {
-  engine: CadEngine
-  state: EditorState
-}): ReactElement {
+export function PalettePanel({ engine, state }: PieceProps): ReactElement {
   const t = useEditorText("Palette")
   const titles = useEditorText()
   const { open, tab } = state.palette

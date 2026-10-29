@@ -2,9 +2,9 @@
 
 import type { ReactElement } from "react"
 import { Lock } from "lucide-react"
-import { CadEngine } from "@mellowcad/engine"
-import { useDynamicInput, type EditorState } from "@mellowcad/react"
+import { useDynamicInput } from "@mellowcad/react"
 import { useEditorText } from "./editor-text"
+import type { PieceProps } from "./piece"
 
 /**
  * Floating dynamic-input box, AutoCAD-style. This component is intentionally
@@ -16,10 +16,7 @@ import { useEditorText } from "./editor-text"
 export function DynamicInput({
   engine,
   state,
-}: {
-  engine: CadEngine
-  state: EditorState
-}): ReactElement | null {
+}: PieceProps): ReactElement | null {
   const t = useEditorText("DynamicInput")
   const { dynamicInput: di, box, field: fieldProps } = useDynamicInput(engine)
 

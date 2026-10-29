@@ -49,6 +49,7 @@ import { LinetypeSelect } from "./linetype-select"
 import { LineweightSelect } from "./lineweight-select"
 import { IconAction, Panel } from "./toolbar-primitives"
 import { useEditorText } from "./editor-text"
+import type { PieceProps } from "./piece"
 
 const MENU_POPUP =
   "min-w-48 origin-(--transform-origin) overflow-hidden rounded-md border bg-card/90 p-1 text-popover-foreground shadow-md backdrop-blur transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0"
@@ -67,6 +68,14 @@ export interface LanguageLink {
   readonly current: boolean
 }
 
+/** The top bar's props: a piece's, and what the host gives `CadEditor` for it. */
+export interface TopBarProps extends PieceProps {
+  /** The application menu's glyph, the host's product mark. */
+  readonly mark?: ReactNode
+  /** The application menu's languages; none, no Language submenu. */
+  readonly languages?: readonly LanguageLink[]
+}
+
 /** A drop-down of the bar: bordered, with no surface of its own. */
 const BAR_SELECT = "border-input bg-transparent shadow-none dark:bg-transparent"
 
@@ -82,14 +91,7 @@ export function TopBar({
   state,
   mark,
   languages = [],
-}: {
-  engine: CadEngine
-  state: EditorState
-  /** The application menu's glyph, the host's product mark. */
-  mark?: ReactNode
-  /** The application menu's languages; none, no Language submenu. */
-  languages?: readonly LanguageLink[]
-}): ReactElement {
+}: TopBarProps): ReactElement {
   const t = useEditorText("TopBar")
   const keys = useEditorText("Keys")
   const layers = useEditorText("Layers")

@@ -5,11 +5,12 @@ import { ChevronUp } from "lucide-react"
 
 import { cn } from "./utils"
 import { TooltipProvider } from "./ui/tooltip"
-import { CadEngine, type CommandLineUi } from "@mellowcad/engine"
-import { type EditorState, useCommandLineInput } from "@mellowcad/react"
+import type { CommandLineUi } from "@mellowcad/engine"
+import { useCommandLineInput } from "@mellowcad/react"
 
 import { IconAction } from "./toolbar-primitives"
 import { useEditorText } from "./editor-text"
+import type { PieceProps } from "./piece"
 
 /** What floats above the prompt, over the drawing. */
 const ABOVE =
@@ -26,10 +27,7 @@ const ABOVE =
 export function CommandLine({
   engine,
   state,
-}: {
-  engine: CadEngine
-  state: EditorState
-}): ReactElement | null {
+}: PieceProps): ReactElement | null {
   const { visible, historyOpen, prompt, buffer, suggestions, lang } =
     state.commandLine
   const t = useEditorText("CommandLine")

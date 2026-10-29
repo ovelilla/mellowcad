@@ -4,11 +4,11 @@ import type { ReactElement } from "react"
 import { Menu } from "@base-ui/react/menu"
 import { CheckIcon } from "lucide-react"
 
-import { VIEW_MENU, type CadEngine } from "@mellowcad/engine"
-import type { EditorState } from "@mellowcad/react"
+import { VIEW_MENU } from "@mellowcad/engine"
 import { cn } from "./utils"
 import { usePortalContainer } from "./ui/portal-container"
 import { useEditorText } from "./editor-text"
+import type { PieceProps } from "./piece"
 
 /**
  * The viewport controls at the drawing's top left (VPCONTROL 1), of which
@@ -16,13 +16,7 @@ import { useEditorText } from "./editor-text"
  * camera shows, opens the preset views and runs the one chosen as AutoCAD's
  * `'_-view _swiso`.
  */
-export function ViewportControls({
-  engine,
-  state,
-}: {
-  engine: CadEngine
-  state: EditorState
-}): ReactElement {
+export function ViewportControls({ engine, state }: PieceProps): ReactElement {
   const portal = usePortalContainer()
   const t = useEditorText("Viewport")
   const names = state.names.views

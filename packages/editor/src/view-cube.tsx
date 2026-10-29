@@ -21,6 +21,7 @@ import { Button } from "./ui/button"
 import { usePortalContainer } from "./ui/portal-container"
 import { cn } from "./utils"
 import { useEditorText } from "./editor-text"
+import type { PieceProps } from "./piece"
 
 /** The cube's box (`size-36`): its SVG draws in a 0–1 box scaled to it. */
 const CUBE_PX = 144
@@ -58,10 +59,7 @@ const MENU_POPUP =
 export function ViewCube({
   engine,
   state,
-}: {
-  engine: CadEngine
-  state: EditorState
-}): React.ReactElement | null {
+}: PieceProps): React.ReactElement | null {
   const portal = usePortalContainer()
   const t = useEditorText("ViewCube")
   // Destructured, as the hook asks (React Compiler's ref lint).

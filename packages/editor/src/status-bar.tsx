@@ -42,6 +42,7 @@ import { IconAction } from "./toolbar-primitives"
 import { DecimalInput } from "./decimal-input"
 import { LineweightIcon, SelectionCyclingIcon, SnapModeIcon } from "./icons"
 import { useEditorText } from "./editor-text"
+import type { PieceProps } from "./piece"
 
 /**
  * How snap rounds the cursor: along alignment paths, or onto the lattice, in
@@ -58,6 +59,12 @@ const MENU_ITEM =
   "relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-disabled:text-faint-foreground data-highlighted:bg-accent data-highlighted:text-accent-foreground"
 const CHECK = <CheckIcon className="absolute inset-e-2 size-4 text-primary" />
 
+/** The status bar's props: a piece's, and where the host keeps its layout. */
+export interface StatusBarProps extends PieceProps {
+  /** Where Customization is kept on this device; none, it is not kept. */
+  readonly storageKey?: string
+}
+
 /**
  * AutoCAD's status bar, in the order of its 2026 reference: the coordinates,
  * MODEL, the drafting modes, Units, Clean Screen and, right-most,
@@ -69,12 +76,7 @@ export function StatusBar({
   engine,
   state,
   storageKey,
-}: {
-  engine: CadEngine
-  state: EditorState
-  /** Where Customization is kept on this device; none, it is not kept. */
-  storageKey?: string
-}): ReactElement {
+}: StatusBarProps): ReactElement {
   const t = useEditorText("StatusBar")
   const keys = useEditorText("Keys")
   // Only rendered once the engine exists, in the browser: the choice is read
