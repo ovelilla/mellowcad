@@ -42,6 +42,7 @@ paths:
   build strips (`stripInternal`), as `CadDriver.runtime` is.
 - **The commit gate builds and checks the package**: `npm run build -w cad`, then
   `npm run check -w cad` (publint `--strict`, attw's `esm-only` profile), about 4 s. Installing
-  the tarball in foreign hosts needs the network, so it belongs to a check before publishing.
+  the tarball in foreign hosts (Node ESM, `tsc`, Vite) needs the network, so it is
+  `npm run check:hosts -w cad` (`scripts/engine/hosts.ts`), which `prepublishOnly` runs.
 - A runtime dependency of the engine goes in `cad/package.json`'s `dependencies` (today only
   `icu-minify`), never only in the root's.
