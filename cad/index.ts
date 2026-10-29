@@ -185,6 +185,7 @@ export type { DimStyle, DimStyleId } from "./domain/dimStyles"
 export {
   LengthUnit,
   LENGTH_UNITS,
+  LENGTH_PRECISIONS,
   formatLength,
   formatAngle,
   unitsSampleOutput,

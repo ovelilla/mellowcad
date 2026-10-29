@@ -817,6 +817,9 @@ export interface LayerInfo extends Layer {
 export type { LayerNameRefusal }
 export type LayerNameRefusal = "base" | "inUse" | "invalid";
 
+export { LENGTH_PRECISIONS }
+export declare const LENGTH_PRECISIONS: readonly string[];
+
 export { LENGTH_UNITS }
 export declare const LENGTH_UNITS: LengthUnit[];
 

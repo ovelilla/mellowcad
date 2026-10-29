@@ -5,6 +5,7 @@ import { Dialog } from "@base-ui/react/dialog"
 
 import {
   LengthUnit,
+  LENGTH_PRECISIONS,
   LENGTH_UNITS,
   unitsSampleOutput,
   type CadEngine,
@@ -20,11 +21,6 @@ import {
 } from "@/components/ui/select"
 import { usePortalContainer } from "@/components/ui/portal-container"
 import { useEditorText } from "./editor-text"
-
-/** LUPREC's decimal places, 0 to 8, written as AutoCAD's list writes them. */
-const PRECISIONS = Array.from({ length: 9 }, (_, places) =>
-  places === 0 ? "0" : `0.${"0".repeat(places)}`
-)
 
 const UNIT_NAMES = {
   [LengthUnit.Millimeter]: "millimeters",
@@ -106,7 +102,7 @@ function UnitsForm({
     LENGTH_UNITS.map((entry) => [entry, t(UNIT_NAMES[entry])])
   )
   const precisions = Object.fromEntries(
-    PRECISIONS.map((label, places) => [String(places), label])
+    LENGTH_PRECISIONS.map((label, places) => [String(places), label])
   )
 
   return (
@@ -149,7 +145,7 @@ function UnitsForm({
                 <SelectValue />
               </SelectTrigger>
               <SelectContent>
-                {PRECISIONS.map((label, places) => (
+                {LENGTH_PRECISIONS.map((label, places) => (
                   <SelectItem
                     key={label}
                     value={String(places)}

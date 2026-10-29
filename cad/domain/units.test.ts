@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 import {
   DEFAULT_DOCUMENT_SETTINGS,
   formatLength,
+  LENGTH_PRECISIONS,
   parseAngleDegrees,
   parseDecimalNumber,
   parseNumber,
@@ -28,6 +29,22 @@ describe("formatLength", () => {
     expect(formatLength(-0.4, at(0))).toBe("0")
     expect(formatLength(-2.5, at(0))).toBe("-3")
     expect(formatLength(-2.25, at(4))).toBe("-2.2500")
+  })
+})
+
+describe("LENGTH_PRECISIONS", () => {
+  it("lists LUPREC's 0 to 8 places as the Drawing Units dialog writes them", () => {
+    expect(LENGTH_PRECISIONS).toEqual([
+      "0",
+      "0.0",
+      "0.00",
+      "0.000",
+      "0.0000",
+      "0.00000",
+      "0.000000",
+      "0.0000000",
+      "0.00000000",
+    ])
   })
 })
 

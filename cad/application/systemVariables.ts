@@ -9,6 +9,7 @@ import {
   type DocumentSettings,
   formatAngle,
   formatLength,
+  LENGTH_PRECISIONS,
   LengthUnit,
 } from "../domain/units"
 import type { AttributeDisplay } from "../domain/entityTypes"
@@ -387,7 +388,7 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
   integer(
     "LUPREC",
     0,
-    8,
+    LENGTH_PRECISIONS.length - 1,
     (settings) => settings.precision,
     (value) => patch({ precision: value })
   ),

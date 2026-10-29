@@ -34,6 +34,7 @@ import {
   DraftingModes,
   formatAngle,
   formatLength,
+  LENGTH_PRECISIONS,
   LengthUnit,
   parseAngleDegrees,
   parseNumber,
@@ -5052,7 +5053,10 @@ export class CadRuntime extends Observable {
    */
   applyDrawingUnits(unit: LengthUnit, precision: number): void {
     const settings = this.document.getSettings()
-    const digits = Math.max(0, Math.min(8, Math.round(precision)))
+    const digits = Math.max(
+      0,
+      Math.min(LENGTH_PRECISIONS.length - 1, Math.round(precision))
+    )
     const patch: { unit?: LengthUnit; precision?: number } = {}
     if (unit !== settings.unit) patch.unit = unit
     if (digits !== settings.precision) patch.precision = digits

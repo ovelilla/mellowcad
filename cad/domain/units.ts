@@ -177,6 +177,15 @@ export const LENGTH_UNITS: LengthUnit[] = [
   LengthUnit.Meter,
 ]
 
+/**
+ * LUPREC's choices as the Drawing Units dialog lists them in Decimal units,
+ * indexed by the places they stand for: `0`, `0.0` … `0.00000000`.
+ */
+export const LENGTH_PRECISIONS: readonly string[] = Array.from(
+  { length: 9 },
+  (_, places) => (0).toFixed(places)
+)
+
 export function unitSuffix(unit: LengthUnit): string {
   return unit
 }
