@@ -1,9 +1,10 @@
 # MellowCAD como librería — brief
 
-> **Estado:** propuesta, sin ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la
-> fase 7 haya ocurrido. El análisis completo, con el inventario medido, las fuentes fechadas, el
-> spike y el pase adversarial, está en https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El
-> spike vive en la rama local worktree-agent-a498997d3f29c107f (commit b1c7923), sin empujar.
+> **Estado:** fase 1 hecha (2026-10-29); las demás, sin ejecutar. Sigue la convención de
+> `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El análisis completo, con el
+> inventario medido, las fuentes fechadas, el spike y el pase adversarial, está en
+> https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama local
+> worktree-agent-a498997d3f29c107f (commit b1c7923), sin empujar.
 
 ## 1. Objetivo
 
@@ -74,7 +75,8 @@ Cada una con su porqué; el análisis tiene las fuentes.
 Cada fase se publica sola, con el gate en verde y producción desplegando como hoy. Las estimaciones
 son días de sesión.
 
-1. **El motor, paquete del workspace** — 1–2 días, sin dependencias. Antes, recortar `AGENTS.md`
+1. **El motor, paquete del workspace** — **hecha** (4172113, afb6e62, 13d6d5a; su regla es
+   `.claude/rules/engine-package.md`). 1–2 días, sin dependencias. Antes, recortar `AGENTS.md`
    (10.210 B con un tope de 10 KB: 30 B de margen). Adoptar el spike: workspaces en `package.json`,
    el package.json propio de `cad/` (privado), los imports `@/cad` por `@mellowcad/engine`,
    `cad/entryPoints.test.ts` leyendo los `exports` y mapeando el nombre del paquete a su ruta (un
@@ -125,8 +127,10 @@ Bloqueos: 1 → 2 → 6; 1 → 3 → 4 → 5 → 7; la org de npm → 6; 7 → 8
 
 - 642 símbolos públicos: cada uno que quede en el barrel es una promesa de semver.
 - Tres superficies para una persona, sin CI: se publican escalonadas y el hook cubre los paquetes.
-- Dependencias nuevas que vigilar: tsdown 0.23.2 usa `rolldown-plugin-dts` en beta; attw trae su
-  propio `typescript@5.6.1-rc`. Ninguna tiene scripts de instalación (`npm audit signatures` limpio).
+- Dependencias nuevas que vigilar: tsdown 0.23.2 usa `rolldown-plugin-dts` en beta (0.23.3 vuelve
+  a la 0.28 estable y sale de la cuarentena el 2026-10-31: la próxima revisión la toma); attw trae
+  su propio `typescript@5.6.1-rc`, anidado. Ninguna tiene scripts de instalación
+  (`npm audit signatures` limpio).
 - Sin procedencia mientras el repo sea privado (npm no la genera desde repos privados).
 - Propiedad intelectual: los catálogos transcriben el vocabulario de AutoCAD en español (frases
   cortas y nombres funcionales, el riesgo es bajo) y las métricas de texto salen de Arial (se
