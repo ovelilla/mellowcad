@@ -6,6 +6,7 @@ import {
   useRef,
   useState,
   type ReactElement,
+  type ReactNode,
 } from "react"
 
 import {
@@ -68,7 +69,7 @@ interface WorkspaceProps {
   /** The page language's catalog for the engine; English when absent. */
   engineLocale?: EngineLocale
   /** The host's product mark, the application menu's glyph. */
-  mark?: React.ReactNode
+  mark?: ReactNode
   /** The page in each language the host offers, for the application menu. */
   languages?: readonly LanguageLink[]
   /** Where this device's layout is kept; nothing is, without it. */
@@ -118,7 +119,6 @@ function Workspace({
   const [engine, setEngine] = useState<CadEngine | null>(null)
   const state = useEditorState(engine)
   const t = useEditorText("Workspace")
-  const input = useEditorText("DynamicInput")
   const [portal, setPortal] = useState<HTMLDivElement | null>(null)
   const root = useRef<HTMLDivElement>(null)
   const ready = engine && state
@@ -231,11 +231,7 @@ function Workspace({
 
             {ready && (
               <>
-                <DynamicInput
-                  engine={engine}
-                  state={state}
-                  lockedLabel={input("locked")}
-                />
+                <DynamicInput engine={engine} state={state} />
                 <RolloverTooltip state={state} />
 
                 {/* WHY inset-s and inset-e: no AutoCAD reads right to left, and

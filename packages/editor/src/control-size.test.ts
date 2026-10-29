@@ -77,7 +77,7 @@ function buttonSizes(): Record<string, string> {
     path.join(ROOT, "packages/editor/src/ui/button.tsx"),
     "utf8"
   )
-  const block = /size: \{([\s\S]*?)\n {6}\},/.exec(source)?.[1] ?? ""
+  const block = /size: \{([\s\S]*?)\n {2}\},/.exec(source)?.[1] ?? ""
   return Object.fromEntries(
     [...block.matchAll(/^\s*"?([\w-]+)"?:\s*"([^"]*)"/gm)].map((m) => [
       m[1],

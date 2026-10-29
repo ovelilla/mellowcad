@@ -158,8 +158,47 @@ function isPrivate(member: ts.ClassElement): boolean {
   )
 }
 
+/**
+ * A parameter as API: its type, never the names it is destructured into, which
+ * the `.d.ts` keeps. It is named after its type (`{ engine, state }:
+ * PieceProps` prints `pieceProps: PieceProps`), so renaming a local is no
+ * change to the report.
+ */
+function namedParameter(
+  parameter: ts.ParameterDeclaration
+): ts.ParameterDeclaration {
+  if (ts.isIdentifier(parameter.name)) return parameter
+  const type =
+    parameter.type &&
+    ts.isTypeReferenceNode(parameter.type) &&
+    ts.isIdentifier(parameter.type.typeName)
+      ? parameter.type.typeName.text
+      : "Props"
+  return ts.factory.updateParameterDeclaration(
+    parameter,
+    parameter.modifiers,
+    parameter.dotDotDotToken,
+    type[0].toLowerCase() + type.slice(1),
+    parameter.questionToken,
+    parameter.type,
+    parameter.initializer
+  )
+}
+
 /** A declaration as API: no private members (the `.d.ts` keeps their names). */
 function publicPart(statement: Declaration): Declaration {
+  if (ts.isFunctionDeclaration(statement)) {
+    return ts.factory.updateFunctionDeclaration(
+      statement,
+      statement.modifiers,
+      statement.asteriskToken,
+      statement.name,
+      statement.typeParameters,
+      statement.parameters.map(namedParameter),
+      statement.type,
+      statement.body
+    )
+  }
   if (!ts.isClassDeclaration(statement)) return statement
   return ts.factory.updateClassDeclaration(
     statement,

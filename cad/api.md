@@ -962,7 +962,7 @@ export { readSavedDrawingSummary }
 export declare function readSavedDrawingSummary(): DrawingSummary | null;
 
 export { recordDemo }
-export declare function recordDemo(script: DemoScript, { locale }?: RecordOptions): Promise<DemoRecording>;
+export declare function recordDemo(script: DemoScript, recordOptions?: RecordOptions): Promise<DemoRecording>;
 
 export type { RecordOptions }
 export interface RecordOptions {

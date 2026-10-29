@@ -6,7 +6,7 @@ Written by `packages/editor/api.test.ts`; a change to it is a change to the publ
 
 ```ts
 export { CadWorkspace }
-export declare function CadWorkspace({ editorLocale, dir, ...props }: WorkspaceProps & {
+export declare function CadWorkspace(props: WorkspaceProps & {
     editorLocale?: EditorLocale;
     dir?: "ltr" | "rtl";
 }): ReactElement;
@@ -70,7 +70,7 @@ export interface SheetTransition {
 // src/cad-workspace.tsx
 interface WorkspaceProps {
     engineLocale?: EngineLocale;
-    mark?: React.ReactNode;
+    mark?: ReactNode;
     languages?: readonly LanguageLink[];
     layoutStorage?: LayoutStorage;
     sheet?: SheetTransition;

@@ -4,6 +4,7 @@ import type { ReactElement } from "react"
 import { Lock } from "lucide-react"
 import { CadEngine } from "@mellowcad/engine"
 import { useDynamicInput, type EditorState } from "@mellowcad/react"
+import { useEditorText } from "./editor-text"
 
 /**
  * Floating dynamic-input box, AutoCAD-style. This component is intentionally
@@ -15,13 +16,11 @@ import { useDynamicInput, type EditorState } from "@mellowcad/react"
 export function DynamicInput({
   engine,
   state,
-  lockedLabel,
 }: {
   engine: CadEngine
   state: EditorState
-  /** `Editor.DynamicInput.locked`: what the padlock says to a screen reader. */
-  lockedLabel: string
 }): ReactElement | null {
+  const t = useEditorText("DynamicInput")
   const { dynamicInput: di, box, field: fieldProps } = useDynamicInput(engine)
 
   if (!di) return null
@@ -90,7 +89,7 @@ export function DynamicInput({
               <Lock
                 className="ms-0.5 size-3 shrink-0 text-amber-400"
                 strokeWidth={2.5}
-                aria-label={lockedLabel}
+                aria-label={t("locked")}
               />
             )}
           </label>

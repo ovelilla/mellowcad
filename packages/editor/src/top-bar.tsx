@@ -1,6 +1,6 @@
 "use client"
 
-import type { ReactElement } from "react"
+import type { ReactElement, ReactNode } from "react"
 import { Menu } from "@base-ui/react/menu"
 import {
   CheckIcon,
@@ -86,7 +86,7 @@ export function TopBar({
   engine: CadEngine
   state: EditorState
   /** The application menu's glyph, the host's product mark. */
-  mark?: React.ReactNode
+  mark?: ReactNode
   /** The application menu's languages; none, no Language submenu. */
   languages?: readonly LanguageLink[]
 }): ReactElement {
@@ -219,7 +219,7 @@ function ApplicationMenu({
   links,
 }: {
   engine: CadEngine
-  mark: React.ReactNode
+  mark: ReactNode
   links: readonly LanguageLink[]
 }) {
   const portal = usePortalContainer()
