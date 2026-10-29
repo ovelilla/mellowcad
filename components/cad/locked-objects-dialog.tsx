@@ -4,7 +4,7 @@ import { useState } from "react"
 import { Dialog } from "@base-ui/react/dialog"
 
 import type { CadEngine } from "@mellowcad/engine"
-import type { EditorState } from "@/hooks/useCadEngine"
+import type { EditorState } from "@mellowcad/react"
 import { Button } from "@/components/ui/button"
 import { usePortalContainer } from "@/components/ui/portal-container"
 import { useEditorText } from "./editor-text"

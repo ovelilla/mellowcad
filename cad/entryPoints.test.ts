@@ -4,8 +4,8 @@ import { describe, expect, it } from "vitest"
 
 const ROOT = path.resolve(import.meta.dirname, "..")
 
-/** Everything outside the engine that uses it: the app, the landing, their tests. */
-const HOSTS = ["app", "components", "hooks", "i18n", "lib", "content"]
+/** Everything outside the engine that uses it: the app, the landing, the other packages. */
+const HOSTS = ["app", "components", "packages", "i18n", "lib", "content"]
 
 /** `from "…"`, `import "…"`, `import("…")` and `export … from "…"`. */
 const SPECIFIER = /(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s+)["']([^"']+)["']/g

@@ -23,7 +23,7 @@ import {
 } from "lucide-react"
 
 import { type CadEngine, type PaletteTab } from "@mellowcad/engine"
-import type { EditorState } from "@/hooks/useCadEngine"
+import type { EditorState } from "@mellowcad/react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"

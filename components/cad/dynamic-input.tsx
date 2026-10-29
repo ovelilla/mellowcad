@@ -3,7 +3,7 @@
 import { useEffect, useRef } from "react"
 import { Lock } from "lucide-react"
 import { CadEngine } from "@mellowcad/engine"
-import { useEngineSelector, type EditorState } from "@/hooks/useCadEngine"
+import { useEngineSelector, type EditorState } from "@mellowcad/react"
 
 /**
  * Floating dynamic-input box, AutoCAD-style. This component is intentionally

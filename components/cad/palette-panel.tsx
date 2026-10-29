@@ -17,7 +17,7 @@ import {
   type CadEngine,
   type PaletteTab,
 } from "@mellowcad/engine"
-import type { EditorState } from "@/hooks/useCadEngine"
+import type { EditorState } from "@mellowcad/react"
 import { cn } from "@/lib/utils"
 import { useDirection } from "@/components/ui/direction"
 import { TooltipProvider } from "@/components/ui/tooltip"

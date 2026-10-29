@@ -6,7 +6,7 @@ import {
   createLocalStorageDrawingStore,
   type EngineLocale,
 } from "@mellowcad/engine"
-import { useCadEngine } from "@/hooks/useCadEngine"
+import { useCadEngine } from "@mellowcad/react"
 import { DirectionProvider } from "@/components/ui/direction"
 import { PortalContainerProvider } from "@/components/ui/portal-container"
 import { cn } from "@/lib/utils"

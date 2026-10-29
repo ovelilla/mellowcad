@@ -335,7 +335,7 @@ scoped to `"document"`, a capture `pointerdown` and a `focusin`.
 
 **A shortcut belongs in `CadRuntime.keyDown`, never in a React `useEffect`**: a second
 document-level listener bypasses the routing order and cannot `preventDefault` in step with it
-(ESLint fails on a `keydown` / `keyup` listener in `components/`, `app/` or `hooks/`).
+(ESLint fails on a `keydown`/`keyup` listener in `components/`, `app/` or `packages/react/`).
 
 ### Embedding (`CadEngineOptions`)
 

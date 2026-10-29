@@ -106,7 +106,7 @@ const eslintConfig = defineConfig([
     },
   },
   {
-    files: ["hooks/**/*.ts", "hooks/**/*.tsx"],
+    files: ["packages/react/src/**/*.ts", "packages/react/src/**/*.tsx"],
     rules: {
       "no-restricted-syntax": [
         "error",
@@ -126,8 +126,9 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
-    // The engine package's build output.
+    // The packages' build output.
     "cad/dist/**",
+    "packages/*/dist/**",
     // Generated coverage report.
     "coverage/**",
     // Gitignored: AutoCAD's strings and a command review's scratch tests.

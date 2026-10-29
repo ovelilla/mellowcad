@@ -1,0 +1,21 @@
+{
+  "name": "@mellowcad/react",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "@mellowcad/engine": "^0.0.0",
+    "react": "^19.0.0"
+  }
+}

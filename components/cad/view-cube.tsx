@@ -17,7 +17,7 @@ import {
   type ViewCubeFace,
   type ViewCubeTarget,
 } from "@mellowcad/engine"
-import type { EditorState } from "@/hooks/useCadEngine"
+import type { EditorState } from "@mellowcad/react"
 import { Button } from "@/components/ui/button"
 import { usePortalContainer } from "@/components/ui/portal-container"
 import { cn } from "@/lib/utils"

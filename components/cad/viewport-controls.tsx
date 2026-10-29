@@ -4,7 +4,7 @@ import { Menu } from "@base-ui/react/menu"
 import { CheckIcon } from "lucide-react"
 
 import { VIEW_MENU, type CadEngine } from "@mellowcad/engine"
-import type { EditorState } from "@/hooks/useCadEngine"
+import type { EditorState } from "@mellowcad/react"
 import { cn } from "@/lib/utils"
 import { usePortalContainer } from "@/components/ui/portal-container"
 import { useEditorText } from "./editor-text"

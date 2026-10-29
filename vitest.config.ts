@@ -16,6 +16,10 @@ export default defineConfig({
         find: /^@mellowcad\/engine\/locales\/([\w-]+)$/,
         replacement: `${rootDir}/cad/locales/$1.ts`,
       },
+      {
+        find: /^@mellowcad\/react$/,
+        replacement: `${rootDir}/packages/react/src/index.ts`,
+      },
     ],
   },
   test: {
@@ -36,6 +40,7 @@ export default defineConfig({
       "lib/**/*.test.ts",
       // The editor's catalog.
       "components/**/*.test.ts",
+      "packages/**/*.test.ts",
     ],
     setupFiles: ["./test/setup.ts"],
     server: {

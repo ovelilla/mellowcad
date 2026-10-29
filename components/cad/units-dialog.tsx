@@ -10,7 +10,7 @@ import {
   unitsSampleOutput,
   type CadEngine,
 } from "@mellowcad/engine"
-import type { EditorState } from "@/hooks/useCadEngine"
+import type { EditorState } from "@mellowcad/react"
 import { Button } from "@/components/ui/button"
 import {
   Select,

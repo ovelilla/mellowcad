@@ -4,7 +4,8 @@
   "type": "module",
   "private": true,
   "workspaces": [
-    "cad"
+    "cad",
+    "packages/*"
   ],
   "sideEffects": [
     "**/*.css"

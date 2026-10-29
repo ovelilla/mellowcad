@@ -8,7 +8,7 @@ import {
   CanvasScenePresenter,
   matchesWildcard,
 } from "@mellowcad/engine"
-import type { EditorState } from "@/hooks/useCadEngine"
+import type { EditorState } from "@mellowcad/react"
 import { useEditorText } from "./editor-text"
 
 const THUMBNAIL_PX = 64

@@ -34,7 +34,7 @@ import {
   SnapModeType,
   SnapType,
 } from "@mellowcad/engine"
-import { useEngineSelector, type EditorState } from "@/hooks/useCadEngine"
+import { useEngineSelector, type EditorState } from "@mellowcad/react"
 import {
   readHiddenStatusItems,
   rememberHiddenStatusItems,

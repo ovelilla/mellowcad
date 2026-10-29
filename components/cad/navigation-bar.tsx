@@ -14,7 +14,7 @@ import {
 } from "lucide-react"
 
 import { ZOOM_MENU, type CadEngine, type ZoomOption } from "@mellowcad/engine"
-import type { EditorState } from "@/hooks/useCadEngine"
+import type { EditorState } from "@mellowcad/react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { TooltipProvider } from "@/components/ui/tooltip"

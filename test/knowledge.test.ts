@@ -42,7 +42,7 @@ const RULE_PATTERN = /^\.claude\/rules\/.+\.md$/
 const SKILL_FOLDER_PATTERN = /^\.claude\/skills\/([^/]+)\//
 const SKILL_NAME_PATTERN = /^[a-z0-9]+(-[a-z0-9]+)*$/
 const LOAD_SCOPE_PATTERN =
-  /^(app|cad|components|content|hooks|i18n|lib|messages|scripts|test)\/.+\.(ts|tsx|mjs|css|json)$/
+  /^(app|cad|components|content|i18n|lib|messages|packages|scripts|test)\/.+\.(ts|tsx|mjs|css|json)$/
 const TEXT_PATTERN = /\.(ts|tsx|mjs|cjs|js|json|css|sh|yml|txt)$/
 const LIBRARY_FILE_PATTERN = /\.([cm]?[jt]sx?)$/
 
@@ -247,10 +247,18 @@ function libraryWords(name: string, version: string) {
 type Manifest = { scripts?: Record<string, string>; workspaces?: string[] }
 const manifest = (dir: string) =>
   JSON.parse(read(join(dir, "package.json"))) as Manifest
-// A workspace's script is cited with its folder, `npm run build -w cad`.
+// A workspace's script is cited with its folder, `npm run build -w cad`;
+// `packages/*` is each folder in packages/.
+const workspaces = (manifest(".").workspaces ?? []).flatMap((workspace) =>
+  workspace.endsWith("/*")
+    ? readdirSync(workspace.slice(0, -2)).map(
+        (folder) => `${workspace.slice(0, -1)}${folder}`
+      )
+    : [workspace]
+)
 const scripts = new Set([
   ...Object.keys(manifest(".").scripts ?? {}),
-  ...(manifest(".").workspaces ?? []).flatMap((workspace) =>
+  ...workspaces.flatMap((workspace) =>
     Object.keys(manifest(workspace).scripts ?? {}).map(
       (name) => `${name} -w ${workspace}`
     )

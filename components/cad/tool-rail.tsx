@@ -40,7 +40,7 @@ import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
 import { usePortalContainer } from "@/components/ui/portal-container"
 import { CadEngine } from "@mellowcad/engine"
-import type { EditorState } from "@/hooks/useCadEngine"
+import type { EditorState } from "@mellowcad/react"
 import { cn } from "@/lib/utils"
 
 import { IconAction, Panel } from "./toolbar-primitives"

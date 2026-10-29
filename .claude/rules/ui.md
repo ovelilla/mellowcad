@@ -3,7 +3,7 @@ paths:
   - "components/cad/**"
   - "components/ui/**"
   - "app/*/*app*/**"
-  - "hooks/**"
+  - "packages/react/**"
 ---
 
 # UI layer (the editor, `/draw`)

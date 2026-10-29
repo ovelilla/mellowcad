@@ -6,7 +6,7 @@ import { Check, Plus, Trash2 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { CadEngine, DimStyleInfo, TextStyleInfo } from "@mellowcad/engine"
-import type { EditorState } from "@/hooks/useCadEngine"
+import type { EditorState } from "@mellowcad/react"
 
 import {
   Select,
