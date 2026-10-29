@@ -134,6 +134,7 @@ import { formatVariable, systemVariableNamed } from "./systemVariables"
 import { directionFromUcsHeading, headingInUcs } from "./tools/ucsHeading"
 import { pointAtDistance } from "./tools/directDistance"
 import { ViewPreset, currentViewPreset } from "./tools/viewPresets"
+import { ZOOM_ANSWERS, type ZoomOption } from "./tools/zoomMenu"
 import { currentName } from "./tools/UcsTool"
 import {
   CompassLetter,
@@ -2630,17 +2631,24 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * The navigation bar's Pan, Zoom members and Orbit, which run AutoCAD's
-   * macros (`'_pan`, `'_zoom _w`, `'_zoom 2x`, `'_3dorbit`): `command`, then
-   * `answer` typed at its first prompt as the macro types it. A step U names
-   * as a menu's, `'ZOOM GROUP`, never joined (desktop view/d07).
+   * The navigation bar's Pan and Orbit, which run AutoCAD's macros (`'_pan`,
+   * `'_3dorbit`). A step U names as a menu's, `'PAN GROUP`, never joined
+   * (desktop view/d07).
    */
-  navigate(command: "PAN" | "ZOOM" | "3DORBIT", answer?: string): boolean {
-    return this.navigateAs(
-      command,
-      { step: (said) => this.text.message("menuStep", { command: said }) },
-      answer
-    )
+  navigate(command: "PAN" | "3DORBIT"): boolean {
+    return this.navigateAs(command, this.menuMacro())
+  }
+
+  /**
+   * A member of the navigation bar's Zoom, its macro (`'_zoom _w`,
+   * `'_zoom 2x`): ZOOM, then the member's answer typed at its first prompt.
+   */
+  zoom(option: ZoomOption): boolean {
+    return this.navigateAs("ZOOM", this.menuMacro(), ZOOM_ANSWERS[option])
+  }
+
+  private menuMacro(): Macro {
+    return { step: (said) => this.text.message("menuStep", { command: said }) }
   }
 
   private navigateAs(

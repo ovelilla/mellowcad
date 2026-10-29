@@ -715,7 +715,7 @@ describe("a transparent command", () => {
     const cad = createHarness()
     cad.command("LINE").click(p(0, 0)).moveTo(p(10, 10))
     cad.type("12")
-    cad.runtime.navigate("ZOOM", "_w")
+    cad.runtime.zoom("window")
     expect(cad.state().commandLine.prompt).toBe("'ZOOM >>Specify first corner:")
     cad.click(p(0, 0)).click(p(50, 50))
     expect(cad.commandLog().slice(-4)).toEqual([
@@ -741,7 +741,7 @@ describe("a transparent command", () => {
       "Press ESC or ENTER to exit, or right-click to display shortcut menu.",
     ])
     cad.escape()
-    cad.runtime.navigate("ZOOM", "_w")
+    cad.runtime.zoom("window")
     expect(cad.state().commandLine.prompt).toBe("ZOOM Specify first corner:")
   })
 
@@ -792,7 +792,7 @@ describe("a transparent command", () => {
       ">>Pulse Esc o Intro para salir, o haga clic con el botón derecho para activar el menú contextual.",
     ])
     cad.enter()
-    cad.runtime.navigate("ZOOM", "_w")
+    cad.runtime.zoom("window")
     expect(cad.state().commandLine.prompt).toBe(
       "'ZOOM >>Designe primera esquina:"
     )

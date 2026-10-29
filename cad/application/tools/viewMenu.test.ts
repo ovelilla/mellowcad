@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest"
 import { VIEW_MENU } from "./viewPresets"
+import { ZOOM_MENU } from "./zoomMenu"
 import { isWorldUcs } from "../../domain/ucs"
 import { type CadHarness, createHarness } from "../../../test/harness"
 import { lineOf, p } from "../../../test/builders"
@@ -156,13 +157,17 @@ describe("the viewport controls and the navigation bar (desktop view/d06, d07, e
     expect(written(spanish, "H")).toEqual(["H", "'-VISTA Regenerando modelo."])
   })
 
+  it("lists the Zoom members that exist here in the ribbon's order", () => {
+    expect(ZOOM_MENU).toEqual(["extents", "window", "previous", "in", "out"])
+  })
+
   // The bar's In runs acad.cuix's `'_zoom 2x`.
   it("Zoom In doubles, a menu step 'ZOOM GROUP never joined", () => {
     const cad = answer(drawing(), "ZOOM", "0.5X")
     const before = scale(cad)
-    cad.runtime.navigate("ZOOM", "2x")
+    cad.runtime.zoom("in")
     expect(scale(cad) / before).toBeCloseTo(2, 9)
-    cad.runtime.navigate("ZOOM", "2x")
+    cad.runtime.zoom("in")
     expect(written(cad, "U")).toEqual(["U", "'ZOOM GROUP"])
     expect(scale(cad) / before).toBeCloseTo(2, 9)
   })
@@ -171,10 +176,10 @@ describe("the viewport controls and the navigation bar (desktop view/d06, d07, e
   it("Out halves, Extents and Previous answer ZOOM's prompt, never joined", () => {
     const cad = drawing()
     const before = scale(cad)
-    cad.runtime.navigate("ZOOM", ".5x")
+    cad.runtime.zoom("out")
     expect(scale(cad) / before).toBeCloseTo(0.5, 9)
-    cad.runtime.navigate("ZOOM", "_e")
-    cad.runtime.navigate("ZOOM", "_p")
+    cad.runtime.zoom("extents")
+    cad.runtime.zoom("previous")
     expect(scale(cad) / before).toBeCloseTo(0.5, 9)
     expect(cad.commandLog().slice(-2)).toEqual([
       "'ZOOM",

@@ -164,7 +164,8 @@ export declare class CadEngine {
     submitCommandLine(): void;
     runCommand(name: string): boolean;
     applyViewPreset(preset: ViewPreset): boolean;
-    navigate(command: "PAN" | "ZOOM" | "3DORBIT", answer?: string): boolean;
+    navigate(command: "PAN" | "3DORBIT"): boolean;
+    zoom(option: ZoomOption): boolean;
     viewCubePick(part: ViewCubePart): void;
     viewCubeRoll(turn: ViewCubeRoll): void;
     viewCubeAdjacent(side: ViewCubeSide): void;
@@ -1309,6 +1310,12 @@ export interface ViewCubeUi {
 
 export type { ViewPreset }
 export type ViewPreset = keyof typeof VIEW_PRESETS;
+
+export { ZOOM_MENU }
+export declare const ZOOM_MENU: readonly ZoomOption[];
+
+export type { ZoomOption }
+export type ZoomOption = "extents" | "window" | "previous" | "in" | "out";
 ```
 
 ## ./locales/en

@@ -13,7 +13,7 @@ import {
   type LucideIcon,
 } from "lucide-react"
 
-import type { CadEngine } from "@mellowcad/engine"
+import { ZOOM_MENU, type CadEngine, type ZoomOption } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -24,29 +24,15 @@ import { ZoomPreviousIcon } from "./icons"
 import { IconAction } from "./toolbar-primitives"
 import { useEditorText } from "./editor-text"
 
-type ZoomId = "extents" | "window" | "previous" | "in" | "out"
-
-interface ZoomMember {
-  readonly id: ZoomId
-  readonly icon: LucideIcon
-  readonly mirrored?: boolean
-  /** What its macro answers ZOOM's first prompt (`'_zoom 2x`). */
-  readonly answer: string
-}
-
-/**
- * The Zoom drop-down's members that exist here, in the ribbon's order
- * (Extents, Window, Previous, …, In, Out); Realtime, All, Dynamic, Scale,
- * Center and Object are not offered. Each runs its acad.cuix macro, inside
- * the running command as a transparent ZOOM.
- */
-const ZOOM: readonly ZoomMember[] = [
-  { id: "extents", icon: Maximize, answer: "_e" },
-  { id: "window", icon: Search, answer: "_w" },
-  { id: "previous", icon: ZoomPreviousIcon, mirrored: true, answer: "_p" },
-  { id: "in", icon: ZoomIn, answer: "2x" },
-  { id: "out", icon: ZoomOut, answer: ".5x" },
-]
+/** The Zoom members' icons; `mirrored` for one of time. */
+const ZOOM_ICONS: Record<ZoomOption, { icon: LucideIcon; mirrored?: boolean }> =
+  {
+    extents: { icon: Maximize },
+    window: { icon: Search },
+    previous: { icon: ZoomPreviousIcon, mirrored: true },
+    in: { icon: ZoomIn },
+    out: { icon: ZoomOut },
+  }
 
 /**
  * AutoCAD's navigation bar (NAVBARDISPLAY 1), linked to the ViewCube: a
@@ -110,15 +96,15 @@ function ZoomSplitButton({
 }) {
   const portal = usePortalContainer()
   const t = useEditorText("NavigationBar")
-  const [face, setFace] = useState<ZoomId>("extents")
-  const shown = ZOOM.find((member) => member.id === face) ?? ZOOM[0]
+  const [face, setFace] = useState<ZoomOption>(ZOOM_MENU[0])
+  const shown = ZOOM_ICONS[face]
   const windowAlias = state.tools
     .find((entry) => entry.id === "zoom")
     ?.shortcut?.toUpperCase()
   const windowActive = state.activeToolId === "zoom"
-  const use = (member: ZoomMember) => {
-    setFace(member.id)
-    engine.navigate("ZOOM", member.answer)
+  const use = (option: ZoomOption) => {
+    setFace(option)
+    engine.zoom(option)
   }
 
   return (
@@ -126,11 +112,11 @@ function ZoomSplitButton({
       <IconAction
         icon={shown.icon}
         mirrored={shown.mirrored}
-        label={t(shown.id)}
-        shortcut={shown.id === "window" ? windowAlias : undefined}
+        label={t(face)}
+        shortcut={face === "window" ? windowAlias : undefined}
         side="inline-start"
-        active={shown.id === "window" && windowActive}
-        onClick={() => use(shown)}
+        active={face === "window" && windowActive}
+        onClick={() => use(face)}
       />
       <Menu.Root>
         <Menu.Trigger
@@ -154,15 +140,15 @@ function ZoomSplitButton({
             className="z-50"
           >
             <Menu.Popup className="min-w-44 origin-(--transform-origin) overflow-hidden rounded-md border bg-card/90 p-1 text-popover-foreground shadow-md backdrop-blur transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0">
-              {ZOOM.map((member) => {
-                const Icon = member.icon
+              {ZOOM_MENU.map((option) => {
+                const { icon: Icon, mirrored } = ZOOM_ICONS[option]
                 return (
                   <Menu.Item
-                    key={member.id}
-                    onClick={() => use(member)}
+                    key={option}
+                    onClick={() => use(option)}
                     className={cn(
                       "flex cursor-default items-center gap-2 rounded-sm py-1.5 ps-2 pe-2 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground",
-                      member.id === "window" &&
+                      option === "window" &&
                         windowActive &&
                         "bg-active/15 text-active-foreground"
                     )}
@@ -170,11 +156,11 @@ function ZoomSplitButton({
                     <Icon
                       className={cn(
                         "size-4 shrink-0",
-                        member.mirrored && "rtl:-scale-x-100"
+                        mirrored && "rtl:-scale-x-100"
                       )}
                     />
-                    <span className="flex-1">{t(member.id)}</span>
-                    {member.id === "window" && windowAlias && (
+                    <span className="flex-1">{t(option)}</span>
+                    {option === "window" && windowAlias && (
                       <kbd
                         dir="ltr"
                         className="ms-4 font-mono text-muted-foreground"

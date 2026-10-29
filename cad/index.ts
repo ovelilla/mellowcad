@@ -92,6 +92,7 @@ export { SnapType } from "./application/snapping/types"
 export { ConstraintType } from "./application/constraints/types"
 export { POLAR_ANGLE_MENU } from "./application/constraints/polarAngles"
 export { VIEW_MENU, type ViewPreset } from "./application/tools/viewPresets"
+export { ZOOM_MENU, type ZoomOption } from "./application/tools/zoomMenu"
 export type {
   CompassLetter,
   ViewCubeFace,

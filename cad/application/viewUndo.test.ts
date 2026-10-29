@@ -92,7 +92,7 @@ describe("the view as an undo step", () => {
     }
     // The navigation bar's are a menu's, never joined.
     const bar = answer(createHarness(), ...LINE, "ZOOM", "2X")
-    bar.runtime.navigate("ZOOM", "_w")
+    bar.runtime.zoom("window")
     bar.click(p(0, 0)).click(p(5, 5))
     expect(written(bar, "U", "U")).toEqual(["U", "'ZOOM GROUP", "U", "ZOOM"])
   })

@@ -24,6 +24,7 @@ import { SnapModeType } from "../application/SnapMode"
 import { SnapType } from "../application/snapping/types"
 import { ConstraintType } from "../application/constraints/types"
 import type { ViewPreset } from "../application/tools/viewPresets"
+import type { ZoomOption } from "../application/tools/zoomMenu"
 import type {
   CompassLetter,
   ViewCubePart,
@@ -446,13 +447,14 @@ export class CadEngine {
     return this.runtime.applyViewPreset(preset)
   }
 
-  /**
-   * The navigation bar's Pan, Zoom members and Orbit, run as their macros
-   * (`'_zoom 2x`): `answer` typed at the command's first prompt as the macro
-   * types it. Transparent mid-command.
-   */
-  navigate(command: "PAN" | "ZOOM" | "3DORBIT", answer?: string): boolean {
-    return this.runtime.navigate(command, answer)
+  /** The navigation bar's Pan and Orbit, run as their macros. Transparent mid-command. */
+  navigate(command: "PAN" | "3DORBIT"): boolean {
+    return this.runtime.navigate(command)
+  }
+
+  /** A member of the navigation bar's Zoom, run as its macro (`'_zoom 2x`). Transparent mid-command. */
+  zoom(option: ZoomOption): boolean {
+    return this.runtime.zoom(option)
   }
 
   viewCubePick(part: ViewCubePart): void {
