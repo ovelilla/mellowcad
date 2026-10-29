@@ -12,7 +12,7 @@ to left). The words: `docs/i18n-glossary.md`.
    by `AppLocale` that now lacks it — `DIRECTION`, `LOCALE_STATUS` (start `draft`),
    `LANGUAGE_NAMES` (the language named in itself), `OG_LOCALE` and `catalogs`
    (`i18n/messages.ts`).
-2. **`messages/<tag>.json`** (the site) and **`components/cad/locales/<tag>.json`** (the editor;
+2. **`messages/<tag>.json`** (the site) and **`packages/editor/src/locales/<tag>.json`** (the editor;
    `npm run locales` compiles it): a draft may leave keys out (they show in English). Nothing to
    list in a test: `TRANSLATED` in `i18n/messages.test.ts` is every `live` language, for both.
 3. **The engine's catalog**, `cad/locales/<tag>.json` (`.claude/rules/cad-catalogs.md`): the

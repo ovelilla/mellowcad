@@ -20,6 +20,14 @@ export default defineConfig({
         find: /^@mellowcad\/react$/,
         replacement: `${rootDir}/packages/react/src/index.ts`,
       },
+      {
+        find: /^@mellowcad\/editor$/,
+        replacement: `${rootDir}/packages/editor/src/index.ts`,
+      },
+      {
+        find: /^@mellowcad\/editor\/locales\/([\w-]+)$/,
+        replacement: `${rootDir}/packages/editor/src/locales/$1.ts`,
+      },
     ],
   },
   test: {
@@ -38,8 +46,6 @@ export default defineConfig({
       // The URL scheme, the message catalogs and the helpers that read them.
       "i18n/**/*.test.ts",
       "lib/**/*.test.ts",
-      // The editor's catalog.
-      "components/**/*.test.ts",
       "packages/**/*.test.ts",
     ],
     setupFiles: ["./test/setup.ts"],

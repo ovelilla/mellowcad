@@ -25,12 +25,12 @@ const PHYSICAL_SIDE = /\bside(?:\s*=\s*|\??:\s*)["'](?:left|right)["']/g
  * one anywhere fails until it is made logical or argued for here.
  */
 const ALLOWED: Record<string, Record<string, string>> = {
-  "components/cad/view-cube.tsx": {
+  "packages/editor/src/view-cube.tsx": {
     'side: "left"': "the cube's triangles, keyed to the sides of the screen",
     'side: "right"': "the cube's triangles, keyed to the sides of the screen",
     "right-0": "the roll arrows are the cube's geometry (dir=ltr)",
   },
-  "components/ui/select.tsx": {
+  "packages/editor/src/ui/select.tsx": {
     "slide-in-from-right-2": "the entry of a popup given a physical side",
     "slide-in-from-left-2": "the entry of a popup given a physical side",
   },

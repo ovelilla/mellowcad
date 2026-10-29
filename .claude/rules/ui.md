@@ -1,12 +1,11 @@
 ---
 paths:
-  - "components/cad/**"
-  - "components/ui/**"
+  - "packages/editor/**"
   - "app/*/*app*/**"
   - "packages/react/**"
 ---
 
-# UI layer (the editor, `/draw`)
+# UI layer (the editor, `@mellowcad/editor`, at `/draw`)
 
 > Verified against **@base-ui/react 1.9.0**, **tailwind-merge 3.7.0**, **lucide-react 1.59.0**.
 
@@ -33,15 +32,15 @@ key is prevented, where focus goes, which element captures the pointer (`useComm
 keyboard listener. If a button needs one, the engine owes it a method (behind a port, implemented
 in `cad/adapters/`), or every host has to rewrite it. Failures are reported at the command prompt,
 never in a React banner. The exception is the layout, kept on the device as AutoCAD keeps it in
-the profile: the palette panel's width and fold (`lib/palette-layout.ts`, read by a `<head>`
-script before any bundle) and the status bar's Customization (`lib/status-bar-layout.ts`, read
+the profile: the palette panel's width and fold (`palette-layout.ts`, read by a `<head>`
+script before any bundle) and the status bar's Customization (`status-bar-layout.ts`, read
 after mount), each under the host's key (`layoutStorage`; none, not kept), the site's frozen
 (`lib/site.test.ts`).
 
 ## Text
 
 - **Every label comes from a catalog**; no literals (`i18n.md`). The chrome's own words are its
-  catalog, `components/cad/locales/en.json`, read with `useEditorText("<Part>")`; never next-intl,
+  catalog, `packages/editor/src/locales/en.json`, read with `useEditorText("<Part>")`; never next-intl,
   which is the site's (`i18n/messages.test.ts`).
 - What the engine names is read from the engine, never copied into the catalog: tool labels and
   aliases (`state.tools`), snap, colour and linetype names, the preset views, the ViewCube's faces
@@ -64,9 +63,9 @@ a second layout. This file owns the rule for the landing too.
 
 - **Classes are logical**: `ms-`/`me-`, `ps-`/`pe-`, `inset-s-`/`inset-e-`, `text-start`/`text-end`,
   `border-s`/`border-e`. `i18n/logical-properties.test.ts` fails on a physical side in
-  `components/**` or `app/**` outside its justified exceptions. `components.json` has `rtl: true`,
-  so `shadcn add` writes logical classes; change its `start-*`/`end-*` to `inset-s-*`/`inset-e-*`
-  (Tailwind 4.2 deprecated them).
+  `components/**`, `app/**` or `packages/**` outside its justified exceptions, and on an exception
+  that matches nothing. `components.json` has `rtl: true`, so `shadcn add` writes logical classes;
+  change its `start-*`/`end-*` to `inset-s-*`/`inset-e-*` (Tailwind 4.2 deprecated them).
 - **Popups take logical sides**: `side="inline-end"` for the tool palette's tooltips and drop-downs
   and the menus at the cursor; `top`/`bottom` need nothing. `Side` (`toolbar-primitives.tsx`) and
   the `ui/` wrappers accept both kinds.
@@ -85,19 +84,23 @@ a second layout. This file owns the rule for the landing too.
   — undo, redo, zoom previous, send, open outside. Never a rotation (orbit, the cube's roll) or a
   CAD glyph (mirror, extend, offset). `rtl:` matches inside an LTR island too (`[dir=rtl] *`).
 - The workspace is the page's `<main>`: every control sits in a landmark (axe's `region`).
-- A caller's `px-1.5` replaces a component's `ps-2.5 pe-2` (`cn()`; `lib/utils.test.ts`).
+- A caller's `px-1.5` replaces a component's `ps-2.5 pe-2` (`cn()`; `packages/editor/src/utils.test.ts`).
 
 ## File layout
 
-`components/cad/` is kebab-case, one primary component per file, the file named after its export
-(`layers-control.tsx` → `LayersControl`); its small satellites stay in the same file. Shared bar
-atoms live in `toolbar-primitives.tsx`, custom glyphs in `icons.tsx`.
+The editor is `packages/editor/src/`: kebab-case, one primary component per file, the file named
+after its export (`layers-control.tsx` → `LayersControl`); its small satellites stay in the same
+file. Shared bar atoms live in `toolbar-primitives.tsx`, custom glyphs in `icons.tsx`, the
+primitives in `ui/`, the catalog in `locales/`. It reaches its own files relatively and the engine
+and the hooks by name (`test/packages.test.ts`): an `@/` import still compiles in the repo, against
+the site. `shadcn add` writes into the editor (`components.json`) with `@/` imports: make them
+relative. `index.ts` exports only what a host uses: each name there is a semver promise.
 
 ## Colour — one scheme, dark
 
 No theme switch, by decision: AutoCAD works dark, and so does the whole site (landing included).
 The tokens on the editor's root (`EDITOR_ROOT_ATTRIBUTE`) are the only values, never the host's
-`:root` (`lib/editor-root.test.ts`); `color-scheme: dark` keeps native controls dark, and
+`:root` (`packages/editor/src/editor-root.test.ts`); `color-scheme: dark` keeps native controls dark, and
 `@custom-variant dark (&)` makes every `dark:` utility apply. Never bring back next-themes, a
 `.dark` class or light values.
 
@@ -140,7 +143,7 @@ the editor's root starts every text, its popups too, as `text-ui text-foreground
 - **Rhythm**: rows of palettes, menus and lists are 28 px (`h-7`; a menu item's `py-1.5`). Text
   starts 12 px from its surface's edge: `px-3` in a palette, `p-3` in a popover, `p-1` + `ps-2` in a
   menu.
-- `lib/type-scale.test.ts` holds the scale and the steps in `components/cad` and `components/ui`;
+- `packages/editor/src/type-scale.test.ts` holds the scale and the steps in the editor;
   `cn()` keeps `text-ui` beside a colour (it knows the roles as sizes). The ViewCube's SVG sets its
   weight as an attribute (a class would size it too); its face names, sized to the face, are the
   one text outside the scale.
@@ -168,7 +171,7 @@ the tool palette would fold on a Full HD laptop at 125 %).
 - Outside the system, each for a reason: the ViewCube's Home, roll arrows and UCS menu
   (`size="icon-cube"`, `"cube"`, 24), drawn at the cube's scale; the viewport control `[Top]`, a
   label on the drawing; separators, the product mark and swatches, which are not targets.
-- `lib/control-size.test.ts` holds the system, and `Button`'s sizes to the table; a new size is
+- `packages/editor/src/control-size.test.ts` holds the system, and `Button`'s sizes to the table; a new size is
   argued here first.
 
 ## Base UI gotchas
@@ -266,7 +269,7 @@ must stay up while one draws belongs in the panel.
 
 ## Icons
 
-Custom CAD glyphs go in `components/cad/icons.tsx` via `createLucideIcon`, on lucide's metrics: 24
+Custom CAD glyphs go in `packages/editor/src/icons.tsx` via `createLucideIcon`, on lucide's metrics: 24
 viewBox, rings at `r=10`, `stroke-width` 2. Point beads need `fill: "currentColor"` and
 `stroke: "none"`, or the inherited stroke pushes them past the viewBox and they clip. Prefer a real
 lucide icon: a hand-rolled shape smaller than the viewBox aliases badly at 16 px.

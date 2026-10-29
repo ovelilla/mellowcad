@@ -11,10 +11,9 @@ const eslintConfig = defineConfig([
     // are not checked here — class names are strings too —; the ones read
     // aloud or shown are, below.
     files: [
-      "components/cad/**/*.tsx",
-      "components/marketing/**/*.tsx",
-      "components/*.tsx",
+      "components/**/*.tsx",
       "app/**/*.tsx",
+      "packages/editor/src/**/*.tsx",
     ],
     rules: {
       "react/jsx-no-literals": [
@@ -69,7 +68,11 @@ const eslintConfig = defineConfig([
     },
   },
   {
-    files: ["components/**/*.tsx", "app/**/*.tsx"],
+    files: [
+      "components/**/*.tsx",
+      "app/**/*.tsx",
+      "packages/editor/src/**/*.tsx",
+    ],
     rules: {
       "no-restricted-syntax": [
         "error",

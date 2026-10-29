@@ -10,11 +10,12 @@ echo "› typecheck"
 npm run --silent typecheck
 
 # The packages: only their builds enforce isolatedDeclarations, and publint,
-# attw and the "use client" check read what the builds wrote.
+# attw and the "use client" check read what the builds wrote. A package whose
+# build is still to come has neither script (UNBUILT, test/packages.test.ts).
 echo "› packages"
 for package in cad packages/*; do
   for step in build check; do
-    out=$(npm run --silent "$step" -w "$package" 2>&1) || { echo "$out"; exit 1; }
+    out=$(npm run --silent --if-present "$step" -w "$package" 2>&1) || { echo "$out"; exit 1; }
   done
 done
 

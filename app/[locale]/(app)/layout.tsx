@@ -5,6 +5,7 @@ import type { Metadata, Viewport } from "next"
 import { getLocale, getTranslations } from "next-intl/server"
 
 import "./globals.css"
+import { paletteLayoutScript } from "@mellowcad/editor"
 import { THEME } from "@mellowcad/engine"
 import { localePath } from "@/i18n/navigation"
 import { DIRECTION, OG_LOCALE, routing } from "@/i18n/routing"
@@ -16,7 +17,6 @@ import {
   SITE_URL,
 } from "@/lib/site"
 import { cn } from "@/lib/utils"
-import { paletteLayoutScript } from "@/lib/palette-layout"
 import { EDITOR_SHEET_ID, VIEW_TRANSITION_OPT_IN } from "@/lib/view-transition"
 
 export const dynamicParams = false

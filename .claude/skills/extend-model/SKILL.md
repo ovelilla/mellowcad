@@ -88,7 +88,7 @@ Colour, linetype and lineweight are structural twins: copy the closest one (colo
 
 A new **style setting** owes: the field with its metric default on the style, a branch in
 `clampDimStyle`, a tolerant read with a `DRAWING_FILE_VERSION` bump, a fold into `scaledDimStyle`
-if it is a plotted size, and a control in `components/cad/styles-control.tsx` **under the heading
+if it is a plotted size, and a control in `packages/editor/src/styles-control.tsx` **under the heading
 AutoCAD files it under** (Lines, Symbols and arrows, Text, Fit, Primary units): users look for a
 setting where they were taught to.
 
@@ -101,6 +101,6 @@ setting where they were taught to.
    its object.
 5. A `SceneBuilder` marker.
 6. Its name in `interface.snap` (menus) and `commands.feedback.snap` (the canvas tooltip).
-7. The menu order in `components/cad/snap-override-menu.tsx`.
+7. The menu order in `packages/editor/src/snap-override-menu.tsx`.
 8. The `CadRuntime` constructor turns off every snap a fresh AutoCAD has off (OSMODE 4133 runs
    Endpoint, Center, Intersection and Extension): add it there unless it is one of those.

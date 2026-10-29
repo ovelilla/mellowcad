@@ -82,7 +82,9 @@ export function productFacts(locale?: EngineLocale): ProductFacts {
   }
 }
 
-const TEST_ROOTS = ["cad", "test", "content", "i18n", "lib"]
+// WHY packages/editor and not packages/: the editor's tests were lib's until
+// they moved with it; packages/react's were never counted (docs/next-library.md).
+const TEST_ROOTS = ["cad", "test", "content", "i18n", "lib", "packages/editor"]
 const TEST_CASE = /^\s*(?:it|test)(?:\.each\([^)]*\))?\(/gm
 
 /**

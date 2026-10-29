@@ -1,4 +1,4 @@
-import type { EditorLocale } from "@/components/cad/locales/types"
+import type { EditorLocale } from "@mellowcad/editor"
 
 import type { AppLocale } from "./routing"
 
@@ -9,8 +9,10 @@ import type { AppLocale } from "./routing"
  */
 const EDITOR_LOCALES: Partial<Record<AppLocale, () => Promise<EditorLocale>>> =
   {
-    es: () => import("@/components/cad/locales/es").then((module) => module.es),
-    ar: () => import("@/components/cad/locales/ar").then((module) => module.ar),
+    es: () =>
+      import("@mellowcad/editor/locales/es").then((module) => module.es),
+    ar: () =>
+      import("@mellowcad/editor/locales/ar").then((module) => module.ar),
   }
 
 export async function loadEditorLocale(

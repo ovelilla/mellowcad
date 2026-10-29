@@ -73,7 +73,7 @@ Walk the whole list and write "n/a" where it does not apply; never trim it from 
   `en`, `es` and `ar`.
 - **The object it makes**: its entity in `cad/domain/`, its scene in `SceneBuilder`, its grips in
   `selectToolGrips.ts`, its palette rows, its part of the file in `cad/serialization/`.
-- **The UI**: the rail (`components/cad/tool-rail.tsx`), the shortcut menus, the landing's filing
+- **The UI**: the rail (the editor's `tool-rail.tsx`), the shortcut menus, the landing's filing
   (`content/commands.ts`); the ribbon button's macro in acad.cuix, which may run another command
   or run it transparently (DIST's runs MEASUREGEOM, ID's is `'_id`: inquiry, DST-05, INQ-04).
 - **Tests**: its own, every one that runs it (`git grep -l '"<COMMAND>"'`), the English surface

@@ -1,4 +1,4 @@
-import { readFileSync, readdirSync } from "node:fs"
+import { existsSync, readFileSync, readdirSync } from "node:fs"
 import { join } from "node:path"
 import { parse } from "@formatjs/icu-messageformat-parser"
 import { describe, expect, it } from "vitest"
@@ -102,8 +102,16 @@ describe("mergeMessages", () => {
   })
 })
 
+/** The names of an `import { … }` or `export { … }` list, without `type`. */
+function importedNames(list: string): string[] {
+  return list
+    .split(",")
+    .map((name) => name.replace(/^\s*type\s+/, "").trim())
+    .filter(Boolean)
+}
+
 describe("the editor", () => {
-  const dir = join(__dirname, "..", "components", "cad")
+  const dir = join(__dirname, "..", "packages", "editor", "src")
 
   // The editor is a library with a catalog of its own: next-intl is the
   // site's, and /draw ships none of it.
@@ -121,14 +129,29 @@ describe("the editor", () => {
   // The landing never mounts the editor's catalog: an editor component it
   // embeds that read one would speak English on every page.
   it("lends the landing only components that take their words as props", () => {
+    const modules = new Map<string, string>()
+    const barrel = readFileSync(join(dir, "index.ts"), "utf8")
+    for (const [, names, from] of barrel.matchAll(
+      /export (?:type )?\{([^}]*)\} from "\.\/([^"]+)"/g
+    )) {
+      for (const name of importedNames(names)) modules.set(name, from)
+    }
     const landing = join(__dirname, "..", "components", "marketing")
     for (const file of readdirSync(landing)) {
       const source = readFileSync(join(landing, file), "utf8")
-      for (const [, name] of source.matchAll(
-        /from "@\/components\/cad\/([^"]+)"/g
+      for (const [, names] of source.matchAll(
+        /import (?:type )?\{([^}]*)\} from "@mellowcad\/editor"/g
       )) {
-        const lent = readFileSync(join(dir, `${name}.tsx`), "utf8")
-        expect(lent, `${file} embeds ${name}`).not.toMatch(/useEditorText\(/)
+        for (const name of importedNames(names)) {
+          const from = modules.get(name)
+          expect(from, `${file} embeds ${name}`).toBeDefined()
+          const tsx = join(dir, `${from}.tsx`)
+          const lent = existsSync(tsx) ? tsx : join(dir, `${from}.ts`)
+          expect(
+            readFileSync(lent, "utf8"),
+            `${file} embeds ${name}`
+          ).not.toMatch(/useEditorText\(/)
+        }
       }
     }
   })

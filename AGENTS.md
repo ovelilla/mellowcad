@@ -45,11 +45,12 @@ cad/application/   orchestration: CadRuntime, tools, snapping, constraints, trac
 cad/adapters/      the only browser-aware layer: CadEngine (composition root), presenters, storage
 ```
 
-`cad/` is the workspace package `@mellowcad/engine`: React imports its `exports` only — never a
-deep path (`cad/entryPoints.test.ts`).
+`cad/` is the workspace package `@mellowcad/engine`; `packages/react` and `packages/editor` are
+`@mellowcad/react` and `@mellowcad/editor`. Each is imported by its name and `exports` only — never
+a deep path or `@/` (`test/packages.test.ts`).
 Two root layouts under the `[locale]` root param: the editor is `/draw` (`app/[locale]/(app)/`),
 the landing is `/` (`app/[locale]/(marketing)/`, `components/marketing/`). Other languages are
-prefixed (`/es/draw`). Texts live in `messages/` (the site, next-intl), `components/cad/locales/`
+prefixed (`/es/draw`). Texts live in `messages/` (the site, next-intl), `packages/editor/src/locales/`
 (the editor) and `cad/locales/` (the engine).
 
 ## Non-negotiable invariants

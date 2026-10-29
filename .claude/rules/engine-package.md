@@ -19,9 +19,10 @@ paths:
 
 > Verified against **tsdown 0.23.2**, **publint 0.3.25**, **@arethetypeswrong/cli 0.18.5**.
 
-`cad/` is the npm workspace `@mellowcad/engine` and `packages/react` is `@mellowcad/react`, in
-place and private until they are published (`docs/next-library.md`). The engine is a peer of the
-others, never a dependency: a host has one instance.
+`cad/` is the npm workspace `@mellowcad/engine`, `packages/react` is `@mellowcad/react` and
+`packages/editor` is `@mellowcad/editor`, in place and private until they are published
+(`docs/next-library.md`). The engine is a peer of the others, never a dependency: a host has one
+instance; so is `@mellowcad/react` of the editor.
 
 - **The repo consumes the source, never a `dist/`.** `tsconfig.json`'s `paths` and
   `vitest.config.ts`'s aliases map each package's name to its source; the workspace link in
@@ -55,7 +56,8 @@ others, never a dependency: a host has one instance.
   module: the page loads a catalog on the server and passes it as a prop.
 - **The commit gate builds and checks each package**: `npm run build -w cad`, then
   `npm run check -w cad` (publint `--strict`, attw's `esm-only` profile), about 4 s; the same
-  in `-w packages/react`. Installing the tarball in foreign hosts (Node ESM, `tsc`, Vite) needs
+  in each of packages/. One whose build is still to come has neither script and is skipped: only
+  those `test/packages.test.ts` lists may (the editor's is phase 4(d)). Installing the tarball in foreign hosts (Node ESM, `tsc`, Vite) needs
   the network, so it is `npm run check:hosts -w cad` (`scripts/engine/hosts.ts`), which
   `prepublishOnly` runs; the other packages get theirs with the examples (phase 5).
 - `@mellowcad/react` is built without the React Compiler: its hooks hold their identities by

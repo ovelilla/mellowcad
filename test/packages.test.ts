@@ -8,9 +8,22 @@ const ROOT = path.resolve(import.meta.dirname, "..")
 const PACKAGES = readdirSync(path.join(ROOT, "packages")).map((dir) => {
   const manifest = JSON.parse(
     readFileSync(path.join(ROOT, "packages", dir, "package.json"), "utf8")
-  ) as { name: string; exports: Record<string, unknown> }
+  ) as {
+    name: string
+    exports: Record<string, unknown>
+    scripts?: Record<string, string>
+  }
   return { dir: `packages/${dir}`, ...manifest }
 })
+
+/**
+ * The packages whose build is still to come, each with where it is planned.
+ * The commit hook skips a package without `build` and `check`, so one missing
+ * by mistake would ship unchecked: only these may.
+ */
+const UNBUILT: Record<string, string> = {
+  "packages/editor": "docs/next-library.md, phase 4(d)",
+}
 
 /** Everything that may use a package: the app, the landing, the engine's tests, the other packages. */
 const HOSTS = [
@@ -37,6 +50,13 @@ function* walk(dir: string): Generator<string> {
 }
 
 describe("the workspace packages", () => {
+  it("are each built and checked by the commit hook, but the unbuilt", () => {
+    for (const { dir, scripts = {} } of PACKAGES) {
+      const built = "build" in scripts && "check" in scripts
+      expect(built, dir).toBe(!(dir in UNBUILT))
+    }
+  })
+
   it("are reached from outside only by their name and their exports", () => {
     const deep: string[] = []
     for (const host of HOSTS) {

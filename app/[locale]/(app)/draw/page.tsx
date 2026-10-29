@@ -1,6 +1,6 @@
 import { getLocale } from "next-intl/server"
 
-import { CadWorkspace } from "@/components/cad/cad-workspace"
+import { CadWorkspace } from "@mellowcad/editor"
 import { LogoMark } from "@/components/marketing/logo"
 import { loadEditorLocale } from "@/i18n/editor"
 import { loadEngineLocale } from "@/i18n/engine"

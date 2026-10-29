@@ -7,6 +7,7 @@ paths:
   - "app/robots.ts"
   - "app/sitemap.ts"
   - "components/marketing/**"
+  - "components/ui/**"
   - "content/**"
   - "lib/site.ts"
   - "lib/plot.ts"
@@ -17,6 +18,7 @@ paths:
   - "lib/structured-data.ts"
   - "lib/brand.ts"
   - "lib/view-transition.ts"
+  - "lib/utils.ts"
 ---
 
 # Landing (`/`)
@@ -186,5 +188,7 @@ script — updates it in the same change.
 
 ## Files
 
-Same conventions as `components/cad/` (`ui.md`): kebab-case, one primary component per file, named
-after its export.
+Same conventions as the editor's `packages/editor/src/` (`ui.md`): kebab-case, one primary
+component per file, named after its export. The landing has its own `cn` (`lib/utils.ts`) and
+`DirectionProvider` (`components/ui/direction.tsx`), the editor its copies: neither imports the
+other's.

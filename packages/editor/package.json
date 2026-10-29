@@ -1,0 +1,42 @@
+{
+  "name": "@mellowcad/editor",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "sideEffects": false,
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "default": "./dist/index.js"
+    },
+    "./locales/en": {
+      "types": "./dist/locales/en.d.ts",
+      "default": "./dist/locales/en.js"
+    },
+    "./locales/es": {
+      "types": "./dist/locales/es.d.ts",
+      "default": "./dist/locales/es.js"
+    },
+    "./locales/ar": {
+      "types": "./dist/locales/ar.d.ts",
+      "default": "./dist/locales/ar.js"
+    },
+    "./package.json": "./package.json"
+  },
+  "peerDependencies": {
+    "@mellowcad/engine": "^0.0.0",
+    "@mellowcad/react": "^0.0.0",
+    "react": "^19.0.0"
+  },
+  "dependencies": {
+    "@base-ui/react": "^1.9.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
+    "icu-minify": "^4.14.9",
+    "lucide-react": "^1.59.0",
+    "tailwind-merge": "^3.7.0"
+  }
+}

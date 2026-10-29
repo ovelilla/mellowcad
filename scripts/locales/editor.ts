@@ -1,5 +1,5 @@
 /**
- * Compiles the editor's catalogs, `components/cad/locales/<tag>.json`, into
+ * Compiles the editor's catalogs, `packages/editor/src/locales/<tag>.json`, into
  * the modules it imports, `<tag>.ts`, as `compile.ts` compiles the engine's:
  * every message becomes icu-minify's compact form, so the browser never ships
  * a message parser. It also writes `values.ts`, what each message takes, read
@@ -19,9 +19,9 @@ import { compileTree } from "./compile.ts"
 import { type Tree, flatten, signature } from "./icu.ts"
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..")
-export const EDITOR_LOCALES_DIR = resolve(ROOT, "components/cad/locales")
+export const EDITOR_LOCALES_DIR = resolve(ROOT, "packages/editor/src/locales")
 
-/** The text of `components/cad/locales/<tag>.ts`, exactly as committed. */
+/** The text of `packages/editor/src/locales/<tag>.ts`, exactly as committed. */
 export function editorModule(tag: string, source: Tree): string {
   // English is the complete catalog every other one falls back on.
   const type = tag === "en" ? "EditorCatalog" : "EditorLocale"
@@ -42,7 +42,7 @@ const TYPES: Record<string, string> = {
 }
 
 /**
- * The text of `components/cad/locales/values.ts`: for every English message
+ * The text of `packages/editor/src/locales/values.ts`: for every English message
  * that takes something, each argument with its type and each rich tag. A bare
  * `{name}` is a string; a count is `{count, number}` or a plural.
  */
@@ -97,11 +97,11 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
       resolve(EDITOR_LOCALES_DIR, `${tag}.ts`),
       editorModule(tag, readEditorCatalog(tag))
     )
-    console.log(`components/cad/locales/${tag}.ts`)
+    console.log(`packages/editor/src/locales/${tag}.ts`)
   }
   writeFileSync(
     resolve(EDITOR_LOCALES_DIR, "values.ts"),
     valuesModule(readEditorCatalog("en"))
   )
-  console.log("components/cad/locales/values.ts")
+  console.log("packages/editor/src/locales/values.ts")
 }

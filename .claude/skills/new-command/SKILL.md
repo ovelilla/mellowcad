@@ -47,7 +47,7 @@ wording (skill `autocad-research`). How a tool is written: `.claude/rules/cad-to
    new command, so this is **enforced**) and, when the landing's transcripts change,
    `npx vitest run content/transcripts.test.ts -u` (cb0d9e4, 6c6c4e2). Never `-u` a diff that
    rewords text the change did not mean to.
-9. **The rail.** `components/cad/tool-rail.tsx`: `TOOL_ICONS` and `PALETTE`, in the ribbon panel
+9. **The rail.** `packages/editor/src/tool-rail.tsx`: `TOOL_ICONS` and `PALETTE`, in the ribbon panel
    AutoCAD puts it in, or `RAIL_EXCLUDED` for a tool that lives elsewhere (ZOOM, -PAN, MREDO). Not
    enforced: an unlisted tool falls into a trailing group. (Every command commit.)
 10. **What it creates.** A command that creates objects gives each the properties AutoCAD gives

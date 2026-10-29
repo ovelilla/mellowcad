@@ -24,7 +24,9 @@
       "@/*": ["./*"],
       "@mellowcad/engine": ["./cad/index.ts"],
       "@mellowcad/engine/locales/*": ["./cad/locales/*.ts"],
-      "@mellowcad/react": ["./packages/react/src/index.ts"]
+      "@mellowcad/react": ["./packages/react/src/index.ts"],
+      "@mellowcad/editor": ["./packages/editor/src/index.ts"],
+      "@mellowcad/editor/locales/*": ["./packages/editor/src/locales/*.ts"]
     }
   },
   "include": [

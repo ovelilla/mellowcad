@@ -18,7 +18,7 @@ Las tres capas de la idea original se mantienen, pero el corte que decide es **n
 lógica y tiene que poder recibir un arreglo; copy-in (registro shadcn) solo para presentación fina y
 estable**. El editor hoy no es ninguna de las dos cosas: sus primitivos son forks (`button` con
 `active`, `icon-flyout`, `cube`), su tema es global (`:root`, `dark:` siempre activo, portales a
-`body`), usa Base UI directamente (19 `render=`) y cambia mucho (88 commits en `components/cad`
+`body`), usa Base UI directamente (19 `render=`) y cambia mucho (88 commits en components/cad
 desde el 1 de septiembre). Por eso va a npm, y el registro llega después.
 
 | Paquete             | Forma | Qué lleva                                                                                                                                                                                                                                                                                 | Cuándo                |
@@ -97,7 +97,7 @@ son días de sesión.
    `languages` (la página los calcula en el servidor con `languageLinks`), `layoutStorage` (sin
    clave no se guarda nada; el sitio pasa las de hoy desde `lib/site.ts`, congeladas por
    `lib/site.test.ts`; el script de cabecera es `paletteLayoutScript(key)`) y `sheet`, el id y el
-   nombre de la transición de la celda del lienzo. Medido después: en `components/cad/` ya no
+   nombre de la transición de la celda del lienzo. Medido después: en components/cad/ ya no
    queda ningún import del sitio salvo next-intl. Lo que queda para las entregas siguientes:
    next-intl en 23 componentes y el `DirectionProvider` que monta el layout del sitio (b); el
    `<html>` que escriben `applyPaletteLayout` y el script (`data-palette`, `--palette-width`), la
@@ -105,9 +105,9 @@ son días de sesión.
    `body` (c); la lógica de §2 (d). `components/ui/`, `lib/utils.ts`, las dos libs de layout y
    `hooks/useCadEngine.ts` ya son del editor: viajan con él en la fase 4.
    (b) **Hecha** (56ad55f, a5dfe4f, 43351c8): el catálogo del editor vive en
-   `components/cad/locales/` (`<tag>.json` sin la raíz `Editor`; `npm run locales` escribe
+   components/cad/locales/ (`<tag>.json` sin la raíz `Editor`; `npm run locales` escribe
    `<tag>.ts` compilado con icu-minify y `values.ts`, los argumentos de cada mensaje tipados desde
-   el inglés). Los 23 componentes lo leen con `useEditorText` (`components/cad/editor-text.tsx`,
+   el inglés). Los 23 componentes lo leen con `useEditorText` (components/cad/editor-text.tsx,
    la misma forma que `t` y `t.rich`, con los formateadores de `Intl` sin opciones, como
    next-intl). `CadWorkspace` recibe `editorLocale` y `dir`, monta el `DirectionProvider` y marca
    su `<main>` con `lang` y `dir`; `/draw` carga el catálogo en el servidor
@@ -117,15 +117,15 @@ son días de sesión.
    es y ar. El DOM de las tres páginas es el de antes salvo `<main lang dir>`. Lo que queda: para
    (c), lo de abajo; para la fase 4, el `en.d.json.ts` del catálogo del editor (Oxc no lee el tipo
    de un JSON, como en el motor), su entrada `./locales/<tag>` en `exports`, y el test de
-   `components/cad/locales/` viaja con él (los dos checks del sitio, uno por idioma enrutado y
+   components/cad/locales/ viaja con él (los dos checks del sitio, uno por idioma enrutado y
    completo si es `live`, se quedan en `i18n/messages.test.ts`).
    (c) **Hecha** (4e3d4ab, ac2a700, 4f0a36b): la raíz del editor es un `<div>` con
-   `data-mellowcad-editor` (`EDITOR_ROOT_ATTRIBUTE`, `lib/editor-root.ts`), `lang` y `dir`, que
+   `data-mellowcad-editor` (`EDITOR_ROOT_ATTRIBUTE`, lib/editor-root.ts), `lang` y `dir`, que
    lleva el `<main>` y, detrás, el nodo donde montan los 19 portales de Base UI
    (`usePortalContainer`; ESLint falla en un `Portal` sin `container`). Los tokens, el
    `color-scheme`, los estilos base (el rol de cuerpo incluido) y las reglas `:lang(ar)` viven en
    la raíz; los roles de tipo son `@theme inline`; `--active` lo escribe la raíz desde
-   `THEME.grip` (`EDITOR_THEME_STYLE`), y `lib/editor-root.test.ts` los mantiene iguales y falla con
+   `THEME.grip` (`EDITOR_THEME_STYLE`), y lib/editor-root.test.ts los mantiene iguales y falla con
    un token del editor en `:root`. El script de cabecera escribe `data-palette` y
    `--palette-width` en la raíz con un `MutationObserver` mientras se parsea, y `palette-open` los
    lee allí: el editor ya no escribe en `<html>` ni en `<body>`. Medido en producción contra
@@ -196,9 +196,9 @@ son días de sesión.
      `type="number"`, los listeners de teclas) nombran `components/` y `hooks/`; el `include` de
      Vitest no ve el test del catálogo fuera de `components/`; `LOAD_SCOPE_PATTERN` de
      `test/knowledge.test.ts` no cuenta `packages/` en el p90; `HOSTS` de `cad/entryPoints.test.ts`;
-     los `ALLOWED` por ruta de `lib/control-size.test.ts` y del test de RTL no fallan por una entrada
+     los `ALLOWED` por ruta de lib/control-size.test.ts y del test de RTL no fallan por una entrada
      huérfana; `tailwindStylesheet` de Prettier y los alias de `components.json`. Los `DIRS` de
-     `lib/type-scale.test.ts` y `lib/control-size.test.ts` sí fallan, con ENOENT.
+     lib/type-scale.test.ts y lib/control-size.test.ts sí fallan, con ENOENT.
 
    Las entregas:
    (a) **Hecha** (5c0a6f3, 2cc4a58, 5c8e792): **`@mellowcad/react`, el paquete**. packages/react
@@ -255,7 +255,7 @@ son días de sesión.
    las teclas de los menús), y viaja con él; `test/renderHook.ts` sirve también a los tests del
    paquete del editor; el `check:hosts` de react sigue esperando a los ejemplos (fase 5).
    (c) **`@mellowcad/editor`, en su sitio**: components/cad, components/ui, `lib/utils.ts`,
-   `lib/editor-root.ts` y las dos libs de layout pasan a packages/editor; el sitio lo importa por su
+   lib/editor-root.ts y las dos libs de layout pasan a packages/editor; el sitio lo importa por su
    nombre desde el fuente; el `en.d.json.ts` del catálogo y sus entradas `./locales/<tag>`; los
    checks siguen a los ficheros; la landing, con su `cn` y su `DirectionProvider`. ~1,5 días.
    (d) **El build del editor**: tsdown con React Compiler, `isolatedDeclarations`, publint, attw,
@@ -272,7 +272,7 @@ son días de sesión.
    LICENSE MIT, nota de marca, auditoría del historial, Changesets, quitar `private`. Con el sí del
    dueño: repo público, primera publicación desde su máquina con 2FA, trusted publisher, y el CI de
    vuelta (gratis en un repo público).
-7. **Publicar react y editor 0.1.0** — 1 día, cuando el ritmo de `components/cad` baje y terminen las
+7. **Publicar react y editor 0.1.0** — 1 día, cuando el ritmo de `packages/editor` baje y terminen las
    revisiones de comandos.
 8. **Registro shadcn** — bajo demanda, tras la 7.
 
