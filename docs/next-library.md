@@ -1,6 +1,6 @@
 # MellowCAD como librería — brief
 
-> **Estado:** fases 1, 2 y 3 hechas (2026-10-29); la 4, repartida en seis entregas; las demás, sin
+> **Estado:** fases 1, 2 y 3 hechas (2026-10-29); de la 4, la entrega (a), de seis; las demás, sin
 > ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
 > análisis completo, con el inventario medido, las fuentes fechadas, el spike y el pase adversarial,
 > está en https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama
@@ -201,11 +201,28 @@ son días de sesión.
      `lib/type-scale.test.ts` y `lib/control-size.test.ts` sí fallan, con ENOENT.
 
    Las entregas:
-   (a) **`@mellowcad/react`, el paquete**: packages/react con los hooks que hay, el sitio por su
-   nombre desde el fuente, su build, publint, attw y un check de `"use client"` en el hook, su
-   informe de API (el generador del motor, compartido) y, para packages/, lo que fallaría en
-   silencio. Sin React Compiler: sus hooks fijan sus identidades a mano, porque
-   `useSyncExternalStore` lo pide, y el paquete no necesita Babel. ~1 día.
+   (a) **Hecha** (5c0a6f3, 2cc4a58, 5c8e792): **`@mellowcad/react`, el paquete**. packages/react
+   lleva `useCadEngine`, `useEngineSelector`, `EditorState` y `UseCadEngineOptions` (motor y React
+   19 como peers); el sitio lo importa por su nombre desde el fuente (`paths`, alias de Vitest). Su
+   build es el del motor sin catálogos, sin React Compiler (los hooks fijan sus identidades a mano,
+   que `useSyncExternalStore` pide); el hook construye y comprueba el motor y cada paquete de
+   packages/, y `check` añade `scripts/packages/client-directive.ts`, que falla si un módulo de
+   `dist` usa el runtime de React sin `"use client"` (rolldown lo conserva sin agrupar; su aviso se
+   descarta por código). El generador de `cad/api.md` es `test/apiReport.ts`, compartido: oculta
+   todo fuente del workspace tras la declaración que construiría, cruza paquetes por `paths` y
+   reporta solo lo propio (`cad/api.md` sale idéntico; `packages/react/api.md`, con `POINTER_KEYS`
+   como alcanzado). Lo que habría dejado de ver ficheros: la regla de ESLint de los listeners de
+   teclas (`hooks/` → packages/react/src), `HOSTS` del test de entradas y el `LOAD_SCOPE_PATTERN`
+   del de conocimiento (más packages/, y sus workspaces expandidos); `test/packages.test.ts` sujeta
+   cada paquete de packages/ a su nombre y sus `exports` desde fuera (relativo, `@/` o profundo
+   fallan, probado). La regla de empaquetado habla de los paquetes. Medido en producción contra
+   a6d96d0 (Chrome, /draw, /es/draw y /ar/draw a 1920 y 1280; en reposo, el menú de aplicación, el
+   de referencias, un tooltip de la paleta de herramientas y la pestaña Capas a 1920): las 30
+   capturas iguales píxel a píxel y el DOM del editor idéntico; el JS de /draw pesa lo mismo
+   (597.144 B gz) y su CSS es el mismo byte a byte. Lo que hereda la (b): las piezas del cableado
+   siguen en sus componentes; el `check:hosts` de react espera a los ejemplos (fase 5); las reglas
+   de ESLint de `components/**` (literales, `Portal`, `type="number"`) y los checks de tipo, tamaño
+   y RTL siguen nombrando components/, para la (c).
    (b) **El cableado del DOM**: `<CadCanvas>`, dueño del canvas y del ciclo de vida, y los hooks sin
    estilo que dejó la 3(d) (las teclas de la línea de comandos y de la entrada dinámica, el
    arrastre del cubo), usados por los componentes del editor. ~1 día.
@@ -243,8 +260,8 @@ Bloqueos: 1 → 2 → 6; 1 → 3 → 4 → 5 → 7; la org de npm → 6; 7 → 8
 
 ## 6. Riesgos
 
-- 146 nombres públicos (eran 642; la 3(d) sumó cinco), más lo que sus firmas alcanzan
-  (`cad/api.md`): cada uno es una promesa de semver.
+- 150 nombres públicos: 146 del motor (eran 642; la 3(d) sumó cinco) y 4 de react, más lo que
+  sus firmas alcanzan (`cad/api.md`, `packages/react/api.md`): cada uno es una promesa de semver.
 - Tres superficies para una persona, sin CI: se publican escalonadas y el hook cubre los paquetes.
 - Dependencias nuevas que vigilar: tsdown 0.23.2 usa `rolldown-plugin-dts` en beta (0.23.3 vuelve
   a la 0.28 estable y sale de la cuarentena el 2026-10-31: la próxima revisión la toma); attw trae
