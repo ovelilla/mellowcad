@@ -1,6 +1,6 @@
 # MellowCAD como librería — brief
 
-> **Estado:** fases 1 y 2 hechas, y la 3(a) (2026-10-29); las demás, sin ejecutar. Sigue la convención de
+> **Estado:** fases 1 y 2 hechas, y la 3(a) y la 3(b) (2026-10-29); las demás, sin ejecutar. Sigue la convención de
 > `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El análisis completo, con el
 > inventario medido, las fuentes fechadas, el spike y el pase adversarial, está en
 > https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama local
@@ -103,8 +103,22 @@ son días de sesión.
    `<html>` que escriben `applyPaletteLayout` y el script (`data-palette`, `--palette-width`), la
    variante `palette-open`, los tokens de `app/[locale]/(app)/globals.css` y los portales a
    `body` (c); la lógica de §2 (d). `components/ui/`, `lib/utils.ts`, las dos libs de layout y
-   `hooks/useCadEngine.ts` ya son del editor: viajan con él en la fase 4. (b) El catálogo del editor sustituye a next-intl en
-   los 23 componentes. (c) Los tokens y la variante `palette-open` quedan acotados a la raíz del
+   `hooks/useCadEngine.ts` ya son del editor: viajan con él en la fase 4.
+   (b) **Hecha** (56ad55f, a5dfe4f, 43351c8): el catálogo del editor vive en
+   `components/cad/locales/` (`<tag>.json` sin la raíz `Editor`; `npm run locales` escribe
+   `<tag>.ts` compilado con icu-minify y `values.ts`, los argumentos de cada mensaje tipados desde
+   el inglés). Los 23 componentes lo leen con `useEditorText` (`components/cad/editor-text.tsx`,
+   la misma forma que `t` y `t.rich`, con los formateadores de `Intl` sin opciones, como
+   next-intl). `CadWorkspace` recibe `editorLocale` y `dir`, monta el `DirectionProvider` y marca
+   su `<main>` con `lang` y `dir`; `/draw` carga el catálogo en el servidor
+   (`i18n/editor.ts`) y el layout ya no monta `NextIntlClientProvider`. Medido en producción: /draw
+   no recibe ningún chunk de next-intl (antes, uno); su JS sube 0,4 KB gz (el catálogo inglés, 3,3
+   KB gz, entra en el bundle y sale use-intl) y su HTML baja 3,0 KB gz en inglés y unos 0,2 en
+   es y ar. El DOM de las tres páginas es el de antes salvo `<main lang dir>`. Lo que queda: para
+   (c), lo de abajo; para la fase 4, el `en.d.json.ts` del catálogo del editor (Oxc no lee el tipo
+   de un JSON, como en el motor), su entrada `./locales/<tag>` en `exports`, y el test de
+   `components/cad/locales/` viaja con él (los dos checks del sitio, uno por idioma enrutado y
+   completo si es `live`, se quedan en `i18n/messages.test.ts`). (c) Los tokens y la variante `palette-open` quedan acotados a la raíz del
    editor, con un contenedor para los portales, y `--active` se genera de `THEME.grip`. (d) La
    lógica de §2 baja de la línea.
 4. **Los paquetes React** — 4–6 días, tras la 2 y la 3. packages/react y packages/editor: tsdown
