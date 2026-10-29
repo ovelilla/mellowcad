@@ -38,5 +38,13 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "research", "cad/dist", "packages/*/dist"]
+  "exclude": [
+    "node_modules",
+    "research",
+    "cad/dist",
+    "packages/*/dist",
+    // Its React plugin is the example's own dependency, installed only where
+    // `check:hosts` installs the example.
+    "examples/*/vite.config.ts"
+  ]
 }

@@ -31,7 +31,9 @@
   },
   "scripts": {
     "build": "tsdown && node ../../scripts/editor/styles.ts",
-    "check": "publint --strict && attw --pack . --profile esm-only --exclude-entrypoints ./styles.css && node ../../scripts/packages/client-directive.ts --compiled && node ../../scripts/editor/styles.ts --check"
+    "check": "publint --strict && attw --pack . --profile esm-only --exclude-entrypoints ./styles.css && node ../../scripts/packages/client-directive.ts --compiled && node ../../scripts/editor/styles.ts --check",
+    "check:hosts": "node ../../scripts/packages/hosts.ts",
+    "prepublishOnly": "npm run check:hosts"
   },
   "peerDependencies": {
     "@mellowcad/engine": "^0.0.0",

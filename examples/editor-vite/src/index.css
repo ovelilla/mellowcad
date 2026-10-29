@@ -1,0 +1,12 @@
+/* What the editor asks of the page around it: the two fonts it reads, and a
+   body without margin, since the editor fills the window. Its stylesheet
+   styles nothing outside its root. */
+:root {
+  --font-sans: system-ui, sans-serif;
+  --font-mono: ui-monospace, monospace;
+  color-scheme: dark;
+}
+
+body {
+  margin: 0;
+}

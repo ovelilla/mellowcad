@@ -70,13 +70,16 @@ instance; so is `@mellowcad/react` of the editor.
   `npm run check -w cad` (publint `--strict`, attw's `esm-only` profile); the same in each of
   packages/, about 8 s in all, and a package without both scripts fails it
   (`test/packages.test.ts`). Installing the tarballs in foreign hosts needs the network, so it is
-  each package's `check:hosts` (`npm run check:hosts -w cad`, `scripts/packages/hosts.ts`),
-  which its `prepublishOnly` runs: the engine's in Node, `tsc` and Vite (~15 s); the other
-  packages get theirs with their examples. A host is an example wherever one fits.
+  each package's `check:hosts` (`npm run check:hosts -w packages/editor`,
+  `scripts/packages/hosts.ts`), which its `prepublishOnly` runs: the engine's in Node, `tsc` and
+  Vite (~15 s), the editor's (~1 min) in Vite and Next, with a render in Node or Next's
+  prerender. A host is an example wherever one fits.
 - **`examples/` are the hosts a stranger copies**, and what `check:hosts` installs: not
-  workspaces, so their tools stay out of the lockfile; `test/packages.test.ts` holds their ranges
-  of our packages at `^version` and of a tool the repo also has at the root's. The root `tsc`
-  checks them against the source.
+  workspaces, so Vite, its React plugin and Next stay out of the lockfile; `test/packages.test.ts`
+  holds their ranges of our packages at `^version` and of a tool the repo also has at the root's
+  (the others, `vite` and `@vitejs/plugin-react`, move in deps-review). The root `tsc` checks
+  them against the source, save their `vite.config.ts`; the site's Tailwind skips them
+  (`globals.css`), or their classes would ship in `/draw`.
 - **`@mellowcad/editor` is built with the React Compiler**, as the site compiles it (Next's
   defaults): `@rolldown/plugin-babel` runs `babel-plugin-react-compiler` before Oxc, and its
   `check` passes `--compiled`, which fails a `dist` module with JSX that does not import
@@ -98,7 +101,7 @@ instance; so is `@mellowcad/react` of the editor.
   that `api.test.ts` does not list as written inline — today `--font-sans` and `--font-mono`. A
   host's variable is never declared by Tailwind (`@theme inline reference`): on the root it would
   hide the host's. `sideEffects` is `["**/*.css"]`, never `false`: webpack 5 drops a bare
-  `import "@mellowcad/editor/styles.css"` under `false` (Vite keeps it). attw skips the stylesheet
-  (`--exclude-entrypoints`), which is not a module.
+  `import "@mellowcad/editor/styles.css"` under `false` (Vite, and Next with either bundler, keep
+  it). attw skips the stylesheet (`--exclude-entrypoints`), which is not a module.
 - A runtime dependency of the engine goes in `cad/package.json`'s `dependencies` (today only
   `icu-minify`), never only in the root's.

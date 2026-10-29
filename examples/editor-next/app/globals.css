@@ -1,0 +1,8 @@
+/* The host's own Tailwind: its preflight gives the page a body without
+   margin, which the editor needs, since it fills the window, and it compiles
+   the classes of the top bar that replaces the editor's. */
+@import "tailwindcss";
+
+:root {
+  color-scheme: dark;
+}

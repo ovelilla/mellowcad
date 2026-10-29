@@ -12,10 +12,15 @@
  *                      declarations; Vite bundles a page importing one helper
  *                      to under 1 KB (`sideEffects: false` honoured from the
  *                      tarball), and a page drawing in Spanish at all
+ *   @mellowcad/editor  examples/editor-vite type-checks, bundles with
+ *                      `styles.css` and renders in Node; examples/editor-next
+ *                      prerenders a server page that hands a slot a client
+ *                      component and turns another off, with `styles.css` and
+ *                      the host's Tailwind, under Turbopack and under webpack
  *
  * Run from a package's folder, as its `check:hosts` (which its
- * `prepublishOnly` runs):  npm run check:hosts -w cad
- * It needs the network (the registry), so it
+ * `prepublishOnly` runs):  npm run check:hosts -w packages/editor
+ * It needs the network (the registry, and Google Fonts for next/font), so it
  * is not in the commit gate (engine-package.md). KEEP=1 leaves the hosts in
  * their temporary folder.
  */
@@ -40,9 +45,13 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..")
 /** Our packages and their folders. */
 const WORKSPACES: Record<string, string> = {
   "@mellowcad/engine": "cad",
+  "@mellowcad/react": "packages/react",
+  "@mellowcad/editor": "packages/editor",
 }
 
 const ISLAND_MAX_BYTES = 1024
+
+const EDITOR_ROOT = "[data-mellowcad-editor]"
 
 type Manifest = {
   name: string
@@ -112,9 +121,20 @@ function bytes(dir: string, extension: string): number {
   )
 }
 
+function text(dir: string, extension: string): string {
+  return filesUnder(dir, extension)
+    .map((file) => readFileSync(file, "utf8"))
+    .join("\n")
+}
+
 function expectIn(where: string, haystack: string, needle: string): void {
   if (!haystack.includes(needle))
     throw new Error(`${where}: no ${JSON.stringify(needle)}`)
+}
+
+function expectNotIn(where: string, haystack: string, needle: string): void {
+  if (haystack.includes(needle))
+    throw new Error(`${where}: ${JSON.stringify(needle)} should be gone`)
 }
 
 const ENGINE_NODE: Host = {
@@ -254,8 +274,67 @@ const ENGINE_FOREIGN: Host = {
   },
 }
 
+const EDITOR_RENDER = `import assert from "node:assert/strict"
+import { createElement } from "react"
+import { renderToString } from "react-dom/server"
+import { CadEditor } from "@mellowcad/editor"
+import { es } from "@mellowcad/editor/locales/es"
+import { es as engineEs } from "@mellowcad/engine/locales/es"
+
+const html = renderToString(
+  createElement(CadEditor, { editorLocale: es, engineLocale: engineEs })
+)
+assert.match(html, /<div data-mellowcad-editor="" lang="es" dir="ltr"/)
+assert.match(html, /<canvas/)
+`
+
+const EDITOR_VITE: Host = {
+  name: "editor-vite",
+  example: "editor-vite",
+  files: { "render.mjs": EDITOR_RENDER },
+  check(dir) {
+    run("npm", ["run", "build"], dir)
+    expectIn("editor-vite", text(join(dir, "dist"), ".css"), EDITOR_ROOT)
+    run("node", ["render.mjs"], dir)
+    return "editor-vite: ok"
+  },
+}
+
+// Both of Next's bundlers: each resolves the package's "use client" modules
+// and its stylesheet its own way. Neither drops the stylesheet under
+// `sideEffects: false` (Next marks CSS as a side effect; measured), which a
+// bare webpack 5 does: the list in its package.json is for that host.
+const EDITOR_NEXT: Host = {
+  name: "editor-next",
+  example: "editor-next",
+  check(dir) {
+    for (const bundler of ["--turbopack", "--webpack"]) {
+      const where = `editor-next ${bundler}`
+      rmSync(join(dir, ".next"), { recursive: true, force: true })
+      run("npx", ["next", "build", bundler], dir)
+      const html = readFileSync(
+        join(dir, ".next/server/app/index.html"),
+        "utf8"
+      )
+      // The pieces paint once the engine exists, after mount: the prerender
+      // has the zones and the server page's payload names the client
+      // component handed to the top bar's.
+      expectIn(where, html, "data-mellowcad-editor")
+      expectIn(where, html, "[grid-area:top]")
+      expectNotIn(where, html, "[grid-area:panel]")
+      expectIn(where, html, 'HostTopBar\\"]')
+      expectIn(where, text(join(dir, ".next/static"), ".js"), "My drawing app")
+      const css = text(join(dir, ".next/static"), ".css")
+      expectIn(where, css, EDITOR_ROOT)
+      expectIn(where, css, "aria-pressed\\:bg-white\\/15")
+    }
+    return "editor-next: ok"
+  },
+}
+
 const HOSTS: Record<string, readonly Host[]> = {
   "@mellowcad/engine": [ENGINE_NODE, ENGINE_FOREIGN],
+  "@mellowcad/editor": [EDITOR_VITE, EDITOR_NEXT],
 }
 
 /** The host's package.json with our packages taken from their tarballs. */

@@ -8,6 +8,8 @@
 @source not "../(marketing)";
 @source not "../../../components/marketing";
 @source not "../../global-not-found.tsx";
+/* The examples are other apps, with their own Tailwind (the Next one's top bar). */
+@source not "../../../examples";
 
 /* The page around the editor is the site's, as dark as it. */
 @layer base {

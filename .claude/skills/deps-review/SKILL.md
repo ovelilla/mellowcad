@@ -47,15 +47,18 @@ An advisory does not wait for the next review. For each one (`npm audit --json`)
 3. **Groups that move together**: `next` with `eslint-config-next`; `react`, `react-dom` and
    `@types/react*`; `vitest` with `@vitest/*`; `typescript` within the peer range of the
    `typescript-eslint` that `eslint-config-next` brings. `npm view <pkg>@<new> peerDependencies`.
-4. **What cites it**: `git grep -n "<pkg>" -- .claude AGENTS.md README.md docs`. A rule whose
+4. **The examples** (`examples/*/package.json`) are not workspaces: a tool the repo also has
+   follows the root's range (`test/packages.test.ts`), and `vite` and `@vitejs/plugin-react` are
+   reviewed here like a direct dependency. `npm run check:hosts -w packages/editor` installs them.
+5. **What cites it**: `git grep -n "<pkg>" -- .claude AGENTS.md README.md docs`. A rule whose
    header says `> Verified against **<pkg> <version>**` fails `test/knowledge.test.ts` until its
    claims are checked against the new source in `node_modules` and the version updated.
-5. **Install** keeping the manifest's range style (`^`, or exact with `-E` where it is exact); a
+6. **Install** keeping the manifest's range style (`^`, or exact with `-E` where it is exact); a
    caret's floor moves up to the version installed, as npm writes it.
-6. **Adapt the code** to the changelog; adopt a new API when it replaces our own code.
-7. **A major not finished in the session is deferred**: say what was read and what is left in the
+7. **Adapt the code** to the changelog; adopt a new API when it replaces our own code.
+8. **A major not finished in the session is deferred**: say what was read and what is left in the
    report, and leave it; the next review starts from there.
-8. **Transitive dependencies** move with the direct one that brings them or for security, never by
+9. **Transitive dependencies** move with the direct one that brings them or for security, never by
    a blanket `npm update` (it fights the quarantine and moves directs unread).
 
 ## 3. Deprecated or unmaintained
