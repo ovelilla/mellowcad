@@ -211,9 +211,9 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   jump. A size this device remembers is decided by the `<head>` script on `<html>` (`data-palette`,
   `--palette-width`) and handed to the engine at build (`useCadEngine({ paletteOpen })`) — never
   after mount. Clean Screen is never on at the first paint (AutoCAD does not save it).
-- **The canvas cell** (`#editor-sheet`) alone carries `SHEET_TRANSITION` and holds what is placed
-  in the canvas's pixels (the dynamic input, at `state.dynamicInput.screen`). A popup anchored
-  there is portalled and positioned in the viewport, so its virtual anchor converts with
+- **The canvas cell** alone carries the host's `sheet` (`SHEET_TRANSITION`) and holds what is
+  placed in the canvas's pixels (the dynamic input, at `state.dynamicInput.screen`). A popup
+  anchored there is portalled and placed in the viewport, so its virtual anchor converts with
   `engine.clientFromScreen`; the raw state point lands off by the zones before the canvas.
 - **On the drawing only what AutoCAD puts there**: the viewport controls, the ViewCube with the
   navigation bar, the dynamic input, the rollover tooltip, the menus at the cursor. A new control finds its zone. What

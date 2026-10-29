@@ -15,7 +15,6 @@ import {
   PALETTE_WIDTH,
   rememberPalette,
 } from "@/lib/palette-layout"
-import { EDITOR_SHEET_ID, SHEET_TRANSITION } from "@/lib/view-transition"
 import { CommandLine } from "./command-line"
 import { ToolRail } from "./tool-rail"
 import { StatusBar } from "./status-bar"
@@ -46,6 +45,15 @@ export interface LayoutStorage {
 }
 
 /**
+ * What names the canvas cell for a host's view transition into the editor:
+ * the element's id (for `<link rel="expect">`) and its `view-transition-name`.
+ */
+export interface SheetTransition {
+  readonly id: string
+  readonly name: string
+}
+
+/**
  * The editor's docked workspace: a grid of named areas round the canvas, which
  * takes what is left. The engine resizes its drawing with the canvas, so ZOOM
  * Extents frames what is visible; nothing but the viewport controls, the
@@ -57,6 +65,7 @@ export function CadWorkspace({
   mark,
   languages,
   layoutStorage = {},
+  sheet,
 }: {
   /** The page language's catalog for the engine; English when absent. */
   engineLocale?: EngineLocale
@@ -66,6 +75,8 @@ export function CadWorkspace({
   languages?: readonly LanguageLink[]
   /** Where this device's layout is kept; nothing is, without it. */
   layoutStorage?: LayoutStorage
+  /** The canvas cell's name for a page that transitions into it. */
+  sheet?: SheetTransition
 }) {
   const paletteKey = layoutStorage.palette
   // The editor is the page: it keeps this device's drawing and takes every
@@ -156,9 +167,9 @@ export function CadWorkspace({
           canvas's box; the menus at the cursor convert to the viewport
           (`engine.clientFromScreen`). */}
       <div
-        id={EDITOR_SHEET_ID}
+        id={sheet?.id}
         className="relative min-h-0 min-w-0 bg-[#0b0f14] [grid-area:canvas]"
-        style={{ viewTransitionName: SHEET_TRANSITION }}
+        style={sheet && { viewTransitionName: sheet.name }}
       >
         {/* The drawing is geometry: it never mirrors, whatever the page. */}
         <canvas
