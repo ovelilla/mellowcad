@@ -2,11 +2,11 @@
 
 import { useState } from "react"
 import { Dialog } from "@base-ui/react/dialog"
-import { useTranslations } from "next-intl"
 
 import type { CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { Button } from "@/components/ui/button"
+import { useEditorText } from "./editor-text"
 
 /**
  * AutoCAD's task dialog `Properties - Locked objects`: an edit from the
@@ -21,7 +21,7 @@ export function LockedObjectsDialog({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.Properties.lockedObjects")
+  const t = useEditorText("Properties.lockedObjects")
   const dialog = state.lockedObjectsDialog
   // Kept while the popup animates out, so its count does not blank first.
   const [shown, setShown] = useState(dialog)

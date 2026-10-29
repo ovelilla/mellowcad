@@ -12,7 +12,6 @@ import {
   ZoomOut,
   type LucideIcon,
 } from "lucide-react"
-import { useTranslations } from "next-intl"
 
 import type { CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
@@ -22,6 +21,7 @@ import { TooltipProvider } from "@/components/ui/tooltip"
 
 import { ZoomPreviousIcon } from "./icons"
 import { IconAction } from "./toolbar-primitives"
+import { useEditorText } from "./editor-text"
 
 type ZoomId = "extents" | "window" | "previous" | "in" | "out"
 
@@ -60,7 +60,7 @@ export function NavigationBar({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.NavigationBar")
+  const t = useEditorText("NavigationBar")
   const tool = (id: string) => state.tools.find((entry) => entry.id === id)
   const pan = tool("pan")
   const orbit = tool("orbit")
@@ -107,7 +107,7 @@ function ZoomSplitButton({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.NavigationBar")
+  const t = useEditorText("NavigationBar")
   const [face, setFace] = useState<ZoomId>("extents")
   const shown = ZOOM.find((member) => member.id === face) ?? ZOOM[0]
   const windowAlias = state.tools

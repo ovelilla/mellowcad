@@ -2,11 +2,11 @@
 
 import { Menu } from "@base-ui/react/menu"
 import { CheckIcon } from "lucide-react"
-import { useTranslations } from "next-intl"
 
 import { VIEW_MENU, type CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { cn } from "@/lib/utils"
+import { useEditorText } from "./editor-text"
 
 /**
  * The viewport controls at the drawing's top left (VPCONTROL 1), of which
@@ -21,7 +21,7 @@ export function ViewportControls({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.Viewport")
+  const t = useEditorText("Viewport")
   const names = state.names.views
   const current = state.view.preset
   const name = names[current ?? "custom"]

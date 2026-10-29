@@ -1,6 +1,5 @@
 "use client"
 
-import { useTranslations } from "next-intl"
 import { useEffect, useRef } from "react"
 import { ChevronUp } from "lucide-react"
 
@@ -10,6 +9,7 @@ import { CadEngine, type CommandLineUi } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 
 import { IconAction } from "./toolbar-primitives"
+import { useEditorText } from "./editor-text"
 
 /** What floats above the prompt, over the drawing. */
 const ABOVE =
@@ -39,7 +39,7 @@ export function CommandLine({
     suggestions,
     lang,
   } = state.commandLine
-  const t = useTranslations("Editor.CommandLine")
+  const t = useEditorText("CommandLine")
 
   // Hidden is only *idle* hidden: as soon as something is typed the prompt
   // comes back, so a keystroke never disappears into nowhere. It hides again

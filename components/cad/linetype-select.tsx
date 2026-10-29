@@ -1,7 +1,5 @@
 "use client"
 
-import { useTranslations } from "next-intl"
-
 import {
   LINETYPES,
   LINETYPE_BYLAYER,
@@ -14,6 +12,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useEditorText } from "./editor-text"
 
 /**
  * A compact linetype picker with an inline dash preview, shared by the layer
@@ -46,7 +45,7 @@ export function LinetypeSelect({
    */
   below?: boolean
 }) {
-  const t = useTranslations("Editor.Properties")
+  const t = useEditorText("Properties")
   // The closed trigger shows what the list shows (`Dash dot`, not the id
   // `DashDot`), and ByLayer in the page's language.
   const items = {

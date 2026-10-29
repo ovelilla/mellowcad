@@ -11,7 +11,6 @@ import {
   SlidersHorizontal,
   type LucideIcon,
 } from "lucide-react"
-import { useTranslations } from "next-intl"
 
 import {
   PALETTE_TABS,
@@ -29,6 +28,7 @@ import { LayersControl } from "./layers-control"
 import { PropertiesPanel } from "./properties-panel"
 import { StylesControl } from "./styles-control"
 import { IconAction } from "./toolbar-primitives"
+import { useEditorText } from "./editor-text"
 
 const TAB_ICONS: Record<PaletteTab, LucideIcon> = {
   properties: SlidersHorizontal,
@@ -59,8 +59,8 @@ export function PalettePanel({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.Palette")
-  const titles = useTranslations("Editor")
+  const t = useEditorText("Palette")
+  const titles = useEditorText()
   const { open, tab } = state.palette
   const title = (id: PaletteTab) => titles(`${TAB_SECTIONS[id]}.title`)
 
@@ -174,7 +174,7 @@ export function PaletteResizeHandle({
   onResize: (width: number) => void
   onCommit: (width: number) => void
 }) {
-  const t = useTranslations("Editor.Palette")
+  const t = useEditorText("Palette")
   // The panel is at the inline end, so the edge grows it moving towards the
   // inline start: left in a left-to-right page, right in a right-to-left one.
   const towardsStart = useDirection() === "rtl" ? 1 : -1

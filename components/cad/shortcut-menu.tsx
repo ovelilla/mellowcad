@@ -3,7 +3,6 @@
 import * as React from "react"
 import { Menu } from "@base-ui/react/menu"
 import { Check, ChevronRight } from "lucide-react"
-import { useTranslations } from "next-intl"
 
 import type {
   CadEngine,
@@ -17,6 +16,7 @@ import {
   SEPARATOR,
   SnapOverrideItems,
 } from "./snap-override-menu"
+import { useEditorText } from "./editor-text"
 
 /**
  * AutoCAD's shortcut menus of the drawing area — Default, Edit and Command —
@@ -69,8 +69,8 @@ export function ShortcutMenu({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.ShortcutMenu")
-  const keys = useTranslations("Editor.Keys")
+  const t = useEditorText("ShortcutMenu")
+  const keys = useEditorText("Keys")
   // The last menu stays rendered while the popup fades out.
   const [shown, setShown] = React.useState(state.shortcutMenu)
   if (state.shortcutMenu && state.shortcutMenu !== shown) {

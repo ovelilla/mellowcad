@@ -2,7 +2,6 @@
 
 import { useState } from "react"
 import { Check, Plus, Trash2 } from "lucide-react"
-import { useTranslations } from "next-intl"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -18,6 +17,7 @@ import {
 } from "@/components/ui/select"
 
 import { DecimalInput } from "./decimal-input"
+import { useEditorText } from "./editor-text"
 
 /**
  * The style managers, modelled on AutoCAD's Dimension Style Manager and Text
@@ -42,7 +42,7 @@ export function StylesControl({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.Styles")
+  const t = useEditorText("Styles")
   const tab = state.stylesTable
 
   return (
@@ -96,7 +96,7 @@ function DimStyles({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.Styles")
+  const t = useEditorText("Styles")
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const selected =
     state.dimStyles.find((style) => style.id === selectedId) ??
@@ -242,7 +242,7 @@ function TextStyles({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.Styles")
+  const t = useEditorText("Styles")
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const selected =
     state.textStyles.find((style) => style.id === selectedId) ??
@@ -308,7 +308,7 @@ function StyleList({
   onDelete: (id: string) => void
   onNew: () => void
 }) {
-  const t = useTranslations("Editor.Styles")
+  const t = useEditorText("Styles")
   return (
     <>
       <div className="flex items-center justify-between px-3 pb-2">
@@ -369,7 +369,7 @@ function StyleRow({
   onRename: (name: string) => void
   onDelete: () => void
 }) {
-  const t = useTranslations("Editor.Styles")
+  const t = useEditorText("Styles")
   const [draft, setDraft] = useState<string | null>(null)
 
   return (

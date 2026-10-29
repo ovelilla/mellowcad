@@ -14,7 +14,6 @@ import {
   Target,
   type LucideIcon,
 } from "lucide-react"
-import { useTranslations } from "next-intl"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -40,6 +39,7 @@ import {
 import { IconAction } from "./toolbar-primitives"
 import { DecimalInput } from "./decimal-input"
 import { LineweightIcon, SelectionCyclingIcon, SnapModeIcon } from "./icons"
+import { useEditorText } from "./editor-text"
 
 /** POLARANG's increments as the desktop's Polar ▾ offers them (workspace/d01-m). */
 const POLAR_ANGLES: readonly number[] = [90, 45, 30, 22.5, 18, 15, 10, 5]
@@ -86,8 +86,8 @@ export function StatusBar({
   /** Where Customization is kept on this device; none, it is not kept. */
   storageKey?: string
 }) {
-  const t = useTranslations("Editor.StatusBar")
-  const keys = useTranslations("Editor.Keys")
+  const t = useEditorText("StatusBar")
+  const keys = useEditorText("Keys")
   // Only rendered once the engine exists, in the browser: the choice is read
   // here, and the bar's height never depends on it.
   const [hidden, setHidden] = useState(() => readHiddenStatusItems(storageKey))
@@ -433,7 +433,7 @@ function SnapMode({
   state: EditorState
   label: string
 }) {
-  const t = useTranslations("Editor.StatusBar")
+  const t = useEditorText("StatusBar")
   const [open, setOpen] = useState(false)
   return (
     <div className="flex items-center">

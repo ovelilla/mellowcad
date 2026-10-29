@@ -8,8 +8,7 @@ paths:
 
 # UI layer (the editor, `/draw`)
 
-> Verified against **@base-ui/react 1.9.0**, **next-intl 4.14.9**, **tailwind-merge 3.7.0**,
-> **lucide-react 1.59.0**.
+> Verified against **@base-ui/react 1.9.0**, **tailwind-merge 3.7.0**, **lucide-react 1.59.0**.
 
 React is a **dumb presentation shell**. Components read `EngineState` and call `CadEngine`
 methods; they never contain CAD logic, geometry or drawing decisions. Import from
@@ -37,16 +36,16 @@ after mount), each under the host's key (`layoutStorage`; none, not kept), the s
 
 ## Text
 
-- **Every label comes from a catalog**; no literals (`i18n.md`). The chrome's own words are
-  `Editor.*` in `messages/en.json`, read with `useTranslations("Editor.<Part>")` — the only
-  namespace the editor's layout sends to the browser, which `i18n/messages.test.ts` enforces.
-- What the engine names is read from the engine, never copied into `messages/`: tool labels and
+- **Every label comes from a catalog**; no literals (`i18n.md`). The chrome's own words are its
+  catalog, `components/cad/locales/en.json`, read with `useEditorText("<Part>")`; never next-intl,
+  which is the site's (`i18n/messages.test.ts`).
+- What the engine names is read from the engine, never copied into the catalog: tool labels and
   aliases (`state.tools`), snap, colour and linetype names, the preset views, the ViewCube's faces
   and compass letters (`state.names`), property rows. A shortcut that is a command alias comes from
-  `state.tools`; a key combination is `Editor.Keys` (keys have local names — `Supr` in Spanish); a
+  `state.tools`; a key combination is `Keys` (keys have local names — `Supr` in Spanish); a
   function key is literal.
-- The engine speaks the page's language: `CadWorkspace` takes the catalog the page loaded
-  (`engineLocale`) and `useCadEngine({ locale })` hands it to the engine.
+- The editor speaks the page's language: `CadWorkspace` takes the catalogs the page loaded
+  (`editorLocale`, `engineLocale`) and `useCadEngine({ locale })` hands the engine its own.
 - **What speaks the command language carries `lang={state.commandLine.lang}`** — the command line's
   lines, prompt and input, the dynamic input, a prompt option in a menu — so a screen reader reads
   `Command: LINE` in English on an Arabic page. Not a container whose `aria-label` is in the page's

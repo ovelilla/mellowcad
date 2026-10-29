@@ -34,7 +34,6 @@ import {
   Waypoints,
 } from "lucide-react"
 import { Menu } from "@base-ui/react/menu"
-import { useTranslations } from "next-intl"
 
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
@@ -75,6 +74,7 @@ import {
   SplineCvIcon,
   StretchIcon,
 } from "./icons"
+import { useEditorText } from "./editor-text"
 
 /** Maps a tool id to an icon. Unknown/new tools fall back to a generic glyph. */
 const TOOL_ICONS: Record<string, LucideIcon> = {
@@ -484,7 +484,7 @@ function ToolFlyout({
   family: ToolFlyoutFamily
   metaById: Map<string, ToolMeta>
 }) {
-  const t = useTranslations("Editor.ToolRail.flyouts")
+  const t = useEditorText("ToolRail.flyouts")
   const members = family.members
     .map((id) => metaById.get(id))
     .filter((meta): meta is ToolMeta => meta !== undefined)
@@ -538,7 +538,7 @@ function FoldedSection({
   section: PaletteSection
   metaById: Map<string, ToolMeta>
 }) {
-  const t = useTranslations("Editor.ToolRail.sections")
+  const t = useEditorText("ToolRail.sections")
   const groups = groupsOf(section.items)
     .map((group) =>
       group

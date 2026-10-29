@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
-import { useTranslations } from "next-intl"
 
 import {
   createLocalStorageDrawingStore,
@@ -31,6 +30,8 @@ import { type LanguageLink, TopBar } from "./top-bar"
 import { ShortcutMenu } from "./shortcut-menu"
 import { SnapOverrideMenu } from "./snap-override-menu"
 import { SelectionCyclingList } from "./selection-cycling-list"
+import { EditorTextProvider, useEditorText } from "./editor-text"
+import type { EditorLocale } from "./locales/types"
 
 /**
  * The localStorage keys this device's layout is kept under, each part's own;
@@ -53,20 +54,7 @@ export interface SheetTransition {
   readonly name: string
 }
 
-/**
- * The editor's docked workspace: a grid of named areas round the canvas, which
- * takes what is left. The engine resizes its drawing with the canvas, so ZOOM
- * Extents frames what is visible; nothing but the viewport controls, the
- * ViewCube with the navigation bar, the dynamic input and the menus at the
- * cursor sits on the drawing.
- */
-export function CadWorkspace({
-  engineLocale,
-  mark,
-  languages,
-  layoutStorage = {},
-  sheet,
-}: {
+interface WorkspaceProps {
   /** The page language's catalog for the engine; English when absent. */
   engineLocale?: EngineLocale
   /** The host's product mark, the application menu's glyph. */
@@ -77,7 +65,36 @@ export function CadWorkspace({
   layoutStorage?: LayoutStorage
   /** The canvas cell's name for a page that transitions into it. */
   sheet?: SheetTransition
+}
+
+/**
+ * The editor's docked workspace: a grid of named areas round the canvas, which
+ * takes what is left. The engine resizes its drawing with the canvas, so ZOOM
+ * Extents frames what is visible; nothing but the viewport controls, the
+ * ViewCube with the navigation bar, the dynamic input and the menus at the
+ * cursor sits on the drawing.
+ */
+export function CadWorkspace({
+  editorLocale,
+  ...props
+}: WorkspaceProps & {
+  /** The page language's catalog for the editor's own words; English when absent. */
+  editorLocale?: EditorLocale
 }) {
+  return (
+    <EditorTextProvider locale={editorLocale}>
+      <Workspace {...props} />
+    </EditorTextProvider>
+  )
+}
+
+function Workspace({
+  engineLocale,
+  mark,
+  languages,
+  layoutStorage = {},
+  sheet,
+}: WorkspaceProps) {
   const paletteKey = layoutStorage.palette
   // The editor is the page: it keeps this device's drawing and takes every
   // key, which the engine leaves to whoever asks.
@@ -87,8 +104,8 @@ export function CadWorkspace({
     locale: engineLocale,
     paletteOpen: () => paletteLayoutAtLoad(paletteKey).open,
   })
-  const t = useTranslations("Editor.Workspace")
-  const input = useTranslations("Editor.DynamicInput")
+  const t = useEditorText("Workspace")
+  const input = useEditorText("DynamicInput")
   const ready = engine && state
   const paletteOpen = state?.palette.open ?? null
   // Clean Screen hides the tool palette and the palette panel (a palette

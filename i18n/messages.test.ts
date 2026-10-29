@@ -105,20 +105,21 @@ describe("mergeMessages", () => {
 describe("the editor", () => {
   const dir = join(__dirname, "..", "components", "cad")
 
-  // Only `Editor.*` reaches the browser (app/[locale]/(app)/layout.tsx).
-  it("reads only its own namespace", () => {
-    for (const file of readdirSync(dir).filter((f) => f.endsWith(".tsx"))) {
+  // The editor is a library with a catalog of its own: next-intl is the
+  // site's, and /draw ships none of it.
+  it("never reads the site's catalog", () => {
+    for (const file of readdirSync(dir, {
+      recursive: true,
+      encoding: "utf8",
+    })) {
+      if (!/\.tsx?$/.test(file)) continue
       const source = readFileSync(join(dir, file), "utf8")
-      for (const [, namespace] of source.matchAll(
-        /useTranslations\(\s*"([^"]*)"/g
-      )) {
-        expect(namespace, file).toMatch(/^Editor(\.|$)/)
-      }
+      expect(source, file).not.toMatch(/from "next-intl/)
     }
   })
 
-  // The landing has no message provider: an editor component it embeds that
-  // reached for one would throw the moment it rendered there.
+  // The landing never mounts the editor's catalog: an editor component it
+  // embeds that read one would speak English on every page.
   it("lends the landing only components that take their words as props", () => {
     const landing = join(__dirname, "..", "components", "marketing")
     for (const file of readdirSync(landing)) {
@@ -127,9 +128,7 @@ describe("the editor", () => {
         /from "@\/components\/cad\/([^"]+)"/g
       )) {
         const lent = readFileSync(join(dir, `${name}.tsx`), "utf8")
-        expect(lent, `${file} embeds ${name}`).not.toMatch(
-          /use(Translations|Formatter|Locale|Messages)\(/
-        )
+        expect(lent, `${file} embeds ${name}`).not.toMatch(/useEditorText\(/)
       }
     }
   })

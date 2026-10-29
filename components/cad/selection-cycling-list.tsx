@@ -3,12 +3,12 @@
 import * as React from "react"
 import { Menu } from "@base-ui/react/menu"
 import { CheckIcon } from "lucide-react"
-import { useTranslations } from "next-intl"
 
 import { CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 
 import { cn } from "@/lib/utils"
+import { useEditorText } from "./editor-text"
 
 /**
  * AutoCAD's Selection list box: with selection cycling set to show the list
@@ -27,7 +27,7 @@ export function SelectionCyclingList({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.SelectionCycling")
+  const t = useEditorText("SelectionCycling")
   const { candidates, currentId, listAt } = state.selectionCycling
 
   const anchor = React.useMemo(

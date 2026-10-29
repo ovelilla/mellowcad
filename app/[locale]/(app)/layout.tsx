@@ -2,8 +2,7 @@ import { Geist_Mono, Inter, Readex_Pro } from "next/font/google"
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
 import type { Metadata, Viewport } from "next"
-import { NextIntlClientProvider } from "next-intl"
-import { getLocale, getMessages, getTranslations } from "next-intl/server"
+import { getLocale, getTranslations } from "next-intl/server"
 
 import "./globals.css"
 import { THEME } from "@mellowcad/engine"
@@ -84,7 +83,6 @@ export default async function AppLayout({
   children: React.ReactNode
 }>) {
   const locale = await getLocale()
-  const messages = await getMessages()
   return (
     // The head script writes the palette panel's layout on <html> before
     // React hydrates (lib/palette-layout.ts); the DOM wins.
@@ -114,14 +112,9 @@ export default async function AppLayout({
         <link rel="expect" href={`#${EDITOR_SHEET_ID}`} blocking="render" />
       </head>
       <body>
-        {/* Only the editor's own messages reach the browser: without an
-            explicit `messages`, the provider would ship every message of
-            the site. */}
-        <NextIntlClientProvider messages={{ Editor: messages.Editor }}>
-          <DirectionProvider direction={DIRECTION[locale]}>
-            {children}
-          </DirectionProvider>
-        </NextIntlClientProvider>
+        <DirectionProvider direction={DIRECTION[locale]}>
+          {children}
+        </DirectionProvider>
         <Analytics />
         <SpeedInsights />
       </body>

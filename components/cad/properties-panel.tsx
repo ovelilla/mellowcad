@@ -1,7 +1,6 @@
 "use client"
 
 import { useState } from "react"
-import { useTranslations } from "next-intl"
 
 import {
   type CadEngine,
@@ -20,6 +19,7 @@ import {
 import { ColorSelect } from "./color-select"
 import { LinetypeSelect } from "./linetype-select"
 import { LineweightSelect } from "./lineweight-select"
+import { useEditorText } from "./editor-text"
 
 /** The type drop-down's value for All, which is no object type. */
 const ALL = "*"
@@ -43,7 +43,7 @@ export function PropertiesPanel({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.Properties")
+  const t = useEditorText("Properties")
   const { properties } = state
   const info = properties.info
   const selected = info !== null
@@ -365,7 +365,7 @@ function StyleRow({
   styles: ReadonlyArray<{ id: string; name: string }>
   onValueChange: (id: string) => void
 }) {
-  const t = useTranslations("Editor.Properties")
+  const t = useEditorText("Properties")
   return (
     <div className="mt-1 flex items-center justify-between gap-2">
       <span className="text-muted-foreground">{label}</span>

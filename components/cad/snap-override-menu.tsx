@@ -3,10 +3,10 @@
 import * as React from "react"
 import { Menu } from "@base-ui/react/menu"
 import { CheckIcon } from "lucide-react"
-import { useTranslations } from "next-intl"
 
 import { CadEngine, SnapType } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
+import { useEditorText } from "./editor-text"
 
 /**
  * The object-snap override menu — AutoCAD's Shift+right-click behaviour. It pops
@@ -69,7 +69,7 @@ export function SnapOverrideItems({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.SnapOverride")
+  const t = useEditorText("SnapOverride")
   return (
     <>
       <Menu.Item onClick={() => engine.startFrom()} className={ITEM}>

@@ -12,15 +12,17 @@ to left). The words: `docs/i18n-glossary.md`.
    by `AppLocale` that now lacks it — `DIRECTION`, `LOCALE_STATUS` (start `draft`),
    `LANGUAGE_NAMES` (the language named in itself), `OG_LOCALE` and `catalogs`
    (`i18n/messages.ts`).
-2. **`messages/<tag>.json`**: a draft may leave keys out (they show in English). Nothing to list
-   in a test: `TRANSLATED` in `i18n/messages.test.ts` is every `live` language.
+2. **`messages/<tag>.json`** (the site) and **`components/cad/locales/<tag>.json`** (the editor;
+   `npm run locales` compiles it): a draft may leave keys out (they show in English). Nothing to
+   list in a test: `TRANSLATED` in `i18n/messages.test.ts` is every `live` language, for both.
 3. **The engine's catalog**, `cad/locales/<tag>.json` (`.claude/rules/cad-catalogs.md`): the
    interface always; `commands` only with an AutoCAD of that language to copy, and then complete.
    Run `npm run locales` to compile it to `cad/locales/<tag>.ts`, make it an entry point of the
    package (`.claude/rules/engine-package.md`: `exports`, tsdown, the build's tsconfig) and add it
    to the entry table in `cad/README.md`.
-4. **`i18n/engine.ts`**: its entry in `ENGINE_LOCALES`. The map is `Partial`, so nothing fails
-   without it — the language just draws in English.
+4. **`i18n/engine.ts` and `i18n/editor.ts`**: its entries in `ENGINE_LOCALES` and
+   `EDITOR_LOCALES`. Both are `Partial`, so nothing fails without them — the language just draws,
+   or shows the editor, in English.
 5. **Its words** in `docs/i18n-glossary.md`, with their sources; register and search texts
    researched, not translated.
 6. **A script Inter lacks**: its face in both root layouts (`preload: false`),

@@ -21,7 +21,6 @@ import {
   Undo2,
   type LucideIcon,
 } from "lucide-react"
-import { useTranslations } from "next-intl"
 
 import { type CadEngine, type PaletteTab } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
@@ -47,6 +46,7 @@ import { LayerSwatch } from "./layers-control"
 import { LinetypeSelect } from "./linetype-select"
 import { LineweightSelect } from "./lineweight-select"
 import { IconAction, Panel } from "./toolbar-primitives"
+import { useEditorText } from "./editor-text"
 
 const MENU_POPUP =
   "min-w-48 origin-(--transform-origin) overflow-hidden rounded-md border bg-card/90 p-1 text-popover-foreground shadow-md backdrop-blur transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0"
@@ -88,11 +88,11 @@ export function TopBar({
   /** The application menu's languages; none, no Language submenu. */
   languages?: readonly LanguageLink[]
 }) {
-  const t = useTranslations("Editor.TopBar")
-  const keys = useTranslations("Editor.Keys")
-  const layers = useTranslations("Editor.Layers")
-  const styles = useTranslations("Editor.Styles")
-  const blocks = useTranslations("Editor.Blocks")
+  const t = useEditorText("TopBar")
+  const keys = useEditorText("Keys")
+  const layers = useEditorText("Layers")
+  const styles = useEditorText("Styles")
+  const blocks = useEditorText("Blocks")
   // The bar's buttons run acad.cuix's `^C^C` macros: the running command
   // cancelled, the macro echoed (`_qnew`).
   const run = (button: "new" | "open" | "save" | "saveAs") =>
@@ -220,7 +220,7 @@ function ApplicationMenu({
   mark: React.ReactNode
   links: readonly LanguageLink[]
 }) {
-  const t = useTranslations("Editor.TopBar")
+  const t = useEditorText("TopBar")
   const item = (icon: LucideIcon, label: string, onClick: () => void) => {
     const Icon = icon
     return (
@@ -321,7 +321,7 @@ function ApplicationMenu({
  * writes.
  */
 function SaveStatus({ state }: { state: EditorState }) {
-  const t = useTranslations("Editor.TopBar")
+  const t = useEditorText("TopBar")
   const saving = state.saveState === "saving"
   const shown = saving || state.lastSavedAt !== null
   // A slot of a whole width, there before the first save: the groups after it
@@ -353,8 +353,8 @@ function LayerControl({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.TopBar")
-  const properties = useTranslations("Editor.Properties")
+  const t = useEditorText("TopBar")
+  const properties = useEditorText("Properties")
   const selected = state.selectionCount > 0
   const value = selected ? state.selectionLayerId : state.currentLayerId
   const items = Object.fromEntries(
@@ -410,7 +410,7 @@ function PropertyControls({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.TopBar")
+  const t = useEditorText("TopBar")
   const selected = state.selectionCount > 0
   const matchprop = state.tools.find((entry) => entry.id === "matchprop")
   const done = () => engine.focusSurface()

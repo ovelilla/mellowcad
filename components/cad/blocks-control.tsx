@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useMemo, useRef, useState } from "react"
-import { useTranslations } from "next-intl"
 
 import { cn } from "@/lib/utils"
 import {
@@ -10,6 +9,7 @@ import {
   matchesWildcard,
 } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
+import { useEditorText } from "./editor-text"
 
 const THUMBNAIL_PX = 64
 
@@ -33,7 +33,7 @@ export function BlocksControl({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.Blocks")
+  const t = useEditorText("Blocks")
   const [filter, setFilter] = useState("")
 
   const shown = useMemo(

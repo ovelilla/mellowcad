@@ -1,7 +1,6 @@
 "use client"
 
 import { Palette } from "lucide-react"
-import { useTranslations } from "next-intl"
 
 import {
   COLOR_BYLAYER,
@@ -17,6 +16,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useEditorText } from "./editor-text"
 
 /**
  * A colour picker for the properties palette: AutoCAD's index colours as quick
@@ -48,7 +48,7 @@ export function ColorSelect({
    */
   below?: boolean
 }) {
-  const t = useTranslations("Editor.Properties")
+  const t = useEditorText("Properties")
   const isStandard = STANDARD_COLORS.some((color) => color.value === value)
   const custom = value && value !== COLOR_BYLAYER && !isStandard ? value : null
   // Lets the closed trigger show "Red" rather than the raw hex value.

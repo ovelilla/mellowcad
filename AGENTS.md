@@ -49,7 +49,8 @@ cad/adapters/      the only browser-aware layer: CadEngine (composition root), p
 deep path (`cad/entryPoints.test.ts`).
 Two root layouts under the `[locale]` root param: the editor is `/draw` (`app/[locale]/(app)/`),
 the landing is `/` (`app/[locale]/(marketing)/`, `components/marketing/`). Other languages are
-prefixed (`/es/draw`). Texts live in `messages/` (next-intl) and `cad/locales/` (the engine).
+prefixed (`/es/draw`). Texts live in `messages/` (the site, next-intl), `components/cad/locales/`
+(the editor) and `cad/locales/` (the engine).
 
 ## Non-negotiable invariants
 

@@ -2,7 +2,6 @@
 
 import { useId, useState } from "react"
 import { Dialog } from "@base-ui/react/dialog"
-import { useTranslations } from "next-intl"
 
 import {
   LengthUnit,
@@ -19,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useEditorText } from "./editor-text"
 
 /** LUPREC's decimal places, 0 to 8, written as AutoCAD's list writes them. */
 const PRECISIONS = Array.from({ length: 9 }, (_, places) =>
@@ -95,7 +95,7 @@ function UnitsForm({
   anglePrecision: number
   onDone: () => void
 }) {
-  const t = useTranslations("Editor.Units")
+  const t = useEditorText("Units")
   const [unit, setUnit] = useState(initialUnit)
   const [precision, setPrecision] = useState(initialPrecision)
   const insertedContent = useId()

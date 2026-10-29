@@ -1,8 +1,7 @@
 "use client"
 
-import { useTranslations } from "next-intl"
-
 import type { EditorState } from "@/hooks/useCadEngine"
+import { useEditorText } from "./editor-text"
 
 /**
  * AutoCAD's rollover tooltip (ROLLOVERTIPS 1): hovering an object at
@@ -11,7 +10,7 @@ import type { EditorState } from "@/hooks/useCadEngine"
  * moment, as AutoCAD's does, and only reads: the engine words every value.
  */
 export function RolloverTooltip({ state }: { state: EditorState }) {
-  const t = useTranslations("Editor.Properties")
+  const t = useEditorText("Properties")
   const rollover = state.rollover
   if (!rollover) return null
   return (

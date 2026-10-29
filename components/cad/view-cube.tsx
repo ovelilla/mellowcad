@@ -9,7 +9,6 @@ import {
   RotateCcw,
   RotateCw,
 } from "lucide-react"
-import { useTranslations } from "next-intl"
 
 import {
   CadEngine,
@@ -21,6 +20,7 @@ import {
 import type { EditorState } from "@/hooks/useCadEngine"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
+import { useEditorText } from "./editor-text"
 
 /** Below this many pixels a press on the cube is a click, beyond it a drag. */
 const DRAG_THRESHOLD_PX = 3
@@ -73,7 +73,7 @@ export function ViewCube({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.ViewCube")
+  const t = useEditorText("ViewCube")
   const [hovered, setHovered] = React.useState<ViewCubePart | null>(null)
   const [menuAt, setMenuAt] = React.useState<{ x: number; y: number } | null>(
     null
@@ -376,7 +376,7 @@ export function ViewCube({
  * an unnamed current one · New UCS (desktop ucs/d03-1, d03-5).
  */
 function UcsMenu({ engine, state }: { engine: CadEngine; state: EditorState }) {
-  const t = useTranslations("Editor.ViewCube")
+  const t = useEditorText("ViewCube")
   const { world, name, named } = state.ucsMenu
   const unnamed = !world && name === null
   const label = world ? t("wcs") : (name ?? t("unnamed"))

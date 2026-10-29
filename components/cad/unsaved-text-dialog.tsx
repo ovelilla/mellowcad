@@ -2,11 +2,11 @@
 
 import { useRef } from "react"
 import { Dialog } from "@base-ui/react/dialog"
-import { useTranslations } from "next-intl"
 
 import type { CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { Button } from "@/components/ui/button"
+import { useEditorText } from "./editor-text"
 
 /**
  * AutoCAD's task dialog `Multiline Text - Unsaved Changes`: Escape in
@@ -22,7 +22,7 @@ export function UnsavedTextDialog({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.MText.unsavedChanges")
+  const t = useEditorText("MText.unsavedChanges")
   // Yes is the task dialog's default button (desktop text/d05-5).
   const yes = useRef<HTMLButtonElement>(null)
 

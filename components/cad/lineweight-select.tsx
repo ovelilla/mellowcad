@@ -1,7 +1,5 @@
 "use client"
 
-import { useTranslations } from "next-intl"
-
 import {
   LINEWEIGHTS,
   LINEWEIGHT_BYLAYER,
@@ -15,6 +13,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { useEditorText } from "./editor-text"
 
 /**
  * A compact lineweight picker with an inline thickness preview, shared by the
@@ -50,7 +49,7 @@ export function LineweightSelect({
    */
   below?: boolean
 }) {
-  const t = useTranslations("Editor.Properties")
+  const t = useEditorText("Properties")
   return (
     <Select
       // The closed trigger shows what the list does — ByLayer in the page's

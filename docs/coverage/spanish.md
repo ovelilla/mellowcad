@@ -86,7 +86,7 @@ origen/Origen` from the 2026 help and the same captures;
   SO / SE / NE / NO), the cube's SUPERIOR, FRONTAL and IZQUIERDA and its compass's `O`; the menus
   (Inicio, Paralelo, Definir vista actual como inicio, SCU, Nuevo SCP, Sin nombre) from its pages.
   The cube's faces and compass and the preset views are the engine's words (`interface.viewCube`,
-  `interface.view`), the menus' the app's (`Editor.ViewCube`). **Unverified:** INFERIOR, POSTERIOR
+  `interface.view`), the menus' the editor's (`ViewCube`). **Unverified:** INFERIOR, POSTERIOR
   and DERECHA on the cube, the roll and triangle tooltips, and Vista personalizada (the only
   Spanish source, a 2026 "¿Ha probado…?" page, shows `[Personalizada]`).
 - **Aliases:** verified in Autodesk's 2026 Spanish material: `L`, `C`, `A`, `REC`, `CP`, `DI`, `AA`,

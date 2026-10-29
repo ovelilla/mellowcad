@@ -14,7 +14,6 @@ import {
   Plus,
   Trash2,
 } from "lucide-react"
-import { useTranslations } from "next-intl"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -36,6 +35,7 @@ import {
 import type { EditorState } from "@/hooks/useCadEngine"
 import { LinetypeSelect } from "./linetype-select"
 import { LineweightSelect } from "./lineweight-select"
+import { useEditorText } from "./editor-text"
 
 /**
  * How long a second click on a selected name waits for a double-click, which
@@ -69,7 +69,7 @@ export function LayersControl({
   engine: CadEngine
   state: EditorState
 }) {
-  const t = useTranslations("Editor.Layers")
+  const t = useEditorText("Layers")
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [renamingId, setRenamingId] = useState<string | null>(null)
   const [dialog, setDialog] = useState<LayerDialogKind | null>(null)
@@ -432,7 +432,7 @@ function LayerRow({
   /** Turning the current layer off asks first (desktop d04-7). */
   onTurnOffCurrent: () => void
 }) {
-  const t = useTranslations("Editor.Layers")
+  const t = useEditorText("Layers")
   const done = () => engine.focusSurface()
   // The row's tint, painted on the frozen cell's opaque ground: the row's own
   // would show through the columns scrolled beneath it.
@@ -627,7 +627,7 @@ function NameField({
   onStartRename: () => void
   onRename: (name: string | null) => void
 }) {
-  const t = useTranslations("Editor.Layers")
+  const t = useEditorText("Layers")
   const pending = useRef<ReturnType<typeof setTimeout> | null>(null)
   // Escape unmounts the field: its blur must not commit what was typed.
   const cancelled = useRef(false)
@@ -771,7 +771,7 @@ function LayerDialogBody({
   onTurnOff: (id: string) => void
   onClose: () => void
 }) {
-  const t = useTranslations("Editor.Layers.dialog")
+  const t = useEditorText("Layers.dialog")
   if (dialog.kind === "currentOff") {
     return (
       <>
