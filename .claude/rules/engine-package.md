@@ -72,8 +72,9 @@ instance; so is `@mellowcad/react` of the editor.
   (`test/packages.test.ts`). Installing the tarballs in foreign hosts needs the network, so it is
   each package's `check:hosts` (`npm run check:hosts -w packages/editor`,
   `scripts/packages/hosts.ts`), which its `prepublishOnly` runs: the engine's in Node, `tsc` and
-  Vite (~15 s), the editor's (~1 min) in Vite and Next, with a render in Node or Next's
-  prerender. A host is an example wherever one fits.
+  Vite (~15 s), react's (~40 s) and the editor's (~1 min) in Vite and Next, with a render in Node
+  or Next's prerender. A host is an example wherever one fits; `@mellowcad/react`'s Vite page
+  is its README's first `tsx` block.
 - **`examples/` are the hosts a stranger copies**, and what `check:hosts` installs: not
   workspaces, so Vite, its React plugin and Next stay out of the lockfile; `test/packages.test.ts`
   holds their ranges of our packages at `^version` and of a tool the repo also has at the root's

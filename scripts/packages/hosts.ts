@@ -12,6 +12,9 @@
  *                      declarations; Vite bundles a page importing one helper
  *                      to under 1 KB (`sideEffects: false` honoured from the
  *                      tarball), and a page drawing in Spanish at all
+ *   @mellowcad/react   the Vite example without the editor type-checks,
+ *                      bundles and renders the canvas in Node; the Next one
+ *                      prerenders it from a server page
  *   @mellowcad/editor  examples/editor-vite type-checks, bundles with
  *                      `styles.css` and renders in Node; examples/editor-next
  *                      prerenders a server page that hands a slot a client
@@ -66,6 +69,8 @@ interface Host {
   readonly example?: string
   /** Files written over it; `null` removes one. */
   readonly files?: Record<string, string | null>
+  /** Our packages it should not depend on (the editor, in react's hosts). */
+  readonly without?: readonly string[]
   /** Runs in the installed host; throws on a failure. */
   readonly check: (dir: string) => string
 }
@@ -274,6 +279,78 @@ const ENGINE_FOREIGN: Host = {
   },
 }
 
+/**
+ * React's own hosts are the editor's examples with the editor taken out, and
+ * the Vite one's page is the README's first snippet: it is what a reader
+ * copies, so it is what type-checks and bundles against the tarball.
+ */
+function readmeSnippet(file: string): string {
+  const [, snippet] =
+    readFileSync(join(ROOT, file), "utf8").match(/^```tsx\n([\s\S]*?)^```$/m) ??
+    []
+  if (!snippet) throw new Error(`${file}: no tsx snippet`)
+  return snippet
+}
+
+const REACT_RENDER = `import assert from "node:assert/strict"
+import { createElement } from "react"
+import { renderToString } from "react-dom/server"
+import { CadCanvas, useEditorState } from "@mellowcad/react"
+
+function App() {
+  const state = useEditorState(null)
+  return createElement(CadCanvas, { "aria-label": String(state) })
+}
+assert.match(renderToString(createElement(App)), /<canvas aria-label="null"/)
+`
+
+const REACT_VITE: Host = {
+  name: "react-vite",
+  example: "editor-vite",
+  without: ["@mellowcad/editor"],
+  files: {
+    "src/main.tsx": readmeSnippet("packages/react/README.md"),
+    "render.mjs": REACT_RENDER,
+  },
+  check(dir) {
+    run("npm", ["run", "build"], dir)
+    run("node", ["render.mjs"], dir)
+    return "react-vite: ok"
+  },
+}
+
+const REACT_NEXT: Host = {
+  name: "react-next",
+  example: "editor-next",
+  without: ["@mellowcad/editor"],
+  files: {
+    "app/host-top-bar.tsx": null,
+    "app/layout.tsx": `import type { ReactNode } from "react"
+
+export default function RootLayout({ children }: { children: ReactNode }) {
+  return (
+    <html lang="en">
+      <body>{children}</body>
+    </html>
+  )
+}
+`,
+    // A server page renders the canvas, a client component of the package.
+    "app/page.tsx": `import { CadCanvas } from "@mellowcad/react"
+
+export default function Page() {
+  return <CadCanvas aria-label="Drawing" />
+}
+`,
+  },
+  check(dir) {
+    run("npx", ["next", "build"], dir)
+    const html = readFileSync(join(dir, ".next/server/app/index.html"), "utf8")
+    expectIn("react-next", html, `<canvas aria-label="Drawing"`)
+    return "react-next: ok"
+  },
+}
+
 const EDITOR_RENDER = `import assert from "node:assert/strict"
 import { createElement } from "react"
 import { renderToString } from "react-dom/server"
@@ -334,15 +411,18 @@ const EDITOR_NEXT: Host = {
 
 const HOSTS: Record<string, readonly Host[]> = {
   "@mellowcad/engine": [ENGINE_NODE, ENGINE_FOREIGN],
+  "@mellowcad/react": [REACT_VITE, REACT_NEXT],
   "@mellowcad/editor": [EDITOR_VITE, EDITOR_NEXT],
 }
 
 /** The host's package.json with our packages taken from their tarballs. */
 function installable(
   manifest: Manifest,
-  tarballs: Record<string, string>
+  tarballs: Record<string, string>,
+  without: readonly string[]
 ): Manifest {
   const dependencies = { ...manifest.dependencies }
+  for (const name of without) delete dependencies[name]
   for (const name of Object.keys(dependencies)) {
     if (!(name in WORKSPACES)) continue
     if (!(name in tarballs))
@@ -393,7 +473,8 @@ try {
     write(dir, host.files ?? {})
     const manifest = installable(
       readJson<Manifest>(join(dir, "package.json")),
-      tarballs
+      tarballs,
+      host.without ?? []
     )
     writeFileSync(join(dir, "package.json"), JSON.stringify(manifest, null, 2))
     // The repo's release quarantine, which an install outside it would not read.

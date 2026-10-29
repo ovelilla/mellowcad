@@ -16,7 +16,9 @@
   },
   "scripts": {
     "build": "tsdown",
-    "check": "publint --strict && attw --pack . --profile esm-only && node ../../scripts/packages/client-directive.ts"
+    "check": "publint --strict && attw --pack . --profile esm-only && node ../../scripts/packages/client-directive.ts",
+    "check:hosts": "node ../../scripts/packages/hosts.ts",
+    "prepublishOnly": "npm run check:hosts"
   },
   "peerDependencies": {
     "@mellowcad/engine": "^0.0.0",
