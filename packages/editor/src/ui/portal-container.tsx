@@ -1,6 +1,6 @@
 "use client"
 
-import { createContext, useContext } from "react"
+import { createContext, useContext, type ReactElement } from "react"
 
 // Where the editor's popups mount: a node inside its root, so its tokens,
 // `dir` and `lang` reach them without the host's <body>. Base UI has no
@@ -17,7 +17,7 @@ export function PortalContainerProvider({
 }: {
   container: HTMLElement | null
   children: React.ReactNode
-}) {
+}): ReactElement {
   return (
     <PortalContainerContext value={container}>
       {children}

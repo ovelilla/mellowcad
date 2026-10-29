@@ -1,5 +1,6 @@
 "use client"
 
+import type { ReactElement } from "react"
 import { type LucideIcon } from "lucide-react"
 
 import { cn } from "./utils"
@@ -41,7 +42,7 @@ export function IconAction({
   mirrored?: boolean
   side?: Side
   className?: string
-}) {
+}): ReactElement {
   return (
     <Tooltip>
       <TooltipTrigger
@@ -84,7 +85,7 @@ export function Panel({
 }: {
   className?: string
   children: React.ReactNode
-}) {
+}): ReactElement {
   return (
     <div className={cn("pointer-events-auto flex gap-1", className)}>
       {children}

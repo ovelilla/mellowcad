@@ -1,5 +1,6 @@
 "use client"
 
+import type { ReactElement } from "react"
 import { Lock } from "lucide-react"
 import { CadEngine } from "@mellowcad/engine"
 import { useDynamicInput, type EditorState } from "@mellowcad/react"
@@ -20,7 +21,7 @@ export function DynamicInput({
   state: EditorState
   /** `Editor.DynamicInput.locked`: what the padlock says to a screen reader. */
   lockedLabel: string
-}) {
+}): ReactElement | null {
   const { dynamicInput: di, box, field: fieldProps } = useDynamicInput(engine)
 
   if (!di) return null

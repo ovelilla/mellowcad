@@ -1,6 +1,6 @@
 "use client"
 
-import { useState, type ReactNode } from "react"
+import { useState, type ReactNode, type ReactElement } from "react"
 import { Menu } from "@base-ui/react/menu"
 import {
   CheckIcon,
@@ -74,7 +74,7 @@ export function StatusBar({
   state: EditorState
   /** Where Customization is kept on this device; none, it is not kept. */
   storageKey?: string
-}) {
+}): ReactElement {
   const t = useEditorText("StatusBar")
   const keys = useEditorText("Keys")
   // Only rendered once the engine exists, in the browser: the choice is read

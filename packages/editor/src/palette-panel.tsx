@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, type ReactElement } from "react"
 import { Tabs } from "@base-ui/react/tabs"
 import {
   ChevronsLeft,
@@ -58,7 +58,7 @@ export function PalettePanel({
 }: {
   engine: CadEngine
   state: EditorState
-}) {
+}): ReactElement {
   const t = useEditorText("Palette")
   const titles = useEditorText()
   const { open, tab } = state.palette
@@ -173,7 +173,7 @@ export function PaletteResizeHandle({
   width: number
   onResize: (width: number) => void
   onCommit: (width: number) => void
-}) {
+}): ReactElement {
   const t = useEditorText("Palette")
   // The panel is at the inline end, so the edge grows it moving towards the
   // inline start: left in a left-to-right page, right in a right-to-left one.

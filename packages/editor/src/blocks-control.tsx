@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useMemo, useRef, useState } from "react"
+import { useEffect, useMemo, useRef, useState, type ReactElement } from "react"
 
 import { cn } from "./utils"
 import {
@@ -32,7 +32,7 @@ export function BlocksControl({
 }: {
   engine: CadEngine
   state: EditorState
-}) {
+}): ReactElement {
   const t = useEditorText("Blocks")
   const [filter, setFilter] = useState("")
 

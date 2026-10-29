@@ -47,7 +47,7 @@ export function DecimalInput({
   live?: boolean
   valid?: (value: number) => boolean
   onCommit: (value: number) => void
-}) {
+}): React.ReactElement {
   const [draft, setDraft] = React.useState<string | null>(null)
 
   const commit = (text: string | null) => {

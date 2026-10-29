@@ -1,6 +1,12 @@
 "use client"
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactElement,
+} from "react"
 import { Dialog } from "@base-ui/react/dialog"
 import {
   ArrowRight,
@@ -65,7 +71,7 @@ export function LayersControl({
 }: {
   engine: CadEngine
   state: EditorState
-}) {
+}): ReactElement {
   const t = useEditorText("Layers")
   const [selectedId, setSelectedId] = useState<string | null>(null)
   const [renamingId, setRenamingId] = useState<string | null>(null)
@@ -883,7 +889,7 @@ function CommandLink({
 }
 
 /** A small rounded colour chip with a subtle border for contrast on any bg. */
-export function LayerSwatch({ color }: { color: string }) {
+export function LayerSwatch({ color }: { color: string }): ReactElement {
   return (
     <span
       className="inline-block size-4 shrink-0 rounded-sm border border-white/25 shadow-inner"

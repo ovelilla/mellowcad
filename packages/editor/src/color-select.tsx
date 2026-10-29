@@ -1,5 +1,6 @@
 "use client"
 
+import type { ReactElement } from "react"
 import { Palette } from "lucide-react"
 
 import {
@@ -47,7 +48,7 @@ export function ColorSelect({
    * a palette's field does.
    */
   below?: boolean
-}) {
+}): ReactElement {
   const t = useEditorText("Properties")
   const isStandard = STANDARD_COLORS.some((color) => color.value === value)
   const custom = value && value !== COLOR_BYLAYER && !isStandard ? value : null

@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, type ReactElement } from "react"
 
 import {
   type CadEngine,
@@ -42,7 +42,7 @@ export function PropertiesPanel({
 }: {
   engine: CadEngine
   state: EditorState
-}) {
+}): ReactElement {
   const t = useEditorText("Properties")
   const { properties } = state
   const info = properties.info

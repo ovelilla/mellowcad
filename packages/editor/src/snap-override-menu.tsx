@@ -69,7 +69,7 @@ export function SnapOverrideItems({
 }: {
   engine: CadEngine
   state: EditorState
-}) {
+}): React.ReactElement {
   const t = useEditorText("SnapOverride")
   return (
     <>
@@ -105,7 +105,7 @@ export function SnapOverrideMenu({
 }: {
   engine: CadEngine
   state: EditorState
-}) {
+}): React.ReactElement {
   const portal = usePortalContainer()
   const at = state.snapOverrideMenu
 

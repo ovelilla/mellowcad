@@ -69,7 +69,7 @@ export function ShortcutMenu({
 }: {
   engine: CadEngine
   state: EditorState
-}) {
+}): React.ReactElement {
   const portal = usePortalContainer()
   const t = useEditorText("ShortcutMenu")
   const keys = useEditorText("Keys")

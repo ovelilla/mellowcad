@@ -6,13 +6,15 @@ import { Popover as PopoverPrimitive } from "@base-ui/react/popover"
 import { cn } from "../utils"
 import { usePortalContainer } from "./portal-container"
 
-function Popover(props: React.ComponentProps<typeof PopoverPrimitive.Root>) {
+function Popover(
+  props: React.ComponentProps<typeof PopoverPrimitive.Root>
+): React.ReactElement {
   return <PopoverPrimitive.Root {...props} />
 }
 
 function PopoverTrigger(
   props: React.ComponentProps<typeof PopoverPrimitive.Trigger>
-) {
+): React.ReactElement {
   return <PopoverPrimitive.Trigger data-slot="popover-trigger" {...props} />
 }
 
@@ -27,7 +29,7 @@ function PopoverContent({
   side?: "top" | "bottom" | "inline-start" | "inline-end" | "left" | "right"
   sideOffset?: number
   align?: "start" | "center" | "end"
-}) {
+}): React.ReactElement {
   const portal = usePortalContainer()
   return (
     <PopoverPrimitive.Portal container={portal}>

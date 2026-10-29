@@ -1,5 +1,6 @@
 "use client"
 
+import type { ReactElement } from "react"
 import {
   LINETYPES,
   LINETYPE_BYLAYER,
@@ -44,7 +45,7 @@ export function LinetypeSelect({
    * a palette's field does.
    */
   below?: boolean
-}) {
+}): ReactElement {
   const t = useEditorText("Properties")
   // The closed trigger shows what the list shows (`Dash dot`, not the id
   // `DashDot`), and ByLayer in the page's language.

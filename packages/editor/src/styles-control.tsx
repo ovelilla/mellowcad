@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, type ReactElement } from "react"
 import { Check, Plus, Trash2 } from "lucide-react"
 
 import { cn } from "./utils"
@@ -41,7 +41,7 @@ export function StylesControl({
 }: {
   engine: CadEngine
   state: EditorState
-}) {
+}): ReactElement {
   const t = useEditorText("Styles")
   const tab = state.stylesTable
 

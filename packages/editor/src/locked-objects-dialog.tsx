@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, type ReactElement } from "react"
 import { Dialog } from "@base-ui/react/dialog"
 
 import type { CadEngine } from "@mellowcad/engine"
@@ -21,7 +21,7 @@ export function LockedObjectsDialog({
 }: {
   engine: CadEngine
   state: EditorState
-}) {
+}): ReactElement {
   const portal = usePortalContainer()
   const t = useEditorText("Properties.lockedObjects")
   const dialog = state.lockedObjectsDialog

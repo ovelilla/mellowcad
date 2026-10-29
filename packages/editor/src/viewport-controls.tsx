@@ -1,5 +1,6 @@
 "use client"
 
+import type { ReactElement } from "react"
 import { Menu } from "@base-ui/react/menu"
 import { CheckIcon } from "lucide-react"
 
@@ -21,7 +22,7 @@ export function ViewportControls({
 }: {
   engine: CadEngine
   state: EditorState
-}) {
+}): ReactElement {
   const portal = usePortalContainer()
   const t = useEditorText("Viewport")
   const names = state.names.views

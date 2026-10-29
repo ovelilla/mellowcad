@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useRef } from "react"
+import { useEffect, useRef, type ReactElement } from "react"
 import { ChevronUp } from "lucide-react"
 
 import { cn } from "./utils"
@@ -29,7 +29,7 @@ export function CommandLine({
 }: {
   engine: CadEngine
   state: EditorState
-}) {
+}): ReactElement | null {
   const { visible, historyOpen, prompt, buffer, suggestions, lang } =
     state.commandLine
   const t = useEditorText("CommandLine")

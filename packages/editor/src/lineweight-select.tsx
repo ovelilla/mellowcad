@@ -1,5 +1,6 @@
 "use client"
 
+import type { ReactElement } from "react"
 import {
   LINEWEIGHTS,
   LINEWEIGHT_BYLAYER,
@@ -49,7 +50,7 @@ export function LineweightSelect({
    * a palette's field does.
    */
   below?: boolean
-}) {
+}): ReactElement {
   const t = useEditorText("Properties")
   return (
     <Select

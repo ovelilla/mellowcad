@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, type ReactElement } from "react"
 import { Menu } from "@base-ui/react/menu"
 import {
   ChevronDown,
@@ -46,7 +46,7 @@ export function NavigationBar({
 }: {
   engine: CadEngine
   state: EditorState
-}) {
+}): ReactElement {
   const t = useEditorText("NavigationBar")
   const tool = (id: string) => state.tools.find((entry) => entry.id === id)
   const pan = tool("pan")

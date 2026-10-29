@@ -14,6 +14,6 @@ export const EDITOR_ROOT_ATTRIBUTE = "data-mellowcad-editor"
  * drawing's own highlight, and a copy of it could drift from what the engine
  * draws.
  */
-export const EDITOR_THEME_STYLE = {
+export const EDITOR_THEME_STYLE: { readonly "--active": string } = {
   "--active": THEME.grip,
-} as const satisfies Record<`--${string}`, string>
+}

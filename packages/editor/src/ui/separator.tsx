@@ -9,7 +9,7 @@ function Separator({
   className,
   orientation = "horizontal",
   ...props
-}: React.ComponentProps<typeof SeparatorPrimitive>) {
+}: React.ComponentProps<typeof SeparatorPrimitive>): React.ReactElement {
   return (
     <SeparatorPrimitive
       data-slot="separator"

@@ -1,5 +1,6 @@
 "use client"
 
+import type { ReactElement } from "react"
 import type { EditorState } from "@mellowcad/react"
 import { useEditorText } from "./editor-text"
 
@@ -9,7 +10,11 @@ import { useEditorText } from "./editor-text"
  * the right of where the cursor came over it (desktop d20). It shows after a
  * moment, as AutoCAD's does, and only reads: the engine words every value.
  */
-export function RolloverTooltip({ state }: { state: EditorState }) {
+export function RolloverTooltip({
+  state,
+}: {
+  state: EditorState
+}): ReactElement | null {
   const t = useEditorText("Properties")
   const rollover = state.rollover
   if (!rollover) return null

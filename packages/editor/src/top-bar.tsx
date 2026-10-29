@@ -1,5 +1,6 @@
 "use client"
 
+import type { ReactElement } from "react"
 import { Menu } from "@base-ui/react/menu"
 import {
   CheckIcon,
@@ -88,7 +89,7 @@ export function TopBar({
   mark?: React.ReactNode
   /** The application menu's languages; none, no Language submenu. */
   languages?: readonly LanguageLink[]
-}) {
+}): ReactElement {
   const t = useEditorText("TopBar")
   const keys = useEditorText("Keys")
   const layers = useEditorText("Layers")

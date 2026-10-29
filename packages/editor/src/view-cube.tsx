@@ -61,7 +61,7 @@ export function ViewCube({
 }: {
   engine: CadEngine
   state: EditorState
-}) {
+}): React.ReactElement | null {
   const portal = usePortalContainer()
   const t = useEditorText("ViewCube")
   // Destructured, as the hook asks (React Compiler's ref lint).

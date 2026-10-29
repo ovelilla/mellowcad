@@ -1,6 +1,12 @@
 "use client"
 
-import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import {
+  useEffect,
+  useLayoutEffect,
+  useRef,
+  useState,
+  type ReactElement,
+} from "react"
 
 import {
   type CadEngine,
@@ -87,7 +93,7 @@ export function CadWorkspace({
   editorLocale?: EditorLocale
   /** The page's direction: the shell mirrors in `rtl`, the drawing never. */
   dir?: "ltr" | "rtl"
-}) {
+}): ReactElement {
   // The editor marks its own root and tells Base UI its direction: it never
   // writes on the host's <html> or <body>.
   return (

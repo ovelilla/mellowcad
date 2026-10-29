@@ -6,6 +6,7 @@ import {
   isValidElement,
   useContext,
   type ReactNode,
+  type ReactElement,
 } from "react"
 import format, { type FormatOptions } from "icu-minify/format"
 
@@ -75,7 +76,7 @@ export function EditorTextProvider({
 }: {
   locale?: EditorLocale
   children: ReactNode
-}) {
+}): ReactElement {
   return (
     <EditorTextContext value={editorText(locale)}>{children}</EditorTextContext>
   )

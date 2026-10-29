@@ -27,7 +27,7 @@ export function SelectionCyclingList({
 }: {
   engine: CadEngine
   state: EditorState
-}) {
+}): React.ReactElement {
   const portal = usePortalContainer()
   const t = useEditorText("SelectionCycling")
   const { candidates, currentId, listAt } = state.selectionCycling

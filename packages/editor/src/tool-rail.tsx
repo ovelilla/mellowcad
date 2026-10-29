@@ -1,6 +1,6 @@
 "use client"
 
-import { Fragment, useState } from "react"
+import { Fragment, useState, type ReactElement } from "react"
 import {
   ArrowRightToLine,
   CopyPlus,
@@ -362,7 +362,7 @@ export function ToolRail({
 }: {
   engine: CadEngine
   state: EditorState
-}) {
+}): ReactElement {
   const metaById = new Map<string, ToolMeta>(
     state.tools.map((tool) => [tool.id, tool])
   )

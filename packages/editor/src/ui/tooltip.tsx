@@ -10,7 +10,7 @@ function TooltipProvider({
   delay = 250,
   closeDelay = 0,
   ...props
-}: React.ComponentProps<typeof TooltipPrimitive.Provider>) {
+}: React.ComponentProps<typeof TooltipPrimitive.Provider>): React.ReactElement {
   return (
     <TooltipPrimitive.Provider
       delay={delay}
@@ -20,7 +20,9 @@ function TooltipProvider({
   )
 }
 
-function Tooltip(props: React.ComponentProps<typeof TooltipPrimitive.Root>) {
+function Tooltip(
+  props: React.ComponentProps<typeof TooltipPrimitive.Root>
+): React.ReactElement {
   return (
     <TooltipProvider>
       <TooltipPrimitive.Root {...props} />
@@ -30,7 +32,7 @@ function Tooltip(props: React.ComponentProps<typeof TooltipPrimitive.Root>) {
 
 function TooltipTrigger(
   props: React.ComponentProps<typeof TooltipPrimitive.Trigger>
-) {
+): React.ReactElement {
   return <TooltipPrimitive.Trigger data-slot="tooltip-trigger" {...props} />
 }
 
@@ -43,7 +45,7 @@ function TooltipContent({
 }: React.ComponentProps<typeof TooltipPrimitive.Popup> & {
   side?: "top" | "bottom" | "inline-start" | "inline-end" | "left" | "right"
   sideOffset?: number
-}) {
+}): React.ReactElement {
   const portal = usePortalContainer()
   return (
     <TooltipPrimitive.Portal container={portal}>

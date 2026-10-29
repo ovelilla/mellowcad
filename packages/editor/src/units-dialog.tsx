@@ -1,6 +1,6 @@
 "use client"
 
-import { useId, useState } from "react"
+import { useId, useState, type ReactElement } from "react"
 import { Dialog } from "@base-ui/react/dialog"
 
 import {
@@ -41,7 +41,7 @@ export function UnitsDialog({
 }: {
   engine: CadEngine
   state: EditorState
-}) {
+}): ReactElement {
   const portal = usePortalContainer()
   const close = () => engine.setUnitsDialog(false)
   return (

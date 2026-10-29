@@ -1,6 +1,6 @@
 "use client"
 
-import { useRef } from "react"
+import { useRef, type ReactElement } from "react"
 import { Dialog } from "@base-ui/react/dialog"
 
 import type { CadEngine } from "@mellowcad/engine"
@@ -22,7 +22,7 @@ export function UnsavedTextDialog({
 }: {
   engine: CadEngine
   state: EditorState
-}) {
+}): ReactElement {
   const portal = usePortalContainer()
   const t = useEditorText("MText.unsavedChanges")
   // Yes is the task dialog's default button (desktop text/d05-5).
