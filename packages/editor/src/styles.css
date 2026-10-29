@@ -54,9 +54,18 @@
   }
 }
 
+/* The fonts are the host's (next/font's variables on the site's <html>): the
+   utilities read them, and `reference` keeps Tailwind from declaring them in
+   its theme: on the editor's root, where the package's build will move that
+   theme, a declaration would hide the host's, and `--font-sans:
+   var(--font-sans)` is a cycle. */
+@theme inline reference {
+  --font-sans: var(--font-sans);
+  --font-mono: var(--font-mono);
+}
+
 @theme inline {
   --font-heading: var(--font-sans);
-  --font-sans: var(--font-sans);
   --color-faint-foreground: var(--faint-foreground);
   --color-active-foreground: var(--active-foreground);
   --color-sidebar-ring: var(--sidebar-ring);
