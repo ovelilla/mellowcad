@@ -73,6 +73,10 @@ change, and read the diff.
 dispatching on the document, where the engine listens. Use it for wiring (which keys reach the
 runtime, what is prevented, which store is written), never for tool behaviour.
 
+A hook of `@mellowcad/react` runs once through `renderHook` (`test/renderHook.ts`, React's server
+renderer) against a stand-in engine, and its handlers take hand-made events. Effects never run
+there: an effect's body is a function of its own, tested alone (`takeFocus`, `mountEngine`).
+
 ## Helpers
 
 - `test/matchers.ts` — `toBeCloseToPoint`, `toBeCloseToPoints`, `toBeCloseToAngle`. **Never

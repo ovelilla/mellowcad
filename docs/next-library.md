@@ -1,6 +1,6 @@
 # MellowCAD como librería — brief
 
-> **Estado:** fases 1, 2 y 3 hechas (2026-10-29); de la 4, la entrega (a), de seis; las demás, sin
+> **Estado:** fases 1, 2 y 3 hechas (2026-10-29); de la 4, las entregas (a) y (b), de seis; las demás, sin
 > ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
 > análisis completo, con el inventario medido, las fuentes fechadas, el spike y el pase adversarial,
 > está en https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama
@@ -24,7 +24,7 @@ desde el 1 de septiembre). Por eso va a npm, y el registro llega después.
 | Paquete             | Forma | Qué lleva                                                                                                                                                                                                                                                                                 | Cuándo                |
 | ------------------- | ----- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------- |
 | `@mellowcad/engine` | npm   | `cad/` tal cual (con `CadEngine` y los presentadores). Entradas `.` y `./locales/{en,es,ar}`, lista explícita. `sideEffects: false`, ESM, solo `icu-minify`.                                                                                                                              | primer lanzamiento    |
-| `@mellowcad/react`  | npm   | `useCadEngine`, `useEngineSelector`, un `<CadCanvas>` dueño del canvas y del ciclo de vida, y los hooks de comportamiento sin estilo (teclas de la línea de comandos y de la entrada dinámica, arrastre del ViewCube). Sin CSS ni Base UI. Motor como peer.                                | segundo lanzamiento   |
+| `@mellowcad/react`  | npm   | `<CadCanvas>`, dueño del canvas y del ciclo de vida, `useEditorState`, `useEngineSelector` y los hooks de comportamiento sin estilo (`useCommandLineInput`, `useDynamicInput`, `useViewCubeDrag`). Sin CSS ni Base UI. Motor como peer.                                                 | segundo lanzamiento   |
 | `@mellowcad/editor` | npm   | Las piezas exportadas una a una y `<CadEditor>` con huecos para sustituirlas (como `components` en tldraw); sus primitivos Base UI, CSS precompilado y acotado a la raíz del editor, el catálogo de textos del editor, compilado con React Compiler. Motor y react como peers. | segundo lanzamiento   |
 | registro shadcn     | copia | Piezas copiables con sus primitivos bajo una ruta propia (`files[].target`), sin pisar los del usuario. Solo Base UI.                                                                                                                                                                     | bajo demanda (fase 8) |
 
@@ -223,9 +223,37 @@ son días de sesión.
    siguen en sus componentes; el `check:hosts` de react espera a los ejemplos (fase 5); las reglas
    de ESLint de `components/**` (literales, `Portal`, `type="number"`) y los checks de tipo, tamaño
    y RTL siguen nombrando components/, para la (c).
-   (b) **El cableado del DOM**: `<CadCanvas>`, dueño del canvas y del ciclo de vida, y los hooks sin
-   estilo que dejó la 3(d) (las teclas de la línea de comandos y de la entrada dinámica, el
-   arrastre del cubo), usados por los componentes del editor. ~1 día.
+   (b) **Hecha** (caf2922, 6e5b86f, 380afec): **el cableado del DOM**. `<CadCanvas>` pinta el
+   `<canvas>` con los atributos del anfitrión, construye el motor al montarse con sus opciones
+   (leídas una vez: `store`, `scope`, `locale`, `paletteOpen`), lo entrega con
+   `onEngine(engine)` y lo libera al desmontarse (`onEngine(null)`); el estado del chrome es
+   `useEditorState(engine)`. Salen `useCadEngine` y `UseCadEngineOptions`: la construcción pasó
+   al componente y las opciones son sus props (0.0.0, sin publicar; el editor era el único
+   llamador). Los hooks: `useCommandLineInput` (valor, escritura y teclas del campo, sin
+   autocompletar del navegador), `useDynamicInput` (la caja, su marca `data-dynamic-input` y las
+   props de cada campo: Command como Ctrl, `preventDefault`, el foco tras un Tab, la selección al
+   enfocar, el cursor al final de un párrafo; y el reenfoque tras cada render con `mayTakeFocus`,
+   que la 3(d) dejaba en el componente: comparte con el `onFocus` de los campos la bandera que
+   distingue un reenfoque del usuario, así que van juntos) y `useViewCubeDrag` (la pulsación
+   izquierda, la captura en la superficie, ahora un ref y no `ownerSVGElement`, los movimientos,
+   la suelta y el puntero perdido). Se prueban en Node sin jsdom: `test/renderHook.ts` hace un
+   render con el renderizador de servidor y los manejadores reciben eventos hechos a mano; lo que
+   corre un efecto es una función aparte (`takeFocus`, `mountEngine`). `api.md`: ocho nombres
+   (eran cuatro). Medido en producción contra ad4745f (Chrome, /draw, /es/draw y /ar/draw; en
+   reposo a 1920 y 1280, y a 1920 escribir en la línea de comandos, Espacio como Intro, la entrada
+   dinámica tomando el foco, una longitud, Tab al ángulo, Command+Z, el cubo con hover, un clic
+   bajo el umbral, un arrastre y uno que sale de su caja, el orden de Tab desde el body, y el
+   cursor de un párrafo de MTEXT): 34 de 36 capturas iguales píxel a píxel y las otras dos con 3
+   px en un dígito de las coordenadas, como dos ejecuciones de ad4745f entre sí; el foco, la
+   selección y los valores, iguales tras cada paso; el DOM del editor, el mismo salvo el orden de
+   tres atributos del `<input>` de la línea de comandos. El JS de /draw sube 0,6 KB gz, su CSS y
+   la landing no cambian. Lo que hereda la (c): los componentes importan los hooks de
+   `@mellowcad/react` (el editor lo tendrá como peer, con el motor); el lint de refs del React
+   Compiler toma por ref un objeto con un miembro pasado como `ref` (por eso se desestructura
+   `useViewCubeDrag`); el cableado que queda en components/cad es del propio chrome, no de una
+   llamada al motor (el asa de anchura de la paleta con su captura, las flechas de `DecimalInput`,
+   las teclas de los menús), y viaja con él; `test/renderHook.ts` sirve también a los tests del
+   paquete del editor; el `check:hosts` de react sigue esperando a los ejemplos (fase 5).
    (c) **`@mellowcad/editor`, en su sitio**: components/cad, components/ui, `lib/utils.ts`,
    `lib/editor-root.ts` y las dos libs de layout pasan a packages/editor; el sitio lo importa por su
    nombre desde el fuente; el `en.d.json.ts` del catálogo y sus entradas `./locales/<tag>`; los
@@ -260,7 +288,7 @@ Bloqueos: 1 → 2 → 6; 1 → 3 → 4 → 5 → 7; la org de npm → 6; 7 → 8
 
 ## 6. Riesgos
 
-- 150 nombres públicos: 146 del motor (eran 642; la 3(d) sumó cinco) y 4 de react, más lo que
+- 154 nombres públicos: 146 del motor (eran 642; la 3(d) sumó cinco) y 8 de react, más lo que
   sus firmas alcanzan (`cad/api.md`, `packages/react/api.md`): cada uno es una promesa de semver.
 - Tres superficies para una persona, sin CI: se publican escalonadas y el hook cubre los paquetes.
 - Dependencias nuevas que vigilar: tsdown 0.23.2 usa `rolldown-plugin-dts` en beta (0.23.3 vuelve

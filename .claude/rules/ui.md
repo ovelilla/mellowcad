@@ -25,6 +25,10 @@ full-editor render per mouse event.
 subscribe). A component that breaks the Rules of React is skipped silently by the compiler but
 fails `npm run lint`: fix the code, never disable the rule.
 
+**The DOM's side of an engine call is a hook of `@mellowcad/react`**, never a component's: which
+key is prevented, where focus goes, which element captures the pointer (`useCommandLineInput`,
+`useDynamicInput`, `useViewCubeDrag`), or a second host rewrites it. The component keeps the look.
+
 **No browser capability in a component**: no `Blob`, file picker, download anchor or global
 keyboard listener. If a button needs one, the engine owes it a method (behind a port, implemented
 in `cad/adapters/`), or every host has to rewrite it. Failures are reported at the command prompt,
@@ -237,9 +241,9 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   field with text in it: keys typed on the drawing before the box had focus went into it. **A
   field's keys and the command line's are the engine's** (`engine.dynamicInputKey`,
   `engine.commandLineKey`: Space as Enter, Tab's comma, Ctrl+Z's `_u`, the option list), as the
-  drawing's never reach the runtime from a field: the component prevents what was taken and, after
-  a Tab, focuses the field now active. It reclaims focus only where `engine.mayTakeFocus` allows
-  (not while another field is being typed in).
+  drawing's never reach the runtime from a field: `useDynamicInput` prevents what was taken and,
+  after a Tab, focuses the field now active. It reclaims focus only where `engine.mayTakeFocus`
+  allows (not while another field is being typed in).
 - **A dialog** only where AutoCAD has one (UNITS): engine state, opened by the command, applied as
   one undo step through the engine. No command palette (Ctrl+K): the command line is that. No
   product or meta copy in the editor: that is the landing's.
