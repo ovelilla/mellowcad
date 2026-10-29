@@ -4,8 +4,8 @@ import { THEME } from "@mellowcad/engine"
  * The attribute that marks the editor's root (`CadWorkspace`). Its tokens, its
  * base styles and its variants are scoped to the element that carries it, and
  * its popups mount inside it, so the editor never styles or writes on the
- * host's `<html>` or `<body>`. Its stylesheet (`styles.css`) and the head
- * script select it by name.
+ * host's `<html>` or `<body>`. Its stylesheet (`styles.css`), the head script
+ * and a host's own CSS select it by name: it is API (`api.md`).
  */
 export const EDITOR_ROOT_ATTRIBUTE = "data-mellowcad-editor"
 

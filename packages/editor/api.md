@@ -42,6 +42,14 @@ export { ar }
 export declare const ar: EditorLocale;
 ```
 
+## ./styles.css
+
+Scoped to `[data-mellowcad-editor]`: its rules match the editor's root and what is inside it, or an element by one of its classes.
+
+Cascade layers, in order: `properties`, `theme`, `base`, `components`, `utilities`.
+
+The host sets, on the root or above it: `--font-mono`, `--font-sans`.
+
 ## Reached, not exported
 
 What the exports' types name. A host cannot import these names, but their shape is API.

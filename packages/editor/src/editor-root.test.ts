@@ -2,6 +2,7 @@ import { readFileSync } from "node:fs"
 import { describe, expect, it } from "vitest"
 
 import { THEME } from "@mellowcad/engine"
+import { ROOT_ATTRIBUTE } from "../../../scripts/editor/styles"
 import { EDITOR_ROOT_ATTRIBUTE, EDITOR_THEME_STYLE } from "./editor-root"
 
 const css = readFileSync(new URL("./styles.css", import.meta.url), "utf8")
@@ -24,6 +25,10 @@ describe("the editor's root", () => {
     expect(EDITOR_THEME_STYLE["--active"]).toBe(THEME.grip)
     // No second copy in the stylesheet to drift from it.
     expect(css).not.toMatch(/--active\s*:/)
+  })
+
+  it("is the attribute the package's stylesheet is scoped to", () => {
+    expect(ROOT_ATTRIBUTE).toBe(EDITOR_ROOT_ATTRIBUTE)
   })
 
   it("holds the editor's tokens, not the host's :root", () => {

@@ -1,5 +1,6 @@
 /* The editor's styles, scoped to its root (editor-root.ts). Tailwind's own
-   import is its compiler's: the site's globals.css. */
+   import is its compiler's: the site's globals.css, or the package's build
+   (scripts/editor/styles.ts), which scopes Tailwind's layers to the root. */
 @import "tw-animate-css";
 @import "shadcn/tailwind.css";
 
@@ -55,10 +56,9 @@
 }
 
 /* The fonts are the host's (next/font's variables on the site's <html>): the
-   utilities read them, and `reference` keeps Tailwind from declaring them in
-   its theme: on the editor's root, where the package's build will move that
-   theme, a declaration would hide the host's, and `--font-sans:
-   var(--font-sans)` is a cycle. */
+   utilities read them, and `reference` keeps Tailwind from declaring them —
+   on the root, where its theme lives in the package's build, a declaration
+   would hide the host's, and `--font-sans: var(--font-sans)` is a cycle. */
 @theme inline reference {
   --font-sans: var(--font-sans);
   --font-mono: var(--font-mono);

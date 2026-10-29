@@ -31,9 +31,14 @@ export interface ApiPackage {
   readonly entries: Readonly<Record<string, string>>
   /** Declarations of the package left out of the report (a generated type). */
   readonly omit?: readonly string[]
+  /** What each stylesheet in `exports` offers a host, by its subpath. */
+  readonly stylesheets?: Readonly<Record<string, string>>
 }
 
-/** The package's `exports`, each with the source it is built from. */
+/**
+ * The package's module `exports`, each with the source it is built from. A
+ * stylesheet is not a module: the package describes it (`stylesheets`).
+ */
 export function exportedEntries(
   dir: string,
   source: (subpath: string) => string
@@ -43,7 +48,9 @@ export function exportedEntries(
   ).exports as Record<string, unknown>
   return Object.fromEntries(
     Object.keys(exports)
-      .filter((subpath) => subpath !== "./package.json")
+      .filter(
+        (subpath) => subpath !== "./package.json" && !subpath.endsWith(".css")
+      )
       .map((subpath) => [subpath, path.join(dir, source(subpath))])
   )
 }
@@ -179,6 +186,7 @@ export function apiReport({
   writer,
   entries,
   omit = [],
+  stylesheets = {},
 }: ApiPackage): string {
   const name = JSON.parse(readFileSync(path.join(dir, "package.json"), "utf8"))
     .name as string
@@ -272,6 +280,12 @@ export function apiReport({
     `Written by \`${writer}\`; a change to it is a change to the public API.`,
     "",
     ...sections.flatMap((section) => [section, ""]),
+    ...Object.entries(stylesheets).flatMap(([subpath, text]) => [
+      `## ${subpath}`,
+      "",
+      text,
+      "",
+    ]),
     "## Reached, not exported",
     "",
     "What the exports' types name. A host cannot import these names, but their shape is API.",

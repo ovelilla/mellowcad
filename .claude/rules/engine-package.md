@@ -14,12 +14,14 @@ paths:
   - "packages/*/tsdown.config.ts"
   - "packages/*/tsconfig.build.json"
   - "scripts/packages/**"
+  - "scripts/editor/**"
+  - "packages/editor/src/styles.css"
 ---
 
 # The packages
 
 > Verified against **tsdown 0.23.2**, **publint 0.3.25**, **@arethetypeswrong/cli 0.18.5**,
-> **@rolldown/plugin-babel 0.2.4**, **babel-plugin-react-compiler 1.0.0**.
+> **@rolldown/plugin-babel 0.2.4**, **babel-plugin-react-compiler 1.0.0**, **tailwindcss 4.3.3**.
 
 `cad/` is the npm workspace `@mellowcad/engine`, `packages/react` is `@mellowcad/react` and
 `packages/editor` is `@mellowcad/editor`, in place and private until they are published
@@ -75,5 +77,21 @@ instance; so is `@mellowcad/react` of the editor.
   pass is most of its build, ~2 s. `@mellowcad/react` is built without it: its hooks hold their
   identities by hand, which `useSyncExternalStore` needs, so a host's build gets the same hooks
   as the site.
+- **`@mellowcad/editor/styles.css` is the site's Tailwind output for the editor alone**
+  (`scripts/editor/styles.ts`, after tsdown): `packages/editor/src/styles.css` compiled from the
+  package's sources only (automatic detection would ship the docs' and tests' classes), every rule
+  Tailwind writes for the page — its theme on `:root, :host`, its preflight, the `@property`
+  fallback on `*` — moved under `:where([data-mellowcad-editor])`, so specificity and the cascade
+  inside the editor stay the site's, then Tailwind's own Lightning CSS pass. Its `--check`, in
+  `check`, fails on a selector naming `html`, `body`, `:root` or `:host`, or neither the root nor a
+  class. Utilities stay classes, and `@keyframes` and `@property` are global by nature. The site
+  imports the source by path (`globals.css`), never the build, and keeps the page's own rules.
+- **What the stylesheet asks of a host is API** (`api.md`'s `./styles.css`, written from the
+  compiled CSS): its root attribute, its layers, and every variable it reads and never declares
+  that `api.test.ts` does not list as written inline — today `--font-sans` and `--font-mono`. A
+  host's variable is never declared by Tailwind (`@theme inline reference`): on the root it would
+  hide the host's. `sideEffects` is `["**/*.css"]`, never `false`: webpack 5 drops a bare
+  `import "@mellowcad/editor/styles.css"` under `false` (Vite keeps it). attw skips the stylesheet
+  (`--exclude-entrypoints`), which is not a module.
 - A runtime dependency of the engine goes in `cad/package.json`'s `dependencies` (today only
   `icu-minify`), never only in the root's.

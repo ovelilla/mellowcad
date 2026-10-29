@@ -36,7 +36,7 @@ describe("the editor's catalogs", () => {
     expect(declaration).toBe(sourceDeclaration(readEditorCatalog("en")))
   })
 
-  it("are each a public entry point, beside the barrel and nothing else", () => {
+  it("are each a public entry point, beside the barrel and the stylesheet", () => {
     const { exports } = JSON.parse(
       readFileSync(join(EDITOR_LOCALES_DIR, "../../package.json"), "utf8")
     ) as { exports: Record<string, unknown> }
@@ -44,6 +44,7 @@ describe("the editor's catalogs", () => {
       [
         ".",
         "./package.json",
+        "./styles.css",
         ...editorTags().map((tag) => `./locales/${tag}`),
       ].sort()
     )

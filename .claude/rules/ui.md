@@ -102,7 +102,8 @@ JSX, and an exported component's return type (`ReactElement`): the hook fails wi
 
 No theme switch, by decision: AutoCAD works dark, and so does the whole site (landing included).
 The tokens on the editor's root (`EDITOR_ROOT_ATTRIBUTE`) are the only values, never the host's
-`:root` (`packages/editor/src/editor-root.test.ts`); `color-scheme: dark` keeps native controls dark, and
+`:root` (`packages/editor/src/editor-root.test.ts`), and its built stylesheet styles nothing outside
+the root (`engine-package.md`); `color-scheme: dark` keeps native controls dark, and
 `@custom-variant dark (&)` makes every `dark:` utility apply. Never bring back next-themes, a
 `.dark` class or light values.
 
