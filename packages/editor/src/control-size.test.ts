@@ -21,7 +21,7 @@ const ALLOWED: Record<string, Record<string, string>> = {
     "h-6": "the ViewCube's own buttons, drawn on it at its scale",
     "size-6": "the ViewCube's own buttons, drawn on it at its scale",
   },
-  "packages/editor/src/cad-workspace.tsx": {
+  "packages/editor/src/cad-editor.tsx": {
     "h-9": "the top bar and the status bar: a control and 4 px either side",
   },
   "packages/editor/src/palette-panel.tsx": {

@@ -5,11 +5,19 @@ Written by `packages/editor/api.test.ts`; a change to it is a change to the publ
 ## .
 
 ```ts
-export { CadWorkspace }
-export declare function CadWorkspace(props: WorkspaceProps & {
+export { CadEditor }
+export declare function CadEditor(cadEditorProps: CadEditorProps): ReactElement;
+
+export type { CadEditorProps }
+export interface CadEditorProps {
+    engineLocale?: EngineLocale;
     editorLocale?: EditorLocale;
     dir?: "ltr" | "rtl";
-}): ReactElement;
+    mark?: ReactNode;
+    languages?: readonly LanguageLink[];
+    layoutStorage?: LayoutStorage;
+    sheet?: SheetTransition;
+}
 
 export type { EditorLocale }
 export interface EditorLocale {
@@ -55,25 +63,16 @@ The host sets, on the root or above it: `--font-mono`, `--font-sans`.
 What the exports' types name. A host cannot import these names, but their shape is API.
 
 ```ts
-// src/cad-workspace.tsx
+// src/cad-editor.tsx
 export interface LayoutStorage {
     readonly palette?: string;
     readonly statusBar?: string;
 }
 
-// src/cad-workspace.tsx
+// src/cad-editor.tsx
 export interface SheetTransition {
     readonly id: string;
     readonly name: string;
-}
-
-// src/cad-workspace.tsx
-interface WorkspaceProps {
-    engineLocale?: EngineLocale;
-    mark?: ReactNode;
-    languages?: readonly LanguageLink[];
-    layoutStorage?: LayoutStorage;
-    sheet?: SheetTransition;
 }
 
 // src/locales/types.ts

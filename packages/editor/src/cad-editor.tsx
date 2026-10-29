@@ -65,9 +65,13 @@ export interface SheetTransition {
   readonly name: string
 }
 
-interface WorkspaceProps {
+export interface CadEditorProps {
   /** The page language's catalog for the engine; English when absent. */
   engineLocale?: EngineLocale
+  /** The page language's catalog for the editor's own words; English when absent. */
+  editorLocale?: EditorLocale
+  /** The page's direction: the shell mirrors in `rtl`, the drawing never. */
+  dir?: "ltr" | "rtl"
   /** The host's product mark, the application menu's glyph. */
   mark?: ReactNode
   /** The page in each language the host offers, for the application menu. */
@@ -85,16 +89,11 @@ interface WorkspaceProps {
  * ViewCube with the navigation bar, the dynamic input and the menus at the
  * cursor sits on the drawing.
  */
-export function CadWorkspace({
+export function CadEditor({
   editorLocale,
   dir = "ltr",
   ...props
-}: WorkspaceProps & {
-  /** The page language's catalog for the editor's own words; English when absent. */
-  editorLocale?: EditorLocale
-  /** The page's direction: the shell mirrors in `rtl`, the drawing never. */
-  dir?: "ltr" | "rtl"
-}): ReactElement {
+}: CadEditorProps): ReactElement {
   // The editor marks its own root and tells Base UI its direction: it never
   // writes on the host's <html> or <body>.
   return (
@@ -114,7 +113,10 @@ function Workspace({
   sheet,
   lang,
   dir,
-}: WorkspaceProps & { lang: string; dir: "ltr" | "rtl" }) {
+}: Omit<CadEditorProps, "editorLocale" | "dir"> & {
+  lang: string
+  dir: "ltr" | "rtl"
+}) {
   const paletteKey = layoutStorage.palette
   const [engine, setEngine] = useState<CadEngine | null>(null)
   const state = useEditorState(engine)

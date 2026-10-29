@@ -30,7 +30,7 @@ export interface EditorCatalog {
 }
 
 /**
- * A language the editor is handed (`<CadWorkspace editorLocale={es}>`). Any
+ * A language the editor is handed (`<CadEditor editorLocale={es}>`). Any
  * message may be left out, and that message is English's. Every message is
  * compiled (`icu-minify/compile`).
  */

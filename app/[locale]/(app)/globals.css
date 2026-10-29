@@ -20,7 +20,7 @@
 }
 
 /* Arriving from the landing, its hero sheet grows into the canvas, which is
-   named `drawing-sheet` (CadWorkspace); timed alike in marketing.css. The
+   named `drawing-sheet` (CadEditor); timed alike in marketing.css. The
    opt-in itself is inline in the layout (lib/view-transition.ts). */
 @media (prefers-reduced-motion: no-preference) {
   ::view-transition-group(drawing-sheet) {

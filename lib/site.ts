@@ -10,7 +10,7 @@ export const SITE_NAME = "MellowCAD"
 export const EDITOR_PATH = "/draw"
 
 /**
- * Where the editor keeps this device's layout (`CadWorkspace`'s
+ * Where the editor keeps this device's layout (`CadEditor`'s
  * `layoutStorage`). FROZEN, old product name included: a renamed key orphans
  * what every user already saved (`lib/site.test.ts`).
  */

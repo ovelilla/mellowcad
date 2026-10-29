@@ -1,6 +1,6 @@
 import { getLocale } from "next-intl/server"
 
-import { CadWorkspace } from "@mellowcad/editor"
+import { CadEditor } from "@mellowcad/editor"
 import { LogoMark } from "@/components/marketing/logo"
 import { loadEditorLocale } from "@/i18n/editor"
 import { loadEngineLocale } from "@/i18n/engine"
@@ -17,7 +17,7 @@ import { EDITOR_SHEET_ID, SHEET_TRANSITION } from "@/lib/view-transition"
 export default async function Page() {
   const locale = await getLocale()
   return (
-    <CadWorkspace
+    <CadEditor
       engineLocale={await loadEngineLocale(locale)}
       editorLocale={await loadEditorLocale(locale)}
       dir={DIRECTION[locale]}

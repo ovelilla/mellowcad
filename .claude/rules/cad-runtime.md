@@ -340,7 +340,7 @@ document-level listener bypasses the routing order and cannot `preventDefault` i
 ### Embedding (`CadEngineOptions`)
 
 The defaults are safe in a page the engine does not own; the editor asks for the rest
-(`packages/editor/src/cad-workspace.tsx`).
+(`packages/editor/src/cad-editor.tsx`).
 
 - `store`: none by default, so nothing is restored or autosaved; `createMemoryDrawingStore()` lasts
   as long as the page. Only the editor passes this device's, which holds the user's drawing.

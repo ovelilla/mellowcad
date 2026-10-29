@@ -47,13 +47,13 @@ after mount), each under the host's key (`layoutStorage`; none, not kept), the s
   and compass letters (`state.names`), property rows. A shortcut that is a command alias comes from
   `state.tools`; a key combination is `Keys` (keys have local names — `Supr` in Spanish); a
   function key is literal.
-- The editor speaks the page's language: `CadWorkspace` takes the catalogs the page loaded
+- The editor speaks the page's language: `CadEditor` takes the catalogs the page loaded
   (`editorLocale`, `engineLocale`) and `CadCanvas`'s `locale` hands the engine its own.
 - **What speaks the command language carries `lang={state.commandLine.lang}`** — the command line's
   lines, prompt and input, the dynamic input, a prompt option in a menu — so a screen reader reads
   `Command: LINE` in English on an Arabic page. Not a container whose `aria-label` is in the page's
   language.
-- `CadWorkspace` takes the page's `dir` and sets it, with its catalog's `lang`, on its root (the
+- `CadEditor` takes the page's `dir` and sets it, with its catalog's `lang`, on its root (the
   `<main>` and the popups' node), in the `DirectionProvider` Base UI reads for keys and placing.
 
 ## Right to left
@@ -210,7 +210,7 @@ the tool palette would fold on a Full HD laptop at 125 %).
 
 Each bar's AutoCAD order is in its component's header comment; touch and phones are out of scope.
 
-- **The workspace is a grid of named areas** (`CadWorkspace`): `top`, `tools` · `canvas` · `panel`,
+- **The workspace is a grid of named areas** (`CadEditor`): `top`, `tools` · `canvas` · `panel`,
   `command`, `status`. A control goes into a zone, never absolutely over the drawing; the canvas
   takes what is left, so ZOOM Extents frames only what is visible.
 - **Every zone has its size in CSS before the engine mounts** (the bars' `h-9`, the palette's
