@@ -11,6 +11,7 @@ import {
   readEditorCatalog,
   valuesModule,
 } from "../../../../scripts/locales/editor"
+import { sourceDeclaration } from "../../../../scripts/locales/compile"
 import { flatten, plurals, signature } from "../../../../scripts/locales/icu"
 import { en } from "./en"
 import { extendEditorLocale, mergeMessages } from "./extend"
@@ -28,6 +29,24 @@ describe("the editor's catalogs", () => {
     }
     const values = readFileSync(join(EDITOR_LOCALES_DIR, "values.ts"), "utf8")
     expect(values).toBe(valuesModule(readEditorCatalog("en")))
+    const declaration = readFileSync(
+      join(EDITOR_LOCALES_DIR, "en.d.json.ts"),
+      "utf8"
+    )
+    expect(declaration).toBe(sourceDeclaration(readEditorCatalog("en")))
+  })
+
+  it("are each a public entry point, beside the barrel and nothing else", () => {
+    const { exports } = JSON.parse(
+      readFileSync(join(EDITOR_LOCALES_DIR, "../../package.json"), "utf8")
+    ) as { exports: Record<string, unknown> }
+    expect(Object.keys(exports).sort()).toEqual(
+      [
+        ".",
+        "./package.json",
+        ...editorTags().map((tag) => `./locales/${tag}`),
+      ].sort()
+    )
   })
 
   it("hold ICU the message parser accepts, every plural with `other`", () => {

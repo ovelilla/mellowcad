@@ -3,7 +3,9 @@
  * the modules it imports, `<tag>.ts`, as `compile.ts` compiles the engine's:
  * every message becomes icu-minify's compact form, so the browser never ships
  * a message parser. It also writes `values.ts`, what each message takes, read
- * off English, which types every call's arguments.
+ * off English, which types every call's arguments, and `en.d.json.ts`, the
+ * English source's type, which the package's declarations read as the
+ * engine's do (`sourceDeclaration`).
  *
  * Run after editing a catalog:  npm run locales
  * (the outputs are committed, and a test compiles them again and fails on any
@@ -15,7 +17,7 @@ import { dirname, resolve } from "node:path"
 import { fileURLToPath, pathToFileURL } from "node:url"
 import { parse } from "@formatjs/icu-messageformat-parser"
 
-import { compileTree } from "./compile.ts"
+import { compileTree, sourceDeclaration } from "./compile.ts"
 import { type Tree, flatten, signature } from "./icu.ts"
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..")
@@ -104,4 +106,9 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
     valuesModule(readEditorCatalog("en"))
   )
   console.log("packages/editor/src/locales/values.ts")
+  writeFileSync(
+    resolve(EDITOR_LOCALES_DIR, "en.d.json.ts"),
+    sourceDeclaration(readEditorCatalog("en"))
+  )
+  console.log("packages/editor/src/locales/en.d.json.ts")
 }

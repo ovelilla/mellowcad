@@ -8,6 +8,7 @@ paths:
   - "cad/tsdown.config.ts"
   - "cad/tsconfig.build.json"
   - "cad/locales/en.d.json.ts"
+  - "packages/editor/src/locales/en.d.json.ts"
   - "cad/locales/keywordIds.ts"
   - "packages/*/package.json"
   - "packages/*/tsdown.config.ts"
@@ -41,7 +42,8 @@ instance; so is `@mellowcad/react` of the editor.
   is annotated; `as const satisfies` is refused (TS9010). `npm run typecheck` does not see it, the
   build does.
 - **`cad/locales/en.d.json.ts` is `en.json`'s type**, written by `npm run locales` because Oxc
-  cannot read a JSON module; `cad/locales/locales.test.ts` fails on drift. Never edit it. Nor
+  cannot read a JSON module; `cad/locales/locales.test.ts` fails on drift. Never edit it, nor the
+  editor's (`packages/editor/src/locales/`, the same way). Nor
   `cad/locales/keywordIds.ts`, the keyword ids `CadDriver` checks: importing `en.json` itself
   shipped the raw catalog, 68 KB, to every page using the driver.
 - **A package's `api.md` is its public surface** (`cad/api.md`, `packages/react/api.md`), every
