@@ -18,6 +18,7 @@ import type { EditorState } from "@/hooks/useCadEngine"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
 import { TooltipProvider } from "@/components/ui/tooltip"
+import { usePortalContainer } from "@/components/ui/portal-container"
 
 import { ZoomPreviousIcon } from "./icons"
 import { IconAction } from "./toolbar-primitives"
@@ -107,6 +108,7 @@ function ZoomSplitButton({
   engine: CadEngine
   state: EditorState
 }) {
+  const portal = usePortalContainer()
   const t = useEditorText("NavigationBar")
   const [face, setFace] = useState<ZoomId>("extents")
   const shown = ZOOM.find((member) => member.id === face) ?? ZOOM[0]
@@ -144,7 +146,7 @@ function ZoomSplitButton({
             </Button>
           }
         />
-        <Menu.Portal>
+        <Menu.Portal container={portal}>
           <Menu.Positioner
             side="inline-start"
             align="start"

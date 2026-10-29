@@ -10,6 +10,7 @@ import type {
   ShortcutMenuEntry,
 } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
+import { usePortalContainer } from "@/components/ui/portal-container"
 
 import {
   MENU_AT_CURSOR,
@@ -69,6 +70,7 @@ export function ShortcutMenu({
   engine: CadEngine
   state: EditorState
 }) {
+  const portal = usePortalContainer()
   const t = useEditorText("ShortcutMenu")
   const keys = useEditorText("Keys")
   // The last menu stays rendered while the popup fades out.
@@ -213,7 +215,7 @@ export function ShortcutMenu({
         if (!open) engine.closeShortcutMenu()
       }}
     >
-      <Menu.Portal>
+      <Menu.Portal container={portal}>
         <Menu.Backdrop />
         <Menu.Positioner
           anchor={anchor}
@@ -254,13 +256,14 @@ function Submenu({
   label: string
   children: React.ReactNode
 }) {
+  const portal = usePortalContainer()
   return (
     <Menu.SubmenuRoot>
       <Menu.SubmenuTrigger className={ITEM}>
         {label}
         <ChevronRight className="absolute inset-e-2 size-4 rtl:-scale-x-100" />
       </Menu.SubmenuTrigger>
-      <Menu.Portal>
+      <Menu.Portal container={portal}>
         <Menu.Positioner
           side="inline-end"
           align="start"

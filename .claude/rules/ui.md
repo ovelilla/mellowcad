@@ -50,8 +50,8 @@ after mount), each under the host's key (`layoutStorage`; none, not kept), the s
   lines, prompt and input, the dynamic input, a prompt option in a menu — so a screen reader reads
   `Command: LINE` in English on an Arabic page. Not a container whose `aria-label` is in the page's
   language.
-- `CadWorkspace` takes the page's `dir` and sets it, with its catalog's `lang`, on its `<main>`,
-  inside the `DirectionProvider` Base UI reads for keyboard and positioning.
+- `CadWorkspace` takes the page's `dir` and sets it, with its catalog's `lang`, on its root (the
+  `<main>` and the popups' node), inside the `DirectionProvider` Base UI reads for keyboard and positioning.
 
 ## Right to left
 
@@ -173,6 +173,8 @@ the tool palette would fold on a Full HD laptop at 125 %).
 
 - `z-50` goes on the **`Positioner`**, not the `Popup`: the positioner is transformed, so it makes a
   stacking context that traps a z-index set inside it.
+- A `Portal` takes `container={usePortalContainer()}` (ESLint): Base UI's default, `<body>`, is
+  outside the editor's root, so its tokens, `dir` and `lang` miss the popup.
 - Radix's asChild is the `render` prop (`<Tooltip.Trigger render={<Button …/>} />`).
 - `Select.Root` needs `items` (a value→label record) for the closed trigger to show the label, not
   the raw value. `onValueChange` can deliver `null`: guard before committing. A drop-down in a bar

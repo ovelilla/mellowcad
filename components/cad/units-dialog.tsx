@@ -18,6 +18,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select"
+import { usePortalContainer } from "@/components/ui/portal-container"
 import { useEditorText } from "./editor-text"
 
 /** LUPREC's decimal places, 0 to 8, written as AutoCAD's list writes them. */
@@ -45,6 +46,7 @@ export function UnitsDialog({
   engine: CadEngine
   state: EditorState
 }) {
+  const portal = usePortalContainer()
   const close = () => engine.setUnitsDialog(false)
   return (
     <Dialog.Root
@@ -58,7 +60,7 @@ export function UnitsDialog({
         if (!open) engine.focusSurface()
       }}
     >
-      <Dialog.Portal>
+      <Dialog.Portal container={portal}>
         <Dialog.Backdrop className="fixed inset-0 z-50 bg-background/60" />
         {/* aria-modal: the engine leaves a modal dialog's keys to it. */}
         <Dialog.Popup

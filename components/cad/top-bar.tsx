@@ -40,6 +40,7 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { usePortalContainer } from "@/components/ui/portal-container"
 
 import { ColorSelect } from "./color-select"
 import { LayerSwatch } from "./layers-control"
@@ -220,6 +221,7 @@ function ApplicationMenu({
   mark: React.ReactNode
   links: readonly LanguageLink[]
 }) {
+  const portal = usePortalContainer()
   const t = useEditorText("TopBar")
   const item = (icon: LucideIcon, label: string, onClick: () => void) => {
     const Icon = icon
@@ -247,7 +249,7 @@ function ApplicationMenu({
         />
         <TooltipContent side="bottom">{t("menu")}</TooltipContent>
       </Tooltip>
-      <Menu.Portal>
+      <Menu.Portal container={portal}>
         <Menu.Positioner
           side="bottom"
           align="start"
@@ -279,7 +281,7 @@ function ApplicationMenu({
                     {t("language")}
                     <ChevronRight className="absolute inset-e-2 rtl:-scale-x-100" />
                   </Menu.SubmenuTrigger>
-                  <Menu.Portal>
+                  <Menu.Portal container={portal}>
                     <Menu.Positioner
                       side="inline-end"
                       align="start"

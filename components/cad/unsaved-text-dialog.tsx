@@ -6,6 +6,7 @@ import { Dialog } from "@base-ui/react/dialog"
 import type { CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { Button } from "@/components/ui/button"
+import { usePortalContainer } from "@/components/ui/portal-container"
 import { useEditorText } from "./editor-text"
 
 /**
@@ -22,6 +23,7 @@ export function UnsavedTextDialog({
   engine: CadEngine
   state: EditorState
 }) {
+  const portal = usePortalContainer()
   const t = useEditorText("MText.unsavedChanges")
   // Yes is the task dialog's default button (desktop text/d05-5).
   const yes = useRef<HTMLButtonElement>(null)
@@ -37,7 +39,7 @@ export function UnsavedTextDialog({
         if (!open) engine.focusSurface()
       }}
     >
-      <Dialog.Portal>
+      <Dialog.Portal container={portal}>
         <Dialog.Backdrop className="fixed inset-0 z-50 bg-background/60" />
         {/* aria-modal: the engine leaves a modal dialog's keys to it. */}
         <Dialog.Popup

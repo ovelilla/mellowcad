@@ -94,6 +94,14 @@ const eslintConfig = defineConfig([
           message:
             "A shortcut belongs in CadRuntime.keyDown, never in a React listener (.claude/rules/cad-runtime.md).",
         },
+        {
+          // Base UI portals to <body> by default, outside the editor's root,
+          // where its tokens, `dir` and `lang` do not reach.
+          selector:
+            "JSXOpeningElement[name.property.name='Portal']:not(:has(JSXAttribute[name.name='container']))",
+          message:
+            "A popup mounts inside the editor's root: container={usePortalContainer()} (.claude/rules/ui.md).",
+        },
       ],
     },
   },

@@ -8,6 +8,7 @@ import { CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 
 import { cn } from "@/lib/utils"
+import { usePortalContainer } from "@/components/ui/portal-container"
 import { useEditorText } from "./editor-text"
 
 /**
@@ -27,6 +28,7 @@ export function SelectionCyclingList({
   engine: CadEngine
   state: EditorState
 }) {
+  const portal = usePortalContainer()
   const t = useEditorText("SelectionCycling")
   const { candidates, currentId, listAt } = state.selectionCycling
 
@@ -50,7 +52,7 @@ export function SelectionCyclingList({
         if (!open) engine.closeCyclingList()
       }}
     >
-      <Menu.Portal>
+      <Menu.Portal container={portal}>
         <Menu.Backdrop />
         <Menu.Positioner
           anchor={anchor}

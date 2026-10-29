@@ -19,6 +19,7 @@ import {
 } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { Button } from "@/components/ui/button"
+import { usePortalContainer } from "@/components/ui/portal-container"
 import { cn } from "@/lib/utils"
 import { useEditorText } from "./editor-text"
 
@@ -73,6 +74,7 @@ export function ViewCube({
   engine: CadEngine
   state: EditorState
 }) {
+  const portal = usePortalContainer()
   const t = useEditorText("ViewCube")
   const [hovered, setHovered] = React.useState<ViewCubePart | null>(null)
   const [menuAt, setMenuAt] = React.useState<{ x: number; y: number } | null>(
@@ -334,7 +336,7 @@ export function ViewCube({
           if (!open) setMenuAt(null)
         }}
       >
-        <Menu.Portal>
+        <Menu.Portal container={portal}>
           <Menu.Positioner
             anchor={anchor}
             positionMethod="fixed"
@@ -376,6 +378,7 @@ export function ViewCube({
  * an unnamed current one · New UCS (desktop ucs/d03-1, d03-5).
  */
 function UcsMenu({ engine, state }: { engine: CadEngine; state: EditorState }) {
+  const portal = usePortalContainer()
   const t = useEditorText("ViewCube")
   const { world, name, named } = state.ucsMenu
   const unnamed = !world && name === null
@@ -396,7 +399,7 @@ function UcsMenu({ engine, state }: { engine: CadEngine; state: EditorState }) {
           </Button>
         }
       />
-      <Menu.Portal>
+      <Menu.Portal container={portal}>
         <Menu.Positioner
           side="bottom"
           align="end"

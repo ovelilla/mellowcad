@@ -38,6 +38,7 @@ import { Menu } from "@base-ui/react/menu"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
+import { usePortalContainer } from "@/components/ui/portal-container"
 import { CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { cn } from "@/lib/utils"
@@ -592,8 +593,9 @@ function ToolMenuPopup({
   activeId: string
   onPick?: (id: string) => void
 }) {
+  const portal = usePortalContainer()
   return (
-    <Menu.Portal>
+    <Menu.Portal container={portal}>
       <Menu.Positioner
         side="inline-end"
         align="start"

@@ -6,6 +6,7 @@ import { Dialog } from "@base-ui/react/dialog"
 import type { CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { Button } from "@/components/ui/button"
+import { usePortalContainer } from "@/components/ui/portal-container"
 import { useEditorText } from "./editor-text"
 
 /**
@@ -21,6 +22,7 @@ export function LockedObjectsDialog({
   engine: CadEngine
   state: EditorState
 }) {
+  const portal = usePortalContainer()
   const t = useEditorText("Properties.lockedObjects")
   const dialog = state.lockedObjectsDialog
   // Kept while the popup animates out, so its count does not blank first.
@@ -39,7 +41,7 @@ export function LockedObjectsDialog({
         if (!open) engine.focusSurface()
       }}
     >
-      <Dialog.Portal>
+      <Dialog.Portal container={portal}>
         <Dialog.Backdrop className="fixed inset-0 z-50 bg-background/60" />
         {/* aria-modal: the engine leaves a modal dialog's keys to it. */}
         <Dialog.Popup

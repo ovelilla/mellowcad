@@ -23,6 +23,7 @@ import {
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+import { usePortalContainer } from "@/components/ui/portal-container"
 import {
   CadEngine,
   DEFAULT_LAYER_ID,
@@ -724,6 +725,7 @@ function LayerDialog({
   onClose: () => void
   onClosed: () => void
 }) {
+  const portal = usePortalContainer()
   // Kept while the popup animates out, so its words do not blank first.
   const [shown, setShown] = useState(dialog)
   if (dialog !== null && dialog !== shown) setShown(dialog)
@@ -738,7 +740,7 @@ function LayerDialog({
         if (!open) onClosed()
       }}
     >
-      <Dialog.Portal>
+      <Dialog.Portal container={portal}>
         <Dialog.Backdrop className="fixed inset-0 z-50 bg-background/60" />
         {/* aria-modal: the engine leaves a modal dialog's keys to it. */}
         <Dialog.Popup

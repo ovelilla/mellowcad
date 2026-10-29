@@ -4,6 +4,7 @@ import * as React from "react"
 import { Popover as PopoverPrimitive } from "@base-ui/react/popover"
 
 import { cn } from "@/lib/utils"
+import { usePortalContainer } from "./portal-container"
 
 function Popover(props: React.ComponentProps<typeof PopoverPrimitive.Root>) {
   return <PopoverPrimitive.Root {...props} />
@@ -27,8 +28,9 @@ function PopoverContent({
   sideOffset?: number
   align?: "start" | "center" | "end"
 }) {
+  const portal = usePortalContainer()
   return (
-    <PopoverPrimitive.Portal>
+    <PopoverPrimitive.Portal container={portal}>
       {/* z-index on the positioner, not the popup: the positioner is
           transformed, so it is the stacking context that must outrank the
           workspace overlays. */}

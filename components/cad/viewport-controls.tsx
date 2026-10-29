@@ -6,6 +6,7 @@ import { CheckIcon } from "lucide-react"
 import { VIEW_MENU, type CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { cn } from "@/lib/utils"
+import { usePortalContainer } from "@/components/ui/portal-container"
 import { useEditorText } from "./editor-text"
 
 /**
@@ -21,6 +22,7 @@ export function ViewportControls({
   engine: CadEngine
   state: EditorState
 }) {
+  const portal = usePortalContainer()
   const t = useEditorText("Viewport")
   const names = state.names.views
   const current = state.view.preset
@@ -42,7 +44,7 @@ export function ViewportControls({
       >
         {name}
       </Menu.Trigger>
-      <Menu.Portal>
+      <Menu.Portal container={portal}>
         <Menu.Positioner
           side="bottom"
           align="start"

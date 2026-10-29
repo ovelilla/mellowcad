@@ -4,6 +4,7 @@ import * as React from "react"
 import { Tooltip as TooltipPrimitive } from "@base-ui/react/tooltip"
 
 import { cn } from "@/lib/utils"
+import { usePortalContainer } from "./portal-container"
 
 function TooltipProvider({
   delay = 250,
@@ -43,8 +44,9 @@ function TooltipContent({
   side?: "top" | "bottom" | "inline-start" | "inline-end" | "left" | "right"
   sideOffset?: number
 }) {
+  const portal = usePortalContainer()
   return (
-    <TooltipPrimitive.Portal>
+    <TooltipPrimitive.Portal container={portal}>
       {/* The z-index must sit on the positioner: it is transformed, which makes
           it a stacking context, so a z-index on the popup would be trapped
           inside it and lose to the workspace's own overlays. */}

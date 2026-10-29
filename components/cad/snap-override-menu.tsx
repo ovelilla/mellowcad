@@ -6,6 +6,7 @@ import { CheckIcon } from "lucide-react"
 
 import { CadEngine, SnapType } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
+import { usePortalContainer } from "@/components/ui/portal-container"
 import { useEditorText } from "./editor-text"
 
 /**
@@ -105,6 +106,7 @@ export function SnapOverrideMenu({
   engine: CadEngine
   state: EditorState
 }) {
+  const portal = usePortalContainer()
   const at = state.snapOverrideMenu
 
   // A zero-size virtual anchor at the cursor: Base UI positions the popup
@@ -130,7 +132,7 @@ export function SnapOverrideMenu({
         if (!open) engine.closeSnapOverrideMenu()
       }}
     >
-      <Menu.Portal>
+      <Menu.Portal container={portal}>
         <Menu.Backdrop />
         <Menu.Positioner
           anchor={anchor}

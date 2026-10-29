@@ -27,6 +27,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
+import { usePortalContainer } from "@/components/ui/portal-container"
 import { CadEngine, SnapModeType, SnapType } from "@mellowcad/engine"
 import { useEngineSelector, type EditorState } from "@/hooks/useCadEngine"
 import {
@@ -357,8 +358,9 @@ function Coordinates({
 
 /** A status-bar menu, above the bar. */
 function MenuPopup({ children }: { children: ReactNode }) {
+  const portal = usePortalContainer()
   return (
-    <Menu.Portal>
+    <Menu.Portal container={portal}>
       <Menu.Positioner side="top" align="end" sideOffset={6} className="z-50">
         <Menu.Popup className={MENU_POPUP}>{children}</Menu.Popup>
       </Menu.Positioner>
