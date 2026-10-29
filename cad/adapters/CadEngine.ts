@@ -23,7 +23,6 @@ import { DrawingStore, EngineHost } from "../application/ports"
 import { SnapModeType } from "../application/SnapMode"
 import { SnapType } from "../application/snapping/types"
 import { ConstraintType } from "../application/constraints/types"
-import { Tool } from "../application/tools/Tool"
 import type { ViewPreset } from "../application/tools/viewPresets"
 import type {
   CompassLetter,
@@ -146,14 +145,6 @@ export class CadEngine {
   /** Switches the language; what the command line already shows stays. */
   setLocale(locale: EngineLocale): void {
     this.runtime.setLocale(locale)
-  }
-
-  listTools(): Tool[] {
-    return this.runtime.listTools()
-  }
-
-  registerTool(tool: Tool): void {
-    this.runtime.registerTool(tool)
   }
 
   setActiveTool(id: string): void {

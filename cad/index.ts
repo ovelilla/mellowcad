@@ -3,7 +3,7 @@
  * to drive the engine, render its state and name its data, and nothing else.
  * Every name here is a semver promise, so the tools, the commands, the
  * runtime's parts and the geometry kernel stay behind it; a name joins only
- * when a host has a use for it.
+ * when a host has a use for it. `cad/api.md` records the result.
  *
  * Layering (dependencies only point downwards):
  *
@@ -157,6 +157,7 @@ export type {
   Bounds,
 } from "./domain/entities"
 export { entityDrawOrder } from "./domain/entities"
+export type { DocumentReader } from "./domain/Document"
 export {
   DEFAULT_LAYER_ID,
   INVALID_LAYER_NAME_CHARACTERS,

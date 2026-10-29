@@ -2,7 +2,7 @@ import { CadDriver } from "./CadDriver"
 import type { CommandLineEntry } from "./CommandLine"
 import type { DynamicFieldKind } from "./input/DynamicInput"
 import { isCoordinateExpression } from "./input/coordinateInput"
-import type { CadDocument } from "../domain/Document"
+import type { DocumentReader } from "../domain/Document"
 import type { Bounds, EntityId } from "../domain/entities"
 import type { LinetypeId } from "../domain/linetypes"
 import type { Lineweight } from "../domain/lineweights"
@@ -183,7 +183,7 @@ export interface DemoRecording {
   readonly locale?: EngineLocale
   readonly steps: readonly DemoStep[]
   /** The drawing as the session left it. */
-  readonly document: CadDocument
+  readonly document: DocumentReader
   /**
    * The editor's own frame at the end of the session — overlays, markers and
    * tooltips included, since those are what a precision demo is about.

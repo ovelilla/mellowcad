@@ -1,5 +1,7 @@
 ---
 paths:
+  - "cad/index.ts"
+  - "cad/api.md"
   - "cad/package.json"
   - "cad/tsdown.config.ts"
   - "cad/tsconfig.build.json"
@@ -29,6 +31,11 @@ paths:
   build does.
 - **`cad/locales/en.d.json.ts` is `en.json`'s type**, written by `npm run locales` because Oxc
   cannot read a JSON module; `cad/locales/locales.test.ts` fails on drift. Never edit it.
+- **`cad/api.md` is the public surface**, every export with its signature and every type they
+  reach, written by `cad/api.test.ts`; any change fails it until `-u`. Read its diff as a version:
+  a new name is a minor, a changed or removed one a major. A name joins `cad/index.ts` only when a
+  host uses it; a public member only the engine's tests need is `/** @internal */`, which the
+  build strips (`stripInternal`), as `CadDriver.runtime` is.
 - **The commit gate builds and checks the package**: `npm run build -w cad`, then
   `npm run check -w cad` (publint `--strict`, attw's `esm-only` profile), about 4 s. Installing
   the tarball in foreign hosts needs the network, so it belongs to a check before publishing.

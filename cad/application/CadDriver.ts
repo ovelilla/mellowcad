@@ -105,8 +105,14 @@ export interface PointerModifiers {
 }
 
 export class CadDriver {
+  // WHY internal: the engine's own tests reach past the driver into the
+  // runtime and its ports; a host drives it through the methods alone, and
+  // the build strips these from the declarations it ships (`cad/api.md`).
+  /** @internal */
   readonly runtime: CadRuntime
+  /** @internal */
   readonly host: RecordingHost
+  /** @internal */
   readonly clipboard: Clipboard | null
 
   constructor(options: CadDriverOptions = {}) {

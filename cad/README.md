@@ -16,7 +16,8 @@ the app imports by name.
 | `@mellowcad/engine/locales/<tag>` | one language each: `en`, `es`, `ar` |
 
 Nothing else is public: they are the package's `exports` (`cad/package.json`), no other path under
-`cad/` is part of the API, and `cad/entryPoints.test.ts` fails if the app reaches one. No module
+`cad/` is part of the API, and `cad/entryPoints.test.ts` fails if the app reaches one. What they
+export, signature by signature, is `cad/api.md`. No module
 has an import-time side effect (`"sideEffects": false`, one built module per source file), so a
 bundler keeps only what a page uses, and a language costs nothing until it is imported.
 

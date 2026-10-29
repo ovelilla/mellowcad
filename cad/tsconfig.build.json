@@ -11,6 +11,7 @@
     "allowArbitraryExtensions": true,
     "declaration": true,
     "isolatedDeclarations": true,
+    "stripInternal": true,
     "noEmit": false,
     "emitDeclarationOnly": true,
     "types": []
