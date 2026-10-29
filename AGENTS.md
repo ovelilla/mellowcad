@@ -15,17 +15,17 @@ engine; Next.js/React is only a presentation shell around it.
 
 ## Commands
 
-| Task       | Command                                                                                    |
-| ---------- | ------------------------------------------------------------------------------------------ |
-| Dev server | `npm run dev` (often already running; check the port — it hops to 3001 when 3000 is taken) |
-| Types      | `npm run typecheck`                                                                        |
-| Lint       | `npm run lint`                                                                             |
-| Tests      | `npm test` / `npm run test:watch` / `npm run test:coverage`                                |
-| Catalogs   | `npm run locales` after editing `cad/locales/<tag>.json`                                   |
-| Knowledge  | `npm run knowledge` (part of `npm test`; prints the rules loaded per file)                 |
+| Task       | Command                                                        |
+| ---------- | -------------------------------------------------------------- |
+| Dev server | `npm run dev` (often running already, on 3000 or 3001)         |
+| Types      | `npm run typecheck`                                            |
+| Lint       | `npm run lint`                                                 |
+| Tests      | `npm test` / `npm run test:watch` / `npm run test:coverage`    |
+| Catalogs   | `npm run locales` after editing `cad/locales/<tag>.json`       |
+| Knowledge  | `npm run knowledge` (in `npm test`; prints the rules per file) |
 
 `typecheck` + `lint` + `format:check` + `test:coverage` must pass before a change is done;
-`.githooks/pre-commit` runs exactly that. GitHub Actions (`.github/workflows/ci.yml`) has not run since 2026-10-18
+`.githooks/pre-commit` runs exactly that. CI (`.github/workflows/ci.yml`) is off since 2026-10-18
 (billing), so the hook is the only gate: never `--no-verify` unless the same checks just passed in
 a clean worktree. `npm run build` is outside the gate (it fights the dev server over `.next`):
 whether a route compiles, ask the running dev server through the MCP `next-devtools`.
@@ -71,10 +71,9 @@ The bar: **someone who uses AutoCAD every day should sit down at this app and wo
 memory.** Command names and aliases, the order of the prompts, the keyword letters, the defaults
 and what each option does must be the ones they already know.
 
-- **Match the current AutoCAD** (2027, the one installed, and its Autodesk Help). Do not implement
-  from a vague recollection of an older release — when a behaviour is unclear or you are guessing,
-  look it up first (skill `autocad-research`). Research has repeatedly overturned the "obvious"
-  design here.
+- **Match the current AutoCAD** (2027, the one installed, and its Autodesk Help), never a memory
+  of an older release: when unclear or guessing, look it up first (skill `autocad-research`).
+  Research has repeatedly overturned the "obvious" design here.
 - **What must match**: the functional and interaction contract — commands, aliases, prompt
   sequences, keywords, defaults, option semantics, what a gesture produces.
 - **What may differ, a little**: styling and chrome, and what the browser cannot reproduce. An
@@ -104,8 +103,8 @@ and what each option does must be the ones they already know.
 - **Commit when the gate passes; never push unasked.** A push to `main` deploys to production on
   Vercel, so it waits for the owner's word. Commits are `feat(engine): …`, `fix(engine): …`,
   `docs: …`; a multi-line message goes through `git commit -F - <<'EOF'`.
-- **Verify tool behaviour with the Vitest harness** (`test/harness.ts`), not a browser. The
-  browser is only for what the harness cannot see: skill `browser-verify`.
+- **Verify tool behaviour with the Vitest harness** (`test/harness.ts`), not a browser, which is
+  only for what the harness cannot see (skill `browser-verify`).
 - **Comments**: only non-obvious _why_ — fidelity rationale, workarounds, ordering constraints,
   invariants, gotchas. No banner dividers, no JSDoc that echoes the symbol name, no restating code.
 - **Naming is already good — do not mass-rename.** Single-letter math variables in
@@ -113,19 +112,18 @@ and what each option does must be the ones they already know.
 - Do not add features, options or abstractions that were not asked for. This codebase grows one
   AutoCAD command at a time, each fully finished: skill `finish-feature`.
 - **Several sessions may work in this tree at once.** Stage only your own files or hunks. The hook
-  checks the whole tree, so when someone else's change turns it red, verify yours in a clean
-  worktree and commit once the tree is green.
-- **Everything runs in WSL2 (Ubuntu) with Bash.** The repo lives in `~/projects/mellowcad`, on
-  the Linux disk, and VS Code connects through Remote-WSL: no native Windows, PowerShell or
-  `/mnt/c` working copy (slow, and the watchers miss changes there). The one Windows program used
-  is AutoCAD 2027 (console and desktop), through `scripts/research/`. Scratch files go in a `mktemp -d`
-  directory outside the repo.
+  checks the whole tree: when someone else's change turns it red, verify yours in a clean worktree
+  and commit once the tree is green.
+- **Everything runs in WSL2 (Ubuntu) with Bash**, in `~/projects/mellowcad` on the Linux disk,
+  VS Code through Remote-WSL: no Windows, PowerShell or `/mnt/c` working copy (slow; watchers miss
+  changes). The only Windows program is AutoCAD 2027 (console and desktop), via `scripts/research/`.
+  Scratch files go in a `mktemp -d` directory outside the repo.
 
 ## Where the knowledge lives
 
 - **`.claude/rules/`** — the rules of each area, loaded with the files their `paths:` match (by
-  Claude Code and by Copilot). Creating something in an area without having opened a file of it,
-  read its rule first: `cad-engine.md` (layers, model), `cad-runtime.md` (input, snapping,
+  Claude Code and by Copilot). Before creating something in an area whose files you have not
+  opened, read its rule: `cad-engine.md` (layers, model), `cad-runtime.md` (input, snapping,
   history, adapters), `cad-scene.md` (scene, presenters), `cad-tools.md` (writing a tool),
   `cad-catalogs.md` (prompts, keywords), `testing.md`, `ui.md` (the editor), `marketing.md` (the
   landing), `i18n.md` (languages), `knowledge.md` (where knowledge goes).
@@ -136,11 +134,9 @@ and what each option does must be the ones they already know.
   lacks, one file per area, plus the roadmap. **Read a command's entry before extending it** —
   the gaps are deliberate and already researched.
 - `docs/i18n-glossary.md` — the interface terms in each language and how each one is written.
-- `cad/README.md` — the engine's public contract for whoever integrates it. Keep it true when that
-  contract changes.
+- `cad/README.md` — the engine's public contract; keep it true when it changes.
 - `docs/plans/<command>-review.md` — a command review's plan (skill `command-review`).
-- `docs/next-*.md` — the brief for the next piece of work, when one has been agreed; deleted once
-  it ships.
+- `docs/next-*.md` — an agreed brief for the next piece of work; deleted once it ships.
 - `scripts/research/` and `research/` (gitignored) — AutoCAD's runners, its tracer plugin and
   its string tables.
 
