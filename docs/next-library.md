@@ -1,6 +1,6 @@
 # MellowCAD como librería — brief
 
-> **Estado:** fases 1, 2, 3 y 4 hechas (2026-10-29); las demás, sin ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
+> **Estado:** fases 1, 2, 3, 4 y 5 hechas (2026-10-30); las demás, sin ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
 > análisis completo, con el inventario medido, las fuentes fechadas, el spike y el pase adversarial,
 > está en https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama
 > local worktree-agent-a498997d3f29c107f (commit b1c7923), sin empujar.
@@ -410,17 +410,68 @@ son días de sesión.
    `ViewCube`, 65,2; solo `StatusBar`, 77,0: el barril más grande no arrastra lo que no se
    importa. La cobertura de líneas baja de 96,1 % a 93,1 % sin bajar de los umbrales: el test
    carga por primera vez los componentes del editor y v8 cuenta lo que se carga.
-5. **Ejemplos y documentación** — 2–3 días, tras la 4. Un anfitrión headless en Node y otro con
-   Vite + React, que sirven también de smoke tests del check previo a publicar. Un README por paquete,
-   a partir de `cad/README.md`. Hereda de la 4: el `check:hosts` de react y el
-   del editor, que instalan el tarball en Vite y en Next e importan `@mellowcad/editor/styles.css`
-   desde él (webpack la tira con `sideEffects: false`; con la lista, no); un ejemplo que sustituye
-   un hueco y apaga otro, con las clases del sustituto compiladas por el anfitrión (las utilidades
-   son globales: comparten nombre con su Tailwind) y su fuente en `--font-sans`/`--font-mono`; en
-   Next, comprobar que una página de servidor puede pasar en `components` un componente de un
-   módulo `"use client"` (una función normal no cruza la frontera); y que una pieza fuera de
-   `CadEditor` no tiene raíz (ni tokens, ni catálogo, ni contenedor de popups): el README lo
-   dice, o hace falta exportar la raíz, que hoy no es API.
+5. **Ejemplos y documentación** — **hecha** (7007d4d, 37f7c79, 52e22ac, 0d8d7dc). Medido antes:
+   el `check:hosts` del motor tardaba ~11 s con la caché de npm caliente (empaqueta, instala el
+   tarball con `typescript` y `vite` exactos en un `/tmp`, sin el `.npmrc` del repo). Lo hecho:
+   `examples/` fuera de los workspaces (Vite, su plugin y Next no entran en el lockfile), con tres
+   anfitriones que un extraño copiaría: `engine-node` (CadDriver dibuja, `SAVE` entrega el fichero
+   a un `FileTransport` que escribe a disco, la escena sale a SVG; `node main.ts`), `editor-vite`
+   (`<CadEditor />`, la hoja importada del paquete, `--font-sans`/`--font-mono` y el body sin
+   margen) y
+   `editor-next` (una página de servidor da a `TopBar` un componente `"use client"` del anfitrión
+   y apaga `PalettePanel`; fuentes de next/font, clases del sustituto con su propio Tailwind). El
+   check pasa a `scripts/packages/hosts.ts`, uno para los tres: lee el paquete del directorio
+   desde el que npm lo lanza, construye, comprueba y empaqueta ese paquete y sus peers nuestros,
+   copia cada anfitrión (un ejemplo, o ficheros propios) con nuestros paquetes apuntando a los
+   tarballs y el `.npmrc` del repo (la cuarentena), instala y corre sus pasos. Motor (~15 s): el
+   ejemplo corre y tipa, y el anfitrión ajeno de antes. React (~40 s): los dos ejemplos del editor
+   sin el editor; en Vite la página es el primer bloque `tsx` de su README (tsc sin
+   `skipLibCheck`, build, un render con el renderizador de servidor), en Next una página de
+   servidor pinta `CadCanvas`. Editor (~1 min): Vite tipa sin `skipLibCheck`, empaqueta con la
+   hoja y renderiza `CadEditor` en español en Node; Next con Turbopack y con webpack prerenderiza
+   la raíz y la zona superior sin la del panel, la carga de la página nombra la referencia de
+   cliente `HostTopBar`, y su CSS lleva la hoja y la clase del anfitrión. `prepublishOnly` lo
+   corre en los tres; el hook no (red). Rotos a propósito: sin `SvgScenePresenter` en el barril
+   falla el ejemplo del motor; sin `useCommandLineInput`, el tsc del README de react; la hoja
+   fuera de `files`, el `check` del editor (publint) y, saltándolo, el build de Vite. Un README
+   por paquete (`packages/react/README.md`, `packages/editor/README.md`; `cad/README.md` gana
+   «Without a browser»), sujetos por `test/packages.test.ts`: uno por paquete, cada import nombra
+   una entrada y lo que exporta según su `api.md`, cada nombre PascalCase o especificador de la
+   prosa está en los informes, y un bloque con la ruta de un ejemplo en su info string es ese
+   fichero palabra por palabra (probado rompiendo cada uno); `test/knowledge.test.ts` los lee
+   también. El mismo test fija los rangos de los ejemplos (`^versión` de los nuestros, el de la
+   raíz para lo que el repo también usa); `vite` y `@vitejs/plugin-react` van en deps-review.
+   Respuestas a lo que dejaba la 4: **una página de servidor sí puede** pasar en `components` un
+   componente de un módulo `"use client"` (y `null`); **Next no tira la hoja** con
+   `sideEffects: false` ni con Turbopack ni con webpack (Next marca el CSS como efecto lateral;
+   medido): quien la tira es el webpack 5 suelto de la 4(e), que el check no cubre, y la lista se
+   queda por él; **una pieza fuera de `CadEditor`** sale sin tokens, en inglés, con los popups en
+   `<body>` sin estilo, y sin los menús y diálogos que monta `CadEditor`, así que un comando que
+   abre uno espera para siempre: exportar la raíz arreglaría lo primero, no lo último, y una
+   página con menos piezas es `CadEditor` con las demás a `null`. Lo dice el README; ningún
+   nombre público nuevo. Lo que un anfitrión pone y el sitio ya pone: `--font-sans` y
+   `--font-mono`, el body sin margen (el editor es `100svh`) y, para un sustituto, su propio
+   Tailwind. Las piezas solo pintan cuando el motor existe, tras montar: un prerender tiene zonas,
+   no piezas. En el repo: el `tsc` raíz comprueba los ejemplos contra el fuente salvo sus
+   `vite.config.ts`, y el `globals.css` del sitio salta `examples/` en la detección de Tailwind.
+   Hallado: las declaraciones del motor nombran tipos del DOM (`CadEngine` toma un canvas), así
+   que un proyecto Node sin `"dom"` en `lib` y con `skipLibCheck` apagado no compila (el ejemplo
+   deja el de `tsc --init`; el README lo dice). Hallado y sin tocar: `dispose()` cancela un
+   autoguardado pendiente (350 ms de debounce) y `CadEngine` no lo vacía al cerrar la página, así
+   que un anfitrión con `store` que desmonta o cierra justo tras editar pierde el último cambio. Dependencias: solo `@vitejs/plugin-react`
+   6.1.2, en el ejemplo (una dependencia, sin scripts de instalación, código leído). Medido en
+   producción contra fe02de1, cada build en un worktree limpio: los 38 ficheros de `.next/static`
+   iguales en nombre y bytes, sus manifiestos iguales, y las páginas prerenderizadas (HTML y RSC,
+   / y /draw en los tres idiomas entre ellas) iguales salvo el build id. Hallado y sin tocar (la
+   landing no debía cambiar): la figura de OTRACK se graba en el prerender esperando temporizadores
+   reales (la espera de 120 ms del rastreo), y con la máquina cargada sale sin la línea de rastreo
+   (dos builds de HEAD así, en /en y /ar; repetidos en calma, los seis commits dan la figura
+   entera). Lo que heredan la 6 y la 7: los
+   READMEs enlazan `examples/` y los otros READMEs por ruta relativa, que npm solo resuelve con
+   `repository` (y su `directory`) en el package.json; los rangos `^0.0.0` de los ejemplos
+   fallan el test en cuanto Changesets cambie una versión, así que la versión los mueve con ella;
+   «not published yet» sale de los tres READMEs; `check:hosts` necesita red, y el del editor
+   también Google Fonts (next/font).
 6. **Publicar el motor 0.1.0** — 2–3 días, tras la 2. Métricas de texto desde una fuente OFL,
    LICENSE MIT, nota de marca, auditoría del historial, Changesets, quitar `private`. Con el sí del
    dueño: repo público, primera publicación desde su máquina con 2FA, trusted publisher, y el CI de
