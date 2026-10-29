@@ -11,7 +11,7 @@ const DIRS = ["packages/editor/src"]
 
 /**
  * A size, weight, line height or tracking that is not a role of the scale
- * (`text-ui`, `text-title` in globals.css): a Tailwind size (`text-xs`,
+ * (`text-ui`, `text-title` in styles.css): a Tailwind size (`text-xs`,
  * `text-[11px]`), a weight (`font-semibold`), a `leading-*` or `tracking-*`.
  * The role carries all of them.
  */

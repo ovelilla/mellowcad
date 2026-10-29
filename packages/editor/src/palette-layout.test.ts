@@ -124,10 +124,7 @@ describe("the palette layout before the first paint", () => {
   })
 
   it("matches the CSS that decides without the script", () => {
-    const css = readFileSync(
-      new URL("../../../app/[locale]/(app)/globals.css", import.meta.url),
-      "utf8"
-    )
+    const css = readFileSync(new URL("./styles.css", import.meta.url), "utf8")
     expect(css).toContain(`@media (width >= ${PALETTE_OPEN_FROM}px)`)
     expect(css).toContain(`[${EDITOR_ROOT_ATTRIBUTE}][data-palette="open"] &`)
     expect(css).toContain(`--palette-width: ${PALETTE_WIDTH.initial}px;`)

@@ -1,192 +1,22 @@
 @import "tailwindcss";
-@import "tw-animate-css";
-@import "shadcn/tailwind.css";
+/* WHY by path: the site compiles the editor's source, as it imports its
+   modules (tsconfig's `paths`); `@mellowcad/editor/styles.css` is the
+   package's build, for hosts outside the repo. */
+@import "../../../packages/editor/src/styles.css";
 
 /* The landing has its own scoped entry (marketing.css); its classes are not the editor's. */
 @source not "../(marketing)";
 @source not "../../../components/marketing";
 @source not "../../global-not-found.tsx";
 
-/* One scheme, dark, like AutoCAD's own. The tokens below are its only values,
-   and `dark:` always applies, so shadcn's components render as they are
-   designed for it — those added with its CLI later too. */
-@custom-variant dark (&);
-
-/* A window too short for the whole tool palette, which then folds its
-   Annotation, Block and Utilities sections into a drop-down each. In CSS, so
-   the palette has its final height at the first paint. */
-@custom-variant short (@media (height < 700px));
-
-/* The palette panel open, before the engine exists: what the head script
-   wrote on the editor's root (packages/editor/src/palette-layout.ts), else the window's
-   width. In CSS, so the canvas has its final box at the first paint. */
-@custom-variant palette-open {
-  [data-mellowcad-editor][data-palette="open"] & {
-    @slot;
-  }
-  @media (width >= 1600px) {
-    [data-mellowcad-editor]:not([data-palette]) & {
-      @slot;
-    }
-  }
-}
-
-/* The chrome's type scale (.claude/rules/ui.md, "Type"): one body, as
-   AutoCAD's Segoe UI at 9 pt, its hierarchy in weight and colour. A role
-   carries its size, weight and line height; monospace is `font-mono` on
-   `text-ui`. Inline, so no variable of the editor's is left on the host's
-   :root. */
-@theme inline {
-  --text-ui: 0.75rem;
-  --text-ui--line-height: 1rem;
-  --text-ui--font-weight: 400;
-  --text-title: 0.75rem;
-  --text-title--line-height: 1rem;
-  --text-title--font-weight: 600;
-
-  /* The command line's temporary prompt lines, once their command ends: held
-     long enough to read a report, then gone. AutoCAD documents no time. */
-  --animate-prompt-fade: prompt-fade 6s ease-in forwards;
-  @keyframes prompt-fade {
-    0%,
-    70% {
-      opacity: 1;
-    }
-    100% {
-      opacity: 0;
-    }
-  }
-}
-
-@theme inline {
-  --font-heading: var(--font-sans);
-  --font-sans: var(--font-sans);
-  --color-faint-foreground: var(--faint-foreground);
-  --color-active-foreground: var(--active-foreground);
-  --color-sidebar-ring: var(--sidebar-ring);
-  --color-sidebar-border: var(--sidebar-border);
-  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
-  --color-sidebar-accent: var(--sidebar-accent);
-  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
-  --color-sidebar-primary: var(--sidebar-primary);
-  --color-sidebar-foreground: var(--sidebar-foreground);
-  --color-sidebar: var(--sidebar);
-  --color-chart-5: var(--chart-5);
-  --color-chart-4: var(--chart-4);
-  --color-chart-3: var(--chart-3);
-  --color-chart-2: var(--chart-2);
-  --color-chart-1: var(--chart-1);
-  --color-active: var(--active);
-  --color-ring: var(--ring);
-  --color-input: var(--input);
-  --color-border: var(--border);
-  --color-destructive: var(--destructive);
-  --color-accent-foreground: var(--accent-foreground);
-  --color-accent: var(--accent);
-  --color-muted-foreground: var(--muted-foreground);
-  --color-muted: var(--muted);
-  --color-secondary-foreground: var(--secondary-foreground);
-  --color-secondary: var(--secondary);
-  --color-primary-foreground: var(--primary-foreground);
-  --color-primary: var(--primary);
-  --color-popover-foreground: var(--popover-foreground);
-  --color-popover: var(--popover);
-  --color-card-foreground: var(--card-foreground);
-  --color-card: var(--card);
-  --color-foreground: var(--foreground);
-  --color-background: var(--background);
-  --radius-sm: calc(var(--radius) * 0.6);
-  --radius-md: calc(var(--radius) * 0.8);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) * 1.4);
-  --radius-2xl: calc(var(--radius) * 1.8);
-  --radius-3xl: calc(var(--radius) * 2.2);
-  --radius-4xl: calc(var(--radius) * 2.6);
-}
-
-/* The editor's tokens, on its root (packages/editor/src/editor-root.ts), never the host's
-   :root: its popups mount inside it (usePortalContainer). `--active`, the
-   grips' blue, is written there from THEME.grip. */
-[data-mellowcad-editor] {
-  /* The palette panel's width until one is remembered (PALETTE_WIDTH.initial). */
-  --palette-width: 280px;
-  --background: oklch(0.145 0 0);
-  --foreground: oklch(0.985 0 0);
-  --card: oklch(0.205 0 0);
-  --card-foreground: oklch(0.985 0 0);
-  --popover: oklch(0.205 0 0);
-  --popover-foreground: oklch(0.985 0 0);
-  --primary: oklch(0.922 0 0);
-  --primary-foreground: oklch(0.205 0 0);
-  --secondary: oklch(0.269 0 0);
-  --secondary-foreground: oklch(0.985 0 0);
-  --muted: oklch(0.269 0 0);
-  /* Text in three steps — foreground, muted-foreground, faint-foreground —
-     never a fraction of one: each keeps WCAG AA (4.5) on card, background,
-     accent, the canvas and the active blue; faint is the disabled and the
-     placeholder step. */
-  --muted-foreground: oklch(0.75 0 0);
-  --faint-foreground: oklch(0.65 0 0);
-  --accent: oklch(0.269 0 0);
-  --accent-foreground: oklch(0.985 0 0);
-  --destructive: oklch(0.704 0.191 22.216);
-  /* The accent's text: the blue itself reads 4.1:1 on its own 15 % tint. */
-  --active-foreground: color-mix(in oklab, var(--active), white 30%);
-  --border: oklch(1 0 0 / 10%);
-  --input: oklch(1 0 0 / 15%);
-  --ring: oklch(0.556 0 0);
-  --chart-1: oklch(0.87 0 0);
-  --chart-2: oklch(0.556 0 0);
-  --chart-3: oklch(0.439 0 0);
-  --chart-4: oklch(0.371 0 0);
-  --chart-5: oklch(0.269 0 0);
-  --radius: 0.625rem;
-  --sidebar: oklch(0.205 0 0);
-  --sidebar-foreground: oklch(0.985 0 0);
-  --sidebar-primary: oklch(0.488 0.243 264.376);
-  --sidebar-primary-foreground: oklch(0.985 0 0);
-  --sidebar-accent: oklch(0.269 0 0);
-  --sidebar-accent-foreground: oklch(0.985 0 0);
-  --sidebar-border: oklch(1 0 0 / 10%);
-  --sidebar-ring: oklch(0.556 0 0);
-  color-scheme: dark;
-}
-
+/* The page around the editor is the site's, as dark as it. */
 @layer base {
-  :where([data-mellowcad-editor], [data-mellowcad-editor] *) {
-    @apply border-border outline-ring/50;
-  }
-  /* Every text of the chrome starts as the body role, its popups included. */
-  [data-mellowcad-editor] {
-    @apply font-sans text-ui text-foreground;
-  }
-  :where([data-mellowcad-editor]) :is(button, [role="button"]):not(:disabled) {
-    cursor: pointer;
-  }
-  /* The page around the editor is the site's, as dark as it. */
   :root {
     color-scheme: dark;
   }
   body {
     background-color: oklch(0.145 0 0);
   }
-}
-
-/* Arabic (brief §8.2), unlayered so it outranks the utilities: tracking
-   breaks the joins of a cursive script, and the script has no capitals and no
-   italics. What speaks the command language carries its own `lang`. */
-:where([data-mellowcad-editor], [data-mellowcad-editor] *):lang(ar) {
-  letter-spacing: 0;
-  text-transform: none;
-  font-style: normal;
-}
-
-/* Readex Pro reaches 14 px above the baseline and 6 below at 12 px (lam-alef,
-   yeh, jeem): a 16 px line would clip it wherever the text truncates. The
-   command language's islands carry their own `lang` and keep 16. */
-[data-mellowcad-editor]:lang(ar),
-[data-mellowcad-editor] :is(.text-ui, .text-title):lang(ar) {
-  line-height: 1.25rem;
 }
 
 /* Arriving from the landing, its hero sheet grows into the canvas, which is

@@ -119,8 +119,8 @@ The tokens on the editor's root (`EDITOR_ROOT_ATTRIBUTE`) are the only values, n
 ## Type
 
 One body, as AutoCAD's Segoe UI at 9 pt: hierarchy is weight and colour, never size. The roles are
-tokens in `globals.css` (`@theme inline`), each one class carrying size, weight and line height;
-the editor's root starts every text, its popups too, as `text-ui text-foreground`.
+tokens in `packages/editor/src/styles.css` (`@theme inline`), each one class carrying size, weight
+and line height; the editor's root starts every text, its popups too, as `text-ui text-foreground`.
 
 | Role  | Classes                            | Size / weight / line | For                                                                                     |
 | ----- | ---------------------------------- | -------------------- | --------------------------------------------------------------------------------------- |
@@ -137,9 +137,9 @@ the editor's root starts every text, its popups too, as `text-ui text-foreground
 - **Monospace only for what is typed or read as a figure.** Labels stay sans, or an Arabic page
   draws them in Geist Mono's 0.6 em spaces with Readex Pro behind. No capitals or tracking for
   titles: sentence case.
-- **Arabic** (`:lang(ar)`, `globals.css`; this file owns it for the landing too): both roles take
-  a 20 px line — Readex Pro reaches 14 px above the baseline and 6 below at 12 px, and a 16 px line
-  clips it wherever a text truncates. The command language's islands carry `lang="en"` and keep
+- **Arabic** (`:lang(ar)`, the editor's `styles.css`; this file owns it for the landing too): both
+  roles take a 20 px line — Readex Pro reaches 14 px above the baseline and 6 below at 12 px, and a
+  16 px line clips it wherever a text truncates. The command language's islands carry `lang="en"` and keep
   16. Select by attributes, never `:dir()`: Lightning CSS lowers it to `:lang()` lists that match
   inside the islands too.
 - **Rhythm**: rows of palettes, menus and lists are 28 px (`h-7`; a menu item's `py-1.5`). Text

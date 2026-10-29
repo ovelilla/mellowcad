@@ -4,12 +4,7 @@ import { describe, expect, it } from "vitest"
 import { THEME } from "@mellowcad/engine"
 import { EDITOR_ROOT_ATTRIBUTE, EDITOR_THEME_STYLE } from "./editor-root"
 
-// The site's stylesheet holds the editor's tokens until the package ships its
-// own (docs/next-library.md, phase 4(e)).
-const css = readFileSync(
-  new URL("../../../app/[locale]/(app)/globals.css", import.meta.url),
-  "utf8"
-)
+const css = readFileSync(new URL("./styles.css", import.meta.url), "utf8")
 
 /** The custom properties declared by the rules whose selector is `selector`. */
 function declaredBy(selector: string): string[] {
