@@ -22,11 +22,28 @@ const HOSTS = [
   "cad",
   "components",
   "content",
+  "examples",
   "i18n",
   "lib",
   "packages",
   "test",
 ]
+
+/** Every package of ours, the engine included, with its folder and version. */
+const ALL = [
+  {
+    dir: "cad",
+    ...readJson<{ name: string; version: string }>("cad/package.json"),
+  },
+  ...PACKAGES.map(({ dir }) => ({
+    dir,
+    ...readJson<{ name: string; version: string }>(`${dir}/package.json`),
+  })),
+]
+
+function readJson<T>(file: string): T {
+  return JSON.parse(readFileSync(path.join(ROOT, file), "utf8")) as T
+}
 
 /** `from "…"`, `import "…"`, `import("…")` and `export … from "…"`. */
 const SPECIFIER = /(?:\bfrom\s*|\bimport\s*\(\s*|\bimport\s+)["']([^"']+)["']/g
@@ -114,5 +131,38 @@ describe("the workspace packages", () => {
       }
     }
     expect(outside).toEqual([])
+  })
+})
+
+type Manifest = {
+  dependencies?: Record<string, string>
+  devDependencies?: Record<string, string>
+}
+
+const EXAMPLES = readdirSync(path.join(ROOT, "examples")).map((dir) => ({
+  dir: `examples/${dir}`,
+  ...readJson<Manifest>(`examples/${dir}/package.json`),
+}))
+
+describe("the examples", () => {
+  // WHY: they are not workspaces (their tools stay out of the lockfile), so
+  // nothing else moves their versions: `check:hosts` installs them as they
+  // are, and a stranger copies them.
+  it("ask for our packages at their version and for the repo's tools at its range", () => {
+    const root = readJson<Manifest>("package.json")
+    const repo = { ...root.dependencies, ...root.devDependencies }
+    const stale: string[] = []
+    for (const { dir, dependencies = {}, devDependencies = {} } of EXAMPLES) {
+      for (const [name, range] of Object.entries({
+        ...dependencies,
+        ...devDependencies,
+      })) {
+        const ours = ALL.find((pkg) => pkg.name === name)
+        const want = ours ? `^${ours.version}` : repo[name]
+        if (want !== undefined && range !== want)
+          stale.push(`${dir}: ${name} ${range}, not ${want}`)
+      }
+    }
+    expect(stale).toEqual([])
   })
 })

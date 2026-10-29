@@ -29,7 +29,7 @@
   "scripts": {
     "build": "tsdown",
     "check": "publint --strict && attw --pack . --profile esm-only",
-    "check:hosts": "node ../scripts/engine/hosts.ts",
+    "check:hosts": "node ../scripts/packages/hosts.ts",
     "prepublishOnly": "npm run check:hosts"
   },
   "dependencies": {

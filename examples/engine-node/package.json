@@ -1,0 +1,16 @@
+{
+  "name": "mellowcad-engine-node",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "start": "node main.ts",
+    "typecheck": "tsc"
+  },
+  "dependencies": {
+    "@mellowcad/engine": "^0.0.0"
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "typescript": "^5"
+  }
+}

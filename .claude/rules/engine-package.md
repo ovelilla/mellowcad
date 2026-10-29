@@ -16,6 +16,7 @@ paths:
   - "scripts/packages/**"
   - "scripts/editor/**"
   - "packages/editor/src/styles.css"
+  - "examples/**"
 ---
 
 # The packages
@@ -68,9 +69,14 @@ instance; so is `@mellowcad/react` of the editor.
 - **The commit gate builds and checks each package**: `npm run build -w cad`, then
   `npm run check -w cad` (publint `--strict`, attw's `esm-only` profile); the same in each of
   packages/, about 8 s in all, and a package without both scripts fails it
-  (`test/packages.test.ts`). Installing the tarball in foreign hosts (Node ESM, `tsc`, Vite) needs
-  the network, so it is `npm run check:hosts -w cad` (`scripts/engine/hosts.ts`), which
-  `prepublishOnly` runs; the other packages get theirs with the examples (phase 5).
+  (`test/packages.test.ts`). Installing the tarballs in foreign hosts needs the network, so it is
+  each package's `check:hosts` (`npm run check:hosts -w cad`, `scripts/packages/hosts.ts`),
+  which its `prepublishOnly` runs: the engine's in Node, `tsc` and Vite (~15 s); the other
+  packages get theirs with their examples. A host is an example wherever one fits.
+- **`examples/` are the hosts a stranger copies**, and what `check:hosts` installs: not
+  workspaces, so their tools stay out of the lockfile; `test/packages.test.ts` holds their ranges
+  of our packages at `^version` and of a tool the repo also has at the root's. The root `tsc`
+  checks them against the source.
 - **`@mellowcad/editor` is built with the React Compiler**, as the site compiles it (Next's
   defaults): `@rolldown/plugin-babel` runs `babel-plugin-react-compiler` before Oxc, and its
   `check` passes `--compiled`, which fails a `dist` module with JSX that does not import

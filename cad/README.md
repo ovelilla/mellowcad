@@ -42,6 +42,41 @@ The defaults are safe on any page:
   also holds the host's controls for the canvas, or `"document"` to take the whole page wherever
   focus sits, as the editor does.
 
+## Without a browser
+
+`CadDriver` drives the same engine with no canvas, as a user would: commands typed, clicks in world
+coordinates, keys. It runs in Node, on a server or in a test:
+
+```ts examples/engine-node/main.ts
+import { writeFileSync } from "node:fs"
+
+import { CadDriver, SvgScenePresenter } from "@mellowcad/engine"
+
+// The engine with no browser: typed commands and clicks in world
+// coordinates, as a user would draw them. SAVE hands the drawing file to the
+// host's transport, which here writes it to disk.
+const cad = new CadDriver({
+  files: {
+    save: (text, fileName) => writeFileSync(fileName, text),
+    open: async () => null,
+  },
+})
+
+cad.command("RECTANG").click({ x: 0, y: 0 }).click({ x: 200, y: 100 })
+cad.command("CIRCLE").click({ x: 100, y: 50 }).type("30").enter()
+cad.command("SAVE")
+
+// What the canvas would show, as an SVG document.
+writeFileSync("drawing.svg", new SvgScenePresenter().render(cad.scene()))
+
+console.log(cad.commandLog().join("\n"))
+cad.dispose()
+```
+
+That is [`examples/engine-node`](../examples/engine-node), run with `node main.ts`. The package's
+declarations name DOM types (`CadEngine` takes a canvas): a TypeScript project that checks them
+(`skipLibCheck` off) has `"dom"` in its `lib`, even in Node.
+
 ## Languages
 
 ### Two languages in one
