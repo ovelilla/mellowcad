@@ -50,9 +50,9 @@ function* walk(dir: string): Generator<string> {
   }
 }
 
-/** Every size off the system, outside comments, as `file:line match`. */
-function offSystem(): string[] {
-  const found: string[] = []
+/** Every size off the system, outside comments, as `[file, line, match]`. */
+function offSystem(): [string, number, string][] {
+  const found: [string, number, string][] = []
   for (const dir of DIRS) {
     for (const file of walk(path.join(ROOT, dir))) {
       const rel = path.relative(ROOT, file).split(path.sep).join("/")
@@ -63,8 +63,7 @@ function offSystem(): string[] {
       source.split(/\r?\n/).forEach((line, index) => {
         const code = line.replace(/(^|\s)\/\/.*$/, "")
         for (const match of code.matchAll(OFF_SYSTEM)) {
-          if (ALLOWED[rel]?.[match[0]] === undefined)
-            found.push(`${rel}:${index + 1} ${match[0]}`)
+          found.push([rel, index + 1, match[0]])
         }
       })
     }
@@ -89,7 +88,24 @@ function buttonSizes(): Record<string, string> {
 
 describe("control sizes", () => {
   it("sizes every control by the system", () => {
-    expect(offSystem()).toEqual([])
+    const unexplained = offSystem()
+      .filter(([file, , match]) => ALLOWED[file]?.[match] === undefined)
+      .map(([file, line, match]) => `${file}:${line} ${match}`)
+    expect(unexplained).toEqual([])
+  })
+
+  // An exception left behind by a move or a fix would excuse the next one.
+  it("keeps no exception that matches nothing", () => {
+    const found = offSystem()
+    const orphans = Object.entries(ALLOWED).flatMap(([file, allowed]) =>
+      Object.keys(allowed)
+        .filter(
+          (match) =>
+            !found.some(([at, , seen]) => at === file && seen === match)
+        )
+        .map((match) => `${file} ${match}`)
+    )
+    expect(orphans).toEqual([])
   })
 
   it("gives Button only the system's sizes", () => {

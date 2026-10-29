@@ -71,4 +71,36 @@ describe("the workspace packages", () => {
     }
     expect(deep).toEqual([])
   })
+
+  // WHY: in the repo `@/` resolves to the root, so a package file importing
+  // `@/lib/utils` still compiles, against the site's copy, and breaks only
+  // once the package is installed somewhere else. Tests are not shipped and
+  // may reach the repo's `test/` and `scripts/`.
+  it("reach their own files relatively and anything else by its name", () => {
+    const outside: string[] = []
+    for (const { dir } of PACKAGES) {
+      for (const file of walk(path.join(ROOT, dir))) {
+        const at = path.relative(ROOT, file).split(path.sep).join("/")
+        const shipped =
+          !/\.test\.tsx?$/.test(at) && !/\/tsdown\.config\.ts$/.test(at)
+        for (const [, specifier] of readFileSync(file, "utf8").matchAll(
+          SPECIFIER
+        )) {
+          if (specifier.startsWith("@/")) {
+            outside.push(`${at}: ${specifier}`)
+            continue
+          }
+          if (!specifier.startsWith(".")) continue
+          const into = path
+            .relative(ROOT, path.resolve(path.dirname(file), specifier))
+            .split(path.sep)
+            .join("/")
+          const own = into.startsWith(`${dir}/`)
+          const allowed = own || (!shipped && /^(test|scripts)\//.test(into))
+          if (!allowed) outside.push(`${at}: ${specifier}`)
+        }
+      }
+    }
+    expect(outside).toEqual([])
+  })
 })

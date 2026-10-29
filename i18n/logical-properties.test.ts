@@ -25,9 +25,6 @@ const PHYSICAL_SIDE = /\bside(?:\s*=\s*|\??:\s*)["'](?:left|right)["']/g
  * one anywhere fails until it is made logical or argued for here.
  */
 const ALLOWED: Record<string, Record<string, string>> = {
-  "components/cad/cad-workspace.tsx": {
-    "left-1/2": "centred with -translate-x-1/2: symmetric",
-  },
   "components/cad/view-cube.tsx": {
     'side: "left"': "the cube's triangles, keyed to the sides of the screen",
     'side: "right"': "the cube's triangles, keyed to the sides of the screen",
@@ -49,6 +46,7 @@ const ALLOWED: Record<string, Record<string, string>> = {
 function* walk(dir: string): Generator<string> {
   for (const entry of readdirSync(dir, { withFileTypes: true })) {
     const full = path.join(dir, entry.name)
+    if (entry.name === "dist" || entry.name === "node_modules") continue
     if (entry.isDirectory()) yield* walk(full)
     else if (
       /\.(tsx|ts|css)$/.test(entry.name) &&
@@ -61,7 +59,7 @@ function* walk(dir: string): Generator<string> {
 /** Every physical side outside comments, as `file → [match, line]`. */
 function physicalSides(): Map<string, [string, number][]> {
   const found = new Map<string, [string, number][]>()
-  for (const dir of ["components", "app"]) {
+  for (const dir of ["components", "app", "packages"]) {
     for (const file of walk(path.join(ROOT, dir))) {
       const rel = path.relative(ROOT, file).split(path.sep).join("/")
       // Comments go, keeping the line numbers: they may well say "right-click".
@@ -98,5 +96,16 @@ describe("logical properties (RTL)", () => {
       }
     }
     expect(unexplained).toEqual([])
+  })
+
+  // An exception left behind by a move or a fix would excuse the next one.
+  it("keeps no exception that matches nothing", () => {
+    const found = physicalSides()
+    const orphans = Object.entries(ALLOWED).flatMap(([file, allowed]) =>
+      Object.keys(allowed)
+        .filter((match) => !found.get(file)?.some(([seen]) => seen === match))
+        .map((match) => `${file} ${match}`)
+    )
+    expect(orphans).toEqual([])
   })
 })
