@@ -25,6 +25,7 @@ import { SnapType } from "../application/snapping/types"
 import { ConstraintType } from "../application/constraints/types"
 import type { ViewPreset } from "../application/tools/viewPresets"
 import type { ZoomOption } from "../application/tools/zoomMenu"
+import type { PointerModifiers } from "../application/CadDriver"
 import type {
   CompassLetter,
   ViewCubePart,
@@ -166,10 +167,6 @@ export class CadEngine {
 
   redo(): void {
     this.runtime.redo()
-  }
-
-  runUndoMacro(): void {
-    this.runtime.runUndoMacro()
   }
 
   zoomIn(): void {
@@ -408,26 +405,21 @@ export class CadEngine {
     this.runtime.setActiveDynamicField(fieldId)
   }
 
-  commitDynamicInput(): void {
-    this.runtime.commitDynamicInput()
-  }
-
   invokeToolOption(input: string): boolean {
     return this.runtime.invokeToolOption(input)
   }
 
-  /** Tab at a point prompt: the next object snap under the cursor, if any. */
-  cycleSnap(): boolean {
-    return this.runtime.cycleSnap()
-  }
-
-  /** A key typed in the box, for the prompt's option list: whether it took it. */
-  dynamicOptionKey(key: string): boolean {
-    return this.runtime.dynamicOptionKey(key)
-  }
-
-  cancelDynamicInput(): void {
-    this.runtime.cancelDynamicInput()
+  /**
+   * A key in a field of the host's dynamic input, by the field's id: whether
+   * the engine took it (prevent the browser's). After a Tab the host moves
+   * focus to the field now active.
+   */
+  dynamicInputKey(
+    fieldId: string,
+    key: string,
+    modifiers?: Omit<PointerModifiers, "button">
+  ): boolean {
+    return this.runtime.dynamicInputKey(fieldId, key, modifiers)
   }
 
   setCommandLineText(text: string): void {

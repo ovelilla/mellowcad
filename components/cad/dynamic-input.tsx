@@ -120,14 +120,8 @@ export function DynamicInput({
                   engine.setDynamicInputText(e.target.value, field.id)
                 }
                 onKeyDown={(e) => {
-                  // Enter breaks a paragraph, as in AutoCAD's editor; Ctrl+Enter
-                  // closes it and keeps the text.
-                  if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+                  if (engine.dynamicInputKey(field.id, e.key, modifiers(e))) {
                     e.preventDefault()
-                    engine.commitDynamicInput()
-                  } else if (e.key === "Escape") {
-                    e.preventDefault()
-                    engine.cancelDynamicInput()
                   }
                 }}
                 className="field-sizing-content max-h-48 w-72 resize-none bg-transparent font-mono text-foreground outline-none"
@@ -151,83 +145,22 @@ export function DynamicInput({
                   engine.setDynamicInputText(e.target.value, field.id)
                 }
                 onKeyDown={(e) => {
-                  const value = field.kind !== "text"
-                  // A name or string that holds spaces takes one after what
-                  // is typed, as the command line does (desktop workspace/d06).
-                  const spaceEnters =
-                    value &&
-                    !(
-                      state.commandLine.takesSpaces && field.value.trim() !== ""
-                    )
-                  if (
-                    !e.ctrlKey &&
-                    !e.metaKey &&
-                    !e.altKey &&
-                    engine.dynamicOptionKey(e.key)
-                  ) {
-                    // The Down arrow's option list takes its own keys first.
-                    e.preventDefault()
-                  } else if (
-                    e.key === "Enter" ||
-                    (e.key === " " && spaceEnters)
-                  ) {
-                    // Space is Enter in a value box, as at AutoCAD's prompt.
-                    e.preventDefault()
-                    engine.commitDynamicInput()
-                  } else if (
-                    value &&
-                    field.value === "" &&
-                    (e.ctrlKey || e.metaKey) &&
-                    !e.shiftKey &&
-                    e.key.toLowerCase() === "z"
-                  ) {
-                    // Ctrl+Z with nothing typed is the drawing's `_u`, typed
-                    // at the prompt, rather than the box's own.
-                    e.preventDefault()
-                    engine.runUndoMacro()
-                  } else if (e.key === "Escape") {
-                    e.preventDefault()
-                    engine.cancelDynamicInput()
-                  } else if (
-                    e.key === "Tab" &&
-                    !e.shiftKey &&
-                    field.value === "" &&
-                    engine.cycleSnap()
-                  ) {
-                    // While an object snap is shown and nothing is typed, Tab
-                    // cycles the snaps under the cursor, as in AutoCAD.
-                    e.preventDefault()
-                  } else if (
-                    e.key === "Tab" &&
-                    !e.shiftKey &&
-                    field.kind === "coordinate" &&
-                    field.value.trim() !== "" &&
-                    !/[,<]/.test(field.value)
-                  ) {
-                    // The first point's X, then Tab, then its Y: "Tab can
-                    // replace the comma".
-                    e.preventDefault()
-                    engine.setDynamicInputText(`${field.value},`, field.id)
-                  } else if (e.key === "Tab" && di.fields.length > 1) {
-                    // Cycle between fields (e.g. Length <-> Angle), AutoCAD-style.
-                    // Move DOM focus directly so the focus effect's "already on a
-                    // dynamic field" guard doesn't fight the switch.
-                    e.preventDefault()
-                    const idx = di.fields.findIndex((f) => f.id === field.id)
-                    const step = e.shiftKey ? -1 : 1
-                    const nextIdx =
-                      (idx + step + di.fields.length) % di.fields.length
-                    const next = di.fields[nextIdx]
-                    engine.setActiveDynamicField(next.id)
-                    const container = e.currentTarget.closest(
-                      "[data-dynamic-input]"
-                    )
-                    const inputs = container?.querySelectorAll("input")
-                    const nextInput = inputs?.[nextIdx] as
-                      HTMLInputElement | undefined
-                    nextInput?.focus()
-                    nextInput?.select()
+                  if (!engine.dynamicInputKey(field.id, e.key, modifiers(e))) {
+                    return
                   }
+                  e.preventDefault()
+                  if (e.key !== "Tab") return
+                  // A Tab to another field (Length and Angle): focus follows
+                  // it here, since the refocus effect never moves focus from
+                  // one field to another.
+                  const fields = engine.getState().dynamicInput?.fields ?? []
+                  const next = fields.findIndex((f) => f.active)
+                  if (next === -1 || fields[next].id === field.id) return
+                  const inputs = e.currentTarget
+                    .closest("[data-dynamic-input]")
+                    ?.querySelectorAll("input")
+                  inputs?.[next]?.focus()
+                  inputs?.[next]?.select()
                 }}
                 className={`bg-transparent font-mono text-foreground outline-none placeholder:text-faint-foreground ${
                   typedAsText ? "w-48" : "w-16"
@@ -280,6 +213,15 @@ export function DynamicInput({
       )}
     </div>
   )
+}
+
+/** A field's modifiers for the engine: the Mac's Command is Ctrl there. */
+function modifiers(e: React.KeyboardEvent) {
+  return {
+    shiftKey: e.shiftKey,
+    ctrlKey: e.ctrlKey || e.metaKey,
+    altKey: e.altKey,
+  }
 }
 
 /** Where `field-sizing` is not supported: roughly the rows the text wraps to. */

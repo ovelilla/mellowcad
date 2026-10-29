@@ -4730,6 +4730,83 @@ export class CadRuntime extends Observable {
   }
 
   /**
+   * A key pressed in a field of the dynamic input the host shows, by the
+   * field's id (`EngineState.dynamicInput.fields`), whose text it types
+   * through `setDynamicInputText`: whether the engine took the key. The
+   * drawing's keys never reach the runtime from a field, so the field's
+   * Enter, Space, Ctrl+Z and Tab are routed here as AutoCAD's box has them.
+   * A Tab that moves to another field makes it the active one: the host
+   * moves its focus there.
+   */
+  dynamicInputKey(
+    fieldId: string,
+    key: string,
+    modifiers: {
+      readonly shiftKey?: boolean
+      readonly ctrlKey?: boolean
+      readonly altKey?: boolean
+    } = {}
+  ): boolean {
+    const fields = this.stateSnapshot.dynamicInput?.fields ?? []
+    const field = fields.find((entry) => entry.id === fieldId)
+    if (!field) return false
+    const { shiftKey = false, ctrlKey = false, altKey = false } = modifiers
+    // Enter breaks a paragraph, as in AutoCAD's editor; Ctrl+Enter closes it
+    // and keeps the text.
+    if (field.kind === "paragraphs") {
+      if (key === "Enter" && ctrlKey) this.commitDynamicInput()
+      else if (key === "Escape") this.cancelDynamicInput()
+      else return false
+      return true
+    }
+    const typed = field.value
+    const value = field.kind !== "text"
+    // A name or string that holds spaces takes one after what is typed, as
+    // the command line does (desktop workspace/d06).
+    const spaceEnters = value && !(this.takesSpaces() && typed.trim() !== "")
+    // The Down arrow's option list takes its own keys first.
+    if (!ctrlKey && !altKey && this.dynamicOptionKey(key)) return true
+    if (key === "Enter" || (key === " " && spaceEnters)) {
+      this.commitDynamicInput()
+    } else if (
+      value &&
+      typed === "" &&
+      ctrlKey &&
+      !shiftKey &&
+      key.toLowerCase() === "z"
+    ) {
+      // With nothing typed, the drawing's `_u` at the prompt, not the box's.
+      this.runUndoMacro()
+    } else if (key === "Escape") {
+      this.cancelDynamicInput()
+    } else if (key !== "Tab") {
+      return false
+    } else if (!shiftKey && typed === "" && this.cycleSnap()) {
+      // While an object snap is shown and nothing is typed, Tab cycles the
+      // snaps under the cursor.
+    } else if (
+      !shiftKey &&
+      field.kind === "coordinate" &&
+      typed.trim() !== "" &&
+      !/[,<]/.test(typed)
+    ) {
+      // The first point's X, then Tab, then its Y: "Tab can replace the
+      // comma".
+      this.setDynamicInputText(`${typed},`, field.id)
+    } else if (fields.length > 1) {
+      // Between fields (Length and Angle), Shift+Tab backwards.
+      const at = fields.indexOf(field)
+      const step = shiftKey ? -1 : 1
+      this.setActiveDynamicField(
+        fields[(at + step + fields.length) % fields.length].id
+      )
+    } else {
+      return false
+    }
+    return true
+  }
+
+  /**
    * Enter in the dynamic-input box. What is typed is submitted, an untyped
    * field beside it taking the cursor's reading (direct distance). With nothing
    * typed it is Enter at the Command prompt ("the actions required to complete

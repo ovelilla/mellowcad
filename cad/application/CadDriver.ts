@@ -4,7 +4,7 @@ import { ConstraintType } from "./constraints/types"
 import { abbreviationOf } from "../i18n/keywords"
 import { KEYWORD_IDS } from "../locales/keywordIds"
 import type { EngineLocale } from "../locales/types"
-import type { EngineState } from "./EngineState"
+import type { DynamicInputFieldUi, EngineState } from "./EngineState"
 import type {
   Clipboard,
   DrawingStore,
@@ -315,31 +315,41 @@ export class CadDriver {
    */
   arrow(direction: "up" | "down"): this {
     const key = direction === "up" ? "ArrowUp" : "ArrowDown"
-    if (this.hasFocusedField()) this.runtime.dynamicOptionKey(key)
+    const field = this.focusedField()
+    if (field) this.runtime.dynamicInputKey(field.id, key)
     else this.press(key)
     return this
   }
 
-  /** Enter: commits dynamic input when open, otherwise goes to the runtime. */
+  /**
+   * Enter: the focused box's, else the drawing's. A paragraphs box takes
+   * Enter as a line break, so it gets Ctrl+Enter, which closes it.
+   */
   enter(): this {
-    if (this.hasFocusedField()) {
-      if (this.runtime.dynamicOptionKey("Enter")) return this
-      this.runtime.commitDynamicInput()
+    const field = this.focusedField()
+    if (field) {
+      this.runtime.dynamicInputKey(field.id, "Enter", {
+        ctrlKey: field.kind === "paragraphs",
+      })
     } else {
       this.press("Enter")
     }
     return this
   }
 
-  /** Escape: cancels dynamic input when open, otherwise goes to the runtime. */
+  /** Escape: the focused box's, else the drawing's. */
   escape(): this {
-    if (this.hasFocusedField()) {
-      if (this.runtime.dynamicOptionKey("Escape")) return this
-      this.runtime.cancelDynamicInput()
-    } else {
-      this.press("Escape")
-    }
+    const field = this.focusedField()
+    if (field) this.runtime.dynamicInputKey(field.id, "Escape")
+    else this.press("Escape")
     return this
+  }
+
+  /** The dynamic-input field that holds the keyboard, as the UI focuses it. */
+  private focusedField(): DynamicInputFieldUi | null {
+    if (!this.hasFocusedField()) return null
+    const fields = this.state().dynamicInput?.fields ?? []
+    return fields.find((field) => field.active) ?? fields[0] ?? null
   }
 
   /**

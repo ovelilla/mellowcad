@@ -101,7 +101,6 @@ export declare class CadEngine {
     newDrawing(): void;
     undo(): void;
     redo(): void;
-    runUndoMacro(): void;
     zoomIn(): void;
     zoomOut(): void;
     resetView(): void;
@@ -155,11 +154,8 @@ export declare class CadEngine {
     setSelectionProperty(property: EntityProperty, text: string): boolean;
     setDynamicInputText(text: string, fieldId?: string): void;
     setActiveDynamicField(fieldId: string): void;
-    commitDynamicInput(): void;
     invokeToolOption(input: string): boolean;
-    cycleSnap(): boolean;
-    dynamicOptionKey(key: string): boolean;
-    cancelDynamicInput(): void;
+    dynamicInputKey(fieldId: string, key: string, modifiers?: Omit<PointerModifiers, "button">): boolean;
     setCommandLineText(text: string): void;
     runCommand(name: string): boolean;
     applyViewPreset(preset: ViewPreset): boolean;
