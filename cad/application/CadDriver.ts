@@ -2,7 +2,7 @@ import { CadRuntime } from "./CadRuntime"
 import { toolCommand } from "./runtimeCommands"
 import { ConstraintType } from "./constraints/types"
 import { abbreviationOf } from "../i18n/keywords"
-import source from "../locales/en.json"
+import { KEYWORD_IDS } from "../locales/keywordIds"
 import type { EngineLocale } from "../locales/types"
 import type { EngineState } from "./EngineState"
 import type {
@@ -370,8 +370,7 @@ export class CadDriver {
     const tool = this.runtime.listTools().find((t) => t.id === toolId)
     const command = tool === undefined ? null : toolCommand(tool)
     const text = this.runtime.text
-    const inventory: Readonly<Record<string, object>> = source.commands.keywords
-    if (command === null || !(id in (inventory[command] ?? {}))) {
+    if (command === null || !KEYWORD_IDS[command]?.includes(id)) {
       throw new Error(`"${id}" is not a keyword of ${command ?? toolId}.`)
     }
     const offered = this.state().commandOptions.find(

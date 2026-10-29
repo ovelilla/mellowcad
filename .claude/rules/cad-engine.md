@@ -34,8 +34,7 @@ what an integrator reads: keep it true. Exports carry their types: `engine-packa
 
 - **Every word the engine shows is in `cad/locales/en.json`**: a tool names prompts and keywords by
   id and reads them through `ctx.text`; displayed text is read only through `EngineText` (the
-  compiled `cad/locales/en.ts`). `CadDriver` imports `en.json` only to check that a keyword id
-  exists.
+  compiled `cad/locales/en.ts`). Product code imports `en.json` only as a type: a value ships raw.
 - **`domain/` exposes ids, never display names** (colours, linetypes, hatch patterns, `ByLayer`);
   data names stay data (layer, style and block names). A failure a user reads is a code
   (`DrawingFileError.code`). Lengths and angles never go through `Intl`: `formatLength` /

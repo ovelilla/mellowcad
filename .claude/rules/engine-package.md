@@ -6,6 +6,7 @@ paths:
   - "cad/tsdown.config.ts"
   - "cad/tsconfig.build.json"
   - "cad/locales/en.d.json.ts"
+  - "cad/locales/keywordIds.ts"
 ---
 
 # The engine package
@@ -31,7 +32,9 @@ paths:
   is annotated; `as const satisfies` is refused (TS9010). `npm run typecheck` does not see it, the
   build does.
 - **`cad/locales/en.d.json.ts` is `en.json`'s type**, written by `npm run locales` because Oxc
-  cannot read a JSON module; `cad/locales/locales.test.ts` fails on drift. Never edit it.
+  cannot read a JSON module; `cad/locales/locales.test.ts` fails on drift. Never edit it. Nor
+  `cad/locales/keywordIds.ts`, the keyword ids `CadDriver` checks: importing `en.json` itself
+  shipped the raw catalog, 68 KB, to every page using the driver.
 - **`cad/api.md` is the public surface**, every export with its signature and every type they
   reach, written by `cad/api.test.ts`; any change fails it until `-u`. Read its diff as a version:
   a new name is a minor, a changed or removed one a major. A name joins `cad/index.ts` only when a

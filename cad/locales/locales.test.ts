@@ -16,6 +16,7 @@ import {
   localeModule,
   readCatalog,
   sourceDeclaration,
+  keywordIdsModule,
 } from "../../scripts/locales/compile"
 import { TOOL_COMMANDS } from "../application/CommandLine"
 import { abbreviationOf } from "../i18n/keywords"
@@ -66,6 +67,8 @@ describe("the engine's catalogs", () => {
     }
     const declaration = readFileSync(join(LOCALES_DIR, "en.d.json.ts"), "utf8")
     expect(declaration).toBe(sourceDeclaration(readCatalog("en")))
+    const keywordIds = readFileSync(join(LOCALES_DIR, "keywordIds.ts"), "utf8")
+    expect(keywordIds).toBe(keywordIdsModule(readCatalog("en")))
   })
 
   it("hold ICU that the message parser accepts", () => {

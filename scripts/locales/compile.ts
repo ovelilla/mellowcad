@@ -154,6 +154,30 @@ export function sourceDeclaration(source: Record<string, Json>): string {
   ].join("\n")
 }
 
+/**
+ * The text of `cad/locales/keywordIds.ts`: every command's keyword ids, the
+ * inventory in `en.json` that `CadDriver` checks an option against.
+ *
+ * WHY generated: English's module leaves out the keywords spelled as their
+ * id, and importing `en.json` itself shipped the whole raw catalog (68 KB)
+ * to every page using the driver.
+ */
+export function keywordIdsModule(source: Record<string, Json>): string {
+  const commands = source.commands as Record<string, Json>
+  const keywords = commands.keywords as Record<string, Record<string, Json>>
+  const ids = Object.fromEntries(
+    Object.entries(keywords).map(([command, table]) => [
+      command,
+      Object.keys(table),
+    ])
+  )
+  return [
+    "// Generated from en.json by `npm run locales`. Do not edit.",
+    `export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = ${JSON.stringify(ids, null, 2)}`,
+    "",
+  ].join("\n")
+}
+
 export function catalogTags(): string[] {
   return readdirSync(LOCALES_DIR)
     .filter((file) => file.endsWith(".json"))
@@ -177,4 +201,9 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
     sourceDeclaration(readCatalog("en"))
   )
   console.log("cad/locales/en.d.json.ts")
+  writeFileSync(
+    resolve(LOCALES_DIR, "keywordIds.ts"),
+    keywordIdsModule(readCatalog("en"))
+  )
+  console.log("cad/locales/keywordIds.ts")
 }
