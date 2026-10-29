@@ -49,11 +49,11 @@ instance; so is `@mellowcad/react` of the editor.
   editor's (`packages/editor/src/locales/`, the same way). Nor
   `cad/locales/keywordIds.ts`, the keyword ids `CadDriver` checks: importing `en.json` itself
   shipped the raw catalog, 68 KB, to every page using the driver.
-- **A package's `api.md` is its public surface** (`cad/api.md`, `packages/react/api.md`), every
-  export with its signature and every type of its own they reach, written by its `api.test.ts`
-  through `test/apiReport.ts`; any change fails it until `-u`. Read its diff as a version:
-  a new name is a minor, a changed or removed one a major. A name joins `cad/index.ts` only when a
-  host uses it; a public member only the engine's tests need is
+- **A package's `api.md` is its public surface** (`cad/api.md`, `packages/react/api.md`,
+  `packages/editor/api.md`), every export with its signature and every type of its own they
+  reach, written by its `api.test.ts` through `test/apiReport.ts`; any change fails it until
+  `-u`. Read its diff as a version: a new name is a minor, a changed or removed one a major. A
+  name joins a barrel only when a host uses it; a public member only the engine's tests need is
   `/** @internal */`, which the build strips (`stripInternal`), as `CadDriver.runtime` is.
 - **A module that uses React starts with `"use client"`**, kept in its own `dist` module
   (`scripts/packages/client-directive.ts`, in `check`): one with a hook or JSX, which under the
