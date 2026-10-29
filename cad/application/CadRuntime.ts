@@ -358,18 +358,18 @@ type FramedPart =
  * {@link EngineHost} and {@link DrawingStore} ports.
  */
 export class CadRuntime extends Observable {
-  readonly document = new CadDocument()
-  readonly viewport = new Viewport()
-  readonly selection = new Selection()
-  readonly snapping = new SnapEngine()
-  readonly snapMode = new SnapMode()
-  readonly cycling = new SelectionCycling()
-  readonly constraints = new ConstraintManager(this.viewport)
-  readonly tracking = new ObjectSnapTrackingEngine()
-  readonly parallelRefs = new ParallelReferenceEngine()
-  readonly dynamicInput = new DynamicInputController()
-  readonly commandLine = new CommandLineController()
-  readonly history = new CommandHistory(this.document)
+  readonly document: CadDocument = new CadDocument()
+  readonly viewport: Viewport = new Viewport()
+  readonly selection: Selection = new Selection()
+  readonly snapping: SnapEngine = new SnapEngine()
+  readonly snapMode: SnapMode = new SnapMode()
+  readonly cycling: SelectionCycling = new SelectionCycling()
+  readonly constraints: ConstraintManager = new ConstraintManager(this.viewport)
+  readonly tracking: ObjectSnapTrackingEngine = new ObjectSnapTrackingEngine()
+  readonly parallelRefs: ParallelReferenceEngine = new ParallelReferenceEngine()
+  readonly dynamicInput: DynamicInputController = new DynamicInputController()
+  readonly commandLine: CommandLineController = new CommandLineController()
+  readonly history: CommandHistory = new CommandHistory(this.document)
 
   private readonly host: EngineHost
   private readonly resolver: PointResolver
@@ -3289,7 +3289,7 @@ export class CadRuntime extends Observable {
     return this.viewport.restorePrevious()
   }
 
-  zoomToFit(padding = EXTENTS_MARGIN_PX): void {
+  zoomToFit(padding: number = EXTENTS_MARGIN_PX): void {
     this.viewport.pushHistory()
     const bounds = entitiesViewBounds(
       this.document.getEntities(),

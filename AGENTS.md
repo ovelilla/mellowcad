@@ -24,11 +24,12 @@ engine; Next.js/React is only a presentation shell around it.
 | Catalogs   | `npm run locales` after editing `cad/locales/<tag>.json`       |
 | Knowledge  | `npm run knowledge` (in `npm test`; prints the rules per file) |
 
-`typecheck` + `lint` + `format:check` + `test:coverage` must pass before a change is done;
-`.githooks/pre-commit` runs exactly that. CI (`.github/workflows/ci.yml`) is off since 2026-10-18
-(billing), so the hook is the only gate: never `--no-verify` unless the same checks just passed in
-a clean worktree. `npm run build` is outside the gate (it fights the dev server over `.next`):
-whether a route compiles, ask the running dev server through the MCP `next-devtools`.
+`typecheck` + the engine's build and check + `lint` + `format:check` + `test:coverage` must
+pass before a change is done; `.githooks/pre-commit` runs exactly that. CI
+(`.github/workflows/ci.yml`) is off since 2026-10-18 (billing), so the hook is the only gate:
+never `--no-verify` unless the same checks just passed in a clean worktree. Next's
+`npm run build` is outside the gate (it fights the dev server over `.next`): whether a route
+compiles, ask the running dev server through the MCP `next-devtools`.
 
 ## Architecture
 
@@ -44,7 +45,8 @@ cad/application/   orchestration: CadRuntime, tools, snapping, constraints, trac
 cad/adapters/      the only browser-aware layer: CadEngine (composition root), presenters, storage
 ```
 
-React imports the public barrel `@/cad` only — never a deep path (`cad/entryPoints.test.ts`).
+`cad/` is the workspace package `@mellowcad/engine`: React imports its `exports` only — never a
+deep path (`cad/entryPoints.test.ts`).
 Two root layouts under the `[locale]` root param: the editor is `/draw` (`app/[locale]/(app)/`),
 the landing is `/` (`app/[locale]/(marketing)/`, `components/marketing/`). Other languages are
 prefixed (`/es/draw`). Texts live in `messages/` (next-intl) and `cad/locales/` (the engine).
@@ -125,8 +127,9 @@ and what each option does must be the ones they already know.
   Claude Code and by Copilot). Before creating something in an area whose files you have not
   opened, read its rule: `cad-engine.md` (layers, model), `cad-runtime.md` (input, snapping,
   history, adapters), `cad-scene.md` (scene, presenters), `cad-tools.md` (writing a tool),
-  `cad-catalogs.md` (prompts, keywords), `testing.md`, `ui.md` (the editor), `marketing.md` (the
-  landing), `i18n.md` (languages), `knowledge.md` (where knowledge goes).
+  `cad-catalogs.md` (prompts, keywords), `engine-package.md` (the build), `testing.md`, `ui.md`
+  (the editor), `marketing.md` (the landing), `i18n.md` (languages), `knowledge.md` (where
+  knowledge goes).
 - **Skills** (`.claude/skills/`, loaded on demand): `new-command`, `extend-model`,
   `autocad-research`, `browser-verify`, `add-language`, `finish-feature`, `deps-review`,
   `command-review`.

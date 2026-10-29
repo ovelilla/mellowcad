@@ -17,6 +17,7 @@
 
 # production
 /build
+/cad/dist/
 
 # misc
 .DS_Store

@@ -3,7 +3,7 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { useTranslations } from "next-intl"
 
-import type { EngineLocale } from "@/cad"
+import type { EngineLocale } from "@mellowcad/engine"
 import { useCadEngine } from "@/hooks/useCadEngine"
 import { cn } from "@/lib/utils"
 import {

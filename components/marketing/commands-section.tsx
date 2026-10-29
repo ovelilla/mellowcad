@@ -1,6 +1,6 @@
 import { getFormatter, getTranslations } from "next-intl/server"
 
-import { type EngineLocale, engineText, transcript } from "@/cad"
+import { type EngineLocale, engineText, transcript } from "@mellowcad/engine"
 import { COMMAND_GROUPS } from "@/content/commands"
 import { FIGURES } from "@/content/figures"
 import { sitePaths } from "@/i18n/site-paths"

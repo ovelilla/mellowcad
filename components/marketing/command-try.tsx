@@ -2,7 +2,7 @@
 
 import { useId, useState } from "react"
 
-import { matchCommands, type CommandInfo } from "@/cad"
+import { matchCommands, type CommandInfo } from "@mellowcad/engine"
 
 const SUGGESTIONS = 6
 

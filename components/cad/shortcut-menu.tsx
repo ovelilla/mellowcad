@@ -5,7 +5,11 @@ import { Menu } from "@base-ui/react/menu"
 import { Check, ChevronRight } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import type { CadEngine, ShortcutMenuAction, ShortcutMenuEntry } from "@/cad"
+import type {
+  CadEngine,
+  ShortcutMenuAction,
+  ShortcutMenuEntry,
+} from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 
 import {

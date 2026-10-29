@@ -20,7 +20,7 @@ export const VIEW_PRESETS = {
   SEiso: { x: 1, y: -1, z: 1 },
   NEiso: { x: 1, y: 1, z: 1 },
   NWiso: { x: -1, y: 1, z: 1 },
-} as const satisfies Record<string, Vec3>
+} as const
 
 export type ViewPreset = keyof typeof VIEW_PRESETS
 

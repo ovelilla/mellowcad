@@ -45,7 +45,11 @@ import type { MessageId } from "../EngineText"
 import type { Curve, CurveEnd } from "./curveFillets"
 import { LinePick, alongOnScreen } from "./lineCorner"
 import { fenceCrossing, meetsPolygon } from "./boxSelection"
-import { ONE_OBJECT_MODES, type ModeFind } from "./objectSelection"
+import {
+  ONE_OBJECT_MODES,
+  type ModeFind,
+  type SelectionMode,
+} from "./objectSelection"
 import { entityScreenOutline } from "../viewOutline"
 import { cursorInPlane } from "../viewPick"
 import { bulgeBetween, segmentsPair } from "./polylineCorners"
@@ -340,7 +344,7 @@ function pairRefusal(
  * The modes FILLET's and CHAMFER's object prompts take, as their refusal
  * lists them: a single object's, not ALL.
  */
-export const CORNER_OBJECT_MODES = ONE_OBJECT_MODES.filter(
+export const CORNER_OBJECT_MODES: SelectionMode[] = ONE_OBJECT_MODES.filter(
   (mode) => mode !== "ALL"
 )
 

@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "target": "ES2022",
+    "lib": ["es2023", "dom", "dom.iterable"],
+    "module": "esnext",
+    "moduleResolution": "bundler",
+    "strict": true,
+    "skipLibCheck": true,
+    "isolatedModules": true,
+    "resolveJsonModule": true,
+    "allowArbitraryExtensions": true,
+    "declaration": true,
+    "isolatedDeclarations": true,
+    "noEmit": false,
+    "emitDeclarationOnly": true,
+    "types": []
+  },
+  "include": ["index.ts", "locales/en.ts", "locales/es.ts", "locales/ar.ts"]
+}

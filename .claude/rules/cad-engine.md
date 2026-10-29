@@ -25,11 +25,10 @@ Adding an entity type, a dimension kind, a property, a style table or a snap typ
 | `adapters/`      | everything (the only browser-aware layer)                                             |
 
 `cad/entryPoints.test.ts` checks the table and the packages for product code; tests may import
-any layer, `test/` and `scripts/`. `cad/index.ts` and the language modules
-`cad/locales/<tag>` are the public entry points (tomorrow the package's `exports`): anything React
-or the landing needs is exported there, and nothing outside `cad/` imports a deep path, not even
-`cad/locales/types` (`cad/entryPoints.test.ts` fails on one). `cad/README.md` is what an integrator
-reads: keep it true when a public contract changes.
+any layer, `test/` and `scripts/`. The public entry points are the `exports` of `cad/package.json`
+(`@mellowcad/engine`): `cad/index.ts` and the language modules `cad/locales/<tag>`. The app
+imports nothing else, not even `@mellowcad/engine/locales/types` (that test). `cad/README.md` is
+what an integrator reads: keep it true. Exports carry their types: `engine-package.md`.
 
 ## Ids, not display names
 
@@ -44,7 +43,7 @@ reads: keep it true when a public contract changes.
 
 ## No import-time side effects
 
-`package.json` declares `"sideEffects": ["**/*.css"]`, so a page imports one helper from the barrel
+`cad/package.json` declares `"sideEffects": false`, so a page imports one helper from the barrel
 (`readSavedDrawingSummary`, `matchCommands`) without the engine. A top-level registration, patch or
 global write is silently dropped from a bundle not using the module's exports. The locale is passed
 explicitly, never held in a module-level registry.

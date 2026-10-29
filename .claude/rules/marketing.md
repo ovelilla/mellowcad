@@ -52,10 +52,10 @@ script — updates it in the same change.
   the trip into the editor), `CommandTry` (autocomplete), `SendToDesktop` (share sheet),
   `UnknownCommand` (a URL only the browser knows) and `LanguageLinks` (`i18n.md`). It takes its copy
   as props (`i18n.md`).
-- **An island imports nothing heavy.** `@/cad` is safe _only_ because `package.json` declares the
-  code side-effect free (`cad-engine.md`); `cn()` is not — it ships `tailwind-merge` — and
+- **An island imports nothing heavy.** The engine is safe _only_ because `cad/package.json`
+  declares it side-effect free (`cad-engine.md`); `cn()` is not — it ships `tailwind-merge` — and
   `next-intl/navigation` ships next-intl's client runtime.
-- **The engine never ships on `/`.** An island takes from `@/cad` only small pure helpers and types;
+- **The engine never ships on `/`.** An island takes from it only small pure helpers and types;
   anything reaching `CadEngine` pulls the whole engine into the landing. Check after touching an
   island: the prerendered `.next/server/app/en.html` names no chunk containing `CadRuntime`'s
   strings. A live, editable sketch in the hero was built and removed (weight, and nothing the

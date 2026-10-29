@@ -5,19 +5,20 @@ snaps. It has no framework and no DOM outside `adapters/`: `CadEngine` binds it 
 everything else — the runtime, the tools, the scene — runs headless, in a browser, on a server or
 in a test.
 
-It is not published yet. Today it is imported as `@/cad`; the paths below are also the future
-package's `exports`.
+It is the package `@mellowcad/engine`, ESM only, not published yet: a private npm workspace that
+the app imports by name.
 
 ## Entry points
 
-| Today                 | As a package                      | What                                |
-| --------------------- | --------------------------------- | ----------------------------------- |
-| `@/cad`               | `@mellowcad/engine`               | the engine; English is built in     |
-| `@/cad/locales/<tag>` | `@mellowcad/engine/locales/<tag>` | one language each: `en`, `es`, `ar` |
+| Import                            | What                                |
+| --------------------------------- | ----------------------------------- |
+| `@mellowcad/engine`               | the engine; English is built in     |
+| `@mellowcad/engine/locales/<tag>` | one language each: `en`, `es`, `ar` |
 
-Nothing else is public: no other path under `cad/` is part of the API, and `cad/entryPoints.test.ts`
-fails if the app reaches one. No module has an import-time side effect, so a bundler keeps only
-what a page uses, and a language costs nothing until it is imported.
+Nothing else is public: they are the package's `exports` (`cad/package.json`), no other path under
+`cad/` is part of the API, and `cad/entryPoints.test.ts` fails if the app reaches one. No module
+has an import-time side effect (`"sideEffects": false`, one built module per source file), so a
+bundler keeps only what a page uses, and a language costs nothing until it is imported.
 
 ## Languages
 
@@ -44,9 +45,9 @@ the `lang` of whatever shows it.
 A language is passed, never registered, so one process can draw in several at once:
 
 ```ts
-import { CadEngine, CadDriver, commandCatalog } from "@/cad"
-import { ar } from "@/cad/locales/ar"
-import { es } from "@/cad/locales/es"
+import { CadEngine, CadDriver, commandCatalog } from "@mellowcad/engine"
+import { ar } from "@mellowcad/engine/locales/ar"
+import { es } from "@mellowcad/engine/locales/es"
 
 const engine = new CadEngine(canvas, { locale: es })
 engine.setLocale(ar) // rewords the state and an open prompt; the scrollback stays as written
@@ -56,7 +57,7 @@ commandCatalog(es) // names, aliases and descriptions, in that language
 ```
 
 `recordDemo(script, { locale })` and `engineText(locale)` take it too. Load the module only where
-it is drawn (`import("@/cad/locales/es")`): English needs none.
+it is drawn (`import("@mellowcad/engine/locales/es")`): English needs none.
 
 ### The catalog
 
@@ -129,8 +130,8 @@ The engine's own catalogs are compiled the same way (`npm run locales` writes
 
 ```ts
 import compile from "icu-minify/compile" // in the host's build, as above
-import { extendLocale } from "@/cad"
-import { es } from "@/cad/locales/es"
+import { extendLocale } from "@mellowcad/engine"
+import { es } from "@mellowcad/engine/locales/es"
 
 const spanish = extendLocale(es, {
   interface: { tool: { line: "Línea recta" } },
@@ -143,7 +144,7 @@ const spanish = extendLocale(es, {
 What it gives wins; everything else is the base's, and the base is untouched. A list of names is
 replaced whole. Giving `commands` to a language without a command language (Arabic) gives it one,
 with the rules above — a command it does not name loses its aliases. Use `en` from
-`@/cad/locales/en` as the base to reword English.
+`@mellowcad/engine/locales/en` as the base to reword English.
 
 ### Names a host shows
 

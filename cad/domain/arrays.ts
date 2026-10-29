@@ -89,7 +89,7 @@ export function arrayAxis(ucs: Ucs): Vec2 {
 /** The grid's items, column by column, the source's cell (0, 0) left out. */
 export function rectangularArrayItems(
   grid: RectangularArray,
-  limit = Infinity
+  limit: number = Infinity
 ): ArrayItem[] {
   const { x: c, y: s } = grid.axis
   const out: ArrayItem[] = []
@@ -134,7 +134,7 @@ export function polarAngleBetween(
  */
 export function polarArrayItems(
   ring: PolarArray,
-  limit = Infinity
+  limit: number = Infinity
 ): ArrayItem[] {
   const between = polarAngleBetween(ring)
   const step = ((ring.clockwise ? -between : between) * Math.PI) / 180
@@ -377,7 +377,7 @@ export function pathDivideStep(path: ArrayPath, items: number): number {
 export function pathArrayItems(
   path: ArrayPath,
   layout: PathLayout,
-  limit = Infinity
+  limit: number = Infinity
 ): ArrayItem[] {
   const divide = layout.method === "divide"
   const step = divide ? pathDivideStep(path, layout.items) : layout.spacing
@@ -400,7 +400,7 @@ export function pathArrayItems(
 /** The items after the source an array's parameters derive, in its block's coordinates. */
 export function arrayItems(
   array: ArrayParameters,
-  limit = Infinity
+  limit: number = Infinity
 ): ArrayItem[] {
   switch (array.kind) {
     case "rectangular":

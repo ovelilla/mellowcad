@@ -126,6 +126,34 @@ export function localeModule(
   ].join("\n")
 }
 
+function typeOf(node: Json, depth: number): string {
+  if (typeof node === "string") return "string"
+  if (Array.isArray(node)) return "string[]"
+  const indent = "  ".repeat(depth + 1)
+  const rows = Object.entries(node).map(
+    ([key, value]) =>
+      `${indent}${JSON.stringify(key)}: ${typeOf(value, depth + 1)}`
+  )
+  return `{\n${rows.join("\n")}\n${"  ".repeat(depth)}}`
+}
+
+/**
+ * The text of `cad/locales/en.d.json.ts`: `en.json`'s type, as TypeScript
+ * infers it, which `types.ts` reads the catalog's shape from.
+ *
+ * WHY: the package's declarations are emitted per file (isolatedDeclarations,
+ * Oxc), and Oxc cannot read a JSON module's type; with
+ * `allowArbitraryExtensions` TypeScript takes this file for `./en.json`.
+ */
+export function sourceDeclaration(source: Record<string, Json>): string {
+  return [
+    "// Generated from en.json by `npm run locales`. Do not edit.",
+    `declare const source: ${typeOf(source, 0)}`,
+    "export default source",
+    "",
+  ].join("\n")
+}
+
 export function catalogTags(): string[] {
   return readdirSync(LOCALES_DIR)
     .filter((file) => file.endsWith(".json"))
@@ -144,4 +172,9 @@ if (import.meta.url === pathToFileURL(process.argv[1] ?? "").href) {
     )
     console.log(`cad/locales/${tag}.ts`)
   }
+  writeFileSync(
+    resolve(LOCALES_DIR, "en.d.json.ts"),
+    sourceDeclaration(readCatalog("en"))
+  )
+  console.log("cad/locales/en.d.json.ts")
 }

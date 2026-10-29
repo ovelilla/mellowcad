@@ -17,7 +17,7 @@ import {
   ViewCubePart,
   ViewCubeSide,
   type ViewCubeFace,
-} from "@/cad"
+} from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { Button } from "@/components/ui/button"
 import { cn } from "@/lib/utils"

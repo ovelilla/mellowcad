@@ -5,7 +5,7 @@ import type { Metadata, Viewport } from "next"
 import { getLocale, getTranslations } from "next-intl/server"
 
 import "./marketing.css"
-import { THEME, themeCustomProperties } from "@/cad"
+import { THEME, themeCustomProperties } from "@mellowcad/engine"
 import { SheetFrame } from "@/components/marketing/sheet-frame"
 import { SiteFooter } from "@/components/marketing/site-footer"
 import { SiteHeader } from "@/components/marketing/site-header"

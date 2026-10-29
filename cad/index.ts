@@ -13,10 +13,10 @@
  *   geometry      → pure math kernel
  *
  * The other public entry points are the languages, one module each
- * (`@/cad/locales/es`, tomorrow `@mellowcad/engine/locales/es`). English is
- * built in; any other is passed explicitly (`new CadEngine(canvas, { locale:
- * es })`), and `extendLocale` lays a host's own words over one. Nothing else
- * under `cad/` is public, and `cad/entryPoints.test.ts` holds the app to that.
+ * (`@mellowcad/engine/locales/es`). English is built in; any other is passed
+ * explicitly (`new CadEngine(canvas, { locale: es })`), and `extendLocale`
+ * lays a host's own words over one. Nothing else under `cad/` is public, and
+ * `cad/entryPoints.test.ts` holds the app to that.
  * How a language is shaped, and what a host may leave out, is in
  * `cad/README.md`.
  */

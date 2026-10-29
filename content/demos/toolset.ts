@@ -1,4 +1,4 @@
-import { demo } from "@/cad"
+import { demo } from "@mellowcad/engine"
 
 /** The toolset index: one small drawing per group, each made by its commands. */
 

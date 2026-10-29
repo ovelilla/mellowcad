@@ -26,6 +26,9 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
+      - name: Engine package
+        run: npm run build -w cad && npm run check -w cad
+
       - name: Lint
         run: npm run lint
 

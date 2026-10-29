@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react"
 import { Lock } from "lucide-react"
-import { CadEngine } from "@/cad"
+import { CadEngine } from "@mellowcad/engine"
 import { useEngineSelector, type EditorState } from "@/hooks/useCadEngine"
 
 /**

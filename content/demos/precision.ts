@@ -1,4 +1,4 @@
-import { type DemoScript, SnapType, demo } from "@/cad"
+import { type DemoScript, SnapType, demo } from "@mellowcad/engine"
 
 /**
  * The precision figures: each ends mid-gesture, so the frame the engine draws

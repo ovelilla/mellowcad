@@ -9,8 +9,8 @@ import {
   extendLocale,
   type CadDriverOptions,
   type EngineLocale,
-} from "@/cad"
-import { es } from "@/cad/locales/es"
+} from "@mellowcad/engine"
+import { es } from "@mellowcad/engine/locales/es"
 
 /**
  * A language the engine does not ship, as a host would write it: a few

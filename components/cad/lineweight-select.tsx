@@ -7,7 +7,7 @@ import {
   LINEWEIGHT_BYLAYER,
   lineweightLabel,
   type EngineNames,
-} from "@/cad"
+} from "@mellowcad/engine"
 import {
   Select,
   SelectContent,

@@ -50,21 +50,22 @@ export function createText(
  * which AutoCAD scales the font by (text/p301). A CAD text height is the
  * height of the capitals, so this is what turns one into a font size.
  */
-export const TEXT_FONT_CAP_RATIO = TEXT_FONT_CAP_HEIGHT / TEXT_FONT_UNITS_PER_EM
+export const TEXT_FONT_CAP_RATIO: number =
+  TEXT_FONT_CAP_HEIGHT / TEXT_FONT_UNITS_PER_EM
 
 /**
  * MTEXT's single line spacing as a multiple of the text height. The help rounds
  * it to 1.66; ObjectARX states the rule it comes from, "line spacing is really
  * 5/3 of the font size".
  */
-export const MTEXT_LINE_SPACING_FACTOR = 5 / 3
+export const MTEXT_LINE_SPACING_FACTOR: number = 5 / 3
 
 /**
  * TEXT's line below, as a multiple of the height: the font's own line (Arial's
  * hhea, 2355 units) over the H AutoCAD scales it by (1466), 1.60641 — not
  * MTEXT's 5/3, which only txt.shx gives TEXT (text/p122, desktop text/d01-4).
  */
-export const TEXT_LINE_SPACING_FACTOR =
+export const TEXT_LINE_SPACING_FACTOR: number =
   TEXT_FONT_LINE_HEIGHT / TEXT_FONT_CAP_HEIGHT
 
 /**

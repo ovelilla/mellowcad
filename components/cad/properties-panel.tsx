@@ -8,7 +8,7 @@ import {
   type ObjectType,
   type PropertyEdit,
   type PropertyRow,
-} from "@/cad"
+} from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import {
   Select,

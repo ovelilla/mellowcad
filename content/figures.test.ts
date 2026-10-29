@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest"
 
-import { recordDemo, transcript } from "@/cad"
-import { ar } from "@/cad/locales/ar"
-import { es } from "@/cad/locales/es"
+import { recordDemo, transcript } from "@mellowcad/engine"
+import { ar } from "@mellowcad/engine/locales/ar"
+import { es } from "@mellowcad/engine/locales/es"
 import { plotDemo, renderFigure } from "@/lib/plot"
 
 import { diagramsIn } from "./diagrams.fixture"

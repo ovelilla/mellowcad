@@ -242,8 +242,8 @@ function pieces(curve: BSplineCurve, from: number, to: number): number[] {
  */
 export function bsplineLength(
   curve: BSplineCurve,
-  from = bsplineDomain(curve).start,
-  to = bsplineDomain(curve).end
+  from: number = bsplineDomain(curve).start,
+  to: number = bsplineDomain(curve).end
 ): number {
   if (!(to > from)) return 0
   const hodograph = bsplineDerivativeCurve(curve)

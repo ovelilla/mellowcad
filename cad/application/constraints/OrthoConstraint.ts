@@ -28,7 +28,7 @@ type OrthoAxis = "x" | "y" | "z"
  * snapped X — Ortho and object snaps genuinely cooperate.
  */
 export class OrthoConstraint implements Constraint {
-  readonly type = ConstraintType.Ortho
+  readonly type: ConstraintType.Ortho = ConstraintType.Ortho
 
   apply(context: ConstraintContext): Vec2 | PointAlongZ {
     const up = this.alongZ(context)

@@ -21,7 +21,9 @@
       }
     ],
     "paths": {
-      "@/*": ["./*"]
+      "@/*": ["./*"],
+      "@mellowcad/engine": ["./cad/index.ts"],
+      "@mellowcad/engine/locales/*": ["./cad/locales/*.ts"]
     }
   },
   "include": [
@@ -33,5 +35,5 @@
     ".next/types/**/*.ts",
     ".next/dev/types/**/*.ts"
   ],
-  "exclude": ["node_modules", "research"]
+  "exclude": ["node_modules", "research", "cad/dist"]
 }

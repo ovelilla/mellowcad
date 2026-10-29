@@ -722,7 +722,7 @@ export const JUSTIFY_BY_KEYWORD: Readonly<Record<string, TextJustify>> = {
   BR: "br",
 }
 
-export const JUSTIFY_KEYWORDS = Object.keys(JUSTIFY_BY_KEYWORD)
+export const JUSTIFY_KEYWORDS: string[] = Object.keys(JUSTIFY_BY_KEYWORD)
 
 /**
  * Where the next line of text starts: one line below, measured along the text's

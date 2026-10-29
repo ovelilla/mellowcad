@@ -32,7 +32,7 @@ import {
   LayerInfo,
   LayerNameRefusal,
   STANDARD_COLORS,
-} from "@/cad"
+} from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { LinetypeSelect } from "./linetype-select"
 import { LineweightSelect } from "./lineweight-select"

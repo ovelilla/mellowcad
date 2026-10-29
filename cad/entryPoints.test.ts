@@ -1,4 +1,4 @@
-import { existsSync, readdirSync, readFileSync } from "node:fs"
+import { readdirSync, readFileSync } from "node:fs"
 import path from "node:path"
 import { describe, expect, it } from "vitest"
 
@@ -18,9 +18,28 @@ function* walk(dir: string): Generator<string> {
   }
 }
 
-/** The repository path a specifier names, or null for a package. */
+const PACKAGE = JSON.parse(
+  readFileSync(path.join(ROOT, "cad/package.json"), "utf8")
+) as { name: string; exports: Record<string, unknown> }
+
+/**
+ * The engine's public entry points, its package's `exports` as repository
+ * paths: the barrel (`.` is `cad`) and one module per language
+ * (`./locales/es` is `cad/locales/es`). `./package.json` is metadata.
+ */
+const PUBLIC = new Set(
+  Object.keys(PACKAGE.exports)
+    .filter((subpath) => subpath !== "./package.json")
+    .map((subpath) => (subpath === "." ? "cad" : `cad/${subpath.slice(2)}`))
+)
+
+/** The repository path a specifier names, or null for another package. */
 function target(file: string, specifier: string): string | null {
   if (specifier.startsWith("@/")) return specifier.slice(2)
+  if (specifier === PACKAGE.name) return "cad"
+  if (specifier.startsWith(`${PACKAGE.name}/`)) {
+    return `cad/${specifier.slice(PACKAGE.name.length + 1)}`
+  }
   if (!specifier.startsWith(".")) return null
   return path
     .relative(ROOT, path.resolve(path.dirname(file), specifier))
@@ -28,18 +47,8 @@ function target(file: string, specifier: string): string | null {
     .join("/")
 }
 
-/**
- * The engine's public entry points, tomorrow its package's `exports`: the
- * barrel (`@mellowcad/engine`) and one module per language
- * (`@mellowcad/engine/locales/es`), each built from its `<tag>.json`.
- */
 function isPublic(entry: string): boolean {
-  if (entry === "cad" || entry === "cad/index") return true
-  const language = /^cad\/locales\/([\w-]+)$/.exec(entry)?.[1]
-  return (
-    language !== undefined &&
-    existsSync(path.join(ROOT, "cad/locales", `${language}.json`))
-  )
+  return PUBLIC.has(entry === "cad/index" ? "cad" : entry)
 }
 
 /**
@@ -143,5 +152,20 @@ describe("the engine's public entry points", () => {
     expect(isPublic("cad/locales/types")).toBe(false)
     expect(isPublic("cad/locales/extend")).toBe(false)
     expect(isPublic("cad/application/EngineText")).toBe(false)
+  })
+
+  it("export one module per catalog, and nothing else", () => {
+    const languages = readdirSync(path.join(ROOT, "cad/locales"))
+      .filter((file) => file.endsWith(".json"))
+      .map((file) => `cad/locales/${file.slice(0, -".json".length)}`)
+    expect([...PUBLIC].sort()).toEqual(["cad", ...languages].sort())
+  })
+
+  it("are reached by the package's name too, and only by its exports", () => {
+    const at = path.join(ROOT, "app/page.tsx")
+    expect(isPublic(target(at, "@mellowcad/engine")!)).toBe(true)
+    expect(isPublic(target(at, "@mellowcad/engine/locales/ar")!)).toBe(true)
+    expect(isPublic(target(at, "@mellowcad/engine/locales/types")!)).toBe(false)
+    expect(isPublic(target(at, "@mellowcad/engine/domain/units")!)).toBe(false)
   })
 })

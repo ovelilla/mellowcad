@@ -12,7 +12,7 @@ import {
   type DrawingStore,
   type EngineLocale,
   type EngineState,
-} from "@/cad"
+} from "@mellowcad/engine"
 
 /**
  * What changes on every pointer move. The editor's chrome never reads it, so

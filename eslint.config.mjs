@@ -118,6 +118,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // The engine package's build output.
+    "cad/dist/**",
     // Generated coverage report.
     "coverage/**",
     // Gitignored: AutoCAD's strings and a command review's scratch tests.

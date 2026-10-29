@@ -128,7 +128,7 @@ export class ObjectSnapTrackingEngine extends Observable {
   observeHover(
     snap: SnapResult | null,
     epsilon: number,
-    pixels = Number.POSITIVE_INFINITY
+    pixels: number = Number.POSITIVE_INFINITY
   ): void {
     if (!this.canAcquire(snap, pixels)) {
       this.cancelDwell()
@@ -165,7 +165,7 @@ export class ObjectSnapTrackingEngine extends Observable {
    */
   canAcquire(
     snap: SnapResult | null,
-    pixels = Number.POSITIVE_INFINITY
+    pixels: number = Number.POSITIVE_INFINITY
   ): snap is SnapResult {
     return (
       snap !== null &&

@@ -39,7 +39,7 @@ import { useTranslations } from "next-intl"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { Button } from "@/components/ui/button"
 import { Separator } from "@/components/ui/separator"
-import { CadEngine } from "@/cad"
+import { CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { cn } from "@/lib/utils"
 

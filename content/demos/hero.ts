@@ -1,4 +1,4 @@
-import { demo } from "@/cad"
+import { demo } from "@mellowcad/engine"
 
 /**
  * The hero: a flange, front view and section A–A, drawn the way someone

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { engineText, recordDemo, transcript } from "@/cad"
+import { engineText, recordDemo, transcript } from "@mellowcad/engine"
 import { plotDemo } from "@/lib/plot"
 
 import { englishDiagrams } from "./diagrams.fixture"

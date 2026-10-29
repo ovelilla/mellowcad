@@ -4,7 +4,11 @@ import { useEffect, useMemo, useRef, useState } from "react"
 import { useTranslations } from "next-intl"
 
 import { cn } from "@/lib/utils"
-import { CadEngine, CanvasScenePresenter, matchesWildcard } from "@/cad"
+import {
+  CadEngine,
+  CanvasScenePresenter,
+  matchesWildcard,
+} from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 
 const THUMBNAIL_PX = 64

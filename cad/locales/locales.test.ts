@@ -15,6 +15,7 @@ import {
   catalogTags,
   localeModule,
   readCatalog,
+  sourceDeclaration,
 } from "../../scripts/locales/compile"
 import { TOOL_COMMANDS } from "../application/CommandLine"
 import { abbreviationOf } from "../i18n/keywords"
@@ -61,10 +62,10 @@ describe("the engine's catalogs", () => {
   it("are committed exactly as the source compiles to", () => {
     for (const tag of catalogTags()) {
       const committed = readFileSync(join(LOCALES_DIR, `${tag}.ts`), "utf8")
-      expect(committed).toBe(
-        localeModule(tag, readCatalog(tag))
-      )
+      expect(committed).toBe(localeModule(tag, readCatalog(tag)))
     }
+    const declaration = readFileSync(join(LOCALES_DIR, "en.d.json.ts"), "utf8")
+    expect(declaration).toBe(sourceDeclaration(readCatalog("en")))
   })
 
   it("hold ICU that the message parser accepts", () => {

@@ -1,4 +1,4 @@
-import { demo, type DemoScript } from "@/cad"
+import { demo, type DemoScript } from "@mellowcad/engine"
 
 /**
  * The two explanatory figures, drawn as plans: boxes, single-line TEXT, and

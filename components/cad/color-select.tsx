@@ -8,7 +8,7 @@ import {
   normalizeColor,
   STANDARD_COLORS,
   type EngineNames,
-} from "@/cad"
+} from "@mellowcad/engine"
 import { cn } from "@/lib/utils"
 import {
   Select,

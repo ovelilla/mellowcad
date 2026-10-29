@@ -9,6 +9,13 @@ set -e
 echo "› typecheck"
 npm run --silent typecheck
 
+# The engine package: only its build enforces isolatedDeclarations, and
+# publint and attw read what the build wrote.
+echo "› engine package"
+for step in build check; do
+  out=$(npm run --silent "$step" -w cad 2>&1) || { echo "$out"; exit 1; }
+done
+
 echo "› lint"
 npm run --silent lint
 

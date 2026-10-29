@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest"
 
-import { commandCatalog } from "@/cad"
+import { commandCatalog } from "@mellowcad/engine"
 import { autocadCommands, productFacts } from "@/lib/facts"
 
 import { COMMAND_FILING } from "./commands"

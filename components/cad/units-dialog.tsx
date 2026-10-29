@@ -9,7 +9,7 @@ import {
   LENGTH_UNITS,
   unitsSampleOutput,
   type CadEngine,
-} from "@/cad"
+} from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { Button } from "@/components/ui/button"
 import {

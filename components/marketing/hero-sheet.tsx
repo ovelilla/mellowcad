@@ -6,7 +6,7 @@ import {
   formatLength,
   type DemoAction,
   type PromptSegment,
-} from "@/cad"
+} from "@mellowcad/engine"
 import { HERO_FIGURE } from "@/content/figures"
 import { sitePaths } from "@/i18n/site-paths"
 import { pageEngineLocale, plotDemo, type PlottedLine } from "@/lib/plot"

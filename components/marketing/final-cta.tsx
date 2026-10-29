@@ -1,6 +1,6 @@
 import { getTranslations } from "next-intl/server"
 
-import { engineText } from "@/cad"
+import { engineText } from "@mellowcad/engine"
 import { sitePaths } from "@/i18n/site-paths"
 import { pageEngineLocale } from "@/lib/plot"
 import { ForwardArrow } from "./forward-arrow"

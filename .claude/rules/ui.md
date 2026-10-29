@@ -12,8 +12,8 @@ paths:
 > **lucide-react 1.59.0**.
 
 React is a **dumb presentation shell**. Components read `EngineState` and call `CadEngine`
-methods; they never contain CAD logic, geometry or drawing decisions. Import from `@/cad` only.
-The landing has its own rules (`marketing.md`).
+methods; they never contain CAD logic, geometry or drawing decisions. Import from
+`@mellowcad/engine` only. The landing has its own rules (`marketing.md`).
 
 **The chrome renders from `EditorState`** (what `useCadEngine` returns): the engine's state less
 `POINTER_KEYS`, which every pointer move changes. A pointer field is read with

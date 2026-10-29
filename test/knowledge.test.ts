@@ -48,7 +48,7 @@ const LIBRARY_FILE_PATTERN = /\.([cm]?[jt]sx?)$/
 
 const CODE_SPAN = /`([^`]+)`/g
 const FENCE = /^\s*```/
-const NPM_SCRIPT = /\bnpm run ([\w:.-]+)/g
+const NPM_SCRIPT = /\bnpm run ([\w:.-]+(?: -w [\w/-]+)?)/g
 const PLACEHOLDER = /[<>…$]|:\/\//
 const GLOB_CHARS = /[*?{]/
 const SYMBOL_PATTERNS = [
@@ -244,12 +244,18 @@ function libraryWords(name: string, version: string) {
   return words
 }
 
-const scripts = new Set(
-  Object.keys(
-    (JSON.parse(read("package.json")) as { scripts: Record<string, string> })
-      .scripts
-  )
-)
+type Manifest = { scripts?: Record<string, string>; workspaces?: string[] }
+const manifest = (dir: string) =>
+  JSON.parse(read(join(dir, "package.json"))) as Manifest
+// A workspace's script is cited with its folder, `npm run build -w cad`.
+const scripts = new Set([
+  ...Object.keys(manifest(".").scripts ?? {}),
+  ...(manifest(".").workspaces ?? []).flatMap((workspace) =>
+    Object.keys(manifest(workspace).scripts ?? {}).map(
+      (name) => `${name} -w ${workspace}`
+    )
+  ),
+])
 
 const rules = sources
   .filter((file) => RULE_PATTERN.test(file))

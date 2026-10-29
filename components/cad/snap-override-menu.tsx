@@ -5,7 +5,7 @@ import { Menu } from "@base-ui/react/menu"
 import { CheckIcon } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import { CadEngine, SnapType } from "@/cad"
+import { CadEngine, SnapType } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 
 /**

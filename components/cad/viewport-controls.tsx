@@ -4,7 +4,7 @@ import { Menu } from "@base-ui/react/menu"
 import { CheckIcon } from "lucide-react"
 import { useTranslations } from "next-intl"
 
-import { VIEW_MENU, type CadEngine } from "@/cad"
+import { VIEW_MENU, type CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { cn } from "@/lib/utils"
 

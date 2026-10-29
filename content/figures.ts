@@ -1,4 +1,4 @@
-import type { Bounds, DemoScript } from "@/cad"
+import type { Bounds, DemoScript } from "@mellowcad/engine"
 
 import {
   engineLayers,

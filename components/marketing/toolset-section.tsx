@@ -4,7 +4,7 @@ import { COMMAND_GROUPS, type CommandGroup } from "@/content/commands"
 import { FIGURES } from "@/content/figures"
 import { sitePaths } from "@/i18n/site-paths"
 import { commandsByGroup, productFacts } from "@/lib/facts"
-import { engineText } from "@/cad"
+import { engineText } from "@mellowcad/engine"
 import { pageEngineLocale, renderFigure } from "@/lib/plot"
 
 import { Drawing } from "./drawing"

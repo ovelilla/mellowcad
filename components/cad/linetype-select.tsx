@@ -2,7 +2,11 @@
 
 import { useTranslations } from "next-intl"
 
-import { LINETYPES, LINETYPE_BYLAYER, type EngineNames } from "@/cad"
+import {
+  LINETYPES,
+  LINETYPE_BYLAYER,
+  type EngineNames,
+} from "@mellowcad/engine"
 import {
   Select,
   SelectContent,

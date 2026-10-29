@@ -27,7 +27,7 @@ import { PointAlongZ, alongZ, footOnScreen, lineOnScreen } from "./zGuide"
  * snaps cooperate.
  */
 export class PolarConstraint implements Constraint {
-  readonly type = ConstraintType.Polar
+  readonly type: ConstraintType.Polar = ConstraintType.Polar
 
   /** Angle increment in degrees: POLARANG, initially 90. */
   angleStep = 90

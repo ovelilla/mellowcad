@@ -6,7 +6,7 @@ import { ChevronUp } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 import { TooltipProvider } from "@/components/ui/tooltip"
-import { CadEngine, type CommandLineUi } from "@/cad"
+import { CadEngine, type CommandLineUi } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 
 import { IconAction } from "./toolbar-primitives"

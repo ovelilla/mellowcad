@@ -7,7 +7,16 @@ const rootDir = path.dirname(fileURLToPath(import.meta.url))
 export default defineConfig({
   resolve: {
     // Prefix-anchored so package names such as `@base-ui/react` are untouched.
-    alias: [{ find: /^@\//, replacement: `${rootDir}/` }],
+    alias: [
+      { find: /^@\//, replacement: `${rootDir}/` },
+      // The engine from source, as tsconfig's `paths` resolve it: the
+      // workspace link would reach the package's built `dist/`.
+      { find: /^@mellowcad\/engine$/, replacement: `${rootDir}/cad/index.ts` },
+      {
+        find: /^@mellowcad\/engine\/locales\/([\w-]+)$/,
+        replacement: `${rootDir}/cad/locales/$1.ts`,
+      },
+    ],
   },
   test: {
     // The whole CAD core is DOM-free by design — only `cad/adapters` touches the
@@ -49,6 +58,9 @@ export default defineConfig({
         "cad/**/*.test.ts",
         // Test infrastructure, not product code.
         "test/**",
+        // The package's build: its config and its output.
+        "cad/tsdown.config.ts",
+        "cad/dist/**",
         // Barrels are re-exports; covering them measures nothing.
         "cad/index.ts",
         "cad/**/index.ts",

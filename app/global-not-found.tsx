@@ -6,7 +6,7 @@ import { getTranslations } from "next-intl/server"
 import "./[locale]/(marketing)/marketing.css"
 import { Logo } from "@/components/marketing/logo"
 import { NotFoundMessage } from "@/components/marketing/not-found-message"
-import { THEME } from "@/cad"
+import { THEME } from "@mellowcad/engine"
 import { DIRECTION, routing } from "@/i18n/routing"
 import { SITE_NAME } from "@/lib/site"
 

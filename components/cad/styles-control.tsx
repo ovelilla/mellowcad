@@ -6,7 +6,7 @@ import { useTranslations } from "next-intl"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
-import { CadEngine, DimStyleInfo, TextStyleInfo } from "@/cad"
+import { CadEngine, DimStyleInfo, TextStyleInfo } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 
 import {

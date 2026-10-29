@@ -1751,7 +1751,10 @@ const FADED_OPACITY = 0.22
 const LOCKED_LAYER_OPACITY = 0.5
 
 /** An object's colour as ERASE's preview fades it, or as `opacity` keeps it. */
-export function fadedColor(color: string, opacity = FADED_OPACITY): string {
+export function fadedColor(
+  color: string,
+  opacity: number = FADED_OPACITY
+): string {
   const hex = normalizeColor(color) ?? THEME.entity
   const [r, g, b] = [1, 3, 5].map((at) =>
     Number.parseInt(hex.slice(at, at + 2), 16)
@@ -2484,7 +2487,7 @@ const GUIDE_DASH = [4, 2]
  */
 const TOOLTIP_OFFSET: Vec2 = { x: 17, y: 18 }
 const TOOLTIP_HEIGHT = 20
-export const CURSOR_TOOLTIP_ROW = TOOLTIP_HEIGHT + 2
+export const CURSOR_TOOLTIP_ROW: number = TOOLTIP_HEIGHT + 2
 const TOOLTIP_FONT_PX = 12
 
 /**

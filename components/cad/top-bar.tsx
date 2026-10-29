@@ -22,7 +22,7 @@ import {
 } from "lucide-react"
 import { useLocale, useTranslations } from "next-intl"
 
-import { type CadEngine, type PaletteTab } from "@/cad"
+import { type CadEngine, type PaletteTab } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"

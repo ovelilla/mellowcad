@@ -20,7 +20,7 @@ export class UpdateSettingsCommand implements Command {
 
   constructor(
     private readonly patch: Partial<DocumentSettings>,
-    readonly lastPoint?: UcsChangeLastPoint
+    readonly lastPoint?: UcsChangeLastPoint | undefined
   ) {}
 
   /**

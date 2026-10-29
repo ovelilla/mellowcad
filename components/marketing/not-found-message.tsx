@@ -1,7 +1,7 @@
 import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 
-import { engineText } from "@/cad"
+import { engineText } from "@mellowcad/engine"
 import { loadEngineLocale } from "@/i18n/engine"
 import { localePath } from "@/i18n/navigation"
 import type { AppLocale } from "@/i18n/routing"

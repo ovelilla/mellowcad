@@ -4,7 +4,11 @@ import bidiFactory from "bidi-js"
 import { ImageResponse } from "next/og"
 import { type Font, parse } from "opentype.js"
 
-import { SvgScenePresenter, buildDrawingPreview, recordDemo } from "@/cad"
+import {
+  SvgScenePresenter,
+  buildDrawingPreview,
+  recordDemo,
+} from "@mellowcad/engine"
 import { HERO_FIGURE } from "@/content/figures"
 import {
   BRAND,

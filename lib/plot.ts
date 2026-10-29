@@ -18,7 +18,7 @@ import {
   type EntityId,
   type ScenePrimitive,
   type TranscriptLine,
-} from "@/cad"
+} from "@mellowcad/engine"
 import { loadEngineLocale } from "@/i18n/engine"
 
 /**

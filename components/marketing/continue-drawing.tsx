@@ -2,7 +2,7 @@
 
 import { useSyncExternalStore } from "react"
 
-import { readSavedDrawingSummary } from "@/cad"
+import { readSavedDrawingSummary } from "@mellowcad/engine"
 import { formatPlural, type PluralMessage } from "@/lib/plural"
 import { ForwardArrow } from "./forward-arrow"
 

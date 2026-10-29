@@ -1,4 +1,4 @@
-import { demo } from "@/cad"
+import { demo } from "@mellowcad/engine"
 
 /**
  * The transcript card: an OFFSET session start to finish. The outline is drawn

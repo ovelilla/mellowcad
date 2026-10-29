@@ -6,7 +6,7 @@ import { NextIntlClientProvider } from "next-intl"
 import { getLocale, getMessages, getTranslations } from "next-intl/server"
 
 import "./globals.css"
-import { THEME } from "@/cad"
+import { THEME } from "@mellowcad/engine"
 import { DirectionProvider } from "@/components/ui/direction"
 import { localePath } from "@/i18n/navigation"
 import { DIRECTION, OG_LOCALE, routing } from "@/i18n/routing"

@@ -487,7 +487,7 @@ export function buildSelectionBoxOverlay(
   viewport: Viewport,
   start: Vec2,
   current: Vec2,
-  crossing = isCrossingBox(viewport, start, current)
+  crossing: boolean = isCrossingBox(viewport, start, current)
 ): ScenePrimitive[] {
   const a = viewport.worldToScreen(start)
   const b = viewport.worldToScreen(current)

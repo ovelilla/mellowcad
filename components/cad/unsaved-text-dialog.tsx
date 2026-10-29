@@ -4,7 +4,7 @@ import { useRef } from "react"
 import { Dialog } from "@base-ui/react/dialog"
 import { useTranslations } from "next-intl"
 
-import type { CadEngine } from "@/cad"
+import type { CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { Button } from "@/components/ui/button"
 

@@ -9,7 +9,7 @@ import {
   commandCatalog,
   type CommandInfo,
   type EngineLocale,
-} from "@/cad"
+} from "@mellowcad/engine"
 import {
   COMMAND_FILING,
   COMMAND_GROUPS,

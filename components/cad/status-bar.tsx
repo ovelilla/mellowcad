@@ -28,7 +28,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { CadEngine, SnapModeType, SnapType } from "@/cad"
+import { CadEngine, SnapModeType, SnapType } from "@mellowcad/engine"
 import { useEngineSelector, type EditorState } from "@/hooks/useCadEngine"
 import {
   readHiddenStatusItems,
