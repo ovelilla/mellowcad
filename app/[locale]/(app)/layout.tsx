@@ -11,9 +11,14 @@ import { DirectionProvider } from "@/components/ui/direction"
 import { localePath } from "@/i18n/navigation"
 import { DIRECTION, OG_LOCALE, routing } from "@/i18n/routing"
 import { scriptFontVariables } from "@/lib/fonts"
-import { EDITOR_PATH, SITE_NAME, SITE_URL } from "@/lib/site"
+import {
+  EDITOR_LAYOUT_STORAGE,
+  EDITOR_PATH,
+  SITE_NAME,
+  SITE_URL,
+} from "@/lib/site"
 import { cn } from "@/lib/utils"
-import { PALETTE_LAYOUT_SCRIPT } from "@/lib/palette-layout"
+import { paletteLayoutScript } from "@/lib/palette-layout"
 import { EDITOR_SHEET_ID, VIEW_TRANSITION_OPT_IN } from "@/lib/view-transition"
 
 export const dynamicParams = false
@@ -101,7 +106,11 @@ export default async function AppLayout({
     >
       <head>
         <style>{VIEW_TRANSITION_OPT_IN}</style>
-        <script dangerouslySetInnerHTML={{ __html: PALETTE_LAYOUT_SCRIPT }} />
+        <script
+          dangerouslySetInnerHTML={{
+            __html: paletteLayoutScript(EDITOR_LAYOUT_STORAGE.palette),
+          }}
+        />
         <link rel="expect" href={`#${EDITOR_SHEET_ID}`} blocking="render" />
       </head>
       <body>

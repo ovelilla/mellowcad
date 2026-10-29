@@ -9,6 +9,16 @@ export const SITE_NAME = "MellowCAD"
 
 export const EDITOR_PATH = "/draw"
 
+/**
+ * Where the editor keeps this device's layout (`CadWorkspace`'s
+ * `layoutStorage`). FROZEN, old product name included: a renamed key orphans
+ * what every user already saved (`lib/site.test.ts`).
+ */
+export const EDITOR_LAYOUT_STORAGE = {
+  palette: "easycad:palette:v1",
+  statusBar: "easycad:status-bar:v1",
+} as const
+
 /** The landing's share image in each language, `app/[locale]/og`. */
 export const OG_IMAGE_PATH = "/og"
 

@@ -34,6 +34,18 @@ import { SnapOverrideMenu } from "./snap-override-menu"
 import { SelectionCyclingList } from "./selection-cycling-list"
 
 /**
+ * The localStorage keys this device's layout is kept under, each part's own;
+ * a part with no key is not remembered. A key is the host's promise to its
+ * users: renaming it orphans what they saved.
+ */
+export interface LayoutStorage {
+  /** The palette panel's width and fold, also read by the `<head>` script. */
+  readonly palette?: string
+  /** The status bar's Customization. */
+  readonly statusBar?: string
+}
+
+/**
  * The editor's docked workspace: a grid of named areas round the canvas, which
  * takes what is left. The engine resizes its drawing with the canvas, so ZOOM
  * Extents frames what is visible; nothing but the viewport controls, the
@@ -44,6 +56,7 @@ export function CadWorkspace({
   engineLocale,
   mark,
   languages,
+  layoutStorage = {},
 }: {
   /** The page language's catalog for the engine; English when absent. */
   engineLocale?: EngineLocale
@@ -51,14 +64,17 @@ export function CadWorkspace({
   mark?: React.ReactNode
   /** The page in each language the host offers, for the application menu. */
   languages?: readonly LanguageLink[]
+  /** Where this device's layout is kept; nothing is, without it. */
+  layoutStorage?: LayoutStorage
 }) {
+  const paletteKey = layoutStorage.palette
   // The editor is the page: it keeps this device's drawing and takes every
   // key, which the engine leaves to whoever asks.
   const { canvasRef, engine, state } = useCadEngine({
     store: createLocalStorageDrawingStore,
     scope: "document",
     locale: engineLocale,
-    paletteOpen: () => paletteLayoutAtLoad().open,
+    paletteOpen: () => paletteLayoutAtLoad(paletteKey).open,
   })
   const t = useTranslations("Editor.Workspace")
   const input = useTranslations("Editor.DynamicInput")
@@ -73,11 +89,14 @@ export function CadWorkspace({
   const [paletteWidth, setPaletteWidth] = useState(() =>
     typeof window === "undefined"
       ? PALETTE_WIDTH.initial
-      : paletteLayoutAtLoad().width
+      : paletteLayoutAtLoad(paletteKey).width
   )
 
   // React's development remount clears what the head script wrote on <html>.
-  useLayoutEffect(() => applyPaletteLayout(paletteLayoutAtLoad()), [])
+  useLayoutEffect(
+    () => applyPaletteLayout(paletteLayoutAtLoad(paletteKey)),
+    [paletteKey]
+  )
 
   // From then on the engine's open state and the dragged width drive the
   // same CSS, before the frame is painted.
@@ -92,8 +111,8 @@ export function CadWorkspace({
   useEffect(() => {
     if (paletteOpen === null) return
     if (firstOpen.current === null) firstOpen.current = paletteOpen
-    else rememberPalette({ open: paletteOpen })
-  }, [paletteOpen])
+    else rememberPalette(paletteKey, { open: paletteOpen })
+  }, [paletteOpen, paletteKey])
 
   // Every zone has its size before the engine mounts, so the canvas's box at
   // the first paint is already the final one: the landing's sheet grows into
@@ -190,7 +209,7 @@ export function CadWorkspace({
               <PaletteResizeHandle
                 width={paletteWidth}
                 onResize={setPaletteWidth}
-                onCommit={(width) => rememberPalette({ width })}
+                onCommit={(width) => rememberPalette(paletteKey, { width })}
               />
             )}
             <PalettePanel engine={engine} state={state} />
@@ -211,7 +230,13 @@ export function CadWorkspace({
       </div>
 
       <div className="box-content flex h-9 min-w-0 items-center gap-2 border-t px-1 [grid-area:status]">
-        {ready && <StatusBar engine={engine} state={state} />}
+        {ready && (
+          <StatusBar
+            engine={engine}
+            state={state}
+            storageKey={layoutStorage.statusBar}
+          />
+        )}
       </div>
 
       {ready && (

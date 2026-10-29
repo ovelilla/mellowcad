@@ -1,14 +1,17 @@
 import { readFileSync } from "node:fs"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
 import {
-  PALETTE_LAYOUT_SCRIPT,
+  paletteLayoutAtLoad,
+  paletteLayoutScript,
   PALETTE_OPEN_FROM,
   PALETTE_WIDTH,
-  PALETTE_STORAGE_KEY,
+  rememberPalette,
   resolvePaletteLayout,
   type RememberedPalette,
 } from "./palette-layout"
+
+const KEY = "host:palette"
 
 /** Runs the head script against a fake page and reads what it wrote. */
 function runScript(stored: string | null, windowWidth: number) {
@@ -21,13 +24,14 @@ function runScript(stored: string | null, windowWidth: number) {
     },
   }
   const localStorage = {
-    getItem: (key: string) => (key === PALETTE_STORAGE_KEY ? stored : null),
+    getItem: (key: string) => (key === KEY ? stored : null),
   }
-  new Function("localStorage", "innerWidth", "document", PALETTE_LAYOUT_SCRIPT)(
-    localStorage,
-    windowWidth,
-    { documentElement }
-  )
+  new Function(
+    "localStorage",
+    "innerWidth",
+    "document",
+    paletteLayoutScript(KEY)
+  )(localStorage, windowWidth, { documentElement })
   return {
     open: attributes["data-palette"] === "open",
     width: Number.parseInt(style["--palette-width"], 10),
@@ -85,5 +89,39 @@ describe("the palette layout before the first paint", () => {
   it("falls back to the window's width on a broken entry", () => {
     expect(runScript("{not json", 1920)).toEqual({ open: true, width: 280 })
     expect(runScript('"open"', 1280)).toEqual({ open: false, width: 280 })
+  })
+})
+
+describe("the palette layout's storage", () => {
+  function stubStorage(entries: Record<string, string>) {
+    const store = new Map(Object.entries(entries))
+    vi.stubGlobal("window", {
+      innerWidth: 1280,
+      localStorage: {
+        getItem: (key: string) => store.get(key) ?? null,
+        setItem: (key: string, value: string) => store.set(key, value),
+      },
+    })
+    return store
+  }
+
+  it("keeps each part under the host's key", () => {
+    const store = stubStorage({})
+    rememberPalette(KEY, { open: true })
+    rememberPalette(KEY, { width: 320 })
+    expect(JSON.parse(store.get(KEY) ?? "null")).toEqual({
+      open: true,
+      width: 320,
+    })
+    expect(paletteLayoutAtLoad(KEY)).toEqual({ open: true, width: 320 })
+  })
+
+  it("remembers nothing without a key", () => {
+    const store = stubStorage({ [KEY]: JSON.stringify({ open: true }) })
+    rememberPalette(undefined, { width: 400 })
+    expect([...store.keys()]).toEqual([KEY])
+    expect(paletteLayoutAtLoad(undefined)).toEqual(
+      resolvePaletteLayout(null, 1280)
+    )
   })
 })

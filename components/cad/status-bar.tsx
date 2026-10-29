@@ -79,22 +79,25 @@ const CHECK = <CheckIcon className="absolute inset-e-2 size-4 text-primary" />
 export function StatusBar({
   engine,
   state,
+  storageKey,
 }: {
   engine: CadEngine
   state: EditorState
+  /** Where Customization is kept on this device; none, it is not kept. */
+  storageKey?: string
 }) {
   const t = useTranslations("Editor.StatusBar")
   const keys = useTranslations("Editor.Keys")
   // Only rendered once the engine exists, in the browser: the choice is read
   // here, and the bar's height never depends on it.
-  const [hidden, setHidden] = useState(readHiddenStatusItems)
+  const [hidden, setHidden] = useState(() => readHiddenStatusItems(storageKey))
   const shows = (item: StatusBarItem) => !hidden.has(item)
   const setShown = (item: StatusBarItem, shown: boolean) => {
     const next = new Set(hidden)
     if (shown) next.delete(item)
     else next.add(item)
     setHidden(next)
-    rememberHiddenStatusItems(next)
+    rememberHiddenStatusItems(storageKey, next)
   }
 
   const names: Record<StatusBarItem, string> = {

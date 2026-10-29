@@ -4,8 +4,9 @@ import {
   parseHiddenStatusItems,
   readHiddenStatusItems,
   rememberHiddenStatusItems,
-  STATUS_BAR_STORAGE_KEY,
 } from "./status-bar-layout"
+
+const KEY = "host:status-bar"
 
 describe("the status bar's customization", () => {
   it("hides only the tools it knows", () => {
@@ -30,10 +31,25 @@ describe("the status bar's customization", () => {
       },
     })
 
-    rememberHiddenStatusItems(new Set(["units", "coordinates"]))
+    rememberHiddenStatusItems(KEY, new Set(["units", "coordinates"]))
 
-    expect(store.get(STATUS_BAR_STORAGE_KEY)).toBe('["coordinates","units"]')
-    expect([...readHiddenStatusItems()]).toEqual(["coordinates", "units"])
+    expect(store.get(KEY)).toBe('["coordinates","units"]')
+    expect([...readHiddenStatusItems(KEY)]).toEqual(["coordinates", "units"])
+  })
+
+  it("remembers nothing without a key", () => {
+    const store = new Map([[KEY, '["grid"]']])
+    vi.stubGlobal("window", {
+      localStorage: {
+        getItem: (key: string) => store.get(key) ?? null,
+        setItem: (key: string, value: string) => store.set(key, value),
+      },
+    })
+
+    rememberHiddenStatusItems(undefined, new Set(["units"]))
+
+    expect([...store.keys()]).toEqual([KEY])
+    expect(readHiddenStatusItems(undefined).size).toBe(0)
   })
 
   it("shows every tool when storage is blocked", () => {
@@ -43,7 +59,9 @@ describe("the status bar's customization", () => {
       },
     })
 
-    expect(readHiddenStatusItems().size).toBe(0)
-    expect(() => rememberHiddenStatusItems(new Set(["grid"]))).not.toThrow()
+    expect(readHiddenStatusItems(KEY).size).toBe(0)
+    expect(() =>
+      rememberHiddenStatusItems(KEY, new Set(["grid"]))
+    ).not.toThrow()
   })
 })

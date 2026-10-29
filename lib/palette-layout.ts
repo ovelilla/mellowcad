@@ -13,10 +13,10 @@
  * engine, so the two never disagree.
  *
  * Only the width and the fold are remembered, each once the user has changed
- * it: until then the window's width decides.
+ * it: until then the window's width decides. They are kept under the host's
+ * key (`layoutStorage.palette`); with none, nothing is remembered and no
+ * script is needed, since the zone's CSS decides by the window's width alone.
  */
-
-export const PALETTE_STORAGE_KEY = "easycad:palette:v1"
 
 /** From this window width (px) the panel starts open; below, folded. */
 export const PALETTE_OPEN_FROM = 1600
@@ -62,11 +62,12 @@ export function resolvePaletteLayout(
   }
 }
 
-function readRemembered(storage: Storage): RememberedPalette | null {
+function readRemembered(
+  storage: Storage,
+  key: string
+): RememberedPalette | null {
   try {
-    const parsed: unknown = JSON.parse(
-      storage.getItem(PALETTE_STORAGE_KEY) ?? "null"
-    )
+    const parsed: unknown = JSON.parse(storage.getItem(key) ?? "null")
     return parsed !== null && typeof parsed === "object"
       ? (parsed as RememberedPalette)
       : null
@@ -76,10 +77,10 @@ function readRemembered(storage: Storage): RememberedPalette | null {
 }
 
 /** The layout this page loaded with: what the head script wrote, read again. */
-export function paletteLayoutAtLoad(): PaletteLayout {
+export function paletteLayoutAtLoad(key: string | undefined): PaletteLayout {
   let remembered: RememberedPalette | null = null
   try {
-    remembered = readRemembered(window.localStorage)
+    if (key !== undefined) remembered = readRemembered(window.localStorage, key)
   } catch {
     // Storage blocked (a private window): the window's width decides.
   }
@@ -87,12 +88,16 @@ export function paletteLayoutAtLoad(): PaletteLayout {
 }
 
 /** Stores one part of the layout once the user has changed it. */
-export function rememberPalette(patch: RememberedPalette): void {
+export function rememberPalette(
+  key: string | undefined,
+  patch: RememberedPalette
+): void {
+  if (key === undefined) return
   try {
     const storage = window.localStorage
     storage.setItem(
-      PALETTE_STORAGE_KEY,
-      JSON.stringify({ ...readRemembered(storage), ...patch })
+      key,
+      JSON.stringify({ ...readRemembered(storage, key), ...patch })
     )
   } catch {
     // Not remembered: the next visit opens as the window's width says.
@@ -111,11 +116,13 @@ export function applyPaletteLayout(layout: PaletteLayout): void {
 }
 
 /**
- * The `<head>` script: {@link paletteLayoutAtLoad} and
- * {@link applyPaletteLayout} in plain ES5, as it runs before any bundle.
- * Without it (storage blocked, a script error) the zone's CSS still decides
- * by the window's width, so the canvas keeps its final box.
+ * The `<head>` script for the layout kept under `key`:
+ * {@link paletteLayoutAtLoad} and {@link applyPaletteLayout} in plain ES5, as
+ * it runs before any bundle. Without it (storage blocked, a script error) the
+ * zone's CSS still decides by the window's width, so the canvas keeps its
+ * final box.
  */
-export const PALETTE_LAYOUT_SCRIPT = `(function(){try{var r=null;try{r=JSON.parse(localStorage.getItem(${JSON.stringify(
-  PALETTE_STORAGE_KEY
-)})||"null")}catch(e){}if(!r||typeof r!=="object")r={};var o=typeof r.open==="boolean"?r.open:innerWidth>=${PALETTE_OPEN_FROM};var w=typeof r.width==="number"&&isFinite(r.width)?Math.round(Math.min(${PALETTE_WIDTH.max},Math.max(${PALETTE_WIDTH.min},r.width))):${PALETTE_WIDTH.initial};var d=document.documentElement;d.setAttribute("data-palette",o?"open":"folded");d.style.setProperty("--palette-width",w+"px")}catch(e){}})()`
+export const paletteLayoutScript = (key: string): string =>
+  `(function(){try{var r=null;try{r=JSON.parse(localStorage.getItem(${JSON.stringify(
+    key
+  )})||"null")}catch(e){}if(!r||typeof r!=="object")r={};var o=typeof r.open==="boolean"?r.open:innerWidth>=${PALETTE_OPEN_FROM};var w=typeof r.width==="number"&&isFinite(r.width)?Math.round(Math.min(${PALETTE_WIDTH.max},Math.max(${PALETTE_WIDTH.min},r.width))):${PALETTE_WIDTH.initial};var d=document.documentElement;d.setAttribute("data-palette",o?"open":"folded");d.style.setProperty("--palette-width",w+"px")}catch(e){}})()`

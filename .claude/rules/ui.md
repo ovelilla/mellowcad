@@ -29,10 +29,11 @@ fails `npm run lint`: fix the code, never disable the rule.
 **No browser capability in a component**: no `Blob`, file picker, download anchor or global
 keyboard listener. If a button needs one, the engine owes it a method (behind a port, implemented
 in `cad/adapters/`), or every host has to rewrite it. Failures are reported at the command prompt,
-never in a React banner. The exception is the page's own layout, kept on the device as AutoCAD
-keeps it in the profile: the palette panel's width and fold (`lib/palette-layout.ts`, read by an
-inline `<head>` script before any bundle) and the status bar's Customization
-(`lib/status-bar-layout.ts`, read after mount — the bar's height never depends on it).
+never in a React banner. The exception is the layout, kept on the device as AutoCAD keeps it in
+the profile: the palette panel's width and fold (`lib/palette-layout.ts`, read by a `<head>`
+script before any bundle) and the status bar's Customization (`lib/status-bar-layout.ts`, read
+after mount), each under the host's key (`layoutStorage`; none, not kept), the site's frozen
+(`lib/site.test.ts`).
 
 ## Text
 
@@ -186,8 +187,8 @@ the tool palette would fold on a Full HD laptop at 125 %).
   reads it to leave the dialog its keys. While it is open the rest of the page is inert, so a test
   reaches the command line by a CSS selector, not by its role.
 - **A menu the engine opens has no trigger**: `ShortcutMenu` is a controlled `Menu.Root` anchored
-  to the pointer. Since 1.9 Base UI names a trigger-less menu's node in its floating tree itself, so
-  a submenu no longer closes it as a sibling (`sibling-open`); before 1.9 it needed a hidden trigger.
+  to the pointer. Base UI names a trigger-less menu's node in its floating tree itself, so a
+  submenu does not close it as a sibling (`sibling-open`).
 - **A modal menu leaves the page inert until it has closed**, so a `focusSurface()` run as an item
   acts is lost and Base UI returns focus to the trigger. Give focus back in the popup's
   `finalFocus` (`() => { engine.focusSurface(); return false }`). A dialog: `finalFocus={false}` and
