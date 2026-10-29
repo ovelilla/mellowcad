@@ -107,6 +107,7 @@ export const en: EngineCatalog = {
       "QNEW": "Start a new drawing",
       "QSAVE": "Save the drawing to a file",
       "SAVEAS": "Save the drawing to a file under a new name",
+      "SAVE": "Save the drawing to a file",
       "OPEN": "Open a drawing file",
       "PASTECLIP": "Paste the clipboard into the drawing",
       "DIMSTYLE": "Create and modify dimension styles",
@@ -881,14 +882,18 @@ export const en: EngineCatalog = {
         "QNEW"
       ],
       "QSAVE": [
-        "QSAVE",
-        "SAVE"
+        "QSAVE"
       ],
       "SAVEAS": [
         "SAVEAS"
       ],
+      "SAVE": [
+        "SAVE",
+        "SAVEURL"
+      ],
       "OPEN": [
-        "OPEN"
+        "OPEN",
+        "OPENURL"
       ],
       "PASTECLIP": [
         "PASTECLIP"

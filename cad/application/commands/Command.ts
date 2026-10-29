@@ -355,7 +355,9 @@ export class CommandHistory extends Observable {
 
   /**
    * A step that changed nothing, named `name`: a menu macro's group whose
-   * command made no step (`GROUP Properties`, desktop workspace/d03).
+   * command made no step (`GROUP Properties`, desktop workspace/d03), or a
+   * save, which regenerates on U and REDO ({@link markRegenerated},
+   * clipboard/p204).
    */
   recordEmpty(name: string): void {
     this.push({
@@ -363,7 +365,7 @@ export class CommandHistory extends Observable {
       command: null,
       name,
       names: [],
-      regenerates: false,
+      regenerates: this.regenerated,
     })
   }
 

@@ -652,8 +652,10 @@ describe("the drafting toggles", () => {
  * workspace/d01–d05).
  */
 describe("the chrome's undo groups", () => {
-  // desktop workspace/d04: Ctrl+1 twice, then U, U
-  it("Ctrl+1 and Ctrl+S are groups that changed nothing, the line kept", () => {
+  // desktop workspace/d04: Ctrl+1 twice, then U, U. Ctrl+S's save is a step
+  // of the group, `QSAVE GROUP` (CLIPBOARD-D2: d04's `GROUP QSAVE` was the
+  // dialog cancelled, which a download never is)
+  it("Ctrl+1 is a group that changed nothing and Ctrl+S one that saved, the line kept", () => {
     const cad = withLine(undefined, new MemoryFileTransport())
 
     cad.press("1", { ctrlKey: true })
@@ -661,7 +663,7 @@ describe("the chrome's undo groups", () => {
     cad.press("s", { ctrlKey: true })
     expect(written(cad, "_U", "_U", "_U")).toEqual([
       "U",
-      "GROUP QSAVE",
+      "QSAVE GROUP Regenerating model.",
       "U",
       "GROUP PROPERTIESCLOSE",
       "U",

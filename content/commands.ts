@@ -144,6 +144,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   NEW: { group: "files" },
   QNEW: { group: "files" },
   QSAVE: { group: "files" },
+  SAVE: { group: "files" },
   SAVEAS: { group: "files" },
   OPEN: { group: "files" },
   COPYCLIP: { group: "files" },

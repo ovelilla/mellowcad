@@ -34,19 +34,25 @@ TEXTSIZE, ORTHOMODE, SNAPMODE, SNAPUNIT, GRIDMODE… — comes with the drawing
 **Missing:** templates and the Select Template dialog, file tabs (several drawings open), STARTUP's
 Create New Drawing, Ctrl+N (the browser keeps it for a new window)
 
-### `QSAVE` / `SAVEAS` / `OPEN` (Ctrl+S / Ctrl+Shift+S / Ctrl+O) · es `GUARDARR` / `GUARDAR` / `GUARDARCOMO` · `ABRE`
+### `QSAVE` / `SAVEAS` / `SAVE` / `OPEN` (Ctrl+S / Ctrl+Shift+S / Ctrl+O) · es `GUARDARR` / `GUARDARCOMO` / `GUARDAR` / `ABRE`
 
 **Implemented:** `FileTransport` port, versioned tolerant JSON, transparent autosave behind the
 `DrawingStore` port (this device's localStorage), its state in the top bar; the file keeps what
 AutoCAD saves in the drawing (FILLETRAD, CHAMFERA/B, TEXTSIZE and TEXT's justification, ORTHOMODE,
 SNAPMODE, SNAPUNIT, GRIDMODE: rectang/p302, p304, p311, p316, p321), and OPEN puts what it keeps
-per drawing unsaved back to its defaults, as NEW does; SAVEAS writes the same
-download as QSAVE, since a browser download always names the file, so saving over the current name
-and prompting for a new one cannot be told apart; Ctrl+S, Ctrl+Shift+S and Ctrl+O are acad.cuix's
-`^C^C_qsave`, `^C^C_saveas` and `^C^C_open` (ID_Save, ID_Saveas, ID_Open): the running command
-cancelled, then the command run, echoed `_qsave`, `_saveas`, `_open` (desktop workspace/d04), Ctrl+S
-a group U names `GROUP QSAVE`, a cancelled save too (d04; Ctrl+Shift+S's `GROUP SAVEAS` by analogy;
-Ctrl+O's none, the drawing opened starting its own history)
+per drawing unsaved back to its defaults, as NEW does; SAVE a command of its own (clipboard/p202),
+acad.pgp's `SAVEURL` / `OPENURL` (es `GUARDARURL` / `ABREURL`, p212); SAVEAS and SAVE write the
+same download as QSAVE, since a browser download always names the file, so saving over the current
+name, prompting for a new one and writing a copy cannot be told apart (CLIPBOARD-D4); each save a
+step U and REDO name and regenerate for, `QSAVE Regenerating model.` (es `GUARDARR Regenerando
+modelo.`; p204, p205, p214), Enter repeating it (p206); none transparent (p117); Ctrl+S,
+Ctrl+Shift+S and Ctrl+O are acad.cuix's `^C^C_qsave`, `^C^C_saveas` and `^C^C_open` (ID_Save,
+ID_Saveas, ID_Open): the running command cancelled, then the command run, echoed `_qsave`,
+`_saveas`, `_open` (desktop workspace/d04), Ctrl+S a group U names `QSAVE GROUP` (Ctrl+Shift+S
+`SAVEAS GROUP`; CLIPBOARD-D2: d04's `GROUP QSAVE` was the dialog cancelled, which a download never
+reports; with no file access the save is reported and makes no step, so `GROUP QSAVE`); Ctrl+O's
+none, the drawing opened starting its own history
 
-**Missing:** File System Access API handles, drag-and-drop open, unsaved-changes prompt, the
-drawing's name and the file tab's unsaved asterisk
+**Missing:** File System Access API handles (QSAVE on a titled drawing saves silently, p203; SAVE
+asks and writes a copy, p215), the `Save drawing as` and SAVEAS's format prompts (FILEDIA 0),
+drag-and-drop open, unsaved-changes prompt, the drawing's name and the file tab's unsaved asterisk

@@ -1313,6 +1313,130 @@ describe("file save and open", () => {
 
     expect(cad.commandLog().join(" ")).toMatch(/not available/i)
   })
+
+  describe("a save is an undo step that regenerates (CLIPBOARD-D2, D3)", () => {
+    const written = (cad: CadHarness, ...texts: string[]): string[] => {
+      const from = cad.commandLog().length
+      for (const text of texts) {
+        cad.runtime.setCommandLineText(text)
+        cad.runtime.submitCommandLine()
+      }
+      return cad.commandLog().slice(from)
+    }
+    const withLine = (locale?: typeof es) => {
+      const files = new MemoryFileTransport()
+      const cad = createHarness({ locale, files })
+      written(cad, "_LINE", "0,0", "10,0", "")
+      return { cad, files }
+    }
+
+    // clipboard/p204: `_U` → `QSAVE Regenerating model.`, the line kept
+    it("U after QSAVE names it and keeps the line", () => {
+      const { cad, files } = withLine()
+      written(cad, "_QSAVE")
+      expect(files.saved).toHaveLength(1)
+      expect(written(cad, "_U").at(-1)).toBe("QSAVE Regenerating model.")
+      expect(cad.entityCount).toBe(1)
+    })
+
+    // clipboard/p205
+    it("U after SAVEAS names it", () => {
+      const { cad } = withLine()
+      written(cad, "_SAVEAS")
+      expect(written(cad, "_U").at(-1)).toBe("SAVEAS Regenerating model.")
+      expect(cad.entityCount).toBe(1)
+    })
+
+    // clipboard/p202, p214: SAVE is a command of its own
+    it("SAVE echoes itself, saves, and U names it", () => {
+      const { cad, files } = withLine()
+      expect(written(cad, "SAVE")).toEqual(["SAVE"])
+      expect(files.saved).toHaveLength(1)
+      expect(written(cad, "_U").at(-1)).toBe("SAVE Regenerating model.")
+      expect(cad.entityCount).toBe(1)
+    })
+
+    // clipboard/p204, p214 es-ES: GUARDARR is QSAVE, GUARDAR is SAVE
+    it("in Spanish, GUARDAR and GUARDARR each name their step", () => {
+      const { cad, files } = withLine(es)
+      expect(written(cad, "GUARDAR")).toEqual(["GUARDAR"])
+      expect(files.saved).toHaveLength(1)
+      expect(written(cad, "_U").at(-1)).toBe("GUARDAR Regenerando modelo.")
+      written(cad, "GUARDARR")
+      expect(files.saved).toHaveLength(2)
+      expect(written(cad, "_U").at(-1)).toBe("GUARDARR Regenerando modelo.")
+      expect(cad.entityCount).toBe(1)
+    })
+
+    // acad.pgp `OPENURL, *OPEN`, `SAVEURL, *SAVE`; clipboard/p212 echoes the
+    // expansion, written here on the echo's line as every alias's
+    it("SAVEURL runs SAVE and OPENURL runs OPEN", () => {
+      const files = new MemoryFileTransport()
+      const cad = createHarness({ files })
+      expect(written(cad, "SAVEURL")).toEqual(["SAVEURL SAVE"])
+      written(cad, "OPENURL")
+      expect(files.saved).toHaveLength(1)
+      expect(files.openCalls).toBe(1)
+    })
+
+    it("in Spanish, GUARDARURL and ABREURL", () => {
+      const files = new MemoryFileTransport()
+      const cad = createHarness({ locale: es, files })
+      written(cad, "GUARDARURL", "ABREURL")
+      expect(files.saved).toHaveLength(1)
+      expect(files.openCalls).toBe(1)
+    })
+
+    // CLIPBOARD-D2: `^C^C_qsave` a menu group with the save's step in it;
+    // desktop workspace/d04's `GROUP QSAVE` was the dialog cancelled
+    it("Ctrl+S then U names QSAVE GROUP, and REDO does it again", () => {
+      const { cad } = withLine()
+      cad.press("s", { ctrlKey: true })
+      expect(written(cad, "_U")).toEqual([
+        "U",
+        "QSAVE GROUP Regenerating model.",
+      ])
+      expect(cad.entityCount).toBe(1)
+      expect(written(cad, "REDO")).toEqual([
+        "REDO",
+        "QSAVE GROUP",
+        "Everything has been redone",
+        "Regenerating model.",
+      ])
+    })
+
+    // A save that wrote nothing is a cancelled one: no step of its own, so
+    // the group is empty, as desktop workspace/d04's cancelled dialog
+    it("with no file access, Ctrl+S reports and U names GROUP QSAVE", () => {
+      const cad = createHarness()
+      written(cad, "_LINE", "0,0", "10,0", "")
+      cad.press("s", { ctrlKey: true })
+      expect(cad.commandLog().join(" ")).toMatch(/not available/i)
+      expect(written(cad, "_U")).toEqual(["U", "GROUP QSAVE"])
+      expect(cad.entityCount).toBe(1)
+    })
+
+    // clipboard/p206
+    it("Enter repeats QSAVE", () => {
+      const { cad, files } = withLine()
+      written(cad, "_QSAVE")
+      expect(written(cad, "")).toEqual(["QSAVE"])
+      expect(files.saved).toHaveLength(2)
+    })
+
+    // clipboard/p117 refused QSAVE, SAVEAS and OPEN so; SAVE as they are
+    it("'_SAVE inside LINE is refused as not transparent", () => {
+      const { cad, files } = withLine()
+      written(cad, "_LINE", "0,0")
+      expect(written(cad, "'_SAVE")).toEqual([
+        "Specify next point or [Undo]: 'SAVE",
+        "** That command may not be invoked transparently **",
+        "Point or option keyword required.",
+      ])
+      expect(files.saved).toHaveLength(0)
+      expect(cad.activeToolId()).toBe("line")
+    })
+  })
 })
 
 describe("engine state snapshot", () => {

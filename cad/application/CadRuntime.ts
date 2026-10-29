@@ -3475,8 +3475,9 @@ export class CadRuntime extends Observable {
    */
   private runAccelerator(command: string, echo: string): void {
     if (this.activeTool.id !== "select") this.cancelCommand()
-    // A menu group (`GROUP QSAVE`, `CLEANSCREENON GROUP`: desktop
-    // workspace/d04), but OPEN's: the drawing it opens starts its own history.
+    // A menu group (`QSAVE GROUP`, `CLEANSCREENON GROUP`: desktop
+    // workspace/d04, CLIPBOARD-D2), but OPEN's: the drawing it opens starts
+    // its own history.
     if (command === "OPEN") {
       this.runCommandAs(`_${command}`, { echo })
       return
@@ -5369,13 +5370,22 @@ export class CadRuntime extends Observable {
     return suggestedFileName((date) => this.text.fileName(date))
   }
 
-  /** Writes the drawing out through the file transport (AutoCAD's QSAVE). */
+  /**
+   * Writes the drawing out through the file transport (AutoCAD's QSAVE). Run
+   * as a command, the save is a step of its own that U and REDO name and
+   * regenerate for (`QSAVE Regenerating model.`, clipboard/p204, p205, p214):
+   * a download always completes (CLIPBOARD-D2). One that wrote nothing is a
+   * cancelled one, no step (Ctrl+S's `GROUP QSAVE`, desktop workspace/d04).
+   */
   saveDrawingToFile(): void {
     if (!this.files) {
       this.reportFileError(this.text.message("saveUnavailable"))
       return
     }
     this.files.save(this.serializeDrawing(), this.suggestedFileName())
+    if (this.startingName === null) return
+    this.history.markRegenerated()
+    this.history.recordEmpty(this.startingName)
   }
 
   /**

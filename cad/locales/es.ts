@@ -107,6 +107,7 @@ export const es: EngineLocale = {
       "QNEW": "Iniciar un dibujo nuevo",
       "QSAVE": "Guardar el dibujo en un archivo",
       "SAVEAS": "Guardar el dibujo en un archivo con otro nombre",
+      "SAVE": "Guardar el dibujo en un archivo",
       "OPEN": "Abrir un archivo de dibujo",
       "PASTECLIP": "Pegar el portapapeles en el dibujo",
       "DIMSTYLE": "Crear y modificar estilos de cota",
@@ -867,14 +868,18 @@ export const es: EngineLocale = {
         "RNUEVO"
       ],
       "QSAVE": [
-        "GUARDARR",
-        "GUARDAR"
+        "GUARDARR"
       ],
       "SAVEAS": [
         "GUARDARCOMO"
       ],
+      "SAVE": [
+        "GUARDAR",
+        "GUARDARURL"
+      ],
       "OPEN": [
-        "ABRE"
+        "ABRE",
+        "ABREURL"
       ],
       "PASTECLIP": [
         "PEGAPP"

@@ -164,10 +164,12 @@ export function registerCommands(
   register({ id: "NEW", run: () => runtime.newDrawing() })
   register({ id: "QNEW", run: () => runtime.newDrawing() })
   // A browser download always names the file, so AutoCAD's QSAVE (save over
-  // the current name) and SAVEAS (prompt for one) cannot be told apart here;
-  // both run the one save we can offer.
+  // the current name), SAVEAS (prompt for one) and SAVE (prompt, and on a
+  // titled drawing write a copy, clipboard/p215) cannot be told apart here;
+  // all three run the one save we can offer (CLIPBOARD-D4).
   register({ id: "QSAVE", run: () => runtime.saveDrawingToFile() })
   register({ id: "SAVEAS", run: () => runtime.saveDrawingToFile() })
+  register({ id: "SAVE", run: () => runtime.saveDrawingToFile() })
   register({
     id: "OPEN",
     run: () => {
