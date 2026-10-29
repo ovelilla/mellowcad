@@ -1,7 +1,7 @@
 # MellowCAD como librería — brief
 
-> **Estado:** fases 1, 2 y 3 hechas (2026-10-29); de la 4, las entregas (a) y (b), de seis; las demás, sin
-> ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
+> **Estado:** fases 1, 2 y 3 hechas (2026-10-29); de la 4, las entregas (a), (b) y (c), de seis; las
+> demás, sin ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
 > análisis completo, con el inventario medido, las fuentes fechadas, el spike y el pase adversarial,
 > está en https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama
 > local worktree-agent-a498997d3f29c107f (commit b1c7923), sin empujar.
@@ -254,10 +254,44 @@ son días de sesión.
    llamada al motor (el asa de anchura de la paleta con su captura, las flechas de `DecimalInput`,
    las teclas de los menús), y viaja con él; `test/renderHook.ts` sirve también a los tests del
    paquete del editor; el `check:hosts` de react sigue esperando a los ejemplos (fase 5).
-   (c) **`@mellowcad/editor`, en su sitio**: components/cad, components/ui, `lib/utils.ts`,
-   lib/editor-root.ts y las dos libs de layout pasan a packages/editor; el sitio lo importa por su
-   nombre desde el fuente; el `en.d.json.ts` del catálogo y sus entradas `./locales/<tag>`; los
-   checks siguen a los ficheros; la landing, con su `cn` y su `DirectionProvider`. ~1,5 días.
+   (c) **Hecha** (7d640c8, 5d00637, fb88bea): **`@mellowcad/editor`, en su sitio**. components/cad,
+   components/ui y las libs editor-root, palette-layout y status-bar-layout pasan con `git mv` a
+   `packages/editor/src` (el catálogo en `locales/`, los primitivos en `ui/`), con sus tests y los
+   de tamaño, tipo y `cn`; el historial los sigue. `lib/utils.ts` y `components/ui/direction.tsx`
+   no se mueven: son de la landing, byte a byte, y el editor lleva copias. El paquete es privado
+   0.0.0 con el motor, react y React 19 como peers y las dependencias que ya tenía la raíz (el
+   lockfile solo gana el enlace); `index.ts` exporta lo que usa el sitio: `CadWorkspace`,
+   `paletteLayoutScript` y el tipo `EditorLocale`, más `./locales/{en,es,ar}`, una entrada por
+   catálogo (su test lo sujeta). El sitio lo importa por su nombre desde el fuente. Sin build
+   todavía: el hook corre cada script con `--if-present` y `test/packages.test.ts` solo deja
+   saltárselo al que lista como pendiente. `npm run locales` escribe el `en.d.json.ts` del
+   catálogo, con test de deriva; `tsc` lo lee (probado). Los checks que fallaban en silencio,
+   arreglados y probados uno a uno haciéndolos fallar en packages/editor: las cinco reglas de
+   ESLint (ahora también en `ui/`, que pasa la de literales); un `@/` dentro de un paquete, que
+   seguía resolviendo a la copia del sitio, o una ruta relativa que sale de él; el test de RTL
+   recorre packages/ y, como el de tamaños, falla con una excepción que ya no casa (encontró una
+   vieja, `left-1/2` del área de trabajo); el test que impide a la landing incrustar piezas que
+   leen el catálogo sigue el nombre por el barrel; `TEST_ROOTS` de `lib/facts.ts` cuenta
+   packages/editor (sin eso la cifra de la landing bajaba de 4.400 a 4.300); los alias de
+   `components.json` apuntan al editor; el `tailwindStylesheet` de Prettier ya lo alcanzaba
+   (probado). Las reglas siguen a los ficheros; el p90 de reglas por fichero sigue en 46,7 KB.
+   Medido en producción contra 4789e77 (Chrome; la landing en /, /es, /ar, /privacy y
+   /ar/privacy a 1440, página entera; /draw, /es/draw y /ar/draw a 1920 y 1280 en reposo y, a
+   1920, el menú de aplicación, el selector de capas, un tooltip de la paleta, los menús de
+   referencias y de Polar, Personalización, la pestaña Capas y LINE con la entrada dinámica): las
+   72 capturas iguales píxel a píxel (dos ejecuciones de la base difieren entre sí en dos de
+   /ar/draw), el DOM del editor y el foco iguales, el `<head>` igual salvo los nombres de los
+   chunks. La landing carga los mismos 13 ficheros de JS y CSS con el mismo hash; /draw, los
+   mismos salvo un chunk de JS con los mismos módulos renumerados (mismo tamaño, +5 B gz), y su
+   CSS es el mismo byte a byte. Hallado y sin tocar (la landing no debía cambiar): los 22 tests
+   de packages/react nunca se contaron; contarlos lleva la cifra a 4.500. Lo que hereda la (d):
+   sacar el editor de la lista de pendientes de `test/packages.test.ts` al darle `build` y
+   `check`; `icons.tsx` y `ui/button.tsx` usan React sin `"use client"` (solo los importan
+   módulos de cliente), y el check de `dist` los señalará; los tipos que alcanza el barrel
+   (`LayoutStorage`, `SheetTransition`, `LanguageLink`) entran en su informe de API;
+   `class-variance-authority` ya solo lo usa el editor y sigue también en la raíz. Para la (e),
+   `globals.css` sigue en el sitio, y `editor-root.test.ts` y `palette-layout.test.ts` lo leen por
+   ruta relativa, como la `css` de `components.json`.
    (d) **El build del editor**: tsdown con React Compiler, `isolatedDeclarations`, publint, attw,
    el check de `"use client"` y su informe de API. ~1 día.
    (e) **El CSS precompilado** (`./styles.css`), acotado a la raíz, con un check de que no declara
@@ -288,8 +322,9 @@ Bloqueos: 1 → 2 → 6; 1 → 3 → 4 → 5 → 7; la org de npm → 6; 7 → 8
 
 ## 6. Riesgos
 
-- 154 nombres públicos: 146 del motor (eran 642; la 3(d) sumó cinco) y 8 de react, más lo que
-  sus firmas alcanzan (`cad/api.md`, `packages/react/api.md`): cada uno es una promesa de semver.
+- 157 nombres públicos: 146 del motor (eran 642; la 3(d) sumó cinco), 8 de react y 3 del editor
+  (sin informe hasta la 4(d)), más lo que sus firmas alcanzan (`cad/api.md`,
+  `packages/react/api.md`): cada uno es una promesa de semver.
 - Tres superficies para una persona, sin CI: se publican escalonadas y el hook cubre los paquetes.
 - Dependencias nuevas que vigilar: tsdown 0.23.2 usa `rolldown-plugin-dts` en beta (0.23.3 vuelve
   a la 0.28 estable y sale de la cuarentena el 2026-10-31: la próxima revisión la toma); attw trae
