@@ -20,6 +20,27 @@ Nothing else is public: they are the package's `exports` (`cad/package.json`), n
 has an import-time side effect (`"sideEffects": false`, one built module per source file), so a
 bundler keeps only what a page uses, and a language costs nothing until it is imported.
 
+## On a page
+
+```ts
+import { CadEngine, createMemoryDrawingStore } from "@mellowcad/engine"
+
+const engine = new CadEngine(canvas, { store: createMemoryDrawingStore() })
+engine.subscribe(() => render(engine.getState()))
+engine.dispose() // when the canvas goes
+```
+
+The defaults are safe on any page:
+
+- **`store`**, where the drawing is autosaved and restored from: none unless given.
+  `createMemoryDrawingStore()` keeps it while the page lives; a `DrawingStore` of the host's
+  (`read`, `write`) keeps it anywhere. `createLocalStorageDrawingStore()` is this device's, the
+  editor's drawing: an engine given it shares, and overwrites, what the editor saved.
+- **`scope`**, what the engine takes keys, the wheel and the right-click from: its canvas unless
+  given, and only once it is pressed or focused, until something outside is. Pass the element that
+  also holds the host's controls for the canvas, or `"document"` to take the whole page wherever
+  focus sits, as the editor does.
+
 ## Languages
 
 ### Two languages in one

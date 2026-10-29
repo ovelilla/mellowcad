@@ -313,11 +313,11 @@ attributes EATTEDIT. Extend that one method per editable type, never another ada
 
 `CadEngine` owns the canvas, DOM listeners, `ResizeObserver`, rAF scheduling and device-pixel ratio,
 and delegates the rest to `CadRuntime`. It is also the **composition root**: it builds the port
-implementations (`createLocalStorageDrawingStore`, `createBrowserFileTransport`), each `null` outside
-the browser, and the runtime reports the missing capability rather than crashing.
+implementations (`createBrowserFileTransport`, `createBrowserClipboard`), each `null` outside the
+browser, and the runtime reports the missing capability rather than crashing.
 
-Listeners on `canvas.ownerDocument`, not the canvas: `keydown` and `keyup`, `contextmenu`, and, with
-a `scope`, a capture `pointerdown` and a `focusin`.
+Listeners on `canvas.ownerDocument`, not the canvas: `keydown` and `keyup`, `contextmenu`, and, unless
+scoped to `"document"`, a capture `pointerdown` and a `focusin`.
 
 - `keydown`, so Escape and shortcuts work wherever focus is. It ignores events from
   `input/textarea/select/[contenteditable]` — **except function keys and the global Ctrl
@@ -339,18 +339,17 @@ document-level listener bypasses the routing order and cannot `preventDefault` i
 
 ### Embedding (`CadEngineOptions`)
 
-Four options: the editor passes `locale` and `paletteOpen`; `store` and `scope` let the same
-composition root live inside a page it does not own.
+The defaults are safe in a page the engine does not own; the editor asks for the rest
+(`components/cad/cad-workspace.tsx`).
 
-- `store` replaces the autosave's `DrawingStore` — `createMemoryDrawingStore()` for one that lasts
-  as long as the page, `null` for none. **Anything embedding the engine beside the editor must pass
-  one**: the default is this device's store, which holds the user's drawing.
-- `scope` embeds it. The engine is **active** from a press or a focus inside the scope until the next
-  one outside. Inactive, it hears no keys, lets the wheel scroll the page and the host's
-  `focusSurface` does nothing (a command ending late must not pull focus back). Active, it hears
-  keys aimed at the canvas, the scope or the body (where focus falls when a focused field unmounts);
-  fields in the scope keep the editable rule; other controls keep their keys; and the scroll keys
-  the runtime passes on are prevented.
+- `store`: none by default, so nothing is restored or autosaved; `createMemoryDrawingStore()` lasts
+  as long as the page. Only the editor passes this device's, which holds the user's drawing.
+- `scope`: the canvas by default, `"document"` for the editor. The engine is **active** from a press
+  or a focus inside the scope until the next one outside. Inactive, it hears no keys, lets the wheel
+  scroll the page and the host's `focusSurface` does nothing (a command ending late must not pull
+  focus back). Active, it hears keys aimed at the canvas, the scope or the body (where focus falls
+  when a focused field unmounts); fields in the scope keep the editable rule; other controls keep
+  their keys; and the scroll keys the runtime passes on are prevented.
 - The filter sits in the adapter **before** `runtime.keyDown`, like the editable rule. Never make
   the runtime scope-aware.
 - `mayTakeFocus(from)` is what the dynamic-input box asks before reclaiming focus after a render:

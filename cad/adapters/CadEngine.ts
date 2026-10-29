@@ -36,28 +36,30 @@ import type { EngineLocale } from "../locales/types"
 import { CanvasScenePresenter } from "./CanvasScenePresenter"
 import { createBrowserFileTransport } from "./browserFileTransport"
 import { createBrowserClipboard } from "./browserClipboard"
-import { createLocalStorageDrawingStore } from "./localStorageDrawingStore"
 
 export interface CadEngineOptions {
   /**
-   * Where the transparent autosave goes: by default this device's store, which
-   * is the editor's drawing. An engine embedded anywhere else passes its own so
-   * it can never write over that drawing; `null` turns autosave off.
+   * Where the transparent autosave goes, and what the engine restores when it
+   * starts. None by default: an engine never writes a drawing it was not given
+   * a store for. The editor passes this device's,
+   * `createLocalStorageDrawingStore()`; `null` is the same as leaving it out.
    */
   readonly store?: DrawingStore | null
   /**
-   * Embeds the engine in a page it does not own. Without a scope the engine
-   * owns the whole document, as the editor needs: every key reaches it wherever
-   * focus sits, the wheel always zooms and the native context menu never opens.
+   * What part of the page the engine may take keys, the wheel and the context
+   * menu from. By default its canvas: the engine is **active** from a press or
+   * a focus inside the scope until the next one outside it. Inactive, it hears
+   * no keys, leaves the wheel to scroll the page and never takes focus. Active,
+   * it hears keys aimed at the canvas or at the page body, and none of them
+   * scrolls the page; fields inside the scope keep the editor's rule for
+   * fields, and any other control there keeps its own keys. A host whose own
+   * controls sit beside the canvas passes the element holding both.
    *
-   * With one, the engine is **active** from a press or a focus inside `scope`
-   * until the next one outside it. Inactive, it hears no keys, leaves the wheel
-   * to scroll the page and never takes focus. Active, it hears keys aimed at
-   * the canvas or at the page body, and none of them scrolls the page; fields
-   * inside the scope keep the editor's rule for fields, and any other control
-   * there keeps its own keys.
+   * `"document"` gives the engine the whole page, as the editor needs: every
+   * key reaches it wherever focus sits, the wheel always zooms and the native
+   * context menu never opens.
    */
-  readonly scope?: HTMLElement
+  readonly scope?: HTMLElement | "document"
   /**
    * The language the engine speaks — its prompts, keywords, palettes and what
    * it draws on the canvas. English, built in, when left out.
@@ -74,8 +76,7 @@ export interface CadEngineOptions {
  * The browser adapter and composition root: it owns the `<canvas>`, its DOM
  * event listeners, the `ResizeObserver` and the `requestAnimationFrame` loop,
  * and wires them to a DOM-free {@link CadRuntime} plus a Canvas 2D scene
- * presenter and, unless {@link CadEngineOptions} say otherwise, this device's
- * drawing store.
+ * presenter and the store {@link CadEngineOptions} name.
  *
  * It exposes the same façade the React layer has always used: construct it
  * with a canvas, subscribe to state, call imperative methods. React never
@@ -87,6 +88,7 @@ export class CadEngine {
   private readonly canvas: HTMLCanvasElement
   private readonly ctx: CanvasRenderingContext2D
   private readonly resizeObserver: ResizeObserver
+  /** Null when the engine owns the whole document (`scope: "document"`). */
   private readonly scope: HTMLElement | null
 
   private dpr = 1
@@ -101,7 +103,8 @@ export class CadEngine {
     const ctx = canvas.getContext("2d")
     if (!ctx) throw new Error("2D canvas context is not available")
     this.ctx = ctx
-    this.scope = options.scope ?? null
+    const scope = options.scope ?? canvas
+    this.scope = scope === "document" ? null : scope
     this.active =
       this.scope === null ||
       this.scope.contains(canvas.ownerDocument.activeElement)
@@ -120,9 +123,7 @@ export class CadEngine {
 
     this.runtime = new CadRuntime(
       host,
-      options.store === undefined
-        ? createLocalStorageDrawingStore()
-        : options.store,
+      options.store ?? null,
       createBrowserFileTransport(canvas.ownerDocument),
       createBrowserClipboard(),
       { locale: options.locale, paletteOpen: options.paletteOpen }

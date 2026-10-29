@@ -10,6 +10,7 @@ import {
 import { serializeDrawing } from "../serialization/drawingFile"
 import { circleOf, lineOf, p, snapshotOf } from "../../test/builders"
 import { CadEngine, type CadEngineOptions } from "./CadEngine"
+import { createLocalStorageDrawingStore } from "./localStorageDrawingStore"
 import { createMemoryDrawingStore } from "./memoryDrawingStore"
 
 /**
@@ -188,9 +189,40 @@ function embedded(options: CadEngineOptions = {}): CadEngine {
 const drawingOf = (...entities: Parameters<typeof snapshotOf>[0]) =>
   serializeDrawing(snapshotOf(entities))
 
+// Safe for any page: what the editor relies on, it asks for (`editor()`).
+describe("CadEngine by default", () => {
+  it("neither restores nor autosaves anything", () => {
+    page.storage.setItem("easycad:autosave:v1", drawingOf(circleOf(p(0, 0), 5)))
+    page.storage.setItem.mockClear()
+    const engine = engineOn()
+
+    expect(engine.getState().entityCount).toBe(0)
+    engine.loadDrawing(drawingOf(lineOf(p(0, 0), p(10, 0))))
+    expect(page.storage.setItem).not.toHaveBeenCalled()
+  })
+
+  it("is scoped to its canvas", () => {
+    const engine = engineOn()
+
+    expect(keyAt(page, page.document.body, "L").defaultPrevented).toBe(false)
+    expect(
+      dispatch(page.document, "contextmenu", page.link).defaultPrevented
+    ).toBe(false)
+    dispatch(page.document, "pointerdown", page.button)
+    expect(keyAt(page, page.document.body, "L").defaultPrevented).toBe(false)
+
+    dispatch(page.document, "pointerdown", page.canvas)
+    keyAt(page, page.document.body, "L")
+    expect(engine.getState().commandLine.buffer).toBe("L")
+  })
+})
+
+const editor = (): CadEngine =>
+  engineOn({ store: createLocalStorageDrawingStore(), scope: "document" })
+
 describe("CadEngine owning the document (the editor)", () => {
   it("hears keys wherever focus sits", () => {
-    const engine = engineOn()
+    const engine = editor()
     page.link.focus()
 
     const typed = keyAt(page, page.link, "L")
@@ -200,7 +232,7 @@ describe("CadEngine owning the document (the editor)", () => {
   })
 
   it("passes on the keys the runtime does not claim", () => {
-    engineOn()
+    editor()
 
     // Space at the neutral prompt: its page cannot scroll, and a toolbar
     // button with focus must still be pressable with it.
@@ -208,7 +240,7 @@ describe("CadEngine owning the document (the editor)", () => {
   })
 
   it("leaves a field its keys, except function keys and the global Ctrl ones", () => {
-    const engine = engineOn()
+    const engine = editor()
 
     expect(keyAt(page, page.search, "L").defaultPrevented).toBe(false)
     expect(engine.getState().commandLine.buffer).toBe("")
@@ -231,7 +263,7 @@ describe("CadEngine owning the document (the editor)", () => {
   })
 
   it("leaves a modal dialog every key", () => {
-    const engine = engineOn()
+    const engine = editor()
     const dialog = new FakeNode(page.document, "DIALOG")
     const choice = new FakeNode(page.document, "BUTTON")
     page.document.body.append(dialog.append(choice))
@@ -246,7 +278,7 @@ describe("CadEngine owning the document (the editor)", () => {
   // The Enter that chooses an item would otherwise also repeat the last
   // command, and the arrows that walk the menu recall commands.
   it("leaves an open menu its keys", () => {
-    const engine = engineOn()
+    const engine = editor()
     const menu = new FakeNode(page.document, "MENU")
     const item = new FakeNode(page.document, "DIV")
     page.document.body.append(menu.append(item))
@@ -260,7 +292,7 @@ describe("CadEngine owning the document (the editor)", () => {
   // An Arabic layout sends its own letter with Ctrl; the shortcut is the
   // physical key's, as every desktop application takes it.
   it("reads a Ctrl shortcut by its physical key on a non-latin layout", () => {
-    engineOn()
+    editor()
     const arabic = (target: FakeNode, key: string, code: string) =>
       dispatch(page.document, "keydown", target, {
         key,
@@ -281,7 +313,7 @@ describe("CadEngine owning the document (the editor)", () => {
   // The lasso's Space arrives while the button is held, at the canvas the
   // press focused (desktop erase/d04).
   it("hands the runtime a Space pressed while a lasso is dragged", () => {
-    const engine = engineOn()
+    const engine = editor()
     const pointer = (type: string, clientX: number, clientY: number) =>
       dispatch(page.canvas, type, page.canvas, {
         button: 0,
@@ -307,7 +339,7 @@ describe("CadEngine owning the document (the editor)", () => {
   })
 
   it("zooms on every wheel turn over the canvas", () => {
-    const engine = engineOn()
+    const engine = editor()
     const wheel = dispatch(page.canvas, "wheel", page.canvas, {
       deltaY: -100,
       clientX: 200,
@@ -320,7 +352,7 @@ describe("CadEngine owning the document (the editor)", () => {
 
   // A notch is 100 px in Chrome on Windows; Firefox counts it in lines.
   it("reads the wheel's lines and pages in pixels", () => {
-    const engine = engineOn()
+    const engine = editor()
     dispatch(page.canvas, "wheel", page.canvas, {
       deltaY: -3,
       deltaMode: 1,
@@ -341,7 +373,7 @@ describe("CadEngine owning the document (the editor)", () => {
   })
 
   it("keeps the native context menu from opening anywhere but a field", () => {
-    engineOn()
+    editor()
 
     expect(
       dispatch(page.document, "contextmenu", page.link).defaultPrevented
@@ -353,7 +385,7 @@ describe("CadEngine owning the document (the editor)", () => {
 
   it("autosaves to this device's store", () => {
     page.storage.setItem("easycad:autosave:v1", drawingOf(circleOf(p(0, 0), 5)))
-    const engine = engineOn()
+    const engine = editor()
 
     expect(engine.getState().entityCount).toBe(1)
     engine.loadDrawing(drawingOf(lineOf(p(0, 0), p(10, 0))))
@@ -364,7 +396,7 @@ describe("CadEngine owning the document (the editor)", () => {
   })
 
   it("may take focus from anywhere but an open menu or a modal dialog", () => {
-    const engine = engineOn()
+    const engine = editor()
     const menu = new FakeNode(page.document, "MENU")
     const dialog = new FakeNode(page.document, "DIALOG")
     const item = new FakeNode(page.document, "DIV")
@@ -379,7 +411,7 @@ describe("CadEngine owning the document (the editor)", () => {
 
   it("places a canvas point in the viewport, past the docked chrome", () => {
     page.canvas.rect = { left: 44, top: 40, width: 400, height: 300 }
-    const engine = engineOn()
+    const engine = editor()
 
     expect(engine.clientFromScreen({ x: 10, y: 20 })).toEqual({ x: 54, y: 60 })
   })

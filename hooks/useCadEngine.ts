@@ -25,10 +25,13 @@ const POINTER_KEYS = ["cursorUcs", "dynamicInput"] as const
 export type EditorState = Omit<EngineState, (typeof POINTER_KEYS)[number]>
 
 export interface UseCadEngineOptions {
-  /** Passed to the engine as is; see `CadEngineOptions.store`. */
-  readonly store?: DrawingStore | null
-  /** The element to embed the engine in; see `CadEngineOptions.scope`. */
-  readonly scopeRef?: React.RefObject<HTMLElement | null>
+  /** Makes the engine's store when it is built; see `CadEngineOptions.store`. */
+  readonly store?: () => DrawingStore | null
+  /**
+   * What the engine may take keys from; see `CadEngineOptions.scope`. An
+   * element by its ref, since it exists only once mounted.
+   */
+  readonly scope?: React.RefObject<HTMLElement | null> | "document"
   /** The engine's language; English when absent. */
   readonly locale?: EngineLocale
   /**
@@ -61,10 +64,12 @@ export function useCadEngine(options: UseCadEngineOptions = {}): {
 
   useEffect(() => {
     if (!canvasRef.current) return
-    const { store, scopeRef, locale, paletteOpen } = initialOptions.current
+    const { store, scope, locale, paletteOpen } = initialOptions.current
     const instance = new CadEngine(canvasRef.current, {
-      ...(store !== undefined && { store }),
-      ...(scopeRef?.current && { scope: scopeRef.current }),
+      ...(store && { store: store() }),
+      ...(scope === "document"
+        ? { scope }
+        : scope?.current && { scope: scope.current }),
       ...(locale && { locale }),
       ...(paletteOpen && { paletteOpen: paletteOpen() }),
     })

@@ -3,7 +3,10 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 import { useTranslations } from "next-intl"
 
-import type { EngineLocale } from "@mellowcad/engine"
+import {
+  createLocalStorageDrawingStore,
+  type EngineLocale,
+} from "@mellowcad/engine"
 import { useCadEngine } from "@/hooks/useCadEngine"
 import { cn } from "@/lib/utils"
 import {
@@ -43,7 +46,11 @@ export function CadWorkspace({
   /** The page language's catalog for the engine; English when absent. */
   engineLocale?: EngineLocale
 }) {
+  // The editor is the page: it keeps this device's drawing and takes every
+  // key, which the engine leaves to whoever asks.
   const { canvasRef, engine, state } = useCadEngine({
+    store: createLocalStorageDrawingStore,
+    scope: "document",
     locale: engineLocale,
     paletteOpen: () => paletteLayoutAtLoad().open,
   })
