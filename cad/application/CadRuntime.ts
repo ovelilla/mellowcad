@@ -2833,6 +2833,34 @@ export class CadRuntime extends Observable {
     this.invalidateState()
   }
 
+  /**
+   * A key pressed in the command line's own field, which types its text
+   * through `setCommandLineText`: whether the engine took the key. Unlike
+   * on the drawing, Enter and Space with nothing typed answer the prompt,
+   * the arrows recall at any prompt, and Escape only steps out: the typed
+   * text, then the expanded history, then the field, to the drawing.
+   */
+  commandLineKey(key: string): boolean {
+    const typed = this.commandLine.getBuffer()
+    // A name that holds spaces (UCS's Save, desktop ucs/d05) takes one
+    // after what is typed: the field types it.
+    if (key === " " && typed.trim() !== "" && this.takesSpaces()) return false
+    if (key === "Enter" || key === " ") {
+      this.submitCommandLine()
+    } else if (key === "Tab" && typed !== "") {
+      this.completeCommandLine()
+    } else if (key === "ArrowUp" || key === "ArrowDown") {
+      this.recallCommand(key === "ArrowUp" ? -1 : 1)
+    } else if (key === "Escape") {
+      if (typed !== "") this.setCommandLineText("")
+      else if (this.commandHistoryOpen) this.setCommandHistoryOpen(false)
+      else this.host.focusSurface()
+    } else {
+      return false
+    }
+    return true
+  }
+
   /** Shows or hides the command prompt (AutoCAD's Ctrl+9). */
   toggleCommandLine(): void {
     this.commandLineVisible = !this.commandLineVisible

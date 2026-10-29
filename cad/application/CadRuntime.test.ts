@@ -166,6 +166,50 @@ describe("command line", () => {
     expect(cad.state().commandLine.buffer).toBe("CIRCLE")
   })
 
+  it("takes the command line field's own keys", () => {
+    const cad = createHarness()
+
+    cad.runtime.setCommandLineText("l")
+    expect(cad.runtime.commandLineKey("Tab")).toBe(true)
+    expect(cad.state().commandLine.buffer).toBe("LINE")
+    expect(cad.runtime.commandLineKey(" ")).toBe(true)
+    expect(cad.activeToolId()).toBe("line")
+    cad.escape()
+
+    // The arrows recall at any prompt, not only at Command:.
+    cad.command("CIRCLE")
+    expect(cad.runtime.commandLineKey("ArrowUp")).toBe(true)
+    expect(cad.state().commandLine.buffer).toBe("CIRCLE")
+
+    // Escape steps out: the text, the expanded history, then to the drawing,
+    // the command still running.
+    cad.runtime.toggleCommandHistory()
+    const focused = cad.host.focusCount
+    cad.runtime.commandLineKey("Escape")
+    expect(cad.state().commandLine.buffer).toBe("")
+    expect(cad.state().commandLine.historyOpen).toBe(true)
+    cad.runtime.commandLineKey("Escape")
+    expect(cad.state().commandLine.historyOpen).toBe(false)
+    cad.runtime.commandLineKey("Escape")
+    expect(cad.host.focusCount).toBe(focused + 1)
+    expect(cad.activeToolId()).toBe("circle")
+
+    expect(cad.runtime.commandLineKey("a")).toBe(false)
+  })
+
+  it("types a space in the field after a name that holds spaces", () => {
+    // desktop ucs/d05: UCS's Save takes a name with spaces.
+    const cad = createHarness()
+    for (const answer of ["UCS", "NA", "S"]) {
+      cad.runtime.setCommandLineText(answer)
+      cad.runtime.commandLineKey("Enter")
+    }
+    cad.runtime.setCommandLineText("my")
+    expect(cad.runtime.commandLineKey(" ")).toBe(false)
+    cad.runtime.setCommandLineText("")
+    expect(cad.runtime.commandLineKey(" ")).toBe(true)
+  })
+
   it("hides on Ctrl+9 but reappears the moment something is typed", () => {
     const cad = createHarness()
 

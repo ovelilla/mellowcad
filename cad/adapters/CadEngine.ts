@@ -434,10 +434,6 @@ export class CadEngine {
     this.runtime.setCommandLineText(text)
   }
 
-  submitCommandLine(): void {
-    this.runtime.submitCommandLine()
-  }
-
   runCommand(name: string): boolean {
     return this.runtime.runCommand(name)
   }
@@ -499,20 +495,13 @@ export class CadEngine {
     return this.runtime.restoreUcs(name)
   }
 
-  completeCommandLine(): void {
-    this.runtime.completeCommandLine()
-  }
-
-  recallCommand(direction: -1 | 1): void {
-    this.runtime.recallCommand(direction)
+  /** A key in the host's command-line field: whether the engine took it (prevent the browser's). */
+  commandLineKey(key: string): boolean {
+    return this.runtime.commandLineKey(key)
   }
 
   toggleCommandLine(): void {
     this.runtime.toggleCommandLine()
-  }
-
-  setCommandHistoryOpen(open: boolean): void {
-    this.runtime.setCommandHistoryOpen(open)
   }
 
   toggleCommandHistory(): void {

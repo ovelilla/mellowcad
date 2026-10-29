@@ -30,15 +30,8 @@ export function CommandLine({
   engine: CadEngine
   state: EditorState
 }) {
-  const {
-    visible,
-    historyOpen,
-    prompt,
-    buffer,
-    takesSpaces,
-    suggestions,
-    lang,
-  } = state.commandLine
+  const { visible, historyOpen, prompt, buffer, suggestions, lang } =
+    state.commandLine
   const t = useEditorText("CommandLine")
 
   // Hidden is only *idle* hidden: as soon as something is typed the prompt
@@ -93,27 +86,7 @@ export function CommandLine({
           value={buffer}
           onChange={(e) => engine.setCommandLineText(e.target.value)}
           onKeyDown={(e) => {
-            // A name that holds spaces (UCS's Save, desktop ucs/d05) takes
-            // one after what is typed: the input types it.
-            const typesSpace =
-              e.key === " " && takesSpaces && buffer.trim() !== ""
-            if ((e.key === "Enter" || e.key === " ") && !typesSpace) {
-              // Space is Enter too, as it is in AutoCAD: it runs the command,
-              // answers the prompt, or with nothing typed repeats or ends.
-              e.preventDefault()
-              engine.submitCommandLine()
-            } else if (e.key === "Tab" && buffer !== "") {
-              e.preventDefault()
-              engine.completeCommandLine()
-            } else if (e.key === "ArrowUp" || e.key === "ArrowDown") {
-              e.preventDefault()
-              engine.recallCommand(e.key === "ArrowUp" ? -1 : 1)
-            } else if (e.key === "Escape") {
-              e.preventDefault()
-              if (buffer !== "") engine.setCommandLineText("")
-              else if (historyOpen) engine.setCommandHistoryOpen(false)
-              else engine.focusSurface()
-            }
+            if (engine.commandLineKey(e.key)) e.preventDefault()
           }}
           spellCheck={false}
           lang={lang}

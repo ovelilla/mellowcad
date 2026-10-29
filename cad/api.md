@@ -161,7 +161,6 @@ export declare class CadEngine {
     dynamicOptionKey(key: string): boolean;
     cancelDynamicInput(): void;
     setCommandLineText(text: string): void;
-    submitCommandLine(): void;
     runCommand(name: string): boolean;
     applyViewPreset(preset: ViewPreset): boolean;
     navigate(command: "PAN" | "3DORBIT"): boolean;
@@ -175,10 +174,8 @@ export declare class CadEngine {
     viewCubeDrag(phase: "start" | "move" | "end", screen: Vec2, ring?: boolean): void;
     setViewCubeVisible(visible: boolean): void;
     restoreUcs(name: string | null): boolean;
-    completeCommandLine(): void;
-    recallCommand(direction: -1 | 1): void;
+    commandLineKey(key: string): boolean;
     toggleCommandLine(): void;
-    setCommandHistoryOpen(open: boolean): void;
     toggleCommandHistory(): void;
     setCleanScreen(on: boolean): void;
     toggleCleanScreen(): void;
