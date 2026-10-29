@@ -2127,6 +2127,7 @@ export const en: EngineCatalog = {
         ">"
       ],
       "everythingDeselected": "Everything has been deselected",
+      "selectingObjectsDone": "Selecting objects...done.",
       "fromNeedsPoint": "FROM needs a point prompt.",
       "fromBase": "FROM: pick the base point.",
       "fromOffset": "FROM: offset from the base point.",

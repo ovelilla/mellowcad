@@ -5516,9 +5516,24 @@ export class CadRuntime extends Observable {
     }
   }
 
-  /** Ctrl+A: selects every object that can be selected. */
+  /**
+   * Ctrl+A, acad.cuix's `^C^C_ai_selall`: the running command cancelled, the
+   * macro echoed, and `c:ai_selall`'s `_.SELECT _ALL` between its `Selecting
+   * objects...` and `done.` (clipboard/p122), in a step U names `AI_SELALL
+   * GROUP` (p123). AI_SELALL is a Lisp routine, not a command here
+   * (CLIPBOARD-D7).
+   */
   selectAll(): void {
+    if (this.activeTool.id !== "select") this.cancelCommand()
+    this.commandStarts("AI_SELALL")
+    this.commandLine.write("command", "_ai_selall")
     selectAll(this.document, this.selection)
+    this.commandLine.write("info", this.text.message("selectingObjectsDone"))
+    this.history.recordEmpty(
+      this.text.message("menuStep", { command: "AI_SELALL" })
+    )
+    this.invalidateState()
+    this.host.requestRender()
   }
 
   /**
@@ -6338,26 +6353,32 @@ export class CadRuntime extends Observable {
       return true
     }
 
-    // The clipboard shortcuts, all four verified in Autodesk's own guide:
-    // Ctrl+C copy, Ctrl+Shift+C copy with base point, Ctrl+X cut, Ctrl+V paste,
-    // Ctrl+A select all. Consuming them stops the browser acting on the page's
-    // own (empty) selection instead. They are deliberately *not* forwarded from
-    // a focused field — see `CadEngine.onKeyDown`.
+    // The clipboard shortcuts, acad.cuix's `^C^C_copyclip`, `^C^C_copybase`,
+    // `^C^C_cutclip`, `^C^C_pasteclip` (ID_Copyclip, ID_Copybase, ID_Cutclip,
+    // ID_Pasteclip) and Ctrl+A's `^C^C_ai_selall`. Consuming them stops the
+    // browser acting on the page's own (empty) selection instead. They are
+    // deliberately *not* forwarded from a focused field — see
+    // `CadEngine.onKeyDown`.
     if (e.ctrlKey && !e.altKey) {
       switch (e.key.toLowerCase()) {
         case "c":
-          this.startTool(e.shiftKey ? "copybase" : "copyclip")
+          if (e.shiftKey) this.runAccelerator("COPYBASE", "_copybase")
+          else this.runAccelerator("COPYCLIP", "_copyclip")
           return true
         case "x":
-          this.startTool("cutclip")
+          // Ctrl+Shift+X is CUTBASE and Ctrl+Shift+V PASTEBLOCK, which do not
+          // exist here; leave them to the browser rather than quietly doing
+          // something else.
+          if (e.shiftKey) break
+          this.runAccelerator("CUTCLIP", "_cutclip")
           return true
         case "v":
-          // Ctrl+Shift+V is PASTEBLOCK, which does not exist here; leave it to
-          // the browser rather than quietly doing something else.
           if (e.shiftKey) break
-          void this.pasteFromClipboard()
+          this.runAccelerator("PASTECLIP", "_pasteclip")
           return true
         case "a":
+          // Ctrl+Shift+A toggles groups (PICKSTYLE), not built here.
+          if (e.shiftKey) break
           this.selectAll()
           return true
       }

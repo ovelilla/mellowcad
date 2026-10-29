@@ -1,5 +1,6 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
+import { DocumentReader } from "../../domain/Document"
 import { Entity, EntityId } from "../../domain/entities"
 import { ScenePrimitive } from "../../scene/types"
 import {
@@ -489,10 +490,7 @@ export class ObjectSelector {
         return true
       }
       case "ALL":
-        this.selectNamed(
-          ctx.document.getEntities().map((entity) => entity.id),
-          ctx
-        )
+        this.selectNamed(allObjects(ctx.document), ctx)
         return true
       case "Previous": {
         const previous = ctx
@@ -1389,6 +1387,14 @@ export class ObjectSelector {
     const hit = this.pickAt(world, ctx)
     return hit && !ctx.selection.has(hit.id) ? hit : null
   }
+}
+
+/**
+ * What the ALL mode takes, and Ctrl+A's `_.SELECT _ALL`: every object, those
+ * on Off and on locked layers too (clipboard/p126).
+ */
+export function allObjects(document: DocumentReader): EntityId[] {
+  return document.getEntities().map((entity) => entity.id)
 }
 
 /** What the Last mode takes: the last object drawn that is visible. */

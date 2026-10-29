@@ -2534,6 +2534,7 @@ export const es: EngineLocale = {
         ">"
       ],
       "everythingDeselected": "Se ha anulado la selección de todo",
+      "selectingObjectsDone": "Designando objetos...terminado.",
       "fromNeedsPoint": "DESDE necesita una solicitud de punto.",
       "fromBase": "DESDE: precise el punto base.",
       "fromOffset": "DESDE: desfase desde el punto base.",

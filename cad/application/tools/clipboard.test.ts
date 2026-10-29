@@ -787,6 +787,19 @@ describe("clipboard shortcuts", () => {
     entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
   })
 
+  /** What Ctrl+`key` wrote in the history. */
+  function pressed(
+    cad: ReturnType<typeof createHarness>,
+    key: string,
+    shiftKey = false
+  ): string[] {
+    const from = cad.commandLog().length
+    expect(cad.press(key, { ctrlKey: true, shiftKey })).toBe(true)
+    return cad.commandLog().slice(from)
+  }
+
+  const CANCEL = "Specify next point or [Undo]: *Cancel*"
+
   it("Ctrl+C starts COPYCLIP and Ctrl+Shift+C starts COPYBASE", () => {
     const cad = createHarness(drawing())
     expect(cad.press("c", { ctrlKey: true })).toBe(true)
@@ -805,13 +818,93 @@ describe("clipboard shortcuts", () => {
 
     expect(cad.press("v", { ctrlKey: true })).toBe(true)
     // The read is asynchronous; the tool starts once it settles.
-    await new Promise((resolve) => setTimeout(resolve, 0))
+    await settled()
     expect(cad.activeToolId()).toBe("paste")
   })
 
-  it("leaves Ctrl+Shift+V to the browser (PASTEBLOCK does not exist here)", () => {
+  // acad.cuix: ID_Copyclip `^C^C_copyclip`, ID_Cutclip `^C^C_cutclip`,
+  // ID_Copybase `^C^C_copybase`; the `^C^C` as Ctrl+S's (desktop
+  // workspace/d04: `Specify next point or [Undo]: *Cancel*`, then `_qsave`).
+  it("Ctrl+C, X and Shift+C cancel LINE, echo their macro and ask", () => {
+    for (const [key, shiftKey, echo, prompt] of [
+      ["c", false, "_copyclip", "COPYCLIP Select objects:"],
+      ["x", false, "_cutclip", "CUTCLIP Select objects:"],
+      ["C", true, "_copybase", "COPYBASE Specify base point:"],
+    ] as const) {
+      const cad = answer(createHarness(drawing()), "_LINE", "0,0")
+      expect(pressed(cad, key, shiftKey)).toEqual([CANCEL, echo])
+      expect(cad.state().commandLine.prompt).toBe(prompt)
+    }
+  })
+
+  // acad.cuix: ID_Pasteclip `^C^C_pasteclip`.
+  it("Ctrl+V cancels LINE, echoes _pasteclip and asks for the point", async () => {
+    const cad = answer(createHarness(drawing()), "_COPYCLIP", "_L", "")
+    answer(cad, "_LINE", "0,0")
+    expect(pressed(cad, "v")).toEqual([CANCEL, "_pasteclip"])
+    await settled()
+    expect(cad.state().commandLine.prompt).toBe(
+      "PASTECLIP Specify insertion point:"
+    )
+  })
+
+  // The `^C^C` leaves a preselection at Command:, which COPYCLIP counts on
+  // the macro's echo (desktop erase/d11) and keeps (clipboard/p124); U names
+  // the group as d04 names Ctrl+S's (CLIPBOARD-D8).
+  it("Ctrl+C at Command: copies the preselection, one step U names COPYCLIP GROUP", () => {
+    const cad = answer(createHarness(drawing()), "_CIRCLE", "5,5", "2")
+    cad.select("L1")
+    expect(pressed(cad, "c")).toEqual(["_copyclip 1 found"])
+    expect(cad.selectedIds()).toEqual(["L1"])
+
+    cad.escape()
+    expect(answer(cad, "_U").commandLog().slice(-2)).toEqual([
+      "U",
+      "COPYCLIP GROUP",
+    ])
+    expect(cad.entityCount).toBe(2)
+  })
+
+  // PASTECLIP's name survives the read (CLIPBOARD-D9) as the group's.
+  it("Ctrl+V then a point is one step U names PASTECLIP GROUP", async () => {
+    const cad = answer(createHarness(drawing()), "_COPYCLIP", "_L", "")
+    answer(cad, "_CIRCLE", "5,5", "2")
+    cad.press("v", { ctrlKey: true })
+    await settled()
+    answer(cad, "0,50")
+    expect(cad.entityCount).toBe(3)
+
+    expect(answer(cad, "_U").commandLog().at(-1)).toBe("PASTECLIP GROUP")
+    expect(cad.entityCount).toBe(2)
+    expect(answer(cad, "_U").commandLog().at(-1)).toBe("CIRCLE")
+    expect(cad.entityCount).toBe(1)
+  })
+
+  it("Ctrl+V with nothing to paste says so, an empty group U names", async () => {
+    const cad = answer(
+      createHarness({ clipboard: null }),
+      "_CIRCLE",
+      "5,5",
+      "2"
+    )
+    expect(pressed(cad, "v")).toEqual(["_pasteclip"])
+    await settled()
+    expect(cad.commandLog().at(-1)).toBe("Nothing on the clipboard.")
+
+    expect(answer(cad, "_U").commandLog().at(-1)).toBe("GROUP PASTECLIP")
+    expect(cad.entityCount).toBe(1)
+  })
+
+  // acad.cuix: ID_Pastebloc and ID_Cutbaseclip, commands not built here;
+  // Ctrl+Shift+A toggles groups (PICKSTYLE), not built either.
+  it("leaves Ctrl+Shift+V, X and A to the browser (PASTEBLOCK, CUTBASE, groups)", () => {
     const cad = createHarness(drawing())
     expect(cad.press("V", { ctrlKey: true, shiftKey: true })).toBe(false)
+    cad.select("L1")
+    expect(cad.press("X", { ctrlKey: true, shiftKey: true })).toBe(false)
+    expect(cad.press("A", { ctrlKey: true, shiftKey: true })).toBe(false)
+    expect(cad.entityCount).toBe(1)
+    expect(cad.commandLog()).toEqual([])
   })
 
   it("never leaks into the command prompt", () => {
@@ -823,37 +916,81 @@ describe("clipboard shortcuts", () => {
   })
 })
 
+// acad.cuix's ID_SelAll `^C^C_ai_selall`: acad2027doc.lsp's `c:ai_selall`
+// writes `Selecting objects...` and `done.` around `_.SELECT _ALL ""`.
 describe("Ctrl+A", () => {
+  const two = () => [
+    lineOf(p(0, 0), p(100, 0), { id: "L1" }),
+    lineOf(p(0, 10), p(100, 10), { id: "L2" }),
+  ]
+
   it("selects everything that can be selected", () => {
-    const cad = createHarness({
-      entities: [
-        lineOf(p(0, 0), p(100, 0), { id: "L1" }),
-        lineOf(p(0, 10), p(100, 10), { id: "L2" }),
-      ],
-    })
+    const cad = createHarness({ entities: two() })
     expect(cad.press("a", { ctrlKey: true })).toBe(true)
     expect(cad.selectedIds().sort()).toEqual(["L1", "L2"])
   })
 
-  // A locked layer's objects are selected at Command: (desktop
-  // properties/d02-1, d02-3; ALL decided alike, PROPS-D60), an Off one's not.
-  it("takes objects on a locked layer, never on an Off one", () => {
+  it("cancels LINE first, as its `^C^C` does", () => {
+    const cad = answer(createHarness({ entities: two() }), "_LINE", "0,0")
+    cad.press("a", { ctrlKey: true })
+    expect(cad.commandLog().slice(-3)).toEqual([
+      "Specify next point or [Undo]: *Cancel*",
+      "_ai_selall",
+      "Selecting objects...done.",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+    expect(cad.state().commandLine.prompt).toBe("Command:")
+    expect(cad.selectedIds().sort()).toEqual(["L1", "L2"])
+  })
+
+  // clipboard/p122, p123: `Command: _AI_SELALL` / `Selecting
+  // objects...done.`, and U `AI_SELALL GROUP`, the objects all still there.
+  it("writes Selecting objects...done., a step U names AI_SELALL GROUP (p123)", () => {
+    const cad = answer(createHarness(), "_LINE", "0,0", "10,0", "")
+    answer(cad, "_CIRCLE", "5,5", "2")
+    cad.press("a", { ctrlKey: true })
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "_ai_selall",
+      "Selecting objects...done.",
+    ])
+    expect(cad.selectedIds()).toHaveLength(2)
+
+    expect(answer(cad, "_U").commandLog().slice(-2)).toEqual([
+      "U",
+      "AI_SELALL GROUP",
+    ])
+    expect(cad.entityCount).toBe(2)
+    expect(answer(cad, "_U").commandLog().at(-1)).toBe("CIRCLE")
+  })
+
+  it("in Spanish, Designando objetos...terminado. and AI_SELALL GRUPO (p123)", () => {
+    const cad = createHarness({ entities: two(), locale: es })
+    cad.press("a", { ctrlKey: true })
+    expect(cad.commandLog().at(-1)).toBe("Designando objetos...terminado.")
+    expect(answer(cad, "_U").commandLog().at(-1)).toBe("AI_SELALL GRUPO")
+    expect(cad.entityCount).toBe(2)
+  })
+
+  // clipboard/p126: ALL takes the objects on Off and on locked layers, never
+  // a frozen one's (no Freeze here), as the selector's ALL does.
+  it("takes objects on a locked layer and on an Off one (p126)", () => {
     const cad = createHarness()
     cad.runtime.document.load(
       [
         lineOf(p(0, 0), p(100, 0), { id: "L1" }),
-        lineOf(p(0, 10), p(100, 10), { id: "LOCKED", layerId: "frozen" }),
+        lineOf(p(0, 10), p(100, 10), { id: "LOCKED", layerId: "locked" }),
         lineOf(p(0, 20), p(100, 20), { id: "OFF", layerId: "off" }),
       ],
       {
         layers: [
           layerOf("0"),
-          layerOf("frozen", { locked: true }),
-          layerOf("off", { visible: false }),
+          layerOf("locked", { locked: true }),
+          layerOf("off"),
         ],
       }
     )
+    cad.runtime.updateLayer("off", { visible: false })
     cad.press("a", { ctrlKey: true })
-    expect(cad.selectedIds()).toEqual(["L1", "LOCKED"])
+    expect(cad.selectedIds()).toEqual(["L1", "LOCKED", "OFF"])
   })
 })

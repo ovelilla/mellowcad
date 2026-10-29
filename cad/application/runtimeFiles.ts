@@ -14,6 +14,7 @@ import {
 } from "../serialization/clipboardFile"
 import { Selection } from "./Selection"
 import { clipboardSnapshot } from "./clipboard"
+import { allObjects } from "./tools/objectSelection"
 import { Clipboard } from "./ports"
 
 /** How long PASTECLIP waits for the host's clipboard before giving up on it. */
@@ -116,12 +117,7 @@ export async function readClipboardFragment(
   return fallback ? parseClipboard(fallback) : null
 }
 
-/** Ctrl+A: selects every object that can be selected. */
+/** Ctrl+A's set: what the object selector's ALL takes (clipboard/p126). */
 export function selectAll(document: CadDocument, selection: Selection): void {
-  selection.set(
-    document
-      .getEntities()
-      .filter((entity) => document.isEntitySelectable(entity))
-      .map((entity) => entity.id)
-  )
+  selection.set(allObjects(document))
 }

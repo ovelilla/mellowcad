@@ -14,10 +14,22 @@ workspace/d03's `Erase GROUP`), a paste dropped when a command starts or Escape 
 clipboard is read (no probe: AutoCAD's read is synchronous); `Clipboard` port with a session fallback, table
 reconciliation across drawings (destination name wins; an array's anonymous block lands under a
 fresh `*U<n>`, arrays/p410), single undo on paste, bounded read timeout,
-editable-field guard for Ctrl+C/X/V/A
+editable-field guard for Ctrl+C/X/V/A; Ctrl+C, Ctrl+X, Ctrl+Shift+C and Ctrl+V are acad.cuix's
+`^C^C_copyclip`, `^C^C_cutclip`, `^C^C_copybase` and `^C^C_pasteclip` (ID_Copyclip, ID_Cutclip,
+ID_Copybase, ID_Pasteclip): the running command cancelled (`*Cancel*`, as Ctrl+S's: desktop
+workspace/d04), the macro echoed, a preselection at `Command:` counted on its line (`_copyclip 1
+found`, as erase/d11's macro), a group U names `COPYCLIP GROUP` (`PASTECLIP GROUP` across the
+clipboard's read, `GROUP PASTECLIP` with nothing pasted; by d04's pattern, unprobed for these keys:
+CLIPBOARD-D8); Ctrl+A is ID_SelAll's `^C^C_ai_selall`: the running command cancelled, `_ai_selall`
+echoed, `Selecting objects...done.` (es `Designando objetos...terminado.`; no table id: the
+console, p122, and `acad2027doc.lsp`'s `c:ai_selall`), what the object selector's ALL takes, objects
+on Off and locked layers too (p126; no Freeze here), and a step U names `AI_SELALL GROUP` (es
+`AI_SELALL GRUPO`, p123), taking nothing else back; AI_SELALL is not a command here (a Lisp
+routine, CLIPBOARD-D7)
 
-**Missing:** PASTEBLOCK, PASTEORIG, CUTBASE, PASTESPEC/OLE, drag and drop between windows, a
-Clipboard UI panel, foreign text pasted as MTEXT, listening to the native `paste` event
+**Missing:** PASTEBLOCK and CUTBASE, and so their keys Ctrl+Shift+V and Ctrl+Shift+X (left to the
+browser), Ctrl+Shift+A's group toggle (PICKSTYLE; left to the browser too), PASTEORIG, PASTESPEC/OLE, drag and drop between windows, a Clipboard UI panel, foreign
+text pasted as MTEXT, listening to the native `paste` event
 
 ### `NEW` / `QNEW` · es `NUEVO` / `RNUEVO`
 

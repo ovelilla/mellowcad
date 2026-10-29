@@ -132,9 +132,9 @@ command line steals them from typing, and no key runs a keyword on its own (type
 confirmed). The right button is answered on its release and never reaches a tool.
 
 **Ctrl+Z is acad.cuix's `_u` typed at the running prompt** (`runUndoMacro`): Undo where offered,
-else the prompt's refusal; the command goes on; at `Command:` U. Ctrl+S, O, 0, 1, 9 and Y, the top
-bar's Undo and the Default menu's start `^C^C` (`runAccelerator`): the command cancelled, then
-theirs echoed as written.
+else the prompt's refusal; the command goes on; at `Command:` U. Ctrl+S, O, 0, 1, 9, Y, C, X, V,
+Shift+C, A, the top bar's Undo and the Default menu's are `^C^C` (`runAccelerator`): the command
+cancelled, theirs echoed.
 
 **A right-click's Enter is `pressEnter`, and so is the Command menu's Enter**: one path with the
 keyboard's. `rightClickResponse` (SHORTCUTMENU 11) picks the menu. Every entry runs through

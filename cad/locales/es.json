@@ -1566,6 +1566,7 @@
       "gridMode": " '<'Rejilla {state, select, on {activado} other {desactivado}}>",
       "selectionCyclingMode": " '<'Ciclo de selección {state, select, on {activado} other {desactivado}}>",
       "everythingDeselected": "Se ha anulado la selección de todo",
+      "selectingObjectsDone": "Designando objetos...terminado.",
       "fromNeedsPoint": "DESDE necesita una solicitud de punto.",
       "fromBase": "DESDE: precise el punto base.",
       "fromOffset": "DESDE: desfase desde el punto base.",

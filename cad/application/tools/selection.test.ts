@@ -269,10 +269,15 @@ describe("box selection", () => {
     expect(crossing.selectedIds().sort()).toEqual(["ON_LOCKED", "VISIBLE"])
   })
 
-  it("takes a locked layer's objects with Ctrl+A and a lasso", () => {
+  // Ctrl+A's `_.SELECT _ALL` takes an Off layer's objects too (clipboard/p126).
+  it("takes a locked layer's objects with Ctrl+A and a lasso, an Off one's with Ctrl+A", () => {
     const all = lockedFigure()
     all.runtime.selectAll()
-    expect(all.selectedIds().sort()).toEqual(["ON_LOCKED", "VISIBLE"])
+    expect(all.selectedIds().sort()).toEqual([
+      "ON_HIDDEN",
+      "ON_LOCKED",
+      "VISIBLE",
+    ])
 
     const lasso = lockedFigure()
     lasso.lasso([
