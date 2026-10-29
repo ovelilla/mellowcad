@@ -12,19 +12,16 @@ import {
 
 import {
   CadEngine,
-  CompassLetter,
   ViewCubePart,
   ViewCubeSide,
   type ViewCubeFace,
+  type ViewCubeTarget,
 } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
 import { Button } from "@/components/ui/button"
 import { usePortalContainer } from "@/components/ui/portal-container"
 import { cn } from "@/lib/utils"
 import { useEditorText } from "./editor-text"
-
-/** Below this many pixels a press on the cube is a click, beyond it a drag. */
-const DRAG_THRESHOLD_PX = 3
 
 /** The cube's box (`size-36`): its SVG draws in a 0–1 box scaled to it. */
 const CUBE_PX = 144
@@ -53,14 +50,6 @@ const MENU_ITEM =
 const MENU_POPUP =
   "min-w-44 origin-(--transform-origin) overflow-hidden rounded-md border bg-card/90 p-1 text-popover-foreground shadow-md backdrop-blur transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0"
 
-interface Press {
-  readonly start: { x: number; y: number }
-  readonly part: ViewCubePart | null
-  readonly letter: CompassLetter | null
-  readonly ring: boolean
-  dragging: boolean
-}
-
 /**
  * AutoCAD's ViewCube, top right of the drawing: Home above, the compass round
  * its foot and the UCS menu below. The engine projects it
@@ -80,7 +69,6 @@ export function ViewCube({
   const [menuAt, setMenuAt] = React.useState<{ x: number; y: number } | null>(
     null
   )
-  const press = React.useRef<Press | null>(null)
   const cube = state.viewCube
 
   const anchor = React.useMemo(
@@ -95,49 +83,24 @@ export function ViewCube({
 
   if (!cube.visible) return null
 
+  // The engine tells a click from a drag; this hands it the press, in the
+  // page's pixels, and keeps the pointer on the cube until it is let go.
   const begin = (
     event: React.PointerEvent<SVGElement>,
-    target: Omit<Press, "start" | "dragging">
+    target: ViewCubeTarget
   ) => {
     if (event.button !== 0) return
     event.stopPropagation()
     event.currentTarget.ownerSVGElement?.setPointerCapture(event.pointerId)
-    press.current = {
-      start: { x: event.clientX, y: event.clientY },
-      dragging: false,
-      ...target,
-    }
+    engine.viewCubePress(target, { x: event.clientX, y: event.clientY })
   }
 
-  const move = (event: React.PointerEvent<SVGSVGElement>) => {
-    const current = press.current
-    if (!current) return
-    const at = { x: event.clientX, y: event.clientY }
-    if (!current.dragging) {
-      const moved = Math.hypot(at.x - current.start.x, at.y - current.start.y)
-      if (moved < DRAG_THRESHOLD_PX) return
-      current.dragging = true
-      engine.viewCubeDrag("start", current.start, current.ring)
-    }
-    engine.viewCubeDrag("move", at, current.ring)
-  }
+  const move = (event: React.PointerEvent<SVGSVGElement>) =>
+    engine.viewCubeMove({ x: event.clientX, y: event.clientY })
 
   const end = (event: React.PointerEvent<SVGSVGElement>) => {
-    const current = press.current
-    press.current = null
-    if (!current) return
-    if (current.dragging) {
-      engine.viewCubeDrag(
-        "end",
-        { x: event.clientX, y: event.clientY },
-        current.ring
-      )
-    } else if (current.part !== null) {
-      setHovered(null)
-      engine.viewCubePick(current.part)
-    } else if (current.letter !== null) {
-      engine.compassPick(current.letter)
-    }
+    setHovered(null)
+    engine.viewCubeRelease({ x: event.clientX, y: event.clientY })
   }
 
   const faceName = (face: ViewCubeFace) => state.names.viewCubeFaces[face]
@@ -174,9 +137,7 @@ export function ViewCube({
           aria-label={t("label")}
           onPointerMove={move}
           onPointerUp={end}
-          onPointerCancel={() => {
-            press.current = null
-          }}
+          onPointerCancel={() => engine.viewCubeRelease(null)}
           onPointerLeave={() => setHovered(null)}
         >
           <ellipse
@@ -198,9 +159,7 @@ export function ViewCube({
             className="cursor-grab fill-none stroke-transparent"
             strokeWidth={0.06}
             pointerEvents="stroke"
-            onPointerDown={(event) =>
-              begin(event, { part: null, letter: null, ring: true })
-            }
+            onPointerDown={(event) => begin(event, { ring: true })}
           />
 
           {/* Under the cube: the compass lies round its foot. */}
@@ -208,9 +167,7 @@ export function ViewCube({
             <g
               key={letter}
               className="pointer-events-auto cursor-pointer"
-              onPointerDown={(event) =>
-                begin(event, { part: null, letter, ring: true })
-              }
+              onPointerDown={(event) => begin(event, { letter })}
             >
               <circle
                 cx={at.x}
@@ -277,13 +234,7 @@ export function ViewCube({
                       hovered === zone.part && "fill-sky-400/35"
                     )}
                     onPointerEnter={() => setHovered(zone.part)}
-                    onPointerDown={(event) =>
-                      begin(event, {
-                        part: zone.part,
-                        letter: null,
-                        ring: false,
-                      })
-                    }
+                    onPointerDown={(event) => begin(event, { part: zone.part })}
                   />
                 ))}
               </g>

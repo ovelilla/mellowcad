@@ -135,12 +135,15 @@ import { directionFromUcsHeading, headingInUcs } from "./tools/ucsHeading"
 import { pointAtDistance } from "./tools/directDistance"
 import { ViewPreset, currentViewPreset } from "./tools/viewPresets"
 import { ZOOM_ANSWERS, type ZoomOption } from "./tools/zoomMenu"
+import { DRAG_THRESHOLD_PX } from "./input/dragThreshold"
 import { currentName } from "./tools/UcsTool"
 import {
   CompassLetter,
+  leavesCubeClick,
   ViewCubePart,
   ViewCubeRoll,
   ViewCubeSide,
+  ViewCubeTarget,
   ViewCubeUi,
 } from "./viewCube"
 import {
@@ -303,9 +306,6 @@ const WHEEL_NOTCH_FACTOR = 1.5978
 
 /** A notch of the wheel in a Windows browser's `deltaY`. */
 const WHEEL_NOTCH_PX = 100
-
-/** Movement past this (screen px) makes a press a drag rather than a click. */
-const DRAG_THRESHOLD_PX = 4
 
 /**
  * How far from the cursor a pick finds an object (screen px): the pick box
@@ -591,6 +591,9 @@ export class CadRuntime extends Observable {
   } | null = null
   /** A drag on the ViewCube or its compass ring under way, and the view it started from. */
   private cubeDrag: { drag: CubeDrag; before: ViewState } | null = null
+  /** A press on the ViewCube not yet released, and where it last was. */
+  private cubePress: { target: ViewCubeTarget; at: Vec2; last: Vec2 } | null =
+    null
   /** The ViewCube as last projected, kept until the camera's axes or the UCS change. */
   private viewCubeCache: {
     readonly direction: Vec3
@@ -2726,6 +2729,41 @@ export class CadRuntime extends Observable {
     if (phase === "end") {
       this.cubeDrag = null
       this.cubeStep(before)
+    }
+  }
+
+  /**
+   * A press on the ViewCube, by what it landed on, at a point in the same
+   * pixels its moves and release come in. Released where it was pressed it
+   * is a click on that part or letter; moved out of the cube's drag
+   * rectangle (`leavesCubeClick`) it drags, from the point it left it,
+   * as AutoCAD orbits (desktop view/d10).
+   */
+  viewCubePress(target: ViewCubeTarget, screen: Vec2): void {
+    this.cubePress = { target, at: screen, last: screen }
+  }
+
+  viewCubeMove(screen: Vec2): void {
+    const press = this.cubePress
+    if (!press) return
+    press.last = screen
+    if (this.cubeDrag) this.viewCubeDrag("move", screen)
+    else if (leavesCubeClick(press.at, screen)) {
+      this.viewCubeDrag("start", screen, !("part" in press.target))
+    }
+  }
+
+  /** The press let go, at `screen`; `null` when the pointer was lost. */
+  viewCubeRelease(screen: Vec2 | null): void {
+    const press = this.cubePress
+    this.cubePress = null
+    if (!press) return
+    if (this.cubeDrag) {
+      this.viewCubeDrag("end", screen ?? press.last)
+    } else if (screen !== null) {
+      const { target } = press
+      if ("part" in target) this.viewCubePick(target.part)
+      else if ("letter" in target) this.compassPick(target.letter)
     }
   }
 

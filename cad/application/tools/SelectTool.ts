@@ -74,9 +74,7 @@ import {
   buildVertexEdit,
   pickRolloverEntity,
 } from "./selectToolOverlay"
-
-/** Screen-pixel movement past which a press-drag becomes a lasso. */
-const DRAG_THRESHOLD_PX = 4
+import { DRAG_THRESHOLD_PX } from "../input/dragThreshold"
 
 /**
  * The select tool's interaction flow as an explicit state machine:

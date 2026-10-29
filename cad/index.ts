@@ -99,6 +99,7 @@ export type {
   ViewCubePart,
   ViewCubeRoll,
   ViewCubeSide,
+  ViewCubeTarget,
   ViewCubeUi,
 } from "./application/viewCube"
 

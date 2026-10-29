@@ -207,6 +207,57 @@ describe("Home", () => {
   })
 })
 
+describe("a press on the ViewCube", () => {
+  const view = (cad: CadHarness) => cad.state().viewCube.current
+
+  it("is a click on its part where it moved 4 px either way", () => {
+    // desktop view/d10: 4 across, 4 down, 4 both ways leave Top a click.
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+    cad.runtime.viewCubePress({ part: "front" }, { x: 100, y: 100 })
+    cad.runtime.viewCubeMove({ x: 104, y: 104 })
+    cad.runtime.viewCubeRelease({ x: 104, y: 104 })
+    expect(view(cad)).toBe("front")
+
+    cad.runtime.viewCubePress({ letter: "S" }, { x: 100, y: 100 })
+    cad.runtime.viewCubeRelease({ x: 100, y: 100 })
+    expectDirection(cad, 0, -1, 0)
+  })
+
+  it("drags once out of the rectangle, from where it left it", () => {
+    // desktop view/d10: 5 px across starts the orbit and turns nothing; 6
+    // turns one pixel's worth, 8 three: it counts from where it began.
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+    cad.runtime.viewCubePick("front")
+    const before = { ...direction(cad) }
+    cad.runtime.viewCubePress({ part: "front" }, { x: 100, y: 100 })
+    cad.runtime.viewCubeMove({ x: 105, y: 100 })
+    expect(direction(cad)).toBeCloseToPoint(before, 9)
+    cad.runtime.viewCubeMove({ x: 106, y: 100 })
+    cad.runtime.viewCubeRelease({ x: 106, y: 100 })
+    expect(view(cad)).toBeNull()
+
+    const once = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+    once.runtime.viewCubePick("front")
+    once.runtime.viewCubeDrag("start", { x: 0, y: 0 })
+    once.runtime.viewCubeDrag("end", { x: 1, y: 0 })
+    expect(direction(cad)).toBeCloseToPoint(direction(once), 9)
+  })
+
+  it("ends a drag where it was when the pointer is lost, a click never", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(100, 0))] })
+    cad.runtime.viewCubePick("front")
+    cad.runtime.history.clear()
+    cad.runtime.viewCubePress({ part: "top" }, { x: 100, y: 100 })
+    cad.runtime.viewCubeRelease(null)
+    expect(view(cad)).toBe("front")
+
+    cad.runtime.viewCubePress({ ring: true }, { x: 100, y: 100 })
+    cad.runtime.viewCubeMove({ x: 140, y: 100 })
+    cad.runtime.viewCubeRelease(null)
+    expect(cad.state().canUndo).toBe(true)
+  })
+})
+
 describe("dragging the ViewCube", () => {
   // Desktop view/d05: let go 1.7° and 6.6° off Top, it stays (VIEW-D67).
   it("orbits, and stays where it is let go however near a view", () => {

@@ -38,6 +38,30 @@ export type ViewCubeRoll = "clockwise" | "counterclockwise"
 
 export type CompassLetter = "N" | "E" | "S" | "W"
 
+/**
+ * What a press on the ViewCube landed on: a part, a compass letter (a drag
+ * from it turns the ring), or the ring itself.
+ */
+export type ViewCubeTarget =
+  | { readonly part: ViewCubePart }
+  | { readonly letter: CompassLetter }
+  | { readonly ring: true }
+
+/**
+ * Whether a press on the cube has moved far enough to be a drag: out of
+ * Windows' drag rectangle, 4 px either way (SM_CXDRAG), as AutoCAD's cube
+ * reads it — 5 px across or down orbits, 4 across and 4 down do not (desktop
+ * view/d10).
+ */
+export function leavesCubeClick(from: Vec2, to: Vec2): boolean {
+  return (
+    Math.abs(to.x - from.x) > DRAG_RECTANGLE_PX ||
+    Math.abs(to.y - from.y) > DRAG_RECTANGLE_PX
+  )
+}
+
+const DRAG_RECTANGLE_PX = 4
+
 /** A view in the cube's frame: towards the viewer, and the direction drawn right. */
 export interface CubeView {
   readonly direction: Vec3

@@ -223,7 +223,9 @@ every action — a part, a roll arrow, a triangle, a compass letter, Home, a dra
 same, e01), joined with nothing, regenerating on REDO too (VIEW-D62); inside a command it is
 transparent: ` Regenerating model.`, `Resuming LINE command.`, an entry of LINE's step that its
 Undo takes back with the segment before it (d05; the drag's own undo was not read, VIEW-D64); a
-solid outline on one of the 26, dashed off them; dragging orbits as 3DORBIT about the centre of the
+solid outline on one of the 26, dashed off them; a press drags once it leaves Windows' drag
+rectangle, more than 4 px across or down, and orbits from that point (desktop view/d10: 5 px across
+or down, never 4 and 4); dragging orbits as 3DORBIT about the centre of the
 view, or of the extents of what is selected, which stays where it is drawn ("About Reorienting the
 View"), and stays where it is let go however near a view (d05: 1.7° and 6.6° off Top, VIEW-D67),
 one ZOOM Previous step; in a face view the roll arrows (a quarter turn about the line of sight,

@@ -293,7 +293,9 @@ drawing, where AutoCAD tests only what the view shows (`No object found` off the
 moved all the same: pieces/p158, p159; on it, p176); PICKFIRST (a set selected before the command is always taken; with
 PICKFIRST 0 AutoCAD ignores it, erase/p230); the lasso `pick/drag cursor` offers at a fence's or
 polygon's first point; PICKADD, PICKAUTO, PICKDRAG and SELECTIONPREVIEW as variables (their
-defaults are the behaviour); the Previous set lasts the session, not the drawing
+defaults are the behaviour); the Previous set lasts the session, not the drawing; a press starts a
+lasso here once it moves 4 px (`DRAG_THRESHOLD_PX`), where AutoCAD's goes past 7 px across and 8
+down, 6 and 6 still a click (desktop erase/d15, at `Command:`, PICKBOX 3 or 10 alike)
 
 ### Typed and confirmed
 

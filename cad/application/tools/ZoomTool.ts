@@ -17,6 +17,7 @@ import {
   Tool,
   ToolContext,
 } from "./Tool"
+import { DRAG_THRESHOLD_PX } from "../input/dragThreshold"
 
 /**
  * ZOOM. Picking two corners frames that window (the command's default action),
@@ -45,9 +46,6 @@ type ZoomState =
     }
   | { readonly phase: "scale" }
   | { readonly phase: "object" }
-
-/** Pixels the press must travel for a drag to count as the whole window. */
-const DRAG_THRESHOLD_PX = 4
 
 /**
  * `2`, `2X` or `0.5x`: a factor, relative to the current view with its X.

@@ -27,10 +27,9 @@ import type { ViewPreset } from "../application/tools/viewPresets"
 import type { ZoomOption } from "../application/tools/zoomMenu"
 import type { PointerModifiers } from "../application/CadDriver"
 import type {
-  CompassLetter,
-  ViewCubePart,
   ViewCubeRoll,
   ViewCubeSide,
+  ViewCubeTarget,
 } from "../application/viewCube"
 import { Bounds } from "../domain/entities"
 import type { EngineLocale } from "../locales/types"
@@ -445,8 +444,21 @@ export class CadEngine {
     return this.runtime.zoom(option)
   }
 
-  viewCubePick(part: ViewCubePart): void {
-    this.runtime.viewCubePick(part)
+  /**
+   * A press on the ViewCube, by what it landed on; its moves and release
+   * follow, in the same pixels. The engine tells a click from a drag.
+   */
+  viewCubePress(target: ViewCubeTarget, screen: Vec2): void {
+    this.runtime.viewCubePress(target, screen)
+  }
+
+  viewCubeMove(screen: Vec2): void {
+    this.runtime.viewCubeMove(screen)
+  }
+
+  /** The press let go, at `screen`; `null` when the pointer was lost (cancelled). */
+  viewCubeRelease(screen: Vec2 | null): void {
+    this.runtime.viewCubeRelease(screen)
   }
 
   viewCubeRoll(turn: ViewCubeRoll): void {
@@ -463,19 +475,6 @@ export class CadEngine {
 
   setHomeFromCurrentView(): void {
     this.runtime.setHomeFromCurrentView()
-  }
-
-  compassPick(letter: CompassLetter): void {
-    this.runtime.compassPick(letter)
-  }
-
-  /** `screen` is in the same pixels the drag moves by; only the differences count. */
-  viewCubeDrag(
-    phase: "start" | "move" | "end",
-    screen: Vec2,
-    ring?: boolean
-  ): void {
-    this.runtime.viewCubeDrag(phase, screen, ring)
   }
 
   setViewCubeVisible(visible: boolean): void {

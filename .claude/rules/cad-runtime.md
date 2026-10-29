@@ -299,9 +299,9 @@ with the cursor is also declared to the host's hook (`ui.md`). Rendering is on d
   `buildViewCubeUi` projects it into a 0–1 box for `EngineState.viewCube`, oriented to the current
   UCS (`cubeAxes`, read with `Viewport.inFrame`, not `UcsFrame`) and cached on the camera's axes,
   the UCS and the setting, so zooming or panning never rebuilds it. `runtimeViewCube.ts` holds what
-  a click, a drag or a letter does. A host hands back part ids, sides, letters and drag phases and
-  computes nothing; a choice that is a command (`applyViewPreset`, `restoreUcs`) runs as that
-  command's macro, never composed in React.
+  a click, a drag or a letter does. A host hands back part ids, sides, letters and the pointer
+  (`viewCubePress`) and computes nothing, not even a click from a drag; a choice that is a command
+  (`applyViewPreset`, `restoreUcs`) runs as that command's macro, never composed in React.
 
 ## Double-click
 

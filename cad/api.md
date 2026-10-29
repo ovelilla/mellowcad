@@ -161,13 +161,13 @@ export declare class CadEngine {
     applyViewPreset(preset: ViewPreset): boolean;
     navigate(command: "PAN" | "3DORBIT"): boolean;
     zoom(option: ZoomOption): boolean;
-    viewCubePick(part: ViewCubePart): void;
+    viewCubePress(target: ViewCubeTarget, screen: Vec2): void;
+    viewCubeMove(screen: Vec2): void;
+    viewCubeRelease(screen: Vec2 | null): void;
     viewCubeRoll(turn: ViewCubeRoll): void;
     viewCubeAdjacent(side: ViewCubeSide): void;
     viewCubeHome(): void;
     setHomeFromCurrentView(): void;
-    compassPick(letter: CompassLetter): void;
-    viewCubeDrag(phase: "start" | "move" | "end", screen: Vec2, ring?: boolean): void;
     setViewCubeVisible(visible: boolean): void;
     restoreUcs(name: string | null): boolean;
     commandLineKey(key: string): boolean;
@@ -1291,6 +1291,15 @@ export type ViewCubeRoll = "clockwise" | "counterclockwise";
 
 export type { ViewCubeSide }
 export type ViewCubeSide = "up" | "down" | "left" | "right";
+
+export type { ViewCubeTarget }
+export type ViewCubeTarget = {
+    readonly part: ViewCubePart;
+} | {
+    readonly letter: CompassLetter;
+} | {
+    readonly ring: true;
+};
 
 export type { ViewCubeUi }
 export interface ViewCubeUi {
