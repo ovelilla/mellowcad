@@ -24,7 +24,8 @@ paths:
   reads the public entry points from `exports`.
 - **Unbundled on purpose** (`unbundle: true`): one module per source file is what lets the host's
   bundler honour `sideEffects: false`. A single-file `dist` took 13.9 KB to a page importing only
-  `matchCommands`, against 0.36 KB.
+  `matchCommands`, against 0.36 KB. `cad/size.test.ts` holds the islands under 1 KB and the
+  engine under a gzip ceiling, bundled by tsdown's own rolldown: raise the ceiling on purpose.
 - **Exported declarations carry their types** (`isolatedDeclarations`: Oxc writes each `.d.ts`
   alone). An exported `const`, a class field or a defaulted parameter whose value is not a literal
   is annotated; `as const satisfies` is refused (TS9010). `npm run typecheck` does not see it, the
