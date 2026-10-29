@@ -1,6 +1,6 @@
 # MellowCAD como librería — brief
 
-> **Estado:** fases 1, 2 y 3 hechas (2026-10-29); de la 4, las entregas (a) a (d), de seis; las
+> **Estado:** fases 1, 2 y 3 hechas (2026-10-29); de la 4, las entregas (a) a (e), de seis; las
 > demás, sin ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
 > análisis completo, con el inventario medido, las fuentes fechadas, el spike y el pase adversarial,
 > está en https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama
@@ -327,9 +327,49 @@ son días de sesión.
    piezas de la (f). El `check:hosts` del editor espera a los ejemplos (fase 5), como el de
    react; la próxima revisión de dependencias toma tsdown 0.23.3 y el plugin 0.3.0 juntos en los
    tres paquetes.
-   (e) **El CSS precompilado** (`./styles.css`), acotado a la raíz, con un check de que no declara
-   nada en `:root`, `html` ni `body`; `data-mellowcad-editor` y las variables de fuente, como API.
-   ~1 día.
+   (e) **Hecha** (7ed735c, 8e7026b, d47988a): **el CSS precompilado**. Medido antes en 01cbe55:
+   Tailwind 4.3.3 deja fuera de la raíz la capa `theme` (14 variables en `:root, :host`), 37 reglas
+   de preflight, la capa `properties` (`--shimmer-angle` en `:root, :host` y el respaldo de
+   `@property` en `*`) y las 3 reglas del sitio; el CSS de /draw es todo del editor salvo esas 3,
+   `.antialiased` y `.font-sans` del `<html>` del sitio y unas 25 utilidades que la detección
+   automática saca de docs, reglas y tests (`text-[Npx]`, `collapse`…); la landing no lleva nada
+   del editor. El tema declaraba `--font-sans: var(--font-sans)` y su propia `--font-mono` en
+   `:root`, muertas en el sitio (las clases de next/font en `<html>`, sin capa, ganan) pero, en la
+   raíz, un ciclo y una fuente tapada. Lo hecho: la mitad del editor de `globals.css` es
+   packages/editor/src/styles.css, sin el `@import "tailwindcss"` (lo pone quien compila), y
+   `globals.css` la importa por ruta, como `paths` le da los módulos; los dos tests que leían
+   `globals.css` desde el paquete leen su hoja, y `components.json` apunta a ella. Las fuentes
+   son `@theme inline reference`: las utilidades las leen y Tailwind no las declara. El build
+   (`scripts/editor/styles.ts`, tras tsdown) compila esa hoja con `source(none)` y solo las
+   fuentes del paquete, lleva lo de página a la raíz (el documento pasa a
+   `:where([data-mellowcad-editor])`, lo demás a `:where(raíz, raíz *)` en su primer compuesto:
+   especificidad cero) y minifica con la pasada de Lightning CSS de Tailwind: 58.844 B, 9.908 B gz.
+   `check` falla con un selector que nombre `html`, `body`, `:root` o `:host`, o ni la raíz ni una
+   clase (probado quitando la pasada); attw salta la hoja (no es un módulo) y publint queda
+   limpio. `sideEffects` es `["**/*.css"]`: webpack 5 tira `import "@mellowcad/editor/styles.css"`
+   con `false` (medido; Vite la conserva igual). `api.md` gana `./styles.css`, escrita desde el CSS
+   compilado: la raíz, las capas (`properties`, `theme`, `base`, `components`, `utilities`) y lo
+   que pone el anfitrión, lo que se lee sin respaldo y nunca se declara salvo lo que el editor
+   escribe en línea (`--active`, las variables de los posicionadores de Base UI): `--font-sans` y
+   `--font-mono` (probado: sin `reference`, desaparecen). Dependencias: ninguna nueva; las
+   devDependencies del editor nombran lo que su build usa, ya en el árbol. Medido en producción
+   contra 01cbe55: tras la mudanza, los 38 ficheros de `.next/static` iguales en nombre y bytes;
+   al final solo cambia el CSS de /draw, sin las dos declaraciones de fuente (−140 B, −19 B gz),
+   y las páginas prerenderizadas son iguales salvo el build id y el nombre de ese CSS. En Chrome,
+   /draw, /es/draw y /ar/draw a 1920 y 1280, en reposo y con el menú de aplicación: los 7.522
+   elementos con todos sus estilos computados iguales y las 12 capturas idénticas. Con la hoja
+   del paquete en lugar del CSS del sitio (bajada con los targets de Next) y lo mínimo de un
+   anfitrión: `<html>` y `<body>` no reciben nada, y dentro de la raíz todo valor es el del sitio
+   salvo la marca del sitio (`size-5`, una clase del anfitrión). El paso de paquetes del hook pasa
+   de ~7,3 s a ~7,6 s, y el hook entero, en caliente, de 55,6 s a 56,6 s. Lo que hereda la (f): las utilidades siguen siendo clases globales y
+   `@keyframes` y `@property` son del documento (`spin`, `enter`, `exit`, `prompt-fade`, los
+   `--tw-*`): un anfitrión con otro Tailwind o tw-animate-css comparte esos nombres; una pieza
+   sustituida trae sus clases, que compila el anfitrión, como la marca de hoy. La hoja apunta al
+   baseline de Tailwind (Safari 16.4, Chrome 111, Firefox 128); el bundler del anfitrión baja más
+   si quiere. Cuando el sitio pase a `dist` (antes de la 1.0), su parte de página necesita su
+   propio preflight para `html` y `body` (el margen del body, la cadena de alturas) y compilar
+   sus clases (`size-5`, `antialiased`, `font-sans`); las utilidades sueltas desaparecen. El
+   `check:hosts` del editor (fase 5) debería importar la hoja desde el tarball en Vite y en Next.
    (f) **Las piezas una a una** y `<CadEditor>` con huecos para sustituirlas (`components`, como en
    tldraw), en el informe de API. ~1 día.
 5. **Ejemplos y documentación** — 2–3 días, tras la 4. Un anfitrión headless en Node y otro con
@@ -356,7 +396,8 @@ Bloqueos: 1 → 2 → 6; 1 → 3 → 4 → 5 → 7; la org de npm → 6; 7 → 8
 ## 6. Riesgos
 
 - 157 nombres públicos: 146 del motor (eran 642; la 3(d) sumó cinco), 8 de react y 3 del editor
-  (más sus tres catálogos), y lo que sus firmas alcanzan (`cad/api.md`, `packages/react/api.md`,
+  (más sus tres catálogos y su hoja, con `data-mellowcad-editor`, sus capas, `--font-sans` y
+  `--font-mono`), y lo que sus firmas alcanzan (`cad/api.md`, `packages/react/api.md`,
   `packages/editor/api.md`): cada uno es una promesa de semver.
 - Tres superficies para una persona, sin CI: se publican escalonadas y el hook cubre los paquetes.
 - Dependencias nuevas que vigilar: tsdown 0.23.2 usa `rolldown-plugin-dts` en beta (0.23.3 vuelve
