@@ -119,6 +119,7 @@ function Workspace({
   const t = useEditorText("Workspace")
   const input = useEditorText("DynamicInput")
   const [portal, setPortal] = useState<HTMLDivElement | null>(null)
+  const root = useRef<HTMLDivElement>(null)
   const ready = engine && state
   const paletteOpen = state?.palette.open ?? null
   // Clean Screen hides the tool palette and the palette panel (a palette
@@ -133,17 +134,18 @@ function Workspace({
       : paletteLayoutAtLoad(paletteKey).width
   )
 
-  // React's development remount clears what the head script wrote on <html>.
-  useLayoutEffect(
-    () => applyPaletteLayout(paletteLayoutAtLoad(paletteKey)),
-    [paletteKey]
-  )
+  // What the head script wrote, again: a root rendered on the client never
+  // met the script.
+  useLayoutEffect(() => {
+    if (root.current)
+      applyPaletteLayout(root.current, paletteLayoutAtLoad(paletteKey))
+  }, [paletteKey])
 
   // From then on the engine's open state and the dragged width drive the
   // same CSS, before the frame is painted.
   useLayoutEffect(() => {
-    if (paletteOpen === null) return
-    applyPaletteLayout({ open: paletteOpen, width: paletteWidth })
+    if (paletteOpen === null || !root.current) return
+    applyPaletteLayout(root.current, { open: paletteOpen, width: paletteWidth })
   }, [paletteOpen, paletteWidth])
 
   // The fold is remembered once it changes, so until the user folds or
@@ -169,9 +171,13 @@ function Workspace({
   // blurs its icon.
   //
   // The editor is the page's main content: a landmark, so every control on
-  // it sits in one (axe's region rule).
+  // it sits in one (axe's region rule). The head script writes the palette's
+  // layout on the root before React hydrates (lib/palette-layout.ts): the
+  // DOM wins.
   return (
     <div
+      ref={root}
+      suppressHydrationWarning
       {...{ [EDITOR_ROOT_ATTRIBUTE]: "" }}
       lang={lang}
       dir={dir}
@@ -242,7 +248,7 @@ function Workspace({
             )}
           </div>
 
-          {/* Its width is CSS, read off <html> (lib/palette-layout.ts): the
+          {/* Its width is CSS, read off the root (lib/palette-layout.ts): the
           head script's answer before the engine exists, the engine's open
           state and the dragged width after — the same box either way. */}
           <div

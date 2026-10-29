@@ -83,10 +83,7 @@ export default async function AppLayout({
 }>) {
   const locale = await getLocale()
   return (
-    // The head script writes the palette panel's layout on <html> before
-    // React hydrates (lib/palette-layout.ts); the DOM wins.
     <html
-      suppressHydrationWarning
       lang={locale}
       dir={DIRECTION[locale]}
       className={cn(

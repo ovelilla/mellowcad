@@ -10,18 +10,49 @@ import {
   resolvePaletteLayout,
   type RememberedPalette,
 } from "./palette-layout"
+import { EDITOR_ROOT_ATTRIBUTE } from "./editor-root"
 
 const KEY = "host:palette"
 
-/** Runs the head script against a fake page and reads what it wrote. */
-function runScript(stored: string | null, windowWidth: number) {
+let observing = false
+
+/**
+ * Runs the head script against a fake page and reads what it wrote on the
+ * editor's root, which the parser inserts after the script unless
+ * `rootFirst`: something else first, then the root.
+ */
+function runScript(
+  stored: string | null,
+  windowWidth: number,
+  rootFirst = false
+) {
   const attributes: Record<string, string> = {}
   const style: Record<string, string> = {}
-  const documentElement = {
+  const root = {
     setAttribute: (name: string, value: string) => (attributes[name] = value),
     style: {
       setProperty: (name: string, value: string) => (style[name] = value),
     },
+  }
+  let parsed = rootFirst
+  let mutated: (() => void) | undefined
+  observing = false
+  class MutationObserver {
+    constructor(callback: () => void) {
+      mutated = callback
+    }
+    observe() {
+      observing = true
+    }
+    disconnect() {
+      observing = false
+    }
+  }
+  const document = {
+    documentElement: {},
+    querySelector: (selector: string) =>
+      parsed && selector === `[${EDITOR_ROOT_ATTRIBUTE}]` ? root : null,
+    addEventListener: () => {},
   }
   const localStorage = {
     getItem: (key: string) => (key === KEY ? stored : null),
@@ -30,8 +61,12 @@ function runScript(stored: string | null, windowWidth: number) {
     "localStorage",
     "innerWidth",
     "document",
+    "MutationObserver",
     paletteLayoutScript(KEY)
-  )(localStorage, windowWidth, { documentElement })
+  )(localStorage, windowWidth, document, MutationObserver)
+  if (observing) mutated?.()
+  parsed = true
+  if (observing) mutated?.()
   return {
     open: attributes["data-palette"] === "open",
     width: Number.parseInt(style["--palette-width"], 10),
@@ -60,6 +95,17 @@ describe("the palette layout before the first paint", () => {
     }
   )
 
+  it("writes on the root as the parser inserts it, then stops watching", () => {
+    const remembered = JSON.stringify({ open: true, width: 360 })
+    expect(runScript(remembered, 1280)).toEqual({ open: true, width: 360 })
+    expect(observing).toBe(false)
+    expect(runScript(remembered, 1280, true)).toEqual({
+      open: true,
+      width: 360,
+    })
+    expect(observing).toBe(false)
+  })
+
   it("opens from 1600 px and folds below", () => {
     expect(resolvePaletteLayout(null, 1599).open).toBe(false)
     expect(resolvePaletteLayout(null, 1600).open).toBe(true)
@@ -83,6 +129,7 @@ describe("the palette layout before the first paint", () => {
       "utf8"
     )
     expect(css).toContain(`@media (width >= ${PALETTE_OPEN_FROM}px)`)
+    expect(css).toContain(`[${EDITOR_ROOT_ATTRIBUTE}][data-palette="open"] &`)
     expect(css).toContain(`--palette-width: ${PALETTE_WIDTH.initial}px;`)
   })
 

@@ -31,6 +31,6 @@ describe("the editor's root", () => {
 
   it("holds the editor's tokens, not the host's :root", () => {
     expect(declaredBy(`[${EDITOR_ROOT_ATTRIBUTE}]`)).toContain("--background")
-    expect(declaredBy(":root")).toEqual(["--palette-width"])
+    expect(declaredBy(":root")).toEqual([])
   })
 })

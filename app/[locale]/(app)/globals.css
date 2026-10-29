@@ -18,22 +18,17 @@
 @custom-variant short (@media (height < 700px));
 
 /* The palette panel open, before the engine exists: what the head script
-   wrote on <html> (lib/palette-layout.ts), else the window's width. In CSS,
-   so the canvas has its final box at the first paint. */
+   wrote on the editor's root (lib/palette-layout.ts), else the window's
+   width. In CSS, so the canvas has its final box at the first paint. */
 @custom-variant palette-open {
-  :root[data-palette="open"] & {
+  [data-mellowcad-editor][data-palette="open"] & {
     @slot;
   }
   @media (width >= 1600px) {
-    :root:not([data-palette]) & {
+    [data-mellowcad-editor]:not([data-palette]) & {
       @slot;
     }
   }
-}
-
-/* Its width until one is remembered (PALETTE_WIDTH.initial). */
-:root {
-  --palette-width: 280px;
 }
 
 /* The chrome's type scale (.claude/rules/ui.md, "Type"): one body, as
@@ -113,6 +108,8 @@
    :root: its popups mount inside it (usePortalContainer). `--active`, the
    grips' blue, is written there from THEME.grip. */
 [data-mellowcad-editor] {
+  /* The palette panel's width until one is remembered (PALETTE_WIDTH.initial). */
+  --palette-width: 280px;
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);

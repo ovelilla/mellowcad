@@ -1,3 +1,5 @@
+import { EDITOR_ROOT_ATTRIBUTE } from "./editor-root"
+
 /**
  * The palette panel's open state and width, decided before the first paint.
  *
@@ -6,11 +8,11 @@
  * and the first view is centred in it. The panel's size depends on the window
  * (open from {@link PALETTE_OPEN_FROM}, folded below) and on what the user
  * last chose, which only this device knows. So an inline script in the
- * layout's `<head>` ({@link PALETTE_LAYOUT_SCRIPT}) reads the choice before
- * the body is parsed and writes it on `<html>` — `data-palette` and
- * `--palette-width` — which the zone's `palette-open:` variant reads; the
- * workspace then hands the same answer ({@link paletteLayoutAtLoad}) to the
- * engine, so the two never disagree.
+ * layout's `<head>` ({@link paletteLayoutScript}) reads the choice before
+ * the body is parsed and writes it on the editor's root as the parser
+ * inserts it — `data-palette` and `--palette-width` — which the zone's
+ * `palette-open:` variant reads; the workspace then hands the same answer
+ * ({@link paletteLayoutAtLoad}) to the engine, so the two never disagree.
  *
  * Only the width and the fold are remembered, each once the user has changed
  * it: until then the window's width decides. They are kept under the host's
@@ -105,12 +107,14 @@ export function rememberPalette(
 }
 
 /**
- * Writes `layout` where the zone's CSS reads it. The head script does this
- * during parsing; React's development remount clears `<html>`'s attributes,
- * so the workspace writes them again.
+ * Writes `layout` on the editor's `root`, where the zone's CSS reads it. The
+ * head script does this during parsing; a root rendered on the client (a
+ * host without the script, a remount) gets it from the workspace.
  */
-export function applyPaletteLayout(layout: PaletteLayout): void {
-  const root = document.documentElement
+export function applyPaletteLayout(
+  root: HTMLElement,
+  layout: PaletteLayout
+): void {
   root.dataset.palette = layout.open ? "open" : "folded"
   root.style.setProperty("--palette-width", `${layout.width}px`)
 }
@@ -118,11 +122,13 @@ export function applyPaletteLayout(layout: PaletteLayout): void {
 /**
  * The `<head>` script for the layout kept under `key`:
  * {@link paletteLayoutAtLoad} and {@link applyPaletteLayout} in plain ES5, as
- * it runs before any bundle. Without it (storage blocked, a script error) the
- * zone's CSS still decides by the window's width, so the canvas keeps its
- * final box.
+ * it runs before any bundle. The root does not exist yet, so a
+ * MutationObserver waits for the parser to insert it: its callback is a
+ * microtask, which runs before the frame that could paint the root. Without
+ * the script (storage blocked, a script error) the zone's CSS still decides
+ * by the window's width, so the canvas keeps its final box.
  */
 export const paletteLayoutScript = (key: string): string =>
   `(function(){try{var r=null;try{r=JSON.parse(localStorage.getItem(${JSON.stringify(
     key
-  )})||"null")}catch(e){}if(!r||typeof r!=="object")r={};var o=typeof r.open==="boolean"?r.open:innerWidth>=${PALETTE_OPEN_FROM};var w=typeof r.width==="number"&&isFinite(r.width)?Math.round(Math.min(${PALETTE_WIDTH.max},Math.max(${PALETTE_WIDTH.min},r.width))):${PALETTE_WIDTH.initial};var d=document.documentElement;d.setAttribute("data-palette",o?"open":"folded");d.style.setProperty("--palette-width",w+"px")}catch(e){}})()`
+  )})||"null")}catch(e){}if(!r||typeof r!=="object")r={};var o=typeof r.open==="boolean"?r.open:innerWidth>=${PALETTE_OPEN_FROM};var w=typeof r.width==="number"&&isFinite(r.width)?Math.round(Math.min(${PALETTE_WIDTH.max},Math.max(${PALETTE_WIDTH.min},r.width))):${PALETTE_WIDTH.initial};var d=document;function a(){var e=d.querySelector("[${EDITOR_ROOT_ATTRIBUTE}]");if(!e)return false;e.setAttribute("data-palette",o?"open":"folded");e.style.setProperty("--palette-width",w+"px");return true}if(!a()){var m=new MutationObserver(function(){if(a())m.disconnect()});m.observe(d.documentElement,{childList:true,subtree:true});d.addEventListener("DOMContentLoaded",function(){m.disconnect()})}}catch(e){}})()`

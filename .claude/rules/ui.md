@@ -92,10 +92,10 @@ atoms live in `toolbar-primitives.tsx`, custom glyphs in `icons.tsx`.
 ## Colour — one scheme, dark
 
 No theme switch, by decision: AutoCAD works dark, and so does the whole site (landing included).
-The tokens on the editor's root (`EDITOR_ROOT_ATTRIBUTE`) are the only values, never on the host's
-`:root`, `html` or `body` (`lib/editor-root.test.ts`); `color-scheme: dark` keeps native controls
-dark, and `@custom-variant dark (&)` makes every `dark:` utility always apply. Never bring back
-next-themes, a `.dark` class or light values.
+The tokens on the editor's root (`EDITOR_ROOT_ATTRIBUTE`) are the only values, never the host's
+`:root` (`lib/editor-root.test.ts`); `color-scheme: dark` keeps native controls dark, and
+`@custom-variant dark (&)` makes every `dark:` utility apply. Never bring back next-themes, a
+`.dark` class or light values.
 
 - **One accent, `--active`**, the grips' blue, written on the root from `THEME.grip`: a tool or
   mode that is on, a flyout whose member runs, the chosen option in a status-bar popover —
@@ -136,11 +136,10 @@ the editor's root starts every text, its popups too, as `text-ui text-foreground
 - **Rhythm**: rows of palettes, menus and lists are 28 px (`h-7`; a menu item's `py-1.5`). Text
   starts 12 px from its surface's edge: `px-3` in a palette, `p-3` in a popover, `p-1` + `ps-2` in a
   menu.
-- `lib/type-scale.test.ts` fails on a size, weight, line height or tracking utility, or a text
-  colour with an opacity, in `components/cad` or `components/ui`; `cn()` knows the roles as font
-  sizes, so `cn("text-ui", "text-muted-foreground")` keeps both. The ViewCube's SVG sets its weight
-  as an attribute (a class would size it too); its face names, sized to the face, are the one text
-  outside the scale.
+- `lib/type-scale.test.ts` holds the scale and the steps in `components/cad` and `components/ui`;
+  `cn()` keeps `text-ui` beside a colour (it knows the roles as sizes). The ViewCube's SVG sets its
+  weight as an attribute (a class would size it too); its face names, sized to the face, are the
+  one text outside the scale.
 - A new zone, palette or menu is checked in Chrome (`getComputedStyle` on every visible text):
   every text on a role and a colour step, nothing truncated or wrapped at 1280×720 in any language.
 
@@ -165,16 +164,15 @@ the tool palette would fold on a Full HD laptop at 125 %).
 - Outside the system, each for a reason: the ViewCube's Home, roll arrows and UCS menu
   (`size="icon-cube"`, `"cube"`, 24), drawn at the cube's scale; the viewport control `[Top]`, a
   label on the drawing; separators, the product mark and swatches, which are not targets.
-- `lib/control-size.test.ts` fails on a height or square size off the system in `components/cad` or
-  `components/ui` outside its justified exceptions, and on a `Button` size the table lacks. A new
-  size is argued here first.
+- `lib/control-size.test.ts` holds the system, and `Button`'s sizes to the table; a new size is
+  argued here first.
 
 ## Base UI gotchas
 
 - `z-50` goes on the **`Positioner`**, not the `Popup`: the positioner is transformed, so it makes a
   stacking context that traps a z-index set inside it.
-- A `Portal` takes `container={usePortalContainer()}` (ESLint): Base UI's default, `<body>`, is
-  outside the editor's root, so its tokens, `dir` and `lang` miss the popup.
+- A `Portal` takes `container={usePortalContainer()}` (ESLint): in Base UI's default, `<body>`, the
+  root's tokens, `dir` and `lang` miss the popup.
 - Radix's asChild is the `render` prop (`<Tooltip.Trigger render={<Button …/>} />`).
 - `Select.Root` needs `items` (a value→label record) for the closed trigger to show the label, not
   the raw value. `onValueChange` can deliver `null`: guard before committing. A drop-down in a bar
@@ -209,9 +207,9 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   `w-14.5`, the panel's `w-9` / `palette-open:w-(--palette-width)`, the `short:` variant), never
   from its content: the canvas's first box is its final one, which the landing's view transition
   grows into and the first view is centred in. A zone that resizes with the work makes the drawing
-  jump. A size this device remembers is decided by the `<head>` script on `<html>` (`data-palette`,
-  `--palette-width`) and handed to the engine at build (`useCadEngine({ paletteOpen })`) — never
-  after mount. Clean Screen is never on at the first paint (AutoCAD does not save it).
+  jump. A size this device remembers is decided by the `<head>` script on the editor's root
+  as it is parsed (`data-palette`, `--palette-width`) and handed to the engine at build
+  (`useCadEngine({ paletteOpen })`), never after mount. Clean Screen is never on at the first paint (AutoCAD does not save it).
 - **The canvas cell** alone carries the host's `sheet` (`SHEET_TRANSITION`) and holds what is
   placed in the canvas's pixels (the dynamic input, at `state.dynamicInput.screen`). A popup
   anchored there is portalled and placed in the viewport, so its virtual anchor converts with
