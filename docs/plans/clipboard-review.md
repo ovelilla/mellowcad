@@ -2,8 +2,8 @@
 
 > **Status:** plan, 2026-10-29. Phases 0–4 in one session with skill `command-review`; the
 > twenty-fifth and last review of `docs/coverage/roadmap.md`'s order. Blocks CLP, PST, FSV and CKY
-> are console blocks, executed in this session (see "Execution"); CFD is a desktop block for a session with the
-> owner's mouse **and clipboard** (the desktop's COPYCLIP overwrites the owner's Windows clipboard).
+> are console blocks, executed in the first session; CFD, the desktop block, was probed with the
+> owner's mouse and clipboard in a second session (d01–d08, e01) and executed there.
 >
 > It owns no cross-cutting area. It took the Workspace review's analogues: a chrome start is a menu
 > group (the shortcut menu's Clipboard ▸ entries, the QAT, the accelerators), a name prompt
@@ -12,8 +12,9 @@
 
 ## Summary
 
-**Findings:** 0 critical, 1 high, 9 medium and 5 low, in four console blocks; the desktop block
-(CFD) holds the cells only the desktop answers, three of them suspected differences.
+**Findings:** 0 critical, 2 high, 12 medium and 8 low: 15 in four console blocks, 7 in the desktop
+block (CFD), which also verified PST-05 and overturned PST-02's wording (the console's paste is
+text's, CFD-03).
 
 | Block | What | Critical | High | Medium | Low |
 | --- | --- | --- | --- | --- | --- |
@@ -21,9 +22,13 @@
 | PST | PASTECLIP | 0 | 0 | 3 | 1 |
 | FSV | QSAVE, SAVEAS, SAVE, OPEN, NEW, QNEW | 0 | 1 | 1 | 2 |
 | CKY | Ctrl+C, X, V, Shift+C, A | 0 | 0 | 2 | 0 |
-| CFD | the desktop: the paste's result, the jig, the QAT, the keys' U | — | — | — | — |
+| CFD | the desktop: the paste's result, the jig, the QAT, the keys' U | 0 | 1 | 3 | 3 |
 
 The worst:
+
+- **A paste leaves what it pasted selected**: on the desktop nothing is selected after it and the
+  pasted set is Previous, so the next command asks (CFD-01, d04). The console's `(ssget "_I")`
+  (erase/p263) was its text paste's MTEXT.
 
 - **QSAVE and SAVEAS make no undo step**, so the U after a save takes back the edit before it;
   2027 makes each a step U names `QSAVE` and regenerates (FSV-01, p204, p205).
@@ -198,22 +203,28 @@ Prompt: `Specify insertion point:`.
 
 ### CFD — desktop (owner's mouse and clipboard)
 
-Cells, each a desktop probe (`dNN`), en-US, then es-ES for the labels:
+Desktop probes `d01-e01.sh` (en-US d01–d08, es-ES e01); scratch `research/review/clipboard/cfd.test.ts`.
 
-1. d01 — COPYCLIP a line and a circle, PASTECLIP at a point: where the set lands (the lower-left
-   corner of the extents, the help's rule), LASTPOINT (`ID @`), the set left selected.
-2. d02 — COPYBASE with a base at Z 10, paste at a 2D point; and in `_UCS _Z 30`: orientation and Z.
-3. d03 — a layer the target lacks (created, with the source's colour) and one it has with another
-   colour (the target's wins); a block of the same name.
-4. d04 — PASTECLIP's jig: the ghost, the dynamic input box and its fields, the cursor at the base
-   point; COPYBASE's base point box. `@`, `@10,0` and `50<90` typed.
-5. d05 — Ctrl+C, X, Shift+C, V inside LINE and at `Command:`: echoes and U names (`COPYCLIP GROUP`
-   or `GROUP COPYCLIP`; `PASTECLIP GROUP`); the shortcut menu's Paste U.
-6. d06 — Ctrl+A: grips shown, the echo, U.
-7. d07 — an empty clipboard (and one holding text): what PASTECLIP says (PST-05).
-8. d08 — the QAT's New, Open, Save, Save As and the application menu's New, Open, Save, Save As:
-   echo, U names, inside LINE; QNEW's template dialog; a completed Ctrl+S on a titled drawing and
-   its U.
+| Row | Cell |
+| --- | --- |
+| H where the set lands | match: the lower-left of the extents at the point · d01 · `clipboard.test.ts:63` |
+| H LASTPOINT | match: the insertion point · d01 · scratch |
+| G selection after | differs CFD-01 · d01, d04-5, d04-6: nothing selected; Previous the pasted set |
+| H base point's Z | match: base Z 10 at a 2D point → Z −10 · d02 · scratch |
+| H a turned UCS | differs CFD-02 · d02: the set turns with the UCS |
+| B FOO, Enter, a Z | differs CFD-03 · d02: `Point or option keyword required.`; a 3D point taken (`udGETZ`) |
+| B hidden keywords | Missing: INSERT's Scale, PScale, Rotate, PRotate, Basepoint, Explode, REpeat (trace d02) |
+| C `@`, polar | match: `@` at LASTPOINT, `50<90` absolute · d02, d04 · `clipboard.test.ts:348` |
+| H layers, blocks | match: a new layer the source's colour, a name the target has wins · d03 · `clipboard.test.ts:517–669` |
+| M, P the ghost | differs CFD-05 · d04-3: the objects in their own colours, the cursor at the base |
+| Q the box | match: `Specify insertion point:` X, Y; COPYBASE's `Specify base point:` X, Y · d04-4, d04-7 |
+| Ctrl+C, X, Shift+C, V | match CKY-01 and CLIPBOARD-D8 · d05: `_copyclip 1 found`, `COPYCLIP GROUP`… `PASTECLIP GROUP` |
+| the menu's Clipboard ▸ U | differs CFD-06 · d05, e01: `PasteCtrl+V GROUP`, es `CopiarCtrl+C GRUPO` |
+| Ctrl+A | match but its line · d06: `_ai_selall Selecting objects...done.` one line (CFD-07), `AI_SELALL GROUP` |
+| O empty clipboard | differs PST-05 · d07: nothing written; typed U `PASTECLIP`, Ctrl+V `GROUP PASTECLIP` (match) |
+| P the QAT, application menu | differs CFD-04 · d08: `^C^C` macros, `_qnew`/`_NEW`…, groups |
+| Ctrl+S on a titled drawing | match FSV-01 · d08: `_qsave`, U `QSAVE GROUP Regenerating model.` · scratch |
+| QNEW without a template | holds: the Select template dialog, as NEW · d08 |
 
 ## Findings
 
@@ -236,7 +247,75 @@ Cells, each a desktop probe (`dNN`), en-US, then es-ES for the labels:
 - **Coverage:** `clipboard-and-files.md` QSAVE entry (U, the regen; d04's `GROUP QSAVE` is the
   cancelled dialog's).
 
+#### CFD-01 — A paste leaves the pasted objects selected; 2027 selects nothing, the set is Previous
+
+- **Severity:** high · **Row:** G · **Status:** verified
+- **Where:** `PasteTool.place` (`ctx.selection.set`), `PasteTool.keepsSelection`.
+- **AutoCAD:** d01 `(ssget "_I")` nil after `_PASTECLIP 200,200`; d04-5, d04-6 no grips after a
+  typed and a clicked paste; `(ssget "_P")` the 2 pasted. erase/p263's set was the console's MTEXT.
+- **mellowcad:** scratch: the pasted line selected; `ERASE _P` erases the source (the copy's set).
+- **Scenario:** paste → MOVE → here MOVE takes the pasted set at once; AutoCAD asks `Select objects:`.
+- **Fix:** nothing selected after the paste; the pasted set becomes Previous (CLIPBOARD-D19).
+- **Regression test:** `clipboard.test.ts` "leaves the pasted objects selected" inverted (d04), `_P`.
+- **Coverage, rules:** `cad-runtime.md`'s `keepsSelection()` list loses PASTECLIP.
+
 ### Medium
+
+#### CFD-02 — A paste in a turned UCS keeps the WCS orientation; 2027 turns the set with the UCS
+
+- **Severity:** medium · **Row:** H · **Status:** verified
+- **AutoCAD:** d02 a line 0,0–50,0, COPYBASE 0,0, `_UCS _Z 30`, PASTECLIP 100,100 →
+  (36.6025,136.6025)–(79.9038,161.6025): laid in the UCS as INSERT's block is (the trace inserts a
+  temporary block and explodes it).
+- **mellowcad:** scratch: (36.6025,136.6025)–(86.6025,136.6025).
+- **Fix:** the fragment placed in the UCS's frame, its WCS coordinates read as the UCS's (CLIPBOARD-D18);
+  the ghost the same (one plan).
+- **Regression test:** `clipboard.test.ts`: the d02 numbers.
+
+#### CFD-03 — PASTECLIP's point refuses a Z and words FOO and Enter as `Invalid 2D point.`
+
+- **Severity:** medium · **Row:** B · **Status:** verified
+- **Where:** `PasteTool.takes()` (`"point2d"`), its `commitRaw` on Enter.
+- **AutoCAD:** d02 `FOO`, Enter → `Point or option keyword required.`, asked again; `100,100,5` taken
+  (Z −5 with a base at Z 10). The trace: `udKWORD, udDRAG, udGETZ`, the hidden keywords Scale PScale
+  Rotate PRotate Basepoint Explode REpeat. p108–p110 were the console's text paste (an MTEXT's point).
+- **Fix:** the point takes a Z; FOO and Enter refused `Point or option keyword required.` (es
+  `Se requiere un punto o una opción.`); the keywords stay out (Missing) (CLIPBOARD-D17, over D10).
+- **Regression test:** `clipboard.test.ts:363`, `:387` rewritten for d02.
+
+#### CFD-04 — The QAT's and the application menu's file buttons are not their macros
+
+- **Severity:** medium · **Row:** P · **Status:** verified
+- **Where:** `components/cad/top-bar.tsx` (`engine.runCommand("_QNEW")`…).
+- **AutoCAD:** d08 inside LINE each writes `*Cancel*`, then the QAT's `_qnew`, `_open`, `_QSAVE`,
+  `_SAVEAS` and the application menu's `_NEW`, `_OPEN`, `_QSave`, `_SAVEAS`; a dialog cancelled U
+  names `GROUP QNEW`…; a save made `QSAVE GROUP Regenerating model.`.
+- **mellowcad:** scratch: QAT New in LINE → LINE replaced with no `*Cancel*`, echo `QNEW`; Save `QSAVE`.
+- **Fix:** each button runs as `runAccelerator` with its echo (CLIPBOARD-D22, over D15).
+- **Regression test:** `CadRuntime.test.ts` "file save and open": each button's echo inside LINE, U.
+
+### Low (desktop)
+
+#### CFD-05 — PASTECLIP's ghost is drawn in the rubber band's colour; 2027 draws the objects
+
+- **Severity:** low · **Row:** M · **Status:** verified (d04-1, d04-3: a red circle ghosts red)
+- **Fix:** the ghost through `drawn(ctx, entity, "plain")` over the plan's entities (CLIPBOARD-D20).
+
+#### CFD-06 — The shortcut menu's Clipboard entries' U names lack their key
+
+- **Severity:** low · **Row:** F · **Status:** verified
+- **AutoCAD:** d05 `PasteCtrl+V GROUP`; e01 `PegarCtrl+V GRUPO`, `CopiarCtrl+C GRUPO`, `Copiar con
+  punto baseCtrl+Mayús+C GRUPO`: the label and the key as the menu shows it, glued.
+- **mellowcad:** `Paste GROUP`, `Copiar GRUPO`.
+- **Fix:** a message for each entry's key (en `Ctrl+Shift+C`, es `Ctrl+Mayús+C`) joined to the label
+  in the group's name (CLIPBOARD-D21).
+
+#### CFD-07 — Ctrl+A writes `Selecting objects...done.` on a line of its own
+
+- **Severity:** low · **Row:** L · **Status:** verified (d06-1: `_ai_selall Selecting objects...done.`)
+- **Fix:** the message joins the echo's line (CLIPBOARD-D24).
+
+### Medium (console blocks)
 
 #### CLP-01 — COPYBASE's base point refuses without words, and Enter says nothing
 
@@ -352,10 +431,13 @@ Cells, each a desktop probe (`dNN`), en-US, then es-ES for the labels:
 
 #### PST-05 — `Nothing on the clipboard.` is worded without a source
 
-- **Severity:** low · **Row:** O · **Status:** unverified (CFD d07)
+- **Severity:** low · **Row:** O · **Status:** verified (d07)
 - **Where:** `CadRuntime.pasteFromClipboard`, `commands.messages.clipboardEmpty`.
-- `cad-catalogs.md`: "if the exact string cannot be verified, leave the message out". d07 settles
-  what 2027 does with an empty clipboard; until then it stays, marked **unverified** in the coverage.
+- **AutoCAD:** d07 an empty Windows clipboard: `_PASTECLIP` writes nothing; U `PASTECLIP` (a step);
+  Ctrl+V U `GROUP PASTECLIP`.
+- **mellowcad:** `Nothing on the clipboard.`; typed, no step (U undoes the command before).
+- **Fix:** nothing written (the key stays, unused: README "Versioning"); a typed PASTECLIP with
+  nothing to paste makes an empty step U names `PASTECLIP` (CLIPBOARD-D23).
 
 #### FSV-03 — acad.pgp's OPENURL and SAVEURL are missing
 
@@ -401,6 +483,24 @@ Cells, each a desktop probe (`dNN`), en-US, then es-ES for the labels:
 - **CLIPBOARD-D16:** no subagents: the clipboard probes had to run one at a time (Windows' clipboard
   is one), and the cells were few enough for one reviewer.
 
+- **CLIPBOARD-D17:** PASTECLIP's point is INSERT's: a Z taken, `Point or option keyword required.`
+  for FOO and Enter; its hidden keywords not offered (Missing: no scaling or rotating paste). D10 is
+  superseded (p110 was the console's text paste).
+- **CLIPBOARD-D18:** the fragment is laid in the current UCS as INSERT lays a block there: its WCS
+  coordinates read as the UCS's (d02).
+- **CLIPBOARD-D19:** nothing selected after a paste; the pasted set becomes Previous (d01, d04).
+- **CLIPBOARD-D20:** the ghost is the planned objects drawn as the drawing draws them (`drawn`),
+  the target's layers resolved, so it shows what lands.
+- **CLIPBOARD-D21:** a menu entry that shows a key is a group U names by its label and that key
+  glued, in the command language (`Copy with Base PointCtrl+Shift+C GROUP`); English Cut, Copy and
+  Copy with Base Point follow d05's Paste and e01's three by that pattern.
+- **CLIPBOARD-D22:** the QAT's and application menu's New, Open, Save, Save As run as `runAccelerator`
+  with their own echoes (d08); D15 settled. A completed QNEW stays one step here (the WHY of NEW).
+- **CLIPBOARD-D23:** an empty clipboard writes nothing (D14 settled); a typed PASTECLIP then makes an
+  empty step `PASTECLIP` (d07).
+- **CLIPBOARD-D24:** Ctrl+A's message completes its echo's line (d06).
+- **CLIPBOARD-D25:** CFD's fixes in one subagent (one block); the desktop probes the reviewer's.
+
 ## Tests proposed
 
 Regression tests are in each finding. Untested cells to pin: COPYCLIP's and CUTCLIP's locked-layer
@@ -416,9 +516,8 @@ permissions (`readSystemClipboard`'s timeout is tested with a fake host).
 
 ## What could not be reviewed and why
 
-The paste's result and look, the QAT's echoes, an empty clipboard: CFD, the desktop with the
-owner's clipboard. NEW and QNEW: the console has one document (p208); their tab and template dialog
-are Missing.
+NEW and QNEW completed: the desktop opens a tab of its own (one drawing here, the WHY); the template
+dialog is Missing. English Cut, Copy and Copy with Base Point's U names: by the pattern (CLIPBOARD-D21).
 
 ## Refuted in the adversarial pass
 
@@ -431,6 +530,10 @@ are Missing.
 - ~~The console's COPYCLIP overwrote the owner's clipboard~~ — it never writes there (p108's paste
   was the owner's own text).
 
+- ~~PASTECLIP refuses a Z and Enter with `Invalid 2D point.` (p108–p110, PST-02)~~ — the console's
+  text paste; the desktop's object paste is INSERT's point (CFD-03).
+- ~~PASTECLIP leaves what it pasted selected (erase/p263)~~ — the console's MTEXT; d04 (CFD-01).
+
 ## Coverage ↔ code ↔ AutoCAD; rules ↔ code
 
 | Claim | Probe | State |
@@ -440,11 +543,12 @@ are Missing.
 | QSAVE es `GUARDARR` / `GUARDAR` | p214 | false: GUARDAR is SAVE (FSV-02) |
 | Ctrl+S a group U names `GROUP QSAVE`, a cancelled save too | d04, p204 | holds for a cancelled dialog; a save made is a step (FSV-01) |
 | NEW: one undo step brings the drawing back (WHY) | — | holds (deviation with its WHY) |
-| QNEW without a template shows the dialog as NEW does | — | **unverified** (CFD d08) |
+| QNEW without a template shows the dialog as NEW does | d08 | holds |
+| `clipboardEmpty` (unverified) | d07 | false: nothing is written (PST-05) |
 
 | Rule | Claim | State |
 | --- | --- | --- |
-| `cad-runtime.md` Commands and history | `keepsSelection()` (COPYCLIP, PASTECLIP) | stale after CLP-02: COPYBASE too |
+| `cad-runtime.md` Commands and history | `keepsSelection()` (COPYCLIP, COPYBASE, PASTECLIP) | stale after CFD-01: not PASTECLIP |
 | `cad-runtime.md` Keys and buttons | the `^C^C` keys: S, O, 0, 1, 9, Y | to widen after CKY-01, CKY-02 |
 | `cad-runtime.md` Waiting on the host | bound every wait | holds; add: what was asked survives the wait and is dropped when something else starts (PST-01, PST-03) |
 | `cad-catalogs.md` Messages | never invent a message | broken by `clipboardEmpty` (PST-05, unverified) |
@@ -460,7 +564,8 @@ Checked and holding: `cad-engine.md` fragments (tests, blocks/p210), ports; `cad
    English snapshot. Small to medium.
 4. **CKY** (CKY-01, 02): `CadRuntime.keyDown`, `selectAll`, a message, tests. Medium; after PST
    (the paste's macro) and FSV (`runAccelerator` with a step).
-5. **CFD**: a session with the owner's mouse and clipboard; PST-05 and D8, D15 settled there.
+5. **CFD** (CFD-01 to 07, PST-05): `PasteTool.ts`, `CadRuntime.pasteFromClipboard`, the shortcut
+   menu's groups, the top bar's buttons, `selectAll`'s line, catalogs; medium. After CKY.
 
 ## Changes to coverage, rules, catalogs and roadmap
 
@@ -497,4 +602,13 @@ are left to the browser as Ctrl+Shift+V is; ALL and Ctrl+A share `allObjects`.
 - template §4.1: a command whose run awaits a port (the clipboard's read) — probe its U name and
   type another command during the wait (PST-01, PST-03).
 
-Applied on 2026-10-29 after the console blocks.
+Applied on 2026-10-29 after the console blocks. From CFD:
+
+- annex-probes.md §2: a console probe whose input is a stand-in (its PASTECLIP pastes text) settles
+  nothing of the real path, its refusals and its selection either: p108–p110 and erase/p263 were the
+  MTEXT's; trace the desktop's prompt before trusting them.
+- annex-probes.md §4: COM's SendCommand turns DYNMODE negative while it runs and restores it, so
+  `com set` and `(setvar)` do not hold it and a command sent by COM shows no dynamic input; set it by
+  typing (`type -text '-1\n'`: a bare `-1` is a PowerShell switch) and type the command.
+- matrix.md / template §4.1: a menu entry showing a key is named by U with the key glued
+  (`PasteCtrl+V GROUP`): probe a menu entry with a key apart from one without.
