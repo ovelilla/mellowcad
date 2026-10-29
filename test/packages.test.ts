@@ -16,15 +16,6 @@ const PACKAGES = readdirSync(path.join(ROOT, "packages")).map((dir) => {
   return { dir: `packages/${dir}`, ...manifest }
 })
 
-/**
- * The packages whose build is still to come, each with where it is planned.
- * The commit hook skips a package without `build` and `check`, so one missing
- * by mistake would ship unchecked: only these may.
- */
-const UNBUILT: Record<string, string> = {
-  "packages/editor": "docs/next-library.md, phase 4(d)",
-}
-
 /** Everything that may use a package: the app, the landing, the engine's tests, the other packages. */
 const HOSTS = [
   "app",
@@ -50,10 +41,11 @@ function* walk(dir: string): Generator<string> {
 }
 
 describe("the workspace packages", () => {
-  it("are each built and checked by the commit hook, but the unbuilt", () => {
+  it("are each built and checked by the commit hook", () => {
     for (const { dir, scripts = {} } of PACKAGES) {
-      const built = "build" in scripts && "check" in scripts
-      expect(built, dir).toBe(!(dir in UNBUILT))
+      expect(Object.keys(scripts), dir).toEqual(
+        expect.arrayContaining(["build", "check"])
+      )
     }
   })
 

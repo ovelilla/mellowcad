@@ -26,6 +26,10 @@
     },
     "./package.json": "./package.json"
   },
+  "scripts": {
+    "build": "tsdown",
+    "check": "publint --strict && attw --pack . --profile esm-only && node ../../scripts/packages/client-directive.ts --compiled"
+  },
   "peerDependencies": {
     "@mellowcad/engine": "^0.0.0",
     "@mellowcad/react": "^0.0.0",
@@ -38,5 +42,13 @@
     "icu-minify": "^4.14.9",
     "lucide-react": "^1.59.0",
     "tailwind-merge": "^3.7.0"
+  },
+  "devDependencies": {
+    "@arethetypeswrong/cli": "^0.18.5",
+    "@babel/core": "^7.29.7",
+    "@rolldown/plugin-babel": "^0.2.4",
+    "babel-plugin-react-compiler": "^1.0.0",
+    "publint": "^0.3.25",
+    "tsdown": "^0.23.2"
   }
 }

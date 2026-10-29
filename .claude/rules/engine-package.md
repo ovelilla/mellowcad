@@ -18,7 +18,8 @@ paths:
 
 # The packages
 
-> Verified against **tsdown 0.23.2**, **publint 0.3.25**, **@arethetypeswrong/cli 0.18.5**.
+> Verified against **tsdown 0.23.2**, **publint 0.3.25**, **@arethetypeswrong/cli 0.18.5**,
+> **@rolldown/plugin-babel 0.2.4**, **babel-plugin-react-compiler 1.0.0**.
 
 `cad/` is the npm workspace `@mellowcad/engine`, `packages/react` is `@mellowcad/react` and
 `packages/editor` is `@mellowcad/editor`, in place and private until they are published
@@ -38,8 +39,10 @@ instance; so is `@mellowcad/react` of the editor.
   `matchCommands`, against 0.36 KB. `cad/size.test.ts` holds the islands under 1 KB and the
   engine under a gzip ceiling, bundled by tsdown's own rolldown: raise the ceiling on purpose.
 - **Exported declarations carry their types** (`isolatedDeclarations`: Oxc writes each `.d.ts`
-  alone). An exported `const`, a class field or a defaulted parameter whose value is not a literal
-  is annotated; `as const satisfies` is refused (TS9010). `npm run typecheck` does not see it, the
+  alone). An exported function has its return type (a component's is `ReactElement`, `| null` if
+  it can render nothing); an exported `const` (a glyph is `LucideIcon`, a `cva` its call's type),
+  a class field or a defaulted parameter whose value is not a literal is annotated;
+  `as const satisfies` is refused (TS9010). `npm run typecheck` does not see it, the
   build does.
 - **`cad/locales/en.d.json.ts` is `en.json`'s type**, written by `npm run locales` because Oxc
   cannot read a JSON module; `cad/locales/locales.test.ts` fails on drift. Never edit it, nor the
@@ -50,19 +53,27 @@ instance; so is `@mellowcad/react` of the editor.
   export with its signature and every type of its own they reach, written by its `api.test.ts`
   through `test/apiReport.ts`; any change fails it until `-u`. Read its diff as a version:
   a new name is a minor, a changed or removed one a major. A name joins `cad/index.ts` only when a
-  host uses it; a public member only the engine's tests need is `/** @internal */`, which the
-  build strips (`stripInternal`), as `CadDriver.runtime` is.
+  host uses it; a public member only the engine's tests need is
+  `/** @internal */`, which the build strips (`stripInternal`), as `CadDriver.runtime` is.
 - **A module that uses React starts with `"use client"`**, kept in its own `dist` module
-  (`scripts/packages/client-directive.ts`, in `check`); rolldown's `MODULE_LEVEL_DIRECTIVE`
-  warning, which says it may be lost when modules merge, is dropped by code. Never on a language
-  module: the page loads a catalog on the server and passes it as a prop.
+  (`scripts/packages/client-directive.ts`, in `check`): one with a hook or JSX, which under the
+  compiler includes any component (its cache is a hook). `icons.tsx` has none: it only calls
+  lucide's `createLucideIcon`, which a server component may import. Rolldown's
+  `MODULE_LEVEL_DIRECTIVE` warning, which says it may be lost when modules merge, is dropped by
+  code. Never on a language module: the page loads a catalog on the server and passes it as a
+  prop.
 - **The commit gate builds and checks each package**: `npm run build -w cad`, then
-  `npm run check -w cad` (publint `--strict`, attw's `esm-only` profile), about 4 s; the same
-  in each of packages/. One whose build is still to come has neither script and is skipped: only
-  those `test/packages.test.ts` lists may (the editor's is phase 4(d)). Installing the tarball in foreign hosts (Node ESM, `tsc`, Vite) needs
+  `npm run check -w cad` (publint `--strict`, attw's `esm-only` profile); the same in each of
+  packages/, about 8 s in all, and a package without both scripts fails it
+  (`test/packages.test.ts`). Installing the tarball in foreign hosts (Node ESM, `tsc`, Vite) needs
   the network, so it is `npm run check:hosts -w cad` (`scripts/engine/hosts.ts`), which
   `prepublishOnly` runs; the other packages get theirs with the examples (phase 5).
-- `@mellowcad/react` is built without the React Compiler: its hooks hold their identities by
-  hand, which `useSyncExternalStore` needs, so a host's build gets the same hooks as the site.
+- **`@mellowcad/editor` is built with the React Compiler**, as the site compiles it (Next's
+  defaults): `@rolldown/plugin-babel` runs `babel-plugin-react-compiler` before Oxc, and its
+  `check` passes `--compiled`, which fails a `dist` module with JSX that does not import
+  `react/compiler-runtime` (the compiler was left out, or skipped all its components). The Babel
+  pass is most of its build, ~2 s. `@mellowcad/react` is built without it: its hooks hold their
+  identities by hand, which `useSyncExternalStore` needs, so a host's build gets the same hooks
+  as the site.
 - A runtime dependency of the engine goes in `cad/package.json`'s `dependencies` (today only
   `icu-minify`), never only in the root's.

@@ -94,7 +94,9 @@ file. Shared bar atoms live in `toolbar-primitives.tsx`, custom glyphs in `icons
 primitives in `ui/`, the catalog in `locales/`. It reaches its own files relatively and the engine
 and the hooks by name (`test/packages.test.ts`): an `@/` import still compiles in the repo, against
 the site. `shadcn add` writes into the editor (`components.json`) with `@/` imports: make them
-relative. `index.ts` exports only what a host uses: each name there is a semver promise.
+relative. `index.ts` exports only what a host uses: each name there is a semver promise. The
+package's build (`engine-package.md`) asks of every module a `"use client"` if it has a hook or
+JSX, and an exported component's return type (`ReactElement`): the hook fails without them.
 
 ## Colour — one scheme, dark
 
