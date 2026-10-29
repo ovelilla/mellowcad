@@ -667,6 +667,13 @@ export class CadEngine {
     this.runtime.openDrawingUnitsFromMenu()
   }
 
+  runFileButton(
+    bar: "quickAccess" | "applicationMenu",
+    button: "new" | "open" | "save" | "saveAs"
+  ): void {
+    this.runtime.runFileButton(bar, button)
+  }
+
   closeLockedObjectsDialog(): void {
     this.runtime.closeLockedObjectsDialog()
   }

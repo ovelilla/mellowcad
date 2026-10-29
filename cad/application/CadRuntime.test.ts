@@ -1436,6 +1436,61 @@ describe("file save and open", () => {
       expect(files.saved).toHaveLength(0)
       expect(cad.activeToolId()).toBe("line")
     })
+
+    // desktop clipboard/d08: each button a `^C^C` macro of acad.cuix's —
+    // LINE cancelled, then the QAT's `_qnew`, `_open`, `_QSAVE`, `_SAVEAS` and
+    // the application menu's `_NEW`, `_OPEN`, `_QSave`, `_SAVEAS` — in a menu
+    // group (a save made `QSAVE GROUP Regenerating model.`), OPEN's drawing
+    // starting a history of its own.
+    it("the QAT's and application menu's file buttons run as their macros (d08)", () => {
+      for (const [bar, button, echo, undone] of [
+        ["quickAccess", "new", "_qnew", "QNEW GROUP"],
+        ["quickAccess", "open", "_open", null],
+        ["quickAccess", "save", "_QSAVE", "QSAVE GROUP Regenerating model."],
+        [
+          "quickAccess",
+          "saveAs",
+          "_SAVEAS",
+          "SAVEAS GROUP Regenerating model.",
+        ],
+        ["applicationMenu", "new", "_NEW", "NEW GROUP"],
+        ["applicationMenu", "open", "_OPEN", null],
+        [
+          "applicationMenu",
+          "save",
+          "_QSave",
+          "QSAVE GROUP Regenerating model.",
+        ],
+        [
+          "applicationMenu",
+          "saveAs",
+          "_SAVEAS",
+          "SAVEAS GROUP Regenerating model.",
+        ],
+      ] as const) {
+        const { cad, files } = withLine()
+        written(cad, "_LINE", "20,0")
+        cad.runtime.runFileButton(bar, button)
+        expect(cad.commandLog().slice(-2)).toEqual([
+          "Specify next point or [Undo]: *Cancel*",
+          echo,
+        ])
+        if (undone === null) {
+          expect(files.openCalls).toBe(1)
+          continue
+        }
+        expect(written(cad, "_U")).toEqual(["U", undone])
+        expect(cad.entityCount).toBe(1)
+      }
+    })
+
+    it("a file button's save with no file access leaves an empty group", () => {
+      const cad = createHarness()
+      written(cad, "_LINE", "0,0", "10,0", "")
+      cad.runtime.runFileButton("applicationMenu", "save")
+      expect(written(cad, "_U")).toEqual(["U", "GROUP QSAVE"])
+      expect(cad.entityCount).toBe(1)
+    })
   })
 })
 

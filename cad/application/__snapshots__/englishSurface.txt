@@ -519,7 +519,6 @@ lweight "Lineweight" LW
   canvas: -
   properties: -
   cycling: -
-  info| Nothing on the clipboard.
 > after paste
 
 ## paste
@@ -538,7 +537,6 @@ lweight "Lineweight" LW
   asks: -
   tip: -
   dyn: -
-  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=50.00~, Start Y=50.00~, Start Z=0.00~, End X=150.00~, End Y=50.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Specify insertion point:
 
 ## LINE

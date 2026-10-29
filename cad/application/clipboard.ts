@@ -4,7 +4,8 @@
  * document that may already have tables of its own.
  */
 
-import { Vec3, sub3 } from "../geometry/Vec3"
+import { Vec3, add3, sub3 } from "../geometry/Vec3"
+import { axesToWorld } from "../geometry/ocs"
 import { DocumentReader } from "../domain/Document"
 import {
   anonymousBlockName,
@@ -15,11 +16,14 @@ import {
   Entity,
   findBlockNamed,
   isAnonymousBlock,
+  Similarity3,
+  transformEntity,
   MAX_BLOCK_NESTING,
 } from "../domain/entities"
 import { DEFAULT_LAYER_ID, Layer, LayerId, nextLayerId } from "../domain/layers"
 import { DimStyle } from "../domain/dimStyles"
 import { TextStyle } from "../domain/textStyles"
+import { Ucs, ucsAxes } from "../domain/ucs"
 import { ClipboardFragment } from "../serialization/clipboardFile"
 import { DrawingSnapshot } from "../serialization/drawingFile"
 
@@ -97,6 +101,39 @@ export function clipboardSnapshot(
     currentDimStyleId: document.getCurrentDimStyleId(),
     blocks: Array.from(blocks.values()),
     entities,
+  }
+}
+
+/**
+ * `fragment` laid in `ucs` as INSERT lays a block there: its WCS coordinates
+ * read as the UCS's, so a paste in a UCS turned 30° turns the objects with it
+ * (desktop clipboard/d02). The result is in the frame `ucs` is given in;
+ * block definitions are in their own coordinates and stay as they are.
+ */
+export function fragmentInUcs(
+  fragment: ClipboardFragment,
+  ucs: Ucs
+): ClipboardFragment {
+  const axes = ucsAxes(ucs)
+  const level =
+    axes.x.x === 1 &&
+    axes.x.y === 0 &&
+    axes.x.z === 0 &&
+    axes.y.x === 0 &&
+    axes.y.y === 1 &&
+    axes.y.z === 0
+  // The origin cancels out of where the objects land, from the base point:
+  // only a turn changes them, and the fragment is then kept exact.
+  if (level) return fragment
+  const map: Similarity3 = { rotation: axes, scale: 1, translation: ucs.origin }
+  return {
+    basePoint: add3(axesToWorld(axes, fragment.basePoint), ucs.origin),
+    drawing: {
+      ...fragment.drawing,
+      entities: fragment.drawing.entities.map((entity) =>
+        transformEntity(entity, map)
+      ),
+    },
   }
 }
 

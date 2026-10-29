@@ -75,9 +75,10 @@ export function TopBar({
   const layers = useTranslations("Editor.Layers")
   const styles = useTranslations("Editor.Styles")
   const blocks = useTranslations("Editor.Blocks")
-  // The bar's buttons run the commands, as AutoCAD's macros do (`_qsave`), so
-  // they are echoed at the prompt like a typed command.
-  const run = (command: string) => engine.runCommand(command)
+  // The bar's buttons run acad.cuix's `^C^C` macros: the running command
+  // cancelled, the macro echoed (`_qnew`).
+  const run = (button: "new" | "open" | "save" | "saveAs") =>
+    engine.runFileButton("quickAccess", button)
 
   return (
     <TooltipProvider>
@@ -90,27 +91,27 @@ export function TopBar({
           icon={FilePlus}
           label={t("new")}
           side="bottom"
-          onClick={() => run("_QNEW")}
+          onClick={() => run("new")}
         />
         <IconAction
           icon={FolderOpen}
           label={t("open")}
           shortcut={keys("open")}
           side="bottom"
-          onClick={() => run("_OPEN")}
+          onClick={() => run("open")}
         />
         <IconAction
           icon={Save}
           label={t("save")}
           shortcut={keys("save")}
           side="bottom"
-          onClick={() => run("_QSAVE")}
+          onClick={() => run("save")}
         />
         <IconAction
           icon={SaveAll}
           label={t("saveAs")}
           side="bottom"
-          onClick={() => run("_SAVEAS")}
+          onClick={() => run("saveAs")}
         />
         <IconAction
           icon={Undo2}
@@ -229,10 +230,18 @@ function ApplicationMenu({ engine }: { engine: CadEngine }) {
           className="z-50"
         >
           <Menu.Popup className={MENU_POPUP}>
-            {item(FilePlus, t("new"), () => engine.runCommand("_NEW"))}
-            {item(FolderOpen, t("open"), () => engine.runCommand("_OPEN"))}
-            {item(Save, t("save"), () => engine.runCommand("_QSAVE"))}
-            {item(SaveAll, t("saveAs"), () => engine.runCommand("_SAVEAS"))}
+            {item(FilePlus, t("new"), () =>
+              engine.runFileButton("applicationMenu", "new")
+            )}
+            {item(FolderOpen, t("open"), () =>
+              engine.runFileButton("applicationMenu", "open")
+            )}
+            {item(Save, t("save"), () =>
+              engine.runFileButton("applicationMenu", "save")
+            )}
+            {item(SaveAll, t("saveAs"), () =>
+              engine.runFileButton("applicationMenu", "saveAs")
+            )}
             <Menu.Separator className="-mx-1 my-1 h-px bg-border" />
             {/* Drawing Utilities > Units, as the help files it. */}
             {item(Ruler, t("units"), () => engine.openDrawingUnitsFromMenu())}

@@ -1,4 +1,5 @@
-import { Entity } from "../../domain/entities"
+import { BlockLookup, Entity } from "../../domain/entities"
+import { Layer, LayerId } from "../../domain/layers"
 import { THEME } from "../../scene/theme"
 import { ScenePrimitive } from "../../scene/types"
 import {
@@ -11,25 +12,30 @@ import { ToolContext } from "./Tool"
 /**
  * `piece` as the drawing draws it, faded as ERASE's preview fades an object,
  * or with the selection's glow over it: the looks of TRIM's and FILLET's
- * ghosts (desktop trim/d01-1, d01-3, corners/d01-2).
+ * ghosts (desktop trim/d01-1, d01-3, corners/d01-2). `tables` stand for the
+ * drawing's where the piece brings entries it has not got yet (a paste).
  */
 export function drawn(
   ctx: ToolContext,
   piece: Entity,
-  look: "plain" | "faded" | "glow"
+  look: "plain" | "faded" | "glow",
+  tables?: {
+    readonly layer: (id: LayerId) => Layer | undefined
+    readonly blocks: BlockLookup
+  }
 ): ScenePrimitive[] {
   const settings = ctx.document.getSettings()
   const stroke = entityStroke(
     ctx.viewport,
     piece,
-    ctx.document.getLayer(piece.layerId),
+    tables ? tables.layer(piece.layerId) : ctx.document.getLayer(piece.layerId),
     settings,
     look === "faded"
   )
   const options = {
     fill: settings.fillMode,
     linetype: true,
-    blocks: ctx.blocks,
+    blocks: tables?.blocks ?? ctx.blocks,
   }
   const primitives = entityScenePrimitive(ctx.viewport, piece, stroke, options)
   return look === "glow"

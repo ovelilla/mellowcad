@@ -2918,6 +2918,19 @@ export const es: EngineLocale = {
           }
         ]
       ],
+      "shortcutMenuEntryKey": [
+        [
+          "entry",
+          1,
+          {
+            "cut": "Ctrl+X",
+            "copy": "Ctrl+C",
+            "copyBase": "Ctrl+Mayús+C",
+            "paste": "Ctrl+V",
+            "other": ""
+          }
+        ]
+      ],
       "menuItemStep": "GRUPO menu item",
       "intelliZoomStep": "INTELLIZOOM",
       "intelliPanStep": "INTELLIPAN",

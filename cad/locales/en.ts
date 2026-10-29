@@ -2515,6 +2515,19 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "shortcutMenuEntryKey": [
+        [
+          "entry",
+          1,
+          {
+            "cut": "Ctrl+X",
+            "copy": "Ctrl+C",
+            "copyBase": "Ctrl+Shift+C",
+            "paste": "Ctrl+V",
+            "other": ""
+          }
+        ]
+      ],
       "menuItemStep": "GROUP menu item",
       "intelliZoomStep": "INTELLIZOOM",
       "intelliPanStep": "INTELLIPAN",

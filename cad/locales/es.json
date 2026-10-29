@@ -1635,6 +1635,7 @@
       "menuStep": "{command} GRUPO",
       "emptyMenuStep": "GRUPO {command}",
       "shortcutMenuEntry": "{entry, select, erase {Borrar} move {Desplazar} copySelection {Copiar selección} scale {Escala} rotate {Girar} deselectAll {Anular selección} properties {Propiedades} pan {Encuadre} cut {Cortar} copy {Copiar} copyBase {Copiar con punto base} paste {Pegar} other {}}",
+      "shortcutMenuEntryKey": "{entry, select, cut {Ctrl+X} copy {Ctrl+C} copyBase {Ctrl+Mayús+C} paste {Ctrl+V} other {}}",
       "menuItemStep": "GRUPO menu item",
       "intelliZoomStep": "INTELLIZOOM",
       "intelliPanStep": "INTELLIPAN",

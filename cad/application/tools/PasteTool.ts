@@ -1,14 +1,14 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Vec3, sub3 } from "../../geometry/Vec3"
 import { BlockLookup, translateEntity } from "../../domain/entities"
+import { Layer, LayerId } from "../../domain/layers"
 import { ScenePrimitive } from "../../scene/types"
-import { THEME } from "../../scene/theme"
 import { ClipboardFragment } from "../../serialization/clipboardFile"
-import { planPaste } from "../clipboard"
+import { PastePlan, planPaste } from "../clipboard"
 import { PasteCommand } from "../commands/clipboardCommands"
 import { parseCoordinate } from "../input/coordinateInput"
-import { entityScenePrimitive } from "../SceneBuilder"
 import type { PromptId } from "../../locales/types"
+import { drawn } from "./ghostLook"
 import { PointerInput, QuestionInput, Tool, ToolContext } from "./Tool"
 
 type PasteState =
@@ -17,8 +17,8 @@ type PasteState =
 
 /**
  * AutoCAD's PASTECLIP: drags the clipboard fragment in by its base point and
- * drops it at an insertion point. Single-shot, and the pasted objects are left
- * selected, so a paste can be nudged straight away.
+ * drops it at an insertion point. Single-shot; what it pasted is left
+ * unselected, as the Previous set.
  *
  * The runtime drives it rather than the command line, because reading the
  * clipboard is asynchronous: it reads first and hands the fragment to
@@ -28,9 +28,12 @@ export class PasteTool implements Tool {
   readonly id = "paste"
 
   private fragment: ClipboardFragment | null = null
+  /** The paste worked out at the base point, once: the ghost and the commit. */
+  private plan: PastePlan | null = null
   private state: PasteState = { phase: "idle" }
   private lastScreen: Vec2 | null = null
   private lookup: BlockLookup = () => undefined
+  private layerOf: (id: LayerId) => Layer | undefined = () => undefined
 
   /** PASTECLIP is registered as a command, not as this tool's. */
   runningCommand(): string {
@@ -41,9 +44,17 @@ export class PasteTool implements Tool {
     return this.state.phase === "point" ? "specifyInsertionPoint" : null
   }
 
-  /** `FOO` and `10,10,5` are `Invalid 2D point.` (clipboard/p108, p109). */
+  // WHY declared: the point is INSERT's jig, whose keywords (Scale, Rotate,
+  // Basepoint…) are hidden, so `FOO` and Enter get the refusal of a point
+  // with keywords though the prompt lists none; a Z is taken (desktop
+  // clipboard/d02: `udKWORD, udDRAG, udGETZ`).
   takes(): QuestionInput {
-    return "point2d"
+    return { refusal: "pointOrKeywordRequired" }
+  }
+
+  /** LASTPOINT is the insertion point (desktop clipboard/d01). */
+  setsLastPoint(): boolean {
+    return true
   }
 
   onActivate(ctx: ToolContext): void {
@@ -51,28 +62,27 @@ export class PasteTool implements Tool {
     ctx.selection.clear()
   }
 
-  // WHY: `(ssget "_I")` after PASTECLIP is what it pasted (erase/p263); a
-  // command's end drops the selection otherwise.
-  keepsSelection(): boolean {
-    return true
-  }
-
   onDeactivate(ctx: ToolContext): void {
     this.fragment = null
+    this.plan = null
     this.state = { phase: "idle" }
     this.lookup = () => undefined
+    this.layerOf = () => undefined
     ctx.dynamicInput.close()
   }
 
   /** Starts placing `fragment`, once the runtime has read it. */
   begin(fragment: ClipboardFragment, ctx: ToolContext): void {
     this.fragment = fragment
-    // A definition the drawing already has wins over the one in the fragment,
-    // exactly as the paste itself resolves it — so the ghost is what lands.
-    const carried = new Map(
-      fragment.drawing.blocks.map((block) => [block.id, block])
-    )
-    this.lookup = (id) => ctx.document.getBlock(id) ?? carried.get(id)
+    // Planned once at its own base point, so the ghost wears the layers and
+    // definitions the paste lands on (a name the drawing has wins) and the
+    // commit moves the very plan the ghost showed.
+    const plan = planPaste(fragment, ctx.document, fragment.basePoint)
+    this.plan = plan
+    const blocks = new Map(plan.blocks.map((block) => [block.id, block]))
+    this.lookup = (id) => ctx.document.getBlock(id) ?? blocks.get(id)
+    const layers = new Map(plan.layers.map((layer) => [layer.id, layer]))
+    this.layerOf = (id) => ctx.document.getLayer(id) ?? layers.get(id)
 
     const screen = this.lastScreen ?? { x: 0, y: 0 }
     this.state = {
@@ -89,10 +99,13 @@ export class PasteTool implements Tool {
       commit: () => {},
       commitRaw: (commitCtx) => {
         const text = commitCtx.dynamicInput.getText("point").trim()
-        // WHY Enter is refused and asked again: the point takes none
-        // (clipboard/p110), worded as what is no 2D point.
+        // WHY Enter is refused and asked again: the point has no default
+        // (desktop clipboard/d02).
         if (text === "") {
-          commitCtx.report(commitCtx.text.message("invalidPoint2d"), "error")
+          commitCtx.report(
+            commitCtx.text.message("pointOrKeywordRequired"),
+            "error"
+          )
           return true
         }
         const point = parseCoordinate(text, {
@@ -124,26 +137,36 @@ export class PasteTool implements Tool {
     this.place(input.point, ctx)
   }
 
+  /** The objects as they land, drawn as the drawing draws them (desktop clipboard/d04-3). */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase !== "point" || !this.fragment) return []
-    const delta = sub3(this.state.cursor, this.fragment.basePoint)
-    return this.fragment.drawing.entities.flatMap((entity) =>
-      entityScenePrimitive(
-        ctx.viewport,
-        // The ghost keeps the fragment's ids: it never reaches the document,
-        // and the paste itself mints fresh ones.
-        translateEntity(entity, delta),
-        { color: THEME.rubberBand, width: 1 },
-        { blocks: this.lookup }
-      )
+    if (this.state.phase !== "point") return []
+    const placed = this.placedAt(this.state.cursor)
+    if (!placed) return []
+    const tables = { layer: this.layerOf, blocks: this.lookup }
+    return placed.entities.flatMap((entity) =>
+      drawn(ctx, entity, "plain", tables)
     )
   }
 
+  /** The plan with its base point moved to `at`. */
+  private placedAt(at: Vec3): PastePlan | null {
+    if (!this.fragment || !this.plan) return null
+    const delta = sub3(at, this.fragment.basePoint)
+    return {
+      ...this.plan,
+      entities: this.plan.entities.map((entity) =>
+        translateEntity(entity, delta)
+      ),
+    }
+  }
+
   private place(at: Vec3, ctx: ToolContext): void {
-    if (!this.fragment) return
-    const plan = planPaste(this.fragment, ctx.document, at)
+    const plan = this.placedAt(at)
+    if (!plan) return
     ctx.execute(new PasteCommand(plan))
-    ctx.selection.set(plan.entities.map((entity) => entity.id))
+    // WHY Previous, none selected: no grips after a paste and `(ssget "_P")`
+    // the pasted set (desktop clipboard/d01, d04-5, d04-6).
+    ctx.rememberSelection(plan.entities.map((entity) => entity.id))
     ctx.endCommand()
   }
 }

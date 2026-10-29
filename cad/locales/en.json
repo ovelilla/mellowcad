@@ -1617,6 +1617,7 @@
       "menuStep": "{command} GROUP",
       "emptyMenuStep": "GROUP {command}",
       "shortcutMenuEntry": "{entry, select, erase {Erase} move {Move} copySelection {Copy Selection} scale {Scale} rotate {Rotate} deselectAll {Deselect All} properties {Properties} pan {Pan} cut {Cut} copy {Copy} copyBase {Copy with Base Point} paste {Paste} other {}}",
+      "shortcutMenuEntryKey": "{entry, select, cut {Ctrl+X} copy {Ctrl+C} copyBase {Ctrl+Shift+C} paste {Ctrl+V} other {}}",
       "menuItemStep": "GROUP menu item",
       "intelliZoomStep": "INTELLIZOOM",
       "intelliPanStep": "INTELLIPAN",

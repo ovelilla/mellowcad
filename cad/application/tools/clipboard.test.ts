@@ -8,6 +8,8 @@ import {
   HatchEntity,
   InsertEntity,
   LineEntity,
+  lineEndZ,
+  lineStartZ,
   TextEntity,
 } from "../../domain/entities"
 import { createTextStyle } from "../../domain/textStyles"
@@ -345,6 +347,32 @@ describe("PASTECLIP", () => {
     expect(pasted.start).toBeCloseToPoint(p(0, 200))
   })
 
+  // desktop clipboard/d04-3: a red circle ghosts red — the objects drawn as
+  // they land, on a layer the target has yet to get, in its colour.
+  it("draws the ghost as the objects land, on the layers they bring (d04)", async () => {
+    const clipboard = new MemoryClipboard()
+    const source = createHarness({ clipboard })
+    const walls = source.runtime.createLayer("WALLS", "#ff0000")
+    source.runtime.document.load([
+      lineOf(p(0, 0), p(100, 0), { id: "L1", layerId: walls }),
+    ])
+    copy(source, "L1")
+
+    const target = createHarness({ clipboard })
+    await target.runtime.pasteFromClipboard()
+    target.moveTo(p(0, 200))
+    const ghostStart = target.toScreen(p(0, 200))
+    const ghost = target
+      .scene()
+      .primitives.filter(
+        (prim) =>
+          prim.kind === "segment" &&
+          Math.hypot(prim.a.x - ghostStart.x, prim.a.y - ghostStart.y) < 1e-6
+      )
+    expect(ghost).toHaveLength(1)
+    expect(ghost[0].kind === "segment" && ghost[0].stroke.color).toBe("#ff0000")
+  })
+
   it("accepts a typed insertion point", async () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
@@ -358,9 +386,17 @@ describe("PASTECLIP", () => {
       .find((entity) => entity.id !== "L1") as LineEntity
     expect(pasted.start).toBeCloseToPoint(p(300, 400))
     expect(cad.activeToolId()).toBe("select")
+    // desktop clipboard/d01: LASTPOINT is the insertion point.
+    answer(cad, "ID", "@")
+    expect(cad.commandLog().at(-1)).toBe(
+      " X = 300.00     Y = 400.00     Z = 0.00"
+    )
   })
 
-  it("refuses Enter and what is no 2D point, and asks again (p108–p110)", async () => {
+  // desktop clipboard/d02: INSERT's jig (`udKWORD, udDRAG, udGETZ`), its
+  // keywords hidden, so FOO and Enter are what a point prompt with keywords
+  // refuses, and a Z is taken.
+  it("refuses Enter and FOO as Point or option keyword required., and asks again (d02)", async () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
     })
@@ -370,21 +406,19 @@ describe("PASTECLIP", () => {
     expect(cad.state().commandLine.prompt).toBe(
       "PASTECLIP Specify insertion point:"
     )
-    answer(cad, "", "FOO", "10,10,5", "5,5")
+    answer(cad, "", "FOO", "5,5")
 
-    expect(cad.commandLog().slice(-7)).toEqual([
+    expect(cad.commandLog().slice(-5)).toEqual([
       "Specify insertion point:",
-      "Invalid 2D point.",
+      "Point or option keyword required.",
       "Specify insertion point: FOO",
-      "Invalid 2D point.",
-      "Specify insertion point: 10,10,5",
-      "Invalid 2D point.",
+      "Point or option keyword required.",
       "Specify insertion point: 5,5",
     ])
     expect(cad.entityCount).toBe(2)
   })
 
-  it("refuses Enter in Spanish too (p110)", async () => {
+  it("refuses Enter in Spanish too (d02)", async () => {
     const cad = createHarness({
       locale: es,
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
@@ -392,8 +426,82 @@ describe("PASTECLIP", () => {
     answer(cad, "_COPYCLIP", "_L", "", "_PASTECLIP")
     await settled()
     answer(cad, "")
-    expect(cad.commandLog().at(-1)).toBe("Punto 2D no válido.")
+    expect(cad.commandLog().at(-1)).toBe("Se requiere un punto o una opción.")
     expect(cad.activeToolId()).toBe("paste")
+  })
+
+  // desktop clipboard/d02: COPYBASE's base at Z 10, `100,100,5` → Z −5, and
+  // a 2D point at the WCS's Z 0 → Z −10.
+  it("takes a 3D point, the base's Z kept off it (d02)", async () => {
+    for (const [at, z] of [
+      ["100,100,5", -5],
+      ["100,100", -10],
+    ] as const) {
+      const cad = createHarness({
+        entities: [lineOf(p(0, 0), p(50, 0), { id: "L1" })],
+      })
+      answer(cad, "_COPYBASE", "0,0,10", "_L", "", "_PASTECLIP")
+      await settled()
+      answer(cad, at)
+      const pasted = cad
+        .entities()
+        .find((entity) => entity.id !== "L1") as LineEntity
+      expect(pasted.start).toBeCloseToPoint(p(100, 100))
+      expect(lineStartZ(pasted)).toBeCloseTo(z)
+      expect(lineEndZ(pasted)).toBeCloseTo(z)
+    }
+  })
+
+  // desktop clipboard/d02: `_UCS _Z 30`, then 100,100 lands the line
+  // 0,0–50,0 at (36.6025,136.6025)–(79.9038,161.6025): its WCS coordinates
+  // read as the UCS's, as INSERT lays a block; the ghost is laid so too.
+  it("lays the fragment in a turned UCS, the ghost with it (d02)", async () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(50, 0), { id: "L1" })],
+    })
+    answer(cad, "_COPYBASE", "0,0", "_L", "", "_UCS", "_Z", "30", "_PASTECLIP")
+    await settled()
+    const start = p(36.60254037844388, 136.60254037844388)
+    const end = p(79.90381056766581, 161.60254037844388)
+    cad.moveTo(start)
+    const [a, b] = [cad.toScreen(start), cad.toScreen(end)]
+    const ghost = cad
+      .scene()
+      .primitives.filter(
+        (prim) =>
+          prim.kind === "segment" &&
+          Math.hypot(prim.a.x - a.x, prim.a.y - a.y) < 1e-6 &&
+          Math.hypot(prim.b.x - b.x, prim.b.y - b.y) < 1e-6
+      )
+    expect(ghost).toHaveLength(1)
+
+    answer(cad, "100,100")
+    const pasted = cad
+      .entities()
+      .find((entity) => entity.id !== "L1") as LineEntity
+    expect(pasted.start).toBeCloseToPoint(start)
+    expect(pasted.end).toBeCloseToPoint(end)
+  })
+
+  // The same reading in a tilted UCS (CLIPBOARD-D18): the front view's Y is
+  // the WCS's Z, so a line along the WCS's Y lands upright.
+  it("lays the fragment in a tilted UCS's plane", async () => {
+    const cad = createHarness({
+      entities: [lineOf(p(0, 0), p(0, 50), { id: "L1" })],
+    })
+    answer(cad, "_COPYBASE", "0,0", "_L", "")
+    cad.press("F7")
+    cad.command("-VIEW").option("Orthographic").option("Front")
+    answer(cad, "_PASTECLIP")
+    await settled()
+    answer(cad, "100,100")
+    const pasted = cad
+      .entities()
+      .find((entity) => entity.id !== "L1") as LineEntity
+    expect(pasted.start).toBeCloseToPoint(p(100, 0))
+    expect(pasted.end).toBeCloseToPoint(p(100, 0))
+    expect(lineStartZ(pasted)).toBeCloseTo(100)
+    expect(lineEndZ(pasted)).toBeCloseTo(150)
   })
 
   it("names the step PASTECLIP at U, PEGAPP in Spanish (p104)", async () => {
@@ -432,8 +540,9 @@ describe("PASTECLIP", () => {
   })
 
   // The menu's other entries are one group U names by the entry (`Erase
-  // GROUP`, desktop workspace/d03): the read must not split it in two.
-  it("is one step from the shortcut menu, U naming it Paste GROUP", async () => {
+  // GROUP`, desktop workspace/d03): the read must not split it in two. An
+  // entry showing a key names it glued to the label (desktop clipboard/d05).
+  it("is one step from the shortcut menu, U naming it PasteCtrl+V GROUP (d05)", async () => {
     const cad = createHarness({
       entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
     })
@@ -444,26 +553,58 @@ describe("PASTECLIP", () => {
     expect(cad.entityCount).toBe(3)
 
     answer(cad, "_U")
-    expect(cad.commandLog().at(-1)).toBe("Paste GROUP")
+    expect(cad.commandLog().at(-1)).toBe("PasteCtrl+V GROUP")
     expect(cad.entityCount).toBe(2)
     answer(cad, "_U")
     expect(cad.commandLog().at(-1)).toBe("CIRCLE")
     expect(cad.entityCount).toBe(1)
   })
 
-  it("is an empty step from the shortcut menu with nothing to paste", async () => {
+  // desktop clipboard/e01: `PegarCtrl+V GRUPO`, `CopiarCtrl+C GRUPO`,
+  // `Copiar con punto baseCtrl+Mayús+C GRUPO`; English's Cut, Copy and Copy
+  // with Base Point by d05's pattern (CLIPBOARD-D21).
+  it("names each Clipboard entry's group by its label and key (d05, e01)", async () => {
+    for (const [locale, entry, name] of [
+      [es, "paste", "PegarCtrl+V GRUPO"],
+      [es, "copy", "CopiarCtrl+C GRUPO"],
+      [es, "copyBase", "Copiar con punto baseCtrl+Mayús+C GRUPO"],
+      [es, "cut", "CortarCtrl+X GRUPO"],
+      [undefined, "copy", "CopyCtrl+C GROUP"],
+      [undefined, "copyBase", "Copy with Base PointCtrl+Shift+C GROUP"],
+      [undefined, "cut", "CutCtrl+X GROUP"],
+    ] as const) {
+      const cad = createHarness({
+        locale,
+        entities: [lineOf(p(0, 0), p(100, 0), { id: "L1" })],
+      })
+      if (entry === "paste") answer(cad, "_COPYCLIP", "_L", "")
+      cad.runtime.chooseShortcutMenuAction(entry)
+      if (entry === "paste") {
+        await settled()
+        answer(cad, "0,50")
+      } else if (entry === "copyBase") answer(cad, "0,0", "_L", "")
+      else answer(cad, "_L", "")
+      answer(cad, "_U")
+      expect(cad.commandLog().at(-1)).toBe(name)
+    }
+  })
+
+  // desktop clipboard/d07: an empty clipboard writes nothing.
+  it("is an empty step from the shortcut menu with nothing to paste (d07)", async () => {
     const cad = createHarness({ clipboard: null })
     answer(cad, "_CIRCLE", "5,5", "2")
     cad.runtime.chooseShortcutMenuAction("paste")
     await settled()
-    expect(cad.commandLog().at(-1)).toBe("Nothing on the clipboard.")
+    expect(cad.commandLog().at(-1)).toBe("_pasteclip")
 
     answer(cad, "_U")
-    expect(cad.commandLog().at(-1)).toBe("GROUP Paste")
+    expect(cad.commandLog().at(-1)).toBe("GROUP PasteCtrl+V")
     expect(cad.entityCount).toBe(1)
   })
 
-  it("leaves the pasted objects selected (erase/p263)", async () => {
+  // desktop clipboard/d01, d04-5, d04-6: no grips and `(ssget "_I")` nil
+  // after a paste; `(ssget "_P")` is the pasted set.
+  it("leaves nothing selected, the pasted objects the Previous set (d04)", async () => {
     const cad = createHarness({
       entities: [
         lineOf(p(0, 0), p(100, 0), { id: "L1" }),
@@ -472,10 +613,11 @@ describe("PASTECLIP", () => {
     })
     copy(cad, "L1", "L2")
     await pasteAt(cad, p(0, 200))
+    expect(cad.entityCount).toBe(4)
+    expect(cad.selectedIds()).toEqual([])
 
-    const selected = cad.selectedIds()
-    expect(selected).toHaveLength(2)
-    expect(selected).not.toContain("L1")
+    answer(cad, "_ERASE", "_P", "")
+    expect(cad.entities().map((entity) => entity.id)).toEqual(["L1", "L2"])
   })
 
   it("undoes a whole paste in one step", async () => {
@@ -493,12 +635,23 @@ describe("PASTECLIP", () => {
     expect(cad.entityCount).toBe(2)
   })
 
-  it("says so when there is nothing to paste", async () => {
-    const cad = createHarness()
-    await cad.runtime.pasteFromClipboard()
+  // desktop clipboard/d07: nothing written; the typed command's run is a
+  // step U names PASTECLIP, PEGAPP in Spanish.
+  it("writes nothing when there is nothing to paste, a step U names (d07)", async () => {
+    for (const [locale, name] of [
+      [undefined, "PASTECLIP"],
+      [es, "PEGAPP"],
+    ] as const) {
+      const cad = createHarness({ locale, clipboard: null })
+      answer(cad, "_CIRCLE", "5,5", "2", "_PASTECLIP")
+      await settled()
+      expect(cad.commandLog().at(-1)).toBe(name)
+      expect(cad.activeToolId()).toBe("select")
 
-    expect(cad.commandLog()).toContain("Nothing on the clipboard.")
-    expect(cad.activeToolId()).toBe("select")
+      answer(cad, "_U")
+      expect(cad.commandLog().at(-1)).toBe(name)
+      expect(cad.entityCount).toBe(1)
+    }
   })
 
   it("Escape cancels without placing anything", async () => {
@@ -880,7 +1033,8 @@ describe("clipboard shortcuts", () => {
     expect(cad.entityCount).toBe(1)
   })
 
-  it("Ctrl+V with nothing to paste says so, an empty group U names", async () => {
+  // desktop clipboard/d07: nothing written, U `GROUP PASTECLIP`.
+  it("Ctrl+V with nothing to paste writes nothing, an empty group U names (d07)", async () => {
     const cad = answer(
       createHarness({ clipboard: null }),
       "_CIRCLE",
@@ -889,7 +1043,7 @@ describe("clipboard shortcuts", () => {
     )
     expect(pressed(cad, "v")).toEqual(["_pasteclip"])
     await settled()
-    expect(cad.commandLog().at(-1)).toBe("Nothing on the clipboard.")
+    expect(cad.commandLog().at(-1)).toBe("_pasteclip")
 
     expect(answer(cad, "_U").commandLog().at(-1)).toBe("GROUP PASTECLIP")
     expect(cad.entityCount).toBe(1)
@@ -933,25 +1087,25 @@ describe("Ctrl+A", () => {
   it("cancels LINE first, as its `^C^C` does", () => {
     const cad = answer(createHarness({ entities: two() }), "_LINE", "0,0")
     cad.press("a", { ctrlKey: true })
-    expect(cad.commandLog().slice(-3)).toEqual([
+    expect(cad.commandLog().slice(-2)).toEqual([
       "Specify next point or [Undo]: *Cancel*",
-      "_ai_selall",
-      "Selecting objects...done.",
+      "_ai_selall Selecting objects...done.",
     ])
     expect(cad.activeToolId()).toBe("select")
     expect(cad.state().commandLine.prompt).toBe("Command:")
     expect(cad.selectedIds().sort()).toEqual(["L1", "L2"])
   })
 
-  // clipboard/p122, p123: `Command: _AI_SELALL` / `Selecting
-  // objects...done.`, and U `AI_SELALL GROUP`, the objects all still there.
-  it("writes Selecting objects...done., a step U names AI_SELALL GROUP (p123)", () => {
+  // clipboard/p122, p123: `Selecting objects...done.`, and U `AI_SELALL
+  // GROUP`, the objects all still there; on the echo's line (desktop
+  // clipboard/d06-1).
+  it("writes _ai_selall Selecting objects...done., a step U names AI_SELALL GROUP (p123, d06)", () => {
     const cad = answer(createHarness(), "_LINE", "0,0", "10,0", "")
     answer(cad, "_CIRCLE", "5,5", "2")
     cad.press("a", { ctrlKey: true })
     expect(cad.commandLog().slice(-2)).toEqual([
-      "_ai_selall",
-      "Selecting objects...done.",
+      "Specify radius of circle or [Diameter]: 2",
+      "_ai_selall Selecting objects...done.",
     ])
     expect(cad.selectedIds()).toHaveLength(2)
 
@@ -966,7 +1120,9 @@ describe("Ctrl+A", () => {
   it("in Spanish, Designando objetos...terminado. and AI_SELALL GRUPO (p123)", () => {
     const cad = createHarness({ entities: two(), locale: es })
     cad.press("a", { ctrlKey: true })
-    expect(cad.commandLog().at(-1)).toBe("Designando objetos...terminado.")
+    expect(cad.commandLog().at(-1)).toBe(
+      "_ai_selall Designando objetos...terminado."
+    )
     expect(answer(cad, "_U").commandLog().at(-1)).toBe("AI_SELALL GRUPO")
     expect(cad.entityCount).toBe(2)
   })

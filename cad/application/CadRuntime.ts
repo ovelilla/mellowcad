@@ -212,6 +212,7 @@ import {
   secondPointQuestion,
 } from "./runtimeMeasure"
 import { promptRefusal, questionInput } from "./promptRefusal"
+import { fragmentInUcs } from "./clipboard"
 import {
   applyDrawingFile,
   copyToClipboard,
@@ -3405,12 +3406,16 @@ export class CadRuntime extends Observable {
    * A fixed entry of the shortcut menu, chosen: what AutoCAD's item runs,
    * echoed as acad.cuix's macro (`_erase`) and, but for Undo, Redo, Repeat,
    * Enter and Cancel, in a group U names by the entry's label (`Erase
-   * GROUP`, `GROUP Properties`; desktop workspace/d03, e01).
+   * GROUP`, `GROUP Properties`; desktop workspace/d03, e01) and its key.
    */
   chooseShortcutMenuAction(action: ShortcutMenuAction): void {
     this.closeShortcutMenu()
     const command = SHORTCUT_MENU_COMMANDS[action]
-    const label = this.text.message("shortcutMenuEntry", { entry: action })
+    // An entry showing a key names the group by its label and that key,
+    // glued: `PasteCtrl+V GROUP` (desktop clipboard/d05, e01).
+    const label =
+      this.text.message("shortcutMenuEntry", { entry: action }) +
+      this.text.message("shortcutMenuEntryKey", { entry: action })
     if (action === "undo") this.runCommandAs("_U", {})
     else if (command !== undefined) {
       this.menuGroup(label, (step) =>
@@ -5305,6 +5310,19 @@ export class CadRuntime extends Observable {
     this.runAccelerator("UNITS", "_UNITS")
   }
 
+  /**
+   * A file button of the Quick Access Toolbar or the application menu:
+   * acad.cuix's `^C^C` macro, the running command cancelled and the macro
+   * echoed as each writes it, in a menu group (desktop clipboard/d08).
+   */
+  runFileButton(
+    bar: "quickAccess" | "applicationMenu",
+    button: "new" | "open" | "save" | "saveAs"
+  ): void {
+    const [command, echo] = FILE_BUTTON_MACROS[bar][button]
+    this.runAccelerator(command, echo)
+  }
+
   purgeBlocks(ids?: readonly BlockId[]): number {
     return purgeBlocks(this.document, this.history, ids)
   }
@@ -5447,7 +5465,8 @@ export class CadRuntime extends Observable {
    * AutoCAD's PASTECLIP. Reading is asynchronous, so the fragment is fetched
    * first and the placement tool is started with it already in hand, named
    * as the command was asked (U says `PASTECLIP`, clipboard/p104) — unless
-   * another command or Escape came first.
+   * another command or Escape came first. The fragment is laid in the UCS
+   * (`fragmentInUcs`, desktop clipboard/d02).
    */
   async pasteFromClipboard(): Promise<void> {
     const waiting = this.awaitHost()
@@ -5457,30 +5476,16 @@ export class CadRuntime extends Observable {
     )
     if (!this.stillWaiting(waiting)) return
     if (!fragment) {
-      // Not AutoCAD's wording: it pastes foreign text as an MTEXT object,
-      // which this paste does not do yet, so there is no message to copy.
-      this.commandLine.write("info", this.text.message("clipboardEmpty"))
-      if (waiting.emptyStep !== null) {
-        this.history.recordEmpty(waiting.emptyStep)
-      }
-      this.commandLineVisible = true
+      // WHY nothing written: an empty clipboard says nothing; the run is
+      // still a step, `PASTECLIP` typed, `GROUP PASTECLIP` from Ctrl+V
+      // (desktop clipboard/d07).
+      const step = waiting.emptyStep ?? waiting.step
+      if (step !== null) this.history.recordEmpty(step)
       this.invalidateState()
       return
     }
     this.startAsAsked("paste", waiting)
-    const { frame } = this
-    this.paste.begin(
-      {
-        basePoint: frame.pointToFrame(fragment.basePoint),
-        drawing: {
-          ...fragment.drawing,
-          entities: fragment.drawing.entities.map((entity) =>
-            frame.entityToFrame(entity)
-          ),
-        },
-      },
-      this.toolContext
-    )
+    this.paste.begin(fragmentInUcs(fragment, this.frame.ucs), this.toolContext)
     this.host.requestRender()
   }
 
@@ -5526,9 +5531,12 @@ export class CadRuntime extends Observable {
   selectAll(): void {
     if (this.activeTool.id !== "select") this.cancelCommand()
     this.commandStarts("AI_SELALL")
-    this.commandLine.write("command", "_ai_selall")
     selectAll(this.document, this.selection)
-    this.commandLine.write("info", this.text.message("selectingObjectsDone"))
+    // On the echo's line (desktop clipboard/d06-1).
+    this.commandLine.write(
+      "command",
+      `_ai_selall ${this.text.message("selectingObjectsDone")}`
+    )
     this.history.recordEmpty(
       this.text.message("menuStep", { command: "AI_SELALL" })
     )
@@ -7177,6 +7185,26 @@ export class CadRuntime extends Observable {
     }
   }
 }
+
+/**
+ * Each file button's command and echo: the QAT's macros are written in
+ * lower case but for Save and Save As, the application menu's in capitals,
+ * its Save `_QSave` (desktop clipboard/d08).
+ */
+const FILE_BUTTON_MACROS = {
+  quickAccess: {
+    new: ["QNEW", "_qnew"],
+    open: ["OPEN", "_open"],
+    save: ["QSAVE", "_QSAVE"],
+    saveAs: ["SAVEAS", "_SAVEAS"],
+  },
+  applicationMenu: {
+    new: ["NEW", "_NEW"],
+    open: ["OPEN", "_OPEN"],
+    save: ["QSAVE", "_QSave"],
+    saveAs: ["SAVEAS", "_SAVEAS"],
+  },
+} as const
 
 /**
  * How a menu or mouse macro runs its command: echoed as given, and the undo

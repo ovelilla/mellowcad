@@ -133,8 +133,8 @@ confirmed). The right button is answered on its release and never reaches a tool
 
 **Ctrl+Z is acad.cuix's `_u` typed at the running prompt** (`runUndoMacro`): Undo where offered,
 else the prompt's refusal; the command goes on; at `Command:` U. Ctrl+S, O, 0, 1, 9, Y, C, X, V,
-Shift+C, A, the top bar's Undo and the Default menu's are `^C^C` (`runAccelerator`): the command
-cancelled, theirs echoed.
+Shift+C, A, the top bar's Undo and file buttons, the Default menu's are `^C^C` (`runAccelerator`):
+the command cancelled, theirs echoed.
 
 **A right-click's Enter is `pressEnter`, and so is the Command menu's Enter**: one path with the
 keyboard's. `rightClickResponse` (SHORTCUTMENU 11) picks the menu. Every entry runs through
@@ -246,8 +246,8 @@ mid-command joins it; at `Command:` U names it by where (`CadRuntime.outside`, `
 `loadDrawing` clears the history. A command's undo puts what it
 removed back at its index (`placesOf`, `restoreMany`): `ERASE _L` reads that order (pieces/p264).
 
-**A command's end or Escape drops the selection** (`switchTool`, erase/p249): a tool never selects
-its result; one whose set AutoCAD keeps says `keepsSelection()` (COPYCLIP, COPYBASE, PASTECLIP). What a tool
+**A command's end or Escape drops the selection** (`switchTool`, erase/p249): no tool selects its
+result; one whose set AutoCAD keeps says `keepsSelection()` (COPYCLIP, COPYBASE). What a tool
 erases leaves the Previous set for good (`executeTool`).
 
 Settings are split. What AutoCAD's U undoes goes through a command
