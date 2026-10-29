@@ -4,6 +4,7 @@ import {
   LINEWEIGHTS,
   LINEWEIGHT_BYLAYER,
   lineweightLabel,
+  lineweightPixels,
   type EngineNames,
 } from "@mellowcad/engine"
 import {
@@ -98,8 +99,8 @@ export function LineweightSelect({
 
 /** A tiny horizontal line drawn at the lineweight's relative thickness. */
 function LineweightPreview({ millimetres }: { millimetres: number }) {
-  // Same proportion the canvas uses (96 dpi), floored so 0.00 mm stays visible.
-  const width = Math.max(1, millimetres * (96 / 25.4))
+  // The canvas's width, floored at a pixel so 0.00 mm stays visible.
+  const width = lineweightPixels(millimetres, 1)
   return (
     <svg
       width={28}
