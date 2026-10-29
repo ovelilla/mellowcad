@@ -170,6 +170,7 @@ the review, not an "n/a".
   echo: AutoCAD names it (`CHPROP`, `Modify Property`, `Grip Edit`; properties/d05-2).
 - The chrome's keys, menus and buttons are read in acad.cuix first (AcceleratorRoot, PopMenuRoot,
   RibbonRoot): order, labels, macros (`^C^C` cancels, `'` is transparent; Workspace, MAC-01).
+- A run that awaits a port (the clipboard's read): probe its U name and a command typed meanwhile.
 - Read what each command leaves selected (`(ssget "_I")` after it ends or is cancelled): a set
   left behind is the next command's preselection (ERASE's SEL-43).
 - A look (a hover, a band, an icon) is changed by a rule's analogy only after the desktop pass:
@@ -396,10 +397,9 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
   commands share), Dimensions (the shared contracts' sweep, asserting scratch tests), Inquiry (the
   ribbon's macro, read-only variables, Escape at a sub-prompt), View (`acad.pgp`, hangs, gestures
   as undo steps, U before evals).
-- 2026-10-28, UCS's console blocks: the previous review's transcripts and each file's old
-  citations counted (§4.1); findings numbered without gaps (§4.8).
-- 2026-10-28, UCS's desktop block: a look waits for the desktop (§4.1), so does a refutation as
-  the console's artefact (§5.3); matrix D's relative box at a prompt with a base.
-- 2026-10-28, Workspace: acad.cuix before the desktop (§4.1); a batched probe's numeric fallback,
-  SETVAR's default untraced, `AllowSpaces` no evidence (annex-probes.md §2); AutoComplete and U's
-  names on the desktop (§4); Chrome's reserved keys (browser-verify).
+- 2026-10-28: UCS (transcripts and old citations counted, findings without gaps, a look and a
+  refutation as the console's artefact wait for the desktop, a relative box at a base); Workspace
+  (acad.cuix first, a batched probe's fallback, SETVAR's default, `AllowSpaces`, AutoComplete and
+  U's names on the desktop, Chrome's reserved keys).
+- 2026-10-29, Clipboard: the console's clipboard, a Lisp stub (annex-probes.md §2); a run that
+  awaits a port (§4.1).

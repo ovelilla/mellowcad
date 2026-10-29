@@ -51,6 +51,11 @@ Writing one (the traps of `console.md` hold; these are the review's):
   runner types `_SECURELOAD` itself, which becomes SETVAR's default, and filters its lines: probe
   SETVAR's default untraced. The trace's `AllowSpaces` is false even at -TEXT's `Enter text:`, and
   the console takes each line whole: whether a name takes a space is a desktop cell (Workspace).
+- The console's clipboard is not Windows': its COPYCLIP writes nothing there and its PASTECLIP
+  pastes whatever text the owner copied, as an MTEXT. What a paste produces is a desktop cell; redact
+  the owner's text from a transcript; run clipboard probes with `PROBE_JOBS=1`; a desktop COPYCLIP
+  overwrites the owner's clipboard, so ask first. A Lisp command missing a function in the console
+  runs with a stub defined first (`AI_SELALL`'s INITCOMMANDVERSION; Clipboard review).
 - What a result is: `MPDUMP` with `-` after the command (every property, full precision);
   `(getvar "LASTPOINT")` for LASTPOINT; `QAFLAGS 2` before LIST.
 - A setting the cell needs is set inside the probe (`CECOLOR`, `-LAYER`, `_ELEVATION`,

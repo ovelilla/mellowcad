@@ -2,7 +2,7 @@
 
 > **Status:** plan, 2026-10-29. Phases 0–4 in one session with skill `command-review`; the
 > twenty-fifth and last review of `docs/coverage/roadmap.md`'s order. Blocks CLP, PST, FSV and CKY
-> are console blocks, executed in this session; CFD is a desktop block for a session with the
+> are console blocks, executed in this session (see "Execution"); CFD is a desktop block for a session with the
 > owner's mouse **and clipboard** (the desktop's COPYCLIP overwrites the owner's Windows clipboard).
 >
 > It owns no cross-cutting area. It took the Workspace review's analogues: a chrome start is a menu
@@ -472,6 +472,20 @@ Checked and holding: `cad-engine.md` fragments (tests, blocks/p210), ports; `cad
   ABREURL; QSAVE's names lose SAVE / GUARDAR; a message `selectingObjectsDone`.
 - Roadmap: the review `plan`, then `done` after CFD.
 
+## Execution
+
+| Block | Findings | Commit |
+| --- | --- | --- |
+| CLP | CLP-01 to CLP-03 | `276b45f` |
+| PST | PST-01 to PST-04 (PST-05 waits for CFD d07) | `0512bb3` |
+| FSV | FSV-01 to FSV-04 | `b5cb8f4` |
+| CKY | CKY-01, CKY-02 | `ad04517` |
+
+Added in the execution: a save the host cannot make (no file port) makes no step, so Ctrl+S then
+leaves `GROUP QSAVE`, as d04's cancelled dialog; Ctrl+V's group is `PASTECLIP GROUP`, an empty
+clipboard's `GROUP PASTECLIP`; Ctrl+Shift+X (CUTBASE) and Ctrl+Shift+A (the group toggle, PICKSTYLE)
+are left to the browser as Ctrl+Shift+V is; ALL and Ctrl+A share `allObjects`.
+
 ## Template improvements
 
 - annex-probes.md §2: the console's clipboard is not Windows': its COPYCLIP writes nothing there
@@ -482,3 +496,5 @@ Checked and holding: `cad-engine.md` fragments (tests, blocks/p210), ports; `cad
   (INITCOMMANDVERSION in AI_SELALL) runs with a stub defined first (p122).
 - template §4.1: a command whose run awaits a port (the clipboard's read) — probe its U name and
   type another command during the wait (PST-01, PST-03).
+
+Applied on 2026-10-29 after the console blocks.
