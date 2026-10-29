@@ -1,6 +1,11 @@
 import { SITE_URL } from "@/lib/site"
 
-import { type AppLocale, routing } from "./routing"
+import {
+  type AppLocale,
+  LANGUAGE_NAMES,
+  LIVE_LOCALES,
+  routing,
+} from "./routing"
 
 /**
  * A path in `locale`: `/draw` in English, `/es/draw` in Spanish — what
@@ -38,4 +43,19 @@ export function unlocalizedPath(pathname: string): string {
     }
   }
   return pathname
+}
+
+/**
+ * `path` (unlocalized) in every live language — none when only one is live.
+ * Plain links, so a crawler follows them and a switch is a full page load:
+ * changing language changes `lang`, `dir`, the fonts and the engine's catalog.
+ */
+export function languageLinks(current: AppLocale, path: string) {
+  if (LIVE_LOCALES.length < 2) return []
+  return LIVE_LOCALES.map((locale) => ({
+    locale,
+    href: localePath(locale, path),
+    name: LANGUAGE_NAMES[locale],
+    current: locale === current,
+  }))
 }

@@ -28,7 +28,7 @@ import { PalettePanel, PaletteResizeHandle } from "./palette-panel"
 import { ViewCube } from "./view-cube"
 import { NavigationBar } from "./navigation-bar"
 import { ViewportControls } from "./viewport-controls"
-import { TopBar } from "./top-bar"
+import { type LanguageLink, TopBar } from "./top-bar"
 import { ShortcutMenu } from "./shortcut-menu"
 import { SnapOverrideMenu } from "./snap-override-menu"
 import { SelectionCyclingList } from "./selection-cycling-list"
@@ -42,9 +42,15 @@ import { SelectionCyclingList } from "./selection-cycling-list"
  */
 export function CadWorkspace({
   engineLocale,
+  mark,
+  languages,
 }: {
   /** The page language's catalog for the engine; English when absent. */
   engineLocale?: EngineLocale
+  /** The host's product mark, the application menu's glyph. */
+  mark?: React.ReactNode
+  /** The page in each language the host offers, for the application menu. */
+  languages?: readonly LanguageLink[]
 }) {
   // The editor is the page: it keeps this device's drawing and takes every
   // key, which the engine leaves to whoever asks.
@@ -107,7 +113,14 @@ export function CadWorkspace({
   return (
     <main className="grid h-svh w-full grid-cols-[auto_minmax(0,1fr)_auto] grid-rows-[auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'top_top_top'_'tools_canvas_panel'_'command_command_command'_'status_status_status']">
       <div className="box-content flex h-9 min-w-0 items-center gap-1 border-b px-1 [grid-area:top]">
-        {ready && <TopBar engine={engine} state={state} />}
+        {ready && (
+          <TopBar
+            engine={engine}
+            state={state}
+            mark={mark}
+            languages={languages}
+          />
+        )}
       </div>
 
       <div

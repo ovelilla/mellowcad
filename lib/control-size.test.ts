@@ -29,7 +29,6 @@ const ALLOWED: Record<string, Record<string, string>> = {
   },
   "components/cad/top-bar.tsx": {
     "h-6": "the separators between the bar's groups, not a control",
-    "size-5": "the product mark, the application menu's glyph",
   },
 }
 

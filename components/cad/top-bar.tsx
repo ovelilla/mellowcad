@@ -10,6 +10,7 @@ import {
   Layers,
   LibraryBig,
   Loader2,
+  Menu as MenuIcon,
   Paintbrush,
   PencilRuler,
   Redo2,
@@ -20,7 +21,7 @@ import {
   Undo2,
   type LucideIcon,
 } from "lucide-react"
-import { useLocale, useTranslations } from "next-intl"
+import { useTranslations } from "next-intl"
 
 import { type CadEngine, type PaletteTab } from "@mellowcad/engine"
 import type { EditorState } from "@/hooks/useCadEngine"
@@ -40,8 +41,6 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
-import { useLanguageLinks } from "@/components/language-links"
-import { LogoMark } from "@/components/marketing/logo"
 
 import { ColorSelect } from "./color-select"
 import { LayerSwatch } from "./layers-control"
@@ -53,6 +52,19 @@ const MENU_POPUP =
   "min-w-48 origin-(--transform-origin) overflow-hidden rounded-md border bg-card/90 p-1 text-popover-foreground shadow-md backdrop-blur transition-[transform,opacity] outline-none data-ending-style:scale-95 data-ending-style:opacity-0 data-starting-style:scale-95 data-starting-style:opacity-0"
 const MENU_ITEM =
   "relative flex cursor-default items-center gap-2 rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground data-popup-open:bg-accent [&_svg]:size-4 [&_svg]:shrink-0"
+/**
+ * The page in one language, for the application menu. A plain link: a switch
+ * is a full page load, since the language changes `lang`, `dir` and the
+ * engine's catalog.
+ */
+export interface LanguageLink {
+  readonly locale: string
+  readonly href: string
+  /** The language named in itself. */
+  readonly name: string
+  readonly current: boolean
+}
+
 /** A drop-down of the bar: bordered, with no surface of its own. */
 const BAR_SELECT = "border-input bg-transparent shadow-none dark:bg-transparent"
 
@@ -66,9 +78,15 @@ const BAR_SELECT = "border-input bg-transparent shadow-none dark:bg-transparent"
 export function TopBar({
   engine,
   state,
+  mark,
+  languages = [],
 }: {
   engine: CadEngine
   state: EditorState
+  /** The application menu's glyph, the host's product mark. */
+  mark?: React.ReactNode
+  /** The application menu's languages; none, no Language submenu. */
+  languages?: readonly LanguageLink[]
 }) {
   const t = useTranslations("Editor.TopBar")
   const keys = useTranslations("Editor.Keys")
@@ -86,7 +104,7 @@ export function TopBar({
           Save As, …, Undo, Redo); Plot and the Web & Mobile pair do not exist
           here. */}
       <Panel className="shrink-0 items-center">
-        <ApplicationMenu engine={engine} />
+        <ApplicationMenu engine={engine} mark={mark} links={languages} />
         <IconAction
           icon={FilePlus}
           label={t("new")}
@@ -193,9 +211,16 @@ export function TopBar({
  * The application menu (AutoCAD's "A" button): the file commands, Drawing
  * Utilities' Units, and the page's language, which AutoCAD has no menu for.
  */
-function ApplicationMenu({ engine }: { engine: CadEngine }) {
+function ApplicationMenu({
+  engine,
+  mark,
+  links,
+}: {
+  engine: CadEngine
+  mark: React.ReactNode
+  links: readonly LanguageLink[]
+}) {
   const t = useTranslations("Editor.TopBar")
-  const links = useLanguageLinks(useLocale())
   const item = (icon: LucideIcon, label: string, onClick: () => void) => {
     const Icon = icon
     return (
@@ -214,7 +239,7 @@ function ApplicationMenu({ engine }: { engine: CadEngine }) {
             <Menu.Trigger
               render={
                 <Button size="icon" variant="ghost" aria-label={t("menu")}>
-                  <LogoMark mono className="size-5" />
+                  {mark ?? <MenuIcon />}
                 </Button>
               }
             />

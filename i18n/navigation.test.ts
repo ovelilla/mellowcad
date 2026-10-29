@@ -1,8 +1,8 @@
 import { createNavigation } from "next-intl/navigation"
 import { describe, expect, it } from "vitest"
 
-import { localePath, localeUrl } from "./navigation"
-import { routing } from "./routing"
+import { languageLinks, localePath, localeUrl } from "./navigation"
+import { LIVE_LOCALES, routing } from "./routing"
 
 describe("localePath", () => {
   const { getPathname } = createNavigation(routing)
@@ -23,5 +23,18 @@ describe("localePath", () => {
     expect(localePath("ar", "/privacy")).toBe("/ar/privacy")
     expect(localeUrl("en", "/")).toBe("https://mellowcad.com/")
     expect(localeUrl("es", "/draw")).toBe("https://mellowcad.com/es/draw")
+  })
+})
+
+describe("languageLinks", () => {
+  it("offers the page in every live language, marking the current one", () => {
+    const links = languageLinks("es", "/draw")
+    expect(links.map((link) => link.locale)).toEqual(
+      LIVE_LOCALES.length < 2 ? [] : LIVE_LOCALES
+    )
+    for (const link of links) {
+      expect(link.href).toBe(localePath(link.locale, "/draw"))
+      expect(link.current).toBe(link.locale === "es")
+    }
   })
 })
