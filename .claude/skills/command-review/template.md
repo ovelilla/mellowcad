@@ -401,5 +401,5 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
   refutation as the console's artefact wait for the desktop, a relative box at a base); Workspace
   (acad.cuix first, a batched probe's fallback, SETVAR's default, `AllowSpaces`, AutoComplete and
   U's names on the desktop, Chrome's reserved keys).
-- 2026-10-29, Clipboard: the console's clipboard, a Lisp stub (annex-probes.md §2); a run that
-  awaits a port (§4.1).
+- 2026-10-29, Clipboard: the console's clipboard and paste, a Lisp stub, DYNMODE under COM, a
+  menu key in U (annex-probes.md §2, §4); a run awaiting a port (§4.1).

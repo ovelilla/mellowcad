@@ -79,7 +79,7 @@ with the area. The order puts first the commands whose review settles what the l
 | 22  | View             | ZOOM, PAN, -PAN, PLAN, VPOINT, -VPOINT, VIEW, -VIEW, 3DORBIT, NAVVCUBE; the ViewCube, the viewport controls, the navigation bar, the wheel | the view and its undo                                                                                                                                                                                                              | done  |
 | 23  | UCS              | UCS, UCSICON, ELEV                                                                                                       |                                                                                                                                                                                                                                    | done  |
 | 24  | Workspace        | UNITS, AUPREC, SETVAR, CLEANSCREENON, CLEANSCREENOFF; the status bar, the top bar, the tool palette, the palette panel, the shortcut menus | system variables typed as commands                                                                                                                                                                                                 | done  |
-| 25  | Clipboard, files | COPYCLIP, CUTCLIP, COPYBASE, PASTECLIP, NEW, QNEW, QSAVE, SAVEAS, OPEN                                                    |                                                                                                                                                                                                                                    | plan  |
+| 25  | Clipboard, files | COPYCLIP, CUTCLIP, COPYBASE, PASTECLIP, NEW, QNEW, QSAVE, SAVEAS, OPEN                                                    |                                                                                                                                                                                                                                    | done  |
 
 A review's state is `plan` while its plan runs, and `done` once executed, its plan reduced to an
 index (LINE's: `docs/plans/line-review.md`); a command added later takes the place its area gives
@@ -137,4 +137,8 @@ reviews before it left (the DIMxxx stay Missing: typed they make an override), a
 apostrophe macros, and on the desktop (WSD) the `<command> GROUP` undo names, the chrome menus'
 echo, the drafting toggles' echo and undo, MATCHPROP's button and the name prompts with spaces;
 it leaves the Default menu's Undo labels, Ctrl+9's confirmation and the ribbon's Move during a grip
-edit in Missing (`workspace.md`, `command-line.md`, `drafting-aids.md`).
+edit in Missing (`workspace.md`, `command-line.md`, `drafting-aids.md`). The Clipboard review
+(`docs/plans/clipboard-review.md`), the last, found the console's PASTECLIP to be its text paste:
+what an object paste takes, lands on and leaves selected is the desktop's (CFD); it leaves
+PASTECLIP's INSERT keywords, foreign text pasted as MTEXT and PASTEBLOCK / CUTBASE in
+`clipboard-and-files.md`'s Missing.

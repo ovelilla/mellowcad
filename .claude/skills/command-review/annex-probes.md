@@ -56,6 +56,8 @@ Writing one (the traps of `console.md` hold; these are the review's):
   the owner's text from a transcript; run clipboard probes with `PROBE_JOBS=1`; a desktop COPYCLIP
   overwrites the owner's clipboard, so ask first. A Lisp command missing a function in the console
   runs with a stub defined first (`AI_SELALL`'s INITCOMMANDVERSION; Clipboard review).
+  Its paste is text's, an MTEXT's point: its refusals and its `(ssget "_I")` say nothing of an
+  object paste, which is INSERT's jig (p108–p110 and erase/p263 refuted by clipboard/d02, d04).
 - What a result is: `MPDUMP` with `-` after the command (every property, full precision);
   `(getvar "LASTPOINT")` for LASTPOINT; `QAFLAGS 2` before LIST.
 - A setting the cell needs is set inside the probe (`CECOLOR`, `-LAYER`, `_ELEVATION`,
@@ -249,6 +251,11 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   is not installed) beside the background's, which tells a translucent fill from a solid one
   (AREA's green, inquiry/d03-1). What dynamic input shows depends on the profile's DYNMODE
   features, not only its sign: probe it with DYNMODE 3 too (inquiry/d02-1 against e01-1).
+
+- COM's SendCommand turns DYNMODE negative while it runs and puts it back after: `com set` and
+  `(setvar)` do not hold it, and a command sent through COM shows no dynamic input. Set it and start
+  the command by typing (`type -text '-1\n'`: a bare `-1` is a PowerShell switch). U names a menu
+  entry showing a key with the key glued (`PasteCtrl+V GROUP`): probe one apart (Clipboard, CFD).
 
 - Read U's echo with `com hist` before any `com eval` or `get`: each writes lines of its own and
   pushes the echo out. `click … wheel -count -1` turns the wheel towards the user (a bare `-1`
