@@ -2,7 +2,11 @@
 
 ### `COPYCLIP` / `CUTCLIP` / `COPYBASE` / `PASTECLIP` / Ctrl+A · es `COPIAPP` / `CORTAPP` / `COPIARBASE` / `PEGAPP`
 
-**Implemented:** all four plus select-all; PASTECLIP asks `Specify insertion point:` (es
+**Implemented:** all four plus select-all; COPYBASE's `Specify base point:` refuses Enter and what
+is no point with `Invalid point.` and asks again (clipboard/p106, p107); COPYCLIP and COPYBASE keep
+a preselection, CUTCLIP drops it (erase/p250, clipboard/p121, p124); their `Select objects:` takes
+whole objects, CUTCLIP's sub-objects too (erase/p259, clipboard/p127); an object on a locked layer
+is found and refused, `1 was on a locked layer.` (p119); PASTECLIP asks `Specify insertion point:` (es
 `Precise punto de inserción`), Enter asking again and what is no point refused with
 `Invalid 2D point.`, as AutoCAD 2023's console does; `Clipboard` port with a session fallback, table
 reconciliation across drawings (destination name wins; an array's anonymous block lands under a

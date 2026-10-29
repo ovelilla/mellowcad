@@ -12,6 +12,16 @@ import {
 } from "../../domain/entities"
 import { createTextStyle } from "../../domain/textStyles"
 import { parseClipboard } from "../../serialization/clipboardFile"
+import { es } from "../../locales/es"
+
+/** Each answer typed at the command line and confirmed, as the console types it. */
+function answer(cad: ReturnType<typeof createHarness>, ...texts: string[]) {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
 
 /** Copies `ids` through COPYCLIP, the noun→verb way a user with a selection does. */
 function copy(cad: ReturnType<typeof createHarness>, ...ids: string[]) {
@@ -169,6 +179,120 @@ describe("COPYBASE", () => {
       .entities()
       .find((entity) => entity.id !== "L1") as LineEntity
     expect(pasted.start).toBeCloseToPoint(p(-100, 0))
+  })
+})
+
+// AutoCAD 2027's console, probes clipboard/p101–p127.
+describe("the clipboard copies at the console", () => {
+  const two = () => [
+    lineOf(p(0, 0), p(100, 0), { id: "L1" }),
+    lineOf(p(0, 50), p(100, 50), { id: "L2" }),
+  ]
+
+  it("refuses what is no point at COPYBASE's base point (p106)", () => {
+    const cad = answer(createHarness({ entities: two() }), "_COPYBASE", "FOO")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify base point: FOO",
+      "Invalid point.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe("COPYBASE Specify base point:")
+  })
+
+  it("refuses Enter at COPYBASE's base point and asks again (p107)", () => {
+    const cad = answer(createHarness({ entities: two() }), "_COPYBASE", "")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify base point:",
+      "Invalid point.",
+    ])
+    expect(cad.activeToolId()).toBe("copybase")
+    expect(cad.state().commandLine.prompt).toBe("COPYBASE Specify base point:")
+
+    cad.enter()
+    expect(cad.commandLog().at(-1)).toBe("Invalid point.")
+    expect(cad.activeToolId()).toBe("copybase")
+  })
+
+  it("leaves LASTPOINT at COPYBASE's base point (p106)", () => {
+    const cad = answer(
+      createHarness({ entities: two() }),
+      "_COPYBASE",
+      "10,10",
+      "_L",
+      "",
+      "ID",
+      "@"
+    )
+    expect(cad.commandLog().at(-1)).toBe(
+      " X = 10.00     Y = 10.00     Z = 0.00"
+    )
+  })
+
+  it("keeps COPYBASE's preselection (p121)", () => {
+    const cad = createHarness({ entities: two() })
+    cad.select("L1", "L2")
+    answer(cad, "_COPYBASE", "0,0")
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Specify base point: 0,0",
+      "2 found",
+    ])
+    expect(cad.selectedIds()).toEqual(["L1", "L2"])
+  })
+
+  it("takes whole objects at COPYBASE's Select objects (p127)", () => {
+    const cad = answer(
+      createHarness({ entities: two() }),
+      "_COPYBASE",
+      "0,0",
+      "FOO"
+    )
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "*Invalid selection*",
+      "Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle",
+    ])
+  })
+
+  it("copies and cuts nothing on a locked layer (p119)", () => {
+    for (const command of ["_COPYCLIP", "_CUTCLIP"]) {
+      const clipboard = new MemoryClipboard()
+      const cad = createHarness({ entities: two(), clipboard })
+      cad.runtime.updateLayer("0", { locked: true })
+      answer(cad, command, "_L")
+      expect(cad.commandLog().slice(-2)).toEqual([
+        "1 found",
+        "1 was on a locked layer.",
+      ])
+      answer(cad, "")
+      expect(cad.activeToolId()).toBe("select")
+      expect(cad.entityCount).toBe(2)
+      expect(clipboard.writes).toEqual([])
+    }
+  })
+
+  it("names each command at U, in Spanish too (p101–p103)", () => {
+    for (const command of ["COPYCLIP", "CUTCLIP", "COPYBASE"]) {
+      const cad = createHarness({ entities: two() })
+      const base = command === "COPYBASE" ? ["0,0"] : []
+      answer(cad, `_${command}`, ...base, "_L", "", "_U")
+      expect(cad.commandLog().at(-1)).toBe(command)
+      expect(cad.entityCount).toBe(2)
+    }
+    const cad = createHarness({ entities: two(), locale: es })
+    answer(cad, "_COPYCLIP", "_L", "", "_U")
+    expect(cad.commandLog().at(-1)).toBe("COPIAPP")
+  })
+
+  it("cuts a preselection, drops it, and U brings the object back unselected (p124, p125)", () => {
+    const cad = createHarness({ entities: two() })
+    cad.select("L1")
+    answer(cad, "_CUTCLIP")
+    expect(cad.commandLog().slice(-2)).toEqual(["CUTCLIP", "1 found"])
+    expect(cad.selectedIds()).toEqual([])
+    expect(cad.entityCount).toBe(1)
+
+    answer(cad, "_U")
+    expect(cad.commandLog().at(-1)).toBe("CUTCLIP")
+    expect(cad.entityCount).toBe(2)
+    expect(cad.selectedIds()).toEqual([])
   })
 })
 

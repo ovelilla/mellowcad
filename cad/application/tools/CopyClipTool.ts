@@ -59,6 +59,13 @@ export class CopyClipTool extends SelectionActionTool {
       ],
       commit: () => {},
       commitRaw: (commitCtx) => {
+        // WHY Enter is refused and asked again: the base point takes none
+        // (clipboard/p107); text that is no point goes to the runtime's
+        // refusal, `Invalid point.` (p106).
+        if (!commitCtx.dynamicInput.hasTypedText()) {
+          commitCtx.report(commitCtx.text.message("invalidPoint"), "error")
+          return true
+        }
         const point = parseCoordinate(
           commitCtx.dynamicInput.getText("base").trim(),
           {
@@ -68,7 +75,8 @@ export class CopyClipTool extends SelectionActionTool {
             elevation: commitCtx.elevation,
           }
         )
-        if (point) this.setBase(point, commitCtx)
+        if (!point) return false
+        this.setBase(point, commitCtx)
         return true
       },
     })
@@ -105,19 +113,20 @@ export class CopyClipTool extends SelectionActionTool {
     return this.awaitingBase ? null : super.takes()
   }
 
-  // WHY COPYCLIP's whole and CUTCLIP's with sub-objects: their refusals list
-  // so (erase/p259). COPYBASE's was not probed: it keeps the default.
+  // WHY COPYCLIP's and COPYBASE's whole, CUTCLIP's with sub-objects: their
+  // refusals list so (erase/p259, clipboard/p127).
   protected selectionInput(): QuestionInput {
-    return this.mode === "copy" ? "wholeObjects" : super.selectionInput()
+    return this.mode === "cut" ? super.selectionInput() : "wholeObjects"
   }
 
   commandOptions(): readonly CommandOption[] {
     return this.awaitingBase ? [] : super.commandOptions()
   }
 
-  // WHY COPYCLIP's preselection alone: `(ssget "_I")` still holds it after
-  // the copy (erase/p250), and is nil after a set picked at its prompt
-  // (p263) and after other commands. COPYBASE's was not probed.
+  // WHY COPYCLIP's and COPYBASE's preselection alone: `(ssget "_I")` still
+  // holds it after the copy (erase/p250, clipboard/p121), and is nil after a
+  // set picked at its prompt (erase/p263), after CUTCLIP (clipboard/p124) and
+  // after other commands.
   keepsSelection(): boolean {
     return this.keeps
   }
@@ -128,7 +137,7 @@ export class CopyClipTool extends SelectionActionTool {
 
   protected run(entities: readonly Entity[], ctx: ToolContext): void {
     ctx.copyToClipboard(entities, this.base ?? lowerLeft(entities, ctx))
-    this.keeps = this.mode === "copy" && this.preselected
+    this.keeps = this.mode !== "cut" && this.preselected
     if (this.mode !== "cut") return
     ctx.execute(new RemoveEntitiesCommand(entities.map((entity) => entity.id)))
     ctx.selection.clear()

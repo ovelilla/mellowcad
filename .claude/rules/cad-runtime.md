@@ -248,7 +248,7 @@ mid-command joins it; at `Command:` U names it by where (`CadRuntime.outside`, `
 removed back at its index (`placesOf`, `restoreMany`): `ERASE _L` reads that order (pieces/p264).
 
 **A command's end or Escape drops the selection** (`switchTool`, erase/p249): a tool never selects
-its result; one whose set AutoCAD keeps says `keepsSelection()` (COPYCLIP, PASTECLIP). What a tool
+its result; one whose set AutoCAD keeps says `keepsSelection()` (COPYCLIP, COPYBASE, PASTECLIP). What a tool
 erases leaves the Previous set for good (`executeTool`).
 
 Settings are split. What AutoCAD's U undoes goes through a command
