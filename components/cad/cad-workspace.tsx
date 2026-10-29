@@ -3,10 +3,11 @@
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
 
 import {
+  type CadEngine,
   createLocalStorageDrawingStore,
   type EngineLocale,
 } from "@mellowcad/engine"
-import { useCadEngine } from "@mellowcad/react"
+import { CadCanvas, useEditorState } from "@mellowcad/react"
 import { DirectionProvider } from "@/components/ui/direction"
 import { PortalContainerProvider } from "@/components/ui/portal-container"
 import { cn } from "@/lib/utils"
@@ -108,14 +109,8 @@ function Workspace({
   dir,
 }: WorkspaceProps & { lang: string; dir: "ltr" | "rtl" }) {
   const paletteKey = layoutStorage.palette
-  // The editor is the page: it keeps this device's drawing and takes every
-  // key, which the engine leaves to whoever asks.
-  const { canvasRef, engine, state } = useCadEngine({
-    store: createLocalStorageDrawingStore,
-    scope: "document",
-    locale: engineLocale,
-    paletteOpen: () => paletteLayoutAtLoad(paletteKey).open,
-  })
+  const [engine, setEngine] = useState<CadEngine | null>(null)
+  const state = useEditorState(engine)
   const t = useEditorText("Workspace")
   const input = useEditorText("DynamicInput")
   const [portal, setPortal] = useState<HTMLDivElement | null>(null)
@@ -214,9 +209,15 @@ function Workspace({
             className="relative min-h-0 min-w-0 bg-[#0b0f14] [grid-area:canvas]"
             style={sheet && { viewTransitionName: sheet.name }}
           >
-            {/* The drawing is geometry: it never mirrors, whatever the page. */}
-            <canvas
-              ref={canvasRef}
+            {/* The editor is the page: it keeps this device's drawing and
+            takes every key, which the engine leaves to whoever asks. The
+            drawing is geometry: it never mirrors, whatever the page. */}
+            <CadCanvas
+              store={createLocalStorageDrawingStore}
+              scope="document"
+              locale={engineLocale}
+              paletteOpen={() => paletteLayoutAtLoad(paletteKey).open}
+              onEngine={setEngine}
               dir="ltr"
               className="absolute inset-0 h-full w-full touch-none outline-none"
               aria-label={t("canvas")}

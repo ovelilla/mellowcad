@@ -14,7 +14,7 @@ React is a **dumb presentation shell**. Components read `EngineState` and call `
 methods; they never contain CAD logic, geometry or drawing decisions. Import from
 `@mellowcad/engine` only. The landing has its own rules (`marketing.md`).
 
-**The chrome renders from `EditorState`** (what `useCadEngine` returns): the engine's state less
+**The chrome renders from `EditorState`** (what `useEditorState(engine)` returns): the engine's state less
 `POINTER_KEYS`, which every pointer move changes. A pointer field is read with
 `useEngineSelector(engine, select)` in the smallest component that shows it (`Coordinates`,
 `DynamicInput`). Passing the whole state down again, or reading a pointer field off it, puts back a
@@ -45,7 +45,7 @@ after mount), each under the host's key (`layoutStorage`; none, not kept), the s
   `state.tools`; a key combination is `Keys` (keys have local names — `Supr` in Spanish); a
   function key is literal.
 - The editor speaks the page's language: `CadWorkspace` takes the catalogs the page loaded
-  (`editorLocale`, `engineLocale`) and `useCadEngine({ locale })` hands the engine its own.
+  (`editorLocale`, `engineLocale`) and `CadCanvas`'s `locale` hands the engine its own.
 - **What speaks the command language carries `lang={state.commandLine.lang}`** — the command line's
   lines, prompt and input, the dynamic input, a prompt option in a menu — so a screen reader reads
   `Command: LINE` in English on an Arabic page. Not a container whose `aria-label` is in the page's
@@ -209,7 +209,7 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
   grows into and the first view is centred in. A zone that resizes with the work makes the drawing
   jump. A size this device remembers is decided by the `<head>` script on the editor's root
   as it is parsed (`data-palette`, `--palette-width`) and handed to the engine at build
-  (`useCadEngine({ paletteOpen })`), never after mount. Clean Screen is never on at the first paint (AutoCAD does not save it).
+  (`CadCanvas`'s `paletteOpen`), never after mount. Clean Screen is never on at the first paint (AutoCAD does not save it).
 - **The canvas cell** alone carries the host's `sheet` (`SHEET_TRANSITION`) and holds what is
   placed in the canvas's pixels (the dynamic input, at `state.dynamicInput.screen`). A popup
   anchored there is portalled and placed in the viewport, so its virtual anchor converts with

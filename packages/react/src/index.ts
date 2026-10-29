@@ -1,6 +1,6 @@
+export { CadCanvas, type CadCanvasProps } from "./CadCanvas"
 export {
   type EditorState,
-  type UseCadEngineOptions,
-  useCadEngine,
+  useEditorState,
   useEngineSelector,
-} from "./useCadEngine"
+} from "./useEditorState"
