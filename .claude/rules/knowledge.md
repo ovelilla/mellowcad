@@ -31,8 +31,8 @@ paths:
 
 ## What `test/knowledge.test.ts` checks
 
-It runs in `npm test`, so in the commit gate, over `AGENTS.md`, `README.md`, `cad/README.md`,
-the rules, the skills and `docs/`:
+It runs in `npm test`, so in the commit gate, over `AGENTS.md`, `README.md`, the packages'
+READMEs, the rules, the skills and `docs/`:
 
 - **Every path, `npm run` script and symbol in a code span exists** — symbols in the repo, in
   TypeScript's DOM and ES libraries, or in a package of the rule's header (not checked in

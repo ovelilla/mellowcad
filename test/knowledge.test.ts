@@ -34,7 +34,7 @@ const ABSENT_CITATIONS: Record<string, { reason: string; values: string[] }> = {
 
 const ALWAYS_LOADED = ["AGENTS.md"]
 const SOURCE_PATTERN =
-  /^(AGENTS\.md|README\.md|cad\/README\.md|\.claude\/(rules\/.+|skills\/[^/]+\/.+)\.md|docs\/.+\.md)$/
+  /^(AGENTS\.md|README\.md|cad\/README\.md|packages\/[^/]+\/README\.md|\.claude\/(rules\/.+|skills\/[^/]+\/.+)\.md|docs\/.+\.md)$/
 // The coverage and the glossary cite AutoCAD's names in code spans, which
 // read as symbols; only their paths and scripts are checked.
 const SYMBOL_SOURCE_PATTERN = /^(?!docs\/)/

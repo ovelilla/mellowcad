@@ -1,4 +1,4 @@
-import { readdirSync, readFileSync } from "node:fs"
+import { existsSync, readdirSync, readFileSync } from "node:fs"
 import path from "node:path"
 import { describe, expect, it } from "vitest"
 
@@ -164,5 +164,106 @@ describe("the examples", () => {
       }
     }
     expect(stale).toEqual([])
+  })
+})
+
+/** Each entry point's exports, from a package's api.md. */
+function exportsOf(dir: string, name: string): Map<string, Set<string>> {
+  const entries = new Map<string, Set<string>>()
+  let names: Set<string> | null = null
+  for (const line of readFileSync(path.join(ROOT, dir, "api.md"), "utf8").split(
+    "\n"
+  )) {
+    const heading = line.match(/^## (.+)$/)?.[1]
+    if (heading !== undefined) {
+      names = heading.startsWith(".") ? new Set() : null
+      if (names)
+        entries.set(
+          heading === "." ? name : `${name}/${heading.slice(2)}`,
+          names
+        )
+      continue
+    }
+    const exported = line.match(/^export (?:type )?\{ (\w+) \}$/)?.[1]
+    if (names && exported) names.add(exported)
+  }
+  return entries
+}
+
+const README_IMPORT =
+  /import\s+(?:type\s+)?(?:\{([^}]*)\}\s*from\s*)?["'](@mellowcad\/[^"']+)["']/g
+const FENCED = /^```(\w+)(?: (\S+))?\n([\s\S]*?)^```$/gm
+
+describe("the READMEs", () => {
+  const entries = new Map(
+    ALL.flatMap(({ dir, name }) => [...exportsOf(dir, name)])
+  )
+  const reports = ALL.map(({ dir }) =>
+    readFileSync(path.join(ROOT, dir, "api.md"), "utf8")
+  ).join("\n")
+  const readmes = ALL.map(({ dir }) => `${dir}/README.md`)
+
+  it("are one per package", () => {
+    expect(
+      readmes.filter((file) => !existsSync(path.join(ROOT, file)))
+    ).toEqual([])
+  })
+
+  it("import only what each entry point exports", () => {
+    const stale: string[] = []
+    for (const file of readmes) {
+      const text = readFileSync(path.join(ROOT, file), "utf8")
+      for (const [, , , code] of text.matchAll(FENCED)) {
+        for (const [, names = "", specifier] of code.matchAll(README_IMPORT)) {
+          const exported = entries.get(specifier)
+          if (!exported) {
+            stale.push(`${file}: ${specifier}`)
+            continue
+          }
+          for (const name of names.split(",")) {
+            const imported = name
+              .replace(/^\s*type\s+/, "")
+              .split(/\s+as\s+/)[0]
+              .trim()
+            if (imported && !exported.has(imported))
+              stale.push(`${file}: ${imported} from ${specifier}`)
+          }
+        }
+      }
+    }
+    expect(stale).toEqual([])
+  })
+
+  // A name in prose (`CadEditor`, `PieceProps`) is one of the API reports'.
+  it("name in their prose only what the API reports hold", () => {
+    const words = new Set(reports.match(/[\w$]+/g))
+    const stale: string[] = []
+    for (const file of readmes) {
+      const prose = readFileSync(path.join(ROOT, file), "utf8").replace(
+        FENCED,
+        ""
+      )
+      for (const [, span] of prose.matchAll(/`([^`]+)`/g)) {
+        const specifier = span.match(/^@mellowcad\/[\w/.-]+$/)?.[0]
+        if (specifier && !entries.has(specifier)) stale.push(`${file}: ${span}`)
+        for (const name of span.match(/\b[A-Z][a-z]\w*[A-Z]\w*\b/g) ?? [])
+          if (!words.has(name)) stale.push(`${file}: ${name}`)
+      }
+    }
+    expect(stale).toEqual([])
+  })
+
+  it("copy an example's file word for word where they name it", () => {
+    const drift: string[] = []
+    for (const file of readmes) {
+      const text = readFileSync(path.join(ROOT, file), "utf8")
+      for (const [, , source, code] of text.matchAll(FENCED)) {
+        if (source === undefined) continue
+        const full = path.join(ROOT, source)
+        if (!existsSync(full) || readFileSync(full, "utf8") !== code)
+          drift.push(`${file}: ${source}`)
+      }
+    }
+    expect(drift).toEqual([])
   })
 })

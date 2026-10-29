@@ -16,6 +16,7 @@ paths:
   - "scripts/packages/**"
   - "scripts/editor/**"
   - "packages/editor/src/styles.css"
+  - "packages/*/README.md"
   - "examples/**"
 ---
 
@@ -81,6 +82,10 @@ instance; so is `@mellowcad/react` of the editor.
   (the others, `vite` and `@vitejs/plugin-react`, move in deps-review). The root `tsc` checks
   them against the source, save their `vite.config.ts`; the site's Tailwind skips them
   (`globals.css`), or their classes would ship in `/draw`.
+- **A package's README is what an integrator reads** (`cad/README.md`, `packages/*/README.md`):
+  `test/packages.test.ts` fails on an import or a PascalCase name in it that no `api.md` has,
+  and on a block whose info string names an example's file
+  (`tsx examples/editor-vite/src/main.tsx`) that is not that file word for word.
 - **`@mellowcad/editor` is built with the React Compiler**, as the site compiles it (Next's
   defaults): `@rolldown/plugin-babel` runs `babel-plugin-react-compiler` before Oxc, and its
   `check` passes `--compiled`, which fails a `dist` module with JSX that does not import

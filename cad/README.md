@@ -77,6 +77,9 @@ That is [`examples/engine-node`](../examples/engine-node), run with `node main.t
 declarations name DOM types (`CadEngine` takes a canvas): a TypeScript project that checks them
 (`skipLibCheck` off) has `"dom"` in its `lib`, even in Node.
 
+React bindings are [`@mellowcad/react`](../packages/react/README.md), and the whole editor is
+[`@mellowcad/editor`](../packages/editor/README.md).
+
 ## Languages
 
 ### Two languages in one
