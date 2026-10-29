@@ -1517,6 +1517,9 @@ describe("engine state snapshot", () => {
 
     expect(cad.state()).not.toBe(before)
     expect(cad.state().cursorUcs).toBeCloseToPoint(p(37, -12))
+    expect(cad.state().coordinates).toBe("37.00, -12.00, 0.00")
+    cad.runtime.setDocumentPrecision(4)
+    expect(cad.state().coordinates).toBe("37.0000, -12.0000, 0.0000")
   })
 
   it("produces a new identity when the model changes", () => {
@@ -1592,6 +1595,7 @@ describe("host interaction", () => {
 
     expect(cad.host.cursors.at(-1)).toBe("default")
     expect(cad.state().cursorUcs).toBeNull()
+    expect(cad.state().coordinates).toBeNull()
   })
 
   it("stops scheduling work once disposed", () => {

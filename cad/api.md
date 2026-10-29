@@ -616,6 +616,7 @@ export interface EngineState {
         readonly named: readonly string[];
     };
     readonly cursorUcs: Vec3 | null;
+    readonly coordinates: string | null;
     readonly snap: {
         type: SnapType;
         point: Vec3;

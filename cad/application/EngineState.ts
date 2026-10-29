@@ -497,6 +497,11 @@ export interface EngineState {
    * elevation plane (AutoCAD's COORDS shows X, Y and Z).
    */
   readonly cursorUcs: Vec3 | null
+  /**
+   * `cursorUcs` as the status bar writes it, `1.5000, 2.0039, 0.0000`: each
+   * value at LUPREC, a zero unsigned (Absolute, COORDS 1).
+   */
+  readonly coordinates: string | null
   readonly snap: { type: SnapType; point: Vec3 } | null
   readonly snapActive: boolean
   readonly snapEnabled: Readonly<Record<SnapType, boolean>>

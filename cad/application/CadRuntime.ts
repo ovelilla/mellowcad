@@ -7024,6 +7024,12 @@ export class CadRuntime extends Observable {
     const options = this.offeredOptions()
     const marked = this.optionList?.marked ?? null
     const prompt = this.currentPrompt()
+    const cursorUcs = this.cursorWorld
+      ? worldPointToUcs(
+          this.frame.ucs,
+          withZ(this.cursorWorld, this.workPlaneZ())
+        )
+      : null
     return {
       activeToolId: this.activeTool.id,
       tools: this.listTools().map((t) => ({
@@ -7043,11 +7049,11 @@ export class CadRuntime extends Observable {
         name: settings.ucsName,
         named: settings.namedUcs.map((entry) => entry.name),
       },
-      cursorUcs: this.cursorWorld
-        ? worldPointToUcs(
-            this.frame.ucs,
-            withZ(this.cursorWorld, this.workPlaneZ())
-          )
+      cursorUcs,
+      coordinates: cursorUcs
+        ? [cursorUcs.x, cursorUcs.y, cursorUcs.z]
+            .map((value) => formatLength(value, settings))
+            .join(", ")
         : null,
       snap: this.currentSnap
         ? {

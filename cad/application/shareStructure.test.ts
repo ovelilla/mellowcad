@@ -50,7 +50,7 @@ describe("the engine's state snapshot", () => {
     )
     // The editor re-renders from everything else on every change: a new
     // reference there would re-render the whole of it as the cursor moves.
-    expect(changed.sort()).toEqual(["cursorUcs", "dynamicInput"])
+    expect(changed.sort()).toEqual(["coordinates", "cursorUcs", "dynamicInput"])
   })
 
   it("is not announced again when nothing in it changed", () => {

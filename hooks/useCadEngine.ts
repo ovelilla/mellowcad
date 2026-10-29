@@ -19,7 +19,7 @@ import {
  * {@link useCadEngine} leaves it out of the state it re-renders with; the two
  * components that show it read it with {@link useEngineSelector}.
  */
-const POINTER_KEYS = ["cursorUcs", "dynamicInput"] as const
+const POINTER_KEYS = ["cursorUcs", "coordinates", "dynamicInput"] as const
 
 /** The engine's state as the editor's chrome renders it. */
 export type EditorState = Omit<EngineState, (typeof POINTER_KEYS)[number]>

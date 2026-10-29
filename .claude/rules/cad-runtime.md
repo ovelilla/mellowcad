@@ -278,7 +278,7 @@ the answer.
 The single UI contract, built in `buildState` on model emits and cached (`useSyncExternalStore`
 needs referential stability). `invalidateState` shares it with the last snapshot
 (`shareStructure`): a part a change left equal keeps its identity, a rebuild that changed nothing is
-not announced, and a pointer move changes only `cursorUcs` and `dynamicInput`
+not announced, and a pointer move changes only what follows the cursor
 (`shareStructure.test.ts`). Anything in `buildState` that is not a plain object or array (a `Map`, a
 class instance, a fresh closure) is new on every rebuild and breaks the sharing; a field that moves
 with the cursor is also declared to the host's hook (`ui.md`). Rendering is on demand

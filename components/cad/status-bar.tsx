@@ -111,11 +111,7 @@ export function StatusBar({
   return (
     <TooltipProvider>
       {shows("coordinates") && (
-        <Coordinates
-          engine={engine}
-          precision={state.documentPrecision}
-          label={names.coordinates}
-        />
+        <Coordinates engine={engine} label={names.coordinates} />
       )}
 
       <div className="ms-auto flex shrink-0 items-center gap-0.5">
@@ -322,30 +318,18 @@ export function StatusBar({
 }
 
 /**
- * The cursor's coordinates in the current UCS, as AutoCAD writes them
- * (`1.5000, 2.0039, 0.0000`), at the drawing's precision. A technical value:
- * it reads left to right in every page.
+ * The cursor's coordinates in the current UCS, as the engine writes them. A
+ * technical value: it reads left to right in every page.
  */
-function Coordinates({
-  engine,
-  precision,
-  label,
-}: {
-  engine: CadEngine
-  precision: number
-  label: string
-}) {
-  const cursor = useEngineSelector(engine, (state) => state.cursorUcs)
-  const value = (n: number) => n.toFixed(precision)
+function Coordinates({ engine, label }: { engine: CadEngine; label: string }) {
+  const coordinates = useEngineSelector(engine, (state) => state.coordinates)
   return (
     <span
       dir="ltr"
       title={label}
       className="truncate px-2 font-mono text-foreground tabular-nums"
     >
-      {cursor
-        ? `${value(cursor.x)}, ${value(cursor.y)}, ${value(cursor.z)}`
-        : "—"}
+      {coordinates ?? "—"}
     </span>
   )
 }
