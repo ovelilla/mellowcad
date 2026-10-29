@@ -1,80 +1,17 @@
 import { readFileSync, readdirSync } from "node:fs"
 import { join } from "node:path"
-import {
-  type MessageFormatElement,
-  isArgumentElement,
-  isDateElement,
-  isNumberElement,
-  isPluralElement,
-  isSelectElement,
-  isTagElement,
-  isTimeElement,
-  parse,
-} from "@formatjs/icu-messageformat-parser"
+import { parse } from "@formatjs/icu-messageformat-parser"
 import { describe, expect, it } from "vitest"
 
+import { editorTags, readEditorCatalog } from "../scripts/locales/editor"
+import { type Tree, flatten, plurals, signature } from "../scripts/locales/icu"
 import { mergeMessages } from "./messages"
 import { LOCALE_STATUS, routing } from "./routing"
-
-type Tree = { readonly [key: string]: Tree | string }
 
 const MESSAGES_DIR = join(__dirname, "..", "messages")
 
 function catalog(locale: string): Tree {
   return JSON.parse(readFileSync(join(MESSAGES_DIR, `${locale}.json`), "utf8"))
-}
-
-/** Every message of a catalog, by its dotted key. */
-function flatten(tree: Tree, path = ""): Map<string, string> {
-  const out = new Map<string, string>()
-  for (const [key, value] of Object.entries(tree)) {
-    const at = path === "" ? key : `${path}.${key}`
-    if (typeof value === "string") out.set(at, value)
-    else for (const entry of flatten(value, at)) out.set(...entry)
-  }
-  return out
-}
-
-/** What a message takes: each argument with its type, and each rich tag. */
-function signature(elements: MessageFormatElement[]): string[] {
-  return elements
-    .flatMap((element): string[] => {
-      if (isArgumentElement(element)) return [element.value]
-      if (isNumberElement(element)) return [`${element.value}:number`]
-      if (isDateElement(element) || isTimeElement(element)) {
-        return [`${element.value}:date`]
-      }
-      if (isPluralElement(element) || isSelectElement(element)) {
-        return [
-          // A plural takes a number, like `{n, number}`: Arabic's six forms
-          // agree with a count that English only prints.
-          `${element.value}:${isPluralElement(element) ? "number" : "select"}`,
-          ...Object.values(element.options).flatMap((option) =>
-            signature(option.value)
-          ),
-        ]
-      }
-      if (isTagElement(element)) {
-        return [`<${element.value}>`, ...signature(element.children)]
-      }
-      return []
-    })
-    .filter((entry, index, all) => all.indexOf(entry) === index)
-    .sort()
-}
-
-function plurals(elements: MessageFormatElement[]): string[][] {
-  return elements.flatMap((element) => {
-    if (isPluralElement(element) || isSelectElement(element)) {
-      return [
-        ...(isPluralElement(element) ? [Object.keys(element.options)] : []),
-        ...Object.values(element.options).flatMap((option) =>
-          plurals(option.value)
-        ),
-      ]
-    }
-    return isTagElement(element) ? plurals(element.children) : []
-  })
 }
 
 const english = flatten(catalog(routing.defaultLocale))
@@ -125,6 +62,24 @@ describe("the app's message catalogs", () => {
   })
 })
 
+// The editor's own catalog (components/cad/locales/) is checked beside it;
+// which languages the site needs it in is the site's to say.
+describe("the editor's catalogs, for the site", () => {
+  it("exist for exactly the routed languages", () => {
+    expect(editorTags().sort()).toEqual([...routing.locales].sort())
+  })
+
+  it("are complete in every live or translated language", () => {
+    const keys = [...flatten(readEditorCatalog(routing.defaultLocale)).keys()]
+    for (const locale of TRANSLATED) {
+      expect(
+        [...flatten(readEditorCatalog(locale)).keys()].sort(),
+        locale
+      ).toEqual(keys.sort())
+    }
+  })
+})
+
 describe("mergeMessages", () => {
   it("lays a partial language over English key by key", () => {
     const merged = mergeMessages(
@@ -152,7 +107,7 @@ describe("the editor", () => {
 
   // Only `Editor.*` reaches the browser (app/[locale]/(app)/layout.tsx).
   it("reads only its own namespace", () => {
-    for (const file of readdirSync(dir)) {
+    for (const file of readdirSync(dir).filter((f) => f.endsWith(".tsx"))) {
       const source = readFileSync(join(dir, file), "utf8")
       for (const [, namespace] of source.matchAll(
         /useTranslations\(\s*"([^"]*)"/g

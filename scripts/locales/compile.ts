@@ -65,7 +65,7 @@ function shippedEnglish(source: Record<string, Json>): Record<string, Json> {
   return copy
 }
 
-function compileTree(node: Json, path: string): unknown {
+export function compileTree(node: Json, path: string): unknown {
   if (typeof node === "string") {
     try {
       return compile(node)

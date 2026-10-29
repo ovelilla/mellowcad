@@ -34,6 +34,8 @@ export default defineConfig({
       // The URL scheme, the message catalogs and the helpers that read them.
       "i18n/**/*.test.ts",
       "lib/**/*.test.ts",
+      // The editor's catalog.
+      "components/**/*.test.ts",
     ],
     setupFiles: ["./test/setup.ts"],
     server: {

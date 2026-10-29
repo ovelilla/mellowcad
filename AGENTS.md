@@ -21,7 +21,7 @@ engine; Next.js/React is only a presentation shell around it.
 | Types      | `npm run typecheck`                                            |
 | Lint       | `npm run lint`                                                 |
 | Tests      | `npm test` / `npm run test:watch` / `npm run test:coverage`    |
-| Catalogs   | `npm run locales` after editing `cad/locales/<tag>.json`       |
+| Catalogs   | `npm run locales` after editing a `locales/<tag>.json`         |
 | Knowledge  | `npm run knowledge` (in `npm test`; prints the rules per file) |
 
 `typecheck` + the engine's build and check + `lint` + `format:check` + `test:coverage` must

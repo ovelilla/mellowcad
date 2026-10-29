@@ -22,7 +22,7 @@
     "test:watch": "vitest",
     "test:coverage": "vitest run --coverage",
     "knowledge": "KNOWLEDGE_STATS=1 vitest run test/knowledge.test.ts --reporter=verbose",
-    "locales": "node scripts/locales/compile.ts"
+    "locales": "node scripts/locales/compile.ts && node scripts/locales/editor.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
