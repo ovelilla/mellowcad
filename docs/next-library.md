@@ -1,6 +1,6 @@
 # MellowCAD como librería — brief
 
-> **Estado:** fases 1 y 2 hechas, y la 3(a), la 3(b) y la 3(c) (2026-10-29); las demás, sin ejecutar. Sigue la convención de
+> **Estado:** fases 1, 2 y 3 hechas (2026-10-29); las demás, sin ejecutar. Sigue la convención de
 > `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El análisis completo, con el
 > inventario medido, las fuentes fechadas, el spike y el pase adversarial, está en
 > https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama local
@@ -30,9 +30,9 @@ desde el 1 de septiembre). Por eso va a npm, y el registro llega después.
 
 **La línea entre npm y la copia:** va debajo (motor o hooks) todo lo que un segundo anfitrión tendría
 que reimplementar para comportarse como AutoCAD — el formato de coordenadas de la barra de estado,
-los píxeles de grosor (`lineweightPixels` ya existe), el umbral de arrastre (3 px en
-`components/cad/view-cube.tsx`, 4 px en el motor), las respuestas de ZOOM, las teclas de la línea
-de comandos y de la entrada dinámica, la lista de POLARANG, las etiquetas de LUPREC.
+los píxeles de grosor, el umbral de arrastre del ViewCube, las respuestas de ZOOM, las teclas de la
+línea de comandos y de la entrada dinámica, la lista de POLARANG, las etiquetas de LUPREC. Desde la
+3(d) todo eso es del motor; a los hooks de `@mellowcad/react` solo les queda el cableado del DOM.
 
 ## 3. Decisiones técnicas
 
@@ -143,7 +143,34 @@ son días de sesión.
    paquete los acota o los prefija), la parte de página de `globals.css` (`color-scheme` y fondo de
    `body`, el tiempo de la transición) se queda en el sitio, y `data-mellowcad-editor` pasa a ser
    API (el script y el CSS del anfitrión lo nombran).
-   (d) La lógica de §2 baja de la línea.
+   (d) **Hecha** (6570edf, 4ce5027, 3c3c985, efb5787, d1de717, 49bec9b, 921f55f, e36269a): la
+   lógica de §2 es del motor, con sus tests en el harness. La vista previa de grosor llama a
+   `lineweightPixels`; `LENGTH_PRECISIONS` (las precisiones de LUPREC, que fijan también su rango
+   en el motor), `POLAR_ANGLE_MENU`, `EngineState.coordinates` (el texto de la barra de estado con
+   `formatLength`: el cero sin signo), `ZOOM_MENU`, `ZoomOption` y `zoom(option)` (`navigate` queda
+   para Pan y Orbit), `commandLineKey(key)` y `dynamicInputKey(field, key, modifiers)` (dicen si
+   tomaron la tecla; `CadDriver.enter`, `escape` y `arrow` pasan por la segunda, así que los 5.094
+   tests del motor recorren la ruta del cuadro), y `viewCubePress`, `viewCubeMove` y
+   `viewCubeRelease` con `ViewCubeTarget`: el motor distingue clic de arrastre. El umbral se midió
+   en AutoCAD 2027 de escritorio (view/d10): el cubo usa el rectángulo de arrastre de Windows, más
+   de 4 px en horizontal o en vertical, y orbita desde donde lo deja (antes, 3 px en redondo y desde
+   la pulsación). Sobre el dibujo el lazo empieza pasados 7 px en horizontal y 8 en vertical
+   (erase/d15), no a los 4 del motor, cuyas tres copias son ahora un `DRAG_THRESHOLD_PX` con el
+   valor de siempre y la desviación anotada en `docs/coverage/command-line.md`, para la revisión
+   de la selección. Salen de `CadEngine` los 12 métodos que ya no llama ningún anfitrión
+   (`viewCubePick`, `compassPick`, `viewCubeDrag`, `submitCommandLine`, `completeCommandLine`,
+   `recallCommand`, `setCommandHistoryOpen`, `runUndoMacro`, `commitDynamicInput`,
+   `cancelDynamicInput`, `cycleSnap`, `dynamicOptionKey`; `navigate` pierde ZOOM). Medido en el
+   navegador contra 4c1a5f2, en /draw, /es/draw y /ar/draw: las coordenadas, las teclas de los dos
+   campos, los menús de Zoom y Polar, los grosores y las precisiones dan lo mismo, y las 18
+   capturas son iguales píxel a píxel; solo cambia el cubo, como se buscaba (3 px es un clic; un
+   arrastre de 12 px gira lo de 7). Lo que hereda la fase 4: los hooks de react se quedan en el
+   cableado (`preventDefault`, Command como Ctrl, el foco tras un Tab, la captura del puntero del
+   cubo) y el reenfoque del cuadro dinámico (`mayTakeFocus`) sigue en su componente; quedan en el
+   editor, como presentación, el orden de los grupos del menú de referencias, el de la barra de
+   estado y la paleta, y el desplazamiento del cuadro respecto al cursor. Hallado y sin tocar (el
+   aspecto no debía cambiar): en /ar/draw las etiquetas de Polar no son una isla LTR y se leen
+   `...360 ,270 ,180 ,90`.
 4. **Los paquetes React** — 4–6 días, tras la 2 y la 3. packages/react y packages/editor: tsdown
    unbundle, React Compiler (verificar cómo se integra en tsdown), un check de que cada componente
    de `dist` lleva `"use client"`, y CSS precompilado. El sitio los consume desde el fuente. Los
@@ -172,8 +199,8 @@ Bloqueos: 1 → 2 → 6; 1 → 3 → 4 → 5 → 7; la org de npm → 6; 7 → 8
 
 ## 6. Riesgos
 
-- 141 nombres públicos (eran 642), más lo que sus firmas alcanzan (`cad/api.md`): cada uno es una
-  promesa de semver.
+- 146 nombres públicos (eran 642; la 3(d) sumó cinco), más lo que sus firmas alcanzan
+  (`cad/api.md`): cada uno es una promesa de semver.
 - Tres superficies para una persona, sin CI: se publican escalonadas y el hook cubre los paquetes.
 - Dependencias nuevas que vigilar: tsdown 0.23.2 usa `rolldown-plugin-dts` en beta (0.23.3 vuelve
   a la 0.28 estable y sale de la cuarentena el 2026-10-31: la próxima revisión la toma); attw trae
