@@ -1,6 +1,6 @@
 # MellowCAD como librería — brief
 
-> **Estado:** fases 1 y 2 hechas, y la 3(a) y la 3(b) (2026-10-29); las demás, sin ejecutar. Sigue la convención de
+> **Estado:** fases 1 y 2 hechas, y la 3(a), la 3(b) y la 3(c) (2026-10-29); las demás, sin ejecutar. Sigue la convención de
 > `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El análisis completo, con el
 > inventario medido, las fuentes fechadas, el spike y el pase adversarial, está en
 > https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama local
@@ -118,9 +118,32 @@ son días de sesión.
    (c), lo de abajo; para la fase 4, el `en.d.json.ts` del catálogo del editor (Oxc no lee el tipo
    de un JSON, como en el motor), su entrada `./locales/<tag>` en `exports`, y el test de
    `components/cad/locales/` viaja con él (los dos checks del sitio, uno por idioma enrutado y
-   completo si es `live`, se quedan en `i18n/messages.test.ts`). (c) Los tokens y la variante `palette-open` quedan acotados a la raíz del
-   editor, con un contenedor para los portales, y `--active` se genera de `THEME.grip`. (d) La
-   lógica de §2 baja de la línea.
+   completo si es `live`, se quedan en `i18n/messages.test.ts`).
+   (c) **Hecha** (4e3d4ab, ac2a700, 4f0a36b): la raíz del editor es un `<div>` con
+   `data-mellowcad-editor` (`EDITOR_ROOT_ATTRIBUTE`, `lib/editor-root.ts`), `lang` y `dir`, que
+   lleva el `<main>` y, detrás, el nodo donde montan los 19 portales de Base UI
+   (`usePortalContainer`; ESLint falla en un `Portal` sin `container`). Los tokens, el
+   `color-scheme`, los estilos base (el rol de cuerpo incluido) y las reglas `:lang(ar)` viven en
+   la raíz; los roles de tipo son `@theme inline`; `--active` lo escribe la raíz desde
+   `THEME.grip` (`EDITOR_THEME_STYLE`), y `lib/editor-root.test.ts` los mantiene iguales y falla con
+   un token del editor en `:root`. El script de cabecera escribe `data-palette` y
+   `--palette-width` en la raíz con un `MutationObserver` mientras se parsea, y `palette-open` los
+   lee allí: el editor ya no escribe en `<html>` ni en `<body>`. Medido en producción contra
+   8d00796 (Chrome, /draw, /es/draw, /ar/draw a 1920 y 1280; en reposo, cada pestaña, el menú de
+   aplicación, un menú y un popover de la barra de estado, un tooltip): las 42 capturas iguales
+   píxel a píxel salvo el ruido de la barra de desplazamiento del panel (también entre dos
+   ejecuciones del antes), los mismos estilos computados en cada texto y popup, y el mismo apilado
+   sobre el lienzo, la entrada dinámica y el ViewCube; anchura y pliegue sobreviven a la recarga
+   sin desplazamiento, la caja del lienzo del primer frame es la final, con y sin JS; la
+   transición desde la landing forma el par en 36 de 36. La landing no cambia (CSS y JS idénticos
+   byte a byte); /draw sube 46 B gz de CSS, 0,2 KB gz de HTML (el script) y 1,1 KB gz de JS (los
+   17 `usePortalContainer`, memoizados por el compilador). Lo que queda: para (d), la lógica de §2,
+   sin cambios; para la fase 4, la capa `theme` de Tailwind (`--spacing`, sus fuentes y colores) y
+   su preflight siguen en `:root`, `html` y `body` (son de Tailwind: el CSS precompilado del
+   paquete los acota o los prefija), la parte de página de `globals.css` (`color-scheme` y fondo de
+   `body`, el tiempo de la transición) se queda en el sitio, y `data-mellowcad-editor` pasa a ser
+   API (el script y el CSS del anfitrión lo nombran).
+   (d) La lógica de §2 baja de la línea.
 4. **Los paquetes React** — 4–6 días, tras la 2 y la 3. packages/react y packages/editor: tsdown
    unbundle, React Compiler (verificar cómo se integra en tsdown), un check de que cada componente
    de `dist` lleva `"use client"`, y CSS precompilado. El sitio los consume desde el fuente. Los
