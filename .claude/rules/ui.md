@@ -50,8 +50,8 @@ after mount), each under the host's key (`layoutStorage`; none, not kept), the s
   lines, prompt and input, the dynamic input, a prompt option in a menu — so a screen reader reads
   `Command: LINE` in English on an Arabic page. Not a container whose `aria-label` is in the page's
   language.
-- `DirectionProvider` (`components/ui/direction.tsx`) wraps the editor with the locale's direction,
-  for Base UI's keyboard and positioning.
+- `CadWorkspace` takes the page's `dir` and sets it, with its catalog's `lang`, on its `<main>`,
+  inside the `DirectionProvider` Base UI reads for keyboard and positioning.
 
 ## Right to left
 

@@ -6,7 +6,6 @@ import { getLocale, getTranslations } from "next-intl/server"
 
 import "./globals.css"
 import { THEME } from "@mellowcad/engine"
-import { DirectionProvider } from "@/components/ui/direction"
 import { localePath } from "@/i18n/navigation"
 import { DIRECTION, OG_LOCALE, routing } from "@/i18n/routing"
 import { scriptFontVariables } from "@/lib/fonts"
@@ -112,9 +111,7 @@ export default async function AppLayout({
         <link rel="expect" href={`#${EDITOR_SHEET_ID}`} blocking="render" />
       </head>
       <body>
-        <DirectionProvider direction={DIRECTION[locale]}>
-          {children}
-        </DirectionProvider>
+        {children}
         <Analytics />
         <SpeedInsights />
       </body>

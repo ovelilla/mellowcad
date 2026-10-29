@@ -7,6 +7,7 @@ import {
   type EngineLocale,
 } from "@mellowcad/engine"
 import { useCadEngine } from "@/hooks/useCadEngine"
+import { DirectionProvider } from "@/components/ui/direction"
 import { cn } from "@/lib/utils"
 import {
   applyPaletteLayout,
@@ -76,15 +77,22 @@ interface WorkspaceProps {
  */
 export function CadWorkspace({
   editorLocale,
+  dir = "ltr",
   ...props
 }: WorkspaceProps & {
   /** The page language's catalog for the editor's own words; English when absent. */
   editorLocale?: EditorLocale
+  /** The page's direction: the shell mirrors in `rtl`, the drawing never. */
+  dir?: "ltr" | "rtl"
 }) {
+  // The editor marks its own root and tells Base UI its direction: it never
+  // writes on the host's <html>.
   return (
-    <EditorTextProvider locale={editorLocale}>
-      <Workspace {...props} />
-    </EditorTextProvider>
+    <DirectionProvider direction={dir}>
+      <EditorTextProvider locale={editorLocale}>
+        <Workspace {...props} lang={editorLocale?.tag ?? "en"} dir={dir} />
+      </EditorTextProvider>
+    </DirectionProvider>
   )
 }
 
@@ -94,7 +102,9 @@ function Workspace({
   languages,
   layoutStorage = {},
   sheet,
-}: WorkspaceProps) {
+  lang,
+  dir,
+}: WorkspaceProps & { lang: string; dir: "ltr" | "rtl" }) {
   const paletteKey = layoutStorage.palette
   // The editor is the page: it keeps this device's drawing and takes every
   // key, which the engine leaves to whoever asks.
@@ -158,7 +168,11 @@ function Workspace({
   // The editor is the page's main content: a landmark, so every control on
   // it sits in one (axe's region rule).
   return (
-    <main className="grid h-svh w-full grid-cols-[auto_minmax(0,1fr)_auto] grid-rows-[auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'top_top_top'_'tools_canvas_panel'_'command_command_command'_'status_status_status']">
+    <main
+      lang={lang}
+      dir={dir}
+      className="grid h-svh w-full grid-cols-[auto_minmax(0,1fr)_auto] grid-rows-[auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'top_top_top'_'tools_canvas_panel'_'command_command_command'_'status_status_status']"
+    >
       <div className="box-content flex h-9 min-w-0 items-center gap-1 border-b px-1 [grid-area:top]">
         {ready && (
           <TopBar
