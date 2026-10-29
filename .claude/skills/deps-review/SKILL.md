@@ -85,7 +85,7 @@ a new script: read it (`npm install-scripts ls`, then the script in `node_module
 
 ## 5. Verify
 
-- Always the gate (`.githooks/pre-commit`): typecheck, the engine package's build and check,
+- Always the gate (`.githooks/pre-commit`): typecheck, the packages' build and check,
   lint, format and `npm run test:coverage`.
 - Next, React, next-intl, Base UI, Tailwind, lucide or the PostCSS chain: also `npm run build`
   and a look at `/draw` and `/` in each language (skill `browser-verify`).

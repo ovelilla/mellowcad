@@ -1,6 +1,7 @@
 "use client"
 
 import {
+  type RefObject,
   useCallback,
   useEffect,
   useRef,
@@ -31,7 +32,7 @@ export interface UseCadEngineOptions {
    * What the engine may take keys from; see `CadEngineOptions.scope`. An
    * element by its ref, since it exists only once mounted.
    */
-  readonly scope?: React.RefObject<HTMLElement | null> | "document"
+  readonly scope?: RefObject<HTMLElement | null> | "document"
   /** The engine's language; English when absent. */
   readonly locale?: EngineLocale
   /**
@@ -54,7 +55,7 @@ export interface UseCadEngineOptions {
  * the engine is built — like the engine's own, they are not reactive.
  */
 export function useCadEngine(options: UseCadEngineOptions = {}): {
-  canvasRef: React.RefObject<HTMLCanvasElement | null>
+  canvasRef: RefObject<HTMLCanvasElement | null>
   engine: CadEngine | null
   state: EditorState | null
 } {

@@ -69,13 +69,13 @@ Si se instala otra versión, se indica su ruta en la variable `ACCORE`.
 
 ### Qué se regenera solo (no hace falta copiarlo)
 
-| Carpeta / archivo                       | Se regenera con                     |
-| --------------------------------------- | ----------------------------------- |
-| `node_modules/`                         | `npm ci`                            |
-| `.next/`                                | `npm run dev` / `npm run build`     |
-| `cad/dist/`                             | `npm run build -w cad` (el hook)    |
-| `coverage/`                             | `npm run test:coverage`             |
-| `tsconfig.tsbuildinfo`, `next-env.d.ts` | `npm run typecheck` / `npm run dev` |
+| Carpeta / archivo                       | Se regenera con                        |
+| --------------------------------------- | -------------------------------------- |
+| `node_modules/`                         | `npm ci`                               |
+| `.next/`                                | `npm run dev` / `npm run build`        |
+| `cad/dist/`, `packages/<paquete>/dist/` | `npm run build -w <paquete>` (el hook) |
+| `coverage/`                             | `npm run test:coverage`                |
+| `tsconfig.tsbuildinfo`, `next-env.d.ts` | `npm run typecheck` / `npm run dev`    |
 
 ## Seguir con el desarrollo
 
