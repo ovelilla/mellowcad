@@ -1,10 +1,10 @@
 # MellowCAD como librería — brief
 
-> **Estado:** fases 1, 2 y 3 hechas (2026-10-29); las demás, sin ejecutar. Sigue la convención de
-> `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El análisis completo, con el
-> inventario medido, las fuentes fechadas, el spike y el pase adversarial, está en
-> https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama local
-> worktree-agent-a498997d3f29c107f (commit b1c7923), sin empujar.
+> **Estado:** fases 1, 2 y 3 hechas (2026-10-29); la 4, repartida en seis entregas; las demás, sin
+> ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
+> análisis completo, con el inventario medido, las fuentes fechadas, el spike y el pase adversarial,
+> está en https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama
+> local worktree-agent-a498997d3f29c107f (commit b1c7923), sin empujar.
 
 ## 1. Objetivo
 
@@ -171,11 +171,55 @@ son días de sesión.
    estado y la paleta, y el desplazamiento del cuadro respecto al cursor. Hallado y sin tocar (el
    aspecto no debía cambiar): en /ar/draw las etiquetas de Polar no son una isla LTR y se leen
    `...360 ,270 ,180 ,90`.
-4. **Los paquetes React** — 4–6 días, tras la 2 y la 3. packages/react y packages/editor: tsdown
-   unbundle, React Compiler (verificar cómo se integra en tsdown), un check de que cada componente
-   de `dist` lleva `"use client"`, y CSS precompilado. El sitio los consume desde el fuente. Los
-   checks de `lib/type-scale.test.ts`, `lib/control-size.test.ts` e
-   `i18n/logical-properties.test.ts` siguen a los ficheros (hoy fallarían en silencio).
+4. **Los paquetes React** — 4–6 días en seis entregas, tras la 2 y la 3. El sitio los consume desde
+   el fuente, como al motor. Medido antes de empezar, en a6d96d0:
+   - **Lo que cruza.** El editor toma de los hooks `useCadEngine`, `useEngineSelector` y
+     `EditorState` (22 módulos, 20 solo el tipo) y 43 nombres del motor; los hooks, `CadEngine`,
+     `DrawingStore`, `EngineLocale` y `EngineState`. El sitio toma del editor `CadWorkspace` (con
+     `LayoutStorage`, `SheetTransition` y `LanguageLink`), `EditorLocale`, los catálogos `es` y `ar`
+     y `paletteLayoutScript`. `cn` lo usan también tres piezas de la landing, y `DirectionProvider` su
+     layout: el sitio se queda con los suyos.
+   - **React Compiler con tsdown 0.23.2**: `@rolldown/plugin-babel` 0.2.4 (la 0.3.0 está en
+     cuarentena) con `babel-plugin-react-compiler` 1.0.0 como plugin de Babel, sin el
+     `@vitejs/plugin-react` de la receta de tsdown 0.23.4, que pide `vite` como peer (spike). Sin
+     agrupar, cada módulo de `dist` conserva su `"use client"` (rolldown avisa con
+     `MODULE_LEVEL_DIRECTIVE`) y la salida importa `react/compiler-runtime`: React 19 es peer.
+   - **El CSS.** Compilado con Tailwind 4.3.3, `globals.css` deja fuera de la raíz la capa `theme`
+     (`:root, :host`, 14 variables), unas 40 reglas de preflight sobre elementos sueltos
+     (`html, :host`, `*`, `button`…), el respaldo de `@property` sobre `*` y lo del sitio. Tailwind
+     no tiene opción para acotarlos: el CSS del paquete es su salida con esos selectores
+     reescritos a la raíz (`:where([data-mellowcad-editor])`, especificidad cero) en una pasada de
+     PostCSS, minificada con Lightning CSS, los dos ya en el árbol. Las fuentes llegan del
+     anfitrión en `--font-sans` y `--font-mono`: también es API.
+   - **Lo que fallaría en silencio al mover ficheros**: `i18n/logical-properties.test.ts` recorre
+     solo `components` y `app`; las globs de ESLint (los literales, el `Portal` sin `container`,
+     `type="number"`, los listeners de teclas) nombran `components/` y `hooks/`; el `include` de
+     Vitest no ve el test del catálogo fuera de `components/`; `LOAD_SCOPE_PATTERN` de
+     `test/knowledge.test.ts` no cuenta `packages/` en el p90; `HOSTS` de `cad/entryPoints.test.ts`;
+     los `ALLOWED` por ruta de `lib/control-size.test.ts` y del test de RTL no fallan por una entrada
+     huérfana; `tailwindStylesheet` de Prettier y los alias de `components.json`. Los `DIRS` de
+     `lib/type-scale.test.ts` y `lib/control-size.test.ts` sí fallan, con ENOENT.
+
+   Las entregas:
+   (a) **`@mellowcad/react`, el paquete**: packages/react con los hooks que hay, el sitio por su
+   nombre desde el fuente, su build, publint, attw y un check de `"use client"` en el hook, su
+   informe de API (el generador del motor, compartido) y, para packages/, lo que fallaría en
+   silencio. Sin React Compiler: sus hooks fijan sus identidades a mano, porque
+   `useSyncExternalStore` lo pide, y el paquete no necesita Babel. ~1 día.
+   (b) **El cableado del DOM**: `<CadCanvas>`, dueño del canvas y del ciclo de vida, y los hooks sin
+   estilo que dejó la 3(d) (las teclas de la línea de comandos y de la entrada dinámica, el
+   arrastre del cubo), usados por los componentes del editor. ~1 día.
+   (c) **`@mellowcad/editor`, en su sitio**: components/cad, components/ui, `lib/utils.ts`,
+   `lib/editor-root.ts` y las dos libs de layout pasan a packages/editor; el sitio lo importa por su
+   nombre desde el fuente; el `en.d.json.ts` del catálogo y sus entradas `./locales/<tag>`; los
+   checks siguen a los ficheros; la landing, con su `cn` y su `DirectionProvider`. ~1,5 días.
+   (d) **El build del editor**: tsdown con React Compiler, `isolatedDeclarations`, publint, attw,
+   el check de `"use client"` y su informe de API. ~1 día.
+   (e) **El CSS precompilado** (`./styles.css`), acotado a la raíz, con un check de que no declara
+   nada en `:root`, `html` ni `body`; `data-mellowcad-editor` y las variables de fuente, como API.
+   ~1 día.
+   (f) **Las piezas una a una** y `<CadEditor>` con huecos para sustituirlas (`components`, como en
+   tldraw), en el informe de API. ~1 día.
 5. **Ejemplos y documentación** — 2–3 días, tras la 4. Un anfitrión headless en Node y otro con
    Vite + React, que sirven también de smoke tests del check previo a publicar. Un README por paquete,
    a partir de `cad/README.md`.
