@@ -51,7 +51,7 @@ after mount), each under the host's key (`layoutStorage`; none, not kept), the s
   `Command: LINE` in English on an Arabic page. Not a container whose `aria-label` is in the page's
   language.
 - `CadWorkspace` takes the page's `dir` and sets it, with its catalog's `lang`, on its root (the
-  `<main>` and the popups' node), inside the `DirectionProvider` Base UI reads for keyboard and positioning.
+  `<main>` and the popups' node), in the `DirectionProvider` Base UI reads for keys and placing.
 
 ## Right to left
 
@@ -81,8 +81,7 @@ a second layout. This file owns the rule for the landing too.
   — undo, redo, zoom previous, send, open outside. Never a rotation (orbit, the cube's roll) or a
   CAD glyph (mirror, extend, offset). `rtl:` matches inside an LTR island too (`[dir=rtl] *`).
 - The workspace is the page's `<main>`: every control sits in a landmark (axe's `region`).
-- A caller's `px-1.5` replaces a component's `ps-2.5 pe-2` (tailwind-merge pairs `px`, `mx` and
-  `inset-x` with their logical sides since 3.7; `lib/utils.test.ts` holds it).
+- A caller's `px-1.5` replaces a component's `ps-2.5 pe-2` (`cn()`; `lib/utils.test.ts`).
 
 ## File layout
 
@@ -93,16 +92,17 @@ atoms live in `toolbar-primitives.tsx`, custom glyphs in `icons.tsx`.
 ## Colour — one scheme, dark
 
 No theme switch, by decision: AutoCAD works dark, and so does the whole site (landing included).
-The tokens in `:root` are the only values, `color-scheme: dark` keeps native controls dark, and
-`@custom-variant dark (&)` makes every `dark:` utility — shadcn's included — always apply. Never
-bring back next-themes, a `.dark` class or light values.
+The tokens on the editor's root (`EDITOR_ROOT_ATTRIBUTE`) are the only values, never on the host's
+`:root`, `html` or `body` (`lib/editor-root.test.ts`); `color-scheme: dark` keeps native controls
+dark, and `@custom-variant dark (&)` makes every `dark:` utility always apply. Never bring back
+next-themes, a `.dark` class or light values.
 
-- **One accent, `--active`**, the grips' blue (`THEME.grip`): a tool or mode that is on, a flyout
-  whose member runs, the chosen option in a status-bar popover — `Button`'s `variant="active"`
-  (`bg-active/15 text-active-foreground`), or those classes off a `Button`. `text-active` is for a
-  glyph alone (as text on its own tint it reads 4.1:1). Never `variant="default"` for state:
-  `--primary` is near-white, so `bg-primary/N` is glare. `bg-accent` for a selected row,
-  `text-primary` for check marks.
+- **One accent, `--active`**, the grips' blue, written on the root from `THEME.grip`: a tool or
+  mode that is on, a flyout whose member runs, the chosen option in a status-bar popover —
+  `Button`'s `variant="active"` (`bg-active/15 text-active-foreground`), or those classes off a
+  `Button`. `text-active` is for a glyph alone (as text on its own tint it reads 4.1:1). Never
+  `variant="default"` for state: `--primary` is near-white, so `bg-primary/N` is glare.
+  `bg-accent` for a selected row, `text-primary` for check marks.
 - Docked zones are `bg-card`, parted by a `border` on the side facing their neighbour, no radius or
   shadow; a `Panel` or trigger inside adds no surface. Radius, shadow and `bg-card/90` +
   `backdrop-blur` belong to popups and to what floats on the drawing.
@@ -110,8 +110,8 @@ bring back next-themes, a `.dark` class or light values.
 ## Type
 
 One body, as AutoCAD's Segoe UI at 9 pt: hierarchy is weight and colour, never size. The roles are
-tokens in `globals.css` (`@theme`), each one class carrying size, weight and line height; `body`
-starts every text — portalled popups too — as `text-ui text-foreground`.
+tokens in `globals.css` (`@theme inline`), each one class carrying size, weight and line height;
+the editor's root starts every text, its popups too, as `text-ui text-foreground`.
 
 | Role  | Classes                            | Size / weight / line | For                                                                                     |
 | ----- | ---------------------------------- | -------------------- | --------------------------------------------------------------------------------------- |

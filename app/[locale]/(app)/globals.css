@@ -39,8 +39,9 @@
 /* The chrome's type scale (.claude/rules/ui.md, "Type"): one body, as
    AutoCAD's Segoe UI at 9 pt, its hierarchy in weight and colour. A role
    carries its size, weight and line height; monospace is `font-mono` on
-   `text-ui`. */
-@theme {
+   `text-ui`. Inline, so no variable of the editor's is left on the host's
+   :root. */
+@theme inline {
   --text-ui: 0.75rem;
   --text-ui--line-height: 1rem;
   --text-ui--font-weight: 400;
@@ -108,7 +109,10 @@
   --radius-4xl: calc(var(--radius) * 2.6);
 }
 
-:root {
+/* The editor's tokens, on its root (lib/editor-root.ts), never the host's
+   :root: its popups mount inside it (usePortalContainer). `--active`, the
+   grips' blue, is written there from THEME.grip. */
+[data-mellowcad-editor] {
   --background: oklch(0.145 0 0);
   --foreground: oklch(0.985 0 0);
   --card: oklch(0.205 0 0);
@@ -129,10 +133,7 @@
   --accent: oklch(0.269 0 0);
   --accent-foreground: oklch(0.985 0 0);
   --destructive: oklch(0.704 0.191 22.216);
-  /* The chrome's one accent is the grips' blue (THEME.grip), so a mode that
-     is on reads like the drawing's own highlight rather than as glare. */
-  --active: #3b82f6;
-  /* Its text: the blue itself reads 4.1:1 on its own 15 % tint. */
+  /* The accent's text: the blue itself reads 4.1:1 on its own 15 % tint. */
   --active-foreground: color-mix(in oklab, var(--active), white 30%);
   --border: oklch(1 0 0 / 10%);
   --input: oklch(1 0 0 / 15%);
@@ -155,27 +156,29 @@
 }
 
 @layer base {
-  * {
+  :where([data-mellowcad-editor], [data-mellowcad-editor] *) {
     @apply border-border outline-ring/50;
   }
-  /* Every text of the chrome starts as the body role, the portalled popups
-     included. */
-  body {
-    @apply bg-background text-ui text-foreground;
+  /* Every text of the chrome starts as the body role, its popups included. */
+  [data-mellowcad-editor] {
+    @apply font-sans text-ui text-foreground;
   }
-  button:not(:disabled),
-  [role="button"]:not(:disabled) {
+  :where([data-mellowcad-editor]) :is(button, [role="button"]):not(:disabled) {
     cursor: pointer;
   }
-  html {
-    @apply font-sans;
+  /* The page around the editor is the site's, as dark as it. */
+  :root {
+    color-scheme: dark;
+  }
+  body {
+    background-color: oklch(0.145 0 0);
   }
 }
 
 /* Arabic (brief §8.2), unlayered so it outranks the utilities: tracking
    breaks the joins of a cursive script, and the script has no capitals and no
    italics. What speaks the command language carries its own `lang`. */
-:lang(ar) {
+:where([data-mellowcad-editor], [data-mellowcad-editor] *):lang(ar) {
   letter-spacing: 0;
   text-transform: none;
   font-style: normal;
@@ -184,7 +187,8 @@
 /* Readex Pro reaches 14 px above the baseline and 6 below at 12 px (lam-alef,
    yeh, jeem): a 16 px line would clip it wherever the text truncates. The
    command language's islands carry their own `lang` and keep 16. */
-:lang(ar):is(body, .text-ui, .text-title) {
+[data-mellowcad-editor]:lang(ar),
+[data-mellowcad-editor] :is(.text-ui, .text-title):lang(ar) {
   line-height: 1.25rem;
 }
 

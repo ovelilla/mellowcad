@@ -10,6 +10,7 @@ import { useCadEngine } from "@/hooks/useCadEngine"
 import { DirectionProvider } from "@/components/ui/direction"
 import { PortalContainerProvider } from "@/components/ui/portal-container"
 import { cn } from "@/lib/utils"
+import { EDITOR_ROOT_ATTRIBUTE, EDITOR_THEME_STYLE } from "@/lib/editor-root"
 import {
   applyPaletteLayout,
   paletteLayoutAtLoad,
@@ -170,7 +171,12 @@ function Workspace({
   // The editor is the page's main content: a landmark, so every control on
   // it sits in one (axe's region rule).
   return (
-    <div lang={lang} dir={dir}>
+    <div
+      {...{ [EDITOR_ROOT_ATTRIBUTE]: "" }}
+      lang={lang}
+      dir={dir}
+      style={EDITOR_THEME_STYLE as React.CSSProperties}
+    >
       <PortalContainerProvider container={portal}>
         <main className="grid h-svh w-full grid-cols-[auto_minmax(0,1fr)_auto] grid-rows-[auto_minmax(0,1fr)_auto_auto] overflow-hidden bg-card [grid-template-areas:'top_top_top'_'tools_canvas_panel'_'command_command_command'_'status_status_status']">
           <div className="box-content flex h-9 min-w-0 items-center gap-1 border-b px-1 [grid-area:top]">
@@ -295,8 +301,8 @@ function Workspace({
           )}
         </main>
       </PortalContainerProvider>
-      {/* The popups mount here, inside the root, so its `dir` and `lang` reach
-          them. Like the <body> they mounted in before, it comes after the
+      {/* The popups mount here, inside the root, so its tokens, `dir` and
+          `lang` reach them. Like the <body> they mounted in before, it comes after the
           workspace and is not positioned, so each popup's z-50 stacks over the
           canvas, the dynamic input and the ViewCube, and nothing clips it. */}
       <div ref={setPortal} />
