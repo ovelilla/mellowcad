@@ -1,6 +1,6 @@
 # MellowCAD como librería — brief
 
-> **Estado:** fase 1 hecha (2026-10-29); las demás, sin ejecutar. Sigue la convención de
+> **Estado:** fases 1 y 2 hechas (2026-10-29); las demás, sin ejecutar. Sigue la convención de
 > `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El análisis completo, con el
 > inventario medido, las fuentes fechadas, el spike y el pase adversarial, está en
 > https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama local
@@ -84,7 +84,9 @@ son días de sesión.
    ESLint, Prettier y la cobertura, y build + publint + attw en `.githooks/pre-commit`. Actualizar
    lo que queda falso: `cad/README.md` (columna «Today»), `.claude/rules/cad-engine.md`, `ui.md`,
    `i18n.md`, `marketing.md`, y una regla de empaquetado donde quepa en el presupuesto.
-2. **La superficie pública del motor** — 3–4 días, tras la 1. Defaults seguros. Barrel recortado (642
+2. **La superficie pública del motor** — **hecha** (bf89978, deb9e72, bf1a8c0, 464bf3a, 52025e0,
+   8f72e70): 141 nombres en el barrel, `cad/api.md`, `cad/size.test.ts`,
+   `npm run check:hosts -w cad`. 3–4 días, tras la 1. Defaults seguros. Barrel recortado (642
    exports; 65 se usan fuera de `cad/`). Un informe de API con firmas completas, no solo nombres (las
    piezas llaman a 96 de los 132 métodos de `CadEngine`), como test de instantánea. Presupuestos de
    tamaño como test con el rolldown que trae tsdown: islas por debajo de 1 KB y el motor completo
@@ -125,7 +127,8 @@ Bloqueos: 1 → 2 → 6; 1 → 3 → 4 → 5 → 7; la org de npm → 6; 7 → 8
 
 ## 6. Riesgos
 
-- 642 símbolos públicos: cada uno que quede en el barrel es una promesa de semver.
+- 141 nombres públicos (eran 642), más lo que sus firmas alcanzan (`cad/api.md`): cada uno es una
+  promesa de semver.
 - Tres superficies para una persona, sin CI: se publican escalonadas y el hook cubre los paquetes.
 - Dependencias nuevas que vigilar: tsdown 0.23.2 usa `rolldown-plugin-dts` en beta (0.23.3 vuelve
   a la 0.28 estable y sale de la cuarentena el 2026-10-31: la próxima revisión la toma); attw trae
