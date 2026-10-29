@@ -2,6 +2,8 @@
 paths:
   - "cad/index.ts"
   - "cad/api.md"
+  - "packages/*/api.md"
+  - "test/apiReport.ts"
   - "cad/package.json"
   - "cad/tsdown.config.ts"
   - "cad/tsconfig.build.json"
@@ -41,8 +43,9 @@ others, never a dependency: a host has one instance.
   cannot read a JSON module; `cad/locales/locales.test.ts` fails on drift. Never edit it. Nor
   `cad/locales/keywordIds.ts`, the keyword ids `CadDriver` checks: importing `en.json` itself
   shipped the raw catalog, 68 KB, to every page using the driver.
-- **`cad/api.md` is the public surface**, every export with its signature and every type they
-  reach, written by `cad/api.test.ts`; any change fails it until `-u`. Read its diff as a version:
+- **A package's `api.md` is its public surface** (`cad/api.md`, `packages/react/api.md`), every
+  export with its signature and every type of its own they reach, written by its `api.test.ts`
+  through `test/apiReport.ts`; any change fails it until `-u`. Read its diff as a version:
   a new name is a minor, a changed or removed one a major. A name joins `cad/index.ts` only when a
   host uses it; a public member only the engine's tests need is `/** @internal */`, which the
   build strips (`stripInternal`), as `CadDriver.runtime` is.
