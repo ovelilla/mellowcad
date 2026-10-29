@@ -122,6 +122,8 @@ const eslintConfig = defineConfig([
     "coverage/**",
     // Gitignored: AutoCAD's strings and a command review's scratch tests.
     "research/**",
+    // Agent worktrees: other branches, with their own .next, dist and coverage.
+    ".claude/worktrees/**",
   ]),
 ])
 

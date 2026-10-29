@@ -3,6 +3,8 @@ node_modules/
 .next/
 .turbo/
 coverage/
+# Agent worktrees: other branches, checked by their own gate.
+.claude/worktrees/
 pnpm-lock.yaml
 .pnpm-store/
 # Generated from cad/locales/<tag>.json by `npm run locales`; a test compares them byte for byte.
