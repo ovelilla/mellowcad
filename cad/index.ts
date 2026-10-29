@@ -90,6 +90,7 @@ export type { DynamicFieldKind } from "./application/input/DynamicInput"
 export type { SnapModeType } from "./application/SnapMode"
 export { SnapType } from "./application/snapping/types"
 export { ConstraintType } from "./application/constraints/types"
+export { POLAR_ANGLE_MENU } from "./application/constraints/polarAngles"
 export { VIEW_MENU, type ViewPreset } from "./application/tools/viewPresets"
 export type {
   CompassLetter,

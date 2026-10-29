@@ -28,7 +28,12 @@ import {
   PopoverTrigger,
 } from "@/components/ui/popover"
 import { usePortalContainer } from "@/components/ui/portal-container"
-import { CadEngine, SnapModeType, SnapType } from "@mellowcad/engine"
+import {
+  CadEngine,
+  POLAR_ANGLE_MENU,
+  SnapModeType,
+  SnapType,
+} from "@mellowcad/engine"
 import { useEngineSelector, type EditorState } from "@/hooks/useCadEngine"
 import {
   readHiddenStatusItems,
@@ -41,19 +46,6 @@ import { IconAction } from "./toolbar-primitives"
 import { DecimalInput } from "./decimal-input"
 import { LineweightIcon, SelectionCyclingIcon, SnapModeIcon } from "./icons"
 import { useEditorText } from "./editor-text"
-
-/** POLARANG's increments as the desktop's Polar ▾ offers them (workspace/d01-m). */
-const POLAR_ANGLES: readonly number[] = [90, 45, 30, 22.5, 18, 15, 10, 5]
-
-/**
- * An increment as the menu writes it, its first four multiples rounded:
- * `90, 180, 270, 360...`, 22.5 as `23, 45, 68, 90...` (desktop
- * workspace/d01-m, e01-4). WHY plain: AutoCAD bolds the first number, and the
- * type roles have no bold figure (`ui.md`).
- */
-function polarAngleLabel(step: number): string {
-  return `${[1, 2, 3, 4].map((n) => Math.round(n * step)).join(", ")}...`
-}
 
 /**
  * How snap rounds the cursor: along alignment paths, or onto the lattice, in
@@ -171,14 +163,16 @@ export function StatusBar({
               // Choosing an increment turns polar on, silently, like AutoCAD.
               onValueChange={(deg: number) => engine.choosePolarAngle(deg)}
             >
-              {POLAR_ANGLES.map((deg) => (
+              {/* WHY plain: AutoCAD bolds each label's first number, and
+                  the type roles have no bold figure (`ui.md`). */}
+              {POLAR_ANGLE_MENU.map(({ step, label }) => (
                 <Menu.RadioItem
-                  key={deg}
-                  value={deg}
+                  key={step}
+                  value={step}
                   closeOnClick
                   className={`${MENU_ITEM} font-mono`}
                 >
-                  {polarAngleLabel(deg)}
+                  {label}
                   <Menu.RadioItemIndicator>{CHECK}</Menu.RadioItemIndicator>
                 </Menu.RadioItem>
               ))}

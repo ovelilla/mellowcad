@@ -903,6 +903,12 @@ export interface PointerModifiers {
     readonly button?: number;
 }
 
+export { POLAR_ANGLE_MENU }
+export declare const POLAR_ANGLE_MENU: readonly {
+    readonly step: number;
+    readonly label: string;
+}[];
+
 export { primitiveLength }
 export declare function primitiveLength(p: ScenePrimitive): number;
 
