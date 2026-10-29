@@ -6,7 +6,7 @@ import { ChevronUp } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { TooltipProvider } from "@/components/ui/tooltip"
 import { CadEngine, type CommandLineUi } from "@mellowcad/engine"
-import type { EditorState } from "@mellowcad/react"
+import { type EditorState, useCommandLineInput } from "@mellowcad/react"
 
 import { IconAction } from "./toolbar-primitives"
 import { useEditorText } from "./editor-text"
@@ -33,6 +33,7 @@ export function CommandLine({
   const { visible, historyOpen, prompt, buffer, suggestions, lang } =
     state.commandLine
   const t = useEditorText("CommandLine")
+  const input = useCommandLineInput(engine)
 
   // Hidden is only *idle* hidden: as soon as something is typed the prompt
   // comes back, so a keystroke never disappears into nowhere. It hides again
@@ -83,14 +84,8 @@ export function CommandLine({
           {prompt}
         </span>
         <input
-          value={buffer}
-          onChange={(e) => engine.setCommandLineText(e.target.value)}
-          onKeyDown={(e) => {
-            if (engine.commandLineKey(e.key)) e.preventDefault()
-          }}
-          spellCheck={false}
+          {...input}
           lang={lang}
-          autoComplete="off"
           aria-label={t("label")}
           className="h-full min-w-0 flex-1 bg-transparent text-foreground uppercase outline-none placeholder:text-faint-foreground placeholder:normal-case"
           placeholder={t("placeholder")}
