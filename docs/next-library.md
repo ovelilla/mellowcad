@@ -1,6 +1,6 @@
 # MellowCAD como librería — brief
 
-> **Estado:** fases 1, 2 y 3 hechas (2026-10-29); de la 4, las entregas (a), (b) y (c), de seis; las
+> **Estado:** fases 1, 2 y 3 hechas (2026-10-29); de la 4, las entregas (a) a (d), de seis; las
 > demás, sin ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
 > análisis completo, con el inventario medido, las fuentes fechadas, el spike y el pase adversarial,
 > está en https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama
@@ -292,8 +292,41 @@ son días de sesión.
    `class-variance-authority` ya solo lo usa el editor y sigue también en la raíz. Para la (e),
    `globals.css` sigue en el sitio, y `editor-root.test.ts` y `palette-layout.test.ts` lo leen por
    ruta relativa, como la `css` de `components.json`.
-   (d) **El build del editor**: tsdown con React Compiler, `isolatedDeclarations`, publint, attw,
-   el check de `"use client"` y su informe de API. ~1 día.
+   (d) **Hecha** (64ffb89, 85cb157, d797783): **el build del editor**. Medido antes en 8513570
+   con el tsconfig del build: 87 errores de `isolatedDeclarations`, todos mecánicos (51 TS9007:
+   los componentes y los envoltorios de `ui/` devuelven `ReactElement`, `| null` los cuatro que
+   pueden no pintar nada, y `cn`, `string`; 36 TS9010: los 33 glifos son `LucideIcon`, `Select`
+   es `typeof SelectPrimitive.Root`, `buttonVariants` lleva escrito su tipo, y
+   `EDITOR_THEME_STYLE` pierde el `as const satisfies`). Solo anotaciones. tsdown como el motor,
+   con las entradas de catálogo (sus `.d.ts` leen el tipo de `en.d.json.ts`; los de `dist`
+   tipan solos sin `skipLibCheck`), y el React Compiler con `@rolldown/plugin-babel` 0.2.4 y
+   `babel-plugin-react-compiler` 1.0.0 con las opciones de Next (la 0.3.0 del plugin y tsdown
+   0.23.3 siguen en cuarentena): 101 funciones compiladas, ningún bailout, y los 33 módulos con
+   JSX importan `react/compiler-runtime`. `check` es publint `--strict`, attw y
+   `client-directive.ts --compiled`, que ahora falla también con un módulo con JSX sin el
+   runtime del compilador; probado rompiendo cada cosa (sin `"use client"` en
+   `cad-workspace.tsx`, sin el plugin). El check señaló `ui/button.tsx`, que ahora es cliente
+   (el compilador da a `Button` una caché, que es un hook); `icons.tsx` se queda sin directiva:
+   no importa React, solo `createLucideIcon`, que un componente de servidor puede importar.
+   `UNBUILT` desaparece y el hook ya no pasa `--if-present`: un paquete sin `build` y `check`
+   lo hace fallar; desde un árbol sin `dist` el bucle pasa en el orden del glob (editor antes
+   que react). `packages/editor/api.md`: los tres nombres y los catálogos, y lo que alcanzan
+   (`WorkspaceProps` con `LayoutStorage`, `SheetTransition` y `LanguageLink`; `EditorCatalog`,
+   `EditorMessages`, `DeepPartial`, `Compiled`); un campo añadido a `LanguageLink` lo hace
+   fallar. Dependencias: solo entra `@rolldown/plugin-babel` (código publicado leído, sin
+   scripts, firmas verificadas); lo demás ya estaba en el árbol. El paso de paquetes del hook
+   pasa de 3,9 s a 7,8 s (el build del editor, 2,5 s, 1,9 de ellos Babel; su check, 1,2) y el
+   hook entero, en reposo, de ~52 s a ~55 s. Medido en producción contra 8513570: los 18
+   ficheros de JS y CSS de `.next/static` iguales en nombre y bytes, y las 14 páginas
+   prerenderizadas (/, /draw, /es/draw, /ar/draw entre ellas) iguales salvo el build id. Lo que
+   hereda la (e): `dist` no lleva CSS (sus clases las compila el sitio desde `globals.css`), así
+   que un anfitrión de `dist` aún no tiene estilos; `ButtonVariantProps` repite las variantes de
+   `cva` (Oxc no infiere su tipo: una nueva va en los dos sitios, y el comentario lo dice);
+   `WorkspaceProps.mark` es `React.ReactNode` por el espacio de nombres global de @types/react,
+   y el informe imprime el patrón desestructurado de `CadWorkspace`: los dos cambian con las
+   piezas de la (f). El `check:hosts` del editor espera a los ejemplos (fase 5), como el de
+   react; la próxima revisión de dependencias toma tsdown 0.23.3 y el plugin 0.3.0 juntos en los
+   tres paquetes.
    (e) **El CSS precompilado** (`./styles.css`), acotado a la raíz, con un check de que no declara
    nada en `:root`, `html` ni `body`; `data-mellowcad-editor` y las variables de fuente, como API.
    ~1 día.
@@ -323,11 +356,12 @@ Bloqueos: 1 → 2 → 6; 1 → 3 → 4 → 5 → 7; la org de npm → 6; 7 → 8
 ## 6. Riesgos
 
 - 157 nombres públicos: 146 del motor (eran 642; la 3(d) sumó cinco), 8 de react y 3 del editor
-  (sin informe hasta la 4(d)), más lo que sus firmas alcanzan (`cad/api.md`,
-  `packages/react/api.md`): cada uno es una promesa de semver.
+  (más sus tres catálogos), y lo que sus firmas alcanzan (`cad/api.md`, `packages/react/api.md`,
+  `packages/editor/api.md`): cada uno es una promesa de semver.
 - Tres superficies para una persona, sin CI: se publican escalonadas y el hook cubre los paquetes.
 - Dependencias nuevas que vigilar: tsdown 0.23.2 usa `rolldown-plugin-dts` en beta (0.23.3 vuelve
-  a la 0.28 estable y sale de la cuarentena el 2026-10-31: la próxima revisión la toma); attw trae
+  a la 0.28 estable y sale de la cuarentena el 2026-10-31: la próxima revisión la toma), y el
+  editor compila con `@rolldown/plugin-babel` 0.2.4 (la 0.3.0 sale el 2026-11-01); attw trae
   su propio `typescript@5.6.1-rc`, anidado. Ninguna tiene scripts de instalación
   (`npm audit signatures` limpio).
 - Sin procedencia mientras el repo sea privado (npm no la genera desde repos privados).

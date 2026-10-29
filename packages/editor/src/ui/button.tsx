@@ -7,6 +7,9 @@ import type { ClassProp } from "class-variance-authority/types"
 
 import { cn } from "../utils"
 
+// WHY written out: the package's declarations are Oxc's, which cannot infer
+// cva's type, so a variant or size added below is added here too (the
+// annotation fails on one named here and missing there, not the reverse).
 interface ButtonVariantProps {
   variant?:
     | "default"
