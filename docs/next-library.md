@@ -103,13 +103,15 @@ son días de sesión.
 5. **Ejemplos y documentación** — 2–3 días, tras la 4. Un anfitrión headless en Node y otro con
    Vite + React, que sirven también de smoke tests del check previo a publicar. Un README por paquete,
    a partir de `cad/README.md`.
-6. **Publicar el motor 0.1.0** — 1 día, tras la 2 y las decisiones de §7. Org, LICENSE, Changesets,
-   quitar `private`, y publicar desde la máquina del dueño con 2FA, con su confirmación expresa.
+6. **Publicar el motor 0.1.0** — 2–3 días, tras la 2. Métricas de texto desde una fuente OFL,
+   LICENSE MIT, nota de marca, auditoría del historial, Changesets, quitar `private`. Con el sí del
+   dueño: repo público, primera publicación desde su máquina con 2FA, trusted publisher, y el CI de
+   vuelta (gratis en un repo público).
 7. **Publicar react y editor 0.1.0** — 1 día, cuando el ritmo de `components/cad` baje y terminen las
    revisiones de comandos.
 8. **Registro shadcn** — bajo demanda, tras la 7.
 
-Bloqueos: 1 → 2 → 6; 1 → 3 → 4 → 5 → 7; §7 → 6; 7 → 8. La 2 y la 3 pueden ir en paralelo.
+Bloqueos: 1 → 2 → 6; 1 → 3 → 4 → 5 → 7; la org de npm → 6; 7 → 8. La 2 y la 3 pueden ir en paralelo.
 
 ## 5. Descartado
 
@@ -126,21 +128,28 @@ Bloqueos: 1 → 2 → 6; 1 → 3 → 4 → 5 → 7; §7 → 6; 7 → 8. La 2 y l
 - Dependencias nuevas que vigilar: tsdown 0.23.2 usa `rolldown-plugin-dts` en beta; attw trae su
   propio `typescript@5.6.1-rc`. Ninguna tiene scripts de instalación (`npm audit signatures` limpio).
 - Sin procedencia mientras el repo sea privado (npm no la genera desde repos privados).
-- Propiedad intelectual: los catálogos transcriben el vocabulario de AutoCAD en español y las
-  métricas de texto salen de Arial.
+- Propiedad intelectual: los catálogos transcriben el vocabulario de AutoCAD en español (frases
+  cortas y nombres funcionales, el riesgo es bajo) y las métricas de texto salen de Arial (se
+  cambian de fuente, §7).
+- Hacer público el repo es irreversible en la práctica: lo que se haya visto, se ha visto.
 
-## 7. Decisiones del dueño
+## 7. Decisiones tomadas
 
-Son hacia fuera: el plan no las toma.
+El dueño las delegó el 2026-10-29. Lo que sale hacia fuera (la org, hacer público el repo, la
+primera publicación) se ejecuta en la fase 6, con un sí suyo en ese momento.
 
-- **Licencia**: abierta (MIT o Apache-2.0, como todos los análogos nativos de shadcn), source-available
-  (tldraw) o dual (AGPL más comercial), tras revisar los catálogos de AutoCAD, las métricas de Arial y
-  el uso de la marca.
-- **Hacer público el repo**: no hace falta para npm; sí para la procedencia y para el directorio de
-  shadcn.
-- **Scope y org de npm**: `@mellowcad/engine`, `@mellowcad/react` y `mellowcad` están libres
-  (2026-10-29); si la org existe solo se ve con sesión.
+- **Licencia MIT**, para los paquetes y el repo: es lo que usan los análogos nativos de shadcn y no
+  obliga a nada a quien la usa. Cubre el código, no el nombre ni el logo. Antes de publicar: las
+  métricas de texto se vuelven a medir de Arimo o Liberation Sans (SIL OFL, mismas anchuras y
+  alturas que Arial por diseño; la tinta se compara con los tests), y AutoCAD solo se nombra para
+  describir la compatibilidad, con una nota de que el proyecto no está afiliado a Autodesk.
+- **El mismo repo `mellowcad` se hace público** en la fase 6, tras auditar su historial (secretos) y
+  lo que versiona. Con un repo público, GitHub Actions es gratis en sus runners estándar: vuelve el
+  CI y se publica con trusted publishing y procedencia, sin coste.
+- **Org de npm `mellowcad`**, plan gratuito (paquetes públicos ilimitados). Solo el dueño puede
+  crearla, con su cuenta y 2FA; conviene hacerlo pronto para reservar el nombre.
 - **Nombres**: `@mellowcad/engine`, `@mellowcad/react`, `@mellowcad/editor`.
-- **Un tier de pago**: ninguno, soporte o plantillas pro, complementos con otra licencia, o clave
-  de licencia.
-- **Cómo se publica**: desde su máquina con 2FA, o pagando Actions para trusted publishing.
+- **Sin tier de pago**: open source puro. Se reconsidera solo si hay adopción.
+- **Publicar sin coste**: la primera versión de cada paquete, desde la máquina del dueño con 2FA (el
+  trusted publisher se configura en los ajustes de un paquete que ya existe); las siguientes,
+  desde GitHub Actions con trusted publishing.
