@@ -63,6 +63,10 @@ claims follow `i18n.md`.
 - **A written page never types a command's name**: `<Command id="NEW" />` is the name in the page's
   command language (`NUEVO` in Spanish), read from `cad/locales/*.json` by `remarkCommandNames`,
   which a remark plugin can read without the engine.
+- **A figure is a `<Session name="…" />`**, never a screenshot: a `DOCS_SESSIONS` script
+  (`content/figures.ts`) the engine draws and writes the history of in the page's language
+  (`DocsSession`); the `.md` gives its history as a text block. `lib/docs/sessions.test.ts` holds
+  every name to a session and every session to a page.
 - **Each difference from AutoCAD quotes why** (`lib/docs/differences.ts`): a `WHY` at the code or
   its coverage entry. A deviation lifted or reworded fails `docs:check` until the page says so; a
   new one gets a section in every language and its quote. No difference without a written reason.

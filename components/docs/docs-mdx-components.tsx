@@ -6,6 +6,7 @@ import { Children, type ComponentProps, isValidElement, type ReactNode } from "r
 import { localePath } from "@/i18n/navigation"
 import type { AppLocale } from "@/i18n/routing"
 import { DOCS_PATH } from "@/lib/docs/packages"
+import { isSession } from "@/lib/docs/sessions"
 
 import {
   CodeBlock,
@@ -16,6 +17,7 @@ import {
   CodeBlockTitle,
 } from "./code-block"
 import { CodeBlockCopyButton } from "./code-block-copy-button"
+import { DocsSession } from "./docs-session"
 
 type Parent = { children?: ReactNode; className?: string }
 
@@ -152,6 +154,10 @@ export function docsMdxComponents(
           </CodeBlockContent>
         </CodeBlock>
       )
+    },
+    Session: ({ name }: { name: string }) => {
+      if (!isSession(name)) throw new Error(`<Session name="${name}" /> names no session`)
+      return <DocsSession id={name} locale={locale} />
     },
     table: (props) => (
       <div className="my-6 overflow-x-auto rounded-lg border border-border">

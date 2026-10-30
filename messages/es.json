@@ -322,6 +322,12 @@
       "up": "↑",
       "down": "↓"
     },
+    "sessions": {
+      "firstLine": "Un rectángulo de cuatro segmentos, escrito punto a punto; el último lo cierra.",
+      "circleDiameter": "Un círculo dado por su centro y un diámetro, escrito tras elegir la opción.",
+      "endpointSnap": "Cerca de una esquina, la referencia a objetos muestra su marca y nombra el punto que tomará.",
+      "offsetRectangle": "Un rectángulo y su copia desfasada, señalada hacia dentro."
+    },
     "types": {
       "gettingStarted": "Primeros pasos",
       "howTo": "Cómo…",

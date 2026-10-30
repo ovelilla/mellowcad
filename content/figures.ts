@@ -5,6 +5,12 @@ import {
   localFirst,
   type LocalFirstLabels,
 } from "./demos/diagrams"
+import {
+  circleDiameter,
+  endpointSnap,
+  firstLine,
+  offsetRectangle,
+} from "./demos/docs"
 import { hero } from "./demos/hero"
 import { offsetSession } from "./demos/offset"
 import {
@@ -89,3 +95,30 @@ export const DIAGRAMS = {
 } satisfies Record<string, (labels: never) => FigureSpec>
 
 export type FigureId = keyof typeof FIGURES
+
+/**
+ * The docs' sessions (`<Session name="…" />` in a written page): a figure and
+ * its history from the command `from` names on, or none for a live figure.
+ */
+export const DOCS_SESSIONS = {
+  firstLine: {
+    figure: { script: firstLine, width: 320, height: 200, padding: 20 },
+    from: "LINE",
+  },
+  circleDiameter: {
+    figure: { script: circleDiameter, width: 320, height: 200, padding: 20 },
+    from: "CIRCLE",
+  },
+  endpointSnap: {
+    figure: { script: endpointSnap, width: 320, height: 200, live: true },
+  },
+  offsetRectangle: {
+    figure: { script: offsetRectangle, width: 320, height: 200, padding: 20 },
+    from: "OFFSET",
+  },
+} satisfies Record<
+  string,
+  { readonly figure: FigureSpec; readonly from?: string }
+>
+
+export type DocsSessionId = keyof typeof DOCS_SESSIONS

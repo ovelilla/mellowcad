@@ -1,3 +1,3 @@
 {
-  "pages": ["commands", "shortcuts", "differences", "engine", "react", "editor"]
+  "pages": ["getting-started", "commands", "shortcuts", "differences", "engine", "react", "editor"]
 }

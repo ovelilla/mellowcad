@@ -322,6 +322,12 @@
       "up": "↑",
       "down": "↓"
     },
+    "sessions": {
+      "firstLine": "A rectangle of four segments, typed point by point; the last one closes it.",
+      "circleDiameter": "A circle from its centre and a diameter, typed once the option is chosen.",
+      "endpointSnap": "Near a corner, object snap shows its marker and names the point it will take.",
+      "offsetRectangle": "A rectangle and its offset copy, picked on the inside."
+    },
     "types": {
       "gettingStarted": "Getting started",
       "howTo": "How-to",

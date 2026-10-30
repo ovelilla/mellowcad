@@ -6,7 +6,7 @@ import { es } from "@mellowcad/engine/locales/es"
 import { plotDemo, renderFigure } from "@/lib/plot"
 
 import { diagramsIn } from "./diagrams.fixture"
-import { FIGURES, HERO_FIGURE } from "./figures"
+import { DOCS_SESSIONS, FIGURES, HERO_FIGURE } from "./figures"
 
 /**
  * Every figure on the landing is a script the engine replays at build time.
@@ -18,6 +18,12 @@ describe.each(
   Object.entries({
     hero: HERO_FIGURE,
     ...FIGURES,
+    ...Object.fromEntries(
+      Object.entries(DOCS_SESSIONS).map(([name, session]) => [
+        `docs ${name}`,
+        session.figure,
+      ])
+    ),
     ...diagramsIn("en"),
     ...diagramsIn("es"),
     ...diagramsIn("ar"),

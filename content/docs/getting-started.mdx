@@ -1,0 +1,57 @@
+---
+title: Getting started
+description: "Your first drawing in MellowCAD: the command line, prompts and options, the drafting aids, undo and saving."
+type: gettingStarted
+---
+
+MellowCAD works like AutoCAD: you type a command, answer its prompts, and the drawing follows. If you already use AutoCAD, [the commands](/docs/commands) and [the differences](/docs/differences) are all you need; this page is for the first ten minutes.
+
+## Open the editor [#open]
+
+[Open the editor](/draw) in a desktop browser. There is nothing to install and no account to make. The drawing is kept in this browser as you work, and is there again the next time you open it.
+
+## Type a command [#command]
+
+Type on the drawing, wherever the cursor is: the letters go to the command line at the bottom, which suggests the commands they start. Enter or Space runs the command. <Command id="LINE" /> draws lines, and so does its shorter alias; every alias is on [the commands page](/docs/commands).
+
+## Answer the prompts [#prompts]
+
+A command asks one thing at a time, at the command line and beside the cursor. A point is a click on the drawing, or two coordinates typed as `x,y`. After the first point, typed coordinates are measured from the last point, as AutoCAD's dynamic input measures them, and the history writes them with `@`; `#x,y` is measured from the origin instead. A distance typed alone goes that far in the direction of the cursor.
+
+<Session name="firstLine" />
+
+## Choose an option [#options]
+
+The options a prompt offers are in square brackets, each with its capital letters: type those letters and press Enter. A value in angle brackets is the default, and Enter takes it.
+
+<Session name="circleDiameter" />
+
+## End, repeat, cancel [#end]
+
+Enter or Space ends a command that keeps asking, such as <Command id="LINE" />, and with no command running they repeat the last one. A right-click opens a menu with the same choices. Esc cancels. Every key is on [the shortcuts page](/docs/shortcuts).
+
+## Draw precisely [#precision]
+
+Object snaps take the cursor to the exact points of what is drawn: ends, middles, centres. `F3` turns them on and off, `F8` Ortho and `F10` polar tracking, as their buttons on the status bar do.
+
+<Session name="endpointSnap" />
+
+## Change what is drawn [#modify]
+
+An editing command asks for the objects to work on, or first for a value, as <Command id="OFFSET" /> does: the distance, the object, then the side to put the copy on.
+
+<Session name="offsetRectangle" />
+
+## Undo and redo [#undo]
+
+<Command id="U" /> or `Ctrl+Z` undoes the last command, whole, and `Ctrl+Y` redoes it. Inside a command that offers it, its own undo option takes back one step, such as one segment of <Command id="LINE" />.
+
+## Save [#save]
+
+The drawing is kept in this browser as you work. <Command id="QSAVE" /> or `Ctrl+S` downloads it as a file in MellowCAD's own versioned format, and <Command id="OPEN" /> or `Ctrl+O` opens one; [saving is not quite AutoCAD's](/docs/differences#saving).
+
+## Next [#next]
+
+- [Commands](/docs/commands): every command, its aliases and the first thing it asks.
+- [Keyboard shortcuts](/docs/shortcuts): the keys the editor answers.
+- [Differences from AutoCAD](/docs/differences): where it works otherwise, and why.
