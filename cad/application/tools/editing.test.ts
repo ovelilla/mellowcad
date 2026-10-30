@@ -23,6 +23,7 @@ import {
   type Entity,
   type LineEntity,
   type PolylineEntity,
+  type SplineEntity,
 } from "../../domain/entities"
 import type { Layer } from "../../domain/layers"
 import { ellipseParamFromAngle } from "../../geometry/primitives"
@@ -2677,17 +2678,18 @@ describe("TRIM and EXTEND with an ellipse or a spline", () => {
     ]).toBeCloseToPoints([p(97.8309, -10.3576), p(0, 50)], 4)
   })
 
-  it("deletes a spline no edge crosses, and leaves one an edge cuts", () => {
+  it("deletes a spline no edge crosses, and cuts one an edge does", () => {
     const far = lineOf(p(300, 0), p(400, 0), { id: "far" })
     const deleted = createHarness({ entities: [spline, far] })
     deleted.command("TRIM").click(p(0, 0))
     expect(deleted.entities()).toEqual([far])
 
-    // The console leaves the piece on knots a spline here cannot hold.
-    const entities = [spline, lineOf(p(-50, 15), p(200, 15))]
-    const cut = createHarness({ entities })
+    // The piece a CV spline on the knots it had (splineEdits.test.ts).
+    const cut = createHarness({
+      entities: [spline, lineOf(p(-50, 15), p(200, 15))],
+    })
     cut.command("TRIM").click(p(0, 0))
-    expect(cut.entities()).toEqual(entities)
+    expect(cut.byId<SplineEntity>("S").method).toBe("cv")
     expect(cut.optionIds()).toEqual([
       "cuTting",
       "Crossing",

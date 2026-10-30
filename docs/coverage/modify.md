@@ -646,7 +646,7 @@ level, trimmed and an edge in its own plane (p175); one standing upright on the 
 `Object is perpendicular to UCS XY plane.` (es `El objeto es perpendicular al plano XY del SCP.`),
 and what only such an edge crosses or bounds is left, `Edge is perpendicular to UCS XY plane.` (es
 `La arista es perpendicular al plano XY del SCP.`), both counted for Undo, TRIM and EXTEND alike
-(p220, p221, p411); an object at another angle is neither an edge nor trimmed (it does not
+(p220, p221, p411); an object at another angle but a spline is neither an edge nor trimmed (it does not
 highlight). The look (desktop trim/d01–d09): hovering, the piece a click takes away is drawn faded
 in place, as ERASE fades an object, the rest as it is (d01-1), Quick's delete fading the whole
 object (d01-2); an extension draws the object as it would be, whole, in the selection's glow (Shift
@@ -656,6 +656,28 @@ the drawing (d03-1, d04-1, d06-2); a red ✕ up and to the right of the pick box
 where a click trims and while TRIM's fence or window runs, none where it extends (d01-3, d02-1),
 and a circle-and-slash where the pick is refused (a circle cut once, a text: d09-1, d09-2). English
 wording from AutoCAD 2027's console (probes trim/p100–p389) and the 2026 help. A 3D polyline cuts and bounds as its segments, each a line between its vertices' Z (3dpoly/p13).
+A spline is cut and grown on its own parameter, as AutoCAD 2027's console leaves it (probes
+spline-knots/k01–k04, k10, k17–k20, k25–k28, k30–k32, k34–k36, MPDUMP): TRIM's piece is a CV
+spline on the control points and knots it had there, never normalised, its fit data dropped
+(k01 `0 0 0 0 14.14 21.21…`, k02), an open one's between the crossings either side of the pick,
+cut in two the piece after it a new object (k28), a closed one's from the far crossing round to the
+near one, open, across its seam on a knot of three there, its parameter within the first turn
+(k03 `50 … 60 80 80 80 90`, k04 `0.5 … 2.5`, k36 `2.5 … 4 4 4 4.5`), cut once
+`Curve must intersect cutting edges at least twice.` (k34, 2027); EXTEND grows the end the pick
+lies nearer in its parameter, not along the curve (k18), a CV spline by its end's second-order
+Taylor polynomial in its homogeneous form, a curved piece behind a knot of its degree (k10, k31's
+weights: its rational end's last three control points unchanged), a fit spline still a fit spline
+(Knot parameterization Custom), straight on along its end tangent from a free end (k17, k19), from
+one with a tangent behind a cubic easing its curvature off over a parameter length that is the
+second derivative's own, `|C″|` — measured, to the digit in k32 (`0.5470`) and k35 (`0.0652`),
+Autodesk documents none —, each piece's end a new fit point; the edge the nearest the growth
+meets, the spline's own curve one (k32, which grew back to it); none met
+`Object does not intersect an edge.` (k20), as is Standard's TRIM of a spline no edge crosses
+(k30, not `Does not intersect with the cutting edge.`); a spline in space or at an angle to the
+UCS is cut in plan, its piece in its own plane, Z and all (k25, k26), and bounds in plan; each
+edit one Undo step, the pieces wearing the spline's properties; the look an object's: the piece
+TRIM takes faded with the ✕, EXTEND's spline whole as it would grow in the glow (desktop
+spline-knots/d05, d06).
 
 **Missing:** Project — AutoCAD's `Enter a projection option [None/Ucs/View] <Ucs>:` (es
 `Indique opción de proyección [Ninguna/SCP/Vista] <SCP>:`), in both modes, its choice an Undo step
@@ -666,14 +688,16 @@ plane, which is Ucs, so `P` is refused as an option not built —, the fence dra
 (`pick/drag cursor`), Shift held for a fence or a window (the console has no Shift: **unverified**),
 PROJMODE as a variable, EDGEMODE and TRIMEXTENDMODE across sessions (AutoCAD keeps them in the
 registry), a spline as an edge running on, projecting objects at an angle to the UCS onto its XY
-plane (so Quick deletes what only an object at an angle crosses, where the console cuts it at the
+plane, a spline's but (so Quick deletes what only an object at an angle crosses, where the console cuts it at the
 projection: p221); a pick inside a hatch, which the console takes for none and starts a fence at
-(p196, p197), here the hatch, refused; a spline an edge cuts or an open one EXTEND picks (the console leaves the piece on control
-points and knots of its own — a trimmed one loses its fit points, a fit spline grows by a straight
-piece along its end tangent behind a triple knot, a CV spline by a curved one, k10 —, its knots
-keeping the parameters they had, k01–k04: a spline on knots of its own, which the model holds
-since spline-knots, draw.md's SPLINE; the command does not cut one yet, so neither an open
-spline's `Object does not intersect an edge.`); the piece after a polyline's own crossing, which the console
+(p196, p197), here the hatch, refused; a spline's crossings with itself as a TRIM edge (not cut
+there here; **unverified**); a CV spline's grown end as AutoCAD places it: its last control point
+on the edge to the digit and its end knot off the polynomial's crossing in the sixth significant
+figure (k10 `1.16024840` against `1.16024690`, k18), its own crossing search, so the piece here
+ends where the polynomial meets the edge, 5.6e-4 off k10's along it — the same curve to the knot
+before; where a fit spline's growth meets the edge inside its easing (here cut there,
+**unverified**); a spline standing upright on the UCS (refused as any such object,
+**unverified**); the piece after a polyline's own crossing, which the console
 starts with a zero-length segment; **unverified**: the reasons when TRIM's Shift extends (EXTEND's,
 the same code here), and whether a crossing at the pick bounds the trim of an arc, a circle or a
 polyline (a line's does not, p261; here theirs does); the circle-and-slash over what EXTEND
@@ -1247,12 +1271,22 @@ dimmed — nothing glowing where all of it goes, the object glowing where nothin
 object at its nearest point, past an end to the end (d01-2–d01-4, d02-1, d03-1, d03-2, d04-2);
 `Specify first break point:` the object plain (d04-1); BREAKATPOINT's point the object whole in the
 glow (d14-1). A 3D polyline breaks in plan as a polyline does, each cut end at the Z it has there (3dpoly/p12).
+A spline breaks on its own parameter, in plan, each piece on the knots and control points it had
+there, never normalised, weights and all (AutoCAD 2027's console, probes spline-knots/k05–k08,
+k21–k24, k29, k33, k37, MPDUMP): a CV spline's pieces CV splines (k06 `0.7 0.7 0.7 0.7 1…`, k22,
+k29 `3 2.2100 1.7320 1.4428`), a fit spline's fit splines on Custom knots, the cut points new fit
+points and the cut ends' tangents the curve's derivatives there (k05, k21); an open one loses what
+lies between the points, whichever comes first, split by `@` and BREAKATPOINT, a fit point too
+(k21), untouched at an end; a closed one is left one open piece from the later point round to the
+earlier, whichever is picked first (k07, k37), across its seam on a knot of three there, within
+its first turn, its seam read as the turn's end (k08 `0 … 3`), and `@` or BREAKATPOINT on it is
+`Cannot break a closed, periodic curve at only one point.` (k23, k24); one in space or at an
+angle to the UCS breaks in plan, its pieces in its plane (k33); the pieces wear its properties;
+the look an object's: its rollover, at the second point what the break keeps in the glow over the
+spline dimmed (desktop spline-knots/d07, d08).
 
-**Missing:** splines (they do not highlight; AutoCAD breaks a CV spline into pieces on control
-points and knots of their own, spline/p325, spline-knots/k06, a closed one into one open piece,
-k08, and a fit spline into fit splines on knots of their own, the break points new fit points and
-the cut ends' tangents the curve's derivatives there, p326, k05, k07 — pieces the model holds
-since spline-knots, the command does not make yet); a point typed off the screen at `Select object:` (command-line.md's
+**Missing:** AutoCAD's Knot parameterization of a broken fit spline's piece, Chord where its knots
+happen to be its chords (k21's first piece, both of k33's), Custom here as on the rest; a point typed off the screen at `Select object:` (command-line.md's
 `Select objects:` Missing); a mirrored whole ellipse,
 which AutoCAD breaks counter-clockwise about its −Z normal (ellipse/p329; MIRROR's entry); an ARC,
 CIRCLE or ELLIPSE not level with the UCS, `No object found` here: AutoCAD breaks one, a −Z one

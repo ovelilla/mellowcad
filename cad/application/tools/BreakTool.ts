@@ -35,7 +35,15 @@ import {
   isFullEllipse,
   type EllipsePiece,
 } from "../../domain/ellipses"
-import type { EllipseEntity } from "../../domain/entityTypes"
+import type { EllipseEntity, SplineEntity } from "../../domain/entityTypes"
+import { nextEntityId } from "../../domain/entityIds"
+import {
+  splineBreakPiece,
+  splineInPlaneOf,
+  splineInWorld,
+  splineParamAt,
+  splineRun,
+} from "../../domain/splineEdits"
 import type { MessageId } from "../EngineText"
 import type { CameraTransform, ScenePrimitive } from "../../scene/types"
 import { cursorOnEntityPlane } from "../viewPick"
@@ -111,6 +119,8 @@ type BreakGeom =
       readonly widths: readonly PolylineWidth[]
     }
   | { readonly kind: "polyline3d"; readonly vertices: readonly Vec3[] }
+  /** A spline's piece, already wearing its object's properties (`splineEdits`). */
+  | { readonly kind: "spline"; readonly spline: SplineEntity }
 
 /** The surviving pieces, from the object's start — none when all of it goes. */
 type BreakResult = readonly BreakGeom[]
@@ -468,12 +478,16 @@ export class BreakTool implements Tool {
   ): void {
     const pieces = breakPieces(target, first, second, ctx.viewport, false)
     if (!pieces) {
-      // WHY: AutoCAD 2027's console will not split a circle or an ellipse
-      // in place (probes pieces/p207, p208, p223); at a line's or an arc's
-      // end it does nothing (p226, p227).
+      // WHY: AutoCAD 2027's console will not split a circle, an ellipse or
+      // a closed spline in place (probes pieces/p207, p208, p223,
+      // spline-knots/k23, k24); at a line's or an arc's end it does nothing
+      // (p226, p227).
       if (target.type === "circle") {
         ctx.report(ctx.text.message("arcCannotBeFull360"))
-      } else if (target.type === "ellipse") {
+      } else if (
+        target.type === "ellipse" ||
+        (target.type === "spline" && target.closed)
+      ) {
         ctx.report(ctx.text.message("cannotBreakClosedAtOnePoint"))
       }
       ctx.endCommand()
@@ -498,6 +512,7 @@ const BROKEN: ReadonlySet<Entity["type"]> = new Set([
   "ellipse",
   "polyline",
   "polyline3d",
+  "spline",
 ])
 
 /**
@@ -510,14 +525,20 @@ const BROKEN: ReadonlySet<Entity["type"]> = new Set([
 function breakable(entity: Entity): boolean {
   return (
     BROKEN.has(entity.type) &&
-    (readsInPlan(entity) || entity.type === "polyline")
+    (readsInPlan(entity) ||
+      entity.type === "polyline" ||
+      (entity.type === "spline" && !standsUpright(entity)))
   )
+}
+
+/** A spline whose plane stands upright on the XY plane has no plan to break it in. */
+function standsUpright(spline: SplineEntity): boolean {
+  return !!spline.normal && Math.abs(spline.normal.z) <= PLANE_EPS
 }
 
 /**
  * What AutoCAD 2027's console says of an object BREAK cannot break, asking
- * `Select object:` again (probes pieces/p180–p187); a spline it breaks,
- * which is not built here.
+ * `Select object:` again (probes pieces/p180–p187).
  */
 function cannotBreak(entity: Entity): MessageId | null {
   switch (entity.type) {
@@ -590,6 +611,11 @@ function toEntity(source: Entity, geom: BreakGeom, id?: EntityId): Entity {
         source,
         createPolyline3d(geom.vertices, false, source.layerId, id)
       )
+    case "spline":
+      // WHY not `carryPiece`: the piece is made from its object, every
+      // property kept, and `carryPlane` would set a 3D piece's Z to its
+      // object's start's.
+      return { ...geom.spline, id: id ?? nextEntityId() }
   }
 }
 
@@ -644,6 +670,7 @@ function computeBreak(
     case "polyline3d":
       return breakPolyline3d(entity, first, second)
     case "spline":
+      return breakSpline(entity, first, second)
     case "text":
     case "mtext":
     case "attdef":
@@ -839,6 +866,51 @@ function breakEllipse(
   const split = to - from < ANGLE_EPS
   if (split && (from < ANGLE_EPS || from > sweep - ANGLE_EPS)) return null
   return ellipseCut(ellipse, from, to).kept.map(piece)
+}
+
+/**
+ * A spline breaks on its own parameter, in plan, each piece on the knots it
+ * had there, a fit spline's a fit spline (`splineBreakPiece`): an open one
+ * loses what lies between the points, whichever comes first, split by `@`,
+ * untouched at an end (spline-knots/k05, k06, k21, k22); a closed one is
+ * left one open piece from the later point round to the earlier, whichever
+ * is picked first (k07, k37), within its first turn, its seam read as the
+ * turn's end (k08), and will not split at one point (k23, k24). One at an
+ * angle to the UCS is broken in plan, as a 3D one (k33).
+ */
+function breakSpline(
+  spline: SplineEntity,
+  first: Vec2,
+  second: Vec2
+): BreakResult | null {
+  const world = splineInWorld(spline)
+  const { start, end, period } = splineRun(world)
+  const eps = PARAM_EPS * Math.max(1, end - start)
+  const piece = (from: number, to: number): BreakGeom => ({
+    kind: "spline",
+    spline: splineInPlaneOf(splineBreakPiece(world, from, to), spline),
+  })
+  let t1 = splineParamAt(world, first)
+  let t2 = splineParamAt(world, second)
+  if (period !== null) {
+    if (t1 - start < eps) t1 = end
+    if (t2 - start < eps) t2 = end
+    const from = Math.min(t1, t2)
+    const to = Math.max(t1, t2)
+    if (to - from < eps) return null
+    const shift = to >= end - eps ? period : 0
+    return [piece(to - shift, from + period - shift)]
+  }
+  const from = Math.min(t1, t2)
+  const to = Math.max(t1, t2)
+  if (to - from < eps) {
+    if (from < start + eps || from > end - eps) return null
+    return [piece(start, from), piece(from, end)]
+  }
+  const kept: BreakGeom[] = []
+  if (from > start + eps) kept.push(piece(start, from))
+  if (to < end - eps) kept.push(piece(to, end))
+  return kept
 }
 
 /**

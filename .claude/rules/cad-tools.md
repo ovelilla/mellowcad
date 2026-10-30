@@ -21,7 +21,8 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
   (`geometry/primitives.ts`), bisected to full precision — the one root finder; never write
   another scan. A new type that is an edge gets its implicit function there. Cut a polyline with
   `polylineSpan` (`domain/polylines.ts`, between two `polylineParamAt` parameters, round a closed
-  one past its start, arc bulges refitted) and an ellipse with `ellipseCut` (`domain/ellipses.ts`):
+  one past its start, arc bulges refitted), an ellipse with `ellipseCut` (`domain/ellipses.ts`)
+  and a spline with `splineCutPiece` / `splineBreakPiece` / `splineGrown` (`domain/splineEdits.ts`):
   never walk the vertices to cut one in a tool. A fence's objects are planned one by one against
   the drawing as it then is, never as it was: the console cuts them in turn.
 - `ObjectSelector` (`objectSelection.ts`) — AutoCAD's `Select objects:`, which every command

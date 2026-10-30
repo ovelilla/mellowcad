@@ -112,8 +112,9 @@ Dependencies run types → per-type modules → overrides → transforms → que
   disagree.
 - **A spline's own knots and weights are AutoCAD's** (`knotVector`, `weights`: DXF 40 / 41 as its
   NurbsData holds them, a periodic one's one period, never normalised: a piece keeps the
-  parameters it had). An edit AutoCAD leaves without fit data goes through `splineWithoutFitData`.
-  A kernel curve may be rational: its derivatives come from `bsplineDifferentials`, never from the
+  parameters it had). An edit AutoCAD leaves without fit data goes through `splineWithoutFitData`;
+  TRIM's, BREAK's and EXTEND's pieces through `domain/splineEdits.ts` (knot insertion on
+  `splineRun`). A kernel curve may be rational: its derivatives come from `bsplineDifferentials`, never from the
   hodograph of a weighted curve (`bsplineDerivativeCurve` ignores the weights).
 - **MTEXT keeps AutoCAD's contents string**, `\P` and escapes included: `mtextPlainText` reads it
   (codes it does not draw vanish from the reading, never from the object), `mtextContents` writes
@@ -206,8 +207,9 @@ is never stored (`withNormal`, `withElevation`), so a flat drawing's file is unc
   thickness; `carryPlane` for a new object sharing only the plane). `createX(..., source.layerId,
 source.id)` alone is the bug: it drops colour, linetype, lineweight and Z.
 - **A piece cut from a line or grown out of it goes through `carryPiece`** (TRIM, EXTEND, BREAK),
-  which re-reads each end with `entityZAt`; a line end moved to a point (a grip) takes its Z with
-  `withLineZ`.
+  which re-reads each end with `entityZAt`; a spline's piece is spread from its object instead
+  (`splineEdits.ts`), as `carryPlane` would set a 3D piece's Z to its object's start's; a line
+  end moved to a point (a grip) takes its Z with `withLineZ`.
 - **Coplanar means `coplanar(a, b)`**, AutoCAD's own test (FILLET, CHAMFER, JOIN, HATCH);
   two lines in a tilted plane are `linesPlaneNormal`.
 - **An entity's points are planar; the Z lives only in its fields.** Factories copy `{ x, y }` and

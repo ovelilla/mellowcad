@@ -41,6 +41,9 @@ import {
   isFullEllipse,
   fractionAlongSegment,
   insertFlatGeometry,
+  nextEntityId,
+  splineCurve,
+  closestPointOnSpline,
   turnedOver,
   mtextCorners,
   nearestPolylineSegment,
@@ -75,6 +78,18 @@ import {
   type ToolQuestion,
 } from "./Tool"
 import {
+  snappedParam,
+  splineCutPiece,
+  splineGrowth,
+  splineGrown,
+  splineInPlaneOf,
+  splineInWorld,
+  splineParamAt,
+  splineRun,
+} from "../../domain/splineEdits"
+import { bsplinesMeeting } from "../../geometry/nurbs"
+import {
+  type ImplicitEdge,
   crossingParams,
   curveCrossings,
   ellipseImplicit,
@@ -166,6 +181,8 @@ type EditGeom =
       readonly startParam: number
       readonly endParam: number
     }
+  /** A spline's piece, already wearing its object's properties (`splineEdits`). */
+  | { readonly kind: "spline"; readonly spline: SplineEntity }
 
 /** A resolved edit ready to preview and commit against the hovered object. */
 type EdgeEditPlan =
@@ -1448,7 +1465,14 @@ export abstract class EdgeEditTool implements Tool {
     return (
       uprightOnly() ??
       (this.mode.standard
-        ? { kind: "refuse", message: "doesNotIntersectCuttingEdge" }
+        ? {
+            kind: "refuse",
+            // A spline in the words EXTEND says it in (spline-knots/k30).
+            message:
+              hit.type === "spline"
+                ? "objectDoesNotIntersectEdge"
+                : "doesNotIntersectCuttingEdge",
+          }
         : { kind: "erase", target: hit })
     )
   }
@@ -1508,10 +1532,7 @@ export abstract class EdgeEditTool implements Tool {
     return {
       id: target.id,
       added: geoms.map((g, i) =>
-        carryPiece(
-          target,
-          geomToEntity(g, plan.layerId, i === 0 ? target.id : mint?.())
-        )
+        pieceOf(target, g, plan.layerId, i === 0 ? target.id : mint?.())
       ),
     }
   }
@@ -1527,10 +1548,22 @@ function removedPiece(
   plan: Extract<EdgeEditPlan, { kind: "trim" }>,
   target: Entity
 ): Entity {
-  return carryPiece(
-    target,
-    geomToEntity(plan.removed, plan.layerId, PREVIEW_ID)
-  )
+  return pieceOf(target, plan.removed, plan.layerId, PREVIEW_ID)
+}
+
+/**
+ * A piece of `target` as an object. WHY a spline's not through
+ * `carryPiece`: it is made from its object already, every property kept, and
+ * `carryPlane` would set a 3D piece's Z to its object's start's (k25).
+ */
+function pieceOf(
+  target: Entity,
+  g: EditGeom,
+  layerId: LayerId,
+  id?: EntityId
+): Entity {
+  if (g.kind === "spline") return { ...g.spline, id: id ?? nextEntityId() }
+  return carryPiece(target, geomToEntity(g, layerId, id))
 }
 
 /**
@@ -1669,6 +1702,7 @@ const TRIMMED: ReadonlySet<Entity["type"]> = new Set([
   "arc",
   "polyline",
   "ellipse",
+  "spline",
   "dimension",
 ])
 
@@ -1690,6 +1724,11 @@ const TURNED: ReadonlySet<Entity["type"]> = new Set([
  */
 function inPlan(entity: Entity): Entity | null {
   if (readsInPlan(entity)) return entity
+  // WHY a spline at any angle but upright: AutoCAD 2027 trims one in plan,
+  // as it trims a 3D one (spline-knots/k25, k26).
+  if (entity.type === "spline" && !standsUpright(entity)) {
+    return splineInWorld(entity)
+  }
   return isUpsideDown(entity) ? turnedOver(entity) : null
 }
 
@@ -1706,6 +1745,9 @@ function isUpsideDown(entity: Entity): boolean {
 
 /** A piece made in plan of the drawing's `source`, as `source` keeps its points. */
 function asStored(source: Entity, piece: Entity): Entity {
+  if (source.type === "spline" && piece.type === "spline") {
+    return splineInPlaneOf(piece, source)
+  }
   return isUpsideDown(source) ? turnedOver(piece) : piece
 }
 
@@ -1862,6 +1904,8 @@ function geomToEntity(g: EditGeom, layerId: LayerId, id?: EntityId): Entity {
         layerId,
         id,
       })
+    case "spline":
+      return { ...g.spline, layerId, id: id ?? nextEntityId() }
   }
 }
 
@@ -1886,7 +1930,7 @@ function planTrim(
     case "ellipse":
       return planTrimEllipse(target, click, others)
     case "spline":
-      return planTrimSpline(target, others)
+      return planTrimSpline(target, click, others)
     // WHY nothing: AutoCAD trims one in plan (3dpoly/p13), not built here.
     case "polyline3d":
     case "text":
@@ -1907,8 +1951,9 @@ function planTrim(
  * end. Spanish words the last by two tables: a circle, a TEXT, an attribute
  * definition and a block reference 20623's, a closed polyline, a whole
  * ellipse, a closed spline, an MTEXT and a hatch 54's (probes trim/p191,
- * p193, p195, p199, p204–p211, p410). `null` where the console extends what
- * is not built here (an open spline).
+ * p193, p195, p199, p204–p211, p410); an open spline as an open polyline's
+ * end (spline-knots/k20). `null` where the console extends what is not built
+ * here (a 3D polyline).
  */
 function extendRefusal(target: Entity): MessageId | null {
   switch (target.type) {
@@ -1925,7 +1970,9 @@ function extendRefusal(target: Entity): MessageId | null {
         ? "cannotExtendThisObject"
         : "objectDoesNotIntersectEdge"
     case "spline":
-      return target.closed ? "cannotExtendThisObject" : null
+      return target.closed
+        ? "cannotExtendThisObject"
+        : "objectDoesNotIntersectEdge"
     case "polyline3d":
       return null
     case "circle":
@@ -1962,6 +2009,7 @@ function planExtend(
     case "ellipse":
       return planExtendEllipse(target, click, others)
     case "spline":
+      return planExtendSpline(target, click, others, own)
     case "polyline3d":
     case "text":
     case "mtext":
@@ -2581,30 +2629,154 @@ function planExtendEllipse(
 // --- Spline target ----------------------------------------------------------
 
 /**
- * A spline is only deleted or refused here: trimmed, AutoCAD's console
- * leaves its piece on control points and knots of its own (probes trim/p187,
- * p188), which a spline here — fit points or control vertices on uniform
- * knots — cannot hold, so a spline an edge cuts stays as it is.
+ * The parameters where the edges cross the spline, in plan: a spline edge's
+ * crossing found on its chords and met on both curves (`bsplinesMeeting`).
+ */
+function splineCrossParams(
+  spline: SplineEntity,
+  others: readonly Entity[]
+): number[] {
+  const curve = parametricCurve(spline)
+  const nurbs = splineCurve(spline)
+  const params: number[] = []
+  for (const o of others) {
+    if (o.type !== "spline") {
+      for (const edge of implicitEdges(o)) {
+        params.push(...crossingParams(curve, edge))
+      }
+      continue
+    }
+    const other = splineCurve(o)
+    for (const edge of implicitEdges(o)) {
+      for (const u of crossingParams(curve, edge)) {
+        const near = closestPointOnSpline(o, curve.at(u))
+        const span = splineRun(o)
+        const v = span.start + near.t * (span.end - span.start)
+        params.push(bsplinesMeeting(nurbs, u, other, v)?.u ?? u)
+      }
+    }
+  }
+  return params
+}
+
+/**
+ * Trims a spline as AutoCAD 2027 does, on its own parameter: an open one
+ * between the crossings either side of the pick, its ends bounding it, a
+ * closed one between the crossings round it, cut once refused as a whole
+ * ellipse is (k34) — each piece left a CV spline on the knots it had there,
+ * a closed one's from the far crossing round to the near one, across its
+ * seam (spline-knots/k01–k04, k28, k36).
  */
 function planTrimSpline(
   spline: SplineEntity,
+  click: Vec2,
   others: readonly Entity[]
 ): EdgeEditPlan | null {
-  const curve = parametricCurve(spline)
-  const params: number[] = []
-  for (const o of others) {
-    for (const edge of implicitEdges(o)) {
-      params.push(...crossingParams(curve, edge))
+  const run = splineRun(spline)
+  const { start, end, period } = run
+  const eps = PARAM_EPS * Math.max(1, end - start)
+  const crossings = dedupeSorted(
+    splineCrossParams(spline, others)
+      .map((u) => snappedParam(run, u))
+      .map((u) => (period !== null && u >= end - eps ? start : u))
+      .filter((u) => period !== null || (u > start + eps && u < end - eps))
+  )
+  if (crossings.length === 0) return null
+  const piece = (from: number, to: number): EditGeom => ({
+    kind: "spline",
+    spline: splineCutPiece(spline, from, to),
+  })
+  const base = {
+    kind: "trim" as const,
+    targetId: spline.id,
+    layerId: spline.layerId,
+  }
+  const t = splineParamAt(spline, click)
+  if (period !== null) {
+    if (crossings.length === 1) {
+      return { kind: "refuse", message: "curveMustIntersectTwice" }
+    }
+    let from = crossings[crossings.length - 1]
+    let to = crossings[0] + period
+    for (let i = 0; i < crossings.length - 1; i++) {
+      if (t >= crossings[i] && t <= crossings[i + 1]) {
+        from = crossings[i]
+        to = crossings[i + 1]
+        break
+      }
+    }
+    // The piece starts where the cut ends, within its first turn (k03, k04).
+    const shift = to >= end - eps ? period : 0
+    return {
+      ...base,
+      replacements: [piece(to - shift, from + period - shift)],
+      removed: piece(from, to),
     }
   }
-  const crossings = dedupeSorted(params).length
-  if (crossings === 0) return { kind: "erase", target: spline }
-  // Cut once, a closed one is refused as a whole ellipse is: AutoCAD 2023's
-  // console (acc/o3), not probed again.
-  if (spline.closed && crossings === 1) {
-    return { kind: "refuse", message: "curveMustIntersectTwice" }
+  const bounds = [start, ...crossings, end]
+  let i = 0
+  while (i < bounds.length - 2 && !(t <= bounds[i + 1])) i++
+  const replacements: EditGeom[] = []
+  if (i > 0) replacements.push(piece(start, bounds[i]))
+  if (i + 1 < bounds.length - 1) replacements.push(piece(bounds[i + 1], end))
+  return { ...base, replacements, removed: piece(bounds[i], bounds[i + 1]) }
+}
+
+/** Steps of the scan along a spline's growth, and of its first stretch, scanned again finer. */
+const GROWTH_SCAN = 4096
+const GROWTH_START = 256
+
+/**
+ * Extends an open spline at the end its pick lies nearer in its parameter
+ * (spline-knots/k18: a pick a third of the way along the curve but past its
+ * parameter's middle grows the end) to the nearest edge its growth meets
+ * (`splineGrowth`), the spline's own curve one where it is an edge (k32).
+ */
+function planExtendSpline(
+  spline: SplineEntity,
+  click: Vec2,
+  others: readonly Entity[],
+  own: boolean
+): EdgeEditPlan | null {
+  if (spline.closed) return null
+  const run = splineRun(spline)
+  const atEnd = splineParamAt(spline, click) > (run.start + run.end) / 2
+  const growth = splineGrowth(spline, atEnd)
+  const bounds = entitiesBounds([spline, ...others])
+  const size = bounds ? V.distance(bounds.min, bounds.max) + 1 : 1
+  const length = growth.reach(2 * size)
+  const scans = [
+    { start: 0, sweep: length, samples: GROWTH_SCAN },
+    { start: 0, sweep: length / GROWTH_SCAN, samples: GROWTH_START },
+  ].map((range) => ({ at: (t: number) => growth.at(t), ...range }))
+  const from = growth.at(0)
+  const edges: ImplicitEdge[] = [
+    ...others.flatMap(implicitEdges),
+    ...(own ? implicitEdges(spline) : []),
+  ]
+  let best = Infinity
+  for (const edge of edges) {
+    for (const scan of scans) {
+      for (const t of crossingParams(scan, edge)) {
+        // Not the growth leaving the end it starts on.
+        if (V.distance(growth.at(t), from) > 1e-9 * size && t < best) best = t
+      }
+    }
   }
-  return null
+  if (!Number.isFinite(best)) return null
+  const result = splineGrown(spline, atEnd, best)
+  return {
+    kind: "extend",
+    targetId: spline.id,
+    layerId: spline.layerId,
+    result: { kind: "spline", spline: result },
+    added: {
+      kind: "spline",
+      spline: atEnd
+        ? splineCutPiece(result, run.end, run.end + best)
+        : splineCutPiece(result, run.start - best, run.start),
+    },
+  }
 }
 
 // --- Polyline target --------------------------------------------------------

@@ -591,7 +591,9 @@ its length the quadrature's, where AutoCAD's integrator is off in the fourth sig
 too (k15 `17.06187596,7.34503156`). The palette's Weight is the current vertex's on a rational
 spline, −1 on another (d01, d03); a closed CV spline counts its vertices (d04-1: 4), and the
 piece TRIM leaves of one is neither Closed nor Periodic (d04-2). Saved from drawing file version
-38
+38. TRIM, EXTEND, BREAK and BREAKATPOINT leave it so, cut on its own parameter by knot insertion
+(spline-knots/k01–k37: modify.md's TRIM and BREAK): a trimmed one a CV spline, a broken or extended
+fit spline a fit spline
 
 **Missing:** toLerance and Object (not offered: a tolerance above 0 is an approximation Autodesk
 does not document, and there are no spline-fit polylines to convert; AutoCAD asks
@@ -604,10 +606,10 @@ every prompt with a base point has); SPLINEDIT, CVSHOW / CVHIDE, the triangular 
 multifunction grip menus (Stretch / Add / Remove fit point and Tangent direction on a fit point,
 d08-2, d08-3; Stretch / Insert / Refine / Remove vertex on a CV, d09-4), editing the weights
 (SPLINEDIT's Edit vertex Weight, k11; the palette's Weight, which d03 shows editable) and the
-palette's Method, Degree, Knot parameterization, Closed and CV frame; no command makes a spline on
-knots or weights of its own yet (only a file holds one: BREAK and TRIM / EXTEND, then OFFSET, are
-next, roadmap.md); AutoCAD's Area of a self-crossing closed spline (**unverified**); TRIM / EXTEND of a spline an edge reaches (TRIM's row), BREAK (modify.md),
-JOIN / OFFSET / FILLET / HATCH / DIM on a spline or against one; Geometric Center (a closed
+palette's Method, Degree, Knot parameterization, Closed and CV frame; weights only a file or a
+piece of a weighted one holds (OFFSET of a spline, an approximation on knots of its own, is next,
+roadmap.md); AutoCAD's Area of a self-crossing closed spline (**unverified**); JOIN / OFFSET /
+FILLET / HATCH / DIM on a spline or against one; Geometric Center (a closed
 spline's, p311: 10,10 and 40,10; none on an open one, p310, p312), Perpendicular and Tangent on a
 spline (p313, p315, p316) (SPLINE-D51); PEDIT Spline, BLEND
 

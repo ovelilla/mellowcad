@@ -387,13 +387,7 @@ function distinctFitPoints(points: readonly Vec3[], closed: boolean): Vec3[] {
  */
 export function splineWithoutFitData(spline: SplineEntity): SplineEntity {
   const curve = splineCurve(spline)
-  // A closed fit spline on fewer than three distinct points is drawn open.
-  const periodic =
-    isPeriodicSpline(spline) &&
-    (spline.method === "cv"
-      ? spline.points.length >= 2
-      : distinctFitPoints(spline.points, true).length >= 3)
-  const own = periodic ? periodicLoop(curve) : curve
+  const own = drawsPeriodic(spline) ? periodicLoop(curve) : curve
   const rest: Record<string, unknown> = { ...spline }
   for (const field of ["startTangent", "endTangent", "knotVector", "weights"]) {
     delete rest[field]
@@ -411,6 +405,16 @@ export function splineWithoutFitData(spline: SplineEntity): SplineEntity {
     knotVector: own.knots.map((k) => k + 0),
     ...(own.weights ? { weights: [...own.weights] } : {}),
   }
+}
+
+/** Whether its curve is drawn periodic: a closed fit spline on fewer than three distinct points is drawn open. */
+export function drawsPeriodic(spline: SplineEntity): boolean {
+  return (
+    isPeriodicSpline(spline) &&
+    (spline.method === "cv"
+      ? spline.points.length >= 2
+      : distinctFitPoints(spline.points, true).length >= 3)
+  )
 }
 
 /** The palette's Knot parameterization: a fit spline on knots of its own reads Custom (desktop spline-knots/d02). */

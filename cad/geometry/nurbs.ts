@@ -756,6 +756,375 @@ export function periodicLoop(curve: BSplineCurve): BSplineCurve {
   }
 }
 
+/** A control point and its weight as one homogeneous point: (wx, wy, wz, w). */
+type Homogeneous = readonly [number, number, number, number]
+
+function homogeneous(curve: BSplineCurve): Homogeneous[] {
+  return curve.controlPoints.map((p, i) => {
+    const w = curve.weights?.[i] ?? 1
+    return [p.x * w, p.y * w, p.z * w, w]
+  })
+}
+
+/** The curve on homogeneous points, weighed only where `rational`. */
+function fromHomogeneous(
+  degree: number,
+  knots: readonly number[],
+  points: readonly Homogeneous[],
+  rational: boolean
+): BSplineCurve {
+  return {
+    degree,
+    knots,
+    controlPoints: points.map(([x, y, z, w]) => ({
+      x: x / w,
+      y: y / w,
+      z: z / w,
+    })),
+    ...(rational ? { weights: points.map((p) => p[3]) } : {}),
+  }
+}
+
+function mix(a: Homogeneous, b: Homogeneous, t: number): Homogeneous {
+  return [
+    a[0] + (b[0] - a[0]) * t,
+    a[1] + (b[1] - a[1]) * t,
+    a[2] + (b[2] - a[2]) * t,
+    a[3] + (b[3] - a[3]) * t,
+  ]
+}
+
+/** How many times `u` stands in `knots`, compared exactly: a cut is snapped onto a knot first. */
+export function knotMultiplicity(knots: readonly number[], u: number): number {
+  return knots.filter((k) => k === u).length
+}
+
+/**
+ * The same curve with the knot `u` inserted `times` more times (Boehm, Piegl
+ * & Tiller A5.1), a rational one in its homogeneous form — how AutoCAD's
+ * pieces get their knots and control points (probes spline-knots/k01–k08).
+ * `u` lies inside the knot vector, short of its last value.
+ */
+export function bsplineInsertKnot(
+  curve: BSplineCurve,
+  u: number,
+  times: number
+): BSplineCurve {
+  const p = curve.degree
+  let knots = [...curve.knots]
+  let points = homogeneous(curve)
+  for (let n = 0; n < times; n++) {
+    let k = knots.length - 2
+    while (k > 0 && knots[k] > u) k--
+    const next: Homogeneous[] = []
+    for (let i = 0; i <= points.length; i++) {
+      if (i <= k - p) next.push(points[i])
+      else if (i > k) next.push(points[i - 1])
+      else {
+        const alpha = (u - knots[i]) / (knots[i + p] - knots[i])
+        next.push(mix(points[i - 1], points[i], alpha))
+      }
+    }
+    knots = [...knots.slice(0, k + 1), u, ...knots.slice(k + 1)]
+    points = next
+  }
+  return fromHomogeneous(p, knots, points, !!curve.weights)
+}
+
+/**
+ * The curve between `a` and `b` (a < b, both in its domain) as a curve of its
+ * own, clamped on knots of full multiplicity at both ends, the knots between
+ * kept as they were, never normalised: a piece keeps its parameters
+ * (spline-knots/k01–k08). Each cut is inserted until it stands `degree` times.
+ */
+export function bsplineSegment(
+  curve: BSplineCurve,
+  a: number,
+  b: number
+): BSplineCurve {
+  const p = curve.degree
+  let cut = curve
+  for (const u of [a, b]) {
+    cut = bsplineInsertKnot(cut, u, p - knotMultiplicity(cut.knots, u))
+  }
+  const last = cut.knots.lastIndexOf(a)
+  const first = cut.knots.indexOf(b)
+  const ends = (u: number) => new Array<number>(p + 1).fill(u)
+  return {
+    degree: p,
+    knots: [...ends(a), ...cut.knots.slice(last + 1, first), ...ends(b)],
+    controlPoints: cut.controlPoints.slice(last - p, first),
+    ...(cut.weights ? { weights: cut.weights.slice(last - p, first) } : {}),
+  }
+}
+
+/**
+ * The same curve with each knot inside its domain standing as often as it
+ * does in `knots`, where it stands less: a fit spline whose own knots repeat
+ * one AutoCAD keeps (k07's triple seam knot) cuts on them as AutoCAD's does.
+ */
+export function bsplineRaised(
+  curve: BSplineCurve,
+  knots: readonly number[]
+): BSplineCurve {
+  const { start, end } = bsplineDomain(curve)
+  let raised = curve
+  for (const u of new Set(knots)) {
+    if (u <= start || u >= end) continue
+    const more = knotMultiplicity(knots, u) - knotMultiplicity(raised.knots, u)
+    if (more > 0) raised = bsplineInsertKnot(raised, u, more)
+  }
+  return raised
+}
+
+/**
+ * Two turns of a closed curve, one after the other, its parameter running on
+ * by the period, so a piece may run across its seam: a periodic one
+ * ({@link periodicCurve}'s form) unwrapped over two periods, a clamped one
+ * joined to itself at its seam, a knot of `degree` there.
+ */
+export function bsplineTwoTurns(
+  curve: BSplineCurve,
+  periodic: boolean
+): BSplineCurve {
+  const p = curve.degree
+  if (periodic) {
+    const loop = periodicLoop(curve)
+    const period = loop.knots[loop.knots.length - 1] - loop.knots[0]
+    return periodicCurve(
+      [...loop.controlPoints, ...loop.controlPoints],
+      p,
+      [...loop.knots, ...loop.knots.slice(1).map((k) => k + period)],
+      loop.weights && [...loop.weights, ...loop.weights]
+    )
+  }
+  const { start, end } = bsplineDomain(curve)
+  const period = end - start
+  const clamped = bsplineSegment(curve, start, end)
+  return {
+    degree: p,
+    knots: [
+      ...clamped.knots.slice(0, -1),
+      ...clamped.knots.slice(p + 1).map((k) => k + period),
+    ],
+    controlPoints: [
+      ...clamped.controlPoints,
+      ...clamped.controlPoints.slice(1),
+    ],
+    ...(clamped.weights
+      ? { weights: [...clamped.weights, ...clamped.weights.slice(1)] }
+      : {}),
+  }
+}
+
+/**
+ * A curve grown past one end: its points `t` on from the end, the parameter
+ * running on outward, and the curve it makes grown by `t` — the old knots and
+ * control points kept, the growth a piece of its own behind a knot of
+ * `degree` (spline-knots/k10, k17), its parameter running on from the end's
+ * (backwards from the start, k18, k19).
+ */
+export interface BSplineGrowth {
+  at(t: number): Vec3
+  grown(t: number): BSplineCurve
+  /** A `t` the growth has gone `distance` or more from the end by, roughly. */
+  reach(distance: number): number
+}
+
+/** The end's point, first and second derivative, homogeneous, the parameter running outward. */
+function homogeneousJet(
+  curve: BSplineCurve,
+  atEnd: boolean
+): [Homogeneous, Homogeneous, Homogeneous] {
+  const u = atEnd ? bsplineDomain(curve).end : bsplineDomain(curve).start
+  const lifted = (axis: number): BSplineCurve => ({
+    degree: curve.degree,
+    knots: curve.knots,
+    controlPoints: homogeneous(curve).map((h) => ({ x: h[axis], y: 0, z: 0 })),
+  })
+  const jet: [number[], number[], number[]] = [[], [], []]
+  for (let axis = 0; axis < 4; axis++) {
+    let c = lifted(axis)
+    for (let order = 0; order < 3; order++) {
+      const value = bsplinePoint(c, u).x
+      jet[order].push(order === 1 && !atEnd ? -value : value)
+      c = bsplineDerivativeCurve(c)
+    }
+  }
+  return jet as unknown as [Homogeneous, Homogeneous, Homogeneous]
+}
+
+/**
+ * The Bézier points, at `degree`, of the polynomial Σ cₖ tᵏ over [0, h]:
+ * by its blossom, Qᵢ = Σ cₖ hᵏ C(i, k) / C(degree, k). A term above the
+ * degree is dropped.
+ */
+function polynomialBezier(
+  coefficients: readonly Homogeneous[],
+  degree: number,
+  h: number
+): Homogeneous[] {
+  const choose = (n: number, k: number): number => {
+    let c = 1
+    for (let j = 1; j <= k; j++) c = (c * (n - k + j)) / j
+    return k > n ? 0 : c
+  }
+  return Array.from({ length: degree + 1 }, (_, i) => {
+    const q: number[] = [0, 0, 0, 0]
+    coefficients.forEach((c, k) => {
+      if (k > degree) return
+      const f = (h ** k * choose(i, k)) / choose(degree, k)
+      for (let axis = 0; axis < 4; axis++) q[axis] += c[axis] * f
+    })
+    return q as unknown as Homogeneous
+  })
+}
+
+/**
+ * The curve with a Bézier piece of parameter length `h` joined at its end
+ * (`bezier` from the end outward), clamped there: the old end's knot then
+ * stands `degree` times.
+ */
+function withPiece(
+  curve: BSplineCurve,
+  atEnd: boolean,
+  bezier: readonly Homogeneous[],
+  h: number
+): BSplineCurve {
+  const p = curve.degree
+  const { start, end } = bsplineDomain(curve)
+  const points = homogeneous(curve)
+  const rational = !!curve.weights || bezier.some((q) => q[3] !== 1)
+  const outer = (u: number) => new Array<number>(p + 1).fill(u)
+  if (atEnd) {
+    return fromHomogeneous(
+      p,
+      [...curve.knots.slice(0, -1), ...outer(end + h)],
+      [...points, ...bezier.slice(1)],
+      rational
+    )
+  }
+  return fromHomogeneous(
+    p,
+    [...outer(start - h), ...curve.knots.slice(1)],
+    [...bezier.slice(1).reverse(), ...points],
+    rational
+  )
+}
+
+function clampedCurve(curve: BSplineCurve): BSplineCurve {
+  const { start, end } = bsplineDomain(curve)
+  return bsplineSegment(curve, start, end)
+}
+
+function pointOf(h: Homogeneous): Vec3 {
+  return { x: h[0] / h[3], y: h[1] / h[3], z: h[2] / h[3] }
+}
+
+/** How far a growth of speed `speed` and bend `bend` takes to go `distance`. */
+function reachOf(speed: number, bend: number, distance: number): number {
+  if (bend <= 1e-300) return distance / Math.max(speed, 1e-300)
+  return (-speed + Math.sqrt(speed * speed + 2 * bend * distance)) / bend
+}
+
+/**
+ * A CV spline grows by its end's second-order Taylor polynomial, in its
+ * homogeneous form: the end's point, tangent and second derivative kept, a
+ * curved piece AutoCAD's EXTEND leaves, the edge found on it (spline-knots/
+ * k10's `43.2049…, 12.4037…`, k18, k31's weights). A curve of degree one
+ * grows straight.
+ */
+export function bsplineTaylorGrowth(
+  curve: BSplineCurve,
+  atEnd: boolean
+): BSplineGrowth {
+  const clamped = clampedCurve(curve)
+  const [c0, c1, c2] = homogeneousJet(clamped, atEnd)
+  const half: Homogeneous = [c2[0] / 2, c2[1] / 2, c2[2] / 2, c2[3] / 2]
+  const terms = clamped.degree >= 2 ? [c0, c1, half] : [c0, c1]
+  const { first, second } = bsplineDifferentials(clamped)
+  const { start, end } = bsplineDomain(clamped)
+  const u = atEnd ? end : start
+  return {
+    at: (t) => {
+      const h: number[] = [0, 0, 0, 0]
+      terms.forEach((c, k) => {
+        for (let axis = 0; axis < 4; axis++) h[axis] += c[axis] * t ** k
+      })
+      return pointOf(h as unknown as Homogeneous)
+    },
+    grown: (t) =>
+      withPiece(clamped, atEnd, polynomialBezier(terms, clamped.degree, t), t),
+    reach: (distance) =>
+      reachOf(length3(first(u)), length3(second(u)), distance),
+  }
+}
+
+/**
+ * A fit spline grows straight on along its end's tangent, behind a piece
+ * that eases its curvature off: a cubic keeping the end's point, tangent and
+ * second derivative, its second derivative falling to none over a parameter
+ * length that is the second derivative's own length, `|C″|` — measured,
+ * AutoCAD 2027 documents no rule (spline-knots/k32 `0.5470`, k35 `0.0652`,
+ * the lengths of the `C″` there to the digit) —, then a line as fast as the
+ * piece ends. A free end has no curvature: it grows straight at once (k17,
+ * k19). Its fit points are the ends of the pieces (k17, k32, k35).
+ */
+export function bsplineEasedGrowth(
+  curve: BSplineCurve,
+  atEnd: boolean
+): BSplineGrowth {
+  const clamped = clampedCurve(curve)
+  const { start, end } = bsplineDomain(clamped)
+  const u = atEnd ? end : start
+  const { first, second } = bsplineDifferentials(clamped)
+  const c = bsplinePoint(clamped, u)
+  const d1 = scale3(first(u), atEnd ? 1 : -1)
+  const d2 = second(u)
+  const speed = length3(d1)
+  const ease = length3(d2) > 1e-10 * Math.max(1, speed) ? length3(d2) : 0
+  const lift = (v: Vec3): Homogeneous => [v.x, v.y, v.z, 0]
+  const at = (v: Vec3): Homogeneous => [v.x, v.y, v.z, 1]
+  const eased =
+    ease > 0
+      ? [
+          at(c),
+          lift(d1),
+          lift(scale3(d2, 1 / 2)),
+          lift(scale3(d2, -1 / (6 * ease))),
+        ]
+      : [at(c), lift(d1)]
+  const easedAt = (t: number): Vec3 =>
+    add3(
+      add3(c, scale3(d1, t)),
+      ease > 0
+        ? scale3(d2, (t * t) / 2 - (t * t * t) / (6 * ease))
+        : { x: 0, y: 0, z: 0 }
+    )
+  const bend = easedAt(ease)
+  const onward = add3(d1, scale3(d2, ease / 2))
+  const line = [at(bend), lift(onward)]
+  return {
+    at: (t) => (t <= ease ? easedAt(t) : add3(bend, scale3(onward, t - ease))),
+    grown: (t) => {
+      const eased1 = withPiece(
+        clamped,
+        atEnd,
+        polynomialBezier(eased, 3, Math.min(t, ease || t)),
+        Math.min(t, ease || t)
+      )
+      if (t <= ease || ease === 0) return eased1
+      return withPiece(
+        eased1,
+        atEnd,
+        polynomialBezier(line, 3, t - ease),
+        t - ease
+      )
+    },
+    reach: (distance) => ease + distance / Math.max(length3(onward), 1e-300),
+  }
+}
+
 /**
  * Gaussian elimination with partial pivoting, for the small systems a fit
  * sets up (one row per fit point). A singular system — two fit points on the
