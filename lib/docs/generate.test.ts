@@ -2,7 +2,7 @@ import { describe, expect, test } from "vitest"
 
 import { routing } from "@/i18n/routing"
 
-import { commandsPage, pageFile } from "./generate"
+import { commandsPage, pageFile, shortcutsPage } from "./generate"
 import { githubAnchor } from "./use"
 
 // The generated pages are file snapshots: a catalog, a message or a coverage
@@ -11,6 +11,12 @@ describe.each(routing.locales)("the generated pages in %s", (locale) => {
   test("commands", async () => {
     await expect(await commandsPage(locale)).toMatchFileSnapshot(
       `../../content/docs/${pageFile("commands", locale)}`
+    )
+  })
+
+  test("shortcuts", async () => {
+    await expect(await shortcutsPage(locale)).toMatchFileSnapshot(
+      `../../content/docs/${pageFile("shortcuts", locale)}`
     )
   })
 })

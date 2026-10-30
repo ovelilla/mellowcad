@@ -284,12 +284,43 @@
         "title": "Comandos",
         "description": "Cada comando de AutoCAD que ejecuta MellowCAD, por grupo de la cinta: su nombre, sus alias y lo primero que pregunta.",
         "lead": "Cada comando como se escribe en la línea de comandos, con el nombre que tiene en AutoCAD en español, bajo el grupo de la cinta donde lo buscarías. Con un guion bajo delante se escribe el nombre inglés, como en AutoCAD (`_LINE`). La primera solicitud es la del propio motor: el mismo orden y las mismas letras de opción que verás al ejecutarlo."
+      },
+      "shortcuts": {
+        "title": "Atajos de teclado",
+        "description": "Las teclas que responde MellowCAD: las ayudas al dibujo, la edición y los archivos, la ventana y la línea de comandos.",
+        "lead": "Las teclas que responde MellowCAD, las que un usuario de AutoCAD ya tiene en los dedos. Cada comando se nombra como lo escribirías; sus alias están en la página de comandos."
       }
     },
     "reference": {
       "aliases": "Alias",
       "firstPrompt": "Primera solicitud",
       "coverage": "Qué hace y qué le falta, en detalle (en inglés)"
+    },
+    "shortcuts": {
+      "key": "Tecla",
+      "action": "Qué hace",
+      "command": "Comando",
+      "sections": {
+        "aids": "Ayudas al dibujo",
+        "editing": "Edición y archivos",
+        "window": "Ventana",
+        "commandLine": "Línea de comandos"
+      },
+      "selectAll": "Seleccionar todos los objetos",
+      "enter": "Ejecuta lo escrito. Sin nada escrito toma el valor por defecto de la solicitud o termina el comando, y sin un comando en curso repite el último.",
+      "escape": "Cancela el comando en curso; un primer Esc borra lo que está a medio escribir.",
+      "recall": "Sin un comando en curso, recupera los comandos escritos antes.",
+      "complete": "Completa el nombre del comando que se escribe; al pedir un punto, recorre las referencias a objetos bajo el cursor.",
+      "cycle": "Recorre los objetos superpuestos bajo el cursor mientras el ciclo de selección muestra su indicador."
+    },
+    "keys": {
+      "shift": "Mayús",
+      "space": "Espacio",
+      "enter": "Intro",
+      "escape": "Esc",
+      "tab": "Tab",
+      "up": "↑",
+      "down": "↓"
     },
     "types": {
       "gettingStarted": "Primeros pasos",

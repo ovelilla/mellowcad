@@ -1,15 +1,29 @@
 import { readFileSync, readdirSync } from "node:fs"
 import { join } from "node:path"
 
-import { demo, recordDemo, type EngineLocale } from "@mellowcad/engine"
+import {
+  commandCatalog,
+  demo,
+  recordDemo,
+  type EngineLocale,
+} from "@mellowcad/engine"
+import type { EditorLocale } from "@mellowcad/editor"
+import { en as editorEnglish } from "@mellowcad/editor/locales/en"
 
 import { COMMAND_GROUPS } from "@/content/commands"
+import { loadEditorLocale } from "@/i18n/editor"
 import { loadEngineLocale } from "@/i18n/engine"
 import { DIRECTION, routing, type AppLocale } from "@/i18n/routing"
 import { autocadCommands } from "@/lib/facts"
 import { REPOSITORY_URL } from "@/lib/site"
 import en from "@/messages/en.json"
 
+import {
+  SHORTCUT_SECTIONS,
+  type KeyCombo,
+  type Shortcut,
+  type ShortcutMode,
+} from "./shortcuts"
 import { COVERAGE_DIR, githubAnchor } from "./use"
 
 /**
@@ -116,6 +130,95 @@ export async function commandsPage(locale: AppLocale): Promise<string> {
       )
     }
   }
+  return `${frontmatter({
+    title: page.title,
+    description: page.description,
+    type: "reference",
+    generated: GENERATOR,
+  })}\n${blocks.join("\n\n")}\n`
+}
+
+/** Where the editor's catalog names each mode: its status bar or command line. */
+const MODE_LABELS: Record<ShortcutMode, readonly [string, string]> = {
+  commandHistory: ["CommandLine", "history"],
+  commandLine: ["CommandLine", "label"],
+  objectSnap: ["StatusBar", "objectSnap"],
+  selectionCycling: ["StatusBar", "selectionCycling"],
+  grid: ["StatusBar", "grid"],
+  ortho: ["StatusBar", "ortho"],
+  snapMode: ["StatusBar", "snapMode"],
+  polarTracking: ["StatusBar", "polarTracking"],
+  objectSnapTracking: ["StatusBar", "objectSnapTracking"],
+}
+
+/** A plain message of the editor's catalog, English where `locale` has none. */
+function editorText(locale: EditorLocale | undefined, [group, key]: readonly [string, string]): string {
+  for (const catalog of [locale, editorEnglish]) {
+    const messages = catalog?.messages as Record<string, Record<string, unknown> | undefined> | undefined
+    const text = messages?.[group]?.[key]
+    if (typeof text === "string") return text
+  }
+  throw new Error(`The editor's catalog has no ${group}.${key}`)
+}
+
+/** A key combination as the page's language prints it (`Ctrl+Mayús+S`). */
+function comboText(combo: KeyCombo, keys: Messages["Docs"]["keys"]): string {
+  const named: Record<string, string> = {
+    " ": keys.space,
+    Enter: keys.enter,
+    Escape: keys.escape,
+    Tab: keys.tab,
+    ArrowUp: keys.up,
+    ArrowDown: keys.down,
+  }
+  return [combo.ctrl && "Ctrl", combo.shift && keys.shift, named[combo.key] ?? combo.key]
+    .filter(Boolean)
+    .join("+")
+}
+
+/**
+ * The keyboard shortcuts, by section: each key as the page's language prints
+ * it, what it does in the words of whatever names it — the engine's catalog
+ * for a command, the editor's for a mode, the messages for the rest — and
+ * the command it runs, in the page's command language.
+ */
+export async function shortcutsPage(locale: AppLocale): Promise<string> {
+  const t = await messages(locale)
+  const engineLocale = await loadEngineLocale(locale)
+  const editorLocale = await loadEditorLocale(locale)
+  const catalog = new Map(commandCatalog(engineLocale).map((command) => [command.id, command]))
+  const command = (id: string) => {
+    const found = catalog.get(id)
+    if (!found) throw new Error(`No command ${id} in the engine's catalog`)
+    return found
+  }
+  const labels = t.Docs.shortcuts
+  const describe = ({ action }: Shortcut): [string, string] => {
+    if ("command" in action) {
+      return [
+        prose(command(action.command[0]).description),
+        action.command.map((id) => code(command(id).name)).join(" / "),
+      ]
+    }
+    if ("mode" in action) return [prose(editorText(editorLocale, MODE_LABELS[action.mode])), ""]
+    return [markdown(labels[action.behaviour]), ""]
+  }
+  const blocks: string[] = [markdown(t.Docs.pages.shortcuts.lead)]
+  for (const section of SHORTCUT_SECTIONS) {
+    const rows = (section.shortcuts as readonly Shortcut[]).map((shortcut) => {
+      const keys = shortcut.keys.map((combo) => code(comboText(combo, t.Docs.keys))).join(", ")
+      return `| ${[keys, ...describe(shortcut)].join(" | ")} |`
+    })
+    blocks.push(
+      `## ${prose(labels.sections[section.id])} [#${section.id.toLowerCase()}]`,
+      [
+        `| ${prose(labels.key)} | ${prose(labels.action)} | ${prose(labels.command)} |`,
+        "| --- | --- | --- |",
+        ...rows,
+      ].join("\n")
+    )
+  }
+  const page = t.Docs.pages.shortcuts
   return `${frontmatter({
     title: page.title,
     description: page.description,

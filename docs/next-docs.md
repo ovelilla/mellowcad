@@ -1,6 +1,6 @@
 # mellowcad.com: producto y documentación — brief
 
-> **Estado:** acordado el 2026-10-30; fases 1 y 2 hechas el mismo día, la 3 en curso (entrega 1 de 5). Sigue la
+> **Estado:** acordado el 2026-10-30; fases 1 y 2 hechas el mismo día, la 3 en curso (entregas 1 y 2 de 5). Sigue la
 > convención de `docs/next-*.md`: se borra cuando la fase 3 haya ocurrido.
 
 ## 1. Objetivo
@@ -130,7 +130,7 @@ Cuatro páginas bajo _Usar MellowCAD_, con slugs sin traducir y un fichero por i
 | Entrega | Qué                                    | De dónde sale cada dato                                                                                                                                                                                                                                                                                     |
 | ------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | 1       | Referencia de comandos y la estructura | Por grupo de la cinta (`COMMAND_FILING`, títulos de `Groups`): nombre, alias y descripción de `autocadCommands(locale)`; la primera pregunta de cada comando, grabada con `recordDemo` en el idioma (orden, palabras clave y valor por defecto del motor); el enlace a su entrada de `docs/coverage/`, que debe existir |
-| 2       | Atajos                                 | lib/docs/shortcuts.ts (tecla y lo que hace: un comando o un modo); el test pulsa cada tecla en el arnés y comprueba el efecto, y barre F1–F12 y Ctrl/Ctrl+Mayús con letra o cifra: lo que `keyDown` consume y no está en la lista falla. Nombres: el comando del catálogo del motor, el modo de `StatusBar` del editor |
+| 2       | Atajos                                 | `lib/docs/shortcuts.ts` (tecla y lo que hace: un comando o un modo); el test pulsa cada tecla en el arnés y comprueba el efecto, y barre F1–F12 y Ctrl/Ctrl+Mayús con letra o cifra: lo que `keyDown` consume y no está en la lista falla. Nombres: el comando del catálogo del motor, el modo de `StatusBar` del editor |
 | 3       | Diferencias con AutoCAD                | Escrita en tres idiomas; cada sección (`## … [#id]`) está en lib/docs/differences.ts con su fuente, un `WHY` en el código o su entrada de cobertura, y una cita literal que `docs:check` busca en ese fichero: si la desviación desaparece, la página falla                                                             |
 | 4       | Primeros pasos                         | Escrita en tres idiomas, corta: abrir `/draw`, la línea de comandos, responder a una pregunta (punto, coordenada, opción, Intro, Esc), las ayudas al dibujo, deshacer, guardar; las figuras con `<Session>` y los nombres con `<Command>`                                                                     |
 | 5       | F1                                     | La ayuda del comando en curso, como AutoCAD, si la skill `autocad-research` confirma qué hace F1 en 2027 y Chrome deja que la página lo tome (`kReservedCommandIds`); si no, se anota aquí y en cobertura por qué no                                                                                            |

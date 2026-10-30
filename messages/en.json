@@ -284,12 +284,43 @@
         "title": "Commands",
         "description": "Every AutoCAD command MellowCAD runs, by ribbon panel: its name, its aliases and the first thing it asks.",
         "lead": "Each command as you type it at the command line, filed under the ribbon panel you would look for it on. The first prompt is the engine's own: the same order and the same option letters you will see when you run it."
+      },
+      "shortcuts": {
+        "title": "Keyboard shortcuts",
+        "description": "The keys MellowCAD answers: the drafting aids, editing and files, the window and the command line.",
+        "lead": "The keys MellowCAD answers, the ones an AutoCAD user already has in their fingers. A command is named as you would type it; its aliases are on the commands page."
       }
     },
     "reference": {
       "aliases": "Aliases",
       "firstPrompt": "First prompt",
       "coverage": "What it does and still lacks, in detail (in English)"
+    },
+    "shortcuts": {
+      "key": "Key",
+      "action": "What it does",
+      "command": "Command",
+      "sections": {
+        "aids": "Drafting aids",
+        "editing": "Editing and files",
+        "window": "Window",
+        "commandLine": "Command line"
+      },
+      "selectAll": "Select every object",
+      "enter": "Runs what is typed. With nothing typed it takes the prompt's default or ends the command, and with no command running it repeats the last one.",
+      "escape": "Cancels the running command; a first Esc clears what is half typed.",
+      "recall": "With no command running, brings back the commands typed before.",
+      "complete": "Completes the command name being typed; at a point prompt, steps through the object snaps under the cursor.",
+      "cycle": "Steps through the overlapping objects under the cursor while selection cycling shows its badge."
+    },
+    "keys": {
+      "shift": "Shift",
+      "space": "Space",
+      "enter": "Enter",
+      "escape": "Esc",
+      "tab": "Tab",
+      "up": "↑",
+      "down": "↓"
     },
     "types": {
       "gettingStarted": "Getting started",

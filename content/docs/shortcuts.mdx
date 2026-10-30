@@ -1,0 +1,54 @@
+---
+title: "Keyboard shortcuts"
+description: "The keys MellowCAD answers: the drafting aids, editing and files, the window and the command line."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+---
+
+The keys MellowCAD answers, the ones an AutoCAD user already has in their fingers. A command is named as you would type it; its aliases are on the commands page.
+
+## Drafting aids [#aids]
+
+| Key | What it does | Command |
+| --- | --- | --- |
+| `F2` | Command history |  |
+| `F3` | Object snap |  |
+| `F4` | Selection cycling |  |
+| `F7` | Grid |  |
+| `F8`, `Ctrl+L` | Ortho mode |  |
+| `F9` | Snap mode |  |
+| `F10` | Polar tracking |  |
+| `F11` | Object snap tracking |  |
+
+## Editing and files [#editing]
+
+| Key | What it does | Command |
+| --- | --- | --- |
+| `Ctrl+Z` | Undo the last action | `U` |
+| `Ctrl+Y`, `Ctrl+Shift+Z` | Multiple redo | `MREDO` |
+| `Ctrl+C` | Copy | `COPYCLIP` |
+| `Ctrl+Shift+C` | Copy with base point | `COPYBASE` |
+| `Ctrl+X` | Cut | `CUTCLIP` |
+| `Ctrl+V` | Paste the clipboard into the drawing | `PASTECLIP` |
+| `Ctrl+A` | Select every object |  |
+| `Ctrl+S` | Save the drawing to a file | `QSAVE` |
+| `Ctrl+Shift+S` | Save the drawing to a file under a new name | `SAVEAS` |
+| `Ctrl+O` | Open a drawing file | `OPEN` |
+
+## Window [#window]
+
+| Key | What it does | Command |
+| --- | --- | --- |
+| `Ctrl+1` | Show the properties of the selected objects | `PROPERTIES` / `PROPERTIESCLOSE` |
+| `Ctrl+0` | Clear toolbars and palettes from the screen | `CLEANSCREENON` / `CLEANSCREENOFF` |
+| `Ctrl+9` | Command line |  |
+
+## Command line [#commandline]
+
+| Key | What it does | Command |
+| --- | --- | --- |
+| `Enter`, `Space` | Runs what is typed. With nothing typed it takes the prompt's default or ends the command, and with no command running it repeats the last one. |  |
+| `Esc` | Cancels the running command; a first Esc clears what is half typed. |  |
+| `↑`, `↓` | With no command running, brings back the commands typed before. |  |
+| `Tab` | Completes the command name being typed; at a point prompt, steps through the object snaps under the cursor. |  |
+| `Shift+Space` | Steps through the overlapping objects under the cursor while selection cycling shows its badge. |  |
