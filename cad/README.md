@@ -5,8 +5,11 @@ snaps. It has no framework and no DOM outside `adapters/`: `CadEngine` binds it 
 everything else — the runtime, the tools, the scene — runs headless, in a browser, on a server or
 in a test.
 
-It is the package `@mellowcad/engine`, ESM only, not published yet: a private npm workspace that
-the app imports by name.
+It is the package `@mellowcad/engine`, ESM only:
+
+```sh
+npm install @mellowcad/engine
+```
 
 ## Entry points
 

@@ -24,11 +24,13 @@ paths:
 # The packages
 
 > Verified against **tsdown 0.23.2**, **publint 0.3.25**, **@arethetypeswrong/cli 0.18.5**,
-> **@rolldown/plugin-babel 0.2.4**, **babel-plugin-react-compiler 1.0.0**, **tailwindcss 4.3.3**.
+> **@rolldown/plugin-babel 0.2.4**, **babel-plugin-react-compiler 1.0.0**, **tailwindcss 4.3.3**,
+> **@changesets/cli 3.0.3**.
 
 `cad/` is the npm workspace `@mellowcad/engine`, `packages/react` is `@mellowcad/react` and
-`packages/editor` is `@mellowcad/editor`, in place and private until they are published
-(`docs/next-library.md`). The engine is a peer of the others, never a dependency: a host has one
+`packages/editor` is `@mellowcad/editor`, in place (`docs/next-library.md`). The engine is
+publishable (`publishConfig.access` public: a scoped package is restricted by default); react and
+the editor stay `private` until theirs. The engine is a peer of the others, never a dependency: a host has one
 instance; so is `@mellowcad/react` of the editor. Each is MIT, as the repo: `"license": "MIT"` and a
 copy of the root `LICENSE`, which npm packs whatever `files` lists; its README ends with the
 license and the Autodesk trademark note.
@@ -117,6 +119,8 @@ license and the Autodesk trademark note.
   (`npx changeset`), and `npm run version-packages` bumps, writes the changelogs and moves the
   examples' ranges. Changesets 3 gives a peer dependent whose range the bump leaves behind a
   patch and a new range, never a major. Every package has `repository` with its `directory`:
-  npm resolves the READMEs' relative links by it.
+  npm resolves the READMEs' relative links by it. `npm publish --dry-run -w cad` runs the whole
+  `check:hosts`: `hosts.ts` drops the `npm_config_dry_run` it exports, or no `npm pack` would
+  write a tarball.
 - A runtime dependency of the engine goes in `cad/package.json`'s `dependencies` (today only
   `icu-minify`), never only in the root's.

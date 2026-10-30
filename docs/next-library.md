@@ -1,6 +1,7 @@
 # MellowCAD como librería — brief
 
-> **Estado:** fases 1, 2, 3, 4 y 5 hechas (2026-10-30); las demás, sin ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
+> **Estado:** fases 1, 2, 3, 4 y 5 hechas (2026-10-30); de la 6, la parte local (2026-10-30), y
+> lo de fuera espera el sí del dueño; las demás, sin ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
 > análisis completo, con el inventario medido, las fuentes fechadas, el spike y el pase adversarial,
 > está en https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama
 > local worktree-agent-a498997d3f29c107f (commit b1c7923), sin empujar.
@@ -471,10 +472,26 @@ son días de sesión.
    fallan el test en cuanto Changesets cambie una versión, así que la versión los mueve con ella;
    «not published yet» sale de los tres READMEs; `check:hosts` necesita red, y el del editor
    también Google Fonts (next/font).
-6. **Publicar el motor 0.1.0** — 2–3 días, tras la 2. Métricas de texto desde una fuente OFL,
-   LICENSE MIT, nota de marca, auditoría del historial, Changesets, quitar `private`. Con el sí del
-   dueño: repo público, primera publicación desde su máquina con 2FA, trusted publisher, y el CI de
-   vuelta (gratis en un repo público).
+6. **Publicar el motor 0.1.0** — la parte local, **hecha** (279fd84, 19446e0, f11dfa6, 23e5dad,
+   a83d5bc y el de la 0.1.0). Métricas de texto: todas de Arimo salvo la escala de AutoCAD
+   (H = 1466, p301); Arimo tiene las anchuras y la línea de Arial pero no sus contornos (su H mide
+   1409), así que la tinta se aparta un poco de la de AutoCAD (82 tests, con los valores de AutoCAD
+   al lado). En producción, solo cambian el chunk del motor, una línea de la brida de la landing (la
+   directriz de la cota de diámetro, 0,1 unidades del SVG) y las imágenes OG que la dibujan; /draw
+   en reposo, idéntico píxel a píxel. LICENSE MIT a nombre del dueño en el repo y en cada paquete,
+   y la nota de marca al final de cada README (la landing ya la tenía). Auditoría de los 12.134
+   blobs de las 530 versiones: ningún secreto; `research/` y `.env*` nunca versionados; quedan
+   para el sí del dueño `SEO-TRAFFIC-DROP-INVESTIGATION.md` (otros dominios de la cuenta de Vercel
+   y su analítica, en la raíz y en el historial) y el email personal de autor en los 530 commits.
+   Changesets 3.0.3 (`access` público, versiones independientes; el patch, no el major, para quien
+   se queda fuera de rango por peer) y `npm run version-packages`, que mueve los rangos de
+   `examples/`. El motor, 0.1.0 sin `private` y con `publishConfig.access` público; react y el
+   editor, 0.0.1 privados (el peer `^0.0.0` ya no admitía la 0.1.0). `npm publish --dry-run -w cad`
+   en verde con su `check:hosts`: 295 ficheros, 748,7 kB (2,7 MB sin comprimir), solo `dist`,
+   README, LICENSE y package.json. Hallado y arreglado: dentro de `npm publish --dry-run`, el
+   `npm pack` de attw no escribía el tarball (`npm_config_dry_run` heredado). Con el sí del
+   dueño: la org, repo público, primera publicación desde su máquina con 2FA, trusted publisher,
+   y el CI de vuelta (gratis en un repo público).
 7. **Publicar react y editor 0.1.0** — 1 día, cuando el ritmo de `packages/editor` baje y terminen las
    revisiones de comandos.
 8. **Registro shadcn** — bajo demanda, tras la 7.

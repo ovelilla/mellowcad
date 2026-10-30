@@ -8,9 +8,9 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@mellowcad/editor": "^0.0.0",
-    "@mellowcad/engine": "^0.0.0",
-    "@mellowcad/react": "^0.0.0",
+    "@mellowcad/editor": "^0.0.1",
+    "@mellowcad/engine": "^0.1.0",
+    "@mellowcad/react": "^0.0.1",
     "react": "19.3.1",
     "react-dom": "19.3.1"
   },

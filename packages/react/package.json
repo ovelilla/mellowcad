@@ -1,6 +1,6 @@
 {
   "name": "@mellowcad/react",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "license": "MIT",
   "repository": {
     "type": "git",
@@ -27,7 +27,7 @@
     "prepublishOnly": "npm run check:hosts"
   },
   "peerDependencies": {
-    "@mellowcad/engine": "^0.0.0",
+    "@mellowcad/engine": "^0.1.0",
     "react": "^19.0.0"
   },
   "devDependencies": {
