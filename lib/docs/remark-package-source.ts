@@ -86,6 +86,17 @@ export function remarkPackageSource() {
         parent.children.splice(parent.children.indexOf(node as never), 1)
         return
       }
+      // An API report heads each entry point with its `exports` key (`.`,
+      // `./locales/es`); the page names it as a host imports it.
+      if (apiReport && node.type === "heading" && node.depth === 2) {
+        const [text] = node.children
+        if (node.children.length !== 1 || text.type !== "text") return
+        if (!/^\.(\/\S*)?$/.test(text.value)) return
+        const entry = `${pkg.name}${text.value.slice(1)}`
+        node.children = [{ type: "inlineCode", value: entry }]
+        replaceSource(file, node, `## \`${entry}\``)
+        return
+      }
       if (node.type === "link") {
         const link = node as Link
         const url = resolvePackageLink(link.url, pkg.dir, root)

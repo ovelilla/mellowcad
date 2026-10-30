@@ -272,18 +272,18 @@ export default async function DocsPageRoute({
         />
       </div>
       <div className="grid gap-10 py-10 lg:grid-cols-[14rem_minmax(0,1fr)] xl:grid-cols-[14rem_minmax(0,1fr)_13rem] lg:py-12">
-        <aside className="hidden lg:block">
+        <div className="hidden lg:block">
           <div className="sticky top-24">{nav}</div>
-        </aside>
+        </div>
         <div className="min-w-0">
           {page ? <DocsArticle page={page} locale={locale} /> : <DocsIndex locale={locale} />}
         </div>
         {page && (
-          <aside className="hidden xl:block">
+          <div className="hidden xl:block">
             <div className="sticky top-24 max-h-[calc(100svh-8rem)] overflow-y-auto">
               <DocsToc items={page.data.toc} title={t("onThisPage")} />
             </div>
-          </aside>
+          </div>
         )}
       </div>
     </div>
