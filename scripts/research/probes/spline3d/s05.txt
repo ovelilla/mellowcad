@@ -1,0 +1,9 @@
+_SPLINE
+0,0
+10,10,7
+20,0
+
+_UCS
+_OB
+_L
+(list (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR"))

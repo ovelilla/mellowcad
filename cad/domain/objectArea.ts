@@ -10,7 +10,7 @@ import {
 import { Entity, HatchEntity, HatchLoop } from "./entityTypes"
 import { hatchLoopRing, hatchLoopSegments } from "./hatch"
 import { polylineArea, polylineLength } from "./polylines"
-import { splineArea, splineLength } from "./splines"
+import { isLevelSpline, splineArea, splineLength } from "./splines"
 import { isLevelPolyline3d, polyline3dLength } from "./polylines3d"
 
 /**
@@ -27,7 +27,7 @@ export interface ObjectArea {
 
 /**
  * Null for an object AutoCAD says "does not have an area" (a line, an arc,
- * text), and for a 3D polyline that does not lie level, which it refuses in
+ * text, a spline in no plane), and for a 3D polyline that does not lie level, which it refuses in
  * words of its own (3dpoly/p15).
  */
 export function objectArea(entity: Entity): ObjectArea | null {
@@ -66,11 +66,15 @@ export function objectArea(entity: Entity): ObjectArea | null {
           }
         : null
     case "spline":
-      return {
-        area: splineArea(entity),
-        around: splineLength(entity),
-        measured: entity.closed ? "perimeter" : "length",
-      }
+      // One in no plane has none (spline3d/s01, s14); one in a tilted plane
+      // measures in it (s02).
+      return isLevelSpline(entity)
+        ? {
+            area: splineArea(entity),
+            around: splineLength(entity),
+            measured: entity.closed ? "perimeter" : "length",
+          }
+        : null
     case "hatch":
       return {
         area: hatchArea(entity),

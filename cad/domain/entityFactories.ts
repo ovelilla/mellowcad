@@ -25,13 +25,11 @@ import {
   Entity,
 } from "./entityTypes"
 import { withDeltaZ, withElevation } from "./elevation"
+import { nextEntityId } from "./entityIds"
 
-let idCounter = 0
-
-export function nextEntityId(): EntityId {
-  idCounter += 1
-  return `e${idCounter.toString(36)}-${Date.now().toString(36)}`
-}
+// In a module of its own for `splines.ts`, which `elevation.ts` imports: from
+// here it would close a cycle.
+export { nextEntityId }
 
 /** DXF gives a line a Z per end, so ends that have one set its elevation and rise. */
 export function createLine(

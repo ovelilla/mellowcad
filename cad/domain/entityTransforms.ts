@@ -24,6 +24,7 @@ import {
   LineEntity,
   PolylineWidth,
   Polyline3dEntity,
+  SplineEntity,
   Entity,
 } from "./entityTypes"
 import {
@@ -65,10 +66,12 @@ import {
   lineStartZ,
   scaleEntityZ,
   shiftEntityZ,
+  splineOnItsPlane,
   withDeltaZ,
   withElevation,
   withLineZ,
   withNormal,
+  worldToEntity,
 } from "./elevation"
 
 /**
@@ -346,6 +349,7 @@ export function stretchEntity(
 ): Entity {
   const dz = zOf(delta)
   const vertices = stretchVertices(entity)
+  if (entity.type === "spline") return stretchSpline(entity, delta, inFrame)
   if (entity.type !== "line" && isTilted(entity)) {
     // Out of the plan the object cannot bend along the frame: it moves whole
     // when the frame catches all of it, and otherwise stays.
@@ -395,6 +399,29 @@ export function stretchEntity(
     case "hatch":
       return planar
   }
+}
+
+/**
+ * A spline's caught points moved by `delta`, Z and all (spline3d/s06), in
+ * whatever plane it lies: its points hold their Z, so it bends off its plane
+ * too, and then lies in the one its points do, if any.
+ */
+function stretchSpline(
+  spline: SplineEntity,
+  delta: Vec2 | Vec3,
+  inFrame: (point: Vec2) => boolean
+): Entity {
+  const world = spline.points.map((p) => entityPointToWorld(spline, p))
+  const caught = world.map(inFrame)
+  if (caught.every(Boolean)) return translateEntity(spline, delta)
+  if (!caught.some(Boolean)) return spline
+  const move = { x: delta.x, y: delta.y, z: zOf(delta) }
+  return splineOnItsPlane({
+    ...spline,
+    points: spline.points.map((p, i) =>
+      caught[i] ? worldToEntity(spline, add3(world[i], move)) : p
+    ),
+  })
 }
 
 /** The points STRETCH moves one by one; all caught, the object moves whole. */
@@ -484,7 +511,10 @@ function stretchPlanar(
     case "spline":
       // Its fit points or control vertices are its free vertices, as a
       // polyline's are; the tangents keep their direction.
-      return { ...entity, points: entity.points.map(shift) }
+      return {
+        ...entity,
+        points: entity.points.map((p) => ({ ...shift(p), z: p.z })),
+      }
     case "polyline": {
       const vertices = entity.vertices.map(shift)
       const n = vertices.length
@@ -1654,6 +1684,17 @@ function planarVertices3d(
   }
 }
 
+/** A spline's points and tangents with their Z's sign changed: each holds its own. */
+function zTurned(spline: SplineEntity): SplineEntity {
+  const turn = (v: Vec3) => ({ ...v, z: -v.z })
+  return {
+    ...spline,
+    points: spline.points.map(turn),
+    ...(spline.startTangent ? { startTangent: turn(spline.startTangent) } : {}),
+    ...(spline.endTangent ? { endTangent: turn(spline.endTangent) } : {}),
+  }
+}
+
 /** A transformed object as a new one: a fresh id, everything else kept. */
 function freshCopy(entity: Entity): Entity {
   return { ...entity, id: nextEntityId() }
@@ -1666,15 +1707,16 @@ function freshCopy(entity: Entity): Entity {
  */
 export function turnedOver(entity: Entity): Entity {
   const down = (entity.normal?.z ?? 1) < 0
-  let turned = withElevation(
-    mirrorEntity(
-      withNormal(entity, WORLD_Z),
-      { x: 0, y: 0 },
-      { x: 0, y: 1 },
-      "patternReflected"
-    ),
-    -entityElevation(entity)
+  const mirrored = mirrorEntity(
+    withNormal(entity, WORLD_Z),
+    { x: 0, y: 0 },
+    { x: 0, y: 1 },
+    "patternReflected"
   )
+  let turned =
+    mirrored.type === "spline"
+      ? zTurned(mirrored)
+      : withElevation(mirrored, -entityElevation(entity))
   if (hasThickness(turned) && turned.thickness) {
     turned = { ...turned, thickness: -turned.thickness }
   }

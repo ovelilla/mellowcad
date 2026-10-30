@@ -1,0 +1,18 @@
+_SPLINE
+0,0,5
+10,10,5
+20,0,8
+30,10,-3
+
+_ZOOM
+_E
+_STRETCH
+_C
+19,-1
+31,11
+
+0,0
+0,0,10
+MPDUMP
+-
+(progn (print (list (cdr (assoc 70 (entget (entlast)))) (assoc 210 (entget (entlast))))) (princ))

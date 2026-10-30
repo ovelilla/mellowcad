@@ -146,11 +146,17 @@ export type SplineMethod = "fit" | "cv"
  * the fit points or the control vertices (`points`, read by `method`), and the
  * settings the curve is derived from. A fit spline's control vertices and knots
  * come out of `splineCurve` every time, as a dimension's measurement does.
+ *
+ * Its points carry their own Z (spline/p200, p216), in the object coordinates
+ * of {@link BaseEntity.normal}: the curve need not lie in a plane, and has no
+ * elevation of its own (its start's Z is it). One that does lie in a plane is
+ * kept in it, its normal that plane's and every Z the same, as AutoCAD keeps
+ * it (DXF 210 and flag 8, spline/p223, spline3d/s07–s11): `splineOnItsPlane`.
  */
 export interface SplineEntity extends BaseEntity {
   readonly type: "spline"
   readonly method: SplineMethod
-  readonly points: readonly Vec2[]
+  readonly points: readonly Vec3[]
   /** 3 for a fit spline; for a CV spline, already lowered to `points.length − 1` when fewer (`points.length` closed). */
   readonly degree: number
   /** How a fit spline spaces its knots; ignored by a CV spline. */
@@ -159,12 +165,13 @@ export interface SplineEntity extends BaseEntity {
   readonly closed: boolean
   /**
    * A fit spline's derivative at its start by the raw knot parameter, as typed
-   * from the first point; absent, the end is free (no curvature). On a closed
-   * fit spline, which only a file holds, the one tangent at the closure.
+   * from the first point, in space (spline3d/s10); absent, the end is free (no
+   * curvature). On a closed fit spline, which only a file holds, the one
+   * tangent at the closure.
    */
-  readonly startTangent?: Vec2
-  /** An open fit spline's derivative at its end, unit as SPLINE gives it; absent, free. */
-  readonly endTangent?: Vec2
+  readonly startTangent?: Vec3
+  /** An open fit spline's derivative at its end, unit as SPLINE gives it (spline3d/s12); absent, free. */
+  readonly endTangent?: Vec3
 }
 
 /**

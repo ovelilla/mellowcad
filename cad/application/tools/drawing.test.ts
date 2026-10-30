@@ -2792,26 +2792,6 @@ describe("SPLINE", () => {
     })
   })
 
-  it("lies on its first point's plane, where AutoCAD 2027 keeps each point's Z (p200, p265)", () => {
-    // A known deviation (SPLINE-D21): AutoCAD's fit points are 0,0,5
-    // 10,10,5 20,0,8 30,10,-3, and with ELEVATION 5 after 0,0,7 the later
-    // points lie at 5; the kernel here has no 3D NURBS.
-    const typed = answer(createHarness(), "SPLINE", "0,0,5", "10,10,5")
-    answer(typed, "20,0,8", "30,10,-3", "")
-    const flat = typed.only<SplineEntity>("spline")
-    expect(flat.elevation).toBe(5)
-    expect(flat.points).toBeCloseToPoints([
-      p(0, 0),
-      p(10, 10),
-      p(20, 0),
-      p(30, 10),
-    ])
-
-    const raised = answer(createHarness(), "ELEV", "5", "0", "SPLINE")
-    answer(raised, "0,0,7", "10,10", "20,0", "")
-    expect(raised.only<SplineEntity>("spline").elevation).toBe(7)
-  })
-
   describe("point input, as the console takes it", () => {
     it("takes `@`, `d<a`, LASTPOINT's `@` and a number (p202, p203, p217, p259, p204, p207)", () => {
       const relative = answer(createHarness(), "SPLINE", "0,0", "@10,10")

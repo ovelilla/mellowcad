@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3, withZOf } from "../../geometry/Vec3"
+import { Vec3, length3, normalize3, sub3 } from "../../geometry/Vec3"
 import { KnotParameterization } from "../../geometry/nurbs"
 import {
   DEFAULT_SPLINE_DEGREE,
@@ -8,7 +8,8 @@ import {
   SplineEntity,
   SplineMethod,
   createSpline,
-  onPlaneOf,
+  entityPointToWorld,
+  splineOnItsPlane,
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
@@ -45,14 +46,14 @@ import {
 import { defersOn } from "./deferredSnap"
 
 /**
- * The points picked so far and what has been said about their ends. The points
- * lie on the first one's plane: a SPLINE is flat until the kernel has 3D NURBS
- * (AutoCAD 2027 keeps each point's Z, probes spline/p200, p265).
+ * The points picked so far and what has been said about their ends, each at
+ * its own Z, as AutoCAD 2027 keeps them (probes spline/p200, p216, p265,
+ * p269; a tangent's too, spline3d/s10, s12).
  */
 interface Drawn {
   readonly points: readonly Vec3[]
-  readonly startTangent: Vec2 | null
-  readonly endTangent: Vec2 | null
+  readonly startTangent: Vec3 | null
+  readonly endTangent: Vec3 | null
   readonly closed: boolean
   /**
    * The current layer and properties as they stood when the spline first
@@ -529,7 +530,9 @@ export class SplineTool implements Tool {
       if (this.method === "cv") {
         out.push({
           kind: "path",
-          points: preview.points.map((p) => viewport.worldToScreen(p)),
+          points: preview.points.map((p) =>
+            viewport.worldToScreen(entityPointToWorld(preview, p))
+          ),
           closed: false,
           stroke: { color: THEME.crosshair, width: 1, dash: [2, 3] },
         })
@@ -560,13 +563,13 @@ export class SplineTool implements Tool {
         return this.splineOf(
           {
             ...state,
-            points: [...state.points, withZOf(target, state.points[0])],
+            points: [...state.points, target],
           },
           ctx
         )
       case "startTangent":
         return this.splineOf(
-          { ...state, startTangent: V.sub(target, state.points[0]) },
+          { ...state, startTangent: sub3(target, state.points[0]) },
           ctx
         )
       case "endTangent":
@@ -599,7 +602,7 @@ export class SplineTool implements Tool {
     point: Vec3,
     world: Vec2,
     ctx: ToolContext
-  ): Vec2 {
+  ): Vec3 {
     const end = lastPoint(state)
     if (ctx.snapOverride() === SnapType.Tangent) {
       const entity = ctx.pick(world, ctx.pickTolerance())
@@ -607,18 +610,19 @@ export class SplineTool implements Tool {
         const radial = V.sub(end, entity.center)
         if (V.length(radial) > 1e-9) {
           const along = V.perpendicular(V.normalize(radial))
-          return V.dot(along, V.sub(world, end)) < 0
-            ? V.scale(along, -1)
-            : along
+          const toward =
+            V.dot(along, V.sub(world, end)) < 0 ? V.scale(along, -1) : along
+          return { ...toward, z: 0 }
         }
       }
     }
-    const offset = V.sub(point, end)
-    return V.length(offset) > 1e-9 ? V.normalize(offset) : offset
+    const offset = sub3(point, end)
+    return normalize3(offset) ?? offset
   }
 
+  /** Kept in the plane its points lie in, if any, as AutoCAD keeps one (spline/p223). */
   private splineOf(drawn: Drawn, ctx: ToolContext): SplineEntity {
-    return onPlaneOf(
+    return splineOnItsPlane(
       createSpline(this.method, drawn.points, {
         degree: this.degree,
         knots: this.knots,
@@ -626,8 +630,7 @@ export class SplineTool implements Tool {
         startTangent: drawn.startTangent ?? undefined,
         endTangent: drawn.endTangent ?? undefined,
         layerId: drawn.properties?.layerId ?? ctx.document.getCurrentLayerId(),
-      }),
-      drawn.points[0]
+      })
     )
   }
 
@@ -647,26 +650,26 @@ export class SplineTool implements Tool {
         this.openNextInput(ctx)
         break
       case "next":
-        if (V.equals(point, lastPoint(state))) return
+        if (length3(sub3(point, lastPoint(state))) === 0) return
         this.state = {
           ...state,
-          points: [...state.points, withZOf(point, state.points[0])],
+          points: [...state.points, point],
           properties: state.properties ?? currentProperties(ctx),
         }
         this.openNextInput(ctx)
         break
       case "startTangent": {
-        const direction = V.sub(point, state.points[0])
+        const direction = sub3(point, state.points[0])
         this.state = {
           ...state,
           phase: "next",
-          startTangent: V.length(direction) > 1e-9 ? direction : null,
+          startTangent: length3(direction) > 1e-9 ? direction : null,
         }
         this.openNextInput(ctx)
         break
       }
       case "endTangent":
-        this.endWith(state, V.sub(point, lastPoint(state)), ctx)
+        this.endWith(state, sub3(point, lastPoint(state)), ctx)
         return
       default:
         return
@@ -680,12 +683,11 @@ export class SplineTool implements Tool {
    */
   private endWith(
     state: Extract<SplineToolState, { phase: "endTangent" }>,
-    direction: Vec2,
+    direction: Vec3,
     ctx: ToolContext
   ): void {
-    if (V.length(direction) > 1e-9) {
-      this.state = { ...state, endTangent: V.normalize(direction) }
-    }
+    const unit = length3(direction) > 1e-9 ? normalize3(direction) : null
+    if (unit) this.state = { ...state, endTangent: unit }
     ctx.setLastPoint(lastPoint(state))
     ctx.endCommand()
   }

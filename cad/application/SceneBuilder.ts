@@ -710,6 +710,13 @@ export function entityScenePrimitive(
     return linePrimitives(camera, entity, stroke, options)
   if (entity.type === "polyline3d")
     return polyline3dPrimitives(camera, entity, stroke, options)
+  if (entity.type === "spline") {
+    // Its points hold their Z, so it is drawn through them, not its plane.
+    const axes = planeAxes(entity)
+    return splinePrimitives(camera, entity, stroke, options, (p) =>
+      camera.worldToScreen(axes ? axesToWorld(axes, p) : p)
+    )
+  }
   const elevation = entityElevation(entity)
   const thickness = entityThickness(entity)
   const axes = planeAxes(entity)
@@ -901,9 +908,9 @@ function planarPrimitives(
         ? linetypedEllipse(camera, entity, stroke)
         : [ellipseScenePrimitive(camera, entity, stroke)]
     case "spline":
-      return options.linetype && stroke.dash && stroke.dash.length > 0
-        ? linetypedSpline(camera, entity, stroke)
-        : [splineCurvePath(camera, entity, stroke)]
+      return splinePrimitives(camera, entity, stroke, options, (p) =>
+        camera.worldToScreen(p)
+      )
     case "polyline3d":
       return polyline3dPrimitives(camera, entity, stroke, options)
     case "polyline":
@@ -1536,16 +1543,30 @@ function splineTolerance(camera: CameraTransform): number {
   return 0.25 / camera.worldToScreenDistance(1)
 }
 
+/** A spline's points, as it stores them, on the screen. */
+type SplineToScreen = (point: Vec3) => Vec2
+
+function splinePrimitives(
+  camera: CameraTransform,
+  spline: SplineEntity,
+  stroke: StrokeStyle,
+  options: EntityDrawOptions,
+  toScreen: SplineToScreen
+): ScenePrimitive[] {
+  return options.linetype && stroke.dash && stroke.dash.length > 0
+    ? linetypedSpline(camera, spline, stroke, toScreen)
+    : [splineCurvePath(camera, spline, stroke, toScreen)]
+}
+
 function splineCurvePath(
   camera: CameraTransform,
   spline: SplineEntity,
-  stroke: StrokeStyle
+  stroke: StrokeStyle,
+  toScreen: SplineToScreen
 ): ScenePrimitive {
   return {
     kind: "path",
-    points: splinePolyline(spline, splineTolerance(camera)).map((p) =>
-      camera.worldToScreen(p)
-    ),
+    points: splinePolyline(spline, splineTolerance(camera)).map(toScreen),
     closed: false,
     stroke,
   }
@@ -1563,16 +1584,17 @@ function splineCurvePath(
 function linetypedSpline(
   camera: CameraTransform,
   spline: SplineEntity,
-  stroke: StrokeStyle
+  stroke: StrokeStyle,
+  toScreen: SplineToScreen
 ): ScenePrimitive[] {
   const pattern = (stroke.dash ?? []).map((run) => run / camera.scale)
   const along = splineLengthOf(spline)
   const solid: StrokeStyle = { color: stroke.color, width: stroke.width }
   const layout = centredPattern(pattern, along.length)
-  if (!layout) return [splineCurvePath(camera, spline, solid)]
+  if (!layout) return [splineCurvePath(camera, spline, solid, toScreen)]
   const period = pattern.reduce((sum, run) => sum + run, 0)
   if (along.length / period > MAX_FITTED_PERIODS)
-    return [splineCurvePath(camera, spline, stroke)]
+    return [splineCurvePath(camera, spline, stroke, toScreen)]
   const dashes = centredDashes(
     pattern,
     along.length,
@@ -1581,7 +1603,7 @@ function linetypedSpline(
   )
   const { curve } = along
   const { params, points } = bsplineTessellation(curve, splineTolerance(camera))
-  const piece = (from: number, to: number): Vec2[] => {
+  const piece = (from: number, to: number): Vec3[] => {
     const run = [bsplinePoint(curve, from)]
     let i = firstAbove(params, from)
     for (; i < params.length && params[i] < to; i++) run.push(points[i])
@@ -1596,7 +1618,7 @@ function linetypedSpline(
   }
   return runs.map((run) => ({
     kind: "path",
-    points: run.map((p) => camera.worldToScreen(p)),
+    points: run.map(toScreen),
     closed: false,
     stroke: solid,
   }))

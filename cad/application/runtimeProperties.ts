@@ -21,6 +21,8 @@ import {
   translateEntity,
   withLineZ,
   splineDataPoints,
+  splineOnItsPlane,
+  splineWithPoint,
 } from "../domain/entities"
 import { COLOR_BYLAYER, EntityColor, normalizeColor } from "../domain/colors"
 import { LayerId } from "../domain/layers"
@@ -320,14 +322,36 @@ function applyInUcs(
     return replacePolyline3dVertex(entity, vertex, target)
   }
   if (
-    (entity.type === "polyline" || entity.type === "spline") &&
+    entity.type === "spline" &&
+    (property === "vertexX" || property === "vertexY" || property === "vertexZ")
+  ) {
+    // Its point holds its Z, as a 3D polyline's vertex does: it moves along
+    // that UCS axis alone, off the spline's plane too (desktop spline/d10-1
+    // has Fit point Z editable).
+    const at = splineDataPoints(entity)[vertex]
+    if (!at) return null
+    const axis =
+      property === "vertexX" ? "x" : property === "vertexY" ? "y" : "z"
+    const target = ucsPointToWorld(ucs, {
+      ...worldPointToUcs(ucs, entityPointToWorld(entity, at)),
+      [axis]: value,
+    })
+    // The whole point at once: one coordinate set alone could settle the
+    // spline on another plane, where the next is read differently.
+    return splineOnItsPlane(
+      splineWithPoint(
+        entity,
+        vertex % entity.points.length,
+        worldToEntity(entity, target)
+      )
+    )
+  }
+  if (
+    entity.type === "polyline" &&
     (property === "vertexX" || property === "vertexY")
   ) {
     // The vertex moves along that UCS axis, and stays in the object's plane.
-    const at =
-      entity.type === "polyline"
-        ? entity.vertices[vertex]
-        : splineDataPoints(entity)[vertex]
+    const at = entity.vertices[vertex]
     if (!at) return null
     const target = ucsPointToWorld(ucs, {
       ...worldPointToUcs(ucs, entityPointToWorld(entity, at)),

@@ -1,0 +1,11 @@
+_SPLINE
+0,0
+10,10,7
+20,0
+
+(progn (print (list (cdr (assoc 70 (entget (entlast)))) (assoc 210 (entget (entlast))))) (princ))
+_AREA
+_O
+_L
+(getvar "AREA")
+(getvar "PERIMETER")

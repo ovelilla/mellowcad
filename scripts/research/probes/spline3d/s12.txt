@@ -1,0 +1,9 @@
+_SPLINE
+0,0,0
+10,0,0
+20,5,0
+_T
+@0,1,1
+MPDUMP
+-
+(progn (print (list (cdr (assoc 70 (entget (entlast)))) (assoc 210 (entget (entlast))))) (princ))

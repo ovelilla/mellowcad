@@ -16,6 +16,7 @@ import { closestPointOnEllipse, polarPoint } from "../../geometry/primitives"
 import {
   Entity,
   LineEntity,
+  SplineEntity,
   arcEndPoint,
   arcStartPoint,
   ellipseEndPoint,
@@ -26,6 +27,7 @@ import {
   entityPointToWorld,
   entityZAt,
   isFullEllipse,
+  isLevel,
   lineEndZ,
   lineStartZ,
   planeAxes,
@@ -51,7 +53,30 @@ export function alignable(entity: Entity | null): Entity | null {
  */
 export function ucsFromObject(entity: Entity, pick: Vec2 | Vec3): Ucs | null {
   if (entity.type === "line") return ucsAlongLine(entity, pick)
+  if (entity.type === "spline" && !entity.closed && !isLevel(entity)) {
+    return ucsAlongSpline(entity, pick)
+  }
   return inPlane(entity, levelUcsFromObject(entity, pick))
+}
+
+/**
+ * An open spline in no plane: the origin at its end nearer `pick`, X towards
+ * the other end in space, and Y across it in the plane of its normal, so its
+ * Z is X × Y (spline3d/s04: X `0.919709 0.30657 -0.245256` to the far end,
+ * Y level).
+ */
+function ucsAlongSpline(spline: SplineEntity, pick: Vec2): Ucs | null {
+  const points = splinePolyline(spline)
+  const first = points[0]
+  const last = points[points.length - 1]
+  const near =
+    V.distance(pick, first) <= V.distance(pick, last)
+      ? [first, last]
+      : [last, first]
+  const [origin, far] = near.map((p) => entityPointToWorld(spline, p))
+  const x = normalize3(sub3(far, origin))
+  const y = x && normalize3(cross3(entityNormal(spline), x))
+  return x && y ? ucsFromAxes(origin, x, y) : null
 }
 
 /** A UCS read in the object's own coordinates, taken to the WCS. */
@@ -217,9 +242,12 @@ export function ucsAtEnd(entity: Entity, pick: Vec2 | Vec3): Ucs | null {
   const end = planarEnd(entity, pick)
   if (!end) return null
   const axes = planeAxes(entity)
+  // A spline's direction is its derivative in space, its Z its own.
   return ucsAlongZ(
     entityPointToWorld(entity, end.point),
-    axes ? axesToWorld(axes, end.direction) : withZ(end.direction, 0)
+    axes
+      ? axesToWorld(axes, end.direction)
+      : withZ(end.direction, zOf(end.direction))
   )
 }
 
@@ -235,9 +263,10 @@ export function ucsAlongZ(origin: Vec3, z: Vec3): Ucs | null {
 }
 
 interface PlanarEnd {
-  readonly point: Vec2
-  /** The direction leaving the object there. */
-  readonly direction: Vec2
+  /** A spline's carries its Z. */
+  readonly point: Vec2 | Vec3
+  /** The direction leaving the object there; a spline's, in space. */
+  readonly direction: Vec2 | Vec3
 }
 
 /** The end of a curve nearer `pick`, both in the curve's own coordinates. */

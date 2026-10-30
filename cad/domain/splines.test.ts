@@ -400,10 +400,10 @@ describe("a fit spline's curve is AutoCAD's", () => {
         return knots[j - turns * n] + turns * period
       }),
       // Its CV i is the one whose basis starts at knot i, three past ours.
-      controlPoints: Array.from(
-        { length: n + 3 },
-        (_, i) => cvs[(i - 3 + 3 * n) % n]
-      ),
+      controlPoints: Array.from({ length: n + 3 }, (_, i) => ({
+        ...cvs[(i - 3 + 3 * n) % n],
+        z: 0,
+      })),
     }
     expect(bsplineDomain(curve)).toEqual({
       start: 0,

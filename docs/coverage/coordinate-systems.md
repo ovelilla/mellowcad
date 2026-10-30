@@ -68,7 +68,7 @@ one, then a point on the positive Z, Enter keeping the Z, one on the origin `Poi
 — es `Los puntos coinciden` — and asked again, p129; X laid parallel to the WCS's XY plane by the
 arbitrary-axis rule, as aCADemia's captures show) and its Object (a line, circular or elliptical
 arc, open polyline or spline: the origin at the end nearest the pick, Z along the tangent pointing
-away, p330–p334; any other object `Z axis option not supported for selected object.` — es
+away, p330–p334, a spline's in space, spline3d/s16; any other object `Z axis option not supported for selected object.` — es
 `No se admite la opción de eje Z para el objeto seleccionado.`, table 33775 — and asked again,
 p335; one on a locked layer `The object is on a locked layer.` and `No object found`, asked again,
 p341, and by a mode too, p435; Enter asks again, p317); at
@@ -80,7 +80,8 @@ p440; a dimension is left out, OBject on one is Missing), at ZAxis Object one wi
 `Z axis option not supported for selected object.`, asked again (p436, p441); read with no pick as AutoCAD 2027's
 console reads each kind (p314–p318) — OBject a line at its first end, a circle at angle 0, an arc at
 its start, a full ellipse with X through its point nearest the WCS's origin, an elliptical arc and a
-spline at their end nearer it, X towards the other, a polyline ending in a line at its first vertex,
+spline at their end nearer it, X towards the other (a spline in no plane's in space, Y level across
+it, spline3d/s04), a polyline ending in a line at its first vertex,
 X towards its last, one ending in an arc at that arc's centre, X towards its first vertex, LASTPOINT
 left at the WCS's origin (p319); ZAxis Object at the end nearest the WCS origin (p336); a mode
 finding nothing at OBject `No object found` and UCS ends (p317), at ZAxis Object asked again (p437)
@@ -283,7 +284,8 @@ typed length or angle, the last point's. Ortho, Polar and the snap lattice leave
 on the `+Z` / `-Z` guide of a 3D view, where the point is the base point's in plan and the height is
 where the cursor is drawn along the guide (a snapped object's, under a snap), and a typed length
 the base point's plus that length up or down. What LINE
-draws has a Z at each end; a flat object (PLINE, SPLINE, CIRCLE, ARC, ELLIPSE, RECTANG, POLYGON,
+draws has a Z at each end, and a SPLINE's points and a 3D polyline's vertices each keep their own
+(draw.md); a flat object (PLINE, CIRCLE, ARC, ELLIPSE, RECTANG, POLYGON,
 TEXT, MTEXT, ATTDEF, INSERT) lies in the plane of the first point that fixed it,
 and the others are projected onto it — what AutoCAD's PLINE does, and its CIRCLE 3P and ARC
 through points at different heights (circle/p189, arc/p06). A dimension

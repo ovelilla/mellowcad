@@ -26,14 +26,14 @@ us to walk again, whereas a command costs the same before or after it.
    ShowMotion, named views, the dynamic UCS (UCSDETECT), UCSFOLLOW, and the tracking label of
    OTRACK.
 
-Left out of the 2.5D model, each a gap of its own: SPLINE 3D (a 3D NURBS kernel), LIST, the `.X` /
-`.XY` point filters, OSNAPZ as a variable, ARRAYRECT's Levels, CHPROP, and POINT's thickness (with
-POINT, below). 3DPOLY is done: the one object whose stored points carry their Z (`draw.md`), the
-pattern SPLINE 3D follows; trimming one, JOIN into one and PEDIT Spline are its own gaps.
+Left out of the 2.5D model, each a gap of its own: LIST, the `.X` / `.XY` point filters, OSNAPZ as
+a variable, ARRAYRECT's Levels, CHPROP, and POINT's thickness (with POINT, below). 3DPOLY and SPLINE
+3D are done: the objects whose stored points carry their Z (`draw.md`), a spline kept in its own
+plane when it has one; trimming a 3D polyline, JOIN into one and PEDIT Spline are its own gaps.
 
 Editing a spline — OFFSET (which is also what the ellipse's OFFSET and FILLET wait for), TRIM /
-EXTEND of one an edge reaches (its own knots), BREAK / JOIN, SPLINEDIT — is a command gap, so it
-queues behind the model gap above.
+EXTEND of one an edge reaches (its own knots), BREAK / JOIN, SPLINEDIT — is a command gap, next now
+that the 3D spline it would edit is the model's.
 
 Deferrable indefinitely at no extra cost: PASTEBLOCK/PASTEORIG/CUTBASE, DIMARC, DIMORDINATE, the
 modern `DIM` command, POINT with DIVIDE/MEASURE, XLINE/RAY, GROUP, LENGTHEN, ALIGN, per-object

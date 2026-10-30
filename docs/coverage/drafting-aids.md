@@ -27,7 +27,7 @@ circle/d15), an arc's so too where its sweep passes (arc/p201, p203; tilted, p21
 ellipse's Quadrants at its own axis ends whatever the UCS, an elliptical arc's only on its sweep
 (ellipse/p300–p302), its Midpoint halfway along an elliptical arc's length and none on a whole
 ellipse (p303, p304), Nearest on both (p307); a spline's Endpoint, its Midpoint halfway along it
-from its start, a closed one's too (spline/p310–p312), Nearest and Intersection on the curve, a
+from its start in space, a closed one's too (spline/p310–p312, spline3d/s03), Nearest and Intersection on the curve, a
 crossing found on its chords refined onto it (p310, p313); the
 markers as AutoCAD's dark
 theme draws them, green, 14 px with a 2 px stroke (square, triangle, circle with a cross, diamond,
@@ -235,8 +235,8 @@ side, absolute `#`, relative `@`, `*` for the WCS, `x,y`, `dist<ang` (all in the
 cylindrical `dist<ang,z` / spherical `dist<ang<ang` in the same box, multi-field forms, keyword
 prompts; on the Z guide (or straight above or below the base point) the length reads the height and
 the angle `+Z` / `-Z`, and a typed length runs along it — LINE, MOVE, COPY, STRETCH and a grip move
-go up or down, PLINE keeps its plane and so does SPLINE (by limitation: AutoCAD 2027's keeps each
-point's Z, draw.md, SPLINE); a typed angle brings it back to the plane
+go up or down, PLINE keeps its plane, SPLINE's next point goes up or down too (its points keep
+their Z, draw.md, SPLINE); a typed angle brings it back to the plane
 (**unverified**); Enter with nothing typed is the prompt's — a form's defaults or the `<default>`,
 else the end of the command — never the cursor's reading, from the keyboard as from the right button;
 the Down arrow, with nothing typed, in the box or on the drawing, opens the prompt's option list with
@@ -357,7 +357,7 @@ on AutoCAD's side), and in a rotated UCS the grips stay at the circle's own quad
 Quadrant snap turns with the UCS (d15); blue squares 9 px across (GRIPSIZE's default), the one
 under the cursor red (d15); a grip's edit at `Command:` is one undo step U and REDO name `Grip
 Edit` (es `Editar pinzamiento`, table 6001; desktop arrays/d14, pline/d09); an array's own grips, squares
-and arrows, and their drags: modify.md, the array object. A 3D polyline has a square grip at each vertex and none at its segments' middles (desktop 3dpoly/d01); a vertex goes to the point given, Z and all, as a line's end
+and arrows, and their drags: modify.md, the array object. A 3D polyline has a square grip at each vertex and none at its segments' middles (desktop 3dpoly/d01); a vertex goes to the point given, Z and all, as a line's end, and so does a spline's fit point or control vertex, whatever plane it lies in
 
 **Missing:** the end grip's hover menu, `Stretch` and `Lengthen` (es `Estirar`, `Longitud`, d15),
 and so Lengthen from a grip; an arc's hover menus (desktop arc/d07: the middle grip's `Stretch`,

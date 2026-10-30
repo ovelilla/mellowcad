@@ -2,6 +2,7 @@ import { V, Vec2 } from "../geometry/Vec2"
 import { Vec3, sub3 } from "../geometry/Vec3"
 import { isUpright, worldDirectionToUcs, worldPointToUcs } from "../domain/ucs"
 import { ellipseAngleFromParam, normalizeDegrees } from "../geometry/primitives"
+import { axesToWorld } from "../geometry/ocs"
 import {
   DocumentSettings,
   LengthUnit,
@@ -42,6 +43,8 @@ import {
   polylineConstantWidth,
   polylineWidth,
   splineArea,
+  entityAxes,
+  isLevelSpline,
   splineDataPoints,
   dimensionGeometry,
   dimensionMeasurementText,
@@ -1433,23 +1436,21 @@ function singleEntityInfo(
     }
     case "spline": {
       // AutoCAD's two groups and rows, in its order (desktop spline/d10-1 to
-      // d10-3). Only the current point moves, as the polyline's vertex does:
-      // the method, degree, knots, closure and frame are SPLINEDIT's and
-      // CVSHOW's, not built; no toLerance and no weights are, so Fit
-      // tolerance reads 0 and Weight −1, as d10 shows them.
+      // d10-3). Only the current point moves, X, Y and Z, as a 3D polyline's
+      // vertex does: the method, degree, knots, closure and frame are
+      // SPLINEDIT's and CVSHOW's, not built; no toLerance and no weights are,
+      // so Fit tolerance reads 0 and Weight −1, as d10 shows them.
       const fit = entity.method === "fit"
       const points = splineDataPoints(entity)
       const current = Math.min(vertex, points.length - 1)
       const point = at(points[current])
       const yesNo = (yes: boolean) => text.propertyValue(yes ? "yes" : "no")
-      const origin = entityPointToWorld(entity, V.zero())
-      const vector = (v: Vec2 | undefined) =>
+      const axes = entityAxes(entity)
+      const vector = (v: Vec3 | undefined) =>
         v
-          ? worldDirectionToUcs(
-              settings.ucs,
-              sub3(entityPointToWorld(entity, v), origin)
-            )
+          ? worldDirectionToUcs(settings.ucs, axesToWorld(axes, v))
           : { x: 0, y: 0, z: 0 }
+      const planar = isLevelSpline(entity)
       const tangentRows = (): PropertyRow[] => {
         const start = vector(entity.startTangent)
         const end = vector(entity.endTangent)
@@ -1480,7 +1481,7 @@ function singleEntityInfo(
             },
             coordRow(fit ? "fitPointX" : "controlPointX", "vertexX", point.x),
             coordRow(fit ? "fitPointY" : "controlPointY", "vertexY", point.y),
-            row(fit ? "fitPointZ" : "controlPointZ", coord(point.z)),
+            coordRow(fit ? "fitPointZ" : "controlPointZ", "vertexZ", point.z),
             fit
               ? row("knotParameterization", text.propertyValue(entity.knots))
               : row("weight", "-1"),
@@ -1495,10 +1496,13 @@ function singleEntityInfo(
             row("closed", yesNo(entity.closed)),
             // A closed fit spline a file gave a closure tangent is not periodic.
             row("periodic", yesNo(entity.closed && !entity.startTangent)),
-            row("planar", yesNo(true)),
+            row("planar", yesNo(planar)),
             ...(fit && !entity.closed ? tangentRows() : []),
             ...(fit ? [row("fitTolerance", coord(0))] : []),
-            ...(entity.closed ? [row("area", area(splineArea(entity)))] : []),
+            // One in no plane has no area (spline3d/s14).
+            ...(entity.closed && planar
+              ? [row("area", area(splineArea(entity)))]
+              : []),
           ]),
         ],
       }

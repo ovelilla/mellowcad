@@ -16,8 +16,10 @@ import {
   Entity,
   LineEntity,
   PolylineEntity,
+  SplineEntity,
 } from "./entityTypes"
 import { closestPointOnPolyline3d, isLevelPolyline3d } from "./polylines3d"
+import { isLevelSpline, splineZAt } from "./splines"
 
 export type ThickEntity = LineEntity | CircleEntity | ArcEntity | PolylineEntity
 
@@ -96,9 +98,13 @@ export function readsInPlan(entity: Entity): boolean {
 /**
  * A point of the object, given as it stores its points, in the WCS: in the
  * plan of its plane, at its height there (a line's are world points already).
+ * A spline's point that carries its Z — any point of its curve — is at that Z.
  */
 export function entityPointToWorld(entity: Entity, point: Vec2): Vec3 {
-  const z = entityZAt(entity, point)
+  const z =
+    entity.type === "spline" && "z" in point
+      ? zOf(point)
+      : entityZAt(entity, point)
   if (
     entity.type === "line" ||
     entity.type === "polyline3d" ||
@@ -140,9 +146,10 @@ export function hasThickness(entity: Entity): entity is ThickEntity {
   )
 }
 
-/** The Z of its plane; a line's and a 3D polyline's, the Z of their start. */
+/** The Z of its plane; a line's, a 3D polyline's and a spline's, the Z of their start. */
 export function entityElevation(entity: Entity): number {
   if (entity.type === "polyline3d") return entity.vertices[0]?.z ?? 0
+  if (entity.type === "spline") return entity.points[0]?.z ?? 0
   return entity.elevation ?? 0
 }
 
@@ -179,7 +186,11 @@ function withField<T extends Entity>(
   return copy as T
 }
 
+/** A spline's points hold their Z: they rise or fall together, its start to `z`. */
 export function withElevation<T extends Entity>(entity: T, z: number): T {
+  if (entity.type === "spline") {
+    return shiftEntityZ(entity, z - entityElevation(entity))
+  }
   return withField(entity, "elevation", z)
 }
 
@@ -200,6 +211,12 @@ export function shiftEntityZ<T extends Entity>(entity: T, dz: number): T {
     return {
       ...entity,
       vertices: entity.vertices.map((v) => ({ ...v, z: v.z + dz })),
+    }
+  }
+  if (entity.type === "spline") {
+    return {
+      ...entity,
+      points: entity.points.map((p) => ({ ...p, z: p.z + dz })),
     }
   }
   return withElevation(entity, entityElevation(entity) + dz)
@@ -223,6 +240,9 @@ export function scaleEntityZ<T extends Entity>(
       })),
     }
   }
+  if (entity.type === "spline") {
+    return scaleSplineZ(entity, baseZ, factor) as T
+  }
   let scaled = withElevation(
     entity,
     baseZ + (entityElevation(entity) - baseZ) * factor
@@ -234,6 +254,26 @@ export function scaleEntityZ<T extends Entity>(
     scaled = withThickness(scaled, (scaled.thickness ?? 0) * factor) as T
   }
   return scaled
+}
+
+/** A tangent's Z grows with the factor as its X and Y did (`mapSplinePoints`). */
+function scaleSplineZ(
+  spline: SplineEntity,
+  baseZ: number,
+  factor: number
+): SplineEntity {
+  const tangent = (v: Vec3 | undefined) => v && { ...v, z: v.z * factor }
+  const startTangent = tangent(spline.startTangent)
+  const endTangent = tangent(spline.endTangent)
+  return {
+    ...spline,
+    points: spline.points.map((p) => ({
+      ...p,
+      z: baseZ + (p.z - baseZ) * factor,
+    })),
+    ...(startTangent ? { startTangent } : {}),
+    ...(endTangent ? { endTangent } : {}),
+  }
 }
 
 /**
@@ -292,12 +332,13 @@ export function onPlaneOf<T extends Entity>(entity: T, first: Vec2 | Vec3): T {
 /**
  * The Z of the object under `point`, a point on it in plan: a line's is read
  * off the line through its ends (so past them too), a 3D polyline's off its
- * segment nearest there, any other lies flat.
+ * segment nearest there, a spline's off its curve, any other lies flat.
  */
 export function entityZAt(entity: Entity, point: Vec2): number {
   if (entity.type === "polyline3d") {
     return closestPointOnPolyline3d(entity, point).z
   }
+  if (entity.type === "spline") return splineZAt(entity, point)
   if (entity.type !== "line" || !entity.deltaZ) return entityElevation(entity)
   const dx = entity.end.x - entity.start.x
   const dy = entity.end.y - entity.start.y
@@ -336,6 +377,7 @@ const PLANE_TOLERANCE = 1e-9
 /** Whether the object lies in one plane parallel to the XY plane: a line must not rise. */
 export function isLevel(entity: Entity): boolean {
   if (entity.type === "polyline3d") return isLevelPolyline3d(entity)
+  if (entity.type === "spline") return isLevelSpline(entity)
   return (
     entity.type !== "line" || Math.abs(entity.deltaZ ?? 0) <= PLANE_TOLERANCE
   )
@@ -375,7 +417,8 @@ export function sharesTiltedPlane(a: Entity, b: Entity): boolean {
         on({ ...entity.end, z: lineEndZ(entity) })
       : entity.type === "polyline3d"
         ? entity.vertices.every(on)
-        : facesAlong(entity, normal) &&
+        : isLevel(entity) &&
+          facesAlong(entity, normal) &&
           Math.abs(entityElevation(entity) - height) <= PLANE_TOLERANCE
   return lies(a) && lies(b)
 }
@@ -406,3 +449,64 @@ export function linesPlaneNormal(a: LineEntity, b: LineEntity): Vec3 | null {
   }
   return unit.z < 0 ? { x: -unit.x, y: -unit.y, z: -unit.z } : unit
 }
+
+/**
+ * The spline kept in the plane its points and tangents lie in, as AutoCAD
+ * keeps one (DXF 210, flag 8): that plane's normal, facing the side its own
+ * did, and every point at one Z in its object coordinates (spline/p223,
+ * spline3d/s09, s11). On a line, the plane holding it upright, its normal Z ×
+ * the line's direction (s07, s08). One that lies in no plane, or already in
+ * its own, is kept as it is. Keeps the id.
+ */
+export function splineOnItsPlane(spline: SplineEntity): SplineEntity {
+  if (isLevelSpline(spline)) return spline
+  const { points } = spline
+  const tangents = [spline.startTangent, spline.endTangent].filter(
+    (v): v is Vec3 => v !== undefined
+  )
+  const origin = points[0]
+  const size = Math.max(1, ...points.map((p) => length3(sub3(p, origin))))
+  const offsets = points.map((p) => sub3(p, origin))
+  const far = offsets.reduce((a, b) => (length3(b) > length3(a) ? b : a))
+  const along = normalize3(far)
+  if (!along) return spline
+  const across = [...offsets, ...tangents].reduce(
+    (best, v) => {
+      const off = length3(cross3(v, along)) / Math.max(1, length3(v) / size)
+      return off > best.off ? { v, off } : best
+    },
+    { v: along, off: 0 }
+  )
+  let normal =
+    across.off <= SPLINE_PLANE_TOLERANCE * size
+      ? normalize3(cross3(WORLD_Z, along))
+      : normalize3(cross3(along, across.v))
+  if (!normal) return spline
+  const lies = (v: Vec3, scale: number) =>
+    Math.abs(dot3(v, normal!)) <= SPLINE_PLANE_TOLERANCE * scale
+  if (
+    !offsets.every((v) => lies(v, size)) ||
+    !tangents.every((v) => lies(v, Math.max(1, length3(v))))
+  ) {
+    return spline
+  }
+  if (normal.z < 0) normal = { x: -normal.x, y: -normal.y, z: -normal.z }
+  const from = entityAxes(spline)
+  const placed = withNormal(spline, axesToWorld(from, normal))
+  const to = entityAxes(placed)
+  const read = (v: Vec3) => worldToAxes(to, axesToWorld(from, v))
+  const z = read(origin).z
+  const level = (v: Vec3 | undefined, height: number) =>
+    v && { ...read(v), z: height }
+  const startTangent = level(spline.startTangent, 0)
+  const endTangent = level(spline.endTangent, 0)
+  return {
+    ...placed,
+    points: points.map((p) => level(p, z)!),
+    ...(startTangent ? { startTangent } : {}),
+    ...(endTangent ? { endTangent } : {}),
+  }
+}
+
+/** How far off a plane, in units of the spline's size, its points may lie and still be in it. */
+const SPLINE_PLANE_TOLERANCE = 1e-10

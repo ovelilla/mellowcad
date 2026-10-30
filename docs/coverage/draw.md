@@ -552,24 +552,36 @@ counts its first again at the end), Current Fit point, Fit point X, Y, Z, Knot p
 frame; Misc — Method, Degree, Closed, Periodic, Planar, an open fit spline's Start and End tangent
 vector X, Y, Z as stored, Fit tolerance, a closed one's Area; a CV spline's Number of control
 points, Current Control point, Control point X, Y, Z and Weight instead, no tangents and no
-tolerance. The current point steps through them and its X and Y move it, one undo step each, as a
-polyline's current vertex; the rest is read-only; Fit tolerance reads 0 and Weight −1, as d10 shows
+tolerance. The current point steps through them and its X, Y and Z move it, one undo step each, as
+a 3D polyline's current vertex; the rest is read-only; Fit tolerance reads 0 and Weight −1, as d10 shows
 them. The English labels are `ax26res.dll`'s by id, the Spanish d10's; the CV frame row's English is
 **unverified** (the Spanish row is cut at `Marco de vértices d…`: id 912 `CV frame` taken over 1248
 `Display CV frame`). STRETCH moves the points in the window (p322, p323); MIRROR keeps its +Z
 (p320); EXPLODE refuses it by name (`Cannot explode SPLINE`, modify.md). The drawing file holds the
 end tangent as the derivative from version 29; an older file's, a direction at the length picked,
 is read as unit. Wording from AutoCAD 2027's console (p01, p02, p100–p157, p300–p332, en and es) and
-the 2027 Spanish language pack's
+the 2027 Spanish language pack's. In space, as AutoCAD 2027's console keeps it (probes
+spline/p200–p269, spline3d/s01–s16): each point keeps its Z (`0,0,5` `10,10,5` `20,0,8` `30,10,-3`
+stay so, p200, p216, p269), one without a Z at ELEVATION as it then is (p223, p231, p234, p265), a
+start or end tangent in space too (s10, s12, the end's unit); the knots are the chords in space and
+the curve the cubic through them (p200's control points to six decimals). One whose points and
+tangents lie in a plane is kept in it, as DXF 210 and flag 8 keep it — that plane's normal, facing
+up (p223, s09, s11) —, and one on a line in the upright plane holding it, its normal Z × the line
+(s07, s08); the rest lie in no plane: Planar `No` in the palette, no Area row, and AREA's
+`Selected object does not have an area`, asked again (s01, s14), where one in a tilted plane is
+measured in it (s02 `Area = 152.5819, Length = 32.5549`, s15). Its Endpoint, Midpoint (halfway
+along in space: `16.4445,3.6988,7.5404`) and Nearest are at the curve's Z (s03), drawn and picked
+through its points' Z in any view; STRETCH moves the caught points, Z and all (s06); a grip goes to
+the point given, Z and all, a 3D polyline's vertex's way, and the palette's Fit point and Control
+point Z are typed as X and Y are (desktop d10-1 shows them editable); UCS OBject on an open one in
+no plane puts X towards its far end in space and Y level across it (s04), ZAxis Object its Z along
+the end's tangent in space (s16). Saved with each point's Z from drawing file version 37
 
 **Missing:** toLerance and Object (not offered: a tolerance above 0 is an approximation Autodesk
 does not document, and there are no spline-fit polylines to convert; AutoCAD asks
 `Specify fit tolerance <0.0000>:`, es `Precise tolerancia de ajuste <0.0000>:`, p115, p131, and
 `Select spline-fit polyline:`, es `Designe polilínea de ajuste de spline:`, whose Enter says
-`None found.` and ends, p114); the 3D spline: AutoCAD 2027 keeps each point's Z (`0,0,5`
-`10,10,5` `20,0,8` `30,10,-3` stay so, p200, p201, p216, p269) and a 2D point takes ELEVATION as it
-then is (p223, p231, p234, p265), where the kernel here has no 3D NURBS and lays every point on the
-first one's plane (SPLINE-D21); the deferred Tangent at the end tangent on a line, an ellipse or a
+`None found.` and ends, p114); the deferred Tangent at the end tangent on a line, an ellipse or a
 spline (unprobed: the ordinary Tangent from the last point here); `<a` at the tangents and at
 CV's next points (**unverified**: the console ignores it, p212, p256, p222, so the angle override
 every prompt with a base point has); SPLINEDIT, CVSHOW / CVHIDE, the triangular grip and the

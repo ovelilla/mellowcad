@@ -1652,12 +1652,12 @@ export interface RectangularArray {
 export interface SplineEntity extends BaseEntity {
     readonly type: "spline";
     readonly method: SplineMethod;
-    readonly points: readonly Vec2[];
+    readonly points: readonly Vec3[];
     readonly degree: number;
     readonly knots: KnotParameterization;
     readonly closed: boolean;
-    readonly startTangent?: Vec2;
-    readonly endTangent?: Vec2;
+    readonly startTangent?: Vec3;
+    readonly endTangent?: Vec3;
 }
 
 // domain/entityTypes.ts

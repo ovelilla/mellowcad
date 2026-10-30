@@ -28,8 +28,11 @@ import {
   ellipseSemiMinor,
   ellipseWithAxes,
   ellipseWithSpan,
+  entityPointToWorld,
+  splineOnItsPlane,
   splineWithPoint,
   stretchPolylineVertices,
+  worldToEntity,
   createPolyline,
   HatchEntity,
   hatchLoopSegments,
@@ -78,7 +81,18 @@ export function withVertexAt(
       stretchPolylineVertices(loop, new Map([[at, point]]))
     )
   }
-  if (entity.type === "spline") return splineWithPoint(entity, index, point)
+  if (entity.type === "spline") {
+    // Its point holds its Z, as a 3D polyline's vertex: it goes to the point
+    // given, Z and all, a typed distance's at its own; given in the drawing,
+    // read in the spline's coordinates, which can then lie in another plane.
+    const at = entity.points[index]
+    if (!at) return null
+    const own = entityPointToWorld(entity, at)
+    const target = { x: point.x, y: point.y, z: "z" in point ? point.z : own.z }
+    return splineOnItsPlane(
+      splineWithPoint(entity, index, worldToEntity(entity, target))
+    )
+  }
   return null
 }
 

@@ -186,7 +186,7 @@ one.
 ## Z and the normal
 
 Every object but a line and a 3D polyline keeps its points in the **OCS of its normal**
-(`domain/elevation.ts`).
+(`domain/elevation.ts`); a spline's carry their own Z in it.
 `normal`, `elevation`, `deltaZ` and `thickness` are optional, absent means +Z or 0, and the default
 is never stored (`withNormal`, `withElevation`), so a flat drawing's file is unchanged.
 
@@ -194,8 +194,9 @@ is never stored (`withNormal`, `withElevation`), so a flat drawing's file is unc
   keeps Z takes the 2D path. Give a line's ends their Z explicitly (`lineStartZ` / `lineEndZ`): in
   plan a vertical line's ends are one point.
 - **Transforms take `Vec2 | Vec3`**, a 2D delta or base being Z = 0. `stretchEntity` moves whole an
-  object whose every point is caught, else the Z of a rigid object and of a line's caught end —
-  nothing else caught in part can tilt. A tilted object goes to `transformEntity`.
+  object whose every point is caught, else the Z of a rigid object, of a line's caught end and of
+  a spline's or 3D polyline's caught points — nothing else caught in part can tilt. A tilted object
+  goes to `transformEntity`.
 - **Rebuilding an object from another goes through `carryOverrides`** (overrides _and_ plane and
   thickness; `carryPlane` for a new object sharing only the plane). `createX(..., source.layerId,
 source.id)` alone is the bug: it drops colour, linetype, lineweight and Z.
@@ -206,11 +207,16 @@ source.id)` alone is the bug: it drops colour, linetype, lineweight and Z.
   two lines in a tilted plane are `linesPlaneNormal`.
 - **An entity's points are planar; the Z lives only in its fields.** Factories copy `{ x, y }` and
   a spread writing a picked point takes `planar(point)`. `entityZAt` is the one reader of an
-  object's Z at a point in plan. **The exception is a 3D polyline** (`domain/polylines3d.ts`):
-  its vertices are WCS `Vec3`s and it has no plane — `withElevation`, `withNormal` and
-  `carryPlane` must never touch it (`shiftEntityZ`, `scaleEntityZ` and `entityElevation`, its
-  first vertex's Z, know it). Where a vertical segment makes the plan ambiguous, read a vertex's
-  own Z, never `entityZAt`. The snaps see it as its segments, lines of its id (`snapEntities`).
+  object's Z at a point in plan. **The exceptions are a 3D polyline and a spline.** A 3D
+  polyline's vertices (`domain/polylines3d.ts`) are WCS `Vec3`s and it has no plane —
+  `withElevation`, `withNormal` and `carryPlane` must never touch it (`shiftEntityZ`,
+  `scaleEntityZ` and `entityElevation`, its first vertex's Z, know it); the snaps see it as its
+  segments, lines of its id (`snapEntities`). A spline's points and tangents are `Vec3`s in the
+  OCS of its normal, with no elevation of its own (`withElevation` shifts them, `entityElevation`
+  is its start's Z); a point of its curve carries its Z, which `entityPointToWorld` reads. **Every
+  edit that moves one of its points ends in `splineOnItsPlane`**, which keeps one with a plane in
+  it (a grip, STRETCH, the palette, SPLINE), so `isLevel` is "lies in a plane". Where a vertical
+  segment makes the plan ambiguous, read a point's own Z, never `entityZAt`.
 - **The domain's 2D queries read one plane** (`readsInPlan`); drawing, picking, bounds and snapping
   project every object through its plane in `application/` (`planeCamera`, `viewPick.ts`). Objects
   in different planes have no intersection yet.

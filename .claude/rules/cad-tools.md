@@ -301,12 +301,13 @@ ctx.lastPoint` with `relativeByDefault: false`; one with a base passes `base ?? 
 base)`, because every `V` helper returns a `Vec2`. Type a state field that feeds `lastPoint` or a
   creation as `Vec3`, so a dropped Z fails to compile. A displacement is `sub3(to, from)`.
 - **A flat object lies in the plane of the first point that fixed it**: `onPlaneOf(createX(...),
-first)`, later points projected (`withZOf(point, first)`); SPLINE by limitation (spline/p200).
+first)`, later points projected (`withZOf(point, first)`). SPLINE and 3DPOLY keep each point's Z
+  (spline/p200), SPLINE through `splineOnItsPlane`.
   `createLine` reads both ends' Z. Three points too (arc/p06, circle/p189). A dimension lies
   at the current ELEVATION, whatever its points' Z (dimensions/p158). FILLET and
   CHAMFER resolve two lines with `lineCorner` (`lineCorner.ts`).
-- **A grip drags to a point like any click**; only a line's end grip writes that Z into the
-  object, every other grip stores `planar(point)`.
+- **A grip drags to a point like any click**; a line's end grip, a 3D polyline's vertex and a
+  spline's point write that Z into the object, every other grip stores `planar(point)`.
 - **An edit that needs coplanar objects refuses with AutoCAD's message** (`coplanar`,
   `linesNonCoplanar`). JOIN discards instead (pieces/p346), HATCH's Select objects too.
 - **THICKNESS is given by LINE, CIRCLE, ARC, PLINE and POLYGON only** (`withCurrentThickness`);

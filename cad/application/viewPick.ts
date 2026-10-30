@@ -1,5 +1,5 @@
 import { V, Vec2 } from "../geometry/Vec2"
-import { Axes3 } from "../geometry/ocs"
+import { Axes3, axesToWorld } from "../geometry/ocs"
 import { closestPointOnSegment } from "../geometry/primitives"
 import {
   BlockLookup,
@@ -10,8 +10,11 @@ import {
   entityThickness,
   hasThickness,
   insertFlatGeometry,
+  isLevel,
   isTilted,
   planeAxes,
+  splinePolyline,
+  SplineEntity,
 } from "../domain/entities"
 import { CameraTransform } from "../scene/types"
 import { planeCamera, smallestStretch } from "./planeCamera"
@@ -39,18 +42,47 @@ export function cursorInPlane(
     : planeCamera(camera, z, axes).screenToWorld(screen)
 }
 
-/** {@link cursorInPlane} for the plane `entity` lies in. */
+/**
+ * {@link cursorInPlane} for the plane `entity` lies in. A spline in none is
+ * read along its own image on screen, as a sloping line is: the point of its
+ * plan under its point drawn nearest the cursor.
+ */
 export function cursorOnEntityPlane(
   camera: CameraTransform,
   entity: Entity,
   screen: Vec2
 ): Vec2 {
+  if (entity.type === "spline" && !isLevel(entity)) {
+    return splineUnderCursor(camera, entity, screen)
+  }
   return cursorInPlane(
     camera,
     entityElevation(entity),
     screen,
     planeAxes(entity)
   )
+}
+
+function splineUnderCursor(
+  camera: CameraTransform,
+  spline: SplineEntity,
+  screen: Vec2
+): Vec2 {
+  const axes = planeAxes(spline)
+  const points = splinePolyline(spline)
+  const drawn = points.map((p) =>
+    camera.worldToScreen(axes ? axesToWorld(axes, p) : p)
+  )
+  let best: Vec2 = points[0]
+  let nearest = Number.POSITIVE_INFINITY
+  for (let i = 1; i < points.length; i++) {
+    const hit = closestPointOnSegment(drawn[i - 1], drawn[i], screen)
+    if (hit.distance < nearest) {
+      nearest = hit.distance
+      best = V.lerp(points[i - 1], points[i], hit.t)
+    }
+  }
+  return { x: best.x, y: best.y }
 }
 
 /**
@@ -116,8 +148,12 @@ export function screenDistanceToEntity(
       Number.POSITIVE_INFINITY
     )
   // A line, its thickness included, is drawn as segments: measure them, and
-  // a 3D polyline's, each at its vertices' Z.
-  if (entity.type === "line" || entity.type === "polyline3d") {
+  // a 3D polyline's, each at its vertices' Z, and a spline's through its own.
+  if (
+    entity.type === "line" ||
+    entity.type === "polyline3d" ||
+    (entity.type === "spline" && !isLevel(entity))
+  ) {
     return outlineDistance()
   }
   const elevation = entityElevation(entity)

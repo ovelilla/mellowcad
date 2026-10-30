@@ -885,7 +885,9 @@ export class MeasureTool implements Tool {
   /** What an Object pick can take: an object lying in the UCS's XY plane. */
   private pickArea(world: Vec2, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(world)
-    return hit && readsInPlan(hit) ? hit : null
+    // A spline in a tilted plane is measured in it (spline3d/s02, s11); other
+    // tilted objects' `Object not parallel with UCS.` is not built.
+    return hit && (readsInPlan(hit) || hit.type === "spline") ? hit : null
   }
 
   /** Back to the first corner, in the mode Add area or Subtract area keeps. */

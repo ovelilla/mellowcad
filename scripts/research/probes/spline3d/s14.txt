@@ -1,0 +1,13 @@
+_SPLINE
+_M
+_CV
+0,0,5
+10,10,9
+20,0,9
+30,10,0
+_C
+(progn (print (list (cdr (assoc 70 (entget (entlast)))) (assoc 210 (entget (entlast))))) (princ))
+_AREA
+_O
+_L
+

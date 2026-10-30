@@ -15,6 +15,7 @@ import {
   entityElevation,
   insertFlatGeometry,
   lineEndZ,
+  isLevel,
   lineStartZ,
   planeAxes,
   polyline3dSegments,
@@ -500,7 +501,7 @@ export class SnapEngine extends Observable {
       return cursor
     }
     const cursorOn = (entity: Entity) => {
-      if (planeAxes(entity)) {
+      if (planeAxes(entity) || (entity.type === "spline" && !isLevel(entity))) {
         return cursorOnEntityPlane(viewport, entity, screenCursor)
       }
       if (entity.type !== "line") return onPlane(entityElevation(entity))

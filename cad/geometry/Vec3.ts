@@ -1,9 +1,10 @@
 import { Vec2 } from "./Vec2"
 
 /**
- * A point or displacement with a Z. The kernel's curves stay in `Vec2`: every
- * object is planar with its normal on +Z, so its Z is one number beside its
- * points rather than a third coordinate on each of them.
+ * A point or displacement with a Z. Most of the kernel's curves stay in
+ * `Vec2`: a planar object's Z is one number beside its points rather than a
+ * third coordinate on each of them. A spline's and a 3D polyline's points
+ * carry their own.
  */
 export interface Vec3 extends Vec2 {
   readonly z: number

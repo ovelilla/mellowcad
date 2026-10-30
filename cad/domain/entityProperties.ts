@@ -47,6 +47,7 @@ import {
   hasThickness,
   lineEndZ,
   lineStartZ,
+  splineOnItsPlane,
   withDeltaZ,
   withElevation,
   withThickness,
@@ -226,16 +227,15 @@ export function applyEntityProperty(
     case "polyline3d":
       return applyPolyline3dProperty(entity, property, value, vertex)
     case "spline": {
-      // The palette's current fit point or control point; the rest is
-      // SPLINEDIT's, which is not built.
-      if (property !== "vertexX" && property !== "vertexY") return null
+      // The palette's current fit point or control point, in the spline's
+      // own coordinates; the rest is SPLINEDIT's, which is not built.
+      const axis = VERTEX_AXES[property]
+      if (!axis) return null
       const count = entity.points.length
       if (vertex < 0 || vertex >= splineDataPoints(entity).length) return null
       const at = entity.points[vertex % count]
-      return splineWithPoint(
-        entity,
-        vertex % count,
-        property === "vertexX" ? { x: value, y: at.y } : { x: at.x, y: value }
+      return splineOnItsPlane(
+        splineWithPoint(entity, vertex % count, { ...at, [axis]: value })
       )
     }
     case "insert":
@@ -244,6 +244,12 @@ export function applyEntityProperty(
 }
 
 const toRadians = (degrees: number) => (degrees * Math.PI) / 180
+
+const VERTEX_AXES: Partial<Record<EntityProperty, "x" | "y" | "z">> = {
+  vertexX: "x",
+  vertexY: "y",
+  vertexZ: "z",
+}
 
 /**
  * A polyline's Geometry rows: the current vertex's X and Y, the starting and

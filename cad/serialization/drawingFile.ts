@@ -118,7 +118,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 36
+export const DRAWING_FILE_VERSION = 37
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -442,7 +442,7 @@ function cloneEntityShape(entity: Entity): Entity {
         layerId: entity.layerId,
         ...overrides,
         method: entity.method,
-        points: entity.points.map((p) => ({ x: p.x, y: p.y })),
+        points: entity.points.map((p) => ({ x: p.x, y: p.y, z: p.z })),
         degree: entity.degree,
         knots: entity.knots,
         closed: entity.closed,
@@ -1006,13 +1006,23 @@ function parseVec3(value: unknown): Vec3 | null {
  * unit (spline/p306). Before 29 it was only a direction, stored at the length
  * picked: read as AutoCAD would have stored that pick.
  */
-function endTangentOf(value: unknown, version: number): Vec2 | undefined {
-  const tangent = parseVec2(value)
+function endTangentOf(value: unknown, version: number): Vec3 | undefined {
+  const tangent = parseSplineVector(value)
   if (!tangent || version >= 29) return tangent ?? undefined
   const length = Math.hypot(tangent.x, tangent.y)
   return length > 0
-    ? { x: tangent.x / length, y: tangent.y / length }
+    ? { x: tangent.x / length, y: tangent.y / length, z: 0 }
     : undefined
+}
+
+/**
+ * A spline's point or tangent. Before 37 it had no Z, its points lying at the
+ * elevation `parsePlane` then gives them; a Z left out is 0.
+ */
+function parseSplineVector(value: unknown): Vec3 | null {
+  const point = parseVec2(value)
+  if (!point || !isRecord(value)) return null
+  return { ...point, z: isFiniteNumber(value.z) ? value.z : 0 }
 }
 
 /**
@@ -1111,7 +1121,9 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
     }
     case "spline": {
       const method = raw.method === "cv" ? "cv" : "fit"
-      const points = parseVertices(raw.points)
+      const points = Array.isArray(raw.points)
+        ? raw.points.flatMap((p) => parseSplineVector(p) ?? [])
+        : []
       if (points.length < 2) return null
       const knots =
         raw.knots === "sqrtChord" || raw.knots === "uniform"
@@ -1124,7 +1136,7 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
           ...(isFiniteNumber(raw.degree) ? { degree: raw.degree } : {}),
           knots,
           closed: raw.closed === true,
-          startTangent: parseVec2(raw.startTangent) ?? undefined,
+          startTangent: parseSplineVector(raw.startTangent) ?? undefined,
           endTangent: endTangentOf(raw.endTangent, version),
           layerId,
           id,

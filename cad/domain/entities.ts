@@ -132,6 +132,7 @@ export {
   splineArea,
   splineBounds,
   closestPointOnSpline,
+  isLevelSpline,
 } from "./splines"
 
 export type { HatchGeometry } from "./hatch"
@@ -272,6 +273,7 @@ export {
   worldToEntity,
   sameNormal,
   facesAlong,
+  splineOnItsPlane,
 } from "./elevation"
 
 export type { Similarity3 } from "./entityTransforms"

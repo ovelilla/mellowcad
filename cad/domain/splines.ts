@@ -1,5 +1,5 @@
 import { Vec2, V } from "../geometry/Vec2"
-import { planar } from "../geometry/Vec3"
+import { Vec3, length3, sub3, zOf } from "../geometry/Vec3"
 import {
   ClosestResult,
   closestPointOnSegment,
@@ -25,7 +25,7 @@ import {
 } from "../geometry/nurbs"
 import { DEFAULT_LAYER_ID, LayerId } from "./layers"
 import { Bounds, EntityId, SplineEntity, SplineMethod } from "./entityTypes"
-import { nextEntityId } from "./entityFactories"
+import { nextEntityId } from "./entityIds"
 
 /** AutoCAD's SPLINE takes degrees 1 to 10 on the CV method. */
 export const MAX_SPLINE_DEGREE = 10
@@ -35,8 +35,8 @@ export interface SplineOptions {
   readonly degree?: number
   readonly knots?: KnotParameterization
   readonly closed?: boolean
-  readonly startTangent?: Vec2
-  readonly endTangent?: Vec2
+  readonly startTangent?: Vec2 | Vec3
+  readonly endTangent?: Vec2 | Vec3
   readonly layerId?: LayerId
   readonly id?: EntityId
 }
@@ -45,15 +45,18 @@ export interface SplineOptions {
  * Builds a spline. A fit spline is always cubic; a CV spline's degree drops to
  * one less than its vertex count when there are too few for the one asked —
  * "the degree of the resulting curve equals the number of vertices minus one"
- * — and a closed one's to the vertex count itself (probe spline/p305).
+ * — and a closed one's to the vertex count itself (probe spline/p305). A
+ * point or a tangent without a Z lies at Z 0.
  */
 export function createSpline(
   method: SplineMethod,
-  points: readonly Vec2[],
+  points: readonly (Vec2 | Vec3)[],
   options: SplineOptions = {}
 ): SplineEntity {
-  const tangent = (v: Vec2 | undefined) =>
-    v && V.length(v) > 1e-12 ? { x: v.x, y: v.y } : undefined
+  const tangent = (v: Vec2 | Vec3 | undefined) => {
+    const t = v && { x: v.x, y: v.y, z: zOf(v) }
+    return t && length3(t) > 1e-12 ? t : undefined
+  }
   const startTangent =
     method === "fit" ? tangent(options.startTangent) : undefined
   const endTangent =
@@ -65,7 +68,7 @@ export function createSpline(
     type: "spline",
     layerId: options.layerId ?? DEFAULT_LAYER_ID,
     method,
-    points: points.map((p) => ({ x: p.x, y: p.y })),
+    points: points.map((p) => ({ x: p.x, y: p.y, z: zOf(p) })),
     degree:
       method === "fit"
         ? 3
@@ -91,13 +94,15 @@ function clampDegree(degree: number): number {
 }
 
 /**
- * The spline with every point carried through `map`, a similarity, keeping
- * its id — the one path every transform takes. A tangent is the derivative at
- * the raw knot parameter, and the knots scale with the points as the chords,
+ * The spline with every point carried through `map`, a similarity in plan,
+ * keeping its id and each point's Z — the one path every transform takes; the
+ * Z half of a scale is `scaleEntityZ`'s. A tangent is the derivative at the
+ * raw knot parameter, and the knots scale with the points as the chords,
  * their square roots or not at all, so it is turned and reflected as a vector
  * and its length scaled to keep the curve the mapped one: unchanged on chord
  * knots, by the factor on uniform ones, by its root on square-root ones — the
- * curve AutoCAD's SCALE leaves (probe spline/p321).
+ * curve AutoCAD's SCALE leaves (probe spline/p321). Its Z takes that change
+ * here, and the factor with the points' Z.
  */
 export function mapSplinePoints(
   spline: SplineEntity,
@@ -112,11 +117,13 @@ export function mapSplinePoints(
       : spline.knots === "sqrtChord"
         ? 1 / Math.sqrt(factor)
         : 1 / factor
-  const mapVector = (v: Vec2) =>
-    factor > 0 ? V.scale(linear(v), growth) : { x: v.x, y: v.y }
+  const mapVector = (v: Vec3): Vec3 =>
+    factor > 0
+      ? { ...V.scale(linear(v), growth), z: v.z * growth }
+      : { x: v.x, y: v.y, z: v.z }
   return {
     ...spline,
-    points: spline.points.map(map),
+    points: spline.points.map((p) => ({ ...map(p), z: p.z })),
     ...(spline.startTangent
       ? { startTangent: mapVector(spline.startTangent) }
       : {}),
@@ -132,15 +139,20 @@ export function splineCopy(
   return { ...mapSplinePoints(spline, map), id: nextEntityId() }
 }
 
-/** The spline with its `index`th fit point or control vertex moved — a grip drag. */
+/**
+ * The spline with its `index`th fit point or control vertex moved — a grip
+ * drag —, given in its own coordinates, Z and all.
+ */
 export function splineWithPoint(
   spline: SplineEntity,
   index: number,
-  point: Vec2
+  point: Vec3
 ): SplineEntity {
   return {
     ...spline,
-    points: spline.points.map((p, i) => (i === index ? planar(point) : p)),
+    points: spline.points.map((p, i) =>
+      i === index ? { x: point.x, y: point.y, z: point.z } : p
+    ),
   }
 }
 
@@ -150,10 +162,39 @@ export function splineWithPoint(
  * counts 4 for three picks). Each is the stored point of index `i` modulo
  * their count.
  */
-export function splineDataPoints(spline: SplineEntity): readonly Vec2[] {
+export function splineDataPoints(spline: SplineEntity): readonly Vec3[] {
   return spline.method === "fit" && spline.closed && spline.points.length > 0
     ? [...spline.points, spline.points[0]]
     : spline.points
+}
+
+/** How far off its plane a point may stand, in units of the spline's size, and still lie in it. */
+const LEVEL_TOLERANCE = 1e-10
+
+/**
+ * Whether the spline lies in the plane of its normal: every point at one Z
+ * and its tangents along it. A spline kept on its own plane
+ * (`splineOnItsPlane`) lies in a plane exactly when it does.
+ */
+export function isLevelSpline(spline: SplineEntity): boolean {
+  const z = spline.points[0]?.z ?? 0
+  const size = Math.max(
+    1,
+    ...spline.points.map((p) => Math.abs(p.x) + Math.abs(p.y) + Math.abs(p.z))
+  )
+  const flat = (v: Vec3 | undefined) =>
+    !v || Math.abs(v.z) <= LEVEL_TOLERANCE * Math.max(1, length3(v))
+  return (
+    spline.points.every((p) => Math.abs(p.z - z) <= LEVEL_TOLERANCE * size) &&
+    flat(spline.startTangent) &&
+    flat(spline.endTangent)
+  )
+}
+
+/** The Z of the curve over `point`, a point of its plan: where it passes nearest there. */
+export function splineZAt(spline: SplineEntity, point: Vec2): number {
+  if (isLevelSpline(spline)) return spline.points[0]?.z ?? 0
+  return closestPointOnSpline(spline, point).point.z
 }
 
 /** The NURBS the spline draws. A fit spline's is re-derived from its fit points every time. */
@@ -163,7 +204,7 @@ export function splineCurve(spline: SplineEntity): BSplineCurve {
 
 function controlCurve(spline: SplineEntity): BSplineCurve {
   const points = spline.points
-  if (points.length < 2) return pointCurve(points[0] ?? V.zero())
+  if (points.length < 2) return pointCurve(points[0] ?? ZERO)
   const degree = cvDegree(spline.degree, points.length, spline.closed)
   if (!spline.closed) return clampedUniformCurve(points, degree)
   // WHY rotated: AutoCAD's periodic curve starts where ours would be at
@@ -180,7 +221,7 @@ function controlCurve(spline: SplineEntity): BSplineCurve {
  */
 function fitCurve(spline: SplineEntity): BSplineCurve {
   const points = distinctFitPoints(spline.points, spline.closed)
-  if (points.length < 2) return pointCurve(points[0] ?? V.zero())
+  if (points.length < 2) return pointCurve(points[0] ?? ZERO)
   if (spline.closed && points.length >= 3) {
     const params = fitParameters(points, spline.knots, true)
     if (!spline.startTangent) return interpolatePeriodicCubic(points, params)
@@ -203,16 +244,17 @@ function fitCurve(spline: SplineEntity): BSplineCurve {
 }
 
 /** Two fit points on top of each other would share a parameter and leave the fit unsolvable. */
-function distinctFitPoints(points: readonly Vec2[], closed: boolean): Vec2[] {
-  const distinct: Vec2[] = []
+function distinctFitPoints(points: readonly Vec3[], closed: boolean): Vec3[] {
+  const apart = (a: Vec3, b: Vec3) => length3(sub3(a, b)) > 1e-9
+  const distinct: Vec3[] = []
   for (const point of points) {
     const last = distinct[distinct.length - 1]
-    if (!last || V.distance(last, point) > 1e-9) distinct.push(point)
+    if (!last || apart(last, point)) distinct.push(point)
   }
   if (closed) {
     while (
       distinct.length > 1 &&
-      V.distance(distinct[0], distinct[distinct.length - 1]) <= 1e-9
+      !apart(distinct[0], distinct[distinct.length - 1])
     ) {
       distinct.pop()
     }
@@ -220,7 +262,9 @@ function distinctFitPoints(points: readonly Vec2[], closed: boolean): Vec2[] {
   return distinct
 }
 
-function pointCurve(point: Vec2): BSplineCurve {
+const ZERO: Vec3 = { x: 0, y: 0, z: 0 }
+
+function pointCurve(point: Vec3): BSplineCurve {
   return { degree: 1, knots: [0, 0, 1, 1], controlPoints: [point, point] }
 }
 
@@ -231,24 +275,22 @@ function pointCurve(point: Vec2): BSplineCurve {
  * tessellates again at the screen's own resolution.
  */
 function queryTolerance(curve: BSplineCurve): number {
-  let minX = Infinity
-  let minY = Infinity
-  let maxX = -Infinity
-  let maxY = -Infinity
+  const min = { x: Infinity, y: Infinity, z: Infinity }
+  const max = { x: -Infinity, y: -Infinity, z: -Infinity }
   for (const p of curve.controlPoints) {
-    minX = Math.min(minX, p.x)
-    minY = Math.min(minY, p.y)
-    maxX = Math.max(maxX, p.x)
-    maxY = Math.max(maxY, p.y)
+    for (const axis of ["x", "y", "z"] as const) {
+      min[axis] = Math.min(min[axis], p[axis])
+      max[axis] = Math.max(max[axis], p[axis])
+    }
   }
-  return Math.max(Math.hypot(maxX - minX, maxY - minY) * 1e-5, 1e-9)
+  return Math.max(length3(sub3(max, min)) * 1e-5, 1e-9)
 }
 
 /** Points along the spline, the chords within `tolerance` of it (a size-relative one by default). */
 export function splinePolyline(
   spline: SplineEntity,
   tolerance?: number
-): Vec2[] {
+): Vec3[] {
   const curve = splineCurve(spline)
   return bsplineTessellation(curve, tolerance ?? queryTolerance(curve)).points
 }
@@ -257,32 +299,33 @@ export function splinePolyline(
 export function splineChords(spline: SplineEntity): {
   readonly curve: BSplineCurve
   readonly params: readonly number[]
-  readonly points: readonly Vec2[]
+  readonly points: readonly Vec3[]
 } {
   const curve = splineCurve(spline)
   return { curve, ...bsplineTessellation(curve, queryTolerance(curve)) }
 }
 
-export function splineStartPoint(spline: SplineEntity): Vec2 {
+export function splineStartPoint(spline: SplineEntity): Vec3 {
   const curve = splineCurve(spline)
   return bsplinePoint(curve, bsplineDomain(curve).start)
 }
 
-export function splineEndPoint(spline: SplineEntity): Vec2 {
+export function splineEndPoint(spline: SplineEntity): Vec3 {
   const curve = splineCurve(spline)
   return bsplinePoint(curve, bsplineDomain(curve).end)
 }
 
-/** Its length along the curve, by quadrature (LIST's and AREA's, probe spline/p327). */
+/** Its length along the curve in space, by quadrature (LIST's and AREA's, probes spline/p327, spline3d/s02). */
 export function splineLength(spline: SplineEntity): number {
   return bsplineLength(splineCurve(spline))
 }
 
 /**
- * The point halfway along the curve from its start — Midpoint's point on a
- * spline, a closed one's too (probes spline/p310, p311).
+ * The point halfway along the curve from its start, in space — Midpoint's
+ * point on a spline, a closed one's too (probes spline/p310, p311,
+ * spline3d/s03).
  */
-export function splineMidpoint(spline: SplineEntity): Vec2 {
+export function splineMidpoint(spline: SplineEntity): Vec3 {
   const curve = splineCurve(spline)
   return bsplinePoint(
     curve,
@@ -503,7 +546,8 @@ export function splineBounds(spline: SplineEntity): Bounds {
 }
 
 /**
- * The point on the curve nearest `point`. The closest point on a NURBS has no
+ * The point on the curve nearest `point` in plan, with the curve's Z there
+ * (spline3d/s03's Nearest). The closest point on a NURBS has no
  * closed form: the nearest chord of the tessellation gives a parameter, and a
  * bounded Newton on `(C(u) − p)·C′(u) = 0` refines it. Both candidates are
  * points of the curve: the chord's own point can lie nearer than the curve
@@ -512,7 +556,7 @@ export function splineBounds(spline: SplineEntity): Bounds {
 export function closestPointOnSpline(
   spline: SplineEntity,
   point: Vec2
-): ClosestResult {
+): ClosestResult & { readonly point: Vec3 } {
   const { curve, params, points } = splineChords(spline)
   let nearest = Infinity
   let u = params[0]

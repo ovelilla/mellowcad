@@ -101,7 +101,9 @@ export function buildGrips(
     if (entity.type === "spline" && entity.method === "cv") {
       out.push({
         kind: "path",
-        points: entity.points.map((p) => ctx.viewport.worldToScreen(p)),
+        points: entity.points.map((p) =>
+          ctx.viewport.worldToScreen(entityPointToWorld(entity, p))
+        ),
         closed: entity.closed,
         stroke: { color: THEME.crosshair, width: 1, dash: [2, 3] },
       })

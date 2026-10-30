@@ -38,7 +38,9 @@ hatch/p320) `Perimeter`, and an open
 polyline's, spline's or elliptical arc's `Length` with the area its chord closes; a closed wide
 polyline's report is followed by `Polyline's width ignored in area calculation.` (es
 `Grosor de polilínea ignorado en cálculo de área.`, p222; an open one's unprobed); anything else
-`Selected object does not have an area` (es `El objeto seleccionado no tiene área`), asked again;
+`Selected object does not have an area` (es `El objeto seleccionado no tiene área`), asked again,
+a spline in no plane too (spline3d/s01, s14), where one in a tilted plane is measured in it (s02,
+s15);
 DIST asks `Specify first point:` (es `Precise primer punto`; `Invalid point.`) and
 `Specify second point or [Multiple points]:` (es `Especifique segundo punto o [puntos Múltiples]`;
 `Point or option keyword required.`), Enter at the first taking LASTPOINT and at the second

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest"
 import fc from "fast-check"
 import { V, type Vec2 } from "./Vec2"
+import { type Vec3 } from "./Vec3"
 import {
   bsplineDerivative,
   bsplineDerivativeCurve,
@@ -18,8 +19,11 @@ import {
   interpolatePeriodicCubic,
   periodicUniformCurve,
 } from "./nurbs"
-import { p } from "../../test/builders"
-import { point } from "../../test/arbitraries"
+import { point as point2 } from "../../test/arbitraries"
+
+/** A point of the kernel, which holds a Z: 0 unless given. */
+const p = (x: number, y: number, z = 0): Vec3 => ({ x, y, z })
+const point = point2.map((q) => p(q.x, q.y))
 
 const ZIGZAG = [p(0, 0), p(100, 50), p(200, -20), p(300, 40), p(400, 0)]
 
@@ -34,6 +38,15 @@ describe("fit parameters", () => {
     expect(
       fitParameters([p(0, 0), p(4, 0), p(4, 9)], "sqrtChord", false)
     ).toEqual([0, 2, 5])
+  })
+
+  it("measure the chords in space (spline/p200)", () => {
+    const params = fitParameters(
+      [p(0, 0, 5), p(10, 10, 5), p(20, 0, 8), p(30, 10, -3)],
+      "chord",
+      false
+    )
+    expect(params[3]).toBeCloseTo(46.51544078570083, 12)
   })
 
   it("step by one on the uniform method, with a closing value when closed", () => {
@@ -99,12 +112,10 @@ describe("cubic interpolation", () => {
         )
         fc.pre(points.length >= 2)
         const params = fitParameters(points, "chord", false)
-        const curve = interpolateCubic(
-          points,
-          params,
-          null,
-          V.sub(points[points.length - 1], points[points.length - 2])
-        )
+        const curve = interpolateCubic(points, params, null, {
+          ...V.sub(points[points.length - 1], points[points.length - 2]),
+          z: 0,
+        })
         points.forEach((q, i) => {
           expect(bsplinePoint(curve, params[i])).toBeCloseToPoint(q, 4)
         })

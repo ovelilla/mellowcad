@@ -15,6 +15,7 @@ import {
   entityElevation,
   entityThickness,
   lineEndZ,
+  splineCurve,
 } from "../domain/entities"
 import { Viewport } from "./Viewport"
 
@@ -93,6 +94,14 @@ export function drawingBox(
       for (const vertex of entity.vertices) {
         low = Math.min(low, vertex.z)
         high = Math.max(high, vertex.z)
+      }
+      continue
+    }
+    if (entity.type === "spline" && !entity.normal) {
+      // Its control points' hull holds the curve.
+      for (const point of splineCurve(entity).controlPoints) {
+        low = Math.min(low, point.z)
+        high = Math.max(high, point.z)
       }
       continue
     }

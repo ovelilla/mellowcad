@@ -1038,7 +1038,8 @@ p279): one a crossing window, a crossing polygon (CPolygon) or a crossing lasso 
 by that frame alone, two windows each stretching their own (p264, p269); one a pick, Window,
 WPolygon or Fence found moves whole (p262, p263, p267, p269); one Last or ALL found neither
 stretches nor moves (p268); Remove takes out (p270). What a frame catches: a line's ends, a
-polyline's vertices, a spline's fit points or control vertices (p278); an arc's ends, one caught
+polyline's vertices, a spline's fit points or control vertices (p278), Z and all, in whatever plane
+it lies (spline3d/s06); an arc's ends, one caught
 refitting the arc through the moved and the fixed end with its chord height kept on the same side,
 both moving it whole, its centre alone nothing; a polyline's arc segment with one end moved keeps
 its chord height, with both its bulge (p271, p281); a circle by its centre, TEXT, MTEXT and a block

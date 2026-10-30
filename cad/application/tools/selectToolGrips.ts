@@ -136,8 +136,9 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
         break
       }
       case "spline":
-        // Its fit points, or its control vertices, as it was made. AutoCAD's
-        // triangular grip that switches between the two is not built.
+        // Its fit points, or its control vertices, as it was made, each at its
+        // own Z. AutoCAD's triangular grip that switches between the two is
+        // not built.
         entity.points.forEach((point, index) => {
           grips.push({
             entityId: id,
@@ -324,8 +325,14 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
   for (const grip of grips) {
     const entity = ctx.document.get(grip.entityId)
     if (!entity) continue
-    // WHY: edit grips read the work plane, not the object's; such objects only move whole.
-    if (planeAxes(entity) && grip.role.kind !== "move") continue
+    // WHY: edit grips read the work plane, not the object's; such objects only
+    // move whole. A spline's points hold their Z, so its grips go anywhere.
+    if (
+      planeAxes(entity) &&
+      entity.type !== "spline" &&
+      grip.role.kind !== "move"
+    )
+      continue
     lifted.push({
       ...grip,
       world:
