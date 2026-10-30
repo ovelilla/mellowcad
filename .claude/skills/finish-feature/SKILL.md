@@ -7,9 +7,9 @@ description: Close a feature, command or fix in mellowcad — the gate, the cove
 
 1. **The gate**: `npm run typecheck`, `npm run build -w cad` and `npm run check -w cad` (and the
    same in each package of `packages/` that has a build), `npm run lint`, `npm run format:check`,
-   `npm run docs:check`, `npm run test:coverage` (the pre-commit hook runs the same; the knowledge check is part of the
-   tests). A snapshot that changed on
-   purpose is updated with `npx vitest run <file> -u` and its diff read before committing.
+   `npm run docs:check`, `npm run test:coverage` (the pre-commit hook runs the same; the knowledge
+   check is part of the tests). A snapshot that changed on purpose is updated with
+   `npx vitest run <file> -u` and its diff read before committing.
 2. **The coverage entry** in `docs/coverage/` (`grep -n '^### .*<COMMAND>' docs/coverage/*.md`):
    what the command now does under **Implemented:**, what it still lacks under **Missing:**, what
    no source settled marked **unverified**. Edit the entry; history belongs in the commit. A new
@@ -24,8 +24,8 @@ description: Close a feature, command or fix in mellowcad — the gate, the cove
    A rule the work made false is edited or deleted in the same change, never patched with an
    exception on top. `cad/README.md` too, when the engine's public contract changed.
 4. **The brief**: a `docs/next-*.md` whose work has shipped is deleted.
-5. **Commit** with only your files (`git add <paths>`, `git status --short` first: other sessions
-   may be working in the tree), message `feat(engine): …` / `fix(engine): …` / `docs: …` in
+5. **Commit** with only your files (`git add <paths>`, `git status --short` before and after: other
+   sessions may be working in the tree, and one path that matches nothing aborts the whole add), message `feat(engine): …` / `fix(engine): …` / `docs: …` in
    English, multi-line through `git commit -F - <<'EOF'`. If someone else's change turns the hook
    red, verify yours in a clean worktree (`git worktree add`, apply your diff, run the gate) and
    commit once it is green.

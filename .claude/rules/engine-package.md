@@ -1,4 +1,5 @@
 ---
+description: The published packages — exports, builds, declarations, API reports, the hosts check and releasing
 paths:
   - "cad/index.ts"
   - "cad/api.md"

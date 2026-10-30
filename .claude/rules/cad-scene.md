@@ -1,4 +1,5 @@
 ---
+description: The neutral scene and its presenters — ScenePrimitive, screen space, theme, and what only a presenter may touch
 paths:
   - "cad/scene/**"
   - "cad/application/SceneBuilder.ts"

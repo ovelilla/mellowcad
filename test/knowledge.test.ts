@@ -19,6 +19,12 @@ import { describe, expect, it } from "vitest"
 const ALWAYS_LOADED_MAX_KB = 10
 const FILE_MAX_KB = 25
 const LOAD_P90_MAX_KB = 52
+// Claude Code re-attaches a skill after compacting, cut to about 5,000
+// tokens: what lies past that is lost mid-task.
+const SKILL_ENTRY_MAX_KB = 16
+// Copilot's limits: a skill's description, and a rule's one-line index.
+const SKILL_DESCRIPTION_MAX = 1024
+const RULE_DESCRIPTION_MAX = 200
 
 // Cited on purpose without existing in the repo or a declared package.
 const ABSENT_CITATIONS: Record<string, { reason: string; values: string[] }> = {
@@ -57,7 +63,10 @@ const VERIFIED_PACKAGE =
 const PATH_SUFFIXES = ["", ".ts", ".tsx", ".mjs", ".json", ".md"]
 const LIBRARY_CACHE = "node_modules/.cache/knowledge/library-words.json"
 
-const kilobytes = (text: string) => Buffer.byteLength(text) / 1024
+// The frontmatter is not counted: Claude Code reads `paths:` to decide when
+// to load a rule and injects only what follows.
+const kilobytes = (text: string) =>
+  Buffer.byteLength(text.replace(/^---\n[\s\S]*?\n---\n/, "")) / 1024
 
 const repoFiles = execFileSync(
   "git",
@@ -334,6 +343,23 @@ describe("the agents' knowledge", () => {
     expect(broken).toEqual([])
   })
 
+  it("describes every rule in one line, the index grep reads", () => {
+    const broken = rules.flatMap(({ file, description }) =>
+      description && description.length <= RULE_DESCRIPTION_MAX
+        ? []
+        : [`${file}: description ${description ? "too long" : "missing"}`]
+    )
+    expect(broken).toEqual([])
+  })
+
+  it("gives each brief the status line the session hook shows", () => {
+    const broken = sources
+      .filter((file) => /^docs\/next-.+\.md$/.test(file))
+      .filter((file) => !/^> \*\*[^*]+:\*\* [^.]+\./m.test(read(file)))
+      .map((file) => `${file}: no "> **Estado:** …." line`)
+    expect(broken).toEqual([])
+  })
+
   it("names every skill after its folder and describes it", () => {
     const folders = new Set(
       sources.flatMap((file) => file.match(SKILL_FOLDER_PATTERN)?.[1] ?? [])
@@ -346,7 +372,12 @@ describe("the agents' knowledge", () => {
         ...(name === folder && SKILL_NAME_PATTERN.test(folder)
           ? []
           : [`${entry}: name ${name ?? "missing"}`]),
-        ...(description ? [] : [`${entry}: no description`]),
+        ...(description && description.length <= SKILL_DESCRIPTION_MAX
+          ? []
+          : [`${entry}: description ${description ? "too long" : "missing"}`]),
+        ...(kilobytes(read(entry)) <= SKILL_ENTRY_MAX_KB
+          ? []
+          : [`${entry} over ${SKILL_ENTRY_MAX_KB} KB`]),
       ]
     })
     expect(broken).toEqual([])

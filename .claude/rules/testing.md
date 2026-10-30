@@ -1,4 +1,5 @@
 ---
+description: Vitest and the harness — driving a tool headless, snapshots, the adapter tests, helpers and the coverage ratchet
 paths:
   - "**/*.test.ts"
   - "test/**"
@@ -76,6 +77,13 @@ runtime, what is prevented, which store is written), never for tool behaviour.
 A hook of `@mellowcad/react` runs once through `renderHook` (`test/renderHook.ts`, React's server
 renderer) against a stand-in engine, and its handlers take hand-made events. Effects never run
 there: an effect's body is a function of its own, tested alone (`takeFocus`, `mountEngine`).
+
+## Tests that run git
+
+The commit gate runs the suite inside git's pre-commit hook, which exports `GIT_DIR` and
+`GIT_INDEX_FILE`: a test that runs git in a scratch repo strips every `GIT_*` variable from the
+child's environment, or its `git init` and commits land in the real repository
+(`test/deps.test.ts`).
 
 ## Helpers
 

@@ -1,4 +1,5 @@
 ---
+description: The site's /docs — one source per page, languages, Fumadocs and the MDX pipeline, search, llms.txt and the .md routes
 paths:
   - "content/docs/**"
   - "lib/docs/**"

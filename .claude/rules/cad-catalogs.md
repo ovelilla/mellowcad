@@ -1,4 +1,5 @@
 ---
+description: The engine's catalogs — prompts, keywords, messages and their letters in every language, named by id from tools
 paths:
   - "cad/locales/**"
   - "cad/i18n/**"

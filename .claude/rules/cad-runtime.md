@@ -1,4 +1,5 @@
 ---
+description: The runtime's plumbing — input, dynamic input, snapping, tracking, history and commands, and the browser adapter
 paths:
   - "cad/application/*.ts"
   - "cad/application/commands/**"

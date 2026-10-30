@@ -1,4 +1,5 @@
 ---
+description: Where knowledge goes (AGENTS.md, rules, skills, docs, tests) and what test/knowledge.test.ts checks
 paths:
   - ".claude/**"
   - "AGENTS.md"
@@ -43,10 +44,17 @@ READMEs, the rules, the skills and `docs/`:
   `docs/`, which cite AutoCAD's names). A path with a placeholder (`<tag>`, `…`) is not checked.
   A citation that is absent on purpose goes in `ABSENT_CITATIONS` with its reason; an entry no
   longer cited fails.
+- **Every rule has a one-line `description:`** (up to 200 characters): the index
+  `grep -H '^description:' .claude/rules/*.md` that `AGENTS.md` points to, and what Copilot loads a
+  rule by.
 - **Every rule has `paths:` and each glob matches a file.** Write `app/*/*app*/**`, never
   `app/[locale]/(app)/**`: Claude Code reads `[locale]` as a character class and `(app)` as a group,
   so that glob never loads the rule.
-- **A skill's `name` is its folder** (kebab-case) and it has a `description`, which is what an
-  agent sees before loading it: say when to use it.
+- **A skill's `name` is its folder** (kebab-case) and it has a `description` of up to 1,024
+  characters (Copilot's limit), which is what an agent sees before loading it: say when to use it.
+  Its `SKILL.md` stays under 16 KB, about what Claude Code re-attaches after compacting.
+- **Each brief, `docs/next-*.md`, opens with a status line** (`> **Estado:** …`): the session hook
+  shows its first sentence.
 - **Budgets**, ratchets that only go down: `AGENTS.md`, each rule and skill file, and the p90 of
-  rule KB loaded per source file (`npm run knowledge` prints median, p90 and max).
+  rule KB loaded per source file (`npm run knowledge` prints median, p90 and max). The frontmatter
+  does not count: Claude Code injects only what follows it.

@@ -117,6 +117,8 @@ and what each option does must be the ones they already know.
   `geometry/` are correct notation.
 - Do not add features, options or abstractions that were not asked for. This codebase grows one
   AutoCAD command at a time, each fully finished: skill `finish-feature`.
+- **The check that clears a destructive step** (a reset, a delete, a discarded change) is run and
+  read by you, never taken from a subagent's summary or a test's name.
 - **Several sessions may work in this tree at once.** Stage only your own files or hunks. The hook
   checks the whole tree: when someone else's change turns it red, verify yours in a clean worktree
   and commit once the tree is green.
@@ -129,11 +131,7 @@ and what each option does must be the ones they already know.
 
 - **`.claude/rules/`** — the rules of each area, loaded with the files their `paths:` match (by
   Claude Code and by Copilot). Before creating something in an area whose files you have not
-  opened, read its rule: `cad-engine.md` (layers, model), `cad-runtime.md` (input, snapping,
-  history, adapters), `cad-scene.md` (scene, presenters), `cad-tools.md` (writing a tool),
-  `cad-catalogs.md` (prompts, keywords), `engine-package.md` (the build), `testing.md`, `ui.md`
-  (the editor), `marketing.md` (the landing), `docs.md` (`/docs`), `i18n.md` (languages),
-  `knowledge.md` (where knowledge goes).
+  opened, read its rule; the index is `grep -H '^description:' .claude/rules/*.md`.
 - **Skills** (`.claude/skills/`, loaded on demand): `new-command`, `extend-model`,
   `autocad-research`, `browser-verify`, `add-language`, `finish-feature`, `deps-review`,
   `command-review`.

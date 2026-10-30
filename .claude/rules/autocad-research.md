@@ -1,4 +1,5 @@
 ---
+description: Where AutoCAD's behaviour and wording are looked up before a command or a catalog changes, and what counts as settled
 paths:
   - "cad/locales/**"
   - "docs/coverage/**"

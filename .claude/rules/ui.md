@@ -1,4 +1,5 @@
 ---
+description: The editor (@mellowcad/editor at /draw) — React as a thin shell over the engine, layout, type scale, sizes and shadcn
 paths:
   - "packages/editor/**"
   - "app/*/*app*/**"

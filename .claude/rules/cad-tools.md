@@ -1,4 +1,5 @@
 ---
+description: Writing a tool — its prompts, preview, commands for every edit, undo grouping and the AutoCAD contract it follows
 paths:
   - "cad/application/tools/**"
 ---

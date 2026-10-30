@@ -1,4 +1,5 @@
 ---
+description: The landing at / — its islands, figures, facts, Open Graph images, sitemap and the 404s
 paths:
   - "app/*/*marketing*/**"
   - "app/*/og/**"

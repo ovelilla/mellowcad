@@ -1,4 +1,5 @@
 ---
+description: The CAD engine's layers and model — what each layer may import, entities, the document, purity and ids
 paths:
   - "cad/**"
 ---
