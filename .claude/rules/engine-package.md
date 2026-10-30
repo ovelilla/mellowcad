@@ -18,6 +18,7 @@ paths:
   - "packages/editor/src/styles.css"
   - "packages/*/README.md"
   - "examples/**"
+  - ".changeset/**"
 ---
 
 # The packages
@@ -80,10 +81,10 @@ license and the Autodesk trademark note.
   is its README's first `tsx` block.
 - **`examples/` are the hosts a stranger copies**, and what `check:hosts` installs: not
   workspaces, so Vite, its React plugin and Next stay out of the lockfile; `test/packages.test.ts`
-  holds their ranges of our packages at `^version` and of a tool the repo also has at the root's
-  (the others, `vite` and `@vitejs/plugin-react`, move in deps-review). The root `tsc` checks
-  them against the source, save their `vite.config.ts`; the site's Tailwind skips them
-  (`globals.css`), or their classes would ship in `/draw`.
+  holds their ranges of our packages at `^version` (moved by `scripts/packages/examples.ts`) and of
+  a tool the repo also has at the root's (the others, `vite` and `@vitejs/plugin-react`, move in
+  deps-review). The root `tsc` checks them against the source, save their `vite.config.ts`; the
+  site's Tailwind skips them (`globals.css`), or their classes would ship in `/draw`.
 - **A package's README is what an integrator reads** (`cad/README.md`, `packages/*/README.md`):
   `test/packages.test.ts` fails on an import or a PascalCase name in it that no `api.md` has,
   and on a block whose info string names an example's file
@@ -111,5 +112,11 @@ license and the Autodesk trademark note.
   hide the host's. `sideEffects` is `["**/*.css"]`, never `false`: webpack 5 drops a bare
   `import "@mellowcad/editor/styles.css"` under `false` (Vite, and Next with either bundler, keep
   it). attw skips the stylesheet (`--exclude-entrypoints`), which is not a module.
+- **Versions are Changesets'** (`.changeset/`, 0.x: a breaking change is a minor, `access`
+  public, each package on its own version): a change a host would notice adds a changeset
+  (`npx changeset`), and `npm run version-packages` bumps, writes the changelogs and moves the
+  examples' ranges. Changesets 3 gives a peer dependent whose range the bump leaves behind a
+  patch and a new range, never a major. Every package has `repository` with its `directory`:
+  npm resolves the READMEs' relative links by it.
 - A runtime dependency of the engine goes in `cad/package.json`'s `dependencies` (today only
   `icu-minify`), never only in the root's.

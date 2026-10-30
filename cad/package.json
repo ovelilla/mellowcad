@@ -2,6 +2,11 @@
   "name": "@mellowcad/engine",
   "version": "0.0.0",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ovelilla/mellowcad.git",
+    "directory": "cad"
+  },
   "private": true,
   "type": "module",
   "sideEffects": false,

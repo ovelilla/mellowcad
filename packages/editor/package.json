@@ -2,6 +2,11 @@
   "name": "@mellowcad/editor",
   "version": "0.0.0",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ovelilla/mellowcad.git",
+    "directory": "packages/editor"
+  },
   "private": true,
   "type": "module",
   "sideEffects": [
