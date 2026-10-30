@@ -82,3 +82,23 @@ volver a verificar las versiones.
   generarla, o que un test la ate a su fuente.
 - La documentación de uso en tres idiomas multiplica el texto que mantener: la referencia generada
   primero, las guías después y cortas.
+
+## 6. Pendiente tras la fase 2 (2026-10-30)
+
+Visto al cerrar la fase 2; ordenado por lo que aporta.
+
+- **El Code Block de shadcn en los bloques de código** (changelog de octubre de 2026, variante de
+  Base UI): números de línea, líneas resaltadas y de diff, ajuste de línea y el aviso accesible al
+  copiar (el `CopyCode` de hoy no anuncia nada). Se trae a `components/docs`, no al editor (al que
+  apunta `components.json`), con los tokens de la landing; Shiki sigue en el build. Cambio pequeño
+  y aparte; decidido hacerlo.
+- **Una skill para quien integra con agentes**: un `SKILL.md` que enseña a montar el motor o el
+  editor, generado de los mismos READMEs (una fuente, como las páginas). Lo más útil hoy junto al
+  `.md` de cada página y `llms.txt`, que ya están.
+- **Un MCP de la documentación** (buscar y leer páginas): `fumadocs-core/mcp` lo trae, pero cada
+  llamada es una función y aporta poco sobre `llms.txt` con tan pocas páginas. Después de la fase 3.
+- **Un MCP del motor** (un agente dibuja con comandos de AutoCAD sobre `CadDriver`, sin navegador,
+  y devuelve SVG o el fichero del dibujo): lo más interesante como producto, y una decisión de
+  producto con su propio brief y la regla de afirmaciones (`i18n.md`) delante.
+- El CLI de shadcn (4.22.0 instalado, 4.23.0 publicada) y la migración de septiembre al paquete
+  `cn` son del editor: van en la próxima revisión de dependencias (`docs/next-agents.md`).
