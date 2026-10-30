@@ -1,6 +1,7 @@
 {
   "name": "@mellowcad/engine",
   "version": "0.0.0",
+  "license": "MIT",
   "private": true,
   "type": "module",
   "sideEffects": false,

@@ -236,3 +236,11 @@ The catalog's shape is public API: `EngineLocale` is typed from `en.json`, and a
 written against it. Renaming, moving or removing a key, changing a message's arguments or tags, or
 changing what a branch holds is a **breaking change, a major version**. Adding a key is not: a
 host's language falls back to English for it, or to the global name for a new command.
+
+## License
+
+MIT ([LICENSE](LICENSE)): the code, not the MellowCAD name or logo.
+
+AutoCAD is a registered trademark of Autodesk, Inc. MellowCAD is an independent project, not
+affiliated with or endorsed by Autodesk; AutoCAD is named only to describe what it is compatible
+with.

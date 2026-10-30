@@ -1,8 +1,8 @@
 # MellowCAD editor
 
-The whole drafting editor as one React component, `CadEditor`: the canvas with AutoCAD's chrome
-around it — the top bar, the tool palette, the palettes, the command line, the status bar, the
-ViewCube — its menus and dialogs, and its words in three languages. Built on
+The whole drafting editor as one React component, `CadEditor`: the canvas with the chrome an
+AutoCAD user expects around it — the top bar, the tool palette, the palettes, the command line,
+the status bar, the ViewCube — its menus and dialogs, and its words in three languages. Built on
 [`@mellowcad/engine`](../../cad/README.md) and [`@mellowcad/react`](../react/README.md), with
 Base UI, compiled with the React Compiler, and shipped with its stylesheet.
 
@@ -11,11 +11,11 @@ It is the package `@mellowcad/editor`, ESM only, not published yet. The engine,
 
 ## Entry points
 
-| Import                            | What                                                       |
-| --------------------------------- | ---------------------------------------------------------- |
-| `@mellowcad/editor`               | `CadEditor`, its pieces and their types                    |
+| Import                            | What                                                      |
+| --------------------------------- | --------------------------------------------------------- |
+| `@mellowcad/editor`               | `CadEditor`, its pieces and their types                   |
 | `@mellowcad/editor/locales/<tag>` | the editor's words in one language each: `en`, `es`, `ar` |
-| `@mellowcad/editor/styles.css`    | its stylesheet                                             |
+| `@mellowcad/editor/styles.css`    | its stylesheet                                            |
 
 What they export, signature by signature, and what the stylesheet asks of a page, is
 [`api.md`](api.md).
@@ -160,3 +160,11 @@ The catalog's keys are public API, as the engine's are (`EditorLocale` is typed 
 adding one is a minor version, renaming or removing one, or changing a message's arguments, a
 major. So are what the stylesheet asks of a page: its root attribute, its layers and the
 variables it reads.
+
+## License
+
+MIT ([LICENSE](LICENSE)): the code, not the MellowCAD name or logo.
+
+AutoCAD is a registered trademark of Autodesk, Inc. MellowCAD is an independent project, not
+affiliated with or endorsed by Autodesk; AutoCAD is named only to describe what it is compatible
+with.

@@ -86,3 +86,12 @@ Si se instala otra versión, se indica su ruta en la variable `ACCORE`.
   landing), que Claude Code y Copilot cargan solas al tocar sus ficheros.
 - [.claude/skills/](.claude/skills/): los procedimientos (añadir un comando o un idioma, investigar
   en AutoCAD, verificar en el navegador, cerrar una funcionalidad).
+
+## Licencia
+
+MIT ([LICENSE](LICENSE)), para el código del repo y de los tres paquetes; no cubre el nombre ni
+el logo de MellowCAD.
+
+AutoCAD es una marca registrada de Autodesk, Inc. MellowCAD es un proyecto independiente, sin
+afiliación con Autodesk ni respaldo suyo; AutoCAD se nombra solo para describir con qué es
+compatible.

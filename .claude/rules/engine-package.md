@@ -28,7 +28,9 @@ paths:
 `cad/` is the npm workspace `@mellowcad/engine`, `packages/react` is `@mellowcad/react` and
 `packages/editor` is `@mellowcad/editor`, in place and private until they are published
 (`docs/next-library.md`). The engine is a peer of the others, never a dependency: a host has one
-instance; so is `@mellowcad/react` of the editor.
+instance; so is `@mellowcad/react` of the editor. Each is MIT, as the repo: `"license": "MIT"` and a
+copy of the root `LICENSE`, which npm packs whatever `files` lists; its README ends with the
+license and the Autodesk trademark note.
 
 - **The repo consumes the source, never a `dist/`.** `tsconfig.json`'s `paths` and
   `vitest.config.ts`'s aliases map each package's name to its source; the workspace link in

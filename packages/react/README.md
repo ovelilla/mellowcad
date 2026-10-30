@@ -85,3 +85,11 @@ The hooks are the DOM's side of the engine's keys, with no markup or styles of t
   `surface` ref captures the pointer, `press(target)` starts on a face, edge or corner.
 
 The editor's own pieces are built on these; read `@mellowcad/editor`'s source for a whole one.
+
+## License
+
+MIT ([LICENSE](LICENSE)): the code, not the MellowCAD name or logo.
+
+AutoCAD is a registered trademark of Autodesk, Inc. MellowCAD is an independent project, not
+affiliated with or endorsed by Autodesk; AutoCAD is named only to describe what it is compatible
+with.
