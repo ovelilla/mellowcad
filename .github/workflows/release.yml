@@ -31,8 +31,14 @@ jobs:
 
       - run: npm ci
 
+      # WHY: changeset publish tags each version with `git tag -m`, an
+      # annotated tag, which needs an identity; without one it fails in
+      # silence and no tag is pushed (0.1.1's run).
+      - run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
       # Each package's prepublishOnly runs its check:hosts first.
       - run: npx changeset publish
 
-      # Its tags are lightweight, which --follow-tags would leave behind.
-      - run: git push origin --tags
+      - run: git push origin --follow-tags
