@@ -52,7 +52,7 @@
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",
-    "@formatjs/icu-messageformat-parser": "^3.5.21",
+    "@formatjs/icu-messageformat-parser": "^3.5.22",
     "@tailwindcss/postcss": "^4",
     "@types/mdx": "^2.0.14",
     "@types/node": "^24.19.2",
