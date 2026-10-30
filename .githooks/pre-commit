@@ -26,6 +26,9 @@ npm run --silent lint
 echo "› format"
 npm run --silent format:check
 
+echo "› docs"
+npm run --silent docs:check
+
 # With coverage: CI fails on vitest.config.ts's thresholds, and a plain
 # `npm test` let nine commits through that CI then rejected.
 echo "› test"

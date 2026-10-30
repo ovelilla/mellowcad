@@ -47,6 +47,9 @@ jobs:
       - name: Format
         run: npm run format:check
 
+      - name: Docs
+        run: npm run docs:check
+
       # Coverage thresholds live in vitest.config.ts and fail the run on their
       # own, so a drop in coverage is a build failure rather than a report.
       - name: Test

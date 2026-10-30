@@ -7,6 +7,7 @@
 /* The landing has its own scoped entry (marketing.css); its classes are not the editor's. */
 @source not "../(marketing)";
 @source not "../../../components/marketing";
+@source not "../../../components/docs";
 @source not "../../global-not-found.tsx";
 /* The examples are other apps, with their own Tailwind (the Next one's top bar). */
 @source not "../../../examples";

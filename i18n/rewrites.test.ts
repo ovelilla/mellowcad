@@ -2,7 +2,7 @@ import { getPathMatch } from "next/dist/shared/lib/router/utils/path-match"
 import { prepareDestination } from "next/dist/shared/lib/router/utils/prepare-destination"
 import { describe, expect, it } from "vitest"
 
-import { localeRedirects, localeRewrites } from "./rewrites"
+import { localeRedirects, localeRewrites, markdownRewrites } from "./rewrites"
 import { routing } from "./routing"
 
 type Route = { source: string; destination: string }
@@ -29,6 +29,8 @@ const FILES = new Set(["/sitemap.xml", "/robots.txt"])
 function resolve(path: string): string {
   const redirect = apply(localeRedirects(routing), path)
   if (redirect !== null) return `redirect ${redirect}`
+  const markdown = apply(markdownRewrites(routing), path)
+  if (markdown !== null) return `route ${markdown}`
   if (FILES.has(path)) return `file ${path}`
   return `route ${apply(localeRewrites(routing), path) ?? path}`
 }
@@ -53,6 +55,13 @@ describe("the locale URL scheme", () => {
     // A word that merely starts like a locale is not one.
     ["/espresso", "route /en/espresso"],
     ["/sitemap.xml", "file /sitemap.xml"],
+    // A docs page's Markdown, in its own language.
+    ["/docs", "route /en/docs"],
+    ["/docs/engine", "route /en/docs/engine"],
+    ["/docs/engine.md", "route /en/docs-md/engine"],
+    ["/docs/engine/api.md", "route /en/docs-md/engine/api"],
+    ["/es/docs/engine/api.md", "route /es/docs-md/engine/api"],
+    ["/en/docs/engine.md", "redirect /docs/engine.md"],
     // Router requests, as Vercel rewrites them from the `RSC` header.
     ["/index.rsc", "route /en.rsc"],
     [

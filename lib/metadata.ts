@@ -41,21 +41,29 @@ export async function pageMetadata({
   path,
   title,
   description,
+  contentLocale,
 }: {
   path: string
   title: string
   description: string
+  /**
+   * The one language a page is written in, when it has no other (the docs'
+   * "Build" section is English): every language's URL names that one as its
+   * canonical, and there are no language versions to list.
+   */
+  contentLocale?: AppLocale
 }): Promise<Metadata> {
-  const locale = await getLocale()
+  const pageLocale = await getLocale()
+  const locale = contentLocale ?? pageLocale
   const t = await getTranslations("Metadata")
   const image = {
-    url: localePath(locale, OG_IMAGE_PATH),
+    url: localePath(pageLocale, OG_IMAGE_PATH),
     width: 1200,
     height: 630,
     type: "image/png",
     alt: t("ogAlt"),
   }
-  const languages = languageAlternates(path)
+  const languages = contentLocale ? undefined : languageAlternates(path)
   return {
     alternates: {
       canonical: localePath(locale, path),

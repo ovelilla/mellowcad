@@ -24,8 +24,8 @@ engine; Next.js/React is only a presentation shell around it.
 | Catalogs   | `npm run locales` after editing a `locales/<tag>.json`         |
 | Knowledge  | `npm run knowledge` (in `npm test`; prints the rules per file) |
 
-`typecheck` + the packages' build and check + `lint` + `format:check` + `test:coverage` must
-pass before a change is done; `.githooks/pre-commit` runs exactly that. CI
+`typecheck` + the packages' build and check + `lint` + `format:check` + `docs:check` +
+`test:coverage` must pass before a change is done; `.githooks/pre-commit` runs exactly that. CI
 (`.github/workflows/ci.yml`) reruns it after a push, too late to stop one: the hook is the gate,
 never `--no-verify` unless the same checks just passed in a clean worktree. Next's
 `npm run build` is outside the gate (it fights the dev server over `.next`): whether a route
@@ -131,8 +131,8 @@ and what each option does must be the ones they already know.
   opened, read its rule: `cad-engine.md` (layers, model), `cad-runtime.md` (input, snapping,
   history, adapters), `cad-scene.md` (scene, presenters), `cad-tools.md` (writing a tool),
   `cad-catalogs.md` (prompts, keywords), `engine-package.md` (the build), `testing.md`, `ui.md`
-  (the editor), `marketing.md` (the landing), `i18n.md` (languages), `knowledge.md` (where
-  knowledge goes).
+  (the editor), `marketing.md` (the landing), `docs.md` (`/docs`), `i18n.md` (languages),
+  `knowledge.md` (where knowledge goes).
 - **Skills** (`.claude/skills/`, loaded on demand): `new-command`, `extend-model`,
   `autocad-research`, `browser-verify`, `add-language`, `finish-feature`, `deps-review`,
   `command-review`.

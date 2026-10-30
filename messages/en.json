@@ -244,5 +244,42 @@
   "Og": {
     "tagline": "2D CAD in your browser",
     "drawTitle": "Start drawing"
+  },
+  "Docs": {
+    "navLabel": "Documentation",
+    "metaTitle": "Documentation",
+    "metaDescription": "How to build with MellowCAD: the drafting engine, its React bindings and the editor, with their API reference and examples.",
+    "label": "Docs",
+    "title": "Documentation",
+    "lead": "How MellowCAD's packages work and how to build with them, from the same files npm and GitHub show.",
+    "buildTitle": "Build with MellowCAD",
+    "buildLead": "The engine, its React bindings and the whole editor, for whoever puts them in an app of their own. In English.",
+    "guide": "Guide",
+    "api": "API reference",
+    "published": "On npm",
+    "notPublished": "Not published yet",
+    "englishOnly": "This section is written in English only.",
+    "onThisPage": "On this page",
+    "menu": "Docs menu",
+    "closeMenu": "Close the docs menu",
+    "search": "Search",
+    "searchTitle": "Search the docs",
+    "searchPlaceholder": "Search the docs",
+    "searchEmpty": "Nothing matches “{query}”.",
+    "searchFailed": "The search did not answer. Try again in a moment.",
+    "searching": "Searching…",
+    "close": "Close",
+    "copy": "Copy",
+    "copied": "Copied",
+    "markdown": "Markdown",
+    "source": "Source on GitHub",
+    "previous": "Previous",
+    "next": "Next",
+    "types": {
+      "gettingStarted": "Getting started",
+      "howTo": "How-to",
+      "reference": "Reference",
+      "concept": "Concepts"
+    }
   }
 }

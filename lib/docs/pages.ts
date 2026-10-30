@@ -1,0 +1,73 @@
+import { readFileSync } from "node:fs"
+import { join } from "node:path"
+
+import type { Node } from "fumadocs-core/page-tree"
+
+import type { AppLocale } from "@/i18n/routing"
+import { routing } from "@/i18n/routing"
+import { REPOSITORY_URL } from "@/lib/site"
+
+import { docsSource } from "./docs-source"
+import {
+  DOCS_PACKAGES,
+  DOCS_PATH,
+  PACKAGE_PAGES,
+  type DocsPackage,
+} from "./packages"
+
+export type DocsPage = NonNullable<ReturnType<typeof docsSource.getPage>>
+
+/** A page's file in the language it is written in (`engine/api.mdx` → `en`). */
+export function pageLanguage(page: DocsPage): AppLocale {
+  return (
+    routing.locales.find((locale) => page.data.info.path.endsWith(`.${locale}.mdx`)) ??
+    routing.defaultLocale
+  )
+}
+
+/** The page's own URL, in the language it is written in: its canonical. */
+export function canonicalPath(page: DocsPage): string {
+  return [DOCS_PATH, ...page.slugs].join("/")
+}
+
+/** Whether a package is on npm: one still `private` is "not published yet". */
+export function isPublished(pkg: DocsPackage): boolean {
+  const manifest = JSON.parse(
+    readFileSync(join(/*turbopackIgnore: true*/ process.cwd(), pkg.dir, "package.json"), "utf8")
+  ) as { private?: boolean }
+  return manifest.private !== true
+}
+
+/** The package a page documents, and the repository file it includes. */
+export function pageSource(
+  page: DocsPage
+): { pkg: DocsPackage; file: string; url: string } | undefined {
+  const [slug, sub = ""] = page.slugs
+  const pkg = DOCS_PACKAGES.find((candidate) => candidate.slug === slug)
+  const entry = PACKAGE_PAGES.find(({ page }) => page === sub)
+  if (!pkg || !entry) return undefined
+  const file = `${pkg.dir}/${entry.file}`
+  return { pkg, file, url: `${REPOSITORY_URL}/blob/main/${file}` }
+}
+
+/**
+ * Every page with its own file in `locale`, in the navigation's order: what
+ * the `.md` routes and `llms.txt` serve.
+ */
+export function ownPages(locale: AppLocale): DocsPage[] {
+  const order: string[] = []
+  const visit = (nodes: Node[]) => {
+    for (const node of nodes) {
+      if (node.type === "page") order.push(node.url)
+      if (node.type === "folder") {
+        if (node.index) order.push(node.index.url)
+        visit(node.children)
+      }
+    }
+  }
+  visit(docsSource.getPageTree(locale).children)
+  return docsSource
+    .getPages(locale)
+    .filter((page) => pageLanguage(page) === locale)
+    .sort((a, b) => order.indexOf(a.url) - order.indexOf(b.url))
+}

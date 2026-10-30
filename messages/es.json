@@ -244,5 +244,42 @@
   "Og": {
     "tagline": "CAD 2D en tu navegador",
     "drawTitle": "Empezar a dibujar"
+  },
+  "Docs": {
+    "navLabel": "Documentación",
+    "metaTitle": "Documentación",
+    "metaDescription": "Cómo construir con MellowCAD: el motor de dibujo, sus enlaces para React y el editor, con su referencia de la API y ejemplos.",
+    "label": "Documentación",
+    "title": "Documentación",
+    "lead": "Cómo funcionan los paquetes de MellowCAD y cómo construir con ellos, desde los mismos ficheros que enseñan npm y GitHub.",
+    "buildTitle": "Construir con MellowCAD",
+    "buildLead": "El motor, sus enlaces para React y el editor entero, para quien los mete en una aplicación propia. En inglés.",
+    "guide": "Guía",
+    "api": "Referencia de la API",
+    "published": "En npm",
+    "notPublished": "Aún no publicado",
+    "englishOnly": "Esta sección solo está escrita en inglés.",
+    "onThisPage": "En esta página",
+    "menu": "Menú de la documentación",
+    "closeMenu": "Cerrar el menú de la documentación",
+    "search": "Buscar",
+    "searchTitle": "Buscar en la documentación",
+    "searchPlaceholder": "Buscar en la documentación",
+    "searchEmpty": "Nada coincide con «{query}».",
+    "searchFailed": "La búsqueda no ha respondido. Vuelve a probar en un momento.",
+    "searching": "Buscando…",
+    "close": "Cerrar",
+    "copy": "Copiar",
+    "copied": "Copiado",
+    "markdown": "Markdown",
+    "source": "Fuente en GitHub",
+    "previous": "Anterior",
+    "next": "Siguiente",
+    "types": {
+      "gettingStarted": "Primeros pasos",
+      "howTo": "Cómo…",
+      "reference": "Referencia",
+      "concept": "Conceptos"
+    }
   }
 }

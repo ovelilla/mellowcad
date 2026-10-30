@@ -37,6 +37,28 @@ export function localeRedirects({ defaultLocale }: LocaleRouting): Redirect[] {
   ]
 }
 
+/**
+ * `beforeFiles`: a docs page's Markdown is its URL with `.md`
+ * (`/docs/engine.md`, `/es/docs/…md`), served by `[locale]/docs-md`, a route
+ * handler, since a page cannot answer two formats.
+ */
+export function markdownRewrites({
+  locales,
+  defaultLocale,
+}: LocaleRouting): Rewrite[] {
+  const prefixed = locales.filter((locale) => locale !== defaultLocale)
+  return [
+    {
+      source: "/docs/:slug+.md",
+      destination: `/${defaultLocale}/docs-md/:slug+`,
+    },
+    {
+      source: `/:locale(${prefixed.join("|")})/docs/:slug+.md`,
+      destination: "/:locale/docs-md/:slug+",
+    },
+  ]
+}
+
 /** Where every language sends the paths it does not have (`[locale]/(marketing)/404`). */
 export const NOT_FOUND_PATH = "/404"
 

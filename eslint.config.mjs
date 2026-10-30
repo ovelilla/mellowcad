@@ -91,6 +91,27 @@ const eslintConfig = defineConfig([
           message:
             "A label a person reads comes from a catalog (.claude/rules/i18n.md, No literals).",
         },
+      ],
+    },
+  },
+  {
+    // The editor's own: the site's pages (the landing, the docs) have no
+    // runtime to route keys through and no editor root to portal into.
+    files: ["packages/editor/src/**/*.tsx"],
+    rules: {
+      "no-restricted-syntax": [
+        "error",
+        {
+          selector: "JSXAttribute[name.name='type'][value.value='number']",
+          message:
+            'A number is typed in DecimalInput (text, inputMode="decimal"), never type="number" (.claude/rules/ui.md).',
+        },
+        {
+          selector:
+            "JSXAttribute[name.name=/^(aria-label|title|placeholder|alt)$/] > Literal",
+          message:
+            "A label a person reads comes from a catalog (.claude/rules/i18n.md, No literals).",
+        },
         {
           selector:
             "CallExpression[callee.property.name='addEventListener'][arguments.0.value=/^key(down|up)$/]",

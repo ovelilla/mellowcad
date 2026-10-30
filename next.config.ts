@@ -1,3 +1,4 @@
+import { createMDX } from "fumadocs-mdx/next"
 import type { NextConfig } from "next"
 import createNextIntlPlugin from "next-intl/plugin"
 
@@ -6,6 +7,7 @@ import {
   localeFallbacks,
   localeRedirects,
   localeRewrites,
+  markdownRewrites,
 } from "./i18n/rewrites"
 
 const nextConfig: NextConfig = {
@@ -43,7 +45,7 @@ const nextConfig: NextConfig = {
   },
   async rewrites() {
     return {
-      beforeFiles: [],
+      beforeFiles: markdownRewrites(routing),
       afterFiles: localeRewrites(routing),
       fallback: localeFallbacks(routing),
     }
@@ -68,4 +70,12 @@ const withNextIntl = createNextIntlPlugin({
   },
 })
 
-export default withNextIntl(nextConfig)
+// WHY a file name: Turbopack matches a pattern without `/` against the file's
+// name; a path (`lib/docs/**`) never matched, and the macro failed at runtime
+// ("this macro was not compiled").
+const withMDX = createMDX({ macro: { include: ["docs-source.ts"] } })
+
+// WHY this order: createMDX sets Turbopack's `*.json` rule (its meta files)
+// over any other, which dropped next-intl's catalog loader and shipped every
+// message uncompiled; next-intl adds its rule beside the one already there.
+export default withNextIntl(withMDX(nextConfig))

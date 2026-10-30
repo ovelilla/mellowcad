@@ -88,7 +88,9 @@ license and the Autodesk trademark note.
   a tool the repo also has at the root's (the others, `vite` and `@vitejs/plugin-react`, move in
   deps-review). The root `tsc` checks them against the source, save their `vite.config.ts`; the
   site's Tailwind skips them (`globals.css`), or their classes would ship in `/draw`.
-- **A package's README is what an integrator reads** (`cad/README.md`, `packages/*/README.md`):
+- **A package's README is what an integrator reads** (`cad/README.md`, `packages/*/README.md`),
+  on GitHub, on npm and as its docs page with its `api.md` (`docs.md`), where a relative link
+  goes to another page or to GitHub, and one leading nowhere fails `docs:check`;
   `test/packages.test.ts` fails on an import or a PascalCase name in it that no `api.md` has,
   and on a block whose info string names an example's file
   (`tsx examples/editor-vite/src/main.tsx`) that is not that file word for word.

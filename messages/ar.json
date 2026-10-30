@@ -244,5 +244,42 @@
   "Og": {
     "tagline": "رسم هندسي ثنائي الأبعاد في متصفحك",
     "drawTitle": "ابدأ الرسم"
+  },
+  "Docs": {
+    "navLabel": "التوثيق",
+    "metaTitle": "التوثيق",
+    "metaDescription": "كيف تبني باستخدام MellowCAD: محرك الرسم وربطه بـ React والمحرّر، مع مرجع الواجهة البرمجية والأمثلة.",
+    "label": "التوثيق",
+    "title": "التوثيق",
+    "lead": "كيف تعمل حزم MellowCAD وكيف تبني بها، من الملفات نفسها التي يعرضها npm وGitHub.",
+    "buildTitle": "البناء باستخدام MellowCAD",
+    "buildLead": "المحرك وربطه بـ React والمحرّر كاملًا، لمن يضعها في تطبيق خاص به. باللغة الإنجليزية.",
+    "guide": "الدليل",
+    "api": "مرجع الواجهة البرمجية",
+    "published": "على npm",
+    "notPublished": "لم يُنشر بعد",
+    "englishOnly": "هذا القسم مكتوب بالإنجليزية فقط.",
+    "onThisPage": "في هذه الصفحة",
+    "menu": "قائمة التوثيق",
+    "closeMenu": "إغلاق قائمة التوثيق",
+    "search": "بحث",
+    "searchTitle": "البحث في التوثيق",
+    "searchPlaceholder": "البحث في التوثيق",
+    "searchEmpty": "لا شيء يطابق «{query}».",
+    "searchFailed": "لم يستجب البحث. أعد المحاولة بعد قليل.",
+    "searching": "جارٍ البحث…",
+    "close": "إغلاق",
+    "copy": "نسخ",
+    "copied": "تم النسخ",
+    "markdown": "Markdown",
+    "source": "المصدر على GitHub",
+    "previous": "السابق",
+    "next": "التالي",
+    "types": {
+      "gettingStarted": "البداية",
+      "howTo": "كيف…",
+      "reference": "مرجع",
+      "concept": "مفاهيم"
+    }
   }
 }

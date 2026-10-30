@@ -7,7 +7,7 @@ description: Close a feature, command or fix in mellowcad — the gate, the cove
 
 1. **The gate**: `npm run typecheck`, `npm run build -w cad` and `npm run check -w cad` (and the
    same in each package of `packages/` that has a build), `npm run lint`, `npm run format:check`,
-   `npm run test:coverage` (the pre-commit hook runs the same; the knowledge check is part of the
+   `npm run docs:check`, `npm run test:coverage` (the pre-commit hook runs the same; the knowledge check is part of the
    tests). A snapshot that changed on
    purpose is updated with `npx vitest run <file> -u` and its diff read before committing.
 2. **The coverage entry** in `docs/coverage/` (`grep -n '^### .*<COMMAND>' docs/coverage/*.md`):

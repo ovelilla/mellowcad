@@ -6,6 +6,7 @@
 @source ".";
 @source "../../global-not-found.tsx";
 @source "../../../components/marketing";
+@source "../../../components/docs";
 
 /* One scheme, dark, like the editor and AutoCAD: `dark:` always applies. */
 @custom-variant dark (&);
@@ -28,6 +29,19 @@
   --accent: #f59e0b;
   --accent-ink: #0b0f14;
   --precision: #22d3ee;
+  /* Code in the docs, by Shiki's CSS-variables theme (lib/docs/docs-source.ts):
+     soft hues at ≥ 7:1 on --bg-sunken, none of them the accent or precision. */
+  --syntax-foreground: var(--text);
+  --syntax-background: var(--bg-sunken);
+  --syntax-token-keyword: #c4b5fd;
+  --syntax-token-string: #a7f3d0;
+  --syntax-token-string-expression: #a7f3d0;
+  --syntax-token-function: #bfdbfe;
+  --syntax-token-constant: #f5d0fe;
+  --syntax-token-parameter: var(--text);
+  --syntax-token-punctuation: var(--text-muted);
+  --syntax-token-comment: var(--text-subtle);
+  --syntax-token-link: var(--text);
   color-scheme: dark;
 }
 
