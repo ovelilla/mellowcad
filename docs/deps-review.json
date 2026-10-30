@@ -11,11 +11,6 @@
       "name": "@babel/core",
       "version": "8.0.9",
       "reason": "under Babel 8 the React Compiler silently skips components with defaults in destructured parameters (react#37406, open), and the editor's build runs it through @rolldown/plugin-babel"
-    },
-    {
-      "name": "@types/node",
-      "version": "26.6.5",
-      "reason": "the types follow the Node we run: 24 locally, in CI and on Vercel. Node 26 is LTS since 2026-10-28 and Vercel's default; moving means nvm, both workflows' node-version and the Vercel project's setting (or engines) together"
     }
   ],
   "acceptedAdvisories": [

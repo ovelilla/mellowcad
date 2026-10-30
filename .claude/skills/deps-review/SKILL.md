@@ -69,8 +69,8 @@ An advisory does not wait for the weekly review. For each one the report flags:
 3. **Groups that move together**, and the report's `peers:` line: `next` with
    `eslint-config-next`; `react`, `react-dom` and `@types/react*`; `vitest` with `@vitest/*`;
    `typescript` within the peer range of the `typescript-eslint` that `eslint-config-next` brings;
-   `@types/node` with the Node major we run (CI's `node-version`, Vercel's runtime and the local
-   one), never ahead of it. `eslint` follows `eslint-config-next`'s peer range (`>=9.0.0`), not
+   `@types/node` with the Node major we run (`engines.node`, which sets Vercel's runtime, the
+   workflows' `node-version` and the local one), never ahead of it. `eslint` follows `eslint-config-next`'s peer range (`>=9.0.0`), not
    that of the plugins it brings: `import`, `jsx-a11y` and `react` still declare ESLint 9, so
    every install warns `ERESOLVE overriding peer dependency` — expected (their rules ran under
    ESLint 10.13, 2026-10-30).
@@ -96,8 +96,11 @@ An advisory does not wait for the weekly review. For each one the report flags:
 - **Actions** of `.github/workflows/`: a new major after reading its releases (Node runtime
   changes). CI runs them only after a push.
 - **Node**: a security release of our major is installed now (`nvm install`, `nvm alias default`).
-  A new LTS moves `node-version` in the workflows, the local Node and `@types/node` together, once
-  Vercel offers it.
+  A new LTS, once Vercel offers it, moves `engines.node`, both workflows' `node-version`, the local
+  Node and `@types/node` together; first the gate and `next build` under it (`nvm exec <major>`)
+  and `process.versions` compared (ICU and OpenSSL change formats and TLS). nvm's default is shared
+  with nubigest, so its review moves too; open shells and VS Code keep the old Node in their
+  `PATH` until reloaded (Developer: Reload Window).
 - **MCP servers** pinned with `npx` in `.mcp.json` and `.vscode/mcp.json`: like a direct
   dependency, both files at once; the change shows after reloading VS Code.
 
