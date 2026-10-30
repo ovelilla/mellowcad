@@ -75,6 +75,14 @@ interface Host {
   readonly check: (dir: string) => string
 }
 
+/**
+ * WHY without `npm_config_dry_run`: `npm publish --dry-run` exports it to its
+ * lifecycle scripts, and every `npm pack` and `npm install` here, attw's
+ * included, would then write and install nothing.
+ */
+const INHERITED: NodeJS.ProcessEnv = { ...process.env }
+delete INHERITED.npm_config_dry_run
+
 function run(
   command: string,
   args: string[],
@@ -85,7 +93,7 @@ function run(
     return execFileSync(command, args, {
       cwd,
       encoding: "utf8",
-      env: { ...process.env, NEXT_TELEMETRY_DISABLED: "1", ...env },
+      env: { ...INHERITED, NEXT_TELEMETRY_DISABLED: "1", ...env },
       stdio: ["ignore", "pipe", "pipe"],
     })
   } catch (error) {
