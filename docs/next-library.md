@@ -1,7 +1,7 @@
 # MellowCAD como librería — brief
 
-> **Estado:** fases 1, 2, 3, 4 y 5 hechas (2026-10-30); de la 6, la parte local (2026-10-30), y
-> lo de fuera espera el sí del dueño; las demás, sin ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
+> **Estado:** fases 1 a 6 hechas (2026-10-30), salvo el trusted publisher del motor, que configura
+> el dueño en npm; las demás, sin ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
 > análisis completo, con el inventario medido, las fuentes fechadas, el spike y el pase adversarial,
 > está en https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama
 > local worktree-agent-a498997d3f29c107f (commit 9bc6682), sin empujar.
@@ -472,8 +472,8 @@ son días de sesión.
    fallan el test en cuanto Changesets cambie una versión, así que la versión los mueve con ella;
    «not published yet» sale de los tres READMEs; `check:hosts` necesita red, y el del editor
    también Google Fonts (next/font).
-6. **Publicar el motor 0.1.0** — la parte local, **hecha** (1fe18c6, 9203e5d, 6abb2b2, b16c114,
-   0e80709 y el de la 0.1.0). Métricas de texto: todas de Arimo salvo la escala de AutoCAD
+6. **Publicar el motor 0.1.0** — **hecha**: `@mellowcad/engine@0.1.0` en npm desde el 2026-10-30
+   (1fe18c6, 9203e5d, 6abb2b2, b16c114, 0e80709, el de la 0.1.0 y c2b3b1c). Métricas de texto: todas de Arimo salvo la escala de AutoCAD
    (H = 1466, p301); Arimo tiene las anchuras y la línea de Arial pero no sus contornos (su H mide
    1409), así que la tinta se aparta un poco de la de AutoCAD (82 tests, con los valores de AutoCAD
    al lado). En producción, solo cambian el chunk del motor, una línea de la brida de la landing (la
@@ -489,9 +489,16 @@ son días de sesión.
    editor, 0.0.1 privados (el peer `^0.0.0` ya no admitía la 0.1.0). `npm publish --dry-run -w cad`
    en verde con su `check:hosts`: 295 ficheros, 748,7 kB (2,7 MB sin comprimir), solo `dist`,
    README, LICENSE y package.json. Hallado y arreglado: dentro de `npm publish --dry-run`, el
-   `npm pack` de attw no escribía el tarball (`npm_config_dry_run` heredado). Con el sí del
-   dueño: la org, repo público, primera publicación desde su máquina con 2FA, trusted publisher,
-   y el CI de vuelta (gratis en un repo público).
+   `npm pack` de attw no escribía el tarball (`npm_config_dry_run` heredado). Con el sí del dueño:
+   el historial reescrito (sin el informe SEO, el email de autor el noreply de GitHub, sin trailer
+   de coautoría; los hashes citados, remapeados) y, como GitHub sigue sirviendo por su hash los
+   commits viejos de un repo forzado, un repo **nuevo** `ovelilla/mellowcad` público; el antiguo es
+   `ovelilla/mellowcad-archive`, privado. Vercel, reconectado al nuevo. El CI vuelve, contenido
+   (un job, 15 min, nada si solo cambia prosa), y `release.yml` publica a mano con trusted
+   publishing. La 0.1.0 la publicó el dueño con 2FA (llave de seguridad): npm la pasó por su
+   revisión de paquete nuevo (un marcador `0.0.0-stage` unos minutos) y la liberó sola; el shasum
+   publicado es el del tarball local. Falta: el trusted publisher (`ovelilla/mellowcad`,
+   `release.yml`) en los ajustes del paquete.
 7. **Publicar react y editor 0.1.0** — 1 día, cuando el ritmo de `packages/editor` baje y terminen las
    revisiones de comandos.
 8. **Registro shadcn** — bajo demanda, tras la 7.
@@ -519,7 +526,8 @@ Bloqueos: 1 → 2 → 6; 1 → 3 → 4 → 5 → 7; la org de npm → 6; 7 → 8
   editor compila con `@rolldown/plugin-babel` 0.2.4 (la 0.3.0 sale el 2026-11-01); attw trae
   su propio `typescript@5.6.1-rc`, anidado. Ninguna tiene scripts de instalación
   (`npm audit signatures` limpio).
-- Sin procedencia mientras el repo sea privado (npm no la genera desde repos privados).
+- La 0.1.0 no lleva procedencia (se publicó desde la máquina del dueño); la tendrán las que salgan
+  de `release.yml`.
 - Propiedad intelectual: los catálogos transcriben el vocabulario de AutoCAD en español (frases
   cortas y nombres funcionales, el riesgo es bajo). Las métricas de texto ya no salen de Arial:
   todas se leen de Arimo menos la escala de AutoCAD (H = 1466, sonda text/p301), a costa de una
@@ -536,8 +544,8 @@ primera publicación) se ejecuta en la fase 6, con un sí suyo en ese momento.
   métricas de texto se vuelven a medir de Arimo o Liberation Sans (SIL OFL, mismas anchuras y
   alturas que Arial por diseño; la tinta se compara con los tests), y AutoCAD solo se nombra para
   describir la compatibilidad, con una nota de que el proyecto no está afiliado a Autodesk.
-- **El mismo repo `mellowcad` se hace público** en la fase 6, tras auditar su historial (secretos) y
-  lo que versiona. Con un repo público, GitHub Actions es gratis en sus runners estándar: vuelve el
+- **El repo `mellowcad` se hace público** en la fase 6, tras auditar su historial (secretos) y lo
+  que versiona; al final, como repo nuevo con el historial reescrito (fase 6). Con un repo público, GitHub Actions es gratis en sus runners estándar: vuelve el
   CI y se publica con trusted publishing y procedencia, sin coste.
 - **Org de npm `mellowcad`**, plan gratuito (paquetes públicos ilimitados). Solo el dueño puede
   crearla, con su cuenta y 2FA; conviene hacerlo pronto para reservar el nombre.
