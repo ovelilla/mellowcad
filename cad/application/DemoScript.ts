@@ -59,9 +59,6 @@ export interface DemoOptions {
   readonly viewPadding?: number
 }
 
-/** Slack past the tracking dwell, so a hover never races its timer. */
-const DWELL_MARGIN_MS = 40
-
 export class DemoScript {
   private constructor(
     readonly options: DemoOptions,
@@ -108,7 +105,7 @@ export class DemoScript {
 
   /**
    * Rests the cursor on a point long enough for object snap tracking to
-   * acquire it — the engine's own dwell, waited out in real time.
+   * acquire it — the engine's own dwell, elapsed at once rather than timed.
    */
   hover(x: number, y: number): DemoScript {
     return this.then({ kind: "hover", at: { x, y } })
@@ -200,8 +197,9 @@ export interface RecordOptions {
 }
 
 /**
- * Replays `script` on a fresh headless engine. Asynchronous only because a
- * {@link DemoScript.hover} waits for the engine's real dwell timer.
+ * Replays `script` on a fresh headless engine. Asynchronous because a command
+ * may wait on a host port (PASTECLIP reads the clipboard), never on the clock:
+ * a recording is the same however loaded the machine that makes it.
  */
 export async function recordDemo(
   script: DemoScript,
@@ -276,6 +274,8 @@ export async function recordDemo(
   }
 }
 
+// Awaited even where nothing in it waits: the turn lets a port's answer
+// (the clipboard's, settled at once) reach its command before the next step.
 async function perform(
   driver: CadDriver,
   action: DemoAction,
@@ -304,10 +304,13 @@ async function perform(
       driver.moveTo(action.at)
       return
     case "hover":
+      // WHY no timer: a build's prerender records many figures at once, and
+      // with its event loop late Node runs every due timer of one duration
+      // before the next, so a wait past the dwell could fire before the
+      // dwell itself and the point went unacquired.
       driver.moveTo(action.at)
-      await new Promise((resolve) =>
-        setTimeout(resolve, driver.runtime.tracking.dwellMs + DWELL_MARGIN_MS)
-      )
+      driver.runtime.tracking.elapseDwell()
+      driver.runtime.parallelRefs.elapseDwell()
       return
     case "down":
       driver.mouseDown(action.at)

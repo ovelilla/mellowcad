@@ -17,6 +17,7 @@ export class ParallelReferenceEngine extends Observable {
   /** A line just acquired that the cursor still rests on — don't re-arm. */
   private settledId: EntityId | null = null
   private timer: ReturnType<typeof setTimeout> | null = null
+  private dwellDone: (() => void) | null = null
 
   /** Hover time before a line is acquired (ms) — same feel as OTRACK. */
   dwellMs = 120
@@ -53,14 +54,20 @@ export class ParallelReferenceEngine extends Observable {
 
     this.cancel()
     this.hoverId = lineId
-    this.timer = setTimeout(() => {
-      this.timer = null
-      this.hoverId = null
+    const done = (): void => {
+      this.cancel()
       this.settledId = lineId
       this.acquired.push(lineId)
       while (this.acquired.length > this.maxRefs) this.acquired.shift()
       this.emit()
-    }, this.dwellMs)
+    }
+    this.dwellDone = done
+    this.timer = setTimeout(done, this.dwellMs)
+  }
+
+  /** Ends the running dwell now, as if the cursor had rested out `dwellMs`. */
+  elapseDwell(): void {
+    this.dwellDone?.()
   }
 
   /** Drops every acquired reference (on point placement, Escape, tool change). */
@@ -75,6 +82,7 @@ export class ParallelReferenceEngine extends Observable {
       clearTimeout(this.timer)
       this.timer = null
     }
+    this.dwellDone = null
     this.hoverId = null
   }
 }

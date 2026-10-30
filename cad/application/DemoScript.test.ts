@@ -1,4 +1,4 @@
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, onTestFinished, vi } from "vitest"
 import type { CircleEntity, LineEntity } from "../domain/entities"
 import { THEME } from "../scene/theme"
 import { p } from "../../test/builders"
@@ -101,7 +101,12 @@ describe("recordDemo", () => {
     expect(segments.length).toBeLessThanOrEqual(4)
   })
 
-  it("waits out the tracking dwell on a hover, so OTRACK acquires the point", async () => {
+  it("acquires on a hover without the clock, so a late event loop drops nothing", async () => {
+    // Timers that never advance: a recording that waited on one would hang.
+    vi.useFakeTimers()
+    onTestFinished(() => {
+      vi.useRealTimers()
+    })
     const recording = await recordDemo(
       demo({ snap: true })
         .command("LINE")
@@ -119,6 +124,29 @@ describe("recordDemo", () => {
         primitive.stroke.color === THEME.trackingSolid
     )
     expect(acquired.length).toBeGreaterThan(0)
+    expect(vi.getTimerCount()).toBe(0)
+  })
+
+  it("lets a pasted copy reach the cursor before the next step", async () => {
+    const recording = await recordDemo(
+      demo()
+        .command("_CIRCLE")
+        .type("0,0")
+        .enter()
+        .type("10")
+        .enter()
+        .command("_COPYBASE")
+        .type("0,0")
+        .enter()
+        .click(10, 0)
+        .enter()
+        .command("_PASTECLIP")
+        .moveTo(50, 0)
+    )
+    const circles = recording.scene.primitives.filter(
+      (primitive) => primitive.kind === "circle"
+    )
+    expect(circles).toHaveLength(2)
   })
 
   it("holds the button between down and up, so a lasso shows", async () => {

@@ -462,11 +462,10 @@ son días de sesión.
    6.1.2, en el ejemplo (una dependencia, sin scripts de instalación, código leído). Medido en
    producción contra fe02de1, cada build en un worktree limpio: los 38 ficheros de `.next/static`
    iguales en nombre y bytes, sus manifiestos iguales, y las páginas prerenderizadas (HTML y RSC,
-   / y /draw en los tres idiomas entre ellas) iguales salvo el build id. Hallado y sin tocar (la
-   landing no debía cambiar): la figura de OTRACK se graba en el prerender esperando temporizadores
-   reales (la espera de 120 ms del rastreo), y con la máquina cargada sale sin la línea de rastreo
-   (dos builds de HEAD así, en /en y /ar; repetidos en calma, los seis commits dan la figura
-   entera). Lo que heredan la 6 y la 7: los
+   / y /draw en los tres idiomas entre ellas) iguales salvo el build id. Hallado (la landing no debía
+   cambiar) y arreglado después: la figura de OTRACK se grababa en el prerender esperando
+   temporizadores reales, y con la máquina cargada salía sin una línea de rastreo; ahora `hover`
+   agota el dwell sin reloj. Lo que heredan la 6 y la 7: los
    READMEs enlazan `examples/` y los otros READMEs por ruta relativa, que npm solo resuelve con
    `repository` (y su `directory`) en el package.json; los rangos `^0.0.0` de los ejemplos
    fallan el test en cuanto Changesets cambie una versión, así que la versión los mueve con ella;

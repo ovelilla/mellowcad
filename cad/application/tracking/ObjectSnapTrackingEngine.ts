@@ -72,6 +72,7 @@ export class ObjectSnapTrackingEngine extends Observable {
    */
   private settledPoint: Vec2 | null = null
   private dwellTimer: ReturnType<typeof setTimeout> | null = null
+  private dwellDone: (() => void) | null = null
   private nextId = 1
 
   private active = true
@@ -152,10 +153,20 @@ export class ObjectSnapTrackingEngine extends Observable {
     this.settledPoint = null
     this.hoverPoint = snap.point
     const { point, type, sourceIds = [] } = snap
-    this.dwellTimer = setTimeout(() => {
-      this.dwellTimer = null
+    const done = (): void => {
+      this.cancelDwell()
       this.toggleAt(point, type, sourceIds, epsilon)
-    }, this.dwellMs)
+    }
+    this.dwellDone = done
+    this.dwellTimer = setTimeout(done, this.dwellMs)
+  }
+
+  /**
+   * Ends the running dwell now, as if the cursor had rested out `dwellMs`: a
+   * recorded session replays a hover without racing the clock.
+   */
+  elapseDwell(): void {
+    this.dwellDone?.()
   }
 
   /**
@@ -373,6 +384,7 @@ export class ObjectSnapTrackingEngine extends Observable {
       clearTimeout(this.dwellTimer)
       this.dwellTimer = null
     }
+    this.dwellDone = null
     this.hoverPoint = null
   }
 }

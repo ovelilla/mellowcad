@@ -87,7 +87,8 @@ script — updates it in the same change.
   dimensions sets `frame`: extents know a dimension's definition points, not how far its text runs.
 - Scripts are real input: a point after the first is **relative** under dynamic input
   (DYNPICOORDS), so write `@`, or `#` for absolute; HATCH starts on ANGLE, so name the pattern;
-  OTRACK acquires by dwelling, so use `hover`, which waits for the engine's timer.
+  OTRACK acquires by dwelling, so use `hover`, which elapses the engine's dwell at once
+  (`elapseDwell`). A recording never waits on a timer: a loaded prerender ran a longer one first.
 - `content/figures.test.ts` replays every figure (no error lines, something drawn) and holds the
   hero to 8–12 s and ≤ 600 primitives.
 - The hero plots with CSS only: each element carries `--t` / `--d`, solid strokes have
