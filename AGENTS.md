@@ -23,6 +23,7 @@ engine; Next.js/React is only a presentation shell around it.
 | Tests      | `npm test` / `npm run test:watch` / `npm run test:coverage`    |
 | Catalogs   | `npm run locales` after editing a `locales/<tag>.json`         |
 | Knowledge  | `npm run knowledge` (in `npm test`; prints the rules per file) |
+| Deps       | `npm run deps:check`: weekly, before the task (`deps-review`)  |
 
 `typecheck` + the packages' build and check + `lint` + `format:check` + `docs:check` +
 `test:coverage` must pass before a change is done; `.githooks/pre-commit` runs exactly that. CI
@@ -148,4 +149,4 @@ and what each option does must be the ones they already know.
   its string tables.
 
 A rule that is now wrong is worse than no rule: fix or delete it in the change that made it wrong.
-Keep this file short: it is loaded on every request (`test/knowledge.test.ts` caps it).
+Keep this file short: `test/knowledge.test.ts` caps it.

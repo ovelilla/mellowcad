@@ -19,12 +19,16 @@ paths:
 | The why of one place in the code                     | a comment there                                           |
 | What was done, measured or tried                     | the commit message                                        |
 | A rule a machine can check                           | a test or a lint rule, and one line in the rule naming it |
+| A dependency deferred, an advisory or package kept   | `docs/deps-review.json` (skill `deps-review`)             |
 
 - **Do not describe the code.** A list of modules, methods or the order of a bar is learned by
   opening the file and goes stale the day it changes: every such table the audit of 2026-10-20 found
   was incomplete. Write what the code cannot say: the constraint, the trap, the reason.
 - **One owner per fact**: anywhere else, a pointer to it.
 - **A rule that can be checked becomes the check.** The prose then shrinks to "checked by X".
+- **The hooks** (`.claude/hooks/`, wired in `.claude/settings.json`) run in Claude Code only: what
+  one enforces also lives in the prose an agent of any tool reads (the skill, `AGENTS.md`), and its
+  logic is tested (`test/deps.test.ts` runs the session hook in a scratch repo).
 - A rule is English and terse. A library's behaviour carries a header after the title,
   `> Verified against **<package> <version>**.`, with the installed version: an upgrade turns it
   red until the rule is re-verified.

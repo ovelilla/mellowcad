@@ -26,7 +26,8 @@
     "knowledge": "KNOWLEDGE_STATS=1 vitest run test/knowledge.test.ts --reporter=verbose",
     "docs:check": "node scripts/docs/check.ts",
     "locales": "node scripts/locales/compile.ts && node scripts/locales/editor.ts",
-    "version-packages": "changeset version && node scripts/packages/examples.ts"
+    "version-packages": "changeset version && node scripts/packages/examples.ts",
+    "deps:check": "node scripts/deps/check.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",
