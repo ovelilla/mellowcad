@@ -9,7 +9,7 @@
   },
   "dependencies": {
     "@mellowcad/editor": "^0.0.1",
-    "@mellowcad/engine": "^0.1.1",
+    "@mellowcad/engine": "^0.1.2",
     "@mellowcad/react": "^0.0.1",
     "next": "16.4.2",
     "react": "19.3.1",
