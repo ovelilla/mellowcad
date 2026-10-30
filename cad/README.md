@@ -33,7 +33,8 @@ engine.dispose() // when the canvas goes
 
 The defaults are safe on any page:
 
-- **`store`**, where the drawing is autosaved and restored from: none unless given.
+- **`store`**, where the drawing is autosaved and restored from: none unless given. A change
+  still waiting to be written is written on `dispose()` and as the page is hidden or left.
   `createMemoryDrawingStore()` keeps it while the page lives; a `DrawingStore` of the host's
   (`read`, `write`) keeps it anywhere. `createLocalStorageDrawingStore()` is this device's, the
   editor's drawing: an engine given it shares, and overwrites, what the editor saved.

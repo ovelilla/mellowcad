@@ -5932,9 +5932,18 @@ export class CadRuntime extends Observable {
   }
 
   dispose(): void {
+    // The last change is written, never dropped with its timer: AutoCAD's
+    // CLOSE asks before it discards an edit, and with nothing to ask, the
+    // store is the save.
+    this.flushAutosave()
     this.disposed = true
     this.autosave.dispose()
     this.tracking.clear()
+  }
+
+  /** Writes a pending autosave now, as a page that is going away must. */
+  flushAutosave(): void {
+    this.autosave.flush()
   }
 
   isDisposed(): boolean {

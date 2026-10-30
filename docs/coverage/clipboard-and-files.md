@@ -64,7 +64,9 @@ Create New Drawing, Ctrl+N (the browser keeps it for a new window)
 ### `QSAVE` / `SAVEAS` / `SAVE` / `OPEN` (Ctrl+S / Ctrl+Shift+S / Ctrl+O) · es `GUARDARR` / `GUARDARCOMO` / `GUARDAR` / `ABRE`
 
 **Implemented:** `FileTransport` port, versioned tolerant JSON, transparent autosave behind the
-`DrawingStore` port (this device's localStorage), its state in the top bar; the file keeps what
+`DrawingStore` port (this device's localStorage), its state in the top bar, a change still in its
+350 ms debounce written at once when the engine is disposed or the page hidden or left (CLOSE
+"prompted to save or discard the changes": with nothing to ask, nothing is dropped); the file keeps what
 AutoCAD saves in the drawing (FILLETRAD, CHAMFERA/B, TEXTSIZE and TEXT's justification, ORTHOMODE,
 SNAPMODE, SNAPUNIT, GRIDMODE: rectang/p302, p304, p311, p316, p321), and OPEN puts what it keeps
 per drawing unsaved back to its defaults, as NEW does; SAVE a command of its own (clipboard/p202),

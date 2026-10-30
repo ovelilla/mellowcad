@@ -72,6 +72,14 @@ export class AutosaveService extends Observable {
     this.emit()
   }
 
+  /** Writes a save still waiting out its debounce at once, if one is. */
+  flush(): void {
+    if (this.debounceHandle === null) return
+    clearTimeout(this.debounceHandle)
+    this.debounceHandle = null
+    this.saveNow()
+  }
+
   dispose(): void {
     if (this.debounceHandle !== null) clearTimeout(this.debounceHandle)
     if (this.indicatorHandle !== null) clearTimeout(this.indicatorHandle)

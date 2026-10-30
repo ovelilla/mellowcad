@@ -60,6 +60,8 @@ class FakeNode extends EventTarget {
 
 class FakeDocument extends FakeNode {
   activeElement: FakeNode | null = null
+  visibilityState: DocumentVisibilityState = "visible"
+  defaultView: EventTarget | null = null
   readonly body: FakeNode
 
   constructor() {
@@ -137,6 +139,7 @@ interface Page {
     readonly getItem: Mock<(key: string) => string | null>
     readonly setItem: Mock<(key: string, value: string) => void>
   }
+  readonly window: EventTarget
 }
 
 let page: Page
@@ -157,7 +160,12 @@ beforeEach(() => {
     setItem: vi.fn((key: string, value: string) => void saved.set(key, value)),
   }
   vi.stubGlobal("Node", FakeNode)
-  vi.stubGlobal("window", { devicePixelRatio: 1, localStorage: storage })
+  const window = Object.assign(new EventTarget(), {
+    devicePixelRatio: 1,
+    localStorage: storage,
+  })
+  document.defaultView = window
+  vi.stubGlobal("window", window)
   vi.stubGlobal("requestAnimationFrame", () => 0)
   vi.stubGlobal(
     "ResizeObserver",
@@ -166,7 +174,17 @@ beforeEach(() => {
       disconnect() {}
     }
   )
-  page = { document, canvas, scope, field, button, link, search, storage }
+  page = {
+    document,
+    canvas,
+    scope,
+    field,
+    button,
+    link,
+    search,
+    storage,
+    window,
+  }
 })
 
 function engineOn(options?: CadEngineOptions): CadEngine {
@@ -568,6 +586,55 @@ describe("CadEngine embedded in a scope", () => {
     engine.dispose()
 
     expect(keyAt(page, page.canvas, "L").defaultPrevented).toBe(false)
+  })
+})
+
+describe("CadEngine's autosave", () => {
+  /** A change still inside the autosave's debounce. */
+  function edited() {
+    vi.useFakeTimers()
+    onTestFinished(() => {
+      vi.useRealTimers()
+    })
+    const store = createMemoryDrawingStore()
+    const engine = embedded({ store })
+    engine.createLayer("Walls")
+    expect(store.read()).toBeNull()
+    return { engine, store }
+  }
+
+  it("writes the last change when disposed before it was due", () => {
+    const { engine, store } = edited()
+    engine.dispose()
+
+    expect(store.read()).toContain("Walls")
+  })
+
+  it("writes it as the page is hidden", () => {
+    const { store } = edited()
+    dispatch(page.document, "visibilitychange", page.document)
+    expect(store.read()).toBeNull()
+    page.document.visibilityState = "hidden"
+    dispatch(page.document, "visibilitychange", page.document)
+
+    expect(store.read()).toContain("Walls")
+  })
+
+  it("writes it as the page goes away", () => {
+    const { store } = edited()
+    page.window.dispatchEvent(new Event("pagehide"))
+
+    expect(store.read()).toContain("Walls")
+  })
+
+  it("writes nothing when nothing is pending", () => {
+    const store = createMemoryDrawingStore()
+    const write = vi.spyOn(store, "write")
+    const engine = embedded({ store })
+    page.window.dispatchEvent(new Event("pagehide"))
+    engine.dispose()
+
+    expect(write).not.toHaveBeenCalled()
   })
 })
 

@@ -766,6 +766,15 @@ export class CadEngine {
     // dynamic-input box, which handles its own Enter/Escape.
     c.ownerDocument.addEventListener("keydown", this.onKeyDown)
     c.ownerDocument.addEventListener("keyup", this.onKeyUp)
+    // A page closed or navigated away never unmounts its engine, so the
+    // autosave's debounce would die with it: write it as the page goes.
+    // `visibilitychange` is the last event a mobile browser reliably fires
+    // before discarding a page; `pagehide` covers a desktop unload.
+    c.ownerDocument.addEventListener(
+      "visibilitychange",
+      this.onVisibilityChange
+    )
+    c.ownerDocument.defaultView?.addEventListener("pagehide", this.onPageHide)
     if (this.scope) {
       // Capture, so a press whose own handler stops it still moves the user's
       // attention in or out of the embedded engine.
@@ -785,8 +794,26 @@ export class CadEngine {
     c.ownerDocument.removeEventListener("contextmenu", this.onContextMenu)
     c.ownerDocument.removeEventListener("keydown", this.onKeyDown)
     c.ownerDocument.removeEventListener("keyup", this.onKeyUp)
+    c.ownerDocument.removeEventListener(
+      "visibilitychange",
+      this.onVisibilityChange
+    )
+    c.ownerDocument.defaultView?.removeEventListener(
+      "pagehide",
+      this.onPageHide
+    )
     c.ownerDocument.removeEventListener("pointerdown", this.onPagePress, true)
     c.ownerDocument.removeEventListener("focusin", this.onPageFocus)
+  }
+
+  private onVisibilityChange = (): void => {
+    if (this.canvas.ownerDocument.visibilityState === "hidden") {
+      this.runtime.flushAutosave()
+    }
+  }
+
+  private onPageHide = (): void => {
+    this.runtime.flushAutosave()
   }
 
   private onPagePress = (e: PointerEvent): void => {

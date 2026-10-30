@@ -456,9 +456,9 @@ son días de sesión.
    `vite.config.ts`, y el `globals.css` del sitio salta `examples/` en la detección de Tailwind.
    Hallado: las declaraciones del motor nombran tipos del DOM (`CadEngine` toma un canvas), así
    que un proyecto Node sin `"dom"` en `lib` y con `skipLibCheck` apagado no compila (el ejemplo
-   deja el de `tsc --init`; el README lo dice). Hallado y sin tocar: `dispose()` cancela un
-   autoguardado pendiente (350 ms de debounce) y `CadEngine` no lo vacía al cerrar la página, así
-   que un anfitrión con `store` que desmonta o cierra justo tras editar pierde el último cambio. Dependencias: solo `@vitejs/plugin-react`
+   deja el de `tsc --init`; el README lo dice). Hallado y arreglado después: `dispose()`
+   cancelaba un autoguardado pendiente (350 ms de debounce) y `CadEngine` no lo vaciaba al cerrar la
+   página; ahora lo escriben `dispose()`, `pagehide` y `visibilitychange`. Dependencias: solo `@vitejs/plugin-react`
    6.1.2, en el ejemplo (una dependencia, sin scripts de instalación, código leído). Medido en
    producción contra fe02de1, cada build en un worktree limpio: los 38 ficheros de `.next/static`
    iguales en nombre y bytes, sus manifiestos iguales, y las páginas prerenderizadas (HTML y RSC,
