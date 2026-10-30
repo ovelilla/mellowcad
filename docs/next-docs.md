@@ -1,6 +1,6 @@
 # mellowcad.com: producto y documentación — brief
 
-> **Estado:** acordado el 2026-10-30; fase 1 hecha el mismo día, la 2 sin empezar. Sigue la
+> **Estado:** acordado el 2026-10-30; fases 1 y 2 hechas el mismo día, la 3 sin empezar. Sigue la
 > convención de `docs/next-*.md`: se borra cuando la fase 3 haya ocurrido.
 
 ## 1. Objetivo
@@ -37,9 +37,12 @@ de la librería.
    `@mellowcad/engine` en npm en «Motor», el pie, la FAQ y la entradilla de «Estado». El README de
    la raíz es uno en inglés para quien visita el repo, y la guía de montaje, en español, está en
    `docs/setup.md`.
-2. **Construir** — 2–3 días. `/docs` con su navegación; las páginas del motor, react y el editor
-   generadas de sus READMEs y `api.md` en el build, los bloques de los ejemplos incluidos; el
-   `homepage` de cada paquete publicado apunta a la suya.
+2. **Construir** — **hecha**. `/docs` con fumadocs (Macro API) y una interfaz propia con Base UI;
+   cada página del motor, react y el editor es un `<include>` de su README o su `api.md`, con los
+   bloques de los ejemplos leídos de su fichero; `.md`, `llms.txt`, el buscador en el servidor y
+   `docs:check` en el gate. En inglés y servida bajo cada prefijo con el marco de su idioma
+   (`.claude/rules/docs.md`). El `homepage` del motor apunta a su página, con un changeset de
+   parche aún sin publicar; react y el editor, «not published yet», tendrán el suyo al publicarse.
 3. **Usar** — 3–5 días. Primeros pasos y la referencia de comandos en los tres idiomas, desde el
    catálogo; atajos y diferencias con AutoCAD. Las capturas o figuras, con el `recordDemo` de la
    landing.
