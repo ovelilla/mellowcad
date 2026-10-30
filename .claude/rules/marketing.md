@@ -23,7 +23,7 @@ paths:
 
 # Landing (`/`)
 
-> Verified against **next 16.4.2**, **next-intl 4.14.9**, **schema-dts 2.1.0**.
+> Verified against **next 16.4.3**, **next-intl 4.14.9**, **schema-dts 2.1.0**.
 
 The landing and the editor are two **root layouts** under the `[locale]` root param:
 `app/[locale]/(marketing)/layout.tsx` owns `<html>`, `marketing.css`, the header, the footer and the

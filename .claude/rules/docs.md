@@ -12,7 +12,7 @@ paths:
 
 # Docs (`/docs`)
 
-> Verified against **fumadocs-core 16.17.8**, **fumadocs-mdx 15.4.10**, **next 16.4.2**.
+> Verified against **fumadocs-core 16.17.8**, **fumadocs-mdx 15.4.10**, **next 16.4.3**.
 
 The plan and its phases: `docs/next-docs.md`. The docs live in the landing's root layout (its
 header, footer and `marketing.css`, which names `components/docs` in its `@source`); copy and
