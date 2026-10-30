@@ -12,7 +12,7 @@ import { CopyCode } from "./copy-code"
 function heading(Tag: "h2" | "h3" | "h4", className: string) {
   return function Heading({ id, children }: ComponentProps<"h2">) {
     return (
-      <Tag id={id} className={`group scroll-mt-24 ${className}`}>
+      <Tag id={id} className={`group ${className}`}>
         {children}
         {id && (
           <a

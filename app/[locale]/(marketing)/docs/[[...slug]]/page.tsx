@@ -280,7 +280,7 @@ export default async function DocsPageRoute({
         </div>
         {page && (
           <div className="hidden xl:block">
-            <div className="sticky top-24 max-h-[calc(100svh-8rem)] overflow-y-auto">
+            <div className="sticky top-24 flex max-h-[calc(100svh-8rem)] flex-col">
               <DocsToc items={page.data.toc} title={t("onThisPage")} />
             </div>
           </div>
