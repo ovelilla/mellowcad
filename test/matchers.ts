@@ -162,7 +162,12 @@ interface CadMatchers<R = unknown> {
 }
 
 declare module "vitest" {
-  // The type parameter must mirror Vitest's own declaration to merge.
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any, @typescript-eslint/no-empty-object-type
-  interface Matchers<T = any> extends CadMatchers<T> {}
+  // The type parameters must mirror Vitest's own declaration to merge; R is
+  // what a matcher returns (a promise under `expect(...).resolves`).
+  // eslint-disable-next-line @typescript-eslint/no-empty-object-type
+  interface Matchers<
+    R extends void | Promise<void> = void | Promise<void>,
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
+    T = unknown,
+  > extends CadMatchers<R> {}
 }
