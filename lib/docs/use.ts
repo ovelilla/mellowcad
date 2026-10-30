@@ -5,7 +5,7 @@ import { createHash } from "node:crypto"
  * language (`commands.mdx`, `commands.es.mdx`, `commands.ar.mdx`), in the
  * navigation's order. Every other folder of `content/docs/` is a package's.
  */
-export const USE_PAGES = ["commands", "shortcuts"] as const
+export const USE_PAGES = ["commands", "shortcuts", "differences"] as const
 
 export type UsePage = (typeof USE_PAGES)[number]
 

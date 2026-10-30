@@ -9,6 +9,8 @@ import {
   PACKAGE_PAGES,
   pagePackage,
 } from "./packages.ts"
+import { DIFFERENCES, DIFFERENCES_PAGE } from "./differences.ts"
+import { commandElements, commandNames } from "./remark-command-names.ts"
 import { resolvePackageLink } from "./remark-package-source.ts"
 import { docsPageSchema, metaSchema } from "./schema.ts"
 import { USE_PAGES, githubAnchor, sourceHash } from "./use.ts"
@@ -16,6 +18,8 @@ import { routing } from "../../i18n/routing.ts"
 import { SITE_URL } from "../site.ts"
 
 export const CONTENT_DIR = "content/docs"
+
+const CATALOGS_NOTE = "cad/locales/en.json"
 
 const FENCE = /^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[ \t]*$/gm
 const INLINE_CODE = /`[^`\n]*`/g
@@ -76,6 +80,7 @@ export function checkDocs(root: string): string[] {
     problems.push(`${file}: ${message}`)
 
   const source = (page: string) => readFileSync(path.join(contentDir, page), "utf8")
+  const names = commandNames(root, "en")
   const anchors = new Map(
     pages
       .filter((page) => !page.includes("/") && !LOCALE_SUFFIX.test(page))
@@ -120,6 +125,23 @@ export function checkDocs(root: string): string[] {
     }
   }
 
+  const flat = (text: string) => text.replace(/\s+/g, " ")
+  for (const { id, sources } of DIFFERENCES) {
+    for (const { file, quote } of sources) {
+      const text = existsSync(path.join(root, file)) ? readFileSync(path.join(root, file), "utf8") : ""
+      if (!flat(text).includes(flat(quote))) {
+        report(file, `no longer says why "${id}" differs from AutoCAD: "${quote}" (lib/docs/differences.ts)`)
+      }
+    }
+  }
+  const expected = DIFFERENCES.map(({ id }) => id).join(", ")
+  for (const page of pages.filter((page) => page.replace(LOCALE_SUFFIX, "") === `${DIFFERENCES_PAGE}.mdx`)) {
+    const sections = [...source(page).matchAll(/^##\s+.*\[#([^\]]+)\]\s*$/gm)].map((match) => match[1])
+    if (sections.join(", ") !== expected) {
+      report(`${CONTENT_DIR}/${page}`, `its sections are those of lib/docs/differences.ts, in order: ${expected}`)
+    }
+  }
+
   for (const page of pages) {
     const file = `${CONTENT_DIR}/${page}`
     const { data, content } = frontmatter(
@@ -147,6 +169,9 @@ export function checkDocs(root: string): string[] {
         report(file, `the page is its file and nothing else: <include>${source}</include>`)
       }
       continue
+    }
+    for (const id of commandElements(content)) {
+      if (!(id in names)) report(file, `<Command id="${id}" /> names no command of ${CATALOGS_NOTE}`)
     }
     for (const link of markdownLinks(content)) {
       const [target, fragment] = link.split("#")

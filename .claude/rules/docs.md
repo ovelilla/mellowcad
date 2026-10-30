@@ -60,6 +60,12 @@ claims follow `i18n.md`.
   external, so neither `docs:check` nor a remark plugin can read the catalog.
 - Every command has a `###` heading in `docs/coverage/` naming it in a code span: the reference
   links to it and fails without one.
+- **A written page never types a command's name**: `<Command id="NEW" />` is the name in the page's
+  command language (`NUEVO` in Spanish), read from `cad/locales/*.json` by `remarkCommandNames`,
+  which a remark plugin can read without the engine.
+- **Each difference from AutoCAD quotes why** (`lib/docs/differences.ts`): a `WHY` at the code or
+  its coverage entry. A deviation lifted or reworded fails `docs:check` until the page says so; a
+  new one gets a section in every language and its quote. No difference without a written reason.
 - A hand-written translation carries `sourceHash` (`sourceHash()` of its English file):
   `docs:check` names a stale one and the hash to set once it is brought up to date.
 - In a right-to-left page a command's name in a heading is isolated (FSI…PDI) and inline code is
@@ -99,7 +105,7 @@ claims follow `i18n.md`.
 ## `docs:check`
 
 `npm run docs:check`, in the hook and CI: frontmatter and `meta.json`, each package's two pages
-and their includes, each "Use" page in every language and its translations' `sourceHash`, the
-links of the package files and of written pages (a fragment to a root page's heading), the
-examples blocks name, and the homepage. A README link that leads nowhere fails it. Its own cases
-are `lib/docs/check.test.ts`.
+and their includes, each "Use" page in every language and its translations' `sourceHash`, each
+`<Command id>`, the differences' quotes and sections, the links of the package files and of
+written pages (a fragment to a root page's heading), the examples blocks name, and the homepage.
+A README link that leads nowhere fails it. Its own cases are `lib/docs/check.test.ts`.

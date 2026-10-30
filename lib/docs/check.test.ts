@@ -7,6 +7,7 @@ import { afterEach, describe, expect, it } from "vitest"
 
 import { checkDocs, contentPagePath, markdownLinks } from "./check"
 import { resolvePackageLink } from "./remark-package-source"
+import { DIFFERENCES, DIFFERENCES_PAGE } from "./differences"
 import { USE_PAGES, sourceHash } from "./use"
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..")
@@ -32,14 +33,24 @@ const page = (body: string, type = "reference") =>
 const translated = (english: string, body: string) =>
   `---\ntitle: T\ndescription: D\ntype: howTo\nsourceHash: "${sourceHash(english)}"\n---\n\n${body}\n`
 
-/** "Use" in every language, each translation up to date with its English page. */
+const differences = DIFFERENCES.map(({ id }) => `## ${id} [#${id}]`).join("\n\n")
+
+/**
+ * "Use" in every language, each translation up to date with its English page,
+ * the differences in their order and every quote in its file.
+ */
 function translatedPages(): Record<string, string> {
   const tree: Record<string, string> = {}
+  for (const { sources } of DIFFERENCES) {
+    for (const { file, quote } of sources) tree[file] = `${tree[file] ?? ""}${quote}\n`
+  }
+  tree["cad/locales/en.json"] = JSON.stringify({ commands: { names: { LINE: ["LINE", "L"] } } })
   for (const name of USE_PAGES) {
-    const english = page(`## Start [#start]\n\nSee [the engine](/docs/engine).`, "howTo")
+    const body = name === DIFFERENCES_PAGE ? differences : "## Start [#start]"
+    const english = page(`${body}\n\nSee [the engine](/docs/engine) and <Command id="LINE" />.`, "howTo")
     tree[`content/docs/${name}.mdx`] = english
-    tree[`content/docs/${name}.es.mdx`] = translated(english, "## Empezar [#start]")
-    tree[`content/docs/${name}.ar.mdx`] = translated(english, "## ابدأ [#start]")
+    tree[`content/docs/${name}.es.mdx`] = translated(english, body)
+    tree[`content/docs/${name}.ar.mdx`] = translated(english, body)
   }
   return tree
 }
@@ -123,6 +134,26 @@ describe("docs:check", () => {
       'content/docs/guide.mdx: "guide" is not in USE_PAGES (lib/docs/use.ts)',
       `content/docs/${name}.ar.mdx: written by gen.test.ts, as ${name}.mdx is: no sourceHash`,
       `content/docs/guide.mdx: the link "/docs/${name}#b" names no heading of /docs/${name}`,
+    ])
+  })
+})
+
+describe("the differences from AutoCAD", () => {
+  it("hold each to the words that say why, and the page to their order", () => {
+    const tree = packages()
+    const [first] = DIFFERENCES
+    const { file, quote } = first.sources[0]
+    tree[file] = tree[file].replace(quote, "")
+    const swapped = differences.replace(`[#${first.id}]`, "[#x]")
+    tree[`content/docs/${DIFFERENCES_PAGE}.es.mdx`] = translated(
+      tree[`content/docs/${DIFFERENCES_PAGE}.mdx`],
+      `${swapped}\n\n<Command id="NOPE" />`
+    )
+    const order = DIFFERENCES.map(({ id }) => id).join(", ")
+    expect(checkDocs(repo(tree))).toEqual([
+      `${file}: no longer says why "${first.id}" differs from AutoCAD: "${quote}" (lib/docs/differences.ts)`,
+      `content/docs/${DIFFERENCES_PAGE}.es.mdx: its sections are those of lib/docs/differences.ts, in order: ${order}`,
+      `content/docs/${DIFFERENCES_PAGE}.es.mdx: <Command id="NOPE" /> names no command of cad/locales/en.json`,
     ])
   })
 })

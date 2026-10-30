@@ -9,6 +9,7 @@ import { localePath } from "../../i18n/navigation"
 import { routing } from "../../i18n/routing"
 
 import { DOCS_PATH } from "./packages"
+import { remarkCommandNames } from "./remark-command-names"
 import { remarkPackageSource } from "./remark-package-source"
 import { docsPageSchema, metaSchema } from "./schema"
 
@@ -47,7 +48,7 @@ const docs = defineDocs({
     schema: docsPageSchema,
     postprocess: { includeProcessedMarkdown: { headingIds: false } },
     mdxOptions: applyMdxPreset({
-      remarkPlugins: (plugins) => [remarkPackageSource, ...plugins],
+      remarkPlugins: (plugins) => [remarkPackageSource, remarkCommandNames, ...plugins],
       rehypeCodeOptions: {
         themes: { dark: codeTheme },
         defaultColor: "dark",

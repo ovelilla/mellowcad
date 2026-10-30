@@ -1,0 +1,43 @@
+---
+title: Differences from AutoCAD
+description: "Where MellowCAD works otherwise than AutoCAD, and why: what the browser keeps for itself, and what does not exist here."
+type: concept
+---
+
+MellowCAD follows AutoCAD 2027: the same commands and aliases, the same order of prompts, the same option letters and defaults. It parts from it only where the browser forces it or where the feature around it does not exist here. Each difference below says what AutoCAD does, what MellowCAD does instead, and why. What a single command still lacks is linked from its entry on [the commands page](/docs/commands).
+
+## One drawing at a time [#one-drawing]
+
+AutoCAD opens a new drawing in a tab of its own and keeps the old one open. MellowCAD holds one drawing: <Command id="NEW" /> and <Command id="OPEN" /> replace it, and after <Command id="NEW" /> a single <Command id="U" /> brings the previous one back.
+
+## Saving downloads a file [#saving]
+
+MellowCAD keeps the drawing in this browser as you work, on this device only. <Command id="QSAVE" />, <Command id="SAVEAS" /> and <Command id="SAVE" /> all download a file in MellowCAD's own versioned format: a browser download always asks for the file's name, so saving over the current file, under another name or as a copy cannot be told apart.
+
+## Keys the browser keeps [#browser-keys]
+
+A page never receives `Ctrl+W`, which closes the tab, nor `Ctrl+N`, which opens a window. Selection cycling, AutoCAD's `Ctrl+W`, is `F4` here; AutoCAD spends `F4` on 3D object snaps, which a 2D drafter does not have. A new drawing is <Command id="NEW" />, typed.
+
+## Dynamic input is always on [#dynamic-input]
+
+Dynamic input cannot be turned off, so its key, `F12`, is left to the browser.
+
+## Model space only [#model-space]
+
+There are no layouts and no plotting: the screen is the only place a drawing is seen. So lineweights show from the start (`LWDISPLAY` on, where AutoCAD starts with it off), and the status bar's `MODEL` is a label rather than a switch to a layout.
+
+## Command-line versions of some dialogs [#dialogs]
+
+Where AutoCAD opens a dialog that does not exist here, the command asks its questions at the command line, as its dash version does: <Command id="COLOR" /> runs <Command id="-COLOR" />, <Command id="LWEIGHT" /> runs <Command id="-LWEIGHT" />, and <Command id="LINETYPE" /> runs <Command id="-LINETYPE" />. <Command id="DIMSTYLE" /> and <Command id="STYLE" /> open the Styles palette, with the dimension or text styles.
+
+## Every linetype is loaded [#linetypes]
+
+A new AutoCAD drawing holds a single, continuous linetype, and the others are loaded from a file. With no Linetype Manager to load one, every drawing here comes with all of them loaded.
+
+## Coordinates in the status bar [#coordinates]
+
+AutoCAD has hidden the cursor's coordinates from its status bar since 2015. MellowCAD shows them, as it has no other readout of the cursor; the status bar's Customization hides them.
+
+## Arabic uses English AutoCAD's commands [#arabic]
+
+There is no Arabic AutoCAD, and whoever drafts in Arabic works in the English one. So in Arabic the interface speaks Arabic and the command line speaks English AutoCAD: the same names, aliases, prompts and option letters. A `Ctrl` shortcut works whatever the keyboard layout, as a desktop program's does: `Ctrl+Z` is undo even when the Arabic layout types a letter.
