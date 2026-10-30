@@ -7,7 +7,7 @@
 > purge), a block reference (placement, per-axis scale, mirror, display, palette rows, grips),
 > attribute definitions and a reference's attributes, and the attribute value prompts and editors.
 >
-> The full plan is in git: `git show a9b13bd:docs/plans/blocks-review.md`. It holds the matrices,
+> The full plan is in git: `git show 3d6484e:docs/plans/blocks-review.md`. It holds the matrices,
 > the findings, decisions BLOCKS-D1 to D94, the refuted suspicions, and coverage and rules ↔ code.
 
 ## Summary
@@ -65,22 +65,22 @@ screenshots are in `research/probes/blocks/` (gitignored).
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| PRG-01 | a block nested in a used one purged | "in use" transitive (`blocksInUse`) | `9c2f263` |
-| PRG-02, PRG-03, PRG-05 | -PURGE unknown; PURGE silent, invented words; anonymous blocks never purged | -PURGE's prompts (Blocks only) and AutoCAD's words, for PURGE too | `9c2f263` |
-| PRG-04, INS-04 | names case-sensitive | `findBlockNamed`, at BLOCK, INSERT, -PURGE, paste | `9c2f263` |
-| INS-15 | the palette deleted blocks | delete removed | `9c2f263` |
-| BLK-01 | a self-referencing block | refused, `*Invalid*` | `a5113fc` |
-| BLK-02 to BLK-08 | Enter at the name and base point, the preselection, `?`, `Invalid point.`, the empty set | as the console | `a5113fc` |
-| BLK-09 to BLK-13 | -BLOCK and aliases; the Z warning; es words; U's regeneration; tests | as the console; 2027 citations | `a5113fc` |
-| ATE-01 | the Convert asked at the command line | ATTEDIT's box; Escape keeps the defaults | `a5113fc` |
-| ATD-01 to ATD-06 | TEXT's settings, Enter at the start, the Current line | shared with TEXT, as TEXT | `a6d3669` |
-| ATD-07 to ATD-10 | the tag's space and `!`; the backslash; no grip; aliases | as the console; TEXT's grips | `a6d3669` |
-| ATE-02 to ATE-05 | ATTDISP's U; the double-click's echo; tests; ATTEDIT's prompts and refusals | as the console and the desktop | `a6d3669` |
-| INS-01, INS-10, INS-13 | -INSERT unknown; INSERT ran the command line | -INSERT; INSERT opens the Blocks palette | `4d17fb6` |
-| INS-03, INS-05 to INS-07, INS-09, INS-11, INS-12, INS-16 | scale kept, `?`, Enter, two points, `<1>`, es wording, the ghost | as the console and the desktop | `4d17fb6` |
-| INS-02, INS-08 | no X/Y/rotation; 0 and negatives dropped | asked; X and Y scales stored (file 33) | `a9b13bd` |
-| BOB-01, BOB-02 | a hatch in a mirrored reference | reflected on display, kept by EXPLODE | `a9b13bd` |
-| BOB-03, BOB-04 | ByBlock unrecorded; the palette's rows | Missing; Geometry, Misc, Attributes | `a9b13bd` |
+| PRG-01 | a block nested in a used one purged | "in use" transitive (`blocksInUse`) | `0b5e984` |
+| PRG-02, PRG-03, PRG-05 | -PURGE unknown; PURGE silent, invented words; anonymous blocks never purged | -PURGE's prompts (Blocks only) and AutoCAD's words, for PURGE too | `0b5e984` |
+| PRG-04, INS-04 | names case-sensitive | `findBlockNamed`, at BLOCK, INSERT, -PURGE, paste | `0b5e984` |
+| INS-15 | the palette deleted blocks | delete removed | `0b5e984` |
+| BLK-01 | a self-referencing block | refused, `*Invalid*` | `06fff9a` |
+| BLK-02 to BLK-08 | Enter at the name and base point, the preselection, `?`, `Invalid point.`, the empty set | as the console | `06fff9a` |
+| BLK-09 to BLK-13 | -BLOCK and aliases; the Z warning; es words; U's regeneration; tests | as the console; 2027 citations | `06fff9a` |
+| ATE-01 | the Convert asked at the command line | ATTEDIT's box; Escape keeps the defaults | `06fff9a` |
+| ATD-01 to ATD-06 | TEXT's settings, Enter at the start, the Current line | shared with TEXT, as TEXT | `d782b7d` |
+| ATD-07 to ATD-10 | the tag's space and `!`; the backslash; no grip; aliases | as the console; TEXT's grips | `d782b7d` |
+| ATE-02 to ATE-05 | ATTDISP's U; the double-click's echo; tests; ATTEDIT's prompts and refusals | as the console and the desktop | `d782b7d` |
+| INS-01, INS-10, INS-13 | -INSERT unknown; INSERT ran the command line | -INSERT; INSERT opens the Blocks palette | `97b840e` |
+| INS-03, INS-05 to INS-07, INS-09, INS-11, INS-12, INS-16 | scale kept, `?`, Enter, two points, `<1>`, es wording, the ghost | as the console and the desktop | `97b840e` |
+| INS-02, INS-08 | no X/Y/rotation; 0 and negatives dropped | asked; X and Y scales stored (file 33) | `3d6484e` |
+| BOB-01, BOB-02 | a hatch in a mirrored reference | reflected on display, kept by EXPLODE | `3d6484e` |
+| BOB-03, BOB-04 | ByBlock unrecorded; the palette's rows | Missing; Geometry, Misc, Attributes | `3d6484e` |
 
 Decisions added or changed in the execution:
 

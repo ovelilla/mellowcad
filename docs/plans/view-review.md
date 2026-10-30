@@ -9,7 +9,7 @@
 > and REDO, ZOOM Previous's list, and a view change made inside another command. Inquiry left
 > nothing for it.
 >
-> The full plan is in git: `git show 3688038:docs/plans/view-review.md`. It holds the inventory,
+> The full plan is in git: `git show bc1d280:docs/plans/view-review.md`. It holds the inventory,
 > the matrices, the findings, decisions VIEW-D1 to D67, the refuted suspicions, and coverage and
 > rules ↔ code.
 
@@ -61,37 +61,37 @@ locale), run with `scripts/research/probe.sh view <ids>`; the desktop pass is
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| ZOM-01 | a transparent ZOOM Object framed | refused, `** Requires a regen, cannot be transparent.` | `2df6cff` |
-| ZOM-02 | a window of no size asked again | `*Invalid*` and the end; no width or no height framed by the other | `2df6cff` |
-| ZOM-03 | `0` and negative factors refused in other words | `Value must be positive and nonzero.`, at Scale too | `2df6cff` |
-| ZOM-04 | `2XP` refused | `2X` in model space | `2df6cff` |
-| ZOM-05 | `2` moved the view to the drawing's middle | the view's centre kept | `2df6cff` |
-| ZOM-06 | `Regenerating model.` after every Extents and All | only with nothing drawn | `2df6cff` |
-| ZOM-07 | Object's preselection uncounted | through `preselect`, `1 found` | `2df6cff` |
-| ZOM-08 | Previous kept 10 views | 20 | `2df6cff` |
-| ZOM-09 | a 40 px margin | 3 px a side (`EXTENTS_MARGIN_PX`) | `2df6cff` |
-| ZOM-10, ZOM-11 | Missing incomplete; tests citing 2023 | Left, Vmax, Center in Missing; 2027 probes cited | `2df6cff` |
-| VUN-01 | a view run changing nothing made no step | every run a step | `c04194e` |
-| VUN-02, VUN-03 | U regenerated after any -VIEW, PLAN or Extents | only when the line of sight turned (`turns()`) | `c04194e` |
-| VUN-04 | LINE's Undo left a transparent `'ZOOM` | an entry of the running group | `c04194e` |
-| VUN-05, VUN-06 | UNDO n inside a joined pair; `*TOP*` after U | Missing | `c04194e` |
-| PAN-01, VDR-04, VDR-20 | acad.pgp's aliases missing | added in both languages | `eb19b47` |
-| VDR-01 | `0,0,0` refused at -VPOINT | the WCS plan, fitted | `eb19b47` |
-| VDR-02 | PLAN's Spanish not-found words | `planUcsNotFound` | `eb19b47` |
-| VDR-03 | -VPOINT's direction in the UCS, no switch notices | the WCS's, with the notices | `eb19b47` |
-| VDR-05, VDR-23, VDR-24 | NAVVCUBEDISPLAY's value; -VIEW's named views; LIMITS framing | coverage and Missing | `eb19b47` |
-| VDR-21 | 3DORBIT said nothing as it started | its exit words | `eb19b47` |
-| VWD-01, VWD-03 | the wheel and the wheel button no step; a 400 ms burst | `INTELLIZOOM` and `INTELLIPAN` steps, joined; a burst under a second | `61f195b` |
-| VWD-02 | 1.1× a notch | 1.5978× per 100 px of `deltaY`, lines and pages converted | `61f195b` |
-| VWD-04, VWD-05 | the wheel button's double-click and Shift orbit silent, no step | `'_.zoom _e` (`'.ZOOM`); ` Regenerating model.` and `GROUP menu item` | `61f195b` |
-| VWD-06 | PAN never joined | joined with ZOOMs and PANs | `61f195b` |
-| VWD-07, VWD-08 (VDR-25) | 3DORBIT silent at its end; `'3DORBIT` refused | regenerates always; transparent, no `>>` | `61f195b` |
-| VWD-09 to VWD-11 | the ViewCube no step, a tight fit, the compass keeping the elevation | `'.VIEWCUBEACTION`, transparent in a command; the extents' sphere; level views | `61f195b` |
-| VWD-12 (VDR-22) | the viewport control ran `-VIEW` typed and ended the command | `'_-view _swiso`, U `'-VIEW`; inert while a command runs | `61f195b` |
-| VWD-13 | the bar's Extents, Previous, In, Out acted at once | their macros, `'ZOOM GROUP`, In ×2, Out ×0.5 | `61f195b` |
-| VWD-14 | -VPOINT's Escape silent in a turned UCS | `*** Returning to the UCS ***` | `61f195b` |
-| VWD-15, VWD-16 | ZOOM's and -PAN's bands; the Spanish Zoom list | solid white, dashed amber; Extensión, Previo, Acercar, Alejar | `61f195b` |
-| VWD-17, VWD-18 | the cube's drag landed on a view; coverage gaps | no landing; the coverage settled by d03–d07 | `61f195b` |
+| ZOM-01 | a transparent ZOOM Object framed | refused, `** Requires a regen, cannot be transparent.` | `72d08ef` |
+| ZOM-02 | a window of no size asked again | `*Invalid*` and the end; no width or no height framed by the other | `72d08ef` |
+| ZOM-03 | `0` and negative factors refused in other words | `Value must be positive and nonzero.`, at Scale too | `72d08ef` |
+| ZOM-04 | `2XP` refused | `2X` in model space | `72d08ef` |
+| ZOM-05 | `2` moved the view to the drawing's middle | the view's centre kept | `72d08ef` |
+| ZOM-06 | `Regenerating model.` after every Extents and All | only with nothing drawn | `72d08ef` |
+| ZOM-07 | Object's preselection uncounted | through `preselect`, `1 found` | `72d08ef` |
+| ZOM-08 | Previous kept 10 views | 20 | `72d08ef` |
+| ZOM-09 | a 40 px margin | 3 px a side (`EXTENTS_MARGIN_PX`) | `72d08ef` |
+| ZOM-10, ZOM-11 | Missing incomplete; tests citing 2023 | Left, Vmax, Center in Missing; 2027 probes cited | `72d08ef` |
+| VUN-01 | a view run changing nothing made no step | every run a step | `9aab9b5` |
+| VUN-02, VUN-03 | U regenerated after any -VIEW, PLAN or Extents | only when the line of sight turned (`turns()`) | `9aab9b5` |
+| VUN-04 | LINE's Undo left a transparent `'ZOOM` | an entry of the running group | `9aab9b5` |
+| VUN-05, VUN-06 | UNDO n inside a joined pair; `*TOP*` after U | Missing | `9aab9b5` |
+| PAN-01, VDR-04, VDR-20 | acad.pgp's aliases missing | added in both languages | `fe99ede` |
+| VDR-01 | `0,0,0` refused at -VPOINT | the WCS plan, fitted | `fe99ede` |
+| VDR-02 | PLAN's Spanish not-found words | `planUcsNotFound` | `fe99ede` |
+| VDR-03 | -VPOINT's direction in the UCS, no switch notices | the WCS's, with the notices | `fe99ede` |
+| VDR-05, VDR-23, VDR-24 | NAVVCUBEDISPLAY's value; -VIEW's named views; LIMITS framing | coverage and Missing | `fe99ede` |
+| VDR-21 | 3DORBIT said nothing as it started | its exit words | `fe99ede` |
+| VWD-01, VWD-03 | the wheel and the wheel button no step; a 400 ms burst | `INTELLIZOOM` and `INTELLIPAN` steps, joined; a burst under a second | `223115d` |
+| VWD-02 | 1.1× a notch | 1.5978× per 100 px of `deltaY`, lines and pages converted | `223115d` |
+| VWD-04, VWD-05 | the wheel button's double-click and Shift orbit silent, no step | `'_.zoom _e` (`'.ZOOM`); ` Regenerating model.` and `GROUP menu item` | `223115d` |
+| VWD-06 | PAN never joined | joined with ZOOMs and PANs | `223115d` |
+| VWD-07, VWD-08 (VDR-25) | 3DORBIT silent at its end; `'3DORBIT` refused | regenerates always; transparent, no `>>` | `223115d` |
+| VWD-09 to VWD-11 | the ViewCube no step, a tight fit, the compass keeping the elevation | `'.VIEWCUBEACTION`, transparent in a command; the extents' sphere; level views | `223115d` |
+| VWD-12 (VDR-22) | the viewport control ran `-VIEW` typed and ended the command | `'_-view _swiso`, U `'-VIEW`; inert while a command runs | `223115d` |
+| VWD-13 | the bar's Extents, Previous, In, Out acted at once | their macros, `'ZOOM GROUP`, In ×2, Out ×0.5 | `223115d` |
+| VWD-14 | -VPOINT's Escape silent in a turned UCS | `*** Returning to the UCS ***` | `223115d` |
+| VWD-15, VWD-16 | ZOOM's and -PAN's bands; the Spanish Zoom list | solid white, dashed amber; Extensión, Previo, Acercar, Alejar | `223115d` |
+| VWD-17, VWD-18 | the cube's drag landed on a view; coverage gaps | no landing; the coverage settled by d03–d07 | `223115d` |
 
 Decisions added or changed in the execution:
 

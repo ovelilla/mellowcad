@@ -3,7 +3,7 @@
 > **Status:** done, 2026-10-21 — reviewed and executed in one session with skill `command-review`,
 > the eighth review of `docs/coverage/roadmap.md`'s order. The full plan (matrices, findings,
 > decisions, refuted suspicions, coverage and rules ↔ code) is in git:
-> `git show ddda433:docs/plans/erase-review.md`.
+> `git show b42d347:docs/plans/erase-review.md`.
 
 ## Summary
 
@@ -39,41 +39,41 @@ Console inputs are `scripts/research/probes/erase/<id>.txt` (`.plain.txt` untrac
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| ERA-01 | ERASE said `n objects erased.` | silent, as AutoCAD | `3c72260` |
-| ERA-02 | no `DELETE` alias | added, en and es | `3c72260` |
-| ERA-03 | the Delete key erased outside ERASE | runs ERASE as acad.cuix's `^C^C_erase;` | `3c72260`, `b6785d8` |
-| ERA-04 | Backspace erased, no `WHY` | a Mac's Delete key; noted | `3c72260` |
-| ERA-05 | EXPLODE's empty set silent | merged into SEL-42 | `75a35df` |
+| ERA-01 | ERASE said `n objects erased.` | silent, as AutoCAD | `aed520b` |
+| ERA-02 | no `DELETE` alias | added, en and es | `aed520b` |
+| ERA-03 | the Delete key erased outside ERASE | runs ERASE as acad.cuix's `^C^C_erase;` | `aed520b`, `751a12d` |
+| ERA-04 | Backspace erased, no `WHY` | a Mac's Delete key; noted | `aed520b` |
+| ERA-05 | EXPLODE's empty set silent | merged into SEL-42 | `746e867` |
 | ERA-06 | PURGE's report words | to the Blocks review | — |
-| ERA-07 | stale knowledge | settled | `3c72260` |
-| ERA-08 | tests asserting ERA-01, no probes | re-cited | `3c72260` |
-| ERA-09 | ERASE's set glowed | faded, as AutoCAD's preview | `3c72260` |
-| SEL-01 | `@` at a mode's first point refused | from LASTPOINT | `6d1e433` |
-| SEL-03 | Previous back after U of ERASE (SEL-50 merged) | erased objects leave it for good | `6d1e433` |
-| SEL-04 | Undo at `Remove objects:` stayed there | back to `Select objects:` | `6d1e433` |
-| SEL-05 | a whole-object set's `S` was SIngle | taken, does nothing | `6d1e433` |
-| SEL-06 | EXPLODE's set took sub-objects | merged into SEL-44 | `75a35df` |
-| SEL-07 | coverage: CLass, SUbobject/Object | settled | `6d1e433` |
-| SEL-08 | es clarify prompt after `_S` | the global words | `6d1e433` |
-| SEL-40 | EXPLODE's refusal said once, after the set | under each count (`refuse`) | `75a35df` |
-| SEL-41 | a refused preselection ended EXPLODE | asks again, closes at the first addition (`preselect`) | `75a35df` |
-| SEL-42 | EXPLODE's empty set silent | `None found.` | `75a35df` |
-| SEL-43 | the set stayed selected after a command | dropped at its end or Escape | `6d1e433` |
-| SEL-44 | six sets took sub-objects | whole objects | `75a35df` |
-| SEL-45 | DIMSPACE's filter silent | `0 found`, any dimension found | `75a35df` |
-| SEL-46 | HATCH's set left open lines out silently | found, left out when tracing | `75a35df` |
-| SEL-47 | "filter the pick" rule wrong | rewritten | `75a35df` |
-| SEL-48 | the locked line at `Remove objects:` | silent there | `75a35df` |
-| SEL-49 | no Previous after EXPLODE | its pieces | `6d1e433` |
-| SEL-51 | DIMSPACE's base refused a typed point | picks there | `75a35df` |
-| SEL-52 | PICKFIRST and the locked pick not in Missing | recorded | `75a35df` |
-| PRE-01 | Escape at `Select objects:` kept the picks selected | dropped (with SEL-43) | `6d1e433` |
-| PRE-02 | a drag was a rectangle | AutoCAD's lasso, Space cycling it | `b6785d8` |
-| PRE-03 | no preview of what a window takes | the hover's glow | `b6785d8` |
-| PRE-04 | the window's outline blue or green | white | `b6785d8` |
-| PRE-05 | the minus badge from Shift alone | over a selected object, no command | `b6785d8` |
-| PRE-06 | a preselection's count always on the echo's line | own line after a full name | `b6785d8` |
-| CYC-01 | the Selection list lacked None | added | `84503ff` |
+| ERA-07 | stale knowledge | settled | `aed520b` |
+| ERA-08 | tests asserting ERA-01, no probes | re-cited | `aed520b` |
+| ERA-09 | ERASE's set glowed | faded, as AutoCAD's preview | `aed520b` |
+| SEL-01 | `@` at a mode's first point refused | from LASTPOINT | `ef9c204` |
+| SEL-03 | Previous back after U of ERASE (SEL-50 merged) | erased objects leave it for good | `ef9c204` |
+| SEL-04 | Undo at `Remove objects:` stayed there | back to `Select objects:` | `ef9c204` |
+| SEL-05 | a whole-object set's `S` was SIngle | taken, does nothing | `ef9c204` |
+| SEL-06 | EXPLODE's set took sub-objects | merged into SEL-44 | `746e867` |
+| SEL-07 | coverage: CLass, SUbobject/Object | settled | `ef9c204` |
+| SEL-08 | es clarify prompt after `_S` | the global words | `ef9c204` |
+| SEL-40 | EXPLODE's refusal said once, after the set | under each count (`refuse`) | `746e867` |
+| SEL-41 | a refused preselection ended EXPLODE | asks again, closes at the first addition (`preselect`) | `746e867` |
+| SEL-42 | EXPLODE's empty set silent | `None found.` | `746e867` |
+| SEL-43 | the set stayed selected after a command | dropped at its end or Escape | `ef9c204` |
+| SEL-44 | six sets took sub-objects | whole objects | `746e867` |
+| SEL-45 | DIMSPACE's filter silent | `0 found`, any dimension found | `746e867` |
+| SEL-46 | HATCH's set left open lines out silently | found, left out when tracing | `746e867` |
+| SEL-47 | "filter the pick" rule wrong | rewritten | `746e867` |
+| SEL-48 | the locked line at `Remove objects:` | silent there | `746e867` |
+| SEL-49 | no Previous after EXPLODE | its pieces | `ef9c204` |
+| SEL-51 | DIMSPACE's base refused a typed point | picks there | `746e867` |
+| SEL-52 | PICKFIRST and the locked pick not in Missing | recorded | `746e867` |
+| PRE-01 | Escape at `Select objects:` kept the picks selected | dropped (with SEL-43) | `ef9c204` |
+| PRE-02 | a drag was a rectangle | AutoCAD's lasso, Space cycling it | `751a12d` |
+| PRE-03 | no preview of what a window takes | the hover's glow | `751a12d` |
+| PRE-04 | the window's outline blue or green | white | `751a12d` |
+| PRE-05 | the minus badge from Shift alone | over a selected object, no command | `751a12d` |
+| PRE-06 | a preselection's count always on the echo's line | own line after a full name | `751a12d` |
+| CYC-01 | the Selection list lacked None | added | `3b4e0e2` |
 
 ## Still open
 

@@ -3,7 +3,7 @@
 > **Status:** done, 2026-10-21 — reviewed and executed in one session with skill `command-review`,
 > the third review of `docs/coverage/roadmap.md`'s order, the owner having waived the wait for
 > approval. The full plan (matrices, findings, decisions, refuted suspicions, rules ↔ code) is in
-> git: `git show eb7ea5e:docs/plans/circle-review.md`.
+> git: `git show 1138a28:docs/plans/circle-review.md`.
 
 ## Summary
 
@@ -69,41 +69,41 @@ line L (−20,−15)–(60,−15).
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| CIR-01 | 2P's and 3P's later points took a Z, `*`, `<a` | 2D prompts, `Invalid 2D point.` | `a6853f4` |
-| CIR-02 | a radius or diameter by a point measured in plan | in 3D | `a6853f4` |
+| CIR-01 | 2P's and 3P's later points took a Z, `*`, `<a` | 2D prompts, `Invalid 2D point.` | `772cdcd` |
+| CIR-02 | a radius or diameter by a point measured in plan | in 3D | `772cdcd` |
 | CIR-03 | `'THICKNESS` mid-CIRCLE | refuted: no THICKNESS command here (Workspace's) | — |
-| CIR-04 | the rail's modes echoed this app's names | the ribbon's macros, `_circle` `_d` / `_2p` / `_3p` | `a6853f4` |
-| CIR-05 | Enter with no default ended CIRCLE | refused in each prompt's words (CTN-09, CTN-10 merged) | `a6853f4` |
-| CIR-06 | 3P at different heights tilted | flat in the first point's plane | `a6853f4` |
-| CIR-07 | a degenerate 2P or 3P silent | `*Invalid*` and the end | `a6853f4` |
-| CIR-08 | Ttr's radius in POLYGON's Spanish words | a prompt of its own (CTN-15 merged) | `a6853f4` |
-| CIR-09 | a rail start not repeated, its step unnamed | a command run, LINE's too | `a6853f4` |
-| CIR-10 | 3P's 2D prompts | merged into CIR-01 | `a6853f4` |
-| CIR-11 | 2P's stale WHY and Missing | p190 | `a6853f4` |
-| CIR-12 | Ortho bent 2P's and 3P's picks | no base there | `a6853f4` |
-| CTN-01 | TTT refused | solved (Apollonius) | `123911e` |
-| CTN-02 | 2P TT another circle | the line of centres | `123911e` |
-| CTN-03 | the radius's Tangent to the tangent line's touch | the circle tangent to the object | `123911e` |
-| CTN-04 | the centre's Tangent took the raw pick | measured from LASTPOINT | `123911e` |
-| CTN-05 | one Tangent among the points not tangent | deferred and solved | `123911e` |
-| CTN-06 | a Tangent on a line refused at 2P, 3P | taken | `123911e` |
-| CTN-07 | a Perpendicular on a circle at 3P taken | refused | `123911e` |
-| CTN-08 | Ttr chose by the sum of distances | sum of squares | `123911e` |
-| CTN-11 | Ttr refused a typed Tangent and point | taken | `123911e` |
-| CTN-12 | table 20418 never said | said | `123911e` |
-| CTN-13 | Ttr at the elevation | the objects' common height | `123911e` |
-| CTN-14 | the coverage entry on tangents | rewritten | `123911e` |
-| COB-01 | a circle's dashes from screen east, unfitted | from its start, whole periods | `303b12f` |
-| COB-02 | Quadrant on the WCS in a rotated UCS | along the UCS | `303b12f` |
+| CIR-04 | the rail's modes echoed this app's names | the ribbon's macros, `_circle` `_d` / `_2p` / `_3p` | `772cdcd` |
+| CIR-05 | Enter with no default ended CIRCLE | refused in each prompt's words (CTN-09, CTN-10 merged) | `772cdcd` |
+| CIR-06 | 3P at different heights tilted | flat in the first point's plane | `772cdcd` |
+| CIR-07 | a degenerate 2P or 3P silent | `*Invalid*` and the end | `772cdcd` |
+| CIR-08 | Ttr's radius in POLYGON's Spanish words | a prompt of its own (CTN-15 merged) | `772cdcd` |
+| CIR-09 | a rail start not repeated, its step unnamed | a command run, LINE's too | `772cdcd` |
+| CIR-10 | 3P's 2D prompts | merged into CIR-01 | `772cdcd` |
+| CIR-11 | 2P's stale WHY and Missing | p190 | `772cdcd` |
+| CIR-12 | Ortho bent 2P's and 3P's picks | no base there | `772cdcd` |
+| CTN-01 | TTT refused | solved (Apollonius) | `2af4083` |
+| CTN-02 | 2P TT another circle | the line of centres | `2af4083` |
+| CTN-03 | the radius's Tangent to the tangent line's touch | the circle tangent to the object | `2af4083` |
+| CTN-04 | the centre's Tangent took the raw pick | measured from LASTPOINT | `2af4083` |
+| CTN-05 | one Tangent among the points not tangent | deferred and solved | `2af4083` |
+| CTN-06 | a Tangent on a line refused at 2P, 3P | taken | `2af4083` |
+| CTN-07 | a Perpendicular on a circle at 3P taken | refused | `2af4083` |
+| CTN-08 | Ttr chose by the sum of distances | sum of squares | `2af4083` |
+| CTN-11 | Ttr refused a typed Tangent and point | taken | `2af4083` |
+| CTN-12 | table 20418 never said | said | `2af4083` |
+| CTN-13 | Ttr at the elevation | the objects' common height | `2af4083` |
+| CTN-14 | the coverage entry on tangents | rewritten | `2af4083` |
+| COB-01 | a circle's dashes from screen east, unfitted | from its start, whole periods | `c97a8b2` |
+| COB-02 | Quadrant on the WCS in a rotated UCS | along the UCS | `c97a8b2` |
 | COB-03 | AREA Object refused a typed point | to the Inquiry review | — |
-| COB-04 | the grips' Missing on Ortho | reworded, tested | `303b12f` |
-| COB-05 | Circumference and Area read-only | editable | `303b12f` |
-| COB-06 | Center in a group of its own | one Geometry group | `303b12f` |
-| CDK-01 | the ghost in the theme's colour | the current colour | `eb7ea5e` |
-| CDK-02 | the size line solid | amber, dashed | `eb7ea5e` |
-| CDK-03 | chords at 2P and 3P | none | `eb7ea5e` |
-| CDK-04 | Ttr's pick highlighted | the Deferred Tangent marker and tooltip | `eb7ea5e` |
-| CDK-05 | a double-click's Quick Properties | to Missing | `eb7ea5e` |
+| COB-04 | the grips' Missing on Ortho | reworded, tested | `c97a8b2` |
+| COB-05 | Circumference and Area read-only | editable | `c97a8b2` |
+| COB-06 | Center in a group of its own | one Geometry group | `c97a8b2` |
+| CDK-01 | the ghost in the theme's colour | the current colour | `1138a28` |
+| CDK-02 | the size line solid | amber, dashed | `1138a28` |
+| CDK-03 | chords at 2P and 3P | none | `1138a28` |
+| CDK-04 | Ttr's pick highlighted | the Deferred Tangent marker and tooltip | `1138a28` |
+| CDK-05 | a double-click's Quick Properties | to Missing | `1138a28` |
 
 ## Still open
 
@@ -112,7 +112,7 @@ worth a later probe:
 
 - the desktop in the owner's Spanish profile (the launched instance opened the English one twice):
   the palette's `Centro X`, the deferred markers' tooltips, Quick Properties, and PLINE's pending
-  desktop items (`git show 84cbabf:docs/plans/pline-review.md`, "Still open");
+  desktop items (`git show 4c9f5e0:docs/plans/pline-review.md`, "Still open");
 - Ctrl+Z at the radius with dynamic input on wrote another refusal than the console's (d07);
 - TTT with nothing fitting beyond d04's case, the deferral at mixed heights, 2P with two lines or
   concentric circles, a Perpendicular on a circle at 3P's later points; the Tangent marker's place

@@ -2,7 +2,7 @@
 
 > **Status:** done, 2026-10-21 — reviewed, approved by the owner and executed overnight with skill
 > `command-review`, the first review of `docs/coverage/roadmap.md`'s order. The full plan (matrices,
-> findings, refuted suspicions, rules ↔ code) is in git: `git show 16b4188:docs/plans/line-review.md`.
+> findings, refuted suspicions, rules ↔ code) is in git: `git show d53f289:docs/plans/line-review.md`.
 
 ## Summary
 
@@ -134,67 +134,67 @@ echo stays unverified.
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| CAT-01 | en `Lines are non-coplanar.` is 2027's `non coplanar` | fixed | `4f61e91` |
-| CAT-02 | ARRAYRECT's Spanish spacing prompt | refuted (p70) | `4f61e91` |
-| UND-01 | es `Nada que deshacer` | `No hay nada que se pueda deshacer` | `626b283` |
-| UND-02 | es integer refusals without the comma | fixed | `626b283` |
-| UND-03 | Ctrl+Z mid-command ended it and undid the previous one | `_u` typed at the prompt | `626b283` |
-| CLI-01 | unknown command without `Press F1 for help.` | AutoCAD's whole line | `2625477` |
-| CLI-02 | `'ZOOM E` with nothing drawn ran | refused, `** Requires a regen…` | `2625477` |
-| CLI-03 | stale coverage on transparent commands | fixed | `2625477` |
-| LIN-01 | LINE's Undo after `'LTSCALE` / `'-COLOR` left the segment | history marks, `ctx.undoTo` | `6a3ba75` |
-| LIN-02 | Continue from a clockwise arc left its far end | LASTPOINT tells the drawn end | `6a3ba75` |
-| LIN-03 | Continue from a polyline ending in an arc | asks `Length of line:` | `6a3ba75` |
-| LIN-04 | Enter at `Length of line:` ended LINE | refused | `6a3ba75` |
-| LIN-05 | Undo after Continue's line | back to `Length of line:` | `6a3ba75` |
-| LIN-06 | Undo of the first point was silent | `All segments already undone.` | `6a3ba75` |
-| LIN-07 | typed zero-length segments skipped | drawn, counted, reported | `6a3ba75` |
-| LIN-08 | es `[Cerrar/desHacer]` prompt | `Precise siguiente punto o` | `6a3ba75` |
-| LIN-09 | `#x,y` at the command line | refused (with PIN-02) | `bb1b4a4` |
-| PIN-01 | `*` point without a Z took ELEVATION | WCS Z 0 | `bb1b4a4` |
-| PIN-02 | `#` typed in the command window accepted | refused; the box keeps it | `bb1b4a4` |
-| PIN-03 | `1e1`, `1/2`, `1-1/2` refused | read | `bb1b4a4` |
-| PIN-04 | `30d`, `0.5r`, `50g`, `N45dE` refused | read | `bb1b4a4` |
-| PIN-05 | `0x10` read as 16 | refused | `bb1b4a4` |
-| PIN-06 | a second `<a` replaced the first | refused, drops the first | `bb1b4a4` |
-| OSN-01 | a typed point after an override not snapped | snapped | `e383cc7` |
-| OSN-02 | an override finding nothing placed the cursor's point | refused, consumed | `e383cc7` |
-| OSN-03 | FROM's typed base skipped FROM | goes through FROM | `e383cc7` |
-| OSN-04 | FROM's prompts were messages | `Base point:`, `<Offset>:` | `e383cc7` |
-| OSN-05 | Enter at `<Offset>` placed the base | the running prompt's Enter | `e383cc7` |
-| OSN-06 | a number at `<Offset>` ran from LASTPOINT | from the base | `e383cc7` |
-| OSN-07 | `_FRO` refused | taken | `e383cc7` |
-| OSN-08 | -OSNAP Enter kept the set | clears it | `e383cc7` |
-| OSN-09 | -OSNAP wrote `None` | no line | `e383cc7` |
-| OSN-10 | `_APPINT` refused | taken | `e383cc7` |
-| OSN-11 | a second override at `of` replaced the first | refused | `e383cc7` |
-| OSN-12 | stale WHY and coverage on prepositions | settled | `e383cc7` |
-| TRK-01 | SNAP a toggle of our own | AutoCAD's SNAP (spacing, ON, OFF, Aspect) | `399a448` |
-| TRK-02 | ORTHOMODE and the aids' variables not typeable | Missing, until SETVAR | `399a448` |
-| TRK-03 | F3–F11 wrote no echo | ` <Ortho on>`… in en and es | `399a448` |
-| RND-01 | invented linetype patterns | acadiso.lin's | `5e4ba72` |
-| RND-02 | dash pattern not centred | centred, solid under one period | `5e4ba72` |
-| RND-03 | LWDISPLAY on without a WHY | WHY and note | `5e4ba72` |
-| CPR-01 | true colour read back as index colour | Missing | `7ba4cc2` |
-| CPR-02 | -LINETYPE named acad.lin | acadiso.lin | `7ba4cc2` |
-| CPR-03 | Spanish acadiso.lin names | Missing (names stay data) | `7ba4cc2` |
-| DYN-01 | dynamic input cannot be turned off | Missing | `4b15a28` |
-| DYN-02 | the Down arrow listed nothing | AutoCAD's option list | `4b15a28` |
-| DSK-01 | rubber band a fixed colour | the line's colour | `6a9591f` |
-| DSK-02 | snap menu order and groups | AutoCAD's | `6a9591f` |
-| DSK-03 | es `Modificaciones de REFENT` | fixed; menu order settled | `6a9591f` |
-| DSK-04 | es `*Cancelado*` inside a command | fixed | `6a9591f` |
-| DSK-05 | the rail wrote no echo | `Command: _line` | `6a9591f` |
-| DSK-06 | no rollover tooltip | added | `6a9591f` |
-| DSK-07 | the aids' look | AutoCAD's dark theme | `6a9591f` |
-| DSK-08 | snap aperture 8 px | 10 px | `6a9591f` |
-| EDT-01 | a line's end grip lengthened | stretches to the cursor | `500fff9` |
-| EDT-02 | a midpoint grip moved the whole selection | moves its object | `500fff9` |
-| EDT-03 | Length and Angle editable | read-only | `500fff9` |
-| EDT-04 | a vertical line's grips on its start | at its ends and middle | `500fff9` |
-| EDT-05 | a rising line's ends could not meet in plan | allowed | `500fff9` |
-| EDT-06 | palette labels and groups | one Geometry group, `Delta X` | `500fff9` |
-| FIL | a line's properties through files untested | tested | `16b4188` |
+| CAT-01 | en `Lines are non-coplanar.` is 2027's `non coplanar` | fixed | `60efa55` |
+| CAT-02 | ARRAYRECT's Spanish spacing prompt | refuted (p70) | `60efa55` |
+| UND-01 | es `Nada que deshacer` | `No hay nada que se pueda deshacer` | `d6e9e5d` |
+| UND-02 | es integer refusals without the comma | fixed | `d6e9e5d` |
+| UND-03 | Ctrl+Z mid-command ended it and undid the previous one | `_u` typed at the prompt | `d6e9e5d` |
+| CLI-01 | unknown command without `Press F1 for help.` | AutoCAD's whole line | `17e34d0` |
+| CLI-02 | `'ZOOM E` with nothing drawn ran | refused, `** Requires a regen…` | `17e34d0` |
+| CLI-03 | stale coverage on transparent commands | fixed | `17e34d0` |
+| LIN-01 | LINE's Undo after `'LTSCALE` / `'-COLOR` left the segment | history marks, `ctx.undoTo` | `0af9b11` |
+| LIN-02 | Continue from a clockwise arc left its far end | LASTPOINT tells the drawn end | `0af9b11` |
+| LIN-03 | Continue from a polyline ending in an arc | asks `Length of line:` | `0af9b11` |
+| LIN-04 | Enter at `Length of line:` ended LINE | refused | `0af9b11` |
+| LIN-05 | Undo after Continue's line | back to `Length of line:` | `0af9b11` |
+| LIN-06 | Undo of the first point was silent | `All segments already undone.` | `0af9b11` |
+| LIN-07 | typed zero-length segments skipped | drawn, counted, reported | `0af9b11` |
+| LIN-08 | es `[Cerrar/desHacer]` prompt | `Precise siguiente punto o` | `0af9b11` |
+| LIN-09 | `#x,y` at the command line | refused (with PIN-02) | `3fd3992` |
+| PIN-01 | `*` point without a Z took ELEVATION | WCS Z 0 | `3fd3992` |
+| PIN-02 | `#` typed in the command window accepted | refused; the box keeps it | `3fd3992` |
+| PIN-03 | `1e1`, `1/2`, `1-1/2` refused | read | `3fd3992` |
+| PIN-04 | `30d`, `0.5r`, `50g`, `N45dE` refused | read | `3fd3992` |
+| PIN-05 | `0x10` read as 16 | refused | `3fd3992` |
+| PIN-06 | a second `<a` replaced the first | refused, drops the first | `3fd3992` |
+| OSN-01 | a typed point after an override not snapped | snapped | `6163daa` |
+| OSN-02 | an override finding nothing placed the cursor's point | refused, consumed | `6163daa` |
+| OSN-03 | FROM's typed base skipped FROM | goes through FROM | `6163daa` |
+| OSN-04 | FROM's prompts were messages | `Base point:`, `<Offset>:` | `6163daa` |
+| OSN-05 | Enter at `<Offset>` placed the base | the running prompt's Enter | `6163daa` |
+| OSN-06 | a number at `<Offset>` ran from LASTPOINT | from the base | `6163daa` |
+| OSN-07 | `_FRO` refused | taken | `6163daa` |
+| OSN-08 | -OSNAP Enter kept the set | clears it | `6163daa` |
+| OSN-09 | -OSNAP wrote `None` | no line | `6163daa` |
+| OSN-10 | `_APPINT` refused | taken | `6163daa` |
+| OSN-11 | a second override at `of` replaced the first | refused | `6163daa` |
+| OSN-12 | stale WHY and coverage on prepositions | settled | `6163daa` |
+| TRK-01 | SNAP a toggle of our own | AutoCAD's SNAP (spacing, ON, OFF, Aspect) | `55e4ad1` |
+| TRK-02 | ORTHOMODE and the aids' variables not typeable | Missing, until SETVAR | `55e4ad1` |
+| TRK-03 | F3–F11 wrote no echo | ` <Ortho on>`… in en and es | `55e4ad1` |
+| RND-01 | invented linetype patterns | acadiso.lin's | `571bea7` |
+| RND-02 | dash pattern not centred | centred, solid under one period | `571bea7` |
+| RND-03 | LWDISPLAY on without a WHY | WHY and note | `571bea7` |
+| CPR-01 | true colour read back as index colour | Missing | `873c6c2` |
+| CPR-02 | -LINETYPE named acad.lin | acadiso.lin | `873c6c2` |
+| CPR-03 | Spanish acadiso.lin names | Missing (names stay data) | `873c6c2` |
+| DYN-01 | dynamic input cannot be turned off | Missing | `52ef2a2` |
+| DYN-02 | the Down arrow listed nothing | AutoCAD's option list | `52ef2a2` |
+| DSK-01 | rubber band a fixed colour | the line's colour | `68db52e` |
+| DSK-02 | snap menu order and groups | AutoCAD's | `68db52e` |
+| DSK-03 | es `Modificaciones de REFENT` | fixed; menu order settled | `68db52e` |
+| DSK-04 | es `*Cancelado*` inside a command | fixed | `68db52e` |
+| DSK-05 | the rail wrote no echo | `Command: _line` | `68db52e` |
+| DSK-06 | no rollover tooltip | added | `68db52e` |
+| DSK-07 | the aids' look | AutoCAD's dark theme | `68db52e` |
+| DSK-08 | snap aperture 8 px | 10 px | `68db52e` |
+| EDT-01 | a line's end grip lengthened | stretches to the cursor | `97cd4d1` |
+| EDT-02 | a midpoint grip moved the whole selection | moves its object | `97cd4d1` |
+| EDT-03 | Length and Angle editable | read-only | `97cd4d1` |
+| EDT-04 | a vertical line's grips on its start | at its ends and middle | `97cd4d1` |
+| EDT-05 | a rising line's ends could not meet in plan | allowed | `97cd4d1` |
+| EDT-06 | palette labels and groups | one Geometry group, `Delta X` | `97cd4d1` |
+| FIL | a line's properties through files untested | tested | `d53f289` |
 
 ## Still open
 

@@ -3,7 +3,7 @@
 > **Status:** done, 2026-10-21 — reviewed and executed in one session with skill `command-review`,
 > the fourth review of `docs/coverage/roadmap.md`'s order, the owner having waived the wait for
 > approval. The full plan (matrices, findings, decisions, refuted suspicions, rules ↔ code) is in
-> git: `git show 1fb8351:docs/plans/arc-review.md`.
+> git: `git show 0150b95:docs/plans/arc-review.md`.
 
 ## Summary
 
@@ -49,28 +49,28 @@ desktop's are `dsk.sh` in the same folder. Transcripts, plots and screenshots ar
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| ARC-01 | Enter at a later prompt ended ARC | refused in each prompt's words | `108c53d` |
-| ARC-02 | a centre mode's end read `@` from the start | from the centre | `108c53d` |
-| ARC-03 | 3P at different heights tilted | flat in the first point's plane | `108c53d` |
-| ARC-04 | a Tangent or Perpendicular at the first point refused | from LASTPOINT | `108c53d` |
-| ARC-05 | a degenerate arc kept asking or made a zero sweep | `*Invalid*` and the end | `108c53d` |
-| ARC-06 | centre = start silent | `Radius must be non-zero.` | `108c53d` |
-| ARC-07 | Ortho, Polar and `<a` at prompts with no base | only a centre mode's end | `108c53d` |
-| ARC-08 | the rail's SCE and CSE as this app's names | the ribbon's macros | `108c53d` |
-| ARC-09 | Enter at the start with nothing to continue silent | `No line or arc to continue.` | `108c53d` |
-| ARC-10 | es «del arco» at a centre mode's end | table 8423 | `108c53d` |
-| ARC-11 | a centre mode's end refused `Invalid 2D point.` | AutoCAD's words | `108c53d` |
-| ARC-12 | tests citing no 2027 probe, the entry's tilted plane | cited, rewritten | `108c53d` |
-| ARC-13 | CIRCLE's 2P and 3P box left LASTPOINT at the absolute reading | the point given | `27f9142` |
-| ADK-01 | the ghost in the theme's colour | the current colour | `27f9142` |
-| ADK-02 | the rubber lines solid white | amber, dashed | `27f9142` |
-| AOB-01 | a dashed arc unfitted | centred over its length | `0090913` |
-| AOB-02 | Quadrant on the arc's own axes | along the UCS, on the arc | `0090913` |
-| AOB-03 | Perpendicular off the arc | on the arc only | `0090913` |
-| AOB-04 | the palette's rows | AutoCAD's, one Geometry group | `0090913` |
-| AOB-05 | the middle grip changed the radius | Stretch through the cursor | `0090913` |
-| AOB-06 | an arc's round trip untested | `arcFiles.test.ts` | `0090913` |
-| AOB-07 | LINE's zero-length message in the UCS | the WCS | `0090913` |
+| ARC-01 | Enter at a later prompt ended ARC | refused in each prompt's words | `117de93` |
+| ARC-02 | a centre mode's end read `@` from the start | from the centre | `117de93` |
+| ARC-03 | 3P at different heights tilted | flat in the first point's plane | `117de93` |
+| ARC-04 | a Tangent or Perpendicular at the first point refused | from LASTPOINT | `117de93` |
+| ARC-05 | a degenerate arc kept asking or made a zero sweep | `*Invalid*` and the end | `117de93` |
+| ARC-06 | centre = start silent | `Radius must be non-zero.` | `117de93` |
+| ARC-07 | Ortho, Polar and `<a` at prompts with no base | only a centre mode's end | `117de93` |
+| ARC-08 | the rail's SCE and CSE as this app's names | the ribbon's macros | `117de93` |
+| ARC-09 | Enter at the start with nothing to continue silent | `No line or arc to continue.` | `117de93` |
+| ARC-10 | es «del arco» at a centre mode's end | table 8423 | `117de93` |
+| ARC-11 | a centre mode's end refused `Invalid 2D point.` | AutoCAD's words | `117de93` |
+| ARC-12 | tests citing no 2027 probe, the entry's tilted plane | cited, rewritten | `117de93` |
+| ARC-13 | CIRCLE's 2P and 3P box left LASTPOINT at the absolute reading | the point given | `95fc42b` |
+| ADK-01 | the ghost in the theme's colour | the current colour | `95fc42b` |
+| ADK-02 | the rubber lines solid white | amber, dashed | `95fc42b` |
+| AOB-01 | a dashed arc unfitted | centred over its length | `92220ea` |
+| AOB-02 | Quadrant on the arc's own axes | along the UCS, on the arc | `92220ea` |
+| AOB-03 | Perpendicular off the arc | on the arc only | `92220ea` |
+| AOB-04 | the palette's rows | AutoCAD's, one Geometry group | `92220ea` |
+| AOB-05 | the middle grip changed the radius | Stretch through the cursor | `92220ea` |
+| AOB-06 | an arc's round trip untested | `arcFiles.test.ts` | `92220ea` |
+| AOB-07 | LINE's zero-length message in the UCS | the WCS | `92220ea` |
 
 ## Still open
 

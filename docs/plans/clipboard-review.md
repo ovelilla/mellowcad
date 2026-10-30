@@ -7,7 +7,7 @@
 > It owns no cross-cutting area. It took the Workspace review's analogues: a chrome start is a menu
 > group, Ctrl+S / Ctrl+O / Ctrl+Shift+S are `^C^C` macros.
 >
-> The full plan is in git: `git show 50e50ba:docs/plans/clipboard-review.md`. It holds the
+> The full plan is in git: `git show e9d04c7:docs/plans/clipboard-review.md`. It holds the
 > inventory, the matrices, the findings, decisions CLIPBOARD-D1 to D25, the refuted suspicions,
 > and coverage and rules ↔ code.
 
@@ -61,25 +61,25 @@ text redacted).
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| CLP-01 | COPYBASE's base point refused in silence | `Invalid point.`, Enter too (p106, p107) | `276b45f` |
-| CLP-02 | COPYBASE dropped its preselection | kept (p121) | `276b45f` |
-| CLP-03 | COPYBASE's set took sub-objects | whole objects (p127) | `276b45f` |
-| PST-01 | the paste's step unnamed, a menu Paste two steps | named across the read, one group | `0512bb3` |
-| PST-02, PST-04 | Enter silent; 2023 citations | refused (then reworded by CFD-03) | `0512bb3` |
-| PST-03 | a command typed during the read replaced | the read dropped | `0512bb3` |
-| PST-05 | `Nothing on the clipboard.` invented | nothing written; a typed one still a step (d07) | `eed1749` |
-| FSV-01 | QSAVE and SAVEAS no step | `QSAVE Regenerating model.` (p204, p205) | `b5cb8f4` |
-| FSV-02, FSV-04 | SAVE an alias of QSAVE; stale coverage | a command of its own (p202, p214) | `b5cb8f4` |
-| FSV-03 | OPENURL, SAVEURL missing | aliases, es ABREURL, GUARDARURL | `b5cb8f4` |
-| CKY-01 | Ctrl+C, X, Shift+C, V acted inside the command | `^C^C` macros, `COPYCLIP GROUP` (d05 confirmed) | `ad04517` |
-| CKY-02 | Ctrl+A silent, no step, Off layers left out | `_ai_selall`, `AI_SELALL GROUP`, ALL's set | `ad04517` |
-| CFD-01 | the pasted set left selected | none selected, the set Previous (d01, d04) | `eed1749` |
-| CFD-02 | a paste in a turned UCS kept the WCS's turn | laid in the UCS as INSERT's block (d02) | `eed1749` |
-| CFD-03 | the point refused a Z, `Invalid 2D point.` | a Z taken, `Point or option keyword required.` (d02) | `eed1749` |
-| CFD-04 | the QAT's and application menu's file buttons ran the command | `^C^C` macros, `_qnew`… `_QSave`, groups (d08) | `eed1749` |
-| CFD-05 | the ghost in the rubber band's colour | the objects as they land (d04-3) | `eed1749` |
-| CFD-06 | the menu's Clipboard entries' U names lacked the key | `PasteCtrl+V GROUP`, es `CopiarCtrl+C GRUPO` (d05, e01) | `eed1749` |
-| CFD-07 | Ctrl+A's message on a line of its own | `_ai_selall Selecting objects...done.` (d06) | `eed1749` |
+| CLP-01 | COPYBASE's base point refused in silence | `Invalid point.`, Enter too (p106, p107) | `ea9556c` |
+| CLP-02 | COPYBASE dropped its preselection | kept (p121) | `ea9556c` |
+| CLP-03 | COPYBASE's set took sub-objects | whole objects (p127) | `ea9556c` |
+| PST-01 | the paste's step unnamed, a menu Paste two steps | named across the read, one group | `fabd4ee` |
+| PST-02, PST-04 | Enter silent; 2023 citations | refused (then reworded by CFD-03) | `fabd4ee` |
+| PST-03 | a command typed during the read replaced | the read dropped | `fabd4ee` |
+| PST-05 | `Nothing on the clipboard.` invented | nothing written; a typed one still a step (d07) | `5b299b4` |
+| FSV-01 | QSAVE and SAVEAS no step | `QSAVE Regenerating model.` (p204, p205) | `39bfb53` |
+| FSV-02, FSV-04 | SAVE an alias of QSAVE; stale coverage | a command of its own (p202, p214) | `39bfb53` |
+| FSV-03 | OPENURL, SAVEURL missing | aliases, es ABREURL, GUARDARURL | `39bfb53` |
+| CKY-01 | Ctrl+C, X, Shift+C, V acted inside the command | `^C^C` macros, `COPYCLIP GROUP` (d05 confirmed) | `6e6976a` |
+| CKY-02 | Ctrl+A silent, no step, Off layers left out | `_ai_selall`, `AI_SELALL GROUP`, ALL's set | `6e6976a` |
+| CFD-01 | the pasted set left selected | none selected, the set Previous (d01, d04) | `5b299b4` |
+| CFD-02 | a paste in a turned UCS kept the WCS's turn | laid in the UCS as INSERT's block (d02) | `5b299b4` |
+| CFD-03 | the point refused a Z, `Invalid 2D point.` | a Z taken, `Point or option keyword required.` (d02) | `5b299b4` |
+| CFD-04 | the QAT's and application menu's file buttons ran the command | `^C^C` macros, `_qnew`… `_QSave`, groups (d08) | `5b299b4` |
+| CFD-05 | the ghost in the rubber band's colour | the objects as they land (d04-3) | `5b299b4` |
+| CFD-06 | the menu's Clipboard entries' U names lacked the key | `PasteCtrl+V GROUP`, es `CopiarCtrl+C GRUPO` (d05, e01) | `5b299b4` |
+| CFD-07 | Ctrl+A's message on a line of its own | `_ai_selall Selecting objects...done.` (d06) | `5b299b4` |
 
 Decisions added in the execution:
 

@@ -3,7 +3,7 @@
 > **Status:** done, 2026-10-22 — reviewed in one session with skill `command-review`, the
 > fifteenth review of `docs/coverage/roadmap.md`'s order, executed over three sessions. It owns
 > **the array object**. The full plan (matrices, findings, decisions ARRAYS-D1 to D78, refuted
-> suspicions, coverage and rules ↔ code) is in git: `git show d7e7d4d:docs/plans/arrays-review.md`.
+> suspicions, coverage and rules ↔ code) is in git: `git show bcfba5e:docs/plans/arrays-review.md`.
 
 ## Summary
 
@@ -41,21 +41,21 @@ are in `research/probes/arrays/` (gitignored).
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| ARR-01 | `AR`, `ARRAY`, `MA`, `MATRIZ` started ARRAYRECT | ARRAY, asking the type | `ef58183` |
-| ARR-02 to ARR-08, ARR-10 | spacing 0, a turned UCS's default, `*x,y`, LASTPOINT, `FOO`'s words, refusals' words, order, trailing zeros | as the console | `ef58183` |
-| ARR-09 | a transparent command at a number box | **refuted** (`'ZOOM` passes) | `ef58183` |
-| ARR-11, ARR-12 | `<eXit>`'s spacing, options unsaid | Missing | `ef58183` |
-| APO-02 to APO-12 | full-turn overlap, clockwise fill, refusals, fill modulo a turn, Enter at the centre, `ROWs or ROTate?`, counts to 32767, words, aliases | as the console | `566528d` |
-| APO-13 to APO-15 | `<eXit>`'s spacing, claims, tests | recorded, tested | `566528d` |
-| APA-01, APA-02 | the source moved onto the path, always from its start | in place, from the nearer end | `4dbdb66` |
-| APA-03 to APA-18 | locked curve, Enter, typed snaps, polylines, 3D paths (Missing), turned UCS, filtered-out words, `Maximum items`, aliases, rollover, Group (Missing), Missing | as the console | `4dbdb66` |
-| AYJ-01, AYJ-02 | Escape made nothing; dashed blue copies | Escape commits; items drawn as objects | `d940a70` |
-| AYJ-03 | Unit cell's rubber band solid | Missing (**unverified**) | `d940a70` |
-| AYO-01 | loose copies, `Associative = No` | one array object, ASsociative kept for the session | `b6b2317` |
-| AYG-01 | one insertion grip | the array's grips and default drags, typed values | `9a05ad4` |
-| AYG-02 | a block reference's palette rows | the array's Geometry and Misc rows, edits | `9a05ad4` |
-| AYG-03 | no grips at the main prompt | the preview's grips, the same drags | `9a05ad4` |
-| AYG-04 | hover menus, Ctrl cycling, hover values | Missing, with every object's | `9a05ad4` |
+| ARR-01 | `AR`, `ARRAY`, `MA`, `MATRIZ` started ARRAYRECT | ARRAY, asking the type | `74d36ae` |
+| ARR-02 to ARR-08, ARR-10 | spacing 0, a turned UCS's default, `*x,y`, LASTPOINT, `FOO`'s words, refusals' words, order, trailing zeros | as the console | `74d36ae` |
+| ARR-09 | a transparent command at a number box | **refuted** (`'ZOOM` passes) | `74d36ae` |
+| ARR-11, ARR-12 | `<eXit>`'s spacing, options unsaid | Missing | `74d36ae` |
+| APO-02 to APO-12 | full-turn overlap, clockwise fill, refusals, fill modulo a turn, Enter at the centre, `ROWs or ROTate?`, counts to 32767, words, aliases | as the console | `922c684` |
+| APO-13 to APO-15 | `<eXit>`'s spacing, claims, tests | recorded, tested | `922c684` |
+| APA-01, APA-02 | the source moved onto the path, always from its start | in place, from the nearer end | `3771678` |
+| APA-03 to APA-18 | locked curve, Enter, typed snaps, polylines, 3D paths (Missing), turned UCS, filtered-out words, `Maximum items`, aliases, rollover, Group (Missing), Missing | as the console | `3771678` |
+| AYJ-01, AYJ-02 | Escape made nothing; dashed blue copies | Escape commits; items drawn as objects | `613a9db` |
+| AYJ-03 | Unit cell's rubber band solid | Missing (**unverified**) | `613a9db` |
+| AYO-01 | loose copies, `Associative = No` | one array object, ASsociative kept for the session | `46f9275` |
+| AYG-01 | one insertion grip | the array's grips and default drags, typed values | `c6c7d7a` |
+| AYG-02 | a block reference's palette rows | the array's Geometry and Misc rows, edits | `c6c7d7a` |
+| AYG-03 | no grips at the main prompt | the preview's grips, the same drags | `c6c7d7a` |
+| AYG-04 | hover menus, Ctrl cycling, hover values | Missing, with every object's | `c6c7d7a` |
 
 ## Still open
 

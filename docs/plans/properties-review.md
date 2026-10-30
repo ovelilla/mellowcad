@@ -5,7 +5,7 @@
 > (layers, colours, linetypes, lineweights). Commands: LAYER, LAYERCLOSE, COLOR, -COLOR, LINETYPE,
 > -LINETYPE, LTSCALE, LWEIGHT, -LWEIGHT, PROPERTIES, PROPERTIESCLOSE, FILL, MATCHPROP. The full plan
 > (matrices, findings, decisions PROPS-D1 to D75, refuted suspicions, coverage and rules ↔ code)
-> is in git: `git show db3d4fc:docs/plans/properties-review.md`.
+> is in git: `git show c45a01a:docs/plans/properties-review.md`.
 
 ## Summary
 
@@ -44,23 +44,23 @@ and screenshots are in `research/probes/properties/` (gitignored).
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| LAY-01, LAY-07 | layer edits and CLAYER not undoable; UNDO Layer unread | commands, LPM edits folded, `'.-LAYER`, `'CLAYER` | `c4d5dcf` |
-| LAY-02 | a layer a block uses deleted | in use, nested too | `c4d5dcf` |
-| LAY-03, LAY-04, LAY-10 | renames unchecked; current layer off silent; own refusal words | the LPM's task dialogs | `c4d5dcf` |
-| LAY-05 | New ignored the selected layer | copies it, current kept | `c4d5dcf` |
-| LAY-06 | layer 0 not index 7 | `#ffffff`, drawn as the foreground | `c4d5dcf` |
-| LAY-08, LAY-09 | es LAYER, DDLMODES; -LAYER unrecorded | aliases; Missing | `c4d5dcf` |
-| LAY-11, LAY-12, LAY-15 | tests; F2; order and colour names | fixed | `c4d5dcf` |
-| LKD-01 | locked objects unselectable at `Command:` | selectable, edits refused, preselection filtered | `f9d1ff4` |
-| LKD-02 | no fade, no padlock | LAYLOCKFADECTL 50, the badge, the tooltip | `f9d1ff4` |
-| COL-01 to COL-05, COL-07 | es `C`, `'ZOOM`, −1, COL / COLOUR, bare English words, tests | as the console | `76a7f05` |
-| COL-06 | layer 0's colour | merged into LAY-06 | `c4d5dcf` |
-| LWT-01 to LWT-08 | −1, `None`, es BYLAYER, ties, `'ZOOM`, LINEWEIGHT, LWDISPLAY's undo, tests | as the console | `e7db87a` |
-| LTY-01 to LTY-09 | aliases, `acad.lin`, `<1.0000>`, loaded linetypes' WHY, listings, ByLayer words, setter, English walk | as the console | `def3fbd` |
-| FIL-01 | 2023 citations, holes | 2027 probes, tests | `0ce5457` |
-| PRP-01, PRP-02, PRP-04 | an array counted as a block reference; the order | `Array (Rectangular)`, by count | `89f054e` |
-| PRP-03 | U named no edit made outside a command | `CHPROP`, `Modify Property`, `Grip Edit` | `89f054e` |
-| MAT-01 to MAT-10 | prompts, COPIARPROP, the settings line, special properties, linetype exceptions, locked source and destination, preselection, the paintbrush | as the desktop and acmatchRes | `ad92007` |
+| LAY-01, LAY-07 | layer edits and CLAYER not undoable; UNDO Layer unread | commands, LPM edits folded, `'.-LAYER`, `'CLAYER` | `bad001c` |
+| LAY-02 | a layer a block uses deleted | in use, nested too | `bad001c` |
+| LAY-03, LAY-04, LAY-10 | renames unchecked; current layer off silent; own refusal words | the LPM's task dialogs | `bad001c` |
+| LAY-05 | New ignored the selected layer | copies it, current kept | `bad001c` |
+| LAY-06 | layer 0 not index 7 | `#ffffff`, drawn as the foreground | `bad001c` |
+| LAY-08, LAY-09 | es LAYER, DDLMODES; -LAYER unrecorded | aliases; Missing | `bad001c` |
+| LAY-11, LAY-12, LAY-15 | tests; F2; order and colour names | fixed | `bad001c` |
+| LKD-01 | locked objects unselectable at `Command:` | selectable, edits refused, preselection filtered | `2518b02` |
+| LKD-02 | no fade, no padlock | LAYLOCKFADECTL 50, the badge, the tooltip | `2518b02` |
+| COL-01 to COL-05, COL-07 | es `C`, `'ZOOM`, −1, COL / COLOUR, bare English words, tests | as the console | `480fe43` |
+| COL-06 | layer 0's colour | merged into LAY-06 | `bad001c` |
+| LWT-01 to LWT-08 | −1, `None`, es BYLAYER, ties, `'ZOOM`, LINEWEIGHT, LWDISPLAY's undo, tests | as the console | `f5af9c4` |
+| LTY-01 to LTY-09 | aliases, `acad.lin`, `<1.0000>`, loaded linetypes' WHY, listings, ByLayer words, setter, English walk | as the console | `57fa7bf` |
+| FIL-01 | 2023 citations, holes | 2027 probes, tests | `9849f31` |
+| PRP-01, PRP-02, PRP-04 | an array counted as a block reference; the order | `Array (Rectangular)`, by count | `86d1568` |
+| PRP-03 | U named no edit made outside a command | `CHPROP`, `Modify Property`, `Grip Edit` | `86d1568` |
+| MAT-01 to MAT-10 | prompts, COPIARPROP, the settings line, special properties, linetype exceptions, locked source and destination, preselection, the paintbrush | as the desktop and acmatchRes | `68f83bc` |
 
 ## Still open
 

@@ -3,7 +3,7 @@
 > **Status:** done, 2026-10-21 — reviewed, approved by the owner and executed in the review's own
 > session with skill `command-review`, the second review of `docs/coverage/roadmap.md`'s order. The
 > full plan (matrices, findings, decisions, refuted suspicions, rules ↔ code) is in git:
-> `git show 84cbabf:docs/plans/pline-review.md`.
+> `git show 4c9f5e0:docs/plans/pline-review.md`.
 
 ## Summary
 
@@ -88,47 +88,47 @@ are `[x, y, bulge, startWidth, endWidth]`.
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| POB-01 | a closed polyline of two vertices lost its closing segment, also through the file | closes from two vertices everywhere | `b0705fa` |
-| POB-02 | a polyline's linetype ran on from its start | each segment laid as a line (PLINEGEN 0) | `b0705fa` |
-| POB-03 | sharp corners mitred up to 50 half-widths | 4, square ends beyond | `b0705fa` |
-| POB-04 | a wedge where an arc meets a line | the line's band cut along the radius | `b0705fa` |
-| POB-05 | an arc band wider than its diameter crossed the centre | clamped | `b0705fa` |
-| POB-06 | a straight segment's midpoint grip inserted a vertex | stretches the segment | `b0705fa` |
-| POB-07 | Ctrl+click removed a vertex; no grip menus | gone; menus to Missing | `b0705fa` |
-| POB-08 | the palette's rows | AutoCAD's, Closed editable | `b0705fa` |
-| POB-09 | no line at the width prompts | dashed from the last vertex | `b0705fa` |
-| POB-10 | FILL-off lineweight | left unverified | `b0705fa` |
-| POB-11 | 2023 citations, false comments | 2027 probes | `b0705fa` |
-| POB-12 | a moved vertex kept the next arc's bulge | bends it through its old midpoint | `b0705fa` |
-| PLN-01 | PLINE's Undo left a transparent command's change | history marks, `ctx.undoTo` | `43acdcf` |
-| PLN-02 | Continue after a clockwise arc from its far end | its drawn end, off LASTPOINT | `43acdcf` |
-| PLN-03 | the chain's heading after a clockwise arc | from its drawn end; DIST too | `43acdcf` |
-| PLN-04 | a Z or `*` typed at a 2D point prompt taken | refused at the command line | `43acdcf` |
-| PLN-05 | `_TAN` at the start point taken | refused (`defersSnap`) | `43acdcf` |
-| PLN-06 | properties set mid-command reached the polyline | those of its start | `43acdcf` |
-| PLN-07 | a refused arc end moved LASTPOINT | kept | `43acdcf` |
-| PLN-08 | Undo under UNDO Control None removed the segment | keeps the chain | `43acdcf` |
-| PLN-20 | Length left LASTPOINT behind | its vertex | `43acdcf` |
-| PLN-21 | with nothing drawn, world X | the UCS's X | `43acdcf` |
-| PLN-22 | Enter with nothing to continue ended PLINE | the WCS origin | `43acdcf` |
-| PLN-23 | a direct distance of 0 or negative ignored | a vertex | `43acdcf` |
+| POB-01 | a closed polyline of two vertices lost its closing segment, also through the file | closes from two vertices everywhere | `9a89a61` |
+| POB-02 | a polyline's linetype ran on from its start | each segment laid as a line (PLINEGEN 0) | `9a89a61` |
+| POB-03 | sharp corners mitred up to 50 half-widths | 4, square ends beyond | `9a89a61` |
+| POB-04 | a wedge where an arc meets a line | the line's band cut along the radius | `9a89a61` |
+| POB-05 | an arc band wider than its diameter crossed the centre | clamped | `9a89a61` |
+| POB-06 | a straight segment's midpoint grip inserted a vertex | stretches the segment | `9a89a61` |
+| POB-07 | Ctrl+click removed a vertex; no grip menus | gone; menus to Missing | `9a89a61` |
+| POB-08 | the palette's rows | AutoCAD's, Closed editable | `9a89a61` |
+| POB-09 | no line at the width prompts | dashed from the last vertex | `9a89a61` |
+| POB-10 | FILL-off lineweight | left unverified | `9a89a61` |
+| POB-11 | 2023 citations, false comments | 2027 probes | `9a89a61` |
+| POB-12 | a moved vertex kept the next arc's bulge | bends it through its old midpoint | `9a89a61` |
+| PLN-01 | PLINE's Undo left a transparent command's change | history marks, `ctx.undoTo` | `24c401d` |
+| PLN-02 | Continue after a clockwise arc from its far end | its drawn end, off LASTPOINT | `24c401d` |
+| PLN-03 | the chain's heading after a clockwise arc | from its drawn end; DIST too | `24c401d` |
+| PLN-04 | a Z or `*` typed at a 2D point prompt taken | refused at the command line | `24c401d` |
+| PLN-05 | `_TAN` at the start point taken | refused (`defersSnap`) | `24c401d` |
+| PLN-06 | properties set mid-command reached the polyline | those of its start | `24c401d` |
+| PLN-07 | a refused arc end moved LASTPOINT | kept | `24c401d` |
+| PLN-08 | Undo under UNDO Control None removed the segment | keeps the chain | `24c401d` |
+| PLN-20 | Length left LASTPOINT behind | its vertex | `24c401d` |
+| PLN-21 | with nothing drawn, world X | the UCS's X | `24c401d` |
+| PLN-22 | Enter with nothing to continue ended PLINE | the WCS origin | `24c401d` |
+| PLN-23 | a direct distance of 0 or negative ignored | a vertex | `24c401d` |
 | PLN-24 | Length's measuring line | refuted (d06) | — |
-| PAC-01 | `*Invalid*` re-asked the option's sub-prompt | back to the arc prompt | `5bf6d45` |
-| PAC-02 | an included angle of 0 or 360 taken | `Value must be nonzero.` | `5bf6d45` |
-| PAC-03 | a negative radius refused | the major arc | `5bf6d45` |
-| PAC-04 | Angle → Radius 0 refused | taken | `5bf6d45` |
-| PAC-05 | CEnter's chord 0 `*Invalid*` | `Value must be nonzero.` | `5bf6d45` |
-| PAC-06 | Enter at Direction's tangent refused | the chain's heading | `5bf6d45` |
-| PAC-07 | `@` at a sub-prompt from the arc's start | from LASTPOINT | `5bf6d45` |
-| PAC-08 | es `CE` opened cEntro | Cerrar | `5bf6d45` |
-| PAC-09 | es `SEGUNDOPTO` | `Segundo` declared; the first prompt's form to Missing | `5bf6d45` |
-| PAC-10 | `'AUPREC` rewrote the chord's default | kept as first formatted | `5bf6d45` |
-| PAC-11 | table 21314 never said | said | `5bf6d45` |
-| PAC-12 | DIST's Undo left Arc | keeps the mode | `5bf6d45` |
-| PAC-13 | DIST's CEnter angle wording | 2027's | `5bf6d45` |
-| PDK-01 | the rubber band a fixed colour | the polyline's, from its start | `84cbabf` |
-| PDK-02 | no dashed chord in arc mode | amber, as the desktop's | `84cbabf` |
-| PDK-03 | a double-click opens PEDIT | to Missing | `84cbabf` |
+| PAC-01 | `*Invalid*` re-asked the option's sub-prompt | back to the arc prompt | `4a4925a` |
+| PAC-02 | an included angle of 0 or 360 taken | `Value must be nonzero.` | `4a4925a` |
+| PAC-03 | a negative radius refused | the major arc | `4a4925a` |
+| PAC-04 | Angle → Radius 0 refused | taken | `4a4925a` |
+| PAC-05 | CEnter's chord 0 `*Invalid*` | `Value must be nonzero.` | `4a4925a` |
+| PAC-06 | Enter at Direction's tangent refused | the chain's heading | `4a4925a` |
+| PAC-07 | `@` at a sub-prompt from the arc's start | from LASTPOINT | `4a4925a` |
+| PAC-08 | es `CE` opened cEntro | Cerrar | `4a4925a` |
+| PAC-09 | es `SEGUNDOPTO` | `Segundo` declared; the first prompt's form to Missing | `4a4925a` |
+| PAC-10 | `'AUPREC` rewrote the chord's default | kept as first formatted | `4a4925a` |
+| PAC-11 | table 21314 never said | said | `4a4925a` |
+| PAC-12 | DIST's Undo left Arc | keeps the mode | `4a4925a` |
+| PAC-13 | DIST's CEnter angle wording | 2027's | `4a4925a` |
+| PDK-01 | the rubber band a fixed colour | the polyline's, from its start | `4c9f5e0` |
+| PDK-02 | no dashed chord in arc mode | amber, as the desktop's | `4c9f5e0` |
+| PDK-03 | a double-click opens PEDIT | to Missing | `4c9f5e0` |
 
 ## Still open
 

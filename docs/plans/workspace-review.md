@@ -10,7 +10,7 @@
 > typed as variables; the rail's apostrophe macros; the toolbar and menu buttons' `<command> GROUP`
 > undo names; the chrome menus' echo (UCD-07); every name prompt that may hold spaces (UCD-05).
 >
-> The full plan is in git: `git show b273f65:docs/plans/workspace-review.md`. It holds the
+> The full plan is in git: `git show c15d2ec:docs/plans/workspace-review.md`. It holds the
 > inventory, the matrices, the findings, decisions WORKSPACE-D1 to D108, the refuted suspicions,
 > and coverage and rules ↔ code.
 
@@ -64,30 +64,30 @@ one locale), run with `scripts/research/probe.sh workspace <ids>`; the desktop p
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| SVA-01, SVA-02 | SETVAR missing; a variable typed by name `Unknown command` | SETVAR (es MODIVAR, `SET`, `MV`) and every modelled variable by name, `'` too | `5911d19` |
-| SVA-03 | one value prompt and refusal for every type | per data type, re-ask or `Cannot set` | `5911d19` |
-| SVA-04 | no `?` listing | AutoCAD's format | `5911d19` |
-| SVA-05 | a variable in a transparent command refused | nested, `Resuming SETVAR command.` | `5911d19` |
-| SVA-06, SVR-05 | AUPREC's 2023 citations | 2027 probes; the Spanish period settled | `5911d19` |
-| SVR-01 | the roster `Unknown command` | the drawing's and read-only variables; then the program's and session's | `5911d19`, `1165751` |
-| SVR-02 | POLARDIST started at 10 | 0, meaning Snap X spacing (d08 confirmed the stepping) | `1165751` |
-| SVR-03, SVR-04 | values that meant something else; settings not undone | handled per variable; one undo step whatever the storage | `1165751` |
-| UNT-01, UNT-02 | CLEANSCREEN and UNITS no step | named steps; Cancel one too (d05) | `5d9175c` |
-| UNT-03, UNT-05 | DDUNITS; stale coverage | the alias; 2027's facts | `5d9175c` |
-| UNT-04 | Units ran `_UNITS` | the status bar `'_units`; the application menu `^C^C_UNITS`, U `UNITS GROUP` (d05-4) | `5d9175c`, `1dafb51` |
-| MAC-01 | the accelerators acted inside the command | `^C^C`, echoed as the macro (the case settled, d04) | `9d0e428` |
-| MAC-02, MAC-04, MAC-05 | ATTDISP ended the command; Edit attributes ran ATTEDIT; Pan as typed | `'_attdisp`; EATTEDIT; `'_pan` | `9d0e428` |
-| MAC-07, MAC-08 | three labels; coverage against acad.cuix | acad.cuix's | `9d0e428` |
-| MAC-03 | Match Properties ended the command | `'_matchprop`, transparent (d02-1) | `c7a7ed4` |
-| MAC-06 | menu entries echoed local names | `_erase 1 found`, `_properties`, `'_pan`; Deselect All `Everything has been deselected` | `1dafb51` |
-| MAC-09 | Ctrl+L unbound | `^O` as F8; chromium does not reserve it | `c7a7ed4` |
-| WSD-01 | U left a drafting toggle | joins the last step (`executeIntoLast`) | `1dafb51` |
-| WSD-02 | F7, F4 and the status bar silent | ` <Grid on>`, ` <Selection Cycling on>`, the buttons as the keys | `1dafb51` |
-| WSD-03 | chrome starts no step or another name | menu groups: `LINE GROUP`, `Erase GROUP`, `GROUP Properties`, `GROUP QSAVE` | `1dafb51` |
-| WSD-04 | `'MATCHPROP`, `'PROPERTIES`, `'LAYER`, `'BLOCKSPALETTE` refused | transparent | `c7a7ed4` |
-| WSD-05 | names ended at a space | `takesSpaces` a question's flag, on every name and string prompt | `c7a7ed4` |
-| WSD-06, WSD-07 | SETVAR's `?` unpaged; its dynamic input empty | 20 per page, `Press ENTER to continue:`; the default as placeholder | `c7a7ed4` |
-| WSD-08, WSD-09 | the dialog's label; the status bar's menus | `Units to scale inserted content:`; AutoCAD's order and eight increments | `c7a7ed4` |
+| SVA-01, SVA-02 | SETVAR missing; a variable typed by name `Unknown command` | SETVAR (es MODIVAR, `SET`, `MV`) and every modelled variable by name, `'` too | `a66a1bf` |
+| SVA-03 | one value prompt and refusal for every type | per data type, re-ask or `Cannot set` | `a66a1bf` |
+| SVA-04 | no `?` listing | AutoCAD's format | `a66a1bf` |
+| SVA-05 | a variable in a transparent command refused | nested, `Resuming SETVAR command.` | `a66a1bf` |
+| SVA-06, SVR-05 | AUPREC's 2023 citations | 2027 probes; the Spanish period settled | `a66a1bf` |
+| SVR-01 | the roster `Unknown command` | the drawing's and read-only variables; then the program's and session's | `a66a1bf`, `eba126d` |
+| SVR-02 | POLARDIST started at 10 | 0, meaning Snap X spacing (d08 confirmed the stepping) | `eba126d` |
+| SVR-03, SVR-04 | values that meant something else; settings not undone | handled per variable; one undo step whatever the storage | `eba126d` |
+| UNT-01, UNT-02 | CLEANSCREEN and UNITS no step | named steps; Cancel one too (d05) | `542b047` |
+| UNT-03, UNT-05 | DDUNITS; stale coverage | the alias; 2027's facts | `542b047` |
+| UNT-04 | Units ran `_UNITS` | the status bar `'_units`; the application menu `^C^C_UNITS`, U `UNITS GROUP` (d05-4) | `542b047`, `8f6d768` |
+| MAC-01 | the accelerators acted inside the command | `^C^C`, echoed as the macro (the case settled, d04) | `1415496` |
+| MAC-02, MAC-04, MAC-05 | ATTDISP ended the command; Edit attributes ran ATTEDIT; Pan as typed | `'_attdisp`; EATTEDIT; `'_pan` | `1415496` |
+| MAC-07, MAC-08 | three labels; coverage against acad.cuix | acad.cuix's | `1415496` |
+| MAC-03 | Match Properties ended the command | `'_matchprop`, transparent (d02-1) | `75a6b62` |
+| MAC-06 | menu entries echoed local names | `_erase 1 found`, `_properties`, `'_pan`; Deselect All `Everything has been deselected` | `8f6d768` |
+| MAC-09 | Ctrl+L unbound | `^O` as F8; chromium does not reserve it | `75a6b62` |
+| WSD-01 | U left a drafting toggle | joins the last step (`executeIntoLast`) | `8f6d768` |
+| WSD-02 | F7, F4 and the status bar silent | ` <Grid on>`, ` <Selection Cycling on>`, the buttons as the keys | `8f6d768` |
+| WSD-03 | chrome starts no step or another name | menu groups: `LINE GROUP`, `Erase GROUP`, `GROUP Properties`, `GROUP QSAVE` | `8f6d768` |
+| WSD-04 | `'MATCHPROP`, `'PROPERTIES`, `'LAYER`, `'BLOCKSPALETTE` refused | transparent | `75a6b62` |
+| WSD-05 | names ended at a space | `takesSpaces` a question's flag, on every name and string prompt | `75a6b62` |
+| WSD-06, WSD-07 | SETVAR's `?` unpaged; its dynamic input empty | 20 per page, `Press ENTER to continue:`; the default as placeholder | `75a6b62` |
+| WSD-08, WSD-09 | the dialog's label; the status bar's menus | `Units to scale inserted content:`; AutoCAD's order and eight increments | `75a6b62` |
 
 Decisions added in the execution:
 

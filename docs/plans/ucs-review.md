@@ -8,7 +8,7 @@
 > words (`ucsUndefined`, VIEW-D23), the `*TOP*` name after U of an orthographic -VIEW (VUN-06), and
 > OBject's locked objects.
 >
-> The full plan is in git: `git show c5b92ad:docs/plans/ucs-review.md`. It holds the inventory,
+> The full plan is in git: `git show fe79f50:docs/plans/ucs-review.md`. It holds the inventory,
 > the matrices, the findings, decisions UCS-D1 to D103, the refuted suspicions, and coverage and
 > rules ↔ code.
 
@@ -59,37 +59,37 @@ locale), run with `scripts/research/probe.sh ucs <ids>`; the desktop pass is
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| UCO-01 | Face not listed at the first prompt | listed | `8ddbc70` |
-| UCO-02 | the third point read in the UCS moved to the origin | read along the new X; LASTPOINT the point given | `8ddbc70` |
-| UCO-03 | ELEVATION reset whenever the UCS became the WCS | World and -VIEW's orthographic views only | `8ddbc70` |
-| UCO-04 | X and Y by a point asked two points | one, from the UCS's origin | `8ddbc70` |
-| UCO-05 | ZAxis's Z point on the origin: `Invalid point.` | `Points are coincident` | `8ddbc70` |
-| UCO-06 | U after OBject on nothing left LASTPOINT | the WCS's origin | `8ddbc70` |
-| UCO-07, UCO-08 | coverage and tests of the first prompt; LINE's typed length with no heading | rewritten; the runtime's fix | `8ddbc70` |
-| UCH-01 | `F` refused at New's prompt | Face listed and asked; `No 3D solid, surface or mesh detected.` | `f5a23ff` |
-| UCH-02 | Move dropped the name and left the saved entry | name kept, entry rewritten | `f5a23ff` |
-| UCH-03 | Origin's Enter kept the name | the UCS applied, the name dropped | `f5a23ff` |
-| UCH-04 | `3P` refused | 3point (`keywords.ts`: a digit counts as a capital) | `f5a23ff` |
-| UCH-05, UCH-06 | SEction declared; stale citations | Missing with its prompt; 2027 probes cited | `f5a23ff` |
-| UCN-01 | NAmed refused the first prompt's words; Enter did nothing | taken hidden; Enter is World | `0bb97de` |
-| UCN-02, UCN-03 | the replace question's colon; a replaced entry renamed | no colon; its stored name kept | `0bb97de` |
-| UCN-04, UCN-05 | Spanish not-found and invalid-name words | the console's | `0bb97de` |
-| UCN-06, UCN-07 | Restore of a bad name; the listing named an orthographic UCS | `Invalid UCS name.`; left out | `0bb97de` |
-| UCI-01, ELV-01 | the icon's scene and ELEV's cells untested | tests | `52b0853` |
-| UCB-01, UCB-02 | OBject passed over locked objects; ZAxis Object said nothing of one | taken in silence; BREAK's words | `a2c5e2f` |
-| UCB-03 | a mode's object read elsewhere | per type, as 2027 reads each | `a2c5e2f` |
-| UCB-04 to UCB-07 | a hatch, an object without ends, a mode finding nothing, Enter at ZAxis Object | their 2027 words and ends | `a2c5e2f` |
-| UCB-08, UCB-10 | LASTPOINT after a click on nothing; stale citations | at the click (d06 confirmed it); 2027 probes | `a2c5e2f` |
-| UCB-09 | the picks' hover `THEME.selected` | `rollover`; reversed for OBject by UCD-03 | `a2c5e2f` |
-| UCB-11, UCB-12 | a mode finding a hatch or a circle: `1 was filtered out` | the newest taken whatever its type, then refused (UCS-D100); `_END` and `_MID` at OBject's pick | `facc991` |
-| UCB-13 | a closed spline's X found by a mode | Missing (no rule fits p434, p438, p439) | `facc991` |
-| UCD-01 | dynamic input `X,Y`, absolute, at UCS's point prompts | Length / Angle from the base, `x,y` relative; `@` from LASTPOINT at the first prompt (p442) | `02afb18` |
-| UCD-02 | a solid band at three prompts | dashed amber at every point prompt and the rotation | `02afb18` |
-| UCD-03 | OBject's hover the white rollover | the selection's glow, the padlock over a locked object | `02afb18` |
-| UCD-04 | a red and green icon with arrowheads, a broken pencil | the 3D icon: white, a Z arm off the plan, edge-on X and Z | `02afb18` |
-| UCD-05 | a Save name ended at a space | Save's and Restore's names take one (`takesSpaces`) | `02afb18` |
-| UCD-06 | the ViewCube's menu read `*TOP*` as the WCS, no unnamed item; es `Sin nombre` | `Unnamed` checked, the separators; `S-nombre` | `02afb18` |
-| UCD-07, UCD-08 | the menu's echo; the icon's grips and shortcut menu | Missing, sized in both languages | `02afb18` |
+| UCO-01 | Face not listed at the first prompt | listed | `f0e71ec` |
+| UCO-02 | the third point read in the UCS moved to the origin | read along the new X; LASTPOINT the point given | `f0e71ec` |
+| UCO-03 | ELEVATION reset whenever the UCS became the WCS | World and -VIEW's orthographic views only | `f0e71ec` |
+| UCO-04 | X and Y by a point asked two points | one, from the UCS's origin | `f0e71ec` |
+| UCO-05 | ZAxis's Z point on the origin: `Invalid point.` | `Points are coincident` | `f0e71ec` |
+| UCO-06 | U after OBject on nothing left LASTPOINT | the WCS's origin | `f0e71ec` |
+| UCO-07, UCO-08 | coverage and tests of the first prompt; LINE's typed length with no heading | rewritten; the runtime's fix | `f0e71ec` |
+| UCH-01 | `F` refused at New's prompt | Face listed and asked; `No 3D solid, surface or mesh detected.` | `431b0ad` |
+| UCH-02 | Move dropped the name and left the saved entry | name kept, entry rewritten | `431b0ad` |
+| UCH-03 | Origin's Enter kept the name | the UCS applied, the name dropped | `431b0ad` |
+| UCH-04 | `3P` refused | 3point (`keywords.ts`: a digit counts as a capital) | `431b0ad` |
+| UCH-05, UCH-06 | SEction declared; stale citations | Missing with its prompt; 2027 probes cited | `431b0ad` |
+| UCN-01 | NAmed refused the first prompt's words; Enter did nothing | taken hidden; Enter is World | `fa716bf` |
+| UCN-02, UCN-03 | the replace question's colon; a replaced entry renamed | no colon; its stored name kept | `fa716bf` |
+| UCN-04, UCN-05 | Spanish not-found and invalid-name words | the console's | `fa716bf` |
+| UCN-06, UCN-07 | Restore of a bad name; the listing named an orthographic UCS | `Invalid UCS name.`; left out | `fa716bf` |
+| UCI-01, ELV-01 | the icon's scene and ELEV's cells untested | tests | `33f6d12` |
+| UCB-01, UCB-02 | OBject passed over locked objects; ZAxis Object said nothing of one | taken in silence; BREAK's words | `05ba7c9` |
+| UCB-03 | a mode's object read elsewhere | per type, as 2027 reads each | `05ba7c9` |
+| UCB-04 to UCB-07 | a hatch, an object without ends, a mode finding nothing, Enter at ZAxis Object | their 2027 words and ends | `05ba7c9` |
+| UCB-08, UCB-10 | LASTPOINT after a click on nothing; stale citations | at the click (d06 confirmed it); 2027 probes | `05ba7c9` |
+| UCB-09 | the picks' hover `THEME.selected` | `rollover`; reversed for OBject by UCD-03 | `05ba7c9` |
+| UCB-11, UCB-12 | a mode finding a hatch or a circle: `1 was filtered out` | the newest taken whatever its type, then refused (UCS-D100); `_END` and `_MID` at OBject's pick | `a23c444` |
+| UCB-13 | a closed spline's X found by a mode | Missing (no rule fits p434, p438, p439) | `a23c444` |
+| UCD-01 | dynamic input `X,Y`, absolute, at UCS's point prompts | Length / Angle from the base, `x,y` relative; `@` from LASTPOINT at the first prompt (p442) | `9d87346` |
+| UCD-02 | a solid band at three prompts | dashed amber at every point prompt and the rotation | `9d87346` |
+| UCD-03 | OBject's hover the white rollover | the selection's glow, the padlock over a locked object | `9d87346` |
+| UCD-04 | a red and green icon with arrowheads, a broken pencil | the 3D icon: white, a Z arm off the plan, edge-on X and Z | `9d87346` |
+| UCD-05 | a Save name ended at a space | Save's and Restore's names take one (`takesSpaces`) | `9d87346` |
+| UCD-06 | the ViewCube's menu read `*TOP*` as the WCS, no unnamed item; es `Sin nombre` | `Unnamed` checked, the separators; `S-nombre` | `9d87346` |
+| UCD-07, UCD-08 | the menu's echo; the icon's grips and shortcut menu | Missing, sized in both languages | `9d87346` |
 
 Decisions added in the execution:
 

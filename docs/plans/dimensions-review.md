@@ -8,7 +8,7 @@
 > dimension style table (its undo, -DIMSTYLE, the drawing's styles), and the dimension commands'
 > shared prompts (Text and Angle, the base-dimension pick, Last).
 >
-> The full plan is in git: `git show ccf268c:docs/plans/dimensions-review.md`. It holds the
+> The full plan is in git: `git show b7afc10:docs/plans/dimensions-review.md`. It holds the
 > matrices, the findings, decisions DIMS-D1 to D106, the refuted suspicions, and coverage and
 > rules ↔ code.
 
@@ -60,26 +60,26 @@ are in `research/probes/dimensions/` (gitignored).
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| DOB-01 | `12.50`, `100.00` drawn | DIMDSEP and DIMZIN 8 on the style (file 34) | `5f4cc19` |
-| DOB-02 | definition-point grips, the text always centred | AutoCAD's grips per kind; a text position mapped by every transform | `5f4cc19` |
-| DOB-03 to DOB-05 | the palette's rows; no Dimension Style ▸; hover menus unrecorded | AutoCAD's title and groups; the menu entry; Missing | `5f4cc19` |
-| DSY-01 | style edits not undoable | history commands, U names DIMSTYLE | `af23278` |
-| DSY-02 | -DIMSTYLE unknown | Save, Restore, `?`, STatus, Variables, Apply | `af23278` |
-| DSY-03, DSY-04 | Standard, Annotative; DIMxxx typed | Missing; the variables to the Workspace review | `af23278` |
-| DLN-01, DLN-02 | a circle's chord projection; H/V by escape | the resolved direction; AutoCAD's bands and hysteresis | `1bdd05c` |
-| DLN-03 to DLN-07 | locked, typed, LASTPOINT, the refusal, nested picks | as the console (table 18669) | `1bdd05c` |
-| DLN-08 | DIMHORIZONTAL, DIMVERTICAL, DIMROTATED absent | modes of the linear tool | `1bdd05c` |
-| DLN-09 | the location's Z | the current ELEVATION, every dimension | `1bdd05c` |
-| DLN-10 to DLN-17 | Angle 0, Text's Enter, `<30`, es Angle, Rotated's default, the rollover, tests | as the console; DLN-15 to Missing | `1bdd05c` |
-| DRD-01, DRD-02 | DIMTOFL 0's picture; the inside runs | DIMTOFL on the style (file 35); one run by the text's ink width | `209984a` |
-| DRD-03 to DRD-09, DRD-11 | the report's order, refusals, typed and locked picks, `@`, `<>`, rollover, Enter | as the console and d06 | `209984a` |
-| DRD-10 | Ø for ∅ | kept: the drawing font has no U+2205 (a WHY, a coverage note) | `209984a` |
-| DAG-01, DAG-06 | the reflex sector; outward-only extension lines | the location's sector; inward and outward | `209984a` |
-| DAG-02 to DAG-05, DAG-07 to DAG-11 | `°` in the report, refusals, the circle form, a polyline's segments, picks, `@`, es names and prompt | as the console | `209984a` |
+| DOB-01 | `12.50`, `100.00` drawn | DIMDSEP and DIMZIN 8 on the style (file 34) | `86f7ce5` |
+| DOB-02 | definition-point grips, the text always centred | AutoCAD's grips per kind; a text position mapped by every transform | `86f7ce5` |
+| DOB-03 to DOB-05 | the palette's rows; no Dimension Style ▸; hover menus unrecorded | AutoCAD's title and groups; the menu entry; Missing | `86f7ce5` |
+| DSY-01 | style edits not undoable | history commands, U names DIMSTYLE | `799a948` |
+| DSY-02 | -DIMSTYLE unknown | Save, Restore, `?`, STatus, Variables, Apply | `799a948` |
+| DSY-03, DSY-04 | Standard, Annotative; DIMxxx typed | Missing; the variables to the Workspace review | `799a948` |
+| DLN-01, DLN-02 | a circle's chord projection; H/V by escape | the resolved direction; AutoCAD's bands and hysteresis | `9be1a50` |
+| DLN-03 to DLN-07 | locked, typed, LASTPOINT, the refusal, nested picks | as the console (table 18669) | `9be1a50` |
+| DLN-08 | DIMHORIZONTAL, DIMVERTICAL, DIMROTATED absent | modes of the linear tool | `9be1a50` |
+| DLN-09 | the location's Z | the current ELEVATION, every dimension | `9be1a50` |
+| DLN-10 to DLN-17 | Angle 0, Text's Enter, `<30`, es Angle, Rotated's default, the rollover, tests | as the console; DLN-15 to Missing | `9be1a50` |
+| DRD-01, DRD-02 | DIMTOFL 0's picture; the inside runs | DIMTOFL on the style (file 35); one run by the text's ink width | `dcf571a` |
+| DRD-03 to DRD-09, DRD-11 | the report's order, refusals, typed and locked picks, `@`, `<>`, rollover, Enter | as the console and d06 | `dcf571a` |
+| DRD-10 | Ø for ∅ | kept: the drawing font has no U+2205 (a WHY, a coverage note) | `dcf571a` |
+| DAG-01, DAG-06 | the reflex sector; outward-only extension lines | the location's sector; inward and outward | `dcf571a` |
+| DAG-02 to DAG-05, DAG-07 to DAG-11 | `°` in the report, refusals, the circle form, a polyline's segments, picks, `@`, es names and prompt | as the console | `dcf571a` |
 | DAG-12 | Enter at the location ended with nothing | refuted: so does the console's (p369) | — |
-| DCH-01, DCH-02 | `@` from the chain; an aligned chain | LASTPOINT; rotated dimensions at the base's axis | `38d04a5` |
-| DCH-03 to DCH-11 | Undo's silence, spacing, an angular last, typed picks, Last's session and origin, a radial picked, comments, rollover | as the console | `38d04a5` |
-| DSP-01 to DSP-03 | the preselection, silent base picks, the value's field | as the console | `38d04a5` |
+| DCH-01, DCH-02 | `@` from the chain; an aligned chain | LASTPOINT; rotated dimensions at the base's axis | `717731d` |
+| DCH-03 to DCH-11 | Undo's silence, spacing, an angular last, typed picks, Last's session and origin, a radial picked, comments, rollover | as the console | `717731d` |
+| DSP-01 to DSP-03 | the preselection, silent base picks, the value's field | as the console | `717731d` |
 
 Decisions added or changed in the execution:
 

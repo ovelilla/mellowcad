@@ -3,7 +3,7 @@
 > **Status:** done, 2026-10-21 — reviewed and executed in one session with skill `command-review`,
 > the sixth review of `docs/coverage/roadmap.md`'s order. The full plan (matrices, findings,
 > decisions, refuted suspicions, coverage and rules ↔ code) is in git:
-> `git show 51793ed:docs/plans/ellipse-review.md`.
+> `git show ec4603a:docs/plans/ellipse-review.md`.
 
 ## Summary
 
@@ -37,36 +37,36 @@ Console inputs are `scripts/research/probes/ellipse/<id>.txt` (`.plain.txt` untr
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| ELL-01 | Enter ended ELLIPSE | refused in each prompt's words | `a624e9d` |
-| ELL-02 | LASTPOINT the last point given | the centre | `a624e9d` |
-| ELL-03 | a point at Rotation read by its distance | its heading from the centre | `a624e9d` |
-| ELL-04 | a zero or negative distance silent | `Value must be positive and nonzero.` | `a624e9d` |
-| ELL-05 | the rail's ELLIPSEC and ELLIPSEARC | the ribbon's `_ellipse _c`, `_a` | `a624e9d` |
-| ELL-06 | a point at Included taken as the end | its heading as the sweep | `a624e9d` |
-| ELL-07 | `_TAN`/`_PER` at the first point refused | from LASTPOINT | `a624e9d` |
-| ELL-08 | an arc's properties read at the end | when its ellipse is fixed | `a624e9d` |
-| ELL-09 | a zero first axis asked again | `*Invalid*` after the distance | `a624e9d` |
-| ELL-10 | es `E` (cEntro) refused | the prompt's keyword | `a624e9d` |
-| ELL-11 | the measure's hidden keyword refused | re-asks | `a624e9d` |
-| ELL-12 | the centre mode's endpoint refused a Z | taken, projected | `a624e9d` |
-| ELL-13 | `<45` at the start angle an override | the angle | `a624e9d` |
-| ELL-14 | a 3D point at the distance in plan | Missing | `a624e9d` |
-| ELL-15 | 2023 citations | 2027's probes | `a624e9d` |
-| EDK-01 | the ghost in the theme's colour | the current colour | `8ddd54d` |
-| EDK-02 | the jig's lines solid | amber, dashed | `8ddd54d` |
-| EDK-03 | the other endpoint's box a coordinate | the axis's length and angle | `8ddd54d` |
-| EOB-01 | Nearest found nothing | `closestOnEntity` | `a7fbcfd` |
-| EOB-02 | Midpoint on an arc refused | halfway along its length | `a7fbcfd` |
-| EOB-03 | dashes unfitted | the circle's and the arc's rules | `a7fbcfd` |
-| EOB-04 | MIRROR kept +Z, negated parameters | Missing: a −Z ellipse leaves `readsInPlan` | `a7fbcfd` |
-| EOB-05 | STRETCH never reshaped an arc | Missing: no rule fits yet | `a7fbcfd` |
-| EOB-06 | the palette's rows | AutoCAD's, one Geometry group | `a7fbcfd` |
-| EOB-07 | the centre grip only | quadrants and an arc's ends | `a7fbcfd` |
-| EOB-08 | a whole turn stored two ways | one whole ellipse | `a7fbcfd` |
-| EOB-09 | parameters unnormalised | start in [0, 2π) | `a7fbcfd` |
-| EOB-10 | a tie kept the turned axis | the first | `a7fbcfd` |
-| EOB-11 | the coverage stale | rewritten | `a7fbcfd` |
-| EOB-12 | tests uncited | cited, `ellipseFiles.test.ts` | `a7fbcfd` |
+| ELL-01 | Enter ended ELLIPSE | refused in each prompt's words | `9f3c0a0` |
+| ELL-02 | LASTPOINT the last point given | the centre | `9f3c0a0` |
+| ELL-03 | a point at Rotation read by its distance | its heading from the centre | `9f3c0a0` |
+| ELL-04 | a zero or negative distance silent | `Value must be positive and nonzero.` | `9f3c0a0` |
+| ELL-05 | the rail's ELLIPSEC and ELLIPSEARC | the ribbon's `_ellipse _c`, `_a` | `9f3c0a0` |
+| ELL-06 | a point at Included taken as the end | its heading as the sweep | `9f3c0a0` |
+| ELL-07 | `_TAN`/`_PER` at the first point refused | from LASTPOINT | `9f3c0a0` |
+| ELL-08 | an arc's properties read at the end | when its ellipse is fixed | `9f3c0a0` |
+| ELL-09 | a zero first axis asked again | `*Invalid*` after the distance | `9f3c0a0` |
+| ELL-10 | es `E` (cEntro) refused | the prompt's keyword | `9f3c0a0` |
+| ELL-11 | the measure's hidden keyword refused | re-asks | `9f3c0a0` |
+| ELL-12 | the centre mode's endpoint refused a Z | taken, projected | `9f3c0a0` |
+| ELL-13 | `<45` at the start angle an override | the angle | `9f3c0a0` |
+| ELL-14 | a 3D point at the distance in plan | Missing | `9f3c0a0` |
+| ELL-15 | 2023 citations | 2027's probes | `9f3c0a0` |
+| EDK-01 | the ghost in the theme's colour | the current colour | `d0f622b` |
+| EDK-02 | the jig's lines solid | amber, dashed | `d0f622b` |
+| EDK-03 | the other endpoint's box a coordinate | the axis's length and angle | `d0f622b` |
+| EOB-01 | Nearest found nothing | `closestOnEntity` | `2805161` |
+| EOB-02 | Midpoint on an arc refused | halfway along its length | `2805161` |
+| EOB-03 | dashes unfitted | the circle's and the arc's rules | `2805161` |
+| EOB-04 | MIRROR kept +Z, negated parameters | Missing: a −Z ellipse leaves `readsInPlan` | `2805161` |
+| EOB-05 | STRETCH never reshaped an arc | Missing: no rule fits yet | `2805161` |
+| EOB-06 | the palette's rows | AutoCAD's, one Geometry group | `2805161` |
+| EOB-07 | the centre grip only | quadrants and an arc's ends | `2805161` |
+| EOB-08 | a whole turn stored two ways | one whole ellipse | `2805161` |
+| EOB-09 | parameters unnormalised | start in [0, 2π) | `2805161` |
+| EOB-10 | a tie kept the turned axis | the first | `2805161` |
+| EOB-11 | the coverage stale | rewritten | `2805161` |
+| EOB-12 | tests uncited | cited, `ellipseFiles.test.ts` | `2805161` |
 
 ## Still open
 

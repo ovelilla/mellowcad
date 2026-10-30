@@ -7,7 +7,7 @@
 > and file, and the transforms' contract with it. Commands: HATCH (H, BH, BHATCH), -HATCH (-H,
 > -BH, -BHATCH), es SOMBREA, -SOMBREA.
 >
-> The full plan is in git: `git show 0ff66b9:docs/plans/hatch-review.md`. It holds the matrices,
+> The full plan is in git: `git show d75557e:docs/plans/hatch-review.md`. It holds the matrices,
 > the findings, decisions HATCH-D1 to D86, the refuted suspicions, and coverage and rules ↔ code.
 
 ## Summary
@@ -55,23 +55,23 @@ and the desktop's history are in `research/probes/hatch/` (gitignored).
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| HOB-01 | imperial ANSI31 the default | 24 acadiso.pat patterns, ANGLE, dots; files before 32 read ANSI31 at scale / 25.4 | `c916632` |
-| HOB-02, HOB-03 | a pattern hatch picked and crossed by its area | by its lines; a SOLID by its area | `c916632` |
-| HOB-04 | MIRROR turned the pattern | angle, origin, scale kept (MIRRHATCH 0) | `c916632` |
-| HOB-05 to HOB-07 | dashed by its linetype; drawn with FILL off; members on an edge | continuous; hidden; left out | `c916632` |
-| HOB-08, HOB-09 | es too-dense words; the cap called HPMAXLINES | the console's words; a safety cap | `c916632` |
-| HOB-13, HOB-14 | one grip; the palette's rows | round centre, vertex and edge grips; AutoCAD's rows | `c916632` |
-| HOB-10 to HOB-12, HOB-15 | a turned UCS's angle, tests, settled coverage, the double-click | Missing, rewritten, settled, Missing | `c916632` |
-| HBD-01, HBD-05 | an area picked twice; a point on an object | refused in AutoCAD's words | `c0cd55d` |
-| HBD-02 | text not an island | box islands, by both routes | `c0cd55d` |
-| HBD-03 | the analysis lines on every pick | once per run, islands when found | `c0cd55d` |
-| HBD-04, HAT-02 | one height traced, the hatch at its boundary's | every height, the hatch at ELEVATION | `c0cd55d` |
-| HBD-07, HBD-08 | typed snaps refused; a bare number refused | honoured; direct distance | `c0cd55d` |
-| HBD-06, HBD-09, HBD-10 | 2023 citations; ellipse and spline; Outer's third loop | 2027 probes; Missing; recorded | `c0cd55d` |
-| HAT-01 | -HATCH unknown | -HATCH, -H, -BH, -BHATCH, BHATCH; es -SOMBREA, -SMB | `0ff66b9` |
-| HAT-16, HAT-17 | Escape by name; no quick preview | as d01 and d02 | `0ff66b9` |
-| HAT-03 to HAT-13 | U of the HP variables, `?`, two points, transparency, Unable to hatch, the Previous set, `_` names, `<%.4f>`, 330°, the listing, es ANSI31 | as the console | `0ff66b9` |
-| HAT-14, HAT-15 | coverage drift; weak tests | fixed; probes cited | `0ff66b9` |
+| HOB-01 | imperial ANSI31 the default | 24 acadiso.pat patterns, ANGLE, dots; files before 32 read ANSI31 at scale / 25.4 | `1896e76` |
+| HOB-02, HOB-03 | a pattern hatch picked and crossed by its area | by its lines; a SOLID by its area | `1896e76` |
+| HOB-04 | MIRROR turned the pattern | angle, origin, scale kept (MIRRHATCH 0) | `1896e76` |
+| HOB-05 to HOB-07 | dashed by its linetype; drawn with FILL off; members on an edge | continuous; hidden; left out | `1896e76` |
+| HOB-08, HOB-09 | es too-dense words; the cap called HPMAXLINES | the console's words; a safety cap | `1896e76` |
+| HOB-13, HOB-14 | one grip; the palette's rows | round centre, vertex and edge grips; AutoCAD's rows | `1896e76` |
+| HOB-10 to HOB-12, HOB-15 | a turned UCS's angle, tests, settled coverage, the double-click | Missing, rewritten, settled, Missing | `1896e76` |
+| HBD-01, HBD-05 | an area picked twice; a point on an object | refused in AutoCAD's words | `e4c26e7` |
+| HBD-02 | text not an island | box islands, by both routes | `e4c26e7` |
+| HBD-03 | the analysis lines on every pick | once per run, islands when found | `e4c26e7` |
+| HBD-04, HAT-02 | one height traced, the hatch at its boundary's | every height, the hatch at ELEVATION | `e4c26e7` |
+| HBD-07, HBD-08 | typed snaps refused; a bare number refused | honoured; direct distance | `e4c26e7` |
+| HBD-06, HBD-09, HBD-10 | 2023 citations; ellipse and spline; Outer's third loop | 2027 probes; Missing; recorded | `e4c26e7` |
+| HAT-01 | -HATCH unknown | -HATCH, -H, -BH, -BHATCH, BHATCH; es -SOMBREA, -SMB | `d75557e` |
+| HAT-16, HAT-17 | Escape by name; no quick preview | as d01 and d02 | `d75557e` |
+| HAT-03 to HAT-13 | U of the HP variables, `?`, two points, transparency, Unable to hatch, the Previous set, `_` names, `<%.4f>`, 330°, the listing, es ANSI31 | as the console | `d75557e` |
+| HAT-14, HAT-15 | coverage drift; weak tests | fixed; probes cited | `d75557e` |
 
 Decisions added in the execution: HATCH-D75 (a mirrored block reference reflects its hatch's
 pattern), D76 (a nameless hatch before version 32 is ANSI31), D77 (the landing's demos name ANSI31

@@ -3,7 +3,7 @@
 > **Status:** done, 2026-10-21 — reviewed and executed in one session with skill `command-review`,
 > the fifth review of `docs/coverage/roadmap.md`'s order. The full plan (matrices, findings,
 > decisions, refuted suspicions, coverage and rules ↔ code) is in git:
-> `git show 5ecf51b:docs/plans/rectang-review.md`.
+> `git show 8d339c6:docs/plans/rectang-review.md`.
 
 ## Summary
 
@@ -38,40 +38,40 @@ the desktop's are `scripts/research/probes/rectang/dsk.sh`. Transcripts and scre
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| REC-01 | a rectangle of no area not made | made, as the console makes it | `a762ca7` |
-| REC-02 | `<a` then a distance towards the cursor | along the angle (shared with Edge) | `a762ca7` |
-| REC-03 | `_TAN`/`_PER` at the first corner refused | from LASTPOINT | `a762ca7` |
-| REC-04 | the ghost in the theme's colour; a line at Pick points | the current colour; none | `a762ca7` |
-| REC-05 | the other corner's box a coordinate | the sides' length and width | `a762ca7` |
-| REC-06 | `RECTANGLE` unknown | an alias, en and es | `a762ca7` |
-| REC-07 | a negative chamfer or fillet taken | `Value must be positive.` | `a762ca7` |
-| REC-08 | a negative side at Area, the other side's sign | the given side's | `a762ca7` |
-| REC-09 | Rotation after Dimensions kept them | drops them | `a762ca7` |
-| REC-10 | the properties read at the end | at the first corner | `a762ca7` |
-| REC-11 | Elevation plus the UCS origin's Z | as typed | `a762ca7` |
-| REC-12 | Enter at Pick points refused | the cursor's point | `a762ca7` |
-| REC-13 | es Area «diferente de cero» | «distinto», an id of its own | `a762ca7` |
-| REC-14 | the Rotation prompt written again after a refusal | Missing (RECTANG-D63) | `a762ca7` |
-| REC-15 | 2023 citations, stale entry lines | cited to 2027 | `a762ca7` |
-| PGN-01 | Enter ended POLYGON | refused in each prompt's words | `c9326d4` |
-| PGN-02 | `_TAN` at the centre and Edge's start refused | from LASTPOINT | `c9326d4` |
-| PGN-03 | the jig white and solid | the current colour, an amber dashed radius | `c9326d4` |
-| PGN-04 | `<a` then a distance at Edge's end | along the angle; the desktop unprobed there | `c9326d4` |
-| PGN-05 | a typed radius's start vertex | AutoCAD's | `c9326d4` |
-| PGN-06 | a radius of 0 or less silent | `Value must be positive and nonzero.` | `c9326d4` |
-| PGN-07 | a zero edge drew nothing | the degenerate polygon | `c9326d4` |
-| PGN-08 | `3.0`, `1e1` taken as a count | refused | `c9326d4` |
-| PGN-09 | Missing's typed point at the radius | it works; tested | `c9326d4` |
-| PGN-10 | 2023 citations, `PG`† | cited to 2027, † gone | `c9326d4` |
-| KEP-01 | three text heights | one TEXTSIZE | `4a30566` |
-| KEP-02 | FILLETRAD, CHAMFERA/B, TEXTSIZE, justification on tools | the document and the file | `4a30566` |
-| KEP-03 | TEXT's Style not current | sets TEXTSTYLE (MTEXT's, ATTDEF's too) | `4a30566` |
-| KEP-04 | Ortho, Snap, Grid session state | the document and the file | `4a30566` |
-| KEP-05 | per-drawing values survived NEW and OPEN | `Tool.onNewDrawing` | `4a30566` |
-| KEP-06 | -MTEXT kept Justify, Rotation, spacing | reset each run | `4a30566` |
-| KEP-07 | U left a command's values | undone with the command | `4a30566` |
-| KEP-08 | the rule on system variables stale | the four storage kinds | `4a30566` |
-| KEP-09 | registry variables unnoted | noted in the coverage | `4a30566` |
+| REC-01 | a rectangle of no area not made | made, as the console makes it | `d26ed04` |
+| REC-02 | `<a` then a distance towards the cursor | along the angle (shared with Edge) | `d26ed04` |
+| REC-03 | `_TAN`/`_PER` at the first corner refused | from LASTPOINT | `d26ed04` |
+| REC-04 | the ghost in the theme's colour; a line at Pick points | the current colour; none | `d26ed04` |
+| REC-05 | the other corner's box a coordinate | the sides' length and width | `d26ed04` |
+| REC-06 | `RECTANGLE` unknown | an alias, en and es | `d26ed04` |
+| REC-07 | a negative chamfer or fillet taken | `Value must be positive.` | `d26ed04` |
+| REC-08 | a negative side at Area, the other side's sign | the given side's | `d26ed04` |
+| REC-09 | Rotation after Dimensions kept them | drops them | `d26ed04` |
+| REC-10 | the properties read at the end | at the first corner | `d26ed04` |
+| REC-11 | Elevation plus the UCS origin's Z | as typed | `d26ed04` |
+| REC-12 | Enter at Pick points refused | the cursor's point | `d26ed04` |
+| REC-13 | es Area «diferente de cero» | «distinto», an id of its own | `d26ed04` |
+| REC-14 | the Rotation prompt written again after a refusal | Missing (RECTANG-D63) | `d26ed04` |
+| REC-15 | 2023 citations, stale entry lines | cited to 2027 | `d26ed04` |
+| PGN-01 | Enter ended POLYGON | refused in each prompt's words | `9a2eda5` |
+| PGN-02 | `_TAN` at the centre and Edge's start refused | from LASTPOINT | `9a2eda5` |
+| PGN-03 | the jig white and solid | the current colour, an amber dashed radius | `9a2eda5` |
+| PGN-04 | `<a` then a distance at Edge's end | along the angle; the desktop unprobed there | `9a2eda5` |
+| PGN-05 | a typed radius's start vertex | AutoCAD's | `9a2eda5` |
+| PGN-06 | a radius of 0 or less silent | `Value must be positive and nonzero.` | `9a2eda5` |
+| PGN-07 | a zero edge drew nothing | the degenerate polygon | `9a2eda5` |
+| PGN-08 | `3.0`, `1e1` taken as a count | refused | `9a2eda5` |
+| PGN-09 | Missing's typed point at the radius | it works; tested | `9a2eda5` |
+| PGN-10 | 2023 citations, `PG`† | cited to 2027, † gone | `9a2eda5` |
+| KEP-01 | three text heights | one TEXTSIZE | `360a1bc` |
+| KEP-02 | FILLETRAD, CHAMFERA/B, TEXTSIZE, justification on tools | the document and the file | `360a1bc` |
+| KEP-03 | TEXT's Style not current | sets TEXTSTYLE (MTEXT's, ATTDEF's too) | `360a1bc` |
+| KEP-04 | Ortho, Snap, Grid session state | the document and the file | `360a1bc` |
+| KEP-05 | per-drawing values survived NEW and OPEN | `Tool.onNewDrawing` | `360a1bc` |
+| KEP-06 | -MTEXT kept Justify, Rotation, spacing | reset each run | `360a1bc` |
+| KEP-07 | U left a command's values | undone with the command | `360a1bc` |
+| KEP-08 | the rule on system variables stale | the four storage kinds | `360a1bc` |
+| KEP-09 | registry variables unnoted | noted in the coverage | `360a1bc` |
 
 ## Still open
 

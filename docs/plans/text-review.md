@@ -7,7 +7,7 @@
 > rows, the in-place editors, and the text style table. Commands: TEXT (DTEXT, DT), MTEXT (T, MT),
 > -MTEXT, TEXTEDIT (ED, DDEDIT), STYLE (ST).
 >
-> The full plan is in git: `git show 4936e05:docs/plans/text-review.md`. It holds the matrices,
+> The full plan is in git: `git show e29ea9b:docs/plans/text-review.md`. It holds the matrices,
 > the findings, decisions TEXT-D1 to D58, the refuted suspicions, and coverage and rules ↔ code.
 
 ## Summary
@@ -64,21 +64,21 @@ in one locale. Run them with `scripts/research/probe.sh text <ids>`. The desktop
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| STY-01, STY-02 | style edits not undoable; the drop-downs N steps | history commands, U names `STYLE`; one step (DIMSTYLE's too) | `b96d772` |
-| STY-03 | names neither unique nor case-blind | refused with the table's words | `b96d772` |
-| STY-04, STY-06, STY-07 | -STYLE, TEXTSTYLE, Annotative, the Text Style dialog | Missing, with their prompts and controls | `b96d772` |
-| STY-05, STY-08, TXT-19 | acad.pgp aliases; `Copy of`; STYLE kept the preselection | DDSTYLE, DST, DIMSTY, DDIM, es ESTILODD, DCOTA; `style1`; dropped | `b96d772` |
-| TXT-01, TXT-03, TXT-09 | Enter at Justify and at an empty start; silent height refusals | refused in the console's words | `95931f7` |
-| TXT-02 | 5/3 line spacing | Arial's 2355/1466 (MTEXT keeps 5/3) | `95931f7` |
-| TXT-04 | continuing across NEW, OPEN and U | per session, read from the document | `95931f7` |
-| TXT-05 to TXT-08 | Current line after Style and `?`, a fixed height, es words | as the console | `95931f7` |
-| TXT-10, TXT-11, TXT-12 | U of the rotation and style; an empty run; mid-command colour | restored; first line commits; start's properties | `95931f7` |
-| TXT-13 to TXT-17 | -TEXT, TEXTODIN, negative rotation, leading spaces, `S` | built; added; normalised; kept; recorded | `95931f7` |
-| TXT-20 to TXT-23 | tests, coverage, Escape in the editor, solid bands | rewritten; drops the line; dashed | `95931f7` |
-| MTX-01 to MTX-13 | Enter at the corner and Width, numbers' zeros, refusals, spacing by a point, declared words, -MTEXT codes and empty run, labels, Escape's Unsaved Changes dialog, aliases | as the console and d05 | `9e563b2` |
-| TED-01 to TED-08, TXT-18 | locked Last, Undo's message, U of the mode, 2027 refusals, silent misses, the double-click (`_textedit`, `_mtedit`), Escape, TEDIT, one preselected text | as the console and d06 | `8611dab` |
-| TXO-01, TXO-02, TXO-04 to TXO-06 | the TEXT box, the baselines, 1466, Middle, the insertion grip | ink metrics, alphabetic baseline, two grips | `97a6d8b` |
-| TXO-03, TXO-07 to TXO-10 | MTEXT by ink (EXP-06), centred width grips, palette rows, MATCHPROP, picking by strokes | laid out by ink; both sides; Text alignment; d08; Missing | `97a6d8b` |
+| STY-01, STY-02 | style edits not undoable; the drop-downs N steps | history commands, U names `STYLE`; one step (DIMSTYLE's too) | `0f091db` |
+| STY-03 | names neither unique nor case-blind | refused with the table's words | `0f091db` |
+| STY-04, STY-06, STY-07 | -STYLE, TEXTSTYLE, Annotative, the Text Style dialog | Missing, with their prompts and controls | `0f091db` |
+| STY-05, STY-08, TXT-19 | acad.pgp aliases; `Copy of`; STYLE kept the preselection | DDSTYLE, DST, DIMSTY, DDIM, es ESTILODD, DCOTA; `style1`; dropped | `0f091db` |
+| TXT-01, TXT-03, TXT-09 | Enter at Justify and at an empty start; silent height refusals | refused in the console's words | `d973c08` |
+| TXT-02 | 5/3 line spacing | Arial's 2355/1466 (MTEXT keeps 5/3) | `d973c08` |
+| TXT-04 | continuing across NEW, OPEN and U | per session, read from the document | `d973c08` |
+| TXT-05 to TXT-08 | Current line after Style and `?`, a fixed height, es words | as the console | `d973c08` |
+| TXT-10, TXT-11, TXT-12 | U of the rotation and style; an empty run; mid-command colour | restored; first line commits; start's properties | `d973c08` |
+| TXT-13 to TXT-17 | -TEXT, TEXTODIN, negative rotation, leading spaces, `S` | built; added; normalised; kept; recorded | `d973c08` |
+| TXT-20 to TXT-23 | tests, coverage, Escape in the editor, solid bands | rewritten; drops the line; dashed | `d973c08` |
+| MTX-01 to MTX-13 | Enter at the corner and Width, numbers' zeros, refusals, spacing by a point, declared words, -MTEXT codes and empty run, labels, Escape's Unsaved Changes dialog, aliases | as the console and d05 | `18883d7` |
+| TED-01 to TED-08, TXT-18 | locked Last, Undo's message, U of the mode, 2027 refusals, silent misses, the double-click (`_textedit`, `_mtedit`), Escape, TEDIT, one preselected text | as the console and d06 | `12a9d13` |
+| TXO-01, TXO-02, TXO-04 to TXO-06 | the TEXT box, the baselines, 1466, Middle, the insertion grip | ink metrics, alphabetic baseline, two grips | `3247adf` |
+| TXO-03, TXO-07 to TXO-10 | MTEXT by ink (EXP-06), centred width grips, palette rows, MATCHPROP, picking by strokes | laid out by ink; both sides; Text alignment; d08; Missing | `3247adf` |
 
 ## Still open
 

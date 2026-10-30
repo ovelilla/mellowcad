@@ -3,7 +3,7 @@
 > **Status:** done, 2026-10-22 — reviewed and executed in one session with skill `command-review`,
 > the fourteenth review of `docs/coverage/roadmap.md`'s order. The full plan (matrices, findings,
 > decisions, refuted suspicions, coverage and rules ↔ code) is in git:
-> `git show a8a20e9:docs/plans/pieces-review.md`.
+> `git show 87f8228:docs/plans/pieces-review.md`.
 
 ## Summary
 
@@ -40,33 +40,33 @@ Console inputs are `scripts/research/probes/pieces/<id>.txt` (`.plain.txt` untra
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| JNG-01 | a polyline's segment lost at an inner vertex, a closed one opened | joins nothing, whole objects only | `5506f98` |
-| JNG-02 | collinear lines into a polyline | the source LINE stretched | `5506f98` |
-| JNG-03 | a polyline's handle and properties lost | the set's first polyline kept | `5506f98` |
-| JNG-04 | arcs of one circle into a polyline or nothing | the source ARC; Convert to circle | `5506f98` |
-| JNG-05 | a window's set read oldest first | newest first, JOIN's only | `5506f98` |
-| JNG-06, JNG-08 | splines, elliptical arcs, tilted planes unsaid | Missing, with probes | `5506f98` |
-| JNG-07 | a false `WHY` of 3D joins | rewritten with p347, p358 | `5506f98` |
-| JNS-01 to JNS-03 | no report, stale citations, the source alone | 2027's reports; cited; Missing | `5506f98` |
-| BRS-01 | Enter at a break point ended BREAK | refused in its words, asked again | `e7acc2d` |
-| BRS-02 | First at the re-asked second point refused | ends BREAK unchanged | `e7acc2d` |
-| BRS-03 | Group, †, 2023 citations | the entry and tests | `e7acc2d` |
-| BRP-01, BRP-02 | locked objects passed over in silence | the locked line, the newest under the box | `e7acc2d` |
-| BRP-03 | typed object snaps refused at `Select object:` | the snapped point is the pick | `e7acc2d` |
-| BRP-04 | a typed pick off the screen finds | Missing (`Select objects:`) | `e7acc2d` |
-| BRP-05 | FILLET's mixed locked find silent | one line per locked object | `e7acc2d` |
-| BRP-06 | the box read relative at a break point | absolute | `e7acc2d` |
-| BRG-01 | tilted and −Z objects refused | polylines cut in their OCS; the rest Missing | `f356c46` |
-| BRG-02, BRG-03 | 2023 citations, untested cells | 2027's probes, tests | `f356c46` |
-| BRJ-01, BRJ-03 | the whole object glowed, the removed piece dashed red | the outcome: kept in the glow, the object faded | `f356c46` |
-| BRJ-02 | a blue rollover | FILLET's, one helper | `f356c46` |
-| EXP-01 | a dimension refused | kept, with a `WHY` and Missing (no SOLID) | `ee7e455` |
-| EXP-02 | hatches refused at the count | a pattern into lines, a SOLID named | `ee7e455` |
-| EXP-03 | an ellipse counted refused | passes, named | `ee7e455` |
-| EXP-04 | MTEXT's texts in the attachment's column | Left at each line's left end | `ee7e455` |
-| EXP-05 | U put the exploded polyline last | back in its place, ERASE's and BLOCK's too | `ee7e455` |
+| JNG-01 | a polyline's segment lost at an inner vertex, a closed one opened | joins nothing, whole objects only | `16bab24` |
+| JNG-02 | collinear lines into a polyline | the source LINE stretched | `16bab24` |
+| JNG-03 | a polyline's handle and properties lost | the set's first polyline kept | `16bab24` |
+| JNG-04 | arcs of one circle into a polyline or nothing | the source ARC; Convert to circle | `16bab24` |
+| JNG-05 | a window's set read oldest first | newest first, JOIN's only | `16bab24` |
+| JNG-06, JNG-08 | splines, elliptical arcs, tilted planes unsaid | Missing, with probes | `16bab24` |
+| JNG-07 | a false `WHY` of 3D joins | rewritten with p347, p358 | `16bab24` |
+| JNS-01 to JNS-03 | no report, stale citations, the source alone | 2027's reports; cited; Missing | `16bab24` |
+| BRS-01 | Enter at a break point ended BREAK | refused in its words, asked again | `53fc309` |
+| BRS-02 | First at the re-asked second point refused | ends BREAK unchanged | `53fc309` |
+| BRS-03 | Group, †, 2023 citations | the entry and tests | `53fc309` |
+| BRP-01, BRP-02 | locked objects passed over in silence | the locked line, the newest under the box | `53fc309` |
+| BRP-03 | typed object snaps refused at `Select object:` | the snapped point is the pick | `53fc309` |
+| BRP-04 | a typed pick off the screen finds | Missing (`Select objects:`) | `53fc309` |
+| BRP-05 | FILLET's mixed locked find silent | one line per locked object | `53fc309` |
+| BRP-06 | the box read relative at a break point | absolute | `53fc309` |
+| BRG-01 | tilted and −Z objects refused | polylines cut in their OCS; the rest Missing | `9fef1bc` |
+| BRG-02, BRG-03 | 2023 citations, untested cells | 2027's probes, tests | `9fef1bc` |
+| BRJ-01, BRJ-03 | the whole object glowed, the removed piece dashed red | the outcome: kept in the glow, the object faded | `9fef1bc` |
+| BRJ-02 | a blue rollover | FILLET's, one helper | `9fef1bc` |
+| EXP-01 | a dimension refused | kept, with a `WHY` and Missing (no SOLID) | `4f06818` |
+| EXP-02 | hatches refused at the count | a pattern into lines, a SOLID named | `4f06818` |
+| EXP-03 | an ellipse counted refused | passes, named | `4f06818` |
+| EXP-04 | MTEXT's texts in the attachment's column | Left at each line's left end | `4f06818` |
+| EXP-05 | U put the exploded polyline last | back in its place, ERASE's and BLOCK's too | `4f06818` |
 | EXP-06 | MTEXT's line positions by the font | the Text review | — |
-| EXP-07, EXP-08 | citations, untested cells, entry | 2027's probes, tests | `ee7e455` |
+| EXP-07, EXP-08 | citations, untested cells, entry | 2027's probes, tests | `4f06818` |
 
 ## Still open
 

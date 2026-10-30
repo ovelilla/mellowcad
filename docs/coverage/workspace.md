@@ -1,7 +1,7 @@
 # Workspace
 
 The research behind these rows and the redesign's — the 2026 help pages by GUID, in English and in
-Spanish — is in `git show 423c37c:docs/next-ui-redesign.md`, §5, and the commit that deleted it.
+Spanish — is in `git show fe31d76:docs/next-ui-redesign.md`, §5, and the commit that deleted it.
 
 ### Status bar
 

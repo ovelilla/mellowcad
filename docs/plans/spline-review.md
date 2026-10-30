@@ -3,7 +3,7 @@
 > **Status:** done, 2026-10-21 — reviewed and executed in one session with skill `command-review`,
 > the seventh review of `docs/coverage/roadmap.md`'s order. The full plan (matrices, findings,
 > decisions, refuted suspicions, coverage and rules ↔ code) is in git:
-> `git show 91f3e97:docs/plans/spline-review.md`.
+> `git show 706956f:docs/plans/spline-review.md`.
 
 ## Summary
 
@@ -18,7 +18,7 @@ TAN/PER from LASTPOINT, the jig's colour and dashed lines and the tangents' DYNM
 are fixed; `<a` at the next point matched; MIRROR's −Z normal does not apply to a spline (p320).
 Evidence: about 200 console probes in es-ES and en-US, a desktop pass in the owner's Spanish profile
 (d00–d10) and two COM-only probes (d11, d12). The review also found why launched desktops opened in
-English: the launcher passed no `/language` (`e6439e5`).
+English: the launcher passed no `/language` (`38bbf8a`).
 
 ## Probes
 
@@ -40,41 +40,41 @@ Console inputs are `scripts/research/probes/spline/<id>.txt` (`.plain.txt` untra
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| SPL-01 | Enter at the first prompt ended SPLINE | refused in its words | `936d9e6` |
-| SPL-02 | Undo to one point went back to `[start Tangency]` | the two-point prompt kept | `936d9e6` |
+| SPL-01 | Enter at the first prompt ended SPLINE | refused in its words | `b9a82bd` |
+| SPL-02 | Undo to one point went back to `[start Tangency]` | the two-point prompt kept | `b9a82bd` |
 | SPL-03 | Enter at the start tangent | refuted (d11) | — |
-| SPL-04 | Degree's `2.5` silent, hidden keywords refused | the range refusal, the keywords | `936d9e6` |
-| SPL-05 | CV's one-point prompt `Invalid point.` | `Point or option keyword required.` | `936d9e6` |
-| SPL-06 | a negative direct distance silent | backwards, as LINE | `936d9e6` |
-| SPL-07 | one Spline on the rail | Spline Fit and Spline CV, the ribbon's macros | `936d9e6` |
-| SPL-08 | 2023's citations | 2027's probes | `936d9e6` |
-| SPL-30 | properties read at the end | fixed at the second point | `936d9e6` |
-| SPL-31 | flattened to the first point's plane | Missing: no 3D NURBS | `936d9e6` |
-| SPL-32 | LASTPOINT the tangent's point | the last fit point | `936d9e6` |
-| SPL-33 | `_TAN` at the end tangent aimed at the point | deferred on circles and arcs | `936d9e6` |
-| SPL-34 | `_TAN`/`_PER` at the first point refused | from LASTPOINT | `936d9e6` |
-| SPL-35 | rows C, D, H untested | tests citing probes | `936d9e6` |
-| SPD-01 | the ghost in the theme's colour | the current colour | `f1d961f` |
-| SPD-02 | no amber dashed line | from the anchor at every point prompt | `f1d961f` |
-| SPD-03 | the tangents' box a coordinate | a length and an angle | `f1d961f` |
-| SPD-04 | the CV frame solid | finely dashed, drawing and selected | `f1d961f` |
-| SOB-01 | Bessel's free ends | natural ends | `16788d9` |
-| SOB-02 | a tangent's length dropped | the derivative as stored; file version 29 | `16788d9` |
-| SOB-03 | a closed CV's degree n − 1 | n | `16788d9` |
-| SOB-04 | a closed CV's start | AutoCAD's | `16788d9` |
-| SOB-05 | Midpoint refused on a closed spline | halfway from the start | `16788d9` |
-| SOB-06 | dashes from the start | centred over the length | `16788d9` |
-| SOB-07 | a self-crossing spline's net area | the loops' sum | `16788d9` |
-| SOB-08 | measures on chords | quadrature; AutoCAD's length overestimates (p332) | `16788d9` |
-| SOB-09 | Nearest off the curve | on it | `16788d9` |
-| SOB-10 | Intersection on chords | refined | `16788d9` |
-| SOB-11 | EXPLODE's count | `Cannot explode SPLINE` | `16788d9` |
-| SOB-12 | the coverage stale | rewritten | `16788d9` |
-| SOB-13 | tests pinning our curve | AutoCAD's values, `splines.test.ts`, `splineFiles.test.ts` | `16788d9` |
-| SOB-14 | a closed fit spline's tangent branch | kept for files | `16788d9` |
-| SOB-15 | SCALE's stored tangent | the curve kept per parameterization | `16788d9` |
-| SOB-16 | one Misc group in the palette | Data Points and Misc, the current point editable | `16788d9` |
-| SOB-17 | square CV grips | round | `16788d9` |
+| SPL-04 | Degree's `2.5` silent, hidden keywords refused | the range refusal, the keywords | `b9a82bd` |
+| SPL-05 | CV's one-point prompt `Invalid point.` | `Point or option keyword required.` | `b9a82bd` |
+| SPL-06 | a negative direct distance silent | backwards, as LINE | `b9a82bd` |
+| SPL-07 | one Spline on the rail | Spline Fit and Spline CV, the ribbon's macros | `b9a82bd` |
+| SPL-08 | 2023's citations | 2027's probes | `b9a82bd` |
+| SPL-30 | properties read at the end | fixed at the second point | `b9a82bd` |
+| SPL-31 | flattened to the first point's plane | Missing: no 3D NURBS | `b9a82bd` |
+| SPL-32 | LASTPOINT the tangent's point | the last fit point | `b9a82bd` |
+| SPL-33 | `_TAN` at the end tangent aimed at the point | deferred on circles and arcs | `b9a82bd` |
+| SPL-34 | `_TAN`/`_PER` at the first point refused | from LASTPOINT | `b9a82bd` |
+| SPL-35 | rows C, D, H untested | tests citing probes | `b9a82bd` |
+| SPD-01 | the ghost in the theme's colour | the current colour | `bc5ec49` |
+| SPD-02 | no amber dashed line | from the anchor at every point prompt | `bc5ec49` |
+| SPD-03 | the tangents' box a coordinate | a length and an angle | `bc5ec49` |
+| SPD-04 | the CV frame solid | finely dashed, drawing and selected | `bc5ec49` |
+| SOB-01 | Bessel's free ends | natural ends | `4ab4b2c` |
+| SOB-02 | a tangent's length dropped | the derivative as stored; file version 29 | `4ab4b2c` |
+| SOB-03 | a closed CV's degree n − 1 | n | `4ab4b2c` |
+| SOB-04 | a closed CV's start | AutoCAD's | `4ab4b2c` |
+| SOB-05 | Midpoint refused on a closed spline | halfway from the start | `4ab4b2c` |
+| SOB-06 | dashes from the start | centred over the length | `4ab4b2c` |
+| SOB-07 | a self-crossing spline's net area | the loops' sum | `4ab4b2c` |
+| SOB-08 | measures on chords | quadrature; AutoCAD's length overestimates (p332) | `4ab4b2c` |
+| SOB-09 | Nearest off the curve | on it | `4ab4b2c` |
+| SOB-10 | Intersection on chords | refined | `4ab4b2c` |
+| SOB-11 | EXPLODE's count | `Cannot explode SPLINE` | `4ab4b2c` |
+| SOB-12 | the coverage stale | rewritten | `4ab4b2c` |
+| SOB-13 | tests pinning our curve | AutoCAD's values, `splines.test.ts`, `splineFiles.test.ts` | `4ab4b2c` |
+| SOB-14 | a closed fit spline's tangent branch | kept for files | `4ab4b2c` |
+| SOB-15 | SCALE's stored tangent | the curve kept per parameterization | `4ab4b2c` |
+| SOB-16 | one Misc group in the palette | Data Points and Misc, the current point editable | `4ab4b2c` |
+| SOB-17 | square CV grips | round | `4ab4b2c` |
 
 ## Still open
 

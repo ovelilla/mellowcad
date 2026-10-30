@@ -4,7 +4,7 @@
 > lo de fuera espera el sí del dueño; las demás, sin ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
 > análisis completo, con el inventario medido, las fuentes fechadas, el spike y el pase adversarial,
 > está en https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama
-> local worktree-agent-a498997d3f29c107f (commit b1c7923), sin empujar.
+> local worktree-agent-a498997d3f29c107f (commit 9bc6682), sin empujar.
 
 ## 1. Objetivo
 
@@ -75,7 +75,7 @@ Cada una con su porqué; el análisis tiene las fuentes.
 Cada fase se publica sola, con el gate en verde y producción desplegando como hoy. Las estimaciones
 son días de sesión.
 
-1. **El motor, paquete del workspace** — **hecha** (4172113, afb6e62, 13d6d5a; su regla es
+1. **El motor, paquete del workspace** — **hecha** (d8bdad3, 95abf9b, e048eae; su regla es
    `.claude/rules/engine-package.md`). 1–2 días, sin dependencias. Antes, recortar `AGENTS.md`
    (10.210 B con un tope de 10 KB: 30 B de margen). Adoptar el spike: workspaces en `package.json`,
    el package.json propio de `cad/` (privado), los imports `@/cad` por `@mellowcad/engine`,
@@ -84,8 +84,8 @@ son días de sesión.
    ESLint, Prettier y la cobertura, y build + publint + attw en `.githooks/pre-commit`. Actualizar
    lo que queda falso: `cad/README.md` (columna «Today»), `.claude/rules/cad-engine.md`, `ui.md`,
    `i18n.md`, `marketing.md`, y una regla de empaquetado donde quepa en el presupuesto.
-2. **La superficie pública del motor** — **hecha** (bf89978, deb9e72, bf1a8c0, 464bf3a, 52025e0,
-   8f72e70): 141 nombres en el barrel, `cad/api.md`, `cad/size.test.ts`,
+2. **La superficie pública del motor** — **hecha** (911117f, 2382c5d, 59c0ec5, 81d41c5, 3816c90,
+   39c5d2c): 141 nombres en el barrel, `cad/api.md`, `cad/size.test.ts`,
    `npm run check:hosts -w cad`. 3–4 días, tras la 1. Defaults seguros. Barrel recortado (642
    exports; 65 se usan fuera de `cad/`). Un informe de API con firmas completas, no solo nombres (las
    piezas llaman a 96 de los 132 métodos de `CadEngine`), como test de instantánea. Presupuestos de
@@ -93,7 +93,7 @@ son días de sesión.
    hoy en 270 KB gz. `CadDriver` deja de importar el `en.json` crudo (68 KB) y usa una lista de ids
    generada. Un check previo a publicar que instala el tarball en anfitriones ajenos.
 3. **Desacoplar el editor del sitio, en su sitio** — 6–9 días en cuatro entregas, tras la 1.
-   (a) **Hecha** (61b75e3, b0ddb5a, 7c673de): `CadWorkspace` recibe del anfitrión `mark` y
+   (a) **Hecha** (e7e7725, cca5e90, 4815cf5): `CadWorkspace` recibe del anfitrión `mark` y
    `languages` (la página los calcula en el servidor con `languageLinks`), `layoutStorage` (sin
    clave no se guarda nada; el sitio pasa las de hoy desde `lib/site.ts`, congeladas por
    `lib/site.test.ts`; el script de cabecera es `paletteLayoutScript(key)`) y `sheet`, el id y el
@@ -104,7 +104,7 @@ son días de sesión.
    variante `palette-open`, los tokens de `app/[locale]/(app)/globals.css` y los portales a
    `body` (c); la lógica de §2 (d). `components/ui/`, `lib/utils.ts`, las dos libs de layout y
    `hooks/useCadEngine.ts` ya son del editor: viajan con él en la fase 4.
-   (b) **Hecha** (56ad55f, a5dfe4f, 43351c8): el catálogo del editor vive en
+   (b) **Hecha** (1149321, e054052, 6265cb2): el catálogo del editor vive en
    components/cad/locales/ (`<tag>.json` sin la raíz `Editor`; `npm run locales` escribe
    `<tag>.ts` compilado con icu-minify y `values.ts`, los argumentos de cada mensaje tipados desde
    el inglés). Los 23 componentes lo leen con `useEditorText` (components/cad/editor-text.tsx,
@@ -119,7 +119,7 @@ son días de sesión.
    de un JSON, como en el motor), su entrada `./locales/<tag>` en `exports`, y el test de
    components/cad/locales/ viaja con él (los dos checks del sitio, uno por idioma enrutado y
    completo si es `live`, se quedan en `i18n/messages.test.ts`).
-   (c) **Hecha** (4e3d4ab, ac2a700, 4f0a36b): la raíz del editor es un `<div>` con
+   (c) **Hecha** (a6cf84d, 3f956bd, f2fb934): la raíz del editor es un `<div>` con
    `data-mellowcad-editor` (`EDITOR_ROOT_ATTRIBUTE`, lib/editor-root.ts), `lang` y `dir`, que
    lleva el `<main>` y, detrás, el nodo donde montan los 19 portales de Base UI
    (`usePortalContainer`; ESLint falla en un `Portal` sin `container`). Los tokens, el
@@ -129,7 +129,7 @@ son días de sesión.
    un token del editor en `:root`. El script de cabecera escribe `data-palette` y
    `--palette-width` en la raíz con un `MutationObserver` mientras se parsea, y `palette-open` los
    lee allí: el editor ya no escribe en `<html>` ni en `<body>`. Medido en producción contra
-   8d00796 (Chrome, /draw, /es/draw, /ar/draw a 1920 y 1280; en reposo, cada pestaña, el menú de
+   d35e983 (Chrome, /draw, /es/draw, /ar/draw a 1920 y 1280; en reposo, cada pestaña, el menú de
    aplicación, un menú y un popover de la barra de estado, un tooltip): las 42 capturas iguales
    píxel a píxel salvo el ruido de la barra de desplazamiento del panel (también entre dos
    ejecuciones del antes), los mismos estilos computados en cada texto y popup, y el mismo apilado
@@ -143,7 +143,7 @@ son días de sesión.
    paquete los acota o los prefija), la parte de página de `globals.css` (`color-scheme` y fondo de
    `body`, el tiempo de la transición) se queda en el sitio, y `data-mellowcad-editor` pasa a ser
    API (el script y el CSS del anfitrión lo nombran).
-   (d) **Hecha** (6570edf, 4ce5027, 3c3c985, efb5787, d1de717, 49bec9b, 921f55f, e36269a): la
+   (d) **Hecha** (436078e, bbad125, 2893587, 29450d0, 60e3c70, b2a781c, 9073173, dd5607e): la
    lógica de §2 es del motor, con sus tests en el harness. La vista previa de grosor llama a
    `lineweightPixels`; `LENGTH_PRECISIONS` (las precisiones de LUPREC, que fijan también su rango
    en el motor), `POLAR_ANGLE_MENU`, `EngineState.coordinates` (el texto de la barra de estado con
@@ -161,7 +161,7 @@ son días de sesión.
    (`viewCubePick`, `compassPick`, `viewCubeDrag`, `submitCommandLine`, `completeCommandLine`,
    `recallCommand`, `setCommandHistoryOpen`, `runUndoMacro`, `commitDynamicInput`,
    `cancelDynamicInput`, `cycleSnap`, `dynamicOptionKey`; `navigate` pierde ZOOM). Medido en el
-   navegador contra 4c1a5f2, en /draw, /es/draw y /ar/draw: las coordenadas, las teclas de los dos
+   navegador contra 3a077d2, en /draw, /es/draw y /ar/draw: las coordenadas, las teclas de los dos
    campos, los menús de Zoom y Polar, los grosores y las precisiones dan lo mismo, y las 18
    capturas son iguales píxel a píxel; solo cambia el cubo, como se buscaba (3 px es un clic; un
    arrastre de 12 px gira lo de 7). Lo que hereda la fase 4: los hooks de react se quedan en el
@@ -171,8 +171,8 @@ son días de sesión.
    estado y la paleta, y el desplazamiento del cuadro respecto al cursor. Hallado (el aspecto no
    debía cambiar) y arreglado después: en /ar/draw las etiquetas de Polar no eran una isla LTR y
    se leían `...360 ,270 ,180 ,90`.
-4. **Los paquetes React** — **hecha** (5c0a6f3..3c0cc78). 4–6 días en seis entregas, tras la 2 y la 3. El sitio los consume desde
-   el fuente, como al motor. Medido antes de empezar, en a6d96d0:
+4. **Los paquetes React** — **hecha** (ad46dfb..a4711fd). 4–6 días en seis entregas, tras la 2 y la 3. El sitio los consume desde
+   el fuente, como al motor. Medido antes de empezar, en 8f0b84d:
    - **Lo que cruza.** El editor toma de los hooks `useCadEngine`, `useEngineSelector` y
      `EditorState` (22 módulos, 20 solo el tipo) y 43 nombres del motor; los hooks, `CadEngine`,
      `DrawingStore`, `EngineLocale` y `EngineState`. El sitio toma del editor `CadWorkspace` (con
@@ -201,7 +201,7 @@ son días de sesión.
      lib/type-scale.test.ts y lib/control-size.test.ts sí fallan, con ENOENT.
 
    Las entregas:
-   (a) **Hecha** (5c0a6f3, 2cc4a58, 5c8e792): **`@mellowcad/react`, el paquete**. packages/react
+   (a) **Hecha** (ad46dfb, e5af535, 864f339): **`@mellowcad/react`, el paquete**. packages/react
    lleva `useCadEngine`, `useEngineSelector`, `EditorState` y `UseCadEngineOptions` (motor y React
    19 como peers); el sitio lo importa por su nombre desde el fuente (`paths`, alias de Vitest). Su
    build es el del motor sin catálogos, sin React Compiler (los hooks fijan sus identidades a mano,
@@ -216,14 +216,14 @@ son días de sesión.
    del de conocimiento (más packages/, y sus workspaces expandidos); `test/packages.test.ts` sujeta
    cada paquete de packages/ a su nombre y sus `exports` desde fuera (relativo, `@/` o profundo
    fallan, probado). La regla de empaquetado habla de los paquetes. Medido en producción contra
-   a6d96d0 (Chrome, /draw, /es/draw y /ar/draw a 1920 y 1280; en reposo, el menú de aplicación, el
+   8f0b84d (Chrome, /draw, /es/draw y /ar/draw a 1920 y 1280; en reposo, el menú de aplicación, el
    de referencias, un tooltip de la paleta de herramientas y la pestaña Capas a 1920): las 30
    capturas iguales píxel a píxel y el DOM del editor idéntico; el JS de /draw pesa lo mismo
    (597.144 B gz) y su CSS es el mismo byte a byte. Lo que hereda la (b): las piezas del cableado
    siguen en sus componentes; el `check:hosts` de react espera a los ejemplos (fase 5); las reglas
    de ESLint de `components/**` (literales, `Portal`, `type="number"`) y los checks de tipo, tamaño
    y RTL siguen nombrando components/, para la (c).
-   (b) **Hecha** (caf2922, 6e5b86f, 380afec): **el cableado del DOM**. `<CadCanvas>` pinta el
+   (b) **Hecha** (1671ee6, add3a3a, 12d379d): **el cableado del DOM**. `<CadCanvas>` pinta el
    `<canvas>` con los atributos del anfitrión, construye el motor al montarse con sus opciones
    (leídas una vez: `store`, `scope`, `locale`, `paletteOpen`), lo entrega con
    `onEngine(engine)` y lo libera al desmontarse (`onEngine(null)`); el estado del chrome es
@@ -239,12 +239,12 @@ son días de sesión.
    la suelta y el puntero perdido). Se prueban en Node sin jsdom: `test/renderHook.ts` hace un
    render con el renderizador de servidor y los manejadores reciben eventos hechos a mano; lo que
    corre un efecto es una función aparte (`takeFocus`, `mountEngine`). `api.md`: ocho nombres
-   (eran cuatro). Medido en producción contra ad4745f (Chrome, /draw, /es/draw y /ar/draw; en
+   (eran cuatro). Medido en producción contra 5de813d (Chrome, /draw, /es/draw y /ar/draw; en
    reposo a 1920 y 1280, y a 1920 escribir en la línea de comandos, Espacio como Intro, la entrada
    dinámica tomando el foco, una longitud, Tab al ángulo, Command+Z, el cubo con hover, un clic
    bajo el umbral, un arrastre y uno que sale de su caja, el orden de Tab desde el body, y el
    cursor de un párrafo de MTEXT): 34 de 36 capturas iguales píxel a píxel y las otras dos con 3
-   px en un dígito de las coordenadas, como dos ejecuciones de ad4745f entre sí; el foco, la
+   px en un dígito de las coordenadas, como dos ejecuciones de 5de813d entre sí; el foco, la
    selección y los valores, iguales tras cada paso; el DOM del editor, el mismo salvo el orden de
    tres atributos del `<input>` de la línea de comandos. El JS de /draw sube 0,6 KB gz, su CSS y
    la landing no cambian. Lo que hereda la (c): los componentes importan los hooks de
@@ -254,7 +254,7 @@ son días de sesión.
    llamada al motor (el asa de anchura de la paleta con su captura, las flechas de `DecimalInput`,
    las teclas de los menús), y viaja con él; `test/renderHook.ts` sirve también a los tests del
    paquete del editor; el `check:hosts` de react sigue esperando a los ejemplos (fase 5).
-   (c) **Hecha** (7d640c8, 5d00637, fb88bea): **`@mellowcad/editor`, en su sitio**. components/cad,
+   (c) **Hecha** (1481b09, 0fd4050, 49c0100): **`@mellowcad/editor`, en su sitio**. components/cad,
    components/ui y las libs editor-root, palette-layout y status-bar-layout pasan con `git mv` a
    `packages/editor/src` (el catálogo en `locales/`, los primitivos en `ui/`), con sus tests y los
    de tamaño, tipo y `cn`; el historial los sigue. `lib/utils.ts` y `components/ui/direction.tsx`
@@ -275,7 +275,7 @@ son días de sesión.
    packages/editor (sin eso la cifra de la landing bajaba de 4.400 a 4.300); los alias de
    `components.json` apuntan al editor; el `tailwindStylesheet` de Prettier ya lo alcanzaba
    (probado). Las reglas siguen a los ficheros; el p90 de reglas por fichero sigue en 46,7 KB.
-   Medido en producción contra 4789e77 (Chrome; la landing en /, /es, /ar, /privacy y
+   Medido en producción contra 8e30619 (Chrome; la landing en /, /es, /ar, /privacy y
    /ar/privacy a 1440, página entera; /draw, /es/draw y /ar/draw a 1920 y 1280 en reposo y, a
    1920, el menú de aplicación, el selector de capas, un tooltip de la paleta, los menús de
    referencias y de Polar, Personalización, la pestaña Capas y LINE con la entrada dinámica): las
@@ -292,7 +292,7 @@ son días de sesión.
    `class-variance-authority` ya solo lo usa el editor y sigue también en la raíz. Para la (e),
    `globals.css` sigue en el sitio, y `editor-root.test.ts` y `palette-layout.test.ts` lo leen por
    ruta relativa, como la `css` de `components.json`.
-   (d) **Hecha** (64ffb89, 85cb157, d797783): **el build del editor**. Medido antes en 8513570
+   (d) **Hecha** (9538649, ae3fac2, c76e614): **el build del editor**. Medido antes en 59a89df
    con el tsconfig del build: 87 errores de `isolatedDeclarations`, todos mecánicos (51 TS9007:
    los componentes y los envoltorios de `ui/` devuelven `ReactElement`, `| null` los cuatro que
    pueden no pintar nada, y `cn`, `string`; 36 TS9010: los 33 glifos son `LucideIcon`, `Select`
@@ -316,7 +316,7 @@ son días de sesión.
    fallar. Dependencias: solo entra `@rolldown/plugin-babel` (código publicado leído, sin
    scripts, firmas verificadas); lo demás ya estaba en el árbol. El paso de paquetes del hook
    pasa de 3,9 s a 7,8 s (el build del editor, 2,5 s, 1,9 de ellos Babel; su check, 1,2) y el
-   hook entero, en reposo, de ~52 s a ~55 s. Medido en producción contra 8513570: los 18
+   hook entero, en reposo, de ~52 s a ~55 s. Medido en producción contra 59a89df: los 18
    ficheros de JS y CSS de `.next/static` iguales en nombre y bytes, y las 14 páginas
    prerenderizadas (/, /draw, /es/draw, /ar/draw entre ellas) iguales salvo el build id. Lo que
    hereda la (e): `dist` no lleva CSS (sus clases las compila el sitio desde `globals.css`), así
@@ -327,7 +327,7 @@ son días de sesión.
    piezas de la (f). El `check:hosts` del editor espera a los ejemplos (fase 5), como el de
    react; la próxima revisión de dependencias toma tsdown 0.23.3 y el plugin 0.3.0 juntos en los
    tres paquetes.
-   (e) **Hecha** (7ed735c, 8e7026b, d47988a): **el CSS precompilado**. Medido antes en 01cbe55:
+   (e) **Hecha** (6e428d3, 7c1ec3f, 8aa9dd6): **el CSS precompilado**. Medido antes en 6df803f:
    Tailwind 4.3.3 deja fuera de la raíz la capa `theme` (14 variables en `:root, :host`), 37 reglas
    de preflight, la capa `properties` (`--shimmer-angle` en `:root, :host` y el respaldo de
    `@property` en `*`) y las 3 reglas del sitio; el CSS de /draw es todo del editor salvo esas 3,
@@ -353,7 +353,7 @@ son días de sesión.
    escribe en línea (`--active`, las variables de los posicionadores de Base UI): `--font-sans` y
    `--font-mono` (probado: sin `reference`, desaparecen). Dependencias: ninguna nueva; las
    devDependencies del editor nombran lo que su build usa, ya en el árbol. Medido en producción
-   contra 01cbe55: tras la mudanza, los 38 ficheros de `.next/static` iguales en nombre y bytes;
+   contra 6df803f: tras la mudanza, los 38 ficheros de `.next/static` iguales en nombre y bytes;
    al final solo cambia el CSS de /draw, sin las dos declaraciones de fuente (−140 B, −19 B gz),
    y las páginas prerenderizadas son iguales salvo el build id y el nombre de ese CSS. En Chrome,
    /draw, /es/draw y /ar/draw a 1920 y 1280, en reposo y con el menú de aplicación: los 7.522
@@ -370,8 +370,8 @@ son días de sesión.
    propio preflight para `html` y `body` (el margen del body, la cadena de alturas) y compilar
    sus clases (`size-5`, `antialiased`, `font-sans`); las utilidades sueltas desaparecen. El
    `check:hosts` del editor (fase 5) debería importar la hoja desde el tarball en Vite y en Next.
-   (f) **Hecha** (2e44b39, ce9237e, 3c0cc78): **las piezas una a una y `<CadEditor>` con
-   huecos**. Medido antes en 25e8f2f: `CadWorkspace` compone nueve piezas que reciben solo
+   (f) **Hecha** (38284c5, efc75d1, a4711fd): **las piezas una a una y `<CadEditor>` con
+   huecos**. Medido antes en c6e91e5: `CadWorkspace` compone nueve piezas que reciben solo
    `{ engine, state }` (la barra superior, además, `mark` y `languages`; la de estado, su clave;
    la entrada dinámica, una etiqueta del catálogo heredada de cuando la landing la incrustaba) y
    siete internas: los menús contextual, de referencias y de ciclo de selección, los tres
@@ -399,7 +399,7 @@ son días de sesión.
    (d): `ButtonVariantProps` sale de las claves de un objeto de variantes que Oxc sí infiere;
    `mark` es `ReactNode` importado; y el informe nombra un parámetro desestructurado por su tipo
    (`cadEditorProps: CadEditorProps`), no por el patrón (`cad/api.md` cambia en `recordDemo`).
-   Dependencias: ninguna. Medido en producción contra 25e8f2f: los 18 ficheros de JS y CSS de
+   Dependencias: ninguna. Medido en producción contra c6e91e5: los 18 ficheros de JS y CSS de
    `.next/static` iguales salvo el chunk del editor de /draw (+355 B, +120 B gz); el CSS, igual
    byte a byte; las páginas de /draw, iguales salvo el build id, ese chunk y la referencia de
    cliente (`CadEditor`); la landing cambia solo la cifra de tests, que redondea hacia abajo a la
@@ -411,7 +411,7 @@ son días de sesión.
    `ViewCube`, 65,2; solo `StatusBar`, 77,0: el barril más grande no arrastra lo que no se
    importa. La cobertura de líneas baja de 96,1 % a 93,1 % sin bajar de los umbrales: el test
    carga por primera vez los componentes del editor y v8 cuenta lo que se carga.
-5. **Ejemplos y documentación** — **hecha** (7007d4d, 37f7c79, 52e22ac, 0d8d7dc). Medido antes:
+5. **Ejemplos y documentación** — **hecha** (6fabbcf, 190b653, 983aea7, 104f5a0). Medido antes:
    el `check:hosts` del motor tardaba ~11 s con la caché de npm caliente (empaqueta, instala el
    tarball con `typescript` y `vite` exactos en un `/tmp`, sin el `.npmrc` del repo). Lo hecho:
    `examples/` fuera de los workspaces (Vite, su plugin y Next no entran en el lockfile), con tres
@@ -461,7 +461,7 @@ son días de sesión.
    cancelaba un autoguardado pendiente (350 ms de debounce) y `CadEngine` no lo vaciaba al cerrar la
    página; ahora lo escriben `dispose()`, `pagehide` y `visibilitychange`. Dependencias: solo `@vitejs/plugin-react`
    6.1.2, en el ejemplo (una dependencia, sin scripts de instalación, código leído). Medido en
-   producción contra fe02de1, cada build en un worktree limpio: los 38 ficheros de `.next/static`
+   producción contra 65989c0, cada build en un worktree limpio: los 38 ficheros de `.next/static`
    iguales en nombre y bytes, sus manifiestos iguales, y las páginas prerenderizadas (HTML y RSC,
    / y /draw en los tres idiomas entre ellas) iguales salvo el build id. Hallado (la landing no debía
    cambiar) y arreglado después: la figura de OTRACK se grababa en el prerender esperando
@@ -472,8 +472,8 @@ son días de sesión.
    fallan el test en cuanto Changesets cambie una versión, así que la versión los mueve con ella;
    «not published yet» sale de los tres READMEs; `check:hosts` necesita red, y el del editor
    también Google Fonts (next/font).
-6. **Publicar el motor 0.1.0** — la parte local, **hecha** (279fd84, 19446e0, f11dfa6, 23e5dad,
-   a83d5bc y el de la 0.1.0). Métricas de texto: todas de Arimo salvo la escala de AutoCAD
+6. **Publicar el motor 0.1.0** — la parte local, **hecha** (1fe18c6, 9203e5d, 6abb2b2, b16c114,
+   0e80709 y el de la 0.1.0). Métricas de texto: todas de Arimo salvo la escala de AutoCAD
    (H = 1466, p301); Arimo tiene las anchuras y la línea de Arial pero no sus contornos (su H mide
    1409), así que la tinta se aparta un poco de la de AutoCAD (82 tests, con los valores de AutoCAD
    al lado). En producción, solo cambian el chunk del motor, una línea de la brida de la landing (la

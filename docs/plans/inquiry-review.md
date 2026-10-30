@@ -8,7 +8,7 @@
 > (hatch/p320) and of a block reference with attributes (Blocks review), and the circle review's
 > COB-03 (AREA Object refusing a typed point).
 >
-> The full plan is in git: `git show 8b95316:docs/plans/inquiry-review.md`. It holds the
+> The full plan is in git: `git show ef71200:docs/plans/inquiry-review.md`. It holds the
 > matrices, the findings, decisions INQUIRY-D1 to D44, the refuted suspicions, and coverage and
 > rules ↔ code.
 
@@ -55,25 +55,25 @@ Transcripts and screenshots are in `research/probes/inquiry/` (gitignored).
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| IDP-01 | `-0.0000` | zero written unsigned in `formatLength` | `d9de70d` |
-| IDP-02 | ID kept the preselection | dropped as it starts | `d9de70d` |
-| INQ-01 | `'_AREA` refused | variables found by `_NAME` | `d9de70d` |
-| INQ-03 | AREA Object's highlight `THEME.selected` | the rollover (confirmed by d08-1) | `d9de70d` |
-| INQ-04 | the rail's ID ended the running command | apostrophe macros run transparently | `d9de70d` |
-| INQ-06 to INQ-08 | a dead `"d"` hint; 2023 citations; tests citing nothing | dropped; 2027 probes cited | `d9de70d` |
-| DST-01, DST-02 | Multiple's `@`, number and Length from the run's end; Undo moved LASTPOINT | LASTPOINT, as the console | `65a7baa` |
-| DST-03, DST-04 | the first Length along the UCS's X; a number ignored Ortho | the last drawn direction, else east; Ortho bends it | `65a7baa` |
-| DST-05, DST-07, DST-08 | MEASUREGEOM, DISTANCE unsaid; stale Missing items | Missing gains them, loses AUPREC and the Spanish report | `65a7baa` |
-| DST-06 | Length `0` added a point | none added | `65a7baa` |
-| ARE-01, ARE-04, ARE-06 | Object refused typed points and snaps, skipped locked objects, left LASTPOINT | as the console; COB-03 closed | `f36ebf7` |
-| ARE-02, ARE-03 | eXit and Enter's total; the AREA variable after a mode | said after a measure only; the running total | `f36ebf7` |
-| ARE-05, ARE-07 | corners off the plane; PERIMETER | Missing | `f36ebf7` |
-| ARE-08, ARE-10, ARE-12 | the wide polyline's warning; `'AREA` in a mode; stale citations | table 20179; through `onAskAgain`; 2027 probes | `f36ebf7` |
-| IQD-01 | the readout chip, ticks and dashed band | the solid rubber band alone | `de3b1df` |
-| IQD-02 | AREA unfilled | `THEME.measureAreaFill`, AutoCAD's translucent green | `de3b1df` |
-| IQD-03 | Multiple's total on the chip | the dynamic prompt's lead line (`Tool.dynamicPromptLead`) | `de3b1df` |
-| IQD-04 | Escape at Length and Arc's sub-prompts ended DIST | steps back, `*Cancel*` on the line left (`Tool.onEscape`) | `de3b1df` |
-| IQD-05 | no `?` cursor badge | Missing, with drafting-aids.md's cursor badges | `de3b1df` |
+| IDP-01 | `-0.0000` | zero written unsigned in `formatLength` | `8ad35c7` |
+| IDP-02 | ID kept the preselection | dropped as it starts | `8ad35c7` |
+| INQ-01 | `'_AREA` refused | variables found by `_NAME` | `8ad35c7` |
+| INQ-03 | AREA Object's highlight `THEME.selected` | the rollover (confirmed by d08-1) | `8ad35c7` |
+| INQ-04 | the rail's ID ended the running command | apostrophe macros run transparently | `8ad35c7` |
+| INQ-06 to INQ-08 | a dead `"d"` hint; 2023 citations; tests citing nothing | dropped; 2027 probes cited | `8ad35c7` |
+| DST-01, DST-02 | Multiple's `@`, number and Length from the run's end; Undo moved LASTPOINT | LASTPOINT, as the console | `3942b70` |
+| DST-03, DST-04 | the first Length along the UCS's X; a number ignored Ortho | the last drawn direction, else east; Ortho bends it | `3942b70` |
+| DST-05, DST-07, DST-08 | MEASUREGEOM, DISTANCE unsaid; stale Missing items | Missing gains them, loses AUPREC and the Spanish report | `3942b70` |
+| DST-06 | Length `0` added a point | none added | `3942b70` |
+| ARE-01, ARE-04, ARE-06 | Object refused typed points and snaps, skipped locked objects, left LASTPOINT | as the console; COB-03 closed | `8c90d21` |
+| ARE-02, ARE-03 | eXit and Enter's total; the AREA variable after a mode | said after a measure only; the running total | `8c90d21` |
+| ARE-05, ARE-07 | corners off the plane; PERIMETER | Missing | `8c90d21` |
+| ARE-08, ARE-10, ARE-12 | the wide polyline's warning; `'AREA` in a mode; stale citations | table 20179; through `onAskAgain`; 2027 probes | `8c90d21` |
+| IQD-01 | the readout chip, ticks and dashed band | the solid rubber band alone | `8e285ec` |
+| IQD-02 | AREA unfilled | `THEME.measureAreaFill`, AutoCAD's translucent green | `8e285ec` |
+| IQD-03 | Multiple's total on the chip | the dynamic prompt's lead line (`Tool.dynamicPromptLead`) | `8e285ec` |
+| IQD-04 | Escape at Length and Arc's sub-prompts ended DIST | steps back, `*Cancel*` on the line left (`Tool.onEscape`) | `8e285ec` |
+| IQD-05 | no `?` cursor badge | Missing, with drafting-aids.md's cursor badges | `8e285ec` |
 
 Decisions added or changed in the execution:
 

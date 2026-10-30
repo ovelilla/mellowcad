@@ -3,7 +3,7 @@
 > **Status:** done, 2026-10-22 — reviewed and executed in one session with skill `command-review`,
 > the ninth review of `docs/coverage/roadmap.md`'s order. The full plan (matrices, findings,
 > decisions, refuted suspicions, coverage and rules ↔ code) is in git:
-> `git show fbe4b7b:docs/plans/move-review.md`.
+> `git show ecdd8c9:docs/plans/move-review.md`.
 
 ## Summary
 
@@ -39,29 +39,29 @@ folder. Transcripts and screenshots are in `research/probes/move/` (gitignored).
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| STP-01 | U after a command that changed nothing took back the one before | every run is a step U names, but a view left alone and UNDO, MREDO | `96d6dee` |
-| PLC-01 | a number at `Specify displacement` refused | from the UCS origin towards the cursor | `891606c` |
-| PLC-02 | LASTPOINT not the origin at `Specify displacement` | set there as it opens; `@` reads from it | `891606c` |
-| PLC-03 | no snap, no pick at `Specify displacement` | a point prompt | `891606c` |
-| PLC-04 | `<a` refused there | `Angle Override:` | `891606c` |
-| PLC-05 | a placement by nothing skipped | COPY duplicates in place; MOVE's run is STP-01's step | `891606c` |
-| PLC-06 | a blue dashed ghost | the set as itself, amber rubber band, MOVE's originals faded | `891606c` |
-| PLC-07 | the tooltip's relative point echoed without `@` | echoed with it | `891606c` |
-| PLC-08 | the rule's partial hook list | a pointer to the JSDoc | `891606c` |
-| PLC-09 | 2023 and missing citations | 2027 probes cited | `891606c` |
-| PLC-10 | paths holding untested | under test | `891606c` |
-| MOV-01 | `D`† | verified | `b1937bd` |
-| MOV-02 | LASTPOINT after a number at MOVE's second point | the destination (STRETCH's too) | `b1937bd` |
-| MOV-03 | STRETCH's ellipse clauses in MOVE's entry | moved | `b1937bd` |
-| CPY-01 | Enter at COPY's first second point kept asking | copies by the base and ends | `ffd0b0a` |
-| CPY-02 | the last copy's Undo silent | `Command has been completely undone.` | `ffd0b0a` |
-| CPY-03 | copies in selection order | drawing order | `ffd0b0a` |
-| CPY-04 | `Invalid point.` at COPY's first second point | Array's keyword refusal while Array is missing | `ffd0b0a` |
-| CPY-05 | `CP`, `DUP`† | verified | `b1937bd` |
-| DRG-01 | a dragged selection stayed selected | dropped | `d81c553` |
-| DRG-02 | its U named nothing | `DROPGEOM GROUP` | `d81c553` |
-| DRG-03 | dashed, blue, with grips | as itself, originals faded | `d81c553` |
-| DRG-04 | the drag not in the coverage | recorded | `d81c553` |
+| STP-01 | U after a command that changed nothing took back the one before | every run is a step U names, but a view left alone and UNDO, MREDO | `289afa8` |
+| PLC-01 | a number at `Specify displacement` refused | from the UCS origin towards the cursor | `877b4d4` |
+| PLC-02 | LASTPOINT not the origin at `Specify displacement` | set there as it opens; `@` reads from it | `877b4d4` |
+| PLC-03 | no snap, no pick at `Specify displacement` | a point prompt | `877b4d4` |
+| PLC-04 | `<a` refused there | `Angle Override:` | `877b4d4` |
+| PLC-05 | a placement by nothing skipped | COPY duplicates in place; MOVE's run is STP-01's step | `877b4d4` |
+| PLC-06 | a blue dashed ghost | the set as itself, amber rubber band, MOVE's originals faded | `877b4d4` |
+| PLC-07 | the tooltip's relative point echoed without `@` | echoed with it | `877b4d4` |
+| PLC-08 | the rule's partial hook list | a pointer to the JSDoc | `877b4d4` |
+| PLC-09 | 2023 and missing citations | 2027 probes cited | `877b4d4` |
+| PLC-10 | paths holding untested | under test | `877b4d4` |
+| MOV-01 | `D`† | verified | `4368a3c` |
+| MOV-02 | LASTPOINT after a number at MOVE's second point | the destination (STRETCH's too) | `4368a3c` |
+| MOV-03 | STRETCH's ellipse clauses in MOVE's entry | moved | `4368a3c` |
+| CPY-01 | Enter at COPY's first second point kept asking | copies by the base and ends | `80fe49d` |
+| CPY-02 | the last copy's Undo silent | `Command has been completely undone.` | `80fe49d` |
+| CPY-03 | copies in selection order | drawing order | `80fe49d` |
+| CPY-04 | `Invalid point.` at COPY's first second point | Array's keyword refusal while Array is missing | `80fe49d` |
+| CPY-05 | `CP`, `DUP`† | verified | `4368a3c` |
+| DRG-01 | a dragged selection stayed selected | dropped | `06614fa` |
+| DRG-02 | its U named nothing | `DROPGEOM GROUP` | `06614fa` |
+| DRG-03 | dashed, blue, with grips | as itself, originals faded | `06614fa` |
+| DRG-04 | the drag not in the coverage | recorded | `06614fa` |
 
 ## Still open
 

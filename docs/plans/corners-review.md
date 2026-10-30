@@ -3,7 +3,7 @@
 > **Status:** done, 2026-10-22 — reviewed and executed in one session with skill `command-review`,
 > the thirteenth review of `docs/coverage/roadmap.md`'s order. The full plan (matrices, findings,
 > decisions, refuted suspicions, coverage and rules ↔ code) is in git:
-> `git show 4c8dc12:docs/plans/corners-review.md`.
+> `git show 8220990:docs/plans/corners-review.md`.
 
 ## Summary
 
@@ -38,30 +38,30 @@ Console inputs are `scripts/research/probes/corners/<id>.txt` (`.plain.txt` untr
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| CRS-01 | a negative radius or distance taken | `Value must be positive.`, asked again | `4c8dc12` |
-| CRS-02 | the second distance's default after Enter | CHAMFERB, the first only when typed | `4c8dc12` |
-| CRS-03 | Undo after 'LTSCALE kept the fillet | back to the step's history depth | `4c8dc12` |
-| CRS-04 | Spanish `R` opened the radius | Trim hidden, `R` is Recortar | `4c8dc12` |
-| CRS-05, CRS-06 | CHAMFER's Polyline listing; stale †, marks, 2023 wording | the entries | `4c8dc12` |
-| CRS-07 | 2023 citations of the command line | 2027's probes | `4c8dc12` |
-| CRS-08 | TRIM's message after `Regenerating model.` | before it, as trim/p164 | `4c8dc12` |
-| CRP-01 | typed object snaps refused at the object prompts | the snapped point is the pick | `4b837ac` |
-| CRP-02 | a locked object picked in silence | `The object is on a locked layer.` | `4b837ac` |
-| CRP-03 | a mode's locked find edited | never taken by a single object's pick | `4b837ac` |
-| CRG-01 | the first line's thickness, no lineweight | the second object's lineweight and thickness | `7b94487` |
-| CRG-02 | Polyline's short corners all dropped | cut in turn | `7b94487` |
-| CRG-03 | an open polyline's ends of three diverged | closed where they cross before its start | `7b94487` |
-| CRG-04 | an arc–arc vertex rounded on the other side | towards the chords' turn (p362–p365) | `7b94487` |
-| CRG-05 | `1 was divergent` | no such count | `7b94487` |
-| CRG-06 | text, MTEXT, hatch, block, dimension in silence | the console's refusals per prompt | `7b94487` |
-| CRG-07 | ellipses and splines ignored | CHAMFER's refusal, FILLET's `Unable to fillet curves.`; the rest Missing | `7b94487` |
-| CRG-08 | a fillet under −Z written at −Z | at +Z | `7b94487` |
-| CRG-09 | the geometry's marks, citations, two weak tests | 2027's probes | `7b94487` |
-| CRJ-01 | a ghost of three strokes over the originals | the result in the glow, the originals dimmed | `e2b515c` |
-| CRJ-02 | the rollover on a polyline whole | the segment taken | `e2b515c` |
-| CRJ-04 | Polyline's prompt showed the polyline | every corner previewed | `e2b515c` |
-| CRJ-05 | a refused pair showed both highlighted | the circle-and-slash | `e2b515c` |
-| CRJ-03 | a locked object's rollover | refuted: the scratch test never locked the layer; tests kept | `e2b515c` |
+| CRS-01 | a negative radius or distance taken | `Value must be positive.`, asked again | `8220990` |
+| CRS-02 | the second distance's default after Enter | CHAMFERB, the first only when typed | `8220990` |
+| CRS-03 | Undo after 'LTSCALE kept the fillet | back to the step's history depth | `8220990` |
+| CRS-04 | Spanish `R` opened the radius | Trim hidden, `R` is Recortar | `8220990` |
+| CRS-05, CRS-06 | CHAMFER's Polyline listing; stale †, marks, 2023 wording | the entries | `8220990` |
+| CRS-07 | 2023 citations of the command line | 2027's probes | `8220990` |
+| CRS-08 | TRIM's message after `Regenerating model.` | before it, as trim/p164 | `8220990` |
+| CRP-01 | typed object snaps refused at the object prompts | the snapped point is the pick | `4f5e307` |
+| CRP-02 | a locked object picked in silence | `The object is on a locked layer.` | `4f5e307` |
+| CRP-03 | a mode's locked find edited | never taken by a single object's pick | `4f5e307` |
+| CRG-01 | the first line's thickness, no lineweight | the second object's lineweight and thickness | `dc13439` |
+| CRG-02 | Polyline's short corners all dropped | cut in turn | `dc13439` |
+| CRG-03 | an open polyline's ends of three diverged | closed where they cross before its start | `dc13439` |
+| CRG-04 | an arc–arc vertex rounded on the other side | towards the chords' turn (p362–p365) | `dc13439` |
+| CRG-05 | `1 was divergent` | no such count | `dc13439` |
+| CRG-06 | text, MTEXT, hatch, block, dimension in silence | the console's refusals per prompt | `dc13439` |
+| CRG-07 | ellipses and splines ignored | CHAMFER's refusal, FILLET's `Unable to fillet curves.`; the rest Missing | `dc13439` |
+| CRG-08 | a fillet under −Z written at −Z | at +Z | `dc13439` |
+| CRG-09 | the geometry's marks, citations, two weak tests | 2027's probes | `dc13439` |
+| CRJ-01 | a ghost of three strokes over the originals | the result in the glow, the originals dimmed | `4b0cf13` |
+| CRJ-02 | the rollover on a polyline whole | the segment taken | `4b0cf13` |
+| CRJ-04 | Polyline's prompt showed the polyline | every corner previewed | `4b0cf13` |
+| CRJ-05 | a refused pair showed both highlighted | the circle-and-slash | `4b0cf13` |
+| CRJ-03 | a locked object's rollover | refuted: the scratch test never locked the layer; tests kept | `4b0cf13` |
 
 ## Still open
 

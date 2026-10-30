@@ -106,7 +106,8 @@ and what each option does must be the ones they already know.
   avoided.
 - **Commit when the gate passes; never push unasked.** A push to `main` deploys to production on
   Vercel, so it waits for the owner's word. Commits are `feat(engine): …`, `fix(engine): …`,
-  `docs: …`; a multi-line message goes through `git commit -F - <<'EOF'`.
+  `docs: …`, with no `Co-Authored-By` trailer; a multi-line message goes through
+  `git commit -F - <<'EOF'`.
 - **Verify tool behaviour with the Vitest harness** (`test/harness.ts`), not a browser, which is
   only for what the harness cannot see (skill `browser-verify`).
 - **Comments**: only non-obvious _why_ — fidelity rationale, workarounds, ordering constraints,

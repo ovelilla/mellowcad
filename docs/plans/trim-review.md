@@ -3,7 +3,7 @@
 > **Status:** done, 2026-10-22 — reviewed and executed in one session with skill `command-review`,
 > the twelfth review of `docs/coverage/roadmap.md`'s order. The full plan (matrices, findings,
 > decisions, refuted suspicions, coverage and rules ↔ code) is in git:
-> `git show 03f17b3:docs/plans/trim-review.md`.
+> `git show 8bc8c89:docs/plans/trim-review.md`.
 
 ## Summary
 
@@ -41,31 +41,31 @@ Console inputs are `scripts/research/probes/trim/<id>.txt` (`.plain.txt` untrace
 
 | Id | What it was | Outcome | Commit |
 | --- | --- | --- | --- |
-| TMI-01 | MIRRTEXT 0 at right angles read otherwise | one antipodal half-plane, (−90°, 90°] | `2547cf6` |
-| TRS-01 | Quick's first Enter ended the command | taken once, Undo listed | `c6dad81` |
-| TRS-02 | a preselection dropped | the only edges, `1 found` | `c6dad81` |
-| TRS-03 | Undo with nothing taken in silence | refused in the prompt's words | `c6dad81` |
-| TRS-04, TRP-05 | answers that change nothing did not list Undo | listed, its message said | `c6dad81` |
-| TRS-05 | EXTEND's Expects line without mOde | the declared list but its last | `c6dad81` |
-| TRS-06 | Edge's `No extend` | declared `Noextend` (es `No`) | `c6dad81` |
-| TRS-07 | Undo after 'LTSCALE kept the trim | back to the step's history depth | `c6dad81` |
-| TRS-08 | the † on RR, AL; 2023 citations | 2027's probes | `c6dad81` |
-| TRP-04 | an empty implied fence was a step | only edits are | `c6dad81` |
-| TRP-01 | typed overrides refused at the object prompt | the snapped point is the pick | `5d3b71b` |
-| TRP-02 | the nearer of two objects taken | the newest, every pick | `5d3b71b` |
-| TRP-03 | a locked object passed over in silence | `1 was on a locked layer.` | `5d3b71b` |
-| TRP-07, EDG-01 | 2023 citations; mOde at a full `Select objects:` | 2027's; `*Invalid*` | `5d3b71b` |
-| TRG-01 | arc segments read as chords | read as arcs | `3758a37` |
-| TRG-02 | blocks and text no edge | edges; an attribute definition is not (p413) | `3758a37` |
-| TRG-03 | normal −Z neither trimmed nor an edge | level for TRIM and EXTEND | `3758a37` |
-| TRG-04, TRG-05 | text, MTEXT, blocks, hatches, dimensions in silence | AutoCAD's refusals; a dimension deleted by Quick | `3758a37` |
-| TRG-06 | a perpendicular object silent, what it crossed deleted | both messages, kept | `3758a37` |
-| TRG-07 | EXTEND ignored its own polyline | grows to its other segments | `3758a37` |
-| TRG-08, TRG-09 | EXTEND's Spanish for closed curves; 2023 citations | table 54; 2027's probes | `3758a37` |
-| TRJ-01 | a red dashed ghost over a repainted object | the piece faded in place | `3800c7b` |
-| TRJ-02 | the extension's added piece dashed | the object whole in the selection's glow | `3800c7b` |
-| TRJ-03 | a fence or window previewed nothing | its trims faded as it runs | `3800c7b` |
-| TRJ-04 | no cursor badge | the ✕ and the circle-and-slash | `3800c7b` |
+| TMI-01 | MIRRTEXT 0 at right angles read otherwise | one antipodal half-plane, (−90°, 90°] | `d0a4e91` |
+| TRS-01 | Quick's first Enter ended the command | taken once, Undo listed | `ce7e58d` |
+| TRS-02 | a preselection dropped | the only edges, `1 found` | `ce7e58d` |
+| TRS-03 | Undo with nothing taken in silence | refused in the prompt's words | `ce7e58d` |
+| TRS-04, TRP-05 | answers that change nothing did not list Undo | listed, its message said | `ce7e58d` |
+| TRS-05 | EXTEND's Expects line without mOde | the declared list but its last | `ce7e58d` |
+| TRS-06 | Edge's `No extend` | declared `Noextend` (es `No`) | `ce7e58d` |
+| TRS-07 | Undo after 'LTSCALE kept the trim | back to the step's history depth | `ce7e58d` |
+| TRS-08 | the † on RR, AL; 2023 citations | 2027's probes | `ce7e58d` |
+| TRP-04 | an empty implied fence was a step | only edits are | `ce7e58d` |
+| TRP-01 | typed overrides refused at the object prompt | the snapped point is the pick | `c1da926` |
+| TRP-02 | the nearer of two objects taken | the newest, every pick | `c1da926` |
+| TRP-03 | a locked object passed over in silence | `1 was on a locked layer.` | `c1da926` |
+| TRP-07, EDG-01 | 2023 citations; mOde at a full `Select objects:` | 2027's; `*Invalid*` | `c1da926` |
+| TRG-01 | arc segments read as chords | read as arcs | `64f28ef` |
+| TRG-02 | blocks and text no edge | edges; an attribute definition is not (p413) | `64f28ef` |
+| TRG-03 | normal −Z neither trimmed nor an edge | level for TRIM and EXTEND | `64f28ef` |
+| TRG-04, TRG-05 | text, MTEXT, blocks, hatches, dimensions in silence | AutoCAD's refusals; a dimension deleted by Quick | `64f28ef` |
+| TRG-06 | a perpendicular object silent, what it crossed deleted | both messages, kept | `64f28ef` |
+| TRG-07 | EXTEND ignored its own polyline | grows to its other segments | `64f28ef` |
+| TRG-08, TRG-09 | EXTEND's Spanish for closed curves; 2023 citations | table 54; 2027's probes | `64f28ef` |
+| TRJ-01 | a red dashed ghost over a repainted object | the piece faded in place | `0b7855b` |
+| TRJ-02 | the extension's added piece dashed | the object whole in the selection's glow | `0b7855b` |
+| TRJ-03 | a fence or window previewed nothing | its trims faded as it runs | `0b7855b` |
+| TRJ-04 | no cursor badge | the ✕ and the circle-and-slash | `0b7855b` |
 
 ## Still open
 
