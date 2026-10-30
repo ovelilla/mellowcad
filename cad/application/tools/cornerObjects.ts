@@ -165,6 +165,10 @@ export function typeRefusal(
       return again(
         fillet ? "filletRequiresNotDimensions" : "chamferRequiresNotDimensions"
       )
+    // Picked first or second, the same words (3dpoly/p26, table 20635;
+    // CHAMFER's by that table, unprobed).
+    case "polyline3d":
+      return again(fillet ? "filletNot3dPolyline" : "chamferNot3dPolyline")
     default:
       return null
   }
@@ -503,6 +507,7 @@ function middleOf(entity: Entity): Vec2 | null {
     case "ellipse":
     case "spline":
     case "polyline":
+    case "polyline3d":
     case "text":
     case "mtext":
     case "attdef":

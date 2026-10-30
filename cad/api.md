@@ -730,7 +730,7 @@ export declare class EngineText {
 }
 
 export type { Entity }
-export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity;
+export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity;
 
 export type { EntityColor }
 export type EntityColor = string;
@@ -742,10 +742,10 @@ export type { EntityId }
 export type EntityId = string;
 
 export type { EntityProperty }
-export type EntityProperty = "startX" | "startY" | "endX" | "endY" | "radius" | "diameter" | "circumference" | "area" | "majorRadius" | "minorRadius" | "radiusRatio" | "centerX" | "centerY" | "startAngle" | "endAngle" | "totalAngle" | "positionX" | "positionY" | "textHeight" | "rotation" | "definedWidth" | "lineSpaceFactor" | "lineSpaceDistance" | "dimensionRotation" | "dimensionTextRotation" | "textPositionX" | "textPositionY" | "dimensionText" | "patternScale" | "patternAngle" | "originX" | "originY" | "insertScaleX" | "insertScaleY" | "vertex" | "vertexX" | "vertexY" | "startSegmentWidth" | "endSegmentWidth" | "globalWidth" | "closed" | "arrayColumns" | "arrayColumnSpacing" | "arrayRows" | "arrayRowSpacing" | "arrayRowElevation" | "arrayClockwise" | "arrayItems" | "arrayAngleBetween" | "arrayFillAngle" | "arrayRotateItems" | "arrayMethod" | "arrayItemSpacing" | "arrayAlignItems" | ZProperty;
+export type EntityProperty = "startX" | "startY" | "endX" | "endY" | "radius" | "diameter" | "circumference" | "area" | "majorRadius" | "minorRadius" | "radiusRatio" | "centerX" | "centerY" | "startAngle" | "endAngle" | "totalAngle" | "positionX" | "positionY" | "textHeight" | "rotation" | "definedWidth" | "lineSpaceFactor" | "lineSpaceDistance" | "dimensionRotation" | "dimensionTextRotation" | "textPositionX" | "textPositionY" | "dimensionText" | "patternScale" | "patternAngle" | "originX" | "originY" | "insertScaleX" | "insertScaleY" | "vertex" | "vertexX" | "vertexY" | "vertexZ" | "startSegmentWidth" | "endSegmentWidth" | "globalWidth" | "closed" | "arrayColumns" | "arrayColumnSpacing" | "arrayRows" | "arrayRowSpacing" | "arrayRowElevation" | "arrayClockwise" | "arrayItems" | "arrayAngleBetween" | "arrayFillAngle" | "arrayRotateItems" | "arrayMethod" | "arrayItemSpacing" | "arrayAlignItems" | ZProperty;
 
 export type { EntityType }
-export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert";
+export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert";
 
 export { extendLocale }
 export declare function extendLocale(base: EngineLocale, overrides: LocaleOverrides): EngineLocale;
@@ -1620,6 +1620,13 @@ export interface PolarArray {
     readonly clockwise: boolean;
     readonly rotate: boolean;
     readonly sourceBase?: Vec2;
+}
+
+// domain/entityTypes.ts
+export interface Polyline3dEntity extends BaseEntity {
+    readonly type: "polyline3d";
+    readonly vertices: readonly Vec3[];
+    readonly closed: boolean;
 }
 
 // domain/entityTypes.ts

@@ -15,6 +15,7 @@ import {
   ArcEntity,
   PolylineEntity,
   PolylineWidth,
+  Polyline3dEntity,
   HatchLoop,
   HatchEntity,
   BlockId,
@@ -101,6 +102,22 @@ export function createPolyline(
     closed,
     ...(normalized ? { bulges: normalized } : {}),
     ...(wide ? { widths: wide } : {}),
+  }
+}
+
+/** A 2D point is at Z 0: the tool gives each its Z (ELEVATION, 3dpoly/p04). */
+export function createPolyline3d(
+  vertices: readonly (Vec2 | Vec3)[],
+  closed: boolean = false,
+  layerId: LayerId = DEFAULT_LAYER_ID,
+  id: EntityId = nextEntityId()
+): Polyline3dEntity {
+  return {
+    id,
+    type: "polyline3d",
+    layerId,
+    vertices: vertices.map((v) => ({ x: v.x, y: v.y, z: zOf(v) })),
+    closed,
   }
 }
 

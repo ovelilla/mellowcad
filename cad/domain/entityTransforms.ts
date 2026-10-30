@@ -23,6 +23,7 @@ import {
   InsertEntity,
   LineEntity,
   PolylineWidth,
+  Polyline3dEntity,
   Entity,
 } from "./entityTypes"
 import {
@@ -30,6 +31,7 @@ import {
   createCircle,
   createArc,
   createPolyline,
+  createPolyline3d,
   HatchOptions,
   createHatch,
   InsertOptions,
@@ -291,6 +293,11 @@ function translatePlanar(entity: Entity, delta: Vec2): Entity {
         ...entity,
         vertices: entity.vertices.map((v) => V.add(v, delta)),
       }
+    case "polyline3d":
+      return {
+        ...entity,
+        vertices: entity.vertices.map((v) => ({ ...V.add(v, delta), z: v.z })),
+      }
     case "text":
     case "mtext":
     case "attdef":
@@ -329,7 +336,8 @@ function translatePlanar(entity: Entity, delta: Vec2): Entity {
  *
  * A Z in `delta` moves what moves whole, and a line's caught end; an object
  * with several vertices in one plane cannot tilt, so caught in part it ignores
- * the Z, as a polyline's vertices all share one elevation.
+ * the Z, as a polyline's vertices all share one elevation; a 3D polyline's
+ * caught vertices take it.
  */
 export function stretchEntity(
   entity: Entity,
@@ -363,6 +371,16 @@ export function stretchEntity(
         (entity.deltaZ ?? 0) + endDz - startDz
       )
     }
+    case "polyline3d":
+      // Its vertices hold their own Z, so each caught one rises (3dpoly/p19).
+      return {
+        ...planar,
+        vertices: planar.vertices.map((v, i) =>
+          entity.type === "polyline3d" && inFrame(entity.vertices[i])
+            ? { ...v, z: v.z + dz }
+            : v
+        ),
+      }
     case "circle":
     case "ellipse":
     case "text":
@@ -387,6 +405,7 @@ function stretchVertices(entity: Entity): readonly Vec2[] {
     case "arc":
       return [arcStartPoint(entity), arcEndPoint(entity)]
     case "polyline":
+    case "polyline3d":
       return entity.vertices
     case "spline":
       return entity.points
@@ -432,6 +451,7 @@ function stretchAnchors(entity: Entity): readonly Vec2[] {
     case "line":
     case "arc":
     case "polyline":
+    case "polyline3d":
     case "spline":
     case "dimension":
     case "hatch":
@@ -483,6 +503,13 @@ function stretchPlanar(
       })
       return { ...entity, vertices, ...(bulges ? { bulges } : {}) }
     }
+    case "polyline3d":
+      return {
+        ...entity,
+        vertices: entity.vertices.map((v) =>
+          inFrame(v) ? { ...V.add(v, delta), z: v.z } : v
+        ),
+      }
     case "text":
     case "mtext":
     case "attdef":
@@ -616,6 +643,12 @@ export function copyEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
         )
       case "spline":
         return splineCopy(entity, (p) => V.add(p, delta))
+      case "polyline3d":
+        return createPolyline3d(
+          planarVertices3d(entity, (v) => V.add(v, delta)).vertices,
+          entity.closed,
+          entity.layerId
+        )
       case "polyline":
         return createPolyline(
           entity.vertices.map((v) => V.add(v, delta)),
@@ -704,6 +737,8 @@ function rotateFlat(entity: Entity, pivot: Vec2, radians: number): Entity {
       }
     case "spline":
       return mapSplinePoints(entity, (p) => rotatePoint(p, pivot, radians))
+    case "polyline3d":
+      return planarVertices3d(entity, (v) => rotatePoint(v, pivot, radians))
     case "polyline":
       return {
         ...entity,
@@ -791,6 +826,13 @@ export function rotateEntityCopy(
         )
       case "spline":
         return splineCopy(entity, (p) => rotatePoint(p, pivot, radians))
+      case "polyline3d":
+        return createPolyline3d(
+          planarVertices3d(entity, (v) => rotatePoint(v, pivot, radians))
+            .vertices,
+          entity.closed,
+          entity.layerId
+        )
       case "polyline":
         return createPolyline(
           entity.vertices.map((v) => rotatePoint(v, pivot, radians)),
@@ -914,6 +956,8 @@ function scalePlanar(entity: Entity, base: Vec2, factor: number): Entity {
       }
     case "spline":
       return mapSplinePoints(entity, (p) => scalePoint(p, base, factor))
+    case "polyline3d":
+      return planarVertices3d(entity, (v) => scalePoint(v, base, factor))
     case "polyline":
       return {
         ...entity,
@@ -1002,6 +1046,12 @@ export function scaleEntityCopy(
         )
       case "spline":
         return splineCopy(entity, (p) => scalePoint(p, base, factor))
+      case "polyline3d":
+        return createPolyline3d(
+          planarVertices3d(entity, (v) => scalePoint(v, base, factor)).vertices,
+          entity.closed,
+          entity.layerId
+        )
       case "polyline":
         return createPolyline(
           entity.vertices.map((v) => scalePoint(v, base, factor)),
@@ -1129,6 +1179,8 @@ function mirrorFlat(
     }
     case "spline":
       return mapSplinePoints(entity, (p) => mirrorPoint(p, a, b))
+    case "polyline3d":
+      return planarVertices3d(entity, (v) => mirrorPoint(v, a, b))
     case "polyline":
       return {
         ...entity,
@@ -1349,6 +1401,12 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
         )
       case "spline":
         return splineCopy(entity, (p) => mirrorPoint(p, a, b))
+      case "polyline3d":
+        return createPolyline3d(
+          planarVertices3d(entity, (v) => mirrorPoint(v, a, b)).vertices,
+          entity.closed,
+          entity.layerId
+        )
       case "polyline":
         return createPolyline(
           entity.vertices.map((v) => mirrorPoint(v, a, b)),
@@ -1515,6 +1573,12 @@ export function transformEntity(entity: Entity, map: Similarity3): Entity {
       line = { ...line, thickness: entity.thickness * map.scale }
     return withNormal(line, normal)
   }
+  if (entity.type === "polyline3d") {
+    return {
+      ...entity,
+      vertices: entity.vertices.map((v) => apply(v)),
+    }
+  }
   const from = entityAxes(entity)
   const to = arbitraryAxis(normal) ?? from
   const alongX = worldToAxes(to, axesToWorld(map.rotation, from.x))
@@ -1547,7 +1611,11 @@ const NO_SHIFT: Vec3 = { x: 0, y: 0, z: 0 }
 export function entityInOcs(entity: Entity, normal: Vec3): Entity {
   const axes = arbitraryAxis(normal)
   if (!axes) return entity
-  if (entity.type !== "line" && facesAlong(entity, axes.z)) {
+  if (
+    entity.type !== "line" &&
+    entity.type !== "polyline3d" &&
+    facesAlong(entity, axes.z)
+  ) {
     return withNormal(entity, { x: 0, y: 0, z: 1 })
   }
   return transformEntity(entity, {
@@ -1561,7 +1629,11 @@ export function entityInOcs(entity: Entity, normal: Vec3): Entity {
 export function entityFromOcs(entity: Entity, normal: Vec3): Entity {
   const axes = arbitraryAxis(normal)
   if (!axes) return entity
-  if (entity.type !== "line" && !isTilted(entity)) {
+  if (
+    entity.type !== "line" &&
+    entity.type !== "polyline3d" &&
+    !isTilted(entity)
+  ) {
     return withNormal(entity, axes.z)
   }
   return transformEntity(entity, {
@@ -1569,6 +1641,17 @@ export function entityFromOcs(entity: Entity, normal: Vec3): Entity {
     scale: 1,
     translation: NO_SHIFT,
   })
+}
+
+/** A 3D polyline whose vertices `map` moves in plan, each keeping its Z. */
+function planarVertices3d(
+  entity: Polyline3dEntity,
+  map: (point: Vec2) => Vec2
+): Polyline3dEntity {
+  return {
+    ...entity,
+    vertices: entity.vertices.map((v) => ({ ...map(v), z: v.z })),
+  }
 }
 
 /** A transformed object as a new one: a fresh id, everything else kept. */

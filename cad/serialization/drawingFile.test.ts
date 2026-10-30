@@ -497,6 +497,7 @@ describe("round trip", () => {
       ellipse: true,
       spline: true,
       polyline: true,
+      polyline3d: true,
       text: true,
       mtext: true,
       attdef: true,

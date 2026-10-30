@@ -8,6 +8,7 @@ export const ar: EngineLocale = {
       "select": "تحديد",
       "line": "خط",
       "polyline": "خط متعدد",
+      "polyline3d": "خط متعدد ثلاثي الأبعاد",
       "circle": "دائرة",
       "circlediameter": "دائرة بالقطر",
       "circle2p": "دائرة بنقطتين",
@@ -243,6 +244,17 @@ export const ar: EngineLocale = {
           }
         ]
       ],
+      "polyline3d": [
+        [
+          "count",
+          2,
+          {
+            "one": "خط متعدد ثلاثي الأبعاد",
+            "two": "خطان متعددان ثلاثيا الأبعاد",
+            "other": "خطوط متعددة ثلاثية الأبعاد"
+          }
+        ]
+      ],
       "text": [
         [
           "count",
@@ -447,6 +459,8 @@ export const ar: EngineLocale = {
         "type": "النوع",
         "vertexX": "الرأس X",
         "vertexY": "الرأس Y",
+        "vertexZ": "الرأس Z",
+        "fitSmooth": "ملاءمة/تنعيم",
         "firstX": "النقطة الأولى X",
         "firstY": "النقطة الأولى Y",
         "secondX": "النقطة الثانية X",
@@ -534,6 +548,7 @@ export const ar: EngineLocale = {
         "yes": "نعم",
         "no": "لا",
         "none": "—",
+        "fitNone": "لا شيء",
         "atLeast": "على الأقل",
         "exactly": "بالضبط",
         "fitPoints": "ملاءمة",

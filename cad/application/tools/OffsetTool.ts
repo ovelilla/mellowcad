@@ -929,6 +929,7 @@ function entityAsGeom(entity: Entity): OffsetGeom | null {
     case "attdef":
     case "ellipse":
     case "spline":
+    case "polyline3d":
     case "dimension":
     case "hatch":
     case "insert":
@@ -941,7 +942,9 @@ function entityAsGeom(entity: Entity): OffsetGeom | null {
  * offset that object.` (TEXT, MTEXT, INSERT, DIMENSION, HATCH: probes
  * offset/p201–p205); or never takes it. AutoCAD offsets an ellipse or a
  * spline into a spline (p196–p198), which is not built: a refusal there would
- * be false, so neither is even picked (OFFSET-D11).
+ * be false, so neither is even picked (OFFSET-D11). A 3D polyline the
+ * console takes and passes over in silence, the prompt asked again
+ * (3dpoly/p09): not picked either.
  */
 function offsetKind(entity: Entity): "offsets" | "refused" | "notPicked" {
   switch (entity.type) {
@@ -959,6 +962,7 @@ function offsetKind(entity: Entity): "offsets" | "refused" | "notPicked" {
       return "refused"
     case "ellipse":
     case "spline":
+    case "polyline3d":
       return "notPicked"
   }
 }
@@ -1036,6 +1040,7 @@ function computeOffset(
       return polylineCopies(offsetPolyline(source, distance, side))
     case "ellipse":
     case "spline":
+    case "polyline3d":
     case "text":
     case "mtext":
     case "attdef":
@@ -1116,6 +1121,7 @@ function computeThrough(source: Entity, point: Vec2): OffsetResult {
     }
     case "ellipse":
     case "spline":
+    case "polyline3d":
     case "text":
     case "mtext":
     case "attdef":

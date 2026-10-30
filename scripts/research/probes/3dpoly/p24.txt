@@ -1,0 +1,9 @@
+_3DPOLY
+0,0,0
+10,0,5
+10,10,3
+
+_ARC
+
+5,5
+(getvar "LASTPOINT")

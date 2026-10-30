@@ -439,6 +439,7 @@ function measuredCircle(entity: Entity, at: Vec2): MeasuredCircle | null {
     case "line":
     case "ellipse":
     case "spline":
+    case "polyline3d":
     case "text":
     case "mtext":
     case "attdef":

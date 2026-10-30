@@ -185,7 +185,8 @@ one.
 
 ## Z and the normal
 
-Every object but a line keeps its points in the **OCS of its normal** (`domain/elevation.ts`).
+Every object but a line and a 3D polyline keeps its points in the **OCS of its normal**
+(`domain/elevation.ts`).
 `normal`, `elevation`, `deltaZ` and `thickness` are optional, absent means +Z or 0, and the default
 is never stored (`withNormal`, `withElevation`), so a flat drawing's file is unchanged.
 
@@ -205,7 +206,11 @@ source.id)` alone is the bug: it drops colour, linetype, lineweight and Z.
   two lines in a tilted plane are `linesPlaneNormal`.
 - **An entity's points are planar; the Z lives only in its fields.** Factories copy `{ x, y }` and
   a spread writing a picked point takes `planar(point)`. `entityZAt` is the one reader of an
-  object's Z at a point in plan.
+  object's Z at a point in plan. **The exception is a 3D polyline** (`domain/polylines3d.ts`):
+  its vertices are WCS `Vec3`s and it has no plane — `withElevation`, `withNormal` and
+  `carryPlane` must never touch it (`shiftEntityZ`, `scaleEntityZ` and `entityElevation`, its
+  first vertex's Z, know it). Where a vertical segment makes the plan ambiguous, read a vertex's
+  own Z, never `entityZAt`. The snaps see it as its segments, lines of its id (`snapEntities`).
 - **The domain's 2D queries read one plane** (`readsInPlan`); drawing, picking, bounds and snapping
   project every object through its plane in `application/` (`planeCamera`, `viewPick.ts`). Objects
   in different planes have no intersection yet.

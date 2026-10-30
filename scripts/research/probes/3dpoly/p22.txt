@@ -1,0 +1,10 @@
+_3DPOLY
+0,0,0
+10,0,5
+10,10,-3
+20,10,0
+
+_UCS
+_OB
+_L
+(list (getvar "UCSORG") (getvar "UCSXDIR") (getvar "UCSYDIR"))

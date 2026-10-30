@@ -1,0 +1,19 @@
+_3DPOLY
+0,0,0
+10,0,5
+10,10,3
+
+_LINE
+
+5,5
+
+(list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))
+_3DPOLY
+0,0,0
+10,0,0
+10,10,0
+
+_ARC
+
+20,20
+(list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 40 (entget (entlast)))))

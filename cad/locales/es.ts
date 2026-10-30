@@ -8,6 +8,7 @@ export const es: EngineLocale = {
       "select": "Seleccionar",
       "line": "Línea",
       "polyline": "Polilínea",
+      "polyline3d": "Polilínea 3D",
       "circle": "Círculo",
       "circlediameter": "Círculo por diámetro",
       "circle2p": "Círculo por 2 puntos",
@@ -237,6 +238,16 @@ export const es: EngineLocale = {
           }
         ]
       ],
+      "polyline3d": [
+        [
+          "count",
+          2,
+          {
+            "one": "Polilínea 3D",
+            "other": "Polilíneas 3D"
+          }
+        ]
+      ],
       "text": [
         [
           "count",
@@ -428,6 +439,8 @@ export const es: EngineLocale = {
         "type": "Tipo",
         "vertexX": "Vértice X",
         "vertexY": "Vértice Y",
+        "vertexZ": "Vértice Z",
+        "fitSmooth": "Ajustar/Suavizar",
         "firstX": "Primero X",
         "firstY": "Primero Y",
         "secondX": "Segundo X",
@@ -515,6 +528,7 @@ export const es: EngineLocale = {
         "yes": "Sí",
         "no": "No",
         "none": "—",
+        "fitNone": "Ninguna",
         "atLeast": "Al menos",
         "exactly": "Exactamente",
         "fitPoints": "Ajustar",
@@ -564,6 +578,10 @@ export const es: EngineLocale = {
       "PLINE": [
         "POL",
         "PL"
+      ],
+      "3DPOLY": [
+        "3DPOL",
+        "3P"
       ],
       "CIRCLE": [
         "CIRCULO",
@@ -1032,6 +1050,10 @@ export const es: EngineLocale = {
         "OFF": "DES"
       },
       "LINE": {
+        "Close": "Cerrar",
+        "Undo": "desHacer"
+      },
+      "3DPOLY": {
         "Close": "Cerrar",
         "Undo": "desHacer"
       },
@@ -1854,6 +1876,7 @@ export const es: EngineLocale = {
       "specifyNextPointOrClose": "Precise siguiente punto o",
       "lengthOfLine": "Longitud de la línea",
       "specifyStartPoint": "Precise punto inicial",
+      "specifyStartPointOfPolyline": "Precise punto inicial de polilínea",
       "specifyEndpointOfArcOr": "Precise punto final del arco (mantenga pulsada la tecla Ctrl para cambiar de dirección) o",
       "specifyCenterPointForCircleOr": "Precise punto central para círculo o",
       "specifyRadiusOfCircleOr": "Precise radio de círculo o",
@@ -2834,6 +2857,7 @@ export const es: EngineLocale = {
       "pointsAreCoincident": "Los puntos coinciden",
       "noSolidSurfaceOrMesh": "No hay ningún sólido, superficie o malla 3D.",
       "ucsNoCoordinateSystem": "Este objeto no define un sistema de coordenadas",
+      "polyline3dNoCoordinateSystem": "El objeto polilínea 3D no define el sistema de coordenadas",
       "zAxisNotSupported": "No se admite la opción de eje Z para el objeto seleccionado.",
       "noPreviousUcs": "No hay ningún sistema de coordenadas guardado.",
       "everythingUndone": "Ya se ha deshecho todo",
@@ -3194,6 +3218,8 @@ export const es: EngineLocale = {
       "objectHasNoArea": "El objeto seleccionado no tiene área",
       "polylineWidthIgnored": "Grosor de polilínea ignorado en cálculo de área.",
       "allSegmentsUndone": "Ya están deshechos todos los segmentos.",
+      "polyline3dNotLevel": "Vértices de polilínea 3D con coordenadas diferentes.",
+      "all3dSegmentsUndone": "Ya se han deshecho todos los segmentos.",
       "distanceTotal": [
         "Distancia = ",
         [
@@ -3251,6 +3277,8 @@ export const es: EngineLocale = {
         ]
       ],
       "cannotFilletItself": "No se puede empalmar un objeto consigo mismo.",
+      "chamferNot3dPolyline": "  Puede que los objetos de polilínea 3D no estén unidos con chaflán.",
+      "filletNot3dPolyline": "  Puede que los objetos de polilínea 3D no estén unidos con empalme.",
       "collinearCannotFillet": "Las líneas colineales no pueden ser unidos con empalme.",
       "collinearCannotChamfer": "Las líneas colineales no pueden ser unidos con chaflán.",
       "cannotChamferItself": "No se puede achaflanar un objeto consigo mismo.",

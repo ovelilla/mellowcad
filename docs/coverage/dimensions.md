@@ -90,6 +90,7 @@ cota`, `Texto de cota = `).
   preselection is dropped and nothing is left selected (p149). The location has no base point
   (the trace's UseBasePoint false, p01): Ortho and Polar leave it alone (**unverified** on the
   desktop, which decides where a command draws its own jig).
+- `<select object>` takes a 3D polyline's segment picked, its ends at their Z (3dpoly/p25).
 
 **Missing:** Mtext (a dimension's text is one line); AutoCAD breaks the location prompt after its
 `or`, written here on one line; with an explicit Angle, AutoCAD centres the text on the dimension

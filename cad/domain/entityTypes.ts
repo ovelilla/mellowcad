@@ -25,6 +25,7 @@ export type EntityType =
   | "ellipse"
   | "spline"
   | "polyline"
+  | "polyline3d"
   | "text"
   | "mtext"
   | "attdef"
@@ -189,6 +190,19 @@ export interface PolylineEntity extends BaseEntity, Thick {
   readonly closed: boolean
   readonly bulges?: readonly number[]
   readonly widths?: readonly PolylineWidth[]
+}
+
+/**
+ * A 3D polyline (3DPOLY; DXF POLYLINE flag 8): straight segments through
+ * `vertices`, world points each at its own Z, so it need not lie in a plane.
+ * The one object whose stored points carry their Z: it has no plane, so no
+ * normal, elevation or thickness. AutoCAD keeps one with a single vertex
+ * (3DPOLY ended at its second prompt, 3dpoly/p05).
+ */
+export interface Polyline3dEntity extends BaseEntity {
+  readonly type: "polyline3d"
+  readonly vertices: readonly Vec3[]
+  readonly closed: boolean
 }
 
 /** A polyline segment's starting and ending width, never negative. */
@@ -636,6 +650,7 @@ export type Entity =
   | EllipseEntity
   | SplineEntity
   | PolylineEntity
+  | Polyline3dEntity
   | TextEntity
   | MTextEntity
   | AttributeDefinitionEntity

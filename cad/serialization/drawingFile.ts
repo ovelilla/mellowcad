@@ -118,7 +118,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 35
+export const DRAWING_FILE_VERSION = 36
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -461,6 +461,15 @@ function cloneEntityShape(entity: Entity): Entity {
         closed: entity.closed,
         ...(entity.bulges ? { bulges: entity.bulges.slice() } : {}),
         ...storedWidths(entity),
+      }
+    case "polyline3d":
+      return {
+        id: entity.id,
+        type: "polyline3d",
+        layerId: entity.layerId,
+        ...overrides,
+        vertices: entity.vertices.map((v) => ({ x: v.x, y: v.y, z: v.z })),
+        closed: entity.closed,
       }
     case "text":
       return {
@@ -968,6 +977,8 @@ function parseEntity(raw: unknown, version: number): Entity | null {
  * Z = 0; one from before 23 has no normal, so everything faces +Z.
  */
 function parsePlane(raw: Record<string, unknown>, entity: Entity): Entity {
+  // Its vertices hold their Z: a plane in the file is not its own.
+  if (entity.type === "polyline3d") return entity
   let placed = isFiniteNumber(raw.elevation)
     ? withElevation(entity, raw.elevation)
     : entity
@@ -1136,6 +1147,21 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         closed,
         ...(bulges ? { bulges } : {}),
         ...(widths ? { widths } : {}),
+      }
+    }
+    case "polyline3d": {
+      // Version 36 brought it; a vertex without its Z is dropped as malformed.
+      const vertices = Array.isArray(raw.vertices)
+        ? raw.vertices.flatMap((v) => parseVec3(v) ?? [])
+        : []
+      if (vertices.length < 1) return null
+      return {
+        id,
+        type: "polyline3d",
+        layerId,
+        ...overrides,
+        vertices,
+        closed: typeof raw.closed === "boolean" ? raw.closed : false,
       }
     }
     case "text": {

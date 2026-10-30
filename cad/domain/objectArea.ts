@@ -11,6 +11,7 @@ import { Entity, HatchEntity, HatchLoop } from "./entityTypes"
 import { hatchLoopRing, hatchLoopSegments } from "./hatch"
 import { polylineArea, polylineLength } from "./polylines"
 import { splineArea, splineLength } from "./splines"
+import { isLevelPolyline3d, polyline3dLength } from "./polylines3d"
 
 /**
  * What AREA's Object option reports for an object: its area and the length
@@ -24,7 +25,11 @@ export interface ObjectArea {
   readonly measured: "perimeter" | "circumference" | "length"
 }
 
-/** Null for an object AutoCAD says "does not have an area" (a line, an arc, text). */
+/**
+ * Null for an object AutoCAD says "does not have an area" (a line, an arc,
+ * text), and for a 3D polyline that does not lie level, which it refuses in
+ * words of its own (3dpoly/p15).
+ */
 export function objectArea(entity: Entity): ObjectArea | null {
   switch (entity.type) {
     case "circle":
@@ -51,6 +56,15 @@ export function objectArea(entity: Entity): ObjectArea | null {
         around: polylineLength(entity),
         measured: entity.closed ? "perimeter" : "length",
       }
+    case "polyline3d":
+      // A level one measures as a polyline at its Z does (3dpoly/p16).
+      return isLevelPolyline3d(entity)
+        ? {
+            area: ringArea(entity.vertices),
+            around: polyline3dLength(entity),
+            measured: entity.closed ? "perimeter" : "length",
+          }
+        : null
     case "spline":
       return {
         area: splineArea(entity),
@@ -124,4 +138,15 @@ function inRing(point: Vec2, ring: readonly Vec2[]): boolean {
     }
   }
   return inside
+}
+
+/** The area the ring through `points` closes, by the shoelace. */
+function ringArea(points: readonly Vec2[]): number {
+  let signed = 0
+  for (let i = 0; i < points.length; i++) {
+    const a = points[i]
+    const b = points[(i + 1) % points.length]
+    signed += a.x * b.y - b.x * a.y
+  }
+  return Math.abs(signed) / 2
 }

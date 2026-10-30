@@ -146,6 +146,7 @@ function levelUcsFromObject(entity: Entity, pick: Vec2): Ucs | null {
         polarPoint({ x: 0, y: 0 }, 1, entity.rotation)
       )
     case "line":
+    case "polyline3d":
     case "dimension":
     case "hatch":
       return null
@@ -188,6 +189,7 @@ export function hasEnds(entity: Entity | null): entity is Entity {
     case "spline":
       return !entity.closed
     case "circle":
+    case "polyline3d":
     case "text":
     case "mtext":
     case "attdef":
@@ -300,6 +302,7 @@ function planarEnd(entity: Entity, pick: Vec2): PlanarEnd | null {
     }
     case "line":
     case "circle":
+    case "polyline3d":
     case "text":
     case "mtext":
     case "attdef":
@@ -385,6 +388,7 @@ export function ucsFromFound(entity: Entity): Ucs | null {
     case "insert":
     case "dimension":
     case "hatch":
+    case "polyline3d":
       return ucsFromObject(entity, wcsOrigin)
     default: {
       const unhandled: never = entity

@@ -293,6 +293,7 @@ function collectCurves(entities: readonly Entity[]): Curve[] | null {
         break
       case "ellipse":
       case "spline":
+      case "polyline3d":
       case "text":
       case "mtext":
       case "attdef":

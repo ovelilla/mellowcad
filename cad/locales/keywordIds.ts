@@ -20,6 +20,10 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Close",
     "Undo"
   ],
+  "3DPOLY": [
+    "Close",
+    "Undo"
+  ],
   "PLINE": [
     "Arc",
     "Line",

@@ -1,0 +1,9 @@
+_3DPOLY
+0,0,2
+10,0,2
+10,10,2
+_C
+_AREA
+_O
+_L
+(list (getvar "AREA") (getvar "PERIMETER"))

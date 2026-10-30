@@ -25,6 +25,7 @@ import {
   type LineEntity,
   type MTextEntity,
   type PolylineEntity,
+  type Polyline3dEntity,
   type SplineEntity,
   type TextEntity,
 } from "../cad/domain/entities"
@@ -272,6 +273,23 @@ export const polylineEntity: fc.Arbitrary<PolylineEntity> = fc
     }
     return entity
   })
+
+export const polyline3dEntity: fc.Arbitrary<Polyline3dEntity> = fc
+  .tuple(
+    fc.array(fc.tuple(point, zValue), { minLength: 1, maxLength: 8 }),
+    fc.boolean()
+  )
+  .map(([points, closed]) =>
+    withId<Polyline3dEntity>(
+      {
+        type: "polyline3d",
+        layerId: DEFAULT_LAYER_ID,
+        vertices: points.map(([p, z]) => ({ ...p, z })),
+        closed,
+      },
+      "polyline3d"
+    )
+  )
 
 export const textEntity: fc.Arbitrary<TextEntity> = fc
   .tuple(
@@ -569,6 +587,7 @@ export const entity: fc.Arbitrary<Entity> = fc
       ellipseEntity,
       splineEntity,
       polylineEntity,
+      polyline3dEntity,
       textEntity,
       mtextEntity,
       attdefEntity,
@@ -599,7 +618,8 @@ export const entity: fc.Arbitrary<Entity> = fc
   .map(([flat, elevation, deltaZ, thickness, normal]) => {
     // Every transform has to carry the Z fields and the normal, which
     // TypeScript cannot check on optional ones; a flat drawing alone would
-    // never notice one dropped.
+    // never notice one dropped. A 3D polyline has none: its vertices hold Z.
+    if (flat.type === "polyline3d") return flat
     let placed: Entity = withElevation(flat, elevation)
     if (placed.type === "line") placed = withDeltaZ(placed, deltaZ)
     if (hasThickness(placed)) placed = withThickness(placed, thickness)

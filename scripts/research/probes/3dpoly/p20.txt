@@ -1,0 +1,9 @@
+_LINE
+0,0,0
+10,0,0
+10,10,5
+
+_JOIN
+_ALL
+
+(progn (setq e (entnext (entlast))) (print (cdr (assoc 70 (entget (entlast))))) (while (= "VERTEX" (cdr (assoc 0 (entget e)))) (print (list (cdr (assoc 10 (entget e))) (cdr (assoc 70 (entget e))))) (setq e (entnext e))) (princ))

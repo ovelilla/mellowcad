@@ -81,6 +81,12 @@ export function linearEntity(
             }
           : {}),
       }
+    case "polyline3d":
+      // Its Z is left as a line's ends' is: the map is the plan's.
+      return {
+        ...entity,
+        vertices: entity.vertices.map((v) => ({ ...at(v), z: v.z })),
+      }
     case "dimension":
       return {
         ...entity,

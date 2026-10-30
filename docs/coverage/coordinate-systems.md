@@ -144,7 +144,7 @@ point on X, an angle given by a point, Zdepth (p211, p213), nor Enter at Origin,
 at Face too; U the WCS's origin, but
 where a UCS made at the first prompt left it, REDO where the UCS left it (p163, p164); U after a
 run that changed nothing but moved it (OBject on nothing, Face's pick) the WCS's origin too (p166,
-p424)
+p424). OBject on a 3D polyline says `3D Polyline object does not define a coordinate system` (es `El objeto polilínea 3D no define el sistema de coordenadas`, table 25596) and ends (3dpoly/p22); ZAxis Object refuses one as an object with no ends (**unverified**).
 
 **Missing:** the listing's `Press ENTER to continue:` (the console pauses there; no page is
 long enough here), Group at OBject's picks (p325); Face's UCS on a solid's, surface's or mesh's face (there are none here: its

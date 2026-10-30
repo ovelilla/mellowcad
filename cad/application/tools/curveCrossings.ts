@@ -13,6 +13,7 @@ import {
   ellipseSweepParams,
   isFullEllipse,
   polylineSegmentGeometries,
+  polyline3dSegments,
   splineCurve,
   splinePolyline,
 } from "../../domain/entities"
@@ -131,6 +132,11 @@ export function implicitEdges(o: Entity): ImplicitEdge[] {
           ]
         }
         const edge = segmentImplicit(g.a, g.b)
+        return edge ? [edge] : []
+      })
+    case "polyline3d":
+      return polyline3dSegments(o).flatMap(([a, b]) => {
+        const edge = segmentImplicit(a, b)
         return edge ? [edge] : []
       })
     case "ellipse":

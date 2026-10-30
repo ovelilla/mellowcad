@@ -17,7 +17,7 @@ us to walk again, whereas a command costs the same before or after it.
    sloping lines. Left, each a gap of its own: perspective and the rest of 3D navigation, saved
    views, UCS Face (no solids) and Apply, grips other than move on a tilted object, the Normal rows
    on types other than circle and arc, Intersection between objects in different planes, PROJMODE's
-   projection of objects at an angle to the UCS, and JOIN's 3D polyline (it waits for 3DPOLY).
+   projection of objects at an angle to the UCS, and JOIN's 3D polyline.
 3. **3D usability** — done: the `+Z` / `-Z` guide of Polar, Ortho and OTRACK with a typed length
    along it, the ViewCube (parts, drag, roll, triangles, Home, compass, its two menus, NAVVCUBE)
    the viewport controls' view menu and the navigation bar (Pan, Zoom, Orbit). Left, each a gap of
@@ -26,9 +26,10 @@ us to walk again, whereas a command costs the same before or after it.
    ShowMotion, named views, the dynamic UCS (UCSDETECT), UCSFOLLOW, and the tracking label of
    OTRACK.
 
-Left out of the 2.5D model, each a gap of its own: SPLINE 3D (a 3D NURBS kernel) and 3DPOLY, LIST,
-the `.X` / `.XY` point filters, OSNAPZ as a variable, ARRAYRECT's Levels, CHPROP, and POINT's
-thickness (with POINT, below).
+Left out of the 2.5D model, each a gap of its own: SPLINE 3D (a 3D NURBS kernel), LIST, the `.X` /
+`.XY` point filters, OSNAPZ as a variable, ARRAYRECT's Levels, CHPROP, and POINT's thickness (with
+POINT, below). 3DPOLY is done: the one object whose stored points carry their Z (`draw.md`), the
+pattern SPLINE 3D follows; trimming one, JOIN into one and PEDIT Spline are its own gaps.
 
 Editing a spline — OFFSET (which is also what the ellipse's OFFSET and FILLET wait for), TRIM /
 EXTEND of one an edge reaches (its own knots), BREAK / JOIN, SPLINEDIT — is a command gap, so it

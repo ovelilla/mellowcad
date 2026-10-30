@@ -514,6 +514,12 @@ export class UcsTool implements Tool {
       ctx.report(ctx.text.message("zAxisNotSupported"))
       return
     }
+    if (!zAxis && hit.type === "polyline3d") {
+      // Said by name, and the command ends (3dpoly/p22, table 25596).
+      ctx.report(ctx.text.message("polyline3dNoCoordinateSystem"))
+      ctx.endCommand()
+      return
+    }
     if (!zAxis && hit.type === "hatch") {
       // WHY once: the console writes it twice, taken for its artefact
       // until the desktop says otherwise (UCS-D63, d06).

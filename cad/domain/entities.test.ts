@@ -722,6 +722,12 @@ function expectSameShape(actual: Entity, expected: Entity, precision = 6) {
     widths.forEach((w, i) =>
       expect(w).toBeCloseTo(expectedWidths[i], precision)
     )
+  } else if (actual.type === "polyline3d" && expected.type === "polyline3d") {
+    expect(actual.vertices).toBeCloseToPoints(expected.vertices, precision)
+    actual.vertices.forEach((v, i) =>
+      expect(v.z).toBeCloseTo(expected.vertices[i].z, precision)
+    )
+    expect(actual.closed).toBe(expected.closed)
   } else if (actual.type === "text" && expected.type === "text") {
     expect(actual.position).toBeCloseToPoint(expected.position, precision)
     expect(actual.height).toBeCloseTo(expected.height, precision)
@@ -800,6 +806,7 @@ function characteristicPoints(entity: Entity): Vec2[] {
       // Not the points: a CV spline's vertices lie off the curve.
       return [splineStartPoint(entity), splineEndPoint(entity)]
     case "polyline":
+    case "polyline3d":
       return [...entity.vertices]
     case "text":
     case "mtext":

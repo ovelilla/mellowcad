@@ -40,6 +40,8 @@ import {
   polylineWidthAt,
 } from "./polylines"
 import { polylineOutline } from "./polylineOutline"
+import { polyline3dSegments } from "./polylines3d"
+import { planar } from "../geometry/Vec3"
 import { arcStartPoint, arcEndPoint } from "./entityMeasures"
 
 /** A box outline as four segments, for hit-testing and crossing tests. */
@@ -210,6 +212,24 @@ export function closestOnEntity(
         }
         if (candidate.distance < best.distance) best = candidate
       })
+      return best
+    }
+    case "polyline3d": {
+      // Picked in plan, as a line is: its rise does not move where it draws.
+      let best: ClosestResult = {
+        point: planar(entity.vertices[0] ?? point),
+        distance: Infinity,
+        t: 0,
+      }
+      for (const [a, b] of polyline3dSegments(entity)) {
+        const candidate = closestPointOnSegment(a, b, point)
+        if (candidate.distance < best.distance) {
+          best = { ...candidate, point: planar(candidate.point) }
+        }
+      }
+      if (best.distance === Infinity) {
+        best = { ...best, distance: V.distance(best.point, point) }
+      }
       return best
     }
     case "text":
@@ -383,6 +403,14 @@ export function entityBounds(entity: Entity, blocks?: BlockLookup): Bounds {
         }
       }
       return { min: { x: minX, y: minY }, max: { x: maxX, y: maxY } }
+    }
+    case "polyline3d": {
+      const xs = entity.vertices.map((v) => v.x)
+      const ys = entity.vertices.map((v) => v.y)
+      return {
+        min: { x: Math.min(...xs), y: Math.min(...ys) },
+        max: { x: Math.max(...xs), y: Math.max(...ys) },
+      }
     }
     case "text":
       return cornersBounds(textCorners(entity))
@@ -628,6 +656,15 @@ export function entityCrossesRect(
           ) {
             return true
           }
+        }
+      }
+      return false
+    }
+    case "polyline3d": {
+      if (entity.vertices.some((v) => pointInRect(v, min, max))) return true
+      for (const [a, b] of polyline3dSegments(entity)) {
+        for (const [e1, e2] of edges) {
+          if (segmentSegmentIntersection(a, b, e1, e2)) return true
         }
       }
       return false

@@ -5,7 +5,9 @@ import { DocumentReader } from "../../domain/Document"
 import {
   ArcEntity,
   PolylineEntity,
+  Polyline3dEntity,
   arcEndPoint,
+  polyline3dSegments,
   arcStartPoint,
   entityElevation,
   lineEndZ,
@@ -68,6 +70,14 @@ export function continuePoint(
           ),
           tangent: entity.closed ? null : polylineEndTangent(entity),
         }
+      case "polyline3d": {
+        // LINE's Continue starts at its last vertex, Z and all (3dpoly/p23).
+        const { vertices, closed } = entity
+        return {
+          point: closed ? vertices[0] : vertices[vertices.length - 1],
+          tangent: null,
+        }
+      }
       case "circle":
       case "ellipse":
       case "spline":
@@ -120,6 +130,12 @@ export function lastDrawnDirection(
           entity.bulges?.[last] ?? 0
         )
       }
+      case "polyline3d": {
+        const segment = lastSegment3d(entity)
+        if (!segment) return null
+        const run = V.sub(segment[1], segment[0])
+        return V.length(run) < 1e-9 ? null : V.normalize(run)
+      }
       case "circle":
       case "ellipse":
       case "spline":
@@ -151,9 +167,18 @@ export function lastDrawnRises(document: DocumentReader): boolean {
     if (entity.type === "line") {
       return Math.abs(lineEndZ(entity) - lineStartZ(entity)) > 1e-9
     }
+    if (entity.type === "polyline3d") {
+      const segment = lastSegment3d(entity)
+      return segment !== null && Math.abs(segment[1].z - segment[0].z) > 1e-9
+    }
     if (entity.type === "arc" || entity.type === "polyline") return false
   }
   return false
+}
+
+/** The segment a 3D polyline ends with, the closing one if it is closed. */
+function lastSegment3d(poly: Polyline3dEntity): [Vec3, Vec3] | null {
+  return polyline3dSegments(poly).at(-1) ?? null
 }
 
 /** Where Continue leaves an arc: its drawn end, along its heading there. */

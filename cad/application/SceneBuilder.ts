@@ -16,6 +16,8 @@ import {
   HatchEntity,
   LineEntity,
   PolylineEntity,
+  Polyline3dEntity,
+  polyline3dSegments,
   ThickEntity,
   arcSweepAngle,
   attributeDefinitionText,
@@ -706,6 +708,8 @@ export function entityScenePrimitive(
   }
   if (entity.type === "line")
     return linePrimitives(camera, entity, stroke, options)
+  if (entity.type === "polyline3d")
+    return polyline3dPrimitives(camera, entity, stroke, options)
   const elevation = entityElevation(entity)
   const thickness = entityThickness(entity)
   const axes = planeAxes(entity)
@@ -764,6 +768,28 @@ function linePrimitives(
     ...segment(bottomStart, topStart),
     ...segment(bottomEnd, topEnd),
   ]
+}
+
+/**
+ * A 3D polyline, in plan or off it: each segment drawn as a line between its
+ * vertices at their own Z, its linetype laid per segment as a line's
+ * (**unverified**: PLINEGEN is a 2D polyline's).
+ */
+function polyline3dPrimitives(
+  camera: CameraTransform,
+  poly: Polyline3dEntity,
+  stroke: StrokeStyle,
+  options: EntityDrawOptions
+): ScenePrimitive[] {
+  return polyline3dSegments(poly).flatMap(([a, b]) =>
+    lineSegments(
+      camera,
+      camera.worldToScreen(a),
+      camera.worldToScreen(b),
+      stroke,
+      options
+    )
+  )
 }
 
 /**
@@ -878,6 +904,8 @@ function planarPrimitives(
       return options.linetype && stroke.dash && stroke.dash.length > 0
         ? linetypedSpline(camera, entity, stroke)
         : [splineCurvePath(camera, entity, stroke)]
+    case "polyline3d":
+      return polyline3dPrimitives(camera, entity, stroke, options)
     case "polyline":
       if (isWidePolyline(entity)) {
         // Filled only seen square on, as AutoCAD fills one only "parallel

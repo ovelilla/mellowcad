@@ -80,6 +80,7 @@ export function clipboardSnapshot(
         case "ellipse":
         case "spline":
         case "polyline":
+        case "polyline3d":
         case "hatch":
           break
         default: {

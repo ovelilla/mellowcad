@@ -1,6 +1,7 @@
 ## commands
 LINE ["L"] "Line"
 PLINE ["PL"] "Polyline"
+3DPOLY ["3P"] "3D Polyline"
 CIRCLE ["C"] "Circle"
 CIRCLED [] "Diameter circle"
 CIRCLE2P [] "2-Point circle"
@@ -135,6 +136,7 @@ ellipsearc "Elliptical arc" ELLIPSEARC
 spline "Spline" SPL
 splinefit "Spline Fit" -
 splinecv "Spline CV" -
+polyline3d "3D Polyline" 3P
 rectangle "Rectangle" REC
 polygon "Polygon" POL
 hatch "Hatch" H
@@ -1196,6 +1198,59 @@ lweight "Lineweight" LW
   tip: -
   dyn: -
   prompt| Specify included angle for arc <180>: 90
+
+## 3DPOLY
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> 3DPOLY
+  prompt: 3DPOLY Specify start point of polyline:
+  asks: ""
+  tip: Specify start point of polyline:
+  dyn: "X,Y"=""||*
+  command| 3P 3DPOLY
+> enter
+  prompt| Specify start point of polyline:
+  error| Invalid point.
+> first
+  prompt: 3DPOLY Specify endpoint of line or [Undo]:
+  asks: "Length" "Angle"
+  tip: Specify endpoint of line or
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  options: [U] Undo
+  prompt| Specify start point of polyline:
+> U
+  prompt| Specify endpoint of line or [Undo]: U
+  error| All segments already undone.
+> second
+  dyn: "Length"=""|100.00|mm* "Angle"=""|180|°
+  prompt| Specify endpoint of line or [Undo]: @100,0,50
+> third
+  prompt: 3DPOLY Specify endpoint of line or [Close/Undo]:
+  dyn: "Length"=""|0.00|mm* "Angle"=""||°
+  options: [C] Close, [U] Undo
+  prompt| Specify endpoint of line or [Undo]:
+> FOO
+  prompt| Specify endpoint of line or [Close/Undo]: FOO
+  error| Point or option keyword required.
+> C
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify endpoint of line or [Close/Undo]: C
+> select it
+  properties: 3D Polyline (1) [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Vertex Z=0.00~, Length=365.03 mm] [Misc: Fit/Smooth=None, Closed=Yes~]
+> escape
+  properties: -
+  command| *Cancel*
 
 ## SPLINE
 > start

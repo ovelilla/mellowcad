@@ -8,6 +8,7 @@ export const en: EngineCatalog = {
       "select": "Select",
       "line": "Line",
       "polyline": "Polyline",
+      "polyline3d": "3D Polyline",
       "circle": "Circle",
       "circlediameter": "Diameter circle",
       "circle2p": "2-Point circle",
@@ -243,6 +244,16 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "polyline3d": [
+        [
+          "count",
+          2,
+          {
+            "one": "3D Polyline",
+            "other": "3D Polylines"
+          }
+        ]
+      ],
       "text": [
         [
           "count",
@@ -434,6 +445,8 @@ export const en: EngineCatalog = {
         "type": "Type",
         "vertexX": "Vertex X",
         "vertexY": "Vertex Y",
+        "vertexZ": "Vertex Z",
+        "fitSmooth": "Fit/Smooth",
         "firstX": "First X",
         "firstY": "First Y",
         "secondX": "Second X",
@@ -521,6 +534,7 @@ export const en: EngineCatalog = {
         "yes": "Yes",
         "no": "No",
         "none": "—",
+        "fitNone": "None",
         "atLeast": "At least",
         "exactly": "Exactly",
         "fitPoints": "Fit",
@@ -570,6 +584,10 @@ export const en: EngineCatalog = {
       "PLINE": [
         "PLINE",
         "PL"
+      ],
+      "3DPOLY": [
+        "3DPOLY",
+        "3P"
       ],
       "CIRCLE": [
         "CIRCLE",
@@ -1446,6 +1464,7 @@ export const en: EngineCatalog = {
       "specifyNextPointOrClose": "Specify next point or",
       "lengthOfLine": "Length of line",
       "specifyStartPoint": "Specify start point",
+      "specifyStartPointOfPolyline": "Specify start point of polyline",
       "specifyEndpointOfArcOr": "Specify endpoint of arc (hold Ctrl to switch direction) or",
       "specifyCenterPointForCircleOr": "Specify center point for circle or",
       "specifyRadiusOfCircleOr": "Specify radius of circle or",
@@ -2431,6 +2450,7 @@ export const en: EngineCatalog = {
       "pointsAreCoincident": "Points are coincident",
       "noSolidSurfaceOrMesh": "No 3D solid, surface or mesh detected.",
       "ucsNoCoordinateSystem": "This object does not define a coordinate system",
+      "polyline3dNoCoordinateSystem": "3D Polyline object does not define a coordinate system",
       "zAxisNotSupported": "Z axis option not supported for selected object.",
       "noPreviousUcs": "No previous coordinate system saved.",
       "everythingUndone": "Everything has been undone",
@@ -2791,6 +2811,8 @@ export const en: EngineCatalog = {
       "objectHasNoArea": "Selected object does not have an area",
       "polylineWidthIgnored": "Polyline's width ignored in area calculation.",
       "allSegmentsUndone": "All segments already undone.",
+      "polyline3dNotLevel": "3D Polyline vertices had differing Z coordinates.",
+      "all3dSegmentsUndone": "All segments already undone.",
       "distanceTotal": [
         "Distance = ",
         [
@@ -2848,6 +2870,8 @@ export const en: EngineCatalog = {
         ]
       ],
       "cannotFilletItself": "Cannot fillet an entity with itself.",
+      "chamferNot3dPolyline": "  3D Polyline objects may not be chamfered.",
+      "filletNot3dPolyline": "  3D Polyline objects may not be filleted.",
       "collinearCannotFillet": "Collinear lines connot be filleted.",
       "collinearCannotChamfer": "Collinear lines connot be chamfered.",
       "cannotChamferItself": "Cannot chamfer an entity with itself.",

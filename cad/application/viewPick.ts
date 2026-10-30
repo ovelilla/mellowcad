@@ -115,8 +115,11 @@ export function screenDistanceToEntity(
       (best, line) => Math.min(best, polylineDistance(line, screen)),
       Number.POSITIVE_INFINITY
     )
-  // A line, its thickness included, is drawn as segments: measure them.
-  if (entity.type === "line") return outlineDistance()
+  // A line, its thickness included, is drawn as segments: measure them, and
+  // a 3D polyline's, each at its vertices' Z.
+  if (entity.type === "line" || entity.type === "polyline3d") {
+    return outlineDistance()
+  }
   const elevation = entityElevation(entity)
   const axes = planeAxes(entity)
   const base = planeCamera(camera, elevation, axes)

@@ -17,6 +17,7 @@ import {
   lineEndZ,
   lineStartZ,
   planeAxes,
+  replacePolyline3dVertex,
   translateEntity,
   withLineZ,
   splineDataPoints,
@@ -302,6 +303,22 @@ function applyInUcs(
   ucs: Ucs,
   vertex: number
 ): Entity | null {
+  if (
+    entity.type === "polyline3d" &&
+    (property === "vertexX" || property === "vertexY" || property === "vertexZ")
+  ) {
+    // Its vertex is a point in space: the coordinate is the UCS's, the
+    // vertex moving along that axis alone.
+    const at = entity.vertices[vertex]
+    if (!at) return null
+    const axis =
+      property === "vertexX" ? "x" : property === "vertexY" ? "y" : "z"
+    const target = ucsPointToWorld(ucs, {
+      ...worldPointToUcs(ucs, at),
+      [axis]: value,
+    })
+    return replacePolyline3dVertex(entity, vertex, target)
+  }
   if (
     (entity.type === "polyline" || entity.type === "spline") &&
     (property === "vertexX" || property === "vertexY")

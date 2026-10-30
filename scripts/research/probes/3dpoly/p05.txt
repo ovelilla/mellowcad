@@ -1,0 +1,10 @@
+_3DPOLY
+5,5
+
+(progn (setq e (entnext (entlast))) (print (cdr (assoc 70 (entget (entlast))))) (while (= "VERTEX" (cdr (assoc 0 (entget e)))) (print (list (cdr (assoc 10 (entget e))) (cdr (assoc 70 (entget e))))) (setq e (entnext e))) (princ))
+_LINE
+0,0
+1,1
+
+_UNDO
+1

@@ -1,0 +1,10 @@
+_3DPOLY
+0,0,0
+10,0,5
+10,10,-3
+20,10,0
+
+_EXPLODE
+_L
+
+(progn (setq s (ssget "X")) (setq i 0) (repeat (sslength s) (setq d (entget (ssname s i))) (print (list (cdr (assoc 0 d)) (cdr (assoc 10 d)) (cdr (assoc 11 d)))) (setq i (1+ i))) (princ))

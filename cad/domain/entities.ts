@@ -18,6 +18,7 @@ export type {
   SplineEntity,
   PolylineEntity,
   PolylineWidth,
+  Polyline3dEntity,
   TextJustify,
   TextEntity,
   MTextAttachment,
@@ -54,6 +55,7 @@ export {
   createCircle,
   createArc,
   createPolyline,
+  createPolyline3d,
   createHatch,
   createInsert,
   insertReflects,
@@ -215,6 +217,15 @@ export {
   removePolylineVertex,
   setPolylineBulge,
 } from "./polylines"
+export {
+  polyline3dSegments,
+  polyline3dLength,
+  isLevelPolyline3d,
+  closestPointOnPolyline3d,
+  replacePolyline3dVertex,
+  polyline3dParamAt,
+  polyline3dSpan,
+} from "./polylines3d"
 export type { PolylineOutline } from "./polylineOutline"
 export { polylineOutline } from "./polylineOutline"
 

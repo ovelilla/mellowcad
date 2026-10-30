@@ -169,6 +169,17 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
           })
         })
         break
+      case "polyline3d":
+        // Its vertices' grips alone, at their own Z: no midpoint grips
+        // (desktop 3dpoly/d01).
+        entity.vertices.forEach((vertex, index) => {
+          grips.push({
+            entityId: id,
+            role: { kind: "vertex", index },
+            world: vertex,
+          })
+        })
+        break
       case "text":
       case "attdef": {
         // The justification point's grip and, for a justified text, the
@@ -318,7 +329,8 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
     lifted.push({
       ...grip,
       world:
-        entity.type === "line" && "z" in grip.world
+        (entity.type === "line" || entity.type === "polyline3d") &&
+        "z" in grip.world
           ? grip.world
           : entityPointToWorld(entity, grip.world),
     })

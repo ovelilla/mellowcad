@@ -39,6 +39,11 @@ explains):
   INSERT's `Indique valores de atributo` and ATRVIS's `[Normal/ACT/DES] <Normal>` are 2027's console's
   (blocks/p03, p311, p335); ATREDIT's and EDITATR's question and refusals are atteditRes.dll's and
   AcEAtteditRes.dll's (es-ES). **Unverified:** the Edit Attribute Definition labels.
+- **3DPOLY:** `3DPOL` and `3P` from the 2027 `acad.pgp`; its prompts, `[Cerrar/desHacer]`, `Ya se
+  han deshecho todos los segmentos.` and the other commands' words of a 3D polyline (`polilínea
+  3D`) from 2027's console (3dpoly/p01–p29.es) and tables 20170, 20288, 20635 and 25596; the
+  palette's `Polilínea 3D`, `Vértice Z`, `Ajustar/Suavizar` and `Ninguna` from the Spanish desktop
+  (3dpoly/d03). **Unverified:** CHAMFER's refusal, composed from table 20635.
 - **SPLINE:** the name from the Spanish page with the English GUID (`SPLINE`; SPLINEDIT is
   `EDITSPLINE`); `SPL`, the keywords `Método`, `Nudos`, `Grado`, `Ajustar`, `VC`,
   `iniciar Tangencia`,

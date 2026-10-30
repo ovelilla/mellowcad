@@ -37,6 +37,7 @@ import {
   lineAngleDegrees,
   polylineArea,
   polylineLength,
+  polyline3dLength,
   polylineSegments,
   polylineConstantWidth,
   polylineWidth,
@@ -1373,6 +1374,47 @@ function singleEntityInfo(
             row("length", length(polylineLength(entity))),
           ]),
           group("misc", [
+            {
+              ...row("closed", yesNo(entity.closed)),
+              edit: {
+                property: "closed",
+                text: entity.closed ? "1" : "0",
+                unit: "",
+                choices: [
+                  { value: "1", label: yesNo(true) },
+                  { value: "0", label: yesNo(false) },
+                ],
+              },
+            },
+          ]),
+        ],
+      }
+    }
+    case "polyline3d": {
+      // AutoCAD's rows (desktop 3dpoly/d02): the current vertex and its point,
+      // Length in space read-only; Fit/Smooth (PEDIT's Spline, not built:
+      // always None, read-only here) and Closed under Misc.
+      const current = Math.min(vertex, entity.vertices.length - 1)
+      const point = worldPointToUcs(settings.ucs, entity.vertices[current])
+      const yesNo = (closed: boolean) =>
+        text.propertyValue(closed ? "yes" : "no")
+      return {
+        title: title("polyline3d"),
+        count: 1,
+        groups: [
+          group("geometry", [
+            {
+              ...row("vertex", String(current + 1)),
+              label: text.propertyRow("currentVertex"),
+              edit: { property: "vertex", text: String(current + 1), unit: "" },
+            },
+            coordRow("vertexX", "vertexX", point.x),
+            coordRow("vertexY", "vertexY", point.y),
+            coordRow("vertexZ", "vertexZ", point.z),
+            row("length", length(polyline3dLength(entity))),
+          ]),
+          group("misc", [
+            row("fitSmooth", text.propertyValue("fitNone")),
             {
               ...row("closed", yesNo(entity.closed)),
               edit: {

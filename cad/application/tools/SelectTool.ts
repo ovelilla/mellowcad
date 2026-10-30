@@ -1038,6 +1038,7 @@ export class SelectTool implements Tool {
     const poly = ctx.document.get(grip.entityId)
     if (
       poly?.type !== "polyline" &&
+      poly?.type !== "polyline3d" &&
       poly?.type !== "spline" &&
       poly?.type !== "hatch"
     ) {

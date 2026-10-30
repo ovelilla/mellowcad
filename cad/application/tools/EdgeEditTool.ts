@@ -46,6 +46,7 @@ import {
   nearestPolylineSegment,
   polylineParamAt,
   polylineSegmentGeometries,
+  polyline3dSegments,
   polylineSegments,
   polylineSpan,
   readsInPlan,
@@ -1587,6 +1588,7 @@ function prolonged(edge: Entity, reach: number): Entity[] {
     }
     case "circle":
     case "spline":
+    case "polyline3d":
     case "text":
     case "mtext":
     case "attdef":
@@ -1761,6 +1763,12 @@ function edgeShapes(edge: Entity, blocks: BlockLookup): Entity[] {
   switch (edge.type) {
     case "polyline":
       return segmentEntities(edge)
+    case "polyline3d":
+      // Its segments, each a line between its vertices' Z: it cuts in plan,
+      // as the UCS projection reads it (3dpoly/p13).
+      return polyline3dSegments(edge).map(([a, b]) =>
+        createLine(a, b, edge.layerId, edge.id)
+      )
     case "text":
       return box(textCorners(edge))
     case "mtext":
@@ -1879,6 +1887,8 @@ function planTrim(
       return planTrimEllipse(target, click, others)
     case "spline":
       return planTrimSpline(target, others)
+    // WHY nothing: AutoCAD trims one in plan (3dpoly/p13), not built here.
+    case "polyline3d":
     case "text":
     case "mtext":
     case "attdef":
@@ -1916,6 +1926,8 @@ function extendRefusal(target: Entity): MessageId | null {
         : "objectDoesNotIntersectEdge"
     case "spline":
       return target.closed ? "cannotExtendThisObject" : null
+    case "polyline3d":
+      return null
     case "circle":
     case "text":
     case "attdef":
@@ -1950,6 +1962,7 @@ function planExtend(
     case "ellipse":
       return planExtendEllipse(target, click, others)
     case "spline":
+    case "polyline3d":
     case "text":
     case "mtext":
     case "attdef":
@@ -2205,6 +2218,10 @@ function circleEdgeCrossPoints(
     case "polyline":
       return segmentEntities(o).flatMap((segment) =>
         circleEdgeCrossPoints(center, radius, segment)
+      )
+    case "polyline3d":
+      return polyline3dSegments(o).flatMap(([a, b]) =>
+        segmentCircleIntersection(a, b, center, radius)
       )
     case "ellipse":
     case "spline":

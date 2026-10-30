@@ -89,6 +89,13 @@ export function drawingBox(
   let low = Number.POSITIVE_INFINITY
   let high = Number.NEGATIVE_INFINITY
   for (const entity of entities) {
+    if (entity.type === "polyline3d") {
+      for (const vertex of entity.vertices) {
+        low = Math.min(low, vertex.z)
+        high = Math.max(high, vertex.z)
+      }
+      continue
+    }
     const z = entityElevation(entity)
     const thickness = entityThickness(entity)
     const top = entity.type === "line" ? lineEndZ(entity) : z

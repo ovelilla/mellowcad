@@ -289,6 +289,19 @@ export const PolylineIcon: LucideIcon = createLucideIcon("Polyline", [
   ["circle", { cx: "21", cy: "17", ...DOT, key: "v4" }],
 ])
 
+/**
+ * 3D Polyline: a chain that leaves its ground plane — an isometric run along
+ * the floor, then up and away — beads at its vertices, like AutoCAD's button.
+ */
+export const Polyline3dIcon: LucideIcon = createLucideIcon("Polyline3d", [
+  ["path", { d: "M3 20 L12 15 L12 6 L21 3", key: "chain" }],
+  ["path", { d: "M12 15 L21 20", strokeDasharray: "2 2", key: "floor" }],
+  ["circle", { cx: "3", cy: "20", ...DOT, key: "v1" }],
+  ["circle", { cx: "12", cy: "15", ...DOT, key: "v2" }],
+  ["circle", { cx: "12", cy: "6", ...DOT, key: "v3" }],
+  ["circle", { cx: "21", cy: "3", ...DOT, key: "v4" }],
+])
+
 /** Lineweight display: three rules of clearly growing thickness. */
 export const LineweightIcon: LucideIcon = createLucideIcon("Lineweight", [
   ["path", { d: "M4 5 H20", strokeWidth: "1", key: "thin" }],

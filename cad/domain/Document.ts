@@ -814,6 +814,7 @@ function usesTextStyle(entity: Entity, id: TextStyleId): boolean {
     case "ellipse":
     case "spline":
     case "polyline":
+    case "polyline3d":
     case "dimension":
     case "hatch":
       return false

@@ -56,6 +56,10 @@ const FROM_SCRATCH: ReadonlyArray<
 > = [
   ["LINE", (c) => c.command("LINE").click(p(0, 0)).click(p(100, 0)).escape()],
   ["PLINE", (c) => c.command("PLINE").click(p(0, 0)).click(p(50, 50)).enter()],
+  [
+    "3DPOLY",
+    (c) => c.command("3DPOLY").click(p(0, 0)).click(p(50, 50)).enter(),
+  ],
   ["CIRCLE", (c) => c.command("CIRCLE").click(p(0, 50)).type("10").enter()],
   // probes arc/p150 (3P), p151 (SCE): the current layer and properties.
   [

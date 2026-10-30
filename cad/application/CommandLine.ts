@@ -254,6 +254,7 @@ export function temporaryPromptLines(
 export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   line: "LINE",
   polyline: "PLINE",
+  polyline3d: "3DPOLY",
   circle: "CIRCLE",
   circlediameter: "CIRCLED",
   circle2p: "CIRCLE2P",

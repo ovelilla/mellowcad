@@ -42,6 +42,7 @@ export function hatchLoopFromEntity(entity: Entity): HatchLoop | null {
     case "arc":
     case "ellipse":
     case "spline":
+    case "polyline3d":
     case "text":
     case "mtext":
     case "attdef":

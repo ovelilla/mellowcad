@@ -50,7 +50,7 @@ inside a command it is that command's step; with nothing to undo it is none; RED
 DYNMODE and SELECTIONCYCLING, are registry variables, which a drawing opened leaves (rectang/p304,
 p321): here they last the session (RECTANG-D46); OSMODE typed (SETVAR, workspace.md) sets the
 running snaps as a step U takes back, NOD's 8 and GCEN's 1024 kept without a snap and 16384
-suspending them as F3 does, which it reads back (workspace/p214, p218, p223)
+suspending them as F3 does, which it reads back (workspace/p214, p218, p223). A 3D polyline snaps as its segments, lines between its vertices at their Z: Endpoint at each vertex, Midpoint of each segment, Nearest, Perpendicular and Intersection on them (3dpoly/p21)
 
 **Missing:** Node and Geometric Center (no POINT object; a dimension's definition points snap as
 Endpoint; Spanish `PUN` and `PUNTO` at OFFSET's distance are Node, `de`, where here PUNTO is refused
@@ -63,7 +63,7 @@ object is probed), extended Intersection and extended Apparent
 Intersection (picked object by object, as an override), Extension from a polyline's arc end, the
 tooltip's distance and angle (`Extension: 12.00 < 0°`), the snapped object's blue glow while Tab
 cycles (d26), APERTURE and AUTOSNAP's settings as variables, per-entity opt-in still required for every
-new entity type (OSOPTIONS-like, deliberate), Intersection between objects in different planes
+new entity type (OSOPTIONS-like, deliberate), Intersection between objects in different planes; Extension from a 3D polyline's two ends alone (here every vertex is a segment's end, so offers it; unprobed)
 
 ### Object snap overrides and `FROM`
 
@@ -357,7 +357,7 @@ on AutoCAD's side), and in a rotated UCS the grips stay at the circle's own quad
 Quadrant snap turns with the UCS (d15); blue squares 9 px across (GRIPSIZE's default), the one
 under the cursor red (d15); a grip's edit at `Command:` is one undo step U and REDO name `Grip
 Edit` (es `Editar pinzamiento`, table 6001; desktop arrays/d14, pline/d09); an array's own grips, squares
-and arrows, and their drags: modify.md, the array object
+and arrows, and their drags: modify.md, the array object. A 3D polyline has a square grip at each vertex and none at its segments' middles (desktop 3dpoly/d01); a vertex goes to the point given, Z and all, as a line's end
 
 **Missing:** the end grip's hover menu, `Stretch` and `Lengthen` (es `Estirar`, `Longitud`, d15),
 and so Lengthen from a grip; an arc's hover menus (desktop arc/d07: the middle grip's `Stretch`,

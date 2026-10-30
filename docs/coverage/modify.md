@@ -492,7 +492,7 @@ Tangent direction (`Specify first point of tangent direction vector or [Normal]:
 hidden clicK (an integer asked with no prompt, `Requires a positive nonzero integer.`, es
 `Requiere un nº entero positivo que no sea cero.`, p323) and UPdate (the main prompt asked again,
 p324); Expression (as ARRAYRECT's) and the `[Expression]` the value prompts list; English's
-`…/eXit]<eXit>:` with no space before the default (p06; as ARRAYRECT's)
+`…/eXit]<eXit>:` with no space before the default (p06; as ARRAYRECT's); a 3D polyline as the path, filtered out here
 
 ### `TRIM` / `EXTEND` · es `RECORTA` / `RR` · `ALARGA` / `AL`
 
@@ -655,7 +655,7 @@ window running draws so what it will trim, planned as its click would commit it,
 the drawing (d03-1, d04-1, d06-2); a red ✕ up and to the right of the pick box or the crosshair
 where a click trims and while TRIM's fence or window runs, none where it extends (d01-3, d02-1),
 and a circle-and-slash where the pick is refused (a circle cut once, a text: d09-1, d09-2). English
-wording from AutoCAD 2027's console (probes trim/p100–p389) and the 2026 help
+wording from AutoCAD 2027's console (probes trim/p100–p389) and the 2026 help. A 3D polyline cuts and bounds as its segments, each a line between its vertices' Z (3dpoly/p13).
 
 **Missing:** Project — AutoCAD's `Enter a projection option [None/Ucs/View] <Ucs>:` (es
 `Indique opción de proyección [Ninguna/SCP/Vista] <SCP>:`), in both modes, its choice an Undo step
@@ -677,7 +677,7 @@ starts with a zero-length segment; **unverified**: the reasons when TRIM's Shift
 the same code here), and whether a crossing at the pick bounds the trim of an arc, a circle or a
 polyline (a line's does not, p261; here theirs does); the circle-and-slash over what EXTEND
 refuses (only TRIM's refusals were seen), the look of EXTEND's fence or window running (here its
-hover's glow) and whether the ✕ shows while a fence crosses nothing (here it does)
+hover's glow) and whether the ✕ shows while a fence crosses nothing (here it does); trimming or extending a 3D polyline itself (AutoCAD cuts it in plan at the Z it has there, `15,10,-1.5`, 3dpoly/p13): nothing happens here
 
 ### `OFFSET` / `O` · es `DESFASE` / `DF` / `EQ`
 
@@ -743,7 +743,7 @@ along the line of sight (p235, p239; an isometric view, p237), and one edge-on t
 (p207, p234); the object under the cursor at `Select object to offset` rolls over with the plain
 glow (desktop d01-4), the picked one turns selected, and the side and through points drag the
 copies they would make drawn as the objects, solid in the source's colour, every piece of a split
-polyline and a tilted object's copy in its plane (d01-5, d02, d03)
+polyline and a tilted object's copy in its plane (d01-5, d02, d03). A 3D polyline is taken and passed over in silence, the prompt asked again (3dpoly/p09; Autodesk's support article quotes `Cannot offset that object.`, which the 2027 console does not say).
 
 **Missing:** OFFSETGAPTYPE 1 and 2, ellipses and splines (AutoCAD offsets them into a SPLINE,
 p196–p198, which is not built: neither is picked, OFFSET-D11), Erase and Layer kept past the
@@ -921,7 +921,7 @@ refused, parallel, a radius too large — the circle-and-slash beside the cursor
 prompt over a 2D polyline draws every corner as the current radius would round it, in the glow,
 over the polyline dimmed (d05-1), and nothing over anything else (d05-2). Wording, English and
 Spanish, from AutoCAD 2027's console (corners/p100–p169, p174, p176, p231–p239, p240–p309,
-p310–p312, p323, p325, p360–p388) and its string tables
+p310–p312, p323, p325, p360–p388) and its string tables. A 3D polyline, first or second, is refused with `  3D Polyline objects may not be filleted.` (es `  Puede que los objetos de polilínea 3D no estén unidos con empalme.`, table 20635, 3dpoly/p26) and the prompt asked again; its Polyline option with `Object selected is not a 2D polyline` (p09).
 
 **Missing:** what AutoCAD makes of a closed ellipse with a line meeting it at radius 0 (the line
 trimmed to it, p324) and with an arc or a circle (a fillet, p368), and of an elliptical arc or a
@@ -1017,7 +1017,7 @@ CIRCLE, a type refused or a locked object), the ghost of the cut lines and the b
 corner in the glow over the originals dimmed (desktop corners/d03-1, d03-2), the circle-and-slash
 over a pair refused, and Polyline's corners at the current distances. Wording, English and Spanish,
 from AutoCAD 2027's console (corners/p100–p169, p182, p184, p314–p319, p327, p370–p382) and its
-string tables
+string tables. A 3D polyline is refused with `  3D Polyline objects may not be chamfered.` (es `… unidos con chaflán.`, composed from table 20635 as FILLET's: **unverified**), its Polyline option with `Object selected is not a 2D polyline` (3dpoly/p09).
 
 **Missing:** the bevel's linetype scale from the second line, as FILLET's arc's; Angle, mEthod and
 Trim (CHAMMODE is always Distance and TRIMMODE 1, so they are not listed, nor the second prompt's
@@ -1054,7 +1054,7 @@ UCS origin (p251, p259, p260), and its hidden `Displacement` asks
 the second point however given and the base at Enter (p249, p250, p254–p257). A stretch by nothing
 changes nothing, its run the step U names (MOVE-D3: p249–p253); the drag is MOVE's (desktop d09);
 a whole ellipse moves with its centre in the window and stays for a quadrant alone (ellipse/p326,
-p331)
+p331). A 3D polyline's caught vertices move, each taking the displacement's Z (3dpoly/p19).
 
 **Missing:** the selection modes' gaps (Command line, `Select objects:`); an elliptical arc with an
 end in the window: AutoCAD moves that end and keeps the other, the arc an affine image of itself
@@ -1113,7 +1113,7 @@ everything was refused too, says `None found.` (es `No hallada.`, table 20841; p
 preselection is counted and sifted the same way after the echo; with nothing left it asks
 `Select objects:` and explodes at the first selection that adds something, with no Enter
 (`1 found, 0 total` for a refused one, p241, p242, p254). It leaves nothing selected and the
-pieces as the Previous set (`ERASE _P` → `2 found`, p236, p258)
+pieces as the Previous set (`ERASE _P` → `2 found`, p236, p258). A 3D polyline becomes a line per segment, each end at its vertex's Z (3dpoly/p11); one of a single vertex is left whole (unprobed).
 
 **Missing:** a dimension, which 2027 explodes into its LINEs, a SOLID per arrowhead and an MTEXT
 (pieces/p258): refused, as there is no SOLID object here (WHY at `ExplodeTool`'s refusal); a hatch
@@ -1178,7 +1178,7 @@ drawn in UCS X 90 into a polyline of that normal, p351); a rising line is left o
 2027 flattens one into the level polyline, its rise lost (p347, p330), yet joins nothing when the
 level line is off Z 0 (p358) — neither copied (PIECES-D24); the order of a fence's and the named
 modes' finds (the drawing's here, unprobed); a run that both grows a polyline and makes new ones
-words its count as new polylines (unprobed)
+words its count as new polylines (unprobed); a 3D polyline as a source or a piece, and lines out of one plane joined into one (pieces/p353; 3dpoly/p27 left unread), discarded here
 
 ### `BREAK` / `BR` / `BREAKATPOINT` · es `PARTE` / `P` · `PARTIRENPUNTO`
 
@@ -1242,7 +1242,7 @@ break point the break the click would make, what it keeps in the selection's glo
 dimmed — nothing glowing where all of it goes, the object glowing where nothing changes —, off the
 object at its nearest point, past an end to the end (d01-2–d01-4, d02-1, d03-1, d03-2, d04-2);
 `Specify first break point:` the object plain (d04-1); BREAKATPOINT's point the object whole in the
-glow (d14-1)
+glow (d14-1). A 3D polyline breaks in plan as a polyline does, each cut end at the Z it has there (3dpoly/p12).
 
 **Missing:** splines (they do not highlight; AutoCAD breaks a CV spline into pieces on control
 points and knots of their own, which a spline here, on uniform knots, cannot hold, spline/p325, and

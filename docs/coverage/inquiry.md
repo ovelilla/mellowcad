@@ -85,7 +85,7 @@ the object snaps and FROM typed at either point (p135–p138); `'AREA` or
 `'_AREA`, at the Command prompt or mid-command, reads the AREA system variable, the last area AREA
 measured in the session, or after Add area or Subtract area the total (p211–p214, p248):
 `AREA = 50.00 (read only)` (es `AREA = 50.00 (sólo lectura)`), as AutoCAD
-2027's console does (p324, p325, p359)
+2027's console does (p324, p325, p359). AREA's Object measures a level 3D polyline as a polyline at its Z (3dpoly/p16) and refuses one whose vertices are not at one Z with `3D Polyline vertices had differing Z coordinates.` (es `Vértices de polilínea 3D con coordenadas diferentes.`, table 20170), AREA and PERIMETER 0, and ends (p15); in Add or Subtract area unprobed.
 
 **Missing:** MEASUREGEOM (es MEDIRGEOM), another command with DIST's and AREA's prompts inside a
 loop: `Move cursor or [Distance/Radius/Angle/ARea/Volume/Quick/Mode/eXit] <eXit>:` (es

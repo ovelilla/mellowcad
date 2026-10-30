@@ -454,6 +454,19 @@ describe("the engine's English surface", () => {
         .do("included", (c) => c.type("90"))
         .do("enter", (c) => c.enter())
     )
+    walk("3DPOLY", createHarness(), (s) =>
+      s
+        .do("3DPOLY", (c) => c.command("3P"))
+        .do("enter", (c) => c.enter())
+        .do("first", (c) => c.click(at(0, 0)))
+        .do("U", (c) => answer(c, "U"))
+        .do("second", (c) => c.type("@100,0,50").enter())
+        .do("third", (c) => c.click(at(100, 100)))
+        .do("FOO", (c) => c.type("FOO").enter())
+        .do("C", (c) => answer(c, "C"))
+        .do("select it", (c) => c.selectAll())
+        .do("escape", (c) => c.escape())
+    )
     walk("SPLINE", createHarness(), (s) =>
       s
         .do("SPLINE", (c) => c.command("SPL"))

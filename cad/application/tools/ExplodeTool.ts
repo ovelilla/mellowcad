@@ -10,6 +10,7 @@ import {
   isWidePolyline,
   mtextLineTexts,
   polylineSegmentGeometries,
+  polyline3dSegments,
 } from "../../domain/entities"
 import {
   hatchPatternLines,
@@ -25,6 +26,7 @@ import { QuestionInput, ToolContext } from "./Tool"
 /** What EXPLODE breaks up. */
 const EXPLODED: ReadonlySet<Entity["type"]> = new Set([
   "polyline",
+  "polyline3d",
   "insert",
   "mtext",
   "hatch",
@@ -55,7 +57,8 @@ function cannotExplode(entity: Entity): string | null {
 /**
  * AutoCAD's EXPLODE. A polyline is replaced by an independent object per
  * segment — a line for a straight one, an arc for a bulged one (the closing
- * segment included when closed). A block reference is replaced by copies of the
+ * segment included when closed); a 3D polyline a line per segment, each at
+ * its vertices' Z. A block reference is replaced by copies of the
  * objects that compose the block, removing **one grouping level at a time**: a
  * nested block comes back as a nested block, to be exploded again, and the
  * objects "revert to their original properties" rather than keeping the ones
@@ -141,6 +144,16 @@ export class ExplodeTool extends SelectionActionTool {
         removedIds.push(entity.id)
         for (const line of mtextLineTexts(entity)) {
           pieces.push(carryOverrides(entity, line))
+        }
+        continue
+      }
+      if (entity.type === "polyline3d") {
+        // A line per segment, each end at its vertex's Z (3dpoly/p11).
+        const segments = polyline3dSegments(entity)
+        if (segments.length === 0) continue
+        removedIds.push(entity.id)
+        for (const [a, b] of segments) {
+          pieces.push(carryOverrides(entity, createLine(a, b, entity.layerId)))
         }
         continue
       }

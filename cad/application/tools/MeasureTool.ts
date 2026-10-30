@@ -20,7 +20,12 @@ import {
 } from "../../geometry/bulgeArcs"
 import { formatAngle, formatLength } from "../../domain/units"
 import { Ucs, worldDirectionToUcs } from "../../domain/ucs"
-import { Entity, isWidePolyline, readsInPlan } from "../../domain/entities"
+import {
+  Entity,
+  isLevelPolyline3d,
+  isWidePolyline,
+  readsInPlan,
+} from "../../domain/entities"
 import { objectArea } from "../../domain/objectArea"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { THEME } from "../../scene/theme"
@@ -904,6 +909,14 @@ export class MeasureTool implements Tool {
 
   /** Whether the object has an area, which was then reported. */
   private reportObject(entity: Entity, ctx: ToolContext): boolean {
+    if (entity.type === "polyline3d" && !isLevelPolyline3d(entity)) {
+      // Said in its own words, AREA and PERIMETER 0, and the command ends
+      // (3dpoly/p15); in Add or Subtract area unprobed.
+      ctx.report(ctx.text.message("polyline3dNotLevel"))
+      this.area = 0
+      this.perimeter = 0
+      return true
+    }
     const measured = objectArea(entity)
     if (measured === null) {
       ctx.report(ctx.text.message("objectHasNoArea"))

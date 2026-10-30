@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { planar } from "../../geometry/Vec3"
+import { Vec3, planar } from "../../geometry/Vec3"
 import {
   arcFrom3Points,
   ellipseParamFromAngle,
@@ -37,6 +37,7 @@ import {
   polylineSegmentGeometries,
   setPolylineBulge,
   rotatePoint,
+  replacePolyline3dVertex,
 } from "../../domain/entities"
 import type { BlockLookup, InsertEntity } from "../../domain/entities"
 import { arrayPlacement } from "../../domain/arrayEdits"
@@ -56,8 +57,19 @@ import { dragArrayGrip, typedArrayGrip } from "./arrayGrips"
 export function withVertexAt(
   entity: Entity,
   index: number,
-  point: Vec2
+  point: Vec2 | Vec3
 ): Entity | null {
+  if (entity.type === "polyline3d") {
+    // The point's Z, as a line's grabbed end takes it; a typed distance,
+    // which has none, keeps the vertex's own.
+    const at = entity.vertices[index]
+    if (!at) return null
+    return replacePolyline3dVertex(entity, index, {
+      x: point.x,
+      y: point.y,
+      z: "z" in point ? point.z : at.z,
+    })
+  }
   if (entity.type === "polyline") {
     return stretchPolylineVertices(entity, new Map([[index, point]]))
   }

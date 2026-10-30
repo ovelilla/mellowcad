@@ -13,6 +13,7 @@ import {
   entityElevation,
   entityZAt,
   polylineSegmentGeometries,
+  polyline3dSegments,
   readsInPlan,
   withElevation,
 } from "../../domain/entities"
@@ -595,6 +596,25 @@ export class DimensionTool implements Tool {
           }
         }
         return best && { entity, origins: pair(best[0], best[1]) }
+      }
+      case "polyline3d": {
+        // The segment picked, as a polyline's, its ends at their own Z
+        // (3dpoly/p25).
+        let best: [Vec3, Vec3] | null = null
+        let bestDistance = Infinity
+        for (const [a, b] of polyline3dSegments(entity)) {
+          const distance = closestPointOnSegment(a, b, at).distance
+          if (distance < bestDistance) {
+            bestDistance = distance
+            best = [a, b]
+          }
+        }
+        return (
+          best && {
+            entity,
+            origins: { first: best[0], second: best[1], circle: null },
+          }
+        )
       }
       case "ellipse":
       case "spline":

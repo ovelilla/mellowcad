@@ -1,0 +1,17 @@
+_3DPOLY
+0,0,0
+10,0,5
+10,10,-3
+
+_LIST
+_L
+
+_OFFSET
+1
+_L
+
+_EXPLODE
+_L
+
+MPDUMP
+-

@@ -17,6 +17,7 @@ import {
   LineEntity,
   PolylineEntity,
 } from "./entityTypes"
+import { closestPointOnPolyline3d, isLevelPolyline3d } from "./polylines3d"
 
 export type ThickEntity = LineEntity | CircleEntity | ArcEntity | PolylineEntity
 
@@ -77,7 +78,7 @@ export function entityAxes(entity: Entity): Axes3 {
 
 /** The axes the object's points are in, when they are not the WCS's; a line's never are. */
 export function planeAxes(entity: Entity): Axes3 | undefined {
-  return entity.type !== "line" && entity.normal
+  return entity.type !== "line" && entity.type !== "polyline3d" && entity.normal
     ? entityAxes(entity)
     : undefined
 }
@@ -98,7 +99,11 @@ export function readsInPlan(entity: Entity): boolean {
  */
 export function entityPointToWorld(entity: Entity, point: Vec2): Vec3 {
   const z = entityZAt(entity, point)
-  if (entity.type === "line" || !entity.normal) {
+  if (
+    entity.type === "line" ||
+    entity.type === "polyline3d" ||
+    !entity.normal
+  ) {
     return { x: point.x, y: point.y, z }
   }
   return axesToWorld(entityAxes(entity), { x: point.x, y: point.y, z })
@@ -106,7 +111,11 @@ export function entityPointToWorld(entity: Entity, point: Vec2): Vec3 {
 
 /** A world point in the object's own coordinates: the plan of its plane, and the height. */
 export function worldToEntity(entity: Entity, point: Vec2 | Vec3): Vec3 {
-  if (entity.type === "line" || !entity.normal) {
+  if (
+    entity.type === "line" ||
+    entity.type === "polyline3d" ||
+    !entity.normal
+  ) {
     return { x: point.x, y: point.y, z: zOf(point) }
   }
   return worldToAxes(entityAxes(entity), point)
@@ -131,7 +140,9 @@ export function hasThickness(entity: Entity): entity is ThickEntity {
   )
 }
 
+/** The Z of its plane; a line's and a 3D polyline's, the Z of their start. */
 export function entityElevation(entity: Entity): number {
+  if (entity.type === "polyline3d") return entity.vertices[0]?.z ?? 0
   return entity.elevation ?? 0
 }
 
@@ -184,7 +195,14 @@ export function withDeltaZ(line: LineEntity, deltaZ: number): LineEntity {
 }
 
 export function shiftEntityZ<T extends Entity>(entity: T, dz: number): T {
-  return dz === 0 ? entity : withElevation(entity, entityElevation(entity) + dz)
+  if (dz === 0) return entity
+  if (entity.type === "polyline3d") {
+    return {
+      ...entity,
+      vertices: entity.vertices.map((v) => ({ ...v, z: v.z + dz })),
+    }
+  }
+  return withElevation(entity, entityElevation(entity) + dz)
 }
 
 /**
@@ -196,6 +214,15 @@ export function scaleEntityZ<T extends Entity>(
   baseZ: number,
   factor: number
 ): T {
+  if (entity.type === "polyline3d") {
+    return {
+      ...entity,
+      vertices: entity.vertices.map((v) => ({
+        ...v,
+        z: baseZ + (v.z - baseZ) * factor,
+      })),
+    }
+  }
   let scaled = withElevation(
     entity,
     baseZ + (entityElevation(entity) - baseZ) * factor
@@ -216,6 +243,10 @@ export function scaleEntityZ<T extends Entity>(
  * points always are.
  */
 export function carryPlane<T extends Entity>(source: Entity, target: T): T {
+  // A 3D polyline has no plane to give, nor one to take: its points hold their Z.
+  if (source.type === "polyline3d" || target.type === "polyline3d") {
+    return target
+  }
   // A line's normal only extrudes it: what is built off its WCS points lies flat.
   const normal =
     source.type === "line" && target.type !== "line"
@@ -260,9 +291,13 @@ export function onPlaneOf<T extends Entity>(entity: T, first: Vec2 | Vec3): T {
 
 /**
  * The Z of the object under `point`, a point on it in plan: a line's is read
- * off the line through its ends (so past them too), any other lies flat.
+ * off the line through its ends (so past them too), a 3D polyline's off its
+ * segment nearest there, any other lies flat.
  */
 export function entityZAt(entity: Entity, point: Vec2): number {
+  if (entity.type === "polyline3d") {
+    return closestPointOnPolyline3d(entity, point).z
+  }
   if (entity.type !== "line" || !entity.deltaZ) return entityElevation(entity)
   const dx = entity.end.x - entity.start.x
   const dy = entity.end.y - entity.start.y
@@ -300,6 +335,7 @@ const PLANE_TOLERANCE = 1e-9
 
 /** Whether the object lies in one plane parallel to the XY plane: a line must not rise. */
 export function isLevel(entity: Entity): boolean {
+  if (entity.type === "polyline3d") return isLevelPolyline3d(entity)
   return (
     entity.type !== "line" || Math.abs(entity.deltaZ ?? 0) <= PLANE_TOLERANCE
   )
@@ -337,8 +373,10 @@ export function sharesTiltedPlane(a: Entity, b: Entity): boolean {
     entity.type === "line"
       ? on({ ...entity.start, z: lineStartZ(entity) }) &&
         on({ ...entity.end, z: lineEndZ(entity) })
-      : facesAlong(entity, normal) &&
-        Math.abs(entityElevation(entity) - height) <= PLANE_TOLERANCE
+      : entity.type === "polyline3d"
+        ? entity.vertices.every(on)
+        : facesAlong(entity, normal) &&
+          Math.abs(entityElevation(entity) - height) <= PLANE_TOLERANCE
   return lies(a) && lies(b)
 }
 

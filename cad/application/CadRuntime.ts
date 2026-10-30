@@ -4729,7 +4729,7 @@ export class CadRuntime extends Observable {
     const entity = ids.length === 1 ? this.document.get(ids[0]) : undefined
     const value = parseNumber(text)
     const count =
-      entity?.type === "polyline"
+      entity?.type === "polyline" || entity?.type === "polyline3d"
         ? entity.vertices.length
         : entity?.type === "spline"
           ? splineDataPoints(entity).length

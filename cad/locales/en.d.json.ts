@@ -5,6 +5,7 @@ declare const source: {
       "select": string
       "line": string
       "polyline": string
+      "polyline3d": string
       "circle": string
       "circlediameter": string
       "circle2p": string
@@ -214,6 +215,7 @@ declare const source: {
       "ellipse": string
       "spline": string
       "polyline": string
+      "polyline3d": string
       "text": string
       "mtext": string
       "attdef": string
@@ -321,6 +323,8 @@ declare const source: {
         "type": string
         "vertexX": string
         "vertexY": string
+        "vertexZ": string
+        "fitSmooth": string
         "firstX": string
         "firstY": string
         "secondX": string
@@ -408,6 +412,7 @@ declare const source: {
         "yes": string
         "no": string
         "none": string
+        "fitNone": string
         "atLeast": string
         "exactly": string
         "fitPoints": string
@@ -452,6 +457,7 @@ declare const source: {
     "names": {
       "LINE": string[]
       "PLINE": string[]
+      "3DPOLY": string[]
       "CIRCLE": string[]
       "CIRCLED": string[]
       "CIRCLE2P": string[]
@@ -588,6 +594,10 @@ declare const source: {
         "OFF": string
       }
       "LINE": {
+        "Close": string
+        "Undo": string
+      }
+      "3DPOLY": {
         "Close": string
         "Undo": string
       }
@@ -1377,6 +1387,7 @@ declare const source: {
       "specifyNextPointOrClose": string
       "lengthOfLine": string
       "specifyStartPoint": string
+      "specifyStartPointOfPolyline": string
       "specifyEndpointOfArcOr": string
       "specifyCenterPointForCircleOr": string
       "specifyRadiusOfCircleOr": string
@@ -1718,6 +1729,7 @@ declare const source: {
       "pointsAreCoincident": string
       "noSolidSurfaceOrMesh": string
       "ucsNoCoordinateSystem": string
+      "polyline3dNoCoordinateSystem": string
       "zAxisNotSupported": string
       "noPreviousUcs": string
       "everythingUndone": string
@@ -1779,6 +1791,8 @@ declare const source: {
       "objectHasNoArea": string
       "polylineWidthIgnored": string
       "allSegmentsUndone": string
+      "polyline3dNotLevel": string
+      "all3dSegmentsUndone": string
       "distanceTotal": string
       "distanceReport": string
       "idReport": string
@@ -1788,6 +1802,8 @@ declare const source: {
       "cannotFilletBetween": string
       "noValidFillet": string
       "cannotFilletItself": string
+      "chamferNot3dPolyline": string
+      "filletNot3dPolyline": string
       "collinearCannotFillet": string
       "collinearCannotChamfer": string
       "cannotChamferItself": string

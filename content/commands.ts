@@ -40,6 +40,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   ELLIPSEC: { group: "draw", variant: true },
   ELLIPSEARC: { group: "draw", variant: true },
   SPLINE: { group: "draw" },
+  "3DPOLY": { group: "draw" },
   RECTANG: { group: "draw" },
   POLYGON: { group: "draw" },
   HATCH: { group: "draw" },

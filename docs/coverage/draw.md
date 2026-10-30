@@ -582,6 +582,39 @@ JOIN / OFFSET / FILLET / HATCH / DIM on a spline or against one; Geometric Cente
 spline's, p311: 10,10 and 40,10; none on an open one, p310, p312), Perpendicular and Tangent on a
 spline (p313, p315, p316) (SPLINE-D51); PEDIT Spline, BLEND
 
+### `3DPOLY` / `3P` · es `3DPOL` / `3P`
+
+**Implemented:** a 3D polyline — straight segments through points each at its own Z, a model type
+of its own (DXF POLYLINE, flag 8: its vertices are world points, with no plane, elevation or
+thickness) — as AutoCAD 2027's console asks it (probes 3dpoly/p01–p07): `Specify start point of
+polyline:`, then `Specify endpoint of line or [Undo]:`, and `[Close/Undo]:` from the second segment
+on (es `Precise punto inicial de polilínea:`, `Precise punto final de línea o [desHacer]:`,
+`[Cerrar/desHacer]:`; Close typed before is `Point or option keyword required.`, es `Se requiere un
+punto o una opción.`, p06, as `FOO` is, p02). Enter at the start is refused, `Invalid point.` (es
+`Punto no válido.`), and asked again — no Continue (p03); later Enter ends, and keeps even the
+start alone as a polyline of one vertex, which U takes back with the rest as `3DPOLY` (p05). Undo
+steps back one vertex, `All segments already undone.` (es `Ya se han deshecho todos los
+segmentos.`, table 20288) with none (p06); Close joins the start and ends. A point with no Z lies
+at ELEVATION, a typed Z is kept, a pick lies at the elevation it is on (p04); points are read in the
+UCS and stored in the WCS (p07). Not transparent (p18). The polyline wears what is current at its
+start, and is added at the end, Escape included (**unverified**: the console cannot press Escape;
+AutoCAD appends it at the start point, p01's trace). The jig draws the chain and the next segment
+in its colour; dynamic input asks Length and Angle as PLINE does. Its name and alias, and the
+ribbon's place (Home ▸ Draw, expanded, beside Spline Fit and Spline CV: acad.cuix ID_PanelDraw),
+from the 2027 `acad.pgp` and `acad.cuix`. LINE's Continue starts at its last vertex, Z and all
+(p23). It draws and is picked as its segments in any view; its linetype is laid per segment, as a
+line's (**unverified**: PLINEGEN is a 2D polyline's). What the other commands do with one is in
+their entries: MOVE, COPY, ROTATE, SCALE, MIRROR and the arrays carry it whole, STRETCH, EXPLODE,
+BREAK, OFFSET, FILLET, CHAMFER, TRIM / EXTEND (modify.md), AREA (inquiry.md), DIMLINEAR
+(dimensions.md), UCS OBject (coordinate-systems.md), the snaps and grips (drafting-aids.md), the
+Properties palette (properties.md). Saved from drawing file version 36.
+
+**Missing:** PEDIT's Spline and Decurve (a spline-fit 3D polyline, the palette's Fit/Smooth
+Quadratic and Cubic), LIST of one (p08: `POLYLINE`, `Open space`, `area` of the vertices' vector
+area, `length` in space, then each `VERTEX`), trimming and extending one (modify.md), JOIN into
+one (pieces/p353), one as a hatch boundary or ARRAYPATH's path, the 3D Visualization group's
+Material row (desktop d02), and the grips' hover menus (Stretch / Add / Remove Vertex, unprobed)
+
 ### `TEXT` / `DTEXT` / `DT` / `-TEXT` · es `TEXTO` / `T` / `TEXTODIN` / `-TEXTO`
 
 **Implemented:** single-line text, 13 justifications, text styles table, as AutoCAD 2027's console

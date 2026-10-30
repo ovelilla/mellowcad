@@ -72,6 +72,7 @@ import {
   InsertIcon,
   OffsetIcon,
   PolylineIcon,
+  Polyline3dIcon,
   SplineCvIcon,
   StretchIcon,
 } from "./icons"
@@ -83,6 +84,7 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   select: MousePointer2,
   line: Slash,
   polyline: PolylineIcon,
+  polyline3d: Polyline3dIcon,
   circle: CircleRadiusIcon,
   circlediameter: CircleDiameterIcon,
   circle2p: Circle2PointsIcon,
@@ -212,6 +214,8 @@ const PALETTE: readonly PaletteSection[] = [
       // On the ribbon Spline Fit and Spline CV are in the expanded Draw
       // panel; the palette has room for their drop-down.
       flyout("spline", ["splinefit", "splinecv"]),
+      // Also in the expanded Draw panel (acad.cuix ID_PanelDraw).
+      "polyline3d",
     ],
   },
   {

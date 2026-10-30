@@ -7,7 +7,9 @@ import {
   Bounds,
   Entity,
   EntityId,
+  carryOverrides,
   closestOnEntity,
+  createLine,
   entityBounds,
   entityPointToWorld,
   entityElevation,
@@ -15,6 +17,7 @@ import {
   lineEndZ,
   lineStartZ,
   planeAxes,
+  polyline3dSegments,
 } from "../../domain/entities"
 import { Viewport } from "../Viewport"
 import { cursorInPlane, cursorOnEntityPlane } from "../viewPick"
@@ -66,17 +69,28 @@ function tierOf(type: SnapType): Tier {
 
 /**
  * What the providers snap to: the drawing, with every block reference replaced
- * by the geometry it draws. Built once per resolve so the expansion is not
- * repeated by each of the ten providers.
+ * by the geometry it draws, and every 3D polyline by its segments, lines of its
+ * id: their ends, middles, nearest and perpendicular points and crossings are
+ * the polyline's, each at its own Z (3dpoly/p21), seen along their image in
+ * any view. Built once per resolve so the expansion is not repeated by each of
+ * the ten providers.
  */
 function snapEntities(document: DocumentReader): Entity[] {
   const blocks = document.blockLookup()
   const entities: Entity[] = []
   for (const entity of document.getEntities()) {
-    if (entity.type === "insert") {
-      entities.push(...insertFlatGeometry(entity, blocks))
-    } else {
-      entities.push(entity)
+    const drawn =
+      entity.type === "insert" ? insertFlatGeometry(entity, blocks) : [entity]
+    for (const piece of drawn) {
+      if (piece.type !== "polyline3d") {
+        entities.push(piece)
+        continue
+      }
+      for (const [a, b] of polyline3dSegments(piece)) {
+        entities.push(
+          carryOverrides(piece, createLine(a, b, piece.layerId, piece.id))
+        )
+      }
     }
   }
   return entities

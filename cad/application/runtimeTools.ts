@@ -2,6 +2,7 @@ import { Tool } from "./tools/Tool"
 import { SelectTool } from "./tools/SelectTool"
 import { LineTool } from "./tools/LineTool"
 import { PolylineTool } from "./tools/PolylineTool"
+import { Polyline3dTool } from "./tools/Polyline3dTool"
 import { CircleTool } from "./tools/CircleTool"
 import { ArcTool } from "./tools/ArcTool"
 import { EllipseTool } from "./tools/EllipseTool"
@@ -111,6 +112,7 @@ export function defaultTools(
     new SplineTool("spline", null, splineSettings),
     new SplineTool("splinefit", "fit", splineSettings),
     new SplineTool("splinecv", "cv", splineSettings),
+    new Polyline3dTool(),
     new RectangleTool(),
     new PolygonTool(),
     new HatchTool(),

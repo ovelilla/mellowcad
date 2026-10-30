@@ -3,7 +3,13 @@ import { Vec3, planar } from "../../geometry/Vec3"
 import {
   arcSweepAngle,
   ArcEntity,
+  carryOverrides,
   carryPiece,
+  createPolyline3d,
+  polyline3dParamAt,
+  polyline3dSegments,
+  polyline3dSpan,
+  type Polyline3dEntity,
   CircleEntity,
   createArc,
   createLine,
@@ -104,6 +110,7 @@ type BreakGeom =
       readonly bulges: readonly number[]
       readonly widths: readonly PolylineWidth[]
     }
+  | { readonly kind: "polyline3d"; readonly vertices: readonly Vec3[] }
 
 /** The surviving pieces, from the object's start — none when all of it goes. */
 type BreakResult = readonly BreakGeom[]
@@ -490,6 +497,7 @@ const BROKEN: ReadonlySet<Entity["type"]> = new Set([
   "circle",
   "ellipse",
   "polyline",
+  "polyline3d",
 ])
 
 /**
@@ -527,6 +535,7 @@ function cannotBreak(entity: Entity): MessageId | null {
     case "ellipse":
     case "spline":
     case "polyline":
+    case "polyline3d":
       return null
     default: {
       const unhandled: never = entity
@@ -575,6 +584,11 @@ function toEntity(source: Entity, geom: BreakGeom, id?: EntityId): Entity {
           id,
           geom.widths
         )
+      )
+    case "polyline3d":
+      return carryOverrides(
+        source,
+        createPolyline3d(geom.vertices, false, source.layerId, id)
       )
   }
 }
@@ -627,6 +641,8 @@ function computeBreak(
           )
     case "ellipse":
       return breakEllipse(entity, first, second)
+    case "polyline3d":
+      return breakPolyline3d(entity, first, second)
     case "spline":
     case "text":
     case "mtext":
@@ -745,6 +761,39 @@ function breakPolyline(
     ...polylineSpan(poly, from, to),
   })
 
+  if (tb - ta < PARAM_EPS) {
+    if (ta < PARAM_EPS || ta > count - PARAM_EPS) return null
+    return [span(0, ta), span(ta, count)]
+  }
+  if (poly.closed) {
+    const rest = ta + count - tb
+    return rest > PARAM_EPS ? [span(tb, ta + count)] : []
+  }
+  const kept: BreakGeom[] = []
+  if (ta > PARAM_EPS) kept.push(span(0, ta))
+  if (tb < count - PARAM_EPS) kept.push(span(tb, count))
+  return kept
+}
+
+/**
+ * A 3D polyline cut in plan as a polyline is, each cut end at the Z the
+ * polyline has there (3dpoly/p12: 5,0 to 10,5 leaves 10,5,1 onwards).
+ */
+function breakPolyline3d(
+  poly: Polyline3dEntity,
+  first: Vec2,
+  second: Vec2
+): BreakResult | null {
+  const count = polyline3dSegments(poly).length
+  if (count === 0) return null
+  const t1 = polyline3dParamAt(poly, first)
+  const t2 = polyline3dParamAt(poly, second)
+  const ta = Math.min(t1, t2)
+  const tb = Math.max(t1, t2)
+  const span = (from: number, to: number): BreakGeom => ({
+    kind: "polyline3d",
+    vertices: polyline3dSpan(poly, from, to),
+  })
   if (tb - ta < PARAM_EPS) {
     if (ta < PARAM_EPS || ta > count - PARAM_EPS) return null
     return [span(0, ta), span(ta, count)]

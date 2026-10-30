@@ -10,6 +10,7 @@ import {
   AttributeDefinitionEntity,
   InsertEntity,
   PolylineEntity,
+  Polyline3dEntity,
   Entity,
   ArrayParameters,
 } from "./entityTypes"
@@ -52,6 +53,7 @@ import {
 } from "./elevation"
 import { splineDataPoints, splineWithPoint } from "./splines"
 import { insertReflects } from "./entityFactories"
+import { replacePolyline3dVertex } from "./polylines3d"
 
 /** A geometry value that can be retyped directly on a selected entity. */
 export type EntityProperty =
@@ -103,6 +105,8 @@ export type EntityProperty =
   | "vertex"
   | "vertexX"
   | "vertexY"
+  /** A 3D polyline's vertex Z, in the WCS here like the Z rows. */
+  | "vertexZ"
   | "startSegmentWidth"
   | "endSegmentWidth"
   | "globalWidth"
@@ -219,6 +223,8 @@ export function applyEntityProperty(
       return null
     case "polyline":
       return applyPolylineProperty(entity, property, value, vertex)
+    case "polyline3d":
+      return applyPolyline3dProperty(entity, property, value, vertex)
     case "spline": {
       // The palette's current fit point or control point; the rest is
       // SPLINEDIT's, which is not built.
@@ -284,6 +290,30 @@ function applyPolylineProperty(
     case "closed":
       return value === 0 || value === 1
         ? withPolylineClosed(poly, value === 1)
+        : null
+    default:
+      return null
+  }
+}
+
+function applyPolyline3dProperty(
+  poly: Polyline3dEntity,
+  property: EntityProperty,
+  value: number,
+  vertex: number
+): Polyline3dEntity | null {
+  const at = poly.vertices[vertex]
+  if (!at) return null
+  switch (property) {
+    case "vertexX":
+      return replacePolyline3dVertex(poly, vertex, { ...at, x: value })
+    case "vertexY":
+      return replacePolyline3dVertex(poly, vertex, { ...at, y: value })
+    case "vertexZ":
+      return replacePolyline3dVertex(poly, vertex, { ...at, z: value })
+    case "closed":
+      return value === 0 || value === 1
+        ? { ...poly, closed: value === 1 }
         : null
     default:
       return null
