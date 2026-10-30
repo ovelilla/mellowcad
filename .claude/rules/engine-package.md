@@ -19,6 +19,7 @@ paths:
   - "packages/*/README.md"
   - "examples/**"
   - ".changeset/**"
+  - ".github/workflows/**"
 ---
 
 # The packages
@@ -117,9 +118,11 @@ license and the Autodesk trademark note.
 - **Versions are Changesets'** (`.changeset/`, 0.x: a breaking change is a minor, `access`
   public, each package on its own version): a change a host would notice adds a changeset
   (`npx changeset`), and `npm run version-packages` bumps, writes the changelogs and moves the
-  examples' ranges. Changesets 3 gives a peer dependent whose range the bump leaves behind a
-  patch and a new range, never a major. Every package has `repository` with its `directory`:
-  npm resolves the READMEs' relative links by it. `npm publish --dry-run -w cad` runs the whole
+  examples' ranges; the Release workflow (`.github/workflows/release.yml`, run by hand)
+  publishes with npm's trusted publishing, once a package's first version is on npm. Changesets 3
+  gives a peer dependent whose range the bump leaves behind a patch and a new range, never a
+  major. Every package has `repository` with its `directory`: npm resolves the READMEs' relative
+  links by it. `npm publish --dry-run -w cad` runs the whole
   `check:hosts`: `hosts.ts` drops the `npm_config_dry_run` it exports, or no `npm pack` would
   write a tarball.
 - A runtime dependency of the engine goes in `cad/package.json`'s `dependencies` (today only

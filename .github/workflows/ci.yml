@@ -1,18 +1,26 @@
 name: CI
 
+# The pre-commit hook's checks, again after a push. Free on a public repo's
+# standard runners; kept lean all the same: one job, a timeout, a newer push
+# cancels an older run, and a change to prose only runs nothing.
 on:
   push:
-    branches: [master, main]
+    branches: [main]
+    paths-ignore: ["**/*.md", "LICENSE", ".claude/**", ".changeset/**"]
   pull_request:
+    paths-ignore: ["**/*.md", "LICENSE", ".claude/**", ".changeset/**"]
 
-# A newer push supersedes an in-flight run for the same branch.
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
 
+permissions:
+  contents: read
+
 jobs:
   verify:
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     steps:
       - uses: actions/checkout@v4
 
@@ -26,8 +34,12 @@ jobs:
       - name: Typecheck
         run: npm run typecheck
 
-      - name: Engine package
-        run: npm run build -w cad && npm run check -w cad
+      - name: Packages
+        run: |
+          for package in cad packages/*; do
+            npm run build -w "$package"
+            npm run check -w "$package"
+          done
 
       - name: Lint
         run: npm run lint
@@ -39,11 +51,3 @@ jobs:
       # own, so a drop in coverage is a build failure rather than a report.
       - name: Test
         run: npm run test:coverage
-
-      - name: Upload coverage
-        if: always()
-        uses: actions/upload-artifact@v4
-        with:
-          name: coverage
-          path: coverage/
-          retention-days: 7

@@ -1,0 +1,38 @@
+name: Release
+
+# Run by hand from the Actions tab, never on a push: it publishes every
+# package whose version npm does not have yet (`changeset publish`), through
+# npm's trusted publishing, so with provenance and no token. The first
+# version of a package is published from the owner's machine: npm only
+# trusts a workflow for a package that already exists.
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: release
+  cancel-in-progress: false
+
+permissions:
+  contents: write # the version tags
+  id-token: write # trusted publishing and provenance
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          registry-url: https://registry.npmjs.org
+
+      - run: npm ci
+
+      # Each package's prepublishOnly runs its check:hosts first.
+      - run: npx changeset publish
+
+      # Its tags are lightweight, which --follow-tags would leave behind.
+      - run: git push origin --tags
