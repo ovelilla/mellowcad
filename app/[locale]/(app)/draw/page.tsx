@@ -4,8 +4,9 @@ import { CadEditor } from "@mellowcad/editor"
 import { LogoMark } from "@/components/marketing/logo"
 import { loadEditorLocale } from "@/i18n/editor"
 import { loadEngineLocale } from "@/i18n/engine"
-import { languageLinks } from "@/i18n/navigation"
+import { languageLinks, localePath } from "@/i18n/navigation"
 import { DIRECTION } from "@/i18n/routing"
+import { DOCS_PATH } from "@/lib/docs/packages"
 import { EDITOR_LAYOUT_STORAGE, EDITOR_PATH } from "@/lib/site"
 import { EDITOR_SHEET_ID, SHEET_TRANSITION } from "@/lib/view-transition"
 
@@ -13,7 +14,8 @@ import { EDITOR_SHEET_ID, SHEET_TRANSITION } from "@/lib/view-transition"
 // the page's language without waiting for another request. The site's own parts
 // of the editor — its direction, its mark, its languages, its storage keys and
 // the sheet the landing grows into, which the layout's head reads too — are
-// filled in here.
+// filled in here, and so is F1's help: the command's entry in the docs'
+// reference (`/docs/commands#line`), or getting started at rest.
 export default async function Page() {
   const locale = await getLocale()
   return (
@@ -25,6 +27,10 @@ export default async function Page() {
       languages={languageLinks(locale, EDITOR_PATH)}
       layoutStorage={EDITOR_LAYOUT_STORAGE}
       sheet={{ id: EDITOR_SHEET_ID, name: SHEET_TRANSITION }}
+      help={{
+        index: localePath(locale, `${DOCS_PATH}/getting-started`),
+        command: `${localePath(locale, `${DOCS_PATH}/commands`)}#{command}`,
+      }}
     />
   )
 }

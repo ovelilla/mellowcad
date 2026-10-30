@@ -280,6 +280,20 @@ describe("CadEngine owning the document (the editor)", () => {
     expect(keyAt(page, page.search, "c", true).defaultPrevented).toBe(false)
   })
 
+  it("takes F1 for the host's help, and leaves it to the browser without one", () => {
+    const asked: (string | null)[] = []
+    const helped = engineOn({
+      scope: "document",
+      onHelp: (command) => asked.push(command),
+    })
+    expect(keyAt(page, page.search, "F1").defaultPrevented).toBe(true)
+    expect(asked).toEqual([null])
+    helped.dispose()
+
+    editor()
+    expect(keyAt(page, page.search, "F1").defaultPrevented).toBe(false)
+  })
+
   it("leaves a modal dialog every key", () => {
     const engine = editor()
     const dialog = new FakeNode(page.document, "DIALOG")

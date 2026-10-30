@@ -35,6 +35,8 @@ export interface CadCanvasProps extends Omit<
    * by then the page knows what it laid out before the engine existed.
    */
   readonly paletteOpen?: () => boolean
+  /** Shows a command's help on F1; see `CadEngineOptions.onHelp`. */
+  readonly onHelp?: (command: string | null) => void
   /** Handed the engine once it is built, and `null` once it is disposed. */
   readonly onEngine?: (engine: CadEngine | null) => void
 }
@@ -46,13 +48,15 @@ export interface CadCanvasProps extends Omit<
  * `useEditorState(engine)` and calls the engine's methods.
  */
 export function CadCanvas(props: CadCanvasProps): ReactElement {
-  const { store, scope, locale, paletteOpen, onEngine, ...canvas } = props
+  const { store, scope, locale, paletteOpen, onHelp, onEngine, ...canvas } =
+    props
   const ref = useRef<HTMLCanvasElement | null>(null)
   const options = useRef<EngineMount>({
     store,
     scope,
     locale,
     paletteOpen,
+    onHelp,
     onEngine,
   })
 
@@ -66,13 +70,13 @@ export function CadCanvas(props: CadCanvasProps): ReactElement {
 
 type EngineMount = Pick<
   CadCanvasProps,
-  "store" | "scope" | "locale" | "paletteOpen" | "onEngine"
+  "store" | "scope" | "locale" | "paletteOpen" | "onHelp" | "onEngine"
 >
 
 /** Builds the engine on `canvas` and hands it out; the returned cleanup disposes it. */
 export function mountEngine(
   canvas: HTMLCanvasElement,
-  { store, scope, locale, paletteOpen, onEngine }: EngineMount
+  { store, scope, locale, paletteOpen, onHelp, onEngine }: EngineMount
 ): () => void {
   const engine = new CadEngine(canvas, {
     ...(store && { store: store() }),
@@ -81,6 +85,7 @@ export function mountEngine(
       : scope?.current && { scope: scope.current }),
     ...(locale && { locale }),
     ...(paletteOpen && { paletteOpen: paletteOpen() }),
+    ...(onHelp && { onHelp }),
   })
   onEngine?.(engine)
   return () => {

@@ -60,6 +60,8 @@ Its engine options are read once, when the engine is built, as the engine's own 
 - `locale` is the engine's language (`@mellowcad/engine/locales/<tag>`); none, English.
 - `paletteOpen` says whether a palette panel starts open, for a host that lays one out before the
   engine exists.
+- `onHelp` is F1's help, handed the running command's global name or `null`; none, F1 is the
+  browser's.
 
 The engine draws and takes the pointer and the keys; everything else is a call to it.
 

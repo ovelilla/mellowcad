@@ -154,6 +154,22 @@ workspace/p306, p316); program state, so it leaves the drawing unchanged. Not tr
 `'CLEANSCREENON` inside a command is refused, `** That command may not be invoked transparently **`
 (p305)
 
+### F1 (Help)
+
+**Implemented:** F1 asks the host for Help (Function Key Reference: "Displays Help for the active
+tooltip, command, palette or dialog box"; HELP: "Press F1 … when command is active to display Help
+for that command"): the running command's global name — a transparent one's inside another
+(`'ZOOM` in LINE), `LINE` from `LINEA` — or none at `Command:` (`EngineHost.showHelp`,
+`CadEngineOptions.onHelp`); taken from a focused field too, as every function key. `/draw` opens
+the command's entry in the docs' reference (`/docs/commands#line`, in the page's language) or, at
+rest, Getting started, in a tab of its own, as AutoCAD opens its Help in a browser. A host that
+shows no help leaves F1 to the browser. WHY a page may take it: Chrome's F1 is
+`IDC_HELP_PAGE_VIA_KEYBOARD`, not in `kReservedCommandIds` (`chrome/browser/ui/accelerator_table.cc`,
+main, 2026-10-30)
+
+**Missing:** HELP and `'HELP` as commands; F1 over a tooltip, a palette or a dialog (Help for
+that one); a command named in the command line but not run yet; offline Help
+
 ### Top bar
 
 **Implemented:** the application menu (New, Open, Save, Save As, then Drawing Units, which the help

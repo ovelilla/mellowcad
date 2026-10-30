@@ -93,6 +93,8 @@ server page loads the catalogs and passes them as props.
   `<head>`: it lays the panel out as the page is parsed, so the drawing does not jump once the
   scripts run.
 - `sheet`, the id and `view-transition-name` of the canvas's cell, for a page that grows into it.
+- `help`, where F1 opens help in a new tab, as AutoCAD's does: `command` while one runs, its
+  `{command}` replaced by the command's global name in lower case, and `index` with none.
 
 ## Replacing a piece
 

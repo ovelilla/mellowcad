@@ -306,6 +306,7 @@
         "window": "Ventana",
         "commandLine": "Línea de comandos"
       },
+      "help": "Abre en una pestaña nueva la ayuda del comando en curso, o esta documentación si no hay ninguno.",
       "selectAll": "Seleccionar todos los objetos",
       "enter": "Ejecuta lo escrito. Sin nada escrito toma el valor por defecto de la solicitud o termina el comando, y sin un comando en curso repite el último.",
       "escape": "Cancela el comando en curso; un primer Esc borra lo que está a medio escribir.",

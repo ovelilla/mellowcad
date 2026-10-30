@@ -2,6 +2,7 @@ export {
   CadEditor,
   type CadEditorComponents,
   type CadEditorProps,
+  type HelpLinks,
 } from "./cad-editor"
 export type { EditorLocale } from "./locales/types"
 export { paletteLayoutScript } from "./palette-layout"

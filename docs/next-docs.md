@@ -1,6 +1,6 @@
 # mellowcad.com: producto y documentación — brief
 
-> **Estado:** acordado el 2026-10-30; fases 1 y 2 hechas el mismo día, la 3 en curso (entregas 1 a 4 de 5). Sigue la
+> **Estado:** acordado el 2026-10-30; fases 1 y 2 hechas el mismo día, la 3 en curso (entregas 1 a 5 de 5). Sigue la
 > convención de `docs/next-*.md`: se borra cuando la fase 3 haya ocurrido.
 
 ## 1. Objetivo

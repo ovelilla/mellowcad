@@ -27,6 +27,7 @@ export type ShortcutMode =
 
 /** What a key does that no command or mode names. */
 export type ShortcutBehaviour =
+  | "help"
   | "selectAll"
   | "enter"
   | "escape"
@@ -49,6 +50,7 @@ export const SHORTCUT_SECTIONS = [
   {
     id: "aids",
     shortcuts: [
+      { keys: [{ key: "F1" }], action: { behaviour: "help" } },
       { keys: [{ key: "F2" }], action: { mode: "commandHistory" } },
       { keys: [{ key: "F3" }], action: { mode: "objectSnap" } },
       { keys: [{ key: "F4" }], action: { mode: "selectionCycling" } },

@@ -49,20 +49,23 @@ describe("CadCanvas", () => {
     expect(onEngine).toHaveBeenCalledExactlyOnceWith(expect.any(Object))
   })
 
-  it("asks for the store and the palette's fold when it builds", () => {
+  it("asks for the store and the palette's fold when it builds, and hands on F1's help", () => {
     built.length = 0
     const store = { load: () => null }
+    const onHelp = () => {}
     mountEngine(canvas, {
       store: () => store as never,
       scope: "document",
       locale: { tag: "es" } as never,
       paletteOpen: () => false,
+      onHelp,
     })
     expect(built[0].options).toEqual({
       store,
       scope: "document",
       locale: { tag: "es" },
       paletteOpen: false,
+      onHelp,
     })
   })
 

@@ -60,6 +60,9 @@ claims follow `i18n.md`.
   external, so neither `docs:check` nor a remark plugin can read the catalog.
 - Every command has a `###` heading in `docs/coverage/` naming it in a code span: the reference
   links to it and fails without one.
+- **The reference's anchors are global names in lower case** (`#line`, `#-hatch`), the same in
+  every language: F1 in `/draw` opens them (its page's `help`), so renaming one breaks the editor's
+  help.
 - **A written page never types a command's name**: `<Command id="NEW" />` is the name in the page's
   command language (`NUEVO` in Spanish), read from `cad/locales/*.json` by `remarkCommandNames`,
   which a remark plugin can read without the engine.

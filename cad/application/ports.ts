@@ -18,6 +18,12 @@ export interface EngineHost {
   setCursor(cursor: string): void
   /** Returns keyboard focus to the drawing surface (e.g. after typed input). */
   focusSurface(): void
+  /**
+   * Shows the help of `command`, its global name, or the help's start when
+   * none is running: AutoCAD's F1. A host without it leaves F1 to its
+   * platform.
+   */
+  showHelp?(command: string | null): void
 }
 
 /**

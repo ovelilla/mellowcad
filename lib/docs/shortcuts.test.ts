@@ -29,10 +29,14 @@ const MODE_STATE: Record<ShortcutMode, (state: EngineState) => boolean> = {
   objectSnapTracking: (state) => state.objectSnapTrackingActive,
 }
 
-/** A drawing with history: two lines on top of each other and one drawn by LINE. */
-function drawing(): CadHarness {
+/**
+ * A drawing with history: two lines on top of each other and one drawn by
+ * LINE, in a host that shows help, as `/draw` does.
+ */
+function drawing(help: (command: string | null) => void = () => {}): CadHarness {
   const h = createHarness({
     entities: [lineOf(p(0, 0), p(100, 0)), lineOf(p(0, 0), p(100, 0))],
+    help,
   })
   h.command("LINE").click(p(0, 50)).click(p(50, 50)).escape()
   return h
@@ -51,6 +55,14 @@ const name = (combo: KeyCombo) =>
     .join("+")
 
 const BEHAVIOURS: Record<ShortcutBehaviour, (h: CadHarness, combo: KeyCombo) => void> = {
+  help: (_, combo) => {
+    const asked: (string | null)[] = []
+    const h = drawing((command) => asked.push(command))
+    expect(press(h, combo)).toBe(true)
+    h.command("CIRCLE")
+    press(h, combo)
+    expect(asked).toEqual([null, "CIRCLE"])
+  },
   selectAll: (h, combo) => {
     expect(press(h, combo)).toBe(true)
     expect(h.state().selectionCount).toBe(3)

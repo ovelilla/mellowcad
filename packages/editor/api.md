@@ -30,6 +30,7 @@ export interface CadEditorProps {
     languages?: readonly LanguageLink[];
     layoutStorage?: LayoutStorage;
     sheet?: SheetTransition;
+    help?: HelpLinks;
     components?: CadEditorComponents;
 }
 
@@ -43,6 +44,12 @@ export type { EditorLocale }
 export interface EditorLocale {
     readonly tag: string;
     readonly messages: DeepPartial<EditorMessages>;
+}
+
+export type { HelpLinks }
+export interface HelpLinks {
+    readonly index: string;
+    readonly command: string;
 }
 
 export { NavigationBar }

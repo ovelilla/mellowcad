@@ -14,6 +14,7 @@ export interface CadCanvasProps extends Omit<CanvasHTMLAttributes<HTMLCanvasElem
     readonly scope?: RefObject<HTMLElement | null> | "document";
     readonly locale?: EngineLocale;
     readonly paletteOpen?: () => boolean;
+    readonly onHelp?: (command: string | null) => void;
     readonly onEngine?: (engine: CadEngine | null) => void;
 }
 

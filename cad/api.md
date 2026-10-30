@@ -88,6 +88,7 @@ export interface CadDriverOptions {
     readonly locale?: EngineLocale;
     readonly files?: FileTransport | null;
     readonly clipboard?: Clipboard | null;
+    readonly help?: (command: string | null) => void;
 }
 
 export { CadEngine }
@@ -224,6 +225,7 @@ export interface CadEngineOptions {
     readonly scope?: HTMLElement | "document";
     readonly locale?: EngineLocale;
     readonly paletteOpen?: boolean;
+    readonly onHelp?: (command: string | null) => void;
 }
 
 export type { CameraTransform }

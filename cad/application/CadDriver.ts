@@ -40,7 +40,9 @@ export interface RecordingHost extends EngineHost {
   readonly focusCount: number
 }
 
-export function createRecordingHost(): RecordingHost {
+export function createRecordingHost(
+  showHelp?: (command: string | null) => void
+): RecordingHost {
   const cursors: string[] = []
   let renderCount = 0
   let focusCount = 0
@@ -54,6 +56,7 @@ export function createRecordingHost(): RecordingHost {
     focusSurface: () => {
       focusCount += 1
     },
+    ...(showHelp && { showHelp }),
     get renderCount() {
       return renderCount
     },
@@ -95,6 +98,8 @@ export interface CadDriverOptions {
   /** File save/open. Absent means the host offers none (SSR, headless). */
   readonly files?: FileTransport | null
   readonly clipboard?: Clipboard | null
+  /** Shows a command's help on F1 (`EngineHost.showHelp`); F1 does nothing without it. */
+  readonly help?: (command: string | null) => void
 }
 
 export interface PointerModifiers {
@@ -116,7 +121,7 @@ export class CadDriver {
   readonly clipboard: Clipboard | null
 
   constructor(options: CadDriverOptions = {}) {
-    this.host = createRecordingHost()
+    this.host = createRecordingHost(options.help)
     this.clipboard = options.clipboard ?? null
     this.runtime = new CadRuntime(
       this.host,

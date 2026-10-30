@@ -4,7 +4,12 @@ import { describe, expect, it } from "vitest"
 
 import type { CadEngine } from "@mellowcad/engine"
 import type { EditorState } from "@mellowcad/react"
-import { CadEditor, type CadEditorComponents, EditorZones } from "./cad-editor"
+import {
+  CadEditor,
+  type CadEditorComponents,
+  EditorZones,
+  helpUrl,
+} from "./cad-editor"
 import type { PieceProps } from "./piece"
 import type { StatusBarProps } from "./status-bar"
 import type { TopBarProps } from "./top-bar"
@@ -112,5 +117,21 @@ describe("CadEditor's components", () => {
       createElement(CadEditor, { components: { ...NONE, TopBar: undefined } })
     )
     expect(zones(html)).toEqual(["top", "canvas"])
+  })
+})
+
+describe("CadEditor's help", () => {
+  const help = {
+    index: "/docs/getting-started",
+    command: "/es/docs/commands#{command}",
+  }
+
+  it("opens the running command's entry, by its global name", () => {
+    expect(helpUrl(help, "LINE")).toBe("/es/docs/commands#line")
+    expect(helpUrl(help, "-HATCH")).toBe("/es/docs/commands#-hatch")
+  })
+
+  it("opens the index with no command running", () => {
+    expect(helpUrl(help, null)).toBe("/docs/getting-started")
   })
 })

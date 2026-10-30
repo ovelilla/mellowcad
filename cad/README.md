@@ -45,6 +45,8 @@ The defaults are safe on any page:
   given, and only once it is pressed or focused, until something outside is. Pass the element that
   also holds the host's controls for the canvas, or `"document"` to take the whole page wherever
   focus sits, as the editor does.
+- **`onHelp`**, what F1 does, as AutoCAD's Help: it is called with the global name of the running
+  command (`"LINE"`, whatever the language), or `null` with none. Without it F1 is the browser's.
 
 ## Without a browser
 

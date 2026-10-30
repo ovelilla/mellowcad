@@ -306,6 +306,7 @@
         "window": "Window",
         "commandLine": "Command line"
       },
+      "help": "Opens the help of the running command in a new tab, or these docs with none.",
       "selectAll": "Select every object",
       "enter": "Runs what is typed. With nothing typed it takes the prompt's default or ends the command, and with no command running it repeats the last one.",
       "escape": "Cancels the running command; a first Esc clears what is half typed.",

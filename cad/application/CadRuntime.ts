@@ -6408,6 +6408,16 @@ export class CadRuntime extends Observable {
       this.setCommandHistoryOpen(false)
     }
 
+    // F1 is Help for the running command, or Help's start with none (the
+    // Function Key Reference); a transparent command running inside another
+    // is the one asked about. Only a host that shows help takes the key.
+    if (e.key === "F1" && this.host.showHelp) {
+      this.host.showHelp(
+        this.activeTool.id === "select" ? null : toolCommand(this.activeTool)
+      )
+      return true
+    }
+
     // F2 expands the command history above the prompt, as AutoCAD's does for
     // the one-line command window it starts with.
     if (e.key === "F2") {

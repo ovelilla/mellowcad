@@ -70,6 +70,11 @@ export interface CadEngineOptions {
    * host laid out before it existed. Folded when left out.
    */
   readonly paletteOpen?: boolean
+  /**
+   * Shows a command's help, AutoCAD's F1: the global name of the command
+   * running, or `null` for the help's start. Without it F1 is the browser's.
+   */
+  readonly onHelp?: (command: string | null) => void
 }
 
 /**
@@ -119,6 +124,7 @@ export class CadEngine {
       focusSurface: () => {
         if (this.active) this.canvas.focus()
       },
+      ...(options.onHelp && { showHelp: options.onHelp }),
     }
 
     this.runtime = new CadRuntime(

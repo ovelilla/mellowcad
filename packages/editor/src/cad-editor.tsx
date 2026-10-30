@@ -68,6 +68,26 @@ export interface SheetTransition {
 }
 
 /**
+ * Where F1 opens help, as AutoCAD's does: `command` while one runs, its
+ * `{command}` replaced by the command's global name in lower case, and
+ * `index` with none. Strings, so a server page can hand them over.
+ */
+export interface HelpLinks {
+  readonly index: string
+  readonly command: string
+}
+
+/** The page F1 opens for `command`, the running command's global name, or for none. */
+export function helpUrl(help: HelpLinks, command: string | null): string {
+  return command === null
+    ? help.index
+    : help.command.replace(
+        "{command}",
+        encodeURIComponent(command.toLowerCase())
+      )
+}
+
+/**
  * The pieces a host may replace with its own component, each by its default's
  * name, or turn off with `null`: its zone goes with it and the canvas takes
  * the room. A replacement is handed what the default is (`PieceProps`, and
@@ -103,6 +123,8 @@ export interface CadEditorProps {
   layoutStorage?: LayoutStorage
   /** The canvas cell's name for a page that transitions into it. */
   sheet?: SheetTransition
+  /** Where F1 opens help; without it F1 is the browser's. */
+  help?: HelpLinks
   /** The pieces the host replaces or turns off; the rest are the editor's. */
   components?: CadEditorComponents
 }
@@ -136,6 +158,7 @@ function Workspace({
   languages,
   layoutStorage = {},
   sheet,
+  help,
   components = {},
   lang,
   dir,
@@ -226,6 +249,13 @@ function Workspace({
                 scope="document"
                 locale={engineLocale}
                 paletteOpen={() => paletteLayoutAtLoad(paletteKey).open}
+                // AutoCAD opens its help in a browser: here, a tab of its own.
+                onHelp={
+                  help &&
+                  ((command) => {
+                    window.open(helpUrl(help, command), "_blank", "noopener")
+                  })
+                }
                 onEngine={setEngine}
                 dir="ltr"
                 className="absolute inset-0 h-full w-full touch-none outline-none"
