@@ -70,7 +70,10 @@ An advisory does not wait for the weekly review. For each one the report flags:
    `eslint-config-next`; `react`, `react-dom` and `@types/react*`; `vitest` with `@vitest/*`;
    `typescript` within the peer range of the `typescript-eslint` that `eslint-config-next` brings;
    `@types/node` with the Node major we run (CI's `node-version`, Vercel's runtime and the local
-   one), never ahead of it.
+   one), never ahead of it. `eslint` follows `eslint-config-next`'s peer range (`>=9.0.0`), not
+   that of the plugins it brings: `import`, `jsx-a11y` and `react` still declare ESLint 9, so
+   every install warns `ERESOLVE overriding peer dependency` — expected (their rules ran under
+   ESLint 10.13, 2026-10-30).
 4. **The examples** (`examples/*/package.json`) are not workspaces: a tool the repo also has
    follows the root's range (`test/packages.test.ts`), and `vite` and `@vitejs/plugin-react` are
    reviewed here like a direct dependency. `npm run check:hosts -w packages/editor` installs them.
