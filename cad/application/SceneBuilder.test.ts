@@ -8,7 +8,7 @@ import type {
 } from "../domain/entities"
 import type { Vec3 } from "../geometry/Vec3"
 import { V, type Vec2 } from "../geometry/Vec2"
-import { bsplineDomain, bsplineLength } from "../geometry/nurbs"
+import { bsplineDomain, bsplineLength, bsplinePoint } from "../geometry/nurbs"
 import {
   assignEntityLinetype,
   closestPointOnSpline,
@@ -875,6 +875,44 @@ describe("appearance resolution", () => {
       expect(across).toHaveLength(1)
     }
   )
+
+  // spline-knots/k15 and k04: weights pull the curve, own knots run it over
+  // their own parameters; either is drawn along the curve it makes.
+  it.each([
+    [
+      "a rational spline",
+      createSpline("cv", [p(0, 0), p(5, 15), p(20, -5), p(40, 10)], {
+        weights: [1, 3, 1, 1],
+      }),
+    ],
+    [
+      "a piece on knots of its own",
+      createSpline(
+        "cv",
+        [p(40, 19.166667), p(37.5, 19.166667), p(30, 16.666667)].concat([
+          p(30, 3.333333),
+          p(37.5, 0.833333),
+          p(40, 0.833333),
+        ]),
+        { knotVector: [0.5, 0.5, 0.5, 0.5, 1, 2, 2.5, 2.5, 2.5, 2.5] }
+      ),
+    ],
+  ] as const)("draws %s along its curve", (_, spline) => {
+    const cad = createHarness({ entities: [spline] })
+    const camera = cad.runtime.viewport
+    const [path] = strokes(cad.scene().primitives, THEME.entity)
+    if (path.kind !== "path") throw new Error(path.kind)
+    for (const point of path.points) {
+      const world = camera.screenToWorld(point)
+      expect(closestPointOnSpline(spline, world).distance).toBeLessThan(1e-6)
+    }
+    const curve = splineCurve(spline)
+    const { start, end } = bsplineDomain(curve)
+    const middle = camera.worldToScreen(bsplinePoint(curve, (start + end) / 2))
+    expect(
+      Math.min(...path.points.map((point) => V.distance(point, middle)))
+    ).toBeLessThan(1)
+  })
 
   // probe spline/p328: the fit spline 150,0 155,5 160,0, shorter than one
   // period, is solid.

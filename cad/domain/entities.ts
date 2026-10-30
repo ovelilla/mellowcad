@@ -133,6 +133,9 @@ export {
   splineBounds,
   closestPointOnSpline,
   isLevelSpline,
+  isPeriodicSpline,
+  splineKnotParameterization,
+  splineWithoutFitData,
 } from "./splines"
 
 export type { HatchGeometry } from "./hatch"

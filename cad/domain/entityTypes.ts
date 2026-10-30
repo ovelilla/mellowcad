@@ -142,10 +142,14 @@ export interface EllipseEntity extends BaseEntity {
 export type SplineMethod = "fit" | "cv"
 
 /**
- * A spline — AutoCAD's NURBS curve, non-rational. It keeps what was picked:
- * the fit points or the control vertices (`points`, read by `method`), and the
- * settings the curve is derived from. A fit spline's control vertices and knots
- * come out of `splineCurve` every time, as a dimension's measurement does.
+ * A spline — AutoCAD's NURBS curve. It keeps what was picked: the fit points
+ * or the control vertices (`points`, read by `method`), and the settings the
+ * curve is derived from. A fit spline's control vertices and knots come out of
+ * `splineCurve` every time, as a dimension's measurement does. One an edit
+ * left on knots of its own carries them (`knotVector`), and a CV spline its
+ * weights: AutoCAD leaves a fit spline it trims a CV spline on its control
+ * points and knots (`splineWithoutFitData`), and one it breaks a fit spline on
+ * knots of its own (probes spline-knots/k01–k08, desktop d01, d02).
  *
  * Its points carry their own Z (spline/p200, p216), in the object coordinates
  * of {@link BaseEntity.normal}: the curve need not lie in a plane, and has no
@@ -157,11 +161,11 @@ export interface SplineEntity extends BaseEntity {
   readonly type: "spline"
   readonly method: SplineMethod
   readonly points: readonly Vec3[]
-  /** 3 for a fit spline; for a CV spline, already lowered to `points.length − 1` when fewer (`points.length` closed). */
+  /** 3 for a fit spline; for a CV spline, already lowered to `points.length − 1` when fewer (`points.length` closed), or its own knots'. */
   readonly degree: number
   /** How a fit spline spaces its knots; ignored by a CV spline. */
   readonly knots: KnotParameterization
-  /** Closed splines are periodic (SPLPERIODIC 1) unless a fit spline was given a closure tangent. */
+  /** Closed splines are periodic (SPLPERIODIC 1) unless a fit spline was given a closure tangent or a CV spline open knots. */
   readonly closed: boolean
   /**
    * A fit spline's derivative at its start by the raw knot parameter, as typed
@@ -172,6 +176,18 @@ export interface SplineEntity extends BaseEntity {
   readonly startTangent?: Vec3
   /** An open fit spline's derivative at its end, unit as SPLINE gives it (spline3d/s12); absent, free. */
   readonly endTangent?: Vec3
+  /**
+   * Its own knots (DXF 40), as AutoCAD holds them, never normalised
+   * (spline-knots/k01–k08): a CV spline's `points.length + degree + 1`, or,
+   * closed and periodic, the `points.length + 1` of one period; a fit
+   * spline's are its curve's, whose distinct values are the parameters of its
+   * fit points (Knot parameterization Custom, desktop d02), a closed one's
+   * one period of them. Absent, they are derived: a fit spline's from `knots`,
+   * a CV spline's 1 apart.
+   */
+  readonly knotVector?: readonly number[]
+  /** A CV spline's weight at each control vertex (DXF 41), each above 0; absent, it is not rational. */
+  readonly weights?: readonly number[]
 }
 
 /**

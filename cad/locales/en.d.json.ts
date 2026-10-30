@@ -420,6 +420,7 @@ declare const source: {
         "chord": string
         "sqrtChord": string
         "uniform": string
+        "custom": string
         "show": string
         "hide": string
         "counterClockwise": string

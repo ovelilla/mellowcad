@@ -787,6 +787,135 @@ describe("a spline's rows in the Properties palette", () => {
     )
   })
 
+  // The pieces AutoCAD's TRIM, BREAK and SPLINEDIT leave (desktop
+  // spline-knots/d01–d04, their geometry probes k01, k04, k05, k11).
+  it("lists the piece a trimmed fit spline leaves as a CV spline (d01)", () => {
+    const piece = createSpline(
+      "cv",
+      [p(0, 0), p(3.333333, 5.555556), p(8.333333, 13.888889)].concat([
+        p(13.333333, 7.222222),
+        p(15, 5),
+      ]),
+      {
+        id: "S1",
+        knotVector: [0, 0, 0, 0, 14.142136, 21.2132, 21.2132, 21.2132, 21.2132],
+      }
+    )
+    const cad = createHarness({ entities: [piece] })
+    cad.select("S1")
+    expect(rowsOf(cad)).toEqual([
+      [
+        "Data Points",
+        [
+          "Number of control points=5",
+          "Current Control point=1*",
+          "Control point X=0.00*",
+          "Control point Y=0.00*",
+          "Control point Z=0.00*",
+          "Weight=-1",
+          "CV frame=Hide",
+        ],
+      ],
+      [
+        "Misc",
+        [
+          "Method=Control Vertices",
+          "Degree=3",
+          "Closed=No",
+          "Periodic=No",
+          "Planar=Yes",
+        ],
+      ],
+    ])
+  })
+
+  it("reads a broken fit spline's knots Custom, its tangents the derivatives (d02)", () => {
+    const piece = createSpline(
+      "fit",
+      [p(0, 0), p(10, 10), p(13.369531, 7.116166)],
+      {
+        id: "S1",
+        knotVector: [0, 0, 0, 0, 14.142136, 18.907372, 18.907372].concat([
+          18.907372, 18.907372,
+        ]),
+        startTangent: p(0.707107, 1.178511),
+        endTangent: p(0.707107, -0.867617),
+      }
+    )
+    const cad = createHarness({ entities: [piece] })
+    cad.select("S1")
+    cad.runtime.setDocumentPrecision(4)
+    expect(rowsOf(cad)[0][1]).toContain("Knot parameterization=Custom")
+    expect(rowsOf(cad)[1][1]).toEqual([
+      "Method=Fit",
+      "Degree=3",
+      "Closed=No",
+      "Periodic=No",
+      "Planar=Yes",
+      "Start tangent vector X=0.7071",
+      "Start tangent vector Y=1.1785",
+      "Start tangent vector Z=0.0000",
+      "End tangent vector X=0.7071",
+      "End tangent vector Y=-0.8676",
+      "End tangent vector Z=0.0000",
+      "Fit tolerance=0.0000",
+    ])
+  })
+
+  it("shows each vertex's weight on a rational spline (d03)", () => {
+    const weighed = createSpline(
+      "cv",
+      [p(40, 0), p(45, 15), p(60, -5), p(80, 10)],
+      { id: "S1", weights: [3, 1, 1, 1] }
+    )
+    const cad = createHarness({ entities: [weighed] })
+    cad.select("S1")
+    expect(rowsOf(cad)[0][1][5]).toBe("Weight=3.00")
+    expect(cad.runtime.setSelectionProperty("vertex", "2")).toBe(true)
+    expect(rowsOf(cad)[0][1][5]).toBe("Weight=1.00")
+    // A vertex moved keeps the weights.
+    expect(cad.runtime.setSelectionProperty("vertexX", "46")).toBe(true)
+    expect(cad.byId<SplineEntity>("S1").weights).toEqual([3, 1, 1, 1])
+  })
+
+  it("counts a closed CV spline's vertices, and the open piece TRIM leaves (d04)", () => {
+    const closed = createSpline(
+      "cv",
+      [p(30, 30), p(50, 30), p(50, 50), p(30, 50)],
+      { id: "S1", closed: true }
+    )
+    const piece = createSpline(
+      "cv",
+      [p(40, 49.166667), p(37.5, 49.166667), p(30, 46.666667)].concat([
+        p(30, 33.333333),
+        p(37.5, 30.833333),
+        p(40, 30.833333),
+      ]),
+      { id: "S2", knotVector: [0.5, 0.5, 0.5, 0.5, 1, 2, 2.5, 2.5, 2.5, 2.5] }
+    )
+    const cad = createHarness({ entities: [closed, piece] })
+    cad.select("S1")
+    expect(rowsOf(cad)[0][1][0]).toBe("Number of control points=4")
+    expect(rowsOf(cad)[1][1].slice(2)).toEqual([
+      "Closed=Yes",
+      "Periodic=Yes",
+      "Planar=Yes",
+      "Area=271.11 mm²",
+    ])
+    cad.escape().select("S2")
+    expect(rowsOf(cad)[0][1].slice(0, 4)).toEqual([
+      "Number of control points=6",
+      "Current Control point=1*",
+      "Control point X=40.00*",
+      "Control point Y=49.17*",
+    ])
+    expect(rowsOf(cad)[1][1].slice(2)).toEqual([
+      "Closed=No",
+      "Periodic=No",
+      "Planar=Yes",
+    ])
+  })
+
   // The fourth fit point of a closed one is its first again (d10-3's count).
   it("moves a closed fit spline's first point from its last", () => {
     const cad = createHarness({ entities: [closedFit()] })

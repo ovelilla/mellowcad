@@ -32,8 +32,13 @@ a variable, ARRAYRECT's Levels, CHPROP, and POINT's thickness (with POINT, below
 plane when it has one; trimming a 3D polyline, JOIN into one and PEDIT Spline are its own gaps.
 
 Editing a spline — OFFSET (which is also what the ellipse's OFFSET and FILLET wait for), TRIM /
-EXTEND of one an edge reaches (its own knots), BREAK / JOIN, SPLINEDIT — is a command gap, next now
-that the 3D spline it would edit is the model's.
+EXTEND of one an edge reaches, BREAK / JOIN, SPLINEDIT — is a command gap, next now that the
+spline it would edit is the model's: in space, and on knots, control points and weights of its own
+(DXF 40 / 10 / 41), as AutoCAD 2027 leaves TRIM's, BREAK's and SPLINEDIT's pieces (probes
+spline-knots/k01–k16, draw.md's SPLINE). In three deliveries: that model (done); BREAK and TRIM /
+EXTEND of a spline, by knot insertion — TRIM's piece a CV spline (k01–k04), BREAK's of a fit
+spline a fit spline on custom knots (k05, k07); then OFFSET of a spline and of an ellipse, an
+approximation within a tolerance.
 
 Deferrable indefinitely at no extra cost: PASTEBLOCK/PASTEORIG/CUTBASE, DIMARC, DIMORDINATE, the
 modern `DIM` command, POINT with DIVIDE/MEASURE, XLINE/RAY, GROUP, LENGTHEN, ALIGN, per-object

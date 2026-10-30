@@ -553,8 +553,7 @@ frame; Misc — Method, Degree, Closed, Periodic, Planar, an open fit spline's S
 vector X, Y, Z as stored, Fit tolerance, a closed one's Area; a CV spline's Number of control
 points, Current Control point, Control point X, Y, Z and Weight instead, no tangents and no
 tolerance. The current point steps through them and its X, Y and Z move it, one undo step each, as
-a 3D polyline's current vertex; the rest is read-only; Fit tolerance reads 0 and Weight −1, as d10 shows
-them. The English labels are `ax26res.dll`'s by id, the Spanish d10's; the CV frame row's English is
+a 3D polyline's current vertex; the rest is read-only; Fit tolerance reads 0, as d10 shows it. The English labels are `ax26res.dll`'s by id, the Spanish d10's; the CV frame row's English is
 **unverified** (the Spanish row is cut at `Marco de vértices d…`: id 912 `CV frame` taken over 1248
 `Display CV frame`). STRETCH moves the points in the window (p322, p323); MIRROR keeps its +Z
 (p320); EXPLODE refuses it by name (`Cannot explode SPLINE`, modify.md). The drawing file holds the
@@ -575,7 +574,24 @@ through its points' Z in any view; STRETCH moves the caught points, Z and all (s
 the point given, Z and all, a 3D polyline's vertex's way, and the palette's Fit point and Control
 point Z are typed as X and Y are (desktop d10-1 shows them editable); UCS OBject on an open one in
 no plane puts X towards its far end in space and Y level across it (s04), ZAxis Object its Z along
-the end's tangent in space (s16). Saved with each point's Z from drawing file version 37
+the end's tangent in space (s16). Saved with each point's Z from drawing file version 37.
+On knots of its own, as AutoCAD 2027 leaves the pieces of TRIM, BREAK and SPLINEDIT (probes
+spline-knots/k01–k16, desktop d01–d04): its knots (DXF 40) as AutoCAD holds them, never
+normalised — an open one's clamped vector, a closed periodic one's one period (p311's `0 20 40 60
+80`) — and a CV spline's weights (DXF 41), which pull the curve to their vertex; drawn, picked,
+snapped and measured as any spline, the knots and weights kept by MOVE, ROTATE, SCALE, MIRROR,
+STRETCH, a grip and the palette (a fit spline's custom knots unscaled, its tangents growing, k13;
+a fit point moved, k14). A fit spline left without its fit data is a CV spline on its control
+points and knots, TRIM's piece (k01, k03; d01: Method Control Vertices, Weight −1); one on knots
+of its own is BREAK's, its fit points at their distinct values, a triple knot one parameter (k05,
+k07; d02: Knot parameterization Custom, its cut ends' tangents the curve's derivatives there). A
+rational spline's area is AutoCAD's to the last decimal (k15 `126.18152044`, k16 `249.09265361`),
+its length the quadrature's, where AutoCAD's integrator is off in the fourth significant figure
+(k15 `47.50408029` against 47.49583887, k16 `57.53346423` against 57.53357861), so its Midpoint
+too (k15 `17.06187596,7.34503156`). The palette's Weight is the current vertex's on a rational
+spline, −1 on another (d01, d03); a closed CV spline counts its vertices (d04-1: 4), and the
+piece TRIM leaves of one is neither Closed nor Periodic (d04-2). Saved from drawing file version
+38
 
 **Missing:** toLerance and Object (not offered: a tolerance above 0 is an approximation Autodesk
 does not document, and there are no spline-fit polylines to convert; AutoCAD asks
@@ -586,10 +602,11 @@ spline (unprobed: the ordinary Tangent from the last point here); `<a` at the ta
 CV's next points (**unverified**: the console ignores it, p212, p256, p222, so the angle override
 every prompt with a base point has); SPLINEDIT, CVSHOW / CVHIDE, the triangular grip and the
 multifunction grip menus (Stretch / Add / Remove fit point and Tangent direction on a fit point,
-d08-2, d08-3; Stretch / Insert / Refine / Remove vertex on a CV, d09-4), weights, editing the
-palette's Method, Degree, Knot parameterization, Closed and CV frame; how many control points
-AutoCAD's palette counts on a closed CV spline, and its Area of a self-crossing one
-(**unverified**); TRIM / EXTEND of a spline an edge reaches (TRIM's row), BREAK (modify.md),
+d08-2, d08-3; Stretch / Insert / Refine / Remove vertex on a CV, d09-4), editing the weights
+(SPLINEDIT's Edit vertex Weight, k11; the palette's Weight, which d03 shows editable) and the
+palette's Method, Degree, Knot parameterization, Closed and CV frame; no command makes a spline on
+knots or weights of its own yet (only a file holds one: BREAK and TRIM / EXTEND, then OFFSET, are
+next, roadmap.md); AutoCAD's Area of a self-crossing closed spline (**unverified**); TRIM / EXTEND of a spline an edge reaches (TRIM's row), BREAK (modify.md),
 JOIN / OFFSET / FILLET / HATCH / DIM on a spline or against one; Geometric Center (a closed
 spline's, p311: 10,10 and 40,10; none on an open one, p310, p312), Perpendicular and Tangent on a
 spline (p313, p315, p316) (SPLINE-D51); PEDIT Spline, BLEND

@@ -5,6 +5,7 @@ import { type Vec3 } from "./Vec3"
 import {
   bsplineDerivative,
   bsplineDerivativeCurve,
+  bsplineDifferentials,
   bsplineDomain,
   bsplineLength,
   bsplineLengthTable,
@@ -17,6 +18,8 @@ import {
   fitParameters,
   interpolateCubic,
   interpolatePeriodicCubic,
+  periodicCurve,
+  periodicLoop,
   periodicUniformCurve,
 } from "./nurbs"
 import { point as point2 } from "../../test/arbitraries"
@@ -268,3 +271,87 @@ function distanceToSegment(q: Vec2, a: Vec2, b: Vec2): number {
   const t = Math.max(0, Math.min(1, V.dot(V.sub(q, a), ab) / V.lengthSq(ab)))
   return V.distance(q, V.add(a, V.scale(ab, t)))
 }
+
+describe("rational curves", () => {
+  // A quarter of the unit circle: the rational quadratic a circle is made of.
+  const QUARTER = {
+    degree: 2,
+    knots: [0, 0, 0, 1, 1, 1],
+    controlPoints: [p(1, 0), p(1, 1), p(0, 1)],
+    weights: [1, Math.SQRT1_2, 1],
+  }
+
+  it("lies on the circle its weights make", () => {
+    for (const u of [0, 0.1, 0.25, 0.5, 0.8, 1]) {
+      expect(V.length(bsplinePoint(QUARTER, u))).toBeCloseTo(1, 14)
+    }
+  })
+
+  it("differentiates as the quotient of its homogeneous form", () => {
+    const { first, second } = bsplineDifferentials(QUARTER)
+    const h = 1e-5
+    for (const u of [0.1, 0.4, 0.7]) {
+      const ahead = bsplinePoint(QUARTER, u + h)
+      const behind = bsplinePoint(QUARTER, u - h)
+      expect(first(u)).toBeCloseToPoint(
+        V.scale(V.sub(ahead, behind), 0.5 / h),
+        6
+      )
+      const d1Ahead = first(u + h)
+      const d1Behind = first(u - h)
+      expect(second(u)).toBeCloseToPoint(
+        V.scale(V.sub(d1Ahead, d1Behind), 0.5 / h),
+        5
+      )
+    }
+  })
+
+  it("measures its length and sweeps its sector", () => {
+    expect(bsplineLength(QUARTER)).toBeCloseTo(Math.PI / 2, 12)
+    expect(bsplineSweptArea(QUARTER, 0, 1)).toBeCloseTo(Math.PI / 4, 12)
+    const half = bsplineParamAtLength(QUARTER, Math.PI / 4)
+    expect(bsplinePoint(QUARTER, half)).toBeCloseToPoint(
+      p(Math.SQRT1_2, Math.SQRT1_2),
+      10
+    )
+  })
+
+  it("is its control polygon's curve when every weight is 1", () => {
+    const plain = clampedUniformCurve(ZIGZAG, 3)
+    const weighed = { ...plain, weights: ZIGZAG.map(() => 1) }
+    for (const u of [0, 0.3, 1.2, 1.9]) {
+      expect(bsplinePoint(weighed, u)).toBeCloseToPoint(
+        bsplinePoint(plain, u),
+        12
+      )
+      expect(bsplineDerivative(weighed, u)).toBeCloseToPoint(
+        bsplineDerivative(plain, u),
+        10
+      )
+    }
+  })
+})
+
+describe("periodic curves as AutoCAD holds them", () => {
+  const loop = [p(0, 0), p(50, 100), p(150, 100), p(200, 0), p(260, 60)]
+
+  it("runs one period of its knots, closing smoothly on any spacing", () => {
+    const curve = periodicCurve(loop, 3, [2, 3, 7, 8, 12, 15])
+    expect(bsplineDomain(curve)).toEqual({ start: 2, end: 15 })
+    expect(bsplinePoint(curve, 15)).toBeCloseToPoint(bsplinePoint(curve, 2))
+    expect(bsplineDerivative(curve, 15)).toBeCloseToPoint(
+      bsplineDerivative(curve, 2)
+    )
+  })
+
+  it("gives back its loop and period unwrapped", () => {
+    const knots = [2, 3, 7, 8, 12, 15]
+    const weights = [1, 2, 3, 4, 5]
+    expect(periodicLoop(periodicCurve(loop, 3, knots, weights))).toEqual({
+      degree: 3,
+      knots,
+      controlPoints: loop,
+      weights,
+    })
+  })
+})

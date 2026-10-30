@@ -556,6 +556,7 @@ export const ar: EngineLocale = {
         "chord": "الوتر",
         "sqrtChord": "الجذر التربيعي للوتر",
         "uniform": "منتظم",
+        "custom": "مخصص",
         "show": "إظهار",
         "hide": "إخفاء",
         "counterClockwise": "عكس اتجاه عقارب الساعة",

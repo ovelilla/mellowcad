@@ -1658,6 +1658,8 @@ export interface SplineEntity extends BaseEntity {
     readonly closed: boolean;
     readonly startTangent?: Vec3;
     readonly endTangent?: Vec3;
+    readonly knotVector?: readonly number[];
+    readonly weights?: readonly number[];
 }
 
 // domain/entityTypes.ts

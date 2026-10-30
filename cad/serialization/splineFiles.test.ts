@@ -81,6 +81,40 @@ const SPLINES: [string, () => SplineEntity][] = [
       return assignEntityLineweight(spline, 0.5) as SplineEntity
     },
   ],
+  [
+    "a weighed CV spline on knots of its own (spline-knots/k02, k11)",
+    () =>
+      createSpline(
+        "cv",
+        [p(0, 0), p(3.138593, 9.41578), p(10.217494, 5.040485), p(20, 4)],
+        {
+          id: "S",
+          knotVector: [0, 0, 0, 0, 0.627719, 0.627719, 0.627719, 0.627719],
+          weights: [1, 3, 1, 1],
+        }
+      ),
+  ],
+  [
+    "a closed CV spline on one period of its own knots",
+    () =>
+      createSpline("cv", [p(30, 0), p(50, 0), p(50, 20), p(30, 20)], {
+        id: "S",
+        closed: true,
+        knotVector: [0, 1, 3, 4, 7],
+      }),
+  ],
+  [
+    "a fit spline on custom knots (spline-knots/k05)",
+    () =>
+      createSpline("fit", [p(0, 0), p(10, 10), p(13.369531, 7.116166)], {
+        id: "S",
+        knotVector: [0, 0, 0, 0, 14.142136, 18.907372, 18.907372].concat([
+          18.907372, 18.907372,
+        ]),
+        startTangent: p(0.707107, 1.178511),
+        endTangent: p(0.707107, -0.867617),
+      }),
+  ],
 ]
 
 describe.each(SPLINES)("%s through files", (_, spline) => {
@@ -140,6 +174,46 @@ describe.each(SPLINES)("%s through files", (_, spline) => {
     const { id: _b, points: _d, elevation: _f, ...b } = spline()
     void [_a, _b, _c, _d, _e, _f]
     expect(a).toEqual(b)
+  })
+})
+
+describe("a spline's own knots and weights in a file", () => {
+  const load = (entity: Record<string, unknown>) => {
+    const cad = createHarness()
+    const file = JSON.parse(cad.runtime.serializeDrawing())
+    file.entities = [
+      {
+        id: "S",
+        type: "spline",
+        layerId: "0",
+        method: "cv",
+        points: [p(0, 0), p(5, 15), p(20, -5), p(40, 10)],
+        degree: 3,
+        knots: "chord",
+        closed: false,
+        ...entity,
+      },
+    ]
+    cad.runtime.loadDrawing(JSON.stringify(file))
+    return cad.byId<SplineEntity>("S")
+  }
+
+  it("drops knots or weights that do not fit its points, keeping the spline", () => {
+    for (const knotVector of [
+      [0, 0, 1, 1],
+      "0 1",
+      [0, 0, 0, 0, 1, 1, 1, "1"],
+    ]) {
+      expect(load({ knotVector }).knotVector).toBeUndefined()
+    }
+    for (const weights of [[1, 2, 3], [1, -2, 1, 1], "1"]) {
+      expect(load({ weights }).weights).toBeUndefined()
+    }
+  })
+
+  it("takes a CV spline's degree from its knots", () => {
+    const loaded = load({ degree: 7, knotVector: [0, 0, 0, 1, 2, 2, 2] })
+    expect(loaded.degree).toBe(2)
   })
 })
 

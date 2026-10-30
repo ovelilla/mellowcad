@@ -343,6 +343,8 @@ namespace MellowProbe
                     {
                         extra.Add("controlPoints"); extra.Add(Log.V(sp.NurbsData.GetControlPoints()));
                         extra.Add("knots"); extra.Add(Log.V(sp.NurbsData.GetKnots()));
+                        if (sp.IsRational) { extra.Add("weights"); extra.Add(Log.V(sp.NurbsData.GetWeights())); }
+                        if (sp.HasFitData) { var fd = sp.FitData; extra.Add("startFitTangent"); extra.Add(Log.V(fd.StartTangent)); extra.Add("endFitTangent"); extra.Add(Log.V(fd.EndTangent)); extra.Add("knotParam"); extra.Add(Log.V(fd.KnotParam)); }
                         if (sp.NumFitPoints > 0) { extra.Add("fitPoints"); extra.Add("[" + string.Join(",", Enumerable.Range(0, sp.NumFitPoints).Select(i => Log.V(sp.GetFitPointAt(i)))) + "]"); }
                     }
                     if (e is BlockReference br)

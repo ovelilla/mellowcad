@@ -670,9 +670,10 @@ plane (so Quick deletes what only an object at an angle crosses, where the conso
 projection: p221); a pick inside a hatch, which the console takes for none and starts a fence at
 (p196, p197), here the hatch, refused; a spline an edge cuts or an open one EXTEND picks (the console leaves the piece on control
 points and knots of its own — a trimmed one loses its fit points, a fit spline grows by a straight
-piece along its end tangent behind a triple knot, a CV spline by a curved one —, which a spline
-here, fit points or control vertices on uniform knots, cannot hold; so neither an open spline's
-`Object does not intersect an edge.`); the piece after a polyline's own crossing, which the console
+piece along its end tangent behind a triple knot, a CV spline by a curved one, k10 —, its knots
+keeping the parameters they had, k01–k04: a spline on knots of its own, which the model holds
+since spline-knots, draw.md's SPLINE; the command does not cut one yet, so neither an open
+spline's `Object does not intersect an edge.`); the piece after a polyline's own crossing, which the console
 starts with a zero-length segment; **unverified**: the reasons when TRIM's Shift extends (EXTEND's,
 the same code here), and whether a crossing at the pick bounds the trim of an arc, a circle or a
 polyline (a line's does not, p261; here theirs does); the circle-and-slash over what EXTEND
@@ -746,7 +747,8 @@ copies they would make drawn as the objects, solid in the source's colour, every
 polyline and a tilted object's copy in its plane (d01-5, d02, d03). A 3D polyline is taken and passed over in silence, the prompt asked again (3dpoly/p09; Autodesk's support article quotes `Cannot offset that object.`, which the 2027 console does not say).
 
 **Missing:** OFFSETGAPTYPE 1 and 2, ellipses and splines (AutoCAD offsets them into a SPLINE,
-p196–p198, which is not built: neither is picked, OFFSET-D11), Erase and Layer kept past the
+p196–p198, an approximation on knots of its own, which the model holds since spline-knots; not
+built: neither is picked, OFFSET-D11), Erase and Layer kept past the
 session (OPEN leaves them, p310; a restart is unprobed), a polyline of more than 2000 segments
 (declined with `Cannot offset that object.`, the clean-up's cap), the ghost's linetype and
 lineweight (it wears the source's colour only, as MOVE's); **unverified**: one object preselected
@@ -1170,7 +1172,8 @@ What no result takes is counted after it, `, 1 object discarded from the operati
 `Designe líneas que unir al origen`, and its `1 line joined to source` counts; p310, p311,
 p348, p372, p383): here a source alone and Enter is a set of one,
 `0 objects joined, 1 object discarded from the operation`; splines, elliptical arcs and helixes,
-discarded here (AutoCAD: `2 objects joined into 1 spline`, p331, p374;
+discarded here, though a spline on knots of its own is now the model's (AutoCAD:
+`2 objects joined into 1 spline`, p331, p374;
 `2 elliptical arcs joined into 1 arc`, p332; an arc and an elliptical arc
 `2 objects converted to 1 spline`, p375; cLose `Ellipse successfully closed.`, p369); objects
 under a −Z normal, discarded (AutoCAD: a 3D polyline from such a polyline and a line, p353, a
@@ -1246,9 +1249,10 @@ object at its nearest point, past an end to the end (d01-2–d01-4, d02-1, d03-1
 glow (d14-1). A 3D polyline breaks in plan as a polyline does, each cut end at the Z it has there (3dpoly/p12).
 
 **Missing:** splines (they do not highlight; AutoCAD breaks a CV spline into pieces on control
-points and knots of their own, which a spline here, on uniform knots, cannot hold, spline/p325, and
-a fit spline broken at two fit points into fit splines whose end tangents are the curve's
-derivatives there, p326); a point typed off the screen at `Select object:` (command-line.md's
+points and knots of their own, spline/p325, spline-knots/k06, a closed one into one open piece,
+k08, and a fit spline into fit splines on knots of their own, the break points new fit points and
+the cut ends' tangents the curve's derivatives there, p326, k05, k07 — pieces the model holds
+since spline-knots, the command does not make yet); a point typed off the screen at `Select object:` (command-line.md's
 `Select objects:` Missing); a mirrored whole ellipse,
 which AutoCAD breaks counter-clockwise about its −Z normal (ellipse/p329; MIRROR's entry); an ARC,
 CIRCLE or ELLIPSE not level with the UCS, `No object found` here: AutoCAD breaks one, a −Z one

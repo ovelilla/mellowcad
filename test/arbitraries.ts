@@ -2,6 +2,7 @@ import fc from "fast-check"
 import {
   createBlockDefinition,
   createSpline,
+  splineWithoutFitData,
   hasThickness,
   MTEXT_ATTACHMENTS,
   mtextContents,
@@ -219,9 +220,11 @@ export const ellipseEntity: fc.Arbitrary<EllipseEntity> = fc
     )
   )
 /**
- * Both methods, open and closed, with and without end tangents. Built through
- * the factory, which is where a CV spline's degree is lowered to fit its
- * vertex count — the only shape the rest of the engine ever sees.
+ * Both methods, open and closed, with and without end tangents, on derived
+ * knots or their own: a fit spline's custom ones, the control data a fit
+ * spline leaves (`splineWithoutFitData`), a CV spline's weights. Built
+ * through the factory, which is where a CV spline's degree is lowered to fit
+ * its vertex count — the only shape the rest of the engine ever sees.
  */
 export const splineEntity: fc.Arbitrary<SplineEntity> = fc
   .tuple(
@@ -231,17 +234,54 @@ export const splineEntity: fc.Arbitrary<SplineEntity> = fc
     fc.constantFrom("chord" as const, "sqrtChord" as const, "uniform" as const),
     fc.boolean(),
     fc.option(point, { nil: undefined }),
-    fc.option(point, { nil: undefined })
+    fc.option(point, { nil: undefined }),
+    fc.constantFrom("derived" as const, "custom" as const, "control" as const),
+    fc.array(fc.double({ min: 0.1, max: 10, noNaN: true }), {
+      minLength: 9,
+      maxLength: 9,
+    }),
+    fc.boolean()
   )
-  .map(([method, points, degree, knots, closed, startTangent, endTangent]) =>
-    createSpline(method, points, {
+  .map(
+    ([
+      method,
+      points,
       degree,
       knots,
       closed,
       startTangent,
       endTangent,
-      id: "spline",
-    })
+      own,
+      numbers,
+      weighted,
+    ]) => {
+      // A custom fit spline's parameters, rising by the numbers.
+      const params = [0]
+      for (let i = 0; i < (closed ? points.length : points.length - 1); i++) {
+        params.push(params[i] + numbers[i])
+      }
+      const first = params[0]
+      const last = params[params.length - 1]
+      const spline = createSpline(method, points, {
+        degree,
+        knots,
+        closed,
+        startTangent,
+        endTangent,
+        ...(own === "custom"
+          ? {
+              knotVector: closed
+                ? params
+                : [first, first, first, ...params, last, last, last],
+            }
+          : {}),
+        id: "spline",
+      })
+      const shaped = own === "control" ? splineWithoutFitData(spline) : spline
+      return weighted && shaped.method === "cv"
+        ? { ...shaped, weights: numbers.slice(0, shaped.points.length) }
+        : shaped
+    }
   )
 
 export const polylineEntity: fc.Arbitrary<PolylineEntity> = fc

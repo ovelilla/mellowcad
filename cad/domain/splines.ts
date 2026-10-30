@@ -8,7 +8,7 @@ import {
 import {
   BSplineCurve,
   KnotParameterization,
-  bsplineDerivativeCurve,
+  bsplineDifferentials,
   bsplineDomain,
   bsplineLength,
   bsplineLengthTable,
@@ -21,6 +21,8 @@ import {
   fitParameters,
   interpolateCubic,
   interpolatePeriodicCubic,
+  periodicCurve,
+  periodicLoop,
   periodicUniformCurve,
 } from "../geometry/nurbs"
 import { DEFAULT_LAYER_ID, LayerId } from "./layers"
@@ -37,6 +39,10 @@ export interface SplineOptions {
   readonly closed?: boolean
   readonly startTangent?: Vec2 | Vec3
   readonly endTangent?: Vec2 | Vec3
+  /** Knots of its own ({@link SplineEntity.knotVector}): dropped when they do not fit the points. */
+  readonly knotVector?: readonly number[]
+  /** A CV spline's weights: dropped unless one per point, each above 0. */
+  readonly weights?: readonly number[]
   readonly layerId?: LayerId
   readonly id?: EntityId
 }
@@ -45,8 +51,9 @@ export interface SplineOptions {
  * Builds a spline. A fit spline is always cubic; a CV spline's degree drops to
  * one less than its vertex count when there are too few for the one asked —
  * "the degree of the resulting curve equals the number of vertices minus one"
- * — and a closed one's to the vertex count itself (probe spline/p305). A
- * point or a tangent without a Z lies at Z 0.
+ * — and a closed one's to the vertex count itself (probe spline/p305);
+ * one on knots of its own takes the degree they give it. A point or a tangent
+ * without a Z lies at Z 0.
  */
 export function createSpline(
   method: SplineMethod,
@@ -63,25 +70,79 @@ export function createSpline(
     method === "fit" && !options.closed
       ? tangent(options.endTangent)
       : undefined
+  const closed = options.closed ?? false
+  const count = points.length
+  let degree =
+    method === "fit"
+      ? 3
+      : cvDegree(options.degree ?? DEFAULT_SPLINE_DEGREE, count, closed)
+  let knotVector = options.knotVector && [...options.knotVector]
+  if (knotVector && !ascending(knotVector)) knotVector = undefined
+  if (knotVector && method === "fit") {
+    const params = fitKnotParameters(knotVector, closed)
+    if (params?.length !== (closed ? count + 1 : count)) knotVector = undefined
+  } else if (knotVector && !(closed && knotVector.length === count + 1)) {
+    const own = knotVector.length - count - 1
+    if (own >= 1 && own <= MAX_SPLINE_DEGREE && spans(knotVector, own)) {
+      degree = own
+    } else {
+      knotVector = undefined
+    }
+  }
+  const weights =
+    method === "cv" &&
+    options.weights?.length === count &&
+    options.weights.every((w) => Number.isFinite(w) && w > 0)
+      ? [...options.weights]
+      : undefined
   return {
     id: options.id ?? nextEntityId(),
     type: "spline",
     layerId: options.layerId ?? DEFAULT_LAYER_ID,
     method,
     points: points.map((p) => ({ x: p.x, y: p.y, z: zOf(p) })),
-    degree:
-      method === "fit"
-        ? 3
-        : cvDegree(
-            options.degree ?? DEFAULT_SPLINE_DEGREE,
-            points.length,
-            options.closed ?? false
-          ),
+    degree,
     knots: options.knots ?? "chord",
-    closed: options.closed ?? false,
+    closed,
     ...(startTangent ? { startTangent } : {}),
     ...(endTangent ? { endTangent } : {}),
+    ...(knotVector ? { knotVector } : {}),
+    ...(weights ? { weights } : {}),
   }
+}
+
+/** Finite and never falling, the first below the last. */
+function ascending(knots: readonly number[]): boolean {
+  return (
+    knots.length >= 2 &&
+    knots.every(
+      (k, i) => Number.isFinite(k) && (i === 0 || k >= knots[i - 1])
+    ) &&
+    knots[knots.length - 1] > knots[0]
+  )
+}
+
+/** Whether an open curve of this degree on these knots has a domain to run over. */
+function spans(knots: readonly number[], degree: number): boolean {
+  return knots[knots.length - degree - 1] > knots[degree]
+}
+
+/**
+ * The parameters of a fit spline's fit points on its own knots: an open
+ * one's distinct knots, a closed one's period, which must not repeat one
+ * (spline-knots/k05: `0 0 0 0 14.14 18.91 …` puts three fit points at 0,
+ * 14.14 and 18.91; k07's triple knot at its seam is still one parameter).
+ */
+function fitKnotParameters(
+  knots: readonly number[],
+  closed: boolean
+): number[] | null {
+  if (closed) {
+    return knots.every((k, i) => i === 0 || k > knots[i - 1])
+      ? [...knots]
+      : null
+  }
+  return knots.filter((k, i) => i === 0 || k > knots[i - 1])
 }
 
 function cvDegree(degree: number, count: number, closed: boolean): number {
@@ -102,17 +163,23 @@ function clampDegree(degree: number): number {
  * and its length scaled to keep the curve the mapped one: unchanged on chord
  * knots, by the factor on uniform ones, by its root on square-root ones — the
  * curve AutoCAD's SCALE leaves (probe spline/p321). Its Z takes that change
- * here, and the factor with the points' Z.
+ * here, and the factor with the points' Z. Its own knots and weights are
+ * kept: a map moves a NURBS by its control points.
  */
 export function mapSplinePoints(
   spline: SplineEntity,
   map: (point: Vec2) => Vec2
 ): SplineEntity {
   const origin = spline.points[0] ?? V.zero()
-  const linear = (v: Vec2) => V.sub(map(V.add(origin, v)), map(origin))
-  const factor = V.length(linear({ x: 1, y: 0 }))
+  // By its images of the axes, so a move leaves a tangent's last digit as it was.
+  const at = map(origin)
+  const ex = V.sub(map(V.add(origin, { x: 1, y: 0 })), at)
+  const ey = V.sub(map(V.add(origin, { x: 0, y: 1 })), at)
+  const linear = (v: Vec2) => V.add(V.scale(ex, v.x), V.scale(ey, v.y))
+  const factor = V.length(ex)
+  // Knots of its own stay as they were, as uniform ones do (spline-knots/k13).
   const growth =
-    spline.knots === "uniform"
+    spline.knots === "uniform" || ownFitParameters(spline)
       ? 1
       : spline.knots === "sqrtChord"
         ? 1 / Math.sqrt(factor)
@@ -202,16 +269,47 @@ export function splineCurve(spline: SplineEntity): BSplineCurve {
   return spline.method === "fit" ? fitCurve(spline) : controlCurve(spline)
 }
 
+/**
+ * A closed CV spline is periodic, its knots one period, the curve starting
+ * where AutoCAD's does (probe spline/p305's five starts, p311's End snap and
+ * control points) — unless knots of its own clamp it.
+ */
 function controlCurve(spline: SplineEntity): BSplineCurve {
   const points = spline.points
   if (points.length < 2) return pointCurve(points[0] ?? ZERO)
+  const weights =
+    spline.weights?.length === points.length ? spline.weights : undefined
+  const { knotVector } = spline
+  if (knotVector && isPeriodicSpline(spline)) {
+    return periodicCurve(points, spline.degree, knotVector, weights)
+  }
+  if (knotVector) {
+    return {
+      degree: knotVector.length - points.length - 1,
+      knots: knotVector,
+      controlPoints: points,
+      ...(weights ? { weights } : {}),
+    }
+  }
   const degree = cvDegree(spline.degree, points.length, spline.closed)
-  if (!spline.closed) return clampedUniformCurve(points, degree)
-  // WHY rotated: AutoCAD's periodic curve starts where ours would be at
-  // u = n − degree (probe spline/p305's five starts, p311's End snap).
-  const n = points.length
-  const loop = points.map((_, i) => points[(i + n - degree) % n])
-  return periodicUniformCurve(loop, degree)
+  if (spline.closed) return periodicUniformCurve(points, degree, weights)
+  return {
+    ...clampedUniformCurve(points, degree),
+    ...(weights ? { weights } : {}),
+  }
+}
+
+/**
+ * Whether the closed spline is periodic (the palette's Periodic): a fit
+ * spline unless a file gave it a closure tangent, a CV spline unless knots of
+ * its own clamp it.
+ */
+export function isPeriodicSpline(spline: SplineEntity): boolean {
+  if (!spline.closed) return false
+  if (spline.method === "fit") return !spline.startTangent
+  return (
+    !spline.knotVector || spline.knotVector.length === spline.points.length + 1
+  )
 }
 
 /**
@@ -222,8 +320,11 @@ function controlCurve(spline: SplineEntity): BSplineCurve {
 function fitCurve(spline: SplineEntity): BSplineCurve {
   const points = distinctFitPoints(spline.points, spline.closed)
   if (points.length < 2) return pointCurve(points[0] ?? ZERO)
+  const own = ownFitParameters(spline)
+  const parameters = (closed: boolean) =>
+    own ?? fitParameters(points, spline.knots, closed)
   if (spline.closed && points.length >= 3) {
-    const params = fitParameters(points, spline.knots, true)
+    const params = parameters(true)
     if (!spline.startTangent) return interpolatePeriodicCubic(points, params)
     // Only a file holds one: SPLINE drops the tangent at Close (p307).
     const loop = [...points, points[0]]
@@ -234,13 +335,27 @@ function fitCurve(spline: SplineEntity): BSplineCurve {
       spline.startTangent
     )
   }
-  const params = fitParameters(points, spline.knots, false)
+  const params = parameters(false)
   return interpolateCubic(
     points,
     params,
     spline.startTangent ?? null,
     spline.endTangent ?? null
   )
+}
+
+/**
+ * The parameters a fit spline's own knots give its fit points, when the
+ * curve is fitted on them: not once a fit point is dropped as a repeat, nor
+ * on a closed one drawn open for want of three points.
+ */
+function ownFitParameters(spline: SplineEntity): number[] | null {
+  if (spline.method !== "fit" || !spline.knotVector) return null
+  const points = distinctFitPoints(spline.points, spline.closed)
+  const closed = spline.closed && points.length >= 3
+  if (closed !== spline.closed) return null
+  const own = fitKnotParameters(spline.knotVector, closed)
+  return own?.length === points.length + (closed ? 1 : 0) ? own : null
 }
 
 /** Two fit points on top of each other would share a parameter and leave the fit unsolvable. */
@@ -260,6 +375,49 @@ function distinctFitPoints(points: readonly Vec3[], closed: boolean): Vec3[] {
     }
   }
   return distinct
+}
+
+/**
+ * The spline on its curve's control points and knots, its fit points and
+ * tangents dropped: what AutoCAD leaves of a fit spline an edit takes them
+ * from, TRIM's piece (spline-knots/k01, k03; desktop d01 lists it Method
+ * Control Vertices). A CV spline keeps its points and weights, its knots made
+ * its own. A closed one stays periodic on one period of knots (p311's), or
+ * clamped where it was not periodic.
+ */
+export function splineWithoutFitData(spline: SplineEntity): SplineEntity {
+  const curve = splineCurve(spline)
+  // A closed fit spline on fewer than three distinct points is drawn open.
+  const periodic =
+    isPeriodicSpline(spline) &&
+    (spline.method === "cv"
+      ? spline.points.length >= 2
+      : distinctFitPoints(spline.points, true).length >= 3)
+  const own = periodic ? periodicLoop(curve) : curve
+  const rest: Record<string, unknown> = { ...spline }
+  for (const field of ["startTangent", "endTangent", "knotVector", "weights"]) {
+    delete rest[field]
+  }
+  // `+ 0` turns a solve's −0 into the 0 a file writes.
+  return {
+    ...(rest as Omit<SplineEntity, "startTangent" | "endTangent">),
+    method: "cv",
+    points: own.controlPoints.map((p) => ({
+      x: p.x + 0,
+      y: p.y + 0,
+      z: p.z + 0,
+    })),
+    degree: own.degree,
+    knotVector: own.knots.map((k) => k + 0),
+    ...(own.weights ? { weights: [...own.weights] } : {}),
+  }
+}
+
+/** The palette's Knot parameterization: a fit spline on knots of its own reads Custom (desktop spline-knots/d02). */
+export function splineKnotParameterization(
+  spline: SplineEntity
+): KnotParameterization | "custom" {
+  return spline.knotVector ? "custom" : spline.knots
 }
 
 const ZERO: Vec3 = { x: 0, y: 0, z: 0 }
@@ -567,14 +725,13 @@ export function closestPointOnSpline(
       u = params[i - 1] + (params[i] - params[i - 1]) * candidate.t
     }
   }
-  const first = bsplineDerivativeCurve(curve)
-  const second = bsplineDerivativeCurve(first)
+  const { first, second } = bsplineDifferentials(curve)
   const { start, end } = bsplineDomain(curve)
   const onChord = u
   for (let i = 0; i < NEWTON_STEPS; i++) {
     const offset = V.sub(bsplinePoint(curve, u), point)
-    const d1 = bsplinePoint(first, u)
-    const slope = V.dot(d1, d1) + V.dot(offset, bsplinePoint(second, u))
+    const d1 = first(u)
+    const slope = V.dot(d1, d1) + V.dot(offset, second(u))
     if (slope <= 1e-18) break
     u = Math.min(end, Math.max(start, u - V.dot(offset, d1) / slope))
   }

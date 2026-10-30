@@ -542,6 +542,7 @@ export const en: EngineCatalog = {
         "chord": "Chord",
         "sqrtChord": "SqrtChord",
         "uniform": "Uniform",
+        "custom": "Custom",
         "show": "Show",
         "hide": "Hide",
         "counterClockwise": "Counter-clockwise",

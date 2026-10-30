@@ -110,6 +110,11 @@ Dependencies run types → per-type modules → overrides → transforms → que
   (`dimensionGeometry`, `dimensionText`), a hatch's loops (`hatchGeometry`), a reference's block and
   placement (`insertGeometry`), a spline's picks (`splineCurve`). A stored derived value can
   disagree.
+- **A spline's own knots and weights are AutoCAD's** (`knotVector`, `weights`: DXF 40 / 41 as its
+  NurbsData holds them, a periodic one's one period, never normalised: a piece keeps the
+  parameters it had). An edit AutoCAD leaves without fit data goes through `splineWithoutFitData`.
+  A kernel curve may be rational: its derivatives come from `bsplineDifferentials`, never from the
+  hodograph of a weighted curve (`bsplineDerivativeCurve` ignores the weights).
 - **MTEXT keeps AutoCAD's contents string**, `\P` and escapes included: `mtextPlainText` reads it
   (codes it does not draw vanish from the reading, never from the object), `mtextContents` writes
   it, nothing else parses or builds it.

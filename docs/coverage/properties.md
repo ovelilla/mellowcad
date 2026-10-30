@@ -306,7 +306,8 @@ it (help GUID-94C065AB), one undo step (es `Vértice actual`, `Vértice X`, `Var
 Autodesk's 2027 resources); a spline's Data Points and Misc groups as AutoCAD's (desktop
 spline/d10-1–d10-3; the rows and their order in draw.md, SPLINE), its current fit or control point
 stepped and moved, X, Y and Z, as a 3D polyline's current vertex, Planar `No` for one in no plane,
-the rest read-only, the English labels
+its Weight the vertex's on a rational spline and −1 on another, Knot parameterization Custom on
+knots of its own (desktop spline-knots/d01–d03), the rest read-only, the English labels
 `ax26res.dll`'s by id, the Spanish d10's. A 3D polyline's (desktop 3dpoly/d02, d03; es `Polilínea 3D`): Geometry Current Vertex, Vertex X, Y and Z (es `Vértice actual`, `Vértice X`… `Vértice Z`), each typed in the UCS, Length in space read-only; Misc Fit/Smooth (es `Ajustar/Suavizar`) read-only `None` (es `Ninguna`) and Closed Yes / No
 
 **Missing:** General's Linetype scale, Plot style, Transparency and Hyperlink and 3D Visualization's

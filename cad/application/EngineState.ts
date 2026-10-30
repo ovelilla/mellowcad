@@ -45,6 +45,8 @@ import {
   splineArea,
   entityAxes,
   isLevelSpline,
+  isPeriodicSpline,
+  splineKnotParameterization,
   splineDataPoints,
   dimensionGeometry,
   dimensionMeasurementText,
@@ -1437,9 +1439,10 @@ function singleEntityInfo(
     case "spline": {
       // AutoCAD's two groups and rows, in its order (desktop spline/d10-1 to
       // d10-3). Only the current point moves, X, Y and Z, as a 3D polyline's
-      // vertex does: the method, degree, knots, closure and frame are
-      // SPLINEDIT's and CVSHOW's, not built; no toLerance and no weights are,
-      // so Fit tolerance reads 0 and Weight −1, as d10 shows them.
+      // vertex does: the method, degree, knots, closure, frame and weights
+      // are SPLINEDIT's and CVSHOW's, not built; no toLerance is, so Fit
+      // tolerance reads 0. Weight is the vertex's on a rational spline, −1 on
+      // any other (desktop spline-knots/d01, d03).
       const fit = entity.method === "fit"
       const points = splineDataPoints(entity)
       const current = Math.min(vertex, points.length - 1)
@@ -1451,6 +1454,8 @@ function singleEntityInfo(
           ? worldDirectionToUcs(settings.ucs, axesToWorld(axes, v))
           : { x: 0, y: 0, z: 0 }
       const planar = isLevelSpline(entity)
+      const weight = (w: number | undefined) =>
+        w === undefined ? "-1" : coord(w)
       const tangentRows = (): PropertyRow[] => {
         const start = vector(entity.startTangent)
         const end = vector(entity.endTangent)
@@ -1483,8 +1488,11 @@ function singleEntityInfo(
             coordRow(fit ? "fitPointY" : "controlPointY", "vertexY", point.y),
             coordRow(fit ? "fitPointZ" : "controlPointZ", "vertexZ", point.z),
             fit
-              ? row("knotParameterization", text.propertyValue(entity.knots))
-              : row("weight", "-1"),
+              ? row(
+                  "knotParameterization",
+                  text.propertyValue(splineKnotParameterization(entity))
+                )
+              : row("weight", weight(entity.weights?.[current])),
             row("cvFrame", text.propertyValue("hide")),
           ]),
           group("misc", [
@@ -1494,8 +1502,7 @@ function singleEntityInfo(
             ),
             row("degree", String(entity.degree)),
             row("closed", yesNo(entity.closed)),
-            // A closed fit spline a file gave a closure tangent is not periodic.
-            row("periodic", yesNo(entity.closed && !entity.startTangent)),
+            row("periodic", yesNo(isPeriodicSpline(entity))),
             row("planar", yesNo(planar)),
             ...(fit && !entity.closed ? tangentRows() : []),
             ...(fit ? [row("fitTolerance", coord(0))] : []),

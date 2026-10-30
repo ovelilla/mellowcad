@@ -536,6 +536,7 @@ export const es: EngineLocale = {
         "chord": "Cuerda",
         "sqrtChord": "RaízcuadradaCuerda",
         "uniform": "Uniforme",
+        "custom": "Personalizado",
         "show": "Mostrar",
         "hide": "Ocultar",
         "counterClockwise": "En el sentido antihorario",

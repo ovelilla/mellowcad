@@ -2,8 +2,8 @@ import { V } from "./Vec2"
 import { Vec3, add3, length3, scale3, sub3 } from "./Vec3"
 
 /**
- * A non-rational B-spline in space: `knots.length === controlPoints.length +
- * degree + 1`. A planar curve's control points share one Z.
+ * A B-spline in space: `knots.length === controlPoints.length + degree + 1`.
+ * A planar curve's control points share one Z.
  * Its domain is `[knots[degree], knots[knots.length - degree - 1]]`, so one
  * shape serves the clamped curves (whose ends are their first and last control
  * points) and the periodic ones (whose control points wrap round).
@@ -12,6 +12,8 @@ export interface BSplineCurve {
   readonly degree: number
   readonly knots: readonly number[]
   readonly controlPoints: readonly Vec3[]
+  /** One positive weight per control point: a rational curve (DXF 41). Absent, every weight is 1. */
+  readonly weights?: readonly number[]
 }
 
 const ZERO: Vec3 = { x: 0, y: 0, z: 0 }
@@ -81,16 +83,21 @@ function basisFunctions(
 export function bsplinePoint(curve: BSplineCurve, u: number): Vec3 {
   const span = findSpan(curve, u)
   const basis = basisFunctions(curve, span, u)
+  const { weights } = curve
   let x = 0
   let y = 0
   let z = 0
+  let w = 0
   for (let j = 0; j <= curve.degree; j++) {
-    const point = curve.controlPoints[span - curve.degree + j]
-    x += basis[j] * point.x
-    y += basis[j] * point.y
-    z += basis[j] * point.z
+    const i = span - curve.degree + j
+    const point = curve.controlPoints[i]
+    const b = weights ? basis[j] * weights[i] : basis[j]
+    x += b * point.x
+    y += b * point.y
+    z += b * point.z
+    w += b
   }
-  return { x, y, z }
+  return weights ? { x: x / w, y: y / w, z: z / w } : { x, y, z }
 }
 
 /** The hodograph: a curve one degree lower whose points are this one's derivative. */
@@ -116,7 +123,65 @@ export function bsplineDerivativeCurve(curve: BSplineCurve): BSplineCurve {
 }
 
 export function bsplineDerivative(curve: BSplineCurve, u: number): Vec3 {
-  return bsplinePoint(bsplineDerivativeCurve(curve), u)
+  return bsplineDifferentials(curve).first(u)
+}
+
+/** The curve's first and second derivatives by its parameter. */
+export interface BSplineDifferentials {
+  first(u: number): Vec3
+  second(u: number): Vec3
+}
+
+/**
+ * A non-rational curve's derivatives are its hodographs'; a rational one's
+ * come from its homogeneous form (Piegl & Tiller §4.5): C = A / W, with
+ * A = Σ N·w·P and W = Σ N·w, so C′ = (A′ − W′C) / W and
+ * C″ = (A″ − 2W′C′ − W″C) / W.
+ */
+export function bsplineDifferentials(
+  curve: BSplineCurve
+): BSplineDifferentials {
+  const { weights } = curve
+  if (!weights) {
+    const d1 = bsplineDerivativeCurve(curve)
+    const d2 = bsplineDerivativeCurve(d1)
+    return {
+      first: (u) => bsplinePoint(d1, u),
+      second: (u) => bsplinePoint(d2, u),
+    }
+  }
+  const { degree, knots } = curve
+  const numerator: BSplineCurve = {
+    degree,
+    knots,
+    controlPoints: curve.controlPoints.map((p, i) => scale3(p, weights[i])),
+  }
+  const weight: BSplineCurve = {
+    degree,
+    knots,
+    controlPoints: weights.map((w) => ({ x: w, y: 0, z: 0 })),
+  }
+  const a1 = bsplineDerivativeCurve(numerator)
+  const a2 = bsplineDerivativeCurve(a1)
+  const w1 = bsplineDerivativeCurve(weight)
+  const w2 = bsplineDerivativeCurve(w1)
+  const first = (u: number): Vec3 => {
+    const c = bsplinePoint(curve, u)
+    const w = bsplinePoint(weight, u).x
+    const dw = bsplinePoint(w1, u).x
+    return scale3(sub3(bsplinePoint(a1, u), scale3(c, dw)), 1 / w)
+  }
+  return {
+    first,
+    second: (u) => {
+      const c = bsplinePoint(curve, u)
+      const w = bsplinePoint(weight, u).x
+      const dw = bsplinePoint(w1, u).x
+      const ddw = bsplinePoint(w2, u).x
+      const pushed = add3(scale3(first(u), 2 * dw), scale3(c, ddw))
+      return scale3(sub3(bsplinePoint(a2, u), pushed), 1 / w)
+    },
+  }
 }
 
 /** The distinct knot values inside the domain, ends included: where the polynomial pieces meet. */
@@ -257,8 +322,8 @@ export function bsplineLength(
   to: number = bsplineDomain(curve).end
 ): number {
   if (!(to > from)) return 0
-  const hodograph = bsplineDerivativeCurve(curve)
-  const speed = (u: number) => length3(bsplinePoint(hodograph, u))
+  const { first } = bsplineDifferentials(curve)
+  const speed = (u: number) => length3(first(u))
   const adaptive = (
     a: number,
     b: number,
@@ -300,7 +365,7 @@ export function bsplineParamAtLength(
 ): number {
   const { start, end } = bsplineDomain(curve)
   if (!(length > 0)) return start
-  const hodograph = bsplineDerivativeCurve(curve)
+  const { first } = bsplineDifferentials(curve)
   const cuts = pieces(curve, start, end)
   let walked = 0
   for (let i = 1; i < cuts.length; i++) {
@@ -321,7 +386,7 @@ export function bsplineParamAtLength(
       if (Math.abs(miss) <= 1e-13 * Math.max(piece, 1e-300)) break
       if (miss > 0) high = u
       else low = u
-      const speed = length3(bsplinePoint(hodograph, u))
+      const speed = length3(first(u))
       const next = speed > 0 ? u - miss / speed : NaN
       u = next > low && next < high ? next : (low + high) / 2
     }
@@ -347,8 +412,8 @@ export function bsplineLengthTable(curve: BSplineCurve): {
   /** The parameter at `distance` along the curve from its start, clamped to it. */
   paramAt(distance: number): number
 } {
-  const hodograph = bsplineDerivativeCurve(curve)
-  const speed = (u: number) => length3(bsplinePoint(hodograph, u))
+  const { first } = bsplineDifferentials(curve)
+  const speed = (u: number) => length3(first(u))
   const breaks = bsplineBreakpoints(curve)
   const cuts = [breaks[0]]
   for (let i = 1; i < breaks.length; i++) {
@@ -399,8 +464,10 @@ const LENGTH_TABLE_STEPS = 6
 
 /**
  * Half `∫ (x y′ − y x′) du` from `from` to `to`: the signed area the curve
- * sweeps about the origin, in plan. Each piece is a polynomial of degree at most
- * 2 × degree − 1, which {@link GAUSS} integrates exactly.
+ * sweeps about the origin, in plan. A non-rational piece's integrand is a
+ * polynomial of degree at most 2 × degree − 1, which {@link GAUSS}
+ * integrates exactly; a rational one's is no polynomial, so it is halved
+ * until the halves agree to a fraction of the curve's own square extent.
  */
 export function bsplineSweptArea(
   curve: BSplineCurve,
@@ -409,13 +476,42 @@ export function bsplineSweptArea(
 ): number {
   if (to === from) return 0
   if (to < from) return -bsplineSweptArea(curve, to, from)
-  const hodograph = bsplineDerivativeCurve(curve)
-  const integrand = (u: number) =>
-    V.cross(bsplinePoint(curve, u), bsplinePoint(hodograph, u))
+  const { first } = bsplineDifferentials(curve)
+  const integrand = (u: number) => V.cross(bsplinePoint(curve, u), first(u))
   const cuts = pieces(curve, from, to)
   let twice = 0
+  if (!curve.weights) {
+    for (let i = 1; i < cuts.length; i++) {
+      twice += gauss(integrand, cuts[i - 1], cuts[i])
+    }
+    return twice / 2
+  }
+  const extent = Math.max(
+    1e-300,
+    ...curve.controlPoints.map((p) => Math.abs(p.x) + Math.abs(p.y))
+  )
+  const tolerance = 1e-14 * extent * extent
+  const adaptive = (
+    a: number,
+    b: number,
+    whole: number,
+    depth: number
+  ): number => {
+    const m = (a + b) / 2
+    const left = gauss(integrand, a, m)
+    const right = gauss(integrand, m, b)
+    if (
+      depth >= MAX_LENGTH_HALVINGS ||
+      Math.abs(left + right - whole) <= tolerance
+    ) {
+      return left + right
+    }
+    return adaptive(a, m, left, depth + 1) + adaptive(m, b, right, depth + 1)
+  }
   for (let i = 1; i < cuts.length; i++) {
-    twice += gauss(integrand, cuts[i - 1], cuts[i])
+    const a = cuts[i - 1]
+    const b = cuts[i]
+    twice += adaptive(a, b, gauss(integrand, a, b), 0)
   }
   return twice / 2
 }
@@ -431,8 +527,8 @@ export function bsplinesMeeting(
   second: BSplineCurve,
   v: number
 ): { readonly u: number; readonly v: number } | null {
-  const d1 = bsplineDerivativeCurve(first)
-  const d2 = bsplineDerivativeCurve(second)
+  const d1 = bsplineDifferentials(first).first
+  const d2 = bsplineDifferentials(second).first
   const one = bsplineDomain(first)
   const two = bsplineDomain(second)
   const size = Math.max(
@@ -442,8 +538,8 @@ export function bsplinesMeeting(
   for (let step = 0; step < MEETING_STEPS; step++) {
     const gap = V.sub(bsplinePoint(first, u), bsplinePoint(second, v))
     if (V.length(gap) <= 1e-13 * size) return { u, v }
-    const a = bsplinePoint(d1, u)
-    const b = V.scale(bsplinePoint(d2, v), -1)
+    const a = d1(u)
+    const b = V.scale(d2(v), -1)
     const det = V.cross(a, b)
     if (Math.abs(det) < 1e-300) return null
     u = Math.min(one.end, Math.max(one.start, u - V.cross(gap, b) / det))
@@ -603,15 +699,60 @@ export function clampedUniformCurve(
 /** A closed curve on a loop of control points with knots 1 apart (periodic, C^(degree−1) everywhere). */
 export function periodicUniformCurve(
   controlPoints: readonly Vec3[],
-  degree: number
+  degree: number,
+  weights?: readonly number[]
 ): BSplineCurve {
-  const knots: number[] = []
-  for (let i = 0; i <= controlPoints.length + 2 * degree; i++)
-    knots.push(i - degree)
+  const knots = Array.from({ length: controlPoints.length + 1 }, (_, i) => i)
+  return periodicCurve(controlPoints, degree, knots, weights)
+}
+
+/**
+ * A closed curve as AutoCAD holds a periodic one: a loop of n control points
+ * (`degree` at most n) and the n + 1 knots of one period, the curve starting
+ * at the first (probe spline/p311: knots 0 to 4 on a closed CV spline of four
+ * vertices, 0 to 80 on a closed fit spline of four points, and its four
+ * control points). Unwrapped, the last `degree` points come first and the
+ * knots run on by the period on either side.
+ */
+export function periodicCurve(
+  controlPoints: readonly Vec3[],
+  degree: number,
+  knots: readonly number[],
+  weights?: readonly number[]
+): BSplineCurve {
+  const n = controlPoints.length
+  const period = knots[n] - knots[0]
+  const knotAt = (i: number): number => {
+    const wraps = Math.floor(i / n)
+    return knots[i - wraps * n] + wraps * period
+  }
+  const wrap = <T>(loop: readonly T[]): T[] => [
+    ...loop.slice(n - degree),
+    ...loop,
+  ]
   return {
     degree,
-    knots,
-    controlPoints: [...controlPoints, ...controlPoints.slice(0, degree)],
+    knots: Array.from({ length: n + 2 * degree + 1 }, (_, i) =>
+      knotAt(i - degree)
+    ),
+    controlPoints: wrap(controlPoints),
+    ...(weights ? { weights: wrap(weights) } : {}),
+  }
+}
+
+/**
+ * The loop and the period a periodic curve unwraps, as AutoCAD holds them:
+ * `curve`'s last `degree` control points are its first again, as
+ * {@link periodicCurve} and {@link interpolatePeriodicCubic} leave them.
+ */
+export function periodicLoop(curve: BSplineCurve): BSplineCurve {
+  const p = curve.degree
+  const n = curve.controlPoints.length - p
+  return {
+    degree: p,
+    knots: curve.knots.slice(p, p + n + 1),
+    controlPoints: curve.controlPoints.slice(p),
+    ...(curve.weights ? { weights: curve.weights.slice(p) } : {}),
   }
 }
 

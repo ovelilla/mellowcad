@@ -118,7 +118,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 37
+export const DRAWING_FILE_VERSION = 38
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -450,6 +450,8 @@ function cloneEntityShape(entity: Entity): Entity {
           ? { startTangent: { ...entity.startTangent } }
           : {}),
         ...(entity.endTangent ? { endTangent: { ...entity.endTangent } } : {}),
+        ...(entity.knotVector ? { knotVector: [...entity.knotVector] } : {}),
+        ...(entity.weights ? { weights: [...entity.weights] } : {}),
       }
     case "polyline":
       return {
@@ -1015,6 +1017,13 @@ function endTangentOf(value: unknown, version: number): Vec3 | undefined {
     : undefined
 }
 
+/** A list of finite numbers, or nothing when it is not one whole. */
+function parseNumbers(value: unknown): number[] | undefined {
+  return Array.isArray(value) && value.every(isFiniteNumber)
+    ? [...value]
+    : undefined
+}
+
 /**
  * A spline's point or tangent. Before 37 it had no Z, its points lying at the
  * elevation `parsePlane` then gives them; a Z left out is 0.
@@ -1130,7 +1139,9 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
           ? raw.knots
           : "chord"
       // Through the factory, so a hand-edited degree is clamped to 1–10 and
-      // lowered to what the vertex count allows.
+      // lowered to what the vertex count allows, and knots or weights that
+      // do not fit the points are dropped. Version 38 brought them; an older
+      // spline has neither.
       return {
         ...createSpline(method, points, {
           ...(isFiniteNumber(raw.degree) ? { degree: raw.degree } : {}),
@@ -1138,6 +1149,8 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
           closed: raw.closed === true,
           startTangent: parseSplineVector(raw.startTangent) ?? undefined,
           endTangent: endTangentOf(raw.endTangent, version),
+          knotVector: parseNumbers(raw.knotVector),
+          weights: parseNumbers(raw.weights),
           layerId,
           id,
         }),
