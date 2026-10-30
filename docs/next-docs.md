@@ -100,5 +100,3 @@ Visto al cerrar la fase 2; ordenado por lo que aporta.
 - **Un MCP del motor** (un agente dibuja con comandos de AutoCAD sobre `CadDriver`, sin navegador,
   y devuelve SVG o el fichero del dibujo): lo más interesante como producto, y una decisión de
   producto con su propio brief y la regla de afirmaciones (`i18n.md`) delante.
-- El CLI de shadcn (4.22.0 instalado, 4.23.0 publicada) y la migración de septiembre al paquete
-  `cn` son del editor: van en la próxima revisión de dependencias (`docs/next-agents.md`).
