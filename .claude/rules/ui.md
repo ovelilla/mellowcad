@@ -7,7 +7,7 @@ paths:
 
 # UI layer (the editor, `@mellowcad/editor`, at `/draw`)
 
-> Verified against **@base-ui/react 1.9.0**, **tailwind-merge 3.7.0**, **lucide-react 1.62.0**.
+> Verified against **@base-ui/react 1.9.0**, **cn 0.5.0**, **lucide-react 1.62.0**.
 
 React is a **dumb presentation shell**. Components read `EngineState` and call `CadEngine`
 methods; they never contain CAD logic, geometry or drawing decisions. Import from
@@ -94,7 +94,8 @@ file. Shared bar atoms live in `toolbar-primitives.tsx`, custom glyphs in `icons
 primitives in `ui/`, the catalog in `locales/`. It reaches its own files relatively and the engine
 and the hooks by name (`test/packages.test.ts`): an `@/` import still compiles in the repo, against
 the site. `shadcn add` writes into the editor (`components.json`) with `@/` imports: make them
-relative. `index.ts` exports only what a host uses, or needs to compose or replace a piece: each
+relative, and its `import { cn } from "cn"` (the stock merge, blind to the type scale) the local
+`./utils` one (ESLint). Never `npx shadcn migrate cn`: it rewrites `utils.ts` to the stock export. `index.ts` exports only what a host uses, or needs to compose or replace a piece: each
 name there is a semver promise. The package's build (`engine-package.md`) asks of every module a
 `"use client"` if it has a hook or JSX, and an exported component's return type (`ReactElement`):
 the hook fails without them.

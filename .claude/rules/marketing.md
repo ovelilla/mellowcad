@@ -57,7 +57,7 @@ script — updates it in the same change.
   `UnknownCommand` (a URL only the browser knows) and `LanguageLinks` (`i18n.md`). It takes its copy
   as props (`i18n.md`).
 - **An island imports nothing heavy.** The engine is safe _only_ because `cad/package.json`
-  declares it side-effect free (`cad-engine.md`); `cn()` is not — it ships `tailwind-merge` — and
+  declares it side-effect free (`cad-engine.md`); `cn()` is not — it ships `cn`'s merge engine and its config compiler — and
   `next-intl/navigation` ships next-intl's client runtime.
 - **The engine never ships on `/`.** An island takes from it only small pure helpers and types;
   anything reaching `CadEngine` pulls the whole engine into the landing. Check after touching an

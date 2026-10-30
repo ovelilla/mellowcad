@@ -49,10 +49,9 @@
   "dependencies": {
     "@base-ui/react": "^1.9.0",
     "class-variance-authority": "^0.7.1",
-    "clsx": "^2.1.1",
+    "cn": "^0.5.0",
     "icu-minify": "^4.14.9",
-    "lucide-react": "^1.62.0",
-    "tailwind-merge": "^3.7.0"
+    "lucide-react": "^1.62.0"
   },
   "devDependencies": {
     "@arethetypeswrong/cli": "^0.18.5",

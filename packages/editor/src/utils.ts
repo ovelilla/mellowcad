@@ -1,9 +1,9 @@
-import { clsx, type ClassValue } from "clsx"
-import { extendTailwindMerge } from "tailwind-merge"
+import type { ClassValue } from "cn"
+import { createCn } from "cn/config"
 
-// The type scale's roles (styles.css) are font sizes: unknown, tailwind-merge
-// would take `text-ui` for a colour and drop it beside `text-muted-foreground`.
-const twMerge = extendTailwindMerge({
+// The type scale's roles (styles.css) are font sizes: unknown, cn would take
+// `text-ui` for a colour and drop it beside `text-muted-foreground`.
+const merge = createCn({
   extend: {
     theme: {
       text: ["ui", "title"],
@@ -12,5 +12,5 @@ const twMerge = extendTailwindMerge({
 })
 
 export function cn(...inputs: ClassValue[]): string {
-  return twMerge(clsx(inputs))
+  return merge(...inputs)
 }

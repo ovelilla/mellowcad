@@ -143,6 +143,25 @@ const eslintConfig = defineConfig([
       ],
     },
   },
+  {
+    // WHY: shadcn's registry ships its components with `import { cn } from
+    // "cn"`, the stock merge, which drops a type-scale role (`text-ui`)
+    // beside a colour. Every class list goes through the local `cn`, the one
+    // place that knows the roles.
+    files: ["**/*.ts", "**/*.tsx"],
+    ignores: ["lib/utils.ts", "packages/editor/src/utils.ts"],
+    rules: {
+      "no-restricted-imports": [
+        "error",
+        ...["cn", "cn/config", "clsx", "tailwind-merge"].map((name) => ({
+          name,
+          importNames: ["cn", "clsx", "twMerge", "createCn"],
+          message:
+            "Merge classes with the local cn (lib/utils.ts, packages/editor/src/utils.ts): it knows the type scale's roles (.claude/rules/ui.md).",
+        })),
+      ],
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:

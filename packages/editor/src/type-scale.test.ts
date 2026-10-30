@@ -71,7 +71,7 @@ describe("type scale", () => {
   })
 
   it("keeps a role beside a text colour when classes merge", () => {
-    // tailwind-merge reads an unknown `text-*` as a colour, and would drop
+    // The stock merge reads an unknown `text-*` as a colour, and would drop
     // the role for the colour after it.
     expect(cn("text-ui text-muted-foreground")).toBe(
       "text-ui text-muted-foreground"
