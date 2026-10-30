@@ -36,8 +36,8 @@ language's (`sitePaths()`, `localePath()`; `i18n.md`); a client island gets it a
 claims and tone: `i18n.md`.
 
 **The site is the landing, the 404, `/privacy` and the docs** (`/docs`, `docs.md`) — decided: no
-changelog or comparison pages, and the commands' reference is the docs' (`docs/next-docs.md`), never
-a hub or cheat sheet of its own. Never propose a new page without Search Console data behind it.
+changelog or comparison pages, and the commands' reference is the docs' (`/docs/commands`), never a
+hub or cheat sheet of its own. Never propose a new page without Search Console data behind it.
 
 **`/privacy` is the notice GDPR requires** (Article 13): the host and both Vercel measurements
 process personal data (the IP address, a visitor hash kept 24 hours), and so does the contact

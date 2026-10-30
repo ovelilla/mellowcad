@@ -523,8 +523,8 @@ Bloqueos: 1 → 2 → 6; 1 → 3 → 4 → 5 → 7; la org de npm → 6; 7 → 8
 
 ## 6. Riesgos
 
-- 171 nombres públicos: 146 del motor (eran 642; la 3(d) sumó cinco), 8 de react y 17 del editor
-  (`CadEditor` y sus nueve piezas, cinco tipos, `EditorLocale` y `paletteLayoutScript`; más sus
+- 172 nombres públicos: 146 del motor (eran 642; la 3(d) sumó cinco), 8 de react y 18 del editor
+  (`CadEditor` y sus nueve piezas, seis tipos —`HelpLinks`, de F1, el 2026-10-30—, `EditorLocale` y `paletteLayoutScript`; más sus
   tres catálogos y su hoja, con `data-mellowcad-editor`, sus capas, `--font-sans` y
   `--font-mono`), y lo que sus firmas alcanzan (`cad/api.md`, `packages/react/api.md`,
   `packages/editor/api.md`): cada uno es una promesa de semver.
@@ -562,3 +562,16 @@ primera publicación) se ejecuta en la fase 6, con un sí suyo en ese momento.
 - **Publicar sin coste**: la primera versión de cada paquete, desde la máquina del dueño con 2FA (el
   trusted publisher se configura en los ajustes de un paquete que ya existe); las siguientes,
   desde GitHub Actions con trusted publishing.
+
+## 8. Para quien integra con agentes (del brief de la documentación, cerrado el 2026-10-30)
+
+Visto al cerrar la fase 2 de la documentación y sin acordar; ordenado por lo que aporta. La web ya
+tiene el `.md` de cada página y `llms.txt`.
+
+- **Una skill para quien integra**: un `SKILL.md` que enseña a montar el motor o el editor,
+  generado de los mismos READMEs (una fuente, como las páginas de _Construir_).
+- **Un MCP de la documentación** (buscar y leer páginas): `fumadocs-core/mcp` lo trae, pero cada
+  llamada es una función y aporta poco sobre `llms.txt` con tan pocas páginas.
+- **Un MCP del motor** (un agente dibuja con comandos de AutoCAD sobre `CadDriver`, sin navegador,
+  y devuelve SVG o el fichero del dibujo): lo más interesante como producto, y una decisión de
+  producto con su propio brief y la regla de afirmaciones (`.claude/rules/i18n.md`) delante.
