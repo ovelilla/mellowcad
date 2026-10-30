@@ -22,10 +22,6 @@ const LOAD_P90_MAX_KB = 52
 
 // Cited on purpose without existing in the repo or a declared package.
 const ABSENT_CITATIONS: Record<string, { reason: string; values: string[] }> = {
-  "README.md": {
-    reason: "written by `vercel env pull`, never by the repo",
-    values: ["VERCEL_OIDC_TOKEN"],
-  },
   "docs/next-launch.md": {
     reason: "the landing's brief, deleted once it shipped; it is in git",
     values: ["docs/next-landing.md"],

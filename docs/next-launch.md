@@ -25,9 +25,9 @@
 5. **Directorios:** AlternativeTo (como alternativa a AutoCAD, LibreCAD y QCAD) y SaaSHub.
 6. **Outreach** a los autores de los listados "free AutoCAD alternatives / online CAD" que hoy
    posicionan.
-7. **Artículo técnico** (dev.to, Hashnode o un blog propio) que enlace a la home. El repo es privado y
-   el lanzamiento no depende de GitHub; si algún día se publica, su README (hoy, cómo montar el
-   proyecto) necesita una presentación para quien no lo desarrolla.
+7. **Artículo técnico** (dev.to, Hashnode o un blog propio) que enlace a la home. El repo es público
+   (MIT) desde el 2026-10-30 y su README presenta el proyecto a quien lo visita; el lanzamiento no
+   depende de GitHub.
 
 Todo lo que se publique sigue la política de afirmaciones de `.claude/rules/i18n.md` («Claims»).
 
