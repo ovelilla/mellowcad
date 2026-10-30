@@ -500,9 +500,9 @@ son días de sesión.
    publicado es el del tarball local. El trusted publisher del motor (`ovelilla/mellowcad`,
    `release.yml`, etiqueta `release`, «Allow npm publish»; 2FA sin tokens que la salten) está
    creado pero **pendiente de validar**: npm lo da por bueno con la primera publicación que pase por
-   él, **antes del 2026-11-01 a las 10:50 UTC**. Hay que sacar antes una 0.1.x con un cambio real
-   del motor por Actions → Release; si caduca, se crea otra vez con los mismos datos y se valida con
-   la siguiente versión.
+   él, **antes del 2026-11-01 a las 10:50 UTC**: la 0.1.1 (la ficha de npm: descripción, palabras
+   clave, `homepage` al README del motor) sale por Actions → Release para eso. Si caducara, se crea
+   otra vez con los mismos datos y se valida con la siguiente versión.
 7. **Publicar react y editor 0.1.0** — 1 día, cuando el ritmo de `packages/editor` baje y terminen las
    revisiones de comandos. Medido el 2026-10-30: las 25 revisiones, hechas; los commits del editor
    de esa semana son casi todos su empaquetado (fases 4 y 5), pero su superficie pública

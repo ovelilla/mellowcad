@@ -1,6 +1,19 @@
 {
   "name": "@mellowcad/engine",
-  "version": "0.1.0",
+  "version": "0.1.1",
+  "description": "A 2D CAD drafting engine that works like AutoCAD: its commands, aliases, prompts, keywords and object snaps, headless or on a canvas.",
+  "keywords": [
+    "cad",
+    "2d",
+    "drafting",
+    "drawing",
+    "autocad",
+    "canvas",
+    "engine",
+    "headless"
+  ],
+  "homepage": "https://github.com/ovelilla/mellowcad/tree/main/cad#readme",
+  "bugs": "https://github.com/ovelilla/mellowcad/issues",
   "license": "MIT",
   "repository": {
     "type": "git",
