@@ -623,7 +623,7 @@ point (p130, p165); ELEVATION is its Z, THICKNESS none (p130). The height and ro
 dashed (desktop d01-5, d01-6). -TEXT (es -TEXTO) asks the same and one line, then ends; an empty
 line adds nothing; U, UNDO and REDO name it `-TEXT` (p101, p118, p127, p129). Laid out as AutoCAD
 lays out Arial, scaled by its H's ink height (1466 units, p301): along the baseline by the
-advances, from A's overhang when it has one (Center of Agh −12.418, p302, p327); Top the height
+advances, from A's overhang when it has one (AutoCAD's Center of Agh −12.418, p302, p327); Top the height
 below the point, ML/MC/MR half of it, BL/BC/BR Arial's descent above it (434/1466 of the height),
 Middle the ink's vertical middle on it (p302, p327). Its box (pick, bounds, windows, TRIM's edges,
 MIRROR) is the ink's, AutoCAD's `(textbox)` (p301), but Arimo's ink, not Arial's (WHY: the package

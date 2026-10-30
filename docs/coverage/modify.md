@@ -147,7 +147,7 @@ reflection of its box (a TEXT's the ink's), its justification kept — one the r
 the other side of the half-plane of directions in (−90°, 90°] turns half round, its point at the
 image of the box's far end along the baseline (Right's at the image of the baseline's start,
 Middle's at its own image, text/p337); one it stands on its head flips across the baseline (a BL
-Agh at 0,0 about y = 20 at 27.019, text/p331, p338); a right angle counts
+Agh at 0,0 about y = 20 at 27.019, here 26.855 by Arimo's ink, text/p331, p338); a right angle counts
 by that half-plane too, 90° rightward and 270° leftward, so about y = x a text at 270° reads at
 180°, about y = −x at 0°, and two mirrors give it back (trim/p01, p02); MTEXT's attachment swaps
 left and right, or top and bottom (p283, p290–p294); a mirrored spline keeps its +Z normal, as
@@ -1122,7 +1122,7 @@ the generator's order, not AutoCAD's (p259 runs from the far corner); a pattern'
 AR-SAND) becomes a zero-length LINE, what AutoCAD makes of one **unverified**; `Hatch boundary associativity
 removed.` (es `Asociatividad del contorno del sombreado eliminada.`, p263), as no hatch is
 associative here; exploded MTEXT's positions differ by the font's metrics (EXP-06, p255: OLD at
-9.324693,39.822647 in AutoCAD, 10,40 here); ByBlock resolution; a reference scaled unequally gives
+9.324693,39.822647 in AutoCAD, 9.338336,40 here by Arimo's ink); ByBlock resolution; a reference scaled unequally gives
 its pieces as it draws them, its texts at X's size (INSERT's Missing)
 
 ### `JOIN` / `J` · es `UNIR` / `U`†
