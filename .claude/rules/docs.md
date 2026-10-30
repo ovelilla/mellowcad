@@ -47,6 +47,24 @@ claims follow `i18n.md`.
 - react and the editor say "not published yet" while their `package.json` is `private`; a
   published package's `homepage` is its page.
 
+## "Use MellowCAD"
+
+- Pages at the docs' root, each in every language (`commands.mdx`, `commands.es.mdx`…), listed in
+  `USE_PAGES` (`lib/docs/use.ts`); the navigation's "Use" is the root pages and "Build" the
+  folders (`navSections`). A page in every language has its own canonical, hreflang and sitemap
+  alternates (`isTranslated`).
+- **A generated page is a file snapshot** of `lib/docs/generate.test.ts` (`generated:` in its
+  frontmatter), written from the engine's catalog, the messages and `docs/coverage/`: never edit
+  one; change its source and run `npx vitest run lib/docs/generate.test.ts -u`. WHY in Vitest:
+  Node resolves `@mellowcad/engine` to its untracked `dist/`, and the macro bundles with packages
+  external, so neither `docs:check` nor a remark plugin can read the catalog.
+- Every command has a `###` heading in `docs/coverage/` naming it in a code span: the reference
+  links to it and fails without one.
+- A hand-written translation carries `sourceHash` (`sourceHash()` of its English file):
+  `docs:check` names a stale one and the hash to set once it is brought up to date.
+- In a right-to-left page a command's name in a heading is isolated (FSI…PDI) and inline code is
+  `dir="ltr"`: `-HATCH` read `HATCH-` in the heading and its table of contents.
+
 ## Fumadocs
 
 - Macro API (`fumadocs-mdx/macro`), no `source.config.ts`. **`include` matches by file name**
@@ -81,6 +99,7 @@ claims follow `i18n.md`.
 ## `docs:check`
 
 `npm run docs:check`, in the hook and CI: frontmatter and `meta.json`, each package's two pages
-and their includes, the links of the package files and of written pages, the examples blocks
-name, and the homepage. A README link that leads nowhere fails it. Its own cases are
-`lib/docs/check.test.ts`.
+and their includes, each "Use" page in every language and its translations' `sourceHash`, the
+links of the package files and of written pages (a fragment to a root page's heading), the
+examples blocks name, and the homepage. A README link that leads nowhere fails it. Its own cases
+are `lib/docs/check.test.ts`.

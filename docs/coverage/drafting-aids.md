@@ -65,7 +65,7 @@ tooltip's distance and angle (`Extension: 12.00 < 0°`), the snapped object's bl
 cycles (d26), APERTURE and AUTOSNAP's settings as variables, per-entity opt-in still required for every
 new entity type (OSOPTIONS-like, deliberate), Intersection between objects in different planes
 
-### Object snap overrides
+### Object snap overrides and `FROM`
 
 **Implemented:** Shift + right-click at a point prompt (on the press), one-shot override: FROM
 and the object snaps in AutoCAD's order and groups for what exists (desktop line/d06): From ·

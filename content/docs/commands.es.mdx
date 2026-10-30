@@ -1,0 +1,851 @@
+---
+title: "Comandos"
+description: "Cada comando de AutoCAD que ejecuta MellowCAD, por grupo de la cinta: su nombre, sus alias y lo primero que pregunta."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+---
+
+Cada comando como se escribe en la línea de comandos, con el nombre que tiene en AutoCAD en español, bajo el grupo de la cinta donde lo buscarías. Con un guion bajo delante se escribe el nombre inglés, como en AutoCAD (`_LINE`). La primera solicitud es la del propio motor: el mismo orden y las mismas letras de opción que verás al ejecutarlo.
+
+## Dibujo [#draw]
+
+### LINEA [#line]
+
+Línea
+
+- **Alias:** `L`
+- **Primera solicitud:** `Precise primer punto:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#line--l--es-linea--l)
+
+### POL [#pline]
+
+Polilínea
+
+- **Alias:** `PL`
+- **Primera solicitud:** `Precise punto inicial:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#pline--pl--es-pol--pl)
+
+### CIRCULO [#circle]
+
+Círculo
+
+- **Alias:** `C`
+- **Primera solicitud:** `Precise punto central para círculo o [3P/2P/Ttr (Tangente tangente radio)]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#circle--c--es-circulo--c)
+
+### ARCO [#arc]
+
+Arco
+
+- **Alias:** `A`
+- **Primera solicitud:** `Precise punto inicial del arco o [Centro]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#arc--a--es-arco--a)
+
+### ELIPSE [#ellipse]
+
+Elipse
+
+- **Alias:** `EL`
+- **Primera solicitud:** `Precise punto final de eje de elipse o [Arco/Centro]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#ellipse--el--es-elipse--el)
+
+### SPLINE [#spline]
+
+Spline
+
+- **Alias:** `SPL`
+- **Primera solicitud:** `Precise primer punto o [Método/Nudos]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#spline--spl--es-spline--spl)
+
+### RECTANG [#rectang]
+
+Rectángulo
+
+- **Alias:** `REC`, `RECTANGLE`
+- **Primera solicitud:** `Precise primer punto de esquina o [Chaflán/Elevación/eMpalme/Alt-objeto/Grosor]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#rectang--rec--rectangle--es-rectang--rec--rectangle)
+
+### POLIGONO [#polygon]
+
+Polígono
+
+- **Alias:** `PG`
+- **Primera solicitud:** `Indique número de lados <4>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#polygon--pol--es-poligono--pg)
+
+### SOMBREA [#hatch]
+
+Sombreado
+
+- **Alias:** `SB`, `SMB`, `-SMB`
+- **Primera solicitud:** `Precise punto interno o [Propiedades/Designar objetos]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#hatch--h--bh--bhatch--hatch---h---bh---bhatch--es-sombrea--sb--smb---smb--sombrea)
+
+### -SOMBREA [#-hatch]
+
+Sombreado
+
+- **Primera solicitud:** `Precise punto interno o [Propiedades/Designar objetos]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#hatch--h--bh--bhatch--hatch---h---bh---bhatch--es-sombrea--sb--smb---smb--sombrea)
+
+## Modificar [#modify]
+
+### DESFASE [#offset]
+
+Desfase
+
+- **Alias:** `DF`, `EQ`
+- **Primera solicitud:** `Precise distancia de desfase o [punto a Atravesar/Borrar/Capa] <punto a Atravesar>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#offset--o--es-desfase--df--eq)
+
+### DESPLAZA [#move]
+
+Desplazar
+
+- **Alias:** `D`
+- **Primera solicitud:** `Designe objetos:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#move--m--es-desplaza--d)
+
+### COPIA [#copy]
+
+Copiar
+
+- **Alias:** `CP`, `DUP`
+- **Primera solicitud:** `Designe objetos:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#copy--co--es-copia--cp--dup)
+
+### ESTIRA [#stretch]
+
+Estirar
+
+- **Alias:** `EI`
+- **Primera solicitud:** `Designe objetos:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#stretch--s--es-estira--ei)
+
+### GIRA [#rotate]
+
+Girar
+
+- **Alias:** `GI`
+- **Primera solicitud:** `Designe objetos:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#rotate--ro--es-gira--gi)
+
+### ESCALA [#scale]
+
+Escala
+
+- **Alias:** `ES`
+- **Primera solicitud:** `Designe objetos:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#scale--sc--es-escala--es)
+
+### SIMETRIA [#mirror]
+
+Simetría
+
+- **Alias:** `SI`
+- **Primera solicitud:** `Designe objetos:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#mirror--mi--es-simetria--si)
+
+### MATRIZ [#array]
+
+Matriz
+
+- **Alias:** `MA`
+- **Primera solicitud:** `Designe objetos:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#array--ar--es-matriz--ma)
+
+### MATRIZRECTANG [#arrayrect]
+
+Matriz rectangular
+
+- **Primera solicitud:** `Designe objetos:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arrayrect--es-matrizrectang)
+
+### MATRIZPOLAR [#arraypolar]
+
+Matriz polar
+
+- **Primera solicitud:** `Designe objetos:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arraypolar--es-matrizpolar)
+
+### MATRIZCAMINO [#arraypath]
+
+Matriz de camino
+
+- **Primera solicitud:** `Designe objetos:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arraypath--es-matrizcamino)
+
+### RECORTA [#trim]
+
+Recortar
+
+- **Alias:** `RR`
+- **Primera solicitud:** `Seleccione un objeto que recortar o use la tecla Mayús y seleccione para alargar, o [aristas de COrte/Captura/MOdo/bOrrar]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al)
+
+### ALARGA [#extend]
+
+Alargar
+
+- **Alias:** `AL`
+- **Primera solicitud:** `Seleccione un objeto que alargar o use la tecla Mayús y seleccione para recortar, o [aristas de COrte/Captura/MOdo]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al)
+
+### EMPALME [#fillet]
+
+Empalme
+
+- **Alias:** `MP`
+- **Primera solicitud:** `Designe el primer objeto o [Deshacer/Polilínea/RAdio/múLtiple]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#fillet--f--es-empalme--mp)
+
+### CHAFLAN [#chamfer]
+
+Chaflán
+
+- **Alias:** `CH`
+- **Primera solicitud:** `Designe la primera línea o [desHacer/Polilínea/Distancia/múLtiple]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#chamfer--cha--es-chaflan--ch)
+
+### BORRA [#erase]
+
+Borrar
+
+- **Alias:** `B`, `DELETE`
+- **Primera solicitud:** `Designe objetos:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#erase--e--delete--es-borra--b--delete)
+
+### DESCOMP [#explode]
+
+Descomponer
+
+- **Alias:** `DP`
+- **Primera solicitud:** `Designe objetos:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#explode--x--es-descomp--dp)
+
+### UNIR [#join]
+
+Juntar
+
+- **Alias:** `U`
+- **Primera solicitud:** `Designe un objeto de origen o varios objetos para unirlos a la vez:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#join--j--es-unir--u)
+
+### PARTE [#break]
+
+Partir
+
+- **Alias:** `P`
+- **Primera solicitud:** `Designe objeto:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#break--br--breakatpoint--es-parte--p--partirenpunto)
+
+### PARTIRENPUNTO [#breakatpoint]
+
+Partir en punto
+
+- **Primera solicitud:** `Designe objeto:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#break--br--breakatpoint--es-parte--p--partirenpunto)
+
+### IGUALARPROP [#matchprop]
+
+Igualar propiedades
+
+- **Alias:** `IP`, `COPIARPROP`
+- **Primera solicitud:** `Designe objeto de origen:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#matchprop--ma--painter--es-igualarprop--ip--copiarprop)
+
+## Anotación [#annotate]
+
+### TEXTO [#text]
+
+Texto
+
+- **Alias:** `T`, `TEXTODIN`
+- **Primera solicitud:** `Precise punto inicial de texto o [jUstificar/Estilo]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#text--dtext--dt---text--es-texto--t--textodin---texto)
+
+### TEXTOM [#mtext]
+
+Texto de líneas múltiples
+
+- **Alias:** `TXM`, `MTEXT`
+- **Primera solicitud:** `Precise la primera esquina:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#mtext--t--mt---mtext---t--es-textom--txm--mtext---textom---txm)
+
+### EDITARTEXTO [#textedit]
+
+Editar texto
+
+- **Alias:** `ED`, `DDEDIC`, `TEDIT`
+- **Primera solicitud:** `Designe un objeto de anotación o [desHacer/Modo]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#textedit--ed--ddedit--tedit--es-editartexto--ed--ddedic--tedit)
+
+### ACOLINEAL [#dimlinear]
+
+Lineal
+
+- **Alias:** `ACOLIN`, `DIMLIN`
+- **Primera solicitud:** `Especifique el origen de la primera línea de referencia o <designar objeto>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimlinear--dimlin--dli--es-acolineal--acolin--dimlin)
+
+### ACOALINEADA [#dimaligned]
+
+Alineada
+
+- **Alias:** `ACOALI`
+- **Primera solicitud:** `Especifique el origen de la primera línea de referencia o <designar objeto>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimaligned--dal--es-acoalineada--acoali)
+
+### ACOHORIZONTAL [#dimhorizontal]
+
+Horizontal
+
+- **Primera solicitud:** `Especifique el origen de la primera línea de referencia o <designar objeto>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimhorizontal--es-acohorizontal)
+
+### ACOVERTICAL [#dimvertical]
+
+Vertical
+
+- **Primera solicitud:** `Especifique el origen de la primera línea de referencia o <designar objeto>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimvertical--es-acovertical)
+
+### ACOGIRADA [#dimrotated]
+
+Girada
+
+- **Primera solicitud:** `Designe ángulo de línea de cota <0>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimrotated--es-acogirada)
+
+### ACORADIO [#dimradius]
+
+Radio
+
+- **Alias:** `ACORAD`
+- **Primera solicitud:** `Designe un arco o un círculo:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimradius--dimrad--dra--es-acoradio--acorad)
+
+### ACODIAMETRO [#dimdiameter]
+
+Diámetro
+
+- **Alias:** `ACODIA`
+- **Primera solicitud:** `Designe un arco o un círculo:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimdiameter--dimdia--ddi--es-acodiametro--acodia)
+
+### ACOANGULAR [#dimangular]
+
+Angular
+
+- **Alias:** `ACOANG`
+- **Primera solicitud:** `Designe arco, círculo, línea o <designar vértice>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimangular--dimang--dan--es-acoangular--acoang)
+
+### ACOLINEABASE [#dimbaseline]
+
+Línea base
+
+- **Alias:** `ACOLINE`
+- **Primera solicitud:** `Designe cota base:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimbaseline--dba--es-acolineabase--acoline)
+
+### ACOCONTINUA [#dimcontinue]
+
+Continuar
+
+- **Alias:** `ACOCONT`
+- **Primera solicitud:** `Designe cota continua:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimcontinue--dco--es-acocontinua--acocont)
+
+### ACOESPAC [#dimspace]
+
+Ajustar espacio
+
+- **Primera solicitud:** `Designar cota base:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimspace--es-acoespac)
+
+### -ACOESTIL [#-dimstyle]
+
+Estilo de cota (línea de comandos)
+
+- **Primera solicitud:** `Indique una opción de estilo de cota [Guardar/Restituir/Estado/Variables/Aplicar/?] <Restituir>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#-dimstyle--es--acoestil)
+
+### -TEXTO [#-text]
+
+Texto
+
+- **Primera solicitud:** `Precise punto inicial de texto o [jUstificar/Estilo]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#text--dtext--dt---text--es-texto--t--textodin---texto)
+
+### -TEXTOM [#-mtext]
+
+Texto de líneas múltiples
+
+- **Alias:** `-TXM`
+- **Primera solicitud:** `Precise la primera esquina:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#mtext--t--mt---mtext---t--es-textom--txm--mtext---textom---txm)
+
+### ACOESTIL [#dimstyle]
+
+Crear y modificar estilos de cota
+
+- **Alias:** `ACES`, `ACOEST`, `AES`, `DCOTA`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimstyle--d--dimsty--dst--ddim--es-acoestil--aces--acoest--aes--dcota)
+
+### ESTILO [#style]
+
+Crear y modificar estilos de texto
+
+- **Alias:** `EST`, `ESTILODD`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#style--st--ddstyle--es-estilo--est--estilodd)
+
+## Organizar [#organize]
+
+### BLOQUE [#block]
+
+Crear bloque
+
+- **Alias:** `BQ`, `MODBLQ`, `ACADBLOCKDIALOG`, `BMAKE`, `BMOD`
+- **Primera solicitud:** `Indique nombre de bloque o [?]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#block--b--bmake--bmod--acadblockdialog--block---b--es-bloque--bq--modblq--bmake--bmod--acadblockdialog--bloque---bq)
+
+### INSERT [#insert]
+
+Insertar un bloque desde la paleta de bloques
+
+- **Alias:** `IN`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#insert--i--insert---i--es-insert--in--insert---in)
+
+### ATREDIT [#attedit]
+
+Editar atributos
+
+- **Alias:** `ATR`, `DDATTE`
+- **Primera solicitud:** `Designe referencia a bloque:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attedit--ate--ddatte--eattedit--es-atredit--atr--ddatte--editatr)
+
+### ATRDEF [#attdef]
+
+Definir atributos
+
+- **Alias:** `AT`
+- **Primera solicitud:** `Indique una opción para modificar [Invisible/Constante/Verificable/Predefinido/Bloquear posición] <terminado>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdef--att--ddattdef---attdef---att--es-atrdef--at---atrdef---at)
+
+### ATRVIS [#attdisp]
+
+Visualización de atributos
+
+- **Primera solicitud:** `Indique parámetro de visibilidad de atributo [Normal/ACT/DES] <Normal>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdisp--es-atrvis)
+
+### LIMPIA [#purge]
+
+Limpiar
+
+- **Alias:** `LI`
+- **Primera solicitud:** `Indique un tipo de objetos sin utilizar para limpiar [Bloques]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#purge--pu--purge---pu--es-limpia--li--limpia---li)
+
+### ESCALATL [#ltscale]
+
+Escala de tipo de línea
+
+- **Alias:** `EC`
+- **Primera solicitud:** `Indique nuevo factor de escala del tipo de línea <1.0000>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#linetypes--ltscale--lts--linetype--lt--ltype--ddltype---linetype---lt---ltype--es-escalatl--ec--tipolin--tl--tlinea--ddltype---tipolin---tl---tlinea)
+
+### AUPREC [#auprec]
+
+Precisión de ángulos
+
+- **Primera solicitud:** `Indique nuevo valor para AUPREC <0>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/workspace.md#setvar--set--es-modivar--mv--a-system-variable-typed-by-its-name-auprec)
+
+### MODIVAR [#setvar]
+
+Variables de sistema
+
+- **Alias:** `MV`
+- **Primera solicitud:** `Indique nombre de variable o [?]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/workspace.md#setvar--set--es-modivar--mv--a-system-variable-typed-by-its-name-auprec)
+
+### COLOR [#color]
+
+Color
+
+- **Alias:** `COL`
+- **Primera solicitud:** `Indique el color de objeto por defecto [COlorverdadero] <PORCAPA>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#colour--color--col--colour---color--es-color--col---color)
+
+### TIPOLIN [#linetype]
+
+Tipo de línea
+
+- **Alias:** `TL`, `TLINEA`, `DDLTYPE`
+- **Primera solicitud:** `Indique una opción [?/Definir]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#linetypes--ltscale--lts--linetype--lt--ltype--ddltype---linetype---lt---ltype--es-escalatl--ec--tipolin--tl--tlinea--ddltype---tipolin---tl---tlinea)
+
+### GROSORLIN [#lweight]
+
+Grosor de línea
+
+- **Primera solicitud:** `Indique el grosor de línea por defecto para los nuevos objetos o [?]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#lineweights--lwdisplay--lweight--lw--lineweight---lweight--es-grosorlin---grosorlin)
+
+### -ATRDEF [#-attdef]
+
+Definir atributos
+
+- **Alias:** `-AT`
+- **Primera solicitud:** `Indique una opción para modificar [Invisible/Constante/Verificable/Predefinido/Bloquear posición] <terminado>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attdef--att--ddattdef---attdef---att--es-atrdef--at---atrdef---at)
+
+### -BLOQUE [#-block]
+
+Crear bloque
+
+- **Alias:** `-BQ`
+- **Primera solicitud:** `Indique nombre de bloque o [?]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#block--b--bmake--bmod--acadblockdialog--block---b--es-bloque--bq--modblq--bmake--bmod--acadblockdialog--bloque---bq)
+
+### -LIMPIA [#-purge]
+
+Limpiar
+
+- **Alias:** `-LI`
+- **Primera solicitud:** `Indique un tipo de objetos sin utilizar para limpiar [Bloques]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#purge--pu--purge---pu--es-limpia--li--limpia---li)
+
+### -COLOR [#-color]
+
+Color
+
+- **Primera solicitud:** `Indique el color de objeto por defecto [COlorverdadero] <PORCAPA>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#colour--color--col--colour---color--es-color--col---color)
+
+### -TIPOLIN [#-linetype]
+
+Tipo de línea
+
+- **Alias:** `-TL`, `-TLINEA`
+- **Primera solicitud:** `Indique una opción [?/Definir]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#linetypes--ltscale--lts--linetype--lt--ltype--ddltype---linetype---lt---ltype--es-escalatl--ec--tipolin--tl--tlinea--ddltype---tipolin---tl---tlinea)
+
+### -GROSORLIN [#-lweight]
+
+Grosor de línea
+
+- **Primera solicitud:** `Indique el grosor de línea por defecto para los nuevos objetos o [?]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#lineweights--lwdisplay--lweight--lw--lineweight---lweight--es-grosorlin---grosorlin)
+
+### EDITATR [#eattedit]
+
+Editar atributos
+
+- **Primera solicitud:** `Designe un bloque:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#attedit--ate--ddatte--eattedit--es-atredit--atr--ddatte--editatr)
+
+### PALETABLOQUES [#blockspalette]
+
+Mostrar la paleta Bloques
+
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/blocks-palette.md#blockspalette--es-paletabloques)
+
+### -INSERT [#-insert]
+
+Insertar bloque
+
+- **Alias:** `-IN`
+- **Primera solicitud:** `Indique nombre de bloque o [?]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#insert--i--insert---i--es-insert--in--insert---in)
+
+### CAPA [#layer]
+
+Administrar las capas y sus propiedades
+
+- **Alias:** `CA`, `LAYER`, `DDLMODES`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#layers--layer--la--ddlmodes--layerclose--es-capa--ca--layer--ddlmodes--cerrarcapa)
+
+### CERRARCAPA [#layerclose]
+
+Cerrar el Administrador de propiedades de capas
+
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#layers--layer--la--ddlmodes--layerclose--es-capa--ca--layer--ddlmodes--cerrarcapa)
+
+### PROPIEDADES [#properties]
+
+Mostrar las propiedades de los objetos designados
+
+- **Alias:** `PR`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#properties-palette--properties--pr--ch--mo--propertiesclose--es-propiedades--pr--cerprop)
+
+### CERPROP [#propertiesclose]
+
+Cerrar la paleta Propiedades
+
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#properties-palette--properties--pr--ch--mo--propertiesclose--es-propiedades--pr--cerprop)
+
+## Consulta y vista [#inquiry]
+
+### DIST [#dist]
+
+Medir
+
+- **Alias:** `DI`
+- **Primera solicitud:** `Precise primer punto:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#dist--es-dist--di--area--aa)
+
+### AREA [#area]
+
+Área
+
+- **Alias:** `AA`
+- **Primera solicitud:** `Precise primer punto de esquina o [Objeto/Añadir área/Sustraer área] <Objeto>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#dist--es-dist--di--area--aa)
+
+### ID [#id]
+
+Coordenadas punto
+
+- **Primera solicitud:** `Precise punto:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/inquiry.md#id--es-id)
+
+### ZOOM [#zoom]
+
+Zoom
+
+- **Alias:** `Z`
+- **Primera solicitud:** `Precise esquina de ventana, indique un factor de escala (nX o nXP), o [Todo/Extensión/Previo/EScala/Ventana/Objeto]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#zoom--z--es-zoom--z)
+
+### ENCUADRE [#pan]
+
+Encuadre
+
+- **Alias:** `E`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#pan--p---pan---p--es-encuadre--e---encuadre---e)
+
+### -ENCUADRE [#-pan]
+
+Encuadre por puntos
+
+- **Alias:** `-E`
+- **Primera solicitud:** `Precise punto base de desplazamiento:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#pan--p---pan---p--es-encuadre--e---encuadre---e)
+
+### SCP [#ucs]
+
+SCP
+
+- **Primera solicitud:** `Indique origen de SCP o [Cara/gUArdado/oBjeto/PRev/Vista/Univ/X/Y/Z/ejEZ] <Univ>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucs--es-scp)
+
+### SIMBSCP [#ucsicon]
+
+Icono SCP
+
+- **Primera solicitud:** `Indique una opción [ACT/DES/Sin origen/Origen] <ACT>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucsicon--es-simbscp)
+
+### PLANTA [#plan]
+
+Vista en planta
+
+- **Primera solicitud:** `Indique una opción [scp Actual/SCP/Universal] <Actual>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#plan--es-planta)
+
+### ELEV [#elev]
+
+Elevación
+
+- **Primera solicitud:** `Precise nueva elevación por defecto <0.00>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#elev--es-elev)
+
+### PTOVISTA [#vpoint]
+
+Punto de vista
+
+- **Alias:** `PV`, `DDVPOINT`
+- **Primera solicitud:** `Precise un punto de vista o [Rotación]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#-vpoint--vpoint---vp--vp--ddvpoint--es--ptovista---pv--ptovista--pv--ddvpoint)
+
+### VISTA [#view]
+
+Vistas predefinidas
+
+- **Alias:** `VI`
+- **Primera solicitud:** `Indique una opción [Ortogonal]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#-view--view---v--v--es--vista--vista---vi--vi)
+
+### 3DORBITA [#3dorbit]
+
+Órbita 3D
+
+- **Alias:** `3DO`, `ORBIT`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#3dorbit--3do--orbit--es-3dorbita--3do--orbit)
+
+### NAVVCUBE [#navvcube]
+
+ViewCube
+
+- **Alias:** `CUBE`
+- **Primera solicitud:** `Indique una opción [ACT/DES] <ACT>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#navvcube--cube--es-navvcube--cube)
+
+### RELLENAR [#fill]
+
+Rellenar
+
+- **Primera solicitud:** `Indique modo [ACT/DES] <ACT>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#fill--es-rellenar)
+
+### DESHACER [#undo]
+
+Deshacer
+
+- **Primera solicitud:** `Indique el número de operaciones a deshacer o [Auto/Control/Inicio/Fin/Marca/Retorno] <1>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
+
+### MREHACER [#mredo]
+
+Rehacer varias
+
+- **Primera solicitud:** `Indique número de acciones o [Todas/úLtima]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
+
+### -REFENT [#-osnap]
+
+Modos de referencia a objetos
+
+- **Primera solicitud:** `Indique lista de modo de referencia a objetos:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/drafting-aids.md#-osnap---os--es--refent)
+
+### FORZCURSOR [#snap]
+
+Modo Forzcursor
+
+- **Alias:** `FC`
+- **Primera solicitud:** `Precise distancia de resolución o [ACT/DES/asPecto] <10.00>:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/drafting-aids.md#snap--sn--es-forzcursor--fc--snap-mode-f9)
+
+### H [#u]
+
+Deshacer la última acción
+
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
+
+### REHACER [#redo]
+
+Rehacer la última acción deshecha
+
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/command-line.md#undo--u--undo--redo--mredo--ctrlz--ctrly)
+
+### -PTOVISTA [#-vpoint]
+
+Punto de vista
+
+- **Alias:** `-PV`
+- **Primera solicitud:** `Precise un punto de vista o [Rotación]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#-vpoint--vpoint---vp--vp--ddvpoint--es--ptovista---pv--ptovista--pv--ddvpoint)
+
+### -VISTA [#-view]
+
+Vistas predefinidas
+
+- **Alias:** `-VI`
+- **Primera solicitud:** `Indique una opción [Ortogonal]:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#-view--view---v--v--es--vista--vista---vi--vi)
+
+### DESDE [#from]
+
+Designar un punto desfasado de un punto base
+
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/drafting-aids.md#object-snap-overrides-and-from)
+
+### UNIDADES [#units]
+
+Controlar la precisión y el formato de visualización de las coordenadas y las distancias
+
+- **Alias:** `UNS`, `DDUNITS`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/workspace.md#units--un--ddunits--es-unidades--uns--ddunits)
+
+### LIMPIAPANTACT [#cleanscreenon]
+
+Borrar de la pantalla las barras de herramientas y las paletas
+
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/workspace.md#cleanscreenon--cleanscreenoff--ctrl0--es-limpiapantact--limpiapantdes)
+
+### LIMPIAPANTDES [#cleanscreenoff]
+
+Restablecer la pantalla como estaba antes de limpiarla
+
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/workspace.md#cleanscreenon--cleanscreenoff--ctrl0--es-limpiapantact--limpiapantdes)
+
+## Archivos y portapapeles [#files]
+
+### COPIAPP [#copyclip]
+
+Copiar
+
+- **Primera solicitud:** `Designe objetos:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/clipboard-and-files.md#copyclip--cutclip--copybase--pasteclip--ctrla--es-copiapp--cortapp--copiarbase--pegapp)
+
+### CORTAPP [#cutclip]
+
+Cortar
+
+- **Primera solicitud:** `Designe objetos:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/clipboard-and-files.md#copyclip--cutclip--copybase--pasteclip--ctrla--es-copiapp--cortapp--copiarbase--pegapp)
+
+### COPIARBASE [#copybase]
+
+Copiar con punto base
+
+- **Primera solicitud:** `Precise punto base:`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/clipboard-and-files.md#copyclip--cutclip--copybase--pasteclip--ctrla--es-copiapp--cortapp--copiarbase--pegapp)
+
+### NUEVO [#new]
+
+Iniciar un dibujo nuevo
+
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/clipboard-and-files.md#new--qnew--es-nuevo--rnuevo)
+
+### RNUEVO [#qnew]
+
+Iniciar un dibujo nuevo
+
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/clipboard-and-files.md#new--qnew--es-nuevo--rnuevo)
+
+### GUARDARR [#qsave]
+
+Guardar el dibujo en un archivo
+
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/clipboard-and-files.md#qsave--saveas--save--open-ctrls--ctrlshifts--ctrlo--es-guardarr--guardarcomo--guardar--abre)
+
+### GUARDARCOMO [#saveas]
+
+Guardar el dibujo en un archivo con otro nombre
+
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/clipboard-and-files.md#qsave--saveas--save--open-ctrls--ctrlshifts--ctrlo--es-guardarr--guardarcomo--guardar--abre)
+
+### GUARDAR [#save]
+
+Guardar el dibujo en un archivo
+
+- **Alias:** `GUARDARURL`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/clipboard-and-files.md#qsave--saveas--save--open-ctrls--ctrlshifts--ctrlo--es-guardarr--guardarcomo--guardar--abre)
+
+### ABRE [#open]
+
+Abrir un archivo de dibujo
+
+- **Alias:** `ABREURL`
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/clipboard-and-files.md#qsave--saveas--save--open-ctrls--ctrlshifts--ctrlo--es-guardarr--guardarcomo--guardar--abre)
+
+### PEGAPP [#pasteclip]
+
+Pegar el portapapeles en el dibujo
+
+- [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/clipboard-and-files.md#copyclip--cutclip--copybase--pasteclip--ctrla--es-copiapp--cortapp--copiarbase--pegapp)

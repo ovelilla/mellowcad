@@ -250,10 +250,10 @@
   "Docs": {
     "navLabel": "Documentación",
     "metaTitle": "Documentación",
-    "metaDescription": "Cómo construir con MellowCAD: el motor de dibujo, sus enlaces para React y el editor, con su referencia de la API y ejemplos.",
+    "metaDescription": "Cómo dibujar con MellowCAD y cómo construir con él: cada comando y atajo, las diferencias con AutoCAD, y el motor, sus enlaces para React y el editor.",
     "label": "Documentación",
     "title": "Documentación",
-    "lead": "Cómo funcionan los paquetes de MellowCAD y cómo construir con ellos, desde los mismos ficheros que enseñan npm y GitHub.",
+    "lead": "Cómo dibujar con MellowCAD, y cómo construir con sus paquetes.",
     "buildTitle": "Construir con MellowCAD",
     "buildLead": "El motor, sus enlaces para React y el editor entero, para quien los mete en una aplicación propia. En inglés.",
     "guide": "Guía",
@@ -277,6 +277,20 @@
     "source": "Fuente en GitHub",
     "previous": "Anterior",
     "next": "Siguiente",
+    "useTitle": "Usar MellowCAD",
+    "useLead": "Para quien dibuja: los primeros pasos, cada comando y atajo, y en qué se aparta MellowCAD de AutoCAD.",
+    "pages": {
+      "commands": {
+        "title": "Comandos",
+        "description": "Cada comando de AutoCAD que ejecuta MellowCAD, por grupo de la cinta: su nombre, sus alias y lo primero que pregunta.",
+        "lead": "Cada comando como se escribe en la línea de comandos, con el nombre que tiene en AutoCAD en español, bajo el grupo de la cinta donde lo buscarías. Con un guion bajo delante se escribe el nombre inglés, como en AutoCAD (`_LINE`). La primera solicitud es la del propio motor: el mismo orden y las mismas letras de opción que verás al ejecutarlo."
+      }
+    },
+    "reference": {
+      "aliases": "Alias",
+      "firstPrompt": "Primera solicitud",
+      "coverage": "Qué hace y qué le falta, en detalle (en inglés)"
+    },
     "types": {
       "gettingStarted": "Primeros pasos",
       "howTo": "Cómo…",

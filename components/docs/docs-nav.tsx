@@ -1,4 +1,4 @@
-import type { Node, Root } from "fumadocs-core/page-tree"
+import type { Node } from "fumadocs-core/page-tree"
 import Link from "next/link"
 
 function NavLink({
@@ -52,24 +52,28 @@ function NavNode({ node, active }: { node: Node; active: string }) {
 
 /** The docs' sections and pages, the page being read marked as current. */
 export function DocsNav({
-  tree,
+  sections,
   active,
-  title,
   label,
 }: {
-  tree: Root
+  sections: { title: string; nodes: Node[] }[]
   active: string
-  title: string
   label: string
 }) {
   return (
-    <nav aria-label={label} className="text-sm">
-      <p className="mb-2 px-3 label-mono">{title}</p>
-      <ul className="flex flex-col gap-3">
-        {tree.children.map((node, index) => (
-          <NavNode key={node.$id ?? index} node={node} active={active} />
-        ))}
-      </ul>
+    <nav aria-label={label} className="flex flex-col gap-8 text-sm">
+      {sections.map(({ title, nodes }) => (
+        <div key={title}>
+          <p className="mb-2 px-3 label-mono">{title}</p>
+          <ul
+            className={`flex flex-col ${nodes.every((node) => node.type === "page") ? "gap-0.5" : "gap-3"}`}
+          >
+            {nodes.map((node, index) => (
+              <NavNode key={node.$id ?? index} node={node} active={active} />
+            ))}
+          </ul>
+        </div>
+      ))}
     </nav>
   )
 }

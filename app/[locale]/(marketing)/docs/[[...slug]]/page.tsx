@@ -11,16 +11,19 @@ import { DocsSearch } from "@/components/docs/docs-search"
 import { DocsToc } from "@/components/docs/docs-toc"
 import { ForwardArrow } from "@/components/marketing/forward-arrow"
 import { localePath } from "@/i18n/navigation"
-import type { AppLocale } from "@/i18n/routing"
+import { DIRECTION, type AppLocale } from "@/i18n/routing"
 import { docsSource } from "@/lib/docs/docs-source"
 import { DOCS_PACKAGES, DOCS_PATH } from "@/lib/docs/packages"
 import {
   canonicalPath,
   type DocsPage,
   isPublished,
+  isTranslated,
+  navSections,
   pageLanguage,
   pageSource,
 } from "@/lib/docs/pages"
+import { USE_PAGES } from "@/lib/docs/use"
 import { pageMetadata } from "@/lib/metadata"
 import { SITE_NAME } from "@/lib/site"
 
@@ -67,7 +70,7 @@ export async function generateMetadata({
       path: canonicalPath(page),
       title: `${page.data.title} · ${SITE_NAME}`,
       description: page.data.description,
-      contentLocale: pageLanguage(page),
+      contentLocale: isTranslated(page) ? undefined : pageLanguage(page),
     })),
   }
 }
@@ -101,6 +104,32 @@ async function DocsIndex({ locale }: { locale: AppLocale }) {
         <h1 className="text-h2">{t("title")}</h1>
         <p className="text-lead measure">{t("lead")}</p>
       </header>
+      <section aria-labelledby="use" className="flex flex-col gap-6">
+        <div className="flex flex-col gap-2">
+          <h2 id="use" className="text-h3">
+            {t("useTitle")}
+          </h2>
+          <p className="text-fg-muted measure">{t("useLead")}</p>
+        </div>
+        <ul className="grid gap-4 md:grid-cols-2">
+          {USE_PAGES.map((slug) => {
+            const page = docsSource.getPage([slug], locale)
+            if (!page) return null
+            return (
+              <li key={slug}>
+                <Link
+                  href={page.url}
+                  className="flex h-full flex-col gap-2 rounded-lg border border-border bg-bg-raised p-5 hover:border-fg-subtle"
+                >
+                  <span className="label-mono">{t(`types.${page.data.type}`)}</span>
+                  <span className="font-semibold text-fg">{page.data.title}</span>
+                  <span className="text-sm text-fg-muted">{page.data.description}</span>
+                </Link>
+              </li>
+            )
+          })}
+        </ul>
+      </section>
       <section aria-labelledby="build" className="flex flex-col gap-6">
         <div className="flex flex-col gap-2">
           <h2 id="build" className="text-h3">
@@ -166,7 +195,7 @@ async function DocsArticle({ page, locale }: { page: DocsPage; locale: AppLocale
           {t("englishOnly")}
         </p>
       )}
-      <article lang={language} dir="ltr" className="min-w-0">
+      <article lang={language} dir={DIRECTION[language]} className="min-w-0">
         <header className="mb-10 flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-3">
             <p className="label-mono" lang={locale} dir="auto">
@@ -243,8 +272,16 @@ export default async function DocsPageRoute({
   const t = await getTranslations("Docs")
   const tree = docsSource.getPageTree(locale)
   const active = page?.url ?? localePath(locale, DOCS_PATH)
+  const { use, build } = navSections(tree.children)
   const nav = (
-    <DocsNav tree={tree} active={active} title={t("buildTitle")} label={t("navLabel")} />
+    <DocsNav
+      sections={[
+        { title: t("useTitle"), nodes: use },
+        { title: t("buildTitle"), nodes: build },
+      ]}
+      active={active}
+      label={t("navLabel")}
+    />
   )
 
   return (

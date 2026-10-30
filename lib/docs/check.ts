@@ -11,6 +11,8 @@ import {
 } from "./packages.ts"
 import { resolvePackageLink } from "./remark-package-source.ts"
 import { docsPageSchema, metaSchema } from "./schema.ts"
+import { USE_PAGES, githubAnchor, sourceHash } from "./use.ts"
+import { routing } from "../../i18n/routing.ts"
 import { SITE_URL } from "../site.ts"
 
 export const CONTENT_DIR = "content/docs"
@@ -33,6 +35,14 @@ export function markdownLinks(markdown: string): string[] {
   return [...prose.matchAll(LINK)].map((match) => match[1])
 }
 
+/** Every anchor a page's headings make, `[#id]` or GitHub's slug. */
+export function headingAnchors(markdown: string): Set<string> {
+  const prose = markdown.replace(FENCE, "")
+  return new Set(
+    [...prose.matchAll(/^#{2,6}\s+(.+)$/gm)].map((match) => githubAnchor(match[1]))
+  )
+}
+
 /** The URL a page of `content/docs/` is served at, in English. */
 export function contentPagePath(relative: string): string {
   const slugs = relative
@@ -46,10 +56,12 @@ export function contentPagePath(relative: string): string {
 /**
  * What `npm run docs:check` holds the docs to, as a list of problems (none
  * when it passes): every page's frontmatter and every `meta.json`; each
- * package's two pages, each including its file and nothing else; and every
+ * package's two pages, each including its file and nothing else; each
+ * "Use" page in every language, a translation written by hand carrying the
+ * `sourceHash` of its English file (a generated one, its generator); every
  * link — a package file's to the repository or another page, a written
- * page's to a page that exists — and every example a block names; and a
- * published package's `homepage` is its page.
+ * page's to a page and a heading that exist — and every example a block
+ * names; and a published package's `homepage` is its page.
  */
 export function checkDocs(root: string): string[] {
   const problems: string[] = []
@@ -62,6 +74,51 @@ export function checkDocs(root: string): string[] {
   pagePaths.add(DOCS_PATH)
   const report = (file: string, message: string) =>
     problems.push(`${file}: ${message}`)
+
+  const source = (page: string) => readFileSync(path.join(contentDir, page), "utf8")
+  const anchors = new Map(
+    pages
+      .filter((page) => !page.includes("/") && !LOCALE_SUFFIX.test(page))
+      .map((page) => [contentPagePath(page), headingAnchors(source(page))])
+  )
+
+  for (const page of pages.filter((page) => !page.includes("/"))) {
+    const name = page.replace(LOCALE_SUFFIX, "").replace(/\.mdx$/, "")
+    if (!(USE_PAGES as readonly string[]).includes(name)) {
+      report(`${CONTENT_DIR}/${page}`, `"${name}" is not in USE_PAGES (lib/docs/use.ts)`)
+    }
+  }
+  for (const name of USE_PAGES) {
+    const english = `${name}.mdx`
+    if (!pages.includes(english)) {
+      report(`${CONTENT_DIR}/${english}`, "missing: a page of USE_PAGES")
+      continue
+    }
+    const original = frontmatter(source(english)).data as Record<string, unknown>
+    if (original.sourceHash !== undefined) {
+      report(`${CONTENT_DIR}/${english}`, "the English page is the source: no sourceHash")
+    }
+    const hash = sourceHash(source(english))
+    for (const locale of routing.locales.filter((tag) => tag !== routing.defaultLocale)) {
+      const translation = `${name}.${locale}.mdx`
+      const file = `${CONTENT_DIR}/${translation}`
+      if (!pages.includes(translation)) {
+        report(file, `missing: ${english} in ${locale}`)
+        continue
+      }
+      const data = frontmatter(source(translation)).data as Record<string, unknown>
+      if (original.generated !== undefined) {
+        if (data.generated !== original.generated || data.sourceHash !== undefined) {
+          report(file, `written by ${String(original.generated)}, as ${english} is: no sourceHash`)
+        }
+      } else if (data.sourceHash !== hash) {
+        report(
+          file,
+          `out of date with ${english}: bring it up to date, then set sourceHash: "${hash}"`
+        )
+      }
+    }
+  }
 
   for (const page of pages) {
     const file = `${CONTENT_DIR}/${page}`
@@ -92,9 +149,12 @@ export function checkDocs(root: string): string[] {
       continue
     }
     for (const link of markdownLinks(content)) {
-      const target = link.split("#")[0]
-      if (target.startsWith(DOCS_PATH) && !pagePaths.has(target)) {
+      const [target, fragment] = link.split("#")
+      if (!target.startsWith(DOCS_PATH)) continue
+      if (!pagePaths.has(target)) {
         report(file, `the link "${link}" names no page`)
+      } else if (fragment && anchors.get(target)?.has(fragment) === false) {
+        report(file, `the link "${link}" names no heading of ${target}`)
       }
     }
   }

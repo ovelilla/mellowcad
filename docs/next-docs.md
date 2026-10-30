@@ -1,6 +1,6 @@
 # mellowcad.com: producto y documentación — brief
 
-> **Estado:** acordado el 2026-10-30; fases 1 y 2 hechas el mismo día, la 3 sin empezar. Sigue la
+> **Estado:** acordado el 2026-10-30; fases 1 y 2 hechas el mismo día, la 3 en curso (entrega 1 de 5). Sigue la
 > convención de `docs/next-*.md`: se borra cuando la fase 3 haya ocurrido.
 
 ## 1. Objetivo
@@ -100,3 +100,46 @@ Visto al cerrar la fase 2; ordenado por lo que aporta.
 - **Un MCP del motor** (un agente dibuja con comandos de AutoCAD sobre `CadDriver`, sin navegador,
   y devuelve SVG o el fichero del dibujo): lo más interesante como producto, y una decisión de
   producto con su propio brief y la regla de afirmaciones (`i18n.md`) delante.
+
+## 7. Plan de la fase 3 (2026-10-30)
+
+Cuatro páginas bajo _Usar MellowCAD_, con slugs sin traducir y un fichero por idioma
+(`name.mdx`, `name.es.mdx`, `name.ar.mdx`): `/docs/getting-started` (primeros pasos),
+`/docs/commands` y `/docs/shortcuts` (referencia), `/docs/differences` (conceptos). Decisiones:
+
+- **Lo generado se genera en Vitest**, no en el build: Node resuelve `@mellowcad/engine` a su
+  `dist/` (fuera de git) y el macro de fumadocs evalúa con esbuild y los paquetes externos, así que
+  ni `docs:check` ni un plugin de remark pueden leer el catálogo. `lib/docs/generate.test.ts` escribe
+  `commands.*.mdx` y `shortcuts.*.mdx` con `toMatchFileSnapshot` (como los transcripts de la
+  landing): Markdown llano, de modo que el buscador, el `.md`, `llms.txt` y el hreflang salen
+  solos, y el gate falla si el catálogo cambia y la página no (`npx vitest run -u` la rehace).
+  Nadie edita esos ficheros a mano.
+- **Lo escrito a mano** (primeros pasos, diferencias) es inglés de fuente y su traducción lleva en
+  el frontmatter `sourceHash`, el hash del fichero inglés: `docs:check` falla con una traducción
+  desfasada, como en nubigest.
+- **Las palabras del motor en una guía no se teclean**: `<Command id="LINE" />` es el nombre en el
+  lenguaje de comandos de la página (`LINEA` en `/es`), y `<Session name="…" />` una figura de
+  `recordDemo` con su transcript, ambos del motor en el idioma de la página; el `.md` los escribe
+  como texto (el nombre; el transcript en un bloque).
+- **La navegación** tiene dos grupos, _Usar_ y _Construir_, con los títulos de `messages`, no
+  separadores en `meta.json` traducidos aparte.
+- **Una página traducida** lleva hreflang y su propio canónico en cada idioma (`pageMetadata` sin
+  `contentLocale`), en el sitemap con alternates y en `llms.txt` (la inglesa) bajo _Usar_;
+  _Construir_ sigue como está.
+
+| Entrega | Qué                                    | De dónde sale cada dato                                                                                                                                                                                                                                                                                     |
+| ------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1       | Referencia de comandos y la estructura | Por grupo de la cinta (`COMMAND_FILING`, títulos de `Groups`): nombre, alias y descripción de `autocadCommands(locale)`; la primera pregunta de cada comando, grabada con `recordDemo` en el idioma (orden, palabras clave y valor por defecto del motor); el enlace a su entrada de `docs/coverage/`, que debe existir |
+| 2       | Atajos                                 | lib/docs/shortcuts.ts (tecla y lo que hace: un comando o un modo); el test pulsa cada tecla en el arnés y comprueba el efecto, y barre F1–F12 y Ctrl/Ctrl+Mayús con letra o cifra: lo que `keyDown` consume y no está en la lista falla. Nombres: el comando del catálogo del motor, el modo de `StatusBar` del editor |
+| 3       | Diferencias con AutoCAD                | Escrita en tres idiomas; cada sección (`## … [#id]`) está en lib/docs/differences.ts con su fuente, un `WHY` en el código o su entrada de cobertura, y una cita literal que `docs:check` busca en ese fichero: si la desviación desaparece, la página falla                                                             |
+| 4       | Primeros pasos                         | Escrita en tres idiomas, corta: abrir `/draw`, la línea de comandos, responder a una pregunta (punto, coordenada, opción, Intro, Esc), las ayudas al dibujo, deshacer, guardar; las figuras con `<Session>` y los nombres con `<Command>`                                                                     |
+| 5       | F1                                     | La ayuda del comando en curso, como AutoCAD, si la skill `autocad-research` confirma qué hace F1 en 2027 y Chrome deja que la página lo tome (`kReservedCommandIds`); si no, se anota aquí y en cobertura por qué no                                                                                            |
+
+**Qué comprueba `docs:check`** además de lo de hoy: cada página de _Usar_ existe en los tres idiomas;
+una traducción escrita tiene `sourceHash` igual al de su inglés; una generada (`GENERATED_PAGES`) no
+lo tiene; las secciones de `differences` son las mismas en cada idioma y las de
+lib/docs/differences.ts, y la cita de cada una está en su fuente; un enlace a
+`/docs/commands#id` nombra un comando de la referencia. **Qué comprueba Vitest**: las páginas
+generadas al día, cada `<Command id>` y `<Session name>` de una guía existe, y los atajos contra el
+runtime.
+

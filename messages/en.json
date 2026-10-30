@@ -250,10 +250,10 @@
   "Docs": {
     "navLabel": "Documentation",
     "metaTitle": "Documentation",
-    "metaDescription": "How to build with MellowCAD: the drafting engine, its React bindings and the editor, with their API reference and examples.",
+    "metaDescription": "How to draw with MellowCAD and how to build with it: every command and shortcut, the differences from AutoCAD, and the engine, its React bindings and the editor.",
     "label": "Docs",
     "title": "Documentation",
-    "lead": "How MellowCAD's packages work and how to build with them, from the same files npm and GitHub show.",
+    "lead": "How to draw with MellowCAD, and how to build with its packages.",
     "buildTitle": "Build with MellowCAD",
     "buildLead": "The engine, its React bindings and the whole editor, for whoever puts them in an app of their own. In English.",
     "guide": "Guide",
@@ -277,6 +277,20 @@
     "source": "Source on GitHub",
     "previous": "Previous",
     "next": "Next",
+    "useTitle": "Use MellowCAD",
+    "useLead": "For whoever draws: the first steps, every command and shortcut, and where MellowCAD differs from AutoCAD.",
+    "pages": {
+      "commands": {
+        "title": "Commands",
+        "description": "Every AutoCAD command MellowCAD runs, by ribbon panel: its name, its aliases and the first thing it asks.",
+        "lead": "Each command as you type it at the command line, filed under the ribbon panel you would look for it on. The first prompt is the engine's own: the same order and the same option letters you will see when you run it."
+      }
+    },
+    "reference": {
+      "aliases": "Aliases",
+      "firstPrompt": "First prompt",
+      "coverage": "What it does and still lacks, in detail (in English)"
+    },
     "types": {
       "gettingStarted": "Getting started",
       "howTo": "How-to",

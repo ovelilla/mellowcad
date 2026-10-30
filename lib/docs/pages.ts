@@ -30,6 +30,29 @@ export function canonicalPath(page: DocsPage): string {
   return [DOCS_PATH, ...page.slugs].join("/")
 }
 
+/**
+ * Whether the page is written in every language ("Use"): each then has its
+ * own URL and the others as its hreflang alternates. A page in English only
+ * ("Build") is served under every prefix, canonical to the English one.
+ */
+export function isTranslated(page: DocsPage): boolean {
+  return routing.locales.every((locale) => {
+    const own = docsSource.getPage(page.slugs, locale)
+    return own !== undefined && pageLanguage(own) === locale
+  })
+}
+
+/**
+ * The navigation's two sections: "Use" is the pages at the docs' root,
+ * "Build" the packages' folders (`content/docs/meta.json` orders both).
+ */
+export function navSections(nodes: Node[]): { use: Node[]; build: Node[] } {
+  return {
+    use: nodes.filter((node) => node.type === "page"),
+    build: nodes.filter((node) => node.type !== "page"),
+  }
+}
+
 /** Whether a package is on npm: one still `private` is "not published yet". */
 export function isPublished(pkg: DocsPackage): boolean {
   const manifest = JSON.parse(
