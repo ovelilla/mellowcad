@@ -1,7 +1,7 @@
 # mellowcad.com: producto y documentación — brief
 
-> **Estado:** acordado el 2026-10-30, sin ejecutar. Sigue la convención de `docs/next-*.md`: se
-> borra cuando la fase 3 haya ocurrido.
+> **Estado:** acordado el 2026-10-30; fase 1 hecha el mismo día, la 2 sin empezar. Sigue la
+> convención de `docs/next-*.md`: se borra cuando la fase 3 haya ocurrido.
 
 ## 1. Objetivo
 
@@ -27,17 +27,16 @@ de la librería.
 - **El `homepage` de cada paquete apunta a su sección** (`https://mellowcad.com/docs/engine`) en
   cuanto exista: un patch por paquete.
 - **El repo es público y MIT** desde el 2026-10-30: la web puede decir «open source» y enlazar
-  GitHub y npm. La regla de afirmaciones de `.claude/rules/i18n.md` lo prohíbe todavía; el resto
-  de la regla (no prometer DWG, impresión, 3D…) se queda.
+  GitHub y npm, y su regla de afirmaciones (`.claude/rules/i18n.md`) ya lo permite; el resto (no
+  prometer DWG, impresión, 3D…) se queda.
 
 ## 3. Fases
 
-1. **Afirmaciones y enlaces** — ½–1 día. La regla de afirmaciones al día; la landing, en los tres
-   idiomas, dice que es open source (MIT) y enlaza GitHub y `@mellowcad/engine` en npm (pie, FAQ,
-   lo que el diseño pida), con `CONTENT_UPDATED`. El README de la raíz, que GitHub enseña a quien
-   visita el repo, es hoy la guía en español para montar el proyecto: pasa a ser un README en
-   inglés para el visitante (qué es, los paquetes, la licencia, cómo contribuir) y la guía de
-   montaje se muda a su propio documento.
+1. **Afirmaciones y enlaces** — **hecha** (ba241a9, 420ab7f, 5f1e583). La regla de afirmaciones
+   lo permite; la landing, en los tres idiomas, dice que es open source (MIT) y enlaza GitHub y
+   `@mellowcad/engine` en npm en «Motor», el pie, la FAQ y la entradilla de «Estado». El README de
+   la raíz es uno en inglés para quien visita el repo, y la guía de montaje, en español, está en
+   `docs/setup.md`.
 2. **Construir** — 2–3 días. `/docs` con su navegación; las páginas del motor, react y el editor
    generadas de sus READMEs y `api.md` en el build, los bloques de los ejemplos incluidos; el
    `homepage` de cada paquete publicado apunta a la suya.
