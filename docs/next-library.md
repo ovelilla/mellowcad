@@ -497,10 +497,19 @@ son días de sesión.
    (un job, 15 min, nada si solo cambia prosa), y `release.yml` publica a mano con trusted
    publishing. La 0.1.0 la publicó el dueño con 2FA (llave de seguridad): npm la pasó por su
    revisión de paquete nuevo (un marcador `0.0.0-stage` unos minutos) y la liberó sola; el shasum
-   publicado es el del tarball local. Falta: el trusted publisher (`ovelilla/mellowcad`,
-   `release.yml`) en los ajustes del paquete.
+   publicado es el del tarball local. El trusted publisher del motor (`ovelilla/mellowcad`,
+   `release.yml`, etiqueta `release`, «Allow npm publish»; 2FA sin tokens que la salten) está
+   creado pero **pendiente de validar**: npm lo da por bueno con la primera publicación que pase por
+   él, **antes del 2026-11-01 a las 10:50 UTC**. Hay que sacar antes una 0.1.x con un cambio real
+   del motor por Actions → Release; si caduca, se crea otra vez con los mismos datos y se valida con
+   la siguiente versión.
 7. **Publicar react y editor 0.1.0** — 1 día, cuando el ritmo de `packages/editor` baje y terminen las
-   revisiones de comandos.
+   revisiones de comandos. Medido el 2026-10-30: las 25 revisiones, hechas; los commits del editor
+   de esa semana son casi todos su empaquetado (fases 4 y 5), pero su superficie pública
+   (`packages/react/api.md`, `packages/editor/api.md`) existe desde el 2026-10-29. Se publica
+   cuando esos dos informes lleven una semana sin cambiar. Lo que pide, como la 6: sus `private`
+   fuera, «not published yet» fuera de sus READMEs, un changeset minor de cada uno, su primera
+   versión desde la máquina del dueño y un trusted publisher por paquete.
 8. **Registro shadcn** — bajo demanda, tras la 7.
 
 Bloqueos: 1 → 2 → 6; 1 → 3 → 4 → 5 → 7; la org de npm → 6; 7 → 8. La 2 y la 3 pueden ir en paralelo.
