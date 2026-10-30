@@ -90,8 +90,8 @@ Visto al cerrar la fase 2; ordenado por lo que aporta.
 - **El Code Block de shadcn en los bloques de código** (changelog de octubre de 2026, variante de
   Base UI): números de línea, líneas resaltadas y de diff, ajuste de línea y el aviso accesible al
   copiar (el `CopyCode` de hoy no anuncia nada). Se trae a `components/docs`, no al editor (al que
-  apunta `components.json`), con los tokens de la landing; Shiki sigue en el build. Cambio pequeño
-  y aparte; decidido hacerlo.
+  apunta `components.json`), con los tokens de la landing; Shiki sigue en el build. **Hecho**
+  (2026-10-30).
 - **Una skill para quien integra con agentes**: un `SKILL.md` que enseña a montar el motor o el
   editor, generado de los mismos READMEs (una fuente, como las páginas). Lo más útil hoy junto al
   `.md` de cada página y `llms.txt`, que ya están.

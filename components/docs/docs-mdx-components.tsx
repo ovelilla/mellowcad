@@ -1,13 +1,53 @@
 import { Link as LinkIcon } from "lucide-react"
 import type { MDXComponents } from "mdx/types"
 import Link from "next/link"
-import type { ComponentProps, ReactNode } from "react"
+import { Children, type ComponentProps, isValidElement, type ReactNode } from "react"
 
 import { localePath } from "@/i18n/navigation"
 import type { AppLocale } from "@/i18n/routing"
 import { DOCS_PATH } from "@/lib/docs/packages"
 
-import { CopyCode } from "./copy-code"
+import {
+  CodeBlock,
+  CodeBlockActions,
+  CodeBlockContent,
+  CodeBlockHeader,
+  CodeBlockLine,
+  CodeBlockTitle,
+} from "./code-block"
+import { CodeBlockCopyButton } from "./code-block-copy-button"
+
+type Parent = { children?: ReactNode; className?: string }
+
+/** The text a highlighted block shows, what its copy button copies. */
+function textOf(node: ReactNode): string {
+  if (typeof node === "string" || typeof node === "number") return String(node)
+  if (Array.isArray(node)) return node.map(textOf).join("")
+  if (isValidElement<Parent>(node)) return textOf(node.props.children)
+  return ""
+}
+
+/**
+ * Shiki's lines (`span.line`, inside its `code`) as the Code Block's, each
+ * marked by the notation its transformers read (`// [!code highlight]`,
+ * `// [!code ++]`, `// [!code --]`). The newlines between them go: each line
+ * is a block of its own.
+ */
+function codeLines(code: ReactNode): ReactNode {
+  const lines = isValidElement<Parent>(code) ? code.props.children : code
+  return Children.map(lines, (line) => {
+    if (!isValidElement<Parent>(line)) return null
+    const classes = line.props.className?.split(" ") ?? []
+    const variant = classes.includes("add")
+      ? "added"
+      : classes.includes("remove")
+        ? "removed"
+        : classes.includes("highlighted")
+          ? "highlighted"
+          : "default"
+    return <CodeBlockLine variant={variant}>{line.props.children}</CodeBlockLine>
+  })
+}
 
 function heading(Tag: "h2" | "h3" | "h4", className: string) {
   return function Heading({ id, children }: ComponentProps<"h2">) {
@@ -69,31 +109,48 @@ export function docsMdxComponents(
     ),
     hr: () => <hr className="my-10 border-border" />,
     code: (props) => (
-      <code
-        className="rounded-sm bg-bg-raised px-1 py-0.5 font-mono text-[0.875em] text-fg [pre_&]:bg-transparent [pre_&]:p-0 [pre_&]:text-[0.8125rem]"
-        {...props}
-      />
+      <code className="rounded-sm bg-bg-raised px-1 py-0.5 font-mono text-[0.875em] text-fg" {...props} />
     ),
     pre: ({
       title,
       children,
       className,
       style,
-    }: ComponentProps<"pre"> & { children?: ReactNode }) => (
-      <figure dir="ltr" className="code-block my-6 overflow-hidden rounded-lg border border-border bg-bg-sunken">
-        <div className="flex min-h-10 items-center justify-between gap-4 border-b border-border px-4">
-          <figcaption className="data-mono truncate text-xs text-fg-subtle">{title}</figcaption>
-          <CopyCode labels={labels} />
-        </div>
-        <pre
-          className={`${className ?? ""} overflow-x-auto p-4 leading-relaxed`}
-          style={style}
-          tabIndex={0}
-        >
-          {children}
-        </pre>
-      </figure>
-    ),
+      "data-line-numbers": lineNumbers,
+      "data-line-numbers-start": startLine,
+      "data-wrap": wrap,
+    }: ComponentProps<"pre"> & {
+      "data-line-numbers"?: boolean
+      "data-line-numbers-start"?: number
+      "data-wrap"?: boolean
+    }) => {
+      const copy = (
+        <CodeBlockActions>
+          <CodeBlockCopyButton value={textOf(children)} labels={labels} />
+        </CodeBlockActions>
+      )
+      return (
+        <CodeBlock>
+          {title ? (
+            <CodeBlockHeader>
+              <CodeBlockTitle>{title}</CodeBlockTitle>
+              {copy}
+            </CodeBlockHeader>
+          ) : (
+            copy
+          )}
+          <CodeBlockContent
+            className={className}
+            style={style}
+            lineNumbers={lineNumbers}
+            startLine={startLine}
+            wrap={wrap}
+          >
+            {codeLines(children)}
+          </CodeBlockContent>
+        </CodeBlock>
+      )
+    },
     table: (props) => (
       <div className="my-6 overflow-x-auto rounded-lg border border-border">
         <table className="w-full border-collapse text-start text-sm" {...props} />

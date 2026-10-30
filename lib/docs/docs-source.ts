@@ -1,5 +1,6 @@
 import { defineI18n } from "fumadocs-core/i18n"
 import { loader } from "fumadocs-core/source"
+import { parseCodeBlockAttributes } from "fumadocs-core/mdx-plugins/codeblock-utils"
 import { applyMdxPreset } from "fumadocs-mdx/config"
 import { defineDocs } from "fumadocs-mdx/macro"
 import { createCssVariablesTheme } from "shiki/core"
@@ -20,6 +21,25 @@ const codeTheme = createCssVariablesTheme({
   fontStyle: true,
 })
 
+/**
+ * A block's meta (`ts title="main.ts" lineNumbers wrap`), as the `pre`'s
+ * props the docs' Code Block reads (`docsMdxComponents`): `lineNumbers=5`
+ * starts counting at 5.
+ */
+export function parseCodeMeta(meta: string): Record<string, unknown> {
+  const { attributes } = parseCodeBlockAttributes(meta, ["title", "lineNumbers", "wrap"])
+  const props: Record<string, unknown> = {}
+  if (typeof attributes.title === "string") props.title = attributes.title
+  if ("lineNumbers" in attributes) {
+    props["data-line-numbers"] = true
+    if (typeof attributes.lineNumbers === "number") {
+      props["data-line-numbers-start"] = attributes.lineNumbers
+    }
+  }
+  if ("wrap" in attributes) props["data-wrap"] = true
+  return props
+}
+
 // WHY literals: the macro reads `dir` statically.
 const docs = defineDocs({
   dir: "content/docs",
@@ -32,6 +52,7 @@ const docs = defineDocs({
         themes: { dark: codeTheme },
         defaultColor: "dark",
         icon: false,
+        parseMetaString: parseCodeMeta,
       },
     }),
   },

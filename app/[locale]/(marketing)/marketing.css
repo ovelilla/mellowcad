@@ -42,6 +42,13 @@
   --syntax-token-punctuation: var(--text-muted);
   --syntax-token-comment: var(--text-subtle);
   --syntax-token-link: var(--text);
+  /* A code block's marked lines (`// [!code highlight]`, `++`, `--`): tints
+     faint enough to keep every syntax hue above 7:1, and a sign beside each. */
+  --code-highlight: rgb(148 163 184 / 0.08);
+  --code-added: rgb(52 211 153 / 0.1);
+  --code-added-sign: #6ee7b7;
+  --code-removed: rgb(248 113 113 / 0.1);
+  --code-removed-sign: #fca5a5;
   color-scheme: dark;
 }
 
@@ -58,6 +65,11 @@
   --color-accent: var(--accent);
   --color-accent-ink: var(--accent-ink);
   --color-precision: var(--precision);
+  --color-code-highlight: var(--code-highlight);
+  --color-code-added: var(--code-added);
+  --color-code-added-sign: var(--code-added-sign);
+  --color-code-removed: var(--code-removed);
+  --color-code-removed-sign: var(--code-removed-sign);
   --color-window: var(--cad-selection-window-stroke);
   --color-window-fill: var(--cad-selection-window-fill);
 }

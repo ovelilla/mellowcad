@@ -62,6 +62,10 @@ claims follow `i18n.md`.
   `.ts` extensions, for Node to run it.
 - Code is coloured by Shiki's CSS-variables theme, from the `--syntax-*` tokens of
   `marketing.css`: never a theme's literal colours.
+- A block is shadcn's Code Block (`components/docs/code-block.tsx`, its registry's `cn` pointed at
+  `lib/utils.ts`), rendered on the server over Shiki's lines; only the copy button is an island,
+  announcing the copy in a live region. Its meta is `title="…"`, `lineNumbers[=n]` and `wrap`
+  (`parseCodeMeta`); a line is marked by Shiki's notation, `// [!code highlight]`, `++`, `--`.
 
 ## Rendering and weight
 
