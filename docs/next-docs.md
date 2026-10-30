@@ -48,7 +48,33 @@ de la librería.
 Bloqueos: 1 → 2 → 3. La 2 no espera a la fase 7 de `docs/next-library.md`: react y el editor salen
 como «aún no publicados» hasta entonces.
 
-## 4. Riesgos
+## 4. Lo que se reutiliza de nubigest
+
+nubigest hizo su centro de ayuda (DOC-01, octubre de 2026) con el mismo problema: tres idiomas con
+árabe, Next y Base UI. Antes de la fase 2, leer su plan (en ese repo, docs/plans/documentation.md,
+DOC-D1 a DOC-D39), su regla .claude/rules/help.md y su skill help-article; ninguno se copia sin
+volver a verificar las versiones.
+
+- **Se adopta**: `fumadocs-core` y `fumadocs-mdx` con la Macro API, sin `fumadocs-ui` (interfaz
+  propia con Base UI); los cuatro tipos de página de Diátaxis (primeros pasos, cómo, referencia,
+  conceptos); un `docs:check` en el gate (frontmatter, traducciones desfasadas por el hash de su
+  fuente, enlaces rotos, qué cubre cada página); la versión `.md` de cada página y `llms.txt`, que
+  para una librería sirven a quien integra con agentes; el buscador en el servidor desde el
+  principio.
+- **Sus trampas, ya pagadas**: con Turbopack, el `include` de la macro casa por nombre de fichero,
+  no por ruta; `next dev` no recompila los `.mdx` al cambiar la colección; la fuente conserva el
+  idioma en `page.path`; un idioma sin traducción hereda los slugs del original
+  (`enforce: "pre"`); un índice de búsqueda estático de los tres idiomas pasó de 20 MB y Vercel
+  rechazó el deploy (`FALLBACK_BODY_TOO_LARGE`).
+- **Aquí, distinto**: la fuente es el inglés (como `messages/en.json` y el catálogo del motor), no
+  el español; las rutas no se traducen (`/es/draw`, y los comandos tienen nombre global); las
+  figuras salen del motor con `recordDemo` (vectoriales, deterministas, en cada idioma) en lugar de
+  capturas WebP; y _Construir_ se genera de los READMEs y los `api.md`, algo que nubigest no tiene.
+- **Para la fase 3**: su ayuda dentro de la app (un «?» que abre la referencia de la pantalla en un
+  panel) tiene aquí su forma de AutoCAD: F1 durante un comando abre la ayuda de ese comando. Antes,
+  comprobar en AutoCAD 2027 qué hace F1 y si Chrome deja que la página lo tome.
+
+## 5. Riesgos
 
 - Una página escrita a mano que repite un README o un `api.md` se queda vieja sin que nada falle:
   generarla, o que un test la ate a su fuente.
