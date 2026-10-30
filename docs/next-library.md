@@ -167,9 +167,9 @@ son días de sesión.
    cableado (`preventDefault`, Command como Ctrl, el foco tras un Tab, la captura del puntero del
    cubo) y el reenfoque del cuadro dinámico (`mayTakeFocus`) sigue en su componente; quedan en el
    editor, como presentación, el orden de los grupos del menú de referencias, el de la barra de
-   estado y la paleta, y el desplazamiento del cuadro respecto al cursor. Hallado y sin tocar (el
-   aspecto no debía cambiar): en /ar/draw las etiquetas de Polar no son una isla LTR y se leen
-   `...360 ,270 ,180 ,90`.
+   estado y la paleta, y el desplazamiento del cuadro respecto al cursor. Hallado (el aspecto no
+   debía cambiar) y arreglado después: en /ar/draw las etiquetas de Polar no eran una isla LTR y
+   se leían `...360 ,270 ,180 ,90`.
 4. **Los paquetes React** — **hecha** (5c0a6f3..3c0cc78). 4–6 días en seis entregas, tras la 2 y la 3. El sitio los consume desde
    el fuente, como al motor. Medido antes de empezar, en a6d96d0:
    - **Lo que cruza.** El editor toma de los hooks `useCadEngine`, `useEngineSelector` y

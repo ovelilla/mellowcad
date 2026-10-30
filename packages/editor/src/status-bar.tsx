@@ -158,7 +158,8 @@ export function StatusBar({
               onValueChange={(deg: number) => engine.choosePolarAngle(deg)}
             >
               {/* WHY plain: AutoCAD bolds each label's first number, and
-                  the type roles have no bold figure (`ui.md`). */}
+                  the type roles have no bold figure (`ui.md`). The list is
+                  an island: in Arabic it would read `...360 ,270 ,180 ,90`. */}
               {POLAR_ANGLE_MENU.map(({ step, label }) => (
                 <Menu.RadioItem
                   key={step}
@@ -166,7 +167,7 @@ export function StatusBar({
                   closeOnClick
                   className={`${MENU_ITEM} font-mono`}
                 >
-                  {label}
+                  <span dir="ltr">{label}</span>
                   <Menu.RadioItemIndicator>{CHECK}</Menu.RadioItemIndicator>
                 </Menu.RadioItem>
               ))}

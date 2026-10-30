@@ -71,10 +71,10 @@ a second layout. This file owns the rule for the landing too.
   the `ui/` wrappers accept both kinds.
 - **LTR islands** (`dir="ltr"`): the canvas, the ViewCube's box (faces, compass, triangles, the
   order of the roll arrows), the command line, the dynamic input, the coordinates, keys
-  (`<kbd dir="ltr">`), the contact address. Put `dir` on the element whose children are
-  positioned, never on a positioned element alone: the spec resolves a logical inset against the
-  containing block, Chrome against the element. The canvas cell is not an island (the ViewCube's
-  `inset-e` must follow the page); what is placed in the canvas's pixels uses physical
+  (`<kbd dir="ltr">`), Polar's increments, the contact address. Put `dir` on the element whose
+  children are positioned, never on a positioned element alone: the spec resolves a logical inset
+  against the containing block, Chrome against the element. The canvas cell is not an island (the
+  ViewCube's `inset-e` must follow the page); what is placed in the canvas's pixels uses physical
   `left`/`top`.
 - **A technical value in a palette is an island with `text-end`**, so `-12.5` never reads `12.5-`.
   A typeable one is an island with its unit, or the unit lands before the number. A numeric field
