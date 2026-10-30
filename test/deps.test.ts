@@ -120,6 +120,14 @@ describe("the review's version arithmetic", () => {
 })
 
 describe("the session hook", () => {
+  // WHY: the commit gate runs this suite inside git's pre-commit hook, which
+  // exports GIT_DIR and GIT_INDEX_FILE: inherited, the scratch repo's
+  // `git init` and commits land in the real repository (it once set
+  // core.bare and committed the staged change as "start").
+  const isolated = Object.fromEntries(
+    Object.entries(process.env).filter(([name]) => !name.startsWith("GIT_"))
+  ) as NodeJS.ProcessEnv
+
   function run(source: string, lastReview: string, claim = false) {
     const dir = mkdtempSync(path.join(tmpdir(), "deps-hook-"))
     mkdirSync(path.join(dir, "docs"))
@@ -132,7 +140,8 @@ describe("the session hook", () => {
         acceptedAdvisories: [],
       })
     )
-    const git = (...args: string[]) => spawnSync("git", args, { cwd: dir })
+    const git = (...args: string[]) =>
+      spawnSync("git", args, { cwd: dir, env: isolated })
     git("init", "-q", "-b", "main")
     git(
       "-c",
@@ -149,7 +158,7 @@ describe("the session hook", () => {
     return spawnSync("node", [HOOK], {
       input: JSON.stringify({ source }),
       encoding: "utf8",
-      env: { ...process.env, CLAUDE_PROJECT_DIR: dir },
+      env: { ...isolated, CLAUDE_PROJECT_DIR: dir },
     }).stdout
   }
   const today = new Date().toISOString().slice(0, 10)
