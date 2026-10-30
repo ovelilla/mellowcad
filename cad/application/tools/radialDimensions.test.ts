@@ -74,8 +74,9 @@ describe("DIMRADIUS", () => {
   it("inside, runs one line from the far end of the text to the arrowhead (probe dimensions/p300)", () => {
     const g = drawnGeometry(radial("DIMRADIUS", p(30, 0)))
 
-    // LINE 26.3924→47.5, the text R50 centred at 30, one SOLID tipped at 50.
-    expect(g.lineStart).toBeCloseToPoint(p(26.3924, 0), 4)
+    // LINE 26.3924→47.5, the text R50 centred at 30, one SOLID tipped at 50:
+    // 26.3830 by Arimo's ink (measureTextInk).
+    expect(g.lineStart).toBeCloseToPoint(p(26.383, 0), 4)
     expect(g.lineEnd).toBeCloseToPoint(p(50 - ARROW, 0))
     expect(g.arrows).toHaveLength(1)
     expect(g.lines).toHaveLength(0)
@@ -85,8 +86,9 @@ describe("DIMRADIUS", () => {
   it("outside, draws DIMTOFL's line from the centre and no centre mark (probe dimensions/p301)", () => {
     const g = drawnGeometry(radial("DIMRADIUS", p(80, 0)))
 
-    // The leader 83.6076→52.5, the line 0→50, one arrow outside the rim.
-    expect(g.lineStart).toBeCloseToPoint(p(83.6076, 0), 4)
+    // The leader 83.6076→52.5 (83.6170 by Arimo's ink), the line 0→50, one
+    // arrow outside the rim.
+    expect(g.lineStart).toBeCloseToPoint(p(83.617, 0), 4)
     expect(g.lineEnd).toBeCloseToPoint(p(50 + ARROW, 0))
     expect(g.lines).toHaveLength(1)
     expect(g.lines[0][0]).toBeCloseToPoint(p(0, 0))
@@ -101,7 +103,7 @@ describe("DIMRADIUS", () => {
     const g = drawnGeometry(cad)
     const size = DEFAULT_DIM_STYLE.centerMark
 
-    expect(g.lineStart).toBeCloseToPoint(p(83.6076, 0), 4)
+    expect(g.lineStart).toBeCloseToPoint(p(83.617, 0), 4)
     expect(g.lines).toEqual([
       [p(-size, 0), p(size, 0)],
       [p(0, -size), p(0, size)],
@@ -135,8 +137,9 @@ describe("DIMRADIUS", () => {
       .click(p(80, 0))
     const g = drawnGeometry(cad)
 
-    // LINE 76.1971→52.5; the MTEXT's middle at (80,0), turned 30°.
-    expect(g.lineStart).toBeCloseToPoint(p(76.1971, 0), 3)
+    // LINE 76.1971→52.5 (76.2773 by Arimo's ink); the MTEXT's middle at
+    // (80,0), turned 30°.
+    expect(g.lineStart).toBeCloseToPoint(p(76.2773, 0), 3)
     expect(g.lineEnd).toBeCloseToPoint(p(50 + ARROW, 0))
     expect(g.textAngle).toBeCloseTo(Math.PI / 6)
     expect(g.textPoint).toBeCloseToPoint(p(80, 0))
@@ -156,8 +159,9 @@ describe("DIMDIAMETER", () => {
   it("inside, draws one run to one arrowhead (probe dimensions/p302)", () => {
     const g = drawnGeometry(radial("DIMDIAMETER", p(30, 0)))
 
-    // LINE 25.2575→47.5 under ∅100, one SOLID: Ø's ink is AutoCAD's box.
-    expect(g.lineStart).toBeCloseToPoint(p(25.2575, 0), 4)
+    // LINE 25.2575→47.5 under ∅100, one SOLID: Ø's ink is AutoCAD's box
+    // (25.2319 by Arimo's).
+    expect(g.lineStart).toBeCloseToPoint(p(25.2319, 0), 4)
     expect(g.lineEnd).toBeCloseToPoint(p(50 - ARROW, 0))
     expect(g.arrows).toHaveLength(1)
     expect(g.lines).toHaveLength(0)
@@ -166,7 +170,8 @@ describe("DIMDIAMETER", () => {
   it("outside, draws the line across and both arrowheads outside the rim (probe dimensions/p303)", () => {
     const g = drawnGeometry(radial("DIMDIAMETER", p(80, 0)))
 
-    expect(g.lineStart).toBeCloseToPoint(p(84.7425, 0), 4)
+    // 84.7425 by Arial's ink.
+    expect(g.lineStart).toBeCloseToPoint(p(84.7681, 0), 4)
     expect(g.lineEnd).toBeCloseToPoint(p(50 + ARROW, 0))
     expect(g.arrows).toHaveLength(2)
     expect(g.arrows[0][0]).toBeCloseToPoint(p(50, 0))
@@ -351,9 +356,10 @@ describe("radial dimensions", () => {
 
     expect(dimensionText(dim(radius))).toBe("R50 TYP")
     expect(dimensionText(dim(diameter))).toBe("\u00d8100 TYP")
-    // The leader runs under the longer text: 87.4966 and 88.6315.
-    expect(drawnGeometry(radius).lineStart).toBeCloseToPoint(p(87.4966, 0), 4)
-    expect(drawnGeometry(diameter).lineStart).toBeCloseToPoint(p(88.6315, 0), 3)
+    // The leader runs under the longer text: 87.4966 and 88.6315, by
+    // Arimo's ink 87.4744 and 88.6255.
+    expect(drawnGeometry(radius).lineStart).toBeCloseToPoint(p(87.4744, 0), 4)
+    expect(drawnGeometry(diameter).lineStart).toBeCloseToPoint(p(88.6255, 0), 3)
   })
 
   it("Angle turns the text", () => {

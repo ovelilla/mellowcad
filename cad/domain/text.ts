@@ -98,10 +98,17 @@ export interface TextBox {
 
 /**
  * The ink box of a string set at a capital height of `height`, from the left
- * end of its baseline: what AutoCAD's `(textbox)` returns (text/p301: H from
- * 1.11869 to 8.96317, g down to −2.93997 at 10). A glyph the font lacks
- * counts as its whole advance by the capital height; a string with no ink
- * at all (spaces, nothing) as its advance width by the height.
+ * end of its baseline: what AutoCAD's `(textbox)` returns, for Arimo's
+ * outlines. A glyph the font lacks counts as its whole advance by the capital
+ * height; a string with no ink at all (spaces, nothing) as its advance width
+ * by the height.
+ *
+ * WHY Arimo's ink and not Arial's, which AutoCAD measures: the engine ships
+ * only numbers read from an OFL font. Arimo has Arial's advances, not its
+ * outlines, so the box is AutoCAD's but for the glyphs' shapes: at 10, H spans
+ * 1.146 to 8.950 and 9.611 up where AutoCAD's spans 1.119 to 8.963 and 10, g
+ * reaches −2.899 where AutoCAD's −2.940, and A does not overhang its advance
+ * (text/p301).
  */
 export function measureTextInk(value: string, height: number): TextBox {
   let pen = 0
@@ -134,13 +141,14 @@ export function measureTextInk(value: string, height: number): TextBox {
  * Where a justification puts the left end of the baseline (AutoCAD's DXF 10),
  * from the justification point, in the text's frame (text/p302, Agh at 10):
  * - along it, by the span from the advance's start, or the ink's when a glyph
- *   overhangs it (A's −0.0205), to the advance's end: Right −24.857, Center
- *   −12.418, not half the advance's 12.428 (p327: HHH −15.133, ggg −11.654);
+ *   overhangs it (Arial's A by −0.0205, AutoCAD's Center −12.418; Arimo's A
+ *   does not), to the advance's end: Right −24.857, Center −12.428 (p327:
+ *   HHH −15.133, ggg −11.654);
  * - Top: the baseline the height below (−10); ML, MC, MR: half of it (−5);
- * - BL, BC, BR: Arial's descent above the point, 434/1466 of the height
+ * - BL, BC, BR: the font's descent above the point, 434/1466 of the height
  *   (+2.96044);
- * - Middle: the ink's vertical middle on the point (−3.530; HHH −5, ggg
- *   −2.234, p327).
+ * - Middle: the ink's vertical middle on the point (−3.612; AutoCAD's −3.530
+ *   by Arial's ink, HHH −5, ggg −2.234, p327).
  */
 export function textStartOffset(
   justify: TextJustify,

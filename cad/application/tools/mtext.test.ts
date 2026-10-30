@@ -397,7 +397,7 @@ describe("editing MTEXT", () => {
 
   // probe pieces/p255: Top left at 10,50, h10, on L1 red → TEXT OLD and
   // LINES, BaseLeft, on L1 red, at 9.324693,39.822647 and 8.976808,22.985448:
-  // set by the ink (text/p303).
+  // set by the ink (text/p303), here Arimo's (measureTextInk's WHY).
   it("explodes into one text per line (pieces/p255)", () => {
     const cad = createHarness()
     cad.runtime.document.load(
@@ -428,13 +428,14 @@ describe("editing MTEXT", () => {
       ["text", "OLD", "left", "L1", "#ff0000"],
       ["text", "LINES", "left", "L1", "#ff0000"],
     ])
-    expect(texts[0].position).toBeCloseToPoint(p(9.324693, 39.822647), 5)
-    expect(texts[1].position).toBeCloseToPoint(p(8.976808, 22.985448), 5)
+    expect(texts[0].position).toBeCloseToPoint(p(9.338336, 40), 5)
+    expect(texts[1].position).toBeCloseToPoint(p(8.854025, 23.333333), 5)
   })
 
   // probe pieces/p256: Middle center at 10,50 → OLD BaseLeft at
   // -4.328104,53.415189 and LINES at -10.334243,36.57799, each line's drawn
-  // left end, not the column.
+  // left end, not the column; by Arimo's ink, -4.358799,53.401546 and
+  // -10.439973,36.734879.
   it("makes each line Left at its drawn left end, whatever the attachment (pieces/p256)", () => {
     const cad = createHarness({
       entities: [
@@ -449,8 +450,8 @@ describe("editing MTEXT", () => {
 
     const [old, lines] = cad.entities() as TextEntity[]
     expect([old.justify, lines.justify]).toEqual(["left", "left"])
-    expect(old.position).toBeCloseToPoint(p(-4.328104, 53.415189), 5)
-    expect(lines.position).toBeCloseToPoint(p(-10.334243, 36.57799), 5)
+    expect(old.position).toBeCloseToPoint(p(-4.358799, 53.401546), 5)
+    expect(lines.position).toBeCloseToPoint(p(-10.439973, 36.734879), 5)
   })
 
   it("is picked anywhere inside its box", () => {

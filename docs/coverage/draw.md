@@ -626,7 +626,10 @@ lays out Arial, scaled by its H's ink height (1466 units, p301): along the basel
 advances, from A's overhang when it has one (Center of Agh −12.418, p302, p327); Top the height
 below the point, ML/MC/MR half of it, BL/BC/BR Arial's descent above it (434/1466 of the height),
 Middle the ink's vertical middle on it (p302, p327). Its box (pick, bounds, windows, TRIM's edges,
-MIRROR) is the ink's, AutoCAD's `(textbox)` (p301). A justified text has two grips, the point and
+MIRROR) is the ink's, AutoCAD's `(textbox)` (p301), but Arimo's ink, not Arial's (WHY: the package
+ships only numbers read from an OFL font; the widths, line and descent are Arial's all the same): at
+10, H's box tops at 9.611, not 10, A does not overhang (Center of Agh −12.428), and Middle sits up
+to 2 % of the height off AutoCAD's (`measureTextInk`). A justified text has two grips, the point and
 its insertion point (DXF 10), either moving it (desktop d02-1); Insertion snaps to the point (p305);
 STRETCH moves it when the point is caught (p304). The palette's Text rows are Contents, Justify,
 Height, Rotation and, for a justified text, Text alignment X/Y/Z (the point, editable), with
@@ -679,8 +682,8 @@ on the opposite corner (p206, p207, p270, p279); in a UCS the box squares up to 
 p258). es from Autodesk's MTEXT table (`Precise la primera esquina`, `Indique la esquina opuesta
 o`, `Indique la altura`, `Indique la justificación`, `Indique el tipo de interlineado [Al
 menos/Exactamente]`, `Indique el ángulo de rotación`, `Indique la anchura`, `Nombre de estilo no
-válido`), each box labelled by its own prompt (acmtedRes 1070); laid out by Arial's ink as AutoCAD
-lays it out (p303, p327, p332): a word wraps when the line's ink would pass the width ("HHH HHH"
+válido`), each box labelled by its own prompt (acmtedRes 1070); laid out as AutoCAD lays out
+Arial, by Arimo's ink (TEXT's WHY, p303, p327, p332): a word wraps when the line's ink would pass the width ("HHH HHH"
 at 10, ink 62.169, one line at 63, two at 62; a longer word overflows), each line's ink set
 against the frame's edge (a first glyph's positive bearing left out, a negative one sticking out)
 or centred in it, the first baseline the height or the first line's ink top below the top, At
@@ -749,7 +752,7 @@ island style) from every visible object parallel to the UCS whatever its height,
 (p153–p155), saying `Analyzing internal islands...`, or `Valid hatch boundary not found.`; an off
 layer is not traced, a locked one is (p151, p152), a hatch never (p159); a TEXT or MTEXT in the
 area is an island box kept clear (p166, p134): a TEXT's ink across its baseline and its advance
-along it plus 0.2585·h each side (p123, p125), an MTEXT's lines' advances by Arial's ascent and
+along it plus 0.2585·h each side (p123, p125), an MTEXT's lines' advances by the font's ascent and
 descent plus 0.25·h (p127), the rule behind both margins **unverified**; a typed object snap
 override moves the point (p120), the running snaps leave a click alone (d09); a bare number is
 direct distance from LASTPOINT towards the cursor (p102, p117); `x,y`, `@dx,dy`, `@`, `d<a` are

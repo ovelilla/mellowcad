@@ -6285,7 +6285,7 @@ Specify next point or
 > select T-right
   properties: Text (1) [Text: Contents=NOTE, Justify=Right, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-9.70, Y=0.00, Z=0.00]
 > select T-middle
-  properties: Text (1) [Text: Contents=NOTE, Justify=Middle, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-4.85, Y=-1.25, Z=0.00]
+  properties: Text (1) [Text: Contents=NOTE, Justify=Middle, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=-4.85, Y=-1.20, Z=0.00]
 > select T-tl
   properties: Text (1) [Text: Contents=NOTE, Justify=Top left, Height=2.50 mm~, Rotation=0°~, Text alignment X=0.00~, Text alignment Y=0.00~, Text alignment Z=0.00~] [Position: X=0.00, Y=-2.50, Z=0.00]
 > select T-tc

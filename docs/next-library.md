@@ -504,8 +504,9 @@ Bloqueos: 1 → 2 → 6; 1 → 3 → 4 → 5 → 7; la org de npm → 6; 7 → 8
   (`npm audit signatures` limpio).
 - Sin procedencia mientras el repo sea privado (npm no la genera desde repos privados).
 - Propiedad intelectual: los catálogos transcriben el vocabulario de AutoCAD en español (frases
-  cortas y nombres funcionales, el riesgo es bajo) y las métricas de texto salen de Arial (se
-  cambian de fuente, §7).
+  cortas y nombres funcionales, el riesgo es bajo). Las métricas de texto ya no salen de Arial:
+  todas se leen de Arimo menos la escala de AutoCAD (H = 1466, sonda text/p301), a costa de una
+  tinta algo distinta de la de AutoCAD (fase 6).
 - Hacer público el repo es irreversible en la práctica: lo que se haya visto, se ha visto.
 
 ## 7. Decisiones tomadas

@@ -316,12 +316,13 @@ describe("markup", () => {
 
   // probe text/p302: Agh at 10 high at 0,0, DXF 10 per justification. The
   // baseline is drawn where AutoCAD's is (TEXT-D43), not at the em box's
-  // anchors (TL −11.168, M −4.188, BL +2.792 before, TXO-02).
+  // anchors (TL −11.168, M −4.188, BL +2.792 before, TXO-02). Center and
+  // Middle by Arimo's ink (AutoCAD's −12.418 and −3.530 by Arial's).
   it.each([
     ["left", 0, 0],
     ["tl", 0, -10],
-    ["mc", -12.418144611186904, -5],
-    ["middle", -12.418144611186904, -3.530013642564802],
+    ["mc", -12.42837653478854, -5],
+    ["middle", -12.42837653478854, -3.6118690313779],
     ["bl", 0, 2.96043656207367],
     ["br", -24.85675306957708, 2.96043656207367],
   ] as const)(

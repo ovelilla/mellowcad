@@ -112,10 +112,12 @@ Dependencies run types → per-type modules → overrides → transforms → que
 - **MTEXT keeps AutoCAD's contents string**, `\P` and escapes included: `mtextPlainText` reads it
   (codes it does not draw vanish from the reading, never from the object), `mtextContents` writes
   it, nothing else parses or builds it.
-- **Text is measured by the engine, not a font**: Arial's widths, ink, descent and TEXT's line
-  (not MTEXT's 5/3) in `domain/textFontMetrics.ts` (from `scripts/fonts/metrics.ts`, never
-  hand-edited); `measureTextInk` sets TEXT (`textBox`) and MTEXT (`mtextLayout`). Presenters:
-  `cad-scene.md`.
+- **Text is measured by the engine, not a font**: Arial's widths, descent and TEXT's line (not
+  MTEXT's 5/3) and the ink in `domain/textFontMetrics.ts`, read from Arimo (SIL OFL, Arial's
+  metrics) by `scripts/fonts/metrics.ts`, with AutoCAD's scale (H = 1466 units, text/p301);
+  never hand-edited, never from `arial.ttf`: the package ships no number measured from Arial. The
+  ink is Arimo's outlines', so boxes differ a little from AutoCAD's (`measureTextInk`'s WHY);
+  `measureTextInk` sets TEXT (`textBox`) and MTEXT (`mtextLayout`). Presenters: `cad-scene.md`.
 
 ## Blocks
 

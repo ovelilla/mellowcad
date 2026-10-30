@@ -752,7 +752,8 @@ describe("property editing", () => {
 
   // desktop text/d04-1: Agh, Middle center at 30,-10, height 5, rotation 15:
   // Text alignment X/Y/Z the point, Position X/Y/Z greyed at DXF 10
-  // (24.6495, -14.0218). d04-2: an MTEXT's height row is Text height.
+  // (24.6495, -14.0218; 24.6446 by Arimo's ink, where A does not overhang).
+  // d04-2: an MTEXT's height row is Text height.
   it("lists a justified text's Text alignment, and its Position read-only at the insertion point", () => {
     const cad = createHarness({
       entities: [
@@ -788,7 +789,7 @@ describe("property editing", () => {
           "Text alignment Z=0.00*",
         ],
       ],
-      ["Position", ["X=24.65", "Y=-14.02", "Z=0.00"]],
+      ["Position", ["X=24.64", "Y=-14.02", "Z=0.00"]],
     ])
 
     cad.escape().select("L")

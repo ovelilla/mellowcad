@@ -1666,7 +1666,7 @@ describe("MIRROR", () => {
   // at 10,10, 30°, starts at (-22.668, 17.314), 330°, by its ink (14.628 from
   // the point); Adios, right-justified at 50,40, is aligned at (-32.527, 40);
   // the MTEXT TopLeft at 10,80 is TopRight at (-10, 80). Yes flips them so in
-  // place.
+  // place. Hola's ink is Arimo's here (measureTextInk's WHY).
   it.each([["_N"], ["_Y"]])(
     "mirrors TEXT and MTEXT readable, Erase %s",
     (erase) => {
@@ -1692,7 +1692,7 @@ describe("MIRROR", () => {
         MTextEntity,
       ]
       expect(hola.position).toBeCloseToPoint(
-        p(-22.66842754717414, 17.31412005457026),
+        p(-22.937214422154987, 17.46930422919509),
         6
       )
       expect(hola.rotation).toBeCloseToAngle(deg(330), 9)

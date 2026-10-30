@@ -189,9 +189,9 @@ describe("text", () => {
   )
 
   // probe transforms/p283: Hola, BaseLeft at 10,10, 30°, mirrored about x = 0
-  // starts at the image of its ink box's end: (-22.668, 17.314), the ink
-  // spanning 14.628 from the point; a right-justified one is aligned at the
-  // image of its ink's start, (-32.527, 40) for Adios.
+  // starts at the image of its ink box's end: AutoCAD's (-22.668, 17.314) by
+  // Arial's ink, here Arimo's (measureTextInk); a right-justified one is
+  // aligned at the image of its ink's start, (-32.527, 40) for Adios.
   it("lands where AutoCAD's MIRRTEXT 0 puts it (transforms/p283)", () => {
     const hola = mirrorEntity(
       textOf(p(10, 10), "Hola", { height: 5, rotation: deg(30) }),
@@ -199,7 +199,7 @@ describe("text", () => {
       p(0, 10)
     )
     expect(hola.type === "text" && hola.position).toBeCloseToPoint(
-      p(-22.668, 17.314),
+      p(-22.937, 17.469),
       3
     )
     const adios = mirrorEntity(
@@ -214,21 +214,22 @@ describe("text", () => {
   // probe text/p337: Adios and Hola at 5, each justification's point at x 40,
   // mirrored about x = 0, turned back to read: refitted in the mirrored ink
   // box, but Right's point goes to the image of the baseline's start and
-  // Middle's to its own image.
+  // Middle's to its own image. The ink is Arimo's (AutoCAD's left Hola
+  // −54.628 by Arial's).
   it.each([
-    ["left", "Adios", -57.19304229195089],
-    ["left", "Hola", -54.62824010914052],
-    ["center", "Adios", -39.73055934515689],
-    ["center", "Hola", -40.26261937244202],
+    ["left", "Adios", -57.23396998635744],
+    ["left", "Hola", -54.93860845839018],
+    ["center", "Adios", -39.7612551159618],
+    ["center", "Hola", -40.572987721691675],
     ["right", "Adios", -22.527285129604365],
     ["right", "Hola", -25.6343792633015],
     ["middle", "Adios", -40],
     ["middle", "Hola", -40],
-    ["tl", "Adios", -57.19304229195089],
-    ["mc", "Hola", -40.26261937244202],
-    ["br", "Adios", -22.247612551159623],
-    ["br", "Hola", -25.89699863574352],
-    ["bc", "Adios", -39.73055934515689],
+    ["tl", "Adios", -57.23396998635744],
+    ["mc", "Hola", -40.572987721691675],
+    ["br", "Adios", -22.288540245566168],
+    ["br", "Hola", -26.20736698499318],
+    ["bc", "Adios", -39.7612551159618],
   ] as const)(
     "puts a %s %s mirrored back along its baseline where AutoCAD does (text/p337)",
     (justify, value, x) => {
@@ -245,12 +246,13 @@ describe("text", () => {
   )
 
   // probe text/p338: flipped across the baseline (about y = 0), Right and
-  // Middle refit in the ink box like the rest: Right Agh at y 10 → −13.530.
+  // Middle refit in the ink box like the rest: Right Agh at y 10 → −13.612
+  // by Arimo's ink (AutoCAD's −13.530 by Arial's, HHH's −15).
   it.each([
-    ["right", "Agh", -13.530013642564802],
-    ["right", "HHH", -15],
+    ["right", "Agh", -13.6118690313779],
+    ["right", "HHH", -14.805593451568896],
     ["middle", "Agh", -10],
-    ["center", "Agh", -13.530013642564802],
+    ["center", "Agh", -13.6118690313779],
   ] as const)(
     "flips a %s %s across its baseline as AutoCAD (text/p338)",
     (justify, value, y) => {
@@ -266,11 +268,12 @@ describe("text", () => {
 
   // probe text/p331: Agh at 10, BL at 0,0, TL at 60,0, Middle at 120,0,
   // mirrored about y = 20: each is refitted in its reflected ink box, so the
-  // BL point lands at 27.019, not at 30 (TXO-01).
+  // BL point lands at 26.855 by Arimo's ink (AutoCAD's 27.019 by Arial's),
+  // not at 30 (TXO-01).
   it.each([
-    ["bl", p(0, 0), p(0, 27.01909959072306), p(0, 29.97953615279673)],
-    ["tl", p(60, 0), p(60, 52.93997271487039), p(60, 42.93997271487039)],
-    ["middle", p(120, 0), p(120, 40), p(107.5818553888131, 36.4699863574352)],
+    ["bl", p(0, 0), p(0, 26.855388813096862), p(0, 29.815825375170533)],
+    ["tl", p(60, 0), p(60, 52.7762619372442), p(60, 42.7762619372442)],
+    ["middle", p(120, 0), p(120, 40), p(107.57162346521146, 36.3881309686221)],
   ] as const)(
     "refits a %s text in its mirrored ink box (text/p331)",
     (justify, at, point, insertion) => {
@@ -361,19 +364,20 @@ describe("text", () => {
   })
 
   // probe text/p301: AutoCAD's (textbox) at 10, the ink box from the
-  // baseline's left end.
+  // baseline's left end, for Arimo's outlines (measureTextInk's WHY):
+  // AutoCAD's own, by Arial's, are in the comment after each.
   it.each([
-    ["H", 1.11869, 0, 8.96317, 10],
-    ["HHHHHHHHHH", 1.11869, 0, 99.7613, 10],
-    ["x", 0.102319, 0, 6.88267, 7.2442],
-    ["g", 0.450205, -2.93997, 6.83492, 7.40791],
-    ["OLD", 0.675307, -0.170532, 27.9809, 10.1774],
-    ["Hola", 1.11869, -0.163711, 28.1378, 10],
-    ["Ag", -0.0204638, -2.93997, 16.1528, 10],
-    ["The quick brown fox", 0.327422, -2.77626, 124.911, 10.1705],
-    ["ñÁé", 0.920873, -0.163711, 24.2769, 12.5239],
+    ["H", 1.14598, 0, 8.94952, 9.61119], // 1.11869, 0, 8.96317, 10
+    ["HHHHHHHHHH", 1.14598, 0, 99.7476, 9.61119], // 1.11869, 0, 99.7613, 10
+    ["x", 0.156889, 0, 6.83492, 7.38063], // 0.102319, 0, 6.88267, 7.2442
+    ["g", 0.58663, -2.89905, 6.86903, 7.49659], // 0.450205, -2.93997, 6.83492, 7.40791
+    ["OLD", 0.661664, -0.136426, 28.0559, 9.75443], // 0.675307, -0.170532, 27.9809, 10.1774
+    ["Hola", 1.14598, -0.136426, 28.7312, 10.1228], // 1.11869, -0.163711, 28.1378, 10
+    ["Ag", 0.0272851, -2.89905, 16.1869, 9.61119], // -0.0204638, -2.93997, 16.1528, 10
+    ["The quick brown fox", 0.313779, -2.89905, 124.864, 10.1228], // 0.327422, -2.77626, 124.911, 10.1705
+    ["ñÁé", 0.95498, -0.136426, 24.236, 12.1146], // 0.920873, -0.163711, 24.2769, 12.5239
   ] as const)(
-    "boxes %s as AutoCAD's textbox (text/p301)",
+    "boxes %s as AutoCAD's textbox, by Arimo's ink (text/p301)",
     (value, x0, y0, x1, y1) => {
       const ink = measureTextInk(value, 10)
       expect(ink.x0).toBeCloseTo(x0, 4)
@@ -385,21 +389,22 @@ describe("text", () => {
 
   // probe text/p302: Agh at 10 at 0,0, AutoCAD's DXF 10 per justification.
   // Bottom puts the baseline Arial's descent above the point (TXO-01),
-  // Middle centres the ink (TXO-05), and Center halves the span from A's
-  // overhang to the advance's end.
+  // Middle centres the ink (TXO-05), and Center halves the span from an
+  // overhang to the advance's end. By Arimo's ink A has none: AutoCAD's
+  // Center −12.418 and Middle −3.530 are Arial's.
   it.each([
     ["left", 0, 0],
-    ["center", -12.418144611186904, 0],
+    ["center", -12.42837653478854, 0],
     ["right", -24.85675306957708, 0],
-    ["middle", -12.418144611186904, -3.530013642564802],
+    ["middle", -12.42837653478854, -3.6118690313779],
     ["tl", 0, -10],
-    ["tc", -12.418144611186904, -10],
+    ["tc", -12.42837653478854, -10],
     ["tr", -24.85675306957708, -10],
     ["ml", 0, -5],
-    ["mc", -12.418144611186904, -5],
+    ["mc", -12.42837653478854, -5],
     ["mr", -24.85675306957708, -5],
     ["bl", 0, 2.96043656207367],
-    ["bc", -12.418144611186904, 2.96043656207367],
+    ["bc", -12.42837653478854, 2.96043656207367],
     ["br", -24.85675306957708, 2.96043656207367],
   ] as const)(
     "places a %s text's baseline as AutoCAD (text/p302)",
@@ -408,16 +413,17 @@ describe("text", () => {
       expect(textInsertionPoint(text)).toBeCloseToPoint(p(x, y), 6)
       // The box is the ink's where the glyphs stand: a BL text's covers them.
       const box = textBox(justify, "Agh", 10)
-      expect(box.y0).toBeCloseTo(y - 2.93997, 4)
-      expect(box.y1).toBeCloseTo(y + 10, 4)
+      expect(box.y0).toBeCloseTo(y - 2.89905, 4)
+      expect(box.y1).toBeCloseTo(y + 10.12278, 4)
     }
   )
 
-  // probe text/p327: Middle at 0,-100 and 0,-200 puts HHH's baseline 5 below,
-  // ggg's 2.234: the ink's middle on the point, its advance centred.
+  // probe text/p327: Middle at 0,-100 and 0,-200 puts the ink's middle on
+  // the point, its advance centred: HHH's baseline 4.806 below and ggg's
+  // 2.299 by Arimo's ink (AutoCAD's 5 and 2.234 by Arial's).
   it.each([
-    ["HHH", p(-15.133015006821283, -105)],
-    ["ggg", p(-11.654160982264667, -202.23396998635744)],
+    ["HHH", p(-15.133015006821283, -104.8055934515689)],
+    ["ggg", p(-11.654160982264667, -202.2987721691678)],
   ] as const)(
     "centres a Middle %s on its ink (text/p327)",
     (value, insertion) => {

@@ -17,7 +17,11 @@ import {
   polylineSegmentGeometries,
   textStartOffset,
 } from "./entities"
-import { TEXT_FONT_CAP_HEIGHT, TEXT_FONT_DESCENT } from "./textFontMetrics"
+import {
+  TEXT_FONT_ASCENT,
+  TEXT_FONT_CAP_HEIGHT,
+  TEXT_FONT_DESCENT,
+} from "./textFontMetrics"
 
 /**
  * Tracing the boundary of the enclosed area around a point — what AutoCAD's
@@ -63,12 +67,6 @@ const TEXT_BOX_MARGIN = 0.25853
 
 /** An MTEXT's, past its lines' ascent and descent (p127: 0.625 at 2.5). */
 const MTEXT_BOX_MARGIN = 0.25
-
-/**
- * Arial's OS/2 usWinAscent, in font units: with `TEXT_FONT_DESCENT` what an
- * MTEXT line spans across its baseline in its island box (p127).
- */
-const FONT_ASCENT = 1854
 
 /**
  * A piece of boundary geometry, parametrised over `t` in `[0, 1]`. Arcs always
@@ -228,7 +226,10 @@ export function textIslandBox(entity: Entity): Vec2[] | null {
       box.y0,
       line.y - (TEXT_FONT_DESCENT / TEXT_FONT_CAP_HEIGHT) * h
     )
-    box.y1 = Math.max(box.y1, line.y + (FONT_ASCENT / TEXT_FONT_CAP_HEIGHT) * h)
+    box.y1 = Math.max(
+      box.y1,
+      line.y + (TEXT_FONT_ASCENT / TEXT_FONT_CAP_HEIGHT) * h
+    )
   }
   const margin = MTEXT_BOX_MARGIN * h
   return boxCorners(entity.position, entity.rotation, {

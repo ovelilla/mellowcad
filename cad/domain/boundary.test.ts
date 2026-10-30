@@ -176,6 +176,8 @@ describe("traceBoundaryLoops", () => {
   })
 })
 
+// AutoCAD's margins around Arimo's ink (measureTextInk's WHY): p125's own
+// loop, by Arial's, starts at (77.3943, 42.2442).
 describe("traceBoundaryLoops: text islands (probes hatch/p123, p125, p127)", () => {
   const ROOM = rectOf(p(0, 0), p(200, 100))
 
@@ -188,10 +190,10 @@ describe("traceBoundaryLoops: text islands (probes hatch/p123, p125, p127)", () 
     expect(loops).toHaveLength(2)
     expect(loops![1].vertices).toBeCloseToPoints(
       [
-        p(77.3943, 42.2442),
-        p(111.31, 42.2442),
-        p(111.31, 57.7558),
-        p(77.3943, 57.7558),
+        p(77.4147, 42.2783),
+        p(111.3097, 42.2783),
+        p(111.3097, 57.3397),
+        p(77.4147, 57.3397),
       ],
       3
     )
@@ -207,10 +209,10 @@ describe("traceBoundaryLoops: text islands (probes hatch/p123, p125, p127)", () 
 
     expect(loops![1].vertices).toBeCloseToPoints(
       [
-        p(74.7885, 39.4884),
-        p(142.619, 39.4884),
-        p(142.619, 70.5116),
-        p(74.7885, 70.5116),
+        p(74.8294, 39.5565),
+        p(142.6194, 39.5565),
+        p(142.6194, 69.6795),
+        p(74.8294, 69.6795),
       ],
       3
     )
@@ -235,10 +237,10 @@ describe("traceBoundaryLoops: text islands (probes hatch/p123, p125, p127)", () 
     expect(loops).toHaveLength(2)
     expect(loops![1].vertices).toBeCloseToPoints(
       [
-        p(79.3699, 56.0923),
-        p(87.8061, 56.0923),
-        p(87.8061, 61.244),
-        p(79.3699, 61.244),
+        p(79.3682, 56.1349),
+        p(87.7993, 56.1349),
+        p(87.7993, 61.2867),
+        p(79.3682, 61.2867),
       ],
       3
     )
