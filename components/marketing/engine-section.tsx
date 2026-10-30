@@ -1,6 +1,8 @@
+import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 
 import { DIAGRAMS } from "@/content/figures"
+import { sitePaths } from "@/i18n/site-paths"
 import { productFacts } from "@/lib/facts"
 import { pageEngineLocale, renderFigure } from "@/lib/plot"
 
@@ -12,6 +14,7 @@ import { sourceLinks } from "./source-links"
 export async function EngineSection() {
   const t = await getTranslations("Engine")
   const facts = productFacts()
+  const paths = await sitePaths()
   const figure = await renderFigure({
     ...DIAGRAMS.engineLayers(t("diagramImports")),
     locale: await pageEngineLocale(),
@@ -23,7 +26,17 @@ export async function EngineSection() {
     [t("formatTitle"), t("formatBody")],
     [t("fidelityTitle"), t("fidelityBody")],
     [t("testsTitle", { tests: facts.tests }), t("testsBody")],
-    [t("sourceTitle"), t.rich("sourceBody", sourceLinks)],
+    [
+      t("sourceTitle"),
+      t.rich("sourceBody", {
+        ...sourceLinks,
+        docs: (chunks) => (
+          <Link href={paths.docs} prefetch={false} className="underline-link">
+            {chunks}
+          </Link>
+        ),
+      }),
+    ],
   ]
 
   return (

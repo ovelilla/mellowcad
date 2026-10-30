@@ -100,6 +100,15 @@ export async function SiteFooter() {
             <span className="pt-0.5 label-mono">{t("code")}</span>
             <ul className="flex flex-wrap gap-x-4 gap-y-1">
               <li>
+                <Link
+                  href={paths.docs}
+                  prefetch={false}
+                  className="underline-link"
+                >
+                  {t("docs")}
+                </Link>
+              </li>
+              <li>
                 <a href={REPOSITORY_URL} className="underline-link">
                   {t("repository")}
                 </a>

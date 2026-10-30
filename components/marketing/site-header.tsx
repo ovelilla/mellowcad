@@ -9,15 +9,12 @@ import { sitePaths } from "@/i18n/site-paths"
 import { Logo } from "./logo"
 import { ForwardArrow } from "./forward-arrow"
 
-const SECTIONS = [
-  ["features", "#features"],
-  ["commands", "#commands"],
-  ["roadmap", "#roadmap"],
-  ["faq", "#faq"],
-] as const
+const SECTIONS = ["features", "commands", "roadmap", "faq"] as const
 
 /**
- * Sticky, with the call to action always in reach. It turns from transparent
+ * Sticky, with the call to action always in reach. The landing's sections
+ * are plain anchors to the home page, so on the landing they only scroll and
+ * from the docs or /privacy they lead back to it. It turns from transparent
  * to raised as the page scrolls — a scroll-driven animation where there is
  * one, a raised bar from the start where there is not. The small-screen menu
  * is a native popover, so it opens and closes without any script.
@@ -40,16 +37,25 @@ export async function SiteHeader() {
         </Link>
         <nav aria-label={t("navLabel")} className="hidden flex-1 md:block">
           <ul className="flex items-center justify-center gap-8 text-sm text-fg-muted">
-            {SECTIONS.map(([key, href]) => (
+            {SECTIONS.map((key) => (
               <li key={key}>
                 <a
-                  href={href}
+                  href={`${paths.home}#${key}`}
                   className="transition-colors duration-150 hover:text-fg"
                 >
                   {t(key)}
                 </a>
               </li>
             ))}
+            <li>
+              <Link
+                href={paths.docs}
+                prefetch={false}
+                className="transition-colors duration-150 hover:text-fg"
+              >
+                {t("docs")}
+              </Link>
+            </li>
           </ul>
         </nav>
         <div className="ms-auto flex items-center gap-2 md:ms-0">
@@ -85,16 +91,24 @@ export async function SiteHeader() {
       <div id="site-menu" popover="auto" className="menu md:hidden">
         <nav aria-label={t("navLabel")}>
           <ul className="flex flex-col">
-            {SECTIONS.map(([key, href]) => (
+            {SECTIONS.map((key) => (
               <li key={key}>
                 <a
-                  href={href}
+                  href={`${paths.home}#${key}`}
                   className="block rounded-md px-3 py-2.5 text-fg hover:bg-bg"
                 >
                   {t(key)}
                 </a>
               </li>
             ))}
+            <li>
+              <a
+                href={paths.docs}
+                className="block rounded-md px-3 py-2.5 text-fg hover:bg-bg"
+              >
+                {t("docs")}
+              </a>
+            </li>
           </ul>
         </nav>
         <nav

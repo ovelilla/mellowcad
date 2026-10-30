@@ -30,11 +30,13 @@ The landing and the editor are two **root layouts** under the `[locale]` root pa
 metadata base; `app/[locale]/(app)/layout.tsx` owns the editor and `globals.css`. Crossing between
 them is a full page load, so a link to the editor is a plain `<a href={paths.editor}>`, never
 `next/link`: its router prefetch would pull the editor's payload into the landing. Links _within_
-the landing use `Link`. Every href is the page's language's (`sitePaths()`, `localePath()`;
-`i18n.md`); a client island gets it as a prop. Copy, claims and tone: `i18n.md`.
+the landing use `Link`; to the docs, `prefetch={false}` (`docs.md`). Every href is the page's
+language's (`sitePaths()`, `localePath()`; `i18n.md`); a client island gets it as a prop. Copy,
+claims and tone: `i18n.md`.
 
-**The site is the landing**, the 404 and `/privacy` — decided: no changelog, command hub, cheat
-sheet or comparison pages. Never propose a new page without Search Console data behind it.
+**The site is the landing, the 404, `/privacy` and the docs** (`/docs`, `docs.md`) — decided: no
+changelog or comparison pages, and the commands' reference is the docs' (`docs/next-docs.md`), never
+a hub or cheat sheet of its own. Never propose a new page without Search Console data behind it.
 
 **`/privacy` is the notice GDPR requires** (Article 13): the host and both Vercel measurements
 process personal data (the IP address, a visitor hash kept 24 hours), and so does the contact
@@ -45,10 +47,10 @@ script — updates it in the same change.
 ## Rendering
 
 - **Every page is prerendered** (`○`, or `●` per language, in the build output; never `ƒ`, no
-  middleware). Nothing here reads `cookies()`, `headers()`, `searchParams` or next-intl's
-  `requestLocale`: one such call silently turns the page dynamic. The locale comes from
-  `next/root-params`. A route handler serving build-time data (OG images, manifests) exports
-  `dynamic = "force-static"`.
+  middleware; the docs' search is the one function, and no page: `docs.md`). Nothing here reads
+  `cookies()`, `headers()`, `searchParams` or next-intl's `requestLocale`: one such call silently
+  turns the page dynamic. The locale comes from `next/root-params`. A route handler serving
+  build-time data (OG images, manifests) exports `dynamic = "force-static"`.
 - **Server Components by default.** A client island exists only where there is browser state:
   `ContinueDrawing` (the autosave), `HeroControls` (pause), `TransitionSheet` (the sheet's name for
   the trip into the editor), `CommandTry` (autocomplete), `SendToDesktop` (share sheet),
