@@ -381,8 +381,12 @@ async function main() {
       flagged.push(`  ${dependency.name}: the registry did not answer`)
       return
     }
+    // A deprecated release is never a target: fumadocs-core 17.0.0 was
+    // published by accident and deprecated, months before 16.17.9.
     const stable = Object.keys(meta.versions ?? {})
-      .filter(isStable)
+      .filter(
+        (version) => isStable(version) && !meta.versions![version].deprecated
+      )
       .map((version) => ({ version, parsed: parseVersion(version)! }))
       .sort((a, b) => compareVersions(b.parsed, a.parsed))
     const aged = stable.filter(
@@ -396,6 +400,17 @@ async function main() {
       newer[0],
       newer.find(({ parsed }) => bumpOf(current, parsed) !== "major"),
     ].filter((target, i, all) => target && all.indexOf(target) === i)
+    // Past a peer blocker, the newest release every peer range admits: how
+    // TypeScript 6 surfaced while 7 waited for typescript-eslint.
+    const admitted = (blocked: string) => {
+      const step = newer.find(
+        ({ version, parsed }) =>
+          version !== blocked &&
+          bumpOf(current, parsed) === "major" &&
+          peerBlockers(dependency.name, version).length === 0
+      )
+      return step && `      admitted:  ${step.version}, which the peers accept`
+    }
     for (const target of targets) {
       const bump = bumpOf(current, target!.parsed)!
       const { name } = dependency
@@ -410,6 +425,7 @@ async function main() {
           `      diff:      npm diff --diff=${name}@${dependency.current} --diff=${name}@${target!.version}`,
           blockers.length > 0 &&
             `      peers:     ${blockers.join("; ")} (move them together, or wait)`,
+          blockers.length > 0 && admitted(target!.version),
           cited.length > 0 && `      cited by:  ${cited.join(", ")}`,
           deferral &&
             (compareVersions(target!.parsed, parseVersion(deferral.version)!) >

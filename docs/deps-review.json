@@ -1,7 +1,45 @@
 {
-  "lastReview": "2026-10-20",
+  "lastReview": "2026-10-30",
   "intervalDays": 7,
-  "deferred": [],
-  "acceptedAdvisories": [],
-  "keptUnmaintained": []
+  "deferred": [
+    {
+      "name": "typescript",
+      "version": "7.0.2",
+      "reason": "typescript-eslint (under eslint-config-next) accepts <6.1.0 until its 7.1 native-parser support lands (typescript-eslint#12803), and 7.0 publishes no JS API, which test/apiReport.ts uses; 6.0.3 is installed meanwhile"
+    },
+    {
+      "name": "@babel/core",
+      "version": "8.0.9",
+      "reason": "under Babel 8 the React Compiler silently skips components with defaults in destructured parameters (react#37406, open), and the editor's build runs it through @rolldown/plugin-babel"
+    },
+    {
+      "name": "@types/node",
+      "version": "26.6.5",
+      "reason": "the types follow the Node we run: 24 locally, in CI and on Vercel. Node 26 is LTS since 2026-10-28 and Vercel's default; moving means nvm, both workflows' node-version and the Vercel project's setting (or engines) together"
+    }
+  ],
+  "acceptedAdvisories": [
+    {
+      "id": "GHSA-gcqx-w48m-w2h4",
+      "reason": "deepmerge 4.3.1 has no fixed version; only the shadcn CLI and @shadcn/registry 0.2.1 use it, merging a registry item's theme we chose into our own config, in dev. Watch @shadcn/registry for a release without it",
+      "date": "2026-10-30"
+    }
+  ],
+  "keptUnmaintained": [
+    {
+      "name": "babel-plugin-react-compiler",
+      "reason": "stable 1.0.0, maintained in the React repository",
+      "date": "2026-10-30"
+    },
+    {
+      "name": "class-variance-authority",
+      "reason": "small and finished; shadcn's components are written against it",
+      "date": "2026-10-30"
+    },
+    {
+      "name": "tw-animate-css",
+      "reason": "small and finished; shadcn's animation classes",
+      "date": "2026-10-30"
+    }
+  ]
 }
