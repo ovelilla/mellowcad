@@ -41,7 +41,8 @@ marks a choice between competing terms that a native review should settle first 
   in AutoCAD, so `cad/locales/es.json` leaves `interface.linetype` and `interface.hatchPattern` out.
 - **Technical values:** a point for decimals, a comma between coordinates, latin digits, in every
   language.
-- **Brand and notation:** MellowCAD, AutoCAD, DWG, DXF, the axis names X and Y.
+- **Brand and notation:** MellowCAD, AutoCAD, DWG, DXF, the axis names X and Y; GitHub, npm, MIT
+  and the packages' names (`@mellowcad/engine`).
 
 ## Interface terms
 
@@ -132,6 +133,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | TOP, FRONT, LEFT; BOTTOM, BACK, RIGHT (faces); N, E, S, W | SUPERIOR, FRONTAL, IZQUIERDA; INFERIOR, POSTERIOR, DERECHA; N, E, S, O | أعلى، أمام، يسار؛ أسفل، خلف، يمين؛ ش، ق، ج، غ — the initials Arabic maps use (شمال، شرق، جنوب، غرب) (M) † | the help's captures of the cube | yes; no (the second three) |
 |  | Rotate clockwise / counterclockwise; View the face above… | Girar en sentido horario / antihorario; Ver la cara de arriba… | تدوير مع عقارب الساعة / عكس عقارب الساعة؛ عرض الوجه العلوي… (M) | C A90F5F1C-B338-4BDE-9D05-F26BFFE3B3A5 (prose: «en el sentido de las agujas del reloj o en el sentido inverso») | no |
 | UCS menu | WCS; New UCS; Unnamed | SCU; Nuevo SCP; S-nombre | نظام الإحداثيات العام؛ نظام إحداثيات مستخدم جديد؛ بلا اسم (M) | C 00815EB6-B218-410D-AF53-A5241BB53AA0; S-nombre the 2027 desktop's menu (probe ucs/e01-8) | yes |
+| Open source | Open source; the code; MIT licence | Código abierto; el código; licencia MIT | مفتوح المصدر؛ الشيفرة؛ رخصة MIT (M) | the landing's own words, no AutoCAD term (`.claude/rules/i18n.md`, «Claims and copy») | — |
 | Search | 2D CAD online, free, no sign-up, AutoCAD commands, aliases | CAD 2D online, gratis, sin registro, comandos de AutoCAD, alias | رسم هندسي، ثنائي الأبعاد، أون لاين، مجاني، أوامر أوتوكاد، اختصارات — Google's Arabic suggestions in SA, EG, AE, MA, IQ and JO, 01/10/2026 (see Search texts, below) | Spanish Google autocomplete and ranking titles, 27/09/2026 (see Search texts, below) | yes |
 
 ## Register

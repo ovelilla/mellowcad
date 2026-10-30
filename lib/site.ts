@@ -25,6 +25,16 @@ export const OG_IMAGE_PATH = "/og"
 /** The contact address the landing publishes: footer, Status and the privacy notice. */
 export const CONTACT_EMAIL = "o.velillaa@gmail.com"
 
+/** The public repository, whose code is MIT: the footer, Engine and the FAQ link it. */
+export const REPOSITORY_URL = "https://github.com/ovelilla/mellowcad"
+
+/**
+ * The one package on npm so far; react and the editor are named only once
+ * they are published (`.claude/rules/i18n.md`, "Claims and copy").
+ */
+export const ENGINE_PACKAGE = "@mellowcad/engine"
+export const ENGINE_PACKAGE_URL = `https://www.npmjs.com/package/${ENGINE_PACKAGE}`
+
 /**
  * Who is responsible for personal data, as GDPR requires the privacy notice to
  * say (Article 13). That notice is the one place the site names a person; it
@@ -37,4 +47,4 @@ export const DATA_CONTROLLER = "Oscar Velilla Abril"
  * `lastModified`, which Google only trusts if it moves with the content, so it
  * is bumped by hand with the copy — never stamped with the build time.
  */
-export const CONTENT_UPDATED = "2026-10-21"
+export const CONTENT_UPDATED = "2026-10-30"

@@ -7,6 +7,7 @@ import { pageEngineLocale, renderFigure } from "@/lib/plot"
 import { Drawing } from "./drawing"
 import { SectionHeading } from "./section-heading"
 import { SnapCorners } from "./snap-corners"
+import { sourceLinks } from "./source-links"
 
 export async function EngineSection() {
   const t = await getTranslations("Engine")
@@ -16,12 +17,13 @@ export async function EngineSection() {
     locale: await pageEngineLocale(),
   })
 
-  const points = [
+  const points: [string, React.ReactNode][] = [
     [t("kernelTitle"), t("kernelBody")],
     [t("undoTitle"), t("undoBody")],
     [t("formatTitle"), t("formatBody")],
     [t("fidelityTitle"), t("fidelityBody")],
     [t("testsTitle", { tests: facts.tests }), t("testsBody")],
+    [t("sourceTitle"), t.rich("sourceBody", sourceLinks)],
   ]
 
   return (

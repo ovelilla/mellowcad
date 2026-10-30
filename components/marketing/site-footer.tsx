@@ -3,7 +3,7 @@ import { getFormatter, getLocale, getTranslations } from "next-intl/server"
 
 import { productFacts } from "@/lib/facts"
 import { sitePaths } from "@/i18n/site-paths"
-import { CONTACT_EMAIL } from "@/lib/site"
+import { CONTACT_EMAIL, ENGINE_PACKAGE_URL, REPOSITORY_URL } from "@/lib/site"
 
 import { LanguageLinks } from "@/components/language-links"
 
@@ -95,6 +95,22 @@ export async function SiteFooter() {
             >
               {CONTACT_EMAIL}
             </a>
+          </div>
+          <div className="grid grid-cols-[5.5rem_1fr] gap-3">
+            <span className="pt-0.5 label-mono">{t("code")}</span>
+            <ul className="flex flex-wrap gap-x-4 gap-y-1">
+              <li>
+                <a href={REPOSITORY_URL} className="underline-link">
+                  {t("repository")}
+                </a>
+              </li>
+              <li>
+                <a href={ENGINE_PACKAGE_URL} className="underline-link">
+                  {t("npm")}
+                </a>
+              </li>
+              <li className="text-fg-muted">{t("licence")}</li>
+            </ul>
           </div>
         </div>
 
