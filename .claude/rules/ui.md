@@ -7,7 +7,7 @@ paths:
 
 # UI layer (the editor, `@mellowcad/editor`, at `/draw`)
 
-> Verified against **@base-ui/react 1.9.0**, **tailwind-merge 3.7.0**, **lucide-react 1.59.0**.
+> Verified against **@base-ui/react 1.9.0**, **tailwind-merge 3.7.0**, **lucide-react 1.62.0**.
 
 React is a **dumb presentation shell**. Components read `EngineState` and call `CadEngine`
 methods; they never contain CAD logic, geometry or drawing decisions. Import from

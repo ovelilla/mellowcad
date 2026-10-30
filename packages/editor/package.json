@@ -51,7 +51,7 @@
     "class-variance-authority": "^0.7.1",
     "clsx": "^2.1.1",
     "icu-minify": "^4.14.9",
-    "lucide-react": "^1.59.0",
+    "lucide-react": "^1.62.0",
     "tailwind-merge": "^3.7.0"
   },
   "devDependencies": {
