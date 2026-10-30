@@ -1,7 +1,7 @@
 # MellowCAD como librería — brief
 
-> **Estado:** fases 1 a 6 hechas (2026-10-30), salvo el trusted publisher del motor, que configura
-> el dueño en npm; las demás, sin ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
+> **Estado:** fases 1 a 6 hechas (2026-10-30); la 7 espera a que la API de react y el editor lleve
+> una semana quieta; la 8, sin ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
 > análisis completo, con el inventario medido, las fuentes fechadas, el spike y el pase adversarial,
 > está en https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama
 > local worktree-agent-a498997d3f29c107f (commit 9bc6682), sin empujar.
@@ -499,10 +499,9 @@ son días de sesión.
    revisión de paquete nuevo (un marcador `0.0.0-stage` unos minutos) y la liberó sola; el shasum
    publicado es el del tarball local. El trusted publisher del motor (`ovelilla/mellowcad`,
    `release.yml`, etiqueta `release`, «Allow npm publish»; 2FA sin tokens que la salten) está
-   creado pero **pendiente de validar**: npm lo da por bueno con la primera publicación que pase por
-   él, **antes del 2026-11-01 a las 10:50 UTC**: la 0.1.1 (la ficha de npm: descripción, palabras
-   clave, `homepage` al README del motor) sale por Actions → Release para eso. Si caducara, se crea
-   otra vez con los mismos datos y se valida con la siguiente versión.
+   validado por la 0.1.1 (la ficha de npm: descripción, palabras clave, `homepage` al README del
+   motor), la primera que salió de `release.yml`, con procedencia. Hallado en ella y arreglado: el
+   tag no se subía (Changesets lo anota y el runner no tenía identidad de git).
 7. **Publicar react y editor 0.1.0** — 1 día, cuando el ritmo de `packages/editor` baje y terminen las
    revisiones de comandos. Medido el 2026-10-30: las 25 revisiones, hechas; los commits del editor
    de esa semana son casi todos su empaquetado (fases 4 y 5), pero su superficie pública
