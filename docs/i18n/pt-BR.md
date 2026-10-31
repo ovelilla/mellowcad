@@ -3,8 +3,10 @@
 > **Command language:** `localized`, Brazilian Portuguese AutoCAD's. **Status:** `live` since
 > 31/10/2026, at `/pt-br` (a `draft` earlier that day): the site, the editor, the four "Use" pages,
 > the engine's interface and its command language, complete ("Command language", below), checked
-> before going live against AutoCAD 2027.1 (26.0.116). **Review:** none by a native speaker; what
-> no console or desktop probe settled is **unverified** below.
+> before going live against AutoCAD 2027.1 (26.0.116), and reviewed again on 31/10/2026 (skill
+> `language-review`) against the installed 26.0.118, whose `pt-BR` resources are still 26.0.116's.
+> **Review:** none by a native speaker; what no console or desktop probe settled is **no** or
+> **unverified** below.
 
 The words are Autodesk's own Brazilian Portuguese localization of AutoCAD, never a translation of
 ours, as Spanish's are (`es.md`). The language is Brazil's, and `LANGUAGE_NAMES` says so
@@ -36,7 +38,9 @@ ours, as Spanish's are (`es.md`). The language is Brazil's, and `LANGUAGE_NAMES`
   `autocad-research`). Below, `P <dll> <id>` is a string table (`strtable.mjs`), `D <dll>` a
   dialog's label, `N <dll> <key>` a .NET resource, `X <uid>` an element of `acad.cuix`, `C <guid>`
   the PTB help page. They are the release build's: 2027.1 rewords prompts in `acadres` and
-  `AcDimRes`, not these.
+  `AcDimRes`, not these. Since the pack is installed, the review of 31/10/2026 read them from the
+  install instead (`pt-BR/` beside `en-US/`, `UserDataCache/pt-br/`), dialogs by control id
+  (`D <dll> <dialog>`).
 - **Console:** the pack is installed on the owner's AutoCAD since 31/10/2026, with 2027.1 applied
   again after it (`pt-BR/acadres.dll` 26.0.116, as Spanish's); its tables are the ones
   `open-pack.sh` extracted, byte for byte. `runacc.sh … pt-BR` and `probe.sh --lang pt-BR` run its
@@ -72,7 +76,7 @@ ours, as Spanish's are (`es.md`). The language is Brazil's, and `LANGUAGE_NAMES`
 | Draw | Line, Polyline, Circle, Arc, Ellipse, Elliptical arc, Rectangle, Polygon, Hatch, Spline | Linha, Polilinha, Círculo, Arco, Elipse, Arco elíptico, Retângulo, Polígono, Hachura, Spline | P ax26res 298, 296, 285, 282, 293, 1170, 295, 312; X T:ID_RBN_0138, ACAD_244 | yes |
 |  | Center, Radius · Center, Diameter · 2-Point · 3-Point · Start, Center, End · Center, Start, End | Centro, Raio · Centro, Diâmetro · 2 pontos · 3 pontos · Início, Centro, Fim · Centro, Início, Fim | X T:ID_RBN_0127, 0128, 0130, 0094, 0113, 0122 | yes |
 |  | Spline Fit, Spline CV, Edit Spline, Edit Polyline | Ajustar a spline, VC da spline, Editar spline, Editar polilinha | X T:ID_RBN_8219, 8218, T:ID_RBN_CMDBTN_SPLINEDIT, T:ID_RBN_CMDBTN_PEDIT | yes |
-|  | Diameter circle, 2-Point circle, Start, Center, End arc, Center ellipse (the tool names) | Círculo por diâmetro, Círculo por 2 pontos, Arco início, centro, fim, Elipse por centro | worded from the ribbon's | no |
+|  | Diameter circle, 2-Point circle, Start, Center, End arc, Center ellipse (the tool names) | Círculo por diâmetro, Círculo por 2 pontos, Arco início, centro, fim, Elipse por centro | ours, worded from the ribbon's options (AutoCAD names no such tool) | — |
 | Modify | Move, Copy, Stretch, Rotate, Mirror, Scale, Offset | Mover, Copiar, Esticar, Rotacionar, Espelhar, Escala, Deslocamento | X ACAD_358, 354, 361, 359, 355; P ax26res 108, 785 | yes |
 |  | Trim, Extend, Fillet, Chamfer, Explode, Join, Break, Break at point, Erase | Aparar, Estender, Concordância (the ribbon's «Concord»), Chanfro, Explodir, Unir, Quebrar, Quebrar em um ponto, Apagar | X ACAD_363, 367, 377, 2639, 365, 2419, 353; P ax26res 812, 806, AcOpmExtRes 391 | yes |
 |  | Region; Union, Subtract, Intersect; Solid Editing | Região; União, Subtrair, Intersecção; Editar sólidos | X ID_Region, ID_Union, ID_Subtract, ID_Intersect, ID_PanelSolidEdit | yes |
@@ -80,16 +84,16 @@ ours, as Spanish's are (`es.md`). The language is Brazil's, and `LANGUAGE_NAMES`
 | Annotate | Text, Multiline text, Edit text | Texto, Texto multilinha, Editar texto | X T:ID_RBN_0020; P ax26res 32 | yes |
 |  | Linear, Aligned, Angular, Radius, Diameter, Baseline, Continue, Adjust space; Rotated | Linear, Alinhada, Angular, Raio, Diâmetro, Linha de base, Continuar, Ajustar espaço; Rotacionada | X T:ID_RBN_CMDBTN_DIMLINEAR … DIMSPACE, T:ID_RBN_0126; P AcDimRes 5853 | yes |
 | Block | Create block, Insert block, Purge, Define attributes, Edit attributes | Criar bloco, Inserir bloco, Eliminar, Definir atributos, Editar atributos | X T:ID_RBN_SPLITBTN_CREATEBLOCK, ACAD_3036, T:ID_RBN_CMDBTN_PURGE, T:ID_RBN_CMDBTN_ATTDEF, T:ID_RBN_SPLITBTN_ATTRIBUTE | yes |
-|  | Attribute display | Exibição de atributos | — | no |
+|  | Attribute display | Exibir atributo | X ACAD_147 | yes |
 | View | Zoom Extents, Zoom Window, Zoom Previous, Zoom In, Zoom Out, Pan | Zoom estendido, Janela de zoom, Zoom anterior, Aproximar o zoom, Diminuir o zoom, Pan | P AcVMToolsRes 47098–47105, 47090 | yes |
 |  | Top, Bottom, Front, Back, Left, Right; SW / SE / NE / NW Isometric; Custom View | Superior, Inferior, Frontal, Posterior, Esquerda, Direita; Isométrico SO / SE / NE / NO; Vista personalizada | X XLS_1673–1682, P acadres 40867 | yes |
 |  | ViewCube; Home; Parallel; Set Current View as Home; WCS; New UCS; Unnamed | ViewCube; Início; Paralela; Definir a vista atual como início; WCS; Novo UCS; Não nomeado | P AcVMToolsRes 47154, 47021, 47022, 47026, 47009, 47042, 47010 | yes |
-|  | TOP … RIGHT on the cube; N, E, S, W | SUPERIOR … DIREITA; N, L, S, O | the view names in capitals; Portuguese's compass points | no |
+|  | TOP … RIGHT on the cube; N, E, S, W | SUPERIOR … DIREITA; N, L, S, O | the view names in capitals; Portuguese's compass points. AcVMToolsRes 629–634 say `Esquerdo`, `Direito`, but their Spanish twins proved not to be the cube's (names/e01): only the pt-BR desktop settles it | no |
 |  | Rotate clockwise / counterclockwise; View the face above… | Girar no sentido horário / anti-horário; Ver a face de cima… | C (UNITS: «sentido horário ou sentido anti-horário») | no |
-|  | 3D Orbit, Plan view, Viewpoint, Preset views, UCS icon, Elevation | Órbita 3D, Vista em planta, Ponto de vista, Vistas predefinidas, Ícone UCS, Elevação | X ACAD_126, T:RBN_200_8A67D; P acrenderRes 2085, AcSceneRes 5143, ax26res 59 | yes (Ponto de vista no) |
+|  | 3D Orbit, Plan view, Viewpoint, Preset views, UCS icon, Elevation | Órbita 3D, Vista em planta, Ponto de vista, Vistas predefinidas, Ícone UCS, Elevação | X ACAD_126, T:RBN_200_8A67D, ID_TbViewpoi; P acrenderRes 2085 (the menu's ACAD_112 says «Vista da planta»), AcSceneRes 5143, ax26res 59 | yes |
 | Inquiry | Measure, Distance, Area, ID Point | Medir, Distância, Área, Ponto de identificação | X T:ID_RBN_0140, T:ID_RBN_CMDBTN_DIST, T:ID_RBN_CMDBTN_AREA, ACAD_189 | yes |
-|  | List | Listar | worded as the pack's ACAD_188 would be, the pack not at hand when LIST was built | no |
-|  | Change properties | Alterar propriedades | worded from the command's name, ALTPROP: no menu or ribbon item runs CHPROP | no |
+|  | List | Lista | X ACAD_188 | yes |
+|  | Change properties | Alterar propriedades | ours, worded from the command's name, ALTPROP: no menu or ribbon item runs CHPROP | — |
 | Edit | Undo, Redo, New, Open, Save, Save As | Desfazer, Refazer, Novo, Abrir, Salvar, Salvar como | X PM_0006; N AcAeNet, AcDxWizard | yes |
 | Clipboard | Clipboard; Cut, Copy, Paste, Copy with Base Point | Área de transferência; Recortar, Copiar, Colar, Copiar com ponto base | X PM_0114 («Cortar» in that menu, «Recortar» ACAD_55 the command's) | yes |
 | Shortcut menu | Shortcut menu; Repeat ‹command›, Enter, Cancel | Menu de atalho; Repetir ‹comando›, Enter, Cancelar | X PM_0006, PM_0009; N AcCustomize NAME_ShortcutMenu | yes |
@@ -107,14 +111,14 @@ ours, as Spanish's are (`es.md`). The language is Brazil's, and `LANGUAGE_NAMES`
 |  | Tag, Prompt, Value; Invisible, Constant, Verify, Preset, Lock position | Identificador, Prompt, Valor; Invisível, Constante, Verificar, Predefinir, Bloquear posição | P ax26res 33–35, 257–260, 359 | yes |
 |  | A spline's Data Points, Method, Degree, fit and control points, Weight, CV frame, Periodic, tangent vectors; Chord, SqrtChord, Uniform | Pontos de dados, Método, Grau, Ponto de ajuste / de controle…, Peso, Quadro do VC, Periódico, Vetor X da tangente inicial…; Banzo, RaizQuadBanzo, Uniforme | P ax26res 69–76, 99, 101, 278, 792, 910–915, 1255; acappres 2027–2034 | yes |
 |  | An array's rows (Columns, Rows, Items, spacing, Fill angle…) and titles | Colunas, Linhas, Itens, Espaçamento entre…, Ângulo de preenchimento…; Matriz (Retangular / Polar / Caminho) | P ax26res 266–269, 1191–1220 | yes |
-|  | Endpoints, Definition points, First X, Second X (our own groups and rows) | Pontos finais, Pontos de definição, Primeiro X, Segundo X | worded from the palette's | no |
+|  | Endpoints, Definition points, First X, Second X (our own groups and rows) | Pontos finais, Pontos de definição, Primeiro X, Segundo X | ours, worded from the palette's | — |
 | Colours | Red, Yellow, Green, Cyan, Blue, Magenta, White | Vermelho, Amarelo, Verde, Ciano, Azul, Magenta, Branco | P AcOpmExtRes 160–167 | yes |
 | Layers | Layers; New layer, Set current, Delete layer, Current layer; Status, Name, On, Lock, Color, Linetype, Lineweight | Camadas; Nova camada, Definir atual, Excluir camada, Camada atual; Status, Nome, Ativado, Bloquear, Cor, Tipo de linha, Espessura de linha | N AcLayer ID_MENUITEM_LISTCTX_*, ID_LISTHEADERCTX_*, CurrentLayerStatusText | yes |
 |  | On / Off, Unlocked / Locked (a layer's state) | Ativada / Desativada, Desbloqueada / Bloqueada | N AcLayer (masculine there, «Ativado»; feminine for «camada») | partial |
 |  | Layer - Not Deleted, Current Layer Off, Name Already Exists, Rename; invalid characters | Camada – Não excluída, Camada - Camada atual desativada, Camada - O nome já existe, Camada - Renomear; Caractere inválido no nome da camada | N AcTaskDialogs (TaskDialog 83, 87, 88; `%ObjectName% - O nome já existe`), N AcLayer LayerErrorInvalidChars, IDS_NOM_BAD_CHARSET_ESN_LAYER | yes; partial (`Camada` for `%ObjectName%`) |
 | Dimension styles | Lines, Symbols and arrows, Text, Fit, Primary units | Linhas, Símbolos e setas, Texto, Ajustar, Unidades primárias | P AcDimRes 6000–6013 | yes |
-|  | Baseline spacing, Extend beyond dim lines, Offset from origin, Arrow size, Center marks, Text height, Offset from dim line, Use overall scale of, Draw dim line between ext lines, Decimal separator | Espaçamento da linha de base, Estender além das linhas de cota, Deslocar da origem, Tamanho da seta, Marcas de centro, Altura do texto, Deslocar da linha de cota, Usar escala global de, Desenhar linha de cota entre linhas ext., Separador decimal | D AcDimRes | yes |
-|  | ',' (Comma), '.' (Period), ' ' (Space); Suppress trailing zeros | ',' (Vírgula), '.' (Ponto), ' ' (Espaço); Suprimir zeros à direita | P ax26res 235 (the combo's items not found) | partial |
+|  | Baseline spacing, Extend beyond dim lines, Offset from origin, Arrow size, Center marks, Text height, Offset from dim line, Use overall scale of, Draw dim line between ext lines, Decimal separator | Espaçamento da linha de base, Estender além das linhas de cota, Deslocar da origem, Tamanho da seta, Marcas de centro, Altura do texto, Deslocar a partir da linha de cota, Usar escala global de, Desenhar linha de cota entre linhas ext., Separador decimal | D AcDimRes 301–307 (by control id since 31/10/2026: the runs read in order had given «Deslocar da linha de cota») | yes |
+|  | ',' (Comma), '.' (Period), ' ' (Space); Suppress trailing zeros | ',' (Vírgula), '.' (Ponto), ' ' (Espaço); Suprimir zeros à direita | P acdb26res 6150–6152, ax26res 235 | yes |
 | Text styles, Blocks | Styles, Height, New, Delete, Rename; Filter | Estilos, Altura, Novo, Excluir, Renomear; Filtro | C 1ED81E98-6463-4574-875F-183C8280C4AC, C E3413A03-8EEF-44D5-B5C7-8B345A9257FE; P AcDimRes (the manager's buttons) | yes |
 | Dialogs | Properties - Locked objects; Multiline Text - Unsaved Changes | Propriedades – Objetos bloqueados; Texto multilinha - Alterações não salvas | N AcTaskDialogs (TaskDialog 181; «Texto multilinha» and «Alterações não salvas» from 104 and 215) | yes; partial |
 | Keys | Enter, Esc, Shift, Tab, Spacebar | Enter, Esc, Shift, Tab, barra de espaço | GS 6B8B7254-94CD-42DB-8F27-1339CAECE9ED («pressionar Enter ou a barra de espaço») | yes |
@@ -364,6 +368,20 @@ e pé» typed from a dead key first, the box already focused. No IME handling wa
 
 ## Review
 
-No native reader yet. First, the landing's copy (written, not copied: «Precisão que se sente sob o
-cursor», «Sua prancheta está a uma tecla de distância»), the editor's words marked **no** or
-**partial** above, and the two "Use" pages written by hand.
+No native reader yet. Every word of the command language and most of the interface are Autodesk's,
+so a reader's time goes first to what Autodesk did not write, in this order:
+
+1. **The landing's copy**, written, not copied: «Precisão que se sente sob o cursor», «Sua prancheta
+   está a uma tecla de distância», the search title and description (Search texts).
+2. **The two "Use" pages written by hand** (`content/docs/getting-started.pt-BR.mdx`,
+   `differences.pt-BR.mdx`).
+3. **Our own words**, marked — above: the tool names worded from the ribbon («Círculo por
+   diâmetro», «Arco início, centro, fim»), the palette's own groups and rows («Pontos finais»,
+   «Primeiro X»), «Alterar propriedades».
+4. **What no source settled**, marked **no** or **partial**: the cube's faces and compass, its
+   tooltips, a layer's state in the feminine («Ativada», «Bloqueada»), the layer dialogs' title.
+5. **The plurals that can say 0**, `one` in pt-BR (Plurals).
+
+Changed since it went live: the review of 31/10/2026 read the installed pack by id and corrected
+«Exibir atributo» (was «Exibição de atributos»), «Lista» (was «Listar») and «Deslocar a partir da
+linha de cota» (was «Deslocar da linha de cota»).

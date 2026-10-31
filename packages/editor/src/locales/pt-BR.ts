@@ -330,7 +330,7 @@ export const ptBR: EditorLocale = {
       "centerMark": "Tamanho da marca de centro",
       "textGroup": "Texto",
       "textHeight": "Altura do texto",
-      "offsetFromDimLine": "Deslocar da linha de cota",
+      "offsetFromDimLine": "Deslocar a partir da linha de cota",
       "fit": "Ajustar",
       "overallScale": "Usar escala global de",
       "drawDimLineBetween": "Desenhar linha de cota entre linhas ext.",
