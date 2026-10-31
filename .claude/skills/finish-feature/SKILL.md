@@ -1,6 +1,6 @@
 ---
 name: finish-feature
-description: Close a feature, command or fix in mellowcad — the gate, the coverage entry, the rules it taught or invalidated, the brief, and the commit (never the push). Use when a change is done and verified, before reporting it.
+description: Close a feature, command or fix in mellowcad — the gate, the coverage entry, the rules it taught or invalidated, the landing and docs text it made stale, the brief, and the commit (never the push). Use when a change is done and verified, before reporting it.
 ---
 
 # Finishing a feature
@@ -25,10 +25,25 @@ description: Close a feature, command or fix in mellowcad — the gate, the cove
    exception on top. `cad/README.md` and the guides in `cad/docs/` too, when the engine's public
    contract changed.
 
-4. **The brief**: a `docs/next-*.md` whose work has shipped is deleted.
-5. **Commit** with only your files (`git add <paths>`, `git status --short` before and after: other
+4. **What the site says.** The tests hold what is derived (the counts in `lib/facts.ts`, the
+   generated `/docs` pages, the filing, the differences); a user-visible change also gets the
+   hand-written text checked in English and corrected where it is now false or missing
+   something a user would want named, then carried to every `live` language of
+   `LOCALE_STATUS` (a draft may lag):
+   - the landing's copy in `messages/<tag>.json`: `Status` (`today*`, `notYet*`, `next1`),
+     `Faq`, and the section the feature belongs to (`Precision`, `Toolset`, `LocalFirst`);
+   - the written "Use" pages (`getting-started`, `content/docs/*.mdx`), each with its
+     translations' `sourceHash` (`docs.md`);
+   - a figure or `DOCS_SESSIONS` script, only where a section shows the feature
+     (`content/figures.ts`);
+   - with any of these changed, `CONTENT_UPDATED` in `lib/site.ts` (`marketing.md`).
+
+   A fix or an internal change usually touches none of them: decide, say so in the report.
+
+5. **The brief**: a `docs/next-*.md` whose work has shipped is deleted.
+6. **Commit** with only your files (`git add <paths>`, `git status --short` before and after: other
    sessions may be working in the tree, and one path that matches nothing aborts the whole add), message `feat(engine): …` / `fix(engine): …` / `docs: …` in
    English, multi-line through `git commit -F - <<'EOF'`. If someone else's change turns the hook
    red, verify yours in a clean worktree (`git worktree add`, apply your diff, run the gate) and
    commit once it is green.
-6. **Do not push.** A push to `main` deploys to production on Vercel: it waits for the owner.
+7. **Do not push.** A push to `main` deploys to production on Vercel: it waits for the owner.
