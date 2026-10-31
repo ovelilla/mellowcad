@@ -301,6 +301,7 @@ function collectCurves(entities: readonly Entity[]): Curve[] | null {
       case "hatch":
       case "insert":
       case "region":
+      case "solid3d":
         break
       default: {
         const unhandled: never = entity

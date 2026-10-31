@@ -2062,7 +2062,7 @@ export interface DocumentReader {
 }
 
 export type { Entity }
-export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity;
+export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity | Solid3dEntity;
 
 export type { EntityColor }
 /**
@@ -2133,7 +2133,7 @@ export type EntityProperty = "startX" | "startY" | "endX" | "endY" | "radius" | 
  | "arrayAlignItems" | ZProperty;
 
 export type { EntityType }
-export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region";
+export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d";
 
 export { formatAngle }
 export declare function formatAngle(degrees: number, settings: DocumentSettings): string;
@@ -3021,6 +3021,18 @@ export interface Polyline3dEntity extends BaseEntity {
 
 // domain/entityTypes.ts
 /**
+ * A 3D solid (DXF's 3DSOLID): its boundary as the kernel's B-rep
+ * (`geometry/solids.ts`), in the WCS. Like a 3D polyline it has no plane:
+ * `normal` and `elevation` are never set.
+ */
+export interface Solid3dEntity extends BaseEntity {
+    readonly type: "solid3d";
+    readonly brep: Brep;
+    readonly primitive?: BoxPrimitive;
+}
+
+// domain/entityTypes.ts
+/**
  * A block reference (AutoCAD's INSERT object): one placement of a
  * {@link BlockDefinition}, positioned, scaled and rotated as a whole.
  *
@@ -3492,6 +3504,23 @@ export type ArrayParameters = (RectangularArray & {
 
 // domain/entityTypes.ts
 /**
+ * What made a solid, kept while it is still that primitive: LIST's `Solid
+ * type` and the Properties palette's Geometry (solid/p01, d03). A box rises
+ * `height` along `normal` from the centre of its base, `position`; its length
+ * runs along `xAxis`, its width along `normal × xAxis`. Both axes are unit.
+ */
+export interface BoxPrimitive {
+    readonly kind: "box";
+    readonly position: Vec3;
+    readonly xAxis: Vec3;
+    readonly normal: Vec3;
+    readonly length: number;
+    readonly width: number;
+    readonly height: number;
+}
+
+// domain/entityTypes.ts
+/**
  * Where a multiline text object's box hangs off its
  * {@link MTextEntity.position} (DXF 71). The column also aligns every line in
  * the box, and the row decides which way the box grows as lines are added.
@@ -3764,6 +3793,8 @@ export interface DocumentSettings {
     readonly splineType: 5 | 6;
     /** SPLINESEGS: PEDIT Spline's points per span, arcs through them when negative, never 0. */
     readonly splineSegments: number;
+    /** ISOLINES: the lines drawn across each curved face of a solid, 0 to 2047. */
+    readonly isolines: number;
     /** CHAMFERA: CHAMFER's first distance. */
     readonly chamferDistance1: number;
     /** CHAMFERB: CHAMFER's second distance. */
@@ -3895,6 +3926,63 @@ export type RegionLoop = readonly PlanarCurve[];
 // geometry/planarRegions.ts
 export interface RegionFace {
     readonly loops: readonly RegionLoop[];
+}
+
+// geometry/solids.ts
+/**
+ * A run of coedges end to end, closed. Seen from outside the solid, a face's
+ * first loop turns counter-clockwise about its outward normal and its holes
+ * clockwise, so the face is on every coedge's left.
+ */
+export type BrepLoop = readonly Coedge[];
+
+// geometry/solids.ts
+/**
+ * A solid's boundary, as ACIS keeps one (docs/next-solids.md §3): its
+ * vertices, its edges between them, and its faces, each a piece of a surface
+ * bounded by loops of those edges. Every edge is shared by two faces, which
+ * run it in opposite senses, so the boundary is closed. Nothing here is a
+ * mesh: what is drawn is derived.
+ */
+export interface Brep {
+    readonly vertices: readonly Vec3[];
+    readonly edges: readonly BrepEdge[];
+    readonly faces: readonly BrepFace[];
+}
+
+// geometry/solids.ts
+/** A face's use of an edge: along it, or against it when `reversed`. */
+export interface Coedge {
+    readonly edge: number;
+    readonly reversed: boolean;
+}
+
+// geometry/solids.ts
+/** An edge from one vertex to another (indices), along its curve. */
+export interface BrepEdge {
+    readonly start: number;
+    readonly end: number;
+    readonly curve: BrepCurve;
+}
+
+// geometry/solids.ts
+/** The curve an edge lies on: so far the straight line through its ends. */
+export type BrepCurve = {
+    readonly kind: "line";
+};
+
+// geometry/solids.ts
+/** The surface a face lies on: a plane through `origin`, `normal` the unit outward one. */
+export type BrepSurface = {
+    readonly kind: "plane";
+    readonly origin: Vec3;
+    readonly normal: Vec3;
+};
+
+// geometry/solids.ts
+export interface BrepFace {
+    readonly surface: BrepSurface;
+    readonly loops: readonly BrepLoop[];
 }
 
 // i18n/keywords.ts

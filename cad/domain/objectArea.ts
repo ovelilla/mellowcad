@@ -12,6 +12,7 @@ import { hatchLoopRing, hatchLoopSegments } from "./hatch"
 import { polylineArea, polylineLength } from "./polylines"
 import { isLevelSpline, splineArea, splineLength } from "./splines"
 import { regionArea, regionPerimeter } from "./regions"
+import { solidArea } from "./solids"
 import { isLevelPolyline3d, polyline3dLength } from "./polylines3d"
 
 /**
@@ -89,6 +90,9 @@ export function objectArea(entity: Entity): ObjectArea | null {
         around: regionPerimeter(entity),
         measured: "region",
       }
+    case "solid3d":
+      // `Area = 700.0000, Perimeter = 0.0000`: its whole surface (solid/p01).
+      return { area: solidArea(entity), around: 0, measured: "perimeter" }
     case "line":
     case "arc":
     case "text":

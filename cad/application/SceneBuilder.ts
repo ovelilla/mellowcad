@@ -1,4 +1,5 @@
 import { regionLevelEdgeEntities } from "../domain/regions"
+import { solidEdgeEntities } from "../domain/solids"
 import { Vec2, V } from "../geometry/Vec2"
 import { Vec3, scale3, withZOf, zOf } from "../geometry/Vec3"
 import { axesToWorld } from "../geometry/ocs"
@@ -18,6 +19,7 @@ import {
   LineEntity,
   PolylineEntity,
   Polyline3dEntity,
+  Solid3dEntity,
   polyline3dSegments,
   ThickEntity,
   arcSweepAngle,
@@ -702,6 +704,9 @@ export function entityScenePrimitive(
   options: EntityDrawOptions = {}
 ): ScenePrimitive[] {
   const entity = entityShape(drawn)
+  if (entity.type === "solid3d") {
+    return solidPrimitives(camera, entity, stroke, options)
+  }
   if (
     (camera.isPlan && !isTilted(entity)) ||
     isPlaneCamera(camera) ||
@@ -1006,7 +1011,21 @@ function planarPrimitives(
       return regionLevelEdgeEntities(entity).flatMap((edge) =>
         planarPrimitives(camera, edge, stroke, options)
       )
+    case "solid3d":
+      return solidPrimitives(camera, entity, stroke, options)
   }
+}
+
+/** A solid in 2D Wireframe: its edges, each a line between its ends at their heights. */
+function solidPrimitives(
+  camera: CameraTransform,
+  solid: Solid3dEntity,
+  stroke: StrokeStyle,
+  options: EntityDrawOptions
+): ScenePrimitive[] {
+  return solidEdgeEntities(solid).flatMap((edge) =>
+    entityScenePrimitive(camera, edge, stroke, options)
+  )
 }
 
 /**

@@ -246,6 +246,11 @@ export function applyEntityProperty(
     case "region":
       // Its Area and Perimeter are greyed in the palette (region/d02).
       return null
+    case "solid3d":
+      // WHY: a box's Length, Width, Height and Position are typeable in
+      // AutoCAD's palette (solid/d03); editing a primitive comes with its
+      // grips (docs/next-solids.md, 2c).
+      return null
   }
 }
 

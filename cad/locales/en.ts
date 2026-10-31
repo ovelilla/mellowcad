@@ -104,6 +104,7 @@ export const en: EngineCatalog = {
       "region": "Region",
       "union": "Union",
       "subtract": "Subtract",
+      "box": "Box",
       "intersect": "Intersect"
     },
     "description": {
@@ -322,6 +323,16 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "solid3d": [
+        [
+          "count",
+          2,
+          {
+            "one": "3D Solid",
+            "other": "3D Solids"
+          }
+        ]
+      ],
       "region": [
         [
           "count",
@@ -382,6 +393,7 @@ export const en: EngineCatalog = {
       },
       "group": {
         "geometry": "Geometry",
+        "solidHistory": "Solid History",
         "endpoints": "Endpoints",
         "center": "Center",
         "text": "Text",
@@ -440,6 +452,7 @@ export const en: EngineCatalog = {
         "minorAxisVectorZ": "Minor axis vector Z",
         "vertices": "Vertices",
         "segments": "Segments",
+        "solidType": "Solid type",
         "currentVertex": "Current Vertex",
         "vertex": "Vertex",
         "startSegmentWidth": "Start segment width",
@@ -449,6 +462,7 @@ export const en: EngineCatalog = {
         "contents": "Contents",
         "justify": "Justify",
         "height": "Height",
+        "history": "History",
         "rotation": "Rotation",
         "lineSpaceFactor": "Line space factor",
         "lineSpaceDistance": "Line space distance",
@@ -502,6 +516,7 @@ export const en: EngineCatalog = {
         "controlPointY": "Control point Y",
         "controlPointZ": "Control point Z",
         "weight": "Weight",
+        "width": "Width",
         "cvFrame": "CV frame",
         "periodic": "Periodic",
         "planar": "Planar",
@@ -518,6 +533,7 @@ export const en: EngineCatalog = {
         "scaleX": "Scale X",
         "scaleY": "Scale Y",
         "scaleZ": "Scale Z",
+        "showHistory": "Show History",
         "baseX": "Base X",
         "baseY": "Base Y",
         "baseZ": "Base Z",
@@ -560,6 +576,7 @@ export const en: EngineCatalog = {
         "exactly": "Exactly",
         "fitPoints": "Fit",
         "controlVertices": "Control Vertices",
+        "box": "Box",
         "chord": "Chord",
         "sqrtChord": "SqrtChord",
         "uniform": "Uniform",
@@ -569,6 +586,7 @@ export const en: EngineCatalog = {
         "counterClockwise": "Counter-clockwise",
         "clockwise": "Clockwise",
         "divide": "Divide",
+        "historyNone": "None",
         "measure": "Measure",
         "predefined": "Predefined",
         "outer": "Outer"
@@ -1087,6 +1105,9 @@ export const en: EngineCatalog = {
       "-LWEIGHT": [
         "-LWEIGHT"
       ],
+      "BOX": [
+        "BOX"
+      ],
       "REGION": [
         "REGION",
         "REG"
@@ -1594,6 +1615,13 @@ export const en: EngineCatalog = {
       "textEditModeOption": "Enter a text edit mode option",
       "viewAngleInPlane": "Enter angle in XY plane from X axis",
       "viewAngleFromPlane": "Enter angle from XY plane",
+      "boxFirstCornerOr": "Specify first corner or",
+      "boxOtherCornerOr": "Specify other corner or",
+      "boxCenter": "Specify center",
+      "boxCornerOr": "Specify corner or",
+      "boxLength": "Specify length",
+      "boxWidth": "Specify width",
+      "boxHeightOr": "Specify height or",
       "specifyFirstPoint": "Specify first point",
       "specifyNextPointOr": "Specify next point or",
       "specifyNextPointOrClose": "Specify next point or",
@@ -4174,6 +4202,7 @@ export const en: EngineCatalog = {
             "hatch": "HATCH",
             "insert": "BLOCK REFERENCE",
             "region": "REGION",
+            "solid3d": "3DSOLID",
             "other": "ARRAY"
           }
         ]
@@ -5555,6 +5584,63 @@ export const en: EngineCatalog = {
         " , Perimeter = ",
         [
           "around"
+        ]
+      ],
+      "boxZeroLength": "Box of zero length not permitted.",
+      "boxZeroWidth": "Box of zero width not permitted.",
+      "boxValueNonzero": "Value must be nonzero.",
+      "listSolidHistory": "         History = None\n    Show History = No",
+      "listSolidType": "      Solid type = Box",
+      "listBoxPosition": [
+        "         Position, X = ",
+        [
+          "x"
+        ],
+        " Y = ",
+        [
+          "y"
+        ],
+        " Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listBoxNormal": [
+        "           Normal: X = ",
+        [
+          "x"
+        ],
+        " Y = ",
+        [
+          "y"
+        ],
+        " Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listBoxLength": [
+        "           Length: ",
+        [
+          "length"
+        ]
+      ],
+      "listBoxWidth": [
+        "            Width: ",
+        [
+          "width"
+        ]
+      ],
+      "listBoxHeight": [
+        "           Height: ",
+        [
+          "height"
+        ]
+      ],
+      "listBoxRotation": [
+        "         Rotation: ",
+        [
+          "angle"
         ]
       ],
       "listRegionArea": [

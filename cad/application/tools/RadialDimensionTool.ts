@@ -438,6 +438,7 @@ function measuredCircle(entity: Entity, at: Vec2): MeasuredCircle | null {
       return best
     }
     case "region":
+    case "solid3d":
       // A circle or arc edge picked, as that object (region/e04).
       return measuredCircle(regionEdgeAt(entity, at), at)
     case "line":

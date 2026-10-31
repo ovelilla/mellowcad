@@ -377,6 +377,13 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
       return unit === undefined ? null : patch({ unit })
     }
   ),
+  integer(
+    "ISOLINES",
+    0,
+    2047,
+    (settings) => settings.isolines,
+    (value) => patch({ isolines: value })
+  ),
   {
     type: "point",
     name: "LASTPOINT",

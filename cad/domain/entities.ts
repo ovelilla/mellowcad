@@ -47,6 +47,8 @@ export type {
   PolarArray,
   PathLayout,
   RegionEntity,
+  BoxPrimitive,
+  Solid3dEntity,
   Entity,
   Bounds,
 } from "./entityTypes"
@@ -348,3 +350,11 @@ export {
 
 export type { EntityProperty } from "./entityProperties"
 export { applyEntityProperty, isZProperty } from "./entityProperties"
+
+export {
+  boxInUcs,
+  createBox,
+  solidArea,
+  solidEdgeEntities,
+  solidFaceRegions,
+} from "./solids"

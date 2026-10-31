@@ -20,6 +20,7 @@ import {
 } from "./entityTypes"
 import { closestPointOnPolyline3d, isLevelPolyline3d } from "./polylines3d"
 import { isLevelSpline, splineZAt } from "./splines"
+import { brepMapped, unsigned0 } from "../geometry/solids"
 
 export type ThickEntity = LineEntity | CircleEntity | ArcEntity | PolylineEntity
 
@@ -149,6 +150,7 @@ export function hasThickness(entity: Entity): entity is ThickEntity {
 /** The Z of its plane; a line's, a 3D polyline's and a spline's, the Z of their start. */
 export function entityElevation(entity: Entity): number {
   if (entity.type === "polyline3d") return entity.vertices[0]?.z ?? 0
+  if (entity.type === "solid3d") return entity.brep.vertices[0]?.z ?? 0
   if (entity.type === "spline") return entity.points[0]?.z ?? 0
   return entity.elevation ?? 0
 }
@@ -188,7 +190,7 @@ function withField<T extends Entity>(
 
 /** A spline's points hold their Z: they rise or fall together, its start to `z`. */
 export function withElevation<T extends Entity>(entity: T, z: number): T {
-  if (entity.type === "spline") {
+  if (entity.type === "spline" || entity.type === "solid3d") {
     return shiftEntityZ(entity, z - entityElevation(entity))
   }
   return withField(entity, "elevation", z)
@@ -207,6 +209,15 @@ export function withDeltaZ(line: LineEntity, deltaZ: number): LineEntity {
 
 export function shiftEntityZ<T extends Entity>(entity: T, dz: number): T {
   if (dz === 0) return entity
+  if (entity.type === "solid3d") {
+    const up = (p: Vec3) => unsigned0({ ...p, z: p.z + dz })
+    const box = entity.primitive
+    return {
+      ...entity,
+      brep: brepMapped(entity.brep, up, (d) => d, false),
+      ...(box ? { primitive: { ...box, position: up(box.position) } } : {}),
+    }
+  }
   if (entity.type === "polyline3d") {
     return {
       ...entity,
@@ -283,8 +294,13 @@ function scaleSplineZ(
  * points always are.
  */
 export function carryPlane<T extends Entity>(source: Entity, target: T): T {
-  // A 3D polyline has no plane to give, nor one to take: its points hold their Z.
-  if (source.type === "polyline3d" || target.type === "polyline3d") {
+  // A 3D polyline or a solid has no plane to give, nor one to take: its points hold their Z.
+  if (
+    source.type === "polyline3d" ||
+    target.type === "polyline3d" ||
+    source.type === "solid3d" ||
+    target.type === "solid3d"
+  ) {
     return target
   }
   // A line's normal only extrudes it: what is built off its WCS points lies flat.
@@ -377,6 +393,7 @@ const PLANE_TOLERANCE = 1e-9
 /** Whether the object lies in one plane parallel to the XY plane: a line must not rise. */
 export function isLevel(entity: Entity): boolean {
   if (entity.type === "polyline3d") return isLevelPolyline3d(entity)
+  if (entity.type === "solid3d") return false
   if (entity.type === "spline") return isLevelSpline(entity)
   return (
     entity.type !== "line" || Math.abs(entity.deltaZ ?? 0) <= PLANE_TOLERANCE

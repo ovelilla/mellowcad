@@ -1,4 +1,5 @@
 import { regionEdgeEntities } from "../../domain/regions"
+import { solidEdgeEntities } from "../../domain/solids"
 import { Observable } from "../../shared/Observable"
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, length3, planar, sub3, withZ } from "../../geometry/Vec3"
@@ -76,7 +77,8 @@ function tierOf(type: SnapType): Tier {
  * by the geometry it draws, and every 3D polyline by its segments, lines of its
  * id: their ends, middles, nearest and perpendicular points and crossings are
  * the polyline's, each at its own Z (3dpoly/p21), seen along their image in
- * any view. A region is its edges, objects of its id. Built once per resolve so the expansion is not repeated by each of
+ * any view. A region is its edges, objects of its id, and a solid its edges,
+ * lines of its id. Built once per resolve so the expansion is not repeated by each of
  * the ten providers.
  */
 function snapEntities(document: DocumentReader): Entity[] {
@@ -90,6 +92,12 @@ function snapEntities(document: DocumentReader): Entity[] {
         // Its edges, as the objects they are: ends, middles, centres,
         // quadrants, crossings; no geometric centre (region/s01, s02).
         entities.push(...regionEdgeEntities(piece))
+        continue
+      }
+      if (piece.type === "solid3d") {
+        // Its edges, lines of its id: ends, middles, nearest and
+        // perpendicular points; no geometric centre (solid/s01, s02).
+        entities.push(...solidEdgeEntities(piece))
         continue
       }
       if (piece.type !== "polyline3d") {

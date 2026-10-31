@@ -836,6 +836,8 @@ function characteristicPoints(entity: Entity): Vec2[] {
       return [entity.position]
     case "region":
       return regionGripPoints(entity)
+    case "solid3d":
+      return [...entity.brep.vertices]
   }
 }
 

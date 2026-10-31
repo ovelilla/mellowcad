@@ -324,6 +324,10 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
           grips.push({ entityId: id, role: { kind: "fixed" }, world: point })
         }
         break
+      // WHY none yet: a box's grips (its base's corners, its edges' arrows,
+      // its height's; solid/d02) come with editing a primitive (2c).
+      case "solid3d":
+        break
       default: {
         const unhandled: never = entity
         void unhandled

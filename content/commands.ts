@@ -63,6 +63,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   ARRAYPATH: { group: "modify" },
   EXPLODE: { group: "modify" },
   REGION: { group: "draw" },
+  BOX: { group: "draw" },
   UNION: { group: "modify" },
   SUBTRACT: { group: "modify" },
   INTERSECT: { group: "modify" },

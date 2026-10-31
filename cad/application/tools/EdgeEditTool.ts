@@ -1669,6 +1669,8 @@ function prolonged(edge: Entity, reach: number): Entity[] {
     case "hatch":
     case "insert":
     case "region":
+    case "solid3d":
+    case "solid3d":
       return [edge]
     default: {
       const unhandled: never = edge
@@ -1907,6 +1909,7 @@ function trimRefusal(target: Entity): MessageId | null {
     case "mtext":
     case "hatch":
     case "region":
+    case "solid3d":
       return "cannotTrimThisObject"
     default:
       return null
@@ -1988,6 +1991,7 @@ function planTrim(
     case "hatch":
     case "insert":
     case "region":
+    case "solid3d":
       return null
   }
 }
@@ -2034,6 +2038,8 @@ function extendRefusal(target: Entity): MessageId | null {
     case "mtext":
     case "hatch":
     case "region":
+    case "solid3d":
+    case "solid3d":
       return "cannotExtendThisObject"
     default: {
       const unhandled: never = target
@@ -2077,6 +2083,7 @@ function planExtend(
     case "hatch":
     case "insert":
     case "region":
+    case "solid3d":
       return null
   }
 }
@@ -2342,6 +2349,7 @@ function circleEdgeCrossPoints(
     case "insert":
     // WHY: "1 was not a valid edge or selection method." (region/e01's first run).
     case "region":
+    case "solid3d":
       return []
   }
 }

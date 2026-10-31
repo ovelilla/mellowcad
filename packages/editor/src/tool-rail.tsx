@@ -3,6 +3,7 @@
 import { Fragment, useState, type ReactElement } from "react"
 import {
   ArrowRightToLine,
+  Box,
   CopyPlus,
   Eraser,
   Eye,
@@ -129,6 +130,7 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   explode: Split,
   join: Merge,
   region: Shapes,
+  box: Box,
   union: SquaresUnite,
   subtract: SquaresSubtract,
   intersect: SquaresIntersect,
@@ -231,6 +233,9 @@ const PALETTE: readonly PaletteSection[] = [
       // in its Boundary drop-down.
       "polyline3d",
       "region",
+      // The 3D Modeling workspace's Modeling panel (acad.cuix
+      // ID_PanelModeling), whose primitives' drop-down BOX opens.
+      "box",
     ],
   },
   {

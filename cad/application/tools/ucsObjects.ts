@@ -1,4 +1,5 @@
 import { regionLevelEdgeEntities } from "../../domain/regions"
+import { solidEdgeEntities } from "../../domain/solids"
 import { Vec2, V } from "../../geometry/Vec2"
 import {
   Vec3,
@@ -66,6 +67,11 @@ export function ucsFromObject(entity: Entity, pick: Vec2 | Vec3): Ucs | null {
         ? ucsAlongLine(edge, withZ(pick, entityElevation(entity)))
         : levelUcsFromObject(edge, pick)
     )
+  }
+  if (entity.type === "solid3d") {
+    // The edge picked, as a line along it would align it (solid/e08).
+    const edge = nearestEdge(solidEdgeEntities(entity), pick)
+    return edge && ucsFromObject(edge, pick)
   }
   if (entity.type === "spline" && !entity.closed && !isLevel(entity)) {
     return ucsAlongSpline(entity, pick)
@@ -202,6 +208,7 @@ function levelUcsFromObject(entity: Entity, pick: Vec2): Ucs | null {
     case "dimension":
     case "hatch":
     case "region":
+    case "solid3d":
       return null
     default: {
       const unhandled: never = entity
@@ -250,6 +257,7 @@ export function hasEnds(entity: Entity | null): entity is Entity {
     case "hatch":
     case "insert":
     case "region":
+    case "solid3d":
       return false
     default: {
       const unhandled: never = entity
@@ -368,6 +376,7 @@ function planarEnd(entity: Entity, pick: Vec2): PlanarEnd | null {
     case "hatch":
     case "insert":
     case "region":
+    case "solid3d":
       return null
     default: {
       const unhandled: never = entity
@@ -450,6 +459,7 @@ export function ucsFromFound(entity: Entity): Ucs | null {
     case "polyline3d":
     // WHY: unverified, read as a pick at the WCS's origin, the edge nearest it.
     case "region":
+    case "solid3d":
       return ucsFromObject(entity, wcsOrigin)
     default: {
       const unhandled: never = entity

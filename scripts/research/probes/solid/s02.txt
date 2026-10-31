@@ -1,0 +1,23 @@
+_QAFLAGS
+2
+_ZOOM
+_W
+-10,-10
+40,40
+_VPOINT
+1,-1,1
+_BOX
+0,0,0
+10,20
+5
+(osnap (trans '(10 0 5) 0 2) "_end")
+(osnap (trans '(10 10 5) 0 2) "_mid")
+(osnap (trans '(10 10 2.5) 0 2) "_nea")
+(osnap (trans '(5 10 5) 0 2) "_gcen")
+(osnap (trans '(5 10 5) 0 2) "_cen")
+_ID
+_END
+(trans '(10 20 5) 0 1)
+_LIST
+_L
+

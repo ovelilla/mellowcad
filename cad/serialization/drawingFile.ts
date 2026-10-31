@@ -62,6 +62,7 @@ import {
   withElevation,
   withNormal,
   withThickness,
+  BoxPrimitive,
 } from "../domain/entities"
 import {
   DEFAULT_HATCH_ANGLE,
@@ -111,6 +112,7 @@ import { Vec2 } from "../geometry/Vec2"
 import { bsplineDomain } from "../geometry/nurbs"
 import { PlanarCurve } from "../geometry/planarCurves"
 import { RegionFace } from "../geometry/planarRegions"
+import { Brep, BrepFace, brepIsClosed } from "../geometry/solids"
 import { Vec3, dot3, length3 } from "../geometry/Vec3"
 import {
   DEFAULT_DOCUMENT_SETTINGS,
@@ -124,7 +126,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 42
+export const DRAWING_FILE_VERSION = 43
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -201,6 +203,7 @@ type SavedCommandSetting =
   | "filletRadius"
   | "splineType"
   | "splineSegments"
+  | "isolines"
   | "chamferDistance1"
   | "chamferDistance2"
   | "textSize"
@@ -593,6 +596,37 @@ function cloneEntityShape(entity: Entity): Entity {
           loops: face.loops.map((loop) => loop.map(storedEdge)),
         })),
       }
+    case "solid3d":
+      return {
+        id: entity.id,
+        type: "solid3d",
+        layerId: entity.layerId,
+        ...overrides,
+        brep: storedBrep(entity.brep),
+        ...(entity.primitive ? { primitive: { ...entity.primitive } } : {}),
+      }
+  }
+}
+
+/** A solid's boundary as the file holds it, nothing but its own fields. */
+function storedBrep(brep: Brep): Brep {
+  return {
+    vertices: brep.vertices.map((v) => ({ x: v.x, y: v.y, z: v.z })),
+    edges: brep.edges.map((e) => ({
+      start: e.start,
+      end: e.end,
+      curve: { kind: e.curve.kind },
+    })),
+    faces: brep.faces.map((face) => ({
+      surface: {
+        kind: face.surface.kind,
+        origin: { ...face.surface.origin },
+        normal: { ...face.surface.normal },
+      },
+      loops: face.loops.map((loop) =>
+        loop.map((c) => ({ edge: c.edge, reversed: c.reversed }))
+      ),
+    })),
   }
 }
 
@@ -788,6 +822,7 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     filletRadius,
     splineType,
     splineSegments,
+    isolines,
     chamferDistance1,
     chamferDistance2,
     textSize,
@@ -839,6 +874,7 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     ...(filletRadius ? { filletRadius } : {}),
     ...(splineType !== 6 ? { splineType } : {}),
     ...(splineSegments !== 8 ? { splineSegments } : {}),
+    ...(isolines !== 4 ? { isolines } : {}),
     ...(chamferDistance1 ? { chamferDistance1 } : {}),
     ...(chamferDistance2 ? { chamferDistance2 } : {}),
     ...(textSize !== DEFAULT_DOCUMENT_SETTINGS.textSize ? { textSize } : {}),
@@ -960,6 +996,13 @@ function parseSettings(value: unknown): DocumentSettings {
       Math.abs(value.splineSegments as number) <= 32768
         ? (value.splineSegments as number)
         : 8,
+    // A drawing from before 43 has acadiso's.
+    isolines:
+      Number.isInteger(value.isolines) &&
+      (value.isolines as number) >= 0 &&
+      (value.isolines as number) <= 2047
+        ? (value.isolines as number)
+        : 4,
     chamferDistance1: nonNegative(value.chamferDistance1),
     chamferDistance2: nonNegative(value.chamferDistance2),
     textSize:
@@ -1060,7 +1103,7 @@ function parseEntity(raw: unknown, version: number): Entity | null {
  */
 function parsePlane(raw: Record<string, unknown>, entity: Entity): Entity {
   // Its vertices hold their Z: a plane in the file is not its own.
-  if (entity.type === "polyline3d") return entity
+  if (entity.type === "polyline3d" || entity.type === "solid3d") return entity
   let placed = isFiniteNumber(raw.elevation)
     ? withElevation(entity, raw.elevation)
     : entity
@@ -1425,8 +1468,91 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
       if (faces.length === 0) return null
       return { id, type: "region", layerId, ...overrides, faces }
     }
+    case "solid3d": {
+      // Since 43. A boundary that does not close loses the solid; a
+      // malformed primitive only its history.
+      const brep = parseBrep(raw.brep)
+      if (!brep) return null
+      const primitive = parseBoxPrimitive(raw.primitive)
+      return {
+        id,
+        type: "solid3d",
+        layerId,
+        ...overrides,
+        brep,
+        ...(primitive ? { primitive } : {}),
+      }
+    }
     default:
       return null
+  }
+}
+
+function parseBrep(raw: unknown): Brep | null {
+  if (!isRecord(raw)) return null
+  const { vertices, edges, faces } = raw
+  if (!Array.isArray(vertices) || !Array.isArray(edges)) return null
+  if (!Array.isArray(faces) || faces.length === 0) return null
+  const points = vertices.map(parseVec3)
+  if (points.some((p) => p === null)) return null
+  const index = (value: unknown) =>
+    Number.isInteger(value) && (value as number) >= 0 ? (value as number) : -1
+  const brep: Brep = {
+    vertices: points as Vec3[],
+    edges: edges.map((e) => ({
+      start: isRecord(e) ? index(e.start) : -1,
+      end: isRecord(e) ? index(e.end) : -1,
+      curve: { kind: "line" },
+    })),
+    faces: faces.map((f): BrepFace => {
+      const surface = isRecord(f) && isRecord(f.surface) ? f.surface : {}
+      const loops = isRecord(f) && Array.isArray(f.loops) ? f.loops : []
+      return {
+        surface: {
+          kind: "plane",
+          origin: parseVec3(surface.origin) ?? { x: NaN, y: NaN, z: NaN },
+          normal: parseVec3(surface.normal) ?? { x: 0, y: 0, z: 0 },
+        },
+        loops: loops.map((loop) =>
+          (Array.isArray(loop) ? loop : []).map((c) => ({
+            edge: isRecord(c) ? index(c.edge) : -1,
+            reversed: isRecord(c) && c.reversed === true,
+          }))
+        ),
+      }
+    }),
+  }
+  const lines = edges.every(
+    (e) => isRecord(e) && isRecord(e.curve) && e.curve.kind === "line"
+  )
+  const planes = faces.every(
+    (f) => isRecord(f) && isRecord(f.surface) && f.surface.kind === "plane"
+  )
+  return lines && planes && brepIsClosed(brep) ? brep : null
+}
+
+function parseBoxPrimitive(raw: unknown): BoxPrimitive | null {
+  if (!isRecord(raw) || raw.kind !== "box") return null
+  const position = parseVec3(raw.position)
+  const xAxis = parseVec3(raw.xAxis)
+  const normal = parseVec3(raw.normal)
+  const { length, width, height } = raw
+  const unit = (v: Vec3) => Math.abs(length3(v) - 1) < 1e-9
+  if (!position || !xAxis || !normal || !unit(xAxis) || !unit(normal)) {
+    return null
+  }
+  if (Math.abs(dot3(xAxis, normal)) > 1e-9) return null
+  if (![length, width, height].every((v) => isFiniteNumber(v) && v > 0)) {
+    return null
+  }
+  return {
+    kind: "box",
+    position,
+    xAxis,
+    normal,
+    length: length as number,
+    width: width as number,
+    height: height as number,
   }
 }
 

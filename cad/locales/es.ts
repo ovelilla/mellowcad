@@ -104,6 +104,7 @@ export const es: EngineLocale = {
       "region": "Región",
       "union": "Unión",
       "subtract": "Diferencia",
+      "box": "Prisma rectangular",
       "intersect": "Intersección"
     },
     "description": {
@@ -316,6 +317,16 @@ export const es: EngineLocale = {
           }
         ]
       ],
+      "solid3d": [
+        [
+          "count",
+          2,
+          {
+            "one": "Sólido 3D",
+            "other": "Sólidos 3D"
+          }
+        ]
+      ],
       "region": [
         [
           "count",
@@ -376,6 +387,7 @@ export const es: EngineLocale = {
       },
       "group": {
         "geometry": "Geometría",
+        "solidHistory": "Historial de sólido",
         "endpoints": "Extremos",
         "center": "Centro",
         "text": "Texto",
@@ -434,6 +446,7 @@ export const es: EngineLocale = {
         "minorAxisVectorZ": "Vector de eje menor Z",
         "vertices": "Vértices",
         "segments": "Segmentos",
+        "solidType": "Tipo de sólido",
         "currentVertex": "Vértice actual",
         "vertex": "Vértice",
         "startSegmentWidth": "Anchura inicial del segmento",
@@ -443,6 +456,7 @@ export const es: EngineLocale = {
         "contents": "Contenido",
         "justify": "Justificar",
         "height": "Altura",
+        "history": "Historial",
         "rotation": "Rotación",
         "lineSpaceFactor": "Factor de interlineado",
         "lineSpaceDistance": "Distancia de interlineado",
@@ -496,6 +510,7 @@ export const es: EngineLocale = {
         "controlPointY": "Punto de apoyo Y",
         "controlPointZ": "Punto de apoyo Z",
         "weight": "Peso",
+        "width": "Anchura",
         "cvFrame": "Marco de vértices de control",
         "periodic": "Periódica",
         "planar": "Plana",
@@ -512,6 +527,7 @@ export const es: EngineLocale = {
         "scaleX": "Escala X",
         "scaleY": "Escala Y",
         "scaleZ": "Escala Z",
+        "showHistory": "Mostrar historial",
         "baseX": "Base X",
         "baseY": "Base Y",
         "baseZ": "Base Z",
@@ -554,6 +570,7 @@ export const es: EngineLocale = {
         "exactly": "Exactamente",
         "fitPoints": "Ajustar",
         "controlVertices": "Vértices de control",
+        "box": "Prisma",
         "chord": "Cuerda",
         "sqrtChord": "RaízcuadradaCuerda",
         "uniform": "Uniforme",
@@ -563,6 +580,7 @@ export const es: EngineLocale = {
         "counterClockwise": "En el sentido antihorario",
         "clockwise": "En el sentido horario",
         "divide": "Dividir",
+        "historyNone": "Ninguno",
         "measure": "Medir",
         "predefined": "Predefinido",
         "outer": "Exterior"
@@ -1069,6 +1087,9 @@ export const es: EngineLocale = {
       "-LWEIGHT": [
         "-GROSORLIN"
       ],
+      "BOX": [
+        "PRISMARECT"
+      ],
       "REGION": [
         "REGION",
         "REG"
@@ -1266,6 +1287,12 @@ export const es: EngineLocale = {
         "Spline curve": "Spline",
         "Decurve": "anularcuRVatura",
         "Defit": "ELiminarcurva"
+      },
+      "BOX": {
+        "Center": "Centro",
+        "Cube": "Cubo",
+        "Length": "Longitud",
+        "2Point": "2Puntos"
       },
       "RECTANG": {
         "Chamfer": "Chaflán",
@@ -2066,6 +2093,13 @@ export const es: EngineLocale = {
       "textEditModeOption": "Indique una opción de modo de edición de texto",
       "viewAngleInPlane": "Ángulo a partir del eje X en el plano XY",
       "viewAngleFromPlane": "Ángulo a partir del plano XY",
+      "boxFirstCornerOr": "Precise primera esquina o",
+      "boxOtherCornerOr": "Precise otra esquina o",
+      "boxCenter": "Precise centro",
+      "boxCornerOr": "Precise esquina o",
+      "boxLength": "Precise longitud",
+      "boxWidth": "Precise anchura",
+      "boxHeightOr": "Precise altura o",
       "specifyFirstPoint": "Precise primer punto",
       "specifyNextPointOr": "Precise punto siguiente o",
       "specifyNextPointOrClose": "Precise siguiente punto o",
@@ -4653,6 +4687,7 @@ export const es: EngineLocale = {
             "hatch": "HATCH",
             "insert": "REFERENCIA A BLOQUE",
             "region": "REGION",
+            "solid3d": "3DSOLID",
             "other": "MATRIZ"
           }
         ]
@@ -6039,6 +6074,63 @@ export const es: EngineLocale = {
         " , Perímetro = ",
         [
           "around"
+        ]
+      ],
+      "boxZeroLength": "No puede ser un Prisma de longitud cero.",
+      "boxZeroWidth": "No puede ser un Prisma de anchura cero.",
+      "boxValueNonzero": "No puede ser un valor igual a cero.",
+      "listSolidHistory": "         Historial = Ninguno\n Mostrar historial = No",
+      "listSolidType": "    Tipo de sólido = Prisma",
+      "listBoxPosition": [
+        "         Posición, X = ",
+        [
+          "x"
+        ],
+        " Y = ",
+        [
+          "y"
+        ],
+        " Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listBoxNormal": [
+        "           Normal: X = ",
+        [
+          "x"
+        ],
+        " Y = ",
+        [
+          "y"
+        ],
+        " Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listBoxLength": [
+        "         Longitud: ",
+        [
+          "length"
+        ]
+      ],
+      "listBoxWidth": [
+        "          Anchura: ",
+        [
+          "width"
+        ]
+      ],
+      "listBoxHeight": [
+        "           Altura: ",
+        [
+          "height"
+        ]
+      ],
+      "listBoxRotation": [
+        "         Rotación: ",
+        [
+          "angle"
         ]
       ],
       "listRegionArea": [

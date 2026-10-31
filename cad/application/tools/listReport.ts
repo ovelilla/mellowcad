@@ -1,4 +1,5 @@
 import { regionArea, regionPerimeter } from "../../domain/regions"
+import { boxInUcs } from "../../domain/solids"
 import { curveBox, curveTessellation } from "../../geometry/planarCurves"
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, add3, cross3, length3, sub3 } from "../../geometry/Vec3"
@@ -16,6 +17,7 @@ import type {
   Entity,
   HatchEntity,
   RegionEntity,
+  Solid3dEntity,
   InsertEntity,
   LineEntity,
   MTextEntity,
@@ -108,6 +110,7 @@ type ObjectName =
   | "insert"
   | "array"
   | "region"
+  | "solid3d"
 
 /** What the header line reads an object's appearance from. */
 interface Wearing {
@@ -191,6 +194,9 @@ class Report {
         break
       case "region":
         this.region(entity)
+        break
+      case "solid3d":
+        this.solid(entity)
         break
     }
     return this.lines
@@ -913,6 +919,26 @@ class Report {
       maxY: left(high("y")),
       maxZ: left(high("z")),
     })
+  }
+
+  /**
+   * Its history, and a box's parameters in the UCS: the base's centre, the
+   * normal when it is not the UCS's Z, the sizes, the length's heading
+   * (solid/p01, p06, p13).
+   */
+  private solid(solid: Solid3dEntity): void {
+    this.header("solid3d", solid)
+    this.say("listSolidHistory")
+    const box = solid.primitive
+    if (!box) return
+    const placed = boxInUcs(box, this.settings.ucs)
+    this.say("listSolidType")
+    this.say("listBoxPosition", this.leftXyz(placed.position))
+    if (placed.normal) this.say("listBoxNormal", this.leftXyz(placed.normal))
+    this.say("listBoxLength", { length: this.length(box.length) })
+    this.say("listBoxWidth", { width: this.length(box.width) })
+    this.say("listBoxHeight", { height: this.length(box.height) })
+    this.say("listBoxRotation", { angle: this.angle(placed.rotation) })
   }
 
   private hatch(hatch: HatchEntity): void {

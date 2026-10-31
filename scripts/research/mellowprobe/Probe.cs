@@ -388,6 +388,23 @@ namespace MellowProbe
                         }
                         catch (System.Exception ex) { extra.Add("areaProperties"); extra.Add(Log.Q(ex.Message)); }
                     }
+                    // A solid's topology is only seen through the B-rep: each vertex, each edge with
+                    // its curve and ends, each face with its surface and loops (edges and vertices in
+                    // loop order, so each coedge's sense reads off them), plus MASSPROP unrounded.
+                    if (e is Solid3d so)
+                    {
+                        try
+                        {
+                            var mp = so.MassProperties;
+                            extra.Add("massProperties"); extra.Add("{\"volume\":" + Log.V(mp.Volume) + ",\"centroid\":" + Log.V(mp.Centroid) +
+                                ",\"moments\":" + Log.V(mp.MomentsOfIntertia) + ",\"products\":" + Log.V(mp.ProductsOfIntertia) +
+                                ",\"principal\":" + Log.V(mp.PrincipalMoments) +
+                                ",\"radii\":" + Log.V(mp.RadiiOfGyration) + ",\"extents\":[" + Log.V(mp.Extents.MinPoint) + "," + Log.V(mp.Extents.MaxPoint) + "]}");
+                        }
+                        catch (System.Exception ex) { extra.Add("massProperties"); extra.Add(Log.Q(ex.Message)); }
+                        try { extra.Add("brep"); extra.Add(BrepDump(so)); }
+                        catch (System.Exception ex) { extra.Add("brep"); extra.Add(Log.Q(ex.GetType().Name + ": " + ex.Message)); }
+                    }
                     if (e is BlockReference br)
                     {
                         var atts = br.AttributeCollection.Cast<ObjectId>().Select(a => Log.Props(tr.GetObject(a, OpenMode.ForRead)));
@@ -398,6 +415,65 @@ namespace MellowProbe
             }
             if (string.IsNullOrEmpty(path)) foreach (var l in lines) Log.W("ent " + l);
             else { File.WriteAllLines(path, lines, new UTF8Encoding(false)); Log.W($"dumped {lines.Count} entities to {Log.Q(path)}"); }
+        }
+
+        static string BrepDump(Entity solid)
+        {
+            using (var brep = new Autodesk.AutoCAD.BoundaryRepresentation.Brep(solid))
+            {
+                var vertices = brep.Vertices.Cast<Autodesk.AutoCAD.BoundaryRepresentation.Vertex>().ToList();
+                var edges = brep.Edges.Cast<Autodesk.AutoCAD.BoundaryRepresentation.Edge>().ToList();
+                int VertexIndex(Autodesk.AutoCAD.BoundaryRepresentation.Vertex v) => vertices.FindIndex(w => w.Point.IsEqualTo(v.Point));
+                int EdgeIndex(Autodesk.AutoCAD.BoundaryRepresentation.Edge x) => edges.FindIndex(y => y.Vertex1.Point.IsEqualTo(x.Vertex1.Point) && y.Vertex2.Point.IsEqualTo(x.Vertex2.Point) && Same(y, x));
+                string Curve(Autodesk.AutoCAD.BoundaryRepresentation.Edge x)
+                {
+                    Curve3d c = null;
+                    try { c = x.Curve; } catch { }
+                    var native = c is ExternalCurve3d ext && ext.IsNativeCurve ? ext.NativeCurve : c;
+                    return native == null ? "null" : Log.Props(native, "kind", Log.Q(native.GetType().Name));
+                }
+                string Surface(Autodesk.AutoCAD.BoundaryRepresentation.Face f)
+                {
+                    Autodesk.AutoCAD.Geometry.Surface s = null;
+                    try { s = f.Surface; } catch { }
+                    if (s is ExternalBoundedSurface eb)
+                    {
+                        Autodesk.AutoCAD.Geometry.Surface b = null;
+                        try { b = eb.BaseSurface; } catch { }
+                        
+                        if (b != null) return Log.Props(b, "kind", Log.Q(b.GetType().Name));
+                    }
+                    return s == null ? "null" : Log.Props(s, "kind", Log.Q(s.GetType().Name));
+                }
+                var faces = brep.Faces.Cast<Autodesk.AutoCAD.BoundaryRepresentation.Face>().Select(f =>
+                {
+                    var loops = f.Loops.Cast<Autodesk.AutoCAD.BoundaryRepresentation.BoundaryLoop>().Select(l =>
+                        "{\"type\":" + Log.V(l.LoopType) +
+                        ",\"edges\":[" + string.Join(",", l.Edges.Cast<Autodesk.AutoCAD.BoundaryRepresentation.Edge>().Select(EdgeIndex)) + "]" +
+                        ",\"vertices\":[" + string.Join(",", l.Vertices.Cast<Autodesk.AutoCAD.BoundaryRepresentation.Vertex>().Select(VertexIndex)) + "]}");
+                    double area = double.NaN;
+                    try { area = f.GetArea(); } catch { }
+                    return "{\"surface\":" + Surface(f) + ",\"orientToSurface\":" + Log.V(f.IsOrientToSurface) + ",\"area\":" + Log.V(area) +
+                        ",\"loops\":[" + string.Join(",", loops) + "]}";
+                });
+                return "{\"vertices\":[" + string.Join(",", vertices.Select(v => Log.V(v.Point))) + "]" +
+                    ",\"edges\":[" + string.Join(",", edges.Select(x => "{\"from\":" + VertexIndex(x.Vertex1) + ",\"to\":" + VertexIndex(x.Vertex2) +
+                        ",\"orientToCurve\":" + Log.V(x.IsOrientToCurve) + ",\"curve\":" + Curve(x) + "}")) + "]" +
+                    ",\"faces\":[" + string.Join(",", faces) + "]" +
+                    ",\"shells\":" + brep.Shells.Cast<object>().Count() + ",\"volume\":" + Log.V(brep.GetVolume()) + ",\"surfaceArea\":" + Log.V(brep.GetSurfaceArea()) + "}";
+            }
+        }
+
+        // An edge is told from another with the same ends (two arcs of a circle) by its midpoint.
+        static bool Same(Autodesk.AutoCAD.BoundaryRepresentation.Edge a, Autodesk.AutoCAD.BoundaryRepresentation.Edge b)
+        {
+            try
+            {
+                var ca = a.Curve; var cb = b.Curve;
+                var ia = ca.GetInterval(); var ib = cb.GetInterval();
+                return ca.EvaluatePoint((ia.LowerBound + ia.UpperBound) / 2).IsEqualTo(cb.EvaluatePoint((ib.LowerBound + ib.UpperBound) / 2));
+            }
+            catch { return true; }
         }
 
         // MPGRIPS: each entity of model space and the grip points it offers (GetGripPoints), as a

@@ -1,0 +1,5 @@
+PRISMARECT
+0,0,0
+10,10
+3
+(getvar "CMDNAMES")

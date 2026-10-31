@@ -551,6 +551,7 @@ function cannotBreak(entity: Entity): MessageId | null {
     case "dimension":
     case "hatch":
     case "region":
+    case "solid3d":
       return "objectCannotBeBroken"
     case "line":
     case "circle":
@@ -684,6 +685,7 @@ function computeBreak(
     case "hatch":
     case "insert":
     case "region":
+    case "solid3d":
       return null
   }
 }

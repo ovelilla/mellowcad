@@ -58,6 +58,7 @@ REGION ["REG"] "Region"
 UNION ["UNI"] "Union"
 SUBTRACT ["SU"] "Subtract"
 INTERSECT ["IN"] "Intersect"
+BOX [] "Box"
 BREAK ["BR"] "Break"
 BREAKATPOINT [] "Break at point"
 SPLINEDIT ["SPE"] "Edit Spline"
@@ -191,6 +192,7 @@ region "Region" REG
 union "Union" UNI
 subtract "Subtract" SU
 intersect "Intersect" IN
+box "Box" BOX
 break "Break" BR
 breakatpoint "Break at point" BREAKATPOINT
 splinedit "Edit Spline" SPE
@@ -4362,6 +4364,92 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Select objects: 250,50
   info| 1 found, 2 total
   prompt| Select objects:
+
+## BOX
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> BOX
+  command| BOX
+  prompt| Specify first corner or [Center]: 0,0,0
+  prompt| Specify other corner or [Cube/Length]: 100,50
+  prompt| Specify height or [2Point]: 30
+> BOX refused
+  prompt: BOX Specify height or [2Point] <30.00>:
+  asks: "Specify height or"
+  tip: Specify height or
+  dyn: "Specify height or"=""|30.00|mm*
+  options: [2P] 2Point
+  command| BOX
+  prompt| Specify first corner or [Center]: FOO
+  error| Point or option keyword required.
+  prompt| Specify first corner or [Center]: 200,0
+  prompt| Specify other corner or [Cube/Length]: 200,50
+  error| Box of zero length not permitted.
+  prompt| Specify other corner or [Cube/Length]: 300,0
+  error| Box of zero width not permitted.
+  prompt| Specify other corner or [Cube/Length]: 300,50
+  prompt| Specify height or [2Point] <30.00>: 0
+  error| Value must be nonzero.
+> BOX 2Point
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify height or [2Point] <30.00>: 2P
+  prompt| Specify first point: 0,0,0
+  prompt| Specify second point: 0,0,0
+  error| Value must be nonzero.
+  prompt| Specify second point: 0,0,20
+> BOX Center Cube
+  command| BOX
+  prompt| Specify first corner or [Center]: C
+  prompt| Specify center: 0,200
+  prompt| Specify corner or [Cube/Length]: C
+  prompt| Specify length: 40
+> BOX Length
+  command| BOX
+  prompt| Specify first corner or [Center]: 400,0
+  prompt| Specify other corner or [Cube/Length]: L
+  prompt| Specify length <40.00>: 0
+  error| Box of zero length not permitted.
+  prompt| Specify length <40.00>: 60
+  prompt| Specify width: 0
+  error| Box of zero width not permitted.
+  prompt| Specify width: 30
+  prompt| Specify height or [2Point] <40.00>:
+> LIST
+  command| LIST
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info|                   3DSOLID   Layer: "0"
+                                    Space: Model space
+                 History = None
+            Show History = No
+              Solid type = Box
+                 Position, X = 370.00    Y = 15.00     Z = 0.00
+                   Length: 60.00
+                    Width: 30.00
+                   Height: 40.00
+                 Rotation: 180
+> select the box
+  properties: 3D Solid (1) [Geometry: Solid type=Box, Position X=50.00, Position Y=25.00, Position Z=0.00, Length=100.00 mm, Width=50.00 mm, Height=30.00 mm, Rotation=0°] [Solid History: History=None, Show History=No]
+> escape
+  properties: -
+  command| *Cancel*
+> ISOLINES
+  command| ISOLINES
+  prompt| Enter new value for ISOLINES <4>: FOO
+  error| Requires an integer between 0 and 2047.
+  prompt| Enter new value for ISOLINES <4>: 8
 
 ## JOIN made
 > start

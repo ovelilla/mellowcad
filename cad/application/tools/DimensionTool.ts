@@ -617,8 +617,9 @@ export class DimensionTool implements Tool {
           }
         )
       }
-      case "region": {
-        // The edge picked, as that object would be (region/e03).
+      case "region":
+      case "solid3d": {
+        // The edge picked, as that object would be (region/e03, solid/e07).
         const found = this.originsOf(regionEdgeAt(entity, at), at)
         return found && { entity, origins: found.origins }
       }

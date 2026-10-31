@@ -1,4 +1,5 @@
 import { regionArea, regionPerimeter } from "../domain/regions"
+import { boxInUcs } from "../domain/solids"
 import { V, Vec2 } from "../geometry/Vec2"
 import { Vec3, sub3 } from "../geometry/Vec3"
 import { isUpright, worldDirectionToUcs, worldPointToUcs } from "../domain/ucs"
@@ -1810,6 +1811,38 @@ function singleEntityInfo(
           ]),
         ],
       }
+    case "solid3d": {
+      // A box's Geometry and its Solid History, read only here (solid/d03:
+      // its Length, Width, Height and Position are typeable in AutoCAD, an
+      // edit that comes with its grips); 3D Visualization's Material is not
+      // built.
+      const box = entity.primitive
+      const placed = box && boxInUcs(box, settings.ucs)
+      return {
+        title: title("solid3d"),
+        count: 1,
+        groups: [
+          ...(box && placed
+            ? [
+                group("geometry", [
+                  row("solidType", text.propertyValue("box")),
+                  row("positionX", coord(placed.position.x)),
+                  row("positionY", coord(placed.position.y)),
+                  row("positionZ", coord(placed.position.z)),
+                  row("length", length(box.length)),
+                  row("width", length(box.width)),
+                  row("height", length(box.height)),
+                  row("rotation", degrees(placed.rotation)),
+                ]),
+              ]
+            : []),
+          group("solidHistory", [
+            row("history", text.propertyValue("historyNone")),
+            row("showHistory", text.propertyValue("no")),
+          ]),
+        ],
+      }
+    }
   }
 }
 

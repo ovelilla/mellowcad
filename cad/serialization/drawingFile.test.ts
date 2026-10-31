@@ -242,6 +242,7 @@ describe("round trip", () => {
       gridMode: false,
       splineType: 5 as const,
       splineSegments: -4,
+      isolines: 16,
     }
     const parsed = parseDrawingFile(
       serializeDrawing(snapshotOf([], { settings }))
@@ -532,6 +533,7 @@ describe("round trip", () => {
       hatch: true,
       insert: true,
       region: true,
+      solid3d: true,
     } satisfies Record<Entity["type"], true>
     const sampled = fc.sample(entityArbitrary, { numRuns: 1000, seed: 1 })
     expect(new Set(sampled.map((e) => e.type))).toEqual(

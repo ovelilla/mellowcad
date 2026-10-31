@@ -1,0 +1,67 @@
+_BOX
+0,0,0
+10,20
+5
+_CYLINDER
+30,10,0
+5
+8
+_ISOLINES
+4
+_REGEN
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mp-solid-plan4.png
+_N
+_Y
+_VPOINT
+1,-1,1
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mp-solid-iso4.png
+_N
+_Y
+_ISOLINES
+16
+_REGEN
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mp-solid-iso16.png
+_N
+_Y

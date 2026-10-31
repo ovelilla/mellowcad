@@ -1,4 +1,5 @@
 import { regionLevelEdgeEntities } from "./regions"
+import { solidEdgeEntities } from "./solids"
 import { Vec2, V } from "../geometry/Vec2"
 import {
   ClosestResult,
@@ -21,6 +22,7 @@ import {
   Entity,
   Bounds,
   RegionEntity,
+  Solid3dEntity,
 } from "./entityTypes"
 import { insertFlatGeometry } from "./blocks"
 import { attributeDefinitionText } from "./attributes"
@@ -330,18 +332,33 @@ export function closestOnEntity(
       }
       return best
     }
+    case "solid3d": {
+      let best: ClosestResult = { point, distance: Infinity, t: 0 }
+      for (const edge of solidEdgeEntities(entity)) {
+        const candidate = closestOnEntity(edge, point)
+        if (candidate.distance < best.distance) best = candidate
+      }
+      return best
+    }
   }
 }
 
 /**
- * The region's edge nearest `point`, as its object: what a command that
- * takes "the picked edge" reads off a region — DIMLINEAR's origins,
- * DIMRADIUS's circle, UCS OBject's axes (region/e03–e05).
+ * The region's or the solid's edge nearest `point`, as its object: what a
+ * command that takes "the picked edge" reads off one — DIMLINEAR's origins,
+ * DIMRADIUS's circle, UCS OBject's axes (region/e03–e05, solid/e07).
  */
-export function regionEdgeAt(region: RegionEntity, point: Vec2): Entity {
+export function regionEdgeAt(
+  region: RegionEntity | Solid3dEntity,
+  point: Vec2
+): Entity {
   let best: Entity | null = null
   let bestDistance = Infinity
-  for (const edge of regionLevelEdgeEntities(region)) {
+  const edges =
+    region.type === "region"
+      ? regionLevelEdgeEntities(region)
+      : solidEdgeEntities(region)
+  for (const edge of edges) {
     const distance = closestOnEntity(edge, point).distance
     if (distance < bestDistance) {
       bestDistance = distance
@@ -500,6 +517,13 @@ export function entityBounds(drawn: Entity, blocks?: BlockLookup): Bounds {
     case "region":
       return (
         entitiesBounds(regionLevelEdgeEntities(entity)) ?? {
+          min: { x: 0, y: 0 },
+          max: { x: 0, y: 0 },
+        }
+      )
+    case "solid3d":
+      return (
+        entitiesBounds(solidEdgeEntities(entity)) ?? {
           min: { x: 0, y: 0 },
           max: { x: 0, y: 0 },
         }
@@ -775,6 +799,10 @@ export function entityCrossesRect(
     }
     case "region":
       return regionLevelEdgeEntities(entity).some((edge) =>
+        entityCrossesRect(edge, min, max)
+      )
+    case "solid3d":
+      return solidEdgeEntities(entity).some((edge) =>
         entityCrossesRect(edge, min, max)
       )
   }

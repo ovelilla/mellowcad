@@ -27,6 +27,7 @@ import {
   SplineEntity,
   Entity,
   RegionEntity,
+  Solid3dEntity,
 } from "./entityTypes"
 import { PlanarSimilarity } from "../geometry/planarCurves"
 import {
@@ -52,6 +53,7 @@ import {
   shiftBy,
   turnAbout,
 } from "./regions"
+import { solidMapped, solidStretchPoints } from "./solids"
 import { TextOptions, createText, measureTextWidth, textBox } from "./text"
 import { MTextOptions, createMText } from "./mtext"
 import { createAttributeDefinition } from "./attributes"
@@ -273,21 +275,28 @@ function mirrorEllipseParams(
 }
 
 /**
+ * What the plan's transforms take: anything but a solid, which moves only
+ * through {@link transformEntity}, its points holding their own Z, as a
+ * tilted object does.
+ */
+type FlatEntity = Exclude<Entity, Solid3dEntity>
+
+/**
  * Returns a copy of `entity` translated by `delta` (preserves its id). A 2D
  * delta moves it within its plane.
  */
 export function translateEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
-  if (isTilted(entity)) {
+  if (isTilted(entity) || entity.type === "solid3d") {
     return transformEntity(entity, translation3(withZ(delta, zOf(delta))))
   }
   return translateFlat(entity, delta)
 }
 
-function translateFlat(entity: Entity, delta: Vec2 | Vec3): Entity {
+function translateFlat(entity: FlatEntity, delta: Vec2 | Vec3): FlatEntity {
   return shiftEntityZ(translatePlanar(entity, delta), zOf(delta))
 }
 
-function translatePlanar(entity: Entity, delta: Vec2): Entity {
+function translatePlanar(entity: FlatEntity, delta: Vec2): FlatEntity {
   if (entity.type === "region") return regionMapped(entity, shiftBy(delta))
   switch (entity.type) {
     case "line":
@@ -361,6 +370,12 @@ export function stretchEntity(
   delta: Vec2 | Vec3,
   inFrame: (point: Vec2) => boolean
 ): Entity {
+  if (entity.type === "solid3d") {
+    // Moved whole once the frame catches a vertex, else left (solid/t03, t05).
+    return solidStretchPoints(entity).some(inFrame)
+      ? translateEntity(entity, delta)
+      : entity
+  }
   const dz = zOf(delta)
   const vertices = stretchVertices(entity)
   if (entity.type === "spline") return stretchSpline(entity, delta, inFrame)
@@ -440,7 +455,7 @@ function stretchSpline(
 }
 
 /** The points STRETCH moves one by one; all caught, the object moves whole. */
-function stretchVertices(entity: Entity): readonly Vec2[] {
+function stretchVertices(entity: FlatEntity): readonly Vec2[] {
   switch (entity.type) {
     case "line":
       return [entity.start, entity.end]
@@ -484,7 +499,7 @@ function stretchVertices(entity: Entity): readonly Vec2[] {
  * What the frame has to catch for STRETCH to move an object whole: its free
  * vertices, or the one point a rigid object rides along with.
  */
-function stretchAnchors(entity: Entity): readonly Vec2[] {
+function stretchAnchors(entity: FlatEntity): readonly Vec2[] {
   switch (entity.type) {
     case "circle":
     case "ellipse":
@@ -511,10 +526,10 @@ function stretchAnchors(entity: Entity): readonly Vec2[] {
 }
 
 function stretchPlanar(
-  entity: Entity,
+  entity: FlatEntity,
   delta: Vec2,
   inFrame: (point: Vec2) => boolean
-): Entity {
+): FlatEntity {
   if (entity.type === "region") return entity
   const shift = (point: Vec2): Vec2 =>
     inFrame(point) ? V.add(point, delta) : point
@@ -668,7 +683,8 @@ function dimensionLinePoint(dim: DimensionEntity): Vec2 | null {
  * `delta`, on the same layer — the building block of the COPY command.
  */
 export function copyEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
-  if (isTilted(entity)) return freshCopy(translateEntity(entity, delta))
+  if (isTilted(entity) || entity.type === "solid3d")
+    return freshCopy(translateEntity(entity, delta))
   const copy: Entity = (() => {
     switch (entity.type) {
       case "line":
@@ -777,13 +793,17 @@ export function rotateEntity(
   pivot: Vec2,
   radians: number
 ): Entity {
-  if (isTilted(entity)) {
+  if (isTilted(entity) || entity.type === "solid3d") {
     return transformEntity(entity, rotationAboutZ(pivot, radians))
   }
   return rotateFlat(entity, pivot, radians)
 }
 
-function rotateFlat(entity: Entity, pivot: Vec2, radians: number): Entity {
+function rotateFlat(
+  entity: FlatEntity,
+  pivot: Vec2,
+  radians: number
+): FlatEntity {
   if (entity.type === "region") {
     return regionMapped(entity, turnAbout(pivot, radians))
   }
@@ -877,7 +897,9 @@ export function rotateEntityCopy(
   pivot: Vec2,
   radians: number
 ): Entity {
-  if (isTilted(entity)) return freshCopy(rotateEntity(entity, pivot, radians))
+  if (isTilted(entity) || entity.type === "solid3d") {
+    return freshCopy(rotateEntity(entity, pivot, radians))
+  }
   const copy: Entity = (() => {
     switch (entity.type) {
       case "region":
@@ -1012,17 +1034,25 @@ export function scaleEntity(
   base: Vec2 | Vec3,
   factor: number
 ): Entity {
-  if (isTilted(entity)) {
+  if (isTilted(entity) || entity.type === "solid3d") {
     return transformEntity(entity, scaling3(withZ(base, zOf(base)), factor))
   }
   return scaleFlat(entity, base, factor)
 }
 
-function scaleFlat(entity: Entity, base: Vec2 | Vec3, factor: number): Entity {
+function scaleFlat(
+  entity: FlatEntity,
+  base: Vec2 | Vec3,
+  factor: number
+): FlatEntity {
   return scaleEntityZ(scalePlanar(entity, base, factor), zOf(base), factor)
 }
 
-function scalePlanar(entity: Entity, base: Vec2, factor: number): Entity {
+function scalePlanar(
+  entity: FlatEntity,
+  base: Vec2,
+  factor: number
+): FlatEntity {
   if (entity.type === "region") {
     return regionMapped(entity, scaleAbout(base, factor))
   }
@@ -1119,7 +1149,8 @@ export function scaleEntityCopy(
   base: Vec2 | Vec3,
   factor: number
 ): Entity {
-  if (isTilted(entity)) return freshCopy(scaleEntity(entity, base, factor))
+  if (isTilted(entity) || entity.type === "solid3d")
+    return freshCopy(scaleEntity(entity, base, factor))
   const copy: Entity = (() => {
     switch (entity.type) {
       case "region":
@@ -1252,7 +1283,7 @@ export function mirrorEntity(
   b: Vec2,
   hatch: HatchMirroring = "patternKept"
 ): Entity {
-  if (isTilted(entity)) {
+  if (isTilted(entity) || entity.type === "solid3d") {
     const reflection = reflectionAcross(a, b)
     return reflection ? transformEntity(entity, reflection) : entity
   }
@@ -1260,11 +1291,11 @@ export function mirrorEntity(
 }
 
 function mirrorFlat(
-  entity: Entity,
+  entity: FlatEntity,
   a: Vec2,
   b: Vec2,
   hatch: HatchMirroring
-): Entity {
+): FlatEntity {
   if (entity.type === "region") return regionMapped(entity, reflectAcross(a, b))
   switch (entity.type) {
     case "line":
@@ -1492,7 +1523,8 @@ function mirrorAngle(angle: number, a: Vec2, b: Vec2): number {
  * through `a`,`b`, on the same layer — MIRROR when the source is kept.
  */
 export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
-  if (isTilted(entity)) return freshCopy(mirrorEntity(entity, a, b))
+  if (isTilted(entity) || entity.type === "solid3d")
+    return freshCopy(mirrorEntity(entity, a, b))
   const copy: Entity = (() => {
     switch (entity.type) {
       case "region":
@@ -1694,6 +1726,7 @@ function fixing(rotation: Axes3, point: Vec3): Similarity3 {
  * becomes. Keeps the id.
  */
 export function transformEntity(entity: Entity, map: Similarity3): Entity {
+  if (entity.type === "solid3d") return solidMapped(entity, map)
   const apply = (point: Vec3) =>
     add3(scale3(axesToWorld(map.rotation, point), map.scale), map.translation)
   const normal = axesToWorld(map.rotation, entityNormal(entity))
@@ -1752,6 +1785,7 @@ export function entityInOcs(entity: Entity, normal: Vec3): Entity {
   if (
     entity.type !== "line" &&
     entity.type !== "polyline3d" &&
+    entity.type !== "solid3d" &&
     facesAlong(entity, axes.z)
   ) {
     return withNormal(entity, { x: 0, y: 0, z: 1 })
@@ -1770,6 +1804,7 @@ export function entityFromOcs(entity: Entity, normal: Vec3): Entity {
   if (
     entity.type !== "line" &&
     entity.type !== "polyline3d" &&
+    entity.type !== "solid3d" &&
     !isTilted(entity)
   ) {
     return withNormal(entity, axes.z)

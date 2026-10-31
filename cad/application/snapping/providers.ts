@@ -868,8 +868,8 @@ export const intersectionProvider: SnapProvider = {
         if (
           a.kind === "segment" &&
           b.kind === "segment" &&
-          a.curveId !== undefined &&
-          a.curveId === b.curveId
+          ((a.curveId !== undefined && a.curveId === b.curveId) ||
+            (a.edgeOf !== undefined && a.edgeOf === b.edgeOf))
         ) {
           continue
         }
@@ -1106,6 +1106,11 @@ type SegmentShape = {
   readonly source: Entity | null
   /** The spline this is a chord of. */
   readonly curveId?: EntityId
+  /**
+   * The solid this is an edge of: its edges meet only at its vertices, where
+   * AutoCAD finds no Intersection (solid/s01).
+   */
+  readonly edgeOf?: EntityId
   /** Its curve and the parameters the chord spans, to refine a crossing onto. */
   readonly chordOf?: {
     readonly curve: BSplineCurve
@@ -1217,6 +1222,7 @@ function collectShapes(
       }
     } else if (entity.type === "line") {
       const [a, b] = lineEnds(entity)
+      const solid = document.get(entity.id)?.type === "solid3d"
       shapes.push({
         kind: "segment",
         a,
@@ -1224,6 +1230,7 @@ function collectShapes(
         sourceIds: [entity.id],
         fromConstruction: false,
         source: entity,
+        ...(solid ? { edgeOf: entity.id } : {}),
       })
     } else if (entity.type === "circle") {
       shapes.push({

@@ -148,10 +148,12 @@ export function screenDistanceToEntity(
       Number.POSITIVE_INFINITY
     )
   // A line, its thickness included, is drawn as segments: measure them, and
-  // a 3D polyline's, each at its vertices' Z, and a spline's through its own.
+  // a 3D polyline's and a solid's edges, each at its vertices' Z, and a
+  // spline's through its own.
   if (
     entity.type === "line" ||
     entity.type === "polyline3d" ||
+    entity.type === "solid3d" ||
     (entity.type === "spline" && !isLevel(entity))
   ) {
     return outlineDistance()

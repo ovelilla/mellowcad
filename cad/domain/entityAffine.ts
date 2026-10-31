@@ -38,8 +38,8 @@ export function insertLinear(
  * or an arc becomes an ellipse or an elliptical arc, an ellipse another, a
  * spline its points (its knots kept), a hatch its loops — the pattern is left
  * to the caller, which knows whether it is shown or exploded. Null for the
- * types it has none for (text, an MTEXT, an attribute definition), which the
- * caller places otherwise. A polyline's arc segments keep their bulge between
+ * types it has none for (text, an MTEXT, an attribute definition, a solid),
+ * which the caller places otherwise. A polyline's arc segments keep their bulge between
  * the mapped vertices, and its widths take `widthScale`: neither is an
  * ellipse here. A nested reference keeps its rotation and its two factors
  * read off the composed map, any shear dropped.
@@ -133,6 +133,7 @@ export function linearEntity(
     case "text":
     case "mtext":
     case "attdef":
+    case "solid3d":
       return null
   }
 }

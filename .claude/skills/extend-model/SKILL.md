@@ -30,8 +30,8 @@ the file is untrusted). Bump `DRAWING_FILE_VERSION`. The Z fields come through `
 also owes the type tests in `assignTextStyle`, `reconcile`, `setSelectionTextStyle` and
 `EngineState`'s `hasStyleOf`: miss one and a style in use can be deleted.
 
-A type that is drawn as other objects (a reference, a region) answers each query through them
-(`insertFlatGeometry`, `regionLevelEdgeEntities`), and a command that takes "the edge picked" reads
+A type that is drawn as other objects (a reference, a region, a solid) answers each query through
+them (`insertFlatGeometry`, `regionLevelEdgeEntities`, `solidEdgeEntities`), and a command that takes "the edge picked" reads
 it as that object (`regionEdgeAt`).
 
 Then the parts that are no switch at all:

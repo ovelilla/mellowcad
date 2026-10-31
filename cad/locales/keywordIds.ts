@@ -180,6 +180,12 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Decurve",
     "Defit"
   ],
+  "BOX": [
+    "Center",
+    "Cube",
+    "Length",
+    "2Point"
+  ],
   "RECTANG": [
     "Chamfer",
     "Elevation",

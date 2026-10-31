@@ -311,6 +311,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   union: "UNION",
   subtract: "SUBTRACT",
   intersect: "INTERSECT",
+  box: "BOX",
   break: "BREAK",
   breakatpoint: "BREAKATPOINT",
   splinedit: "SPLINEDIT",

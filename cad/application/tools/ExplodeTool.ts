@@ -20,6 +20,7 @@ import {
 } from "../../domain/hatchPatterns"
 import { DEFAULT_LINETYPE_ID } from "../../domain/linetypes"
 import { createRegion, regionEdgeEntity } from "../../domain/regions"
+import { solidFaceRegions } from "../../domain/solids"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
 import type { MessageId } from "../EngineText"
 import type { ObjectSelectorOptions } from "./objectSelection"
@@ -34,6 +35,7 @@ const EXPLODED: ReadonlySet<Entity["type"]> = new Set([
   "mtext",
   "hatch",
   "region",
+  "solid3d",
 ])
 
 /**
@@ -70,7 +72,8 @@ function cannotExplode(entity: Entity): string | null {
  * per line as drawn. A pattern hatch becomes its pattern's lines clipped to
  * its boundary. A region of one face becomes its edges, lines, arcs, circles,
  * ellipses and splines; one of several faces a region per face
- * (region/p09, b02, b04). A polyline's widths are lost, its pieces following its
+ * (region/p09, b02, b04); a 3D solid a region of each face, facing out
+ * (solid/p09). A polyline's widths are lost, its pieces following its
  * centreline, and AutoCAD says so for each wide one.
  *
  * A spline, an ellipse and a solid hatch pass the count and are named once the
@@ -168,6 +171,12 @@ export class ExplodeTool extends SelectionActionTool {
             pieces.push(regionEdgeEntity(entity, edge, nextEntityId()))
           }
         }
+        continue
+      }
+      if (entity.type === "solid3d") {
+        // A region of each face (solid/p09).
+        removedIds.push(entity.id)
+        pieces.push(...solidFaceRegions(entity))
         continue
       }
       if (entity.type === "polyline3d") {

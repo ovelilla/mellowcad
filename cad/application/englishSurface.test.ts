@@ -1240,6 +1240,24 @@ describe("the engine's English surface", () => {
             )
           )
     )
+    walk("BOX", createHarness(), (s) =>
+      s
+        .do("BOX", (c) => submit(c, "BOX", "0,0,0", "100,50", "30"))
+        .do("BOX refused", (c) =>
+          submit(c, "BOX", "FOO", "200,0", "200,50", "300,0", "300,50", "0")
+        )
+        .do("BOX 2Point", (c) => submit(c, "2P", "0,0,0", "0,0,0", "0,0,20"))
+        .do("BOX Center Cube", (c) => submit(c, "BOX", "C", "0,200", "C", "40"))
+        .do("BOX Length", (c) =>
+          submit(c, "BOX", "400,0", "L", "0", "60", "0", "30", "")
+        )
+        .do("LIST", (c) => submit(c, "LIST", "L", ""))
+        .do("select the box", (c) =>
+          c.select(c.entities().find((e) => e.type === "solid3d")!.id)
+        )
+        .do("escape", (c) => c.escape())
+        .do("ISOLINES", (c) => submit(c, "ISOLINES", "FOO", "8"))
+    )
     walk(
       "JOIN made",
       createHarness({

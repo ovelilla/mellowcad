@@ -3,6 +3,7 @@ import { Vec3 } from "../geometry/Vec3"
 import { KnotParameterization } from "../geometry/nurbs"
 import type { Linear2 } from "../geometry/linear"
 import type { RegionFace } from "../geometry/planarRegions"
+import type { Brep } from "../geometry/solids"
 import { EntityColor } from "./colors"
 import { LayerId } from "./layers"
 import { LinetypeId } from "./linetypes"
@@ -34,6 +35,7 @@ export type EntityType =
   | "hatch"
   | "insert"
   | "region"
+  | "solid3d"
 
 interface BaseEntity {
   readonly id: EntityId
@@ -729,6 +731,33 @@ export interface RegionEntity extends BaseEntity {
   readonly faces: readonly RegionFace[]
 }
 
+/**
+ * What made a solid, kept while it is still that primitive: LIST's `Solid
+ * type` and the Properties palette's Geometry (solid/p01, d03). A box rises
+ * `height` along `normal` from the centre of its base, `position`; its length
+ * runs along `xAxis`, its width along `normal × xAxis`. Both axes are unit.
+ */
+export interface BoxPrimitive {
+  readonly kind: "box"
+  readonly position: Vec3
+  readonly xAxis: Vec3
+  readonly normal: Vec3
+  readonly length: number
+  readonly width: number
+  readonly height: number
+}
+
+/**
+ * A 3D solid (DXF's 3DSOLID): its boundary as the kernel's B-rep
+ * (`geometry/solids.ts`), in the WCS. Like a 3D polyline it has no plane:
+ * `normal` and `elevation` are never set.
+ */
+export interface Solid3dEntity extends BaseEntity {
+  readonly type: "solid3d"
+  readonly brep: Brep
+  readonly primitive?: BoxPrimitive
+}
+
 export type Entity =
   | LineEntity
   | CircleEntity
@@ -744,6 +773,7 @@ export type Entity =
   | HatchEntity
   | InsertEntity
   | RegionEntity
+  | Solid3dEntity
 
 export interface Bounds {
   readonly min: Vec2

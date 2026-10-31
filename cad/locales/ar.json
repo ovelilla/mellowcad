@@ -100,6 +100,7 @@
       "region": "منطقة",
       "union": "اتحاد",
       "subtract": "طرح",
+      "box": "صندوق",
       "intersect": "تقاطع"
     },
     "description": {
@@ -195,6 +196,7 @@
       "dimension": "{count, plural, one {بُعد} two {بُعدان} other {أبعاد}}",
       "hatch": "{count, plural, one {تهشير} two {تهشيران} other {تهشيرات}}",
       "insert": "{count, plural, one {مرجع كتلة} two {مرجعا كتلة} other {مراجع كتل}}",
+      "solid3d": "{count, plural, one {مجسم ثلاثي الأبعاد} two {مجسمان ثلاثيا الأبعاد} other {مجسمات ثلاثية الأبعاد}}",
       "region": "{count, plural, one {منطقة} two {منطقتان} other {مناطق}}"
     },
     "array": {
@@ -216,6 +218,7 @@
       },
       "group": {
         "geometry": "الهندسة",
+        "solidHistory": "سجل المجسم",
         "endpoints": "نقاط النهاية",
         "center": "المركز",
         "text": "النص",
@@ -274,6 +277,7 @@
         "minorAxisVectorZ": "متجه المحور الأصغر Z",
         "vertices": "الرؤوس",
         "segments": "المقاطع",
+        "solidType": "نوع المجسم",
         "currentVertex": "الرأس الحالي",
         "vertex": "الرأس",
         "startSegmentWidth": "عرض بداية المقطع",
@@ -283,6 +287,7 @@
         "contents": "المحتوى",
         "justify": "المحاذاة",
         "height": "الارتفاع",
+        "history": "السجل",
         "rotation": "الدوران",
         "lineSpaceFactor": "معامل تباعد الأسطر",
         "lineSpaceDistance": "مسافة تباعد الأسطر",
@@ -336,6 +341,7 @@
         "controlPointY": "نقطة التحكم Y",
         "controlPointZ": "نقطة التحكم Z",
         "weight": "الوزن",
+        "width": "العرض",
         "cvFrame": "إطار رؤوس التحكم",
         "periodic": "دوري",
         "planar": "مستوٍ",
@@ -352,6 +358,7 @@
         "scaleX": "المقياس X",
         "scaleY": "المقياس Y",
         "scaleZ": "المقياس Z",
+        "showHistory": "إظهار السجل",
         "baseX": "القاعدة X",
         "baseY": "القاعدة Y",
         "baseZ": "القاعدة Z",
@@ -394,6 +401,7 @@
         "exactly": "بالضبط",
         "fitPoints": "ملاءمة",
         "controlVertices": "رؤوس التحكم",
+        "box": "صندوق",
         "chord": "الوتر",
         "sqrtChord": "الجذر التربيعي للوتر",
         "uniform": "منتظم",
@@ -403,6 +411,7 @@
         "counterClockwise": "عكس اتجاه عقارب الساعة",
         "clockwise": "مع اتجاه عقارب الساعة",
         "divide": "تقسيم",
+        "historyNone": "بلا",
         "measure": "قياس",
         "predefined": "معرّف مسبقًا",
         "outer": "خارجي"

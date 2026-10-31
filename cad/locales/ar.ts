@@ -104,6 +104,7 @@ export const ar: EngineLocale = {
       "region": "منطقة",
       "union": "اتحاد",
       "subtract": "طرح",
+      "box": "صندوق",
       "intersect": "تقاطع"
     },
     "description": {
@@ -329,6 +330,17 @@ export const ar: EngineLocale = {
           }
         ]
       ],
+      "solid3d": [
+        [
+          "count",
+          2,
+          {
+            "one": "مجسم ثلاثي الأبعاد",
+            "two": "مجسمان ثلاثيا الأبعاد",
+            "other": "مجسمات ثلاثية الأبعاد"
+          }
+        ]
+      ],
       "region": [
         [
           "count",
@@ -397,6 +409,7 @@ export const ar: EngineLocale = {
       },
       "group": {
         "geometry": "الهندسة",
+        "solidHistory": "سجل المجسم",
         "endpoints": "نقاط النهاية",
         "center": "المركز",
         "text": "النص",
@@ -455,6 +468,7 @@ export const ar: EngineLocale = {
         "minorAxisVectorZ": "متجه المحور الأصغر Z",
         "vertices": "الرؤوس",
         "segments": "المقاطع",
+        "solidType": "نوع المجسم",
         "currentVertex": "الرأس الحالي",
         "vertex": "الرأس",
         "startSegmentWidth": "عرض بداية المقطع",
@@ -464,6 +478,7 @@ export const ar: EngineLocale = {
         "contents": "المحتوى",
         "justify": "المحاذاة",
         "height": "الارتفاع",
+        "history": "السجل",
         "rotation": "الدوران",
         "lineSpaceFactor": "معامل تباعد الأسطر",
         "lineSpaceDistance": "مسافة تباعد الأسطر",
@@ -517,6 +532,7 @@ export const ar: EngineLocale = {
         "controlPointY": "نقطة التحكم Y",
         "controlPointZ": "نقطة التحكم Z",
         "weight": "الوزن",
+        "width": "العرض",
         "cvFrame": "إطار رؤوس التحكم",
         "periodic": "دوري",
         "planar": "مستوٍ",
@@ -533,6 +549,7 @@ export const ar: EngineLocale = {
         "scaleX": "المقياس X",
         "scaleY": "المقياس Y",
         "scaleZ": "المقياس Z",
+        "showHistory": "إظهار السجل",
         "baseX": "القاعدة X",
         "baseY": "القاعدة Y",
         "baseZ": "القاعدة Z",
@@ -575,6 +592,7 @@ export const ar: EngineLocale = {
         "exactly": "بالضبط",
         "fitPoints": "ملاءمة",
         "controlVertices": "رؤوس التحكم",
+        "box": "صندوق",
         "chord": "الوتر",
         "sqrtChord": "الجذر التربيعي للوتر",
         "uniform": "منتظم",
@@ -584,6 +602,7 @@ export const ar: EngineLocale = {
         "counterClockwise": "عكس اتجاه عقارب الساعة",
         "clockwise": "مع اتجاه عقارب الساعة",
         "divide": "تقسيم",
+        "historyNone": "بلا",
         "measure": "قياس",
         "predefined": "معرّف مسبقًا",
         "outer": "خارجي"

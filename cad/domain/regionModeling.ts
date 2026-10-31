@@ -212,6 +212,7 @@ function closedLoop(drawn: Entity): ClosedLoop | "open" | null {
     case "hatch":
     case "insert":
     case "region":
+    case "solid3d":
       return null
     default: {
       const unhandled: never = entity

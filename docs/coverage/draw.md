@@ -966,6 +966,69 @@ the same objects in another order); two spline edges running along each other in
 they are one curve; a tangent touch between an ellipse or spline edge and another, which is not
 cut there.
 
+### `BOX` · es `PRISMARECT` · pt-BR `CAIXA`
+
+**Implemented:** BOX as AutoCAD 2027's console asks it (scripts/research/probes/solid, en, es and
+pt-BR): `Specify first corner or [Center]:`, `Specify other corner or [Cube/Length]:` and `Specify
+height or [2Point]:` (es `Precise primera esquina o [Centro]`, `Precise otra esquina o
+[Cubo/Longitud]`, `Precise altura o [2Puntos]`; pt-BR `Especificar primeiro canto ou [Centro]`,
+`… outro canto ou [CUbo/COmprimento]`, `… altura ou [2Pontos]`). Two corners make a box on the
+UCS's axes; Center asks `Specify center:` and `Specify corner or [Cube/Length]:` and centres the box
+on the point, in height too (p02, p13). Cube asks `Specify length:` and makes a cube; Length asks
+`Specify length:` and `Specify width:`; a typed length runs towards the cursor and a negative one
+backwards (p03, p10: Rotation 22, 202), a point gives its distance and heading; the cube's width
+lies to the left of its length, Length's to the side the cursor or the width's point is, the right
+one with the cursor on the line, a typed width's sign unread (p03, p10). The height rises along
+the UCS's Z, down when negative (LIST then adds `Normal:`, p06); a point gives its distance from
+the corner (p06, p10), 2Point the distance between `Specify first point:` and `Specify second
+point:` (p03); a corner at another Z than the first sets the height without asking it (twice its
+rise from the centre, p06, p13), one typed without a Z lies at the first's (p07). The last length,
+width and height are offered as `<default>`s and Enter takes them; with none, Enter is refused as
+`FOO` is (p02, p04, p11). Refusals: `Point or option keyword required.` at every point prompt,
+`Requires numeric distance, second point, or option keyword.` at every distance, `Box of zero
+length not permitted.` / `Box of zero width not permitted.` for a corner on the first's X or Y or
+a length of 0, `Value must be nonzero.` for a height of 0 and for 2Point's second point on its
+first, which is asked again (p05, p06, p12; es `No puede ser un Prisma de longitud cero.`, `No
+puede ser un valor igual a cero.`; pt-BR `Não é permitido uma Caixa de comprimento zero.`). It lies
+in a tilted UCS and at its Z or ELEVATION (p07); it wears the current layer and properties; one
+undo step (p08).
+
+The object, a 3D solid (file version 43): a B-rep, the kernel's (`geometry/solids.ts`) — vertices,
+edges with their curve, faces with their surface and loops of coedges, every edge in two faces run
+opposite ways, the tolerance 1e-6 —, each planar face a region of its plane; its edges run as
+ACIS's do (p01's MPDUMP). It keeps its primitive as LIST and the palette show it: `History = None`,
+`Show History = No`, `Solid type = Box`, `Position` (its base's centre), `Normal` (when not the
+UCS's Z), `Length`, `Width`, `Height`, `Rotation` (its length's heading on the UCS's XY plane), in
+the current UCS (p01, p06, p13, t02). It draws in 2D Wireframe as its edges, a plane having no
+isolines (d01: ISOLINES 4 and 16 draw a box alike; ISOLINES is saved with the drawing); it is
+picked by its edges, in plan and off it, and a window takes it by them; it snaps at its vertices
+(Endpoint), the middles of its edges, Nearest and Perpendicular on them, no Intersection where
+its own edges meet and no Geometric Center or Center on a box (s01, s02); in plan, where a top
+edge hides a bottom one, the bottom's is found (s01). MOVE, COPY, ROTATE, SCALE and MIRROR carry
+it, in a tilted UCS and with a Z too, a mirrored box still a box (t01: Rotation 330; t02); STRETCH
+moves it whole once the window takes a vertex, else leaves it (t03, t05). The Properties palette:
+3D Solid, Geometry's Solid type, Position X/Y/Z, Length, Width, Height and Rotation, Solid History's
+History and Show History, read only (d03). AREA's Object gives its surface, `Area = 700.0000,
+Perimeter = 0.0000` (p01); EXPLODE leaves a region of each face, facing out, which explode into
+lines (p09); REGION rejects it (`1 closed, degenerate or unsupported object rejected.`, e09);
+DIMLINEAR's object and UCS OBject take the edge picked as a line along it (e07, e08); BREAK, OFFSET,
+TRIM, EXTEND, PEDIT, DIMRADIUS and ARRAYPATH's path refuse it with their own words (e01–e06, e10).
+
+**Missing:** the other primitives — CYLINDER, CONE, SPHERE, WEDGE, TORUS, PYRAMID — and the
+isolines of their curved faces (the brief's phase 2b); MASSPROP (its numbers are in the probes'
+MPDUMP) and a box's grips — the base's corners, the edges' arrows, the height's, d02 — with editing
+its Geometry rows in the palette (phase 2c; none here, a click selects it); the 3D commands of its
+own (3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN), the gizmos and sub-objects
+(Ctrl+click), later phases; the dynamic UCS and the jig's 3D drag of the height (here a pick at the
+height prompt gives its distance, as the console does); FILLET and CHAMFER of its edges, which
+AutoCAD asks with `Enter fillet radius or [Expression]:` and `Base surface selection...` (phase
+6; here the pick is passed over); JOIN with a solid picked first, which AutoCAD answers with `Line,
+open polyline, arc, elliptical arc, or open spline expected.  Select a supported object:` (here
+discarded, as a region); LIST of a solid with no primitive (none is made yet; here its History
+lines alone); Solid History's Record History (SOLIDHIST) and Show History; its 3D Visualization's
+Material row; Hidden, shaded and Conceptual styles; the per-drawing defaults reset on OPEN as
+CIRCLERAD's (**unverified**: no OPEN probe of BOX's).
+
 ### `BLOCK` / `B` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOCK` / `-B` · es `BLOQUE` / `BQ` / `MODBLQ` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOQUE` / `-BQ` · pt-BR `BLOCO` / `CB` / `ACADBLOCKDIALOG` / `CRIARB` / `DEFB`, `-BLOCO` / `-CB`
 
 **Implemented:** -BLOCK's command line, which BLOCK asks too (p151, p152; aliases from the 2027

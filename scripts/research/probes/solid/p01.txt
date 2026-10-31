@@ -1,0 +1,16 @@
+_QAFLAGS
+2
+(getvar "ISOLINES")
+_BOX
+0,0,0
+10,20
+5
+_LIST
+_L
+
+_AREA
+_O
+_L
+MPGRIPS
+MPDUMP
+-

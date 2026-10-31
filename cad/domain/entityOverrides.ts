@@ -58,6 +58,8 @@ export function assignEntityLayer(entity: Entity, layerId: LayerId): Entity {
       return { ...entity, layerId }
     case "region":
       return { ...entity, layerId }
+    case "solid3d":
+      return { ...entity, layerId }
   }
 }
 
@@ -99,6 +101,8 @@ export function assignEntityColor(
       return { ...entity, color }
     case "region":
       return { ...entity, color }
+    case "solid3d":
+      return { ...entity, color }
   }
 }
 
@@ -139,6 +143,8 @@ export function assignEntityLinetype(
       return { ...entity, linetype }
     case "region":
       return { ...entity, linetype }
+    case "solid3d":
+      return { ...entity, linetype }
   }
 }
 
@@ -178,6 +184,8 @@ export function assignEntityLineweight(
     case "insert":
       return { ...entity, lineweight }
     case "region":
+      return { ...entity, lineweight }
+    case "solid3d":
       return { ...entity, lineweight }
   }
 }

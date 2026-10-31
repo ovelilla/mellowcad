@@ -28,6 +28,7 @@ import {
   type PolylineEntity,
   type Polyline3dEntity,
   type RegionEntity,
+  type Solid3dEntity,
   type SplineEntity,
   type TextEntity,
   polylineFitted,
@@ -46,6 +47,9 @@ import { LINEWEIGHTS, LINEWEIGHT_BYLAYER } from "../cad/domain/lineweights"
 import type { Vec2 } from "../cad/geometry/Vec2"
 import type { PlanarCurve } from "../cad/geometry/planarCurves"
 import type { RegionFace } from "../cad/geometry/planarRegions"
+import { arbitraryAxis } from "../cad/geometry/ocs"
+import { add3, scale3 } from "../cad/geometry/Vec3"
+import { createBox } from "../cad/domain/solids"
 import type { DrawingSnapshot } from "../cad/serialization/drawingFile"
 import { snapshotOf } from "./builders"
 
@@ -779,6 +783,44 @@ export const regionEntity: fc.Arbitrary<RegionEntity> = fc
     )
   )
 
+/** A box, any size, anywhere, its base facing any way and turned any way in it. */
+export const solidEntity: fc.Arbitrary<Solid3dEntity> = fc
+  .tuple(
+    point,
+    coordinate,
+    fc.double({ min: -Math.PI, max: Math.PI, noNaN: true }),
+    fc.double({ min: -Math.PI / 2, max: Math.PI / 2, noNaN: true }),
+    fc.double({ min: -Math.PI, max: Math.PI, noNaN: true }),
+    positiveLength,
+    positiveLength,
+    positiveLength
+  )
+  .map(([at, z, azimuth, tilt, turn, length, width, height]) => {
+    const normal = {
+      x: Math.cos(tilt) * Math.cos(azimuth),
+      y: Math.cos(tilt) * Math.sin(azimuth),
+      z: Math.sin(tilt),
+    }
+    const axes = arbitraryAxis(normal)!
+    const xAxis = add3(
+      scale3(axes.x, Math.cos(turn)),
+      scale3(axes.y, Math.sin(turn))
+    )
+    return createBox(
+      {
+        kind: "box",
+        position: { ...at, z },
+        xAxis,
+        normal: axes.z,
+        length,
+        width,
+        height,
+      },
+      DEFAULT_LAYER_ID,
+      "solid"
+    )
+  })
+
 export const entity: fc.Arbitrary<Entity> = fc
   .tuple(
     fc.oneof(
@@ -795,7 +837,8 @@ export const entity: fc.Arbitrary<Entity> = fc
       dimensionEntity,
       hatchEntity,
       insertEntity,
-      regionEntity
+      regionEntity,
+      solidEntity
     ),
     zValue,
     zValue,
@@ -820,8 +863,9 @@ export const entity: fc.Arbitrary<Entity> = fc
   .map(([flat, elevation, deltaZ, thickness, normal]) => {
     // Every transform has to carry the Z fields and the normal, which
     // TypeScript cannot check on optional ones; a flat drawing alone would
-    // never notice one dropped. A 3D polyline has none: its vertices hold Z.
-    if (flat.type === "polyline3d") return flat
+    // never notice one dropped. A 3D polyline or a solid has none: its
+    // vertices hold Z.
+    if (flat.type === "polyline3d" || flat.type === "solid3d") return flat
     let placed: Entity = withElevation(flat, elevation)
     if (placed.type === "line") placed = withDeltaZ(placed, deltaZ)
     if (hasThickness(placed)) placed = withThickness(placed, thickness)

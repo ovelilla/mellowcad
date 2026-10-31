@@ -101,7 +101,8 @@ prompt's `<90>`, DIST's `Angle in XY Plane = 45`, ROTATE's `ANGBASE=0`, the tool
 Properties palette's), LUPREC, LWDISPLAY, ATTMODE (regenerating), ELEVATION, THICKNESS,
 NAVVCUBEDISPLAY (0–3), FILLMODE, PLINEWID, FILLETRAD, CHAMFERA, CHAMFERB (none negative), TEXTSIZE
 (a negative taken as its size, 0 refused), ORTHOMODE, SNAPMODE (0–2), SNAPUNIT (both above 0),
-GRIDMODE, INSUNITS (0–24), CECOLOR (a number, 256 ByLayer, a name in English or the command
+GRIDMODE, INSUNITS (0–24), ISOLINES (0–2047, 4 in a new drawing, saved with it; solid/v01–v03:
+`Requires an integer between 0 and 2047.`), CECOLOR (a number, 256 ByLayer, a name in English or the command
 language, `BYLAYER` / es `PORCAPA`, `r,g,b` and `RGB:r,g,b`; shown `"1"`, `"RGB:255,0,0"`), CELTYPE
 (a linetype case-blind or ByLayer, shown `"BYLAYER"`), CELWEIGHT (hundredths of a millimetre, −1
 ByLayer, the standard values; −3 to 211), CLAYER and TEXTSTYLE (a name case-blind), HPNAME (its `_`

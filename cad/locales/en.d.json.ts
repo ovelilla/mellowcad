@@ -101,6 +101,7 @@ declare const source: {
       "region": string
       "union": string
       "subtract": string
+      "box": string
       "intersect": string
     }
     "description": {
@@ -230,6 +231,7 @@ declare const source: {
       "dimension": string
       "hatch": string
       "insert": string
+      "solid3d": string
       "region": string
     }
     "array": {
@@ -251,6 +253,7 @@ declare const source: {
       }
       "group": {
         "geometry": string
+        "solidHistory": string
         "endpoints": string
         "center": string
         "text": string
@@ -309,6 +312,7 @@ declare const source: {
         "minorAxisVectorZ": string
         "vertices": string
         "segments": string
+        "solidType": string
         "currentVertex": string
         "vertex": string
         "startSegmentWidth": string
@@ -318,6 +322,7 @@ declare const source: {
         "contents": string
         "justify": string
         "height": string
+        "history": string
         "rotation": string
         "lineSpaceFactor": string
         "lineSpaceDistance": string
@@ -371,6 +376,7 @@ declare const source: {
         "controlPointY": string
         "controlPointZ": string
         "weight": string
+        "width": string
         "cvFrame": string
         "periodic": string
         "planar": string
@@ -387,6 +393,7 @@ declare const source: {
         "scaleX": string
         "scaleY": string
         "scaleZ": string
+        "showHistory": string
         "baseX": string
         "baseY": string
         "baseZ": string
@@ -429,6 +436,7 @@ declare const source: {
         "exactly": string
         "fitPoints": string
         "controlVertices": string
+        "box": string
         "chord": string
         "sqrtChord": string
         "uniform": string
@@ -438,6 +446,7 @@ declare const source: {
         "counterClockwise": string
         "clockwise": string
         "divide": string
+        "historyNone": string
         "measure": string
         "predefined": string
         "outer": string
@@ -592,6 +601,7 @@ declare const source: {
       "-LINETYPE": string[]
       "LWEIGHT": string[]
       "-LWEIGHT": string[]
+      "BOX": string[]
       "REGION": string[]
       "UNION": string[]
       "SUBTRACT": string[]
@@ -777,6 +787,12 @@ declare const source: {
         "Spline curve": string
         "Decurve": string
         "Defit": string
+      }
+      "BOX": {
+        "Center": string
+        "Cube": string
+        "Length": string
+        "2Point": string
       }
       "RECTANG": {
         "Chamfer": string
@@ -1538,6 +1554,13 @@ declare const source: {
       "textEditModeOption": string
       "viewAngleInPlane": string
       "viewAngleFromPlane": string
+      "boxFirstCornerOr": string
+      "boxOtherCornerOr": string
+      "boxCenter": string
+      "boxCornerOr": string
+      "boxLength": string
+      "boxWidth": string
+      "boxHeightOr": string
       "specifyFirstPoint": string
       "specifyNextPointOr": string
       "specifyNextPointOrClose": string
@@ -2375,6 +2398,17 @@ declare const source: {
       "subtractFrom": string
       "subtractWhat": string
       "regionAreaReport": string
+      "boxZeroLength": string
+      "boxZeroWidth": string
+      "boxValueNonzero": string
+      "listSolidHistory": string
+      "listSolidType": string
+      "listBoxPosition": string
+      "listBoxNormal": string
+      "listBoxLength": string
+      "listBoxWidth": string
+      "listBoxHeight": string
+      "listBoxRotation": string
       "listRegionArea": string
       "listRegionPerimeter": string
       "listRegionBounds": string

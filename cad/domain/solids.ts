@@ -1,0 +1,170 @@
+import { Vec3, add3, cross3, length3, scale3, sub3 } from "../geometry/Vec3"
+import { Axes3, axesToWorld } from "../geometry/ocs"
+import {
+  Brep,
+  boxBrep,
+  brepArea,
+  brepEdgeSegments,
+  brepMapped,
+  planarFace,
+  unsigned0,
+} from "../geometry/solids"
+import { createRegion } from "./regions"
+import { createLine } from "./entityFactories"
+import { nextEntityId } from "./entityIds"
+import { DEFAULT_LAYER_ID, LayerId } from "./layers"
+import { withElevation, withNormal } from "./elevation"
+import { Ucs, worldDirectionToUcs, worldPointToUcs } from "./ucs"
+import { normalizeDegrees } from "../geometry/primitives"
+import {
+  BoxPrimitive,
+  Entity,
+  EntityId,
+  LineEntity,
+  RegionEntity,
+  Solid3dEntity,
+} from "./entityTypes"
+
+/** The box a primitive describes, as the kernel's B-rep. */
+export function boxPrimitiveBrep(box: BoxPrimitive): Brep {
+  const y = cross3(box.normal, box.xAxis)
+  const corner = sub3(
+    box.position,
+    add3(scale3(box.xAxis, box.length / 2), scale3(y, box.width / 2))
+  )
+  return boxBrep(
+    corner,
+    scale3(box.xAxis, box.length),
+    scale3(y, box.width),
+    scale3(box.normal, box.height)
+  )
+}
+
+/** BOX's solid: the box `primitive` describes, which it keeps as its history. */
+export function createBox(
+  primitive: BoxPrimitive,
+  layerId: LayerId = DEFAULT_LAYER_ID,
+  id: EntityId = nextEntityId()
+): Solid3dEntity {
+  return {
+    id,
+    type: "solid3d",
+    layerId,
+    brep: boxPrimitiveBrep(primitive),
+    primitive: {
+      ...primitive,
+      position: unsigned0(primitive.position),
+      xAxis: unsigned0(primitive.xAxis),
+      normal: unsigned0(primitive.normal),
+    },
+  }
+}
+
+/** A similarity of space: `rotation` (a reflection when left-handed), then `scale`, then `translation`. */
+export interface SolidMap {
+  readonly rotation: Axes3
+  readonly scale: number
+  readonly translation: Vec3
+}
+
+/**
+ * The solid carried through `map`, keeping its id: its boundary and its
+ * primitive. A box mirrored is still a box (solid/t01: Rotation 330 after a
+ * mirror across a level line), its length axis and normal reflected and its
+ * width axis their cross product again, which its symmetry allows.
+ */
+export function solidMapped(
+  solid: Solid3dEntity,
+  map: SolidMap
+): Solid3dEntity {
+  const { x, y, z } = map.rotation
+  const reflects = length3(add3(cross3(x, y), scale3(z, -1))) > 1
+  const direction = (d: Vec3) => axesToWorld(map.rotation, d)
+  const point = (p: Vec3) =>
+    add3(scale3(direction(p), map.scale), map.translation)
+  const box = solid.primitive
+  return {
+    ...solid,
+    brep: brepMapped(solid.brep, point, direction, reflects),
+    ...(box
+      ? {
+          primitive: {
+            ...box,
+            position: unsigned0(point(box.position)),
+            xAxis: unsigned0(direction(box.xAxis)),
+            normal: unsigned0(direction(box.normal)),
+            length: box.length * map.scale,
+            width: box.width * map.scale,
+            height: box.height * map.scale,
+          },
+        }
+      : {}),
+  }
+}
+
+/** The solid's ByObject colour, linetype and lineweight on what is drawn or made of it. */
+function dressed<T extends Entity>(solid: Solid3dEntity, piece: T): T {
+  return {
+    ...piece,
+    ...(solid.color ? { color: solid.color } : {}),
+    ...(solid.linetype ? { linetype: solid.linetype } : {}),
+    ...(solid.lineweight !== undefined ? { lineweight: solid.lineweight } : {}),
+  }
+}
+
+/**
+ * What the solid draws as, is picked and snapped by in 2D Wireframe: its
+ * edges, as lines of its own id from end to end at their heights. A plane
+ * has no isolines (solid/d01: ISOLINES 4 and 16 draw a box alike).
+ */
+export function solidEdgeEntities(solid: Solid3dEntity): LineEntity[] {
+  return brepEdgeSegments(solid.brep).map(([a, b]) =>
+    dressed(solid, createLine(a, b, solid.layerId, solid.id))
+  )
+}
+
+/** The points STRETCH catches it by: its vertices (solid/t03, t05). */
+export function solidStretchPoints(solid: Solid3dEntity): readonly Vec3[] {
+  return solid.brep.vertices
+}
+
+/**
+ * EXPLODE's pieces: a region of each face, in the plane of its outward normal,
+ * wearing the solid's layer and overrides (solid/p09).
+ */
+export function solidFaceRegions(solid: Solid3dEntity): RegionEntity[] {
+  return solid.brep.faces.map((face) => {
+    const flat = planarFace(solid.brep, face)
+    const region = dressed(solid, createRegion([flat.face], solid.layerId))
+    return withNormal(withElevation(region, flat.elevation), flat.axes.z)
+  })
+}
+
+/** Its surface area: AREA's Object (solid/p01, `Area = 700.0000, Perimeter = 0.0000`). */
+export function solidArea(solid: Solid3dEntity): number {
+  return brepArea(solid.brep)
+}
+
+/** A box's history as LIST and the palette read it in `ucs`. */
+export interface BoxInUcs {
+  /** The centre of its base. */
+  readonly position: Vec3
+  /** Its normal, or null when it is the UCS's Z (LIST then leaves the line out, solid/p06). */
+  readonly normal: Vec3 | null
+  /** Degrees, its length's heading on the UCS's XY plane (solid/p13, t02). */
+  readonly rotation: number
+}
+
+export function boxInUcs(box: BoxPrimitive, ucs: Ucs): BoxInUcs {
+  const normal = worldDirectionToUcs(ucs, box.normal)
+  const along = worldDirectionToUcs(ucs, box.xAxis)
+  const level =
+    Math.abs(normal.x) <= TILT && Math.abs(normal.y) <= TILT && normal.z > 0
+  return {
+    position: worldPointToUcs(ucs, box.position),
+    normal: level ? null : normal,
+    rotation: normalizeDegrees((Math.atan2(along.y, along.x) * 180) / Math.PI),
+  }
+}
+
+const TILT = 1e-10

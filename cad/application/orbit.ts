@@ -90,8 +90,10 @@ export function drawingBox(
   let low = Number.POSITIVE_INFINITY
   let high = Number.NEGATIVE_INFINITY
   for (const entity of entities) {
-    if (entity.type === "polyline3d") {
-      for (const vertex of entity.vertices) {
+    if (entity.type === "polyline3d" || entity.type === "solid3d") {
+      const vertices =
+        entity.type === "solid3d" ? entity.brep.vertices : entity.vertices
+      for (const vertex of vertices) {
         low = Math.min(low, vertex.z)
         high = Math.max(high, vertex.z)
       }

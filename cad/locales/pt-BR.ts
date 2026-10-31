@@ -104,6 +104,7 @@ export const ptBR: EngineLocale = {
       "region": "Região",
       "union": "União",
       "subtract": "Subtrair",
+      "box": "Caixa",
       "intersect": "Intersecção"
     },
     "description": {
@@ -316,6 +317,16 @@ export const ptBR: EngineLocale = {
           }
         ]
       ],
+      "solid3d": [
+        [
+          "count",
+          2,
+          {
+            "one": "Sólido 3D",
+            "other": "Sólidos 3D"
+          }
+        ]
+      ],
       "region": [
         [
           "count",
@@ -376,6 +387,7 @@ export const ptBR: EngineLocale = {
       },
       "group": {
         "geometry": "Geometria",
+        "solidHistory": "Histórico do sólido",
         "endpoints": "Pontos finais",
         "center": "Centro",
         "text": "Texto",
@@ -434,6 +446,7 @@ export const ptBR: EngineLocale = {
         "minorAxisVectorZ": "Vetor Z do eixo menor",
         "vertices": "Vértices",
         "segments": "Segmentos",
+        "solidType": "Tipo de sólido",
         "currentVertex": "Vértice atual",
         "vertex": "Vértice",
         "startSegmentWidth": "Largura inicial do segmento",
@@ -443,6 +456,7 @@ export const ptBR: EngineLocale = {
         "contents": "Conteúdo",
         "justify": "Justificar",
         "height": "Altura",
+        "history": "Histórico",
         "rotation": "Rotação",
         "lineSpaceFactor": "Fator de espaçamento de linha",
         "lineSpaceDistance": "Distância de espaçamento de linha",
@@ -496,6 +510,7 @@ export const ptBR: EngineLocale = {
         "controlPointY": "Ponto de controle Y",
         "controlPointZ": "Ponto de controle Z",
         "weight": "Peso",
+        "width": "Largura",
         "cvFrame": "Quadro do VC",
         "periodic": "Periódico",
         "planar": "Plana",
@@ -512,6 +527,7 @@ export const ptBR: EngineLocale = {
         "scaleX": "Escala X",
         "scaleY": "Escala Y",
         "scaleZ": "Escala Z",
+        "showHistory": "Mostrar histórico",
         "baseX": "Base X",
         "baseY": "Base Y",
         "baseZ": "Base Z",
@@ -554,6 +570,7 @@ export const ptBR: EngineLocale = {
         "exactly": "Exatamente",
         "fitPoints": "Ajustar",
         "controlVertices": "Vértices de controle",
+        "box": "Caixa",
         "chord": "Banzo",
         "sqrtChord": "RaizQuadBanzo",
         "uniform": "Uniforme",
@@ -563,6 +580,7 @@ export const ptBR: EngineLocale = {
         "counterClockwise": "Sentido anti-horário",
         "clockwise": "Sentido horário",
         "divide": "Dividir",
+        "historyNone": "Nenhum",
         "measure": "Medir",
         "predefined": "Predefinido",
         "outer": "Externa"
@@ -1082,6 +1100,9 @@ export const ptBR: EngineLocale = {
       "-LWEIGHT": [
         "-ESPLINHA"
       ],
+      "BOX": [
+        "CAIXA"
+      ],
       "REGION": [
         "REGIAO",
         "REG"
@@ -1278,6 +1299,12 @@ export const ptBR: EngineLocale = {
         "Spline curve": "Spline",
         "Decurve": "desfCurva",
         "Defit": "DEsfajuste"
+      },
+      "BOX": {
+        "Center": "Centro",
+        "Cube": "CUbo",
+        "Length": "COmprimento",
+        "2Point": "2Pontos"
       },
       "RECTANG": {
         "Chamfer": "CHanfro",
@@ -2079,6 +2106,13 @@ export const ptBR: EngineLocale = {
       "textEditModeOption": "Digite uma opção de modo de edição de texto",
       "viewAngleInPlane": "Insira o ângulo no plano XY a partir do eixo X",
       "viewAngleFromPlane": "Insira o ângulo a partir do plano XY",
+      "boxFirstCornerOr": "Especificar primeiro canto ou",
+      "boxOtherCornerOr": "Especificar outro canto ou",
+      "boxCenter": "Especificar centro",
+      "boxCornerOr": "Especificar canto ou",
+      "boxLength": "Especificar comprimento",
+      "boxWidth": "Especificar largura",
+      "boxHeightOr": "Especificar altura ou",
       "specifyFirstPoint": "Especificar primeiro ponto",
       "specifyNextPointOr": "Especificar próximo ponto ou",
       "specifyNextPointOrClose": "Especificar próximo ponto ou",
@@ -4662,6 +4696,7 @@ export const ptBR: EngineLocale = {
             "hatch": "HATCH",
             "insert": "REFERÊNCIA DE BLOCO",
             "region": "REGION",
+            "solid3d": "3DSOLID",
             "other": "MATRIZ"
           }
         ]
@@ -6067,6 +6102,63 @@ export const ptBR: EngineLocale = {
         " , Perímetro = ",
         [
           "around"
+        ]
+      ],
+      "boxZeroLength": "Não é permitido uma Caixa de comprimento zero.",
+      "boxZeroWidth": "Não é permitida uma Caixa de largura zero.",
+      "boxValueNonzero": "Este valor precisa ser diferente de zero.",
+      "listSolidHistory": "       Histórico = Nenhum\nMostrar histórico = Não",
+      "listSolidType": "  Tipo de sólido = Caixa",
+      "listBoxPosition": [
+        "          Posição, X = ",
+        [
+          "x"
+        ],
+        " Y = ",
+        [
+          "y"
+        ],
+        " Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listBoxNormal": [
+        "           Normal: X = ",
+        [
+          "x"
+        ],
+        " Y = ",
+        [
+          "y"
+        ],
+        " Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listBoxLength": [
+        "      Comprimento: ",
+        [
+          "length"
+        ]
+      ],
+      "listBoxWidth": [
+        "          Largura: ",
+        [
+          "width"
+        ]
+      ],
+      "listBoxHeight": [
+        "           Altura: ",
+        [
+          "height"
+        ]
+      ],
+      "listBoxRotation": [
+        "          Rotação: ",
+        [
+          "angle"
         ]
       ],
       "listRegionArea": [
