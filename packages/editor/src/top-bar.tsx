@@ -505,14 +505,15 @@ function PaletteToggle({
       variant={active ? "active" : "ghost"}
       aria-pressed={active}
       // A whole width, as every part of the bar: a text one would leave what
-      // follows it on a fraction of a pixel.
-      className="w-24 justify-start gap-2"
+      // follows it on a fraction of a pixel. Button's own inset and gap leave
+      // the label the room pt-BR's «Camadas» needs.
+      className="w-24 justify-start"
       onClick={() => {
         engine.togglePalette(tab)
         engine.focusSurface()
       }}
     >
-      <Icon className="shrink-0" />
+      <Icon data-icon="inline-start" className="shrink-0" />
       <span className="truncate">{label}</span>
     </Button>
   )

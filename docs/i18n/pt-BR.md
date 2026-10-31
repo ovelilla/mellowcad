@@ -1,10 +1,10 @@
 # Brazilian Portuguese (`pt-BR`)
 
-> **Command language:** `localized`, Brazilian Portuguese AutoCAD's. **Status:** `draft` since
-> 31/10/2026, at `/pt-br`: the site, the editor, the four "Use" pages and the engine's interface
-> are translated, and the command line speaks Brazilian Portuguese AutoCAD's language, complete
-> (31/10/2026: "Command language", below). **Review:** none by a native speaker; what no console
-> or desktop probe settled is **unverified** below.
+> **Command language:** `localized`, Brazilian Portuguese AutoCAD's. **Status:** `live` since
+> 31/10/2026, at `/pt-br` (a `draft` earlier that day): the site, the editor, the four "Use" pages,
+> the engine's interface and its command language, complete ("Command language", below), checked
+> before going live against AutoCAD 2027.1 (26.0.116). **Review:** none by a native speaker; what
+> no console or desktop probe settled is **unverified** below.
 
 The words are Autodesk's own Brazilian Portuguese localization of AutoCAD, never a translation of
 ours, as Spanish's are (`es.md`). The language is Brazil's, and `LANGUAGE_NAMES` says so
@@ -40,7 +40,8 @@ ours, as Spanish's are (`es.md`). The language is Brazil's, and `LANGUAGE_NAMES`
 - **Console:** the pack is installed on the owner's AutoCAD since 31/10/2026, with 2027.1 applied
   again after it (`pt-BR/acadres.dll` 26.0.116, as Spanish's); its tables are the ones
   `open-pack.sh` extracted, byte for byte. `runacc.sh … pt-BR` and `probe.sh --lang pt-BR` run its
-  console. **Desktop:** not driven in pt-BR yet (tooltips, dynamic input, the palette's rows).
+  console. **Desktop:** `acad.exe /language pt-BR` ("The desktop, and an answer against the colon",
+  below).
 
 ## Deviations
 
@@ -57,7 +58,7 @@ ours, as Spanish's are (`es.md`). The language is Brazil's, and `LANGUAGE_NAMES`
 | --- | --- | --- | --- | --- |
 | Object snaps | Endpoint, Midpoint, Center, Intersection, Apparent intersection | Ponto final, Meio, Centro, Intersecção, Intersecção aparente | P acadres 70–80 (2027.1's: «Extremidade» became «Ponto final»), C 50383F73-4F23-4F70-B4FC-52D5748D80AF | yes |
 |  | Perpendicular, Tangent, Insertion, Extension, Parallel, Quadrant, Nearest | Perpendicular, Tangente, Inserção, Extensão, Paralela, Quadrante, Mais próximo | P acadres 77–79, 7544, 32998, 20670; X PM_0001 | yes |
-|  | From, None (the snap menu) | De, Nenhum | X PM_0001 | yes |
+|  | From, Point Filters, None (the snap menu) | De, Filtros de ponto, Nenhum | X PM_0001, ACAD_1863 | yes |
 | Status bar | Object snap, Object snap tracking, Polar tracking | Snap ao objeto, Rastreamento de snap ao objeto, Rastreamento polar | P acadres 20022, 20026, 20029 | yes |
 |  | Ortho mode, Grid, Snap mode | Modo Orto, Grade, Modo snap | C E3B34B0A-EA98-45E9-937A-BF5FEF4152DB («modo Orto» in its shortcut pages; the tooltip says «Modo Ortogonal», P acadres 20023), P acadres 20020 | yes |
 |  | Snap X spacing, Polar distance, Grid snap, Polar snap, Increment angle | Espaçamento X do snap, Distância polar, Snap à grade, Snap polar, Ângulo de incremento | D dwgaidsRes (Drafting Settings) | yes |
@@ -340,16 +341,26 @@ form of 1 too. The hero's count is never shown at 0, and has none.
 ## Length
 
 On the same table ids, pt-BR runs like Spanish: labels of up to 20 characters +24% in total
-(median +15%, 90th percentile +71%; Spanish +25%, +15%, +75%), prompts +25% (Spanish +22%). What
-fits Spanish should fit; the screenshots before going live check it.
+(median +15%, 90th percentile +71%; Spanish +25%, +15%, +75%), prompts +25% (Spanish +22%). The
+catalogs as a whole run as Spanish's: the editor's 4,387 characters (Spanish 4,516), the engine's
+interface 5,826 (5,928), the site 16,180 (16,017).
+
+Seen before going live (31/10/2026; the landing at 360 px, the editor at 1280×720, every
+drop-down, the shortcut and snap menus): what did not fit was the layout's, fixed there for every
+language — the palette toggle «Camadas», the palette panel's four tabs, the snap's name in a live
+figure, the try-it box's example at 360 px, the local-first diagram's «salvamento automático» and
+a list that broke `-DEFATRIB` after its hyphen. A palette row's label wraps where it runs long
+(«Espessura de linha», four rows of the dimension style), as English's «Draw dim line between ext
+lines» does: Autodesk's words stay whole.
 
 ## Input
 
 ABNT2 is latin with dead keys (´ ` ~ ^ ¨) and its own `ç`. Command names and keywords are ASCII
-(`CIRCULO`, `RETANGULO`; the keyword's letter of `âNgulo` is `N`). The command line and the dynamic
-input are real `<input>`s, so a dead key composes in them natively; whether a dead key pressed with
-the canvas focused reaches them composed is checked in the browser before going live, and no IME
-handling is added unless that fails.
+(`CIRCULO`, `RETANGULO`; the keyword's letter of `âNgulo` is `N`). Checked in Chrome before going
+live (31/10/2026), both ways a dead key reaches a page — Windows' `keydown` of `Dead` and then the
+composed letter, Linux's and macOS's composition — on the drawing, in the command line's field and
+in the dynamic input: `é`, `ã`, `â` and `ç` arrive whole, and TEXT keeps «Ângulo de ação» and «Élan
+e pé» typed from a dead key first, the box already focused. No IME handling was added.
 
 ## Review
 

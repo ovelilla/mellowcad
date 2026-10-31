@@ -131,13 +131,17 @@ describe("docs:check", () => {
   it("holds each translation to its English page", () => {
     const tree = packages()
     const [name] = USE_PAGES
+    const missing = LIVE.at(-1)
     tree[`content/docs/${name}.mdx`] += "A new line.\n"
-    delete tree[`content/docs/${name}.ar.mdx`]
+    delete tree[`content/docs/${name}.${missing}.mdx`]
     const hash = sourceHash(tree[`content/docs/${name}.mdx`])
-    expect(checkDocs(repo(tree))).toEqual([
-      `content/docs/${name}.es.mdx: out of date with ${name}.mdx: bring it up to date, then set sourceHash: "${hash}"`,
-      `content/docs/${name}.ar.mdx: missing: ${name}.mdx in ar`,
-    ])
+    expect(checkDocs(repo(tree))).toEqual(
+      LIVE.map((locale) =>
+        locale === missing
+          ? `content/docs/${name}.${locale}.mdx: missing: ${name}.mdx in ${locale}`
+          : `content/docs/${name}.${locale}.mdx: out of date with ${name}.mdx: bring it up to date, then set sourceHash: "${hash}"`
+      )
+    )
   })
 
   it.skipIf(DRAFTS.length === 0)("lets a draft miss a page, but holds the ones it has", () => {
@@ -161,13 +165,16 @@ describe("docs:check", () => {
     const [name] = USE_PAGES
     const generated = (body: string) =>
       `---\ntitle: T\ndescription: D\ntype: reference\ngenerated: "gen.test.ts"\n---\n\n${body}\n`
+    const byHand = LIVE.at(-1)
     tree[`content/docs/${name}.mdx`] = generated("## A [#a]")
-    tree[`content/docs/${name}.es.mdx`] = generated("## A [#a]")
-    tree[`content/docs/${name}.ar.mdx`] = translated("x", "## A [#a]")
+    for (const locale of LIVE) {
+      tree[`content/docs/${name}.${locale}.mdx`] =
+        locale === byHand ? translated("x", "## A [#a]") : generated("## A [#a]")
+    }
     tree["content/docs/guide.mdx"] = page(`[a](/docs/${name}#a) [b](/docs/${name}#b)`)
     expect(checkDocs(repo(tree))).toEqual([
       'content/docs/guide.mdx: "guide" is not in USE_PAGES (lib/docs/use.ts)',
-      `content/docs/${name}.ar.mdx: written by gen.test.ts, as ${name}.mdx is: no sourceHash`,
+      `content/docs/${name}.${byHand}.mdx: written by gen.test.ts, as ${name}.mdx is: no sourceHash`,
       `content/docs/guide.mdx: the link "/docs/${name}#b" names no heading of /docs/${name}`,
     ])
   })

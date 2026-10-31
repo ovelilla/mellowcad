@@ -1,3 +1,4 @@
+import type { ReactNode } from "react"
 import { getTranslations } from "next-intl/server"
 
 import { COMMAND_GROUPS, type CommandGroup } from "@/content/commands"
@@ -28,6 +29,35 @@ const ALT = {
   inquiry: "inquiryAlt",
   files: "filesAlt",
 } as const satisfies Record<CommandGroup, string>
+
+// The dot held to the name before it, so no line starts with one.
+const SEPARATOR = "\u00a0· "
+
+/**
+ * Command names as one line that breaks only between them. WHY the spans: a
+ * line may break after a hyphen, and pt-BR's list broke -DEFATRIB after its
+ * own; only such names get one, which keeps the page's bytes down.
+ */
+function commandList(names: readonly string[]): ReactNode[] {
+  const out: ReactNode[] = []
+  let text = ""
+  names.forEach((name, index) => {
+    if (index > 0) text += SEPARATOR
+    if (!name.startsWith("-")) {
+      text += name
+      return
+    }
+    if (text !== "") out.push(text)
+    out.push(
+      <span key={name} className="whitespace-nowrap">
+        {name}
+      </span>
+    )
+    text = ""
+  })
+  if (text !== "") out.push(text)
+  return out
+}
 
 /**
  * The toolset as a drawing index: one sheet per ribbon group, each with a
@@ -92,7 +122,7 @@ export async function ToolsetSection() {
                 {/* The command language, isolated: a list that starts with
                     -VIEW must not lose its hyphen to the far end. */}
                 <span dir="ltr" lang={engineText(locale).commandTag}>
-                  {byGroup[group].map((command) => command.name).join(" · ")}
+                  {commandList(byGroup[group].map((command) => command.name))}
                 </span>
               </p>
             </li>

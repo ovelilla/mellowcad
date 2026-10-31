@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest"
 
-import { recordDemo, transcript } from "@mellowcad/engine"
-import { ar } from "@mellowcad/engine/locales/ar"
-import { es } from "@mellowcad/engine/locales/es"
+import { THEME, recordDemo, transcript } from "@mellowcad/engine"
+import { loadEngineLocale } from "@/i18n/engine"
+import { routing } from "@/i18n/routing"
 import { plotDemo, renderFigure } from "@/lib/plot"
 
 import { diagramsIn } from "./diagrams.fixture"
@@ -24,25 +24,42 @@ describe.each(
         session.figure,
       ])
     ),
-    ...diagramsIn("en"),
-    ...diagramsIn("es"),
-    ...diagramsIn("ar"),
+    ...Object.fromEntries(
+      routing.locales.flatMap((locale) => Object.entries(diagramsIn(locale)))
+    ),
   })
 )("the %s figure", (_name, figure) => {
   // Scripts name commands by their global name with _ (_LINE), as a
   // portable AutoCAD script does, so they run in every command language.
-  it.each([
-    ["English", undefined],
-    ["Spanish", es],
-    ["Arabic", ar],
-  ])(
+  it.each(routing.locales)(
     "replays in %s without the engine reporting an error",
-    async (_language, locale) => {
+    async (language) => {
+      const locale = await loadEngineLocale(language)
       const recording = await recordDemo(figure.script, { locale })
       const errors = recording.steps
         .flatMap((step) => step.output)
         .filter((line) => line.kind === "error")
       expect(errors).toEqual([])
+    }
+  )
+
+  // A live figure is the editor's last frame, and a snap's name runs as long
+  // as its language words it: "Endpoint" and «Ponto final» lost their ends.
+  it.runIf("live" in figure).each(routing.locales)(
+    "keeps its tooltips inside it in %s",
+    async (language) => {
+      const locale = await loadEngineLocale(language)
+      const { scene } = await recordDemo(figure.script, { locale })
+      for (const primitive of scene.primitives) {
+        if (primitive.kind !== "rect") continue
+        if (primitive.fill !== THEME.snapTooltipBg) continue
+        expect(primitive.min.x + primitive.width).toBeLessThanOrEqual(
+          figure.width
+        )
+        expect(primitive.min.y + primitive.height).toBeLessThanOrEqual(
+          figure.height
+        )
+      }
     }
   )
 

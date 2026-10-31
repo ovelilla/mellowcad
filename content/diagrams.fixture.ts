@@ -1,16 +1,23 @@
+import type { AppLocale } from "@/i18n/routing"
 import ar from "@/messages/ar.json"
 import en from "@/messages/en.json"
 import es from "@/messages/es.json"
+import ptBR from "@/messages/pt-BR.json"
 
 import { DIAGRAMS, type FigureSpec } from "./figures"
 
 type Words = Readonly<Record<string, string>>
 type Catalog = { readonly LocalFirst?: Words; readonly Engine?: Words }
 
-const CATALOGS: Readonly<Record<string, Catalog>> = { en, es, ar }
+const CATALOGS: Readonly<Record<AppLocale, Catalog>> = {
+  en,
+  es,
+  ar,
+  "pt-BR": ptBR,
+}
 
 /** The diagrams as a language's messages word them, keyed `name.locale`. */
-export function diagramsIn(locale: string): Record<string, FigureSpec> {
+export function diagramsIn(locale: AppLocale): Record<string, FigureSpec> {
   const catalog = CATALOGS[locale]
   const local: Words = { ...en.LocalFirst, ...catalog.LocalFirst }
   const engine: Words = { ...en.Engine, ...catalog.Engine }

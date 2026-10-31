@@ -109,8 +109,10 @@ export function PalettePanel({ engine, state }: PieceProps): ReactElement {
                 onClick={(event) => {
                   if (event.detail > 0) engine.focusSurface()
                 }}
+                // WHY px-1: at the panel's narrowest the four names must
+                // fit in every language, and pt-BR's ran 8 px over with 1.5.
                 className={cn(
-                  "h-7 shrink-0 rounded-sm px-1.5 whitespace-nowrap text-muted-foreground outline-none select-none",
+                  "h-7 shrink-0 rounded-sm px-1 whitespace-nowrap text-muted-foreground outline-none select-none",
                   "hover:bg-accent/60 hover:text-foreground focus-visible:ring-2 focus-visible:ring-ring",
                   "data-active:bg-active/15 data-active:text-active-foreground"
                 )}

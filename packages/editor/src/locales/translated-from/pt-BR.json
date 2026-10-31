@@ -116,6 +116,7 @@
   "Units.ok": "OK",
   "Units.cancel": "Cancel",
   "SnapOverride.from": "From",
+  "SnapOverride.pointFilters": "Point Filters",
   "SnapOverride.none": "None",
   "SelectionCycling.title": "Selection",
   "SelectionCycling.none": "None",

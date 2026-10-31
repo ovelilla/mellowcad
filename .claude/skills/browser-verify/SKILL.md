@@ -52,6 +52,11 @@ clipboard once shipped a hang no harness test could see.
   the cursor moved onto the canvas first (`#x,y` for absolute: a point typed at a second-point
   prompt is relative). A typed length takes its direction from the cursor: move the mouse off the
   last point first, or LINE draws nothing.
+- **Dead keys reach a page two ways**, and a layout that has them is driven both ways through
+  CDP: Windows sends a `keydown` of `Dead`, then the composed letter (CDP's Input.dispatchKeyEvent
+  with `key: "Dead"`, then one with `text: "é"`); Linux and macOS compose (Input.imeSetComposition,
+  then Input.insertText). Type on the drawing, in the command line's
+  field and in the dynamic input, and read what the drawing kept (pt-BR's ABNT2, 31/10/2026).
 - Scope dynamic-input typing to `[data-dynamic-input] input`; a bare `querySelector("input")`
   matches the hidden file input.
 - Dispatch events in one `page.evaluate` and read the DOM in another: React commits async.

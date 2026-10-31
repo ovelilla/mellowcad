@@ -154,7 +154,9 @@ and line height; the editor's root starts every text, its popups too, as `text-u
   weight as an attribute (a class would size it too); its face names, sized to the face, are the
   one text outside the scale.
 - A new zone, palette or menu is checked in Chrome (`getComputedStyle` on every visible text):
-  every text on a role and a colour step, nothing truncated or wrapped at 1280×720 in any language.
+  every text on a role and a colour step, nothing truncated or wrapped at 1280×720 in any language
+  but a palette row's label, which wraps and grows its row (an AutoCAD word stays whole: pt-BR's
+  «Espessura de linha»; English's «Draw dim line between ext lines»).
 
 ## Size
 

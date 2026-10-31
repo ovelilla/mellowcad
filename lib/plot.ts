@@ -31,6 +31,11 @@ import { loadEngineLocale } from "@/i18n/engine"
 export const DRAWING_FONT = "var(--font-mono), ui-monospace, monospace"
 const DRAWING_FONT_CAP_RATIO = 0.71
 
+/** How far a string runs in it: Geist Mono advances every glyph 0.6 em. */
+export function drawingTextWidth(text: string, capHeight: number): number {
+  return ([...text].length * 0.6 * capHeight) / DRAWING_FONT_CAP_RATIO
+}
+
 /** Typing speed of the scripted user. Fast — this is a practised hand. */
 const CHAR_MS = 42
 /** An Enter, an option letter or a pick, once the input is ready. */

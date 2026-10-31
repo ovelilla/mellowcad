@@ -122,12 +122,16 @@ every left-to-right island (`ui.md`). Plurals and IME as the plan found.
 
 - `npm run typecheck`, `npm run lint`, `npm test`; a production build shows the new pages as `●`,
   never `ƒ`, and the budgets of `i18n.md` hold (skill `language-review` measures them).
-- Screenshots of the landing at 360 px and of the editor's palettes for text that no longer fits
-  (skill `browser-verify`).
+- Screenshots of the landing at 360 px and of the editor at 1280×720 for text that no longer fits
+  (skill `browser-verify`): the palettes and every drop-down, the top bar's palette toggles and
+  the panel's tabs at its narrowest, the figures' tooltips and diagrams, the lists of command
+  names. pt-BR found six, all the layout's, each fixed for every language. A layout with dead keys
+  or an IME is typed into the command line and the dynamic input (`browser-verify`).
 - **Going `live`** (`LOCALE_STATUS`): every English key exists, `i18n/languages.test.ts` passes
   (both catalogs, `commands` as declared, `docs/i18n/<tag>.md`), and the language joins the
   selector, `hreflang` and the sitemap. A `localized` one never goes live without its command
   language. A `global` one is read by a native speaker first when one can be found (Arabic went
   without; its page says so). The announcement takes it off the Status section's «Next up» in
-  every language in the same commit; `docs/i18n/README.md`'s table gets its row.
+  every language in the same commit, where it is listed (pt-BR never was); `docs/i18n/README.md`'s
+  table gets its row.
 - The plan shrinks to a summary and its commits (skill `finish-feature`).

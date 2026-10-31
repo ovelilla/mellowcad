@@ -155,6 +155,7 @@ export const ptBR: EditorLocale = {
     },
     "SnapOverride": {
       "from": "De",
+      "pointFilters": "Filtros de ponto",
       "none": "Nenhum"
     },
     "SelectionCycling": {

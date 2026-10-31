@@ -85,8 +85,10 @@ The table of `.claude/rules/i18n.md`, measured on a production build of a clean 
 (`git worktree add` inside `~/projects`, `cp -al node_modules`, `npm run build`): Next's build in
 the shared tree fights the dev server over `.next` (AGENTS.md).
 
-- **Each engine catalog's chunk**: find it by a string only that catalog holds
-  (`grep -l` under `.next/static/chunks`), then `gzip -9 -c <chunk> | wc -c`.
+- **The engine's catalogs**: `cad/size.test.ts` holds each against English's. On the build, a
+  language's catalog reaches its own pages only: the host loads it on the server, so no file under
+  `.next/static/chunks` holds a word only it has, and `.next/server/app/<segment>/draw.html` holds
+  no other language's.
 - **A language's first load of the landing**, Brotli: `npx next start` in the worktree and the
   bytes the browser transferred (skill `browser-verify`), for each language.
 - **Functions**: the build's route table shows `○` and `●` only, but `/api/search`.

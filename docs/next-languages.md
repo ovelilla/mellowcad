@@ -1,10 +1,8 @@
 # Un sistema para los idiomas — brief
 
-> **Estado:** fases 1 a 4 hechas (2026-10-31); la 5, en curso: plan `docs/plans/pt-BR-language.md`,
-> sus fases 0 a 4 hechas (`pt-BR` como `draft` en `/pt-br`, con sitio, editor, páginas «Use»,
-> interfaz del motor y lenguaje de comandos completo, contrastado con la consola y el escritorio
-> pt-BR); falta la 6: verificar y pasar a `live`. Se borra cuando el portugués de Brasil esté
-> `live` con el sistema entero.
+> **Estado:** fases 1 a 5 hechas (2026-10-31): el portugués de Brasil es `live` en `/pt-br` con el
+> sistema entero (plan `docs/plans/pt-BR-language.md`, ya un resumen con sus commits). Sin
+> publicar: el push a `main` es del dueño. Se borra cuando esté publicado.
 
 ## 1. Objetivo
 
@@ -151,3 +149,9 @@ Una fase, un commit (o varios si se separan solos). Las 1 a 4 no cambian nada vi
    historial escribe la respuesta pegada donde la cadena del idioma no lo lleva: DIMSPACE en los
    tres idiomas, EDITARP o REFAZERM solo en pt-BR. Lo que no encajó, corregido en el sistema: ese
    espacio se lee del `Message` de la consola, no de la tabla, que lo pierde en sus `%s`.
+   Fase 6, que cierra el piloto: el gate y una build de producción (todo `●`), los presupuestos,
+   las capturas y las teclas muertas de ABNT2, y `pt-BR` pasa a `live`. Lo que no encajó,
+   corregido en el sistema: los presupuestos fijos de los catálogos del motor, rebasados desde el
+   11/10 porque crecen con cada comando (ahora un test los mide contra el inglés); seis textos que
+   no cabían, todos del layout y cortados también en otros idiomas; y tres tests con el español y
+   el árabe escritos a mano, que ahora leen los idiomas de `routing`.

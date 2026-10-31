@@ -7,10 +7,11 @@ how it is written, and how far it has been reviewed. A `live` language without o
 `language-review`. How the code handles languages: `.claude/rules/i18n.md` and
 `.claude/rules/cad-catalogs.md`.
 
-| File    | Language | Command language | Status |
-| ------- | -------- | ---------------- | ------ |
-| `es.md` | Spanish  | `localized`      | `live` |
-| `ar.md` | Arabic   | `global`         | `live` |
+| File       | Language             | Command language | Status |
+| ---------- | -------------------- | ---------------- | ------ |
+| `es.md`    | Spanish              | `localized`      | `live` |
+| `ar.md`    | Arabic               | `global`         | `live` |
+| `pt-BR.md` | Brazilian Portuguese | `localized`      | `live` |
 
 A file covers both of its languages (`COMMAND_LANGUAGE`): the **interface language** — palettes,
 menus, tooltips, the landing — and, for a `localized` one, the **command language** copied from

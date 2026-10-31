@@ -127,11 +127,14 @@ export const organizeGroup = demo({
   .enter()
   .escape()
 
-/** Inquiry & view: DIST, measuring corner to corner. */
+/**
+ * Inquiry & view: DIST, measuring corner to corner. The drawing sits left of
+ * centre: the snap's name runs to the right of the cursor.
+ */
 export const inquiryGroup = demo({
   ...figure,
   snap: true,
-  view: { min: { x: -48, y: -8 }, max: { x: 118, y: 52 } },
+  view: { min: { x: -26, y: -8 }, max: { x: 140, y: 52 } },
 })
   .command("_RECTANG")
   .type("0,0")

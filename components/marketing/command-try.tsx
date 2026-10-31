@@ -57,6 +57,8 @@ export function CommandTry({
         <span aria-hidden="true" className="text-fg-subtle">
           {prompt}
         </span>
+        {/* WHY a smaller placeholder on a phone: an input cannot wrap it, and
+        at 360 px Spanish's and Portuguese's lost their example command. */}
         <input
           id={`${listId}-input`}
           role="combobox"
@@ -90,7 +92,7 @@ export function CommandTry({
               setText("")
             }
           }}
-          className="h-11 min-w-0 flex-1 bg-transparent text-fg uppercase outline-none placeholder:text-fg-subtle placeholder:normal-case"
+          className="h-11 min-w-0 flex-1 bg-transparent text-fg uppercase outline-none placeholder:text-xs placeholder:text-fg-subtle placeholder:normal-case sm:placeholder:text-sm"
         />
       </div>
       <p id={hintId} className="mt-2 text-xs text-fg-subtle">
