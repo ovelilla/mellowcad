@@ -108,7 +108,8 @@ ByLayer, the standard values; −3 to 211), CLAYER and TEXTSTYLE (a name case-bl
 kept, `.` the default), HPSCALE (above 0), HPANG (degrees, `400` is 40), UCSICON; those kept
 outside the drawing's settings, each one undo step though the program keeps it (p218):
 program-wide, which NEW and OPEN leave, OSMODE (0–32767, the running snaps; NOD's 8 and GCEN's 1024
-kept without a snap, 16384 suspended as F3 does), POLARANG (degrees, put in 0–360), POLARDIST (any
+kept without a snap, 16384 suspended as F3 does), OSNAPZ (a snap at ELEVATION's Z, drafting-aids.md;
+osnapz/o01–o03), POLARANG (degrees, put in 0–360), POLARDIST (any
 sign, 0 at first: PolarSnap then steps by Snap X), SELECTIONCYCLING (−2 to 2), CLIPROMPTLINES (0–50,
 the temporary prompt lines), TRIMEXTENDMODE, EDGEMODE, TEXTEDITMODE, SPLMETHOD, SPLKNOTS (0–2),
 SPLDEGREE (1–10), ARRAYASSOCIATIVITY, AFLAGS (0–63); per drawing, which NEW and OPEN put back,

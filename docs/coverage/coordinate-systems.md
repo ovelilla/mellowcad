@@ -271,7 +271,8 @@ degrees and minutes (`30d`, `30d30'`), radians (`0.5r`), grads (`50g`) or a surv
 other length units' forms (architectural `1'6"`, engineering; UNITS offers decimal only) and the
 angle units AUNITS 1–4 (UNITS offers decimal degrees only).
 
-**Where a point's Z comes from:** an object snap gives the object's Z there (OSNAPZ 0, not exposed;
+**Where a point's Z comes from:** an object snap gives the object's Z there (OSNAPZ 0; at 1 the
+elevation's in the UCS, drafting-aids.md;
 a line's is interpolated along it, and Intersection needs the two objects to meet in 3D, while
 Apparent Intersection is where they cross on the screen, at the newer one's height in plan and on
 the older one off it — drafting-aids.md, Object snaps, interaction3d/i02–i14; objects in different

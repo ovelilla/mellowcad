@@ -741,6 +741,7 @@ describe("the variables kept outside the drawing", () => {
     const cad = createHarness({ snap: true })
     for (const [name, value] of [
       ["OSMODE", "4133"],
+      ["OSNAPZ", "0"],
       ["POLARANG", "90"],
       ["POLARDIST", "0.00"],
       ["SELECTIONCYCLING", "0"],
@@ -784,6 +785,8 @@ describe("the variables kept outside the drawing", () => {
       ["POLYSIDES", "2", "Requires an integer between 3 and 1024."],
       ["POLYSIDES", "1025", "Requires an integer between 3 and 1024."],
       ["AFLAGS", "64", "Requires an integer between 0 and 63."],
+      ["OSNAPZ", "2", "Requires 0 or 1 only."],
+      ["OSNAPZ", "FOO", "Requires 0 or 1 only."],
       ["TRIMEXTENDMODE", "2", "Requires 0 or 1 only."],
       ["EDGEMODE", "2", "Requires 0 or 1 only."],
       ["TEXTEDITMODE", "2", "Requires 0 or 1 only."],
@@ -1004,6 +1007,7 @@ describe("the variables kept outside the drawing", () => {
     const cad = createHarness({ snap: true })
     for (const [name, typed, before] of [
       ["OSMODE", "1", "4133"],
+      ["OSNAPZ", "1", "0"],
       ["POLARANG", "45", "90"],
       ["POLARDIST", "5", "0.00"],
       ["SELECTIONCYCLING", "1", "0"],
@@ -1037,8 +1041,8 @@ describe("the variables kept outside the drawing", () => {
     expect(prompt(cad)).toBe("CIRCLERAD Enter new value for CIRCLERAD <5.00>:")
   })
 
-  // rectang/p301, p303, p309, p310 (per drawing, unsaved); p304, p219 (the
-  // registry's and the session's, which NEW leaves)
+  // rectang/p301, p303, p309, p310 (per drawing, unsaved); p304, p219,
+  // osnapz/o02 (the registry's and the session's, which NEW leaves)
   it("goes back to its default with NEW where it is the drawing's", () => {
     const cad = createHarness({ snap: true })
     const typed: [string, string, string][] = [
@@ -1048,6 +1052,7 @@ describe("the variables kept outside the drawing", () => {
       ["INSNAME", "FOO", '""'],
       ["LASTPOINT", "5,5", "0.00,0.00,0.00"],
       ["OSMODE", "1", "1"],
+      ["OSNAPZ", "1", "1"],
       ["POLARANG", "45", "45"],
       ["POLARDIST", "5", "5.00"],
       ["SELECTIONCYCLING", "1", "1"],

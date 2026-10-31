@@ -542,6 +542,8 @@ export class CadRuntime extends Observable {
   private cliPromptLines = CLIPROMPTLINES
   /** OSMODE's bits for Node and Geometric Center, kept without a snap. */
   private osmodeUnmodelled = 0
+  /** OSNAPZ, program-wide: OPEN and NEW leave it (probe osnapz/o02). */
+  private osnapZ = 0
   /** The system variables kept outside the drawing's settings, by name. */
   private readonly heldVariables: HeldVariables
 
@@ -737,7 +739,8 @@ export class CadRuntime extends Observable {
       this.tracking,
       this.snapMode,
       () => this.frame.ucs,
-      () => this.extensionGuides()
+      () => this.extensionGuides(),
+      () => (this.osnapZ === 1 ? this.workPlaneZ() : null)
     )
     this.autosave = new AutosaveService(store, () => this.serializeDrawing())
 
@@ -4470,6 +4473,7 @@ export class CadRuntime extends Observable {
   private runtimeVariables(): Pick<
     HeldVariables,
     | "OSMODE"
+    | "OSNAPZ"
     | "POLARANG"
     | "POLARDIST"
     | "SELECTIONCYCLING"
@@ -4492,6 +4496,12 @@ export class CadRuntime extends Observable {
             this.snapping.setEnabled(type, (value & OSMODE_BITS[type]) !== 0)
           }
           this.snapping.setActive((value & OSMODE_SUSPENDED) === 0)
+        },
+      },
+      OSNAPZ: {
+        read: () => this.osnapZ,
+        write: (value) => {
+          this.osnapZ = value
         },
       },
       POLARANG: {

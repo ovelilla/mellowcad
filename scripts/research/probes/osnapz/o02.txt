@@ -1,0 +1,29 @@
+_QAFLAGS
+2
+_FILEDIA
+0
+_OSNAPZ
+1
+_.SAVEAS
+2018
+oszA
+_OSNAPZ
+0
+_.SAVEAS
+2018
+oszB
+_.OPEN
+oszA
+(getvar "DWGNAME")
+(getvar "OSNAPZ")
+_OSNAPZ
+1
+_.OPEN
+oszB
+(getvar "DWGNAME")
+(getvar "OSNAPZ")
+_NEW
+.
+(getvar "OSNAPZ")
+_OSNAPZ
+0

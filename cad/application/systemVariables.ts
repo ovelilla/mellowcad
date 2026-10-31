@@ -414,6 +414,7 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
   // NOD's 8 and GCEN's 1024 are kept without a snap; 16384 suspends the
   // running snaps as F3 does (p214; WORKSPACE-D40).
   heldInteger("OSMODE", 0, 32767),
+  heldInteger("OSNAPZ", 0, 1),
   {
     type: "real",
     name: "PERIMETER",

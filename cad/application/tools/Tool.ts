@@ -451,6 +451,8 @@ export interface ToolContext {
 export interface HeldValues {
   /** As typed: NOD's 8 and GCEN's 1024 kept, 16384 the running snaps suspended. */
   readonly OSMODE: number
+  /** 1 puts a snap's Z in the UCS at ELEVATION. */
+  readonly OSNAPZ: number
   /** Degrees. */
   readonly POLARANG: number
   readonly POLARDIST: number

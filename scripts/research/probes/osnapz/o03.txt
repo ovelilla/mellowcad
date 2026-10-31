@@ -1,0 +1,28 @@
+_QAFLAGS
+2
+_OSNAPZ
+1
+_U
+(getvar "OSNAPZ")
+_REDO
+(getvar "OSNAPZ")
+_OSNAPZ
+0
+_LINE
+0,0
+'_OSNAPZ
+1
+10,0
+
+(getvar "OSNAPZ")
+_U
+(getvar "OSNAPZ")
+_UNDO
+_BE
+_OSNAPZ
+1
+_UNDO
+_E
+_UNDO
+1
+(getvar "OSNAPZ")

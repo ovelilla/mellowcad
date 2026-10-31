@@ -1,0 +1,46 @@
+_QAFLAGS
+2
+_ZOOM
+_W
+-50,-50
+150,150
+_LINE
+0,0,10
+100,0,30
+
+_UCS
+_Z
+30
+_OSNAPZ
+1
+_ELEVATION
+5
+_ID
+_END
+86.6,-50
+(trans (getvar "LASTPOINT") 1 0)
+_ELEVATION
+0
+_UCS
+_W
+_UCS
+_X
+90
+(getvar "ELEVATION")
+_ELEVATION
+5
+_ID
+_END
+100,30,0
+(trans (getvar "LASTPOINT") 1 0)
+_ID
+_MID
+50,20,0
+(trans (getvar "LASTPOINT") 1 0)
+_ELEVATION
+0
+_UCS
+_W
+(getvar "ELEVATION")
+_OSNAPZ
+0

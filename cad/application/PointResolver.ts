@@ -20,7 +20,7 @@ import { Ucs } from "../domain/ucs"
 export interface ResolvedPoint {
   /**
    * The effective world point a tool should act on. Its Z is the snapped
-   * object's, the tracked point's, the base point's where Ortho or Polar
+   * object's (ELEVATION's under OSNAPZ 1), the tracked point's, the base point's where Ortho or Polar
    * locks it to a line through that point (on the `+Z` / `-Z` path of a 3D
    * view, the height they set), or else the cursor's on the work plane.
    */
@@ -53,7 +53,9 @@ export class PointResolver {
     private readonly tracking: ObjectSnapTrackingEngine,
     private readonly snapMode: SnapMode,
     private readonly currentUcs: () => Ucs,
-    private readonly currentExtensions: () => readonly TrackingGuide[] = () => []
+    private readonly currentExtensions: () => readonly TrackingGuide[] = () => [],
+    /** The Z OSNAPZ 1 puts a snap at (the work plane's), null under 0. */
+    private readonly snapZ: () => number | null = () => null
   ) {}
 
   /**
@@ -73,7 +75,16 @@ export class PointResolver {
     // specify an object snap" (AutoCAD), and polar tracking yields to a snap
     // the same way — projecting it onto the ray left the point off the object
     // the marker was showing.
-    if (snap) return { point: snap.point, tracking: extensionPath(snap) }
+    if (snap) {
+      // OSNAPZ 1 finds the snap as 0 does, a Perpendicular foot or a Tangent
+      // point in 3D, then gives it the work plane's Z in the UCS (probes
+      // osnapz/o04–o08).
+      const z = this.snapZ()
+      return {
+        point: z === null ? snap.point : withZ(snap.point, z),
+        tracking: extensionPath(snap),
+      }
+    }
 
     // "The angle you specify will lock the cursor, overriding Grid Snap, Ortho
     // mode, and PolarSnap": the point slides along the line through the base

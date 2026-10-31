@@ -60,9 +60,19 @@ vertical line, in plan as in SEISO (i04, i08, i14), to a circle in the circle's 
 Tangent from the point projected onto the circle's plane (i04); Intersection needs the objects to
 meet in space (none where they cross in plan at Z 0 and Z 30, i02), a vertical line meeting what it
 passes through at that object's height (i06, i14); Apparent Intersection is at the newer object's
-height in plan and on the older one in SEISO, whichever was drawn first (i02, i03, i12, i13)
+height in plan and on the older one in SEISO, whichever was drawn first (i02, i03, i12, i13),
+and under an override it is a real crossing too (osnapz/o04). OSNAPZ (SETVAR, workspace.md: 0
+or 1, program-wide, which OPEN and NEW leave, osnapz/o01–o03) at 1 finds every snap as at 0 — the
+Perpendicular foot and the Tangent point in space, Intersection only where the objects meet (o05,
+o09) — and gives it ELEVATION's Z in the UCS, turned or tilted (o04, o06): a line's, a circle's,
+a text's, a 3D polyline's, a 3D spline's and those of a circle in another plane (o07, o10);
+LASTPOINT and the point filters take that Z (`.Z` of `_END` is ELEVATION's, o08, filters/f25)
 
-**Missing:** Node and Geometric Center (no POINT object; a dimension's definition points snap as
+**Missing:** OSNAPZ 1 under OTRACK: an acquired point keeps its object's Z here, and its guide
+with it (**unverified**: desktop pass `scripts/research/probes/osnapz/dsk.sh`, not run), and the
+marker off the plan is drawn on the object (**unverified**, the same pass); snaps of an object seen
+edge-on in plan (a circle in a vertical plane gives its Center from the rim in AutoCAD, none here:
+osnapz/o07); Node and Geometric Center (no POINT object; a dimension's definition points snap as
 Endpoint; Spanish `PUN` and `PUNTO` at OFFSET's distance are Node, `de`, where here PUNTO is refused
 and PUN is Thru, offset/p109, p110), deferred Perpendicular and Tangent at the first point of a
 command other than LINE and CIRCLE (refused there as finding nothing, as at PLINE's start, pline/p29),
@@ -158,8 +168,8 @@ override are the prompt's wrong answer, and neither holds after it (desktop d05;
 prompt line reads `LINE of` and `LINE (need YZ):`; the tooltip the question before it, `Specify next
 point or of` (desktop d01, d02); the history `Specify first point: .X of 10,20` and `(need YZ):
 30,40` on a line of its own, as the menu's macro writes it (d04; typed, the desktop puts `of` on a
-line of its own too). OSNAPZ, which would put a snap's Z at the elevation (f25), does not exist
-here (roadmap).
+line of its own too). Under OSNAPZ 1 a snap at `of` or `(need …)` gives ELEVATION's Z (f25,
+osnapz/o08).
 
 **Missing:** filters at `Select objects:` and a single object's pick, where AutoCAD takes them as a
 point (f40, f63; here the prompt's wrong answer); the tool's own fields at `of` (the desktop keeps

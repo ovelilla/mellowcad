@@ -73,8 +73,8 @@ through its object with its point beyond the release radius (the centre from the
 perpendicular foot) leaves the crosshair on the pointer.
 
 **The point carries a Z** (`ResolvedPoint.point`, `PointerInput.point` are `Vec3`), in the same
-order: a snap's is the object's there (providers build it with `on(entity, point)`, which reads
-`entityZAt`, a line's own Z where given), a tracked point's is the acquired point's, one Ortho or
+order: a snap's is the object's there (`on(entity, point)`, `entityZAt`; OSNAPZ 1: the work
+plane's, set in `resolve`, `snap.point` kept on the object), a tracked point's is the acquired point's, one Ortho or
 Polar locks the base point's, else the elevation plane (`ucs.origin.z` + ELEVATION). **Ortho, Polar
 and the lattice under them read the cursor on the base point's plane** (`constraintContext`,
 interaction3d/d03–d07): ask them through it. Intersection is 3D (`meetingPoint`: two objects that cross in plan at different

@@ -27,8 +27,9 @@ us to walk again, whereas a command costs the same before or after it.
    third-party one), drawn on the canvas as AutoCAD draws them (isolines, Hidden, shaded), from
    REGION and its booleans to SWEEP and LOFT. The brief is `docs/next-solids.md`.
 
-Left out of the 2.5D model, each a gap of its own: OSNAPZ as a variable, ARRAYRECT's Levels, and
-POINT's thickness (with POINT, below). CHPROP is done, its Color, LAyer, LType, LWeight and
+Left out of the 2.5D model, each a gap of its own: ARRAYRECT's Levels and POINT's thickness (with
+POINT, below). OSNAPZ is done, every snap found as at 0 and put at ELEVATION's Z in the UCS
+(osnapz/o01–o10, drafting-aids.md's Object snaps); under OTRACK it is unverified. CHPROP is done, its Color, LAyer, LType, LWeight and
 Thickness as AutoCAD 2027's console asks them (chprop/p01–p22, properties.md's CHPROP); its
 ltScale waits for per-object ltscale, below. The point filters are done, `.X` to `.YZ` at
 every point prompt and in the Point Filters menu, in the UCS (filters/f01–f63, d01–d05,

@@ -983,7 +983,9 @@ function mayReachCursor(
  * Apparent Intersection … to find where a polar alignment path intersects
  * another object"). WHY not two edges prolonged to meet each other: AutoCAD's
  * extended intersections are picked object by object as an override, not
- * offered by the running snap, and here they fired in empty space.
+ * offered by the running snap, and here they fired in empty space. Two edges
+ * that meet are one too: `_APP` on a real crossing gives it (probe
+ * osnapz/o04), Intersection winning the tie when both run.
  */
 export const apparentIntersectionProvider: SnapProvider = {
   type: SnapType.ApparentIntersection,
@@ -1014,10 +1016,6 @@ export const apparentIntersectionProvider: SnapProvider = {
         if (!withinBoth && !a.fromConstruction && !b.fromConstruction) continue
         const za = heightOn(a, x.point)
         const zb = heightOn(b, x.point)
-        // Crossing where they meet is a real intersection, Intersection's.
-        const meet =
-          za === null || zb === null || Math.abs(za - zb) <= MEETING_EPSILON
-        if (withinBoth && meet) continue
         // In plan, the later object's height: the newer of two lines at Z 0
         // and Z 30 gives its own, whichever was drawn first (interaction3d/
         // i02, i03); off the plan the earlier one's (`apparentOnScreen`).
@@ -1069,14 +1067,10 @@ function apparentOnScreen(
       )
       if (!x) continue
       const onFirst = lerp3(ends[i][0], ends[i][1], x.t)
-      const onSecond = lerp3(ends[j][0], ends[j][1], x.u)
       const withinBoth = x.t >= 0 && x.t <= 1 && x.u >= 0 && x.u <= 1
       const extended =
         segments[i].fromConstruction || segments[j].fromConstruction
       if (!withinBoth && !extended) continue
-      if (withinBoth && length3(sub3(onFirst, onSecond)) <= MEETING_EPSILON) {
-        continue
-      }
       if (!isNear(onFirst, 8)) continue
       candidates.push({
         type: SnapType.ApparentIntersection,

@@ -1,0 +1,59 @@
+_QAFLAGS
+2
+_ZOOM
+_W
+-50,-50
+150,150
+_LINE
+0,0,0
+100,0,100
+
+_CIRCLE
+50,60,20
+10
+_OSNAPZ
+0
+_LINE
+50,50,0
+_PER
+60,0
+
+(list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))
+_LINE
+50,30,0
+_TAN
+60,60
+
+(list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))
+_OSNAPZ
+1
+_LINE
+50,50,0
+_PER
+60,0
+
+(list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))
+_LINE
+50,30,0
+_TAN
+60,60
+
+(list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))
+_ELEVATION
+7
+_LINE
+50,50,0
+_PER
+60,0
+
+(list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))
+_LINE
+_END
+99,0
+@10,0
+
+(list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))
+_ELEVATION
+0
+_OSNAPZ
+0
