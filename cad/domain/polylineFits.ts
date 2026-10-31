@@ -182,7 +182,10 @@ function stripTangents(fit: PolylineFit): PolylineFit {
 function given(tangents: readonly (number | null)[] | undefined): {
   tangents?: readonly (number | null)[]
 } {
-  return tangents?.some((t) => t !== null) ? { tangents } : {}
+  // `+ 0` turns a -0 (a tangent typed as -0), which a file cannot hold, into 0.
+  return tangents?.some((t) => t !== null)
+    ? { tangents: tangents.map((t) => (t === null ? null : t + 0)) }
+    : {}
 }
 
 /** The frame, every segment straight and no fit. */
@@ -332,8 +335,7 @@ export function mappedFit(
   reflects: boolean
 ): { fit?: PolylineFit } {
   if (!fit) return {}
-  const tangents = fit.tangents?.map((t) => (t === null ? null : angle(t)))
-  const turned = tangents ? { tangents } : {}
+  const turned = given(fit.tangents?.map((t) => (t === null ? null : angle(t))))
   if (fit.kind !== "curve") return { fit: { ...fit, ...turned } }
   const sign = reflects ? -1 : 1
   return {

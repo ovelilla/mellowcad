@@ -290,6 +290,13 @@ describe("PEDIT's Fit", () => {
       P147.map(([x, y, b]) => [x, -20 - y, -b])
     )
   })
+
+  it("keeps a tangent typed as -0 as the 0 a file holds", () => {
+    const cad = edit(polylineOf(FOUR, { id: "P" }))
+    cad.option("Edit vertex").option("Tangent").type("-0").enter()
+    cad.option("eXit").option("Fit")
+    expect(poly(cad).fit?.tangents?.[0]).toBe(0)
+  })
 })
 
 describe("PEDIT's Spline", () => {
