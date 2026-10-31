@@ -769,10 +769,40 @@ along the line of sight (p235, p239; an isometric view, p237), and one edge-on t
 glow (desktop d01-4), the picked one turns selected, and the side and through points drag the
 copies they would make drawn as the objects, solid in the source's colour, every piece of a split
 polyline and a tilted object's copy in its plane (d01-5, d02, d03). A 3D polyline is taken and passed over in silence, the prompt asked again (3dpoly/p09; Autodesk's support article quotes `Cannot offset that object.`, which the 2027 console does not say).
+An ellipse, an elliptical arc or a spline lying in a plane offsets into a SPLINE
+(`offsetCurveEntity`, spline-knots/k38–k56, offset/p196–p198): a CV spline of degree 3 on the
+source's own parameter (an ellipse's `0` to `2π`, an arc's parameters, a spline's knots), every
+inner knot double, each span the Hermite cubic of the exact offset's points and derivatives at its
+ends, closed (not periodic) for a closed source, never rational (a weighted spline's too, k44) — on
+AutoCAD's knots its control points are AutoCAD's to nine digits (p197, p198) —, within 0.001 drawing
+units of the exact offset, AutoCAD's tolerance whatever the size (k38, k39, k55: 4.65e-4 to 9.86e-4
+measured); a fit, CV, rational or closed spline alike (k42–k45); where an inward offset passes the
+curvature it crosses itself, and is cut there, what comes nearer than the distance dropped, an open
+one's pieces in order and a closed one's cut at its seam too, the last first (k38, k42, k52: the
+cuts to the dumps' eleven digits); nothing left (an ellipse offset past its minor semi-axis, k38),
+or a curve with a corner (a CV spline of degree 1, a tripled vertex, k51, k54), says `Cannot offset
+that object.`; a round ellipse (ratio 1) offsets into a concentric ellipse, an arc into its arc
+(k41, k56); Through measures to the curve's nearest point, one on it `Invalid through point.` and an
+ellipse's centre `Cannot offset that object.` (k48); Erase, Layer and Multiple as for any object,
+Multiple offsetting the spline it made (k49); the copy keeps the source's layer, colour and
+linetype (AutoCAD's transparency and linetype scale too, not modelled here), but not its
+lineweight, ByLayer again (k50, k53, k56);
+one tilted to the UCS is offset in its plane, its normal kept (k47); a spline out of every plane is
+taken and passed over in silence, as a 3D polyline (k46); the curve rolls over with the plain glow,
+the picked one turns selected and its copy, or the pieces of it, drag as the curve in its colour
+(desktop spline-knots/d09-1–d09-5).
 
-**Missing:** OFFSETGAPTYPE 1 and 2, ellipses and splines (AutoCAD offsets them into a SPLINE,
-p196–p198, an approximation on knots of its own, which the model holds since spline-knots; not
-built: neither is picked, OFFSET-D11), Erase and Layer kept past the
+**Missing:** OFFSETGAPTYPE 1 and 2; where a spline's or an ellipse's knots fall: AutoCAD's spans
+come in runs of equal ones whose rule the dumps do not give (p196: 4 × 0.1028, 4 × 0.1983, 1, 1,
+2, 2, 7…), so here a span over the tolerance is split into as many equal ones as its error's fourth
+root asks, from the source's knots or an ellipse's quarters — as many spans near enough (p196 33
+there, 36 here; p197 9 and 9; k38's pieces 18 control points each, as AutoCAD's), the same
+tolerance, other knots (OFFSET-D11); Through's tooltip on a spline, which holds the distance with a
+dotted line from the curve to the cursor (d09-5) where a line's holds X and Y (d02-1; here X and Y
+for both; an ellipse's unprobed); **unverified**: a closed spline with a corner at its seam
+(refused here), Through beyond an open curve's end (measured to the end here), a spline or an
+ellipse edge-on to the view (refused at the pick here, as a polyline), a round elliptical arc's
+lineweight (dropped here, as a round ellipse's, k56); Erase and Layer kept past the
 session (OPEN leaves them, p310; a restart is unprobed), a polyline of more than 2000 segments
 (declined with `Cannot offset that object.`, the clean-up's cap), the ghost's linetype and
 lineweight (it wears the source's colour only, as MOVE's); **unverified**: one object preselected
@@ -952,7 +982,11 @@ p310–p312, p323, p325, p360–p388) and its string tables. A 3D polyline, firs
 **Missing:** what AutoCAD makes of a closed ellipse with a line meeting it at radius 0 (the line
 trimmed to it, p324) and with an arc or a circle (a fillet, p368), and of an elliptical arc or a
 spline (a fillet, the spline extended at radius 0: p237, p326, p369) — such a pick is not taken and
-the prompt is asked again without a word, and a mode does not take an ellipse or a spline; the
+the prompt is asked again without a word, and a mode does not take an ellipse or a spline (no longer
+blocked: the fillet's centre lies on the curve's exact offset at the radius, which
+`geometry/curveOffset.ts` evaluates, differentiates and crosses since OFFSET of an ellipse and a
+spline; what is left is the console's rules of p324, p326, p368 and p369 — which piece is kept, a
+spline's end grown, the arc's side); the
 linetype scale the arc takes from the object picked second (`LinetypeScale` 2, p332: no per-object
 linetype scale is modelled); Trim (TRIMMODE is always 1, so it is not listed; `T`, es `R`, is taken
 as its word and refused as a wrong answer, so Spanish `R` never opens RAdio, p165, p168), the

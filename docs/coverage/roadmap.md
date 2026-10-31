@@ -31,13 +31,14 @@ a variable, ARRAYRECT's Levels, CHPROP, and POINT's thickness (with POINT, below
 3D are done: the objects whose stored points carry their Z (`draw.md`), a spline kept in its own
 plane when it has one; trimming a 3D polyline, JOIN into one and PEDIT Spline are its own gaps.
 
-Editing a spline — OFFSET (which is also what the ellipse's OFFSET and FILLET wait for), JOIN,
-SPLINEDIT — is a command gap, next now that the
-spline it would edit is the model's: in space, and on knots, control points and weights of its own
-(DXF 40 / 10 / 41), as AutoCAD 2027 leaves TRIM's, BREAK's and SPLINEDIT's pieces (probes
-spline-knots/k01–k16, draw.md's SPLINE). In three deliveries: that model (done); BREAK and TRIM /
-EXTEND of a spline, by knot insertion (done: k01–k37, modify.md's TRIM and BREAK); then OFFSET of a
-spline and of an ellipse, an approximation within a tolerance.
+Editing a spline is done in its three deliveries: the spline the model's, in space and on knots,
+control points and weights of its own (DXF 40 / 10 / 41), as AutoCAD 2027 leaves TRIM's, BREAK's
+and SPLINEDIT's pieces (probes spline-knots/k01–k16, draw.md's SPLINE); BREAK and TRIM / EXTEND
+of a spline, by knot insertion (k01–k37, modify.md's TRIM and BREAK); OFFSET of a spline and of an
+ellipse, an approximation within AutoCAD's 0.001 (k38–k56, modify.md's OFFSET). Left: JOIN and
+SPLINEDIT, command gaps; FILLET of an elliptical arc or a spline, which waited on OFFSET and is now
+unblocked (its centre on the curve's exact offset, `geometry/curveOffset.ts`; the console's rules in
+corners/p324, p326, p368, p369, modify.md's FILLET).
 
 Deferrable indefinitely at no extra cost: PASTEBLOCK/PASTEORIG/CUTBASE, DIMARC, DIMORDINATE, the
 modern `DIM` command, POINT with DIVIDE/MEASURE, XLINE/RAY, GROUP, LENGTHEN, ALIGN, per-object

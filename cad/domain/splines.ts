@@ -719,7 +719,30 @@ export function closestPointOnSpline(
   spline: SplineEntity,
   point: Vec2
 ): ClosestResult & { readonly point: Vec3 } {
+  return splineNearest(spline)(point)
+}
+
+/** {@link closestPointOnSpline} for many points, the tessellation made once. */
+export function splineNearest(
+  spline: SplineEntity
+): (point: Vec2) => ClosestResult & { readonly point: Vec3 } {
   const { curve, params, points } = splineChords(spline)
+  const { first, second } = bsplineDifferentials(curve)
+  const { start, end } = bsplineDomain(curve)
+  return (point) =>
+    nearestOnChords(curve, params, points, first, second, start, end, point)
+}
+
+function nearestOnChords(
+  curve: BSplineCurve,
+  params: readonly number[],
+  points: readonly Vec3[],
+  first: (u: number) => Vec3,
+  second: (u: number) => Vec3,
+  start: number,
+  end: number,
+  point: Vec2
+): ClosestResult & { readonly point: Vec3 } {
   let nearest = Infinity
   let u = params[0]
   for (let i = 1; i < points.length; i++) {
@@ -729,8 +752,6 @@ export function closestPointOnSpline(
       u = params[i - 1] + (params[i] - params[i - 1]) * candidate.t
     }
   }
-  const { first, second } = bsplineDifferentials(curve)
-  const { start, end } = bsplineDomain(curve)
   const onChord = u
   for (let i = 0; i < NEWTON_STEPS; i++) {
     const offset = V.sub(bsplinePoint(curve, u), point)

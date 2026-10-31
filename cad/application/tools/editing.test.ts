@@ -6724,37 +6724,6 @@ describe("OFFSET", () => {
     ])
   })
 
-  it("will not offset an ellipse or a spline, and does not even highlight one", () => {
-    // AutoCAD offsets them into a spline (probes offset/p196–p198), which is
-    // not built: neither is picked, in silence (OFFSET-D11).
-    const spline = createSpline("fit", [p(0, 50), p(50, 80), p(100, 50)], {
-      id: "S1",
-    })
-    const cad = createHarness({
-      entities: [ellipseOf(p(0, 0), p(100, 0), 0.5, { id: "E1" }), spline],
-    })
-    const lit = () =>
-      cad
-        .scene()
-        .primitives.filter(
-          (primitive) =>
-            "stroke" in primitive &&
-            (primitive.stroke?.color === THEME.selected ||
-              primitive.stroke?.color === THEME.entityHover)
-        )
-
-    cad.command("OFFSET").type("20").enter()
-    for (const at of [p(100, 0), p(0, 50)]) {
-      cad.moveTo(at)
-      expect(lit()).toHaveLength(0)
-      cad.click(at)
-      expect(cad.state().commandLine.prompt).toBe(`OFFSET ${SELECT}`)
-    }
-    cad.click(p(200, 0)).escape()
-    expect(cad.entityCount).toBe(2)
-    expect(cad.commandLog()).not.toContain("Cannot offset that object.")
-  })
-
   describe("its look", () => {
     /** The strokes of the segments drawn from `a` to `b` on the screen. */
     function segmentsAt(cad: CadHarness, a: Vec2, b: Vec2) {

@@ -114,7 +114,10 @@ Dependencies run types → per-type modules → overrides → transforms → que
   NurbsData holds them, a periodic one's one period, never normalised: a piece keeps the
   parameters it had). An edit AutoCAD leaves without fit data goes through `splineWithoutFitData`;
   TRIM's, BREAK's and EXTEND's pieces through `domain/splineEdits.ts` (knot insertion on
-  `splineRun`). A kernel curve may be rational: its derivatives come from `bsplineDifferentials`, never from the
+  `splineRun`); OFFSET's copy of a spline or an ellipse through `domain/splineOffset.ts` (Hermite
+  spans on the source's parameter, `geometry/curveOffset.ts`, whose exact offset a fillet's centre
+  lies on too). Many nearest points on one spline take `splineNearest` once:
+  `closestPointOnSpline` tessellates it at every call. A kernel curve may be rational: its derivatives come from `bsplineDifferentials`, never from the
   hodograph of a weighted curve (`bsplineDerivativeCurve` ignores the weights).
 - **MTEXT keeps AutoCAD's contents string**, `\P` and escapes included: `mtextPlainText` reads it
   (codes it does not draw vanish from the reading, never from the object), `mtextContents` writes

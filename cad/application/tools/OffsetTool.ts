@@ -7,11 +7,14 @@ import {
   offsetSegment,
 } from "../../geometry/primitives"
 import {
+  assignEntityLineweight,
   createArc,
   createCircle,
+  createEllipse,
   createLine,
   carryOverrides,
   createPolyline,
+  createSpline,
   entityElevation,
   entityNormal,
   withNormal,
@@ -24,6 +27,12 @@ import {
   polylineThroughDistance,
   type OffsetPolylineShape,
 } from "../../domain/polylineOffset"
+import {
+  curveThroughDistance,
+  offsetCurveEntity,
+  offsetsCurve,
+  type CurveOffsetShape,
+} from "../../domain/splineOffset"
 import {
   AddEntitiesCommand,
   RemoveEntitiesCommand,
@@ -76,7 +85,8 @@ import { typedPick } from "./typedPick"
  * (Enter) or Escape; Undo takes back the last copy and asks for the object.
  *
  * Lines offset to a parallel line; circles and arcs to a concentric one;
- * polylines as `offsetPolyline` makes them, perhaps several. Erase and Layer
+ * polylines as `offsetPolyline` makes them, perhaps several; ellipses and
+ * splines into splines as `offsetCurveEntity` makes them. Erase and Layer
  * are AutoCAD's own sub-prompts at the distance prompt, reported in `Current
  * settings:` when the command starts; Multiple belongs to the side prompt and
  * keeps stepping copies out from the same object. Nothing is mutated
@@ -103,6 +113,7 @@ type OffsetGeom =
       readonly bulges?: readonly number[]
       readonly widths?: readonly PolylineWidth[]
     }
+  | CurveOffsetShape
 
 type OffsetToolState =
   /**
@@ -479,6 +490,8 @@ export class OffsetTool implements Tool {
             ),
           ]
         case "polyline":
+        case "spline":
+        case "ellipse":
           return entityScenePrimitive(
             viewport,
             offsetToEntity(geom, "0", OFFSET_PREVIEW_ID),
@@ -487,18 +500,17 @@ export class OffsetTool implements Tool {
       }
     }
     // Highlights an entity's outline, or nothing for one OFFSET refuses; one
-    // off the plan through its own plane.
+    // off the plan through its own plane, and a curve as it draws.
     const highlight = (
       entity: Entity,
       color: string,
       width: number
     ): ScenePrimitive[] => {
       if (offsetKind(entity) !== "offsets") return []
-      if (isOffPlan(entity, viewport)) {
-        return entityScenePrimitive(viewport, entity, { color, width })
-      }
-      const geom = entityAsGeom(entity)
-      return geom ? draw(geom, color, width) : []
+      const geom = isOffPlan(entity, viewport) ? null : entityAsGeom(entity)
+      return geom
+        ? draw(geom, color, width)
+        : entityScenePrimitive(viewport, entity, { color, width })
     }
 
     if (this.state.phase === "select") {
@@ -854,7 +866,7 @@ export class OffsetTool implements Tool {
       : computeThrough(flat, into(point))
   }
 
-  /** The object a click would offset or refuse; an ellipse or a spline is never taken. */
+  /** The object a click would offset or refuse; a 3D polyline or a spline out of every plane is never taken. */
   private pickSource(input: PointerInput, ctx: ToolContext): Entity | null {
     const hit = ctx.pick(input.world)
     return hit && offsetKind(hit) !== "notPicked" ? hit : null
@@ -876,8 +888,13 @@ export class OffsetTool implements Tool {
       // WHY: AutoCAD's copy of a circle or an arc has no thickness, its
       // elevation, colour, linetype and lineweight kept; a line's and a
       // polyline's keep theirs (probes offset/p219, p232, p233; p218, p225).
-      return copy.type === "circle" || copy.type === "arc"
-        ? withThickness(copy, 0)
+      // An ellipse's or a spline's drops its lineweight, its colour,
+      // linetype and plane kept (spline-knots/k50, k53, k56).
+      if (copy.type === "circle" || copy.type === "arc") {
+        return withThickness(copy, 0)
+      }
+      return source.type === "ellipse" || source.type === "spline"
+        ? assignEntityLineweight(copy, undefined)
         : copy
     })
   }
@@ -940,11 +957,9 @@ function entityAsGeom(entity: Entity): OffsetGeom | null {
 /**
  * What OFFSET does with a picked object: offsets it; refuses it with `Cannot
  * offset that object.` (TEXT, MTEXT, INSERT, DIMENSION, HATCH: probes
- * offset/p201–p205); or never takes it. AutoCAD offsets an ellipse or a
- * spline into a spline (p196–p198), which is not built: a refusal there would
- * be false, so neither is even picked (OFFSET-D11). A 3D polyline the
- * console takes and passes over in silence, the prompt asked again
- * (3dpoly/p09): not picked either.
+ * offset/p201–p205); or never takes it. A 3D polyline, and a spline out of
+ * every plane, the console takes and passes over in silence, the prompt asked
+ * again (3dpoly/p09, spline-knots/k46): not picked.
  */
 function offsetKind(entity: Entity): "offsets" | "refused" | "notPicked" {
   switch (entity.type) {
@@ -952,7 +967,10 @@ function offsetKind(entity: Entity): "offsets" | "refused" | "notPicked" {
     case "circle":
     case "arc":
     case "polyline":
+    case "ellipse":
       return "offsets"
+    case "spline":
+      return offsetsCurve(entity) ? "offsets" : "notPicked"
     case "text":
     case "mtext":
     case "attdef":
@@ -960,8 +978,6 @@ function offsetKind(entity: Entity): "offsets" | "refused" | "notPicked" {
     case "hatch":
     case "insert":
       return "refused"
-    case "ellipse":
-    case "spline":
     case "polyline3d":
       return "notPicked"
   }
@@ -994,7 +1010,8 @@ function isRefusal(result: OffsetResult): result is Refusal {
  * parallel segment; circles and arcs a concentric one whose radius grows when
  * the side is outside the original and shrinks when inside, refused when that
  * takes it to its centre or past (probes offset/p174–p176); a polyline what
- * {@link offsetPolyline} makes of it.
+ * {@link offsetPolyline} makes of it, an ellipse or a spline what
+ * {@link offsetCurveEntity} does (spline-knots/k38–k56).
  */
 function computeOffset(
   source: Entity,
@@ -1040,6 +1057,7 @@ function computeOffset(
       return polylineCopies(offsetPolyline(source, distance, side))
     case "ellipse":
     case "spline":
+      return curveCopies(offsetCurveEntity(source, distance, side))
     case "polyline3d":
     case "text":
     case "mtext":
@@ -1056,15 +1074,22 @@ function polylineCopies(shapes: readonly OffsetPolylineShape[]): OffsetResult {
   return shapes.map((shape) => ({ kind: "polyline", ...shape }))
 }
 
+/** Nothing left, or a corner on the curve: `Cannot offset that object.` (k38, k51, k54). */
+function curveCopies(shapes: readonly CurveOffsetShape[]): OffsetResult {
+  return shapes.length === 0 ? CANNOT_OFFSET : shapes
+}
+
 /**
  * The offset copy of `source` passing through `point` — AutoCAD's Through. For
  * a line, the parallel line that contains the point (shifted by the point's
  * offset from its perpendicular foot); for a circle/arc, the concentric one
  * whose radius is the point's distance to the centre; for a polyline, the one
  * at the point's distance from it, its open ends drawn on (probes offset/p211,
- * p212). Refused for a point on the object; at the centre, a radius of zero,
- * and outside an arc's span, `Cannot offset that object.` (probes
- * offset/p209, p273, p277, p278, p295, p296).
+ * p212); for an ellipse or a spline, the one at the point's distance from its
+ * nearest point (spline-knots/k48). Refused for a point on the object; at
+ * the centre, a radius of zero, and outside an arc's span, `Cannot offset
+ * that object.` (probes offset/p209, p273, p277, p278, p295, p296), as at an
+ * ellipse's centre, where nothing is left (k48).
  */
 function computeThrough(source: Entity, point: Vec2): OffsetResult {
   switch (source.type) {
@@ -1120,7 +1145,12 @@ function computeThrough(source: Entity, point: Vec2): OffsetResult {
         : ON_OBJECT
     }
     case "ellipse":
-    case "spline":
+    case "spline": {
+      const distance = curveThroughDistance(source, point)
+      return distance > 1e-9
+        ? curveCopies(offsetCurveEntity(source, distance, point))
+        : ON_OBJECT
+    }
     case "polyline3d":
     case "text":
     case "mtext":
@@ -1173,6 +1203,20 @@ function offsetToEntity(
         id,
         geom.widths
       )
+    case "spline":
+      return createSpline("cv", geom.curve.controlPoints, {
+        closed: geom.closed,
+        knotVector: geom.curve.knots,
+        layerId,
+        id,
+      })
+    case "ellipse":
+      return createEllipse(geom.center, geom.majorAxis, geom.ratio, {
+        startParam: geom.startParam,
+        endParam: geom.endParam,
+        layerId,
+        id,
+      })
   }
 }
 
