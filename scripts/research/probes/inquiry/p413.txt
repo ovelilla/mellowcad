@@ -1,0 +1,25 @@
+QAFLAGS
+2
+_-ATTDEF
+
+TAG1
+Your prompt
+Dflt
+0,0
+2.5
+0
+_LIST
+_L
+
+_-ATTDEF
+_I
+_C
+
+TAG2
+Fixed value
+10,0
+2.5
+0
+_LIST
+_L
+

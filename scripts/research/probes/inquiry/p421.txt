@@ -1,0 +1,17 @@
+QAFLAGS
+2
+_LINE
+0,0
+10,0
+
+_CIRCLE
+5,5
+2
+(sssetfirst nil (ssget "_X"))
+_LIST
+_LIST
+
+_LIST
+FOO
+_L
+

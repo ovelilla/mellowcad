@@ -1701,6 +1701,15 @@ describe("the engine's English surface", () => {
         .do("ID typed", (c) => c.command("ID"))
         .do("point", (c) => c.type("1,2,3").enter())
     )
+    walk("LIST", createHarness({ entities: [line()] }), (s) =>
+      s
+        .do("LI", (c) => c.command("LI"))
+        .do("FOO", (c) => answer(c, "FOO"))
+        .do("pick", (c) => c.click(at(50, 0)))
+        .do("enter", (c) => c.enter())
+        .do("LS", (c) => c.command("LS"))
+        .do("enter", (c) => c.enter())
+    )
     walk("VPOINT VIEW", createHarness({ entities: [line()] }), (s) =>
       s
         .do("VPOINT", (c) => c.command("VPOINT"))

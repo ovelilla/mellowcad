@@ -71,6 +71,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | Attribute display; Attribute definition | عرض السمات؛ تعريف سمة (C) |
 | View | Zoom, Pan; Window, Previous, Extents | تكبير/تصغير، تحريك العرض؛ نافذة، السابق، الامتداد (C) |
 | Inquiry | Measure, Area | قياس، المساحة (M) |
+|  | List | سرد (L) |
 | Edit | Undo, Redo, Erase | تراجع، إعادة، حذف (M) |
 | Clipboard | Copy, Cut, Paste, Copy with base point | نسخ، قص، لصق، نسخ بنقطة أساس (M) |
 | Selection | Window, Crossing | نافذة، تقاطع (L) † |

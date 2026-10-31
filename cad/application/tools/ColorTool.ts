@@ -179,12 +179,21 @@ export class ColorTool implements Tool {
     if (current === COLOR_BYLAYER) {
       return ctx.text.keyword(BY_LAYER).toUpperCase()
     }
-    const index = STANDARD_COLORS.findIndex((color) => color.value === current)
-    if (index >= 0) {
-      return `${index + 1} (${ctx.text.keyword(NAMES[index]).toLowerCase()})`
-    }
-    return rgbOf(current).join(",")
+    return colorWord(current, ctx)
   }
+}
+
+/**
+ * A colour as the console writes it, -COLOR's default and LIST's `Color:`
+ * (inquiry/p401): an index colour by number and name, `1 (red)`, or `R,G,B`.
+ */
+export function colorWord(color: EntityColor, ctx: ToolContext): string {
+  const index = STANDARD_COLORS.findIndex((entry) => entry.value === color)
+  if (index >= 0) {
+    const name = ctx.text.commandKeyword("COLOR", NAMES[index])
+    return `${index + 1} (${name.toLowerCase()})`
+  }
+  return rgbOf(color).join(",")
 }
 
 /**

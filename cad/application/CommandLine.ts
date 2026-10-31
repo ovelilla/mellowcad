@@ -318,6 +318,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   measure: "DIST",
   measurearea: "AREA",
   id: "ID",
+  list: "LIST",
   zoom: "ZOOM",
   pan: "PAN",
   dashpan: "-PAN",

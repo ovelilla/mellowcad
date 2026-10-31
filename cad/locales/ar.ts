@@ -75,6 +75,7 @@ export const ar: EngineLocale = {
       "measure": "قياس",
       "measurearea": "المساحة",
       "id": "إحداثيات نقطة",
+      "list": "سرد",
       "zoom": "تكبير/تصغير",
       "pan": "تحريك العرض",
       "dashpan": "تحريك العرض بنقطتين",

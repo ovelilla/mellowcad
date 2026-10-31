@@ -657,8 +657,7 @@ PEDIT's Spline curve fits one, drawn and picked as its curve, Decurve back to it
 
 **Missing:** the palette's Fit/Smooth of a fitted one, which reads None here (AutoCAD's
 `Quadratic` and `Cubic`, es `Cuadrática`, `Cúbica`, ax26res.dll, not in the catalogs yet: a new
-interface word every language's catalog owes), and editing it there; LIST of one (p08: `POLYLINE`, `Open space`, `area` of the vertices' vector
-area, `length` in space, then each `VERTEX`), trimming and extending one (modify.md), JOIN into
+interface word every language's catalog owes), and editing it there; trimming and extending one (modify.md), JOIN into
 one (pieces/p353), one as a hatch boundary or ARRAYPATH's path, the 3D Visualization group's
 Material row (desktop d02), and the grips' hover menus (Stretch / Add / Remove Vertex, unprobed)
 

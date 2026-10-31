@@ -1,0 +1,13 @@
+_PLINE
+0,0
+10,0
+20,10
+30,0
+
+_PEDIT
+_L
+_F
+
+(foreach v (list (entnext (entnext (entnext (entnext (entnext (entnext (entnext (entlast))))))))) (princ (assoc 42 (entget v))))
+(setq e (entlast))
+(progn (setq v (entnext e)) (while v (princ (list (cdr (assoc 10 (entget v))) (cdr (assoc 42 (entget v))) (cdr (assoc 70 (entget v))))) (terpri) (setq v (entnext v))) (princ))

@@ -75,6 +75,7 @@ export const ptBR: EngineLocale = {
       "measure": "Medir",
       "measurearea": "Área",
       "id": "Ponto de identificação",
+      "list": "Listar",
       "zoom": "Zoom",
       "pan": "Pan",
       "dashpan": "Pan por pontos",

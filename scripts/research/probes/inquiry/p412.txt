@@ -1,0 +1,11 @@
+QAFLAGS
+2
+_-MTEXT
+0,0
+40,-20
+First line
+Second
+
+_LIST
+_L
+

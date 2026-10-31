@@ -65,6 +65,7 @@ COPYBASE [] "Copy with base point"
 DIST ["DI"] "Measure"
 AREA ["AA"] "Area"
 ID [] "ID Point"
+LIST ["LI","LS"] "List"
 ZOOM ["Z"] "Zoom"
 PAN ["P"] "Pan"
 -PAN ["-P"] "Pan by points"
@@ -193,6 +194,7 @@ paste "Paste" -
 measure "Measure" DI
 measurearea "Area" AA
 id "ID Point" ID
+list "List" LI
 zoom "Zoom" Z
 pan "Pan" P
 dashpan "Pan by points" -P
@@ -6506,6 +6508,43 @@ Specify next point or
   dyn: -
   prompt| Specify point: 1,2,3
   info|  X = 1.00     Y = 2.00     Z = 3.00
+
+## LIST
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> LI
+  prompt: LIST Select objects:
+  command| LI LIST
+> FOO
+  prompt| Select objects: FOO
+  error| *Invalid selection*
+  error| Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle
+> pick
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  prompt| Select objects: 1 found
+> enter
+  prompt: Command:
+  properties: -
+  prompt| Select objects:
+  info|                   LINE      Layer: "0"
+                                    Space: Model space
+                      from point, X=     0.00  Y=     0.00  Z=     0.00
+                        to point, X=   100.00  Y=     0.00  Z=     0.00
+                  Length =   100.00,  Angle in XY Plane =      0
+                          Delta X =   100.00, Delta Y =      0.00, Delta Z =     0.00
+> LS
+  prompt: LIST Select objects:
+  command| LS LIST
+> enter
+  prompt: Command:
+  prompt| Select objects:
 
 ## VPOINT VIEW
 > start

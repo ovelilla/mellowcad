@@ -220,6 +220,11 @@ export interface ObjectSelectorOptions {
    */
   readonly locked?: MessageId
   /**
+   * Objects on a locked layer join the set like any other, in silence: a
+   * command that only reads them (LIST, inquiry/p426).
+   */
+  readonly takesLocked?: boolean
+  /**
    * Called as objects join the set, a duplicate not among them, with how they
    * were found: STRETCH's frames, JOIN's order.
    */
@@ -1127,8 +1132,12 @@ export class ObjectSelector {
     for (const id of ids) {
       const entity = ctx.document.get(id)
       if (!entity) continue
-      if (ctx.document.getLayer(entity.layerId)?.locked) locked++
-      else if (refuse?.rejects(entity, ctx)) refused++
+      if (
+        !this.options.takesLocked &&
+        ctx.document.getLayer(entity.layerId)?.locked
+      ) {
+        locked++
+      } else if (refuse?.rejects(entity, ctx)) refused++
       else kept.push(id)
     }
     return { kept, locked, refused }

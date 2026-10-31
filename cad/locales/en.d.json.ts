@@ -72,6 +72,7 @@ declare const source: {
       "measure": string
       "measurearea": string
       "id": string
+      "list": string
       "zoom": string
       "pan": string
       "dashpan": string
@@ -529,6 +530,7 @@ declare const source: {
       "DIST": string[]
       "AREA": string[]
       "ID": string[]
+      "LIST": string[]
       "ZOOM": string[]
       "PAN": string[]
       "-PAN": string[]
@@ -2100,6 +2102,155 @@ declare const source: {
       "joinTypeIs": string
       "notAFitPoint": string
       "notAControlVertex": string
+      "listObjectName": string
+      "listObject": string
+      "listSpace": string
+      "listColor": string
+      "listLineweight": string
+      "listThickness": string
+      "listExtrusion": string
+      "listLineFrom": string
+      "listLineTo": string
+      "listLineLength": string
+      "listLine3d": string
+      "listLineDelta": string
+      "listCenter": string
+      "listRadius": string
+      "listCircumference": string
+      "listArea": string
+      "listStartAngle": string
+      "listEndAngle": string
+      "listLength": string
+      "listTotalAngle": string
+      "listCurveArea": string
+      "listCurveCircumference": string
+      "listCurveLength": string
+      "listEllipseCenter": string
+      "listEllipseMajor": string
+      "listEllipseMinor": string
+      "listEllipseStart": string
+      "listEllipseEnd": string
+      "listEllipseStartAngle": string
+      "listEllipseEndAngle": string
+      "listEllipseRatio": string
+      "listSplineOrder": string
+      "listSplineProperties": string
+      "listSplineRange": string
+      "listSplineControlCount": string
+      "listSplineControlPoints": string
+      "listPointMore": string
+      "listSplineWeight": string
+      "listSplineFitCount": string
+      "listSplineFitPoints": string
+      "listSplineTolerance": string
+      "listSplineStartTangent": string
+      "listSplineEndTangent": string
+      "listLwState": string
+      "listLwThickness": string
+      "listLwConstantWidth": string
+      "listLwArea": string
+      "listLwLength": string
+      "listLwPerimeter": string
+      "listLwPoint": string
+      "listStartingWidth": string
+      "listEndingWidth": string
+      "listBulge": string
+      "listLwCenter": string
+      "listVertexCenter": string
+      "listPolylineStartAngle": string
+      "listPolylineEndAngle": string
+      "listPolylineState": string
+      "listPolylinePerimeter": string
+      "listVertexPoint": string
+      "listVertex3dPoint": string
+      "listVertexSpace": string
+      "listVertexCurveFit": string
+      "listVertexSplineFit": string
+      "listVertexControl": string
+      "listTextStyle": string
+      "listTextAnnotative": string
+      "listTypeface": string
+      "listTextPoint": string
+      "listJustifyPoint": string
+      "listTextHeight": string
+      "listTextValue": string
+      "listTextRotation": string
+      "listTextWidth": string
+      "listTextOblique": string
+      "listTextGeneration": string
+      "listAttributeDefault": string
+      "listAttributePrompt": string
+      "listAttributeTag": string
+      "listAttributeValue": string
+      "listAttributeFlags": string
+      "listMtextLocation": string
+      "listMtextWidth": string
+      "listMtextNormal": string
+      "listMtextRotation": string
+      "listMtextHeight": string
+      "listMtextSpacing": string
+      "listMtextAttachment": string
+      "listMtextFlow": string
+      "listMtextContents": string
+      "listDimensionAssociative": string
+      "listDimensionType": string
+      "listDimensionRotation": string
+      "listDimensionFirstExtension": string
+      "listDimensionSecondExtension": string
+      "listDimensionLine": string
+      "listDimensionArcFirst": string
+      "listDimensionArcSecond": string
+      "listDimensionArcCenter": string
+      "listDimensionArc": string
+      "listDimensionRadialCenter": string
+      "listDimensionDefiningPoint": string
+      "listDimensionFarPoint": string
+      "listDimensionTextAngle": string
+      "listDimensionTextPosition": string
+      "listDimensionDefaultText": string
+      "listDimensionTextModifier": string
+      "listDimensionStyle": string
+      "listDimensionOverrides": string
+      "listDimensionAnnotative": string
+      "listHatchPattern": string
+      "listHatchAnnotative": string
+      "listHatchScale": string
+      "listHatchAngle": string
+      "listHatchNotAssociative": string
+      "listHatchArea": string
+      "listHatchOrigin": string
+      "listInsertName": string
+      "listInsertPoint": string
+      "listInsertScaleX": string
+      "listInsertScaleY": string
+      "listInsertScaleZ": string
+      "listInsertRotation": string
+      "listInsertUnits": string
+      "listInsertConversion": string
+      "listInsertUniform": string
+      "listInsertExploding": string
+      "listArrayType": string
+      "listArrayBasePoint": string
+      "listArrayCenter": string
+      "listArrayColumns": string
+      "listArrayColumnSpacing": string
+      "listArrayRows": string
+      "listArrayRowSpacing": string
+      "listArrayRowElevation": string
+      "listArrayLevels": string
+      "listArrayLevelSpacing": string
+      "listArrayAxisAngle": string
+      "listArrayRadius": string
+      "listArrayItems": string
+      "listArrayAngleBetween": string
+      "listArrayFillAngle": string
+      "listArrayItemSpacing": string
+      "listArrayStartOffset": string
+      "listArrayEndOffset": string
+      "listArrayDirection": string
+      "listArrayRotate": string
+      "listArrayMethod": string
+      "listArrayAlign": string
     }
     "feedback": {
       "snap": {

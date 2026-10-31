@@ -92,7 +92,8 @@ later probe:
   dynamic prompt's lead at Length, on the desktop.
 
 Built here only in part: AREA's Arc and Length, MEASUREGEOM's loop, DISTANCE and PERIMETER, corners
-off the UCS's XY plane, LIST (INQUIRY-D1).
+off the UCS's XY plane. LIST (INQUIRY-D1) was built afterwards, on probes p400–p446: inquiry.md's
+LIST.
 
 **Analogues for the reviews that follow** (roadmap): the Workspace review takes the rail's other
 apostrophe macros (ATTDISP's, MATCHPROP's).

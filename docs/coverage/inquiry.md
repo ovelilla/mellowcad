@@ -114,3 +114,79 @@ is the object's with an object snap and the elevation plane's otherwise (p313); 
 without a word (p303); a preselection is dropped as it starts, as DIST and AREA drop it (p349–p351);
 the rail's ID is its button's macro `'_id`, run inside a running command as `'ID` typed there
 (acad.cuix, p320)
+
+### `LIST` / `LI` / `LS` · es `LIST` / `LS` / `LT`
+
+**Implemented:** `Select objects:` (es `Designe objetos`), a set of whole objects (`FOO` refused
+with the modes up to `SIngle`, p421), objects on a locked layer taken in silence (p426); Enter on
+nothing ends without a word (p421); a preselection is listed at once, without the prompt, and
+dropped (p421, p440), the set staying the Previous one (p420); not transparent (`'LIST` refused,
+p425); one undo step U names `LIST` (p440). The order is the set's as AutoCAD builds it: picks as
+picked (p435), what one mode finds at once — ALL, a window, Previous — newest first (p420), a
+preselection newest first (p421). Each object's report is written at the command prompt in AutoCAD
+2027's columns, word for word in English and Spanish (acdb26res.dll's tables; the console,
+QAFLAGS 2, p400–p446): its type and `Layer: "0"` (es `Capa`), `Space: Model space` (es
+`Espacio: Espacio modelo`), `Color: 1 (red)    Linetype: "DASHED"` when either is not ByLayer (an
+index colour by number and name, any other `255,128,0`; a linetype as acadiso.lin names it,
+`BYLAYER` / es `PORCAPA` for the other, p401, p427), `LineWeight: 0.30 mm` and `Thickness =`
+(es `GrosorLínea`, `Alt-objeto`) when set; every point and direction in the current UCS (p424),
+`Extrusion direction relative to UCS:` and the normal when it is not the UCS's Z (p424, p436,
+p437, each type's line where the console puts it); lengths at LUPREC and angles at AUPREC,
+padded as the console's printf widths pad them (`%9`, `%6`, `%-9`: p423, p438), the areas of an
+LWPOLYLINE and a HATCH unpadded (p438, p441). LINE: from and to, the length and angle in the XY
+plane, `In Current UCS,` and the `3D Length` and angle from the plane when it rises (p401, p427),
+the deltas. CIRCLE: centre, radius, circumference, area. ARC: centre, radius, start and end angle
+and length, or off the UCS's plane the length and `total angle` (p436). ELLIPSE: area and
+circumference, or an arc's length, centre, the axes as vectors, an arc's ends and ELLIPSE's
+angles, the radius ratio (p404). SPLINE: length, or closed area and circumference — no area for
+one that crosses itself (p429, p444) —, order, `Planar`/`Non-Planar`, `Rational`, `Periodic`,
+the parametric range on its own knots (a fit spline's chord sums, p405), the control points (a
+periodic one's loop, p406) with each weight (p429), and a fit spline's fit points (a closed one's
+first again), `Fit point tolerance: 1.0000E-10` and its tangents (p428). LWPOLYLINE: `Open` or
+`Closed` (es `Abrir`, `Cerrada`), its thickness, `Constant width` or each segment's widths, area
+and length or perimeter, each vertex `at point` with its segment's arc (bulge, centre, radius,
+angles, p407, p408). A fitted polyline is AutoCAD's POLYLINE, its VERTEX entries and END
+SEQUENCE: a Fit's joints `(Inserted by curve fitting)`, a Spline's frame `(Spline control point)`
+round its curve's points `(Inserted by spline fitting)` (p409, p430, pedit/p177); Decurve makes
+it an LWPOLYLINE again (p409). A 3D polyline: `Open space` / `Closed space`, its vertices' vector
+area, its length, each VERTEX `Space` (p410, 3dpoly/p08). TEXT and ATTDEF: style, `Annotative: No`,
+`Typeface = Arial`, the point its justification names (`start`, `mid`, `top/left`…, p431),
+height, text or default, prompt and tag, the rotation (none off the UCS's plane, p436), width
+factor, obliquing, an ATTDEF's flags, generation (p411, p413). MTEXT: location, width, normal,
+rotation, text height, `Multiple (1x = 4.1667)` or `Exactly (0.48x = 2.0000)`, attachment
+(`TopLeft`, es `SIzquierda`…), flow direction, contents (p412, p432). DIMENSION: `associative:
+no`, the type (`horizontal`, `vertical`, `rotated` and its angle, `aligned`, `<linear, not
+parallel to UCS>` off the plane, `arc` for an angular one, `radial`, `diameter`), its defining
+points (a linear one's where its line meets the second extension line; an angular one's arc point
+a third of the way round, p415), the text angle, the text position `default` or `user specified`
+(a radial one's always), `default text` or `dimension text modifier: …`, the style, a radial
+one's `DIMUPT On` override as the console writes it (p416, p439), `Annotative: No` (p414). HATCH:
+pattern, `Annotative: No`, scale and angle (not SOLID's), `Not associative`, area, origin (p417).
+BLOCK REFERENCE: block name, insertion point, the three scales and rotation (none off the plane,
+p437), `InsUnits:` the drawing's unit, `Unit conversion: 1.0000`, `Scale uniformly: No`,
+`Allow exploding: Yes`, then each ATTRIBUTE as the reference shows it (its Y scale the height,
+X over Y the width factor: 7.5000 and 0.6667 at 2 by 3, p418) and END SEQUENCE. ARRAY:
+rectangular, polar and path, each row of the console's report (arrays/p401–p406, p419, p434).
+WHY no `Handle = 2d7` line: the model has no handles, and an id made up as one would read as
+AutoCAD's. WHY every line at once, with no `Press ENTER to continue:` (es
+`Pulse INTRO para continuar:`) each screenful: the pause pages AutoCAD's text window, whose height
+is the desktop's (the console pauses every few lines without QAFLAGS 2, p422), and the history here
+scrolls. WHY on the top bar, after the linetype, not the rail: it is the ribbon's Properties
+panel's (acad.cuix RBN_01740411, `^C^C_list`), which the top bar is here
+
+**Missing:** the area of an open curve-fit polyline, which AutoCAD's LIST and AREA give larger
+than the curve closed by its chord (p409, p445: 138.8091 where it closes 127.9336; no bulge on
+its last vertex explains it, p446); a spline's length as AutoCAD's console approximates it
+(32.6835 for the exact 32.6829, p406, p428, p444; here exact); a dimension's default text position
+as the console's font sets it (11.9014 over a line at 10, where the desktop's palette reads 11.875,
+dimensions/d04-2, as here; with a text angle the console's lies on the line, p433); DIMANGULAR's
+two-line form, `type: angular` with each line's points (p415: the model keeps the three-point
+one); `associative: yes` for a dimension picked on its object (p416, p439: none is associative
+here); the MTEXT `Text height:` line p432's two leave out, for no reason p442 and p443 found; the
+desktop's pause and its text window; **unverified**, unprobed: a hatch off the UCS's plane, an
+ATTDEF's extrusion line, a fitted polyline's thickness, a closed spline-fit one's order, a 3D
+polyline's Spline (`Open spline space`), a closed spline in no plane, an open heavy polyline's
+last widths, a clockwise ring (`CW`, es `Horaria` from table 27647), a path array's Divide
+spacing, the ring's and the path's rows (one and a half times the source, as ARRAYRECT's
+defaults), what no model here holds (ByBlock, `LineWeight: Default`, per-object linetype scale,
+transparency, groups, a block's units other than the drawing's)

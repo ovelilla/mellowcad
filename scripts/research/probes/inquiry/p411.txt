@@ -1,0 +1,20 @@
+QAFLAGS
+2
+_-TEXT
+5,5
+2.5
+0
+Hello
+_LIST
+_L
+
+_-TEXT
+_J
+_MC
+20,10
+3
+30
+Mid text
+_LIST
+_L
+

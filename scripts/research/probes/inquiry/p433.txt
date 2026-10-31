@@ -1,0 +1,16 @@
+QAFLAGS
+2
+_DIMLINEAR
+0,0
+30,0
+_A
+20
+15,10
+_LIST
+_L
+
+(setq d (entlast))
+(entmod (subst (cons 11 '(5.0 20.0 0.0)) (assoc 11 (entget d)) (subst (cons 70 (logior 128 (cdr (assoc 70 (entget d))))) (assoc 70 (entget d)) (entget d))))
+_LIST
+_L
+

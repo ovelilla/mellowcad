@@ -53,6 +53,7 @@ import { CopyClipTool } from "./tools/CopyClipTool"
 import { PasteTool } from "./tools/PasteTool"
 import { MeasureTool } from "./tools/MeasureTool"
 import { IdTool } from "./tools/IdTool"
+import { ListTool } from "./tools/ListTool"
 import { ZoomTool } from "./tools/ZoomTool"
 import { PanTool } from "./tools/PanTool"
 import { DashPanTool } from "./tools/DashPanTool"
@@ -170,6 +171,7 @@ export function defaultTools(
     new MeasureTool("distance", "measure"),
     new MeasureTool("area", "measurearea"),
     new IdTool(),
+    new ListTool(),
     new ZoomTool(),
     new PanTool(),
     new DashPanTool(),

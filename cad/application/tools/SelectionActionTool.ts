@@ -44,6 +44,7 @@ export abstract class SelectionActionTool implements Tool {
     refuse: this.refusal(),
     noneFound: this.noneFound(),
     onAdded: (ids, added, _ctx, find) => this.selectionAdded(ids, added, find),
+    takesLocked: this.takesLocked(),
   })
 
   /**
@@ -78,6 +79,11 @@ export abstract class SelectionActionTool implements Tool {
   protected begin(ctx: ToolContext): void {
     this.selector.start()
     if (this.selector.preselect(ctx)) this.execute(ctx)
+  }
+
+  /** Whether the set takes objects on a locked layer, as a command that only reads them does. */
+  protected takesLocked(): boolean {
+    return false
   }
 
   /** What the command refuses at `Select objects:`, said under the count. */

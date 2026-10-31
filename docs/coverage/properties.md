@@ -133,7 +133,7 @@ each segment takes the linetype current as it starts (p250, p251); es `Tipo de l
 `porCapa` (`C`; the English `BYL` and `POR` are no linetype, p223, p228), `Tipo de línea "X" no
 encontrado en acad.lin.`, no match `Tipo de línea no encontrado.`; the acad.pgp aliases (p253): LT,
 LTYPE and DDLTYPE run LINETYPE, -LT and -LTYPE -LINETYPE; es TL, TLINEA and DDLTYPE TIPOLIN, -TL and
--TLINEA -TIPOLIN (Spanish LT is LIST, p254, not built)
+-TLINEA -TIPOLIN (Spanish LT is LIST, p254, inquiry.md)
 
 **Missing:** the listings' descriptions but Continuous's `Solid line` (acadiso.lin's are not
 shipped to quote); the first `?`'s `Enter name of linetype file to list <acadiso.lin>:` (es

@@ -6,6 +6,7 @@ import {
   CheckIcon,
   ChevronRight,
   FilePlus,
+  FileText,
   FolderOpen,
   Globe,
   Layers,
@@ -406,7 +407,8 @@ function LayerControl({
  * The Properties panel: Match Properties, then the object colour, lineweight
  * and linetype. As the layer drop-down, each shows and changes the selection
  * when there is one, and otherwise the current setting new objects take
- * (CECOLOR, CELWEIGHT, CELTYPE).
+ * (CECOLOR, CELWEIGHT, CELTYPE). List closes it, as in the ribbon panel's
+ * expanded part (acad.cuix's RBN_01740411, `^C^C_list`).
  */
 function PropertyControls({
   engine,
@@ -418,6 +420,7 @@ function PropertyControls({
   const t = useEditorText("TopBar")
   const selected = state.selectionCount > 0
   const matchprop = state.tools.find((entry) => entry.id === "matchprop")
+  const list = state.tools.find((entry) => entry.id === "list")
   const done = () => engine.focusSurface()
 
   return (
@@ -465,6 +468,14 @@ function PropertyControls({
         }}
         ariaLabel={t("linetype")}
         className={cn(BAR_SELECT, "w-32")}
+      />
+      <IconAction
+        icon={FileText}
+        label={list?.label ?? "list"}
+        shortcut={list?.shortcut?.toUpperCase()}
+        side="bottom"
+        active={state.activeToolId === "list"}
+        onClick={() => engine.setActiveTool("list")}
       />
     </Panel>
   )

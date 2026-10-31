@@ -306,6 +306,8 @@ const PALETTE: readonly PaletteSection[] = [
 const RAIL_EXCLUDED = new Set([
   "select",
   "matchprop",
+  // LIST is the ribbon's Properties panel's, beside Match Properties.
+  "list",
   "zoom",
   "pan",
   "dashpan",

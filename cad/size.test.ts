@@ -22,7 +22,7 @@ const ISLAND_MAX_BYTES = 1 * KB
  * The engine a page drawing with `CadEngine` loads, gzipped: a ceiling at its
  * size when the package was cut, raised only on purpose.
  */
-const ENGINE_MAX_GZIP_BYTES = 295 * KB
+const ENGINE_MAX_GZIP_BYTES = 303 * KB
 
 const CAD = import.meta.dirname
 const fromTsdown = createRequire(

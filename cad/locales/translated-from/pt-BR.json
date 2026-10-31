@@ -69,6 +69,7 @@
   "interface.tool.measure": "Measure",
   "interface.tool.measurearea": "Area",
   "interface.tool.id": "ID Point",
+  "interface.tool.list": "List",
   "interface.tool.zoom": "Zoom",
   "interface.tool.pan": "Pan",
   "interface.tool.dashpan": "Pan by points",

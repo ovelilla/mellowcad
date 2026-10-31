@@ -27,7 +27,7 @@ us to walk again, whereas a command costs the same before or after it.
    third-party one), drawn on the canvas as AutoCAD draws them (isolines, Hidden, shaded), from
    REGION and its booleans to SWEEP and LOFT. The brief is `docs/next-solids.md`.
 
-Left out of the 2.5D model, each a gap of its own: LIST, the `.X` / `.XY` point filters, OSNAPZ as
+Left out of the 2.5D model, each a gap of its own: the `.X` / `.XY` point filters, OSNAPZ as
 a variable, ARRAYRECT's Levels, CHPROP, and POINT's thickness (with POINT, below). 3DPOLY and SPLINE
 3D are done: the objects whose stored points carry their Z (`draw.md`), a spline kept in its own
 plane when it has one; trimming a 3D polyline and JOIN into one are its own gaps.
@@ -45,8 +45,9 @@ Polyline's vertices AutoCAD's on a CV spline only (k57–k146, modify.md's SPLIN
 
 PEDIT is done, its Fit, Spline and Decurve with the fitted polylines they make (pedit/p01–p199,
 modify.md's PEDIT): a Fit's arcs kept as AutoCAD keeps them, a Spline's curve derived from its
-frame, SPLINE's Object and SPLINEDIT taking a spline-fit one; Ltype gen a polyline's own. Left: LIST
-(which would list a fitted one's vertices), the palette's Fit/Smooth words and the meshes.
+frame, SPLINE's Object and SPLINEDIT taking a spline-fit one; Ltype gen a polyline's own. Left: the
+palette's Fit/Smooth words and the meshes. LIST is done, every type of the model listed as AutoCAD
+2027's console lists it (inquiry/p400–p446, inquiry.md's LIST).
 
 Deferrable indefinitely at no extra cost: PASTEBLOCK/PASTEORIG/CUTBASE, DIMARC, DIMORDINATE, the
 modern `DIM` command, POINT with DIVIDE/MEASURE, XLINE/RAY, GROUP, LENGTHEN, ALIGN, per-object
@@ -130,12 +131,10 @@ what it takes into a reference by default (`Object conversion=Convert`, properti
 layer a block definition uses cannot be deleted (LAY-02): for the Blocks review, BLOCK's and
 PURGE's sides. LWDISPLAY, LAYLOCKFADECTL, CECOLOR, CELTYPE and CELWEIGHT typed as variables: for
 the Workspace review (SETVAR). A hatch inside a block, mirrored with its reference, reflects its
-pattern (HATCH-D75, built by the Blocks review: BOB-01, BOB-02), and LIST of a hatch has its words
-in hatch/p320 and p369, for whoever builds LIST (INQUIRY-D1); HPNAME, HPSCALE, HPANG and HPORIGIN typed as variables, for the Workspace review
+pattern (HATCH-D75, built by the Blocks review: BOB-01, BOB-02); HPNAME, HPSCALE, HPANG and HPORIGIN typed as variables, for the Workspace review
 (`docs/plans/hatch-review.md`). The Blocks review settled what was left for it
 above (`docs/plans/blocks-review.md`); it leaves ATTDIA, ATTREQ, AFLAGS, ATTMODE and INSNAME typed
-as variables to the Workspace review, LIST of a block reference and its attributes to whoever builds
-LIST (INQUIRY-D1: `docs/plans/inquiry-review.md`, which closed the circle review's COB-03), and the Edit Attributes dialog's stand-in (ATTEDIT's box, BLOCKS-D90) to whichever review
+as variables to the Workspace review, and the Edit Attributes dialog's stand-in (ATTEDIT's box, BLOCKS-D90) to whichever review
 builds a dialog for it. The Dimensions review (`docs/plans/dimensions-review.md`) leaves angular
 chaining, dimension overrides and the Dimension Style Manager in `dimensions.md`'s Missing. The Inquiry
 review leaves the rail's other apostrophe macros (ATTDISP's, MATCHPROP's: `transparentMacro`) to

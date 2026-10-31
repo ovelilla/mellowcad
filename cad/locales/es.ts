@@ -75,6 +75,7 @@ export const es: EngineLocale = {
       "measure": "Medir",
       "measurearea": "Área",
       "id": "Coordenadas punto",
+      "list": "Lista",
       "zoom": "Zoom",
       "pan": "Encuadre",
       "dashpan": "Encuadre por puntos",
@@ -850,6 +851,11 @@ export const es: EngineLocale = {
       ],
       "ID": [
         "ID"
+      ],
+      "LIST": [
+        "LIST",
+        "LS",
+        "LT"
       ],
       "ZOOM": [
         "ZOOM",
@@ -4374,7 +4380,1310 @@ export const es: EngineLocale = {
         ]
       ],
       "notAFitPoint": "No es ningún punto de ajuste.",
-      "notAControlVertex": "No es un vértice de control."
+      "notAControlVertex": "No es un vértice de control.",
+      "listObjectName": [
+        [
+          "name",
+          1,
+          {
+            "line": "LINEA",
+            "circle": "CIRCULO",
+            "arc": "ARCO",
+            "ellipse": "ELLIPSE",
+            "spline": "SPLINE",
+            "lwpolyline": "LWPOLYLINE",
+            "polyline": "POLILINEA",
+            "vertex": "VERTICE",
+            "endSequence": "FIN SECUENCIA",
+            "text": "TEXT",
+            "mtext": "MTEXT",
+            "attdef": "DEFINICIÓN DE ATRIBUTO",
+            "attribute": "ATRIBUTO",
+            "dimension": "ACOTACION",
+            "hatch": "HATCH",
+            "insert": "REFERENCIA A BLOQUE",
+            "other": "MATRIZ"
+          }
+        ]
+      ],
+      "listObject": [
+        "                  ",
+        [
+          "name"
+        ],
+        "  Capa: \"",
+        [
+          "layer"
+        ],
+        "\""
+      ],
+      "listSpace": "                            Espacio: Espacio modelo",
+      "listColor": [
+        "                   Color: ",
+        [
+          "color"
+        ],
+        "    Tipo de línea: \"",
+        [
+          "linetype"
+        ],
+        "\""
+      ],
+      "listLineweight": [
+        "                   GrosorLínea: ",
+        [
+          "lineweight"
+        ],
+        " mm"
+      ],
+      "listThickness": [
+        "                   Alt-objeto = ",
+        [
+          "thickness"
+        ]
+      ],
+      "listExtrusion": [
+        "Dirección de extrusión relativa al SCP:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLineFrom": [
+        "                de punto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLineTo": [
+        "             hasta punto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLineLength": [
+        "          ",
+        [
+          "inUcs",
+          1,
+          {
+            "yes": "En SCP actual, ",
+            "other": ""
+          }
+        ],
+        "Longitud = ",
+        [
+          "length"
+        ],
+        ", Ángulo en el plano XY = ",
+        [
+          "angle"
+        ]
+      ],
+      "listLine3d": [
+        "                  3D Longitud = ",
+        [
+          "length"
+        ],
+        ", Ángulo del plano XY = ",
+        [
+          "angle"
+        ]
+      ],
+      "listLineDelta": [
+        "                  Incremento X =",
+        [
+          "x"
+        ],
+        ",  Incremento Y = ",
+        [
+          "y"
+        ],
+        ",  Incremento Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listCenter": [
+        "            centro punto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listRadius": [
+        "             radio ",
+        [
+          "radius"
+        ]
+      ],
+      "listCircumference": [
+        "     circunferencia ",
+        [
+          "length"
+        ]
+      ],
+      "listArea": [
+        "              área ",
+        [
+          "area"
+        ]
+      ],
+      "listStartAngle": [
+        "           inicial ángulo ",
+        [
+          "angle"
+        ]
+      ],
+      "listEndAngle": [
+        "             final ángulo ",
+        [
+          "angle"
+        ]
+      ],
+      "listLength": [
+        "            longitud ",
+        [
+          "length"
+        ]
+      ],
+      "listTotalAngle": [
+        "             ángulo total ",
+        [
+          "angle"
+        ]
+      ],
+      "listCurveArea": [
+        "                             Área: ",
+        [
+          "area"
+        ]
+      ],
+      "listCurveCircumference": [
+        "                   Circunferencia: ",
+        [
+          "length"
+        ]
+      ],
+      "listCurveLength": [
+        "                         Longitud: ",
+        [
+          "length"
+        ]
+      ],
+      "listEllipseCenter": [
+        "                           Center: X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listEllipseMajor": [
+        "                        Eje mayor: X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listEllipseMinor": [
+        "                        Eje menor: X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listEllipseStart": [
+        "                    Punto inicial: X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listEllipseEnd": [
+        "                      Punto final: X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listEllipseStartAngle": [
+        "                   Ángulo inicial: ",
+        [
+          "angle"
+        ]
+      ],
+      "listEllipseEndAngle": [
+        "                     Ángulo final: ",
+        [
+          "angle"
+        ]
+      ],
+      "listEllipseRatio": [
+        "                  Relación del radio: ",
+        [
+          "ratio"
+        ]
+      ],
+      "listSplineOrder": [
+        "                            Orden: ",
+        [
+          "order"
+        ]
+      ],
+      "listSplineProperties": [
+        "                      Propiedades: ",
+        [
+          "planar",
+          1,
+          {
+            "yes": "Plana,",
+            "other": "No plana,"
+          }
+        ],
+        " ",
+        [
+          "rational",
+          1,
+          {
+            "yes": "Racional,",
+            "other": "No racional,"
+          }
+        ],
+        " ",
+        [
+          "periodic",
+          1,
+          {
+            "yes": "Periódica",
+            "other": "No periódica"
+          }
+        ]
+      ],
+      "listSplineRange": [
+        "                 Rango de parámetros: Inicio",
+        [
+          "start"
+        ],
+        "\n                                     Fin",
+        [
+          "end"
+        ]
+      ],
+      "listSplineControlCount": [
+        "         Número de puntos de apoyo: ",
+        [
+          "count"
+        ]
+      ],
+      "listSplineControlPoints": [
+        "                  Puntos de apoyo: X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listPointMore": [
+        "                                   X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listSplineWeight": [
+        "                                   Peso",
+        [
+          "weight"
+        ]
+      ],
+      "listSplineFitCount": [
+        "             Número de puntos de ajuste: ",
+        [
+          "count"
+        ]
+      ],
+      "listSplineFitPoints": "                  Datos del usuario: Ajustar puntos",
+      "listSplineTolerance": [
+        "              Tolerancia de punto de ajuste: ",
+        [
+          "tolerance"
+        ]
+      ],
+      "listSplineStartTangent": "                                   Tangente inicial",
+      "listSplineEndTangent": "                                   Tangente final",
+      "listLwState": [
+        [
+          "closed",
+          1,
+          {
+            "yes": "           Cerrada",
+            "other": "             Abrir"
+          }
+        ]
+      ],
+      "listLwThickness": [
+        " Altura del objeto ",
+        [
+          "thickness"
+        ]
+      ],
+      "listLwConstantWidth": [
+        " Anchura constante ",
+        [
+          "width"
+        ]
+      ],
+      "listLwArea": [
+        "              área   ",
+        [
+          "area"
+        ]
+      ],
+      "listLwLength": [
+        "          longitud   ",
+        [
+          "length"
+        ]
+      ],
+      "listLwPerimeter": [
+        "         perímetro   ",
+        [
+          "length"
+        ]
+      ],
+      "listLwPoint": [
+        "          en el punto  X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listStartingWidth": [
+        "   anchura inicial ",
+        [
+          "width"
+        ]
+      ],
+      "listEndingWidth": [
+        "     anchura final ",
+        [
+          "width"
+        ]
+      ],
+      "listBulge": [
+        "         curvatura ",
+        [
+          "bulge"
+        ]
+      ],
+      "listLwCenter": [
+        "            centro  X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listVertexCenter": [
+        "            centro X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listPolylineStartAngle": [
+        "    ángulo inicial ",
+        [
+          "angle"
+        ]
+      ],
+      "listPolylineEndAngle": [
+        "      ángulo final ",
+        [
+          "angle"
+        ]
+      ],
+      "listPolylineState": [
+        [
+          "state",
+          1,
+          {
+            "open": "           Abierta",
+            "closed": "           Cerrada",
+            "openSpline": "           Abierta spline",
+            "closedSpline": "           Cerrada spline",
+            "openSpace": "           Abierta espacio",
+            "closedSpace": "           Cerrada espacio",
+            "openSplineSpace": "           Abierta spline espacio",
+            "other": "           Cerrada spline espacio"
+          }
+        ]
+      ],
+      "listPolylinePerimeter": [
+        "         perímetro ",
+        [
+          "length"
+        ]
+      ],
+      "listVertexPoint": [
+        "                en punto; X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listVertex3dPoint": [
+        "                en punto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listVertexSpace": "           Espacio",
+      "listVertexCurveFit": "                   (Inserción por adaptación de curva)",
+      "listVertexSplineFit": "                   (insertado por transformación en spline)",
+      "listVertexControl": "                   (punto de apoyo de spline)",
+      "listTextStyle": [
+        "             Estilo = \"",
+        [
+          "style"
+        ],
+        "\""
+      ],
+      "listTextAnnotative": "        Anotativo: no",
+      "listTypeface": [
+        "             Tipo de letra = ",
+        [
+          "font"
+        ]
+      ],
+      "listTextPoint": [
+        "  ",
+        [
+          "point"
+        ],
+        " punto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listJustifyPoint": [
+        [
+          "justify",
+          1,
+          {
+            "start": "inicial",
+            "center": "centro",
+            "end": "final",
+            "mid": "mitad",
+            "topLeft": "superior/izquierda",
+            "topCenter": "superior/centro",
+            "topRight": "superior/derecha",
+            "midLeft": "mitad/izquierda",
+            "midRight": "mitad/derecha",
+            "bottomLeft": "inferior/izquierda",
+            "bottomCenter": "inferior/centro",
+            "other": "inferior/derecha"
+          }
+        ]
+      ],
+      "listTextHeight": [
+        "            altura ",
+        [
+          "height"
+        ]
+      ],
+      "listTextValue": [
+        "             texto ",
+        [
+          "text"
+        ]
+      ],
+      "listTextRotation": [
+        "          rotación ángulo ",
+        [
+          "angle"
+        ]
+      ],
+      "listTextWidth": [
+        "           anchura factor de escala ",
+        [
+          "factor"
+        ]
+      ],
+      "listTextOblique": [
+        "        oblicuidad ángulo ",
+        [
+          "angle"
+        ]
+      ],
+      "listTextGeneration": "        generación normal",
+      "listAttributeDefault": [
+        "       por defecto ",
+        [
+          "value"
+        ]
+      ],
+      "listAttributePrompt": [
+        "         solicitud ",
+        [
+          "prompt"
+        ]
+      ],
+      "listAttributeTag": [
+        "     identificador ",
+        [
+          "tag"
+        ]
+      ],
+      "listAttributeValue": [
+        "             valor ",
+        [
+          "value"
+        ]
+      ],
+      "listAttributeFlags": [
+        "       indicadores ",
+        [
+          "normal",
+          1,
+          {
+            "yes": "normal",
+            "other": [
+              [
+                "invisible",
+                1,
+                {
+                  "yes": "invisible  ",
+                  "other": ""
+                }
+              ],
+              [
+                "constant",
+                1,
+                {
+                  "yes": "constante  ",
+                  "other": ""
+                }
+              ],
+              [
+                "verify",
+                1,
+                {
+                  "yes": "verific.  ",
+                  "other": ""
+                }
+              ],
+              [
+                "preset",
+                1,
+                {
+                  "yes": "predefinido",
+                  "other": ""
+                }
+              ]
+            ]
+          }
+        ]
+      ],
+      "listMtextLocation": [
+        "Ubicación:        X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listMtextWidth": [
+        "Anchura:          ",
+        [
+          "width"
+        ]
+      ],
+      "listMtextNormal": [
+        "Normal:           X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listMtextRotation": [
+        "Rotación:        ",
+        [
+          "angle"
+        ]
+      ],
+      "listMtextHeight": [
+        "Altura de texto: ",
+        [
+          "height"
+        ]
+      ],
+      "listMtextSpacing": [
+        "Interlineado:     ",
+        [
+          "style",
+          1,
+          {
+            "exactly": "Exactamente",
+            "other": "Múltiple"
+          }
+        ],
+        " (",
+        [
+          "factor"
+        ],
+        "x = ",
+        [
+          "distance"
+        ],
+        ")"
+      ],
+      "listMtextAttachment": [
+        "Enlace:           ",
+        [
+          "attachment",
+          1,
+          {
+            "tl": "SIzquierda",
+            "tc": "SCentro",
+            "tr": "SDerecha",
+            "ml": "MIzquierda",
+            "mc": "MCentro",
+            "mr": "MDerecha",
+            "bl": "IIzquierda",
+            "bc": "ICentro",
+            "other": "IDerecha"
+          }
+        ]
+      ],
+      "listMtextFlow": "Dirección:        PorEstilo",
+      "listMtextContents": [
+        "Contenido:        ",
+        [
+          "contents"
+        ]
+      ],
+      "listDimensionAssociative": "asociativo: no",
+      "listDimensionType": [
+        "tipo: ",
+        [
+          "type",
+          1,
+          {
+            "horizontal": "horizontal",
+            "vertical": "vertical",
+            "rotated": "girada",
+            "aligned": "alineado",
+            "arc": "arco",
+            "radial": "radial",
+            "diameter": "diámetro",
+            "other": "<lineal, no paralelo al SCP>"
+          }
+        ]
+      ],
+      "listDimensionRotation": [
+        " rotación: ",
+        [
+          "angle"
+        ]
+      ],
+      "listDimensionFirstExtension": [
+        "1ª extensión    punto definidor X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionSecondExtension": [
+        "2ª extensión    punto definidor X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionLine": [
+        "línea de cota punto definidor X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionArcFirst": [
+        "1ª extensión    punto definidor X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionArcSecond": [
+        "2ª extensión    punto definidor X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionArcCenter": [
+        "centro del arco punto definidor X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionArc": [
+        "cota del arco   punto definidor X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionRadialCenter": [
+        "punto de definición de centro: X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionDefiningPoint": [
+        "punto definidor        X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionFarPoint": [
+        "       punto definidor X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionTextAngle": [
+        "ángulo del texto: ",
+        [
+          "angle"
+        ]
+      ],
+      "listDimensionTextPosition": [
+        [
+          "user",
+          1,
+          {
+            "yes": "determinada por el usuario",
+            "other": "por defecto"
+          }
+        ],
+        " posición del texto: X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionDefaultText": "texto por defecto",
+      "listDimensionTextModifier": [
+        "modif. del texto de cota: ",
+        [
+          "text"
+        ]
+      ],
+      "listDimensionStyle": [
+        "estilo de cota: \"",
+        [
+          "style"
+        ],
+        "\""
+      ],
+      "listDimensionOverrides": "modificaciones de estilos de cota:\n DIMUPT      ACT",
+      "listDimensionAnnotative": "Anotativo: No",
+      "listHatchPattern": [
+        "                 Patrón de sombreado ",
+        [
+          "pattern"
+        ]
+      ],
+      "listHatchAnnotative": "                 Anotativo: no",
+      "listHatchScale": [
+        "                 Escala de sombreado ",
+        [
+          "scale"
+        ]
+      ],
+      "listHatchAngle": [
+        "                 Orientación del sombreado ",
+        [
+          "angle"
+        ]
+      ],
+      "listHatchNotAssociative": "                 No asociativo",
+      "listHatchArea": [
+        "                 Área      ",
+        [
+          "area"
+        ]
+      ],
+      "listHatchOrigin": [
+        "                 Origen    X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listInsertName": [
+        " Nombre de bloque: \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "listInsertPoint": [
+        "                en punto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listInsertScaleX": [
+        "Factor de escala X: ",
+        [
+          "scale"
+        ]
+      ],
+      "listInsertScaleY": [
+        "Factor de escala Y: ",
+        [
+          "scale"
+        ]
+      ],
+      "listInsertScaleZ": [
+        "Factor de escala Z: ",
+        [
+          "scale"
+        ]
+      ],
+      "listInsertRotation": [
+        "ángulo de rotación: ",
+        [
+          "angle"
+        ]
+      ],
+      "listInsertUnits": [
+        "      UnidadesIns: ",
+        [
+          "unit",
+          1,
+          {
+            "cm": "Centímetros",
+            "m": "Metros",
+            "other": "Milímetros"
+          }
+        ]
+      ],
+      "listInsertConversion": [
+        "Conversión de unidades: ",
+        [
+          "factor"
+        ]
+      ],
+      "listInsertUniform": "Aplicar escala uniforme: No",
+      "listInsertExploding": "Permitir descomposición: Sí",
+      "listArrayType": [
+        "  Tipo de matriz:  ",
+        [
+          "kind",
+          1,
+          {
+            "rectangular": "Rectangular",
+            "polar": "    Polar",
+            "other": "     Ruta"
+          }
+        ]
+      ],
+      "listArrayBasePoint": [
+        "      Punto base:  X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listArrayCenter": [
+        "          Centro:  X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listArrayColumns": [
+        "       Número de columnas:  ",
+        [
+          "count"
+        ]
+      ],
+      "listArrayColumnSpacing": [
+        "    Espaciado de columnas:  ",
+        [
+          "spacing"
+        ]
+      ],
+      "listArrayRows": [
+        "          Número de filas:  ",
+        [
+          "count"
+        ]
+      ],
+      "listArrayRowSpacing": [
+        "       Espaciado de filas:  ",
+        [
+          "spacing"
+        ]
+      ],
+      "listArrayRowElevation": [
+        "  Incremento de elevación de fila:  ",
+        [
+          "spacing"
+        ]
+      ],
+      "listArrayLevels": [
+        "        Número de niveles:  ",
+        [
+          "count"
+        ]
+      ],
+      "listArrayLevelSpacing": [
+        "     Espaciado de niveles:  ",
+        [
+          "spacing"
+        ]
+      ],
+      "listArrayAxisAngle": [
+        "  Incluye el ángulo de eje:  ",
+        [
+          "angle"
+        ]
+      ],
+      "listArrayRadius": [
+        "                    Radio:  ",
+        [
+          "radius"
+        ]
+      ],
+      "listArrayItems": [
+        "      Número de elementos:  ",
+        [
+          "count"
+        ]
+      ],
+      "listArrayAngleBetween": [
+        "   Ángulo entre elementos:  ",
+        [
+          "angle"
+        ]
+      ],
+      "listArrayFillAngle": [
+        "        Ángulo de relleno:  ",
+        [
+          "angle"
+        ]
+      ],
+      "listArrayItemSpacing": [
+        "   Espaciado de elementos:  ",
+        [
+          "spacing"
+        ]
+      ],
+      "listArrayStartOffset": [
+        "          Desfase inicial:  ",
+        [
+          "spacing"
+        ]
+      ],
+      "listArrayEndOffset": [
+        "            Desfase final:  ",
+        [
+          "spacing"
+        ]
+      ],
+      "listArrayDirection": [
+        "                Dirección:  ",
+        [
+          "direction",
+          1,
+          {
+            "clockwise": "  Horaria",
+            "other": "Antihoraria"
+          }
+        ]
+      ],
+      "listArrayRotate": [
+        "            Girar objetos:  ",
+        [
+          "answer",
+          1,
+          {
+            "yes": "       Sí",
+            "other": "       No"
+          }
+        ]
+      ],
+      "listArrayMethod": [
+        "          Método:  ",
+        [
+          "method",
+          1,
+          {
+            "measure": "    Medir",
+            "other": "  Dividir"
+          }
+        ]
+      ],
+      "listArrayAlign": [
+        "        Alinear elementos:  ",
+        [
+          "answer",
+          1,
+          {
+            "yes": "       Sí",
+            "other": "       No"
+          }
+        ]
+      ]
     },
     "feedback": {
       "snap": {

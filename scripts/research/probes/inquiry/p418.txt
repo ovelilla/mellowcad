@@ -1,0 +1,35 @@
+QAFLAGS
+2
+ATTDIA
+0
+ATTREQ
+1
+_-ATTDEF
+
+TA
+PA
+DA
+0,3
+2.5
+0
+(setq ea (entlast))
+_CIRCLE
+0,0
+2
+(setq ec (entlast))
+_-BLOCK
+B1
+0,0
+!ec
+!ea
+
+_-INSERT
+B1
+100,0
+2
+3
+30
+V1
+_LIST
+_L
+

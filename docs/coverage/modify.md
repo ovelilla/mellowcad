@@ -328,7 +328,7 @@ move grip is hot at the main prompt; the
 palette's Base X and Base Y edits, which move the base point alone, the items staying (d20b: the
 Base point option), and Center X, Y and Z edits (**unverified**); the palette's rows of options not
 built — Levels, Level spacing, a ring's or a path array's Rows, Row spacing and Row elevation
-increment, Start offset, Fill entire path (d13); LIST's `ARRAY` report (p401, p403–p406); ARRAYEDIT (p419–p421) and
+increment, Start offset, Fill entire path (d13); ARRAYEDIT (p419–p421) and
 ARRAYCLOSE; no cap on the items but 32767 each way, a large array costing what as many loose
 copies cost to draw and pick; Unit cell's rubber band dashed, as the trace's UseDashedLine 1 says (p123;
 solid here: **unverified** on the desktop); Base point (`Specify base point or [Key point] <centroid>:`, es
@@ -1615,9 +1615,8 @@ spell them: a keyword's label is one per command); FILLET's and CHAMFER's Polyli
 fitted polyline, which AutoCAD runs over its curve's vertices, the result unprobed (p194, p195); a
 fitted polyline's grips on the desktop and its palette (the 2D one's Fit/Smooth, ax26res.dll's
 `None;Curve fit;Quadratic;Cubic`, es `Ninguna;Ajuste de curva;Cuadrática;Cúbica`, not shown; the
-3D one's reads None, properties.md); LIST of a heavy polyline, its VERTEX entries `(Spline control
-point)`, `(Inserted by spline fitting)`, `(Inserted by curve fitting)` and its `Open spline`
-(p177), for whoever builds LIST; the small arcs OFFSET rounds some outer corners of a spline-fit
+3D one's reads None, properties.md); the area LIST and AREA give an open curve-fit one
+(inquiry.md); the small arcs OFFSET rounds some outer corners of a spline-fit
 one's copy with (p169); SPLFRAME, which 2027 no longer ties to spline-fit polylines (its help:
 helixes and meshes; plotted with it on, the frame is not drawn, p193).
 **Unverified:** Enter at Width (back at the main prompt here), Multiple's set with nothing in it,
