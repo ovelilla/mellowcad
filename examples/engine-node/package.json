@@ -7,7 +7,7 @@
     "typecheck": "tsc"
   },
   "dependencies": {
-    "@mellowcad/engine": "^0.1.2"
+    "@mellowcad/engine": "^0.2.0"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",

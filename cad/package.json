@@ -1,6 +1,6 @@
 {
   "name": "@mellowcad/engine",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "A 2D CAD drafting engine that works like AutoCAD: its commands, aliases, prompts, keywords and object snaps, headless or on a canvas.",
   "keywords": [
     "cad",

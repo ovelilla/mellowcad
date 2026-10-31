@@ -1,7 +1,7 @@
 # MellowCAD como librería — brief
 
-> **Estado:** fases 1 a 6 hechas (2026-10-30); la 7 espera a que la API de react y el editor lleve
-> una semana quieta; la 8, sin ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
+> **Estado:** fases 1 a 6 hechas (2026-10-30); la 7, preparada (2026-10-31) y a falta de que el dueño
+> publique; la 8, sin ejecutar. Sigue la convención de `docs/next-*.md`: se borra cuando la fase 7 haya ocurrido. El
 > análisis completo, con el inventario medido, las fuentes fechadas, el spike y el pase adversarial,
 > está en https://claude.ai/artifact/VZnAHvDFL8wGadysVcjMdx (privado). El spike vive en la rama
 > local worktree-agent-a498997d3f29c107f (commit 9bc6682), sin empujar.
@@ -502,13 +502,21 @@ son días de sesión.
    validado por la 0.1.1 (la ficha de npm: descripción, palabras clave, `homepage` al README del
    motor), la primera que salió de `release.yml`, con procedencia. Hallado en ella y arreglado: el
    tag no se subía (Changesets lo anota y el runner no tenía identidad de git).
-7. **Publicar react y editor 0.1.0** — 1 día, cuando el ritmo de `packages/editor` baje y terminen las
-   revisiones de comandos. Medido el 2026-10-30: las 25 revisiones, hechas; los commits del editor
-   de esa semana son casi todos su empaquetado (fases 4 y 5), pero su superficie pública
-   (`packages/react/api.md`, `packages/editor/api.md`) existe desde el 2026-10-29. Se publica
-   cuando esos dos informes lleven una semana sin cambiar. Lo que pide, como la 6: sus `private`
-   fuera, «not published yet» fuera de sus READMEs, un changeset minor de cada uno, su primera
-   versión desde la máquina del dueño y un trusted publisher por paquete.
+7. **Publicar react y editor 0.1.0** — preparada (2026-10-31), falta publicar. El criterio de «una
+   semana sin cambios en `api.md`» se quitó el 2026-10-31, por decisión del dueño: no iba a cumplirse
+   mientras el editor crezca, y en 0.x no hace falta, porque un cambio incompatible es un minor y el
+   `^0.1.0` de un integrador no salta a 0.2.0 (lo mismo que ya vale para el motor, publicado en 0.1.0
+   y cambiando desde entonces). Se publica cuando los READMEs y las guías están al día y
+   `npm publish --dry-run` pasa con su `check:hosts`. Preparado: `private` fuera, `publishConfig`,
+   descripción, palabras clave y `homepage` (su página de docs), «not published yet» fuera de los
+   READMEs, un changeset minor de cada uno; `npm run version-packages` deja el motor en 0.2.0 (F1,
+   3DPOLY, SPLINEDIT y las ediciones de spline), react y el editor en 0.1.0 con sus peers en
+   `^0.2.0`. Falta, del dueño y en este orden: (a) react y el editor desde su máquina con 2FA,
+   `npm publish -w packages/react` y luego `-w packages/editor` (npm solo confía en un workflow
+   para un paquete que ya existe); (b) el motor 0.2.0 desde el workflow Release, que se salta las
+   dos versiones ya publicadas y lo saca con procedencia; (c) un trusted publisher por paquete, como
+   el del motor. Al revés, `changeset publish` del workflow intentaría react y el editor sin
+   paquete en npm y fallaría a mitad.
 8. **Registro shadcn** — bajo demanda, tras la 7.
 
 Bloqueos: 1 → 2 → 6; 1 → 3 → 4 → 5 → 7; la org de npm → 6; 7 → 8. La 2 y la 3 pueden ir en paralelo.

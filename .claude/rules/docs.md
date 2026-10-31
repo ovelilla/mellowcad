@@ -47,8 +47,8 @@ claims follow `i18n.md`.
 - `remarkInclude` always runs first, so no plugin sees which file a node came from:
   `remarkPackageSource` finds the package and the file from the page's path, and resolves a
   relative link from that file's folder (a guide's are its `docs/`'s).
-- react and the editor say "not published yet" while their `package.json` is `private`; a
-  published package's `homepage` is its page.
+- A package says "not published yet" while its `package.json` is `private`; a published package's
+  `homepage` is its page.
 
 ## "Use MellowCAD"
 

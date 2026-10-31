@@ -5,8 +5,12 @@ engine that owns it, the engine's state as React state, and the DOM wiring of th
 users type into. No styles and no chrome: for the whole editor, see
 [`@mellowcad/editor`](../editor/README.md).
 
-It is the package `@mellowcad/react`, ESM only, not published yet. `@mellowcad/engine` and React 19
-are peers: a page has one engine, its own.
+```sh
+npm install @mellowcad/react @mellowcad/engine
+```
+
+It is ESM only and ships its TypeScript declarations. `@mellowcad/engine` and React 19 are peers: a
+page has one engine, its own.
 
 ## Entry point
 

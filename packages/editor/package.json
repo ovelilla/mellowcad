@@ -1,13 +1,27 @@
 {
   "name": "@mellowcad/editor",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "The MellowCAD drafting editor as one React component: the canvas with AutoCAD-style chrome, menus and dialogs, its stylesheet and its words in three languages.",
+  "keywords": [
+    "cad",
+    "2d",
+    "drafting",
+    "autocad",
+    "react",
+    "editor",
+    "component"
+  ],
+  "homepage": "https://mellowcad.com/docs/editor",
+  "bugs": "https://github.com/ovelilla/mellowcad/issues",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ovelilla/mellowcad.git",
     "directory": "packages/editor"
   },
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "sideEffects": [
     "**/*.css"
@@ -42,8 +56,8 @@
     "prepublishOnly": "npm run check:hosts"
   },
   "peerDependencies": {
-    "@mellowcad/engine": "^0.1.0",
-    "@mellowcad/react": "^0.0.1",
+    "@mellowcad/engine": "^0.2.0",
+    "@mellowcad/react": "^0.1.0",
     "react": "^19.0.0"
   },
   "dependencies": {

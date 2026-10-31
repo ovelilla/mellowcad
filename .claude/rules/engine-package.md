@@ -31,9 +31,8 @@ paths:
 > **@changesets/cli 3.0.3**.
 
 `cad/` is the npm workspace `@mellowcad/engine`, `packages/react` is `@mellowcad/react` and
-`packages/editor` is `@mellowcad/editor`, in place (`docs/next-library.md`). The engine is
-publishable (`publishConfig.access` public: a scoped package is restricted by default); react and
-the editor stay `private` until theirs. The engine is a peer of the others, never a dependency: a host has one
+`packages/editor` is `@mellowcad/editor`, in place (`docs/next-library.md`). Each is
+publishable (`publishConfig.access` public: a scoped package is restricted by default). The engine is a peer of the others, never a dependency: a host has one
 instance; so is `@mellowcad/react` of the editor. Each is MIT, as the repo: `"license": "MIT"` and a
 copy of the root `LICENSE`, which npm packs whatever `files` lists; its README ends with the
 license and the Autodesk trademark note.

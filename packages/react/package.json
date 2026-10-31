@@ -1,13 +1,27 @@
 {
   "name": "@mellowcad/react",
-  "version": "0.0.1",
+  "version": "0.1.0",
+  "description": "React bindings for @mellowcad/engine: the drawing canvas with its engine, the engine state as React state, and the wiring of the fields AutoCAD users type into.",
+  "keywords": [
+    "cad",
+    "2d",
+    "drafting",
+    "autocad",
+    "react",
+    "canvas",
+    "hooks"
+  ],
+  "homepage": "https://mellowcad.com/docs/react",
+  "bugs": "https://github.com/ovelilla/mellowcad/issues",
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/ovelilla/mellowcad.git",
     "directory": "packages/react"
   },
-  "private": true,
+  "publishConfig": {
+    "access": "public"
+  },
   "type": "module",
   "sideEffects": false,
   "files": [
@@ -27,7 +41,7 @@
     "prepublishOnly": "npm run check:hosts"
   },
   "peerDependencies": {
-    "@mellowcad/engine": "^0.1.0",
+    "@mellowcad/engine": "^0.2.0",
     "react": "^19.0.0"
   },
   "devDependencies": {

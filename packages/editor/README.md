@@ -7,8 +7,6 @@ Arabic. It is the editor of [mellowcad.com/draw](https://mellowcad.com/draw), bu
 [`@mellowcad/engine`](../../cad/README.md) and [`@mellowcad/react`](../react/README.md), and it
 ships its own stylesheet.
 
-It is not on npm yet. Once it is:
-
 ```sh
 npm install @mellowcad/editor @mellowcad/react @mellowcad/engine
 ```
