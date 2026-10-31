@@ -704,7 +704,6 @@ export class CadRuntime extends Observable {
       this.tracking,
       this.snapMode,
       () => this.frame.ucs,
-      () => this.document.getSettings().elevation,
       () => this.extensionGuides()
     )
     this.autosave = new AutosaveService(store, () => this.serializeDrawing())
@@ -4377,7 +4376,9 @@ export class CadRuntime extends Observable {
   /**
    * The point of the work plane under a screen point, in the frame. Off the
    * plan it is where the line of sight meets the plane; seen edge-on there is
-   * none, and the point of the plane facing the viewer stands in, for picking.
+   * none, and the point of the plane facing the viewer through the origin is
+   * the one a click gives (VPOINT 0,-1,0 in the WCS: 50.23,0,30.2 on
+   * 50,0,30's pixel, desktop interaction3d/d08).
    */
   private screenToWork(screen: Vec2): Vec3 {
     const z = this.workPlaneZ()
@@ -4385,16 +4386,6 @@ export class CadRuntime extends Observable {
     const onPlane = viewport.screenToPlane(screen, z)
     if (onPlane) return withZ(onPlane, z)
     return viewport.screenToFacing(screen)
-  }
-
-  /** True when the view sees the work plane edge-on, so a point cannot be pointed on it. */
-  private workPlaneEdgeOn(): boolean {
-    return (
-      this.frame.viewport.screenToPlane(
-        this.viewportCenterScreen(),
-        this.workPlaneZ()
-      ) === null
-    )
   }
 
   /**
@@ -6033,19 +6024,6 @@ export class CadRuntime extends Observable {
   }
 
   private dispatchPointerDown(e: PointerEventData): void {
-    // Seen edge-on the work plane has no point under the cursor: AutoCAD
-    // refuses the pick unless an object snap supplies the point.
-    if (
-      this.wantsPoint() &&
-      this.currentSnap === null &&
-      this.workPlaneEdgeOn()
-    ) {
-      this.commandLine.write("error", this.text.message("pointingEdgeOn"))
-      this.invalidateState()
-      this.host.requestRender()
-      return
-    }
-
     const input = this.buildPointerInput(e)
     this.answering("", () => this.pickAnswer(input), true)
     // A one-shot snap override applies to exactly this pick; consume it now that

@@ -93,7 +93,7 @@ sides, free orbit), objects crossing in plan but not in 3D, the work plane edge-
 | Z-20 | OTRACK's `+Z` guide | offered (d09) | offered | ok |
 | Z-21 | Polar / Ortho's `+Z` guide | offered (help, d03) | offered | ok |
 | Z-22 | A line's end grip dragged with Ortho or Polar | bent from where the grip was (d06) | from the line's far end | fixed (GRP-01) |
-| Z-23 | The work plane edge-on | the plane facing the screen through the origin (d08) | `screenToFacing` | unverified here |
+| Z-23 | The work plane edge-on | the plane facing the screen through the origin (d08) | refused, `Pointing in edge-on UCS is prohibited.` (a string 2027's tables lack) | fixed (EDG-01) |
 | Z-24 | Dynamic input: a length typed on a guide | the base's Z plus the length along it | the base's Z | ok (`zTracking.test.ts`) |
 | Z-25 | FROM with a base at another Z | `@` from the base keeps its Z | same | ok |
 | Z-26 | Tab cycling where snaps stack (a vertical line's ends in plan) | unverified | both ends offered at one point | unverified |
@@ -118,3 +118,4 @@ sides, free orbit), objects crossing in plan but not in 3D, the work plane edge-
 | TRK-01 | OTRACK's projection onto a guide of the plane was the foot on the screen | the foot on the acquired point's plane | constraints |
 | TRK-02 | An acquired point at another height was dropped once the work plane's cursor was a view's diagonal away in plan | measured on the screen off the plan | constraints |
 | GRP-01 | A line's end grip bent Ortho and Polar from the line's far end (the code's choice since the first commit, never probed) | from where the grip was | constraints |
+| EDG-01 | A click with the work plane edge-on was refused with a message from memory | the point on the plane facing the screen through the origin, its Z kept | edge-on |

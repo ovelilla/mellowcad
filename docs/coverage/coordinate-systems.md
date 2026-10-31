@@ -289,7 +289,7 @@ desktop interaction3d/d03–d07), while a click no aid bends stays on the work p
 where the cursor is drawn along the guide (a snapped object's, under a snap), and a typed length
 the base point's plus that length up or down. An OTRACK point is on its guide in the acquired
 point's plane, at its Z (d04). Edge-on (VPOINT 0,-1,0 in the World UCS) a click lands on the plane
-facing the screen through the origin (d08; here **unverified** against it). What LINE
+facing the screen through the origin (d08). What LINE
 draws has a Z at each end, and a SPLINE's points and a 3D polyline's vertices each keep their own
 (draw.md); a flat object (PLINE, CIRCLE, ARC, ELLIPSE, RECTANG, POLYGON,
 TEXT, MTEXT, ATTDEF, INSERT) lies in the plane of the first point that fixed it,

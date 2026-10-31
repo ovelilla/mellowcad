@@ -64,17 +64,17 @@ describe("pointing off the plan", () => {
     expect(cursor.z).toBeCloseTo(0, 9)
   })
 
-  it("refuses a pick on a work plane seen edge-on, but takes a typed point", () => {
+  it("takes a pick on a work plane seen edge-on on the plane facing the screen (d08)", () => {
     const cad = createHarness()
     cad.command("VPOINT").type("0,-1,0").enter()
 
-    cad.command("LINE").click({ x: 0, y: 0, z: 0 })
+    cad.command("LINE").click({ x: 50, y: 0, z: 30 })
+    cad.type("@100,0,50").enter().escape()
 
-    expect(cad.commandLog().at(-1)).toBe(
-      "Pointing in edge-on UCS is prohibited."
-    )
-    cad.type("0,0,0").enter().type("@100,0,50").enter().escape()
-    expect(lineEndZ(drawnLine(cad))).toBeCloseTo(50, 9)
+    const line = drawnLine(cad)
+    expect(line.start).toBeCloseToPoint(p(50, 0), 6)
+    expect(lineStartZ(line)).toBeCloseTo(30, 6)
+    expect(lineEndZ(line)).toBeCloseTo(80, 6)
   })
 
   it("points on the front view's plane once -VIEW has aligned the UCS with it", () => {

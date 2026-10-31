@@ -20,10 +20,9 @@ import { Ucs } from "../domain/ucs"
 export interface ResolvedPoint {
   /**
    * The effective world point a tool should act on. Its Z is the snapped
-   * object's, the tracked point's, or else the elevation plane (ELEVATION above
-   * the UCS's XY plane) — Ortho, Polar and the snap lattice work in the plane
-   * and never change it, except on the `+Z` / `-Z` path of a 3D view, where
-   * the height is what they set.
+   * object's, the tracked point's, the base point's where Ortho or Polar
+   * locks it to a line through that point (on the `+Z` / `-Z` path of a 3D
+   * view, the height they set), or else the cursor's on the work plane.
    */
   readonly point: Vec3
   /** The tracking result that produced it, if tracking engaged. */
@@ -54,12 +53,11 @@ export class PointResolver {
     private readonly tracking: ObjectSnapTrackingEngine,
     private readonly snapMode: SnapMode,
     private readonly currentUcs: () => Ucs,
-    private readonly currentElevation: () => number,
     private readonly currentExtensions: () => readonly TrackingGuide[] = () => []
   ) {}
 
   /**
-   * `world` is the cursor on the work plane, `anchor` the tool's base point,
+   * `world` is the cursor on the work plane (UCS XY + ELEVATION), `anchor` the tool's base point,
    * both in the frame `currentView` reads. `allowSnapMode` is false while a
    * tool is merely picking objects: SNAP is a point-prompt aid, and rounding
    * the cursor would only make objects harder to hit.
@@ -118,11 +116,12 @@ export class PointResolver {
       }
     }
     // Free, the point is the cursor on the work plane, the lattice's there
-    // (d02, d05: 80,100,0 from 0,100,50 with SNAP alone).
+    // (d02, d05: 80,100,0 from 0,100,50 with SNAP alone); edge-on, on the
+    // plane facing the screen, at the height it has there (d08).
     return {
       point: withZ(
         allowSnapMode ? this.snapMode.snapPoint(world, ucs) : world,
-        ucs.origin.z + this.currentElevation()
+        world.z
       ),
       tracking: null,
     }

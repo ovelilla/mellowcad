@@ -289,8 +289,10 @@ selection, ZOOM Window / Extents / Object and HATCH's boundary set work on the r
 screen shows; elevation and thickness are drawn (an object at both heights with the edges joining
 them; a circle's two circles without silhouette lines, **unverified**), and text turns with the
 view. Off the plan the cursor lies on the work plane (the UCS's XY plane at ELEVATION); seen
-edge-on it cannot point there and says `Pointing in edge-on UCS is prohibited.` (**unverified**,
-from memory; es ours), and typed points still work. Objects are picked and snapped where they are
+edge-on a click lands on the plane facing the screen through the origin (VPOINT 0,-1,0 in the WCS,
+50,0,30's pixel: 50.23,0,30.2, desktop interaction3d/d08; through the UCS's origin or the view's
+target **unverified**, the two being one there). The catalog keeps `pointingEdgeOn`, the message
+this used to refuse with, until the next major version: 2027's tables hold no such string. Objects are picked and snapped where they are
 drawn; Apparent Intersection is the crossing on the screen. The grid lies on the UCS's XY plane
 (not drawn edge-on). The view is not saved in the drawing (no view is yet); the presets and
 Pan, Zoom and Orbit are on the navigation bar under the ViewCube, and the preset views on the
