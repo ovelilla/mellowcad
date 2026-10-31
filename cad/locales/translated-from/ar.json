@@ -62,6 +62,7 @@
   "interface.tool.break": "Break",
   "interface.tool.breakatpoint": "Break at point",
   "interface.tool.matchprop": "Match properties",
+  "interface.tool.chprop": "Change properties",
   "interface.tool.copyclip": "Copy",
   "interface.tool.cutclip": "Cut",
   "interface.tool.copybase": "Copy with base point",

@@ -68,6 +68,7 @@ export const es: EngineLocale = {
       "break": "Partir",
       "breakatpoint": "Partir en punto",
       "matchprop": "Igualar propiedades",
+      "chprop": "Cambiar propiedades",
       "copyclip": "Copiar",
       "cutclip": "Cortar",
       "copybase": "Copiar con punto base",
@@ -831,6 +832,9 @@ export const es: EngineLocale = {
         "IGUALARPROP",
         "IP",
         "COPIARPROP"
+      ],
+      "CHPROP": [
+        "CAMBPROP"
       ],
       "COPYCLIP": [
         "COPIAPP"
@@ -1642,6 +1646,24 @@ export const es: EngineLocale = {
         "Yes": "Sí",
         "No": "No"
       },
+      "CHPROP": {
+        "Color": "COlor",
+        "LAyer": "Capa",
+        "LType": "Tlínea",
+        "LWeight": "Grosorl",
+        "Thickness": "Alt-objeto",
+        "Truecolor": "COlorverdadero",
+        "BYLAYER": "porCapa",
+        "RED": "Rojo",
+        "YELLOW": "Amarillo",
+        "GREEN": "Verde",
+        "CYAN": "cIán",
+        "BLUE": "aZul",
+        "MAGENTA": "Magenta",
+        "WHITE": "bLanco",
+        "BYBLOCK": "porBloque",
+        "?": "?"
+      },
       "COLOR": {
         "Truecolor": "COlorverdadero",
         "BYLAYER": "porCapa",
@@ -1976,6 +1998,12 @@ export const es: EngineLocale = {
       "fillMode": "Indique modo",
       "matchpropSource": "Designe objeto de origen",
       "matchpropDestination": "Designe objeto(s) de destino",
+      "propertyToChange": "Indique propiedad que cambiar",
+      "newColor": "Nuevo color",
+      "newLayerName": "Indique nuevo nombre de capa",
+      "newLinetypeName": "Indique nuevo nombre de tipo de línea",
+      "newLineweight": "Indique el nuevo grosor de línea",
+      "newThickness": "Precise nueva alt-objeto",
       "viewPoint": "Precise un punto de vista",
       "specifyViewPointOr": "Precise un punto de vista o",
       "attributeVisibilitySetting": "Indique parámetro de visibilidad de atributo",
@@ -2522,6 +2550,40 @@ export const es: EngineLocale = {
       "selectedBlockHasNoEditableAttributes": " El bloque seleccionado no contiene atributos editables.",
       "matchpropSettings": "Parámetros activos actuales:  Color Capa Tlínea Grosor de línea Alt-objeto Acota Texto Sombreado",
       "matchpropLockedDestination": "El objeto de destino no puede actualizarse porque se encuentra en una capa bloqueada.",
+      "varies": "varía",
+      "layerNotFound": [
+        "No se puede encontrar capa \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "invalidLayerName": "Nombre capa no válido.",
+      "linetypeNotLoaded": [
+        "Tipo de línea \"",
+        [
+          "name"
+        ],
+        "\" no encontrado. Utilice TIPOLIN para cargarlo."
+      ],
+      "invalidLinetypeName": "Nombre tipo de línea no válido.",
+      "cannotChangeThickness": [
+        "Imposible cambiar la altura de objeto de ",
+        [
+          "type",
+          1,
+          {
+            "ellipse": "ELLIPSE",
+            "spline": "SPLINE",
+            "polyline3d": "Polilíneas 3D",
+            "mtext": "MTEXT",
+            "dimension": "DIMENSION",
+            "hatch": "HATCH",
+            "other": "BLOQUEs"
+          }
+        ],
+        "."
+      ],
       "invalidThroughPoint": "Punto a atravesar no válido.",
       "cannotOffsetObject": "Imposible transponer este objeto.",
       "cannotOffsetAtViewDirection": "Imposible transponer este objeto en la dirección de la vista actual.",

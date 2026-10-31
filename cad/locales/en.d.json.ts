@@ -65,6 +65,7 @@ declare const source: {
       "break": string
       "breakatpoint": string
       "matchprop": string
+      "chprop": string
       "copyclip": string
       "cutclip": string
       "copybase": string
@@ -524,6 +525,7 @@ declare const source: {
       "BREAK": string[]
       "BREAKATPOINT": string[]
       "MATCHPROP": string[]
+      "CHPROP": string[]
       "COPYCLIP": string[]
       "CUTCLIP": string[]
       "COPYBASE": string[]
@@ -1176,6 +1178,24 @@ declare const source: {
         "Yes": string
         "No": string
       }
+      "CHPROP": {
+        "Color": string
+        "LAyer": string
+        "LType": string
+        "LWeight": string
+        "Thickness": string
+        "Truecolor": string
+        "BYLAYER": string
+        "RED": string
+        "YELLOW": string
+        "GREEN": string
+        "CYAN": string
+        "BLUE": string
+        "MAGENTA": string
+        "WHITE": string
+        "BYBLOCK": string
+        "?": string
+      }
       "COLOR": {
         "Truecolor": string
         "BYLAYER": string
@@ -1471,6 +1491,12 @@ declare const source: {
       "fillMode": string
       "matchpropSource": string
       "matchpropDestination": string
+      "propertyToChange": string
+      "newColor": string
+      "newLayerName": string
+      "newLinetypeName": string
+      "newLineweight": string
+      "newThickness": string
       "viewPoint": string
       "specifyViewPointOr": string
       "attributeVisibilitySetting": string
@@ -1794,6 +1820,12 @@ declare const source: {
       "selectedBlockHasNoEditableAttributes": string
       "matchpropSettings": string
       "matchpropLockedDestination": string
+      "varies": string
+      "layerNotFound": string
+      "invalidLayerName": string
+      "linetypeNotLoaded": string
+      "invalidLinetypeName": string
+      "cannotChangeThickness": string
       "invalidThroughPoint": string
       "cannotOffsetObject": string
       "cannotOffsetAtViewDirection": string

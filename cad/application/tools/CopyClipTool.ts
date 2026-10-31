@@ -5,7 +5,13 @@ import { RemoveEntitiesCommand } from "../commands/entityCommands"
 import { parseCoordinate } from "../input/coordinateInput"
 import { SelectionActionTool } from "./SelectionActionTool"
 import type { PromptId } from "../../locales/types"
-import { CommandOption, PointerInput, QuestionInput, ToolContext } from "./Tool"
+import {
+  CommandOption,
+  PointerInput,
+  QuestionInput,
+  ToolContext,
+  ToolQuestion,
+} from "./Tool"
 
 /**
  * COPYCLIP copies, CUTCLIP copies and erases, COPYBASE copies relative to a
@@ -105,7 +111,7 @@ export class CopyClipTool extends SelectionActionTool {
   }
 
   /** COPYBASE asks its base point before the objects. */
-  question(): PromptId {
+  question(): PromptId | ToolQuestion {
     return this.awaitingBase ? "clipboardBasePoint" : super.question()
   }
 

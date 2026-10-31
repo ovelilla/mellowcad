@@ -95,7 +95,7 @@ export class LweightTool implements Tool {
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (id !== "?") return "unhandled"
-    ctx.report(listing(ctx))
+    ctx.report(lineweightListing(ctx))
     this.ask(ctx)
     return "continue"
   }
@@ -119,31 +119,11 @@ export class LweightTool implements Tool {
   private answer(typed: string, ctx: ToolContext): void {
     if (typed === "") return ctx.endCommand()
     if (typed === "?") {
-      ctx.report(listing(ctx))
+      ctx.report(lineweightListing(ctx))
       return this.ask(ctx)
     }
-    const value = parseNumber(typed)
-    if (value !== null && value < 0) {
-      ctx.report(ctx.text.message("invalidLineweightNumber"), "error")
-      return this.ask(ctx)
-    }
-    const lineweight =
-      value !== null
-        ? nearestLineweight(value)
-        : ctx.text.resolveKeyword(typed, [BY_LAYER]) === BY_LAYER
-          ? LINEWEIGHT_BYLAYER
-          : null
-    if (lineweight === null) {
-      ctx.report(ctx.text.message("lineweightRequired"), "error")
-      return this.ask(ctx)
-    }
-    if (value !== null && lineweight !== value) {
-      ctx.report(
-        ctx.text.message("lineweightRounded", {
-          value: lineweightLabel(nearestLineweight(value)),
-        })
-      )
-    }
+    const lineweight = readLineweight(typed, ctx)
+    if (lineweight === null) return this.ask(ctx)
     if (lineweight !== ctx.document.getSettings().currentLineweight) {
       ctx.execute(new UpdateSettingsCommand({ currentLineweight: lineweight }))
     }
@@ -159,10 +139,52 @@ export class LweightTool implements Tool {
     if (lineweight === LINEWEIGHT_BYLAYER) {
       return ctx.text.message("lineweightByLayer")
     }
-    return lineweight === 0
-      ? ctx.text.message("lineweightNone")
-      : lineweightLabel(lineweight)
+    return lineweightWord(lineweight, ctx)
   }
+}
+
+/** A lineweight as the console writes it: `0.30 mm`, and 0.00 mm `None`. */
+export function lineweightWord(
+  lineweight: Lineweight,
+  ctx: ToolContext
+): string {
+  return lineweight === 0
+    ? ctx.text.message("lineweightNone")
+    : lineweightLabel(lineweight)
+}
+
+/**
+ * The lineweight typed at a lineweight prompt, -LWEIGHT's and CHPROP's: a
+ * value in millimetres, set to the nearest valid one and said so, or ByLayer;
+ * null, the refusal said, where the prompt is asked again.
+ */
+export function readLineweight(
+  typed: string,
+  ctx: ToolContext
+): Lineweight | typeof LINEWEIGHT_BYLAYER | null {
+  const value = parseNumber(typed)
+  if (value !== null && value < 0) {
+    ctx.report(ctx.text.message("invalidLineweightNumber"), "error")
+    return null
+  }
+  const lineweight =
+    value !== null
+      ? nearestLineweight(value)
+      : ctx.text.resolveKeyword(typed, [BY_LAYER]) === BY_LAYER
+        ? LINEWEIGHT_BYLAYER
+        : null
+  if (lineweight === null) {
+    ctx.report(ctx.text.message("lineweightRequired"), "error")
+    return null
+  }
+  if (value !== null && lineweight !== value) {
+    ctx.report(
+      ctx.text.message("lineweightRounded", {
+        value: lineweightLabel(nearestLineweight(value)),
+      })
+    )
+  }
+  return lineweight
 }
 
 const TIE_TOLERANCE = 1e-9
@@ -185,7 +207,7 @@ export function nearestLineweight(value: number): Lineweight {
  * Spanish too (properties/p151). WHY not ByBlock and Default, which AutoCAD's
  * listing names first: neither is modelled.
  */
-function listing(ctx: ToolContext): string {
+export function lineweightListing(ctx: ToolContext): string {
   const lines = [ctx.text.message("lineweightListByLayer")]
   for (let at = 0; at < LINEWEIGHTS.length; at += GAPS.length + 1) {
     const row = LINEWEIGHTS.slice(at, at + GAPS.length + 1).map(lineweightLabel)

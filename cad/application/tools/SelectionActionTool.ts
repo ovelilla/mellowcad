@@ -7,6 +7,7 @@ import {
   QuestionInput,
   Tool,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 import type { PromptId } from "../../locales/types"
 import type { MessageId } from "../EngineText"
@@ -45,6 +46,7 @@ export abstract class SelectionActionTool implements Tool {
     noneFound: this.noneFound(),
     onAdded: (ids, added, _ctx, find) => this.selectionAdded(ids, added, find),
     takesLocked: this.takesLocked(),
+    lockedFirst: this.lockedFirst(),
   })
 
   /**
@@ -86,6 +88,11 @@ export abstract class SelectionActionTool implements Tool {
     return false
   }
 
+  /** What the command says above the count of each locked object found. */
+  protected lockedFirst(): MessageId | undefined {
+    return undefined
+  }
+
   /** What the command refuses at `Select objects:`, said under the count. */
   protected refusal(): ObjectSelectorOptions["refuse"] {
     return undefined
@@ -113,7 +120,7 @@ export abstract class SelectionActionTool implements Tool {
     return "selectObjects"
   }
 
-  question(): PromptId {
+  question(): PromptId | ToolQuestion {
     return this.selector.question()
   }
 

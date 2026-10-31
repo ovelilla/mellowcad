@@ -242,6 +242,70 @@ step U names nothing (d05-3)
 linetype list's Other… and the lineweight list's Lineweight Settings…, ByBlock and Default in the
 lists, Transparency, the List drop-down
 
+### `CHPROP` · es `CAMBPROP` · pt-BR `ALTPROP`
+
+**Implemented:** `Select objects:`, a set of whole objects (its refusal ends at SIngle, chprop/p17),
+a preselection taken at once (p14), Enter on nothing ending it silently (p17), each object on a
+locked layer said above the count, `The object is on a locked layer.` (es `El objeto está en una
+capa bloqueada.`), then counted and left out, `2 were on a locked layer.`, for ALL, a window and a
+preselection alike (p13, p13b); then `Enter property to change [Color/LAyer/LType/LWeight/Thickness]:`
+(es `Indique propiedad que cambiar [COlor/Capa/Tlínea/Grosorl/Alt-objeto]`, pt-BR `Inserir
+propriedade a alterar [Cor/CAmada/TIpolinha/ESplinha/espessURa]`, table 20403), asked again after
+each property until Enter (`Invalid option keyword.` to FOO); each property's prompt offers the
+set's one value, `varies` (es `varía`, pt-BR `vários`, 20358) where the objects differ, or the
+value this run gave it (p01, p02, p02b, p11e), and Enter there keeps each object's own; what the
+run set is applied only as it ends, so Escape leaves every object as it was (p21: `(command)`
+cancels it and `entget` never saw the change); the whole run one undo step U and REDO name
+`CHPROP` (es `CAMBPROP`, pt-BR `ALTPROP`), UNDO 2 `CHPROP LINE` (p16), even a run that changed
+nothing (p01); not transparent (`** That command may not be invoked transparently **`), `'ZOOM`
+running at its value prompts and the property prompt (p15); Color asks `New color [Truecolor]
+<BYLAYER>:` (es `Nuevo color [COlorverdadero] <PORCAPA>`, pt-BR `Nova cor [Truecolor]
+<PORCAMADA>`, 20409), offering `1 (red)` or `R,G,B` as -COLOR does, and takes and refuses what
+-COLOR takes and refuses, the same messages, `BY`'s question and Truecolor's `Red,Green,Blue:`
+asked again until valid (p03, p04, p04s, p05); LAyer asks `Enter new layer name <0>:` (20390) and
+takes a layer by its name in any case (`l1` is L1), a name with `<>/\":;?*|,=` or a backquote
+`Invalid layer name.` (es `Nombre capa no válido.`), any other it does not find `Cannot find layer
+"FOO".` (es `No se puede encontrar capa "FOO".`), both asked again (p06), and `'_ZOOM` typed there
+a name (p15); LType asks `Enter new linetype name <ByLayer>:` (20391; es `<PorCapa>`) and takes a
+loaded linetype's name in any case or ByLayer (`bylayer`, the table's name whole in any language,
+es `porcapa`), `?` and the like `Invalid linetype name.` asked again, and any other name `Linetype
+"FOO" not found.  Use LINETYPE command to load it.` (20393; es `Tipo de línea "FOO" no encontrado.
+Utilice TIPOLIN para cargarlo.`), back to the property prompt (p07, p07s, p20); LWeight asks
+`Enter new lineweight <ByLayer>:` (20401; es `<PorCapa>`, as the linetype's word, where -LWEIGHT
+writes `BYLAYER`; `<None>` for 0.00 mm) and reads what -LWEIGHT reads, rounding said, `-1` and FOO
+refused and asked again, `bylayer`; its unlisted `?` lists them and asks again in -LWEIGHT's words,
+`Enter default lineweight for new objects or [?]:`, no default offered (p09, p09s); Thickness asks
+`Specify new thickness <0.0000>:` (20394 + 20388; es `Precise nueva alt-objeto`, pt-BR
+`Especificar nova espessura`), a distance at LUNITS and LUPREC (p22), so two points give it too
+(p08b's ` Specify second point:`), negative and zero taken, FOO `Requires numeric distance or two
+points.` (p10); it sets a line's, a circle's, an arc's and a polyline's along each one's own
+normal, whatever the UCS (p12), and of the others in the set each type is named once as the
+command ends, in the set's order — picks as picked, ALL and a preselection newest first — `Cannot
+change thickness for ELLIPSE.` (SPLINE, MTEXT, DIMENSION, HATCH; `3D Polylines`, 20362, and a
+reference's `BLOCKs`, 20407; es `Imposible cambiar la altura de objeto de ELLIPSE.`, `Polilíneas
+3D`, `BLOQUEs`), only when a thickness was typed (p11, p11b, p11d, p11e); not on the rail (no
+ribbon panel offers it)
+
+**Missing:** ltScale, `Specify new linetype scale <1.0000>:` (20394 + 20399; es `Precise nueva
+escala del tipo de línea`), no object here having a linetype scale of its own (CELTSCALE, roadmap):
+a distance, 0 `Value must be nonzero.` asked again, −2 taken as 2, two points their distance
+(p08, p08b, p22); TRansparency (`Specify transparency value <ByLayer>:`, an integer from 0 to 90,
+`Requires an integer between 0 and 90.`), Material (`Enter new material name <ByLayer>:`) and
+Annotative (`Make Annotative? [Yes/No] <No>:`; p17, p17b), none modelled, so neither they nor
+ltScale are listed; ByBlock (`BYBLOCK` at Color, LType and LWeight sets it, p04, p07, p09: here
+Color asks again as -COLOR does, LType says the name is not loaded, LWeight refuses it) and
+LWeight's `Default` (es `defecto`, p09s); Truecolor's colour kept apart from an index colour's
+(-COLOR's Missing: `255,0,0` reads back `1 (red)`, where AutoCAD offers `<255,0,0>`, p05);
+COlorbook; a linetype AutoCAD loads from acad.lin as it is named (English `DASHED` loads it
+silently, p07; every linetype here is loaded) and its name as the file writes it (`DASHED`; here
+`Dashed`); a text's and an attribute definition's thickness, which AutoCAD sets (p11, p11d): none
+has one here, so they are left as they are, said nothing — WHY at the tool; the hidden keywords
+`Colour` (Color whole) and `Properties` / `Propertys` (asked again silently, p17); a pick on an
+object of a locked layer (here it finds nothing and starts a window, `command-line.md`; AutoCAD
+says it and counts it, p13b); CHANGE, whose Properties asks the same prompt with Elev
+(`[Color/Elev/LAyer/…]`, 20404, p18); **unverified**: whether the desktop draws the set as the run
+changes it (the console's database changes only as it ends, p21; here nothing changes before Enter)
+
 ### Properties palette · `PROPERTIES` / `PR` / `CH` / `MO` · `PROPERTIESCLOSE` · es `PROPIEDADES` / `PR` · `CERPROP` · pt-BR `PROPRIEDADES` / `ALT` / `PROPS` / `ALTPROPD` / `MODIFICARD` · `FECHARPROP` / `FPROP`
 **Implemented:** PROPERTIES opens the Properties palette, a tab of the modeless palette panel, and
 PROPERTIESCLOSE closes it while it is the tab shown (as LAYERCLOSE); PR, CH and MO are the aliases

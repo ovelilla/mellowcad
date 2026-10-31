@@ -34,6 +34,12 @@ const HIDDEN: readonly CommandOption[] = [...NAMES, BY_BLOCK, BY_LAYER].map(
   (id) => ({ id, hidden: true })
 )
 
+/** The colour prompt's keywords, -COLOR's and CHPROP's `New color`. */
+export const COLOR_OPTIONS: readonly CommandOption[] = [
+  { id: "Truecolor" },
+  ...HIDDEN,
+]
+
 /**
  * AutoCAD's -COLOR, which COLOR runs too (its Select Color dialog does not
  * exist here): `Enter default object color [Truecolor/COlorbook] <BYLAYER>:`
@@ -86,16 +92,17 @@ export class ColorTool implements Tool {
   }
 
   commandOptions(): readonly CommandOption[] {
-    return this.phase === "color" ? [{ id: "Truecolor" }, ...HIDDEN] : []
+    return this.phase === "color" ? COLOR_OPTIONS : []
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     if (this.phase !== "color") return "unhandled"
     if (id === "Truecolor") this.askTrueColor(ctx)
-    else if (id === BY_LAYER) this.finish(COLOR_BYLAYER, ctx)
-    else if (NAMES.includes(id)) {
-      this.finish(STANDARD_COLORS[NAMES.indexOf(id)].value, ctx)
-    } else return "unhandled"
+    else {
+      const color = colorOfOption(id)
+      if (color === null) return "unhandled"
+      this.finish(color, ctx)
+    }
     return "continue"
   }
 
@@ -120,13 +127,9 @@ export class ColorTool implements Tool {
       fields: [{ id: "rgb", prompt: "trueColor", kind: "text" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
-        const color = parseRgb(commitCtx.dynamicInput.getText("rgb"))
-        if (color) {
-          this.finish(color, commitCtx)
-          return true
-        }
-        commitCtx.report(commitCtx.text.message("invalidTrueColor"), "error")
-        this.askTrueColor(commitCtx)
+        const color = readTrueColor(commitCtx)
+        if (color) this.finish(color, commitCtx)
+        else this.askTrueColor(commitCtx)
         return true
       },
     })
@@ -136,28 +139,9 @@ export class ColorTool implements Tool {
 
   private answerColor(typed: string, ctx: ToolContext): void {
     if (typed === "") return ctx.endCommand()
-    // A signed integer is a colour number, as AutoCAD's integer prompt reads
-    // it: −1 is refused as one (p106).
-    if (/^[-+]?\d+$/.test(typed)) {
-      const index = Number(typed)
-      const standard = STANDARD_COLORS[index - 1]
-      if (standard) return this.finish(standard.value, ctx)
-      // WHY nothing said for 8 to 255: AutoCAD takes them, and only their
-      // RGB values are missing here.
-      if (index < 1 || index > 255) {
-        ctx.report(ctx.text.message("invalidColorNumber"), "error")
-      }
-      return this.askColor(ctx)
-    }
-    // Spanish AutoCAD takes the standard names whole in English too, bare:
-    // `RED`, `BYLAYER` (p107b, p113b). Every other word is a hidden option.
-    const english = typed.toUpperCase()
-    if (english === BY_LAYER) return this.finish(COLOR_BYLAYER, ctx)
-    if (NAMES.includes(english)) {
-      return this.finish(STANDARD_COLORS[NAMES.indexOf(english)].value, ctx)
-    }
-    ctx.report(ctx.text.message("colorRequired"), "error")
-    this.askColor(ctx)
+    const color = readColor(typed, ctx)
+    if (color === null) return this.askColor(ctx)
+    this.finish(color, ctx)
   }
 
   private finish(
@@ -170,17 +154,22 @@ export class ColorTool implements Tool {
     ctx.endCommand()
   }
 
-  /**
-   * The current colour as AutoCAD's console offers it: `BYLAYER`, an index
-   * colour by number and name, `1 (red)`, or `R,G,B`.
-   */
   private colorWord(ctx: ToolContext): string {
-    const current = ctx.document.getSettings().currentColor
-    if (current === COLOR_BYLAYER) {
-      return ctx.text.keyword(BY_LAYER).toUpperCase()
-    }
-    return colorWord(current, ctx)
+    return colorDefault(ctx.document.getSettings().currentColor, ctx)
   }
+}
+
+/**
+ * A colour as the colour prompt offers it: `BYLAYER` (es `PORCAPA`), an index
+ * colour by number and name, `1 (red)`, or `R,G,B`.
+ */
+export function colorDefault(
+  color: EntityColor | typeof COLOR_BYLAYER,
+  ctx: ToolContext
+): string {
+  return color === COLOR_BYLAYER
+    ? ctx.text.keyword(BY_LAYER).toUpperCase()
+    : colorWord(color, ctx)
 }
 
 /**
@@ -194,6 +183,52 @@ export function colorWord(color: EntityColor, ctx: ToolContext): string {
     return `${index + 1} (${name.toLowerCase()})`
   }
   return rgbOf(color).join(",")
+}
+
+/** The colour a hidden keyword of the colour prompt names; null for ByBlock. */
+export function colorOfOption(
+  id: string
+): EntityColor | typeof COLOR_BYLAYER | null {
+  if (id === BY_LAYER) return COLOR_BYLAYER
+  return NAMES.includes(id) ? STANDARD_COLORS[NAMES.indexOf(id)].value : null
+}
+
+/**
+ * The colour typed at the colour prompt: a number or a standard name; null,
+ * the refusal said, where the prompt is asked again.
+ */
+export function readColor(
+  typed: string,
+  ctx: ToolContext
+): EntityColor | typeof COLOR_BYLAYER | null {
+  // A signed integer is a colour number, as AutoCAD's integer prompt reads
+  // it: −1 is refused as one (p106).
+  if (/^[-+]?\d+$/.test(typed)) {
+    const index = Number(typed)
+    const standard = STANDARD_COLORS[index - 1]
+    if (standard) return standard.value
+    // WHY nothing said for 8 to 255: AutoCAD takes them, and only their
+    // RGB values are missing here.
+    if (index < 1 || index > 255) {
+      ctx.report(ctx.text.message("invalidColorNumber"), "error")
+    }
+    return null
+  }
+  // Spanish AutoCAD takes the standard names whole in English too, bare:
+  // `RED`, `BYLAYER` (p107b, p113b). Every other word is a hidden option.
+  const english = typed.toUpperCase()
+  if (english === BY_LAYER || NAMES.includes(english)) {
+    return colorOfOption(english)
+  }
+  ctx.report(ctx.text.message("colorRequired"), "error")
+  return null
+}
+
+/** Truecolor's `Red,Green,Blue:` answer; null, the refusal said, to ask again. */
+export function readTrueColor(ctx: ToolContext): EntityColor | null {
+  const color = parseRgb(ctx.dynamicInput.getText("rgb"))
+  if (!color) ctx.report(ctx.text.message("invalidTrueColor"), "error")
+  return color
 }
 
 /**

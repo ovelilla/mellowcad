@@ -1,0 +1,12 @@
+_QAFLAGS
+2
+(defun d (e) (mapcar (quote (lambda (k) (assoc k (entget e)))) (quote (0 8 62 6 48 370 39 210))))
+_LINE
+0,0
+10,0
+
+(progn (command "_.CHPROP" "_L" "" "_C" "1") (setq r (d (entlast))) (command) (list r (d (entlast))))
+(progn (command "_.CHPROP" "_L" "" "_C" "2" "") (d (entlast)))
+(progn (command "_.CHPROP" "_L" "" "_C" "3" "_T" "4") (command) (d (entlast)))
+_U
+(d (entlast))

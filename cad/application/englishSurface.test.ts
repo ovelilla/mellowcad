@@ -1701,6 +1701,28 @@ describe("the engine's English surface", () => {
         .do("ID typed", (c) => c.command("ID"))
         .do("point", (c) => c.type("1,2,3").enter())
     )
+    walk("CHPROP", createHarness({ entities: [line()] }), (s) =>
+      s
+        .do("CHPROP", (c) => c.command("CHPROP"))
+        .do("pick", (c) => c.click(at(50, 0)))
+        .do("enter", (c) => c.enter())
+        .do("Color", (c) => answer(c, "C"))
+        .do("FOO", (c) => c.type("FOO").enter())
+        .do("Truecolor", (c) => answer(c, "T"))
+        .do("rgb", (c) => c.type("1,2").enter())
+        .do("rgb", (c) => c.type("1,2,3").enter())
+        .do("LAyer", (c) => answer(c, "LA"))
+        .do("FOO", (c) => c.type("FOO").enter())
+        .do("enter", (c) => c.enter())
+        .do("LType", (c) => answer(c, "LT"))
+        .do("FOO", (c) => c.type("FOO").enter())
+        .do("LWeight", (c) => answer(c, "LW"))
+        .do("?", (c) => c.type("?").enter())
+        .do("weight", (c) => c.type("0.33").enter())
+        .do("Thickness", (c) => answer(c, "T"))
+        .do("thickness", (c) => c.type("2").enter())
+        .do("enter", (c) => c.enter())
+    )
     walk("LIST", createHarness({ entities: [line()] }), (s) =>
       s
         .do("LI", (c) => c.command("LI"))

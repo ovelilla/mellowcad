@@ -64,6 +64,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | Offset, Trim, Extend, Fillet, Chamfer | إزاحة متوازية، تشذيب، تمديد، تقويس، شطف (C) † |
 |  | Explode, Join, Break, Break at point | تفكيك، ضمّ، كسر، كسر عند نقطة (C) |
 |  | Match properties | مطابقة الخصائص (C) |
+|  | Change properties | تغيير الخصائص (C) |
 |  | Array; Rectangular, Polar, Path array | مصفوفة؛ مصفوفة مستطيلة، قطبية، على مسار (M) |
 | Annotate | Single line text, Edit | نص بسطر واحد، تحرير (C) |
 |  | Linear, Aligned, Angular, Radius, Diameter, Baseline, Continue, Adjust space | خطي، محاذٍ، زاوي، نصف القطر، القطر، خط أساس، متتابع، تباعد (C) † |

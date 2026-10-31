@@ -59,6 +59,7 @@ import {
   PointerInput,
   QuestionInput,
   ToolContext,
+  ToolQuestion,
 } from "./Tool"
 import type { ScenePrimitive } from "../../scene/types"
 
@@ -181,7 +182,7 @@ export class JoinTool extends SelectionActionTool {
     return this.source.type === "ellipse" ? this.toEllipse : this.toSpline
   }
 
-  question(): PromptId {
+  question(): PromptId | ToolQuestion {
     if (this.circle) return "convertCombinedArcsToCircle"
     return this.step()?.question() ?? super.question()
   }

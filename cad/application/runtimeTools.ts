@@ -49,6 +49,7 @@ import { BreakTool } from "./tools/BreakTool"
 import { SplineEditTool } from "./tools/SplineEditTool"
 import { PolylineEditTool } from "./tools/PolylineEditTool"
 import { MatchPropTool } from "./tools/MatchPropTool"
+import { ChPropTool } from "./tools/ChPropTool"
 import { CopyClipTool } from "./tools/CopyClipTool"
 import { PasteTool } from "./tools/PasteTool"
 import { MeasureTool } from "./tools/MeasureTool"
@@ -164,6 +165,7 @@ export function defaultTools(
     new SplineEditTool(),
     pedit,
     new MatchPropTool(),
+    new ChPropTool(),
     new CopyClipTool("copy", "copyclip"),
     new CopyClipTool("cut", "cutclip"),
     new CopyClipTool("base", "copybase"),

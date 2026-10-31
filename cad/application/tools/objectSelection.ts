@@ -220,6 +220,12 @@ export interface ObjectSelectorOptions {
    */
   readonly locked?: MessageId
   /**
+   * Said for each object on a locked layer a selection finds, before its
+   * count, which says `n was on a locked layer.` too: CHPROP's `The object is
+   * on a locked layer.` (chprop/p13, p13b; a preselection's alike).
+   */
+  readonly lockedFirst?: MessageId
+  /**
    * Objects on a locked layer join the set like any other, in silence: a
    * command that only reads them (LIST, inquiry/p426).
    */
@@ -367,6 +373,7 @@ export class ObjectSelector {
     const ids = this.options.accept?.(all, ctx) ?? all
     const sifted = this.sift(ids, ctx)
     ctx.selection.set(sifted.kept)
+    this.sayLockedFirst(sifted, ctx)
     ctx.answer(
       ctx.text.message("objectsFound", {
         found: ids.length,
@@ -1094,6 +1101,7 @@ export class ObjectSelector {
     }
     const hasTotal = this.counted && found.length > 0
     if (ids.length > 0) this.operations.push({ added, removed })
+    if (sifted) this.sayLockedFirst(sifted, ctx)
     if (found.length > 0) this.counted = true
     ctx.answer(
       ctx.text.message("objectsFound", {
@@ -1157,6 +1165,14 @@ export class ObjectSelector {
     if (!lockedObjectAt(screen, ctx)) return false
     ctx.report(ctx.text.message(message), "error")
     return true
+  }
+
+  /** The command's line for each locked object found, said above the count. */
+  private sayLockedFirst(sifted: Sifted, ctx: ToolContext): void {
+    const message = this.options.lockedFirst
+    for (let i = 0; message && i < sifted.locked; i++) {
+      ctx.report(ctx.text.message(message), "error")
+    }
   }
 
   /** The lines under a count: the locked layer's, then the command's. */

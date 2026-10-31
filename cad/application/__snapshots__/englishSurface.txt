@@ -59,6 +59,7 @@ BREAKATPOINT [] "Break at point"
 SPLINEDIT ["SPE"] "Edit Spline"
 PEDIT ["PE"] "Edit Polyline"
 MATCHPROP ["MA","PAINTER"] "Match properties"
+CHPROP [] "Change properties"
 COPYCLIP [] "Copy"
 CUTCLIP [] "Cut"
 COPYBASE [] "Copy with base point"
@@ -187,6 +188,7 @@ breakatpoint "Break at point" BREAKATPOINT
 splinedit "Edit Spline" SPE
 pedit "Edit Polyline" PE
 matchprop "Match properties" MA
+chprop "Change properties" CHPROP
 copyclip "Copy" COPYCLIP
 cutclip "Cut" CUTCLIP
 copybase "Copy with base point" COPYBASE
@@ -6508,6 +6510,138 @@ Specify next point or
   dyn: -
   prompt| Specify point: 1,2,3
   info|  X = 1.00     Y = 2.00     Z = 3.00
+
+## CHPROP
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> CHPROP
+  prompt: CHPROP Select objects:
+  command| CHPROP
+> pick
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  prompt| Select objects: 1 found
+> enter
+  prompt: CHPROP Enter property to change [Color/LAyer/LType/LWeight/Thickness]:
+  asks: 
+  tip: Enter property to change
+  dyn: 
+  options: [C] Color, [LA] LAyer, [LT] LType, [LW] LWeight, [T] Thickness
+  prompt| Select objects:
+> Color
+  prompt: CHPROP New color [Truecolor] <BYLAYER>:
+  asks: "New color"
+  tip: New color
+  dyn: "New color"=""|BYLAYER|*
+  options: [T] Truecolor
+  prompt| Enter property to change [Color/LAyer/LType/LWeight/Thickness]: C
+> FOO
+  prompt| New color [Truecolor] <BYLAYER>: FOO
+  error| A color number or standard color name is required.
+> Truecolor
+  prompt: CHPROP Red,Green,Blue:
+  asks: "Red,Green,Blue"
+  tip: Red,Green,Blue:
+  dyn: "Red,Green,Blue"=""||*
+  options: -
+  prompt| New color [Truecolor] <BYLAYER>: T
+> rgb
+  prompt| Red,Green,Blue: 1,2
+  error| Invalid color.  Type three comma separated values from 0 to 255.
+> rgb
+  prompt: CHPROP Enter property to change [Color/LAyer/LType/LWeight/Thickness]:
+  asks: 
+  tip: Enter property to change
+  dyn: 
+  options: [C] Color, [LA] LAyer, [LT] LType, [LW] LWeight, [T] Thickness
+  prompt| Red,Green,Blue: 1,2,3
+> LAyer
+  prompt: CHPROP Enter new layer name <0>:
+  asks: "Enter new layer name"
+  tip: Enter new layer name
+  dyn: "Enter new layer name"=""||*
+  options: -
+  prompt| Enter property to change [Color/LAyer/LType/LWeight/Thickness]: LA
+> FOO
+  prompt| Enter new layer name <0>: FOO
+  error| Cannot find layer "FOO".
+> enter
+  prompt: CHPROP Enter property to change [Color/LAyer/LType/LWeight/Thickness]:
+  asks: 
+  tip: Enter property to change
+  dyn: 
+  options: [C] Color, [LA] LAyer, [LT] LType, [LW] LWeight, [T] Thickness
+  prompt| Enter new layer name <0>:
+> LType
+  prompt: CHPROP Enter new linetype name <ByLayer>:
+  asks: "Enter new linetype name"
+  tip: Enter new linetype name
+  dyn: "Enter new linetype name"=""||*
+  options: -
+  prompt| Enter property to change [Color/LAyer/LType/LWeight/Thickness]: LT
+> FOO
+  prompt: CHPROP Enter property to change [Color/LAyer/LType/LWeight/Thickness]:
+  asks: 
+  tip: Enter property to change
+  dyn: 
+  options: [C] Color, [LA] LAyer, [LT] LType, [LW] LWeight, [T] Thickness
+  prompt| Enter new linetype name <ByLayer>: FOO
+  info| Linetype "FOO" not found.  Use LINETYPE command to load it.
+> LWeight
+  prompt: CHPROP Enter new lineweight <ByLayer>:
+  asks: "Enter new lineweight"
+  tip: Enter new lineweight
+  dyn: "Enter new lineweight"=""|ByLayer|*
+  options: -
+  prompt| Enter property to change [Color/LAyer/LType/LWeight/Thickness]: LW
+> ?
+  prompt: CHPROP Enter default lineweight for new objects or [?]:
+  asks: "Enter default lineweight for new objects or"
+  tip: Enter default lineweight for new objects or
+  dyn: "Enter default lineweight for new objects or"=""|ByLayer|*
+  options: [?] ?
+  prompt| Enter new lineweight <ByLayer>: ?
+  info| ByLayer
+        0.00 mm 0.05 mm  0.09 mm    0.13 mm 0.15 mm  0.18 mm
+        0.20 mm 0.25 mm  0.30 mm    0.35 mm 0.40 mm  0.50 mm
+        0.53 mm 0.60 mm  0.70 mm    0.80 mm 0.90 mm  1.00 mm
+        1.06 mm 1.20 mm  1.40 mm    1.58 mm 2.00 mm  2.11 mm
+> weight
+  prompt: CHPROP Enter property to change [Color/LAyer/LType/LWeight/Thickness]:
+  asks: 
+  tip: Enter property to change
+  dyn: 
+  options: [C] Color, [LA] LAyer, [LT] LType, [LW] LWeight, [T] Thickness
+  prompt| Enter default lineweight for new objects or [?]: 0.33
+  info| Lineweight rounded to nearest valid value of 0.35 mm
+> Thickness
+  prompt: CHPROP Specify new thickness <0.00>:
+  asks: "Specify new thickness"
+  tip: Specify new thickness
+  dyn: "Specify new thickness"=""|0.00|mm*
+  options: -
+  prompt| Enter property to change [Color/LAyer/LType/LWeight/Thickness]: T
+> thickness
+  prompt: CHPROP Enter property to change [Color/LAyer/LType/LWeight/Thickness]:
+  asks: 
+  tip: Enter property to change
+  dyn: 
+  options: [C] Color, [LA] LAyer, [LT] LType, [LW] LWeight, [T] Thickness
+  prompt| Specify new thickness <0.00>: 2
+> enter
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  properties: -
+  prompt| Enter property to change [Color/LAyer/LType/LWeight/Thickness]:
 
 ## LIST
 > start

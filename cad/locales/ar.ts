@@ -68,6 +68,7 @@ export const ar: EngineLocale = {
       "break": "كسر",
       "breakatpoint": "كسر عند نقطة",
       "matchprop": "مطابقة الخصائص",
+      "chprop": "تغيير الخصائص",
       "copyclip": "نسخ",
       "cutclip": "قص",
       "copybase": "نسخ بنقطة أساس",

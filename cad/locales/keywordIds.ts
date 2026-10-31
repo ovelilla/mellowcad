@@ -592,6 +592,24 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Yes",
     "No"
   ],
+  "CHPROP": [
+    "Color",
+    "LAyer",
+    "LType",
+    "LWeight",
+    "Thickness",
+    "Truecolor",
+    "BYLAYER",
+    "RED",
+    "YELLOW",
+    "GREEN",
+    "CYAN",
+    "BLUE",
+    "MAGENTA",
+    "WHITE",
+    "BYBLOCK",
+    "?"
+  ],
   "COLOR": [
     "Truecolor",
     "BYLAYER",

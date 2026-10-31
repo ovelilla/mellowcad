@@ -1,0 +1,48 @@
+_QAFLAGS
+2
+(defun d (e) (mapcar (quote (lambda (k) (assoc k (entget e)))) (quote (0 8 62 6 48 370 39 210))))
+_ZOOM
+_W
+-20,-20
+60,60
+_LINE
+0,0
+10,0
+
+(setq e1 (entlast))
+_UCS
+_X
+90
+_CIRCLE
+20,0
+3
+(setq e2 (entlast))
+_CHPROP
+_ALL
+
+_T
+5
+
+(d e1)
+(d e2)
+_LINE
+0,0
+0,10
+
+(setq e3 (entlast))
+(d e3)
+_UCS
+_W
+_CHPROP
+_L
+
+_T
+7
+
+(d e3)
+_CHPROP
+(ssadd e2)
+
+_T
+
+

@@ -68,6 +68,7 @@ export const en: EngineCatalog = {
       "break": "Break",
       "breakatpoint": "Break at point",
       "matchprop": "Match properties",
+      "chprop": "Change properties",
       "copyclip": "Copy",
       "cutclip": "Cut",
       "copybase": "Copy with base point",
@@ -844,6 +845,9 @@ export const en: EngineCatalog = {
         "MA",
         "PAINTER"
       ],
+      "CHPROP": [
+        "CHPROP"
+      ],
       "COPYCLIP": [
         "COPYCLIP"
       ],
@@ -1184,6 +1188,17 @@ export const en: EngineCatalog = {
         "NEiso": "NEIso",
         "NWiso": "NWIso"
       },
+      "CHPROP": {
+        "BYLAYER": "BYLayer",
+        "RED": "Red",
+        "YELLOW": "Yellow",
+        "GREEN": "Green",
+        "CYAN": "Cyan",
+        "BLUE": "Blue",
+        "MAGENTA": "Magenta",
+        "WHITE": "White",
+        "BYBLOCK": "BYBlock"
+      },
       "COLOR": {
         "BYLAYER": "BYLayer",
         "RED": "Red",
@@ -1513,6 +1528,12 @@ export const en: EngineCatalog = {
       "fillMode": "Enter mode",
       "matchpropSource": "Select source object",
       "matchpropDestination": "Select destination object(s)",
+      "propertyToChange": "Enter property to change",
+      "newColor": "New color",
+      "newLayerName": "Enter new layer name",
+      "newLinetypeName": "Enter new linetype name",
+      "newLineweight": "Enter new lineweight",
+      "newThickness": "Specify new thickness",
       "viewPoint": "Specify a view point",
       "specifyViewPointOr": "Specify a view point or",
       "attributeVisibilitySetting": "Enter attribute visibility setting",
@@ -2061,6 +2082,40 @@ export const en: EngineCatalog = {
       "selectedBlockHasNoEditableAttributes": "The selected block has no editable attributes.",
       "matchpropSettings": "Current active settings:  Color Layer Ltype Lineweight Thickness Dim Text Hatch",
       "matchpropLockedDestination": "Destination object on a locked layer. Cannot be updated.",
+      "varies": "varies",
+      "layerNotFound": [
+        "Cannot find layer \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "invalidLayerName": "Invalid layer name.",
+      "linetypeNotLoaded": [
+        "Linetype \"",
+        [
+          "name"
+        ],
+        "\" not found.  Use LINETYPE command to load it."
+      ],
+      "invalidLinetypeName": "Invalid linetype name.",
+      "cannotChangeThickness": [
+        "Cannot change thickness for ",
+        [
+          "type",
+          1,
+          {
+            "ellipse": "ELLIPSE",
+            "spline": "SPLINE",
+            "polyline3d": "3D Polylines",
+            "mtext": "MTEXT",
+            "dimension": "DIMENSION",
+            "hatch": "HATCH",
+            "other": "BLOCKs"
+          }
+        ],
+        "."
+      ],
       "invalidThroughPoint": "Invalid through point.",
       "cannotOffsetObject": "Cannot offset that object.",
       "cannotOffsetAtViewDirection": "Cannot offset that object at current view direction.",

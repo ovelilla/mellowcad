@@ -1,0 +1,46 @@
+_QAFLAGS
+2
+(defun d (e) (mapcar (quote (lambda (k) (assoc k (entget e)))) (quote (8 62 420 6 48 370 39 210))))
+_-LAYER
+_N
+L1
+
+_LINE
+0,0
+10,0
+
+(setq a (entlast))
+_CLAYER
+L1
+_CECOLOR
+1
+_CELTYPE
+Continuous
+_CELWEIGHT
+30
+_CELTSCALE
+2
+_THICKNESS
+3
+_LINE
+0,5
+10,5
+
+_CHPROP
+_ALL
+
+_C
+
+_LA
+
+_LT
+
+_S
+
+_LW
+
+_T
+
+
+(d a)
+(d (entlast))

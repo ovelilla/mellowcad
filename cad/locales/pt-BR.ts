@@ -68,6 +68,7 @@ export const ptBR: EngineLocale = {
       "break": "Quebrar",
       "breakatpoint": "Quebrar em um ponto",
       "matchprop": "Corresponder propriedades",
+      "chprop": "Alterar propriedades",
       "copyclip": "Copiar",
       "cutclip": "Recortar",
       "copybase": "Copiar com ponto base",
@@ -837,6 +838,9 @@ export const ptBR: EngineLocale = {
         "PROPIG",
         "PI",
         "PINTOR"
+      ],
+      "CHPROP": [
+        "ALTPROP"
       ],
       "COPYCLIP": [
         "COPIACORTE"
@@ -1655,6 +1659,24 @@ export const ptBR: EngineLocale = {
         "Yes": "Sim",
         "No": "Não"
       },
+      "CHPROP": {
+        "Color": "Cor",
+        "LAyer": "CAmada",
+        "LType": "TIpolinha",
+        "LWeight": "ESplinha",
+        "Thickness": "espessURa",
+        "Truecolor": "Truecolor",
+        "BYLAYER": "PORCamada",
+        "RED": "Vermelho",
+        "YELLOW": "Amarelo",
+        "GREEN": "Verde",
+        "CYAN": "Ciano",
+        "BLUE": "Azul",
+        "MAGENTA": "Magenta",
+        "WHITE": "Branco",
+        "BYBLOCK": "PORBloco",
+        "?": "?"
+      },
       "COLOR": {
         "Truecolor": "Truecolor",
         "BYLAYER": "PORCamada",
@@ -1990,6 +2012,12 @@ export const ptBR: EngineLocale = {
       "fillMode": "Inserir modo",
       "matchpropSource": "Selecione objeto de origem",
       "matchpropDestination": "Selecionar o(s) objeto(s) de destino",
+      "propertyToChange": "Inserir propriedade a alterar",
+      "newColor": "Nova cor",
+      "newLayerName": "Inserir nome da nova camada",
+      "newLinetypeName": "Inserir nome do novo tipo de linha",
+      "newLineweight": "Inserir nova espessura de linha",
+      "newThickness": "Especificar nova espessura",
       "viewPoint": "Especificar um ponto de vista",
       "specifyViewPointOr": "Especificar um ponto de vista ou",
       "attributeVisibilitySetting": "Inserir configuração de visibilidade de atributo",
@@ -2538,6 +2566,40 @@ export const ptBR: EngineLocale = {
       "selectedBlockHasNoEditableAttributes": "O bloco selecionado não tem atributos editáveis.",
       "matchpropSettings": "Configurações ativas atuais:  Cor Camada Tipolinha Espessura de linha Espessura Cota Texto Hachura",
       "matchpropLockedDestination": "O objeto de destino está em uma camada bloqueada.\nNão é possível atualizá-lo.",
+      "varies": "vários",
+      "layerNotFound": [
+        "Não é possível localizar camada \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "invalidLayerName": "Nome camada inválido.",
+      "linetypeNotLoaded": [
+        "Tipo de linha \"",
+        [
+          "name"
+        ],
+        "\" não encontrado. Use o comando TIPOLINHA para carregá-lo."
+      ],
+      "invalidLinetypeName": "Nome tipo de linha inválido.",
+      "cannotChangeThickness": [
+        "Não é possível alterar a espessura para ",
+        [
+          "type",
+          1,
+          {
+            "ellipse": "ELLIPSE",
+            "spline": "SPLINE",
+            "polyline3d": "Polilinhas 3D",
+            "mtext": "MTEXT",
+            "dimension": "DIMENSION",
+            "hatch": "HATCH",
+            "other": "BLOCOs"
+          }
+        ],
+        "."
+      ],
       "invalidThroughPoint": "Ponto de passagem inválido.",
       "cannotOffsetObject": "Não é possível deslocar esse objeto.",
       "cannotOffsetAtViewDirection": "Não é possível deslocar esse objeto na direção da vista atual.",

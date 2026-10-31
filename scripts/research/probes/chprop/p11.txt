@@ -1,0 +1,75 @@
+_QAFLAGS
+2
+(defun d (e) (mapcar (quote (lambda (k) (assoc k (entget e)))) (quote (0 8 62 6 48 370 39 210))))
+_ZOOM
+_W
+-20,-20
+60,60
+_LINE
+0,0
+10,0
+
+(setq e1 (entlast))
+_CIRCLE
+20,0
+3
+(setq e2 (entlast))
+_ARC
+30,0
+35,5
+40,0
+(setq e3 (entlast))
+_ELLIPSE
+0,10
+10,10
+2
+(setq e4 (entlast))
+_SPLINE
+0,20
+5,25
+10,20
+
+(setq e5 (entlast))
+_POINT
+20,20
+(setq e6 (entlast))
+_PLINE
+30,20
+40,20
+40,25
+
+(setq e7 (entlast))
+_3DPOLY
+0,30
+10,30
+10,35
+
+(setq e8 (entlast))
+_-TEXT
+20,30
+2
+0
+Hola
+(setq e9 (entlast))
+_DIMLINEAR
+0,0
+10,0
+5,-5
+(setq e10 (entlast))
+_RECTANG
+30,30
+35,35
+(setq e11 (entlast))
+_-HATCH
+_S
+_L
+
+
+(setq e12 (entlast))
+_CHPROP
+_ALL
+
+_T
+5
+
+(mapcar (quote d) (list e1 e2 e3 e4 e5 e6 e7 e8 e9 e10 e11 e12))

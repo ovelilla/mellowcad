@@ -308,6 +308,8 @@ const RAIL_EXCLUDED = new Set([
   "matchprop",
   // LIST is the ribbon's Properties panel's, beside Match Properties.
   "list",
+  // CHPROP is typed: no ribbon panel offers it.
+  "chprop",
   "zoom",
   "pan",
   "dashpan",

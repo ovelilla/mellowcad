@@ -1,0 +1,12 @@
+_QAFLAGS
+2
+_LINE
+0,0
+10,0
+
+_CHPROP
+_L
+
+_C
+1
+

@@ -87,6 +87,7 @@ ours, as Spanish's are (`es.md`). The language is Brazil's, and `LANGUAGE_NAMES`
 |  | 3D Orbit, Plan view, Viewpoint, Preset views, UCS icon, Elevation | Órbita 3D, Vista em planta, Ponto de vista, Vistas predefinidas, Ícone UCS, Elevação | X ACAD_126, T:RBN_200_8A67D; P acrenderRes 2085, AcSceneRes 5143, ax26res 59 | yes (Ponto de vista no) |
 | Inquiry | Measure, Distance, Area, ID Point | Medir, Distância, Área, Ponto de identificação | X T:ID_RBN_0140, T:ID_RBN_CMDBTN_DIST, T:ID_RBN_CMDBTN_AREA, ACAD_189 | yes |
 |  | List | Listar | worded as the pack's ACAD_188 would be, the pack not at hand when LIST was built | no |
+|  | Change properties | Alterar propriedades | worded from the command's name, ALTPROP: no menu or ribbon item runs CHPROP | no |
 | Edit | Undo, Redo, New, Open, Save, Save As | Desfazer, Refazer, Novo, Abrir, Salvar, Salvar como | X PM_0006; N AcAeNet, AcDxWizard | yes |
 | Clipboard | Clipboard; Cut, Copy, Paste, Copy with Base Point | Área de transferência; Recortar, Copiar, Colar, Copiar com ponto base | X PM_0114 («Cortar» in that menu, «Recortar» ACAD_55 the command's) | yes |
 | Shortcut menu | Shortcut menu; Repeat ‹command›, Enter, Cancel | Menu de atalho; Repetir ‹comando›, Enter, Cancelar | X PM_0006, PM_0009; N AcCustomize NAME_ShortcutMenu | yes |
