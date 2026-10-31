@@ -1,6 +1,6 @@
 # Un sistema para los idiomas — brief
 
-> **Estado:** fases 1 y 2 hechas (2026-10-31); las 3 a 5, sin empezar. Se borra cuando el portugués
+> **Estado:** fases 1 a 3 hechas (2026-10-31); las 4 y 5, sin empezar. Se borra cuando el portugués
 > de Brasil esté `live` con el sistema entero.
 
 ## 1. Objetivo
@@ -72,7 +72,23 @@ Una fase, un commit (o varios si se separan solos). Las 1 a 4 no cambian nada vi
 3. **Herramientas por idioma.** Extraer `acadres.dll` de cualquier language pack a
    `research/strings/`; `pair.mjs` y `catalog-sweep.mjs` con `--lang` (estados sin `es-`); un script
    que proponga las entradas de `commands` de un idioma desde los ids emparejados, para revisarlas.
-   El español sigue saliendo igual.
+   El español sigue saliendo igual. Hecho así: `--lang` toma la etiqueta BCP 47 de los catálogos
+   (`pt-BR`), que nombra también las tablas (`all_pt-BR.tsv`), y por defecto es `es`;
+   `extract-strings.mjs` la traduce a la cultura de AutoCAD (la misma, o la única de su idioma:
+   `es` → `es-ES`) y copia también `acad.pgp`, porque los alias salen de él. El código común está
+   en `scripts/research/tables.mjs`; el «o» que precede a la lista de palabras clave se deduce de
+   las tablas, no de una lista por idioma. `propose-commands.mjs` escribe en `research/proposals/`
+   (ignorado: es texto de Autodesk, y fuera de `cad/locales/` nada lo compila sin leerlo) un JSON
+   con solo lo que una cadena decide y un informe con todas las claves; lo dudoso (cadenas que
+   discrepan, un `select` de ICU, plurales, coincidencias parciales o de otras mayúsculas) queda
+   fuera del JSON y marcado en el informe. Comprobado con el español: las tablas extraídas son las
+   de antes byte a byte, `pair.mjs` sale idéntico y `catalog-sweep.mjs` también salvo el nombre de
+   los estados (`lang-2027`, `lang-differs`, `lang-several`); de las 967 propuestas, 941 son ya
+   las de `es.json`, y el resto son decisiones tomadas con la consola (alias del `acad.pgp` que el
+   catálogo no recoge, filas `lang-differs` del barrido). **Queda para la fase 5**, porque solo se
+   prueba con otro idioma: abrir un pack sin instalarlo (7-Zip, que no está en WSL; dónde guarda
+   sus DLL y su `acad.pgp`), y si las tablas de `pt-BR` emparejan como las españolas (su «ou», sus
+   initget).
 4. **Conocimiento.** La carpeta de idiomas de §4, comprobando las citas de `lib/docs/differences.ts`; el test
    de `live` exige también su `docs/i18n/<tag>.md`. Reglas `i18n.md`, `cad-catalogs.md` y
    `autocad-research.md` sin el español como caso único; `add-language` por fases con plan

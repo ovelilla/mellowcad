@@ -18,7 +18,8 @@ to left). The words: `docs/i18n-glossary.md`.
    lists it: `TRANSLATED` (`i18n/messages.test.ts`) is every `live` language, for both, and
    `i18n/freshness.test.ts` every translation.
 3. **The engine's catalog**, `cad/locales/<tag>.json` (`.claude/rules/cad-catalogs.md`): the
-   interface always; `commands` only with an AutoCAD of that language to copy, and then complete.
+   interface always; `commands` only with an AutoCAD of that language to copy, and then complete,
+   starting from `scripts/research/propose-commands.mjs` (skill `autocad-research`).
    `npm run locales` compiles it to `cad/locales/<tag>.ts`; make it an entry point of the
    package (`.claude/rules/engine-package.md`: `exports`, tsdown, the build's tsconfig) and add it
    to the entry table in `cad/README.md` and the table in `cad/docs/languages.md`.

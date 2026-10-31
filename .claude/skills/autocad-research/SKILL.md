@@ -16,7 +16,7 @@ tool runs from WSL through interop. Pick the source by the question:
 | Exact geometry of a result, every property                                 | MPDUMP, traced run          | tracing.md |
 | How AutoCAD draws a result: linetypes, hatches, dimensions, text           | the console, plotted to PNG | console.md |
 | What the user sees: jig, grips, snap markers, dialogs, palettes            | the desktop AutoCAD         | gui.md     |
-| The exact wording, by id, in English and Spanish                           | the string tables           | below      |
+| The exact wording, by id, in English and each installed language           | the string tables           | below      |
 | What no program shows: intent, the cursor, documented defaults             | Autodesk's help             | below      |
 
 The console settles what a command does; the help never overrides it. What none of them settles
@@ -26,26 +26,34 @@ is written **unverified** in `docs/coverage/`, with what was seen instead. Cite 
 ## The string tables
 
 `research/strings/` is gitignored, because it holds Autodesk's text, not ours. Copy it along with
-the project. Each table is `id<TAB>text`, with the text JSON-quoted:
+the project. Each table is `id<TAB>text`, with the text JSON-quoted, and named by the BCP 47 tag the
+catalogs use (`en`, `es`, `pt-BR`); `--lang <tag>` picks one in every script, Spanish by default:
 
 | File                                                         | Source                                                   |
 | ------------------------------------------------------------ | -------------------------------------------------------- |
-| `st2027_en.tsv`, `st2027_es.tsv`                             | `acadres`, AutoCAD 2027 English and Spanish              |
+| `st2027_<tag>.tsv`                                           | `acadres`, AutoCAD 2027                                  |
 | `AcDimRes_*`, `acmtedRes_*`, `AcArrayRes_*`, `texteditRes_*` | the dimension, MTEXT, array and TEXTEDIT resources, 2027 |
-| `all_en.tsv`, `all_es.tsv`                                   | everything above merged, the other DLLs' ids prefixed    |
+| `all_<tag>.tsv`                                              | the first four merged, the other DLLs' ids prefixed      |
+| `acad_<tag>.pgp`                                             | the language's aliases                                   |
 | `st2023_en.tsv`                                              | `acadres`, AutoCAD 2023 English, kept for history        |
 
 `node scripts/research/pair.mjs "<regex>"` prints every English string that matches, beside the
-Spanish one of the same id. The tables come from the installed DLLs: after an AutoCAD update,
-regenerate them with `node scripts/research/strtable.mjs <dll>` from the install's `en-US/` and
-`es-ES/` folders (it reads the PE file, nothing runs). **An update rewords prompts**: 2027's
-update turned DIMANGULAR's `Designe primer extremo` into `Designe primer punto final del
-ángulo`, so a table from the release's language pack is not the current product. The installed
-language packs are English and Spanish; AutoCAD has none for Arabic. The palettes' labels are in
-`ax24res.dll` / `ax26res.dll` and `acappres.dll`.
+translated one of the same id. `node scripts/research/extract-strings.mjs --lang <tag>` writes a
+language's tables from the install's folder of its culture (`es` is `es-ES`; `zh` needs its
+region), which only its language pack fills; for a pack not installed, 7-Zip opens its `.exe`
+without running anything (`docs/i18n-glossary.md`): pass the folder of its DLLs and `--pgp` its
+`acad.pgp`. It reads the files, nothing runs. **An update rewords prompts**: 2027's update turned
+DIMANGULAR's `Designe primer extremo` into `Designe primer punto final del ángulo`, so a table from
+the release's language pack is not the current product. After an AutoCAD update, move the tables
+to `previous/` and extract them again (the script will not overwrite a table that changed). The
+installed language packs are English and Spanish; AutoCAD has none for Arabic. The palettes'
+labels are in `ax24res.dll` / `ax26res.dll` and `acappres.dll`.
 
-`node scripts/research/catalog-sweep.mjs` checks the engine's catalogs against the tables (skill
-`command-review`).
+`node scripts/research/catalog-sweep.mjs` checks a catalog against the tables (skill
+`command-review`). `node scripts/research/propose-commands.mjs --lang <tag>` proposes a new
+language's `commands` from them, into `research/proposals/<tag>.json` with a report of every key
+beside it; what it leaves out (strings that disagree, an ICU select, a plural, no source) is
+worded by hand, and what it proposes is checked against the console like any table string.
 
 A keyword is the word the table declares for `initget`; the prompt lists its label. How both are
 written in the catalogs is in `.claude/rules/cad-catalogs.md`.
