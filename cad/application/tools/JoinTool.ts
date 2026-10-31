@@ -1,5 +1,10 @@
 import { Vec2 } from "../../geometry/Vec2"
 import {
+  type BSplineCurve,
+  bsplineJoined,
+  bsplineReversed,
+} from "../../geometry/nurbs"
+import {
   type Vec3,
   add3,
   cross3,
@@ -14,6 +19,7 @@ import { normalizeAngle } from "../../geometry/primitives"
 import {
   type ArcEntity,
   type CircleEntity,
+  type EllipseEntity,
   Entity,
   EntityId,
   type LineEntity,
@@ -24,18 +30,26 @@ import {
   coplanar,
   createCircle,
   createPolyline,
+  ellipseSweepParams,
+  ellipseWithSpan,
+  isFullEllipse,
   isLevel,
   lineEndZ,
   lineStartZ,
   polylineSegmentGeometries,
   polylineWidth,
   type PolylineWidth,
-  readsInPlan,
   withLineZ,
 } from "../../domain/entities"
+import { joinCurve, joinedSpline } from "../../domain/splineJoin"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
 import { SelectionActionTool } from "./SelectionActionTool"
-import type { AddedBy, ModeFind } from "./objectSelection"
+import {
+  type AddedBy,
+  type ModeFind,
+  ObjectSelector,
+  type SelectionMode,
+} from "./objectSelection"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -53,16 +67,18 @@ const ANGLE_EPS = 1e-9
 const TAU = 2 * Math.PI
 
 /**
- * AutoCAD's JOIN, several objects at once (pieces/p300–p390). The set read in
- * order, a window's find newest first (p390), makes one of three things:
+ * AutoCAD's JOIN, several objects at once (pieces/p300–p440). The set read in
+ * order, a window's find newest first (p390), makes one of four things:
  * collinear lines the source LINE stretched over them all (p300, p328, p329,
  * p349); arcs of one circle the source ARC, counter-clockwise from it over the
- * gaps, or a CIRCLE if they close it (p327, p344, p386); anything else
- * polylines grown from a source — the set's first polyline, which keeps its
- * handle (p343, p378–p380), else its first object, whose properties a new one
- * wears (p339, p340) — over whole objects meeting its ends, in the set's
- * order, until none fits (p324, p338, p377, p384); a polyline met at an inner
- * vertex, or closed, joins nothing (p373, p388, p389).
+ * gaps, or a CIRCLE if they close it (p327, p344, p386); elliptical arcs of
+ * one ellipse the source's, so (p332, p407, p413); anything else chains, one
+ * per source, each grown over whole objects meeting its ends, in the set's
+ * order, until none fits (p324, p338, p377, p384): from each spline or
+ * elliptical arc in turn a spline (p331, p374, p415, p435), then from the
+ * first polyline left, else the first object, a polyline (p339, p343, p434).
+ * A spline or an elliptical arc picked alone is a source the objects asked
+ * next join (p406, p411), or that cLose closes (p369).
  */
 export class JoinTool extends SelectionActionTool {
   readonly id = "join"
@@ -72,12 +88,51 @@ export class JoinTool extends SelectionActionTool {
   private order: EntityId[] = []
   /** What `Convert to circle?` is asked about, while it is. */
   private circle: Joined | null = null
+  /** A spline or an elliptical arc picked alone, while what joins it is asked. */
+  private source: Entity | null = null
+  private readonly toSpline = this.toSource("selectOpenCurvesToJoinToSource")
+  // WHY no Window and the rest: the prompt takes a pick, Fence and Crossing
+  // (pieces/p369 trace), and finds only arcs of the source's ellipse (p420,
+  // p439).
+  private readonly toEllipse = this.toSource(
+    (picked) =>
+      picked
+        ? "selectEllipticalArcsToJoinToSource"
+        : "selectEllipticalArcsToJoinToSourceOr",
+    ["Fence", "Crossing"]
+  )
+
+  private toSource(
+    question: PromptId | ((picked: boolean) => PromptId),
+    modes?: readonly SelectionMode[]
+  ): ObjectSelector {
+    return new ObjectSelector({
+      takes: () => "wholeObjects",
+      question: () =>
+        typeof question === "string"
+          ? question
+          : question(!(this.liveSet?.isEmpty() ?? true)),
+      accept: (ids, ctx) =>
+        ids.filter((id) => {
+          const entity = ctx.document.get(id)
+          return entity && this.source && this.joinsSource(entity)
+        }),
+      done: (ctx) => this.joinToSource(ctx),
+      onAdded: (ids, added, _ctx, find) =>
+        this.selectionAdded(ids, added, find),
+      ...(modes ? { modes } : {}),
+    })
+  }
+
+  /** The set read live, for the source's prompt to drop cLose once it holds one. */
+  private liveSet: ToolContext["selection"] | null = null
 
   /**
    * JOIN takes the source and the rest in one set here, so after the first
    * pick it asks for the objects to join as AutoCAD does once several are
    * picked at once. WHY: `Select lines to join to source`, its prompt after a
-   * single source, would ask for a step this JOIN does not take.
+   * single line, arc or polyline, would ask for a step this JOIN takes only
+   * after a spline or an elliptical arc.
    */
   protected selectionQuestion(picked: boolean): PromptId {
     return picked ? "selectObjectsToJoin" : "selectSourceOrMultipleToJoin"
@@ -105,21 +160,33 @@ export class JoinTool extends SelectionActionTool {
   onActivate(ctx: ToolContext): void {
     this.order = []
     this.circle = null
+    this.source = null
+    this.liveSet = ctx.selection
     super.onActivate(ctx)
   }
 
   onDeactivate(ctx: ToolContext): void {
     this.order = []
     this.circle = null
+    this.source = null
+    this.liveSet = null
     super.onDeactivate(ctx)
   }
 
+  /** The prompt asking what joins the source, while it is. */
+  private step(): ObjectSelector | null {
+    if (!this.source || this.circle) return null
+    return this.source.type === "ellipse" ? this.toEllipse : this.toSpline
+  }
+
   question(): PromptId {
-    return this.circle ? "convertCombinedArcsToCircle" : super.question()
+    if (this.circle) return "convertCombinedArcsToCircle"
+    return this.step()?.question() ?? super.question()
   }
 
   takes(): QuestionInput | null {
-    return this.circle ? null : super.takes()
+    if (this.circle) return null
+    return this.step()?.takes() ?? super.takes()
   }
 
   defaultOption(): string | null {
@@ -128,10 +195,30 @@ export class JoinTool extends SelectionActionTool {
 
   commandOptions(): readonly CommandOption[] {
     // `[Yes/No] <Yes>`, listed and declared No, Yes (pieces/p326 trace).
-    return this.circle ? [{ id: "Yes" }, { id: "No" }] : super.commandOptions()
+    if (this.circle) return [{ id: "Yes" }, { id: "No" }]
+    const step = this.step()
+    if (!step) return super.commandOptions()
+    const closes = step === this.toEllipse && (this.liveSet?.isEmpty() ?? true)
+    return [...(closes ? [{ id: "cLose" }] : []), ...step.commandOptions()]
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
+    const step = this.step()
+    if (step && this.source?.type === "ellipse" && id === "cLose") {
+      if (!ctx.selection.isEmpty()) return "unhandled"
+      // cLose makes the arc's ellipse whole (p369, p412: AutoCAD keeps its
+      // start, which a whole ellipse has no field for here).
+      ctx.execute(
+        new ReplaceEntitiesCommand(
+          [this.source.id],
+          [ellipseWithSpan(this.source, undefined, undefined)]
+        )
+      )
+      ctx.report(ctx.text.message("ellipseClosed"))
+      ctx.endCommand()
+      return "end"
+    }
+    if (step) return step.invokeOption(id, ctx) ? "continue" : "unhandled"
     if (!this.circle) return super.invokeOption(id, ctx)
     if (id !== "Yes" && id !== "No") return "unhandled"
     // No changes nothing and says nothing (pieces/p385).
@@ -143,37 +230,71 @@ export class JoinTool extends SelectionActionTool {
   }
 
   onEnter(ctx: ToolContext): boolean {
+    const step = this.step()
+    // Enter with nothing picked ends JOIN changing nothing (p430).
+    if (step) return step.onEnter(ctx)
     if (!this.circle) return super.onEnter(ctx)
     this.invokeOption("Yes", ctx)
     return true
   }
 
   answerTyped(text: string, ctx: ToolContext): boolean {
+    const step = this.step()
+    if (step) return step.answerTyped(text, ctx)
     return !this.circle && super.answerTyped(text, ctx)
   }
 
   wantsSnap(): boolean {
+    const step = this.step()
+    if (step) return step.wantsSnap()
     return !this.circle && super.wantsSnap()
   }
 
+  cycleLasso(ctx: ToolContext): boolean {
+    const step = this.step()
+    return step ? step.cycleLasso(ctx) : super.cycleLasso(ctx)
+  }
+
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
-    if (!this.circle) super.onPointerDown(input, ctx)
+    const step = this.step()
+    if (step) {
+      step.onPointerDown(input, ctx)
+      ctx.requestRender()
+    } else if (!this.circle) super.onPointerDown(input, ctx)
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
-    if (!this.circle) super.onPointerMove(input, ctx)
+    const step = this.step()
+    if (step) step.onPointerMove(input, ctx)
+    else if (!this.circle) super.onPointerMove(input, ctx)
   }
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
-    if (!this.circle) super.onPointerUp(input, ctx)
+    const step = this.step()
+    if (step) step.onPointerUp(input, ctx)
+    else if (!this.circle) super.onPointerUp(input, ctx)
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    return this.circle ? [] : super.buildOverlay(ctx)
+    if (this.circle) return []
+    return this.step()?.buildOverlay(ctx) ?? super.buildOverlay(ctx)
   }
 
   protected run(entities: readonly Entity[], ctx: ToolContext): boolean {
     const set = this.inSetOrder(entities)
+    const [only] = set
+    if (
+      set.length === 1 &&
+      (only.type === "spline" || only.type === "ellipse") &&
+      joinCurve(only)
+    ) {
+      // A source alone: what joins it is asked next (p406, p411).
+      this.source = only
+      this.order = []
+      ctx.selection.clear()
+      this.step()!.start()
+      return true
+    }
     const joined = joinObjects(set)
     if (!joined) {
       ctx.report(
@@ -192,9 +313,42 @@ export class JoinTool extends SelectionActionTool {
     return false
   }
 
+  /** Whether `entity` may join the source: any other object, or an arc of its ellipse. */
+  private joinsSource(entity: Entity): boolean {
+    const source = this.source!
+    if (entity.id === source.id) return false
+    return (
+      source.type !== "ellipse" ||
+      (entity.type === "ellipse" && ellipseShift(source, entity) !== null)
+    )
+  }
+
+  /** What the source's prompt closed on joins it, in the set's order. */
+  private joinToSource(ctx: ToolContext): void {
+    const source = this.source!
+    const set = this.inSetOrder(
+      ctx.selection
+        .toArray()
+        .map((id) => ctx.document.get(id))
+        .filter((entity): entity is Entity => entity !== undefined)
+    )
+    const joined =
+      source.type === "ellipse"
+        ? joinToEllipse(source, set as EllipseEntity[])
+        : joinToSpline(source, set)
+    if (joined.made.length > 0) this.commit(joined, ctx)
+    else
+      ctx.report(
+        ctx.text.message(joined.reports[0].message, joined.reports[0].values)
+      )
+    ctx.endCommand()
+  }
+
   private commit(joined: Joined, ctx: ToolContext): void {
     ctx.execute(new ReplaceEntitiesCommand(joined.removed, joined.made))
-    ctx.report(ctx.text.message(joined.message, joined.values))
+    for (const { message, values } of joined.reports) {
+      ctx.report(ctx.text.message(message, values))
+    }
   }
 
   /** The set as JOIN reads it: a preselection first, then as it was built. */
@@ -204,47 +358,69 @@ export class JoinTool extends SelectionActionTool {
   }
 }
 
-/** What a join makes, what it takes away and how it says so. */
-interface Joined {
-  readonly kind: "line" | "arc" | "circle" | "polylines"
-  readonly made: readonly Entity[]
-  /** Every object joined; a `made` under one's id is that object grown. */
-  readonly removed: readonly EntityId[]
-  readonly message:
-    | "linesJoined"
-    | "arcsJoined"
-    | "arcsJoinedIntoCircle"
-    | "objectsConvertedToPolylines"
-    | "segmentsJoinedIntoPolyline"
+type JoinMessage =
+  | "linesJoined"
+  | "arcsJoined"
+  | "arcsJoinedIntoCircle"
+  | "ellipticalArcsJoined"
+  | "objectsJoinedIntoSplines"
+  | "objectsConvertedToSplines"
+  | "objectsConvertedToPolylines"
+  | "segmentsJoinedIntoPolyline"
+  | "objectsJoinedToSource"
+  | "ellipticalArcsJoinedToSource"
+
+/** One line of what JOIN says. */
+interface Report {
+  readonly message: JoinMessage
   readonly values: Readonly<Record<string, number>>
 }
 
-/** What `set`, in JOIN's order, joins into; null when nothing joins. */
+/** What a join makes, what it takes away and how it says so. */
+interface Joined {
+  readonly kind: "line" | "arc" | "circle" | "ellipse" | "chains"
+  readonly made: readonly Entity[]
+  /** Every object joined; a `made` under one's id is that object grown. */
+  readonly removed: readonly EntityId[]
+  /**
+   * A line per kind of result, splines joined, splines made and polylines
+   * in that order whatever came first (p436–p438).
+   */
+  readonly reports: readonly Report[]
+}
+
+/**
+ * What `set`, in JOIN's order, joins into; null when nothing joins. What no
+ * result takes is counted on the last line (where several lines are said,
+ * unprobed).
+ */
 function joinObjects(set: readonly Entity[]): Joined | null {
   const usable = set.filter(joinable)
-  const result = joinLines(usable) ?? joinArcs(usable) ?? joinPolylines(usable)
+  const result =
+    joinLines(usable) ??
+    joinArcs(usable) ??
+    joinEllipticalArcs(usable) ??
+    joinChains(usable)
   if (!result) return null
+  return withDiscarded(result, set.length - result.removed.length)
+}
+
+function withDiscarded(joined: Joined, discarded: number): Joined {
   return {
-    ...result,
-    values: {
-      ...result.values,
-      discarded: set.length - result.removed.length,
-    },
+    ...joined,
+    reports: joined.reports.map((report, i, all) => ({
+      ...report,
+      values: {
+        ...report.values,
+        discarded: i === all.length - 1 ? discarded : 0,
+      },
+    })),
   }
 }
 
 /** Closed objects, and those JOIN makes nothing of here, are discarded. */
 function joinable(entity: Entity): boolean {
-  switch (entity.type) {
-    case "line":
-      return true
-    case "arc":
-      return readsInPlan(entity)
-    case "polyline":
-      return readsInPlan(entity) && !entity.closed
-    default:
-      return false
-  }
+  return entity.type === "line" || joinCurve(entity) !== null
 }
 
 const startOf = (line: LineEntity): Vec3 => ({
@@ -287,8 +463,7 @@ function joinLines(set: readonly Entity[]): Joined | null {
     kind: "line",
     made: [line],
     removed: lines.map((entity) => entity.id),
-    message: "linesJoined",
-    values: { count: lines.length },
+    reports: [{ message: "linesJoined", values: { count: lines.length } }],
   }
 }
 
@@ -324,8 +499,9 @@ function joinArcs(set: readonly Entity[]): Joined | null {
       kind: "circle",
       made: [circle],
       removed,
-      message: "arcsJoinedIntoCircle",
-      values: { count: arcs.length },
+      reports: [
+        { message: "arcsJoinedIntoCircle", values: { count: arcs.length } },
+      ],
     }
   }
   const arc: ArcEntity = {
@@ -336,9 +512,211 @@ function joinArcs(set: readonly Entity[]): Joined | null {
     kind: "arc",
     made: [arc],
     removed,
-    message: "arcsJoined",
-    values: { count: arcs.length },
+    reports: [{ message: "arcsJoined", values: { count: arcs.length } }],
   }
+}
+
+/**
+ * How far round `arc`'s parameter is turned from `source`'s where it is an
+ * arc of the same ellipse in the same plane (its major axis the other way
+ * round, half a turn), else null.
+ */
+function ellipseShift(
+  source: EllipseEntity,
+  arc: EllipseEntity
+): number | null {
+  if (
+    !samePoint(arc.center, source.center) ||
+    Math.abs(arc.ratio - source.ratio) > ANGLE_EPS ||
+    !coplanar(arc, source)
+  )
+    return null
+  if (samePoint(arc.majorAxis, source.majorAxis)) return 0
+  const opposite = { x: -source.majorAxis.x, y: -source.majorAxis.y }
+  return samePoint(arc.majorAxis, opposite) ? Math.PI : null
+}
+
+/**
+ * Elliptical arcs of the source's ellipse made the source's arc,
+ * counter-clockwise from its start over every gap to the farthest end, a
+ * whole ellipse where one reaches round to its start, which JOIN does not ask
+ * about (pieces/p332, p407, p408, p413; AutoCAD keeps the start, which a
+ * whole ellipse has no field for here). Null where one is not of it.
+ */
+function ellipseOver(
+  source: EllipseEntity,
+  arcs: readonly EllipseEntity[]
+): EllipseEntity | null {
+  const { start } = ellipseSweepParams(source)
+  let reach = 0
+  for (const arc of arcs) {
+    const shift = ellipseShift(source, arc)
+    if (shift === null || isFullEllipse(arc)) return null
+    const own = ellipseSweepParams(arc)
+    let from = normalizeAngle(own.start + shift - start)
+    if (from > TAU - ANGLE_EPS) from = 0
+    reach = Math.max(reach, from + own.sweep)
+  }
+  return reach >= TAU - ANGLE_EPS
+    ? ellipseWithSpan(source, undefined, undefined)
+    : ellipseWithSpan(source, start, start + reach)
+}
+
+/** A set all of elliptical arcs of one ellipse: the source's arc over them all. */
+function joinEllipticalArcs(set: readonly Entity[]): Joined | null {
+  if (set.length < 2 || set.some((entity) => entity.type !== "ellipse")) {
+    return null
+  }
+  const arcs = set as readonly EllipseEntity[]
+  const ellipse = ellipseOver(arcs[0], arcs)
+  if (!ellipse) return null
+  return {
+    kind: "ellipse",
+    made: [ellipse],
+    removed: arcs.map((arc) => arc.id),
+    reports: [
+      { message: "ellipticalArcsJoined", values: { count: arcs.length } },
+    ],
+  }
+}
+
+/** What the source's prompt picked of its ellipse joins the elliptical arc (p411). */
+function joinToEllipse(
+  source: EllipseEntity,
+  arcs: readonly EllipseEntity[]
+): Joined {
+  return {
+    kind: "ellipse",
+    made: [ellipseOver(source, [source, ...arcs])!],
+    removed: [source.id, ...arcs.map((arc) => arc.id)],
+    reports: [
+      {
+        message: "ellipticalArcsJoinedToSource",
+        values: { count: arcs.length, discarded: 0 },
+      },
+    ],
+  }
+}
+
+/** A spline grown from a source, and the objects it took. */
+interface SplineChain {
+  readonly spline: Entity
+  readonly members: readonly Entity[]
+}
+
+/**
+ * The spline `source` grows into over whole objects of `left` meeting one of
+ * its ends in space, in their order, scanning them again after each, until
+ * none fits or it closes (pieces/p405, p418, p431): those it takes leave
+ * `left`. Null where none meets it.
+ */
+function splineChain(source: Entity, left: Entity[]): SplineChain | null {
+  const curves = [joinCurve(source)!]
+  const members = [source]
+  let closed = false
+  for (let i = 0; i < left.length && !closed; i++) {
+    const curve = joinCurve(left[i])
+    if (!curve || !attachCurve(curves, curve)) continue
+    members.push(...left.splice(i, 1))
+    i = -1
+    closed = samePoint3(
+      curves[0].controlPoints[0],
+      curves[curves.length - 1].controlPoints.at(-1)!
+    )
+  }
+  if (members.length < 2) return null
+  return {
+    spline: joinedSpline(source, bsplineJoined(curves), closed),
+    members,
+  }
+}
+
+/** {@link attach}'s rule for a spline's curves, their ends met in space. */
+function attachCurve(curves: BSplineCurve[], curve: BSplineCurve): boolean {
+  const start = curve.controlPoints[0]
+  const end = curve.controlPoints[curve.controlPoints.length - 1]
+  const head = curves[0].controlPoints[0]
+  const tail = curves[curves.length - 1].controlPoints.at(-1)!
+  if (samePoint3(start, tail)) curves.push(curve)
+  else if (samePoint3(end, tail)) curves.push(bsplineReversed(curve))
+  else if (samePoint3(end, head)) curves.unshift(curve)
+  else if (samePoint3(start, head)) curves.unshift(bsplineReversed(curve))
+  else return false
+  return true
+}
+
+/**
+ * What the source's prompt picked joins the spline, its source whatever came
+ * first (p406, p426); with nothing meeting it, nothing changes and JOIN says
+ * so (p440).
+ */
+function joinToSpline(source: Entity, set: readonly Entity[]): Joined {
+  const left = set.filter(joinable)
+  const chain = splineChain(source, left)
+  const joined = chain ? chain.members.length - 1 : 0
+  return {
+    kind: "chains",
+    made: chain ? [chain.spline] : [],
+    removed: chain ? chain.members.map((member) => member.id) : [],
+    reports: [
+      {
+        message: "objectsJoinedToSource",
+        values: { count: joined, discarded: set.length - joined },
+      },
+    ],
+  }
+}
+
+/**
+ * Chains: a spline from each spline or elliptical arc left in the set in
+ * turn — the spline itself (`joined into`), or a new one (`converted to`) —
+ * over anything meeting its ends, coplanar or not (p374, p415, p419, p421,
+ * p435); then polylines over the lines, arcs and polylines left (p434, p436).
+ */
+function joinChains(set: readonly Entity[]): Joined | null {
+  const left = [...set]
+  const made: Entity[] = []
+  const removed: EntityId[] = []
+  const reports: Report[] = []
+  // Joined into the source spline, then converted to a new one (p437, p438).
+  const counts = {
+    kept: { objects: 0, splines: 0 },
+    made: { objects: 0, splines: 0 },
+  }
+  for (;;) {
+    const source = left.find(
+      (entity) => entity.type === "spline" || entity.type === "ellipse"
+    )
+    if (!source) break
+    left.splice(left.indexOf(source), 1)
+    const chain = splineChain(source, left)
+    if (!chain) continue
+    made.push(chain.spline)
+    removed.push(...chain.members.map((member) => member.id))
+    const count = source.type === "spline" ? counts.kept : counts.made
+    count.objects += chain.members.length
+    count.splines++
+  }
+  for (const [count, message] of [
+    [counts.kept, "objectsJoinedIntoSplines"],
+    [counts.made, "objectsConvertedToSplines"],
+  ] as const) {
+    if (count.splines === 0) continue
+    reports.push({
+      message,
+      values: { count: count.objects, splines: count.splines },
+    })
+  }
+  const polylines = joinPolylines(
+    left.filter((entity) => entity.type !== "spline")
+  )
+  if (polylines) {
+    made.push(...polylines.made)
+    removed.push(...polylines.removed)
+    reports.push(...polylines.reports)
+  }
+  if (made.length === 0) return null
+  return { kind: "chains", made, removed, reports }
 }
 
 /** A segment of a chain, from `a` to `b`. */
@@ -446,18 +824,26 @@ function joinPolylines(set: readonly Entity[]): Joined | null {
   // polylines count their objects (p319, p324, p333).
   return made.length === 1 && polylineSource
     ? {
-        kind: "polylines",
+        kind: "chains",
         made,
         removed,
-        message: "segmentsJoinedIntoPolyline",
-        values: { count: segments },
+        reports: [
+          {
+            message: "segmentsJoinedIntoPolyline",
+            values: { count: segments },
+          },
+        ],
       }
     : {
-        kind: "polylines",
+        kind: "chains",
         made,
         removed,
-        message: "objectsConvertedToPolylines",
-        values: { count: removed.length, polylines: made.length },
+        reports: [
+          {
+            message: "objectsConvertedToPolylines",
+            values: { count: removed.length, polylines: made.length },
+          },
+        ],
       }
 }
 
@@ -482,6 +868,10 @@ function attach(pieces: Piece[], member: Entity): boolean {
 
 function samePoint(p: Vec2, q: Vec2): boolean {
   return Math.abs(p.x - q.x) < JOIN_EPS && Math.abs(p.y - q.y) < JOIN_EPS
+}
+
+function samePoint3(p: Vec3, q: Vec3): boolean {
+  return samePoint(p, q) && Math.abs(p.z - q.z) < JOIN_EPS
 }
 
 /**

@@ -472,7 +472,7 @@ length or an angle typed while a grip is hot is not built; a whole ellipse's Sta
 angle retyped (**unverified**: unprobed, read-only here); the palette's English labels
 (**unverified**: the desktop seen in Spanish only); the start a closed elliptical arc keeps
 (p220: StartParam 0.857072, EndParam 7.140257), which has no field here (ELLIPSE-D21);
-HATCH / boundary / JOIN / DIM on an ellipse (OFFSET, FILLET: modify.md); the Intersection, Tangent and
+HATCH / boundary / DIM on an ellipse (OFFSET, FILLET, JOIN: modify.md); the Intersection, Tangent and
 Perpendicular snaps on an ellipse (`_INT` with a line, a circle and another ellipse at
 45.825757,10, 38.186654,16.138304 and 14,24; from 100,60 `_TAN` at −26.144218,21.310091 and
 `_PER` at 45.503239,10.361651, an arc's only on its sweep, −48.836572,−5.361651; p308–p314); a
@@ -609,7 +609,7 @@ d08-2, d08-3; Stretch / Insert / Refine / Remove vertex on a CV, d09-4), editing
 (SPLINEDIT's Edit vertex Weight, k11; the palette's Weight, which d03 shows editable) and the
 palette's Method, Degree, Knot parameterization, Closed and CV frame; weights only a file or a
 piece of a weighted one holds; AutoCAD's Area of a self-crossing closed spline (**unverified**);
-JOIN / HATCH / DIM on a spline or against one (OFFSET, FILLET: modify.md); Geometric Center (a closed
+HATCH / DIM on a spline or against one (OFFSET, FILLET, JOIN: modify.md); Geometric Center (a closed
 spline's, p311: 10,10 and 40,10; none on an open one, p310, p312), Perpendicular and Tangent on a
 spline (p313, p315, p316) (SPLINE-D51); PEDIT Spline, BLEND
 

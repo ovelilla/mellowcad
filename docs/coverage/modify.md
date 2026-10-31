@@ -1234,8 +1234,29 @@ ending silently (p309). The set is read in its order, a window's or a crossing's
   `Los segmentos de arco combinados forman un círculo. ¿Convertir en círculo? [Sí/No] <Sí>`), Yes or
   Enter a new CIRCLE with the source's properties, `2 arcs joined and converted to circle` (es
   `2 arcos unidos y convertidos a círculo`), No nothing, silently (p326, p382, p385–p387);
-- **anything else** polylines, one per chain, each grown from a source — the set's first polyline,
-  which keeps its handle, properties and widths (`1 segment joined into 1 polyline`,
+- **elliptical arcs of one ellipse**, the set all of them, the source's arc counter-clockwise from
+  its start over every gap to the farthest end, its major axis either way round:
+  `2 elliptical arcs joined into 1 arc` (es `2 arcos elípticos unidos en 1 arco`; p332, p407,
+  p408), a whole ellipse where they reach round, nothing asked and the same words (p332, p413);
+- **splines**, first, before any polyline: from each spline or elliptical arc in the set in turn a
+  chain over whole objects meeting one of its ends in space — lines, arcs, polylines, splines,
+  elliptical arcs, coplanar or not, a rising line too —, in the set's order and scanned again
+  after each, until none fits or it closes (p405, p418, p419, p431). A spline source keeps its
+  handle and properties, `2 objects joined into 1 spline`, `4 objects joined into 2 splines` (es
+  `2 objetos unidos en 1 spline`, `4 objetos unidos en 2 splines`; p331, p374, p396, p435), an
+  elliptical arc's chain is a new spline in its properties, `2 objects converted to 1 spline` (es
+  `2 objetos convertidos en 1 spline`; p375, p409, p415, p421, p428); the polylines are made of
+  what is left (p434), and each kind says its own line, joined, converted, polylines, whatever came
+  first (p436–p438). The spline is a CV spline, a fit one's data dropped (p331, p396), on each
+  object's own curve run the chain's way: a line of degree 1 on a parameter of 1, an arc and an
+  elliptical arc rational quadratics on their own angle in the fewest equal spans of a quarter
+  turn or less (p400, p424, p425), a polyline segment by segment (p401), a spline on its own knots;
+  each raised to the highest degree (Piegl & Tiller's elevation, each knot once more, p402, p433),
+  end to end from parameter 0 whatever the pieces started at (p423, p432), a knot of the degree
+  where two meet, rational when anything but splines is in it, a line's weights 1 (p374, p398);
+  closed and clamped where the chain closes (p405). Objects with a gap join nothing (p403);
+- **the lines, arcs and polylines left** polylines, one per chain, each grown from a source —
+  the set's first polyline, which keeps its handle, properties and widths (`1 segment joined into 1 polyline`,
   `2 segments joined into 1 polyline`, counting the segments added; es
   `1 segmento unido en 1 polilínea`; p322, p343, p356, p378–p380), else its first object, whose
   properties a new polyline wears (`2 objects converted to 1 polyline`,
@@ -1248,20 +1269,38 @@ ending silently (p309). The set is read in its order, a window's or a crossing's
   (p354–p356); at the plane's elevation (p345), what touches in plan at another height discarded
   (p346).
 
+A spline or an elliptical arc picked alone and Enter is a source: `Select any open curves to join
+to source:` (es `Designe cualesquiera curvas abiertas para unir al origen`; p406), a set whose
+objects join it as above, `1 object joined to source` (es `1 objeto unido al origen`), with
+nothing meeting it `0 objects joined to source, 1 object discarded from the operation` and nothing
+changed (p426, p440); an elliptical arc's
+`Select elliptical arcs to join to source or [cLose]:`, then without cLose once one is found (es
+`Designe arcos elípticos que unir al origen o [cErrar]`; p411), takes picks, Fence and Crossing
+(p369 trace) and finds only arcs of its ellipse (p420, p439), `1 elliptical arc joined to source`
+(es `1 arco elíptico unido al origen`); cLose makes the ellipse whole,
+`Ellipse successfully closed.` (es `Elipse cerrada correctamente.`; p369, p412). Enter with nothing
+found ends JOIN, changing nothing (p430).
+
 What no result takes is counted after it, `, 1 object discarded from the operation` (es
 `, 1 objeto descartado de la operación`; p319, p377); with nothing joined
 `0 objects joined, 2 objects discarded from the operation` (es
 `0 objetos unidos, 2 objetos descartados de la operación`; p334). One undo step, named JOIN / UNIR
 (p360–p362).
 
-**Missing:** a single source's own step (`Select lines to join to source:`, es
-`Designe líneas que unir al origen`, and its `1 line joined to source` counts; p310, p311,
-p348, p372, p383): here a source alone and Enter is a set of one,
-`0 objects joined, 1 object discarded from the operation`; splines, elliptical arcs and helixes,
-discarded here, though a spline on knots of its own is now the model's (AutoCAD:
-`2 objects joined into 1 spline`, p331, p374;
-`2 elliptical arcs joined into 1 arc`, p332; an arc and an elliptical arc
-`2 objects converted to 1 spline`, p375; cLose `Ellipse successfully closed.`, p369); objects
+**Missing:** a line's, an arc's and a polyline's own step as a single source
+(`Select lines to join to source:`, es `Designe líneas que unir al origen`, and its
+`1 line joined to source` counts; p310, p311, p348, p372, p383; an arc's cLose): here such a
+source alone and Enter is a set of one, `0 objects joined, 1 object discarded from the operation`;
+a closed object alone, which AutoCAD asks again for
+(`Line, open polyline, arc, elliptical arc, or open spline expected.  Select a supported object:`,
+p430's first run); helixes; the start a whole ellipse JOIN or cLose leaves keeps (p332's 90°,
+p412's 1.0916), which has no field here (ELLIPSE-D21); the elliptical arc's prompt dropping cLose
+after a pick that found nothing, and its `0 found` and a crossing's
+`No objects crossed by crossing window.` (p420, p439: here `Select objects:`' counts); a closed
+spline beside a line it touches, which AutoCAD leaves out of the count (p416: `1 object
+discarded`, two here; one it does not touch counts, p429); several splines converted
+(`converted to 2 splines` here: no such string in the tables) and where the discarded count goes
+when several lines are said (on the last here) — both **unverified**; objects
 under a −Z normal, discarded (AutoCAD: a 3D polyline from such a polyline and a line, p353, a
 spline from such an arc and a line, p352) and objects in a tilted plane (AutoCAD joins lines
 drawn in UCS X 90 into a polyline of that normal, p351); a rising line is left out, where AutoCAD

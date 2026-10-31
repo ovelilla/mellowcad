@@ -1349,7 +1349,8 @@ export const es: EngineLocale = {
       },
       "JOIN": {
         "Yes": "Sí",
-        "No": "No"
+        "No": "No",
+        "cLose": "cErrar"
       },
       "ARRAY": {
         "Rectangular": "Rectangular",
@@ -1979,6 +1980,9 @@ export const es: EngineLocale = {
       "selectSourceOrMultipleToJoin": "Designe un objeto de origen o varios objetos para unirlos a la vez",
       "selectObjectsToJoin": "Seleccione objetos para unir",
       "convertCombinedArcsToCircle": "Los segmentos de arco combinados forman un círculo. ¿Convertir en círculo?",
+      "selectOpenCurvesToJoinToSource": "Designe cualesquiera curvas abiertas para unir al origen",
+      "selectEllipticalArcsToJoinToSourceOr": "Designe arcos elípticos que unir al origen o",
+      "selectEllipticalArcsToJoinToSource": "Designe arcos elípticos que unir al origen",
       "specifyOffsetDistanceOr": "Precise distancia de desfase o",
       "selectObjectToOffsetOr": "Designe objeto a desplazar o",
       "specifyPointOnSideToOffsetOr": "Precise punto en lado de desplazamiento o",
@@ -3606,6 +3610,172 @@ export const es: EngineLocale = {
           }
         ]
       ],
+      "ellipticalArcsJoined": [
+        [
+          "count"
+        ],
+        " arcos elípticos unidos en 1 arco",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto descartado de la operación"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos descartados de la operación"
+            ]
+          }
+        ]
+      ],
+      "objectsJoinedIntoSplines": [
+        [
+          "count"
+        ],
+        " objetos unidos en ",
+        [
+          "splines",
+          2,
+          {
+            "one": [
+              0,
+              " spline"
+            ],
+            "other": [
+              0,
+              " splines"
+            ]
+          }
+        ],
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto descartado de la operación"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos descartados de la operación"
+            ]
+          }
+        ]
+      ],
+      "objectsConvertedToSplines": [
+        [
+          "count"
+        ],
+        " objetos convertidos en ",
+        [
+          "splines",
+          2,
+          {
+            "one": [
+              0,
+              " spline"
+            ],
+            "other": [
+              0,
+              " splines"
+            ]
+          }
+        ],
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto descartado de la operación"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos descartados de la operación"
+            ]
+          }
+        ]
+      ],
+      "objectsJoinedToSource": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " objeto unido"
+            ],
+            "other": [
+              0,
+              " objetos unidos"
+            ]
+          }
+        ],
+        " al origen",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto descartado de la operación"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos descartados de la operación"
+            ]
+          }
+        ]
+      ],
+      "ellipticalArcsJoinedToSource": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " arco elíptico unido"
+            ],
+            "other": [
+              0,
+              " arcos elípticos unidos"
+            ]
+          }
+        ],
+        " al origen",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto descartado de la operación"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos descartados de la operación"
+            ]
+          }
+        ]
+      ],
+      "ellipseClosed": "Elipse cerrada correctamente.",
       "panExit": "Pulse Esc o Intro para salir, o haga clic con el botón derecho para activar el menú contextual.",
       "orbitExit": "Pulse ESC o INTRO para salir, o haga clic con el botón derecho para ver el menú contextual.",
       "requiresTwoPointsOrDisplacement": "Requiere dos puntos o un desplazamiento seguido por INTRO.",

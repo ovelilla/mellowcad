@@ -37,7 +37,9 @@ and SPLINEDIT's pieces (probes spline-knots/k01–k16, draw.md's SPLINE); BREAK 
 of a spline, by knot insertion (k01–k37, modify.md's TRIM and BREAK); OFFSET of a spline and of an
 ellipse, an approximation within AutoCAD's 0.001 (k38–k56, modify.md's OFFSET); FILLET of an
 ellipse, an elliptical arc or a spline, its centre on the curve's exact offset (corners/p389–p482,
-modify.md's FILLET). Left: JOIN and SPLINEDIT, command gaps.
+modify.md's FILLET); JOIN of splines and elliptical arcs, each object a curve on its own parameter
+joined end to end, and an elliptical arc's or a spline's single source with cLose
+(pieces/p396–p440, modify.md's JOIN). Left: SPLINEDIT, a command gap.
 
 Deferrable indefinitely at no extra cost: PASTEBLOCK/PASTEORIG/CUTBASE, DIMARC, DIMORDINATE, the
 modern `DIM` command, POINT with DIVIDE/MEASURE, XLINE/RAY, GROUP, LENGTHEN, ALIGN, per-object

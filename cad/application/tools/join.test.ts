@@ -105,8 +105,9 @@ describe("JOIN's prompts", () => {
     expect(cad.state().commandLine.command).toBeNull()
   })
 
-  // WHY not `Select lines to join to source:`: the source's own step is
-  // Missing (PIECES-D28), so a source alone is a set of one (p310, p364).
+  // WHY not `Select lines to join to source:`: a line's own step is Missing
+  // (a spline's and an elliptical arc's are built), so a line alone is a set
+  // of one (p310, p364).
   it("says a source alone is discarded, its own step being Missing (p310)", () => {
     const cad = joined(
       createHarness({

@@ -315,7 +315,8 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
   ],
   "JOIN": [
     "Yes",
-    "No"
+    "No",
+    "cLose"
   ],
   "ARRAY": [
     "Rectangular",

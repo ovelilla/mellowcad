@@ -794,6 +794,13 @@ function mix(a: Homogeneous, b: Homogeneous, t: number): Homogeneous {
   ]
 }
 
+/** The binomial coefficient C(n, k), 0 above `n`. */
+function choose(n: number, k: number): number {
+  let c = 1
+  for (let j = 1; j <= k; j++) c = (c * (n - k + j)) / j
+  return k > n ? 0 : c
+}
+
 /** How many times `u` stands in `knots`, compared exactly: a cut is snapped onto a knot first. */
 export function knotMultiplicity(knots: readonly number[], u: number): number {
   return knots.filter((k) => k === u).length
@@ -856,6 +863,208 @@ export function bsplineSegment(
     controlPoints: cut.controlPoints.slice(last - p, first),
     ...(cut.weights ? { weights: cut.weights.slice(last - p, first) } : {}),
   }
+}
+
+/**
+ * The same clamped curve raised to `degree` (Piegl & Tiller A5.9), a rational
+ * one in its homogeneous form: each knot stands once more for each degree
+ * gained, as AutoCAD raises a piece JOIN joins to a spline of a higher one
+ * (pieces/p433).
+ */
+export function bsplineElevated(
+  curve: BSplineCurve,
+  degree: number
+): BSplineCurve {
+  const p = curve.degree
+  const t = degree - p
+  if (t <= 0) return curve
+  const U = curve.knots
+  const Pw = homogeneous(curve)
+  const m = Pw.length + p
+  const ph = degree
+  const ph2 = Math.floor(ph / 2)
+  const bezalfs = Array.from({ length: ph + 1 }, () =>
+    new Array<number>(p + 1).fill(0)
+  )
+  bezalfs[0][0] = bezalfs[ph][p] = 1
+  for (let i = 1; i <= ph2; i++) {
+    const inv = 1 / choose(ph, i)
+    for (let j = Math.max(0, i - t); j <= Math.min(p, i); j++) {
+      bezalfs[i][j] = inv * choose(p, j) * choose(t, i - j)
+    }
+  }
+  for (let i = ph2 + 1; i < ph; i++) {
+    for (let j = Math.max(0, i - t); j <= Math.min(p, i); j++) {
+      bezalfs[i][j] = bezalfs[ph - i][p - j]
+    }
+  }
+  let kind = ph + 1
+  let r = -1
+  let a = p
+  let b = p + 1
+  let cind = 1
+  let ua = U[0]
+  const Qw: Homogeneous[] = [Pw[0]]
+  const Uh: number[] = new Array<number>(ph + 1).fill(ua)
+  const bpts = Pw.slice(0, p + 1)
+  const next: Homogeneous[] = []
+  const ebpts: Homogeneous[] = []
+  const alfs: number[] = []
+  while (b < m) {
+    const i0 = b
+    while (b < m && U[b] === U[b + 1]) b++
+    const mul = b - i0 + 1
+    const ub = U[b]
+    const oldr = r
+    r = p - mul
+    const lbz = oldr > 0 ? Math.floor((oldr + 2) / 2) : 1
+    const rbz = r > 0 ? ph - Math.floor((r + 1) / 2) : ph
+    if (r > 0) {
+      for (let k = p; k > mul; k--)
+        alfs[k - mul - 1] = (ub - ua) / (U[a + k] - ua)
+      for (let j = 1; j <= r; j++) {
+        const s = mul + j
+        for (let k = p; k >= s; k--)
+          bpts[k] = mix(bpts[k - 1], bpts[k], alfs[k - s])
+        next[r - j] = bpts[p]
+      }
+    }
+    for (let i = lbz; i <= ph; i++) {
+      const e = [0, 0, 0, 0]
+      for (let j = Math.max(0, i - t); j <= Math.min(p, i); j++) {
+        for (let axis = 0; axis < 4; axis++)
+          e[axis] += bezalfs[i][j] * bpts[j][axis]
+      }
+      ebpts[i] = e as unknown as Homogeneous
+    }
+    if (oldr > 1) {
+      // The knot `ua` removed again the times the Bézier split put it in.
+      let first = kind - 2
+      let last = kind
+      const den = ub - ua
+      const bet = (ub - Uh[kind - 1]) / den
+      for (let tr = 1; tr < oldr; tr++) {
+        let i = first
+        let j = last
+        let kj = j - kind + 1
+        while (j - i > tr) {
+          if (i < cind) {
+            Qw[i] = mix(Qw[i - 1], Qw[i], (ub - Uh[i]) / (ua - Uh[i]))
+          }
+          if (j >= lbz) {
+            const gam =
+              j - tr <= kind - ph + oldr ? (ub - Uh[j - tr]) / den : bet
+            ebpts[kj] = mix(ebpts[kj + 1], ebpts[kj], gam)
+          }
+          i++
+          j--
+          kj--
+        }
+        first--
+        last++
+      }
+    }
+    if (a !== p) {
+      for (let i = 0; i < ph - oldr; i++) Uh[kind++] = ua
+    }
+    for (let j = lbz; j <= rbz; j++) Qw[cind++] = ebpts[j]
+    if (b < m) {
+      for (let j = 0; j < r; j++) bpts[j] = next[j]
+      for (let j = r; j <= p; j++) bpts[j] = Pw[b - p + j]
+      a = b
+      b++
+      ua = ub
+    } else {
+      for (let i = 0; i <= ph; i++) Uh[kind + i] = ub
+    }
+  }
+  return fromHomogeneous(ph, Uh, Qw, !!curve.weights)
+}
+
+/** The same curve run the other way, on the same parameter interval. */
+export function bsplineReversed(curve: BSplineCurve): BSplineCurve {
+  const { knots } = curve
+  const sum = knots[0] + knots[knots.length - 1]
+  return {
+    degree: curve.degree,
+    knots: knots.map((k) => sum - k).reverse(),
+    controlPoints: [...curve.controlPoints].reverse(),
+    ...(curve.weights ? { weights: [...curve.weights].reverse() } : {}),
+  }
+}
+
+/**
+ * Clamped curves, each starting where the one before ends, as one: raised to
+ * the highest degree, its parameter from 0 with each piece's length kept, a
+ * knot of `degree` where two meet (pieces/p331, p374, p375). Rational if any
+ * piece is, each piece's weights scaled to meet the last one's.
+ */
+export function bsplineJoined(curves: readonly BSplineCurve[]): BSplineCurve {
+  const degree = Math.max(...curves.map((curve) => curve.degree))
+  const rational = curves.some((curve) => curve.weights)
+  const knots: number[] = []
+  const points: Homogeneous[] = []
+  let at = 0
+  curves.forEach((piece, n) => {
+    const curve = bsplineElevated(piece, degree)
+    const { knots: own } = curve
+    const shift = at - own[0]
+    const weights = curve.weights ?? curve.controlPoints.map(() => 1)
+    const scale = n === 0 ? 1 : points[points.length - 1][3] / weights[0]
+    const lifted = curve.controlPoints.map((q, i): Homogeneous => {
+      const w = weights[i] * scale
+      return [q.x * w, q.y * w, q.z * w, w]
+    })
+    if (n === 0) {
+      knots.push(...own.slice(0, -1).map((k) => k + shift))
+      points.push(...lifted)
+    } else {
+      knots.push(...own.slice(degree + 1, -1).map((k) => k + shift))
+      points.push(...lifted.slice(1))
+    }
+    at = own[own.length - 1] + shift
+  })
+  knots.push(at)
+  return fromHomogeneous(degree, knots, points, rational)
+}
+
+/**
+ * The conic `center + cos θ·u + sin θ·v` for θ from `start` over `sweep`
+ * (negative runs clockwise), as AutoCAD makes an arc's or an elliptical
+ * arc's spline: quadratic and rational, on its own angle from 0, in the
+ * fewest equal spans of a quarter turn or less, a knot of 2 between them
+ * (Piegl & Tiller A7.1; pieces/p375, p424, p425).
+ */
+export function conicArcCurve(
+  center: Vec3,
+  u: Vec3,
+  v: Vec3,
+  start: number,
+  sweep: number
+): BSplineCurve {
+  const spans = Math.max(1, Math.ceil(Math.abs(sweep) / (Math.PI / 2) - 1e-9))
+  const step = sweep / spans
+  const w = Math.cos(step / 2)
+  const at = (theta: number, scale: number): Vec3 =>
+    add3(
+      center,
+      add3(
+        scale3(u, Math.cos(theta) * scale),
+        scale3(v, Math.sin(theta) * scale)
+      )
+    )
+  const controlPoints: Vec3[] = [at(start, 1)]
+  const weights = [1]
+  const knots = [0, 0, 0]
+  for (let i = 1; i <= spans; i++) {
+    const theta = start + step * i
+    controlPoints.push(at(theta - step / 2, 1 / w), at(theta, 1))
+    weights.push(w, 1)
+    const k = Math.abs(step) * i
+    knots.push(k, k)
+  }
+  knots.push(knots[knots.length - 1])
+  return { degree: 2, knots, controlPoints, weights }
 }
 
 /**
@@ -964,11 +1173,6 @@ function polynomialBezier(
   degree: number,
   h: number
 ): Homogeneous[] {
-  const choose = (n: number, k: number): number => {
-    let c = 1
-    for (let j = 1; j <= k; j++) c = (c * (n - k + j)) / j
-    return k > n ? 0 : c
-  }
   return Array.from({ length: degree + 1 }, (_, i) => {
     const q: number[] = [0, 0, 0, 0]
     coefficients.forEach((c, k) => {

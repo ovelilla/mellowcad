@@ -98,8 +98,8 @@ function withoutGeometry(
 // `+ 0` turns a solve's −0 into the 0 a file writes.
 const tidy = (p: Vec3): Vec3 => ({ x: p.x + 0, y: p.y + 0, z: p.z + 0 })
 
-/** The spline on a curve of its own, as a CV spline, its other properties kept. */
-function onControlPoints(
+/** The spline on a curve of its own, as a CV spline, its other properties kept, open. */
+export function onControlPoints(
   spline: SplineEntity,
   curve: BSplineCurve
 ): SplineEntity {

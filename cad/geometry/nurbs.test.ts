@@ -7,14 +7,18 @@ import {
   bsplineDerivativeCurve,
   bsplineDifferentials,
   bsplineDomain,
+  bsplineElevated,
+  bsplineJoined,
   bsplineLength,
   bsplineLengthTable,
   bsplineParamAtLength,
   bsplinePoint,
+  bsplineReversed,
   bsplineSweptArea,
   bsplineTessellation,
   bsplinesMeeting,
   clampedUniformCurve,
+  conicArcCurve,
   fitParameters,
   interpolateCubic,
   interpolatePeriodicCubic,
@@ -353,5 +357,129 @@ describe("periodic curves as AutoCAD holds them", () => {
       controlPoints: loop,
       weights,
     })
+  })
+})
+
+describe("JOIN's curves", () => {
+  const near = (a: Vec3, b: Vec3) => {
+    expect(a.x).toBeCloseTo(b.x, 9)
+    expect(a.y).toBeCloseTo(b.y, 9)
+    expect(a.z).toBeCloseTo(b.z, 9)
+  }
+
+  it("raises a degree-2 curve to 3, each knot once more (pieces/p433)", () => {
+    const curve = clampedUniformCurve(
+      [p(50, 0), p(60, -20), p(75, -20), p(90, -20), p(100, 0)],
+      2
+    )
+    const raised = bsplineElevated(curve, 3)
+    expect(raised.knots).toEqual([0, 0, 0, 0, 1, 1, 2, 2, 3, 3, 3, 3])
+    const expected = [
+      p(50, 0),
+      p(56.66666667, -13.33333333),
+      p(62.5, -20),
+      p(72.5, -20),
+      p(77.5, -20),
+      p(87.5, -20),
+      p(93.33333333, -13.33333333),
+      p(100, 0),
+    ]
+    raised.controlPoints.forEach((q, i) => {
+      expect(q.x).toBeCloseTo(expected[i].x, 7)
+      expect(q.y).toBeCloseTo(expected[i].y, 7)
+    })
+  })
+
+  it("keeps the curve it raises, a rational one too", () => {
+    fc.assert(
+      fc.property(
+        fc.array(point, { minLength: 4, maxLength: 7 }),
+        fc.array(fc.double({ min: 0.2, max: 3, noNaN: true }), {
+          minLength: 7,
+          maxLength: 7,
+        }),
+        fc.integer({ min: 1, max: 3 }),
+        fc.integer({ min: 1, max: 2 }),
+        (points, w, degree, t) => {
+          const curve = {
+            ...clampedUniformCurve(points, degree),
+            weights: w.slice(0, points.length),
+          }
+          const raised = bsplineElevated(curve, degree + t)
+          const { start, end } = bsplineDomain(curve)
+          for (let i = 0; i <= 8; i++) {
+            const u = start + ((end - start) * i) / 8
+            near(bsplinePoint(raised, u), bsplinePoint(curve, u))
+          }
+        }
+      )
+    )
+  })
+
+  it("runs a curve backwards on the same interval", () => {
+    const curve = clampedUniformCurve(
+      [p(0, 0), p(10, 20), p(40, 20), p(50, 0), p(60, 5)],
+      3
+    )
+    const back = bsplineReversed(curve)
+    near(bsplinePoint(back, 0.5), bsplinePoint(curve, 1.5))
+  })
+
+  it("makes an arc's spline in quarter turns, a knot of 2 between (p375, p424)", () => {
+    const arc = conicArcCurve(p(0, 0), p(50, 0), p(0, 50), 0, Math.PI / 2)
+    expect(arc.knots).toEqual([0, 0, 0, Math.PI / 2, Math.PI / 2, Math.PI / 2])
+    expect(arc.weights).toEqual([1, Math.SQRT1_2, 1])
+    near(arc.controlPoints[1], p(50, 50))
+    const long = conicArcCurve(
+      p(75, 0),
+      p(25, 0),
+      p(0, 25),
+      Math.PI,
+      (100 * Math.PI) / 180
+    )
+    expect(
+      long.knots.filter((k) => k > 0 && k < long.knots.at(-1)!)
+    ).toHaveLength(2)
+    expect(long.weights![1]).toBeCloseTo(Math.cos((25 * Math.PI) / 180), 12)
+    near(
+      bsplinePoint(long, (50 * Math.PI) / 180),
+      p(
+        75 + 25 * Math.cos((230 * Math.PI) / 180),
+        25 * Math.sin((230 * Math.PI) / 180)
+      )
+    )
+  })
+
+  it("joins pieces from 0, each its own length, a knot of the degree between (p375)", () => {
+    const ellipse = conicArcCurve(
+      p(0, 75),
+      p(0, -25),
+      p(10, 0),
+      Math.PI,
+      Math.PI
+    )
+    const arc = bsplineReversed(
+      conicArcCurve(p(0, 0), p(50, 0), p(0, 50), 0, Math.PI / 2)
+    )
+    const joined = bsplineJoined([ellipse, arc])
+    expect(joined.degree).toBe(2)
+    const h = Math.PI / 2
+    joined.knots.forEach((k, i) =>
+      expect(k).toBeCloseTo(
+        [0, 0, 0, h, h, 2 * h, 2 * h, 3 * h, 3 * h, 3 * h][i],
+        12
+      )
+    )
+    expect(joined.weights).toEqual([
+      1,
+      Math.SQRT1_2,
+      1,
+      Math.SQRT1_2,
+      1,
+      Math.SQRT1_2,
+      1,
+    ])
+    near(joined.controlPoints[0], p(0, 100))
+    near(joined.controlPoints[5], p(50, 50))
   })
 })

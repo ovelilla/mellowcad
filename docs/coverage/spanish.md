@@ -137,7 +137,7 @@ interlineado`, `Anchura definida`, `Método`, `Grado`…), the prompts of POL, C
   (`es-ES/acadres.dll`, read without installing it), paired with AutoCAD 2023's English by id;
   EXPLODE's `1 no se ha podido descomponer.` and `No hallada.` (the 2027 console, erase/p216,
   p328, p329); JOIN's prompts, `Convert to circle?` and its counts (the 2027 console,
-  pieces/p300–p387). ERASE says no count, and an empty set nothing (erase/p00, p304).
+  pieces/p300–p387, p396–p440). ERASE says no count, and an empty set nothing (erase/p00, p304).
   PURGE's prompts and reports (the 2027 console, blocks/p04, p141, erase/p326).
   **Unverified:** the file errors, the clipboard and
   FROM notes, `El círculo no existe.`, block, pattern and style not found, `Capa{n}`

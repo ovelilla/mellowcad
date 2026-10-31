@@ -821,7 +821,8 @@
       },
       "JOIN": {
         "Yes": "Sí",
-        "No": "No"
+        "No": "No",
+        "cLose": "cErrar"
       },
       "ARRAY": {
         "Rectangular": "Rectangular",
@@ -1383,6 +1384,9 @@
       "selectSourceOrMultipleToJoin": "Designe un objeto de origen o varios objetos para unirlos a la vez",
       "selectObjectsToJoin": "Seleccione objetos para unir",
       "convertCombinedArcsToCircle": "Los segmentos de arco combinados forman un círculo. ¿Convertir en círculo?",
+      "selectOpenCurvesToJoinToSource": "Designe cualesquiera curvas abiertas para unir al origen",
+      "selectEllipticalArcsToJoinToSourceOr": "Designe arcos elípticos que unir al origen o",
+      "selectEllipticalArcsToJoinToSource": "Designe arcos elípticos que unir al origen",
       "specifyOffsetDistanceOr": "Precise distancia de desfase o",
       "selectObjectToOffsetOr": "Designe objeto a desplazar o",
       "specifyPointOnSideToOffsetOr": "Precise punto en lado de desplazamiento o",
@@ -1745,6 +1749,12 @@
       "arcsJoinedIntoCircle": "{count} arcos unidos y convertidos a círculo{discarded, plural, =0 {} one {, # objeto descartado de la operación} other {, # objetos descartados de la operación}}",
       "objectsConvertedToPolylines": "{polylines, plural, one {{count} objetos convertidos en # polilínea} other {{count} objetos convertidos a # polilíneas}}{discarded, plural, =0 {} one {, # objeto descartado de la operación} other {, # objetos descartados de la operación}}",
       "segmentsJoinedIntoPolyline": "{count, plural, one {# segmento unido} other {# segmentos unidos}} en 1 polilínea{discarded, plural, =0 {} one {, # objeto descartado de la operación} other {, # objetos descartados de la operación}}",
+      "ellipticalArcsJoined": "{count} arcos elípticos unidos en 1 arco{discarded, plural, =0 {} one {, # objeto descartado de la operación} other {, # objetos descartados de la operación}}",
+      "objectsJoinedIntoSplines": "{count} objetos unidos en {splines, plural, one {# spline} other {# splines}}{discarded, plural, =0 {} one {, # objeto descartado de la operación} other {, # objetos descartados de la operación}}",
+      "objectsConvertedToSplines": "{count} objetos convertidos en {splines, plural, one {# spline} other {# splines}}{discarded, plural, =0 {} one {, # objeto descartado de la operación} other {, # objetos descartados de la operación}}",
+      "objectsJoinedToSource": "{count, plural, one {# objeto unido} other {# objetos unidos}} al origen{discarded, plural, =0 {} one {, # objeto descartado de la operación} other {, # objetos descartados de la operación}}",
+      "ellipticalArcsJoinedToSource": "{count, plural, one {# arco elíptico unido} other {# arcos elípticos unidos}} al origen{discarded, plural, =0 {} one {, # objeto descartado de la operación} other {, # objetos descartados de la operación}}",
+      "ellipseClosed": "Elipse cerrada correctamente.",
       "panExit": "Pulse Esc o Intro para salir, o haga clic con el botón derecho para activar el menú contextual.",
       "orbitExit": "Pulse ESC o INTRO para salir, o haga clic con el botón derecho para ver el menú contextual.",
       "requiresTwoPointsOrDisplacement": "Requiere dos puntos o un desplazamiento seguido por INTRO.",

@@ -894,6 +894,7 @@ declare const source: {
       "JOIN": {
         "Yes": string
         "No": string
+        "cLose": string
       }
       "ARRAY": {
         "Rectangular": string
@@ -1485,6 +1486,9 @@ declare const source: {
       "selectSourceOrMultipleToJoin": string
       "selectObjectsToJoin": string
       "convertCombinedArcsToCircle": string
+      "selectOpenCurvesToJoinToSource": string
+      "selectEllipticalArcsToJoinToSourceOr": string
+      "selectEllipticalArcsToJoinToSource": string
       "specifyOffsetDistanceOr": string
       "eraseSourceObjectAfterOffsetting": string
       "enterLayerOptionForOffsetObjects": string
@@ -1847,6 +1851,12 @@ declare const source: {
       "arcsJoinedIntoCircle": string
       "objectsConvertedToPolylines": string
       "segmentsJoinedIntoPolyline": string
+      "ellipticalArcsJoined": string
+      "objectsJoinedIntoSplines": string
+      "objectsConvertedToSplines": string
+      "objectsJoinedToSource": string
+      "ellipticalArcsJoinedToSource": string
+      "ellipseClosed": string
       "currentViewDirection": string
       "switchingToWcs": string
       "returningToUcs": string

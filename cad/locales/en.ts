@@ -1567,6 +1567,9 @@ export const en: EngineCatalog = {
       "selectSourceOrMultipleToJoin": "Select source object or multiple objects to join at once",
       "selectObjectsToJoin": "Select objects to join",
       "convertCombinedArcsToCircle": "Combined arc segments form a circle.  Convert to circle?",
+      "selectOpenCurvesToJoinToSource": "Select any open curves to join to source",
+      "selectEllipticalArcsToJoinToSourceOr": "Select elliptical arcs to join to source or",
+      "selectEllipticalArcsToJoinToSource": "Select elliptical arcs to join to source",
       "specifyOffsetDistanceOr": "Specify offset distance or",
       "eraseSourceObjectAfterOffsetting": "Erase source object after offsetting?",
       "enterLayerOptionForOffsetObjects": "Enter layer option for offset objects",
@@ -3195,6 +3198,172 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "ellipticalArcsJoined": [
+        [
+          "count"
+        ],
+        " elliptical arcs joined into 1 arc",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " object discarded from the operation"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objects discarded from the operation"
+            ]
+          }
+        ]
+      ],
+      "objectsJoinedIntoSplines": [
+        [
+          "count"
+        ],
+        " objects joined into ",
+        [
+          "splines",
+          2,
+          {
+            "one": [
+              0,
+              " spline"
+            ],
+            "other": [
+              0,
+              " splines"
+            ]
+          }
+        ],
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " object discarded from the operation"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objects discarded from the operation"
+            ]
+          }
+        ]
+      ],
+      "objectsConvertedToSplines": [
+        [
+          "count"
+        ],
+        " objects converted to ",
+        [
+          "splines",
+          2,
+          {
+            "one": [
+              0,
+              " spline"
+            ],
+            "other": [
+              0,
+              " splines"
+            ]
+          }
+        ],
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " object discarded from the operation"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objects discarded from the operation"
+            ]
+          }
+        ]
+      ],
+      "objectsJoinedToSource": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " object"
+            ],
+            "other": [
+              0,
+              " objects"
+            ]
+          }
+        ],
+        " joined to source",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " object discarded from the operation"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objects discarded from the operation"
+            ]
+          }
+        ]
+      ],
+      "ellipticalArcsJoinedToSource": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " elliptical arc"
+            ],
+            "other": [
+              0,
+              " elliptical arcs"
+            ]
+          }
+        ],
+        " joined to source",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " object discarded from the operation"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objects discarded from the operation"
+            ]
+          }
+        ]
+      ],
+      "ellipseClosed": "Ellipse successfully closed.",
       "currentViewDirection": [
         "Current view direction:  VIEWDIR=",
         [
