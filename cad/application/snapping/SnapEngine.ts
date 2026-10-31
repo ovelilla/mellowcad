@@ -1,3 +1,4 @@
+import { regionEdgeEntities } from "../../domain/regions"
 import { Observable } from "../../shared/Observable"
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, length3, planar, sub3, withZ } from "../../geometry/Vec3"
@@ -75,7 +76,7 @@ function tierOf(type: SnapType): Tier {
  * by the geometry it draws, and every 3D polyline by its segments, lines of its
  * id: their ends, middles, nearest and perpendicular points and crossings are
  * the polyline's, each at its own Z (3dpoly/p21), seen along their image in
- * any view. Built once per resolve so the expansion is not repeated by each of
+ * any view. A region is its edges, objects of its id. Built once per resolve so the expansion is not repeated by each of
  * the ten providers.
  */
 function snapEntities(document: DocumentReader): Entity[] {
@@ -85,6 +86,12 @@ function snapEntities(document: DocumentReader): Entity[] {
     const drawn =
       entity.type === "insert" ? insertFlatGeometry(entity, blocks) : [entity]
     for (const piece of drawn) {
+      if (piece.type === "region") {
+        // Its edges, as the objects they are: ends, middles, centres,
+        // quadrants, crossings; no geometric centre (region/s01, s02).
+        entities.push(...regionEdgeEntities(piece))
+        continue
+      }
       if (piece.type !== "polyline3d") {
         // A fitted polyline snaps along its curve, at the vertices fitting
         // added too (**unverified**: they are its own vertices in AutoCAD).

@@ -87,7 +87,7 @@ the object snaps and FROM typed at either point (p135–p138); `'AREA` or
 `'_AREA`, at the Command prompt or mid-command, reads the AREA system variable, the last area AREA
 measured in the session, or after Add area or Subtract area the total (p211–p214, p248):
 `AREA = 50.00 (read only)` (es `AREA = 50.00 (sólo lectura)`), as AutoCAD
-2027's console does (p324, p325, p359). AREA's Object measures a level 3D polyline as a polyline at its Z (3dpoly/p16) and refuses one whose vertices are not at one Z with `3D Polyline vertices had differing Z coordinates.` (es `Vértices de polilínea 3D con coordenadas diferentes.`, table 20170), AREA and PERIMETER 0, and ends (p15); in Add or Subtract area unprobed.
+2027's console does (p324, p325, p359). AREA's Object measures a level 3D polyline as a polyline at its Z (3dpoly/p16) and refuses one whose vertices are not at one Z with `3D Polyline vertices had differing Z coordinates.` (es `Vértices de polilínea 3D con coordenadas diferentes.`, table 20170), AREA and PERIMETER 0, and ends (p15); in Add or Subtract area unprobed. A region gives its own line, `Area = 78.5398, Trimmed area = 0.0000 , Perimeter = 31.4159` (es `área recortada`, pt-BR `Área aparada`), its perimeter every loop's, holes included (region/p01, b02); in Add or Subtract area unprobed.
 
 **Missing:** MEASUREGEOM (es MEDIRGEOM), another command with DIST's and AREA's prompts inside a
 loop: `Move cursor or [Distance/Radius/Angle/ARea/Volume/Quick/Mode/eXit] <eXit>:` (es
@@ -166,7 +166,7 @@ BLOCK REFERENCE: block name, insertion point, the three scales and rotation (non
 p437), `InsUnits:` the drawing's unit, `Unit conversion: 1.0000`, `Scale uniformly: No`,
 `Allow exploding: Yes`, then each ATTRIBUTE as the reference shows it (its Y scale the height,
 X over Y the width factor: 7.5000 and 0.6667 at 2 by 3, p418) and END SEQUENCE. ARRAY:
-rectangular, polar and path, each row of the console's report (arrays/p401–p406, p419, p434).
+rectangular, polar and path, each row of the console's report (arrays/p401–p406, p419, p434). REGION: `Area:`, `Perimeter:` and its `Bounding Box:` lower and upper bounds in the UCS, padded `%-9` (es `Cuadro delimitador: Límite inferior`, pt-BR `Caixa delimitadora: Limite inferior`; region/p01, p07, p13).
 WHY no `Handle = 2d7` line: the model has no handles, and an id made up as one would read as
 AutoCAD's. WHY every line at once, with no `Press ENTER to continue:` (es
 `Pulse INTRO para continuar:`) each screenful: the pause pages AutoCAD's text window, whose height

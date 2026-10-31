@@ -135,6 +135,9 @@ Dependencies run types → per-type modules → overrides → transforms → que
   points on one spline take `splineNearest` once:
   `closestPointOnSpline` tessellates it at every call. A kernel curve may be rational: its derivatives come from `bsplineDifferentials`, never from the
   hodograph of a weighted curve (`bsplineDerivativeCurve` ignores the weights).
+- **A region is faces of exact edges, the kernel's** (`geometry/planarRegions.ts`, one tolerance
+  `MODEL_TOLERANCE`): drawn, picked, measured and snapped as its edges (`regionLevelEdgeEntities`
+  in its plane, `regionEdgeEntities` placed); a boolean is `regionBoolean`, never a tool's cut.
 - **MTEXT keeps AutoCAD's contents string**, `\P` and escapes included: `mtextPlainText` reads it
   (codes it does not draw vanish from the reading, never from the object), `mtextContents` writes
   it, nothing else parses or builds it.

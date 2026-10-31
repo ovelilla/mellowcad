@@ -1,3 +1,4 @@
+import { regionArea, regionPerimeter } from "../domain/regions"
 import { V, Vec2 } from "../geometry/Vec2"
 import { Vec3, sub3 } from "../geometry/Vec3"
 import { isUpright, worldDirectionToUcs, worldPointToUcs } from "../domain/ucs"
@@ -1796,6 +1797,19 @@ function singleEntityInfo(
         ],
       }
     }
+    case "region":
+      // Greyed, as AutoCAD shows them (region/d02); its 3D Visualization's
+      // Material is not built (no materials here).
+      return {
+        title: title("region"),
+        count: 1,
+        groups: [
+          group("geometry", [
+            row("area", area(regionArea(entity))),
+            row("perimeter", length(regionPerimeter(entity))),
+          ]),
+        ],
+      }
   }
 }
 

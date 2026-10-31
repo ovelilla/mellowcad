@@ -531,6 +531,7 @@ describe("round trip", () => {
       dimension: true,
       hatch: true,
       insert: true,
+      region: true,
     } satisfies Record<Entity["type"], true>
     const sampled = fc.sample(entityArbitrary, { numRuns: 1000, seed: 1 })
     expect(new Set(sampled.map((e) => e.type))).toEqual(

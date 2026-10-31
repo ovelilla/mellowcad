@@ -952,6 +952,7 @@ function entityAsGeom(picked: Entity): OffsetGeom | null {
     case "dimension":
     case "hatch":
     case "insert":
+    case "region":
       return null
   }
 }
@@ -959,7 +960,7 @@ function entityAsGeom(picked: Entity): OffsetGeom | null {
 /**
  * What OFFSET does with a picked object: offsets it; refuses it with `Cannot
  * offset that object.` (TEXT, MTEXT, INSERT, DIMENSION, HATCH: probes
- * offset/p201–p205); or never takes it. A 3D polyline, and a spline out of
+ * offset/p201–p205; a REGION, region/e01); or never takes it. A 3D polyline, and a spline out of
  * every plane, the console takes and passes over in silence, the prompt asked
  * again (3dpoly/p09, spline-knots/k46): not picked.
  */
@@ -979,6 +980,7 @@ function offsetKind(entity: Entity): "offsets" | "refused" | "notPicked" {
     case "dimension":
     case "hatch":
     case "insert":
+    case "region":
       return "refused"
     case "polyline3d":
       return "notPicked"
@@ -1070,6 +1072,7 @@ function computeOffset(
     case "dimension":
     case "hatch":
     case "insert":
+    case "region":
       return CANNOT_OFFSET
   }
 }
@@ -1164,6 +1167,7 @@ function computeThrough(picked: Entity, point: Vec2): OffsetResult {
     case "dimension":
     case "hatch":
     case "insert":
+    case "region":
       return CANNOT_OFFSET
   }
 }

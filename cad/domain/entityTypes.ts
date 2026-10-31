@@ -2,6 +2,7 @@ import { Vec2 } from "../geometry/Vec2"
 import { Vec3 } from "../geometry/Vec3"
 import { KnotParameterization } from "../geometry/nurbs"
 import type { Linear2 } from "../geometry/linear"
+import type { RegionFace } from "../geometry/planarRegions"
 import { EntityColor } from "./colors"
 import { LayerId } from "./layers"
 import { LinetypeId } from "./linetypes"
@@ -32,6 +33,7 @@ export type EntityType =
   | "dimension"
   | "hatch"
   | "insert"
+  | "region"
 
 interface BaseEntity {
   readonly id: EntityId
@@ -717,6 +719,16 @@ export type ArrayParameters =
 
 export type ArrayKind = ArrayParameters["kind"]
 
+/**
+ * REGION's object: a bounded area of one plane, as the kernel's faces of
+ * loops of edges (`geometry/planarRegions.ts`) in the OCS of its normal, at
+ * its elevation. It has no thickness: DXF gives a region none.
+ */
+export interface RegionEntity extends BaseEntity {
+  readonly type: "region"
+  readonly faces: readonly RegionFace[]
+}
+
 export type Entity =
   | LineEntity
   | CircleEntity
@@ -731,6 +743,7 @@ export type Entity =
   | DimensionEntity
   | HatchEntity
   | InsertEntity
+  | RegionEntity
 
 export interface Bounds {
   readonly min: Vec2

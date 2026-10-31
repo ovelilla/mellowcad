@@ -18,6 +18,8 @@ import { mapDimensionPoints } from "./dimensions"
 import { carryOverrides } from "./entityOverrides"
 import { hatchLoopRing } from "./hatch"
 import { mappedFit } from "./polylineFits"
+import { curveAffine } from "../geometry/planarCurves"
+import { loopReversed } from "../geometry/planarRegions"
 
 /** A reference's placement of its block: turned by `rotation` after scaling X and Y apart. */
 export function insertLinear(
@@ -114,6 +116,20 @@ export function linearEntity(
       }
     case "insert":
       return nestedInsert(entity, map)
+    case "region": {
+      const [xx, yx, xy, yy] = map
+      const affine = { linear: { xx, xy, yx, yy }, translation: { x: 0, y: 0 } }
+      // Through a reflection each loop is turned back, its face kept on its left.
+      return {
+        ...entity,
+        faces: entity.faces.map((face) => ({
+          loops: face.loops.map((loop) => {
+            const edges = loop.map((edge) => curveAffine(edge, affine))
+            return flips ? loopReversed(edges) : edges
+          }),
+        })),
+      }
+    }
     case "text":
     case "mtext":
     case "attdef":

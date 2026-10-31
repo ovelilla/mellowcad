@@ -1,0 +1,4 @@
+(getcname "_REGION")
+(getcname "_UNION")
+(getcname "_SUBTRACT")
+(getcname "_INTERSECT")

@@ -28,6 +28,9 @@ import {
   SplinePointer,
   Split,
   Square,
+  SquaresIntersect,
+  SquaresSubtract,
+  SquaresUnite,
   SquarePen,
   Tag,
   TextCursorInput,
@@ -125,6 +128,10 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   chamfer: ChamferIcon,
   explode: Split,
   join: Merge,
+  region: Shapes,
+  union: SquaresUnite,
+  subtract: SquaresSubtract,
+  intersect: SquaresIntersect,
   splinedit: SplinePointer,
   pedit: SquarePen,
   break: BreakIcon,
@@ -175,6 +182,7 @@ type FlyoutId =
   | "dimchain"
   | "attributes"
   | "measure"
+  | "union"
 
 type SectionId = "draw" | "modify" | "annotation" | "block" | "utilities"
 
@@ -219,8 +227,10 @@ const PALETTE: readonly PaletteSection[] = [
       // On the ribbon Spline Fit and Spline CV are in the expanded Draw
       // panel; the palette has room for their drop-down.
       flyout("spline", ["splinefit", "splinecv"]),
-      // Also in the expanded Draw panel (acad.cuix ID_PanelDraw).
+      // Also in the expanded Draw panel (acad.cuix ID_PanelDraw), REGION
+      // in its Boundary drop-down.
       "polyline3d",
+      "region",
     ],
   },
   {
@@ -244,6 +254,10 @@ const PALETTE: readonly PaletteSection[] = [
       flyout("break", ["break", "breakatpoint"]),
       "join",
       flyout("pedit", ["pedit", "splinedit"]),
+      // The 3D Modeling workspace's Solid Editing panel (acad.cuix
+      // ID_PanelSolidEdit): Drafting & Annotation's Home tab has none, and
+      // they are what joins, cuts and overlaps regions.
+      flyout("union", ["union", "subtract", "intersect"]),
     ],
   },
   {

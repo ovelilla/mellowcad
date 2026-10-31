@@ -73,6 +73,8 @@ namespace MellowProbe
                 case KeywordCollection k: return Kw(k);
                 case ResultBuffer rb: return "[" + string.Join(",", rb.AsArray().Select(t => "[" + t.TypeCode + "," + V(t.Value) + "]")) + "]";
                 case Point3dCollection pc: return "[" + string.Join(",", pc.Cast<Point3d>().Select(p => V(p))) + "]";
+                case double[] da: return "[" + string.Join(",", da.Select(p => V(p))) + "]";
+                case Vector2d[] va: return "[" + string.Join(",", va.Select(p => V(p))) + "]";
                 case DoubleCollection dc: return "[" + string.Join(",", dc.Cast<double>().Select(p => V(p))) + "]";
                 default: return Q(v.ToString());
             }
@@ -275,6 +277,12 @@ namespace MellowProbe
         [CommandMethod("MELLOWPROBE", "MPDUMP", CommandFlags.Modal | CommandFlags.NoHistory | CommandFlags.NoUndoMarker)]
         public static void MpDump() => Safe(MpDumpBody);
 
+        [CommandMethod("MELLOWPROBE", "MPGRIPS", CommandFlags.Modal | CommandFlags.NoHistory | CommandFlags.NoUndoMarker)]
+        public static void MpGrips() => Safe(MpGripsBody);
+
+        [CommandMethod("MELLOWPROBE", "MPGRIPMOVE", CommandFlags.Modal | CommandFlags.NoHistory)]
+        public static void MpGripMove() => Safe(MpGripMoveBody);
+
         [CommandMethod("MELLOWPROBE", "MPSYSVARS", CommandFlags.Modal | CommandFlags.NoHistory | CommandFlags.NoUndoMarker)]
         public static void MpSysvars() => Safe(MpSysvarsBody);
 
@@ -361,6 +369,25 @@ namespace MellowProbe
                         if (sp.HasFitData) { var fd = sp.FitData; extra.Add("startFitTangent"); extra.Add(Log.V(fd.StartTangent)); extra.Add("endFitTangent"); extra.Add(Log.V(fd.EndTangent)); extra.Add("knotParam"); extra.Add(Log.V(fd.KnotParam)); }
                         if (sp.NumFitPoints > 0) { extra.Add("fitPoints"); extra.Add("[" + string.Join(",", Enumerable.Range(0, sp.NumFitPoints).Select(i => Log.V(sp.GetFitPointAt(i)))) + "]"); }
                     }
+                    // A region's loops are only seen exploded: its curves in the order and sense
+                    // AutoCAD keeps them, and the area properties MASSPROP prints, unrounded.
+                    if (e is Region rg)
+                    {
+                        var parts = new DBObjectCollection();
+                        try { rg.Explode(parts); } catch { }
+                        extra.Add("curves"); extra.Add("[" + string.Join(",", parts.Cast<DBObject>().Select(c =>
+                            c is Curve cv ? Log.Props(cv, "dxf", Log.Q(cv.GetRXClass().DxfName), "from", Log.V(cv.StartPoint), "to", Log.V(cv.EndPoint))
+                                          : Log.Props(c, "dxf", Log.Q(c.GetRXClass().DxfName)))) + "]");
+                        try
+                        {
+                            var plane = rg.GetPlane();
+                            var cs = plane.GetCoordinateSystem();
+                            Point3d o = cs.Origin; Vector3d xa = cs.Xaxis, ya = cs.Yaxis;
+                            var ap = rg.AreaProperties(ref o, ref xa, ref ya);
+                            extra.Add("areaProperties"); extra.Add(Log.Props(ap, "centroid", Log.V(ap.Centroid), "moments", Log.V(ap.MomentsOfInertia), "principal", Log.V(ap.PrincipalMoments), "radii", Log.V(ap.RadiiOfGyration), "origin", Log.V(cs.Origin)));
+                        }
+                        catch (System.Exception ex) { extra.Add("areaProperties"); extra.Add(Log.Q(ex.Message)); }
+                    }
                     if (e is BlockReference br)
                     {
                         var atts = br.AttributeCollection.Cast<ObjectId>().Select(a => Log.Props(tr.GetObject(a, OpenMode.ForRead)));
@@ -371,6 +398,46 @@ namespace MellowProbe
             }
             if (string.IsNullOrEmpty(path)) foreach (var l in lines) Log.W("ent " + l);
             else { File.WriteAllLines(path, lines, new UTF8Encoding(false)); Log.W($"dumped {lines.Count} entities to {Log.Q(path)}"); }
+        }
+
+        // MPGRIPS: each entity of model space and the grip points it offers (GetGripPoints), as a
+        // selected object shows them: what the console cannot draw.
+        static void MpGripsBody()
+        {
+            var db = Application.DocumentManager.MdiActiveDocument.Database;
+            using (var tr = db.TransactionManager.StartOpenCloseTransaction())
+            {
+                var ms = (BlockTableRecord)tr.GetObject(SymbolUtilityServices.GetBlockModelSpaceId(db), OpenMode.ForRead);
+                foreach (ObjectId id in ms)
+                {
+                    var e = (Entity)tr.GetObject(id, OpenMode.ForRead);
+                    var pts = new Point3dCollection();
+                    var modes = new IntegerCollection();
+                    var gids = new IntegerCollection();
+                    try { e.GetGripPoints(pts, modes, gids); }
+                    catch (System.Exception ex) { Log.W($"grips {Log.Q(e.GetRXClass().DxfName)} {Log.Q(e.Handle.ToString())} error {Log.Q(ex.Message)}"); continue; }
+                    Log.W($"grips {Log.Q(e.GetRXClass().DxfName)} {Log.Q(e.Handle.ToString())} {Log.V(pts)}");
+                }
+            }
+        }
+
+        // MPGRIPMOVE handle index dx,dy: drags one grip of an entity as a grip edit does
+        // (MoveGripPointsAt), for what the console cannot drag.
+        static void MpGripMoveBody()
+        {
+            var handle = AskString("Handle:");
+            var index = Ed.GetInteger(new PromptIntegerOptions("\nGrip index:"));
+            var by = Ed.GetPoint(new PromptPointOptions("\nOffset:"));
+            if (handle == null || index.Status != PromptStatus.OK || by.Status != PromptStatus.OK) return;
+            var db = Application.DocumentManager.MdiActiveDocument.Database;
+            var id = db.GetObjectId(false, new Handle(Convert.ToInt64(handle, 16)), 0);
+            using (var tr = db.TransactionManager.StartTransaction())
+            {
+                var e = (Entity)tr.GetObject(id, OpenMode.ForWrite);
+                e.MoveGripPointsAt(new IntegerCollection(new[] { index.Value }), by.Value - Point3d.Origin);
+                tr.Commit();
+            }
+            Log.W($"gripmoved {Log.Q(handle)} {index.Value}");
         }
 
         // MPSYSVARS [file]: every system variable with its value, type, range and where it is

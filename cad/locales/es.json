@@ -96,7 +96,11 @@
       "color": "Color",
       "linetype": "Tipo de línea",
       "lweight": "Grosor de línea",
-      "snap": "Modo Forzcursor"
+      "snap": "Modo Forzcursor",
+      "region": "Región",
+      "union": "Unión",
+      "subtract": "Diferencia",
+      "intersect": "Intersección"
     },
     "description": {
       "U": "Deshacer la última acción",
@@ -185,7 +189,8 @@
       "attdef": "{count, plural, one {Definición de atributo} other {Definiciones de atributo}}",
       "dimension": "{count, plural, one {Cota} other {Cotas}}",
       "hatch": "{count, plural, one {Sombreado} other {Sombreados}}",
-      "insert": "{count, plural, one {Referencia a bloque} other {Referencias a bloque}}"
+      "insert": "{count, plural, one {Referencia a bloque} other {Referencias a bloque}}",
+      "region": "{count, plural, one {Región} other {Regiones}}"
     },
     "array": {
       "rectangular": "Matriz (rectangular)",
@@ -372,7 +377,8 @@
         "dimScaleOverall": "Escala global de cota",
         "decimalSeparator": "Separador decimal",
         "suppressTrailingZeros": "Suprimir ceros finales",
-        "precision": "Precisión"
+        "precision": "Precisión",
+        "perimeter": "Perímetro"
       },
       "value": {
         "yes": "Sí",
@@ -545,7 +551,11 @@
       "LINETYPE": ["TIPOLIN", "TL", "TLINEA", "DDLTYPE"],
       "-LINETYPE": ["-TIPOLIN", "-TL", "-TLINEA"],
       "LWEIGHT": ["GROSORLIN"],
-      "-LWEIGHT": ["-GROSORLIN"]
+      "-LWEIGHT": ["-GROSORLIN"],
+      "REGION": ["REGION", "REG"],
+      "UNION": ["UNION", "UNI"],
+      "SUBTRACT": ["DIFERENCIA", "DIF"],
+      "INTERSECT": ["INTERSEC", "INT"]
     },
     "keywords": {
       "-OSNAP": {
@@ -2088,7 +2098,7 @@
       "joinTypeIs": "Tipo de junta = {type, select, extend {Alargar} add {Añadir segmento} other {Ambos (Alargar o Añadir)}}",
       "notAFitPoint": "No es ningún punto de ajuste.",
       "notAControlVertex": "No es un vértice de control.",
-      "listObjectName": "{name, select, line {LINEA} circle {CIRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FIN SECUENCIA} text {TEXT} mtext {MTEXT} attdef {DEFINICIÓN DE ATRIBUTO} attribute {ATRIBUTO} dimension {ACOTACION} hatch {HATCH} insert {REFERENCIA A BLOQUE} other {MATRIZ}}",
+      "listObjectName": "{name, select, line {LINEA} circle {CIRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FIN SECUENCIA} text {TEXT} mtext {MTEXT} attdef {DEFINICIÓN DE ATRIBUTO} attribute {ATRIBUTO} dimension {ACOTACION} hatch {HATCH} insert {REFERENCIA A BLOQUE} region {REGION} other {MATRIZ}}",
       "listObject": "                  {name}  Capa: \"{layer}\"",
       "listSpace": "                            Espacio: Espacio modelo",
       "listColor": "                   Color: {color}    Tipo de línea: \"{linetype}\"",
@@ -2236,7 +2246,22 @@
       "listArrayDirection": "                Dirección:  {direction, select, clockwise {  Horaria} other {Antihoraria}}",
       "listArrayRotate": "            Girar objetos:  {answer, select, yes {       Sí} other {       No}}",
       "listArrayMethod": "          Método:  {method, select, measure {    Medir} other {  Dividir}}",
-      "listArrayAlign": "        Alinear elementos:  {answer, select, yes {       Sí} other {       No}}"
+      "listArrayAlign": "        Alinear elementos:  {answer, select, yes {       Sí} other {       No}}",
+      "regionNoneFound": "No se ha encontrado ninguno.",
+      "regionObjectsRejected": "Se ha rechazado {count, plural, one {# objeto} other {# objetos}} cerrado, dañado o no admitido.",
+      "regionOpenNotCoplanar": "Los objetos abiertos deben ser coplanares.",
+      "regionLoopsExtracted": "{count, plural, one {# bucle} other {# bucles}} extraído(s).",
+      "regionLoopsRejected": "{count, plural, one {# bucle} other {# bucles}} rechazado(s).",
+      "regionSelfIntersections": "    Autointersecciones                     : {count, plural, one {# bucle.} other {# bucles.}}",
+      "regionsCreated": "{count, plural, one {# región} other {# regiones}} creada(s).",
+      "nullRegion": "Región nula creada - eliminada.",
+      "booleanNeedsTwo": "Hay que designar al menos 2 sólidos, superficies o regiones coplanares.",
+      "subtractFrom": "Designe sólidos, superficies y regiones de las que sustraer...",
+      "subtractWhat": "Designe sólidos, superficies y regiones de las que sustraer...",
+      "regionAreaReport": "Área = {area}, área recortada = {trimmed} , Perímetro = {around}",
+      "listRegionArea": "                             Área: {area}",
+      "listRegionPerimeter": "                        Perímetro: {perimeter}",
+      "listRegionBounds": "Cuadro delimitador: Límite inferior X = {minX}, Y = {minY}, Z = {minZ}\n                 Límite superior X = {maxX}, Y = {maxY}, Z = {maxZ}"
     },
     "feedback": {
       "snap": {

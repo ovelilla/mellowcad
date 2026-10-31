@@ -1,3 +1,4 @@
+import { regionLevelEdgeEntities } from "../domain/regions"
 import { Vec2, V } from "../geometry/Vec2"
 import { Vec3, scale3, withZOf, zOf } from "../geometry/Vec3"
 import { axesToWorld } from "../geometry/ocs"
@@ -1000,6 +1001,11 @@ function planarPrimitives(
             entityScenePrimitive(camera, nested, stroke, options)
           )
         : []
+    case "region":
+      // Its edges, nothing filled: 2D Wireframe (region/d01).
+      return regionLevelEdgeEntities(entity).flatMap((edge) =>
+        planarPrimitives(camera, edge, stroke, options)
+      )
   }
 }
 

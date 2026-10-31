@@ -16,6 +16,7 @@ import {
   polyline3dSegments,
   readsInPlan,
   withElevation,
+  regionEdgeAt,
 } from "../../domain/entities"
 import { ucsAngleToWorld, worldPointToUcs } from "../../domain/ucs"
 import { AddEntityCommand } from "../commands/entityCommands"
@@ -615,6 +616,11 @@ export class DimensionTool implements Tool {
             origins: { first: best[0], second: best[1], circle: null },
           }
         )
+      }
+      case "region": {
+        // The edge picked, as that object would be (region/e03).
+        const found = this.originsOf(regionEdgeAt(entity, at), at)
+        return found && { entity, origins: found.origins }
       }
       case "ellipse":
       case "spline":

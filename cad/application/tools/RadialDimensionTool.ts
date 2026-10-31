@@ -14,6 +14,7 @@ import {
   withElevation,
   polylineSegmentGeometries,
   readsInPlan,
+  regionEdgeAt,
 } from "../../domain/entities"
 import { AddEntityCommand } from "../commands/entityCommands"
 import { DynamicInputSession } from "../input/DynamicInput"
@@ -436,6 +437,9 @@ function measuredCircle(entity: Entity, at: Vec2): MeasuredCircle | null {
       }
       return best
     }
+    case "region":
+      // A circle or arc edge picked, as that object (region/e04).
+      return measuredCircle(regionEdgeAt(entity, at), at)
     case "line":
     case "ellipse":
     case "spline":

@@ -23,9 +23,11 @@ us to walk again, whereas a command costs the same before or after it.
    ShowMotion, named views, the dynamic UCS (UCSDETECT), UCSFOLLOW, and the tracking label of
    OTRACK.
 
-4. **3D solids** — next, from its first phase, REGION and its 2D booleans: a B-rep kernel of our own (no
-   third-party one), drawn on the canvas as AutoCAD draws them (isolines, Hidden, shaded), from
-   REGION and its booleans to SWEEP and LOFT. The brief is `docs/next-solids.md`.
+4. **3D solids** — under way: a B-rep kernel of our own (no third-party one), drawn on the canvas
+   as AutoCAD draws them (isolines, Hidden, shaded), from REGION and its booleans to SWEEP and
+   LOFT. The brief is `docs/next-solids.md`. Its first phase is done: REGION and UNION, SUBTRACT
+   and INTERSECT of regions on the kernel's planar topology (`geometry/planarRegions.ts`,
+   draw.md's REGION, modify.md's UNION); next, its second: the solid entity and its primitives.
 
 Left out of the 2.5D model: POINT's thickness, with POINT (below). TRIM, EXTEND and JOIN of 3D
 polylines are done, cut and grown in plan at the Z they have there, a closed one left in two at

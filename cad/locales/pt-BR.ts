@@ -100,7 +100,11 @@ export const ptBR: EngineLocale = {
       "color": "Cor",
       "linetype": "Tipo de linha",
       "lweight": "Espessura de linha",
-      "snap": "Modo snap"
+      "snap": "Modo snap",
+      "region": "Região",
+      "union": "União",
+      "subtract": "Subtrair",
+      "intersect": "Intersecção"
     },
     "description": {
       "U": "Desfaz a última ação",
@@ -309,6 +313,16 @@ export const ptBR: EngineLocale = {
           {
             "one": "Referência de bloco",
             "other": "Referências de bloco"
+          }
+        ]
+      ],
+      "region": [
+        [
+          "count",
+          2,
+          {
+            "one": "Região",
+            "other": "Regiões"
           }
         ]
       ]
@@ -528,7 +542,8 @@ export const ptBR: EngineLocale = {
         "dimScaleOverall": "Escala de cota global",
         "decimalSeparator": "Separador decimal",
         "suppressTrailingZeros": "Suprimir zeros à direita",
-        "precision": "Precisão"
+        "precision": "Precisão",
+        "perimeter": "Perímetro"
       },
       "value": {
         "yes": "Sim",
@@ -1066,6 +1081,21 @@ export const ptBR: EngineLocale = {
       ],
       "-LWEIGHT": [
         "-ESPLINHA"
+      ],
+      "REGION": [
+        "REGIAO",
+        "REG"
+      ],
+      "UNION": [
+        "UNIAO"
+      ],
+      "SUBTRACT": [
+        "SUBTRAIR",
+        "SU"
+      ],
+      "INTERSECT": [
+        "INTERSEC",
+        "INT"
       ]
     },
     "keywords": {
@@ -4631,6 +4661,7 @@ export const ptBR: EngineLocale = {
             "dimension": "COTA",
             "hatch": "HATCH",
             "insert": "REFERÊNCIA DE BLOCO",
+            "region": "REGION",
             "other": "MATRIZ"
           }
         ]
@@ -5911,6 +5942,169 @@ export const ptBR: EngineLocale = {
             "yes": "      Sim",
             "other": "      Não"
           }
+        ]
+      ],
+      "regionNoneFound": "Não foi encontrado nada.",
+      "regionObjectsRejected": [
+        [
+          "count",
+          2,
+          {
+            "=0": [
+              0,
+              " objetos"
+            ],
+            "one": [
+              0,
+              " objeto"
+            ],
+            "other": [
+              0,
+              " objetos"
+            ]
+          }
+        ],
+        " rejeitado(s), fechado(s), danificado(s) ou não suportado(s)."
+      ],
+      "regionOpenNotCoplanar": "Objetos abertos devem ser coplanares.",
+      "regionLoopsExtracted": [
+        [
+          "count",
+          2,
+          {
+            "=0": [
+              0,
+              " loops"
+            ],
+            "one": [
+              0,
+              " loop"
+            ],
+            "other": [
+              0,
+              " loops"
+            ]
+          }
+        ],
+        " extraído(s)."
+      ],
+      "regionLoopsRejected": [
+        [
+          "count",
+          2,
+          {
+            "=0": [
+              0,
+              " loops"
+            ],
+            "one": [
+              0,
+              " loop"
+            ],
+            "other": [
+              0,
+              " loops"
+            ]
+          }
+        ],
+        " rejeitado(s)."
+      ],
+      "regionSelfIntersections": [
+        "    Autointersecções                     : ",
+        [
+          "count",
+          2,
+          {
+            "=0": [
+              0,
+              " loops."
+            ],
+            "one": [
+              0,
+              " loop."
+            ],
+            "other": [
+              0,
+              " loops."
+            ]
+          }
+        ]
+      ],
+      "regionsCreated": [
+        [
+          "count",
+          2,
+          {
+            "=0": [
+              0,
+              " Regiões"
+            ],
+            "one": [
+              0,
+              " Região"
+            ],
+            "other": [
+              0,
+              " Regiões"
+            ]
+          }
+        ],
+        " criada(s)."
+      ],
+      "nullRegion": "Foi criada uma região nula - excluída",
+      "booleanNeedsTwo": "Pelo menos 2 sólidos, superfícies ou regiões coplanares precisam estar selecionados.",
+      "subtractFrom": "Selecionar sólidos, superfícies e regiões a subtrair de ..",
+      "subtractWhat": "Selecionar sólidos, superfícies e regiões a subtrair ..",
+      "regionAreaReport": [
+        "Área = ",
+        [
+          "area"
+        ],
+        ", Área aparada = ",
+        [
+          "trimmed"
+        ],
+        " , Perímetro = ",
+        [
+          "around"
+        ]
+      ],
+      "listRegionArea": [
+        "                             Área: ",
+        [
+          "area"
+        ]
+      ],
+      "listRegionPerimeter": [
+        "                        Perímetro: ",
+        [
+          "perimeter"
+        ]
+      ],
+      "listRegionBounds": [
+        "Caixa delimitadora: Limite inferior X = ",
+        [
+          "minX"
+        ],
+        ", Y = ",
+        [
+          "minY"
+        ],
+        ", Z = ",
+        [
+          "minZ"
+        ],
+        "\n                 Limite superior X = ",
+        [
+          "maxX"
+        ],
+        ", Y = ",
+        [
+          "maxY"
+        ],
+        ", Z = ",
+        [
+          "maxZ"
         ]
       ]
     },

@@ -9,6 +9,7 @@ import {
   insertGeometry,
   isWidePolyline,
   mtextLineTexts,
+  nextEntityId,
   polylineSegmentGeometries,
   polyline3dSegments,
   polylineCurve,
@@ -18,6 +19,7 @@ import {
   isSolidHatchPattern,
 } from "../../domain/hatchPatterns"
 import { DEFAULT_LINETYPE_ID } from "../../domain/linetypes"
+import { createRegion, regionEdgeEntity } from "../../domain/regions"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
 import type { MessageId } from "../EngineText"
 import type { ObjectSelectorOptions } from "./objectSelection"
@@ -31,6 +33,7 @@ const EXPLODED: ReadonlySet<Entity["type"]> = new Set([
   "insert",
   "mtext",
   "hatch",
+  "region",
 ])
 
 /**
@@ -65,7 +68,9 @@ function cannotExplode(entity: Entity): string | null {
  * objects "revert to their original properties" rather than keeping the ones
  * the reference lent them. A multiline text becomes one Left single-line text
  * per line as drawn. A pattern hatch becomes its pattern's lines clipped to
- * its boundary. A polyline's widths are lost, its pieces following its
+ * its boundary. A region of one face becomes its edges, lines, arcs, circles,
+ * ellipses and splines; one of several faces a region per face
+ * (region/p09, b02, b04). A polyline's widths are lost, its pieces following its
  * centreline, and AutoCAD says so for each wide one.
  *
  * A spline, an ellipse and a solid hatch pass the count and are named once the
@@ -145,6 +150,23 @@ export class ExplodeTool extends SelectionActionTool {
         removedIds.push(entity.id)
         for (const line of mtextLineTexts(entity)) {
           pieces.push(carryOverrides(entity, line))
+        }
+        continue
+      }
+      if (entity.type === "region") {
+        removedIds.push(entity.id)
+        if (entity.faces.length > 1) {
+          for (const face of entity.faces) {
+            pieces.push(
+              carryOverrides(entity, createRegion([face], entity.layerId))
+            )
+          }
+          continue
+        }
+        for (const loop of entity.faces[0]?.loops ?? []) {
+          for (const edge of loop) {
+            pieces.push(regionEdgeEntity(entity, edge, nextEntityId()))
+          }
         }
         continue
       }

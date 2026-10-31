@@ -46,6 +46,7 @@ export type {
   RectangularArray,
   PolarArray,
   PathLayout,
+  RegionEntity,
   Entity,
   Bounds,
 } from "./entityTypes"
@@ -329,6 +330,7 @@ export {
   entitiesBounds,
   entityWithinRect,
   entityCrossesRect,
+  regionEdgeAt,
 } from "./entityQueries"
 
 export {

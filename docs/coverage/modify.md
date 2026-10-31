@@ -1246,7 +1246,7 @@ everything was refused too, says `None found.` (es `No hallada.`, table 20841; p
 preselection is counted and sifted the same way after the echo; with nothing left it asks
 `Select objects:` and explodes at the first selection that adds something, with no Enter
 (`1 found, 0 total` for a refused one, p241, p242, p254). It leaves nothing selected and the
-pieces as the Previous set (`ERASE _P` → `2 found`, p236, p258). A 3D polyline becomes a line per segment, each end at its vertex's Z (3dpoly/p11); one of a single vertex is left whole (unprobed).
+pieces as the Previous set (`ERASE _P` → `2 found`, p236, p258). A 3D polyline becomes a line per segment, each end at its vertex's Z (3dpoly/p11); one of a single vertex is left whole (unprobed). A region of one face becomes its edges — lines, arcs, circles, ellipses and splines — wearing its layer and properties (region/p09, p11, b02: the square with a hole gives four lines and a circle); one of several faces becomes a region per face (b04).
 
 **Missing:** a dimension, which 2027 explodes into its LINEs, a SOLID per arrowhead and an MTEXT
 (pieces/p258): refused, as there is no SOLID object here (WHY at `ExplodeTool`'s refusal); a hatch
@@ -1257,6 +1257,39 @@ removed.` (es `Asociatividad del contorno del sombreado eliminada.`, p263), as n
 associative here; exploded MTEXT's positions differ by the font's metrics (EXP-06, p255: OLD at
 9.324693,39.822647 in AutoCAD, 9.338336,40 here by Arimo's ink); ByBlock resolution; a reference scaled unequally gives
 its pieces as it draws them, its texts at X's size (INSERT's Missing)
+
+### `UNION` / `UNI` · es `UNION` / `UNI` · pt-BR `UNIAO`
+
+### `SUBTRACT` / `SU` · es `DIFERENCIA` / `DIF` · pt-BR `SUBTRAIR` / `SU`
+
+### `INTERSECT` / `IN` · es `INTERSEC` / `INT` · pt-BR `INTERSEC` / `INT`
+
+**Implemented** (regions; region/b01–b11, n01): UNION and INTERSECT ask `Select objects:` (whole
+objects); SUBTRACT reports `Select solids, surfaces, and regions to subtract from ..` then asks
+`Select objects:`, then `Select solids, surfaces, and regions to subtract ..` and asks again (es
+both `Designe sólidos, superficies y regiones de las que sustraer...`; pt-BR `… a subtrair de ..` /
+`… a subtrair ..`), Enter on an empty set ending it with nothing done (b07). Whatever is found is
+counted, and what is no region passed over: with fewer than two regions in any one plane UNION and
+INTERSECT say `At least 2 solids, surfaces, or coplanar regions must be selected.` (b07). Regions
+are combined **plane by plane** (b08: two pairs at Z 0 and 10 give two regions), the first of a
+plane keeping its object and the others erased (b01, b10); SUBTRACT joins the first set's regions
+of a plane (b10's two squares became one region) and takes out of them every region of the
+second set in that plane, erasing those whether they overlapped or not (b05), leaving one in another
+plane as it was (b10's circle at Z 5). A result is exact (`geometry/planarRegions.ts`: edges cut
+where they cross or run along each other, each piece kept by where it lies against the other
+region): a circle inside a square becomes its hole (b02, area 321.4602, perimeter 111.4159, the
+hole counted in it), a cut in two leaves one region of two faces (b06: 160 and 72), disjoint
+regions unite into one of two faces (b04), a ring of four bars into one with a hole (b11: 224,
+224); shared sides merge (b11). A result of nothing says `Null region created - deleted` (es
+`Región nula creada - eliminada.`, pt-BR `Foi criada uma região nula - excluída`) and erases the
+regions (b05, b06). One undo step each (b09). Their rail slot is the 3D Modeling workspace's
+Solid Editing drop-down.
+
+**Missing:** solids and surfaces (the brief's phases 2–4); SUBTRACT of a plane of the first set
+with nothing to subtract, left alone here (AutoCAD may join its regions; **unverified**); which
+region keeps its object when the set was taken by `ALL` (AutoCAD's order then is the newest
+first, b01; here the first in the set); a preselection's part in SUBTRACT (taken as the first set,
+**unverified**).
 
 ### `JOIN` / `J` · es `UNIR` / `U`† · pt-BR `UNIR` / `UNE`
 

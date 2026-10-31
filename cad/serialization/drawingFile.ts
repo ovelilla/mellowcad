@@ -108,6 +108,9 @@ import {
   WORLD_UCS,
 } from "../domain/ucs"
 import { Vec2 } from "../geometry/Vec2"
+import { bsplineDomain } from "../geometry/nurbs"
+import { PlanarCurve } from "../geometry/planarCurves"
+import { RegionFace } from "../geometry/planarRegions"
 import { Vec3, dot3, length3 } from "../geometry/Vec3"
 import {
   DEFAULT_DOCUMENT_SETTINGS,
@@ -121,7 +124,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 41
+export const DRAWING_FILE_VERSION = 42
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -579,6 +582,61 @@ function cloneEntityShape(entity: Entity): Entity {
           ? { attributes: entity.attributes.map(cloneBlockAttribute) }
           : {}),
         ...(entity.array ? { array: cloneArray(entity.array) } : {}),
+      }
+    case "region":
+      return {
+        id: entity.id,
+        type: "region",
+        layerId: entity.layerId,
+        ...overrides,
+        faces: entity.faces.map((face) => ({
+          loops: face.loops.map((loop) => loop.map(storedEdge)),
+        })),
+      }
+  }
+}
+
+/** A region's edge as the file holds it, nothing but its own fields. */
+function storedEdge(edge: PlanarCurve): PlanarCurve {
+  switch (edge.kind) {
+    case "line":
+      return {
+        kind: "line",
+        start: { x: edge.start.x, y: edge.start.y },
+        end: { x: edge.end.x, y: edge.end.y },
+      }
+    case "arc":
+      return {
+        kind: "arc",
+        center: { x: edge.center.x, y: edge.center.y },
+        radius: edge.radius,
+        startAngle: edge.startAngle,
+        sweep: edge.sweep,
+      }
+    case "ellipse":
+      return {
+        kind: "ellipse",
+        center: { x: edge.center.x, y: edge.center.y },
+        majorAxis: { x: edge.majorAxis.x, y: edge.majorAxis.y },
+        ratio: edge.ratio,
+        startParam: edge.startParam,
+        sweep: edge.sweep,
+      }
+    case "spline":
+      return {
+        kind: "spline",
+        curve: {
+          degree: edge.curve.degree,
+          knots: [...edge.curve.knots],
+          controlPoints: edge.curve.controlPoints.map((p) => ({
+            x: p.x,
+            y: p.y,
+            z: 0,
+          })),
+          ...(edge.curve.weights ? { weights: [...edge.curve.weights] } : {}),
+        },
+        from: edge.from,
+        to: edge.to,
       }
   }
 }
@@ -1347,6 +1405,86 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         ...parseBlockAttributes(raw.attributes),
         ...parseArray(raw.array),
       }
+    }
+    case "region": {
+      // Since 42. A face missing its outline, or an edge malformed, loses the
+      // region: a loop with a gap bounds nothing.
+      if (!Array.isArray(raw.faces)) return null
+      const faces: RegionFace[] = []
+      for (const face of raw.faces) {
+        if (!isRecord(face) || !Array.isArray(face.loops)) return null
+        const loops: PlanarCurve[][] = []
+        for (const loop of face.loops) {
+          if (!Array.isArray(loop) || loop.length === 0) return null
+          const edges = loop.map(parseEdge)
+          if (edges.some((edge) => edge === null)) return null
+          loops.push(edges as PlanarCurve[])
+        }
+        if (loops.length > 0) faces.push({ loops })
+      }
+      if (faces.length === 0) return null
+      return { id, type: "region", layerId, ...overrides, faces }
+    }
+    default:
+      return null
+  }
+}
+
+function parseEdge(raw: unknown): PlanarCurve | null {
+  if (!isRecord(raw)) return null
+  switch (raw.kind) {
+    case "line": {
+      const start = parseVec2(raw.start)
+      const end = parseVec2(raw.end)
+      return start && end ? { kind: "line", start, end } : null
+    }
+    case "arc": {
+      const center = parseVec2(raw.center)
+      const { radius, startAngle, sweep } = raw
+      if (!center || !isFiniteNumber(radius) || !(radius > 0)) return null
+      if (!isFiniteNumber(startAngle) || !isFiniteNumber(sweep) || sweep === 0)
+        return null
+      return { kind: "arc", center, radius, startAngle, sweep }
+    }
+    case "ellipse": {
+      const center = parseVec2(raw.center)
+      const majorAxis = parseVec2(raw.majorAxis)
+      const { ratio, startParam, sweep } = raw
+      if (!center || !majorAxis || !isFiniteNumber(ratio)) return null
+      if (!(ratio > 0 && ratio <= 1)) return null
+      if (!isFiniteNumber(startParam) || !isFiniteNumber(sweep) || sweep === 0)
+        return null
+      return { kind: "ellipse", center, majorAxis, ratio, startParam, sweep }
+    }
+    case "spline": {
+      const { from, to } = raw
+      if (!isRecord(raw.curve)) return null
+      const { degree } = raw.curve
+      const knots = parseNumbers(raw.curve.knots)
+      const points = Array.isArray(raw.curve.controlPoints)
+        ? raw.curve.controlPoints.map(parseVec2)
+        : []
+      if (!isFiniteNumber(degree) || !Number.isInteger(degree) || degree < 1)
+        return null
+      if (!knots || points.length < 2 || points.some((p) => p === null))
+        return null
+      if (knots.length !== points.length + degree + 1) return null
+      if (!isFiniteNumber(from) || !isFiniteNumber(to) || from === to)
+        return null
+      const weights = parseNumbers(raw.curve.weights)
+      const curve = {
+        degree,
+        knots,
+        controlPoints: (points as Vec2[]).map((p) => ({ ...p, z: 0 })),
+        ...(weights?.length === points.length && weights.every((w) => w > 0)
+          ? { weights }
+          : {}),
+      }
+      const domain = bsplineDomain(curve)
+      const inside = (u: number) => u >= domain.start && u <= domain.end
+      return inside(from) && inside(to)
+        ? { kind: "spline", curve, from, to }
+        : null
     }
     default:
       return null

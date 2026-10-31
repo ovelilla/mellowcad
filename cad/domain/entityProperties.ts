@@ -243,6 +243,9 @@ export function applyEntityProperty(
     }
     case "insert":
       return applyInsertProperty(entity, property, value)
+    case "region":
+      // Its Area and Perimeter are greyed in the palette (region/d02).
+      return null
   }
 }
 

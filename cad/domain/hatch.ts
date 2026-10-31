@@ -51,6 +51,7 @@ export function hatchLoopFromEntity(drawn: Entity): HatchLoop | null {
     case "dimension":
     case "hatch":
     case "insert":
+    case "region":
       return null
     default: {
       const unhandled: never = entity

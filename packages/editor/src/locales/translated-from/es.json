@@ -63,6 +63,7 @@
   "ToolRail.flyouts.dimchain": "Continue",
   "ToolRail.flyouts.attributes": "Attributes",
   "ToolRail.flyouts.measure": "Measure",
+  "ToolRail.flyouts.union": "Solid Editing",
   "ToolRail.sections.draw": "Draw",
   "ToolRail.sections.modify": "Modify",
   "ToolRail.sections.annotation": "Annotation",

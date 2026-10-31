@@ -1,7 +1,6 @@
 # Sólidos 3D con núcleo propio — brief
 
-> **Estado:** pendiente; lo siguiente, desde la fase 1: los huecos 2D y 2.5D que lista
-> `docs/coverage/roadmap.md` están cerrados (POINT's thickness va con POINT, aplazable). Se borra
+> **Estado:** en curso: la fase 1 está hecha (31/10/2026); lo siguiente, la fase 2. Se borra
 > cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
@@ -50,7 +49,10 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación en
 
 1. **REGION y booleanas 2D** (UNION, SUBTRACT, INTERSECT de regiones): la primera topología
    (caras planas, bucles, aristas) y las booleanas sin intersección de superficies. Útil por sí
-   sola.
+   sola. **Hecha** (31/10/2026): el núcleo plano en `cad/geometry/planarCurves.ts` y
+   `planarRegions.ts` (aristas exactas —rectas, arcos, arcos elípticos, trozos de NURBS—, la
+   tolerancia única `MODEL_TOLERANCE` de 1e-6), la entidad `region` (fichero versión 42) y sus
+   comandos; lo que falta, en las entradas de REGION y UNION de `docs/coverage/`.
 2. **La entidad sólido**: estructura, guardado (versión del fichero), primitivas (BOX, CYLINDER,
    SPHERE, CONE, WEDGE, TORUS, PYRAMID), alámbrico con isolíneas, selección, grips de las
    primitivas, snaps a vértices, aristas y centros, MOVE / COPY / ROTATE / SCALE / MIRROR, MASSPROP.

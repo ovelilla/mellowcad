@@ -74,6 +74,12 @@ type AreaReport = {
   readonly area: string
   readonly measured: string
   readonly around: string
+  readonly trimmed: string
+}
+
+/** A region's line names a trimmed area, 0 for a planar one (region/p01). */
+function reportOf(measured: string): "areaReport" | "regionAreaReport" {
+  return measured === "region" ? "regionAreaReport" : "areaReport"
 }
 
 type MeasureState =
@@ -978,8 +984,9 @@ export class MeasureTool implements Tool {
       area: formatLength(area, settings),
       measured,
       around: formatLength(around, settings),
+      trimmed: formatLength(0, settings),
     }
-    ctx.report(ctx.text.message("areaReport", report))
+    ctx.report(ctx.text.message(reportOf(measured), report))
     if (this.areaMode === "plain") return
     this.total += this.areaMode === "add" ? area : -area
     this.area = this.total
@@ -990,7 +997,7 @@ export class MeasureTool implements Tool {
 
   private reportShown(ctx: ToolContext): void {
     if (!this.shown) return
-    ctx.report(ctx.text.message("areaReport", this.shown))
+    ctx.report(ctx.text.message(reportOf(this.shown.measured), this.shown))
     ctx.report(ctx.text.message("totalArea", this.shown))
   }
 

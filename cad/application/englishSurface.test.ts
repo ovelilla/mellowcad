@@ -52,6 +52,14 @@ function answer(cad: CadHarness, letter: string): void {
   }
 }
 
+/** Each text typed at the command line and confirmed, as the console types it. */
+function submit(cad: CadHarness, ...texts: string[]): void {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+}
+
 /** The text of the prompt each open field asks, before the X,Y collapse. */
 function sessionPrompts(cad: CadHarness): string {
   const session = cad.runtime.dynamicInput.getSession()
@@ -1190,6 +1198,47 @@ describe("the engine's English surface", () => {
               .command("J")
           )
           .do("escape", (c) => c.escape())
+    )
+    walk(
+      "REGION UNION SUBTRACT INTERSECT",
+      createHarness({
+        entities: [
+          rectOf(p(0, 0), p(100, 100), { id: "Q1" }),
+          rectOf(p(50, 50), p(150, 150), { id: "Q2" }),
+          circleOf(p(300, 0), 20, { id: "C1" }),
+          polylineOf([p(400, 0), p(500, 100), p(500, 0), p(400, 100)], {
+            closed: true,
+          }),
+        ],
+      }),
+      (s) =>
+        s
+          .do("REGION", (c) => submit(c, "REGION", "ALL", ""))
+          .do("REGION nothing", (c) => submit(c, "REGION", ""))
+          .do("UNION one", (c) => submit(c, "UNION", "300,20", ""))
+          .do("UNION", (c) => submit(c, "UNION", "0,10", "50,60", ""))
+          .do("SUBTRACT", (c) =>
+            submit(c, "SUBTRACT", "0,10", "", "300,20", "")
+          )
+          .do("select the region", (c) =>
+            c.select(c.entities().find((e) => e.type === "region")!.id)
+          )
+          .do("escape", (c) => c.escape())
+          .do("INTERSECT", (c) =>
+            submit(
+              c,
+              "CIRCLE",
+              "50,50",
+              "200",
+              "REGION",
+              "L",
+              "",
+              "INTERSECT",
+              "0,10",
+              "250,50",
+              ""
+            )
+          )
     )
     walk(
       "JOIN made",

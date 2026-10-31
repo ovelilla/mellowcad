@@ -32,6 +32,8 @@ export type DimensionPoint =
  * - `dimPoint` — a dimension's grip: an extension-line origin, an angular
  *   one's vertex, the dimension line, which slides the whole assembly, the text
  *   (Move with Dim Line) or a diameter's rim point.
+ * - `fixed`    — a region's corner or centre: shown, and a drag changes
+ *   nothing, as AutoCAD's own does not (region/s03).
  * - `mtextWidth` — a multiline text's width arrow on one `side` of its box:
  *   rewrap it to a new width.
  * - `ellipseAxis` — an ellipse's quadrant, its axis end at a quarter-turn
@@ -54,6 +56,7 @@ export type GripRole =
   | { readonly kind: "ellipseAxis"; readonly quadrant: 0 | 1 | 2 | 3 }
   | { readonly kind: "ellipseEnd"; readonly end: LineEnd }
   | { readonly kind: "array"; readonly grip: ArrayEditRole }
+  | { readonly kind: "fixed" }
 
 /** The array grips that edit its parameters rather than move it. */
 export type ArrayEditRole = Exclude<ArrayGripRole, "move">

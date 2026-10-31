@@ -100,7 +100,11 @@ export const ar: EngineLocale = {
       "color": "اللون",
       "linetype": "نوع الخط",
       "lweight": "وزن الخط",
-      "snap": "وضع الالتقاط"
+      "snap": "وضع الالتقاط",
+      "region": "منطقة",
+      "union": "اتحاد",
+      "subtract": "طرح",
+      "intersect": "تقاطع"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",
@@ -322,6 +326,17 @@ export const ar: EngineLocale = {
             "one": "مرجع كتلة",
             "two": "مرجعا كتلة",
             "other": "مراجع كتل"
+          }
+        ]
+      ],
+      "region": [
+        [
+          "count",
+          2,
+          {
+            "one": "منطقة",
+            "two": "منطقتان",
+            "other": "مناطق"
           }
         ]
       ]
@@ -548,7 +563,8 @@ export const ar: EngineLocale = {
         "dimScaleOverall": "المقياس الكلي للبُعد",
         "decimalSeparator": "الفاصل العشري",
         "suppressTrailingZeros": "حذف الأصفار اللاحقة",
-        "precision": "الدقة"
+        "precision": "الدقة",
+        "perimeter": "المحيط"
       },
       "value": {
         "yes": "نعم",

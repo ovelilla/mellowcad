@@ -26,7 +26,9 @@ import {
   Polyline3dEntity,
   SplineEntity,
   Entity,
+  RegionEntity,
 } from "./entityTypes"
+import { PlanarSimilarity } from "../geometry/planarCurves"
 import {
   createLine,
   createCircle,
@@ -41,6 +43,15 @@ import {
 } from "./entityFactories"
 import { createEllipse, ellipseWithSpan } from "./ellipses"
 import { mapSplinePoints, splineCopy } from "./splines"
+import {
+  createRegion,
+  reflectAcross,
+  regionGripPoints,
+  regionMapped,
+  scaleAbout,
+  shiftBy,
+  turnAbout,
+} from "./regions"
 import { TextOptions, createText, measureTextWidth, textBox } from "./text"
 import { MTextOptions, createMText } from "./mtext"
 import { createAttributeDefinition } from "./attributes"
@@ -277,6 +288,7 @@ function translateFlat(entity: Entity, delta: Vec2 | Vec3): Entity {
 }
 
 function translatePlanar(entity: Entity, delta: Vec2): Entity {
+  if (entity.type === "region") return regionMapped(entity, shiftBy(delta))
   switch (entity.type) {
     case "line":
       return {
@@ -399,6 +411,7 @@ export function stretchEntity(
     case "spline":
     case "dimension":
     case "hatch":
+    case "region":
       return planar
   }
 }
@@ -449,6 +462,10 @@ function stretchVertices(entity: Entity): readonly Vec2[] {
     }
     case "hatch":
       return entity.loops.flatMap((loop) => loop.vertices)
+    // WHY: unverified; a region's grips drag nothing (region/s03), so it is
+    // taken to have no stretch points either and moves only when all are caught.
+    case "region":
+      return regionGripPoints(entity)
     case "circle":
     case "ellipse":
     case "text":
@@ -484,6 +501,7 @@ function stretchAnchors(entity: Entity): readonly Vec2[] {
     case "spline":
     case "dimension":
     case "hatch":
+    case "region":
       return stretchVertices(entity)
     default: {
       const unhandled: never = entity
@@ -497,6 +515,7 @@ function stretchPlanar(
   delta: Vec2,
   inFrame: (point: Vec2) => boolean
 ): Entity {
+  if (entity.type === "region") return entity
   const shift = (point: Vec2): Vec2 =>
     inFrame(point) ? V.add(point, delta) : point
 
@@ -720,6 +739,8 @@ export function copyEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
         )
       case "insert":
         return insertLike(entity, V.add(entity.position, delta))
+      case "region":
+        return regionLike(entity, shiftBy(delta))
     }
   })()
   return shiftEntityZ(carryOverrides(entity, copy), zOf(delta))
@@ -763,6 +784,9 @@ export function rotateEntity(
 }
 
 function rotateFlat(entity: Entity, pivot: Vec2, radians: number): Entity {
+  if (entity.type === "region") {
+    return regionMapped(entity, turnAbout(pivot, radians))
+  }
   switch (entity.type) {
     case "line":
       return {
@@ -856,6 +880,8 @@ export function rotateEntityCopy(
   if (isTilted(entity)) return freshCopy(rotateEntity(entity, pivot, radians))
   const copy: Entity = (() => {
     switch (entity.type) {
+      case "region":
+        return regionLike(entity, turnAbout(pivot, radians))
       case "line":
         return createLine(
           rotatePoint(entity.start, pivot, radians),
@@ -997,6 +1023,9 @@ function scaleFlat(entity: Entity, base: Vec2 | Vec3, factor: number): Entity {
 }
 
 function scalePlanar(entity: Entity, base: Vec2, factor: number): Entity {
+  if (entity.type === "region") {
+    return regionMapped(entity, scaleAbout(base, factor))
+  }
   switch (entity.type) {
     case "line":
       return {
@@ -1093,6 +1122,8 @@ export function scaleEntityCopy(
   if (isTilted(entity)) return freshCopy(scaleEntity(entity, base, factor))
   const copy: Entity = (() => {
     switch (entity.type) {
+      case "region":
+        return regionLike(entity, scaleAbout(base, factor))
       case "line":
         return createLine(
           scalePoint(entity.start, base, factor),
@@ -1234,6 +1265,7 @@ function mirrorFlat(
   b: Vec2,
   hatch: HatchMirroring
 ): Entity {
+  if (entity.type === "region") return regionMapped(entity, reflectAcross(a, b))
   switch (entity.type) {
     case "line":
       return {
@@ -1463,6 +1495,8 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
   if (isTilted(entity)) return freshCopy(mirrorEntity(entity, a, b))
   const copy: Entity = (() => {
     switch (entity.type) {
+      case "region":
+        return regionLike(entity, reflectAcross(a, b))
       case "line":
         return createLine(
           mirrorPoint(entity.start, a, b),
@@ -1767,6 +1801,11 @@ function zTurned(spline: SplineEntity): SplineEntity {
     ...(spline.startTangent ? { startTangent: turn(spline.startTangent) } : {}),
     ...(spline.endTangent ? { endTangent: turn(spline.endTangent) } : {}),
   }
+}
+
+/** A *new* region (fresh id) of `region`'s faces carried through `map`. */
+function regionLike(region: RegionEntity, map: PlanarSimilarity): RegionEntity {
+  return createRegion(regionMapped(region, map).faces, region.layerId)
 }
 
 /** A transformed object as a new one: a fresh id, everything else kept. */

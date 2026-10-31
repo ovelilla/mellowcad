@@ -916,6 +916,56 @@ the palette's Spacing, ISO pen width, Double and Background color rows (greyed f
 pattern); a double-click, which in AutoCAD opens the Hatch Editor tab and Quick Properties
 (d08-2): HATCHEDIT/HE, the Hatch Editor and Quick Properties
 
+### `REGION` / `REG` · es `REGION` / `REG` · pt-BR `REGIAO` / `REG`
+
+**Implemented:** `Select objects:` (whole objects) and every loop the set makes becomes a REGION:
+each closed object a loop of its own — a circle, an ellipse, a closed polyline (fitted ones by
+their curve), a closed or self-closing spline, a closed planar 3D polyline, and an open one whose
+ends meet (region/p02, p12) —, and the open ones (lines, arcs, elliptical arcs, open polylines,
+splines and 3D polylines) chained **end to end, never at crossings** (p04: a line touching mid-side
+and a tail are left), loose chains dropped; where three meet, each face the chains enclose and,
+round more than one, their outline too (p10: two squares of lines give both and the rectangle;
+p13: a grid of four, the four and the outline). Nested loops give separate regions, no hole (p08).
+A region lies in its loop's plane: at Z (p06), tilted (a circle in a turned UCS, a planar 3D
+polyline, p06, p12). The objects that went into a region are erased (DELOBJ's initial 3), the
+others kept; the regions wear the **current** layer, colour, linetype and lineweight, not the
+objects' (p07, p10), a polyline's width ignored (p07). The console's report, in its order:
+`N closed, degenerate or unsupported objects rejected.` (a region, a hatch, text, a reference,
+a zero-length object, a closed spline or 3D polyline in no plane; p06, p11, p14), then
+`N loops extracted.` or, with open objects in no one plane, `Open objects must be coplanar.` in
+its place, those then unused (p06, p15), then `N loops rejected.` and
+`    Self intersections                     : N loops.` for a loop crossing or folding on itself
+(a bow tie, a closed polyline of two vertices; p03, p14, p15), then `N Regions created.`; Enter on
+an empty set says `None found.` (p05) — es `bucle(s) extraído(s)`, `regiones creada(s)`,
+`Se ha rechazado N objetos cerrado, dañado o no admitido.`, `No se ha encontrado ninguno.`; pt-BR
+`loops extraído(s)`, `Regiões criada(s)` (0 in the plural, p15), `Não foi encontrado nada.`
+One undo step. The object (file version 42): faces of loops of exact edges — lines, circular and
+elliptical arcs, NURBS pieces —, the kernel's (`geometry/planarRegions.ts`, tolerance 1e-6). It
+draws as its edges, nothing filled (2D Wireframe, d01); it is picked by them and a window takes it
+by them; it snaps as its edges do — Endpoint, Midpoint, Center, Quadrant, Intersection, Nearest,
+Tangent, Perpendicular —, no Geometric Center, Node or Insertion (s01, s02); its grips are its
+corners and the centre of a loop that is a whole circle or ellipse (s01–s03, d01), and dragging one
+changes nothing (MoveGripPointsAt leaves it, s03). MOVE, COPY, ROTATE, SCALE, MIRROR, ALIGN-free 3D
+transforms and STRETCH (whole, when the window takes every corner; **unverified**) carry it. The
+Properties palette: Region, Geometry's Area and Perimeter, read only (d02). LIST, AREA and EXPLODE:
+their entries. BREAK says `Object can't be broken`, OFFSET `Cannot offset that object.`, TRIM and
+EXTEND `Cannot TRIM this object.` / `Cannot EXTEND this object.` (es `Este objeto no se puede
+RECORTAR.` / `… ALARGAR.`), FILLET and CHAMFER refuse it, JOIN discards it, PEDIT `Object selected
+is not a polyline` (e01, e06–e10); DIMLINEAR, DIMALIGNED, DIMRADIUS, DIMDIAMETER and UCS OBject
+take the edge picked as that object (e03–e05).
+
+**Missing:** DELOBJ (always 3 here); MASSPROP (the brief's phase 2; the console's centroid and
+moments, p01, b02, are in the probes); BOUNDARY's Region object type; a region from a hatch's
+boundary; its 3D Visualization's Material row (no materials); the hot grip's `** STRETCH **` and
+the grip modes (a click on a grip does nothing); LIST's `Handle =` line (no handles); SUBTRACT,
+UNION and INTERSECT of solids and surfaces (none yet); Hidden and shaded styles; the edges as a
+TRIM or EXTEND edge in Quick mode (the Standard set refuses it, `1 was not a valid edge or
+selection method.`, e01's first run; Quick **unverified**); the order of a loop's edges and where
+it starts as AutoCAD keeps them (here counter-clockwise from the chain's first edge; EXPLODE gives
+the same objects in another order); two spline edges running along each other in a boolean unless
+they are one curve; a tangent touch between an ellipse or spline edge and another, which is not
+cut there.
+
 ### `BLOCK` / `B` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOCK` / `-B` · es `BLOQUE` / `BQ` / `MODBLQ` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOQUE` / `-BQ` · pt-BR `BLOCO` / `CB` / `ACADBLOCKDIALOG` / `CRIARB` / `DEFB`, `-BLOCO` / `-CB`
 
 **Implemented:** -BLOCK's command line, which BLOCK asks too (p151, p152; aliases from the 2027

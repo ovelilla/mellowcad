@@ -11,6 +11,7 @@ import { Entity, HatchEntity, HatchLoop } from "./entityTypes"
 import { hatchLoopRing, hatchLoopSegments } from "./hatch"
 import { polylineArea, polylineLength } from "./polylines"
 import { isLevelSpline, splineArea, splineLength } from "./splines"
+import { regionArea, regionPerimeter } from "./regions"
 import { isLevelPolyline3d, polyline3dLength } from "./polylines3d"
 
 /**
@@ -22,7 +23,7 @@ import { isLevelPolyline3d, polyline3dLength } from "./polylines3d"
 export interface ObjectArea {
   readonly area: number
   readonly around: number
-  readonly measured: "perimeter" | "circumference" | "length"
+  readonly measured: "perimeter" | "circumference" | "length" | "region"
 }
 
 /**
@@ -80,6 +81,13 @@ export function objectArea(entity: Entity): ObjectArea | null {
         area: hatchArea(entity),
         around: entity.loops.reduce((sum, loop) => sum + loopLength(loop), 0),
         measured: "perimeter",
+      }
+    case "region":
+      // Its own words: `Area = …, Trimmed area = 0.0000 , Perimeter = …` (region/p01).
+      return {
+        area: regionArea(entity),
+        around: regionPerimeter(entity),
+        measured: "region",
       }
     case "line":
     case "arc":

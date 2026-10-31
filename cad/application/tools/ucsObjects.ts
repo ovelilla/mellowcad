@@ -1,3 +1,4 @@
+import { regionLevelEdgeEntities } from "../../domain/regions"
 import { Vec2, V } from "../../geometry/Vec2"
 import {
   Vec3,
@@ -35,6 +36,8 @@ import {
   splineCurve,
   splinePolyline,
   worldToEntity,
+  closestOnEntity,
+  entityElevation,
 } from "../../domain/entities"
 import { Ucs, createUcs, ucsFromAxes } from "../../domain/ucs"
 
@@ -53,6 +56,17 @@ export function alignable(entity: Entity | null): Entity | null {
  */
 export function ucsFromObject(entity: Entity, pick: Vec2 | Vec3): Ucs | null {
   if (entity.type === "line") return ucsAlongLine(entity, pick)
+  if (entity.type === "region") {
+    // The edge picked, as that object would align it (region/e05).
+    const edge = nearestEdge(regionLevelEdgeEntities(entity), pick)
+    if (!edge) return null
+    return inPlane(
+      entity,
+      edge.type === "line"
+        ? ucsAlongLine(edge, withZ(pick, entityElevation(entity)))
+        : levelUcsFromObject(edge, pick)
+    )
+  }
   if (entity.type === "spline" && !entity.closed && !isLevel(entity)) {
     return ucsAlongSpline(entity, pick)
   }
@@ -77,6 +91,19 @@ function ucsAlongSpline(spline: SplineEntity, pick: Vec2): Ucs | null {
   const x = normalize3(sub3(far, origin))
   const y = x && normalize3(cross3(entityNormal(spline), x))
   return x && y ? ucsFromAxes(origin, x, y) : null
+}
+
+function nearestEdge(edges: readonly Entity[], pick: Vec2): Entity | null {
+  let best: Entity | null = null
+  let bestDistance = Infinity
+  for (const edge of edges) {
+    const distance = closestOnEntity(edge, pick).distance
+    if (distance < bestDistance) {
+      bestDistance = distance
+      best = edge
+    }
+  }
+  return best
 }
 
 /** A UCS read in the object's own coordinates, taken to the WCS. */
@@ -174,6 +201,7 @@ function levelUcsFromObject(entity: Entity, pick: Vec2): Ucs | null {
     case "polyline3d":
     case "dimension":
     case "hatch":
+    case "region":
       return null
     default: {
       const unhandled: never = entity
@@ -221,6 +249,7 @@ export function hasEnds(entity: Entity | null): entity is Entity {
     case "dimension":
     case "hatch":
     case "insert":
+    case "region":
       return false
     default: {
       const unhandled: never = entity
@@ -338,6 +367,7 @@ function planarEnd(entity: Entity, pick: Vec2): PlanarEnd | null {
     case "dimension":
     case "hatch":
     case "insert":
+    case "region":
       return null
     default: {
       const unhandled: never = entity
@@ -418,6 +448,8 @@ export function ucsFromFound(entity: Entity): Ucs | null {
     case "dimension":
     case "hatch":
     case "polyline3d":
+    // WHY: unverified, read as a pick at the WCS's origin, the edge nearest it.
+    case "region":
       return ucsFromObject(entity, wcsOrigin)
     default: {
       const unhandled: never = entity

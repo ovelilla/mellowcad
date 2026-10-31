@@ -1,3 +1,4 @@
+import { regionLevelEdgeEntities } from "./regions"
 import { Vec2, V } from "../geometry/Vec2"
 import {
   ClosestResult,
@@ -19,6 +20,7 @@ import {
   BlockLookup,
   Entity,
   Bounds,
+  RegionEntity,
 } from "./entityTypes"
 import { insertFlatGeometry } from "./blocks"
 import { attributeDefinitionText } from "./attributes"
@@ -319,7 +321,34 @@ export function closestOnEntity(
       }
       return best
     }
+    case "region": {
+      // Picked by its edges: in 2D Wireframe nothing fills it.
+      let best: ClosestResult = { point, distance: Infinity, t: 0 }
+      for (const edge of regionLevelEdgeEntities(entity)) {
+        const candidate = closestOnEntity(edge, point)
+        if (candidate.distance < best.distance) best = candidate
+      }
+      return best
+    }
   }
+}
+
+/**
+ * The region's edge nearest `point`, as its object: what a command that
+ * takes "the picked edge" reads off a region — DIMLINEAR's origins,
+ * DIMRADIUS's circle, UCS OBject's axes (region/e03–e05).
+ */
+export function regionEdgeAt(region: RegionEntity, point: Vec2): Entity {
+  let best: Entity | null = null
+  let bestDistance = Infinity
+  for (const edge of regionLevelEdgeEntities(region)) {
+    const distance = closestOnEntity(edge, point).distance
+    if (distance < bestDistance) {
+      bestDistance = distance
+      best = edge
+    }
+  }
+  return best ?? region
 }
 
 export function entityBounds(drawn: Entity, blocks?: BlockLookup): Bounds {
@@ -468,6 +497,13 @@ export function entityBounds(drawn: Entity, blocks?: BlockLookup): Bounds {
         }
       )
     }
+    case "region":
+      return (
+        entitiesBounds(regionLevelEdgeEntities(entity)) ?? {
+          min: { x: 0, y: 0 },
+          max: { x: 0, y: 0 },
+        }
+      )
   }
 }
 
@@ -737,5 +773,9 @@ export function entityCrossesRect(
       }
       return false
     }
+    case "region":
+      return regionLevelEdgeEntities(entity).some((edge) =>
+        entityCrossesRect(edge, min, max)
+      )
   }
 }

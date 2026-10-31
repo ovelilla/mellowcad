@@ -1,0 +1,41 @@
+_QAFLAGS
+2
+_ZOOM
+_W
+-10,-10
+30,30
+_RECTANG
+0,0
+20,20
+_CIRCLE
+10,10
+5
+_REGION
+_ALL
+
+_SUBTRACT
+20,10
+
+15,10
+
+MPGRIPS
+(osnap '(0.2 0.1 0) "_end")
+(osnap '(10.2 0.1 0) "_mid")
+(osnap '(15.1 10.1 0) "_cen")
+(osnap '(10 10 0) "_gcen")
+(osnap '(15.1 10.1 0) "_qua")
+(osnap '(10.3 -0.1 0) "_nea")
+(osnap '(15.1 10.1 0) "_nod")
+(osnap '(0.1 0.1 0) "_int")
+(osnap '(7.1 0.1 0) "_ins")
+_LINE
+30,10
+_PER
+20.1,12
+
+_LINE
+30,30
+_TAN
+14,13.5
+
+(osnap '(15.1 10.1 0) "_end")

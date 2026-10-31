@@ -96,7 +96,11 @@
       "color": "اللون",
       "linetype": "نوع الخط",
       "lweight": "وزن الخط",
-      "snap": "وضع الالتقاط"
+      "snap": "وضع الالتقاط",
+      "region": "منطقة",
+      "union": "اتحاد",
+      "subtract": "طرح",
+      "intersect": "تقاطع"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",
@@ -190,7 +194,8 @@
       "attdef": "{count, plural, one {تعريف سمة} two {تعريفا سمة} other {تعريفات سمات}}",
       "dimension": "{count, plural, one {بُعد} two {بُعدان} other {أبعاد}}",
       "hatch": "{count, plural, one {تهشير} two {تهشيران} other {تهشيرات}}",
-      "insert": "{count, plural, one {مرجع كتلة} two {مرجعا كتلة} other {مراجع كتل}}"
+      "insert": "{count, plural, one {مرجع كتلة} two {مرجعا كتلة} other {مراجع كتل}}",
+      "region": "{count, plural, one {منطقة} two {منطقتان} other {مناطق}}"
     },
     "array": {
       "rectangular": "مصفوفة (مستطيلة)",
@@ -377,7 +382,8 @@
         "dimScaleOverall": "المقياس الكلي للبُعد",
         "decimalSeparator": "الفاصل العشري",
         "suppressTrailingZeros": "حذف الأصفار اللاحقة",
-        "precision": "الدقة"
+        "precision": "الدقة",
+        "perimeter": "المحيط"
       },
       "value": {
         "yes": "نعم",

@@ -88,7 +88,8 @@ export const ar: EditorLocale = {
         "dimension": "بُعد",
         "dimchain": "متتابع",
         "attributes": "السمات",
-        "measure": "قياس"
+        "measure": "قياس",
+        "union": "تحرير المجسمات"
       },
       "sections": {
         "draw": "رسم",

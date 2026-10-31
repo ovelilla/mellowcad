@@ -50,6 +50,7 @@ desktop and tables answer in Spanish (skill `autocad-research`).
 | Modify | Move, Copy, Stretch, Rotate, Mirror, Scale | Desplazar, Copiar, Estirar, Girar, Simetría, Escala | GS 29B2169B-01D9-429B-9DCD-5D3552E5E68E | yes |
 |  | Offset, Trim, Extend, Fillet, Chamfer | Desfase, Recortar, Alargar, Empalme, Chaflán | same, C 696681C1-4B8B-4995-8903-CCE6686179EA | yes |
 |  | Explode, Join, Break, Break at point | Descomponer, Juntar, Partir, Partir en punto | C 4DC59885-3B10-4CEE-854B-4B5ADCD1A4EF, MAC D175DCD2-2050-4DA9-9965-1E94462718CA | yes (Partir en punto partial) |
+|  | Region; Union, Subtract, Intersect; Solid Editing | Región; Unión, Diferencia, Intersección; Editar sólidos | es-es acad.cuix, `ID_Region`, `ID_Union`, `ID_Subtract`, `ID_Intersect`, `ID_PanelSolidEdit` | yes |
 |  | Match properties | Igualar propiedades | C F1EB0CCC-49E4-4798-A12E-709795CAD1C2 | yes |
 |  | Array; Rectangular, Polar, Path array | Matriz; Matriz rectangular, Matriz polar, Matriz de camino | C 181BF535-D6F4-4B90-B04D-EB99C5488DAB; Matriz: the command's Spanish name, MATRIZ (console arrays/p103) | yes (Matriz partial) |
 | Annotate | Single line text, Edit | Texto en una línea, Editar | C 8739509C-15A7-4582-BF7C-3D83ED2A23B5 | yes |

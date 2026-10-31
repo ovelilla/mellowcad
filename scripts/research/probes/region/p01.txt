@@ -1,0 +1,27 @@
+_QAFLAGS
+2
+(getvar "DELOBJ")
+_LINE
+0,0
+10,0
+10,10
+0,10
+_C
+_CIRCLE
+30,5
+5
+_REGION
+_ALL
+
+_LIST
+_ALL
+
+_AREA
+_O
+_L
+_MASSPROP
+_L
+
+_N
+MPDUMP
+-

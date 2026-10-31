@@ -88,7 +88,8 @@ export const en: EditorCatalog = {
         "dimension": "Dimension",
         "dimchain": "Continue",
         "attributes": "Attributes",
-        "measure": "Measure"
+        "measure": "Measure",
+        "union": "Solid Editing"
       },
       "sections": {
         "draw": "Draw",

@@ -239,6 +239,8 @@ export class SelectTool implements Tool {
         case "array":
           this.beginArrayGrip(grip, grip.role.grip, input.screen, ctx)
           break
+        case "fixed":
+          break
       }
       return
     }

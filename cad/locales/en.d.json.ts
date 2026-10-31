@@ -98,6 +98,10 @@ declare const source: {
       "linetype": string
       "lweight": string
       "snap": string
+      "region": string
+      "union": string
+      "subtract": string
+      "intersect": string
     }
     "description": {
       "U": string
@@ -226,6 +230,7 @@ declare const source: {
       "dimension": string
       "hatch": string
       "insert": string
+      "region": string
     }
     "array": {
       "rectangular": string
@@ -413,6 +418,7 @@ declare const source: {
         "decimalSeparator": string
         "suppressTrailingZeros": string
         "precision": string
+        "perimeter": string
       }
       "value": {
         "yes": string
@@ -586,6 +592,10 @@ declare const source: {
       "-LINETYPE": string[]
       "LWEIGHT": string[]
       "-LWEIGHT": string[]
+      "REGION": string[]
+      "UNION": string[]
+      "SUBTRACT": string[]
+      "INTERSECT": string[]
     }
     "keywords": {
       "-OSNAP": {
@@ -2353,6 +2363,21 @@ declare const source: {
       "listArrayRotate": string
       "listArrayMethod": string
       "listArrayAlign": string
+      "regionNoneFound": string
+      "regionObjectsRejected": string
+      "regionOpenNotCoplanar": string
+      "regionLoopsExtracted": string
+      "regionLoopsRejected": string
+      "regionSelfIntersections": string
+      "regionsCreated": string
+      "nullRegion": string
+      "booleanNeedsTwo": string
+      "subtractFrom": string
+      "subtractWhat": string
+      "regionAreaReport": string
+      "listRegionArea": string
+      "listRegionPerimeter": string
+      "listRegionBounds": string
     }
     "feedback": {
       "snap": {

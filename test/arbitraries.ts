@@ -27,6 +27,7 @@ import {
   type MTextEntity,
   type PolylineEntity,
   type Polyline3dEntity,
+  type RegionEntity,
   type SplineEntity,
   type TextEntity,
   polylineFitted,
@@ -43,6 +44,8 @@ import { COLOR_BYLAYER } from "../cad/domain/colors"
 import { LINETYPES, LINETYPE_BYLAYER } from "../cad/domain/linetypes"
 import { LINEWEIGHTS, LINEWEIGHT_BYLAYER } from "../cad/domain/lineweights"
 import type { Vec2 } from "../cad/geometry/Vec2"
+import type { PlanarCurve } from "../cad/geometry/planarCurves"
+import type { RegionFace } from "../cad/geometry/planarRegions"
 import type { DrawingSnapshot } from "../cad/serialization/drawingFile"
 import { snapshotOf } from "./builders"
 
@@ -668,6 +671,114 @@ export const insertEntity: fc.Arbitrary<InsertEntity> = fc
     )
   )
 
+/**
+ * A face of a region: a circle, an ellipse, a polygon with a round hole, or
+ * a spline closed by a line — each kind of edge a region keeps.
+ */
+export const regionFace: fc.Arbitrary<RegionFace> = fc
+  .tuple(
+    fc.constantFrom("circle", "ellipse", "polygon", "spline"),
+    point,
+    positiveLength,
+    angle,
+    fc.integer({ min: 3, max: 6 }),
+    fc.boolean()
+  )
+  .map(([kind, center, radius, turn, sides, holed]): RegionFace => {
+    const at = (a: number, r = radius): Vec2 => ({
+      x: center.x + r * Math.cos(a),
+      y: center.y + r * Math.sin(a),
+    })
+    switch (kind) {
+      case "circle":
+        return {
+          loops: [
+            [
+              {
+                kind: "arc",
+                center,
+                radius,
+                startAngle: turn,
+                sweep: 2 * Math.PI,
+              },
+            ],
+          ],
+        }
+      case "ellipse":
+        return {
+          loops: [
+            [
+              {
+                kind: "ellipse",
+                center,
+                majorAxis: {
+                  x: radius * Math.cos(turn),
+                  y: radius * Math.sin(turn),
+                },
+                ratio: 0.5,
+                startParam: 0,
+                sweep: 2 * Math.PI,
+              },
+            ],
+          ],
+        }
+      case "polygon": {
+        const corners = Array.from({ length: sides }, (_, i) =>
+          at(turn + (2 * Math.PI * i) / sides)
+        )
+        const outline: PlanarCurve[] = corners.map((start, i) => ({
+          kind: "line",
+          start,
+          end: corners[(i + 1) % sides],
+        }))
+        const hole: PlanarCurve[] = [
+          {
+            kind: "arc",
+            center,
+            radius: radius / 4,
+            startAngle: 0,
+            sweep: -2 * Math.PI,
+          },
+        ]
+        return { loops: holed ? [outline, hole] : [outline] }
+      }
+      case "spline": {
+        const points = [0, 1, 2, 3].map((i) =>
+          at(
+            turn + (Math.PI * i) / 3,
+            i === 1 || i === 2 ? radius * 1.5 : radius
+          )
+        )
+        return {
+          loops: [
+            [
+              {
+                kind: "spline",
+                curve: {
+                  degree: 3,
+                  knots: [0, 0, 0, 0, 1, 1, 1, 1],
+                  controlPoints: points.map((p) => ({ ...p, z: 0 })),
+                },
+                from: 0,
+                to: 1,
+              },
+              { kind: "line", start: points[3], end: points[0] },
+            ],
+          ],
+        }
+      }
+    }
+  })
+
+export const regionEntity: fc.Arbitrary<RegionEntity> = fc
+  .array(regionFace, { minLength: 1, maxLength: 2 })
+  .map((faces) =>
+    withId<RegionEntity>(
+      { type: "region", layerId: DEFAULT_LAYER_ID, faces },
+      "region"
+    )
+  )
+
 export const entity: fc.Arbitrary<Entity> = fc
   .tuple(
     fc.oneof(
@@ -683,7 +794,8 @@ export const entity: fc.Arbitrary<Entity> = fc
       attdefEntity,
       dimensionEntity,
       hatchEntity,
-      insertEntity
+      insertEntity,
+      regionEntity
     ),
     zValue,
     zValue,

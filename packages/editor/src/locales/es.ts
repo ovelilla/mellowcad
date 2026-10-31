@@ -88,7 +88,8 @@ export const es: EditorLocale = {
         "dimension": "Cota",
         "dimchain": "Continua",
         "attributes": "Atributos",
-        "measure": "Medir"
+        "measure": "Medir",
+        "union": "Editar sólidos"
       },
       "sections": {
         "draw": "Dibujo",

@@ -54,6 +54,10 @@ CHAMFER ["CHA"] "Chamfer"
 ERASE ["E","DELETE"] "Erase"
 EXPLODE ["X"] "Explode"
 JOIN ["J"] "Join"
+REGION ["REG"] "Region"
+UNION ["UNI"] "Union"
+SUBTRACT ["SU"] "Subtract"
+INTERSECT ["IN"] "Intersect"
 BREAK ["BR"] "Break"
 BREAKATPOINT [] "Break at point"
 SPLINEDIT ["SPE"] "Edit Spline"
@@ -183,6 +187,10 @@ chamfer "Chamfer" CHA
 erase "Erase" E
 explode "Explode" X
 join "Join" J
+region "Region" REG
+union "Union" UNI
+subtract "Subtract" SU
+intersect "Intersect" IN
 break "Break" BR
 breakatpoint "Break at point" BREAKATPOINT
 splinedit "Edit Spline" SPE
@@ -4286,6 +4294,74 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   error| 0 objects joined, 2 objects discarded from the operation
 > escape
   command| *Cancel*
+
+## REGION UNION SUBTRACT INTERSECT
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> REGION
+  command| REGION
+  prompt| Select objects: ALL
+  info| 4 found
+  prompt| Select objects:
+  info| 4 loops extracted.
+  info| 1 loop rejected.
+  info|     Self intersections                     : 1 loop.
+  info| 3 Regions created.
+> REGION nothing
+  command| REGION
+  prompt| Select objects:
+  info| None found.
+> UNION one
+  command| UNION
+  prompt| Select objects: 300,20
+  info| 1 found
+  prompt| Select objects:
+  info| At least 2 solids, surfaces, or coplanar regions must be selected.
+> UNION
+  command| UNION
+  prompt| Select objects: 0,10
+  info| 1 found
+  prompt| Select objects: 50,60
+  info| 1 found, 2 total
+  prompt| Select objects:
+> SUBTRACT
+  command| SUBTRACT
+  info| Select solids, surfaces, and regions to subtract from ..
+  prompt| Select objects: 0,10
+  info| 1 found
+  prompt| Select objects:
+  info| Select solids, surfaces, and regions to subtract ..
+  prompt| Select objects: 300,20
+  info| 1 found
+  prompt| Select objects:
+> select the region
+  properties: Region (1) [Geometry: Area=17500.00 mm², Perimeter=600.00 mm]
+> escape
+  properties: -
+  command| *Cancel*
+> INTERSECT
+  command| CIRCLE
+  prompt| Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: 50,50
+  prompt| Specify radius of circle or [Diameter]: 200
+  command| REGION
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info| 1 loop extracted.
+  info| 1 Region created.
+  command| INTERSECT
+  prompt| Select objects: 0,10
+  info| 1 found
+  prompt| Select objects: 250,50
+  info| 1 found, 2 total
+  prompt| Select objects:
 
 ## JOIN made
 > start

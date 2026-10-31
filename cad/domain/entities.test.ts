@@ -1,3 +1,4 @@
+import { regionArea, regionGripPoints, regionPerimeter } from "./regions"
 import fc from "fast-check"
 import { describe, expect, it } from "vitest"
 import { V, type Vec2 } from "../geometry/Vec2"
@@ -777,6 +778,17 @@ function expectSameShape(actual: Entity, expected: Entity, precision = 6) {
       expected.patternAngle,
       precision
     )
+  } else if (actual.type === "region" && expected.type === "region") {
+    // The area keeps its sign: a reflection must turn the loops back.
+    expect(regionArea(actual)).toBeCloseTo(regionArea(expected), precision - 2)
+    expect(regionPerimeter(actual)).toBeCloseTo(
+      regionPerimeter(expected),
+      precision - 2
+    )
+    const grips = regionGripPoints(actual)
+    regionGripPoints(expected).forEach((point, i) =>
+      expect(grips[i]).toBeCloseToPoint(point, precision - 2)
+    )
   } else if (actual.type === "insert" && expected.type === "insert") {
     expect(actual.blockId).toBe(expected.blockId)
     expect(actual.position).toBeCloseToPoint(expected.position, precision)
@@ -822,6 +834,8 @@ function characteristicPoints(entity: Entity): Vec2[] {
       return entity.loops.flatMap((loop) => [...loop.vertices])
     case "insert":
       return [entity.position]
+    case "region":
+      return regionGripPoints(entity)
   }
 }
 

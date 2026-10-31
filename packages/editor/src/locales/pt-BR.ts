@@ -88,7 +88,8 @@ export const ptBR: EditorLocale = {
         "dimension": "Cota",
         "dimchain": "Continuar",
         "attributes": "Atributos",
-        "measure": "Medir"
+        "measure": "Medir",
+        "union": "Editar sólidos"
       },
       "sections": {
         "draw": "Desenhar",

@@ -1,0 +1,41 @@
+_QAFLAGS
+2
+_ZOOM
+_W
+-10,-10
+30,30
+_ARC
+0,0
+10,10
+20,0
+_LINE
+0,0
+20,0
+
+_ELLIPSE
+0,15
+10,15
+2
+_REGION
+_ALL
+
+MPGRIPS
+(osnap '(0.1 0.1 0) "_end")
+(osnap '(10 10.1 0) "_mid")
+(osnap '(10 0.1 0) "_cen")
+(osnap '(10.1 10 0) "_qua")
+(osnap '(5.1 15.1 0) "_cen")
+(osnap '(10 15.1 0) "_qua")
+(osnap '(5 17.1 0) "_qua")
+_UCS
+_X
+30
+_CIRCLE
+50,0
+5
+_REGION
+_L
+
+_UCS
+_W
+MPGRIPS

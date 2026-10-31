@@ -82,6 +82,7 @@ export function clipboardSnapshot(
         case "polyline":
         case "polyline3d":
         case "hatch":
+        case "region":
           break
         default: {
           const unhandled: never = entity

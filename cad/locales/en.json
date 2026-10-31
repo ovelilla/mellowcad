@@ -96,7 +96,11 @@
       "color": "Color",
       "linetype": "Linetype",
       "lweight": "Lineweight",
-      "snap": "Snap mode"
+      "snap": "Snap mode",
+      "region": "Region",
+      "union": "Union",
+      "subtract": "Subtract",
+      "intersect": "Intersect"
     },
     "description": {
       "U": "Undo the last action",
@@ -219,7 +223,8 @@
       "attdef": "{count, plural, one {Attribute Definition} other {Attribute Definitions}}",
       "dimension": "{count, plural, one {Dimension} other {Dimensions}}",
       "hatch": "{count, plural, one {Hatch} other {Hatches}}",
-      "insert": "{count, plural, one {Block Reference} other {Block References}}"
+      "insert": "{count, plural, one {Block Reference} other {Block References}}",
+      "region": "{count, plural, one {Region} other {Regions}}"
     },
     "array": {
       "rectangular": "Array (Rectangular)",
@@ -406,7 +411,8 @@
         "dimScaleOverall": "Dim scale overall",
         "decimalSeparator": "Decimal separator",
         "suppressTrailingZeros": "Suppress trailing zeros",
-        "precision": "Precision"
+        "precision": "Precision",
+        "perimeter": "Perimeter"
       },
       "value": {
         "yes": "Yes",
@@ -579,7 +585,11 @@
       "LINETYPE": ["LINETYPE", "LT", "LTYPE", "DDLTYPE"],
       "-LINETYPE": ["-LINETYPE", "-LT", "-LTYPE"],
       "LWEIGHT": ["LWEIGHT", "LW", "LINEWEIGHT"],
-      "-LWEIGHT": ["-LWEIGHT"]
+      "-LWEIGHT": ["-LWEIGHT"],
+      "REGION": ["REGION", "REG"],
+      "UNION": ["UNION", "UNI"],
+      "SUBTRACT": ["SUBTRACT", "SU"],
+      "INTERSECT": ["INTERSECT", "IN"]
     },
     "keywords": {
       "-OSNAP": {
@@ -2065,7 +2075,7 @@
       "joinTypeIs": "Join Type = {type, select, extend {Extend} add {Add segment} other {Both (Extend or Add)}}",
       "notAFitPoint": "Not a fit point.",
       "notAControlVertex": "Not a control vertex.",
-      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTE DEFINITION} attribute {ATTRIBUTE} dimension {DIMENSION} hatch {HATCH} insert {BLOCK REFERENCE} other {ARRAY}}",
+      "listObjectName": "{name, select, line {LINE} circle {CIRCLE} arc {ARC} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLYLINE} vertex {VERTEX} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {ATTRIBUTE DEFINITION} attribute {ATTRIBUTE} dimension {DIMENSION} hatch {HATCH} insert {BLOCK REFERENCE} region {REGION} other {ARRAY}}",
       "listObject": "                  {name}  Layer: \"{layer}\"",
       "listSpace": "                            Space: Model space",
       "listColor": "                   Color: {color}    Linetype: \"{linetype}\"",
@@ -2213,7 +2223,22 @@
       "listArrayDirection": "                Direction:  {direction, select, clockwise {       CW} other {      CCW}}",
       "listArrayRotate": "           Rotate objects:  {answer, select, yes {      Yes} other {       No}}",
       "listArrayMethod": "          Method:  {method, select, measure {  Measure} other {   Divide}}",
-      "listArrayAlign": "              Align items:  {answer, select, yes {      Yes} other {       No}}"
+      "listArrayAlign": "              Align items:  {answer, select, yes {      Yes} other {       No}}",
+      "regionNoneFound": "None found.",
+      "regionObjectsRejected": "{count, plural, one {# closed, degenerate or unsupported object rejected.} other {# closed, degenerate or unsupported objects rejected.}}",
+      "regionOpenNotCoplanar": "Open objects must be coplanar.",
+      "regionLoopsExtracted": "{count, plural, one {# loop extracted.} other {# loops extracted.}}",
+      "regionLoopsRejected": "{count, plural, one {# loop rejected.} other {# loops rejected.}}",
+      "regionSelfIntersections": "    Self intersections                     : {count, plural, one {# loop.} other {# loops.}}",
+      "regionsCreated": "{count, plural, one {# Region created.} other {# Regions created.}}",
+      "nullRegion": "Null region created - deleted",
+      "booleanNeedsTwo": "At least 2 solids, surfaces, or coplanar regions must be selected.",
+      "subtractFrom": "Select solids, surfaces, and regions to subtract from ..",
+      "subtractWhat": "Select solids, surfaces, and regions to subtract ..",
+      "regionAreaReport": "Area = {area}, Trimmed area = {trimmed} , Perimeter = {around}",
+      "listRegionArea": "                             Area: {area}",
+      "listRegionPerimeter": "                        Perimeter: {perimeter}",
+      "listRegionBounds": "   Bounding Box: Lower Bound X = {minX}, Y = {minY}, Z = {minZ}\n                 Upper Bound X = {maxX}, Y = {maxY}, Z = {maxZ}"
     },
     "feedback": {
       "snap": {

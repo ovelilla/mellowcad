@@ -88,6 +88,7 @@ export function continuePoint(
       case "dimension":
       case "hatch":
       case "insert":
+      case "region":
         break
       default: {
         const unhandled: never = entity
@@ -146,6 +147,7 @@ export function lastDrawnDirection(
       case "dimension":
       case "hatch":
       case "insert":
+      case "region":
         break
       default: {
         const unhandled: never = entity

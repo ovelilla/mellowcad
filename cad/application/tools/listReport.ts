@@ -1,3 +1,5 @@
+import { regionArea, regionPerimeter } from "../../domain/regions"
+import { curveBox, curveTessellation } from "../../geometry/planarCurves"
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, add3, cross3, length3, sub3 } from "../../geometry/Vec3"
 import { axesToWorld } from "../../geometry/ocs"
@@ -13,6 +15,7 @@ import type {
   EllipseEntity,
   Entity,
   HatchEntity,
+  RegionEntity,
   InsertEntity,
   LineEntity,
   MTextEntity,
@@ -104,6 +107,7 @@ type ObjectName =
   | "hatch"
   | "insert"
   | "array"
+  | "region"
 
 /** What the header line reads an object's appearance from. */
 interface Wearing {
@@ -184,6 +188,9 @@ class Report {
       case "insert":
         if (entity.array) this.array(entity)
         else this.insert(entity)
+        break
+      case "region":
+        this.region(entity)
         break
     }
     return this.lines
@@ -870,6 +877,42 @@ class Report {
     // DIMRADIUS and DIMDIAMETER place the text themselves (p416, p439).
     if (radial) this.say("listDimensionOverrides")
     this.say("listDimensionAnnotative")
+  }
+
+  /**
+   * Its area, its perimeter and its box in the UCS (region/p01, p07), the
+   * box's coordinates left-aligned in nine as the console pads them.
+   */
+  private region(region: RegionEntity): void {
+    this.header("region", region)
+    this.say("listRegionArea", { area: this.length(regionArea(region)) })
+    this.say("listRegionPerimeter", {
+      perimeter: this.length(regionPerimeter(region)),
+    })
+    const points = region.faces.flatMap((face) =>
+      face.loops.flatMap((loop) =>
+        loop.flatMap((edge) => {
+          // Within a ten-millionth of its size: past what LUPREC can show.
+          const box = curveBox(edge)
+          const size = V.distance(box.min, box.max)
+          return curveTessellation(edge, Math.max(size * 1e-7, 1e-12)).points
+        })
+      )
+    )
+    const placed = points.map((p) => this.at(region, p))
+    const low = (axis: "x" | "y" | "z") =>
+      Math.min(...placed.map((p) => p[axis]))
+    const high = (axis: "x" | "y" | "z") =>
+      Math.max(...placed.map((p) => p[axis]))
+    const left = (value: number) => this.length(value).padEnd(9)
+    this.say("listRegionBounds", {
+      minX: left(low("x")),
+      minY: left(low("y")),
+      minZ: left(low("z")),
+      maxX: left(high("x")),
+      maxY: left(high("y")),
+      maxZ: left(high("z")),
+    })
   }
 
   private hatch(hatch: HatchEntity): void {

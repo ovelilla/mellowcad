@@ -156,6 +156,7 @@ export function implicitEdges(o: Entity): ImplicitEdge[] {
     case "dimension":
     case "hatch":
     case "insert":
+    case "region":
       return []
   }
 }

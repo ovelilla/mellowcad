@@ -2062,7 +2062,7 @@ export interface DocumentReader {
 }
 
 export type { Entity }
-export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity;
+export type Entity = LineEntity | CircleEntity | ArcEntity | EllipseEntity | SplineEntity | PolylineEntity | Polyline3dEntity | TextEntity | MTextEntity | AttributeDefinitionEntity | DimensionEntity | HatchEntity | InsertEntity | RegionEntity;
 
 export type { EntityColor }
 /**
@@ -2133,7 +2133,7 @@ export type EntityProperty = "startX" | "startY" | "endX" | "endY" | "radius" | 
  | "arrayAlignItems" | ZProperty;
 
 export type { EntityType }
-export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert";
+export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region";
 
 export { formatAngle }
 export declare function formatAngle(degrees: number, settings: DocumentSettings): string;
@@ -3439,6 +3439,17 @@ export interface HatchLoop {
 
 // domain/entityTypes.ts
 /**
+ * REGION's object: a bounded area of one plane, as the kernel's faces of
+ * loops of edges (`geometry/planarRegions.ts`) in the OCS of its normal, at
+ * its elevation. It has no thickness: DXF gives a region none.
+ */
+export interface RegionEntity extends BaseEntity {
+    readonly type: "region";
+    readonly faces: readonly RegionFace[];
+}
+
+// domain/entityTypes.ts
+/**
  * The objects AutoCAD extrudes by a thickness (DXF 39): "lines, arcs, circles,
  * polylines" among the ones modelled here. Absent means 0; negative extrudes
  * down.
@@ -3814,8 +3825,77 @@ export type Linear2 = readonly [
 ];
 
 // geometry/nurbs.ts
+/**
+ * A B-spline in space: `knots.length === controlPoints.length + degree + 1`.
+ * A planar curve's control points share one Z.
+ * Its domain is `[knots[degree], knots[knots.length - degree - 1]]`, so one
+ * shape serves the clamped curves (whose ends are their first and last control
+ * points) and the periodic ones (whose control points wrap round).
+ */
+export interface BSplineCurve {
+    readonly degree: number;
+    readonly knots: readonly number[];
+    readonly controlPoints: readonly Vec3[];
+    /** One positive weight per control point: a rational curve (DXF 41). Absent, every weight is 1. */
+    readonly weights?: readonly number[];
+}
+
+// geometry/nurbs.ts
 /** AutoCAD's knot parameterizations (SPLKNOTS 0, 1, 2). */
 export type KnotParameterization = "chord" | "sqrtChord" | "uniform";
+
+// geometry/planarCurves.ts
+/**
+ * An edge of a planar region in its plane's coordinates, with a direction of
+ * travel. Each kind keeps the curve it lies on exactly: an arc its circle, an
+ * elliptical arc its ellipse, a spline piece its whole NURBS and the stretch of
+ * parameter it runs over, so a piece cut from a piece is still that curve.
+ *
+ * - `arc`: from `startAngle`, `sweep` radians, counter-clockwise when positive,
+ *   a whole turn at most.
+ * - `ellipse`: the points `center + majorAxis·cos t + minor·sin t`, minor being
+ *   the major axis turned a quarter counter-clockwise and scaled by `ratio`,
+ *   for `t` from `startParam` over `sweep`.
+ * - `spline`: the NURBS from parameter `from` to `to`; `to < from` runs it
+ *   backwards. Its control points lie at Z 0.
+ */
+export type PlanarCurve = {
+    readonly kind: "line";
+    readonly start: Vec2;
+    readonly end: Vec2;
+} | {
+    readonly kind: "arc";
+    readonly center: Vec2;
+    readonly radius: number;
+    readonly startAngle: number;
+    readonly sweep: number;
+} | {
+    readonly kind: "ellipse";
+    readonly center: Vec2;
+    readonly majorAxis: Vec2;
+    readonly ratio: number;
+    readonly startParam: number;
+    readonly sweep: number;
+} | {
+    readonly kind: "spline";
+    readonly curve: BSplineCurve;
+    readonly from: number;
+    readonly to: number;
+};
+
+// geometry/planarRegions.ts
+/**
+ * The topology of a planar region, the kernel's first: a region is faces, a
+ * face is loops, a loop is edges run end to end. A face's first loop is its
+ * outline, counter-clockwise; the others are its holes, clockwise, so the
+ * face is always on an edge's left. Faces never overlap.
+ */
+export type RegionLoop = readonly PlanarCurve[];
+
+// geometry/planarRegions.ts
+export interface RegionFace {
+    readonly loops: readonly RegionLoop[];
+}
 
 // i18n/keywords.ts
 /** A keyword on offer: its global id, and the word in the command language. */

@@ -1,3 +1,4 @@
+import { regionGripPoints } from "../../domain/regions"
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, withZ } from "../../geometry/Vec3"
 import {
@@ -318,6 +319,11 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
           })
         }
         break
+      case "region":
+        for (const point of regionGripPoints(entity)) {
+          grips.push({ entityId: id, role: { kind: "fixed" }, world: point })
+        }
+        break
       default: {
         const unhandled: never = entity
         void unhandled
@@ -333,7 +339,8 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
     if (
       planeAxes(entity) &&
       entity.type !== "spline" &&
-      grip.role.kind !== "move"
+      grip.role.kind !== "move" &&
+      grip.role.kind !== "fixed"
     )
       continue
     lifted.push({

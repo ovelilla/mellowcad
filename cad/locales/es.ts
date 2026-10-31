@@ -100,7 +100,11 @@ export const es: EngineLocale = {
       "color": "Color",
       "linetype": "Tipo de línea",
       "lweight": "Grosor de línea",
-      "snap": "Modo Forzcursor"
+      "snap": "Modo Forzcursor",
+      "region": "Región",
+      "union": "Unión",
+      "subtract": "Diferencia",
+      "intersect": "Intersección"
     },
     "description": {
       "U": "Deshacer la última acción",
@@ -309,6 +313,16 @@ export const es: EngineLocale = {
           {
             "one": "Referencia a bloque",
             "other": "Referencias a bloque"
+          }
+        ]
+      ],
+      "region": [
+        [
+          "count",
+          2,
+          {
+            "one": "Región",
+            "other": "Regiones"
           }
         ]
       ]
@@ -528,7 +542,8 @@ export const es: EngineLocale = {
         "dimScaleOverall": "Escala global de cota",
         "decimalSeparator": "Separador decimal",
         "suppressTrailingZeros": "Suprimir ceros finales",
-        "precision": "Precisión"
+        "precision": "Precisión",
+        "perimeter": "Perímetro"
       },
       "value": {
         "yes": "Sí",
@@ -1053,6 +1068,22 @@ export const es: EngineLocale = {
       ],
       "-LWEIGHT": [
         "-GROSORLIN"
+      ],
+      "REGION": [
+        "REGION",
+        "REG"
+      ],
+      "UNION": [
+        "UNION",
+        "UNI"
+      ],
+      "SUBTRACT": [
+        "DIFERENCIA",
+        "DIF"
+      ],
+      "INTERSECT": [
+        "INTERSEC",
+        "INT"
       ]
     },
     "keywords": {
@@ -4621,6 +4652,7 @@ export const es: EngineLocale = {
             "dimension": "ACOTACION",
             "hatch": "HATCH",
             "insert": "REFERENCIA A BLOQUE",
+            "region": "REGION",
             "other": "MATRIZ"
           }
         ]
@@ -5901,6 +5933,150 @@ export const es: EngineLocale = {
             "yes": "       Sí",
             "other": "       No"
           }
+        ]
+      ],
+      "regionNoneFound": "No se ha encontrado ninguno.",
+      "regionObjectsRejected": [
+        "Se ha rechazado ",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " objeto"
+            ],
+            "other": [
+              0,
+              " objetos"
+            ]
+          }
+        ],
+        " cerrado, dañado o no admitido."
+      ],
+      "regionOpenNotCoplanar": "Los objetos abiertos deben ser coplanares.",
+      "regionLoopsExtracted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " bucle"
+            ],
+            "other": [
+              0,
+              " bucles"
+            ]
+          }
+        ],
+        " extraído(s)."
+      ],
+      "regionLoopsRejected": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " bucle"
+            ],
+            "other": [
+              0,
+              " bucles"
+            ]
+          }
+        ],
+        " rechazado(s)."
+      ],
+      "regionSelfIntersections": [
+        "    Autointersecciones                     : ",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " bucle."
+            ],
+            "other": [
+              0,
+              " bucles."
+            ]
+          }
+        ]
+      ],
+      "regionsCreated": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " región"
+            ],
+            "other": [
+              0,
+              " regiones"
+            ]
+          }
+        ],
+        " creada(s)."
+      ],
+      "nullRegion": "Región nula creada - eliminada.",
+      "booleanNeedsTwo": "Hay que designar al menos 2 sólidos, superficies o regiones coplanares.",
+      "subtractFrom": "Designe sólidos, superficies y regiones de las que sustraer...",
+      "subtractWhat": "Designe sólidos, superficies y regiones de las que sustraer...",
+      "regionAreaReport": [
+        "Área = ",
+        [
+          "area"
+        ],
+        ", área recortada = ",
+        [
+          "trimmed"
+        ],
+        " , Perímetro = ",
+        [
+          "around"
+        ]
+      ],
+      "listRegionArea": [
+        "                             Área: ",
+        [
+          "area"
+        ]
+      ],
+      "listRegionPerimeter": [
+        "                        Perímetro: ",
+        [
+          "perimeter"
+        ]
+      ],
+      "listRegionBounds": [
+        "Cuadro delimitador: Límite inferior X = ",
+        [
+          "minX"
+        ],
+        ", Y = ",
+        [
+          "minY"
+        ],
+        ", Z = ",
+        [
+          "minZ"
+        ],
+        "\n                 Límite superior X = ",
+        [
+          "maxX"
+        ],
+        ", Y = ",
+        [
+          "maxY"
+        ],
+        ", Z = ",
+        [
+          "maxZ"
         ]
       ]
     },

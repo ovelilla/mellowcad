@@ -66,6 +66,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | Match properties | مطابقة الخصائص (C) |
 |  | Change properties | تغيير الخصائص (C) |
 |  | Array; Rectangular, Polar, Path array | مصفوفة؛ مصفوفة مستطيلة، قطبية، على مسار (M) |
+|  | Region, Union, Subtract, Intersect | منطقة، اتحاد، طرح، تقاطع (C) |
 | Annotate | Single line text, Edit | نص بسطر واحد، تحرير (C) |
 |  | Linear, Aligned, Angular, Radius, Diameter, Baseline, Continue, Adjust space | خطي، محاذٍ، زاوي، نصف القطر، القطر، خط أساس، متتابع، تباعد (C) † |
 | Block | Create block, Insert, Purge | إنشاء كتلة، إدراج، تنظيف (C) † |

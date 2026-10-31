@@ -1,0 +1,25 @@
+_QAFLAGS
+2
+_RECTANG
+0,0
+20,20
+_CIRCLE
+40,10
+5
+_REGION
+_ALL
+
+(cdr (assoc 5 (entget (ssname (ssget "_X") 0))))
+(cdr (assoc 5 (entget (ssname (ssget "_X") 1))))
+MPGRIPS
+MPGRIPMOVE
+(cdr (assoc 5 (entget (ssname (ssget "_X" '((0 . "REGION"))) 1))))
+1
+5,3
+MPGRIPMOVE
+(cdr (assoc 5 (entget (ssname (ssget "_X" '((0 . "REGION"))) 0))))
+0
+5,3
+MPGRIPS
+MPDUMP
+-

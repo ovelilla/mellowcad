@@ -100,7 +100,11 @@ export const en: EngineCatalog = {
       "color": "Color",
       "linetype": "Linetype",
       "lweight": "Lineweight",
-      "snap": "Snap mode"
+      "snap": "Snap mode",
+      "region": "Region",
+      "union": "Union",
+      "subtract": "Subtract",
+      "intersect": "Intersect"
     },
     "description": {
       "U": "Undo the last action",
@@ -315,6 +319,16 @@ export const en: EngineCatalog = {
           {
             "one": "Block Reference",
             "other": "Block References"
+          }
+        ]
+      ],
+      "region": [
+        [
+          "count",
+          2,
+          {
+            "one": "Region",
+            "other": "Regions"
           }
         ]
       ]
@@ -534,7 +548,8 @@ export const en: EngineCatalog = {
         "dimScaleOverall": "Dim scale overall",
         "decimalSeparator": "Decimal separator",
         "suppressTrailingZeros": "Suppress trailing zeros",
-        "precision": "Precision"
+        "precision": "Precision",
+        "perimeter": "Perimeter"
       },
       "value": {
         "yes": "Yes",
@@ -1071,6 +1086,22 @@ export const en: EngineCatalog = {
       ],
       "-LWEIGHT": [
         "-LWEIGHT"
+      ],
+      "REGION": [
+        "REGION",
+        "REG"
+      ],
+      "UNION": [
+        "UNION",
+        "UNI"
+      ],
+      "SUBTRACT": [
+        "SUBTRACT",
+        "SU"
+      ],
+      "INTERSECT": [
+        "INTERSECT",
+        "IN"
       ]
     },
     "keywords": {
@@ -4142,6 +4173,7 @@ export const en: EngineCatalog = {
             "dimension": "DIMENSION",
             "hatch": "HATCH",
             "insert": "BLOCK REFERENCE",
+            "region": "REGION",
             "other": "ARRAY"
           }
         ]
@@ -5422,6 +5454,145 @@ export const en: EngineCatalog = {
             "yes": "      Yes",
             "other": "       No"
           }
+        ]
+      ],
+      "regionNoneFound": "None found.",
+      "regionObjectsRejected": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " closed, degenerate or unsupported object rejected."
+            ],
+            "other": [
+              0,
+              " closed, degenerate or unsupported objects rejected."
+            ]
+          }
+        ]
+      ],
+      "regionOpenNotCoplanar": "Open objects must be coplanar.",
+      "regionLoopsExtracted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " loop extracted."
+            ],
+            "other": [
+              0,
+              " loops extracted."
+            ]
+          }
+        ]
+      ],
+      "regionLoopsRejected": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " loop rejected."
+            ],
+            "other": [
+              0,
+              " loops rejected."
+            ]
+          }
+        ]
+      ],
+      "regionSelfIntersections": [
+        "    Self intersections                     : ",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " loop."
+            ],
+            "other": [
+              0,
+              " loops."
+            ]
+          }
+        ]
+      ],
+      "regionsCreated": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " Region created."
+            ],
+            "other": [
+              0,
+              " Regions created."
+            ]
+          }
+        ]
+      ],
+      "nullRegion": "Null region created - deleted",
+      "booleanNeedsTwo": "At least 2 solids, surfaces, or coplanar regions must be selected.",
+      "subtractFrom": "Select solids, surfaces, and regions to subtract from ..",
+      "subtractWhat": "Select solids, surfaces, and regions to subtract ..",
+      "regionAreaReport": [
+        "Area = ",
+        [
+          "area"
+        ],
+        ", Trimmed area = ",
+        [
+          "trimmed"
+        ],
+        " , Perimeter = ",
+        [
+          "around"
+        ]
+      ],
+      "listRegionArea": [
+        "                             Area: ",
+        [
+          "area"
+        ]
+      ],
+      "listRegionPerimeter": [
+        "                        Perimeter: ",
+        [
+          "perimeter"
+        ]
+      ],
+      "listRegionBounds": [
+        "   Bounding Box: Lower Bound X = ",
+        [
+          "minX"
+        ],
+        ", Y = ",
+        [
+          "minY"
+        ],
+        ", Z = ",
+        [
+          "minZ"
+        ],
+        "\n                 Upper Bound X = ",
+        [
+          "maxX"
+        ],
+        ", Y = ",
+        [
+          "maxY"
+        ],
+        ", Z = ",
+        [
+          "maxZ"
         ]
       ]
     },

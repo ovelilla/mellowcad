@@ -1,0 +1,23 @@
+_QAFLAGS
+2
+_ZOOM
+_W
+-10,-10
+40,30
+_RECTANG
+0,0
+10,10
+_CIRCLE
+25,5
+5
+_REGION
+_ALL
+_DIMLINEAR
+
+10,5
+20,5
+_DIMLINEAR
+
+20,5
+20,15
+(foreach e (list (entget (entlast))) (princ (list (assoc 13 e) (assoc 14 e))))

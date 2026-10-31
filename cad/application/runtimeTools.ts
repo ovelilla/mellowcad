@@ -45,6 +45,8 @@ import { ChamferTool } from "./tools/ChamferTool"
 import { EraseTool } from "./tools/EraseTool"
 import { ExplodeTool } from "./tools/ExplodeTool"
 import { JoinTool } from "./tools/JoinTool"
+import { RegionTool } from "./tools/RegionTool"
+import { RegionBooleanTool, SubtractTool } from "./tools/RegionBooleanTool"
 import { BreakTool } from "./tools/BreakTool"
 import { SplineEditTool } from "./tools/SplineEditTool"
 import { PolylineEditTool } from "./tools/PolylineEditTool"
@@ -160,6 +162,10 @@ export function defaultTools(
     new EraseTool(),
     new ExplodeTool(),
     new JoinTool(),
+    new RegionTool(),
+    new RegionBooleanTool("union"),
+    new SubtractTool(),
+    new RegionBooleanTool("intersect"),
     new BreakTool("gap", "break"),
     new BreakTool("atPoint", "breakatpoint"),
     new SplineEditTool(),

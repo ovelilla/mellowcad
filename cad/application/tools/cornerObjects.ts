@@ -523,6 +523,7 @@ function middleOf(entity: Entity): Vec2 | null {
     case "dimension":
     case "hatch":
     case "insert":
+    case "region":
       return null
     default: {
       const unhandled: never = entity

@@ -80,6 +80,7 @@ declare const source: {
       "dimchain": string
       "attributes": string
       "measure": string
+      "union": string
     }
     "sections": {
       "draw": string

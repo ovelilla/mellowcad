@@ -56,6 +56,8 @@ export function assignEntityLayer(entity: Entity, layerId: LayerId): Entity {
       return { ...entity, layerId }
     case "insert":
       return { ...entity, layerId }
+    case "region":
+      return { ...entity, layerId }
   }
 }
 
@@ -95,6 +97,8 @@ export function assignEntityColor(
       return { ...entity, color }
     case "insert":
       return { ...entity, color }
+    case "region":
+      return { ...entity, color }
   }
 }
 
@@ -133,6 +137,8 @@ export function assignEntityLinetype(
       return { ...entity, linetype }
     case "insert":
       return { ...entity, linetype }
+    case "region":
+      return { ...entity, linetype }
   }
 }
 
@@ -170,6 +176,8 @@ export function assignEntityLineweight(
     case "hatch":
       return { ...entity, lineweight }
     case "insert":
+      return { ...entity, lineweight }
+    case "region":
       return { ...entity, lineweight }
   }
 }
