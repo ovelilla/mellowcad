@@ -22,6 +22,23 @@ type Rewrite = { source: string; destination: string }
 export interface LocaleRouting {
   readonly locales: readonly string[]
   readonly defaultLocale: string
+  readonly localePrefix?:
+    | string
+    | { readonly prefixes?: Readonly<Partial<Record<string, string>>> }
+    | { readonly mode: "never" }
+}
+
+/**
+ * Each language's first path segment: its prefix without the slash where it
+ * has one (`pt-br` for `pt-BR`), else its tag. The rules below match and
+ * write segments, never tags.
+ */
+function segments({ locales, localePrefix }: LocaleRouting): string[] {
+  const prefixes =
+    typeof localePrefix === "object" && "prefixes" in localePrefix
+      ? localePrefix.prefixes
+      : undefined
+  return locales.map((locale) => prefixes?.[locale]?.slice(1) ?? locale)
 }
 
 export function localeRedirects({ defaultLocale }: LocaleRouting): Redirect[] {
@@ -42,11 +59,11 @@ export function localeRedirects({ defaultLocale }: LocaleRouting): Redirect[] {
  * (`/docs/engine.md`, `/es/docs/…md`), served by `[locale]/docs-md`, a route
  * handler, since a page cannot answer two formats.
  */
-export function markdownRewrites({
-  locales,
-  defaultLocale,
-}: LocaleRouting): Rewrite[] {
-  const prefixed = locales.filter((locale) => locale !== defaultLocale)
+export function markdownRewrites(routing: LocaleRouting): Rewrite[] {
+  const { defaultLocale } = routing
+  const prefixed = segments(routing).filter(
+    (segment) => segment !== defaultLocale
+  )
   return [
     {
       source: "/docs/:slug+.md",
@@ -68,11 +85,9 @@ export const NOT_FOUND_PATH = "/404"
  * is where `[locale]` lives. A first segment that is a locale, or that starts
  * with `_` (the framework's and the platform's own paths), is left alone.
  */
-export function localeRewrites({
-  locales,
-  defaultLocale,
-}: LocaleRouting): Rewrite[] {
-  const prefixes = locales.join("|")
+export function localeRewrites(routing: LocaleRouting): Rewrite[] {
+  const { defaultLocale } = routing
+  const prefixes = segments(routing).join("|")
   return [
     { source: "/", destination: `/${defaultLocale}` },
     // WHY: Vercel turns a router request (`RSC` header) into a path before
@@ -98,10 +113,10 @@ export function localeRewrites({
  * unknown path of a language gets that language's prerendered 404 — English
  * ones arrive here already rewritten under `/en`.
  */
-export function localeFallbacks({ locales }: LocaleRouting): Rewrite[] {
+export function localeFallbacks(routing: LocaleRouting): Rewrite[] {
   return [
     {
-      source: `/:locale(${locales.join("|")})/:path*`,
+      source: `/:locale(${segments(routing).join("|")})/:path*`,
       destination: `/:locale${NOT_FOUND_PATH}`,
     },
   ]

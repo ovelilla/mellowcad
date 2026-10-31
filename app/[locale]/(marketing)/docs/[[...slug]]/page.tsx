@@ -11,7 +11,7 @@ import { DocsSearch } from "@/components/docs/docs-search"
 import { DocsToc } from "@/components/docs/docs-toc"
 import { ForwardArrow } from "@/components/marketing/forward-arrow"
 import { localePath } from "@/i18n/navigation"
-import { DIRECTION, type AppLocale } from "@/i18n/routing"
+import { DIRECTION, type AppLocale, segmentLocale } from "@/i18n/routing"
 import { docsSource } from "@/lib/docs/docs-source"
 import { DOCS_PACKAGES, DOCS_PATH } from "@/lib/docs/packages"
 import {
@@ -31,10 +31,12 @@ import { SITE_NAME } from "@/lib/site"
 export const dynamicParams = false
 
 export function generateStaticParams({
-  params: { locale },
+  params,
 }: {
   params: { locale: string }
 }) {
+  const locale = segmentLocale(params.locale)
+  if (!locale) return []
   return [
     { slug: [] },
     ...docsSource.getPages(locale).map((page) => ({ slug: page.slugs })),
@@ -50,7 +52,7 @@ export async function generateMetadata({
   params,
 }: PageProps<"/[locale]/docs/[[...slug]]">): Promise<Metadata> {
   const { slug } = await params
-  const { page } = await find(slug)
+  const { locale, page } = await find(slug)
   const t = await getTranslations("Docs")
   if (!page) {
     return {
@@ -70,7 +72,10 @@ export async function generateMetadata({
       path: canonicalPath(page),
       title: `${page.data.title} · ${SITE_NAME}`,
       description: page.data.description,
-      contentLocale: isTranslated(page) ? undefined : pageLanguage(page),
+      contentLocale:
+        isTranslated(page) && pageLanguage(page) === locale
+          ? undefined
+          : pageLanguage(page),
     })),
   }
 }

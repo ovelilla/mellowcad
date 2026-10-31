@@ -8,7 +8,7 @@ import type { VFile } from "vfile"
 /** The engine's catalogs, its words' one source. */
 const CATALOGS = "cad/locales"
 
-const LOCALE_SUFFIX = /\.([a-z]{2})\.mdx$/
+const LOCALE_SUFFIX = /\.([a-z]{2}(?:-[A-Z]{2})?)\.mdx$/
 
 type Catalog = { commands?: { names?: Record<string, readonly string[]> } }
 

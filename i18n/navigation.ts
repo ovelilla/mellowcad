@@ -4,11 +4,13 @@ import {
   type AppLocale,
   LANGUAGE_NAMES,
   LIVE_LOCALES,
+  localeSegment,
   routing,
 } from "./routing"
 
 /**
- * A path in `locale`: `/draw` in English, `/es/draw` in Spanish — what
+ * A path in `locale`: `/draw` in English, `/es/draw` in Spanish, `/pt-br/draw`
+ * in Brazilian Portuguese — what
  * next-intl's `getPathname` gives for this routing (slugs are not translated,
  * so it only adds the prefix; a test holds the two together). Every link to a
  * page of the site is built with it.
@@ -21,7 +23,8 @@ import {
  */
 export function localePath(locale: AppLocale, href: string): string {
   if (locale === routing.defaultLocale) return href
-  return href === "/" ? `/${locale}` : `/${locale}${href}`
+  const segment = localeSegment(locale)
+  return href === "/" ? `/${segment}` : `/${segment}${href}`
 }
 
 /** The same path as a full URL on the canonical host, for metadata and feeds. */
@@ -36,10 +39,10 @@ export function localeUrl(locale: AppLocale, href: string): string {
  * same on the server and in the browser.
  */
 export function unlocalizedPath(pathname: string): string {
-  for (const locale of routing.locales) {
-    if (pathname === `/${locale}`) return "/"
-    if (pathname.startsWith(`/${locale}/`)) {
-      return pathname.slice(locale.length + 1)
+  for (const segment of routing.locales.map(localeSegment)) {
+    if (pathname === `/${segment}`) return "/"
+    if (pathname.startsWith(`/${segment}/`)) {
+      return pathname.slice(segment.length + 1)
     }
   }
   return pathname

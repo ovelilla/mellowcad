@@ -46,6 +46,10 @@
       "types": "./dist/locales/ar.d.ts",
       "default": "./dist/locales/ar.js"
     },
+    "./locales/pt-BR": {
+      "types": "./dist/locales/pt-BR.d.ts",
+      "default": "./dist/locales/pt-BR.js"
+    },
     "./styles.css": "./dist/styles.css",
     "./package.json": "./package.json"
   },

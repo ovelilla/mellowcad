@@ -1,7 +1,7 @@
 # Un sistema para los idiomas — brief
 
 > **Estado:** fases 1 a 4 hechas (2026-10-31); la 5, en curso: plan `docs/plans/pt-BR-language.md`,
-> su fase 0 hecha. Se borra cuando el portugués de Brasil esté `live` con el sistema entero.
+> sus fases 0 y 1 hechas (`pt-BR` registrado como `draft` en `/pt-br`). Se borra cuando el portugués de Brasil esté `live` con el sistema entero.
 
 ## 1. Objetivo
 
@@ -117,4 +117,8 @@ Una fase, un commit (o varios si se separan solos). Las 1 a 4 no cambian nada vi
    (`LInha`), 991 propuestas. Lo que no encajó, corregido en el sistema: `forms()` quitaba
    `(or|o|u)` fijo en vez del «ou» del idioma, y `probe.sh` solo reconocía los sufijos `.es` y `.en`.
    La URL es `/pt-br`: el segmento `[locale]` lleva el prefijo de `localePrefix.prefixes` y
-   `i18n/request.ts` lo traduce a la etiqueta (fase 1 del plan).
+   `i18n/request.ts` lo traduce a la etiqueta. Fase 1 hecha: `pt-BR` registrado como `draft`, con
+   catálogos vacíos y su `docs/i18n/pt-BR.md`; lo que no encajó, corregido en el sistema: los
+   sufijos de idioma de las páginas de `/docs` (solo dos letras), el nombre exportado de un
+   catálogo con región (`ptBR`), y una página «Use» que le falta a un draft cae al inglés en vez
+   de romper `docs:check` (`isTranslated` cuenta solo los idiomas `live`).

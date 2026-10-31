@@ -106,6 +106,14 @@ export function compileCatalog(tag: string, source: Record<string, Json>) {
   }
 }
 
+/**
+ * The name a catalog module exports: its tag, but a region's hyphen dropped
+ * (`ptBR` from `pt-BR`), since a tag with one is no identifier.
+ */
+export function catalogExport(tag: string): string {
+  return tag.replace("-", "")
+}
+
 /** The text of `cad/locales/<tag>.ts`, exactly as it is committed. */
 export function localeModule(
   tag: string,
@@ -121,7 +129,7 @@ export function localeModule(
     `// Generated from ${tag}.json by \`npm run locales\`. Do not edit.`,
     `import type { ${type} } from "./types"`,
     "",
-    `export const ${tag}: ${type} = ${JSON.stringify(catalog, null, 2)}`,
+    `export const ${catalogExport(tag)}: ${type} = ${JSON.stringify(catalog, null, 2)}`,
     "",
   ].join("\n")
 }

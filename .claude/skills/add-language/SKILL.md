@@ -47,10 +47,16 @@ what each one touches, and what stays unverified. Commit it alone (`docs: <langu
 
 ## 1. Registration
 
-**`i18n/routing.ts`**: add the tag to `locales`, then `npm run typecheck` lists every map keyed by
-`AppLocale` that now lacks it — `DIRECTION`, `LOCALE_STATUS` (`draft`), `COMMAND_LANGUAGE`,
-`SCRIPT`, `LANGUAGE_NAMES` (the language named in itself), `OG_LOCALE` and `catalogs`
-(`i18n/messages.ts`). Create `docs/i18n/<tag>.md` from the plan's research, with its status lines.
+**`i18n/routing.ts`**: add the tag to `locales` (and to `PREFIXES` if it has a region: `/pt-br`),
+then `npm run typecheck` lists every map keyed by `AppLocale` that now lacks it — `DIRECTION`,
+`LOCALE_STATUS` (`draft`), `COMMAND_LANGUAGE`, `SCRIPT`, `LANGUAGE_NAMES` (the language named in
+itself), `OG_LOCALE` and `catalogs` (`i18n/messages.ts`). The tests want a site and an editor
+catalog per tag: `messages/<tag>.json` and `packages/editor/src/locales/<tag>.json` as `{}` (a
+draft shows English), `npm run locales`, and the editor's entry point for it (`exports`, tsdown,
+the build's tsconfig, `api.md` by `npx vitest run packages/editor/api.test.ts -u`, its README's
+table, a changeset; a region's tag exports without the hyphen, `ptBR`). A "Use" page a draft lacks
+is served in English. Create `docs/i18n/<tag>.md` from the plan's research, with its status lines;
+the plan keeps only a pointer to it.
 
 ## 2. The site and the editor
 

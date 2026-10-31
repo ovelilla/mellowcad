@@ -13,6 +13,7 @@ import { en as editorEnglish } from "@mellowcad/editor/locales/en"
 import { COMMAND_GROUPS } from "@/content/commands"
 import { loadEditorLocale } from "@/i18n/editor"
 import { loadEngineLocale } from "@/i18n/engine"
+import { loadMessages } from "@/i18n/messages"
 import { DIRECTION, routing, type AppLocale } from "@/i18n/routing"
 import { autocadCommands } from "@/lib/facts"
 import { REPOSITORY_URL } from "@/lib/site"
@@ -37,9 +38,17 @@ export const GENERATOR = "lib/docs/generate.test.ts"
 
 type Messages = typeof en
 
-async function messages(locale: AppLocale): Promise<Messages> {
-  const own = (await import(`@/messages/${locale}.json`)) as { default: Messages }
-  return own.default
+/**
+ * Whether `locale` has its own version of a generated page: English always,
+ * another language once its site catalog names the page. Until then a draft
+ * is served the English page, as its missing keys are.
+ */
+export async function translatesPage(locale: AppLocale, page: "commands" | "shortcuts"): Promise<boolean> {
+  if (locale === routing.defaultLocale) return true
+  const own = (await import(`@/messages/${locale}.json`)) as {
+    default: { Docs?: { pages?: Partial<Record<string, unknown>> } }
+  }
+  return own.default.Docs?.pages?.[page] !== undefined
 }
 
 /** Text as Markdown, its marks escaped (MDX also reads `{` and `<`). */
@@ -108,7 +117,7 @@ export function pageFile(page: string, locale: AppLocale): string {
  * (`#line`), the same in every language.
  */
 export async function commandsPage(locale: AppLocale): Promise<string> {
-  const t = await messages(locale)
+  const t = await loadMessages(locale)
   const engineLocale = await loadEngineLocale(locale)
   const commands = autocadCommands(engineLocale)
   const page = t.Docs.pages.commands
@@ -183,7 +192,7 @@ function comboText(combo: KeyCombo, keys: Messages["Docs"]["keys"]): string {
  * the command it runs, in the page's command language.
  */
 export async function shortcutsPage(locale: AppLocale): Promise<string> {
-  const t = await messages(locale)
+  const t = await loadMessages(locale)
   const engineLocale = await loadEngineLocale(locale)
   const editorLocale = await loadEditorLocale(locale)
   const catalog = new Map(commandCatalog(engineLocale).map((command) => [command.id, command]))

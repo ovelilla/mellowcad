@@ -9,6 +9,7 @@ import { checkDocs, contentPagePath, markdownLinks } from "./check"
 import { resolvePackageLink } from "./remark-package-source"
 import { DIFFERENCES, DIFFERENCES_PAGE } from "./differences"
 import { USE_PAGES, sourceHash } from "./use"
+import { LOCALE_STATUS, routing } from "../../i18n/routing"
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..")
 
@@ -35,9 +36,13 @@ const translated = (english: string, body: string) =>
 
 const differences = DIFFERENCES.map(({ id }) => `## ${id} [#${id}]`).join("\n\n")
 
+const TRANSLATIONS = routing.locales.filter((locale) => locale !== routing.defaultLocale)
+const LIVE = TRANSLATIONS.filter((locale) => LOCALE_STATUS[locale] === "live")
+const DRAFTS = TRANSLATIONS.filter((locale) => LOCALE_STATUS[locale] === "draft")
+
 /**
- * "Use" in every language, each translation up to date with its English page,
- * the differences in their order and every quote in its file.
+ * "Use" in every live language, each translation up to date with its English
+ * page, the differences in their order and every quote in its file.
  */
 function translatedPages(): Record<string, string> {
   const tree: Record<string, string> = {}
@@ -49,8 +54,7 @@ function translatedPages(): Record<string, string> {
     const body = name === DIFFERENCES_PAGE ? differences : "## Start [#start]"
     const english = page(`${body}\n\nSee [the engine](/docs/engine) and <Command id="LINE" />.`, "howTo")
     tree[`content/docs/${name}.mdx`] = english
-    tree[`content/docs/${name}.es.mdx`] = translated(english, body)
-    tree[`content/docs/${name}.ar.mdx`] = translated(english, body)
+    for (const locale of LIVE) tree[`content/docs/${name}.${locale}.mdx`] = translated(english, body)
   }
   return tree
 }
@@ -136,6 +140,22 @@ describe("docs:check", () => {
     ])
   })
 
+  it.skipIf(DRAFTS.length === 0)("lets a draft miss a page, but holds the ones it has", () => {
+    const tree = packages()
+    const [name, written] = USE_PAGES
+    for (const locale of DRAFTS) {
+      tree[`content/docs/${written}.${locale}.mdx`] = translated("old", "## Start [#start]")
+    }
+    const hash = sourceHash(tree[`content/docs/${written}.mdx`])
+    expect(tree[`content/docs/${name}.${DRAFTS[0]}.mdx`]).toBeUndefined()
+    expect(checkDocs(repo(tree))).toEqual(
+      DRAFTS.map(
+        (locale) =>
+          `content/docs/${written}.${locale}.mdx: out of date with ${written}.mdx: bring it up to date, then set sourceHash: "${hash}"`
+      )
+    )
+  })
+
   it("holds a generated page's translations to its generator", () => {
     const tree = packages()
     const [name] = USE_PAGES
@@ -178,6 +198,7 @@ describe("the docs' paths and links", () => {
     expect(contentPagePath("engine/index.mdx")).toBe("/docs/engine")
     expect(contentPagePath("engine/api.mdx")).toBe("/docs/engine/api")
     expect(contentPagePath("start.es.mdx")).toBe("/docs/start")
+    expect(contentPagePath("start.pt-BR.mdx")).toBe("/docs/start")
   })
 
   it("reads links outside code only", () => {

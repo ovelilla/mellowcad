@@ -4,7 +4,7 @@ import { join } from "node:path"
 import type { Node } from "fumadocs-core/page-tree"
 
 import type { AppLocale } from "@/i18n/routing"
-import { routing } from "@/i18n/routing"
+import { LIVE_LOCALES, routing } from "@/i18n/routing"
 import { REPOSITORY_URL } from "@/lib/site"
 
 import { docsSource } from "./docs-source"
@@ -31,12 +31,13 @@ export function canonicalPath(page: DocsPage): string {
 }
 
 /**
- * Whether the page is written in every language ("Use"): each then has its
- * own URL and the others as its hreflang alternates. A page in English only
- * ("Build") is served under every prefix, canonical to the English one.
+ * Whether the page is written in every live language ("Use"): each then has
+ * its own URL and the others as its hreflang alternates. A page in English
+ * only ("Build"), or one a draft has not translated yet, is served under
+ * every prefix, canonical to the English one.
  */
 export function isTranslated(page: DocsPage): boolean {
-  return routing.locales.every((locale) => {
+  return LIVE_LOCALES.every((locale) => {
     const own = docsSource.getPage(page.slugs, locale)
     return own !== undefined && pageLanguage(own) === locale
   })

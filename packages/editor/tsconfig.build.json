@@ -21,6 +21,7 @@
     "src/index.ts",
     "src/locales/en.ts",
     "src/locales/es.ts",
-    "src/locales/ar.ts"
+    "src/locales/ar.ts",
+    "src/locales/pt-BR.ts"
   ]
 }

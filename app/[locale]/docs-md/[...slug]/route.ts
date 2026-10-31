@@ -1,7 +1,5 @@
-import { hasLocale } from "next-intl"
-
 import { localeUrl } from "@/i18n/navigation"
-import { routing } from "@/i18n/routing"
+import { localeSegment, routing, segmentLocale } from "@/i18n/routing"
 import { docsSource } from "@/lib/docs/docs-source"
 import { pageMarkdown } from "@/lib/docs/markdown"
 import { canonicalPath, ownPages, pageLanguage } from "@/lib/docs/pages"
@@ -12,7 +10,10 @@ export const dynamicParams = false
 /** Served at a page's own URL with `.md` (`i18n/rewrites.ts`), in its own language only. */
 export function generateStaticParams() {
   return routing.locales.flatMap((locale) =>
-    ownPages(locale).map((page) => ({ locale, slug: page.slugs }))
+    ownPages(locale).map((page) => ({
+      locale: localeSegment(locale),
+      slug: page.slugs,
+    }))
   )
 }
 
@@ -20,11 +21,10 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ locale: string; slug: string[] }> }
 ) {
-  const { locale, slug } = await params
-  const page = hasLocale(routing.locales, locale)
-    ? docsSource.getPage(slug, locale)
-    : undefined
-  if (!page || pageLanguage(page) !== locale) {
+  const { slug, ...segment } = await params
+  const locale = segmentLocale(segment.locale)
+  const page = locale ? docsSource.getPage(slug, locale) : undefined
+  if (!locale || !page || pageLanguage(page) !== locale) {
     return new Response(null, { status: 404 })
   }
   return new Response(await pageMarkdown(page), {

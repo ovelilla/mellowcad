@@ -99,11 +99,11 @@ What each command does, with its prompts and options, is in the user's
 
 ## Entry points
 
-| Import                            | What                                                      |
-| --------------------------------- | --------------------------------------------------------- |
-| `@mellowcad/editor`               | `CadEditor`, its pieces and their types                   |
-| `@mellowcad/editor/locales/<tag>` | The editor's words in one language each: `en`, `es`, `ar` |
-| `@mellowcad/editor/styles.css`    | The stylesheet                                            |
+| Import                            | What                                                                                                 |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `@mellowcad/editor`               | `CadEditor`, its pieces and their types                                                              |
+| `@mellowcad/editor/locales/<tag>` | The editor's words in one language each: `en`, `es`, `ar`, `pt-BR` (exported as `ptBR`, in progress) |
+| `@mellowcad/editor/styles.css`    | The stylesheet                                                                                       |
 
 ## Versioning
 

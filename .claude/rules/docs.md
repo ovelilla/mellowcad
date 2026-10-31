@@ -52,10 +52,12 @@ claims follow `i18n.md`.
 
 ## "Use MellowCAD"
 
-- Pages at the docs' root, each in every language (`commands.mdx`, `commands.es.mdx`…), listed in
-  `USE_PAGES` (`lib/docs/use.ts`); the navigation's "Use" is the root pages and "Build" the
-  folders (`navSections`). A page in every language has its own canonical, hreflang and sitemap
-  alternates (`isTranslated`).
+- Pages at the docs' root, each in every live language (`commands.mdx`, `commands.es.mdx`…),
+  listed in `USE_PAGES` (`lib/docs/use.ts`); the navigation's "Use" is the root pages and "Build"
+  the folders (`navSections`). A page in every live language has its own canonical, hreflang and
+  sitemap alternates (`isTranslated`). A draft's missing page is the English one under its prefix,
+  canonical to it, as a missing key is English's; a generated one is written for a language once
+  its messages name the page (`translatesPage`).
 - **A generated page is a file snapshot** of `lib/docs/generate.test.ts` (`generated:` in its
   frontmatter), written from the engine's catalog, the messages and `docs/coverage/`: never edit
   one; change its source and run `npx vitest run lib/docs/generate.test.ts -u`. WHY in Vitest:
@@ -115,7 +117,7 @@ claims follow `i18n.md`.
 ## `docs:check`
 
 `npm run docs:check`, in the hook and CI: frontmatter and `meta.json`, each package's pages (its
-README, `api.md` and every guide) and their includes, each "Use" page in every language and its translations' `sourceHash`, each
+README, `api.md` and every guide) and their includes, each "Use" page in every live language and its translations' `sourceHash`, each
 `<Command id>`, the differences' quotes and sections, the links of the package files and of
 written pages (a fragment to a root page's heading), the examples blocks name, and the homepage.
 A README link that leads nowhere fails it. Its own cases are `lib/docs/check.test.ts`.

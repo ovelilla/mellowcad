@@ -1,15 +1,19 @@
 import { defineRouting } from "next-intl/routing"
 
+// English keeps today's URLs (`/`, `/draw`); the others live under a prefix,
+// their tag unless it names a region: URLs are lower case (`/pt-br`), the tag
+// keeps its BCP 47 case everywhere else (catalogs, `lang`, hreflang).
+const PREFIXES: Readonly<Record<string, `/${string}`>> = { "pt-BR": "/pt-br" }
+
 /**
  * The site's languages, and the one source of truth for them: the URL scheme,
  * the rewrites in `next.config.ts`, the static params of both root layouts,
  * the sitemap and the metadata all read this.
  */
 export const routing = defineRouting({
-  locales: ["en", "es", "ar"],
+  locales: ["en", "es", "ar", "pt-BR"],
   defaultLocale: "en",
-  // English keeps today's URLs (`/`, `/draw`); the others live under a prefix.
-  localePrefix: "as-needed",
+  localePrefix: { mode: "as-needed", prefixes: PREFIXES },
   // No negotiation by Accept-Language: Google advises against it and its
   // crawlers do not send one. Without detection the cookie has no use either,
   // and the privacy notice can go on saying there are no cookies.
@@ -23,6 +27,33 @@ export const routing = defineRouting({
 export type AppLocale = (typeof routing.locales)[number]
 
 /**
+ * A language's URL segment: what `[locale]` holds, and what every prefixed
+ * path starts with (`pt-br` for `pt-BR`).
+ */
+export function localeSegment(locale: AppLocale): string {
+  return PREFIXES[locale]?.slice(1) ?? locale
+}
+
+const SEGMENT_LOCALES: ReadonlyMap<string, AppLocale> = new Map(
+  routing.locales.map((locale) => [localeSegment(locale), locale])
+)
+
+/**
+ * The language a `[locale]` segment names, or none. WHY a map and not a
+ * case-insensitive match: `/pt-BR/…` is not served (Next matches routes
+ * without case, so a redirect from it to `/pt-br/…` would loop), and the
+ * prefix need not be the tag at all.
+ */
+export function segmentLocale(segment: string): AppLocale | undefined {
+  return SEGMENT_LOCALES.get(segment)
+}
+
+/** Every language's segment, as `generateStaticParams` gives `[locale]`. */
+export function localeParams(): { locale: string }[] {
+  return routing.locales.map((locale) => ({ locale: localeSegment(locale) }))
+}
+
+/**
  * The reading direction of each language. A static map rather than
  * `Intl.Locale#getTextInfo()`, which not every browser has, so the server and
  * any client agree.
@@ -31,6 +62,7 @@ export const DIRECTION: Readonly<Record<AppLocale, "ltr" | "rtl">> = {
   en: "ltr",
   es: "ltr",
   ar: "rtl",
+  "pt-BR": "ltr",
 }
 
 /**
@@ -42,6 +74,7 @@ export const LOCALE_STATUS: Readonly<Record<AppLocale, "live" | "draft">> = {
   en: "live",
   es: "live",
   ar: "live",
+  "pt-BR": "draft",
 }
 
 export const LIVE_LOCALES: readonly AppLocale[] = routing.locales.filter(
@@ -61,6 +94,7 @@ export const COMMAND_LANGUAGE: Readonly<
   en: "global",
   es: "localized",
   ar: "global",
+  "pt-BR": "localized",
 }
 
 /**
@@ -71,6 +105,7 @@ export const SCRIPT: Readonly<Record<AppLocale, "latin" | "arabic">> = {
   en: "latin",
   es: "latin",
   ar: "arabic",
+  "pt-BR": "latin",
 }
 
 export type NonLatinScript = Exclude<(typeof SCRIPT)[AppLocale], "latin">
@@ -84,6 +119,7 @@ export const LANGUAGE_NAMES: Readonly<Record<AppLocale, string>> = {
   en: "English",
   es: "Español",
   ar: "العربية",
+  "pt-BR": "Português (Brasil)",
 }
 
 /** Open Graph wants language and territory. */
@@ -91,4 +127,5 @@ export const OG_LOCALE: Readonly<Record<AppLocale, string>> = {
   en: "en_US",
   es: "es_ES",
   ar: "ar_AR",
+  "pt-BR": "pt_BR",
 }

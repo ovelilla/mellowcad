@@ -12,7 +12,7 @@ import { SiteHeader } from "@/components/marketing/site-header"
 import { SpeculationRules } from "@/components/marketing/speculation-rules"
 import { DirectionProvider } from "@/components/ui/direction"
 import { localePath } from "@/i18n/navigation"
-import { DIRECTION, LOCALE_STATUS, routing } from "@/i18n/routing"
+import { DIRECTION, LOCALE_STATUS, localeParams } from "@/i18n/routing"
 import { scriptFontVariables } from "@/lib/fonts"
 import { SITE_NAME, SITE_URL } from "@/lib/site"
 import { VIEW_TRANSITION_OPT_IN } from "@/lib/view-transition"
@@ -21,7 +21,7 @@ import { VIEW_TRANSITION_OPT_IN } from "@/lib/view-transition"
 export const dynamicParams = false
 
 export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }))
+  return localeParams()
 }
 
 // Inter's `opsz` axis (the Display cut at headline sizes) costs ~25 KB more

@@ -8,7 +8,7 @@ import "./globals.css"
 import { paletteLayoutScript } from "@mellowcad/editor"
 import { THEME } from "@mellowcad/engine"
 import { localePath } from "@/i18n/navigation"
-import { DIRECTION, OG_LOCALE, routing } from "@/i18n/routing"
+import { DIRECTION, OG_LOCALE, localeParams } from "@/i18n/routing"
 import { scriptFontVariables } from "@/lib/fonts"
 import {
   EDITOR_LAYOUT_STORAGE,
@@ -22,7 +22,7 @@ import { EDITOR_SHEET_ID, VIEW_TRANSITION_OPT_IN } from "@/lib/view-transition"
 export const dynamicParams = false
 
 export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }))
+  return localeParams()
 }
 
 // The editor is shared as a link, so it carries a preview — but it has nothing

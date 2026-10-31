@@ -17,7 +17,7 @@ import { dirname, resolve } from "node:path"
 import { fileURLToPath, pathToFileURL } from "node:url"
 import { parse } from "@formatjs/icu-messageformat-parser"
 
-import { compileTree, sourceDeclaration } from "./compile.ts"
+import { catalogExport, compileTree, sourceDeclaration } from "./compile.ts"
 import { type Tree, flatten, signature } from "./icu.ts"
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), "../..")
@@ -32,7 +32,7 @@ export function editorModule(tag: string, source: Tree): string {
     `// Generated from ${tag}.json by \`npm run locales\`. Do not edit.`,
     `import type { ${type} } from "./types"`,
     "",
-    `export const ${tag}: ${type} = ${JSON.stringify(catalog, null, 2)}`,
+    `export const ${catalogExport(tag)}: ${type} = ${JSON.stringify(catalog, null, 2)}`,
     "",
   ].join("\n")
 }

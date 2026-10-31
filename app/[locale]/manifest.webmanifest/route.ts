@@ -1,9 +1,8 @@
 import type { MetadataRoute } from "next"
-import { hasLocale } from "next-intl"
 import { getTranslations } from "next-intl/server"
 
 import { localePath } from "@/i18n/navigation"
-import { DIRECTION, routing } from "@/i18n/routing"
+import { DIRECTION, localeParams, segmentLocale } from "@/i18n/routing"
 import { BRAND } from "@/lib/brand"
 import { EDITOR_PATH, SITE_NAME } from "@/lib/site"
 
@@ -11,7 +10,7 @@ export const dynamic = "force-static"
 export const dynamicParams = false
 
 export function generateStaticParams() {
-  return routing.locales.map((locale) => ({ locale }))
+  return localeParams()
 }
 
 /**
@@ -24,8 +23,8 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ locale: string }> }
 ) {
-  const { locale } = await params
-  if (!hasLocale(routing.locales, locale)) {
+  const locale = segmentLocale((await params).locale)
+  if (!locale) {
     return new Response(null, { status: 404 })
   }
   const t = await getTranslations({ locale, namespace: "Metadata" })

@@ -17,7 +17,7 @@ import { commandElements, commandNames } from "./remark-command-names.ts"
 import { resolvePackageLink } from "./remark-package-source.ts"
 import { docsPageSchema, metaSchema } from "./schema.ts"
 import { USE_PAGES, githubAnchor, sourceHash } from "./use.ts"
-import { routing } from "../../i18n/routing.ts"
+import { LOCALE_STATUS, routing } from "../../i18n/routing.ts"
 import { SITE_URL } from "../site.ts"
 
 export const CONTENT_DIR = "content/docs"
@@ -27,7 +27,7 @@ const CATALOGS_NOTE = "cad/locales/en.json"
 const FENCE = /^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[ \t]*$/gm
 const INLINE_CODE = /`[^`\n]*`/g
 const LINK = /\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g
-const LOCALE_SUFFIX = /\.[a-z]{2}(?=\.mdx$)/
+const LOCALE_SUFFIX = /\.[a-z]{2}(?:-[A-Z]{2})?(?=\.mdx$)/
 
 function files(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -64,8 +64,9 @@ export function contentPagePath(relative: string): string {
  * What `npm run docs:check` holds the docs to, as a list of problems (none
  * when it passes): every page's frontmatter and every `meta.json`; each
  * package's two pages, each including its file and nothing else; each
- * "Use" page in every language, a translation written by hand carrying the
- * `sourceHash` of its English file (a generated one, its generator); each
+ * "Use" page in every live language (a draft's missing one is served in
+ * English, as its missing keys are), a translation written by hand carrying
+ * the `sourceHash` of its English file (a generated one, its generator); each
  * guide of a package (`docs/<name>.md`) with its page; every link — a package
  * file's to the repository or another page, a written page's to a page and a
  * heading that exist — and every example a block names; and a published
@@ -112,7 +113,7 @@ export function checkDocs(root: string): string[] {
       const translation = `${name}.${locale}.mdx`
       const file = `${CONTENT_DIR}/${translation}`
       if (!pages.includes(translation)) {
-        report(file, `missing: ${english} in ${locale}`)
+        if (LOCALE_STATUS[locale] === "live") report(file, `missing: ${english} in ${locale}`)
         continue
       }
       const data = frontmatter(source(translation)).data as Record<string, unknown>
@@ -231,7 +232,7 @@ export function checkDocs(root: string): string[] {
     }
   }
 
-  for (const meta of all.filter((file) => /(^|\/)meta(\.[a-z]{2})?\.json$/.test(file))) {
+  for (const meta of all.filter((file) => /(^|\/)meta(\.[a-z]{2}(?:-[A-Z]{2})?)?\.json$/.test(file))) {
     const file = `${CONTENT_DIR}/${meta}`
     const parsed = metaSchema.safeParse(
       JSON.parse(readFileSync(path.join(root, file), "utf8"))
