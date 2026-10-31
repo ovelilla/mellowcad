@@ -1,7 +1,7 @@
 # Un sistema para los idiomas — brief
 
-> **Estado:** fases 1 a 4 hechas (2026-10-31); la 5, sin empezar. Se borra cuando el portugués
-> de Brasil esté `live` con el sistema entero.
+> **Estado:** fases 1 a 4 hechas (2026-10-31); la 5, en curso: plan `docs/plans/pt-BR-language.md`,
+> su fase 0 hecha. Se borra cuando el portugués de Brasil esté `live` con el sistema entero.
 
 ## 1. Objetivo
 
@@ -108,4 +108,13 @@ Una fase, un commit (o varios si se separan solos). Las 1 a 4 no cambian nada vi
    cubre por `COMMAND_LANGUAGE`.
 5. **Piloto: `pt-BR`.** Con el sistema entero, de `draft` a `live`; lo que no encaje se corrige en el
    sistema, no en el idioma. Instalar su language pack en el AutoCAD del dueño (para las consolas) se
-   le confirma antes.
+   le confirma antes. En curso por el plan `docs/plans/pt-BR-language.md`. Resuelto en su fase 0:
+   abrir un pack sin instalarlo es `scripts/research/open-pack.sh` (7-Zip en su compilación para
+   Linux, `7zz`; las DLL van en un zip, `acadlp.adix`, dentro del `.exe`), y **las tablas salen de
+   la actualización, no del pack**: el pack es la build de lanzamiento, y 2027.1 cambia 101 cadenas
+   de pt-BR (el español de la actualización es el instalado, byte a byte). Las tablas de pt-BR
+   emparejan como las españolas: «ou» deducido, initget con la mayúscula dentro de la palabra
+   (`LInha`), 991 propuestas. Lo que no encajó, corregido en el sistema: `forms()` quitaba
+   `(or|o|u)` fijo en vez del «ou» del idioma, y `probe.sh` solo reconocía los sufijos `.es` y `.en`.
+   La URL es `/pt-br`: el segmento `[locale]` lleva el prefijo de `localePrefix.prefixes` y
+   `i18n/request.ts` lo traduce a la etiqueta (fase 1 del plan).
