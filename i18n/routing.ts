@@ -49,6 +49,33 @@ export const LIVE_LOCALES: readonly AppLocale[] = routing.locales.filter(
 )
 
 /**
+ * Where each language's command language comes from. `localized`: its own
+ * AutoCAD's, copied whole into the engine's catalog — a user of that AutoCAD
+ * types its names, so a language that has one never goes live without it.
+ * `global`: the global commands, for English and for a language Autodesk does
+ * not ship (Arabic: docs/coverage/arabic.md). Checked by `languages.test.ts`.
+ */
+export const COMMAND_LANGUAGE: Readonly<
+  Record<AppLocale, "localized" | "global">
+> = {
+  en: "global",
+  es: "localized",
+  ar: "global",
+}
+
+/**
+ * The script each language is written in. Any but latin needs a face Inter
+ * and Geist Mono lack, which `scriptFontVariables` then requires by type.
+ */
+export const SCRIPT: Readonly<Record<AppLocale, "latin" | "arabic">> = {
+  en: "latin",
+  es: "latin",
+  ar: "arabic",
+}
+
+export type NonLatinScript = Exclude<(typeof SCRIPT)[AppLocale], "latin">
+
+/**
  * Each language named in itself, as the language selector offers it — a
  * reader looks for their own language's name, and never for a flag, which
  * stands for a country.
