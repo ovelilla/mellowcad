@@ -79,8 +79,8 @@ Extension and Parallel along a vertical line (unprobed; none here); Extension fr
 
 ### Object snap overrides and `FROM`
 
-**Implemented:** Shift + right-click at a point prompt (on the press), one-shot override: FROM
-and the object snaps in AutoCAD's order and groups for what exists (desktop line/d06): From ·
+**Implemented:** Shift + right-click at a point prompt (on the press), one-shot override: FROM, the point filters
+and the object snaps in AutoCAD's order and groups for what exists (desktop line/d06): From, Point Filters ▸ ·
 Endpoint, Midpoint, Intersection, Apparent Intersection, Extension · Center, Quadrant, Tangent ·
 Perpendicular, Parallel, Insertion, Nearest, None — the same entries as the Command menu's Snap
 Overrides; typed at any point
@@ -121,13 +121,52 @@ the command line and from the base in the tooltip (LINE-D10: dynamic input's rel
 pick places the point it is on, an override finds its snap. Enter at either is the prompt's own:
 LINE's Continue at its first point, its end at the next, LASTPOINT left at the base (probes
 line/p34, p154, p164, p211). At `Command:` FROM is an unknown command (p211). Escape at its prompts
-leaves FROM only (**unverified**).
+cancels the command, `Base point: *Cancel*` (desktop filters/d05).
 
-**Missing:** in the menu, Temporary track point, Mid Between 2 Points, Point Filters ▸, 3D Osnap ▸,
+**Missing:** in the menu, Temporary track point, Mid Between 2 Points, 3D Osnap ▸,
 Geometric Center, Node and Osnap Settings… (none built), and its icons; M2P / MTP, TT (the temporary
 tracking point), the temporary override keys (Shift+A,
 Shift+Q, Shift+E…: TEMPOVERRIDES), INT and APPINT on one object asking ` and ` for the second
 (p156, p211; here that pick finds nothing and is refused)
+
+### Point filters · `.X` `.Y` `.Z` `.XY` `.XZ` `.YZ`
+
+**Implemented:** typed at any point prompt — in the box or at the command line, FROM's `Base point:`
+and `<Offset>:`, a transparent command's (`>>of`), MOVE's displacement, a distance or an angle
+measured by points (CIRCLE's radius, OFFSET's distance, ROTATE's angle) — or chosen from the Shift +
+right-click menu's and the Command menu's Osnap Overrides' Point Filters ▸ (es `Filtros para
+puntos`), after From: `.X .Y .Z | .XY .XZ .YZ`, acad.cuix's `ID_MnPointFi`, whose macros type them
+(desktop filters/d03, d04). A dot and X, Y and Z, each once, in any order and case (`.yx`, `.ZX`,
+`.XYZ`, the whole point; `.Q` and a lone `.` are the prompt's wrong answer: probes filters/f13–f17,
+f44). The next point gives those coordinates, `of` (es `de`, table 26329), and `(need YZ):` (es
+`(falta YZ):`, 26266) asks the rest, the point whole answering the prompt as a pick there (f01–f05):
+X, Y and Z in the UCS, origin and turn (f19, f20), a 2D point's Z the elevation (f21, f22), a number
+at `(need Z)` the Z in the UCS (f02, f20). At a 2D point's prompt (PLINE's, ARC's) it asks `(need
+Y)`, and a filter naming Z says `Z coordinates not allowed here.` (es `Aquí no están permitidas las
+coordenadas Z.`, 26327), then the prompt's refusal (f38, f39, f52, f53). Each point given is picked,
+typed (`@` from LASTPOINT, which the filter's points leave: f07, f26), found by an object snap
+typed at `of` or `(need …)` (f23, f24), FROM's at `(need …)` (f55), or a number: at `of` and at a
+`(need …)` of two a direct distance from the base point towards the cursor (f08, f27, f29), at a
+`(need …)` of one that coordinate (f28, f49; the help's "a numeric value at any coordinate filter
+prompt" is the console's at these only). A filter at `(need …)` replaces the last one, a coordinate
+given twice keeping the later (f06, f57–f59). The prompt's keywords stay on offer at both, LINE's
+Undo (f45, f46; es `H`, f50); Enter is the prompt's own, LINE's Continue (f09, f10); a wrong answer
+gets the prompt's refusal (`Invalid point.`, `Point or option keyword required.`) and the prompt
+is asked again without the filter (f11, f12, f48, f60); Escape cancels the command (desktop d05). A
+filter, or FROM, at a filter's `of`, a filter at an object snap's `of` and one under an angle
+override are the prompt's wrong answer, and neither holds after it (desktop d05; f42, f47). The
+prompt line reads `LINE of` and `LINE (need YZ):`; the tooltip the question before it, `Specify next
+point or of` (desktop d01, d02); the history `Specify first point: .X of 10,20` and `(need YZ):
+30,40` on a line of its own, as the menu's macro writes it (d04; typed, the desktop puts `of` on a
+line of its own too). OSNAPZ, which would put a snap's Z at the elevation (f25), does not exist
+here (roadmap).
+
+**Missing:** filters at `Select objects:` and a single object's pick, where AutoCAD takes them as a
+point (f40, f63; here the prompt's wrong answer); the tool's own fields at `of` (the desktop keeps
+LINE's distance and angle, d01; here a coordinate box, as FROM's); a filter inside FROM typed at
+`(need …)` (refused here, **unverified**); FROM typed at a filter's `of` in the console, which takes
+FROM's base point as the filter's (f32; the desktop refuses it, d05, as here); the menu's icons
+(d04).
 
 ### `-OSNAP` / `-OS` · es `-REFENT`
 

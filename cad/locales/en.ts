@@ -1390,6 +1390,14 @@ export const en: EngineCatalog = {
       "offsetDistance": "Offset distance",
       "basePoint": "Base point",
       "fromOffset": "<Offset>",
+      "pointFilterOf": "of",
+      "pointFilterNeed": [
+        "(need ",
+        [
+          "axes"
+        ],
+        ")"
+      ],
       "distance": "Distance",
       "rotationAngle": "Rotation angle",
       "referenceAngle": "Reference angle",
@@ -2261,6 +2269,7 @@ export const en: EngineCatalog = {
           "angle"
         ]
       ],
+      "zNotAllowed": "Z coordinates not allowed here.",
       "saveUnavailable": "Saving to a file is not available here.",
       "openUnavailable": "Opening a file is not available here.",
       "openFailed": "Could not open the file.",

@@ -1371,6 +1371,8 @@ declare const source: {
       "offsetDistance": string
       "basePoint": string
       "fromOffset": string
+      "pointFilterOf": string
+      "pointFilterNeed": string
       "distance": string
       "rotationAngle": string
       "referenceAngle": string
@@ -1821,6 +1823,7 @@ declare const source: {
       "fromBase": string
       "fromOffset": string
       "angleOverride": string
+      "zNotAllowed": string
       "saveUnavailable": string
       "openUnavailable": string
       "openFailed": string

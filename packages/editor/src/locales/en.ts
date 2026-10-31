@@ -154,6 +154,7 @@ export const en: EditorCatalog = {
     },
     "SnapOverride": {
       "from": "From",
+      "pointFilters": "Point Filters",
       "none": "None"
     },
     "SelectionCycling": {

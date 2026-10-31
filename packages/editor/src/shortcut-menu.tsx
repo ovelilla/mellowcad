@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { Menu } from "@base-ui/react/menu"
-import { Check, ChevronRight } from "lucide-react"
+import { Check } from "lucide-react"
 
 import type {
   CadEngine,
@@ -14,8 +14,10 @@ import { usePortalContainer } from "./ui/portal-container"
 
 import {
   MENU_AT_CURSOR,
+  MENU_ITEM as ITEM,
   SEPARATOR,
   SnapOverrideItems,
+  Submenu,
 } from "./snap-override-menu"
 import { useEditorText } from "./editor-text"
 
@@ -26,9 +28,6 @@ import { useEditorText } from "./editor-text"
  * object-snap override menu, this is a controlled Base UI menu anchored to a
  * virtual element, whose backdrop takes the click that dismisses it.
  */
-
-const ITEM =
-  "relative flex cursor-default items-center gap-2 rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-disabled:text-faint-foreground data-highlighted:bg-accent data-highlighted:text-accent-foreground data-popup-open:bg-accent"
 
 /** The entries that are a tool, named as the tool palette names it. */
 const TOOL_OF: Partial<Record<ShortcutMenuAction, string>> = {
@@ -246,33 +245,5 @@ export function ShortcutMenu({
         </Menu.Positioner>
       </Menu.Portal>
     </Menu.Root>
-  )
-}
-
-function Submenu({
-  label,
-  children,
-}: {
-  label: string
-  children: React.ReactNode
-}) {
-  const portal = usePortalContainer()
-  return (
-    <Menu.SubmenuRoot>
-      <Menu.SubmenuTrigger className={ITEM}>
-        {label}
-        <ChevronRight className="absolute inset-e-2 size-4 rtl:-scale-x-100" />
-      </Menu.SubmenuTrigger>
-      <Menu.Portal container={portal}>
-        <Menu.Positioner
-          side="inline-end"
-          align="start"
-          sideOffset={6}
-          className="z-50"
-        >
-          <Menu.Popup className={MENU_AT_CURSOR}>{children}</Menu.Popup>
-        </Menu.Positioner>
-      </Menu.Portal>
-    </Menu.SubmenuRoot>
   )
 }

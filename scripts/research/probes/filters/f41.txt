@@ -1,0 +1,14 @@
+_QAFLAGS
+2
+_LINE
+0,0
+1,0
+
+_ROTATE
+_L
+
+0,0
+.X
+0,9
+0,1
+(cdr (assoc 11 (entget (entlast))))

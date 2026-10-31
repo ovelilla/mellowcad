@@ -80,6 +80,7 @@ export type { SnapModeType } from "./application/SnapMode"
 export { SnapType } from "./application/snapping/types"
 export { ConstraintType } from "./application/constraints/types"
 export { POLAR_ANGLE_MENU } from "./application/constraints/polarAngles"
+export { POINT_FILTERS, type PointFilterName } from "./application/pointFilter"
 export { VIEW_MENU, type ViewPreset } from "./application/tools/viewPresets"
 export { ZOOM_MENU, type ZoomOption } from "./application/tools/zoomMenu"
 export type {

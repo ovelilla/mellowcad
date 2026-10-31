@@ -154,6 +154,7 @@ export const ar: EditorLocale = {
     },
     "SnapOverride": {
       "from": "من نقطة",
+      "pointFilters": "مرشِّحات النقاط",
       "none": "لا شيء"
     },
     "SelectionCycling": {

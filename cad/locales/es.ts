@@ -1853,6 +1853,14 @@ export const es: EngineLocale = {
       "offsetDistance": "Distancia de desfase",
       "basePoint": "Punto base",
       "fromOffset": "<Desfase>",
+      "pointFilterOf": "de",
+      "pointFilterNeed": [
+        "(falta ",
+        [
+          "axes"
+        ],
+        ")"
+      ],
       "distance": "Distancia",
       "rotationAngle": "Ángulo de rotación",
       "referenceAngle": "Ángulo de referencia",
@@ -2723,6 +2731,7 @@ export const es: EngineLocale = {
           "angle"
         ]
       ],
+      "zNotAllowed": "Aquí no están permitidas las coordenadas Z.",
       "saveUnavailable": "Guardar en un archivo no está disponible aquí.",
       "openUnavailable": "Abrir un archivo no está disponible aquí.",
       "openFailed": "No se ha podido abrir el archivo.",

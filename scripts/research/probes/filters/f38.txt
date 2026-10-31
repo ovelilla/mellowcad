@@ -1,0 +1,9 @@
+_QAFLAGS
+2
+_PLINE
+0,0
+.X
+5,9
+0,3
+
+(cdr (assoc 10 (reverse (entget (entlast)))))

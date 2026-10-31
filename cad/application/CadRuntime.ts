@@ -99,7 +99,12 @@ import {
 } from "./CommandLine"
 import { matchKeywords, resolveKeyword } from "../i18n/keywords"
 import type { EngineLocale, PromptId } from "../locales/types"
-import { EngineText, engineText, promptString } from "./EngineText"
+import {
+  EngineText,
+  type PromptSegment,
+  engineText,
+  promptString,
+} from "./EngineText"
 import { Command, CommandHistory, Step } from "./commands/Command"
 import type { UndoHistory } from "./tools/Tool"
 import {
@@ -218,6 +223,18 @@ import {
   secondPointQuestion,
 } from "./runtimeMeasure"
 import { promptRefusal, questionInput } from "./promptRefusal"
+import {
+  type FilterAxis,
+  type PointFilter,
+  type PointFilterName,
+  filterAxesNamed,
+  filterPrompt,
+  filteredPoint,
+  missingAxes,
+  takePoint,
+  takeValue,
+  withFilter,
+} from "./pointFilter"
 import { fragmentInUcs } from "./clipboard"
 import {
   applyDrawingFile,
@@ -635,6 +652,20 @@ export class CadRuntime extends Observable {
   private fromPending = false
   private fromBase: Vec3 | null = null
   private fromParkedSession: DynamicInputSession | null = null
+  /**
+   * AutoCAD's point filters (`.X`, `.XY`…: pointFilterTyped), building a point
+   * for `tool`'s question, its box in the place of the one `parked`.
+   * `insideFrom`: typed at FROM's prompts, its point answers FROM; else FROM
+   * typed at `(need …)` answers it (probes filters/f30, f55). `echo`: the
+   * prompt it was typed at, which the point its `of` takes is written after.
+   */
+  private pointFilter: {
+    readonly tool: Tool
+    filter: PointFilter
+    readonly insideFrom: boolean
+    readonly parked: DynamicInputSession | null
+    readonly echo: PromptSegment[] | null
+  } | null = null
   /**
    * The first of the two points a distance or an angle is measured by, at a
    * question whose tool takes no point itself (FILLET's radius), in the
@@ -1273,6 +1304,12 @@ export class CadRuntime extends Observable {
     // An override left pending ends with its command (probe offset/p294).
     this.snapping.clearOverride()
     this.answerPrefix = null
+    // FROM and a point filter end with their command: Escape at their prompts
+    // cancels it, as the desktop's does (filters/d05).
+    this.pointFilter = null
+    this.fromPending = false
+    this.fromBase = null
+    this.fromParkedSession = null
     this.commandStart = this.echoMark ?? this.commandLine.mark()
     this.activeTool = next
     this.toolCursor = null
@@ -1822,6 +1859,9 @@ export class CadRuntime extends Observable {
    * it was refused, which the history writes as an answer.
    */
   private refuse(): boolean {
+    // A point filter is gone after the prompt's refusal, which asks the
+    // tool's question again (probes filters/f11, f12); FROM keeps asking.
+    if (this.filterAsks()) this.endFilter()
     // FROM's questions are its own, with no keywords: `Invalid point.` (probe
     // line/p211).
     const asking = this.fromRuns() ? this.asking() : this.activeTool
@@ -2121,10 +2161,26 @@ export class CadRuntime extends Observable {
     return this.fromPending || this.fromBase !== null
   }
 
+  /** The point filter building a point for the running tool's question, or null. */
+  private filtering(): CadRuntime["pointFilter"] {
+    return this.pointFilter?.tool === this.activeTool ? this.pointFilter : null
+  }
+
+  /** Whether the point filter asks, not FROM typed at its `(need …)`. */
+  private filterAsks(): boolean {
+    const running = this.filtering()
+    return running !== null && (running.insideFrom || !this.fromRuns())
+  }
+
+  /** Whether a point filter asks its `of`. */
+  private filterOf(): boolean {
+    return this.filterAsks() && this.pointFilter?.filter.of !== null
+  }
+
   /** The prompt as it stands: the question asked, or which keyword was meant. */
   private currentPrompt(): CommandPrompt {
     const asking = this.asking()
-    const prompt = commandPrompt(
+    const asked = commandPrompt(
       asking,
       this.text,
       asking === this.activeTool ? offerOptions(asking, this.text) : [],
@@ -2132,6 +2188,17 @@ export class CadRuntime extends Observable {
       this.startedAs,
       this.suspended !== null
     )
+    const running = this.filterAsks() ? this.pointFilter : null
+    const prompt =
+      running === null
+        ? asked
+        : filterPrompt(
+            asked,
+            running.filter,
+            running.echo,
+            this.text,
+            this.suspended !== null
+          )
     const words = this.clarifyingWords()
     return words === null
       ? prompt
@@ -2410,6 +2477,8 @@ export class CadRuntime extends Observable {
       this.setSnapOverride(OSNAP_MODES[mode], text.trim())
       return true
     }
+    const axes = filterAxesNamed(text)
+    if (axes !== null) return this.pointFilterTyped(text.trim(), axes)
     // A second one is the wrong answer of the override's `of`, which takes a
     // point, and neither holds after it (probe line/p162).
     if (mode !== null && this.snapping.getOverride() !== null) {
@@ -3415,10 +3484,12 @@ export class CadRuntime extends Observable {
     const at =
       this.snapOverrideMenu ?? this.shortcutMenu?.at ?? this.lastPointerScreen
     this.snapping.setOverride(override)
-    this.answerPrefix = this.text.snapOverride(
-      typed,
-      OSNAP_MENU_ANSWERS[override].to
-    )
+    const given = this.text.snapOverride(typed, OSNAP_MENU_ANSWERS[override].to)
+    // At a point filter's `of`, on its line: `.X of _END of 99,1`.
+    this.answerPrefix =
+      this.filterOf() && this.answerPrefix !== null
+        ? `${this.answerPrefix} ${given}`
+        : given
     this.snapOverrideMenu = null
     this.shortcutMenu = null
     if (at) this.updateSnap(at)
@@ -3797,7 +3868,11 @@ export class CadRuntime extends Observable {
    */
   startFrom(): boolean {
     if (!this.wantsPoint()) return false
-    return this.answering("_from", () => this.beginFrom())
+    // At a point filter's `of`, FROM is its wrong answer (desktop
+    // filters/d05); at `(need …)` its point answers the filter (f55).
+    return this.answering("_from", () =>
+      this.filterOf() ? this.refuse() : this.beginFrom()
+    )
   }
 
   private beginFrom(): boolean {
@@ -3868,14 +3943,23 @@ export class CadRuntime extends Observable {
 
   /**
    * Feeds a point to the active tool as if it had been picked there, or to
-   * FROM while it asks its base point.
+   * FROM or a point filter while they ask, the one typed last first.
    */
   private placePoint(point: Vec3, movedThere = false): void {
+    if (this.filterAsks()) {
+      this.filterPoint(point)
+      return
+    }
     if (this.fromPending) {
       this.takeFromBase(point)
       return
     }
     this.endFrom()
+    // FROM typed at a filter's `(need …)`: its point answers the filter (f55).
+    if (this.filtering() !== null) {
+      this.filterPoint(point)
+      return
+    }
     this.pointGiven = this.frame.pointToWorld(point)
     const input = this.forTool({
       screen: this.frame.viewport.worldToScreen(point),
@@ -3935,6 +4019,12 @@ export class CadRuntime extends Observable {
       )
       return this.refuse()
     }
+    if (this.filtering() !== null) {
+      this.placePoint(
+        this.frame.pointToFrame(this.toolPointToWorld(input.point))
+      )
+      return true
+    }
     if (this.fromPending) {
       this.takeFromBase(
         this.frame.pointToFrame(this.toolPointToWorld(input.point))
@@ -3983,6 +4073,207 @@ export class CadRuntime extends Observable {
     if (this.fromParkedSession) this.dynamicInput.open(this.fromParkedSession)
     else this.dynamicInput.close()
     this.fromParkedSession = null
+  }
+
+  /**
+   * The Point Filters menu's `.X` to `.YZ`, whose macros type them at the
+   * prompt (acad.cuix's `.X `): as typed, `Specify first point: .XY of 1,2`
+   * (desktop filters/d04).
+   */
+  choosePointFilter(filter: PointFilterName): void {
+    this.snapOverrideMenu = null
+    this.shortcutMenu = null
+    this.pointModifierFirst(filter)
+    this.invalidateState()
+    this.host.requestRender()
+    this.host.focusSurface()
+  }
+
+  /**
+   * A point filter typed at a point prompt, `.X` to `.XYZ` (`axes`): the
+   * next point gives those coordinates (`of`), and `(need …)` asks the rest,
+   * in the UCS, until the point is whole and answers the prompt as a pick
+   * there (probes filters/f01–f06, f19). Not an answer by itself: written on
+   * the line the point it takes answers, as an object snap is. Refused where
+   * the point it would build cannot be one ({@link filterRefusal}).
+   */
+  private pointFilterTyped(
+    typed: string,
+    axes: readonly FilterAxis[]
+  ): boolean {
+    const refusal = this.filterRefusal(axes)
+    if (refusal === null) {
+      this.beginFilter(typed, axes)
+      return true
+    }
+    return this.answering(typed, () => {
+      if (refusal === "z") {
+        this.commandLine.write("error", this.text.message("zNotAllowed"))
+      }
+      this.snapping.clearOverride()
+      if (this.resolver.hasAngleOverride()) this.holdAngle(null)
+      return this.refuse()
+    })
+  }
+
+  /**
+   * Why a filter typed now is the prompt's wrong answer, or null: at another
+   * filter's `of` or an object snap's (desktop filters/d05: `Invalid point.`;
+   * at `(need …)` it replaces the one before, f57–f59), under an angle
+   * override (f42, f47: neither holds after it), inside FROM typed at
+   * `(need …)` (**unverified**), or naming Z at a 2D point's prompt, which
+   * says `Z coordinates not allowed here.` first (f52, f53).
+   */
+  private filterRefusal(axes: readonly FilterAxis[]): "z" | "point" | null {
+    if (this.filtering() !== null && !this.filterAsks()) return "point"
+    if (this.filterOf() || this.snapping.getOverride() !== null) return "point"
+    if (this.resolver.hasAngleOverride()) return "point"
+    const planar =
+      this.pointFilter?.filter.axes.length === 2 || this.asksPoint2d()
+    return planar && axes.includes("z") ? "z" : null
+  }
+
+  /** Whether the running tool's question takes a 2D point: (need Y), not (need YZ) (f38, f39). */
+  private asksPoint2d(): boolean {
+    const session = this.fromRuns()
+      ? this.fromParkedSession
+      : this.dynamicInput.isOpen()
+        ? this.dynamicInput.getSession()
+        : null
+    const prompt = askedPrompt(this.activeTool)
+    return (
+      questionInput({ tool: this.activeTool, prompt, session }) === "point2d"
+    )
+  }
+
+  private beginFilter(typed: string, axes: readonly FilterAxis[]): void {
+    const echo = this.currentPrompt().echo
+    const running = this.filtering()
+    const prompt: readonly FilterAxis[] = this.asksPoint2d()
+      ? ["x", "y"]
+      : ["x", "y", "z"]
+    this.pointFilter = {
+      tool: this.activeTool,
+      filter: withFilter(running?.filter ?? null, prompt, axes),
+      insideFrom: running?.insideFrom ?? this.fromRuns(),
+      parked:
+        running !== null
+          ? running.parked
+          : this.dynamicInput.isOpen()
+            ? this.dynamicInput.getSession()
+            : null,
+      echo,
+    }
+    this.answerPrefix = this.text.snapOverride(typed, false)
+    this.openFilterBox()
+    this.invalidateState()
+    this.host.requestRender()
+    this.host.focusSurface()
+  }
+
+  /**
+   * The filter's point box, in the place of the tool's as FROM's is. A number
+   * at a `(need …)` asking one coordinate is that coordinate (f02, f28, f49),
+   * elsewhere a direct distance (f08, f27, f29), from FROM's base at
+   * `<Offset>` (f31).
+   */
+  private openFilterBox(): void {
+    const running = this.pointFilter
+    if (running === null) return
+    const one =
+      running.filter.of === null && missingAxes(running.filter).length === 1
+    const from = running.insideFrom ? this.fromBase : null
+    this.dynamicInput.open({
+      fields: [{ id: "point", kind: "coordinate" }],
+      commit: () => {},
+      commitRaw: () => this.commitFilter(one),
+      ...(one
+        ? { directDistance: "typed" as const }
+        : from !== null && { directDistance: from }),
+    })
+    if (this.lastPointerScreen) {
+      this.dynamicInput.setPosition(this.lastPointerScreen)
+    }
+  }
+
+  /**
+   * What the filter's box takes: a coordinate, `@` from LASTPOINT, which its
+   * points leave (f07, f26), a number where one coordinate is asked, or Enter,
+   * the prompt's own (f09, f10).
+   */
+  private commitFilter(one: boolean): boolean {
+    const running = this.pointFilter
+    if (running === null) return false
+    const typed = this.dynamicInput.getText("point").trim()
+    if (typed === "") {
+      this.endFilter()
+      this.pressEnter()
+      return true
+    }
+    const value =
+      one && !isCoordinateExpression(typed) ? parseNumber(typed) : null
+    if (value !== null) {
+      this.filterTakes(takeValue(running.filter, value))
+      return true
+    }
+    const point = this.typedFramePoint(typed)
+    if (point === null) return false
+    this.filterPoint(point)
+    return true
+  }
+
+  /**
+   * A point of the frame given to the filter, which takes its coordinates in
+   * the UCS (filters/f19): the frame of a UCS turned about Z is the world's.
+   */
+  private filterPoint(point: Vec3): void {
+    const running = this.pointFilter
+    if (running === null) return
+    const ucs = this.document.getSettings().ucs
+    const given = worldPointToUcs(ucs, this.frame.pointToWorld(point))
+    this.filterTakes(takePoint(running.filter, given))
+  }
+
+  /**
+   * The filter with what a point or a value gave it: `(need …)` asked for
+   * the rest, or the point whole given to the prompt. LASTPOINT stays where
+   * it was until then (f26).
+   */
+  private filterTakes(filter: PointFilter): void {
+    const running = this.pointFilter
+    if (running === null) return
+    this.pointGiven = null
+    this.pointTyped = null
+    this.snapping.clearOverride()
+    const built = filteredPoint(filter)
+    if (built === null) {
+      running.filter = filter
+      this.openFilterBox()
+      this.invalidateState()
+      this.host.requestRender()
+      return
+    }
+    this.endFilter()
+    const point = this.frame.pointToFrame(
+      ucsPointToWorld(this.document.getSettings().ucs, built)
+    )
+    // FROM's base or offset when the filter was typed there; else the prompt's
+    // point, measured where the question measures points (CIRCLE's radius,
+    // OFFSET's distance: f36, f37).
+    if (!this.fromRuns() && this.measuresPoints()) {
+      this.measurePoint(this.frameToTool(point))
+    } else {
+      this.placePoint(point, true)
+    }
+  }
+
+  /** Leaves the point filter, giving back the box it parked. */
+  private endFilter(): void {
+    const running = this.pointFilter
+    if (running === null) return
+    this.pointFilter = null
+    if (running.parked) this.dynamicInput.open(running.parked)
+    else this.dynamicInput.close()
   }
 
   /** Ortho, by F8 or the status bar. */
@@ -5062,14 +5353,6 @@ export class CadRuntime extends Observable {
    * canvas keydown path.
    */
   cancelDynamicInput(): void {
-    // While FROM is running, Escape cancels just the modifier and hands the
-    // tool back its own input, leaving the command alive.
-    if (this.fromPending || this.fromBase) {
-      this.endFrom()
-      this.host.requestRender()
-      this.host.focusSurface()
-      return
-    }
     if (this.asksToSaveText() || this.escapesWithin()) return
     this.cancelInput()
   }
@@ -5168,6 +5451,9 @@ export class CadRuntime extends Observable {
   }
 
   private invokeOption(id: string, typed?: string): boolean {
+    // A keyword answers the tool's question at a filter's prompts too
+    // (f45, f46, f50).
+    if (this.filterAsks()) this.endFilter()
     const outcome =
       this.activeTool.invokeOption?.(id, this.toolContext, typed) ?? "unhandled"
     if (outcome === "unhandled") return false
@@ -6377,13 +6663,6 @@ export class CadRuntime extends Observable {
     // the current selection alone.
     if (e.key === "Escape" && this.cyclingList !== null) {
       this.closeCyclingList()
-      return true
-    }
-
-    // Escape likewise cancels only the FROM modifier, not the running command.
-    if (e.key === "Escape" && (this.fromPending || this.fromBase)) {
-      this.endFrom()
-      this.host.requestRender()
       return true
     }
 

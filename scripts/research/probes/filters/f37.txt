@@ -1,0 +1,7 @@
+_QAFLAGS
+2
+_OFFSET
+.X
+5,9
+0,0
+

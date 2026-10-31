@@ -22,6 +22,7 @@ import {
 import { DrawingStore, EngineHost } from "../application/ports"
 import { SnapModeType } from "../application/SnapMode"
 import { SnapType } from "../application/snapping/types"
+import type { PointFilterName } from "../application/pointFilter"
 import { ConstraintType } from "../application/constraints/types"
 import type { ViewPreset } from "../application/tools/viewPresets"
 import type { ZoomOption } from "../application/tools/zoomMenu"
@@ -415,6 +416,15 @@ export class CadEngine {
   /** Starts the FROM point modifier (pick a base, then type an offset). */
   startFrom(): boolean {
     return this.runtime.startFrom()
+  }
+
+  /**
+   * Types a point filter at the running point prompt (`.X`, `.XY`…), as the
+   * Point Filters menu does: the next point gives those coordinates, and
+   * `(need …)` asks for the rest.
+   */
+  choosePointFilter(filter: PointFilterName): void {
+    this.runtime.choosePointFilter(filter)
   }
 
   /**

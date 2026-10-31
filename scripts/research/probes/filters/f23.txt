@@ -1,0 +1,18 @@
+_QAFLAGS
+2
+_ZOOM
+_W
+-50,-50
+150,150
+_LINE
+0,0,10
+100,0,10
+
+_LINE
+.XZ
+_END
+99,1
+0,50
+@1,0
+
+(list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))

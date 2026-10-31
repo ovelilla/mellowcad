@@ -1,0 +1,18 @@
+_QAFLAGS
+2
+_LINE
+.Y
+1,2,3
+4,5,6
+.XZ
+1,2,3
+4,5,6
+
+(list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))
+_LINE
+.YZ
+1,2,3
+4,5,6
+@1,0
+
+(list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))

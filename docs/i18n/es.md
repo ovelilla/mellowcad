@@ -28,6 +28,7 @@ desktop and tables answer in Spanish (skill `autocad-research`).
 |  | Perpendicular, Tangent, Insertion, Extension, Parallel, Quadrant, Nearest | Perpendicular, Tangente, Inserción, Extensión, Paralelo, Cuadrante, Cercano | same | yes |
 |  | None | Ninguno | C CF5780AD-D1AB-4526-9608-83D7952749E7 | partial |
 |  | From (snap menu) | Desde | C A2F8FFFB-EEC4-40A5-AFA5-A44C41E281E5 | yes |
+|  | Point Filters (snap menu) | Filtros para puntos | es-es acad.cuix, `ACAD_1863`; desktop filters/d03 | yes |
 | Status bar | Object snap | Referencia a objetos | C ACAA0279-047D-458E-889F-60BBFDD40489 | yes |
 |  | Object snap tracking, Polar tracking | Rastreo de referencia a objetos, Rastreo polar | C E3B34B0A-EA98-45E9-937A-BF5FEF4152DB | yes |
 |  | Ortho mode, Grid | Modo Orto, Rejilla | same | yes |

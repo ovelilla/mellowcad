@@ -41,6 +41,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | Perpendicular, Tangent, Insertion, Extension, Parallel, Quadrant, Nearest | عمودي، مماس، الإدراج، الامتداد، موازٍ، الربع، الأقرب (C) |
 |  | None | لا شيء (M) |
 |  | From (snap menu) | من نقطة (L) |
+|  | Point Filters (snap menu) | مرشِّحات النقاط (L) |
 | Status bar | Object snap | التقاط الكائنات (C) † |
 |  | Object snap tracking, Polar tracking | تتبع التقاط الكائنات، التتبع القطبي (C) |
 |  | Ortho mode, Grid | الوضع المتعامد، الشبكة (C) |

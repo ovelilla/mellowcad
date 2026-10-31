@@ -225,9 +225,9 @@ runtime picks for the tool" feature.
   works out is let through (`defersSnap`, false by default: the raw pick drew circles touching
   nothing, circle CTN-05). `snapsFromLastPoint()`: LASTPOINT is the snap's base, not Ortho's
   (circle/p343).
-- **FROM asks in the place of the tool** (`asking()` gives `questionInstead`): its prompts, no
-  keywords, its box over the tool's. A point given while it asks reaches it through `pickAnswer`
-  and `placePoint`; a new way to give a point goes through them, or FROM is skipped.
+- **FROM asks in the place of the tool** (`questionInstead`, no keywords); a point filter keeps
+  its question, reworded (`filterPrompt`), in UCS coordinates. Both park the tool's box. A point
+  reaches them through `pickAnswer` and `placePoint`, the last typed first, as must a new way.
 - Providers read `SnapContext.entities`, **not** `document.getEntities()`: the drawing with every
   block reference expanded (AutoCAD snaps inside a block), built once per resolve.
   `insertionProvider` is the exception: it offers the reference's own insertion point.

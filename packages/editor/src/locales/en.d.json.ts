@@ -145,6 +145,7 @@ declare const source: {
   }
   "SnapOverride": {
     "from": string
+    "pointFilters": string
     "none": string
   }
   "SelectionCycling": {

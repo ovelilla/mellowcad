@@ -144,6 +144,7 @@
   },
   "SnapOverride": {
     "from": "From",
+    "pointFilters": "Point Filters",
     "none": "None"
   },
   "SelectionCycling": {

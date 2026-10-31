@@ -2,9 +2,9 @@
 
 import * as React from "react"
 import { Menu } from "@base-ui/react/menu"
-import { CheckIcon } from "lucide-react"
+import { CheckIcon, ChevronRight } from "lucide-react"
 
-import { CadEngine, SnapType } from "@mellowcad/engine"
+import { CadEngine, POINT_FILTERS, SnapType } from "@mellowcad/engine"
 import type { EditorState } from "@mellowcad/react"
 import { usePortalContainer } from "./ui/portal-container"
 import { useEditorText } from "./editor-text"
@@ -32,8 +32,8 @@ export const MENU_AT_CURSOR =
 /**
  * The object snaps as AutoCAD's Shift+right-click menu groups them (desktop
  * d06), for the ones that exist here: Temporary track point, Mid Between 2
- * Points, Point Filters, 3D Osnap, Geometric Center, Node and Osnap Settings
- * are left out until they are built.
+ * Points, 3D Osnap, Geometric Center, Node and Osnap Settings are left out
+ * until they are built.
  */
 const GROUPS: readonly (readonly Choice[])[] = [
   [
@@ -56,12 +56,16 @@ const GROUPS: readonly (readonly Choice[])[] = [
 /** The rule between a menu's groups: this one's, the shortcut menu's. */
 export const SEPARATOR = "-mx-1 my-1 h-px bg-border"
 
+/** An entry of the shortcut menu, a submenu's trigger here too. */
+export const MENU_ITEM =
+  "relative flex cursor-default items-center gap-2 rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-disabled:text-faint-foreground data-highlighted:bg-accent data-highlighted:text-accent-foreground data-popup-open:bg-accent"
+
 const ITEM =
   "relative flex cursor-default items-center rounded-sm py-1.5 ps-2 pe-8 text-ui outline-hidden select-none data-highlighted:bg-accent data-highlighted:text-accent-foreground"
 
 /**
- * The override menu's entries: FROM and the object snaps. The shortcut menu's
- * Osnap Overrides submenu lists the same ones.
+ * The override menu's entries: FROM, the Point Filters submenu and the object
+ * snaps. The shortcut menu's Osnap Overrides submenu lists the same ones.
  */
 export function SnapOverrideItems({
   engine,
@@ -76,6 +80,20 @@ export function SnapOverrideItems({
       <Menu.Item onClick={() => engine.startFrom()} className={ITEM}>
         {t("from")}
       </Menu.Item>
+      {/* `.X .Y .Z | .XY .XZ .YZ`, as acad.cuix's ID_MnPointFi (desktop filters/d03). */}
+      <Submenu label={t("pointFilters")}>
+        {POINT_FILTERS.map((filter) => (
+          <React.Fragment key={filter}>
+            {filter === ".XY" && <Menu.Separator className={SEPARATOR} />}
+            <Menu.Item
+              onClick={() => engine.choosePointFilter(filter)}
+              className={ITEM}
+            >
+              {filter}
+            </Menu.Item>
+          </React.Fragment>
+        ))}
+      </Submenu>
       {GROUPS.map((group) => (
         <React.Fragment key={group[0]}>
           <Menu.Separator className={SEPARATOR} />
@@ -148,5 +166,34 @@ export function SnapOverrideMenu({
         </Menu.Positioner>
       </Menu.Portal>
     </Menu.Root>
+  )
+}
+
+/** A submenu of a menu at the cursor, opening beside its entry. */
+export function Submenu({
+  label,
+  children,
+}: {
+  label: string
+  children: React.ReactNode
+}) {
+  const portal = usePortalContainer()
+  return (
+    <Menu.SubmenuRoot>
+      <Menu.SubmenuTrigger className={MENU_ITEM}>
+        {label}
+        <ChevronRight className="absolute inset-e-2 size-4 rtl:-scale-x-100" />
+      </Menu.SubmenuTrigger>
+      <Menu.Portal container={portal}>
+        <Menu.Positioner
+          side="inline-end"
+          align="start"
+          sideOffset={6}
+          className="z-50"
+        >
+          <Menu.Popup className={MENU_AT_CURSOR}>{children}</Menu.Popup>
+        </Menu.Positioner>
+      </Menu.Portal>
+    </Menu.SubmenuRoot>
   )
 }

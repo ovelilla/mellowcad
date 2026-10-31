@@ -154,6 +154,7 @@ export const es: EditorLocale = {
     },
     "SnapOverride": {
       "from": "Desde",
+      "pointFilters": "Filtros para puntos",
       "none": "Ninguno"
     },
     "SelectionCycling": {

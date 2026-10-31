@@ -140,6 +140,12 @@ export declare class CadEngine {
     /** Starts the FROM point modifier (pick a base, then type an offset). */
     startFrom(): boolean;
     /**
+     * Types a point filter at the running point prompt (`.X`, `.XY`…), as the
+     * Point Filters menu does: the next point gives those coordinates, and
+     * `(need …)` asks for the rest.
+     */
+    choosePointFilter(filter: PointFilterName): void;
+    /**
      * Gives the selected objects a linetype, an id of `LINETYPES` or
      * `"ByLayer"`, in one undo step.
      */
@@ -986,6 +992,24 @@ export interface PaletteUi {
     readonly open: boolean;
     readonly tab: PaletteTab;
 }
+
+export { POINT_FILTERS }
+/**
+ * The point filters AutoCAD's Point Filters menu lists, in its order, with a
+ * separator before `.XY` (acad.cuix's `ID_MnPointFi`).
+ */
+export declare const POINT_FILTERS: readonly [
+    ".X",
+    ".Y",
+    ".Z",
+    ".XY",
+    ".XZ",
+    ".YZ"
+];
+
+export type { PointFilterName }
+/** A point filter as the Point Filters menu types it. */
+export type PointFilterName = (typeof POINT_FILTERS)[number];
 
 export { POLAR_ANGLE_MENU }
 /**

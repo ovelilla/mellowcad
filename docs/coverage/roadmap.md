@@ -27,8 +27,10 @@ us to walk again, whereas a command costs the same before or after it.
    third-party one), drawn on the canvas as AutoCAD draws them (isolines, Hidden, shaded), from
    REGION and its booleans to SWEEP and LOFT. The brief is `docs/next-solids.md`.
 
-Left out of the 2.5D model, each a gap of its own: the `.X` / `.XY` point filters, OSNAPZ as
-a variable, ARRAYRECT's Levels, CHPROP, and POINT's thickness (with POINT, below). 3DPOLY and SPLINE
+Left out of the 2.5D model, each a gap of its own: CHPROP, OSNAPZ as a variable, ARRAYRECT's
+Levels, and POINT's thickness (with POINT, below). The point filters are done, `.X` to `.YZ` at
+every point prompt and in the Point Filters menu, in the UCS (filters/f01–f63, d01–d05,
+drafting-aids.md's Point filters); at `Select objects:` they are a gap of their own. 3DPOLY and SPLINE
 3D are done: the objects whose stored points carry their Z (`draw.md`), a spline kept in its own
 plane when it has one; trimming a 3D polyline and JOIN into one are its own gaps.
 
