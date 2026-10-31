@@ -73,6 +73,8 @@ capability the app has belongs to the engine, behind a port; only the _mechanism
   the width before it to the width after, `cornerObjects.ts`' `joinAtCut`). A wide polyline is an area:
   `polylineOutline` gives its bands, which drawing, bounds, window crossing and `closestOnEntity`
   read. Never derive the edges in a caller.
+- A polyline's `linetypeGeneration` (PEDIT's Ltype gen) goes with it into what is made of it
+  through `carryOverrides`, as its plane does: `createPolyline` alone drops it.
 - `polylineSegmentGeometries()` is the single source of how a polyline is shaped; a closed one
   closes from two vertices too (pline/p227): count segments with `polylineSegments`.
 - Paint order is `entityDrawOrder()` (only hatches move, behind, HPDRAWORDER 3); `pickAll()`

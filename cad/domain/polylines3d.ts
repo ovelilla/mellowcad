@@ -116,3 +116,55 @@ export function polyline3dSpan(
   vertices.push(at(to))
   return vertices
 }
+
+/** PEDIT's Reverse of a 3D polyline: its vertices the other way, as a polyline's. */
+export function polyline3dReversed(poly: Polyline3dEntity): Polyline3dEntity {
+  return { ...poly, vertices: [...poly.vertices].reverse() }
+}
+
+/** Edit vertex's Insert: a vertex at `point` after vertex `index` (pedit/p30). */
+export function polyline3dVertexInserted(
+  poly: Polyline3dEntity,
+  index: number,
+  point: Vec3
+): Polyline3dEntity {
+  const vertices = poly.vertices.slice()
+  vertices.splice(index + 1, 0, { x: point.x, y: point.y, z: point.z })
+  return { ...poly, vertices }
+}
+
+/** Edit vertex's Straighten: the vertices between `from` and `to` dropped, as a polyline's. */
+export function polyline3dStraightened(
+  poly: Polyline3dEntity,
+  from: number,
+  to: number
+): Polyline3dEntity {
+  const lo = Math.min(from, to)
+  const hi = Math.max(from, to)
+  if (hi - lo < 2) return poly
+  return {
+    ...poly,
+    vertices: poly.vertices.filter((_, i) => i <= lo || i >= hi),
+  }
+}
+
+/**
+ * Edit vertex's Break of a 3D polyline, by a polyline's rules (pedit/p111):
+ * the runs before the lower vertex and after the higher, a closed one read
+ * round to its first vertex again; null where it cuts nothing off.
+ */
+export function polyline3dBrokenAt(
+  poly: Polyline3dEntity,
+  from: number,
+  to: number
+): { first: Polyline3dEntity | null; second: Polyline3dEntity | null } | null {
+  const lo = Math.min(from, to)
+  const hi = Math.max(from, to)
+  const end = polyline3dSegments(poly).length
+  if (hi === lo ? lo === 0 || lo >= end : lo === 0 && hi >= end) return null
+  const piece = (a: number, b: number): Polyline3dEntity | null =>
+    b <= a
+      ? null
+      : { ...poly, closed: false, vertices: polyline3dSpan(poly, a, b) }
+  return { first: piece(0, lo), second: piece(hi, end) }
+}

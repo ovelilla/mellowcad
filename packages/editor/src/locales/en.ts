@@ -82,6 +82,7 @@ export const en: EditorCatalog = {
         "trim": "Trim",
         "fillet": "Fillet",
         "break": "Break",
+        "pedit": "Edit Polyline",
         "array": "Array",
         "text": "Text",
         "dimension": "Dimension",

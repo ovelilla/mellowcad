@@ -339,6 +339,20 @@ namespace MellowProbe
                             $"[{Log.V(pl.GetPoint2dAt(i).X)},{Log.V(pl.GetPoint2dAt(i).Y)},{Log.V(pl.GetBulgeAt(i))},{Log.V(pl.GetStartWidthAt(i))},{Log.V(pl.GetEndWidthAt(i))}]");
                         extra.Add("vertices"); extra.Add("[" + string.Join(",", vs) + "]");
                     }
+                    // A heavy polyline's vertices are objects of their own: their bulge, widths,
+                    // fit tangent and type (spline frame, spline-fit, curve-fit) only read one by one.
+                    if (e is Polyline2d p2)
+                    {
+                        var vs = p2.Cast<ObjectId>().Select(v => (Vertex2d)tr.GetObject(v, OpenMode.ForRead)).Select(v =>
+                            $"[{Log.V(v.Position)},{Log.V(v.Bulge)},{Log.V(v.StartWidth)},{Log.V(v.EndWidth)},{Log.Q(v.VertexType.ToString())},{(v.TangentUsed ? Log.V(v.Tangent) : "null")}]");
+                        extra.Add("vertices"); extra.Add("[" + string.Join(",", vs) + "]");
+                    }
+                    if (e is Polyline3d p3)
+                    {
+                        var vs = p3.Cast<ObjectId>().Select(v => (PolylineVertex3d)tr.GetObject(v, OpenMode.ForRead)).Select(v =>
+                            $"[{Log.V(v.Position)},{Log.Q(v.VertexType.ToString())}]");
+                        extra.Add("vertices"); extra.Add("[" + string.Join(",", vs) + "]");
+                    }
                     if (e is Spline sp)
                     {
                         extra.Add("controlPoints"); extra.Add(Log.V(sp.NurbsData.GetControlPoints()));

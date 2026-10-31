@@ -193,6 +193,11 @@ above, explains):
   spells some words per prompt (`añaDIr` and `dEsplazar` at Fit data, `Añadir` and `Desplazar` at
   Edit vertex, `Polilínea` at a closed spline's first prompt, eXit's hidden `SA` or `S`).
   **Unverified:** the rail's `Editar spline`.
+- **PEDIT:** `EDITPOL` and `PE` from the 2027 Spanish `acad.pgp`; every prompt, keyword and
+  message from 2027's console (pedit/p01–p146.es), whose `initget` spells Join `Juntar` at a 2D
+  polyline's prompt and `Unir` at a 3D one's, eXit `Salir` at Edit vertex and the hidden `SAlir`
+  beside `SA` at the first prompt, and the default of Next `<U>`. **Unverified:** the rail's
+  `Editar polilínea`, Jointype's default `<Ambos>`.
 - **UCS:** `SCP` and `SIMBSCP` from the Spanish pages with the English GUIDs, as is `PLANTA`;
   the keywords `gUArdado`, `oBjeto`, `PRev`, `Vista`, `Univ`, `X`, `Y`, `Z`, `ejEZ`, `Objeto`,
   `Rest`,

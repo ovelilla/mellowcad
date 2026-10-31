@@ -1481,6 +1481,99 @@ of its own and the SqrtChord AutoCAD then reports (k141), Select point finding n
 again in silence), Next and Previous at the ends of a closed one (staying put, as k99's), Undo at
 `Specify new point or [After/Before]`.
 
+### `PEDIT` / `PE` · es `EDITPOL` / `PE`
+
+**Implemented:** as AutoCAD 2027's console asks it and leaves the polyline (probes
+pedit/p01–p146, traced, MPDUMP, en and es; not transparent). `Select polyline or [Multiple]:` (es
+`Designe polilínea o [Múltiple]:`), a pick or a mode typed there (Window, Last, Crossing, BOX, ALL,
+Fence, WPolygon, CPolygon), a miss and Enter asked again in silence and Escape the only way out
+(p03, p38), a word `*Invalid selection*` and `Expects a point or
+Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Multiple]:`, the stray bracket AutoCAD's (es
+`Requiere un punto o …/Múltiple]:`); a polyline selected before it is the one edited, a set of more
+not taken (p37, p38), and a double-click on a polyline or a 3D polyline at `Command:` runs it on
+it as the ribbon's `^C^C_pedit` does (DoubleClickRoot.cui), echoed `_pedit`. A line, an arc or a
+spline says `Object selected is not a polyline` (es `El objeto designado no es una polilínea`) and
+asks `Do you want to turn it into one? <Y>` (es `¿Lo quiere transformar en una? <S>`; `Yes or No,
+please.`), No asking for a polyline again (p05); Yes or Enter puts a new polyline in its place in
+its properties, which U takes back with the command (p04, p11): a line at its height (p98), a
+rising one in the upright plane holding it, its normal Z × the line (p97), an arc from its start
+counter-clockwise (p06), a spline after `Specify a precision <10>:` (0 to 99, `Requires an integer
+between 0 and 99.`) as SPLINEDIT's convert to Polyline leaves it, a 3D polyline where it lies in
+no plane (p07, p99); anything else is said and asked again (p96). Then `Enter an option
+[Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]:` (es `Indique una opción
+[Cerrar/Juntar/Grosor/Editar vértices/generarTlínea/Invertir/desHacer]:`), Open in Close's place
+on a closed one, both answering either way, with the hidden X and EXit (es `SA`, `SAlir`); a 3D
+polyline's `[Close/Join/Edit vertex/Reverse/Undo]:` (es `[Cerrar/Unir/…]`); a word `Invalid option
+keyword.`, Enter ending (p01, p02, p09, p10). **Close** draws the closing segment straight, or an
+arc tangent to the last segment where that is an arc (p02, p78, p130, p133); **Open** drops it.
+**Join** on an open polyline asks `Select objects:` and grows it as JOIN grows a polyline source —
+lines, arcs and open polylines meeting its ends in its plane, their widths JOIN's —, saying `3
+segments added to polyline` (es `3 segmentos añadidos a la polilínea`; p17, p42, p76); a closed
+one `Can't join to a closed polyline` (es `Imposible unir a una polilínea cerrada`) and the prompt
+again (p18); at another height nothing (p44); a 3D polyline joins nothing, `0 segments added to
+polyline`, as the console (p43, p77, p103, p104). **Width**: `Specify new width for all segments:`
+(es `Precise nuevo grosor para todos los segmentos:`), a value or two points, `Requires numeric
+distance or two points.`, `Value must be positive.` (p20, p75, p110). **Ltype gen**: `Enter
+polyline linetype generation option [ON/OFF] <Off>:` (es `[ACT/DES] <DES>`), its default the
+polyline's own (p32): on, the linetype laid in one pattern along all of it, a model property of
+the polyline (DXF 70 flag 128) saved from drawing file version 39. **Reverse**, in no words: the
+vertices the other way, each segment's bulge negated and widths swapped, a closed one from its
+last vertex (p33, p113). **Edit vertex**: `Enter a vertex editing option
+[Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit] <N>:` (es
+`[sigUiente/Precedente/Cortar/Insertar/Desplazar/Regenerar/Alisar/Tangente/Grosor/Salir] <U>:`; a
+3D polyline's without Tangent and Width, p30), an X on the vertex from the first, Enter stepping
+the way Next or Previous last went, staying put at either end of an open or a closed one (p21,
+p29, p63–p65); Insert's `Specify location for new vertex:` after the X, the segment it splits
+keeping its bulge and widths and the new one straight as wide as it ended, the X onto it (p23,
+p109, p115, p118, p128); Move's `Specify new location for marked vertex:`, the bulges kept (p23),
+both doing nothing at Enter (p74), with their Z on a 3D polyline (p30); Break's and Straighten's
+`Enter an option [Next/Previous/Go/eXit] <N>:` (es `[sigUiente/Precedente/Ejecutar/Salir]`), Go
+breaking between the vertex they began at and the X — the runs before the lower and after the
+higher, a closed one read from its first vertex round to it again, the piece from the start
+keeping the polyline and the other a new object, at one vertex cut in two there, `*Invalid*` at
+an end or over all of it (p66–p71, p100–p102, p111) — or straightening, the vertices between
+dropped and the segment straight with the lower one's widths, at one vertex the arc after it
+(p26, p27, p72, p73, p129, p131), the X then on the lower; Width's `Specify starting width for next
+segment <…>:` and `Specify ending width for next segment <…>:` from the X, `Requires numeric
+distance or second point.`, `Value must be positive.` (p22, p29, p79, p80); Tangent's `Specify
+direction of vertex tangent:` (`Requires valid numeric angle or second point.`), taken and kept by
+nothing, as AutoCAD drops it from a polyline that is not fitted (p28); Regen. **Undo**: the last
+step of the main prompt back, a whole Edit vertex at once, `Command has been completely undone.`
+(es `Todos los efectos del comando han sido deshechos.`) once none is left, even as it takes back
+the last (p34, p35, p46, p81); a conversion stays (p112). Escape keeps what was done; U after the
+command takes it all back, named PEDIT (es EDITPOL; p36, p47). **Multiple**: `Select objects:`,
+read newest first (p12, p14, p93), its lines, arcs and splines asked about with `Convert Lines,
+Arcs and Splines to polylines [Yes/No]? <Y>` (es `¿Convertir líneas, arcos y splines en
+polilíneas? [Sí/No]? <S>`) and a spline's `Specify a precision for spline conversion <10>:`
+(p12, p114), No asking for a polyline again (p41); then `Enter an option
+[Close/Open/Join/Width/Ltype gen/Reverse/Undo]:`, `[Close/Open/Reverse/Undo]:` with a 3D polyline
+in the set (p39), each option done to them all (p95). Its Join says `Join Type = Extend` (es
+`Tipo de junta = Alargar`) and asks `Enter fuzz distance or [Jointype] <0.0000>:` (es `Indique la
+distancia de aproximación o [Tipo de junta]`; `Requires numeric distance, two points, or option
+keyword.`), Jointype's `Enter join type [Extend/Add/Both] <Extend>:` (es
+`[Alargar/aÑadir/aMbos] <Alargar>`) kept for the session (`Add segment`, `Both (Extend or Add)`;
+p12); from the set's first, each polyline joined onto a chain's end in turn: touching, as JOIN;
+Extend, where the straight end segments' lines meet with neither end moving farther than the fuzz,
+trimmed back or grown, parallel ones never (p13, p16, p86–p88, p92, p106, p107); Add, the nearest
+two ends joined by a segment where their gap is less than the fuzz times the distance between the
+other two ends — the rule twenty probes give, no help states it (p83, p105, p108, p116–p127,
+p134–p146); Both, Extend where it can, else Add (p15, p85, p91, p93); `1 segments added to
+polyline`, as AutoCAD writes it.
+
+**Missing:** Fit, Spline and Decurve, a 2D polyline's and a 3D one's (`Spline curve`), and the
+spline-fit polylines they make: `docs/next-pedit-spline.md`, with what the console showed (p50–p62);
+PEDITACCEPT (the question left out, p06) and PLINECONVERTMODE's arcs (p08); a spline's vertices
+as SPLINEDIT's convert to Polyline makes them, far finer than AutoCAD's on a fit spline (31 at
+precision 10, p07; SPLINEDIT's entry); Multiple's prompt when the set is all 3D polylines (the 2D
+one, p40, effect unprobed); the meshes; the X's look on the desktop (**unverified**: a red cross
+here); the widths of Close's segment, AutoCAD's the last vertex's, which nothing stores here
+(the last segment's end width here, PLINE's and Width's alike, p34, p78), and of an open
+polyline's last vertex, which Edit vertex's Width sets and nothing here keeps (p79); the bulge
+Straighten leaves on an open polyline's last vertex, which a later Close would use (p131).
+**Unverified:** Enter at Width (back at the main prompt here), Multiple's set with nothing in it,
+a pick's order in Multiple's set, where Jointype is kept, Spanish `<Ambos>`, Enter at a fuzz
+distance never given (0 here), Extend of an arc end segment (never here).
+
 ### `MATCHPROP` / `MA` / `PAINTER` · es `IGUALARPROP` / `IP` / `COPIARPROP`
 
 **Implemented:** `Select source object:` (es `Designe objeto de origen:`, acmatchRes 15), a pick

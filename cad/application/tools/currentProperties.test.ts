@@ -399,6 +399,23 @@ const DERIVED: ReadonlyArray<
     ],
   ],
   [
+    // The polyline a line turns into, and the piece Edit vertex's Break cuts
+    // off, in the source's properties (pedit/p11, p66).
+    "PEDIT",
+    (c) =>
+      c
+        .command("PEDIT")
+        .click(p(50, 0))
+        .enter()
+        .option("Edit vertex")
+        .option("Insert")
+        .click(p(50, 50))
+        .option("Break")
+        .option("Go")
+        .enter(),
+    [blueLine(0, 100, "L1")],
+  ],
+  [
     "PASTECLIP",
     async (c) => {
       c.select("L1").command("COPYCLIP")

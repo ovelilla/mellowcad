@@ -180,7 +180,16 @@ export function assignEntityLineweight(
  * another goes through here, which is what keeps a rebuild from dropping them.
  */
 export function carryOverrides<T extends Entity>(source: Entity, copy: T): T {
-  const withColor = source.color ? assignEntityColor(copy, source.color) : copy
+  // PEDIT's Ltype gen goes with the polyline into what is made of it.
+  const generated =
+    source.type === "polyline" &&
+    source.linetypeGeneration &&
+    copy.type === "polyline"
+      ? { ...copy, linetypeGeneration: true as const }
+      : copy
+  const withColor = source.color
+    ? assignEntityColor(generated, source.color)
+    : generated
   const withLinetype = source.linetype
     ? assignEntityLinetype(withColor, source.linetype)
     : withColor

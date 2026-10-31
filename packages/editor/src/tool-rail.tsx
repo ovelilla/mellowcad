@@ -28,6 +28,7 @@ import {
   SplinePointer,
   Split,
   Square,
+  SquarePen,
   Tag,
   TextCursorInput,
   TrianglesCenterlineDashedVertical,
@@ -125,6 +126,7 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   explode: Split,
   join: Merge,
   splinedit: SplinePointer,
+  pedit: SquarePen,
   break: BreakIcon,
   breakatpoint: BreakAtPointIcon,
   matchprop: Paintbrush,
@@ -166,6 +168,7 @@ type FlyoutId =
   | "trim"
   | "fillet"
   | "break"
+  | "pedit"
   | "array"
   | "text"
   | "dimension"
@@ -235,12 +238,12 @@ const PALETTE: readonly PaletteSection[] = [
       "scale",
       flyout("array", ["array", "arraypolar", "arraypath"]),
       "offset",
-      // The ribbon keeps these in the expanded Modify panel (Edit Spline in
-      // Edit Polyline's drop-down); here they are slots, Break at Point as
+      // The ribbon keeps these in the expanded Modify panel, Edit Spline in
+      // Edit Polyline's drop-down; here they are slots, Break at Point as
       // the variant of BREAK it is.
       flyout("break", ["break", "breakatpoint"]),
       "join",
-      "splinedit",
+      flyout("pedit", ["pedit", "splinedit"]),
     ],
   },
   {

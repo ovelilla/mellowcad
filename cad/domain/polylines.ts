@@ -6,7 +6,11 @@ import {
   normalizeAngle,
   polarPoint,
 } from "../geometry/primitives"
-import { arcThroughBulge } from "../geometry/bulgeArcs"
+import {
+  arcThroughBulge,
+  segmentExitTangent,
+  tangentArcBulge,
+} from "../geometry/bulgeArcs"
 import { PolylineEntity, PolylineWidth } from "./entityTypes"
 import { createPolyline } from "./entityFactories"
 
@@ -520,4 +524,147 @@ function reshaped(
   if (!fresh.bulges) delete copy.bulges
   if (!fresh.widths) delete copy.widths
   return copy as unknown as PolylineEntity
+}
+
+/**
+ * PEDIT's Reverse: the vertices the other way, each segment turned round —
+ * its bulge negated, its widths swapped —, a closed one from its last vertex
+ * round to its first (pedit/p33, p113).
+ */
+export function polylineReversed(poly: PolylineEntity): PolylineEntity {
+  const n = poly.vertices.length
+  const widths = padWidths(poly)
+  // Segment k of the reversed run is segment n-2-k turned round; a closed
+  // one's closing segment stays the closing segment.
+  const from = (k: number) => (k <= n - 2 ? n - 2 - k : k)
+  return reshaped(
+    poly,
+    [...poly.vertices].reverse(),
+    widths.map((_, k) => -polylineBulge(poly, from(k))),
+    widths.map((_, k) => {
+      const [start, end] = widths[from(k)]
+      return [end, start] as const
+    })
+  )
+}
+
+/**
+ * PEDIT's Close and Open. Closing draws the segment from the last vertex to
+ * the first an arc on from the last segment where that is an arc, tangent to
+ * it, else straight (pedit/p02, p78, p130, p133), as wide as the last segment
+ * ends (**unverified**: AutoCAD gives it the widths the last vertex holds,
+ * which nothing stores here; PLINE's and Width's are that width, p34, p78).
+ * Opening drops it.
+ */
+export function polylineClosedByPedit(
+  poly: PolylineEntity,
+  closed: boolean
+): PolylineEntity {
+  if (poly.closed === closed) return poly
+  if (!closed) return withPolylineClosed(poly, false)
+  const n = poly.vertices.length
+  const last = n - 2
+  const bulges = polylineSegments(poly).map((_, i) => polylineBulge(poly, i))
+  const widths = padWidths(poly)
+  const lastBulge = polylineBulge(poly, last)
+  const exit =
+    lastBulge === 0
+      ? null
+      : segmentExitTangent(poly.vertices[last], poly.vertices[n - 1], lastBulge)
+  bulges.push(
+    exit
+      ? (tangentArcBulge(poly.vertices[n - 1], exit, poly.vertices[0]) ?? 0)
+      : 0
+  )
+  const end = widths[last]?.[1] ?? 0
+  widths.push([end, end])
+  return reshaped({ ...poly, closed: true }, poly.vertices, bulges, widths)
+}
+
+/**
+ * Edit vertex's Insert: a vertex at `point` after vertex `index`, the
+ * segment it splits keeping its bulge and widths up to it and the new one
+ * straight, as wide as the split one ends (pedit/p23, p109, p118, p128); after
+ * an open polyline's last vertex, a straight segment as wide as the last one
+ * ends (p115).
+ */
+export function polylineVertexInserted(
+  poly: PolylineEntity,
+  index: number,
+  point: Vec2
+): PolylineEntity {
+  const vertices = poly.vertices.slice()
+  vertices.splice(index + 1, 0, { x: point.x, y: point.y })
+  const bulges = polylineSegments(poly).map((_, i) => polylineBulge(poly, i))
+  const widths = padWidths(poly)
+  const end = (widths[index] ?? widths[widths.length - 1])?.[1] ?? 0
+  bulges.splice(index + 1, 0, 0)
+  widths.splice(index + 1, 0, [end, end])
+  return reshaped(poly, vertices, bulges, widths)
+}
+
+/**
+ * Edit vertex's Straighten from vertex `from` to `to`, either way round: the
+ * vertices between them dropped and the segment left between them straight,
+ * with the widths it had at the lower one (pedit/p26, p27, p73, p129); at
+ * one vertex, the arc segment after it straightened (p72, p131).
+ */
+export function polylineStraightened(
+  poly: PolylineEntity,
+  from: number,
+  to: number
+): PolylineEntity {
+  const lo = Math.min(from, to)
+  const hi = Math.max(from, to)
+  const segments = polylineSegments(poly).length
+  if (lo >= segments) return poly
+  const vertices = poly.vertices.filter((_, i) => i <= lo || i >= hi)
+  const bulges = polylineSegments(poly).map((_, i) => polylineBulge(poly, i))
+  const widths = padWidths(poly)
+  const gap = Math.max(hi - lo - 1, 0)
+  bulges.splice(lo, gap + 1, 0)
+  widths.splice(lo + 1, gap)
+  return reshaped(poly, vertices, bulges, widths)
+}
+
+/**
+ * Edit vertex's Break between vertices `from` and `to`, either way round: the
+ * polyline cut there into the run before the lower one and the run after the
+ * higher one, a closed one read from its first vertex round to it again
+ * (pedit/p66, p67, p70, p71, p101, p102), each piece that has a segment kept;
+ * at one vertex, cut in two there. Null where nothing would be left or the
+ * cut is at an end — AutoCAD's `*Invalid*` (p68, p69, p100).
+ */
+export function polylineBrokenAt(
+  poly: PolylineEntity,
+  from: number,
+  to: number
+): { first: PolylineEntity | null; second: PolylineEntity | null } | null {
+  const lo = Math.min(from, to)
+  const hi = Math.max(from, to)
+  const end = polylineSegments(poly).length
+  if (hi === lo ? lo === 0 || lo >= end : lo === 0 && hi >= end) return null
+  const piece = (a: number, b: number): PolylineEntity | null => {
+    if (b <= a) return null
+    const span = polylineSpan(poly, a, b)
+    return reshaped(
+      { ...poly, closed: false },
+      span.vertices,
+      span.bulges,
+      span.widths
+    )
+  }
+  return { first: piece(0, lo), second: piece(hi, end) }
+}
+
+/** Edit vertex's Width: the segment after vertex `index` that wide; none after an open one's last. */
+export function polylineSegmentWidened(
+  poly: PolylineEntity,
+  index: number,
+  width: PolylineWidth
+): PolylineEntity {
+  const widths = padWidths(poly)
+  if (index >= widths.length) return poly
+  widths[index] = width
+  return reshaped(poly, poly.vertices, poly.bulges, widths)
 }

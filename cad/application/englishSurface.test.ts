@@ -1281,6 +1281,82 @@ describe("the engine's English surface", () => {
           .do("precision", (c) => c.enter())
     )
     walk(
+      "PEDIT",
+      createHarness({
+        entities: [
+          polylineOf([p(0, 0), p(100, 0), p(100, 100)], { id: "PE" }),
+          lineOf(p(100, 100), p(200, 100)),
+          circleOf(p(0, 300), 20),
+        ],
+      }),
+      (s) =>
+        s
+          .do("PEDIT", (c) => c.command("PE"))
+          .do("miss", (c) => c.click(at(-200, -200)))
+          .do("circle", (c) => c.click(at(20, 300)))
+          .do("line", (c) => c.click(at(150, 100)))
+          .do("Y", (c) => c.enter())
+          .do("J", (c) => answer(c, "J"))
+          .do("pick", (c) => c.click(at(50, 0)))
+          .do("enter", (c) => c.enter())
+          .do("W", (c) => answer(c, "W"))
+          .do("width", (c) => c.type("2"))
+          .do("enter", (c) => c.enter())
+          .do("L", (c) => answer(c, "L"))
+          .do("ON", (c) => c.option("ON"))
+          .do("E", (c) => answer(c, "E"))
+          .do("N", (c) => c.option("Next"))
+          .do("W", (c) => answer(c, "W"))
+          .do("start", (c) => c.type("4"))
+          .do("enter", (c) => c.enter())
+          .do("enter", (c) => c.enter())
+          .do("T", (c) => answer(c, "T"))
+          .do("angle", (c) => c.type("45"))
+          .do("enter", (c) => c.enter())
+          .do("I", (c) => answer(c, "I"))
+          .do("point", (c) => c.click(at(50, 50)))
+          .do("M", (c) => answer(c, "M"))
+          .do("point", (c) => c.click(at(60, 50)))
+          .do("S", (c) => answer(c, "S"))
+          .do("N", (c) => c.option("Next"))
+          .do("G", (c) => answer(c, "G"))
+          .do("B", (c) => answer(c, "B"))
+          .do("G", (c) => answer(c, "G"))
+          .do("X", (c) => c.option("eXit"))
+          .do("C", (c) => answer(c, "C"))
+          .do("R", (c) => answer(c, "R"))
+          .do("U", (c) => answer(c, "U"))
+          .do("U", (c) => answer(c, "U"))
+          .do("U", (c) => answer(c, "U"))
+          .do("U", (c) => answer(c, "U"))
+          .do("U", (c) => answer(c, "U"))
+          .do("U", (c) => answer(c, "U"))
+          .do("X", (c) => answer(c, "X"))
+    )
+    walk(
+      "PEDIT Multiple",
+      createHarness({
+        entities: [
+          polylineOf([p(0, 0), p(100, 0)]),
+          polylineOf([p(110, 20), p(110, 100)]),
+          lineOf(p(0, 200), p(100, 200)),
+        ],
+      }),
+      (s) =>
+        s
+          .do("PEDIT", (c) => c.command("PE"))
+          .do("M", (c) => answer(c, "M"))
+          .do("ALL", (c) => answer(c, "ALL"))
+          .do("enter", (c) => c.enter())
+          .do("Y", (c) => c.enter())
+          .do("J", (c) => answer(c, "J"))
+          .do("J", (c) => answer(c, "J"))
+          .do("B", (c) => answer(c, "B"))
+          .do("fuzz", (c) => c.type("30"))
+          .do("enter", (c) => c.enter())
+          .do("enter", (c) => c.enter())
+    )
+    walk(
       "MATCHPROP",
       createHarness({ entities: [line(), circleOf(p(0, 50), 10)] }),
       (s) =>

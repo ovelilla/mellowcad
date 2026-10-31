@@ -372,6 +372,31 @@ describe("appearance resolution", () => {
     expect(along(0, 10, 20, 30, 40, 50, 60, 70, 80, 90, 100)).toEqual([100])
   })
 
+  // PEDIT's Ltype gen (pedit/p32): one pattern along the whole polyline,
+  // centred as a line's of its length (**unverified** on a plot).
+  it("lays a polyline's pattern along all of it with Ltype gen on", () => {
+    const polyline = {
+      ...assignEntityLinetype(
+        polylineOf([p(0, 0), p(50, 0), p(100, 0), p(150, 0)], { id: "P1" }),
+        "Dashed"
+      ),
+      linetypeGeneration: true as const,
+    }
+    const cad = createHarness({ entities: [polyline] })
+    const origin = cad.runtime.viewport.worldToScreen(p(0, 0)).x
+    const dashes = strokes(cad.scene().primitives, THEME.entity).flatMap(
+      (piece) =>
+        piece.kind === "path"
+          ? [piece.points.map((point) => point.x - origin)]
+          : []
+    )
+    // (150 − 7·19.05 + 12.7) / 2 = 14.675 at either end.
+    expect(dashes[0][0]).toBeCloseTo(0, 9)
+    expect(dashes[0].at(-1)! - dashes[0][0]).toBeCloseTo(14.675, 6)
+    expect(dashes.at(-1)!.at(-1)).toBeCloseTo(150, 9)
+    expect(dashes).toHaveLength(8)
+  })
+
   /**
    * A circle's drawn dashes as `[from, to]` in degrees of its own parameter
    * (counter-clockwise from its OCS X about its normal), rebuilt from the

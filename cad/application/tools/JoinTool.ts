@@ -23,6 +23,7 @@ import {
   Entity,
   EntityId,
   type LineEntity,
+  type PolylineEntity,
   arcEndPoint,
   arcStartPoint,
   arcSweepAngle,
@@ -787,37 +788,12 @@ function joinPolylines(set: readonly Entity[]): Joined | null {
   while (left.length > 0) {
     const source = left.find((entity) => entity.type === "polyline") ?? left[0]
     left.splice(left.indexOf(source), 1)
-    const pieces = piecesOf(source)
-    const members = [source]
-    let closed = false
-    for (let i = 0; i < left.length && !closed; i++) {
-      const member = left[i]
-      const grown = coplanar(member, source) && attach(pieces, member)
-      if (!grown) continue
-      left.splice(i, 1)
-      members.push(member)
-      i = -1
-      closed = samePoint(pieces[0].a, pieces[pieces.length - 1].b)
-    }
-    if (members.length < 2) continue
+    const chain = chainOf(source, left)
+    if (!chain) continue
     polylineSource = source.type === "polyline"
-    segments = pieces.length - piecesOf(source).length
-    const vertices = [pieces[0].a, ...pieces.map((piece) => piece.b)]
-    if (closed) vertices.pop()
-    made.push(
-      carryOverrides(
-        source,
-        createPolyline(
-          vertices,
-          closed,
-          source.layerId,
-          pieces.map((piece) => piece.bulge),
-          polylineSource ? source.id : undefined,
-          joinedWidths(pieces.map((piece) => piece.width))
-        )
-      )
-    )
-    removed.push(...members.map((member) => member.id))
+    segments = chain.segments
+    made.push(chain.polyline)
+    removed.push(...chain.members)
   }
   if (made.length === 0) return null
   // A polyline grown keeps counting its new segments (p322, p356, p378); new
@@ -845,6 +821,68 @@ function joinPolylines(set: readonly Entity[]): Joined | null {
           },
         ],
       }
+}
+
+/**
+ * The chain grown from `source` over the objects of `left` that meet one of
+ * its ends in its plane, in their order and scanning again after each, until
+ * none fits or it closes; those joined are taken out of `left`. A polyline
+ * source keeps its id. Null when nothing joins it.
+ */
+function chainOf(
+  source: Entity,
+  left: Entity[]
+): { polyline: PolylineEntity; members: EntityId[]; segments: number } | null {
+  const pieces = piecesOf(source)
+  const members = [source.id]
+  let closed = false
+  for (let i = 0; i < left.length && !closed; i++) {
+    const member = left[i]
+    const grown = coplanar(member, source) && attach(pieces, member)
+    if (!grown) continue
+    left.splice(i, 1)
+    members.push(member.id)
+    i = -1
+    closed = samePoint(pieces[0].a, pieces[pieces.length - 1].b)
+  }
+  if (members.length < 2) return null
+  const vertices = [pieces[0].a, ...pieces.map((piece) => piece.b)]
+  if (closed) vertices.pop()
+  return {
+    polyline: carryOverrides(
+      source,
+      createPolyline(
+        vertices,
+        closed,
+        source.layerId,
+        pieces.map((piece) => piece.bulge),
+        source.type === "polyline" ? source.id : undefined,
+        joinedWidths(pieces.map((piece) => piece.width))
+      )
+    ),
+    members,
+    segments: pieces.length - piecesOf(source).length,
+  }
+}
+
+/**
+ * PEDIT's Join onto an open polyline: JOIN's chain grown from it over the
+ * level lines, arcs and open polylines of `set` (pedit/p17, p76). Null when
+ * nothing joins it.
+ */
+export function joinToPolyline(
+  source: PolylineEntity,
+  set: readonly Entity[]
+): { polyline: PolylineEntity; members: EntityId[]; segments: number } | null {
+  const left = set.filter(
+    (entity) =>
+      entity.id !== source.id &&
+      isLevel(entity) &&
+      (entity.type === "line" ||
+        entity.type === "arc" ||
+        (entity.type === "polyline" && !entity.closed))
+  )
+  return chainOf(source, left)
 }
 
 /**

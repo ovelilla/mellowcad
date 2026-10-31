@@ -47,6 +47,7 @@ import { ExplodeTool } from "./tools/ExplodeTool"
 import { JoinTool } from "./tools/JoinTool"
 import { BreakTool } from "./tools/BreakTool"
 import { SplineEditTool } from "./tools/SplineEditTool"
+import { PolylineEditTool } from "./tools/PolylineEditTool"
 import { MatchPropTool } from "./tools/MatchPropTool"
 import { CopyClipTool } from "./tools/CopyClipTool"
 import { PasteTool } from "./tools/PasteTool"
@@ -85,7 +86,8 @@ export function defaultTools(
   insert: InsertTool,
   paste: PasteTool,
   attEdit: AttEditTool,
-  setvar: SystemVariableTool
+  setvar: SystemVariableTool,
+  pedit: PolylineEditTool
 ): Tool[] {
   const circleRadius = { radius: 0 }
   const trimExtendMode: TrimExtendMode = { standard: false, edgeExtend: false }
@@ -159,6 +161,7 @@ export function defaultTools(
     new BreakTool("gap", "break"),
     new BreakTool("atPoint", "breakatpoint"),
     new SplineEditTool(),
+    pedit,
     new MatchPropTool(),
     new CopyClipTool("copy", "copyclip"),
     new CopyClipTool("cut", "cutclip"),

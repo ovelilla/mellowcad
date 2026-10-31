@@ -296,9 +296,10 @@ export const polylineEntity: fc.Arbitrary<PolylineEntity> = fc
       {
         nil: undefined,
       }
-    )
+    ),
+    fc.boolean()
   )
-  .map(([vertices, closed, bulges, widthList]) => {
+  .map(([vertices, closed, bulges, widthList, linetypeGeneration]) => {
     // One width pair per segment, as the factory and the file keep them.
     const segments = closed ? vertices.length : vertices.length - 1
     const widths = widthList?.slice(0, segments)
@@ -310,6 +311,7 @@ export const polylineEntity: fc.Arbitrary<PolylineEntity> = fc
       closed,
       ...(bulges && bulges.some((b) => b !== 0) ? { bulges } : {}),
       ...(widths && widths.some(([s, e]) => s > 0 || e > 0) ? { widths } : {}),
+      ...(linetypeGeneration ? { linetypeGeneration: true } : {}),
     }
     return entity
   })

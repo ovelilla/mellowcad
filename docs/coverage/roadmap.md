@@ -43,6 +43,10 @@ joined end to end, and an elliptical arc's or a spline's single source with cLos
 (pieces/p396–p440, modify.md's JOIN); SPLINEDIT, every option but Kink and toLerance, convert to
 Polyline's vertices AutoCAD's on a CV spline only (k57–k146, modify.md's SPLINEDIT).
 
+PEDIT is done but Fit, Spline and Decurve (pedit/p01–p146, modify.md's PEDIT), and Ltype gen a
+polyline's own; the spline-fit polylines those three make are the next delivery, with the model
+change they ask: `docs/next-pedit-spline.md`.
+
 Deferrable indefinitely at no extra cost: PASTEBLOCK/PASTEORIG/CUTBASE, DIMARC, DIMORDINATE, the
 modern `DIM` command, POINT with DIVIDE/MEASURE, XLINE/RAY, GROUP, LENGTHEN, ALIGN, per-object
 ltscale, isometric drafting mode.

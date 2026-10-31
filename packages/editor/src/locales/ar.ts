@@ -82,6 +82,7 @@ export const ar: EditorLocale = {
         "trim": "تشذيب",
         "fillet": "تقويس",
         "break": "كسر",
+        "pedit": "تحرير الخط المتعدد",
         "array": "مصفوفة",
         "text": "نص",
         "dimension": "بُعد",

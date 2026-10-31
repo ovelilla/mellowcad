@@ -1,12 +1,6 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
-import {
-  Entity,
-  EntityId,
-  carryOverrides,
-  createPolyline,
-  createPolyline3d,
-} from "../../domain/entities"
+import { Entity, EntityId } from "../../domain/entities"
 import type { SplineEntity } from "../../domain/entityTypes"
 import { splineOnItsPlane } from "../../domain/elevation"
 import { splineInPlaneOf, splineInWorld } from "../../domain/splineEdits"
@@ -24,7 +18,7 @@ import {
   splineClosedAs,
   splineElevated,
   splinePointNear,
-  splinePolylinePoints,
+  splinePolyline,
   splinePurged,
   splineReversed,
   splineTangentsAt,
@@ -956,32 +950,14 @@ export class SplineEditTool implements Tool {
     }
   }
 
-  /**
-   * convert to Polyline: the spline replaced by a polyline of straight
-   * segments along it in its plane, a 3D polyline where it lies in none, its
-   * properties carried; the command ends (k73, k90–k92). PLINECONVERTMODE's
-   * arcs and DELOBJ's keeping are not built.
-   */
+  /** convert to Polyline: the spline replaced and the command ended (k73, k90–k92). */
   private convert(precision: number, ctx: ToolContext): void {
     const spline = this.spline(ctx)
     if (!spline) return
-    const closed = spline.closed
-    const points = splinePolylinePoints(spline, precision)
-    const polyline = isLevelSpline(spline)
-      ? createPolyline(
-          points.map((p) => ({ x: p.x, y: p.y })),
-          closed,
-          spline.layerId
-        )
-      : createPolyline3d(
-          splinePolylinePoints(splineInWorld(spline), precision),
-          closed,
-          spline.layerId
-        )
     ctx.execute(
       new ReplaceEntitiesCommand(
         [spline.id],
-        [carryOverrides(spline, polyline)]
+        [splinePolyline(spline, precision)]
       )
     )
     ctx.endCommand()
@@ -1148,7 +1124,7 @@ export class SplineEditTool implements Tool {
 }
 
 /** Whether `typed` is an integer from `min` to `max`, as AutoCAD's integer prompts take one. */
-function integerIn(
+export function integerIn(
   typed: string,
   value: number,
   min: number,

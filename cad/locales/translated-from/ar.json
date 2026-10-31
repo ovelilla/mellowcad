@@ -15,6 +15,7 @@
   "interface.tool.ellipsearc": "Elliptical arc",
   "interface.tool.spline": "Spline",
   "interface.tool.splinedit": "Edit Spline",
+  "interface.tool.pedit": "Edit Polyline",
   "interface.tool.splinefit": "Spline Fit",
   "interface.tool.splinecv": "Spline CV",
   "interface.tool.rectangle": "Rectangle",

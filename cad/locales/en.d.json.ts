@@ -18,6 +18,7 @@ declare const source: {
       "ellipsearc": string
       "spline": string
       "splinedit": string
+      "pedit": string
       "splinefit": string
       "splinecv": string
       "rectangle": string
@@ -472,6 +473,7 @@ declare const source: {
       "ELLIPSEARC": string[]
       "SPLINE": string[]
       "SPLINEDIT": string[]
+      "PEDIT": string[]
       "RECTANG": string[]
       "POLYGON": string[]
       "HATCH": string[]
@@ -724,6 +726,36 @@ declare const source: {
         "Default": string
         "After": string
         "Before": string
+      }
+      "PEDIT": {
+        "Close": string
+        "Open": string
+        "Join": string
+        "Width": string
+        "Edit vertex": string
+        "Ltype gen": string
+        "Reverse": string
+        "Undo": string
+        "eXit": string
+        "X": string
+        "Multiple": string
+        "Yes": string
+        "No": string
+        "Jointype": string
+        "Extend": string
+        "Add": string
+        "Both": string
+        "ON": string
+        "OFF": string
+        "Next": string
+        "Previous": string
+        "Break": string
+        "Insert": string
+        "Move": string
+        "Regen": string
+        "Straighten": string
+        "Tangent": string
+        "Go": string
       }
       "RECTANG": {
         "Chamfer": string
@@ -1214,6 +1246,13 @@ declare const source: {
       "splineditOptionClosed": {
         "convert to Polyline": string
       }
+      "peditOption": {
+        "eXit": string
+      }
+      "peditOption3d": {
+        "Join": string
+        "eXit": string
+      }
       "enterFitDataOption": {
         "Add": string
         "Open": string
@@ -1659,6 +1698,27 @@ declare const source: {
       "specifyNewLocationOr": string
       "enterNewWeightOr": string
       "specifyPrecision": string
+      "selectPolylineOr": string
+      "turnIntoPolyline": string
+      "convertToPolylines": string
+      "specifyPrecisionForSplineConversion": string
+      "peditOption": string
+      "peditOption3d": string
+      "enterFuzzDistanceOr": string
+      "enterJoinType": string
+      "specifyNewWidthForAllSegments": string
+      "linetypeGenerationOption": string
+      "peditVertexOption": string
+      "peditWalkOption": string
+      "specifyLocationForNewVertex": string
+      "specifyNewLocationForMarkedVertex": string
+      "startingWidthForNextSegment": string
+      "endingWidthForNextSegment": string
+      "directionOfVertexTangent": string
+      "peditNextShort": string
+      "joinTypeExtend": string
+      "joinTypeAdd": string
+      "joinTypeBoth": string
       "exitLower": string
       "nextShort": string
       "previousShort": string
@@ -2023,6 +2083,12 @@ declare const source: {
       "splineReversed": string
       "splineMadeRational": string
       "cannotDeleteBeyond": string
+      "objectNotPolyline": string
+      "expectsPolylineOr": string
+      "cannotJoinClosedPolyline": string
+      "segmentsAddedToPolyline": string
+      "segmentsAddedToPolylines": string
+      "joinTypeIs": string
       "notAFitPoint": string
       "notAControlVertex": string
     }
@@ -2163,6 +2229,12 @@ declare const source: {
         "Elevate order": string
         "Select point": string
         "System default": string
+      }
+      "PEDIT": {
+        "Edit vertex": string
+        "Ltype gen": string
+        "OFF": string
+        "Jointype": string
       }
       "HATCH": {
         "Select objects": string

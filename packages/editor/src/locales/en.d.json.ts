@@ -73,6 +73,7 @@ declare const source: {
       "trim": string
       "fillet": string
       "break": string
+      "pedit": string
       "array": string
       "text": string
       "dimension": string

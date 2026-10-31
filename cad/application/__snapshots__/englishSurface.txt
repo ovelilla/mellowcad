@@ -57,6 +57,7 @@ JOIN ["J"] "Join"
 BREAK ["BR"] "Break"
 BREAKATPOINT [] "Break at point"
 SPLINEDIT ["SPE"] "Edit Spline"
+PEDIT ["PE"] "Edit Polyline"
 MATCHPROP ["MA","PAINTER"] "Match properties"
 COPYCLIP [] "Copy"
 CUTCLIP [] "Cut"
@@ -183,6 +184,7 @@ join "Join" J
 break "Break" BR
 breakatpoint "Break at point" BREAKATPOINT
 splinedit "Edit Spline" SPE
+pedit "Edit Polyline" PE
 matchprop "Match properties" MA
 copyclip "Copy" COPYCLIP
 cutclip "Cut" CUTCLIP
@@ -4529,6 +4531,228 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt: Command:
   asks: -
   prompt| Specify a precision <10>:
+
+## PEDIT
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> PEDIT
+  prompt: PEDIT Select polyline or [Multiple]:
+  options: [M] Multiple
+  command| PE PEDIT
+> miss
+  prompt| Select polyline or [Multiple]:
+> circle
+  prompt| Select polyline or [Multiple]:
+  info| Object selected is not a polyline
+> line
+  prompt: PEDIT Do you want to turn it into one? <Y>
+  asks: 
+  options: -
+  prompt| Select polyline or [Multiple]:
+  info| Object selected is not a polyline
+> Y
+  prompt: PEDIT Enter an option [Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]:
+  options: [C] Close, [J] Join, [W] Width, [E] Edit vertex, [L] Ltype gen, [R] Reverse, [U] Undo
+  prompt| Do you want to turn it into one? <Y>
+> J
+  prompt: PEDIT Select objects:
+  options: -
+  prompt| Enter an option [Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]: J
+> pick
+  properties: Polyline (1) {Thickness=0.00 mm~} [Geometry: Current Vertex=1~, Vertex X=0.00~, Vertex Y=0.00~, Start segment width=0.00 mm~, End segment width=0.00 mm~, Global width=0.00 mm~, Elevation=0.00~, Area=5000.00 mm², Length=200.00 mm] [Misc: Closed=No~]
+  prompt| Select objects: 1 found
+> enter
+  prompt: PEDIT Enter an option [Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]:
+  options: [C] Close, [J] Join, [W] Width, [E] Edit vertex, [L] Ltype gen, [R] Reverse, [U] Undo
+  properties: -
+  prompt| Select objects:
+  info| 2 segments added to polyline
+> W
+  prompt: PEDIT Specify new width for all segments:
+  asks: "Length"
+  options: -
+  prompt| Enter an option [Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]: W
+> width
+> enter
+  prompt: PEDIT Enter an option [Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]:
+  asks: 
+  options: [C] Close, [J] Join, [W] Width, [E] Edit vertex, [L] Ltype gen, [R] Reverse, [U] Undo
+  prompt| Specify new width for all segments: 2
+> L
+  prompt: PEDIT Enter polyline linetype generation option [ON/OFF] <Off>:
+  options: [ON] ON, [OF] OFF
+  prompt| Enter an option [Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]: L
+> ON
+  prompt: PEDIT Enter an option [Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]:
+  options: [C] Close, [J] Join, [W] Width, [E] Edit vertex, [L] Ltype gen, [R] Reverse, [U] Undo
+  prompt| Enter polyline linetype generation option [ON/OFF] <Off>: ON
+> E
+  prompt: PEDIT Enter a vertex editing option [Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit] <N>:
+  options: [N] Next, [P] Previous, [B] Break, [I] Insert, [M] Move, [R] Regen, [S] Straighten, [T] Tangent, [W] Width, [X] eXit
+  prompt| Enter an option [Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]: E
+> N
+  prompt| Enter a vertex editing option [Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit] <N>: N
+> W
+  prompt: PEDIT Specify starting width for next segment <2.00>:
+  asks: "Length"
+  options: -
+  prompt| Enter a vertex editing option [Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit] <N>: W
+> start
+> enter
+  prompt: PEDIT Specify ending width for next segment <4.00>:
+  prompt| Specify starting width for next segment <2.00>: 4
+> enter
+  prompt: PEDIT Enter a vertex editing option [Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit] <N>:
+  asks: 
+  options: [N] Next, [P] Previous, [B] Break, [I] Insert, [M] Move, [R] Regen, [S] Straighten, [T] Tangent, [W] Width, [X] eXit
+  prompt| Specify ending width for next segment <4.00>:
+> T
+  prompt: PEDIT Specify direction of vertex tangent:
+  asks: "Angle"
+  options: -
+  prompt| Enter a vertex editing option [Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit] <N>: T
+> angle
+> enter
+  prompt: PEDIT Enter a vertex editing option [Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit] <N>:
+  asks: 
+  options: [N] Next, [P] Previous, [B] Break, [I] Insert, [M] Move, [R] Regen, [S] Straighten, [T] Tangent, [W] Width, [X] eXit
+  prompt| Specify direction of vertex tangent: 45
+> I
+  prompt: PEDIT Specify location for new vertex:
+  asks: ""
+  options: -
+  prompt| Enter a vertex editing option [Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit] <N>: I
+> point
+  prompt: PEDIT Enter a vertex editing option [Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit] <N>:
+  asks: 
+  options: [N] Next, [P] Previous, [B] Break, [I] Insert, [M] Move, [R] Regen, [S] Straighten, [T] Tangent, [W] Width, [X] eXit
+  prompt| Specify location for new vertex:
+> M
+  prompt: PEDIT Specify new location for marked vertex:
+  asks: ""
+  options: -
+  prompt| Enter a vertex editing option [Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit] <N>: M
+> point
+  prompt: PEDIT Enter a vertex editing option [Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit] <N>:
+  asks: 
+  options: [N] Next, [P] Previous, [B] Break, [I] Insert, [M] Move, [R] Regen, [S] Straighten, [T] Tangent, [W] Width, [X] eXit
+  prompt| Specify new location for marked vertex:
+> S
+  prompt: PEDIT Enter an option [Next/Previous/Go/eXit] <N>:
+  options: [N] Next, [P] Previous, [G] Go, [X] eXit
+  prompt| Enter a vertex editing option [Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit] <N>: S
+> N
+  prompt| Enter an option [Next/Previous/Go/eXit] <N>: N
+> G
+  prompt: PEDIT Enter a vertex editing option [Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit] <N>:
+  options: [N] Next, [P] Previous, [B] Break, [I] Insert, [M] Move, [R] Regen, [S] Straighten, [T] Tangent, [W] Width, [X] eXit
+  prompt| Enter an option [Next/Previous/Go/eXit] <N>: G
+> B
+  prompt: PEDIT Enter an option [Next/Previous/Go/eXit] <N>:
+  options: [N] Next, [P] Previous, [G] Go, [X] eXit
+  prompt| Enter a vertex editing option [Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit] <N>: B
+> G
+  prompt: PEDIT Enter a vertex editing option [Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit] <N>:
+  options: [N] Next, [P] Previous, [B] Break, [I] Insert, [M] Move, [R] Regen, [S] Straighten, [T] Tangent, [W] Width, [X] eXit
+  prompt| Enter an option [Next/Previous/Go/eXit] <N>: G
+> X
+  prompt: PEDIT Enter an option [Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]:
+  options: [C] Close, [J] Join, [W] Width, [E] Edit vertex, [L] Ltype gen, [R] Reverse, [U] Undo
+  prompt| Enter a vertex editing option [Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit] <N>: X
+> C
+  prompt: PEDIT Enter an option [Open/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]:
+  options: [O] Open, [J] Join, [W] Width, [E] Edit vertex, [L] Ltype gen, [R] Reverse, [U] Undo
+  prompt| Enter an option [Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]: C
+> R
+  prompt| Enter an option [Open/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]: R
+> U
+  prompt| Enter an option [Open/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]: U
+> U
+  prompt: PEDIT Enter an option [Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]:
+  options: [C] Close, [J] Join, [W] Width, [E] Edit vertex, [L] Ltype gen, [R] Reverse, [U] Undo
+  prompt| Enter an option [Open/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]: U
+> U
+  prompt| Enter an option [Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]: U
+> U
+  prompt| Enter an option [Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]: U
+> U
+  prompt| Enter an option [Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]: U
+> U
+  prompt| Enter an option [Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]: U
+  info| Command has been completely undone.
+> X
+  prompt: Command:
+  asks: -
+  options: -
+  prompt| Enter an option [Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]: X
+
+## PEDIT Multiple
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> PEDIT
+  prompt: PEDIT Select polyline or [Multiple]:
+  options: [M] Multiple
+  command| PE PEDIT
+> M
+  prompt: PEDIT Select objects:
+  options: -
+  prompt| Select polyline or [Multiple]: M
+> ALL
+  properties: 3 objects (3) [Selection: Polylines=2, Line=1]
+  prompt| Select objects: ALL
+  info| 3 found
+> enter
+  prompt: PEDIT Convert Lines, Arcs and Splines to polylines [Yes/No]? <Y>
+  asks: 
+  properties: -
+  prompt| Select objects:
+> Y
+  prompt: PEDIT Enter an option [Close/Open/Join/Width/Ltype gen/Reverse/Undo]:
+  options: [C] Close, [O] Open, [J] Join, [W] Width, [L] Ltype gen, [R] Reverse, [U] Undo
+  prompt| Convert Lines, Arcs and Splines to polylines [Yes/No]? <Y>
+> J
+  prompt: PEDIT Enter fuzz distance or [Jointype] <0.00>:
+  asks: "Length"
+  options: [J] Jointype
+  prompt| Enter an option [Close/Open/Join/Width/Ltype gen/Reverse/Undo]: J
+  info| Join Type = Extend
+> J
+  prompt: PEDIT Enter join type [Extend/Add/Both] <Extend>:
+  asks: 
+  options: [E] Extend, [A] Add, [B] Both
+  prompt| Enter fuzz distance or [Jointype] <0.00>: J
+> B
+  prompt: PEDIT Enter fuzz distance or [Jointype] <0.00>:
+  asks: "Length"
+  options: [J] Jointype
+  prompt| Enter join type [Extend/Add/Both] <Extend>: B
+  info| Join Type = Both (Extend or Add)
+> fuzz
+> enter
+  prompt: PEDIT Enter an option [Close/Open/Join/Width/Ltype gen/Reverse/Undo]:
+  asks: 
+  options: [C] Close, [O] Open, [J] Join, [W] Width, [L] Ltype gen, [R] Reverse, [U] Undo
+  prompt| Enter fuzz distance or [Jointype] <0.00>: 30
+  info| 3 segments added to polyline
+> enter
+  prompt: Command:
+  asks: -
+  options: -
+  prompt| Enter an option [Close/Open/Join/Width/Ltype gen/Reverse/Undo]:
 
 ## MATCHPROP
 > start

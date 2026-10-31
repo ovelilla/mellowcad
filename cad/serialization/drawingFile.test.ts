@@ -417,6 +417,31 @@ describe("round trip", () => {
     expect(parsed.settings.viewCube).toEqual({ visible: false, home: null })
   })
 
+  it("reads a polyline's Ltype gen only when it is true", () => {
+    const polyline = (linetypeGeneration: unknown) => ({
+      id: "P",
+      type: "polyline",
+      layerId: "0",
+      vertices: [
+        { x: 0, y: 0 },
+        { x: 10, y: 0 },
+      ],
+      closed: false,
+      linetypeGeneration,
+    })
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: DRAWING_FILE_VERSION,
+        settings: {},
+        entities: [polyline(true), { ...polyline(1), id: "Q" }],
+      })
+    )
+    const [on, off] = parsed.entities
+    expect(on.type === "polyline" && on.linetypeGeneration).toBe(true)
+    expect(off.type === "polyline" && "linetypeGeneration" in off).toBe(false)
+  })
+
   it("reads a UCS name that is not in the table as unnamed", () => {
     const parsed = parseDrawingFile(
       JSON.stringify({

@@ -925,7 +925,9 @@ function planarPrimitives(
         )
       }
       if (options.linetype && stroke.dash && stroke.dash.length > 0) {
-        return linetypedPolyline(camera, entity, stroke, options)
+        return entity.linetypeGeneration
+          ? linetypedWholePolyline(camera, entity, stroke)
+          : linetypedPolyline(camera, entity, stroke, options)
       }
       // A straight polyline is one crisp path (mitred corners). One that
       // carries arc bulges is tessellated finely into the same path, so arcs
@@ -1314,6 +1316,57 @@ function linetypedPolyline(
           },
         ]
   )
+}
+
+/**
+ * A polyline with Ltype gen on (PEDIT's, help GUID-648BDC21: "a continuous
+ * pattern through the vertices"): its pattern laid once along its whole
+ * length as drawn, centred as a line's, a closed one's end dashes one dash
+ * across its start as a spline's (**unverified**: not measured on a plot).
+ */
+function linetypedWholePolyline(
+  camera: CameraTransform,
+  poly: PolylineEntity,
+  stroke: StrokeStyle
+): ScenePrimitive[] {
+  const points = polylinePathPoints(camera, poly)
+  const along = [0]
+  for (let i = 1; i < points.length; i++) {
+    along.push(along[i - 1] + V.distance(points[i - 1], points[i]))
+  }
+  const length = along[along.length - 1]
+  const pattern = stroke.dash ?? []
+  const solid: StrokeStyle = { color: stroke.color, width: stroke.width }
+  const path = (run: Vec2[], style: StrokeStyle): ScenePrimitive => ({
+    kind: "path",
+    points: run,
+    closed: false,
+    stroke: style,
+  })
+  const layout = centredPattern(pattern, length)
+  if (!layout) return [path(points, solid)]
+  const period = pattern.reduce((sum, run) => sum + run, 0)
+  if (length / period > MAX_FITTED_PERIODS) return [path(points, stroke)]
+  const at = (distance: number, i: number): Vec2 => {
+    const span = along[i + 1] - along[i]
+    return span > 0
+      ? V.lerp(points[i], points[i + 1], (distance - along[i]) / span)
+      : points[i]
+  }
+  const runs = centredDashes(pattern, length, layout, stroke.width).map(
+    ([from, to]) => {
+      let i = Math.max(0, firstAbove(along, from) - 1)
+      const run = [at(from, Math.min(i, points.length - 2))]
+      for (i += 1; i < points.length && along[i] < to; i++) run.push(points[i])
+      run.push(at(to, Math.min(i - 1, points.length - 2)))
+      return run
+    }
+  )
+  if (poly.closed && runs.length > 1) {
+    const last = runs.pop()!
+    runs[0] = [...last, ...runs[0].slice(1)]
+  }
+  return runs.map((run) => path(run, solid))
 }
 
 /**

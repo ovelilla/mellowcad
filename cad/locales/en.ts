@@ -21,6 +21,7 @@ export const en: EngineCatalog = {
       "ellipsearc": "Elliptical arc",
       "spline": "Spline",
       "splinedit": "Edit Spline",
+      "pedit": "Edit Polyline",
       "splinefit": "Spline Fit",
       "splinecv": "Spline CV",
       "rectangle": "Rectangle",
@@ -632,6 +633,10 @@ export const en: EngineCatalog = {
         "SPLINEDIT",
         "SPE"
       ],
+      "PEDIT": [
+        "PEDIT",
+        "PE"
+      ],
       "RECTANG": [
         "RECTANG",
         "REC",
@@ -1096,6 +1101,11 @@ export const en: EngineCatalog = {
         "Select point": "Select",
         "System default": "System"
       },
+      "PEDIT": {
+        "Edit vertex": "Edit",
+        "Ltype gen": "Ltype",
+        "OFF": "OFf"
+      },
       "HATCH": {
         "Select objects": "Select"
       },
@@ -1238,6 +1248,13 @@ export const en: EngineCatalog = {
       },
       "splineditOptionClosed": {
         "convert to Polyline": "Polyline"
+      },
+      "peditOption": {
+        "eXit": "EXit"
+      },
+      "peditOption3d": {
+        "Join": "Join",
+        "eXit": "EXit"
       },
       "enterFitDataOption": {
         "Add": "Add",
@@ -1728,6 +1745,27 @@ export const en: EngineCatalog = {
         ") or"
       ],
       "specifyPrecision": "Specify a precision",
+      "selectPolylineOr": "Select polyline or",
+      "turnIntoPolyline": "Do you want to turn it into one?",
+      "convertToPolylines": "Convert Lines, Arcs and Splines to polylines [Yes/No]?",
+      "specifyPrecisionForSplineConversion": "Specify a precision for spline conversion",
+      "peditOption": "Enter an option",
+      "peditOption3d": "Enter an option",
+      "enterFuzzDistanceOr": "Enter fuzz distance or",
+      "enterJoinType": "Enter join type",
+      "specifyNewWidthForAllSegments": "Specify new width for all segments",
+      "linetypeGenerationOption": "Enter polyline linetype generation option",
+      "peditVertexOption": "Enter a vertex editing option",
+      "peditWalkOption": "Enter an option",
+      "specifyLocationForNewVertex": "Specify location for new vertex",
+      "specifyNewLocationForMarkedVertex": "Specify new location for marked vertex",
+      "startingWidthForNextSegment": "Specify starting width for next segment",
+      "endingWidthForNextSegment": "Specify ending width for next segment",
+      "directionOfVertexTangent": "Specify direction of vertex tangent",
+      "peditNextShort": "N",
+      "joinTypeExtend": "Extend",
+      "joinTypeAdd": "Add",
+      "joinTypeBoth": "Both",
       "exitLower": "exit",
       "nextShort": "N",
       "previousShort": "P"
@@ -3837,6 +3875,37 @@ export const en: EngineCatalog = {
       "splineReversed": "Spline has been reversed.",
       "splineMadeRational": "Spline is not rational. Will make it so.",
       "cannotDeleteBeyond": "Cannot delete beyond this.",
+      "objectNotPolyline": "Object selected is not a polyline",
+      "expectsPolylineOr": "Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Multiple]:",
+      "cannotJoinClosedPolyline": "Can't join to a closed polyline",
+      "segmentsAddedToPolyline": [
+        [
+          "count"
+        ],
+        " segments added to polyline"
+      ],
+      "segmentsAddedToPolylines": [
+        [
+          "count"
+        ],
+        " segments added to ",
+        [
+          "polylines"
+        ],
+        " polylines"
+      ],
+      "joinTypeIs": [
+        "Join Type = ",
+        [
+          "type",
+          1,
+          {
+            "extend": "Extend",
+            "add": "Add segment",
+            "other": "Both (Extend or Add)"
+          }
+        ]
+      ],
       "notAFitPoint": "Not a fit point.",
       "notAControlVertex": "Not a control vertex."
     },
@@ -4051,6 +4120,12 @@ export const en: EngineCatalog = {
         "Elevate order": "Elevate order",
         "Select point": "Select point",
         "System default": "System default"
+      },
+      "PEDIT": {
+        "Edit vertex": "Edit vertex",
+        "Ltype gen": "Ltype gen",
+        "OFF": "OFF",
+        "Jointype": "Jointype"
       },
       "HATCH": {
         "Select objects": "Select objects"

@@ -118,7 +118,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 38
+export const DRAWING_FILE_VERSION = 39
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -463,6 +463,7 @@ function cloneEntityShape(entity: Entity): Entity {
         closed: entity.closed,
         ...(entity.bulges ? { bulges: entity.bulges.slice() } : {}),
         ...storedWidths(entity),
+        ...(entity.linetypeGeneration ? { linetypeGeneration: true } : {}),
       }
     case "polyline3d":
       return {
@@ -1172,6 +1173,10 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         closed,
         ...(bulges ? { bulges } : {}),
         ...(widths ? { widths } : {}),
+        // Version 39 brought it; anything but true is off.
+        ...(raw.linetypeGeneration === true
+          ? { linetypeGeneration: true as const }
+          : {}),
       }
     }
     case "polyline3d": {

@@ -145,8 +145,9 @@ linetypes of acadiso.lin, which Set finds there (the refusal names the file sear
 every language here; the names as acadiso.lin writes them, in capitals (Set's `dashed` makes CELTYPE
 `DASHED`, which the next run names, p209): the stored ids stay `Dashed`, drawing data; per-object ltscale (CELTSCALE), the Linetype Manager (its Details' Global Scale
 Factor is LTSCALE), PSLTSCALE / MSLTSCALE (no paper space), Create and Load (there is no LIN file to
-read or write; Load's `Enter linetype(s) to load` takes spaces, desktop workspace/d06), ByBlock (so Set's `BY` is no `BYBlock or BYLayer?`, p228), the Linetype Manager, the drop-down's Other…; PLINEGEN (a polyline lays
-its pattern segment by segment, PLINEGEN 0's; PEDIT's Ltype gen is not built); **unverified**: how
+read or write; Load's `Enter linetype(s) to load` takes spaces, desktop workspace/d06), ByBlock (so Set's `BY` is no `BYBlock or BYLayer?`, p228), the Linetype Manager, the drop-down's Other…; PLINEGEN (a new polyline lays
+its pattern segment by segment, PLINEGEN 0's; PEDIT's Ltype gen turns one polyline's on, its
+pattern then laid along all of it, centred as a line's, **unverified** on a plot); **unverified**: how
 AutoCAD lays a pattern on a polyline's arc segment: ours runs from its start; a dashed tilted or
 thick arc (not plotted, laid as in plan); a line off the plan is centred on its length as drawn,
 its pattern not foreshortened; a circle's dot is drawn as a line's, a run as long as the stroke is wide
@@ -311,8 +312,8 @@ knots of its own (desktop spline-knots/d01–d03), the rest read-only, the Engli
 `ax26res.dll`'s by id, the Spanish d10's. A 3D polyline's (desktop 3dpoly/d02, d03; es `Polilínea 3D`): Geometry Current Vertex, Vertex X, Y and Z (es `Vértice actual`, `Vértice X`… `Vértice Z`), each typed in the UCS, Length in space read-only; Misc Fit/Smooth (es `Ajustar/Suavizar`) read-only `None` (es `Ninguna`) and Closed Yes / No
 
 **Missing:** General's Linetype scale, Plot style, Transparency and Hyperlink and 3D Visualization's
-Material (d16); a polyline's Misc Linetype generation (`Disabled`, d08; PLINEGEN is not built, and
-a row is shown only where it can be changed as there); the width a closing segment takes from Closed
+Material (d16); a polyline's Misc Linetype generation (`Disabled`, d08; PEDIT's Ltype gen sets it,
+modify.md, and a row is shown only where it can be changed as there); the width a closing segment takes from Closed
 (the polyline's constant width here, else none; **unverified**: AutoCAD keeps the last vertex's
 widths, which nothing stores here); the current vertex's marker in the drawing, what Global width shows where the widths
 vary (blank here, **unverified**), the geometry rows of several objects of one type (`*VARIES*`),

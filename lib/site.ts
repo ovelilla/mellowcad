@@ -47,4 +47,4 @@ export const DATA_CONTROLLER = "Oscar Velilla Abril"
  * `lastModified`, which Google only trusts if it moves with the content, so it
  * is bumped by hand with the copy — never stamped with the build time.
  */
-export const CONTENT_UPDATED = "2026-10-30"
+export const CONTENT_UPDATED = "2026-10-31"

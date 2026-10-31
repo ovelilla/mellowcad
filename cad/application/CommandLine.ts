@@ -310,6 +310,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   break: "BREAK",
   breakatpoint: "BREAKATPOINT",
   splinedit: "SPLINEDIT",
+  pedit: "PEDIT",
   matchprop: "MATCHPROP",
   copyclip: "COPYCLIP",
   cutclip: "CUTCLIP",

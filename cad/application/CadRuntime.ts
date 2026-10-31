@@ -125,6 +125,7 @@ import {
 } from "./tools/Tool"
 import { MeasureTool } from "./tools/MeasureTool"
 import { InsertTool } from "./tools/InsertTool"
+import { PolylineEditTool } from "./tools/PolylineEditTool"
 import { TextEditTool } from "./tools/TextEditTool"
 import { AttEditTool } from "./tools/AttEditTool"
 import { PasteTool } from "./tools/PasteTool"
@@ -658,6 +659,7 @@ export class CadRuntime extends Observable {
 
   // Held as a field so a double-click can hand it the object directly.
   private readonly textEdit = new TextEditTool()
+  private readonly pedit = new PolylineEditTool()
   // Held as a field so a double-click can hand it the block reference.
   private readonly attEdit = new AttEditTool()
   // Held as a field so the Blocks palette can name the block for it.
@@ -932,7 +934,8 @@ export class CadRuntime extends Observable {
       this.insert,
       this.paste,
       this.attEdit,
-      this.setvar
+      this.setvar,
+      this.pedit
     )) {
       this.registerTool(tool)
     }
@@ -6261,6 +6264,12 @@ export class CadRuntime extends Observable {
       // the run is TEXTEDIT's for U and Enter.
       this.textEdit.startOn(hit, true)
       this.startEchoed(this.textEdit.id, "MTEDIT", "TEXTEDIT")
+    } else if (hit?.type === "polyline" || hit?.type === "polyline3d") {
+      // `^C^C_pedit ` with the polyline selected (DoubleClickRoot.cui's
+      // LWPOLYLINE and POLYLINE): straight to its options, as a polyline
+      // selected before PEDIT is (pedit/p37).
+      this.pedit.startOn(hit.id)
+      this.startEchoed(this.pedit.id, "PEDIT", "PEDIT")
     } else {
       return false
     }

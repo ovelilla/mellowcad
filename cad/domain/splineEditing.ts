@@ -10,14 +10,17 @@ import {
   bsplineSegment,
   periodicLoop,
 } from "../geometry/nurbs"
-import { SplineEntity } from "./entityTypes"
+import { PolylineEntity, Polyline3dEntity, SplineEntity } from "./entityTypes"
+import { createPolyline, createPolyline3d } from "./entityFactories"
+import { carryOverrides } from "./entityOverrides"
 import {
   closestPointOnSpline,
+  isLevelSpline,
   isPeriodicSpline,
   splineCurve,
   splineWithoutFitData,
 } from "./splines"
-import { splineRun } from "./splineEdits"
+import { splineInWorld, splineRun } from "./splineEdits"
 
 /*
  * SPLINEDIT's edits of a spline's data, as AutoCAD 2027's console leaves
@@ -463,6 +466,33 @@ export function splinePolylinePoints(
   for (let i = 1; i < breaks.length; i++) halve(breaks[i - 1], breaks[i], 0)
   if (spline.closed && points.length > 2) points.pop()
   return points
+}
+
+/**
+ * The spline as convert to Polyline and PEDIT leave it (k73, pedit/p07,
+ * p99): a polyline of straight segments through {@link splinePolylinePoints}
+ * in its plane, a 3D polyline where it lies in none, its properties carried.
+ * PLINECONVERTMODE's arcs are not built.
+ */
+export function splinePolyline(
+  spline: SplineEntity,
+  precision: number
+): PolylineEntity | Polyline3dEntity {
+  const polyline = isLevelSpline(spline)
+    ? createPolyline(
+        splinePolylinePoints(spline, precision).map((p) => ({
+          x: p.x,
+          y: p.y,
+        })),
+        spline.closed,
+        spline.layerId
+      )
+    : createPolyline3d(
+        splinePolylinePoints(splineInWorld(spline), precision),
+        spline.closed,
+        spline.layerId
+      )
+  return carryOverrides(spline, polyline)
 }
 
 function frameDiagonal(curve: BSplineCurve): number {

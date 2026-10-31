@@ -213,6 +213,11 @@ export interface PolylineEntity extends BaseEntity, Thick {
   readonly closed: boolean
   readonly bulges?: readonly number[]
   readonly widths?: readonly PolylineWidth[]
+  /**
+   * PEDIT's Ltype gen (DXF 70 flag 128): its linetype laid in one pattern
+   * along its whole length, not anew on each segment. Absent means off.
+   */
+  readonly linetypeGeneration?: true
 }
 
 /**

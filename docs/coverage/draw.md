@@ -120,9 +120,8 @@ an arc's band no wider inwards than its radius (p234), a closed one's start mitr
 back to its start square there (p236); its linetype laid segment by segment (PLINEGEN 0, p232);
 its grips and palette rows: `drafting-aids.md` Grips, `properties.md` Properties palette
 
-**Missing:** PEDIT, which a double-click on a polyline at `Command:` opens
-(`Enter an option [Close/Join/Width/Edit vertex/Fit/Spline/Decurve/Ltype gen/Reverse/Undo]:`, d10;
-nothing here); a wide band's jig in a dimmer shade (d02; as drawn here); **unverified**: the dashed
+**Missing:** PEDIT's Fit, Spline and Decurve (PEDIT, which a double-click on a polyline opens, d10:
+modify.md); a wide band's jig in a dimmer shade (d02; as drawn here); **unverified**: the dashed
 line at Second pt's `Specify second point on arc:`, CEnter's endpoint and Angle's centre (none
 here); Spanish declares
 `Mitadgrosor` at the first segment's prompt (21322; `Mitad` everywhere
@@ -131,8 +130,8 @@ here, **unverified** whether `MITADG` answers there), and `Segundopto` at the fi
 **unverified**: whether table 21314's angle is the line's heading in the plane (taken here) or 0,
 and where else it is said; Ctrl held at each sub-prompt (the desktop reads it only at the pick); **unverified**: Continue with nothing to
 continue in a tilted UCS (from the WCS's origin here), and a Z or `*` typed in the dynamic-input box
-after the start (taken here); PLINEGEN 1 and a linetype's dashes along a wide
-band (drawn solid); AutoCAD breaks the arc prompt after its `or`, written here on one line;
+after the start (taken here); PLINEGEN, the Ltype gen new polylines take (PEDIT's Ltype gen sets
+it on one, modify.md), and a linetype's dashes along a wide band (drawn solid); AutoCAD breaks the arc prompt after its `or`, written here on one line;
 **unverified**: where two wide arcs meet at an angle (a wedge closes the outer corner here), how an
 arc segment lays a linetype (from its start here), and a wide band's outline with FILL off, whose
 lineweight the plot draws (p231) and the screen here does not

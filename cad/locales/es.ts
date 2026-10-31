@@ -21,6 +21,7 @@ export const es: EngineLocale = {
       "ellipsearc": "Arco elíptico",
       "spline": "Spline",
       "splinedit": "Editar spline",
+      "pedit": "Editar polilínea",
       "splinefit": "Ajuste de spline",
       "splinecv": "VC de spline",
       "rectangle": "Rectángulo",
@@ -626,6 +627,10 @@ export const es: EngineLocale = {
         "EDITSPLINE",
         "SPE"
       ],
+      "PEDIT": [
+        "EDITPOL",
+        "PE"
+      ],
       "RECTANG": [
         "RECTANG",
         "REC",
@@ -1184,6 +1189,36 @@ export const es: EngineLocale = {
         "After": "Después",
         "Before": "Antes"
       },
+      "PEDIT": {
+        "Close": "Cerrar",
+        "Open": "Abrir",
+        "Join": "Juntar",
+        "Width": "Grosor",
+        "Edit vertex": "Editar",
+        "Ltype gen": "generarTlínea",
+        "Reverse": "Invertir",
+        "Undo": "desHacer",
+        "eXit": "Salir",
+        "X": "SA",
+        "Multiple": "Múltiple",
+        "Yes": "Sí",
+        "No": "No",
+        "Jointype": "Tipodejunta",
+        "Extend": "Alargar",
+        "Add": "aÑadir",
+        "Both": "aMbos",
+        "ON": "ACT",
+        "OFF": "DES",
+        "Next": "sigUiente",
+        "Previous": "Precedente",
+        "Break": "Cortar",
+        "Insert": "Insertar",
+        "Move": "Desplazar",
+        "Regen": "Regenerar",
+        "Straighten": "Alisar",
+        "Tangent": "Tangente",
+        "Go": "Ejecutar"
+      },
       "RECTANG": {
         "Chamfer": "Chaflán",
         "Elevation": "Elevación",
@@ -1672,6 +1707,13 @@ export const es: EngineLocale = {
       },
       "splineditOptionClosed": {
         "convert to Polyline": "Polilínea"
+      },
+      "peditOption": {
+        "eXit": "SAlir"
+      },
+      "peditOption3d": {
+        "Join": "Unir",
+        "eXit": "SAlir"
       },
       "enterFitDataOption": {
         "Add": "añaDIr",
@@ -2162,6 +2204,27 @@ export const es: EngineLocale = {
         ") o"
       ],
       "specifyPrecision": "Especifique una precisión",
+      "selectPolylineOr": "Designe polilínea o",
+      "turnIntoPolyline": "¿Lo quiere transformar en una?",
+      "convertToPolylines": "¿Convertir líneas, arcos y splines en polilíneas? [Sí/No]?",
+      "specifyPrecisionForSplineConversion": "Especifique una precisión para la conversión de spline",
+      "peditOption": "Indique una opción",
+      "peditOption3d": "Indique una opción",
+      "enterFuzzDistanceOr": "Indique la distancia de aproximación o",
+      "enterJoinType": "Indique el tipo de junta",
+      "specifyNewWidthForAllSegments": "Precise nuevo grosor para todos los segmentos",
+      "linetypeGenerationOption": "Indique opción de creación de tipos de línea de polilínea",
+      "peditVertexOption": "Indique una opción de edición de vértices",
+      "peditWalkOption": "Indique una opción",
+      "specifyLocationForNewVertex": "Precise ubicación del nuevo vértice",
+      "specifyNewLocationForMarkedVertex": "Precise nueva ubicación del vértice marcado",
+      "startingWidthForNextSegment": "Precise grosor inicial para siguiente segmento",
+      "endingWidthForNextSegment": "Precise grosor final del siguiente segmento",
+      "directionOfVertexTangent": "Precise dirección de la tangente de vértice",
+      "peditNextShort": "U",
+      "joinTypeExtend": "Alargar",
+      "joinTypeAdd": "Añadir",
+      "joinTypeBoth": "Ambos",
       "exitLower": "salir",
       "nextShort": "G",
       "previousShort": "P"
@@ -4270,6 +4333,37 @@ export const es: EngineLocale = {
       "splineReversed": "Se ha invertido la spline.",
       "splineMadeRational": "Spline no racional. Se va a convertir.",
       "cannotDeleteBeyond": "Imposible eliminar nada más.",
+      "objectNotPolyline": "El objeto designado no es una polilínea",
+      "expectsPolylineOr": "Requiere un punto o Ventana/úLTimo/Captura/MArco/Todos/Borde/polígonOV/polígonOC/Múltiple]:",
+      "cannotJoinClosedPolyline": "Imposible unir a una polilínea cerrada",
+      "segmentsAddedToPolyline": [
+        [
+          "count"
+        ],
+        " segmentos añadidos a la polilínea"
+      ],
+      "segmentsAddedToPolylines": [
+        [
+          "count"
+        ],
+        " segmentos añadidos a ",
+        [
+          "polylines"
+        ],
+        " polilíneas"
+      ],
+      "joinTypeIs": [
+        "Tipo de junta = ",
+        [
+          "type",
+          1,
+          {
+            "extend": "Alargar",
+            "add": "Añadir segmento",
+            "other": "Ambos (Alargar o Añadir)"
+          }
+        ]
+      ],
       "notAFitPoint": "No es ningún punto de ajuste.",
       "notAControlVertex": "No es un vértice de control."
     },
@@ -4484,6 +4578,12 @@ export const es: EngineLocale = {
         "Elevate order": "Elevar orden",
         "Select point": "Designar punto",
         "System default": "Defecto sistema"
+      },
+      "PEDIT": {
+        "Edit vertex": "Editar vértices",
+        "Ltype gen": "generarTlínea",
+        "OFF": "DES",
+        "Jointype": "Tipo de junta"
       },
       "HATCH": {
         "Select objects": "Designar objetos"
