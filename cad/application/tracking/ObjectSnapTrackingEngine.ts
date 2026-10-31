@@ -330,9 +330,10 @@ export class ObjectSnapTrackingEngine extends Observable {
 
     // Priority 2: projection onto a single guide.
     for (const g of tracking) {
-      const x = onScreen
-        ? nearestOnScreen(view, g.point.origin, g.dir, screen)
-        : projectPointOntoRay(worldCursor, guideRay(g))
+      const x = !onScreen
+        ? projectPointOntoRay(worldCursor, guideRay(g))
+        : (onGuidePlane(view, g, screen) ??
+          nearestOnScreen(view, g.point.origin, g.dir, screen))
       if (x) consider(x, "projection", [g], 2)
     }
 
@@ -370,11 +371,19 @@ export class ObjectSnapTrackingEngine extends Observable {
     if (had) this.emit()
   }
 
-  /** Forgets points farther than `maxWorld` from the cursor (stale references). */
-  removeFarFrom(cursor: Vec2, maxWorld: number): void {
+  /**
+   * Forgets points farther than the view's diagonal from the cursor (stale
+   * references). Off the plan measured on the screen: a point acquired at
+   * another height is drawn far from where the work plane's cursor is in plan.
+   */
+  removeFarFrom(cursor: Vec3, view: Viewport): void {
+    const reach = Math.hypot(view.width, view.height)
+    const screen = view.worldToScreen(cursor)
     const before = this.acquired.length
-    this.acquired = this.acquired.filter(
-      (p) => V.distance(p.origin, cursor) <= maxWorld
+    this.acquired = this.acquired.filter((p) =>
+      view.isPlan
+        ? V.distance(p.origin, cursor) <= view.screenToWorldDistance(reach)
+        : V.distance(view.worldToScreen(p.origin), screen) <= reach
     )
     if (this.acquired.length !== before) this.emit()
   }
@@ -387,4 +396,25 @@ export class ObjectSnapTrackingEngine extends Observable {
     this.dwellDone = null
     this.hoverPoint = null
   }
+}
+
+/**
+ * The point of a guide in the acquired point's plane under the cursor: where
+ * the line of sight meets the plane through the point parallel to the UCS's
+ * XY, projected onto the guide there. 8 px off the X guide of 0,100,50 in
+ * SEISO, AutoCAD's is 101.648,100,50, that plane's foot (101.7), not the one
+ * on the screen (100.85; desktop interaction3d/d04). `null` for the `+Z`
+ * guide, which is read where it is drawn, and for a plane seen edge-on.
+ */
+function onGuidePlane(
+  view: Viewport,
+  guide: TrackingGuide,
+  screen: Vec2
+): Vec3 | null {
+  if (guide.kind === "z") return null
+  const { origin } = guide.point
+  const cursor = view.screenToPlane(screen, origin.z)
+  if (cursor === null) return null
+  const along = projectPointOntoRay(cursor, guideRay(guide))
+  return withZ(along, origin.z)
 }

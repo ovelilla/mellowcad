@@ -133,6 +133,8 @@ export type SelectToolState =
       readonly fixed: Vec3
       /** Live position of the moving endpoint, with the Z it will take. */
       readonly moving: Vec3
+      /** Where the grip was, the base Ortho and Polar bend the drag from. */
+      readonly origin: Vec3
       /** Screen position where the grip was grabbed (drag vs click-click). */
       readonly pressScreen: Vec2
     }

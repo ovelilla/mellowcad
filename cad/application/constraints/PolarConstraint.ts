@@ -101,8 +101,17 @@ export class PolarConstraint implements Constraint {
 
     // Perpendicular distance from the cursor to the candidate ray, in pixels.
     // The cursor is "near" the angle when this is within the aperture box.
-    const perpWorld = Math.abs(dx * -dir.y + dy * dir.x)
-    if (perpWorld * this.viewport.scale > this.aperturePixels) return null
+    // Off the plan, measured where the path is drawn, at the base point's
+    // height: over its image on the work plane nothing engages (desktop
+    // interaction3d/d01).
+    const { view } = context
+    const pixels = view.isPlan
+      ? Math.abs(dx * -dir.y + dy * dir.x) * this.viewport.scale
+      : (footOnScreen(
+          lineOnScreen(view, withZ(anchor, zOf(anchor)), withZ(dir, 0)),
+          view.worldToScreen(world)
+        )?.pixels ?? Infinity)
+    if (pixels > this.aperturePixels) return null
     return dir
   }
 }

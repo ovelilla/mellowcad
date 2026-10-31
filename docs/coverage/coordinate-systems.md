@@ -275,15 +275,21 @@ angle units AUNITS 1–4 (UNITS offers decimal degrees only).
 a line's is interpolated along it, and Intersection needs the two objects to meet in 3D, while
 Apparent Intersection is where they cross on the screen, at the newer one's height in plan and on
 the older one off it — drafting-aids.md, Object snaps, interaction3d/i02–i14; objects in different
-planes have no Intersection yet); an OTRACK point the acquired point's (**unverified**), or that
+planes have no Intersection yet); an OTRACK point the acquired point's (desktop interaction3d/d04), or that
 plus the rise along its `+Z` / `-Z` guide; an
 absolute point typed without a Z, or the bare cursor, ELEVATION above the XY plane of the UCS
 (ELEV and DIST say so; one conceptual page keeps the last Z instead), a `*` one Z 0 in the WCS; a
 relative one (`@*` too), a
-typed length or angle, the last point's. Ortho, Polar and the snap lattice leave it alone, except
-on the `+Z` / `-Z` guide of a 3D view, where the point is the base point's in plan and the height is
+typed length or angle, the last point's. A point Ortho or Polar locks to a line through the base
+point (and `<angle`) has the base point's Z: they read the cursor where its line of sight meets the
+plane through the base point parallel to the UCS's XY, the lattice under them too, in a 3D view and
+in plan (from 0,100,50 in SEISO, Ortho with the pointer on 80,100,0's pixel gives 129.875,100,50;
+desktop interaction3d/d03–d07), while a click no aid bends stays on the work plane (d02); on the
+`+Z` / `-Z` guide of a 3D view the point is the base point's in plan and the height is
 where the cursor is drawn along the guide (a snapped object's, under a snap), and a typed length
-the base point's plus that length up or down. What LINE
+the base point's plus that length up or down. An OTRACK point is on its guide in the acquired
+point's plane, at its Z (d04). Edge-on (VPOINT 0,-1,0 in the World UCS) a click lands on the plane
+facing the screen through the origin (d08; here **unverified** against it). What LINE
 draws has a Z at each end, and a SPLINE's points and a 3D polyline's vertices each keep their own
 (draw.md); a flat object (PLINE, CIRCLE, ARC, ELLIPSE, RECTANG, POLYGON,
 TEXT, MTEXT, ATTDEF, INSERT) lies in the plane of the first point that fixed it,

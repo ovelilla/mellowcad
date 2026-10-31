@@ -5874,14 +5874,12 @@ export class CadRuntime extends Observable {
     if (anchor === null) return null
 
     const settings = this.document.getSettings()
-    const { ucs, viewport: view } = this.frame
-    const context = {
+    const { ucs } = this.frame
+    const context = this.resolver.constraintContext(
+      this.cursorWorld,
       anchor,
-      world: this.cursorWorld,
-      point: this.cursorWorld,
-      ucs,
-      view,
-    }
+      false
+    )
     const up = this.constraints.polarAlongZ(context)
     if (up) {
       const rise = up.z - zOf(anchor)
@@ -6835,7 +6833,7 @@ export class CadRuntime extends Observable {
     cursor: Vec3,
     anchor: Vec2 | Vec3 | null
   ): readonly ConstructionGeometry[] {
-    const { ucs, viewport: view } = this.frame
+    const { viewport: view } = this.frame
     const reach = (from: Vec2) =>
       V.distance(from, cursor) +
       view.screenToWorldDistance(Math.hypot(view.width, view.height))
@@ -6843,13 +6841,9 @@ export class CadRuntime extends Observable {
     const ray =
       anchor === null || this.pointerShift
         ? null
-        : this.constraints.polarGuideRay({
-            anchor,
-            world: cursor,
-            point: cursor,
-            ucs,
-            view,
-          })
+        : this.constraints.polarGuideRay(
+            this.resolver.constraintContext(cursor, anchor, false)
+          )
     if (ray) {
       paths.push({
         kind: "segment",
@@ -7046,10 +7040,7 @@ export class CadRuntime extends Observable {
         epsilon,
         this.snapping.releaseTolerance
       )
-      const maxWorld = this.viewport.screenToWorldDistance(
-        Math.hypot(this.viewport.width, this.viewport.height)
-      )
-      this.tracking.removeFarFrom(cursor, maxWorld)
+      this.tracking.removeFarFrom(cursor, frame.viewport)
     } else {
       this.currentSnap = null
       this.snapMarker = null

@@ -180,7 +180,7 @@ describe("object snap tracking in a 3D view", () => {
     expect(lineEndZ(line)).toBeCloseTo(40, 9)
   })
 
-  it("measures a guide of the plane where it is drawn, at its point's height", () => {
+  it("reads a guide of the plane on its point's plane, at its height", () => {
     vi.useFakeTimers()
     const raised = withElevation(lineOf(p(0, 0), p(100, 0)), 50)
     const cad = seIsometric(createHarness({ entities: [raised], snap: true }))

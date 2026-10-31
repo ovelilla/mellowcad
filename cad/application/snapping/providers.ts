@@ -96,11 +96,6 @@ function lineEnds(line: LineEntity): [Vec3, Vec3] {
   return [withZ(line.start, lineStartZ(line)), withZ(line.end, lineEndZ(line))]
 }
 
-/** Whether a line runs along the UCS's Z, a point in plan. */
-function isVertical(line: LineEntity): boolean {
-  return V.distance(line.start, line.end) < VERTICAL_EPSILON
-}
-
 const VERTICAL_EPSILON = 1e-9
 
 /**

@@ -74,11 +74,12 @@ perpendicular foot) leaves the crosshair on the pointer.
 
 **The point carries a Z** (`ResolvedPoint.point`, `PointerInput.point` are `Vec3`), in the same
 order: a snap's is the object's there (providers build it with `on(entity, point)`, which reads
-`entityZAt`), a tracked point's is the acquired point's, otherwise the elevation plane
-(`ucs.origin.z` + ELEVATION). Constraints and the lattice work in plan and the resolver puts the Z
-back after them. Intersection is 3D (`meetingPoint`: two objects that cross in plan at different
-heights do not meet); Apparent Intersection is where two edges, extended, cross on the screen, on
-the first at its height. `input.world` is the unsnapped cursor on the work plane: it is for picking.
+`entityZAt`, a line's own Z where given), a tracked point's is the acquired point's, one Ortho or
+Polar locks the base point's, else the elevation plane (`ucs.origin.z` + ELEVATION). **Ortho, Polar
+and the lattice under them read the cursor on the base point's plane** (`constraintContext`,
+interaction3d/d03–d07): ask them through it. Intersection is 3D (`meetingPoint`: two objects that cross in plan at different
+heights do not meet); Apparent Intersection is where two edges cross on the screen, on the newer
+in plan, the older off it (`snaps3d.test.ts`). `input.world` is the unsnapped cursor on the work plane: it is for picking.
 
 **The `+Z` / `-Z` guide** (`constraints/zGuide.ts`) exists only where the UCS's Z shows on the
 screen (`zOnScreen`: never in a plan, so the 2D arithmetic is untouched and the landing's snapshots
@@ -87,9 +88,9 @@ guard it). It is the Z through the anchor, measured on the screen (`ConstraintCo
 locks to whichever of X, Y and Z is drawn nearest. Locked to it, a constraint returns a
 `PointAlongZ` (`isAlongZ`), which the resolver keeps instead of the work plane's height; `ray()` is
 `null` and `alongZ()` / `activeAlongZ()` give the point. OTRACK adds a `kind: "z"` guide per
-acquired point (`TrackingGuide.dir`, `TrackingResult.direction` are `Vec3`). Off the plan every
-OTRACK guide is measured where it is drawn (`nearestOnScreen`), and two guides cross where they are
-drawn crossing. The anchor keeps its Z (`getConstraintAnchor()` may give a `Vec3`).
+acquired point (`TrackingGuide.dir`, `TrackingResult.direction` are `Vec3`). Off the plan an
+OTRACK guide reads the cursor on its point's plane (`onGuidePlane`), the `+Z` one where it is drawn
+(`nearestOnScreen`), and two guides cross where they are drawn crossing. The anchor keeps its Z (`getConstraintAnchor()` may give a `Vec3`).
 
 ## The view (`Viewport`)
 

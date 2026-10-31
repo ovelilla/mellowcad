@@ -151,10 +151,12 @@ acquire up to seven tracking points"), orthogonal guides along the UCS's axes wh
 increment ("By default, object snap tracking is set to orthogonal"), the crossing of two paths
 (guides, Extensions, the Ortho / Polar line) winning over a snap that slides along one of them
 (Extension, Parallel, Nearest); precedence over constraints; in a 3D view each acquired point's `+Z`
-/ `-Z` guide too (**unverified** that AutoCAD offers it: the help names it for POLARMODE, which also
-governs OTRACK), measured on the screen, a crossing with it taken where it is drawn, on the Z guide,
-and a typed offset running up it; off the plan every guide is measured where it is drawn, at its
-point's height, and two guides cross where they are drawn crossing, on the first; drawn as
+/ `-Z` guide too (`Endpoint: 75.5448 < +Z`, desktop interaction3d/d09), measured on the screen, a
+crossing with it taken where it is drawn, on the Z guide, and a typed offset running up it; off the
+plan a guide of the plane reads the cursor where its line of sight meets the acquired point's
+plane, at that point's Z (8 px off the X guide of 0,100,50, `Endpoint: 101.6485 < 0°`, the point
+101.648,100,50, d04), an acquired point dropped only once it is drawn a view's diagonal from the
+cursor, and two guides cross where they are drawn crossing, on the first; drawn as
 AutoCAD's dark theme draws it (desktop line/d13): an acquired point a small green `+`, the guide
 green and dashed as Polar's, the point it gives a small ✕
 
@@ -171,9 +173,13 @@ axis (the status bar's menu offers POLARANG's 90, 45, 30, 22.5, 18, 15, 10 and 5
 writes them, `90, 180, 270, 360...`, 22.5 as `23, 45, 68, 90...`, desktop workspace/d01-m, e01-4 —
 its first number plain where AutoCAD bolds it, the type roles having no bold figure — and choosing
 one turns Polar on, silently), guides, mutually exclusive
-with Ortho, Shift override; in a 3D view the `+Z` / `-Z` guide along the UCS's Z, engaged within the
-same 12 px measured on the screen, the guide drawn nearer the cursor winning against a polar angle,
-the Z on a tie (**unverified** rule); readout `Polar: 50.00mm < +Z` (**unverified** wording); the
+with Ortho, Shift override; from a base point at another height than the work plane, the cursor
+read where its line of sight meets the base point's plane, the path engaged where it is drawn (not
+over its image on the work plane) and the point on it at the base point's Z, in a 3D view and in
+plan (desktop interaction3d/d01, d04, d07: 8 px off the 0° path at 100,100,50, 101.648,100,50), a
+click with no angle engaged on the work plane (d02); in a 3D view the `+Z` / `-Z` guide along the
+UCS's Z, engaged within the same 12 px measured on the screen, the guide drawn nearer the cursor
+winning against a polar angle, the Z on a tie (**unverified** rule); readout `Polar: 50.00mm < +Z` (**unverified** wording); the
 path dashed green from the base point out of the view, a small ✕ on the point, the reading in a
 light grey box below and to the right of the cursor (desktop line/d12); POLARANG typed (SETVAR,
 workspace.md) in degrees, put in 0–360 (`-30` is 330, `400` is 40), a step U takes back
@@ -191,9 +197,12 @@ and 3P later points, whose picks it leaves alone, desktop circle/d12, nor at ARC
 mode's end, bent about the centre, arc/d06); F8 turns it on and off, writing ` <Ortho on>` /
 ` <Ortho off>` (es ` <Orto activado>` / `desactivado`), and turning it on turns Polar off, as Polar
 turns it off (desktop passes line/d10, d27); Shift held toggles it ("To turn Ortho off
-temporarily, hold down the Shift key"; with it off, on), Polar yielding; in a 3D view its Z as a
-third axis, the one drawn nearest the cursor winning (**unverified**: AutoCAD does not publish the
-rule); ORTHOMODE is saved in the drawing, NEW and a drawing opened bringing theirs (rectang/p304,
+temporarily, hold down the Shift key"; with it off, on), Polar yielding; from a base point at
+another height, the cursor read on the base point's plane and the point at its Z (from 0,100,50 in
+SEISO, the pointer on 80,100,0's pixel gives 129.875,100,50; in plan 70.29,100,50; desktop
+interaction3d/d03, d07); in a 3D view its Z as a third axis, the one drawn nearest the cursor
+winning (a sweep of d03: right within a few degrees, AutoCAD keeping −Z to 302° where the screen's
+bisector is 300°); ORTHOMODE is saved in the drawing, NEW and a drawing opened bringing theirs (rectang/p304,
 p321), Polar turning it off too; F8 is taken back with the last undo step (see Object snaps,
 desktop workspace/d01); Ctrl+L, acad.cuix's `^O` (MM_0005), is F8's toggle and echo, taken from a
 focused field too — Chrome does not reserve it (IDC_FOCUS_LOCATION is not in `accelerator_table.cc`'s
@@ -206,8 +215,10 @@ back the ORTHO command (p317), which is not built here
 lattice (SNAPUNIT 10: 13,7 is 10,10, desktop pass line/d23), polar snap, stepping by POLARDIST, 0 at
 first and then Snap X's spacing ("If this value is 0, the PolarSnap distance assumes the value for
 Snap X Spacing", help GUID-66D637C9; workspace/p205), program-wide and typed as a variable (any
-sign, p211; a step U takes back, p218; the status bar's Polar distance takes 0 too); on the `+Z` /
-`-Z` guide PolarSnap rounds the height and the grid leaves it (**unverified**). SNAP asks
+sign, p211; a step U takes back, p218; the status bar's Polar distance takes 0 too); under Ortho or
+Polar from a base point at another height the lattice rounds the cursor on the base point's plane
+(130,100,50 from 0,100,50), alone the work plane's (80,100,0; desktop interaction3d/d05); on the
+`+Z` / `-Z` guide PolarSnap rounds the height and the grid leaves it (**unverified**). SNAP asks
 `Specify snap spacing or [ON/OFF/Aspect] <10.0000>:` (es
 `Precise distancia de resolución o [ACT/DES/asPecto]`): a spacing, typed or two points apart, sets
 SNAPUNIT's X and Y and turns snap mode on; Enter turns it on; ON and OFF (es ACT, DES); Aspect asks
@@ -269,7 +280,9 @@ command-line echo of an option picked from the list
 
 **Implemented:** `<angle` typed at a point prompt that has a base point, in the box or at the
 command line: `Angle Override: 30` (es `Modo momentáneo de ángulo: 30`), the next point locked to
-that heading from the base point in the UCS, over Ortho, Polar and the snap lattice, object snaps
+that heading from the base point in the UCS, the cursor read on the base point's plane and the
+point at its Z (`<0` from 0,100,50, 132.849,100,50, desktop interaction3d/d05), over Ortho, Polar
+and the snap lattice, object snaps
 (`_END`, p165) and typed coordinates (`@10,0`, p161) still winning; for that one point. The angle in
 any of the forms a typed angle takes (`30d30'`, `0.5r`, `50g`, `N45dE`: coordinate-systems.md). At a
 first point, with no base, it is `Invalid point.`, and at CIRCLE's 2P and 3P later points, which
@@ -362,7 +375,8 @@ hysteresis; a grip drags to a point like a click (the elevation plane, or the
 object's Z under a snap, or its own Z for a typed distance): a line's end takes that Z, a move grip
 moves by it from its object's Z, every other grip stays in its object's plane; a line's grips sit at
 its ends' own heights and their middle, so a vertical line shows three; an end dropped on the other
-end in space is ignored (**unverified**); a circle's centre grip moves it and a quadrant grip sets
+end in space is ignored (**unverified**); Ortho and Polar bend a line's end grip from where the
+grip was (a raised line's, `Ortho: 79.7743 < -Z`, desktop interaction3d/d06); a circle's centre grip moves it and a quadrant grip sets
 its radius (desktop circle/d08, d09): a number typed while it is hot is the radius, from the centre
 (help GUID-01DE459C, desktop circle/d15), Ortho bends its drag as it bends a pick (**unverified**
 on AutoCAD's side), and in a rotated UCS the grips stay at the circle's own quadrants, where the

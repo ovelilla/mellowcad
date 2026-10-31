@@ -84,15 +84,15 @@ sides, free orbit), objects crossing in plan but not in 3D, the work plane edge-
 | Z-11 | QUA of a circle oblique to the UCS | none, "Oblique, non-uniformly scaled objects were ignored." (i09) | its OCS's | fixed (SNP-05), the line not written |
 | Z-12 | INS of a reference | needs the aperture over its geometry (i10) | the point itself | unverified (a plan question; i10's aperture may simply have missed) |
 | Z-13 | Picking a vertical or raised line by its line of sight | taken (i11) | same | ok |
-| Z-14 | Polar from a base point at another Z | engages where drawn; the cursor on the base plane; the base's Z (d01, d04, d07) | engages on its image at Z 0; the point on the work plane | **bad** (owner's report) |
-| Z-15 | Ortho / Shift from a base point at another Z | the base plane's cursor, the base's Z (d03, d07) | the work plane's cursor and Z | **bad** |
+| Z-14 | Polar from a base point at another Z | engages where drawn; the cursor on the base plane; the base's Z (d01, d04, d07) | engaged on its image at Z 0; the point on the work plane | fixed (CON-01) |
+| Z-15 | Ortho / Shift from a base point at another Z | the base plane's cursor, the base's Z (d03, d07) | the work plane's cursor and Z | fixed (CON-02) |
 | Z-16 | Ortho's axis in a 3D view | nearest drawn, ± a few degrees (d03, d06) | nearest drawn | ok (approximate) |
-| Z-17 | `<angle` from a base point at another Z | the base plane's cursor (d05) | the work plane's cursor, the base's Z | **bad** |
-| Z-18 | SNAP under Ortho / Polar from another Z; SNAP alone | the base plane's cursor rounded; alone the work plane's (d05) | the work plane's | **bad** (with a constraint) |
-| Z-19 | OTRACK guides from points at another Z | measured on the point's plane, its Z (d04) | measured on the screen (`nearestOnScreen`), its Z | **bad** (≈0.8 units at 8 px) |
+| Z-17 | `<angle` from a base point at another Z | the base plane's cursor (d05) | the work plane's cursor, the base's Z | fixed (CON-03) |
+| Z-18 | SNAP under Ortho / Polar from another Z; SNAP alone | the base plane's cursor rounded; alone the work plane's (d05) | the work plane's | fixed (CON-04) |
+| Z-19 | OTRACK guides from points at another Z | measured on the point's plane, its Z (d04) | measured on the screen, its Z; dropped by its plan distance | fixed (TRK-01, TRK-02) |
 | Z-20 | OTRACK's `+Z` guide | offered (d09) | offered | ok |
 | Z-21 | Polar / Ortho's `+Z` guide | offered (help, d03) | offered | ok |
-| Z-22 | A grip dragged with Ortho from another Z | as Ortho (d06) | as Ortho | follows Z-15 |
+| Z-22 | A line's end grip dragged with Ortho or Polar | bent from where the grip was (d06) | from the line's far end | fixed (GRP-01) |
 | Z-23 | The work plane edge-on | the plane facing the screen through the origin (d08) | `screenToFacing` | unverified here |
 | Z-24 | Dynamic input: a length typed on a guide | the base's Z plus the length along it | the base's Z | ok (`zTracking.test.ts`) |
 | Z-25 | FROM with a base at another Z | `@` from the base keeps its Z | same | ok |
@@ -111,3 +111,10 @@ sides, free orbit), objects crossing in plan but not in 3D, the work plane edge-
 | SNP-03 | APP in plan took the older object's height | the newer's in plan, the older's off it | snaps |
 | SNP-04 | PER to a line from another height was the foot in plan | the foot in space | snaps |
 | SNP-05 | QUA of an oblique circle gave its OCS quadrants | none | snaps |
+| CON-01 | Polar from a base point at another Z engaged over its path's image on the work plane, and its point dropped to the work plane (the owner's report) | engaged where drawn (measured on the screen), the cursor on the base point's plane, its Z | constraints |
+| CON-02 | Ortho and Shift from another Z read the work plane's cursor and gave its Z | the base point's plane and Z, in plan too | constraints |
+| CON-03 | `<angle` read the work plane's cursor | the base point's plane | constraints |
+| CON-04 | SNAP under Ortho / Polar rounded the work plane's cursor | the base plane's; alone, still the work plane's | constraints |
+| TRK-01 | OTRACK's projection onto a guide of the plane was the foot on the screen | the foot on the acquired point's plane | constraints |
+| TRK-02 | An acquired point at another height was dropped once the work plane's cursor was a view's diagonal away in plan | measured on the screen off the plan | constraints |
+| GRP-01 | A line's end grip bent Ortho and Polar from the line's far end (the code's choice since the first commit, never probed) | from where the grip was | constraints |

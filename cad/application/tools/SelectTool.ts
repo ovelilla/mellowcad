@@ -757,14 +757,15 @@ export class SelectTool implements Tool {
   /**
    * The base point that drawing constraints (Ortho, ...) and object-snap
    * tracking restrict against. While moving the whole line it is the grabbed
-   * midpoint; while stretching an endpoint it is the *fixed* far end, so Ortho
-   * locks the stretch to a horizontal/vertical direction through that end and
-   * tracking guides can intersect the Ortho ray. While resizing a radius or
-   * swinging an arc endpoint it is the centre. No anchor while merely selecting.
+   * midpoint; while stretching an endpoint it is where that end was, as for
+   * STRETCH's base point: a raised line's end grip dragged with Ortho in SEISO
+   * reads `Ortho: 79.7743 < -Z` from the grip, the far end untouched (desktop
+   * interaction3d/d06). While resizing a radius or swinging an arc endpoint
+   * it is the centre. No anchor while merely selecting.
    */
   getConstraintAnchor(): Vec2 | null {
     if (this.state.phase === "moveLine") return this.state.origMid
-    if (this.state.phase === "grip") return this.state.fixed
+    if (this.state.phase === "grip") return this.state.origin
     if (this.state.phase === "resizeRadius") return this.state.center
     if (this.state.phase === "arcAngle") return this.state.center
     if (this.state.phase === "arcStretch") return this.state.origin
@@ -880,6 +881,7 @@ export class SelectTool implements Tool {
       end,
       fixed: end === "start" ? finish : start,
       moving: end === "start" ? start : finish,
+      origin: end === "start" ? start : finish,
       pressScreen: screen,
     }
     this.openLengthInput(ctx, screen)

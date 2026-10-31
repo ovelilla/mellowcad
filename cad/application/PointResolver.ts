@@ -82,7 +82,7 @@ export class PointResolver {
     // point at that angle, at the base point's height, as `@dist<angle` would.
     if (this.angleOverride !== null && anchor !== null) {
       const dir = this.angleOverride
-      const along = V.dot(V.sub(world, anchor), dir)
+      const along = V.dot(V.sub(this.onBasePlane(world, anchor), anchor), dir)
       return {
         point: withZ(V.add(anchor, V.scale(dir, along)), zOf(anchor)),
         tracking: null,
@@ -90,14 +90,10 @@ export class PointResolver {
     }
 
     const ucs = this.currentUcs()
-    const view = this.currentView()
     const tracked = this.track(world, anchor, orthoOverride)
     if (tracked) return { point: tracked.point, tracking: tracked }
 
-    const candidate = allowSnapMode
-      ? this.snapMode.snapPoint(world, ucs)
-      : world
-    const context = { anchor, world, point: candidate, ucs, view }
+    const context = this.constraintContext(world, anchor, allowSnapMode)
     const constrained = this.constraints.apply(context, orthoOverride)
     if (isAlongZ(constrained)) {
       return {
@@ -107,15 +103,64 @@ export class PointResolver {
         tracking: null,
       }
     }
+    // Locked to a line through the base point, the point is on it, at the
+    // base point's height (desktop interaction3d/d03, d04, d07: Ortho and
+    // Polar from 0,100,50 give Z 50, in a 3D view and in plan alike).
+    if (anchor !== null && this.constraints.activeRay(context, orthoOverride)) {
+      return {
+        point: withZ(
+          allowSnapMode
+            ? this.applyPolarSnap(context, constrained, orthoOverride)
+            : constrained,
+          zOf(anchor)
+        ),
+        tracking: null,
+      }
+    }
+    // Free, the point is the cursor on the work plane, the lattice's there
+    // (d02, d05: 80,100,0 from 0,100,50 with SNAP alone).
     return {
       point: withZ(
-        allowSnapMode
-          ? this.applyPolarSnap(context, constrained, orthoOverride)
-          : constrained,
+        allowSnapMode ? this.snapMode.snapPoint(world, ucs) : world,
         ucs.origin.z + this.currentElevation()
       ),
       tracking: null,
     }
+  }
+
+  /**
+   * What Ortho, Polar and the lattice under them read: the cursor on the base
+   * point's plane, rounded onto the lattice when `allowSnapMode`. Every caller
+   * that asks a constraint about the cursor builds its context here.
+   */
+  constraintContext(
+    world: Vec3,
+    anchor: Vec2 | Vec3 | null,
+    allowSnapMode = true
+  ): ConstraintContext {
+    const ucs = this.currentUcs()
+    const view = this.currentView()
+    const cursor = this.onBasePlane(world, anchor)
+    const point = allowSnapMode ? this.snapMode.snapPoint(cursor, ucs) : cursor
+    return { anchor, world: cursor, point, ucs, view }
+  }
+
+  /**
+   * The cursor where the line of sight meets the plane through the base point
+   * parallel to the UCS's XY: a constraint from a base point at another height
+   * reads it there. With the pointer on 80,100,0's pixel in SEISO, Ortho from
+   * 0,100,50 gives 129.875,100,50, where that line of sight is at Z 50 —
+   * neither the pointer's plan (80) nor its foot on the drawn axis (≈105);
+   * the grid under Ortho rounds it to 130 (desktop interaction3d/d03, d05).
+   * Edge-on, where the line of sight never meets it, the work plane's.
+   */
+  private onBasePlane(world: Vec3, anchor: Vec2 | Vec3 | null): Vec3 {
+    if (anchor === null) return world
+    const z = zOf(anchor)
+    if (Math.abs(z - world.z) < 1e-9) return world
+    const view = this.currentView()
+    const on = view.screenToPlane(view.worldToScreen(world), z)
+    return on === null ? world : withZ(on, z)
   }
 
   /**
@@ -171,7 +216,7 @@ export class PointResolver {
     orthoOverride: boolean
   ): TrackingResult | null {
     const view = this.currentView()
-    const raw = { anchor, world, point: world, ucs: this.currentUcs(), view }
+    const raw = this.constraintContext(world, anchor, false)
     const anchorLine =
       anchor !== null ? this.constraints.activeRay(raw, orthoOverride) : null
     const anchorUp =
