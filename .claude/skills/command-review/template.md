@@ -363,7 +363,7 @@ share the catalogs and the snapshots.
    and seen failing, citing its probe.
 2. **The plan's tests** for the block's untested cells; old `acc/…` citations replaced by the 2027
    probe that confirmed them.
-3. **Catalogs**: `en`, `es` and `ar` edited, `npm run locales`, the compiled files committed; the
+3. **Catalogs**: `en`, `es` and `ar` edited, `npm run locales`, all it writes committed; the
    English surface snapshot updated with `-u` only where the English was meant to change, its diff
    read. A key no code reads any more **stays**, unused: removing one is a major version
    (`cad/README.md`, "Versioning").

@@ -14,11 +14,12 @@ to left). The words: `docs/i18n-glossary.md`.
    `LANGUAGE_NAMES` (the language named in itself), `OG_LOCALE` and `catalogs`
    (`i18n/messages.ts`).
 2. **`messages/<tag>.json`** (the site) and **`packages/editor/src/locales/<tag>.json`** (the editor;
-   `npm run locales` compiles it): a draft may leave keys out (they show in English). Nothing to
-   list in a test: `TRANSLATED` in `i18n/messages.test.ts` is every `live` language, for both.
+   `npm run locales` compiles it): a draft may leave keys out (they show in English). No test
+   lists it: `TRANSLATED` (`i18n/messages.test.ts`) is every `live` language, for both, and
+   `i18n/freshness.test.ts` every translation.
 3. **The engine's catalog**, `cad/locales/<tag>.json` (`.claude/rules/cad-catalogs.md`): the
    interface always; `commands` only with an AutoCAD of that language to copy, and then complete.
-   Run `npm run locales` to compile it to `cad/locales/<tag>.ts`, make it an entry point of the
+   `npm run locales` compiles it to `cad/locales/<tag>.ts`; make it an entry point of the
    package (`.claude/rules/engine-package.md`: `exports`, tsdown, the build's tsconfig) and add it
    to the entry table in `cad/README.md` and the table in `cad/docs/languages.md`.
 4. **`i18n/engine.ts` and `i18n/editor.ts`**: its entries in `ENGINE_LOCALES` and

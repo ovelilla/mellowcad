@@ -33,7 +33,7 @@ wording (skill `autocad-research`). How a tool is written: `.claude/rules/cad-to
    - `cad/locales/es.json`: the same keys, Spanish AutoCAD's words from the 2027 tables; a name
      no source shows is noted **unverified** in the coverage entry.
    - `cad/locales/ar.json`: `interface.tool.<id>` only (Arabic has no command language).
-   - `npm run locales`, and commit the compiled `cad/locales/*.ts`.
+   - `npm run locales`, and commit all it writes.
 
    **Enforced** by `cad/locales/locales.test.ts`: every `TOOL_COMMANDS` name and label in English,
    Spanish's command language complete, every language's `interface` complete, compiled files

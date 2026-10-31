@@ -29,10 +29,11 @@ wording comes from: `autocad-research.md`.
 - A language translates the whole `interface` but `linetype` and `hatchPattern` (drawing data).
 - `names` and `keywords` are words, not compiled messages. Messages are ICU: `{count, plural, …}`,
   never a hand-made plural.
-- **After editing `en.json`, `es.json` or `ar.json`, run `npm run locales`** and commit the
-  compiled `.ts` too: the engine imports it (no parser ships), and `cad/locales/locales.test.ts`
-  fails on drift. That test also holds every command language to English's full list, no name or
-  alias shared by two commands, and no two keywords of one prompt on one abbreviation.
+- **After editing a catalog, run `npm run locales`** and commit all it writes: the compiled `.ts`
+  (the engine imports it, no parser ships) and each translated key's English (`i18n.md`).
+  `cad/locales/locales.test.ts` fails on drift, and holds every command language to English's full
+  list, no name or alias shared by two commands, and no two keywords of one prompt on one
+  abbreviation.
 - **The catalog's shape is public API**: renaming, moving or removing a key, or changing a
   message's arguments or tags, is a major version (README, "Versioning"). A new vocabulary a host
   shows goes in `EngineNames` and the README's table.

@@ -1,6 +1,6 @@
 # Un sistema para los idiomas — brief
 
-> **Estado:** fase 1 hecha (2026-10-31); las 2 a 5, sin empezar. Se borra cuando el portugués
+> **Estado:** fases 1 y 2 hechas (2026-10-31); las 3 a 5, sin empezar. Se borra cuando el portugués
 > de Brasil esté `live` con el sistema entero.
 
 ## 1. Objetivo
@@ -63,7 +63,12 @@ Una fase, un commit (o varios si se separan solos). Las 1 a 4 no cambian nada vi
    `localized`. Español y árabe lo pasan tal cual.
 2. **Frescura.** Cada traducción de los tres catálogos guarda junto a ella el inglés de cada clave;
    el test lista las desfasadas con el inglés viejo y el nuevo, y `npm run locales` da por al día lo
-   que se haya revisado. Las páginas «Use» siguen con su `sourceHash`.
+   que se haya revisado. Las páginas «Use» siguen con su `sourceHash`. Hecho así: un
+   `translated-from/<tag>.json` por catálogo e idioma, en una carpeta propia porque next-intl infiere
+   los idiomas de los `*.json` de `messages/`; la revisión es clave a clave
+   (`npm run locales -- --reviewed es:<clave>`), porque `npm run locales` se ejecuta tras cada
+   cambio del inglés y por idioma bendeciría lo no leído; lo escribe `scripts/locales/sources.ts`,
+   un tercer paso que no toca lo compilado; lo comprueba `i18n/freshness.test.ts`.
 3. **Herramientas por idioma.** Extraer `acadres.dll` de cualquier language pack a
    `research/strings/`; `pair.mjs` y `catalog-sweep.mjs` con `--lang` (estados sin `es-`); un script
    que proponga las entradas de `commands` de un idioma desde los ids emparejados, para revisarlas.
