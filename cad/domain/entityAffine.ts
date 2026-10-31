@@ -17,6 +17,7 @@ import { mapSplinePoints } from "./splines"
 import { mapDimensionPoints } from "./dimensions"
 import { carryOverrides } from "./entityOverrides"
 import { hatchLoopRing } from "./hatch"
+import { mappedFit } from "./polylineFits"
 
 /** A reference's placement of its block: turned by `rotation` after scaling X and Y apart. */
 export function insertLinear(
@@ -69,6 +70,15 @@ export function linearEntity(
       return {
         ...entity,
         vertices: entity.vertices.map(at),
+        ...mappedFit(
+          entity.fit,
+          at,
+          (t) => {
+            const d = applyLinear(map, { x: Math.cos(t), y: Math.sin(t) })
+            return Math.atan2(d.y, d.x)
+          },
+          flips
+        ),
         ...(entity.bulges && flips
           ? { bulges: entity.bulges.map((bulge) => -bulge) }
           : {}),

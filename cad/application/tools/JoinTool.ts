@@ -41,6 +41,7 @@ import {
   polylineWidth,
   type PolylineWidth,
   withLineZ,
+  polylineDecurved,
 } from "../../domain/entities"
 import { joinCurve, joinedSpline } from "../../domain/splineJoin"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
@@ -743,13 +744,17 @@ function piecesOf(entity: Entity): Piece[] {
           width: null,
         },
       ]
-    case "polyline":
-      return polylineSegmentGeometries(entity).map((segment, i) => ({
+    case "polyline": {
+      // A fitted one joins as its frame, straight: PEDIT's Join decurves
+      // what it grows (pedit/p168, p183; JOIN's **unverified**).
+      const frame = entity.fit ? polylineDecurved(entity) : entity
+      return polylineSegmentGeometries(frame).map((segment, i) => ({
         a: segment.a,
         b: segment.b,
         bulge: segment.kind === "arc" ? segment.bulge : 0,
-        width: polylineWidth(entity, i),
+        width: polylineWidth(frame, i),
       }))
+    }
     default:
       return []
   }

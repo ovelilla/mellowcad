@@ -48,6 +48,7 @@ import {
   TEXT_FONT_CAP_RATIO,
   textAlong,
   textBaselinePoint,
+  entityShape,
 } from "../domain/entities"
 import {
   DEFAULT_DIM_STYLE,
@@ -695,10 +696,11 @@ export interface EntityDrawOptions {
 
 export function entityScenePrimitive(
   camera: CameraTransform,
-  entity: Entity,
+  drawn: Entity,
   stroke: StrokeStyle,
   options: EntityDrawOptions = {}
 ): ScenePrimitive[] {
+  const entity = entityShape(drawn)
   if (
     (camera.isPlan && !isTilted(entity)) ||
     isPlaneCamera(camera) ||
@@ -1810,7 +1812,7 @@ export function entityStroke(
   // plan view": in plan their width is what they show.
   const wideInPlan =
     entity.type === "polyline" &&
-    isWidePolyline(entity) &&
+    isWidePolyline(entityShape(entity)) &&
     camera.isPlan &&
     !isTilted(entity)
   const color = drawnColor(entity.color ?? layer?.color ?? DEFAULT_LAYER_COLOR)

@@ -41,6 +41,7 @@ import {
 } from "./polylines"
 import { polylineOutline } from "./polylineOutline"
 import { polyline3dSegments } from "./polylines3d"
+import { entityShape } from "./polylineFits"
 import { planar } from "../geometry/Vec3"
 import { arcStartPoint, arcEndPoint } from "./entityMeasures"
 
@@ -152,10 +153,11 @@ export function distanceToEntity(
  * the one thing about it that is knowable on its own.
  */
 export function closestOnEntity(
-  entity: Entity,
+  drawn: Entity,
   point: Vec2,
   blocks?: BlockLookup
 ): ClosestResult {
+  const entity = entityShape(drawn)
   switch (entity.type) {
     case "line":
       return closestPointOnSegment(entity.start, entity.end, point)
@@ -320,7 +322,8 @@ export function closestOnEntity(
   }
 }
 
-export function entityBounds(entity: Entity, blocks?: BlockLookup): Bounds {
+export function entityBounds(drawn: Entity, blocks?: BlockLookup): Bounds {
+  const entity = entityShape(drawn)
   switch (entity.type) {
     case "line":
       return {
@@ -564,11 +567,12 @@ function wideBandCrossesRect(
  * (drag right→left): objects inside or touching the box match.
  */
 export function entityCrossesRect(
-  entity: Entity,
+  drawn: Entity,
   min: Vec2,
   max: Vec2,
   blocks?: BlockLookup
 ): boolean {
+  const entity = entityShape(drawn)
   const edges = rectEdges(min, max)
   switch (entity.type) {
     case "line": {

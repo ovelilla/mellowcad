@@ -51,7 +51,7 @@ const typeAnswer = (cad: Harness, text: string) => {
 const xy = (poly: PolylineEntity) => poly.vertices.map((v) => [v.x, v.y])
 
 const MAIN =
-  "Enter an option [Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]:"
+  "Enter an option [Close/Join/Width/Edit vertex/Fit/Spline/Decurve/Ltype gen/Reverse/Undo]:"
 const VERTEX =
   "Enter a vertex editing option [Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit]"
 
@@ -74,7 +74,7 @@ describe("PEDIT's prompts", () => {
   it("lists Open on a closed one, both answering either way (p02)", () => {
     const cad = edit(square())
     expect(asked(cad)).toBe(
-      "Enter an option [Open/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]:"
+      "Enter an option [Open/Join/Width/Edit vertex/Fit/Spline/Decurve/Ltype gen/Reverse/Undo]:"
     )
     cad.option("Open")
     expect(poly(cad).closed).toBe(false)
@@ -101,12 +101,12 @@ describe("PEDIT's prompts", () => {
     })
     cad.command("PEDIT").click(p(5, 0))
     expect(asked(cad)).toBe(
-      "Enter an option [Close/Join/Edit vertex/Reverse/Undo]:"
+      "Enter an option [Close/Join/Edit vertex/Spline curve/Decurve/Reverse/Undo]:"
     )
     cad.option("Close")
     expect(cad.byId<Polyline3dEntity>("Q").closed).toBe(true)
     expect(asked(cad)).toBe(
-      "Enter an option [Open/Join/Edit vertex/Reverse/Undo]:"
+      "Enter an option [Open/Join/Edit vertex/Spline curve/Decurve/Reverse/Undo]:"
     )
     cad.option("Edit vertex")
     expect(asked(cad)).toBe(
@@ -153,7 +153,7 @@ describe("PEDIT's prompts", () => {
     const cad = createHarness({ entities: [pl()], locale: es })
     cad.command("EDITPOL").click(p(5, 0))
     expect(asked(cad)).toBe(
-      "Indique una opción [Cerrar/Juntar/Grosor/Editar vértices/generarTlínea/Invertir/desHacer]:"
+      "Indique una opción [Cerrar/Juntar/Grosor/Editar vértices/curVar/Spline/anularcuRVatura/generarTlínea/Invertir/desHacer]:"
     )
     typeAnswer(cad, "E")
     expect(asked(cad)).toBe(
@@ -591,7 +591,7 @@ describe("PEDIT's Multiple", () => {
     )
     cad.enter()
     expect(asked(cad)).toBe(
-      "Enter an option [Close/Open/Join/Width/Ltype gen/Reverse/Undo]:"
+      "Enter an option [Close/Open/Join/Width/Fit/Spline/Decurve/Ltype gen/Reverse/Undo]:"
     )
     cad.option("Join")
     expect(cad.commandLog().slice(-1)).toEqual(["Join Type = Extend"])
@@ -813,7 +813,7 @@ describe("PEDIT on a 3D polyline", () => {
     const cad = createHarness({ entities: [poly3d()], locale: es })
     cad.command("EDITPOL").click(p(5, 0))
     expect(asked(cad)).toBe(
-      "Indique una opción [Cerrar/Unir/Editar vértices/Invertir/desHacer]:"
+      "Indique una opción [Cerrar/Unir/Editar vértices/curva Spline/anularcuRVatura/Invertir/desHacer]:"
     )
     typeAnswer(cad, "I")
     expect(cad.byId<Polyline3dEntity>("Q").vertices[0]).toEqual({

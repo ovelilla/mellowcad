@@ -58,7 +58,8 @@ capability the app has belongs to the engine, behind a port; only the _mechanism
 ## Conventions
 
 - `geometry/` and `domain/` are pure: no I/O, no mutation of inputs, no hidden state — **except
-  the id counters** (`nextEntityId`, `nextLayerId`) and `hatchGeometry`'s memo. Entity helpers
+  the id counters** (`nextEntityId`, `nextLayerId`) and the memos of `hatchGeometry` and
+  `polylineCurve`. Entity helpers
   return new objects and either keep the id (in-place edit) or mint one (`*Copy` helpers).
 - Angles are **radians CCW from +X** in `geometry/` and `domain/`; degrees only at the UI boundary.
   Normalise with `normalizeAngle` / `normalizeDegrees` (`geometry/primitives`): a hand-rolled
@@ -77,6 +78,16 @@ capability the app has belongs to the engine, behind a port; only the _mechanism
   through `carryOverrides`, as its plane does: `createPolyline` alone drops it.
 - `polylineSegmentGeometries()` is the single source of how a polyline is shaped; a closed one
   closes from two vertices too (pline/p227): count segments with `polylineSegments`.
+- **A fitted polyline (PEDIT's Fit or Spline, `fit`) is two things** (`domain/polylineFits.ts`):
+  its `vertices` are the frame Edit vertex, the grips, STRETCH and the palette edit; what it draws
+  is `polylineCurve` (`entityShape` for any entity), which `polylineSegmentGeometries`, length,
+  area, the queries, the scene and the snaps read. A Spline's curve is derived; a Fit keeps its
+  arcs (`fit.arcs`), as AutoCAD keeps them through a vertex moved (pedit/p152), and is refitted
+  only where AutoCAD refits (`polylineRefitted`: Close, Open, a tangent, STRETCH). A command that
+  cuts or copies a shape (OFFSET, TRIM, BREAK, EXPLODE) takes `polylineCurve` and makes a polyline
+  fitted no more; a frame edit that splices vertices splices `fit.arcs` and `fit.tangents` too
+  (`withFitParts`); a transform maps them (`mappedFit`), and a piece built through
+  `carryOverrides` never carries `fit`.
 - Paint order is `entityDrawOrder()` (only hatches move, behind, HPDRAWORDER 3); `pickAll()`
   sorts by it reversed, then newest first, never nearest (trim/p400): what is on top is what a
   click takes. `pick()` is `pickAll()[0]`; selection cycling relies on it. A type set behind

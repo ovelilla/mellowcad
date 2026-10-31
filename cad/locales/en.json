@@ -726,7 +726,12 @@
         "Regen": "Regen",
         "Straighten": "Straighten",
         "Tangent": "Tangent",
-        "Go": "Go"
+        "Go": "Go",
+        "Fit": "Fit",
+        "Spline": "Spline",
+        "Spline curve": "Spline",
+        "Decurve": "Decurve",
+        "Defit": "Defit"
       },
       "RECTANG": {
         "Chamfer": "Chamfer",
@@ -1551,6 +1556,7 @@
       "selectDimension": "Select dimension",
       "enterValueOr": "Enter value or",
       "selectSpline": "Select spline",
+      "selectSplineFitPolyline": "Select spline-fit polyline",
       "splineditOption": "Enter an option",
       "splineditOptionClosed": "Enter an option",
       "enterFitDataOption": "Enter a fit data option",
@@ -1715,6 +1721,9 @@
       "explodeLostWidth": "Exploding this polyline has lost width information.\nThe UNDO command will restore it.",
       "explodeCannot": "Cannot explode {name}",
       "noneFound": "None found.",
+      "noneFoundToConvert": "None found.",
+      "onlySplineFittedPolylines": "Only spline fitted polylines can be converted to splines.",
+      "unableToConvertSelectedObject": "Unable to convert the selected object.",
       "currentUcsName": "Current ucs name:  {kind, select, world {*WORLD*} unnamed {*NO NAME*} top {*TOP*} bottom {*BOTTOM*} front {*FRONT*} back {*BACK*} left {*LEFT*} right {*RIGHT*} other {{name}}}",
       "listedUcsName": "Current ucs name: {kind, select, world {*WORLD*} unnamed {*NO NAME*} top {*TOP*} bottom {*BOTTOM*} front {*FRONT*} back {*BACK*} left {*LEFT*} right {*RIGHT*} other {\"{name}\"}}",
       "savedUcsHeader": "Saved coordinate systems:",
@@ -2058,7 +2067,8 @@
         "Edit vertex": "Edit vertex",
         "Ltype gen": "Ltype gen",
         "OFF": "OFF",
-        "Jointype": "Jointype"
+        "Jointype": "Jointype",
+        "Spline curve": "Spline curve"
       },
       "HATCH": { "Select objects": "Select objects" },
       "BREAK": { "First point": "First point" },

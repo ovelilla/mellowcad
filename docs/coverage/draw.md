@@ -120,8 +120,10 @@ an arc's band no wider inwards than its radius (p234), a closed one's start mitr
 back to its start square there (p236); its linetype laid segment by segment (PLINEGEN 0, p232);
 its grips and palette rows: `drafting-aids.md` Grips, `properties.md` Properties palette
 
-**Missing:** PEDIT's Fit, Spline and Decurve (PEDIT, which a double-click on a polyline opens, d10:
-modify.md); a wide band's jig in a dimmer shade (d02; as drawn here); **unverified**: the dashed
+PEDIT's Fit and Spline fit one, drawn, picked and measured as its curve, Decurve straightens it
+(modify.md's PEDIT, which a double-click on a polyline opens, d10).
+
+**Missing:** a wide band's jig in a dimmer shade (d02; as drawn here); **unverified**: the dashed
 line at Second pt's `Specify second point on arc:`, CEnter's endpoint and Angle's centre (none
 here); Spanish declares
 `Mitadgrosor` at the first segment's prompt (21322; `Mitad` everywhere
@@ -596,11 +598,21 @@ fit spline a fit spline; FILLET's piece or growth of one a fit spline too (corne
 p448: modify.md's FILLET). SPLINEDIT edits its fit data, vertices, knots and weights, to a
 degree of 25 on knots of its own (k57–k146: modify.md's SPLINEDIT)
 
-**Missing:** toLerance and Object (not offered: a tolerance above 0 is an approximation Autodesk
-does not document, and there are no spline-fit polylines to convert; AutoCAD asks
-`Specify fit tolerance <0.0000>:`, es `Precise tolerancia de ajuste <0.0000>:`, p115, p131, and
-`Select spline-fit polyline:`, es `Designe polilínea de ajuste de spline:`, whose Enter says
-`None found.` and ends, p114); the deferred Tangent at the end tangent on a line, an ellipse or a
+**Object** (`Specify first point or [Method/Knots/Object]:`, CV's `[Method/Degree/Object]`, es
+`Objeto`): `Select spline-fit polyline:` (es `Designe polilínea de ajuste de spline:`), the picks
+and modes of `Select objects:`, Enter with none `None found.` (es `No se ha encontrado ninguno.`,
+table 22419) and the end (p114); each polyline PEDIT's Spline fitted, 2D or 3D, becomes the CV
+spline of the same curve — its frame the control points, knots 1 apart and clamped, a closed one
+cut where its curve begins, `0 0 0 1 2 3 4 4 4` on a quadratic loop of four (pedit/p57, p178,
+p189) — the polyline gone, in one step; anything else says `Only spline fitted polylines can be
+converted to splines.` and `Unable to convert the selected object.` (es `Solo pueden convertirse
+en splines las polilíneas ajustadas como spline.`, `Imposible convertir el objeto designado.`,
+22427, 22428; p178).
+
+**Missing:** toLerance (not offered: a tolerance above 0 is an approximation Autodesk does not
+document; AutoCAD asks `Specify fit tolerance <0.0000>:`, es `Precise tolerancia de ajuste
+<0.0000>:`, p115, p131); Object's DELOBJ (the polyline always erased here, as at its default) and
+its spline of a cubic frame of three (the Bézier on the middle vertex twice here, **unverified**); the deferred Tangent at the end tangent on a line, an ellipse or a
 spline (unprobed: the ordinary Tangent from the last point here); `<a` at the tangents and at
 CV's next points (**unverified**: the console ignores it, p212, p256, p222, so the angle override
 every prompt with a base point has); CVSHOW / CVHIDE, the triangular grip and the
@@ -640,8 +652,12 @@ BREAK, OFFSET, FILLET, CHAMFER, TRIM / EXTEND (modify.md), AREA (inquiry.md), DI
 (dimensions.md), UCS OBject (coordinate-systems.md), the snaps and grips (drafting-aids.md), the
 Properties palette (properties.md). Saved from drawing file version 36.
 
-**Missing:** PEDIT's Spline and Decurve (a spline-fit 3D polyline, the palette's Fit/Smooth
-Quadratic and Cubic), LIST of one (p08: `POLYLINE`, `Open space`, `area` of the vertices' vector
+PEDIT's Spline curve fits one, drawn and picked as its curve, Decurve back to its frame
+(modify.md's PEDIT).
+
+**Missing:** the palette's Fit/Smooth of a fitted one, which reads None here (AutoCAD's
+`Quadratic` and `Cubic`, es `Cuadrática`, `Cúbica`, ax26res.dll, not in the catalogs yet: a new
+interface word every language's catalog owes), and editing it there; LIST of one (p08: `POLYLINE`, `Open space`, `area` of the vertices' vector
 area, `length` in space, then each `VERTEX`), trimming and extending one (modify.md), JOIN into
 one (pieces/p353), one as a hatch boundary or ARRAYPATH's path, the 3D Visualization group's
 Material row (desktop d02), and the grips' hover menus (Stretch / Add / Remove Vertex, unprobed)

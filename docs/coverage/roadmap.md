@@ -30,7 +30,7 @@ us to walk again, whereas a command costs the same before or after it.
 Left out of the 2.5D model, each a gap of its own: LIST, the `.X` / `.XY` point filters, OSNAPZ as
 a variable, ARRAYRECT's Levels, CHPROP, and POINT's thickness (with POINT, below). 3DPOLY and SPLINE
 3D are done: the objects whose stored points carry their Z (`draw.md`), a spline kept in its own
-plane when it has one; trimming a 3D polyline, JOIN into one and PEDIT Spline are its own gaps.
+plane when it has one; trimming a 3D polyline and JOIN into one are its own gaps.
 
 Editing a spline is done in its three deliveries: the spline the model's, in space and on knots,
 control points and weights of its own (DXF 40 / 10 / 41), as AutoCAD 2027 leaves TRIM's, BREAK's
@@ -43,9 +43,10 @@ joined end to end, and an elliptical arc's or a spline's single source with cLos
 (pieces/p396–p440, modify.md's JOIN); SPLINEDIT, every option but Kink and toLerance, convert to
 Polyline's vertices AutoCAD's on a CV spline only (k57–k146, modify.md's SPLINEDIT).
 
-PEDIT is done but Fit, Spline and Decurve (pedit/p01–p146, modify.md's PEDIT), and Ltype gen a
-polyline's own; the spline-fit polylines those three make are the next delivery, with the model
-change they ask: `docs/next-pedit-spline.md`.
+PEDIT is done, its Fit, Spline and Decurve with the fitted polylines they make (pedit/p01–p199,
+modify.md's PEDIT): a Fit's arcs kept as AutoCAD keeps them, a Spline's curve derived from its
+frame, SPLINE's Object and SPLINEDIT taking a spline-fit one; Ltype gen a polyline's own. Left: LIST
+(which would list a fitted one's vertices), the palette's Fit/Smooth words and the meshes.
 
 Deferrable indefinitely at no extra cost: PASTEBLOCK/PASTEORIG/CUTBASE, DIMARC, DIMORDINATE, the
 modern `DIM` command, POINT with DIVIDE/MEASURE, XLINE/RAY, GROUP, LENGTHEN, ALIGN, per-object

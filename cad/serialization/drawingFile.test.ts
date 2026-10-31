@@ -240,6 +240,8 @@ describe("round trip", () => {
       snapMode: true,
       snapUnit: { x: 5, y: 2.5 },
       gridMode: false,
+      splineType: 5 as const,
+      splineSegments: -4,
     }
     const parsed = parseDrawingFile(
       serializeDrawing(snapshotOf([], { settings }))

@@ -2,11 +2,19 @@ import { Vec2 } from "../geometry/Vec2"
 import { Vec3, length3, sub3 } from "../geometry/Vec3"
 import { closestPointOnSegment } from "../geometry/primitives"
 import { Polyline3dEntity } from "./entityTypes"
+import { polyline3dCurve, polyline3dFrame } from "./polylineFits"
 
 const LEVEL_TOLERANCE = 1e-9
 
-/** Its straight segments, the closing one last; none for a single vertex. */
+/**
+ * Its straight segments, the closing one last; none for a single vertex. A
+ * fitted one's are its curve's.
+ */
 export function polyline3dSegments(poly: Polyline3dEntity): [Vec3, Vec3][] {
+  return frameSegments(polyline3dCurve(poly))
+}
+
+function frameSegments(poly: Polyline3dEntity): [Vec3, Vec3][] {
   const { vertices } = poly
   const segments: [Vec3, Vec3][] = []
   for (let i = 0; i < vertices.length - 1; i++) {
@@ -93,7 +101,11 @@ export function polyline3dSpan(
   from: number,
   to: number
 ): Vec3[] {
-  const segments = polyline3dSegments(poly)
+  return frameSpan(polyline3dCurve(poly), from, to)
+}
+
+function frameSpan(poly: Polyline3dEntity, from: number, to: number): Vec3[] {
+  const segments = frameSegments(poly)
   const count = segments.length
   if (count === 0) return [...poly.vertices]
   // A closed one's run may go round past its start; an open one's ends at
@@ -160,11 +172,12 @@ export function polyline3dBrokenAt(
 ): { first: Polyline3dEntity | null; second: Polyline3dEntity | null } | null {
   const lo = Math.min(from, to)
   const hi = Math.max(from, to)
-  const end = polyline3dSegments(poly).length
+  const end = frameSegments(poly).length
   if (hi === lo ? lo === 0 || lo >= end : lo === 0 && hi >= end) return null
   const piece = (a: number, b: number): Polyline3dEntity | null =>
-    b <= a
-      ? null
-      : { ...poly, closed: false, vertices: polyline3dSpan(poly, a, b) }
-  return { first: piece(0, lo), second: piece(hi, end) }
+    b <= a ? null : { ...poly, closed: false, vertices: frameSpan(poly, a, b) }
+  // The piece from the start is its frame, the other stays fitted (as a
+  // polyline's, pedit/p158).
+  const first = piece(0, lo)
+  return { first: first && polyline3dFrame(first), second: piece(hi, end) }
 }

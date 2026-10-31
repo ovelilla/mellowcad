@@ -1,0 +1,15 @@
+_ZOOM
+_W
+-20,-20
+60,40
+_SPLINETYPE
+5
+_SPLINESEGS
+5
+_SPLFRAME
+1
+MPSYSVARS
+-
+_.SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\mc-pedit-p181.dwg

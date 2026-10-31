@@ -14,6 +14,7 @@ import {
   controlVertexDeleted,
   controlVertexWeighed,
   fitPointAdded,
+  fittedPolylineSpline,
   fitPointDeleted,
   splineClosedAs,
   splineElevated,
@@ -622,8 +623,20 @@ export class SplineEditTool implements Tool {
     this.ask({ kind: "main" }, ctx)
   }
 
-  /** A spline found at `Select spline:`; anything else is said and asked again (k93). */
+  /**
+   * A spline found at `Select spline:`, or a spline-fit polyline, turned into
+   * the spline of its curve in silence as it is found (k94); anything else is
+   * said and asked again (k93; a Fit polyline's words **unverified**).
+   */
   private take(entity: Entity, ctx: ToolContext): void {
+    const converted =
+      (entity.type === "polyline" || entity.type === "polyline3d") &&
+      fittedPolylineSpline(entity)
+    if (converted) {
+      ctx.execute(new ReplaceEntitiesCommand([entity.id], [converted]))
+      this.begin(converted, ctx)
+      return
+    }
     if (entity.type !== "spline") {
       ctx.report(ctx.text.message("objectNotSpline"))
       this.modes.start()

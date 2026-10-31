@@ -11,6 +11,7 @@ import {
   mtextLineTexts,
   polylineSegmentGeometries,
   polyline3dSegments,
+  polylineCurve,
 } from "../../domain/entities"
 import {
   hatchPatternLines,
@@ -159,7 +160,8 @@ export class ExplodeTool extends SelectionActionTool {
       }
       if (entity.type !== "polyline") continue
       removedIds.push(entity.id)
-      if (isWidePolyline(entity)) {
+      // A fitted one goes into the lines and arcs of its curve (pedit/p173, p174).
+      if (isWidePolyline(polylineCurve(entity))) {
         ctx.report(ctx.text.message("explodeLostWidth"))
       }
       for (const seg of polylineSegmentGeometries(entity)) {

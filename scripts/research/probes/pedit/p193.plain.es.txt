@@ -1,0 +1,35 @@
+_ZOOM
+_W
+-20,-20
+60,40
+_PLINE
+0,0
+7,3
+12,11
+20,9
+26,1
+
+_PEDIT
+_L
+_S
+
+_SPLFRAME
+1
+_REGEN
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 píxeles)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mc-pedit-p193.png
+_N
+_Y

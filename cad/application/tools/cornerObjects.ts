@@ -171,6 +171,9 @@ export function typeRefusal(
     // CHAMFER's by that table, unprobed).
     case "polyline3d":
       return again(fillet ? "filletNot3dPolyline" : "chamferNot3dPolyline")
+    // A fitted one, picked second (pedit/p194, p195; first **unverified**).
+    case "polyline":
+      return entity.fit ? again(any) : null
     default:
       return null
   }

@@ -15,12 +15,15 @@ import { createPolyline, createPolyline3d } from "./entityFactories"
 import { carryOverrides } from "./entityOverrides"
 import {
   closestPointOnSpline,
+  createSpline,
   isLevelSpline,
   isPeriodicSpline,
   splineCurve,
   splineWithoutFitData,
 } from "./splines"
 import { splineInWorld, splineRun } from "./splineEdits"
+import { splineFitCurve } from "../geometry/splineFit"
+import { splineOnItsPlane } from "./elevation"
 
 /*
  * SPLINEDIT's edits of a spline's data, as AutoCAD 2027's console leaves
@@ -523,4 +526,35 @@ export function splinePointNear(
     }
   })
   return best
+}
+
+/**
+ * SPLINE's Object (and SPLINEDIT's pick, k94) of a polyline PEDIT's Spline
+ * fitted: the CV spline of the same curve, its control points the frame and
+ * its knots 1 apart, clamped (pedit/p57, p178), a closed one cut where its
+ * curve begins (p189), in the polyline's plane and properties. Null for any
+ * other polyline, Fit's too: AutoCAD converts only these (p178).
+ */
+export function fittedPolylineSpline(
+  poly: PolylineEntity | Polyline3dEntity
+): SplineEntity | null {
+  const fit = poly.fit
+  if (!fit || fit.kind === "curve" || poly.vertices.length < 3) return null
+  const frame: Vec3[] = poly.vertices.map((v) => ({
+    x: v.x,
+    y: v.y,
+    z: "z" in v ? v.z : 0,
+  }))
+  const curve = splineFitCurve(
+    frame,
+    poly.closed,
+    fit.kind === "quadratic" ? 2 : 3
+  )
+  const spline = createSpline("cv", curve.controlPoints, {
+    degree: curve.degree,
+    closed: poly.closed,
+    knotVector: curve.knots,
+  })
+  const placed = carryOverrides(poly, { ...spline, layerId: poly.layerId })
+  return poly.type === "polyline3d" ? splineOnItsPlane(placed) : placed
 }

@@ -1104,7 +1104,8 @@ export const en: EngineCatalog = {
       "PEDIT": {
         "Edit vertex": "Edit",
         "Ltype gen": "Ltype",
-        "OFF": "OFf"
+        "OFF": "OFf",
+        "Spline curve": "Spline"
       },
       "HATCH": {
         "Select objects": "Select"
@@ -1724,6 +1725,7 @@ export const en: EngineCatalog = {
       "selectDimension": "Select dimension",
       "enterValueOr": "Enter value or",
       "selectSpline": "Select spline",
+      "selectSplineFitPolyline": "Select spline-fit polyline",
       "splineditOption": "Enter an option",
       "splineditOptionClosed": "Enter an option",
       "enterFitDataOption": "Enter a fit data option",
@@ -2408,6 +2410,9 @@ export const en: EngineCatalog = {
         ]
       ],
       "noneFound": "None found.",
+      "noneFoundToConvert": "None found.",
+      "onlySplineFittedPolylines": "Only spline fitted polylines can be converted to splines.",
+      "unableToConvertSelectedObject": "Unable to convert the selected object.",
       "currentUcsName": [
         "Current ucs name:  ",
         [
@@ -4125,7 +4130,8 @@ export const en: EngineCatalog = {
         "Edit vertex": "Edit vertex",
         "Ltype gen": "Ltype gen",
         "OFF": "OFF",
-        "Jointype": "Jointype"
+        "Jointype": "Jointype",
+        "Spline curve": "Spline curve"
       },
       "HATCH": {
         "Select objects": "Select objects"

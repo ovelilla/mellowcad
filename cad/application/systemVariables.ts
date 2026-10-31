@@ -442,6 +442,23 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
         ? patch({ snapUnit: { x: point.x, y: point.y } })
         : null,
   },
+  // Taken as getint takes any integer, then `Cannot set` but for 5 and 6, and
+  // for 0 (pedit/p161, p199).
+  integer(
+    "SPLINESEGS",
+    -32768,
+    32767,
+    (settings) => settings.splineSegments,
+    (value) => (value === 0 ? null : patch({ splineSegments: value }))
+  ),
+  integer(
+    "SPLINETYPE",
+    -32768,
+    32767,
+    (settings) => settings.splineType,
+    (value) =>
+      value === 5 || value === 6 ? patch({ splineType: value }) : null
+  ),
   {
     type: "real",
     name: "TEXTSIZE",

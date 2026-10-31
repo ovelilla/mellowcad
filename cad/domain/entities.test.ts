@@ -93,6 +93,7 @@ import {
   translateEntity,
   withElevation,
   withThickness,
+  entityShape,
 } from "./entities"
 import { DEFAULT_LAYER_ID } from "./layers"
 import { SOLID_HATCH_PATTERN_ID } from "./hatchPatterns"
@@ -807,7 +808,8 @@ function characteristicPoints(entity: Entity): Vec2[] {
       return [splineStartPoint(entity), splineEndPoint(entity)]
     case "polyline":
     case "polyline3d":
-      return [...entity.vertices]
+      // A fitted one's curve's: a Spline's frame lies off it.
+      return [...entityShape(entity).vertices]
     case "text":
     case "mtext":
     case "attdef":

@@ -63,6 +63,10 @@ export interface DocumentSettings {
   readonly polylineWidth: number
   /** FILLETRAD: the radius FILLET rounds with. */
   readonly filletRadius: number
+  /** SPLINETYPE: PEDIT Spline's curve, 5 quadratic or 6 cubic. */
+  readonly splineType: 5 | 6
+  /** SPLINESEGS: PEDIT Spline's points per span, arcs through them when negative, never 0. */
+  readonly splineSegments: number
   /** CHAMFERA: CHAMFER's first distance. */
   readonly chamferDistance1: number
   /** CHAMFERB: CHAMFER's second distance. */
@@ -157,6 +161,9 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   // acadiso.dwt's FILLETRAD, CHAMFERA, CHAMFERB, TEXTSIZE, SNAPUNIT and
   // GRIDMODE (rectang/p302, p303, p304).
   filletRadius: 0,
+  // Saved in the drawing: OPEN brings back what was set (pedit/p181).
+  splineType: 6,
+  splineSegments: 8,
   chamferDistance1: 0,
   chamferDistance2: 0,
   textSize: DEFAULT_TEXT_HEIGHT,

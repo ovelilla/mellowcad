@@ -27,6 +27,7 @@ import {
   createSpline,
   type Entity,
   withElevation,
+  createPolyline3d,
 } from "../domain/entities"
 import { SnapType } from "./snapping/types"
 import { commandCatalog } from "./commandCatalog"
@@ -1332,6 +1333,57 @@ describe("the engine's English surface", () => {
           .do("U", (c) => answer(c, "U"))
           .do("U", (c) => answer(c, "U"))
           .do("X", (c) => answer(c, "X"))
+    )
+    walk(
+      "PEDIT Fit, Spline and Decurve",
+      createHarness({
+        entities: [
+          polylineOf([p(0, 0), p(70, 30), p(120, 110), p(200, 90)], {
+            id: "PF",
+          }),
+          createPolyline3d(
+            [
+              { x: 0, y: 300, z: 0 },
+              { x: 100, y: 400, z: 50 },
+              { x: 200, y: 300, z: 0 },
+            ],
+            false,
+            undefined,
+            "P3"
+          ),
+        ],
+      }),
+      (s) =>
+        s
+          .do("PEDIT", (c) => c.command("PE"))
+          .do("pick", (c) => c.click(at(0, 0)))
+          .do("F", (c) => answer(c, "F"))
+          .do("S", (c) => answer(c, "S"))
+          .do("D", (c) => answer(c, "D"))
+          .do("DEFIT", (c) => answer(c, "DEFIT"))
+          .do("X", (c) => answer(c, "X"))
+          .do("SPLINESEGS", (c) => answer(c, "SPLINESEGS"))
+          .do("0", (c) => c.type("0"))
+          .do("enter", (c) => c.enter())
+          .do("PEDIT 3D", (c) => c.command("PE"))
+          .do("pick", (c) => c.click(at(0, 300)))
+          .do("S", (c) => answer(c, "S"))
+          .do("X", (c) => answer(c, "X"))
+          .do("SPLINE", (c) => c.command("SPL"))
+          .do("O", (c) => answer(c, "O"))
+          .do("pick", (c) => c.click(at(0, 300)))
+          .do("enter", (c) => c.enter())
+          .do("PEDIT", (c) => c.command("PE"))
+          .do("pick", (c) => c.click(at(0, 0)))
+          .do("F", (c) => answer(c, "F"))
+          .do("X", (c) => answer(c, "X"))
+          .do("SPLINE", (c) => c.command("SPL"))
+          .do("O", (c) => answer(c, "O"))
+          .do("pick", (c) => c.click(at(0, 0)))
+          .do("enter", (c) => c.enter())
+          .do("SPLINE", (c) => c.command("SPL"))
+          .do("O", (c) => answer(c, "O"))
+          .do("enter", (c) => c.enter())
     )
     walk(
       "PEDIT Multiple",

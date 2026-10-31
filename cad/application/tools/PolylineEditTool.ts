@@ -19,7 +19,13 @@ import {
   lineEndZ,
   lineStartZ,
   planeAxes,
+  polyline3dFrame,
+  polyline3dSplined,
   polylineBulge,
+  polylineDecurved,
+  polylineFitted,
+  polylineSplined,
+  withFitParts,
   polylineSegments,
   polylineWidth,
   replacePolyline3dVertex,
@@ -118,15 +124,16 @@ const TOUCH = 1e-6
 const MARK_SIZE = 6
 
 /**
- * PEDIT, as AutoCAD 2027's console asks it (probes pedit/p01–p146, en and
+ * PEDIT, as AutoCAD 2027's console asks it (probes pedit/p01–p199, en and
  * es): `Select polyline or [Multiple]:`, a line, an arc or a spline turned
  * into a polyline on the spot, then `Enter an option [Close/Join/Width/Edit
- * vertex/Ltype gen/Reverse/Undo]:` (a 3D polyline's `[Close/Join/Edit
- * vertex/Reverse/Undo]`), each option done at once and one step of its Undo;
- * Edit vertex is a prompt of its own with its X on a vertex, taken back
- * whole (p35). Escape keeps what was done, and U after the command takes back
- * all of it (p36, p47). Fit, Spline and Decurve are not offered (no
- * spline-fit polylines: docs/next-pedit-spline.md).
+ * vertex/Fit/Spline/Decurve/Ltype gen/Reverse/Undo]:` (a 3D polyline's
+ * `[Close/Join/Edit vertex/Spline curve/Decurve/Reverse/Undo]`), each option
+ * done at once and one step of its Undo; Edit vertex is a prompt of its own
+ * with its X on a vertex of the frame, taken back whole (p35). Fit, Spline
+ * and Decurve fit it as `polylineFits.ts` does (p50–p62, p147–p199). Escape
+ * keeps what was done, and U after the command takes back all of it (p36,
+ * p47).
  */
 export class PolylineEditTool implements Tool {
   readonly id = "pedit"
@@ -150,6 +157,15 @@ export class PolylineEditTool implements Tool {
   private order: EntityId[] = []
   /** The polyline a double-click starts the run on. */
   private pending: EntityId | null = null
+  /**
+   * Edit vertex's tangents of a polyline not fitted, one per vertex: AutoCAD
+   * keeps them on its vertices for a Fit later in the run (p59, p188, p192)
+   * and drops them as PEDIT ends on one left unfitted (p28). A fitted one
+   * keeps its own (`fit.tangents`).
+   */
+  private loose = new Map<EntityId, (number | null)[]>()
+  /** The loose tangents as each step of the main prompt found them, for its Undo. */
+  private looseAt: Map<EntityId, (number | null)[]>[] = []
 
   /** `Select polyline or [Multiple]:`, a single object's pick (p01, p03). */
   private readonly modes = new ObjectSelector({
@@ -208,6 +224,8 @@ export class PolylineEditTool implements Tool {
     this.ids = []
     this.multiple = false
     this.steps = []
+    this.loose = new Map()
+    this.looseAt = []
     this.cursor = null
     this.modes.start()
   }
@@ -387,8 +405,8 @@ export class PolylineEditTool implements Tool {
   /**
    * The main prompt's keywords, Close or Open as the polyline stands (both
    * answer either way, p02) and Multiple's both; a 3D polyline's and a set
-   * holding one fewer (p09, p39). WHY no Fit, Spline nor Decurve: there are
-   * no spline-fit polylines (docs/next-pedit-spline.md).
+   * holding one fewer (p09, p39, p55, p196, p197), Defit Decurve's hidden
+   * twin (p198).
    */
   private mainOptions(): CommandOption[] {
     const close: CommandOption[] = this.multiple
@@ -397,6 +415,7 @@ export class PolylineEditTool implements Tool {
         ? [{ id: "Open" }, { id: "Close", hidden: true }]
         : [{ id: "Close" }, { id: "Open", hidden: true }]
     const hidden: CommandOption[] = [
+      { id: "Defit", hidden: true },
       { id: "eXit", hidden: true },
       { id: "X", hidden: true },
     ]
@@ -404,6 +423,8 @@ export class PolylineEditTool implements Tool {
       return [
         ...close,
         ...(this.multiple ? [] : [{ id: "Join" }, { id: "Edit vertex" }]),
+        { id: "Spline curve" },
+        { id: "Decurve" },
         { id: "Reverse" },
         { id: "Undo" },
         ...hidden,
@@ -414,6 +435,9 @@ export class PolylineEditTool implements Tool {
       { id: "Join" },
       { id: "Width" },
       ...(this.multiple ? [] : [{ id: "Edit vertex" }]),
+      { id: "Fit" },
+      { id: "Spline" },
+      { id: "Decurve" },
       { id: "Ltype gen" },
       { id: "Reverse" },
       { id: "Undo" },
@@ -501,6 +525,7 @@ export class PolylineEditTool implements Tool {
         break
       case "Join":
         this.stepStart = ctx.historyDepth()
+        this.looseStart = copied(this.loose)
         if (this.multiple) {
           this.askFuzz(ctx)
           break
@@ -522,6 +547,7 @@ export class PolylineEditTool implements Tool {
       case "Edit vertex":
         if (this.multiple) return "unhandled"
         this.stepStart = ctx.historyDepth()
+        this.looseStart = copied(this.loose)
         this.current = 0
         this.forward = true
         this.ask({ kind: "vertex" }, ctx)
@@ -532,12 +558,54 @@ export class PolylineEditTool implements Tool {
         break
       case "Reverse":
         // Said in no words (p33).
-        this.mainStep(ctx, () =>
+        this.mainStep(ctx, () => {
+          for (const [id, tangents] of this.loose) {
+            this.loose.set(id, turnedRound(tangents))
+          }
           this.editAll(ctx, (poly) =>
             poly.type === "polyline"
               ? polylineReversed(poly)
               : polyline3dReversed(poly)
           )
+        })
+        break
+      case "Fit":
+        if (this.main3d) return "unhandled"
+        this.mainStep(ctx, () =>
+          this.editAll(ctx, (poly) =>
+            poly.type === "polyline"
+              ? polylineFitted(poly, this.tangentsOf(poly))
+              : null
+          )
+        )
+        break
+      case "Spline":
+      case "Spline curve": {
+        if ((id === "Spline") === this.main3d) return "unhandled"
+        // SPLINETYPE and SPLINESEGS as they now stand (p52–p54).
+        const settings = ctx.document.getSettings()
+        const kind = settings.splineType === 5 ? "quadratic" : "cubic"
+        const segments = settings.splineSegments
+        this.mainStep(ctx, () =>
+          this.editAll(ctx, (poly) =>
+            poly.type === "polyline"
+              ? polylineSplined(poly, kind, segments, this.tangentsOf(poly))
+              : // A 3D polyline's runs are straight, |SPLINESEGS| a span (p198).
+                polyline3dSplined(poly, kind, Math.abs(segments))
+          )
+        )
+        break
+      }
+      case "Decurve":
+      case "Defit":
+        this.mainStep(ctx, () =>
+          this.editAll(ctx, (poly) => {
+            if (poly.type === "polyline3d") return polyline3dFrame(poly)
+            // Its tangents stay for a Fit later in the run (p188).
+            const tangents = this.tangentsOf(poly)
+            if (tangents) this.loose.set(poly.id, [...tangents])
+            return poly.fit || poly.bulges ? polylineDecurved(poly) : null
+          })
         )
         break
       case "Undo":
@@ -620,7 +688,11 @@ export class PolylineEditTool implements Tool {
     const from = step.from
     const to = this.current
     const lo = Math.min(from, to)
+    const hi = Math.max(from, to)
     if (step.purpose === "straighten") {
+      this.spliceLoose(poly.id, (t) =>
+        hi - lo < 2 ? t : t.filter((_, i) => i <= lo || i >= hi)
+      )
       this.edit(ctx, poly, (p) =>
         p.type === "polyline"
           ? polylineStraightened(p, from, to)
@@ -639,6 +711,9 @@ export class PolylineEditTool implements Tool {
         // The piece from its start keeps the polyline; the other is new (p66, p101).
         const kept = pieces.first ?? pieces.second
         const other = pieces.first ? pieces.second : null
+        this.spliceLoose(poly.id, (t) =>
+          pieces.first ? t.slice(0, lo + 1) : t.slice(hi)
+        )
         const made: EditedPolyline[] = [
           { ...kept!, id: poly.id },
           ...(other ? [{ ...other, id: nextEntityId() }] : []),
@@ -653,14 +728,33 @@ export class PolylineEditTool implements Tool {
   /** A step of the main prompt done at once, which its Undo takes back. */
   private mainStep(ctx: ToolContext, run: () => void): void {
     this.stepStart = ctx.historyDepth()
+    this.looseStart = copied(this.loose)
     run()
     this.backToMain(ctx)
   }
 
   private backToMain(ctx: ToolContext): void {
-    if (ctx.historyDepth() > this.stepStart) this.steps.push(this.stepStart)
+    if (ctx.historyDepth() > this.stepStart) {
+      this.steps.push(this.stepStart)
+      this.looseAt.push(this.looseStart)
+    }
+    // A fitted polyline holds its tangents itself.
+    for (const poly of this.polylines(ctx)) {
+      if (poly.type === "polyline" && poly.fit) this.loose.delete(poly.id)
+    }
     this.stepStart = ctx.historyDepth()
+    this.looseStart = copied(this.loose)
     this.ask({ kind: "main" }, ctx)
+  }
+
+  /** The loose tangents as the step under way found them. */
+  private looseStart = new Map<EntityId, (number | null)[]>()
+
+  /** A polyline's tangents: its fit's, else those Edit vertex gave it in this run. */
+  private tangentsOf(
+    poly: PolylineEntity
+  ): readonly (number | null)[] | undefined {
+    return poly.fit?.tangents ?? this.loose.get(poly.id)
   }
 
   /**
@@ -670,6 +764,8 @@ export class PolylineEditTool implements Tool {
    */
   private undoStep(ctx: ToolContext): void {
     const mark = this.steps.pop()
+    const loose = this.looseAt.pop()
+    if (loose) this.loose = loose
     if (mark !== undefined) ctx.undoTo(mark)
     if (this.steps.length === 0) {
       ctx.report(ctx.text.message("commandCompletelyUndone"))
@@ -736,10 +832,8 @@ export class PolylineEditTool implements Tool {
       case "tangent":
         ctx.dynamicInput.open({
           fields: [{ id: "angle", prompt: "angle", kind: "angle" }],
-          // A tangent is kept only for Fit, which is not built: a polyline
-          // stores none (p28, its vertices dropped as PEDIT ends).
-          commit: (_values, commitCtx) =>
-            this.ask({ kind: "vertex" }, commitCtx),
+          commit: (values, commitCtx) =>
+            this.answerTangent(values.angle, commitCtx),
           commitRaw: () => false,
         })
         break
@@ -917,6 +1011,9 @@ export class PolylineEditTool implements Tool {
     if (poly?.type === "polyline") {
       const chain = joinToPolyline(poly, set)
       if (chain) {
+        // Grown, it is decurved (p168, p183), its loose tangents gone with
+        // the vertices they stood on (**unverified**).
+        this.loose.delete(poly.id)
         ctx.execute(new ReplaceEntitiesCommand(chain.members, [chain.polyline]))
         count = chain.segments
       }
@@ -971,6 +1068,38 @@ export class PolylineEditTool implements Tool {
         : ctx.text.message("segmentsAddedToPolyline", { count: segments })
     )
     this.backToMain(ctx)
+  }
+
+  /**
+   * Tangent's direction, in degrees from the X axis: a Fit refitted with it
+   * at once (p150), a Spline's kept for a Fit later — it moves none of its
+   * curve (p192) —, an unfitted one's kept for the run (p59, p28).
+   */
+  private answerTangent(degrees: number, ctx: ToolContext): void {
+    const poly = this.polyline(ctx)
+    if (poly?.type === "polyline" && Number.isFinite(degrees)) {
+      const tangents = [
+        ...(this.tangentsOf(poly) ?? poly.vertices.map(() => null)),
+      ]
+      tangents[this.current] = (degrees * Math.PI) / 180
+      if (poly.fit?.kind === "curve") {
+        ctx.execute(new UpdateEntitiesCommand([polylineFitted(poly, tangents)]))
+      } else if (poly.fit) {
+        ctx.execute(
+          new UpdateEntitiesCommand([withFitParts(poly, null, tangents)])
+        )
+      } else this.loose.set(poly.id, tangents)
+    }
+    this.ask({ kind: "vertex" }, ctx)
+  }
+
+  /** The loose tangents of the polyline Edit vertex works on, spliced as its vertices are. */
+  private spliceLoose(
+    id: EntityId,
+    change: (tangents: (number | null)[]) => (number | null)[]
+  ): void {
+    const tangents = this.loose.get(id)
+    if (tangents) this.loose.set(id, change([...tangents]))
   }
 
   /** A width, a fuzz distance or a vertex's width given, never negative (p22, p75). */
@@ -1047,6 +1176,10 @@ export class PolylineEditTool implements Tool {
     if (poly && point) {
       const at = this.current
       if (step.kind === "insert") {
+        this.spliceLoose(poly.id, (t) => {
+          t.splice(at + 1, 0, null)
+          return t
+        })
         this.edit(ctx, poly, (p) =>
           p.type === "polyline"
             ? polylineVertexInserted(p, at, onPlane(p, point))
@@ -1478,4 +1611,15 @@ function extendedToMeet(
     replacePolylineVertex(chain, best.a, best.at),
     replacePolylineVertex(other, best.b, best.at),
   ]
+}
+
+/** Tangents turned round with their polyline: the other way, each a half turn on (**unverified**). */
+function turnedRound(tangents: readonly (number | null)[]): (number | null)[] {
+  return tangents.map((t) => (t === null ? null : t + Math.PI)).reverse()
+}
+
+function copied(
+  loose: ReadonlyMap<EntityId, readonly (number | null)[]>
+): Map<EntityId, (number | null)[]> {
+  return new Map([...loose].map(([id, tangents]) => [id, [...tangents]]))
 }

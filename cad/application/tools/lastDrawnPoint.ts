@@ -12,6 +12,7 @@ import {
   entityElevation,
   lineEndZ,
   lineStartZ,
+  entityShape,
 } from "../../domain/entities"
 
 /** Where a draw command's Continue starts, and the arc it must leave tangent to. */
@@ -54,7 +55,7 @@ export function continuePoint(
 ): ContinuePoint | null {
   const entities = document.getEntities()
   for (let i = entities.length - 1; i >= 0; i--) {
-    const entity = entities[i]
+    const entity = entityShape(entities[i])
     switch (entity.type) {
       case "line":
         return { point: withZ(entity.end, lineEndZ(entity)), tangent: null }
@@ -111,7 +112,7 @@ export function lastDrawnDirection(
 ): Vec2 | null {
   const entities = document.getEntities()
   for (let i = entities.length - 1; i >= 0; i--) {
-    const entity = entities[i]
+    const entity = entityShape(entities[i])
     switch (entity.type) {
       case "line": {
         const run = V.sub(entity.end, entity.start)
@@ -163,7 +164,7 @@ export function lastDrawnDirection(
 export function lastDrawnRises(document: DocumentReader): boolean {
   const entities = document.getEntities()
   for (let i = entities.length - 1; i >= 0; i--) {
-    const entity = entities[i]
+    const entity = entityShape(entities[i])
     if (entity.type === "line") {
       return Math.abs(lineEndZ(entity) - lineStartZ(entity)) > 1e-9
     }

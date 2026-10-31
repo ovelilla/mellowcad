@@ -185,7 +185,9 @@ above, explains):
   Spanish
   product; every prompt, keyword capital (`[Cuerda/raíz cuaDrada/Uniforme]`), refusal and the
   settings line are 2027's console's (spline/p01.es, p02.es, p108, p111.es, p113.es, p125.es,
-  p155.es), which asks no `Precise tangente` at the closure (p124.es). The rail's
+  p155.es), which asks no `Precise tangente` at the closure (p124.es); Object's `Objeto`, `Designe
+  polilínea de ajuste de spline` and `No se ha encontrado ninguno.` (spline/p114.es, pedit/p178.es),
+  not EXPLODE's `No hallada.`. The rail's
   `Ajuste de spline` and `VC de spline` are the ribbon's tooltips (acad.cuix). **Unverified:** the
   palette's `Parametrización de nudos`.
 - **SPLINEDIT:** `EDITSPLINE` (table 52827) and `SPE` from the 2027 Spanish `acad.pgp`; every
@@ -196,8 +198,12 @@ above, explains):
 - **PEDIT:** `EDITPOL` and `PE` from the 2027 Spanish `acad.pgp`; every prompt, keyword and
   message from 2027's console (pedit/p01–p146.es), whose `initget` spells Join `Juntar` at a 2D
   polyline's prompt and `Unir` at a 3D one's, eXit `Salir` at Edit vertex and the hidden `SAlir`
-  beside `SA` at the first prompt, and the default of Next `<U>`. **Unverified:** the rail's
-  `Editar polilínea`, Jointype's default `<Ambos>`.
+  beside `SA` at the first prompt, and the default of Next `<U>`; Fit `curVar`, Decurve
+  `anularcuRVatura` and its hidden twin `ELiminarcurva`, a 3D polyline's `Spline` listed `curva
+  Spline` (p51.es, p55.es, p198.es). **Deviation:** Multiple's prompts list Spline `SPline` and a 3D
+  polyline's `curvaB`, and declare `Eliminarcurva` (p196.es, p197.es): here as the single prompts
+  spell them, a keyword's label being one per command. **Unverified:** the rail's `Editar
+  polilínea`, Jointype's default `<Ambos>`.
 - **UCS:** `SCP` and `SIMBSCP` from the Spanish pages with the English GUIDs, as is `PLANTA`;
   the keywords `gUArdado`, `oBjeto`, `PRev`, `Vista`, `Univ`, `X`, `Y`, `Z`, `ejEZ`, `Objeto`,
   `Rest`,

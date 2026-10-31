@@ -1404,7 +1404,8 @@ spline-knots/k11, k57–k146, traced, MPDUMP, en and es; not transparent, k146):
 WPolygon, CPolygon, Previous, AUto), on nothing a window, anything but a spline
 `Object selected is not a spline.` (es `El objeto designado no es una spline.`) and the prompt
 again, Enter ending the command (k93, k96, k118); a spline selected before it is the one edited
-(k121). Then `Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit]
+(k121); a polyline PEDIT's Spline fitted turned at once, in silence, into the CV spline of its curve,
+as SPLINE's Object makes it (k94, pedit/p180). Then `Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit]
 <eXit>:` (es `Indique una opción [Cerrar/Unir/Ajustar datos/Editar vértices/coNvertir en
 polilínea/Invertir/desHacer/Salir] <Salir>:`), a closed spline's with Open (es `aBrir`) and no Join,
 its Spanish declaring `Polilínea` where it lists `coNvertir`; the hidden words Data, R, X and
@@ -1471,8 +1472,8 @@ Tangents of a closed spline (`Specify tangent or [System default]:`, then still 
 tangent`, k144): not offered. convert to Polyline's own vertices on a fit spline, which AutoCAD
 leaves far coarser (5, 7, 13 and 31 at precisions 0, 1, 3 and 10, at the fit points and between,
 against 74, 144, 286 and 786 here: k120, k132–k134), PLINECONVERTMODE's arcs and DELOBJ's keeping
-of the spline; a spline-fit polyline at `Select spline:`, which AutoCAD converts (k94; there is no
-PEDIT Spline), and Group there; the look of the prompts on the desktop (here the spline glows with
+of the spline; Group at `Select spline:`; what it says of a Fit polyline there (**unverified**:
+`Object selected is not a spline.` here); the look of the prompts on the desktop (here the spline glows with
 its fit points' or vertices' grips, Move's and Weight's hot, a dashed line from the point to the
 cursor: **unverified**). **Unverified:** Close / Open of a fit spline on knots of its own (its knots
 dropped here, chord ones worked out), Add and Delete on a closed one's own knots, Delete on a
@@ -1484,7 +1485,7 @@ again in silence), Next and Previous at the ends of a closed one (staying put, a
 ### `PEDIT` / `PE` · es `EDITPOL` / `PE`
 
 **Implemented:** as AutoCAD 2027's console asks it and leaves the polyline (probes
-pedit/p01–p146, traced, MPDUMP, en and es; not transparent). `Select polyline or [Multiple]:` (es
+pedit/p01–p199, traced, MPDUMP, en and es; not transparent). `Select polyline or [Multiple]:` (es
 `Designe polilínea o [Múltiple]:`), a pick or a mode typed there (Window, Last, Crossing, BOX, ALL,
 Fence, WPolygon, CPolygon), a miss and Enter asked again in silence and Escape the only way out
 (p03, p38), a word `*Invalid selection*` and `Expects a point or
@@ -1500,11 +1501,13 @@ rising one in the upright plane holding it, its normal Z × the line (p97), an a
 counter-clockwise (p06), a spline after `Specify a precision <10>:` (0 to 99, `Requires an integer
 between 0 and 99.`) as SPLINEDIT's convert to Polyline leaves it, a 3D polyline where it lies in
 no plane (p07, p99); anything else is said and asked again (p96). Then `Enter an option
-[Close/Join/Width/Edit vertex/Ltype gen/Reverse/Undo]:` (es `Indique una opción
-[Cerrar/Juntar/Grosor/Editar vértices/generarTlínea/Invertir/desHacer]:`), Open in Close's place
-on a closed one, both answering either way, with the hidden X and EXit (es `SA`, `SAlir`); a 3D
-polyline's `[Close/Join/Edit vertex/Reverse/Undo]:` (es `[Cerrar/Unir/…]`); a word `Invalid option
-keyword.`, Enter ending (p01, p02, p09, p10). **Close** draws the closing segment straight, or an
+[Close/Join/Width/Edit vertex/Fit/Spline/Decurve/Ltype gen/Reverse/Undo]:` (es `Indique una opción
+[Cerrar/Juntar/Grosor/Editar vértices/curVar/Spline/anularcuRVatura/generarTlínea/Invertir/desHacer]:`),
+Open in Close's place on a closed one, both answering either way, with the hidden X, EXit (es `SA`,
+`SAlir`) and Defit (es `ELiminarcurva`), Decurve's twin (p198); a 3D polyline's `[Close/Join/Edit
+vertex/Spline curve/Decurve/Reverse/Undo]:` (es `[Cerrar/Unir/Editar vértices/curva
+Spline/anularcuRVatura/Invertir/desHacer]`, the keyword `Spline` in both); a word `Invalid option
+keyword.`, Enter ending (p01, p02, p09, p10, p51, p55). **Close** draws the closing segment straight, or an
 arc tangent to the last segment where that is an arc (p02, p78, p130, p133); **Open** drops it.
 **Join** on an open polyline asks `Select objects:` and grows it as JOIN grows a polyline source —
 lines, arcs and open polylines meeting its ends in its plane, their widths JOIN's —, saying `3
@@ -1546,8 +1549,9 @@ read newest first (p12, p14, p93), its lines, arcs and splines asked about with 
 Arcs and Splines to polylines [Yes/No]? <Y>` (es `¿Convertir líneas, arcos y splines en
 polilíneas? [Sí/No]? <S>`) and a spline's `Specify a precision for spline conversion <10>:`
 (p12, p114), No asking for a polyline again (p41); then `Enter an option
-[Close/Open/Join/Width/Ltype gen/Reverse/Undo]:`, `[Close/Open/Reverse/Undo]:` with a 3D polyline
-in the set (p39), each option done to them all (p95). Its Join says `Join Type = Extend` (es
+[Close/Open/Join/Width/Fit/Spline/Decurve/Ltype gen/Reverse/Undo]:`, `[Close/Open/Spline
+curve/Decurve/Reverse/Undo]:` with a 3D polyline in the set (p39, p196, p197), each option done to
+them all (p95), Spline curve to its 2D polylines too. Its Join says `Join Type = Extend` (es
 `Tipo de junta = Alargar`) and asks `Enter fuzz distance or [Jointype] <0.0000>:` (es `Indique la
 distancia de aproximación o [Tipo de junta]`; `Requires numeric distance, two points, or option
 keyword.`), Jointype's `Enter join type [Extend/Add/Both] <Extend>:` (es
@@ -1560,19 +1564,69 @@ other two ends — the rule twenty probes give, no help states it (p83, p105, p1
 p134–p146); Both, Extend where it can, else Add (p15, p85, p91, p93); `1 segments added to
 polyline`, as AutoCAD writes it.
 
-**Missing:** Fit, Spline and Decurve, a 2D polyline's and a 3D one's (`Spline curve`), and the
-spline-fit polylines they make: `docs/next-pedit-spline.md`, with what the console showed (p50–p62);
-PEDITACCEPT (the question left out, p06) and PLINECONVERTMODE's arcs (p08); a spline's vertices
+**Fit** lays two arcs between each pair of vertices, the curve through them all, tangent at each:
+at an inner vertex `a/|a|² · sin(turn after) + b/|b|² · sin(turn before)`, `a` and `b` the chords
+in and out and each turn the angle between the chords at the next vertex on (1 where there is
+none), so a straight run keeps its direction; at an open end the circle's through it and the next
+two; Edit vertex's Tangent where one is given. Each pair of arcs meets at the incentre of the
+triangle the tangents make with the chord where they lie either side of it, and where they lie on
+one side so that `r₁ sin α = r₂ sin β`; a tangent along the chord leaves the segment straight. No
+help states either rule: they reproduce the 47 fitted polylines of the probes, closed ones and
+given tangents among them, to the last digit (p51, p59, p147–p151, p184–p186; `geometry/arcFit.ts`).
+The frame's own arcs are dropped (p151); a segment's widths run on through its joint by length
+(p151, p156). The arcs are the polyline's, as AutoCAD keeps its curve-fit vertices: Edit vertex's
+Move, Insert and Straighten change the frame and leave them (Insert's and Straighten's segment
+straight, p152, p153, p155), while a Tangent given refits it (p150), as Close and Open do (p166)
+and STRETCH and a grip (p176); Reverse turns them round (p166), Break leaves the piece from the
+start a polyline of the curve's vertices and the rest fitted (p154). **Spline** lays SPLINESEGS
+points a knot span on the uniform B-spline its vertices frame, SPLINETYPE's quadratic or cubic (5,
+6), clamped to an open frame's ends, periodic round a closed one from where its first span begins
+(p52–p56, p160); a frame of three, cubic, is the Bézier on its middle vertex twice (p158, p190); of
+two, left as it is (p190); with a negative SPLINESEGS, Fit's arcs through |SPLINESEGS| points a span
+(p54, p162, p198); its width runs by length from the frame's first to its last (p60, p157, p163).
+Its curve follows the frame through every edit: Move, Insert, Straighten (p58, p157, p159),
+STRETCH of a frame vertex (p187); Break leaves the piece from the start its frame, unfitted (p158).
+SPLINETYPE and SPLINESEGS are saved in the drawing (OPEN, p181), typed as variables: SPLINETYPE
+5 or 6, SPLINESEGS any integer but 0 (`Cannot set SPLINESEGS to that value.`, `*Invalid*`;
+`Requires an integer between -32768 and 32767.` past it, p161, p199); a polyline keeps the
+SPLINESEGS it was fitted at. A 3D polyline's **Spline curve** is the same in space, straight runs of
+|SPLINESEGS| a span (p55, p164, p198). **Decurve** (and Defit) leaves the frame, every segment
+straight, fitted or not (p50–p52, p182, p198). Tangents stay on the vertices through Spline and
+Decurve for a Fit later in the run (p188, p192) and go as PEDIT ends on one left unfitted (p28).
+Edit vertex walks the frame; Width, Join (`0 segments added to polyline`, else the frame grown and
+decurved, p60, p168, p183), Ltype gen and Undo (p62, p167) as on any polyline. Of a fitted one,
+OFFSET, TRIM, BREAK and EXPLODE make polylines, lines and arcs of its curve (p169–p174), its own
+vertices cutting nothing; FILLET and CHAMFER refuse it picked second, `Fillet requires 2 lines, arcs,
+or circles.` and `Chamfer requires 2 lines.` (p194, p195); MOVE, MIRROR and the rest carry its
+arcs (p191). The curve is `polylineCurve`'s: drawn, picked, snapped and measured; the grips are the
+frame's vertices alone.
+
+**Missing:** PEDITACCEPT (the question left out, p06) and PLINECONVERTMODE's arcs (p08); a spline's vertices
 as SPLINEDIT's convert to Polyline makes them, far finer than AutoCAD's on a fit spline (31 at
 precision 10, p07; SPLINEDIT's entry); Multiple's prompt when the set is all 3D polylines (the 2D
 one, p40, effect unprobed); the meshes; the X's look on the desktop (**unverified**: a red cross
 here); the widths of Close's segment, AutoCAD's the last vertex's, which nothing stores here
 (the last segment's end width here, PLINE's and Width's alike, p34, p78), and of an open
 polyline's last vertex, which Edit vertex's Width sets and nothing here keeps (p79); the bulge
-Straighten leaves on an open polyline's last vertex, which a later Close would use (p131).
+Straighten leaves on an open polyline's last vertex, which a later Close would use (p131);
+Multiple's Spanish listing, `[…/curVar/SPline/…]` and the 3D one's `curvaB`, and its hidden
+`Eliminarcurva` (p196, p197; here Spline, curva Spline and ELiminarcurva, as the single prompts
+spell them: a keyword's label is one per command); FILLET's and CHAMFER's Polyline option on a
+fitted polyline, which AutoCAD runs over its curve's vertices, the result unprobed (p194, p195); a
+fitted polyline's grips on the desktop and its palette (the 2D one's Fit/Smooth, ax26res.dll's
+`None;Curve fit;Quadratic;Cubic`, es `Ninguna;Ajuste de curva;Cuadrática;Cúbica`, not shown; the
+3D one's reads None, properties.md); LIST of a heavy polyline, its VERTEX entries `(Spline control
+point)`, `(Inserted by spline fitting)`, `(Inserted by curve fitting)` and its `Open spline`
+(p177), for whoever builds LIST; the small arcs OFFSET rounds some outer corners of a spline-fit
+one's copy with (p169); SPLFRAME, which 2027 no longer ties to spline-fit polylines (its help:
+helixes and meshes; plotted with it on, the frame is not drawn, p193).
 **Unverified:** Enter at Width (back at the main prompt here), Multiple's set with nothing in it,
 a pick's order in Multiple's set, where Jointype is kept, Spanish `<Ambos>`, Enter at a fuzz
-distance never given (0 here), Extend of an arc end segment (never here).
+distance never given (0 here), Extend of an arc end segment (never here); a tangent where both
+neighbouring runs are straight (the circle's here), a tangent turned by Reverse (a half turn here),
+a Break whose piece from the start is empty (the rest keeps its fit here), EXTEND of a fitted
+polyline (its curve, as TRIM), JOIN of one (its frame, as PEDIT's Join), where a closed frame of
+three cubic begins, where the snaps find its curve's added vertices (End here).
 
 ### `MATCHPROP` / `MA` / `PAINTER` · es `IGUALARPROP` / `IP` / `COPIARPROP`
 

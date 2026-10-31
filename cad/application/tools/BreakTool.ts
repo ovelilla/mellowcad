@@ -25,6 +25,7 @@ import {
   entityElevation,
   readsInPlan,
   worldToEntity,
+  polylineCurve,
 } from "../../domain/entities"
 import { normalizeAngle } from "../../geometry/primitives"
 import {
@@ -657,14 +658,18 @@ function computeBreak(
       return breakArc(entity, first, second)
     case "circle":
       return breakCircle(entity, first, second)
-    case "polyline":
+    case "polyline": {
+      // A fitted one is broken as its curve, a polyline fitted no more
+      // (pedit/p172).
+      const curve = polylineCurve(entity)
       return readsInPlan(entity)
-        ? breakPolyline(entity, first, second)
+        ? breakPolyline(curve, first, second)
         : breakPolyline(
-            entity,
+            curve,
             inPlaneOf(entity, first, view),
             inPlaneOf(entity, second, view)
           )
+    }
     case "ellipse":
       return breakEllipse(entity, first, second)
     case "polyline3d":

@@ -18,7 +18,10 @@ export type {
   SplineEntity,
   PolylineEntity,
   PolylineWidth,
+  PolylineFit,
+  FitArcs,
   Polyline3dEntity,
+  Polyline3dFit,
   TextJustify,
   TextEntity,
   MTextAttachment,
@@ -230,6 +233,21 @@ export {
   polyline3dParamAt,
   polyline3dSpan,
 } from "./polylines3d"
+export type { SplineFitKind } from "./polylineFits"
+export {
+  curveIndexOf,
+  entityShape,
+  polyline3dCurve,
+  polyline3dFrame,
+  polyline3dSplined,
+  polylineCurve,
+  polylineDecurved,
+  polylineFitted,
+  polylineFrame,
+  polylineRefitted,
+  polylineSplined,
+  withFitParts,
+} from "./polylineFits"
 export type { PolylineOutline } from "./polylineOutline"
 export { polylineOutline } from "./polylineOutline"
 

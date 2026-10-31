@@ -1,0 +1,35 @@
+_ZOOM
+_W
+-20,-20
+60,40
+(setvar "SPLINESEGS" 0)
+(getvar "SPLINESEGS")
+(setvar "SPLINESEGS" -1)
+(setvar "SPLINESEGS" 32767)
+(setvar "SPLINESEGS" -32768)
+(getvar "SPLINESEGS")
+(setvar "SPLINETYPE" 4)
+(setvar "SPLINETYPE" 7)
+(getvar "SPLINETYPE")
+_SPLINESEGS
+1
+_PLINE
+0,0
+10,10
+20,0
+30,10
+
+_PEDIT
+_L
+_S
+
+MPDUMP
+-
+_SPLINESEGS
+0
+_PEDIT
+_L
+_S
+
+MPDUMP
+-

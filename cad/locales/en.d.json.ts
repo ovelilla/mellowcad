@@ -756,6 +756,11 @@ declare const source: {
         "Straighten": string
         "Tangent": string
         "Go": string
+        "Fit": string
+        "Spline": string
+        "Spline curve": string
+        "Decurve": string
+        "Defit": string
       }
       "RECTANG": {
         "Chamfer": string
@@ -1683,6 +1688,7 @@ declare const source: {
       "selectDimension": string
       "enterValueOr": string
       "selectSpline": string
+      "selectSplineFitPolyline": string
       "splineditOption": string
       "splineditOptionClosed": string
       "enterFitDataOption": string
@@ -1847,6 +1853,9 @@ declare const source: {
       "explodeLostWidth": string
       "explodeCannot": string
       "noneFound": string
+      "noneFoundToConvert": string
+      "onlySplineFittedPolylines": string
+      "unableToConvertSelectedObject": string
       "currentUcsName": string
       "listedUcsName": string
       "savedUcsHeader": string
@@ -2235,6 +2244,7 @@ declare const source: {
         "Ltype gen": string
         "OFF": string
         "Jointype": string
+        "Spline curve": string
       }
       "HATCH": {
         "Select objects": string

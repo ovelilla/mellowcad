@@ -173,7 +173,12 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Regen",
     "Straighten",
     "Tangent",
-    "Go"
+    "Go",
+    "Fit",
+    "Spline",
+    "Spline curve",
+    "Decurve",
+    "Defit"
   ],
   "RECTANG": [
     "Chamfer",

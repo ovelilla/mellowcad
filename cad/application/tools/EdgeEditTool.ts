@@ -56,6 +56,7 @@ import {
   rotateEntity,
   textCorners,
   withNormal,
+  polylineCurve,
 } from "../../domain/entities"
 import { LayerId } from "../../domain/layers"
 import {
@@ -1923,10 +1924,14 @@ function planTrim(
       return planTrimCircle(target, click, others)
     case "arc":
       return planTrimArc(target, click, others)
-    case "polyline":
-      return own
-        ? planTrimPolyline(target, click, others)
-        : planTrimPolylinePath(target, click, others)
+    case "polyline": {
+      // A fitted one is cut as its curve, a polyline fitted no more, its
+      // vertices cutting nothing (pedit/p170, p171).
+      const curve = polylineCurve(target)
+      return own && !target.fit
+        ? planTrimPolyline(curve, click, others)
+        : planTrimPolylinePath(curve, click, others)
+    }
     case "ellipse":
       return planTrimEllipse(target, click, others)
     case "spline":
@@ -2005,7 +2010,13 @@ function planExtend(
     case "circle":
       return null // a closed circle has no endpoint to extend
     case "polyline":
-      return planExtendPolyline(target, click, others, own)
+      // As TRIM, its curve (**unverified**).
+      return planExtendPolyline(
+        polylineCurve(target),
+        click,
+        others,
+        own && !target.fit
+      )
     case "ellipse":
       return planExtendEllipse(target, click, others)
     case "spline":

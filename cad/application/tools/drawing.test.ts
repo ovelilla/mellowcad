@@ -2281,7 +2281,7 @@ describe("SPLINE", () => {
 
     cad.command("SPLINE")
     expect(cad.state().commandLine.prompt).toBe(
-      "SPLINE Specify first point or [Method/Knots]:"
+      "SPLINE Specify first point or [Method/Knots/Object]:"
     )
     cad.option("Knots")
     expect(cad.state().commandLine.prompt).toBe(
@@ -2304,19 +2304,19 @@ describe("SPLINE", () => {
     expect(cad.commandLog()).toEqual([
       "SPLINE",
       "Current settings: Method=Fit   Knots=Chord",
-      "Specify first point or [Method/Knots]: K",
+      "Specify first point or [Method/Knots/Object]: K",
       "Enter knot parameterization [Chord/Square root/Uniform] <Chord>: S",
       "Current settings: Method=Fit   Knots=Square root",
-      "Specify first point or [Method/Knots]: M",
+      "Specify first point or [Method/Knots/Object]: M",
       "Enter spline creation method [Fit/CV] <Fit>: CV",
       "Current settings: Method=CV   Degree=3",
-      "Specify first point or [Method/Degree]: D",
+      "Specify first point or [Method/Degree/Object]: D",
       "Enter degree of spline <3>: 2",
       "Current settings: Method=CV   Degree=2",
-      "Specify first point or [Method/Degree]: M",
+      "Specify first point or [Method/Degree/Object]: M",
       "Enter spline creation method [Fit/CV] <CV>: F",
       "Current settings: Method=Fit   Knots=Square root",
-      "Specify first point or [Method/Knots]:",
+      "Specify first point or [Method/Knots/Object]:",
       "Enter next point or [start Tangency]:",
       "Enter next point or [end Tangency/Undo]:",
       "Enter next point or [end Tangency/Undo/Close]:",
@@ -2506,12 +2506,12 @@ describe("SPLINE", () => {
     const CASES = [
       [
         undefined,
-        "SPLINE Specify first point or [Method/Knots]:",
+        "SPLINE Specify first point or [Method/Knots/Object]:",
         "Point or option keyword required.",
       ],
       [
         es,
-        "SPLINE Precise primer punto o [Método/Nudos]:",
+        "SPLINE Precise primer punto o [Método/Nudos/Objeto]:",
         "Se requiere un punto o una opción.",
       ],
     ] as const
@@ -2651,7 +2651,7 @@ describe("SPLINE", () => {
           "Current settings: Method=CV   Degree=3",
         ])
         expect(cad.state().commandLine.prompt).toBe(
-          "SPLINE Specify first point or [Method/Degree]:"
+          "SPLINE Specify first point or [Method/Degree/Object]:"
         )
       }
       const spanish = answer(createHarness({ locale: es }), "SPLINE", "M")
@@ -2685,7 +2685,7 @@ describe("SPLINE", () => {
       expect(cv.commandLog()).toEqual([
         "_spline",
         "Current settings: Method=Fit   Knots=Chord",
-        "Specify first point or [Method/Knots]: _m Enter spline creation method [Fit/CV] <Fit>: _cv",
+        "Specify first point or [Method/Knots/Object]: _m Enter spline creation method [Fit/CV] <Fit>: _cv",
         "Current settings: Method=CV   Degree=3",
       ])
       answer(cv, "0,0", "10,10", "20,0", "")
@@ -2697,9 +2697,9 @@ describe("SPLINE", () => {
       expect(cv.commandLog().slice(from, from + 5)).toEqual([
         "_spline",
         "Current settings: Method=CV   Degree=3",
-        "Specify first point or [Method/Degree]: _m Enter spline creation method [Fit/CV] <CV>: _fit",
+        "Specify first point or [Method/Degree/Object]: _m Enter spline creation method [Fit/CV] <CV>: _fit",
         "Current settings: Method=Fit   Knots=Chord",
-        "Specify first point or [Method/Knots]: 0,0",
+        "Specify first point or [Method/Knots/Object]: 0,0",
       ])
       expect((cv.latest() as SplineEntity).method).toBe("fit")
     })

@@ -704,7 +704,7 @@ describe("Spanish AutoCAD's command language", () => {
     }
     cad.command("SPLINE")
     expect(cad.state().commandLine.prompt).toBe(
-      "SPLINE Precise primer punto o [Método/Nudos]:"
+      "SPLINE Precise primer punto o [Método/Nudos/Objeto]:"
     )
     answer("N")
     expect(cad.state().commandLine.prompt).toBe(
@@ -745,7 +745,7 @@ describe("Spanish AutoCAD's command language", () => {
       "Parámetros actuales: Método=VC   Grado=3"
     )
     expect(cad.state().commandLine.prompt).toBe(
-      "SPLINE Precise primer punto o [Método/Grado]:"
+      "SPLINE Precise primer punto o [Método/Grado/Objeto]:"
     )
     answer("G")
     expect(cad.state().commandLine.prompt).toBe(

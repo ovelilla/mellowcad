@@ -218,6 +218,47 @@ export interface PolylineEntity extends BaseEntity, Thick {
    * along its whole length, not anew on each segment. Absent means off.
    */
   readonly linetypeGeneration?: true
+  /**
+   * PEDIT's Fit or Spline (DXF 70 flags 2 and 4, 75): `vertices` stay the
+   * frame Edit vertex walks and the grips hold, the curve is
+   * `polylineCurve`'s. Absent, the polyline is as drawn.
+   */
+  readonly fit?: PolylineFit
+}
+
+/**
+ * How a polyline is fitted. **Fit** keeps each segment's two arcs as it laid
+ * them — `arcs[i]` segment `i`'s, null where straight —, as AutoCAD keeps
+ * its curve-fit vertices (DXF 70 flag 1 on the VERTEX) through a vertex
+ * moved, inserted or straightened, which refits nothing (pedit/p152, p153,
+ * p155); its frame's bulges are 0. **Spline** keeps what was chosen
+ * (SPLINETYPE, SPLINESEGS) and its curve is derived from the frame, which
+ * AutoCAD refits at every edit (p58, p157, p159). `tangents` are Edit
+ * vertex's (DXF 50), one per vertex, null where none is given.
+ */
+export type PolylineFit =
+  | {
+      readonly kind: "curve"
+      readonly arcs: readonly (FitArcs | null)[]
+      readonly tangents?: readonly (number | null)[]
+    }
+  | {
+      readonly kind: "quadratic" | "cubic"
+      /** SPLINESEGS when it was fitted: points per span, arcs through them when negative. */
+      readonly segments: number
+      readonly tangents?: readonly (number | null)[]
+    }
+
+/** A Fit segment's arcs: to `joint` with the first bulge, on to the next vertex with the second. */
+export interface FitArcs {
+  readonly joint: Vec2
+  readonly bulges: readonly [first: number, second: number]
+}
+
+/** A 3D polyline's PEDIT Spline curve: straight runs, |SPLINESEGS| per span (pedit/p55, p198). */
+export interface Polyline3dFit {
+  readonly kind: "quadratic" | "cubic"
+  readonly segments: number
 }
 
 /**
@@ -231,6 +272,8 @@ export interface Polyline3dEntity extends BaseEntity {
   readonly type: "polyline3d"
   readonly vertices: readonly Vec3[]
   readonly closed: boolean
+  /** PEDIT's Spline curve: `vertices` the frame, the curve `polyline3dCurve`'s. */
+  readonly fit?: Polyline3dFit
 }
 
 /** A polyline segment's starting and ending width, never negative. */

@@ -19,6 +19,7 @@ import {
   lineStartZ,
   planeAxes,
   polyline3dSegments,
+  entityShape,
 } from "../../domain/entities"
 import { Viewport } from "../Viewport"
 import { cursorInPlane, cursorOnEntityPlane } from "../viewPick"
@@ -85,7 +86,9 @@ function snapEntities(document: DocumentReader): Entity[] {
       entity.type === "insert" ? insertFlatGeometry(entity, blocks) : [entity]
     for (const piece of drawn) {
       if (piece.type !== "polyline3d") {
-        entities.push(piece)
+        // A fitted polyline snaps along its curve, at the vertices fitting
+        // added too (**unverified**: they are its own vertices in AutoCAD).
+        entities.push(entityShape(piece))
         continue
       }
       for (const [a, b] of polyline3dSegments(piece)) {

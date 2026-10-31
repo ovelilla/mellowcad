@@ -2968,6 +2968,8 @@ export interface Polyline3dEntity extends BaseEntity {
     readonly type: "polyline3d";
     readonly vertices: readonly Vec3[];
     readonly closed: boolean;
+    /** PEDIT's Spline curve: `vertices` the frame, the curve `polyline3dCurve`'s. */
+    readonly fit?: Polyline3dFit;
 }
 
 // domain/entityTypes.ts
@@ -3178,6 +3180,12 @@ export interface PolylineEntity extends BaseEntity, Thick {
      * along its whole length, not anew on each segment. Absent means off.
      */
     readonly linetypeGeneration?: true;
+    /**
+     * PEDIT's Fit or Spline (DXF 70 flags 2 and 4, 75): `vertices` stay the
+     * frame Edit vertex walks and the grips hold, the curve is
+     * `polylineCurve`'s. Absent, the polyline is as drawn.
+     */
+    readonly fit?: PolylineFit;
 }
 
 // domain/entityTypes.ts
@@ -3312,6 +3320,28 @@ export type LineSpacingStyle = "atLeast" | "exactly";
 
 // domain/entityTypes.ts
 /**
+ * How a polyline is fitted. **Fit** keeps each segment's two arcs as it laid
+ * them — `arcs[i]` segment `i`'s, null where straight —, as AutoCAD keeps
+ * its curve-fit vertices (DXF 70 flag 1 on the VERTEX) through a vertex
+ * moved, inserted or straightened, which refits nothing (pedit/p152, p153,
+ * p155); its frame's bulges are 0. **Spline** keeps what was chosen
+ * (SPLINETYPE, SPLINESEGS) and its curve is derived from the frame, which
+ * AutoCAD refits at every edit (p58, p157, p159). `tangents` are Edit
+ * vertex's (DXF 50), one per vertex, null where none is given.
+ */
+export type PolylineFit = {
+    readonly kind: "curve";
+    readonly arcs: readonly (FitArcs | null)[];
+    readonly tangents?: readonly (number | null)[];
+} | {
+    readonly kind: "quadratic" | "cubic";
+    /** SPLINESEGS when it was fitted: points per span, arcs through them when negative. */
+    readonly segments: number;
+    readonly tangents?: readonly (number | null)[];
+};
+
+// domain/entityTypes.ts
+/**
  * How a pure function reaches the block table, which lives on the document.
  * Every helper that has to look inside a block reference takes one; without it
  * an insert degrades to its insertion point rather than pretending to be empty.
@@ -3423,6 +3453,13 @@ export type MTextAttachment = "tl" | "tc" | "tr" | "ml" | "mc" | "mr" | "bl" | "
 export type TextJustify = "left" | "center" | "right" | "middle" | "tl" | "tc" | "tr" | "ml" | "mc" | "mr" | "bl" | "bc" | "br";
 
 // domain/entityTypes.ts
+/** A 3D polyline's PEDIT Spline curve: straight runs, |SPLINESEGS| per span (pedit/p55, p198). */
+export interface Polyline3dFit {
+    readonly kind: "quadratic" | "cubic";
+    readonly segments: number;
+}
+
+// domain/entityTypes.ts
 /** A 3D segment: it starts at {@link BaseEntity.elevation} and rises by {@link deltaZ}. */
 export interface LineEntity extends BaseEntity, Thick {
     readonly type: "line";
@@ -3435,6 +3472,16 @@ export interface LineEntity extends BaseEntity, Thick {
 // domain/entityTypes.ts
 /** A block definition's name, which is also its identity, as in AutoCAD. */
 export type BlockId = string;
+
+// domain/entityTypes.ts
+/** A Fit segment's arcs: to `joint` with the first bulge, on to the next vertex with the second. */
+export interface FitArcs {
+    readonly joint: Vec2;
+    readonly bulges: readonly [
+        first: number,
+        second: number
+    ];
+}
 
 // domain/entityTypes.ts
 /** A polyline segment's starting and ending width, never negative. */
@@ -3652,6 +3699,10 @@ export interface DocumentSettings {
     readonly polylineWidth: number;
     /** FILLETRAD: the radius FILLET rounds with. */
     readonly filletRadius: number;
+    /** SPLINETYPE: PEDIT Spline's curve, 5 quadratic or 6 cubic. */
+    readonly splineType: 5 | 6;
+    /** SPLINESEGS: PEDIT Spline's points per span, arcs through them when negative, never 0. */
+    readonly splineSegments: number;
     /** CHAMFERA: CHAMFER's first distance. */
     readonly chamferDistance1: number;
     /** CHAMFERB: CHAMFER's second distance. */

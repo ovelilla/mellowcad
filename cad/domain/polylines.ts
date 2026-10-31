@@ -13,6 +13,12 @@ import {
 } from "../geometry/bulgeArcs"
 import { PolylineEntity, PolylineWidth } from "./entityTypes"
 import { createPolyline } from "./entityFactories"
+import {
+  curveIndexOf,
+  polylineCurve,
+  polylineRefitted,
+  withFitParts,
+} from "./polylineFits"
 
 /** The bulge of the segment starting at vertex `index` (0 = straight). */
 export function polylineBulge(poly: PolylineEntity, index: number): number {
@@ -78,7 +84,9 @@ export function withPolylineClosed(
     bulges.pop()
     widths.pop()
   }
-  return reshaped({ ...poly, closed }, poly.vertices, bulges, widths)
+  return polylineRefitted(
+    reshaped({ ...poly, closed }, poly.vertices, bulges, widths)
+  )
 }
 
 /** The width segment `index` has a fraction `f` along it. */
@@ -114,6 +122,11 @@ export type PolylineSegmentGeometry =
 export function polylineSegmentGeometries(
   poly: PolylineEntity
 ): PolylineSegmentGeometry[] {
+  return frameGeometries(polylineCurve(poly))
+}
+
+/** The segments of `poly`'s own vertices and bulges, fitted or not: its frame's. */
+function frameGeometries(poly: PolylineEntity): PolylineSegmentGeometry[] {
   return segmentGeometries(polylineSegments(poly), poly.bulges)
 }
 
@@ -217,7 +230,7 @@ export function fractionAlongSegment(
  * segment's index plus how far along it, so a vertex's is its index.
  */
 export function polylineParamAt(poly: PolylineEntity, point: Vec2): number {
-  const i = nearestPolylineSegment(poly, point)
+  const i = nearestPolylineSegment(polylineCurve(poly), point)
   return i + fractionAlongSegment(polylineSegmentGeometries(poly)[i], point)
 }
 
@@ -237,7 +250,15 @@ export function polylineSpan(
   from: number,
   to: number
 ): { vertices: Vec2[]; bulges: number[]; widths: PolylineWidth[] } {
-  const segments = polylineSegmentGeometries(poly)
+  return frameSpan(polylineCurve(poly), from, to)
+}
+
+function frameSpan(
+  poly: PolylineEntity,
+  from: number,
+  to: number
+): { vertices: Vec2[]; bulges: number[]; widths: PolylineWidth[] } {
+  const segments = frameGeometries(poly)
   const count = segments.length
   const segmentAt = (i: number) => segments[i % count]
   const first = Math.min(Math.floor(from + SPAN_EPS), count - 1)
@@ -309,7 +330,8 @@ export function polylineLength(poly: PolylineEntity): number {
  * (positive when the arc bows outward, negative when it bows in), then made
  * positive. Straight closed polylines reduce to the plain polygon area.
  */
-export function polylineArea(poly: PolylineEntity): number {
+export function polylineArea(fitted: PolylineEntity): number {
+  const poly = polylineCurve(fitted)
   const v = poly.vertices
   const n = v.length
   if (n < 2) return 0
@@ -368,14 +390,15 @@ export function stretchPolylineVertices(
     const to = moves.get(i)
     return to ? { x: to.x, y: to.y } : v
   })
-  const bulges = polylineSegmentGeometries(poly).map((segment, i) => {
+  const bulges = frameGeometries(poly).map((segment, i) => {
     if (segment.kind === "line") return 0
     const j = (i + 1) % n
     if (moves.has(i) === moves.has(j)) return segment.bulge
     const through = pointAlongSegment(segment, 0.5)
     return arcThroughBulge(vertices[i], through, vertices[j]) ?? 0
   })
-  return reshaped(poly, vertices, bulges, poly.widths)
+  // A Fit is fitted again (STRETCH, pedit/p176); a Spline's curve follows.
+  return polylineRefitted(reshaped(poly, vertices, bulges, poly.widths))
 }
 
 /**
@@ -537,7 +560,7 @@ export function polylineReversed(poly: PolylineEntity): PolylineEntity {
   // Segment k of the reversed run is segment n-2-k turned round; a closed
   // one's closing segment stays the closing segment.
   const from = (k: number) => (k <= n - 2 ? n - 2 - k : k)
-  return reshaped(
+  const reversed = reshaped(
     poly,
     [...poly.vertices].reverse(),
     widths.map((_, k) => -polylineBulge(poly, from(k))),
@@ -546,6 +569,26 @@ export function polylineReversed(poly: PolylineEntity): PolylineEntity {
       return [end, start] as const
     })
   )
+  const fit = poly.fit
+  if (!fit) return reversed
+  // A Fit's arcs run back the other way (pedit/p166), each tangent turned
+  // round (**unverified**).
+  const arcs =
+    fit.kind === "curve"
+      ? widths.map((_, k) => {
+          const arc = fit.arcs[from(k)]
+          return arc
+            ? {
+                joint: arc.joint,
+                bulges: [-arc.bulges[1], -arc.bulges[0]] as const,
+              }
+            : null
+        })
+      : null
+  const tangents = fit.tangents
+    ?.map((t) => (t === null ? null : normalizeAngle(t + Math.PI)))
+    .reverse()
+  return withFitParts(reversed, arcs, tangents)
 }
 
 /**
@@ -578,7 +621,10 @@ export function polylineClosedByPedit(
   )
   const end = widths[last]?.[1] ?? 0
   widths.push([end, end])
-  return reshaped({ ...poly, closed: true }, poly.vertices, bulges, widths)
+  // A Fit is fitted again closed (pedit/p166).
+  return polylineRefitted(
+    reshaped({ ...poly, closed: true }, poly.vertices, bulges, widths)
+  )
 }
 
 /**
@@ -600,7 +646,15 @@ export function polylineVertexInserted(
   const end = (widths[index] ?? widths[widths.length - 1])?.[1] ?? 0
   bulges.splice(index + 1, 0, 0)
   widths.splice(index + 1, 0, [end, end])
-  return reshaped(poly, vertices, bulges, widths)
+  const inserted = reshaped(poly, vertices, bulges, widths)
+  if (!poly.fit) return inserted
+  // A Fit's segment split goes straight, both halves, the rest left as they
+  // were (pedit/p153); a Spline's curve follows its frame (p157).
+  const arcs = poly.fit.kind === "curve" ? poly.fit.arcs.slice() : null
+  arcs?.splice(index, 1, null, null)
+  const tangents = poly.fit.tangents?.slice()
+  tangents?.splice(index + 1, 0, null)
+  return withFitParts(inserted, arcs, tangents)
 }
 
 /**
@@ -624,7 +678,13 @@ export function polylineStraightened(
   const gap = Math.max(hi - lo - 1, 0)
   bulges.splice(lo, gap + 1, 0)
   widths.splice(lo + 1, gap)
-  return reshaped(poly, vertices, bulges, widths)
+  const straightened = reshaped(poly, vertices, bulges, widths)
+  if (!poly.fit) return straightened
+  // A Fit's arcs between go, the rest stay (pedit/p155).
+  const arcs = poly.fit.kind === "curve" ? poly.fit.arcs.slice() : null
+  arcs?.splice(lo, gap + 1, null)
+  const tangents = poly.fit.tangents?.filter((_, i) => i <= lo || i >= hi)
+  return withFitParts(straightened, arcs, tangents)
 }
 
 /**
@@ -644,17 +704,43 @@ export function polylineBrokenAt(
   const hi = Math.max(from, to)
   const end = polylineSegments(poly).length
   if (hi === lo ? lo === 0 || lo >= end : lo === 0 && hi >= end) return null
+  const fit = poly.fit
   const piece = (a: number, b: number): PolylineEntity | null => {
     if (b <= a) return null
-    const span = polylineSpan(poly, a, b)
-    return reshaped(
+    const span = frameSpan(poly, a, b)
+    const cut = reshaped(
       { ...poly, closed: false },
       span.vertices,
       span.bulges,
       span.widths
     )
+    if (!fit) return cut
+    const arcs = fit.kind === "curve" ? fit.arcs.slice(a, b) : null
+    const tangents = fit.tangents?.slice(a, b + 1)
+    return withFitParts(cut, arcs, tangents)
   }
-  return { first: piece(0, lo), second: piece(hi, end) }
+  // The piece from the start is no longer fitted: a Fit's keeps its arcs as
+  // vertices of its own, a Spline's is its frame (pedit/p154, p158); the
+  // other stays fitted.
+  const unfitted = (a: number, b: number): PolylineEntity | null => {
+    if (b <= a) return null
+    if (fit?.kind !== "curve") {
+      const frame = piece(a, b)
+      if (!frame) return null
+      const copy: Record<string, unknown> = { ...frame }
+      delete copy.fit
+      return copy as unknown as PolylineEntity
+    }
+    const curve = polylineCurve(poly)
+    const span = frameSpan(curve, curveIndexOf(poly, a), curveIndexOf(poly, b))
+    return reshaped(
+      { ...curve, closed: false },
+      span.vertices,
+      span.bulges,
+      span.widths
+    )
+  }
+  return { first: unfitted(0, lo), second: piece(hi, end) }
 }
 
 /** Edit vertex's Width: the segment after vertex `index` that wide; none after an open one's last. */

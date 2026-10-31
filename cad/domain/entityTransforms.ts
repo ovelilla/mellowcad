@@ -54,6 +54,7 @@ import {
 } from "./dimensions"
 import { arcEndPoint, arcStartPoint } from "./entityMeasures"
 import { carryOverrides } from "./entityOverrides"
+import { mappedFit, polylineRefitted } from "./polylineFits"
 import {
   entityAxes,
   entityElevation,
@@ -295,6 +296,7 @@ function translatePlanar(entity: Entity, delta: Vec2): Entity {
       return {
         ...entity,
         vertices: entity.vertices.map((v) => V.add(v, delta)),
+        ...mappedFit(entity.fit, (p) => V.add(p, delta), same, false),
       }
     case "polyline3d":
       return {
@@ -531,7 +533,12 @@ function stretchPlanar(
           V.distance(vertices[i], vertices[j])
         )
       })
-      return { ...entity, vertices, ...(bulges ? { bulges } : {}) }
+      // A Fit is fitted again (pedit/p176); a Spline's curve follows.
+      return polylineRefitted({
+        ...entity,
+        vertices,
+        ...(bulges ? { bulges } : {}),
+      })
     }
     case "polyline3d":
       return {
@@ -674,20 +681,26 @@ export function copyEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
       case "spline":
         return splineCopy(entity, (p) => V.add(p, delta))
       case "polyline3d":
-        return createPolyline3d(
-          planarVertices3d(entity, (v) => V.add(v, delta)).vertices,
-          entity.closed,
-          entity.layerId
-        )
+        return {
+          ...createPolyline3d(
+            planarVertices3d(entity, (v) => V.add(v, delta)).vertices,
+            entity.closed,
+            entity.layerId
+          ),
+          ...(entity.fit ? { fit: entity.fit } : {}),
+        }
       case "polyline":
-        return createPolyline(
-          entity.vertices.map((v) => V.add(v, delta)),
-          entity.closed,
-          entity.layerId,
-          entity.bulges,
-          undefined,
-          entity.widths
-        )
+        return {
+          ...createPolyline(
+            entity.vertices.map((v) => V.add(v, delta)),
+            entity.closed,
+            entity.layerId,
+            entity.bulges,
+            undefined,
+            entity.widths
+          ),
+          ...mappedFit(entity.fit, (p) => V.add(p, delta), same, false),
+        }
       case "text":
         return textLike(entity, V.add(entity.position, delta))
       case "mtext":
@@ -713,6 +726,15 @@ export function copyEntity(entity: Entity, delta: Vec2 | Vec3): Entity {
 }
 
 /** Rotates `point` about `pivot` by `radians` (counter-clockwise positive). */
+/** An angle a transform leaves as it was: a fit's tangents under a move or a scale. */
+const same = (angle: number): number => angle
+
+/** A direction reflected across the line through `a` and `b`. */
+function mirroredHeading(a: Vec2, b: Vec2): (angle: number) => number {
+  const line = Math.atan2(b.y - a.y, b.x - a.x)
+  return (angle) => normalizeAngle(2 * line - angle)
+}
+
 export function rotatePoint(point: Vec2, pivot: Vec2, radians: number): Vec2 {
   const cos = Math.cos(radians)
   const sin = Math.sin(radians)
@@ -773,6 +795,12 @@ function rotateFlat(entity: Entity, pivot: Vec2, radians: number): Entity {
       return {
         ...entity,
         vertices: entity.vertices.map((v) => rotatePoint(v, pivot, radians)),
+        ...mappedFit(
+          entity.fit,
+          (p) => rotatePoint(p, pivot, radians),
+          (t) => t + radians,
+          false
+        ),
       }
     case "text":
     case "mtext":
@@ -857,21 +885,32 @@ export function rotateEntityCopy(
       case "spline":
         return splineCopy(entity, (p) => rotatePoint(p, pivot, radians))
       case "polyline3d":
-        return createPolyline3d(
-          planarVertices3d(entity, (v) => rotatePoint(v, pivot, radians))
-            .vertices,
-          entity.closed,
-          entity.layerId
-        )
+        return {
+          ...createPolyline3d(
+            planarVertices3d(entity, (v) => rotatePoint(v, pivot, radians))
+              .vertices,
+            entity.closed,
+            entity.layerId
+          ),
+          ...(entity.fit ? { fit: entity.fit } : {}),
+        }
       case "polyline":
-        return createPolyline(
-          entity.vertices.map((v) => rotatePoint(v, pivot, radians)),
-          entity.closed,
-          entity.layerId,
-          entity.bulges,
-          undefined,
-          entity.widths
-        )
+        return {
+          ...createPolyline(
+            entity.vertices.map((v) => rotatePoint(v, pivot, radians)),
+            entity.closed,
+            entity.layerId,
+            entity.bulges,
+            undefined,
+            entity.widths
+          ),
+          ...mappedFit(
+            entity.fit,
+            (p) => rotatePoint(p, pivot, radians),
+            (t) => t + radians,
+            false
+          ),
+        }
       case "text":
         return textLike(entity, rotatePoint(entity.position, pivot, radians), {
           rotation: entity.rotation + radians,
@@ -992,6 +1031,12 @@ function scalePlanar(entity: Entity, base: Vec2, factor: number): Entity {
       return {
         ...entity,
         vertices: entity.vertices.map((v) => scalePoint(v, base, factor)),
+        ...mappedFit(
+          entity.fit,
+          (p) => scalePoint(p, base, factor),
+          same,
+          false
+        ),
         ...(entity.widths
           ? { widths: scaledWidths(entity.widths, factor) }
           : {}),
@@ -1077,20 +1122,32 @@ export function scaleEntityCopy(
       case "spline":
         return splineCopy(entity, (p) => scalePoint(p, base, factor))
       case "polyline3d":
-        return createPolyline3d(
-          planarVertices3d(entity, (v) => scalePoint(v, base, factor)).vertices,
-          entity.closed,
-          entity.layerId
-        )
+        return {
+          ...createPolyline3d(
+            planarVertices3d(entity, (v) => scalePoint(v, base, factor))
+              .vertices,
+            entity.closed,
+            entity.layerId
+          ),
+          ...(entity.fit ? { fit: entity.fit } : {}),
+        }
       case "polyline":
-        return createPolyline(
-          entity.vertices.map((v) => scalePoint(v, base, factor)),
-          entity.closed,
-          entity.layerId,
-          entity.bulges,
-          undefined,
-          entity.widths && scaledWidths(entity.widths, factor)
-        )
+        return {
+          ...createPolyline(
+            entity.vertices.map((v) => scalePoint(v, base, factor)),
+            entity.closed,
+            entity.layerId,
+            entity.bulges,
+            undefined,
+            entity.widths && scaledWidths(entity.widths, factor)
+          ),
+          ...mappedFit(
+            entity.fit,
+            (p) => scalePoint(p, base, factor),
+            same,
+            false
+          ),
+        }
       case "text":
         return textLike(entity, scalePoint(entity.position, base, factor), {
           height: entity.height * factor,
@@ -1217,6 +1274,12 @@ function mirrorFlat(
         vertices: entity.vertices.map((v) => mirrorPoint(v, a, b)),
         // Reflection reverses orientation, so every arc's turn flips sign.
         ...(entity.bulges ? { bulges: negateBulges(entity.bulges) } : {}),
+        ...mappedFit(
+          entity.fit,
+          (p) => mirrorPoint(p, a, b),
+          mirroredHeading(a, b),
+          true
+        ),
       }
     case "text":
       return { ...entity, ...mirroredText(entity, entity.value, a, b) }
@@ -1432,20 +1495,31 @@ export function mirrorEntityCopy(entity: Entity, a: Vec2, b: Vec2): Entity {
       case "spline":
         return splineCopy(entity, (p) => mirrorPoint(p, a, b))
       case "polyline3d":
-        return createPolyline3d(
-          planarVertices3d(entity, (v) => mirrorPoint(v, a, b)).vertices,
-          entity.closed,
-          entity.layerId
-        )
+        return {
+          ...createPolyline3d(
+            planarVertices3d(entity, (v) => mirrorPoint(v, a, b)).vertices,
+            entity.closed,
+            entity.layerId
+          ),
+          ...(entity.fit ? { fit: entity.fit } : {}),
+        }
       case "polyline":
-        return createPolyline(
-          entity.vertices.map((v) => mirrorPoint(v, a, b)),
-          entity.closed,
-          entity.layerId,
-          entity.bulges ? negateBulges(entity.bulges) : undefined,
-          undefined,
-          entity.widths
-        )
+        return {
+          ...createPolyline(
+            entity.vertices.map((v) => mirrorPoint(v, a, b)),
+            entity.closed,
+            entity.layerId,
+            entity.bulges ? negateBulges(entity.bulges) : undefined,
+            undefined,
+            entity.widths
+          ),
+          ...mappedFit(
+            entity.fit,
+            (p) => mirrorPoint(p, a, b),
+            mirroredHeading(a, b),
+            true
+          ),
+        }
       case "text": {
         const placed = mirroredText(entity, entity.value, a, b)
         return textLike(entity, placed.position, { rotation: placed.rotation })

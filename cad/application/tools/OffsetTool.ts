@@ -21,6 +21,7 @@ import {
   withThickness,
   Entity,
   PolylineWidth,
+  entityShape,
 } from "../../domain/entities"
 import {
   offsetPolyline,
@@ -919,7 +920,8 @@ export class OffsetTool implements Tool {
 }
 
 /** The bare shape of an entity, for drawing highlights without an offset. */
-function entityAsGeom(entity: Entity): OffsetGeom | null {
+function entityAsGeom(picked: Entity): OffsetGeom | null {
+  const entity = entityShape(picked)
   switch (entity.type) {
     case "line":
       return { kind: "line", a: entity.start, b: entity.end }
@@ -1014,10 +1016,13 @@ function isRefusal(result: OffsetResult): result is Refusal {
  * {@link offsetCurveEntity} does (spline-knots/k38–k56).
  */
 function computeOffset(
-  source: Entity,
+  picked: Entity,
   distance: number,
   side: Vec2
 ): OffsetResult {
+  // A fitted polyline's copy is of its curve, a polyline fitted no more
+  // (pedit/p169).
+  const source = entityShape(picked)
   switch (source.type) {
     case "line": {
       const o = offsetSegment(source.start, source.end, distance, side)
@@ -1091,7 +1096,8 @@ function curveCopies(shapes: readonly CurveOffsetShape[]): OffsetResult {
  * that object.` (probes offset/p209, p273, p277, p278, p295, p296), as at an
  * ellipse's centre, where nothing is left (k48).
  */
-function computeThrough(source: Entity, point: Vec2): OffsetResult {
+function computeThrough(picked: Entity, point: Vec2): OffsetResult {
+  const source = entityShape(picked)
   switch (source.type) {
     case "line": {
       const foot = closestPointOnInfiniteLine(

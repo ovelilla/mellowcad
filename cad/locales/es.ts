@@ -1217,7 +1217,12 @@ export const es: EngineLocale = {
         "Regen": "Regenerar",
         "Straighten": "Alisar",
         "Tangent": "Tangente",
-        "Go": "Ejecutar"
+        "Go": "Ejecutar",
+        "Fit": "curVar",
+        "Spline": "Spline",
+        "Spline curve": "Spline",
+        "Decurve": "anularcuRVatura",
+        "Defit": "ELiminarcurva"
       },
       "RECTANG": {
         "Chamfer": "Chaflán",
@@ -2183,6 +2188,7 @@ export const es: EngineLocale = {
       "selectDimension": "Designe una cota",
       "enterValueOr": "Indique valor o",
       "selectSpline": "Designe spline",
+      "selectSplineFitPolyline": "Designe polilínea de ajuste de spline",
       "splineditOption": "Indique una opción",
       "splineditOptionClosed": "Indique una opción",
       "enterFitDataOption": "Indique una opción de datos de ajuste",
@@ -2862,6 +2868,9 @@ export const es: EngineLocale = {
         ]
       ],
       "noneFound": "No hallada.",
+      "noneFoundToConvert": "No se ha encontrado ninguno.",
+      "onlySplineFittedPolylines": "Solo pueden convertirse en splines las polilíneas ajustadas como spline.",
+      "unableToConvertSelectedObject": "Imposible convertir el objeto designado.",
       "currentUcsName": [
         "Nombre de scp actual:  ",
         [
@@ -4583,7 +4592,8 @@ export const es: EngineLocale = {
         "Edit vertex": "Editar vértices",
         "Ltype gen": "generarTlínea",
         "OFF": "DES",
-        "Jointype": "Tipo de junta"
+        "Jointype": "Tipo de junta",
+        "Spline curve": "curva Spline"
       },
       "HATCH": {
         "Select objects": "Designar objetos"

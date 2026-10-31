@@ -159,6 +159,9 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
         // A midpoint grip per segment, whose default is Stretch: a straight
         // segment moves, an arc bends through the point (desktop pline/d09).
         // The hover menus' Add Vertex, Convert to Arc / Line are not built.
+        // A fitted one's grips are its frame's vertices alone, which Edit
+        // vertex walks (**unverified** on the desktop).
+        if (entity.fit) break
         polylineSegmentGeometries(entity).forEach((seg, segmentIndex) => {
           grips.push({
             entityId: id,

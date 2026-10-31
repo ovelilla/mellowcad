@@ -10,9 +10,15 @@ import {
   createSpline,
   entityPointToWorld,
   splineOnItsPlane,
+  type EntityId,
 } from "../../domain/entities"
 import { parseNumber } from "../../domain/units"
-import { AddEntityCommand } from "../commands/entityCommands"
+import {
+  AddEntityCommand,
+  ReplaceEntitiesCommand,
+} from "../commands/entityCommands"
+import { ObjectSelector } from "./objectSelection"
+import { fittedPolylineSpline } from "../../domain/splineEditing"
 import { SnapType } from "../snapping/types"
 import { DynamicInputSession } from "../input/DynamicInput"
 import {
@@ -70,6 +76,8 @@ type SplineToolState =
   | { readonly phase: "method" }
   | { readonly phase: "knots" }
   | { readonly phase: "degree" }
+  /** Object's `Select spline-fit polyline:`. */
+  | { readonly phase: "object" }
   | ({ readonly phase: "next" } & Drawn)
   | ({ readonly phase: "startTangent" } & Drawn)
   | ({ readonly phase: "endTangent" } & Drawn)
@@ -130,6 +138,19 @@ export class SplineTool implements Tool {
   readonly id: string
 
   private state: SplineToolState = { phase: "first" }
+
+  /**
+   * Object's set (pedit/p57, p178; spline/p114): `Select objects:`'s picks
+   * and modes, asked `Select spline-fit polyline:`, Enter with none `None
+   * found.` and the end.
+   */
+  private readonly polylines = new ObjectSelector({
+    takes: () => "wholeObjects",
+    question: () => "selectSplineFitPolyline",
+    // es `No se ha encontrado ninguno.`, not EXPLODE's (table 22419, spline/p114).
+    noneFound: "noneFoundToConvert",
+    done: (ctx) => this.convertPolylines(ctx),
+  })
   private cursor: Vec3 | null = null
   /** The cursor unsnapped, where a deferred Tangent's object is picked. */
   private pickWorld: Vec2 | null = null
@@ -199,10 +220,12 @@ export class SplineTool implements Tool {
     this.enterFirst(ctx)
   }
 
-  /** WHY no toLerance or Object: they are not offered, so not listed. */
+  /** WHY no toLerance: it is not offered, so not listed. */
   question(): PromptId | ToolQuestion {
     const state = this.state
     switch (state.phase) {
+      case "object":
+        return this.polylines.question()
       case "first":
         return "specifyFirstPointOr"
       case "method":
@@ -239,6 +262,8 @@ export class SplineTool implements Tool {
   takes(): QuestionInput | null {
     const state = this.state
     switch (state.phase) {
+      case "object":
+        return this.polylines.takes()
       case "degree":
         return {
           refusal: "requiresIntegerBetweenOrKeyword",
@@ -319,6 +344,7 @@ export class SplineTool implements Tool {
    * false, probe spline/p106; desktop d05); elsewhere {@link acceptDefault}.
    */
   onEnter(ctx: ToolContext): boolean {
+    if (this.state.phase === "object") return this.polylines.onEnter(ctx)
     if (this.state.phase === "first") {
       ctx.report(ctx.text.message("pointOrKeywordRequired"), "error")
       return true
@@ -327,6 +353,10 @@ export class SplineTool implements Tool {
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
+    if (this.state.phase === "object") {
+      this.polylines.onPointerMove(input, ctx)
+      return
+    }
     this.lastScreen = input.screen
     this.cursor = input.point
     this.pickWorld = input.world
@@ -350,6 +380,11 @@ export class SplineTool implements Tool {
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
     const state = this.state
+    if (state.phase === "object") {
+      this.polylines.onPointerDown(input, ctx)
+      ctx.requestRender()
+      return
+    }
     if (state.phase === "endTangent") {
       this.endWith(
         state,
@@ -374,17 +409,19 @@ export class SplineTool implements Tool {
   commandOptions(): readonly CommandOption[] {
     const state = this.state
     switch (state.phase) {
+      case "object":
+        return this.polylines.commandOptions()
       case "first":
         return this.method === "fit"
-          ? [{ id: "Method" }, { id: "Knots" }]
-          : [{ id: "Method" }, { id: "Degree" }]
+          ? [{ id: "Method" }, { id: "Knots" }, { id: "Object" }]
+          : [{ id: "Method" }, { id: "Degree" }, { id: "Object" }]
       case "method":
         return [{ id: "Fit" }, { id: "CV" }]
       case "knots":
         return Object.keys(KNOTS_BY_KEYWORD).map((id) => ({ id }))
       case "degree":
         // Declared, unlisted, each back at the first prompt (spline/p153,
-        // p154, p155): Object too, which is not built.
+        // p154, p155), Object too.
         return [
           { id: "Method", hidden: true },
           { id: "Degree", hidden: true },
@@ -412,6 +449,8 @@ export class SplineTool implements Tool {
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
     const state = this.state
     switch (state.phase) {
+      case "object":
+        return this.polylines.invokeOption(id, ctx) ? "continue" : "unhandled"
       case "first":
         return this.invokeFirstOption(id, ctx)
       case "method":
@@ -457,6 +496,13 @@ export class SplineTool implements Tool {
         if (this.method !== "cv") return "unhandled"
         this.state = { phase: "degree" }
         this.openDegreeInput(ctx)
+        return "continue"
+      case "Object":
+        this.state = { phase: "object" }
+        ctx.selection.clear()
+        ctx.dynamicInput.close()
+        this.polylines.start()
+        ctx.requestRender()
         return "continue"
       default:
         return "unhandled"
@@ -520,6 +566,7 @@ export class SplineTool implements Tool {
    */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const state = this.state
+    if (state.phase === "object") return this.polylines.buildOverlay(ctx)
     const cursor = this.cursor
     if (!cursor || !("points" in state)) return []
     const { viewport } = ctx
@@ -712,6 +759,51 @@ export class SplineTool implements Tool {
       default:
         return false
     }
+  }
+
+  onPointerUp(input: PointerInput, ctx: ToolContext): void {
+    if (this.state.phase === "object") this.polylines.onPointerUp(input, ctx)
+  }
+
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    return this.state.phase === "object"
+      ? this.polylines.answerTyped(text, ctx)
+      : false
+  }
+
+  cycleLasso(ctx: ToolContext): boolean {
+    return this.state.phase === "object"
+      ? this.polylines.cycleLasso(ctx)
+      : false
+  }
+
+  /**
+   * Object's set closed: each spline-fit polyline turned into the spline of
+   * its curve in one step, the polyline gone (pedit/p57, p189); anything else
+   * said, `Only spline fitted polylines can be converted to splines.` and
+   * `Unable to convert the selected object.` (p178), each time. Then the end.
+   */
+  private convertPolylines(ctx: ToolContext): void {
+    const removed: EntityId[] = []
+    const made: Entity[] = []
+    for (const id of ctx.selection.toArray()) {
+      const entity = ctx.document.get(id)
+      const spline =
+        entity &&
+        (entity.type === "polyline" || entity.type === "polyline3d") &&
+        fittedPolylineSpline(entity)
+      if (spline) {
+        removed.push(id)
+        made.push(spline)
+        continue
+      }
+      ctx.report(ctx.text.message("onlySplineFittedPolylines"))
+      ctx.report(ctx.text.message("unableToConvertSelectedObject"))
+    }
+    ctx.selection.clear()
+    this.state = { phase: "first" }
+    if (made.length > 0) ctx.execute(new ReplaceEntitiesCommand(removed, made))
+    ctx.endCommand()
   }
 
   private commitPending(ctx: ToolContext): void {

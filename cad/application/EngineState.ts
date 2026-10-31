@@ -1397,8 +1397,9 @@ function singleEntityInfo(
     }
     case "polyline3d": {
       // AutoCAD's rows (desktop 3dpoly/d02): the current vertex and its point,
-      // Length in space read-only; Fit/Smooth (PEDIT's Spline, not built:
-      // always None, read-only here) and Closed under Misc.
+      // Length in space read-only; Fit/Smooth (read-only None here: its
+      // Quadratic and Cubic are not in the catalogs yet, 3dpoly's entry) and
+      // Closed under Misc.
       const current = Math.min(vertex, entity.vertices.length - 1)
       const point = worldPointToUcs(settings.ucs, entity.vertices[current])
       const yesNo = (closed: boolean) =>

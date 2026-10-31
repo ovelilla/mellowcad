@@ -695,7 +695,12 @@
         "Regen": "Regenerar",
         "Straighten": "Alisar",
         "Tangent": "Tangente",
-        "Go": "Ejecutar"
+        "Go": "Ejecutar",
+        "Fit": "curVar",
+        "Spline": "Spline",
+        "Spline curve": "Spline",
+        "Decurve": "anularcuRVatura",
+        "Defit": "ELiminarcurva"
       },
       "RECTANG": {
         "Chamfer": "Chaflán",
@@ -1570,6 +1575,7 @@
       "selectDimension": "Designe una cota",
       "enterValueOr": "Indique valor o",
       "selectSpline": "Designe spline",
+      "selectSplineFitPolyline": "Designe polilínea de ajuste de spline",
       "splineditOption": "Indique una opción",
       "splineditOptionClosed": "Indique una opción",
       "enterFitDataOption": "Indique una opción de datos de ajuste",
@@ -1734,6 +1740,9 @@
       "explodeLostWidth": "Al descomponer esta línea se ha perdido información de grosor.\nSe puede restituir con el comando DESHACER.",
       "explodeCannot": "No se puede descomponer {name}",
       "noneFound": "No hallada.",
+      "noneFoundToConvert": "No se ha encontrado ninguno.",
+      "onlySplineFittedPolylines": "Solo pueden convertirse en splines las polilíneas ajustadas como spline.",
+      "unableToConvertSelectedObject": "Imposible convertir el objeto designado.",
       "currentUcsName": "Nombre de scp actual:  {kind, select, world {*UNIVERSAL*} unnamed {*SIN NOMBRE*} top {*SUPERIOR*} bottom {*INFERIOR*} front {*FRONTAL*} back {*POSTERIOR*} left {*IZQUIERDA*} right {*DERECHA*} other {{name}}}",
       "listedUcsName": "Nombre de scp actual: {kind, select, world {*UNIVERSAL*} unnamed {*SIN NOMBRE*} top {*SUPERIOR*} bottom {*INFERIOR*} front {*FRONTAL*} back {*POSTERIOR*} left {*IZQUIERDA*} right {*DERECHA*} other {\"{name}\"}}",
       "savedUcsHeader": "Sistemas de coordenadas guardados:",
@@ -2077,7 +2086,8 @@
         "Edit vertex": "Editar vértices",
         "Ltype gen": "generarTlínea",
         "OFF": "DES",
-        "Jointype": "Tipo de junta"
+        "Jointype": "Tipo de junta",
+        "Spline curve": "curva Spline"
       },
       "HATCH": { "Select objects": "Designar objetos" },
       "BREAK": { "First point": "Primer punto" },

@@ -29,6 +29,9 @@ import {
   type Polyline3dEntity,
   type SplineEntity,
   type TextEntity,
+  polylineFitted,
+  polylineSplined,
+  polyline3dSplined,
 } from "../cad/domain/entities"
 import { arrayPathOfPieces } from "../cad/domain/arrays"
 import { DEFAULT_HATCH_PATTERN_ID } from "../cad/domain/hatchPatterns"
@@ -297,9 +300,19 @@ export const polylineEntity: fc.Arbitrary<PolylineEntity> = fc
         nil: undefined,
       }
     ),
-    fc.boolean()
+    fc.boolean(),
+    fc.option(
+      fc.tuple(
+        fc.constantFrom("curve", "quadratic", "cubic"),
+        fc.integer({ min: -16, max: 16 }).filter((n) => n !== 0),
+        fc.option(fc.double({ min: -Math.PI, max: Math.PI, noNaN: true }), {
+          nil: null,
+        })
+      ),
+      { nil: undefined }
+    )
   )
-  .map(([vertices, closed, bulges, widthList, linetypeGeneration]) => {
+  .map(([vertices, closed, bulges, widthList, linetypeGeneration, fit]) => {
     // One width pair per segment, as the factory and the file keep them.
     const segments = closed ? vertices.length : vertices.length - 1
     const widths = widthList?.slice(0, segments)
@@ -313,7 +326,13 @@ export const polylineEntity: fc.Arbitrary<PolylineEntity> = fc
       ...(widths && widths.some(([s, e]) => s > 0 || e > 0) ? { widths } : {}),
       ...(linetypeGeneration ? { linetypeGeneration: true } : {}),
     }
-    return entity
+    if (!fit) return entity
+    // PEDIT's Fit or Spline, a tangent given at the first vertex.
+    const [kind, perSpan, tangent] = fit
+    const tangents = vertices.map((_, i) => (i === 0 ? tangent : null))
+    return kind === "curve"
+      ? polylineFitted(entity, tangents)
+      : (polylineSplined(entity, kind, perSpan, tangents) ?? entity)
   })
 
 export const polyline3dEntity: fc.Arbitrary<Polyline3dEntity> = fc
@@ -331,6 +350,17 @@ export const polyline3dEntity: fc.Arbitrary<Polyline3dEntity> = fc
       },
       "polyline3d"
     )
+  )
+  .chain((poly) =>
+    fc
+      .option(
+        fc.tuple(
+          fc.constantFrom("quadratic" as const, "cubic" as const),
+          fc.integer({ min: 1, max: 16 })
+        ),
+        { nil: undefined }
+      )
+      .map((fit) => (fit && polyline3dSplined(poly, fit[0], fit[1])) ?? poly)
   )
 
 export const textEntity: fc.Arbitrary<TextEntity> = fc

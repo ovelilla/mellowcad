@@ -9,6 +9,7 @@ import {
 import { HatchLoop, HatchEntity, Entity } from "./entityTypes"
 import { PolylineSegmentGeometry, segmentGeometries } from "./polylines"
 import { rotatePoint } from "./entityTransforms"
+import { entityShape } from "./polylineFits"
 
 /**
  * The boundary loop an object contributes to a hatch, or `null` when it does
@@ -16,7 +17,8 @@ import { rotatePoint } from "./entityTransforms"
  * objects "that form an enclosed area"; chaining several open objects into one
  * loop is not done here yet, so only self-closing ones qualify.
  */
-export function hatchLoopFromEntity(entity: Entity): HatchLoop | null {
+export function hatchLoopFromEntity(drawn: Entity): HatchLoop | null {
+  const entity = entityShape(drawn)
   switch (entity.type) {
     case "circle":
       // Two semicircles: a bulge of 1 is a half turn, so the pair traces the

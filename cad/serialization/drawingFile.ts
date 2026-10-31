@@ -51,6 +51,9 @@ import {
   polylineSegments,
   polylineWidth,
   PolylineWidth,
+  PolylineFit,
+  FitArcs,
+  Polyline3dFit,
   MTEXT_ATTACHMENTS,
   MTextAttachment,
   TEXT_JUSTIFICATIONS,
@@ -118,7 +121,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 39
+export const DRAWING_FILE_VERSION = 40
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -193,6 +196,8 @@ export type StoredSettings = Omit<
 /** The command settings AutoCAD saves in the drawing, written only when not the default. */
 type SavedCommandSetting =
   | "filletRadius"
+  | "splineType"
+  | "splineSegments"
   | "chamferDistance1"
   | "chamferDistance2"
   | "textSize"
@@ -464,6 +469,7 @@ function cloneEntityShape(entity: Entity): Entity {
         ...(entity.bulges ? { bulges: entity.bulges.slice() } : {}),
         ...storedWidths(entity),
         ...(entity.linetypeGeneration ? { linetypeGeneration: true } : {}),
+        ...(entity.fit ? { fit: storedFit(entity.fit) } : {}),
       }
     case "polyline3d":
       return {
@@ -473,6 +479,7 @@ function cloneEntityShape(entity: Entity): Entity {
         ...overrides,
         vertices: entity.vertices.map((v) => ({ x: v.x, y: v.y, z: v.z })),
         closed: entity.closed,
+        ...(entity.fit ? { fit: { ...entity.fit } } : {}),
       }
     case "text":
       return {
@@ -719,6 +726,8 @@ function cloneLayer(layer: Layer): Layer {
 function storedSettings(settings: DocumentSettings): StoredSettings {
   const {
     filletRadius,
+    splineType,
+    splineSegments,
     chamferDistance1,
     chamferDistance2,
     textSize,
@@ -768,6 +777,8 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     ...(fillMode ? {} : { fillMode: false as const }),
     ...(polylineWidth ? { polylineWidth } : {}),
     ...(filletRadius ? { filletRadius } : {}),
+    ...(splineType !== 6 ? { splineType } : {}),
+    ...(splineSegments !== 8 ? { splineSegments } : {}),
     ...(chamferDistance1 ? { chamferDistance1 } : {}),
     ...(chamferDistance2 ? { chamferDistance2 } : {}),
     ...(textSize !== DEFAULT_DOCUMENT_SETTINGS.textSize ? { textSize } : {}),
@@ -881,6 +892,14 @@ function parseSettings(value: unknown): DocumentSettings {
         : 0,
     // A drawing from before 28 has acadiso's.
     filletRadius: nonNegative(value.filletRadius),
+    // A drawing from before 40 has acadiso's.
+    splineType: value.splineType === 5 ? 5 : 6,
+    splineSegments:
+      Number.isInteger(value.splineSegments) &&
+      value.splineSegments !== 0 &&
+      Math.abs(value.splineSegments as number) <= 32768
+        ? (value.splineSegments as number)
+        : 8,
     chamferDistance1: nonNegative(value.chamferDistance1),
     chamferDistance2: nonNegative(value.chamferDistance2),
     textSize:
@@ -1177,6 +1196,7 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         ...(raw.linetypeGeneration === true
           ? { linetypeGeneration: true as const }
           : {}),
+        ...parsedFit(raw.fit, vertices.length, closed),
       }
     }
     case "polyline3d": {
@@ -1192,6 +1212,7 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         ...overrides,
         vertices,
         closed: typeof raw.closed === "boolean" ? raw.closed : false,
+        ...parsedSplineFit(raw.fit),
       }
     }
     case "text": {
@@ -1724,6 +1745,76 @@ function parseVec2(value: unknown): Vec2 | null {
   if (!isRecord(value)) return null
   if (!isFiniteNumber(value.x) || !isFiniteNumber(value.y)) return null
   return { x: value.x, y: value.y }
+}
+
+function storedFit(fit: PolylineFit): PolylineFit {
+  const tangents = fit.tangents ? { tangents: [...fit.tangents] } : {}
+  if (fit.kind !== "curve") {
+    return { kind: fit.kind, segments: fit.segments, ...tangents }
+  }
+  return {
+    kind: "curve",
+    arcs: fit.arcs.map((arc) =>
+      arc
+        ? {
+            joint: { x: arc.joint.x, y: arc.joint.y },
+            bulges: [arc.bulges[0], arc.bulges[1]] as const,
+          }
+        : null
+    ),
+    ...tangents,
+  }
+}
+
+/**
+ * A polyline's PEDIT Fit or Spline, version 40 on; one that does not fit its
+ * vertices is dropped, the polyline read as its frame.
+ */
+function parsedFit(
+  value: unknown,
+  vertexCount: number,
+  closed: boolean
+): { fit?: PolylineFit } {
+  if (!isRecord(value)) return {}
+  const tangents = Array.isArray(value.tangents)
+    ? value.tangents.map((t) => (isFiniteNumber(t) ? t : null))
+    : null
+  const given =
+    tangents &&
+    tangents.length === vertexCount &&
+    tangents.some((t) => t !== null)
+      ? { tangents }
+      : {}
+  if (value.kind === "curve") {
+    if (!Array.isArray(value.arcs)) return {}
+    const count = closed ? vertexCount : vertexCount - 1
+    if (value.arcs.length !== count) return {}
+    const arcs = value.arcs.map((arc): FitArcs | null => {
+      if (!isRecord(arc)) return null
+      const joint = parseVec2(arc.joint)
+      const bulges = Array.isArray(arc.bulges) ? arc.bulges : []
+      const [first, second] = bulges
+      return joint && isFiniteNumber(first) && isFiniteNumber(second)
+        ? { joint, bulges: [first, second] }
+        : null
+    })
+    return { fit: { kind: "curve", arcs, ...given } }
+  }
+  const spline = parsedSplineFit(value).fit
+  return spline ? { fit: { ...spline, ...given } } : {}
+}
+
+function parsedSplineFit(value: unknown): { fit?: Polyline3dFit } {
+  if (!isRecord(value)) return {}
+  const segments = value.segments
+  if (
+    (value.kind !== "quadratic" && value.kind !== "cubic") ||
+    !Number.isInteger(segments) ||
+    segments === 0
+  ) {
+    return {}
+  }
+  return { fit: { kind: value.kind, segments: segments as number } }
 }
 
 /** Parses a polyline's vertex array, skipping any malformed points. */
