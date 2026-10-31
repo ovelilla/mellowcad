@@ -567,16 +567,34 @@ const arrayPathPiece: fc.Arbitrary<ArrayPathPiece> = fc.oneof(
 /** An array's parameters, small counts so that its items stay cheap to derive. */
 export const arrayParameters: fc.Arbitrary<ArrayParameters> = fc.oneof(
   fc
-    .tuple(count, count, coordinate, coordinate, coordinate, angle)
-    .map(([columns, rows, colSpacing, rowSpacing, rowElevation, turn]) => ({
-      kind: "rectangular" as const,
-      columns,
-      rows,
-      colSpacing,
-      rowSpacing,
-      rowElevation,
-      axis: { x: Math.cos(turn), y: Math.sin(turn) },
-    })),
+    .tuple(
+      fc.tuple(count, count, count),
+      coordinate,
+      coordinate,
+      coordinate,
+      coordinate,
+      angle
+    )
+    .map(
+      ([
+        [columns, rows, levels],
+        colSpacing,
+        rowSpacing,
+        rowElevation,
+        levelSpacing,
+        turn,
+      ]) => ({
+        kind: "rectangular" as const,
+        columns,
+        rows,
+        colSpacing,
+        rowSpacing,
+        rowElevation,
+        levels,
+        levelSpacing,
+        axis: { x: Math.cos(turn), y: Math.sin(turn) },
+      })
+    ),
   fc
     .tuple(
       point,

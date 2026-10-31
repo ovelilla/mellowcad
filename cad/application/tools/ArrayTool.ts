@@ -6,6 +6,7 @@ import {
   arrayAxis,
   arraySourceSize,
 } from "../../domain/arrays"
+import { insertFlatGeometry } from "../../domain/blocks"
 import { parseNumber } from "../../domain/units"
 import { Ucs, ucsDirectionToWorld, worldDirectionToUcs } from "../../domain/ucs"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
@@ -14,6 +15,7 @@ import {
   isCoordinateExpression,
   parseCoordinate,
 } from "../input/coordinateInput"
+import { drawingBox } from "../orbit"
 import { ObjectSelector } from "./objectSelection"
 import { selectedInDrawingOrder } from "./drawingOrder"
 import { refusesCount, takesCount } from "./arrayCounts"
@@ -40,18 +42,20 @@ import {
  * AutoCAD's ARRAYRECT, as its 2027 console asks it: `Select objects:` (or
  * ARRAY's set, {@link takeSet}), then `Type = Rectangular  Associative = Yes`
  * and `Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/
- * eXit] <eXit>:` over a live preview of the grid — 4 columns along the UCS's
- * +X and 3 rows along its +Y, a negative spacing flipping the direction.
+ * Levels/eXit] <eXit>:` over a live preview of the grid — 4 columns along the
+ * UCS's +X, 3 rows along its +Y and 1 level along its +Z, a negative spacing
+ * flipping the direction.
  * ASsociative asks `Create associative array [Yes/No] <Yes>:`. COUnt asks the
  * number of columns and of rows, Spacing the distance between columns or
  * [Unit cell] — two corners, whose sides along the UCS's axes are both
  * distances — and between rows, COLumns the number of columns and their
  * distance, Rows the number of rows, their distance and the elevation each row
- * rises by; eXit or Enter makes the array (`makeArray`), one undo step with
+ * rises by, Levels the number of levels and their distance or Total, the
+ * first to the last; eXit or Enter makes the array (`makeArray`), one undo step with
  * the source as item 1,1. Escape makes it too, with the values given so far
  * (desktop arrays/d08, d08b); before the main prompt it makes nothing. The
- * main prompt picks the preview's grips (`ArrayPromptGrips`). Base point and
- * Levels are not offered.
+ * main prompt picks the preview's grips (`ArrayPromptGrips`). Base point is
+ * not offered.
  */
 
 const DEFAULT_COLUMNS = 4
@@ -76,6 +80,9 @@ type Step =
   | "rowsCount"
   | "rowsSpacing"
   | "rowsElevation"
+  | "levelsCount"
+  | "levelsSpacing"
+  | "levelsTotal"
   | "unitCellFirst"
   | "unitCellOpposite"
 
@@ -111,6 +118,9 @@ const NEXT: Readonly<Record<Step, Step>> = {
   rowsCount: "rowsSpacing",
   rowsSpacing: "rowsElevation",
   rowsElevation: "main",
+  levelsCount: "levelsSpacing",
+  levelsSpacing: "main",
+  levelsTotal: "main",
   unitCellFirst: "unitCellOpposite",
   unitCellOpposite: "main",
 }
@@ -119,6 +129,7 @@ const KEYWORD_STEP: Readonly<Record<string, Step>> = {
   Spacing: "spacingColumns",
   COLumns: "columnsCount",
   Rows: "rowsCount",
+  Levels: "levelsCount",
 }
 
 export class ArrayTool implements Tool {
@@ -134,11 +145,20 @@ export class ArrayTool implements Tool {
   private readonly grips = new ArrayPromptGrips({
     take: (array) => {
       if (this.state.phase !== "edit" || array.kind !== "rectangular") return
-      const { columns, rows, colSpacing, rowSpacing, rowElevation, axis } =
-        array
+      const { columns, rows, colSpacing, rowSpacing, rowElevation } = array
+      const { levels, levelSpacing, axis } = array
       this.state = {
         ...this.state,
-        grid: { columns, rows, colSpacing, rowSpacing, rowElevation, axis },
+        grid: {
+          columns,
+          rows,
+          colSpacing,
+          rowSpacing,
+          rowElevation,
+          levels,
+          levelSpacing,
+          axis,
+        },
       }
     },
     main: (ctx) => this.ask("main", ctx),
@@ -230,6 +250,22 @@ export class ArrayTool implements Tool {
           enter: grid.rowElevation,
           trimmed: true,
         }
+      case "levelsCount":
+        return { id: "enterNumberOfLevels", enter: { count: grid.levels } }
+      case "levelsSpacing":
+        return {
+          id: "specifyDistanceBetweenLevelsOr",
+          enter: grid.levelSpacing,
+          trimmed: true,
+        }
+      case "levelsTotal":
+        // The first level to the last, the spacing itself with one level
+        // (probes arrays/p433, p434: `<2>` for 3 at 1, `<1>` for 1 at 1).
+        return {
+          id: "enterTotalDistanceBetweenLevels",
+          enter: Math.max(grid.levels - 1, 1) * grid.levelSpacing,
+          trimmed: true,
+        }
       case "unitCellFirst":
         return "unitCellFirstCorner"
       case "unitCellOpposite":
@@ -255,11 +291,13 @@ export class ArrayTool implements Tool {
       case "countRows":
       case "columnsCount":
       case "rowsCount":
+      case "levelsCount":
         return { refusal: "requiresPositiveInteger" }
       case "unitCellFirst":
       case "unitCellOpposite":
         return "point"
       case "spacingRows":
+      case "levelsTotal":
         return {
           refusal: "requiresDistance",
           values: { points: "two", keyword: "no" },
@@ -284,6 +322,9 @@ export class ArrayTool implements Tool {
     if (this.state.phase === "edit" && this.state.step === "spacingColumns") {
       return [{ id: "Unit cell" }]
     }
+    if (this.state.phase === "edit" && this.state.step === "levelsSpacing") {
+      return [{ id: "Total" }]
+    }
     if (this.state.phase === "edit" && this.state.step === "associative") {
       return [{ id: "Yes" }, { id: "No" }]
     }
@@ -295,6 +336,7 @@ export class ArrayTool implements Tool {
       { id: "Spacing" },
       { id: "COLumns" },
       { id: "Rows" },
+      { id: "Levels" },
       { id: "eXit" },
     ]
   }
@@ -317,6 +359,14 @@ export class ArrayTool implements Tool {
       id === "Unit cell"
     ) {
       this.ask("unitCellFirst", ctx)
+      return "continue"
+    }
+    if (
+      this.state.phase === "edit" &&
+      this.state.step === "levelsSpacing" &&
+      id === "Total"
+    ) {
+      this.ask("levelsTotal", ctx)
       return "continue"
     }
     if (this.state.phase === "edit" && this.state.step === "associative") {
@@ -501,7 +551,10 @@ export class ArrayTool implements Tool {
       ctx.dynamicInput.close()
       return
     }
-    const { colSpacing, rowSpacing } = defaultSpacing(originals, ctx)
+    const { colSpacing, rowSpacing, levelSpacing } = defaultSpacing(
+      originals,
+      ctx
+    )
     // The base point is the source's extents centre (probes arrays/p403,
     // p404).
     const box = entitiesBounds(originals, ctx.blocks)
@@ -518,6 +571,8 @@ export class ArrayTool implements Tool {
         colSpacing,
         rowSpacing,
         rowElevation: 0,
+        levels: 1,
+        levelSpacing,
         axis: arrayAxis(ctx.ucs),
       },
       step: "main",
@@ -649,8 +704,9 @@ export class ArrayTool implements Tool {
     if (this.state.phase !== "edit") return
     const { step, grid } = this.state
     if (value !== null && isCount(step) && refusesCount(value, ctx)) return
-    // The four distances refuse 0 and ask again; the elevation takes it
-    // (probes arrays/p117, p120, p135: AllowZero 0, and 1 at the elevation).
+    // The distances and Total refuse 0 and ask again; the elevation takes it
+    // (probes arrays/p117, p120, p135, p431, p433: AllowZero 0, and 1 at the
+    // elevation).
     if (value === 0 && !isCount(step) && step !== "rowsElevation") {
       ctx.report(ctx.text.message("valueMustBeNonzero"), "error")
       return
@@ -713,6 +769,9 @@ const FIELD_LABEL: Readonly<
   spacingRows: "rowSpacing",
   rowsSpacing: "rowSpacing",
   rowsElevation: "distance",
+  levelsCount: "levels",
+  levelsSpacing: "levelSpacing",
+  levelsTotal: "distance",
 }
 
 function isUnitCell(step: Step): step is "unitCellFirst" | "unitCellOpposite" {
@@ -734,7 +793,8 @@ function isCount(step: Step): boolean {
     step === "countColumns" ||
     step === "countRows" ||
     step === "columnsCount" ||
-    step === "rowsCount"
+    step === "rowsCount" ||
+    step === "levelsCount"
   )
 }
 
@@ -754,6 +814,12 @@ function withValue(grid: Grid, step: Step, value: number): Grid {
       return { ...grid, rowSpacing: value }
     case "rowsElevation":
       return { ...grid, rowElevation: value }
+    case "levelsCount":
+      return { ...grid, levels: value }
+    case "levelsSpacing":
+      return { ...grid, levelSpacing: value }
+    case "levelsTotal":
+      return { ...grid, levelSpacing: value / Math.max(grid.levels - 1, 1) }
     default:
       return grid
   }
@@ -761,21 +827,34 @@ function withValue(grid: Grid, step: Step, value: number): Grid {
 
 /**
  * AutoCAD's default spacing: one and a half times the selection's width
- * between columns and its height between rows, 1 where it has none (probe
- * arrays/p168: a line's rows 1 apart). Width and height are the extents box's,
- * measured along the UCS's axes (p165: a circle of radius 2 under
- * `_UCS _Z 30` is 8.1962 apart, 1.5 × 4 (cos 30° + sin 30°)).
+ * between columns, its height between rows and its rise between levels, 1
+ * where it has none (probes arrays/p168: a line's rows 1 apart; p436, p437:
+ * a line rising 6 is 9, a circle 4 thick 6). Width and height are the extents
+ * box's, measured along the UCS's axes (p165: a circle of radius 2 under
+ * `_UCS _Z 30` is 8.1962 apart, 1.5 × 4 (cos 30° + sin 30°)); the rise is
+ * along its Z, an array's own levels and rows counted (p432: 31.5 for four
+ * levels 7 apart).
  */
 function defaultSpacing(
   originals: readonly Entity[],
   ctx: Pick<ToolContext, "blocks" | "ucs">
-): { colSpacing: number; rowSpacing: number } {
+): { colSpacing: number; rowSpacing: number; levelSpacing: number } {
   const { width, height } = arraySourceSize(
     entitiesBounds(originals, ctx.blocks),
     ctx.ucs
   )
+  const box = drawingBox(
+    originals.flatMap((entity) =>
+      entity.type === "insert"
+        ? insertFlatGeometry(entity, ctx.blocks)
+        : [entity]
+    )
+  )
+  const rise = box ? box.max.z - box.min.z : 0
+  const spaced = (size: number) => (size > 1e-6 ? size * 1.5 : 1)
   return {
-    colSpacing: width > 1e-6 ? width * 1.5 : 1,
-    rowSpacing: height > 1e-6 ? height * 1.5 : 1,
+    colSpacing: spaced(width),
+    rowSpacing: spaced(height),
+    levelSpacing: spaced(rise),
   }
 }

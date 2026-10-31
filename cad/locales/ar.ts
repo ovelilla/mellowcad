@@ -527,6 +527,8 @@ export const ar: EngineLocale = {
         "rows": "الصفوف",
         "rowSpacing": "تباعد الصفوف",
         "rowElevationIncrement": "زيادة منسوب الصفوف",
+        "levels": "المستويات",
+        "levelSpacing": "تباعد المستويات",
         "includedAxisAngle": "زاوية المحور المضمّنة",
         "direction": "الاتجاه",
         "items": "العناصر",

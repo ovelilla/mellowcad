@@ -395,6 +395,8 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Spacing",
     "COLumns",
     "Rows",
+    "Levels",
+    "Total",
     "eXit",
     "Unit cell",
     "Yes",

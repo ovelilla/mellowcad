@@ -86,7 +86,11 @@ export function arrayAxis(ucs: Ucs): Vec2 {
   return { x, y }
 }
 
-/** The grid's items, column by column, the source's cell (0, 0) left out. */
+/**
+ * The grid's items, column by column, row by row, then level by level, the
+ * source's cell (0, 0, 0) left out: EXPLODE's order (probe arrays/p438). A
+ * level rises by its spacing on top of its row's elevation.
+ */
 export function rectangularArrayItems(
   grid: RectangularArray,
   limit: number = Infinity
@@ -95,15 +99,17 @@ export function rectangularArrayItems(
   const out: ArrayItem[] = []
   for (let i = 0; i < grid.columns && out.length < limit; i++) {
     for (let j = 0; j < grid.rows && out.length < limit; j++) {
-      if (i === 0 && j === 0) continue
-      const along = i * grid.colSpacing
-      const across = j * grid.rowSpacing
-      const move = {
-        x: along * c - across * s,
-        y: along * s + across * c,
-        z: j * grid.rowElevation,
+      for (let k = 0; k < grid.levels && out.length < limit; k++) {
+        if (i === 0 && j === 0 && k === 0) continue
+        const along = i * grid.colSpacing
+        const across = j * grid.rowSpacing
+        const move = {
+          x: along * c - across * s,
+          y: along * s + across * c,
+          z: j * grid.rowElevation + k * grid.levelSpacing,
+        }
+        out.push({ move, pivot: { x: 0, y: 0 }, turn: 0 })
       }
-      out.push({ move, pivot: { x: 0, y: 0 }, turn: 0 })
     }
   }
   return out

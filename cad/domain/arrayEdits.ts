@@ -93,16 +93,32 @@ export function withGridCounts(
     : null
 }
 
-/** The grid with a distance between columns or rows, which refuses 0 (ARRAYS-D11). */
+/** The grid with this many levels, null for a count an array refuses. */
+export function withGridLevels(
+  grid: Rectangular,
+  levels: number
+): Rectangular | null {
+  return isArrayCount(levels) ? { ...grid, levels } : null
+}
+
+/**
+ * The grid with a distance between columns, rows or levels, which refuses 0
+ * (ARRAYS-D11; the levels' as ARRAYRECT's, p431).
+ */
 export function withGridSpacing(
   grid: Rectangular,
-  along: "column" | "row",
+  along: "column" | "row" | "level",
   spacing: number
 ): Rectangular | null {
   if (!Number.isFinite(spacing) || spacing === 0) return null
-  return along === "column"
-    ? { ...grid, colSpacing: spacing }
-    : { ...grid, rowSpacing: spacing }
+  switch (along) {
+    case "column":
+      return { ...grid, colSpacing: spacing }
+    case "row":
+      return { ...grid, rowSpacing: spacing }
+    case "level":
+      return { ...grid, levelSpacing: spacing }
+  }
 }
 
 const FULL_TURN = 360

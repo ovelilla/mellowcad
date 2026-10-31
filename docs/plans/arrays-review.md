@@ -34,6 +34,7 @@ are in `research/probes/arrays/` (gitignored).
 | p200–p279 | ARRAYPOLAR: the centre, Items, Angle between, Fill angle, ROTate items, overruns, signs, the cap |
 | p300–p379 | ARRAYPATH: where items go, every path kind, the path pick (locked, snaps, modes, Enter), every prompt |
 | p400–p422 | the array object: its blocks, LIST, EXPLODE, layers, base points, the path's edits, U, COPY, the file, END, ARRAYEDIT, where ARRAYASSOCIATIVITY lives |
+| p430–p444 | ARRAYRECT's Levels (2026-10-31, en, es, pt-BR): the prompts, refusals, Total, defaults, two points, EXPLODE's order, a tilted UCS, ASsociative No, 'ZOOM, Expression, the file (p443b opens p443's DWG with `runacc.sh -i`), MOVE |
 | d01–d10 | es-ES desktop: the jig of each command, its grips, a grip dragged mid-command, each array's grips and hover menus, the palette, Escape at the main prompt, the right button, the rollover |
 | d11–d20 | en-US desktop: each array's grips, every hover menu, the palette, each grip's default drag read with `LIST`, a typed count, the main prompt's grip, the rollover, palette edits |
 
@@ -68,7 +69,7 @@ ARRAYPOLAR and ARRAYPATH entries and the array object's paragraph; the points wo
   left out); a Divide path array's grips; the path's Items edited in the palette (d20g missed);
 - the Spanish palette labels d07 cuts short (ARRAYS-D76);
 - the hover menus and Ctrl cycling, with every other object's (drafting-aids.md); the path
-  association (ARRAYS-D9); Base point, Levels, a polar or path array's Rows; ARRAYEDIT, ARRAYCLOSE.
+  association (ARRAYS-D9); Base point, a polar or path array's Rows and Levels (ARRAYRECT's Levels done, p430–p444); ARRAYEDIT, ARRAYCLOSE.
 
 Analogues for the reviews that follow: the Properties review's object filter still counts an array
 with the block references; the Blocks review owns the anonymous blocks' purge on save

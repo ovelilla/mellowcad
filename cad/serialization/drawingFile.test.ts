@@ -1541,8 +1541,12 @@ describe("blocks", () => {
       spacing: 6,
       align: true,
     }
+    // Version 41's levels.
+    const stacked = { ...rect, levels: 3, levelSpacing: -5 }
     const damaged = [
       { ...rect, columns: 0 },
+      { ...stacked, levels: 1.5 },
+      { ...stacked, levelSpacing: null },
       { ...rect, rows: 32768 },
       { ...rect, axis: { x: 0, y: 0 } },
       { ...rect, colSpacing: "6" },
@@ -1561,14 +1565,21 @@ describe("blocks", () => {
     ]
     const parsed = file({
       blocks: [{ name: "*U1", entities: bar }],
-      entities: [rect, polar, path, ...damaged].map(array),
+      entities: [rect, polar, path, stacked, ...damaged].map(array),
     })
 
-    expect(parsed.entities).toHaveLength(3 + damaged.length)
-    const [r, o, a] = parsed.entities.map((e) =>
+    expect(parsed.entities).toHaveLength(4 + damaged.length)
+    const [r, o, a, l] = parsed.entities.map((e) =>
       e.type === "insert" ? e.array : undefined
     )
-    expect(r).toEqual({ ...rect, axis: { x: 0, y: 1 } })
+    // Before 41, one level.
+    expect(r).toEqual({
+      ...rect,
+      levels: 1,
+      levelSpacing: 1,
+      axis: { x: 0, y: 1 },
+    })
+    expect(l).toEqual({ ...stacked, axis: { x: 0, y: 1 } })
     expect(o).toEqual(polar)
     // From 31 a stretched ring keeps its source's anchor; a malformed one is
     // none, the source where it stands.
@@ -1583,7 +1594,7 @@ describe("blocks", () => {
     expect(stretched[1]).toEqual(polar)
     // The length is the pieces', whatever the file says.
     expect(a?.kind === "path" && a.path.length).toBeCloseTo(100 + 10 * Math.PI)
-    for (const plain of parsed.entities.slice(3)) {
+    for (const plain of parsed.entities.slice(4)) {
       expect(plain).not.toHaveProperty("array")
     }
   })

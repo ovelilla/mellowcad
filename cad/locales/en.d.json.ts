@@ -391,6 +391,8 @@ declare const source: {
         "rows": string
         "rowSpacing": string
         "rowElevationIncrement": string
+        "levels": string
+        "levelSpacing": string
         "includedAxisAngle": string
         "direction": string
         "items": string
@@ -981,6 +983,8 @@ declare const source: {
         "Spacing": string
         "COLumns": string
         "Rows": string
+        "Levels": string
+        "Total": string
         "eXit": string
         "Unit cell": string
         "Yes": string
@@ -1422,6 +1426,8 @@ declare const source: {
       "rows": string
       "columnSpacing": string
       "rowSpacing": string
+      "levels": string
+      "levelSpacing": string
       "items": string
       "fillAngle": string
       "spacing": string
@@ -1680,6 +1686,9 @@ declare const source: {
       "specifyDistanceBetweenColumns": string
       "specifyDistanceBetweenRows": string
       "specifyIncrementingElevationBetweenRows": string
+      "enterNumberOfLevels": string
+      "specifyDistanceBetweenLevelsOr": string
+      "enterTotalDistanceBetweenLevels": string
       "specifyCenterPointOfArray": string
       "enterNumberOfItemsInArray": string
       "specifyAngleBetweenItems": string

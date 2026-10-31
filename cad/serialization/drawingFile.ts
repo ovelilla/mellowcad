@@ -121,7 +121,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 40
+export const DRAWING_FILE_VERSION = 41
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -593,6 +593,8 @@ function cloneArray(array: ArrayParameters): ArrayParameters {
         colSpacing: array.colSpacing,
         rowSpacing: array.rowSpacing,
         rowElevation: array.rowElevation,
+        levels: array.levels,
+        levelSpacing: array.levelSpacing,
         axis: { x: array.axis.x, y: array.axis.y },
       }
     case "polar":
@@ -1460,14 +1462,19 @@ function parseArray(value: unknown): { array?: ArrayParameters } {
       const axis = parseVec2(value.axis)
       const size = axis ? Math.hypot(axis.x, axis.y) : 0
       const { columns, rows, colSpacing, rowSpacing, rowElevation } = value
+      // Version 41 brought the levels; before it, one level 1 apart, as
+      // ARRAYRECT starts a flat source (probe arrays/p139).
+      const { levels = 1, levelSpacing = 1 } = value
       if (
         !axis ||
         !(size > 0) ||
         !count(columns) ||
         !count(rows) ||
+        !count(levels) ||
         !isFiniteNumber(colSpacing) ||
         !isFiniteNumber(rowSpacing) ||
-        !isFiniteNumber(rowElevation)
+        !isFiniteNumber(rowElevation) ||
+        !isFiniteNumber(levelSpacing)
       ) {
         return {}
       }
@@ -1479,6 +1486,8 @@ function parseArray(value: unknown): { array?: ArrayParameters } {
           colSpacing,
           rowSpacing,
           rowElevation,
+          levels,
+          levelSpacing,
           axis:
             Math.abs(size - 1) < 1e-9
               ? axis

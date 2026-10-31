@@ -1,0 +1,27 @@
+_ZOOM
+_W
+-200,-200
+200,200
+_CIRCLE
+10,10
+2
+_ARRAYRECT
+_L
+
+_AS
+_N
+_COU
+1
+1
+_L
+3
+5
+_X
+(progn (setq ss (ssget "_X") i 0) (if ss (repeat (sslength ss) (setq e (entget (ssname ss i))) (terpri) (princ (mapcar (quote (lambda (k) (cdr (assoc k e)))) (quote (5 0 8 10 39 210)))) (setq i (1+ i)))) (princ))
+_ARRAYRECT
+_L
+
+_AS
+_Y
+_X
+_U

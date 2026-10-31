@@ -155,6 +155,8 @@ describe("the rectangular and polar layouts", () => {
       colSpacing: 10,
       rowSpacing: 5,
       rowElevation: 1,
+      levels: 1,
+      levelSpacing: 1,
       axis: arrayAxis(WORLD_UCS),
     }
     const items = rectangularArrayItems(grid)
@@ -172,6 +174,30 @@ describe("the rectangular and polar layouts", () => {
     })
     expect(turned[1].move).toBeCloseToPoint(p(0, 10))
     expect(turned[0].move).toBeCloseToPoint(p(-5, 0))
+  })
+
+  // probe arrays/p438: 2 × 2 × 2 at 6, 6 and 5, rows rising 3 — EXPLODE's
+  // circles at Z 0, 5, 3, 8 in each column.
+  it("stacks the levels innermost, each on top of its row's elevation", () => {
+    const grid = {
+      columns: 2,
+      rows: 2,
+      colSpacing: 6,
+      rowSpacing: 6,
+      rowElevation: 3,
+      levels: 2,
+      levelSpacing: 5,
+      axis: arrayAxis(WORLD_UCS),
+    }
+    expect(rectangularArrayItems(grid).map((item) => item.move)).toEqual([
+      { x: 0, y: 0, z: 5 },
+      { x: 0, y: 6, z: 3 },
+      { x: 0, y: 6, z: 8 },
+      { x: 6, y: 0, z: 0 },
+      { x: 6, y: 0, z: 5 },
+      { x: 6, y: 6, z: 3 },
+      { x: 6, y: 6, z: 8 },
+    ])
   })
 
   it("turns each item about the centre, or carries the base point round", () => {
@@ -211,6 +237,8 @@ describe("an array reference", () => {
       colSpacing: 6,
       rowSpacing: 5,
       rowElevation: 0,
+      levels: 1,
+      levelSpacing: 1,
       axis: { x: 1, y: 0 },
     },
   })

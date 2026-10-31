@@ -27,15 +27,17 @@ us to walk again, whereas a command costs the same before or after it.
    third-party one), drawn on the canvas as AutoCAD draws them (isolines, Hidden, shaded), from
    REGION and its booleans to SWEEP and LOFT. The brief is `docs/next-solids.md`.
 
-Left out of the 2.5D model, each a gap of its own: ARRAYRECT's Levels and POINT's thickness (with
-POINT, below). OSNAPZ is done, every snap found as at 0 and put at ELEVATION's Z in the UCS
+Left out of the 2.5D model, each a gap of its own: POINT's thickness (with POINT, below), and
+TRIM and JOIN of 3D polylines, next. ARRAYRECT's Levels are done, stacked along the UCS's Z with
+their Total, default spacing, palette rows and file (arrays/p430–p444, modify.md's ARRAYRECT);
+a ring's and a path array's Levels and Rows are gaps of their own. OSNAPZ is done, every snap found as at 0 and put at ELEVATION's Z in the UCS
 (osnapz/o01–o10, drafting-aids.md's Object snaps); under OTRACK it is unverified. CHPROP is done, its Color, LAyer, LType, LWeight and
 Thickness as AutoCAD 2027's console asks them (chprop/p01–p22, properties.md's CHPROP); its
 ltScale waits for per-object ltscale, below. The point filters are done, `.X` to `.YZ` at
 every point prompt and in the Point Filters menu, in the UCS (filters/f01–f63, d01–d05,
 drafting-aids.md's Point filters); at `Select objects:` they are a gap of their own. 3DPOLY and SPLINE
 3D are done: the objects whose stored points carry their Z (`draw.md`), a spline kept in its own
-plane when it has one; trimming a 3D polyline and JOIN into one are its own gaps.
+plane when it has one; trimming a 3D polyline and JOIN into one are the gap named above.
 
 Editing a spline is done in its three deliveries: the spline the model's, in space and on knots,
 control points and weights of its own (DXF 40 / 10 / 41), as AutoCAD 2027 leaves TRIM's, BREAK's

@@ -329,6 +329,8 @@
   "interface.property.row.rows": "Rows",
   "interface.property.row.rowSpacing": "Row spacing",
   "interface.property.row.rowElevationIncrement": "Row elevation increment",
+  "interface.property.row.levels": "Levels",
+  "interface.property.row.levelSpacing": "Level spacing",
   "interface.property.row.includedAxisAngle": "Included axis angle",
   "interface.property.row.direction": "Direction",
   "interface.property.row.items": "Items",

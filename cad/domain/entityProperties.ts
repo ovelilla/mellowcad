@@ -16,6 +16,7 @@ import {
 } from "./entityTypes"
 import {
   withGridCounts,
+  withGridLevels,
   withGridSpacing,
   withPathItems,
   withPathMethod,
@@ -119,6 +120,8 @@ export type EntityProperty =
   | "arrayRows"
   | "arrayRowSpacing"
   | "arrayRowElevation"
+  | "arrayLevels"
+  | "arrayLevelSpacing"
   /** A ring's Direction, a choice: 1 Clockwise, 0 Counter-clockwise. */
   | "arrayClockwise"
   | "arrayItems"
@@ -600,6 +603,10 @@ function applyArrayProperty(
           return withGridSpacing(array, "row", length)
         case "arrayRowElevation":
           return { ...array, rowElevation: length }
+        case "arrayLevels":
+          return withGridLevels(array, value)
+        case "arrayLevelSpacing":
+          return withGridSpacing(array, "level", length)
         default:
           return null
       }

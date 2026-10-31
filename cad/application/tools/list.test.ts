@@ -1010,6 +1010,21 @@ describe("LIST against AutoCAD 2027's console in English", () => {
     ])
   })
 
+  // arrays/p430, p431: the levels and their spacing, negative too.
+  it("lists a rectangular array's levels (arrays/p430, p431)", () => {
+    const cad = run(
+      en,
+      "_CIRCLE|10,10|2|_ARRAYRECT|_L||_L|3|5|_X|_LIST|_L||_ARRAYRECT|_L||_L|2|-5|_X|_LIST|_L|"
+    )
+    const levels = listed(cad).filter((line) => / level/i.test(line))
+    expect(levels).toEqual([
+      "         Number of levels:          3",
+      "            Level spacing:     5.0000",
+      "         Number of levels:          2",
+      "            Level spacing:    -5.0000",
+    ])
+  })
+
   it("lists picks in the order picked (p435)", () => {
     const cad = run(
       en,

@@ -982,20 +982,31 @@ class Report {
       entitiesBounds(block.entities),
       this.settings.ucs
     )
+    // Nor levels: one, 1 apart (p420).
     const rows =
       array.kind === "rectangular"
         ? {
             rows: array.rows,
             spacing: array.rowSpacing,
             rise: array.rowElevation,
+            levels: array.levels,
+            levelSpacing: array.levelSpacing,
           }
-        : { rows: 1, spacing: source.height * 1.5, rise: 0 }
+        : {
+            rows: 1,
+            spacing: source.height * 1.5,
+            rise: 0,
+            levels: 1,
+            levelSpacing: 1,
+          }
     const rowLines = () => {
       this.say("listArrayRows", { count: count(rows.rows) })
       this.say("listArrayRowSpacing", { spacing: spacing(rows.spacing) })
       this.say("listArrayRowElevation", { spacing: this.n9(rows.rise) })
-      this.say("listArrayLevels", { count: count(1) })
-      this.say("listArrayLevelSpacing", { spacing: this.n9(1) })
+      this.say("listArrayLevels", { count: count(rows.levels) })
+      this.say("listArrayLevelSpacing", {
+        spacing: spacing(rows.levelSpacing),
+      })
     }
     switch (array.kind) {
       case "rectangular":

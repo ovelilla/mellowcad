@@ -3952,11 +3952,11 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   properties: -
   prompt| Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
 > ARRAYRECT
-  prompt: ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:
+  prompt: ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:
   asks: 
   tip: Select grip to edit array or
   dyn: 
-  options: [AS] ASsociative, [COU] COUnt, [S] Spacing, [COL] COLumns, [R] Rows, [X] eXit
+  options: [AS] ASsociative, [COU] COUnt, [S] Spacing, [COL] COLumns, [R] Rows, [L] Levels, [X] eXit
   properties: Circle (1) {Thickness=0.00 mm~} [Geometry: Center X=0.00~, Center Y=0.00~, Center Z=0.00~, Radius=10.00 mm~, Diameter=20.00 mm~, Circumference=62.83 mm~, Area=314.16 mm²~, Normal X=0.00, Normal Y=0.00, Normal Z=1.00]
   command| ARRAYRECT
   info| 1 found
@@ -3967,7 +3967,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: Specify the distance between columns or
   dyn: "Column spacing"=""||mm*
   options: [U] Unit cell
-  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: S
 > U
   prompt: ARRAYRECT Specify first corner point of unit cell:
   asks: "First corner"
@@ -3976,11 +3976,11 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   options: -
   prompt| Specify the distance between columns or [Unit cell] <30>: U
 > FOO
-  prompt: ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:
+  prompt: ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:
   asks: 
   tip: Select grip to edit array or
   dyn: 
-  options: [AS] ASsociative, [COU] COUnt, [S] Spacing, [COL] COLumns, [R] Rows, [X] eXit
+  options: [AS] ASsociative, [COU] COUnt, [S] Spacing, [COL] COLumns, [R] Rows, [L] Levels, [X] eXit
   prompt| Specify first corner point of unit cell: FOO
   error| Requires numeric nonzero value.
 > S
@@ -3989,7 +3989,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: Specify the distance between columns or
   dyn: "Column spacing"=""||mm*
   options: [U] Unit cell
-  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: S
 > U
   prompt: ARRAYRECT Specify first corner point of unit cell:
   asks: "First corner"
@@ -4003,11 +4003,11 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: Specify opposite corner:
   prompt| Specify first corner point of unit cell:
 > opposite
-  prompt: ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:
+  prompt: ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:
   asks: 
   tip: Select grip to edit array or
   dyn: 
-  options: [AS] ASsociative, [COU] COUnt, [S] Spacing, [COL] COLumns, [R] Rows, [X] eXit
+  options: [AS] ASsociative, [COU] COUnt, [S] Spacing, [COL] COLumns, [R] Rows, [L] Levels, [X] eXit
   prompt| Specify opposite corner:
 > enter
   prompt: Command:
@@ -4016,7 +4016,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: -
   options: -
   properties: -
-  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:
 > ARRAYPOLAR
   prompt: ARRAYPOLAR Specify center point of array:
   asks: "Center point"
@@ -6932,13 +6932,13 @@ Specify next point or
   command| ARRAYRECT
   info| 1 found
   info| Type = Rectangular  Associative = Yes
-  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: _COU
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: _COU
   prompt| Enter the number of columns <4>: 4
   prompt| Enter the number of rows <3>: 3
-  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: _S
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: _S
   prompt| Specify the distance between columns or [Unit cell] <6>: 8
   prompt| Specify the distance between rows <6>: 8
-  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: _X
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: _X
   command| ARRAYPOLAR
   info| 1 found
   info| Type = Polar  Associative = Yes
@@ -6950,14 +6950,14 @@ Specify next point or
   prompt| Select path curve: 65,0
   prompt| Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>: _X
 > select rectangular
-  properties: Array (Rectangular) (1) [Geometry: Base X=-30.00, Base Y=0.00, Base Z=0.00] [Misc: Columns=4~, Column spacing=8.00 mm~, Rows=3~, Row spacing=8.00 mm~, Row elevation increment=0.00 mm~, Included axis angle=90°]
+  properties: Array (Rectangular) (1) [Geometry: Base X=-30.00, Base Y=0.00, Base Z=0.00] [Misc: Columns=4~, Column spacing=8.00 mm~, Rows=3~, Row spacing=8.00 mm~, Row elevation increment=0.00 mm~, Levels=1~, Level spacing=1.00 mm~, Included axis angle=90°]
 > grab column count
   asks: "Columns"
   dyn: "Columns"=""|4|*
 > type 6
   asks: -
   dyn: -
-  properties: Array (Rectangular) (1) [Geometry: Base X=-30.00, Base Y=0.00, Base Z=0.00] [Misc: Columns=6~, Column spacing=8.00 mm~, Rows=3~, Row spacing=8.00 mm~, Row elevation increment=0.00 mm~, Included axis angle=90°]
+  properties: Array (Rectangular) (1) [Geometry: Base X=-30.00, Base Y=0.00, Base Z=0.00] [Misc: Columns=6~, Column spacing=8.00 mm~, Rows=3~, Row spacing=8.00 mm~, Row elevation increment=0.00 mm~, Levels=1~, Level spacing=1.00 mm~, Included axis angle=90°]
 > grab column spacing
   asks: "Column spacing"
   dyn: "Column spacing"=""|8.00|mm*

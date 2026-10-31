@@ -22,6 +22,7 @@ import { insertFlatGeometry } from "../../domain/blocks"
 import { createBlockDefinition, createInsert } from "../../domain/entities"
 import { THEME } from "../../scene/theme"
 import { es } from "../../locales/es"
+import { ptBR } from "../../locales/pt-BR"
 
 /**
  * ARRAY, ARRAYRECT, ARRAYPOLAR, ARRAYPATH, the arrays' shared prompts and the
@@ -101,7 +102,7 @@ describe("ARRAYRECT", () => {
 
     cad.command("ARRAYRECT").click(p(20, 0)).enter()
     expect(cad.state().commandLine.prompt).toBe(
-      "ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:"
+      "ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:"
     )
     cad.option("COUnt")
     expect(cad.state().commandLine.prompt).toBe(
@@ -130,21 +131,21 @@ describe("ARRAYRECT", () => {
       "Select objects: 1 found",
       "Select objects:",
       "Type = Rectangular  Associative = Yes",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: COU",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: COU",
       "Enter the number of columns <4>: 0",
       "Value must be positive and nonzero.",
       "Enter the number of columns <4>: 2.5",
       "Requires a positive nonzero integer or option keyword.",
       "Enter the number of columns <4>: 3",
       "Enter the number of rows <3>: 2",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: S",
       "Specify the distance between columns or [Unit cell] <60>: 100",
       "Specify the distance between rows <1>: 50",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: R",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: R",
       "Enter the number of rows <2>:",
       "Specify the distance between rows <50>:",
       "Specify the incrementing elevation between rows <0>: 5",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:",
     ])
     expect(shown(cad).length).toBe(6)
     const raised = linesOf(shown(cad)).filter((line) => line.start.y === 50)
@@ -161,7 +162,7 @@ describe("ARRAYRECT", () => {
     cad.select("L1").command("MATRIZRECTANG")
     expect(cad.commandLog().at(-1)).toBe("Tipo = Rectangular  Asociativa = Sí")
     expect(cad.state().commandLine.prompt).toBe(
-      "MATRIZRECTANG Seleccione un pinzamiento para editar la matriz o [Asociativa/COntar/Espaciado/Columnas/Filas/Salir] <Salir>:"
+      "MATRIZRECTANG Seleccione un pinzamiento para editar la matriz o [Asociativa/COntar/Espaciado/Columnas/Filas/Niveles/Salir] <Salir>:"
     )
     cad.option("COUnt")
     expect(cad.state().commandLine.prompt).toBe(
@@ -241,10 +242,10 @@ describe("ARRAYRECT", () => {
     expect(cad.commandLog().slice(-11)).toEqual([
       "Specify first corner point of unit cell: FOO",
       "Requires numeric nonzero value.",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: S",
       "Specify the distance between columns or [Unit cell] <15>: U",
       "Specify first corner point of unit cell:",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: S",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: S",
       "Specify the distance between columns or [Unit cell] <15>: U",
       "Specify first corner point of unit cell: 0,0",
       "Specify opposite corner: FOO",
@@ -361,7 +362,7 @@ describe("ARRAY", () => {
       "Type = Rectangular  Associative = Yes",
     ])
     expect(cad.state().commandLine.prompt).toBe(
-      "ARRAY Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:"
+      "ARRAY Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:"
     )
     answer(cad, "_COU", "2", "1", "")
     expect(centres(cad)).toHaveLength(2)
@@ -510,11 +511,11 @@ describe("ARRAYRECT's answers", () => {
 
     answer(cad, "_ARRAYRECT", "_L", "", "5", "30,20")
     expect(cad.commandLog().slice(-2)).toEqual([
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: 5",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: 30,20",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: 5",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: 30,20",
     ])
     expect(cad.state().commandLine.prompt).toBe(
-      "ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:"
+      "ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:"
     )
   })
 
@@ -632,6 +633,229 @@ describe("ARRAYRECT's answers", () => {
       expect(cad.selectedIds()).toEqual([])
       expect(centres(cad)).toHaveLength(12)
     }
+  })
+})
+
+/**
+ * The log after the array's type, without the main prompt's lines, whose
+ * keywords other tests hold.
+ */
+function answered(cad: CadHarness): string[] {
+  const log = cad.commandLog()
+  const type = log.findIndex((line) => /^(Type|Tipo) = /.test(line))
+  return log
+    .slice(type + 1)
+    .filter((line) => !/^(Select grip|Seleccione un|Selecione Alça)/.test(line))
+}
+
+/** Each circle shown, `x,y,z` in the WCS. */
+function circlesInSpace(cad: CadHarness): string[] {
+  return shown(cad).flatMap((e) => {
+    if (e.type !== "circle") return []
+    const c = entityPointToWorld(e, e.center)
+    return [[c.x, c.y, c.z].map((v) => round4(v) || 0).join(",")]
+  })
+}
+
+describe("ARRAYRECT's Levels", () => {
+  // probes arrays/p430, p431, p433 (en, es, pt-BR): the main prompt's L, the
+  // count's refusals as COLumns', the distance's and Total's.
+  it("asks the levels and their distance, refusing as the console does", () => {
+    const cad = createHarness({ entities: [circle()] })
+    answer(cad, "_ARRAYRECT", "_L", "", "_L")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYRECT Enter the number of levels <1>:"
+    )
+    answer(cad, "FOO", "0", "-1", "1.5", "32768", "3")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYRECT Specify the distance between levels or [Total] <1>:"
+    )
+    answer(cad, "FOO", "0", "_T")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYRECT Enter total distance between start and end levels <2>:"
+    )
+    answer(cad, "FOO", "0", "-10", "_X")
+
+    expect(answered(cad)).toEqual([
+      "Enter the number of levels <1>: FOO",
+      "Requires a positive nonzero integer or option keyword.",
+      "Enter the number of levels <1>: 0",
+      "Value must be positive and nonzero.",
+      "Enter the number of levels <1>: -1",
+      "Value must be positive and nonzero.",
+      "Enter the number of levels <1>: 1.5",
+      "Requires a positive nonzero integer or option keyword.",
+      "Enter the number of levels <1>: 32768",
+      "Requires an integer between 1 and 32767, or option keyword.",
+      "Enter the number of levels <1>: 3",
+      "Specify the distance between levels or [Total] <1>: FOO",
+      "Requires numeric distance, two points, or option keyword.",
+      "Specify the distance between levels or [Total] <1>: 0",
+      "Value must be nonzero.",
+      "Specify the distance between levels or [Total] <1>: _T",
+      "Enter total distance between start and end levels <2>: FOO",
+      "Requires numeric distance or two points.",
+      "Enter total distance between start and end levels <2>: 0",
+      "Value must be nonzero.",
+      "Enter total distance between start and end levels <2>: -10",
+    ])
+    expect(arrayOf(cad).array).toMatchObject({ levels: 3, levelSpacing: -5 })
+  })
+
+  // probe arrays/p430: 4 × 3 × 3; p443: kept by the file.
+  it("stacks the grid, saved with its levels", () => {
+    const cad = createHarness({ entities: [circle()] })
+    answer(cad, "_ARRAYRECT", "_L", "", "_L", "3", "5", "_X")
+
+    expect(circlesInSpace(cad)).toHaveLength(36)
+    expect(circlesInSpace(cad).slice(0, 3)).toEqual([
+      "10,10,0",
+      "10,10,5",
+      "10,10,10",
+    ])
+    const copy = createHarness()
+    copy.runtime.loadDrawing(cad.runtime.serializeDrawing())
+    expect(circlesInSpace(copy)).toEqual(circlesInSpace(cad))
+  })
+
+  // probes arrays/p432, p433, p434: each answer the next default; Total's
+  // the first level to the last, the spacing itself at one level.
+  it("offers the answers given, and Total from the first level to the last", () => {
+    const cad = createHarness({ entities: [circle()] })
+    answer(cad, "_ARRAYRECT", "_L", "", "_L", "4", "7", "_L", "", "_T")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYRECT Enter total distance between start and end levels <21>:"
+    )
+    answer(cad, "", "_L", "1", "_T")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ARRAYRECT Enter total distance between start and end levels <7>:"
+    )
+    answer(cad, "10", "_X")
+
+    expect(answered(cad)).toEqual([
+      "Enter the number of levels <1>: 4",
+      "Specify the distance between levels or [Total] <1>: 7",
+      "Enter the number of levels <4>:",
+      "Specify the distance between levels or [Total] <7>: _T",
+      "Enter total distance between start and end levels <21>:",
+      "Enter the number of levels <4>: 1",
+      "Specify the distance between levels or [Total] <7>: _T",
+      "Enter total distance between start and end levels <7>: 10",
+    ])
+    expect(arrayOf(cad).array).toMatchObject({ levels: 1, levelSpacing: 10 })
+  })
+
+  // probes arrays/p436, p437, p432: 1.5 × the rise of a line 6 up, of a
+  // circle 4 thick, of an array four levels 7 apart (31.5).
+  it("spaces the levels one and a half times the source's rise", () => {
+    const rising = createHarness()
+    answer(rising, "_LINE", "10,10,0", "12,12,6", "")
+    answer(rising, "_ARRAYRECT", "_L", "", "_L", "")
+    expect(rising.state().commandLine.prompt).toBe(
+      "ARRAYRECT Specify the distance between levels or [Total] <9>:"
+    )
+    const thick = createHarness()
+    answer(thick, "THICKNESS", "4", "_CIRCLE", "10,10", "2", "THICKNESS", "0")
+    answer(thick, "_ARRAYRECT", "_L", "", "_L", "")
+    expect(thick.state().commandLine.prompt).toBe(
+      "ARRAYRECT Specify the distance between levels or [Total] <6>:"
+    )
+    const stacked = createHarness({ entities: [circle()] })
+    answer(stacked, "_ARRAYRECT", "_L", "", "_L", "4", "7", "_X")
+    answer(stacked, "_ARRAYRECT", "_L", "", "_L", "")
+    expect(stacked.state().commandLine.prompt).toBe(
+      "ARRAYRECT Specify the distance between levels or [Total] <31.5>:"
+    )
+  })
+
+  // probe arrays/p435: two points measure in space, at the distance and at
+  // Total.
+  it("takes two points in space at the distance and at Total", () => {
+    const spacing = createHarness({ entities: [circle()] })
+    answer(spacing, "_ARRAYRECT", "_L", "", "_L", "", "0,0,0", "0,3,4", "_X")
+    expect(arrayOf(spacing).array).toMatchObject({ levelSpacing: 5 })
+    const total = createHarness({ entities: [circle()] })
+    answer(total, "_ARRAYRECT", "_L", "", "_L", "3", "_T", "0,0,0", "0,0,6")
+    answer(total, "_X")
+    expect(arrayOf(total).array).toMatchObject({ levels: 3, levelSpacing: 3 })
+  })
+
+  // probe arrays/p438: 2 × 2 × 2, rows rising 3; EXPLODE's circles column by
+  // column, row by row, level by level.
+  it("explodes level by level inside each row, a level on top of its row", () => {
+    const cad = createHarness({ entities: [circle()] })
+    answer(cad, "_ARRAYRECT", "_L", "", "_COU", "2", "2", "_L", "2", "5")
+    answer(cad, "_R", "", "", "3", "_X", "_EXPLODE", "_L", "")
+
+    expect(circlesInSpace(cad)).toEqual([
+      "10,10,0",
+      "10,10,5",
+      "10,16,3",
+      "10,16,8",
+      "16,10,0",
+      "16,10,5",
+      "16,16,3",
+      "16,16,8",
+    ])
+  })
+
+  // probe arrays/p439: under `_UCS _X 90` the levels rise along the UCS's Z,
+  // the WCS's −Y.
+  it("stacks the levels along a tilted UCS's Z", () => {
+    const cad = createHarness()
+    answer(cad, "_UCS", "_X", "90", "_CIRCLE", "10,10", "2")
+    answer(cad, "_ARRAYRECT", "_L", "", "_COU", "2", "1", "_L", "2", "5", "_X")
+
+    expect(circlesInSpace(cad)).toEqual([
+      "10,0,10",
+      "10,-5,10",
+      "16,0,10",
+      "16,-5,10",
+    ])
+  })
+
+  // probe arrays/p440: ASsociative No leaves a copy on each level, one undo
+  // step; p444: MOVE carries the levels.
+  it("leaves loose copies on each level, and moves with the array", () => {
+    const loose = createHarness({ entities: [circle()] })
+    answer(loose, "_ARRAYRECT", "_L", "", "_AS", "_N", "_COU", "1", "1")
+    answer(loose, "_L", "3", "5", "_X")
+    expect(circlesInSpace(loose)).toEqual(["10,10,0", "10,10,5", "10,10,10"])
+    answer(loose, "_U")
+    expect(circlesInSpace(loose)).toEqual(["10,10,0"])
+
+    const moved = createHarness({ entities: [circle()] })
+    answer(moved, "_ARRAYRECT", "_L", "", "_COU", "1", "1", "_L", "2", "5")
+    answer(moved, "_X", "_MOVE", "_L", "", "0,0,0", "10,0,3")
+    expect(circlesInSpace(moved)).toEqual(["20,10,3", "20,10,8"])
+  })
+
+  // probe arrays/p441: 'ZOOM at either prompt resumes it.
+  it("resumes after a transparent ZOOM", () => {
+    const cad = createHarness({ entities: [circle()] })
+    answer(cad, "_ARRAYRECT", "_L", "", "_L", "'_ZOOM", "_E", "2")
+    answer(cad, "'_ZOOM", "_E", "5", "_X")
+    expect(arrayOf(cad).array).toMatchObject({ levels: 2, levelSpacing: 5 })
+  })
+
+  // probes arrays/p430.es, p433.es, p430.pt-BR, p433.pt-BR: Niveles and
+  // Níveis by N, Total by T.
+  it("asks in Spanish and Brazilian Portuguese", () => {
+    const words = (locale: typeof es) => {
+      const cad = createHarness({ locale, entities: [circle()] })
+      answer(cad, "_ARRAYRECT", "_L", "", "N", "3", "T", "-10", "_X")
+      return answered(cad)
+    }
+    expect(words(es)).toEqual([
+      "Indique el número de niveles <1>: 3",
+      "Especifique la distancia entre niveles o [Total] <1>: T",
+      "Introduzca la distancia total entre los puntos inicial y final niveles <2>: -10",
+    ])
+    expect(words(ptBR)).toEqual([
+      "Insira o número de níveis <1>: 3",
+      "Especificar a distância entre níveis ou [Total] <1>: T",
+      "Insira a distância total entre níveis inicial e final <2>: -10",
+    ])
   })
 })
 
@@ -2372,16 +2596,16 @@ describe("the array object (AYO-01)", () => {
     )
     answer(cad, "_N")
     expect(cad.state().commandLine.prompt).toBe(
-      "ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:"
+      "ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:"
     )
     answer(cad, "_X")
     expect(cad.typeCounts()).toEqual({ line: 1, circle: 12 })
     expect(cad.runtime.document.get("C")).toEqual(circle())
     expect(cad.commandLog().slice(-4)).toEqual([
       "Type = Rectangular  Associative = Yes",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: _AS",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: _AS",
       "Create associative array [Yes/No] <Yes>: _N",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>: _X",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: _X",
     ])
 
     answer(cad, "_ARRAYPATH", "12,10", "", "50,0")
@@ -2493,9 +2717,10 @@ describe("the array object (AYO-01)", () => {
 })
 
 describe("ARRAYRECT in a tilted UCS", () => {
-  // No probe: the positions ARRAYRECT gave before AYO, its columns along the
-  // UCS's X, its rows along its Y and their elevation along its Z. Whether
-  // AutoCAD lays a tilted grid so is **unverified**.
+  // The positions ARRAYRECT gave before AYO, its columns along the UCS's X,
+  // its rows along its Y and their elevation along its Z: the columns and the
+  // levels as AutoCAD lays them (probe arrays/p439), the rows and their
+  // elevation **unverified**.
   it("keeps the grid in the UCS's axes, as an array and as loose copies", () => {
     for (const associative of ["_Y", "_N"]) {
       const cad = createHarness()
@@ -2899,8 +3124,8 @@ function retype(cad: CadHarness, label: string, text: string): boolean {
 
 describe("the array's palette (AYG-02)", () => {
   // desktop arrays/d13-1: no Block group; Base X/Y/Z under Geometry; the
-  // grid's rows under Misc, Included axis angle 90 greyed (Levels and Level
-  // spacing are options not built, ARRAYS-D75).
+  // grid's rows under Misc, Levels and Level spacing among them, Included
+  // axis angle 90 greyed.
   it("shows a rectangular array's rows", () => {
     const cad = figure("rectangular")
 
@@ -2914,6 +3139,8 @@ describe("the array's palette (AYG-02)", () => {
         "Rows=3*",
         "Row spacing=8.00 mm*",
         "Row elevation increment=0.00 mm*",
+        "Levels=1*",
+        "Level spacing=1.00 mm*",
         "Included axis angle=90°",
       ],
     ])
@@ -2985,8 +3212,14 @@ describe("the array's palette (AYG-02)", () => {
     expect(retype(cad, "Rows", "2.5")).toBe(false)
     expect(retype(cad, "Columns", "40000")).toBe(false)
     expect(retype(cad, "Column spacing", "0")).toBe(false)
+    // Levels as Rows, its spacing as theirs (**unverified** on the desktop).
+    expect(retype(cad, "Levels", "3")).toBe(true)
+    expect(retype(cad, "Level spacing", "-5")).toBe(true)
+    expect(parameters(cad)).toMatchObject({ levels: 3, levelSpacing: -5 })
+    expect(retype(cad, "Levels", "0")).toBe(false)
+    expect(retype(cad, "Level spacing", "0")).toBe(false)
 
-    answer(cad, "_U", "_U", "_U")
+    answer(cad, "_U", "_U", "_U", "_U", "_U")
     expect(cad.commandLog().slice(-2)).toEqual(["U", "Modify Property"])
     expect(arrayOf(cad)).toEqual(before)
   })
@@ -3077,6 +3310,8 @@ describe("the array's palette (AYG-02)", () => {
         "Filas",
         "Espacio entre filas",
         "Incremento de elevación de filas",
+        "Niveles",
+        "Espaciado de niveles",
         "Incluye el ángulo del eje",
       ],
     ])
@@ -3130,7 +3365,7 @@ function atMainPrompt(
 }
 
 const RECT_MAIN =
-  "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:"
+  "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:"
 
 /** The circles' centres the scene draws, rounded, sorted. */
 function drawnCentres(cad: CadHarness): string[] {

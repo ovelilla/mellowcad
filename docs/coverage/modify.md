@@ -189,8 +189,9 @@ the last type chosen: **unverified**, so `<Rectangular>` always)
 **Implemented:** `Select objects:` (MOVE's counts; ARRAY's set),
 `Type = Rectangular  Associative = Yes` (es `Tipo = Rectangular  Asociativa = Sí`, arrays/p01,
 p04), `= No` (es `= No`) once ASsociative No is the answer, then
-`Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/eXit] <eXit>:` (es
-`Seleccione un pinzamiento para editar la matriz o [Asociativa/COntar/Espaciado/Columnas/Filas/Salir] <Salir>`)
+`Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:` (es
+`Seleccione un pinzamiento para editar la matriz o [Asociativa/COntar/Espaciado/Columnas/Filas/Niveles/Salir] <Salir>`,
+pt-BR `[ASsociativa/CONtagem/Espaçamento/COLunas/Linhas/Níveis/saIr]`)
 over a live preview — the items as the drawing will draw them, each in its own colour, linetype and
 lineweight, the source hidden and drawn as item 1 (desktop arrays/d01-1) — 4 columns along the UCS's X and 3 rows along its Y, one and a
 half times the selection's extents apart, its width and height measured along the UCS's axes (1 where it has
@@ -216,7 +217,22 @@ cell (p125, p127; a negative number too, AutoCAD 2023's), at the opposite one `I
 (p128) (es `[célula de Unidad]`, `Precise primer punto de esquina de la celda de unidad`,
 `Precise esquina opuesta`, `Necesita un valor numérico distinto de cero.`) —, COLumns the number
 and the distance of the columns, Rows those of the rows and
-`Specify the incrementing elevation between rows <0>:` (each row that much higher); es
+`Specify the incrementing elevation between rows <0>:` (each row that much higher), Levels
+`Enter the number of levels <1>:` and `Specify the distance between levels or [Total] <1>:`, the
+levels stacked along the UCS's Z, each on top of its row's elevation (arrays/p430, p438; under
+`_UCS _X 90` along the WCS's −Y, p439), its default one and a half times the set's rise along the
+UCS's Z, 1 where it has none (p436, p437: 9 for a line rising 6, 6 for a circle 4 thick; p432:
+31.5 for an array of four levels 7 apart), the count refusing as COLumns' and the distance 0 as the
+others (p431), two points measuring it in space (p435: `0,0,0` to `0,3,4` is 5); Total
+`Enter total distance between start and end levels <2>:` the first level to the last, offered as
+(levels − 1) × spacing, the spacing itself with one level, and shared among the steps (p433: −10
+over 3 levels is −5 apart; p434: 10 with one level is 10), `FOO` there
+`Requires numeric distance or two points.`, `0` `Value must be nonzero.` (p433); each answer the
+next default of the run, a new run starting at 1 level (p432) (es
+`Indique el número de niveles`, `Especifique la distancia entre niveles o [Total]`,
+`Introduzca la distancia total entre los puntos inicial y final niveles`; pt-BR
+`Insira o número de níveis`, `Especificar a distância entre níveis ou [Total]`,
+`Insira a distância total entre níveis inicial e final`; p430, p433); es
 `Indique el número de columnas`, `Especificar la distancia entre columnas` (Spacing's; COLumns'
 `Especifique…`), `Especifique la elevación incremental entre filas`; a count refuses 0
 (`Value must be positive and nonzero.`, p111) and a fraction
@@ -224,12 +240,12 @@ and the distance of the columns, Rows those of the rows and
 (`Requires an integer between 1 and 32767, or option keyword.`, as ARRAYPOLAR's, p279); the
 preview draws the first 1000 cells (as ARRAYPOLAR's); a distance refuses 0 with
 `Value must be nonzero.` (es `El valor debe ser diferente de cero.`) and asks again, where the
-elevation takes it (p117, p120, p135); `FOO` at Spacing's rows says
+elevation takes it (p117, p120, p135, p431); `FOO` at Spacing's rows says
 `Requires numeric distance or two points.` (es `Requiere una distancia numérica o dos puntos.`),
 at the other distances `…, two points, or option keyword.` (p121, p138); `'ZOOM` at any prompt,
 a count's too, resumes it (p154, p157, p158); eXit or Enter makes the array object below, or with
 ASsociative No the copies, in the drawing's order whatever the pick's (p167), with the source's
-layer, colour, lineweight and Z (p164, p166), the source kept; one undo step (U writes
+layer, colour, lineweight and Z (p164, p166), a copy on each level (p440), the source kept; one undo step (U writes
 `ARRAYRECT`, p159); Escape at the main prompt makes it too, the prompt written with `*Cancel*` (es
 `*Cancelado*`; desktop d08, d08b), at a value's prompt with the values given before it
 (**unverified**: the desktop showed the main prompt only), before the main prompt nothing.
@@ -244,9 +260,10 @@ source's extents centre (p403, p404), ARRAYPOLAR's at the centre, the extents ce
 (p405), ARRAYPATH's at the path's start (p406). Its items are derived from its parameters, kept in
 the block's coordinates, so they are drawn, picked, bounded and snapped to as the drawing's own: a
 pick on any item takes the array (p408), `_END` finds an item's end (p412), and MOVE, COPY (a
-second array, p410), ROTATE, SCALE, MIRROR, STRETCH and its move grips carry it whole; EXPLODE
-gives each item's objects, item by item, on their own layers (p402, p415, p418); U puts the source
-back with its id (p409); the file keeps it (p411a, p411b); PASTECLIP lands it with an anonymous
+second array, p410), ROTATE, SCALE, MIRROR, STRETCH and its move grips carry it whole, its levels
+too (p444); EXPLODE gives each item's objects, item by item — column by column, row by row, then
+level by level (p438) — on their own layers (p402, p415, p418); U puts the source
+back with its id (p409); the file keeps it, its levels too (p411a, p411b, p443); PASTECLIP lands it with an anonymous
 block of its own. Its block is in no list of blocks (INSERT's `?` and default, BLOCK's `?`, the
 Blocks palette), a typed `*U1` is no block INSERT finds, -PURGE's `*` deletes it by name once unused
 (blocks/p147), and a drawing is saved without one no reference places any more (whether AutoCAD's
@@ -286,7 +303,8 @@ step (d18c: U echoes `ARRAYRECT`). Its
 Properties palette (d13; es d07) has no Block group: Geometry `Base X`, `Base Y`, `Base Z`
 read-only (the base point, a ring's its own), a ring's `Center X`, `Center Y`, `Center Z` read-only
 and `Radius` (d20f: 20 puts the base point at 23,45), a path array's `Path length` read-only; Misc —
-rectangular `Columns`, `Column spacing`, `Rows`, `Row spacing`, `Row elevation increment` and
+rectangular `Columns`, `Column spacing`, `Rows`, `Row spacing`, `Row elevation increment`,
+`Levels`, `Level spacing` (their edits as Rows' and Row spacing's: **unverified**) and
 `Included axis angle` 90 read-only (d20a: Columns 5); polar `Direction` (`Counter-clockwise`,
 `Clockwise`), `Items` (the fill kept, d20c: 8 are 45 apart), `Angle between items` (the fill
 `(items − 1) × angle`, d20d: 30 is 150, refused past 360°), `Fill angle` (the items kept, d20e: 180
@@ -294,7 +312,8 @@ is 36 apart), `Rotate items` (Yes / No); path `Method` (`Divide`, `Measure`, Mea
 Divide's spacing), `Items` (by Measure no more than fit: d20g **unverified**), `Item spacing` (the
 items as many as fit, d20h: 10 is 9; by Divide its even share, read-only: **unverified**), `Align
 items` (Yes / No); each edit one undo step, which U names `Modify Property` (d20); es `Columnas`, `Espacio entre columnas`, `Filas`,
-`Espacio entre filas`, `Incremento de elevación de filas`, `Incluye el ángulo del eje`, `Centro X`,
+`Espacio entre filas`, `Incremento de elevación de filas`, `Niveles`, `Espaciado de niveles`
+(pt-BR `Níveis`, `Espaçamento entre níveis`, ax26res 1197, 1198), `Incluye el ángulo del eje`, `Centro X`,
 `Radio`, `Dirección` (`En el sentido antihorario`, `En el sentido horario`), `Elementos`,
 `Ángulo entre elementos`, `Ángulo de relleno`, `Girar objetos`, `Longitud de trayectoria`, `Método`
 (`Dividir`, `Medir`), `Espaciado entre elementos`, `Alinear elementos` — those d07 cuts short
@@ -327,23 +346,23 @@ the main prompt, as no grip writes its own here — `** COLUMN COUNT **`, `Colum
 move grip is hot at the main prompt; the
 palette's Base X and Base Y edits, which move the base point alone, the items staying (d20b: the
 Base point option), and Center X, Y and Z edits (**unverified**); the palette's rows of options not
-built — Levels, Level spacing, a ring's or a path array's Rows, Row spacing and Row elevation
-increment, Start offset, Fill entire path (d13); ARRAYEDIT (p419–p421) and
+built — a ring's or a path array's Rows, Row spacing, Row elevation increment, Levels and Level
+spacing, Start offset, Fill entire path (d13); the base point's Z, the middle of the source's rise
+in AutoCAD (p436: Z 3 for a line from Z 0 to 6; p437: 2 for a circle 4 thick), here the
+reference's; a level grip in a 3D view (`** LEVEL COUNT **`, `** LEVEL SPACING **`,
+`** TOTAL LEVEL SPACING **`, AcArrayRes 5729–5731: whether one shows, **unverified**, no desktop
+pass); ARRAYEDIT (p419–p421) and
 ARRAYCLOSE; no cap on the items but 32767 each way, a large array costing what as many loose
 copies cost to draw and pick; Unit cell's rubber band dashed, as the trace's UseDashedLine 1 says (p123;
 solid here: **unverified** on the desktop); Base point (`Specify base point or [Key point] <centroid>:`, es
-`Especifique un punto base o [punto Clave] <centro de gravedad>:`, p140); Levels
-(`Enter the number of levels or [Expression] <1>:`,
-`Specify the distance between levels or [Total/Expression] <1>:`, es
-`Indique el número de niveles o [Expresión] <1>:`,
-`Especifique la distancia entre niveles o [Total/Expresión] <1>:`, p139); Total at COLumns' and
+`Especifique un punto base o [punto Clave] <centro de gravedad>:`, p140); Total at COLumns' and
 Rows' distances (`Enter total distance between start and end columns <12>:`, `… rows`, es
 `Introduzca la distancia total entre los puntos inicial y final columnas <12>:`, `… filas`, p133,
-p136); the hidden clicK (an integer asked with no prompt, `FOO` refused with
+p136; as Levels', (columns − 1) × spacing offered, p434: 3 columns 6 apart offer 12); the hidden clicK (an integer asked with no prompt, `FOO` refused with
 `Requires a positive nonzero integer.`, es `Requiere un nº entero positivo que no sea cero.`, p141)
 and UPdate (the main prompt asked again, p142); the counts' `[Expression]` and the distances'
-`[Total/Expression]`, which AutoCAD lists (p131, p135; English spells the elevation's
-`[Expresson]`); English's `…/eXit]<eXit>:` with no space before the default, Spanish's with one
+`[Total/Expression]`, which AutoCAD lists (p131, p135, p139; English spells the elevation's
+`[Expresson]`), Levels' too (`Enter expression<1>:`, p442: `2*3` is 6 levels); English's `…/eXit]<eXit>:` with no space before the default, Spanish's with one
 (p01, p04; WHY not built: the space is per question here, not per language, and it changes no
 letter typed); MAXARRAY's message (MAXARRAY is nil in 2027, p00: **unverified**); Expression (WHY not built: it
 ties an associative array to the drawing's parameters, and with no Parameters Manager it would only

@@ -2122,7 +2122,7 @@ export type EntityProperty = "startX" | "startY" | "endX" | "endY" | "radius" | 
 /** A polyline's Closed, a choice: 1 Yes, 0 No. */
  | "closed"
 /** An array's rows (desktop arrays/d13); its Radius is `radius`. */
- | "arrayColumns" | "arrayColumnSpacing" | "arrayRows" | "arrayRowSpacing" | "arrayRowElevation"
+ | "arrayColumns" | "arrayColumnSpacing" | "arrayRows" | "arrayRowSpacing" | "arrayRowElevation" | "arrayLevels" | "arrayLevelSpacing"
 /** A ring's Direction, a choice: 1 Clockwise, 0 Counter-clockwise. */
  | "arrayClockwise" | "arrayItems" | "arrayAngleBetween" | "arrayFillAngle"
 /** A ring's Rotate items, a choice: 1 Yes, 0 No. */
@@ -3571,6 +3571,9 @@ export interface RectangularArray {
     readonly rowSpacing: number;
     /** How far each row rises above the one before it. */
     readonly rowElevation: number;
+    /** The levels stacked along the block's Z, the UCS's when it was made (arrays/p439). */
+    readonly levels: number;
+    readonly levelSpacing: number;
     /** The columns' direction, a unit vector: the UCS's X when it was made. */
     readonly axis: Vec2;
 }

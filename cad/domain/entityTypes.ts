@@ -665,6 +665,9 @@ export interface RectangularArray {
   readonly rowSpacing: number
   /** How far each row rises above the one before it. */
   readonly rowElevation: number
+  /** The levels stacked along the block's Z, the UCS's when it was made (arrays/p439). */
+  readonly levels: number
+  readonly levelSpacing: number
   /** The columns' direction, a unit vector: the UCS's X when it was made. */
   readonly axis: Vec2
 }

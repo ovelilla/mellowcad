@@ -1070,8 +1070,8 @@ function singleEntityInfo(
   // An array's rows, as AutoCAD's palette shows them (desktop arrays/d13,
   // d07): no Block group; its base point read-only, moved alone by the
   // Base point option, which is not built (ARRAYS-D75); the rows of options
-  // not built (Levels, a ring's or a path's Rows, Start offset, Fill entire
-  // path) left out. Lengths in the drawing's units, the reference's scale in.
+  // not built (a ring's or a path's Rows and Levels, Start offset, Fill
+  // entire path) left out. Lengths in the drawing's units, the reference's scale in.
   const arrayGroups = (
     insert: InsertEntity,
     array: ArrayParameters
@@ -1109,6 +1109,12 @@ function singleEntityInfo(
               "rowElevationIncrement",
               "arrayRowElevation",
               scaled(array.rowElevation)
+            ),
+            countRow("levels", "arrayLevels", array.levels),
+            lengthRow(
+              "levelSpacing",
+              "arrayLevelSpacing",
+              scaled(array.levelSpacing)
             ),
             // The angle between the columns and the rows, 90 while the grid
             // has no Axis Angle grip to skew it (ARRAYS-D75).
