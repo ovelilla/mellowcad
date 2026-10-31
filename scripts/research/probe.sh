@@ -39,7 +39,9 @@ if (($#)); then ids=("$@"); else
   ids=()
   for f in "$src"/*.txt; do
     [[ -e $f ]] || continue
-    id=$(basename "$f" .txt); id=${id%.es}; id=${id%.en}; ids+=("${id%.plain}")
+    id=$(basename "$f" .txt)
+    [[ $id =~ ^(.+)\.[a-z]{2,3}$ ]] && id=${BASH_REMATCH[1]}
+    ids+=("${id%.plain}")
   done
   mapfile -t ids < <(printf '%s\n' "${ids[@]}" | sort -u)
 fi

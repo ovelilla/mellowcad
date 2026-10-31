@@ -111,10 +111,12 @@ export const loose = (text) =>
     .replace(/[^\p{L}\p{N}{}]+/gu, " ")
     .trim()
 
-export function forms(text) {
+// A string whole, up to its keyword list, and without the "or" before the list: English's, or
+// the language's `orWords` for a translated table.
+export function forms(text, or = / or$/) {
   const full = fromTable(text)
   const cut = head(full)
-  return [...new Set([full, cut, cut.replace(/ (or|o|u)$/, "")])]
+  return [...new Set([full, cut, cut.replace(or, "")])]
 }
 
 export function index(tableMap, normal = (form) => form) {

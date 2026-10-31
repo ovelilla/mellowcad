@@ -139,7 +139,7 @@ for (const [key, english] of entries) {
     const ids = [...new Set(matched.map(({ id }) => id))]
     const translatedOf = (tableMap) =>
       ids.flatMap((id) =>
-        tableMap.has(id) ? forms(tableMap.get(id)).map(pattern) : []
+        tableMap.has(id) ? forms(tableMap.get(id), or).map(pattern) : []
       )
     const fits = (regexes) =>
       trForm !== undefined && regexes.some((p) => p.test(trForm))

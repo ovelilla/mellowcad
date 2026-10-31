@@ -71,7 +71,8 @@ in `cad/docs/languages.md`, and give it its entries in `ENGINE_LOCALES` (`i18n/e
 ## 4. The command language (`localized` only)
 
 1. Extract the tables: `node scripts/research/extract-strings.mjs --lang <tag>` (installed pack),
-   or the folder of a pack opened with 7-Zip and `--pgp` its `acad.pgp`.
+   or `scripts/research/open-pack.sh --lang <tag> <update.exe> <pack.exe>` (not installed: the
+   current update's tables, the pack's `acad.pgp`; skill `autocad-research`).
 2. `node scripts/research/propose-commands.mjs --lang <tag>`: its JSON is what one table string
    settles; its report, every key. What it leaves out (several strings, an ICU select, plurals,
    partial matches, no source) is worded by hand, from the console.

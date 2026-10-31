@@ -40,14 +40,18 @@ catalogs use (`en`, `es`, `pt-BR`); `--lang <tag>` picks one in every script, Sp
 `node scripts/research/pair.mjs "<regex>"` prints every English string that matches, beside the
 translated one of the same id. `node scripts/research/extract-strings.mjs --lang <tag>` writes a
 language's tables from the install's folder of its culture (`es` is `es-ES`; `zh` needs its
-region), which only its language pack fills; for a pack not installed, 7-Zip opens its `.exe`
-without running anything (Spanish's pack is named in `docs/i18n/es.md`): pass the folder of its
-DLLs and `--pgp` its `acad.pgp`. It reads the files, nothing runs. **An update rewords prompts**:
-2027's update turned DIMANGULAR's `Designe primer extremo` into `Designe primer punto final del
-ángulo`, so a table from the release's language pack is not the current product. After an AutoCAD
-update, move the tables to `previous/` and extract them again (the script will not overwrite a
-table that changed; skill `language-review`). The installed language packs are English and
-Spanish; installing another on the owner's AutoCAD is asked first. AutoCAD has none for Arabic.
+region), which only its language pack fills. For a language not installed,
+`scripts/research/open-pack.sh --lang <tag> <update.exe> <pack.exe>` opens Autodesk's installers
+with 7-Zip (its own Linux build, `7zz`: Ubuntu has none) and runs nothing: the tables from the
+current update (`AutoCAD_2027.1_Update.exe` carries every culture's resource DLLs), `acad.pgp` from
+the language pack, both linked from the forum thread "2027 Product download links" (the script
+says where each lives inside). **An update rewords prompts**: 2027.1 turned DIMANGULAR's
+`Designe primer extremo` into `Designe primer punto final del ángulo`, and 101 strings of pt-BR's
+(`extremidade` into `ponto final`), so a table from the release's language pack alone is not the
+current product; the update's Spanish is the installed one byte for byte. After an AutoCAD update,
+move the tables to `previous/` and extract them again (the script will not overwrite a table that
+changed; skill `language-review`). The installed language packs are English and Spanish;
+installing another on the owner's AutoCAD is asked first. AutoCAD has none for Arabic.
 The palettes' labels are in `ax24res.dll` / `ax26res.dll` and `acappres.dll`.
 
 `node scripts/research/catalog-sweep.mjs` checks a catalog against the tables (skill

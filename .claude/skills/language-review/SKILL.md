@@ -29,8 +29,9 @@ to `docs/plans/<tag>-language-review.md` first, as `command-review` does.
 `Designe primer extremo`).
 
 1. Move the language's tables to `research/strings/previous/` and extract them again,
-   `acad.pgp` included: `node scripts/research/extract-strings.mjs --lang <tag>` (skill
-   `autocad-research`; it refuses to overwrite a table that changed).
+   `acad.pgp` included: `node scripts/research/extract-strings.mjs --lang <tag>`, or for a
+   language whose pack is not installed `scripts/research/open-pack.sh` with the new update (skill
+   `autocad-research`; both refuse to overwrite a table that changed).
 2. `node scripts/research/catalog-sweep.mjs --lang <tag>`, read state by state as annex-catalogs.md
    §2 says. `lang-2027` and `en-2027` are findings, each confirmed by a console probe of the prompt
    (`scripts/research/probe.sh --lang <tag>`) before the catalog changes; the console beats the

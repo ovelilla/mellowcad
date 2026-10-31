@@ -8,7 +8,8 @@
  *   node scripts/research/extract-strings.mjs --lang pt-BR <folder> --pgp <acad.pgp>
  *
  * By default the DLLs come from the install's folder of the language's culture (`pt-BR/`, `es-ES/`),
- * which only a language pack fills, and `acad.pgp` from `UserDataCache/<culture>/Support/`. A
+ * which only a language pack fills, and `acad.pgp` from `UserDataCache/<culture>/Support/`; a
+ * language not installed comes out of Autodesk's installers with open-pack.sh. A
  * table that would change is not overwritten: move the old one to `previous/` first (it is what
  * tells an update's rewording apart), or pass `--replace`.
  *
