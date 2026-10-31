@@ -8,14 +8,17 @@ import { COMMAND_LANGUAGE, LOCALE_STATUS, routing } from "./routing"
 
 // Each catalog's own completeness is its test's (messages.test.ts, the
 // engine's and the editor's locales.test.ts); this one holds a live language
-// to having every piece, so none of it falls back to English unseen.
+// to having every piece, so none of it falls back to English unseen, and to
+// its page in docs/i18n/, where its words and its review are kept.
 const LIVE_TRANSLATIONS = routing.locales.filter(
   (locale) =>
     locale !== routing.defaultLocale && LOCALE_STATUS[locale] === "live"
 )
 
+const repoFile = (...parts: string[]) => join(__dirname, "..", ...parts)
+
 function engineCatalog(locale: string): Record<string, unknown> | undefined {
-  const file = join(__dirname, "..", "cad", "locales", `${locale}.json`)
+  const file = repoFile("cad", "locales", `${locale}.json`)
   return existsSync(file) ? JSON.parse(readFileSync(file, "utf8")) : undefined
 }
 
@@ -32,5 +35,9 @@ describe.each(LIVE_TRANSLATIONS)("the live language %s", (locale) => {
     expect(engineCatalog(locale)?.commands !== undefined).toBe(
       COMMAND_LANGUAGE[locale] === "localized"
     )
+  })
+
+  it("has its page in docs/i18n/", () => {
+    expect(existsSync(repoFile("docs", "i18n", `${locale}.md`))).toBe(true)
   })
 })

@@ -1,6 +1,6 @@
 ---
 name: new-command
-description: Checklist for adding an AutoCAD command, dash command or system variable to the engine — the tool, every registration point, the catalogs in three languages, transparency, tests, snapshots, the rail, the landing's filing and the coverage entry. Use when a change adds a command a user can type.
+description: Checklist for adding an AutoCAD command, dash command or system variable to the engine — the tool, every registration point, the catalogs in every declared language, transparency, tests, snapshots, the rail, the landing's filing and the coverage entry. Use when a change adds a command a user can type.
 ---
 
 # Adding a command
@@ -30,14 +30,17 @@ wording (skill `autocad-research`). How a tool is written: `.claude/rules/cad-to
      `commands.keywords.<NAME>`, `commands.prompts` (one id per `question()`),
      `commands.messages`, `commands.keywordLabels` / `promptKeywords` where AutoCAD's `initget`
      needs them, and `interface.tool.<id>`.
-   - `cad/locales/es.json`: the same keys, Spanish AutoCAD's words from the 2027 tables; a name
-     no source shows is noted **unverified** in the coverage entry.
-   - `cad/locales/ar.json`: `interface.tool.<id>` only (Arabic has no command language).
+   - Each language of `routing.locales` (`i18n/routing.ts`), by its `COMMAND_LANGUAGE`: a
+     `localized` one (Spanish) gets the same keys, its AutoCAD's words from the 2027 tables
+     (`propose-commands.mjs --lang <tag>` reports the new ids, skill `autocad-research`), and a
+     name no source shows is noted **unverified** in the coverage entry; a `global` one (Arabic)
+     gets `interface.tool.<id>` only.
    - `npm run locales`, and commit all it writes.
 
    **Enforced** by `cad/locales/locales.test.ts`: every `TOOL_COMMANDS` name and label in English,
-   Spanish's command language complete, every language's `interface` complete, compiled files
+   each command language complete, every language's `interface` complete, compiled files
    current, no shared name or alias, one abbreviation per keyword per prompt. (6d870a7, 85565ad.)
+
 7. **Tests** with the harness (`.claude/rules/testing.md`): `cad/application/tools/*.test.ts`, or a
    file of its own beside the runtime when it is about history or routing (`cad/application/dashPan.test.ts`,
    `cad/application/mredoCommand.test.ts`). Cite the console probe or table id in each test that reproduces one.

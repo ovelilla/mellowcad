@@ -1,6 +1,6 @@
 # Un sistema para los idiomas — brief
 
-> **Estado:** fases 1 a 3 hechas (2026-10-31); las 4 y 5, sin empezar. Se borra cuando el portugués
+> **Estado:** fases 1 a 4 hechas (2026-10-31); la 5, sin empezar. Se borra cuando el portugués
 > de Brasil esté `live` con el sistema entero.
 
 ## 1. Objetivo
@@ -47,8 +47,8 @@ puede estar a medias; un `live`, nunca, tampoco cuando el inglés cambia despué
 - **Etiquetas BCP 47**: `pt-BR` en catálogos, `lang` y `og:locale`; la URL, en minúsculas (`/pt-br`)
   si next-intl lo permite con root params (se comprueba en la fase 5; si no, `/pt-BR`).
 - **Una sola fuente por idioma en `docs/`**: `docs/i18n/<tag>.md` reúne sus términos, fuentes,
-  desviaciones y estado de revisión (hoy repartidos entre el glosario y `docs/coverage/spanish.md` /
-  `arabic.md`); un README en esa carpeta, lo común.
+  desviaciones y estado de revisión (antes repartidos entre el glosario y la cobertura del español
+  y del árabe); un README en esa carpeta, lo común.
 - Orden de idiomas tras el sistema: portugués de Brasil (piloto), francés, alemán, italiano; los demás
   según la analítica (`@vercel/analytics`). Los de solo interfaz (turco, persa…), cuando la
   analítica los pida.
@@ -95,6 +95,17 @@ Una fase, un commit (o varios si se separan solos). Las 1 a 4 no cambian nada vi
    `docs/plans/<tag>-language.md` (investigación fija: AutoCAD y language pack, `acad.pgp`, formato
    de las palabras clave, fuentes, plurales, longitud, IME); skill nuevo `language-review` para el
    mantenimiento; `new-command`, `finish-feature` y `command-review` recorren los idiomas declarados.
+   Hecho así: el glosario y las dos páginas de cobertura se movieron sin reescribirse; la tabla de
+   términos se partió por idioma (columna inglesa en cada una) y el README lleva lo común (qué
+   tiene cada página y en qué orden, las marcas, lo que nunca se traduce, las fuentes de un
+   `localized`). La fuente de Readex Pro pasó de `i18n.md` a `ar.md`. La ayuda de 2027 responde en
+   `ESP`, `PTB`, `FRA`, `DEU` e `ITA` con los mismos GUID; el MCP con `pt_BR` devuelve resultados
+   ingleses, así que se busca en inglés y se lee en la carpeta del idioma. `probe.sh` toma
+   `--lang` como los demás scripts y lee de la tabla (22843) el `Comando:` en que debe acabar cada
+   probe; en español sale idéntico. `language-review` mide también un archivo estático contra los
+   20 MB de Vercel, nueva fila de los presupuestos. `cad/locales/locales.test.ts` sigue fijando el
+   árabe a mano: `cad/` no puede importar `i18n/routing.ts`, y `i18n/languages.test.ts` ya lo
+   cubre por `COMMAND_LANGUAGE`.
 5. **Piloto: `pt-BR`.** Con el sistema entero, de `draft` a `live`; lo que no encaje se corrige en el
    sistema, no en el idioma. Instalar su language pack en el AutoCAD del dueño (para las consolas) se
    le confirma antes.

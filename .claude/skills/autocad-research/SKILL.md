@@ -8,16 +8,16 @@ description: Establish how AutoCAD behaves and words something before building o
 The AutoCAD installed is **2027** (R26.0) on Windows, in Spanish with the English language pack too; every
 tool runs from WSL through interop. Pick the source by the question:
 
-| Question                                                                   | Source                      | Read       |
-| -------------------------------------------------------------------------- | --------------------------- | ---------- |
-| What a command asks, accepts, refuses and produces, verbatim               | the console                 | console.md |
-| A prompt's options: keywords in Spanish and English, defaults, Enter, zero | the console, traced (`-t`)  | tracing.md |
-| The raw initget string and flags                                           | the desktop AutoCAD, traced | tracing.md |
-| Exact geometry of a result, every property                                 | MPDUMP, traced run          | tracing.md |
-| How AutoCAD draws a result: linetypes, hatches, dimensions, text           | the console, plotted to PNG | console.md |
-| What the user sees: jig, grips, snap markers, dialogs, palettes            | the desktop AutoCAD         | gui.md     |
-| The exact wording, by id, in English and each installed language           | the string tables           | below      |
-| What no program shows: intent, the cursor, documented defaults             | Autodesk's help             | below      |
+| Question                                                                        | Source                      | Read       |
+| ------------------------------------------------------------------------------- | --------------------------- | ---------- |
+| What a command asks, accepts, refuses and produces, verbatim                    | the console                 | console.md |
+| A prompt's options: keywords in its language and English, defaults, Enter, zero | the console, traced (`-t`)  | tracing.md |
+| The raw initget string and flags                                                | the desktop AutoCAD, traced | tracing.md |
+| Exact geometry of a result, every property                                      | MPDUMP, traced run          | tracing.md |
+| How AutoCAD draws a result: linetypes, hatches, dimensions, text                | the console, plotted to PNG | console.md |
+| What the user sees: jig, grips, snap markers, dialogs, palettes                 | the desktop AutoCAD         | gui.md     |
+| The exact wording, by id, in English and each installed language                | the string tables           | below      |
+| What no program shows: intent, the cursor, documented defaults                  | Autodesk's help             | below      |
 
 The console settles what a command does; the help never overrides it. What none of them settles
 is written **unverified** in `docs/coverage/`, with what was seen instead. Cite the table id
@@ -41,13 +41,14 @@ catalogs use (`en`, `es`, `pt-BR`); `--lang <tag>` picks one in every script, Sp
 translated one of the same id. `node scripts/research/extract-strings.mjs --lang <tag>` writes a
 language's tables from the install's folder of its culture (`es` is `es-ES`; `zh` needs its
 region), which only its language pack fills; for a pack not installed, 7-Zip opens its `.exe`
-without running anything (`docs/i18n-glossary.md`): pass the folder of its DLLs and `--pgp` its
-`acad.pgp`. It reads the files, nothing runs. **An update rewords prompts**: 2027's update turned
-DIMANGULAR's `Designe primer extremo` into `Designe primer punto final del ángulo`, so a table from
-the release's language pack is not the current product. After an AutoCAD update, move the tables
-to `previous/` and extract them again (the script will not overwrite a table that changed). The
-installed language packs are English and Spanish; AutoCAD has none for Arabic. The palettes'
-labels are in `ax24res.dll` / `ax26res.dll` and `acappres.dll`.
+without running anything (Spanish's pack is named in `docs/i18n/es.md`): pass the folder of its
+DLLs and `--pgp` its `acad.pgp`. It reads the files, nothing runs. **An update rewords prompts**:
+2027's update turned DIMANGULAR's `Designe primer extremo` into `Designe primer punto final del
+ángulo`, so a table from the release's language pack is not the current product. After an AutoCAD
+update, move the tables to `previous/` and extract them again (the script will not overwrite a
+table that changed; skill `language-review`). The installed language packs are English and
+Spanish; installing another on the owner's AutoCAD is asked first. AutoCAD has none for Arabic.
+The palettes' labels are in `ax24res.dll` / `ax26res.dll` and `acappres.dll`.
 
 `node scripts/research/catalog-sweep.mjs` checks a catalog against the tables (skill
 `command-review`). `node scripts/research/propose-commands.mjs --lang <tag>` proposes a new
@@ -73,12 +74,14 @@ curl -sS https://developer.api.autodesk.com/knowledge/public/v1/mcp \
 ```
 
 It returns titles, URLs (with the page's GUID) and an excerpt of about 1 KB, support articles
-included (they often quote a whole command-line session). `locale` is `en_US` or `es_ES`.
+included (they often quote a whole command-line session). `locale` is `en_US` or `es_ES`; another
+language's (`pt_BR`) returns the English results, so find the page in English and read it in its
+language's folder.
 
 **Read** the whole page from its GUID with curl or WebFetch:
-`https://help.autodesk.com/cloudhelp/2027/ENU/AutoCAD-Core/files/GUID-….htm` (`ESP` for the
-Spanish page, which shares the GUID). Only the `view/ACD/…` viewer is a JavaScript shell that
-needs a browser (skill `browser-verify`). Pages already read are in `research/autodesk-help/`
+`https://help.autodesk.com/cloudhelp/2027/ENU/AutoCAD-Core/files/GUID-….htm` (`ESP`, `PTB`,
+`FRA`, `DEU`, `ITA`… for that language's page, which shares the GUID). Only the `view/ACD/…`
+viewer is a JavaScript shell that needs a browser (skill `browser-verify`). Pages already read are in `research/autodesk-help/`
 (gitignored, named by GUID): grep there first.
 
 - **A thin command page is not an undocumented behaviour.** COPYCLIP's reference page has no
@@ -86,7 +89,7 @@ needs a browser (skill `browser-verify`). Pages already read are in `research/au
   extents of the objects you selected") is on a _Have You Tried_ page, and the prompt order on a
   _To …_ task page. Read `About …`, `To …` and `Have You Tried` before concluding that something
   cannot be verified.
-- Spanish names come from the Spanish help pages that share the English GUIDs.
+- A `localized` language's command names come from its help pages that share the English GUIDs.
 
 ## Routes tried and dropped
 

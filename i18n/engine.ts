@@ -14,7 +14,7 @@ const ENGINE_LOCALES: Partial<Record<AppLocale, () => Promise<EngineLocale>>> =
       import("@mellowcad/engine/locales/es").then((module) => module.es),
     // WHY interface only: there is no Arabic AutoCAD, and whoever drafts in
     // Arabic works in the English one, so Arabic's command language is the
-    // global one (docs/coverage/arabic.md).
+    // global one (docs/i18n/ar.md).
     ar: () =>
       import("@mellowcad/engine/locales/ar").then((module) => module.ar),
   }

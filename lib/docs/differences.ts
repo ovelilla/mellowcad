@@ -125,9 +125,9 @@ export const DIFFERENCES: readonly {
   {
     id: "arabic",
     sources: [
-      { file: "docs/coverage/arabic.md", quote: "there is no Arabic AutoCAD" },
+      { file: "docs/i18n/ar.md", quote: "there is no Arabic AutoCAD" },
       {
-        file: "docs/coverage/arabic.md",
+        file: "docs/i18n/ar.md",
         quote:
           "a Ctrl shortcut is read by its physical key (`e.code`) when the layout sends a letter that is not latin",
       },

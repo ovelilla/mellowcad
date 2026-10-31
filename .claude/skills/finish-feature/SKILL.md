@@ -12,12 +12,14 @@ description: Close a feature, command or fix in mellowcad — the gate, the cove
    `npx vitest run <file> -u` and its diff read before committing.
 2. **The coverage entry** in `docs/coverage/` (`grep -n '^### .*<COMMAND>' docs/coverage/*.md`):
    what the command now does under **Implemented:**, what it still lacks under **Missing:**, what
-   no source settled marked **unverified**. Edit the entry; history belongs in the commit. A new
+   no source settled marked **unverified** — in English and in each `localized` language of
+   `COMMAND_LANGUAGE` (`i18n/routing.ts`), whose wording beyond one command goes in its
+   `docs/i18n/<tag>.md`. Edit the entry; history belongs in the commit. A new
    command gets its entry in the file of its area.
 3. **The rules.** If the work taught something the next change must respect, it goes in the rule
    of its area (`.claude/rules/`), not in `AGENTS.md`:
    - a new base class, shared helper or extension point other code should use;
-   - another step in a checklist (`new-command`, `extend-model`, `add-language`);
+   - another step in a checklist (`new-command`, `extend-model`, `add-language`, `language-review`);
    - an ordering or routing rule found by debugging;
    - a convention or invariant; if a test or lint rule can hold it, write that instead.
 

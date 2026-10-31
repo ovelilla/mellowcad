@@ -46,8 +46,8 @@ how a string is worded, the console which string a prompt uses.
 - Some commands keep their words in DLLs the tables do not merge: MATCHPROP's in `acmatchRes.dll`
   (read it with `strtable.mjs`), the Layer Properties Manager's dialogs in
   AcTaskDialogs.resources.dll, a .NET resource read by string search (Properties review).
-- **Arabic** has no AutoCAD language pack: its command language is the global one, and the sweep
-  does not apply. Its interface is checked against `docs/i18n-glossary.md`.
+- **A `global` language** (Arabic: no AutoCAD language pack) speaks the global command language,
+  and the sweep does not apply. Its interface is checked against its `docs/i18n/<tag>.md`.
 
 ## 4. Its findings
 

@@ -70,7 +70,7 @@ layer 0's lineweight Default (p300: 370 -3; here 0.25 mm, Default is not modelle
 `'.-CAPA` and `'CLAYER` (the Spanish desktop pass ran without the mouse), the Spanish title
 `Capa` of the invalid-characters dialog and `Capa` in `Capa - El nombre ya existe` (the table's
 `%ObjectName%`), what a colour that is not an index colour writes beside its swatch (AutoCAD writes
-its RGB; here the swatch alone), the Arabic words (worded by the project, `docs/i18n-glossary.md`),
+its RGB; here the swatch alone), the Arabic words (worded by the project, `docs/i18n/ar.md`),
 the drop-downs' answer to a set holding locked objects (only the palette's was probed, d03-5: the
 same here, PROPS-D61), the padlock and the faded look at `Select objects:` (seen only at
 `Command:`; here neither the padlock nor any fade but ERASE's)

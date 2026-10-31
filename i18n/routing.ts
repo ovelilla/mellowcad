@@ -53,7 +53,7 @@ export const LIVE_LOCALES: readonly AppLocale[] = routing.locales.filter(
  * AutoCAD's, copied whole into the engine's catalog — a user of that AutoCAD
  * types its names, so a language that has one never goes live without it.
  * `global`: the global commands, for English and for a language Autodesk does
- * not ship (Arabic: docs/coverage/arabic.md). Checked by `languages.test.ts`.
+ * not ship (Arabic: docs/i18n/ar.md). Checked by `languages.test.ts`.
  */
 export const COMMAND_LANGUAGE: Readonly<
   Record<AppLocale, "localized" | "global">

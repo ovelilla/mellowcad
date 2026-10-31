@@ -14,9 +14,10 @@ its header says what each flag does. Set `ACCORE` to use another install. A run 
   user's real profile instead, where whatever the probe sets persists: restore it.
 - **Encoding**: the console reads its input as Windows-1252 and the runner converts the probe;
   `/utf8` makes it write UTF-8 (by default it writes UTF-16).
-- **Two languages**: Spanish by default, English with `runacc.sh probe.txt en-US` (the English
-  language pack is installed). The same underscore-form probe runs in both: run it twice to pair
-  each prompt with its translation.
+- **Languages**: Spanish by default, the install's; any other installed pack by its culture,
+  `runacc.sh probe.txt en-US` (the packs installed: SKILL.md). The same underscore-form probe runs
+  in each: run it in a language and in English to pair each prompt with its translation
+  (`probe.sh --lang <tag>` does both, skill `command-review`).
 
 ## Probes
 

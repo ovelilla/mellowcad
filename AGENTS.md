@@ -133,12 +133,12 @@ and what each option does must be the ones they already know.
   Claude Code and by Copilot). Before creating something in an area whose files you have not
   opened, read its rule; the index is `grep -H '^description:' .claude/rules/*.md`.
 - **Skills** (`.claude/skills/`, loaded on demand): `new-command`, `extend-model`,
-  `autocad-research`, `browser-verify`, `add-language`, `finish-feature`, `deps-review`,
-  `command-review`.
+  `autocad-research`, `browser-verify`, `add-language`, `language-review`, `finish-feature`,
+  `deps-review`, `command-review`.
 - **`docs/coverage/`** — what each implemented command does and which AutoCAD options it still
   lacks, one file per area, plus the roadmap. **Read a command's entry before extending it** —
   the gaps are deliberate and already researched.
-- `docs/i18n-glossary.md` — the interface terms in each language and how each one is written.
+- `docs/i18n/` — one file per language: its terms and sources, deviations and review state.
 - The packages' READMEs, guides (`cad/docs/`, `packages/editor/docs/`) and `examples/` — their
   public contract; keep them true when it changes.
 - `docs/plans/<command>-review.md` — a command review's plan (skill `command-review`).

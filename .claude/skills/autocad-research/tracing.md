@@ -21,8 +21,8 @@ Precise distancia de desfase o [punto a Atravesar/Borrar/Capa] <punto a Atravesa
 
 ## Reading it
 
-- **Keywords come in both languages**: `g` is the Spanish (local) word and `l` the English
-  (global) one — the managed wrapper swaps the two names for built-in prompts. Hidden aliases
+- **Keywords come in both languages**: `g` is the local word, the console's language (Spanish by
+  default), and `l` the English (global) one — the managed wrapper swaps the two names for built-in prompts. Hidden aliases
   show too (OFFSET's `Thru`, absent from the prompt text).
 - **What the options say**: AllowNone (Enter accepted), AllowZero / AllowNegative, UseBasePoint
   and BasePoint (rubber band from where), UseDashedLine, the default keyword. Not every default

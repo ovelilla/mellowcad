@@ -7,7 +7,7 @@ researched. Each command or feature is a `###` heading in the file of its area, 
 
 Update the affected entry when you finish a feature; do not append a narrative of the work. A
 parenthetical in **Missing:** gives the reason when the gap is blocked on something else rather
-than merely unbuilt.
+than merely unbuilt. Each language's command language and interface words: `docs/i18n/`.
 
 | File                     | Area                                                           |
 | ------------------------ | -------------------------------------------------------------- |
@@ -20,8 +20,6 @@ than merely unbuilt.
 | `properties.md`          | Properties, layers and style tables                            |
 | `workspace.md`           | The editor's panels and bars                                   |
 | `command-line.md`        | Command window, names, keywords, selection, undo               |
-| `spanish.md`             | The Spanish command language (`es`) and its sources            |
-| `arabic.md`              | The Arabic interface (`ar`)                                    |
 | `drafting-aids.md`       | Snaps, tracking, grips, Ortho, Polar and dynamic input         |
 | `clipboard-and-files.md` | Clipboard, save and open                                       |
 | `blocks-palette.md`      | The Blocks palette                                             |

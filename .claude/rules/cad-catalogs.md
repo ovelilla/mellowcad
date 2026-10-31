@@ -22,10 +22,12 @@ wording comes from: `autocad-research.md`.
 - **`domain/` exposes ids, never display names** (colours, linetypes, hatch patterns, `ByLayer`).
   Data names stay data (layer, style and block names, `Standard`, `Continuous`, `ANSI31`); a
   default name is fixed when the object is made, in the command language of that moment.
-- **Spanish is Spanish AutoCAD's, copied, never translated**: names from the help pages that share
-  the English GUIDs, aliases from its `acad.pgp`, prompts and keyword capitals from its string
-  tables and the console (they beat the help). What no source shows is worded in Autodesk's style
-  and marked **unverified** in `docs/coverage/`. In Spanish `H` undoes and `U` is UNIR.
+- **A `localized` command language is its AutoCAD's, copied, never translated**
+  (`COMMAND_LANGUAGE`): names from the help pages that share the English GUIDs, aliases from its
+  `acad.pgp`, prompts and keyword capitals from its string tables and the console (they beat the
+  help). What no source shows is worded in Autodesk's style and marked **unverified** in its
+  `docs/i18n/<tag>.md`. No letter means what it means in English (in Spanish `H` undoes and `U` is
+  UNIR). A `global` language has no `commands`.
 - A language translates the whole `interface` but `linetype` and `hatchPattern` (drawing data).
 - `names` and `keywords` are words, not compiled messages. Messages are ICU: `{count, plural, …}`,
   never a hand-made plural.
@@ -99,8 +101,8 @@ offsetting? [Yes/No] <No>:`) is a phase whose `question()` names it, with that a
   otherwise than declared (TEXT's `TLeft` listed `TL`, ATTDISP's `OFf` listed `OFF`), has a
   `commands.keywordLabels.<NAME>` entry for every command name offering it; the `keywords` word is
   the declared one, which answers and which `Ambiguous response` names. A language labels only what
-  English labels (keep English's label even when equal to the word). Spanish often declares
-  otherwise where English does not (`Atravesar`, `Actual`): read both tables' `initget`. The
+  English labels (keep English's label even when equal to the word). A translation often declares
+  otherwise where English does not (Spanish `Atravesar`, `Actual`): read both tables' `initget`. The
   console outranks the table (PLINE keeps `CEnter`, pline/p103).
 - A prompt whose declared order is not the listed one names it in its question (`declared: ["OFF",
 "Normal", "ON"]`), only where two words on offer can be ambiguous.

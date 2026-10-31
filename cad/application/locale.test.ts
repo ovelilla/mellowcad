@@ -260,7 +260,7 @@ describe("the palettes", () => {
 
 describe("Spanish AutoCAD's command language", () => {
   // Someone who works in Spanish AutoCAD types LINEA or L, DESFASE, _LINE and
-  // H, and it works (docs/coverage/spanish.md).
+  // H, and it works (docs/i18n/es.md).
   it("names the interface in Spanish and leaves the drawing's data alone", () => {
     const { names, tools } = createHarness({ locale: es }).state()
     expect(names.snaps.endpoint).toBe("Punto final")

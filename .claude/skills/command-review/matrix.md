@@ -22,8 +22,8 @@ plan each block has its table, a cell reading `match · p07 · LineTool.test.ts:
 
 **A. Invocation**
 
-- The name, every alias, in `en` and `es` (Spanish names and `acad.pgp` aliases), the `_` global
-  form and `_.`; abbreviations that are another command's. The catalog's names are diffed against
+- The name, every alias, in `en` and each `localized` language (its names and `acad.pgp`
+  aliases), the `_` global form and `_.`; abbreviations that are another command's. The catalog's names are diffed against
   the installed `acad.pgp` of each language in Phase 1: View found seven missing (view/p201, p335).
 - Repeating it: Enter or Space at `Command:`, the right button's Repeat, the recent commands.
 - Typed transparently (`'LINE`): refused as AutoCAD refuses it, or run as it runs.
@@ -31,7 +31,8 @@ plan each block has its table, a cell reading `match · p07 · LineTool.test.ts:
 
 **B. Prompts and options** — for each prompt:
 
-- The text in `en` and `es`, against the table id and the console (the console wins).
+- The text in `en` and each `localized` language, against the table id and the console (the
+  console wins).
 - The keywords: declared (`initget`) against listed, hidden aliases, their capitals in each
   language, the default keyword, an ambiguous abbreviation.
 - Enter, Space, `0`, a negative, `FOO` (the refusal words differ per input function), a keyword of
@@ -97,9 +98,10 @@ edit does).
 **J. Persistence** — save and open, the autosave, a file from an older version, copy and paste;
 the object comes back identical.
 
-**K. Languages** — `en` and `es` (the command language: names, prompts, keywords, messages, the
-letters typed), `ar` (the interface in Arabic, the command language global; a left-to-right run
-inside right-to-left text). The catalog sweep for the command's ids (annex-catalogs.md).
+**K. Languages** — every language of `COMMAND_LANGUAGE` (`i18n/routing.ts`): English and each
+`localized` one (the command language: names, prompts, keywords, messages, the letters typed),
+each `global` one (its interface, the command language global; in a right-to-left one such as
+Arabic, a left-to-right run inside right-to-left text). The catalog sweep for the command's ids (annex-catalogs.md).
 
 **L. Command history** — every line the history writes, with its answer, as the console writes it:
 the echo of options, refusals, reports, `>>` lines, what F2 shows.

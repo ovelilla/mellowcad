@@ -19,20 +19,21 @@ is how a review uses them.
 
 ## 2. The console
 
-`scripts/research/probe.sh <command> [id...]` runs each console probe traced (`-t`) in es-ES and
-en-US, in parallel, into `research/probes/<command>/<id>.<locale>.txt`, and prints `ok` or the
+`scripts/research/probe.sh [--lang <tag>] <command> [id...]` runs each console probe traced (`-t`)
+in a `localized` language's culture (es-ES by default; its pack must be installed) and in en-US,
+in parallel, into `research/probes/<command>/<id>.<locale>.txt`, and prints `ok` or the
 prompt that swallowed the runner's QUIT. Read a transcript without the tracer's lines, answers
 kept, with `sed 's/«MP[^»]*»//g'`; the `«MP …»` lines hold each prompt's keywords in both
 languages, AllowNone, the base point and every object appended, modified or erased.
 
 Writing one (the traps of `console.md` hold; these are the review's):
 
-- A probe for one language only is `<id>.es.txt` or `<id>.en.txt` (`.plain` before it when
-  untraced): `probe.sh` runs it in that locale alone (a Spanish name such as `POL` is POLYGON in
+- A probe for one language only is `<id>.es.txt` or `<id>.en.txt` (`.pt.txt`…; `.plain` before it
+  when untraced): `probe.sh` runs it in that locale alone (a Spanish name such as `POL` is POLYGON in
   English, and the run slips).
 - **One question per probe**, ending back at the command prompt: a refused answer slips every line
   after it by one, and the runner flags the probe.
-- Answers in the **underscore form** (`_LINE`, `_U`, `_C`), so one file runs in both languages;
+- Answers in the **underscore form** (`_LINE`, `_U`, `_C`), so one file runs in every language;
   a probe of the Spanish names (`LINEA`, `H` for undo) runs in es-ES only and says so in its index.
 - `_ZOOM _W` around the drawing before any pick or window selection (`console.md`).
 - **How far U and UNDO go is probed untraced**: name the file `<id>.plain.txt`. Loading the

@@ -45,8 +45,8 @@ summary, order of execution and estimate for every block).
 - `npm run typecheck` and the command's test files (`npx vitest run <files>`): the baseline is green,
   or its failures are noted before anything is blamed on the review.
 - The AutoCAD build and the tables: `(getvar "ACADVER")` and `(getvar "_VERNUM")` in the console,
-  and the date of `research/strings/all_es.tsv`. After an AutoCAD update the tables are
-  regenerated first (skill `autocad-research`): **an update rewords prompts**.
+  each `research/strings/all_<tag>.tsv`'s date. **An update rewords prompts**: skill
+  `language-review` first.
 - MellowProbe built (`scripts/research/mellowprobe/build.sh`) and the console answering a one-line
   probe. The desktop is opened only when a desktop probe is due, with
   `scripts/research/acad.sh launch`, and its rules (`gui.md` of `autocad-research`) hold throughout.
@@ -70,7 +70,7 @@ Walk the whole list and write "n/a" where it does not apply; never trim it from 
 - **The tool and its helpers**: `cad/application/tools/<Name>Tool.ts` and what it imports.
 - **Registration**: `defaultTools`, `TOOL_COMMANDS`, `TRANSPARENT_COMMANDS`, `registerCommands`.
 - **Catalogs**: its names, keywords, prompts, messages, `keywordLabels` and `promptKeywords`, in
-  `en`, `es` and `ar`.
+  each language (`COMMAND_LANGUAGE`; a `global` one, `interface.tool` only).
 - **The object it makes**: its entity in `cad/domain/`, its scene in `SceneBuilder`, its grips in
   `selectToolGrips.ts`, its palette rows, its part of the file in `cad/serialization/`.
 - **The UI**: the rail (the editor's `tool-rail.tsx`), the shortcut menus, the landing's filing
@@ -128,7 +128,7 @@ is **owned by the first review whose command uses it**, in the roadmap's order:
 From most to least reliable. Nothing about AutoCAD is claimed from memory.
 
 1. **The 2027 console, traced** (`runacc.sh -t`): what a command asks, accepts, refuses and
-   produces, its keywords in both languages, defaults, AllowNone and the rubber band's base.
+   produces, its keywords in each language, defaults, AllowNone and the rubber band's base.
 2. **The 2027 string tables** (`pair.mjs`): the exact wording by id. The console beats the table
    where they differ (a prompt built from two strings).
 3. **The desktop AutoCAD** (`acad.sh`): what the console has no way to show — the jig, dynamic
@@ -363,7 +363,7 @@ share the catalogs and the snapshots.
    and seen failing, citing its probe.
 2. **The plan's tests** for the block's untested cells; old `acc/…` citations replaced by the 2027
    probe that confirmed them.
-3. **Catalogs**: `en`, `es` and `ar` edited, `npm run locales`, all it writes committed; the
+3. **Catalogs**: every language's edited (§1.1), `npm run locales`, all it writes committed; the
    English surface snapshot updated with `-u` only where the English was meant to change, its diff
    read. A key no code reads any more **stays**, unused: removing one is a major version
    (`cad/README.md`, "Versioning").
