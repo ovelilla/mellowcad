@@ -1,11 +1,10 @@
 # Un sistema para los idiomas — brief
 
 > **Estado:** fases 1 a 4 hechas (2026-10-31); la 5, en curso: plan `docs/plans/pt-BR-language.md`,
-> sus fases 0 a 3 hechas (`pt-BR` como `draft` en `/pt-br`, con sitio, editor, páginas «Use» e
-> interfaz del motor traducidos) y la 4 en curso (`commands` completo desde la consola pt-BR, con
-> sus prompts por comando, -OSNAP, y la forma del valor por defecto y las etiquetas por prompt en
-> el catálogo; falta lo que solo muestra el escritorio). Se borra cuando el portugués de Brasil
-> esté `live` con el sistema entero.
+> sus fases 0 a 4 hechas (`pt-BR` como `draft` en `/pt-br`, con sitio, editor, páginas «Use»,
+> interfaz del motor y lenguaje de comandos completo, contrastado con la consola y el escritorio
+> pt-BR); falta la 6: verificar y pasar a `live`. Se borra cuando el portugués de Brasil esté
+> `live` con el sistema entero.
 
 ## 1. Objetivo
 
@@ -146,3 +145,9 @@ Una fase, un commit (o varios si se separan solos). Las 1 a 4 no cambian nada vi
    pt-BR espacia donde el inglés pega y el español espacia el prompt de las matrices que el inglés
    y pt-BR pegan; y las claves que ninguna sonda imprimía, sondeadas en los dos idiomas. Lo que no
    encajó, corregido en el sistema: la consola no conocía MATCHPROP hasta cargar `acmatch.crx`.
+   Cuarta sesión, que cierra la fase 4: el escritorio pt-BR contra el inglés (dos líneas de los
+   conmutadores corregidas; las etiquetas de la entrada dinámica son nuestras y siguen sin fuente),
+   y el espacio tras los dos puntos de un prompt pasa al catálogo por id (`answerForms`), porque el
+   historial escribe la respuesta pegada donde la cadena del idioma no lo lleva: DIMSPACE en los
+   tres idiomas, EDITARP o REFAZERM solo en pt-BR. Lo que no encajó, corregido en el sistema: ese
+   espacio se lee del `Message` de la consola, no de la tabla, que lo pierde en sus `%s`.

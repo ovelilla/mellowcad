@@ -2416,7 +2416,7 @@ export type { CommandCatalog }
  * The command language. `names` and `keywords` are vocabulary, not messages: a
  * keyword marks its abbreviation in capitals (`desHacer`), as `initget` does.
  */
-export type CommandCatalog = Compiled<Omit<Commands, "names" | "keywords" | "promptKeywords" | "promptForms">> & {
+export type CommandCatalog = Compiled<Omit<Commands, "names" | "keywords" | "promptKeywords" | "promptForms" | "answerForms">> & {
     readonly names: {
         readonly [C in CommandName]: readonly string[];
     };
@@ -2446,6 +2446,14 @@ export type CommandCatalog = Compiled<Omit<Commands, "names" | "keywords" | "pro
      */
     readonly promptForms: {
         readonly [P in keyof Commands["prompts"]]?: PromptForm;
+    };
+    /**
+     * How the history writes an answer after a prompt, as each language's
+     * string ends: a prompt left out is `spaced`. DIMSPACE's are `tight` in
+     * every language, PEDIT's first only in pt-BR.
+     */
+    readonly answerForms: {
+        readonly [P in keyof Commands["prompts"]]?: AnswerForm;
     };
 };
 
@@ -2550,6 +2558,8 @@ export declare class EngineText {
     abbreviation(command: string | null, id: string): string;
     /** How prompt `id` writes its default in the command language. */
     promptForm(id: PromptId): PromptForm;
+    /** How the history writes an answer after prompt `id` in the command language. */
+    answerForm(id: PromptId): AnswerForm;
     prompt(id: PromptId, values?: MessageValues): string;
     message(id: MessageId, values?: MessageValues): string;
     fileError(code: FileErrorCode): string;
@@ -2589,8 +2599,11 @@ export declare class EngineText {
     transparentPrompt(question: string): string;
     /** An object snap given at a point prompt, as answered: `_endp of`. */
     snapOverride(snap: string, to: boolean | null): string;
-    /** A prompt as the history keeps it once answered: `Specify next point or [Undo]: 100`. */
-    answered(prompt: string, answer: string): string;
+    /**
+     * A prompt as the history keeps it once answered: `Specify next point or
+     * [Undo]: 100`, or `tight`, against its colon (pt-BR `…[Múltiplo]:M`).
+     */
+    answered(prompt: string, answer: string, form?: AnswerForm): string;
     /**
      * A prompt from its parts: what is asked (a command name, a field, or the
      * neutral `Command`), the keywords on offer and the one Enter keeps, e.g.
@@ -3833,6 +3846,14 @@ export type MessageValues = Readonly<Record<string, string | number>>;
  * (`[Zdepth]<0,0,0>:`), or with no colon (`OK? <Y>`).
  */
 export type PromptForm = "spaced" | "tight" | "open";
+
+// locales/types.ts
+/**
+ * How the history writes an answer after a prompt: past its colon's space
+ * (`Select polyline or [Multiple]: M`), or against the colon where the
+ * language's string ends without one (pt-BR `…[Múltiplo]:M`).
+ */
+export type AnswerForm = "spaced" | "tight";
 
 // locales/types.ts
 /**

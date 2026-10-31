@@ -30,12 +30,12 @@ and what stays unverified until the pack is installed.
 | 1 | `feat(i18n)` | **Done** (31/10/2026), below |
 | 2 | `feat(i18n)` | **Done** (31/10/2026), with phase 3 in one commit, below |
 | 3 | `feat(i18n)` | **Done** (31/10/2026), below |
-| 4 | `feat(engine)` | **In progress**: `commands` whole, from the console, then its prompts per command and -OSNAP, then a default's form and a label per prompt and what a console could still show (31/10/2026, three commits, below); next, the desktop in pt-BR |
+| 4 | `feat(engine)` | **Done** (31/10/2026, four commits): `commands` whole, from the console, then its prompts per command and -OSNAP, a default's form and a label per prompt, and the desktop with an answer's form, below |
 | 5 | — | nothing: latin, left to right; plurals as §5 (in phases 2–4) |
 | 6 | `feat(i18n)` | gate, production build (`●`), budgets (`language-review`), screenshots at 360 px and the palettes, the dead keys; `live`, selector, `hreflang`, sitemap, «Next up» off in every language, `docs/i18n/README.md`'s row; this plan shrinks to a summary |
 
-Phase 4 is three or four sessions on its own: Spanish's `several` and `no-source` took the
-console, command by command.
+Phase 4 took four sessions: Spanish's `several` and `no-source` took the console, command by
+command.
 
 ## Phase 1, as done
 
@@ -88,7 +88,7 @@ One commit: the generated "Use" pages read both catalogs, so they come out right
   interface files). Found, not changed: `pluralMessage` samples 0 for pt-BR's `one`, so a landing
   island's plural cannot take `=0` (`pt-BR.md`, "Plurals"); none needs it today.
 
-## Phase 4, so far
+## Phase 4, as done
 
 - **The pack is installed** (asked first; the owner had it installed from WSL): its `.exe -q`
   elevated, then 2027.1's again, since a pack after an update is the release build. Its tables are
@@ -134,27 +134,41 @@ One commit: the generated "Use" pages read both catalogs, so they come out right
   (skill `autocad-research`, console.md); `locales.test.ts` read only spaced defaults off the
   English surface, so the arrays' prompts would have left its abbreviation check; skills
   `add-language` §4, `new-command`, `command-review`'s catalogs annex.
-- **Left for the next sessions** (`docs/i18n/pt-BR.md`, "Pending"): the desktop in pt-BR for the
-  dynamic-input labels and tooltips and ATTEDIT's dialog prompt; whether a prompt's trailing space
-  is the language's (pt-BR's MREDO and ARRAYPATH echo the answer against the colon); then phase 6.
+- **Fourth session** (31/10/2026, `feat(engine)`): the desktop in pt-BR (`/language pt-BR`, asked
+  first; the owner's default and profile left as found), against English's own desktop reviews:
+  the toggles' lines, two corrected (`<Ortogonal ativado>`, `<Grade ativado>`), Polar's tooltip
+  and ATTEDIT's `Selecionar referência de bloco` as worded; the dynamic input's labels are ours
+  (AutoCAD's fields have none) and the `feedback.measure*` readout no AutoCAD view shows, so both
+  stay unverified (`research/probes/names/d01`–`d05`). **An answer written against the colon is
+  the language's**: `commands.answerForms` by prompt id and `format.answeredTight`, a minor of the
+  catalog's shape, read off every traced `Message` of the three languages: DIMSPACE's and
+  -DIMSTYLE's redefine in all three, pt-BR's PEDIT, MREDO, ARRAYPATH and ARRAYRECT's rows at
+  Spacing, Spanish's unit cell (`cad/application/promptForms.test.ts`). ARRAYPATH's main prompt and
+  ARRAYRECT's rows at Spacing took ids of their own; pt-BR Rows' is `Especificar a distância entre
+  linhas`, as its console words it.
+- Fixed in the system: the trailing space is read from the console's `Message`, not the table
+  (TRIM's Mode, 13161, has none in the table and one in the console): rule `cad-catalogs.md`, skills
+  `add-language` §4, `new-command`, `command-review`'s catalogs annex. Found: the
+  English desktop came up behind the owner's windows, and `acad.sh click` sent the clicks and keys
+  meant for it to VS Code; the English half came from the earlier desktop reviews instead. Skill
+  `autocad-research` (gui.md) now says to see AutoCAD on top before clicking; the tool itself still
+  does not bring it forward.
 
 ## Next session
 
-> Sigue la fase 4 de docs/plans/pt-BR-language.md (el lenguaje de comandos de portugués de
-> Brasil): `commands` está completo, sus prompts van por comando y la forma del valor por defecto y
-> las etiquetas por prompt son del catálogo. Lee antes el plan entero, docs/i18n/pt-BR.md (sobre
-> todo "Command language": sus tres sesiones, Deviations, Pending y Unverified), el brief
-> docs/next-languages.md, los skills add-language (§4) y autocad-research (gui.md: el escritorio),
-> las reglas cad-catalogs.md e i18n.md y cad/docs/languages.md. El language pack de pt-BR está
-> instalado. Resuelve "Pending" con el AutoCAD de escritorio en pt-BR (pide antes al dueño cambiar
-> el idioma del escritorio si hace falta, y déjalo como estaba): las etiquetas de la entrada
-> dinámica y los tooltips que ninguna consola muestra (`Centro`, `Raio`, `Polar:`, los de
-> MEASUREGEOM), las líneas `<Snap ativado>` de los conmutadores y el `Selecionar referência de
-> bloco` del diálogo de ATTEDIT, cada uno contra el inglés del mismo escritorio; corrige lo que
-> difiera con su test y marca en Unverified lo que siga sin fuente. Luego decide si el espacio tras
-> los dos puntos de un prompt es del idioma (pt-BR escribe `…[Tudo/Último]:_L`, names/p11): si el
-> historial lo muestra al usuario, como cambio menor del catálogo, con su test en los tres idiomas.
-> Si con eso no queda nada de la fase 4, ciérrala en el plan. Puede haber otras sesiones en el
-> árbol y cambios staged ajenos: mira git diff --cached; si comparten tus archivos, trabaja en un
-> worktree limpio desde main, pasa ahí el gate y lleva a main solo tus hunks. Commit en main, sin
-> push. Pon al día el plan (con el prompt de la sesión siguiente al final) y el estado del brief.
+> Sigue la fase 6 de docs/plans/pt-BR-language.md (verificar y pasar a `live` el portugués de
+> Brasil): las fases 1 a 4 están hechas, con el lenguaje de comandos completo; la 5 no tiene nada.
+> Lee antes el plan entero, docs/i18n/pt-BR.md (sobre todo Review, Length, Input y Unverified), el
+> brief docs/next-languages.md, los skills add-language (§6), language-review (los presupuestos),
+> browser-verify y finish-feature, y las reglas i18n.md y marketing.md. Pasa el gate y una build de
+> producción en un worktree limpio (sus páginas `●`, nunca `ƒ`; no pelees con el `next dev` del
+> árbol por `.next`), mide los presupuestos de i18n.md con language-review, haz las capturas de la
+> landing a 360 px y de las paletas del editor en pt-BR buscando texto que no cabe, y comprueba en
+> el navegador las teclas muertas de ABNT2 en la línea de comandos y la entrada dinámica. Corrige
+> lo que falle en el sistema, no en el idioma. Luego pásalo a `live` (LOCALE_STATUS, selector,
+> `hreflang`, sitemap, la fila de docs/i18n/README.md) y quita «Next up» de la sección Status en
+> todos los idiomas en el mismo commit, con CONTENT_UPDATED. Publicar es del dueño: el commit va a
+> main, sin push. Puede haber otras sesiones en el árbol y cambios staged ajenos: mira git diff
+> --cached; si comparten tus archivos, trabaja en un worktree limpio desde main, pasa ahí el gate y
+> lleva a main solo tus hunks. Reduce el plan a un resumen con sus commits y pon al día el estado
+> del brief.

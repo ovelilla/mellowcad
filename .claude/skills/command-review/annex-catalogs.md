@@ -45,7 +45,9 @@ how a string is worded, the console which string a prompt uses.
 - **Keywords** are not in the sweep: their capitals are per prompt (`initget`). A traced probe of
   each prompt (annex-probes.md) lists `g` (Spanish) and `l` (English): compare with
   `commands.keywords`, `keywordLabels`, `promptKeywords` and `promptKeywordLabels`; and where each
-  console puts the default (`promptForms`: `]<eXit>:` in English, `] <Salir>:` in Spanish).
+  console puts the default (`promptForms`: `]<eXit>:` in English, `] <Salir>:` in Spanish),
+  and whether its `Message` ends without the space after the colon (`answerForms`: the answer
+  written against it, DIMSPACE's `Select base dimension:50,-40`).
 - **`--interface`** matches short words loosely (`Top`, `Radius`): most of its hits are noise. The
   palettes' and ribbon's labels come from `ax26res.dll` and `acappres.dll`, which the tables do
   not hold; a label is compared with the desktop's screenshot instead.

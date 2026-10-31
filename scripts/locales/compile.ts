@@ -2,8 +2,8 @@
  * Compiles the engine's catalogs, `cad/locales/<tag>.json`, into the modules
  * the engine imports, `cad/locales/<tag>.ts`: every ICU message becomes
  * icu-minify's compact form, so the browser never ships a message parser.
- * `names`, `keywords`, `promptKeywords` and `promptForms` are vocabulary and
- * pass through untouched.
+ * `names`, `keywords`, `promptKeywords`, `promptForms` and `answerForms` are
+ * vocabulary and pass through untouched.
  *
  * Run after editing a catalog:  npm run locales
  * (Node runs the TypeScript directly; the outputs are committed, and a test
@@ -26,6 +26,7 @@ const VOCABULARY = new Set([
   "keywords",
   "promptKeywords",
   "promptForms",
+  "answerForms",
 ])
 
 /**

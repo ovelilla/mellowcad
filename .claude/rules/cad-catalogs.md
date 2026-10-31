@@ -68,8 +68,12 @@ runtime builds the rest: `LINE Specify next point or [Undo]:`, the dynamic promp
   `<Current>`: a phrase). Where the default touches what precedes it (`[Zdepth]<0,0,0>:`) or no
   colon follows (`OK? <Y>`) is each language's, `commands.promptForms.<promptId>` (`tight`,
   `open`), never the tool's: read each table, never assume the space or the colon (pt-BR spaces
-  UCS's, Spanish the arrays'). A prompt that names something carries it in `values`; a name or
-  string, `takesSpaces` (d06).
+  UCS's, Spanish the arrays'). So is an answer written against the colon where the prompt ends
+  without its space (`commands.answerForms`, `tight`: DIMSPACE's in every language, pt-BR
+  PEDIT's `[Múltiplo]:M`): the console's traced `Message` decides it, never the table, whose
+  `%s` strings lose it (TRIM's Mode, 13161). Two prompts of one tool that differ in it need ids of
+  their own. A prompt that names something carries it in `values`; a name or string,
+  `takesSpaces` (d06).
 - **A yes-or-no question** lists no keywords: hidden `Yes` and `No`, `enter: { name: "N" }`, and
   `{ refusal: "yesOrNoPlease" }`.
 - The `or` belongs to the text: a state that offers none of the keywords AutoCAD lists there takes

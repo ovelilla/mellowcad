@@ -2204,13 +2204,15 @@ export const ptBR: EngineLocale = {
       "specifyBreakPoint": "Especificar ponto de quebra",
       "enterArrayType": "Insira o tipo de matriz",
       "selectGripToEditArrayOr": "Selecione Alça para editar a matriz ou",
+      "selectGripToEditPathArrayOr": "Selecione Alça para editar a matriz ou",
       "enterNumberOfColumns": "Insira o número de colunas",
       "enterNumberOfRows": "Insira o número de linhas",
       "specifyDistanceBetweenColumnsOfCell": "Especifique a distância entre as colunas ou",
       "unitCellFirstCorner": "Especifique o primeiro ponto de canto de uma célula unitária",
       "unitCellOppositeCorner": "Especificar canto oposto",
       "specifyDistanceBetweenColumns": "Especificar a distância entre colunas",
-      "specifyDistanceBetweenRows": "Especifique a distância entre linhas",
+      "specifyDistanceBetweenRows": "Especificar a distância entre linhas",
+      "specifyDistanceBetweenRowsOfCell": "Especifique a distância entre linhas",
       "specifyIncrementingElevationBetweenRows": "Especificar a elevação incremental entre linhas",
       "enterNumberOfLevels": "Insira o número de níveis",
       "specifyDistanceBetweenLevelsOr": "Especificar a distância entre níveis ou",
@@ -2333,6 +2335,7 @@ export const ptBR: EngineLocale = {
       "convertToPolylines": "open",
       "purgeBlock": "open",
       "selectGripToEditArrayOr": "tight",
+      "selectGripToEditPathArrayOr": "tight",
       "turnIntoPolyline": "open",
       "ucsMoveOrigin": "spaced",
       "ucsOrthographic": "spaced",
@@ -2340,6 +2343,16 @@ export const ptBR: EngineLocale = {
       "ucsZdepth": "spaced",
       "undoEverything": "open",
       "viewOrthographic": "spaced"
+    },
+    "answerForms": {
+      "dimStyleRedefine": "tight",
+      "mredoCount": "tight",
+      "selectDimensionsToSpace": "tight",
+      "selectGripToEditPathArrayOr": "tight",
+      "selectPolylineOr": "tight",
+      "spaceBaseDimension": "tight",
+      "specifyDistanceBetweenRowsOfCell": "tight",
+      "unitCellFirstCorner": "spaced"
     },
     "format": {
       "idle": "Comando",
@@ -2357,6 +2370,14 @@ export const ptBR: EngineLocale = {
           "prompt"
         ],
         " ",
+        [
+          "answer"
+        ]
+      ],
+      "answeredTight": [
+        [
+          "prompt"
+        ],
         [
           "answer"
         ]
@@ -2788,7 +2809,7 @@ export const ptBR: EngineLocale = {
         ">"
       ],
       "orthoMode": [
-        " <Orto ",
+        " <Ortogonal ",
         [
           "state",
           1,
@@ -2829,8 +2850,8 @@ export const ptBR: EngineLocale = {
           "state",
           1,
           {
-            "on": "ativada",
-            "other": "desativada"
+            "on": "ativado",
+            "other": "desativado"
           }
         ],
         ">"

@@ -20,6 +20,13 @@ type Compiled<T> = T extends string
  */
 export type PromptForm = "spaced" | "tight" | "open"
 
+/**
+ * How the history writes an answer after a prompt: past its colon's space
+ * (`Select polyline or [Multiple]: M`), or against the colon where the
+ * language's string ends without one (pt-BR `…[Múltiplo]:M`).
+ */
+export type AnswerForm = "spaced" | "tight"
+
 /** A command's global (English, language-independent) name. */
 export type CommandName = keyof Commands["names"]
 
@@ -40,7 +47,10 @@ export type InterfaceCatalog = Omit<
  * keyword marks its abbreviation in capitals (`desHacer`), as `initget` does.
  */
 export type CommandCatalog = Compiled<
-  Omit<Commands, "names" | "keywords" | "promptKeywords" | "promptForms">
+  Omit<
+    Commands,
+    "names" | "keywords" | "promptKeywords" | "promptForms" | "answerForms"
+  >
 > & {
   readonly names: { readonly [C in CommandName]: readonly string[] }
   /**
@@ -69,6 +79,14 @@ export type CommandCatalog = Compiled<
    */
   readonly promptForms: {
     readonly [P in keyof Commands["prompts"]]?: PromptForm
+  }
+  /**
+   * How the history writes an answer after a prompt, as each language's
+   * string ends: a prompt left out is `spaced`. DIMSPACE's are `tight` in
+   * every language, PEDIT's first only in pt-BR.
+   */
+  readonly answerForms: {
+    readonly [P in keyof Commands["prompts"]]?: AnswerForm
   }
 }
 

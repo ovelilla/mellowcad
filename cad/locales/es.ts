@@ -2190,6 +2190,7 @@ export const es: EngineLocale = {
       "specifyBreakPoint": "Especifique el punto de interrupción",
       "enterArrayType": "Indique el tipo de matriz",
       "selectGripToEditArrayOr": "Seleccione un pinzamiento para editar la matriz o",
+      "selectGripToEditPathArrayOr": "Seleccione un pinzamiento para editar la matriz o",
       "enterNumberOfColumns": "Indique el número de columnas",
       "enterNumberOfRows": "Indique el número de filas",
       "specifyDistanceBetweenColumnsOfCell": "Especificar la distancia entre columnas o",
@@ -2197,6 +2198,7 @@ export const es: EngineLocale = {
       "unitCellOppositeCorner": "Precise esquina opuesta",
       "specifyDistanceBetweenColumns": "Especifique la distancia entre columnas",
       "specifyDistanceBetweenRows": "Especifique la distancia entre filas",
+      "specifyDistanceBetweenRowsOfCell": "Especifique la distancia entre filas",
       "specifyIncrementingElevationBetweenRows": "Especifique la elevación incremental entre filas",
       "enterNumberOfLevels": "Indique el número de niveles",
       "specifyDistanceBetweenLevelsOr": "Especifique la distancia entre niveles o",
@@ -2319,6 +2321,7 @@ export const es: EngineLocale = {
       "convertToPolylines": "open",
       "purgeBlock": "open",
       "selectGripToEditArrayOr": "spaced",
+      "selectGripToEditPathArrayOr": "spaced",
       "turnIntoPolyline": "open",
       "ucsMoveOrigin": "tight",
       "ucsOrthographic": "tight",
@@ -2326,6 +2329,16 @@ export const es: EngineLocale = {
       "ucsZdepth": "tight",
       "undoEverything": "open",
       "viewOrthographic": "tight"
+    },
+    "answerForms": {
+      "dimStyleRedefine": "tight",
+      "mredoCount": "spaced",
+      "selectDimensionsToSpace": "tight",
+      "selectGripToEditPathArrayOr": "spaced",
+      "selectPolylineOr": "spaced",
+      "spaceBaseDimension": "tight",
+      "specifyDistanceBetweenRowsOfCell": "spaced",
+      "unitCellFirstCorner": "tight"
     },
     "format": {
       "idle": "Comando",
@@ -2343,6 +2356,14 @@ export const es: EngineLocale = {
           "prompt"
         ],
         " ",
+        [
+          "answer"
+        ]
+      ],
+      "answeredTight": [
+        [
+          "prompt"
+        ],
         [
           "answer"
         ]

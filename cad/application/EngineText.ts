@@ -8,6 +8,7 @@ import {
 import type { CompiledMessage, MessageValues } from "../i18n/types"
 import { en } from "../locales/en"
 import type {
+  AnswerForm,
   CommandCatalog,
   CommandName,
   EngineLocale,
@@ -34,7 +35,7 @@ export interface PromptSegment {
   readonly keywords: boolean
 }
 
-export type { PromptForm } from "../locales/types"
+export type { AnswerForm, PromptForm } from "../locales/types"
 
 /**
  * What the engine names, in the interface language (`EngineState.names`): a
@@ -337,6 +338,11 @@ export class EngineText {
     return this.commands.promptForms[id] ?? "spaced"
   }
 
+  /** How the history writes an answer after prompt `id` in the command language. */
+  answerForm(id: PromptId): AnswerForm {
+    return this.commands.answerForms[id] ?? "spaced"
+  }
+
   prompt(id: PromptId, values?: MessageValues): string {
     return this.format(this.commands.prompts[id], values)
   }
@@ -469,11 +475,21 @@ export class EngineText {
     })
   }
 
-  /** A prompt as the history keeps it once answered: `Specify next point or [Undo]: 100`. */
-  answered(prompt: string, answer: string): string {
-    return answer === ""
-      ? prompt
-      : this.format(this.commands.format.answered, { prompt, answer })
+  /**
+   * A prompt as the history keeps it once answered: `Specify next point or
+   * [Undo]: 100`, or `tight`, against its colon (pt-BR `…[Múltiplo]:M`).
+   */
+  answered(
+    prompt: string,
+    answer: string,
+    form: AnswerForm = "spaced"
+  ): string {
+    if (answer === "") return prompt
+    const { answered, answeredTight } = this.commands.format
+    return this.format(form === "tight" ? answeredTight : answered, {
+      prompt,
+      answer,
+    })
   }
 
   /**

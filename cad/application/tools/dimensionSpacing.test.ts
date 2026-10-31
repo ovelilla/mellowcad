@@ -210,7 +210,7 @@ describe("DIMSPACE", () => {
     cad.select("D1", "D2", "D3")
     typed(cad.command("DIMSPACE"), "50,-40")
     expect(cad.commandLog().slice(-2)).toEqual([
-      "Select base dimension: 50,-40",
+      "Select base dimension:50,-40",
       "3 found",
     ])
     expect(cad.state().commandLine.prompt).toBe(
@@ -237,14 +237,14 @@ describe("DIMSPACE", () => {
     })
     typed(cad.command("DIMSPACE"), "50,300")
     expect(cad.commandLog().slice(-2)).toEqual([
-      "Select base dimension: 50,300",
+      "Select base dimension:50,300",
       "Selected object is not a dimension.",
     ])
     cad.click(p(50, 300))
     expect(cad.commandLog().at(-1)).toBe("Selected object is not a dimension.")
     typed(cad, "50,50")
     expect(cad.commandLog().slice(-2)).toEqual([
-      "Select base dimension: 50,50",
+      "Select base dimension:50,50",
       "No object selected.",
     ])
     expect(cad.state().commandLine.prompt).toBe(
@@ -362,14 +362,14 @@ describe("DIMSPACE", () => {
     typed(cad.command("DIMSPACE"), "50,-10", "50,0", "50,0", "50,-20", "50,0")
 
     expect(cad.commandLog().slice(1)).toEqual([
-      "Select base dimension: 50,-10",
-      "Select dimensions to space: 50,0",
+      "Select base dimension:50,-10",
+      "Select dimensions to space:50,0",
       "0 found",
-      "Select dimensions to space: 50,0",
+      "Select dimensions to space:50,0",
       "0 found, 0 total",
-      "Select dimensions to space: 50,-20",
+      "Select dimensions to space:50,-20",
       "1 found, 1 total",
-      "Select dimensions to space: 50,0",
+      "Select dimensions to space:50,0",
       "0 found, 1 total",
     ])
   })
@@ -382,10 +382,10 @@ describe("DIMSPACE", () => {
     cad.enter().type("10").enter()
 
     expect(cad.commandLog().slice(1, 6)).toEqual([
-      "Select base dimension: 50,-10",
-      "Select dimensions to space: -10,25",
+      "Select base dimension:50,-10",
+      "Select dimensions to space:-10,25",
       "1 found",
-      "Select dimensions to space: 50,-20",
+      "Select dimensions to space:50,-20",
       "1 found, 2 total",
     ])
     expect(cad.byId<DimensionEntity>("V").linePoint).toBeCloseToPoint(

@@ -1678,6 +1678,7 @@ declare const source: {
       "specifyBreakPoint": string
       "enterArrayType": string
       "selectGripToEditArrayOr": string
+      "selectGripToEditPathArrayOr": string
       "enterNumberOfColumns": string
       "enterNumberOfRows": string
       "specifyDistanceBetweenColumnsOfCell": string
@@ -1685,6 +1686,7 @@ declare const source: {
       "unitCellOppositeCorner": string
       "specifyDistanceBetweenColumns": string
       "specifyDistanceBetweenRows": string
+      "specifyDistanceBetweenRowsOfCell": string
       "specifyIncrementingElevationBetweenRows": string
       "enterNumberOfLevels": string
       "specifyDistanceBetweenLevelsOr": string
@@ -1801,6 +1803,7 @@ declare const source: {
       "convertToPolylines": string
       "purgeBlock": string
       "selectGripToEditArrayOr": string
+      "selectGripToEditPathArrayOr": string
       "turnIntoPolyline": string
       "ucsMoveOrigin": string
       "ucsOrthographic": string
@@ -1809,10 +1812,21 @@ declare const source: {
       "undoEverything": string
       "viewOrthographic": string
     }
+    "answerForms": {
+      "dimStyleRedefine": string
+      "mredoCount": string
+      "selectDimensionsToSpace": string
+      "selectGripToEditPathArrayOr": string
+      "selectPolylineOr": string
+      "spaceBaseDimension": string
+      "specifyDistanceBetweenRowsOfCell": string
+      "unitCellFirstCorner": string
+    }
     "format": {
       "idle": string
       "commandPrompt": string
       "answered": string
+      "answeredTight": string
       "snapOverride": string
       "transparentCommand": string
       "transparentPrompt": string

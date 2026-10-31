@@ -110,6 +110,9 @@ word the engine says, and its type is the type of every other language.
   prompt left out), `tight`, against what precedes it (`[Zdepth]<0,0,0>:`), or `open`, with no
   colon (`OK? <Y>`). It is the language's, not the command's: Brazilian Portuguese writes
   `[profundidadeZ] <0,0,0>:`.
+- **`answerForms`** says how the history writes an answer after a prompt, by the prompt's id:
+  `spaced` (`[Multiple]: M`, any prompt left out) or `tight`, against the colon, where the
+  language's prompt ends without a space: Brazilian Portuguese writes `[Múltiplo]:M`.
 - A linetype's or hatch pattern's name is drawing data, the same in every language, and may be left
   out.
 

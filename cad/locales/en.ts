@@ -1718,6 +1718,7 @@ export const en: EngineCatalog = {
       "specifyBreakPoint": "Specify break point",
       "enterArrayType": "Enter array type",
       "selectGripToEditArrayOr": "Select grip to edit array or",
+      "selectGripToEditPathArrayOr": "Select grip to edit array or",
       "enterNumberOfColumns": "Enter the number of columns",
       "enterNumberOfRows": "Enter the number of rows",
       "specifyDistanceBetweenColumnsOfCell": "Specify the distance between columns or",
@@ -1725,6 +1726,7 @@ export const en: EngineCatalog = {
       "unitCellOppositeCorner": "Specify opposite corner",
       "specifyDistanceBetweenColumns": "Specify the distance between columns",
       "specifyDistanceBetweenRows": "Specify the distance between rows",
+      "specifyDistanceBetweenRowsOfCell": "Specify the distance between rows",
       "specifyIncrementingElevationBetweenRows": "Specify the incrementing elevation between rows",
       "enterNumberOfLevels": "Enter the number of levels",
       "specifyDistanceBetweenLevelsOr": "Specify the distance between levels or",
@@ -1847,6 +1849,7 @@ export const en: EngineCatalog = {
       "convertToPolylines": "open",
       "purgeBlock": "open",
       "selectGripToEditArrayOr": "tight",
+      "selectGripToEditPathArrayOr": "tight",
       "turnIntoPolyline": "open",
       "ucsMoveOrigin": "tight",
       "ucsOrthographic": "tight",
@@ -1854,6 +1857,16 @@ export const en: EngineCatalog = {
       "ucsZdepth": "tight",
       "undoEverything": "open",
       "viewOrthographic": "tight"
+    },
+    "answerForms": {
+      "dimStyleRedefine": "tight",
+      "mredoCount": "spaced",
+      "selectDimensionsToSpace": "tight",
+      "selectGripToEditPathArrayOr": "spaced",
+      "selectPolylineOr": "spaced",
+      "spaceBaseDimension": "tight",
+      "specifyDistanceBetweenRowsOfCell": "spaced",
+      "unitCellFirstCorner": "spaced"
     },
     "format": {
       "idle": "Command",
@@ -1871,6 +1884,14 @@ export const en: EngineCatalog = {
           "prompt"
         ],
         " ",
+        [
+          "answer"
+        ]
+      ],
+      "answeredTight": [
+        [
+          "prompt"
+        ],
         [
           "answer"
         ]

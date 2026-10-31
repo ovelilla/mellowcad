@@ -47,6 +47,9 @@ Windows desktop.
   `acad.sh click <x> <y> [left|right|middle|none|wheel] [count] [shift|ctrl]` moves it there and
   clicks (or only moves, or turns the wheel) and leaves it there, so hovering shows. AutoCAD reads
   the real cursor; posted mouse messages move nothing. Both move the owner's mouse: ask first.
+  **Neither brings AutoCAD forward**: a screen shot (`shot -hwnd -1`) of where you will click must
+  show AutoCAD on top first. An instance launched while the owner works can open behind their
+  windows, and a probe's clicks and keys (Esc, F-keys, Ctrl+W) then went to VS Code (2026-10-31).
 - **Typing**: `acad.sh type "<text>"` (`\n` Enter, `\e` Esc), one virtual key at a time;
   `acad.sh key ctrl+z f8 shift+tab down` for what text cannot say. The keys reach a prompt only
   when the drawing area holds the keyboard focus, which a click there gives: launched from WSL,

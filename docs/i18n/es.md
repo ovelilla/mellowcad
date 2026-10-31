@@ -258,7 +258,11 @@ origen/Origen` from the 2026 help and the same captures;
   `MT`, but that page is a translation of the English one (it also lists `DT` for TEXTO), and the
   file keeps `T` on TEXTO, as the 2027 console does (`MT` is no command there), with `TEXTODIN`
   (text/p149, p150, p259, p260).
-- **Prompts and keywords:** from Spanish product captures (2012–2020) and the 2011–2026 Spanish
+- **Prompts and keywords:** where a default touches the list, and where the answer is written
+  against the colon, are the language's (`promptForms`, `answerForms`): Spanish spaces the arrays'
+  main prompt, and writes the unit cell's answer against its colon (`…celda de unidad:0,0`,
+  AcArrayRes 5717, arrays/p157), as DIMSPACE's in every language (`Designar cota base:50,-40`). From
+  Spanish product captures (2012–2020) and the 2011–2026 Spanish
   help;
   where the help and the product disagree on capitals, the product wins (`punto a Atravesar`,
   `RAdio`, `jUstificar`, `ángUlo`, `EScala`). TEXTOM's corner prompts,

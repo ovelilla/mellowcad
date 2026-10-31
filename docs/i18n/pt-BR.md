@@ -2,9 +2,9 @@
 
 > **Command language:** `localized`, Brazilian Portuguese AutoCAD's. **Status:** `draft` since
 > 31/10/2026, at `/pt-br`: the site, the editor, the four "Use" pages and the engine's interface
-> are translated, and the command line speaks Brazilian Portuguese AutoCAD's language (31/10/2026,
-> in progress: "Command language", below). **Review:** none by a native speaker; what no console
-> probe settled is **unverified** below.
+> are translated, and the command line speaks Brazilian Portuguese AutoCAD's language, complete
+> (31/10/2026: "Command language", below). **Review:** none by a native speaker; what no console
+> or desktop probe settled is **unverified** below.
 
 The words are Autodesk's own Brazilian Portuguese localization of AutoCAD, never a translation of
 ours, as Spanish's are (`es.md`). The language is Brazil's, and `LANGUAGE_NAMES` says so
@@ -259,6 +259,41 @@ origem`), and CHAMFER fills 20635's `Objetos %s 3D não podem ser %s.` with `cha
 which is copied (FILLET's `com concordância` was right). The report still counts most of these
 `unseen`: they span two lines or are filled with values.
 
+### The desktop, and an answer against the colon (31/10/2026, fourth session)
+
+The desktop in pt-BR (`acad.exe /language pt-BR`, its profile left as found), against English's
+own desktop reviews (line/d10, d27, workspace/d01, draw's d05); the evidence is
+`research/probes/names/d01`–`d05`:
+
+- **The toggles' lines** (d01): `<Snap ativado>`, `<Osnap ativado>`, `<Polar ativado>`,
+  `<Rastreamento de snap ao objeto ativado>`, `<Ciclo de seleção ativado>` as worded; two
+  corrected: Ortho is `<Ortogonal ativado>` (not `Orto`) and Grid `<Grade ativado>`, masculine
+  like Spanish's `<Rejilla activado>` (not `ativada`).
+- **Polar's tooltip** (d02): `Polar: 75.7945 < 0°`, English's words and form.
+- **ATTEDIT's dialog prompt** (d04): `EDITARATRIB Selecionar referência de bloco:`, as worded
+  (atteditRes 1).
+- **MEASUREGEOM** (d03), which is not built: Quick shows bare values (`100`, `50`) and an area
+  `Área = 5000.0000, Perímetro = 300.0000`, AREA's own message; Distance draws a bare rubber
+  band. None shows the readout chip `feedback.measure*` words (`Dist`, `Âng`, `Área`, `Perím`),
+  unused since the inquiry review (IQD), so they stay unverified in every language.
+- **The dynamic input's field labels** (`Centro`, `Raio`, `Primeiro ponto`…) are ours: AutoCAD's
+  fields are unlabelled (draw's d05), as Spanish's page says of its own; they stay unverified,
+  the nouns of each prompt.
+
+**An answer written against the colon is the language's** (`commands.answerForms`, by prompt id):
+where a prompt's string ends without a space after its colon, the history writes the answer
+against it, which the desktop shows too (d05, `Digitar número de ações ou [Tudo/úLtimo]:L`). Read
+from every traced `Message` of the three languages' probes and the tables id by id: DIMSPACE's two
+questions and -DIMSTYLE's redefine in every language (AcDimRes 5994, 5995, 5303; dimensions/p06,
+p260); in pt-BR also PEDIT's first prompt (21229, pedit/p18), MREDO's (26256, names/p11),
+ARRAYPATH's main prompt (AcArrayRes 5644, arrays/p332; ARRAYRECT's and ARRAYPOLAR's keep the
+space) and ARRAYRECT's rows at Spacing (5718, arrays/p116); in Spanish the unit cell (5717,
+arrays/p157). The tables alone mislead: TRIM's and EXTEND's Mode strings (13161, 64161) end with
+no space, and their consoles print one. ARRAYPATH's main prompt and ARRAYRECT's rows at Spacing took
+ids of their own (`selectGripToEditPathArrayOr`, `specifyDistanceBetweenRowsOfCell`); Rows' path is
+`Especificar a distância entre linhas`, as its console words it beside Spacing's `Especifique`. Held
+in the three languages by `cad/application/promptForms.test.ts`.
+
 ### Deviations
 
 - **Aliases left out.** `acad.pgp` makes `COTAHORIZONTAL`, `COTAVERTICAL` and `COTAROTACIONADA`
@@ -271,22 +306,13 @@ which is copied (FILLET's `com concordância` was right). The report still count
   (`Ponto`), which is not built here, refuses `EXTR` and `ON`, and no typed word reaches Endpoint
   but `_END` (names/p07–p09).
 
-### Pending (phase 4, next sessions)
-
-- **The desktop in pt-BR**: the dynamic-input labels and tooltips (Unverified, below), and ATTEDIT's
-  `Selecionar referência de bloco`, which only its dialog asks (the console runs it as -ATTEDIT).
-- **An answer written against the colon.** pt-BR's MREDO and ARRAYPATH main prompts end without a
-  space, so the console echoes `…[Tudo/Último]:_L` and `…/saIr]<saIr>:2.5` (names/p11,
-  arrays/p332), where the history here writes `: L`: whether a prompt's trailing space is the
-  language's too is not modelled.
-
 ### Unverified
 
 What no probe showed, worded from the tables or in Autodesk's style: the keys
 `research/console/pt-BR.md` reports `unseen` or `unpaired` that no transcript shows, above all the
-dynamic-input labels (`Centro`, `Raio`, `Primeiro ponto`…), the tooltips (`Polar:`, MEASUREGEOM's
-`Dist`, `Âng`, `Área`, `Perím`), the status-bar toggles' `<Snap ativado>` lines, our own messages
-(files, clipboard, FROM) and the keywords and labels no probe's trace showed, taken from the tables.
+dynamic-input labels (`Centro`, `Raio`, `Primeiro ponto`…: AutoCAD shows none), the unused
+`feedback.measure*` readout (`Dist`, `Âng`, `Área`, `Perím`: no AutoCAD view shows it), Polar's 3D
+readout (`< +Z`, ours in every language), our own messages (files, clipboard, FROM) and the keywords and labels no probe's trace showed, taken from the tables.
 The report's `unseen` also counts keys printed but not matched (a message over several lines, or
 filled with values): these were compared by hand against the transcripts on 31/10/2026, which
 corrected SPLINE's `Método=Ajustar Nós=`, the -STYLE listing's `Ângulo de inclinação`, LIST's

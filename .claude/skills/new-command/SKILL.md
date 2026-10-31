@@ -30,7 +30,8 @@ wording (skill `autocad-research`). How a tool is written: `.claude/rules/cad-to
      `commands.keywords.<NAME>`, `commands.prompts` (one id per `question()`),
      `commands.messages`, `commands.keywordLabels` / `promptKeywords` /
      `promptKeywordLabels` where AutoCAD's `initget` needs them, `commands.promptForms` where a
-     default touches what precedes it or takes no colon, and `interface.tool.<id>`.
+     default touches what precedes it or takes no colon, `commands.answerForms` where a prompt
+     ends without its space after the colon (the traced `Message`), and `interface.tool.<id>`.
    - Each language of `routing.locales` (`i18n/routing.ts`), by its `COMMAND_LANGUAGE`: a
      `localized` one (Spanish) gets the same keys, its AutoCAD's words from the 2027 tables
      (`propose-commands.mjs --lang <tag>` reports the new ids, skill `autocad-research`), and a

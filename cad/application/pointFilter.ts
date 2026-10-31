@@ -114,6 +114,7 @@ export function filterPrompt(
         : text.commandQuestion(prompt.command, question)
     ),
     echo: of ? echo : line(question),
+    answerForm: "spaced",
     dynamic: prompt.dynamic === null ? asked : `${prompt.dynamic} ${asked}`,
   }
 }

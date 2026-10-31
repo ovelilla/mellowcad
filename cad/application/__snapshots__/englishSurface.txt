@@ -3373,10 +3373,10 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Select base dimension:
 > pick
   properties: Rotated Dimension (1) [Misc: Annotative=No] [Lines & Arrows: Arrow size=2.5, Ext line ext=1.25, Ext line offset=0.625] [Text: Text height=2.5, Text offset=0.625, Text position X=50.00~, Text position Y=26.88~, Text rotation=0°~, Measurement=100, Text override=~] [Fit: Dim scale overall=1] [Primary Units: Decimal separator=,, Suppress trailing zeros=Yes, Precision=0.00]
-  prompt| Select dimensions to space: 1 found
+  prompt| Select dimensions to space:1 found
 > pick
   properties: 2 objects (2) [Selection: Dimensions=2]
-  prompt| Select dimensions to space: 1 found, 2 total
+  prompt| Select dimensions to space:1 found, 2 total
 > enter
   prompt: DIMSPACE Enter value or [Auto] <Auto>:
   asks: "Enter value"
@@ -6307,7 +6307,7 @@ Specify next point or
   tip: Enter name for new dimension style or
   dyn: "Enter name for new dimension style or"=""||*
   options: [?] ?
-  prompt| That name is already in use, redefine it? <N>: N
+  prompt| That name is already in use, redefine it? <N>:N
 > escape
   prompt: Command:
   asks: -

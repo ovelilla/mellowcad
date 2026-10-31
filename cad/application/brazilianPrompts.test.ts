@@ -259,3 +259,41 @@ describe("Brazilian Portuguese words only these probes print", () => {
     )
   })
 })
+
+// What only the desktop shows, against its English (names/d01, d04; English's
+// line/d10, d27, workspace/d01 and draw's d05).
+describe("Brazilian Portuguese words of the desktop", () => {
+  it("echoes the drafting toggles as the desktop's history does: Ortogonal, and Grade in the masculine (names/d01)", () => {
+    const cad = createHarness({ locale: ptBR })
+    const toggled = (key: string) => {
+      const from = cad.commandLog().length
+      cad.press(key)
+      return cad.commandLog().slice(from)
+    }
+    expect([
+      ...toggled("F9"),
+      ...toggled("F3"),
+      ...toggled("F8"),
+      ...toggled("F10"),
+      ...toggled("F11"),
+      ...toggled("F7"),
+      ...toggled("F7"),
+      ...toggled("F4"),
+    ]).toEqual([
+      " <Snap ativado>",
+      " <Osnap ativado>",
+      " <Ortogonal ativado>",
+      " <Polar ativado>",
+      " <Rastreamento de snap ao objeto desativado>",
+      " <Grade desativado>",
+      " <Grade ativado>",
+      " <Ciclo de seleção ativado>",
+    ])
+  })
+
+  it("asks ATTEDIT's block reference as the desktop does (names/d04)", () => {
+    expect(asked(run("EDITARATRIB"))).toBe(
+      "EDITARATRIB Selecionar referência de bloco:"
+    )
+  })
+})

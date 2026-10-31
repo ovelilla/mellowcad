@@ -178,7 +178,9 @@ export class ArrayPathTool implements Tool {
     const { layout } = state
     switch (state.step) {
       case "main":
-        return this.grips.isHot() ? null : "selectGripToEditArrayOr"
+        // WHY an id of its own: pt-BR writes this one's answer against the
+        // colon (AcArrayRes 5644), ARRAYRECT's and ARRAYPOLAR's past a space.
+        return this.grips.isHot() ? null : "selectGripToEditPathArrayOr"
       case "associative":
         return "createAssociativeArray"
       case "method":

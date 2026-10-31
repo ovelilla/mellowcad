@@ -206,7 +206,9 @@ registry, a drawing saved at 1 opening at 0 after `_AS _N`, p422; typed as a var
 a step U takes back, workspace/p214, p218); COUnt asks `Enter the number of columns <4>:` and
 `Enter the number of rows <3>:`, Spacing
 `Specify the distance between columns or [Unit cell] <15>:` and
-`Specify the distance between rows <1>:` — the defaults without trailing zeros, at the drawing's
+`Specify the distance between rows <1>:` (pt-BR `Especifique a distância entre linhas <6>:`, its
+answer against the colon, where Rows' is `Especificar … ou [Total/Expressão] <6>: `, p116, p131;
+es the unit cell's, `…celda de unidad:0,0`, p157) — the defaults without trailing zeros, at the drawing's
 precision, as AutoCAD writes them (`<6>`, `<-4.3514>`; p116, p130) — Unit cell asks
 `Specify first corner point of unit cell:` and `Specify opposite corner:`, picked or typed (a
 typed corner read as any typed point, `*x,y` in the WCS, p147), and the cell's sides along the
@@ -457,7 +459,9 @@ either way (p06, p310, p344), runs from the curve's start here —; a circle fro
 counter-clockwise, wherever it is picked (p301, p315); a closed polyline from its first vertex,
 its own way round (**unverified**). Then
 `Select grip to edit array or [ASsociative/Method/Items/Align items/eXit]<eXit>:` (es
-`[Asociativa/Método/Elementos/ALinear elementos/Salir] <Salir>`; ASsociative as ARRAYRECT's, p06)
+`[Asociativa/Método/Elementos/ALinear elementos/Salir] <Salir>`; pt-BR's answer written against
+the colon, `…/saIr]<saIr>:2.5`, AcArrayRes 5644, p332, where ARRAYRECT's and ARRAYPOLAR's have
+the space; ASsociative as ARRAYRECT's, p06)
 over a live preview, the items drawn as
 ARRAYRECT's and the path as the drawing draws it (d03-2); a point or a number typed there is taken and the prompt asked again
 without a word (p328, p329). Method `Enter path method [Divide/Measure] <Measure>:`, Measure
@@ -1548,7 +1552,8 @@ again in silence), Next and Previous at the ends of a closed one (staying put, a
 
 **Implemented:** as AutoCAD 2027's console asks it and leaves the polyline (probes
 pedit/p01–p199, traced, MPDUMP, en and es; not transparent). `Select polyline or [Multiple]:` (es
-`Designe polilínea o [Múltiple]:`), a pick or a mode typed there (Window, Last, Crossing, BOX, ALL,
+`Designe polilínea o [Múltiple]:`; pt-BR `Selecionar polilinha ou [Múltiplo]:`, its answer written
+against the colon, `[Múltiplo]:_Y`, 21229, pedit/p18), a pick or a mode typed there (Window, Last, Crossing, BOX, ALL,
 Fence, WPolygon, CPolygon), a miss and Enter asked again in silence and Escape the only way out
 (p03, p38), a word `*Invalid selection*` and `Expects a point or
 Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Multiple]:`, the stray bracket AutoCAD's (es

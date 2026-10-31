@@ -238,6 +238,11 @@ export class ArrayTool implements Tool {
           trimmed: true,
         }
       case "spacingRows":
+        return {
+          id: "specifyDistanceBetweenRowsOfCell",
+          enter: grid.rowSpacing,
+          trimmed: true,
+        }
       case "rowsSpacing":
         return {
           id: "specifyDistanceBetweenRows",

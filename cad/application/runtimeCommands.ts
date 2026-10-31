@@ -3,6 +3,7 @@ import { CommandDefinition, TOOL_COMMANDS } from "./CommandLine"
 import type { CommandOptionUi, StylesPanelTab } from "./EngineState"
 import {
   promptString,
+  type AnswerForm,
   type EngineText,
   type PromptForm,
   type PromptSegment,
@@ -308,6 +309,8 @@ export interface CommandPrompt {
   readonly segments: PromptSegment[]
   /** `Specify next point or [Undo]:`, the line an answer is written after. */
   readonly echo: PromptSegment[] | null
+  /** How the history writes an answer after {@link echo}. */
+  readonly answerForm: AnswerForm
   /**
    * The dynamic prompt, the question without the command's name: with its
    * colon when nothing follows it (`Specify first point:`), else without
@@ -363,6 +366,7 @@ export function commandPrompt(
       command: null,
       segments: text.composePrompt(text.idleHead(), []),
       echo: null,
+      answerForm: "spaced",
       dynamic: null,
     }
   }
@@ -413,6 +417,7 @@ export function commandPrompt(
       question === null
         ? null
         : text.composePrompt(question, labels, value, form),
+    answerForm: id === null ? "spaced" : text.answerForm(id),
     dynamic:
       shown === null || labels.length > 0 || value !== null
         ? shown
@@ -464,6 +469,7 @@ export function keywordChoicePrompt(
         : text.commandQuestion(prompt.command, question)
     ),
     echo: line(question),
+    answerForm: "spaced",
     dynamic: question,
   }
 }

@@ -258,7 +258,7 @@ describe("DIMSPACE's questions", () => {
       "DIMSPACE Select dimensions to space:"
     )
     cad.click(p(50, -60))
-    expect(cad.commandLog().at(-1)).toBe("Select dimensions to space: 1 found")
+    expect(cad.commandLog().at(-1)).toBe("Select dimensions to space:1 found")
     cad.enter()
     expect(cad.state().commandLine.prompt).toBe(
       "DIMSPACE Enter value or [Auto] <Auto>:"
@@ -272,7 +272,7 @@ describe("DIMSPACE's questions", () => {
   it("take Last at the base dimension, as AutoCAD's console does", () => {
     const cad = createHarness({ entities: dims() })
     answer(cad.command("DIMSPACE"), "L")
-    expect(cad.commandLog().at(-1)).toBe("Select base dimension: L")
+    expect(cad.commandLog().at(-1)).toBe("Select base dimension:L")
     expect(cad.state().commandLine.prompt).toBe(
       "DIMSPACE Select dimensions to space:"
     )
@@ -289,7 +289,7 @@ describe("DIMSPACE's questions", () => {
     })
     answer(cad.command("DIMSPACE"), "L")
     expect(cad.commandLog().slice(-2)).toEqual([
-      "Select base dimension: L",
+      "Select base dimension:L",
       "Selected object is not a dimension.",
     ])
     expect(cad.state().commandLine.prompt).toBe(

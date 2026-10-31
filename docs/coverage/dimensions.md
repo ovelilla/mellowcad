@@ -171,7 +171,9 @@ again —, `Select dimensions to space:` with MOVE's counts (es `Designe cotas p
 finding every dimension, one at an angle to the base too, which spacing leaves where it is, and
 saying `0 found` for what is no dimension, which starts the total (`0 found, 0 total`, erase/p221,
 p244, p256); Enter on an empty set ends (p262). A set selected before the command is the set,
-counted with the base after its pick (`3 found`), the value asked next (p246, p239).
+counted with the base after its pick (`3 found`), the value asked next (p246, p239). Both
+questions end without a space after the colon in every language (AcDimRes 5994, 5995), so the
+history writes the answer against it, `Select base dimension:50,-40` (p260, erase/p256).
 `Enter value or [Auto] <Auto>:` (es `Indique valor o [Auto] <Auto>`) is a keyword prompt read by
 its leading number (`FOO` 0, `7FOO` 7, `12,10` 12, p251, p268, p225), no point or distance; a
 negative one `Invalid spacing value, spacing value cannot be negative.` (p250); Auto (2×DIMTXT,
@@ -285,7 +287,8 @@ take says `Invalid option keyword.` and asks again (p11).
 - **Save**: `Enter name for new dimension style or [?]:` (spaces typed key by key, `AB CD` whole,
   as at Restore's and `?`'s names, desktop workspace/d06) names a new style holding the current
   style's settings, made current (p08). A name in use, any case, asks `That name is already in
-  use, redefine it? <N>:` (es `Este nombre está ya en uso; ¿redefinirlo? <N>:`); No or Enter asks
+  use, redefine it? <N>:` (es `Este nombre está ya en uso; ¿redefinirlo? <N>:`), its answer
+  written against the colon, `<N>:_Y` (AcDimRes 5303, p06); No or Enter asks
   the name again (p08), Yes gives that style the current settings and makes it current (p06 on the
   current style's own name; on another style, unverified).
 - **Restore** (Enter's): `Enter a dimension style name, [?] or <select dimension>:` makes the named

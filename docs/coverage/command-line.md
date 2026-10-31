@@ -374,7 +374,8 @@ OPEN bring `Auto = On, Control = All, Combine = Yes, Layer = Yes` back (UNDOCTL,
 AutoCAD's own start puts beneath the first command, taking back the last one says
 `Everything has been undone` at once; a U that finds nothing leaves REDO the undo before it; REDO
 does the whole last undo again; MREDO (es `MREHACER`) asks `Enter number of actions or [All/Last]:`
-(es `Indique número de acciones o [Todas/úLtima]`; UNDO's refusal; Enter is 1, though the prompt
+(es `Indique número de acciones o [Todas/úLtima]`; pt-BR `Digitar número de ações ou [Tudo/úLtimo]:`,
+its answer written against the colon, `:L`, 26256, names/p11 and the desktop's d05; UNDO's refusal; Enter is 1, though the prompt
 shows no default) and does that many of the steps the undos took back again, whatever U, UNDO, REDO
 and MREDO ran since, writing them as REDO does (a mark silently), All all of them, Last the last
 undo's whole, once (`The last UNDO operation has been already redone.`, es

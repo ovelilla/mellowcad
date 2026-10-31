@@ -233,7 +233,8 @@ over its image on the work plane) and the point on it at the base point's Z, in 
 plan (desktop interaction3d/d01, d04, d07: 8 px off the 0° path at 100,100,50, 101.648,100,50), a
 click with no angle engaged on the work plane (d02); in a 3D view the `+Z` / `-Z` guide along the
 UCS's Z, engaged within the same 12 px measured on the screen, the guide drawn nearer the cursor
-winning against a polar angle, the Z on a tie (**unverified** rule); readout `Polar: 50.00mm < +Z` (**unverified** wording); the
+winning against a polar angle, the Z on a tie (**unverified** rule); readout `Polar: 50.00mm < +Z` (**unverified** wording; the plan's `Polar: 75.7945 < 0°` is
+pt-BR's too, desktop names/d02); the
 path dashed green from the base point out of the view, a small ✕ on the point, the reading in a
 light grey box below and to the right of the cursor (desktop line/d12); POLARANG typed (SETVAR,
 workspace.md) in degrees, put in 0–360 (`-30` is 330, `400` is 40), a step U takes back
@@ -249,7 +250,8 @@ the plan
 **Implemented:** constraint to the UCS's axes, from the prompt's base point (none at CIRCLE's 2P
 and 3P later points, whose picks it leaves alone, desktop circle/d12, nor at ARC's but a centre
 mode's end, bent about the centre, arc/d06); F8 turns it on and off, writing ` <Ortho on>` /
-` <Ortho off>` (es ` <Orto activado>` / `desactivado`), and turning it on turns Polar off, as Polar
+` <Ortho off>` (es ` <Orto activado>` / `desactivado`; pt-BR ` <Ortogonal ativado>`, desktop
+names/d01), and turning it on turns Polar off, as Polar
 turns it off (desktop passes line/d10, d27); Shift held toggles it ("To turn Ortho off
 temporarily, hold down the Shift key"; with it off, on), Polar yielding; from a base point at
 another height, the cursor read on the base point's plane and the point at its Z (from 0,100,50 in
@@ -297,7 +299,8 @@ steps by its size, as the desktop's does (POLARDIST −10 steps 10, desktop work
 
 **Implemented:** F7 shows and hides the grid, which follows the lattice while grid snap is on;
 GRIDMODE is saved in the drawing (rectang/p304, p321); F7 writes ` <Grid on>` / ` <Grid off>` (es
-` <Rejilla activado>` / ` <Rejilla desactivado>`, table 16646, desktop workspace/d01, e01) and is
+` <Rejilla activado>` / ` <Rejilla desactivado>`, table 16646, desktop workspace/d01, e01; pt-BR
+` <Grade ativado>`, masculine too, desktop names/d01) and is
 taken back with the last undo step (see Object snaps, d01)
 
 **Missing:** GRID, GRIDUNIT (the spacing is the lattice's or the zoom's here)

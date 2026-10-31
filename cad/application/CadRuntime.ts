@@ -101,6 +101,7 @@ import { matchKeywords, resolveKeyword } from "../i18n/keywords"
 import type { EngineLocale, PromptId } from "../locales/types"
 import {
   EngineText,
+  type AnswerForm,
   type PromptSegment,
   engineText,
   promptString,
@@ -494,6 +495,8 @@ export class CadRuntime extends Observable {
    * that line, and a prompt AutoCAD asks without a new line follows it there.
    */
   private openLine: number | null = null
+  /** How what is found is written on {@link openLine}: its prompt's answer form. */
+  private openLineForm: AnswerForm = "spaced"
   /** Whether {@link openLine} is a ribbon macro's answer, which the next prompt continues. */
   private macroOpen = false
   /**
@@ -788,7 +791,10 @@ export class CadRuntime extends Observable {
         )
         if (kind !== "prompt") return
         this.reportedPrompt = this.commandLine.mark()
-        if (!this.answeringPrompt) this.openLine = this.reportedPrompt
+        if (!this.answeringPrompt) {
+          this.openLine = this.reportedPrompt
+          this.openLineForm = "spaced"
+        }
       },
       runsTransparently: () => this.suspended !== null,
       regenerate: (how) => {
@@ -1378,6 +1384,7 @@ export class CadRuntime extends Observable {
         this.commandLine.getLines().at(-1)?.kind === "prompt"
       ) {
         this.openLine = before + 1
+        this.openLineForm = "spaced"
         this.macroOpen = true
       }
     }
@@ -1930,7 +1937,7 @@ export class CadRuntime extends Observable {
     if (this.answeringPrompt) return run()
     this.optionList = null
     const asking = this.asking()
-    const { echo } = this.currentPrompt()
+    const { echo, answerForm } = this.currentPrompt()
     const prefix = this.answerPrefix
     const mark = this.commandLine.mark()
     const continues =
@@ -1972,7 +1979,7 @@ export class CadRuntime extends Observable {
       return true
     }
     const given = [prefix, answer, ...found].filter((part) => part).join(" ")
-    const line = this.text.answered(promptString(echo), given)
+    const line = this.text.answered(promptString(echo), given, answerForm)
     if (continues) {
       this.commandLine.amendBefore(mark, (last) => `${last} ${line}`)
     } else {
@@ -1984,6 +1991,7 @@ export class CadRuntime extends Observable {
       reportedLast
         ? written
         : null
+    this.openLineForm = reportedLast ? "spaced" : answerForm
     this.resumeMacro()
     return true
   }
@@ -2384,18 +2392,21 @@ export class CadRuntime extends Observable {
     // WHY only outside an answer: one being answered (a fence's Enter) found
     // it, and an earlier pick's line is no longer the one asking.
     if (!this.answeringPrompt) {
-      const answered = (line: string) => this.text.answered(line, text)
       const open = this.openLine === this.commandLine.mark()
       this.openLine = null
       if (
         open &&
-        this.commandLine.amendLast(["prompt"], this.commandStart, answered)
+        this.commandLine.amendLast(["prompt"], this.commandStart, (line) =>
+          this.text.answered(line, text, this.openLineForm)
+        )
       ) {
         return
       }
       if (
         !this.countOnOwnLine &&
-        this.commandLine.amendLast(["command"], this.commandStart, answered)
+        this.commandLine.amendLast(["command"], this.commandStart, (line) =>
+          this.text.answered(line, text)
+        )
       ) {
         return
       }
@@ -4419,13 +4430,13 @@ export class CadRuntime extends Observable {
     on: boolean
   ): void {
     const text = this.text.message(id, { state: on ? "on" : "off" })
-    const { echo } = this.currentPrompt()
+    const { echo, answerForm } = this.currentPrompt()
     if (this.activeTool.id === "select") this.commandLine.write("command", text)
     else if (echo === null) this.commandLine.write("info", text.trimStart())
     else {
       this.commandLine.write(
         "prompt",
-        this.text.answered(promptString(echo), text)
+        this.text.answered(promptString(echo), text, answerForm)
       )
     }
     this.invalidateState()
