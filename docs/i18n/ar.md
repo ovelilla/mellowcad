@@ -158,5 +158,17 @@ breaks Satori's parser); how a script's face is loaded is `.claude/rules/i18n.md
 
 The interface words are the project's, written in Modern Standard Arabic with the terms above.
 `ar` went `live` **without a native speaker's review**, by the author's decision: none was
-available. Where one should look first, if one ever is: the † terms and the ViewCube's compass
-letters, then `messages/ar.json` and `cad/locales/ar.json`.
+available. Where one should look first, if one ever is, in this order:
+
+1. **The † terms** of the table above and the ViewCube's compass letters: each a choice between
+   competing words that only a native reader settles.
+2. **What was written after 01/10/2026**, which no one has reread (counted on 31/10/2026 against
+   the catalogs of `4ffac941`): 154 keys of `cad/locales/ar.json`, above all the Properties
+   palette's rows (114 of `interface.property`: splines, arrays, hatches, attributes, regions) and
+   30 tool names; in `packages/editor/src/locales/ar.json`, split from the site's catalog since,
+   the layer dialogs (`Layers.dialog`), the rail's flyouts and MTEXT's unsaved-changes dialog;
+   in `messages/ar.json`, 79 new keys (the docs' pages and shortcuts, `Docs.*`) and 18 rewritten
+   (the FAQ, the Status section).
+3. **The rest** of `messages/ar.json` and `cad/locales/ar.json`, the plurals' six categories first.
+
+A review received goes in as any fix, and the status lines then name its date.
