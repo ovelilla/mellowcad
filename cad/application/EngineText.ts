@@ -12,6 +12,7 @@ import type {
   CommandName,
   EngineLocale,
   InterfaceCatalog,
+  PromptForm,
   PromptId,
 } from "../locales/types"
 import type {
@@ -33,8 +34,7 @@ export interface PromptSegment {
   readonly keywords: boolean
 }
 
-/** How a prompt writes its default: `<1>:`, against the list, or with no colon. */
-export type PromptForm = "spaced" | "tight" | "open"
+export type { PromptForm } from "../locales/types"
 
 /**
  * What the engine names, in the interface language (`EngineState.names`): a
@@ -292,9 +292,10 @@ export class EngineText {
   /**
    * How a prompt lists a keyword whose word AutoCAD follows with a note —
    * `Ttr (tan tan radius)` — or null for one listed as its word. At `prompt`,
-   * a label that only repeats the command's word gives way to the word that
-   * prompt spells otherwise (pt-BR SPLINEDIT lists `saIr` at its options,
-   * `Sair` at Weight's; inquiry/p429).
+   * its own label comes first (pt-BR UCS New lists `EIxo z`, declared
+   * `EIxoz`; ucs/p225), and a label that only repeats the command's word
+   * gives way to the word that prompt spells otherwise (pt-BR SPLINEDIT lists
+   * `saIr` at its options, `Sair` at Weight's; inquiry/p429).
    */
   keywordLabel(
     command: string | null,
@@ -302,6 +303,15 @@ export class EngineText {
     prompt: PromptId | null = null
   ): string | null {
     if (command === null) return null
+    const own =
+      prompt === null
+        ? undefined
+        : (
+            this.commands.promptKeywordLabels as Readonly<
+              Record<string, Readonly<Record<string, CompiledMessage>>>
+            >
+          )[prompt]?.[id]
+    if (own !== undefined) return this.format(own)
     const label = (
       this.commands.keywordLabels as Readonly<
         Record<string, Readonly<Record<string, CompiledMessage>> | undefined>
@@ -320,6 +330,11 @@ export class EngineText {
   /** A keyword's abbreviation in the command language (`U` for Undo). */
   abbreviation(command: string | null, id: string): string {
     return abbreviationOf(this.keyword(command, id))
+  }
+
+  /** How prompt `id` writes its default in the command language. */
+  promptForm(id: PromptId): PromptForm {
+    return this.commands.promptForms[id] ?? "spaced"
   }
 
   prompt(id: PromptId, values?: MessageValues): string {

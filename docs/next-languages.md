@@ -3,8 +3,9 @@
 > **Estado:** fases 1 a 4 hechas (2026-10-31); la 5, en curso: plan `docs/plans/pt-BR-language.md`,
 > sus fases 0 a 3 hechas (`pt-BR` como `draft` en `/pt-br`, con sitio, editor, páginas «Use» e
 > interfaz del motor traducidos) y la 4 en curso (`commands` completo desde la consola pt-BR, con
-> sus prompts por comando y -OSNAP; faltan el espacio antes de algunos valores por defecto y lo no
-> verificado). Se borra cuando el portugués de Brasil esté `live` con el sistema entero.
+> sus prompts por comando, -OSNAP, y la forma del valor por defecto y las etiquetas por prompt en
+> el catálogo; falta lo que solo muestra el escritorio). Se borra cuando el portugués de Brasil
+> esté `live` con el sistema entero.
 
 ## 1. Objetivo
 
@@ -140,5 +141,8 @@ Una fase, un commit (o varios si se separan solos). Las 1 a 4 no cambian nada vi
    prompt que la escribe a su manera (`EngineText.keywordLabel` recibe el prompt), y las palabras
    de -OSNAP con una sola mayúscula robaban la letra de cada keyword en un prompt de punto (ahora
    llevan tres, como la consola, y el listado usa los nombres cortos de AutoCAD en todos los
-   idiomas). Queda en el sistema: la forma pegada o espaciada del valor por defecto es del tool,
-   igual en todos los idiomas, y pt-BR la espacia donde el inglés no.
+   idiomas). Tercera sesión: la forma pegada o espaciada del valor por defecto, y la etiqueta que un prompt da a
+   una keyword, pasan al catálogo por id de prompt (`promptForms`, `promptKeywordLabels`), porque
+   pt-BR espacia donde el inglés pega y el español espacia el prompt de las matrices que el inglés
+   y pt-BR pegan; y las claves que ninguna sonda imprimía, sondeadas en los dos idiomas. Lo que no
+   encajó, corregido en el sistema: la consola no conocía MATCHPROP hasta cargar `acmatch.crx`.

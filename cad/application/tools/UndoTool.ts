@@ -82,7 +82,7 @@ export class UndoTool implements Tool {
       case "one":
         return { id: "enterAnOption", enter: { count: 1 } }
       case "everything":
-        return { id: "undoEverything", enter: "undoYes", open: true }
+        return { id: "undoEverything", enter: "undoYes" }
       case "control":
         return { id: "undoControl" }
       case "combine":

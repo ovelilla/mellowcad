@@ -2416,7 +2416,7 @@ export type { CommandCatalog }
  * The command language. `names` and `keywords` are vocabulary, not messages: a
  * keyword marks its abbreviation in capitals (`desHacer`), as `initget` does.
  */
-export type CommandCatalog = Compiled<Omit<Commands, "names" | "keywords" | "promptKeywords">> & {
+export type CommandCatalog = Compiled<Omit<Commands, "names" | "keywords" | "promptKeywords" | "promptForms">> & {
     readonly names: {
         readonly [C in CommandName]: readonly string[];
     };
@@ -2438,6 +2438,14 @@ export type CommandCatalog = Compiled<Omit<Commands, "names" | "keywords" | "pro
         readonly [P in keyof Commands["promptKeywords"]]?: {
             readonly [K in keyof Commands["promptKeywords"][P]]?: string;
         };
+    };
+    /**
+     * The form of a prompt's default, as each language's string writes it: a
+     * prompt left out is `spaced`. The same prompt can differ by language
+     * (`[Zdepth]<0,0,0>:`, pt-BR `[profundidadeZ] <0,0,0>:`).
+     */
+    readonly promptForms: {
+        readonly [P in keyof Commands["prompts"]]?: PromptForm;
     };
 };
 
@@ -2532,13 +2540,16 @@ export declare class EngineText {
     /**
      * How a prompt lists a keyword whose word AutoCAD follows with a note —
      * `Ttr (tan tan radius)` — or null for one listed as its word. At `prompt`,
-     * a label that only repeats the command's word gives way to the word that
-     * prompt spells otherwise (pt-BR SPLINEDIT lists `saIr` at its options,
-     * `Sair` at Weight's; inquiry/p429).
+     * its own label comes first (pt-BR UCS New lists `EIxo z`, declared
+     * `EIxoz`; ucs/p225), and a label that only repeats the command's word
+     * gives way to the word that prompt spells otherwise (pt-BR SPLINEDIT lists
+     * `saIr` at its options, `Sair` at Weight's; inquiry/p429).
      */
     keywordLabel(command: string | null, id: string, prompt?: PromptId | null): string | null;
     /** A keyword's abbreviation in the command language (`U` for Undo). */
     abbreviation(command: string | null, id: string): string;
+    /** How prompt `id` writes its default in the command language. */
+    promptForm(id: PromptId): PromptForm;
     prompt(id: PromptId, values?: MessageValues): string;
     message(id: MessageId, values?: MessageValues): string;
     fileError(code: FileErrorCode): string;
@@ -2860,10 +2871,6 @@ What the exports' types name. A host cannot import these names, but their shape 
 // application/CadDriver.ts
 /** A point to point at: one with a Z is drawn at that height in a view off the plan. */
 type WorldPoint = Vec2 | Vec3;
-
-// application/EngineText.ts
-/** How a prompt writes its default: `<1>:`, against the list, or with no colon. */
-export type PromptForm = "spaced" | "tight" | "open";
 
 // application/EngineText.ts
 export type FeedbackId = Exclude<keyof CommandCatalog["feedback"], "snap">;
@@ -3819,6 +3826,13 @@ export type DeepPartial<T> = T extends string | number | boolean ? T : T extends
 // i18n/types.ts
 /** Values a message is formatted with. Technical numbers arrive pre-formatted. */
 export type MessageValues = Readonly<Record<string, string | number>>;
+
+// locales/types.ts
+/**
+ * How a prompt writes its default: `<1>:`, against what precedes it
+ * (`[Zdepth]<0,0,0>:`), or with no colon (`OK? <Y>`).
+ */
+export type PromptForm = "spaced" | "tight" | "open";
 
 // locales/types.ts
 /**

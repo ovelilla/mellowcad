@@ -14,6 +14,12 @@ type Compiled<T> = T extends string
   ? CompiledMessage
   : { readonly [K in keyof T]: Compiled<T[K]> }
 
+/**
+ * How a prompt writes its default: `<1>:`, against what precedes it
+ * (`[Zdepth]<0,0,0>:`), or with no colon (`OK? <Y>`).
+ */
+export type PromptForm = "spaced" | "tight" | "open"
+
 /** A command's global (English, language-independent) name. */
 export type CommandName = keyof Commands["names"]
 
@@ -34,7 +40,7 @@ export type InterfaceCatalog = Omit<
  * keyword marks its abbreviation in capitals (`desHacer`), as `initget` does.
  */
 export type CommandCatalog = Compiled<
-  Omit<Commands, "names" | "keywords" | "promptKeywords">
+  Omit<Commands, "names" | "keywords" | "promptKeywords" | "promptForms">
 > & {
   readonly names: { readonly [C in CommandName]: readonly string[] }
   /**
@@ -55,6 +61,14 @@ export type CommandCatalog = Compiled<
     readonly [P in keyof Commands["promptKeywords"]]?: {
       readonly [K in keyof Commands["promptKeywords"][P]]?: string
     }
+  }
+  /**
+   * The form of a prompt's default, as each language's string writes it: a
+   * prompt left out is `spaced`. The same prompt can differ by language
+   * (`[Zdepth]<0,0,0>:`, pt-BR `[profundidadeZ] <0,0,0>:`).
+   */
+  readonly promptForms: {
+    readonly [P in keyof Commands["prompts"]]?: PromptForm
   }
 }
 

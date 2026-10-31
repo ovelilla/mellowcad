@@ -1843,6 +1843,18 @@ export const en: EngineCatalog = {
       "nextShort": "N",
       "previousShort": "P"
     },
+    "promptForms": {
+      "convertToPolylines": "open",
+      "purgeBlock": "open",
+      "selectGripToEditArrayOr": "tight",
+      "turnIntoPolyline": "open",
+      "ucsMoveOrigin": "tight",
+      "ucsOrthographic": "tight",
+      "ucsReplace": "open",
+      "ucsZdepth": "tight",
+      "undoEverything": "open",
+      "viewOrthographic": "tight"
+    },
     "format": {
       "idle": "Command",
       "commandPrompt": [
@@ -5592,6 +5604,11 @@ export const en: EngineCatalog = {
       },
       "OFFSET": {
         "Through": "Through"
+      }
+    },
+    "promptKeywordLabels": {
+      "ucsNewUcs": {
+        "ZAxis": "ZAxis"
       }
     },
     "listing": {

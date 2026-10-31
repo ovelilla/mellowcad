@@ -40,7 +40,7 @@ import {
  * AutoCAD's ARRAYPATH, as its 2027 console asks it: `Select objects:` (or
  * ARRAY's set, {@link takeSet}), `Type = Path  Associative = Yes`, `Select
  * path curve:` — a line, an arc, a circle or a polyline —, then `Select grip
- * to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>:` over
+ * to edit array or [ASsociative/Method/Items/Align items/eXit]<eXit>:` over
  * a live preview. ASsociative asks as ARRAYRECT's does. Method asks `Enter
  * path method [Divide/Measure] <Measure>:`: Measure steps the items a
  * distance apart, Divide spreads them evenly over the path. Items

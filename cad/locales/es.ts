@@ -2315,6 +2315,18 @@ export const es: EngineLocale = {
       "nextShort": "G",
       "previousShort": "P"
     },
+    "promptForms": {
+      "convertToPolylines": "open",
+      "purgeBlock": "open",
+      "selectGripToEditArrayOr": "spaced",
+      "turnIntoPolyline": "open",
+      "ucsMoveOrigin": "tight",
+      "ucsOrthographic": "tight",
+      "ucsReplace": "open",
+      "ucsZdepth": "tight",
+      "undoEverything": "open",
+      "viewOrthographic": "tight"
+    },
     "format": {
       "idle": "Comando",
       "commandPrompt": [
@@ -6063,6 +6075,11 @@ export const es: EngineLocale = {
       },
       "OFFSET": {
         "Through": "punto a Atravesar"
+      }
+    },
+    "promptKeywordLabels": {
+      "ucsNewUcs": {
+        "ZAxis": "ejEZ"
       }
     },
     "listing": {

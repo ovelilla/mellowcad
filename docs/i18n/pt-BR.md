@@ -235,6 +235,30 @@ default, a phrase), UCSICON's `Sem origem`.
 keywords. The listing prints the short names of 33200–33213 in OSMODE's order (names/p10), which
 English's `Qua`, `Per`, `Nea`, `App` did not either (`Quad`, `Perp`, `Near`, `App Int`).
 
+### A default's form and a label per prompt (31/10/2026, third session)
+
+**Where a default touches what precedes it is each language's** (`commands.promptForms`, by prompt
+id; the tools no longer say it): pt-BR spaces UCS Move's `[profundidadeZ] <0,0,0>:`, its
+`profundidadeZ <0>:` and UCS's and -VIEW's Orthographic `[Superior/…/Direito] <Superior>:`, which
+English and Spanish write touching (25630, 25632, 25634, 26548; ucs/p153, p210, p211, view/p268).
+The console showed the arrays' main prompt the other way round: `…/saIr]<saIr>:` in pt-BR and
+`…/eXit]<eXit>:` in English, as AcArrayRes 5632, 5644 and 5651 write them, spaced only in Spanish
+(arrays/p01, p100); English's was spaced here until then. A label one prompt lists otherwise is
+`commands.promptKeywordLabels`: UCS New lists `[EIxo z/…]` for the `EIxoz` it declares (25626,
+25627; ucs/p225). Both are held in the three languages by `cad/application/promptForms.test.ts`
+and `brazilianPrompts.test.ts`.
+
+**What no review's probe printed**, probed in both languages (names/p11–p23): REDO's `A última
+operação DESFAZER já foi refeita.`, UNDO's `Início de grupo encontrado.` and its Auto prompt,
+FILLET's non-coplanar refusals (each ends the command) and FILLET's and CHAMFER's 3D polyline
+ones (each asks again), -DIMSTYLE's and -LINETYPE's `Não foram encontrados …`, PEDIT's `2 segmentos
+adicionados a 2 polilinhas`, and MATCHPROP's prompts, settings line and locked destination, which
+the console runs once `acmatch.crx` is loaded (skill `autocad-research`). They matched but two:
+MATCHPROP's source is `Selecionar o objeto de origem` (acmatchRes had `Selecione objeto de
+origem`), and CHAMFER fills 20635's `Objetos %s 3D não podem ser %s.` with `chanfrado`, singular,
+which is copied (FILLET's `com concordância` was right). The report still counts most of these
+`unseen`: they span two lines or are filled with values.
+
 ### Deviations
 
 - **Aliases left out.** `acad.pgp` makes `COTAHORIZONTAL`, `COTAVERTICAL` and `COTAROTACIONADA`
@@ -246,22 +270,15 @@ English's `Qua`, `Per`, `Nea`, `App` did not either (`Quad`, `Perp`, `Near`, `Ap
 - **-OSNAP's Endpoint is `pONto`** (27408): pt-BR's console takes `PON` and `PONTO` as Node
   (`Ponto`), which is not built here, refuses `EXTR` and `ON`, and no typed word reaches Endpoint
   but `_END` (names/p07–p09).
-- **UCS New lists `EIxoz`**, the word it declares, where the console lists `EIxo z`: a label is the
-  command's, and UCS's first prompt lists `eixOZ` (ucs/p225, 3dpoly/p22).
 
 ### Pending (phase 4, next sessions)
 
-- **The space before a default.** English and Spanish write four prompts with the default touching
-  the list (`[Top/…/Right]<Top>:`, `[Zdepth]<0,0,0>:`, `Zdepth<0>:`: `tight` in UcsTool and
-  ViewTool); pt-BR spaces them (`[Superior/…/Direito] <Superior>:`, `profundidadeZ <0>:`; 25630,
-  25632, 25634, 26548; ucs/p153, p211, view/p268). The form is the tool's, the same in every
-  language: the catalog needs a way to say it per prompt (a shape change, so a minor and
-  `cad/docs/languages.md`).
-- **A label per prompt**, for UCS New's `EIxo z` (Deviations).
-- **What a console can still show**: the `unseen` keys whose English no probe prints (MATCHPROP's
-  settings line, REDO's `already redone`, UNDO's Start of Group and Auto, CHAMFER's non-coplanar and
-  3D polyline refusals, -DIMSTYLE's `No matching`, PEDIT's `segments added to … polylines`, ATTEDIT's
-  `Select block reference`), each a probe in both languages.
+- **The desktop in pt-BR**: the dynamic-input labels and tooltips (Unverified, below), and ATTEDIT's
+  `Selecionar referência de bloco`, which only its dialog asks (the console runs it as -ATTEDIT).
+- **An answer written against the colon.** pt-BR's MREDO and ARRAYPATH main prompts end without a
+  space, so the console echoes `…[Tudo/Último]:_L` and `…/saIr]<saIr>:2.5` (names/p11,
+  arrays/p332), where the history here writes `: L`: whether a prompt's trailing space is the
+  language's too is not modelled.
 
 ### Unverified
 

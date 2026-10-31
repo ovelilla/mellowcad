@@ -560,15 +560,14 @@ export class UcsTool implements Tool {
         return { id: "ucsNewUcs", enter: { name: "0,0,0" } }
       case "shift":
         return state.move
-          ? { id: "ucsMoveOrigin", enter: { name: "0,0,0" }, tight: true }
+          ? { id: "ucsMoveOrigin", enter: { name: "0,0,0" } }
           : { id: "ucsNewOrigin", enter: { name: "0,0,0" } }
       case "zdepth":
-        return { id: "ucsZdepth", enter: { name: "0" }, tight: true }
+        return { id: "ucsZdepth", enter: { name: "0" } }
       case "orthographic":
         return {
           id: "ucsOrthographic",
           enter: ORTHOGRAPHIC_NAMES[state.current],
-          tight: true,
         }
       case "threeOrigin":
         return { id: "ucsNewOrigin", enter: { name: "0,0,0" } }
@@ -600,13 +599,12 @@ export class UcsTool implements Tool {
       case "save":
         return { id: "ucsSaveName", takesSpaces: true }
       // WHY no keyword list: AutoCAD's yes-or-no question lists none, and
-      // writes its default as the letter, with no colon (probe ucs/p231).
+      // writes its default as the letter (probe ucs/p231).
       case "replace":
         return {
           id: "ucsReplace",
           enter: { name: "N" },
           values: { name: state.name },
-          open: true,
         }
       case "delete":
         return { id: "ucsDeleteNames", enter: "ucsNone", takesSpaces: true }

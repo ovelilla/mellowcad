@@ -203,7 +203,7 @@ describe("every command language", () => {
     // `UCS Specify origin of UCS or [NAmed/…/ZAxis] <World>:`.
     const prompts = [
       ...surface.matchAll(
-        /^ {2}prompt: (\S+) (?:([^[\n]*) )?\[([^\]\n]+)\](?: <[^>\n]*>)?:$/gm
+        /^ {2}prompt: (\S+) (?:([^[\n]*) )?\[([^\]\n]+)\](?: ?<[^>\n]*>)?:$/gm
       ),
     ].map(([, command, question, list]) => ({
       command,

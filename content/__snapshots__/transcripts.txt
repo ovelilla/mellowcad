@@ -16,7 +16,7 @@ idle: Command:
 2731 +66 input | Select objects: | 
 2731 +0 info |  | Type = Polar  Associative = Yes
 2797 +126 input | Specify center point of array: | 0,0
-2923 +66 input | Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: | 
+2923 +66 input | Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>: | 
 3315 +206 command |  | RECTANG
 3521 +166 input | Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: | 80,20
 3687 +186 input | Specify other corner point or [Area/Dimensions/Rotation]: | @14,30

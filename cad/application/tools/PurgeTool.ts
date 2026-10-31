@@ -68,7 +68,6 @@ export class PurgeTool implements Tool {
           id: "purgeBlock",
           enter: { name: "N" },
           values: { name: state.found[state.index].name },
-          open: true,
         }
     }
   }

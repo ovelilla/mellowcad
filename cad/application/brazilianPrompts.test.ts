@@ -162,11 +162,14 @@ describe("Brazilian Portuguese keywords spelled per prompt", () => {
     ])
   })
 
-  it("takes UCS's ZAxis as EIxoz at New's prompt, eixOZ at its first (ucs/p225, 3dpoly/p22)", () => {
-    expect(asked(run("UCS", "NO"))).toBe(
-      "UCS Especificar origem do novo UCS ou [EIxoz/3pontos/OBjeto/Face/Vista/X/Y/Z] <0,0,0>:"
+  it("takes UCS's ZAxis as EIxoz at New's prompt, listed EIxo z, eixOZ at its first (ucs/p225, 3dpoly/p22)", () => {
+    const cad = run("UCS", "NO")
+    expect(asked(cad)).toBe(
+      "UCS Especificar origem do novo UCS ou [EIxo z/3pontos/OBjeto/Face/Vista/X/Y/Z] <0,0,0>:"
     )
-    expect(abbreviations(run("UCS", "NO"))[0]).toBe("EI")
+    expect(abbreviations(cad)[0]).toBe("EI")
+    expect(cad.state().commandOptions[0]?.label).toBe("EIxo z")
+    expect(asked(answer(cad, "EIXOZ"))).toMatch(/^UCS Especificar novo ponto/)
   })
 
   it("takes PEDIT's eXit as SAir at Straighten's prompt, Sair at the vertex's (pedit/p101)", () => {
@@ -228,6 +231,31 @@ describe("Brazilian Portuguese object snaps", () => {
     cad.command("-OSNAP")
     expect(cad.commandLog().at(-1)).toBe(
       "Modos de osnap atuais: Quadrante,Intersecção,Inserção,Perpendicular,Mais próximo,Aparente,Ext,Paralela"
+    )
+  })
+})
+
+// What no review's probe printed, probed in both languages for pt-BR.
+describe("Brazilian Portuguese words only these probes print", () => {
+  it("asks MATCHPROP's source in its console's words (names/p21)", () => {
+    const cad = createHarness({
+      locale: ptBR,
+      entities: [lineOf(p(0, 0), p(10, 0))],
+    })
+    expect(asked(cad.command("PROPIG"))).toBe(
+      "PROPIG Selecionar o objeto de origem:"
+    )
+    cad.click(p(5, 0))
+    expect(cad.commandLog().at(-1)).toBe(
+      "Configurações ativas atuais:  Cor Camada Tipolinha Espessura de linha Espessura Cota Texto Hachura"
+    )
+  })
+
+  it("refuses a 3D polyline at CHAMFER as its console fills the table's words (names/p17)", () => {
+    const cad = run("POLI3D", "0,0", "100,0", "100,100", "")
+    answer(cad, "CHANFRO", "50,0")
+    expect(cad.commandLog()).toContain(
+      "  Objetos Polilinha 3D não podem ser chanfrado."
     )
   })
 })

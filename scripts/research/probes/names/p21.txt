@@ -1,0 +1,12 @@
+(arxload "acmatch.crx")
+_ZOOM
+_W
+-20,-20
+30,20
+_LINE
+0,0
+10,0
+
+_MATCHPROP
+5,0
+

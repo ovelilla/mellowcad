@@ -252,13 +252,13 @@ export class PolylineEditTool implements Tool {
       case "select":
         return this.modes.question()
       case "convert":
-        return { id: "turnIntoPolyline", enter: "undoYes", open: true }
+        return { id: "turnIntoPolyline", enter: "undoYes" }
       case "precision":
         return { id: "specifyPrecision", enter: { count: DEFAULT_PRECISION } }
       case "set":
         return this.setSelector.question()
       case "convertSet":
-        return { id: "convertToPolylines", enter: "undoYes", open: true }
+        return { id: "convertToPolylines", enter: "undoYes" }
       case "setPrecision":
         return {
           id: "specifyPrecisionForSplineConversion",

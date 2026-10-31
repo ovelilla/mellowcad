@@ -2032,7 +2032,7 @@ export const ptBR: EngineLocale = {
       "polylineStartingHalfWidth": "Especificar a meia-largura inicial",
       "polylineEndingHalfWidth": "Especificar a meia-largura final",
       "fillMode": "Inserir modo",
-      "matchpropSource": "Selecione objeto de origem",
+      "matchpropSource": "Selecionar o objeto de origem",
       "matchpropDestination": "Selecionar o(s) objeto(s) de destino",
       "propertyToChange": "Inserir propriedade a alterar",
       "newColor": "Nova cor",
@@ -2328,6 +2328,18 @@ export const ptBR: EngineLocale = {
       "exitLower": "sair",
       "nextShort": "P",
       "previousShort": "A"
+    },
+    "promptForms": {
+      "convertToPolylines": "open",
+      "purgeBlock": "open",
+      "selectGripToEditArrayOr": "tight",
+      "turnIntoPolyline": "open",
+      "ucsMoveOrigin": "spaced",
+      "ucsOrthographic": "spaced",
+      "ucsReplace": "open",
+      "ucsZdepth": "spaced",
+      "undoEverything": "open",
+      "viewOrthographic": "spaced"
     },
     "format": {
       "idle": "Comando",
@@ -3563,7 +3575,7 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "cannotFilletItself": "Não é possível fazer a concordância entre uma entidade e ela mesma.",
-      "chamferNot3dPolyline": "  Objetos Polilinha 3D não podem ser chanfrados.",
+      "chamferNot3dPolyline": "  Objetos Polilinha 3D não podem ser chanfrado.",
       "filletNot3dPolyline": "  Objetos Polilinha 3D não podem ser com concordância.",
       "collinearCannotFillet": "As linhas colineares não podem ser com concordância.",
       "collinearCannotChamfer": "As linhas colineares não podem ser chanfrado.",
@@ -6081,6 +6093,11 @@ export const ptBR: EngineLocale = {
       },
       "OFFSET": {
         "Through": "Através"
+      }
+    },
+    "promptKeywordLabels": {
+      "ucsNewUcs": {
+        "ZAxis": "EIxo z"
       }
     },
     "listing": {

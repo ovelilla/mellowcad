@@ -102,7 +102,7 @@ describe("ARRAYRECT", () => {
 
     cad.command("ARRAYRECT").click(p(20, 0)).enter()
     expect(cad.state().commandLine.prompt).toBe(
-      "ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:"
+      "ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>:"
     )
     cad.option("COUnt")
     expect(cad.state().commandLine.prompt).toBe(
@@ -131,21 +131,21 @@ describe("ARRAYRECT", () => {
       "Select objects: 1 found",
       "Select objects:",
       "Type = Rectangular  Associative = Yes",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: COU",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: COU",
       "Enter the number of columns <4>: 0",
       "Value must be positive and nonzero.",
       "Enter the number of columns <4>: 2.5",
       "Requires a positive nonzero integer or option keyword.",
       "Enter the number of columns <4>: 3",
       "Enter the number of rows <3>: 2",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: S",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: S",
       "Specify the distance between columns or [Unit cell] <60>: 100",
       "Specify the distance between rows <1>: 50",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: R",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: R",
       "Enter the number of rows <2>:",
       "Specify the distance between rows <50>:",
       "Specify the incrementing elevation between rows <0>: 5",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>:",
     ])
     expect(shown(cad).length).toBe(6)
     const raised = linesOf(shown(cad)).filter((line) => line.start.y === 50)
@@ -242,10 +242,10 @@ describe("ARRAYRECT", () => {
     expect(cad.commandLog().slice(-11)).toEqual([
       "Specify first corner point of unit cell: FOO",
       "Requires numeric nonzero value.",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: S",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: S",
       "Specify the distance between columns or [Unit cell] <15>: U",
       "Specify first corner point of unit cell:",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: S",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: S",
       "Specify the distance between columns or [Unit cell] <15>: U",
       "Specify first corner point of unit cell: 0,0",
       "Specify opposite corner: FOO",
@@ -362,7 +362,7 @@ describe("ARRAY", () => {
       "Type = Rectangular  Associative = Yes",
     ])
     expect(cad.state().commandLine.prompt).toBe(
-      "ARRAY Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:"
+      "ARRAY Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>:"
     )
     answer(cad, "_COU", "2", "1", "")
     expect(centres(cad)).toHaveLength(2)
@@ -511,11 +511,11 @@ describe("ARRAYRECT's answers", () => {
 
     answer(cad, "_ARRAYRECT", "_L", "", "5", "30,20")
     expect(cad.commandLog().slice(-2)).toEqual([
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: 5",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: 30,20",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: 5",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: 30,20",
     ])
     expect(cad.state().commandLine.prompt).toBe(
-      "ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:"
+      "ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>:"
     )
   })
 
@@ -875,7 +875,7 @@ function polar(locale?: typeof es): CadHarness {
 }
 
 const POLAR_MAIN =
-  "ARRAYPOLAR Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:"
+  "ARRAYPOLAR Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>:"
 
 describe("ARRAYPOLAR", () => {
   // probe arrays/p248: a line round 0,0, ROTate Yes.
@@ -938,15 +938,15 @@ describe("ARRAYPOLAR", () => {
       "1 found",
       "Type = Polar  Associative = Yes",
       "Specify center point of array:",
-      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: I",
+      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>: I",
       "Enter number of items in array <6>: 4",
-      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: A",
+      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>: A",
       "Specify angle between items <90>: 30",
-      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: F",
+      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>: F",
       "Specify the angle to fill (+=ccw, -=cw) <90>: 180",
-      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: ROT",
+      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>: ROT",
       "Rotate arrayed items? [Yes/No] <Yes>: N",
-      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: X",
+      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>: X",
     ])
     // Four items over 180°, 60° apart, carried round by the extents' centre
     // 100,10 without turning (p245).
@@ -1025,8 +1025,8 @@ describe("ARRAYPOLAR's answers", () => {
 
     answer(cad, "0,0", "5,5", "7")
     expect(cad.commandLog().slice(-2)).toEqual([
-      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: 5,5",
-      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: 7",
+      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>: 5,5",
+      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>: 7",
     ])
     expect(cad.state().commandLine.prompt).toBe(POLAR_MAIN)
     expect(shown(cad).length).toBe(1)
@@ -1037,7 +1037,7 @@ describe("ARRAYPOLAR's answers", () => {
 
     answer(cad, "0,0", "R")
     expect(cad.commandLog().slice(-2)).toEqual([
-      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: R",
+      "Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>: R",
       "Ambiguous response, please clarify...",
     ])
     expect(cad.state().commandLine.prompt).toBe("ARRAYPOLAR ROWs or ROTate?")
@@ -1680,7 +1680,7 @@ describe("ARRAYPATH", () => {
     ])
     cad.click(p(50, 0))
     expect(cad.state().commandLine.prompt).toBe(
-      "ARRAYPATH Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>:"
+      "ARRAYPATH Select grip to edit array or [ASsociative/Method/Items/Align items/eXit]<eXit>:"
     )
     cad.option("Method")
     expect(cad.state().commandLine.prompt).toBe(
@@ -2596,16 +2596,16 @@ describe("the array object (AYO-01)", () => {
     )
     answer(cad, "_N")
     expect(cad.state().commandLine.prompt).toBe(
-      "ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:"
+      "ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>:"
     )
     answer(cad, "_X")
     expect(cad.typeCounts()).toEqual({ line: 1, circle: 12 })
     expect(cad.runtime.document.get("C")).toEqual(circle())
     expect(cad.commandLog().slice(-4)).toEqual([
       "Type = Rectangular  Associative = Yes",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: _AS",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: _AS",
       "Create associative array [Yes/No] <Yes>: _N",
-      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: _X",
+      "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: _X",
     ])
 
     answer(cad, "_ARRAYPATH", "12,10", "", "50,0")
@@ -3365,7 +3365,7 @@ function atMainPrompt(
 }
 
 const RECT_MAIN =
-  "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:"
+  "Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>:"
 
 /** The circles' centres the scene draws, rounded, sorted. */
 function drawnCentres(cad: CadHarness): string[] {

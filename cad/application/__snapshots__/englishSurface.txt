@@ -3927,7 +3927,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Enter array type [Rectangular/PAth/POlar] <Rectangular>: PO
   info| Type = Polar  Associative = Yes
 > centre
-  prompt: ARRAY Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
+  prompt: ARRAY Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>:
   asks: 
   tip: Select grip to edit array or
   dyn: 
@@ -3937,9 +3937,9 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt: ARRAY Create associative array [Yes/No] <Yes>:
   tip: Create associative array
   options: [Y] Yes, [N] No
-  prompt| Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: AS
+  prompt| Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>: AS
 > N
-  prompt: ARRAY Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
+  prompt: ARRAY Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>:
   tip: Select grip to edit array or
   options: [AS] ASsociative, [I] Items, [A] Angle between, [F] Fill angle, [ROT] ROTate items, [X] eXit
   prompt| Create associative array [Yes/No] <Yes>: N
@@ -3950,9 +3950,9 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: -
   options: -
   properties: -
-  prompt| Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
+  prompt| Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>:
 > ARRAYRECT
-  prompt: ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:
+  prompt: ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>:
   asks: 
   tip: Select grip to edit array or
   dyn: 
@@ -3967,7 +3967,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: Specify the distance between columns or
   dyn: "Column spacing"=""||mm*
   options: [U] Unit cell
-  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: S
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: S
 > U
   prompt: ARRAYRECT Specify first corner point of unit cell:
   asks: "First corner"
@@ -3976,7 +3976,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   options: -
   prompt| Specify the distance between columns or [Unit cell] <30>: U
 > FOO
-  prompt: ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:
+  prompt: ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>:
   asks: 
   tip: Select grip to edit array or
   dyn: 
@@ -3989,7 +3989,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: Specify the distance between columns or
   dyn: "Column spacing"=""||mm*
   options: [U] Unit cell
-  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: S
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: S
 > U
   prompt: ARRAYRECT Specify first corner point of unit cell:
   asks: "First corner"
@@ -4003,7 +4003,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: Specify opposite corner:
   prompt| Specify first corner point of unit cell:
 > opposite
-  prompt: ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:
+  prompt: ARRAYRECT Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>:
   asks: 
   tip: Select grip to edit array or
   dyn: 
@@ -4016,7 +4016,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: -
   options: -
   properties: -
-  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>:
 > ARRAYPOLAR
   prompt: ARRAYPOLAR Specify center point of array:
   asks: "Center point"
@@ -4027,7 +4027,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   info| 1 found
   info| Type = Polar  Associative = No
 > centre
-  prompt: ARRAYPOLAR Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
+  prompt: ARRAYPOLAR Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>:
   asks: 
   tip: Select grip to edit array or
   dyn: 
@@ -4036,7 +4036,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
 > R
   prompt: ARRAYPOLAR ROWs or ROTate?
   tip: ROWs or ROTate?
-  prompt| Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: R
+  prompt| Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>: R
   error| Ambiguous response, please clarify...
 > ROT
   prompt: ARRAYPOLAR Rotate arrayed items? [Yes/No] <Yes>:
@@ -4044,7 +4044,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   options: [Y] Yes, [N] No
   prompt| ROWs or ROTate? ROT
 > enter
-  prompt: ARRAYPOLAR Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
+  prompt: ARRAYPOLAR Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>:
   tip: Select grip to edit array or
   options: [AS] ASsociative, [I] Items, [A] Angle between, [F] Fill angle, [ROT] ROTate items, [X] eXit
   prompt| Rotate arrayed items? [Yes/No] <Yes>:
@@ -4055,7 +4055,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: -
   options: -
   properties: -
-  prompt| Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:
+  prompt| Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>:
 > ARRAYPATH
   prompt: ARRAYPATH Select path curve:
   asks: 
@@ -4066,7 +4066,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   info| 1 found
   info| Type = Path  Associative = No
 > path
-  prompt: ARRAYPATH Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>:
+  prompt: ARRAYPATH Select grip to edit array or [ASsociative/Method/Items/Align items/eXit]<eXit>:
   tip: Select grip to edit array or
   options: [AS] ASsociative, [M] Method, [I] Items, [A] Align items, [X] eXit
   prompt| Select path curve:
@@ -4074,12 +4074,12 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt: ARRAYPATH Enter path method [Divide/Measure] <Measure>:
   tip: Enter path method
   options: [D] Divide, [M] Measure
-  prompt| Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>: M
+  prompt| Select grip to edit array or [ASsociative/Method/Items/Align items/eXit]<eXit>: M
 > A
   prompt| Enter path method [Divide/Measure] <Measure>: A
   error| Invalid option keyword.
 > M back
-  prompt: ARRAYPATH Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>:
+  prompt: ARRAYPATH Select grip to edit array or [ASsociative/Method/Items/Align items/eXit]<eXit>:
   tip: Select grip to edit array or
   options: [AS] ASsociative, [M] Method, [I] Items, [A] Align items, [X] eXit
   prompt| Enter path method [Divide/Measure] <Measure>: M
@@ -4087,9 +4087,9 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt: ARRAYPATH Create associative array [Yes/No] <No>:
   tip: Create associative array
   options: [Y] Yes, [N] No
-  prompt| Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>: AS
+  prompt| Select grip to edit array or [ASsociative/Method/Items/Align items/eXit]<eXit>: AS
 > Y
-  prompt: ARRAYPATH Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>:
+  prompt: ARRAYPATH Select grip to edit array or [ASsociative/Method/Items/Align items/eXit]<eXit>:
   tip: Select grip to edit array or
   options: [AS] ASsociative, [M] Method, [I] Items, [A] Align items, [X] eXit
   prompt| Create associative array [Yes/No] <No>: Y
@@ -4100,7 +4100,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: -
   options: -
   properties: -
-  prompt| Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>:
+  prompt| Select grip to edit array or [ASsociative/Method/Items/Align items/eXit]<eXit>:
 > pick the array
   properties: Array (Path) (1) [Geometry: Base X=0.00, Base Y=100.00, Base Z=0.00, Path length=300.00 mm] [Misc: Method=Measure~, Items=11~, Item spacing=30.00 mm~, Align items=Yes~]
 
@@ -6932,23 +6932,23 @@ Specify next point or
   command| ARRAYRECT
   info| 1 found
   info| Type = Rectangular  Associative = Yes
-  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: _COU
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: _COU
   prompt| Enter the number of columns <4>: 4
   prompt| Enter the number of rows <3>: 3
-  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: _S
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: _S
   prompt| Specify the distance between columns or [Unit cell] <6>: 8
   prompt| Specify the distance between rows <6>: 8
-  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>: _X
+  prompt| Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>: _X
   command| ARRAYPOLAR
   info| 1 found
   info| Type = Polar  Associative = Yes
   prompt| Specify center point of array: 23,25
-  prompt| Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>: _X
+  prompt| Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>: _X
   command| ARRAYPATH
   info| 1 found
   info| Type = Path  Associative = Yes
   prompt| Select path curve: 65,0
-  prompt| Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>: _X
+  prompt| Select grip to edit array or [ASsociative/Method/Items/Align items/eXit]<eXit>: _X
 > select rectangular
   properties: Array (Rectangular) (1) [Geometry: Base X=-30.00, Base Y=0.00, Base Z=0.00] [Misc: Columns=4~, Column spacing=8.00 mm~, Rows=3~, Row spacing=8.00 mm~, Row elevation increment=0.00 mm~, Levels=1~, Level spacing=1.00 mm~, Included axis angle=90°]
 > grab column count

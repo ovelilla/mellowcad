@@ -10,7 +10,6 @@ import {
   PointerInput,
   Tool,
   ToolContext,
-  ToolQuestion,
 } from "./Tool"
 
 type ViewState =
@@ -72,13 +71,10 @@ export class ViewTool implements Tool {
 
   /**
    * Two prompts of their own, as their keywords are spelled apart: the first
-   * one's hidden `RIght`, Orthographic's `Right`, which writes its default
-   * against the list (`[…/Right]<Top>:`).
+   * one's hidden `RIght`, Orthographic's `Right`.
    */
-  question(): PromptId | ToolQuestion {
-    return this.state.phase === "option"
-      ? "viewOption"
-      : { id: "viewOrthographic", tight: true }
+  question(): PromptId {
+    return this.state.phase === "option" ? "viewOption" : "viewOrthographic"
   }
 
   defaultOption(): string | null {

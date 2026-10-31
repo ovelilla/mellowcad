@@ -1681,6 +1681,18 @@
       "nextShort": "G",
       "previousShort": "P"
     },
+    "promptForms": {
+      "convertToPolylines": "open",
+      "purgeBlock": "open",
+      "selectGripToEditArrayOr": "spaced",
+      "turnIntoPolyline": "open",
+      "ucsMoveOrigin": "tight",
+      "ucsOrthographic": "tight",
+      "ucsReplace": "open",
+      "ucsZdepth": "tight",
+      "undoEverything": "open",
+      "viewOrthographic": "tight"
+    },
     "format": {
       "idle": "Comando",
       "commandPrompt": "{command} {question}",
@@ -2332,6 +2344,9 @@
       "COPY": { "Displacement": "Desplazamiento" },
       "UCSICON": { "Noorigin": "Sin origen" },
       "OFFSET": { "Through": "punto a Atravesar" }
+    },
+    "promptKeywordLabels": {
+      "ucsNewUcs": { "ZAxis": "ejEZ" }
     },
     "listing": {
       "dimVariable": "{name}{value}{description}",

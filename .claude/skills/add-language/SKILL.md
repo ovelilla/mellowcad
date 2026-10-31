@@ -101,7 +101,10 @@ them shows English. Regenerate the "Use" pages: the tools' descriptions are this
    `unseen` also counts what a transcript prints but the pairing missed (a message over several
    lines, filled with values): compare those by hand before probing again.
    -OSNAP's words take their three capitals (pt-BR `MEIo`): a snap typed at a point prompt is
-   matched before the keywords, and one capital steals the letter from every keyword.
+   matched before the keywords, and one capital steals the letter from every keyword. Where a
+   default touches the list, and a label one prompt lists otherwise, are the language's
+   (`promptForms`, `promptKeywordLabels`): read each table string's `]<`. MATCHPROP's words come
+   from its console once `acmatch.crx` is loaded.
 4. Each command's coverage entry names it after `· <tag>`; the `/docs` pages that read the catalog
    regenerate (`npm run docs:check`).
 

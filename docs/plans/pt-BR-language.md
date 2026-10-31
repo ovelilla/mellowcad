@@ -30,7 +30,7 @@ and what stays unverified until the pack is installed.
 | 1 | `feat(i18n)` | **Done** (31/10/2026), below |
 | 2 | `feat(i18n)` | **Done** (31/10/2026), with phase 3 in one commit, below |
 | 3 | `feat(i18n)` | **Done** (31/10/2026), below |
-| 4 | `feat(engine)` | **In progress**: `commands` whole, from the console, then its prompts per command and -OSNAP (31/10/2026, two commits, below); next, a default's space per language and what a console can still show |
+| 4 | `feat(engine)` | **In progress**: `commands` whole, from the console, then its prompts per command and -OSNAP, then a default's form and a label per prompt and what a console could still show (31/10/2026, three commits, below); next, the desktop in pt-BR |
 | 5 | — | nothing: latin, left to right; plurals as §5 (in phases 2–4) |
 | 6 | `feat(i18n)` | gate, production build (`●`), budgets (`language-review`), screenshots at 360 px and the palettes, the dead keys; `live`, selector, `hreflang`, sitemap, «Next up» off in every language, `docs/i18n/README.md`'s row; this plan shrinks to a summary |
 
@@ -119,27 +119,42 @@ One commit: the generated "Use" pages read both catalogs, so they come out right
   word gives way to a prompt's own, pt-BR SPLINEDIT's `Sair`); rule `cad-catalogs.md` and skill
   `add-language` §4 (-OSNAP's three capitals; what the report's `several` and `unseen` mean).
   Spanish UCSICON's Noorigin is `Sin`, listed `Sin origen`, as its console declares (ucs/p347).
-- **Left for the next sessions** (`docs/i18n/pt-BR.md`, "Pending"): the space pt-BR puts before
-  four defaults English writes touching (`tight`: the catalog needs a way to say it per prompt);
-  a label per prompt (UCS New's `EIxo z`); probes in both languages for the `unseen` keys no
-  transcript prints that a console can show; then the desktop in pt-BR for the dynamic-input
-  labels and tooltips, and phase 6.
+- **Third session** (31/10/2026, `feat(engine)`): where a default touches what precedes it is the
+  language's, `commands.promptForms` by prompt id (the tools' `tight` and `open` are gone), and a
+  label one prompt lists otherwise is `commands.promptKeywordLabels`: pt-BR spaces UCS's and
+  -VIEW's four, and lists UCS New's `EIxo z`. A minor of the catalog's shape (changeset,
+  `cad/docs/languages.md`), held in the three languages by `cad/application/promptForms.test.ts`.
+  The console showed English's arrays' main prompt touching its default too (`…/eXit]<eXit>:`, as
+  pt-BR's), spaced only in Spanish: the arrays' coverage had it as not built ("the space is per
+  question here, not per language"), and it is built now. The `unseen` keys Pending named were
+  probed in both languages (names/p11–p23) and compared by hand: MATCHPROP's source and CHAMFER's
+  3D polyline refusal corrected; ATTEDIT's `Select block reference` is its dialog's (the console
+  runs -ATTEDIT).
+- Fixed in the system: MATCHPROP runs in the console once `(arxload "acmatch.crx")` loads it
+  (skill `autocad-research`, console.md); `locales.test.ts` read only spaced defaults off the
+  English surface, so the arrays' prompts would have left its abbreviation check; skills
+  `add-language` §4, `new-command`, `command-review`'s catalogs annex.
+- **Left for the next sessions** (`docs/i18n/pt-BR.md`, "Pending"): the desktop in pt-BR for the
+  dynamic-input labels and tooltips and ATTEDIT's dialog prompt; whether a prompt's trailing space
+  is the language's (pt-BR's MREDO and ARRAYPATH echo the answer against the colon); then phase 6.
 
 ## Next session
 
 > Sigue la fase 4 de docs/plans/pt-BR-language.md (el lenguaje de comandos de portugués de
-> Brasil): `commands` está completo y sus prompts van por comando. Lee antes el plan entero,
-> docs/i18n/pt-BR.md (sobre todo "Command language": "Per command and per prompt", Deviations,
-> Pending y Unverified), el brief docs/next-languages.md, el skill add-language (§4),
-> command-review (su anexo de catálogos) y autocad-research, las reglas cad-catalogs.md e i18n.md
-> y cad/docs/languages.md. El language pack de pt-BR está instalado. Resuelve "Pending": el espacio
-> que pt-BR pone antes de cuatro valores por defecto que el inglés escribe pegados (`tight`, tablas
-> 25630–25634 y 26548): decide cómo dice el catálogo la forma por prompt, como cambio menor de su
-> forma pública, con su test en los tres idiomas; luego una etiqueta por prompt si el mismo
-> mecanismo la permite (`EIxo z` de UCS Nuevo). Después, con sondas nuevas en inglés y en pt-BR,
-> las claves `unseen` que ninguna transcripción imprime y una consola puede mostrar (las nombra
-> Pending), regenerando research/console/pt-BR.md con `node scripts/research/console-pair.mjs
-> --lang pt-BR` y comparando a mano lo que el emparejado no casa. Puede haber otras sesiones en el
+> Brasil): `commands` está completo, sus prompts van por comando y la forma del valor por defecto y
+> las etiquetas por prompt son del catálogo. Lee antes el plan entero, docs/i18n/pt-BR.md (sobre
+> todo "Command language": sus tres sesiones, Deviations, Pending y Unverified), el brief
+> docs/next-languages.md, los skills add-language (§4) y autocad-research (gui.md: el escritorio),
+> las reglas cad-catalogs.md e i18n.md y cad/docs/languages.md. El language pack de pt-BR está
+> instalado. Resuelve "Pending" con el AutoCAD de escritorio en pt-BR (pide antes al dueño cambiar
+> el idioma del escritorio si hace falta, y déjalo como estaba): las etiquetas de la entrada
+> dinámica y los tooltips que ninguna consola muestra (`Centro`, `Raio`, `Polar:`, los de
+> MEASUREGEOM), las líneas `<Snap ativado>` de los conmutadores y el `Selecionar referência de
+> bloco` del diálogo de ATTEDIT, cada uno contra el inglés del mismo escritorio; corrige lo que
+> difiera con su test y marca en Unverified lo que siga sin fuente. Luego decide si el espacio tras
+> los dos puntos de un prompt es del idioma (pt-BR escribe `…[Tudo/Último]:_L`, names/p11): si el
+> historial lo muestra al usuario, como cambio menor del catálogo, con su test en los tres idiomas.
+> Si con eso no queda nada de la fase 4, ciérrala en el plan. Puede haber otras sesiones en el
 > árbol y cambios staged ajenos: mira git diff --cached; si comparten tus archivos, trabaja en un
 > worktree limpio desde main, pasa ahí el gate y lleva a main solo tus hunks. Commit en main, sin
 > push. Pon al día el plan (con el prompt de la sesión siguiente al final) y el estado del brief.

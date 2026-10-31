@@ -37,7 +37,7 @@ import {
  * AutoCAD's ARRAYPOLAR, as its 2027 console asks it: `Select objects:` (or
  * ARRAY's set), `Type = Polar  Associative = Yes`, `Specify center point of
  * array:`, then `Select grip to edit array or [ASsociative/Items/Angle
- * between/Fill angle/ROTate items/eXit] <eXit>:` over a live preview — 6
+ * between/Fill angle/ROTate items/eXit]<eXit>:` over a live preview — 6
  * items over 360° at first. ASsociative asks as ARRAYRECT's does. Items asks
  * the count, Angle between the angle from one item to
  * the next, Fill angle the angle they span (+ counterclockwise, - clockwise),

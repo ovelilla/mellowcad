@@ -189,9 +189,11 @@ the last type chosen: **unverified**, so `<Rectangular>` always)
 **Implemented:** `Select objects:` (MOVE's counts; ARRAY's set),
 `Type = Rectangular  Associative = Yes` (es `Tipo = Rectangular  Asociativa = Sí`, arrays/p01,
 p04), `= No` (es `= No`) once ASsociative No is the answer, then
-`Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit] <eXit>:` (es
+`Select grip to edit array or [ASsociative/COUnt/Spacing/COLumns/Rows/Levels/eXit]<eXit>:` (es
 `Seleccione un pinzamiento para editar la matriz o [Asociativa/COntar/Espaciado/Columnas/Filas/Niveles/Salir] <Salir>`,
-pt-BR `[ASsociativa/CONtagem/Espaçamento/COLunas/Linhas/Níveis/saIr]`)
+pt-BR `[ASsociativa/CONtagem/Espaçamento/COLunas/Linhas/Níveis/saIr]<saIr>`: its default touches
+the list in English and pt-BR, not in Spanish, as each console writes it, p01, p04, p100, and so
+ARRAYPOLAR's and ARRAYPATH's)
 over a live preview — the items as the drawing will draw them, each in its own colour, linetype and
 lineweight, the source hidden and drawn as item 1 (desktop arrays/d01-1) — 4 columns along the UCS's X and 3 rows along its Y, one and a
 half times the selection's extents apart, its width and height measured along the UCS's axes (1 where it has
@@ -362,9 +364,7 @@ p136; as Levels', (columns − 1) × spacing offered, p434: 3 columns 6 apart of
 `Requires a positive nonzero integer.`, es `Requiere un nº entero positivo que no sea cero.`, p141)
 and UPdate (the main prompt asked again, p142); the counts' `[Expression]` and the distances'
 `[Total/Expression]`, which AutoCAD lists (p131, p135, p139; English spells the elevation's
-`[Expresson]`), Levels' too (`Enter expression<1>:`, p442: `2*3` is 6 levels); English's `…/eXit]<eXit>:` with no space before the default, Spanish's with one
-(p01, p04; WHY not built: the space is per question here, not per language, and it changes no
-letter typed); MAXARRAY's message (MAXARRAY is nil in 2027, p00: **unverified**); Expression (WHY not built: it
+`[Expresson]`), Levels' too (`Enter expression<1>:`, p442: `2*3` is 6 levels); MAXARRAY's message (MAXARRAY is nil in 2027, p00: **unverified**); Expression (WHY not built: it
 ties an associative array to the drawing's parameters, and with no Parameters Manager it would only
 be a calculator; 2027's console: `Enter expression<4>:`, es
 `Introduzca la expresión<4>:`, p134; AutoCAD 2023's: arithmetic with `^`, `%`, parentheses and
@@ -378,7 +378,7 @@ fraction with `Requires an integer between 1 an 32767, or option keyword.`)
 (es `Tipo = Polar  Asociativa = Sí`, p02; `No` as ARRAYRECT's), `Specify center point of array:` (es
 `Especifique el punto central de la matriz`, arrays/p201), where Enter says
 `Point or option keyword required.` (es `Se requiere un punto o una opción.`) and asks again (p206);
-then `Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit] <eXit>:`
+then `Select grip to edit array or [ASsociative/Items/Angle between/Fill angle/ROTate items/eXit]<eXit>:`
 (es `[Asociativa/Elementos/ángUlo entre/ángulo de Relleno/Girar objetos/Salir] <Salir>`; ASsociative
 as ARRAYRECT's, p05) over a live preview, 6
 items over 360° at first, drawn as ARRAYRECT's, nothing marking the centre, and no preview while the
@@ -428,8 +428,7 @@ ambiguous and refused when typed (es `Filas`; `Enter the number of rows or [Expr
 integer asked with no prompt, `Requires a positive nonzero integer.`, es
 `Requiere un nº entero positivo que no sea cero.`, p258) and UPdate (the main prompt asked again,
 p259); Expression (`Enter expression<6>:`, es `Introduzca la expresión<6>:`, p260; WHY not built:
-as ARRAYRECT's) and the `[Expression]`, `[EXpression]` the value prompts list; English's
-`…/eXit]<eXit>:` with no space before the default (p05; as ARRAYRECT's); the 360° overrun question
+as ARRAYRECT's) and the `[Expression]`, `[EXpression]` the value prompts list; the 360° overrun question
 (`Adjust angle between to fit items to 360 degrees?`, table 5669), which the console never asks
 (p267): whether the desktop does is **unverified**
 
@@ -457,7 +456,7 @@ polygon's last point (p300, p303, p342, p343, p376–p378); an exact midpoint, w
 either way (p06, p310, p344), runs from the curve's start here —; a circle from its angle 0,
 counter-clockwise, wherever it is picked (p301, p315); a closed polyline from its first vertex,
 its own way round (**unverified**). Then
-`Select grip to edit array or [ASsociative/Method/Items/Align items/eXit] <eXit>:` (es
+`Select grip to edit array or [ASsociative/Method/Items/Align items/eXit]<eXit>:` (es
 `[Asociativa/Método/Elementos/ALinear elementos/Salir] <Salir>`; ASsociative as ARRAYRECT's, p06)
 over a live preview, the items drawn as
 ARRAYRECT's and the path as the drawing draws it (d03-2); a point or a number typed there is taken and the prompt asked again
@@ -510,8 +509,7 @@ Tangent direction (`Specify first point of tangent direction vector or [Normal]:
 `¿Mantener la dirección Z para todos los elementos de la matriz? [Sí/No] <Sí>:`, p322); the
 hidden clicK (an integer asked with no prompt, `Requires a positive nonzero integer.`, es
 `Requiere un nº entero positivo que no sea cero.`, p323) and UPdate (the main prompt asked again,
-p324); Expression (as ARRAYRECT's) and the `[Expression]` the value prompts list; English's
-`…/eXit]<eXit>:` with no space before the default (p06; as ARRAYRECT's); a 3D polyline as the path, filtered out here
+p324); Expression (as ARRAYRECT's) and the `[Expression]` the value prompts list; a 3D polyline as the path, filtered out here
 
 ### `TRIM` / `EXTEND` · es `RECORTA` / `RR` · `ALARGA` / `AL` · pt-BR `APARAR` / `AP` / `ESTENDER` / `EST`
 

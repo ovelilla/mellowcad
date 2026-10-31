@@ -35,8 +35,9 @@ Verified on the 2027 console, October 2026.
   contain the origin, and a typed pick or a `W`/`C` window finds only what is on screen. `L`
   needs nothing.
 - **Hangs and gaps**: TEXT's text entry and 3DORBIT hang the console (use `-TEXT`); `LAYER`
-  kills it at once (use `-LAYER`). VIEW, PROPERTIES, MATCHPROP, BLOCKSPALETTE and EATTEDIT
-  are unknown to it; `-VIEW` works, and PURGE runs as `-PURGE` (blocks/p152). Enter after an
+  kills it at once (use `-LAYER`). VIEW, PROPERTIES, BLOCKSPALETTE and EATTEDIT are unknown to
+  it; `-VIEW` works, PURGE runs as `-PURGE` (blocks/p152), ATTEDIT as -ATTEDIT, and MATCHPROP
+  once `(arxload "acmatch.crx")` has loaded it (names/p21; `acmatch.arx` is the desktop's). Enter after an
   unknown command echoes `_HELP`.
 - **Each answer echoes once**, after its prompt. A jig is fed one keystroke at a time (tracing.md
   shows the samples). Lisp typed at a prompt is evaluated and its result taken as the answer

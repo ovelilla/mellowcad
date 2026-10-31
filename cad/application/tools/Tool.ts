@@ -121,13 +121,6 @@ export interface ToolQuestion {
    */
   readonly declared?: readonly string[]
   /**
-   * The default written against what comes before it, as AutoCAD's string
-   * has it (`[Zdepth]<0,0,0>:`, `Specify Zdepth<0>:`).
-   */
-  readonly tight?: true
-  /** No colon after the default, as AutoCAD's string ends (`OK? <Y>`). */
-  readonly open?: true
-  /**
    * A length or angle default written without its trailing zeros, at the
    * drawing's precision, as the arrays' prompts write theirs (`<6>`,
    * `<-4.3514>`; probes arrays/p116, p130).

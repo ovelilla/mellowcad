@@ -104,6 +104,12 @@ word the engine says, and its type is the type of every other language.
 - **`promptKeywords`** spells a keyword differently at one prompt, by the prompt's id: each
   AutoCAD prompt declares its own, so Spanish FILLET lists `[RAdio]` but
   `Designe polilínea 2D o [Radio]:`. A keyword it leaves out is spelled as in `keywords`.
+- **`promptKeywordLabels`** is a label of one prompt, by its id, before the command's: Brazilian
+  Portuguese UCS New lists `[EIxo z/…]` for the `EIxoz` it declares.
+- **`promptForms`** says how a prompt writes its default, by the prompt's id: `spaced` (`<0>:`, any
+  prompt left out), `tight`, against what precedes it (`[Zdepth]<0,0,0>:`), or `open`, with no
+  colon (`OK? <Y>`). It is the language's, not the command's: Brazilian Portuguese writes
+  `[profundidadeZ] <0,0,0>:`.
 - A linetype's or hatch pattern's name is drawing data, the same in every language, and may be left
   out.
 

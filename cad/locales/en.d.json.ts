@@ -1797,6 +1797,18 @@ declare const source: {
       "nextShort": string
       "previousShort": string
     }
+    "promptForms": {
+      "convertToPolylines": string
+      "purgeBlock": string
+      "selectGripToEditArrayOr": string
+      "turnIntoPolyline": string
+      "ucsMoveOrigin": string
+      "ucsOrthographic": string
+      "ucsReplace": string
+      "ucsZdepth": string
+      "undoEverything": string
+      "viewOrthographic": string
+    }
     "format": {
       "idle": string
       "commandPrompt": string
@@ -2501,6 +2513,11 @@ declare const source: {
       }
       "OFFSET": {
         "Through": string
+      }
+    }
+    "promptKeywordLabels": {
+      "ucsNewUcs": {
+        "ZAxis": string
       }
     }
     "listing": {

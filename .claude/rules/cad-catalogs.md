@@ -65,9 +65,10 @@ runtime builds the rest: `LINE Specify next point or [Undo]:`, the dynamic promp
 - A `ToolQuestion` (`{ id, enter }`) shows what Enter keeps: a length (`<10.0000>`), a point or a
   phrase id (`<use first point as displacement>`), or a text as written (`{ name: "0,0,0" }`). A
   keyword Enter keeps is `defaultOption()`'s, unless the prompt names it short (PLAN's
-  `<Current>`: a phrase). `tight: true` where the default touches what precedes it
-  (`[Zdepth]<0,0,0>:`), `open: true` where no colon follows (`OK? <Y>`): read the table, never
-  assume the space or the colon. A prompt that names something carries it in `values`; a name or
+  `<Current>`: a phrase). Where the default touches what precedes it (`[Zdepth]<0,0,0>:`) or no
+  colon follows (`OK? <Y>`) is each language's, `commands.promptForms.<promptId>` (`tight`,
+  `open`), never the tool's: read each table, never assume the space or the colon (pt-BR spaces
+  UCS's, Spanish the arrays'). A prompt that names something carries it in `values`; a name or
   string, `takesSpaces` (d06).
 - **A yes-or-no question** lists no keywords: hidden `Yes` and `No`, `enter: { name: "N" }`, and
   `{ refusal: "yesOrNoPlease" }`.
@@ -105,7 +106,7 @@ offsetting? [Yes/No] <No>:`) is a phase whose `question()` names it, with that a
   otherwise where English does not (Spanish `Atravesar`, `Actual`): read both tables' `initget`. The
   console outranks the table (PLINE keeps `CEnter`, pline/p103). A label equal to the command's
   word gives way to a prompt's own (pt-BR SPLINEDIT's `saIr`, `Sair` at Weight's); a label one
-  prompt lists otherwise has no place yet (pt-BR UCS New's `EIxo z`).
+  prompt lists otherwise is `commands.promptKeywordLabels.<promptId>` (pt-BR UCS New's `EIxo z`).
 - A prompt whose declared order is not the listed one names it in its question (`declared: ["OFF",
 "Normal", "ON"]`), only where two words on offer can be ambiguous.
 - A word the `initget` declares and the list leaves out is a **hidden option**, after the shown
