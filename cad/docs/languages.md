@@ -1,8 +1,8 @@
 # Languages
 
-The engine speaks English, Spanish and Arabic, and a host can reword any of it or add a language
-of its own. A language is passed to the engine, never registered globally, so one page can run
-two engines in two languages.
+The engine speaks English, Spanish and Arabic, with Brazilian Portuguese on its way, and a host can
+reword any of it or add a language of its own. A language is passed to the engine, never registered
+globally, so one page can run two engines in two languages.
 
 ## Two languages in one
 
@@ -13,11 +13,12 @@ As in AutoCAD's language packs, a language has two parts:
 - **The command language** (`commands`): command names and aliases, prompts, keywords,
   command-line messages, and everything drawn on the canvas.
 
-| Language | Interface | Command language                                                     |
-| -------- | --------- | -------------------------------------------------------------------- |
-| English  | Built in  | Built in, the global one                                             |
-| Spanish  | `es`      | Spanish AutoCAD's: `LINEA`, `DESFASE`, `[Cerrar/desHacer]`           |
-| Arabic   | `ar`      | The global one, as there is no Arabic AutoCAD                        |
+| Language             | Interface        | Command language                                                            |
+| -------------------- | ---------------- | --------------------------------------------------------------------------- |
+| English              | Built in         | Built in, the global one                                                    |
+| Spanish              | `es`             | Spanish AutoCAD's: `LINEA`, `DESFASE`, `[Cerrar/desHacer]`                  |
+| Arabic               | `ar`             | The global one, as there is no Arabic AutoCAD                               |
+| Brazilian Portuguese | `pt-BR` (`ptBR`) | In progress: the global one until Brazilian Portuguese AutoCAD's is written |
 
 In every language, `_` before a global name or keyword reaches the global vocabulary — `_LINE`,
 `_C` — as AutoCAD's scripts and macros rely on. A keyword whose global id has a space is typed as

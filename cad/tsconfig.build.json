@@ -16,5 +16,5 @@
     "emitDeclarationOnly": true,
     "types": []
   },
-  "include": ["index.ts", "locales/en.ts", "locales/es.ts", "locales/ar.ts"]
+  "include": ["index.ts", "locales/en.ts", "locales/es.ts", "locales/ar.ts", "locales/pt-BR.ts"]
 }

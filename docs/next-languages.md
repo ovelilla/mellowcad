@@ -1,7 +1,9 @@
 # Un sistema para los idiomas — brief
 
 > **Estado:** fases 1 a 4 hechas (2026-10-31); la 5, en curso: plan `docs/plans/pt-BR-language.md`,
-> sus fases 0 y 1 hechas (`pt-BR` registrado como `draft` en `/pt-br`). Se borra cuando el portugués de Brasil esté `live` con el sistema entero.
+> sus fases 0 a 3 hechas (`pt-BR` como `draft` en `/pt-br`, con sitio, editor, páginas «Use» e
+> interfaz del motor traducidos; falta el lenguaje de comandos). Se borra cuando el portugués de
+> Brasil esté `live` con el sistema entero.
 
 ## 1. Objetivo
 
@@ -121,4 +123,9 @@ Una fase, un commit (o varios si se separan solos). Las 1 a 4 no cambian nada vi
    catálogos vacíos y su `docs/i18n/pt-BR.md`; lo que no encajó, corregido en el sistema: los
    sufijos de idioma de las páginas de `/docs` (solo dos letras), el nombre exportado de un
    catálogo con región (`ptBR`), y una página «Use» que le falta a un draft cae al inglés en vez
-   de romper `docs:check` (`isTranslated` cuenta solo los idiomas `live`).
+   de romper `docs:check` (`isTranslated` cuenta solo los idiomas `live`). Fases 2 y 3 hechas, en un
+   commit: sitio, editor, las cuatro páginas «Use» e `interface` del motor, cada término con su
+   fuente en `docs/i18n/pt-BR.md`. Lo que no encajó: las etiquetas de un idioma `localized` no
+   están en las tablas sino en las DLL de interfaz del pack y su `acad.cuix` (cómo leerlas, en el
+   skill `autocad-research`); `add-language` dice ahora de dónde salen y que `EDITOR_LOCALES` va en
+   la fase 2.

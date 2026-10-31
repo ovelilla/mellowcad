@@ -1,0 +1,575 @@
+// Generated from pt-BR.json by `npm run locales`. Do not edit.
+import type { EngineLocale } from "./types"
+
+export const ptBR: EngineLocale = {
+  "tag": "pt-BR",
+  "interface": {
+    "tool": {
+      "select": "Selecionar",
+      "line": "Linha",
+      "polyline": "Polilinha",
+      "polyline3d": "Polilinha 3D",
+      "circle": "Círculo",
+      "circlediameter": "Círculo por diâmetro",
+      "circle2p": "Círculo por 2 pontos",
+      "circle3p": "Círculo por 3 pontos",
+      "arc": "Arco",
+      "arcsce": "Arco início, centro, fim",
+      "arccse": "Arco centro, início, fim",
+      "ellipse": "Elipse",
+      "ellipsecenter": "Elipse por centro",
+      "ellipsearc": "Arco elíptico",
+      "spline": "Spline",
+      "splinedit": "Editar spline",
+      "pedit": "Editar polilinha",
+      "splinefit": "Ajustar a spline",
+      "splinecv": "VC da spline",
+      "rectangle": "Retângulo",
+      "polygon": "Polígono",
+      "hatch": "Hachura",
+      "block": "Criar bloco",
+      "insert": "Inserir bloco",
+      "attedit": "Editar atributos",
+      "attdef": "Definir atributos",
+      "attdisp": "Exibição de atributos",
+      "purge": "Eliminar",
+      "text": "Texto",
+      "mtext": "Texto multilinha",
+      "textedit": "Editar texto",
+      "dimlinear": "Linear",
+      "dimaligned": "Alinhada",
+      "dimhorizontal": "Horizontal",
+      "dimvertical": "Vertical",
+      "dimrotated": "Rotacionada",
+      "dimradius": "Raio",
+      "dimdiameter": "Diâmetro",
+      "dimangular": "Angular",
+      "dimbaseline": "Linha de base",
+      "dimcontinue": "Continuar",
+      "dimspace": "Ajustar espaço",
+      "offset": "Deslocamento",
+      "move": "Mover",
+      "copy": "Copiar",
+      "stretch": "Esticar",
+      "rotate": "Rotacionar",
+      "scale": "Escala",
+      "mirror": "Espelhar",
+      "arraycommand": "Matriz",
+      "array": "Matriz retangular",
+      "arraypolar": "Matriz polar",
+      "arraypath": "Matriz de caminho",
+      "trim": "Aparar",
+      "extend": "Estender",
+      "fillet": "Concordância",
+      "chamfer": "Chanfro",
+      "erase": "Apagar",
+      "explode": "Explodir",
+      "join": "Unir",
+      "break": "Quebrar",
+      "breakatpoint": "Quebrar em um ponto",
+      "matchprop": "Corresponder propriedades",
+      "copyclip": "Copiar",
+      "cutclip": "Recortar",
+      "copybase": "Copiar com ponto base",
+      "paste": "Colar",
+      "measure": "Medir",
+      "measurearea": "Área",
+      "id": "Ponto de identificação",
+      "zoom": "Zoom",
+      "pan": "Pan",
+      "dashpan": "Pan por pontos",
+      "dashdimstyle": "Estilo de cota (linha de comando)",
+      "ucs": "UCS",
+      "ucsicon": "Ícone UCS",
+      "fill": "Preencher",
+      "ucsiconvariable": "Ícone UCS (variável)",
+      "plan": "Vista em planta",
+      "elev": "Elevação",
+      "vpoint": "Ponto de vista",
+      "view": "Vistas predefinidas",
+      "orbit": "Órbita 3D",
+      "navvcube": "ViewCube",
+      "ltscale": "Escala do tipo de linha",
+      "auprec": "Precisão do ângulo",
+      "setvar": "Variáveis de sistema",
+      "undo": "Desfazer",
+      "mredo": "Refazer múltiplo",
+      "osnap": "Modos de snap ao objeto",
+      "color": "Cor",
+      "linetype": "Tipo de linha",
+      "lweight": "Espessura de linha",
+      "snap": "Modo snap"
+    },
+    "description": {
+      "U": "Desfaz a última ação",
+      "REDO": "Refaz a última ação desfeita",
+      "SNAP": "Restringe o cursor aos incrementos de snap",
+      "-OSNAP": "Define os modos de snap ao objeto em execução",
+      "FROM": "Seleciona um ponto deslocado a partir de um ponto base",
+      "NEW": "Inicia um desenho novo",
+      "QNEW": "Inicia um desenho novo",
+      "QSAVE": "Salva o desenho em um arquivo",
+      "SAVEAS": "Salva o desenho em um arquivo com outro nome",
+      "SAVE": "Salva o desenho em um arquivo",
+      "OPEN": "Abre um arquivo de desenho",
+      "PASTECLIP": "Cola o conteúdo da área de transferência no desenho",
+      "DIMSTYLE": "Cria e modifica estilos de cota",
+      "STYLE": "Cria e modifica estilos de texto",
+      "INSERT": "Insere um bloco a partir da paleta Blocos",
+      "BLOCKSPALETTE": "Exibe a paleta Blocos",
+      "PURGE": "Remove as definições de bloco não usadas",
+      "LAYER": "Gerencia as camadas e as propriedades de camada",
+      "LAYERCLOSE": "Fecha o Gerenciador de propriedades de camada",
+      "PROPERTIES": "Exibe as propriedades dos objetos selecionados",
+      "PROPERTIESCLOSE": "Fecha a paleta Propriedades",
+      "UNITS": "Controla a precisão e o formato de exibição das coordenadas e das distâncias",
+      "CLEANSCREENON": "Remove da tela as barras de ferramentas e as paletas",
+      "CLEANSCREENOFF": "Restaura a tela como estava antes de Limpar tela"
+    },
+    "snap": {
+      "endpoint": "Ponto final",
+      "midpoint": "Meio",
+      "center": "Centro",
+      "intersection": "Intersecção",
+      "apparentIntersection": "Intersecção aparente",
+      "perpendicular": "Perpendicular",
+      "tangent": "Tangente",
+      "insertion": "Inserção",
+      "extension": "Extensão",
+      "parallel": "Paralela",
+      "quadrant": "Quadrante",
+      "nearest": "Mais próximo"
+    },
+    "color": {
+      "red": "Vermelho",
+      "yellow": "Amarelo",
+      "green": "Verde",
+      "cyan": "Ciano",
+      "blue": "Azul",
+      "magenta": "Magenta",
+      "white": "Branco"
+    },
+    "byLayer": "PorCamada",
+    "view": {
+      "Top": "Superior",
+      "Bottom": "Inferior",
+      "Front": "Frontal",
+      "BAck": "Posterior",
+      "Left": "Esquerda",
+      "Right": "Direita",
+      "SWiso": "Isométrico SO",
+      "SEiso": "Isométrico SE",
+      "NEiso": "Isométrico NE",
+      "NWiso": "Isométrico NO",
+      "custom": "Vista personalizada"
+    },
+    "viewCube": {
+      "face": {
+        "top": "SUPERIOR",
+        "bottom": "INFERIOR",
+        "front": "FRONTAL",
+        "back": "POSTERIOR",
+        "left": "ESQUERDA",
+        "right": "DIREITA"
+      },
+      "compass": {
+        "N": "N",
+        "E": "L",
+        "S": "S",
+        "W": "O"
+      }
+    },
+    "entity": {
+      "line": [
+        [
+          "count",
+          2,
+          {
+            "one": "Linha",
+            "other": "Linhas"
+          }
+        ]
+      ],
+      "circle": [
+        [
+          "count",
+          2,
+          {
+            "one": "Círculo",
+            "other": "Círculos"
+          }
+        ]
+      ],
+      "arc": [
+        [
+          "count",
+          2,
+          {
+            "one": "Arco",
+            "other": "Arcos"
+          }
+        ]
+      ],
+      "ellipse": [
+        [
+          "count",
+          2,
+          {
+            "one": "Elipse",
+            "other": "Elipses"
+          }
+        ]
+      ],
+      "spline": [
+        [
+          "count",
+          2,
+          {
+            "one": "Spline",
+            "other": "Splines"
+          }
+        ]
+      ],
+      "polyline": [
+        [
+          "count",
+          2,
+          {
+            "one": "Polilinha",
+            "other": "Polilinhas"
+          }
+        ]
+      ],
+      "polyline3d": [
+        [
+          "count",
+          2,
+          {
+            "one": "Polilinha 3D",
+            "other": "Polilinhas 3D"
+          }
+        ]
+      ],
+      "text": [
+        [
+          "count",
+          2,
+          {
+            "one": "Texto",
+            "other": "Textos"
+          }
+        ]
+      ],
+      "mtext": [
+        [
+          "count",
+          2,
+          {
+            "one": "TextoM",
+            "other": "TextosM"
+          }
+        ]
+      ],
+      "attdef": [
+        [
+          "count",
+          2,
+          {
+            "one": "Definição de atributo",
+            "other": "Definições de atributo"
+          }
+        ]
+      ],
+      "dimension": [
+        [
+          "count",
+          2,
+          {
+            "one": "Cota",
+            "other": "Cotas"
+          }
+        ]
+      ],
+      "hatch": [
+        [
+          "count",
+          2,
+          {
+            "one": "Hachura",
+            "other": "Hachuras"
+          }
+        ]
+      ],
+      "insert": [
+        [
+          "count",
+          2,
+          {
+            "one": "Referência de bloco",
+            "other": "Referências de bloco"
+          }
+        ]
+      ]
+    },
+    "array": {
+      "rectangular": "Matriz (Retangular)",
+      "polar": "Matriz (Polar)",
+      "path": "Matriz (Caminho)"
+    },
+    "property": {
+      "title": {
+        "ellipticalArc": "Arco elíptico",
+        "objects": [
+          [
+            "count",
+            2,
+            {
+              "one": [
+                0,
+                " objeto"
+              ],
+              "other": [
+                0,
+                " objetos"
+              ]
+            }
+          ]
+        ],
+        "all": [
+          "Todos (",
+          [
+            "count"
+          ],
+          ")"
+        ],
+        "type": [
+          [
+            "type"
+          ],
+          " (",
+          [
+            "count"
+          ],
+          ")"
+        ],
+        "linearDimension": "Cota rotacionada",
+        "alignedDimension": "Cota alinhada",
+        "angularDimension": "Cota angular",
+        "radiusDimension": "Cota radial",
+        "diameterDimension": "Cota de diâmetro"
+      },
+      "group": {
+        "geometry": "Geometria",
+        "endpoints": "Pontos finais",
+        "center": "Centro",
+        "text": "Texto",
+        "position": "Posição",
+        "dimension": "Cota",
+        "definitionPoints": "Pontos de definição",
+        "pattern": "Padrão",
+        "block": "Bloco",
+        "attributes": "Atributos",
+        "misc": "Diversos",
+        "dataPoints": "Pontos de dados",
+        "selection": "Seleção",
+        "linesArrows": "Linhas e setas",
+        "fit": "Ajustar",
+        "primaryUnits": "Unidades primárias"
+      },
+      "row": {
+        "length": "Comprimento",
+        "angle": "Ângulo",
+        "deltaX": "Delta X",
+        "deltaY": "Delta Y",
+        "deltaZ": "Delta Z",
+        "startX": "X inicial",
+        "startY": "Y inicial",
+        "startZ": "Z inicial",
+        "endX": "X final",
+        "endY": "Y final",
+        "endZ": "Z final",
+        "centerX": "Centro X",
+        "centerY": "Centro Y",
+        "centerZ": "Centro Z",
+        "radius": "Raio",
+        "diameter": "Diâmetro",
+        "circumference": "Circunferência",
+        "area": "Área",
+        "normalX": "Normal X",
+        "normalY": "Normal Y",
+        "normalZ": "Normal Z",
+        "x": "X",
+        "y": "Y",
+        "z": "Z",
+        "elevation": "Elevação",
+        "thickness": "Espessura",
+        "startAngle": "Ângulo inicial",
+        "endAngle": "Ângulo final",
+        "totalAngle": "Ângulo total",
+        "arcLength": "Comprimento do arco",
+        "majorRadius": "Raio maior",
+        "minorRadius": "Raio menor",
+        "radiusRatio": "Proporção do raio",
+        "majorAxisVectorX": "Vetor X do eixo maior",
+        "majorAxisVectorY": "Vetor Y do eixo maior",
+        "majorAxisVectorZ": "Vetor Z do eixo maior",
+        "minorAxisVectorX": "Vetor X do eixo menor",
+        "minorAxisVectorY": "Vetor Y do eixo menor",
+        "minorAxisVectorZ": "Vetor Z do eixo menor",
+        "vertices": "Vértices",
+        "segments": "Segmentos",
+        "currentVertex": "Vértice atual",
+        "vertex": "Vértice",
+        "startSegmentWidth": "Largura inicial do segmento",
+        "endSegmentWidth": "Largura do segmento final",
+        "globalWidth": "Largura global",
+        "closed": "Fechado",
+        "contents": "Conteúdo",
+        "justify": "Justificar",
+        "height": "Altura",
+        "rotation": "Rotação",
+        "lineSpaceFactor": "Fator de espaçamento de linha",
+        "lineSpaceDistance": "Distância de espaçamento de linha",
+        "lineSpaceStyle": "Estilo de espaçamento de linha",
+        "definedWidth": "Largura definida",
+        "textHeight": "Altura do texto",
+        "textAlignmentX": "Alinhamento de texto X",
+        "textAlignmentY": "Alinhamento de texto Y",
+        "textAlignmentZ": "Alinhamento de texto Z",
+        "measurement": "Medição",
+        "textOverride": "Sobrepor texto",
+        "type": "Tipo",
+        "vertexX": "Vértice X",
+        "vertexY": "Vértice Y",
+        "vertexZ": "Vértice Z",
+        "fitSmooth": "Ajustar/Suavizar",
+        "firstX": "Primeiro X",
+        "firstY": "Primeiro Y",
+        "secondX": "Segundo X",
+        "secondY": "Segundo Y",
+        "pattern": "Padrão",
+        "scale": "Escala",
+        "boundaries": "Limites",
+        "patternName": "Nome do padrão",
+        "annotative": "Anotativo",
+        "originX": "Origem X",
+        "originY": "Origem Y",
+        "associative": "Associativa",
+        "islandDetectionStyle": "Estilo de detecção de ilha",
+        "cumulativeArea": "Área cumulativa",
+        "name": "Nome",
+        "tag": "Identificador",
+        "prompt": "Prompt",
+        "value": "Valor",
+        "invisible": "Invisível",
+        "constant": "Constante",
+        "verify": "Verificar",
+        "preset": "Predefinir",
+        "lockPosition": "Bloquear posição",
+        "method": "Método",
+        "degree": "Grau",
+        "knotParameterization": "Parametrização do nó",
+        "numberOfFitPoints": "Número de pontos de ajuste",
+        "currentFitPoint": "Ponto de ajuste atual",
+        "fitPointX": "Ponto de ajuste X",
+        "fitPointY": "Ponto de ajuste Y",
+        "fitPointZ": "Ponto de ajuste Z",
+        "numberOfControlPoints": "Número de pontos de controle",
+        "currentControlPoint": "Ponto de controle atual",
+        "controlPointX": "Ponto de controle X",
+        "controlPointY": "Ponto de controle Y",
+        "controlPointZ": "Ponto de controle Z",
+        "weight": "Peso",
+        "cvFrame": "Quadro do VC",
+        "periodic": "Periódico",
+        "planar": "Plana",
+        "startTangentVectorX": "Vetor X da tangente inicial",
+        "startTangentVectorY": "Vetor Y da tangente inicial",
+        "startTangentVectorZ": "Vetor Z da tangente inicial",
+        "endTangentVectorX": "Vetor X da tangente final",
+        "endTangentVectorY": "Vetor Y da tangente final",
+        "endTangentVectorZ": "Vetor Z da tangente final",
+        "fitTolerance": "Tolerância de ajuste",
+        "positionX": "Posição X",
+        "positionY": "Posição Y",
+        "positionZ": "Posição Z",
+        "scaleX": "Escala X",
+        "scaleY": "Escala Y",
+        "scaleZ": "Escala Z",
+        "baseX": "Base X",
+        "baseY": "Base Y",
+        "baseZ": "Base Z",
+        "pathLength": "Comprimento do caminho",
+        "columns": "Colunas",
+        "columnSpacing": "Espaçamento entre colunas",
+        "rows": "Linhas",
+        "rowSpacing": "Espaçamento entre linhas",
+        "rowElevationIncrement": "Incremento de elevação de linha",
+        "includedAxisAngle": "Ângulo do eixo incluso",
+        "direction": "Direção",
+        "items": "Itens",
+        "angleBetweenItems": "Itens de ângulo intermediário",
+        "fillAngle": "Ângulo de preenchimento",
+        "rotateItems": "Rotacionar itens",
+        "itemSpacing": "Espaçamento entre itens",
+        "alignItems": "Alinhar itens",
+        "arrowSize": "Tamanho da seta",
+        "centerMarkSize": "Tamanho da marca de centro",
+        "extLineExt": "Extensão da linha de extensão",
+        "extLineOffset": "Deslocamento da linha de extensão",
+        "textOffset": "Deslocamento do texto",
+        "textPositionX": "Texto posição X",
+        "textPositionY": "Texto posição Y",
+        "textRotation": "Rotação do texto",
+        "dimScaleOverall": "Escala de cota global",
+        "decimalSeparator": "Separador decimal",
+        "suppressTrailingZeros": "Suprimir zeros à direita",
+        "precision": "Precisão"
+      },
+      "value": {
+        "yes": "Sim",
+        "no": "Não",
+        "none": "—",
+        "fitNone": "Nenhuma",
+        "atLeast": "Pelo menos",
+        "exactly": "Exatamente",
+        "fitPoints": "Ajustar",
+        "controlVertices": "Vértices de controle",
+        "chord": "Banzo",
+        "sqrtChord": "RaizQuadBanzo",
+        "uniform": "Uniforme",
+        "custom": "Personalizado",
+        "show": "Mostrar",
+        "hide": "Ocultar",
+        "counterClockwise": "Sentido anti-horário",
+        "clockwise": "Sentido horário",
+        "divide": "Dividir",
+        "measure": "Medir",
+        "predefined": "Predefinido",
+        "outer": "Externa"
+      },
+      "justify": {
+        "left": "Esquerda",
+        "center": "Central",
+        "right": "Direita",
+        "middle": "Meio",
+        "tl": "Superior esquerda",
+        "tc": "Superior central",
+        "tr": "Superior direita",
+        "ml": "Meio esquerda",
+        "mc": "Meio central",
+        "mr": "Meio direita",
+        "bl": "Inferior esquerda",
+        "bc": "Inferior central",
+        "br": "Inferior direita"
+      },
+      "dimensionKind": {
+        "linear": "Linear",
+        "aligned": "Alinhada",
+        "angular": "Angular",
+        "radius": "Raio",
+        "diameter": "Diâmetro"
+      }
+    }
+  }
+}

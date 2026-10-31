@@ -1,0 +1,58 @@
+---
+title: Primeiros passos
+description: "Seu primeiro desenho no MellowCAD: a linha de comando, os prompts e suas opções, os auxílios de desenho, desfazer e salvar."
+type: gettingStarted
+sourceHash: "1bb1ab64037f"
+---
+
+O MellowCAD funciona como o AutoCAD: você digita um comando, responde aos prompts dele e o desenho segue. Se você já usa o AutoCAD, [os comandos](/docs/commands) e [as diferenças](/docs/differences) são tudo de que precisa; esta página é para os dez primeiros minutos.
+
+## Abra o editor [#open]
+
+[Abra o editor](/pt-br/draw) em um navegador de desktop. Não há nada para instalar nem conta para criar. O desenho fica guardado neste navegador enquanto você trabalha, e está lá de novo na próxima vez que você o abrir.
+
+## Digite um comando [#command]
+
+Digite sobre o desenho, onde quer que esteja o cursor: as letras vão para a linha de comando, embaixo, que sugere os comandos que começam com elas. Enter ou a barra de espaço executam o comando. <Command id="LINE" /> desenha linhas, e o alias dele, mais curto, também; todos os aliases estão na [página de comandos](/docs/commands). Os nomes são os do AutoCAD em português, e com um sublinhado na frente digita-se o nome em inglês, como no AutoCAD (`_LINE`).
+
+## Responda aos prompts [#prompts]
+
+Um comando pergunta uma coisa de cada vez, na linha de comando e ao lado do cursor. Um ponto é um clique no desenho, ou duas coordenadas digitadas como `x,y`. A partir do segundo ponto, as coordenadas digitadas são medidas a partir do último ponto, como a entrada dinâmica do AutoCAD as mede, e o histórico as escreve com `@`; `#x,y` é medido a partir da origem. Uma distância digitada sozinha vai até lá na direção do cursor.
+
+<Session name="firstLine" />
+
+## Escolha uma opção [#options]
+
+As opções que um prompt oferece ficam entre colchetes, cada uma com suas letras maiúsculas: digite essas letras e pressione Enter. Um valor entre os sinais `<` e `>` é o valor padrão, e Enter o aceita.
+
+<Session name="circleDiameter" />
+
+## Termine, repita, cancele [#end]
+
+Enter ou a barra de espaço terminam um comando que continua perguntando, como <Command id="LINE" />, e sem nenhum comando em execução repetem o último. Um clique com o botão direito abre um menu com as mesmas escolhas. Esc cancela. Todas as teclas estão na [página de atalhos](/docs/shortcuts).
+
+## Desenhe com precisão [#precision]
+
+Os snaps ao objeto levam o cursor aos pontos exatos do que está desenhado: pontos finais, pontos do meio, centros. `F3` os ativa e desativa, `F8` o modo Orto e `F10` o rastreamento polar, como os botões deles na barra de status.
+
+<Session name="endpointSnap" />
+
+## Altere o que está desenhado [#modify]
+
+Um comando de edição pede os objetos com que trabalhar, ou antes um valor, como faz <Command id="OFFSET" />: a distância, o objeto e depois o lado onde colocar a cópia.
+
+<Session name="offsetRectangle" />
+
+## Desfazer e refazer [#undo]
+
+<Command id="U" /> ou `Ctrl+Z` desfaz o último comando, inteiro, e `Ctrl+Y` o refaz. Dentro de um comando que a oferece, a própria opção de desfazer dele volta um passo, como um segmento de <Command id="LINE" />.
+
+## Salve [#save]
+
+O desenho fica guardado neste navegador enquanto você trabalha. <Command id="QSAVE" /> ou `Ctrl+S` o baixa como um arquivo no formato próprio e versionado do MellowCAD, e <Command id="OPEN" /> ou `Ctrl+O` abre um; [salvar não é bem como no AutoCAD](/docs/differences#saving).
+
+## A seguir [#next]
+
+- [Comandos](/docs/commands): cada comando, seus aliases e a primeira coisa que ele pergunta.
+- [Atalhos de teclado](/docs/shortcuts): as teclas a que o editor responde.
+- [Diferenças em relação ao AutoCAD](/docs/differences): onde ele funciona de outro modo, e por quê.

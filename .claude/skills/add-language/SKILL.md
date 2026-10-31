@@ -64,15 +64,21 @@ the plan keeps only a pointer to it.
 compiles the editor's and records each key's English). A draft may leave keys out (they show in
 English); no test lists it: `TRANSLATED` (`i18n/messages.test.ts`) is every `live` language, and
 `i18n/freshness.test.ts` every translation. Register and search texts researched, not translated;
-each term, with its source and mark, in `docs/i18n/<tag>.md`.
+each term, with its source and mark, in `docs/i18n/<tag>.md`. A `localized` language's labels are
+its pack's (palettes, dialogs, menus, ribbon: skill `autocad-research`), its help's only where the
+pack has none; the help leaves some labels in English. The "Use" pages: the two written ones by
+hand with their `sourceHash`, the generated ones by `npx vitest run lib/docs/generate.test.ts -u`
+(they name commands in English until phase 4).
 
 ## 3. The engine's interface
 
 `cad/locales/<tag>.json`, its `interface` whole (`cad-catalogs.md`). `npm run locales` compiles it
 to `cad/locales/<tag>.ts`; make it an entry point of the package (`.claude/rules/engine-package.md`:
 `exports`, tsdown, the build's tsconfig), add it to the entry table in `cad/README.md` and the table
-in `cad/docs/languages.md`, and give it its entries in `ENGINE_LOCALES` (`i18n/engine.ts`) and
-`EDITOR_LOCALES` (`i18n/editor.ts`). Both maps are `Partial`: a draft without them shows English.
+in `cad/docs/languages.md`, `cad/api.md` (`npx vitest run cad/api.test.ts -u`) and a changeset, and
+give it its entry in `ENGINE_LOCALES` (`i18n/engine.ts`); the editor's in `EDITOR_LOCALES`
+(`i18n/editor.ts`) comes with its catalog in phase 2. Both maps are `Partial`: a draft without
+them shows English. Regenerate the "Use" pages: the tools' descriptions are this catalog's.
 
 ## 4. The command language (`localized` only)
 

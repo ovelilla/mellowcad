@@ -54,6 +54,17 @@ changed; skill `language-review`). The installed language packs are English and 
 installing another on the owner's AutoCAD is asked first. AutoCAD has none for Arabic.
 The palettes' labels are in `ax24res.dll` / `ax26res.dll` and `acappres.dll`.
 
+**A language's interface** (palettes, dialogs, menus, ribbon) is in no table: pair the pack's DLLs
+with the installed `en-US/` ones by id. Inside the pack's `.exe`, `x64/<culture>/acadlp/acadlp.adix`
+and `acadsharedlp.adix` (`ax26res.dll` is there) are zips of DLLs, and
+`acadps/PF/Root/UserDataCache/Support/acad.CUIX` a zip of XML. A string table is `strtable.mjs`
+(`ax26res.dll`, acappres.dll, dwgaidsRes.dll, AcVMToolsRes.dll: the ViewCube and navigation
+bar); a dialog's labels (unitsRes.dll, AcDimRes.dll) are UTF-16 runs read in order; a
+`.resources.dll` is .NET (AcLayer.resources.dll keys its strings; AcTaskDialogs.resources.dll
+is BAML, one `TaskDialog_<n>` block per dialog); `acad.cuix` names each item by UID in both
+languages (`PopMenuRoot.cui` the shortcut menus, `RibbonRoot.cui` the ribbon's `Text`).
+`docs/i18n/pt-BR.md` cites them so.
+
 `node scripts/research/catalog-sweep.mjs` checks a catalog against the tables (skill
 `command-review`). `node scripts/research/propose-commands.mjs --lang <tag>` proposes a new
 language's `commands` from them, into `research/proposals/<tag>.json` with a report of every key

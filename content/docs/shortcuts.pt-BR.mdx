@@ -1,0 +1,55 @@
+---
+title: "Atalhos de teclado"
+description: "As teclas a que o MellowCAD responde: os auxílios de desenho, a edição e os arquivos, a janela e a linha de comando."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+---
+
+As teclas a que o MellowCAD responde, as que um usuário do AutoCAD já tem nos dedos. Cada comando é nomeado como você o digitaria; seus aliases estão na página de comandos.
+
+## Auxílios de desenho [#aids]
+
+| Tecla | O que faz | Comando |
+| --- | --- | --- |
+| `F1` | Abre em uma nova aba a ajuda do comando em execução, ou esta documentação se não houver nenhum. |  |
+| `F2` | Histórico de comandos |  |
+| `F3` | Snap ao objeto |  |
+| `F4` | Ciclo de seleção |  |
+| `F7` | Grade |  |
+| `F8`, `Ctrl+L` | Modo Orto |  |
+| `F9` | Modo snap |  |
+| `F10` | Rastreamento polar |  |
+| `F11` | Rastreamento de snap ao objeto |  |
+
+## Edição e arquivos [#editing]
+
+| Tecla | O que faz | Comando |
+| --- | --- | --- |
+| `Ctrl+Z` | Desfaz a última ação | `U` |
+| `Ctrl+Y`, `Ctrl+Shift+Z` | Refazer múltiplo | `MREDO` |
+| `Ctrl+C` | Copiar | `COPYCLIP` |
+| `Ctrl+Shift+C` | Copiar com ponto base | `COPYBASE` |
+| `Ctrl+X` | Recortar | `CUTCLIP` |
+| `Ctrl+V` | Cola o conteúdo da área de transferência no desenho | `PASTECLIP` |
+| `Ctrl+A` | Seleciona todos os objetos |  |
+| `Ctrl+S` | Salva o desenho em um arquivo | `QSAVE` |
+| `Ctrl+Shift+S` | Salva o desenho em um arquivo com outro nome | `SAVEAS` |
+| `Ctrl+O` | Abre um arquivo de desenho | `OPEN` |
+
+## Janela [#window]
+
+| Tecla | O que faz | Comando |
+| --- | --- | --- |
+| `Ctrl+1` | Exibe as propriedades dos objetos selecionados | `PROPERTIES` / `PROPERTIESCLOSE` |
+| `Ctrl+0` | Remove da tela as barras de ferramentas e as paletas | `CLEANSCREENON` / `CLEANSCREENOFF` |
+| `Ctrl+9` | Linha de comando |  |
+
+## Linha de comando [#commandline]
+
+| Tecla | O que faz | Comando |
+| --- | --- | --- |
+| `Enter`, `Barra de espaço` | Executa o que foi digitado. Sem nada digitado, aceita o valor padrão do prompt ou termina o comando, e sem nenhum comando em execução repete o último. |  |
+| `Esc` | Cancela o comando em execução; um primeiro Esc apaga o que estiver digitado pela metade. |  |
+| `↑`, `↓` | Sem nenhum comando em execução, traz de volta os comandos digitados antes. |  |
+| `Tab` | Completa o nome do comando sendo digitado; quando um ponto é pedido, percorre os snaps ao objeto sob o cursor. |  |
+| `Shift+Barra de espaço` | Percorre os objetos sobrepostos sob o cursor enquanto o ciclo de seleção mostra seu indicador. |  |
