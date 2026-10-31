@@ -35,7 +35,7 @@ export enum ConstraintType {
 export interface ConstraintContext {
   /** Its Z, when it has one, is where the `+Z` / `-Z` guide starts. */
   readonly anchor: Vec2 | Vec3 | null
-  /** The cursor on the work plane, which `view` draws where the pointer is. */
+  /** The cursor on the base point's plane (`PointResolver.constraintContext`), drawn where the pointer is. */
   readonly world: Vec3
   readonly point: Vec2
   /** Horizontal, vertical and the polar angles are the UCS's. */

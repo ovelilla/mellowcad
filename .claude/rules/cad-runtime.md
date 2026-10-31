@@ -84,7 +84,7 @@ in plan, the older off it (`snaps3d.test.ts`). `input.world` is the unsnapped cu
 **The `+Z` / `-Z` guide** (`constraints/zGuide.ts`) exists only where the UCS's Z shows on the
 screen (`zOnScreen`: never in a plan, so the 2D arithmetic is untouched and the landing's snapshots
 guard it). It is the Z through the anchor, measured on the screen (`ConstraintContext.view`, and
-`world` the work-plane cursor). Polar engages it within its aperture and prefers it on a tie; Ortho
+`world` the cursor on the base plane). Polar engages it within its aperture and prefers it on a tie; Ortho
 locks to whichever of X, Y and Z is drawn nearest. Locked to it, a constraint returns a
 `PointAlongZ` (`isAlongZ`), which the resolver keeps instead of the work plane's height; `ray()` is
 `null` and `alongZ()` / `activeAlongZ()` give the point. OTRACK adds a `kind: "z"` guide per
