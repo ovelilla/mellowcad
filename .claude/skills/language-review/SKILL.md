@@ -69,6 +69,13 @@ reviewed unread is a translation nobody checked. The "Use" pages' `sourceHash` w
 - In a `localized` language each mark is a probe: the console, the tables, the help in the
   language's folder, the desktop. Settle what a source now answers; what none does keeps its mark
   with what was seen.
+- Its interface terms first by id: every catalog word whose English an installed DLL or
+  `acad.cuix` holds, against that id's translation (`strtable.mjs`, `dialogs.mjs`, the pairing of
+  skill `autocad-research`); a list (`At least;Exactly`) pairs item by item, and a word found in a
+  menu and in the palette takes the palette's where the catalog row is the palette's. The review
+  of 31/10/2026 found 26 Spanish words so, unmarked ones among them.
+- `console-pair.mjs` groups keys by their English, so a `differs` can be another key's prompt:
+  read the probe's traced `Message` before changing a word.
 - In a `global` language a † waits for a native reader; it changes only on new evidence (a course,
   a book, Autodesk's own material in that language), cited on the page.
 

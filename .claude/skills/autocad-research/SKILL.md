@@ -64,10 +64,13 @@ with the installed `en-US/` ones by id. Inside the pack's `.exe`, `x64/<culture>
 and `acadsharedlp.adix` (`ax26res.dll` is there) are zips of DLLs, and
 `acadps/PF/Root/UserDataCache/Support/acad.CUIX` a zip of XML. A string table is `strtable.mjs`
 (`ax26res.dll`, acappres.dll, dwgaidsRes.dll, AcVMToolsRes.dll: the ViewCube and navigation
-bar); a dialog's labels (unitsRes.dll, AcDimRes.dll) are UTF-16 runs read in order; a
+bar); a dialog's labels (unitsRes.dll, AcDimRes.dll, dwgaidsRes.dll) are `dialogs.mjs`'s, by
+dialog and control id (the UTF-16 runs read in order mispaired one of pt-BR's); a
 `.resources.dll` is .NET (AcLayer.resources.dll keys its strings; AcTaskDialogs.resources.dll
 is BAML, one `TaskDialog_<n>` block per dialog); `acad.cuix` names each item by UID in both
-languages (`PopMenuRoot.cui` the shortcut menus, `RibbonRoot.cui` the ribbon's `Text`).
+languages (`PopMenuRoot.cui` the shortcut menus, `RibbonRoot.cui` the ribbon's `Text`). For an
+installed pack the same DLLs sit in the install's `<culture>/` beside `en-US/`, and `acad.cuix` in
+`UserDataCache/<culture>/Support/`.
 `docs/i18n/pt-BR.md` cites them so.
 
 `node scripts/research/catalog-sweep.mjs` checks a catalog against the tables (skill

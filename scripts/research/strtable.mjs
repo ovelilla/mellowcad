@@ -10,7 +10,11 @@
 import { readFileSync } from "node:fs"
 import { pathToFileURL } from "node:url"
 
-export function stringTable(dll) {
+/**
+ * The resource directory of a PE file: `entries(directory)` lists a directory's `{ id, offset }`,
+ * `data(entry)` the file offset of a leaf's bytes. dialogs.mjs reads it too.
+ */
+export function resources(dll) {
   const pe = readFileSync(dll)
   const header = pe.readUInt32LE(0x3c)
   const sections = pe.readUInt16LE(header + 6)
@@ -48,7 +52,12 @@ export function stringTable(dll) {
   }
   const isDirectory = (offset) => (offset & 0x80000000) !== 0
   const below = (offset) => offset & 0x7fffffff
+  const data = (leaf) => offsetOf(pe.readUInt32LE(root + leaf.offset))
+  return { pe, entries, isDirectory, below, data }
+}
 
+export function stringTable(dll) {
+  const { pe, entries, isDirectory, below, data } = resources(dll)
   const RT_STRING = 6
   const lines = []
   const strings = entries(0).find(({ id }) => id === RT_STRING)
@@ -56,7 +65,7 @@ export function stringTable(dll) {
     // A string table resource holds 16 strings: block N has ids (N - 1) * 16 to N * 16 - 1.
     const [language] = entries(below(block.offset))
     if (isDirectory(language.offset)) continue
-    let at = offsetOf(pe.readUInt32LE(root + language.offset))
+    let at = data(language)
     for (let i = 0; i < 16; i++) {
       const length = pe.readUInt16LE(at)
       const text = pe.toString("utf16le", at + 2, at + 2 + length * 2)
