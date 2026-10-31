@@ -2564,6 +2564,7 @@ export const ptBR: EngineLocale = {
       "objectDoesNotIntersectEdge": "Objeto não faz intersecção com uma aresta.",
       "cannotExtendObject": "Não é possível ESTENDER este objeto.",
       "cannotExtendThisObject": "Não é possível ESTENDER este objeto.",
+      "cannotExtendClosedPolyline": "Não é possível estender uma polilinha fechada.",
       "cannotTrimObject": "Não é possível APARAR este objeto.",
       "cannotTrimThisObject": "Não é possível APARAR este objeto.",
       "objectPerpendicularToUcs": "O objeto é perpendicular ao plano XY do UCS.",
@@ -3885,6 +3886,54 @@ export const ptBR: EngineLocale = {
           }
         ],
         " em 1 polilinha",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto desconsiderado pela operação"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos desconsiderados pela operação"
+            ]
+          }
+        ]
+      ],
+      "segmentsJoinedInto3dPolylines": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " segmento unido"
+            ],
+            "other": [
+              0,
+              " segmentos unidos"
+            ]
+          }
+        ],
+        " em ",
+        [
+          "polylines",
+          2,
+          {
+            "one": [
+              0,
+              " polilinha 3D"
+            ],
+            "other": [
+              0,
+              " polilinhas 3D"
+            ]
+          }
+        ],
         [
           "discarded",
           2,

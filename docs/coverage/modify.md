@@ -672,7 +672,28 @@ window running draws so what it will trim, planned as its click would commit it,
 the drawing (d03-1, d04-1, d06-2); a red ✕ up and to the right of the pick box or the crosshair
 where a click trims and while TRIM's fence or window runs, none where it extends (d01-3, d02-1),
 and a circle-and-slash where the pick is refused (a circle cut once, a text: d09-1, d09-2). English
-wording from AutoCAD 2027's console (probes trim/p100–p389) and the 2026 help. A 3D polyline cuts and bounds as its segments, each a line between its vertices' Z (3dpoly/p13).
+wording from AutoCAD 2027's console (probes trim/p100–p389) and the 2026 help.
+A 3D polyline cuts and bounds as its segments, each a line between its vertices' Z, an edge run on
+from its end segments under Edge's Extend (3dpoly/p13, p68), and is trimmed and extended in plan
+as AutoCAD 2027's console leaves it (probes 3dpoly/p30–p78, entget of its vertices): TRIM takes
+the run between the crossings either side of the pick, past its vertices, each cut end at the Z
+it has there (p13, p31); as an edge — Quick mode, or Standard's edges taking it — its own segments
+cut it, and so do its vertices where its segments turn in plan, never where they run on (p30,
+p32, p35, p42); cut mid-run it is two objects, the piece from its start keeping it (p30); a closed
+one's run round its first vertex goes whole, one open piece left (p58), any other leaves its two
+sides two objects meeting at that vertex (p33, p34), which is a cut where only one crossing is on
+it (p59, p71); a fitted one is cut as its curve, fitted no more (p72); one lying in an upright
+plane is trimmed and cuts like any (p36, never `Object is perpendicular…`); a fence trims it
+where it crosses (p78). One nothing cuts is never deleted, Quick or Standard:
+`Does not intersect with the cutting edge.` (es `No se interseca con la arista de corte.`;
+p41, p42). EXTEND grows the end the pick lies nearer in its parameter, as a polyline's, along its
+end segment in plan, the new end at the Z of that segment's slope (`20,10,3`, `-5,0,-2.5`: p37,
+p40, p39's single segment); a fitted one grows its frame's end segment and is fitted again (p73);
+an end segment standing upright, or none met, is
+`Path does not intersect with the bounding edge.` (p13, p67), a closed one
+`Cannot extend a closed polyline.` (es `Imposible alargar polilínea cerrada.`; p39). Each edit
+one Undo step, its Undo saying `Command has been completely undone.` at the first (p40), U taking
+the command back (p30, p40).
 A spline is cut and grown on its own parameter, as AutoCAD 2027's console leaves it (probes
 spline-knots/k01–k04, k10, k17–k20, k25–k28, k30–k32, k34–k36, MPDUMP): TRIM's piece is a CV
 spline on the control points and knots it had there, never normalised, its fit data dropped
@@ -706,7 +727,9 @@ plane, which is Ucs, so `P` is refused as an option not built —, the fence dra
 PROJMODE as a variable, EDGEMODE and TRIMEXTENDMODE across sessions (AutoCAD keeps them in the
 registry), a spline as an edge running on, projecting objects at an angle to the UCS onto its XY
 plane, a spline's but (so Quick deletes what only an object at an angle crosses, where the console cuts it at the
-projection: p221); a pick inside a hatch, which the console takes for none and starts a fence at
+projection: p221); a 3D polyline's segment standing upright, which cuts and is cut nowhere here,
+and a crossing on one of its vertices, which a non-edge's run passes there (both
+**unverified**); a pick inside a hatch, which the console takes for none and starts a fence at
 (p196, p197), here the hatch, refused; a spline's crossings with itself as a TRIM edge (not cut
 there here; **unverified**); a CV spline's grown end as AutoCAD places it: its last control point
 on the edge to the digit and its end knot off the polynomial's crossing in the sixth significant
@@ -719,7 +742,7 @@ starts with a zero-length segment; **unverified**: the reasons when TRIM's Shift
 the same code here), and whether a crossing at the pick bounds the trim of an arc, a circle or a
 polyline (a line's does not, p261; here theirs does); the circle-and-slash over what EXTEND
 refuses (only TRIM's refusals were seen), the look of EXTEND's fence or window running (here its
-hover's glow) and whether the ✕ shows while a fence crosses nothing (here it does); trimming or extending a 3D polyline itself (AutoCAD cuts it in plan at the Z it has there, `15,10,-1.5`, 3dpoly/p13): nothing happens here
+hover's glow) and whether the ✕ shows while a fence crosses nothing (here it does)
 
 ### `OFFSET` / `O` · es `DESFASE` / `DF` / `EQ` · pt-BR `DESLOCAMENTO`
 
@@ -1304,6 +1327,23 @@ What no result takes is counted after it, `, 1 object discarded from the operati
 `0 objetos unidos, 2 objetos descartados de la operación`; p334). One undo step, named JOIN / UNIR
 (p360–p362).
 
+A 3D polyline joins as AutoCAD 2027's console leaves it (probes 3dpoly/p44–p77, entget): one that
+is not level grows, source or piece and whatever came first, its handle, properties and direction
+kept, over whole objects meeting its ends in space in the set's order — lines rising or not,
+polylines by their vertices (an arc segment its chord, p63), other 3D polylines turned to fit,
+a fitted one by its curve's vertices, fitted no more (p44–p47, p54, p66, p70) —, the first of a
+branch taken (p64), closing where it meets its start (p74), saying
+`2 segments joined into 1 3D polyline` (es `2 segmentos unidos en 1 polilínea 3D`, `1 segmento
+unido a 1 polilínea 3D`), its new segments counted, several in a window `2 segments joined into 2
+3D polylines` (es `… unidos en2 polilíneas 3D`, the table's missing space; p77), the newest of a
+window's the one grown (p62); an arc joining it makes a new spline,
+`2 objects converted to 1 spline`, each object a curve on its own parameter, the lines raised to
+the arc's degree (p48, p56); a spline it meets takes it, `2 objects joined into 1 spline`, cubic
+(p49); a level one is a polyline's piece, so what lies in its plane makes a polyline,
+`2 objects converted to 1 polyline`, at its Z (p50, p60, p69, p75), and a rising line is left out
+(p76); what touches it only in plan, at another height, is discarded (p55), and a closed one joins
+nothing (p53).
+
 **Missing:** a line's, an arc's and a polyline's own step as a single source
 (`Select lines to join to source:`, es `Designe líneas que unir al origen`, and its
 `1 line joined to source` counts; p310, p311, p348, p372, p383; an arc's cLose): here such a
@@ -1324,7 +1364,12 @@ drawn in UCS X 90 into a polyline of that normal, p351); a rising line is left o
 2027 flattens one into the level polyline, its rise lost (p347, p330), yet joins nothing when the
 level line is off Z 0 (p358) — neither copied (PIECES-D24); the order of a fence's and the named
 modes' finds (the drawing's here, unprobed); a run that both grows a polyline and makes new ones
-words its count as new polylines (unprobed); a 3D polyline as a source or a piece, and lines out of one plane joined into one (pieces/p353; 3dpoly/p27 left unread), discarded here
+words its count as new polylines (unprobed); lines out of one plane, and a −Z polyline with a line, joined into a 3D polyline where none is
+among them (pieces/p353), discarded here; the count when a closed or a level 3D polyline source
+joins nothing, which AutoCAD gives as `1 object discarded` of two (3dpoly/p53, p76: two here); a
+3D polyline picked alone, which may ask `Select lines to join to source:` as a line does
+(unprobed); a 3D polyline in a tilted plane (grown in space here) and a fitted 2D polyline joined
+into one (its frame here), both **unverified**
 
 ### `BREAK` / `BR` / `BREAKATPOINT` · es `PARTE` / `P` · `PARTIRENPUNTO` · pt-BR `QUEBRAR` / `QU` / `QUEBRAREMPONTO`
 

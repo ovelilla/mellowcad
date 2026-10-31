@@ -2548,6 +2548,7 @@ export const es: EngineLocale = {
       "objectDoesNotIntersectEdge": "El objeto no se interseca con ninguna arista.",
       "cannotExtendObject": "Objeto no procesado por ALARGA.",
       "cannotExtendThisObject": "Este objeto no se puede ALARGAR.",
+      "cannotExtendClosedPolyline": "Imposible alargar polilínea cerrada.",
       "cannotTrimObject": "Objeto no procesado por RECORTA.",
       "cannotTrimThisObject": "Este objeto no se puede RECORTAR.",
       "objectPerpendicularToUcs": "El objeto es perpendicular al plano XY del SCP.",
@@ -3867,6 +3868,62 @@ export const es: EngineLocale = {
           }
         ],
         " en 1 polilínea",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto descartado de la operación"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos descartados de la operación"
+            ]
+          }
+        ]
+      ],
+      "segmentsJoinedInto3dPolylines": [
+        [
+          "polylines",
+          2,
+          {
+            "one": [
+              [
+                "count",
+                2,
+                {
+                  "one": [
+                    0,
+                    " segmento unido a 1 polilínea 3D"
+                  ],
+                  "other": [
+                    0,
+                    " segmentos unidos en 1 polilínea 3D"
+                  ]
+                }
+              ]
+            ],
+            "other": [
+              [
+                "count",
+                2,
+                {
+                  "other": [
+                    0,
+                    " segmentos unidos"
+                  ]
+                }
+              ],
+              " en",
+              0,
+              " polilíneas 3D"
+            ]
+          }
+        ],
         [
           "discarded",
           2,

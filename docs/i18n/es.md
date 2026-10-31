@@ -177,7 +177,9 @@ above, explains):
   han deshecho todos los segmentos.` and the other commands' words of a 3D polyline (`polilínea
   3D`) from 2027's console (3dpoly/p01–p29.es) and tables 20170, 20288, 20635 and 25596; the
   palette's `Polilínea 3D`, `Vértice Z`, `Ajustar/Suavizar` and `Ninguna` from the Spanish desktop
-  (3dpoly/d03). **Unverified:** CHAMFER's refusal, composed from table 20635.
+  (3dpoly/d03); TRIM's, EXTEND's and JOIN's words of one from 2027's console (3dpoly/p30–p78.es)
+  and tables 1127, 46864 and 20624, `segmentos unidos en2 polilíneas 3D` as table 295 and the
+  console print it, its space missing. **Unverified:** CHAMFER's refusal, composed from table 20635.
 - **SPLINE:** the name from the Spanish page with the English GUID (`SPLINE`; SPLINEDIT is
   `EDITSPLINE`); `SPL`, the keywords `Método`, `Nudos`, `Grado`, `Ajustar`, `VC`,
   `iniciar Tangencia`,

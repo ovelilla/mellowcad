@@ -14,7 +14,7 @@ us to walk again, whereas a command costs the same before or after it.
    sloping lines. Left, each a gap of its own: perspective and the rest of 3D navigation, saved
    views, UCS Face (no solids) and Apply, grips other than move on a tilted object, the Normal rows
    on types other than circle and arc, Intersection between objects in different planes, PROJMODE's
-   projection of objects at an angle to the UCS, and JOIN's 3D polyline.
+   projection of objects at an angle to the UCS.
 3. **3D usability** — done: the `+Z` / `-Z` guide of Polar, Ortho and OTRACK with a typed length
    along it, the ViewCube (parts, drag, roll, triangles, Home, compass, its two menus, NAVVCUBE)
    the viewport controls' view menu and the navigation bar (Pan, Zoom, Orbit). Left, each a gap of
@@ -23,12 +23,14 @@ us to walk again, whereas a command costs the same before or after it.
    ShowMotion, named views, the dynamic UCS (UCSDETECT), UCSFOLLOW, and the tracking label of
    OTRACK.
 
-4. **3D solids** — next once the 2D and 2.5D gaps below are closed: a B-rep kernel of our own (no
+4. **3D solids** — next, from its first phase, REGION and its 2D booleans: a B-rep kernel of our own (no
    third-party one), drawn on the canvas as AutoCAD draws them (isolines, Hidden, shaded), from
    REGION and its booleans to SWEEP and LOFT. The brief is `docs/next-solids.md`.
 
-Left out of the 2.5D model, each a gap of its own: POINT's thickness (with POINT, below), and
-TRIM and JOIN of 3D polylines, next. ARRAYRECT's Levels are done, stacked along the UCS's Z with
+Left out of the 2.5D model: POINT's thickness, with POINT (below). TRIM, EXTEND and JOIN of 3D
+polylines are done, cut and grown in plan at the Z they have there, a closed one left in two at
+its first vertex, and joined in space into a 3D polyline, or a spline where an arc joins it
+(3dpoly/p30–p78, modify.md's TRIM and JOIN). ARRAYRECT's Levels are done, stacked along the UCS's Z with
 their Total, default spacing, palette rows and file (arrays/p430–p444, modify.md's ARRAYRECT);
 a ring's and a path array's Levels and Rows are gaps of their own. OSNAPZ is done, every snap found as at 0 and put at ELEVATION's Z in the UCS
 (osnapz/o01–o10, drafting-aids.md's Object snaps); under OTRACK it is unverified. CHPROP is done, its Color, LAyer, LType, LWeight and
@@ -37,7 +39,7 @@ ltScale waits for per-object ltscale, below. The point filters are done, `.X` to
 every point prompt and in the Point Filters menu, in the UCS (filters/f01–f63, d01–d05,
 drafting-aids.md's Point filters); at `Select objects:` they are a gap of their own. 3DPOLY and SPLINE
 3D are done: the objects whose stored points carry their Z (`draw.md`), a spline kept in its own
-plane when it has one; trimming a 3D polyline and JOIN into one are the gap named above.
+plane when it has one.
 
 Editing a spline is done in its three deliveries: the spline the model's, in space and on knots,
 control points and weights of its own (DXF 40 / 10 / 41), as AutoCAD 2027 leaves TRIM's, BREAK's

@@ -2078,6 +2078,7 @@ export const en: EngineCatalog = {
       "objectDoesNotIntersectEdge": "Object does not intersect an edge.",
       "cannotExtendObject": "Cannot EXTEND this object.",
       "cannotExtendThisObject": "Cannot EXTEND this object.",
+      "cannotExtendClosedPolyline": "Cannot extend a closed polyline.",
       "cannotTrimObject": "Cannot TRIM this object.",
       "cannotTrimThisObject": "Cannot TRIM this object.",
       "objectPerpendicularToUcs": "Object is perpendicular to UCS XY plane.",
@@ -3396,6 +3397,54 @@ export const en: EngineCatalog = {
           }
         ],
         " joined into 1 polyline",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " object discarded from the operation"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objects discarded from the operation"
+            ]
+          }
+        ]
+      ],
+      "segmentsJoinedInto3dPolylines": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " segment"
+            ],
+            "other": [
+              0,
+              " segments"
+            ]
+          }
+        ],
+        " joined into ",
+        [
+          "polylines",
+          2,
+          {
+            "one": [
+              0,
+              " 3D polyline"
+            ],
+            "other": [
+              0,
+              " 3D polylines"
+            ]
+          }
+        ],
         [
           "discarded",
           2,

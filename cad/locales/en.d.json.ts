@@ -1852,6 +1852,7 @@ declare const source: {
       "objectDoesNotIntersectEdge": string
       "cannotExtendObject": string
       "cannotExtendThisObject": string
+      "cannotExtendClosedPolyline": string
       "cannotTrimObject": string
       "cannotTrimThisObject": string
       "objectPerpendicularToUcs": string
@@ -2074,6 +2075,7 @@ declare const source: {
       "arcsJoinedIntoCircle": string
       "objectsConvertedToPolylines": string
       "segmentsJoinedIntoPolyline": string
+      "segmentsJoinedInto3dPolylines": string
       "ellipticalArcsJoined": string
       "objectsJoinedIntoSplines": string
       "objectsConvertedToSplines": string

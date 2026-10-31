@@ -23,6 +23,7 @@ import {
   Entity,
   EntityId,
   type LineEntity,
+  type Polyline3dEntity,
   type PolylineEntity,
   arcEndPoint,
   arcStartPoint,
@@ -32,14 +33,19 @@ import {
   createCircle,
   createPolyline,
   ellipseSweepParams,
+  entityElevation,
   ellipseWithSpan,
   isFullEllipse,
   isLevel,
   lineEndZ,
   lineStartZ,
+  polyline3dCurve,
+  polyline3dFrame,
   polylineSegmentGeometries,
   polylineWidth,
   type PolylineWidth,
+  readsInPlan,
+  withElevation,
   withLineZ,
   polylineDecurved,
 } from "../../domain/entities"
@@ -78,7 +84,8 @@ const TAU = 2 * Math.PI
  * one ellipse the source's, so (p332, p407, p413); anything else chains, one
  * per source, each grown over whole objects meeting its ends, in the set's
  * order, until none fits (p324, p338, p377, p384): from each spline or
- * elliptical arc in turn a spline (p331, p374, p415, p435), then from the
+ * elliptical arc in turn a spline (p331, p374, p415, p435), from each 3D
+ * polyline that is not level a 3D polyline (3dpoly/p44, p62), then from the
  * first polyline left, else the first object, a polyline (p339, p343, p434).
  * A spline or an elliptical arc picked alone is a source the objects asked
  * next join (p406, p411), or that cLose closes (p369).
@@ -370,6 +377,7 @@ export type JoinMessage =
   | "objectsConvertedToSplines"
   | "objectsConvertedToPolylines"
   | "segmentsJoinedIntoPolyline"
+  | "segmentsJoinedInto3dPolylines"
   | "objectsJoinedToSource"
   | "ellipticalArcsJoinedToSource"
 
@@ -700,6 +708,28 @@ function joinChains(set: readonly Entity[]): Joined | null {
     count.objects += chain.members.length
     count.splines++
   }
+  // Then from each 3D polyline that is not level, a 3D polyline, or a new
+  // spline where an arc joins it (3dpoly/p44, p48, p62, p77).
+  const grown = { segments: 0, polylines: 0 }
+  for (;;) {
+    const source = left.find(
+      (entity): entity is Polyline3dEntity =>
+        entity.type === "polyline3d" && !entity.closed && !isLevel(entity)
+    )
+    if (!source) break
+    left.splice(left.indexOf(source), 1)
+    const chain = polyline3dChain(source, left)
+    if (!chain) continue
+    made.push(chain.made)
+    removed.push(...chain.members.map((member) => member.id))
+    if (chain.made.type === "spline") {
+      counts.made.objects += chain.members.length
+      counts.made.splines++
+    } else {
+      grown.segments += chain.segments
+      grown.polylines++
+    }
+  }
   for (const [count, message] of [
     [counts.kept, "objectsJoinedIntoSplines"],
     [counts.made, "objectsConvertedToSplines"],
@@ -708,6 +738,12 @@ function joinChains(set: readonly Entity[]): Joined | null {
     reports.push({
       message,
       values: { count: count.objects, splines: count.splines },
+    })
+  }
+  if (grown.polylines > 0) {
+    reports.push({
+      message: "segmentsJoinedInto3dPolylines",
+      values: { count: grown.segments, polylines: grown.polylines },
     })
   }
   const polylines = joinPolylines(
@@ -720,6 +756,107 @@ function joinChains(set: readonly Entity[]): Joined | null {
   }
   if (made.length === 0) return null
   return { kind: "chains", made, removed, reports }
+}
+
+/** An object of a 3D polyline's chain, its points in the chain's direction. */
+interface Run3d {
+  readonly member: Entity
+  readonly points: readonly Vec3[]
+  readonly reversed: boolean
+}
+
+/**
+ * The points an object joins a 3D polyline by, in the WCS, or null where it
+ * joins none: a line's ends, rising or not (3dpoly/p44); a polyline's
+ * vertices, its arcs joined as chords (p63) and a fitted one's frame
+ * (**unverified**); a 3D polyline's curve, fitted no more (p66); an arc's
+ * ends, which make the chain a spline (p48). Closed objects join none.
+ */
+function pointsOf3d(entity: Entity): Vec3[] | null {
+  switch (entity.type) {
+    case "line":
+      return [startOf(entity), endOf(entity)]
+    case "arc": {
+      if (!readsInPlan(entity)) return null
+      const z = entityElevation(entity)
+      return [
+        { ...arcStartPoint(entity), z },
+        { ...arcEndPoint(entity), z },
+      ]
+    }
+    case "polyline": {
+      if (entity.closed || !readsInPlan(entity)) return null
+      const frame = entity.fit ? polylineDecurved(entity) : entity
+      const z = entityElevation(entity)
+      return frame.vertices.map((vertex) => ({ ...vertex, z }))
+    }
+    case "polyline3d":
+      return entity.closed ? null : [...polyline3dCurve(entity).vertices]
+    default:
+      return null
+  }
+}
+
+/**
+ * The chain a 3D polyline grows into over whole objects of `left` meeting one
+ * of its ends in space, in their order, scanning again after each, until none
+ * fits or it closes (3dpoly/p64, p70, p74); those it takes leave `left`. It
+ * stays that 3D polyline, its handle, properties and direction kept, whatever
+ * came first (p45, p47), or becomes a new spline where an arc joins it
+ * (p48). Null where nothing meets it.
+ */
+function polyline3dChain(
+  source: Polyline3dEntity,
+  left: Entity[]
+): { made: Entity; members: readonly Entity[]; segments: number } | null {
+  const own = pointsOf3d(source)!
+  const runs: Run3d[] = [{ member: source, points: own, reversed: false }]
+  const head = () => runs[0].points[0]
+  const tail = () => runs[runs.length - 1].points.at(-1)!
+  let closed = false
+  for (let i = 0; i < left.length && !closed; i++) {
+    const member = left[i]
+    const points = pointsOf3d(member)
+    if (!points || points.length < 2) continue
+    const back = [...points].reverse()
+    if (samePoint3(points[0], tail())) {
+      runs.push({ member, points, reversed: false })
+    } else if (samePoint3(back[0], tail())) {
+      runs.push({ member, points: back, reversed: true })
+    } else if (samePoint3(points.at(-1)!, head())) {
+      runs.unshift({ member, points, reversed: false })
+    } else if (samePoint3(back.at(-1)!, head())) {
+      runs.unshift({ member, points: back, reversed: true })
+    } else continue
+    left.splice(i, 1)
+    i = -1
+    closed = samePoint3(head(), tail())
+  }
+  if (runs.length < 2) return null
+  const members = runs.map((run) => run.member)
+  if (members.some((member) => member.type === "arc")) {
+    const curves = runs.map((run) => {
+      const curve = joinCurve(run.member)!
+      return run.reversed ? bsplineReversed(curve) : curve
+    })
+    return {
+      made: joinedSpline(source, bsplineJoined(curves), closed),
+      members,
+      segments: 0,
+    }
+  }
+  const vertices = [
+    runs[0].points[0],
+    ...runs.flatMap((run) => run.points.slice(1)),
+  ]
+  if (closed) vertices.pop()
+  const made: Polyline3dEntity = {
+    ...polyline3dFrame(source),
+    vertices,
+    closed,
+  }
+  const total = closed ? vertices.length : vertices.length - 1
+  return { made, members, segments: total - (own.length - 1) }
 }
 
 /** A segment of a chain, from `a` to `b`. */
@@ -754,6 +891,17 @@ function piecesOf(entity: Entity): Piece[] {
         b: segment.b,
         bulge: segment.kind === "arc" ? segment.bulge : 0,
         width: polylineWidth(frame, i),
+      }))
+    }
+    case "polyline3d": {
+      // A level one joins as a polyline does (3dpoly/p50, p60, p75).
+      if (entity.closed || !isLevel(entity)) return []
+      const { vertices } = polyline3dCurve(entity)
+      return vertices.slice(1).map((b, i) => ({
+        a: vertices[i],
+        b,
+        bulge: 0,
+        width: null,
       }))
     }
     default:
@@ -854,16 +1002,22 @@ function chainOf(
   if (members.length < 2) return null
   const vertices = [pieces[0].a, ...pieces.map((piece) => piece.b)]
   if (closed) vertices.pop()
+  // A 3D polyline gives no plane (`carryPlane`): the polyline lies at its Z
+  // (3dpoly/p69).
+  const elevation = source.type === "polyline3d" ? entityElevation(source) : 0
   return {
     polyline: carryOverrides(
       source,
-      createPolyline(
-        vertices,
-        closed,
-        source.layerId,
-        pieces.map((piece) => piece.bulge),
-        source.type === "polyline" ? source.id : undefined,
-        joinedWidths(pieces.map((piece) => piece.width))
+      withElevation(
+        createPolyline(
+          vertices,
+          closed,
+          source.layerId,
+          pieces.map((piece) => piece.bulge),
+          source.type === "polyline" ? source.id : undefined,
+          joinedWidths(pieces.map((piece) => piece.width))
+        ),
+        elevation
       )
     ),
     members,

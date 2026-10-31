@@ -226,8 +226,8 @@ is never stored (`withNormal`, `withElevation`), so a flat drawing's file is unc
   thickness; `carryPlane` for a new object sharing only the plane). `createX(..., source.layerId,
 source.id)` alone is the bug: it drops colour, linetype, lineweight and Z.
 - **A piece cut from a line or grown out of it goes through `carryPiece`** (TRIM, EXTEND, BREAK),
-  which re-reads each end with `entityZAt`; a spline's piece is spread from its object instead
-  (`splineEdits.ts`), as `carryPlane` would set a 3D piece's Z to its object's start's; a line
+  which re-reads each end with `entityZAt`; a spline's or a 3D polyline's piece is spread from its
+  object instead (`splineEdits.ts`), as `carryPlane` would set a 3D piece's Z to its start's; a line
   end moved to a point (a grip) takes its Z with `withLineZ`.
 - **Coplanar means `coplanar(a, b)`**, AutoCAD's own test (FILLET, CHAMFER, JOIN, HATCH);
   two lines in a tilted plane are `linesPlaneNormal`.

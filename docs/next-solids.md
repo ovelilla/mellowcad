@@ -1,8 +1,8 @@
 # Sólidos 3D con núcleo propio — brief
 
-> **Estado:** pendiente; empieza cuando estén cerrados los huecos 2D y 2.5D que lista
-> `docs/coverage/roadmap.md` (fases 1 a 3 y la lista que les sigue). Se borra cuando la fase 7 esté
-> hecha; hasta entonces cada fase cerrada se marca aquí.
+> **Estado:** pendiente; lo siguiente, desde la fase 1: los huecos 2D y 2.5D que lista
+> `docs/coverage/roadmap.md` están cerrados (POINT's thickness va con POINT, aplazable). Se borra
+> cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 

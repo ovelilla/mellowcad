@@ -648,7 +648,7 @@ from the 2027 `acad.pgp` and `acad.cuix`. LINE's Continue starts at its last ver
 (p23). It draws and is picked as its segments in any view; its linetype is laid per segment, as a
 line's (**unverified**: PLINEGEN is a 2D polyline's). What the other commands do with one is in
 their entries: MOVE, COPY, ROTATE, SCALE, MIRROR and the arrays carry it whole, STRETCH, EXPLODE,
-BREAK, OFFSET, FILLET, CHAMFER, TRIM / EXTEND (modify.md), AREA (inquiry.md), DIMLINEAR
+BREAK, OFFSET, FILLET, CHAMFER, TRIM / EXTEND, JOIN (modify.md), AREA (inquiry.md), DIMLINEAR
 (dimensions.md), UCS OBject (coordinate-systems.md), the snaps and grips (drafting-aids.md), the
 Properties palette (properties.md). Saved from drawing file version 36.
 
@@ -657,8 +657,7 @@ PEDIT's Spline curve fits one, drawn and picked as its curve, Decurve back to it
 
 **Missing:** the palette's Fit/Smooth of a fitted one, which reads None here (AutoCAD's
 `Quadratic` and `Cubic`, es `Cuadrática`, `Cúbica`, ax26res.dll, not in the catalogs yet: a new
-interface word every language's catalog owes), and editing it there; trimming and extending one (modify.md), JOIN into
-one (pieces/p353), one as a hatch boundary or ARRAYPATH's path, the 3D Visualization group's
+interface word every language's catalog owes), and editing it there; one as a hatch boundary or ARRAYPATH's path, the 3D Visualization group's
 Material row (desktop d02), and the grips' hover menus (Stretch / Add / Remove Vertex, unprobed)
 
 ### `TEXT` / `DTEXT` / `DT` / `-TEXT` · es `TEXTO` / `T` / `TEXTODIN` / `-TEXTO` · pt-BR `TEXTO` / `ETE` / `ETEXTO` / `-TEXTO`

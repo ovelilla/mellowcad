@@ -13,6 +13,7 @@ import { entityElevation, lineEndZ, lineStartZ, readsInPlan } from "./elevation"
 import { arcSweepAngle } from "./entityMeasures"
 import { ellipseMinorAxis, ellipseSweepParams, isFullEllipse } from "./ellipses"
 import { polylineSegmentGeometries } from "./polylines"
+import { polyline3dSegments } from "./polylines3d"
 import { createSpline } from "./splines"
 import { onControlPoints, splineInWorld, splineRun } from "./splineEdits"
 
@@ -28,9 +29,9 @@ const at = (p: Vec2, z: number): Vec3 => ({ x: p.x, y: p.y, z })
  * The curve `entity` joins a spline on, in the WCS, or null where it joins
  * none: a line on [0, 1], rational though its weights are 1 (p374, p398); an
  * arc or an elliptical arc on its own angle (p375, p424, p425); a polyline
- * segment by segment so (p401, p431); an open spline on its own knots,
- * shifted (p423, p432). A closed object, and one in a plane at an angle to
- * the plan, joins none.
+ * segment by segment so (p401, p431), and an open 3D polyline its curve's
+ * (3dpoly/p48, p49); an open spline on its own knots, shifted (p423, p432).
+ * A closed object, and one in a plane at an angle to the plan, joins none.
  */
 export function joinCurve(entity: Entity): BSplineCurve | null {
   switch (entity.type) {
@@ -94,6 +95,16 @@ export function joinCurve(entity: Entity): BSplineCurve | null {
         })
       )
     }
+    case "polyline3d":
+      if (entity.closed || entity.vertices.length < 2) return null
+      return bsplineJoined(
+        polyline3dSegments(entity).map(([a, b]) => ({
+          degree: 1,
+          knots: [0, 0, 1, 1],
+          controlPoints: [a, b],
+          weights: [1, 1],
+        }))
+      )
     case "spline": {
       if (entity.closed) return null
       const { curve } = splineRun(splineInWorld(entity))

@@ -21,6 +21,7 @@ import {
   PolylineEntity,
   PolylineWidth,
   PolylineSegmentGeometry,
+  type Polyline3dEntity,
   SplineEntity,
   arcSweepAngle,
   createArc,
@@ -49,7 +50,11 @@ import {
   nearestPolylineSegment,
   polylineParamAt,
   polylineSegmentGeometries,
+  polyline3dCurve,
+  polyline3dFrame,
+  polyline3dParamAt,
   polyline3dSegments,
+  polyline3dSpan,
   polylineSegments,
   polylineSpan,
   readsInPlan,
@@ -149,7 +154,7 @@ import {
  *
  * The command loops until Escape/Enter, so successive clicks trim more pieces
  * or extend to further boundaries — exactly like AutoCAD. Lines, circles,
- * arcs, polylines, ellipses and splines all serve as edges/boundaries for
+ * arcs, polylines, 3D polylines, ellipses and splines all serve as edges for
  * one another, and so do what a block reference draws and a text's box
  * (`edgeShapes`); an object whose normal is -Z is read in plan (`inPlan`),
  * one standing upright on the plane refused (`standsUpright`).
@@ -184,6 +189,8 @@ type EditGeom =
     }
   /** A spline's piece, already wearing its object's properties (`splineEdits`). */
   | { readonly kind: "spline"; readonly spline: SplineEntity }
+  /** A 3D polyline's piece, so too, its points in space. */
+  | { readonly kind: "polyline3d"; readonly polyline: Polyline3dEntity }
 
 /** A resolved edit ready to preview and commit against the hovered object. */
 type EdgeEditPlan =
@@ -1464,7 +1471,18 @@ export abstract class EdgeEditTool implements Tool {
     const refusal = trimRefusal(hit)
     if (refusal) return { kind: "refuse", message: refusal }
     const plan = planTrim(hit, click, others, own)
-    if (plan || !TRIMMED.has(hit.type)) return plan
+    if (plan) return plan
+    // WHY never deleted: Quick mode says so of a 3D polyline no edge cuts,
+    // as Standard does (3dpoly/p41, p42).
+    if (hit.type === "polyline3d") {
+      return (
+        uprightOnly() ?? {
+          kind: "refuse",
+          message: "doesNotIntersectCuttingEdge",
+        }
+      )
+    }
+    if (!TRIMMED.has(hit.type)) return plan
     // "In Quick mode, selecting an object that doesn't cross a boundary
     // deletes the object instead" — of those trimmed here, and a dimension,
     // which nothing cuts (probe trim/p194); Standard says so (p239, p383,
@@ -1570,6 +1588,9 @@ function pieceOf(
   id?: EntityId
 ): Entity {
   if (g.kind === "spline") return { ...g.spline, id: id ?? nextEntityId() }
+  if (g.kind === "polyline3d") {
+    return { ...g.polyline, id: id ?? nextEntityId() }
+  }
   return carryPiece(target, geomToEntity(g, layerId, id))
 }
 
@@ -1626,9 +1647,21 @@ function prolonged(edge: Entity, reach: number): Entity[] {
             : ray(g.b, V.sub(g.b, g.a))
       return [edge, ...end(first, true), ...end(last, false)]
     }
+    case "polyline3d": {
+      // On from its end segments in plan, as a polyline's (3dpoly/p68); a
+      // segment standing upright runs nowhere.
+      const segments = polyline3dSegments(edge)
+      const first = segments[0]
+      const last = segments.at(-1)
+      if (edge.closed || !first || !last) return [edge]
+      return [
+        edge,
+        ...ray(first[0], V.sub(first[0], first[1])),
+        ...ray(last[1], V.sub(last[1], last[0])),
+      ]
+    }
     case "circle":
     case "spline":
-    case "polyline3d":
     case "text":
     case "mtext":
     case "attdef":
@@ -1913,6 +1946,8 @@ function geomToEntity(g: EditGeom, layerId: LayerId, id?: EntityId): Entity {
       })
     case "spline":
       return { ...g.spline, layerId, id: id ?? nextEntityId() }
+    case "polyline3d":
+      return { ...g.polyline, layerId, id: id ?? nextEntityId() }
   }
 }
 
@@ -1942,8 +1977,8 @@ function planTrim(
       return planTrimEllipse(target, click, others)
     case "spline":
       return planTrimSpline(target, click, others)
-    // WHY nothing: AutoCAD trims one in plan (3dpoly/p13), not built here.
     case "polyline3d":
+      return planTrimPolyline3d(target, click, others, own)
     case "text":
     case "mtext":
     case "attdef":
@@ -1963,8 +1998,8 @@ function planTrim(
  * definition and a block reference 20623's, a closed polyline, a whole
  * ellipse, a closed spline, an MTEXT and a hatch 54's (probes trim/p191,
  * p193, p195, p199, p204–p211, p410); an open spline as an open polyline's
- * end (spline-knots/k20). `null` where the console extends what is not built
- * here (a 3D polyline).
+ * end (spline-knots/k20); a 3D polyline as a line, closed in words of its
+ * own (3dpoly/p13, p39).
  */
 function extendRefusal(target: Entity): MessageId | null {
   switch (target.type) {
@@ -1985,7 +2020,9 @@ function extendRefusal(target: Entity): MessageId | null {
         ? "cannotExtendThisObject"
         : "objectDoesNotIntersectEdge"
     case "polyline3d":
-      return null
+      return target.closed
+        ? "cannotExtendClosedPolyline"
+        : "pathDoesNotIntersectBoundingEdge"
     case "circle":
     case "text":
     case "attdef":
@@ -2028,6 +2065,7 @@ function planExtend(
     case "spline":
       return planExtendSpline(target, click, others, own)
     case "polyline3d":
+      return planExtendPolyline3d(target, click, others, own)
     case "text":
     case "mtext":
     case "attdef":
@@ -3012,6 +3050,170 @@ function trimPolylinePieces(
     return piece(si + tb, si + ta + count)
   }
   return [...piece(0, si + ta), ...piece(si + tb, count)]
+}
+
+/**
+ * A 3D polyline trimmed in plan along its curve, past its vertices, between
+ * the crossings either side of the pick, each cut end at the Z it has there
+ * (3dpoly/p13, p31); a fitted one so, fitted no more (p72). As an edge
+ * (`own`) its segments cut it too, and so do its vertices where the
+ * segments meeting there turn in plan, never where they run on (p30, p35,
+ * p42). A closed one's run round its start is taken whole and what is left
+ * stays one; any other leaves its two sides meeting at its first vertex two
+ * objects, that vertex a cut where only one crossing is on it (p33, p34,
+ * p58, p59, p71). Null where nothing crosses it, which Quick mode does not
+ * delete (`planOn`).
+ */
+function planTrimPolyline3d(
+  poly: Polyline3dEntity,
+  click: Vec2,
+  others: readonly Entity[],
+  own: boolean
+): EdgeEditPlan | null {
+  const curve = polyline3dCurve(poly)
+  const count = polyline3dSegments(curve).length
+  const crossings = polyline3dCrossings(curve, others, own)
+  const inner = crossings.filter((t) => t > PARAM_EPS && t < count - PARAM_EPS)
+  if (inner.length === 0) return null
+  const at = polyline3dParamAt(curve, click)
+  let from = inner.findLast((t) => t < at) ?? 0
+  let to = inner.find((t) => t > at) ?? count
+  const piece = (a: number, b: number): EditGeom[] =>
+    b - a > PARAM_EPS
+      ? [
+          {
+            kind: "polyline3d",
+            polyline: {
+              ...curve,
+              closed: false,
+              vertices: polyline3dSpan(curve, a, b),
+            },
+          },
+        ]
+      : []
+  const atStart = inner.length < crossings.length
+  let replacements: EditGeom[]
+  if (
+    curve.closed &&
+    !atStart &&
+    inner.length > 1 &&
+    (from === 0 || to === count)
+  ) {
+    replacements = piece(inner[0], inner[inner.length - 1])
+    from = inner[inner.length - 1]
+    to = inner[0] + count
+  } else {
+    replacements = [...piece(0, from), ...piece(to, count)]
+  }
+  return {
+    kind: "trim",
+    targetId: poly.id,
+    layerId: poly.layerId,
+    replacements,
+    removed: {
+      kind: "polyline3d",
+      polyline: {
+        ...curve,
+        closed: false,
+        vertices: polyline3dSpan(curve, from, to),
+      },
+    },
+  }
+}
+
+/**
+ * Where `others` cross the 3D polyline in plan, as its parameters; with
+ * `own`, its other segments and the vertices where it turns too (a closed
+ * one's first at 0). A segment standing upright, a point in plan, cuts and
+ * is cut nowhere (**unverified**).
+ */
+function polyline3dCrossings(
+  poly: Polyline3dEntity,
+  others: readonly Entity[],
+  own: boolean
+): number[] {
+  const lines = polyline3dSegments(poly).map(([a, b]) => createLine(a, b))
+  const level = lines.filter((line) => V.distance(line.start, line.end) > 0)
+  const out = lines.flatMap((line, j) =>
+    V.distance(line.start, line.end) === 0
+      ? []
+      : trimCrossParams(
+          line,
+          own ? [...others, ...level.filter((l) => l !== line)] : others
+        ).map((t) => j + t)
+  )
+  if (own) {
+    const count = lines.length
+    const first = poly.closed ? 0 : 1
+    for (let i = first; i < count; i++) {
+      const before = lines[(i - 1 + count) % count]
+      const after = lines[i]
+      const turn = V.cross(
+        V.sub(before.end, before.start),
+        V.sub(after.end, after.start)
+      )
+      if (Math.abs(turn) > PARAM_EPS) out.push(i)
+    }
+  }
+  return dedupeSorted(out)
+}
+
+/**
+ * Extends a free end of an open 3D polyline in plan along its end segment,
+ * the new end at the Z along that segment's slope (3dpoly/p37, p39): the end
+ * the pick lies nearer in its parameter, as a polyline's (p37's middle
+ * pick). A fitted one grows its frame's end segment and is fitted again
+ * (p73). An end segment standing upright grows nowhere (p67).
+ */
+function planExtendPolyline3d(
+  poly: Polyline3dEntity,
+  click: Vec2,
+  edges: readonly Entity[],
+  own: boolean
+): EdgeEditPlan | null {
+  const v = poly.vertices
+  const n = v.length
+  if (poly.closed || n < 2) return null
+  const curve = polyline3dCurve(poly)
+  const growStart =
+    polyline3dParamAt(curve, click) < polyline3dSegments(curve).length / 2
+  const end = growStart ? 0 : n - 1
+  const from = growStart ? v[1] : v[n - 2]
+  const seg = createLine(from, v[end])
+  if (V.distance(seg.start, seg.end) === 0) return null
+  // As an edge, its other segments bound it, but the one growing and its
+  // neighbour there (a polyline's rule, p236).
+  const frame = polyline3dFrame(poly)
+  const others = own
+    ? [
+        ...edges,
+        ...polyline3dSegments(frame)
+          .map(([a, b]) => createLine(a, b))
+          .filter((_, j) => (growStart ? j > 1 : j < n - 3)),
+      ]
+    : edges
+  const t = nearestExtendParam(seg, others, "after")
+  if (t === null) return null
+  const point = {
+    ...pointOnLine(seg, t),
+    z: from.z + (v[end].z - from.z) * t,
+  }
+  return {
+    kind: "extend",
+    targetId: poly.id,
+    layerId: poly.layerId,
+    result: {
+      kind: "polyline3d",
+      polyline: {
+        ...poly,
+        vertices: v.map((vertex, i) => (i === end ? point : vertex)),
+      },
+    },
+    added: {
+      kind: "polyline3d",
+      polyline: { ...frame, vertices: [v[end], point] },
+    },
+  }
 }
 
 /**
