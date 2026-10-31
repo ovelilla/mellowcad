@@ -13,6 +13,7 @@ import {
 import {
   type CadEngine,
   createLocalStorageDrawingStore,
+  type DrawingStore,
   type EngineLocale,
 } from "@mellowcad/engine"
 import { CadCanvas, useEditorState } from "@mellowcad/react"
@@ -127,6 +128,20 @@ export interface CadEditorProps {
   help?: HelpLinks
   /** The pieces the host replaces or turns off; the rest are the editor's. */
   components?: CadEditorComponents
+  /**
+   * Makes the store the drawing is restored from when the editor starts and
+   * autosaved to after every change; `null` from it keeps nothing. Called
+   * once, when the engine is built. Without it, this browser's
+   * `localStorage` (`createLocalStorageDrawingStore`), the slot
+   * mellowcad.com/draw uses.
+   */
+  store?: () => DrawingStore | null
+  /**
+   * Handed the engine once it is built, and `null` once it is disposed, for
+   * the host's own code to save, open or run commands with. Read once, like
+   * `store`.
+   */
+  onEngine?: (engine: CadEngine | null) => void
 }
 
 /**
@@ -160,6 +175,8 @@ function Workspace({
   sheet,
   help,
   components = {},
+  store = createLocalStorageDrawingStore,
+  onEngine,
   lang,
   dir,
 }: Omit<CadEditorProps, "editorLocale" | "dir"> & {
@@ -241,11 +258,11 @@ function Workspace({
             statusBarKey={layoutStorage.statusBar}
             sheet={sheet}
             canvas={
-              // The editor is the page: it keeps this device's drawing and
-              // takes every key, which the engine leaves to whoever asks. The
-              // drawing is geometry: it never mirrors, whatever the page.
+              // The editor is the page: it takes every key, which the engine
+              // leaves to whoever asks. The drawing is geometry: it never
+              // mirrors, whatever the page.
               <CadCanvas
-                store={createLocalStorageDrawingStore}
+                store={store}
                 scope="document"
                 locale={engineLocale}
                 paletteOpen={() => paletteLayoutAtLoad(paletteKey).open}
@@ -256,7 +273,10 @@ function Workspace({
                     window.open(helpUrl(help, command), "_blank", "noopener")
                   })
                 }
-                onEngine={setEngine}
+                onEngine={(next) => {
+                  setEngine(next)
+                  onEngine?.(next)
+                }}
                 dir="ltr"
                 className="absolute inset-0 h-full w-full touch-none outline-none"
                 aria-label={t("canvas")}

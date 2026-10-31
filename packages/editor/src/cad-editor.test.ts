@@ -1,9 +1,13 @@
 import { createElement, type ComponentType } from "react"
 import { renderToString } from "react-dom/server"
-import { describe, expect, it } from "vitest"
+import { describe, expect, it, vi } from "vitest"
 
-import type { CadEngine } from "@mellowcad/engine"
-import type { EditorState } from "@mellowcad/react"
+import {
+  type CadEngine,
+  createLocalStorageDrawingStore,
+  createMemoryDrawingStore,
+} from "@mellowcad/engine"
+import type { CadCanvasProps, EditorState } from "@mellowcad/react"
 import {
   CadEditor,
   type CadEditorComponents,
@@ -18,7 +22,26 @@ import type { TopBarProps } from "./top-bar"
  * The slots, in Node through the server renderer (no jsdom). It never runs
  * the effect that builds the engine, so `CadEditor` shows the first paint, the
  * zones alone; what fills them is `EditorZones`, handed a stand-in engine.
+ * What `CadEditor` hands the canvas is read off a stand-in `CadCanvas`, whose
+ * own lifecycle is `@mellowcad/react`'s test.
  */
+
+const canvases = vi.hoisted(() => [] as CadCanvasProps[])
+
+vi.mock("@mellowcad/react", async (importOriginal) => ({
+  ...(await importOriginal<typeof import("@mellowcad/react")>()),
+  CadCanvas: (props: CadCanvasProps) => {
+    canvases.push(props)
+    return null
+  },
+}))
+
+/** The props `CadEditor` hands its canvas on the first render. */
+function canvasOf(props: Parameters<typeof CadEditor>[0] = {}) {
+  canvases.length = 0
+  renderToString(createElement(CadEditor, props))
+  return canvases[0]
+}
 
 const ZONES = ["top", "tools", "canvas", "panel", "command", "status"]
 
@@ -117,6 +140,32 @@ describe("CadEditor's components", () => {
       createElement(CadEditor, { components: { ...NONE, TopBar: undefined } })
     )
     expect(zones(html)).toEqual(["top", "canvas"])
+  })
+})
+
+describe("CadEditor's engine", () => {
+  it("keeps the drawing in this browser's localStorage by default, taking every key", () => {
+    expect(canvasOf()).toMatchObject({
+      store: createLocalStorageDrawingStore,
+      scope: "document",
+    })
+  })
+
+  it("builds the engine with the host's store", () => {
+    const store = () => createMemoryDrawingStore()
+    expect(canvasOf({ store }).store).toBe(store)
+  })
+
+  it("hands the host the engine once it is built, and null once it is disposed", () => {
+    const onEngine = vi.fn()
+    const canvas = canvasOf({ onEngine })
+    canvas.onEngine?.(engine)
+    canvas.onEngine?.(null)
+    expect(onEngine.mock.calls).toEqual([[engine], [null]])
+  })
+
+  it("needs no onEngine of the host's", () => {
+    expect(() => canvasOf().onEngine?.(engine)).not.toThrow()
   })
 })
 
