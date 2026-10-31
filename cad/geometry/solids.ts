@@ -190,9 +190,14 @@ export interface PlanarFace {
  * The face as the kernel's planar region in its plane: read in the OCS of its
  * outward normal, its outline is counter-clockwise and its holes clockwise,
  * as a region's are. What EXPLODE leaves of it (solid/p09), and how its area
- * is measured.
+ * is measured — then `about` a vertex of the solid: a shoelace far from the
+ * origin loses a small face's area to rounding.
  */
-export function planarFace(brep: Brep, face: BrepFace): PlanarFace {
+export function planarFace(
+  brep: Brep,
+  face: BrepFace,
+  about: Vec3 = ORIGIN
+): PlanarFace {
   const axes = arbitraryAxis(face.surface.normal) ?? {
     x: { x: 1, y: 0, z: 0 },
     y: { x: 0, y: 1, z: 0 },
@@ -202,8 +207,8 @@ export function planarFace(brep: Brep, face: BrepFace): PlanarFace {
     loop.map((coedge): PlanarCurve => {
       const { start, end } = brep.edges[coedge.edge]
       const [from, to] = coedge.reversed ? [end, start] : [start, end]
-      const a = worldToAxes(axes, brep.vertices[from])
-      const b = worldToAxes(axes, brep.vertices[to])
+      const a = worldToAxes(axes, sub3(brep.vertices[from], about))
+      const b = worldToAxes(axes, sub3(brep.vertices[to], about))
       return {
         kind: "line",
         start: { x: a.x, y: a.y },
@@ -213,15 +218,18 @@ export function planarFace(brep: Brep, face: BrepFace): PlanarFace {
   )
   return {
     axes,
-    elevation: dot3(face.surface.origin, axes.z),
+    elevation: dot3(sub3(face.surface.origin, about), axes.z),
     face: { loops },
   }
 }
 
+const ORIGIN: Vec3 = { x: 0, y: 0, z: 0 }
+
 /** The area of its whole boundary: AREA's Object of a solid (solid/p01). */
 export function brepArea(brep: Brep): number {
+  const about = brep.vertices[0] ?? ORIGIN
   return brep.faces.reduce(
-    (sum, face) => sum + facesArea([planarFace(brep, face).face]),
+    (sum, face) => sum + facesArea([planarFace(brep, face, about).face]),
     0
   )
 }
@@ -232,9 +240,10 @@ export function brepArea(brep: Brep): number {
  * normal.
  */
 export function brepVolume(brep: Brep): number {
+  const about = brep.vertices[0] ?? ORIGIN
   let sum = 0
   for (const face of brep.faces) {
-    const flat = planarFace(brep, face)
+    const flat = planarFace(brep, face, about)
     sum += flat.elevation * facesArea([flat.face])
   }
   return sum / 3
