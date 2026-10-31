@@ -6,10 +6,7 @@ us to walk again, whereas a command costs the same before or after it.
 
 1. **Z in the model (2.5D)** — done: Z along the world's Z with the normal fixed at +Z, stored as
    DXF stores it (what each command does with it is in its entry and under "Where a point's Z comes
-   from"). 3D solids (ACIS: B-rep, booleans, shading) are off the roadmap: a separate kernel the
-   size
-   of everything built so far, which neither reuses nor cheapens any of this — a product decision,
-   not a debt.
+   from"). 3D solids are step 4, below.
 2. **Views and the tilted plane** — done: parallel views from any direction (-VPOINT, `-VIEW`'s
    presets, PLAN, 3DORBIT) that draw elevation and thickness, a normal per entity with its points
    in their OCS (DXF 210), and the tilted UCS the commands work in (X, Y, ZAxis, three points, View,
@@ -25,6 +22,10 @@ us to walk again, whereas a command costs the same before or after it.
    the ViewCube Settings dialog and its variables, SteeringWheels and
    ShowMotion, named views, the dynamic UCS (UCSDETECT), UCSFOLLOW, and the tracking label of
    OTRACK.
+
+4. **3D solids** — next once the 2D and 2.5D gaps below are closed: a B-rep kernel of our own (no
+   third-party one), drawn on the canvas as AutoCAD draws them (isolines, Hidden, shaded), from
+   REGION and its booleans to SWEEP and LOFT. The brief is `docs/next-solids.md`.
 
 Left out of the 2.5D model, each a gap of its own: LIST, the `.X` / `.XY` point filters, OSNAPZ as
 a variable, ARRAYRECT's Levels, CHPROP, and POINT's thickness (with POINT, below). 3DPOLY and SPLINE
