@@ -1,4 +1,4 @@
 {
   "title": "Editor",
-  "pages": ["api"]
+  "pages": ["customizing", "drawings", "languages", "nextjs", "api"]
 }

@@ -54,9 +54,10 @@ renders empty.
 Its engine options are read once, when the engine is built, as the engine's own are:
 
 - `store` makes the drawing's store (`createMemoryDrawingStore`, or a `DrawingStore` of the host's);
-  none, nothing is saved.
+  none, nothing is saved. See [Drawings and files](../../cad/docs/drawings.md#autosave).
 - `scope` is what the engine takes keys, the wheel and the right-click from: a ref to an element
-  that also holds the host's controls, or `"document"` for the whole page; none, its canvas.
+  that also holds the host's controls, or `"document"` for the whole page; none, its canvas. See
+  [Keys, the wheel and focus](../../cad/docs/host.md#keys-the-wheel-and-focus).
 - `locale` is the engine's language (`@mellowcad/engine/locales/<tag>`); none, English.
 - `paletteOpen` says whether a palette panel starts open, for a host that lays one out before the
   engine exists.
@@ -64,6 +65,8 @@ Its engine options are read once, when the engine is built, as the engine's own 
   browser's.
 
 The engine draws and takes the pointer and the keys; everything else is a call to it.
+[Building a host](../../cad/docs/host.md) goes through the state and the calls of each piece of
+chrome.
 
 ## State
 
@@ -76,7 +79,8 @@ The engine draws and takes the pointer and the keys; everything else is a call t
 
 ## The controls AutoCAD users type into
 
-The hooks are the DOM's side of the engine's keys, with no markup or styles of their own:
+The hooks are the DOM's side of the engine's keys, with no markup or styles of their own: the
+wiring that [Building a host](../../cad/docs/host.md#the-command-line) does by hand.
 
 - `useCommandLineInput(engine)` gives a command line's `<input>` its value and keys (Space as
   Enter, the arrows through the commands already run, Tab to complete a name, Escape back to the

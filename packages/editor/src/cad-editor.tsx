@@ -132,8 +132,8 @@ export interface CadEditorProps {
    * Makes the store the drawing is restored from when the editor starts and
    * autosaved to after every change; `null` from it keeps nothing. Called
    * once, when the engine is built. Without it, this browser's
-   * `localStorage` (`createLocalStorageDrawingStore`), the slot
-   * mellowcad.com/draw uses.
+   * `localStorage` (`createLocalStorageDrawingStore`), whose one key every
+   * page of the site that keeps the default shares.
    */
   store?: () => DrawingStore | null
   /**

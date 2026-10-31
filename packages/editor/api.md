@@ -4,6 +4,8 @@ Every export with its signature and its documentation, grouped by topic, then th
 
 ## .
 
+### The editor
+
 ```ts
 export { CadEditor }
 /**
@@ -61,8 +63,8 @@ export interface CadEditorProps {
      * Makes the store the drawing is restored from when the editor starts and
      * autosaved to after every change; `null` from it keeps nothing. Called
      * once, when the engine is built. Without it, this browser's
-     * `localStorage` (`createLocalStorageDrawingStore`), the slot
-     * mellowcad.com/draw uses.
+     * `localStorage` (`createLocalStorageDrawingStore`), whose one key every
+     * page of the site that keeps the default shares.
      */
     store?: () => DrawingStore | null;
     /**
@@ -71,39 +73,6 @@ export interface CadEditorProps {
      * `store`.
      */
     onEngine?: (engine: CadEngine | null) => void;
-}
-
-export { CommandLine }
-/**
- * AutoCAD's command line as it starts: one prompt line, with the temporary
- * prompt history of the running command above it (CLIPROMPTLINES, 3), and the
- * whole history expanded upwards over the drawing with F2 or the arrow at its
- * end. Like the dynamic input box this component is "dumb": the engine owns
- * the prompt text, the scrollback and the autocomplete, so typing on the
- * canvas and typing in this box feed exactly the same buffer.
- */
-export declare function CommandLine(pieceProps: PieceProps): ReactElement | null;
-
-export { DynamicInput }
-/**
- * Floating dynamic-input box, AutoCAD-style. This component is intentionally
- * "dumb": it renders whatever fields the engine's current input session exposes
- * and forwards every interaction back to the engine. All meaning (units,
- * parsing, what a value does) lives in the engine/tool system, so the same UI
- * works for distances today and radii, angles or coordinates later.
- */
-export declare function DynamicInput(pieceProps: PieceProps): ReactElement | null;
-
-export type { EditorLocale }
-/**
- * A language the editor is handed (`<CadEditor editorLocale={es}>`). Any
- * message may be left out, and that message is English's. Every message is
- * compiled (`icu-minify/compile`).
- */
-export interface EditorLocale {
-    /** BCP 47, what `Intl` receives (plurals, numbers), and the editor's `lang`. */
-    readonly tag: string;
-    readonly messages: DeepPartial<EditorMessages>;
 }
 
 export type { HelpLinks }
@@ -117,15 +86,6 @@ export interface HelpLinks {
     readonly command: string;
 }
 
-export { NavigationBar }
-/**
- * AutoCAD's navigation bar (NAVBARDISPLAY 1), linked to the ViewCube: a
- * vertical strip under it with Pan, the Zoom split button and Orbit. The
- * SteeringWheels and ShowMotion do not exist here. Its menus open towards the
- * middle of the drawing, the bar's inline start.
- */
-export declare function NavigationBar(pieceProps: PieceProps): ReactElement;
-
 export { paletteLayoutScript }
 /**
  * The `<head>` script for the layout kept under `key`:
@@ -137,6 +97,38 @@ export { paletteLayoutScript }
  * by the window's width, so the canvas keeps its final box.
  */
 export declare const paletteLayoutScript: (key: string) => string;
+```
+
+### Pieces
+
+```ts
+export { CommandLine }
+/**
+ * AutoCAD's command line as it starts: one prompt line, with the temporary
+ * prompt history of the running command above it (CLIPROMPTLINES, 3), and the
+ * whole history expanded upwards over the drawing with F2 or the arrow at its
+ * end. The engine owns the prompt, the history and the suggestions, so typing
+ * on the drawing and typing in this field feed the same buffer.
+ */
+export declare function CommandLine(pieceProps: PieceProps): ReactElement | null;
+
+export { DynamicInput }
+/**
+ * AutoCAD's dynamic input: the tooltip of fields at the cursor, with the
+ * prompt's options beside it. It renders the fields the running command asks
+ * for (`state.dynamicInput`) and hands every key back to the engine, which
+ * reads units, parses what is typed and decides what a value does.
+ */
+export declare function DynamicInput(pieceProps: PieceProps): ReactElement | null;
+
+export { NavigationBar }
+/**
+ * AutoCAD's navigation bar (NAVBARDISPLAY 1), linked to the ViewCube: a
+ * vertical strip under it with Pan, the Zoom split button and Orbit. The
+ * SteeringWheels and ShowMotion do not exist here. Its menus open towards the
+ * middle of the drawing, the bar's inline start.
+ */
+export declare function NavigationBar(pieceProps: PieceProps): ReactElement;
 
 export { PalettePanel }
 /**
@@ -222,6 +214,22 @@ export { ViewportControls }
  * `'_-view _swiso`.
  */
 export declare function ViewportControls(pieceProps: PieceProps): ReactElement;
+```
+
+### Languages
+
+```ts
+export type { EditorLocale }
+/**
+ * A language the editor is handed (`<CadEditor editorLocale={es}>`). Any
+ * message may be left out, and that message is English's. Every message is
+ * compiled (`icu-minify/compile`).
+ */
+export interface EditorLocale {
+    /** BCP 47, what `Intl` receives (plurals, numbers), and the editor's `lang`. */
+    readonly tag: string;
+    readonly messages: DeepPartial<EditorMessages>;
+}
 ```
 
 ## ./locales/en

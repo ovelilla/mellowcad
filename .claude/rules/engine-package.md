@@ -18,6 +18,7 @@ paths:
   - "scripts/editor/**"
   - "packages/editor/src/styles.css"
   - "packages/*/README.md"
+  - "packages/*/docs/**"
   - "examples/**"
   - ".changeset/**"
   - ".github/workflows/**"
@@ -92,8 +93,8 @@ license and the Autodesk trademark note.
   a tool the repo also has at the root's (the others, `vite` and `@vitejs/plugin-react`, move in
   deps-review). The root `tsc` checks them against the source, save their `vite.config.ts`; the
   site's Tailwind skips them (`globals.css`), or their classes would ship in `/draw`.
-- **A package's README and guides are what an integrator reads** (`cad/README.md`,
-  `cad/docs/*.md`, `packages/*/README.md`), on GitHub, on npm and as its docs pages with its
+- **A package's README and guides are what an integrator reads** (`packages/*/README.md`,
+  `cad/README.md` and the `docs/*.md` beside each), on GitHub, on npm and as its docs pages with its
   `api.md` (`docs.md`), where a relative link goes to another page or to GitHub, and one leading
   nowhere fails `docs:check`; `test/packages.test.ts` fails on an import or a PascalCase name in
   one that no `api.md` has (outside its doc comments),

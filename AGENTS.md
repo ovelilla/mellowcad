@@ -139,8 +139,8 @@ and what each option does must be the ones they already know.
   lacks, one file per area, plus the roadmap. **Read a command's entry before extending it** —
   the gaps are deliberate and already researched.
 - `docs/i18n-glossary.md` — the interface terms in each language and how each one is written.
-- `cad/README.md`, `cad/docs/`, `packages/*/README.md` and `examples/` — the packages' public contract; keep
-  them true when it changes.
+- The packages' READMEs, guides (`cad/docs/`, `packages/editor/docs/`) and `examples/` — their
+  public contract; keep them true when it changes.
 - `docs/plans/<command>-review.md` — a command review's plan (skill `command-review`).
 - `docs/next-*.md` — an agreed brief for the next piece of work; deleted once it ships.
 - `scripts/research/` and `research/` (gitignored) — AutoCAD's runners, its tracer plugin and

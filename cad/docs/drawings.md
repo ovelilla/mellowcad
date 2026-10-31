@@ -25,16 +25,16 @@ interface DrawingStore {
 
 The engine has two stores built in:
 
-| Store                              | Where it keeps the drawing                                                  |
-| ---------------------------------- | --------------------------------------------------------------------------- |
-| `createMemoryDrawingStore(text?)`  | In memory while the page lives, starting from `text` if given               |
-| `createLocalStorageDrawingStore()` | In this browser's `localStorage`, the same slot the MellowCAD editor uses    |
+| Store                              | Where it keeps the drawing                                    |
+| ---------------------------------- | ------------------------------------------------------------- |
+| `createMemoryDrawingStore(text?)`  | In memory while the page lives, starting from `text` if given |
+| `createLocalStorageDrawingStore()` | In this browser's `localStorage`, under one fixed key         |
 
-The second one shares, and overwrites, the drawing someone drew at mellowcad.com/draw on the same
-device: use it only for an editor that should continue that drawing. `readSavedDrawingSummary()`
-reads how many objects and layers that slot holds without loading it, for a "continue drawing"
-link. `null` from `createLocalStorageDrawingStore()` means there is no storage (a server, or a
-browser that blocks it).
+The second one keeps a single drawing per site: every page of yours that uses it shares, and
+overwrites, the same one, as the MellowCAD editor does by default. Use it for one editor per site.
+`readSavedDrawingSummary()` reads how many objects and layers that slot holds without loading it,
+for a "continue drawing" link. `null` from `createLocalStorageDrawingStore()` means there is no
+storage (a server, or a browser that blocks it).
 
 ### Your own store
 
@@ -50,7 +50,7 @@ const saved = await fetch(url).then((response) => (response.ok ? response.text()
 const store: DrawingStore = {
   read: () => saved,
   write: (text) => {
-    void fetch(url, { method: "PUT", body: text, keepalive: true })
+    void fetch(url, { method: "PUT", body: text, keepalive: text.length < 60_000 })
   },
 }
 
@@ -58,7 +58,8 @@ const engine = new CadEngine(canvas, { store })
 ```
 
 The engine already waits for changes to settle, so `write` is not called on every mouse move.
-`keepalive` lets the last write finish while the page closes.
+`keepalive` lets the last write finish while the page closes; browsers refuse it for a body over
+64 KB, so a bigger drawing is sent without it.
 
 ## The drawing file
 

@@ -7,11 +7,10 @@ import { useEditorText } from "./editor-text"
 import type { PieceProps } from "./piece"
 
 /**
- * Floating dynamic-input box, AutoCAD-style. This component is intentionally
- * "dumb": it renders whatever fields the engine's current input session exposes
- * and forwards every interaction back to the engine. All meaning (units,
- * parsing, what a value does) lives in the engine/tool system, so the same UI
- * works for distances today and radii, angles or coordinates later.
+ * AutoCAD's dynamic input: the tooltip of fields at the cursor, with the
+ * prompt's options beside it. It renders the fields the running command asks
+ * for (`state.dynamicInput`) and hands every key back to the engine, which
+ * reads units, parses what is typed and decides what a value does.
  */
 export function DynamicInput({
   engine,

@@ -112,8 +112,10 @@ export function docsMdxComponents(
     hr: () => <hr className="my-10 border-border" />,
     code: (props) => (
       // WHY ltr: code is a left-to-right run inside Arabic prose, isolated
-      // as the catalogs isolate one (`i18n.md`).
-      <code dir="ltr" className="rounded-sm bg-bg-raised px-1 py-0.5 font-mono text-[0.875em] wrap-anywhere text-fg" {...props} />
+      // as the catalogs isolate one (`i18n.md`). In a cell it breaks only
+      // where it must: `anywhere` lets the table shrink its column to one
+      // letter and split every name, and the table scrolls on its own.
+      <code dir="ltr" className="rounded-sm bg-bg-raised px-1 py-0.5 font-mono text-[0.875em] wrap-anywhere text-fg [td_&]:wrap-break-word" {...props} />
     ),
     pre: ({
       title,

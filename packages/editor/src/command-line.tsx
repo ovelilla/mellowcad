@@ -20,9 +20,8 @@ const ABOVE =
  * AutoCAD's command line as it starts: one prompt line, with the temporary
  * prompt history of the running command above it (CLIPROMPTLINES, 3), and the
  * whole history expanded upwards over the drawing with F2 or the arrow at its
- * end. Like the dynamic input box this component is "dumb": the engine owns
- * the prompt text, the scrollback and the autocomplete, so typing on the
- * canvas and typing in this box feed exactly the same buffer.
+ * end. The engine owns the prompt, the history and the suggestions, so typing
+ * on the drawing and typing in this field feed the same buffer.
  */
 export function CommandLine({
   engine,

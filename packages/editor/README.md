@@ -1,26 +1,24 @@
 # MellowCAD editor
 
-The whole drafting editor as one React component, `CadEditor`: the canvas with the chrome an
-AutoCAD user expects around it — the top bar, the tool palette, the palettes, the command line,
-the status bar, the ViewCube — its menus and dialogs, and its words in three languages. Built on
-[`@mellowcad/engine`](../../cad/README.md) and [`@mellowcad/react`](../react/README.md), with
-Base UI, compiled with the React Compiler, and shipped with its stylesheet.
+The whole MellowCAD drafting editor as one React component, `CadEditor`: the drawing with the
+chrome an AutoCAD user expects around it — the top bar, the tool palette, the palettes, the command
+line, the status bar, the ViewCube — its menus and dialogs, and its words in English, Spanish and
+Arabic. It is the editor of [mellowcad.com/draw](https://mellowcad.com/draw), built on
+[`@mellowcad/engine`](../../cad/README.md) and [`@mellowcad/react`](../react/README.md), and it
+ships its own stylesheet.
 
-It is the package `@mellowcad/editor`, ESM only, not published yet. The engine,
-`@mellowcad/react` and React 19 are peers: a page has one of each.
+It is not on npm yet. Once it is:
 
-## Entry points
+```sh
+npm install @mellowcad/editor @mellowcad/react @mellowcad/engine
+```
 
-| Import                            | What                                                      |
-| --------------------------------- | --------------------------------------------------------- |
-| `@mellowcad/editor`               | `CadEditor`, its pieces and their types                   |
-| `@mellowcad/editor/locales/<tag>` | the editor's words in one language each: `en`, `es`, `ar` |
-| `@mellowcad/editor/styles.css`    | its stylesheet                                            |
+The engine, `@mellowcad/react` and React 19 are peers: a page has one of each. The package is ESM
+only and ships its TypeScript declarations.
 
-What they export, signature by signature, and what the stylesheet asks of a page, is
-[`api.md`](api.md).
+## Quick start
 
-## On a page
+The whole of [`examples/editor-vite`](../../examples/editor-vite), a Vite app:
 
 ```tsx examples/editor-vite/src/main.tsx
 import { StrictMode } from "react"
@@ -51,117 +49,71 @@ body {
 }
 ```
 
-That is all of [`examples/editor-vite`](../../examples/editor-vite), a Vite app. What the page
-gives the editor, and what the editor takes:
+Type `L` and Enter, click twice, press Escape: that is AutoCAD's LINE. Reload the page and the
+drawing is still there.
 
-- **The stylesheet styles only the editor**: its root, `[data-mellowcad-editor]`, and what is
-  inside it, never `<html>` or `<body>`. It is Tailwind 4's output, in Tailwind's cascade layers
-  (`properties`, `theme`, `base`, `components`, `utilities`).
-- **The fonts are the page's**: `--font-sans` and `--font-mono`, set on the root or above it. The
-  editor declares neither.
-- **It fills the window** (`100svh`), so the page's body has no margin and nothing else scrolls
-  around it.
-- **It is the page's application**: it takes every key on the page wherever focus sits, as AutoCAD
-  takes the keyboard, and keeps the drawing on this device (`localStorage`), restoring it on the
-  next visit.
+## What it asks of the page
 
-## Languages
+- **Two fonts.** Set `--font-sans` and `--font-mono` on the page, or on any element around the
+  editor. The editor declares neither.
+- **The whole window.** The editor is `100svh` high and as wide as its parent. Give the body no
+  margin and put nothing above or below it: your own controls go in the editor's
+  [slots](docs/customizing.md).
+- **The whole keyboard.** It takes every key on the page wherever focus is, as AutoCAD does, so a
+  command can be typed at any moment. A text field keeps what is typed in it, save the function
+  keys and AutoCAD's Ctrl shortcuts.
+- **Nothing else.** The stylesheet styles only the editor's root, `[data-mellowcad-editor]`, and
+  what is inside it, never `<html>` or `<body>`. The editor sets `lang` and `dir` on its own root
+  and leaves the page's alone.
 
-```tsx
-import { CadEditor } from "@mellowcad/editor"
-import { ar } from "@mellowcad/editor/locales/ar"
-import { ar as engineAr } from "@mellowcad/engine/locales/ar"
+By default it keeps the drawing in this browser's `localStorage` and restores it on the next
+visit. To keep it somewhere else, see [Saving drawings](docs/drawings.md).
 
-export const Arabic = () => (
-  <CadEditor editorLocale={ar} engineLocale={engineAr} dir="rtl" />
-)
-```
+## Props
 
-The editor's words and the engine's are two catalogs, one per package, each English when left
-out. `dir` mirrors the chrome; the drawing never mirrors. The editor sets `lang` and `dir` on its
-own root and leaves the page's `<html>` alone. A language module is not a client module: a
-server page loads the catalogs and passes them as props.
+Every prop is optional.
 
-## What else a page may give it
+- **Languages**: `engineLocale` for the commands, prompts and drawing, `editorLocale` for the
+  editor's own words, and `dir="rtl"` to mirror the chrome. See [Languages](docs/languages.md).
+- **The drawing**: `store`, where it is kept, and `onEngine`, which hands you the engine to save,
+  open or run commands from your own code. See [Saving drawings](docs/drawings.md).
+- **The chrome**: `components`, your own top bar, status bar or other piece, or none; `mark`, your
+  product's glyph on the application menu; `languages`, the page in each language you offer, in
+  that menu; `layoutStorage`, the `localStorage` keys under which the palette panel and the status
+  bar are remembered; `help`, where F1 opens help; and `sheet`, an id and a `view-transition-name`
+  for the drawing's cell. See [Customizing](docs/customizing.md).
 
-- `mark`, the product's glyph on the application menu.
-- `languages`, the page in each language the host offers (`locale`, `href`, `name`, `current`),
-  listed in the application menu.
-- `layoutStorage`, the `localStorage` keys under which this device keeps the palette panel's
-  width and fold (`palette`) and the status bar's Customization (`statusBar`). Without a key,
-  nothing is kept. With `palette`, put `paletteLayoutScript(key)` in a `<script>` in the page's
-  `<head>`: it lays the panel out as the page is parsed, so the drawing does not jump once the
-  scripts run.
-- `sheet`, the id and `view-transition-name` of the canvas's cell, for a page that grows into it.
-- `help`, where F1 opens help in a new tab, as AutoCAD's does: `command` while one runs, its
-  `{command}` replaced by the command's global name in lower case, and `index` with none.
+`engineLocale`, `store`, `onEngine` and `help` go to the engine, so they are read once, when the
+editor starts. To change one, mount a new editor: give it a new `key`.
 
-## Replacing a piece
+## Guides
 
-Each of the nine pieces is a slot of `components`, by its name: `TopBar`, `ToolRail`,
-`PalettePanel`, `CommandLine`, `StatusBar`, `ViewportControls`, `ViewCube`, `NavigationBar`,
-`DynamicInput`. A slot takes a component of the host's, which renders in the piece's place and
-is handed what the piece is (`PieceProps`: the engine and its state; `TopBarProps` and
-`StatusBarProps` add what the page gave for those two), or `null`, which takes the piece out with
-its zone, from the first paint, and the canvas takes the room.
+| Guide                               | What it covers                                                           |
+| ----------------------------------- | ------------------------------------------------------------------------ |
+| [Customizing](docs/customizing.md)  | Replacing or removing the top bar, the status bar and the other pieces   |
+| [Saving drawings](docs/drawings.md) | Your own store, and saving and opening drawings from your code           |
+| [Languages](docs/languages.md)      | Spanish and Arabic, right to left, the language menu, your own words     |
+| [Next.js](docs/nextjs.md)           | Server pages, catalogs loaded on the server, fonts and the layout script |
+| [API reference](api.md)             | Every export, with its signature and its documentation                   |
 
-```tsx examples/editor-next/app/page.tsx
-import { CadEditor } from "@mellowcad/editor"
+What each command does, with its prompts and options, is in the user's
+[command reference](https://mellowcad.com/docs/commands).
 
-import { HostTopBar } from "./host-top-bar"
+## Entry points
 
-// A server component may hand the editor a client component (`HostTopBar`
-// comes from a "use client" module) or `null`, never a function of its own:
-// the top bar is the host's, and the palette panel is gone with its zone.
-export default function Page() {
-  return <CadEditor components={{ TopBar: HostTopBar, PalettePanel: null }} />
-}
-```
-
-[`examples/editor-next`](../../examples/editor-next) is that Next app, with its top bar and its
-fonts from `next/font`.
-
-- **A replacement renders inside the editor's root**: the editor's colour tokens, its fonts and
-  its popups' container reach it. Its zone, the zone's size and border, stay the editor's.
-- **Its classes are the host's to compile**: the stylesheet holds only the editor's own. Tailwind's
-  utilities are global classes, so the host's `.flex` or `.px-2` and the editor's are the same
-  rule under Tailwind 4's default theme; a host that changes the theme (its spacing, say) changes
-  the editor's utilities too. Keyframes (`spin`, `enter`, `exit`, `prompt-fade`) and Tailwind's
-  `--tw-*` properties are the document's, shared the same way.
-- **The menus and dialogs the engine opens are not slots** — the shortcut menu, the object snap
-  menu, selection cycling, the UNITS dialog: the engine waits on their answer.
-
-## The pieces
-
-The nine pieces are exported too, to wrap one in its own slot or to compose one inside a
-replacement:
-
-```tsx
-"use client"
-
-import { TopBar, type TopBarProps } from "@mellowcad/editor"
-
-export function TopBarWithHelp(props: TopBarProps) {
-  return (
-    <>
-      <TopBar {...props} />
-      <a href="/help">Help</a>
-    </>
-  )
-}
-```
-
-A piece renders only inside `CadEditor`. Outside it there is no root: no tokens, the English
-words whatever the page's language, popups in `<body>` with no styles; and the menus and dialogs
-that `CadEditor` mounts are missing, so a command that opens one waits for an answer that never
-comes. A page with fewer pieces is `CadEditor` with the others turned off.
+| Import                            | What                                                      |
+| --------------------------------- | --------------------------------------------------------- |
+| `@mellowcad/editor`               | `CadEditor`, its pieces and their types                   |
+| `@mellowcad/editor/locales/<tag>` | The editor's words in one language each: `en`, `es`, `ar` |
+| `@mellowcad/editor/styles.css`    | The stylesheet                                            |
 
 ## Versioning
 
-The catalog's keys are public API, as the engine's are (`EditorLocale` is typed from `en`):
-adding one is a minor version, renaming or removing one, or changing a message's arguments, a
-major. So are what the stylesheet asks of a page: its root attribute, its layers and the
-variables it reads.
+The editor follows semantic versioning, as the engine does. What it promises is what the
+[API reference](api.md) lists: every export and every type it reaches, the shape of its catalog
+(`EditorLocale`), and what the stylesheet asks of a page — its root attribute, its cascade layers
+and the two font variables. While the version is 0.x, a breaking change bumps the minor version.
+Each release is in the [changelog](CHANGELOG.md).
 
 ## License
 
