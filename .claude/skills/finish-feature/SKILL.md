@@ -22,7 +22,9 @@ description: Close a feature, command or fix in mellowcad — the gate, the cove
    - a convention or invariant; if a test or lint rule can hold it, write that instead.
 
    A rule the work made false is edited or deleted in the same change, never patched with an
-   exception on top. `cad/README.md` too, when the engine's public contract changed.
+   exception on top. `cad/README.md` and the guides in `cad/docs/` too, when the engine's public
+   contract changed.
+
 4. **The brief**: a `docs/next-*.md` whose work has shipped is deleted.
 5. **Commit** with only your files (`git add <paths>`, `git status --short` before and after: other
    sessions may be working in the tree, and one path that matches nothing aborts the whole add), message `feat(engine): …` / `fix(engine): …` / `docs: …` in

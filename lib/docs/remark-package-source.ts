@@ -7,7 +7,7 @@ import type { VFile } from "vfile"
 
 import { REPOSITORY_URL } from "../site.ts"
 
-import { packagePagePath, pagePackage } from "./packages.ts"
+import { packagePageFile, packagePagePath, pagePackage } from "./packages.ts"
 
 /** A link a README writes for GitHub and npm, both of which resolve it against its file. */
 function isRelative(url: string): boolean {
@@ -65,10 +65,11 @@ function indexExports(code: Code) {
 }
 
 /**
- * A page of "Build with MellowCAD" is its package's README or `api.md`,
- * included whole (`<include>`): what the file says for GitHub and npm, the
- * site says for itself. Its title is the page's, so the file's `#` heading
- * goes; its relative links go where they lead on the site; and a block that
+ * A page of "Build with MellowCAD" is its package's README, `api.md` or a
+ * guide, included whole (`<include>`): what the file says for GitHub and npm,
+ * the site says for itself. Its title is the page's, so the file's `#` heading
+ * goes; its relative links go where they lead on the site, read from the
+ * included file's folder; and a block that
  * names an example's file (`tsx examples/editor-vite/src/main.tsx`) is read
  * from that file, which `test/packages.test.ts` already holds it to.
  * Every change is recorded for the page's Markdown too.
@@ -76,7 +77,9 @@ function indexExports(code: Code) {
 export function remarkPackageSource() {
   return (tree: Root, file: VFile) => {
     const pkg = pagePackage(file.path.split(path.sep).join("/"))
-    if (!pkg) return
+    const included = pkg && packagePageFile(pkg, path.basename(file.path, ".mdx"))
+    if (!pkg || !included) return
+    const base = path.posix.dirname(included)
     const root = file.cwd
     const apiReport = file.path.endsWith(`${path.sep}api.mdx`)
 
@@ -99,7 +102,7 @@ export function remarkPackageSource() {
       }
       if (node.type === "link") {
         const link = node as Link
-        const url = resolvePackageLink(link.url, pkg.dir, root)
+        const url = resolvePackageLink(link.url, base, root)
         if (url === link.url) return
         link.url = url
         replaceSource(file, link, (s) => `[${s.inner(link)}](${url})`)

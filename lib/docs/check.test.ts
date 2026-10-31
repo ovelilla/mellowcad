@@ -109,6 +109,21 @@ describe("docs:check", () => {
     ])
   })
 
+  it("holds a package's guides to their pages", () => {
+    const tree = packages()
+    tree["cad/docs/concepts.md"] = "# C\n\n[the API](../api.md), [gone](../nope.md)\n"
+    tree["content/docs/engine/concepts.mdx"] = page("<include>../../../cad/docs/concepts.md</include>", "concept")
+    tree["cad/docs/hosts.md"] = "# H\n"
+    tree["cad/docs/Bad_Name.md"] = "# B\n"
+    tree["content/docs/engine/stray.mdx"] = page("Written here.")
+    expect(checkDocs(repo(tree))).toEqual([
+      "content/docs/engine/stray.mdx: engine/ holds only the package's pages (index, api) and its guides (cad/docs/*.md)",
+      "cad/docs/Bad_Name.md: a guide's name is lower case, words joined by -, and neither index nor api",
+      'cad/docs/concepts.md: cad/docs: the link "../nope.md" names no file of the repository',
+      "content/docs/engine/hosts.mdx: missing: the page of cad/docs/hosts.md",
+    ])
+  })
+
   it("holds each translation to its English page", () => {
     const tree = packages()
     const [name] = USE_PAGES
@@ -185,5 +200,8 @@ describe("the docs' paths and links", () => {
     expect(resolvePackageLink("LICENSE", "cad", ROOT)).toBe(`${github}/blob/main/cad/LICENSE`)
     expect(resolvePackageLink("https://npmjs.com", "cad", ROOT)).toBe("https://npmjs.com")
     expect(resolvePackageLink("#languages", "cad", ROOT)).toBe("#languages")
+    expect(resolvePackageLink("../README.md#install", "cad/docs", ROOT)).toBe(
+      "/docs/engine#install"
+    )
   })
 })

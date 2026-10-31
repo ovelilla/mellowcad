@@ -11,8 +11,8 @@ import { docsSource } from "./docs-source"
 import {
   DOCS_PACKAGES,
   DOCS_PATH,
-  PACKAGE_PAGES,
   type DocsPackage,
+  packagePageFile,
 } from "./packages"
 
 export type DocsPage = NonNullable<ReturnType<typeof docsSource.getPage>>
@@ -65,11 +65,10 @@ export function isPublished(pkg: DocsPackage): boolean {
 export function pageSource(
   page: DocsPage
 ): { pkg: DocsPackage; file: string; url: string } | undefined {
-  const [slug, sub = ""] = page.slugs
+  const [slug, sub = "index"] = page.slugs
   const pkg = DOCS_PACKAGES.find((candidate) => candidate.slug === slug)
-  const entry = PACKAGE_PAGES.find(({ page }) => page === sub)
-  if (!pkg || !entry) return undefined
-  const file = `${pkg.dir}/${entry.file}`
+  const file = pkg && packagePageFile(pkg, sub)
+  if (!pkg || !file) return undefined
   return { pkg, file, url: `${REPOSITORY_URL}/blob/main/${file}` }
 }
 

@@ -77,15 +77,15 @@ export interface CadEngineOptions {
   readonly onHelp?: (command: string | null) => void
 }
 
+// WHY a thin adapter: it is the composition root, the one class that wires
+// the DOM to the DOM-free runtime, a Canvas 2D presenter and the ports.
 /**
- * The browser adapter and composition root: it owns the `<canvas>`, its DOM
- * event listeners, the `ResizeObserver` and the `requestAnimationFrame` loop,
- * and wires them to a DOM-free {@link CadRuntime} plus a Canvas 2D scene
- * presenter and the store {@link CadEngineOptions} name.
- *
- * It exposes the same façade the React layer has always used: construct it
- * with a canvas, subscribe to state, call imperative methods. React never
- * touches drawing logic — and the runtime never touches the DOM.
+ * The engine on a page. It owns its `<canvas>`: sizes the backing store to
+ * the canvas's CSS box and the device's pixel ratio, draws a frame whenever
+ * something changed, and takes the pointer, the wheel and the keys (from its
+ * `scope`). Everything else is the host's: it shows {@link getState} in its
+ * own chrome and calls the methods below. `CadDriver` is the same engine with
+ * no browser.
  */
 export class CadEngine {
   private readonly runtime: CadRuntime
@@ -141,10 +141,19 @@ export class CadEngine {
     this.syncSize()
   }
 
+  /**
+   * Calls `listener` after every change to the state, once per change, with
+   * nothing: read the new state with {@link getState}. Returns the unsubscribe.
+   */
   subscribe(listener: Listener): () => void {
     return this.runtime.subscribe(listener)
   }
 
+  /**
+   * The engine's state, an immutable snapshot: the same object until something
+   * changes, and a changed one keeps every part that did not, so a host can
+   * compare by identity (`useSyncExternalStore` takes it as it is).
+   */
   getState(): EngineState {
     return this.runtime.getState()
   }
@@ -154,22 +163,42 @@ export class CadEngine {
     this.runtime.setLocale(locale)
   }
 
+  /**
+   * Starts a tool as its button would, by its id in `state.tools` (`"line"`):
+   * the running command ends, the tool's command starts and the command line
+   * echoes it. `"select"` goes back to the Command prompt.
+   */
   setActiveTool(id: string): void {
     this.runtime.setActiveTool(id)
   }
 
+  /**
+   * The Delete key: ERASE on what is selected at the Command prompt, one undo
+   * step. Nothing happens while a command runs.
+   */
   deleteSelection(): void {
     this.runtime.deleteSelection()
   }
 
+  /**
+   * NEW: an empty drawing in place of this one, the running command ended. It
+   * is one undo step, so U brings the old drawing back.
+   */
   newDrawing(): void {
     this.runtime.newDrawing()
   }
 
+  /**
+   * U: takes back the last step, a whole command or gesture, and writes what
+   * it took back on the command line.
+   */
   undo(): void {
     this.runtime.undo()
   }
 
+  /**
+   * REDO: does again what the last undo took back.
+   */
   redo(): void {
     this.runtime.redo()
   }
@@ -186,6 +215,10 @@ export class CadEngine {
     this.runtime.resetView()
   }
 
+  /**
+   * ZOOM Extents: frames every object, `padding` screen pixels in from the
+   * edges; the default view on an empty drawing.
+   */
   zoomToFit(padding?: number): void {
     this.runtime.zoomToFit(padding)
   }
@@ -202,6 +235,10 @@ export class CadEngine {
     this.runtime.toggleSnap()
   }
 
+  /**
+   * Turns one running object snap on or off (OSNAP's checkboxes); {@link toggleSnap}
+   * switches them all, as F3 does.
+   */
   setSnapEnabled(type: SnapType, enabled: boolean): void {
     this.runtime.setSnapEnabled(type, enabled)
   }
@@ -286,6 +323,9 @@ export class CadEngine {
     this.runtime.toggleSnapMode()
   }
 
+  /**
+   * Whether snap mode steps on the rectangular lattice or by polar distance.
+   */
   setSnapModeType(type: SnapModeType): void {
     this.runtime.setSnapModeType(type)
   }
@@ -298,14 +338,26 @@ export class CadEngine {
     this.runtime.setSnapPolarDistance(distance)
   }
 
+  /**
+   * Turns Ortho or Polar tracking on or off; the two exclude each other.
+   */
   setConstraintEnabled(type: ConstraintType, enabled: boolean): void {
     this.runtime.setConstraintEnabled(type, enabled)
   }
 
+  /**
+   * A new layer, current unless `makeCurrent` is false, as -LAYER's Make
+   * does: one undo step. Unnamed, it is the next `Layer<n>`. Returns its id.
+   */
   createLayer(name?: string, color?: string, makeCurrent?: boolean): string {
     return this.runtime.createLayer(name, color, makeCurrent)
   }
 
+  /**
+   * The Layer Properties Manager's New Layer: the next `Layer<n>`, with the
+   * colour, linetype and lineweight of `like` or the defaults, the current
+   * layer kept. Returns its id.
+   */
   newLayer(like?: string): string {
     return this.runtime.newLayer(like)
   }
@@ -322,10 +374,19 @@ export class CadEngine {
     return this.runtime.updateLayer(id, patch)
   }
 
+  /**
+   * Makes a layer current, as the Layers drop-down does (CLAYER), or as the
+   * Layer Properties Manager does with `"manager"`, which names the undo step
+   * after it.
+   */
   setCurrentLayer(id: string, from?: "control" | "manager"): void {
     this.runtime.setCurrentLayer(id, from)
   }
 
+  /**
+   * Deletes a layer, one undo step, unless it is layer `0`, the current layer
+   * or holds an object (in a block definition too). Returns whether it went.
+   */
   removeLayer(id: string): boolean {
     return this.runtime.removeLayer(id)
   }
@@ -343,6 +404,10 @@ export class CadEngine {
     this.runtime.applyLayerControl(id)
   }
 
+  /**
+   * Gives the selected objects a colour, a hex value or `"ByLayer"`, in one
+   * undo step.
+   */
   setSelectionColor(color: string, scope?: SelectionScope): void {
     this.runtime.setSelectionColor(color, scope)
   }
@@ -352,6 +417,10 @@ export class CadEngine {
     return this.runtime.startFrom()
   }
 
+  /**
+   * Gives the selected objects a linetype, an id of `LINETYPES` or
+   * `"ByLayer"`, in one undo step.
+   */
   setSelectionLinetype(linetype: string, scope?: SelectionScope): void {
     this.runtime.setSelectionLinetype(linetype, scope)
   }
@@ -402,14 +471,26 @@ export class CadEngine {
     return this.runtime.setSelectionProperty(property, text)
   }
 
+  /**
+   * The text of a field of the dynamic input (`state.dynamicInput.fields`),
+   * the active one unless `fieldId` names another, as the user types it.
+   */
   setDynamicInputText(text: string, fieldId?: string): void {
     this.runtime.setDynamicInputText(text, fieldId)
   }
 
+  /**
+   * Moves the dynamic input to another of its fields, as Tab does.
+   */
   setActiveDynamicField(fieldId: string): void {
     this.runtime.setActiveDynamicField(fieldId)
   }
 
+  /**
+   * Answers the prompt's `[Close/Undo]` with a keyword typed as a user types
+   * it: its letters or word in the command language, or `_` and the global word.
+   * Returns whether the prompt offered it.
+   */
   invokeToolOption(input: string): boolean {
     return this.runtime.invokeToolOption(input)
   }
@@ -427,10 +508,19 @@ export class CadEngine {
     return this.runtime.dynamicInputKey(fieldId, key, modifiers)
   }
 
+  /**
+   * Replaces what is typed at the prompt; what is typed on the drawing goes
+   * there too. {@link commandLineKey} sends the keys that act on it.
+   */
   setCommandLineText(text: string): void {
     this.runtime.setCommandLineText(text)
   }
 
+  /**
+   * Runs a command as typed at the prompt and confirmed: its name or alias in
+   * the command language, or `_` and its global name in any (`_LINE`). Returns
+   * false, writing the error on the command line, when no command has the name.
+   */
   runCommand(name: string): boolean {
     return this.runtime.runCommand(name)
   }
@@ -552,10 +642,17 @@ export class CadEngine {
     )
   }
 
+  /**
+   * The drawing's unit, which lengths are written in (`10.00 mm`): one
+   * drawing unit is one of it, so nothing is rescaled.
+   */
   setDocumentUnit(unit: LengthUnit): void {
     this.runtime.setDocumentUnit(unit)
   }
 
+  /**
+   * How many decimal places lengths are written with.
+   */
   setDocumentPrecision(precision: number): void {
     this.runtime.setDocumentPrecision(precision)
   }
@@ -580,6 +677,9 @@ export class CadEngine {
     this.runtime.updateDimStyle(id, patch)
   }
 
+  /**
+   * Makes a dimension style the one new dimensions take.
+   */
   setCurrentDimStyle(id: string): void {
     this.runtime.setCurrentDimStyle(id)
   }
@@ -600,6 +700,9 @@ export class CadEngine {
     this.runtime.updateTextStyle(id, patch)
   }
 
+  /**
+   * Makes a text style the one new text takes.
+   */
   setCurrentTextStyle(id: string): void {
     this.runtime.setCurrentTextStyle(id)
   }
@@ -666,10 +769,18 @@ export class CadEngine {
     this.runtime.insertBlock(id)
   }
 
+  /**
+   * Deletes the block definitions named, or every one, that nothing in the
+   * drawing uses: PURGE's Blocks, one undo step. Returns how many went.
+   */
   purgeBlocks(ids?: readonly string[]): number {
     return this.runtime.purgeBlocks(ids)
   }
 
+  /**
+   * A block's thumbnail, framed in `width`×`height` pixels, as a scene for a
+   * presenter. Null for an unknown or empty block.
+   */
   buildBlockPreview(id: string, width: number, height: number): Scene | null {
     return this.runtime.buildBlockPreview(id, width, height)
   }
@@ -678,34 +789,67 @@ export class CadEngine {
     this.runtime.toggleLineweightDisplay()
   }
 
+  /**
+   * The drawing as the text of a drawing file: versioned JSON, in world
+   * coordinates, what SAVE writes and {@link loadDrawing} reads.
+   */
   serializeDrawing(): string {
     return this.runtime.serializeDrawing()
   }
 
+  /**
+   * The name SAVE gives the file, `drawing-<date>.ecad.json` with `drawing`
+   * in the command language (`dibujo-` in Spanish).
+   */
   suggestedFileName(): string {
     return this.runtime.suggestedFileName()
   }
 
+  /**
+   * Replaces the drawing with a drawing file's text, framed in the view, with
+   * an empty undo history; the store is written at once. Throws an `Error`
+   * whose message is for the user when the text is no drawing or is from a
+   * newer version.
+   */
   loadDrawing(text: string): void {
     this.runtime.loadDrawing(text)
   }
 
+  /**
+   * SAVE: hands the drawing file to the file transport, a download in the
+   * browser.
+   */
   saveDrawingToFile(): void {
     this.runtime.saveDrawingToFile()
   }
 
+  /**
+   * OPEN: asks the file transport for a file, a file picker in the browser,
+   * and loads it. Never rejects: a cancelled pick does nothing and a bad file is
+   * reported on the command line.
+   */
   openDrawingFromFile(): Promise<void> {
     return this.runtime.openDrawingFromFile()
   }
 
+  /**
+   * PASTECLIP: reads the clipboard and starts placing what was copied there.
+   */
   pasteFromClipboard(): Promise<void> {
     return this.runtime.pasteFromClipboard()
   }
 
+  /**
+   * Ctrl+A: selects every object that can be, the running command ended.
+   */
   selectAll(): void {
     this.runtime.selectAll()
   }
 
+  /**
+   * Stops listening to the page and drawing, and writes a change still
+   * waiting for the store. Call it when the canvas goes away.
+   */
   dispose(): void {
     this.disposed = true
     this.resizeObserver.disconnect()

@@ -20,35 +20,24 @@
  * lays a host's own words over one. Nothing else under `cad/` is public, and
  * `cad/entryPoints.test.ts` holds the app to that.
  * How a language is shaped, and what a host may leave out, is in
- * `cad/README.md`.
+ * `cad/docs/languages.md`.
+ *
+ * Each `// @group` heads the exports below it in `cad/api.md`, the reference
+ * the docs serve: a name joins the group a host would look for it in.
  */
 
+// @group Engine
 export { CadEngine } from "./adapters/CadEngine"
 export type { CadEngineOptions } from "./adapters/CadEngine"
-export { CanvasScenePresenter } from "./adapters/CanvasScenePresenter"
-export {
-  SvgScenePresenter,
-  primitiveLength,
-  themeCustomProperties,
-  themePalette,
-} from "./adapters/SvgScenePresenter"
-export type {
-  SvgDecorator,
-  SvgDocumentOptions,
-  SvgScenePresenterOptions,
-} from "./adapters/SvgScenePresenter"
-export { matchesWildcard } from "./shared/wildcard"
-export {
-  createLocalStorageDrawingStore,
-  readSavedDrawingSummary,
-} from "./adapters/localStorageDrawingStore"
-export { createMemoryDrawingStore } from "./adapters/memoryDrawingStore"
-export type {
-  DrawingStore,
-  FileTransport,
-  Clipboard,
-} from "./application/ports"
 
+// @group Headless
+export { CadDriver } from "./application/CadDriver"
+export type {
+  CadDriverOptions,
+  PointerModifiers,
+} from "./application/CadDriver"
+
+// @group State
 export type {
   EngineState,
   CommandOptionUi,
@@ -85,7 +74,7 @@ export type {
   CommandLineEntryKind,
   CommandSuggestion,
 } from "./application/CommandLine"
-export type { SaveState } from "./application/Autosave"
+export type { EngineNames, PromptSegment } from "./application/EngineText"
 export type { DynamicFieldKind } from "./application/input/DynamicInput"
 export type { SnapModeType } from "./application/SnapMode"
 export { SnapType } from "./application/snapping/types"
@@ -103,45 +92,38 @@ export type {
   ViewCubeUi,
 } from "./application/viewCube"
 
+// @group Commands
 export { matchCommands } from "./application/CommandLine"
 export type { CommandInfo } from "./application/CommandLine"
 export { commandCatalog } from "./application/commandCatalog"
-export { engineText, type EngineText } from "./application/EngineText"
-export type { EngineNames, PromptSegment } from "./application/EngineText"
-export type {
-  CommandCatalog,
-  CommandName,
-  EngineCatalog,
-  EngineLocale,
-  InterfaceCatalog,
-} from "./locales/types"
-export { extendLocale } from "./locales/extend"
-export type { LocaleOverrides } from "./locales/extend"
 
-export { CadDriver } from "./application/CadDriver"
-export type {
-  CadDriverOptions,
-  PointerModifiers,
-} from "./application/CadDriver"
+// @group Storage and files
 export {
-  DemoScript,
-  demo,
-  recordDemo,
-  transcript,
-} from "./application/DemoScript"
+  createLocalStorageDrawingStore,
+  readSavedDrawingSummary,
+} from "./adapters/localStorageDrawingStore"
+export { createMemoryDrawingStore } from "./adapters/memoryDrawingStore"
 export type {
-  DemoAction,
-  DemoLayer,
-  DemoOptions,
-  DemoPrompt,
-  DemoRecording,
-  DemoStep,
-  RecordOptions,
-  TranscriptLine,
-} from "./application/DemoScript"
-export { buildDrawingPreview } from "./application/drawingPreview"
-export type { DrawingPreviewOptions } from "./application/drawingPreview"
+  DrawingStore,
+  FileTransport,
+  Clipboard,
+} from "./application/ports"
+export type { SaveState } from "./application/Autosave"
+export type { DrawingSummary } from "./serialization/drawingSummary"
 
+// @group Rendering
+export { CanvasScenePresenter } from "./adapters/CanvasScenePresenter"
+export {
+  SvgScenePresenter,
+  primitiveLength,
+  themeCustomProperties,
+  themePalette,
+} from "./adapters/SvgScenePresenter"
+export type {
+  SvgDecorator,
+  SvgDocumentOptions,
+  SvgScenePresenterOptions,
+} from "./adapters/SvgScenePresenter"
 export type {
   Scene,
   ScenePrimitive,
@@ -150,7 +132,10 @@ export type {
   TextAlign,
 } from "./scene/types"
 export { THEME } from "./scene/theme"
+export { buildDrawingPreview } from "./application/drawingPreview"
+export type { DrawingPreviewOptions } from "./application/drawingPreview"
 
+// @group Drawing model
 export type {
   EntityId,
   EntityType,
@@ -193,6 +178,36 @@ export {
   formatAngle,
   unitsSampleOutput,
 } from "./domain/units"
+export { matchesWildcard } from "./shared/wildcard"
 export type { Vec2 } from "./geometry/Vec2"
 export type { Vec3 } from "./geometry/Vec3"
-export type { DrawingSummary } from "./serialization/drawingSummary"
+
+// @group Languages
+export { engineText, type EngineText } from "./application/EngineText"
+export type {
+  CommandCatalog,
+  CommandName,
+  EngineCatalog,
+  EngineLocale,
+  InterfaceCatalog,
+} from "./locales/types"
+export { extendLocale } from "./locales/extend"
+export type { LocaleOverrides } from "./locales/extend"
+
+// @group Demos
+export {
+  DemoScript,
+  demo,
+  recordDemo,
+  transcript,
+} from "./application/DemoScript"
+export type {
+  DemoAction,
+  DemoLayer,
+  DemoOptions,
+  DemoPrompt,
+  DemoRecording,
+  DemoStep,
+  RecordOptions,
+  TranscriptLine,
+} from "./application/DemoScript"

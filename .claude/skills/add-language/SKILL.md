@@ -19,7 +19,7 @@ to left). The words: `docs/i18n-glossary.md`.
    interface always; `commands` only with an AutoCAD of that language to copy, and then complete.
    Run `npm run locales` to compile it to `cad/locales/<tag>.ts`, make it an entry point of the
    package (`.claude/rules/engine-package.md`: `exports`, tsdown, the build's tsconfig) and add it
-   to the entry table in `cad/README.md`.
+   to the entry table in `cad/README.md` and the table in `cad/docs/languages.md`.
 4. **`i18n/engine.ts` and `i18n/editor.ts`**: its entries in `ENGINE_LOCALES` and
    `EDITOR_LOCALES`. Both are `Partial`, so nothing fails without them — the language just draws,
    or shows the editor, in English.

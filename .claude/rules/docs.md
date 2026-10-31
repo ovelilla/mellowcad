@@ -35,15 +35,18 @@ claims follow `i18n.md`.
 ## One source
 
 - **A "Build" page is its package's file**: frontmatter (`title`, `description`, `type`) and one
-  `<include>` of the README or the `api.md`, nothing else; `DOCS_PACKAGES` ties a slug to a
-  folder. Never copy a README's words into a page.
+  `<include>` of the README, the `api.md` or a guide (`<dir>/docs/<name>.md`, the page
+  `<slug>/<name>`), nothing else; `DOCS_PACKAGES` ties a slug to a folder, `packagePageFile` a page
+  to its file. A guide is the package's, read on GitHub and npm as the README is. Never copy a
+  package file's words into a page.
 - `remarkPackageSource` drops the file's `#` heading (the title is the frontmatter's), sends a
   relative link to its docs page or to the file on GitHub's `main`, reads a block named after an
   example (`tsx examples/…`) from that file, and indexes an API report's exports for search.
   **Every edit is recorded with `replaceSource`**: the `.md` slices the authored source, not the
   tree, so an edit made on the tree alone never reaches it.
 - `remarkInclude` always runs first, so no plugin sees which file a node came from:
-  `remarkPackageSource` finds the package from the page's path.
+  `remarkPackageSource` finds the package and the file from the page's path, and resolves a
+  relative link from that file's folder (a guide's are `cad/docs/`'s).
 - react and the editor say "not published yet" while their `package.json` is `private`; a
   published package's `homepage` is its page.
 
@@ -111,8 +114,8 @@ claims follow `i18n.md`.
 
 ## `docs:check`
 
-`npm run docs:check`, in the hook and CI: frontmatter and `meta.json`, each package's two pages
-and their includes, each "Use" page in every language and its translations' `sourceHash`, each
+`npm run docs:check`, in the hook and CI: frontmatter and `meta.json`, each package's pages (its
+README, `api.md` and every guide) and their includes, each "Use" page in every language and its translations' `sourceHash`, each
 `<Command id>`, the differences' quotes and sections, the links of the package files and of
 written pages (a fragment to a root page's heading), the examples blocks name, and the homepage.
 A README link that leads nowhere fails it. Its own cases are `lib/docs/check.test.ts`.

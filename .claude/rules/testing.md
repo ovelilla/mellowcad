@@ -39,7 +39,7 @@ expect(h.latest()).toBeDefined()
   per language (`optionAbbreviations()`, and `locale.test.ts`).
 - `createHarness({ locale })` runs another language: `locale.test.ts` types what a Spanish AutoCAD
   user types (LINEA, `_LINE`, `H` to undo). `cad/locales/foreignHost.test.ts` is a host from
-  outside, testing what `cad/README.md` promises an integrator.
+  outside, testing what `cad/docs/languages.md` promises an integrator.
 - Keys route exactly like the real UI: through the dynamic input when a field is focused, else
   `keyDown`. A menu at the cursor holds focus while open, so `escape()` closes it and the command
   goes on; a shortcut menu's entry is `runtime.chooseShortcutMenuAction(id)` /

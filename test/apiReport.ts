@@ -7,8 +7,11 @@ import ts from "typescript"
  * records it: every export of every entry point with its full signature, and
  * every declaration of the package they reach that no entry point exports (a
  * parameter's type, a field's), since a change there changes the API too.
- * Comments and private members are left out; they are not API. What another
- * package declares (the engine's types in react's signatures) is that
+ * Private members are left out; they are not API. The doc comments stay: they
+ * ship in the `.d.ts` a host's editor shows, and the report is the reference
+ * the docs serve. An entry point whose barrel heads its exports with
+ * `// @group <title>` is reported group by group, in the barrel's order. What
+ * another package declares (the engine's types in react's signatures) is that
  * package's report.
  *
  * WHY declarations from `transpileDeclaration`: `isolatedDeclarations` makes
@@ -210,14 +213,56 @@ function publicPart(statement: Declaration): Declaration {
   )
 }
 
-const printer = ts.createPrinter({ removeComments: true })
+const printer = ts.createPrinter({ removeComments: false })
+
+const GROUP = /^\/\/ @group (.+)$/
+
+/**
+ * The group each name a barrel exports is under: the last `// @group` comment
+ * above its export. Empty for a barrel without one; a name above the first is
+ * a mistake, and throws.
+ */
+function exportGroups(source: string): Map<string, string> {
+  const text = readFileSync(source, "utf8")
+  const file = ts.createSourceFile(source, text, ts.ScriptTarget.Latest)
+  const groups = new Map<string, string>()
+  let group: string | null = null
+  for (const statement of file.statements) {
+    for (const range of ts.getLeadingCommentRanges(text, statement.pos) ?? []) {
+      const title = GROUP.exec(text.slice(range.pos, range.end))?.[1]
+      if (title !== undefined) group = title.trim()
+    }
+    if (!ts.isExportDeclaration(statement)) continue
+    const clause = statement.exportClause
+    if (!clause || !ts.isNamedExports(clause)) continue
+    for (const element of clause.elements) {
+      if (group === null) {
+        if (groups.size > 0 || text.includes("// @group ")) {
+          throw new Error(
+            `${source}: ${element.name.text} is exported above its first // @group`
+          )
+        }
+        continue
+      }
+      groups.set(element.name.text, group)
+    }
+  }
+  return groups
+}
+
+/** Leading doc comments followed by another: a file's header above a declaration's own. */
+const SUPERSEDED_DOCS = /^(?:\/\*\*[\s\S]*?\*\/\s*\n)+(?=\/\*\*)/
 
 function print(statement: Declaration): string {
-  return printer.printNode(
-    ts.EmitHint.Unspecified,
-    publicPart(statement),
-    statement.getSourceFile()
-  )
+  // Only the doc comment nearest a declaration is its doc, as an editor's
+  // hover shows it.
+  return printer
+    .printNode(
+      ts.EmitHint.Unspecified,
+      publicPart(statement),
+      statement.getSourceFile()
+    )
+    .replace(SUPERSEDED_DOCS, "")
 }
 
 export function apiReport({
@@ -233,6 +278,7 @@ export function apiReport({
   const files = Object.entries(entries).map(([subpath, source]) => ({
     subpath,
     file: declarationFile(source),
+    groups: exportGroups(source),
   }))
   const omitted = new Set(omit)
   const program = declarationProgram(files.map(({ file }) => file))
@@ -262,9 +308,9 @@ export function apiReport({
     }
   }
 
-  const sections = files.map(({ subpath, file }) => {
+  const sections = files.map(({ subpath, file, groups }) => {
     const entry = checker.getSymbolAtLocation(program.getSourceFile(file)!)!
-    const lines = checker
+    const blocks = checker
       .getExportsOfModule(entry)
       .sort((a, b) => a.name.localeCompare(b.name, "en"))
       .map((symbol) => {
@@ -278,9 +324,28 @@ export function apiReport({
         for (const statement of statements) exported.add(statement)
         reach(symbol)
         const head = `export ${typeOnly ? "type " : ""}{ ${symbol.name} }`
-        return [head, ...statements.map(print)].join("\n")
+        return {
+          group: groups.get(symbol.name),
+          text: [head, ...statements.map(print)].join("\n"),
+        }
       })
-    return `## ${subpath}\n\n\`\`\`ts\n${lines.join("\n\n")}\n\`\`\``
+    const code = (texts: string[]) => `\`\`\`ts\n${texts.join("\n\n")}\n\`\`\``
+    if (groups.size === 0) {
+      return `## ${subpath}\n\n${code(blocks.map(({ text }) => text))}`
+    }
+    const loose = blocks.find((block) => block.group === undefined)
+    if (loose)
+      throw new Error(
+        `${subpath}: no // @group heads ${loose.text.split("\n")[0]}`
+      )
+    const titles = [...new Set(groups.values())]
+    return [
+      `## ${subpath}`,
+      ...titles.map(
+        (title) =>
+          `### ${title}\n\n${code(blocks.filter((block) => block.group === title).map(({ text }) => text))}`
+      ),
+    ].join("\n\n")
   })
 
   // Every name a declaration's types mention, followed to its own.
@@ -316,7 +381,7 @@ export function apiReport({
   return [
     `# ${name} — API report`,
     "",
-    `Written by \`${writer}\`; a change to it is a change to the public API.`,
+    `Every export with its signature and its documentation, grouped by topic, then the types they reach. Generated from the source by \`${writer}\`: a change to it is a change to the public API.`,
     "",
     ...sections.flatMap((section) => [section, ""]),
     ...Object.entries(stylesheets).flatMap(([subpath, text]) => [

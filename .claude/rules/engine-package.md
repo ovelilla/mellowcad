@@ -61,9 +61,12 @@ license and the Autodesk trademark note.
   `cad/locales/keywordIds.ts`, the keyword ids `CadDriver` checks: importing `en.json` itself
   shipped the raw catalog, 68 KB, to every page using the driver.
 - **A package's `api.md` is its public surface** (`cad/api.md`, `packages/react/api.md`,
-  `packages/editor/api.md`), every export with its signature and every type of its own they
-  reach, written by its `api.test.ts` through `test/apiReport.ts`; any change fails it until
-  `-u`. Read its diff as a version: a new name is a minor, a changed or removed one a major. A
+  `packages/editor/api.md`), every export with its signature, its doc comment and every type of
+  its own they reach, written by its `api.test.ts` through `test/apiReport.ts`; any change fails
+  it until `-u`. It is also the docs' reference page, so a public member's doc comment is written
+  for an integrator. A barrel heads its exports with `// @group <title>` and the report follows
+  the groups, in order (`cad/index.ts`); a name below no group fails it. Read its diff as a
+  version: a new name is a minor, a changed or removed one a major, a reworded comment neither. A
   name joins a barrel only when a host uses it, or needs it to compose or replace a piece; a
   public member only the tests need is `/** @internal */`, which the build strips
   (`stripInternal`), as `CadDriver.runtime` and the editor's `EditorZones` are.
@@ -89,10 +92,11 @@ license and the Autodesk trademark note.
   a tool the repo also has at the root's (the others, `vite` and `@vitejs/plugin-react`, move in
   deps-review). The root `tsc` checks them against the source, save their `vite.config.ts`; the
   site's Tailwind skips them (`globals.css`), or their classes would ship in `/draw`.
-- **A package's README is what an integrator reads** (`cad/README.md`, `packages/*/README.md`),
-  on GitHub, on npm and as its docs page with its `api.md` (`docs.md`), where a relative link
-  goes to another page or to GitHub, and one leading nowhere fails `docs:check`;
-  `test/packages.test.ts` fails on an import or a PascalCase name in it that no `api.md` has,
+- **A package's README and guides are what an integrator reads** (`cad/README.md`,
+  `cad/docs/*.md`, `packages/*/README.md`), on GitHub, on npm and as its docs pages with its
+  `api.md` (`docs.md`), where a relative link goes to another page or to GitHub, and one leading
+  nowhere fails `docs:check`; `test/packages.test.ts` fails on an import or a PascalCase name in
+  one that no `api.md` has (outside its doc comments),
   and on a block whose info string names an example's file
   (`tsx examples/editor-vite/src/main.tsx`) that is not that file word for word.
 - **`@mellowcad/editor` is built with the React Compiler**, as the site compiles it (Next's

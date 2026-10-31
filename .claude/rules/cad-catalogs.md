@@ -10,7 +10,7 @@ paths:
 
 The catalog's public contract — `EngineLocale`, `interface` against `commands`, what `names`,
 `keywords`, `keywordLabels` and `promptKeywords` hold, a command language complete or absent, ICU
-compiled by the host, versioning — is `cad/README.md`. Keep it true; do not repeat it here. Where a
+compiled by the host, versioning — is `cad/docs/languages.md`. Keep it true; do not repeat it here. Where a
 wording comes from: `autocad-research.md`.
 
 ## Catalogs
@@ -86,7 +86,7 @@ is its own) is resolved by the runtime from `commands.keywords.<NAME>`: comparin
 letter breaks when the language changes. Every keyword a tool offers is in its command's table.
 
 - A keyword AutoCAD answers with a **sub-prompt** (OFFSET's Erase: `Erase source object after
-  offsetting? [Yes/No] <No>:`) is a phase whose `question()` names it, with that answer as
+offsetting? [Yes/No] <No>:`) is a phase whose `question()` names it, with that answer as
   `defaultOption()`, never a chip toggled in place.
 - A keyword one prompt spells otherwise (`initget` is per prompt: Spanish FILLET's `[Radio]` at
   `Designe polilínea 2D o`) goes in `commands.promptKeywords.<promptId>`, never a second keyword id.
@@ -102,7 +102,7 @@ letter breaks when the language changes. Every keyword a tool offers is in its c
   otherwise where English does not (`Atravesar`, `Actual`): read both tables' `initget`. The
   console outranks the table (PLINE keeps `CEnter`, pline/p103).
 - A prompt whose declared order is not the listed one names it in its question (`declared: ["OFF",
-  "Normal", "ON"]`), only where two words on offer can be ambiguous.
+"Normal", "ON"]`), only where two words on offer can be ambiguous.
 - A word the `initget` declares and the list leaves out is a **hidden option**, after the shown
   ones (OFFSET's `Thru`, ELLIPSE's `Centre`), only once the console shows what it does; one opening
   an option not built here stays refused and is noted in the coverage entry. Where its letters would

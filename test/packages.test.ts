@@ -194,14 +194,29 @@ const README_IMPORT =
   /import\s+(?:type\s+)?(?:\{([^}]*)\}\s*from\s*)?["'](@mellowcad\/[^"']+)["']/g
 const FENCED = /^```(\w+)(?: (\S+))?\n([\s\S]*?)^```$/gm
 
-describe("the READMEs", () => {
+/** A package's README and its guides (`docs/*.md`): what an integrator reads. */
+function packageDocs(dir: string): string[] {
+  const guides = path.join(ROOT, dir, "docs")
+  return [
+    `${dir}/README.md`,
+    ...(existsSync(guides) ? readdirSync(guides) : [])
+      .filter((file) => file.endsWith(".md"))
+      .map((file) => `${dir}/docs/${file}`),
+  ]
+}
+
+describe("the READMEs and guides", () => {
   const entries = new Map(
     ALL.flatMap(({ dir, name }) => [...exportsOf(dir, name)])
   )
+  // A word of a doc comment is no name of the API.
   const reports = ALL.map(({ dir }) =>
     readFileSync(path.join(ROOT, dir, "api.md"), "utf8")
-  ).join("\n")
+  )
+    .join("\n")
+    .replace(/\/\*[\s\S]*?\*\//g, "")
   const readmes = ALL.map(({ dir }) => `${dir}/README.md`)
+  const docs = ALL.flatMap(({ dir }) => packageDocs(dir))
 
   it("are one per package", () => {
     expect(
@@ -211,7 +226,7 @@ describe("the READMEs", () => {
 
   it("import only what each entry point exports", () => {
     const stale: string[] = []
-    for (const file of readmes) {
+    for (const file of docs) {
       const text = readFileSync(path.join(ROOT, file), "utf8")
       for (const [, , , code] of text.matchAll(FENCED)) {
         for (const [, names = "", specifier] of code.matchAll(README_IMPORT)) {
@@ -238,7 +253,7 @@ describe("the READMEs", () => {
   it("name in their prose only what the API reports hold", () => {
     const words = new Set(reports.match(/[\w$]+/g))
     const stale: string[] = []
-    for (const file of readmes) {
+    for (const file of docs) {
       const prose = readFileSync(path.join(ROOT, file), "utf8").replace(
         FENCED,
         ""
@@ -255,7 +270,7 @@ describe("the READMEs", () => {
 
   it("copy an example's file word for word where they name it", () => {
     const drift: string[] = []
-    for (const file of readmes) {
+    for (const file of docs) {
       const text = readFileSync(path.join(ROOT, file), "utf8")
       for (const [, , source, code] of text.matchAll(FENCED)) {
         if (source === undefined) continue

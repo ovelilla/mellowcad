@@ -6,7 +6,10 @@ import { frontmatter } from "fumadocs-core/content/md/frontmatter"
 import {
   DOCS_PACKAGES,
   DOCS_PATH,
+  GUIDES_DIR,
   PACKAGE_PAGES,
+  packagePageFile,
+  packagePagePath,
   pagePackage,
 } from "./packages.ts"
 import { DIFFERENCES, DIFFERENCES_PAGE } from "./differences.ts"
@@ -62,10 +65,11 @@ export function contentPagePath(relative: string): string {
  * when it passes): every page's frontmatter and every `meta.json`; each
  * package's two pages, each including its file and nothing else; each
  * "Use" page in every language, a translation written by hand carrying the
- * `sourceHash` of its English file (a generated one, its generator); every
- * link — a package file's to the repository or another page, a written
- * page's to a page and a heading that exist — and every example a block
- * names; and a published package's `homepage` is its page.
+ * `sourceHash` of its English file (a generated one, its generator); each
+ * guide of a package (`docs/<name>.md`) with its page; every link — a package
+ * file's to the repository or another page, a written page's to a page and a
+ * heading that exist — and every example a block names; and a published
+ * package's `homepage` is its page.
  */
 export function checkDocs(root: string): string[] {
   const problems: string[] = []
@@ -156,15 +160,15 @@ export function checkDocs(root: string): string[] {
     const pkg = pagePackage(file)
     if (pkg) {
       const name = path.posix.basename(page, ".mdx")
-      const entry = PACKAGE_PAGES.find(({ page }) => (page || "index") === name)
-      if (!entry) {
-        report(file, `${pkg.slug}/ holds only the package's pages (index, api)`)
+      const included = packagePageFile(pkg, name)
+      if (!included || !existsSync(path.join(root, included))) {
+        report(
+          file,
+          `${pkg.slug}/ holds only the package's pages (index, api) and its guides (${pkg.dir}/${GUIDES_DIR}/*.md)`
+        )
         continue
       }
-      const source = path.posix.relative(
-        path.posix.dirname(file),
-        `${pkg.dir}/${entry.file}`
-      )
+      const source = path.posix.relative(path.posix.dirname(file), included)
       if (content.trim() !== `<include>${source}</include>`) {
         report(file, `the page is its file and nothing else: <include>${source}</include>`)
       }
@@ -192,16 +196,29 @@ export function checkDocs(root: string): string[] {
     if (!manifest.private && manifest.homepage !== homepage) {
       report(`${pkg.dir}/package.json`, `a published package's homepage is ${homepage}`)
     }
-    for (const { file, page } of PACKAGE_PAGES) {
-      const doc = `${CONTENT_DIR}/${pkg.slug}/${page || "index"}.mdx`
-      if (!existsSync(path.join(root, doc))) {
-        report(doc, `missing: the page of ${pkg.dir}/${file}`)
+    const guides = path.join(root, pkg.dir, GUIDES_DIR)
+    const sources = [
+      ...PACKAGE_PAGES.map(({ file }) => `${pkg.dir}/${file}`),
+      ...(existsSync(guides) ? readdirSync(guides) : [])
+        .filter((file) => file.endsWith(".md"))
+        .sort()
+        .map((file) => `${pkg.dir}/${GUIDES_DIR}/${file}`),
+    ]
+    for (const source of sources) {
+      const url = packagePagePath(source)
+      if (!url) {
+        report(source, "a guide's name is lower case, words joined by -, and neither index nor api")
+        continue
       }
-      const source = `${pkg.dir}/${file}`
+      const doc = `${CONTENT_DIR}/${url.slice(DOCS_PATH.length + 1)}`
+      const page = url === `${DOCS_PATH}/${pkg.slug}` ? `${doc}/index.mdx` : `${doc}.mdx`
+      if (!existsSync(path.join(root, page))) {
+        report(page, `missing: the page of ${source}`)
+      }
       const markdown = readFileSync(path.join(root, source), "utf8")
       for (const link of markdownLinks(markdown)) {
         try {
-          resolvePackageLink(link, pkg.dir, root)
+          resolvePackageLink(link, path.posix.dirname(source), root)
         } catch (error) {
           report(source, (error as Error).message)
         }

@@ -28,8 +28,8 @@ Adding an entity type, a dimension kind, a property, a style table or a snap typ
 `cad/entryPoints.test.ts` checks the table and the packages for product code; tests may import
 any layer, `test/` and `scripts/`. The public entry points are the `exports` of `cad/package.json`
 (`@mellowcad/engine`): `cad/index.ts` and the language modules `cad/locales/<tag>`. The app
-imports nothing else, not even `@mellowcad/engine/locales/types` (that test). `cad/README.md` is
-what an integrator reads: keep it true. Exports carry their types: `engine-package.md`.
+imports nothing else, not even `@mellowcad/engine/locales/types` (that test). `cad/README.md` and
+the guides in `cad/docs/` are what an integrator reads: keep them true. Exports carry their types: `engine-package.md`.
 
 ## Ids, not display names
 
