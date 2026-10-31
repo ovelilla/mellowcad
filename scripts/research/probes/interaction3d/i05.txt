@@ -1,0 +1,18 @@
+_LINE
+0,0,50
+10,0
+
+(progn (print (list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))) (princ))
+_ELEVATION
+20
+_LINE
+0,0,50
+10,0
+
+(progn (print (list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))) (princ))
+_LINE
+0,0,50
+@10,0
+
+(progn (print (list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))) (princ))
+(getvar "LASTPOINT")

@@ -1,0 +1,23 @@
+_LINE
+0,0,0
+0,0,50
+
+_LINE
+100,0,40
+150,0,40
+
+-VIEW
+_SEISO
+_ZOOM
+_E
+_ERASE
+-40,40,0
+
+(sslength (ssget "_X"))
+_ERASE
+85,40,0
+
+(sslength (ssget "_X"))
+_U
+_U
+(sslength (ssget "_X"))

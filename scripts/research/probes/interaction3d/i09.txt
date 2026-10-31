@@ -1,0 +1,34 @@
+_UCS
+_X
+90
+_CIRCLE
+0,0
+20
+_ARC
+100,0
+120,20
+140,0
+_UCS
+_W
+-VIEW
+_SEISO
+_ZOOM
+_E
+_LINE
+_CEN
+20,0,0
+@10,0,0
+
+(progn (print (list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))) (princ))
+_LINE
+_QUA
+0,0,20
+@10,0,0
+
+(progn (print (list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))) (princ))
+_LINE
+_MID
+120,0,20
+@10,0,0
+
+(progn (print (list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))) (princ))

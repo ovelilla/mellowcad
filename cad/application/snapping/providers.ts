@@ -48,7 +48,8 @@ import {
   entityZAt,
   insertAttributePoints,
   isFullEllipse,
-  lineMidpoint,
+  lineEndZ,
+  lineStartZ,
   planeAxes,
   polylineSegmentGeometries,
   sameNormal,
@@ -59,6 +60,7 @@ import {
   worldToEntity,
   Entity,
   EntityId,
+  LineEntity,
   PolylineEntity,
   PolylineSegmentGeometry,
 } from "../../domain/entities"
@@ -79,9 +81,43 @@ import {
  * boundary a hatch was traced from is still there to snap to.
  */
 
-/** A point on `entity`, given as it stores its points, in the WCS at the object's height there. */
+/**
+ * A point on `entity`, given as it stores its points, in the WCS at the
+ * object's height there. A line's point read along it in space carries its
+ * own Z: a vertical line is one point in plan, where its height is ambiguous.
+ */
 function on(entity: Entity, point: Vec2): Vec3 {
+  if (entity.type === "line" && "z" in point) return withZ(point, zOf(point))
   return entityPointToWorld(entity, point)
+}
+
+/** A line's ends in space. */
+function lineEnds(line: LineEntity): [Vec3, Vec3] {
+  return [withZ(line.start, lineStartZ(line)), withZ(line.end, lineEndZ(line))]
+}
+
+/** Whether a line runs along the UCS's Z, a point in plan. */
+function isVertical(line: LineEntity): boolean {
+  return V.distance(line.start, line.end) < VERTICAL_EPSILON
+}
+
+const VERTICAL_EPSILON = 1e-9
+
+/**
+ * The point of `line` nearest `cursor`, in space. A cursor read along the
+ * line's image on the screen (`SnapContext.cursorOn`, off the plan) has a Z
+ * and is measured in space, so a vertical line gives the point under it
+ * (interaction3d/i01); a plan cursor is measured in plan.
+ */
+export function nearestOnLine(line: LineEntity, cursor: Vec2): Vec3 {
+  const [a, b] = lineEnds(line)
+  const along = sub3(b, a)
+  const lengthSq = "z" in cursor ? dot3(along, along) : V.lengthSq(along)
+  if (!(lengthSq > 0)) return a
+  const offset = sub3(withZ(cursor, zOf(cursor)), a)
+  const t =
+    ("z" in cursor ? dot3(offset, along) : V.dot(offset, along)) / lengthSq
+  return lerp3(a, b, Math.max(0, Math.min(1, t)))
 }
 
 /**
@@ -122,8 +158,9 @@ export const endpointProvider: SnapProvider = {
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       if (entity.type === "line") {
-        candidates.push(notable(SnapType.Endpoint, entity, entity.start, touch))
-        candidates.push(notable(SnapType.Endpoint, entity, entity.end, touch))
+        for (const end of lineEnds(entity)) {
+          candidates.push(notable(SnapType.Endpoint, entity, end, touch))
+        }
       } else if (entity.type === "arc") {
         candidates.push(
           notable(SnapType.Endpoint, entity, arcStartPoint(entity), touch)
@@ -181,8 +218,9 @@ export const midpointProvider: SnapProvider = {
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       if (entity.type === "line") {
+        const [a, b] = lineEnds(entity)
         candidates.push(
-          notable(SnapType.Midpoint, entity, lineMidpoint(entity), touch)
+          notable(SnapType.Midpoint, entity, lerp3(a, b, 0.5), touch)
         )
       } else if (entity.type === "arc") {
         candidates.push(
@@ -281,12 +319,13 @@ export const insertionProvider: SnapProvider = {
 /**
  * Where a circle's or an arc's quadrants start in its own plan: along the
  * UCS's X when it lies parallel to the UCS's XY plane (circle/p212, p217;
- * arc/p201, p211), its OCS X otherwise (**unverified**: a quadrant on a curve
- * tilted to the UCS was not probed).
+ * arc/p201, p211); `null`, no quadrant at all, when it is oblique to it —
+ * "Oblique, non-uniformly scaled objects were ignored." (interaction3d/i09,
+ * a circle; an arc by the same rule).
  */
-function quadrantTurn(circle: Entity, ucs: Ucs): number {
+function quadrantTurn(circle: Entity, ucs: Ucs): number | null {
   const axes = entityAxes(circle)
-  if (Math.abs(Math.abs(dot3(axes.z, ucsZAxis(ucs))) - 1) > 1e-9) return 0
+  if (Math.abs(Math.abs(dot3(axes.z, ucsZAxis(ucs))) - 1) > 1e-9) return null
   return Math.atan2(dot3(ucs.xAxis, axes.y), dot3(ucs.xAxis, axes.x))
 }
 
@@ -301,6 +340,7 @@ export const quadrantProvider: SnapProvider = {
       if (entity.type === "circle") {
         const { center: c, radius: r } = entity
         const turn = quadrantTurn(entity, document.getSettings().ucs)
+        if (turn === null) continue
         const points =
           turn === 0
             ? [
@@ -316,6 +356,7 @@ export const quadrantProvider: SnapProvider = {
       } else if (entity.type === "arc") {
         // Only the quadrants the sweep actually passes through (arc/p201, p203).
         const turn = quadrantTurn(entity, document.getSettings().ucs)
+        if (turn === null) continue
         for (const quadrant of QUADRANT_ANGLES) {
           const angle = turn + quadrant
           if (!angleWithinSweep(entity.startAngle, entity.endAngle, angle)) {
@@ -375,14 +416,30 @@ export const perpendicularProvider: SnapProvider = {
     const candidates: SnapCandidate[] = []
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
+      if (entity.type === "line") {
+        // The foot in space: from a point at another height to a sloped or
+        // vertical line, AutoCAD's PER is perpendicular in 3D, in plan and
+        // in an isometric view alike (interaction3d/i04, i08, i14).
+        const near = touch(entity)
+        const [a, b] = lineEnds(entity)
+        const along = sub3(b, a)
+        const lengthSq = dot3(along, along)
+        if (!near || !(lengthSq > 0)) continue
+        const t = dot3(sub3(withZ(anchor, zOf(anchor)), a), along) / lengthSq
+        candidates.push({
+          type: SnapType.Perpendicular,
+          point: lerp3(a, b, t),
+          touch: near,
+          sourceIds: [entity.id],
+        })
+        continue
+      }
       const shape =
-        entity.type === "line"
-          ? { center: null, a: entity.start, b: entity.end, radius: 0 }
-          : entity.type === "circle" || entity.type === "arc"
-            ? { center: entity.center, a: null, b: null, radius: entity.radius }
-            : entity.type === "polyline"
-              ? asShape(segmentUnder(entity, cursorOn(entity)))
-              : null
+        entity.type === "circle" || entity.type === "arc"
+          ? { center: entity.center, a: null, b: null, radius: entity.radius }
+          : entity.type === "polyline"
+            ? asShape(segmentUnder(entity, cursorOn(entity)))
+            : null
       if (!shape) continue
       const near = touch(entity)
       if (!near) continue
@@ -746,24 +803,33 @@ export const nearestProvider: SnapProvider = {
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       const cursor = cursorOn(entity)
+      if (entity.type === "line") {
+        const point = nearestOnLine(entity, cursor)
+        if (isNear(point)) {
+          candidates.push({
+            type: SnapType.Nearest,
+            point,
+            sourceIds: [entity.id],
+          })
+        }
+        continue
+      }
       const closest =
-        entity.type === "line"
-          ? closestPointOnSegment(entity.start, entity.end, cursor)
-          : entity.type === "circle"
-            ? closestPointOnCircle(entity.center, entity.radius, cursor)
-            : entity.type === "arc"
-              ? closestPointOnArc(
-                  entity.center,
-                  entity.radius,
-                  entity.startAngle,
-                  entity.endAngle,
-                  cursor
-                )
-              : entity.type === "polyline" ||
-                  entity.type === "spline" ||
-                  entity.type === "ellipse"
-                ? closestOnEntity(entity, cursor)
-                : null
+        entity.type === "circle"
+          ? closestPointOnCircle(entity.center, entity.radius, cursor)
+          : entity.type === "arc"
+            ? closestPointOnArc(
+                entity.center,
+                entity.radius,
+                entity.startAngle,
+                entity.endAngle,
+                cursor
+              )
+            : entity.type === "polyline" ||
+                entity.type === "spline" ||
+                entity.type === "ellipse"
+              ? closestOnEntity(entity, cursor)
+              : null
       if (closest && isNear(on(entity, closest.point))) {
         candidates.push({
           type: SnapType.Nearest,
@@ -815,6 +881,17 @@ export const intersectionProvider: SnapProvider = {
         // Two alignment paths crossing is tracking's point, not an object's.
         if (a.fromConstruction && b.fromConstruction) continue
         if (!sameFrame(a, b)) continue
+        const upright = verticalMeeting(a, b)
+        if (upright !== undefined) {
+          if (upright && isNear(upright, INTERSECTION_REACH)) {
+            candidates.push({
+              type: SnapType.Intersection,
+              point: upright,
+              sourceIds: [...a.sourceIds, ...b.sourceIds],
+            })
+          }
+          continue
+        }
         for (const crossing of intersectShapes(shapes[i], shapes[j])) {
           const point = onCurves(a, b, crossing)
           const at = meetingPoint(a, b, point)
@@ -832,6 +909,43 @@ export const intersectionProvider: SnapProvider = {
     }
     return candidates
   },
+}
+
+/**
+ * Where a vertical line meets another object, which crossing the two in plan
+ * cannot find, the line being a point there: that point on the other's
+ * outline, at the other's height, when the line spans it (interaction3d/i06,
+ * i14). `null` when they do not meet, `undefined` when neither is vertical.
+ * Two vertical lines, a spline's chord or the rubber band are not crossed.
+ */
+function verticalMeeting(a: SnapShape, b: SnapShape): Vec3 | null | undefined {
+  const upright = isUpright(a) ? a : isUpright(b) ? b : null
+  if (upright === null || upright.kind !== "segment") return undefined
+  const other = upright === a ? b : a
+  if (other.fromConstruction || isUpright(other)) return null
+  if (other.kind === "segment" && other.curveId !== undefined) return null
+  const point = planar(upright.a)
+  const off =
+    other.kind === "segment"
+      ? closestPointOnSegment(other.a, other.b, point).distance
+      : other.kind === "arc" && !arcShapeContains(other, point)
+        ? Infinity
+        : Math.abs(V.distance(point, other.center) - other.radius)
+  if (off > MEETING_EPSILON) return null
+  const z = heightOn(other, point) ?? 0
+  const low = Math.min(zOf(upright.a), zOf(upright.b))
+  const high = Math.max(zOf(upright.a), zOf(upright.b))
+  if (z < low - MEETING_EPSILON || z > high + MEETING_EPSILON) return null
+  return withZ(point, z)
+}
+
+/** A line's segment along the UCS's Z: a point in plan. */
+function isUpright(shape: SnapShape): boolean {
+  return (
+    shape.kind === "segment" &&
+    shape.source?.type === "line" &&
+    V.distance(shape.a, shape.b) < VERTICAL_EPSILON
+  )
 }
 
 /** How far from the cursor, in release tolerances, Intersection looks. */
@@ -909,8 +1023,10 @@ export const apparentIntersectionProvider: SnapProvider = {
         const meet =
           za === null || zb === null || Math.abs(za - zb) <= MEETING_EPSILON
         if (withinBoth && meet) continue
-        // The first object's height: the two pass at different ones.
-        const point = withZ(x.point, za ?? zb ?? 0)
+        // In plan, the later object's height: the newer of two lines at Z 0
+        // and Z 30 gives its own, whichever was drawn first (interaction3d/
+        // i02, i03); off the plan the earlier one's (`apparentOnScreen`).
+        const point = withZ(x.point, zb ?? za ?? 0)
         if (isNear(point, 8)) {
           candidates.push({
             type: SnapType.ApparentIntersection,
@@ -927,8 +1043,9 @@ export const apparentIntersectionProvider: SnapProvider = {
 
 /**
  * Apparent intersection on the screen: where two edges cross in the view
- * without meeting in space (an edge prolonged only to meet a polar path). The point is on the first of
- * them, at its height there.
+ * without meeting in space (an edge prolonged only to meet a polar path). The
+ * point is on the earlier of them, at its height there, whichever was drawn
+ * first (interaction3d/i12, i13: in SEISO; in plan the later's).
  */
 function apparentOnScreen(
   segments: readonly SegmentShape[],
@@ -979,9 +1096,7 @@ function apparentOnScreen(
 
 /** An end of an edge in space: on its object there, or the rubber band's own. */
 function segmentEnd(segment: SegmentShape, point: Vec2): Vec3 {
-  return segment.source
-    ? entityPointToWorld(segment.source, point)
-    : withZ(point, zOf(point))
+  return segment.source ? on(segment.source, point) : withZ(point, zOf(point))
 }
 
 function lerp3(a: Vec3, b: Vec3, t: number): Vec3 {
@@ -1112,10 +1227,11 @@ function collectShapes(
         })
       }
     } else if (entity.type === "line") {
+      const [a, b] = lineEnds(entity)
       shapes.push({
         kind: "segment",
-        a: entity.start,
-        b: entity.end,
+        a,
+        b,
         sourceIds: [entity.id],
         fromConstruction: false,
         source: entity,

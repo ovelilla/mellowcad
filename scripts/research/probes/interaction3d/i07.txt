@@ -1,0 +1,21 @@
+_3DPOLY
+0,0,0
+0,0,40
+30,0,40
+
+-VIEW
+_SEISO
+_ZOOM
+_E
+_LINE
+_END
+-40,40,0
+@10,0,0
+
+(progn (print (list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))) (princ))
+_LINE
+_MID
+-20,20,0
+@10,0,0
+
+(progn (print (list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))) (princ))

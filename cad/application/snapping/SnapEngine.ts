@@ -1,6 +1,6 @@
 import { Observable } from "../../shared/Observable"
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3, length3, planar, sub3 } from "../../geometry/Vec3"
+import { Vec3, length3, planar, sub3, withZ } from "../../geometry/Vec3"
 import { closestPointOnInfiniteLine } from "../../geometry/primitives"
 import { DocumentReader } from "../../domain/Document"
 import {
@@ -26,6 +26,7 @@ import {
   ExtensionLine,
   defaultSnapProviders,
   extensionLines,
+  nearestOnLine,
 } from "./providers"
 import {
   AcquiredPoint,
@@ -453,8 +454,13 @@ export class SnapEngine extends Observable {
           reach === null ||
           withinBox(entityBounds(entity, blocks), cursor, reach)
         ) {
-          const nearest = closestOnEntity(entity, cursor, blocks)
-          point = entityPointToWorld(entity, nearest.point)
+          point =
+            entity.type === "line"
+              ? nearestOnLine(entity, cursor)
+              : entityPointToWorld(
+                  entity,
+                  closestOnEntity(entity, cursor, blocks).point
+                )
         }
         touched.set(entity, point)
         return point
@@ -505,13 +511,20 @@ export class SnapEngine extends Observable {
         return cursorOnEntityPlane(viewport, entity, screenCursor)
       }
       if (entity.type !== "line") return onPlane(entityElevation(entity))
-      // A line, level or sloping, is read along its own image on screen.
+      // A line, level, sloping or vertical, is read along its own image on
+      // screen, with the Z it has there.
+      const start = { ...entity.start, z: lineStartZ(entity) }
+      const end = { ...entity.end, z: lineEndZ(entity) }
       const { t } = closestPointOnInfiniteLine(
-        viewport.worldToScreen({ ...entity.start, z: lineStartZ(entity) }),
-        viewport.worldToScreen({ ...entity.end, z: lineEndZ(entity) }),
+        viewport.worldToScreen(start),
+        viewport.worldToScreen(end),
         screenCursor
       )
-      return V.lerp(entity.start, entity.end, Number.isFinite(t) ? t : 0)
+      const along = Number.isFinite(t) ? t : 0
+      return withZ(
+        V.lerp(start, end, along),
+        start.z + (end.z - start.z) * along
+      )
     }
     return {
       ...shared,

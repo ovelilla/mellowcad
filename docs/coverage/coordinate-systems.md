@@ -273,8 +273,8 @@ angle units AUNITS 1–4 (UNITS offers decimal degrees only).
 
 **Where a point's Z comes from:** an object snap gives the object's Z there (OSNAPZ 0, not exposed;
 a line's is interpolated along it, and Intersection needs the two objects to meet in 3D, while
-Apparent Intersection is where they cross on the screen, on the first one — **unverified**, the
-help only says it snaps where two objects "do not intersect in 3D space"; objects in different
+Apparent Intersection is where they cross on the screen, at the newer one's height in plan and on
+the older one off it — drafting-aids.md, Object snaps, interaction3d/i02–i14; objects in different
 planes have no Intersection yet); an OTRACK point the acquired point's (**unverified**), or that
 plus the rise along its `+Z` / `-Z` guide; an
 absolute point typed without a Z, or the bare cursor, ELEVATION above the XY plane of the UCS

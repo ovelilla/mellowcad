@@ -1,0 +1,37 @@
+_LINE
+0,0,5
+40,0,5
+
+_-BLOCK
+B1
+0,0,0
+_L
+
+_-INSERT
+B1
+100,0,10
+1
+1
+0
+-VIEW
+_SEISO
+_ZOOM
+_E
+_LINE
+_END
+140,0,15
+@10,0,0
+
+(progn (print (list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))) (princ))
+_LINE
+_INS
+100,0,10
+@10,0,0
+
+(progn (print (list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))) (princ))
+_LINE
+_END
+100,0,15
+@10,0,0
+
+(progn (print (list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))) (princ))

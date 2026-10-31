@@ -1,0 +1,39 @@
+_LINE
+0,0,0
+100,0,100
+
+_LINE
+50,-50,50
+50,50,50
+
+_LINE
+200,0,0
+200,0,50
+
+_CIRCLE
+300,0,0
+20
+_ZOOM
+_E
+-VIEW
+_SEISO
+_ZOOM
+_E
+_LINE
+_INT
+50,0,50
+@10,0,0
+
+(progn (print (list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))) (princ))
+_LINE
+230,0,10
+_PER
+200,0,30
+
+(progn (print (list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))) (princ))
+_LINE
+350,0,50
+_PER
+320,0,0
+
+(progn (print (list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))) (princ))

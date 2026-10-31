@@ -1,0 +1,16 @@
+_LINE
+-50,0,30
+50,0,30
+
+_LINE
+0,-50,0
+0,50,0
+
+_ZOOM
+_E
+_LINE
+_APP
+0,0
+@10,0,0
+
+(progn (print (list (cdr (assoc 10 (entget (entlast)))) (cdr (assoc 11 (entget (entlast)))))) (princ))

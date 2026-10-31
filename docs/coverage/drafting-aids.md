@@ -21,8 +21,9 @@ from the end; running Apparent Intersection is the visual crossing of two object
 heights; Perpendicular to lines (past their ends), circles, arcs (only a foot on the sweep, though
 the other is nearer: arc/p208, p209) and polyline segments; Tangent to
 circles, arcs and polyline arcs; Center and Quadrant of polyline arcs; a circle's Quadrants along
-the UCS's X and Y when it lies parallel to the UCS's XY plane (UCS Z 30: circle/p212, p217), its
-OCS's otherwise (**unverified**, not probed), only the snap turning, not the grips (desktop
+the UCS's X and Y when it lies parallel to the UCS's XY plane (UCS Z 30: circle/p212, p217), none
+when it is oblique to it (interaction3d/i09; an arc's by the same rule, unprobed), only the snap
+turning, not the grips (desktop
 circle/d15), an arc's so too where its sweep passes (arc/p201, p203; tilted, p210, p211); an
 ellipse's Quadrants at its own axis ends whatever the UCS, an elliptical arc's only on its sweep
 (ellipse/p300–p302), its Midpoint halfway along an elliptical arc's length and none on a whole
@@ -50,7 +51,16 @@ inside a command it is that command's step; with nothing to undo it is none; RED
 DYNMODE and SELECTIONCYCLING, are registry variables, which a drawing opened leaves (rectang/p304,
 p321): here they last the session (RECTANG-D46); OSMODE typed (SETVAR, workspace.md) sets the
 running snaps as a step U takes back, NOD's 8 and GCEN's 1024 kept without a snap and 16384
-suspending them as F3 does, which it reads back (workspace/p214, p218, p223). A 3D polyline snaps as its segments, lines between its vertices at their Z: Endpoint at each vertex, Midpoint of each segment, Nearest, Perpendicular and Intersection on them (3dpoly/p21)
+suspending them as F3 does, which it reads back (workspace/p214, p218, p223). A 3D polyline snaps as its segments, lines between its vertices at their Z: Endpoint at each vertex, Midpoint of each segment, Nearest, Perpendicular and Intersection on them (3dpoly/p21). Off the plan
+every snap is found where its object is drawn (a point typed under an override as a pick there):
+a vertical line, a point in plan, gives its top end, its middle and the point under the cursor, a
+3D polyline's vertical segment too (interaction3d/i01, i07), and in plan its start (i06);
+Perpendicular to a line is the foot in space, from a point at another height to a sloped or
+vertical line, in plan as in SEISO (i04, i08, i14), to a circle in the circle's plane (i08), and
+Tangent from the point projected onto the circle's plane (i04); Intersection needs the objects to
+meet in space (none where they cross in plan at Z 0 and Z 30, i02), a vertical line meeting what it
+passes through at that object's height (i06, i14); Apparent Intersection is at the newer object's
+height in plan and on the older one in SEISO, whichever was drawn first (i02, i03, i12, i13)
 
 **Missing:** Node and Geometric Center (no POINT object; a dimension's definition points snap as
 Endpoint; Spanish `PUN` and `PUNTO` at OFFSET's distance are Node, `de`, where here PUNTO is refused
@@ -63,7 +73,9 @@ object is probed), extended Intersection and extended Apparent
 Intersection (picked object by object, as an override), Extension from a polyline's arc end, the
 tooltip's distance and angle (`Extension: 12.00 < 0°`), the snapped object's blue glow while Tab
 cycles (d26), APERTURE and AUTOSNAP's settings as variables, per-entity opt-in still required for every
-new entity type (OSOPTIONS-like, deliberate), Intersection between objects in different planes; Extension from a 3D polyline's two ends alone (here every vertex is a segment's end, so offers it; unprobed)
+new entity type (OSOPTIONS-like, deliberate), Intersection between objects in different planes,
+the `Oblique, non-uniformly scaled objects were ignored.` line before Quadrant's refusal (i09),
+Extension and Parallel along a vertical line (unprobed; none here); Extension from a 3D polyline's two ends alone (here every vertex is a segment's end, so offers it; unprobed)
 
 ### Object snap overrides and `FROM`
 
