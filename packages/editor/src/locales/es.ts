@@ -32,9 +32,9 @@ export const es: EditorLocale = {
       "savedHint": "Guardado en este dispositivo",
       "undo": "Deshacer",
       "redo": "Rehacer",
-      "commandLine": "Línea de comandos",
+      "commandLine": "Línea de comando",
       "layer": "Capa",
-      "color": "Color del objeto",
+      "color": "Color de objeto",
       "lineweight": "Grosor de línea",
       "linetype": "Tipo de línea"
     },
@@ -100,7 +100,7 @@ export const es: EditorLocale = {
       }
     },
     "CommandLine": {
-      "label": "Línea de comandos",
+      "label": "Línea de comando",
       "placeholder": "Escriba un comando (LINEA, RR, CP…)",
       "history": "Historial de comandos"
     },
@@ -120,9 +120,9 @@ export const es: EditorLocale = {
       "gridSnap": "Referencia a rejilla",
       "polarSnap": "Referencia polar",
       "snapX": "Forzcursor X",
-      "snapXSpacing": "Intervalo X de forzcursor",
+      "snapXSpacing": "Distancia resolución X",
       "snapY": "Forzcursor Y",
-      "snapYSpacing": "Intervalo Y de forzcursor",
+      "snapYSpacing": "Distancia resolución Y",
       "polarDistance": "Distancia polar",
       "polarSnapDistance": "Distancia de forzcursor polar",
       "ortho": "Modo Orto",
@@ -145,7 +145,7 @@ export const es: EditorLocale = {
       "precision": "Precisión",
       "decimal": "Decimales",
       "insertionScale": "Escala de inserción",
-      "insertedContent": "Unidades para escalar el contenido insertado:",
+      "insertedContent": "Unidades de escala del contenido insertado:",
       "millimeters": "Milímetros",
       "centimeters": "Centímetros",
       "meters": "Metros",
@@ -339,9 +339,9 @@ export const es: EditorLocale = {
       "angularPrecision": "Precisión angular",
       "decimalSeparator": "Separador decimal",
       "comma": "',' (Coma)",
-      "period": "'.' (Punto)",
+      "period": "'.' (Periodo)",
       "space": "' ' (Espacio)",
-      "suppressTrailingZeros": "Suprimir ceros finales",
+      "suppressTrailingZeros": "Suprimir ceros a la derecha",
       "yes": "Sí",
       "no": "No",
       "size": "Tamaño",
@@ -372,7 +372,7 @@ export const es: EditorLocale = {
       ]
     },
     "Properties": {
-      "noSelection": "Sin selección",
+      "noSelection": "No hay selección",
       "general": "General",
       "color": "Color",
       "colorLabel": "Color de los objetos seleccionados",

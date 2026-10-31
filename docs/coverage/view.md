@@ -259,7 +259,7 @@ desktop view/e01) — each run as AutoCAD's menu runs it (`'_-view` answered `_s
 `Regenerating model.`, fitted, an orthographic one aligning the UCS, desktop d06), a step U names
 `'-VIEW Regenerating model.` (es `'-VISTA`, e01); while a command runs the label takes no pointer
 and the click is the command's (d06, VIEW-D66); its label is the preset the camera looks along (a
-turned plan is none), else Custom View / es Vista personalizada (**unverified**); the list opens
+turned plan is none), else Custom View / es Vista personalizada (table 40867); the list opens
 downwards (**unverified**)
 
 **Missing:** the `[−]` and visual style controls (`[-][Top][2D Wireframe]`, d06), VPCONTROL as a

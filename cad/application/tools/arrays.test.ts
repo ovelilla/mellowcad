@@ -3293,7 +3293,7 @@ describe("the array's palette (AYG-02)", () => {
   })
 
   // desktop arrays/d07-1 to d07-3, es-ES; the labels it truncates completed
-  // (ARRAYS-D76, unverified).
+  // from es-ES/ax26res.dll by id, 1189–1212 (ARRAYS-D76).
   it("names its rows in Spanish", () => {
     const labels = (kind: "rectangular" | "polar" | "path") => {
       const cad = figure(kind)
@@ -3309,10 +3309,10 @@ describe("the array's palette (AYG-02)", () => {
         "Espacio entre columnas",
         "Filas",
         "Espacio entre filas",
-        "Incremento de elevación de filas",
+        "Incremento de elevación de fila",
         "Niveles",
         "Espaciado de niveles",
-        "Incluye el ángulo del eje",
+        "Incluye el ángulo de eje",
       ],
     ])
     expect(labels("polar")[1]).toEqual([

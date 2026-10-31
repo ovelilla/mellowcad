@@ -49,12 +49,13 @@
   view direction, the Fit rows but Dim scale overall, the Primary Units rows but the three, Alternate
   Units and Tolerances. The style's rows are read-only: an edit there is an override AutoCAD keeps
   on the object. A fractional Measurement (d04 showed `40`) and an angular one's Precision row
-  (DIMDEC here) are **unverified**; so are the Spanish and Arabic titles, groups and rows.
+  (DIMDEC here) are **unverified**; so are the Arabic titles, groups and rows (the Spanish and
+  Portuguese ones are `ax26res.dll`'s by id, 141–235 and 287–292).
 - A text at its default place caught alone by STRETCH stays (its place needs the style); DIMZIN's
   other bits (leading zeros, feet and inches), DIMAZIN, DIMTMOVE (always 0: the text keeps its
   line).
 
-### `DIMLINEAR` / `DIMLIN` / `DLI` · es `ACOLINEAL` / `ACOLIN`† / `DIMLIN`† · pt-BR `COTALINEAR` / `CLI` / `DIMLIN`
+### `DIMLINEAR` / `DIMLIN` / `DLI` · es `ACOLINEAL` / `ACOLIN` / `DIMLIN` · pt-BR `COTALINEAR` / `CLI` / `DIMLIN`
 
 **Implemented:** the prompts AutoCAD 2027's console asks, written answered (p01, p104, p126, p129,
 p137): `Specify first extension line origin or <select object>:` (Enter: `Select object to
@@ -97,7 +98,7 @@ cota`, `Texto de cota = `).
 line (p129, p168), drawn here above it as without one; a hatch picked says `No object selected.`
 (**unverified**: not probed).
 
-### `DIMALIGNED` / `DAL` · es `ACOALINEADA` / `ACOALI`† · pt-BR `COTAALIN` / `COA` / `DIMALI`
+### `DIMALIGNED` / `DAL` · es `ACOALINEADA` / `ACOALI` · pt-BR `COTAALIN` / `COA` / `DIMALI`
 
 **Implemented:** DIMLINEAR's prompts with `[Text/Angle]` (p01, p143), its object pick, Text and
 Angle (es `Designe ángulo de texto de cota`, as the console asks, though the table words
@@ -128,7 +129,7 @@ second point:`), then DIMLINEAR's prompts measuring along that angle, `[Text/Ang
 
 **Missing:** as DIMLINEAR's.
 
-### `DIMBASELINE` / `DBA` · es `ACOLINEABASE` / `ACOLINE`† · pt-BR `COTALINBASE` / `CLB` / `DIMBASE`
+### `DIMBASELINE` / `DBA` · es `ACOLINEABASE` / `ACOLINE` · pt-BR `COTALINBASE` / `CLB` / `DIMBASE`
 
 **Implemented:** `Specify second extension line origin or [Select/Undo] <Select>:` (Undo offered
 with nothing to undo too, as AutoCAD's; with nothing left, `Command has been completely undone.`,
@@ -153,7 +154,7 @@ opens at Select, and one picked or Last is refused as a radial one is (the WHY o
 `No object selected.`); whether a dimension copied, pasted or exploded counts as made in the
 session (here it does: any object the opened file did not hold)
 
-### `DIMCONTINUE` / `DCO` · es `ACOCONTINUA` / `ACOCONT`† · pt-BR `COTASERIE` / `CSE` / `DIMCONT`
+### `DIMCONTINUE` / `DCO` · es `ACOCONTINUA` / `ACOCONT` · pt-BR `COTASERIE` / `CSE` / `DIMCONT`
 
 **Implemented:** DIMBASELINE's prompts and bases, its own `Select continued dimension:` (es
 `Designe cota continua`; a radial picked refused, p402); `@` from LASTPOINT (p230); chains from
@@ -184,7 +185,7 @@ at an angle spaced along their normal (p256)
 design). **Unverified:** what AutoCAD says to a radial or angular base (here it is passed over in
 silence)
 
-### `DIMRADIUS` / `DIMRAD` / `DRA` · es `ACORADIO` / `ACORAD`† · pt-BR `COTARAIOS` / `CRA` / `DIMRAD`
+### `DIMRADIUS` / `DIMRAD` / `DRA` · es `ACORADIO` / `ACORAD` · pt-BR `COTARAIOS` / `CRA` / `DIMRAD`
 
 **Implemented:** `Select arc or circle:` (es `Designe un arco o un círculo`; FOO `Expects a single
 object.`, p307), a circle, arc or polyline arc segment picked, on a locked layer too (p315), or a
@@ -204,7 +205,7 @@ text's middle on the line, the run stopping at its box.
 reference (the prompt is a nested pick, p300's trace), DIMCEN negative centrelines, DIMATFIT and
 DIMTOH (ISO-25 writes the text along the leader with no landing, desktop d04).
 
-### `DIMDIAMETER` / `DIMDIA` / `DDI` · es `ACODIAMETRO` / `ACODIA`† · pt-BR `COTADIAMETRO` / `CDI` / `DIMDIA`
+### `DIMDIAMETER` / `DIMDIA` / `DDI` · es `ACODIAMETRO` / `ACODIA` · pt-BR `COTADIAMETRO` / `CDI` / `DIMDIA`
 
 **Implemented:** DIMRADIUS's prompts, refusals and placement, reporting the diameter; inside one
 run to one arrowhead (p302); outside DIMTOFL's line across from rim to rim, the far arrowhead
@@ -214,7 +215,7 @@ outside on a stub as long as it (p303). The sign is drawn Ø (U+00D8) where Auto
 **Missing:** what DIMRADIUS lacks; **unverified**: outside with DIMTOFL off (the centre mark and
 the far arrowhead on its stub, not probed).
 
-### `DIMANGULAR` / `DIMANG` / `DAN` · es `ACOANGULAR` / `ACOANG`† · pt-BR `COTAANG` / `CANG` / `DIMANG`
+### `DIMANGULAR` / `DIMANG` / `DAN` · es `ACOANGULAR` / `ACOANG` · pt-BR `COTAANG` / `CANG` / `DIMANG`
 
 **Implemented:** `Select arc, circle, line, or <specify vertex>:` (es
 `Designe arco, círculo, línea o <designar vértice>`), `Select second line:`, Enter's

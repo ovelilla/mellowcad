@@ -42,7 +42,7 @@ at the first point)
 Perpendiculars; a pick whose object snap lands on the point before is skipped as a double click is
 (**unverified**: the console draws a zero-length line for an APP or PER typed there, line/p32)
 
-### `PLINE` / `PL` · es `POL` / `PL`† · pt-BR `PLINHA` / `PL`
+### `PLINE` / `PL` · es `POL` / `PL` · pt-BR `PLINHA` / `PL`
 
 **Implemented:** `Specify start point:`, `Current line-width is 0.0000` (at the drawing's
 precision), `Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]:` (Close once a segment
@@ -393,7 +393,7 @@ polyline or an arc drawn ends ARC (AutoCAD asks the end of an arc tangent from i
 the included-angle box dynamic input shows at a centre mode's end, and its Down list's Angle and
 chord Length (desktop d05); Polar at ARC's prompts (**unverified**: assumed to follow Ortho's base)
 
-### `ELLIPSE` / `EL` · es `ELIPSE` / `EL`† · pt-BR `ELIPSE` / `EL`
+### `ELLIPSE` / `EL` · es `ELIPSE` / `EL` · pt-BR `ELIPSE` / `EL`
 
 **Implemented:** `Specify axis endpoint of ellipse or [Arc/Center]:` (es
 `Precise punto final de eje de elipse o [Arco/Centro]:`), `Specify other endpoint of axis:`,
@@ -470,8 +470,8 @@ here), as `[Arc/Center/Isocircle]`, `Specify center of isocircle:`,
 `Specify radius of isocircle or [Diameter]:` and `Specify diameter of isocircle:`; `PELLIPSE` = 1
 (polyline approximation); an arc's end grips are drawn square, not AutoCAD's arrows (d07-5), and a
 length or an angle typed while a grip is hot is not built; a whole ellipse's Start angle and End
-angle retyped (**unverified**: unprobed, read-only here); the palette's English labels
-(**unverified**: the desktop seen in Spanish only); the start a closed elliptical arc keeps
+angle retyped (**unverified**: unprobed, read-only here); the palette's English labels are
+`ax26res.dll`'s by id (46, 47, 105), the desktop seen in Spanish only; the start a closed elliptical arc keeps
 (p220: StartParam 0.857072, EndParam 7.140257), which has no field here (ELLIPSE-D21);
 HATCH / boundary / DIM on an ellipse (OFFSET, FILLET, JOIN: modify.md); the Intersection, Tangent and
 Perpendicular snaps on an ellipse (`_INT` with a line, a circle and another ellipse at
@@ -554,9 +554,9 @@ frame; Misc — Method, Degree, Closed, Periodic, Planar, an open fit spline's S
 vector X, Y, Z as stored, Fit tolerance, a closed one's Area; a CV spline's Number of control
 points, Current Control point, Control point X, Y, Z and Weight instead, no tangents and no
 tolerance. The current point steps through them and its X, Y and Z move it, one undo step each, as
-a 3D polyline's current vertex; the rest is read-only; Fit tolerance reads 0, as d10 shows it. The English labels are `ax26res.dll`'s by id, the Spanish d10's; the CV frame row's English is
-**unverified** (the Spanish row is cut at `Marco de vértices d…`: id 912 `CV frame` taken over 1248
-`Display CV frame`). STRETCH moves the points in the window (p322, p323); MIRROR keeps its +Z
+a 3D polyline's current vertex; the rest is read-only; Fit tolerance reads 0, as d10 shows it. The English labels are `ax26res.dll`'s by id, the Spanish d10's; the CV frame row is id 912 (`CV frame`,
+`Marco de vértices de control`), not 1248, whose Spanish starts `Mostrar`: d10 cuts the row at
+`Marco de vértices d…`. STRETCH moves the points in the window (p322, p323); MIRROR keeps its +Z
 (p320); EXPLODE refuses it by name (`Cannot explode SPLINE`, modify.md). The drawing file holds the
 end tangent as the derivative from version 29; an older file's, a direction at the length picked,
 is read as unit. Wording from AutoCAD 2027's console (p01, p02, p100–p157, p300–p332, en and es) and
@@ -713,7 +713,7 @@ STRETCH moves it when the point is caught (p304). The palette's Text rows are Co
 Height, Rotation and, for a justified text, Text alignment X/Y/Z (the point, editable), with
 Position X/Y/Z greyed at the insertion point (desktop d04-1); a Left text shows Position alone,
 editable (whether AutoCAD shows Text alignment greyed for it is unverified; es
-`Alineación de texto X`, unverified). MATCHPROP's Text property: `modify.md`
+`Alineación de texto X`, ax26res 36). MATCHPROP's Text property: `modify.md`
 
 **Missing:** Align and Fit justifications (en labels `Align` / `Fit`, es `Alinear` / `Ajustar`
 when built), `?`'s `Enter text style(s) to list <*>:` and its `Press ENTER to continue:` pages
@@ -780,7 +780,7 @@ contents kept as AutoCAD's string (`\P`, escapes; inline codes survive but are n
 Insertion snap; a grip at the attachment point and a width grip on the side that moves, both
 sides for TC, MC and BC, each widening it about the attachment (desktop d03-1); palette rows
 Contents, Justify, Text height, Rotation, Line space factor/distance/style, Defined width
-(desktop d04-2; es `Altura de texto`, unverified); TEXTEDIT and double-click; EXPLODE to one Left
+(desktop d04-2; es `Altura de texto`, ax26res 733); TEXTEDIT and double-click; EXPLODE to one Left
 TEXT per line where AutoCAD's stand (p303; pieces/p255, p256). Aliases from acad.pgp: `-T`; es `TXM`, `-TXM` and
 `MTEXT` (es `T` is TEXTO and `MT` nothing, p259, p260). The es title of the Unsaved Changes dialog,
 `Texto de líneas múltiples - Cambios sin guardar`, and its question,
@@ -1111,7 +1111,7 @@ inside a reflected reference draws its pattern reflected (plots p230, p231); EXP
 angle and its lattice through the origin (p227, p228; the scale it takes is the reference's,
 **unverified**). The Properties palette files it under Geometry (Position X/Y/Z, Scale X/Y/Z, each
 typed but Scale Z, which is |X| here), Misc (Name, read-only, and Rotation) and Attributes (a row
-per tag, read-only) (desktop d03-2, d03-3; es `Posición X`, `Escala X` **unverified**). Attribute
+per tag, read-only) (desktop d03-2, d03-3; es `Posición X`, `Escala X`, ax26res 31, 43). Attribute
 values at the command line (ATTDIA 0, ATTREQ 1), after the rotation (p303): `Enter attribute values` (es `Indique valores de atributo`), each asked
 by its prompt (its tag when it has none) with its default, `Prompt one <def1>:`, `Verify attribute
 values` (es `Verificar valores de atributo`) for Verify mode, Preset takes its default, Constant is

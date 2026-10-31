@@ -41,7 +41,7 @@ which runs UNITS' macro `'_units` (acad.cuix ID_Units: inside a command, transpa
 length formats, no dialog: Length's Type (Decimal, the only
 one: LUNITS 2) and Precision (LUPREC, 0 to 8 places as -UNITS asks them, p300, listed `0` …
 `0.00000000`, as the desktop's list, d05-1), Insertion Scale (its list labelled `Units to scale inserted content:`, desktop
-workspace/d05-1, es `Unidades para escalar el contenido insertado:` **unverified**; INSUNITS:
+workspace/d05-1, es `Unidades de escala del contenido insertado:`, unitsRes dialog 500; INSUNITS:
 Millimeters, Centimeters, Meters — what a drawing unit is here, shown by the status bar and the dynamic input), Sample Output
 (a point as X,Y,Z and as distance<angle,Z, at the chosen precision, the angle at AUPREC's). The run
 lasts until the dialog closes, one undo step U names `UNITS` (es `UNIDADES`) with OK's change in it

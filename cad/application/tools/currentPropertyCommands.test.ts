@@ -976,6 +976,12 @@ describe("-LWEIGHT", () => {
     expect(cad.activeToolId()).toBe("lweight")
   })
 
+  it("runs as LINEWEIGHT in Spanish, acad.pgp's alias of GROSORLIN (probe names/p24)", () => {
+    const cad = createHarness({ locale: es })
+    expect(written(cad, "LINEWEIGHT")[0]).toBe("LINEWEIGHT GROSORLIN")
+    expect(cad.activeToolId()).toBe("lweight")
+  })
+
   // Spanish AutoCAD writes BYLAYER, not PORCAPA, in its heading (p140 es-ES).
   it.each(["GROSORLIN", "-GROSORLIN"])(
     "runs as %s in Spanish (probes properties/p163, p140)",

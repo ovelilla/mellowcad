@@ -171,8 +171,8 @@ out (six to a line, spaced in threes; `ByLayer` in Spanish too, p151) and asks a
 it; `'ZOOM` at its prompt runs and -LWEIGHT resumes (p165); run transparently, its heading is
 `>>Current lineweight: >>BYLAYER` and each LINE segment takes the lineweight current as it starts
 (p154); es `Indique el grosor de línea por defecto para los nuevos objetos o [?]`; LW and
-LINEWEIGHT in English (p164, p162; Spanish has no LW, p164, and LINEWEIGHT is **unverified**
-there, so not added); "wide polylines display lineweights
+LINEWEIGHT in English (p164, p162; Spanish has no LW, p164, and LINEWEIGHT is its `acad.pgp`'s
+alias of GROSORLIN, names/p24); "wide polylines display lineweights
 only when displayed outside of plan view": in plan their width is drawn, hairline at its edges;
 LWDISPLAY starts on, where AutoCAD's starts at 0 (p204) — WHY: with no layouts or plotting here,
 the screen is the only place a lineweight shows; the status bar's Lineweight toggles it as a step U
@@ -348,8 +348,7 @@ object the position rows are read and moved as points in space; Normal X / Y / Z
 circle and an arc; a circle's one Geometry group as AutoCAD's (desktop circle/d10): Center X, Y and
 Z, Radius, Diameter, Circumference, Area, Normal X, Y and Z, only the normal read-only (greyed
 there), Circumference and Area setting the radius (0 or less refused, as Radius refuses it); es
-`Centro X` as Autodesk's Spanish support names the palette's View rows ("Centro X y Centro Y
-dentro de la vista aparecen atenuados en AutoCAD"), the desktop's own **unverified**; an arc's one
+`Centro X`, ax26res 14; an arc's one
 Geometry group as AutoCAD's (desktop arc/d09): Start X, Y and Z, Center X, Y and Z, End X, Y and Z,
 Radius, Start angle, End angle, Total angle, Arc length, Area (the segment its chord closes) and
 Normal X, Y and Z, the ends, Total angle, Arc length, Area and the normal read-only (greyed there),
@@ -361,7 +360,7 @@ Radius ratio, Start angle, End angle (0 and 360 on a whole one), Major axis vect
 Minor axis vector X, Y and Z and Area, the ends, the vectors and Area read-only (greyed there), the
 ratio (above 0, at most 1) and an arc's angles retyped, a whole ellipse's angles read-only
 (**unverified** what retyping them does there); es `Relación del radio`, `Vector de radio mayor X`,
-`Vector de eje menor X` as d08 shows them, the English labels **unverified**; a polyline's rows and groups as AutoCAD's (desktop pline/d08): Geometry's
+`Vector de eje menor X` as d08 shows them, both languages' ax26res 105, 47, 46; a polyline's rows and groups as AutoCAD's (desktop pline/d08): Geometry's
 Current Vertex (typed here where AutoCAD steps it with arrows), Vertex X and Y, Start segment width
 and End segment width of the segment it starts (none at an open one's last vertex), Global width,
 which sets every segment's, Elevation, Area (an open one's as if closed) and Length, the last two

@@ -186,11 +186,11 @@ same prompt again; ARRAYPOLAR's `ROWs` (es `Filas`), not built and so refused, k
 `CENT`, `CENTER`, `_CEN` at PLINE's arc prompt are the Center snap, not `CEnter`, and `CENTER` at
 ZOOM's first prompt is the snap although it spells `Center` (es `CEN`, `CENTRO` at POL's arc prompt;
 `E` names `cEntro`). AutoCAD 2023's console; the Spanish words from Autodesk's table, the Spanish
-matches by the same rule (**unverified**: no Spanish console)
+matches by the same rule (`CEN` at POL's arc prompt asks `de`, pline/p105 es-ES)
 
 **Missing:** PLINE's and DIST's arc prompt keep the listed `CEnter` and `Second pt`: the console
-asks `CEnter or CLose?` although the table declares `CE` and `Second` (es `Segundo`/`Segundopto`
-**unverified**); FILLET's Spanish `[Radio]` at `Designe una polilínea 2D o` and the second object's
+asks `CEnter or CLose?` although the table declares `CE` and `Second` (es `Segundo`/`Segundopto`, the 2027
+console's traced `initget`); FILLET's Spanish `[Radio]` at `Designe una polilínea 2D o` and the second object's
 prompt keeps the listed word, which AutoCAD declares `RAdio` (only `R` differs, its hidden Trim's
 there); a declared order other than the listed one is kept only where two offered words can be
 ambiguous (TEXT, ATTDEF, ATTDISP, ARRAYPOLAR) — CIRCLE's `2P 3P Ttr`, ZOOM's, ROTATE's `Reference Copy`,

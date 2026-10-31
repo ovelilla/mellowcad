@@ -316,14 +316,14 @@ is 36 apart), `Rotate items` (Yes / No); path `Method` (`Divide`, `Measure`, Mea
 Divide's spacing), `Items` (by Measure no more than fit: d20g **unverified**), `Item spacing` (the
 items as many as fit, d20h: 10 is 9; by Divide its even share, read-only: **unverified**), `Align
 items` (Yes / No); each edit one undo step, which U names `Modify Property` (d20); es `Columnas`, `Espacio entre columnas`, `Filas`,
-`Espacio entre filas`, `Incremento de elevación de filas`, `Niveles`, `Espaciado de niveles`
-(pt-BR `Níveis`, `Espaçamento entre níveis`, ax26res 1197, 1198), `Incluye el ángulo del eje`, `Centro X`,
+`Espacio entre filas`, `Incremento de elevación de fila`, `Niveles`, `Espaciado de niveles`
+(pt-BR `Níveis`, `Espaçamento entre níveis`), `Incluye el ángulo de eje`, `Centro X`,
 `Radio`, `Dirección` (`En el sentido antihorario`, `En el sentido horario`), `Elementos`,
 `Ángulo entre elementos`, `Ángulo de relleno`, `Girar objetos`, `Longitud de trayectoria`, `Método`
 (`Dividir`, `Medir`), `Espaciado entre elementos`, `Alinear elementos` — those d07 cuts short
 (`Espacio entre colum…`, `Incremento de eleva…`, `Incluye el ángulo de…`, `Ángulo entre eleme…`,
-`Espaciado entre ele…`, `Longitud de trayect…`) completed in Autodesk's style, **unverified**
-(ARRAYS-D76)
+`Espaciado entre ele…`, `Longitud de trayect…`) completed from the installed `es-ES/ax26res.dll`
+by id, 1189–1212 (ARRAYS-D76; the language review of 31/10/2026)
 
 **Missing:** the array's grips' hover menus (d12; es d04–d06) — the rectangular base `Move`, `Level Count` (es `Desplazar`,
 `Conteo de niveles`), the last column's `Column Count`, `Total Column Spacing`, `Axis Angle`
@@ -1149,7 +1149,7 @@ CIRCLE, a type refused or a locked object), the ghost of the cut lines and the b
 corner in the glow over the originals dimmed (desktop corners/d03-1, d03-2), the circle-and-slash
 over a pair refused, and Polyline's corners at the current distances. Wording, English and Spanish,
 from AutoCAD 2027's console (corners/p100–p169, p182, p184, p314–p319, p327, p370–p382) and its
-string tables. A 3D polyline is refused with `  3D Polyline objects may not be chamfered.` (es `… unidos con chaflán.`, composed from table 20635 as FILLET's: **unverified**), its Polyline option with `Object selected is not a 2D polyline` (3dpoly/p09).
+string tables. A 3D polyline is refused with `  3D Polyline objects may not be chamfered.` (es `  Puede que los objetos de polilínea 3D no estén unidos con chaflán.`, names/p17), its Polyline option with `Object selected is not a 2D polyline` (3dpoly/p09).
 
 **Missing:** the bevel's linetype scale from the second line, as FILLET's arc's; Angle, mEthod and
 Trim (CHAMMODE is always Distance and TRIMMODE 1, so they are not listed, nor the second prompt's
@@ -1291,7 +1291,7 @@ region keeps its object when the set was taken by `ALL` (AutoCAD's order then is
 first, b01; here the first in the set); a preselection's part in SUBTRACT (taken as the first set,
 **unverified**).
 
-### `JOIN` / `J` · es `UNIR` / `U`† · pt-BR `UNIR` / `UNE`
+### `JOIN` / `J` · es `UNIR` / `U` · pt-BR `UNIR` / `UNE`
 
 **Implemented:** `Select source object or multiple objects to join at once:`, then
 `Select objects to join:` once one is picked (es
