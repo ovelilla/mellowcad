@@ -259,7 +259,9 @@ export class PolylineTool implements Tool {
     if (this.askingWidth) return this.widthQuestion(this.askingWidth)
     if (this.askingLength) return "specifyLengthOfLine"
     if (this.arc.active) return this.arc.question()
-    return this.state.arcMode ? "specifyEndpointOfArcOr" : "specifyNextPointOr"
+    // WHY not LINE's id: pt-BR words this one `Especificar o próximo ponto ou`
+    // (21297, 21321), LINE's `Especificar próximo ponto ou`.
+    return this.state.arcMode ? "specifyEndpointOfArcOr" : "plineNextPointOr"
   }
 
   /** Every point after the start is a 2D one, as AutoCAD's console refuses it. */

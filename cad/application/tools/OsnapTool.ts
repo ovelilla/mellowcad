@@ -1,6 +1,7 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { SnapType } from "../snapping/types"
 import {
+  OSMODE_BITS,
   OSNAP_MODES,
   OSNAP_MODE_IDS,
   OSNAP_OFF,
@@ -79,17 +80,16 @@ export class OsnapTool implements Tool {
     return true
   }
 
-  /** The modes as AutoCAD lists them, `End,Cen,Int,Ext`; empty for none. */
+  /**
+   * The modes as AutoCAD lists them, `End,Cen,Int,Ext`; empty for none. WHY
+   * not the keywords: the list prints each mode's short name (33200–33213:
+   * `Quad`, `App Int`; pt-BR `Extremidade`, `Mais próximo`), in OSMODE's
+   * order, Ext after App Int (probe names/p10).
+   */
   private modeList(ctx: ToolContext, enabled: readonly SnapType[]): string {
-    return OSNAP_MODE_IDS.filter((id) => {
-      const mode = OSNAP_MODES[id]
-      return mode !== "none" && enabled.includes(mode)
-    })
-      .map((id) => capitalized(ctx.text.abbreviation(id)))
+    return [...enabled]
+      .sort((a, b) => OSMODE_BITS[a] - OSMODE_BITS[b])
+      .map((mode) => ctx.text.message("osnapModeName", { mode }))
       .join(",")
   }
-}
-
-function capitalized(word: string): string {
-  return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()
 }

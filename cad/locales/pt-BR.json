@@ -553,18 +553,18 @@
     "keywords": {
       "-OSNAP": {
         "ENDpoint": "pONto",
-        "MIDpoint": "Meio",
-        "CENter": "Centro",
-        "QUAdrant": "Quadrante",
-        "INTersection": "Intersecção",
-        "EXTension": "Extensão",
-        "INSertion": "Inserção",
-        "PERpendicular": "Perpendicular",
-        "TANgent": "Tangente",
-        "NEArest": "Maispróximo",
-        "APParent": "Aparente",
-        "PARallel": "Paralela",
-        "NONe": "Nenhum",
+        "MIDpoint": "MEIo",
+        "CENter": "CENtro",
+        "QUAdrant": "QUAdrante",
+        "INTersection": "INTersecção",
+        "EXTension": "EXTensão",
+        "INSertion": "INSerção",
+        "PERpendicular": "PERpendicular",
+        "TANgent": "TANgente",
+        "NEArest": "MAIspróximo",
+        "APParent": "APArente",
+        "PARallel": "PARalela",
+        "NONe": "NENhum",
         "OFF": "Desativado"
       },
       "LINE": {
@@ -1207,10 +1207,18 @@
         "Undo": "Desfazer"
       },
       "viewOrthographic": {
+        "Top": "Superior",
+        "Left": "Esquerda",
         "Right": "Direita"
       },
+      "ucsNewUcs": {
+        "ZAxis": "EIxoz"
+      },
       "ucsOrthographic": {
+        "Top": "Superior",
         "Front": "Frontal",
+        "BAck": "Posterior",
+        "Left": "Esquerdo",
         "Right": "Direito"
       },
       "specifyEndpointOfLineOr": {
@@ -1226,7 +1234,7 @@
         "Close": "Fechar",
         "Arc": "Arco"
       },
-      "specifyNextPointOr": {
+      "plineNextPointOr": {
         "Line": "LInha"
       },
       "specifyFirstCornerPointOr": {
@@ -1245,6 +1253,9 @@
         "Join": "Unir",
         "eXit": "SAir"
       },
+      "peditWalkOption": {
+        "eXit": "SAir"
+      },
       "enterFitDataOption": {
         "Add": "ADicionar",
         "Open": "ABrir",
@@ -1255,6 +1266,11 @@
         "X": "X"
       },
       "specifyNewLocationOr": {
+        "eXit": "Sair",
+        "X": "S"
+      },
+      "enterNewWeightOr": {
+        "eXit": "Sair",
         "X": "S"
       }
     },
@@ -1474,6 +1490,8 @@
       "specifyFirstPoint": "Especificar primeiro ponto",
       "specifyNextPointOr": "Especificar próximo ponto ou",
       "specifyNextPointOrClose": "Especificar próximo ponto ou",
+      "plineNextPointOr": "Especificar o próximo ponto ou",
+      "specifyNextPointOrTotal": "Especifique o próximo ponto ou",
       "lengthOfLine": "Comprimento da linha",
       "specifyStartPoint": "Especificar o ponto inicial",
       "specifyStartPointOfPolyline": "Especificar o ponto inicial da polilinha",
@@ -1485,6 +1503,9 @@
       "enterNumberOfSides": "Inserir número de lados",
       "specifyCenterOfPolygonOr": "Especificar centro do polígono ou",
       "enterAnOption": "Inserir uma opção",
+      "textJustifyOption": "Insira uma opção",
+      "ucsiconOption": "Insira uma opção",
+      "navvcubeOption": "Insira uma opção",
       "inscribedShort": "I",
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Especificar primeiro ponto final da aresta",
@@ -1526,8 +1547,11 @@
       "secondPointOfDistance": " Especifique o segundo ponto",
       "clarifyKeyword": "{keywords}?",
       "specifyFirstCornerPointOr": "Especificar primeiro canto ou",
-      "addModeNextPointOr": " (modo ADICIONAR)Especifique o próximo ponto ou",
-      "subtractModeNextPointOr": " (modo SUBTRAIR)Especifique o próximo ponto ou",
+      "areaFirstCornerPointOr": "Especificar o primeiro ponto do canto ou",
+      "addModeNextPointOr": " (modo ADICIONAR)Especificar próximo ponto ou",
+      "subtractModeNextPointOr": " (modo SUBTRAIR)Especificar próximo ponto ou",
+      "addModeNextPointOrTotal": " (modo ADICIONAR)Especifique o próximo ponto ou",
+      "subtractModeNextPointOrTotal": " (modo SUBTRAIR)Especifique o próximo ponto ou",
       "addModeSelectObjects": "(modo ADICIONAR) Selecionar objetos",
       "subtractModeSelectObjects": "(modo SUBTRAIR) Selecionar objetos",
       "specifyOtherCornerPointOr": "Especificar outro ponto de canto ou",
@@ -1535,6 +1559,7 @@
       "specifySecondPointOfArcOr": "Especificar segundo ponto do arco ou",
       "specifyEndPointOfArc": "Especificar o ponto final do arco",
       "specifyCenterPointOfArc": "Especificar ponto central do arco",
+      "plineCenterPointOfArc": "Especificar o centro do arco",
       "specifyIncludedAngle": "Especificar o ângulo interno",
       "specifyRadiusOfArc": "Especificar o raio do arco",
       "specifyDirectionOfChordForArc": "Especificar direção da corda do arco (mantenha pressionada a tecla Ctrl para alternar direção)",
@@ -1554,9 +1579,12 @@
       "firstPolygonPoint": "Primeiro ponto do polígono ou selecionar/arrastar cursor",
       "specifyEndpointOfLineOr": "Especificar ponto final da linha ou",
       "specifyBasePointOr": "Especificar ponto base ou",
+      "copyBasePointOr": "Especificar um ponto base ou",
+      "copyDisplacement": "Deslocamento",
       "specifyDisplacement": "Especificar deslocamento",
       "specifySecondPointOr": "Especificar segundo ponto ou",
       "useFirstPointAsDisplacement": "utilizar primeiro ponto como deslocamento",
+      "copyUseFirstPoint": "usar primeiro ponto como deslocamento",
       "useXScaleFactor": "utilizar fator de escala X",
       "copySecondPointOr": "Especificar segundo ponto ou",
       "specifyBasePoint": "Especificar ponto base",
@@ -1587,6 +1615,7 @@
       "enterTrimModeOption": "Insira uma opção de modo de recorte",
       "enterExtendModeOption": "Insira uma opção de modo estendido",
       "selectObjectsOr": "Selecionar objetos ou",
+      "selectEdgesOr": "Selecione objetos ou",
       "selectAll": "selecionar tudo",
       "selectObjectsToEraseOrExit": "Selecionar objetos a serem apagados ou '<'sair>",
       "selectObjectsToErase": "Selecionar objetos a serem apagados",
@@ -1626,7 +1655,7 @@
       "enterPathMethod": "Insira o método de caminho",
       "enterNumberOfItemsAlongPath": "Insira o número de itens ao longo do caminho",
       "specifyDistanceBetweenItemsAlongPath": "Especifique a distância entre os itens ao longo do caminho",
-      "specifyNumberOfItemsOr": "Especificar número de itens ou",
+      "specifyNumberOfItemsOr": "Especifique o número de itens ou",
       "alignArrayedItemsToPath": "Alinhar itens dispostos em matriz ao caminho?",
       "specifyInternalPointOr": "Especifique um ponto interno ou",
       "enterPatternNameOr": "Insira um nome de padrão ou",
@@ -1959,7 +1988,7 @@
       "unknownDimStyle": "Estilo de cota desconhecido.",
       "namedDimStyles": "Estilos de cota nomeados:",
       "noMatchingDimStyles": "  Não foram encontrados estilos de cota coincidentes.",
-      "splineSettingsFit": "Configurações atuais: Método=Ajustar   Nós={knots, select, chord {Banzo} sqrtChord {Raiz quadrada} other {Uniforme}}",
+      "splineSettingsFit": "Configurações atuais: Método=Ajustar Nós={knots, select, chord {Banzo} sqrtChord {Raiz quadrada} other {Uniforme}}",
       "splineSettingsCv": "Configurações atuais: Método=VC Grau={degree}",
       "requiresIntegerBetween": "Requer um inteiro entre {min} e {max}.",
       "commandCompletelyUndone": "O comando foi desfeito completamente.",
@@ -2006,6 +2035,7 @@
       "orbitExit": "Pressione ESC ou ENTER para sair ou clique com o botão direito do mouse para exibir o menu de atalho.",
       "requiresTwoPointsOrDisplacement": "Requer dois pontos ou um deslocamento seguido por ENTER.",
       "currentOsnapModes": "Modos de osnap atuais: {modes}",
+      "osnapModeName": "{mode, select, endpoint {Extremidade} midpoint {Meio} center {Centro} quadrant {Quadrante} intersection {Intersecção} insertion {Inserção} perpendicular {Perpendicular} tangent {Tangente} nearest {Mais próximo} apparentIntersection {Aparente} extension {Ext} other {Paralela}}",
       "currentLineweight": "Espessura de linha atual: {value}",
       "pointingEdgeOn": "Não é permitido apontar em um UCS visto de perfil.",
       "circleDoesNotExist": "O círculo não existe.",
@@ -2069,7 +2099,7 @@
       "currentTextStyle": "Estilo de texto atual: \"{style}\"  Altura do texto:  {height} Anotativo: Não  Justificar:  {justify}",
       "textJustifyName": "{justify, select, center {Centro} right {Direita} middle {Meio} tl {SE} tc {SC} tr {SD} ml {MES} mc {MC} mr {MD} bl {IE} bc {IC} br {ID} other {Esquerda}}",
       "textStylesHeader": "Estilos de texto:",
-      "textStyleEntry": "Nome do estilo: {name}  Tipo de fonte: Arial\n   Altura: {height}  Fator de largura: {width}  Ângulo oblíquo: 0\n   Geração: Normal",
+      "textStyleEntry": "Nome do estilo: {name}  Tipo de fonte: Arial\n   Altura: {height}  Fator de largura: {width}  Ângulo de inclinação: 0\n   Geração: Normal",
       "currentTextStyleName": "Estilo de texto atual: \"{name}\"",
       "currentMTextStyle": "Estilo de texto atual:  \"{style}\"  Altura do texto:  {height} Anotativo: Não",
       "invalidStyleName": "Nome de estilo não válido",
@@ -2108,7 +2138,7 @@
       "listColor": "                   Cor: {color}    Tipo de linha: \"{linetype}\"",
       "listLineweight": "                   Espessura de linha: {lineweight} mm",
       "listThickness": "                            Espessura =    {thickness}",
-      "listExtrusion": "Direção da extrusão relativa ao UCS:\n                   X={x}  Y={y}  Z={z}",
+      "listExtrusion": "Direção de extrusão em relação ao UCS:\n                   X={x}  Y={y}  Z={z}",
       "listLineFrom": "                do ponto, X={x}  Y={y}  Z={z}",
       "listLineTo": "            para o ponto, X={x}  Y={y}  Z={z}",
       "listLineLength": "          {inUcs, select, yes {No UCS atual, } other {}}Comprimento ={length},  Ângulo no plano XY = {angle}",
@@ -2210,7 +2240,7 @@
       "listDimensionDefaultText": "texto padrão",
       "listDimensionTextModifier": "modificador do texto de cota: {text}",
       "listDimensionStyle": "estilo de cota: \"{style}\"",
-      "listDimensionOverrides": "substituições de estilo de cota:\n DIMUPT      Ativado",
+      "listDimensionOverrides": "sobreposições de estilo de cota:\n DIMUPT      Ativado",
       "listDimensionAnnotative": "Anotativo: Não",
       "listHatchPattern": "                 Padrão de hachura {pattern}",
       "listHatchAnnotative": "                 Anotativo: Não",
@@ -2308,6 +2338,8 @@
         "Second pt": "Segundo pto"
       },
       "DIST": {
+        "Line": "LInha",
+        "Direction": "DIreção",
         "Multiple": "Múltiplos pontos",
         "Second pt": "Segundo pto"
       },
@@ -2345,9 +2377,7 @@
         "BR": "BR",
         "Lock position": "Bloquear posição"
       },
-      "ATTDISP": {
-        "OFF": "Desativado"
-      },
+      "ATTDISP": { "ON": "ATivado", "OFF": "Desativado" },
       "SNAP": {
         "OFF": "Desativado"
       },
@@ -2381,6 +2411,7 @@
         "end Tangency": "Tangência final"
       },
       "SPLINEDIT": {
+        "After": "Depois",
         "Fit data": "AJustar dados",
         "Edit vertex": "Editar vértice",
         "convert to Polyline": "converter para Polilinha",
@@ -2415,6 +2446,8 @@
         "Align items": "Alinhar itens",
         "Fill entire path": "Preencha o caminho inteiro"
       },
+      "COPY": { "Displacement": "Descolamento" },
+      "UCSICON": { "Noorigin": "Sem origem" },
       "OFFSET": {
         "Through": "Através"
       }

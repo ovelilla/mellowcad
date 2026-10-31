@@ -103,13 +103,15 @@ const POINT_STEPS: Partial<Record<StepKind, readonly string[]>> = {
   secondEnd: [],
 }
 
+// WHY PLINE's center, not ARC's: pt-BR words it `Especificar o centro do arco`
+// (21286), ARC's `Especificar ponto central do arco` (pline/p133, arc/p140).
 const QUESTIONS: Record<StepKind, PromptId> = {
   included: "specifyIncludedAngle",
   angleEnd: "specifyEndpointOfArcOr",
-  angleCenter: "specifyCenterPointOfArc",
+  angleCenter: "plineCenterPointOfArc",
   angleRadius: "specifyRadiusOfArc",
   chordDirection: "specifyDirectionOfChordForArc",
-  center: "specifyCenterPointOfArc",
+  center: "plineCenterPointOfArc",
   centerEnd: "specifyEndpointOfArcOr",
   centerAngle: "specifyIncludedAngleCtrl",
   centerChord: "specifyLengthOfChordCtrl",

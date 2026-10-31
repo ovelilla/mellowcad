@@ -103,7 +103,9 @@ offsetting? [Yes/No] <No>:`) is a phase whose `question()` names it, with that a
   the declared one, which answers and which `Ambiguous response` names. A language labels only what
   English labels (keep English's label even when equal to the word). A translation often declares
   otherwise where English does not (Spanish `Atravesar`, `Actual`): read both tables' `initget`. The
-  console outranks the table (PLINE keeps `CEnter`, pline/p103).
+  console outranks the table (PLINE keeps `CEnter`, pline/p103). A label equal to the command's
+  word gives way to a prompt's own (pt-BR SPLINEDIT's `saIr`, `Sair` at Weight's); a label one
+  prompt lists otherwise has no place yet (pt-BR UCS New's `EIxo z`).
 - A prompt whose declared order is not the listed one names it in its question (`declared: ["OFF",
 "Normal", "ON"]`), only where two words on offer can be ambiguous.
 - A word the `initget` declares and the list leaves out is a **hidden option**, after the shown
@@ -113,5 +115,7 @@ offsetting? [Yes/No] <No>:`) is a phase whose `question()` names it, with that a
   `unhandled` in `invokeOption`.
 - The runtime matches answers (`matchKeywords`), and two keywords of one prompt may share their
   first letters — AutoCAD asks which (`CEnter or CLose?`): never re-letter one for that, nor for an
-  object snap's name (`CEN` at a point prompt is Center). `resolveKeyword` is the stricter match
+  object snap's name (`CEN` at a point prompt is Center). A snap typed at a point prompt is matched
+  before the keywords, so -OSNAP's words take their three capitals in every language (pt-BR
+  `MEIo`, not `Meio`, which stole every `M`; names/p09). `resolveKeyword` is the stricter match
   for words a tool reads itself (a style name, `?`).

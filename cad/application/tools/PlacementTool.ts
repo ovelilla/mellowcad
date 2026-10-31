@@ -169,6 +169,16 @@ export abstract class PlacementTool implements Tool {
     }
   }
 
+  /** The base point's question, which COPY words apart in pt-BR. */
+  protected basePointQuestion(): PromptId | ToolQuestion {
+    return "specifyBasePointOr"
+  }
+
+  /** What Enter keeps at the first second point; COPY words it apart. */
+  protected firstPointPhrase(): PromptId {
+    return "useFirstPointAsDisplacement"
+  }
+
   /** The second point's question, which COPY words apart in Spanish. */
   protected secondPointQuestion(): PromptId {
     return "specifySecondPointOr"
@@ -179,7 +189,7 @@ export abstract class PlacementTool implements Tool {
       case "selecting":
         return this.selector.question()
       case "basePoint":
-        return "specifyBasePointOr"
+        return this.basePointQuestion()
       case "displacement":
         return { id: "specifyDisplacement", enter: this.lastDisplacement }
       case "secondPoint":
@@ -187,7 +197,7 @@ export abstract class PlacementTool implements Tool {
           ? this.secondPointQuestion()
           : {
               id: this.secondPointQuestion(),
-              enter: "useFirstPointAsDisplacement",
+              enter: this.firstPointPhrase(),
             }
     }
   }

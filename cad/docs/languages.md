@@ -99,7 +99,8 @@ word the engine says, and its type is the type of every other language.
   is typed and confirmed with Enter or Space, never run on a letter alone.
 - **`keywordLabels`** gives a keyword the gloss AutoCAD lists it with (`Ttr (tan tan radius)`), or
   the form it lists a keyword declared otherwise in (`TL` for TEXT's `TLeft`). A language labels
-  only what English labels.
+  only what English labels. A label that only repeats the command's word gives way to the word a
+  prompt spells its own way (`promptKeywords`).
 - **`promptKeywords`** spells a keyword differently at one prompt, by the prompt's id: each
   AutoCAD prompt declares its own, so Spanish FILLET lists `[RAdio]` but
   `Designe polilínea 2D o [Radio]:`. A keyword it leaves out is spelled as in `keywords`.

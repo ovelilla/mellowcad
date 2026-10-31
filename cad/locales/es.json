@@ -1068,7 +1068,7 @@
       "UCSICON": {
         "ON": "ACT",
         "OFF": "DES",
-        "Noorigin": "Sin origen",
+        "Noorigin": "Sin",
         "ORigin": "Origen"
       },
       "PLAN": {
@@ -1159,18 +1159,30 @@
         "Object": "Objeto"
       },
       "specifyNextFencePointOr": { "Undo": "desHacer" },
-      "viewOrthographic": { "Right": "Derecha" },
-      "ucsOrthographic": { "Front": "Frontal", "Right": "Derecha" },
+      "viewOrthographic": {
+        "Top": "sUperior",
+        "Left": "IZquierda",
+        "Right": "Derecha"
+      },
+      "ucsNewUcs": { "ZAxis": "ejEZ" },
+      "ucsOrthographic": {
+        "Top": "SUperior",
+        "Front": "Frontal",
+        "BAck": "Posterior",
+        "Left": "IZquierda",
+        "Right": "Derecha"
+      },
       "specifyEndpointOfLineOr": { "Undo": "desHacer" },
       "select2dPolylineOr": { "Radius": "Radio" },
       "selectSecondObjectOrApplyCornerOr": { "Radius": "Radio" },
       "specifyEndpointOfArcOr": { "Close": "Cerrar", "Arc": "Arco" },
-      "specifyNextPointOr": { "Line": "líNea" },
+      "plineNextPointOr": { "Line": "líNea" },
       "specifyFirstCornerPointOr": { "Width": "Grosor" },
       "specifyAxisEndpointOfEllipticalArcOr": { "Centre": "cEntro" },
       "splineditOptionClosed": { "convert to Polyline": "Polilínea" },
       "peditOption": { "eXit": "SAlir" },
       "peditOption3d": { "Join": "Unir", "eXit": "SAlir" },
+      "peditWalkOption": { "eXit": "Salir" },
       "enterFitDataOption": {
         "Add": "añaDIr",
         "Open": "Abrir",
@@ -1178,7 +1190,8 @@
         "X": "S"
       },
       "enterVertexEditingOption": { "X": "S" },
-      "specifyNewLocationOr": { "X": "S" }
+      "specifyNewLocationOr": { "eXit": "Salir", "X": "S" },
+      "enterNewWeightOr": { "eXit": "Salir", "X": "SA" }
     },
     "prompts": {
       "length": "Longitud",
@@ -1396,6 +1409,8 @@
       "specifyFirstPoint": "Precise primer punto",
       "specifyNextPointOr": "Precise punto siguiente o",
       "specifyNextPointOrClose": "Precise siguiente punto o",
+      "plineNextPointOr": "Precise punto siguiente o",
+      "specifyNextPointOrTotal": "Precise punto siguiente o",
       "lengthOfLine": "Longitud de la línea",
       "specifyStartPoint": "Precise punto inicial",
       "specifyStartPointOfPolyline": "Precise punto inicial de polilínea",
@@ -1407,6 +1422,9 @@
       "enterNumberOfSides": "Indique número de lados",
       "specifyCenterOfPolygonOr": "Precise centro de polígono o",
       "enterAnOption": "Indique una opción",
+      "textJustifyOption": "Indique una opción",
+      "ucsiconOption": "Indique una opción",
+      "navvcubeOption": "Indique una opción",
       "inscribedShort": "I",
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Precise primer punto final de lado",
@@ -1448,8 +1466,11 @@
       "secondPointOfDistance": " Designe segundo punto",
       "clarifyKeyword": "{keywords}?",
       "specifyFirstCornerPointOr": "Precise primer punto de esquina o",
+      "areaFirstCornerPointOr": "Precise primer punto de esquina o",
       "addModeNextPointOr": " (modo AÑADIR)Precise punto siguiente o",
       "subtractModeNextPointOr": " (modo SUSTRAER)Precise punto siguiente o",
+      "addModeNextPointOrTotal": " (modo AÑADIR)Precise punto siguiente o",
+      "subtractModeNextPointOrTotal": " (modo SUSTRAER)Precise punto siguiente o",
       "addModeSelectObjects": "(modo AÑADIR) Designe objetos",
       "subtractModeSelectObjects": "(modo SUSTRAER) Designe objetos",
       "specifyOtherCornerPointOr": "Precise esquina opuesta o",
@@ -1457,6 +1478,7 @@
       "specifySecondPointOfArcOr": "Precise segundo punto de arco o",
       "specifyEndPointOfArc": "Precise punto final del arco",
       "specifyCenterPointOfArc": "Precise punto central del arco",
+      "plineCenterPointOfArc": "Precise punto central del arco",
       "specifyIncludedAngle": "Precise ángulo incluido",
       "specifyRadiusOfArc": "Precise radio de arco",
       "specifyDirectionOfChordForArc": "Precise dirección de cuerda para arco (mantenga pulsada la tecla Ctrl para cambiar de dirección)",
@@ -1476,9 +1498,12 @@
       "firstPolygonPoint": "Primer punto del polígono o designe/arrastre cursor",
       "specifyEndpointOfLineOr": "Precise punto final de línea o",
       "specifyBasePointOr": "Precise punto base o",
+      "copyBasePointOr": "Precise punto base o",
+      "copyDisplacement": "Desplazamiento",
       "specifyDisplacement": "Precise desplazamiento",
       "specifySecondPointOr": "Precise segundo punto o",
       "useFirstPointAsDisplacement": "usar primer punto como desplazamiento",
+      "copyUseFirstPoint": "usar primer punto como desplazamiento",
       "useXScaleFactor": "usar factor de escala X",
       "copySecondPointOr": "Precise el segundo punto o",
       "specifyBasePoint": "Precise punto base",
@@ -1509,6 +1534,7 @@
       "enterTrimModeOption": "Introduzca una opción de modo de recorte",
       "enterExtendModeOption": "Introduzca una opción de modo de alargamiento",
       "selectObjectsOr": "Seleccione objetos o",
+      "selectEdgesOr": "Seleccione objetos o",
       "selectAll": "seleccionar todo",
       "selectObjectsToEraseOrExit": "Designe objetos que borrar o '<'salir>",
       "selectObjectsToErase": "Designe objetos que borrar",
@@ -1928,6 +1954,7 @@
       "regenQueued": "La regeneración está en espera.",
       "requiresRegen": "** Regeneración necesaria, no puede ser transparente.",
       "currentOsnapModes": "Modos refent actuales: {modes}",
+      "osnapModeName": "{mode, select, endpoint {Fin} midpoint {Med} center {Cen} quadrant {Cua} intersection {Int} insertion {Ins} perpendicular {Per} tangent {Tan} nearest {Cer} apparentIntersection {Fic Int} extension {Ext} other {Par}}",
       "currentLineweight": "Grosor de línea actual: {value}",
       "pointingEdgeOn": "No se puede señalar en un SCP visto de canto.",
       "circleDoesNotExist": "El círculo no existe.",
@@ -2216,7 +2243,12 @@
       },
       "CIRCLED": { "Ttr": "Ttr (Tangente tangente radio)" },
       "PLINE": { "Halfwidth": "Mitad grosor", "Second pt": "Segundo pto." },
-      "DIST": { "Multiple": "puntos Múltiples", "Second pt": "Segundo pto." },
+      "DIST": {
+        "Line": "líNea",
+        "Direction": "Dirección",
+        "Multiple": "puntos Múltiples",
+        "Second pt": "Segundo pto."
+      },
       "RECTANG": { "Pick": "Designar puntos" },
       "AREA": { "Add": "Añadir área", "Subtract": "Sustraer área" },
       "MTEXT": { "Line spacing": "Interlineado", "At least": "Al menos" },
@@ -2243,7 +2275,7 @@
         "BR": "ID",
         "Lock position": "Bloquear posición"
       },
-      "ATTDISP": { "OFF": "DES" },
+      "ATTDISP": { "ON": "ACT", "OFF": "DES" },
       "SNAP": { "OFF": "DES" },
       "FILL": { "OFF": "DES" },
       "UNDO": { "OFF": "DES" },
@@ -2259,6 +2291,7 @@
         "end Tangency": "finalizar Tangencia"
       },
       "SPLINEDIT": {
+        "After": "Después",
         "Fit data": "Ajustar datos",
         "Edit vertex": "Editar vértices",
         "convert to Polyline": "coNvertir en polilínea",
@@ -2287,6 +2320,8 @@
         "Align items": "ALinear elementos",
         "Fill entire path": "Llenar todo el camino"
       },
+      "COPY": { "Displacement": "Desplazamiento" },
+      "UCSICON": { "Noorigin": "Sin origen" },
       "OFFSET": { "Through": "punto a Atravesar" }
     },
     "listing": {

@@ -1140,18 +1140,26 @@
         "Object": "Object"
       },
       "specifyNextFencePointOr": { "Undo": "Undo" },
-      "viewOrthographic": { "Right": "Right" },
-      "ucsOrthographic": { "Front": "Front", "Right": "Right" },
+      "viewOrthographic": { "Top": "Top", "Left": "Left", "Right": "Right" },
+      "ucsNewUcs": { "ZAxis": "ZAxis" },
+      "ucsOrthographic": {
+        "Top": "Top",
+        "Front": "Front",
+        "BAck": "BAck",
+        "Left": "Left",
+        "Right": "Right"
+      },
       "specifyEndpointOfLineOr": { "Undo": "Undo" },
       "select2dPolylineOr": { "Radius": "Radius" },
       "selectSecondObjectOrApplyCornerOr": { "Radius": "Radius" },
       "specifyEndpointOfArcOr": { "Close": "CLose", "Arc": "ARc" },
-      "specifyNextPointOr": { "Line": "LIne" },
+      "plineNextPointOr": { "Line": "LIne" },
       "specifyFirstCornerPointOr": { "Width": "Width" },
       "specifyAxisEndpointOfEllipticalArcOr": { "Centre": "Centre" },
       "splineditOptionClosed": { "convert to Polyline": "Polyline" },
       "peditOption": { "eXit": "EXit" },
       "peditOption3d": { "Join": "Join", "eXit": "EXit" },
+      "peditWalkOption": { "eXit": "eXit" },
       "enterFitDataOption": {
         "Add": "Add",
         "Open": "Open",
@@ -1159,7 +1167,8 @@
         "X": "X"
       },
       "enterVertexEditingOption": { "X": "X" },
-      "specifyNewLocationOr": { "X": "X" }
+      "specifyNewLocationOr": { "eXit": "EXit", "X": "X" },
+      "enterNewWeightOr": { "eXit": "EXit", "X": "X" }
     },
     "prompts": {
       "length": "Length",
@@ -1377,6 +1386,8 @@
       "specifyFirstPoint": "Specify first point",
       "specifyNextPointOr": "Specify next point or",
       "specifyNextPointOrClose": "Specify next point or",
+      "plineNextPointOr": "Specify next point or",
+      "specifyNextPointOrTotal": "Specify next point or",
       "lengthOfLine": "Length of line",
       "specifyStartPoint": "Specify start point",
       "specifyStartPointOfPolyline": "Specify start point of polyline",
@@ -1388,6 +1399,9 @@
       "enterNumberOfSides": "Enter number of sides",
       "specifyCenterOfPolygonOr": "Specify center of polygon or",
       "enterAnOption": "Enter an option",
+      "textJustifyOption": "Enter an option",
+      "ucsiconOption": "Enter an option",
+      "navvcubeOption": "Enter an option",
       "inscribedShort": "I",
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Specify first endpoint of edge",
@@ -1429,8 +1443,11 @@
       "secondPointOfDistance": " Specify second point",
       "clarifyKeyword": "{keywords}?",
       "specifyFirstCornerPointOr": "Specify first corner point or",
+      "areaFirstCornerPointOr": "Specify first corner point or",
       "addModeNextPointOr": " (ADD mode)Specify next point or",
       "subtractModeNextPointOr": " (SUBTRACT mode)Specify next point or",
+      "addModeNextPointOrTotal": " (ADD mode)Specify next point or",
+      "subtractModeNextPointOrTotal": " (SUBTRACT mode)Specify next point or",
       "addModeSelectObjects": "(ADD mode) Select objects",
       "subtractModeSelectObjects": "(SUBTRACT mode) Select objects",
       "specifyOtherCornerPointOr": "Specify other corner point or",
@@ -1438,6 +1455,7 @@
       "specifySecondPointOfArcOr": "Specify second point of arc or",
       "specifyEndPointOfArc": "Specify end point of arc",
       "specifyCenterPointOfArc": "Specify center point of arc",
+      "plineCenterPointOfArc": "Specify center point of arc",
       "specifyIncludedAngle": "Specify included angle",
       "specifyRadiusOfArc": "Specify radius of arc",
       "specifyDirectionOfChordForArc": "Specify direction of chord for arc (hold Ctrl to switch direction)",
@@ -1457,9 +1475,12 @@
       "firstPolygonPoint": "First polygon point or pick/drag cursor",
       "specifyEndpointOfLineOr": "Specify endpoint of line or",
       "specifyBasePointOr": "Specify base point or",
+      "copyBasePointOr": "Specify base point or",
+      "copyDisplacement": "Displacement",
       "specifyDisplacement": "Specify displacement",
       "specifySecondPointOr": "Specify second point or",
       "useFirstPointAsDisplacement": "use first point as displacement",
+      "copyUseFirstPoint": "use first point as displacement",
       "useXScaleFactor": "use X scale factor",
       "copySecondPointOr": "Specify second point or",
       "specifyBasePoint": "Specify base point",
@@ -1490,6 +1511,7 @@
       "enterTrimModeOption": "Enter a trim mode option",
       "enterExtendModeOption": "Enter an extend mode option",
       "selectObjectsOr": "Select objects or",
+      "selectEdgesOr": "Select objects or",
       "selectAll": "select all",
       "selectObjectsToEraseOrExit": "Select objects to erase or '<'exit>",
       "selectObjectsToErase": "Select objects to erase",
@@ -1909,6 +1931,7 @@
       "orbitExit": "Press ESC or ENTER to exit, or right-click to display shortcut-menu.",
       "requiresTwoPointsOrDisplacement": "Requires two points, or a displacement followed by ENTER.",
       "currentOsnapModes": "Current osnap modes: {modes}",
+      "osnapModeName": "{mode, select, endpoint {End} midpoint {Mid} center {Cen} quadrant {Quad} intersection {Int} insertion {Ins} perpendicular {Perp} tangent {Tan} nearest {Near} apparentIntersection {App Int} extension {Ext} other {Par}}",
       "currentLineweight": "Current lineweight: {value}",
       "pointingEdgeOn": "Pointing in edge-on UCS is prohibited.",
       "circleDoesNotExist": "Circle does not exist.",
@@ -2197,7 +2220,12 @@
       },
       "CIRCLED": { "Ttr": "Ttr (tan tan radius)" },
       "PLINE": { "Halfwidth": "Halfwidth", "Second pt": "Second pt" },
-      "DIST": { "Multiple": "Multiple points", "Second pt": "Second pt" },
+      "DIST": {
+        "Line": "Line",
+        "Direction": "Direction",
+        "Multiple": "Multiple points",
+        "Second pt": "Second pt"
+      },
       "RECTANG": { "Pick": "Pick points" },
       "AREA": { "Add": "Add area", "Subtract": "Subtract area" },
       "MTEXT": { "Line spacing": "Line spacing", "At least": "At least" },
@@ -2224,7 +2252,7 @@
         "BR": "BR",
         "Lock position": "Lock position"
       },
-      "ATTDISP": { "OFF": "OFF" },
+      "ATTDISP": { "ON": "ON", "OFF": "OFF" },
       "SNAP": { "OFF": "OFF" },
       "FILL": { "OFF": "OFF" },
       "UNDO": { "OFF": "OFF" },
@@ -2240,6 +2268,7 @@
         "end Tangency": "end Tangency"
       },
       "SPLINEDIT": {
+        "After": "After",
         "Fit data": "Fit data",
         "Edit vertex": "Edit vertex",
         "convert to Polyline": "convert to Polyline",
@@ -2268,6 +2297,8 @@
         "Align items": "Align items",
         "Fill entire path": "Fill entire path"
       },
+      "COPY": { "Displacement": "Displacement" },
+      "UCSICON": { "Noorigin": "Noorigin" },
       "OFFSET": { "Through": "Through" }
     },
     "listing": {

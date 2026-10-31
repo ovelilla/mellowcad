@@ -1240,10 +1240,18 @@ export const en: EngineCatalog = {
         "Undo": "Undo"
       },
       "viewOrthographic": {
+        "Top": "Top",
+        "Left": "Left",
         "Right": "Right"
       },
+      "ucsNewUcs": {
+        "ZAxis": "ZAxis"
+      },
       "ucsOrthographic": {
+        "Top": "Top",
         "Front": "Front",
+        "BAck": "BAck",
+        "Left": "Left",
         "Right": "Right"
       },
       "specifyEndpointOfLineOr": {
@@ -1259,7 +1267,7 @@ export const en: EngineCatalog = {
         "Close": "CLose",
         "Arc": "ARc"
       },
-      "specifyNextPointOr": {
+      "plineNextPointOr": {
         "Line": "LIne"
       },
       "specifyFirstCornerPointOr": {
@@ -1278,6 +1286,9 @@ export const en: EngineCatalog = {
         "Join": "Join",
         "eXit": "EXit"
       },
+      "peditWalkOption": {
+        "eXit": "eXit"
+      },
       "enterFitDataOption": {
         "Add": "Add",
         "Open": "Open",
@@ -1288,6 +1299,11 @@ export const en: EngineCatalog = {
         "X": "X"
       },
       "specifyNewLocationOr": {
+        "eXit": "EXit",
+        "X": "X"
+      },
+      "enterNewWeightOr": {
+        "eXit": "EXit",
         "X": "X"
       }
     },
@@ -1546,6 +1562,8 @@ export const en: EngineCatalog = {
       "specifyFirstPoint": "Specify first point",
       "specifyNextPointOr": "Specify next point or",
       "specifyNextPointOrClose": "Specify next point or",
+      "plineNextPointOr": "Specify next point or",
+      "specifyNextPointOrTotal": "Specify next point or",
       "lengthOfLine": "Length of line",
       "specifyStartPoint": "Specify start point",
       "specifyStartPointOfPolyline": "Specify start point of polyline",
@@ -1557,6 +1575,9 @@ export const en: EngineCatalog = {
       "enterNumberOfSides": "Enter number of sides",
       "specifyCenterOfPolygonOr": "Specify center of polygon or",
       "enterAnOption": "Enter an option",
+      "textJustifyOption": "Enter an option",
+      "ucsiconOption": "Enter an option",
+      "navvcubeOption": "Enter an option",
       "inscribedShort": "I",
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Specify first endpoint of edge",
@@ -1603,8 +1624,11 @@ export const en: EngineCatalog = {
         "?"
       ],
       "specifyFirstCornerPointOr": "Specify first corner point or",
+      "areaFirstCornerPointOr": "Specify first corner point or",
       "addModeNextPointOr": " (ADD mode)Specify next point or",
       "subtractModeNextPointOr": " (SUBTRACT mode)Specify next point or",
+      "addModeNextPointOrTotal": " (ADD mode)Specify next point or",
+      "subtractModeNextPointOrTotal": " (SUBTRACT mode)Specify next point or",
       "addModeSelectObjects": "(ADD mode) Select objects",
       "subtractModeSelectObjects": "(SUBTRACT mode) Select objects",
       "specifyOtherCornerPointOr": "Specify other corner point or",
@@ -1612,6 +1636,7 @@ export const en: EngineCatalog = {
       "specifySecondPointOfArcOr": "Specify second point of arc or",
       "specifyEndPointOfArc": "Specify end point of arc",
       "specifyCenterPointOfArc": "Specify center point of arc",
+      "plineCenterPointOfArc": "Specify center point of arc",
       "specifyIncludedAngle": "Specify included angle",
       "specifyRadiusOfArc": "Specify radius of arc",
       "specifyDirectionOfChordForArc": "Specify direction of chord for arc (hold Ctrl to switch direction)",
@@ -1631,9 +1656,12 @@ export const en: EngineCatalog = {
       "firstPolygonPoint": "First polygon point or pick/drag cursor",
       "specifyEndpointOfLineOr": "Specify endpoint of line or",
       "specifyBasePointOr": "Specify base point or",
+      "copyBasePointOr": "Specify base point or",
+      "copyDisplacement": "Displacement",
       "specifyDisplacement": "Specify displacement",
       "specifySecondPointOr": "Specify second point or",
       "useFirstPointAsDisplacement": "use first point as displacement",
+      "copyUseFirstPoint": "use first point as displacement",
       "useXScaleFactor": "use X scale factor",
       "copySecondPointOr": "Specify second point or",
       "specifyBasePoint": "Specify base point",
@@ -1664,6 +1692,7 @@ export const en: EngineCatalog = {
       "enterTrimModeOption": "Enter a trim mode option",
       "enterExtendModeOption": "Enter an extend mode option",
       "selectObjectsOr": "Select objects or",
+      "selectEdgesOr": "Select objects or",
       "selectAll": "select all",
       "selectObjectsToEraseOrExit": "Select objects to erase or <exit>",
       "selectObjectsToErase": "Select objects to erase",
@@ -3561,6 +3590,26 @@ export const en: EngineCatalog = {
           "modes"
         ]
       ],
+      "osnapModeName": [
+        [
+          "mode",
+          1,
+          {
+            "endpoint": "End",
+            "midpoint": "Mid",
+            "center": "Cen",
+            "quadrant": "Quad",
+            "intersection": "Int",
+            "insertion": "Ins",
+            "perpendicular": "Perp",
+            "tangent": "Tan",
+            "nearest": "Near",
+            "apparentIntersection": "App Int",
+            "extension": "Ext",
+            "other": "Par"
+          }
+        ]
+      ],
       "currentLineweight": [
         "Current lineweight: ",
         [
@@ -5417,6 +5466,8 @@ export const en: EngineCatalog = {
         "Second pt": "Second pt"
       },
       "DIST": {
+        "Line": "Line",
+        "Direction": "Direction",
         "Multiple": "Multiple points",
         "Second pt": "Second pt"
       },
@@ -5455,6 +5506,7 @@ export const en: EngineCatalog = {
         "Lock position": "Lock position"
       },
       "ATTDISP": {
+        "ON": "ON",
         "OFF": "OFF"
       },
       "SNAP": {
@@ -5490,6 +5542,7 @@ export const en: EngineCatalog = {
         "end Tangency": "end Tangency"
       },
       "SPLINEDIT": {
+        "After": "After",
         "Fit data": "Fit data",
         "Edit vertex": "Edit vertex",
         "convert to Polyline": "convert to Polyline",
@@ -5523,6 +5576,12 @@ export const en: EngineCatalog = {
       "ARRAYPATH": {
         "Align items": "Align items",
         "Fill entire path": "Fill entire path"
+      },
+      "COPY": {
+        "Displacement": "Displacement"
+      },
+      "UCSICON": {
+        "Noorigin": "Noorigin"
       },
       "OFFSET": {
         "Through": "Through"

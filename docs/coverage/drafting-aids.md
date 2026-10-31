@@ -180,13 +180,18 @@ FROM's base point as the filter's (f32; the desktop refuses it, d05, as here); t
 
 ### `-OSNAP` / `-OS` · es `-REFENT` · pt-BR `-OSNAP` / `-OS`
 
-**Implemented:** `Current osnap modes: End,Cen,Int,Ext` (no line when none runs), then
+**Implemented:** `Current osnap modes: End,Cen,Int,Ext` (no line when none runs), each mode by its
+short name in OSMODE's order (`Quad,Int,Ins,Perp,Near,App Int,Ext,Par`; es `Fin,Med,Cen,Cua…`,
+pt-BR `Extremidade,Meio,…,Mais próximo,Aparente,Ext,Paralela`; 33200–33213, probe names/p10), then
 `Enter list of object snap modes:` — modes by their capitals, separated with commas (es Spanish's,
-from 2026's -REFENT page, CF5780AD), `_APPINT` too, replacing the running set and turning object
-snapping on; NONe, OFF (es NINguno, DES) or Enter clears it, OSMODE 0 (probes line/p37, p155,
-p163); an unknown mode says `Invalid object snap modes.` and asks again (es
+from 2026's -REFENT page, CF5780AD; pt-BR's three letters, `MEI`, `CEN`, `MAI`, `APA`, `NEN`,
+names/p07, p09), `_APPINT` too, replacing the running set and turning object
+snapping on; NONe, OFF (es NINguno, DES; pt-BR NENhum, DES) or Enter clears it, OSMODE 0 (probes
+line/p37, p155, p163); an unknown mode says `Invalid object snap modes.` and asks again (es
 `Modos refent actuales: …`, `Indique lista de modo de referencia a objetos`,
-`Modos no válidos de referencia a objetos.`)
+`Modos no válidos de referencia a objetos.`). A snap typed at a point prompt takes the same three
+letters, so a keyword's single letter stays the keyword (pt-BR `A` at PLINE is Arco; `M` and `C`
+at LINE are `Ponto inválido.`, names/p09).
 
 **Missing:** OSNAP / OS (the Drafting Settings dialog; the status bar's Object snap menu stands in),
 GCEnter and NODe in the list, a Spanish alias (none verified)

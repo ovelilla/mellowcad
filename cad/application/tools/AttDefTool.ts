@@ -182,8 +182,9 @@ export class AttDefTool implements Tool {
         const [plain, withKeywords] = POINT_PROMPT[this.justify]
         return state.keywords ? withKeywords : plain
       }
+      // WHY not `enterAnOption`: pt-BR words this one `Insira uma opção`.
       case "justify":
-        return "enterAnOption"
+        return "textJustifyOption"
       case "style":
         return {
           id: "enterStyleNameOr",

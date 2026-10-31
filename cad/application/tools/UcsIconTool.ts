@@ -33,8 +33,9 @@ export class UcsIconTool implements Tool {
     ctx.dynamicInput.close()
   }
 
+  // WHY not `enterAnOption`: pt-BR words this one `Insira uma opção`.
   question(): PromptId {
-    return "enterAnOption"
+    return "ucsiconOption"
   }
 
   commandOptions(): readonly CommandOption[] {

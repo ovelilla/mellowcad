@@ -1,7 +1,7 @@
 import { Vec3 } from "../../geometry/Vec3"
 import { Entity, copyEntity } from "../../domain/entities"
 import { AddEntitiesCommand } from "../commands/entityCommands"
-import { ToolContext } from "./Tool"
+import { ToolContext, ToolQuestion } from "./Tool"
 import { PlacementTool } from "./PlacementTool"
 import type { PromptId } from "../../locales/types"
 
@@ -18,6 +18,19 @@ export class CopyTool extends PlacementTool {
 
   protected continuesAfterPlace(): boolean {
     return true
+  }
+
+  // WHY: pt-BR's COPY asks `Especificar um ponto base ou`, MOVE's and
+  // STRETCH's `Especificar ponto base ou`; and lists `[Descolamento/mOdo]`
+  // but keeps `<Deslocamento>`, so the default is a phrase (move/p114, p123).
+  protected basePointQuestion(): PromptId | ToolQuestion {
+    return { id: "copyBasePointOr", enter: "copyDisplacement" }
+  }
+
+  // WHY: pt-BR's COPY keeps `<usar primeiro ponto como deslocamento>`
+  // (57968), MOVE's and STRETCH's `<utilizar …>` (21186, 21537).
+  protected firstPointPhrase(): PromptId {
+    return "copyUseFirstPoint"
   }
 
   protected secondPointQuestion(): PromptId {

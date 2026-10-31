@@ -209,6 +209,32 @@ is an alias of CAMADA, and `COTAD` of the English `DIMSTYLE` (the file's own odd
   descriptions from the pack's `acadiso.pat`; -DIMSTYLE's from its status listing (names/p06).
 - A snap typed at a point prompt echoes `de` or `para` (`_END` → `de`, `_PER` → `para`, line/p214).
 
+### Per command and per prompt (31/10/2026, second session)
+
+What English words alike and pt-BR words per command has an id of its own, each with its table id
+and probe at the tool (`cad/application/brazilianPrompts.test.ts`): PLINE's next point
+(`plineNextPointOr`, `Especificar o próximo ponto ou`), DIST's and AREA's once they offer Total
+(`specifyNextPointOrTotal`, `addModeNextPointOrTotal`, `subtractModeNextPointOrTotal`,
+`Especifique o próximo ponto ou`), TEXT's and ATTDEF's justification, UCSICON's and NAVVCUBE's
+option (`Insira uma opção`), AREA's first corner, PLINE's arc center (`Especificar o centro do
+arco`), COPY's base point (`Especificar um ponto base ou`) and its `<usar primeiro ponto como
+deslocamento>` (MOVE's `<utilizar …>`), and TRIM's and EXTEND's edges once cuTting edges or
+Boundary edges ask them (`selectEdgesOr`, `Selecione objetos ou`, 42047). `undoYes` needed none:
+UNDO's `OK? <S>` is pt-BR's too (line/p109). Keywords per prompt (`promptKeywords`): UCS's and
+-VIEW's Top, BAck and Left at Orthographic, UCS New's `EIxoz`, PEDIT's eXit at Straighten's prompt
+(`SAir`), SPLINEDIT's eXit and X at Weight's and Move's (`Sair`, `S`). Labels pt-BR declares
+otherwise (English's entry beside): ATTDISP's `ATivado`, DIST's arc `DIreção` and `LInha`,
+SPLINEDIT's `Depois`, COPY's `Descolamento` (Autodesk's spelling, with `<Deslocamento>` kept as the
+default, a phrase), UCSICON's `Sem origem`.
+
+**-OSNAP's words take their three capitals** (`MEIo`, `CENtro`, `QUAdrante`, `INTersecção`,
+`EXTensão`, `INSerção`, `PERpendicular`, `TANgente`, `MAIspróximo`, `APArente`, `PARalela`,
+`NENhum`): the console takes `MEI` and `MEIO` and refuses `M` and `C` at a point prompt
+(`Ponto inválido.`), and `A` at PLINE is Arco (names/p07, p09). With one capital, `Meio`,
+`Centro`, `Aparente`… took every `M`, `C`, `A` typed at a point prompt as a snap, before the
+keywords. The listing prints the short names of 33200–33213 in OSMODE's order (names/p10), which
+English's `Qua`, `Per`, `Nea`, `App` did not either (`Quad`, `Perp`, `Near`, `App Int`).
+
 ### Deviations
 
 - **Aliases left out.** `acad.pgp` makes `COTAHORIZONTAL`, `COTAVERTICAL` and `COTAROTACIONADA`
@@ -217,31 +243,40 @@ is an alias of CAMADA, and `COTAD` of the English `DIMSTYLE` (the file's own odd
 - **SNAP's Aspect is `ASpecto`**, as the prompt lists it and table 25920 declares it: the console's
   `initget` declares `Ativado` and `Aspecto`, one abbreviation for two keywords, which
   `locales.test.ts` refuses.
-- **-OSNAP's Endpoint is `pONto`** (27408): pt-BR's console takes `PON` as Node (`Ponto`), which is
-  not built here, and no typed word reaches Endpoint but `_END` (names/p07, p08).
+- **-OSNAP's Endpoint is `pONto`** (27408): pt-BR's console takes `PON` and `PONTO` as Node
+  (`Ponto`), which is not built here, refuses `EXTR` and `ON`, and no typed word reaches Endpoint
+  but `_END` (names/p07–p09).
+- **UCS New lists `EIxoz`**, the word it declares, where the console lists `EIxo z`: a label is the
+  command's, and UCS's first prompt lists `eixOZ` (ucs/p225, 3dpoly/p22).
 
 ### Pending (phase 4, next sessions)
 
-- **Prompts English shares that pt-BR words per command**, one wording for now (the first named):
-  `specifyNextPointOr` (LINE `Especificar próximo ponto ou`; PLINE `Especificar o próximo ponto ou`;
-  DIST, AREA `Especifique o próximo ponto ou`), `enterAnOption` (`Inserir uma opção`; NAVVCUBE,
-  UCSICON, TEXT's justification `Insira uma opção`), `specifyBasePointOr` (MOVE, STRETCH; COPY
-  `Especificar um ponto base ou`; the arrays `Especifique o ponto base ou`), `specifyFirstCornerPointOr`
-  (RECTANG; AREA `Especificar o primeiro ponto do canto ou`), `specifyCenterPointOfArc` (ARC; PLINE's
-  arc `Especificar o centro do arco`), `selectObjectsOr` (TRIM; EXTEND also `Selecione objetos ou`),
-  `undoYes` (PEDIT `S`; UNDO's `OK? <Y>`, 26268), and a keyword spelled per prompt (SPLINEDIT's Open,
-  Add, Previous and eXit, PEDIT's Previous, UCS's Top/Back/Left at its first prompt and at
-  Orthographic). Each needs a prompt id of its own (`cad-catalogs.md`).
-- **-OSNAP's listing** prints the modes' short names (33200–33213: `Extremidade,Centro,…,Ext`),
-  not the keywords' abbreviations `OsnapTool` prints (English's coincide).
+- **The space before a default.** English and Spanish write four prompts with the default touching
+  the list (`[Top/…/Right]<Top>:`, `[Zdepth]<0,0,0>:`, `Zdepth<0>:`: `tight` in UcsTool and
+  ViewTool); pt-BR spaces them (`[Superior/…/Direito] <Superior>:`, `profundidadeZ <0>:`; 25630,
+  25632, 25634, 26548; ucs/p153, p211, view/p268). The form is the tool's, the same in every
+  language: the catalog needs a way to say it per prompt (a shape change, so a minor and
+  `cad/docs/languages.md`).
+- **A label per prompt**, for UCS New's `EIxo z` (Deviations).
+- **What a console can still show**: the `unseen` keys whose English no probe prints (MATCHPROP's
+  settings line, REDO's `already redone`, UNDO's Start of Group and Auto, CHAMFER's non-coplanar and
+  3D polyline refusals, -DIMSTYLE's `No matching`, PEDIT's `segments added to … polylines`, ATTEDIT's
+  `Select block reference`), each a probe in both languages.
 
 ### Unverified
 
-What no probe showed, worded from the tables or in Autodesk's style: every key
-`research/console/pt-BR.md` reports `unseen` or `unpaired` (regenerate it with `console-pair.mjs
---lang pt-BR`), above all the dynamic-input labels (`Centro`, `Raio`, `Primeiro ponto`…), the
-tooltips (`Polar:`, MEASUREGEOM's `Dist`, `Âng`, `Área`, `Perím`), our own messages (files,
-clipboard, FROM) and the keywords and labels no probe's trace showed, taken from the tables.
+What no probe showed, worded from the tables or in Autodesk's style: the keys
+`research/console/pt-BR.md` reports `unseen` or `unpaired` that no transcript shows, above all the
+dynamic-input labels (`Centro`, `Raio`, `Primeiro ponto`…), the tooltips (`Polar:`, MEASUREGEOM's
+`Dist`, `Âng`, `Área`, `Perím`), the status-bar toggles' `<Snap ativado>` lines, our own messages
+(files, clipboard, FROM) and the keywords and labels no probe's trace showed, taken from the tables.
+The report's `unseen` also counts keys printed but not matched (a message over several lines, or
+filled with values): these were compared by hand against the transcripts on 31/10/2026, which
+corrected SPLINE's `Método=Ajustar Nós=`, the -STYLE listing's `Ângulo de inclinação`, LIST's
+`Direção de extrusão em relação ao UCS:` and `sobreposições de estilo de cota:`, ARRAYPATH's
+`Especifique o número de itens ou` and AREA's ADD and SUBTRACT prompts. The report's `several`
+groups keys by English's words, so it lists the ids above with every wording of their English:
+each one's own is fixed by its test.
 
 ## Script and font
 

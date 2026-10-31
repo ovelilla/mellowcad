@@ -260,7 +260,11 @@ export function offerOptions(tool: Tool, text: EngineText): CommandOptionUi[] {
       abbreviation: keyword.abbreviation,
       label:
         value === undefined
-          ? (text.keywordLabel(command, keyword.id) ?? keyword.word)
+          ? (text.keywordLabel(
+              command,
+              keyword.id,
+              options[index].prompt ?? askedPrompt(tool)
+            ) ?? keyword.word)
           : text.optionValue(keyword.word, text.keyword(command, value)),
     }
   })
@@ -390,7 +394,7 @@ export function commandPrompt(
       ? enterValue(asked.enter, text, settings, asked.trimmed === true)
       : fallback === null
         ? null
-        : (text.keywordLabel(command, fallback) ??
+        : (text.keywordLabel(command, fallback, id) ??
           text.keyword(command, fallback, id))
   // WHY only the history keeps a prompt's leading space (` Specify second
   // point:`, ` (ADD mode)…`): it is how AutoCAD lays the line out after the

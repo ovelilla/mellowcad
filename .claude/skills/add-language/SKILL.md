@@ -96,7 +96,12 @@ them shows English. Regenerate the "Use" pages: the tools' descriptions are this
    between commands and the language words per command: each needs a prompt id of its own
    (`cad-catalogs.md`), or one command's wording until then. Check the rest with
    `catalog-sweep.mjs --lang <tag>`; what no probe settles is **unverified** in
-   `docs/i18n/<tag>.md`. pt-BR's run: 430 probes, some 15 minutes of console.
+   `docs/i18n/<tag>.md`. pt-BR's run: 430 probes, some 15 minutes of console. The report groups a
+   key by English's words, so an id split per command stays `several`: its test fixes it. Its
+   `unseen` also counts what a transcript prints but the pairing missed (a message over several
+   lines, filled with values): compare those by hand before probing again.
+   -OSNAP's words take their three capitals (pt-BR `MEIo`): a snap typed at a point prompt is
+   matched before the keywords, and one capital steals the letter from every keyword.
 4. Each command's coverage entry names it after `· <tag>`; the `/docs` pages that read the catalog
    regenerate (`npm run docs:check`).
 

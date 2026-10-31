@@ -2,9 +2,9 @@
 
 > **Estado:** fases 1 a 4 hechas (2026-10-31); la 5, en curso: plan `docs/plans/pt-BR-language.md`,
 > sus fases 0 a 3 hechas (`pt-BR` como `draft` en `/pt-br`, con sitio, editor, páginas «Use» e
-> interfaz del motor traducidos) y la 4 en curso (`commands` completo desde la consola pt-BR;
-> faltan los ids por comando y lo no verificado). Se borra cuando el portugués de Brasil esté
-> `live` con el sistema entero.
+> interfaz del motor traducidos) y la 4 en curso (`commands` completo desde la consola pt-BR, con
+> sus prompts por comando y -OSNAP; faltan el espacio antes de algunos valores por defecto y lo no
+> verificado). Se borra cuando el portugués de Brasil esté `live` con el sistema entero.
 
 ## 1. Objetivo
 
@@ -134,4 +134,11 @@ Una fase, un commit (o varios si se separan solos). Las 1 a 4 no cambian nada vi
    `scripts/research/console-pair.mjs` empareja las transcripciones de las sondas de las revisiones
    en pt-BR con las inglesas y redacta cada clave desde la consola. Lo que no encajó, corregido en
    el sistema: `runacc.sh` solo reconocía el banner en inglés y español, y su timeout dejaba la
-   consola colgada en Windows.
+   consola colgada en Windows. Segunda sesión de la fase 4: cada prompt que el inglés comparte y pt-BR
+   redacta por comando tiene su id, y las keywords por prompt su `promptKeywords`. Lo que no
+   encajó, corregido en el sistema: una etiqueta igual a la palabra del comando tapaba la de un
+   prompt que la escribe a su manera (`EngineText.keywordLabel` recibe el prompt), y las palabras
+   de -OSNAP con una sola mayúscula robaban la letra de cada keyword en un prompt de punto (ahora
+   llevan tres, como la consola, y el listado usa los nombres cortos de AutoCAD en todos los
+   idiomas). Queda en el sistema: la forma pegada o espaciada del valor por defecto es del tool,
+   igual en todos los idiomas, y pt-BR la espacia donde el inglés no.

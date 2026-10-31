@@ -883,7 +883,7 @@ export class CadRuntime extends Observable {
               this.text.prompt(id),
               keywords.map(
                 (keyword) =>
-                  this.text.keywordLabel(command, keyword) ??
+                  this.text.keywordLabel(command, keyword, id) ??
                   this.text.keyword(command, keyword, id)
               )
             )
@@ -1886,12 +1886,11 @@ export class CadRuntime extends Observable {
           null,
         keyword: (id, declared) => {
           const command = toolCommand(this.activeTool)
-          const word = this.text.keyword(
-            command,
-            id,
-            askedPrompt(this.activeTool)
-          )
-          return declared ? word : (this.text.keywordLabel(command, id) ?? word)
+          const prompt = askedPrompt(this.activeTool)
+          const word = this.text.keyword(command, id, prompt)
+          return declared
+            ? word
+            : (this.text.keywordLabel(command, id, prompt) ?? word)
         },
       },
       this.text

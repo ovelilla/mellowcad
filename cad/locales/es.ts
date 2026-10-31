@@ -1608,7 +1608,7 @@ export const es: EngineLocale = {
       "UCSICON": {
         "ON": "ACT",
         "OFF": "DES",
-        "Noorigin": "Sin origen",
+        "Noorigin": "Sin",
         "ORigin": "Origen"
       },
       "PLAN": {
@@ -1710,10 +1710,18 @@ export const es: EngineLocale = {
         "Undo": "desHacer"
       },
       "viewOrthographic": {
+        "Top": "sUperior",
+        "Left": "IZquierda",
         "Right": "Derecha"
       },
+      "ucsNewUcs": {
+        "ZAxis": "ejEZ"
+      },
       "ucsOrthographic": {
+        "Top": "SUperior",
         "Front": "Frontal",
+        "BAck": "Posterior",
+        "Left": "IZquierda",
         "Right": "Derecha"
       },
       "specifyEndpointOfLineOr": {
@@ -1729,7 +1737,7 @@ export const es: EngineLocale = {
         "Close": "Cerrar",
         "Arc": "Arco"
       },
-      "specifyNextPointOr": {
+      "plineNextPointOr": {
         "Line": "líNea"
       },
       "specifyFirstCornerPointOr": {
@@ -1748,6 +1756,9 @@ export const es: EngineLocale = {
         "Join": "Unir",
         "eXit": "SAlir"
       },
+      "peditWalkOption": {
+        "eXit": "Salir"
+      },
       "enterFitDataOption": {
         "Add": "añaDIr",
         "Open": "Abrir",
@@ -1758,7 +1769,12 @@ export const es: EngineLocale = {
         "X": "S"
       },
       "specifyNewLocationOr": {
+        "eXit": "Salir",
         "X": "S"
+      },
+      "enterNewWeightOr": {
+        "eXit": "Salir",
+        "X": "SA"
       }
     },
     "prompts": {
@@ -2016,6 +2032,8 @@ export const es: EngineLocale = {
       "specifyFirstPoint": "Precise primer punto",
       "specifyNextPointOr": "Precise punto siguiente o",
       "specifyNextPointOrClose": "Precise siguiente punto o",
+      "plineNextPointOr": "Precise punto siguiente o",
+      "specifyNextPointOrTotal": "Precise punto siguiente o",
       "lengthOfLine": "Longitud de la línea",
       "specifyStartPoint": "Precise punto inicial",
       "specifyStartPointOfPolyline": "Precise punto inicial de polilínea",
@@ -2027,6 +2045,9 @@ export const es: EngineLocale = {
       "enterNumberOfSides": "Indique número de lados",
       "specifyCenterOfPolygonOr": "Precise centro de polígono o",
       "enterAnOption": "Indique una opción",
+      "textJustifyOption": "Indique una opción",
+      "ucsiconOption": "Indique una opción",
+      "navvcubeOption": "Indique una opción",
       "inscribedShort": "I",
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Precise primer punto final de lado",
@@ -2073,8 +2094,11 @@ export const es: EngineLocale = {
         "?"
       ],
       "specifyFirstCornerPointOr": "Precise primer punto de esquina o",
+      "areaFirstCornerPointOr": "Precise primer punto de esquina o",
       "addModeNextPointOr": " (modo AÑADIR)Precise punto siguiente o",
       "subtractModeNextPointOr": " (modo SUSTRAER)Precise punto siguiente o",
+      "addModeNextPointOrTotal": " (modo AÑADIR)Precise punto siguiente o",
+      "subtractModeNextPointOrTotal": " (modo SUSTRAER)Precise punto siguiente o",
       "addModeSelectObjects": "(modo AÑADIR) Designe objetos",
       "subtractModeSelectObjects": "(modo SUSTRAER) Designe objetos",
       "specifyOtherCornerPointOr": "Precise esquina opuesta o",
@@ -2082,6 +2106,7 @@ export const es: EngineLocale = {
       "specifySecondPointOfArcOr": "Precise segundo punto de arco o",
       "specifyEndPointOfArc": "Precise punto final del arco",
       "specifyCenterPointOfArc": "Precise punto central del arco",
+      "plineCenterPointOfArc": "Precise punto central del arco",
       "specifyIncludedAngle": "Precise ángulo incluido",
       "specifyRadiusOfArc": "Precise radio de arco",
       "specifyDirectionOfChordForArc": "Precise dirección de cuerda para arco (mantenga pulsada la tecla Ctrl para cambiar de dirección)",
@@ -2101,9 +2126,12 @@ export const es: EngineLocale = {
       "firstPolygonPoint": "Primer punto del polígono o designe/arrastre cursor",
       "specifyEndpointOfLineOr": "Precise punto final de línea o",
       "specifyBasePointOr": "Precise punto base o",
+      "copyBasePointOr": "Precise punto base o",
+      "copyDisplacement": "Desplazamiento",
       "specifyDisplacement": "Precise desplazamiento",
       "specifySecondPointOr": "Precise segundo punto o",
       "useFirstPointAsDisplacement": "usar primer punto como desplazamiento",
+      "copyUseFirstPoint": "usar primer punto como desplazamiento",
       "useXScaleFactor": "usar factor de escala X",
       "copySecondPointOr": "Precise el segundo punto o",
       "specifyBasePoint": "Precise punto base",
@@ -2134,6 +2162,7 @@ export const es: EngineLocale = {
       "enterTrimModeOption": "Introduzca una opción de modo de recorte",
       "enterExtendModeOption": "Introduzca una opción de modo de alargamiento",
       "selectObjectsOr": "Seleccione objetos o",
+      "selectEdgesOr": "Seleccione objetos o",
       "selectAll": "seleccionar todo",
       "selectObjectsToEraseOrExit": "Designe objetos que borrar o <salir>",
       "selectObjectsToErase": "Designe objetos que borrar",
@@ -4030,6 +4059,26 @@ export const es: EngineLocale = {
           "modes"
         ]
       ],
+      "osnapModeName": [
+        [
+          "mode",
+          1,
+          {
+            "endpoint": "Fin",
+            "midpoint": "Med",
+            "center": "Cen",
+            "quadrant": "Cua",
+            "intersection": "Int",
+            "insertion": "Ins",
+            "perpendicular": "Per",
+            "tangent": "Tan",
+            "nearest": "Cer",
+            "apparentIntersection": "Fic Int",
+            "extension": "Ext",
+            "other": "Par"
+          }
+        ]
+      ],
       "currentLineweight": [
         "Grosor de línea actual: ",
         [
@@ -5886,6 +5935,8 @@ export const es: EngineLocale = {
         "Second pt": "Segundo pto."
       },
       "DIST": {
+        "Line": "líNea",
+        "Direction": "Dirección",
         "Multiple": "puntos Múltiples",
         "Second pt": "Segundo pto."
       },
@@ -5924,6 +5975,7 @@ export const es: EngineLocale = {
         "Lock position": "Bloquear posición"
       },
       "ATTDISP": {
+        "ON": "ACT",
         "OFF": "DES"
       },
       "SNAP": {
@@ -5959,6 +6011,7 @@ export const es: EngineLocale = {
         "end Tangency": "finalizar Tangencia"
       },
       "SPLINEDIT": {
+        "After": "Después",
         "Fit data": "Ajustar datos",
         "Edit vertex": "Editar vértices",
         "convert to Polyline": "coNvertir en polilínea",
@@ -5992,6 +6045,12 @@ export const es: EngineLocale = {
       "ARRAYPATH": {
         "Align items": "ALinear elementos",
         "Fill entire path": "Llenar todo el camino"
+      },
+      "COPY": {
+        "Displacement": "Desplazamiento"
+      },
+      "UCSICON": {
+        "Noorigin": "Sin origen"
       },
       "OFFSET": {
         "Through": "punto a Atravesar"

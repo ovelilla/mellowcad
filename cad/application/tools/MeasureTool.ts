@@ -532,11 +532,21 @@ export class MeasureTool implements Tool {
         if (this.arc.active) return this.arc.question()
         return this.state.arcMode
           ? "specifyEndpointOfArcOr"
-          : "specifyNextPointOr"
+          : "specifyNextPointOrTotal"
       case "length":
         return "specifyLengthOfLine"
       case "area":
-        if (this.state.points.length === 0) return "specifyFirstCornerPointOr"
+        if (this.state.points.length === 0) return "areaFirstCornerPointOr"
+        // WHY two ids each: pt-BR words the prompt that offers Total
+        // `Especifique o próximo ponto ou` (9964, 23954) and the one before it
+        // `Especificar próximo ponto ou` (21323, 39796; inquiry/p206, p212).
+        if (this.state.points.length >= 3) {
+          return this.areaMode === "add"
+            ? "addModeNextPointOrTotal"
+            : this.areaMode === "subtract"
+              ? "subtractModeNextPointOrTotal"
+              : "specifyNextPointOrTotal"
+        }
         return this.areaMode === "add"
           ? "addModeNextPointOr"
           : this.areaMode === "subtract"

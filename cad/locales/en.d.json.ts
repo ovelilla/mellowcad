@@ -1242,10 +1242,18 @@ declare const source: {
         "Undo": string
       }
       "viewOrthographic": {
+        "Top": string
+        "Left": string
         "Right": string
       }
+      "ucsNewUcs": {
+        "ZAxis": string
+      }
       "ucsOrthographic": {
+        "Top": string
         "Front": string
+        "BAck": string
+        "Left": string
         "Right": string
       }
       "specifyEndpointOfLineOr": {
@@ -1261,7 +1269,7 @@ declare const source: {
         "Close": string
         "Arc": string
       }
-      "specifyNextPointOr": {
+      "plineNextPointOr": {
         "Line": string
       }
       "specifyFirstCornerPointOr": {
@@ -1280,6 +1288,9 @@ declare const source: {
         "Join": string
         "eXit": string
       }
+      "peditWalkOption": {
+        "eXit": string
+      }
       "enterFitDataOption": {
         "Add": string
         "Open": string
@@ -1290,6 +1301,11 @@ declare const source: {
         "X": string
       }
       "specifyNewLocationOr": {
+        "eXit": string
+        "X": string
+      }
+      "enterNewWeightOr": {
+        "eXit": string
         "X": string
       }
     }
@@ -1509,6 +1525,8 @@ declare const source: {
       "specifyFirstPoint": string
       "specifyNextPointOr": string
       "specifyNextPointOrClose": string
+      "plineNextPointOr": string
+      "specifyNextPointOrTotal": string
       "lengthOfLine": string
       "specifyStartPoint": string
       "specifyStartPointOfPolyline": string
@@ -1520,6 +1538,9 @@ declare const source: {
       "enterNumberOfSides": string
       "specifyCenterOfPolygonOr": string
       "enterAnOption": string
+      "textJustifyOption": string
+      "ucsiconOption": string
+      "navvcubeOption": string
       "inscribedShort": string
       "circumscribedShort": string
       "specifyFirstEndpointOfEdge": string
@@ -1561,8 +1582,11 @@ declare const source: {
       "secondPointOfDistance": string
       "clarifyKeyword": string
       "specifyFirstCornerPointOr": string
+      "areaFirstCornerPointOr": string
       "addModeNextPointOr": string
       "subtractModeNextPointOr": string
+      "addModeNextPointOrTotal": string
+      "subtractModeNextPointOrTotal": string
       "addModeSelectObjects": string
       "subtractModeSelectObjects": string
       "specifyOtherCornerPointOr": string
@@ -1570,6 +1594,7 @@ declare const source: {
       "specifySecondPointOfArcOr": string
       "specifyEndPointOfArc": string
       "specifyCenterPointOfArc": string
+      "plineCenterPointOfArc": string
       "specifyIncludedAngle": string
       "specifyRadiusOfArc": string
       "specifyDirectionOfChordForArc": string
@@ -1589,9 +1614,12 @@ declare const source: {
       "firstPolygonPoint": string
       "specifyEndpointOfLineOr": string
       "specifyBasePointOr": string
+      "copyBasePointOr": string
+      "copyDisplacement": string
       "specifyDisplacement": string
       "specifySecondPointOr": string
       "useFirstPointAsDisplacement": string
+      "copyUseFirstPoint": string
       "useXScaleFactor": string
       "copySecondPointOr": string
       "specifyBasePoint": string
@@ -1622,6 +1650,7 @@ declare const source: {
       "enterTrimModeOption": string
       "enterExtendModeOption": string
       "selectObjectsOr": string
+      "selectEdgesOr": string
       "selectAll": string
       "selectObjectsToEraseOrExit": string
       "selectObjectsToErase": string
@@ -2041,6 +2070,7 @@ declare const source: {
       "orbitExit": string
       "requiresTwoPointsOrDisplacement": string
       "currentOsnapModes": string
+      "osnapModeName": string
       "currentLineweight": string
       "pointingEdgeOn": string
       "circleDoesNotExist": string
@@ -2343,6 +2373,8 @@ declare const source: {
         "Second pt": string
       }
       "DIST": {
+        "Line": string
+        "Direction": string
         "Multiple": string
         "Second pt": string
       }
@@ -2381,6 +2413,7 @@ declare const source: {
         "Lock position": string
       }
       "ATTDISP": {
+        "ON": string
         "OFF": string
       }
       "SNAP": {
@@ -2416,6 +2449,7 @@ declare const source: {
         "end Tangency": string
       }
       "SPLINEDIT": {
+        "After": string
         "Fit data": string
         "Edit vertex": string
         "convert to Polyline": string
@@ -2449,6 +2483,12 @@ declare const source: {
       "ARRAYPATH": {
         "Align items": string
         "Fill entire path": string
+      }
+      "COPY": {
+        "Displacement": string
+      }
+      "UCSICON": {
+        "Noorigin": string
       }
       "OFFSET": {
         "Through": string

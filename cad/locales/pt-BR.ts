@@ -1069,18 +1069,18 @@ export const ptBR: EngineLocale = {
     "keywords": {
       "-OSNAP": {
         "ENDpoint": "pONto",
-        "MIDpoint": "Meio",
-        "CENter": "Centro",
-        "QUAdrant": "Quadrante",
-        "INTersection": "Intersecção",
-        "EXTension": "Extensão",
-        "INSertion": "Inserção",
-        "PERpendicular": "Perpendicular",
-        "TANgent": "Tangente",
-        "NEArest": "Maispróximo",
-        "APParent": "Aparente",
-        "PARallel": "Paralela",
-        "NONe": "Nenhum",
+        "MIDpoint": "MEIo",
+        "CENter": "CENtro",
+        "QUAdrant": "QUAdrante",
+        "INTersection": "INTersecção",
+        "EXTension": "EXTensão",
+        "INSertion": "INSerção",
+        "PERpendicular": "PERpendicular",
+        "TANgent": "TANgente",
+        "NEArest": "MAIspróximo",
+        "APParent": "APArente",
+        "PARallel": "PARalela",
+        "NONe": "NENhum",
         "OFF": "Desativado"
       },
       "LINE": {
@@ -1723,10 +1723,18 @@ export const ptBR: EngineLocale = {
         "Undo": "Desfazer"
       },
       "viewOrthographic": {
+        "Top": "Superior",
+        "Left": "Esquerda",
         "Right": "Direita"
       },
+      "ucsNewUcs": {
+        "ZAxis": "EIxoz"
+      },
       "ucsOrthographic": {
+        "Top": "Superior",
         "Front": "Frontal",
+        "BAck": "Posterior",
+        "Left": "Esquerdo",
         "Right": "Direito"
       },
       "specifyEndpointOfLineOr": {
@@ -1742,7 +1750,7 @@ export const ptBR: EngineLocale = {
         "Close": "Fechar",
         "Arc": "Arco"
       },
-      "specifyNextPointOr": {
+      "plineNextPointOr": {
         "Line": "LInha"
       },
       "specifyFirstCornerPointOr": {
@@ -1761,6 +1769,9 @@ export const ptBR: EngineLocale = {
         "Join": "Unir",
         "eXit": "SAir"
       },
+      "peditWalkOption": {
+        "eXit": "SAir"
+      },
       "enterFitDataOption": {
         "Add": "ADicionar",
         "Open": "ABrir",
@@ -1771,6 +1782,11 @@ export const ptBR: EngineLocale = {
         "X": "X"
       },
       "specifyNewLocationOr": {
+        "eXit": "Sair",
+        "X": "S"
+      },
+      "enterNewWeightOr": {
+        "eXit": "Sair",
         "X": "S"
       }
     },
@@ -2030,6 +2046,8 @@ export const ptBR: EngineLocale = {
       "specifyFirstPoint": "Especificar primeiro ponto",
       "specifyNextPointOr": "Especificar próximo ponto ou",
       "specifyNextPointOrClose": "Especificar próximo ponto ou",
+      "plineNextPointOr": "Especificar o próximo ponto ou",
+      "specifyNextPointOrTotal": "Especifique o próximo ponto ou",
       "lengthOfLine": "Comprimento da linha",
       "specifyStartPoint": "Especificar o ponto inicial",
       "specifyStartPointOfPolyline": "Especificar o ponto inicial da polilinha",
@@ -2041,6 +2059,9 @@ export const ptBR: EngineLocale = {
       "enterNumberOfSides": "Inserir número de lados",
       "specifyCenterOfPolygonOr": "Especificar centro do polígono ou",
       "enterAnOption": "Inserir uma opção",
+      "textJustifyOption": "Insira uma opção",
+      "ucsiconOption": "Insira uma opção",
+      "navvcubeOption": "Insira uma opção",
       "inscribedShort": "I",
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Especificar primeiro ponto final da aresta",
@@ -2087,8 +2108,11 @@ export const ptBR: EngineLocale = {
         "?"
       ],
       "specifyFirstCornerPointOr": "Especificar primeiro canto ou",
-      "addModeNextPointOr": " (modo ADICIONAR)Especifique o próximo ponto ou",
-      "subtractModeNextPointOr": " (modo SUBTRAIR)Especifique o próximo ponto ou",
+      "areaFirstCornerPointOr": "Especificar o primeiro ponto do canto ou",
+      "addModeNextPointOr": " (modo ADICIONAR)Especificar próximo ponto ou",
+      "subtractModeNextPointOr": " (modo SUBTRAIR)Especificar próximo ponto ou",
+      "addModeNextPointOrTotal": " (modo ADICIONAR)Especifique o próximo ponto ou",
+      "subtractModeNextPointOrTotal": " (modo SUBTRAIR)Especifique o próximo ponto ou",
       "addModeSelectObjects": "(modo ADICIONAR) Selecionar objetos",
       "subtractModeSelectObjects": "(modo SUBTRAIR) Selecionar objetos",
       "specifyOtherCornerPointOr": "Especificar outro ponto de canto ou",
@@ -2096,6 +2120,7 @@ export const ptBR: EngineLocale = {
       "specifySecondPointOfArcOr": "Especificar segundo ponto do arco ou",
       "specifyEndPointOfArc": "Especificar o ponto final do arco",
       "specifyCenterPointOfArc": "Especificar ponto central do arco",
+      "plineCenterPointOfArc": "Especificar o centro do arco",
       "specifyIncludedAngle": "Especificar o ângulo interno",
       "specifyRadiusOfArc": "Especificar o raio do arco",
       "specifyDirectionOfChordForArc": "Especificar direção da corda do arco (mantenha pressionada a tecla Ctrl para alternar direção)",
@@ -2115,9 +2140,12 @@ export const ptBR: EngineLocale = {
       "firstPolygonPoint": "Primeiro ponto do polígono ou selecionar/arrastar cursor",
       "specifyEndpointOfLineOr": "Especificar ponto final da linha ou",
       "specifyBasePointOr": "Especificar ponto base ou",
+      "copyBasePointOr": "Especificar um ponto base ou",
+      "copyDisplacement": "Deslocamento",
       "specifyDisplacement": "Especificar deslocamento",
       "specifySecondPointOr": "Especificar segundo ponto ou",
       "useFirstPointAsDisplacement": "utilizar primeiro ponto como deslocamento",
+      "copyUseFirstPoint": "usar primeiro ponto como deslocamento",
       "useXScaleFactor": "utilizar fator de escala X",
       "copySecondPointOr": "Especificar segundo ponto ou",
       "specifyBasePoint": "Especificar ponto base",
@@ -2148,6 +2176,7 @@ export const ptBR: EngineLocale = {
       "enterTrimModeOption": "Insira uma opção de modo de recorte",
       "enterExtendModeOption": "Insira uma opção de modo estendido",
       "selectObjectsOr": "Selecionar objetos ou",
+      "selectEdgesOr": "Selecione objetos ou",
       "selectAll": "selecionar tudo",
       "selectObjectsToEraseOrExit": "Selecionar objetos a serem apagados ou <sair>",
       "selectObjectsToErase": "Selecionar objetos a serem apagados",
@@ -2187,7 +2216,7 @@ export const ptBR: EngineLocale = {
       "enterPathMethod": "Insira o método de caminho",
       "enterNumberOfItemsAlongPath": "Insira o número de itens ao longo do caminho",
       "specifyDistanceBetweenItemsAlongPath": "Especifique a distância entre os itens ao longo do caminho",
-      "specifyNumberOfItemsOr": "Especificar número de itens ou",
+      "specifyNumberOfItemsOr": "Especifique o número de itens ou",
       "alignArrayedItemsToPath": "Alinhar itens dispostos em matriz ao caminho?",
       "specifyInternalPointOr": "Especifique um ponto interno ou",
       "enterPatternNameOr": "Insira um nome de padrão ou",
@@ -3607,7 +3636,7 @@ export const ptBR: EngineLocale = {
       "namedDimStyles": "Estilos de cota nomeados:",
       "noMatchingDimStyles": "  Não foram encontrados estilos de cota coincidentes.",
       "splineSettingsFit": [
-        "Configurações atuais: Método=Ajustar   Nós=",
+        "Configurações atuais: Método=Ajustar Nós=",
         [
           "knots",
           1,
@@ -4048,6 +4077,26 @@ export const ptBR: EngineLocale = {
           "modes"
         ]
       ],
+      "osnapModeName": [
+        [
+          "mode",
+          1,
+          {
+            "endpoint": "Extremidade",
+            "midpoint": "Meio",
+            "center": "Centro",
+            "quadrant": "Quadrante",
+            "intersection": "Intersecção",
+            "insertion": "Inserção",
+            "perpendicular": "Perpendicular",
+            "tangent": "Tangente",
+            "nearest": "Mais próximo",
+            "apparentIntersection": "Aparente",
+            "extension": "Ext",
+            "other": "Paralela"
+          }
+        ]
+      ],
       "currentLineweight": [
         "Espessura de linha atual: ",
         [
@@ -4360,7 +4409,7 @@ export const ptBR: EngineLocale = {
         [
           "width"
         ],
-        "  Ângulo oblíquo: 0\n   Geração: Normal"
+        "  Ângulo de inclinação: 0\n   Geração: Normal"
       ],
       "currentTextStyleName": [
         "Estilo de texto atual: \"",
@@ -4532,7 +4581,7 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "listExtrusion": [
-        "Direção da extrusão relativa ao UCS:\n                   X=",
+        "Direção de extrusão em relação ao UCS:\n                   X=",
         [
           "x"
         ],
@@ -5492,7 +5541,7 @@ export const ptBR: EngineLocale = {
         ],
         "\""
       ],
-      "listDimensionOverrides": "substituições de estilo de cota:\n DIMUPT      Ativado",
+      "listDimensionOverrides": "sobreposições de estilo de cota:\n DIMUPT      Ativado",
       "listDimensionAnnotative": "Anotativo: Não",
       "listHatchPattern": [
         "                 Padrão de hachura ",
@@ -5904,6 +5953,8 @@ export const ptBR: EngineLocale = {
         "Second pt": "Segundo pto"
       },
       "DIST": {
+        "Line": "LInha",
+        "Direction": "DIreção",
         "Multiple": "Múltiplos pontos",
         "Second pt": "Segundo pto"
       },
@@ -5942,6 +5993,7 @@ export const ptBR: EngineLocale = {
         "Lock position": "Bloquear posição"
       },
       "ATTDISP": {
+        "ON": "ATivado",
         "OFF": "Desativado"
       },
       "SNAP": {
@@ -5977,6 +6029,7 @@ export const ptBR: EngineLocale = {
         "end Tangency": "Tangência final"
       },
       "SPLINEDIT": {
+        "After": "Depois",
         "Fit data": "AJustar dados",
         "Edit vertex": "Editar vértice",
         "convert to Polyline": "converter para Polilinha",
@@ -6010,6 +6063,12 @@ export const ptBR: EngineLocale = {
       "ARRAYPATH": {
         "Align items": "Alinhar itens",
         "Fill entire path": "Preencha o caminho inteiro"
+      },
+      "COPY": {
+        "Displacement": "Descolamento"
+      },
+      "UCSICON": {
+        "Noorigin": "Sem origem"
       },
       "OFFSET": {
         "Through": "Através"

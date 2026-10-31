@@ -1,0 +1,39 @@
+_LINE
+0,0
+10,0
+
+_ZOOM
+_E
+_LINE
+MEI
+5,0.1
+20,20
+
+(cdr (assoc 10 (entget (entlast))))
+_LINE
+MEIO
+5,0.1
+20,20
+
+(cdr (assoc 10 (entget (entlast))))
+_LINE
+EXTR
+9,0.1
+20,20
+
+(cdr (assoc 10 (entget (entlast))))
+_LINE
+M
+30,30
+40,40
+
+_LINE
+C
+30,30
+40,40
+
+_PLINE
+40,40
+A
+_L
+

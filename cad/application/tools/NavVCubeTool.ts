@@ -25,8 +25,9 @@ export class NavVCubeTool implements Tool {
     ctx.dynamicInput.close()
   }
 
+  // WHY not `enterAnOption`: pt-BR words this one `Insira uma opção`.
   question(): PromptId {
-    return "enterAnOption"
+    return "navvcubeOption"
   }
 
   commandOptions(): readonly CommandOption[] {

@@ -405,11 +405,17 @@ export abstract class EdgeEditTool implements Tool {
     const selector = this.selector()
     if (selector) {
       const asked = selector.question()
-      // `Select objects or [mOde] <select all>:` while the set is empty.
+      // `Select objects or [mOde] <select all>:` while the set is empty; WHY
+      // two ids: cuTting edges' (Boundary edges') lists no mOde, and is
+      // another string, which pt-BR words `Selecione objetos ou` (42047,
+      // trim/p152) against the starting one's `Selecionar objetos ou` (21775).
       return this.asking === "edges" &&
         asked === "selectObjects" &&
         (this.selection?.isEmpty() ?? true)
-        ? { id: "selectObjectsOr", enter: "selectAll" }
+        ? {
+            id: this.starting ? "selectObjectsOr" : "selectEdgesOr",
+            enter: "selectAll",
+          }
         : asked
     }
     return this.fence || this.window ? this.boxPrompt() : this.objectQuestion()

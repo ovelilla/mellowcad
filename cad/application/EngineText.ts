@@ -291,16 +291,30 @@ export class EngineText {
 
   /**
    * How a prompt lists a keyword whose word AutoCAD follows with a note —
-   * `Ttr (tan tan radius)` — or null for one listed as its word.
+   * `Ttr (tan tan radius)` — or null for one listed as its word. At `prompt`,
+   * a label that only repeats the command's word gives way to the word that
+   * prompt spells otherwise (pt-BR SPLINEDIT lists `saIr` at its options,
+   * `Sair` at Weight's; inquiry/p429).
    */
-  keywordLabel(command: string | null, id: string): string | null {
+  keywordLabel(
+    command: string | null,
+    id: string,
+    prompt: PromptId | null = null
+  ): string | null {
     if (command === null) return null
     const label = (
       this.commands.keywordLabels as Readonly<
         Record<string, Readonly<Record<string, CompiledMessage>> | undefined>
       >
     )[command]?.[id]
-    return label === undefined ? null : this.format(label)
+    if (label === undefined) return null
+    const shown = this.format(label)
+    const word = this.keyword(command, id)
+    return prompt !== null &&
+      shown === word &&
+      this.keyword(command, id, prompt) !== word
+      ? null
+      : shown
   }
 
   /** A keyword's abbreviation in the command language (`U` for Undo). */
