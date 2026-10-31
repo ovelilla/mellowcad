@@ -414,7 +414,11 @@ export function ToolRail({ engine, state }: PieceProps): ReactElement {
 
   return (
     <TooltipProvider>
-      <Panel className="min-h-0 w-full flex-col gap-0 overflow-y-auto">
+      {/* WHY flex-1: sized to its content, the scroller overflowed by the
+      pixel a pressed button of the last row moves down (Button's
+      `active:translate-y-px`), and the vertical scrollbar it brought narrowed
+      the grid into a horizontal one too. */}
+      <Panel className="min-h-0 w-full flex-1 flex-col gap-0 overflow-y-auto">
         {PALETTE.map((section, s) => (
           <Fragment key={section.id}>
             {s > 0 && <Separator className="my-1" />}

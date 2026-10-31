@@ -250,7 +250,9 @@ Each bar's AutoCAD order is in its component's header comment; touch and phones 
 - **The tool palette** holds only commands that act on the drawing, grouped by meaning, never to
   save room (no "more" menu). Unlisted tools fall into a trailing group, so a tool that belongs
   elsewhere in the chrome (view tools, Select, Match Properties) must be listed in `RAIL_EXCLUDED`.
-  A new slot keeps the palette inside its zone at 720 px of window and, folded (`short:`), at 650.
+  A new slot keeps the palette inside its zone at 720 px of window and, folded (`short:`, below
+  720), at 650. Its scroller fills the zone: sized to its content, a pressed button of the last
+  row (`active:translate-y-px`) overflowed it into both scrollbars.
 - **The dynamic input** is `pointer-events-none` and keyboard-driven — never clickable. A
   `paragraphs` field (MTEXT) is a textarea, never reselected when focus comes back; nor is a value
   field with text in it: keys typed on the drawing before the box had focus went into it. **A

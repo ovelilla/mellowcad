@@ -11,8 +11,9 @@
 
 /* A window too short for the whole tool palette, which then folds its
    Annotation, Block and Utilities sections into a drop-down each. In CSS, so
-   the palette has its final height at the first paint. */
-@custom-variant short (@media (height < 700px));
+   the palette has its final height at the first paint. 720 is the height the
+   whole palette is kept inside (.claude/rules/ui.md): below it, folded. */
+@custom-variant short (@media (height < 720px));
 
 /* The palette panel open, before the engine exists: what the head script
    wrote on the editor's root (packages/editor/src/palette-layout.ts), else the window's
