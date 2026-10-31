@@ -11,11 +11,11 @@ import {
   createArc,
   createLine,
   carryOverrides,
-  EllipseEntity,
   Entity,
   EntityId,
   LineEntity,
   PolylineEntity,
+  coplanar,
   readsInPlan,
 } from "../../domain/entities"
 import {
@@ -86,7 +86,7 @@ import {
   refused,
   updated,
 } from "./cornerGhost"
-import { curveCrossings, segmentImplicit } from "./curveCrossings"
+import { filletCurveObjects } from "./curveObjectFillets"
 import { ModeFind, ObjectSelector } from "./objectSelection"
 import { setCommandSettings } from "./commandSettings"
 import { type RoundObject, filletRound } from "./roundFillets"
@@ -125,7 +125,8 @@ import {
  * rounded against its circle where the two cross, as AutoCAD 2023's console
  * does (`Cannot fillet between these two entities.` where they do not). An
  * ARC or a CIRCLE is an object too, rounded against a line or another of
- * them by {@link filletRound} (a circle never trimmed). Shift on the second pick applies a
+ * them by {@link filletRound} (a circle never trimmed), and so is an ELLIPSE
+ * or a SPLINE, by {@link filletCurveObjects}. Shift on the second pick applies a
  * corner instead, as a radius of 0 does. The radius is FILLETRAD, saved in the
  * drawing, set inside the command's run so U takes it back (rectang/p316, p317).
  * Multiple keeps asking for the next pair until Enter, and Undo takes back the
@@ -533,7 +534,12 @@ export class FilletTool implements Tool {
 
   /** Whether a mode's find counts: Polyline's takes a polyline. */
   private takesFound(entity: Entity | undefined): boolean {
-    return this.state.phase === "polyline" || isCornerEntity(entity)
+    return (
+      this.state.phase === "polyline" ||
+      isCornerEntity(entity) ||
+      entity?.type === "ellipse" ||
+      entity?.type === "spline"
+    )
   }
 
   /**
@@ -664,7 +670,7 @@ export class FilletTool implements Tool {
     if (whole || this.state.whole) return ENDS
     const radius = corner ? 0 : this.radius
     if (isCurve(first) || isCurve(second)) {
-      return curveOutcome(first, second, radius)
+      return curveOutcome(first, pick1, second, pick2, radius, ctx, arcId)
     }
     if (isRound(first) || isRound(second)) {
       return this.roundOutcome(first, pick1, second, pick2, radius, ctx, arcId)
@@ -1047,26 +1053,53 @@ export class FilletTool implements Tool {
 }
 
 /**
- * A closed ellipse with the other object, in AutoCAD 2027's console's words
- * (probes corners/p236, p325, p366, p367, p383–p385): with a polyline's
- * segment `Cannot fillet between these two entities.`; with a line or
- * another ellipse, at a radius `Unable to fillet curves.`; at radius 0, a
- * line that misses it makes nothing and nothing is said. WHY the rest is
- * not taken, the prompt asked again: AutoCAD trims a line meeting it at
- * radius 0 (p324) and fillets it with an arc or a circle (p368), which is
- * not built.
+ * An ELLIPSE or a SPLINE with the other object (see
+ * {@link filletCurveObjects}), in AutoCAD 2027's console's words: with a
+ * polyline's segment `Cannot fillet between these two entities.` at any
+ * radius (probes corners/p367, p385, p464–p466); out of its plane — a spline
+ * in none — `The entities are non-coplanar.` (p479); each ending the command,
+ * or in Multiple asking the first prompt again (p475). WHY a tilted plane
+ * is asked again without a word: AutoCAD rounds them in it, not built.
  */
 function curveOutcome(
   first: FilletObject,
+  pick1: LinePick,
   second: FilletObject,
-  radius: number
+  pick2: LinePick,
+  radius: number,
+  ctx: ToolContext,
+  arcId?: EntityId
 ): Outcome {
-  const other = isCurve(first) ? second : first
-  const ellipse = (isCurve(first) ? first : second) as EllipseEntity
-  if (isSegment(other)) return refusal("cannotFilletBetweenThese", false)
-  if (other.type !== "line" && other.type !== "ellipse") return NONE
-  if (radius > 0) return refusal("unableToFilletCurves", false)
-  return other.type === "line" && missesEllipse(other, ellipse) ? ENDS : NONE
+  if (isSegment(first) || isSegment(second)) {
+    return refusal("cannotFilletBetweenThese", false)
+  }
+  if (!coplanar(first, second)) return refusal("entitiesNonCoplanar", false)
+  if (!readsInPlan(first) || !readsInPlan(second)) return NONE
+  const settings = ctx.document.getSettings()
+  const filleted = filletCurveObjects(
+    first,
+    pick1.world,
+    second,
+    pick2.world,
+    radius,
+    {
+      layerId: ctx.document.getCurrentLayerId(),
+      lineweight: settings.currentLineweight,
+    },
+    arcId
+  )
+  switch (filleted) {
+    case "unable":
+      return refusal("unableToFilletCurves", false)
+    case "noValid":
+      return refusal("noValidCurveFillet", false, {
+        radius: formatLength(radius, settings),
+      })
+    case "nothing":
+      return ENDS
+    default:
+      return made(filleted.replaced, filleted.built)
+  }
 }
 
 /**
@@ -1086,16 +1119,6 @@ function joinOutcome(
   return made(
     [cornerEntity(join.other).id, join.segment.poly.id],
     [back(joinAtCut(join, cut))]
-  )
-}
-
-/** Whether a line, taken whole, misses a closed ellipse lying in plan. */
-function missesEllipse(line: LineEntity, ellipse: EllipseEntity): boolean {
-  const edge = segmentImplicit(line.start, line.end)
-  return (
-    edge !== null &&
-    readsInPlan(ellipse) &&
-    curveCrossings(ellipse, edge.f).length === 0
   )
 }
 

@@ -86,16 +86,20 @@ export function offsetCurvePieces(
   return pieces
 }
 
-interface OffsetFunctions {
+export interface OffsetFunctions {
   point(t: number): Vec2
   first(t: number): Vec2
 }
 
 /**
  * `O = C + d·N` with `N` the unit left normal, and its derivative
- * `O′ = C′ + d·N′`, `N′ = (⊥C″·|C′|² − ⊥C′·(C′·C″)) / |C′|³`.
+ * `O′ = C′ + d·N′`, `N′ = (⊥C″·|C′|² − ⊥C′·(C′·C″)) / |C′|³`: the exact
+ * offset OFFSET approximates and FILLET's centres lie on.
  */
-function offsetFunctions(curve: PlanarCurve, d: number): OffsetFunctions {
+export function offsetFunctions(
+  curve: PlanarCurve,
+  d: number
+): OffsetFunctions {
   return {
     point: (t) => {
       const d1 = curve.first(t)

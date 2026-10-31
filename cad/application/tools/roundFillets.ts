@@ -105,7 +105,7 @@ function wholeOf(object: RoundPartner): WholeCurve {
  * The object kept from `point` the way `away` points: a line keeps the end
  * that lies that way, an arc the part that turns that way; a circle stays.
  */
-function keptFrom(
+export function keptFrom(
   object: RoundPartner,
   point: Vec2,
   away: Vec2
@@ -129,7 +129,7 @@ function keptFrom(
  * reaching it from the end the pick is nearer (the start on a tie: acc/a8,
  * p2–p4).
  */
-function keptAtCorner(
+export function keptAtCorner(
   object: RoundPartner,
   corner: Vec2,
   pick: Vec2

@@ -13,6 +13,7 @@ import {
   ellipseMinorAxis,
   ellipseSemiMajor,
   ellipseSweepParams,
+  ellipseWithSpan,
   isFullEllipse,
 } from "./ellipses"
 import {
@@ -21,6 +22,7 @@ import {
   splineCurve,
   splineNearest,
 } from "./splines"
+import { splineRunOn } from "./splineEdits"
 
 /**
  * OFFSET of a spline or an ellipse, in its own plane (its stored points), as
@@ -165,8 +167,56 @@ function splinePlanarCurve(spline: SplineEntity): PlanarCurve {
   }
 }
 
+/**
+ * The curve FILLET meets another on, run on past what is drawn: an
+ * elliptical arc round its whole ellipse (corners/p445, p446), an open spline
+ * past both ends by about `reach` as EXTEND grows it, a CV spline of its own
+ * on {@link splineRunOn}'s parameter (p237, p448); a closed one as it is.
+ */
+export function curveRunOn(
+  source: SplineEntity | EllipseEntity,
+  reach: number
+): SplineEntity | EllipseEntity {
+  if (source.type === "ellipse") {
+    return ellipseWithSpan(source, undefined, undefined)
+  }
+  if (source.closed) return source
+  const curve = splineRunOn(source, reach)
+  const rest: Record<string, unknown> = { ...source }
+  for (const field of ["startTangent", "endTangent", "weights"]) {
+    delete rest[field]
+  }
+  return {
+    ...(rest as Omit<SplineEntity, "startTangent" | "endTangent">),
+    method: "cv",
+    points: curve.controlPoints,
+    degree: curve.degree,
+    knotVector: curve.knots,
+    ...(curve.weights ? { weights: curve.weights } : {}),
+  }
+}
+
+/**
+ * How far `p` lies from the curve, positive on its left as its parameter
+ * runs: the zero of FILLET's offset at `distance` is this less `distance`.
+ */
+export function curveSignedDistance(
+  source: SplineEntity | EllipseEntity
+): (p: Vec2) => number {
+  const curve = planarCurve(source)
+  const nearest = source.type === "spline" ? splineNearest(source) : null
+  return (p) => {
+    const t = nearest
+      ? curve.start + (curve.end - curve.start) * nearest(p).t
+      : nearestParam(source, curve, p)
+    const q = curve.point(t)
+    const side = V.cross(curve.first(t), V.sub(p, q))
+    return side < 0 ? -V.distance(p, q) : V.distance(p, q)
+  }
+}
+
 /** The parameter of the curve's point nearest `p`, which says the side `p` lies on. */
-function nearestParam(
+export function nearestParam(
   source: SplineEntity | EllipseEntity,
   curve: PlanarCurve,
   p: Vec2

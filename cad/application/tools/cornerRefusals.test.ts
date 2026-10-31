@@ -742,7 +742,8 @@ describe("FILLET and CHAMFER say what they make no corner of", () => {
 })
 
 // AutoCAD 2027's console, en-US and es-ES (probes corners/p228, p230, p236,
-// p237, p314, p315, p319, p324–p327, p366–p370, p379, p380, p383–p385).
+// p314, p315, p319, p325, p327, p366, p367, p370, p379, p380, p383–p385);
+// what FILLET makes of them, curveObjectFillets.test.ts.
 describe("FILLET and CHAMFER of an ellipse or a spline", () => {
   const ELLIPSE = () => ellipseOf(p(0, 0), p(50, 0), 0.5, { id: "E" })
   const HALF = () =>
@@ -772,7 +773,7 @@ describe("FILLET and CHAMFER of an ellipse or a spline", () => {
     ]
   }
 
-  it("FILLET at a radius says it cannot fillet a closed ellipse with a line, either first, crossing or not (p325, p366, p383)", () => {
+  it("FILLET at a radius is unable where the ellipse is picked with its tangent parallel to the line, either first, crossing or not (p325, p366, p383)", () => {
     const apart = () => [
       ELLIPSE(),
       lineOf(p(200, -100), p(200, 100), { id: "L1" }),
@@ -790,7 +791,7 @@ describe("FILLET and CHAMFER of an ellipse or a spline", () => {
     }
   })
 
-  it("FILLET says it of two closed ellipses (p384)", () => {
+  it("FILLET says it of two closed ellipses picked with parallel tangents (p384)", () => {
     const two = () => [
       ELLIPSE(),
       ellipseOf(p(60, 0), p(50, 0), 0.5, { id: "E2" }),
@@ -830,43 +831,6 @@ describe("FILLET and CHAMFER of an ellipse or a spline", () => {
       "Select second object or shift-select to apply corner or [Radius]: 50,0"
     )
     expect(cad.activeToolId()).toBe("select")
-  })
-
-  // WHY asked again: AutoCAD trims the line to the ellipse at radius 0
-  // (p324), fillets a closed ellipse with an arc (p368) and an elliptical arc
-  // or a spline with a line (p369, p326), which is not built: the coverage
-  // entry's Missing.
-  it("FILLET takes no corner it does not build: asked again, nothing said (p324, p368, p369, p237)", () => {
-    const meets = run(
-      [ELLIPSE(), across()],
-      "FILLET",
-      "R",
-      "0",
-      "30,40",
-      "50,0"
-    )
-    expect(meets.activeToolId()).toBe("fillet")
-    expect(meets.byId<LineEntity>("L1").start).toBeCloseToPoint(p(30, -40))
-    const arc = run(
-      [ELLIPSE(), arcOf(p(60, 0), 20, deg(180), deg(270), { id: "A1" })],
-      "FILLET",
-      "R",
-      "5",
-      "60,-20",
-      "50,0"
-    )
-    expect(arc.state().commandLine.prompt).toBe(
-      "FILLET Select second object or shift-select to apply corner or [Radius]:"
-    )
-    for (const [entity, pick] of [
-      [HALF(), "0,25"],
-      [SPLINE(), "0,0"],
-    ] as const) {
-      const cad = run([entity, across()], "FILLET", "R", "5", pick)
-      expect(cad.state().commandLine.prompt).toBe(
-        "FILLET Select first object or [Undo/Polyline/Radius/Multiple]:"
-      )
-    }
   })
 
   it("CHAMFER takes an ellipse, an elliptical arc or a spline, and with a line says it cannot, either first (p314, p315, p319, p327, p370, p380)", () => {

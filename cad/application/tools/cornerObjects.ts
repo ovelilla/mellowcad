@@ -28,7 +28,8 @@ import {
   entityThickness,
   facesAlong,
   hasThickness,
-  isFullEllipse,
+  ellipsePointAt,
+  ellipseSweepParams,
   isTilted,
   polylineSegmentGeometries,
   polylineSpan,
@@ -36,6 +37,7 @@ import {
   type PolylineWidth,
   readsInPlan,
   sharesTiltedPlane,
+  splineStartPoint,
   turnedOver,
   withNormal,
   withThickness,
@@ -68,13 +70,13 @@ export interface SegmentPick {
 export type CornerObject = LineEntity | SegmentPick
 
 /**
- * An ELLIPSE or a SPLINE, taken as an object only for the pair to be refused
- * in AutoCAD's words: CHAMFER's any of them, FILLET's a closed ellipse.
+ * An ELLIPSE or a SPLINE: FILLET rounds it (`curveObjectFillets.ts`), CHAMFER
+ * takes it only for the pair to be refused in AutoCAD's words.
  */
 export type CurveObject = EllipseEntity | SplineEntity
 
-/** FILLET's objects: CHAMFER's, an ARC or a CIRCLE, and a closed ellipse. */
-export type FilletObject = CornerObject | RoundObject | EllipseEntity
+/** FILLET's objects: CHAMFER's, an ARC or a CIRCLE, an ELLIPSE or a SPLINE. */
+export type FilletObject = CornerObject | RoundObject | CurveObject
 
 /** Any object of FILLET's or CHAMFER's. */
 type AnyObject = FilletObject | CurveObject
@@ -255,13 +257,11 @@ function filletObjectAt(
   first: FilletObject | null,
   index?: number
 ): FilletObject | null {
-  // WHY a closed ellipse alone: AutoCAD fillets an elliptical arc and a
-  // spline, which is not built, so they stay untaken (probes corners/p237,
-  // p326, p369).
   const whole =
     hit.type === "arc" ||
     hit.type === "circle" ||
-    (hit.type === "ellipse" && isFullEllipse(hit))
+    hit.type === "ellipse" ||
+    hit.type === "spline"
   if (!whole) {
     return cornerObjectAt(
       ctx,
@@ -489,7 +489,9 @@ export function foundFilletObject(
 
 /**
  * Where a mode's find of a line, an arc or a circle stands for its pick: its
- * middle — a circle's half way round from its angle 0.
+ * middle — a circle's half way round from its angle 0 —, an ellipse's middle
+ * by its parameter; a spline's, its start (FILLET's Last, probes
+ * corners/p477, p478: the fillet each would make picked there).
  */
 function middleOf(entity: Entity): Vec2 | null {
   switch (entity.type) {
@@ -504,8 +506,12 @@ function middleOf(entity: Entity): Vec2 | null {
       )
     case "circle":
       return polarPoint(entity.center, entity.radius, Math.PI)
-    case "ellipse":
+    case "ellipse": {
+      const { start, sweep } = ellipseSweepParams(entity)
+      return ellipsePointAt(entity, start + sweep / 2)
+    }
     case "spline":
+      return planar(splineStartPoint(entity))
     case "polyline":
     case "polyline3d":
     case "text":

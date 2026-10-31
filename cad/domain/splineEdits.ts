@@ -183,6 +183,25 @@ export function splineGrowth(
     : bsplineTaylorGrowth(curve, atEnd)
 }
 
+/**
+ * The open spline run on past both ends by about `distance`, each end as
+ * EXTEND grows it: FILLET's curve, which meets the other object on a growth
+ * as on the spline (corners/p237, p448). On the parameter of
+ * {@link splineRun}: past its end `u` is {@link splineGrown}'s `u − end`,
+ * before its start `start − u`.
+ */
+export function splineRunOn(
+  spline: SplineEntity,
+  distance: number
+): BSplineCurve {
+  const grow =
+    spline.method === "fit" ? bsplineEasedGrowth : bsplineTaylorGrowth
+  const atEnd = splineGrowth(spline, true)
+  const ended = atEnd.grown(atEnd.reach(distance))
+  const atStart = grow(ended, false)
+  return atStart.grown(atStart.reach(distance))
+}
+
 /** The spline grown by `t` past an end, a fit spline still one (k17, k32, k35). */
 export function splineGrown(
   spline: SplineEntity,

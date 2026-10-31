@@ -935,12 +935,40 @@ a block reference `Fillet requires 2 lines, arcs, or circles (not block referenc
 `… (no referencias a bloque).`), a dimension `… (not dimensions).` (es `… (no cotas).`), and the
 prompt is asked again (p231–p235, p378, p381); at the second prompt the same, but an MTEXT or a HATCH
 says `Cannot fillet between these two entities.` (es `Imposible empalmar estos dos objetos.`, another
-string than the parallel pair's) and the command ends (p238, p239, p310–p312). A closed ELLIPSE is
-an object: with a line or another ellipse, at a radius, `Unable to fillet curves.` (es
-`No se pueden empalmar curvas.`) and the command ends, crossing or not (p325, p366, p383, p384); at
-radius 0 a line that misses it makes nothing and nothing is said (p236); with a polyline's segment
-`Cannot fillet between these two entities.` (es `Imposible empalmar estos dos objetos.`) at any
-radius (p367, p385). A point typed at any of the three prompts is a pick there (`30,40`), the side it lies on
+string than the parallel pair's) and the command ends (p238, p239, p310–p312). An ELLIPSE, an
+elliptical arc and a SPLINE are objects (`curveObjectFillets.ts`, corners/p389–p482), with a line,
+an ARC, a CIRCLE or another of them: at a radius each is read as its tangent at the point picked, a
+line as itself, and the fillet's centre lies on the side of each tangent the other was picked on
+(an elliptical arc's inside its ellipse though the line was picked outside it, p446; a circle's
+inside it, p453), a spline met on its growth on that growth's own (p448, p449), where the curves'
+exact offsets cross, the one touching each curve nearest its pick along it (p468: a closed
+spline's branch by the pick; p368: of two as near, the first round the ellipse); the arc is the
+part of its circle facing where the two tangents meet, which is the long way round in two
+quadrants of four — a 308° arc, the line and the spline kept through their crossing (p389, p392,
+p413) —, whichever was picked or drawn first and whichever way either runs (p393–p396,
+p405–p412), and turns with the pick: the same circle with the ellipse picked further round makes
+the other (p399, p435), as does the radius (p421–p432); where that leaves a spline met on its
+growth nothing, the other way round (p448). Each object is kept on the side it runs on from the
+arc, tangent: a line trimmed or extended, an ARC (p456) and an elliptical arc trimmed or run on
+round their circle and ellipse (p446: `-4.154, 1.5708`, stored here from 2.1292), a spline cut as
+BREAK cuts it, a fit spline still one, a CV spline a CV spline (p326, p467), or grown past its end
+as EXTEND grows it (p448); a CIRCLE, a closed ellipse and a closed spline are left as they are
+(p450, p451, p453, p468). The arc lies on the objects' layer, else the current one, and wears the
+current lineweight — not the second object's, as a line's fillet does — and not the current colour
+(p472, p473, p481). The tangents parallel, or the offsets never meeting, say
+`Unable to fillet curves.` (es `No se pueden empalmar curvas.`; a pick on an ellipse's end facing a
+line upright beside it, p325, p366, p383, p384, p398, p470, p474), and a line that would keep nothing
+`No valid fillet with radius 100.0000` (es `Imposible hacer un empalme de radio 100.0000`, table
+20711, another string than an ARC's; p469); at radius 0 they meet where they cross, an elliptical
+arc round its ellipse and a spline grown past its end (p237, p445), nearest a line's pick, else
+both picks, each kept on its picked side — an ARC and an elliptical arc reached from the end its pick
+is nearer when the crossing lies off it (p441–p445, p452, p455, p458, p461) —, and where they do
+not cross, or nothing is cut (two closed ones), nothing is made and nothing said (p236, p454,
+p471). With a polyline's segment `Cannot fillet between these two entities.` (es
+`Imposible empalmar estos dos objetos.`) at any radius (p367, p385, p464–p466); a spline lying in no
+plane `The entities are non-coplanar.` (es `Los objetos no son coplanares.`, table 20709, p479);
+each ends the command, or in Multiple asks the first prompt again (p475). Last finds an elliptical
+arc at its middle and a spline at its start, a fence where it crosses (p477, p478, p480). A point typed at any of the three prompts is a pick there (`30,40`), the side it lies on
 kept, read as a first point is — `@` from LASTPOINT, a polar point, `*` in the WCS, its Z kept, a
 number a direct distance from LASTPOINT towards the cursor; `#` refused (p240–p248) —, and it
 becomes LASTPOINT, on nothing too, where the prompt is asked again without a word (p249, p250,
@@ -966,27 +994,27 @@ cannot be (`'LINE`) says `** That command may not be invoked transparently **` f
 before the command is dropped, and nothing is left selected after (p162–p164); Enter at `Command:`
 repeats it, and `'FILLET` is refused as no transparent command (p105, p106). The look (desktop
 corners/d01–d06): the first prompt's rollover thickens what a pick takes — a line, an arc, a
-circle, a closed ellipse, a polyline's segment alone (d01-1, d04-2, d04-3) —, none over a type it
+circle, an ellipse, a spline, a polyline's segment alone (d01-1, d04-2, d04-3, d14-1, d14-2) —, none over a type it
 refuses nor over an object on a locked layer (d04-4); the second prompt's ghost is what the click
 makes, worked out as the click works it out — the lines trimmed and the arc, Shift's sharp corner,
 the cap, a joined polyline — in the selection's glow, over the objects it replaces drawn dimmed in
 place, so what shows of them is what it removes, the side following the cursor (d01-2, d01-3,
-d02-1, d06-2), a circle left as drawn; with the cursor on nothing, or on an object making nothing,
+d02-1, d06-2), a curve's arc the long way round too (d15-1, d15-2, d16-1), a circle left as drawn; with the cursor on nothing, or on an object making nothing,
 the first object alone in the glow (d01-4), and on one the pair refuses — the first again, a type
 refused, parallel, a radius too large — the circle-and-slash beside the cursor (d06-1); Polyline's
 prompt over a 2D polyline draws every corner as the current radius would round it, in the glow,
 over the polyline dimmed (d05-1), and nothing over anything else (d05-2). Wording, English and
 Spanish, from AutoCAD 2027's console (corners/p100–p169, p174, p176, p231–p239, p240–p309,
-p310–p312, p323, p325, p360–p388) and its string tables. A 3D polyline, first or second, is refused with `  3D Polyline objects may not be filleted.` (es `  Puede que los objetos de polilínea 3D no estén unidos con empalme.`, table 20635, 3dpoly/p26) and the prompt asked again; its Polyline option with `Object selected is not a 2D polyline` (p09).
+p310–p312, p323, p325, p360–p482) and its string tables; the look from the desktop (corners/d01–d16, `dsk.sh`, `dsk-curves.sh`). A 3D polyline, first or second, is refused with `  3D Polyline objects may not be filleted.` (es `  Puede que los objetos de polilínea 3D no estén unidos con empalme.`, table 20635, 3dpoly/p26) and the prompt asked again; its Polyline option with `Object selected is not a 2D polyline` (p09).
 
-**Missing:** what AutoCAD makes of a closed ellipse with a line meeting it at radius 0 (the line
-trimmed to it, p324) and with an arc or a circle (a fillet, p368), and of an elliptical arc or a
-spline (a fillet, the spline extended at radius 0: p237, p326, p369) — such a pick is not taken and
-the prompt is asked again without a word, and a mode does not take an ellipse or a spline (no longer
-blocked: the fillet's centre lies on the curve's exact offset at the radius, which
-`geometry/curveOffset.ts` evaluates, differentiates and crosses since OFFSET of an ellipse and a
-spline; what is left is the console's rules of p324, p326, p368 and p369 — which piece is kept, a
-spline's end grown, the arc's side); the
+**Missing:** of an ellipse or a spline: a closed spline with a line at radius 0, where AutoCAD
+cuts the line and leaves a SPLINE of it under the line's handle (p482: here it stays a line);
+an ARC whose offset only touches the ellipse's (p459, a half circle between their ends: a double
+root, which the scan finds no sign change at, so `Unable to fillet curves.` here); a pair in a
+tilted plane they share, which AutoCAD rounds in it (here asked again without a word); which of
+AutoCAD's rules settles a pair no probe here meets — two candidate circles neither nearer along a
+curve, a line kept nothing with a spline on its growth —, read from p389–p482 and **unverified**
+beyond them; the
 linetype scale the arc takes from the object picked second (`LinetypeScale` 2, p332: no per-object
 linetype scale is modelled); Trim (TRIMMODE is always 1, so it is not listed; `T`, es `R`, is taken
 as its word and refused as a wrong answer, so Spanish `R` never opens RAdio, p165, p168), the

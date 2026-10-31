@@ -462,7 +462,7 @@ X Y Z, End X Y Z, Major radius, Minor radius, Radius ratio, Start angle, End ang
 whole one), Major axis vector X Y Z, Minor axis vector X Y Z and Area (an arc's the segment its
 chord closes, AREA's, p328); the centre, the radii, the ratio and an arc's angles retyped, the rest
 greyed; Spanish as d08 shows (`Relación del radio`, `Vector de radio mayor X`,
-`Vector de eje menor X`). Its linetype: properties.md; ROTATE, SCALE, STRETCH, BREAK: modify.md
+`Vector de eje menor X`). Its linetype: properties.md; ROTATE, SCALE, STRETCH, BREAK, FILLET: modify.md
 
 **Missing:** Isocircle: AutoCAD offers it only under the isometric snap style (SNAPSTYL 1, not built
 here), as `[Arc/Center/Isocircle]`, `Specify center of isocircle:`,
@@ -472,7 +472,7 @@ length or an angle typed while a grip is hot is not built; a whole ellipse's Sta
 angle retyped (**unverified**: unprobed, read-only here); the palette's English labels
 (**unverified**: the desktop seen in Spanish only); the start a closed elliptical arc keeps
 (p220: StartParam 0.857072, EndParam 7.140257), which has no field here (ELLIPSE-D21);
-HATCH / boundary / JOIN / FILLET / DIM on an ellipse (OFFSET: modify.md); the Intersection, Tangent and
+HATCH / boundary / JOIN / DIM on an ellipse (OFFSET, FILLET: modify.md); the Intersection, Tangent and
 Perpendicular snaps on an ellipse (`_INT` with a line, a circle and another ellipse at
 45.825757,10, 38.186654,16.138304 and 14,24; from 100,60 `_TAN` at −26.144218,21.310091 and
 `_PER` at 45.503239,10.361651, an arc's only on its sweep, −48.836572,−5.361651; p308–p314); a
@@ -593,7 +593,8 @@ spline, −1 on another (d01, d03); a closed CV spline counts its vertices (d04-
 piece TRIM leaves of one is neither Closed nor Periodic (d04-2). Saved from drawing file version
 38. TRIM, EXTEND, BREAK and BREAKATPOINT leave it so, cut on its own parameter by knot insertion
 (spline-knots/k01–k37: modify.md's TRIM and BREAK): a trimmed one a CV spline, a broken or extended
-fit spline a fit spline
+fit spline a fit spline; FILLET's piece or growth of one a fit spline too (corners/p326, p441,
+p448: modify.md's FILLET)
 
 **Missing:** toLerance and Object (not offered: a tolerance above 0 is an approximation Autodesk
 does not document, and there are no spline-fit polylines to convert; AutoCAD asks
@@ -608,7 +609,7 @@ d08-2, d08-3; Stretch / Insert / Refine / Remove vertex on a CV, d09-4), editing
 (SPLINEDIT's Edit vertex Weight, k11; the palette's Weight, which d03 shows editable) and the
 palette's Method, Degree, Knot parameterization, Closed and CV frame; weights only a file or a
 piece of a weighted one holds; AutoCAD's Area of a self-crossing closed spline (**unverified**);
-JOIN / FILLET / HATCH / DIM on a spline or against one (OFFSET: modify.md); Geometric Center (a closed
+JOIN / HATCH / DIM on a spline or against one (OFFSET, FILLET: modify.md); Geometric Center (a closed
 spline's, p311: 10,10 and 40,10; none on an open one, p310, p312), Perpendicular and Tangent on a
 spline (p313, p315, p316) (SPLINE-D51); PEDIT Spline, BLEND
 

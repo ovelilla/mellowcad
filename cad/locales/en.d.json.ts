@@ -1833,6 +1833,8 @@ declare const source: {
       "filletRequiresNotBlocks": string
       "filletRequiresNotDimensions": string
       "unableToFilletCurves": string
+      "noValidCurveFillet": string
+      "entitiesNonCoplanar": string
       "chamferRequiresTwoLines": string
       "chamferRequiresNotBlocks": string
       "chamferRequiresNotDimensions": string

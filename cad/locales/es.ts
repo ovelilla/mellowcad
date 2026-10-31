@@ -3401,6 +3401,13 @@ export const es: EngineLocale = {
       "filletRequiresNotBlocks": "Empalme requiere 2 líneas, arcos o círculos (no referencias a bloque).",
       "filletRequiresNotDimensions": "Empalme requiere 2 líneas, arcos o círculos (no cotas).",
       "unableToFilletCurves": "No se pueden empalmar curvas.",
+      "noValidCurveFillet": [
+        "Imposible hacer un empalme de radio ",
+        [
+          "radius"
+        ]
+      ],
+      "entitiesNonCoplanar": "Los objetos no son coplanares.",
       "chamferRequiresTwoLines": "Chaflán requiere 2 líneas.",
       "chamferRequiresNotBlocks": "Chaflán requiere 2 líneas (no referencias a bloque).",
       "chamferRequiresNotDimensions": "Chaflán requiere 2 líneas (no cotas).",

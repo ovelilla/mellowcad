@@ -2994,6 +2994,13 @@ export const en: EngineCatalog = {
       "filletRequiresNotBlocks": "Fillet requires 2 lines, arcs, or circles (not block references).",
       "filletRequiresNotDimensions": "Fillet requires 2 lines, arcs, or circles (not dimensions).",
       "unableToFilletCurves": "Unable to fillet curves.",
+      "noValidCurveFillet": [
+        "No valid fillet with radius ",
+        [
+          "radius"
+        ]
+      ],
+      "entitiesNonCoplanar": "The entities are non-coplanar.",
       "chamferRequiresTwoLines": "Chamfer requires 2 lines.",
       "chamferRequiresNotBlocks": "Chamfer requires 2 lines (not block references).",
       "chamferRequiresNotDimensions": "Chamfer requires 2 lines (not dimensions).",

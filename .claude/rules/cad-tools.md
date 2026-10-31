@@ -51,19 +51,19 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
   `selectToolOverlay.ts` (each edit's preview), `selectToolEdits.ts` (pure helpers). Add a grip
   kind in all four, never by growing the class. Points that drag like a polyline's vertices (a
   spline's) reuse the `vertex` role through `withVertexAt`.
-- FILLET and CHAMFER — `cornerObjects.ts` (the objects, their picks, refusals and planes),
+- FILLET and CHAMFER — `cornerObjects.ts` (objects, picks, refusals, planes),
   `polylineCorners.ts` (polyline corners, `cutBetweenSegments`, `cutPolylineCorners`),
-  `curveFillets.ts` (arc segments and whole curves), `roundFillets.ts` (ARC and CIRCLE objects).
-  The rules: a corner-cutting command passes its cut, never walks a polyline itself; it carries
-  the widths, and so does any tool that makes a polyline out of another's pieces (OFFSET, JOIN,
-  TRIM, BREAK). An arc segment, an ARC or CIRCLE and a `CurveObject` follow different console
-  rules (`curveCrossing` / `keptEnd`, `filletRound` / `wholeFillet`, refused): never send one kind
-  through another's path. What a mode found is read by `foundFilletObject`: never invent a pick
-  point in the tool. A second object that makes no corner is said and refused
-  (`cornerPairRefusal`, `foundPairRefusal`), never filtered out; click and ghost share one
-  `CornerOutcome`. A tilted polyline is cut in its OCS (`cornerPlane`, `roundPlane`): never cut its
-  points against plan picks. `bulgeThroughPoint` reads its point as the arc's middle: beside an arc
-  pass the bisector of the radii.
+  `curveFillets.ts` (arc segments and whole curves), `roundFillets.ts` (ARC and CIRCLE objects),
+  `curveObjectFillets.ts` (ELLIPSE, SPLINE). A corner-cutting command passes its cut, never walks
+  a polyline itself; it carries the widths, as does any tool making a polyline of another's pieces
+  (OFFSET, JOIN, TRIM, BREAK). An arc segment, an ARC or CIRCLE and a `CurveObject` follow
+  different console rules (`curveCrossing` / `keptEnd`, `filletRound` / `wholeFillet`,
+  `filletCurveObjects`): never send one kind through another's path. What a mode found is read by
+  `foundFilletObject`, never a pick invented in the tool. A second object making no corner is said
+  and refused (`cornerPairRefusal`, `foundPairRefusal`), never filtered out; click and ghost share
+  one `CornerOutcome`. A tilted polyline is cut in its OCS (`cornerPlane`, `roundPlane`), never
+  against plan picks. `bulgeThroughPoint` reads its point as the arc's middle: beside an
+  arc pass the bisector of the radii.
 - `ArcSegmentInput` (`arcSegmentInput.ts`) — the prompts a polyline's arc options open, for any
   command drawing a polyline's arcs (PLINE; DIST's Arc). The tool lists `ARC_SEGMENT_OPTIONS` among
   its keywords in AutoCAD's order, calls `begin`, and while `active` hands it the question, input,
@@ -163,7 +163,7 @@ CELWEIGHT; ByLayer by default, which stores nothing). Every creating command has
 - **Made from another**: the source's, through `carryOverrides` / `carryPiece` / the copy helpers;
   never the current ones.
 - **FILLET's arc and CHAMFER's bevel**: the lines' shared layer or the current one, ByLayer, the
-  second object's lineweight and thickness (`cornerPiece`).
+  second object's lineweight and thickness (`cornerPiece`); beside a curve, CELWEIGHT (p481).
 
 The jigs of LINE, PLINE, CIRCLE, ARC, RECTANG, POLYGON, ELLIPSE and SPLINE wear `currentColor`
 (line/d04, rectang/d02, ellipse/d01–d02, else d01). No HPLAYER, DIMLAYER or TEXTLAYER: the current
