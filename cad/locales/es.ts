@@ -104,7 +104,7 @@ export const es: EngineLocale = {
       "region": "Región",
       "union": "Unión",
       "subtract": "Diferencia",
-      "box": "De textura cuadrada",
+      "box": "Prisma rectangular",
       "intersect": "Intersección"
     },
     "description": {
