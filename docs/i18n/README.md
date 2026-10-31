@@ -13,6 +13,10 @@ how it is written, and how far it has been reviewed. A `live` language without o
 | `ar.md`    | Arabic               | `global`         | `live` |
 | `pt-BR.md` | Brazilian Portuguese | `localized`      | `live` |
 
+**Next, when the owner opens one:** French, then German and Italian, each `localized`, through
+skill `add-language`; a language Autodesk does not ship (Turkish, Persian…) when the analytics
+ask for it.
+
 A file covers both of its languages (`COMMAND_LANGUAGE`): the **interface language** — palettes,
 menus, tooltips, the landing — and, for a `localized` one, the **command language** copied from
 its AutoCAD (names, aliases, prompts, keywords), whose names each command's entry in
