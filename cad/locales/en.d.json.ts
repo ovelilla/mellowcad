@@ -17,6 +17,7 @@ declare const source: {
       "ellipsecenter": string
       "ellipsearc": string
       "spline": string
+      "splinedit": string
       "splinefit": string
       "splinecv": string
       "rectangle": string
@@ -470,6 +471,7 @@ declare const source: {
       "ELLIPSEC": string[]
       "ELLIPSEARC": string[]
       "SPLINE": string[]
+      "SPLINEDIT": string[]
       "RECTANG": string[]
       "POLYGON": string[]
       "HATCH": string[]
@@ -691,6 +693,37 @@ declare const source: {
         "Undo": string
         "Close": string
         "Object": string
+      }
+      "SPLINEDIT": {
+        "Close": string
+        "Open": string
+        "Join": string
+        "Fit data": string
+        "Data": string
+        "Edit vertex": string
+        "convert to Polyline": string
+        "Reverse": string
+        "R": string
+        "Undo": string
+        "eXit": string
+        "X": string
+        "Toggle": string
+        "Add": string
+        "Delete": string
+        "Move": string
+        "Purge": string
+        "Tangents": string
+        "Elevate order": string
+        "Order": string
+        "Weight": string
+        "Next": string
+        "Previous": string
+        "Select point": string
+        "Point": string
+        "System default": string
+        "Default": string
+        "After": string
+        "Before": string
       }
       "RECTANG": {
         "Chamfer": string
@@ -1178,6 +1211,21 @@ declare const source: {
       "specifyAxisEndpointOfEllipticalArcOr": {
         "Centre": string
       }
+      "splineditOptionClosed": {
+        "convert to Polyline": string
+      }
+      "enterFitDataOption": {
+        "Add": string
+        "Open": string
+        "Move": string
+        "X": string
+      }
+      "enterVertexEditingOption": {
+        "X": string
+      }
+      "specifyNewLocationOr": {
+        "X": string
+      }
     }
     "prompts": {
       "length": string
@@ -1595,6 +1643,25 @@ declare const source: {
       "dimStylesToList": string
       "selectDimension": string
       "enterValueOr": string
+      "selectSpline": string
+      "splineditOption": string
+      "splineditOptionClosed": string
+      "enterFitDataOption": string
+      "specifyExistingFitPoint": string
+      "specifyNewPointOr": string
+      "specifyNewFitPointToAdd": string
+      "specifyStartTangentOr": string
+      "specifyEndTangentOr": string
+      "enterVertexEditingOption": string
+      "specifyPointOnSpline": string
+      "specifyControlVertexToDelete": string
+      "enterNewOrder": string
+      "specifyNewLocationOr": string
+      "enterNewWeightOr": string
+      "specifyPrecision": string
+      "exitLower": string
+      "nextShort": string
+      "previousShort": string
     }
     "format": {
       "idle": string
@@ -1952,6 +2019,12 @@ declare const source: {
       "notALine": string
       "dimLinesParallel": string
       "negativeSpacing": string
+      "objectNotSpline": string
+      "splineReversed": string
+      "splineMadeRational": string
+      "cannotDeleteBeyond": string
+      "notAFitPoint": string
+      "notAControlVertex": string
     }
     "feedback": {
       "snap": {
@@ -2080,6 +2153,16 @@ declare const source: {
         "Square root": string
         "start Tangency": string
         "end Tangency": string
+      }
+      "SPLINEDIT": {
+        "Fit data": string
+        "Edit vertex": string
+        "convert to Polyline": string
+        "Reverse": string
+        "eXit": string
+        "Elevate order": string
+        "Select point": string
+        "System default": string
       }
       "HATCH": {
         "Select objects": string

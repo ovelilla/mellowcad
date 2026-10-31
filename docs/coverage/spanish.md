@@ -55,6 +55,11 @@ explains):
   p155.es), which asks no `Precise tangente` at the closure (p124.es). The rail's
   `Ajuste de spline` and `VC de spline` are the ribbon's tooltips (acad.cuix). **Unverified:** the
   palette's `Parametrización de nudos`.
+- **SPLINEDIT:** `EDITSPLINE` (table 52827) and `SPE` from the 2027 Spanish `acad.pgp`; every
+  prompt, keyword and message from 2027's console (spline-knots/k57–k146.es), whose `initget`
+  spells some words per prompt (`añaDIr` and `dEsplazar` at Fit data, `Añadir` and `Desplazar` at
+  Edit vertex, `Polilínea` at a closed spline's first prompt, eXit's hidden `SA` or `S`).
+  **Unverified:** the rail's `Editar spline`.
 - **UCS:** `SCP` and `SIMBSCP` from the Spanish pages with the English GUIDs, as is `PLANTA`;
   the keywords `gUArdado`, `oBjeto`, `PRev`, `Vista`, `Univ`, `X`, `Y`, `Z`, `ejEZ`, `Objeto`,
   `Rest`,

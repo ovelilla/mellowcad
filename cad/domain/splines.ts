@@ -31,6 +31,12 @@ import { nextEntityId } from "./entityIds"
 
 /** AutoCAD's SPLINE takes degrees 1 to 10 on the CV method. */
 export const MAX_SPLINE_DEGREE = 10
+/**
+ * The highest order (degree + 1) a spline's own knots give it, SPLINEDIT's
+ * Elevate order's: `Requires an integer between 4 and 26.` (probe
+ * spline-knots/k86).
+ */
+export const MAX_SPLINE_ORDER = 26
 export const DEFAULT_SPLINE_DEGREE = 3
 
 export interface SplineOptions {
@@ -83,7 +89,7 @@ export function createSpline(
     if (params?.length !== (closed ? count + 1 : count)) knotVector = undefined
   } else if (knotVector && !(closed && knotVector.length === count + 1)) {
     const own = knotVector.length - count - 1
-    if (own >= 1 && own <= MAX_SPLINE_DEGREE && spans(knotVector, own)) {
+    if (own >= 1 && own < MAX_SPLINE_ORDER && spans(knotVector, own)) {
       degree = own
     } else {
       knotVector = undefined

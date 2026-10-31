@@ -56,6 +56,7 @@ EXPLODE ["X"] "Explode"
 JOIN ["J"] "Join"
 BREAK ["BR"] "Break"
 BREAKATPOINT [] "Break at point"
+SPLINEDIT ["SPE"] "Edit Spline"
 MATCHPROP ["MA","PAINTER"] "Match properties"
 COPYCLIP [] "Copy"
 CUTCLIP [] "Cut"
@@ -181,6 +182,7 @@ explode "Explode" X
 join "Join" J
 break "Break" BR
 breakatpoint "Break at point" BREAKATPOINT
+splinedit "Edit Spline" SPE
 matchprop "Match properties" MA
 copyclip "Copy" COPYCLIP
 cutclip "Cut" CUTCLIP
@@ -4359,6 +4361,174 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt: Command:
   asks: -
   prompt| Specify break point:
+
+## SPLINEDIT
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> SPLINEDIT
+  prompt: SPLINEDIT Select spline:
+  command| SPE SPLINEDIT
+> pick
+  prompt: SPLINEDIT Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>:
+  asks: 
+  options: [C] Close, [J] Join, [F] Fit data, [E] Edit vertex, [P] convert to Polyline, [RE] Reverse, [U] Undo, [EX] eXit
+  prompt| Select spline:
+> E
+  prompt: SPLINEDIT Enter a vertex editing option [Add/Delete/Elevate order/Move/Weight/eXit] <eXit>:
+  options: [A] Add, [D] Delete, [E] Elevate order, [M] Move, [W] Weight, [EX] eXit
+  prompt| Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>: E
+> W
+  prompt: SPLINEDIT Enter new weight (current = 1.00) or [Next/Previous/Select point/eXit] <N>:
+  asks: ""
+  options: [N] Next, [P] Previous, [S] Select point, [EX] eXit
+  prompt| Enter a vertex editing option [Add/Delete/Elevate order/Move/Weight/eXit] <eXit>: W
+  info| Spline is not rational. Will make it so.
+> N
+  prompt| Enter new weight (current = 1.00) or [Next/Previous/Select point/eXit] <N>: N
+> weight
+> enter
+  prompt: SPLINEDIT Enter new weight (current = 3.00) or [Next/Previous/Select point/eXit] <N>:
+  prompt| Enter new weight (current = 1.00) or [Next/Previous/Select point/eXit] <N>: 3
+> X
+  prompt: SPLINEDIT Enter a vertex editing option [Add/Delete/Elevate order/Move/Weight/eXit] <eXit>:
+  asks: 
+  options: [A] Add, [D] Delete, [E] Elevate order, [M] Move, [W] Weight, [EX] eXit
+  prompt| Enter new weight (current = 3.00) or [Next/Previous/Select point/eXit] <N>: EX
+> E order
+  prompt: SPLINEDIT Enter new order <4>:
+  asks: ""
+  options: -
+  prompt| Enter a vertex editing option [Add/Delete/Elevate order/Move/Weight/eXit] <eXit>: E
+> order
+> enter
+  prompt: SPLINEDIT Enter a vertex editing option [Add/Delete/Elevate order/Move/Weight/eXit] <eXit>:
+  asks: 
+  options: [A] Add, [D] Delete, [E] Elevate order, [M] Move, [W] Weight, [EX] eXit
+  prompt| Enter new order <4>: 5
+> D
+  prompt: SPLINEDIT Specify control vertex to delete:
+  asks: ""
+  options: -
+  prompt| Enter a vertex editing option [Add/Delete/Elevate order/Move/Weight/eXit] <eXit>: D
+> enter
+  prompt: SPLINEDIT Enter a vertex editing option [Add/Delete/Elevate order/Move/Weight/eXit] <eXit>:
+  asks: 
+  options: [A] Add, [D] Delete, [E] Elevate order, [M] Move, [W] Weight, [EX] eXit
+  prompt| Specify control vertex to delete:
+> A
+  prompt: SPLINEDIT Specify a point on the spline <exit>:
+  asks: ""
+  options: -
+  prompt| Enter a vertex editing option [Add/Delete/Elevate order/Move/Weight/eXit] <eXit>: A
+> enter
+  prompt: SPLINEDIT Enter a vertex editing option [Add/Delete/Elevate order/Move/Weight/eXit] <eXit>:
+  asks: 
+  options: [A] Add, [D] Delete, [E] Elevate order, [M] Move, [W] Weight, [EX] eXit
+  prompt| Specify a point on the spline <exit>:
+> M
+  prompt: SPLINEDIT Specify new location or [Next/Previous/Select point/eXit] <N>:
+  asks: ""
+  options: [N] Next, [P] Previous, [S] Select point, [EX] eXit
+  prompt| Enter a vertex editing option [Add/Delete/Elevate order/Move/Weight/eXit] <eXit>: M
+> X
+  prompt: SPLINEDIT Enter a vertex editing option [Add/Delete/Elevate order/Move/Weight/eXit] <eXit>:
+  asks: 
+  options: [A] Add, [D] Delete, [E] Elevate order, [M] Move, [W] Weight, [EX] eXit
+  prompt| Specify new location or [Next/Previous/Select point/eXit] <N>: EX
+> X
+  prompt: SPLINEDIT Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>:
+  options: [C] Close, [J] Join, [F] Fit data, [E] Edit vertex, [P] convert to Polyline, [RE] Reverse, [U] Undo, [EX] eXit
+  prompt| Enter a vertex editing option [Add/Delete/Elevate order/Move/Weight/eXit] <eXit>: X
+> F
+  prompt: SPLINEDIT Enter a fit data option [Add/Close/Delete/Move/Purge/Tangents/eXit] <eXit>:
+  options: [A] Add, [C] Close, [D] Delete, [M] Move, [P] Purge, [T] Tangents, [EX] eXit
+  prompt| Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>: F
+> A
+  prompt: SPLINEDIT Specify existing fit point on spline <exit>:
+  asks: ""
+  options: -
+  prompt| Enter a fit data option [Add/Close/Delete/Move/Purge/Tangents/eXit] <eXit>: A
+> first
+  prompt: SPLINEDIT Specify new point or [After/Before] <exit>:
+  options: [A] After, [B] Before
+  prompt| Specify existing fit point on spline <exit>:
+> enter
+  prompt: SPLINEDIT Specify existing fit point on spline <exit>:
+  options: -
+  prompt| Specify new point or [After/Before] <exit>:
+> enter
+  prompt: SPLINEDIT Enter a fit data option [Add/Close/Delete/Move/Purge/Tangents/eXit] <eXit>:
+  asks: 
+  options: [A] Add, [C] Close, [D] Delete, [M] Move, [P] Purge, [T] Tangents, [EX] eXit
+  prompt| Specify existing fit point on spline <exit>:
+> T
+  prompt: SPLINEDIT Specify start tangent or [System default]:
+  asks: ""
+  options: [S] System default
+  prompt| Enter a fit data option [Add/Close/Delete/Move/Purge/Tangents/eXit] <eXit>: T
+> start
+  prompt: SPLINEDIT Specify end tangent or [System default]:
+  prompt| Specify start tangent or [System default]:
+> S
+  prompt: SPLINEDIT Enter a fit data option [Add/Close/Delete/Move/Purge/Tangents/eXit] <eXit>:
+  asks: 
+  options: [A] Add, [C] Close, [D] Delete, [M] Move, [P] Purge, [T] Tangents, [EX] eXit
+  prompt| Specify end tangent or [System default]: S
+> X
+  prompt: SPLINEDIT Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>:
+  options: [C] Close, [J] Join, [F] Fit data, [E] Edit vertex, [P] convert to Polyline, [RE] Reverse, [U] Undo, [EX] eXit
+  prompt| Enter a fit data option [Add/Close/Delete/Move/Purge/Tangents/eXit] <eXit>: X
+> J
+  prompt: SPLINEDIT Select any open curves to join to source:
+  options: -
+  prompt| Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>: J
+> line
+  properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=400.00~, Start Y=100.00~, Start Z=0.00~, End X=500.00~, End Y=100.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
+  prompt| Select any open curves to join to source: 1 found
+> enter
+  prompt: SPLINEDIT Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>:
+  options: [C] Close, [J] Join, [F] Fit data, [E] Edit vertex, [P] convert to Polyline, [RE] Reverse, [U] Undo, [EX] eXit
+  properties: -
+  prompt| Select any open curves to join to source:
+  info| 1 object joined to source
+> C
+  prompt: SPLINEDIT Enter an option [Open/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>:
+  options: [O] Open, [F] Fit data, [E] Edit vertex, [P] convert to Polyline, [RE] Reverse, [U] Undo, [EX] eXit
+  prompt| Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>: C
+> RE
+  prompt| Enter an option [Open/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>: RE
+  info| Spline has been reversed.
+> U
+  prompt| Enter an option [Open/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>: U
+> U
+  prompt: SPLINEDIT Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>:
+  options: [C] Close, [J] Join, [F] Fit data, [E] Edit vertex, [P] convert to Polyline, [RE] Reverse, [U] Undo, [EX] eXit
+  prompt| Enter an option [Open/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>: U
+> U
+  prompt| Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>: U
+> U
+  prompt| Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>: U
+> U
+  prompt| Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>: U
+> U
+  prompt| Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>: U
+  info| Command has been completely undone.
+> P
+  prompt: SPLINEDIT Specify a precision <10>:
+  asks: ""
+  options: -
+  prompt| Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit] <eXit>: P
+> precision
+  prompt: Command:
+  asks: -
+  prompt| Specify a precision <10>:
 
 ## MATCHPROP
 > start

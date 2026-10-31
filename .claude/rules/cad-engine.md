@@ -114,7 +114,8 @@ Dependencies run types → per-type modules → overrides → transforms → que
   NurbsData holds them, a periodic one's one period, never normalised: a piece keeps the
   parameters it had). An edit AutoCAD leaves without fit data goes through `splineWithoutFitData`;
   TRIM's, BREAK's and EXTEND's pieces through `domain/splineEdits.ts` (knot insertion on
-  `splineRun`); OFFSET's copy of a spline or an ellipse through `domain/splineOffset.ts` (Hermite
+  `splineRun`); SPLINEDIT's edits of its fit points, vertices, knots and weights through
+  `domain/splineEditing.ts`; OFFSET's copy of a spline or an ellipse through `domain/splineOffset.ts` (Hermite
   spans on the source's parameter, `geometry/curveOffset.ts`, whose exact offset a fillet's centre
   lies on too); JOIN's spline through `domain/splineJoin.ts` (each object's own curve, `joinCurve`,
   joined end to end by `bsplineJoined`, raised by `bsplineElevated`, never refitted). Many nearest

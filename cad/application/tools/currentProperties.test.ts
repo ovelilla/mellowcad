@@ -7,6 +7,7 @@ import {
   assignEntityLineweight,
   createBlockDefinition,
   createDimension,
+  createSpline,
   Entity,
   entityElevation,
   lineEndZ,
@@ -378,6 +379,23 @@ const DERIVED: ReadonlyArray<
     [
       blueLine(0, 100, "L1"),
       blue(lineOf(p(100, 0), p(100, 100), { id: "L2" })),
+    ],
+  ],
+  [
+    // convert to Polyline's polyline, in the spline's properties.
+    "SPLINEDIT",
+    (c) =>
+      c
+        .command("SPLINEDIT")
+        .click(p(0, 0))
+        .option("convert to Polyline")
+        .enter(),
+    [
+      blue(
+        createSpline("cv", [p(0, 0), p(50, 150), p(200, -50), p(400, 100)], {
+          id: "S1",
+        })
+      ),
     ],
   ],
   [

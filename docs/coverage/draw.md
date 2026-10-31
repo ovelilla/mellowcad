@@ -594,7 +594,8 @@ piece TRIM leaves of one is neither Closed nor Periodic (d04-2). Saved from draw
 38. TRIM, EXTEND, BREAK and BREAKATPOINT leave it so, cut on its own parameter by knot insertion
 (spline-knots/k01–k37: modify.md's TRIM and BREAK): a trimmed one a CV spline, a broken or extended
 fit spline a fit spline; FILLET's piece or growth of one a fit spline too (corners/p326, p441,
-p448: modify.md's FILLET)
+p448: modify.md's FILLET). SPLINEDIT edits its fit data, vertices, knots and weights, to a
+degree of 25 on knots of its own (k57–k146: modify.md's SPLINEDIT)
 
 **Missing:** toLerance and Object (not offered: a tolerance above 0 is an approximation Autodesk
 does not document, and there are no spline-fit polylines to convert; AutoCAD asks
@@ -603,10 +604,10 @@ does not document, and there are no spline-fit polylines to convert; AutoCAD ask
 `None found.` and ends, p114); the deferred Tangent at the end tangent on a line, an ellipse or a
 spline (unprobed: the ordinary Tangent from the last point here); `<a` at the tangents and at
 CV's next points (**unverified**: the console ignores it, p212, p256, p222, so the angle override
-every prompt with a base point has); SPLINEDIT, CVSHOW / CVHIDE, the triangular grip and the
+every prompt with a base point has); CVSHOW / CVHIDE, the triangular grip and the
 multifunction grip menus (Stretch / Add / Remove fit point and Tangent direction on a fit point,
-d08-2, d08-3; Stretch / Insert / Refine / Remove vertex on a CV, d09-4), editing the weights
-(SPLINEDIT's Edit vertex Weight, k11; the palette's Weight, which d03 shows editable) and the
+d08-2, d08-3; Stretch / Insert / Refine / Remove vertex on a CV, d09-4), the palette's Weight
+(d03 shows it editable; SPLINEDIT's Edit vertex Weight edits it: modify.md) and the
 palette's Method, Degree, Knot parameterization, Closed and CV frame; weights only a file or a
 piece of a weighted one holds; AutoCAD's Area of a self-crossing closed spline (**unverified**);
 HATCH / DIM on a spline or against one (OFFSET, FILLET, JOIN: modify.md); Geometric Center (a closed

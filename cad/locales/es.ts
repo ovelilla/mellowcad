@@ -20,6 +20,7 @@ export const es: EngineLocale = {
       "ellipsecenter": "Elipse por centro",
       "ellipsearc": "Arco elíptico",
       "spline": "Spline",
+      "splinedit": "Editar spline",
       "splinefit": "Ajuste de spline",
       "splinecv": "VC de spline",
       "rectangle": "Rectángulo",
@@ -621,6 +622,10 @@ export const es: EngineLocale = {
         "SPLINE",
         "SPL"
       ],
+      "SPLINEDIT": [
+        "EDITSPLINE",
+        "SPE"
+      ],
       "RECTANG": [
         "RECTANG",
         "REC",
@@ -1148,6 +1153,37 @@ export const es: EngineLocale = {
         "Close": "Cerrar",
         "Object": "Objeto"
       },
+      "SPLINEDIT": {
+        "Close": "Cerrar",
+        "Open": "aBrir",
+        "Join": "Unir",
+        "Fit data": "Ajustar",
+        "Data": "daTos",
+        "Edit vertex": "Editar",
+        "convert to Polyline": "coNvertir",
+        "Reverse": "Invertir",
+        "R": "I",
+        "Undo": "desHacer",
+        "eXit": "Salir",
+        "X": "SA",
+        "Toggle": "COnmutar",
+        "Add": "Añadir",
+        "Delete": "sUprimir",
+        "Move": "Desplazar",
+        "Purge": "Limpiar",
+        "Tangents": "Tangentes",
+        "Elevate order": "Elevar",
+        "Order": "Orden",
+        "Weight": "Peso",
+        "Next": "siGuiente",
+        "Previous": "Previo",
+        "Select point": "Designar",
+        "Point": "pUnto",
+        "System default": "Defecto",
+        "Default": "sistema",
+        "After": "Después",
+        "Before": "Antes"
+      },
       "RECTANG": {
         "Chamfer": "Chaflán",
         "Elevation": "Elevación",
@@ -1633,6 +1669,21 @@ export const es: EngineLocale = {
       },
       "specifyAxisEndpointOfEllipticalArcOr": {
         "Centre": "cEntro"
+      },
+      "splineditOptionClosed": {
+        "convert to Polyline": "Polilínea"
+      },
+      "enterFitDataOption": {
+        "Add": "añaDIr",
+        "Open": "Abrir",
+        "Move": "dEsplazar",
+        "X": "S"
+      },
+      "enterVertexEditingOption": {
+        "X": "S"
+      },
+      "specifyNewLocationOr": {
+        "X": "S"
       }
     },
     "prompts": {
@@ -2088,7 +2139,32 @@ export const es: EngineLocale = {
       "dimStyleSelectDimension": "designar cota",
       "dimStylesToList": "Indique estilo(s) de cota a enumerar",
       "selectDimension": "Designe una cota",
-      "enterValueOr": "Indique valor o"
+      "enterValueOr": "Indique valor o",
+      "selectSpline": "Designe spline",
+      "splineditOption": "Indique una opción",
+      "splineditOptionClosed": "Indique una opción",
+      "enterFitDataOption": "Indique una opción de datos de ajuste",
+      "specifyExistingFitPoint": "Precise punto de ajuste existente en spline",
+      "specifyNewPointOr": "Precise nuevo punto o",
+      "specifyNewFitPointToAdd": "Precise nuevo punto de ajuste a añadir",
+      "specifyStartTangentOr": "Precise tangente inicial o",
+      "specifyEndTangentOr": "Precise tangente final o",
+      "enterVertexEditingOption": "Indique una opción de edición de vértices",
+      "specifyPointOnSpline": "Precise un punto en la spline",
+      "specifyControlVertexToDelete": "Especifique vértice de control a suprimir",
+      "enterNewOrder": "Indique nuevo orden",
+      "specifyNewLocationOr": "Precise nueva ubicación o",
+      "enterNewWeightOr": [
+        "Indique nuevo peso (actual = ",
+        [
+          "weight"
+        ],
+        ") o"
+      ],
+      "specifyPrecision": "Especifique una precisión",
+      "exitLower": "salir",
+      "nextShort": "G",
+      "previousShort": "P"
     },
     "format": {
       "idle": "Comando",
@@ -4189,7 +4265,13 @@ export const es: EngineLocale = {
       "notLineArcOrCircle": "El objeto designado no es ni una línea, un arco ni un círculo.",
       "notALine": "El objeto seleccionado no es una línea.",
       "dimLinesParallel": "Las líneas son paralelas.",
-      "negativeSpacing": "Valor de intervalo no válido, el valor de intervalo no puede ser negativo."
+      "negativeSpacing": "Valor de intervalo no válido, el valor de intervalo no puede ser negativo.",
+      "objectNotSpline": "El objeto designado no es una spline.",
+      "splineReversed": "Se ha invertido la spline.",
+      "splineMadeRational": "Spline no racional. Se va a convertir.",
+      "cannotDeleteBeyond": "Imposible eliminar nada más.",
+      "notAFitPoint": "No es ningún punto de ajuste.",
+      "notAControlVertex": "No es un vértice de control."
     },
     "feedback": {
       "snap": {
@@ -4392,6 +4474,16 @@ export const es: EngineLocale = {
         "Square root": "raíz cuaDrada",
         "start Tangency": "iniciar Tangencia",
         "end Tangency": "finalizar Tangencia"
+      },
+      "SPLINEDIT": {
+        "Fit data": "Ajustar datos",
+        "Edit vertex": "Editar vértices",
+        "convert to Polyline": "coNvertir en polilínea",
+        "Reverse": "Invertir",
+        "eXit": "Salir",
+        "Elevate order": "Elevar orden",
+        "Select point": "Designar punto",
+        "System default": "Defecto sistema"
       },
       "HATCH": {
         "Select objects": "Designar objetos"

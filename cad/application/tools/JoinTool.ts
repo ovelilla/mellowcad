@@ -358,7 +358,7 @@ export class JoinTool extends SelectionActionTool {
   }
 }
 
-type JoinMessage =
+export type JoinMessage =
   | "linesJoined"
   | "arcsJoined"
   | "arcsJoinedIntoCircle"
@@ -371,13 +371,13 @@ type JoinMessage =
   | "ellipticalArcsJoinedToSource"
 
 /** One line of what JOIN says. */
-interface Report {
+export interface Report {
   readonly message: JoinMessage
   readonly values: Readonly<Record<string, number>>
 }
 
 /** What a join makes, what it takes away and how it says so. */
-interface Joined {
+export interface Joined {
   readonly kind: "line" | "arc" | "circle" | "ellipse" | "chains"
   readonly made: readonly Entity[]
   /** Every object joined; a `made` under one's id is that object grown. */
@@ -648,9 +648,9 @@ function attachCurve(curves: BSplineCurve[], curve: BSplineCurve): boolean {
 /**
  * What the source's prompt picked joins the spline, its source whatever came
  * first (p406, p426); with nothing meeting it, nothing changes and JOIN says
- * so (p440).
+ * so (p440). SPLINEDIT's Join is this one (spline-knots/k72, k117).
  */
-function joinToSpline(source: Entity, set: readonly Entity[]): Joined {
+export function joinToSpline(source: Entity, set: readonly Entity[]): Joined {
   const left = set.filter(joinable)
   const chain = splineChain(source, left)
   const joined = chain ? chain.members.length - 1 : 0

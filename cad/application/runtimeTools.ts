@@ -46,6 +46,7 @@ import { EraseTool } from "./tools/EraseTool"
 import { ExplodeTool } from "./tools/ExplodeTool"
 import { JoinTool } from "./tools/JoinTool"
 import { BreakTool } from "./tools/BreakTool"
+import { SplineEditTool } from "./tools/SplineEditTool"
 import { MatchPropTool } from "./tools/MatchPropTool"
 import { CopyClipTool } from "./tools/CopyClipTool"
 import { PasteTool } from "./tools/PasteTool"
@@ -157,6 +158,7 @@ export function defaultTools(
     new JoinTool(),
     new BreakTool("gap", "break"),
     new BreakTool("atPoint", "breakatpoint"),
+    new SplineEditTool(),
     new MatchPropTool(),
     new CopyClipTool("copy", "copyclip"),
     new CopyClipTool("cut", "cutclip"),

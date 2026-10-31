@@ -20,6 +20,7 @@ export const en: EngineCatalog = {
       "ellipsecenter": "Center ellipse",
       "ellipsearc": "Elliptical arc",
       "spline": "Spline",
+      "splinedit": "Edit Spline",
       "splinefit": "Spline Fit",
       "splinecv": "Spline CV",
       "rectangle": "Rectangle",
@@ -627,6 +628,10 @@ export const en: EngineCatalog = {
         "SPLINE",
         "SPL"
       ],
+      "SPLINEDIT": [
+        "SPLINEDIT",
+        "SPE"
+      ],
       "RECTANG": [
         "RECTANG",
         "REC",
@@ -1081,6 +1086,16 @@ export const en: EngineCatalog = {
         "start Tangency": "Tangency",
         "end Tangency": "Tangency"
       },
+      "SPLINEDIT": {
+        "Fit data": "Fit",
+        "Edit vertex": "Edit",
+        "convert to Polyline": "Polyline",
+        "Reverse": "REverse",
+        "eXit": "EXit",
+        "Elevate order": "Elevate",
+        "Select point": "Select",
+        "System default": "System"
+      },
       "HATCH": {
         "Select objects": "Select"
       },
@@ -1220,6 +1235,21 @@ export const en: EngineCatalog = {
       },
       "specifyAxisEndpointOfEllipticalArcOr": {
         "Centre": "Centre"
+      },
+      "splineditOptionClosed": {
+        "convert to Polyline": "Polyline"
+      },
+      "enterFitDataOption": {
+        "Add": "Add",
+        "Open": "Open",
+        "Move": "Move",
+        "X": "X"
+      },
+      "enterVertexEditingOption": {
+        "X": "X"
+      },
+      "specifyNewLocationOr": {
+        "X": "X"
       }
     },
     "prompts": {
@@ -1675,7 +1705,32 @@ export const en: EngineCatalog = {
       "dimStyleSelectDimension": "select dimension",
       "dimStylesToList": "Enter dimension style(s) to list",
       "selectDimension": "Select dimension",
-      "enterValueOr": "Enter value or"
+      "enterValueOr": "Enter value or",
+      "selectSpline": "Select spline",
+      "splineditOption": "Enter an option",
+      "splineditOptionClosed": "Enter an option",
+      "enterFitDataOption": "Enter a fit data option",
+      "specifyExistingFitPoint": "Specify existing fit point on spline",
+      "specifyNewPointOr": "Specify new point or",
+      "specifyNewFitPointToAdd": "Specify new fit point to add",
+      "specifyStartTangentOr": "Specify start tangent or",
+      "specifyEndTangentOr": "Specify end tangent or",
+      "enterVertexEditingOption": "Enter a vertex editing option",
+      "specifyPointOnSpline": "Specify a point on the spline",
+      "specifyControlVertexToDelete": "Specify control vertex to delete",
+      "enterNewOrder": "Enter new order",
+      "specifyNewLocationOr": "Specify new location or",
+      "enterNewWeightOr": [
+        "Enter new weight (current = ",
+        [
+          "weight"
+        ],
+        ") or"
+      ],
+      "specifyPrecision": "Specify a precision",
+      "exitLower": "exit",
+      "nextShort": "N",
+      "previousShort": "P"
     },
     "format": {
       "idle": "Command",
@@ -3777,7 +3832,13 @@ export const en: EngineCatalog = {
       "notLineArcOrCircle": "Object selected is not a line, arc or circle.",
       "notALine": "Object selected is not a line.",
       "dimLinesParallel": "Lines are parallel.",
-      "negativeSpacing": "Invalid spacing value, spacing value cannot be negative."
+      "negativeSpacing": "Invalid spacing value, spacing value cannot be negative.",
+      "objectNotSpline": "Object selected is not a spline.",
+      "splineReversed": "Spline has been reversed.",
+      "splineMadeRational": "Spline is not rational. Will make it so.",
+      "cannotDeleteBeyond": "Cannot delete beyond this.",
+      "notAFitPoint": "Not a fit point.",
+      "notAControlVertex": "Not a control vertex."
     },
     "feedback": {
       "snap": {
@@ -3980,6 +4041,16 @@ export const en: EngineCatalog = {
         "Square root": "Square root",
         "start Tangency": "start Tangency",
         "end Tangency": "end Tangency"
+      },
+      "SPLINEDIT": {
+        "Fit data": "Fit data",
+        "Edit vertex": "Edit vertex",
+        "convert to Polyline": "convert to Polyline",
+        "Reverse": "Reverse",
+        "eXit": "eXit",
+        "Elevate order": "Elevate order",
+        "Select point": "Select point",
+        "System default": "System default"
       },
       "HATCH": {
         "Select objects": "Select objects"

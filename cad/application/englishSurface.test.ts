@@ -24,6 +24,7 @@ import {
   createDimension,
   createInsert,
   createMText,
+  createSpline,
   type Entity,
   withElevation,
 } from "../domain/entities"
@@ -1227,6 +1228,57 @@ describe("the engine's English surface", () => {
           .do("BREAKATPOINT", (c) => c.command("BREAKATPOINT"))
           .do("pick", (c) => c.click(at(-80, 0)))
           .do("point", (c) => c.click(at(-60, 0)))
+    )
+    walk(
+      "SPLINEDIT",
+      createHarness({
+        entities: [
+          createSpline("cv", [p(0, 0), p(50, 150), p(200, -50), p(400, 100)]),
+          lineOf(p(400, 100), p(500, 100)),
+        ],
+      }),
+      (s) =>
+        s
+          .do("SPLINEDIT", (c) => c.command("SPE"))
+          .do("pick", (c) => c.click(at(0, 0)))
+          .do("E", (c) => answer(c, "E"))
+          .do("W", (c) => answer(c, "W"))
+          .do("N", (c) => c.option("Next"))
+          .do("weight", (c) => c.type("3"))
+          .do("enter", (c) => c.enter())
+          .do("X", (c) => c.option("eXit"))
+          .do("E order", (c) => answer(c, "E"))
+          .do("order", (c) => c.type("5"))
+          .do("enter", (c) => c.enter())
+          .do("D", (c) => answer(c, "D"))
+          .do("enter", (c) => c.enter())
+          .do("A", (c) => answer(c, "A"))
+          .do("enter", (c) => c.enter())
+          .do("M", (c) => answer(c, "M"))
+          .do("X", (c) => c.option("eXit"))
+          .do("X", (c) => answer(c, "X"))
+          .do("F", (c) => answer(c, "F"))
+          .do("A", (c) => answer(c, "A"))
+          .do("first", (c) => c.click(at(0, 0)))
+          .do("enter", (c) => c.enter())
+          .do("enter", (c) => c.enter())
+          .do("T", (c) => answer(c, "T"))
+          .do("start", (c) => c.click(at(0, 100)))
+          .do("S", (c) => c.option("System default"))
+          .do("X", (c) => answer(c, "X"))
+          .do("J", (c) => answer(c, "J"))
+          .do("line", (c) => c.click(at(450, 100)))
+          .do("enter", (c) => c.enter())
+          .do("C", (c) => answer(c, "C"))
+          .do("RE", (c) => answer(c, "RE"))
+          .do("U", (c) => answer(c, "U"))
+          .do("U", (c) => answer(c, "U"))
+          .do("U", (c) => answer(c, "U"))
+          .do("U", (c) => answer(c, "U"))
+          .do("U", (c) => answer(c, "U"))
+          .do("U", (c) => answer(c, "U"))
+          .do("P", (c) => answer(c, "P"))
+          .do("precision", (c) => c.enter())
     )
     walk(
       "MATCHPROP",

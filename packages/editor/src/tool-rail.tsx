@@ -25,6 +25,7 @@ import {
   Shapes,
   Slash,
   Spline,
+  SplinePointer,
   Split,
   Square,
   Tag,
@@ -123,6 +124,7 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   chamfer: ChamferIcon,
   explode: Split,
   join: Merge,
+  splinedit: SplinePointer,
   break: BreakIcon,
   breakatpoint: BreakAtPointIcon,
   matchprop: Paintbrush,
@@ -233,10 +235,12 @@ const PALETTE: readonly PaletteSection[] = [
       "scale",
       flyout("array", ["array", "arraypolar", "arraypath"]),
       "offset",
-      // The ribbon keeps these three in the expanded Modify panel; here they
-      // are slots, Break at Point as the variant of BREAK it is.
+      // The ribbon keeps these in the expanded Modify panel (Edit Spline in
+      // Edit Polyline's drop-down); here they are slots, Break at Point as
+      // the variant of BREAK it is.
       flyout("break", ["break", "breakatpoint"]),
       "join",
+      "splinedit",
     ],
   },
   {

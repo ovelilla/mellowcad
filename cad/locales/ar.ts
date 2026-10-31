@@ -20,6 +20,7 @@ export const ar: EngineLocale = {
       "ellipsecenter": "قطع ناقص بالمركز",
       "ellipsearc": "قوس قطع ناقص",
       "spline": "منحنى شرائحي",
+      "splinedit": "تحرير المنحنى الشرائحي",
       "splinefit": "منحنى شرائحي بالملاءمة",
       "splinecv": "منحنى شرائحي برؤوس التحكم",
       "rectangle": "مستطيل",
