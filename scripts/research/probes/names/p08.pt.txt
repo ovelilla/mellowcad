@@ -1,0 +1,9 @@
+_-OSNAP
+ON
+(getvar "OSMODE")
+_-OSNAP
+PONTO
+(getvar "OSMODE")
+_-OSNAP
+DES
+(getvar "OSMODE")

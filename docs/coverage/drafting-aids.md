@@ -168,7 +168,7 @@ LINE's distance and angle, d01; here a coordinate box, as FROM's); a filter insi
 FROM's base point as the filter's (f32; the desktop refuses it, d05, as here); the menu's icons
 (d04).
 
-### `-OSNAP` / `-OS` · es `-REFENT`
+### `-OSNAP` / `-OS` · es `-REFENT` · pt-BR `-OSNAP` / `-OS`
 
 **Implemented:** `Current osnap modes: End,Cen,Int,Ext` (no line when none runs), then
 `Enter list of object snap modes:` — modes by their capitals, separated with commas (es Spanish's,
@@ -248,7 +248,7 @@ focused field too — Chrome does not reserve it (IDC_FOCUS_LOCATION is not in `
 `kReservedCommandIds`, chromium 7f7e075), so the page receives it before the address bar; U takes
 back the ORTHO command (p317), which is not built here
 
-### `SNAP` / `SN` · es `FORZCURSOR` / `FC` · snap mode (F9)
+### `SNAP` / `SN` · es `FORZCURSOR` / `FC` · pt-BR `SNAP` / `SN` · snap mode (F9)
 
 **Implemented:** grid snap on the UCS (from its origin, along its axes), the picks rounded to the
 lattice (SNAPUNIT 10: 13,7 is 10,10, desktop pass line/d23), polar snap, stepping by POLARDIST, 0 at

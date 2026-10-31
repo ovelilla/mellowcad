@@ -2,8 +2,9 @@
 
 > **Estado:** fases 1 a 4 hechas (2026-10-31); la 5, en curso: plan `docs/plans/pt-BR-language.md`,
 > sus fases 0 a 3 hechas (`pt-BR` como `draft` en `/pt-br`, con sitio, editor, páginas «Use» e
-> interfaz del motor traducidos; falta el lenguaje de comandos). Se borra cuando el portugués de
-> Brasil esté `live` con el sistema entero.
+> interfaz del motor traducidos) y la 4 en curso (`commands` completo desde la consola pt-BR;
+> faltan los ids por comando y lo no verificado). Se borra cuando el portugués de Brasil esté
+> `live` con el sistema entero.
 
 ## 1. Objetivo
 
@@ -128,4 +129,9 @@ Una fase, un commit (o varios si se separan solos). Las 1 a 4 no cambian nada vi
    fuente en `docs/i18n/pt-BR.md`. Lo que no encajó: las etiquetas de un idioma `localized` no
    están en las tablas sino en las DLL de interfaz del pack y su `acad.cuix` (cómo leerlas, en el
    skill `autocad-research`); `add-language` dice ahora de dónde salen y que `EDITOR_LOCALES` va en
-   la fase 2.
+   la fase 2. Fase 4 empezada: el dueño pidió que el language pack lo instalara la sesión (desde
+   WSL, con su UAC, y la 2027.1 aplicada de nuevo después), y `commands` salió entero de la consola:
+   `scripts/research/console-pair.mjs` empareja las transcripciones de las sondas de las revisiones
+   en pt-BR con las inglesas y redacta cada clave desde la consola. Lo que no encajó, corregido en
+   el sistema: `runacc.sh` solo reconocía el banner en inglés y español, y su timeout dejaba la
+   consola colgada en Windows.

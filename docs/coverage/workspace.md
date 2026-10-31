@@ -30,7 +30,7 @@ menus' "… Settings" items (the Drafting Settings dialog: Snap mode's spacing i
 instead), the right-click menus of Grid, Object Snap Tracking and Lineweight, the Coordinates menu
 (Relative, Geographic, Specific)
 
-### `UNITS` / `UN` / `DDUNITS` · es `UNIDADES` / `UNS` / `DDUNITS`
+### `UNITS` / `UN` / `DDUNITS` · es `UNIDADES` / `UNS` / `DDUNITS` · pt-BR `UNIDADES` / `UN` / `UNIDADESD`
 
 **Implemented:** the Drawing Units dialog (es "Unidades de dibujo"), modal, opened by the command
 (the aliases from both `acad.pgp` files, en:417, :505, es:284, :513; `DDUNITS` probe
@@ -62,7 +62,7 @@ choice, 1 to 5 <1>:`, `Enter number of fractional places for display of angles (
 a table of directions `Enter direction for angle 0 <0>:` and `Measure angles clockwise? [Yes/No]
 <N>`, and no insertion scale (p309)
 
-### `SETVAR` / `SET` · es `MODIVAR` / `MV` · a system variable typed by its name (`AUPREC`…)
+### `SETVAR` / `SET` · es `MODIVAR` / `MV` · pt-BR `DEFVAR` / `DEF` · a system variable typed by its name (`AUPREC`…)
 
 **Implemented:** AutoCAD 2027's console's (probes workspace/p100–p169, p203–p222, p410–p415):
 `Enter variable name or [?] <ORTHOMODE>:` (es `Indique nombre de variable o [?]`), the default the
@@ -137,7 +137,7 @@ becomes LASTPOINT, refused or not (p212), which it does not here. Escape in a ne
 (`*Cancel*`, `Resuming SETVAR command.`, d07-2), a preselection dropped after one (d07; the console
 too, p161) and PolarSnap with a negative POLARDIST stepping by its size (d08) hold as here
 
-### `CLEANSCREENON` / `CLEANSCREENOFF` / Ctrl+0 · es `LIMPIAPANTACT` / `LIMPIAPANTDES`
+### `CLEANSCREENON` / `CLEANSCREENOFF` / Ctrl+0 · es `LIMPIAPANTACT` / `LIMPIAPANTDES` · pt-BR `TELALIMPAATIV` / `TELALIMPADESAT`
 
 **Implemented:** hides the tool palette, the palette panel and the top bar's ribbon parts (the
 Layers and Properties groups, the palette toggles) and keeps the application menu, the Quick Access

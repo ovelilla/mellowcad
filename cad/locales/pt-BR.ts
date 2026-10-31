@@ -572,5 +572,5478 @@ export const ptBR: EngineLocale = {
         "diameter": "Diâmetro"
       }
     }
+  },
+  "commands": {
+    "names": {
+      "LINE": [
+        "LINHA",
+        "L"
+      ],
+      "PLINE": [
+        "PLINHA",
+        "PL"
+      ],
+      "3DPOLY": [
+        "POLI3D",
+        "P3"
+      ],
+      "CIRCLE": [
+        "CIRCULO",
+        "CI"
+      ],
+      "CIRCLED": [
+        "CIRCULOD"
+      ],
+      "CIRCLE2P": [
+        "CIRCULO2P"
+      ],
+      "CIRCLE3P": [
+        "CIRCULO3P"
+      ],
+      "ARC": [
+        "ARCO",
+        "A"
+      ],
+      "ARCSCE": [
+        "ARCOICF"
+      ],
+      "ARCCSE": [
+        "ARCOCIF"
+      ],
+      "ELLIPSE": [
+        "ELIPSE",
+        "EL"
+      ],
+      "ELLIPSEC": [
+        "ELIPSEC"
+      ],
+      "ELLIPSEARC": [
+        "ELIPSEARCO"
+      ],
+      "SPLINE": [
+        "SPLINE",
+        "SPL"
+      ],
+      "SPLINEDIT": [
+        "EDITARSPLINE",
+        "ESPL"
+      ],
+      "PEDIT": [
+        "EDITARP",
+        "EDP"
+      ],
+      "RECTANG": [
+        "RETANGULO",
+        "RET"
+      ],
+      "POLYGON": [
+        "POLIGONO",
+        "POL"
+      ],
+      "HATCH": [
+        "HACHURA",
+        "HC"
+      ],
+      "-HATCH": [
+        "-HACHURA",
+        "-H"
+      ],
+      "BLOCK": [
+        "BLOCO",
+        "CB",
+        "ACADBLOCKDIALOG",
+        "CRIARB",
+        "DEFB"
+      ],
+      "-BLOCK": [
+        "-BLOCO",
+        "-CB"
+      ],
+      "INSERT": [
+        "INSERIR",
+        "I",
+        "INSERIRURL",
+        "INSERIRD"
+      ],
+      "-INSERT": [
+        "-INSERIR",
+        "-I"
+      ],
+      "ATTEDIT": [
+        "EDITARATRIB",
+        "EAT",
+        "EATRIBD"
+      ],
+      "EATTEDIT": [
+        "EDITARATRIBA"
+      ],
+      "ATTDEF": [
+        "DEFATRIB",
+        "DA",
+        "DEFATR",
+        "DEFATRIBD"
+      ],
+      "-ATTDEF": [
+        "-DEFATRIB",
+        "-DA",
+        "-DEFATR"
+      ],
+      "ATTDISP": [
+        "VISATRIB"
+      ],
+      "TEXT": [
+        "TEXTO",
+        "ETE",
+        "ETEXTO"
+      ],
+      "-TEXT": [
+        "-TEXTO"
+      ],
+      "MTEXT": [
+        "TEXTOM",
+        "T",
+        "TXM"
+      ],
+      "-MTEXT": [
+        "-TEXTOM",
+        "-T"
+      ],
+      "TEXTEDIT": [
+        "EDITARTEXTO",
+        "TEDIT",
+        "DDEDIT",
+        "ED"
+      ],
+      "DIMLINEAR": [
+        "COTALINEAR",
+        "CLI",
+        "DIMLIN"
+      ],
+      "DIMALIGNED": [
+        "COTAALIN",
+        "COA",
+        "DIMALI"
+      ],
+      "DIMHORIZONTAL": [
+        "COTAHORIZONTAL"
+      ],
+      "DIMVERTICAL": [
+        "COTAVERTICAL"
+      ],
+      "DIMROTATED": [
+        "COTAROTACIONADA"
+      ],
+      "DIMRADIUS": [
+        "COTARAIOS",
+        "CRA",
+        "DIMRAD"
+      ],
+      "DIMDIAMETER": [
+        "COTADIAMETRO",
+        "CDI",
+        "DIMDIA"
+      ],
+      "DIMANGULAR": [
+        "COTAANG",
+        "CANG",
+        "DIMANG"
+      ],
+      "DIMBASELINE": [
+        "COTALINBASE",
+        "CLB",
+        "DIMBASE"
+      ],
+      "DIMCONTINUE": [
+        "COTASERIE",
+        "CSE",
+        "DIMCONT"
+      ],
+      "DIMSPACE": [
+        "ESPACOCOTA"
+      ],
+      "OFFSET": [
+        "DESLOCAMENTO"
+      ],
+      "MOVE": [
+        "MOVER",
+        "M"
+      ],
+      "COPY": [
+        "COPIAR",
+        "CO",
+        "CP"
+      ],
+      "STRETCH": [
+        "ESTICAR",
+        "E"
+      ],
+      "ROTATE": [
+        "ROTAC",
+        "RO"
+      ],
+      "SCALE": [
+        "ESCALA",
+        "ES"
+      ],
+      "MIRROR": [
+        "ESPELHAR",
+        "ESP"
+      ],
+      "ARRAY": [
+        "MATRIZ",
+        "MA"
+      ],
+      "ARRAYRECT": [
+        "MATRIZRETANG"
+      ],
+      "ARRAYPOLAR": [
+        "MATRIZPOLAR"
+      ],
+      "ARRAYPATH": [
+        "MATRIZCAMINHO"
+      ],
+      "TRIM": [
+        "APARAR",
+        "AP"
+      ],
+      "EXTEND": [
+        "ESTENDER",
+        "EST"
+      ],
+      "FILLET": [
+        "CONCORD",
+        "CNC"
+      ],
+      "CHAMFER": [
+        "CHANFRO",
+        "CHA"
+      ],
+      "EXPLODE": [
+        "EXPLODIR",
+        "X"
+      ],
+      "JOIN": [
+        "UNIR",
+        "UNE"
+      ],
+      "BREAK": [
+        "QUEBRAR",
+        "QU"
+      ],
+      "BREAKATPOINT": [
+        "QUEBRAREMPONTO"
+      ],
+      "MATCHPROP": [
+        "PROPIG",
+        "PI",
+        "PINTOR"
+      ],
+      "COPYCLIP": [
+        "COPIACORTE"
+      ],
+      "CUTCLIP": [
+        "RECORTAT"
+      ],
+      "COPYBASE": [
+        "COPIABASE"
+      ],
+      "DIST": [
+        "DIST",
+        "DI"
+      ],
+      "AREA": [
+        "AREA",
+        "AA"
+      ],
+      "ID": [
+        "ID"
+      ],
+      "LIST": [
+        "LISTA",
+        "LI",
+        "LS",
+        "MOSTRARMAT"
+      ],
+      "ZOOM": [
+        "ZOOM",
+        "Z"
+      ],
+      "PAN": [
+        "PAN",
+        "P"
+      ],
+      "-PAN": [
+        "-PAN",
+        "-P"
+      ],
+      "ERASE": [
+        "APAGAR",
+        "APG",
+        "DELETE"
+      ],
+      "U": [
+        "D"
+      ],
+      "UNDO": [
+        "DESFAZER"
+      ],
+      "REDO": [
+        "REFAZER"
+      ],
+      "MREDO": [
+        "REFAZERM"
+      ],
+      "SNAP": [
+        "SNAP",
+        "SN"
+      ],
+      "-OSNAP": [
+        "-OSNAP",
+        "-OS"
+      ],
+      "FROM": [
+        "DE"
+      ],
+      "NEW": [
+        "NOVO"
+      ],
+      "QNEW": [
+        "NOVOR"
+      ],
+      "QSAVE": [
+        "SALVARR"
+      ],
+      "SAVEAS": [
+        "SALVARCOMO"
+      ],
+      "SAVE": [
+        "SALVAR",
+        "SALVARURL"
+      ],
+      "OPEN": [
+        "ABRIR",
+        "ABRIRURL",
+        "OPENURL",
+        "IMPDXF"
+      ],
+      "PASTECLIP": [
+        "COLARAT"
+      ],
+      "DIMSTYLE": [
+        "ESTILOCOTA",
+        "EC",
+        "DIMSTY"
+      ],
+      "-DIMSTYLE": [
+        "-ESTILOCOTA"
+      ],
+      "STYLE": [
+        "ESTILO",
+        "ET",
+        "DDSTYLE"
+      ],
+      "BLOCKSPALETTE": [
+        "PALETABLOCOS"
+      ],
+      "PURGE": [
+        "ELIMINAR",
+        "ELM"
+      ],
+      "-PURGE": [
+        "-ELIMINAR",
+        "-ELM"
+      ],
+      "LAYER": [
+        "CAMADA",
+        "CA",
+        "LAYER",
+        "DDLMODES"
+      ],
+      "LAYERCLOSE": [
+        "FECHARCAMADA"
+      ],
+      "PROPERTIES": [
+        "PROPRIEDADES",
+        "ALT",
+        "PROPS",
+        "ALTPROPD",
+        "MODIFICARD"
+      ],
+      "PROPERTIESCLOSE": [
+        "FECHARPROP",
+        "FPROP"
+      ],
+      "UCS": [
+        "UCS",
+        "UCSDD"
+      ],
+      "UCSICON": [
+        "ICONEUCS"
+      ],
+      "FILL": [
+        "PREENCHER"
+      ],
+      "PLAN": [
+        "PLANTA"
+      ],
+      "ELEV": [
+        "ELEV"
+      ],
+      "VPOINT": [
+        "PONTOV",
+        "VP"
+      ],
+      "-VPOINT": [
+        "-PONTOV",
+        "-VP"
+      ],
+      "VIEW": [
+        "VISTA",
+        "V",
+        "VISTADD"
+      ],
+      "-VIEW": [
+        "-VISTA",
+        "-V"
+      ],
+      "3DORBIT": [
+        "ORBITA3D",
+        "O3D"
+      ],
+      "NAVVCUBE": [
+        "CUBONAV",
+        "CUBE"
+      ],
+      "UNITS": [
+        "UNIDADES",
+        "UN",
+        "UNIDADESD"
+      ],
+      "LTSCALE": [
+        "ESCALATL",
+        "ETL"
+      ],
+      "AUPREC": [
+        "AUPREC"
+      ],
+      "SETVAR": [
+        "DEFVAR",
+        "DEF"
+      ],
+      "CLEANSCREENON": [
+        "TELALIMPAATIV"
+      ],
+      "CLEANSCREENOFF": [
+        "TELALIMPADESAT"
+      ],
+      "COLOR": [
+        "COR",
+        "C",
+        "COLOUR",
+        "CORDIAG"
+      ],
+      "-COLOR": [
+        "-COR"
+      ],
+      "LINETYPE": [
+        "TIPOLINHA",
+        "TL",
+        "DDLTYPE"
+      ],
+      "-LINETYPE": [
+        "-TIPOLINHA",
+        "-TL"
+      ],
+      "LWEIGHT": [
+        "ESPLINHA",
+        "ESL"
+      ],
+      "-LWEIGHT": [
+        "-ESPLINHA"
+      ]
+    },
+    "keywords": {
+      "-OSNAP": {
+        "ENDpoint": "pONto",
+        "MIDpoint": "Meio",
+        "CENter": "Centro",
+        "QUAdrant": "Quadrante",
+        "INTersection": "Intersecção",
+        "EXTension": "Extensão",
+        "INSertion": "Inserção",
+        "PERpendicular": "Perpendicular",
+        "TANgent": "Tangente",
+        "NEArest": "Maispróximo",
+        "APParent": "Aparente",
+        "PARallel": "Paralela",
+        "NONe": "Nenhum",
+        "OFF": "Desativado"
+      },
+      "LINE": {
+        "Close": "Fechar",
+        "Undo": "Desfazer"
+      },
+      "3DPOLY": {
+        "Close": "Fechar",
+        "Undo": "Desfazer"
+      },
+      "PLINE": {
+        "Arc": "Arco",
+        "Line": "LInha",
+        "Close": "Fechar",
+        "Halfwidth": "Meialargura",
+        "Undo": "Desfazer",
+        "Width": "LArgura",
+        "Angle": "âNgulo",
+        "Center": "CEntro",
+        "Direction": "DIreção",
+        "Radius": "Raio",
+        "Second pt": "Segundo pto",
+        "Length": "Comprimento"
+      },
+      "ARC": {
+        "Center": "Ce"
+      },
+      "MOVE": {
+        "Displacement": "Deslocamento"
+      },
+      "COPY": {
+        "Displacement": "Deslocamento",
+        "Exit": "Sair",
+        "Undo": "Desfazer"
+      },
+      "STRETCH": {
+        "Displacement": "Deslocamento"
+      },
+      "ARCSCE": {
+        "Center": "Ce"
+      },
+      "CIRCLE": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Diameter": "Diâmetro"
+      },
+      "CIRCLED": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr"
+      },
+      "FILL": {
+        "0": "0",
+        "1": "1",
+        "ON": "Ativado",
+        "OFF": "Desativado"
+      },
+      "ELLIPSE": {
+        "Arc": "Arco",
+        "Center": "Centro",
+        "Centre": "Meio",
+        "Rotation": "Rotação",
+        "Included angle": "Interno",
+        "Parameter": "Parâmetro",
+        "Angle": "ângUlo"
+      },
+      "ELLIPSEC": {
+        "Arc": "Arco",
+        "Center": "Centro",
+        "Centre": "Meio",
+        "Rotation": "Rotação",
+        "Included angle": "Interno",
+        "Parameter": "Parâmetro",
+        "Angle": "ângUlo"
+      },
+      "ELLIPSEARC": {
+        "Arc": "Arco",
+        "Center": "Centro",
+        "Centre": "Meio",
+        "Rotation": "Rotação",
+        "Included angle": "Interno",
+        "Parameter": "Parâmetro",
+        "Angle": "ângUlo"
+      },
+      "SPLINE": {
+        "Method": "Método",
+        "Knots": "Nós",
+        "Degree": "Grau",
+        "Fit": "Ajustar",
+        "CV": "VC",
+        "Chord": "Banzo",
+        "Square root": "Raiz",
+        "Uniform": "Uniforme",
+        "start Tangency": "Tangência",
+        "end Tangency": "Tangência",
+        "Undo": "Desfazer",
+        "Close": "Fechar",
+        "Object": "Objeto"
+      },
+      "SPLINEDIT": {
+        "Close": "Fechar",
+        "Open": "Abrir",
+        "Join": "Unir",
+        "Fit data": "AJustar",
+        "Data": "DAdos",
+        "Edit vertex": "Editar",
+        "convert to Polyline": "Polilinha",
+        "Reverse": "REverter",
+        "R": "R",
+        "Undo": "Desfazer",
+        "eXit": "saIr",
+        "X": "X",
+        "Toggle": "Alternar",
+        "Add": "Adicionar",
+        "Delete": "EXcluir",
+        "Move": "Mover",
+        "Purge": "ELiminar",
+        "Tangents": "Tangentes",
+        "Elevate order": "Elevação",
+        "Order": "Ordem",
+        "Weight": "ESpessura",
+        "Next": "Próximo",
+        "Previous": "Anterior",
+        "Select point": "SElecionar",
+        "Point": "Ponto",
+        "System default": "Sistema",
+        "Default": "Padrão",
+        "After": "DEpois",
+        "Before": "Antes"
+      },
+      "PEDIT": {
+        "Close": "Fechar",
+        "Open": "Abrir",
+        "Join": "Unir",
+        "Width": "Largura",
+        "Edit vertex": "Editar",
+        "Ltype gen": "Tipolinha",
+        "Reverse": "Reverter",
+        "Undo": "Desfazer",
+        "eXit": "Sair",
+        "X": "X",
+        "Multiple": "Múltiplo",
+        "Yes": "Sim",
+        "No": "Não",
+        "Jointype": "Tipounião",
+        "Extend": "Estender",
+        "Add": "Adicionar",
+        "Both": "aMbos",
+        "ON": "Ativado",
+        "OFF": "Desativado",
+        "Next": "Próximo",
+        "Previous": "Anterior",
+        "Break": "Quebrar",
+        "Insert": "Inserir",
+        "Move": "Mover",
+        "Regen": "Regenerar",
+        "Straighten": "rEta",
+        "Tangent": "Tangente",
+        "Go": "Ir",
+        "Fit": "AJustar",
+        "Spline": "Spline",
+        "Spline curve": "Spline",
+        "Decurve": "desfCurva",
+        "Defit": "DEsfajuste"
+      },
+      "RECTANG": {
+        "Chamfer": "CHanfro",
+        "Elevation": "Elevação",
+        "Fillet": "COncordância",
+        "Thickness": "espessURa",
+        "Area": "árEa",
+        "Dimensions": "Dimensões",
+        "Rotation": "Rotação",
+        "Length": "Comprimento",
+        "Width": "Largura",
+        "Pick": "SElecionar"
+      },
+      "POLYGON": {
+        "Edge": "Aresta",
+        "Inscribed": "Inscrito",
+        "Circumscribed": "Circunscrito"
+      },
+      "HATCH": {
+        "Properties": "Propriedades",
+        "Select objects": "Selecionar",
+        "?": "?",
+        "Solid": "Sólido",
+        "Undo": "Desfazer"
+      },
+      "INSERT": {
+        "?": "?",
+        "Scale": "Escala",
+        "Rotate": "Rotacionar"
+      },
+      "BLOCK": {
+        "?": "?",
+        "Yes": "Sim",
+        "No": "Não"
+      },
+      "ATTDEF": {
+        "Invisible": "Invisível",
+        "Constant": "Constante",
+        "Verify": "Verificação",
+        "Preset": "Predefinido",
+        "Lock position": "Bloquear",
+        "Justify": "Justificar",
+        "Style": "Estilo",
+        "Left": "Esquerda",
+        "Center": "Centro",
+        "Right": "Direita",
+        "Middle": "Meio",
+        "TL": "SEsquerda",
+        "TC": "SCentral",
+        "TR": "SDireita",
+        "ML": "MEsquerda",
+        "MC": "MCentral",
+        "MR": "MDireita",
+        "BL": "IEsquerda",
+        "BC": "ICentral",
+        "BR": "IDireita",
+        "?": "?"
+      },
+      "ATTDISP": {
+        "OFF": "Desativado",
+        "Normal": "Normal",
+        "ON": "Ativado"
+      },
+      "PURGE": {
+        "Blocks": "Blocos",
+        "Yes": "Sim",
+        "No": "Não"
+      },
+      "SNAP": {
+        "ON": "Ativado",
+        "OFF": "Desativado",
+        "Aspect": "ASpecto"
+      },
+      "TEXT": {
+        "Justify": "Justificar",
+        "Style": "Estilo",
+        "?": "?",
+        "Left": "Esquerda",
+        "Center": "Centro",
+        "Right": "Direita",
+        "Middle": "Meio",
+        "TL": "SEsquerda",
+        "TC": "SCentral",
+        "TR": "SDireita",
+        "ML": "MEsquerda",
+        "MC": "MCentral",
+        "MR": "MDireita",
+        "BL": "IEsquerda",
+        "BC": "ICentral",
+        "BR": "IDireita"
+      },
+      "MTEXT": {
+        "Height": "Altura",
+        "Justify": "Justificar",
+        "Line spacing": "Espaçamentodelinha",
+        "Rotation": "Rotação",
+        "Style": "eStilo",
+        "?": "?",
+        "Width": "Largura",
+        "TL": "SE",
+        "TC": "SC",
+        "TR": "SD",
+        "ML": "ME",
+        "MC": "MC",
+        "MR": "MD",
+        "BL": "IE",
+        "BC": "IC",
+        "BR": "ID",
+        "At least": "Pelomenos",
+        "Exactly": "Exatamente"
+      },
+      "TEXTEDIT": {
+        "Undo": "Desfazer",
+        "Mode": "Modo",
+        "Single": "Único",
+        "Multiple": "Múltiplo"
+      },
+      "DIMLINEAR": {
+        "Text": "Texto",
+        "Angle": "âNgulo",
+        "Horizontal": "Horizontal",
+        "Vertical": "Vertical",
+        "Rotated": "Rotacionada"
+      },
+      "DIMALIGNED": {
+        "Text": "Texto",
+        "Angle": "âNgulo"
+      },
+      "DIMHORIZONTAL": {
+        "Text": "Texto",
+        "Angle": "âNgulo"
+      },
+      "DIMVERTICAL": {
+        "Text": "Texto",
+        "Angle": "âNgulo"
+      },
+      "DIMROTATED": {
+        "Text": "Texto",
+        "Angle": "âNgulo"
+      },
+      "DIMRADIUS": {
+        "Text": "Texto",
+        "Angle": "âNgulo"
+      },
+      "DIMDIAMETER": {
+        "Text": "Texto",
+        "Angle": "âNgulo"
+      },
+      "DIMANGULAR": {
+        "Text": "Texto",
+        "Angle": "âNgulo"
+      },
+      "DIMBASELINE": {
+        "Undo": "Desfazer",
+        "Select": "Selecionar"
+      },
+      "DIMCONTINUE": {
+        "Undo": "Desfazer",
+        "Select": "Selecionar"
+      },
+      "DIMSPACE": {
+        "Auto": "Auto"
+      },
+      "-DIMSTYLE": {
+        "Save": "Salvar",
+        "Restore": "Restaurar",
+        "STatus": "STatus",
+        "Variables": "Variáveis",
+        "Apply": "Aplicar",
+        "?": "?",
+        "Yes": "Sim",
+        "No": "Não"
+      },
+      "OFFSET": {
+        "Through": "Através",
+        "Thru": "aTé",
+        "Erase": "aPagar",
+        "Layer": "Camada",
+        "Yes": "Sim",
+        "No": "Não",
+        "Current": "Atual",
+        "Source": "Origem",
+        "Exit": "Sair",
+        "Multiple": "Múltiplo",
+        "Undo": "Desfazer"
+      },
+      "ROTATE": {
+        "Copy": "Cópia",
+        "Reference": "Referência",
+        "Points": "Pontos"
+      },
+      "SCALE": {
+        "Copy": "Cópia",
+        "Reference": "Referência",
+        "Points": "Pontos"
+      },
+      "MIRROR": {
+        "Yes": "Sim",
+        "No": "Não"
+      },
+      "JOIN": {
+        "Yes": "Sim",
+        "No": "Não",
+        "cLose": "Fechar"
+      },
+      "ARRAY": {
+        "Rectangular": "Retangular",
+        "PAth": "CAminho",
+        "POlar": "POlar"
+      },
+      "ARRAYRECT": {
+        "ASsociative": "ASsociativa",
+        "COUnt": "CONtagem",
+        "Spacing": "Espaçamento",
+        "COLumns": "COLunas",
+        "Rows": "Linhas",
+        "eXit": "saIr",
+        "Unit cell": "Unidade",
+        "Yes": "Sim",
+        "No": "Não"
+      },
+      "ARRAYPOLAR": {
+        "ASsociative": "ASsociativa",
+        "Items": "itEns",
+        "Angle between": "Ângulo",
+        "Fill angle": "Preenchimento",
+        "ROWs": "LINHAs",
+        "ROTate items": "ROTacionar",
+        "eXit": "saIr",
+        "Yes": "Sim",
+        "No": "Não"
+      },
+      "ARRAYPATH": {
+        "ASsociative": "ASsociativa",
+        "Method": "Método",
+        "Items": "ITens",
+        "Align items": "Alinhar",
+        "eXit": "saIr",
+        "Divide": "Dividir",
+        "Measure": "Medir",
+        "Fill entire path": "Preencha",
+        "Yes": "Sim",
+        "No": "Não"
+      },
+      "TRIM": {
+        "Undo": "Desfazer",
+        "Fence": "Cerca",
+        "Crossing": "Intersecção",
+        "eRase": "aPagar",
+        "cuTting": "Arestas",
+        "mOde": "mOdo",
+        "Quick": "Rápido",
+        "Standard": "Padrão",
+        "Edge": "Aresta",
+        "Extend": "Estender",
+        "No extend": "Não",
+        "Noextend": "Não"
+      },
+      "EXTEND": {
+        "Undo": "Desfazer",
+        "Fence": "Cerca",
+        "Crossing": "Intersecção",
+        "Boundary": "Arestas",
+        "mOde": "mOdo",
+        "Quick": "Rápido",
+        "Standard": "Padrão",
+        "Edge": "aResta",
+        "Extend": "Estender",
+        "No extend": "Não",
+        "Noextend": "Não"
+      },
+      "FILLET": {
+        "Undo": "Desfazer",
+        "Polyline": "Polilinha",
+        "Radius": "Raio",
+        "Multiple": "Múltiplo",
+        "Trim": "Aparar"
+      },
+      "CHAMFER": {
+        "Undo": "desFazer",
+        "Polyline": "Polilinha",
+        "Distance": "Distância",
+        "Multiple": "múlTiplo"
+      },
+      "BREAK": {
+        "First point": "Primeiro"
+      },
+      "DIST": {
+        "Multiple": "Múltiplo",
+        "Close": "Fechar",
+        "Length": "Comprimento",
+        "Undo": "Desfazer",
+        "Total": "Total",
+        "Arc": "Arco",
+        "Line": "Linha",
+        "Angle": "âNgulo",
+        "Center": "CEntro",
+        "Direction": "Direção",
+        "Radius": "Raio",
+        "Second pt": "Segundo pto"
+      },
+      "AREA": {
+        "Object": "Objeto",
+        "Add": "Adicionar",
+        "Subtract": "Subtrair",
+        "Undo": "Desfazer",
+        "Total": "Total",
+        "Entity": "Entidade",
+        "eXit": "saIr"
+      },
+      "ZOOM": {
+        "All": "TOtal",
+        "Extents": "ESTendido",
+        "Previous": "Anterior",
+        "Scale": "ESCala",
+        "Window": "Janela",
+        "Object": "Objeto"
+      },
+      "UCS": {
+        "NAmed": "NOMeado",
+        "OBject": "OBjeto",
+        "Previous": "Anterior",
+        "View": "Vista",
+        "World": "Universal",
+        "X": "X",
+        "Y": "Y",
+        "Z": "Z",
+        "ZAxis": "eixOZ",
+        "Object": "Objeto",
+        "Restore": "Restaurar",
+        "Save": "Salvar",
+        "Delete": "Excluir",
+        "?": "?",
+        "Yes": "Sim",
+        "No": "Não",
+        "Origin": "Origem",
+        "Face": "Face",
+        "3point": "3pontos",
+        "Entity": "ENtidade",
+        "Move": "Mover",
+        "orthoGraphic": "ORTogonal",
+        "New": "Novo",
+        "Top": "SUperior",
+        "Bottom": "Inferior",
+        "Front": "Frontal",
+        "BAck": "POsterior",
+        "Left": "ESquerdo",
+        "Right": "Direito",
+        "Zdepth": "profundidadeZ"
+      },
+      "UNDO": {
+        "BEgin": "cOmeço",
+        "End": "Fim",
+        "Mark": "Marca",
+        "Back": "Voltar",
+        "Group": "Grupo",
+        "Yes": "Sim",
+        "No": "Não",
+        "Auto": "Auto",
+        "Control": "Controle",
+        "All": "Todos",
+        "None": "Nenhum",
+        "One": "Um",
+        "Combine": "COmbinar",
+        "Layer": "CAmada",
+        "ON": "Ativado",
+        "OFF": "Desativado"
+      },
+      "MREDO": {
+        "All": "Tudo",
+        "Last": "úLtimo"
+      },
+      "UCSICON": {
+        "ON": "ATIVADO",
+        "OFF": "DESATIVADO",
+        "Noorigin": "Sem",
+        "ORigin": "Origem"
+      },
+      "PLAN": {
+        "Current ucs": "Atual",
+        "Ucs": "UCs",
+        "World": "UNiversal",
+        "?": "?"
+      },
+      "VPOINT": {
+        "Rotate": "Rotacionar"
+      },
+      "VIEW": {
+        "Orthographic": "Ortogonal",
+        "Top": "SUperior",
+        "Bottom": "Inferior",
+        "Front": "Frontal",
+        "BAck": "Posterior",
+        "Left": "ESquerdo",
+        "Right": "Direito",
+        "SWiso": "isoSO",
+        "SEiso": "isoSE",
+        "NEiso": "isoNE",
+        "NWiso": "isoNO"
+      },
+      "NAVVCUBE": {
+        "ON": "Ativar",
+        "OFF": "Desativar"
+      },
+      "SETVAR": {
+        "?": "?",
+        "ON": "Ativado",
+        "OFF": "Desativado",
+        "True": "Verdadeiro",
+        "False": "Falso",
+        "Yes": "Sim",
+        "No": "Não"
+      },
+      "COLOR": {
+        "Truecolor": "Truecolor",
+        "BYLAYER": "PORCamada",
+        "RED": "Vermelho",
+        "YELLOW": "Amarelo",
+        "GREEN": "Verde",
+        "CYAN": "Ciano",
+        "BLUE": "Azul",
+        "MAGENTA": "Magenta",
+        "WHITE": "Branco",
+        "BYBLOCK": "PORBloco"
+      },
+      "LINETYPE": {
+        "?": "?",
+        "Set": "Definir",
+        "BYLAYER": "PORCamada",
+        "BYLayer": "PORCamada"
+      },
+      "LWEIGHT": {
+        "?": "?",
+        "BYLAYER": "PORCamada"
+      }
+    },
+    "promptKeywords": {
+      "selectObjects": {
+        "Window": "Janela",
+        "Last": "Último",
+        "Crossing": "Intersecção",
+        "BOX": "CAIXA",
+        "ALL": "TUDO",
+        "Fence": "Cerca",
+        "WPolygon": "PSeleção",
+        "CPolygon": "PIntersecção",
+        "Add": "Adicionar",
+        "Remove": "Remover",
+        "Previous": "ANterior",
+        "Undo": "Desfazer",
+        "AUto": "AUto",
+        "SIngle": "ÚNico",
+        "SUbobject": "SUbobjeto",
+        "Object": "Objeto"
+      },
+      "specifyNextFencePointOr": {
+        "Undo": "Desfazer"
+      },
+      "viewOrthographic": {
+        "Right": "Direita"
+      },
+      "ucsOrthographic": {
+        "Front": "Frontal",
+        "Right": "Direito"
+      },
+      "specifyEndpointOfLineOr": {
+        "Undo": "Desfazer"
+      },
+      "select2dPolylineOr": {
+        "Radius": "Raio"
+      },
+      "selectSecondObjectOrApplyCornerOr": {
+        "Radius": "Raio"
+      },
+      "specifyEndpointOfArcOr": {
+        "Close": "Fechar",
+        "Arc": "Arco"
+      },
+      "specifyNextPointOr": {
+        "Line": "LInha"
+      },
+      "specifyFirstCornerPointOr": {
+        "Width": "Largura"
+      },
+      "specifyAxisEndpointOfEllipticalArcOr": {
+        "Centre": "Meio"
+      },
+      "splineditOptionClosed": {
+        "convert to Polyline": "Polilinha"
+      },
+      "peditOption": {
+        "eXit": "SAir"
+      },
+      "peditOption3d": {
+        "Join": "Unir",
+        "eXit": "SAir"
+      },
+      "enterFitDataOption": {
+        "Add": "ADicionar",
+        "Open": "ABrir",
+        "Move": "Mover",
+        "X": "X"
+      },
+      "enterVertexEditingOption": {
+        "X": "X"
+      },
+      "specifyNewLocationOr": {
+        "X": "S"
+      }
+    },
+    "prompts": {
+      "length": "Comprimento",
+      "width": "Largura",
+      "angle": "Ângulo",
+      "trackingOffset": "Deslocamento",
+      "center": "Centro",
+      "radius": "Raio",
+      "diameter": "Diâmetro",
+      "firstPoint": "Primeiro ponto",
+      "secondPoint": "Segundo ponto",
+      "thirdPoint": "Terceiro ponto",
+      "startPoint": "Ponto inicial",
+      "centerPoint": "Ponto central",
+      "endPoint": "Ponto final",
+      "axisEndpoint": "Ponto final do eixo",
+      "otherAxisEndpoint": "Outro ponto final do eixo",
+      "endpointOfAxis": "Ponto final do eixo",
+      "distanceToOtherAxis": "Distância até o outro eixo",
+      "rotationAroundMajorAxis": "Rotação em torno do eixo maior",
+      "startAngle": "Ângulo inicial",
+      "endAngle": "Ângulo final",
+      "startParameter": "Parâmetro inicial",
+      "endParameter": "Parâmetro final",
+      "includedAngle": "Ângulo interno",
+      "splineStartTangent": "Especificar tangente inicial",
+      "splineEndTangent": "Especificar tangente final",
+      "splineDegree": "Inserir grau da spline",
+      "firstCorner": "Primeiro canto",
+      "otherCorner": "Outro canto",
+      "rectangleElevation": "Especificar elevação para retângulos",
+      "rectangleThickness": "Especificar espessura para retângulos",
+      "rectangleFirstChamfer": "Especificar primeira distância do chanfro para retângulos",
+      "rectangleSecondChamfer": "Especificar segunda distância do chanfro para retângulos",
+      "rectangleFillet": "Especificar raio de concordância para retângulos",
+      "rectangleLineWidth": "Especificar largura da linha para retângulos",
+      "rectangleArea": "Insira a área do retângulo em unidades atuais",
+      "rectangleAreaBasis": "Calcular dimensões do retângulo com base em",
+      "rectangleLength": "Inserir comprimento do retângulo",
+      "rectangleWidth": "Inserir largura do retângulo",
+      "rectangleDimensionLength": "Especificar comprimento dos retângulos",
+      "rectangleDimensionWidth": "Especificar largura dos retângulos",
+      "rectangleRotation": "Especificar ângulo de rotação ou",
+      "numberOfSides": "Número de lados",
+      "patternName": "Insira um nome de padrão",
+      "patternScale": "Especificar escala para o padrão",
+      "patternAngle": "Especificar ângulo para o padrão",
+      "blockName": "Inserir nome do bloco ou",
+      "blockExists": [
+        "O bloco \"",
+        [
+          "name"
+        ],
+        "\" já existe. Redefinir?"
+      ],
+      "redefineIt": "Redefinir?",
+      "blocksToList": "Inserir bloco(s) a relacionar",
+      "purgeType": "Insira o tipo de objetos não utilizados a eliminar",
+      "purgeNames": "Digitar nome(s) a ser eliminado",
+      "purgeVerify": "Verificar cada nome a ser eliminado?",
+      "purgeBlock": [
+        "Eliminar bloco \"",
+        [
+          "name"
+        ],
+        "\"?"
+      ],
+      "insertionBasePoint": "Especifique o ponto base de inserção",
+      "insertionPoint": "Especificar ponto de inserção ou",
+      "specifyInsertionPoint": "Especificar ponto de inserção",
+      "insertScale": "Especificar fator de escala para os eixos XYZ",
+      "insertRotation": "Especificar ângulo de rotação",
+      "insertXScale": "Inserir fator de escala X, especificar canto oposto ou [Canto/XYZ]",
+      "insertYScale": "Especificar fator de escala Y ou",
+      "attributeTag": "Digitar o nome do identificador do atributo",
+      "attributePrompt": "Digitar o prompt do atributo",
+      "attributeDefault": "Digitar o valor padrão do atributo",
+      "attributeValue": "Digitar o valor do atributo",
+      "attributeValuePrompt": [
+        [
+          "prompt"
+        ],
+        "A"
+      ],
+      "attdefModes": "Insira uma opção para alterar",
+      "attdefDone": "concluído",
+      "definitionTag": "Identificador",
+      "definitionPrompt": "Prompt",
+      "definitionDefault": "Padrão",
+      "textStartPoint": "Especificar o ponto inicial do texto",
+      "textHeight": "Especificar altura",
+      "textRotation": "Especificar o ângulo de rotação do texto",
+      "text": "Texto",
+      "justify": "Justificar",
+      "styleName": "Nome do estilo",
+      "mtextFirstCorner": "Especificar o primeiro canto",
+      "mtextOppositeCorner": "Especificar canto oposto",
+      "mtextRotation": "Especificar o ângulo de rotação",
+      "mtextWidth": "Especificar largura",
+      "mtextLineSpacing": "Insira o fator de espaçamento de linha ou a distância",
+      "mtextLine": "TextoM",
+      "firstExtensionOrigin": "Especificar origem da primeira linha de extensão ou <selecionar objeto>",
+      "secondExtensionOrigin": "Especificar origem da segunda linha de extensão",
+      "dimensionLineLocation": "Especificar localização da linha de cota",
+      "dimensionLineAngle": "Especificar ângulo da linha de cota",
+      "dimensionText": "Inserir texto da cota",
+      "dimensionTextAngle": "Especificar ângulo do texto da cota",
+      "angleVertex": "Especificar vértice do ângulo",
+      "firstAngleEndpoint": "Especificar primeiro ponto final do ângulo",
+      "secondAngleEndpoint": "Especificar segundo ponto final do ângulo",
+      "circleSecondAngleEndpoint": "Especificar segundo ponto final do ângulo",
+      "dimensionArcLocation": "Especificar localização da linha de cota em arco",
+      "dimensionSpacing": "Insira um valor",
+      "offsetDistance": "Distância de deslocamento",
+      "basePoint": "Ponto base",
+      "fromOffset": "<Deslocamento>",
+      "pointFilterOf": "de",
+      "pointFilterNeed": [
+        "(é necessário ",
+        [
+          "axes"
+        ],
+        ")"
+      ],
+      "distance": "Distância",
+      "rotationAngle": "Ângulo de rotação",
+      "referenceAngle": "Ângulo de referência",
+      "newAngle": "Novo ângulo",
+      "scaleFactor": "Fator de escala",
+      "referenceLength": "Comprimento de referência",
+      "newLength": "Novo comprimento",
+      "mirrorFirstPoint": "Primeiro ponto da linha de espelho",
+      "mirrorSecondPoint": "Segundo ponto da linha de espelho",
+      "columns": "Colunas",
+      "rows": "Linhas",
+      "columnSpacing": "Espaçamento entre colunas",
+      "rowSpacing": "Espaçamento entre linhas",
+      "items": "Itens",
+      "fillAngle": "Ângulo de preenchimento",
+      "spacing": "Espaçamento",
+      "filletRadius": "Raio da concordância",
+      "firstDistance": "Primeira distância",
+      "secondDistance": "Segunda distância",
+      "clipboardBasePoint": "Especificar ponto base",
+      "lengthen": "Alongar",
+      "move": "Mover",
+      "bulge": "Volume",
+      "ucsOrigin": "Especificar origem de UCS ou",
+      "ucsXAxisPoint": "Especificar ponto no eixo X ou",
+      "ucsXYPlanePoint": "Especificar ponto no plano XY ou",
+      "ucsRotationX": "Especificar o ângulo de rotação sobre o eixo X",
+      "ucsRotationY": "Especificar o ângulo de rotação sobre o eixo Y",
+      "ucsRotationZ": "Especificar o ângulo de rotação sobre o eixo Z",
+      "ucsZAxisOrigin": "Especificar novo ponto de origem ou",
+      "ucsZAxisPoint": "Especificar ponto na parte positiva do eixo Z",
+      "ucsRestoreName": "Inserir nome do UCS a restaurar ou",
+      "ucsSaveName": "Inserir nome para salvar o UCS atual ou",
+      "ucsDeleteNames": "Inserir nome(s) de UCS(s) a excluir",
+      "ucsListNames": "Inserir nome(s) de UCS(s) a relacionar",
+      "ucsAccept": "aceitar",
+      "ucsNone": "nenhum",
+      "ucsReplace": [
+        "UCS \"",
+        [
+          "name"
+        ],
+        "\" já existe. Substitui-lo?"
+      ],
+      "ucsAlignObject": "Selecione o objeto para alinhar o UCS",
+      "ucsNewUcs": "Especificar origem do novo UCS ou",
+      "ucsNewOrigin": "Especificar novo ponto de origem",
+      "ucsMoveOrigin": "Especificar novo ponto de origem ou",
+      "ucsZdepth": "Especificar profundidadeZ",
+      "ucsOrthographic": "Inserir uma opção",
+      "ucs3XAxisPoint": "Especificar ponto na parte positiva do eixo X",
+      "ucs3XYPlanePoint": "Especificar ponto na parte positiva do eixo Y do plano XY do UCS",
+      "ucsTop": "Superior",
+      "ucsBottom": "Inferior",
+      "ucsFront": "Frontal",
+      "ucsBack": "Posterior",
+      "ucsLeft": "Esquerdo",
+      "ucsRight": "Direito",
+      "ucsSelectFace": "Selecionar face de sólido, superfície ou malha",
+      "undoCount": "Inserir número de operações a desfazer ou",
+      "undoEverything": "Isto irá desfazer tudo. OK?",
+      "mredoCount": "Digitar número de ações ou",
+      "undoYes": "S",
+      "undoControl": "Inserir uma opção de controle DESFAZER",
+      "undoCombine": "Combinar operações de zoom e pan?",
+      "undoLayer": "Combinar operações da caixa de diálogo de camada?",
+      "undoAuto": "Inserir modo DESFAZER Automático",
+      "undoOn": "Ativado",
+      "undoOff": "Desativado",
+      "panBasePoint": "Especificar ponto base ou deslocamento",
+      "planUcsName": "Inserir nome de UCS ou",
+      "planCurrent": "Atual",
+      "zoomCornerOr": "Especificar canto da janela, inserir fator de escala (nX ou nXP) ou",
+      "zoomScaleFactor": "Inserir um fator de escala (nX ou nXP)",
+      "viewOption": "Inserir uma opção",
+      "viewOrthographic": "Inserir uma opção",
+      "elevDefaultElevation": "Especificar nova elevação padrão",
+      "elevDefaultThickness": "Especificar nova espessura padrão",
+      "ltscaleFactor": "Inserir novo fator de escala do tipo de linha",
+      "enterNewValueFor": [
+        "Inserir o novo valor para ",
+        [
+          "name"
+        ]
+      ],
+      "enterNewValueForOrNone": [
+        "Inserir o novo valor para ",
+        [
+          "name"
+        ],
+        ", ou . para nenhum"
+      ],
+      "enterVariableName": "Digitar nome da variável ou",
+      "enterVariablesToList": "Digitar variável(is) a relacionar",
+      "pressEnterToContinue": "Pressione ENTER para continuar",
+      "osnapModes": "Inserir lista de modos de snap ao objeto",
+      "snapSpacingOr": "Especificar espaçamento de snap ou",
+      "snapAspect": "A",
+      "snapHorizontalSpacing": "Especificar espaçamento horizontal",
+      "snapVerticalSpacing": "Especificar espaçamento vertical",
+      "defaultObjectColor": "Inserir cor do objeto padrão",
+      "trueColor": "Vermelho,Verde,Azul",
+      "linetypeName": "Especificar nome do tipo de linha ou",
+      "linetypeListNames": "Inserir nome(s) de tipo(s) de linha a relacionar",
+      "defaultLineweight": "Inserir espessura de linha padrão para novos objetos ou",
+      "idPoint": "Especificar ponto",
+      "distSecondPointOr": "Especifique o segundo ponto ou",
+      "specifyLengthOfLine": "Especificar o comprimento da linha",
+      "polylineStartingWidth": "Especificar a largura inicial",
+      "polylineEndingWidth": "Especificar a largura final",
+      "polylineStartingHalfWidth": "Especificar a meia-largura inicial",
+      "polylineEndingHalfWidth": "Especificar a meia-largura final",
+      "fillMode": "Inserir modo",
+      "matchpropSource": "Selecione objeto de origem",
+      "matchpropDestination": "Selecionar o(s) objeto(s) de destino",
+      "viewPoint": "Especificar um ponto de vista",
+      "specifyViewPointOr": "Especificar um ponto de vista ou",
+      "attributeVisibilitySetting": "Inserir configuração de visibilidade de atributo",
+      "selectAnnotationObjectOr": "Selecione um objeto de anotação ou",
+      "selectBlockReference": "Selecionar referência de bloco",
+      "selectABlock": "Selecionar um bloco",
+      "textEditModeOption": "Digite uma opção de modo de edição de texto",
+      "viewAngleInPlane": "Insira o ângulo no plano XY a partir do eixo X",
+      "viewAngleFromPlane": "Insira o ângulo a partir do plano XY",
+      "specifyFirstPoint": "Especificar primeiro ponto",
+      "specifyNextPointOr": "Especificar próximo ponto ou",
+      "specifyNextPointOrClose": "Especificar próximo ponto ou",
+      "lengthOfLine": "Comprimento da linha",
+      "specifyStartPoint": "Especificar o ponto inicial",
+      "specifyStartPointOfPolyline": "Especificar o ponto inicial da polilinha",
+      "specifyEndpointOfArcOr": "Especificar ponto final do arco (mantenha pressionada a tecla Ctrl para alternar direção) ou",
+      "specifyCenterPointForCircleOr": "Especificar o ponto central do círculo ou",
+      "specifyRadiusOfCircleOr": "Especificar o raio do círculo ou",
+      "specifyRadiusOfCircle": "Especificar raio do círculo",
+      "specifyRadiusOfCircleTtr": "Especificar o raio do círculo",
+      "enterNumberOfSides": "Inserir número de lados",
+      "specifyCenterOfPolygonOr": "Especificar centro do polígono ou",
+      "enterAnOption": "Inserir uma opção",
+      "inscribedShort": "I",
+      "circumscribedShort": "C",
+      "specifyFirstEndpointOfEdge": "Especificar primeiro ponto final da aresta",
+      "specifySecondEndpointOfEdge": "Especificar segundo ponto final da aresta",
+      "specifyAxisEndpointOfEllipseOr": "Especificar ponto final do eixo da elipse ou",
+      "specifyAxisEndpointOfEllipticalArcOr": "Especificar ponto final do eixo do arco elíptico ou",
+      "specifyCenterOfEllipse": "Especificar centro da elipse",
+      "specifyCenterOfEllipticalArc": "Especificar centro do arco elíptico",
+      "specifyOtherEndpointOfAxis": "Especificar outro ponto final do eixo",
+      "specifyEndpointOfAxis": "Especificar ponto final do eixo",
+      "specifyDistanceToOtherAxisOr": "Especificar distância para outro eixo ou",
+      "specifyRotationAroundMajorAxis": "Especificar rotação em torno do eixo maior",
+      "specifyStartAngleOr": "Especificar ângulo inicial ou",
+      "specifyEndAngleOr": "Especificar ângulo final ou",
+      "specifyStartParameterOr": "Especificar parâmetro inicial ou",
+      "specifyEndParameterOr": "Especificar parâmetro final ou",
+      "specifyIncludedAngleForArc": "Especificar ângulo interno para arco",
+      "specifyFirstPointOr": "Especifique o primeiro ponto ou",
+      "enterSplineCreationMethod": "Insira o método de criação da spline",
+      "enterKnotParameterization": "Insira a parametrização do nó",
+      "knotsChord": "Banzo",
+      "knotsSquareRoot": "Raiz quadrada",
+      "knotsUniform": "Uniforme",
+      "enterDegreeOfSpline": "Insira o grau da spline",
+      "enterNextPoint": "Insira o próximo ponto",
+      "enterNextPointOr": "Insira o próximo ponto ou",
+      "enterThirdPointOr": "Inserir próximo ponto ou",
+      "specifyStartTangent": "Especificar tangente inicial",
+      "specifyEndTangent": "Especificar tangente final",
+      "specifyDiameterOfCircle": "Especificar o diâmetro do círculo",
+      "specifyFirstEndPointOfDiameter": "Especificar o primeiro ponto final do diâmetro do círculo",
+      "specifySecondEndPointOfDiameter": "Especificar o segundo ponto final do diâmetro do círculo",
+      "specifyFirstPointOnCircle": "Especificar o primeiro ponto do círculo",
+      "specifySecondPointOnCircle": "Especificar o segundo ponto do círculo",
+      "specifyThirdPointOnCircle": "Especificar o terceiro ponto do círculo",
+      "specifyFirstTangentOfCircle": "Especificar o ponto no objeto da primeira tangente do círculo",
+      "specifySecondTangentOfCircle": "Especificar o ponto no objeto da segunda tangente do círculo",
+      "specifySecondPoint": "Especificar segundo ponto",
+      "secondPointOfDistance": " Especifique o segundo ponto",
+      "clarifyKeyword": [
+        [
+          "keywords"
+        ],
+        "?"
+      ],
+      "specifyFirstCornerPointOr": "Especificar primeiro canto ou",
+      "addModeNextPointOr": " (modo ADICIONAR)Especifique o próximo ponto ou",
+      "subtractModeNextPointOr": " (modo SUBTRAIR)Especifique o próximo ponto ou",
+      "addModeSelectObjects": "(modo ADICIONAR) Selecionar objetos",
+      "subtractModeSelectObjects": "(modo SUBTRAIR) Selecionar objetos",
+      "specifyOtherCornerPointOr": "Especificar outro ponto de canto ou",
+      "specifyStartPointOfArcOr": "Especificar ponto inicial do arco ou",
+      "specifySecondPointOfArcOr": "Especificar segundo ponto do arco ou",
+      "specifyEndPointOfArc": "Especificar o ponto final do arco",
+      "specifyCenterPointOfArc": "Especificar ponto central do arco",
+      "specifyIncludedAngle": "Especificar o ângulo interno",
+      "specifyRadiusOfArc": "Especificar o raio do arco",
+      "specifyDirectionOfChordForArc": "Especificar direção da corda do arco (mantenha pressionada a tecla Ctrl para alternar direção)",
+      "specifyIncludedAngleCtrl": "Especificar ângulo interno (mantenha pressionada a tecla Ctrl para alternar direção)",
+      "specifyLengthOfChordCtrl": "Especificar comprimento da corda (mantenha pressionada a tecla Ctrl para alternar direção)",
+      "specifyTangentDirectionForStartPointOfArc": "Especificar a direção da tangente para o ponto inicial do arco",
+      "specifyEndpointOfTheArcCtrl": "Especificar ponto final do arco (mantenha pressionada a tecla Ctrl para alternar direção)",
+      "specifySecondPointOnArc": "Especificar o segundo ponto do arco",
+      "specifyStartPointOfArc": "Especifica o ponto inicial do arco",
+      "specifyEndPointOfArcCtrl": "Especificar ponto final do arco (mantenha pressionada a tecla Ctrl para alternar direção)",
+      "selectObjects": "Selecionar objetos",
+      "removeObjects": "Remover objetos",
+      "specifyFirstCorner": "Especificar primeiro canto",
+      "specifyOppositeCorner": "Especificar canto oposto",
+      "specifyFirstFencePoint": "Especificar primeiro ponto da cerca ou selecionar/arrastar cursor",
+      "specifyNextFencePointOr": "Especificar próximo ponto de cerca ou",
+      "firstPolygonPoint": "Primeiro ponto do polígono ou selecionar/arrastar cursor",
+      "specifyEndpointOfLineOr": "Especificar ponto final da linha ou",
+      "specifyBasePointOr": "Especificar ponto base ou",
+      "specifyDisplacement": "Especificar deslocamento",
+      "specifySecondPointOr": "Especificar segundo ponto ou",
+      "useFirstPointAsDisplacement": "utilizar primeiro ponto como deslocamento",
+      "useXScaleFactor": "utilizar fator de escala X",
+      "copySecondPointOr": "Especificar segundo ponto ou",
+      "specifyBasePoint": "Especificar ponto base",
+      "specifyRotationAngleOr": "Especificar ângulo de rotação ou",
+      "specifyTheReferenceAngle": "Especificar ângulo de referência",
+      "specifyTheNewAngle": "Especificar novo ângulo",
+      "specifyTheNewAngleOr": "Especificar novo ângulo ou",
+      "specifyScaleFactorOr": "Especifique o fator de escala ou",
+      "specifyReferenceLength": "Especificar comprimento de referência",
+      "specifyNewLengthOr": "Especificar novo comprimento ou",
+      "specifyFirstPointOfMirrorLine": "Especificar primeiro ponto da linha de espelhamento",
+      "specifySecondPointOfMirrorLine": "Especificar segundo ponto da linha de espelhamento",
+      "eraseSourceObjects": "Excluir objetos de origem?",
+      "selectSourceOrMultipleToJoin": "Selecionar objeto de origem ou vários objetos para unir de uma vez",
+      "selectObjectsToJoin": "Selecionar objetos para união",
+      "convertCombinedArcsToCircle": "Segmentos de arcos combinados formam um círculo. Converter para um círculo?",
+      "selectOpenCurvesToJoinToSource": "Selecione quaisquer curvas abertas para unir à origem",
+      "selectEllipticalArcsToJoinToSourceOr": "Selecionar arcos elípticos para juntar à origem ou",
+      "selectEllipticalArcsToJoinToSource": "Selecione arcos elípticos a juntar à origem",
+      "specifyOffsetDistanceOr": "Especificar distância de deslocamento ou",
+      "eraseSourceObjectAfterOffsetting": "Apagar objeto de origem após deslocar?",
+      "enterLayerOptionForOffsetObjects": "Inserir opção de camada para objetos de deslocamento",
+      "selectObjectToOffsetOr": "Selecionar objeto a deslocar ou",
+      "specifyPointOnSideToOffsetOr": "Especificar ponto do lado a deslocar ou",
+      "specifyThroughPointOr": "Especificar ponto de passagem ou",
+      "nextObject": "próximo objeto",
+      "enterImpliedEdgeExtensionMode": "Inserir um modo de extensão de aresta implícita",
+      "enterTrimModeOption": "Insira uma opção de modo de recorte",
+      "enterExtendModeOption": "Insira uma opção de modo estendido",
+      "selectObjectsOr": "Selecionar objetos ou",
+      "selectAll": "selecionar tudo",
+      "selectObjectsToEraseOrExit": "Selecionar objetos a serem apagados ou <sair>",
+      "selectObjectsToErase": "Selecionar objetos a serem apagados",
+      "selectObjectToTrimOrShiftSelectToExtendOr": "Selecione o objeto a ser aparado ou pressione shift para estender ou",
+      "selectObjectToExtendOrShiftSelectToTrimOr": "Selecione o objeto a ser estendido, pressione shift e selecione para aparar ou",
+      "selectFirstObjectOr": "Selecionar primeiro objeto ou",
+      "selectSecondObjectOrApplyCornerOr": "Selecionar segundo objeto ou selecionar com a tecla Shift pressionada para aplicar canto ou",
+      "specifyFilletRadius": "Especificar raio de concordância",
+      "select2dPolylineOr": "Selecionar polilinha 2D ou",
+      "selectPolylineToChamferOr": "Selecionar polilinha 2D ou",
+      "selectFirstLineOr": "Selecionar primeira linha ou",
+      "selectSecondLineOrApplyCornerOr": "Selecionar a segunda linha ou selecionar com a tecla Shift pressionada para aplicar canto ou",
+      "specifyFirstChamferDistance": "Especificar primeira distância do chanfro",
+      "specifySecondChamferDistance": "Especificar segunda distância do chanfro",
+      "selectObject": "Selecionar objeto",
+      "specifyFirstBreakPoint": "Especificar primeiro ponto de quebra",
+      "specifySecondBreakPointOr": "Especificar segundo ponto de quebra ou",
+      "specifySecondBreakPoint": "Especificar segundo ponto de quebra",
+      "specifyBreakPoint": "Especificar ponto de quebra",
+      "enterArrayType": "Insira o tipo de matriz",
+      "selectGripToEditArrayOr": "Selecione Alça para editar a matriz ou",
+      "enterNumberOfColumns": "Insira o número de colunas",
+      "enterNumberOfRows": "Insira o número de linhas",
+      "specifyDistanceBetweenColumnsOfCell": "Especifique a distância entre as colunas ou",
+      "unitCellFirstCorner": "Especifique o primeiro ponto de canto de uma célula unitária",
+      "unitCellOppositeCorner": "Especificar canto oposto",
+      "specifyDistanceBetweenColumns": "Especificar a distância entre colunas",
+      "specifyDistanceBetweenRows": "Especifique a distância entre linhas",
+      "specifyIncrementingElevationBetweenRows": "Especificar a elevação incremental entre linhas",
+      "specifyCenterPointOfArray": "Especifique ponto central da matriz",
+      "enterNumberOfItemsInArray": "Insira o número de itens na matriz",
+      "specifyAngleBetweenItems": "Especificar itens de ângulo intermediário",
+      "specifyTheAngleToFill": "Especificar o ângulo a ser preenchido (+=sah, -=sh)",
+      "rotateArrayedItems": "Rotacionar itens dispostos em matriz?",
+      "createAssociativeArray": "Crie uma matriz associativa",
+      "selectPathCurve": "Selecionar curva de caminho",
+      "enterPathMethod": "Insira o método de caminho",
+      "enterNumberOfItemsAlongPath": "Insira o número de itens ao longo do caminho",
+      "specifyDistanceBetweenItemsAlongPath": "Especifique a distância entre os itens ao longo do caminho",
+      "specifyNumberOfItemsOr": "Especificar número de itens ou",
+      "alignArrayedItemsToPath": "Alinhar itens dispostos em matriz ao caminho?",
+      "specifyInternalPointOr": "Especifique um ponto interno ou",
+      "enterPatternNameOr": "Insira um nome de padrão ou",
+      "specifyStartPointOfText": "Especificar o ponto inicial do texto",
+      "specifyStartPointOfTextOr": "Especificar o ponto inicial do texto ou",
+      "specifyCenterPointOfText": "Especificar o ponto central do texto",
+      "specifyCenterPointOfTextOr": "Especificar o ponto central do texto ou",
+      "specifyRightEndpointOfTextBaseline": "Especificar o ponto final direito da linha de base do texto",
+      "specifyRightEndpointOfTextBaselineOr": "Especificar o ponto final direito da linha de base do texto ou",
+      "specifyMiddlePointOfText": "Especificar o ponto do meio do texto",
+      "specifyMiddlePointOfTextOr": "Especificar o ponto do meio do texto ou",
+      "specifyTopLeftPointOfText": "Especificar o ponto superior esquerdo do texto",
+      "specifyTopLeftPointOfTextOr": "Especificar o ponto superior esquerdo do texto ou",
+      "specifyTopCenterPointOfText": "Especificar o ponto superior central do texto",
+      "specifyTopCenterPointOfTextOr": "Especificar o ponto superior central do texto ou",
+      "specifyTopRightPointOfText": "Especificar o ponto superior direito do texto",
+      "specifyTopRightPointOfTextOr": "Especificar o ponto superior direito do texto ou",
+      "specifyMiddleLeftPointOfText": "Especificar o ponto do meio esquerdo do texto",
+      "specifyMiddleLeftPointOfTextOr": "Especificar o ponto do meio esquerdo do texto ou",
+      "specifyMiddleRightPointOfText": "Especificar o ponto do meio direito do texto",
+      "specifyMiddleRightPointOfTextOr": "Especificar o ponto do meio direito do texto ou",
+      "specifyBottomLeftPointOfText": "Especificar o ponto inferior esquerdo do texto",
+      "specifyBottomLeftPointOfTextOr": "Especificar o ponto inferior esquerdo do texto ou",
+      "specifyBottomCenterPointOfText": "Especificar o ponto inferior central do texto",
+      "specifyBottomCenterPointOfTextOr": "Especificar o ponto inferior central do texto ou",
+      "specifyBottomRightPointOfText": "Especificar o ponto inferior direito do texto",
+      "specifyBottomRightPointOfTextOr": "Especificar o ponto inferior direito do texto ou",
+      "enterStyleNameOr": "Digite o nome do estilo ou",
+      "enterText": "Digitar texto",
+      "mtextOppositeCornerOr": "Especificar canto oposto ou",
+      "mtextHeight": "Especificar altura",
+      "enterJustification": "Inserir justificação",
+      "enterLineSpacingType": "Insira o tipo de espaçamento de linha",
+      "mtextStyleNameOr": "Inserir nome de estilo ou",
+      "selectObjectToDimension": "Selecionar o objeto a ser cotado",
+      "dimensionLineLocationOr": "Especificar localização da linha de cota ou",
+      "enterDimensionText": "Inserir texto da cota",
+      "specifyAngleOfDimensionText": "Especificar ângulo do texto da cota",
+      "selectArcOrCircle": "Selecionar arco ou círculo",
+      "selectArcCircleLineOrVertex": "Selecionar arco, círculo, linha ou <especificar vértice>",
+      "selectSecondLine": "Selecione a segunda linha",
+      "dimensionArcLocationOr": "Especificar localização da linha de cota em arco ou",
+      "secondExtensionOriginOr": "Especifique uma segunda origem da linha de extensão ou",
+      "selectBaseDimension": "Selecionar a cota de base",
+      "selectContinuedDimension": "Selecionar a cota em série",
+      "spaceBaseDimension": "Selecionar a cota de base",
+      "selectDimensionsToSpace": "Selecione as cotas a espaçar",
+      "dimStyleOption": "Insira uma opção de estilo de cota",
+      "dimStyleSaveName": "Inserir o nome do novo estilo de cota ou",
+      "dimStyleRedefine": "Este nome já está sendo usado, redefini-lo?",
+      "dimStyleName": "Inserir um nome de estilo de cota, [?] ou",
+      "dimStyleSelectDimension": "selecionar cota",
+      "dimStylesToList": "Inserir o(s) estilo(s) de cota a relacionar",
+      "selectDimension": "Selecionar cota",
+      "enterValueOr": "Insira um valor ou",
+      "selectSpline": "Selecionar spline",
+      "selectSplineFitPolyline": "Selecione a spline ajustada à polilinha",
+      "splineditOption": "Insira uma opção",
+      "splineditOptionClosed": "Insira uma opção",
+      "enterFitDataOption": "Inserir uma opção de ajuste de dados",
+      "specifyExistingFitPoint": "Especifique um ponto de ajuste existente na spline",
+      "specifyNewPointOr": "Especifique novo ponto ou",
+      "specifyNewFitPointToAdd": "Especifique novo ponto de ajuste a ser adicionado",
+      "specifyStartTangentOr": "Especificar tangente inicial ou",
+      "specifyEndTangentOr": "Especificar tangente final ou",
+      "enterVertexEditingOption": "Inserir uma opção de edição de vértice",
+      "specifyPointOnSpline": "Especificar um ponto na spline",
+      "specifyControlVertexToDelete": "Especifique o vértice de controle a ser excluído",
+      "enterNewOrder": "Insira a nova ordem",
+      "specifyNewLocationOr": "Especificar nova localização ou",
+      "enterNewWeightOr": [
+        "Inserir novo peso (atual = ",
+        [
+          "weight"
+        ],
+        ") ou"
+      ],
+      "specifyPrecision": "Especifique uma precisão",
+      "selectPolylineOr": "Selecionar polilinha ou",
+      "turnIntoPolyline": "Deseja transformá-lo em uma?",
+      "convertToPolylines": "Converter linhas, arcos e splines em polilinhas [Sim/Não]?",
+      "specifyPrecisionForSplineConversion": "Especifique uma precisão para a conversão da spline",
+      "peditOption": "Inserir uma opção",
+      "peditOption3d": "Inserir uma opção",
+      "enterFuzzDistanceOr": "Inserir distância aproximada ou",
+      "enterJoinType": "Inserir tipo de união",
+      "specifyNewWidthForAllSegments": "Especificar nova largura para todos os segmentos",
+      "linetypeGenerationOption": "Inserir opção de geração de tipo de polilinha",
+      "peditVertexOption": "Inserir uma opção de edição de vértice",
+      "peditWalkOption": "Inserir uma opção",
+      "specifyLocationForNewVertex": "Especificar localização do novo vértice",
+      "specifyNewLocationForMarkedVertex": "Especificar nova localização do vértice marcado",
+      "startingWidthForNextSegment": "Especificar largura inicial para o próximo segmento",
+      "endingWidthForNextSegment": "Especificar largura final para o próximo segmento",
+      "directionOfVertexTangent": "Especificar direção da tangente do vértice",
+      "peditNextShort": "P",
+      "joinTypeExtend": "Estender",
+      "joinTypeAdd": "Adicionar",
+      "joinTypeBoth": "Ambos",
+      "exitLower": "sair",
+      "nextShort": "P",
+      "previousShort": "A"
+    },
+    "format": {
+      "idle": "Comando",
+      "commandPrompt": [
+        [
+          "command"
+        ],
+        " ",
+        [
+          "question"
+        ]
+      ],
+      "answered": [
+        [
+          "prompt"
+        ],
+        " ",
+        [
+          "answer"
+        ]
+      ],
+      "snapOverride": [
+        [
+          "snap"
+        ],
+        [
+          "preposition",
+          1,
+          {
+            "to": " para",
+            "of": " de",
+            "other": ""
+          }
+        ]
+      ],
+      "transparentCommand": [
+        "'",
+        [
+          "command"
+        ]
+      ],
+      "transparentPrompt": [
+        ">>",
+        [
+          "question"
+        ]
+      ],
+      "prompt": [
+        [
+          "head"
+        ],
+        ":"
+      ],
+      "promptWithValue": [
+        [
+          "head"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        ">:"
+      ],
+      "promptWithValueTight": [
+        [
+          "head"
+        ],
+        "<",
+        [
+          "value"
+        ],
+        ">:"
+      ],
+      "promptWithValueOpen": [
+        [
+          "head"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        ">"
+      ],
+      "promptWithKeywords": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        ":"
+      ],
+      "promptWithDefault": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        ">:"
+      ],
+      "promptWithDefaultTight": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        "<",
+        [
+          "value"
+        ],
+        ">:"
+      ],
+      "keywordSeparator": "/",
+      "keywordOr": " ou ",
+      "optionValue": [
+        [
+          "keyword"
+        ],
+        ": ",
+        [
+          "value"
+        ]
+      ],
+      "cartesian": "X,Y",
+      "polar": "Dist<Ang"
+    },
+    "messages": {
+      "unknownCommand": [
+        "Comando \"",
+        [
+          "name"
+        ],
+        "\" desconhecido. Pressione F1 para obter ajuda."
+      ],
+      "cancel": "*Cancelar*",
+      "commandCancelled": "*Cancelar*",
+      "resumingCommand": [
+        "Retomando o comando ",
+        [
+          "command"
+        ],
+        "."
+      ],
+      "readOnlyVariable": [
+        [
+          "name"
+        ],
+        " = ",
+        [
+          "value"
+        ],
+        " (somente leitura)"
+      ],
+      "readOnlyListed": "(somente leitura)",
+      "unknownVariableName": "Nome de variável desconhecido. Digite DEFVAR ? para obter uma lista de variáveis.",
+      "cannotSetVariable": [
+        "Não é possível definir ",
+        [
+          "name"
+        ],
+        " para esse valor."
+      ],
+      "requiresZeroOrOne": "Requer apenas 0 ou 1.",
+      "requiresZeroOrOneOrKeyword": "Requer apenas 0 ou 1, ou opção.",
+      "notTransparent": "** Esse comando não pode ser chamado de modo transparente **",
+      "rotateSettings": [
+        "Ângulo positivo atual no UCS:  ANGDIR=sentido anti-horário  ANGBASE=",
+        [
+          "angbase"
+        ]
+      ],
+      "rotatingCopy": "Rotacionando uma cópia dos objetos selecionados.",
+      "scalingCopy": "Alterando a escala de uma cópia dos objetos selecionados.",
+      "trimExtendSettings": [
+        "Configurações atuais: Projeção=UCS, Aresta=",
+        [
+          "edge",
+          1,
+          {
+            "extend": "Estender",
+            "other": "Nenhum"
+          }
+        ],
+        ", Modo=",
+        [
+          "mode",
+          1,
+          {
+            "standard": "Padrão",
+            "other": "Rápido"
+          }
+        ]
+      ],
+      "selectCuttingEdges": "Selecionar limites de recorte ...",
+      "selectBoundaryEdges": "Selecionar arestas de limite...",
+      "doesNotIntersectCuttingEdge": "Não interseciona com a aresta de corte.",
+      "pathDoesNotIntersectBoundingEdge": "O caminho não efetua a intersecção com a aresta de limite.",
+      "objectDoesNotIntersectEdge": "Objeto não faz intersecção com uma aresta.",
+      "cannotExtendObject": "Não é possível ESTENDER este objeto.",
+      "cannotExtendThisObject": "Não é possível ESTENDER este objeto.",
+      "cannotTrimObject": "Não é possível APARAR este objeto.",
+      "cannotTrimThisObject": "Não é possível APARAR este objeto.",
+      "objectPerpendicularToUcs": "O objeto é perpendicular ao plano XY do UCS.",
+      "edgePerpendicularToUcs": "A aresta é perpendicular ao plano XY do UCS.",
+      "noEdgeInThatDirection": "Não há arestas nessa direção.",
+      "noObjectsCrossedByCrossingWindow": "Nenhum objeto interseccionado por janela de intersecção.",
+      "circleMustIntersectTwice": "O círculo deve fazer intersecção duas vezes.",
+      "curveMustIntersectTwice": "A curva deve fazer intersecção com os limites de recorte pelo menos duas vezes.",
+      "filletSettings": [
+        "Configurações atuais: Modo = APARAR, Raio = ",
+        [
+          "radius"
+        ]
+      ],
+      "chamferSettings": [
+        "(modo APARAR) Chanfro atual Dist1 = ",
+        [
+          "dist1"
+        ],
+        ", Dist2 = ",
+        [
+          "dist2"
+        ]
+      ],
+      "offsetSettings": [
+        "Configurações atuais: Apagar fonte=",
+        [
+          "erase",
+          1,
+          {
+            "yes": "Sim",
+            "other": "Não"
+          }
+        ],
+        "  Camada=",
+        [
+          "layer",
+          1,
+          {
+            "current": "Atual",
+            "other": "Origem"
+          }
+        ],
+        "  OFFSETGAPTYPE=0"
+      ],
+      "objectOnLockedLayer": "O objeto está em uma camada bloqueada.",
+      "objectNotABlock": " O objeto não é um bloco.",
+      "blockHasNoEditableAttributes": " O bloco não possui atributos editáveis.",
+      "selectedEntityNotABlock": "A entidade selecionada não é um bloco.",
+      "selectedBlockHasNoEditableAttributes": "O bloco selecionado não tem atributos editáveis.",
+      "matchpropSettings": "Configurações ativas atuais:  Cor Camada Tipolinha Espessura de linha Espessura Cota Texto Hachura",
+      "matchpropLockedDestination": "O objeto de destino está em uma camada bloqueada.\nNão é possível atualizá-lo.",
+      "invalidThroughPoint": "Ponto de passagem inválido.",
+      "cannotOffsetObject": "Não é possível deslocar esse objeto.",
+      "cannotOffsetAtViewDirection": "Não é possível deslocar esse objeto na direção da vista atual.",
+      "objectsFound": [
+        [
+          "box",
+          1,
+          {
+            "yes": "Especificar canto oposto: ",
+            "other": ""
+          }
+        ],
+        [
+          "found"
+        ],
+        " encontrado(s)",
+        [
+          "duplicate",
+          2,
+          {
+            "=0": "",
+            "other": [
+              " (",
+              0,
+              " duplicado(s))"
+            ]
+          }
+        ],
+        [
+          "removed",
+          2,
+          {
+            "=0": "",
+            "other": [
+              ", ",
+              0,
+              " removido"
+            ]
+          }
+        ],
+        [
+          "hasTotal",
+          1,
+          {
+            "yes": [
+              ", total ",
+              [
+                "total"
+              ]
+            ],
+            "other": ""
+          }
+        ]
+      ],
+      "lassoMode": [
+        [
+          "mode",
+          1,
+          {
+            "window": "Janela",
+            "crossing": "Intersecção",
+            "other": "Cerca"
+          }
+        ],
+        " laço – Pressione a barra de espaço para alternar as opções"
+      ],
+      "onLockedLayer": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " estava em uma camada bloqueada."
+            ],
+            "other": [
+              0,
+              " estavam camadas bloqueadas."
+            ]
+          }
+        ]
+      ],
+      "noPreviousSelection": "Não há nenhum conjunto de seleção anterior.",
+      "allSelectionsUndone": "Todas as seleções foram desfeitas.",
+      "invalidWindowSpecification": "Especificação de janela inválida.",
+      "invalidResponse": "Resposta inválida.",
+      "polygonSegmentZeroLength": "Ponto inválido, segmento poligonal de comprimento zero.",
+      "polygonSegmentsIntersect": "Ponto inválido, segmentos poligonais não podem fazer intersecção.",
+      "copyModeMultiple": "Configurações atuais: Modo de cópia = Múltiplo",
+      "stretchSelection": "Selecione os objetos a esticar interseccionando a janela ou o polígono...",
+      "currentLineWidth": [
+        "A largura da linha atual é ",
+        [
+          "width"
+        ]
+      ],
+      "erased": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " objeto apagado."
+            ],
+            "other": [
+              0,
+              " objetos apagados."
+            ]
+          }
+        ]
+      ],
+      "snapMode": [
+        " <Snap ",
+        [
+          "state",
+          1,
+          {
+            "on": "ativado",
+            "other": "desativado"
+          }
+        ],
+        ">"
+      ],
+      "osnapMode": [
+        " <Osnap ",
+        [
+          "state",
+          1,
+          {
+            "on": "ativado",
+            "other": "desativado"
+          }
+        ],
+        ">"
+      ],
+      "orthoMode": [
+        " <Orto ",
+        [
+          "state",
+          1,
+          {
+            "on": "ativado",
+            "other": "desativado"
+          }
+        ],
+        ">"
+      ],
+      "polarMode": [
+        " <Polar ",
+        [
+          "state",
+          1,
+          {
+            "on": "ativado",
+            "other": "desativado"
+          }
+        ],
+        ">"
+      ],
+      "otrackMode": [
+        " <Rastreamento de snap ao objeto ",
+        [
+          "state",
+          1,
+          {
+            "on": "ativado",
+            "other": "desativado"
+          }
+        ],
+        ">"
+      ],
+      "gridMode": [
+        " <Grade ",
+        [
+          "state",
+          1,
+          {
+            "on": "ativada",
+            "other": "desativada"
+          }
+        ],
+        ">"
+      ],
+      "selectionCyclingMode": [
+        " <Ciclo de seleção ",
+        [
+          "state",
+          1,
+          {
+            "on": "ativado",
+            "other": "desativado"
+          }
+        ],
+        ">"
+      ],
+      "everythingDeselected": "A seleção de tudo foi cancelada",
+      "selectingObjectsDone": "Selecionando objetos...concluído.",
+      "fromNeedsPoint": "DE requer um prompt de ponto.",
+      "fromBase": "DE: especifique o ponto base.",
+      "fromOffset": "DE: deslocamento a partir do ponto base.",
+      "angleOverride": [
+        "Sobreposição de ângulo: ",
+        [
+          "angle"
+        ]
+      ],
+      "zNotAllowed": "Coordenadas Z não são permitidas aqui.",
+      "saveUnavailable": "Não é possível salvar em um arquivo aqui.",
+      "openUnavailable": "Não é possível abrir um arquivo aqui.",
+      "openFailed": "Não foi possível abrir o arquivo.",
+      "fileError": {
+        "invalidJson": "O arquivo não é um JSON válido.",
+        "unrecognised": "Arquivo de desenho não reconhecido.",
+        "notADrawing": "Este arquivo não é um desenho do MellowCAD.",
+        "newerVersion": "Este desenho foi criado com uma versão mais recente do MellowCAD. Atualize para abri-lo."
+      },
+      "clipboardEmpty": "Não há nada na área de transferência.",
+      "noUnusedBlocks": "Não há blocos não utilizados.",
+      "blocksPurged": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " bloco eliminado."
+            ],
+            "other": [
+              0,
+              " blocos eliminados."
+            ]
+          }
+        ]
+      ],
+      "purgeSettings": "Itens aninhados = Desativar    Dados órfãos = Desativar",
+      "deletingBlock": [
+        "Excluindo bloco \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "blocksDeleted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " bloco excluído(s)."
+            ],
+            "other": [
+              0,
+              " blocos excluído(s)."
+            ]
+          }
+        ]
+      ],
+      "noUnreferencedBlocks": "Nenhum blocos sem referência encontrado.",
+      "noBlocks": "Nenhum bloco definido.",
+      "blockUndefined": [
+        "O bloco \"",
+        [
+          "name"
+        ],
+        "\" não está definido."
+      ],
+      "hatchPatternUnknown": "Nome de padrão desconhecido.",
+      "hatchTooDense": "Espaçamento de hachura denso demais, ou tamanho do traço pequeno demais.",
+      "hatchNoBoundary": "Não foi encontrado nenhum limite de hachura válido.",
+      "noBoundaryToUndo": "Não há limites a serem desfeitos.",
+      "areaAlreadySpecified": "Esta área já foi especificada.",
+      "unableToHatchBoundary": "Não é possível hachurar o limite.",
+      "pointOnObject": "O ponto está diretamente em um objeto.",
+      "textStyleUndefined": [
+        "Não é possível localizar estilo de texto \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "textJustifyOptions": [
+        "Insira uma opção [",
+        [
+          "keywords"
+        ],
+        "]:"
+      ],
+      "attributeModes": [
+        "Modos de atributos atuais:\nInvisível=",
+        [
+          "invisible",
+          1,
+          {
+            "yes": "S",
+            "other": "N"
+          }
+        ],
+        "  Constante=",
+        [
+          "constant",
+          1,
+          {
+            "yes": "S",
+            "other": "N"
+          }
+        ],
+        "  Verificação=",
+        [
+          "verify",
+          1,
+          {
+            "yes": "S",
+            "other": "N"
+          }
+        ],
+        "  Predefinido=",
+        [
+          "preset",
+          1,
+          {
+            "yes": "S",
+            "other": "N"
+          }
+        ],
+        "  Bloquear posição=",
+        [
+          "lockPosition",
+          1,
+          {
+            "yes": "S",
+            "other": "N"
+          }
+        ],
+        "  Anotativo=N  Múltiplas linhas=N"
+      ],
+      "enterAttributeValues": "Insira os valores do atributo",
+      "verifyAttributeValues": "Verifique os valores do atributo",
+      "explodeRejected": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " não pôde ser explodido."
+            ],
+            "other": [
+              0,
+              " não puderam ser explodidos."
+            ]
+          }
+        ]
+      ],
+      "explodeLostWidth": "A explosão desta polilinha causou a perda das informações de largura.\nO comando DESFAZER irá restaurá-las.",
+      "explodeCannot": [
+        "Não é possível explodir ",
+        [
+          "name"
+        ]
+      ],
+      "noneFound": "Nenhum foi encontrado.",
+      "noneFoundToConvert": "Nenhum foi encontrado.",
+      "onlySplineFittedPolylines": "Somente spline  ajustada a polilinhas podem ser convertidas em splines.",
+      "unableToConvertSelectedObject": "Não é possível converter o objeto selecionado.",
+      "currentUcsName": [
+        "Nome do ucs atual:  ",
+        [
+          "kind",
+          1,
+          {
+            "world": "*UNIVERSAL*",
+            "unnamed": "*SEM NOME*",
+            "top": "*SUPERIOR*",
+            "bottom": "*INFERIOR*",
+            "front": "*FRONTAL*",
+            "back": "*POSTERIOR*",
+            "left": "*ESQUERDO*",
+            "right": "*DIREITO*",
+            "other": [
+              [
+                "name"
+              ]
+            ]
+          }
+        ]
+      ],
+      "listedUcsName": [
+        "Nome atual de ucs: ",
+        [
+          "kind",
+          1,
+          {
+            "world": "*UNIVERSAL*",
+            "unnamed": "*SEM NOME*",
+            "top": "*SUPERIOR*",
+            "bottom": "*INFERIOR*",
+            "front": "*FRONTAL*",
+            "back": "*POSTERIOR*",
+            "left": "*ESQUERDO*",
+            "right": "*DIREITO*",
+            "other": [
+              "\"",
+              [
+                "name"
+              ],
+              "\""
+            ]
+          }
+        ]
+      ],
+      "savedUcsHeader": "Sistemas de coordenadas gravados:",
+      "savedUcsEntry": [
+        "\"",
+        [
+          "name"
+        ],
+        "\"\n     Origem = <",
+        [
+          "originX"
+        ],
+        ",",
+        [
+          "originY"
+        ],
+        ",",
+        [
+          "originZ"
+        ],
+        ">, Eixo X = <",
+        [
+          "xAxisX"
+        ],
+        ",",
+        [
+          "xAxisY"
+        ],
+        ",",
+        [
+          "xAxisZ"
+        ],
+        ">\n     Eixo Y = <",
+        [
+          "yAxisX"
+        ],
+        ",",
+        [
+          "yAxisY"
+        ],
+        ",",
+        [
+          "yAxisZ"
+        ],
+        ">, Eixo Z = <",
+        [
+          "zAxisX"
+        ],
+        ",",
+        [
+          "zAxisY"
+        ],
+        ",",
+        [
+          "zAxisZ"
+        ],
+        ">"
+      ],
+      "ucsUndefined": [
+        "Não é possível localizar UCS \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "planUcsNotFound": [
+        "Não é possível localizar UCS \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "noMatchingUcs": "  Não foram encontrados nomes de UCS correspondentes.",
+      "ucsDeleted": [
+        "Foram excluídos ",
+        [
+          "count"
+        ],
+        " ",
+        [
+          "count",
+          2,
+          {
+            "one": "nome",
+            "other": "nomes"
+          }
+        ],
+        " de UCS."
+      ],
+      "invalidUcsName": "Nome UCS inválido.",
+      "coincidentWithFirstPoint": "Coincidente com o primeiro ponto",
+      "pointsAreColinear": "Os pontos são colineares",
+      "pointsAreCoincident": "Os pontos são coincidentes",
+      "noSolidSurfaceOrMesh": "Nenhum sólido 3D, superfície ou malha detectados.",
+      "ucsNoCoordinateSystem": "Este objeto não define um sistema de coordenadas",
+      "polyline3dNoCoordinateSystem": "o objeto Polilinha 3D não define um sistema de coordenadas",
+      "zAxisNotSupported": "Opção de eixo Z não é suportada para o objeto selecionado.",
+      "noPreviousUcs": "Nenhum sistema de coordenadas anterior foi gravado.",
+      "everythingUndone": "Tudo foi desfeito",
+      "nothingToUndo": "Nada a desfazer",
+      "nothingToRedo": "Nada a refazer",
+      "everythingRedone": "Tudo foi refeito",
+      "redoMustFollowUndo": "REFAZER deve seguir imediatamente após o comando D ou DESFAZER.",
+      "alreadyRedone": "A última operação DESFAZER já foi refeita.",
+      "undoSettings": [
+        "Configurações atuais: Automático = ",
+        [
+          "auto",
+          1,
+          {
+            "on": "Ativado",
+            "other": "Desativado"
+          }
+        ],
+        ", Controle = ",
+        [
+          "control",
+          1,
+          {
+            "all": "Todas",
+            "one": "Um",
+            "other": "Nenhum"
+          }
+        ],
+        ", Combinar = ",
+        [
+          "combine",
+          1,
+          {
+            "yes": "Sim",
+            "other": "Não"
+          }
+        ],
+        ", Camada = ",
+        [
+          "layer",
+          1,
+          {
+            "yes": "Sim",
+            "other": "Não"
+          }
+        ]
+      ],
+      "markEncountered": "Marca encontrada",
+      "startOfGroup": "Início de grupo encontrado.\nÉ necessário digitar DESFAZER FIM para prosseguir.",
+      "undoGroup": "GRUPO",
+      "dropGeometryStep": "DROPGEOM GRUPO",
+      "menuStep": [
+        [
+          "command"
+        ],
+        " GRUPO"
+      ],
+      "emptyMenuStep": [
+        "GRUPO ",
+        [
+          "command"
+        ]
+      ],
+      "shortcutMenuEntry": [
+        [
+          "entry",
+          1,
+          {
+            "erase": "Apagar",
+            "move": "Mover",
+            "copySelection": "Copiar seleção",
+            "scale": "Escala",
+            "rotate": "Rotacionar",
+            "deselectAll": "Desmarcar tudo",
+            "properties": "Propriedades",
+            "pan": "Pan",
+            "cut": "Cortar",
+            "copy": "Copiar",
+            "copyBase": "Copiar com ponto base",
+            "paste": "Colar",
+            "other": ""
+          }
+        ]
+      ],
+      "shortcutMenuEntryKey": [
+        [
+          "entry",
+          1,
+          {
+            "cut": "Ctrl+X",
+            "copy": "Ctrl+C",
+            "copyBase": "Ctrl+Shift+C",
+            "paste": "Ctrl+V",
+            "other": ""
+          }
+        ]
+      ],
+      "menuItemStep": "GRUPO item de menu",
+      "intelliZoomStep": "INTELLIZOOM",
+      "intelliPanStep": "INTELLIPAN",
+      "viewCubeStep": "'.VIEWCUBEACTION",
+      "layerManagerStep": "'.-CAMADA",
+      "changePropertiesStep": "ALTPROP",
+      "modifyPropertyStep": "Modify Property",
+      "gripEditStep": "Edição de alça",
+      "uDisabled": "Comando D desativado. Use DESFAZER para ativá-lo.",
+      "redoDisabled": [
+        [
+          "command",
+          1,
+          {
+            "mredo": "Comandos REFAZER e MREDO desativados",
+            "other": "Comando REFAZER desativado"
+          }
+        ],
+        ". Use DESFAZER C para ativá-lo."
+      ],
+      "requiresIntegerValueOrKeyword": [
+        "Requer um valor inteiro ",
+        [
+          "value"
+        ],
+        ", ou opção."
+      ],
+      "requiresIntegerBetweenOrKeyword": [
+        "Requer um inteiro entre ",
+        [
+          "min"
+        ],
+        " e ",
+        [
+          "max"
+        ],
+        ", ou opção."
+      ],
+      "yesOrNoPlease": "Escolha Sim ou Não.",
+      "requiresDistanceNumberXOrKeyword": "Requer uma distância, númeroX ou uma opção.",
+      "noPreviousView": "Nenhuma vista anterior foi gravada.",
+      "currentLinetype": [
+        "Tipo de linha atual:  \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "linetypeByLayer": "PorCamada",
+      "linetypeNotFound": [
+        "Tipo de linha \"",
+        [
+          "name"
+        ],
+        "\" não encontrado em acad.lin.\nUtilize a opção \"Carregar\" para carregá-lo a partir de outro arquivo."
+      ],
+      "loadedLinetypes": "PorCamada, PorBloco ou um dos tipos de linha carregados:",
+      "linetypeColumns": "      Nome          Descrição\n---------------- ------------------",
+      "linetypesInFile": [
+        "Tipos de linha definidos no arquivo ",
+        [
+          "file"
+        ],
+        ":"
+      ],
+      "fileLinetypeColumns": "      Nome          Descrição\n---------------- -------------------",
+      "solidLine": "Linha sólida",
+      "noMatchingLinetypes": "  Não foram encontrados nomes de tipos de linha correspondentes.",
+      "invalidColorNumber": "Número de cor inválido.",
+      "tagCannotBeNull": "O identificador não pode ser nulo",
+      "attdefTextStyle": [
+        "Estilo de texto atual: \"",
+        [
+          "style"
+        ],
+        "\"  Altura do texto:  ",
+        [
+          "height"
+        ],
+        "  Justificar:  ",
+        [
+          "justify"
+        ]
+      ],
+      "blockConversion": "Configurações atuais: Conversão de objetos=Converter",
+      "invalidBlockName": "Nome de bloco inválido.",
+      "invalidNewBlockName": "Nome bloco inválido.",
+      "blockReferencesItself": [
+        "Bloco \"",
+        [
+          "name"
+        ],
+        "\" faz referência a si mesmo"
+      ],
+      "blockRedefined": [
+        "Bloco \"",
+        [
+          "name"
+        ],
+        "\" redefinido"
+      ],
+      "zBaseNotZero": "Cuidado, a base Z de inserção não é zero.",
+      "definedBlocks": "Blocos definidos.",
+      "definedBlock": [
+        "  \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "blockCounts": [
+        "Blocos do   Referências   Blocos        Blocos\nusuário     externas      dependentes   sem nome\n",
+        [
+          "user"
+        ],
+        "      ",
+        [
+          "external"
+        ],
+        "         ",
+        [
+          "dependent"
+        ],
+        "         ",
+        [
+          "unnamed"
+        ]
+      ],
+      "insertBlockCounts": [
+        "Blocos do   Blocos\nusuário     sem nome\n",
+        [
+          "user"
+        ],
+        "      ",
+        [
+          "unnamed"
+        ]
+      ],
+      "rectangleModes": [
+        "Modos de retângulo atual:",
+        [
+          "corners",
+          1,
+          {
+            "chamfer": [
+              "  Chanfro=",
+              [
+                "first"
+              ],
+              " x ",
+              [
+                "second"
+              ]
+            ],
+            "other": ""
+          }
+        ],
+        [
+          "hasElevation",
+          1,
+          {
+            "yes": [
+              "  Elevação=",
+              [
+                "elevation"
+              ]
+            ],
+            "other": ""
+          }
+        ],
+        [
+          "corners",
+          1,
+          {
+            "fillet": [
+              "  Concordância=",
+              [
+                "first"
+              ]
+            ],
+            "other": ""
+          }
+        ],
+        [
+          "hasThickness",
+          1,
+          {
+            "yes": [
+              "  Espessura=",
+              [
+                "thickness"
+              ]
+            ],
+            "other": ""
+          }
+        ],
+        [
+          "hasWidth",
+          1,
+          {
+            "yes": [
+              "  Largura=",
+              [
+                "width"
+              ]
+            ],
+            "other": ""
+          }
+        ],
+        [
+          "hasRotation",
+          1,
+          {
+            "yes": [
+              "  Rotação=",
+              [
+                "rotation"
+              ]
+            ],
+            "other": ""
+          }
+        ]
+      ],
+      "textEditSettings": [
+        "Configurações atuais: Modo de edição = ",
+        [
+          "mode",
+          1,
+          {
+            "single": "Único",
+            "other": "Múltiplo"
+          }
+        ]
+      ],
+      "totalArea": [
+        "Área total = ",
+        [
+          "total"
+        ]
+      ],
+      "areaReport": [
+        "Área = ",
+        [
+          "area"
+        ],
+        ", ",
+        [
+          "measured",
+          1,
+          {
+            "circumference": "Circunferência",
+            "length": "Comprimento",
+            "other": "Perímetro"
+          }
+        ],
+        " = ",
+        [
+          "around"
+        ]
+      ],
+      "objectHasNoArea": "O objeto selecionado não tem uma área",
+      "polylineWidthIgnored": "Largura da polilinha ignorada no cálculo da área.",
+      "allSegmentsUndone": "Todos os segmentos já foram desfeitos.",
+      "polyline3dNotLevel": "Os vértices da polilinha 3D tinham coordenadas Z diferentes.",
+      "all3dSegmentsUndone": "Todos os segmentos já foram desfeitos.",
+      "distanceTotal": [
+        "Distância = ",
+        [
+          "value"
+        ]
+      ],
+      "distanceReport": [
+        "Distância = ",
+        [
+          "distance"
+        ],
+        ", Ângulo no plano XY = ",
+        [
+          "angleInPlane"
+        ],
+        ",  Ângulo a partir do plano XY = ",
+        [
+          "angleFromPlane"
+        ],
+        "\nDelta X = ",
+        [
+          "deltaX"
+        ],
+        ",  Delta Y = ",
+        [
+          "deltaY"
+        ],
+        ",   Delta Z = ",
+        [
+          "deltaZ"
+        ]
+      ],
+      "idReport": [
+        " X = ",
+        [
+          "x"
+        ],
+        "     Y = ",
+        [
+          "y"
+        ],
+        "     Z = ",
+        [
+          "z"
+        ]
+      ],
+      "linesNonCoplanar": "As linhas são não coplanares.",
+      "lineAndPolylineNonCoplanar": "Linha e polilinha são não coplanares.",
+      "twoEntitiesNonCoplanar": "Duas entidades são não coplanares.",
+      "cannotFilletBetween": "Não é possível fazer a concordância entre essas duas entidades.",
+      "noValidFillet": [
+        "Nenhuma concordância válida com raio de ",
+        [
+          "radius"
+        ]
+      ],
+      "cannotFilletItself": "Não é possível fazer a concordância entre uma entidade e ela mesma.",
+      "chamferNot3dPolyline": "  Objetos Polilinha 3D não podem ser chanfrados.",
+      "filletNot3dPolyline": "  Objetos Polilinha 3D não podem ser com concordância.",
+      "collinearCannotFillet": "As linhas colineares não podem ser com concordância.",
+      "collinearCannotChamfer": "As linhas colineares não podem ser chanfrado.",
+      "cannotChamferItself": "Não é possível fazer o chanfro entre uma entidade e ela mesma.",
+      "segmentsNotConsecutive": "Linhas pertencentes a polilinhas devem ser consecutivas ou serem separadas por um segmento",
+      "notA2dPolyline": "O objeto selecionado não é uma polilinha 2D",
+      "cornersSkipped": [
+        [
+          "parallel",
+          2,
+          {
+            "=0": "",
+            "one": [
+              0,
+              " era paralela    "
+            ],
+            "other": [
+              0,
+              " eram paralelas    "
+            ]
+          }
+        ],
+        [
+          "tooShort",
+          2,
+          {
+            "=0": "",
+            "one": [
+              0,
+              " era curto demais    "
+            ],
+            "other": [
+              0,
+              " eram curtos demais    "
+            ]
+          }
+        ],
+        [
+          "divergent",
+          2,
+          {
+            "=0": "",
+            "one": [
+              0,
+              " era divergente    "
+            ],
+            "other": [
+              0,
+              " eram divergentes    "
+            ]
+          }
+        ]
+      ],
+      "invalid": "*Inválido*",
+      "styleNameInUse": [
+        "Já existe um ",
+        [
+          "table",
+          1,
+          {
+            "dimension": "estilo de cota",
+            "other": "estilo de texto"
+          }
+        ],
+        " nomeado como \"",
+        [
+          "name"
+        ],
+        "\"."
+      ],
+      "currentDimStyle": [
+        "Estilo de cota atual:  ",
+        [
+          "name"
+        ],
+        "  Anotativo: Não"
+      ],
+      "unknownDimStyle": "Estilo de cota desconhecido.",
+      "namedDimStyles": "Estilos de cota nomeados:",
+      "noMatchingDimStyles": "  Não foram encontrados estilos de cota coincidentes.",
+      "splineSettingsFit": [
+        "Configurações atuais: Método=Ajustar   Nós=",
+        [
+          "knots",
+          1,
+          {
+            "chord": "Banzo",
+            "sqrtChord": "Raiz quadrada",
+            "other": "Uniforme"
+          }
+        ]
+      ],
+      "splineSettingsCv": [
+        "Configurações atuais: Método=VC Grau=",
+        [
+          "degree"
+        ]
+      ],
+      "requiresIntegerBetween": [
+        "Requer um inteiro entre ",
+        [
+          "min"
+        ],
+        " e ",
+        [
+          "max"
+        ],
+        "."
+      ],
+      "commandCompletelyUndone": "O comando foi desfeito completamente.",
+      "commandCompletelyUndoneShort": "O comando foi completamente desfeito.",
+      "linesParallel": "As linhas são paralelas",
+      "linesDiverge": "As linhas divergem",
+      "filletRadiusTooLarge": "Raio da concordância é grande demais",
+      "chamferDistanceTooLarge": "Distância do chanfro é grande demais",
+      "cannotChamferArcSegments": "Não é possível chanfro segmentos de arco de polilinha.",
+      "chamferRequiresLines": "Chanfro requer 2 linhas (não segmentos de arco).",
+      "cannotFilletBetweenThese": "Não é possível fazer a concordância entre essas duas entidades.",
+      "filletRequiresObjects": "Concord requer 2 linhas, arcos ou círculos.",
+      "filletRequiresNotBlocks": "Concord requer 2 linhas, arcos ou círculos (não referências de bloco).",
+      "filletRequiresNotDimensions": "Concord requer 2 linhas, arcos ou círculos (não cotas).",
+      "unableToFilletCurves": "Não é possível fazer a concordância de curvas.",
+      "noValidCurveFillet": [
+        "Não há concordância válida com raio ",
+        [
+          "radius"
+        ]
+      ],
+      "entitiesNonCoplanar": "As entidades são do tipo não coplanares.",
+      "chamferRequiresTwoLines": "Chanfro requer 2 linhas.",
+      "chamferRequiresNotBlocks": "Chanfro requer 2 linhas (não referências de bloco).",
+      "chamferRequiresNotDimensions": "Chanfro requer 2 linhas (não cotas).",
+      "cannotChamferBetween": "Não é possível chanfrar entre essas duas entidades.",
+      "linesChamfered": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              "Em ",
+              0,
+              " linha foi aplicado o chanfro"
+            ],
+            "other": [
+              "Em ",
+              0,
+              " linhas foram aplicada(s) o chanfro"
+            ]
+          }
+        ]
+      ],
+      "linesFilleted": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              "Em ",
+              0,
+              " linha foi aplicada a concordância"
+            ],
+            "other": [
+              "Em ",
+              0,
+              " linhas foram aplicada(s) a concordância"
+            ]
+          }
+        ]
+      ],
+      "nothingJoined": [
+        "0 objetos unidos, ",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " objeto desconsiderado"
+            ],
+            "other": [
+              0,
+              " objetos desconsiderados"
+            ]
+          }
+        ],
+        " pela operação"
+      ],
+      "linesJoined": [
+        [
+          "count"
+        ],
+        " linhas unidas em 1 linha",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto desconsiderado pela operação"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos desconsiderados pela operação"
+            ]
+          }
+        ]
+      ],
+      "arcsJoined": [
+        [
+          "count"
+        ],
+        " arcos unidos em 1 arco",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto desconsiderado pela operação"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos desconsiderados pela operação"
+            ]
+          }
+        ]
+      ],
+      "arcsJoinedIntoCircle": [
+        [
+          "count"
+        ],
+        " arcos juntados e convertidos para um círculo",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto desconsiderado pela operação"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos desconsiderados pela operação"
+            ]
+          }
+        ]
+      ],
+      "objectsConvertedToPolylines": [
+        [
+          "count"
+        ],
+        " objetos convertidos em ",
+        [
+          "polylines",
+          2,
+          {
+            "one": [
+              0,
+              " polilinha"
+            ],
+            "other": [
+              0,
+              " polilinhas"
+            ]
+          }
+        ],
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto desconsiderado pela operação"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos desconsiderados pela operação"
+            ]
+          }
+        ]
+      ],
+      "segmentsJoinedIntoPolyline": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " segmento unido"
+            ],
+            "other": [
+              0,
+              " segmentos unidos"
+            ]
+          }
+        ],
+        " em 1 polilinha",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto desconsiderado pela operação"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos desconsiderados pela operação"
+            ]
+          }
+        ]
+      ],
+      "ellipticalArcsJoined": [
+        [
+          "count"
+        ],
+        " arcos elípticos unidos em 1 arco",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto desconsiderado pela operação"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos desconsiderados pela operação"
+            ]
+          }
+        ]
+      ],
+      "objectsJoinedIntoSplines": [
+        [
+          "count"
+        ],
+        " objetos unidos em ",
+        [
+          "splines",
+          2,
+          {
+            "one": [
+              0,
+              " spline"
+            ],
+            "other": [
+              0,
+              " splines"
+            ]
+          }
+        ],
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto desconsiderado pela operação"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos desconsiderados pela operação"
+            ]
+          }
+        ]
+      ],
+      "objectsConvertedToSplines": [
+        [
+          "count"
+        ],
+        " objetos convertidos em ",
+        [
+          "splines",
+          2,
+          {
+            "one": [
+              0,
+              " spline"
+            ],
+            "other": [
+              0,
+              " splines"
+            ]
+          }
+        ],
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto desconsiderado pela operação"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos desconsiderados pela operação"
+            ]
+          }
+        ]
+      ],
+      "objectsJoinedToSource": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " objeto unido"
+            ],
+            "other": [
+              0,
+              " objetos unidos"
+            ]
+          }
+        ],
+        " à origem",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto desconsiderado pela operação"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos desconsiderados pela operação"
+            ]
+          }
+        ]
+      ],
+      "ellipticalArcsJoinedToSource": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              "arco elíptico juntado"
+            ],
+            "other": [
+              0,
+              " arcos elípticos juntados"
+            ]
+          }
+        ],
+        " à origem",
+        [
+          "discarded",
+          2,
+          {
+            "=0": "",
+            "one": [
+              ", ",
+              0,
+              " objeto desconsiderado pela operação"
+            ],
+            "other": [
+              ", ",
+              0,
+              " objetos desconsiderados pela operação"
+            ]
+          }
+        ]
+      ],
+      "ellipseClosed": "Elipse fechada com êxito.",
+      "currentViewDirection": [
+        "Direção da vista atual:  VIEWDIR=",
+        [
+          "x"
+        ],
+        ",",
+        [
+          "y"
+        ],
+        ",",
+        [
+          "z"
+        ]
+      ],
+      "switchingToWcs": "*** Alternando para o WCS ***",
+      "returningToUcs": "*** Retornando para o UCS ***",
+      "invalidInputTryAgain": "Entrada inválida. Tente novamente.",
+      "regeneratingModel": "Regenerando modelo.",
+      "regenQueued": "Regeneração em fila.",
+      "requiresRegen": "** Exige uma regeneração, não pode ser transparente.",
+      "panExit": "Pressione ESC ou ENTER para sair ou clique com o botão direito do mouse para exibir o menu de atalho.",
+      "orbitExit": "Pressione ESC ou ENTER para sair ou clique com o botão direito do mouse para exibir o menu de atalho.",
+      "requiresTwoPointsOrDisplacement": "Requer dois pontos ou um deslocamento seguido por ENTER.",
+      "currentOsnapModes": [
+        "Modos de osnap atuais: ",
+        [
+          "modes"
+        ]
+      ],
+      "currentLineweight": [
+        "Espessura de linha atual: ",
+        [
+          "value"
+        ]
+      ],
+      "pointingEdgeOn": "Não é permitido apontar em um UCS visto de perfil.",
+      "circleDoesNotExist": "O círculo não existe.",
+      "radiusMustBeNonZero": "O raio não pode ser zero.",
+      "noLineOrArcToContinue": "Não há linha ou arco para continuar.",
+      "allLineSegmentsUndone": "Todos os segmentos já foram desfeitos.",
+      "zeroLengthLineCreated": [
+        "Linha de comprimento zero criada em (",
+        [
+          "x"
+        ],
+        ", ",
+        [
+          "y"
+        ],
+        ", ",
+        [
+          "z"
+        ],
+        ")"
+      ],
+      "positiveNonzero": "O valor deve ser positivo e diferente de zero.",
+      "parameterCannotBeZero": "O parâmetro não pode ser definido como 0. Insira um número não zero ou expressão.",
+      "areaPositiveNonzero": "O valor deve ser positivo e diferente de zero.",
+      "valueMustBePositive": "O valor deve ser positivo.",
+      "valueMustBeNonzero": "O valor deve ser diferente de zero.",
+      "x2dCornerPointOrKeyword": "Xponto de canto 2D ou opção.",
+      "previousDirectionNotUcsParallel": [
+        "A direção anterior não é paralela ao UCS, utilizando ",
+        [
+          "angle"
+        ],
+        "."
+      ],
+      "lineweightRequired": "É necessário uma espessura em unidades de espessura de linha.",
+      "lineweightRounded": [
+        "Espessura de linha arredondada para o valor válido mais próximo de ",
+        [
+          "value"
+        ]
+      ],
+      "invalidLineweightNumber": "Número de espessura de linha inválido.",
+      "lineweightNone": "Nenhum",
+      "lineweightByLayer": "PORCAMADA",
+      "lineweightListByLayer": "PorCamada",
+      "colorRequired": "É necessário um número de cor ou um nome de cor padrão.",
+      "invalidTrueColor": "Cor inválida. Insira três valores separados por vírgulas de 0 a 255.",
+      "invalidOsnapModes": "Modos de snap ao objeto inválidos.",
+      "invalidPoint": "Ponto inválido.",
+      "snapNotFound": [
+        "Nenhum(a) ",
+        [
+          "snap",
+          1,
+          {
+            "endpoint": "pONto ",
+            "midpoint": "Meio ",
+            "center": "Centro ",
+            "quadrant": "Quadrante ",
+            "intersection": "Intersecção ",
+            "insertion": "Inserção ",
+            "perpendicular": "Perpendicular ",
+            "nearest": "Maispróximo ",
+            "other": ""
+          }
+        ],
+        "foi encontrado(a) no ponto especificado."
+      ],
+      "invalidPoint2d": "Ponto 2D inválido.",
+      "pointOrKeywordRequired": "Ponto ou opção necessário.",
+      "point2dOrKeywordRequired": "Ponto 2D ou opção necessário.",
+      "pointsMustBeDistinct": "Os pontos devem ser diferentes.",
+      "requiresDistance": [
+        "Requer distância numérica",
+        [
+          "keyword",
+          1,
+          {
+            "yes": [
+              [
+                "points",
+                1,
+                {
+                  "second": ", segundo ponto ou opção.",
+                  "other": ", dois pontos ou opção."
+                }
+              ]
+            ],
+            "other": [
+              [
+                "points",
+                1,
+                {
+                  "second": " ou segundo ponto.",
+                  "other": " ou dois pontos."
+                }
+              ]
+            ]
+          }
+        ]
+      ],
+      "requiresAngle": [
+        "Requer um ângulo numérico válido",
+        [
+          "keyword",
+          1,
+          {
+            "yes": [
+              [
+                "points",
+                1,
+                {
+                  "second": ", segundo ponto ou opção.",
+                  "other": ", dois pontos ou opção."
+                }
+              ]
+            ],
+            "other": [
+              [
+                "points",
+                1,
+                {
+                  "second": " ou segundo ponto.",
+                  "other": " ou dois pontos."
+                }
+              ]
+            ]
+          }
+        ]
+      ],
+      "requiresNumber": [
+        "Requer valor numérico",
+        [
+          "keyword",
+          1,
+          {
+            "yes": " ou opção.",
+            "other": "."
+          }
+        ]
+      ],
+      "requiresInteger": [
+        "Requer um valor inteiro",
+        [
+          "keyword",
+          1,
+          {
+            "yes": " ou opção.",
+            "other": "."
+          }
+        ]
+      ],
+      "requiresRadius": "Requer raio, ponto na circunferência ou \"D\" numéricos.",
+      "requiresTangent": "Requer um snap ao objeto TAN e a seleção de um círculo, arco ou linha.",
+      "requiresTangentSelection": "*Exige um snap ao objeto TAN e a seleção de um círculo, arco ou linha.",
+      "invalidOptionKeyword": "Opção inválida.",
+      "ambiguousResponse": "Resposta ambígua, esclareça...",
+      "invalidSelection": "*Seleção inválida*",
+      "expectsPointOr": [
+        "Espera um ponto ou ",
+        [
+          "keywords"
+        ]
+      ],
+      "textEditExpectsPoint": [
+        "Espera um ponto ou Último/",
+        [
+          "keywords"
+        ],
+        [
+          "mode",
+          1,
+          {
+            "single": "]:",
+            "other": ""
+          }
+        ]
+      ],
+      "selectionModes": [
+        [
+          "set",
+          1,
+          {
+            "subobjects": "Janela/Intersecção/CAIXA/Cerca/PSeleção/PIntersecção/Adicionar/Remover/Múltiplo/ANterior/Desfazer/AUto/ÚNico/SUbobjeto/Objeto",
+            "oneObject": "Janela/Último/Intersecção/CAIXA/TUDO/Cerca/PSeleção/PIntersecção",
+            "singleSet": "Janela/Último/Intersecção/CAIXA/TUDO/Cerca/PSeleção/PIntersecção/Grupo",
+            "pathCurve": "Janela/Último/Intersecção/CAIXA/TUDO/Cerca/PSeleção/PIntersecção/Grupo/ANterior/AUto",
+            "crossingObjects": "Janela/Último/Intersecção/CAIXA/TUDO/Cerca/PSeleção/PIntersecção/Adicionar/Remover/Múltiplo/ANterior/Desfazer/AUto/ÚNico",
+            "wholeObjects": "Janela/Último/Intersecção/CAIXA/TUDO/Cerca/PSeleção/PIntersecção/Grupo/Adicionar/Remover/Múltiplo/ANterior/Desfazer/AUto/ÚNico",
+            "faceSet": "Intersecção/Cerca/PIntersecção",
+            "other": "Janela/Último/Intersecção/CAIXA/TUDO/Cerca/PSeleção/PIntersecção/Grupo/Adicionar/Remover/Múltiplo/ANterior/Desfazer/AUto/ÚNico/SUbobjeto/Objeto"
+          }
+        ]
+      ],
+      "noObjectFound": "Nenhum objeto encontrado",
+      "arcCannotBeFull360": "O arco não pode ser completo (360 graus)",
+      "objectCannotBeBroken": "O objeto não pode ser quebrado",
+      "cannotBreakBlock": "Não é possível quebrar um bloco",
+      "cannotBreakClosedAtOnePoint": "Não é possível quebrar uma curva periódica fechada em um só ponto.",
+      "arrayType": [
+        "Tipo = ",
+        [
+          "type",
+          1,
+          {
+            "rectangular": "Retangular",
+            "polar": "Polar",
+            "other": "Caminho"
+          }
+        ],
+        "  Associativa = Não"
+      ],
+      "arrayTypeAssociative": [
+        "Tipo = ",
+        [
+          "type",
+          1,
+          {
+            "rectangular": "Retangular",
+            "polar": "Polar",
+            "other": "Caminho"
+          }
+        ],
+        "  Associativa = Sim"
+      ],
+      "requiresPositiveInteger": "Requer um inteiro positivo e diferente de zero ou opção.",
+      "requiresNonzero": "Requer valor numérico diferente de zero.",
+      "maximumItems": [
+        "Máximo de itens = ",
+        [
+          "count"
+        ]
+      ],
+      "pathCurveIsArrayed": "Os objetos selecionados para disposição em matriz não podem ser selecionados como curva do caminho.",
+      "filteredOut": [
+        [
+          "count",
+          2,
+          {
+            "one": "1 foi filtrado",
+            "other": [
+              0,
+              " foram filtrados"
+            ]
+          }
+        ]
+      ],
+      "currentHatchPattern": [
+        "Padrão de hachura atual:  ",
+        [
+          "name"
+        ]
+      ],
+      "selectingEverything": "Selecionando tudo...",
+      "selectingEverythingVisible": "Selecionando tudo o que é visível...",
+      "analyzingSelectedData": "Analisando os dados selecionados...",
+      "analyzingInternalIslands": "Analisando ilhas internas...",
+      "requiresDistanceOrNumberX": "Requer uma distância (ou númeroX).",
+      "currentTextStyle": [
+        "Estilo de texto atual: \"",
+        [
+          "style"
+        ],
+        "\"  Altura do texto:  ",
+        [
+          "height"
+        ],
+        " Anotativo: Não  Justificar:  ",
+        [
+          "justify"
+        ]
+      ],
+      "textJustifyName": [
+        [
+          "justify",
+          1,
+          {
+            "center": "Centro",
+            "right": "Direita",
+            "middle": "Meio",
+            "tl": "SE",
+            "tc": "SC",
+            "tr": "SD",
+            "ml": "MES",
+            "mc": "MC",
+            "mr": "MD",
+            "bl": "IE",
+            "bc": "IC",
+            "br": "ID",
+            "other": "Esquerda"
+          }
+        ]
+      ],
+      "textStylesHeader": "Estilos de texto:",
+      "textStyleEntry": [
+        "Nome do estilo: ",
+        [
+          "name"
+        ],
+        "  Tipo de fonte: Arial\n   Altura: ",
+        [
+          "height"
+        ],
+        "  Fator de largura: ",
+        [
+          "width"
+        ],
+        "  Ângulo oblíquo: 0\n   Geração: Normal"
+      ],
+      "currentTextStyleName": [
+        "Estilo de texto atual: \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "currentMTextStyle": [
+        "Estilo de texto atual:  \"",
+        [
+          "style"
+        ],
+        "\"  Altura do texto:  ",
+        [
+          "height"
+        ],
+        " Anotativo: Não"
+      ],
+      "invalidStyleName": "Nome de estilo não válido",
+      "lineSpacingRange": [
+        "Especifique um valor de espaçamento de linha entre ",
+        [
+          "min"
+        ],
+        " (",
+        [
+          "minFactor"
+        ],
+        "x) e ",
+        [
+          "max"
+        ],
+        " (",
+        [
+          "maxFactor"
+        ],
+        "x), inclusive."
+      ],
+      "invalidPointInput": "Entrada de ponto inválida.",
+      "invalidInputCapital": "Entrada inválida.",
+      "nonAssociativeDimension": "Cota não associativa criada.",
+      "dimensionTextIs": [
+        "Texto da cota = ",
+        [
+          "text"
+        ]
+      ],
+      "expectsSingleObject": "Espera um único objeto.",
+      "expectsCornerObject": [
+        "Espera um ponto ou Janela/Último/Intersecção/CAIXA/Cerca/PSeleção/PIntersecção/",
+        [
+          "set",
+          1,
+          {
+            "fillet": "Desfazer/Polilinha/Raio",
+            "filletRadius": "Raio]:",
+            "chamfer": "Desfazer/Polilinha/Distância",
+            "other": "Distância"
+          }
+        ]
+      ],
+      "lastKeyword": "Último",
+      "noObjectSelected": "Nenhum objeto selecionado.",
+      "notLineArcOrCircleToDimension": "O objeto selecionado não é uma linha, um arco ou um círculo.",
+      "associativeDimensionRequired": "Cotas associativas lineares, ordenadas ou angulares são necessárias.",
+      "selectedObjectNotDimension": "O objeto selecionado não é uma cota.",
+      "notCircleOrArc": "O objeto selecionado não é um círculo ou um arco.",
+      "notLineArcOrCircle": "O objeto selecionado não é uma linha, um arco ou um círculo.",
+      "notALine": "O objeto selecionado não é uma linha.",
+      "dimLinesParallel": "As linhas são paralelas.",
+      "negativeSpacing": "Valor inválido de espaçamento, o valor do espaçamento não pode ser negativo.",
+      "objectNotSpline": "O objeto selecionado não é uma spline.",
+      "splineReversed": "A spline foi revertida.",
+      "splineMadeRational": "A spline não é rotacional. Será transformada em rotacional.",
+      "cannotDeleteBeyond": "Não é possível excluir além deste ponto.",
+      "objectNotPolyline": "O objeto selecionado não é uma polilinha",
+      "expectsPolylineOr": "Espera um ponto ou Janela/Último/Intersecção/CAIXA/TUDO/Cerca/PSeleção/PIntersecção/Múltiplo]:",
+      "cannotJoinClosedPolyline": "Não é possível unir a uma polilinha fechada",
+      "segmentsAddedToPolyline": [
+        [
+          "count"
+        ],
+        " segmentos adicionados à polilinha"
+      ],
+      "segmentsAddedToPolylines": [
+        [
+          "count"
+        ],
+        " segmentos adicionados a ",
+        [
+          "polylines"
+        ],
+        " polilinhas"
+      ],
+      "joinTypeIs": [
+        "Tipo de união = ",
+        [
+          "type",
+          1,
+          {
+            "extend": "Estender",
+            "add": "Adicionar segmento",
+            "other": "Ambos (Estender ou Adicionar)"
+          }
+        ]
+      ],
+      "notAFitPoint": "Não é um ponto de ajuste.",
+      "notAControlVertex": "Não é um vértice de controle.",
+      "listObjectName": [
+        [
+          "name",
+          1,
+          {
+            "line": "LINHA",
+            "circle": "CÍRCULO",
+            "arc": "ARCO",
+            "ellipse": "ELLIPSE",
+            "spline": "SPLINE",
+            "lwpolyline": "LWPOLYLINE",
+            "polyline": "POLILINHA",
+            "vertex": "VÉRTICE",
+            "endSequence": "END SEQUENCE",
+            "text": "TEXT",
+            "mtext": "MTEXT",
+            "attdef": "DEFINIÇÃO DE ATRIBUTO",
+            "attribute": "ATRIBUTO",
+            "dimension": "COTA",
+            "hatch": "HATCH",
+            "insert": "REFERÊNCIA DE BLOCO",
+            "other": "MATRIZ"
+          }
+        ]
+      ],
+      "listObject": [
+        "                  ",
+        [
+          "name"
+        ],
+        "  Camada: \"",
+        [
+          "layer"
+        ],
+        "\""
+      ],
+      "listSpace": "                            Espaço: Espaço do modelo",
+      "listColor": [
+        "                   Cor: ",
+        [
+          "color"
+        ],
+        "    Tipo de linha: \"",
+        [
+          "linetype"
+        ],
+        "\""
+      ],
+      "listLineweight": [
+        "                   Espessura de linha: ",
+        [
+          "lineweight"
+        ],
+        " mm"
+      ],
+      "listThickness": [
+        "                            Espessura =    ",
+        [
+          "thickness"
+        ]
+      ],
+      "listExtrusion": [
+        "Direção da extrusão relativa ao UCS:\n                   X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLineFrom": [
+        "                do ponto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLineTo": [
+        "            para o ponto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listLineLength": [
+        "          ",
+        [
+          "inUcs",
+          1,
+          {
+            "yes": "No UCS atual, ",
+            "other": ""
+          }
+        ],
+        "Comprimento =",
+        [
+          "length"
+        ],
+        ",  Ângulo no plano XY = ",
+        [
+          "angle"
+        ]
+      ],
+      "listLine3d": [
+        "                  Comprimento 3D  =",
+        [
+          "length"
+        ],
+        ",  Ângulo do plano XY =     ",
+        [
+          "angle"
+        ]
+      ],
+      "listLineDelta": [
+        "                  Delta X =",
+        [
+          "x"
+        ],
+        ", Delta Y = ",
+        [
+          "y"
+        ],
+        ", Delta Z =",
+        [
+          "z"
+        ]
+      ],
+      "listCenter": [
+        "            centro ponto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listRadius": [
+        "              raio    ",
+        [
+          "radius"
+        ]
+      ],
+      "listCircumference": [
+        "     circunferência   ",
+        [
+          "length"
+        ]
+      ],
+      "listArea": [
+        "              área   ",
+        [
+          "area"
+        ]
+      ],
+      "listStartAngle": [
+        "    ângulo inicial    ",
+        [
+          "angle"
+        ]
+      ],
+      "listEndAngle": [
+        "      ângulo final    ",
+        [
+          "angle"
+        ]
+      ],
+      "listLength": [
+        "            comprimento   ",
+        [
+          "length"
+        ]
+      ],
+      "listTotalAngle": [
+        "             ângulo total ",
+        [
+          "angle"
+        ]
+      ],
+      "listCurveArea": [
+        "                             Área: ",
+        [
+          "area"
+        ]
+      ],
+      "listCurveCircumference": [
+        "                   Circunferência: ",
+        [
+          "length"
+        ]
+      ],
+      "listCurveLength": [
+        "                      Comprimento: ",
+        [
+          "length"
+        ]
+      ],
+      "listEllipseCenter": [
+        "                           Centro: X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listEllipseMajor": [
+        "                       Eixo maior: X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listEllipseMinor": [
+        "                       Eixo menor: X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listEllipseStart": [
+        "                    Ponto inicial: X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listEllipseEnd": [
+        "                      Ponto final: X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listEllipseStartAngle": [
+        "                   Ângulo inicial: ",
+        [
+          "angle"
+        ]
+      ],
+      "listEllipseEndAngle": [
+        "                     Ângulo final: ",
+        [
+          "angle"
+        ]
+      ],
+      "listEllipseRatio": [
+        "                  Proporção do raio: ",
+        [
+          "ratio"
+        ]
+      ],
+      "listSplineOrder": [
+        "                            Ordem: ",
+        [
+          "order"
+        ]
+      ],
+      "listSplineProperties": [
+        "                     Propriedades: ",
+        [
+          "planar",
+          1,
+          {
+            "yes": "Plana,",
+            "other": "Não plana,"
+          }
+        ],
+        " ",
+        [
+          "rational",
+          1,
+          {
+            "yes": "Racional,",
+            "other": "Não racional,"
+          }
+        ],
+        " ",
+        [
+          "periodic",
+          1,
+          {
+            "yes": "Periódico",
+            "other": "Não periódico"
+          }
+        ]
+      ],
+      "listSplineRange": [
+        "                 Intervalo paramétrico: Início",
+        [
+          "start"
+        ],
+        "\n                                     Fim",
+        [
+          "end"
+        ]
+      ],
+      "listSplineControlCount": [
+        "         Número de pontos de controle:",
+        [
+          "count"
+        ]
+      ],
+      "listSplineControlPoints": [
+        "                  Pontos de controle: X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listPointMore": [
+        "                                   X = ",
+        [
+          "x"
+        ],
+        ", Y = ",
+        [
+          "y"
+        ],
+        ", Z = ",
+        [
+          "z"
+        ]
+      ],
+      "listSplineWeight": [
+        "                                   Peso",
+        [
+          "weight"
+        ]
+      ],
+      "listSplineFitCount": [
+        "             Número de pontos de ajuste:",
+        [
+          "count"
+        ]
+      ],
+      "listSplineFitPoints": "                  Dados do usuário: Pontos de ajuste",
+      "listSplineTolerance": [
+        "              Tolerância do ponto de ajuste: ",
+        [
+          "tolerance"
+        ]
+      ],
+      "listSplineStartTangent": "                                   Tangente inicial",
+      "listSplineEndTangent": "                                   Tangente final",
+      "listLwState": [
+        [
+          "closed",
+          1,
+          {
+            "yes": "            Fechado",
+            "other": "              Abrir"
+          }
+        ]
+      ],
+      "listLwThickness": [
+        "                            Espessura ",
+        [
+          "thickness"
+        ]
+      ],
+      "listLwConstantWidth": [
+        "    Largura constante      ",
+        [
+          "width"
+        ]
+      ],
+      "listLwArea": [
+        "              área   ",
+        [
+          "area"
+        ]
+      ],
+      "listLwLength": [
+        "            comprimento   ",
+        [
+          "length"
+        ]
+      ],
+      "listLwPerimeter": [
+        "         perímetro   ",
+        [
+          "length"
+        ]
+      ],
+      "listLwPoint": [
+        "          no ponto  X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listStartingWidth": [
+        "   largura inicial    ",
+        [
+          "width"
+        ]
+      ],
+      "listEndingWidth": [
+        "     largura final    ",
+        [
+          "width"
+        ]
+      ],
+      "listBulge": [
+        "            volume    ",
+        [
+          "bulge"
+        ]
+      ],
+      "listLwCenter": [
+        "            centro  X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listVertexCenter": [
+        "            centro X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listPolylineStartAngle": [
+        "    ângulo inicial    ",
+        [
+          "angle"
+        ]
+      ],
+      "listPolylineEndAngle": [
+        "      ângulo final    ",
+        [
+          "angle"
+        ]
+      ],
+      "listPolylineState": [
+        [
+          "state",
+          1,
+          {
+            "open": "              Abrir",
+            "closed": "            Fechado",
+            "openSpline": "             Abrir spline",
+            "closedSpline": "            Fechado spline",
+            "openSpace": "             Abrir espaço",
+            "closedSpace": "            Fechado espaço",
+            "openSplineSpace": "             Abrir spline espaço",
+            "other": "            Fechado spline espaço"
+          }
+        ]
+      ],
+      "listPolylinePerimeter": [
+        "         perímetro   ",
+        [
+          "length"
+        ]
+      ],
+      "listVertexPoint": [
+        "                em ponto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listVertex3dPoint": [
+        "                em ponto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listVertexSpace": "            Espaço",
+      "listVertexCurveFit": "                   (Inserido pelo ajuste de curva)",
+      "listVertexSplineFit": "                   (Inserido pelo ajuste de spline)",
+      "listVertexControl": "                   (Ponto de controle de spline)",
+      "listTextStyle": [
+        "             Estilo = \"",
+        [
+          "style"
+        ],
+        "\""
+      ],
+      "listTextAnnotative": "                 Anotativo: Não",
+      "listTypeface": [
+        "             Estilo da fonte = ",
+        [
+          "font"
+        ]
+      ],
+      "listTextPoint": [
+        "            para o pon",
+        [
+          "point"
+        ],
+        ", X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listJustifyPoint": [
+        [
+          "justify",
+          1,
+          {
+            "start": "início no",
+            "center": "centro",
+            "end": "fim",
+            "mid": "meio",
+            "topLeft": "superior/esquerdo",
+            "topCenter": "superior/centro",
+            "topRight": "superior/direito",
+            "midLeft": "meio/esquerdo",
+            "midRight": "meio/direito",
+            "bottomLeft": "inferior/esquerdo",
+            "bottomCenter": "inferior/centro",
+            "other": "inferior/direito"
+          }
+        ]
+      ],
+      "listTextHeight": [
+        "            altura    ",
+        [
+          "height"
+        ]
+      ],
+      "listTextValue": [
+        "             texto ",
+        [
+          "text"
+        ]
+      ],
+      "listTextRotation": [
+        "           rotação ângulo      ",
+        [
+          "angle"
+        ]
+      ],
+      "listTextWidth": [
+        "           largura fator de escala    ",
+        [
+          "factor"
+        ]
+      ],
+      "listTextOblique": [
+        "        inclinação ângulo      ",
+        [
+          "angle"
+        ]
+      ],
+      "listTextGeneration": "           geração normal",
+      "listAttributeDefault": [
+        "            padrão ",
+        [
+          "value"
+        ]
+      ],
+      "listAttributePrompt": [
+        "            prompt ",
+        [
+          "prompt"
+        ]
+      ],
+      "listAttributeTag": [
+        "     identificador ",
+        [
+          "tag"
+        ]
+      ],
+      "listAttributeValue": [
+        "             valor ",
+        [
+          "value"
+        ]
+      ],
+      "listAttributeFlags": [
+        "     sinalizadores ",
+        [
+          "normal",
+          1,
+          {
+            "yes": "normal",
+            "other": [
+              [
+                "invisible",
+                1,
+                {
+                  "yes": "invisível  ",
+                  "other": ""
+                }
+              ],
+              [
+                "constant",
+                1,
+                {
+                  "yes": "constante  ",
+                  "other": ""
+                }
+              ],
+              [
+                "verify",
+                1,
+                {
+                  "yes": "verificar  ",
+                  "other": ""
+                }
+              ],
+              [
+                "preset",
+                1,
+                {
+                  "yes": "predefinido",
+                  "other": ""
+                }
+              ]
+            ]
+          }
+        ]
+      ],
+      "listMtextLocation": [
+        "Localização:      X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listMtextWidth": [
+        "Largura:             ",
+        [
+          "width"
+        ]
+      ],
+      "listMtextNormal": [
+        "Normal:           X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listMtextRotation": [
+        "Rotação:                 ",
+        [
+          "angle"
+        ]
+      ],
+      "listMtextHeight": [
+        "Altura do texto      ",
+        [
+          "height"
+        ]
+      ],
+      "listMtextSpacing": [
+        "Espaçamento da linha:    ",
+        [
+          "style",
+          1,
+          {
+            "exactly": "Exatamente",
+            "other": "Múltiplo"
+          }
+        ],
+        " (",
+        [
+          "factor"
+        ],
+        "x = ",
+        [
+          "distance"
+        ],
+        ")"
+      ],
+      "listMtextAttachment": [
+        "Anexo:            ",
+        [
+          "attachment",
+          1,
+          {
+            "tl": "SuperiorEsquerda",
+            "tc": "SuperiorCentral",
+            "tr": "SuperiorDireita",
+            "ml": "MeioEsquerda",
+            "mc": "MeioCentral",
+            "mr": "MeioDireita",
+            "bl": "InferiorEsquerda",
+            "bc": "InferiorCentral",
+            "other": "InferiorDireita"
+          }
+        ]
+      ],
+      "listMtextFlow": "Direção do fluxo: PorEstilo",
+      "listMtextContents": [
+        "Conteúdo:         ",
+        [
+          "contents"
+        ]
+      ],
+      "listDimensionAssociative": "associativa: não",
+      "listDimensionType": [
+        "tipo: ",
+        [
+          "type",
+          1,
+          {
+            "horizontal": "horizontal",
+            "vertical": "vertical",
+            "rotated": "rotacionado",
+            "aligned": "alinhado",
+            "arc": "arco",
+            "radial": "radial",
+            "diameter": "diâmetro",
+            "other": "<linear, não paralelo ao UCS>"
+          }
+        ]
+      ],
+      "listDimensionRotation": [
+        " rotação:     ",
+        [
+          "angle"
+        ]
+      ],
+      "listDimensionFirstExtension": [
+        "1a. extensão   ponto de definição: X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionSecondExtension": [
+        "2a. extensão   ponto de definição: X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionLine": [
+        "linha de cota ponto de definição: X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionArcFirst": [
+        "1a. extensão   ponto de definição: X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionArcSecond": [
+        "2a. extensão   ponto de definição: X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionArcCenter": [
+        "centro do arco ponto de definição: X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionArc": [
+        "arco da cota   ponto de definição: X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionRadialCenter": [
+        "ponto de definição do centro: X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionDefiningPoint": [
+        "ponto de definição:        X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionFarPoint": [
+        "       ponto de definição: X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionTextAngle": [
+        "ângulo do texto:     ",
+        [
+          "angle"
+        ]
+      ],
+      "listDimensionTextPosition": [
+        [
+          "user",
+          1,
+          {
+            "yes": "especificado pelo usuário",
+            "other": "padrão"
+          }
+        ],
+        " posição do texto: X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listDimensionDefaultText": "texto padrão",
+      "listDimensionTextModifier": [
+        "modificador do texto de cota: ",
+        [
+          "text"
+        ]
+      ],
+      "listDimensionStyle": [
+        "estilo de cota: \"",
+        [
+          "style"
+        ],
+        "\""
+      ],
+      "listDimensionOverrides": "substituições de estilo de cota:\n DIMUPT      Ativado",
+      "listDimensionAnnotative": "Anotativo: Não",
+      "listHatchPattern": [
+        "                 Padrão de hachura ",
+        [
+          "pattern"
+        ]
+      ],
+      "listHatchAnnotative": "                 Anotativo: Não",
+      "listHatchScale": [
+        "                 Escala de hachura    ",
+        [
+          "scale"
+        ]
+      ],
+      "listHatchAngle": [
+        "                 Ângulo de hachura    ",
+        [
+          "angle"
+        ]
+      ],
+      "listHatchNotAssociative": "                 Não associativo",
+      "listHatchArea": [
+        "                 Área      ",
+        [
+          "area"
+        ]
+      ],
+      "listHatchOrigin": [
+        "                 Origem    X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listInsertName": [
+        "    Nome do bloco: \"",
+        [
+          "name"
+        ],
+        "\""
+      ],
+      "listInsertPoint": [
+        "                em ponto, X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listInsertScaleX": [
+        "Fator de escala X:    ",
+        [
+          "scale"
+        ]
+      ],
+      "listInsertScaleY": [
+        "Fator de escala Y:    ",
+        [
+          "scale"
+        ]
+      ],
+      "listInsertScaleZ": [
+        "Fator de escala Z:    ",
+        [
+          "scale"
+        ]
+      ],
+      "listInsertRotation": [
+        "ângulo de rotação:     ",
+        [
+          "angle"
+        ]
+      ],
+      "listInsertUnits": [
+        "      InsUnidades: ",
+        [
+          "unit",
+          1,
+          {
+            "cm": "Centímetros",
+            "m": "Metros",
+            "other": "Milímetros"
+          }
+        ]
+      ],
+      "listInsertConversion": [
+        "Conversão de unidade:    ",
+        [
+          "factor"
+        ]
+      ],
+      "listInsertUniform": "  Escala uniforme: Não",
+      "listInsertExploding": "Permitir explosão: Sim",
+      "listArrayType": [
+        "  Tipo de matriz:  ",
+        [
+          "kind",
+          1,
+          {
+            "rectangular": "Retangular",
+            "polar": "    Polar",
+            "other": "  Caminho"
+          }
+        ]
+      ],
+      "listArrayBasePoint": [
+        "      Ponto base:  X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listArrayCenter": [
+        "   Ponto central:  X=",
+        [
+          "x"
+        ],
+        "  Y=",
+        [
+          "y"
+        ],
+        "  Z=",
+        [
+          "z"
+        ]
+      ],
+      "listArrayColumns": [
+        "                Número de colunas:          ",
+        [
+          "count"
+        ]
+      ],
+      "listArrayColumnSpacing": [
+        "        Espaçamento entre colunas:     ",
+        [
+          "spacing"
+        ]
+      ],
+      "listArrayRows": [
+        "                 Número de linhas:          ",
+        [
+          "count"
+        ]
+      ],
+      "listArrayRowSpacing": [
+        "         Espaçamento entre linhas:     ",
+        [
+          "spacing"
+        ]
+      ],
+      "listArrayRowElevation": [
+        "  Incremento de elevação de linha:     ",
+        [
+          "spacing"
+        ]
+      ],
+      "listArrayLevels": [
+        "                 Número de níveis:          ",
+        [
+          "count"
+        ]
+      ],
+      "listArrayLevelSpacing": [
+        "         Espaçamento entre níveis:     ",
+        [
+          "spacing"
+        ]
+      ],
+      "listArrayAxisAngle": [
+        "           Ângulo do eixo incluso:         ",
+        [
+          "angle"
+        ]
+      ],
+      "listArrayRadius": [
+        "                             Raio:    ",
+        [
+          "radius"
+        ]
+      ],
+      "listArrayItems": [
+        "                  Número de itens:         ",
+        [
+          "count"
+        ]
+      ],
+      "listArrayAngleBetween": [
+        "               Ângulo entre itens:         ",
+        [
+          "angle"
+        ]
+      ],
+      "listArrayFillAngle": [
+        "          Ângulo de preenchimento:        ",
+        [
+          "angle"
+        ]
+      ],
+      "listArrayItemSpacing": [
+        "          Espaçamento entre itens:     ",
+        [
+          "spacing"
+        ]
+      ],
+      "listArrayStartOffset": [
+        "             Deslocamento inicial:     ",
+        [
+          "spacing"
+        ]
+      ],
+      "listArrayEndOffset": [
+        "               Deslocamento final:     ",
+        [
+          "spacing"
+        ]
+      ],
+      "listArrayDirection": [
+        "                          Direção:  ",
+        [
+          "direction",
+          1,
+          {
+            "clockwise": "       CW",
+            "other": "      CCW"
+          }
+        ]
+      ],
+      "listArrayRotate": [
+        "               Rotacionar objetos:  ",
+        [
+          "answer",
+          1,
+          {
+            "yes": "      Sim",
+            "other": "      Não"
+          }
+        ]
+      ],
+      "listArrayMethod": [
+        "          Método:  ",
+        [
+          "method",
+          1,
+          {
+            "measure": "    Medir",
+            "other": "  Dividir"
+          }
+        ]
+      ],
+      "listArrayAlign": [
+        "                    Alinhar itens:  ",
+        [
+          "answer",
+          1,
+          {
+            "yes": "      Sim",
+            "other": "      Não"
+          }
+        ]
+      ]
+    },
+    "feedback": {
+      "snap": {
+        "endpoint": "Ponto final",
+        "midpoint": "Meio",
+        "center": "Centro",
+        "intersection": "Intersecção",
+        "apparentIntersection": "Intersecção aparente",
+        "perpendicular": "Perpendicular",
+        "tangent": "Tangente",
+        "insertion": "Inserção",
+        "extension": "Extensão",
+        "parallel": "Paralela",
+        "quadrant": "Quadrante",
+        "nearest": "Mais próximo"
+      },
+      "deferredTangent": "Tangente adiado",
+      "deferredPerpendicular": "Perpendicular adiado",
+      "polar": [
+        "Polar: ",
+        [
+          "distance"
+        ],
+        [
+          "unit"
+        ],
+        " < ",
+        [
+          "angle"
+        ],
+        "°"
+      ],
+      "polarZ": [
+        "Polar: ",
+        [
+          "distance"
+        ],
+        [
+          "unit"
+        ],
+        " < ",
+        [
+          "axis"
+        ]
+      ],
+      "zPositive": "+Z",
+      "zNegative": "-Z",
+      "ucsIconX": "X",
+      "ucsIconY": "Y",
+      "ucsIconZ": "Z",
+      "measureDistance": [
+        "Dist  ",
+        [
+          "value"
+        ],
+        " ",
+        [
+          "unit"
+        ]
+      ],
+      "measureAngle": [
+        "Âng   ",
+        [
+          "value"
+        ],
+        "°"
+      ],
+      "measureDeltaX": [
+        "ΔX    ",
+        [
+          "value"
+        ]
+      ],
+      "measureDeltaY": [
+        "ΔY    ",
+        [
+          "value"
+        ]
+      ],
+      "measureDeltaZ": [
+        "ΔZ    ",
+        [
+          "value"
+        ]
+      ],
+      "measureArea": [
+        "Área  ",
+        [
+          "value"
+        ],
+        " ",
+        [
+          "unit"
+        ],
+        "²"
+      ],
+      "measurePerimeter": [
+        "Perím ",
+        [
+          "value"
+        ],
+        " ",
+        [
+          "unit"
+        ]
+      ]
+    },
+    "keywordLabels": {
+      "CIRCLE": {
+        "Ttr": "Ttr (tan tan raio)"
+      },
+      "TRIM": {
+        "cuTting": "Arestas de corte",
+        "Noextend": "Não estender"
+      },
+      "EXTEND": {
+        "Boundary": "Arestas de limite",
+        "Noextend": "Não estender"
+      },
+      "POLYGON": {
+        "Inscribed": "Inscrito no círculo",
+        "Circumscribed": "Circunscrito sobre o círculo"
+      },
+      "CIRCLED": {
+        "Ttr": "Ttr (tan tan raio)"
+      },
+      "PLINE": {
+        "Halfwidth": "Meialargura",
+        "Second pt": "Segundo pto"
+      },
+      "DIST": {
+        "Multiple": "Múltiplos pontos",
+        "Second pt": "Segundo pto"
+      },
+      "RECTANG": {
+        "Pick": "SElecionar pontos"
+      },
+      "AREA": {
+        "Add": "Adicionar área",
+        "Subtract": "Subtrair área"
+      },
+      "MTEXT": {
+        "Line spacing": "Espaçamento de linha",
+        "At least": "Pelo menos"
+      },
+      "TEXT": {
+        "TL": "TL",
+        "TC": "TC",
+        "TR": "TR",
+        "ML": "ML",
+        "MC": "MC",
+        "MR": "MR",
+        "BL": "BL",
+        "BC": "BC",
+        "BR": "BR"
+      },
+      "ATTDEF": {
+        "TL": "TL",
+        "TC": "TC",
+        "TR": "TR",
+        "ML": "ML",
+        "MC": "MC",
+        "MR": "MR",
+        "BL": "BL",
+        "BC": "BC",
+        "BR": "BR",
+        "Lock position": "Bloquear posição"
+      },
+      "ATTDISP": {
+        "OFF": "Desativado"
+      },
+      "SNAP": {
+        "OFF": "Desativado"
+      },
+      "FILL": {
+        "OFF": "Desativado"
+      },
+      "UNDO": {
+        "OFF": "Desativado"
+      },
+      "ARC": {
+        "Center": "Centro"
+      },
+      "ARCSCE": {
+        "Center": "Centro"
+      },
+      "ELLIPSE": {
+        "Included angle": "ângulo Interno"
+      },
+      "ELLIPSEC": {
+        "Included angle": "ângulo Interno"
+      },
+      "ELLIPSEARC": {
+        "Included angle": "ângulo Interno"
+      },
+      "PLAN": {
+        "Current ucs": "ucs Atual"
+      },
+      "SPLINE": {
+        "Square root": "Raiz quadrada",
+        "start Tangency": "Tangência inicial",
+        "end Tangency": "Tangência final"
+      },
+      "SPLINEDIT": {
+        "Fit data": "AJustar dados",
+        "Edit vertex": "Editar vértice",
+        "convert to Polyline": "converter para Polilinha",
+        "Reverse": "Reverter",
+        "eXit": "saIr",
+        "Elevate order": "Ordem de elevação",
+        "Select point": "SElecionar ponto",
+        "System default": "Padrão do sistema"
+      },
+      "PEDIT": {
+        "Edit vertex": "Editar vértice",
+        "Ltype gen": "gerar Tipolinha",
+        "OFF": "Desativado",
+        "Jointype": "Tipo de união",
+        "Spline curve": "Spline"
+      },
+      "HATCH": {
+        "Select objects": "Selecionar objetos"
+      },
+      "BREAK": {
+        "First point": "Primeiro ponto"
+      },
+      "ARRAYRECT": {
+        "Unit cell": "célula unitária"
+      },
+      "ARRAYPOLAR": {
+        "Angle between": "Ângulo intermediário",
+        "Fill angle": "ângulo de Preenchimento",
+        "ROTate items": "ROTacionar itens"
+      },
+      "ARRAYPATH": {
+        "Align items": "Alinhar itens",
+        "Fill entire path": "Preencha o caminho inteiro"
+      },
+      "OFFSET": {
+        "Through": "Através"
+      }
+    },
+    "listing": {
+      "dimVariable": [
+        [
+          "name"
+        ],
+        [
+          "value"
+        ],
+        [
+          "description"
+        ]
+      ],
+      "dimVariableOn": "Ativado",
+      "dimVariableOff": "Desativado",
+      "dimVariableDescription": {
+        "DIMSTYLE": "Estilo de cota atual (somente leitura)",
+        "DIMADEC": "Casas decimais angulares",
+        "DIMASZ": "Tamanho da seta",
+        "DIMCEN": "Tamanho da marca de centro",
+        "DIMDEC": "Casas decimais",
+        "DIMDLI": "Espaçamento da linha de cota",
+        "DIMDSEP": "Separador decimal",
+        "DIMEXE": "Extensão acima da linha de cota",
+        "DIMEXO": "Deslocamento da linha de extensão de origem",
+        "DIMGAP": "Distância entre a linha de cota e o texto",
+        "DIMSCALE": "Fator de escala global",
+        "DIMTOFL": "Forçar a linha para dentro das linhas de extensão",
+        "DIMTXT": "Altura do texto",
+        "DIMZIN": "Supressão de zero"
+      },
+      "hatchPattern": [
+        [
+          "name"
+        ],
+        " - ",
+        [
+          "description"
+        ]
+      ],
+      "hatchPatternDescription": {
+        "SOLID": " Preenchimento sólido",
+        "ANGLE": "Aço inclinado",
+        "ANSI31": " Ferro, Tijolo, Construção de pedra  ANSI",
+        "ANSI32": "Aço ANSI",
+        "ANSI33": "Bronze, Latão, Cobre ANSI",
+        "ANSI34": "Plástico, Borracha ANSI",
+        "ANSI35": "Tijolo isolante, Material refratário ANSI",
+        "ANSI36": "Mármore, Ardósia, Vidro ANSI ",
+        "ANSI37": "Chumbo, Zinco, Magnésio, Isolamento acústico/térmico/elétrico ANSI",
+        "ANSI38": "Alumínio ANSI",
+        "LINE": "Linhas paralelas horizontais",
+        "NET": "Grade horizontal / vertical",
+        "NET3": "Padrão de rede 0-60-120",
+        "DASH": "Linhas tracejadas",
+        "SQUARE": " Pequenos quadrados alinhados",
+        "STEEL": "Aço",
+        "BRICK": "Superfície de tijolo ou pedra",
+        "CROSS": "Uma série de cruzes",
+        "ZIGZAG": "Efeito de escada",
+        "HONEY": "Padrão de favo de mel",
+        "EARTH": "Terra ou solo (subterrâneo)",
+        "DOTS": "Uma série de pontos",
+        "AR-SAND": " padrão de pontos aleatórios",
+        "AR-CONC": " padrão aleatório de pontos e pedras"
+      }
+    },
+    "defaults": {
+      "layer": [
+        "Camada",
+        [
+          "n"
+        ]
+      ],
+      "textStyle": [
+        "estilo",
+        [
+          "n"
+        ]
+      ],
+      "copyOf": [
+        "Cópia de ",
+        [
+          "name"
+        ]
+      ],
+      "fileName": [
+        "desenho-",
+        [
+          "date"
+        ]
+      ]
+    }
   }
 }

@@ -1,6 +1,6 @@
 # Draw
 
-### `LINE` / `L` · es `LINEA` / `L`
+### `LINE` / `L` · es `LINEA` / `L` · pt-BR `LINHA` / `L`
 
 **Implemented:** `LINE Specify first point:` (es `LINEA Precise primer punto:`), then
 `Specify next point or [Undo]:` from it on — its Undo takes that point back — and `[Close/Undo]`
@@ -42,7 +42,7 @@ at the first point)
 Perpendiculars; a pick whose object snap lands on the point before is skipped as a double click is
 (**unverified**: the console draws a zero-length line for an APP or PER typed there, line/p32)
 
-### `PLINE` / `PL` · es `POL` / `PL`†
+### `PLINE` / `PL` · es `POL` / `PL`† · pt-BR `PLINHA` / `PL`
 
 **Implemented:** `Specify start point:`, `Current line-width is 0.0000` (at the drawing's
 precision), `Specify next point or [Arc/Close/Halfwidth/Length/Undo/Width]:` (Close once a segment
@@ -138,7 +138,7 @@ it on one, modify.md), and a linetype's dashes along a wide band (drawn solid); 
 arc segment lays a linetype (from its start here), and a wide band's outline with FILL off, whose
 lineweight the plot draws (p231) and the screen here does not
 
-### `RECTANG` / `REC` / `RECTANGLE` · es `RECTANG` / `REC` / `RECTANGLE`
+### `RECTANG` / `REC` / `RECTANGLE` · es `RECTANG` / `REC` / `RECTANGLE` · pt-BR `RETANGULO` / `RET`
 
 **Implemented:** `Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]:` (es
 `Precise primer punto de esquina o [Chaflán/Elevación/eMpalme/Alt-objeto/Grosor]`) and
@@ -205,7 +205,7 @@ vertices but the first are NaN, p114); after a refusal at Rotation's prompt the 
 prompt again (the getangle's message is empty; p116, p135), asked again in full here
 (**unverified** on the desktop; RECTANG-D63)
 
-### `POLYGON` / `POL` · es `POLIGONO` / `PG`
+### `POLYGON` / `POL` · es `POLIGONO` / `PG` · pt-BR `POLIGONO` / `POL`
 
 **Implemented:** `Enter number of sides <4>:` (es `Indique número de lados <4>:`), a count outside
 3–1024 or not written as an integer (`3.5`, `3.0`, `1e1`; `+5` taken) refused with
@@ -250,7 +250,7 @@ Spanish (p108)
 where AutoCAD turns it by SNAPANG, p105); `<angle` then a distance at
 Edge's end is unprobed on the desktop (RECTANG-D65)
 
-### `CIRCLE` / `C` · es `CIRCULO` / `C`
+### `CIRCLE` / `C` · es `CIRCULO` / `C` · pt-BR `CIRCULO` / `CI`
 
 **Implemented:** `Specify center point for circle or [3P/2P/Ttr (tan tan radius)]:`,
 `Specify radius of circle or [Diameter] <10.0000>:` and `Specify diameter of circle <20.0000>:` with
@@ -339,7 +339,7 @@ at its end; here the point nearest the cursor), the marker at 2P's Perpendicular
 from LASTPOINT; **unverified**, none here), the rail's Tan, Tan, Tan entry
 (`_circle _3p _tan \_tan \_tan \`; typed it works)
 
-### `ARC` / `A` · es `ARCO` / `A`
+### `ARC` / `A` · es `ARCO` / `A` · pt-BR `ARCO` / `A`
 
 **Implemented:** `Specify start point of arc or [Center]:` — Center asks
 `Specify center point of arc:` then `Specify start point of arc:` — then
@@ -393,7 +393,7 @@ polyline or an arc drawn ends ARC (AutoCAD asks the end of an arc tangent from i
 the included-angle box dynamic input shows at a centre mode's end, and its Down list's Angle and
 chord Length (desktop d05); Polar at ARC's prompts (**unverified**: assumed to follow Ortho's base)
 
-### `ELLIPSE` / `EL` · es `ELIPSE` / `EL`†
+### `ELLIPSE` / `EL` · es `ELIPSE` / `EL`† · pt-BR `ELIPSE` / `EL`
 
 **Implemented:** `Specify axis endpoint of ellipse or [Arc/Center]:` (es
 `Precise punto final de eje de elipse o [Arco/Centro]:`), `Specify other endpoint of axis:`,
@@ -482,7 +482,7 @@ mirrored ellipse's normal (modify.md, MIRROR); a point with a Z at the distance,
 angle (**unverified**: unprobed, so the angle override every prompt with a base point has); Spanish
 from the 2027 Spanish language pack's string table, paired with the English by id
 
-### `SPLINE` / `SPL` · es `SPLINE` / `SPL`
+### `SPLINE` / `SPL` · es `SPLINE` / `SPL` · pt-BR `SPLINE` / `SPL`
 
 **Implemented:** `Current settings: Method=Fit   Knots=Chord` (es
 `Parámetros actuales: Método=Ajustar Nudos=Cuerda`; CV `Method=CV   Degree=3`, es
@@ -625,7 +625,7 @@ HATCH / DIM on a spline or against one (OFFSET, FILLET, JOIN: modify.md); Geomet
 spline's, p311: 10,10 and 40,10; none on an open one, p310, p312), Perpendicular and Tangent on a
 spline (p313, p315, p316) (SPLINE-D51); PEDIT Spline, BLEND
 
-### `3DPOLY` / `3P` · es `3DPOL` / `3P`
+### `3DPOLY` / `3P` · es `3DPOL` / `3P` · pt-BR `POLI3D` / `P3`
 
 **Implemented:** a 3D polyline — straight segments through points each at its own Z, a model type
 of its own (DXF POLYLINE, flag 8: its vertices are world points, with no plane, elevation or
@@ -661,7 +661,7 @@ interface word every language's catalog owes), and editing it there; trimming an
 one (pieces/p353), one as a hatch boundary or ARRAYPATH's path, the 3D Visualization group's
 Material row (desktop d02), and the grips' hover menus (Stretch / Add / Remove Vertex, unprobed)
 
-### `TEXT` / `DTEXT` / `DT` / `-TEXT` · es `TEXTO` / `T` / `TEXTODIN` / `-TEXTO`
+### `TEXT` / `DTEXT` / `DT` / `-TEXT` · es `TEXTO` / `T` / `TEXTODIN` / `-TEXTO` · pt-BR `TEXTO` / `ETE` / `ETEXTO` / `-TEXTO`
 
 **Implemented:** single-line text, 13 justifications, text styles table, as AutoCAD 2027's console
 asks it (text/p101, p103, p106): `Current text style:  "Standard"  Text height:  2.5000
@@ -724,7 +724,7 @@ Obliquing, Upside down and Backward rows (desktop d04-1; not modelled), picking 
 (AutoCAD's click inside the box but off the glyphs selects nothing, desktop d06-3; here the box is
 the hit area: Arial's outlines cannot ship and the bundled faces' differ)
 
-### `MTEXT` / `T` / `MT` / `-MTEXT` / `-T` · es `TEXTOM` / `TXM` / `MTEXT` / `-TEXTOM` / `-TXM`
+### `MTEXT` / `T` / `MT` / `-MTEXT` / `-T` · es `TEXTOM` / `TXM` / `MTEXT` / `-TEXTOM` / `-TXM` · pt-BR `TEXTOM` / `T` / `TXM` / `-TEXTOM` / `-T`
 
 **Implemented:** two corners or Width; as AutoCAD 2027's console asks it (text/p202, p213):
 `Current text style:  "Standard"  Text height:  2.5  Annotative:  No`, `Specify first corner:`
@@ -803,7 +803,7 @@ and Text frame rows (desktop d04-2), picking by the strokes (TEXT's), `?`'s 2027
 `Enter style name(s) to list <*>:` and its own listing (p225; here TEXT's: MTEXT's table words it
 `Style name: … Font files: …`), a preselection at MTEXT (the console hangs, p145)
 
-### `HATCH` / `H` / `BH` / `BHATCH`, `-HATCH` / `-H` / `-BH` / `-BHATCH` · es `SOMBREA` / `SB` / `SMB` / `-SMB`, `-SOMBREA`
+### `HATCH` / `H` / `BH` / `BHATCH`, `-HATCH` / `-H` / `-BH` / `-BHATCH` · es `SOMBREA` / `SB` / `SMB` / `-SMB`, `-SOMBREA` · pt-BR `HACHURA` / `HC`, `-HACHURA` / `-H`
 
 **Implemented:** both names run one tool asking -HATCH's command line, headed and echoed by the
 name typed (`-SMB` is SOMBREA, acad.pgp; p200–p202, p255; WHY HATCH asks -HATCH's prompts: the
@@ -917,7 +917,7 @@ the palette's Spacing, ISO pen width, Double and Background color rows (greyed f
 pattern); a double-click, which in AutoCAD opens the Hatch Editor tab and Quick Properties
 (d08-2): HATCHEDIT/HE, the Hatch Editor and Quick Properties
 
-### `BLOCK` / `B` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOCK` / `-B` · es `BLOQUE` / `BQ` / `MODBLQ` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOQUE` / `-BQ`
+### `BLOCK` / `B` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOCK` / `-B` · es `BLOQUE` / `BQ` / `MODBLQ` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOQUE` / `-BQ` · pt-BR `BLOCO` / `CB` / `ACADBLOCKDIALOG` / `CRIARB` / `DEFB`, `-BLOCO` / `-CB`
 
 **Implemented:** -BLOCK's command line, which BLOCK asks too (p151, p152; aliases from the 2027
 `acad.pgp`): `Current settings: Object conversion=Convert` (es `Parámetros actuales: conversión de
@@ -954,7 +954,7 @@ desktop d09); here they stay where they were, a deviation (BLOCKS-D14): copying 
 the user's geometry is no muscle memory. ByBlock: an object drawn ByBlock inside a block takes the
 reference's colour, linetype or lineweight in AutoCAD; it is not modelled here (`cad-engine.md`)
 
-### `INSERT` / `I`, `-INSERT` / `-I` · es `INSERT` / `IN`, `-INSERT` / `-IN`
+### `INSERT` / `I`, `-INSERT` / `-I` · es `INSERT` / `IN`, `-INSERT` / `-IN` · pt-BR `INSERIR` / `I` / `INSERIRURL` / `INSERIRD`, `-INSERIR` / `-I`
 
 **Implemented:** INSERT opens the Blocks palette, as 2027's does, and writes nothing more (the
 console's `*Insert a block from the Blocks palette` is the console's, p05; desktop d06); the rail's
@@ -1020,7 +1020,7 @@ drawing (AutoCAD searches for a drawing file, `"FOO.dwg": Can't find file in sea
 and REpeat at the point; inserting an external drawing + INSUNITS; ATTDIA 1 (the Edit Attributes
 dialog at insertion); ATTREQ 0
 
-### `ATTDEF` / `ATT` / `DDATTDEF` / `-ATTDEF` / `-ATT` · es `ATRDEF` / `AT` / `-ATRDEF` / `-AT`
+### `ATTDEF` / `ATT` / `DDATTDEF` / `-ATTDEF` / `-ATT` · es `ATRDEF` / `AT` / `-ATRDEF` / `-AT` · pt-BR `DEFATRIB` / `DA` / `DEFATR` / `DEFATRIBD` / `-DEFATRIB` / `-DA` / `-DEFATR`
 
 **Implemented:** -ATTDEF's command-line sequence for every name (ATTDEF's dialog is not built, as
 BLOCK's is not; aliases from the 2027 `acad.pgp`, p300, p301): the modes line on two lines, as
@@ -1062,7 +1062,7 @@ nor Multiple lines' `Next line or <done>:` and `Specify location of multiline at
 fields, Align/Fit (as TEXT), `?`'s `Enter text style(s) to list <*>:` and its pages (as TEXT,
 p325), the Attribute Definition dialog
 
-### `ATTEDIT` / `ATE` / `DDATTE` / `EATTEDIT` · es `ATREDIT` / `ATR` / `DDATTE` / `EDITATR`
+### `ATTEDIT` / `ATE` / `DDATTE` / `EATTEDIT` · es `ATREDIT` / `ATR` / `DDATTE` / `EDITATR` · pt-BR `EDITARATRIB` / `EAT` / `EATRIBD` / `EDITARATRIBA`
 
 **Implemented:** ATTEDIT asks `Select block reference:` (es `Designe referencia a bloque:`) and
 EATTEDIT `Select a block:` (es `Designe un bloque:`), words of atteditRes.dll (1) and
@@ -1085,7 +1085,7 @@ and Ctrl+double-click; the dialogs' other parts: Edit Attributes' Previous, Next
 EATTEDIT's Text Options and Properties tabs and Select Block button; an unlocked attribute's own
 grip on a reference (desktop d02-1); attribute rows editable in the Properties palette
 
-### `ATTDISP` · es `ATRVIS`
+### `ATTDISP` · es `ATRVIS` · pt-BR `VISATRIB`
 
 **Implemented:** `Enter attribute visibility setting [Normal/ON/OFF] <Normal>:` (the current one; es
 `Indique parámetro de visibilidad de atributo [Normal/ACT/DES]`), `Invalid option keyword.` for

@@ -5,7 +5,8 @@ description: Establish how AutoCAD behaves and words something before building o
 
 # Researching AutoCAD
 
-The AutoCAD installed is **2027** (R26.0) on Windows, in Spanish with the English language pack too; every
+The AutoCAD installed is **2027** (R26.0) on Windows, in Spanish with the English and Brazilian Portuguese
+language packs too; every
 tool runs from WSL through interop. Pick the source by the question:
 
 | Question                                                                        | Source                      | Read       |
@@ -50,8 +51,12 @@ says where each lives inside). **An update rewords prompts**: 2027.1 turned DIMA
 (`extremidade` into `ponto final`), so a table from the release's language pack alone is not the
 current product; the update's Spanish is the installed one byte for byte. After an AutoCAD update,
 move the tables to `previous/` and extract them again (the script will not overwrite a table that
-changed; skill `language-review`). The installed language packs are English and Spanish;
-installing another on the owner's AutoCAD is asked first. AutoCAD has none for Arabic.
+changed; skill `language-review`). The installed language packs are English, Spanish and Brazilian
+Portuguese; installing another on the owner's AutoCAD is asked first. It installs from WSL: the
+pack's `.exe` with `-q`, run elevated (`Start-Process -Verb RunAs`, the owner accepts UAC), then the
+current update's `.exe` with `-q` again, since a pack installed after an update is the release
+build (Autodesk: pack, then update); `pt-BR/acadres.dll`'s FileVersion says which. AutoCAD has none
+for Arabic.
 The palettes' labels are in `ax24res.dll` / `ax26res.dll` and `acappres.dll`.
 
 **A language's interface** (palettes, dialogs, menus, ribbon) is in no table: pair the pack's DLLs
@@ -66,7 +71,11 @@ languages (`PopMenuRoot.cui` the shortcut menus, `RibbonRoot.cui` the ribbon's `
 `docs/i18n/pt-BR.md` cites them so.
 
 `node scripts/research/catalog-sweep.mjs` checks a catalog against the tables (skill
-`command-review`). `node scripts/research/propose-commands.mjs --lang <tag>` proposes a new
+`command-review`); `node scripts/research/console-pair.mjs --lang <tag>` against the console: it
+pairs each probe's transcript in the language with its `en-US` one, prompt by prompt (the trace's
+keywords too) and line by line, rewords every catalog key from what the language printed in its
+place, per command, and writes `research/console/<tag>.md`; `--select` lists the fewest probes to
+run first (`probe.sh --lang <tag> --lang-only`). `node scripts/research/propose-commands.mjs --lang <tag>` proposes a new
 language's `commands` from them, into `research/proposals/<tag>.json` with a report of every key
 beside it; what it leaves out (strings that disagree, an ICU select, a plural, no source) is
 worded by hand, and what it proposes is checked against the console like any table string.

@@ -17,7 +17,9 @@ its header says what each flag does. Set `ACCORE` to use another install. A run 
 - **Languages**: Spanish by default, the install's; any other installed pack by its culture,
   `runacc.sh probe.txt en-US` (the packs installed: SKILL.md). The same underscore-form probe runs
   in each: run it in a language and in English to pair each prompt with its translation
-  (`probe.sh --lang <tag>` does both, skill `command-review`).
+  (`probe.sh --lang <tag>` does both, skill `command-review`; `--lang-only` the language alone,
+  and `console-pair.mjs` pairs it with the English already run). A run that hangs (pt-BR's `?` at
+  UCS Restore, ucs/p235) is stopped after `ACC_TIMEOUT` seconds, the Windows process with it.
 
 ## Probes
 

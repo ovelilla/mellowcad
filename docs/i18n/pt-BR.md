@@ -2,9 +2,9 @@
 
 > **Command language:** `localized`, Brazilian Portuguese AutoCAD's. **Status:** `draft` since
 > 31/10/2026, at `/pt-br`: the site, the editor, the four "Use" pages and the engine's interface
-> are translated; the command line still speaks the global language until `commands` is written.
-> **Review:** none by a native speaker; the language pack is not installed, so what only its console
-> settles is **unverified** below.
+> are translated, and the command line speaks Brazilian Portuguese AutoCAD's language (31/10/2026,
+> in progress: "Command language", below). **Review:** none by a native speaker; what no console
+> probe settled is **unverified** below.
 
 The words are Autodesk's own Brazilian Portuguese localization of AutoCAD, never a translation of
 ours, as Spanish's are (`es.md`). The language is Brazil's, and `LANGUAGE_NAMES` says so
@@ -37,8 +37,10 @@ ours, as Spanish's are (`es.md`). The language is Brazil's, and `LANGUAGE_NAMES`
   dialog's label, `N <dll> <key>` a .NET resource, `X <uid>` an element of `acad.cuix`, `C <guid>`
   the PTB help page. They are the release build's: 2027.1 rewords prompts in `acadres` and
   `AcDimRes`, not these.
-- **Console and desktop:** not yet. The pack is not installed on the owner's AutoCAD; installing it
-  is asked of the owner before the command language is written.
+- **Console:** the pack is installed on the owner's AutoCAD since 31/10/2026, with 2027.1 applied
+  again after it (`pt-BR/acadres.dll` 26.0.116, as Spanish's); its tables are the ones
+  `open-pack.sh` extracted, byte for byte. `runacc.sh … pt-BR` and `probe.sh --lang pt-BR` run its
+  console. **Desktop:** not driven in pt-BR yet (tooltips, dynamic input, the palette's rows).
 
 ## Deviations
 
@@ -154,7 +156,7 @@ the ones an English hand types without thinking:
 | `E`   | ERASE      | ESTICAR (STRETCH); APAGAR is `APG`, and `DELETE` stays    |
 | `O`   | OFFSET     | OCULTAR (HIDE); DESLOCAMENTO has no alias                 |
 | `H`   | HATCH      | HACHLIM; HACHURA is `HC`, `-HACHURA` is `-H`              |
-| `U`   | U          | UNIAO (UNION); U's own name is not settled (unverified)   |
+| `U`   | U          | UNIAO (UNION); U is `D` (names/p02)                        |
 | `MA`  | MATCHPROP  | MATRIZ (ARRAY)                                            |
 | `AP`  | APPLOAD    | APARAR (TRIM)                                             |
 | `EX`  | EXTEND     | EXTRUSAO; ESTENDER is `EST`                               |
@@ -183,14 +185,62 @@ is an alias of CAMADA, and `COTAD` of the English `DIMSTYLE` (the file's own odd
   of 71, `promptKeywords` 5 of 17, `keywordLabels` 21 of 31. One to doubt already: `-OSNAP`'s `OFF`
   proposed as `Desativado`, where Spanish's is `DES` from the console.
 
+### How `commands` was written (31/10/2026)
+
+`cad/locales/pt-BR.json`, every key, in this order of authority:
+
+- **The console.** 430 of the reviews' probes run in pt-BR (`console-pair.mjs --select`,
+  `probe.sh --lang pt-BR --lang-only`) and paired with their en-US transcripts by
+  `console-pair.mjs`: each prompt, keyword, label and message English's console printed is
+  reworded from what pt-BR's printed in its place (`research/console/pt-BR.md`). It overruled the
+  tables wherever they disagreed (SPLINE's third point `Inserir próximo ponto ou`, the next ones
+  `Insira o próximo ponto ou`; MTEXT's justifications `SE/SC/SD/ME/MC/MD/IE/IC/ID`, not TEXT's
+  `MES`; `Selecionar objetos`, `Especificar primeiro ponto`).
+- **Names.** `(getcname "_LINE")` for every AutoCAD command (names/p01); the PTB help pages for those
+  it does not answer (`PROPIG`, `ELIMINAR`, `PALETABLOCOS`, `EDITARATRIBA`, `MATRIZRETANG`,
+  `QUEBRAREMPONTO`, `FECHARCAMADA`, `FECHARPROP`, `PROPRIEDADES`, `UNIDADES`, `VISTA`, `RETANGULO`,
+  `TEXTOM`, `LISTA`, `CUBONAV`, `ORBITA3D`); aliases from `acad.pgp`. U is `D` and FROM is `DE`, with
+  `Ponto base:` and `<Deslocamento>:` (names/p02, p03). Our own commands take the base name and the
+  initials of the ribbon's words, as Spanish: `CIRCULOD`, `CIRCULO2P`, `CIRCULO3P`, `ARCOICF`
+  (Início, Centro, Fim), `ARCOCIF`, `ELIPSEC`, `ELIPSEARCO`.
+- **The tables**, where no probe shows a key: the proposal, and the DLLs the tables do not merge
+  (`acmatchRes`, `atteditRes`, `AcEAtteditRes`, read with `strtable.mjs`); the hatch patterns'
+  descriptions from the pack's `acadiso.pat`; -DIMSTYLE's from its status listing (names/p06).
+- A snap typed at a point prompt echoes `de` or `para` (`_END` → `de`, `_PER` → `para`, line/p214).
+
+### Deviations
+
+- **Aliases left out.** `acad.pgp` makes `COTAHORIZONTAL`, `COTAVERTICAL` and `COTAROTACIONADA`
+  aliases of COTALINEAR, but each is a command's name, and the name wins (names/p02); `COTAD` points
+  at the English `DIMSTYLE`, which pt-BR reads as the system variable (names/p04).
+- **SNAP's Aspect is `ASpecto`**, as the prompt lists it and table 25920 declares it: the console's
+  `initget` declares `Ativado` and `Aspecto`, one abbreviation for two keywords, which
+  `locales.test.ts` refuses.
+- **-OSNAP's Endpoint is `pONto`** (27408): pt-BR's console takes `PON` as Node (`Ponto`), which is
+  not built here, and no typed word reaches Endpoint but `_END` (names/p07, p08).
+
+### Pending (phase 4, next sessions)
+
+- **Prompts English shares that pt-BR words per command**, one wording for now (the first named):
+  `specifyNextPointOr` (LINE `Especificar próximo ponto ou`; PLINE `Especificar o próximo ponto ou`;
+  DIST, AREA `Especifique o próximo ponto ou`), `enterAnOption` (`Inserir uma opção`; NAVVCUBE,
+  UCSICON, TEXT's justification `Insira uma opção`), `specifyBasePointOr` (MOVE, STRETCH; COPY
+  `Especificar um ponto base ou`; the arrays `Especifique o ponto base ou`), `specifyFirstCornerPointOr`
+  (RECTANG; AREA `Especificar o primeiro ponto do canto ou`), `specifyCenterPointOfArc` (ARC; PLINE's
+  arc `Especificar o centro do arco`), `selectObjectsOr` (TRIM; EXTEND also `Selecione objetos ou`),
+  `undoYes` (PEDIT `S`; UNDO's `OK? <Y>`, 26268), and a keyword spelled per prompt (SPLINEDIT's Open,
+  Add, Previous and eXit, PEDIT's Previous, UCS's Top/Back/Left at its first prompt and at
+  Orthographic). Each needs a prompt id of its own (`cad-catalogs.md`).
+- **-OSNAP's listing** prints the modes' short names (33200–33213: `Extremidade,Centro,…,Ext`),
+  not the keywords' abbreviations `OsnapTool` prints (English's coincide).
+
 ### Unverified
 
-Until the pack is installed (or for good, if the owner declines): which of several table strings a
-prompt uses (158 `several`), the capitals of an `initget` the table does not hold (`-OSNAP`), U's
-name (`C`, 21134 and 45049, or `D`, 52855), and the names the tables lack (CIRCLED, CIRCLE2P,
-CIRCLE3P, ARCSCE, ARCCSE, ELLIPSEC, ELLIPSEARC, PEDIT — `EDITARP`, 52749 —, EATTEDIT, MATCHPROP,
-FROM, DIMSTYLE, BLOCKSPALETTE, PURGE, -PURGE, LAYERCLOSE, PROPERTIES, PROPERTIESCLOSE, 3DORBIT,
-NAVVCUBE, UNITS, AUPREC), from the PTB help where it names them.
+What no probe showed, worded from the tables or in Autodesk's style: every key
+`research/console/pt-BR.md` reports `unseen` or `unpaired` (regenerate it with `console-pair.mjs
+--lang pt-BR`), above all the dynamic-input labels (`Centro`, `Raio`, `Primeiro ponto`…), the
+tooltips (`Polar:`, MEASUREGEOM's `Dist`, `Âng`, `Área`, `Perím`), our own messages (files,
+clipboard, FROM) and the keywords and labels no probe's trace showed, taken from the tables.
 
 ## Script and font
 

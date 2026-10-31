@@ -13,7 +13,12 @@ node scripts/research/catalog-sweep.mjs                           # every key of
 node scripts/research/catalog-sweep.mjs --lang pt-BR              # another language's catalog
 node scripts/research/catalog-sweep.mjs --from cad/application/tools/LineTool.ts  # a command's keys
 node scripts/research/catalog-sweep.mjs --interface               # the interface too
+node scripts/research/console-pair.mjs --lang pt-BR               # the catalog against the console
 ```
+
+The sweep reads the tables; `console-pair.mjs` the console, from the transcripts the reviews'
+probes left in both languages: a key it reports `differs` or `several` is the console's word on the
+table's `lang-differs` and `lang-several`, per command.
 
 `--from` takes the files that name the command's ids (its tool and the helpers it asks through).
 The tables must be current (skill `autocad-research`, "The string tables"); the ones from before

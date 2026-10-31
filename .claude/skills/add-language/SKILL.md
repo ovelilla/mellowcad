@@ -88,10 +88,15 @@ them shows English. Regenerate the "Use" pages: the tools' descriptions are this
 2. `node scripts/research/propose-commands.mjs --lang <tag>`: its JSON is what one table string
    settles; its report, every key. What it leaves out (several strings, an ICU select, plurals,
    partial matches, no source) is worded by hand, from the console.
-3. `commands` complete, never partial (`cad/locales/locales.test.ts`). Check the proposal with
-   `catalog-sweep.mjs --lang <tag>` and the console (`probe.sh --lang <tag>`, skill
-   `command-review`) prompt by prompt where the report says so; what no probe settles is
-   **unverified** in `docs/i18n/<tag>.md`.
+3. `commands` complete, never partial (`cad/locales/locales.test.ts`). With the pack installed,
+   the console words most of it at once: `console-pair.mjs --lang <tag> --select` lists the fewest
+   of the reviews' probes that show every key, `probe.sh --lang <tag> --lang-only` runs them
+   (English's transcripts are kept), and `console-pair.mjs --lang <tag>` rewords each key from them
+   (`research/console/<tag>.md`; skill `autocad-research`). Its `several` are prompts English shares
+   between commands and the language words per command: each needs a prompt id of its own
+   (`cad-catalogs.md`), or one command's wording until then. Check the rest with
+   `catalog-sweep.mjs --lang <tag>`; what no probe settles is **unverified** in
+   `docs/i18n/<tag>.md`. pt-BR's run: 430 probes, some 15 minutes of console.
 4. Each command's coverage entry names it after `· <tag>`; the `/docs` pages that read the catalog
    regenerate (`npm run docs:check`).
 

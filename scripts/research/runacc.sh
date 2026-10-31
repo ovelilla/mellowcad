@@ -56,13 +56,22 @@ args=(/utf8 /noCER /l "$L")
   cat "$probe"
   printf '_.QUIT\n_Y\n'
 } | iconv -f utf-8 -t cp1252 | sed 's/$/\r/' |
-  (cd "$dir" && timeout "${ACC_TIMEOUT:-90}" "$ACCORE" "${args[@]}" 2>&1) |
+  (cd "$dir" && timeout -k 5 "${ACC_TIMEOUT:-90}" "$ACCORE" "${args[@]}" 2>&1) |
   tr -d '\r' |
+  # The banner's last line, in each installed culture: it is in no string table.
   awk -v t="$trace" '
-    !f && /AutoCAD menu utilities loaded|Utilidades de men/ { f = 1; if (!t) print; next }
+    !f && /AutoCAD menu utilities loaded|Utilidades de men|Utilitários de menu/ { f = 1; if (!t) print; next }
     t && /SECURELOAD|NETLOAD|MellowProbe|MPTRACE|«MP (loaded|clm skipped|trace db)/ { next }
     f { print }' |
   grep -v "^$"
+# timeout stops only WSL's end of the interop: the console it ran keeps hanging on Windows (a
+# prompt pt-BR's `?` listing never left, ucs/p235) until it is stopped by its isolation id.
+status=("${PIPESTATUS[@]}")
+if ((status[3] == 124 || status[3] == 137)); then
+  echo "*** runacc.sh: no answer after ${ACC_TIMEOUT:-90} s, the console stopped ***"
+  (cd /mnt/c && powershell.exe -NoProfile -Command "Get-CimInstance Win32_Process -Filter \"Name='accoreconsole.exe'\" |
+    Where-Object CommandLine -like '*$id*' | ForEach-Object { Stop-Process -Id \$_.ProcessId -Force }") >/dev/null 2>&1
+fi
 
 [[ $real ]] || (cd "$dir" && "$ACCORE" /cleanisolate "$id" "$wdir" >/dev/null 2>&1)
 rm -rf "$dir" 2>/dev/null

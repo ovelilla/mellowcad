@@ -1,6 +1,6 @@
 # Measurement and inquiry
 
-### `DIST` · es `DIST` / `DI` · `AREA` / `AA`
+### `DIST` · es `DIST` / `DI` · `AREA` / `AA` · pt-BR `DIST` / `DI`
 
 **Implemented:** Distance and Area modes; AREA asks
 `Specify first corner point or [Object/Add area/Subtract area] <Object>:`,
@@ -105,7 +105,7 @@ Arc's CEnter → Angle reading a number as a point (2027's console asks it as a 
 distance along the cursor, p145: degrees here, until the desktop shows it); the `?` badge beside the
 cursor at DIST's and AREA's prompts is with the other cursor badges in drafting-aids.md
 
-### `ID` · es `ID`
+### `ID` · es `ID` · pt-BR `ID`
 
 **Implemented:** `Specify point:` (es `Precise punto`; `Invalid point.`), picked, snapped or typed,
 then ` X = …     Y = …     Z = …` (one space ahead, a value that rounds to zero unsigned, as AutoCAD
@@ -115,7 +115,7 @@ without a word (p303); a preselection is dropped as it starts, as DIST and AREA 
 the rail's ID is its button's macro `'_id`, run inside a running command as `'ID` typed there
 (acad.cuix, p320)
 
-### `LIST` / `LI` / `LS` · es `LIST` / `LS` / `LT`
+### `LIST` / `LI` / `LS` · es `LIST` / `LS` / `LT` · pt-BR `LISTA` / `LI` / `LS` / `MOSTRARMAT`
 
 **Implemented:** `Select objects:` (es `Designe objetos`), a set of whole objects (`FOO` refused
 with the modes up to `SIngle`, p421), objects on a locked layer taken in silence (p426); Enter on

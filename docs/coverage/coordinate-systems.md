@@ -4,7 +4,7 @@ The UCS is an origin and X and Y axes in space, so its XY plane can tilt. Every 
 normal (DXF 210) and, a line aside, its points in the OCS of that normal, as DXF stores them; what
 is drawn in a tilted UCS takes its Z as the normal. The commands work in the UCS's XY plane.
 
-### `UCS` · es `SCP`
+### `UCS` · es `SCP` · pt-BR `UCS` / `UCSDD`
 
 **Implemented:** `Current ucs name:  *WORLD*` (`*NO NAME*` / the name), then
 `Specify origin of UCS or [Face/NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>:` (Face
@@ -180,7 +180,7 @@ the X axis of a closed spline a mode finds at OBject (UCB-13): its first point i
 but 2027's X on p434's is (0.5364, −0.8440), which is neither its start tangent (p438, here's
 (0.4148, −0.9099)) nor towards a control point (p439); no rule found yet
 
-### `UCSICON` · es `SIMBSCP`
+### `UCSICON` · es `SIMBSCP` · pt-BR `ICONEUCS`
 
 **Implemented:** `Enter an option [ON/OFF/Noorigin/ORigin] <ON>:` (es
 `Indique una opción [ACT/DES/Sin origen/Origen] <ACT>`; `Invalid option keyword.`), the current
@@ -201,7 +201,7 @@ that U and REDO echo as `'UCSICON` (p430)
 **Missing:** All, Selectable, Properties (the UCS Icon dialog: the 2D style, size, line width,
 colour)
 
-### `ELEV` · es `ELEV`
+### `ELEV` · es `ELEV` · pt-BR `ELEV`
 
 **Implemented:** `Specify new default elevation <0.00>:`, then
 `Specify new default thickness <0.00>:` (es `Precise nueva elevación por defecto`,

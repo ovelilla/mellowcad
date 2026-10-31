@@ -30,7 +30,7 @@ and what stays unverified until the pack is installed.
 | 1 | `feat(i18n)` | **Done** (31/10/2026), below |
 | 2 | `feat(i18n)` | **Done** (31/10/2026), with phase 3 in one commit, below |
 | 3 | `feat(i18n)` | **Done** (31/10/2026), below |
-| 4 | `feat(engine)` | `commands` whole from `research/proposals/pt-BR.json`, the rest by hand from the report, `catalog-sweep.mjs --lang pt-BR`, console probes if the pack is installed; `· pt-BR` in each coverage entry; `npm run docs:check` |
+| 4 | `feat(engine)` | **In progress**: `commands` whole, from the console (31/10/2026, below); next, the per-command prompt ids and what stays unverified |
 | 5 | — | nothing: latin, left to right; plurals as §5 (in phases 2–4) |
 | 6 | `feat(i18n)` | gate, production build (`●`), budgets (`language-review`), screenshots at 360 px and the palettes, the dead keys; `live`, selector, `hreflang`, sitemap, «Next up» off in every language, `docs/i18n/README.md`'s row; this plan shrinks to a summary |
 
@@ -88,16 +88,44 @@ One commit: the generated "Use" pages read both catalogs, so they come out right
   interface files). Found, not changed: `pluralMessage` samples 0 for pt-BR's `one`, so a landing
   island's plural cannot take `=0` (`pt-BR.md`, "Plurals"); none needs it today.
 
+## Phase 4, so far
+
+- **The pack is installed** (asked first; the owner had it installed from WSL): its `.exe -q`
+  elevated, then 2027.1's again, since a pack after an update is the release build. Its tables are
+  `open-pack.sh`'s byte for byte.
+- **`commands` whole** in `cad/locales/pt-BR.json`, from the console first: 430 of the reviews'
+  probes run in pt-BR and paired with their English transcripts by the new
+  `scripts/research/console-pair.mjs` (`--select` picks them, `probe.sh --lang-only` runs them),
+  then the proposal, the DLLs and the PTB help; names by `getcname` (`scripts/research/probes/names/`).
+  How each piece was sourced, the deviations and what is unverified: `docs/i18n/pt-BR.md`,
+  "Command language". `· pt-BR` in every coverage heading; the "Use" pages regenerated, so the
+  draft's incoherence of phases 2–3 (the placeholder, `CI` and `AP`) is gone.
+- Fixed in the system: `runacc.sh` knew the console's banner in English and Spanish only (pt-BR's
+  ran empty), and its timeout left the Windows console hanging (ucs/p235 in pt-BR held a run for
+  minutes); `probe.sh --lang-only`; skills `autocad-research` (installing a pack from WSL, the
+  pairing), `add-language` §4, `command-review`'s catalogs annex.
+- **Left for the next sessions** (`docs/i18n/pt-BR.md`, "Pending"): the prompts English shares and
+  pt-BR words per command, each needing an id of its own and its tool's change
+  (`specifyNextPointOr`, `enterAnOption`, `specifyBasePointOr`, `specifyFirstCornerPointOr`,
+  `specifyCenterPointOfArc`, `selectObjectsOr`, `undoYes`) and the keywords spelled per prompt
+  (`promptKeywords`, with English's entry beside); -OSNAP's listing by its own short names
+  (33200–33213); then the `unseen` and `unpaired` keys of `research/console/pt-BR.md`, by new
+  probes where a console can show them and on the desktop in pt-BR for the tooltips and dynamic
+  input.
+
 ## Next session
 
-> Ejecuta la fase 4 de docs/plans/pt-BR-language.md (el lenguaje de comandos de portugués de
-> Brasil). Lee antes el plan entero, docs/i18n/pt-BR.md, el brief docs/next-languages.md, el skill
-> add-language (§4), command-review (su anexo de catálogos) y autocad-research, las reglas
-> cad-catalogs.md e i18n.md, y research/proposals/pt-BR.md; es.md es el ejemplo de cómo se fuentea
-> cada pieza. Antes de nada pregunta al dueño si instala el language pack de pt-BR en su AutoCAD
-> (para la consola); si no, escribe lo que las tablas deciden y marca el resto como unverified.
-> `commands` va completo de una vez; los `several` y `no-source` se deciden prompt a prompt. Puede
-> haber otras sesiones en el árbol y cambios staged ajenos: mira git diff --cached y haz el commit
-> con git commit --only -- <tus archivos>; si el gate está rojo por otros, pásalo en un worktree
-> limpio desde HEAD con solo tus archivos. Commit en main, sin push. Pon al día el plan (con el
-> prompt de la sesión siguiente al final) y el estado del brief.
+> Sigue la fase 4 de docs/plans/pt-BR-language.md (el lenguaje de comandos de portugués de
+> Brasil): `commands` ya está completo desde la consola. Lee antes el plan entero, docs/i18n/pt-BR.md
+> (sobre todo "Command language": Deviations, Pending y Unverified), el brief
+> docs/next-languages.md, el skill add-language (§4), command-review (su anexo de catálogos) y
+> autocad-research, y las reglas cad-catalogs.md e i18n.md. El language pack de pt-BR está
+> instalado. Regenera research/console/pt-BR.md con `node scripts/research/console-pair.mjs --lang
+> pt-BR` y resuelve "Pending" prompt a prompt: cada prompt que el inglés comparte y pt-BR redacta por
+> comando lleva su id propio (en.json, es.json con su palabra y pt-BR.json) y el cambio en su tool,
+> con su test; las keywords por prompt van a `promptKeywords`. Luego -OSNAP con sus nombres cortos
+> (33200–33213) y, con sondas nuevas en pt-BR, los `unseen` y `unpaired` que una consola pueda
+> mostrar. Puede haber otras sesiones en el árbol y cambios staged ajenos: mira git diff --cached y
+> haz el commit con git commit --only -- <tus archivos>; si el gate está rojo por otros, pásalo en un
+> worktree limpio desde HEAD con solo tus archivos. Commit en main, sin push. Pon al día el plan (con
+> el prompt de la sesión siguiente al final) y el estado del brief.
