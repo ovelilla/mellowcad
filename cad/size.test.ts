@@ -10,8 +10,7 @@ import { describe, expect, it } from "vitest"
  * one module per source file, and `dist` weighed the same (within 0.1 %).
  *
  * WHY tsdown's rolldown: it is already here, as the build's own bundler, so
- * the budgets need no dependency of their own (`size-limit` was ruled out in
- * docs/next-library.md).
+ * the budgets need no dependency of their own (`size-limit` was ruled out).
  */
 
 const KB = 1024

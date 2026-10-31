@@ -31,9 +31,11 @@ paths:
 > **@changesets/cli 3.0.3**.
 
 `cad/` is the npm workspace `@mellowcad/engine`, `packages/react` is `@mellowcad/react` and
-`packages/editor` is `@mellowcad/editor`, in place (`docs/next-library.md`). Each is
-publishable (`publishConfig.access` public: a scoped package is restricted by default). The engine is a peer of the others, never a dependency: a host has one
-instance; so is `@mellowcad/react` of the editor. Each is MIT, as the repo: `"license": "MIT"` and a
+`packages/editor` is `@mellowcad/editor`, in place: `cad/` never moved to packages/ (it would
+re-point every citation of it for no function), and the app stays at the root (under a Root
+Directory, `vercel.json`'s `ignoreCommand` would stop seeing `cad/`). Each is on npm
+(`publishConfig.access` public: a scoped package is restricted by default). The engine is a peer of
+the others, never a dependency: a host has one instance; so is `@mellowcad/react` of the editor. Each is MIT, as the repo: `"license": "MIT"` and a
 copy of the root `LICENSE`, which npm packs whatever `files` lists; its README ends with the
 license and the Autodesk trademark note.
 
@@ -132,5 +134,18 @@ license and the Autodesk trademark note.
   links by it. `npm publish --dry-run -w cad` runs the whole
   `check:hosts`: `hosts.ts` drops the `npm_config_dry_run` it exports, or no `npm pack` would
   write a tarball.
+- **The versions stay independent** until 1.0, never `fixed`: in 0.x the minor is the breaking
+  signal, and a lockstep would hand every editor break to the engine's headless users as a minor
+  their `^` refuses; the peers already say what goes with what. **1.0** comes when the site's build
+  consumes `dist`, the API reports have stood for weeks and the catalogs' shape is frozen; that is
+  when lockstep is weighed again.
+- **A new package's first version is the owner's** (npm trusts a workflow only for a package that
+  exists): `npm publish -w <dir>` from their machine, then
+  `npm trust github <name> --file release.yml --repository ovelilla/mellowcad --allow-publish`,
+  both behind 2FA. npm's web
+  authentication needs a terminal: an agent runs it under `script -q -f -c "…" <log>` and hands the
+  owner the URL, which lapses after five minutes. It goes before the Release workflow, whose
+  `changeset publish` would otherwise try the new package and fail halfway; and before the push
+  that deploys its docs, which give the install line once `private` is gone.
 - A runtime dependency of the engine goes in `cad/package.json`'s `dependencies` (today only
   `icu-minify`), never only in the root's.
