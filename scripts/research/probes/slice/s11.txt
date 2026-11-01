@@ -1,0 +1,26 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+30,10
+10
+_BOX
+0,0,10
+10,10
+10
+_BOX
+20,0,10
+30,10
+10
+_UNION
+_ALL
+
+_SLICE
+_L
+
+_XY
+0,0,15
+
+(sslength (ssget "X"))
+MPDUMP
+-

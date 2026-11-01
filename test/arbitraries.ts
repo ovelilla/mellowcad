@@ -1164,6 +1164,83 @@ export const drawingSnapshot: fc.Arbitrary<DrawingSnapshot> = fc
   )
 
 /**
+ * A solid a boolean can take: a primitive or a sweep, never a sliver —
+ * thinner than a fiftieth of its length one way, or an elliptical round side
+ * flatter than 1 : 10 —, finer than the model's tolerance tells apart.
+ */
+const boolSolid = fc
+  .oneof(
+    solidEntity.map((s) => ({
+      brep: s.brep,
+      kind: s.primitive?.kind ?? "solid",
+      sweep: null as Sweep | null,
+    })),
+    sweep.map((s) => ({ brep: s.brep, kind: s.kind, sweep: s }))
+  )
+  .filter(({ brep }) => {
+    // No sliver: a solid thinner than a fiftieth of its length one way is
+    // finer than a boolean at the model's tolerance tells apart.
+    const box = brepBox(brep)!
+    const d = [
+      box.max.x - box.min.x,
+      box.max.y - box.min.y,
+      box.max.z - box.min.z,
+    ].sort((p, q) => p - q)
+    const flat = brep.faces.some(
+      (f) =>
+        (f.surface.kind === "cylinder" || f.surface.kind === "cone") &&
+        (f.surface.ratio < 0.1 || f.surface.ratio > 10)
+    )
+    return !flat && d[0] >= d[2] / 50 && d[0] >= 0.5
+  })
+
+/**
+ * A solid and a plane through it (SLICE's, SECTION's): through a point of
+ * its box, never along the world's axes, where a plane that holds a face
+ * leaves no edge a cut can sort. A torus or a turned profile meets a plane in
+ * closed form only square to its axis or along it: there the plane is square.
+ */
+export const solidCut: fc.Arbitrary<{
+  brep: Brep
+  origin: Vec3
+  normal: Vec3
+  kind: string
+}> = fc
+  .tuple(
+    boolSolid,
+    fc.tuple(
+      fc.double({ min: -0.4, max: 0.4, noNaN: true }),
+      fc.double({ min: -0.4, max: 0.4, noNaN: true }),
+      fc.double({ min: -0.4, max: 0.4, noNaN: true })
+    ),
+    fc.double({ min: -Math.PI, max: Math.PI, noNaN: true }),
+    fc.double({ min: -Math.PI / 2, max: Math.PI / 2, noNaN: true })
+  )
+  .map(([solid, shift, azimuth, tilt]) => {
+    const box = brepBox(solid.brep)!
+    const center = scale3(add3(box.min, box.max), 0.5)
+    const size = sub3(box.max, box.min)
+    const origin = add3(center, {
+      x: shift[0] * size.x,
+      y: shift[1] * size.y,
+      z: shift[2] * size.z,
+    })
+    const turned = solid.brep.faces
+      .map((f) => f.surface)
+      .find((f) => f.kind === "torus" || f.kind === "revolution")
+    const t = tilt * 0.8 + 0.21
+    const normal =
+      turned && "axis" in turned
+        ? turned.axis
+        : {
+            x: Math.cos(t) * Math.cos(azimuth + 0.37),
+            y: Math.cos(t) * Math.sin(azimuth + 0.37),
+            z: Math.sin(t),
+          }
+    return { brep: solid.brep, origin, normal, kind: solid.kind }
+  })
+
+/**
  * Two solids to combine, in the meetings the kernel has closed forms for
  * (`geometry/intersections.ts`): a primitive or an extruded sweep and a box
  * turned any way across it; a revolved sweep and a cylinder on its axis; two
@@ -1173,31 +1250,7 @@ export const drawingSnapshot: fc.Arbitrary<DrawingSnapshot> = fc
  */
 export const solidPair: fc.Arbitrary<{ a: Brep; b: Brep; kind: string }> = fc
   .tuple(
-    fc
-      .oneof(
-        solidEntity.map((s) => ({
-          brep: s.brep,
-          kind: s.primitive?.kind ?? "solid",
-          sweep: null as Sweep | null,
-        })),
-        sweep.map((s) => ({ brep: s.brep, kind: s.kind, sweep: s }))
-      )
-      .filter(({ brep }) => {
-        // No sliver: a solid thinner than a fiftieth of its length one way is
-        // finer than a boolean at the model's tolerance tells apart.
-        const box = brepBox(brep)!
-        const d = [
-          box.max.x - box.min.x,
-          box.max.y - box.min.y,
-          box.max.z - box.min.z,
-        ].sort((p, q) => p - q)
-        const flat = brep.faces.some(
-          (f) =>
-            (f.surface.kind === "cylinder" || f.surface.kind === "cone") &&
-            (f.surface.ratio < 0.1 || f.surface.ratio > 10)
-        )
-        return !flat && d[0] >= d[2] / 50 && d[0] >= 0.5
-      }),
+    boolSolid,
     fc.tuple(
       fc.double({ min: -0.6, max: 0.6, noNaN: true }),
       fc.double({ min: -0.6, max: 0.6, noNaN: true }),

@@ -2,6 +2,7 @@ import fc from "fast-check"
 import { describe, expect, it } from "vitest"
 
 import { solidPair } from "../../test/arbitraries"
+import { eulerHolds } from "../../test/breps"
 
 import { Vec3 } from "./Vec3"
 import {
@@ -66,6 +67,18 @@ describe("booleans of solids", () => {
     expect(brepIsClosed(r)).toBe(true)
     expect(brepVolume(r)).toBeCloseTo(2000, 9)
     expect(counts(r)).toEqual({ v: 8, e: 12, f: 6 })
+  })
+
+  it("unites and takes boxes stacked on a face whose edges run the other way", () => {
+    // A box's top and the next one's bottom run their shared edges opposite
+    // ways: each solid's coedges keep their own sense on the one piece.
+    const b = box(0, 0, 0, 10, 10, 10)
+    const r = brepBoolean("union", b, box(0, 0, 10, 10, 10, 3))!
+    expect(brepIsClosed(r)).toBe(true)
+    expect(brepVolume(r)).toBeCloseTo(1300, 9)
+    expect(counts(r)).toEqual({ v: 8, e: 12, f: 6 })
+    const d = brepBoolean("subtract", b, box(0, 0, -3, 10, 10, 6))!
+    expect(brepVolume(d)).toBeCloseTo(700, 9)
   })
 
   it("unites boxes apart into one of two shells (union/k03)", () => {
@@ -214,33 +227,6 @@ describe("booleans of solids", () => {
 function normalize(v: Vec3): Vec3 {
   const l = Math.hypot(v.x, v.y, v.z)
   return { x: v.x / l, y: v.y / l, z: v.z / l }
-}
-
-/**
- * Euler–Poincaré: V − E + F − (L − F) = 2 (S − G), an apex's edge of no
- * length counted with no edge: even, and no more than twice the shells.
- */
-function eulerHolds(b: Brep): boolean {
-  const edges = b.edges.filter((e) => e.curve.kind !== "point").length
-  const loops = b.faces.reduce((n, f) => n + f.loops.length, 0)
-  const chi =
-    b.vertices.length - edges + b.faces.length - (loops - b.faces.length)
-  // Shells: faces joined by the edges they share.
-  const parent = b.faces.map((_, i) => i)
-  const find = (i: number): number =>
-    parent[i] === i ? i : (parent[i] = find(parent[i]))
-  const owner = new Map<number, number>()
-  b.faces.forEach((f, i) => {
-    for (const loop of f.loops) {
-      for (const c of loop) {
-        const j = owner.get(c.edge)
-        if (j === undefined) owner.set(c.edge, i)
-        else parent[find(i)] = find(j)
-      }
-    }
-  })
-  const shells = new Set(b.faces.map((_, i) => find(i))).size
-  return chi % 2 === 0 && chi <= 2 * shells
 }
 
 /** Unions, intersections and differences of the pair add up, and each closes. */

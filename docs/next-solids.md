@@ -1,7 +1,7 @@
 # Sólidos 3D con núcleo propio — brief
 
-> **Estado:** en curso: las fases 1 a 5 están hechas (1/11/2026); lo siguiente, la fase 6:
-> edición (SLICE, SECTION, CHAMFEREDGE, FILLETEDGE, subobjetos). Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> **Estado:** en curso: las fases 1 a 5 están hechas (1/11/2026); la fase 6 (edición) va en tres
+> entregas, y la 6a (subobjetos, PRESSPULL sobre caras, SLICE, SECTION) está en curso. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 
@@ -115,9 +115,12 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación en
    de VSCURRENT de `docs/coverage/view.md`: los demás estilos y Other, que Hidden oculte objetos que
    no son sólidos (líneas, la rejilla), las siluetas de 3 px y el tinte de un color en Conceptual;
    HIDE, que en 2027 es la vista facetada y temporal de 2D Wireframe (p04).
-6. **Edición**: SLICE, SECTION, CHAMFEREDGE, FILLETEDGE en los casos analíticos, SOLIDEDIT de caras;
-   sub-objetos con Ctrl+clic, 3DMOVE / 3DROTATE, UCS Face y el SCP dinámico (UCSDETECT); con los
-   subobjetos, PRESSPULL sobre caras de sólidos (pendiente de la fase 4). **Lo siguiente.**
+6. **Edición**, en tres entregas. **6a:** los subobjetos con Ctrl+clic (cara, arista y vértice, su
+   resaltado, sus grips y la selección que los guarda), PRESSPULL sobre caras de sólidos (clic:
+   extruir la cara; Ctrl+clic: desplazarla con sus vecinas extendidas; pendiente de la fase 4),
+   SLICE y SECTION. **En curso.** **6b:** FILLETEDGE y CHAMFEREDGE en los casos analíticos y
+   SOLIDEDIT de caras. **6c:** 3DMOVE y 3DROTATE (también de subobjetos, con MOVE, ROTATE, SCALE y
+   ERASE sobre ellos), UCS Face y el SCP dinámico (UCSDETECT).
 7. **SWEEP, LOFT** y superficies NURBS generales; las booleanas y empalmes que las tocan.
 
 ## 5. Riesgos
