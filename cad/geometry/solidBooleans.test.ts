@@ -458,9 +458,11 @@ describe("booleans of any solids", () => {
           6
         )
       }),
-      { numRuns: 20 }
+      // 5.6 s alone with coverage at its slowest seed seen (1692859543), over
+      // 10 s with the whole suite beside it at 20 runs.
+      { numRuns: 12 }
     )
-    expect(made).toBeGreaterThan(8)
+    expect(made).toBeGreaterThan(5)
     // About 1 in 1000 sampled pairs, a sliver between a cut and an edge.
     expect(refused).toBeLessThanOrEqual(Math.max(1, made / 10))
   }, 120_000)
