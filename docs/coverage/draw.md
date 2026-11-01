@@ -1037,8 +1037,8 @@ leaves the box upright 1 high, down 7 turns it over 2 high), refused here; the 3
 own (3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN), the gizmos and the edits of its sub-objects
 (Ctrl+click selects them: command-line.md), later phases; the dynamic UCS and the jig's 3D drag of the height (here a pick at the
 height prompt gives its distance, as the console does); FILLET and CHAMFER of its edges, which
-AutoCAD asks with `Enter fillet radius or [Expression]:` and `Base surface selection...` (phase
-6; here the pick is passed over); JOIN with a solid picked first, which AutoCAD answers with `Line,
+AutoCAD asks with `Enter fillet radius or [Expression]:` and `Base surface selection...` (here the
+pick is passed over; FILLETEDGE and CHAMFEREDGE round and bevel them, modify.md); JOIN with a solid picked first, which AutoCAD answers with `Line,
 open polyline, arc, elliptical arc, or open spline expected.  Select a supported object:` (here
 discarded, as a region); LIST of a solid with no primitive (none is made yet; here its History
 lines alone); Solid History's Record History (SOLIDHIST) and Show History; its 3D Visualization's
@@ -1433,8 +1433,9 @@ run is one undo step, `PRESSPULL` (desktop).
 
 **Missing:** a curved face, which AutoCAD offsets too (refused here as no face: `Click a face,
 curve, or inside a bounded area`); an offset whose neighbours are cones, spheres, tori or
-revolutions, or planes and curved faces together, and one the topology cannot take (a face pushed
-through the one across it), each leaving the solid as it was, where AutoCAD's message is
+revolutions (a cone or a cylinder round it, as whole circles, is carried on: SOLIDEDIT's, e03), or
+planes and curved faces together, and one the topology cannot take (a face pushed through the one
+across it), each leaving the solid as it was, where AutoCAD's message is
 **unverified**; Ctrl+Shift+E, IMPLIEDFACE and an imprinted face's area (no IMPRINT here); an open
 object, which it extrudes into a surface (no surface object here); the drag's live preview of the
 united solid (here a face's prism, or the solid an object makes) and the hover highlight of an
