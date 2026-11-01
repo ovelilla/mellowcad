@@ -65,6 +65,7 @@ SLICE ["SL"] "Slice"
 SECTION ["SEC"] "Section"
 FILLETEDGE [] "Fillet Edge"
 CHAMFEREDGE [] "Chamfer Edge"
+SOLIDEDIT [] "Solid Editing"
 BOX [] "Box"
 WEDGE ["WE"] "Wedge"
 CYLINDER ["CYL"] "Cylinder"
@@ -221,6 +222,14 @@ slice "Slice" SL
 section "Section" SEC
 filletedge "Fillet Edge" FILLETEDGE
 chamferedge "Chamfer Edge" CHAMFEREDGE
+solidedit "Solid Editing" SOLIDEDIT
+solideditextrude "Extrude faces" -
+solideditmove "Move faces" -
+solideditoffset "Offset faces" -
+solideditrotate "Rotate faces" -
+solidedittaper "Taper faces" -
+solideditdelete "Delete faces" -
+solideditcopy "Copy faces" -
 break "Break" BR
 breakatpoint "Break at point" BREAKATPOINT
 splinedit "Edit Spline" SPE
@@ -5407,6 +5416,126 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   info| Distance1 = 1.00, Distance2 = 1.00
   prompt| Select an edge or [Loop/Distance]:
   info| No edges to chamfer.
+
+## SOLIDEDIT
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> BOX, off plan
+  command| BOX
+  prompt| Specify first corner or [Center]: 0,0,0
+  prompt| Specify other corner or [Cube/Length]: 10,10
+  prompt| Specify height or [2Point]: 10
+  command| -VPOINT
+  info| Current view direction:  VIEWDIR=0.00,0.00,1.00
+  prompt| Specify a view point or [Rotate]: -1.3,-2.2,1.6
+  info| Regenerating model.
+> SOLIDEDIT Face
+  prompt: SOLIDEDIT Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>:
+  asks: 
+  tip: Enter a face editing option
+  dyn: 
+  options: [E] Extrude, [M] Move, [R] Rotate, [O] Offset, [T] Taper, [D] Delete, [C] Copy, [L] coLor, [A] mAterial, [U] Undo, [X] eXit
+  command| ZOOM
+  prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: E
+  command| SOLIDEDIT
+  info| Solids editing automatic checking:  SOLIDCHECK=1
+  prompt| Enter a solids editing option [Face/Edge/Body/Undo/eXit] <eXit>: E
+  error| Invalid option keyword.
+  prompt| Enter a solids editing option [Face/Edge/Body/Undo/eXit] <eXit>: F
+  prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>: L
+  error| Invalid option keyword.
+> Offset refused, Remove, Add, ALL
+  prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>: O
+  prompt| Select faces or [Undo/Remove]: FOO
+  error| *Invalid selection*
+  error| Expects a point or Crossing/Fence/CPolygon/Undo
+  prompt| Select faces or [Undo/Remove]: 5,5,10
+  info| 1 face found.
+  prompt| Select faces or [Undo/Remove/ALL]: R
+  prompt| Remove faces or [Undo/Add/ALL]: 5,5,10
+  info| 1 face found, 1 removed.
+  prompt| Remove faces or [Undo/Add/ALL]: A
+  prompt| Select faces or [Undo/Remove]: ALL
+  error| *Invalid selection*
+  error| Expects a point or Crossing/Fence/CPolygon/Undo
+  prompt| Select faces or [Undo/Remove]: U
+  prompt| Select faces or [Undo/Remove]:
+> offset
+  prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>: 1
+  error| Invalid option keyword.
+> Extrude
+  prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>: E
+  prompt| Select faces or [Undo/Remove]: 5,5,11
+  info| 1 face found.
+  prompt| Select faces or [Undo/Remove/ALL]:
+  prompt| Specify height of extrusion or [Path]: P
+  error| Requires numeric distance, two points, or option keyword.
+  prompt| Specify height of extrusion or [Path]: 2
+  prompt| Specify angle of taper for extrusion <0>: FOO
+  error| Requires valid numeric angle or two points.
+  prompt| Specify angle of taper for extrusion <0>: 5
+  info| Solid validation started.
+  info| Solid validation completed.
+> Rotate by X
+  prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>: R
+  prompt| Select faces or [Undo/Remove]: 5,0,5
+  info| 1 face found.
+  prompt| Select faces or [Undo/Remove/ALL]:
+  prompt| Specify an axis point or [Axis by object/View/Xaxis/Yaxis/Zaxis] <2points>: X
+  prompt| Specify the origin of the rotation <0,0,0>:
+  prompt| Specify a rotation angle or [Reference]: R
+  error| Requires valid numeric angle, second point, or option keyword.
+  prompt| Specify a rotation angle or [Reference]: -10
+  error| Modeling Operation Error:
+> Taper
+  prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>: T
+  prompt| Select faces or [Undo/Remove]: 10,5,5
+  info| 1 face found.
+  prompt| Select faces or [Undo/Remove/ALL]:
+  prompt| Specify the base point: 0,0,0
+  prompt| Specify another point along the axis of tapering: 0,0,10
+  prompt| Specify the taper angle: 5
+  error| Modeling Operation Error:
+> Move, Copy, Delete
+  prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>: M
+  prompt| Select faces or [Undo/Remove]: 0,5,5
+  info| 1 face found.
+  prompt| Select faces or [Undo/Remove/ALL]:
+  prompt| Specify a base point or displacement: FOO
+  error| Invalid point.
+  prompt| Specify a base point or displacement: 0,0,0
+  prompt| Specify a second point of displacement: -1,0,0
+  error| Modeling Operation Error:
+        Error Code Number is 103009
+  prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>: C
+  prompt| Select faces or [Undo/Remove]: 0,5,5
+  info| 1 face found.
+  prompt| Select faces or [Undo/Remove/ALL]:
+  prompt| Specify a base point or displacement: 0,0,0
+  prompt| Specify a second point of displacement:
+  prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>: D
+  prompt| Select faces or [Undo/Remove]: 0,5,5
+  info| 1 face found.
+  prompt| Select faces or [Undo/Remove/ALL]:
+  error| Modeling Operation Error:
+        Error Code Number is 103013
+> Undo, eXit
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>: U
+  prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>:
+  info| Solids editing automatic checking:  SOLIDCHECK=1
+  prompt| Enter a solids editing option [Face/Edge/Body/Undo/eXit] <eXit>: X
 
 ## SECTION
 > start

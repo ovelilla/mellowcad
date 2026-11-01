@@ -73,6 +73,7 @@ declare const source: {
       "trim": string
       "fillet": string
       "filletedge": string
+      "solideditextrude": string
       "break": string
       "pedit": string
       "array": string

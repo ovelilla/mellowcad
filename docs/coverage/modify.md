@@ -1419,6 +1419,60 @@ one is taken (passed over here, **unverified**); surfaces; FILLET and CHAMFER of
 (their `Enter fillet radius or [Expression]:` and `Base surface selection...`, BOX's entry); the
 preview drawn as a mesh.
 
+### `SOLIDEDIT` · es `EDITSOLIDO` · pt-BR `EDITARSOLIDO`
+
+**Implemented** (its faces; solidedit/e01–e12, en, es and pt-BR): it says `Solids editing automatic
+checking:  SOLIDCHECK=1` (es `Comprobación automática de edición de sólidos:`, pt-BR `Verificação
+automática de edição de sólidos:`) and asks `Enter a solids editing option
+[Face/Edge/Body/Undo/eXit] <eXit>:` (es `Indique una opción de edición de sólidos
+[Cara/Arista/cUerpo/desHacer/Salir] <Salir>`, pt-BR `[Face/Aresta/Corpo/Desfazer/Sair] <Sair>`); Face
+asks `Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit]
+<eXit>:` (es `[eXtruir/Desplazar/Girar/dEsfasar/Inclinar/sUprimir/Copiar/cOlor/mAterial/desHacer/Salir]`,
+pt-BR `[Extrusão/Mover/Rotacionar/desLocamento/Afilar/eXcluir/COpiar/Cor/maTerial/Desfazer/Sair]`),
+and each option `Select faces or [Undo/Remove]:`, `… [Undo/Remove/ALL]:` once one is taken,
+`Remove faces or [Undo/Add/ALL]:` after Remove: a click or a typed point takes the face nearest the
+viewer under it, lit as the cursor passes (`1 face found.`, removed `1 face found, 1 removed.`),
+ALL every face of its solid (e11: `6 faces found.`), Undo the last taken, FOO `*Invalid
+selection*` / `Expects a point or Crossing/Fence/CPolygon/Undo`; Enter with none asks the option
+again. Extrude: `Specify height of extrusion or [Path]:` and `Specify angle of taper for extrusion
+<0>:`, each face's prism added or taken out, narrowing as it rises by a positive angle (e01, e08).
+Move: `Specify a base point or displacement:` and `Specify a second point of displacement:`, Enter
+there the base point as the displacement; a planar face moves as far as that runs along its normal,
+its neighbours carried on (e06: a drilled box's top up 3, 2436.6372). Rotate: `Specify an axis
+point or [Axis by object/View/Xaxis/Yaxis/Zaxis] <2points>:` — a point there or Enter's `Specify
+the first point on the rotation axis:` and `Specify the second point on the rotation axis:`, Xaxis,
+Yaxis, Zaxis (the UCS's) and View through `Specify the origin of the rotation <0,0,0>:` — then
+`Specify a rotation angle or [Reference]:`, right-handed about the axis (e07: a box's top 10°,
+1088.1635). Offset: `Specify the offset distance:`, as PRESSPULL's Ctrl+click, a planar face's
+neighbours carried on: planes any way they slope, cylinders and extrusions square to it, and
+coaxial cylinders and cones round it (e03: a frustum's top -4, 321.9504). Taper: `Specify the base
+point:`, `Specify another point along the axis of tapering:` and `Specify the taper angle:`, the
+face turned about where it meets the plane square to the axis through the base point, a positive
+angle leaning it in along the axis (e08: a side 10°, 911.8365). Delete: a hole's wall closes the
+hole, a fillet's or a chamfer's strip gives way to the edge it replaced (e09: 2000, 1000). Copy: a
+planar face becomes a region where it lies, moved (e10), of the current layer and properties. Each
+edit says `Solid validation started.` and `Solid validation completed.` and asks the option again;
+Undo there takes the last one back; eXit or Enter leaves Face, then the command. The solid keeps
+its object and loses what made it. One undo step, `SOLIDEDIT` (f07). Its rail slot is the Solid
+Editing panel's faces split button (Extrude, Taper, Move, Copy, Offset, Delete and Rotate faces, in
+RibbonRoot's order), each SOLIDEDIT answered as acad.cuix's `_solidedit _face _extrude` does;
+plain SOLIDEDIT is typed.
+
+**Deviations:** an edit the kernel cannot make says `Modeling Operation Error:` (es `Error en
+operación de modelado:`, pt-BR `Erro de operação de modelagem:`) and leaves the solid; with ACIS's
+code where the console showed one for that failure — `Error Code Number is 103013` deleting a box's
+face, `103009` moving its top through it (e09, e12) — and none for the others, never seen. An
+offset past what the solid can take is refused that way, where AutoCAD asks again with `The offset
+distance must be greater than -5.0000.` (e04: its bound's rule is **unverified**).
+
+**Missing:** Edge and Body, coLor (the Select Color dialog, desktop; no solid holds a colour per
+face yet) and mAterial, Path, Axis by object and Reference, each offered and refused; Crossing,
+Fence and CPolygon at `Select faces`; a curved face moved, rotated, tapered, offset among other
+neighbours, deleted when no hole's or strip's, or copied (a surface in AutoCAD, e10); an edit that
+changes the topology (e12: a top tapered 80° wears its far side away, 88.1635); faces of several
+solids at once (here the first's); what a pick on nothing says (**unverified**); a preview while a
+distance or an angle is given.
+
 ### `JOIN` / `J` · es `UNIR` / `U` · pt-BR `UNIR` / `UNE`
 
 **Implemented:** `Select source object or multiple objects to join at once:`, then

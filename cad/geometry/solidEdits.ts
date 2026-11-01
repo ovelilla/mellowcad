@@ -1,4 +1,13 @@
-import { Vec3, add3, cross3, dot3, length3, scale3, sub3 } from "./Vec3"
+import {
+  Vec3,
+  add3,
+  cross3,
+  dot3,
+  length3,
+  normalize3,
+  scale3,
+  sub3,
+} from "./Vec3"
 import { arbitraryAxis } from "./ocs"
 import { MODEL_TOLERANCE } from "./planarCurves"
 import { RegionFace, loopArea, loopReversed } from "./planarRegions"
@@ -9,7 +18,9 @@ import {
   Brep,
   BrepEdge,
   BrepFace,
+  Coedge,
   boxBrep,
+  unsignedDomain,
   brepAnchor,
   brepIsClosed,
   brepVolume,
@@ -230,10 +241,16 @@ export function brepFaceOffset(
   distance: number
 ): Brep {
   const face = brep.faces[faceIndex]
-  const n = face && planeNormal(face)
-  if (!n) throw new SolidBooleanError("unsupported")
-  const moved = movedAmongPlanes(brep, faceIndex, distance)
+  const s = face?.surface
+  if (!s || s.kind !== "plane") throw new SolidBooleanError("unsupported")
+  const n = s.normal
+  const moved = movedAmongPlanes(brep, faceIndex, {
+    normal: n,
+    level: dot3(s.origin, n) + distance,
+  })
   if (moved !== "curved") return moved
+  const rings = movedRings(brep, faceIndex, distance)
+  if (rings) return rings
   for (const g of neighbours(brep, faceIndex)) {
     if (!squareTo(g, n)) throw new SolidBooleanError("unsupported")
   }
@@ -279,8 +296,130 @@ function squareTo(g: BrepFace, n: Vec3): boolean {
   }
 }
 
+/** A plane by its unit normal and how far along it from the origin. */
+export interface FacePlane {
+  readonly normal: Vec3
+  readonly level: number
+}
+
 /**
- * The face moved `distance` along its normal where every face at its
+ * The solid with a planar face laid in another plane and its neighbours
+ * carried on to meet it (SOLIDEDIT's Rotate and Taper, solidedit/e07, e08,
+ * e12; its Offset with every neighbour a plane): each vertex of the face
+ * slides to where its neighbouring planes meet the new one. Throws
+ * `SolidBooleanError`: "unsupported" where a face there is curved, "failed"
+ * where the faces cannot meet it so (a face turned over or worn away).
+ */
+export function brepFacePlaneSet(
+  brep: Brep,
+  faceIndex: number,
+  to: FacePlane
+): Brep {
+  if (brep.faces[faceIndex]?.surface.kind !== "plane") {
+    throw new SolidBooleanError("unsupported")
+  }
+  const moved = movedAmongPlanes(brep, faceIndex, to)
+  if (moved === "curved") throw new SolidBooleanError("unsupported")
+  return moved
+}
+
+/**
+ * A planar face whose loops are whole circles round coaxial cylinders or
+ * cones, moved `distance` along its normal: each circle slides along its
+ * neighbour to the face's new level (solidedit/e03: a frustum's top pressed
+ * 4, 321.9504). Null where the face is not so; throws "failed" where the
+ * move passes the neighbour's other end or a cone's apex.
+ */
+function movedRings(
+  brep: Brep,
+  faceIndex: number,
+  distance: number
+): Brep | null {
+  const face = brep.faces[faceIndex]
+  const s = face.surface
+  if (s.kind !== "plane") return null
+  const n = s.normal
+  const level = dot3(s.origin, n) + distance
+  const vertices = [...brep.vertices]
+  const edges = [...brep.edges]
+  const faces = [...brep.faces]
+  for (const loop of face.loops) {
+    if (loop.length !== 1) return null
+    const index = loop[0].edge
+    const e = brep.edges[index]
+    if (e.start !== e.end || e.curve.kind !== "circle") return null
+    const gi = brep.faces.findIndex(
+      (g, i) =>
+        i !== faceIndex && g.loops.some((l) => l.some((c) => c.edge === index))
+    )
+    const g = brep.faces[gi]
+    const round = g?.surface
+    if (!round || (round.kind !== "cylinder" && round.kind !== "cone")) {
+      return null
+    }
+    if (round.ratio !== 1 || length3(cross3(round.axis, n)) > 1e-9) return null
+    const base = round.kind === "cylinder" ? round.origin : round.apex
+    const off = sub3(e.curve.center, base)
+    if (length3(cross3(off, round.axis)) > sizeTolerance(brep)) return null
+    if (
+      brep.edges.some(
+        (x, i) => i !== index && (x.start === e.start || x.end === e.start)
+      )
+    ) {
+      return null
+    }
+    const center = add3(
+      e.curve.center,
+      scale3(n, level - dot3(e.curve.center, n))
+    )
+    const along = dot3(sub3(center, base), round.axis)
+    const radius =
+      round.kind === "cylinder" ? round.radius : round.slope * along
+    if (!(radius > sizeTolerance(brep))) throw new SolidBooleanError("failed")
+    // The neighbour's other loops stay on the side they were.
+    const h0 = dot3(e.curve.center, n)
+    for (const l of g.loops) {
+      for (const c of l) {
+        if (c.edge === index) continue
+        const other = brep.vertices[brep.edges[c.edge].start]
+        const h = dot3(other, n)
+        if (Math.sign(h0 - h) !== Math.sign(level - h)) {
+          throw new SolidBooleanError("failed")
+        }
+      }
+    }
+    const out = normalize3(sub3(brep.vertices[e.start], e.curve.center))
+    if (!out) return null
+    vertices[e.start] = unsigned0(add3(center, scale3(out, radius)))
+    edges[index] = {
+      ...e,
+      curve: { ...e.curve, center: unsigned0(center), radius },
+    }
+    if (g.domain) {
+      // Its range along the axis reaches the circle where it now is.
+      const was = dot3(sub3(e.curve.center, base), round.axis)
+      const v = g.domain.v
+      const near = Math.abs(v[0] - was) < Math.abs(v[1] - was) ? 0 : 1
+      const next: [number, number] = [v[0], v[1]]
+      next[near] = along
+      faces[gi] = { ...g, domain: unsignedDomain({ u: g.domain.u, v: next }) }
+    }
+  }
+  faces[faceIndex] = {
+    ...face,
+    surface: {
+      kind: "plane",
+      origin: unsigned0(add3(s.origin, scale3(n, distance))),
+      normal: n,
+    },
+  }
+  const moved: Brep = { vertices, edges, faces }
+  if (!brepIsClosed(moved)) throw new SolidBooleanError("failed")
+  return moved
+}
+
+/**
+ * The face moved to the plane `to` where every face at its
  * vertices is a plane: each vertex slides to where its neighbouring planes
  * meet the moved one. "curved" where a face there is not a plane. Throws
  * `SolidBooleanError("failed")` when a vertex has no single place (its
@@ -290,13 +429,13 @@ function squareTo(g: BrepFace, n: Vec3): boolean {
 function movedAmongPlanes(
   brep: Brep,
   faceIndex: number,
-  distance: number
+  to: FacePlane
 ): Brep | "curved" {
   const surface = brep.faces[faceIndex].surface
   if (surface.kind !== "plane") return "curved"
   const face = brep.faces[faceIndex]
-  const n = surface.normal
-  const target = dot3(surface.origin, n) + distance
+  const n = to.normal
+  const target = to.level
   const tolerance = sizeTolerance(brep)
   const own = new Set<number>()
   for (const loop of face.loops) {
@@ -350,8 +489,13 @@ function movedAmongPlanes(
             ...g,
             surface: {
               kind: "plane",
-              origin: unsigned0(add3(surface.origin, scale3(n, distance))),
-              normal: n,
+              origin: unsigned0(
+                add3(
+                  surface.origin,
+                  scale3(n, target - dot3(surface.origin, n))
+                )
+              ),
+              normal: unsigned0(n),
             },
           }
         : g
@@ -422,13 +566,19 @@ function meetingPoint(
 export function brepFacesExtruded(
   brep: Brep,
   faces: readonly number[],
-  distance: number
+  distance: number,
+  taper = 0
 ): Brep | null {
   const prisms = faces.map((index) => {
     const face = brep.faces[index]
     const n = face && planeNormal(face)
     if (!n) throw new SolidBooleanError("unsupported")
-    const prism = extrusionBrep(faceProfile(brep, face), scale3(n, distance))
+    // SOLIDEDIT's taper narrows the prism as it rises, EXTRUDE's way (e08).
+    const prism = extrusionBrep(
+      faceProfile(brep, face),
+      scale3(n, distance),
+      taper
+    )
     if (!prism) throw new SolidBooleanError("unsupported")
     return prism
   })
@@ -472,4 +622,186 @@ export function brepFacesOffset(
     result = brepFaceOffset(result, index, distance)
   })
   return result
+}
+
+/**
+ * The solid with a face taken away and what is round it closed over
+ * (SOLIDEDIT's Delete, solidedit/e09): a hole's wall, its loops holes in the
+ * planes it ran between, leaves them whole; a fillet's or a chamfer's strip
+ * between two planes, its ends on two more, gives way to the edge where the
+ * two meet again. Throws `SolidBooleanError("failed")` for any other face,
+ * whose gap nothing closes (e09: a box's top, ACIS's 103013).
+ */
+export function brepFaceDeleted(brep: Brep, faceIndex: number): Brep {
+  const face = brep.faces[faceIndex]
+  if (!face) throw new SolidBooleanError("failed")
+  const holes = holeClosed(brep, faceIndex)
+  const out = holes ?? stripClosed(brep, faceIndex)
+  if (!out || !brepIsClosed(out)) throw new SolidBooleanError("failed")
+  return out
+}
+
+/** The other face using an edge. */
+function otherFace(brep: Brep, edge: number, not: number): number {
+  return brep.faces.findIndex(
+    (g, i) => i !== not && g.loops.some((l) => l.some((c) => c.edge === edge))
+  )
+}
+
+/** A wall whose every loop is a whole closed curve that is a hole of the plane beyond, taken out with those holes. */
+function holeClosed(brep: Brep, faceIndex: number): Brep | null {
+  const face = brep.faces[faceIndex]
+  if (face.loops.length === 0) return null
+  const drop = new Map<number, number>()
+  for (const loop of face.loops) {
+    if (loop.length !== 1) return null
+    const e = brep.edges[loop[0].edge]
+    if (e.start !== e.end) return null
+    const gi = otherFace(brep, loop[0].edge, faceIndex)
+    const g = brep.faces[gi]
+    if (!g || g.surface.kind !== "plane") return null
+    const li = g.loops.findIndex(
+      (l) => l.length === 1 && l[0].edge === loop[0].edge
+    )
+    // Only a hole closes: the plane's outline gone would leave it open.
+    const flat = planarFace(brep, g).face.loops[li]
+    if (li < 0 || !flat || !(loopArea(flat) < 0)) return null
+    drop.set(gi, li)
+  }
+  const gone = new Set(face.loops.map((l) => l[0].edge))
+  return compactedBrep(
+    {
+      vertices: brep.vertices,
+      edges: brep.edges,
+      faces: brep.faces.flatMap((g, i) => {
+        if (i === faceIndex) return []
+        const li = drop.get(i)
+        return li === undefined
+          ? [g]
+          : [{ ...g, loops: g.loops.filter((_, k) => k !== li) }]
+      }),
+    },
+    gone
+  )
+}
+
+/**
+ * A strip of four sides between two planes along it and two across its ends
+ * (a fillet's, a chamfer's), taken out: the planes along it meet again in a
+ * line, its ends where they cross the planes across.
+ */
+function stripClosed(brep: Brep, faceIndex: number): Brep | null {
+  const face = brep.faces[faceIndex]
+  if (face.loops.length !== 1 || face.loops[0].length !== 4) return null
+  const loop = face.loops[0]
+  const sides = loop.map((c) => otherFace(brep, c.edge, faceIndex))
+  const plane = (i: number) => {
+    const sf = brep.faces[i]?.surface
+    return sf?.kind === "plane"
+      ? { normal: sf.normal, level: dot3(sf.origin, sf.normal) }
+      : null
+  }
+  const planes = sides.map(plane)
+  if (planes.some((p) => !p) || new Set(sides).size !== 4) return null
+  for (const shift of [0, 1]) {
+    const along = [loop[shift], loop[shift + 2]]
+    const [f1, g1, f2, g2] = [0, 1, 2, 3].map((k) => planes[(k + shift) % 4]!)
+    const line = cross3(f1.normal, f2.normal)
+    if (length3(line) < 1e-9) continue
+    const parallel = along.every((c) => {
+      const e = brep.edges[c.edge]
+      return (
+        e.curve.kind === "line" &&
+        length3(
+          cross3(sub3(brep.vertices[e.end], brep.vertices[e.start]), line)
+        ) <=
+          1e-9 * length3(sub3(brep.vertices[e.end], brep.vertices[e.start]))
+      )
+    })
+    if (!parallel) continue
+    const v1 = meetingPoint([f1, f2], g1.normal, g1.level)
+    const v2 = meetingPoint([f1, f2], g2.normal, g2.level)
+    if (!v1 || !v2) return null
+    // The strip runs a → b along f1, b → c across g1, c → d along f2, d → a
+    // across g2: b and c become one corner, d and a the other.
+    const [c0, c1, c2, c3] = [0, 1, 2, 3].map((k) => loop[(k + shift) % 4])
+    const start = (c: Coedge) =>
+      c.reversed ? brep.edges[c.edge].end : brep.edges[c.edge].start
+    const a = start(c0)
+    const b = start(c1)
+    const c = start(c2)
+    const d = start(c3)
+    const vertices = [...brep.vertices]
+    vertices[b] = unsigned0(v1)
+    vertices[a] = unsigned0(v2)
+    const merge = (v: number) => (v === c ? b : v === d ? a : v)
+    const edges = brep.edges.map((e) => ({
+      ...e,
+      start: merge(e.start),
+      end: merge(e.end),
+    }))
+    const kept = c0.edge
+    const dropped = new Set([c1.edge, c3.edge, c2.edge])
+    const faces = brep.faces.flatMap((g, i) => {
+      if (i === faceIndex) return []
+      return [
+        {
+          ...g,
+          loops: g.loops.map((l) =>
+            l.flatMap((co): Coedge[] => {
+              if (co.edge === c1.edge || co.edge === c3.edge) return []
+              if (co.edge !== c2.edge) return [co]
+              // The plane along the far side takes the near side's edge,
+              // the way it ran its own.
+              const from = co.reversed
+                ? edges[co.edge].end
+                : edges[co.edge].start
+              return [{ edge: kept, reversed: edges[kept].start !== from }]
+            })
+          ),
+        },
+      ]
+    })
+    const out = compactedBrep({ vertices, edges, faces }, dropped)
+    const about = brepAnchor(brep)
+    for (const g of out.faces) {
+      if (g.surface.kind !== "plane") continue
+      for (const l of planarFace(out, g, about).face.loops) {
+        if (Math.abs(loopArea(l)) <= sizeTolerance(brep) ** 2) return null
+      }
+    }
+    return out
+  }
+  return null
+}
+
+/** The B-rep without the edges `gone`, and with only the vertices its edges use, renumbered. */
+function compactedBrep(brep: Brep, gone: ReadonlySet<number>): Brep {
+  const edgeIndex = new Map<number, number>()
+  const vertexIndex = new Map<number, number>()
+  const vertices: Vec3[] = []
+  const edges: BrepEdge[] = []
+  const vertex = (v: number) => {
+    let i = vertexIndex.get(v)
+    if (i === undefined) {
+      i = vertices.push(brep.vertices[v]) - 1
+      vertexIndex.set(v, i)
+    }
+    return i
+  }
+  brep.edges.forEach((e, i) => {
+    if (gone.has(i)) return
+    edgeIndex.set(i, edges.length)
+    edges.push({ ...e, start: vertex(e.start), end: vertex(e.end) })
+  })
+  return {
+    vertices,
+    edges,
+    faces: brep.faces.map((f) => ({
+      ...f,
+      loops: f.loops.map((l) =>
+        l.map((c) => ({ edge: edgeIndex.get(c.edge)!, reversed: c.reversed }))
+      ),
+    })),
+  }
 }

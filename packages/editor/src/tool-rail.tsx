@@ -153,6 +153,13 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   slice: Slice,
   filletedge: FilletIcon,
   chamferedge: ChamferIcon,
+  solideditextrude: ArrowUpFromLine,
+  solidedittaper: ArrowUpFromLine,
+  solideditmove: Move,
+  solideditcopy: CopyPlus,
+  solideditoffset: ArrowUpFromLine,
+  solideditdelete: Eraser,
+  solideditrotate: Rotate3d,
   union: SquaresUnite,
   subtract: SquaresSubtract,
   intersect: SquaresIntersect,
@@ -199,6 +206,7 @@ type FlyoutId =
   | "trim"
   | "fillet"
   | "filletedge"
+  | "solideditextrude"
   | "break"
   | "pedit"
   | "array"
@@ -304,6 +312,17 @@ const PALETTE: readonly PaletteSection[] = [
       "slice",
       // Its Fillet Edge split button, Chamfer Edge under it.
       flyout("filletedge", ["filletedge", "chamferedge"]),
+      // Its faces' split button, in RibbonRoot's order (ID_FaceExtru…);
+      // plain SOLIDEDIT is typed.
+      flyout("solideditextrude", [
+        "solideditextrude",
+        "solidedittaper",
+        "solideditmove",
+        "solideditcopy",
+        "solideditoffset",
+        "solideditdelete",
+        "solideditrotate",
+      ]),
     ],
   },
   {
@@ -375,6 +394,8 @@ const RAIL_EXCLUDED = new Set([
   "chprop",
   // SECTION is typed: the ribbon offers SECTIONPLANE in its place.
   "section",
+  // SOLIDEDIT is typed: the ribbon offers its options, as the face buttons.
+  "solidedit",
   "zoom",
   "pan",
   "dashpan",

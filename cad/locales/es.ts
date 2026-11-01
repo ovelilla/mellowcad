@@ -120,7 +120,15 @@ export const es: EngineLocale = {
       "slice": "Corte",
       "section": "Sección",
       "filletedge": "Empalmar aristas",
-      "chamferedge": "Achaflanar aristas"
+      "chamferedge": "Achaflanar aristas",
+      "solidedit": "Editar sólidos",
+      "solideditextrude": "Extruir caras",
+      "solideditmove": "Desplazar caras",
+      "solideditrotate": "Girar caras",
+      "solideditoffset": "Desfasar caras",
+      "solidedittaper": "Inclinar caras",
+      "solideditdelete": "Suprimir caras",
+      "solideditcopy": "Copiar caras"
     },
     "description": {
       "U": "Deshacer la última acción",
@@ -1195,6 +1203,9 @@ export const es: EngineLocale = {
       ],
       "CHAMFEREDGE": [
         "ACHAFLANAARISTA"
+      ],
+      "SOLIDEDIT": [
+        "EDITSOLIDO"
       ]
     },
     "keywords": {
@@ -1961,6 +1972,36 @@ export const es: EngineLocale = {
         "Expression": "Expresión",
         "Accept": "Aceptar",
         "Next": "Siguiente"
+      },
+      "SOLIDEDIT": {
+        "Face": "Cara",
+        "Edge": "Arista",
+        "Body": "cUerpo",
+        "Undo": "desHacer",
+        "eXit": "Salir",
+        "Extrude": "eXtruir",
+        "Move": "Desplazar",
+        "Rotate": "Girar",
+        "Offset": "dEsfasar",
+        "Taper": "Inclinar",
+        "Delete": "sUprimir",
+        "Copy": "Copiar",
+        "coLor": "cOlor",
+        "mAterial": "mAterial",
+        "Remove": "Eliminar",
+        "Add": "Añadir",
+        "ALL": "Todas",
+        "Crossing": "Captura",
+        "Fence": "Borde",
+        "CPolygon": "polígonOC",
+        "Path": "Trayectoria",
+        "Axis": "Eje",
+        "View": "Vista",
+        "Xaxis": "ejeX",
+        "Yaxis": "ejeY",
+        "Zaxis": "ejeZ",
+        "2points": "2puntos",
+        "Reference": "Referencia"
       }
     },
     "promptKeywords": {
@@ -2673,7 +2714,24 @@ export const es: EngineLocale = {
       "chamferEdgeLoopOr": "Designe un bucle de arista o",
       "chamferEdgeAccept": "Pulse Intro para aceptar el chaflán o",
       "chamferEdgeDistance1Or": "Precise distancia1 o",
-      "chamferEdgeDistance2Or": "Precise distancia2 o"
+      "chamferEdgeDistance2Or": "Precise distancia2 o",
+      "solideditOption": "Indique una opción de edición de sólidos",
+      "solideditFaceOption": "Indique opción de edición de caras",
+      "selectFacesOr": "Designe caras o",
+      "removeFacesOr": "Elimine caras o",
+      "solideditHeightOr": "Precise altura de extrusión o",
+      "solideditExtrudeTaper": "Precise ángulo de inclinación para extrusión",
+      "solideditBase": "Precise un punto base de desplazamiento",
+      "solideditSecond": "Precise un segundo punto de desplazamiento",
+      "solideditAxisOr": "Precise un punto de eje o",
+      "solideditAxisFirst": "Precise el primer punto en el eje de rotación",
+      "solideditAxisSecond": "Precise el segundo punto en el eje de rotación",
+      "solideditOrigin": "Precise el origen de rotación",
+      "solideditAngleOr": "Precise ángulo de rotación o",
+      "solideditOffset": "Precise la distancia de desfase",
+      "solideditTaperBase": "Precise el punto base",
+      "solideditTaperAxis": "Precise otro punto en el eje de inclinación",
+      "solideditTaperAngle": "Precise ángulo de inclinación"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -7104,7 +7162,53 @@ export const es: EngineLocale = {
       "radiusTooSmall": "Radio demasiado pequeño. *No válido*",
       "distanceTooSmall": "Distancia demasiado pequeña. *No válida*",
       "filletEdgeFailed": "Error en operación de modelado:\nImposible efectuar la operación.\nHubo un fallo en la construcción del empalme.",
-      "chamferEdgeFailed": "Error en operación de modelado:\nError Code Number is 12069\nImposible efectuar la operación.\nHubo un fallo en la construcción del chaflán."
+      "chamferEdgeFailed": "Error en operación de modelado:\nError Code Number is 12069\nImposible efectuar la operación.\nHubo un fallo en la construcción del chaflán.",
+      "solideditChecking": "Comprobación automática de edición de sólidos:  SOLIDCHECK=1",
+      "facesFound": [
+        [
+          "count",
+          2,
+          {
+            "one": "1 cara encontrada.",
+            "other": [
+              0,
+              " cara(s) encontrada(s)."
+            ]
+          }
+        ]
+      ],
+      "facesFoundRemoved": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              "1 cara encontrada, ",
+              [
+                "removed"
+              ],
+              " eliminada(s)."
+            ],
+            "other": [
+              0,
+              " cara(s) encontrada(s), ",
+              [
+                "removed"
+              ],
+              " eliminada(s)."
+            ]
+          }
+        ]
+      ],
+      "solidValidationStarted": "Validación de sólido iniciada.",
+      "solidValidationCompleted": "Validación de sólido finalizada.",
+      "modelingError": "Error en operación de modelado:",
+      "modelingErrorCode": [
+        "Error en operación de modelado:\nError Code Number is ",
+        [
+          "code"
+        ]
+      ]
     },
     "feedback": {
       "snap": {
@@ -7376,6 +7480,9 @@ export const es: EngineLocale = {
       "SLICE": {
         "Object": "Objeto plano",
         "Both": "mantener Ambos lados"
+      },
+      "SOLIDEDIT": {
+        "Axis": "Eje por objeto"
       }
     },
     "promptKeywordLabels": {

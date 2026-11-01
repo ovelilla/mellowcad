@@ -1,0 +1,15 @@
+_CHAMFERA
+5
+_CHAMFERB
+6
+_CHAMFEREDGE
+
+(list (getvar "CHAMFERA") (getvar "CHAMFERB") (getvar "FILLETRAD3D"))
+_FILLETRAD3D
+3
+_FILLETEDGE
+
+(setq f (strcat (getenv "TEMP") "\\fr3d.dwg"))
+_.SAVEAS
+2018
+!f

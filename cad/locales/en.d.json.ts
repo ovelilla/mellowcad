@@ -118,6 +118,14 @@ declare const source: {
       "section": string
       "filletedge": string
       "chamferedge": string
+      "solidedit": string
+      "solideditextrude": string
+      "solideditmove": string
+      "solideditrotate": string
+      "solideditoffset": string
+      "solidedittaper": string
+      "solideditdelete": string
+      "solideditcopy": string
     }
     "description": {
       "U": string
@@ -656,6 +664,7 @@ declare const source: {
       "SECTION": string[]
       "FILLETEDGE": string[]
       "CHAMFEREDGE": string[]
+      "SOLIDEDIT": string[]
     }
     "keywords": {
       "-OSNAP": {
@@ -1422,6 +1431,36 @@ declare const source: {
         "Accept": string
         "Next": string
       }
+      "SOLIDEDIT": {
+        "Face": string
+        "Edge": string
+        "Body": string
+        "Undo": string
+        "eXit": string
+        "Extrude": string
+        "Move": string
+        "Rotate": string
+        "Offset": string
+        "Taper": string
+        "Delete": string
+        "Copy": string
+        "coLor": string
+        "mAterial": string
+        "Remove": string
+        "Add": string
+        "ALL": string
+        "Crossing": string
+        "Fence": string
+        "CPolygon": string
+        "Path": string
+        "Axis": string
+        "View": string
+        "Xaxis": string
+        "Yaxis": string
+        "Zaxis": string
+        "2points": string
+        "Reference": string
+      }
     }
     "promptKeywords": {
       "selectObjects": {
@@ -2084,6 +2123,23 @@ declare const source: {
       "chamferEdgeAccept": string
       "chamferEdgeDistance1Or": string
       "chamferEdgeDistance2Or": string
+      "solideditOption": string
+      "solideditFaceOption": string
+      "selectFacesOr": string
+      "removeFacesOr": string
+      "solideditHeightOr": string
+      "solideditExtrudeTaper": string
+      "solideditBase": string
+      "solideditSecond": string
+      "solideditAxisOr": string
+      "solideditAxisFirst": string
+      "solideditAxisSecond": string
+      "solideditOrigin": string
+      "solideditAngleOr": string
+      "solideditOffset": string
+      "solideditTaperBase": string
+      "solideditTaperAxis": string
+      "solideditTaperAngle": string
     }
     "promptForms": {
       "convertToPolylines": string
@@ -2747,6 +2803,13 @@ declare const source: {
       "distanceTooSmall": string
       "filletEdgeFailed": string
       "chamferEdgeFailed": string
+      "solideditChecking": string
+      "facesFound": string
+      "facesFoundRemoved": string
+      "solidValidationStarted": string
+      "solidValidationCompleted": string
+      "modelingError": string
+      "modelingErrorCode": string
     }
     "feedback": {
       "snap": {
@@ -2944,6 +3007,9 @@ declare const source: {
       "SLICE": {
         "Object": string
         "Both": string
+      }
+      "SOLIDEDIT": {
+        "Axis": string
       }
     }
     "promptKeywordLabels": {
