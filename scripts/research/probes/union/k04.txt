@@ -1,0 +1,26 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+20,20
+10
+(setq b (entlast))
+_CYLINDER
+10,10,-5
+4
+20
+(setq c (entlast))
+_SUBTRACT
+!b
+
+!c
+
+_MASSPROP
+!b
+
+_N
+_LIST
+!b
+
+MPDUMP
+-

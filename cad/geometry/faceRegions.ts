@@ -2,6 +2,7 @@ import { Vec3, cross3, dot3, length3, scale3, sub3 } from "./Vec3"
 import { BSplineCurve, bsplineBreakpoints, bsplineDomain } from "./nurbs"
 import { Rule, gaussRule } from "./quadrature"
 import { EdgeTrace, edgeTrace } from "./brepCurves"
+import { relaxedOnBoth } from "./surfaces"
 import {
   Curved,
   FaceSample,
@@ -283,7 +284,7 @@ export interface FaceRegion {
  * sphere from pole to pole, round a doughnut's tube, or over an apple's or a
  * lemon's arc of it.
  */
-function primitiveDomain(brep: Brep, face: BrepFace): FaceDomain | null {
+export function primitiveDomain(brep: Brep, face: BrepFace): FaceDomain | null {
   const s = face.surface
   switch (s.kind) {
     case "cylinder":
@@ -293,16 +294,19 @@ function primitiveDomain(brep: Brep, face: BrepFace): FaceDomain | null {
           surfaceParams(s, brep.vertices[brep.edges[loop[0].edge].start]).v
       )
       if (vs.length === 0) return null
-      return { u: [0, TURN], v: [Math.min(...vs), Math.max(...vs)] }
+      // A cone's rulings start opposite its X (solid/d04), a cylinder's at its seam.
+      const u0 = s.kind === "cone" ? Math.PI : 0
+      return { u: [u0, u0 + TURN], v: [Math.min(...vs), Math.max(...vs)] }
     }
     case "sphere":
-      return { u: [0, TURN], v: [-Math.PI / 2, Math.PI / 2] }
+      // Its meridians, and a torus' tube circles, start opposite its X (d06).
+      return { u: [Math.PI, 3 * Math.PI], v: [-Math.PI / 2, Math.PI / 2] }
     case "torus": {
       const R = s.majorRadius
       const r = s.minorRadius
-      if (R > r) return { u: [0, TURN], v: [-Math.PI, Math.PI] }
+      if (R > r) return { u: [Math.PI, 3 * Math.PI], v: [-Math.PI, Math.PI] }
       const half = Math.acos(Math.max(-1, Math.min(1, -R / r)))
-      return { u: [0, TURN], v: [-half, half] }
+      return { u: [Math.PI, 3 * Math.PI], v: [-half, half] }
     }
     default:
       return null
@@ -551,6 +555,17 @@ function loopsArea(
     }
   }
   return sum
+}
+
+/** The area a region's loops alone bound in its parameters, the region's way round. */
+export function regionLoopsArea(region: FaceRegion): number {
+  const { cut, periods } = region
+  const P = periods.v
+  const reduce =
+    cut && P !== null
+      ? (v: number) => cut.v + ((((v - cut.v) % P) + P) % P)
+      : (v: number) => v
+  return region.sense * loopsArea(region.loops, region.vRef, reduce)
 }
 
 const regions = new WeakMap<BrepFace, { brep: Brep; region: FaceRegion }>()
@@ -845,30 +860,81 @@ export function faceSamples(
         stops.push(...(c.to > c.from ? ts : ts.reverse()))
       }
       stops.push(c.to)
-      const curve = brep.edges[c.edge].curve
+      const edge = brep.edges[c.edge]
+      const curve = edge.curve
+      const other =
+        curve.kind === "spline" ? meetingSurface(brep, face, c.edge) : null
+      const at = (t: number, q: Vec3, d: Vec3, w: number) => {
+        const uv = surfaceParams(s, q, sampledAt(c, t))
+        const { du, dv } = surfaceFrame(s, uv.u, uv.v)
+        const uu = dot3(du, du)
+        const uvv = dot3(du, dv)
+        const vv = dot3(dv, dv)
+        const det = uu * vv - uvv * uvv
+        if (!(Math.abs(det) > 0)) return
+        const rate = (dot3(du, d) * vv - dot3(dv, d) * uvv) / det
+        node(uv.u, uv.v, w * rate)
+      }
       for (let i = 1; i < stops.length; i++) {
         const a = stops[i - 1]
         const b = stops[i]
-        let rule: Rule
         if (curve.kind === "spline") {
           const spans = splineSpans(curve.curve, a, b)
-          rule = spans.slice(1).flatMap((y, k) => gaussRule(spans[k], y, 2))
-        } else {
-          const share = Math.abs(b - a) / Math.abs(c.to - c.from)
-          rule = gaussRule(a, b, Math.max(1, Math.ceil(edgePieces(c) * share)))
+          if (other) {
+            // A meeting of two surfaces, its spline only near it: each span
+            // integrated on the curve itself, by a coordinate along it.
+            const exact = spans.map((t) =>
+              meetingPoint(brep, edge, c.trace, s, other, t)
+            )
+            for (let k = 1; k < spans.length; k++) {
+              const r0 = exact[k - 1]
+              const r1 = exact[k]
+              const chord = sub3(r1, r0)
+              const size = length3(chord)
+              if (!(size > 0)) continue
+              const along = scale3(chord, 1 / size)
+              const s0 = dot3(along, r0)
+              const s1 = dot3(along, r1)
+              for (const { t: sigma, w } of gaussRule(s0, s1, 2)) {
+                const t =
+                  spans[k - 1] +
+                  ((sigma - s0) / (s1 - s0)) * (spans[k] - spans[k - 1])
+                const relaxed = relaxedOnBoth(
+                  s,
+                  other,
+                  c.trace.point(t),
+                  along,
+                  sigma
+                )
+                if (relaxed && Math.abs(dot3(along, relaxed.tangent)) > 0) {
+                  at(
+                    t,
+                    relaxed.point,
+                    scale3(relaxed.tangent, 1 / dot3(along, relaxed.tangent)),
+                    w
+                  )
+                } else {
+                  const d = c.trace.derivative(t)
+                  at(t, c.trace.point(t), scale3(d, 1 / dot3(along, d)), w)
+                }
+              }
+            }
+            continue
+          }
+          for (const { t, w } of spans
+            .slice(1)
+            .flatMap((y, k) => gaussRule(spans[k], y, 2))) {
+            at(t, c.trace.point(t), c.trace.derivative(t), w)
+          }
+          continue
         }
-        for (const { t, w } of rule) {
-          const q = c.trace.point(t)
-          const uv = surfaceParams(s, q, sampledAt(c, t))
-          const { du, dv } = surfaceFrame(s, uv.u, uv.v)
-          const d = c.trace.derivative(t)
-          const uu = dot3(du, du)
-          const uvv = dot3(du, dv)
-          const vv = dot3(dv, dv)
-          const det = uu * vv - uvv * uvv
-          if (!(Math.abs(det) > 0)) continue
-          const rate = (dot3(du, d) * vv - dot3(dv, d) * uvv) / det
-          node(uv.u, uv.v, w * rate)
+        const share = Math.abs(b - a) / Math.abs(c.to - c.from)
+        for (const { t, w } of gaussRule(
+          a,
+          b,
+          Math.max(1, Math.ceil(edgePieces(c) * share))
+        )) {
+          at(t, c.trace.point(t), c.trace.derivative(t), w)
         }
       }
     }
@@ -896,6 +962,54 @@ export function faceSamples(
   return out
 }
 
+const meetings = new WeakMap<Brep, Map<number, BrepFace[]>>()
+
+/** The surface of the curved face across an edge from `face`, null when it is a plane's. */
+function meetingSurface(
+  brep: Brep,
+  face: BrepFace,
+  edge: number
+): Curved | null {
+  let map = meetings.get(brep)
+  if (!map) {
+    map = new Map()
+    for (const f of brep.faces) {
+      for (const loop of f.loops) {
+        for (const c of loop) {
+          const list = map.get(c.edge)
+          if (list) list.push(f)
+          else map.set(c.edge, [f])
+        }
+      }
+    }
+    meetings.set(brep, map)
+  }
+  const other = map.get(edge)?.find((f) => f !== face)
+  return other && other.surface.kind !== "plane" ? other.surface : null
+}
+
+/**
+ * The point of two surfaces' meeting at a spline's parameter: its vertex at
+ * an end, else the spline's point carried onto both, square to the spline.
+ */
+function meetingPoint(
+  brep: Brep,
+  edge: { start: number; end: number },
+  trace: EdgeTrace,
+  a: Curved,
+  b: Curved,
+  t: number
+): Vec3 {
+  if (t === trace.t0) return brep.vertices[edge.start]
+  if (t === trace.t1) return brep.vertices[edge.end]
+  const p = trace.point(t)
+  const d = trace.derivative(t)
+  const size = length3(d)
+  if (!(size > 0)) return p
+  const along = scale3(d, 1 / size)
+  return relaxedOnBoth(a, b, p, along, dot3(along, p))?.point ?? p
+}
+
 /** A curved face's area and its flux `∫ (x − about) · n dA`, by its samples. */
 export function faceRegionMeasures(
   brep: Brep,
@@ -911,4 +1025,84 @@ export function faceRegionMeasures(
     area += length3(n) * w
   }
   return { area, flux }
+}
+
+/**
+ * Whether `at` lies inside the face's region, by the parity of the loops
+ * crossed by a ray up `v` from it: to the top of the parameters, where the
+ * face goes on when it reaches a pole no loop bounds, or round a doughnut to
+ * the cut, inside where a run of it is. Where a sampled crossing comes near,
+ * it is pinned on the edge itself. A point on an edge is not asked here.
+ */
+export function regionContains(region: FaceRegion, at: UV): boolean {
+  const { periods, cut, surface: s } = region
+  const Pu = periods.u
+  const Pv = periods.v
+  let u0 = at.u
+  // On a sample's own line (a ruling's, a seam's) the half-open count would
+  // turn on rounding: the ray is moved off it.
+  for (let tries = 0; tries < 8; tries++) {
+    let hit = false
+    for (const loop of region.loops) {
+      for (const run of loop.runs) {
+        const us =
+          run.kind === "pole" ? [run.from, run.to] : run.samples.map((x) => x.u)
+        if (us.some((u) => Math.abs(nearest(u, u0, Pu) - u0) <= 1e-10))
+          hit = true
+      }
+    }
+    if (!hit) break
+    u0 += 3.7e-9
+  }
+  const reduce =
+    cut && Pv !== null
+      ? (v: number) => cut.v + ((((v - cut.v) % Pv) + Pv) % Pv)
+      : (v: number) => v
+  const v0 = reduce(at.v)
+  let count = 0
+  const across = (a: number, b: number): number | null => {
+    const x = nearest(u0, (a + b) / 2, Pu)
+    return (a <= x && x < b) || (b <= x && x < a) ? x : null
+  }
+  for (const loop of region.loops) {
+    for (const run of loop.runs) {
+      if (run.kind === "pole") {
+        if (across(run.from, run.to) !== null && reduce(run.v) > v0) count++
+        continue
+      }
+      const ss = run.samples
+      for (let i = 1; i < ss.length; i++) {
+        const a = ss[i - 1]
+        const b = ss[i]
+        const x = across(a.u, b.u)
+        if (x === null) continue
+        let v = a.v + ((b.v - a.v) * (x - a.u)) / (b.u - a.u)
+        const spread = Math.abs(b.v - a.v) + Math.abs(b.u - a.u)
+        if (Math.abs(reduce(v) - v0) <= spread) {
+          // Near the point: the edge's own crossing of `u = x`.
+          let lo = a.t
+          let hi = b.t
+          let near: UV = a
+          for (let step = 0; step < CROSSING_STEPS; step++) {
+            const m = (lo + hi) / 2
+            const uv = surfaceParams(s, run.trace.point(m), near)
+            if ((uv.u - x) * (a.u - x) > 0) {
+              lo = m
+              near = uv
+            } else hi = m
+          }
+          v = surfaceParams(s, run.trace.point((lo + hi) / 2), near).v
+        }
+        if (reduce(v) > v0) count++
+      }
+    }
+  }
+  let top = region.top !== null
+  if (cut && Pu !== null) {
+    top = cut.runs.some(([a, b]) => {
+      const x = a + ((((u0 - a) % Pu) + Pu) % Pu)
+      return x < b
+    })
+  }
+  return (count % 2 === 1) !== top
 }
