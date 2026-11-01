@@ -55,6 +55,7 @@
   "ToolRail.flyouts.rectangle": "Rectangle",
   "ToolRail.flyouts.trim": "Trim",
   "ToolRail.flyouts.fillet": "Fillet",
+  "ToolRail.flyouts.filletedge": "Fillet Edge",
   "ToolRail.flyouts.break": "Break",
   "ToolRail.flyouts.pedit": "Edit Polyline",
   "ToolRail.flyouts.array": "Array",

@@ -114,7 +114,9 @@
       "revolve": "Revolve",
       "presspull": "Presspull",
       "slice": "Slice",
-      "section": "Section"
+      "section": "Section",
+      "filletedge": "Fillet Edge",
+      "chamferedge": "Chamfer Edge"
     },
     "description": {
       "U": "Undo the last action",
@@ -645,7 +647,9 @@
       "REVOLVE": ["REVOLVE", "REV"],
       "PRESSPULL": ["PRESSPULL"],
       "SLICE": ["SLICE", "SL"],
-      "SECTION": ["SECTION", "SEC"]
+      "SECTION": ["SECTION", "SEC"],
+      "FILLETEDGE": ["FILLETEDGE"],
+      "CHAMFEREDGE": ["CHAMFEREDGE"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1211,7 +1215,9 @@
       "REVOLVE": {"MOde": "MOde", "SOlid": "SOlid", "SUrface": "SUrface", "Object": "Object", "X": "X", "Y": "Y", "Z": "Z", "STart": "STart", "Reverse": "Reverse", "EXpression": "EXpression", "Yes": "Yes", "No": "No"},
       "PRESSPULL": {"Multiple": "Multiple"},
       "SLICE": {"Object": "Object", "Surface": "Surface", "Zaxis": "Zaxis", "View": "View", "XY": "XY", "YZ": "YZ", "ZX": "ZX", "3points": "3points", "Both": "Both"},
-      "SECTION": {"Object": "Object", "Zaxis": "Zaxis", "View": "View", "XY": "XY", "YZ": "YZ", "ZX": "ZX", "3points": "3points"}
+      "SECTION": {"Object": "Object", "Zaxis": "Zaxis", "View": "View", "XY": "XY", "YZ": "YZ", "ZX": "ZX", "3points": "3points"},
+      "FILLETEDGE": {"Chain": "Chain", "Loop": "Loop", "Radius": "Radius", "Edge": "Edge", "Expression": "Expression", "Accept": "Accept", "Next": "Next", "eXit": "eXit"},
+      "CHAMFEREDGE": {"Loop": "Loop", "Distance": "Distance", "Edge": "Edge", "Expression": "Expression", "Accept": "Accept", "Next": "Next"}
     },
     "promptKeywords": {
       "selectObjects": {
@@ -1819,7 +1825,21 @@
       "planeFirstPoint": "Specify first point on plane",
       "planeThirdPoint": "Specify third point on plane",
       "sliceSideOr": "Specify a point on desired side or",
-      "sliceBoth": "Both"
+      "sliceBoth": "Both",
+      "filletEdgeSelectOr": "Select an edge or",
+      "filletEdgeChainOr": "Select an edge chain or",
+      "filletEdgeLoopOr": "Select edge of loop or",
+      "edgeLoopOption": "Enter an option",
+      "filletEdgeAccept": "Press Enter to accept the fillet or",
+      "filletEdgeRadiusOr": "Enter fillet radius or",
+      "filletEdgeAcceptRadiusOr": "Specify Radius or",
+      "filletEdgeGripRadiusOr": "Specify radius or",
+      "chamferEdgeSelectOr": "Select an edge or",
+      "chamferEdgeAnotherOr": "Select another edge on the same face or",
+      "chamferEdgeLoopOr": "Select edge of loop or",
+      "chamferEdgeAccept": "Press Enter to accept the chamfer or",
+      "chamferEdgeDistance1Or": "Specify Distance1 or",
+      "chamferEdgeDistance2Or": "Specify Distance2 or"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -1844,7 +1864,10 @@
       "selectPolylineOr": "spaced",
       "spaceBaseDimension": "tight",
       "specifyDistanceBetweenRowsOfCell": "spaced",
-      "unitCellFirstCorner": "spaced"
+      "unitCellFirstCorner": "spaced",
+      "filletEdgeAccept": "tight",
+      "chamferEdgeAccept": "tight",
+      "filletEdgeGripRadiusOr": "tight"
     },
     "format": {
       "idle": "Command",
@@ -2469,7 +2492,17 @@
       "sliceMissed": "Slicing plane does not intersect {count, plural, one {# selected solid} other {# selected solids}}.",
       "sectionMissedOne": "Sectioning plane does not intersect the selected solid.",
       "sectionMissed": "Sectioning plane does not intersect {count, plural, one {# selected solid} other {# selected solids}}.",
-      "noSolidsSelected": "No Solids, Surfaces or Meshes selected."
+      "noSolidsSelected": "No Solids, Surfaces or Meshes selected.",
+      "filletEdgeRadius": "Radius = {radius}",
+      "chamferEdgeDistances": "Distance1 = {distance1}, Distance2 = {distance2}",
+      "filletEdgesSelected": "{count} edge(s) selected for fillet.",
+      "noFilletComputed": "No fillet to be computed.",
+      "noEdgesToChamfer": "No edges to chamfer.",
+      "edgesOneFace": "Edges must belong to one face.",
+      "radiusTooSmall": "Radius too small. *Invalid*",
+      "distanceTooSmall": "Distance too small. *Invalid*",
+      "filletEdgeFailed": "Modeling Operation Error:\nFailed to perform blend.\nFailure while filleting.",
+      "chamferEdgeFailed": "Modeling Operation Error:\nError Code Number is 12069\nFailed to perform blend.\nFailure while chamfering."
     },
     "feedback": {
       "snap": {
@@ -2601,7 +2634,8 @@
       "SLICE": {"Object": "planar Object", "Both": "keep Both sides"}
     },
     "promptKeywordLabels": {
-      "ucsNewUcs": { "ZAxis": "ZAxis" }
+      "ucsNewUcs": { "ZAxis": "ZAxis" },
+      "filletEdgeLoopOr": {"Edge": "Edge"}
     },
     "listing": {
       "dimVariable": "{name}{value}{description}",

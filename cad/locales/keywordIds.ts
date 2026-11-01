@@ -745,5 +745,23 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "YZ",
     "ZX",
     "3points"
+  ],
+  "FILLETEDGE": [
+    "Chain",
+    "Loop",
+    "Radius",
+    "Edge",
+    "Expression",
+    "Accept",
+    "Next",
+    "eXit"
+  ],
+  "CHAMFEREDGE": [
+    "Loop",
+    "Distance",
+    "Edge",
+    "Expression",
+    "Accept",
+    "Next"
   ]
 }

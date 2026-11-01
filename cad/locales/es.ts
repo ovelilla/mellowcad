@@ -118,7 +118,9 @@ export const es: EngineLocale = {
       "revolve": "Revolución",
       "presspull": "Presionar/Tirar",
       "slice": "Corte",
-      "section": "Sección"
+      "section": "Sección",
+      "filletedge": "Empalmar aristas",
+      "chamferedge": "Achaflanar aristas"
     },
     "description": {
       "U": "Deshacer la última acción",
@@ -1187,6 +1189,12 @@ export const es: EngineLocale = {
       "SECTION": [
         "SECCION",
         "SC"
+      ],
+      "FILLETEDGE": [
+        "ARISTAEMPALME"
+      ],
+      "CHAMFEREDGE": [
+        "ACHAFLANAARISTA"
       ]
     },
     "keywords": {
@@ -1935,6 +1943,24 @@ export const es: EngineLocale = {
         "YZ": "YZ",
         "ZX": "ZX",
         "3points": "3puntos"
+      },
+      "FILLETEDGE": {
+        "Chain": "Cadena",
+        "Loop": "Bucle",
+        "Radius": "Radio",
+        "Edge": "Arista",
+        "Expression": "Expresión",
+        "Accept": "Aceptar",
+        "Next": "Siguiente",
+        "eXit": "Salir"
+      },
+      "CHAMFEREDGE": {
+        "Loop": "Bucle",
+        "Distance": "Distancia",
+        "Edge": "Arista",
+        "Expression": "Expresión",
+        "Accept": "Aceptar",
+        "Next": "Siguiente"
       }
     },
     "promptKeywords": {
@@ -2633,7 +2659,21 @@ export const es: EngineLocale = {
       "planeFirstPoint": "Precise primer punto en plano",
       "planeThirdPoint": "Precise tercer punto en plano",
       "sliceSideOr": "Precise un punto en el lado deseado o",
-      "sliceBoth": "Ambos"
+      "sliceBoth": "Ambos",
+      "filletEdgeSelectOr": "Designe una arista o",
+      "filletEdgeChainOr": "Designe una cadena de aristas o",
+      "filletEdgeLoopOr": "Seleccione la arista del bucle o",
+      "edgeLoopOption": "Introduzca una opción",
+      "filletEdgeAccept": "Pulse Intro para aceptar el empalme o",
+      "filletEdgeRadiusOr": "Indique radio de empalme o",
+      "filletEdgeAcceptRadiusOr": "Precise radio o",
+      "filletEdgeGripRadiusOr": "Precise radio o",
+      "chamferEdgeSelectOr": "Designe una arista o",
+      "chamferEdgeAnotherOr": "Seleccione otra arista perteneciente a la misma cara o",
+      "chamferEdgeLoopOr": "Designe un bucle de arista o",
+      "chamferEdgeAccept": "Pulse Intro para aceptar el chaflán o",
+      "chamferEdgeDistance1Or": "Precise distancia1 o",
+      "chamferEdgeDistance2Or": "Precise distancia2 o"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2658,7 +2698,10 @@ export const es: EngineLocale = {
       "selectPolylineOr": "spaced",
       "spaceBaseDimension": "tight",
       "specifyDistanceBetweenRowsOfCell": "spaced",
-      "unitCellFirstCorner": "tight"
+      "unitCellFirstCorner": "tight",
+      "filletEdgeAccept": "tight",
+      "chamferEdgeAccept": "tight",
+      "filletEdgeGripRadiusOr": "tight"
     },
     "format": {
       "idle": "Comando",
@@ -7032,7 +7075,36 @@ export const es: EngineLocale = {
         ],
         "."
       ],
-      "noSolidsSelected": "No se ha seleccionado ningún sólido, superficie o malla."
+      "noSolidsSelected": "No se ha seleccionado ningún sólido, superficie o malla.",
+      "filletEdgeRadius": [
+        "Radio = ",
+        [
+          "radius"
+        ]
+      ],
+      "chamferEdgeDistances": [
+        "Distancia1 = ",
+        [
+          "distance1"
+        ],
+        ", Distancia2 = ",
+        [
+          "distance2"
+        ]
+      ],
+      "filletEdgesSelected": [
+        [
+          "count"
+        ],
+        " arista(s) seleccionadas para empalme."
+      ],
+      "noFilletComputed": "No hay ningún empalme a calcular.",
+      "noEdgesToChamfer": "No hay aristas que achaflanar.",
+      "edgesOneFace": "Las aristas deben pertenecer a una cara.",
+      "radiusTooSmall": "Radio demasiado pequeño. *No válido*",
+      "distanceTooSmall": "Distancia demasiado pequeña. *No válida*",
+      "filletEdgeFailed": "Error en operación de modelado:\nImposible efectuar la operación.\nHubo un fallo en la construcción del empalme.",
+      "chamferEdgeFailed": "Error en operación de modelado:\nError Code Number is 12069\nImposible efectuar la operación.\nHubo un fallo en la construcción del chaflán."
     },
     "feedback": {
       "snap": {
@@ -7309,6 +7381,9 @@ export const es: EngineLocale = {
     "promptKeywordLabels": {
       "ucsNewUcs": {
         "ZAxis": "ejEZ"
+      },
+      "filletEdgeLoopOr": {
+        "Edge": "Arista"
       }
     },
     "listing": {

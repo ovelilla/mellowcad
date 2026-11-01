@@ -3917,6 +3917,8 @@ export interface DocumentSettings {
     readonly isolines: number;
     /** VSCURRENT: how the view draws solids, saved in the drawing (its viewport's, visualstyle/v03). */
     readonly visualStyle: VisualStyle;
+    /** FILLETRAD3D: the radius FILLETEDGE rounds with, the last one it made. */
+    readonly filletRadius3d: number;
     /** CHAMFERA: CHAMFER's first distance. */
     readonly chamferDistance1: number;
     /** CHAMFERB: CHAMFER's second distance. */

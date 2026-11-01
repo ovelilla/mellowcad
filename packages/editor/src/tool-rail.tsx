@@ -151,6 +151,8 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   revolve: Rotate3d,
   presspull: UnfoldVertical,
   slice: Slice,
+  filletedge: FilletIcon,
+  chamferedge: ChamferIcon,
   union: SquaresUnite,
   subtract: SquaresSubtract,
   intersect: SquaresIntersect,
@@ -196,6 +198,7 @@ type FlyoutId =
   | "rectangle"
   | "trim"
   | "fillet"
+  | "filletedge"
   | "break"
   | "pedit"
   | "array"
@@ -299,6 +302,8 @@ const PALETTE: readonly PaletteSection[] = [
       flyout("union", ["union", "subtract", "intersect"]),
       // Beside them in that panel (ID_PanelSolidEdit's Slice).
       "slice",
+      // Its Fillet Edge split button, Chamfer Edge under it.
+      flyout("filletedge", ["filletedge", "chamferedge"]),
     ],
   },
   {

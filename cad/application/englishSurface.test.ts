@@ -1585,6 +1585,30 @@ describe("the engine's English surface", () => {
           )
         )
     )
+    walk("FILLETEDGE", createHarness(), (s) =>
+      s
+        .do("BOX, off plan", (c) =>
+          submit(c, "BOX", "0,0,0", "10,10", "10", "-VPOINT", "-1.3,-2.2,1.6")
+        )
+        .do("FILLETEDGE refused", (c) =>
+          submit(c, "ZOOM", "E", "FILLETEDGE", "FOO", "R", "0", "E", "2*1")
+        )
+        .do("Chain, Loop", (c) => submit(c, "C", "E", "L", "5,0,10", "N", ""))
+        .do("Enter, Radius", (c) => submit(c, "", "R", "1", ""))
+        .do("FILLETEDGE too wide", (c) =>
+          submit(c, "FILLETEDGE", "R", "20", "5,0,0", "")
+        )
+        .do("CHAMFEREDGE of a new box", (c) =>
+          submit(c, "ERASE", "ALL", "", "BOX", "0,0,0", "10,10", "10")
+        )
+        .do("CHAMFEREDGE", (c) =>
+          submit(c, "CHAMFEREDGE", "D", "-1", "1", "2", "0,5,10", "10,0,5")
+        )
+        .do("Loop, Enter", (c) =>
+          submit(c, "L", "5,10,10", "", "", "D", "1", "1", "")
+        )
+        .do("CHAMFEREDGE of nothing", (c) => submit(c, "CHAMFEREDGE", ""))
+    )
     walk("SECTION", createHarness(), (s) =>
       s
         .do("BOX", (c) => submit(c, "BOX", "0,0,0", "100,100", "100"))

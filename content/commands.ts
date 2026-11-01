@@ -74,6 +74,8 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   REVOLVE: { group: "draw" },
   PRESSPULL: { group: "draw" },
   SLICE: { group: "modify" },
+  FILLETEDGE: { group: "modify" },
+  CHAMFEREDGE: { group: "modify" },
   SECTION: { group: "draw" },
   UNION: { group: "modify" },
   SUBTRACT: { group: "modify" },

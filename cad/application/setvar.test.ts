@@ -200,7 +200,7 @@ describe("SETVAR's ? pages every 20 variables", () => {
     const second = written(cad, "")
     expect(second[0]).toBe("Press ENTER to continue:")
     expect(second[1].split("\n")).toHaveLength(20)
-    expect(second[1].split("\n")[0]).toMatch(/^INSNAME /)
+    expect(second[1].split("\n")[0]).toMatch(/^HPSCALE /)
     written(cad, "")
     expect(cad.activeToolId()).toBe("select")
     expect(cad.state().commandLine.prompt).toBe("Command:")

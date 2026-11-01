@@ -63,6 +63,8 @@ REVOLVE ["REV"] "Revolve"
 PRESSPULL [] "Presspull"
 SLICE ["SL"] "Slice"
 SECTION ["SEC"] "Section"
+FILLETEDGE [] "Fillet Edge"
+CHAMFEREDGE [] "Chamfer Edge"
 BOX [] "Box"
 WEDGE ["WE"] "Wedge"
 CYLINDER ["CYL"] "Cylinder"
@@ -217,6 +219,8 @@ revolve "Revolve" REV
 presspull "Presspull" PRESSPULL
 slice "Slice" SL
 section "Section" SEC
+filletedge "Fillet Edge" FILLETEDGE
+chamferedge "Chamfer Edge" CHAMFEREDGE
 break "Break" BR
 breakatpoint "Break at point" BREAKATPOINT
 splinedit "Edit Spline" SPE
@@ -5287,6 +5291,122 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   error| Need a point distinct from and not collinear with 1st and 2nd points.
   prompt| Specify third point on plane: 10,10,10
   prompt| Specify a point on desired side or [keep Both sides] <Both>: B
+
+## FILLETEDGE
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> BOX, off plan
+  command| BOX
+  prompt| Specify first corner or [Center]: 0,0,0
+  prompt| Specify other corner or [Cube/Length]: 10,10
+  prompt| Specify height or [2Point]: 10
+  command| -VPOINT
+  info| Current view direction:  VIEWDIR=0.00,0.00,1.00
+  prompt| Specify a view point or [Rotate]: -1.3,-2.2,1.6
+  info| Regenerating model.
+> FILLETEDGE refused
+  prompt: FILLETEDGE Select an edge or [Chain/Loop/Radius]:
+  asks: "Select an edge or"
+  tip: Select an edge or
+  dyn: "X,Y"=""||*
+  options: [C] Chain, [L] Loop, [R] Radius
+  command| ZOOM
+  prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: E
+  command| FILLETEDGE
+  info| Radius = 1.00
+  prompt| Select an edge or [Chain/Loop/Radius]: FOO
+  error| *Invalid selection*
+  error| Expects a point or Chain/Loop
+  prompt| Select an edge or [Chain/Loop/Radius]: R
+  prompt| Enter fillet radius or [Expression] <1.00>: 0
+  error| Radius too small. *Invalid*
+  prompt| Enter fillet radius or [Expression] <1.00>: E
+  prompt| Enter expression: 2*1
+> Chain, Loop
+  prompt: FILLETEDGE Select edge of loop or [Edge/Chain/Radius]:
+  asks: "Select edge of loop or"
+  tip: Select edge of loop or
+  options: [E] Edge, [C] Chain, [R] Radius
+  prompt| Select an edge or [Chain/Loop/Radius]: C
+  prompt| Select an edge chain or [Edge/Radius]: E
+  prompt| Select an edge or [Chain/Loop/Radius]: L
+  prompt| Select edge of loop or [Edge/Chain/Radius]: 5,0,10
+  prompt| Enter an option [Accept/Next] <Accept>: N
+  prompt| Enter an option [Accept/Next] <Accept>:
+> Enter, Radius
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Select edge of loop or [Edge/Chain/Radius]:
+  info| 4 edge(s) selected for fillet.
+  prompt| Press Enter to accept the fillet or [Radius]:R
+  prompt| Specify Radius or [Expression] <2.00>: 1
+  prompt| Press Enter to accept the fillet or [Radius]:
+> FILLETEDGE too wide
+  command| FILLETEDGE
+  info| Radius = 1.00
+  prompt| Select an edge or [Chain/Loop/Radius]: R
+  prompt| Enter fillet radius or [Expression] <1.00>: 20
+  prompt| Select an edge or [Chain/Loop/Radius]: 5,0,0
+  prompt| Select an edge or [Chain/Loop/Radius]:
+  info| 1 edge(s) selected for fillet.
+  error| Modeling Operation Error:
+        Failed to perform blend.
+        Failure while filleting.
+> CHAMFEREDGE of a new box
+  command| ERASE
+  prompt| Select objects: ALL
+  info| 1 found
+  prompt| Select objects:
+  command| BOX
+  prompt| Specify first corner or [Center]: 0,0,0
+  prompt| Specify other corner or [Cube/Length]: 10,10
+  prompt| Specify height or [2Point] <10.00>: 10
+> CHAMFEREDGE
+  prompt: CHAMFEREDGE Select another edge on the same face or [Loop/Distance]:
+  asks: "Select another edge on the same face or"
+  tip: Select another edge on the same face or
+  dyn: "X,Y"=""||*
+  options: [L] Loop, [D] Distance
+  command| CHAMFEREDGE
+  info| Distance1 = 1.00, Distance2 = 1.00
+  prompt| Select an edge or [Loop/Distance]: D
+  prompt| Specify Distance1 or [Expression] <1.00>: -1
+  error| Distance too small. *Invalid*
+  prompt| Specify Distance1 or [Expression] <1.00>: 1
+  prompt| Specify Distance2 or [Expression] <1.00>: 2
+  prompt| Select an edge or [Loop/Distance]: 0,5,10
+  prompt| Select another edge on the same face or [Loop/Distance]: 10,0,5
+  error| Edges must belong to one face.
+> Loop, Enter
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Select another edge on the same face or [Loop/Distance]: L
+  prompt| Select edge of loop or [Edge/Distance]: 5,10,10
+  prompt| Enter an option [Accept/Next] <Accept>:
+  error| Edges must belong to one face.
+  prompt| Select edge of loop or [Edge/Distance]:
+  prompt| Press Enter to accept the chamfer or [Distance]:D
+  prompt| Specify Distance1 or [Expression] <1.00>: 1
+  prompt| Specify Distance2 or [Expression] <2.00>: 1
+  prompt| Press Enter to accept the chamfer or [Distance]:
+> CHAMFEREDGE of nothing
+  command| CHAMFEREDGE
+  info| Distance1 = 1.00, Distance2 = 1.00
+  prompt| Select an edge or [Loop/Distance]:
+  info| No edges to chamfer.
 
 ## SECTION
 > start
