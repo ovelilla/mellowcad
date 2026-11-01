@@ -10,8 +10,9 @@ import { brepMesh } from "../geometry/faceMesh"
  * pan or a zoom only projects it again.
  */
 
-export interface ShadedTriangle {
-  readonly points: readonly [Vec3, Vec3, Vec3]
+/** A cell of a face, its two triangles painted as one: they share a colour and a depth. */
+export interface ShadedCell {
+  readonly points: readonly Vec3[]
   readonly fill: string
 }
 
@@ -70,12 +71,12 @@ export function goochFill(color: string, normal: Vec3, light: Vec3): string {
   return `#${hex(channel(1, 0))}${hex(channel(3, 0))}${hex(channel(5, cool))}`
 }
 
-/** The last solids and view {@link shadedTriangles} answered, and its answer. */
+/** The last solids and view {@link shadedCells} answered, and its answer. */
 let last: {
   readonly solids: readonly ShadedSolid[]
   readonly toViewer: Vec3
   readonly up: Vec3
-  readonly triangles: readonly ShadedTriangle[]
+  readonly cells: readonly ShadedCell[]
 } | null = null
 
 const same = (a: Vec3, b: Vec3) => a.x === b.x && a.y === b.y && a.z === b.z
@@ -86,11 +87,11 @@ const same = (a: Vec3, b: Vec3) => a.x === b.x && a.y === b.y && a.z === b.z
  * can get wrong, the more so the larger the cells; the edges drawn on top
  * are exact).
  */
-export function shadedTriangles(
+export function shadedCells(
   solids: readonly ShadedSolid[],
   toViewer: Vec3,
   up: Vec3
-): readonly ShadedTriangle[] {
+): readonly ShadedCell[] {
   if (
     last &&
     same(last.toViewer, toViewer) &&
@@ -100,25 +101,33 @@ export function shadedTriangles(
       (s, i) => s.brep === solids[i].brep && s.color === solids[i].color
     )
   ) {
-    return last.triangles
+    return last.cells
   }
   const light = lightDirection(toViewer, up)
-  const found: { triangle: ShadedTriangle; depth: number }[] = []
+  const found: { cell: ShadedCell; depth: number }[] = []
   for (const { brep, color } of solids) {
-    for (const t of brepMesh(brep)) {
+    const mesh = brepMesh(brep)
+    for (let i = 0; i < mesh.length; i++) {
+      const t = mesh[i]
       if (dot3(t.normal, toViewer) <= 0) continue
+      // A cell's second triangle shares its first's corner and diagonal.
+      const next = mesh[i + 1]
+      let points: Vec3[] = [t.a, t.b, t.c]
+      if (next && next.normal === t.normal && next.a === t.a) {
+        if (next.b === t.c) points = [t.a, t.b, t.c, next.c]
+        else if (next.c === t.b) points = [t.a, next.b, t.b, t.c]
+        if (points.length === 4) i++
+      }
+      const depth =
+        points.reduce((sum, p) => sum + dot3(p, toViewer), 0) / points.length
       found.push({
-        triangle: {
-          points: [t.a, t.b, t.c],
-          fill: goochFill(color, t.normal, light),
-        },
-        depth:
-          (dot3(t.a, toViewer) + dot3(t.b, toViewer) + dot3(t.c, toViewer)) / 3,
+        cell: { points, fill: goochFill(color, t.normal, light) },
+        depth,
       })
     }
   }
   found.sort((p, q) => p.depth - q.depth)
-  const triangles = found.map((f) => f.triangle)
-  last = { solids, toViewer, up, triangles }
-  return triangles
+  const cells = found.map((f) => f.cell)
+  last = { solids, toViewer, up, cells }
+  return cells
 }

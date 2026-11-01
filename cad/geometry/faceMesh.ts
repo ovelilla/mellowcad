@@ -30,7 +30,7 @@ const CELLS_PER_TURN = 32
 /** Cells along a straight parameter, a profile, and each way across a plane's box. */
 const CELLS_LINEAR = 6
 const CELLS_PROFILE = 16
-const CELLS_PLANE = 8
+const CELLS_PLANE = 4
 
 /** Halvings of a cell across a face's edge. */
 const MESH_DEPTH = 3

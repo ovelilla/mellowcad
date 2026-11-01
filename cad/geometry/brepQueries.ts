@@ -9,6 +9,7 @@ import { surfaceLevel } from "./surfaces"
 import {
   Box3,
   Brep,
+  BrepCurve,
   BrepFace,
   BrepSurface,
   PlanarFace,
@@ -28,6 +29,7 @@ export type FacePlace = "inside" | "boundary" | "outside"
 interface FaceCache {
   readonly brep: Brep
   readonly traces: EdgeTrace[]
+  readonly curves: BrepCurve[]
   readonly boxes: Box3[]
   flat?: PlanarFace
   box?: Box3
@@ -39,15 +41,18 @@ function cacheOf(brep: Brep, face: BrepFace): FaceCache {
   const found = caches.get(face)
   if (found && found.brep === brep) return found
   const traces: EdgeTrace[] = []
+  const curves: BrepCurve[] = []
   const boxes: Box3[] = []
   for (const loop of face.loops) {
     for (const c of loop) {
-      const trace = edgeTrace(brep, brep.edges[c.edge])
+      const edge = brep.edges[c.edge]
+      const trace = edgeTrace(brep, edge)
       traces.push(trace)
+      curves.push(edge.curve)
       boxes.push(traceBox(trace))
     }
   }
-  const made: FaceCache = { brep, traces, boxes }
+  const made: FaceCache = { brep, traces, curves, boxes }
   caches.set(face, made)
   return made
 }
@@ -146,6 +151,15 @@ export function nearFaceEdge(
   const cache = cacheOf(brep, face)
   for (let i = 0; i < cache.traces.length; i++) {
     if (!inBox(p, cache.boxes[i], tolerance)) continue
+    // The whole circle is no farther than any arc of it: a point off it
+    // needs no search along the arc.
+    const c = cache.curves[i]
+    if (c.kind === "circle") {
+      const d = sub3(p, c.center)
+      const h = dot3(d, c.normal)
+      const rho = length3(sub3(d, scale3(c.normal, h)))
+      if (Math.hypot(h, rho - c.radius) > tolerance) continue
+    }
     if (traceNearest(cache.traces[i], p).distance <= tolerance) return true
   }
   return false
@@ -200,7 +214,7 @@ export function solidBox(brep: Brep): Box3 {
 }
 
 /** The parameters along a ray inside a box, null when it misses it. */
-function rayInBox(o: Vec3, d: Vec3, box: Box3): [number, number] | null {
+export function rayInBox(o: Vec3, d: Vec3, box: Box3): [number, number] | null {
   let lo = -Infinity
   let hi = Infinity
   for (const k of ["x", "y", "z"] as const) {

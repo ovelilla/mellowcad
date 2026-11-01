@@ -1,6 +1,6 @@
 import { regionLevelEdgeEntities } from "../domain/regions"
 import { solidViewEntities, solidWireEntities } from "../domain/solids"
-import { shadedTriangles } from "./shading"
+import { shadedCells } from "./shading"
 import { DEFAULT_DOCUMENT_SETTINGS, VisualStyle } from "../domain/units"
 import { Vec2, V } from "../geometry/Vec2"
 import { Vec3, scale3, withZOf, zOf } from "../geometry/Vec3"
@@ -1795,7 +1795,7 @@ function pushEntities(
     const lines = solidViewEntities(solids, viewDirection)
     solidLines = new Map(solids.map((solid, i) => [solid, lines[i]]))
     if (visualStyle === "conceptual") {
-      const shaded = shadedTriangles(
+      const shaded = shadedCells(
         solids.map((solid) => ({
           brep: solid.brep,
           color: (
