@@ -1,7 +1,7 @@
 # Sólidos 3D con núcleo propio — brief
 
-> **Estado:** en curso: las fases 1 a 5 están hechas (1/11/2026); la fase 6 (edición) va en tres
-> entregas, y la 6a (subobjetos, PRESSPULL sobre caras, SLICE, SECTION) está en curso. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> **Estado:** en curso: las fases 1 a 5 y la entrega 6a están hechas (1/11/2026); lo siguiente,
+> la 6b: FILLETEDGE, CHAMFEREDGE y SOLIDEDIT de caras. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 
@@ -118,9 +118,19 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación en
 6. **Edición**, en tres entregas. **6a:** los subobjetos con Ctrl+clic (cara, arista y vértice, su
    resaltado, sus grips y la selección que los guarda), PRESSPULL sobre caras de sólidos (clic:
    extruir la cara; Ctrl+clic: desplazarla con sus vecinas extendidas; pendiente de la fase 4),
-   SLICE y SECTION. **En curso.** **6b:** FILLETEDGE y CHAMFEREDGE en los casos analíticos y
-   SOLIDEDIT de caras. **6c:** 3DMOVE y 3DROTATE (también de subobjetos, con MOVE, ROTATE, SCALE y
-   ERASE sobre ellos), UCS Face y el SCP dinámico (UCSDETECT).
+   SLICE y SECTION. **Hecha** (1/11/2026): el núcleo en `cad/geometry/solidEdits.ts` (cortar un
+   B-rep por un plano con las booleanas contra el semiespacio, su sección como región del plano,
+   extruir una cara con su prisma y desplazarla con sus vecinas extendidas: entre planos moviendo
+   sus vértices, con vecinas curvas a escuadra por el prisma) y un arreglo de las booleanas (caras
+   coincidentes con las aristas al revés); los subobjetos en `cad/application/subobjectPick.ts` y
+   `cad/domain/solidSubobjects.ts`, guardados aparte en la selección; PRESSPULL sobre caras, SLICE
+   y SECTION (`PlaneCutTool`), contrastados con la consola (slice/s01–s13, section/c01–c10,
+   solidedit/e01–e05) y el escritorio (subobjetos y PRESSPULL en una caja). Lo que falta, en sus
+   entradas de `modify.md`, `draw.md` y `command-line.md`: arrastrar los grips de subobjetos y
+   MOVE, ROTATE, SCALE y ERASE sobre ellos (6c), SUBOBJSELECTIONMODE, el desfase junto a conos,
+   esferas o toros, las superficies. **6b, lo siguiente:** FILLETEDGE y CHAMFEREDGE en los casos
+   analíticos y SOLIDEDIT de caras. **6c:** 3DMOVE y 3DROTATE (también de subobjetos, con MOVE,
+   ROTATE, SCALE y ERASE sobre ellos), UCS Face y el SCP dinámico (UCSDETECT).
 7. **SWEEP, LOFT** y superficies NURBS generales; las booleanas y empalmes que las tocan.
 
 ## 5. Riesgos

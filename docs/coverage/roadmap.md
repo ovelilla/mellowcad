@@ -41,8 +41,10 @@ us to walk again, whereas a command costs the same before or after it.
    `geometry/faceRegions.ts`), PRESSPULL on a solid's faces and INTERFERE left for later. Phase
    5 is done: VSCURRENT with 2D Wireframe, Hidden and Conceptual (view.md; the kernel's hidden
    lines in `geometry/hiddenLines.ts`, the faces' mesh in `geometry/faceMesh.ts`, file version 48),
-   HIDE left out. Next, phase 6: SLICE, SECTION, CHAMFEREDGE and FILLETEDGE, and the sub-objects
-   picked with Ctrl+click that PRESSPULL on a solid's faces waits for.
+   HIDE left out. Phase 6 goes in three deliveries; 6a is done: a solid's faces, edges and
+   vertices selected with Ctrl+click (command-line.md), PRESSPULL on its faces, SLICE and SECTION
+   (the kernel's cut, section and face offset in `geometry/solidEdits.ts`). Next, 6b: FILLETEDGE,
+   CHAMFEREDGE and SOLIDEDIT's faces; then 6c: 3DMOVE, 3DROTATE, UCS Face and UCSDETECT.
 
 Left out of the 2.5D model: POINT's thickness, with POINT (below). TRIM, EXTEND and JOIN of 3D
 polylines are done, cut and grown in plan at the Z they have there, a closed one left in two at
