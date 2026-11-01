@@ -1,7 +1,7 @@
 # Sólidos 3D con núcleo propio — brief
 
-> **Estado:** en curso: las fases 1 y 2 están hechas (1/11/2026); lo siguiente, la fase 3:
-> EXTRUDE, REVOLVE y PRESSPULL. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> **Estado:** en curso: las fases 1, 2 y 3 están hechas (1/11/2026); lo siguiente, la fase 4:
+> booleanas 3D. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 
@@ -73,11 +73,21 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación en
    `cad/domain/solidGrips.ts` (dónde está cada uno, qué hace arrastrarlo y qué valores rechaza la
    paleta, medidos en el escritorio, solid/g01); lo que falta, en sus entradas de `draw.md`.
    **Fase 2 hecha.**
-3. **De 2D a 3D**: EXTRUDE, REVOLVE, PRESSPULL de regiones y perfiles cerrados. **Lo
-   siguiente.** El sólido pasa a llevar caras de extrusión y de revolución de cualquier curva que
-   ya dibujamos (rectas, arcos, elipses, splines): sus isolíneas, su volumen y MASSPROP por cara
-   como los de las primitivas, y sus grips de perfil y de altura.
-4. **Booleanas 3D** entre planos y cuádricas.
+3. **De 2D a 3D**: EXTRUDE, REVOLVE, PRESSPULL de regiones y perfiles cerrados. **Hecha**
+   (1/11/2026): el núcleo de barridos en `cad/geometry/sweeps.ts` (las caras que hace ACIS: planos,
+   cilindros, conos, esferas, toros, cilindros elípticos y extrusiones y revoluciones de elipses y
+   splines; aristas spline) y `faceDomains.ts` (cada cara barrida lleva su dominio en su superficie,
+   integrado con reglas exactas: volumen y MASSPROP exactos, contrastados con la consola), el
+   fichero en la versión 47; EXTRUDE (altura, Direction, Taper angle, Expression, DELOBJ), REVOLVE
+   (eje por dos puntos, Object, X/Y/Z, STart angle, Reverse, EXpression) y PRESSPULL de objetos
+   cerrados y áreas delimitadas, con LIST y el Solid type de la paleta; lo que falta, en sus
+   entradas de `draw.md` (Path y SUrface, una conicidad con aristas cónicas, un eje fuera del plano
+   del perfil). **Pendiente de escritorio** (no se pudo abrir el AutoCAD de escritorio en esta
+   sesión): los grips de perfil y altura de un sólido extruido y uno revuelto y las filas de su
+   paleta (MPGRIPDATA con -VIEW _SWISO), lo que PRESSPULL muestra al pasar y arrastrar, y lo que
+   quedó de la 2c (las cajas dinámicas de las esquinas de BOX y los cuadrantes de CYLINDER con Ortho,
+   Polar y un snap; Elliptical = Sí en un cilindro circular; Type de la pirámide en la paleta).
+4. **Booleanas 3D** entre planos y cuádricas. **Lo siguiente.**
 5. **Estilo Hidden** (líneas ocultas en el motor), sombreado en canvas, VSCURRENT.
 6. **Edición**: SLICE, SECTION, CHAMFEREDGE, FILLETEDGE en los casos analíticos, SOLIDEDIT de caras;
    sub-objetos con Ctrl+clic, 3DMOVE / 3DROTATE, UCS Face y el SCP dinámico (UCSDETECT).
