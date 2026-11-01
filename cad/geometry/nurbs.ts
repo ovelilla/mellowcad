@@ -1,4 +1,5 @@
 import { V } from "./Vec2"
+import { GAUSS } from "./quadrature"
 import { Vec3, add3, length3, scale3, sub3 } from "./Vec3"
 
 /**
@@ -257,37 +258,6 @@ function distanceToChord(p: Vec3, a: Vec3, b: Vec3): number {
   )
   return length3(sub3(p, add3(a, scale3(ab, t))))
 }
-
-/**
- * The 16-point Gauss–Legendre rule on [−1, 1]: exact for a polynomial up to
- * degree 31, so for the area swept by a polynomial piece of any degree
- * SPLINE takes (2 × 10 − 1). Nodes by Newton on P₁₆ from Chebyshev's guesses.
- */
-const GAUSS = ((n: number) => {
-  const nodes: number[] = []
-  const weights: number[] = []
-  for (let i = 0; i < n; i++) {
-    let x = Math.cos((Math.PI * (i + 0.75)) / (n + 0.5))
-    let slope = 1
-    for (let step = 0; step < 100; step++) {
-      let p0 = 1
-      let p1 = x
-      for (let k = 2; k <= n; k++) {
-        const p2 = ((2 * k - 1) * x * p1 - (k - 1) * p0) / k
-        p0 = p1
-        p1 = p2
-      }
-      slope = (n * (x * p1 - p0)) / (x * x - 1)
-      const next = x - p1 / slope
-      const done = Math.abs(next - x) < 1e-16
-      x = next
-      if (done) break
-    }
-    nodes.push(x)
-    weights.push(2 / ((1 - x * x) * slope * slope))
-  }
-  return { nodes, weights }
-})(16)
 
 /** `∫ f` over `[a, b]` by {@link GAUSS}. */
 function gauss(f: (u: number) => number, a: number, b: number): number {

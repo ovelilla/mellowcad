@@ -109,7 +109,7 @@ import {
   WORLD_UCS,
 } from "../domain/ucs"
 import { Vec2 } from "../geometry/Vec2"
-import { bsplineDomain } from "../geometry/nurbs"
+import { BSplineCurve, bsplineDomain } from "../geometry/nurbs"
 import { PlanarCurve } from "../geometry/planarCurves"
 import { RegionFace } from "../geometry/planarRegions"
 import {
@@ -117,6 +117,8 @@ import {
   BrepCurve,
   BrepFace,
   BrepSurface,
+  FaceDomain,
+  SweptCurve,
   brepIsClosed,
 } from "../geometry/solids"
 import { Vec3, dot3, length3 } from "../geometry/Vec3"
@@ -132,7 +134,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 46
+export const DRAWING_FILE_VERSION = 47
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -628,8 +630,37 @@ function storedBrep(brep: Brep): Brep {
       loops: face.loops.map((loop) =>
         loop.map((c) => ({ edge: c.edge, reversed: c.reversed }))
       ),
+      ...(face.domain
+        ? {
+            domain: {
+              u: [face.domain.u[0], face.domain.u[1]] as const,
+              v: [face.domain.v[0], face.domain.v[1]] as const,
+            },
+          }
+        : {}),
     })),
   }
+}
+
+/** A solid's NURBS as the file holds it, its control points in space. */
+function storedNurbs(curve: BSplineCurve): BSplineCurve {
+  return {
+    degree: curve.degree,
+    knots: [...curve.knots],
+    controlPoints: curve.controlPoints.map(storedVec3),
+    ...(curve.weights ? { weights: [...curve.weights] } : {}),
+  }
+}
+
+function storedSwept(c: SweptCurve): SweptCurve {
+  return c.kind === "ellipse"
+    ? {
+        kind: "ellipse",
+        center: storedVec3(c.center),
+        majorAxis: storedVec3(c.majorAxis),
+        minorAxis: storedVec3(c.minorAxis),
+      }
+    : { kind: "spline", curve: storedNurbs(c.curve) }
 }
 
 const storedVec3 = (v: Vec3): Vec3 => ({ x: v.x, y: v.y, z: v.z })
@@ -654,6 +685,8 @@ function storedCurve(c: BrepCurve): BrepCurve {
         majorAxis: storedVec3(c.majorAxis),
         ratio: c.ratio,
       }
+    case "spline":
+      return { kind: "spline", curve: storedNurbs(c.curve) }
   }
 }
 
@@ -699,6 +732,19 @@ function storedSurface(s: BrepSurface): BrepSurface {
         xAxis: storedVec3(s.xAxis),
         majorRadius: s.majorRadius,
         minorRadius: s.minorRadius,
+      }
+    case "extrusion":
+      return {
+        kind: "extrusion",
+        profile: storedSwept(s.profile),
+        direction: storedVec3(s.direction),
+      }
+    case "revolution":
+      return {
+        kind: "revolution",
+        profile: storedSwept(s.profile),
+        origin: storedVec3(s.origin),
+        axis: storedVec3(s.axis),
       }
   }
 }
@@ -1543,7 +1589,7 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
     }
     case "solid3d": {
       // Since 43; a wedge or a pyramid since 44, a cylinder or a cone 45, a
-      // sphere or a torus 46. A boundary that does not
+      // sphere or a torus 46, an extrusion or a revolution 47. A boundary that does not
       // close loses the solid; a malformed primitive only its history.
       const brep = parseBrep(raw.brep)
       if (!brep) return null
@@ -1587,8 +1633,10 @@ function parseBrep(raw: unknown): Brep | null {
     })),
     faces: faces.map((f, i): BrepFace => {
       const loops = isRecord(f) && Array.isArray(f.loops) ? f.loops : []
+      const domain = isRecord(f) ? parseDomain(f.domain) : null
       return {
         surface: surfaces[i] as BrepSurface,
+        ...(domain ? { domain } : {}),
         loops: loops.map((loop) =>
           (Array.isArray(loop) ? loop : []).map((c) => ({
             edge: isRecord(c) ? index(c.edge) : -1,
@@ -1601,7 +1649,53 @@ function parseBrep(raw: unknown): Brep | null {
   return brepIsClosed(brep) ? brep : null
 }
 
-/** An edge's curve; a circle or an ellipse since 45. */
+/** Where a swept face lies on its surface (since 47): two ranges of two numbers. */
+function parseDomain(raw: unknown): FaceDomain | null {
+  if (!isRecord(raw)) return null
+  const range = (r: unknown): [number, number] | null =>
+    Array.isArray(r) && r.length === 2 && r.every(isFiniteNumber)
+      ? [r[0] as number, r[1] as number]
+      : null
+  const u = range(raw.u)
+  const v = range(raw.v)
+  return u && v ? { u, v } : null
+}
+
+/** A solid's NURBS in space (since 47); brepIsClosed checks the rest. */
+function parseNurbs(raw: unknown): BSplineCurve | null {
+  if (!isRecord(raw)) return null
+  const { degree } = raw
+  const knots = parseNumbers(raw.knots)
+  const points = Array.isArray(raw.controlPoints)
+    ? raw.controlPoints.map(parseVec3)
+    : []
+  if (!isFiniteNumber(degree) || !knots || points.length < 2) return null
+  if (points.some((p) => p === null)) return null
+  const weights = parseNumbers(raw.weights)
+  return {
+    degree,
+    knots,
+    controlPoints: points as Vec3[],
+    ...(weights ? { weights } : {}),
+  }
+}
+
+function parseSwept(raw: unknown): SweptCurve | null {
+  if (!isRecord(raw)) return null
+  if (raw.kind === "spline") {
+    const curve = parseNurbs(raw.curve)
+    return curve ? { kind: "spline", curve } : null
+  }
+  if (raw.kind !== "ellipse") return null
+  const center = parseVec3(raw.center)
+  const majorAxis = parseVec3(raw.majorAxis)
+  const minorAxis = parseVec3(raw.minorAxis)
+  return center && majorAxis && minorAxis
+    ? { kind: "ellipse", center, majorAxis, minorAxis }
+    : null
+}
+
+/** An edge's curve; a circle or an ellipse since 45, a spline 47. */
 function parseCurve(raw: unknown): BrepCurve | null {
   if (!isRecord(raw)) return null
   switch (raw.kind) {
@@ -1623,15 +1717,37 @@ function parseCurve(raw: unknown): BrepCurve | null {
       }
       return { kind: "ellipse", center, normal, majorAxis, ratio: raw.ratio }
     }
+    case "spline": {
+      const curve = parseNurbs(raw.curve)
+      return curve ? { kind: "spline", curve } : null
+    }
     default:
       return null
   }
 }
 
-/** A face's surface; a cylinder or a cone since 45, a sphere or a torus 46. */
+/**
+ * A face's surface; a cylinder or a cone since 45, a sphere or a torus 46,
+ * an extrusion or a revolution 47.
+ */
 function parseSurface(raw: unknown): BrepSurface | null {
   if (!isRecord(raw)) return null
   switch (raw.kind) {
+    case "extrusion": {
+      const profile = parseSwept(raw.profile)
+      const direction = parseVec3(raw.direction)
+      return profile && direction
+        ? { kind: "extrusion", profile, direction }
+        : null
+    }
+    case "revolution": {
+      const profile = parseSwept(raw.profile)
+      const origin = parseVec3(raw.origin)
+      const axis = parseVec3(raw.axis)
+      return profile && origin && axis
+        ? { kind: "revolution", profile, origin, axis }
+        : null
+    }
     case "plane": {
       const origin = parseVec3(raw.origin)
       const normal = parseVec3(raw.normal)

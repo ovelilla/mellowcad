@@ -1,0 +1,97 @@
+_QAFLAGS
+2
+_ELLIPSE
+_C
+15,0
+20,0
+2
+_REVOLVE
+_L
+
+0,0
+0,10
+
+_VPOINT
+1,-1,1
+_ISOLINES
+4
+_REGEN
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mp-iso-i8-4.png
+_N
+_Y
+_ISOLINES
+6
+_REGEN
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mp-iso-i8-6.png
+_N
+_Y
+_ISOLINES
+8
+_REGEN
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mp-iso-i8-8.png
+_N
+_Y
+_VPOINT
+0,0,1
+_ISOLINES
+4
+_REGEN
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mp-iso-i8-p4.png
+_N
+_Y

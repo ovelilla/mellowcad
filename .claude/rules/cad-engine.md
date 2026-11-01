@@ -139,8 +139,8 @@ Dependencies run types → per-type modules → overrides → transforms → que
   `regionEdgeEntities`, `solidEdgeEntities`); a solid's isolines (`solidWireEntities`) are drawn
   and picked, snapped only at a sphere's or torus' centre, which with an apex goes through
   `SnapContext.solidPoints`. A boolean is `regionBoolean`, never a tool's cut. A solid's points
-  are the WCS's; it moves only by `transformEntity`, holds no -0 (`unsigned0`) and is measured
-  exactly, face by face (`faceFlux`), never as a mesh.
+  are the WCS's; it moves only by `transformEntity`, holds no -0 (`unsigned0`), is measured
+  exactly face by face (`faceFlux`; a swept face over its `domain`), never as a mesh.
 - **MTEXT keeps AutoCAD's contents string**, `\P` and escapes included: `mtextPlainText` reads it
   (codes it does not draw vanish from the reading, never from the object), `mtextContents` writes
   it, nothing else parses or builds it.

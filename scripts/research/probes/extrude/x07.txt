@@ -1,0 +1,51 @@
+_QAFLAGS
+2
+(setvar "DELOBJ" 0)
+_CIRCLE
+0,0
+5
+_EXTRUDE
+_L
+
+5
+(sslength (ssget "X"))
+(setvar "DELOBJ" 1)
+_CIRCLE
+50,0
+5
+_EXTRUDE
+_L
+
+5
+(sslength (ssget "X"))
+(setvar "DELOBJ" -1)
+_CIRCLE
+100,0
+5
+_EXTRUDE
+_L
+
+5
+FOO
+_N
+(sslength (ssget "X"))
+_CIRCLE
+150,0
+5
+_EXTRUDE
+_L
+
+5
+_Y
+(sslength (ssget "X"))
+_U
+(sslength (ssget "X"))
+_TEXT
+0,50
+2
+0
+HI
+_EXTRUDE
+_L
+
+(sslength (ssget "X"))

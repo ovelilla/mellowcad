@@ -20,6 +20,8 @@ import { arbitraryAxis, worldToAxes } from "../geometry/ocs"
 import { createRegion } from "./regions"
 import { createArc, createCircle, createLine } from "./entityFactories"
 import { createEllipse } from "./ellipses"
+import { createSpline } from "./splines"
+import { BSplineCurve } from "../geometry/nurbs"
 import { nextEntityId } from "./entityIds"
 import { DEFAULT_LAYER_ID, LayerId } from "./layers"
 import { withElevation, withNormal } from "./elevation"
@@ -260,6 +262,7 @@ function edgeEntity(solid: Solid3dEntity, edge: BrepEdge): Entity | null {
   if (curve.kind === "line") {
     return dressed(solid, createLine(from, to, layerId, id))
   }
+  if (curve.kind === "spline") return splinePiece(solid, curve.curve)
   const axes = arbitraryAxis(curve.normal)
   if (!axes) return null
   const c = worldToAxes(axes, curve.center)
@@ -321,12 +324,30 @@ export function solidCenters(solid: Solid3dEntity): Vec3[] {
   )
 }
 
+/**
+ * A NURBS of the solid as a spline of its id: its control points the
+ * world's, as a spline's carry their own Z in the plane of its normal.
+ */
+function splinePiece(solid: Solid3dEntity, curve: BSplineCurve): Entity {
+  return dressed(
+    solid,
+    createSpline("cv", curve.controlPoints, {
+      degree: curve.degree,
+      knotVector: curve.knots,
+      ...(curve.weights ? { weights: curve.weights } : {}),
+      layerId: solid.layerId,
+      id: solid.id,
+    })
+  )
+}
+
 /** An isoline as the object it draws as, of the solid's id, in the plane of its normal. */
 function wireEntity(solid: Solid3dEntity, wire: Wire): Entity {
   const { layerId, id } = solid
   if (wire.kind === "line") {
     return dressed(solid, createLine(wire.start, wire.end, layerId, id))
   }
+  if (wire.kind === "curve") return splinePiece(solid, wire.curve)
   const axes = arbitraryAxis(wire.normal)!
   const c = worldToAxes(axes, wire.center)
   const s = worldToAxes(axes, wire.start)
