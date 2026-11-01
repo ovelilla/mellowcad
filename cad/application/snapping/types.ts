@@ -61,6 +61,11 @@ export interface SnapCandidate {
    */
   readonly touch?: Vec3
   /**
+   * Found only through `touch`, never by its point under the cursor: a
+   * sphere's or a torus' centre, where no isoline need pass (solid/s07).
+   */
+  readonly byTouch?: boolean
+  /**
    * True when the snap is derived from provisional, moving geometry — the
    * rubber-band being drawn. Such points still attract the cursor, but must not
    * be *acquired* as object-snap-tracking references (you cannot pick up a
@@ -165,12 +170,22 @@ export interface SnapContext {
   readonly solidPoints?: readonly SolidSnapPoint[]
 }
 
-/** A point of a visible solid, by the snap that finds it. */
-export interface SolidSnapPoint {
-  readonly type: SnapType.Endpoint
-  readonly point: Vec3
-  readonly id: EntityId
-}
+/**
+ * A point of a visible solid, by the snap that finds it: a Center from
+ * anywhere over its `wires`, as a circle's from its rim.
+ */
+export type SolidSnapPoint =
+  | {
+      readonly type: SnapType.Endpoint
+      readonly point: Vec3
+      readonly id: EntityId
+    }
+  | {
+      readonly type: SnapType.Center
+      readonly point: Vec3
+      readonly id: EntityId
+      readonly wires: readonly Entity[]
+    }
 
 /**
  * A snap provider inspects the document near the cursor and returns any snap

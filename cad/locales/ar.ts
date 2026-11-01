@@ -109,6 +109,8 @@ export const ar: EngineLocale = {
       "pyramid": "هرم",
       "cylinder": "أسطوانة",
       "cone": "مخروط",
+      "sphere": "كرة",
+      "torus": "طارة",
       "intersect": "تقاطع"
     },
     "description": {
@@ -481,6 +483,8 @@ export const ar: EngineLocale = {
         "baseMinorRadius": "نصف القطر الأصغر للقاعدة",
         "topMajorRadius": "نصف القطر الأكبر العلوي",
         "topMinorRadius": "نصف القطر الأصغر العلوي",
+        "torusRadius": "نصف قطر الطارة",
+        "tubeRadius": "نصف قطر الأنبوب",
         "currentVertex": "الرأس الحالي",
         "vertex": "الرأس",
         "startSegmentWidth": "عرض بداية المقطع",
@@ -611,6 +615,8 @@ export const ar: EngineLocale = {
         "circumscribed": "محيط",
         "cylinder": "أسطوانة",
         "cone": "مخروط",
+        "sphere": "كرة",
+        "torus": "طارة",
         "chord": "الوتر",
         "sqrtChord": "الجذر التربيعي للوتر",
         "uniform": "منتظم",

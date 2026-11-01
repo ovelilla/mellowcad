@@ -47,6 +47,7 @@ import { polylineOutline } from "./polylineOutline"
 import { polyline3dSegments } from "./polylines3d"
 import { entityShape } from "./polylineFits"
 import { planar } from "../geometry/Vec3"
+import { closedSurfaceReach } from "../geometry/solids"
 import { arcStartPoint, arcEndPoint } from "./entityMeasures"
 
 /** A box outline as four segments, for hit-testing and crossing tests. */
@@ -522,13 +523,20 @@ export function entityBounds(drawn: Entity, blocks?: BlockLookup): Bounds {
         }
       )
     case "solid3d": {
-      // Its edges and its vertices: a cone's apex is on no edge.
+      // Its edges and its vertices: a cone's apex is on no edge; a sphere's
+      // or a torus' face, which has neither.
       const edges = entitiesBounds(solidEdgeEntities(entity))
       const xs = entity.brep.vertices.map((p) => p.x)
       const ys = entity.brep.vertices.map((p) => p.y)
       if (edges) {
         xs.push(edges.min.x, edges.max.x)
         ys.push(edges.min.y, edges.max.y)
+      }
+      for (const { surface } of entity.brep.faces) {
+        const reach = closedSurfaceReach(surface)
+        if (!reach || !("center" in surface)) continue
+        xs.push(surface.center.x - reach.x, surface.center.x + reach.x)
+        ys.push(surface.center.y - reach.y, surface.center.y + reach.y)
       }
       if (xs.length === 0) return { min: { x: 0, y: 0 }, max: { x: 0, y: 0 } }
       return {

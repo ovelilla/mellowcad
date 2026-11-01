@@ -19,6 +19,9 @@ import {
   ConePrimitive,
   CylinderPrimitive,
   Entity,
+  SolidPrimitive,
+  SpherePrimitive,
+  TorusPrimitive,
   createSolid,
   entityElevation,
   readsInPlan,
@@ -28,7 +31,7 @@ import {
   ucsPointToWorld,
   worldPointToUcs,
 } from "../../domain/ucs"
-import { parseNumber } from "../../domain/units"
+import { formatLength, parseNumber } from "../../domain/units"
 import { AddEntityCommand } from "../commands/entityCommands"
 import {
   isCoordinateExpression,
@@ -56,13 +59,17 @@ import {
   solidDefaults,
 } from "./solidDefaults"
 
-/** The solid CYLINDER makes, or CONE, which asks the same and a top radius. */
-export type RoundKind = "cylinder" | "cone"
+/**
+ * The solid CYLINDER makes, or CONE, which asks the same and a top radius;
+ * SPHERE and TORUS, which ask their centre as these ask a base.
+ */
+export type RoundKind = "cylinder" | "cone" | "sphere" | "torus"
 
 /**
  * The base as given, in the UCS: its centre, the plane's normal, the way to
  * its seam, its radius that way and across (an ellipse's), and whether its
- * plane is the UCS's XY's.
+ * plane is the UCS's XY's. A sphere's centre and radius; a torus' ring, its
+ * radius negative for a lemon or an apple.
  */
 interface Base {
   readonly center: Vec3
@@ -120,6 +127,20 @@ type State =
       readonly first: Vec3
       readonly cursor: Vec3
     }
+  /** TORUS's tube, measured from `ring`, the point of its ring last given. */
+  | {
+      readonly phase: "tube" | "tubeDiameter" | "tubeFirst"
+      readonly base: Base
+      readonly ring: Vec3
+      readonly cursor: Vec3
+    }
+  | {
+      readonly phase: "tubeSecond"
+      readonly base: Base
+      readonly ring: Vec3
+      readonly first: Vec3
+      readonly cursor: Vec3
+    }
 
 const PREVIEW_ID = "round-preview"
 const UCS_Z: Vec3 = { x: 0, y: 0, z: 1 }
@@ -137,6 +158,12 @@ const UCS_X: Vec3 = { x: 1, y: 0, z: 0 }
  * base tilted by 3P or by Axis endpoint — the arbitrary axis' −X of the plane
  * in UCS terms, an ellipse's Y (c12, c14, c15). The radius, the height and the
  * top radius are the primitives' shared defaults ({@link SolidDefaults}).
+ *
+ * SPHERE and TORUS (solid/h01–h05, r01–r09) ask `Specify center point or
+ * [3P/2P/Ttr]:` and `Specify radius or [Diameter]:`: 3P puts a sphere's
+ * centre at their circle's, 2P on the diameter between them in space; a
+ * torus lies in 3P's plane, its normal their turn (r05), and asks `Specify
+ * tube radius or [2Point/Diameter]:` from the ring's point last given.
  */
 export class RoundSolidTool implements Tool {
   readonly id: RoundKind
@@ -196,16 +223,35 @@ export class RoundSolidTool implements Tool {
 
   question(): PromptId | ToolQuestion {
     const state = this.state
-    const { radius, height, topRadius } = this.defaults
+    const { radius, height, topRadius, tubeRadius } = this.defaults
     const sized = (id: PromptId, value: number | null) =>
       value === null ? id : { id, enter: value }
+    const twice = (value: number | null) => (value === null ? null : value * 2)
     switch (state.phase) {
       case "center":
-        return "roundBaseCenterOr"
+        return this.round ? "roundBaseCenterOr" : "sphereCenterOr"
       case "radius":
-        return sized("specifyBaseRadiusOr", radius)
+        return sized(
+          this.round ? "specifyBaseRadiusOr" : "specifyRadiusOr",
+          radius
+        )
       case "diameter":
-        return sized("specifyDiameter", radius === null ? null : radius * 2)
+        return sized(
+          this.kind === "torus" ? "torusDiameter" : "specifyDiameter",
+          twice(radius)
+        )
+      case "tube":
+        return sized("tubeRadiusOr", tubeRadius)
+      case "tubeDiameter":
+        // Before any tube, `<0.0000>` once a diameter was given (r08).
+        return sized(
+          "tubeDiameter",
+          twice(tubeRadius ?? (this.defaults.diameterGiven ? 0 : null))
+        )
+      case "tubeFirst":
+        return "specifyFirstPoint"
+      case "tubeSecond":
+        return "specifySecondPoint"
       case "threePoint":
         return (
           [
@@ -269,6 +315,8 @@ export class RoundSolidTool implements Tool {
       case "twoFirst":
       case "twoSecond":
       case "axis":
+      case "tubeFirst":
+      case "tubeSecond":
         return { refusal: "pointOrKeywordRequired" }
       case "tangentFirst":
       case "tangentSecond":
@@ -277,6 +325,8 @@ export class RoundSolidTool implements Tool {
       case "diameter":
       case "ellipseDistance":
       case "height":
+      case "tube":
+      case "tubeDiameter":
         return distance("yes")
       case "top":
         return distance(this.kind === "cone" ? "yes" : "no")
@@ -289,9 +339,13 @@ export class RoundSolidTool implements Tool {
     const state = this.state
     switch (state.phase) {
       case "center":
-        return [{ id: "3P" }, { id: "2P" }, { id: "Ttr" }, { id: "Elliptical" }]
+        return this.round
+          ? [{ id: "3P" }, { id: "2P" }, { id: "Ttr" }, { id: "Elliptical" }]
+          : [{ id: "3P" }, { id: "2P" }, { id: "Ttr" }]
       case "radius":
         return [{ id: "Diameter" }]
+      case "tube":
+        return [{ id: "2Point" }, { id: "Diameter" }]
       case "ellipseFirst":
         return [{ id: "Center" }]
       case "height": {
@@ -332,7 +386,9 @@ export class RoundSolidTool implements Tool {
           return go({ phase: "twoPoint", points: [], cursor: UCS_Z }, "point")
         }
         if (id === "Ttr") return go({ phase: "tangentFirst" }, "tangent")
-        if (id === "Elliptical") return go({ phase: "ellipseFirst" }, "point")
+        if (id === "Elliptical" && this.round) {
+          return go({ phase: "ellipseFirst" }, "point")
+        }
         return "unhandled"
       case "radius":
         if (id !== "Diameter") return "unhandled"
@@ -347,6 +403,14 @@ export class RoundSolidTool implements Tool {
         }
         if (id === "Top" && this.kind === "cone") {
           return go({ ...state, phase: "top" }, "distance")
+        }
+        return "unhandled"
+      case "tube":
+        if (id === "2Point") {
+          return go({ ...state, phase: "tubeFirst" }, "point")
+        }
+        if (id === "Diameter") {
+          return go({ ...state, phase: "tubeDiameter" }, "distance")
         }
         return "unhandled"
       default:
@@ -410,7 +474,11 @@ export class RoundSolidTool implements Tool {
       case "top":
         return this.topFrom(state.base, state.cursor, ctx)
       case "twoSecond":
+      case "tubeSecond":
         return state.first
+      case "tube":
+      case "tubeDiameter":
+        return state.ring
       default:
         return null
     }
@@ -422,7 +490,10 @@ export class RoundSolidTool implements Tool {
     const stroke = { color: currentColor(ctx), width: 1 }
     const ghost = (base: Base | null, height: number, top: number | null) => {
       if (!base || !(height > 0)) return []
-      const primitive = this.primitive(base, top, { height }, ctx)
+      if (this.kind === "torus" && base.radius + height <= 0) return []
+      const primitive = this.round
+        ? this.primitive(base, top, { height }, ctx)
+        : this.ballPrimitive(base, height, ctx)
       return primitive
         ? entityScenePrimitive(
             ctx.viewport,
@@ -436,20 +507,36 @@ export class RoundSolidTool implements Tool {
           )
         : []
     }
+    const cursor = "cursor" in state ? state.cursor : null
+    const reach = (from: Vec3) =>
+      cursor ? this.distanceTo(from, worldPointToUcs(ctx.ucs, cursor)) : 0
     switch (state.phase) {
       case "height":
       case "axis":
+        return ghost(state.base, reach(state.base.center), state.top)
+      case "radius":
+      case "diameter": {
+        if (this.kind !== "sphere") return []
+        const size = reach(state.center) / (state.phase === "diameter" ? 2 : 1)
+        return ghost(this.levelBase(state.center, size), size, null)
+      }
+      case "tube":
+      case "tubeDiameter":
         return ghost(
           state.base,
-          this.distanceTo(
-            state.base.center,
-            worldPointToUcs(ctx.ucs, state.cursor)
-          ),
-          state.top
+          reach(state.ring) / (state.phase === "tubeDiameter" ? 2 : 1),
+          null
         )
+      case "tubeSecond":
+        return ghost(state.base, reach(state.first), null)
       default:
         return []
     }
+  }
+
+  /** CYLINDER's and CONE's: a base, rising. */
+  private get round(): boolean {
+    return this.kind === "cylinder" || this.kind === "cone"
   }
 
   private distanceTo(from: Vec3, to: Vec3): number {
@@ -479,8 +566,24 @@ export class RoundSolidTool implements Tool {
         this.takeRadius(
           this.distanceTo(state.center, at) /
             (state.phase === "diameter" ? 2 : 1),
+          ctx,
+          at
+        )
+        return
+      case "tube":
+      case "tubeDiameter":
+        this.takeTube(
+          this.distanceTo(state.ring, at) /
+            (state.phase === "tubeDiameter" ? 2 : 1),
           ctx
         )
+        return
+      case "tubeFirst":
+        this.state = { ...state, phase: "tubeSecond", first: at }
+        this.openPoint(ctx)
+        return
+      case "tubeSecond":
+        this.takeTube(this.distanceTo(state.first, at), ctx)
         return
       case "threePoint":
         this.takeThreePoint(at, ctx)
@@ -544,33 +647,110 @@ export class RoundSolidTool implements Tool {
     }
   }
 
-  /** `Value must be positive and nonzero.` for none (c06). */
-  private takeRadius(radius: number, ctx: ToolContext): void {
+  /**
+   * `Value must be positive and nonzero.` for none (c06, h03); a torus'
+   * `Value must be nonzero.`, its negative one a lemon's or an apple's (r03).
+   * The ring's point is `toward`'s way, the cursor's when typed (r01, r02).
+   */
+  private takeRadius(radius: number, ctx: ToolContext, toward?: Vec3): void {
     const state = this.state
     if (state.phase !== "radius" && state.phase !== "diameter") return
-    if (!(radius > 0)) {
+    if (this.kind === "torus" ? radius === 0 : !(radius > 0)) {
+      ctx.report(
+        ctx.text.message(
+          this.kind === "torus" ? "valueMustBeNonzero" : "positiveNonzero"
+        ),
+        "error"
+      )
+      return
+    }
+    if (state.phase === "diameter" && this.kind !== "torus") {
+      this.defaults.diameterGiven = true
+    }
+    const base = this.levelBase(state.center, radius)
+    const way = toward ?? worldPointToUcs(ctx.ucs, state.cursor)
+    this.askRest(base, ringPoint(base, way), ctx)
+  }
+
+  /** What follows the base: CYLINDER's and CONE's height, TORUS's tube; a sphere is made. */
+  private askRest(base: Base, ring: Vec3, ctx: ToolContext): void {
+    if (this.kind === "sphere") {
+      this.defaults.radius = base.radius
+      this.commitPrimitive(this.ballPrimitive(base, 0, ctx), ctx)
+      return
+    }
+    if (this.kind === "torus") {
+      // A negative radius is no default (r03, r05).
+      if (base.radius > 0) this.defaults.radius = base.radius
+      this.state = {
+        phase: "tube",
+        base,
+        ring,
+        cursor: ucsPointToWorld(ctx.ucs, ring),
+      }
+      this.openDistance(ctx)
+      return
+    }
+    this.askHeight(base, ctx)
+  }
+
+  /**
+   * The tube: `Value must be positive and nonzero.` for none, and round a
+   * negative ring no thinner than its radius' size, `If torus radius is
+   * -5.0000, tube radius must be greater than 5.0000.`, which asks it again
+   * (r03, r06, r07); 2Point's says that for none too, whatever the ring (r09).
+   */
+  private takeTube(tube: number, ctx: ToolContext): void {
+    const state = this.state
+    if (
+      state.phase !== "tube" &&
+      state.phase !== "tubeDiameter" &&
+      state.phase !== "tubeSecond"
+    ) {
+      return
+    }
+    const { base } = state
+    if (!(tube > 0) && state.phase !== "tubeSecond") {
       ctx.report(ctx.text.message("positiveNonzero"), "error")
       return
     }
-    this.askHeight(this.levelBase(state.center, radius), ctx)
+    if (!(tube > 0) || (base.radius < 0 && tube <= -base.radius)) {
+      const settings = ctx.document.getSettings()
+      ctx.report(
+        ctx.text.message("torusTubeTooSmall", {
+          radius: formatLength(base.radius, settings),
+          minimum: formatLength(Math.abs(base.radius), settings),
+        }),
+        "error"
+      )
+      return
+    }
+    this.defaults.tubeRadius = tube
+    this.commitPrimitive(this.ballPrimitive(base, tube, ctx), ctx)
   }
 
   /**
    * 3P's points: a second on the first or a third on their line is refused
-   * and asked again (c08); the base lies in their plane, level when that is
-   * the UCS's XY's (c02, c15).
+   * and asked again (c08), SPHERE's and TORUS's second as coincident (h03,
+   * r09); the base lies in their plane, level when that is the UCS's XY's
+   * (c02, c15).
    */
   private takeThreePoint(at: Vec3, ctx: ToolContext): void {
     const state = this.state
     if (state.phase !== "threePoint") return
     const points = [...state.points, at]
-    const collinear = () => {
-      if (points.length < 2) return false
-      const [a, b] = points
-      if (points.length === 2) return length3(sub3(b, a)) === 0
-      return length3(cross3(sub3(b, a), sub3(points[2], a))) === 0
+    const [a, b] = points
+    if (points.length === 2 && length3(sub3(b, a)) === 0) {
+      ctx.report(
+        ctx.text.message(this.round ? "pointsCollinear" : "pointsCoincident"),
+        "error"
+      )
+      return
     }
-    if (collinear()) {
+    if (
+      points.length === 3 &&
+      length3(cross3(sub3(b, a), sub3(points[2], a))) === 0
+    ) {
       ctx.report(ctx.text.message("pointsCollinear"), "error")
       return
     }
@@ -581,12 +761,13 @@ export class RoundSolidTool implements Tool {
     }
     const base = circleThrough(points[0], points[1], points[2])
     if (!base) return
-    this.askHeight(base, ctx)
+    this.askRest(this.kind === "torus" ? turnedBy(base, points) : base, at, ctx)
   }
 
   /**
    * 2P's ends of a diameter, the second read in the first's plane: on the
-   * first it is refused and asked again (c08, c02).
+   * first it is refused and asked again (c08, c02, r07). A sphere's are
+   * points in space, its centre between them (h02, h03).
    */
   private takeTwoPoint(at: Vec3, ctx: ToolContext): void {
     const state = this.state
@@ -597,13 +778,14 @@ export class RoundSolidTool implements Tool {
       return
     }
     const [first] = state.points
-    const size = V.distance(first, at)
+    const end = this.kind === "sphere" ? at : { ...at, z: first.z }
+    const size = length3(sub3(end, first))
     if (size === 0) {
       ctx.report(ctx.text.message("pointsCoincident"), "error")
       return
     }
-    const middle = V.lerp(first, at, 0.5)
-    this.askHeight(this.levelBase({ ...middle, z: first.z }, size / 2), ctx)
+    const middle = scale3(add3(first, end), 0.5)
+    this.askRest(this.levelBase(middle, size / 2), end, ctx)
   }
 
   /** Ttr's object: a line, a circle or an arc lying in the plane, else refused (c03). */
@@ -658,7 +840,9 @@ export class RoundSolidTool implements Tool {
     }
     const z = Math.abs(first.z - second.z) < 1e-9 ? first.z : ctx.elevation
     const center = worldPointToUcs(ctx.ucs, { ...best.center, z })
-    this.askHeight(this.levelBase(center, radius), ctx)
+    const base = this.levelBase(center, radius)
+    // The ring's point along the UCS's X (r04).
+    this.askRest(base, ringPoint(base, center), ctx)
   }
 
   /** `Value must be positive and nonzero.` for none (v05). */
@@ -793,6 +977,39 @@ export class RoundSolidTool implements Tool {
       : { kind: "cone", ...common, topRadius: top ?? 0 }
   }
 
+  /**
+   * A sphere of the base's radius or a torus round its ring with a `tube`.
+   * A sphere's frame is the UCS's whatever gave it (h05's MPDUMP); a torus'
+   * the ring's (r05).
+   */
+  private ballPrimitive(
+    base: Base,
+    tube: number,
+    ctx: ToolContext
+  ): SpherePrimitive | TorusPrimitive {
+    const unit = (d: Vec3) => {
+      const w = ucsDirectionToWorld(ctx.ucs, d)
+      return scale3(w, 1 / length3(w))
+    }
+    const position = ucsPointToWorld(ctx.ucs, base.center)
+    return this.kind === "sphere"
+      ? {
+          kind: "sphere",
+          position,
+          xAxis: unit(UCS_X),
+          normal: unit(UCS_Z),
+          radius: base.radius,
+        }
+      : {
+          kind: "torus",
+          position,
+          xAxis: unit(base.xAxis),
+          normal: unit(base.normal),
+          radius: base.radius,
+          tubeRadius: tube,
+        }
+  }
+
   private commit(
     base: Base,
     top: number | null,
@@ -802,6 +1019,10 @@ export class RoundSolidTool implements Tool {
     const primitive = this.primitive(base, top, rise, ctx)
     if (!primitive) return
     this.defaults.height = "height" in rise ? rise.height : primitive.height
+    this.commitPrimitive(primitive, ctx)
+  }
+
+  private commitPrimitive(primitive: SolidPrimitive, ctx: ToolContext): void {
     const solid = createSolid(primitive, ctx.document.getCurrentLayerId())
     this.state = { phase: "center" }
     ctx.execute(new AddEntityCommand(withCurrentProperties(solid, ctx)))
@@ -854,8 +1075,11 @@ export class RoundSolidTool implements Tool {
   private openDistance(ctx: ToolContext): void {
     const question = this.question()
     const prompt = typeof question === "string" ? question : question.id
+    // The tube diameter's `<0.0000>` before any tube is shown, not taken (r08).
     const enter =
-      typeof question === "string" || typeof question.enter !== "number"
+      typeof question === "string" ||
+      typeof question.enter !== "number" ||
+      (this.state.phase === "tubeDiameter" && this.defaults.tubeRadius === null)
         ? null
         : question.enter
     ctx.dynamicInput.open({
@@ -902,6 +1126,12 @@ export class RoundSolidTool implements Tool {
         return
       case "top":
         this.takeTop(value, ctx)
+        return
+      case "tube":
+        this.takeTube(value, ctx)
+        return
+      case "tubeDiameter":
+        this.takeTube(value / 2, ctx)
         return
     }
   }
@@ -980,6 +1210,30 @@ function circleThrough(a: Vec3, b: Vec3, c: Vec3): Base | null {
     radiusY: null,
     level,
   }
+}
+
+/**
+ * A torus' ring through three points: in their plane, its normal their turn
+ * even when that is the UCS's −Z, its X the arbitrary axis' (r05's MPDUMP).
+ */
+function turnedBy(base: Base, [a, b, c]: readonly Vec3[]): Base {
+  const normal = normalize3(cross3(sub3(b, a), sub3(c, a))) ?? UCS_Z
+  const axes = arbitraryAxis(normal)
+  return { ...base, normal, xAxis: axes ? axes.x : UCS_X, level: false }
+}
+
+/**
+ * Where on a level ring TORUS measures its tube from: its radius toward
+ * `toward`, along the seam when that is the centre; a negative ring's centre
+ * (the console's BasePoint, r01–r07).
+ */
+function ringPoint(base: Base, toward: Vec3): Vec3 {
+  const { center, radius } = base
+  if (!(radius > 0)) return center
+  const way = { x: toward.x - center.x, y: toward.y - center.y, z: 0 }
+  const reach = length3(way)
+  const unit = reach > 0 ? scale3(way, 1 / reach) : base.xAxis
+  return add3(center, scale3(unit, radius))
 }
 
 /** A line, circle or arc lying in the plane, as the tangent it offers. */

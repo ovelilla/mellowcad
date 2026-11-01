@@ -3334,6 +3334,19 @@ export interface TextEntity extends BaseEntity {
 
 // domain/entityTypes.ts
 /**
+ * A sphere `radius` round `position`, its north `normal` and its X `xAxis`,
+ * the UCS's when made (solid/h01, h05), where its isolines start round.
+ */
+export interface SpherePrimitive {
+    readonly kind: "sphere";
+    readonly position: Vec3;
+    readonly xAxis: Vec3;
+    readonly normal: Vec3;
+    readonly radius: number;
+}
+
+// domain/entityTypes.ts
+/**
  * A spline — AutoCAD's NURBS curve. It keeps what was picked: the fit points
  * or the control vertices (`points`, read by `method`), and the settings the
  * curve is derived from. A fit spline's control vertices and knots come out of
@@ -3380,6 +3393,21 @@ export interface SplineEntity extends BaseEntity {
     readonly knotVector?: readonly number[];
     /** A CV spline's weight at each control vertex (DXF 41), each above 0; absent, it is not rational. */
     readonly weights?: readonly number[];
+}
+
+// domain/entityTypes.ts
+/**
+ * A torus round `position`, square to `normal`: its tube `tubeRadius` round,
+ * centred `radius` out (LIST's Torus radius), across the axis when negative
+ * (a lemon, r03).
+ */
+export interface TorusPrimitive {
+    readonly kind: "torus";
+    readonly position: Vec3;
+    readonly xAxis: Vec3;
+    readonly normal: Vec3;
+    readonly radius: number;
+    readonly tubeRadius: number;
 }
 
 // domain/entityTypes.ts
@@ -3582,7 +3610,7 @@ export type ArrayParameters = (RectangularArray & {
  * What made a solid, kept while it is still that primitive: LIST's `Solid
  * type` and the Properties palette's Geometry (solid/p01, d03, d05).
  */
-export type SolidPrimitive = BoxPrimitive | WedgePrimitive | PyramidPrimitive | CylinderPrimitive | ConePrimitive;
+export type SolidPrimitive = BoxPrimitive | WedgePrimitive | PyramidPrimitive | CylinderPrimitive | ConePrimitive | SpherePrimitive | TorusPrimitive;
 
 // domain/entityTypes.ts
 /**
@@ -4055,6 +4083,12 @@ export type BrepCurve = {
  * - `cylinder`: `radius` along X from the axis through `origin`.
  * - `cone`: widening from `apex` along `axis`, `slope` along X per unit along
  *   it (the tangent of its half angle there).
+ * - `sphere`: `radius` round `center`, `axis` its north (solid/h01).
+ * - `torus`: the circle `minorRadius` round, its centre `majorRadius` out
+ *   from `center` in the plane square to `axis`, swept round it; the part
+ *   that sweep leaves outside the axis (ρ ≥ 0). A negative `majorRadius`
+ *   puts the circle's centre across the axis: a lemon; one under
+ *   `minorRadius` an apple (r03, r05, r06).
  */
 export type BrepSurface = {
     readonly kind: "plane";
@@ -4074,6 +4108,19 @@ export type BrepSurface = {
     readonly xAxis: Vec3;
     readonly slope: number;
     readonly ratio: number;
+} | {
+    readonly kind: "sphere";
+    readonly center: Vec3;
+    readonly axis: Vec3;
+    readonly xAxis: Vec3;
+    readonly radius: number;
+} | {
+    readonly kind: "torus";
+    readonly center: Vec3;
+    readonly axis: Vec3;
+    readonly xAxis: Vec3;
+    readonly majorRadius: number;
+    readonly minorRadius: number;
 };
 
 // geometry/solids.ts

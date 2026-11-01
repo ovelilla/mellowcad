@@ -83,6 +83,7 @@ ours, as Spanish's are (`es.md`). The language is Brazil's, and `LANGUAGE_NAMES`
 |  | Box; 3D Solid; Solid type, Box; History, None, Show History; Solid History | Caixa; Sólido 3D; Tipo de sólido, Caixa; Histórico, Nenhum, Mostrar histórico; Histórico do sólido | X ID_Box; LIST's lines (solid/p01); 3D Solid and Solid History, ours | partly |
 |  | Wedge, Pyramid; Modeling; Solid type Wedge, Pyramid; Base radius, Top radius, Sides, Type, Inscribed, Circumscribed | Cunha, Pirâmide; Modelagem; Tipo de sólido Cunha, Pirâmide; Raio da base, Raio superior, Lados, Tipo, Inscrito, Circunscrito | X ID_Wedge, ID_Pyramid, ID_Panel3D_Modeling; LIST's lines and the keywords (solid/w01, y01, y02); the palette's rows not seen in Portuguese | partly |
 |  | Cylinder, Cone; Elliptical, Major radius, Minor radius, Base/Top major and minor radius | Cilindro, Cone; Elíptico, Raio maior, Raio menor, Raio da base maior/menor, Raio superior maior/menor | X ID_Cylinder, ID_Cone; LIST's lines and the keywords (solid/c01, c04, k01, k03); `Raio superior menor` and the palette's rows, ours | partly |
+|  | Sphere, Torus; Torus radius, Tube radius | Esfera, Toroide; Raio do toroide, Raio do tubo | X ID_Sphere, ID_Torus; LIST's lines (solid/h01, r01); the palette's rows, ours | partly |
 |  | Match properties; Array; Rectangular, Polar, Path array | Corresponder propriedades; Matriz; Matriz retangular, Matriz polar, Matriz de caminho | X ACAD_335, XLS_00021866, 00021843, 00021840 | yes |
 | Annotate | Text, Multiline text, Edit text | Texto, Texto multilinha, Editar texto | X T:ID_RBN_0020; P ax26res 32 | yes |
 |  | Linear, Aligned, Angular, Radius, Diameter, Baseline, Continue, Adjust space; Rotated | Linear, Alinhada, Angular, Raio, Diâmetro, Linha de base, Continuar, Ajustar espaço; Rotacionada | X T:ID_RBN_CMDBTN_DIMLINEAR … DIMSPACE, T:ID_RBN_0126; P AcDimRes 5853 | yes |
@@ -307,7 +308,9 @@ in the three languages by `cad/application/promptForms.test.ts`.
 
 - **Aliases left out.** `acad.pgp` makes `COTAHORIZONTAL`, `COTAVERTICAL` and `COTAROTACIONADA`
   aliases of COTALINEAR, but each is a command's name, and the name wins (names/p02); `COTAD` points
-  at the English `DIMSTYLE`, which pt-BR reads as the system variable (names/p04).
+  at the English `DIMSTYLE`, which pt-BR reads as the system variable (names/p04). `TOR` points at
+  `TORO`, which the console runs as TORUS while it refuses `TOR` (solid/n03): `TORO` is an alias
+  of TOROIDE here, `TOR` unknown.
 - **SNAP's Aspect is `ASpecto`**, as the prompt lists it and table 25920 declares it: the console's
   `initget` declares `Ativado` and `Aspecto`, one abbreviation for two keywords, which
   `locales.test.ts` refuses.

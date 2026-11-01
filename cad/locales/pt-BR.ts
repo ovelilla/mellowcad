@@ -109,6 +109,8 @@ export const ptBR: EngineLocale = {
       "pyramid": "Pirâmide",
       "cylinder": "Cilindro",
       "cone": "Cone",
+      "sphere": "Esfera",
+      "torus": "Toroide",
       "intersect": "Intersecção"
     },
     "description": {
@@ -459,6 +461,8 @@ export const ptBR: EngineLocale = {
         "baseMinorRadius": "Raio da base menor",
         "topMajorRadius": "Raio superior maior",
         "topMinorRadius": "Raio superior menor",
+        "torusRadius": "Raio do toroide",
+        "tubeRadius": "Raio do tubo",
         "currentVertex": "Vértice atual",
         "vertex": "Vértice",
         "startSegmentWidth": "Largura inicial do segmento",
@@ -589,6 +593,8 @@ export const ptBR: EngineLocale = {
         "circumscribed": "Circunscrito",
         "cylinder": "Cilindro",
         "cone": "Cone",
+        "sphere": "Esfera",
+        "torus": "Toroide",
         "chord": "Banzo",
         "sqrtChord": "RaizQuadBanzo",
         "uniform": "Uniforme",
@@ -1136,6 +1142,13 @@ export const ptBR: EngineLocale = {
       "CONE": [
         "CONE"
       ],
+      "SPHERE": [
+        "ESFERA"
+      ],
+      "TORUS": [
+        "TOROIDE",
+        "TORO"
+      ],
       "REGION": [
         "REGIAO",
         "REG"
@@ -1374,6 +1387,19 @@ export const ptBR: EngineLocale = {
         "2Point": "2Pontos",
         "Axis": "Eixo",
         "Top": "Raio"
+      },
+      "SPHERE": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Diameter": "Diâmetro"
+      },
+      "TORUS": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Diameter": "Diâmetro",
+        "2Point": "2Pontos"
       },
       "RECTANG": {
         "Chamfer": "CHanfro",
@@ -2189,6 +2215,11 @@ export const ptBR: EngineLocale = {
       "solidHeightOr": "Especificar altura ou",
       "specifyAxisEndpoint": "Especificar ponto final do eixo",
       "specifyTopRadius": "Especificar raio superior",
+      "sphereCenterOr": "Especificar ponto central ou",
+      "specifyRadiusOr": "Especificar raio ou",
+      "torusDiameter": "Especificar o diâmetro do toroide",
+      "tubeRadiusOr": "Especificar raio ou",
+      "tubeDiameter": "Especificar diâmetro",
       "roundBaseCenterOr": "Especificar centro do ponto base ou",
       "specifyDiameter": "Especificar diâmetro",
       "specifyThirdPoint": "Especificar terceiro ponto",
@@ -4407,7 +4438,6 @@ export const ptBR: EngineLocale = {
             "intersection": "Intersecção ",
             "insertion": "Inserção ",
             "perpendicular": "Perpendicular ",
-            "nearest": "Maispróximo ",
             "other": ""
           }
         ],
@@ -6226,6 +6256,17 @@ export const ptBR: EngineLocale = {
         ],
         "Requer um snap ao objeto TAN e a seleção de um círculo, arco ou linha."
       ],
+      "torusTubeTooSmall": [
+        "Se o raio do toroide for ",
+        [
+          "radius"
+        ],
+        ", o raio do tubo deverá ser maior do que ",
+        [
+          "minimum"
+        ],
+        "."
+      ],
       "listSolidHistory": "       Histórico = Nenhum\nMostrar histórico = Não",
       "listSolidType": [
         "  Tipo de sólido = ",
@@ -6237,6 +6278,8 @@ export const ptBR: EngineLocale = {
             "pyramid": "Pirâmide",
             "cylinder": "Cilindro",
             "cone": "Cone",
+            "sphere": "Esfera",
+            "torus": "Toroide",
             "other": "Caixa"
           }
         ]
@@ -6367,6 +6410,18 @@ export const ptBR: EngineLocale = {
       ],
       "listConeTopMajorRadius": [
         "Raio superior maior: ",
+        [
+          "radius"
+        ]
+      ],
+      "listTorusRadius": [
+        "  Raio do toroide: ",
+        [
+          "radius"
+        ]
+      ],
+      "listTubeRadius": [
+        "     Raio do tubo: ",
         [
           "radius"
         ]

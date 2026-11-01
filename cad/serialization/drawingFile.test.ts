@@ -682,11 +682,63 @@ describe("tolerates damaged and legacy content", () => {
       { ...cone.primitive, topRadius: -1 },
       { ...ellipse.primitive, radiusY: 0 },
       { ...cone.primitive, height: 0 },
-      { ...cone.primitive, kind: "sphere" },
+      { ...cone.primitive, kind: "helix" },
       { ...cone.primitive, kind: "pyramid", sides: 2 },
       { ...cone.primitive, xAxis: { x: 0, y: 0, z: 1 } },
     ]) {
       const [solid] = read({ ...cone, primitive })
+      expect(solid.type === "solid3d" && solid.primitive).toBeUndefined()
+    }
+  })
+
+  it("keeps a sphere and a torus while their faces read, their history while it does", () => {
+    const frame = {
+      position: { x: 0, y: 0, z: 0 },
+      xAxis: { x: 1, y: 0, z: 0 },
+      normal: { x: 0, y: 0, z: 1 },
+    }
+    const stored = (primitive: SolidPrimitive) =>
+      JSON.parse(
+        serializeDrawing(
+          snapshotOf([createSolid(primitive, DEFAULT_LAYER_ID, primitive.kind)])
+        )
+      ).entities[0]
+    const read = (raw: unknown) => parseDrawingFile(fileWith([raw])).entities
+    const sphere = stored({ kind: "sphere", ...frame, radius: 5 })
+    const torus = stored({ kind: "torus", ...frame, radius: 10, tubeRadius: 2 })
+    const lemon = stored({ kind: "torus", ...frame, radius: -4, tubeRadius: 5 })
+    for (const raw of [sphere, torus, lemon]) expect(read(raw)).toHaveLength(1)
+    const face = (raw: typeof sphere, surface: object) => ({
+      ...raw,
+      brep: {
+        ...raw.brep,
+        faces: [
+          {
+            ...raw.brep.faces[0],
+            surface: { ...raw.brep.faces[0].surface, ...surface },
+          },
+        ],
+      },
+    })
+    // A surface that cannot be read, or a face that does not close, loses it.
+    for (const raw of [
+      face(sphere, { radius: 0 }),
+      face(sphere, { center: null }),
+      face(torus, { minorRadius: -1 }),
+      face(torus, { majorRadius: "10" }),
+      face(torus, { majorRadius: 1 }),
+      face(lemon, { majorRadius: 0 }),
+    ]) {
+      expect(read(raw)).toEqual([])
+    }
+    // A primitive that cannot be read loses its history alone.
+    for (const [raw, primitive] of [
+      [sphere, { ...sphere.primitive, radius: 0 }],
+      [torus, { ...torus.primitive, radius: 0 }],
+      [torus, { ...torus.primitive, tubeRadius: -2 }],
+      [lemon, { ...lemon.primitive, tubeRadius: 4 }],
+    ]) {
+      const [solid] = read({ ...raw, primitive })
       expect(solid.type === "solid3d" && solid.primitive).toBeUndefined()
     }
   })

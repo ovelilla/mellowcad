@@ -786,8 +786,9 @@ export const regionEntity: fc.Arbitrary<RegionEntity> = fc
 
 /**
  * A primitive solid — a box, a wedge, a pyramid of 3 to 32 sides, a
- * cylinder or a cone, maybe with a top, maybe elliptical —, any size,
- * anywhere, its base facing any way and turned any way in it.
+ * cylinder or a cone, maybe with a top, maybe elliptical, a sphere, a torus
+ * of any kind —, any size, anywhere, its base facing any way and turned any
+ * way in it.
  */
 export const solidEntity: fc.Arbitrary<Solid3dEntity> = fc
   .tuple(
@@ -799,7 +800,15 @@ export const solidEntity: fc.Arbitrary<Solid3dEntity> = fc
     positiveLength,
     positiveLength,
     positiveLength,
-    fc.constantFrom("box", "wedge", "pyramid", "cylinder", "cone"),
+    fc.constantFrom(
+      "box",
+      "wedge",
+      "pyramid",
+      "cylinder",
+      "cone",
+      "sphere",
+      "torus"
+    ),
     fc.integer({ min: 3, max: 32 }),
     fc.double({ min: 0, max: 2, noNaN: true }),
     fc.boolean()
@@ -846,6 +855,15 @@ export const solidEntity: fc.Arbitrary<Solid3dEntity> = fc
           height,
           inscribed,
         }
+      } else if (kind === "sphere") {
+        primitive = { kind, ...frame, radius: length }
+      } else if (kind === "torus") {
+        // A doughnut, or round a ring narrower than its tube (an apple), or
+        // negative and narrower still (a lemon): `top` picks which.
+        const narrower = length * (0.05 + 1.8 * ((top - 1) % 0.5))
+        const radius =
+          top < 1 ? length + width : top < 1.5 ? narrower : -narrower
+        primitive = { kind, ...frame, radius, tubeRadius: length }
       } else if (kind === "cylinder" || kind === "cone") {
         // An elliptical base half the time, its width across.
         const round = {

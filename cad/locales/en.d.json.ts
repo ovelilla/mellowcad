@@ -106,6 +106,8 @@ declare const source: {
       "pyramid": string
       "cylinder": string
       "cone": string
+      "sphere": string
+      "torus": string
       "intersect": string
     }
     "description": {
@@ -325,6 +327,8 @@ declare const source: {
         "baseMinorRadius": string
         "topMajorRadius": string
         "topMinorRadius": string
+        "torusRadius": string
+        "tubeRadius": string
         "currentVertex": string
         "vertex": string
         "startSegmentWidth": string
@@ -455,6 +459,8 @@ declare const source: {
         "circumscribed": string
         "cylinder": string
         "cone": string
+        "sphere": string
+        "torus": string
         "chord": string
         "sqrtChord": string
         "uniform": string
@@ -624,6 +630,8 @@ declare const source: {
       "PYRAMID": string[]
       "CYLINDER": string[]
       "CONE": string[]
+      "SPHERE": string[]
+      "TORUS": string[]
       "REGION": string[]
       "UNION": string[]
       "SUBTRACT": string[]
@@ -851,6 +859,19 @@ declare const source: {
         "2Point": string
         "Axis": string
         "Top": string
+      }
+      "SPHERE": {
+        "3P": string
+        "2P": string
+        "Ttr": string
+        "Diameter": string
+      }
+      "TORUS": {
+        "3P": string
+        "2P": string
+        "Ttr": string
+        "Diameter": string
+        "2Point": string
       }
       "RECTANG": {
         "Chamfer": string
@@ -1626,6 +1647,11 @@ declare const source: {
       "solidHeightOr": string
       "specifyAxisEndpoint": string
       "specifyTopRadius": string
+      "sphereCenterOr": string
+      "specifyRadiusOr": string
+      "torusDiameter": string
+      "tubeRadiusOr": string
+      "tubeDiameter": string
       "roundBaseCenterOr": string
       "specifyDiameter": string
       "specifyThirdPoint": string
@@ -2485,6 +2511,7 @@ declare const source: {
       "pointsCoincident": string
       "ellipseAxesNonzero": string
       "solidTangentRequired": string
+      "torusTubeTooSmall": string
       "listSolidHistory": string
       "listSolidType": string
       "listBoxPosition": string
@@ -2506,6 +2533,8 @@ declare const source: {
       "listConeBaseMajorRadius": string
       "listConeBaseMinorRadius": string
       "listConeTopMajorRadius": string
+      "listTorusRadius": string
+      "listTubeRadius": string
       "listRegionArea": string
       "listRegionPerimeter": string
       "listRegionBounds": string

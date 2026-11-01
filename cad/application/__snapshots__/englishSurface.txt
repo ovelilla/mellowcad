@@ -62,6 +62,8 @@ BOX [] "Box"
 WEDGE ["WE"] "Wedge"
 CYLINDER ["CYL"] "Cylinder"
 CONE [] "Cone"
+SPHERE [] "Sphere"
+TORUS ["TOR"] "Torus"
 PYRAMID ["PYR"] "Pyramid"
 BREAK ["BR"] "Break"
 BREAKATPOINT [] "Break at point"
@@ -200,6 +202,8 @@ box "Box" BOX
 wedge "Wedge" WE
 cylinder "Cylinder" CYL
 cone "Cone" CONE
+sphere "Sphere" SPHERE
+torus "Torus" TOR
 pyramid "Pyramid" PYR
 break "Break" BR
 breakatpoint "Break at point" BREAKATPOINT
@@ -4681,6 +4685,123 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
                  Rotation: 149
 > select the cone
   properties: 3D Solid (1) [Geometry: Solid type=Cone, Position X=200.00, Position Y=0.00, Position Z=0.00, Elliptical=No, Base radius=50.00 mm, Top radius=20.00 mm, Height=60.00 mm] [Solid History: History=None, Show History=No]
+> escape
+  properties: -
+  command| *Cancel*
+
+## SPHERE
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> SPHERE
+  command| SPHERE
+  prompt| Specify center point or [3P/2P/Ttr]: 0,0,0
+  prompt| Specify radius or [Diameter]: 50
+> SPHERE refused
+  command| SPHERE
+  prompt| Specify center point or [3P/2P/Ttr]: FOO
+  error| Point or option keyword required.
+  prompt| Specify center point or [3P/2P/Ttr]: 200,0
+  prompt| Specify radius or [Diameter] <50.00>: 0
+  error| Value must be positive and nonzero.
+  prompt| Specify radius or [Diameter] <50.00>: D
+  prompt| Specify diameter <100.00>: FOO
+  error| Requires numeric distance, second point, or option keyword.
+  prompt| Specify diameter <100.00>: 60
+> SPHERE 3P
+  command| SPHERE
+  prompt| Specify center point or [3P/2P/Ttr]: 3P
+  prompt| Specify first point: 300,0
+  prompt| Specify second point: 300,0
+  error| Points cannot be coincident. *Invalid*
+  prompt| Specify second point: 400,0
+  prompt| Specify third point: 300,100
+> LIST
+  command| LIST
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info|                   3DSOLID   Layer: "0"
+                                    Space: Model space
+                 History = None
+            Show History = No
+              Solid type = Sphere
+                 Position, X = 350.00    Y = 50.00     Z = 0.00
+                   Radius: 70.71
+> select the sphere
+  properties: 3D Solid (1) [Geometry: Solid type=Sphere, Position X=0.00, Position Y=0.00, Position Z=0.00, Radius=50.00 mm, Diameter=100.00 mm] [Solid History: History=None, Show History=No]
+> escape
+  properties: -
+  command| *Cancel*
+
+## TORUS
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> TORUS
+  command| TORUS
+  prompt| Specify center point or [3P/2P/Ttr]: 0,0,0
+  prompt| Specify radius or [Diameter]: 50
+  prompt| Specify tube radius or [2Point/Diameter]: 10
+> TORUS refused
+  command| TORUS
+  prompt| Specify center point or [3P/2P/Ttr]: FOO
+  error| Point or option keyword required.
+  prompt| Specify center point or [3P/2P/Ttr]: 200,0
+  prompt| Specify radius or [Diameter] <50.00>: 0
+  error| Value must be nonzero.
+  prompt| Specify radius or [Diameter] <50.00>: -20
+  prompt| Specify tube radius or [2Point/Diameter] <10.00>: FOO
+  error| Requires numeric distance, second point, or option keyword.
+  prompt| Specify tube radius or [2Point/Diameter] <10.00>: 0
+  error| Value must be positive and nonzero.
+  prompt| Specify tube radius or [2Point/Diameter] <10.00>: 10
+  error| If torus radius is -20.00, tube radius must be greater than 20.00.
+  prompt| Specify tube radius or [2Point/Diameter] <10.00>: 2P
+  prompt| Specify first point: 0,0
+  prompt| Specify second point: 0,0,10
+  error| If torus radius is -20.00, tube radius must be greater than 20.00.
+  prompt| Specify second point: 0,0,30
+> TORUS Diameter
+  command| TORUS
+  prompt| Specify center point or [3P/2P/Ttr]: 400,0
+  prompt| Specify radius or [Diameter] <50.00>: D
+  prompt| Specify diameter of torus <100.00>: 60
+  prompt| Specify tube radius or [2Point/Diameter] <30.00>: D
+  prompt| Specify tube diameter <60.00>: 20
+> TORUS 2P
+  command| TORUS
+  prompt| Specify center point or [3P/2P/Ttr]: 2P
+  prompt| Specify first end point of diameter: 0,300
+  prompt| Specify second end point of diameter: 100,300
+  prompt| Specify tube radius or [2Point/Diameter] <10.00>:
+> LIST
+  command| LIST
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info|                   3DSOLID   Layer: "0"
+                                    Space: Model space
+                 History = None
+            Show History = No
+              Solid type = Torus
+                 Position, X = 50.00     Y = 300.00    Z = 0.00
+             Torus radius: 50.00
+              Tube radius: 10.00
+> select the torus
+  properties: 3D Solid (1) [Geometry: Solid type=Torus, Position X=0.00, Position Y=0.00, Position Z=0.00, Torus radius=50.00 mm, Tube radius=10.00 mm] [Solid History: History=None, Show History=No]
 > escape
   properties: -
   command| *Cancel*

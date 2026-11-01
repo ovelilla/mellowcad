@@ -113,6 +113,12 @@ const FROM_SCRATCH: ReadonlyArray<
     (c) =>
       c.command("PYRAMID").click(p(0, 0)).type("20").enter().type("30").enter(),
   ],
+  ["SPHERE", (c) => c.command("SPHERE").click(p(0, 0)).type("20").enter()],
+  [
+    "TORUS",
+    (c) =>
+      c.command("TORUS").click(p(0, 0)).type("20").enter().type("5").enter(),
+  ],
   // probe polygon/p136: the current layer and properties, both modes.
   [
     "POLYGON",

@@ -12,8 +12,13 @@ import {
   brepIsClosed,
   brepMapped,
   brepVolume,
+  brepIsolines,
+  closedSurfaceReach,
   coedgeStart,
   pyramidBrep,
+  sphereBrep,
+  sphereParallels,
+  torusBrep,
   wedgeBrep,
 } from "./solids"
 
@@ -53,13 +58,18 @@ const box = fc
 
 /**
  * The Euler characteristic V − E + Σ χ(face), 2 for one shell of genus 0:
- * each face an open surface with its loops as holes, χ = 2 − L for a disc's
- * or an annulus's; an apex's edge of no length is only its vertex, its loop a
- * puncture the vertex fills (a cone's side, χ 0, plus that vertex).
+ * each face an open surface with its loops as holes, χ = 2 − 2g − L for a
+ * disc's, an annulus's or a doughnut's (g 1); an apex's edge of no length is
+ * only its vertex, its loop a puncture the vertex fills (a cone's side, χ 0,
+ * plus that vertex; a lemon's, an apple's poles).
  */
 function euler(brep: Brep): number {
   const edges = brep.edges.filter((e) => e.curve.kind !== "point").length
-  const faces = brep.faces.reduce((n, f) => n + 2 - f.loops.length, 0)
+  const faces = brep.faces.reduce((n, f) => {
+    const s = f.surface
+    const genus = s.kind === "torus" && s.majorRadius > s.minorRadius ? 1 : 0
+    return n + 2 - 2 * genus - f.loops.length
+  }, 0)
   return brep.vertices.length - edges + faces
 }
 
@@ -504,3 +514,185 @@ describe("a cylinder's, a cone's and a frustum's B-rep", () => {
     )
   })
 })
+
+const ball = fc
+  .tuple(frame, size)
+  .map(([f, r]) => ({ brep: sphereBrep(f.origin, f.z, f.x, r), r }))
+
+/**
+ * A torus of every kind: a doughnut's ring wider than its tube, a vortex's
+ * as wide, an apple's narrower, a lemon's negative and narrower still.
+ */
+const torus = fc
+  .tuple(
+    frame,
+    size,
+    fc.oneof(
+      fc.constant(1),
+      fc.double({ min: 1.05, max: 20, noNaN: true }),
+      fc.double({ min: 0.05, max: 0.95, noNaN: true }),
+      fc.double({ min: -0.95, max: -0.05, noNaN: true })
+    )
+  )
+  .map(([f, r, ratio]) => ({
+    brep: torusBrep(f.origin, f.z, f.x, ratio * r, r),
+    f,
+    R: ratio * r,
+    r,
+  }))
+
+/**
+ * The volume and the area the tube's circle sweeps where it lies outside the
+ * axis, by Pappus: the disc's part beyond the chord at `a` = −R from its
+ * centre, its area r²·acos(a/r) − a·√(r² − a²) and first moment ⅔(r² − a²)^1.5;
+ * the circle's arc of half angle acos(−R/r).
+ */
+function torusMeasures(R: number, r: number) {
+  const a = Math.max(-r, Math.min(r, -R))
+  const segment = r * r * Math.acos(a / r) - a * Math.sqrt(r * r - a * a)
+  const moment = (2 / 3) * (r * r - a * a) ** 1.5
+  const half = Math.acos(a / r)
+  return {
+    volume: 2 * Math.PI * (R * segment + moment),
+    area: 4 * Math.PI * r * (R * half + r * Math.sin(half)),
+  }
+}
+
+describe("a sphere's and a torus' B-rep", () => {
+  it("is one face with no edge, a lemon's or an apple's with its poles (h01, r05)", () => {
+    fc.assert(
+      fc.property(ball, ({ brep }) => {
+        expect([brep.vertices, brep.edges, brep.faces[0].loops]).toEqual([
+          [],
+          [],
+          [],
+        ])
+        expect(euler(brep)).toBe(2)
+        expect(brepIsClosed(brep)).toBe(true)
+      })
+    )
+    fc.assert(
+      fc.property(torus, ({ brep, R, r }) => {
+        // A doughnut's hole makes it genus 1; a vortex's pinch, its poles one.
+        expect(euler(brep)).toBe(R > r ? 0 : R === r ? 1 : 2)
+        expect(brep.vertices).toHaveLength(R > r ? 0 : R === r ? 1 : 2)
+        expect(brepIsClosed(brep)).toBe(true)
+      })
+    )
+  })
+
+  it("encloses and is bounded as Pappus has it, AutoCAD's measures too (h01, r01, r05)", () => {
+    fc.assert(
+      fc.property(ball, ({ brep, r }) => {
+        expect(close(brepVolume(brep), (4 / 3) * Math.PI * r ** 3)).toBe(true)
+        expect(close(brepArea(brep), 4 * Math.PI * r * r)).toBe(true)
+      })
+    )
+    fc.assert(
+      fc.property(torus, ({ brep, R, r }) => {
+        const { volume, area } = torusMeasures(R, r)
+        expect(close(brepVolume(brep), volume)).toBe(true)
+        expect(close(brepArea(brep), area)).toBe(true)
+      })
+    )
+    const origin = { x: 0, y: 0, z: 0 }
+    const Z = { x: 0, y: 0, z: 1 }
+    const X = { x: 1, y: 0, z: 0 }
+    const lemon = torusBrep(origin, Z, X, -4, 5)
+    expect(brepArea(lemon)).toBeCloseTo(26.766091, 6)
+    expect(brepVolume(lemon)).toBeCloseTo(10.366559, 6)
+    expect(brepArea(torusBrep(origin, Z, X, 2, 4))).toBeCloseTo(384.6763, 4)
+    expect(brepArea(torusBrep(origin, Z, X, 10, 2))).toBeCloseTo(789.5684, 4)
+  })
+
+  it("keeps all that through a turn, a scale, a shift and a reflection", () => {
+    fc.assert(
+      fc.property(
+        fc.oneof(ball, torus),
+        unitVector,
+        fc.double({ min: 0.1, max: 10, noNaN: true }),
+        point,
+        fc.boolean(),
+        ({ brep }, n, k, shift, reflects) => {
+          const axes = arbitraryAxis(n)!
+          const z = reflects ? scale3(axes.z, -1) : axes.z
+          const direction = (d: Vec3) =>
+            add3(add3(scale3(axes.x, d.x), scale3(axes.y, d.y)), scale3(z, d.z))
+          const moved = brepMapped(
+            brep,
+            (p) => add3(scale3(direction(p), k), shift),
+            direction,
+            reflects,
+            k
+          )
+          expect(brepIsClosed(moved)).toBe(true)
+          expect(euler(moved)).toBe(euler(brep))
+          expect(close(brepVolume(moved), brepVolume(brep) * k ** 3)).toBe(true)
+          expect(close(brepArea(moved), brepArea(brep) * k ** 2)).toBe(true)
+        }
+      )
+    )
+  })
+
+  it("reaches along each axis exactly as far as its surface does", () => {
+    fc.assert(
+      fc.property(torus, ({ brep, f, R, r }) => {
+        const [{ surface }] = brep.faces
+        const reach = closedSurfaceReach(surface)!
+        const half = Math.acos(Math.max(-1, Math.min(1, -R / r)))
+        let most = { x: 0, y: 0, z: 0 }
+        for (let i = 0; i <= 360; i++) {
+          const phi = -half + (2 * half * i) / 360
+          for (let j = 0; j < 360; j++) {
+            const theta = (2 * Math.PI * j) / 360
+            const p = at(
+              f,
+              (R + r * Math.cos(phi)) * Math.cos(theta),
+              (R + r * Math.cos(phi)) * Math.sin(theta),
+              r * Math.sin(phi)
+            )
+            const d = add3(p, scale3(f.origin, -1))
+            most = {
+              x: Math.max(most.x, Math.abs(d.x)),
+              y: Math.max(most.y, Math.abs(d.y)),
+              z: Math.max(most.z, Math.abs(d.z)),
+            }
+          }
+        }
+        // Sampled every degree: within 1e-3 of the reach, never past it.
+        for (const axis of ["x", "y", "z"] as const) {
+          expect(most[axis]).toBeLessThanOrEqual(reach[axis] + 1e-9 * r)
+          expect(most[axis]).toBeGreaterThan(
+            reach[axis] - 1e-3 * (r + Math.abs(R))
+          )
+        }
+      }),
+      { numRuns: 20 }
+    )
+    expect(
+      closedSurfaceReach(sphereBrep(ORIGIN, UP, EAST, 3).faces[0].surface)
+    ).toEqual({ x: 3, y: 3, z: 3 })
+  })
+
+  it("draws ISOLINES' meridians and parallels, none at 0 (d06–d09)", () => {
+    expect([1, 4, 8, 16, 17].map(sphereParallels)).toEqual([1, 3, 7, 13, 13])
+    const sphere = sphereBrep(ORIGIN, UP, EAST, 5)
+    expect(brepIsolines(sphere, 4)).toHaveLength(4 + 3)
+    expect(brepIsolines(sphere, 16)).toHaveLength(16 + 13)
+    expect(brepIsolines(sphere, 0)).toEqual([])
+    const doughnut = torusBrep(ORIGIN, UP, EAST, 10, 2)
+    const lemon = torusBrep(ORIGIN, UP, EAST, -4, 5)
+    expect(brepIsolines(doughnut, 4)).toHaveLength(8)
+    expect(brepIsolines(lemon, 4)).toHaveLength(8)
+    // A lemon's tube circles are arcs within its poles.
+    const [tube] = brepIsolines(lemon, 4)
+    expect(tube.kind === "arc" && tube.sweep).toBeCloseTo(
+      2 * Math.acos(4 / 5),
+      12
+    )
+  })
+})
+
+const ORIGIN: Vec3 = { x: 0, y: 0, z: 0 }
+const UP: Vec3 = { x: 0, y: 0, z: 1 }
+const EAST: Vec3 = { x: 1, y: 0, z: 0 }

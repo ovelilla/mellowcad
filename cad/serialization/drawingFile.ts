@@ -132,7 +132,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 45
+export const DRAWING_FILE_VERSION = 46
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -682,6 +682,23 @@ function storedSurface(s: BrepSurface): BrepSurface {
         xAxis: storedVec3(s.xAxis),
         slope: s.slope,
         ratio: s.ratio,
+      }
+    case "sphere":
+      return {
+        kind: "sphere",
+        center: storedVec3(s.center),
+        axis: storedVec3(s.axis),
+        xAxis: storedVec3(s.xAxis),
+        radius: s.radius,
+      }
+    case "torus":
+      return {
+        kind: "torus",
+        center: storedVec3(s.center),
+        axis: storedVec3(s.axis),
+        xAxis: storedVec3(s.xAxis),
+        majorRadius: s.majorRadius,
+        minorRadius: s.minorRadius,
       }
   }
 }
@@ -1525,7 +1542,8 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
       return { id, type: "region", layerId, ...overrides, faces }
     }
     case "solid3d": {
-      // Since 43; a wedge or a pyramid since 44, a cylinder or a cone 45. A boundary that does not
+      // Since 43; a wedge or a pyramid since 44, a cylinder or a cone 45, a
+      // sphere or a torus 46. A boundary that does not
       // close loses the solid; a malformed primitive only its history.
       const brep = parseBrep(raw.brep)
       if (!brep) return null
@@ -1610,7 +1628,7 @@ function parseCurve(raw: unknown): BrepCurve | null {
   }
 }
 
-/** A face's surface; a cylinder or a cone since 45. */
+/** A face's surface; a cylinder or a cone since 45, a sphere or a torus 46. */
 function parseSurface(raw: unknown): BrepSurface | null {
   if (!isRecord(raw)) return null
   switch (raw.kind) {
@@ -1646,6 +1664,20 @@ function parseSurface(raw: unknown): BrepSurface | null {
         slope: raw.slope,
         ratio: raw.ratio,
       }
+    }
+    case "sphere":
+    case "torus": {
+      const center = parseVec3(raw.center)
+      const axis = parseVec3(raw.axis)
+      const xAxis = parseVec3(raw.xAxis)
+      if (!center || !axis || !xAxis) return null
+      if (raw.kind === "sphere") {
+        if (!positive(raw.radius)) return null
+        return { kind: "sphere", center, axis, xAxis, radius: raw.radius }
+      }
+      const { majorRadius, minorRadius } = raw
+      if (!isFiniteNumber(majorRadius) || !positive(minorRadius)) return null
+      return { kind: "torus", center, axis, xAxis, majorRadius, minorRadius }
     }
     default:
       return null
@@ -1712,6 +1744,20 @@ function parsePrimitive(raw: unknown): SolidPrimitive | null {
       if (raw.kind === "cylinder") return { kind: "cylinder", ...common }
       if (!isFiniteNumber(topRadius) || topRadius < 0) return null
       return { kind: "cone", ...common, topRadius }
+    }
+    case "sphere":
+      // Since 46.
+      return positive(raw.radius)
+        ? { kind: "sphere", ...frame, radius: raw.radius }
+        : null
+    case "torus": {
+      // A negative ring needs a tube wider than it, as TORUS asks (r06).
+      const { radius, tubeRadius } = raw
+      if (!isFiniteNumber(radius) || radius === 0 || !positive(tubeRadius)) {
+        return null
+      }
+      if (radius + tubeRadius <= 0) return null
+      return { kind: "torus", ...frame, radius, tubeRadius }
     }
     default:
       return null

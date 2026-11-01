@@ -802,6 +802,32 @@ export interface ConePrimitive extends Omit<CylinderPrimitive, "kind"> {
 }
 
 /**
+ * A sphere `radius` round `position`, its north `normal` and its X `xAxis`,
+ * the UCS's when made (solid/h01, h05), where its isolines start round.
+ */
+export interface SpherePrimitive {
+  readonly kind: "sphere"
+  readonly position: Vec3
+  readonly xAxis: Vec3
+  readonly normal: Vec3
+  readonly radius: number
+}
+
+/**
+ * A torus round `position`, square to `normal`: its tube `tubeRadius` round,
+ * centred `radius` out (LIST's Torus radius), across the axis when negative
+ * (a lemon, r03).
+ */
+export interface TorusPrimitive {
+  readonly kind: "torus"
+  readonly position: Vec3
+  readonly xAxis: Vec3
+  readonly normal: Vec3
+  readonly radius: number
+  readonly tubeRadius: number
+}
+
+/**
  * What made a solid, kept while it is still that primitive: LIST's `Solid
  * type` and the Properties palette's Geometry (solid/p01, d03, d05).
  */
@@ -811,6 +837,8 @@ export type SolidPrimitive =
   | PyramidPrimitive
   | CylinderPrimitive
   | ConePrimitive
+  | SpherePrimitive
+  | TorusPrimitive
 
 /**
  * A 3D solid (DXF's 3DSOLID): its boundary as the kernel's B-rep

@@ -222,6 +222,19 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Axis",
     "Top"
   ],
+  "SPHERE": [
+    "3P",
+    "2P",
+    "Ttr",
+    "Diameter"
+  ],
+  "TORUS": [
+    "3P",
+    "2P",
+    "Ttr",
+    "Diameter",
+    "2Point"
+  ],
   "RECTANG": [
     "Chamfer",
     "Elevation",

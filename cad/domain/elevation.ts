@@ -20,7 +20,7 @@ import {
 } from "./entityTypes"
 import { closestPointOnPolyline3d, isLevelPolyline3d } from "./polylines3d"
 import { isLevelSpline, splineZAt } from "./splines"
-import { brepMapped, unsigned0 } from "../geometry/solids"
+import { brepAnchor, brepMapped, unsigned0 } from "../geometry/solids"
 
 export type ThickEntity = LineEntity | CircleEntity | ArcEntity | PolylineEntity
 
@@ -147,10 +147,13 @@ export function hasThickness(entity: Entity): entity is ThickEntity {
   )
 }
 
-/** The Z of its plane; a line's, a 3D polyline's and a spline's, the Z of their start. */
+/**
+ * The Z of its plane; a line's, a 3D polyline's and a spline's, the Z of their
+ * start; a solid's, its anchor's ({@link brepAnchor}).
+ */
 export function entityElevation(entity: Entity): number {
   if (entity.type === "polyline3d") return entity.vertices[0]?.z ?? 0
-  if (entity.type === "solid3d") return entity.brep.vertices[0]?.z ?? 0
+  if (entity.type === "solid3d") return brepAnchor(entity.brep).z
   if (entity.type === "spline") return entity.points[0]?.z ?? 0
   return entity.elevation ?? 0
 }

@@ -138,7 +138,8 @@ Dependencies run types → per-type modules → overrides → transforms → que
 - **A region and a solid are the kernel's** (`planarRegions.ts`, `solids.ts`; one tolerance
   `MODEL_TOLERANCE`), drawn, picked and snapped as their edges (`regionLevelEdgeEntities`,
   `regionEdgeEntities`, `solidEdgeEntities`); a solid's isolines (`solidWireEntities`) are drawn
-  and picked, never snapped, an apex snapped through `SnapContext.solidPoints`. A boolean is
+  and picked, snapped only to a sphere's or a torus' centre, which with an apex goes through
+  `SnapContext.solidPoints`. A boolean is
   `regionBoolean`, never a tool's cut. A solid's points are the WCS's; it moves only by
   `transformEntity` and holds no -0 (`unsigned0`).
 - **MTEXT keeps AutoCAD's contents string**, `\P` and escapes included: `mtextPlainText` reads it

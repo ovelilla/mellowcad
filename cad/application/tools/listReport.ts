@@ -934,6 +934,10 @@ class Report {
     const placed = primitiveInUcs(primitive, this.settings.ucs)
     this.say("listSolidType", { type: primitive.kind })
     this.say("listBoxPosition", this.leftXyz(placed.position))
+    if (primitive.kind === "sphere") {
+      this.say("listRoundRadius", { radius: this.length(primitive.radius) })
+      return
+    }
     if (placed.normal) this.say("listBoxNormal", this.leftXyz(placed.normal))
     const rotation = () =>
       this.say("listBoxRotation", { angle: this.angle(placed.rotation) })
@@ -998,6 +1002,14 @@ class Report {
         rotation()
         return
       }
+      case "torus":
+        this.say("listTorusRadius", {
+          radius: this.length(primitive.radius),
+        })
+        this.say("listTubeRadius", {
+          radius: this.length(primitive.tubeRadius),
+        })
+        return
     }
   }
 

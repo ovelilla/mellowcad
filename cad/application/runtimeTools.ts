@@ -175,6 +175,8 @@ export function defaultTools(
     new BoxTool("wedge", primitives),
     new RoundSolidTool("cylinder", primitives),
     new RoundSolidTool("cone", primitives),
+    new RoundSolidTool("sphere", primitives),
+    new RoundSolidTool("torus", primitives),
     new PyramidTool(primitives),
     new BreakTool("gap", "break"),
     new BreakTool("atPoint", "breakatpoint"),

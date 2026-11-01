@@ -1,5 +1,10 @@
 import { regionEdgeEntities } from "../../domain/regions"
-import { solidApexes, solidEdgeEntities } from "../../domain/solids"
+import {
+  solidApexes,
+  solidCenters,
+  solidEdgeEntities,
+  solidIsolineEntities,
+} from "../../domain/solids"
 import { Observable } from "../../shared/Observable"
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, length3, planar, sub3, withZ } from "../../geometry/Vec3"
@@ -102,11 +107,27 @@ function snapEntities(document: DocumentReader): {
       if (piece.type === "solid3d") {
         // Its edges, objects of its id: ends, middles, centres, quadrants,
         // nearest and perpendicular points; no geometric centre, nothing on
-        // its isolines (solid/s01, s02, s03, s10). A cone's apex, an end.
+        // its isolines but a sphere's or a torus' centre (solid/s01, s02,
+        // s03, s09, s10). A cone's apex, an end.
         entities.push(...solidEdgeEntities(piece))
         if (document.isEntityVisible(piece)) {
           for (const point of solidApexes(piece)) {
             solidPoints.push({ type: SnapType.Endpoint, point, id: piece.id })
+          }
+          const centers = solidCenters(piece)
+          if (centers.length > 0) {
+            const wires = solidIsolineEntities(
+              piece,
+              document.getSettings().isolines
+            )
+            for (const point of centers) {
+              solidPoints.push({
+                type: SnapType.Center,
+                point,
+                id: piece.id,
+                wires,
+              })
+            }
           }
         }
         continue
@@ -325,7 +346,7 @@ export class SnapEngine extends Observable {
           screenCursor
         )
         const result = { ...candidate, screenDistance }
-        if (screenDistance <= this.pixelTolerance) {
+        if (screenDistance <= this.pixelTolerance && !candidate.byTouch) {
           offer(tierOf(candidate.type), result, priority)
         } else if (
           candidate.touch &&

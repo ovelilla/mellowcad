@@ -1188,7 +1188,7 @@ describe("CYLINDER", () => {
     expectAt(snapped(cad, "_QUA", "10.1,15.1") as Vec3, { x: 10, y: 15, z: 0 })
     answer(cad, "-VIEW", "_SEISO", "ZOOM", "E")
     expect(snapped(cad, "_NEA", "10,15,4")).toBe(
-      "No Nearest found for specified point."
+      "No found for specified point."
     )
     expect(snapped(cad, "_CEN", "10,15,4")).toBe(
       "No Center found for specified point."
@@ -1321,6 +1321,589 @@ describe("CONE", () => {
     answer(cad, "CONE", "0,0,0", "5", "T", "2", "8")
     answer(cad, "CONE", "E", "50,0,0", "60,0,0", "50,3,0", "8")
     answer(cad, "CYLINDER", "100,0,0", "5", "A", "110,0,10")
+    const document = cad.runtime.document
+    const file = serializeDrawing(
+      snapshotOf(document.getEntities(), { settings: document.getSettings() })
+    )
+    expect(parseDrawingFile(file).entities).toEqual(document.getEntities())
+  })
+})
+
+describe("SPHERE", () => {
+  it("asks a centre and a radius, its one face with no edge (solid/h01)", () => {
+    const cad = console()
+    expect(written(cad, "SPHERE", "0,0,0", "5")).toEqual([
+      "SPHERE",
+      "Specify center point or [3P/2P/Ttr]: 0,0,0",
+      "Specify radius or [Diameter]: 5",
+    ])
+    expect(listed(cad)).toEqual([
+      "      Solid type = Sphere",
+      "         Position, X = 0.0000    Y = 0.0000    Z = 0.0000",
+      "           Radius: 5.0000",
+    ])
+    const { brep } = last(cad)
+    expect(brep.vertices).toEqual([])
+    expect(brep.edges).toEqual([])
+    expect(brep.faces.map((f) => [f.surface.kind, f.loops.length])).toEqual([
+      ["sphere", 0],
+    ])
+    expect(brepIsClosed(brep)).toBe(true)
+    expect(brepVolume(brep)).toBeCloseTo(523.598776, 6)
+    expect(written(cad, "AREA", "O", "L").at(-1)).toBe(
+      "Area = 314.1593, Perimeter = 0.0000"
+    )
+  })
+
+  it("takes 3P, 2P in space, Diameter and Ttr, its frame the UCS's (h02)", () => {
+    const cad = console()
+    answer(cad, "SPHERE", "3P", "0,0,0", "10,0,0", "0,10,0")
+    expect(listed(cad).slice(1)).toEqual([
+      "         Position, X = 5.0000    Y = 5.0000    Z = 0.0000",
+      "           Radius: 7.0711",
+    ])
+    expect(written(cad, "SPHERE", "2P", "50,0,0", "60,0,4")).toEqual([
+      "SPHERE",
+      "Specify center point or [3P/2P/Ttr]: 2P",
+      "Specify first end point of diameter: 50,0,0",
+      "Specify second end point of diameter: 60,0,4",
+    ])
+    expect(listed(cad).slice(1)).toEqual([
+      "         Position, X = 55.0000   Y = 0.0000    Z = 2.0000",
+      "           Radius: 5.3852",
+    ])
+    expect(written(cad, "SPHERE", "100,0,0", "D", "6").slice(2)).toEqual([
+      "Specify radius or [Diameter] <5.3852>: D",
+      "Specify diameter <10.7703>: 6",
+    ])
+    expect(listed(cad)[2]).toBe("           Radius: 3.0000")
+    answer(cad, "LINE", "200,0", "300,0", "", "LINE", "200,0", "200,100", "")
+    answer(cad, "ZOOM", "E")
+    expect(
+      written(cad, "SPHERE", "T", "_TAN", "250,0", "_TAN", "200,50", "10")
+    ).toEqual([
+      "SPHERE",
+      "Specify center point or [3P/2P/Ttr]: T",
+      "Specify point on object for first tangent: _TAN to 250,0",
+      "Specify point on object for second tangent: _TAN to 200,50",
+      "Specify radius of circle <3.0000>: 10",
+    ])
+    expect(listed(cad).slice(1)).toEqual([
+      "         Position, X = 210.0000  Y = 10.0000   Z = 0.0000",
+      "           Radius: 10.0000",
+    ])
+    answer(cad, "SPHERE", "3P", "400,0,0", "410,0,0", "400,0,10")
+    expect(listed(cad).slice(1)).toEqual([
+      "         Position, X = 405.0000  Y = 0.0000    Z = 5.0000",
+      "           Radius: 7.0711",
+    ])
+    // Upright whatever its points (h02's MPDUMP).
+    const [{ surface }] = last(cad).brep.faces
+    expect(surface.kind === "sphere" && surface.axis).toEqual({
+      x: 0,
+      y: 0,
+      z: 1,
+    })
+  })
+
+  it("refuses what makes no sphere, coincident points by that name (h03)", () => {
+    const cad = console()
+    expect(
+      written(
+        cad,
+        "SPHERE",
+        "FOO",
+        "",
+        "0,0,0",
+        "FOO",
+        "",
+        "0",
+        "-2",
+        "D",
+        "FOO",
+        "0",
+        "8"
+      )
+    ).toEqual([
+      "SPHERE",
+      "Specify center point or [3P/2P/Ttr]: FOO",
+      "Point or option keyword required.",
+      "Specify center point or [3P/2P/Ttr]:",
+      "Point or option keyword required.",
+      "Specify center point or [3P/2P/Ttr]: 0,0,0",
+      "Specify radius or [Diameter]: FOO",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify radius or [Diameter]:",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify radius or [Diameter]: 0",
+      "Value must be positive and nonzero.",
+      "Specify radius or [Diameter]: -2",
+      "Value must be positive and nonzero.",
+      "Specify radius or [Diameter]: D",
+      "Specify diameter: FOO",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify diameter: 0",
+      "Value must be positive and nonzero.",
+      "Specify diameter: 8",
+    ])
+    expect(written(cad, "SPHERE", "50,0,0", "")[2]).toBe(
+      "Specify radius or [Diameter] <4.0000>:"
+    )
+    expect(listed(cad)[2]).toBe("           Radius: 4.0000")
+    expect(
+      written(
+        cad,
+        "SPHERE",
+        "3P",
+        "0,0,0",
+        "0,0,0",
+        "10,0,0",
+        "20,0,0",
+        "0,10,0"
+      ).slice(2)
+    ).toEqual([
+      "Specify first point: 0,0,0",
+      "Specify second point: 0,0,0",
+      "Points cannot be coincident. *Invalid*",
+      "Specify second point: 10,0,0",
+      "Specify third point: 20,0,0",
+      "Points cannot be collinear. *Invalid*",
+      "Specify third point: 0,10,0",
+    ])
+    expect(
+      written(cad, "SPHERE", "2P", "0,0,0", "0,0,0", "10,0,0").slice(3)
+    ).toEqual([
+      "Specify second end point of diameter: 0,0,0",
+      "Points cannot be coincident. *Invalid*",
+      "Specify second end point of diameter: 10,0,0",
+    ])
+  })
+
+  it("lies in the UCS, moves, turns, mirrors and scales, not exploded (h04, h05)", () => {
+    const cad = console()
+    answer(cad, "UCS", "X", "30", "SPHERE", "0,0,0", "5")
+    const tilted = [
+      "         Position, X = 0.0000    Y = 0.0000    Z = 0.0000",
+      "           Radius: 5.0000",
+    ]
+    expect(listed(cad).slice(1)).toEqual(tilted)
+    answer(cad, "UCS", "W")
+    // No Normal: a sphere has none to list.
+    expect(listed(cad).slice(1)).toEqual(tilted)
+    // Its frame the UCS's (h05's MPDUMP).
+    const [{ surface }] = last(cad).brep.faces
+    if (surface.kind !== "sphere") throw new Error("not a sphere")
+    expectAt(surface.axis, { x: 0, y: -0.5, z: Math.sqrt(3) / 2 })
+    answer(cad, "MOVE", "L", "", "0,0,0", "5,5,3")
+    answer(cad, "ROTATE", "L", "", "0,0", "30")
+    answer(cad, "MIRROR", "L", "", "0,40", "10,40", "N")
+    answer(cad, "SCALE", "L", "", "0,0", "2")
+    expect(listed(cad).slice(1)).toEqual([
+      "         Position, X = 3.6603    Y = 146.3397  Z = 6.0000",
+      "           Radius: 10.0000",
+    ])
+    for (const solid of solids(cad)) expect(brepIsClosed(solid.brep)).toBe(true)
+    expect(written(cad, "EXPLODE", "L", "").slice(1, 4)).toEqual([
+      "Select objects: L",
+      "1 found",
+      "1 was not able to be exploded.",
+    ])
+    answer(cad, "")
+  })
+
+  it("snaps at its centre from any isoline, at nothing else (s06, s09, s10)", () => {
+    const cad = console()
+    answer(cad, "ZOOM", "W", "-10,-10", "40,40", "SPHERE", "10,10,5", "5")
+    expect(snapped(cad, "_CEN", "15.1,10.1")).toEqual({ x: 10, y: 10, z: 5 })
+    expect(snapped(cad, "_CEN", "10.1,10.1")).toEqual({ x: 10, y: 10, z: 5 })
+    expect(snapped(cad, "_QUA", "10.1,15.1")).toBe(
+      "No Quadrant found for specified point."
+    )
+    expect(snapped(cad, "_END", "10.1,10.1")).toBe(
+      "No Endpoint found for specified point."
+    )
+    expect(snapped(cad, "_NEA", "10.1,15.1")).toBe(
+      "No found for specified point."
+    )
+    answer(cad, "-VIEW", "_SEISO", "ZOOM", "E")
+    expect(snapped(cad, "_CEN", "13.5355,10,8.5355")).toEqual({
+      x: 10,
+      y: 10,
+      z: 5,
+    })
+    answer(cad, "ISOLINES", "0")
+    expect(snapped(cad, "_CEN", "15,10,5")).toBe(
+      "No Center found for specified point."
+    )
+  })
+
+  it("asks in each language, by its own name (n02)", () => {
+    const spanish = console(es)
+    expect(written(spanish, "ESFERA", "0,0,0", "D", "8")).toEqual([
+      "ESFERA",
+      "Precise centro o [3P/2P/Ttr]: 0,0,0",
+      "Precise radio o [Diámetro]: D",
+      "Precise diámetro: 8",
+    ])
+    expect(listed(spanish)).toEqual([
+      "    Tipo de sólido = Esfera",
+      "         Posición, X = 0.0000    Y = 0.0000    Z = 0.0000",
+      "            Radio: 4.0000",
+    ])
+    const portuguese = console(ptBR)
+    expect(written(portuguese, "ESFERA", "0,0,0", "5")).toEqual([
+      "ESFERA",
+      "Especificar ponto central ou [3P/2P/Ttr]: 0,0,0",
+      "Especificar raio ou [Diâmetro]: 5",
+    ])
+    expect(listed(portuguese)[0]).toBe("  Tipo de sólido = Esfera")
+  })
+})
+
+describe("TORUS", () => {
+  it("asks a centre, a radius and a tube, its one face with no edge (solid/r01)", () => {
+    const cad = console()
+    expect(written(cad, "TORUS", "0,0,0", "10", "2")).toEqual([
+      "TORUS",
+      "Specify center point or [3P/2P/Ttr]: 0,0,0",
+      "Specify radius or [Diameter]: 10",
+      "Specify tube radius or [2Point/Diameter]: 2",
+    ])
+    expect(listed(cad)).toEqual([
+      "      Solid type = Torus",
+      "         Position, X = 0.0000    Y = 0.0000    Z = 0.0000",
+      "     Torus radius: 10.0000",
+      "      Tube radius: 2.0000",
+    ])
+    const { brep } = last(cad)
+    expect(brep.vertices).toEqual([])
+    expect(brep.edges).toEqual([])
+    expect(brep.faces.map((f) => [f.surface.kind, f.loops.length])).toEqual([
+      ["torus", 0],
+    ])
+    expect(brepIsClosed(brep)).toBe(true)
+    expect(brepVolume(brep)).toBeCloseTo(2 * Math.PI ** 2 * 10 * 4, 6)
+    expect(written(cad, "AREA", "O", "L").at(-1)).toBe(
+      "Area = 789.5684, Perimeter = 0.0000"
+    )
+  })
+
+  it("takes 3P, 2P, Diameter, the tube's 2Point and Diameter (r02, r07)", () => {
+    const cad = console()
+    answer(cad, "TORUS", "3P", "0,0,0", "20,0,0", "0,20,0", "2")
+    expect(listed(cad).slice(1)).toEqual([
+      "         Position, X = 10.0000   Y = 10.0000   Z = 0.0000",
+      "     Torus radius: 14.1421",
+      "      Tube radius: 2.0000",
+    ])
+    expect(
+      written(cad, "TORUS", "2P", "50,0,0", "70,0,0", "2P", "0,0,0", "0,0,4")
+    ).toEqual([
+      "TORUS",
+      "Specify center point or [3P/2P/Ttr]: 2P",
+      "Specify first end point of diameter: 50,0,0",
+      "Specify second end point of diameter: 70,0,0",
+      "Specify tube radius or [2Point/Diameter] <2.0000>: 2P",
+      "Specify first point: 0,0,0",
+      "Specify second point: 0,0,4",
+    ])
+    expect(listed(cad).slice(1)).toEqual([
+      "         Position, X = 60.0000   Y = 0.0000    Z = 0.0000",
+      "     Torus radius: 10.0000",
+      "      Tube radius: 4.0000",
+    ])
+    expect(
+      written(cad, "TORUS", "100,0,0", "D", "20", "D", "6").slice(2)
+    ).toEqual([
+      "Specify radius or [Diameter] <10.0000>: D",
+      "Specify diameter of torus <20.0000>: 20",
+      "Specify tube radius or [2Point/Diameter] <4.0000>: D",
+      "Specify tube diameter <8.0000>: 6",
+    ])
+    expect(listed(cad).slice(2)).toEqual([
+      "     Torus radius: 10.0000",
+      "      Tube radius: 3.0000",
+    ])
+    // 2P's second point is read in the first's plane (r07).
+    answer(cad, "TORUS", "2P", "200,0,0", "210,0,5", "1")
+    expect(listed(cad).slice(1, 3)).toEqual([
+      "         Position, X = 205.0000  Y = 0.0000    Z = 0.0000",
+      "     Torus radius: 5.0000",
+    ])
+  })
+
+  it("measures its tube from the ring's point last given (r01, r02, r04, r06)", () => {
+    const cad = console()
+    answer(cad, "TORUS", "0,0,0", "10,0,0", "10,0,3")
+    expect(listed(cad).at(-1)).toBe("      Tube radius: 3.0000")
+    answer(cad, "TORUS", "3P", "50,0,0", "70,0,0", "50,20,0", "50,24,0")
+    expect(listed(cad).at(-1)).toBe("      Tube radius: 4.0000")
+    answer(cad, "TORUS", "100,0,0", "-5", "100,6,0")
+    expect(listed(cad).at(-1)).toBe("      Tube radius: 6.0000")
+  })
+
+  it("asks no Diameter's default before any is given (r07, r08)", () => {
+    const cad = console()
+    expect(
+      written(cad, "TORUS", "0,0,0", "D", "", "20", "D", "", "4").slice(2)
+    ).toEqual([
+      "Specify radius or [Diameter]: D",
+      "Specify diameter of torus:",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify diameter of torus: 20",
+      "Specify tube radius or [2Point/Diameter]: D",
+      "Specify tube diameter:",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify tube diameter: 4",
+    ])
+    const after = console()
+    answer(after, "SPHERE", "0,0,0", "D", "5")
+    expect(
+      written(after, "TORUS", "20,0,0", "5", "D", "", "2").slice(3)
+    ).toEqual([
+      "Specify tube radius or [2Point/Diameter]: D",
+      "Specify tube diameter <0.0000>:",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify tube diameter <0.0000>: 2",
+    ])
+    expect(written(after, "TORUS", "40,0,0", "5", "D", "").slice(3)).toEqual([
+      "Specify tube radius or [2Point/Diameter] <1.0000>: D",
+      "Specify tube diameter <2.0000>:",
+    ])
+    expect(listed(after).at(-1)).toBe("      Tube radius: 1.0000")
+  })
+
+  it("refuses what makes no torus, a negative radius a lemon's (r03, r05, r06, r09)", () => {
+    const cad = console()
+    expect(
+      written(
+        cad,
+        "TORUS",
+        "FOO",
+        "0,0,0",
+        "FOO",
+        "",
+        "0",
+        "-2",
+        "FOO",
+        "",
+        "0",
+        "-1",
+        "4"
+      )
+    ).toEqual([
+      "TORUS",
+      "Specify center point or [3P/2P/Ttr]: FOO",
+      "Point or option keyword required.",
+      "Specify center point or [3P/2P/Ttr]: 0,0,0",
+      "Specify radius or [Diameter]: FOO",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify radius or [Diameter]:",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify radius or [Diameter]: 0",
+      "Value must be nonzero.",
+      "Specify radius or [Diameter]: -2",
+      "Specify tube radius or [2Point/Diameter]: FOO",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify tube radius or [2Point/Diameter]:",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify tube radius or [2Point/Diameter]: 0",
+      "Value must be positive and nonzero.",
+      "Specify tube radius or [2Point/Diameter]: -1",
+      "Value must be positive and nonzero.",
+      "Specify tube radius or [2Point/Diameter]: 4",
+    ])
+    expect(listed(cad).slice(2)).toEqual([
+      "     Torus radius: -2.0000",
+      "      Tube radius: 4.0000",
+    ])
+    // A negative radius is no default (r03).
+    expect(written(cad, "TORUS", "50,0,0", "100,0,0", "5")[2]).toBe(
+      "Specify radius or [Diameter]: 100,0,0"
+    )
+    expect(listed(cad)[2]).toBe("     Torus radius: 50.0000")
+    expect(
+      written(cad, "TORUS", "150,0,0", "-5", "4", "", "7").slice(3)
+    ).toEqual([
+      "Specify tube radius or [2Point/Diameter] <5.0000>: 4",
+      "If torus radius is -5.0000, tube radius must be greater than 5.0000.",
+      "Specify tube radius or [2Point/Diameter] <5.0000>:",
+      "If torus radius is -5.0000, tube radius must be greater than 5.0000.",
+      "Specify tube radius or [2Point/Diameter] <5.0000>: 7",
+    ])
+    // 2Point's none says so whatever the ring, and asks its point again (r09).
+    expect(
+      written(cad, "TORUS", "200,0,0", "10", "2P", "0,0,0", "0,0,0", "0,0,1")
+    ).toEqual([
+      "TORUS",
+      "Specify center point or [3P/2P/Ttr]: 200,0,0",
+      "Specify radius or [Diameter] <50.0000>: 10",
+      "Specify tube radius or [2Point/Diameter] <7.0000>: 2P",
+      "Specify first point: 0,0,0",
+      "Specify second point: 0,0,0",
+      "If torus radius is 10.0000, tube radius must be greater than 10.0000.",
+      "Specify second point: 0,0,1",
+    ])
+    expect(
+      written(cad, "TORUS", "300,0,0", "10", "D", "0", "-1", "4").slice(4)
+    ).toEqual([
+      "Specify tube diameter <2.0000>: 0",
+      "Value must be positive and nonzero.",
+      "Specify tube diameter <2.0000>: -1",
+      "Value must be positive and nonzero.",
+      "Specify tube diameter <2.0000>: 4",
+    ])
+    expect(
+      written(cad, "TORUS", "3P", "0,0,0", "0,0,0", "10,0,0", "20,0,0").slice(3)
+    ).toEqual([
+      "Specify second point: 0,0,0",
+      "Points cannot be coincident. *Invalid*",
+      "Specify second point: 10,0,0",
+      "Specify third point: 20,0,0",
+      "Points cannot be collinear. *Invalid*",
+    ])
+    answer(cad, "\u001b")
+    for (const solid of solids(cad)) expect(brepIsClosed(solid.brep)).toBe(true)
+  })
+
+  it("lies in its 3P's plane, turned as they turn (r05's MPDUMP)", () => {
+    const cad = console()
+    answer(cad, "TORUS", "3P", "0,0,0", "20,0,0", "0,0,20", "2")
+    answer(cad, "TORUS", "3P", "50,0,0", "50,20,0", "50,0,20", "2")
+    const [lying, standing] = solids(cad).map((s) => s.brep.faces[0].surface)
+    expect(lying.kind === "torus" && [lying.axis, lying.xAxis]).toEqual([
+      { x: 0, y: -1, z: 0 },
+      { x: 1, y: 0, z: 0 },
+    ])
+    expect(
+      standing.kind === "torus" && [standing.axis, standing.xAxis]
+    ).toEqual([
+      { x: 1, y: 0, z: 0 },
+      { x: 0, y: 1, z: 0 },
+    ])
+    expect(listed(cad).slice(1, 3)).toEqual([
+      "         Position, X = 50.0000   Y = 10.0000   Z = 10.0000",
+      "           Normal: X = 1.0000    Y = 0.0000    Z = 0.0000",
+    ])
+  })
+
+  it("makes Ttr's ring tangent to two objects, measures from it in the UCS (r04)", () => {
+    const cad = console()
+    answer(cad, "LINE", "200,0", "300,0", "", "LINE", "200,0", "200,100", "")
+    answer(cad, "ZOOM", "E")
+    expect(
+      written(
+        cad,
+        "TORUS",
+        "T",
+        "_TAN",
+        "250,0",
+        "_TAN",
+        "200,50",
+        "10",
+        "2"
+      ).slice(4)
+    ).toEqual([
+      "Specify radius of circle: 10",
+      "Specify tube radius or [2Point/Diameter]: 2",
+    ])
+    expect(listed(cad).slice(1)).toEqual([
+      "         Position, X = 210.0000  Y = 10.0000   Z = 0.0000",
+      "     Torus radius: 10.0000",
+      "      Tube radius: 2.0000",
+    ])
+    answer(cad, "UCS", "X", "30", "TORUS", "0,0,0", "10", "2")
+    expect(listed(cad)[2]).toBe("     Torus radius: 10.0000")
+    answer(cad, "UCS", "W")
+    expect(listed(cad)[2]).toBe(
+      "           Normal: X = 0.0000    Y = -0.5000   Z = 0.8660"
+    )
+    answer(cad, "ROTATE", "L", "", "0,0", "30")
+    answer(cad, "MIRROR", "L", "", "0,40", "10,40", "N")
+    answer(cad, "SCALE", "L", "", "0,0", "2")
+    expect(listed(cad).slice(1)).toEqual([
+      "         Position, X = 0.0000    Y = 160.0000  Z = 0.0000",
+      "           Normal: X = 0.2500    Y = 0.4330    Z = 0.8660",
+      "     Torus radius: 20.0000",
+      "      Tube radius: 4.0000",
+    ])
+    for (const solid of solids(cad)) expect(brepIsClosed(solid.brep)).toBe(true)
+  })
+
+  it("snaps at its centre from any isoline, at nothing else (s07, s09, s10)", () => {
+    const cad = console()
+    answer(cad, "ZOOM", "W", "-20,-20", "40,40", "TORUS", "10,10,0", "10", "2")
+    expect(snapped(cad, "_CEN", "22.1,10.1")).toEqual({ x: 10, y: 10, z: 0 })
+    expect(snapped(cad, "_CEN", "18.1,10.1")).toEqual({ x: 10, y: 10, z: 0 })
+    expect(snapped(cad, "_CEN", "10.1,10.1")).toBe(
+      "No Center found for specified point."
+    )
+    expect(snapped(cad, "_QUA", "10.1,20.1")).toBe(
+      "No Quadrant found for specified point."
+    )
+    answer(cad, "-VIEW", "_SEISO", "ZOOM", "E")
+    expect(snapped(cad, "_CEN", "20,10,2")).toEqual({ x: 10, y: 10, z: 0 })
+    expect(snapped(cad, "_NEA", "20,10,2")).toBe(
+      "No found for specified point."
+    )
+  })
+
+  it("asks in each language, by its own name and alias (n02, n03)", () => {
+    const spanish = console(es)
+    expect(written(spanish, "TOR", "0,0,0", "10", "D", "4")).toEqual([
+      "TOR TOROIDE",
+      "Precise centro o [3P/2P/Ttr]: 0,0,0",
+      "Precise radio o [Diámetro]: 10",
+      "Precise radio de sección o [2Puntos/Diámetro]: D",
+      "Precise diámetro de sección: 4",
+    ])
+    expect(listed(spanish)).toEqual([
+      "    Tipo de sólido = Toroide",
+      "         Posición, X = 0.0000    Y = 0.0000    Z = 0.0000",
+      " Radio de toroide: 10.0000",
+      " Radio de sección: 2.0000",
+    ])
+    expect(written(spanish, "TOROIDE", "50,0,0", "-5", "4").slice(-1)).toEqual([
+      "Si el radio del toroide es -5.0000, el radio de sección debe ser superior a 5.0000.",
+    ])
+    const portuguese = console(ptBR)
+    // pt-BR's acad.pgp sends TOR to TORO, which its console runs as TORUS
+    // and refuses through TOR (n03).
+    expect(written(portuguese, "TORO", "0,0,0", "10", "2")).toEqual([
+      "TORO TOROIDE",
+      "Especificar ponto central ou [3P/2P/Ttr]: 0,0,0",
+      "Especificar raio ou [Diâmetro]: 10",
+      "Especificar raio ou [2Pontos/Diâmetro]: 2",
+    ])
+    expect(listed(portuguese).slice(2)).toEqual([
+      "  Raio do toroide: 10.0000",
+      "     Raio do tubo: 2.0000",
+    ])
+  })
+
+  it("is stretched whole by a frame round its centre, never by its rim (t06)", () => {
+    const cad = console()
+    answer(cad, "ZOOM", "W", "-20,-20", "80,40")
+    answer(cad, "SPHERE", "0,0,0", "5", "TORUS", "50,0,0", "10", "2")
+    const at = () => listedAll(cad).map((block) => block[1].replace(/ +/g, " "))
+    const stretch = (from: string, to: string, by: string) =>
+      answer(cad, "STRETCH", "C", from, to, "", "0,0", by)
+    stretch("-1,-1", "1,1", "10,0")
+    stretch("14,-1", "16,1", "0,10")
+    stretch("45,-1", "59,1", "10,0")
+    stretch("70,-1", "73,1", "0,10")
+    expect(at()).toEqual([
+      " Position, X = 60.0000 Y = 0.0000 Z = 0.0000",
+      " Position, X = 10.0000 Y = 0.0000 Z = 0.0000",
+    ])
+  })
+
+  it("is saved and read back, a lemon and an apple too", () => {
+    const cad = console()
+    answer(cad, "TORUS", "0,0,0", "10", "2")
+    answer(cad, "TORUS", "50,0,0", "-4", "5")
+    answer(cad, "TORUS", "100,0,0", "2", "4")
+    answer(cad, "SPHERE", "3P", "0,0,0", "10,0,0", "0,10,0")
     const document = cad.runtime.document
     const file = serializeDrawing(
       snapshotOf(document.getEntities(), { settings: document.getSettings() })

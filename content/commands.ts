@@ -67,6 +67,8 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   WEDGE: { group: "draw" },
   CYLINDER: { group: "draw" },
   CONE: { group: "draw" },
+  SPHERE: { group: "draw" },
+  TORUS: { group: "draw" },
   PYRAMID: { group: "draw" },
   UNION: { group: "modify" },
   SUBTRACT: { group: "modify" },

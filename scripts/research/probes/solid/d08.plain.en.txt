@@ -1,0 +1,127 @@
+_QAFLAGS
+2
+_SPHERE
+0,0,0
+10
+_VPOINT
+0,-1,0
+_ISOLINES
+13
+_REGEN
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mp-solid-d08-front13.png
+_N
+_Y
+_ISOLINES
+18
+_REGEN
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mp-solid-d08-front18.png
+_N
+_Y
+_ISOLINES
+23
+_REGEN
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mp-solid-d08-front23.png
+_N
+_Y
+_ISOLINES
+28
+_REGEN
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mp-solid-d08-front28.png
+_N
+_Y
+_ISOLINES
+51
+_REGEN
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mp-solid-d08-front51.png
+_N
+_Y
+_ISOLINES
+56
+_REGEN
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mp-solid-d08-front56.png
+_N
+_Y

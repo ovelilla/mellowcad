@@ -262,8 +262,27 @@ export const midpointProvider: SnapProvider = {
 
 export const centerProvider: SnapProvider = {
   type: SnapType.Center,
-  collect({ document, entities, touch }: SnapContext): SnapCandidate[] {
+  collect({
+    document,
+    entities,
+    touch,
+    solidPoints = [],
+  }: SnapContext): SnapCandidate[] {
     const candidates: SnapCandidate[] = []
+    for (const solid of solidPoints) {
+      if (solid.type !== SnapType.Center) continue
+      for (const wire of solid.wires) {
+        const near = touch(wire)
+        if (!near) continue
+        candidates.push({
+          type: SnapType.Center,
+          point: solid.point,
+          sourceIds: [solid.id],
+          touch: near,
+          byTouch: true,
+        })
+      }
+    }
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       if (

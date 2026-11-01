@@ -1355,6 +1355,51 @@ describe("the engine's English surface", () => {
         )
         .do("escape", (c) => c.escape())
     )
+    walk("SPHERE", createHarness(), (s) =>
+      s
+        .do("SPHERE", (c) => submit(c, "SPHERE", "0,0,0", "50"))
+        .do("SPHERE refused", (c) =>
+          submit(c, "SPHERE", "FOO", "200,0", "0", "D", "FOO", "60")
+        )
+        .do("SPHERE 3P", (c) =>
+          submit(c, "SPHERE", "3P", "300,0", "300,0", "400,0", "300,100")
+        )
+        .do("LIST", (c) => submit(c, "LIST", "L", ""))
+        .do("select the sphere", (c) =>
+          c.select(c.entities().find((e) => e.type === "solid3d")!.id)
+        )
+        .do("escape", (c) => c.escape())
+    )
+    walk("TORUS", createHarness(), (s) =>
+      s
+        .do("TORUS", (c) => submit(c, "TORUS", "0,0,0", "50", "10"))
+        .do("TORUS refused", (c) =>
+          submit(
+            c,
+            "TORUS",
+            "FOO",
+            "200,0",
+            "0",
+            "-20",
+            "FOO",
+            "0",
+            "10",
+            "2P",
+            "0,0",
+            "0,0,10",
+            "0,0,30"
+          )
+        )
+        .do("TORUS Diameter", (c) =>
+          submit(c, "TORUS", "400,0", "D", "60", "D", "20")
+        )
+        .do("TORUS 2P", (c) => submit(c, "TORUS", "2P", "0,300", "100,300", ""))
+        .do("LIST", (c) => submit(c, "LIST", "L", ""))
+        .do("select the torus", (c) =>
+          c.select(c.entities().find((e) => e.type === "solid3d")!.id)
+        )
+        .do("escape", (c) => c.escape())
+    )
     walk("PYRAMID", createHarness(), (s) =>
       s
         .do("PYRAMID", (c) => submit(c, "PYRAMID", "0,0,0", "50", "80"))

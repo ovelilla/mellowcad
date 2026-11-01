@@ -3,6 +3,7 @@ import { Axes3, axesToWorld } from "../geometry/ocs"
 import {
   Brep,
   BrepEdge,
+  Wire,
   boxBrep,
   brepArea,
   brepIsolines,
@@ -10,6 +11,8 @@ import {
   planarFace,
   pyramidBrep,
   roundBrep,
+  sphereBrep,
+  torusBrep,
   unsigned0,
   wedgeBrep,
 } from "../geometry/solids"
@@ -97,6 +100,21 @@ export function primitiveBrep(primitive: SolidPrimitive): Brep {
           : primitive.topRadius / Math.max(radius, radiusY)
       )
     }
+    case "sphere":
+      return sphereBrep(
+        primitive.position,
+        primitive.normal,
+        primitive.xAxis,
+        primitive.radius
+      )
+    case "torus":
+      return torusBrep(
+        primitive.position,
+        primitive.normal,
+        primitive.xAxis,
+        primitive.radius,
+        primitive.tubeRadius
+      )
   }
 }
 
@@ -195,6 +213,15 @@ function primitiveMapped(
           : {}),
         height: primitive.height * scale,
       }
+    case "sphere":
+      return { ...primitive, ...placed, radius: primitive.radius * scale }
+    case "torus":
+      return {
+        ...primitive,
+        ...placed,
+        radius: primitive.radius * scale,
+        tubeRadius: primitive.tubeRadius * scale,
+      }
   }
 }
 
@@ -272,20 +299,63 @@ export function solidApexes(solid: Solid3dEntity): Vec3[] {
 }
 
 /**
+ * A sphere's or a torus' centre, which Center finds from any isoline of it,
+ * and only so: none with ISOLINES 0 (solid/s09, s10).
+ */
+export function solidCenters(solid: Solid3dEntity): Vec3[] {
+  return solid.brep.faces.flatMap(({ surface }) =>
+    surface.kind === "sphere" || surface.kind === "torus"
+      ? [surface.center]
+      : []
+  )
+}
+
+/** An isoline as the object it draws as, of the solid's id, in the plane of its normal. */
+function wireEntity(solid: Solid3dEntity, wire: Wire): Entity {
+  const { layerId, id } = solid
+  if (wire.kind === "line") {
+    return dressed(solid, createLine(wire.start, wire.end, layerId, id))
+  }
+  const axes = arbitraryAxis(wire.normal)!
+  const c = worldToAxes(axes, wire.center)
+  const s = worldToAxes(axes, wire.start)
+  const from = Math.atan2(s.y - c.y, s.x - c.x)
+  const center = { x: c.x, y: c.y }
+  const piece =
+    Math.abs(wire.sweep) >= 2 * Math.PI
+      ? createCircle(center, wire.radius, layerId, id)
+      : createArc(
+          center,
+          wire.radius,
+          normalizeAngle(from),
+          normalizeAngle(from + wire.sweep),
+          layerId,
+          id
+        )
+  return dressed(solid, withNormal(withElevation(piece, c.z), wire.normal))
+}
+
+/**
  * What the solid draws as and is picked by in 2D Wireframe: its edges and
- * the isolines ISOLINES draws on its curved faces (solid/d04), these snapped
- * by nothing (s10). A plane has none (d01).
+ * the isolines ISOLINES draws on its curved faces (solid/d04, d06), these
+ * snapped by nothing but a sphere's or a torus' Center (s09, s10). A plane
+ * has none (d01).
  */
 export function solidWireEntities(
   solid: Solid3dEntity,
   isolines: number
 ): Entity[] {
-  return [
-    ...solidEdgeEntities(solid),
-    ...brepIsolines(solid.brep, isolines).map(([a, b]) =>
-      dressed(solid, createLine(a, b, solid.layerId, solid.id))
-    ),
-  ]
+  return [...solidEdgeEntities(solid), ...solidIsolineEntities(solid, isolines)]
+}
+
+/** Its isolines alone, as the objects they draw as. */
+export function solidIsolineEntities(
+  solid: Solid3dEntity,
+  isolines: number
+): Entity[] {
+  return brepIsolines(solid.brep, isolines).map((wire) =>
+    wireEntity(solid, wire)
+  )
 }
 
 /**
@@ -296,9 +366,12 @@ export function solidHasCurvedFaces(solid: Solid3dEntity): boolean {
   return solid.brep.faces.some((face) => face.surface.kind !== "plane")
 }
 
-/** The points STRETCH catches it by: its vertices (solid/t03, t05). */
+/**
+ * The points STRETCH catches it by: its vertices (solid/t03, t05), a sphere's
+ * or a torus' centre (t06).
+ */
 export function solidStretchPoints(solid: Solid3dEntity): readonly Vec3[] {
-  return solid.brep.vertices
+  return [...solid.brep.vertices, ...solidCenters(solid)]
 }
 
 /**

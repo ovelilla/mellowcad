@@ -4,9 +4,9 @@
  * CYLINDER, CONE and PYRAMID a height, kept with its sign (w09: `<-5.0000>`);
  * CYLINDER, CONE, SPHERE, TORUS and PYRAMID a radius, PYRAMID's the circle
  * its base is inscribed in (x01: `<9.8995>` after a circumscribed 7); CONE and
- * PYRAMID a top radius, 0 at first. A length or a width is the size made, a
- * negative one's or a doubled one's too (p10, w09). Per drawing and not saved,
- * as CIRCLERAD is (**unverified**: no OPEN probe).
+ * PYRAMID a top radius, 0 at first; TORUS a tube radius (r02). A length or a
+ * width is the size made, a negative one's or a doubled one's too (p10, w09).
+ * Per drawing and not saved, as CIRCLERAD is (**unverified**: no OPEN probe).
  */
 export interface SolidDefaults {
   length: number | null
@@ -14,6 +14,12 @@ export interface SolidDefaults {
   height: number | null
   radius: number | null
   topRadius: number
+  tubeRadius: number | null
+  /**
+   * Whether CYLINDER, CONE or SPHERE took a diameter, after which TORUS's
+   * tube diameter offers `<0.0000>` before any tube (r07, r08).
+   */
+  diameterGiven: boolean
   /** PYRAMID's sides and Type, which every PYRAMID starts with (y02). */
   sides: number
   inscribed: boolean
@@ -26,6 +32,8 @@ export function solidDefaults(): SolidDefaults {
     height: null,
     radius: null,
     topRadius: 0,
+    tubeRadius: null,
+    diameterGiven: false,
     sides: 4,
     inscribed: false,
   }

@@ -1892,6 +1892,16 @@ function singleEntityInfo(
               height,
             ]
           }
+          case "sphere":
+            return [
+              row("radius", length(primitive.radius)),
+              row("diameter", length(primitive.radius * 2)),
+            ]
+          case "torus":
+            return [
+              row("torusRadius", length(primitive.radius)),
+              row("tubeRadius", length(primitive.tubeRadius)),
+            ]
         }
       }
       return {

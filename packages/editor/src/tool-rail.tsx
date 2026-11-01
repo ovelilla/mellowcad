@@ -11,6 +11,8 @@ import {
   Grid3x3,
   CircleDotDashed,
   Cone,
+  Donut,
+  Globe,
   LetterText,
   LocateFixed,
   Merge,
@@ -138,6 +140,8 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   pyramid: Pyramid,
   cylinder: Cylinder,
   cone: Cone,
+  sphere: Globe,
+  torus: Donut,
   wedge: TriangleRight,
   union: SquaresUnite,
   subtract: SquaresSubtract,
@@ -245,7 +249,15 @@ const PALETTE: readonly PaletteSection[] = [
       // The 3D Modeling workspace's Modeling panel (acad.cuix
       // ID_Panel3D_Modeling), whose primitives' drop-down BOX opens, in
       // its order.
-      flyout("box", ["box", "cylinder", "cone", "pyramid", "wedge"]),
+      flyout("box", [
+        "box",
+        "cylinder",
+        "cone",
+        "sphere",
+        "pyramid",
+        "wedge",
+        "torus",
+      ]),
     ],
   },
   {

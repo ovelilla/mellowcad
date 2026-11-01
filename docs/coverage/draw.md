@@ -987,7 +987,7 @@ negative cube or length is twice as long, the box centred on the point (w09, x07
 and width a cube or Length made — their sizes, a negative or doubled one's too (p10, w09) — and the
 last height, with its sign, are offered as `<default>`s and Enter takes them; with none, Enter is
 refused as `FOO` is (p02, p04, p11). They are the primitives' shared ones: WEDGE's length and
-width, and the height of WEDGE, PYRAMID and, later, CYLINDER and CONE (w02, x06, x07). Refusals: `Point or option keyword required.` at every point prompt,
+width, and the height of WEDGE, PYRAMID, CYLINDER and CONE (w02, x06, x07). Refusals: `Point or option keyword required.` at every point prompt,
 `Requires numeric distance, second point, or option keyword.` at every distance, `Box of zero
 length not permitted.` / `Box of zero width not permitted.` for a corner on the first's X or Y or
 a length of 0, `Value must be nonzero.` for a height of 0 and for 2Point's second point on its
@@ -1017,7 +1017,7 @@ lines (p09); REGION rejects it (`1 closed, degenerate or unsupported object reje
 DIMLINEAR's object and UCS OBject take the edge picked as a line along it (e07, e08); BREAK, OFFSET,
 TRIM, EXTEND, PEDIT, DIMRADIUS and ARRAYPATH's path refuse it with their own words (e01–e06, e10).
 
-**Missing:** SPHERE and TORUS (the brief's phase 2b); MASSPROP (its numbers are in the probes'
+**Missing:** MASSPROP (its numbers are in the probes'
 MPDUMP) and a box's grips — the base's corners, the edges' arrows, the height's, d02 — with editing
 its Geometry rows in the palette (phase 2c; none here, a click selects it); the 3D commands of its
 own (3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN), the gizmos and sub-objects
@@ -1146,6 +1146,80 @@ perimeter, k01, k03). Everything else a solid does is CYLINDER's and BOX's entri
 **Missing:** CYLINDER's (EXPLODE's SURFACE, k06; MASSPROP and the grips in 2c); the apex drawn as a
 dot with ISOLINES 0 (nothing here).
 
+### `SPHERE` · es `ESFERA` · pt-BR `ESFERA`
+
+**Implemented:** SPHERE as 2027's console asks it (solid/h01–h05, x01–x05), in en, es and pt-BR:
+`Specify center point or [3P/2P/Ttr]:` and `Specify radius or [Diameter]:` (es `Precise centro o
+[3P/2P/Ttr]`, `Precise radio o [Diámetro]`; pt-BR `Especificar ponto central ou [3P/2P/Ttr]`,
+`Especificar raio ou [Diâmetro]`). Diameter asks `Specify diameter:`, twice the radius offered once
+there is one. 3P asks CYLINDER's three points and centres the sphere on the circle through them
+(h02: 0,0,0 / 10,0,0 / 0,10,0 makes 5,5,0 and 7.0711), 2P CYLINDER's ends of a diameter, in space
+(h02: 50,0,0 / 60,0,4 makes 55,0,2 and 5.3852), Ttr CYLINDER's tangents and `Specify radius of
+circle:`, the centre on the circle tangent to both, at their height (h02). Refusals are CYLINDER's
+(`Point or option keyword required.`, `Requires numeric distance, second point, or option
+keyword.`, `Value must be positive and nonzero.` for a radius or a diameter of 0 or less, `Points
+cannot be collinear. *Invalid*` at 3P's third), but 3P's second point on its first is `Points cannot
+be coincident. *Invalid*`, as 2P's (h03). The radius is the primitives' shared default (x01–x05).
+It lies in a tilted UCS and at its Z (h04); it wears the current layer and properties; one undo
+step.
+
+The object, a 3D solid (file version 46), as ACIS makes it (h01's MPDUMP): one spherical face with
+no edge, vertex or loop, its axis the UCS's Z and its seam the UCS's X whatever gave it (h02, h05).
+2D Wireframe draws ISOLINES' meridians, the first opposite its seam, and 2⌊3n/8⌋+1 parallels evenly
+between its poles (d06–d09: fitted to 17 values of ISOLINES from 1 to 56; 0 draws nothing); it is
+picked and windowed by them. Center finds its centre from anywhere over an isoline — at the centre
+itself only where one passes; nothing else snaps on it, its poles no Endpoint, Nearest `No found
+for specified point.` (s06, s09, s10). LIST: `Solid type = Sphere`, Position and `Radius`, never a
+Normal (h01, h04). The palette: Solid type, Position X/Y/Z, Radius and Diameter (d05). AREA's
+Object gives its surface (`Area = 314.1593`); MOVE, ROTATE, SCALE and MIRROR carry it (h04);
+STRETCH moves it whole once the window takes its centre, never by its rim alone (t06).
+
+**Missing:** what AutoCAD's EXPLODE makes of it, a SURFACE (h04): refused as CYLINDER's is; BOX's
+(MASSPROP and its grip, its centre (MPGRIPS), in phase 2c, the palette's edits, the 3D commands,
+Hidden and shaded styles); DISPSILH's silhouette.
+
+### `TORUS` / `TOR` · es `TOROIDE` / `TOR` · pt-BR `TOROIDE` / `TORO`
+
+**Implemented:** TORUS as 2027's console asks it (solid/r01–r09, x01–x05, n03), in en, es and
+pt-BR: SPHERE's `Specify center point or [3P/2P/Ttr]:` and `Specify radius or [Diameter]:`, then
+`Specify tube radius or [2Point/Diameter]:` (es `Precise radio de sección o [2Puntos/Diámetro]`;
+pt-BR `Especificar raio ou [2Pontos/Diâmetro]`, the radius' words). Diameter asks `Specify diameter
+of torus:`, the tube's `Specify tube diameter:` (es `Precise diámetro de toroide`, `Precise diámetro
+de sección`; pt-BR `Especificar o diâmetro do toroide`, `Especificar diâmetro`), twice the defaults;
+before any tube, once CYLINDER, CONE or SPHERE took a diameter, the tube's offers `<0.0000>`, which
+Enter does not take (r07, r08). 2Point asks `Specify first point:` and `Specify second point:`. 3P
+lays the ring in the points' plane, its normal their turn even when that points down, its seam that
+plane's arbitrary axis (r05's MPDUMP); 2P in the first's plane (r07); Ttr as CYLINDER's (r04). A
+point at the tube's prompt measures from the ring's point last given: the radius' point or, typed,
+the radius toward the cursor, 3P's third, 2P's second in the first's plane, Ttr's along the UCS's
+X, a negative ring's centre (the console's BasePoint, r01–r07). A radius typed negative makes an
+apple's or a lemon's ring, its tube wider (r03, r05). Refusals: SPHERE's, with `Value must be
+nonzero.` for a radius of 0, `Value must be positive and nonzero.` for a tube or a tube diameter of
+0 or less, and `If torus radius is -5.0000, tube radius must be greater than 5.0000.` for a tube no
+wider than a negative ring, asked again — and for 2Point's second point on its first whatever the
+ring (`If torus radius is 10.0000, …`), which asks that point again (r06, r09; es `Si el radio del
+toroide es -5.0000, el radio de sección debe ser superior a 5.0000.`). The radius is the
+primitives' shared default, a negative one not kept (r03, r05); the tube radius its own (x01–x05).
+It lies in a tilted UCS and at its Z (r04); one undo step. pt-BR's `TOR`, which its `acad.pgp` sends
+to `TORO`, is refused by its console (`Comando "TOR" desconhecido.`) and is unknown here; `TORO`
+runs it (n03).
+
+The object, a 3D solid (file version 46), as ACIS makes it (r01, r05's MPDUMP): one toroidal face,
+round a doughnut with no edge; an apple's or a lemon's with an edge of no length at each pole, where
+the tube meets the axis, a vortex's (its tube as wide as its ring) both at its centre. 2D Wireframe
+draws ISOLINES' tube circles, the first opposite its seam, and as many parallels round the tube
+from its inside, spread over an apple's or a lemon's arc (d06–d09); it is picked and windowed by
+them. Center finds its centre from anywhere over an isoline, never at the centre itself; nothing
+else snaps on it (s07, s09, s10). LIST: `Solid type = Torus`, Position, Normal, `Torus radius`,
+`Tube radius` (r01, r04; es `Radio de toroide`, `Radio de sección`; pt-BR `Raio do toroide`, `Raio
+do tubo`). The palette: Solid type, Position X/Y/Z, Torus radius and Tube radius (d05). AREA's
+Object gives its surface (`789.5684`; an apple's, 2 round a tube of 4, `384.6763`; a lemon's, -4
+and 5, `26.7661`, r05's MPDUMP); MOVE, ROTATE, SCALE and MIRROR carry it (r04), STRETCH as
+SPHERE's (t06).
+
+**Missing:** SPHERE's (EXPLODE's SURFACE, MASSPROP and the grip in phase 2c, DISPSILH); an apple's or
+a lemon's poles as Endpoints (**unverified**: no probe snaps there; none here).
+
 ### `PYRAMID` / `PYR` · es `PIRAMIDE` / `PIR` · pt-BR `PIRAMIDE` / `PIR`
 
 **Implemented:** PYRAMID as 2027's console asks it (solid/y01–y10, v04), in en, es and pt-BR:
@@ -1176,7 +1250,7 @@ distance or second point.` at the top radius, `Value must be positive and nonzer
 of no length, `Value must be positive.` for a negative top radius (y03–y06; es `El valor debe ser
 positivo y diferente de cero.`). The defaults are the primitives' shared ones: the height BOX's,
 the radius kept as the corners' circle (`<7.0711>` after a circumscribed 5, y05), which CYLINDER,
-CONE, SPHERE and TORUS share later (x01), and the top radius CONE's (y10). It lies in a tilted UCS
+CONE, SPHERE and TORUS share (x01), and the top radius CONE's (y10). It lies in a tilted UCS
 and at its Z (y07); it wears the current layer and properties; one undo step.
 
 The object, a 3D solid (file version 44): the base, the triangles or a frustum's quadrilaterals

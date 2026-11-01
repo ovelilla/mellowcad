@@ -109,6 +109,8 @@ export const es: EngineLocale = {
       "pyramid": "Pirámide",
       "cylinder": "Cilindro",
       "cone": "Cono",
+      "sphere": "Esfera",
+      "torus": "Toroide",
       "intersect": "Intersección"
     },
     "description": {
@@ -459,6 +461,8 @@ export const es: EngineLocale = {
         "baseMinorRadius": "Radio menor de base",
         "topMajorRadius": "Radio mayor superior",
         "topMinorRadius": "Radio menor superior",
+        "torusRadius": "Radio de toroide",
+        "tubeRadius": "Radio de sección",
         "currentVertex": "Vértice actual",
         "vertex": "Vértice",
         "startSegmentWidth": "Anchura inicial del segmento",
@@ -589,6 +593,8 @@ export const es: EngineLocale = {
         "circumscribed": "Circunscrito",
         "cylinder": "Cilindro",
         "cone": "Cono",
+        "sphere": "Esfera",
+        "torus": "Toroide",
         "chord": "Cuerda",
         "sqrtChord": "RaízcuadradaCuerda",
         "uniform": "Uniforme",
@@ -1123,6 +1129,13 @@ export const es: EngineLocale = {
       "CONE": [
         "CONO"
       ],
+      "SPHERE": [
+        "ESFERA"
+      ],
+      "TORUS": [
+        "TOROIDE",
+        "TOR"
+      ],
       "REGION": [
         "REGION",
         "REG"
@@ -1362,6 +1375,19 @@ export const es: EngineLocale = {
         "2Point": "2Puntos",
         "Axis": "Eje",
         "Top": "Radio"
+      },
+      "SPHERE": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Diameter": "Diámetro"
+      },
+      "TORUS": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Diameter": "Diámetro",
+        "2Point": "2Puntos"
       },
       "RECTANG": {
         "Chamfer": "Chaflán",
@@ -2176,6 +2202,11 @@ export const es: EngineLocale = {
       "solidHeightOr": "Precise altura o",
       "specifyAxisEndpoint": "Precise punto final de eje",
       "specifyTopRadius": "Precise radio superior",
+      "sphereCenterOr": "Precise centro o",
+      "specifyRadiusOr": "Precise radio o",
+      "torusDiameter": "Precise diámetro de toroide",
+      "tubeRadiusOr": "Precise radio de sección o",
+      "tubeDiameter": "Precise diámetro de sección",
       "roundBaseCenterOr": "Precise centro de base o",
       "specifyDiameter": "Precise diámetro",
       "specifyThirdPoint": "Precise tercer punto",
@@ -4398,7 +4429,6 @@ export const es: EngineLocale = {
             "intersection": "INTersección ",
             "insertion": "INSerción ",
             "perpendicular": "PERpendicular ",
-            "nearest": "CERcano ",
             "other": ""
           }
         ],
@@ -6198,6 +6228,17 @@ export const es: EngineLocale = {
         ],
         "Requiere una REFENT TAN y la designación de un círculo, arco o línea."
       ],
+      "torusTubeTooSmall": [
+        "Si el radio del toroide es ",
+        [
+          "radius"
+        ],
+        ", el radio de sección debe ser superior a ",
+        [
+          "minimum"
+        ],
+        "."
+      ],
       "listSolidHistory": "         Historial = Ninguno\n Mostrar historial = No",
       "listSolidType": [
         "    Tipo de sólido = ",
@@ -6209,6 +6250,8 @@ export const es: EngineLocale = {
             "pyramid": "Pirámide",
             "cylinder": "Cilindro",
             "cone": "Cono",
+            "sphere": "Esfera",
+            "torus": "Toroide",
             "other": "Prisma"
           }
         ]
@@ -6339,6 +6382,18 @@ export const es: EngineLocale = {
       ],
       "listConeTopMajorRadius": [
         "Radio mayor superior: ",
+        [
+          "radius"
+        ]
+      ],
+      "listTorusRadius": [
+        " Radio de toroide: ",
+        [
+          "radius"
+        ]
+      ],
+      "listTubeRadius": [
+        " Radio de sección: ",
         [
           "radius"
         ]

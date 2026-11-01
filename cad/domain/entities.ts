@@ -52,6 +52,8 @@ export type {
   PyramidPrimitive,
   CylinderPrimitive,
   ConePrimitive,
+  SpherePrimitive,
+  TorusPrimitive,
   SolidPrimitive,
   Solid3dEntity,
   Entity,

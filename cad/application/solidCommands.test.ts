@@ -40,6 +40,10 @@ const solids = (cad: CadHarness) =>
 
 const last = (cad: CadHarness) => solids(cad).at(-1)!
 
+/** A box's height, as its primitive keeps it. */
+const heightOf = (solid: Solid3dEntity) =>
+  solid.primitive?.kind === "box" ? solid.primitive.height : undefined
+
 /** The console's own: LUPREC 4, its cursor at the initial view's corner. */
 function console(locale?: typeof es): CadHarness {
   const cad = createHarness(locale ? { locale } : {})
@@ -177,12 +181,12 @@ describe("BOX", () => {
       "Specify first point: 0,0,0",
       "Specify second point: 0,0,7",
     ])
-    expect(last(cad).primitive?.height).toBe(7)
+    expect(heightOf(last(cad))).toBe(7)
     expect(written(cad, "BOX", "300,0,0", "310,10,4")).toHaveLength(3)
-    expect(last(cad).primitive?.height).toBe(4)
+    expect(heightOf(last(cad))).toBe(4)
     // A point at the height gives its distance from the corner (p06).
     answer(cad, "BOX", "400,0,0", "410,10", "0,0,0")
-    expect(last(cad).primitive?.height).toBeCloseTo(Math.hypot(410, 10), 9)
+    expect(heightOf(last(cad))).toBeCloseTo(Math.hypot(410, 10), 9)
   })
 
   it("offers the last length, width and height, which Enter takes (p02, p04)", () => {
@@ -195,7 +199,7 @@ describe("BOX", () => {
       "Specify height or [2Point] <5.0000>:",
     ])
     expect(solids(cad)).toHaveLength(2)
-    expect(last(cad).primitive?.height).toBe(5)
+    expect(heightOf(last(cad))).toBe(5)
   })
 
   it("refuses what makes no box, and asks again (p05, p06, p11, p12)", () => {
@@ -257,7 +261,7 @@ describe("BOX", () => {
       "Value must be nonzero.",
       "Specify second point: 5,5,8",
     ])
-    expect(last(cad).primitive?.height).toBe(3)
+    expect(heightOf(last(cad))).toBe(3)
   })
 
   it("is one undo step (p08)", () => {

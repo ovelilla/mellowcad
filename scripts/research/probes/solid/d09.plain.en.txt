@@ -1,0 +1,32 @@
+_QAFLAGS
+2
+_CYLINDER
+0,0,0
+10
+30
+_CONE
+30,0,0
+10
+30
+_ISOLINES
+3
+_VPOINT
+0,-1,0
+_REGEN
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 Pixels)
+_L
+_N
+_E
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\mp-solid-d09-front3.png
+_N
+_Y

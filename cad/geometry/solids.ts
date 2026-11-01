@@ -83,6 +83,12 @@ export type BrepLoop = readonly Coedge[]
  * - `cylinder`: `radius` along X from the axis through `origin`.
  * - `cone`: widening from `apex` along `axis`, `slope` along X per unit along
  *   it (the tangent of its half angle there).
+ * - `sphere`: `radius` round `center`, `axis` its north (solid/h01).
+ * - `torus`: the circle `minorRadius` round, its centre `majorRadius` out
+ *   from `center` in the plane square to `axis`, swept round it; the part
+ *   that sweep leaves outside the axis (ρ ≥ 0). A negative `majorRadius`
+ *   puts the circle's centre across the axis: a lemon; one under
+ *   `minorRadius` an apple (r03, r05, r06).
  */
 export type BrepSurface =
   | {
@@ -105,6 +111,21 @@ export type BrepSurface =
       readonly xAxis: Vec3
       readonly slope: number
       readonly ratio: number
+    }
+  | {
+      readonly kind: "sphere"
+      readonly center: Vec3
+      readonly axis: Vec3
+      readonly xAxis: Vec3
+      readonly radius: number
+    }
+  | {
+      readonly kind: "torus"
+      readonly center: Vec3
+      readonly axis: Vec3
+      readonly xAxis: Vec3
+      readonly majorRadius: number
+      readonly minorRadius: number
     }
 
 export interface BrepFace {
@@ -380,6 +401,75 @@ export function roundBrep(
   })
 }
 
+/**
+ * A sphere's boundary: one face, closed on itself, with no loop, no edge and
+ * no vertex (solid/h01's MPDUMP).
+ */
+export function sphereBrep(
+  center: Vec3,
+  axis: Vec3,
+  xAxis: Vec3,
+  radius: number
+): Brep {
+  return mappedUnsigned({
+    vertices: [],
+    edges: [],
+    faces: [
+      { surface: { kind: "sphere", center, axis, xAxis, radius }, loops: [] },
+    ],
+  })
+}
+
+/**
+ * A torus' boundary: a doughnut's one face with no loop; an apple's or a
+ * lemon's with a point's edge at each pole, where the tube meets the axis,
+ * the north first; a vortex's both at its centre (r05's MPDUMP).
+ */
+export function torusBrep(
+  center: Vec3,
+  axis: Vec3,
+  xAxis: Vec3,
+  majorRadius: number,
+  minorRadius: number
+): Brep {
+  const surface: BrepSurface = {
+    kind: "torus",
+    center,
+    axis,
+    xAxis,
+    majorRadius,
+    minorRadius,
+  }
+  if (majorRadius > minorRadius) {
+    return mappedUnsigned({
+      vertices: [],
+      edges: [],
+      faces: [{ surface, loops: [] }],
+    })
+  }
+  const reach = Math.sqrt(
+    Math.max(0, minorRadius * minorRadius - majorRadius * majorRadius)
+  )
+  const poles =
+    reach === 0
+      ? [center]
+      : [add3(center, scale3(axis, reach)), add3(center, scale3(axis, -reach))]
+  const last = poles.length - 1
+  return mappedUnsigned({
+    vertices: poles,
+    edges: [
+      { start: 0, end: 0, curve: { kind: "point" } },
+      { start: last, end: last, curve: { kind: "point" } },
+    ],
+    faces: [
+      {
+        surface,
+        loops: [[{ edge: 0, reversed: false }], [{ edge: 1, reversed: false }]],
+      },
+    ],
+  })
+}
+
 /** `brep` with no -0 in any point or direction it holds. */
 function mappedUnsigned(brep: Brep): Brep {
   return brepMapped(
@@ -462,6 +552,23 @@ export function brepMapped(
           apex: at(s.apex),
           axis: unit(s.axis),
           xAxis: unit(s.xAxis),
+        }
+      case "sphere":
+        return {
+          ...s,
+          center: at(s.center),
+          axis: unit(s.axis),
+          xAxis: unit(s.xAxis),
+          radius: s.radius * scale,
+        }
+      case "torus":
+        return {
+          ...s,
+          center: at(s.center),
+          axis: unit(s.axis),
+          xAxis: unit(s.xAxis),
+          majorRadius: s.majorRadius * scale,
+          minorRadius: s.minorRadius * scale,
         }
     }
   }
@@ -664,12 +771,83 @@ function faceMeasures(
         flux: -Math.PI * across * span * dot3(sub3(s.apex, about), s.axis),
       }
     }
+    case "sphere":
+      return {
+        area: 4 * Math.PI * s.radius ** 2,
+        flux: 4 * Math.PI * s.radius ** 3,
+      }
+    case "torus": {
+      // Swept round the axis, the tube's arc on which ρ = R + r cos φ ≥ 0:
+      // ∫ 2π ρ r dφ, and the flux of (R cos φ + r) over it (r05, r06).
+      const R = s.majorRadius
+      const r = s.minorRadius
+      const half = tubeHalfAngle(R, r)
+      const sin = Math.sin(half)
+      return {
+        area: 2 * Math.PI * r * (2 * R * half + 2 * r * sin),
+        flux:
+          2 *
+          Math.PI *
+          r *
+          ((R * R + r * r) * 2 * sin +
+            R * r * (half + sin * Math.cos(half)) +
+            2 * r * R * half),
+      }
+    }
   }
+}
+
+/** How far round its tube a torus' face runs either way from its outside: π for a doughnut. */
+function tubeHalfAngle(major: number, minor: number): number {
+  return Math.acos(Math.max(-1, Math.min(1, -major / minor)))
+}
+
+/**
+ * How far a sphere or a torus reaches from its centre along each world axis,
+ * a face with no edge to bound it (solid/h01, r01). A torus' tube circle,
+ * kept where it lies outside the axis, reaches `R·s + r·cos(α − φ)` along a
+ * direction at `α` to its plane (`s` = cos α), the most at `φ = α` when the
+ * tube still runs there, else at its arc's end.
+ */
+export function closedSurfaceReach(surface: BrepSurface): Vec3 | null {
+  if (surface.kind === "sphere") {
+    const { radius } = surface
+    return { x: radius, y: radius, z: radius }
+  }
+  if (surface.kind !== "torus") return null
+  const { axis, majorRadius, minorRadius } = surface
+  const half = tubeHalfAngle(majorRadius, minorRadius)
+  // `s` from the axis' other two components: √(1 − t²) loses an axis
+  // tilted 1e-11 off the world's.
+  const along = (t: number, s: number) => {
+    const alpha = Math.abs(Math.atan2(t, s))
+    return (
+      majorRadius * s +
+      minorRadius * (alpha <= half ? 1 : Math.cos(alpha - half))
+    )
+  }
+  return {
+    x: along(axis.x, Math.hypot(axis.y, axis.z)),
+    y: along(axis.y, Math.hypot(axis.x, axis.z)),
+    z: along(axis.z, Math.hypot(axis.x, axis.y)),
+  }
+}
+
+/**
+ * The point a B-rep is placed and measured by: its first vertex, else the
+ * centre of a sphere or a doughnut, which have none.
+ */
+export function brepAnchor(brep: Brep): Vec3 {
+  if (brep.vertices.length > 0) return brep.vertices[0]
+  for (const { surface } of brep.faces) {
+    if ("center" in surface) return surface.center
+  }
+  return ORIGIN
 }
 
 /** The area of its whole boundary: AREA's Object of a solid (solid/p01). */
 export function brepArea(brep: Brep): number {
-  const about = brep.vertices[0] ?? ORIGIN
+  const about = brepAnchor(brep)
   return brep.faces.reduce(
     (sum, face) => sum + faceMeasures(brep, face, about).area,
     0
@@ -682,7 +860,7 @@ export function brepArea(brep: Brep): number {
  * along its outward normal.
  */
 export function brepVolume(brep: Brep): number {
-  const about = brep.vertices[0] ?? ORIGIN
+  const about = brepAnchor(brep)
   return (
     brep.faces.reduce(
       (sum, face) => sum + faceMeasures(brep, face, about).flux,
@@ -692,41 +870,165 @@ export function brepVolume(brep: Brep): number {
 }
 
 /**
- * The isolines ISOLINES draws on a solid's curved faces in 2D Wireframe
- * (solid/d04): `count` rulings of a cylinder or a cone, from `xAxis` round,
- * between its loops' heights, an ellipse's at those parameters. None on a
- * plane, nor with ISOLINES 0.
+ * A wire drawn on a face: a segment, or an arc `sweep` radians round
+ * `normal` from `start` (a whole circle at 2π).
  */
-export function brepIsolines(brep: Brep, count: number): [Vec3, Vec3][] {
-  const out: [Vec3, Vec3][] = []
+export type Wire =
+  | { readonly kind: "line"; readonly start: Vec3; readonly end: Vec3 }
+  | {
+      readonly kind: "arc"
+      readonly center: Vec3
+      readonly normal: Vec3
+      readonly radius: number
+      readonly start: Vec3
+      readonly sweep: number
+    }
+
+/**
+ * The parallels a sphere shows for ISOLINES `count`: 2⌊3n/8⌋ + 1, fitted to
+ * what AutoCAD 2027 draws for every count probed, 1 to 56 (solid/d06–d08:
+ * 3, 4 and 5 all show three, 8 and 10 seven, 16 thirteen).
+ */
+export function sphereParallels(count: number): number {
+  return count <= 0 ? 0 : 2 * Math.floor((3 * count) / 8) + 1
+}
+
+/**
+ * The isolines ISOLINES draws on a solid's curved faces in 2D Wireframe
+ * (solid/d04, d06–d09): `count` rulings of a cylinder from its seam round, of
+ * a cone from the side opposite; a sphere's `count` meridians from opposite
+ * its X and its {@link sphereParallels}; a torus' `count` tube circles from
+ * opposite its X and `count` parallels — round the tube from its inside for
+ * a doughnut, spread over an apple's or a lemon's arc. None on a plane, nor
+ * with ISOLINES 0.
+ */
+export function brepIsolines(brep: Brep, count: number): Wire[] {
+  const out: Wire[] = []
   if (count <= 0) return out
+  const turn = (k: number, from: number) => from + (2 * Math.PI * k) / count
   for (const face of brep.faces) {
     const s = face.surface
     if (s.kind === "plane") continue
     const y = cross3(s.axis, s.xAxis)
-    const across = (theta: number, r: number) =>
-      add3(
-        scale3(s.xAxis, r * Math.cos(theta)),
-        scale3(y, r * s.ratio * Math.sin(theta))
-      )
-    if (s.kind === "cylinder") {
-      const [t0, t1] = loopHeights(brep, face, s.origin, s.axis)
-      for (let k = 0; k < count; k++) {
-        const side = add3(s.origin, across((2 * Math.PI * k) / count, s.radius))
-        out.push([
-          unsigned0(add3(side, scale3(s.axis, t0))),
-          unsigned0(add3(side, scale3(s.axis, t1))),
-        ])
+    const way = (theta: number) =>
+      add3(scale3(s.xAxis, Math.cos(theta)), scale3(y, Math.sin(theta)))
+    const line = (a: Vec3, b: Vec3) =>
+      out.push({ kind: "line", start: unsigned0(a), end: unsigned0(b) })
+    const arc = (
+      center: Vec3,
+      normal: Vec3,
+      radius: number,
+      start: Vec3,
+      sweep: number
+    ) => {
+      if (radius > 0) {
+        out.push({
+          kind: "arc",
+          center: unsigned0(center),
+          normal: unsigned0(normal),
+          radius,
+          start: unsigned0(start),
+          sweep,
+        })
       }
-    } else {
-      const [t0, t1] = loopHeights(brep, face, s.apex, s.axis)
-      const at = (t: number, theta: number) =>
-        unsigned0(
-          add3(s.apex, add3(scale3(s.axis, t), across(theta, s.slope * t)))
-        )
-      for (let k = 0; k < count; k++) {
-        const theta = (2 * Math.PI * k) / count
-        out.push([at(t0, theta), at(t1, theta)])
+    }
+    const circle = (center: Vec3, radius: number) =>
+      arc(
+        center,
+        s.axis,
+        radius,
+        add3(center, scale3(s.xAxis, radius)),
+        2 * Math.PI
+      )
+    switch (s.kind) {
+      case "cylinder": {
+        const [t0, t1] = loopHeights(brep, face, s.origin, s.axis)
+        for (let k = 0; k < count; k++) {
+          const theta = turn(k, 0)
+          const side = add3(
+            s.origin,
+            add3(
+              scale3(s.xAxis, s.radius * Math.cos(theta)),
+              scale3(y, s.radius * s.ratio * Math.sin(theta))
+            )
+          )
+          line(add3(side, scale3(s.axis, t0)), add3(side, scale3(s.axis, t1)))
+        }
+        break
+      }
+      case "cone": {
+        const [t0, t1] = loopHeights(brep, face, s.apex, s.axis)
+        const at = (t: number, theta: number) =>
+          add3(
+            s.apex,
+            add3(
+              scale3(s.axis, t),
+              add3(
+                scale3(s.xAxis, s.slope * t * Math.cos(theta)),
+                scale3(y, s.slope * s.ratio * t * Math.sin(theta))
+              )
+            )
+          )
+        for (let k = 0; k < count; k++) {
+          const theta = turn(k, Math.PI)
+          line(at(t0, theta), at(t1, theta))
+        }
+        break
+      }
+      case "sphere": {
+        const north = add3(s.center, scale3(s.axis, s.radius))
+        for (let k = 0; k < count; k++) {
+          arc(
+            s.center,
+            cross3(s.axis, way(turn(k, Math.PI))),
+            s.radius,
+            north,
+            Math.PI
+          )
+        }
+        const parallels = sphereParallels(count)
+        for (let j = 1; j <= parallels; j++) {
+          const latitude = -Math.PI / 2 + (Math.PI * j) / (parallels + 1)
+          circle(
+            add3(s.center, scale3(s.axis, s.radius * Math.sin(latitude))),
+            s.radius * Math.cos(latitude)
+          )
+        }
+        break
+      }
+      case "torus": {
+        const R = s.majorRadius
+        const r = s.minorRadius
+        const doughnut = face.loops.length === 0
+        const half = tubeHalfAngle(R, r)
+        for (let k = 0; k < count; k++) {
+          const u = way(turn(k, Math.PI))
+          const center = add3(s.center, scale3(u, R))
+          const start = add3(
+            center,
+            add3(
+              scale3(u, r * Math.cos(half)),
+              scale3(s.axis, -r * Math.sin(half))
+            )
+          )
+          arc(
+            center,
+            cross3(u, s.axis),
+            r,
+            start,
+            doughnut ? 2 * Math.PI : 2 * half
+          )
+        }
+        for (let j = 0; j < count; j++) {
+          const phi = doughnut
+            ? turn(j, Math.PI)
+            : -half + (2 * half * (j + 1)) / (count + 1)
+          circle(
+            add3(s.center, scale3(s.axis, r * Math.sin(phi))),
+            R + r * Math.cos(phi)
+          )
+        }
+        break
       }
     }
   }
@@ -749,6 +1051,18 @@ function onSurface(s: BrepSurface, p: Vec3, tolerance: number): boolean {
       const u = dot3(d, s.xAxis)
       const v = dot3(d, y) / s.ratio
       return Math.abs(Math.hypot(u, v) - Math.abs(r)) <= tolerance
+    }
+    case "sphere":
+      return Math.abs(length3(sub3(p, s.center)) - s.radius) <= tolerance
+    case "torus": {
+      // At its distance ρ from the axis and z along it, on the tube's circle.
+      const d = sub3(p, s.center)
+      const z = dot3(d, s.axis)
+      const rho = length3(sub3(d, scale3(s.axis, z)))
+      return (
+        Math.abs(Math.hypot(rho - s.majorRadius, z) - s.minorRadius) <=
+        tolerance
+      )
     }
   }
 }
@@ -821,6 +1135,22 @@ export function brepIsClosed(brep: Brep): boolean {
         if (Math.abs(dot3(s.axis, s.xAxis)) > 1e-9) return false
         if (!((s.kind === "cylinder" ? s.radius : s.slope) > 0)) return false
         break
+      case "sphere":
+      case "torus": {
+        if (!isUnit(s.axis) || !isUnit(s.xAxis)) return false
+        if (Math.abs(dot3(s.axis, s.xAxis)) > 1e-9) return false
+        const sized =
+          s.kind === "sphere"
+            ? s.radius > 0
+            : s.minorRadius > 0 &&
+              s.majorRadius !== 0 &&
+              s.majorRadius + s.minorRadius > 0
+        if (!sized) return false
+        // A face closed on itself has no loop: a sphere, a doughnut.
+        const closed = s.kind === "sphere" || s.majorRadius > s.minorRadius
+        if (closed !== (face.loops.length === 0)) return false
+        break
+      }
       default:
         return false
     }

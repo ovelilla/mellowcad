@@ -107,11 +107,11 @@ desktop d22); INS's `of` is **unverified** (the probe hung). A point typed after
 found there as a pick is (`_END of 99,1` is 100,0, p25; a deferred `_TAN to 10,0` at LINE's first
 point, p24). An override that finds nothing refuses the point — `No Endpoint found for specified
 point.`, then the prompt's own refusal (`Invalid point.`, `Point or option keyword required.`) —
-and is gone (p36, p156, p211): Tangent, Extension, Parallel and Apparent Intersection are named by
-nothing, `No found for specified point.`, as 2027 writes it (LINE-D11); es
-`No se ha encontrado ptoFINal para el punto designado.` (puntoMEDio, CENtro, PERpendicular,
-INTersección); Quadrant's, Nearest's and Insertion's names (`Quadrant`, `Nearest`, `Insert`; es
-`CUAdrante`, `CERcano`, `INSerción`) come from table 27408, **unverified**. A second override
+and is gone (p36, p156, p211): Tangent, Extension, Parallel, Apparent Intersection and Nearest are
+named by nothing, `No found for specified point.`, as 2027 writes it (LINE-D11; Nearest es and en
+solid/s10); es `No se ha encontrado ptoFINal para el punto designado.` (puntoMEDio, CENtro,
+PERpendicular, INTersección, CUAdrante, s10); Insertion's name (`Insert`, es `INSerción`) comes from
+table 27408, **unverified**, as does pt-BR's Nearest left unnamed. A second override
 typed at the first's `of` is `Invalid point.`, and neither holds (p162). Enter at an override's `of`
 is the prompt's own Enter, and the override never outlives its command (offset/p294). A Tangent or
 Perpendicular

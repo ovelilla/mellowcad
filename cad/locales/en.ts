@@ -109,6 +109,8 @@ export const en: EngineCatalog = {
       "pyramid": "Pyramid",
       "cylinder": "Cylinder",
       "cone": "Cone",
+      "sphere": "Sphere",
+      "torus": "Torus",
       "intersect": "Intersect"
     },
     "description": {
@@ -465,6 +467,8 @@ export const en: EngineCatalog = {
         "baseMinorRadius": "Base minor radius",
         "topMajorRadius": "Top major radius",
         "topMinorRadius": "Top minor radius",
+        "torusRadius": "Torus radius",
+        "tubeRadius": "Tube radius",
         "currentVertex": "Current Vertex",
         "vertex": "Vertex",
         "startSegmentWidth": "Start segment width",
@@ -595,6 +599,8 @@ export const en: EngineCatalog = {
         "circumscribed": "Circumscribed",
         "cylinder": "Cylinder",
         "cone": "Cone",
+        "sphere": "Sphere",
+        "torus": "Torus",
         "chord": "Chord",
         "sqrtChord": "SqrtChord",
         "uniform": "Uniform",
@@ -1141,6 +1147,13 @@ export const en: EngineCatalog = {
       "CONE": [
         "CONE"
       ],
+      "SPHERE": [
+        "SPHERE"
+      ],
+      "TORUS": [
+        "TORUS",
+        "TOR"
+      ],
       "REGION": [
         "REGION",
         "REG"
@@ -1662,6 +1675,11 @@ export const en: EngineCatalog = {
       "solidHeightOr": "Specify height or",
       "specifyAxisEndpoint": "Specify axis endpoint",
       "specifyTopRadius": "Specify top radius",
+      "sphereCenterOr": "Specify center point or",
+      "specifyRadiusOr": "Specify radius or",
+      "torusDiameter": "Specify diameter of torus",
+      "tubeRadiusOr": "Specify tube radius or",
+      "tubeDiameter": "Specify tube diameter",
       "roundBaseCenterOr": "Specify center point of base or",
       "specifyDiameter": "Specify diameter",
       "specifyThirdPoint": "Specify third point",
@@ -3877,7 +3895,6 @@ export const en: EngineCatalog = {
             "intersection": "Intersection ",
             "insertion": "Insert ",
             "perpendicular": "Perpendicular ",
-            "nearest": "Nearest ",
             "other": ""
           }
         ],
@@ -5672,6 +5689,17 @@ export const en: EngineCatalog = {
         ],
         "Requires a TAN object-snap and selection of Circle, Arc, or Line."
       ],
+      "torusTubeTooSmall": [
+        "If torus radius is ",
+        [
+          "radius"
+        ],
+        ", tube radius must be greater than ",
+        [
+          "minimum"
+        ],
+        "."
+      ],
       "listSolidHistory": "         History = None\n    Show History = No",
       "listSolidType": [
         "      Solid type = ",
@@ -5683,6 +5711,8 @@ export const en: EngineCatalog = {
             "pyramid": "Pyramid",
             "cylinder": "Cylinder",
             "cone": "Cone",
+            "sphere": "Sphere",
+            "torus": "Torus",
             "other": "Box"
           }
         ]
@@ -5813,6 +5843,18 @@ export const en: EngineCatalog = {
       ],
       "listConeTopMajorRadius": [
         " Top major radius: ",
+        [
+          "radius"
+        ]
+      ],
+      "listTorusRadius": [
+        "     Torus radius: ",
+        [
+          "radius"
+        ]
+      ],
+      "listTubeRadius": [
+        "      Tube radius: ",
         [
           "radius"
         ]
