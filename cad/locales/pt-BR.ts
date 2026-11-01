@@ -2597,7 +2597,8 @@ export const ptBR: EngineLocale = {
       "revolveAngleOr": "Especifique um ângulo de revolução ou",
       "revolveStartAngle": "Especificar ângulo inicial",
       "presspullSelect": "Selecione o objeto ou área delimitada",
-      "presspullHeightOr": "Especifique a altura da extrusão ou"
+      "presspullHeightOr": "Especifique a altura da extrusão ou",
+      "presspullOffsetOr": "Especifique a distância de deslocamento ou"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2615,6 +2616,7 @@ export const ptBR: EngineLocale = {
     "answerForms": {
       "dimStyleRedefine": "tight",
       "mredoCount": "tight",
+      "presspullOffsetOr": "tight",
       "selectDimensionsToSpace": "tight",
       "selectGripToEditPathArrayOr": "tight",
       "selectPolylineOr": "tight",
@@ -6929,7 +6931,19 @@ export const ptBR: EngineLocale = {
           "z"
         ]
       ],
-      "presspullClick": "Clique em uma face, em uma curva ou dentro de uma área delimitada"
+      "presspullClick": "Clique em uma face, em uma curva ou dentro de uma área delimitada",
+      "presspullExtruded": [
+        [
+          "count"
+        ],
+        " extrusões criadas"
+      ],
+      "presspullOffset": [
+        [
+          "count"
+        ],
+        " faces deslocadas"
+      ]
     },
     "feedback": {
       "snap": {

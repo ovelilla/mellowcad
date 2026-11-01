@@ -398,3 +398,63 @@ function meetingPoint(
   )
   return scale3(x, 1 / best.det)
 }
+
+/**
+ * Several planar faces of one solid pulled or pressed together (PRESSPULL's
+ * Multiple): each face's prism made from the solid as it was, then united or
+ * taken out in turn. Throws `SolidBooleanError`.
+ */
+export function brepFacesExtruded(
+  brep: Brep,
+  faces: readonly number[],
+  distance: number
+): Brep | null {
+  const prisms = faces.map((index) => {
+    const face = brep.faces[index]
+    const n = face && planeNormal(face)
+    if (!n) throw new SolidBooleanError("unsupported")
+    const prism = extrusionBrep(faceProfile(brep, face), scale3(n, distance))
+    if (!prism) throw new SolidBooleanError("unsupported")
+    return prism
+  })
+  let result: Brep | null = brep
+  for (const prism of prisms) {
+    if (!result) return null
+    result = brepBoolean(distance > 0 ? "union" : "subtract", result, prism)
+  }
+  return result
+}
+
+/**
+ * Several planar faces of one solid offset together, one after another: a
+ * face found again after the first by its plane, which offsetting another
+ * leaves where it was. Throws `SolidBooleanError`.
+ */
+export function brepFacesOffset(
+  brep: Brep,
+  faces: readonly number[],
+  distance: number
+): Brep {
+  const planes = faces.map((index) => {
+    const s = brep.faces[index]?.surface
+    if (!s || s.kind !== "plane") throw new SolidBooleanError("unsupported")
+    return { normal: s.normal, level: dot3(s.origin, s.normal) }
+  })
+  const tolerance = sizeTolerance(brep)
+  let result = brep
+  planes.forEach((plane, i) => {
+    const index =
+      i === 0
+        ? faces[0]
+        : result.faces.findIndex(
+            (f) =>
+              f.surface.kind === "plane" &&
+              dot3(f.surface.normal, plane.normal) > 1 - 1e-9 &&
+              Math.abs(dot3(f.surface.origin, plane.normal) - plane.level) <=
+                tolerance
+          )
+    if (index < 0) throw new SolidBooleanError("failed")
+    result = brepFaceOffset(result, index, distance)
+  })
+  return result
+}

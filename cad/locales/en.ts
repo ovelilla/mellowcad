@@ -2020,7 +2020,8 @@ export const en: EngineCatalog = {
       "revolveAngleOr": "Specify angle of revolution or",
       "revolveStartAngle": "Specify start angle",
       "presspullSelect": "Select object or bounded area",
-      "presspullHeightOr": "Specify extrusion height or"
+      "presspullHeightOr": "Specify extrusion height or",
+      "presspullOffsetOr": "Specify offset distance or"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2038,6 +2039,7 @@ export const en: EngineCatalog = {
     "answerForms": {
       "dimStyleRedefine": "tight",
       "mredoCount": "spaced",
+      "presspullOffsetOr": "tight",
       "selectDimensionsToSpace": "tight",
       "selectGripToEditPathArrayOr": "spaced",
       "selectPolylineOr": "spaced",
@@ -6324,7 +6326,19 @@ export const en: EngineCatalog = {
           "z"
         ]
       ],
-      "presspullClick": "Click a face, curve, or inside a bounded area"
+      "presspullClick": "Click a face, curve, or inside a bounded area",
+      "presspullExtruded": [
+        [
+          "count"
+        ],
+        " extrusion(s) created"
+      ],
+      "presspullOffset": [
+        [
+          "count"
+        ],
+        " face(s) offset"
+      ]
     },
     "feedback": {
       "snap": {

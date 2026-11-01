@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest"
 
 import { type CadHarness, createHarness } from "../../test/harness"
-import { brepIsClosed, brepVolume } from "../geometry/solids"
+import { boxBrep, brepIsClosed, brepVolume } from "../geometry/solids"
+import { brepSliced } from "../geometry/solidEdits"
 import { brepMoments, solidInertia } from "../geometry/massProperties"
 import type { Solid3dEntity } from "../domain/entities"
 import {
@@ -475,6 +476,96 @@ describe("PRESSPULL", () => {
     expect(cad.commandLog().at(-1)).toBe("Select object or bounded area:")
     answer(cad, "U")
     expect(solids(cad)).toHaveLength(0)
+  })
+
+  /** A 10 box seen from (-1.3, -2.2, 1.6), its top, front and left towards the viewer (desktop). */
+  function boxInView(): CadHarness {
+    const cad = console()
+    answer(cad, "BOX", "0,0,0", "10,10", "10", "VPOINT", "-1.3,-2.2,1.6")
+    answer(cad, "ZOOM", "E")
+    return cad
+  }
+
+  const TOP = { x: 3, y: 7, z: 10 }
+
+  it("extrudes a solid's face clicked, its neighbours left (its help; desktop, solidedit/e01)", () => {
+    const cad = boxInView()
+    const id = last(cad).id
+    answer(cad, "PRESSPULL")
+    cad.click(TOP)
+    expect(written(cad, "2")).toEqual([
+      "Specify extrusion height or [Multiple]: 2",
+      "1 extrusion(s) created",
+    ])
+    expect(last(cad).id).toBe(id)
+    expect(brepVolume(last(cad).brep)).toBeCloseTo(1200, 9)
+    // Pressed in, the face's prism taken out.
+    cad.click(TOP)
+    answer(cad, "-5")
+    expect(brepVolume(last(cad).brep)).toBeCloseTo(700, 9)
+    expect(written(cad, "")).toEqual(["Select object or bounded area:"])
+    // What made it is gone (desktop LIST: History = None, no Solid type).
+    expect(listed(cad).join("\n")).not.toContain("Solid type")
+    // The whole run is one step (desktop: U says LIST, then PRESSPULL).
+    expect(written(cad, "U")).toEqual(["U", "LIST"])
+    expect(written(cad, "U")).toEqual(["U", "PRESSPULL"])
+    expect(brepVolume(last(cad).brep)).toBeCloseTo(1000, 9)
+    expect(last(cad).primitive?.kind).toBe("box")
+  })
+
+  it("offsets a face Ctrl+clicked, a slope beside it carried on (desktop; solidedit/e02)", () => {
+    const { back } = brepSliced(
+      boxBrep(
+        { x: 0, y: 0, z: 0 },
+        { x: 10, y: 0, z: 0 },
+        { x: 0, y: 10, z: 0 },
+        { x: 0, y: 0, z: 10 }
+      ),
+      {
+        origin: { x: 10, y: 0, z: 10 },
+        normal: { x: 0.894427190999916, y: 0, z: -0.447213595499958 },
+      }
+    )
+    const sloped = (): CadHarness => {
+      const cad = createHarness({
+        entities: [{ id: "s", type: "solid3d", layerId: "0", brep: back! }],
+      })
+      answer(cad, "VPOINT", "-1.3,-2.2,1.6", "ZOOM", "E")
+      return cad
+    }
+    const offset = sloped()
+    answer(offset, "PRESSPULL")
+    offset.click(TOP, { ctrlKey: true })
+    expect(written(offset, "2")).toEqual([
+      "Specify offset distance or [Multiple]:2",
+      "1 face(s) offset",
+    ])
+    expect(brepVolume(last(offset).brep)).toBeCloseTo(960, 9)
+    expect(last(offset).brep.faces).toHaveLength(6)
+    const extruded = sloped()
+    answer(extruded, "PRESSPULL")
+    extruded.click(TOP)
+    answer(extruded, "2")
+    expect(brepVolume(last(extruded).brep)).toBeCloseTo(950, 9)
+    expect(last(extruded).brep.faces).toHaveLength(7)
+  })
+
+  it("takes several faces of a solid before one height with Multiple", () => {
+    const cad = boxInView()
+    answer(cad, "PRESSPULL", "_M")
+    cad.click(TOP)
+    cad.click({ x: 6, y: 0, z: 4 })
+    answer(cad, "", "2", "")
+    expect(cad.commandLog()).toContain("2 extrusion(s) created")
+    expect(brepVolume(last(cad).brep)).toBeCloseTo(1400, 9)
+  })
+
+  it("takes the top face of a box seen in plan", () => {
+    const cad = console()
+    answer(cad, "BOX", "0,0,0", "10,10", "10", "PRESSPULL")
+    cad.click({ x: 5, y: 5 })
+    answer(cad, "3", "")
+    expect(brepVolume(last(cad).brep)).toBeCloseTo(1300, 9)
   })
 
   it("takes several before one height with Multiple", () => {
