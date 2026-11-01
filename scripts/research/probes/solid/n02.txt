@@ -1,0 +1,8 @@
+(getcname "_WEDGE")
+(getcname "_PYRAMID")
+(getcname "_CYLINDER")
+(getcname "_CONE")
+(getcname "_SPHERE")
+(getcname "_TORUS")
+(getcname "_BOX")
+(getcname "_ISOLINES")

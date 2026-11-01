@@ -89,7 +89,8 @@ export const es: EditorLocale = {
         "dimchain": "Continua",
         "attributes": "Atributos",
         "measure": "Medir",
-        "union": "Editar sólidos"
+        "union": "Editar sólidos",
+        "box": "Modelado"
       },
       "sections": {
         "draw": "Dibujo",

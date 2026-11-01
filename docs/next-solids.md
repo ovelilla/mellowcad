@@ -1,7 +1,7 @@
 # Sólidos 3D con núcleo propio — brief
 
-> **Estado:** en curso: la fase 1 está hecha y la 2a de la fase 2 (31/10/2026); lo siguiente, la
-> 2b. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> **Estado:** en curso: la fase 1 está hecha y la 2a de la fase 2 (31/10/2026); la 2b, a medias:
+> WEDGE y PYRAMID hechas (1/11/2026); lo siguiente, CYLINDER y CONE, luego SPHERE y TORUS. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 
@@ -61,7 +61,9 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación en
    coaristas; cada cara plana, una región de su plano), su fichero (versión 43), BOX, el alámbrico
    (aristas; ISOLINES guardada con el dibujo), selección, snaps y las transformaciones; lo que falta,
    en la entrada de BOX de `docs/coverage/draw.md`. **2b:** CYLINDER, CONE, SPHERE, WEDGE, TORUS y
-   PYRAMID, con las isolíneas de sus caras curvas. **2c:** MASSPROP y los grips de las primitivas.
+   PYRAMID, con las isolíneas de sus caras curvas; WEDGE y PYRAMID hechas (1/11/2026: la primitiva
+   guardada es una unión por tipo, el fichero la versión 44, los valores por defecto compartidos
+   entre primitivas). **2c:** MASSPROP y los grips de las primitivas.
 3. **De 2D a 3D**: EXTRUDE, REVOLVE, PRESSPULL de regiones y perfiles cerrados.
 4. **Booleanas 3D** entre planos y cuádricas.
 5. **Estilo Hidden** (líneas ocultas en el motor), sombreado en canvas, VSCURRENT.

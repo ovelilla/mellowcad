@@ -18,6 +18,7 @@ import {
   Paintbrush,
   PenLine,
   Pentagon,
+  Pyramid,
   RotateCw,
   Ruler,
   Scaling,
@@ -35,6 +36,7 @@ import {
   SquarePen,
   Tag,
   TextCursorInput,
+  TriangleRight,
   TrianglesCenterlineDashedVertical,
   Type,
   Waypoints,
@@ -131,6 +133,8 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   join: Merge,
   region: Shapes,
   box: Box,
+  pyramid: Pyramid,
+  wedge: TriangleRight,
   union: SquaresUnite,
   subtract: SquaresSubtract,
   intersect: SquaresIntersect,
@@ -185,6 +189,7 @@ type FlyoutId =
   | "attributes"
   | "measure"
   | "union"
+  | "box"
 
 type SectionId = "draw" | "modify" | "annotation" | "block" | "utilities"
 
@@ -234,8 +239,9 @@ const PALETTE: readonly PaletteSection[] = [
       "polyline3d",
       "region",
       // The 3D Modeling workspace's Modeling panel (acad.cuix
-      // ID_PanelModeling), whose primitives' drop-down BOX opens.
-      "box",
+      // ID_Panel3D_Modeling), whose primitives' drop-down BOX opens, in
+      // its order.
+      flyout("box", ["box", "pyramid", "wedge"]),
     ],
   },
   {

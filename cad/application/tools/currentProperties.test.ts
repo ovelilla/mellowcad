@@ -87,6 +87,16 @@ const FROM_SCRATCH: ReadonlyArray<
     "BOX",
     (c) => c.command("BOX").click(p(0, 0)).click(p(100, 50)).type("30").enter(),
   ],
+  [
+    "WEDGE",
+    (c) =>
+      c.command("WEDGE").click(p(0, 0)).click(p(100, 50)).type("30").enter(),
+  ],
+  [
+    "PYRAMID",
+    (c) =>
+      c.command("PYRAMID").click(p(0, 0)).type("20").enter().type("30").enter(),
+  ],
   // probe polygon/p136: the current layer and properties, both modes.
   [
     "POLYGON",

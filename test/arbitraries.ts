@@ -29,6 +29,7 @@ import {
   type Polyline3dEntity,
   type RegionEntity,
   type Solid3dEntity,
+  type SolidPrimitive,
   type SplineEntity,
   type TextEntity,
   polylineFitted,
@@ -49,7 +50,7 @@ import type { PlanarCurve } from "../cad/geometry/planarCurves"
 import type { RegionFace } from "../cad/geometry/planarRegions"
 import { arbitraryAxis } from "../cad/geometry/ocs"
 import { add3, scale3 } from "../cad/geometry/Vec3"
-import { createBox } from "../cad/domain/solids"
+import { createSolid } from "../cad/domain/solids"
 import type { DrawingSnapshot } from "../cad/serialization/drawingFile"
 import { snapshotOf } from "./builders"
 
@@ -783,7 +784,11 @@ export const regionEntity: fc.Arbitrary<RegionEntity> = fc
     )
   )
 
-/** A box, any size, anywhere, its base facing any way and turned any way in it. */
+/**
+ * A primitive solid — a box, a wedge or a pyramid of 3 to 32 sides, maybe
+ * with a top —, any size, anywhere, its base facing any way and turned any
+ * way in it.
+ */
 export const solidEntity: fc.Arbitrary<Solid3dEntity> = fc
   .tuple(
     point,
@@ -793,33 +798,57 @@ export const solidEntity: fc.Arbitrary<Solid3dEntity> = fc
     fc.double({ min: -Math.PI, max: Math.PI, noNaN: true }),
     positiveLength,
     positiveLength,
-    positiveLength
+    positiveLength,
+    fc.constantFrom("box", "wedge", "pyramid"),
+    fc.integer({ min: 3, max: 32 }),
+    fc.double({ min: 0, max: 2, noNaN: true }),
+    fc.boolean()
   )
-  .map(([at, z, azimuth, tilt, turn, length, width, height]) => {
-    const normal = {
-      x: Math.cos(tilt) * Math.cos(azimuth),
-      y: Math.cos(tilt) * Math.sin(azimuth),
-      z: Math.sin(tilt),
-    }
-    const axes = arbitraryAxis(normal)!
-    const xAxis = add3(
-      scale3(axes.x, Math.cos(turn)),
-      scale3(axes.y, Math.sin(turn))
-    )
-    return createBox(
-      {
-        kind: "box",
+  .map(
+    ([
+      at,
+      z,
+      azimuth,
+      tilt,
+      turn,
+      length,
+      width,
+      height,
+      kind,
+      sides,
+      top,
+      inscribed,
+    ]) => {
+      const normal = {
+        x: Math.cos(tilt) * Math.cos(azimuth),
+        y: Math.cos(tilt) * Math.sin(azimuth),
+        z: Math.sin(tilt),
+      }
+      const axes = arbitraryAxis(normal)!
+      const frame = {
         position: { ...at, z },
-        xAxis,
+        xAxis: add3(
+          scale3(axes.x, Math.cos(turn)),
+          scale3(axes.y, Math.sin(turn))
+        ),
         normal: axes.z,
-        length,
-        width,
-        height,
-      },
-      DEFAULT_LAYER_ID,
-      "solid"
-    )
-  })
+      }
+      const primitive: SolidPrimitive =
+        kind === "pyramid"
+          ? {
+              kind,
+              ...frame,
+              sides,
+              radius: length,
+              // Half the time a point, else a top up to twice the base.
+              topRadius: top < 1 ? 0 : (top - 1) * 2 * length,
+              height,
+              inscribed,
+            }
+          : { kind, ...frame, length, width, height }
+      return createSolid(primitive, DEFAULT_LAYER_ID, "solid")
+    }
+  )
 
 export const entity: fc.Arbitrary<Entity> = fc
   .tuple(

@@ -1,0 +1,49 @@
+_QAFLAGS
+2
+_ZOOM
+_W
+-20,-20
+40,40
+_TORUS
+10,10,0
+10
+2
+MPGRIPS
+(osnap '(22.1 10.1 0) "_end")
+(osnap '(22.1 10.1 0) "_mid")
+(osnap '(22.1 10.1 0) "_cen")
+(osnap '(22.1 10.1 0) "_qua")
+(osnap '(22.1 10.1 0) "_nea")
+(osnap '(22.1 10.1 0) "_int")
+(osnap '(22.1 10.1 0) "_gcen")
+(osnap '(18.1 10.1 0) "_end")
+(osnap '(18.1 10.1 0) "_mid")
+(osnap '(18.1 10.1 0) "_cen")
+(osnap '(18.1 10.1 0) "_qua")
+(osnap '(18.1 10.1 0) "_nea")
+(osnap '(10.1 10.1 0) "_cen")
+(osnap '(10.1 10.1 0) "_gcen")
+(osnap '(10.1 10.1 0) "_nod")
+(osnap '(10.1 20.1 0) "_qua")
+(osnap '(10.1 20.1 0) "_cen")
+(osnap '(10.1 20.1 0) "_nea")
+_VPOINT
+1,-1,1
+_ZOOM
+_E
+(osnap (trans '(22 10 0) 0 2) "_end")
+(osnap (trans '(22 10 0) 0 2) "_mid")
+(osnap (trans '(22 10 0) 0 2) "_cen")
+(osnap (trans '(22 10 0) 0 2) "_qua")
+(osnap (trans '(22 10 0) 0 2) "_nea")
+(osnap (trans '(22 10 0) 0 2) "_int")
+(osnap (trans '(20 10 2) 0 2) "_end")
+(osnap (trans '(20 10 2) 0 2) "_qua")
+(osnap (trans '(20 10 2) 0 2) "_cen")
+(osnap (trans '(20 10 2) 0 2) "_nea")
+(osnap (trans '(10 10 0) 0 2) "_cen")
+(osnap (trans '(10 10 0) 0 2) "_gcen")
+(osnap (trans '(10 10 0) 0 2) "_nod")
+(osnap (trans '(18 10 0) 0 2) "_nea")
+(osnap (trans '(18 10 0) 0 2) "_qua")
+(osnap (trans '(18 10 0) 0 2) "_cen")

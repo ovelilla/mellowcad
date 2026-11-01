@@ -1,5 +1,5 @@
 import { regionArea, regionPerimeter } from "../../domain/regions"
-import { boxInUcs } from "../../domain/solids"
+import { primitiveInUcs } from "../../domain/solids"
 import { curveBox, curveTessellation } from "../../geometry/planarCurves"
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, add3, cross3, length3, sub3 } from "../../geometry/Vec3"
@@ -922,23 +922,51 @@ class Report {
   }
 
   /**
-   * Its history, and a box's parameters in the UCS: the base's centre, the
-   * normal when it is not the UCS's Z, the sizes, the length's heading
-   * (solid/p01, p06, p13).
+   * Its history, and its primitive's parameters in the UCS: the base's
+   * centre, the normal when it is not the UCS's Z, the sizes, the heading of
+   * its X (solid/p01, p06, p13, w01, y01).
    */
   private solid(solid: Solid3dEntity): void {
     this.header("solid3d", solid)
     this.say("listSolidHistory")
-    const box = solid.primitive
-    if (!box) return
-    const placed = boxInUcs(box, this.settings.ucs)
-    this.say("listSolidType")
+    const primitive = solid.primitive
+    if (!primitive) return
+    const placed = primitiveInUcs(primitive, this.settings.ucs)
+    this.say("listSolidType", { type: primitive.kind })
     this.say("listBoxPosition", this.leftXyz(placed.position))
     if (placed.normal) this.say("listBoxNormal", this.leftXyz(placed.normal))
-    this.say("listBoxLength", { length: this.length(box.length) })
-    this.say("listBoxWidth", { width: this.length(box.width) })
-    this.say("listBoxHeight", { height: this.length(box.height) })
-    this.say("listBoxRotation", { angle: this.angle(placed.rotation) })
+    const rotation = () =>
+      this.say("listBoxRotation", { angle: this.angle(placed.rotation) })
+    switch (primitive.kind) {
+      case "box":
+      case "wedge":
+        this.say("listBoxLength", { length: this.length(primitive.length) })
+        this.say("listBoxWidth", { width: this.length(primitive.width) })
+        this.say("listBoxHeight", { height: this.length(primitive.height) })
+        rotation()
+        return
+      case "pyramid": {
+        // Inscribed is the circle the corners lie on, Circumscribed the one
+        // the sides touch (y01: 7.0711 and 5.0000 for a radius of 5 given
+        // Circumscribed).
+        const apothem = Math.cos(Math.PI / primitive.sides)
+        const radius = (r: number) => ({ radius: this.length(r) })
+        this.say("listPyramidInscribedBase", radius(primitive.radius))
+        this.say(
+          "listPyramidCircumscribedBase",
+          radius(primitive.radius * apothem)
+        )
+        this.say("listPyramidInscribedTop", radius(primitive.topRadius))
+        this.say(
+          "listPyramidCircumscribedTop",
+          radius(primitive.topRadius * apothem)
+        )
+        this.say("listBoxHeight", { height: this.length(primitive.height) })
+        rotation()
+        this.say("listPyramidSides", { sides: primitive.sides })
+        return
+      }
+    }
   }
 
   private hatch(hatch: HatchEntity): void {

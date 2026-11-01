@@ -48,6 +48,9 @@ export type {
   PathLayout,
   RegionEntity,
   BoxPrimitive,
+  WedgePrimitive,
+  PyramidPrimitive,
+  SolidPrimitive,
   Solid3dEntity,
   Entity,
   Bounds,
@@ -351,9 +354,10 @@ export {
 export type { EntityProperty } from "./entityProperties"
 export { applyEntityProperty, isZProperty } from "./entityProperties"
 
+export type { PrimitiveInUcs } from "./solids"
 export {
-  boxInUcs,
-  createBox,
+  createSolid,
+  primitiveInUcs,
   solidArea,
   solidEdgeEntities,
   solidFaceRegions,

@@ -89,7 +89,8 @@ export const ar: EditorLocale = {
         "dimchain": "متتابع",
         "attributes": "السمات",
         "measure": "قياس",
-        "union": "تحرير المجسمات"
+        "union": "تحرير المجسمات",
+        "box": "النمذجة"
       },
       "sections": {
         "draw": "رسم",

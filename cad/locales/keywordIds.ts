@@ -186,6 +186,21 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Length",
     "2Point"
   ],
+  "WEDGE": [
+    "Center",
+    "Cube",
+    "Length",
+    "2Point"
+  ],
+  "PYRAMID": [
+    "Edge",
+    "Sides",
+    "Inscribed",
+    "Circumscribed",
+    "2Point",
+    "Axis",
+    "Top"
+  ],
   "RECTANG": [
     "Chamfer",
     "Elevation",

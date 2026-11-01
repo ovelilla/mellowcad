@@ -1,0 +1,48 @@
+_QAFLAGS
+2
+_ZOOM
+_W
+-10,-10
+40,40
+_CYLINDER
+10,10,0
+5
+8
+MPGRIPS
+(osnap '(15.1 10.1 0) "_end")
+(osnap '(15.1 10.1 0) "_mid")
+(osnap '(15.1 10.1 0) "_cen")
+(osnap '(15.1 10.1 0) "_qua")
+(osnap '(15.1 10.1 0) "_nea")
+(osnap '(15.1 10.1 0) "_int")
+(osnap '(15.1 10.1 0) "_gcen")
+(osnap '(15.1 10.1 0) "_nod")
+(osnap '(15.1 10.1 0) "_ins")
+(osnap '(10.1 15.1 0) "_end")
+(osnap '(10.1 15.1 0) "_mid")
+(osnap '(10.1 15.1 0) "_cen")
+(osnap '(10.1 15.1 0) "_qua")
+(osnap '(10.1 15.1 0) "_nea")
+(osnap '(10.1 15.1 0) "_int")
+(osnap '(5.1 10.1 0) "_end")
+(osnap '(5.1 10.1 0) "_mid")
+(osnap '(5.1 10.1 0) "_qua")
+(osnap '(10.2 10.1 0) "_cen")
+(osnap '(10.2 10.1 0) "_gcen")
+(osnap '(10.2 10.1 0) "_nod")
+(osnap '(10.2 10.1 0) "_end")
+(osnap '(13 13 0) "_nea")
+(osnap '(13 13 0) "_cen")
+_LINE
+30,30
+_TAN
+10,15.1
+
+_LINE
+30,10
+_PER
+15.1,10
+
+_LIST
+_L
+

@@ -402,8 +402,10 @@ namespace MellowProbe
                                 ",\"radii\":" + Log.V(mp.RadiiOfGyration) + ",\"extents\":[" + Log.V(mp.Extents.MinPoint) + "," + Log.V(mp.Extents.MaxPoint) + "]}");
                         }
                         catch (System.Exception ex) { extra.Add("massProperties"); extra.Add(Log.Q(ex.Message)); }
-                        try { extra.Add("brep"); extra.Add(BrepDump(so)); }
-                        catch (System.Exception ex) { extra.Add("brep"); extra.Add(Log.Q(ex.GetType().Name + ": " + ex.Message)); }
+                        string dumped;
+                        try { dumped = BrepDump(so); }
+                        catch (System.Exception ex) { dumped = Log.Q(ex.GetType().Name + ": " + ex.Message); }
+                        extra.Add("brep"); extra.Add(dumped);
                     }
                     if (e is BlockReference br)
                     {
@@ -419,48 +421,87 @@ namespace MellowProbe
 
         static string BrepDump(Entity solid)
         {
+            // Each part is read on its own: a degenerate edge or vertex (a cone's apex) throws in
+            // the managed wrapper, and one failure must not lose the rest of the boundary.
+            string Err(System.Exception ex) => "{\"error\":" + Log.Q(ex.GetType().Name + ": " + ex.Message) + "}";
             using (var brep = new Autodesk.AutoCAD.BoundaryRepresentation.Brep(solid))
             {
-                var vertices = brep.Vertices.Cast<Autodesk.AutoCAD.BoundaryRepresentation.Vertex>().ToList();
-                var edges = brep.Edges.Cast<Autodesk.AutoCAD.BoundaryRepresentation.Edge>().ToList();
-                int VertexIndex(Autodesk.AutoCAD.BoundaryRepresentation.Vertex v) => vertices.FindIndex(w => w.Point.IsEqualTo(v.Point));
-                int EdgeIndex(Autodesk.AutoCAD.BoundaryRepresentation.Edge x) => edges.FindIndex(y => y.Vertex1.Point.IsEqualTo(x.Vertex1.Point) && y.Vertex2.Point.IsEqualTo(x.Vertex2.Point) && Same(y, x));
+                var vertices = new List<Autodesk.AutoCAD.BoundaryRepresentation.Vertex>();
+                var edges = new List<Autodesk.AutoCAD.BoundaryRepresentation.Edge>();
+                try { vertices = brep.Vertices.Cast<Autodesk.AutoCAD.BoundaryRepresentation.Vertex>().ToList(); } catch { }
+                try { edges = brep.Edges.Cast<Autodesk.AutoCAD.BoundaryRepresentation.Edge>().ToList(); } catch { }
+                int VertexIndex(Autodesk.AutoCAD.BoundaryRepresentation.Vertex v)
+                {
+                    try { return vertices.FindIndex(w => w.Point.IsEqualTo(v.Point)); } catch { return -2; }
+                }
+                int EdgeIndex(Autodesk.AutoCAD.BoundaryRepresentation.Edge x)
+                {
+                    try { return edges.FindIndex(y => y.Vertex1.Point.IsEqualTo(x.Vertex1.Point) && y.Vertex2.Point.IsEqualTo(x.Vertex2.Point) && Same(y, x)); }
+                    catch { return -2; }
+                }
                 string Curve(Autodesk.AutoCAD.BoundaryRepresentation.Edge x)
                 {
                     Curve3d c = null;
-                    try { c = x.Curve; } catch { }
+                    try { c = x.Curve; } catch (System.Exception ex) { return Err(ex); }
                     var native = c is ExternalCurve3d ext && ext.IsNativeCurve ? ext.NativeCurve : c;
                     return native == null ? "null" : Log.Props(native, "kind", Log.Q(native.GetType().Name));
                 }
                 string Surface(Autodesk.AutoCAD.BoundaryRepresentation.Face f)
                 {
                     Autodesk.AutoCAD.Geometry.Surface s = null;
-                    try { s = f.Surface; } catch { }
+                    try { s = f.Surface; } catch (System.Exception ex) { return Err(ex); }
                     if (s is ExternalBoundedSurface eb)
                     {
                         Autodesk.AutoCAD.Geometry.Surface b = null;
                         try { b = eb.BaseSurface; } catch { }
-                        
                         if (b != null) return Log.Props(b, "kind", Log.Q(b.GetType().Name));
                     }
                     return s == null ? "null" : Log.Props(s, "kind", Log.Q(s.GetType().Name));
                 }
-                var faces = brep.Faces.Cast<Autodesk.AutoCAD.BoundaryRepresentation.Face>().Select(f =>
+                string Edge(Autodesk.AutoCAD.BoundaryRepresentation.Edge x)
                 {
-                    var loops = f.Loops.Cast<Autodesk.AutoCAD.BoundaryRepresentation.BoundaryLoop>().Select(l =>
-                        "{\"type\":" + Log.V(l.LoopType) +
-                        ",\"edges\":[" + string.Join(",", l.Edges.Cast<Autodesk.AutoCAD.BoundaryRepresentation.Edge>().Select(EdgeIndex)) + "]" +
-                        ",\"vertices\":[" + string.Join(",", l.Vertices.Cast<Autodesk.AutoCAD.BoundaryRepresentation.Vertex>().Select(VertexIndex)) + "]}");
-                    double area = double.NaN;
-                    try { area = f.GetArea(); } catch { }
-                    return "{\"surface\":" + Surface(f) + ",\"orientToSurface\":" + Log.V(f.IsOrientToSurface) + ",\"area\":" + Log.V(area) +
-                        ",\"loops\":[" + string.Join(",", loops) + "]}";
-                });
-                return "{\"vertices\":[" + string.Join(",", vertices.Select(v => Log.V(v.Point))) + "]" +
-                    ",\"edges\":[" + string.Join(",", edges.Select(x => "{\"from\":" + VertexIndex(x.Vertex1) + ",\"to\":" + VertexIndex(x.Vertex2) +
-                        ",\"orientToCurve\":" + Log.V(x.IsOrientToCurve) + ",\"curve\":" + Curve(x) + "}")) + "]" +
-                    ",\"faces\":[" + string.Join(",", faces) + "]" +
-                    ",\"shells\":" + brep.Shells.Cast<object>().Count() + ",\"volume\":" + Log.V(brep.GetVolume()) + ",\"surfaceArea\":" + Log.V(brep.GetSurfaceArea()) + "}";
+                    try
+                    {
+                        return "{\"from\":" + VertexIndex(x.Vertex1) + ",\"to\":" + VertexIndex(x.Vertex2) +
+                            ",\"orientToCurve\":" + Log.V(x.IsOrientToCurve) + ",\"curve\":" + Curve(x) + "}";
+                    }
+                    catch (System.Exception ex) { return Err(ex); }
+                }
+                string Loop(Autodesk.AutoCAD.BoundaryRepresentation.BoundaryLoop l)
+                {
+                    try
+                    {
+                        string type; try { type = Log.V(l.LoopType); } catch (System.Exception ex) { type = Log.Q(ex.GetType().Name); }
+                        string es; try { es = string.Join(",", l.Edges.Cast<Autodesk.AutoCAD.BoundaryRepresentation.Edge>().Select(EdgeIndex)); } catch (System.Exception ex) { es = Log.Q(ex.GetType().Name); }
+                        string vs; try { vs = string.Join(",", l.Vertices.Cast<Autodesk.AutoCAD.BoundaryRepresentation.Vertex>().Select(VertexIndex)); } catch (System.Exception ex) { vs = Log.Q(ex.GetType().Name); }
+                        return "{\"type\":" + type + ",\"edges\":[" + es + "],\"vertices\":[" + vs + "]}";
+                    }
+                    catch (System.Exception ex) { return Err(ex); }
+                }
+                string Face(Autodesk.AutoCAD.BoundaryRepresentation.Face f)
+                {
+                    try
+                    {
+                        string loops; try { loops = string.Join(",", f.Loops.Cast<Autodesk.AutoCAD.BoundaryRepresentation.BoundaryLoop>().Select(Loop)); } catch (System.Exception ex) { loops = Err(ex); }
+                        double area = double.NaN;
+                        try { area = f.GetArea(); } catch { }
+                        return "{\"surface\":" + Surface(f) + ",\"orientToSurface\":" + Log.V(f.IsOrientToSurface) + ",\"area\":" + Log.V(area) +
+                            ",\"loops\":[" + loops + "]}";
+                    }
+                    catch (System.Exception ex) { return Err(ex); }
+                }
+                string Point(Autodesk.AutoCAD.BoundaryRepresentation.Vertex v)
+                {
+                    try { return Log.V(v.Point); } catch (System.Exception ex) { return Err(ex); }
+                }
+                string faces; try { faces = string.Join(",", brep.Faces.Cast<Autodesk.AutoCAD.BoundaryRepresentation.Face>().Select(Face)); } catch (System.Exception ex) { faces = Err(ex); }
+                string shells; try { shells = brep.Shells.Cast<object>().Count().ToString(); } catch { shells = "null"; }
+                string volume; try { volume = Log.V(brep.GetVolume()); } catch { volume = "null"; }
+                string surfaceArea; try { surfaceArea = Log.V(brep.GetSurfaceArea()); } catch { surfaceArea = "null"; }
+                return "{\"vertices\":[" + string.Join(",", vertices.Select(Point)) + "]" +
+                    ",\"edges\":[" + string.Join(",", edges.Select(Edge)) + "]" +
+                    ",\"faces\":[" + faces + "]" +
+                    ",\"shells\":" + shells + ",\"volume\":" + volume + ",\"surfaceArea\":" + surfaceArea + "}";
             }
         }
 

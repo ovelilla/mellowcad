@@ -1258,6 +1258,49 @@ describe("the engine's English surface", () => {
         .do("escape", (c) => c.escape())
         .do("ISOLINES", (c) => submit(c, "ISOLINES", "FOO", "8"))
     )
+    walk("WEDGE", createHarness(), (s) =>
+      s
+        .do("WEDGE", (c) => submit(c, "WEDGE", "0,0,0", "100,50", "30"))
+        .do("WEDGE refused", (c) =>
+          submit(c, "WEDGE", "FOO", "200,0", "200,50", "300,0", "300,50", "0")
+        )
+        .do("WEDGE Length", (c) =>
+          submit(c, "-30", "WEDGE", "400,0", "L", "60", "", "30", "")
+        )
+        .do("LIST", (c) => submit(c, "LIST", "L", ""))
+        .do("select the wedge", (c) =>
+          c.select(c.entities().find((e) => e.type === "solid3d")!.id)
+        )
+        .do("escape", (c) => c.escape())
+    )
+    walk("PYRAMID", createHarness(), (s) =>
+      s
+        .do("PYRAMID", (c) => submit(c, "PYRAMID", "0,0,0", "50", "80"))
+        .do("PYRAMID refused", (c) =>
+          submit(c, "PYRAMID", "S", "2", "6", "FOO", "200,0", "0", "I", "50")
+        )
+        .do("PYRAMID Top radius", (c) =>
+          submit(c, "FOO", "0", "T", "-1", "20", "A", "200,0", "200,0,80")
+        )
+        .do("PYRAMID Edge", (c) =>
+          submit(
+            c,
+            "PYRAMID",
+            "E",
+            "400,0",
+            "400,0",
+            "450,0",
+            "2P",
+            "0,0,0",
+            "0,0,30"
+          )
+        )
+        .do("LIST", (c) => submit(c, "LIST", "L", ""))
+        .do("select the pyramid", (c) =>
+          c.select(c.entities().find((e) => e.type === "solid3d")!.id)
+        )
+        .do("escape", (c) => c.escape())
+    )
     walk(
       "JOIN made",
       createHarness({

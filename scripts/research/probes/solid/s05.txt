@@ -1,0 +1,40 @@
+_QAFLAGS
+2
+_ZOOM
+_W
+-10,-10
+40,40
+_VPOINT
+1,-1,1
+_CONE
+10,10,0
+5
+8
+_CONE
+30,10,0
+5
+_T
+2
+8
+_ZOOM
+_E
+(osnap (trans '(10 10 8) 0 2) "_end")
+(osnap (trans '(10 10 8) 0 2) "_cen")
+(osnap (trans '(10 10 8) 0 2) "_mid")
+(osnap (trans '(10 10 8) 0 2) "_nea")
+(osnap (trans '(10 10 8) 0 2) "_gcen")
+(osnap (trans '(10 10 8) 0 2) "_int")
+(osnap (trans '(15 10 0) 0 2) "_end")
+(osnap (trans '(15 10 0) 0 2) "_mid")
+(osnap (trans '(15 10 0) 0 2) "_cen")
+(osnap (trans '(15 10 0) 0 2) "_qua")
+(osnap (trans '(12.5 10 4) 0 2) "_nea")
+(osnap (trans '(12.5 10 4) 0 2) "_end")
+(osnap (trans '(12.5 10 4) 0 2) "_mid")
+(osnap (trans '(10 12.5 4) 0 2) "_nea")
+(osnap (trans '(10 12.5 4) 0 2) "_end")
+(osnap (trans '(32 10 8) 0 2) "_end")
+(osnap (trans '(32 10 8) 0 2) "_cen")
+(osnap (trans '(32 10 8) 0 2) "_qua")
+(osnap (trans '(30 12 8) 0 2) "_qua")
+(osnap (trans '(30 12 8) 0 2) "_cen")

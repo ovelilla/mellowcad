@@ -732,10 +732,9 @@ export interface RegionEntity extends BaseEntity {
 }
 
 /**
- * What made a solid, kept while it is still that primitive: LIST's `Solid
- * type` and the Properties palette's Geometry (solid/p01, d03). A box rises
- * `height` along `normal` from the centre of its base, `position`; its length
- * runs along `xAxis`, its width along `normal × xAxis`. Both axes are unit.
+ * A box as made: its base centred on `position`, its length along `xAxis`,
+ * its width along `normal × xAxis`, `height` along `normal`. Both axes are
+ * unit.
  */
 export interface BoxPrimitive {
   readonly kind: "box"
@@ -748,6 +747,40 @@ export interface BoxPrimitive {
 }
 
 /**
+ * A wedge: a box's sizes, its top sloping from the base's −`xAxis` edge,
+ * `height` up, down to its +`xAxis` edge.
+ */
+export interface WedgePrimitive extends Omit<BoxPrimitive, "kind"> {
+  readonly kind: "wedge"
+}
+
+/**
+ * A pyramid on a regular polygon of `sides` centred on `position`, `xAxis`
+ * towards the middle of one of its sides (LIST's Rotation), rising `height`
+ * along `normal` to a point, or to the same polygon `topRadius` round. Both
+ * radii are the circles the polygons are inscribed in (LIST's `Inscribed`);
+ * `inscribed` is the Type it was made as, which the palette reads its radii
+ * by (solid/y01, d05).
+ */
+export interface PyramidPrimitive {
+  readonly kind: "pyramid"
+  readonly position: Vec3
+  readonly xAxis: Vec3
+  readonly normal: Vec3
+  readonly sides: number
+  readonly radius: number
+  readonly topRadius: number
+  readonly height: number
+  readonly inscribed: boolean
+}
+
+/**
+ * What made a solid, kept while it is still that primitive: LIST's `Solid
+ * type` and the Properties palette's Geometry (solid/p01, d03, d05).
+ */
+export type SolidPrimitive = BoxPrimitive | WedgePrimitive | PyramidPrimitive
+
+/**
  * A 3D solid (DXF's 3DSOLID): its boundary as the kernel's B-rep
  * (`geometry/solids.ts`), in the WCS. Like a 3D polyline it has no plane:
  * `normal` and `elevation` are never set.
@@ -755,7 +788,7 @@ export interface BoxPrimitive {
 export interface Solid3dEntity extends BaseEntity {
   readonly type: "solid3d"
   readonly brep: Brep
-  readonly primitive?: BoxPrimitive
+  readonly primitive?: SolidPrimitive
 }
 
 export type Entity =

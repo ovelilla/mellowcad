@@ -89,7 +89,8 @@ export const en: EditorCatalog = {
         "dimchain": "Continue",
         "attributes": "Attributes",
         "measure": "Measure",
-        "union": "Solid Editing"
+        "union": "Solid Editing",
+        "box": "Modeling"
       },
       "sections": {
         "draw": "Draw",

@@ -105,6 +105,8 @@ export const es: EngineLocale = {
       "union": "Unión",
       "subtract": "Diferencia",
       "box": "Prisma rectangular",
+      "wedge": "Cuña",
+      "pyramid": "Pirámide",
       "intersect": "Intersección"
     },
     "description": {
@@ -447,6 +449,9 @@ export const es: EngineLocale = {
         "vertices": "Vértices",
         "segments": "Segmentos",
         "solidType": "Tipo de sólido",
+        "baseRadius": "Radio de base",
+        "topRadius": "Radio superior",
+        "sides": "Lados",
         "currentVertex": "Vértice actual",
         "vertex": "Vértice",
         "startSegmentWidth": "Anchura inicial del segmento",
@@ -571,6 +576,10 @@ export const es: EngineLocale = {
         "fitPoints": "Ajustar",
         "controlVertices": "Vértices de control",
         "box": "Prisma",
+        "wedge": "Cuña",
+        "pyramid": "Pirámide",
+        "inscribed": "Inscrito",
+        "circumscribed": "Circunscrito",
         "chord": "Cuerda",
         "sqrtChord": "RaízcuadradaCuerda",
         "uniform": "Uniforme",
@@ -1091,6 +1100,13 @@ export const es: EngineLocale = {
       "BOX": [
         "PRISMARECT"
       ],
+      "WEDGE": [
+        "CUÑA"
+      ],
+      "PYRAMID": [
+        "PIRAMIDE",
+        "PIR"
+      ],
       "REGION": [
         "REGION",
         "REG"
@@ -1294,6 +1310,21 @@ export const es: EngineLocale = {
         "Cube": "Cubo",
         "Length": "Longitud",
         "2Point": "2Puntos"
+      },
+      "WEDGE": {
+        "Center": "Centro",
+        "Cube": "Cubo",
+        "Length": "Longitud",
+        "2Point": "2Puntos"
+      },
+      "PYRAMID": {
+        "Edge": "Arista",
+        "Sides": "Lados",
+        "Inscribed": "Inscrito",
+        "Circumscribed": "Circunscrito",
+        "2Point": "2Puntos",
+        "Axis": "Eje",
+        "Top": "Radio"
       },
       "RECTANG": {
         "Chamfer": "Chaflán",
@@ -2101,6 +2132,13 @@ export const es: EngineLocale = {
       "boxLength": "Precise longitud",
       "boxWidth": "Precise anchura",
       "boxHeightOr": "Precise altura o",
+      "pyramidCenterOr": "Precise centro de base o",
+      "specifyBaseRadiusOr": "Precise radio de base o",
+      "pyramidBaseRadiusOr": "Precise radio de base o",
+      "solidHeightTopOr": "Indique altura o",
+      "solidHeightOr": "Precise altura o",
+      "specifyAxisEndpoint": "Precise punto final de eje",
+      "specifyTopRadius": "Precise radio superior",
       "specifyFirstPoint": "Precise primer punto",
       "specifyNextPointOr": "Precise punto siguiente o",
       "specifyNextPointOrClose": "Precise siguiente punto o",
@@ -6080,8 +6118,36 @@ export const es: EngineLocale = {
       "boxZeroLength": "No puede ser un Prisma de longitud cero.",
       "boxZeroWidth": "No puede ser un Prisma de anchura cero.",
       "boxValueNonzero": "No puede ser un valor igual a cero.",
+      "wedgeZeroLength": "No puede ser un Cuña de longitud cero.",
+      "wedgeZeroWidth": "No puede ser un Cuña de anchura cero.",
+      "pyramidSettings": [
+        " ",
+        [
+          "sides"
+        ],
+        " lados ",
+        [
+          "type",
+          1,
+          {
+            "inscribed": "inscritos",
+            "other": "circunscritos"
+          }
+        ]
+      ],
       "listSolidHistory": "         Historial = Ninguno\n Mostrar historial = No",
-      "listSolidType": "    Tipo de sólido = Prisma",
+      "listSolidType": [
+        "    Tipo de sólido = ",
+        [
+          "type",
+          1,
+          {
+            "wedge": "Cuña",
+            "pyramid": "Pirámide",
+            "other": "Prisma"
+          }
+        ]
+      ],
       "listBoxPosition": [
         "         Posición, X = ",
         [
@@ -6132,6 +6198,36 @@ export const es: EngineLocale = {
         "         Rotación: ",
         [
           "angle"
+        ]
+      ],
+      "listPyramidInscribedBase": [
+        "   Radio de base inscrito: ",
+        [
+          "radius"
+        ]
+      ],
+      "listPyramidCircumscribedBase": [
+        "Radio de base circunscrito: ",
+        [
+          "radius"
+        ]
+      ],
+      "listPyramidInscribedTop": [
+        "  Radio superior inscrito: ",
+        [
+          "radius"
+        ]
+      ],
+      "listPyramidCircumscribedTop": [
+        "Radio superior circunscrito: ",
+        [
+          "radius"
+        ]
+      ],
+      "listPyramidSides": [
+        "  Número de lados: ",
+        [
+          "sides"
         ]
       ],
       "listRegionArea": [
@@ -6294,6 +6390,10 @@ export const es: EngineLocale = {
       "POLYGON": {
         "Inscribed": "Inscrito en el círculo",
         "Circumscribed": "Circunscrito alrededor del círculo"
+      },
+      "PYRAMID": {
+        "Axis": "punto final Eje",
+        "Top": "Radio superior"
       },
       "CIRCLED": {
         "Ttr": "Ttr (Tangente tangente radio)"

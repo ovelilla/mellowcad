@@ -105,6 +105,8 @@ export const en: EngineCatalog = {
       "union": "Union",
       "subtract": "Subtract",
       "box": "Box",
+      "wedge": "Wedge",
+      "pyramid": "Pyramid",
       "intersect": "Intersect"
     },
     "description": {
@@ -453,6 +455,9 @@ export const en: EngineCatalog = {
         "vertices": "Vertices",
         "segments": "Segments",
         "solidType": "Solid type",
+        "baseRadius": "Base radius",
+        "topRadius": "Top radius",
+        "sides": "Sides",
         "currentVertex": "Current Vertex",
         "vertex": "Vertex",
         "startSegmentWidth": "Start segment width",
@@ -577,6 +582,10 @@ export const en: EngineCatalog = {
         "fitPoints": "Fit",
         "controlVertices": "Control Vertices",
         "box": "Box",
+        "wedge": "Wedge",
+        "pyramid": "Pyramid",
+        "inscribed": "Inscribed",
+        "circumscribed": "Circumscribed",
         "chord": "Chord",
         "sqrtChord": "SqrtChord",
         "uniform": "Uniform",
@@ -1108,6 +1117,14 @@ export const en: EngineCatalog = {
       "BOX": [
         "BOX"
       ],
+      "WEDGE": [
+        "WEDGE",
+        "WE"
+      ],
+      "PYRAMID": [
+        "PYRAMID",
+        "PYR"
+      ],
       "REGION": [
         "REGION",
         "REG"
@@ -1622,6 +1639,13 @@ export const en: EngineCatalog = {
       "boxLength": "Specify length",
       "boxWidth": "Specify width",
       "boxHeightOr": "Specify height or",
+      "pyramidCenterOr": "Specify center point of base or",
+      "specifyBaseRadiusOr": "Specify base radius or",
+      "pyramidBaseRadiusOr": "Specify base radius or",
+      "solidHeightTopOr": "Specify height or",
+      "solidHeightOr": "Specify height or",
+      "specifyAxisEndpoint": "Specify axis endpoint",
+      "specifyTopRadius": "Specify top radius",
       "specifyFirstPoint": "Specify first point",
       "specifyNextPointOr": "Specify next point or",
       "specifyNextPointOrClose": "Specify next point or",
@@ -5589,8 +5613,36 @@ export const en: EngineCatalog = {
       "boxZeroLength": "Box of zero length not permitted.",
       "boxZeroWidth": "Box of zero width not permitted.",
       "boxValueNonzero": "Value must be nonzero.",
+      "wedgeZeroLength": "Wedge of zero length not permitted.",
+      "wedgeZeroWidth": "Wedge of zero width not permitted.",
+      "pyramidSettings": [
+        " ",
+        [
+          "sides"
+        ],
+        " sides  ",
+        [
+          "type",
+          1,
+          {
+            "inscribed": "Inscribed",
+            "other": "Circumscribed"
+          }
+        ]
+      ],
       "listSolidHistory": "         History = None\n    Show History = No",
-      "listSolidType": "      Solid type = Box",
+      "listSolidType": [
+        "      Solid type = ",
+        [
+          "type",
+          1,
+          {
+            "wedge": "Wedge",
+            "pyramid": "Pyramid",
+            "other": "Box"
+          }
+        ]
+      ],
       "listBoxPosition": [
         "         Position, X = ",
         [
@@ -5641,6 +5693,36 @@ export const en: EngineCatalog = {
         "         Rotation: ",
         [
           "angle"
+        ]
+      ],
+      "listPyramidInscribedBase": [
+        "    Inscribed base radius: ",
+        [
+          "radius"
+        ]
+      ],
+      "listPyramidCircumscribedBase": [
+        "Circumscribed base radius: ",
+        [
+          "radius"
+        ]
+      ],
+      "listPyramidInscribedTop": [
+        "     Inscribed top radius: ",
+        [
+          "radius"
+        ]
+      ],
+      "listPyramidCircumscribedTop": [
+        " Circumscribed top radius: ",
+        [
+          "radius"
+        ]
+      ],
+      "listPyramidSides": [
+        "  Number of sides: ",
+        [
+          "sides"
         ]
       ],
       "listRegionArea": [
@@ -5803,6 +5885,10 @@ export const en: EngineCatalog = {
       "POLYGON": {
         "Inscribed": "Inscribed in circle",
         "Circumscribed": "Circumscribed about circle"
+      },
+      "PYRAMID": {
+        "Axis": "Axis endpoint",
+        "Top": "Top radius"
       },
       "CIRCLED": {
         "Ttr": "Ttr (tan tan radius)"

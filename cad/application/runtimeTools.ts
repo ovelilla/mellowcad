@@ -47,6 +47,8 @@ import { ExplodeTool } from "./tools/ExplodeTool"
 import { JoinTool } from "./tools/JoinTool"
 import { RegionTool } from "./tools/RegionTool"
 import { BoxTool } from "./tools/BoxTool"
+import { PyramidTool } from "./tools/PyramidTool"
+import { solidDefaults } from "./tools/solidDefaults"
 import { RegionBooleanTool, SubtractTool } from "./tools/RegionBooleanTool"
 import { BreakTool } from "./tools/BreakTool"
 import { SplineEditTool } from "./tools/SplineEditTool"
@@ -95,6 +97,7 @@ export function defaultTools(
   pedit: PolylineEditTool
 ): Tool[] {
   const circleRadius = { radius: 0 }
+  const primitives = solidDefaults()
   const trimExtendMode: TrimExtendMode = { standard: false, edgeExtend: false }
   const splineSettings = defaultSplineSettings()
   const associativity: ArrayAssociativity = { associative: true }
@@ -167,7 +170,9 @@ export function defaultTools(
     new RegionBooleanTool("union"),
     new SubtractTool(),
     new RegionBooleanTool("intersect"),
-    new BoxTool(),
+    new BoxTool("box", primitives),
+    new BoxTool("wedge", primitives),
+    new PyramidTool(primitives),
     new BreakTool("gap", "break"),
     new BreakTool("atPoint", "breakatpoint"),
     new SplineEditTool(),

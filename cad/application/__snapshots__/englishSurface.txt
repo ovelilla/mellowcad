@@ -59,6 +59,8 @@ UNION ["UNI"] "Union"
 SUBTRACT ["SU"] "Subtract"
 INTERSECT ["IN"] "Intersect"
 BOX [] "Box"
+WEDGE ["WE"] "Wedge"
+PYRAMID ["PYR"] "Pyramid"
 BREAK ["BR"] "Break"
 BREAKATPOINT [] "Break at point"
 SPLINEDIT ["SPE"] "Edit Spline"
@@ -193,6 +195,8 @@ union "Union" UNI
 subtract "Subtract" SU
 intersect "Intersect" IN
 box "Box" BOX
+wedge "Wedge" WE
+pyramid "Pyramid" PYR
 break "Break" BR
 breakatpoint "Break at point" BREAKATPOINT
 splinedit "Edit Spline" SPE
@@ -4450,6 +4454,163 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Enter new value for ISOLINES <4>: FOO
   error| Requires an integer between 0 and 2047.
   prompt| Enter new value for ISOLINES <4>: 8
+
+## WEDGE
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> WEDGE
+  command| WEDGE
+  prompt| Specify first corner or [Center]: 0,0,0
+  prompt| Specify other corner or [Cube/Length]: 100,50
+  prompt| Specify height or [2Point]: 30
+> WEDGE refused
+  prompt: WEDGE Specify height or [2Point] <30.00>:
+  asks: "Specify height or"
+  tip: Specify height or
+  dyn: "Specify height or"=""|30.00|mm*
+  options: [2P] 2Point
+  command| WEDGE
+  prompt| Specify first corner or [Center]: FOO
+  error| Point or option keyword required.
+  prompt| Specify first corner or [Center]: 200,0
+  prompt| Specify other corner or [Cube/Length]: 200,50
+  error| Wedge of zero length not permitted.
+  prompt| Specify other corner or [Cube/Length]: 300,0
+  error| Wedge of zero width not permitted.
+  prompt| Specify other corner or [Cube/Length]: 300,50
+  prompt| Specify height or [2Point] <30.00>: 0
+  error| Value must be nonzero.
+> WEDGE Length
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify height or [2Point] <30.00>: -30
+  command| WEDGE
+  prompt| Specify first corner or [Center]: 400,0
+  prompt| Specify other corner or [Cube/Length]: L
+  prompt| Specify length: 60
+  prompt| Specify width:
+  error| Wedge of zero width not permitted.
+  prompt| Specify width: 30
+  prompt| Specify height or [2Point] <-30.00>:
+> LIST
+  command| LIST
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info|                   3DSOLID   Layer: "0"
+                                    Space: Model space
+                 History = None
+            Show History = No
+              Solid type = Wedge
+                 Position, X = 430.00    Y = 15.00     Z = 0.00
+                   Normal: X = 0.00      Y = 0.00      Z = -1.00
+                   Length: 60.00
+                    Width: 30.00
+                   Height: 30.00
+                 Rotation: 0
+> select the wedge
+  properties: 3D Solid (1) [Geometry: Solid type=Wedge, Position X=50.00, Position Y=25.00, Position Z=0.00, Length=100.00 mm, Width=50.00 mm, Height=30.00 mm, Rotation=0°] [Solid History: History=None, Show History=No]
+> escape
+  properties: -
+  command| *Cancel*
+
+## PYRAMID
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> PYRAMID
+  command| PYRAMID
+  info|  4 sides  Circumscribed
+  prompt| Specify center point of base or [Edge/Sides]: 0,0,0
+  prompt| Specify base radius or [Inscribed]: 50
+  prompt| Specify height or [2Point/Axis endpoint/Top radius]: 80
+> PYRAMID refused
+  prompt: PYRAMID Specify height or [2Point/Axis endpoint/Top radius] <80.00>:
+  asks: "Specify height or"
+  tip: Specify height or
+  dyn: "Specify height or"=""|80.00|mm*
+  options: [2P] 2Point, [A] Axis endpoint, [T] Top radius
+  command| PYRAMID
+  info|  4 sides  Circumscribed
+  prompt| Specify center point of base or [Edge/Sides]: S
+  prompt| Enter number of sides <4>: 2
+  error| Requires an integer between 3 and 32.
+  prompt| Enter number of sides <4>: 6
+  prompt| Specify center point of base or [Edge/Sides]: FOO
+  error| Point or option keyword required.
+  prompt| Specify center point of base or [Edge/Sides]: 200,0
+  prompt| Specify base radius or [Inscribed] <70.71>: 0
+  error| Value must be positive and nonzero.
+  prompt| Specify base radius or [Inscribed] <70.71>: I
+  prompt| Specify base radius or [Circumscribed] <70.71>: 50
+> PYRAMID Top radius
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify height or [2Point/Axis endpoint/Top radius] <80.00>: FOO
+  error| Requires numeric distance, second point, or option keyword.
+  prompt| Specify height or [2Point/Axis endpoint/Top radius] <80.00>: 0
+  error| Value must be nonzero.
+  prompt| Specify height or [2Point/Axis endpoint/Top radius] <80.00>: T
+  prompt| Specify top radius <0.00>: -1
+  error| Value must be positive.
+  prompt| Specify top radius <0.00>: 20
+  prompt| Specify height or [2Point/Axis endpoint] <80.00>: A
+  prompt| Specify axis endpoint: 200,0
+  error| Value must be nonzero.
+  prompt| Specify axis endpoint: 200,0,80
+> PYRAMID Edge
+  command| PYRAMID
+  info|  6 sides  Inscribed
+  prompt| Specify center point of base or [Edge/Sides]: E
+  prompt| Specify first endpoint of edge: 400,0
+  prompt| Specify second endpoint of edge: 400,0
+  error| Value must be positive and nonzero.
+  prompt| Specify second endpoint of edge: 450,0
+  prompt| Specify height or [2Point/Axis endpoint/Top radius] <80.00>: 2P
+  prompt| Specify first point: 0,0,0
+  prompt| Specify second point: 0,0,30
+> LIST
+  command| LIST
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info|                   3DSOLID   Layer: "0"
+                                    Space: Model space
+                 History = None
+            Show History = No
+              Solid type = Pyramid
+                 Position, X = 425.00    Y = 43.30     Z = 0.00
+            Inscribed base radius: 50.00
+        Circumscribed base radius: 43.30
+             Inscribed top radius: 0.00
+         Circumscribed top radius: 0.00
+                   Height: 30.00
+                 Rotation: 270
+          Number of sides: 6
+> select the pyramid
+  properties: 3D Solid (1) [Geometry: Solid type=Pyramid, Position X=0.00, Position Y=0.00, Position Z=0.00, Type=Circumscribed, Base radius=50.00 mm, Top radius=0.00 mm, Sides=4, Rotation=0°, Height=80.00 mm] [Solid History: History=None, Show History=No]
+> escape
+  properties: -
+  command| *Cancel*
 
 ## JOIN made
 > start

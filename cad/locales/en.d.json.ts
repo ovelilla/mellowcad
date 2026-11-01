@@ -102,6 +102,8 @@ declare const source: {
       "union": string
       "subtract": string
       "box": string
+      "wedge": string
+      "pyramid": string
       "intersect": string
     }
     "description": {
@@ -313,6 +315,9 @@ declare const source: {
         "vertices": string
         "segments": string
         "solidType": string
+        "baseRadius": string
+        "topRadius": string
+        "sides": string
         "currentVertex": string
         "vertex": string
         "startSegmentWidth": string
@@ -437,6 +442,10 @@ declare const source: {
         "fitPoints": string
         "controlVertices": string
         "box": string
+        "wedge": string
+        "pyramid": string
+        "inscribed": string
+        "circumscribed": string
         "chord": string
         "sqrtChord": string
         "uniform": string
@@ -602,6 +611,8 @@ declare const source: {
       "LWEIGHT": string[]
       "-LWEIGHT": string[]
       "BOX": string[]
+      "WEDGE": string[]
+      "PYRAMID": string[]
       "REGION": string[]
       "UNION": string[]
       "SUBTRACT": string[]
@@ -793,6 +804,21 @@ declare const source: {
         "Cube": string
         "Length": string
         "2Point": string
+      }
+      "WEDGE": {
+        "Center": string
+        "Cube": string
+        "Length": string
+        "2Point": string
+      }
+      "PYRAMID": {
+        "Edge": string
+        "Sides": string
+        "Inscribed": string
+        "Circumscribed": string
+        "2Point": string
+        "Axis": string
+        "Top": string
       }
       "RECTANG": {
         "Chamfer": string
@@ -1561,6 +1587,13 @@ declare const source: {
       "boxLength": string
       "boxWidth": string
       "boxHeightOr": string
+      "pyramidCenterOr": string
+      "specifyBaseRadiusOr": string
+      "pyramidBaseRadiusOr": string
+      "solidHeightTopOr": string
+      "solidHeightOr": string
+      "specifyAxisEndpoint": string
+      "specifyTopRadius": string
       "specifyFirstPoint": string
       "specifyNextPointOr": string
       "specifyNextPointOrClose": string
@@ -2401,6 +2434,9 @@ declare const source: {
       "boxZeroLength": string
       "boxZeroWidth": string
       "boxValueNonzero": string
+      "wedgeZeroLength": string
+      "wedgeZeroWidth": string
+      "pyramidSettings": string
       "listSolidHistory": string
       "listSolidType": string
       "listBoxPosition": string
@@ -2409,6 +2445,11 @@ declare const source: {
       "listBoxWidth": string
       "listBoxHeight": string
       "listBoxRotation": string
+      "listPyramidInscribedBase": string
+      "listPyramidCircumscribedBase": string
+      "listPyramidInscribedTop": string
+      "listPyramidCircumscribedTop": string
+      "listPyramidSides": string
       "listRegionArea": string
       "listRegionPerimeter": string
       "listRegionBounds": string
@@ -2460,6 +2501,10 @@ declare const source: {
       "POLYGON": {
         "Inscribed": string
         "Circumscribed": string
+      }
+      "PYRAMID": {
+        "Axis": string
+        "Top": string
       }
       "CIRCLED": {
         "Ttr": string

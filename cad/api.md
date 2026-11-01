@@ -3028,7 +3028,7 @@ export interface Polyline3dEntity extends BaseEntity {
 export interface Solid3dEntity extends BaseEntity {
     readonly type: "solid3d";
     readonly brep: Brep;
-    readonly primitive?: BoxPrimitive;
+    readonly primitive?: SolidPrimitive;
 }
 
 // domain/entityTypes.ts
@@ -3062,6 +3062,22 @@ export interface InsertEntity extends BaseEntity {
      * derived from these parameters (`domain/arrays.ts`).
      */
     readonly array?: ArrayParameters;
+}
+
+// domain/entityTypes.ts
+/**
+ * A box as made: its base centred on `position`, its length along `xAxis`,
+ * its width along `normal × xAxis`, `height` along `normal`. Both axes are
+ * unit.
+ */
+export interface BoxPrimitive {
+    readonly kind: "box";
+    readonly position: Vec3;
+    readonly xAxis: Vec3;
+    readonly normal: Vec3;
+    readonly length: number;
+    readonly width: number;
+    readonly height: number;
 }
 
 // domain/entityTypes.ts
@@ -3249,6 +3265,27 @@ export interface PolylineEntity extends BaseEntity, Thick {
 
 // domain/entityTypes.ts
 /**
+ * A pyramid on a regular polygon of `sides` centred on `position`, `xAxis`
+ * towards the middle of one of its sides (LIST's Rotation), rising `height`
+ * along `normal` to a point, or to the same polygon `topRadius` round. Both
+ * radii are the circles the polygons are inscribed in (LIST's `Inscribed`);
+ * `inscribed` is the Type it was made as, which the palette reads its radii
+ * by (solid/y01, d05).
+ */
+export interface PyramidPrimitive {
+    readonly kind: "pyramid";
+    readonly position: Vec3;
+    readonly xAxis: Vec3;
+    readonly normal: Vec3;
+    readonly sides: number;
+    readonly radius: number;
+    readonly topRadius: number;
+    readonly height: number;
+    readonly inscribed: boolean;
+}
+
+// domain/entityTypes.ts
+/**
  * A single line of text (AutoCAD's TEXT / DTEXT object). `position` is the
  * justification point the text hangs off — which for left-justified text is
  * also its insertion point — and `height` is the capital-letter height in
@@ -3314,6 +3351,15 @@ export interface SplineEntity extends BaseEntity {
     readonly knotVector?: readonly number[];
     /** A CV spline's weight at each control vertex (DXF 41), each above 0; absent, it is not rational. */
     readonly weights?: readonly number[];
+}
+
+// domain/entityTypes.ts
+/**
+ * A wedge: a box's sizes, its top sloping from the base's −`xAxis` edge,
+ * `height` up, down to its +`xAxis` edge.
+ */
+export interface WedgePrimitive extends Omit<BoxPrimitive, "kind"> {
+    readonly kind: "wedge";
 }
 
 // domain/entityTypes.ts
@@ -3505,19 +3551,9 @@ export type ArrayParameters = (RectangularArray & {
 // domain/entityTypes.ts
 /**
  * What made a solid, kept while it is still that primitive: LIST's `Solid
- * type` and the Properties palette's Geometry (solid/p01, d03). A box rises
- * `height` along `normal` from the centre of its base, `position`; its length
- * runs along `xAxis`, its width along `normal × xAxis`. Both axes are unit.
+ * type` and the Properties palette's Geometry (solid/p01, d03, d05).
  */
-export interface BoxPrimitive {
-    readonly kind: "box";
-    readonly position: Vec3;
-    readonly xAxis: Vec3;
-    readonly normal: Vec3;
-    readonly length: number;
-    readonly width: number;
-    readonly height: number;
-}
+export type SolidPrimitive = BoxPrimitive | WedgePrimitive | PyramidPrimitive;
 
 // domain/entityTypes.ts
 /**

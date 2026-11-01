@@ -1,8 +1,10 @@
-import { Vec3, add3, cross3, length3, scale3, sub3 } from "../geometry/Vec3"
+import { Vec3, add3, cross3, length3, scale3 } from "../geometry/Vec3"
 import { Axes3, axesToWorld } from "../geometry/ocs"
 import {
   Brep,
   boxBrep,
+  pyramidBrep,
+  wedgeBrep,
   brepArea,
   brepEdgeSegments,
   brepMapped,
@@ -17,32 +19,71 @@ import { withElevation, withNormal } from "./elevation"
 import { Ucs, worldDirectionToUcs, worldPointToUcs } from "./ucs"
 import { normalizeDegrees } from "../geometry/primitives"
 import {
-  BoxPrimitive,
   Entity,
   EntityId,
   LineEntity,
   RegionEntity,
   Solid3dEntity,
+  SolidPrimitive,
 } from "./entityTypes"
 
-/** The box a primitive describes, as the kernel's B-rep. */
-export function boxPrimitiveBrep(box: BoxPrimitive): Brep {
-  const y = cross3(box.normal, box.xAxis)
-  const corner = sub3(
-    box.position,
-    add3(scale3(box.xAxis, box.length / 2), scale3(y, box.width / 2))
-  )
-  return boxBrep(
-    corner,
-    scale3(box.xAxis, box.length),
-    scale3(y, box.width),
-    scale3(box.normal, box.height)
-  )
+/** The frame a primitive is made in: its X, the Y beside it, its normal. */
+function primitiveFrame(primitive: SolidPrimitive): Axes3 {
+  return {
+    x: primitive.xAxis,
+    y: cross3(primitive.normal, primitive.xAxis),
+    z: primitive.normal,
+  }
 }
 
-/** BOX's solid: the box `primitive` describes, which it keeps as its history. */
-export function createBox(
-  primitive: BoxPrimitive,
+/** A point of the primitive's own frame, from its position. */
+function framePoint(primitive: SolidPrimitive, p: Vec3): Vec3 {
+  return add3(primitive.position, axesToWorld(primitiveFrame(primitive), p))
+}
+
+/** The solid a primitive describes, as the kernel's B-rep. */
+export function primitiveBrep(primitive: SolidPrimitive): Brep {
+  switch (primitive.kind) {
+    case "box":
+    case "wedge": {
+      const { length, width, height } = primitive
+      const corner = framePoint(primitive, {
+        x: -length / 2,
+        y: -width / 2,
+        z: 0,
+      })
+      const { x, y, z } = primitiveFrame(primitive)
+      return (primitive.kind === "box" ? boxBrep : wedgeBrep)(
+        corner,
+        scale3(x, length),
+        scale3(y, width),
+        scale3(z, height)
+      )
+    }
+    case "pyramid": {
+      const { sides, radius, topRadius, height } = primitive
+      // The polygon's corners half a side either way of its X (solid/y01).
+      const ring = (r: number, z: number) =>
+        Array.from({ length: sides }, (_, k) => {
+          const angle = (Math.PI * (2 * k + 1)) / sides
+          return framePoint(primitive, {
+            x: r * Math.cos(angle),
+            y: r * Math.sin(angle),
+            z,
+          })
+        })
+      return pyramidBrep(
+        ring(radius, 0),
+        framePoint(primitive, { x: 0, y: 0, z: height }),
+        topRadius > 0 ? ring(topRadius, height) : null
+      )
+    }
+  }
+}
+
+/** The solid `primitive` describes, which it keeps as its history. */
+export function createSolid(
+  primitive: SolidPrimitive,
   layerId: LayerId = DEFAULT_LAYER_ID,
   id: EntityId = nextEntityId()
 ): Solid3dEntity {
@@ -50,7 +91,7 @@ export function createBox(
     id,
     type: "solid3d",
     layerId,
-    brep: boxPrimitiveBrep(primitive),
+    brep: primitiveBrep(primitive),
     primitive: {
       ...primitive,
       position: unsigned0(primitive.position),
@@ -69,9 +110,9 @@ export interface SolidMap {
 
 /**
  * The solid carried through `map`, keeping its id: its boundary and its
- * primitive. A box mirrored is still a box (solid/t01: Rotation 330 after a
- * mirror across a level line), its length axis and normal reflected and its
- * width axis their cross product again, which its symmetry allows.
+ * primitive. A primitive mirrored is still that primitive (solid/t01: a box's
+ * Rotation 330 after a mirror across a level line; w06, y08), its axes
+ * reflected, as the symmetry of each about its X allows.
  */
 export function solidMapped(
   solid: Solid3dEntity,
@@ -82,23 +123,45 @@ export function solidMapped(
   const direction = (d: Vec3) => axesToWorld(map.rotation, d)
   const point = (p: Vec3) =>
     add3(scale3(direction(p), map.scale), map.translation)
-  const box = solid.primitive
+  const primitive = solid.primitive
   return {
     ...solid,
     brep: brepMapped(solid.brep, point, direction, reflects),
-    ...(box
-      ? {
-          primitive: {
-            ...box,
-            position: unsigned0(point(box.position)),
-            xAxis: unsigned0(direction(box.xAxis)),
-            normal: unsigned0(direction(box.normal)),
-            length: box.length * map.scale,
-            width: box.width * map.scale,
-            height: box.height * map.scale,
-          },
-        }
+    ...(primitive
+      ? { primitive: primitiveMapped(primitive, point, direction, map.scale) }
       : {}),
+  }
+}
+
+function primitiveMapped(
+  primitive: SolidPrimitive,
+  point: (p: Vec3) => Vec3,
+  direction: (d: Vec3) => Vec3,
+  scale: number
+): SolidPrimitive {
+  const placed = {
+    position: unsigned0(point(primitive.position)),
+    xAxis: unsigned0(direction(primitive.xAxis)),
+    normal: unsigned0(direction(primitive.normal)),
+  }
+  switch (primitive.kind) {
+    case "box":
+    case "wedge":
+      return {
+        ...primitive,
+        ...placed,
+        length: primitive.length * scale,
+        width: primitive.width * scale,
+        height: primitive.height * scale,
+      }
+    case "pyramid":
+      return {
+        ...primitive,
+        ...placed,
+        radius: primitive.radius * scale,
+        topRadius: primitive.topRadius * scale,
+        height: primitive.height * scale,
+      }
   }
 }
 
@@ -145,23 +208,26 @@ export function solidArea(solid: Solid3dEntity): number {
   return brepArea(solid.brep)
 }
 
-/** A box's history as LIST and the palette read it in `ucs`. */
-export interface BoxInUcs {
+/** A primitive's placement as LIST and the palette read it in `ucs`. */
+export interface PrimitiveInUcs {
   /** The centre of its base. */
   readonly position: Vec3
   /** Its normal, or null when it is the UCS's Z (LIST then leaves the line out, solid/p06). */
   readonly normal: Vec3 | null
-  /** Degrees, its length's heading on the UCS's XY plane (solid/p13, t02). */
+  /** Degrees, its X's heading on the UCS's XY plane (solid/p13, t02, y07). */
   readonly rotation: number
 }
 
-export function boxInUcs(box: BoxPrimitive, ucs: Ucs): BoxInUcs {
-  const normal = worldDirectionToUcs(ucs, box.normal)
-  const along = worldDirectionToUcs(ucs, box.xAxis)
+export function primitiveInUcs(
+  primitive: SolidPrimitive,
+  ucs: Ucs
+): PrimitiveInUcs {
+  const normal = worldDirectionToUcs(ucs, primitive.normal)
+  const along = worldDirectionToUcs(ucs, primitive.xAxis)
   const level =
     Math.abs(normal.x) <= TILT && Math.abs(normal.y) <= TILT && normal.z > 0
   return {
-    position: worldPointToUcs(ucs, box.position),
+    position: worldPointToUcs(ucs, primitive.position),
     normal: level ? null : normal,
     rotation: normalizeDegrees((Math.atan2(along.y, along.x) * 180) / Math.PI),
   }

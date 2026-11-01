@@ -1,4 +1,4 @@
-import { Vec3, add3, dot3, normalize3, sub3 } from "./Vec3"
+import { Vec3, add3, cross3, dot3, normalize3, sub3 } from "./Vec3"
 import { Axes3, arbitraryAxis, worldToAxes } from "./ocs"
 import { MODEL_TOLERANCE, PlanarCurve } from "./planarCurves"
 import { RegionFace, facesArea } from "./planarRegions"
@@ -60,6 +60,57 @@ export function unsigned0(v: Vec3): Vec3 {
 }
 
 /**
+ * The solid with flat faces through `vertices`: its edges `ends`, each run
+ * from its first vertex to its second, and its faces the vertex cycles
+ * `faces`, each counter-clockwise seen from outside — which the face's
+ * coedges follow, along their edge or against it.
+ */
+export function polyhedronBrep(
+  points: readonly Vec3[],
+  ends: readonly (readonly [number, number])[],
+  faces: readonly (readonly number[])[]
+): Brep {
+  const vertices = points.map(unsigned0)
+  return {
+    vertices,
+    edges: ends.map(([start, end]) => ({
+      start,
+      end,
+      curve: { kind: "line" },
+    })),
+    faces: faces.map((cycle) => {
+      // Newell's normal: exact for a face along the axes, unbiased for any.
+      let n: Vec3 = { x: 0, y: 0, z: 0 }
+      cycle.forEach((a, i) => {
+        n = add3(
+          n,
+          cross3(vertices[a], vertices[cycle[(i + 1) % cycle.length]])
+        )
+      })
+      return {
+        surface: {
+          kind: "plane",
+          origin: vertices[cycle[0]],
+          normal: unsigned0(normalize3(n) ?? n),
+        },
+        loops: [
+          cycle.map((a, i) => {
+            const b = cycle[(i + 1) % cycle.length]
+            const along = ends.findIndex(([s, e]) => s === a && e === b)
+            return along >= 0
+              ? { edge: along, reversed: false }
+              : {
+                  edge: ends.findIndex(([s, e]) => s === b && e === a),
+                  reversed: true,
+                }
+          }),
+        ],
+      }
+    }),
+  }
+}
+
+/**
  * The box with a corner at `corner` and sides `u`, `v` and `w`, which must
  * turn right-handed (`(u × v) · w > 0`). Its edges run as ACIS runs a box's
  * (solid/p01): the bottom's round the bottom face, the top's round the top,
@@ -74,61 +125,106 @@ export function boxBrep(corner: Vec3, u: Vec3, v: Vec3, w: Vec3): Brep {
     add3(add3(corner, u), v),
     add3(corner, v),
   ]
-  const vertices = [...base, ...base.map((p) => add3(p, w))].map(unsigned0)
-  const ends: [number, number][] = [
-    [0, 3],
-    [3, 2],
-    [2, 1],
-    [1, 0],
-    [4, 5],
-    [5, 6],
-    [6, 7],
-    [7, 4],
-    [4, 0],
-    [5, 1],
-    [6, 2],
-    [7, 3],
-  ]
-  const edges: BrepEdge[] = ends.map(([start, end]) => ({
-    start,
-    end,
-    curve: { kind: "line" },
-  }))
-  // Each face's corners counter-clockwise seen from outside, its coedges
-  // the edges between them, along or against.
-  const face = (d: Vec3, k: number, cycle: number[]): BrepFace => ({
-    surface: {
-      kind: "plane",
-      origin: vertices[cycle[0]],
-      normal: unsigned0(
-        normalize3({ x: d.x * k, y: d.y * k, z: d.z * k }) ?? d
-      ),
-    },
-    loops: [
-      cycle.map((a, n) => {
-        const b = cycle[(n + 1) % cycle.length]
-        const edge = ends.findIndex(([s, e]) => s === a && e === b)
-        return edge >= 0
-          ? { edge, reversed: false }
-          : {
-              edge: ends.findIndex(([s, e]) => s === b && e === a),
-              reversed: true,
-            }
-      }),
+  return polyhedronBrep(
+    [...base, ...base.map((p) => add3(p, w))],
+    [
+      [0, 3],
+      [3, 2],
+      [2, 1],
+      [1, 0],
+      [4, 5],
+      [5, 6],
+      [6, 7],
+      [7, 4],
+      [4, 0],
+      [5, 1],
+      [6, 2],
+      [7, 3],
     ],
-  })
-  return {
-    vertices,
-    edges,
-    faces: [
-      face(w, 1, [4, 5, 6, 7]),
-      face(w, -1, [0, 3, 2, 1]),
-      face(v, -1, [0, 1, 5, 4]),
-      face(u, -1, [3, 0, 4, 7]),
-      face(v, 1, [2, 3, 7, 6]),
-      face(u, 1, [1, 2, 6, 5]),
+    [
+      [4, 5, 6, 7],
+      [0, 3, 2, 1],
+      [0, 1, 5, 4],
+      [3, 0, 4, 7],
+      [2, 3, 7, 6],
+      [1, 2, 6, 5],
+    ]
+  )
+}
+
+/**
+ * The wedge on the base from `corner` along `u` and `v`, rising `w` over the
+ * base's edge at `corner` along `v` and sloping down to the far edge along
+ * `u`, right-handed as a box. ACIS builds it as that end triangle swept along
+ * `v` (solid/w01): its vertices, edges, their sense and the faces — slope,
+ * back, bottom, the far end, the near end — in ACIS's order, which decides
+ * the edge found in plan where the slope hides a side of the base.
+ */
+export function wedgeBrep(corner: Vec3, u: Vec3, v: Vec3, w: Vec3): Brep {
+  const a = corner
+  const b = add3(a, u)
+  const c = add3(b, v)
+  const d = add3(a, v)
+  const e = add3(a, w)
+  const f = add3(d, w)
+  return polyhedronBrep(
+    [c, f, d, a, b, e],
+    [
+      [0, 1],
+      [4, 0],
+      [1, 2],
+      [5, 1],
+      [2, 0],
+      [3, 2],
+      [3, 4],
+      [4, 5],
+      [5, 3],
     ],
+    [
+      [0, 1, 5, 4],
+      [1, 2, 3, 5],
+      [2, 0, 4, 3],
+      [1, 0, 2],
+      [3, 4, 5],
+    ]
+  )
+}
+
+/**
+ * The pyramid on the regular polygon `base`, its corners counter-clockwise
+ * about `up`, rising to `apex`, or, given `top` (the top's corners over the
+ * base's), its frustum. Its edges run as ACIS runs them (solid/y01, y02,
+ * y09): the base's round the base face, the top's round the top, the slanted
+ * ones from the apex or the top down.
+ */
+export function pyramidBrep(
+  base: readonly Vec3[],
+  apex: Vec3,
+  top: readonly Vec3[] | null
+): Brep {
+  const n = base.length
+  const next = (k: number) => (k + 1) % n
+  const ends: [number, number][] = base.map((_, k) => [next(k), k])
+  if (!top) {
+    return polyhedronBrep(
+      [...base, apex],
+      [...ends, ...base.map((_, k): [number, number] => [n, k])],
+      [base.map((_, k) => (n - k) % n), ...base.map((_, k) => [k, next(k), n])]
+    )
   }
+  return polyhedronBrep(
+    [...base, ...top],
+    [
+      ...ends,
+      ...top.map((_, k): [number, number] => [n + k, n + next(k)]),
+      ...base.map((_, k): [number, number] => [n + k, k]),
+    ],
+    [
+      base.map((_, k) => (n - k) % n),
+      top.map((_, k) => n + k),
+      ...base.map((_, k) => [k, next(k), n + next(k), n + k]),
+    ]
+  )
 }
 
 /** The vertex a coedge starts from, in its face's sense. */

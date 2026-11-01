@@ -982,9 +982,12 @@ one with the cursor on the line, a typed width's sign unread (p03, p10). The hei
 the UCS's Z, down when negative (LIST then adds `Normal:`, p06); a point gives its distance from
 the corner (p06, p10), 2Point the distance between `Specify first point:` and `Specify second
 point:` (p03); a corner at another Z than the first sets the height without asking it (twice its
-rise from the centre, p06, p13), one typed without a Z lies at the first's (p07). The last length,
-width and height are offered as `<default>`s and Enter takes them; with none, Enter is refused as
-`FOO` is (p02, p04, p11). Refusals: `Point or option keyword required.` at every point prompt,
+rise from the centre, p06, p13), one typed without a Z lies at the first's (p07); from the centre a
+negative cube or length is twice as long, the box centred on the point (w09, x07). The last length
+and width a cube or Length made — their sizes, a negative or doubled one's too (p10, w09) — and the
+last height, with its sign, are offered as `<default>`s and Enter takes them; with none, Enter is
+refused as `FOO` is (p02, p04, p11). They are the primitives' shared ones: WEDGE's length and
+width, and the height of WEDGE, PYRAMID and, later, CYLINDER and CONE (w02, x06, x07). Refusals: `Point or option keyword required.` at every point prompt,
 `Requires numeric distance, second point, or option keyword.` at every distance, `Box of zero
 length not permitted.` / `Box of zero width not permitted.` for a corner on the first's X or Y or
 a length of 0, `Value must be nonzero.` for a height of 0 and for 2Point's second point on its
@@ -1014,8 +1017,8 @@ lines (p09); REGION rejects it (`1 closed, degenerate or unsupported object reje
 DIMLINEAR's object and UCS OBject take the edge picked as a line along it (e07, e08); BREAK, OFFSET,
 TRIM, EXTEND, PEDIT, DIMRADIUS and ARRAYPATH's path refuse it with their own words (e01–e06, e10).
 
-**Missing:** the other primitives — CYLINDER, CONE, SPHERE, WEDGE, TORUS, PYRAMID — and the
-isolines of their curved faces (the brief's phase 2b); MASSPROP (its numbers are in the probes'
+**Missing:** the other primitives — CYLINDER, CONE, SPHERE, TORUS — and the isolines of their
+curved faces (the brief's phase 2b); MASSPROP (its numbers are in the probes'
 MPDUMP) and a box's grips — the base's corners, the edges' arrows, the height's, d02 — with editing
 its Geometry rows in the palette (phase 2c; none here, a click selects it); the 3D commands of its
 own (3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN), the gizmos and sub-objects
@@ -1028,6 +1031,85 @@ discarded, as a region); LIST of a solid with no primitive (none is made yet; he
 lines alone); Solid History's Record History (SOLIDHIST) and Show History; its 3D Visualization's
 Material row; Hidden, shaded and Conceptual styles; the per-drawing defaults reset on OPEN as
 CIRCLERAD's (**unverified**: no OPEN probe of BOX's).
+
+### `WEDGE` / `WE` · es `CUÑA` · pt-BR `CUNHA` / `CN`
+
+**Implemented:** WEDGE asks what BOX asks, in the same words (solid/w01–w09, v04; es `CUÑA`, pt-BR
+`CUNHA` / `CN`, `getcname`, n02): `Specify first corner or [Center]:`, `Specify other corner or
+[Cube/Length]:`, `Specify height or [2Point]:`, Center's `Specify center:` and `Specify corner or
+[Cube/Length]:`, the solid centred on it in height too. The wedge is a box whose top slopes down
+from its tall end, at the first corner, to the other corner's side: from (0,0,0) to (10,20) it rises
+5 over X 0 and slopes down to X 10 (w01); from the centre, its tall end is opposite the corner given
+(w09); a corner at a smaller X turns it, `Rotation: 180` (w08). Unlike BOX's, its Cube and Length run
+along the UCS's X and its width along its Y, backwards when typed negative (w08: length -10, width
+-6, Position 145,-3, Rotation 180; v04: a cube of -8 from 0,0,0 lies at -4,-4), and a point gives
+the distance alone, never the heading (w08: 110,10 gives 14.1421 along X); from the centre a
+negative one is twice as long, as BOX's (w04, w09). Refusals, BOX's in its own words: `Wedge of zero
+length not permitted.`, `Wedge of zero width not permitted.` (es `No puede ser un Cuña de longitud
+cero.`, pt-BR `Não é permitido uma Cunha de comprimento zero.`, `Não é permitida uma Cunha de
+largura zero.`), and Enter at a width with no default says the latter where BOX's says `Requires
+numeric distance, second point, or option keyword.` (w04). Its length, width and height are BOX's
+shared defaults (w02, x07). It lies in a tilted UCS and at its Z or ELEVATION (w05); it wears the
+current layer and properties; one undo step.
+
+The object is a 3D solid (file version 44) of 6 vertices, 9 edges and 5 faces, built as ACIS
+builds it: the end triangle swept along the width, its edges in ACIS's order and sense (w01's
+MPDUMP), which decides the edge found in plan where the slope hides a side of the base. LIST and the
+palette show `Solid type = Wedge` and BOX's rows (w01, d05); AREA's Object gives its surface
+(`Area = 573.6068`); MOVE, ROTATE, SCALE and MIRROR carry it, a mirrored wedge still a wedge
+(w06: Rotation 330 and 210); EXPLODE leaves a region of each face (w07). Everything else a solid
+does is BOX's entry.
+
+**Missing:** BOX's (MASSPROP and the grips in phase 2c, the palette's edits, the 3D commands,
+Hidden and shaded styles, the per-drawing defaults on OPEN, **unverified**).
+
+### `PYRAMID` / `PYR` · es `PIRAMIDE` / `PIR` · pt-BR `PIRAMIDE` / `PIR`
+
+**Implemented:** PYRAMID as 2027's console asks it (solid/y01–y10, v04), in en, es and pt-BR:
+first ` 4 sides  Circumscribed` (es and pt-BR ` 4 lados circunscritos`, ` 6 lados inscritos`), then
+`Specify center point of base or [Edge/Sides]:`, `Specify base radius or [Inscribed]:` and `Specify
+height or [2Point/Axis endpoint/Top radius]:` (es `Precise centro de base o [Arista/Lados]`, `Precise
+radio de base o [Inscrito]`, `Indique altura o [2Puntos/punto final Eje/Radio superior]`; pt-BR
+`Especificar ponto central da base ou [Aresta/Lados]`, `Especificar raio base  ou [Inscrito]` with
+its two spaces, `… raio de base ou [Circunscrito]`, `Especificar altura ou [2Pontos/ponto final
+Eixo/Raio superior]`). Sides asks `Enter number of sides <4>:`, 3 to 32 (`Requires an integer
+between 3 and 32.`), and the centre again with no new line (y02, y03). Edge asks `Specify first
+endpoint of edge:` and `Specify second endpoint of edge:`, the base to the edge's left (y02, y06).
+Inscribed and Circumscribed switch how a radius is read — to a corner, or to the middle of a side
+— and ask it again; the sides and the Type are kept for the next PYRAMID and said in its first line
+(y02). A typed radius turns the base towards the cursor, a point towards itself: Circumscribed puts
+the middle of a side there, Inscribed a corner (y01: Rotation 22 = the cursor's heading; y02: 56 =
+26 + 30); Enter takes the last radius as the circle its corners lie on, a corner then on the UCS's X
+(y05, v04: Rotation 0 Circumscribed, 45 Inscribed). Top radius asks `Specify top radius <0.0000>:`,
+read by the Type, and the height again as `Specify height or [2Point/Axis endpoint]:` (es `Precise
+altura o`); a top as large as the base makes a prism (y05). Axis endpoint asks `Specify axis
+endpoint:` and tilts the base into the plane normal to the axis, turned by the same angle in that
+plane's OCS, the UCS's arbitrary axis (y09); 2Point asks two points. The height rises along the
+UCS's Z, down when negative; a point gives its distance. Refusals: `Point or option keyword
+required.` at the centre and 2Point's, `Invalid point.` at Edge's and the axis' (y06), `Requires
+numeric distance, second point, or option keyword.` at the radius and the height, `Requires numeric
+distance or second point.` at the top radius, `Value must be positive and nonzero.` for a radius of
+0 or less and an edge of no length, `Value must be nonzero.` for a height of 0 and an axis or 2Point
+of no length, `Value must be positive.` for a negative top radius (y03–y06; es `El valor debe ser
+positivo y diferente de cero.`). The defaults are the primitives' shared ones: the height BOX's,
+the radius kept as the corners' circle (`<7.0711>` after a circumscribed 5, y05), which CYLINDER,
+CONE, SPHERE and TORUS share later (x01), and the top radius CONE's (y10). It lies in a tilted UCS
+and at its Z (y07); it wears the current layer and properties; one undo step.
+
+The object, a 3D solid (file version 44): the base, the triangles or a frustum's quadrilaterals
+and its top, its edges run as ACIS runs them — the base's round the base, the top's round the top,
+the slanted ones down (y01, y02, y09's MPDUMP). LIST: `Solid type = Pyramid`, Position, Normal,
+`Inscribed base radius` (the corners' circle), `Circumscribed base radius` (the sides'), the top's
+two, Height, Rotation (the middle of a side's heading) and `Number of sides` (y01; es `Radio de base
+inscrito`, `Número de lados`). The palette: Solid type, Position X/Y/Z, Type, Base radius and Top
+radius as the Type reads them, Sides, Rotation, Height (d05). AREA's Object gives its surface
+(`288.6796`); MOVE, ROTATE, SCALE and MIRROR carry it (y08: Rotation 52, then 308 mirrored);
+EXPLODE leaves a region of each face (y08). Everything else a solid does is BOX's entry.
+
+**Missing:** BOX's (MASSPROP and the grips in phase 2c — its grips are the base's corners and the
+apex, MPGRIPS —, the palette's edits, the 3D commands, Hidden and shaded styles). The console's
+cursor in a tilted UCS turns a typed radius by its own projection (y07's Rotation 4), which the
+harness does not reproduce; a radius given by a point there is exact.
 
 ### `BLOCK` / `B` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOCK` / `-B` · es `BLOQUE` / `BQ` / `MODBLQ` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOQUE` / `-BQ` · pt-BR `BLOCO` / `CB` / `ACADBLOCKDIALOG` / `CRIARB` / `DEFB`, `-BLOCO` / `-CB`
 

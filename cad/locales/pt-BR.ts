@@ -105,6 +105,8 @@ export const ptBR: EngineLocale = {
       "union": "União",
       "subtract": "Subtrair",
       "box": "Caixa",
+      "wedge": "Cunha",
+      "pyramid": "Pirâmide",
       "intersect": "Intersecção"
     },
     "description": {
@@ -447,6 +449,9 @@ export const ptBR: EngineLocale = {
         "vertices": "Vértices",
         "segments": "Segmentos",
         "solidType": "Tipo de sólido",
+        "baseRadius": "Raio da base",
+        "topRadius": "Raio superior",
+        "sides": "Lados",
         "currentVertex": "Vértice atual",
         "vertex": "Vértice",
         "startSegmentWidth": "Largura inicial do segmento",
@@ -571,6 +576,10 @@ export const ptBR: EngineLocale = {
         "fitPoints": "Ajustar",
         "controlVertices": "Vértices de controle",
         "box": "Caixa",
+        "wedge": "Cunha",
+        "pyramid": "Pirâmide",
+        "inscribed": "Inscrito",
+        "circumscribed": "Circunscrito",
         "chord": "Banzo",
         "sqrtChord": "RaizQuadBanzo",
         "uniform": "Uniforme",
@@ -1103,6 +1112,14 @@ export const ptBR: EngineLocale = {
       "BOX": [
         "CAIXA"
       ],
+      "WEDGE": [
+        "CUNHA",
+        "CN"
+      ],
+      "PYRAMID": [
+        "PIRAMIDE",
+        "PIR"
+      ],
       "REGION": [
         "REGIAO",
         "REG"
@@ -1305,6 +1322,21 @@ export const ptBR: EngineLocale = {
         "Cube": "CUbo",
         "Length": "COmprimento",
         "2Point": "2Pontos"
+      },
+      "WEDGE": {
+        "Center": "Centro",
+        "Cube": "CUbo",
+        "Length": "COmprimento",
+        "2Point": "2Pontos"
+      },
+      "PYRAMID": {
+        "Edge": "Aresta",
+        "Sides": "Lados",
+        "Inscribed": "Inscrito",
+        "Circumscribed": "Circunscrito",
+        "2Point": "2Pontos",
+        "Axis": "Eixo",
+        "Top": "Raio"
       },
       "RECTANG": {
         "Chamfer": "CHanfro",
@@ -2113,6 +2145,13 @@ export const ptBR: EngineLocale = {
       "boxLength": "Especificar comprimento",
       "boxWidth": "Especificar largura",
       "boxHeightOr": "Especificar altura ou",
+      "pyramidCenterOr": "Especificar ponto central da base ou",
+      "specifyBaseRadiusOr": "Especificar raio de base ou",
+      "pyramidBaseRadiusOr": "Especificar raio base  ou",
+      "solidHeightTopOr": "Especificar altura ou",
+      "solidHeightOr": "Especificar altura ou",
+      "specifyAxisEndpoint": "Especificar ponto final do eixo",
+      "specifyTopRadius": "Especificar raio superior",
       "specifyFirstPoint": "Especificar primeiro ponto",
       "specifyNextPointOr": "Especificar próximo ponto ou",
       "specifyNextPointOrClose": "Especificar próximo ponto ou",
@@ -6107,8 +6146,36 @@ export const ptBR: EngineLocale = {
       "boxZeroLength": "Não é permitido uma Caixa de comprimento zero.",
       "boxZeroWidth": "Não é permitida uma Caixa de largura zero.",
       "boxValueNonzero": "Este valor precisa ser diferente de zero.",
+      "wedgeZeroLength": "Não é permitido uma Cunha de comprimento zero.",
+      "wedgeZeroWidth": "Não é permitida uma Cunha de largura zero.",
+      "pyramidSettings": [
+        " ",
+        [
+          "sides"
+        ],
+        " lados ",
+        [
+          "type",
+          1,
+          {
+            "inscribed": "inscritos",
+            "other": "circunscritos"
+          }
+        ]
+      ],
       "listSolidHistory": "       Histórico = Nenhum\nMostrar histórico = Não",
-      "listSolidType": "  Tipo de sólido = Caixa",
+      "listSolidType": [
+        "  Tipo de sólido = ",
+        [
+          "type",
+          1,
+          {
+            "wedge": "Cunha",
+            "pyramid": "Pirâmide",
+            "other": "Caixa"
+          }
+        ]
+      ],
       "listBoxPosition": [
         "          Posição, X = ",
         [
@@ -6159,6 +6226,36 @@ export const ptBR: EngineLocale = {
         "          Rotação: ",
         [
           "angle"
+        ]
+      ],
+      "listPyramidInscribedBase": [
+        "    Raio de base inscrito: ",
+        [
+          "radius"
+        ]
+      ],
+      "listPyramidCircumscribedBase": [
+        "Raio de base circunscrito: ",
+        [
+          "radius"
+        ]
+      ],
+      "listPyramidInscribedTop": [
+        "   Raio superior inscrito: ",
+        [
+          "radius"
+        ]
+      ],
+      "listPyramidCircumscribedTop": [
+        "Raio superior circunscrito: ",
+        [
+          "radius"
+        ]
+      ],
+      "listPyramidSides": [
+        "  Número de lados: ",
+        [
+          "sides"
         ]
       ],
       "listRegionArea": [
@@ -6321,6 +6418,10 @@ export const ptBR: EngineLocale = {
       "POLYGON": {
         "Inscribed": "Inscrito no círculo",
         "Circumscribed": "Circunscrito sobre o círculo"
+      },
+      "PYRAMID": {
+        "Axis": "ponto final Eixo",
+        "Top": "Raio superior"
       },
       "CIRCLED": {
         "Ttr": "Ttr (tan tan raio)"

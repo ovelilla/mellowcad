@@ -1,0 +1,15 @@
+_QAFLAGS
+2
+_CONE
+0,0,0
+5
+8
+_LIST
+_L
+
+_AREA
+_O
+_L
+MPGRIPS
+MPDUMP
+-

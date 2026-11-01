@@ -1,5 +1,5 @@
 import { regionArea, regionPerimeter } from "../domain/regions"
-import { boxInUcs } from "../domain/solids"
+import { primitiveInUcs } from "../domain/solids"
 import { V, Vec2 } from "../geometry/Vec2"
 import { Vec3, sub3 } from "../geometry/Vec3"
 import { isUpright, worldDirectionToUcs, worldPointToUcs } from "../domain/ucs"
@@ -1812,27 +1812,58 @@ function singleEntityInfo(
         ],
       }
     case "solid3d": {
-      // A box's Geometry and its Solid History, read only here (solid/d03:
-      // its Length, Width, Height and Position are typeable in AutoCAD, an
-      // edit that comes with its grips); 3D Visualization's Material is not
-      // built.
-      const box = entity.primitive
-      const placed = box && boxInUcs(box, settings.ucs)
+      // Its primitive's Geometry and its Solid History, read only here
+      // (solid/d03, d05: AutoCAD types its sizes and Position, an edit that
+      // comes with its grips); 3D Visualization's Material is not built.
+      const primitive = entity.primitive
+      const placed = primitive && primitiveInUcs(primitive, settings.ucs)
+      const sizes = (): PropertyRow[] => {
+        if (!primitive) return []
+        switch (primitive.kind) {
+          case "box":
+          case "wedge":
+            return [
+              row("length", length(primitive.length)),
+              row("width", length(primitive.width)),
+              row("height", length(primitive.height)),
+              row("rotation", degrees(placed?.rotation ?? 0)),
+            ]
+          case "pyramid": {
+            // Its radii as its Type reads them (d05: Circumscribed, 5).
+            const read = (r: number) =>
+              length(
+                primitive.inscribed
+                  ? r
+                  : r * Math.cos(Math.PI / primitive.sides)
+              )
+            return [
+              row(
+                "type",
+                text.propertyValue(
+                  primitive.inscribed ? "inscribed" : "circumscribed"
+                )
+              ),
+              row("baseRadius", read(primitive.radius)),
+              row("topRadius", read(primitive.topRadius)),
+              row("sides", String(primitive.sides)),
+              row("rotation", degrees(placed?.rotation ?? 0)),
+              row("height", length(primitive.height)),
+            ]
+          }
+        }
+      }
       return {
         title: title("solid3d"),
         count: 1,
         groups: [
-          ...(box && placed
+          ...(primitive && placed
             ? [
                 group("geometry", [
-                  row("solidType", text.propertyValue("box")),
+                  row("solidType", text.propertyValue(primitive.kind)),
                   row("positionX", coord(placed.position.x)),
                   row("positionY", coord(placed.position.y)),
                   row("positionZ", coord(placed.position.z)),
-                  row("length", length(box.length)),
-                  row("width", length(box.width)),
-                  row("height", length(box.height)),
-                  row("rotation", degrees(placed.rotation)),
+                  ...sizes(),
                 ]),
               ]
             : []),

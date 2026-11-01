@@ -1,0 +1,199 @@
+_QAFLAGS
+2
+_VPOINT
+1,-1,1
+_CYLINDER
+10,10,0
+5
+8
+_CONE
+40,10,0
+5
+8
+_SPHERE
+70,10,5
+5
+_TORUS
+110,10,0
+10
+2
+_PYRAMID
+140,10,0
+5
+8
+_WEDGE
+160,0,0
+170,20
+5
+_CONE
+190,10,0
+5
+_T
+2
+8
+_ZOOM
+_E
+_ID
+_NEA
+(trans (quote (10 15 4)) 0 1)
+0,0,0
+_ID
+_MID
+(trans (quote (10 15 4)) 0 1)
+0,0,0
+_ID
+_END
+(trans (quote (10 15 4)) 0 1)
+0,0,0
+_ID
+_CEN
+(trans (quote (10 15 4)) 0 1)
+0,0,0
+_ID
+_PER
+(trans (quote (10 15 4)) 0 1)
+0,0,0
+_ID
+_INT
+(trans (quote (10 15 8)) 0 1)
+0,0,0
+_ID
+_END
+(trans (quote (10 15 8)) 0 1)
+0,0,0
+_ID
+_NEA
+(trans (quote (15 10 8)) 0 1)
+0,0,0
+_ID
+_CEN
+(trans (quote (15 10 8)) 0 1)
+0,0,0
+_ID
+_MID
+(trans (quote (5 10 8)) 0 1)
+0,0,0
+_ID
+_END
+(trans (quote (40 10 8)) 0 1)
+0,0,0
+_ID
+_NEA
+(trans (quote (42.5 10 4)) 0 1)
+0,0,0
+_ID
+_MID
+(trans (quote (42.5 10 4)) 0 1)
+0,0,0
+_ID
+_CEN
+(trans (quote (42.5 10 4)) 0 1)
+0,0,0
+_ID
+_END
+(trans (quote (45 10 0)) 0 1)
+0,0,0
+_ID
+_QUA
+(trans (quote (45 10 0)) 0 1)
+0,0,0
+_ID
+_INT
+(trans (quote (40 10 8)) 0 1)
+0,0,0
+_ID
+_CEN
+(trans (quote (73.5355 10 8.5355)) 0 1)
+0,0,0
+_ID
+_NEA
+(trans (quote (73.5355 10 8.5355)) 0 1)
+0,0,0
+_ID
+_QUA
+(trans (quote (75 10 5)) 0 1)
+0,0,0
+_ID
+_END
+(trans (quote (70 10 10)) 0 1)
+0,0,0
+_ID
+_INT
+(trans (quote (75 10 5)) 0 1)
+0,0,0
+_ID
+_NEA
+(trans (quote (70 15 5)) 0 1)
+0,0,0
+_ID
+_CEN
+(trans (quote (122 10 0)) 0 1)
+0,0,0
+_ID
+_NEA
+(trans (quote (122 10 0)) 0 1)
+0,0,0
+_ID
+_QUA
+(trans (quote (122 10 0)) 0 1)
+0,0,0
+_ID
+_CEN
+(trans (quote (120 10 2)) 0 1)
+0,0,0
+_ID
+_INT
+(trans (quote (120 10 2)) 0 1)
+0,0,0
+_ID
+_NEA
+(trans (quote (110 20 2)) 0 1)
+0,0,0
+_ID
+_CEN
+(trans (quote (110 20 2)) 0 1)
+0,0,0
+_ID
+_END
+(trans (quote (140 10 8)) 0 1)
+0,0,0
+_ID
+_MID
+(trans (quote (142.5 12.5 4)) 0 1)
+0,0,0
+_ID
+_GCEN
+(trans (quote (140 10 0)) 0 1)
+0,0,0
+_ID
+_NEA
+(trans (quote (142.5 12.5 4)) 0 1)
+0,0,0
+_ID
+_MID
+(trans (quote (165 0 2.5)) 0 1)
+0,0,0
+_ID
+_END
+(trans (quote (160 0 5)) 0 1)
+0,0,0
+_ID
+_GCEN
+(trans (quote (165 10 0)) 0 1)
+0,0,0
+_ID
+_CEN
+(trans (quote (192 10 8)) 0 1)
+0,0,0
+_ID
+_QUA
+(trans (quote (192 10 8)) 0 1)
+0,0,0
+_ID
+_NEA
+(trans (quote (192 10 8)) 0 1)
+0,0,0
+_ID
+_END
+(trans (quote (192 10 8)) 0 1)
+0,0,0

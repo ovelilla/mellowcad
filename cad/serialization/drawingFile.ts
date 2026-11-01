@@ -62,7 +62,7 @@ import {
   withElevation,
   withNormal,
   withThickness,
-  BoxPrimitive,
+  SolidPrimitive,
 } from "../domain/entities"
 import {
   DEFAULT_HATCH_ANGLE,
@@ -126,7 +126,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 43
+export const DRAWING_FILE_VERSION = 44
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -1469,11 +1469,11 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
       return { id, type: "region", layerId, ...overrides, faces }
     }
     case "solid3d": {
-      // Since 43. A boundary that does not close loses the solid; a
-      // malformed primitive only its history.
+      // Since 43; a wedge or a pyramid since 44. A boundary that does not
+      // close loses the solid; a malformed primitive only its history.
       const brep = parseBrep(raw.brep)
       if (!brep) return null
-      const primitive = parseBoxPrimitive(raw.primitive)
+      const primitive = parsePrimitive(raw.primitive)
       return {
         id,
         type: "solid3d",
@@ -1531,28 +1531,53 @@ function parseBrep(raw: unknown): Brep | null {
   return lines && planes && brepIsClosed(brep) ? brep : null
 }
 
-function parseBoxPrimitive(raw: unknown): BoxPrimitive | null {
-  if (!isRecord(raw) || raw.kind !== "box") return null
+/** A primitive's frame: a position and two unit axes square to each other. */
+function parseFrame(
+  raw: Record<string, unknown>
+): { position: Vec3; xAxis: Vec3; normal: Vec3 } | null {
   const position = parseVec3(raw.position)
   const xAxis = parseVec3(raw.xAxis)
   const normal = parseVec3(raw.normal)
-  const { length, width, height } = raw
   const unit = (v: Vec3) => Math.abs(length3(v) - 1) < 1e-9
   if (!position || !xAxis || !normal || !unit(xAxis) || !unit(normal)) {
     return null
   }
   if (Math.abs(dot3(xAxis, normal)) > 1e-9) return null
-  if (![length, width, height].every((v) => isFiniteNumber(v) && v > 0)) {
-    return null
-  }
-  return {
-    kind: "box",
-    position,
-    xAxis,
-    normal,
-    length: length as number,
-    width: width as number,
-    height: height as number,
+  return { position, xAxis, normal }
+}
+
+const positive = (v: unknown): v is number => isFiniteNumber(v) && v > 0
+
+function parsePrimitive(raw: unknown): SolidPrimitive | null {
+  if (!isRecord(raw)) return null
+  const frame = parseFrame(raw)
+  if (!frame) return null
+  switch (raw.kind) {
+    case "box":
+    case "wedge": {
+      const { length, width, height } = raw
+      if (!positive(length) || !positive(width) || !positive(height)) {
+        return null
+      }
+      return { kind: raw.kind, ...frame, length, width, height }
+    }
+    case "pyramid": {
+      const { sides, radius, topRadius, height, inscribed } = raw
+      if (!Number.isInteger(sides) || (sides as number) < 3) return null
+      if (!positive(radius) || !positive(height)) return null
+      if (!isFiniteNumber(topRadius) || topRadius < 0) return null
+      return {
+        kind: "pyramid",
+        ...frame,
+        sides: sides as number,
+        radius,
+        topRadius,
+        height,
+        inscribed: inscribed === true,
+      }
+    }
+    default:
+      return null
   }
 }
 

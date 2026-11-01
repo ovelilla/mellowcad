@@ -29,7 +29,8 @@ us to walk again, whereas a command costs the same before or after it.
    and INTERSECT of regions on the kernel's planar topology (`geometry/planarRegions.ts`,
    draw.md's REGION, modify.md's UNION). The second's first delivery (2a) is done: the solid entity
    (a B-rep, `geometry/solids.ts`, file version 43), BOX, 2D Wireframe, selection, snaps and the
-   transforms (draw.md's BOX); next, 2b: the other primitives.
+   transforms (draw.md's BOX). 2b is under way: WEDGE and PYRAMID are done (file version 44,
+   draw.md); next, CYLINDER and CONE, then SPHERE and TORUS.
 
 Left out of the 2.5D model: POINT's thickness, with POINT (below). TRIM, EXTEND and JOIN of 3D
 polylines are done, cut and grown in plan at the Z they have there, a closed one left in two at

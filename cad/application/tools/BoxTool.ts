@@ -1,6 +1,11 @@
 import { V, Vec2 } from "../../geometry/Vec2"
 import { Vec3, length3, sub3 } from "../../geometry/Vec3"
-import { BoxPrimitive, createBox, createPolyline } from "../../domain/entities"
+import {
+  BoxPrimitive,
+  WedgePrimitive,
+  createPolyline,
+  createSolid,
+} from "../../domain/entities"
 import {
   ucsDirectionToWorld,
   ucsPointToWorld,
@@ -13,6 +18,7 @@ import {
 } from "../input/coordinateInput"
 import { ScenePrimitive } from "../../scene/types"
 import { entityScenePrimitive } from "../SceneBuilder"
+import type { MessageId } from "../EngineText"
 import type { PromptId } from "../../locales/types"
 import {
   CommandOption,
@@ -25,11 +31,17 @@ import {
   ToolQuestion,
 } from "./Tool"
 import { currentColor, withCurrentProperties } from "./currentProperties"
+import {
+  SolidDefaults,
+  resetSolidDefaults,
+  solidDefaults,
+} from "./solidDefaults"
 
 /**
- * Where the box's footprint lies, in the UCS: its centre, the way its length
- * runs, its sides, and the Z it rises from — a corner's, or the centre's when
- * the box is centred on it in height too.
+ * Where the solid's footprint lies, in the UCS: its centre, the way its
+ * length runs (a wedge's slope runs down that way), its sides, and the Z it
+ * rises from — a corner's, or the centre's when the solid is centred on it in
+ * height too.
  */
 interface Footprint {
   readonly center: Vec2
@@ -76,27 +88,48 @@ type BoxToolState =
 
 const PREVIEW_ID = "box-preview"
 const UCS_X: Vec2 = { x: 1, y: 0 }
+const UCS_Y: Vec2 = { x: 0, y: 1 }
+
+/** The solid BOX makes, or WEDGE, which asks the same. */
+export type BlockKind = "box" | "wedge"
+
+const ZERO_LENGTH: Record<BlockKind, MessageId> = {
+  box: "boxZeroLength",
+  wedge: "wedgeZeroLength",
+}
+const ZERO_WIDTH: Record<BlockKind, MessageId> = {
+  box: "boxZeroWidth",
+  wedge: "wedgeZeroWidth",
+}
 
 /**
- * AutoCAD's BOX, as 2027's console asks it (solid/p01–p13): `Specify first
- * corner or [Center]:`, then `Specify other corner or [Cube/Length]:` and
- * `Specify height or [2Point]:`. Center asks `Specify center:` and `Specify
- * corner or [Cube/Length]:`, the box then centred on it in height too. Cube
- * asks one length, Length a length and a width, both turned towards the
- * cursor, or the point given (p03); a negative length turns it back (p10). A
- * corner at another Z sets the height without asking it (p06, p13). The
- * height rises along the UCS's Z, down when negative; a point gives its
- * distance (p06, p10). A length, a width and a height are offered again by
- * the next box of the drawing (p02–p04).
+ * AutoCAD's BOX, as 2027's console asks it (solid/p01–p13), and WEDGE, which
+ * asks the same (w01–w09): `Specify first corner or [Center]:`, then `Specify
+ * other corner or [Cube/Length]:` and `Specify height or [2Point]:`. Center
+ * asks `Specify center:` and `Specify corner or [Cube/Length]:`, the solid
+ * then centred on it in height too; a negative cube or length is twice as
+ * long about it (w09, x07). A corner at another Z sets the height without
+ * asking it (p06, p13). The height rises along the UCS's Z, down when
+ * negative; a point gives its distance (p06, p10). BOX's cube and length turn
+ * towards the cursor or the point given (p03), its width to their side, a
+ * typed width's sign unread (p10); WEDGE's run along the UCS's X and its width
+ * along its Y, back when typed negative, a point giving the distance alone
+ * (w08). A wedge's tall end is at the first corner, or opposite the corner
+ * given from its centre (w02, w09). The defaults are the primitives' shared
+ * ones ({@link SolidDefaults}).
  */
 export class BoxTool implements Tool {
-  readonly id = "box"
+  readonly id: BlockKind
 
   private state: BoxToolState = { phase: "first" }
   private lastScreen: Vec2 | null = null
-  private lastLength: number | null = null
-  private lastWidth: number | null = null
-  private lastHeight: number | null = null
+
+  constructor(
+    private readonly kind: BlockKind = "box",
+    private readonly defaults: SolidDefaults = solidDefaults()
+  ) {
+    this.id = kind
+  }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
@@ -110,11 +143,8 @@ export class BoxTool implements Tool {
     ctx.dynamicInput.close()
   }
 
-  /** Per drawing, unsaved, as CIRCLERAD is (**unverified**: no OPEN probe). */
   onNewDrawing(): void {
-    this.lastLength = null
-    this.lastWidth = null
-    this.lastHeight = null
+    resetSolidDefaults(this.defaults)
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -148,6 +178,7 @@ export class BoxTool implements Tool {
 
   question(): PromptId | ToolQuestion {
     const state = this.state
+    const { length, width, height } = this.defaults
     switch (state.phase) {
       case "first":
         return "boxFirstCornerOr"
@@ -157,17 +188,15 @@ export class BoxTool implements Tool {
         return state.mode === "center" ? "boxCornerOr" : "boxOtherCornerOr"
       case "cube":
       case "length":
-        return this.lastLength === null
+        return length === null
           ? "boxLength"
-          : { id: "boxLength", enter: this.lastLength }
+          : { id: "boxLength", enter: length }
       case "width":
-        return this.lastWidth === null
-          ? "boxWidth"
-          : { id: "boxWidth", enter: this.lastWidth }
+        return width === null ? "boxWidth" : { id: "boxWidth", enter: width }
       case "height":
-        return this.lastHeight === null
+        return height === null
           ? "boxHeightOr"
-          : { id: "boxHeightOr", enter: this.lastHeight }
+          : { id: "boxHeightOr", enter: height }
       case "twoFirst":
         return "specifyFirstPoint"
       case "twoSecond":
@@ -221,7 +250,7 @@ export class BoxTool implements Tool {
     }
     if (state.phase === "other" && (id === "Cube" || id === "Length")) {
       this.state = { ...state, phase: id === "Cube" ? "cube" : "length" }
-      this.openDistance(ctx, this.lastLength)
+      this.openDistance(ctx, this.defaults.length)
       return "continue"
     }
     if (state.phase === "height" && id === "2Point") {
@@ -254,7 +283,7 @@ export class BoxTool implements Tool {
     }
   }
 
-  /** The footprint as the cursor stretches it, then the box as its height does. */
+  /** The footprint as the cursor stretches it, then the solid as its height does. */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const state = this.state
     const stroke = { color: currentColor(ctx), width: 1 }
@@ -280,12 +309,12 @@ export class BoxTool implements Tool {
     if (state.phase === "height") {
       const height = length3(sub3(state.cursor, state.from))
       if (!(height > 0)) return []
-      const box = createBox(
+      const solid = createSolid(
         this.primitive(state.footprint, height, ctx),
         ctx.document.getCurrentLayerId(),
         PREVIEW_ID
       )
-      return entityScenePrimitive(ctx.viewport, box, stroke)
+      return entityScenePrimitive(ctx.viewport, solid, stroke)
     }
     return []
   }
@@ -354,11 +383,11 @@ export class BoxTool implements Tool {
     const from = worldPointToUcs(ctx.ucs, base)
     const to = worldPointToUcs(ctx.ucs, point)
     if (Math.abs(to.x - from.x) === 0) {
-      ctx.report(ctx.text.message("boxZeroLength"), "error")
+      ctx.report(ctx.text.message(ZERO_LENGTH[this.kind]), "error")
       return
     }
     if (Math.abs(to.y - from.y) === 0) {
-      ctx.report(ctx.text.message("boxZeroWidth"), "error")
+      ctx.report(ctx.text.message(ZERO_WIDTH[this.kind]), "error")
       return
     }
     const footprint = this.cornerFootprint(mode, base, point, ctx)
@@ -371,6 +400,10 @@ export class BoxTool implements Tool {
     this.askHeight(footprint, point, ctx)
   }
 
+  /**
+   * A box's footprint runs along the UCS's X; a wedge's slopes down away
+   * from the first corner, or towards the corner given from its centre (w09).
+   */
   private cornerFootprint(
     mode: Mode,
     base: Vec3,
@@ -383,9 +416,10 @@ export class BoxTool implements Tool {
     const dy = Math.abs(to.y - from.y)
     if (dx === 0 || dy === 0) return null
     const centered = mode === "center"
+    const back = this.kind === "wedge" && to.x < from.x
     return {
       center: centered ? from : V.lerp(from, to, 0.5),
-      along: UCS_X,
+      along: back ? V.scale(UCS_X, -1) : UCS_X,
       length: centered ? 2 * dx : dx,
       width: centered ? 2 * dy : dy,
       z: from.z,
@@ -394,23 +428,29 @@ export class BoxTool implements Tool {
   }
 
   /**
-   * Cube's or Length's length: typed, along the cursor, backwards when
-   * negative (p10); a point, its distance, towards it (p03).
+   * Cube's or Length's length: typed, BOX's along the cursor, WEDGE's along
+   * the UCS's X, either backwards when negative (p10, w08); a point, its
+   * distance, BOX's towards it (p03). From the centre a negative one is twice
+   * as long (w09, x07). The length made is the next one offered (p10).
    */
   private takeLength(length: number, toward: Vec3, ctx: ToolContext): void {
     const state = this.state
     if (state.phase !== "cube" && state.phase !== "length") return
     if (length === 0) {
-      ctx.report(ctx.text.message("boxZeroLength"), "error")
+      ctx.report(ctx.text.message(ZERO_LENGTH[this.kind]), "error")
       return
     }
     const base = worldPointToUcs(ctx.ucs, state.base)
     const aim = worldPointToUcs(ctx.ucs, toward)
     const heading = V.sub(aim, base)
-    const along0 = V.length(heading) > 0 ? V.normalize(heading) : UCS_X
+    const along0 =
+      this.kind === "box" && V.length(heading) > 0
+        ? V.normalize(heading)
+        : UCS_X
     const along = length < 0 ? V.scale(along0, -1) : along0
-    const size = Math.abs(length)
-    this.lastLength = length
+    const centered = state.mode === "center"
+    const size = Math.abs(length) * (centered && length < 0 ? 2 : 1)
+    this.defaults.length = size
     if (state.phase === "length") {
       this.state = {
         phase: "width",
@@ -420,15 +460,19 @@ export class BoxTool implements Tool {
         length: size,
         cursor: state.cursor,
       }
-      this.openDistance(ctx, this.lastWidth)
+      this.openDistance(ctx, this.defaults.width)
       return
     }
-    // A cube's width lies to the left of its length, its height up (p03, p10).
-    const centered = state.mode === "center"
+    // A box's cube is wide to the left of its length (p03, p10); a wedge's
+    // towards the UCS's Y, or back with a negative one, as its width is.
+    const side =
+      this.kind === "box"
+        ? V.perpendicular(along)
+        : V.scale(UCS_Y, Math.sign(length))
     const footprint: Footprint = {
       center: centered
         ? base
-        : V.add(base, V.scale(V.add(along, V.perpendicular(along)), size / 2)),
+        : V.add(base, V.scale(V.add(along, side), size / 2)),
       along,
       length: size,
       width: size,
@@ -446,24 +490,31 @@ export class BoxTool implements Tool {
   }
 
   /**
-   * Length's width, on the side of the length the cursor or the point is,
-   * the right one with the cursor on its line: what a typed length always
-   * leaves in the console, whose cursor gave the length its heading (p03,
-   * p10). A typed width's sign is not read (p10's -5).
+   * Length's width. BOX's lies on the side of the length the cursor or the
+   * point is, the right one with the cursor on its line: what a typed length
+   * always leaves in the console, whose cursor gave the length its heading
+   * (p03, p10); a typed width's sign is not read (p10's -5). WEDGE's lies
+   * towards the UCS's Y, back when typed negative, a point giving its
+   * distance alone (w08).
    */
   private takeWidth(width: number, toward: Vec3, ctx: ToolContext): void {
     const state = this.state
     if (state.phase !== "width") return
     if (width === 0) {
-      ctx.report(ctx.text.message("boxZeroWidth"), "error")
+      ctx.report(ctx.text.message(ZERO_WIDTH[this.kind]), "error")
       return
     }
-    this.lastWidth = width
     const size = Math.abs(width)
+    this.defaults.width = size
     const base = worldPointToUcs(ctx.ucs, state.base)
-    const aim = worldPointToUcs(ctx.ucs, toward)
-    const left = V.cross(state.along, V.sub(aim, base)) > 0
-    const side = V.scale(V.perpendicular(state.along), left ? 1 : -1)
+    let side: Vec2
+    if (this.kind === "wedge") {
+      side = V.scale(UCS_Y, Math.sign(width))
+    } else {
+      const aim = worldPointToUcs(ctx.ucs, toward)
+      const left = V.cross(state.along, V.sub(aim, base)) > 0
+      side = V.scale(V.perpendicular(state.along), left ? 1 : -1)
+    }
     const centered = state.mode === "center"
     const footprint: Footprint = {
       center: centered
@@ -483,7 +534,7 @@ export class BoxTool implements Tool {
 
   private askHeight(footprint: Footprint, from: Vec3, ctx: ToolContext): void {
     this.state = { phase: "height", footprint, from, cursor: from }
-    this.openDistance(ctx, this.lastHeight)
+    this.openDistance(ctx, this.defaults.height)
     ctx.requestRender()
   }
 
@@ -501,7 +552,7 @@ export class BoxTool implements Tool {
     footprint: Footprint,
     height: number,
     ctx: ToolContext
-  ): BoxPrimitive {
+  ): BoxPrimitive | WedgePrimitive {
     const up = Math.sign(height)
     // Centred, its base is half its height back from the centre (p13).
     const z = footprint.centered ? footprint.z - height / 2 : footprint.z
@@ -511,7 +562,7 @@ export class BoxTool implements Tool {
       return { x: w.x / n, y: w.y / n, z: w.z / n }
     }
     return {
-      kind: "box",
+      kind: this.kind,
       position: ucsPointToWorld(ctx.ucs, { ...footprint.center, z }),
       xAxis: toWorld(footprint.along),
       normal: toWorld({ x: 0, y: 0, z: up }),
@@ -522,13 +573,13 @@ export class BoxTool implements Tool {
   }
 
   private commit(footprint: Footprint, height: number, ctx: ToolContext): void {
-    this.lastHeight = height
-    const box = createBox(
+    this.defaults.height = height
+    const solid = createSolid(
       this.primitive(footprint, height, ctx),
       ctx.document.getCurrentLayerId()
     )
     this.state = { phase: "first" }
-    ctx.execute(new AddEntityCommand(withCurrentProperties(box, ctx)))
+    ctx.execute(new AddEntityCommand(withCurrentProperties(solid, ctx)))
     ctx.endCommand()
   }
 
@@ -545,7 +596,8 @@ export class BoxTool implements Tool {
   /**
    * A distance's box, `<default>` the last one given if any: a number typed
    * is the value, a coordinate a point measured from the prompt's base, and
-   * Enter takes the default or is refused as `FOO` is (p04, p11).
+   * Enter takes the default or is refused as `FOO` is (p04, p11) — but at
+   * WEDGE's width, where it is a width of 0 (w04).
    */
   private openDistance(ctx: ToolContext, value: number | null): void {
     const prompt = this.question()
@@ -564,6 +616,13 @@ export class BoxTool implements Tool {
       commitRaw: (commitCtx) => {
         if (commitCtx.dynamicInput.hasTypedText()) {
           return this.commitTypedPoint(commitCtx)
+        }
+        if (this.kind === "wedge" && this.state.phase === "width") {
+          commitCtx.report(
+            commitCtx.text.message(ZERO_WIDTH[this.kind]),
+            "error"
+          )
+          return true
         }
         commitCtx.report(
           commitCtx.text.message("requiresDistance", {

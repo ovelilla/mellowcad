@@ -11,6 +11,8 @@ import {
   brepMapped,
   brepVolume,
   coedgeStart,
+  pyramidBrep,
+  wedgeBrep,
 } from "./solids"
 
 const size = fc.double({ min: 0.01, max: 1000, noNaN: true })
@@ -226,5 +228,137 @@ describe("a box's B-rep", () => {
         vertices: brep.vertices.map((p, i) => (i === 6 ? { ...p, z: 2 } : p)),
       })
     ).toBe(false)
+  })
+})
+
+/** A right-handed frame anywhere: a corner or centre, its axes. */
+const frame = fc.tuple(point, unitVector, angle).map(([origin, n, turn]) => {
+  const axes = arbitraryAxis(n)!
+  const x = add3(scale3(axes.x, Math.cos(turn)), scale3(axes.y, Math.sin(turn)))
+  return { origin, x, y: cross3(axes.z, x), z: axes.z }
+})
+
+/** A point of `f` at local coordinates (a, b, c). */
+function at(
+  f: { origin: Vec3; x: Vec3; y: Vec3; z: Vec3 },
+  a: number,
+  b: number,
+  c: number
+): Vec3 {
+  return add3(
+    f.origin,
+    add3(add3(scale3(f.x, a), scale3(f.y, b)), scale3(f.z, c))
+  )
+}
+
+const wedge = fc.tuple(frame, size, size, size).map(([f, l, w, h]) => ({
+  brep: wedgeBrep(f.origin, scale3(f.x, l), scale3(f.y, w), scale3(f.z, h)),
+  l,
+  w,
+  h,
+}))
+
+/** A pyramid of 3 to 32 sides, `top` 0 for a point, else a frustum's top. */
+const pyramid = fc
+  .tuple(
+    frame,
+    fc.integer({ min: 3, max: 32 }),
+    size,
+    size,
+    fc.oneof(fc.constant(0), size)
+  )
+  .map(([f, n, r, h, top]) => {
+    const ring = (radius: number, z: number) =>
+      Array.from({ length: n }, (_, k) => {
+        const a = (Math.PI * (2 * k + 1)) / n
+        return at(f, radius * Math.cos(a), radius * Math.sin(a), z)
+      })
+    return {
+      brep: pyramidBrep(
+        ring(r, 0),
+        at(f, 0, 0, h),
+        top > 0 ? ring(top, h) : null
+      ),
+      n,
+      r,
+      h,
+      top,
+    }
+  })
+
+describe("a wedge's B-rep", () => {
+  it("is one closed shell, 6 − 9 + 5, watertight and facing out", () => {
+    fc.assert(
+      fc.property(wedge, ({ brep }) => {
+        expect([
+          brep.vertices.length,
+          brep.edges.length,
+          brep.faces.length,
+        ]).toEqual([6, 9, 5])
+        expect(euler(brep)).toBe(2)
+        expect(brepIsClosed(brep)).toBe(true)
+        expect(loopsTurnOutward(brep)).toBe(true)
+      })
+    )
+  })
+
+  it("encloses half its box, bounded by its base, back, ends and slope", () => {
+    fc.assert(
+      fc.property(wedge, ({ brep, l, w, h }) => {
+        expect(close(brepVolume(brep), (l * w * h) / 2)).toBe(true)
+        const area = l * w + w * h + l * h + w * Math.hypot(l, h)
+        expect(close(brepArea(brep), area)).toBe(true)
+      })
+    )
+  })
+})
+
+describe("a pyramid's B-rep", () => {
+  it("is one closed shell, its apex or its top over its base", () => {
+    fc.assert(
+      fc.property(pyramid, ({ brep, n, top }) => {
+        expect([
+          brep.vertices.length,
+          brep.edges.length,
+          brep.faces.length,
+        ]).toEqual(top > 0 ? [2 * n, 3 * n, n + 2] : [n + 1, 2 * n, n + 1])
+        expect(euler(brep)).toBe(2)
+        expect(brepIsClosed(brep)).toBe(true)
+        expect(loopsTurnOutward(brep)).toBe(true)
+      })
+    )
+  })
+
+  it("encloses a frustum's volume and is bounded by its faces' area", () => {
+    fc.assert(
+      fc.property(pyramid, ({ brep, n, r, h, top }) => {
+        const polygon = (radius: number) =>
+          (n / 2) * radius ** 2 * Math.sin((2 * Math.PI) / n)
+        const base = polygon(r)
+        const upper = polygon(top)
+        expect(
+          close(
+            brepVolume(brep),
+            (h / 3) * (base + upper + Math.sqrt(base * upper))
+          )
+        ).toBe(true)
+        const side = (radius: number) => 2 * radius * Math.sin(Math.PI / n)
+        const slant = Math.hypot(h, (r - top) * Math.cos(Math.PI / n))
+        const lateral = (n / 2) * (side(r) + side(top)) * slant
+        expect(close(brepArea(brep), base + upper + lateral)).toBe(true)
+      })
+    )
+  })
+
+  it("keeps all that through a reflection", () => {
+    fc.assert(
+      fc.property(pyramid, point, ({ brep }, shift) => {
+        const flip = (d: Vec3) => ({ x: -d.x, y: d.y, z: d.z })
+        const moved = brepMapped(brep, (p) => add3(flip(p), shift), flip, true)
+        expect(brepIsClosed(moved)).toBe(true)
+        expect(loopsTurnOutward(moved)).toBe(true)
+        expect(close(brepVolume(moved), brepVolume(brep))).toBe(true)
+      })
+    )
   })
 })

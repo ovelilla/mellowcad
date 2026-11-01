@@ -89,7 +89,8 @@ export const ptBR: EditorLocale = {
         "dimchain": "Continuar",
         "attributes": "Atributos",
         "measure": "Medir",
-        "union": "Editar sólidos"
+        "union": "Editar sólidos",
+        "box": "Modelagem"
       },
       "sections": {
         "draw": "Desenhar",
