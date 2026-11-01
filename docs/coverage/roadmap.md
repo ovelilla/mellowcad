@@ -43,8 +43,9 @@ us to walk again, whereas a command costs the same before or after it.
    lines in `geometry/hiddenLines.ts`, the faces' mesh in `geometry/faceMesh.ts`, file version 48),
    HIDE left out. Phase 6 goes in three deliveries; 6a is done: a solid's faces, edges and
    vertices selected with Ctrl+click (command-line.md), PRESSPULL on its faces, SLICE and SECTION
-   (the kernel's cut, section and face offset in `geometry/solidEdits.ts`). Next, 6b: FILLETEDGE,
-   CHAMFEREDGE and SOLIDEDIT's faces; then 6c: 3DMOVE, 3DROTATE, UCS Face and UCSDETECT.
+   (the kernel's cut, section and face offset in `geometry/solidEdits.ts`); 6b is done:
+   FILLETEDGE, CHAMFEREDGE and SOLIDEDIT's faces (modify.md; the kernel's blends in
+   `geometry/solidBlends.ts`). Next, 6c: 3DMOVE, 3DROTATE, UCS Face and UCSDETECT.
 
 Left out of the 2.5D model: POINT's thickness, with POINT (below). TRIM, EXTEND and JOIN of 3D
 polylines are done, cut and grown in plan at the Z they have there, a closed one left in two at

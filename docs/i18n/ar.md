@@ -73,6 +73,8 @@ marks a choice between competing terms that a native review should settle first 
 |  | Extrude, Extrusion | بثق، بثق (C) |
 |  | Revolve | دوران (C) |
 |  | Presspull | ضغط/سحب (C) |
+|  | Fillet Edge, Chamfer Edge | تقويس الحافة، شطف الحافة (C) |
+|  | Extrude, Taper, Move, Copy, Offset, Delete, Rotate faces | بثق، تسليب، نقل، نسخ، إزاحة متوازية، حذف، تدوير الأوجه (C; تسليب L †) |
 |  | Sphere, Torus, Torus radius, Tube radius | كرة، طارة، نصف قطر الطارة، نصف قطر الأنبوب (C) |
 | Annotate | Single line text, Edit | نص بسطر واحد، تحرير (C) |
 |  | Linear, Aligned, Angular, Radius, Diameter, Baseline, Continue, Adjust space | خطي، محاذٍ، زاوي، نصف القطر، القطر، خط أساس، متتابع، تباعد (C) † |

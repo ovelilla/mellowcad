@@ -1,7 +1,7 @@
 # Sólidos 3D con núcleo propio — brief
 
-> **Estado:** en curso: las fases 1 a 5 y la entrega 6a están hechas (1/11/2026); lo siguiente,
-> la 6b: FILLETEDGE, CHAMFEREDGE y SOLIDEDIT de caras. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> **Estado:** en curso: las fases 1 a 5 y las entregas 6a y 6b están hechas (1/11/2026); lo
+> siguiente, la 6c: 3DMOVE, 3DROTATE, UCS Face y UCSDETECT. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 
@@ -128,8 +128,23 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación en
    solidedit/e01–e05) y el escritorio (subobjetos y PRESSPULL en una caja). Lo que falta, en sus
    entradas de `modify.md`, `draw.md` y `command-line.md`: arrastrar los grips de subobjetos y
    MOVE, ROTATE, SCALE y ERASE sobre ellos (6c), SUBOBJSELECTIONMODE, el desfase junto a conos,
-   esferas o toros, las superficies. **6b, lo siguiente:** FILLETEDGE y CHAMFEREDGE en los casos
-   analíticos y SOLIDEDIT de caras. **6c:** 3DMOVE y 3DROTATE (también de subobjetos, con MOVE,
+   esferas o toros, las superficies. **6b:** FILLETEDGE y CHAMFEREDGE en los casos analíticos y
+   SOLIDEDIT de caras. **Hecha** (1/11/2026): el núcleo de empalmes y chaflanes en
+   `cad/geometry/solidBlends.ts` (sin booleanas: la topología se rehace alrededor de las aristas —
+   cilindro o plano en una arista recta entre planos, toro o cono en un círculo entre plano y
+   cilindro coaxial, los extremos en la cara de enfrente, cadenas tangentes, inglete con elipse,
+   esquina esférica, cara gastada del todo—, con las cifras de la consola), y en `solidEdits.ts` el
+   plano de una cara cambiado (Rotate, Taper), el desfase con vecinas coaxiales (el tronco de e03,
+   321.9504), Delete de agujeros y tiras, Extrude con inclinación; FILLETEDGE y CHAMFEREDGE
+   (`EdgeBlendTool`: clic, Ctrl+Espacio, punto tecleado, Chain, Loop, Radius, Distance, Expression,
+   la vista previa y el pinzamiento del radio; FILLETRAD3D en el dibujo, versión 49) y SOLIDEDIT de
+   caras (`SolideditTool`: Extrude, Move, Rotate, Offset, Taper, Delete y Copy, con los botones del
+   panel), contrastados con la consola (filletedge/f01–f07, chamferedge/c01–c07,
+   solidedit/e06–e12) y el escritorio (la arista al pasar, la vista previa, el pinzamiento, el
+   diálogo de coLor). Lo que falta, en sus entradas de `modify.md`: empalmes de dos radios o sobre
+   caras curvas, la bola que rueda sobre una cara estrecha (f05), coLor y mAterial, Edge y Body,
+   las caras curvas en Move, Rotate, Taper y Copy, las ediciones que cambian la topología (e12).
+   **6c, lo siguiente:** 3DMOVE y 3DROTATE (también de subobjetos, con MOVE,
    ROTATE, SCALE y ERASE sobre ellos), UCS Face y el SCP dinámico (UCSDETECT).
 7. **SWEEP, LOFT** y superficies NURBS generales; las booleanas y empalmes que las tocan.
 
