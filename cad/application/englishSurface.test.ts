@@ -1969,6 +1969,51 @@ describe("the engine's English surface", () => {
         .do("LS", (c) => c.command("LS"))
         .do("enter", (c) => c.enter())
     )
+    // Files of their own: the error a missing transport says names the day.
+    const massFiles = new MemoryFileTransport()
+    walk(
+      "MASSPROP",
+      createHarness({ entities: [line()], files: massFiles }),
+      (s) =>
+        s
+          .do("nothing", (c) => submit(c, "MASSPROP", ""))
+          .do("a line", (c) => submit(c, "MASSPROP", "L", ""))
+          .do("solids and regions", (c) =>
+            submit(
+              c,
+              "BOX",
+              "0,0,0",
+              "10,20",
+              "5",
+              "CIRCLE",
+              "30,0",
+              "5",
+              "REGION",
+              "L",
+              "",
+              "CIRCLE",
+              "30,0,7",
+              "2",
+              "REGION",
+              "L",
+              "",
+              "RECTANG",
+              "50,0",
+              "60,4",
+              "REGION",
+              "L",
+              "",
+              "MASSPROP",
+              "ALL",
+              ""
+            )
+          )
+          .do("FOO", (c) => submit(c, "FOO"))
+          .do("Yes", (c) => submit(c, "Y"))
+          .do("a region off the XY plane", (c) =>
+            submit(c, "UCS", "X", "30", "MASSPROP", "L", "", "")
+          )
+    )
     walk("VPOINT VIEW", createHarness({ entities: [line()] }), (s) =>
       s
         .do("VPOINT", (c) => c.command("VPOINT"))

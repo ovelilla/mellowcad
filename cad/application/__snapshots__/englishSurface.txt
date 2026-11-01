@@ -78,6 +78,7 @@ DIST ["DI"] "Measure"
 AREA ["AA"] "Area"
 ID [] "ID Point"
 LIST ["LI","LS"] "List"
+MASSPROP [] "Region/Mass Properties"
 ZOOM ["Z"] "Zoom"
 PAN ["P"] "Pan"
 -PAN ["-P"] "Pan by points"
@@ -219,6 +220,7 @@ measure "Measure" DI
 measurearea "Area" AA
 id "ID Point" ID
 list "List" LI
+massprop "Region/Mass Properties" MASSPROP
 zoom "Zoom" Z
 pan "Pan" P
 dashpan "Pan by points" -P
@@ -7286,6 +7288,137 @@ Specify next point or
 > enter
   prompt: Command:
   prompt| Select objects:
+
+## MASSPROP
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> nothing
+  command| MASSPROP
+  prompt| Select objects:
+  info| Nothing selected.
+> a line
+  command| MASSPROP
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info| No solids or regions selected.
+> solids and regions
+  prompt: MASSPROP Write analysis to a file? [Yes/No] <N>:
+  asks: 
+  options: [Y] Yes, [N] No
+  command| BOX
+  prompt| Specify first corner or [Center]: 0,0,0
+  prompt| Specify other corner or [Cube/Length]: 10,20
+  prompt| Specify height or [2Point]: 5
+  command| CIRCLE
+  prompt| Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: 30,0
+  prompt| Specify radius of circle or [Diameter]: 5
+  command| REGION
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info| 1 loop extracted.
+  info| 1 Region created.
+  command| CIRCLE
+  prompt| Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: 30,0,7
+  prompt| Specify radius of circle or [Diameter] <5.00>: 2
+  command| REGION
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info| 1 loop extracted.
+  info| 1 Region created.
+  command| RECTANG
+  prompt| Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: 50,0
+  prompt| Specify other corner point or [Area/Dimensions/Rotation]: 60,4
+  command| REGION
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info| 1 loop extracted.
+  info| 1 Region created.
+  command| MASSPROP
+  prompt| Select objects: ALL
+  info| 5 found
+  prompt| Select objects:
+  info| 1 region ignored.
+  info| 
+         ----------------   REGIONS   ----------------
+        
+        Area:                    118.54
+        Perimeter:               59.42
+        Bounding box:         X: 25.00  --  60.00
+                              Y: -5.00  --  5.00
+        Centroid:             X: 38.44
+                              Y: 0.67
+        Moments of inertia:   X: 704.21
+                              Y: 192510.04
+        Product of inertia:  XY: -4400.00
+        Radii of gyration:    X: 2.44
+                              Y: 40.30
+        Principal moments and X-Y directions about centroid:
+                              I: 545.96 along [1.00 0.08]
+                              J: 17492.48 along [-0.08 1.00]
+        
+         ----------------   SOLIDS    ----------------
+        
+        Mass:                    1000.00
+        Volume:                  1000.00
+        Bounding box:         X: 0.00  --  10.00
+                              Y: 0.00  --  20.00
+                              Z: 0.00  --  5.00
+        Centroid:             X: 5.00
+                              Y: 10.00
+                              Z: 2.50
+        Moments of inertia:   X: 141666.67
+                              Y: 41666.67
+                              Z: 166666.67
+        Products of inertia: XY: -50000.00
+                             YZ: -25000.00
+                             ZX: -12500.00
+        Radii of gyration:    X: 11.90
+                              Y: 6.45
+                              Z: 12.91
+        Principal moments and X-Y-Z directions about centroid:
+                              I: 35416.67 along [1.00 0.00 0.00]
+                              J: 10416.67 along [0.00 1.00 0.00]
+                              K: 41666.67 along [0.00 0.00 1.00]
+> FOO
+  prompt| Write analysis to a file? [Yes/No] <N>: FOO
+  error| Invalid option keyword.
+> Yes
+  prompt: Command:
+  asks: -
+  options: -
+  prompt| Write analysis to a file? [Yes/No] <N>: Y
+> a region off the XY plane
+  command| UCS
+  info| Current ucs name:  *WORLD*
+  prompt| Specify origin of UCS or [Face/NAmed/OBject/Previous/View/World/X/Y/Z/ZAxis] <World>: X
+  prompt| Specify rotation angle about X axis <90>: 30
+  command| MASSPROP
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info| 
+         ----------------   REGIONS   ----------------
+        
+        Area:                    40.00
+        Perimeter:               28.00
+        Bounding box:         X: 50.00  --  60.00
+                              Y: 0.00  --  3.46
+                              Z: -2.00  --  0.00
+        Centroid:             X: 55.00
+                              Y: 1.73
+                              Z: -1.00
+  prompt| Write analysis to a file? [Yes/No] <N>:
 
 ## VPOINT VIEW
 > start

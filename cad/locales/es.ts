@@ -77,6 +77,7 @@ export const es: EngineLocale = {
       "measurearea": "Área",
       "id": "Coordenadas punto",
       "list": "Lista",
+      "massprop": "Propiedades físicas y de región",
       "zoom": "Zoom",
       "pan": "Encuadre",
       "dashpan": "Encuadre por puntos",
@@ -920,6 +921,9 @@ export const es: EngineLocale = {
         "LS",
         "LT"
       ],
+      "MASSPROP": [
+        "PROPFIS"
+      ],
       "ZOOM": [
         "ZOOM",
         "Z"
@@ -1388,6 +1392,10 @@ export const es: EngineLocale = {
         "Ttr": "Ttr",
         "Diameter": "Diámetro",
         "2Point": "2Puntos"
+      },
+      "MASSPROP": {
+        "Yes": "Sí",
+        "No": "No"
       },
       "RECTANG": {
         "Chamfer": "Chaflán",
@@ -1993,6 +2001,7 @@ export const es: EngineLocale = {
       "purgeType": "Indique un tipo de objetos sin utilizar para limpiar",
       "purgeNames": "Indique nombres que limpiar",
       "purgeVerify": "Verifique cada nombre que se va a limpiar?",
+      "massPropWriteFile": "¿Escribir análisis en un archivo?",
       "purgeBlock": [
         "Limpiar bloque \"",
         [
@@ -3201,6 +3210,285 @@ export const es: EngineLocale = {
         ]
       ],
       "noneFound": "No hallada.",
+      "massPropRegionsIgnored": [
+        [
+          "count",
+          2,
+          {
+            "=1": "1 región ignorada.",
+            "other": [
+              0,
+              " regiones ignoradas."
+            ]
+          }
+        ]
+      ],
+      "massPropNoneSelected": "No se ha designado ningún sólido o región.",
+      "massPropNothingSelected": "No se ha designado nada.",
+      "massPropUnableToOpen": [
+        "Imposible abrir el archivo ",
+        [
+          "name"
+        ],
+        " sobre propiedades físicas y de área."
+      ],
+      "massPropRegions": [
+        "\n ----------------   REGIONES   ---------------- \n\nÁrea:                    ",
+        [
+          "area"
+        ],
+        " \nPerímetro:               ",
+        [
+          "perimeter"
+        ],
+        " \nCuadro delimitador:         X: ",
+        [
+          "minX"
+        ],
+        "  --  ",
+        [
+          "maxX"
+        ],
+        " \n                      Y: ",
+        [
+          "minY"
+        ],
+        "  --  ",
+        [
+          "maxY"
+        ],
+        " \nCentro de gravedad:             X: ",
+        [
+          "x"
+        ],
+        " \n                      Y: ",
+        [
+          "y"
+        ],
+        " \nMomentos de inercia:   X: ",
+        [
+          "momentX"
+        ],
+        "  \n                      Y: ",
+        [
+          "momentY"
+        ],
+        "  \nProducto de inercia:  XY: ",
+        [
+          "productXY"
+        ],
+        "  \nRadios de giro:    X: ",
+        [
+          "radiusX"
+        ],
+        " \n                      Y: ",
+        [
+          "radiusY"
+        ],
+        " \nMomentos principales y direcciones X-Y alrededor del centro de gravedad:\n                      I: ",
+        [
+          "i"
+        ],
+        " a lo largo de [",
+        [
+          "iX"
+        ],
+        " ",
+        [
+          "iY"
+        ],
+        "]\n                      J: ",
+        [
+          "j"
+        ],
+        " a lo largo de [",
+        [
+          "jX"
+        ],
+        " ",
+        [
+          "jY"
+        ],
+        "]\n"
+      ],
+      "massPropRegionsInSpace": [
+        "\n ----------------   REGIONES   ---------------- \n\nÁrea:                    ",
+        [
+          "area"
+        ],
+        " \nPerímetro:               ",
+        [
+          "perimeter"
+        ],
+        " \nCuadro delimitador:         X: ",
+        [
+          "minX"
+        ],
+        "  --  ",
+        [
+          "maxX"
+        ],
+        " \n                      Y: ",
+        [
+          "minY"
+        ],
+        "  --  ",
+        [
+          "maxY"
+        ],
+        " \n                      Z: ",
+        [
+          "minZ"
+        ],
+        "  --  ",
+        [
+          "maxZ"
+        ],
+        " \nCentro de gravedad:             X: ",
+        [
+          "x"
+        ],
+        " \n                      Y: ",
+        [
+          "y"
+        ],
+        " \n                      Z: ",
+        [
+          "z"
+        ],
+        " \n"
+      ],
+      "massPropSolids": [
+        "\n ----------------   SOLIDOS    ---------------- \n\nMasa:                     ",
+        [
+          "mass"
+        ],
+        " \nVolumen:                  ",
+        [
+          "volume"
+        ],
+        " \nCuadro delimitador:   X: ",
+        [
+          "minX"
+        ],
+        "  --  ",
+        [
+          "maxX"
+        ],
+        " \n                      Y: ",
+        [
+          "minY"
+        ],
+        "  --  ",
+        [
+          "maxY"
+        ],
+        " \n                      Z: ",
+        [
+          "minZ"
+        ],
+        "  --  ",
+        [
+          "maxZ"
+        ],
+        " \nCentro de gravedad:   X: ",
+        [
+          "x"
+        ],
+        " \n                      Y: ",
+        [
+          "y"
+        ],
+        " \n                      Z: ",
+        [
+          "z"
+        ],
+        " \nMomentos de inercia:  X: ",
+        [
+          "momentX"
+        ],
+        "  \n                      Y: ",
+        [
+          "momentY"
+        ],
+        "  \n                      Z: ",
+        [
+          "momentZ"
+        ],
+        "  \nProductos de inercia:XY: ",
+        [
+          "productXY"
+        ],
+        "  \n                     YZ: ",
+        [
+          "productYZ"
+        ],
+        "  \n                     ZX: ",
+        [
+          "productZX"
+        ],
+        "  \nRadios de giro:       X: ",
+        [
+          "radiusX"
+        ],
+        " \n                      Y: ",
+        [
+          "radiusY"
+        ],
+        " \n                      Z: ",
+        [
+          "radiusZ"
+        ],
+        " \nMomentos principales y direcciones X-Y-Z alrededor del centro de gravedad:\n                      I: ",
+        [
+          "i"
+        ],
+        " a lo largo de [",
+        [
+          "iX"
+        ],
+        " ",
+        [
+          "iY"
+        ],
+        " ",
+        [
+          "iZ"
+        ],
+        "]\n                      J: ",
+        [
+          "j"
+        ],
+        " a lo largo de [",
+        [
+          "jX"
+        ],
+        " ",
+        [
+          "jY"
+        ],
+        " ",
+        [
+          "jZ"
+        ],
+        "]\n                      K: ",
+        [
+          "k"
+        ],
+        " a lo largo de [",
+        [
+          "kX"
+        ],
+        " ",
+        [
+          "kY"
+        ],
+        " ",
+        [
+          "kZ"
+        ],
+        "]\n"
+      ],
       "noneFoundToConvert": "No se ha encontrado ninguno.",
       "onlySplineFittedPolylines": "Solo pueden convertirse en splines las polilíneas ajustadas como spline.",
       "unableToConvertSelectedObject": "Imposible convertir el objeto designado.",

@@ -947,15 +947,14 @@ Tangent, Perpendicular —, no Geometric Center, Node or Insertion (s01, s02); i
 corners and the centre of a loop that is a whole circle or ellipse (s01–s03, d01), and dragging one
 changes nothing (MoveGripPointsAt leaves it, s03). MOVE, COPY, ROTATE, SCALE, MIRROR, ALIGN-free 3D
 transforms and STRETCH (whole, when the window takes every corner; **unverified**) carry it. The
-Properties palette: Region, Geometry's Area and Perimeter, read only (d02). LIST, AREA and EXPLODE:
-their entries. BREAK says `Object can't be broken`, OFFSET `Cannot offset that object.`, TRIM and
+Properties palette: Region, Geometry's Area and Perimeter, read only (d02). LIST, AREA, MASSPROP
+and EXPLODE: their entries. BREAK says `Object can't be broken`, OFFSET `Cannot offset that object.`, TRIM and
 EXTEND `Cannot TRIM this object.` / `Cannot EXTEND this object.` (es `Este objeto no se puede
 RECORTAR.` / `… ALARGAR.`), FILLET and CHAMFER refuse it, JOIN discards it, PEDIT `Object selected
 is not a polyline` (e01, e06–e10); DIMLINEAR, DIMALIGNED, DIMRADIUS, DIMDIAMETER and UCS OBject
 take the edge picked as that object (e03–e05).
 
-**Missing:** DELOBJ (always 3 here); MASSPROP (the brief's phase 2; the console's centroid and
-moments, p01, b02, are in the probes); BOUNDARY's Region object type; a region from a hatch's
+**Missing:** DELOBJ (always 3 here); BOUNDARY's Region object type; a region from a hatch's
 boundary; its 3D Visualization's Material row (no materials); the hot grip's `** STRETCH **` and
 the grip modes (a click on a grip does nothing); LIST's `Handle =` line (no handles); SUBTRACT,
 UNION and INTERSECT of solids and surfaces (none yet); Hidden and shaded styles; the edges as a
@@ -1012,13 +1011,12 @@ it, in a tilted UCS and with a Z too, a mirrored box still a box (t01: Rotation 
 moves it whole once the window takes a vertex, else leaves it (t03, t05). The Properties palette:
 3D Solid, Geometry's Solid type, Position X/Y/Z, Length, Width, Height and Rotation, Solid History's
 History and Show History, read only (d03). AREA's Object gives its surface, `Area = 700.0000,
-Perimeter = 0.0000` (p01); EXPLODE leaves a region of each face, facing out, which explode into
+Perimeter = 0.0000` (p01); MASSPROP measures it, as every primitive (its entry, m01–m04); EXPLODE leaves a region of each face, facing out, which explode into
 lines (p09); REGION rejects it (`1 closed, degenerate or unsupported object rejected.`, e09);
 DIMLINEAR's object and UCS OBject take the edge picked as a line along it (e07, e08); BREAK, OFFSET,
 TRIM, EXTEND, PEDIT, DIMRADIUS and ARRAYPATH's path refuse it with their own words (e01–e06, e10).
 
-**Missing:** MASSPROP (its numbers are in the probes'
-MPDUMP) and a box's grips — the base's corners, the edges' arrows, the height's, d02 — with editing
+**Missing:** a box's grips — the base's corners, the edges' arrows, the height's, d02 — with editing
 its Geometry rows in the palette (phase 2c; none here, a click selects it); the 3D commands of its
 own (3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN), the gizmos and sub-objects
 (Ctrl+click), later phases; the dynamic UCS and the jig's 3D drag of the height (here a pick at the
@@ -1059,7 +1057,7 @@ palette show `Solid type = Wedge` and BOX's rows (w01, d05); AREA's Object gives
 (w06: Rotation 330 and 210); EXPLODE leaves a region of each face (w07). Everything else a solid
 does is BOX's entry.
 
-**Missing:** BOX's (MASSPROP and the grips in phase 2c, the palette's edits, the 3D commands,
+**Missing:** BOX's (the grips in phase 2c, the palette's edits, the 3D commands,
 Hidden and shaded styles, the per-drawing defaults on OPEN, **unverified**).
 
 ### `CYLINDER` / `CYL` · es `CILINDRO` / `CIL` · pt-BR `CILINDRO` / `CIL`
@@ -1114,7 +1112,7 @@ ROTATE, SCALE and MIRROR carry it (c10).
 
 **Missing:** what AutoCAD's EXPLODE makes of it — the regions of its ends and a SURFACE of its
 round face (c11): no surface object here, so it is refused as `Select objects:` finds it (`1 was
-not able to be exploded.`); BOX's (MASSPROP and the grips in phase 2c — the base's and the top's
+not able to be exploded.`); BOX's (the grips in phase 2c — the base's and the top's
 centres, MPGRIPS —, the palette's edits, Hidden and shaded styles, DISPSILH's silhouettes, d04's
 `iso16s`); in plan, where the top circle hides the base's, Nearest finds the top's in AutoCAD (s03)
 and the base's here, as BOX's; an elliptical base tilted by Axis endpoint turns its seam to the
@@ -1143,7 +1141,7 @@ and Top radius, or Base major, Base minor, Top major and Top minor radius and Ro
 AREA's Object gives its surface (`226.7284`; a frustum's `278.9986`, an elliptical one's from the
 perimeter, k01, k03). Everything else a solid does is CYLINDER's and BOX's entries.
 
-**Missing:** CYLINDER's (EXPLODE's SURFACE, k06; MASSPROP and the grips in 2c); the apex drawn as a
+**Missing:** CYLINDER's (EXPLODE's SURFACE, k06; the grips in 2c); the apex drawn as a
 dot with ISOLINES 0 (nothing here).
 
 ### `SPHERE` · es `ESFERA` · pt-BR `ESFERA`
@@ -1175,7 +1173,7 @@ Object gives its surface (`Area = 314.1593`); MOVE, ROTATE, SCALE and MIRROR car
 STRETCH moves it whole once the window takes its centre, never by its rim alone (t06).
 
 **Missing:** what AutoCAD's EXPLODE makes of it, a SURFACE (h04): refused as CYLINDER's is; BOX's
-(MASSPROP and its grip, its centre (MPGRIPS), in phase 2c, the palette's edits, the 3D commands,
+(its grip, its centre (MPGRIPS), in phase 2c, the palette's edits, the 3D commands,
 Hidden and shaded styles); DISPSILH's silhouette.
 
 ### `TORUS` / `TOR` · es `TOROIDE` / `TOR` · pt-BR `TOROIDE` / `TORO`
@@ -1217,7 +1215,7 @@ Object gives its surface (`789.5684`; an apple's, 2 round a tube of 4, `384.6763
 and 5, `26.7661`, r05's MPDUMP); MOVE, ROTATE, SCALE and MIRROR carry it (r04), STRETCH as
 SPHERE's (t06).
 
-**Missing:** SPHERE's (EXPLODE's SURFACE, MASSPROP and the grip in phase 2c, DISPSILH); an apple's or
+**Missing:** SPHERE's (EXPLODE's SURFACE, the grip in phase 2c, DISPSILH); an apple's or
 a lemon's poles as Endpoints (**unverified**: no probe snaps there; none here).
 
 ### `PYRAMID` / `PYR` · es `PIRAMIDE` / `PIR` · pt-BR `PIRAMIDE` / `PIR`
@@ -1263,7 +1261,7 @@ radius as the Type reads them, Sides, Rotation, Height (d05). AREA's Object give
 (`288.6796`); MOVE, ROTATE, SCALE and MIRROR carry it (y08: Rotation 52, then 308 mirrored);
 EXPLODE leaves a region of each face (y08). Everything else a solid does is BOX's entry.
 
-**Missing:** BOX's (MASSPROP and the grips in phase 2c — its grips are the base's corners and the
+**Missing:** BOX's (the grips in phase 2c — its grips are the base's corners and the
 apex, MPGRIPS —, the palette's edits, the 3D commands, Hidden and shaded styles). The console's
 cursor in a tilted UCS turns a typed radius by its own projection (y07's Rotation 4), which the
 harness does not reproduce; a radius given by a point there is exact.

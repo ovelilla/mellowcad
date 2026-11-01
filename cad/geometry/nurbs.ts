@@ -464,33 +464,50 @@ const LENGTH_TABLE_STEPS = 6
 
 /**
  * Half `∫ (x y′ − y x′) du` from `from` to `to`: the signed area the curve
- * sweeps about the origin, in plan. A non-rational piece's integrand is a
- * polynomial of degree at most 2 × degree − 1, which {@link GAUSS}
- * integrates exactly; a rational one's is no polynomial, so it is halved
- * until the halves agree to a fraction of the curve's own square extent.
+ * sweeps about the origin, in plan.
  */
 export function bsplineSweptArea(
   curve: BSplineCurve,
   from: number,
   to: number
 ): number {
+  return bsplineIntegral(curve, from, to, (p, d) => V.cross(p, d), 1) / 2
+}
+
+/**
+ * `∫ f(C(u), C′(u)) du` from `from` to `to`, for an `f` polynomial of degree
+ * `degree` in the point and linear in the derivative. A non-rational piece's
+ * integrand is then a polynomial of degree at most (`degree` + 1) × the
+ * curve's − 1, which {@link GAUSS} integrates exactly up to 31; a rational
+ * one's, or a higher one's, is no polynomial it can, so it is halved until
+ * the halves agree to a fraction of the curve's own extent to the power of
+ * the integrand's.
+ */
+export function bsplineIntegral(
+  curve: BSplineCurve,
+  from: number,
+  to: number,
+  f: (point: Vec3, derivative: Vec3) => number,
+  degree: number
+): number {
   if (to === from) return 0
-  if (to < from) return -bsplineSweptArea(curve, to, from)
+  if (to < from) return -bsplineIntegral(curve, to, from, f, degree)
   const { first } = bsplineDifferentials(curve)
-  const integrand = (u: number) => V.cross(bsplinePoint(curve, u), first(u))
+  const integrand = (u: number) => f(bsplinePoint(curve, u), first(u))
   const cuts = pieces(curve, from, to)
-  let twice = 0
-  if (!curve.weights) {
+  let sum = 0
+  const exact = (degree + 1) * curve.degree - 1 < 2 * GAUSS.nodes.length
+  if (!curve.weights && exact) {
     for (let i = 1; i < cuts.length; i++) {
-      twice += gauss(integrand, cuts[i - 1], cuts[i])
+      sum += gauss(integrand, cuts[i - 1], cuts[i])
     }
-    return twice / 2
+    return sum
   }
   const extent = Math.max(
     1e-300,
     ...curve.controlPoints.map((p) => Math.abs(p.x) + Math.abs(p.y))
   )
-  const tolerance = 1e-14 * extent * extent
+  const tolerance = 1e-14 * extent ** (degree + 1)
   const adaptive = (
     a: number,
     b: number,
@@ -511,9 +528,9 @@ export function bsplineSweptArea(
   for (let i = 1; i < cuts.length; i++) {
     const a = cuts[i - 1]
     const b = cuts[i]
-    twice += adaptive(a, b, gauss(integrand, a, b), 0)
+    sum += adaptive(a, b, gauss(integrand, a, b), 0)
   }
-  return twice / 2
+  return sum
 }
 
 /**

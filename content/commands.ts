@@ -132,6 +132,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   AREA: { group: "inquiry" },
   ID: { group: "inquiry" },
   LIST: { group: "inquiry" },
+  MASSPROP: { group: "inquiry" },
   ZOOM: { group: "inquiry" },
   PAN: { group: "inquiry" },
   "-PAN": { group: "inquiry" },

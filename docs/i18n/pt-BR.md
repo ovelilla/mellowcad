@@ -96,6 +96,7 @@ ours, as Spanish's are (`es.md`). The language is Brazil's, and `LANGUAGE_NAMES`
 |  | Rotate clockwise / counterclockwise; View the face above… | Girar no sentido horário / anti-horário; Ver a face de cima… | C (UNITS: «sentido horário ou sentido anti-horário») | no |
 |  | 3D Orbit, Plan view, Viewpoint, Preset views, UCS icon, Elevation | Órbita 3D, Vista em planta, Ponto de vista, Vistas predefinidas, Ícone UCS, Elevação | X ACAD_126, T:RBN_200_8A67D, ID_TbViewpoi; P acrenderRes 2085 (the menu's ACAD_112 says «Vista da planta»), AcSceneRes 5143, ax26res 59 | yes |
 | Inquiry | Measure, Distance, Area, ID Point | Medir, Distância, Área, Ponto de identificação | X T:ID_RBN_0140, T:ID_RBN_CMDBTN_DIST, T:ID_RBN_CMDBTN_AREA, ACAD_189 | yes |
+|  | Region/Mass Properties; MASSPROP's report (Mass, Volume, Bounding box, Centroid…) | Região/Propriedades de massa; Massa, Volume, Caixa delimitadora, Centroide… (the region's `l:` for `I:` kept, as the table and console write it) | X ID_Massprop (ACAD_187); the 2027 tables 22082–22165 and console (solid/m01–m09) | yes |
 |  | List | Lista | X ACAD_188 | yes |
 |  | Change properties | Alterar propriedades | ours, worded from the command's name, ALTPROP: no menu or ribbon item runs CHPROP | — |
 | Edit | Undo, Redo, New, Open, Save, Save As | Desfazer, Refazer, Novo, Abrir, Salvar, Salvar como | X PM_0006; N AcAeNet, AcDxWizard | yes |

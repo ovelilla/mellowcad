@@ -61,6 +61,7 @@ import { PasteTool } from "./tools/PasteTool"
 import { MeasureTool } from "./tools/MeasureTool"
 import { IdTool } from "./tools/IdTool"
 import { ListTool } from "./tools/ListTool"
+import { MassPropTool } from "./tools/MassPropTool"
 import { ZoomTool } from "./tools/ZoomTool"
 import { PanTool } from "./tools/PanTool"
 import { DashPanTool } from "./tools/DashPanTool"
@@ -192,6 +193,7 @@ export function defaultTools(
     new MeasureTool("area", "measurearea"),
     new IdTool(),
     new ListTool(),
+    new MassPropTool(),
     new ZoomTool(),
     new PanTool(),
     new DashPanTool(),

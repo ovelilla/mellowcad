@@ -74,6 +74,7 @@ declare const source: {
       "measurearea": string
       "id": string
       "list": string
+      "massprop": string
       "zoom": string
       "pan": string
       "dashpan": string
@@ -574,6 +575,7 @@ declare const source: {
       "AREA": string[]
       "ID": string[]
       "LIST": string[]
+      "MASSPROP": string[]
       "ZOOM": string[]
       "PAN": string[]
       "-PAN": string[]
@@ -872,6 +874,10 @@ declare const source: {
         "Ttr": string
         "Diameter": string
         "2Point": string
+      }
+      "MASSPROP": {
+        "Yes": string
+        "No": string
       }
       "RECTANG": {
         "Chamfer": string
@@ -1471,6 +1477,7 @@ declare const source: {
       "purgeType": string
       "purgeNames": string
       "purgeVerify": string
+      "massPropWriteFile": string
       "purgeBlock": string
       "insertionBasePoint": string
       "insertionPoint": string
@@ -2091,6 +2098,13 @@ declare const source: {
       "explodeLostWidth": string
       "explodeCannot": string
       "noneFound": string
+      "massPropRegionsIgnored": string
+      "massPropNoneSelected": string
+      "massPropNothingSelected": string
+      "massPropUnableToOpen": string
+      "massPropRegions": string
+      "massPropRegionsInSpace": string
+      "massPropSolids": string
       "noneFoundToConvert": string
       "onlySplineFittedPolylines": string
       "unableToConvertSelectedObject": string

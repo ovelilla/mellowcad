@@ -190,3 +190,48 @@ last widths, a clockwise ring (`CW`, es `Horaria` from table 27647), a path arra
 spacing, the ring's and the path's rows (one and a half times the source, as ARRAYRECT's
 defaults), what no model here holds (ByBlock, `LineWeight: Default`, per-object linetype scale,
 transparency, groups, a block's units other than the drawing's)
+
+### `MASSPROP` · es `PROPFIS` · pt-BR `PROPMASS`
+
+**Implemented:** `Select objects:` (es `Designe objetos`, pt-BR `Selecionar objetos`), a set of
+whole objects, locked ones measured (solid/m09); a preselection measured at once; Enter on nothing
+says `Nothing selected.` (es `No se ha designado nada.`, pt-BR `Nada foi selecionado.`), a set with
+no solid or region `No solids or regions selected.` (es `No se ha designado ningún sólido o
+región.`), and both end (m05). Then the report, at the command prompt in AutoCAD 2027's columns,
+each language its tables' (22084–22163; es keeps its misaligned region rows, pt-BR its `l:` for
+`I:`): the regions first, ` ----------------   REGIONS   ----------------`, then the solids,
+` ----------------   SOLIDS    ----------------`, each set summed as one body with a density of 1,
+overlaps counted twice (m05). A solid's: `Mass:`, `Volume:`, `Bounding box:` X, Y and Z, `Centroid:`,
+`Moments of inertia:` about the UCS's axes through its origin, `Products of inertia:` XY, YZ, ZX as
+the inertia tensor's (`−∫ xy`: −50000.0000 for a box at the origin), `Radii of gyration:`, and
+`Principal moments and X-Y-Z directions about centroid:` I, J, K in the order and with the signs
+of Jacobi's sweeps, as AutoCAD's (m01's wedge, m04's tilted UCS). A region's, in the XY plane at
+its Z 0: `Area:`, `Perimeter:`, its box and centroid in X and Y, `Moments of inertia:` X and Y,
+`Product of inertia:  XY:`, the radii, `Principal moments and X-Y directions about centroid:` (b02,
+m05, m07); off that plane — tilted, standing, or level at another Z — `Area:`, `Perimeter:`, its
+box and centroid in X, Y and Z alone (m07). The regions are those in the plane of the set's first
+(ALL finds the newest first), the others counted first, `1 region ignored.` / `2 regions ignored.`
+(es `región ignorada`, pt-BR `região ignorada`, m09). Everything in the current UCS, tilted and
+moved (m04, m07); every number at LUPREC, `-0` unsigned (m08). The numbers are exact: the kernel
+integrates each face's flux by the divergence theorem in closed form (`geometry/massProperties.ts`:
+planes by Green's theorem round their loops, cylinders, cones, spheres and tori, elliptical,
+apples and lemons too, round their axis), equal to MPDUMP's to 1e-12 for every primitive
+(m01–m03). Then `Write analysis to a file? [Yes/No] <N>:` (es `¿Escribir análisis en un archivo?
+[Sí/No] <N>:`, pt-BR `Gravar análise em arquivo? [Sim/Não] <N>:`), `FOO` refused `Invalid option
+keyword.`, Enter and No ending (m06); one undo step that changes nothing. WHY Yes writes the file
+at once, a download named as the drawing (`drawing-2026-11-01.mpr`): AutoCAD asks for it in its
+`Create Mass and Area Properties File` dialog (the console's `Enter file name <Drawing1.mpr>:` and
+`… already exists, do you want to replace it? [Yes/No] <N>:`, m06), and in a browser the download
+is the save dialog, as SAVE's is here; with no file transport it says `Unable to open mass and area
+properties file drawing-….mpr.` (22138). The file is AutoCAD's byte for byte: the report's lines
+with their empty unit fields' spaces, CRLF (m10). Typed only, as in AutoCAD, whose ribbon has no
+button for it (acad.cuix's `ID_Massprop` is the Inquiry toolbar's and the Tools menu's)
+
+**Missing:** the units after each number with architectural or engineering units (`lb`, `cu in`,
+`in`, `lb sq in`, `Principal moments (lb sq in) and …`, m08: no unit but decimal here); a
+degenerate pair of principal axes as AutoCAD's rounding turns it (m01's pyramid `[0.9963 0.0860
+0.0000]`, m02's elliptical cone, m04's torus in the WCS: here the axes); the last digit of a
+number AutoCAD's ACIS gets off by its own rounding (m02's frustum `J: 4439.8759`, m04's tilted
+UCS `296444.2735`: here the exact `…60`, `…32`); a solid made by a boolean (phase 4), whose trimmed
+curved faces the kernel does not integrate yet; the file name and the replace question (the
+download names it)

@@ -389,6 +389,16 @@ export interface ToolContext {
   copyToClipboard(entities: readonly Entity[], basePoint: Vec2 | Vec3): void
 
   /**
+   * Hands `text` to the user as a file named as the drawing is, with
+   * `extension` (MASSPROP's `.mpr`), through the file transport: the name
+   * given, and whether there was a transport to write through.
+   */
+  writeFile(
+    text: string,
+    extension: string
+  ): { readonly name: string; readonly written: boolean }
+
+  /**
    * Shows or hides the ViewCube (NAVVCUBE). Saved in the drawing, not through a
    * command: U leaves it, where AutoCAD's puts it back (move/p238).
    */

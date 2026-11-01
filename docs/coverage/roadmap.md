@@ -31,7 +31,8 @@ us to walk again, whereas a command costs the same before or after it.
    (a B-rep, `geometry/solids.ts`, file version 43), BOX, 2D Wireframe, selection, snaps and the
    transforms (draw.md's BOX). 2b is done: WEDGE, PYRAMID, CYLINDER, CONE, SPHERE and TORUS (file
    version 46, draw.md; the kernel's circles, ellipses, apexes, cylinders, cones, spheres and tori,
-   and the isolines); next, 2c: MASSPROP and the primitives' grips.
+   and the isolines). 2c is under way: MASSPROP is done (inquiry.md, the kernel's exact moments in
+   `geometry/massProperties.ts`); next, the primitives' grips and their palette edits.
 
 Left out of the 2.5D model: POINT's thickness, with POINT (below). TRIM, EXTEND and JOIN of 3D
 polylines are done, cut and grown in plan at the Z they have there, a closed one left in two at

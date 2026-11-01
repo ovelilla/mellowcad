@@ -77,6 +77,7 @@ export const en: EngineCatalog = {
       "measurearea": "Area",
       "id": "ID Point",
       "list": "List",
+      "massprop": "Region/Mass Properties",
       "zoom": "Zoom",
       "pan": "Pan",
       "dashpan": "Pan by points",
@@ -932,6 +933,9 @@ export const en: EngineCatalog = {
         "LI",
         "LS"
       ],
+      "MASSPROP": [
+        "MASSPROP"
+      ],
       "ZOOM": [
         "ZOOM",
         "Z"
@@ -1466,6 +1470,7 @@ export const en: EngineCatalog = {
       "purgeType": "Enter type of unused objects to purge",
       "purgeNames": "Enter name(s) to purge",
       "purgeVerify": "Verify each name to be purged?",
+      "massPropWriteFile": "Write analysis to a file?",
       "purgeBlock": [
         "Purge block \"",
         [
@@ -2679,6 +2684,285 @@ export const en: EngineCatalog = {
         ]
       ],
       "noneFound": "None found.",
+      "massPropRegionsIgnored": [
+        [
+          "count",
+          2,
+          {
+            "=1": "1 region ignored.",
+            "other": [
+              0,
+              " regions ignored."
+            ]
+          }
+        ]
+      ],
+      "massPropNoneSelected": "No solids or regions selected.",
+      "massPropNothingSelected": "Nothing selected.",
+      "massPropUnableToOpen": [
+        "Unable to open mass and area properties file ",
+        [
+          "name"
+        ],
+        "."
+      ],
+      "massPropRegions": [
+        "\n ----------------   REGIONS   ---------------- \n\nArea:                    ",
+        [
+          "area"
+        ],
+        " \nPerimeter:               ",
+        [
+          "perimeter"
+        ],
+        " \nBounding box:         X: ",
+        [
+          "minX"
+        ],
+        "  --  ",
+        [
+          "maxX"
+        ],
+        " \n                      Y: ",
+        [
+          "minY"
+        ],
+        "  --  ",
+        [
+          "maxY"
+        ],
+        " \nCentroid:             X: ",
+        [
+          "x"
+        ],
+        " \n                      Y: ",
+        [
+          "y"
+        ],
+        " \nMoments of inertia:   X: ",
+        [
+          "momentX"
+        ],
+        "  \n                      Y: ",
+        [
+          "momentY"
+        ],
+        "  \nProduct of inertia:  XY: ",
+        [
+          "productXY"
+        ],
+        "  \nRadii of gyration:    X: ",
+        [
+          "radiusX"
+        ],
+        " \n                      Y: ",
+        [
+          "radiusY"
+        ],
+        " \nPrincipal moments and X-Y directions about centroid:\n                      I: ",
+        [
+          "i"
+        ],
+        " along [",
+        [
+          "iX"
+        ],
+        " ",
+        [
+          "iY"
+        ],
+        "]\n                      J: ",
+        [
+          "j"
+        ],
+        " along [",
+        [
+          "jX"
+        ],
+        " ",
+        [
+          "jY"
+        ],
+        "]\n"
+      ],
+      "massPropRegionsInSpace": [
+        "\n ----------------   REGIONS   ---------------- \n\nArea:                    ",
+        [
+          "area"
+        ],
+        " \nPerimeter:               ",
+        [
+          "perimeter"
+        ],
+        " \nBounding box:         X: ",
+        [
+          "minX"
+        ],
+        "  --  ",
+        [
+          "maxX"
+        ],
+        " \n                      Y: ",
+        [
+          "minY"
+        ],
+        "  --  ",
+        [
+          "maxY"
+        ],
+        " \n                      Z: ",
+        [
+          "minZ"
+        ],
+        "  --  ",
+        [
+          "maxZ"
+        ],
+        " \nCentroid:             X: ",
+        [
+          "x"
+        ],
+        " \n                      Y: ",
+        [
+          "y"
+        ],
+        " \n                      Z: ",
+        [
+          "z"
+        ],
+        " \n"
+      ],
+      "massPropSolids": [
+        "\n ----------------   SOLIDS    ---------------- \n\nMass:                    ",
+        [
+          "mass"
+        ],
+        " \nVolume:                  ",
+        [
+          "volume"
+        ],
+        " \nBounding box:         X: ",
+        [
+          "minX"
+        ],
+        "  --  ",
+        [
+          "maxX"
+        ],
+        " \n                      Y: ",
+        [
+          "minY"
+        ],
+        "  --  ",
+        [
+          "maxY"
+        ],
+        " \n                      Z: ",
+        [
+          "minZ"
+        ],
+        "  --  ",
+        [
+          "maxZ"
+        ],
+        " \nCentroid:             X: ",
+        [
+          "x"
+        ],
+        " \n                      Y: ",
+        [
+          "y"
+        ],
+        " \n                      Z: ",
+        [
+          "z"
+        ],
+        " \nMoments of inertia:   X: ",
+        [
+          "momentX"
+        ],
+        "  \n                      Y: ",
+        [
+          "momentY"
+        ],
+        "  \n                      Z: ",
+        [
+          "momentZ"
+        ],
+        "  \nProducts of inertia: XY: ",
+        [
+          "productXY"
+        ],
+        "  \n                     YZ: ",
+        [
+          "productYZ"
+        ],
+        "  \n                     ZX: ",
+        [
+          "productZX"
+        ],
+        "  \nRadii of gyration:    X: ",
+        [
+          "radiusX"
+        ],
+        " \n                      Y: ",
+        [
+          "radiusY"
+        ],
+        " \n                      Z: ",
+        [
+          "radiusZ"
+        ],
+        " \nPrincipal moments and X-Y-Z directions about centroid:\n                      I: ",
+        [
+          "i"
+        ],
+        " along [",
+        [
+          "iX"
+        ],
+        " ",
+        [
+          "iY"
+        ],
+        " ",
+        [
+          "iZ"
+        ],
+        "]\n                      J: ",
+        [
+          "j"
+        ],
+        " along [",
+        [
+          "jX"
+        ],
+        " ",
+        [
+          "jY"
+        ],
+        " ",
+        [
+          "jZ"
+        ],
+        "]\n                      K: ",
+        [
+          "k"
+        ],
+        " along [",
+        [
+          "kX"
+        ],
+        " ",
+        [
+          "kY"
+        ],
+        " ",
+        [
+          "kZ"
+        ],
+        "]\n"
+      ],
       "noneFoundToConvert": "None found.",
       "onlySplineFittedPolylines": "Only spline fitted polylines can be converted to splines.",
       "unableToConvertSelectedObject": "Unable to convert the selected object.",

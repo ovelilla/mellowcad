@@ -349,6 +349,9 @@ const RAIL_EXCLUDED = new Set([
   "matchprop",
   // LIST is the ribbon's Properties panel's, beside Match Properties.
   "list",
+  // MASSPROP is typed: no ribbon panel offers it, only the Inquiry toolbar
+  // and the Tools menu (acad.cuix's ID_Massprop).
+  "massprop",
   // CHPROP is typed: no ribbon panel offers it.
   "chprop",
   "zoom",

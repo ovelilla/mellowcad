@@ -44,9 +44,12 @@ export function serializeDrawing(document: CadDocument): string {
  * A sensible default download name, e.g. `drawing-2026-07-10.ecad.json`: the
  * name is the command language's, the date and the extension are not.
  */
-export function suggestedFileName(name: (date: string) => string): string {
+export function suggestedFileName(
+  name: (date: string) => string,
+  extension = "ecad.json"
+): string {
   const stamp = new Date().toISOString().slice(0, 10)
-  return `${name(stamp)}.ecad.json`
+  return `${name(stamp)}.${extension}`
 }
 
 /** Replaces the document's contents with a parsed drawing file. */

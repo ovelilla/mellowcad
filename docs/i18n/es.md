@@ -73,6 +73,7 @@ the 5,124 probes run in `es-ES` with their English twins (`research/console/es.m
 |  | Attribute display; Attribute definition | Visualizar atributos; Definición de atributo | X ACAD_147 (the menu); X XLS_0011 (Quick Properties) | yes |
 | View | Zoom, Pan; Window, Previous, Extents | Zoom, Encuadre; Ventana, Previo, Extensión | C 66E7DB72-B2A7-4166-9970-9E19CC06F739 | yes |
 | Inquiry | Measure, Area | Medir, Área | C 4C31CB59-338C-4812-991D-29414329611E | yes |
+|  | Region/Mass Properties; MASSPROP's report (Mass, Volume, Bounding box, Centroid…) | Propiedades físicas y de región; Masa, Volumen, Cuadro delimitador, Centro de gravedad… | es-es acad.cuix `ID_Massprop` (ACAD_187); the 2027 tables 22082–22165 and console (solid/m01–m09) | yes |
 | Edit | Undo, Redo, Erase | Deshacer, Rehacer, Borrar | C BC96A2AA-2AEE-47C0-B1F2-85F8B60663D6 | yes |
 | Clipboard | Copy, Cut, Paste, Copy with base point | Copiar, Cortar, Pegar, Copiar con punto base | C 345B759D-D758-488A-9E85-542A30A901C4, CU B6A9C126-230D-47F5-8973-464BC80E3736 | yes |
 | Selection | Window, Crossing | Ventana, Captura | P acadres 63424 (the lasso's tooltip, filled with the keywords of `Designar objetos`, the console's) | yes |

@@ -822,6 +822,14 @@ export class CadRuntime extends Observable {
         this.previousSet = [...ids]
       },
       madeThisSession: (id) => !this.openedIds.has(id),
+      writeFile: (text, extension) => {
+        const name = suggestedFileName(
+          (date) => this.text.fileName(date),
+          extension
+        )
+        this.files?.save(text, name)
+        return { name, written: this.files !== null }
+      },
       setViewCubeVisible: (visible) => this.setViewCubeVisible(visible),
       inquiry: () => this.inquiry(),
       held: (name) => this.heldVariables[name],

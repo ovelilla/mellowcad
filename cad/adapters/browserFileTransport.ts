@@ -18,7 +18,11 @@ export function createBrowserFileTransport(
 
   return {
     save(text: string, fileName: string): void {
-      const blob = new Blob([text], { type: DRAWING_FILE_MIME_TYPE })
+      // A drawing is JSON; anything else written (MASSPROP's .mpr) is text.
+      const type = fileName.endsWith(".json")
+        ? DRAWING_FILE_MIME_TYPE
+        : "text/plain"
+      const blob = new Blob([text], { type })
       const url = URL.createObjectURL(blob)
       const anchor = ownerDocument.createElement("a")
       anchor.href = url

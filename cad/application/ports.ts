@@ -43,7 +43,10 @@ export interface DrawingStore {
  * embedding the engine can point it at its own backend instead.
  */
 export interface FileTransport {
-  /** Hands the drawing text to the user as a named file. */
+  /**
+   * Hands text to the user as a named file: the drawing, or what a command
+   * writes beside it (MASSPROP's `.mpr`).
+   */
   save(text: string, fileName: string): void
   /**
    * Asks the user for a drawing file. Resolves with its text, or with `null`

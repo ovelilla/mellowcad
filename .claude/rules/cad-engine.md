@@ -90,8 +90,7 @@ capability the app has belongs to the engine, behind a port; only the _mechanism
   `carryOverrides` never carries `fit`.
 - Paint order is `entityDrawOrder()` (only hatches move, behind, HPDRAWORDER 3); `pickAll()`
   sorts by it reversed, then newest first, never nearest (trim/p400): what is on top is what a
-  click takes. `pick()` is `pickAll()[0]`; selection cycling relies on it. A type set behind
-  another changes that function only.
+  click takes. `pick()` is `pickAll()[0]`; selection cycling relies on it.
 - **The UCS is only how points and angles are read; it never changes what is stored.** A `Ucs`
   can tilt; `isUpright` guards the 2D formulas, which stay bit-identical for it. Convert at the
   boundary (`ucsPointToWorld` / `worldPointToUcs` and their twins); nothing in `domain/` reads the
@@ -138,10 +137,10 @@ Dependencies run types → per-type modules → overrides → transforms → que
 - **A region and a solid are the kernel's** (`planarRegions.ts`, `solids.ts`; one tolerance
   `MODEL_TOLERANCE`), drawn, picked and snapped as their edges (`regionLevelEdgeEntities`,
   `regionEdgeEntities`, `solidEdgeEntities`); a solid's isolines (`solidWireEntities`) are drawn
-  and picked, snapped only to a sphere's or a torus' centre, which with an apex goes through
-  `SnapContext.solidPoints`. A boolean is
-  `regionBoolean`, never a tool's cut. A solid's points are the WCS's; it moves only by
-  `transformEntity` and holds no -0 (`unsigned0`).
+  and picked, snapped only at a sphere's or torus' centre, which with an apex goes through
+  `SnapContext.solidPoints`. A boolean is `regionBoolean`, never a tool's cut. A solid's points
+  are the WCS's; it moves only by `transformEntity`, holds no -0 (`unsigned0`) and is measured
+  exactly, face by face (`faceFlux`), never as a mesh.
 - **MTEXT keeps AutoCAD's contents string**, `\P` and escapes included: `mtextPlainText` reads it
   (codes it does not draw vanish from the reading, never from the object), `mtextContents` writes
   it, nothing else parses or builds it.

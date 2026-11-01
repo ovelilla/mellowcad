@@ -116,7 +116,8 @@ When the user saves (SAVE, or QSAVE with Ctrl+S) or opens (OPEN, Ctrl+O), `CadEn
 the file or shows a file picker, as the browser allows; a bad file is reported on the command
 line.
 `saveDrawingToFile()` and `openDrawingFromFile()` do the same from a button. `newDrawing()` is
-NEW: an empty drawing, which U brings back from.
+NEW: an empty drawing, which U brings back from. MASSPROP's analysis goes out the same way, a text
+file named as the drawing with `.mpr`: a `FileTransport` of your own receives it in `save` too.
 
 ## The clipboard
 

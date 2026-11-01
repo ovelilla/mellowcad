@@ -235,6 +235,10 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Diameter",
     "2Point"
   ],
+  "MASSPROP": [
+    "Yes",
+    "No"
+  ],
   "RECTANG": [
     "Chamfer",
     "Elevation",

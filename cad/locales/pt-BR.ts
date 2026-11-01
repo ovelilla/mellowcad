@@ -77,6 +77,7 @@ export const ptBR: EngineLocale = {
       "measurearea": "Área",
       "id": "Ponto de identificação",
       "list": "Lista",
+      "massprop": "Região/Propriedades de massa",
       "zoom": "Zoom",
       "pan": "Pan",
       "dashpan": "Pan por pontos",
@@ -927,6 +928,9 @@ export const ptBR: EngineLocale = {
         "LS",
         "MOSTRARMAT"
       ],
+      "MASSPROP": [
+        "PROPMASS"
+      ],
       "ZOOM": [
         "ZOOM",
         "Z"
@@ -1400,6 +1404,10 @@ export const ptBR: EngineLocale = {
         "Ttr": "Ttr",
         "Diameter": "Diâmetro",
         "2Point": "2Pontos"
+      },
+      "MASSPROP": {
+        "Yes": "Sim",
+        "No": "Não"
       },
       "RECTANG": {
         "Chamfer": "CHanfro",
@@ -2005,6 +2013,7 @@ export const ptBR: EngineLocale = {
       "purgeType": "Insira o tipo de objetos não utilizados a eliminar",
       "purgeNames": "Digitar nome(s) a ser eliminado",
       "purgeVerify": "Verificar cada nome a ser eliminado?",
+      "massPropWriteFile": "Gravar análise em arquivo?",
       "purgeBlock": [
         "Eliminar bloco \"",
         [
@@ -3218,6 +3227,285 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "noneFound": "Nenhum foi encontrado.",
+      "massPropRegionsIgnored": [
+        [
+          "count",
+          2,
+          {
+            "=1": "1 região ignorada.",
+            "other": [
+              0,
+              " regiões ignoradas."
+            ]
+          }
+        ]
+      ],
+      "massPropNoneSelected": "Não há sólidos ou regiões selecionados.",
+      "massPropNothingSelected": "Nada foi selecionado.",
+      "massPropUnableToOpen": [
+        "Não é possível abrir o arquivo de propriedades de área e de massa ",
+        [
+          "name"
+        ],
+        "."
+      ],
+      "massPropRegions": [
+        "\n ----------------   REGIÕES   ---------------- \n\nÁrea:                    ",
+        [
+          "area"
+        ],
+        " \nPerímetro:               ",
+        [
+          "perimeter"
+        ],
+        " \nCaixa delimitadora:   X: ",
+        [
+          "minX"
+        ],
+        "  --  ",
+        [
+          "maxX"
+        ],
+        " \n                      Y: ",
+        [
+          "minY"
+        ],
+        "  --  ",
+        [
+          "maxY"
+        ],
+        " \nCentroide:            X: ",
+        [
+          "x"
+        ],
+        " \n                      Y: ",
+        [
+          "y"
+        ],
+        " \nMomentos de inércia:  X: ",
+        [
+          "momentX"
+        ],
+        "  \n                      Y: ",
+        [
+          "momentY"
+        ],
+        "  \nProduto de inércia:  XY: ",
+        [
+          "productXY"
+        ],
+        "  \nRaios de giro:        X: ",
+        [
+          "radiusX"
+        ],
+        " \n                      Y: ",
+        [
+          "radiusY"
+        ],
+        " \nMomentos principais e direções X-Y em relação ao centroide:\n                      l: ",
+        [
+          "i"
+        ],
+        " em [",
+        [
+          "iX"
+        ],
+        " ",
+        [
+          "iY"
+        ],
+        "]\n                      J: ",
+        [
+          "j"
+        ],
+        " em [",
+        [
+          "jX"
+        ],
+        " ",
+        [
+          "jY"
+        ],
+        "]\n"
+      ],
+      "massPropRegionsInSpace": [
+        "\n ----------------   REGIÕES   ---------------- \n\nÁrea:                    ",
+        [
+          "area"
+        ],
+        " \nPerímetro:               ",
+        [
+          "perimeter"
+        ],
+        " \nCaixa delimitadora:   X: ",
+        [
+          "minX"
+        ],
+        "  --  ",
+        [
+          "maxX"
+        ],
+        " \n                      Y: ",
+        [
+          "minY"
+        ],
+        "  --  ",
+        [
+          "maxY"
+        ],
+        " \n                      Z: ",
+        [
+          "minZ"
+        ],
+        "  --  ",
+        [
+          "maxZ"
+        ],
+        " \nCentroide:            X: ",
+        [
+          "x"
+        ],
+        " \n                      Y: ",
+        [
+          "y"
+        ],
+        " \n                      Z: ",
+        [
+          "z"
+        ],
+        " \n"
+      ],
+      "massPropSolids": [
+        "\n ----------------   SÓLIDOS    ---------------- \n\nMassa:                   ",
+        [
+          "mass"
+        ],
+        " \nVolume:                  ",
+        [
+          "volume"
+        ],
+        " \nCaixa delimitadora:   X: ",
+        [
+          "minX"
+        ],
+        "  --  ",
+        [
+          "maxX"
+        ],
+        " \n                      Y: ",
+        [
+          "minY"
+        ],
+        "  --  ",
+        [
+          "maxY"
+        ],
+        " \n                      Z: ",
+        [
+          "minZ"
+        ],
+        "  --  ",
+        [
+          "maxZ"
+        ],
+        " \nCentroide:            X: ",
+        [
+          "x"
+        ],
+        " \n                      Y: ",
+        [
+          "y"
+        ],
+        " \n                      Z: ",
+        [
+          "z"
+        ],
+        " \nMomentos de inércia:  X: ",
+        [
+          "momentX"
+        ],
+        "  \n                      Y: ",
+        [
+          "momentY"
+        ],
+        "  \n                      Z: ",
+        [
+          "momentZ"
+        ],
+        "  \nProdutos de inércia: XY: ",
+        [
+          "productXY"
+        ],
+        "  \n                     YZ: ",
+        [
+          "productYZ"
+        ],
+        "  \n                     ZX: ",
+        [
+          "productZX"
+        ],
+        "  \nRaio de giro:         X: ",
+        [
+          "radiusX"
+        ],
+        " \n                      Y: ",
+        [
+          "radiusY"
+        ],
+        " \n                      Z: ",
+        [
+          "radiusZ"
+        ],
+        " \nPrincipais momentos e direções X Y Z em relação ao centroide.\n                      I: ",
+        [
+          "i"
+        ],
+        " com [",
+        [
+          "iX"
+        ],
+        " ",
+        [
+          "iY"
+        ],
+        " ",
+        [
+          "iZ"
+        ],
+        "]\n                      J: ",
+        [
+          "j"
+        ],
+        " com [",
+        [
+          "jX"
+        ],
+        " ",
+        [
+          "jY"
+        ],
+        " ",
+        [
+          "jZ"
+        ],
+        "]\n                      K: ",
+        [
+          "k"
+        ],
+        " com [",
+        [
+          "kX"
+        ],
+        " ",
+        [
+          "kY"
+        ],
+        " ",
+        [
+          "kZ"
+        ],
+        "]\n"
+      ],
       "noneFoundToConvert": "Nenhum foi encontrado.",
       "onlySplineFittedPolylines": "Somente spline  ajustada a polilinhas podem ser convertidas em splines.",
       "unableToConvertSelectedObject": "Não é possível converter o objeto selecionado.",

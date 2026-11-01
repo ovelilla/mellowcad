@@ -1,7 +1,7 @@
 # Sólidos 3D con núcleo propio — brief
 
-> **Estado:** en curso: la fase 1 está hecha, y la 2a y la 2b de la fase 2 (1/11/2026); lo
-> siguiente, la 2c: MASSPROP y los grips de las primitivas. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> **Estado:** en curso: la fase 1 está hecha, y la 2a y la 2b de la fase 2 (1/11/2026); la 2c,
+> a medias: MASSPROP hecho, lo siguiente los grips de las primitivas. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 
@@ -65,7 +65,10 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación en
    una unión por tipo, los valores por defecto compartidos entre primitivas, el núcleo con
    círculos, elipses, ápices, cilindros, conos, esferas y toros (caras sin aristas o con aristas
    degeneradas), el fichero en la versión 46; lo que falta, en sus entradas de `draw.md`. **2c:**
-   MASSPROP y los grips de las primitivas.
+   MASSPROP y los grips de las primitivas. MASSPROP **hecho** (1/11/2026): las integrales exactas
+   por cara en `cad/geometry/massProperties.ts` (el flujo de cada cara por el teorema de la
+   divergencia, Green en las planas, Jacobi para los ejes principales como el de AutoCAD), el
+   informe de sólidos y regiones en el SCP actual y el fichero `.mpr`; su entrada en `inquiry.md`.
 3. **De 2D a 3D**: EXTRUDE, REVOLVE, PRESSPULL de regiones y perfiles cerrados.
 4. **Booleanas 3D** entre planos y cuádricas.
 5. **Estilo Hidden** (líneas ocultas en el motor), sombreado en canvas, VSCURRENT.

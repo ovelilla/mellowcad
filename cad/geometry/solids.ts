@@ -161,12 +161,18 @@ export function polyhedronBrep(
       curve: { kind: "line" },
     })),
     faces: faces.map((cycle) => {
-      // Newell's normal: exact for a face along the axes, unbiased for any.
+      // Newell's normal: exact for a face along the axes, unbiased for any;
+      // from its first corner, as far from the origin the products of the
+      // coordinates would swamp the face's own size.
+      const o = vertices[cycle[0]]
       let n: Vec3 = { x: 0, y: 0, z: 0 }
       cycle.forEach((a, i) => {
         n = add3(
           n,
-          cross3(vertices[a], vertices[cycle[(i + 1) % cycle.length]])
+          cross3(
+            sub3(vertices[a], o),
+            sub3(vertices[cycle[(i + 1) % cycle.length]], o)
+          )
         )
       })
       return {
@@ -713,7 +719,7 @@ const AGM_STEPS = 64
  * Where along `axis` from `origin` each of a round face's loops lies: a
  * circle's or ellipse's centre, an apex's point.
  */
-function loopHeights(
+export function loopHeights(
   brep: Brep,
   face: BrepFace,
   origin: Vec3,
@@ -798,7 +804,7 @@ function faceMeasures(
 }
 
 /** How far round its tube a torus' face runs either way from its outside: π for a doughnut. */
-function tubeHalfAngle(major: number, minor: number): number {
+export function tubeHalfAngle(major: number, minor: number): number {
   return Math.acos(Math.max(-1, Math.min(1, -major / minor)))
 }
 
@@ -831,6 +837,97 @@ export function closedSurfaceReach(surface: BrepSurface): Vec3 | null {
     y: along(axis.y, Math.hypot(axis.x, axis.z)),
     z: along(axis.z, Math.hypot(axis.x, axis.y)),
   }
+}
+
+/** A box along the world's axes. */
+export interface Box3 {
+  readonly min: Vec3
+  readonly max: Vec3
+}
+
+/** The smallest box holding every point. */
+export function boxOfPoints(points: readonly Vec3[]): Box3 | null {
+  if (points.length === 0) return null
+  const min = { x: Infinity, y: Infinity, z: Infinity }
+  const max = { x: -Infinity, y: -Infinity, z: -Infinity }
+  for (const p of points) {
+    min.x = Math.min(min.x, p.x)
+    min.y = Math.min(min.y, p.y)
+    min.z = Math.min(min.z, p.z)
+    max.x = Math.max(max.x, p.x)
+    max.y = Math.max(max.y, p.y)
+    max.z = Math.max(max.z, p.z)
+  }
+  return { min, max }
+}
+
+/**
+ * The points of `center + a cos t + b sin t`, `t` from `from` through
+ * `sweep`, that bound it along the world's axes: its ends and where each
+ * coordinate turns, `tan t = b_k / a_k`.
+ */
+export function ellipticalArcExtremes(
+  center: Vec3,
+  a: Vec3,
+  b: Vec3,
+  from: number,
+  sweep: number
+): Vec3[] {
+  const at = (t: number) =>
+    add3(center, add3(scale3(a, Math.cos(t)), scale3(b, Math.sin(t))))
+  const points = [at(from), at(from + sweep)]
+  for (const k of ["x", "y", "z"] as const) {
+    const turn = Math.atan2(b[k], a[k])
+    for (const t of [turn, turn + Math.PI]) {
+      const into = sweep >= 0 ? t - from : from - t
+      const reach = Math.abs(sweep)
+      const past = ((into % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)
+      if (past <= reach) points.push(at(t))
+    }
+  }
+  return points
+}
+
+/**
+ * The B-rep's exact box: its vertices (a cone's apex), its edges' circles
+ * and ellipses where they turn, and a sphere's or a torus' reach (MASSPROP's
+ * Bounding box, solid/m01–m04; a turned pyramid's is its corners', 6.6800).
+ */
+export function brepBox(brep: Brep): Box3 | null {
+  const points: Vec3[] = [...brep.vertices]
+  for (const edge of brep.edges) {
+    const c = edge.curve
+    if (c.kind !== "circle" && c.kind !== "ellipse") continue
+    const start = brep.vertices[edge.start]
+    const end = brep.vertices[edge.end]
+    const major =
+      c.kind === "circle"
+        ? scale3(normalize3(sub3(start, c.center)) ?? WORLD.x, c.radius)
+        : c.majorAxis
+    const minor = scale3(
+      cross3(c.normal, major),
+      c.kind === "circle" ? 1 : c.ratio
+    )
+    const param = (p: Vec3) => {
+      const d = sub3(p, c.center)
+      return Math.atan2(
+        dot3(d, minor) / dot3(minor, minor),
+        dot3(d, major) / dot3(major, major)
+      )
+    }
+    const from = param(start)
+    const sweep =
+      edge.start === edge.end
+        ? 2 * Math.PI
+        : (((param(end) - from) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)
+    points.push(...ellipticalArcExtremes(c.center, major, minor, from, sweep))
+  }
+  for (const { surface } of brep.faces) {
+    const reach = closedSurfaceReach(surface)
+    if (!reach || !("center" in surface)) continue
+    points.push(sub3(surface.center, reach), add3(surface.center, reach))
+  }
+  return boxOfPoints(points)
 }
 
 /**
