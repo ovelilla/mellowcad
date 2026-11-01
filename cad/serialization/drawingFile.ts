@@ -129,13 +129,14 @@ import {
   LengthUnit,
   LENGTH_UNITS,
   SavedView,
+  VISUAL_STYLES,
 } from "../domain/units"
 import { DRAWING_FILE_TYPE } from "./drawingSummary"
 
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 47
+export const DRAWING_FILE_VERSION = 48
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -213,6 +214,7 @@ type SavedCommandSetting =
   | "splineType"
   | "splineSegments"
   | "isolines"
+  | "visualStyle"
   | "chamferDistance1"
   | "chamferDistance2"
   | "textSize"
@@ -958,6 +960,7 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     splineType,
     splineSegments,
     isolines,
+    visualStyle,
     chamferDistance1,
     chamferDistance2,
     textSize,
@@ -1010,6 +1013,7 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     ...(splineType !== 6 ? { splineType } : {}),
     ...(splineSegments !== 8 ? { splineSegments } : {}),
     ...(isolines !== 4 ? { isolines } : {}),
+    ...(visualStyle !== "2dWireframe" ? { visualStyle } : {}),
     ...(chamferDistance1 ? { chamferDistance1 } : {}),
     ...(chamferDistance2 ? { chamferDistance2 } : {}),
     ...(textSize !== DEFAULT_DOCUMENT_SETTINGS.textSize ? { textSize } : {}),
@@ -1138,6 +1142,10 @@ function parseSettings(value: unknown): DocumentSettings {
       (value.isolines as number) <= 2047
         ? (value.isolines as number)
         : 4,
+    // A drawing from before 48 is in 2D Wireframe.
+    visualStyle:
+      VISUAL_STYLES.find((style) => style === value.visualStyle) ??
+      "2dWireframe",
     chamferDistance1: nonNegative(value.chamferDistance1),
     chamferDistance2: nonNegative(value.chamferDistance2),
     textSize:

@@ -1,6 +1,6 @@
 import { regionLevelEdgeEntities } from "../domain/regions"
-import { solidWireEntities } from "../domain/solids"
-import { DEFAULT_DOCUMENT_SETTINGS } from "../domain/units"
+import { solidViewEntities, solidWireEntities } from "../domain/solids"
+import { DEFAULT_DOCUMENT_SETTINGS, VisualStyle } from "../domain/units"
 import { Vec2, V } from "../geometry/Vec2"
 import { Vec3, scale3, withZOf, zOf } from "../geometry/Vec3"
 import { axesToWorld } from "../geometry/ocs"
@@ -188,6 +188,10 @@ export interface SceneInput {
   readonly fillMode?: boolean
   /** ISOLINES: a solid's curved faces' isolines; a new drawing's 4 when absent. */
   readonly isolines?: number
+  /** VSCURRENT: how solids are drawn; 2D Wireframe when absent. */
+  readonly visualStyle?: VisualStyle
+  /** VIEWDIR: the unit vector from the drawing towards the viewer, which Hidden hides along; +Z when absent. */
+  readonly viewDirection?: Vec3
   /** ATTMODE: which attributes block references show; Normal when absent. */
   readonly attributeDisplay?: AttributeDisplay
   readonly snap: SnapResult | null
@@ -259,7 +263,9 @@ export function buildScene(input: SceneInput): Scene {
     input.lwDisplay,
     input.attributeDisplay ?? "normal",
     input.fillMode ?? true,
-    input.isolines
+    input.isolines,
+    input.visualStyle ?? "2dWireframe",
+    input.viewDirection ?? { x: 0, y: 0, z: 1 }
   )
   if (input.ucsIcon) {
     pushUcsIcon(primitives, aid, input.ucs, input.ucsIcon)
@@ -697,6 +703,11 @@ export interface EntityDrawOptions {
   /** ISOLINES, for a solid's curved faces; a new drawing's 4 when absent. */
   readonly isolines?: number
   /**
+   * What a solid shows in a style that hides lines, in place of its edges
+   * and isolines: its stretches no face hides ({@link solidViewEntities}).
+   */
+  readonly solidLines?: ReadonlyMap<Entity, readonly Entity[]>
+  /**
    * The stroke's dash is the object's linetype, which a line lays centred; a
    * ghost's dash is the editor's own and runs from the start.
    */
@@ -1022,13 +1033,22 @@ function planarPrimitives(
   }
 }
 
-/** A solid in 2D Wireframe: its edges and its curved faces' isolines (solid/d04). */
+/**
+ * A solid in 2D Wireframe: its edges and its curved faces' isolines
+ * (solid/d04); in Hidden, what of its edges and outlines shows.
+ */
 function solidPrimitives(
   camera: CameraTransform,
   solid: Solid3dEntity,
   stroke: StrokeStyle,
   options: EntityDrawOptions
 ): ScenePrimitive[] {
+  const shown = options.solidLines?.get(solid)
+  if (shown) {
+    return shown.flatMap((piece) =>
+      entityScenePrimitive(camera, piece, stroke, options)
+    )
+  }
   const isolines = options.isolines ?? DEFAULT_DOCUMENT_SETTINGS.isolines
   return solidWireEntities(solid, isolines).flatMap((edge) =>
     entityScenePrimitive(camera, edge, stroke, options)
@@ -1751,10 +1771,24 @@ function pushEntities(
   lwDisplay: boolean,
   attributeDisplay: AttributeDisplay,
   fillMode: boolean,
-  isolines: number | undefined
+  isolines: number | undefined,
+  visualStyle: VisualStyle,
+  viewDirection: Vec3
 ): void {
   const layerById = new Map<LayerId, Layer>()
   for (const layer of layers) layerById.set(layer.id, layer)
+  // In Hidden every solid shown hides what lies behind it in any other.
+  let solidLines: Map<Entity, readonly Entity[]> | undefined
+  if (visualStyle === "hidden") {
+    const solids = entities.filter(
+      (entity): entity is Solid3dEntity =>
+        entity.type === "solid3d" &&
+        !hiddenIds.has(entity.id) &&
+        layerById.get(entity.layerId)?.visible !== false
+    )
+    const lines = solidViewEntities(solids, viewDirection)
+    solidLines = new Map(solids.map((solid, i) => [solid, lines[i]]))
+  }
   const dimStyleById = new Map<DimStyleId, DimStyle>()
   for (const style of dimStyles) dimStyleById.set(style.id, style)
 
@@ -1802,6 +1836,7 @@ function pushEntities(
     const options = {
       fill: fillMode,
       isolines,
+      solidLines,
       linetype: true,
       dimStyle:
         entity.type === "dimension"

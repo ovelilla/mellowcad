@@ -385,6 +385,8 @@ const RAIL_EXCLUDED = new Set([
   "vpoint",
   "view",
   "navvcube",
+  // VSCURRENT is the viewport controls' visual style list, not built.
+  "vscurrent",
   // FILL is typed, as AutoCAD's: no panel offers it.
   "fill",
   "ltscale",

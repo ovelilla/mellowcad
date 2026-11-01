@@ -89,6 +89,7 @@ declare const source: {
       "view": string
       "orbit": string
       "navvcube": string
+      "vscurrent": string
       "ltscale": string
       "auprec": string
       "setvar": string
@@ -620,6 +621,7 @@ declare const source: {
       "-VIEW": string[]
       "3DORBIT": string[]
       "NAVVCUBE": string[]
+      "VSCURRENT": string[]
       "UNITS": string[]
       "LTSCALE": string[]
       "AUPREC": string[]
@@ -1292,6 +1294,10 @@ declare const source: {
         "ON": string
         "OFF": string
       }
+      "VSCURRENT": {
+        "2dwireframe": string
+        "Hidden": string
+      }
       "SETVAR": {
         "?": string
         "ON": string
@@ -1726,6 +1732,9 @@ declare const source: {
       "textJustifyOption": string
       "ucsiconOption": string
       "navvcubeOption": string
+      "vscurrentOption": string
+      "vscurrent2dWireframe": string
+      "vscurrentHidden": string
       "inscribedShort": string
       "circumscribedShort": string
       "specifyFirstEndpointOfEdge": string

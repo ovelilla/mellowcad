@@ -92,6 +92,7 @@ export const es: EngineLocale = {
       "view": "Vistas predefinidas",
       "orbit": "Órbita 3D",
       "navvcube": "ViewCube",
+      "vscurrent": "Estilos visuales",
       "ltscale": "Escala de tipo de línea",
       "auprec": "Precisión de ángulos",
       "setvar": "Variables de sistema",
@@ -1074,6 +1075,10 @@ export const es: EngineLocale = {
         "NAVVCUBE",
         "CUBE"
       ],
+      "VSCURRENT": [
+        "ESTVISACTUAL",
+        "EVA"
+      ],
       "UNITS": [
         "UNIDADES",
         "UNS",
@@ -1819,6 +1824,10 @@ export const es: EngineLocale = {
         "ON": "ACT",
         "OFF": "DES"
       },
+      "VSCURRENT": {
+        "2dwireframe": "estructuraalámbrica2d",
+        "Hidden": "ocUlto"
+      },
       "SETVAR": {
         "?": "?",
         "ON": "ACT",
@@ -2292,6 +2301,9 @@ export const es: EngineLocale = {
       "textJustifyOption": "Indique una opción",
       "ucsiconOption": "Indique una opción",
       "navvcubeOption": "Indique una opción",
+      "vscurrentOption": "Indique una opción",
+      "vscurrent2dWireframe": "estructuraalámbrica2d",
+      "vscurrentHidden": "Oculto",
       "inscribedShort": "I",
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Precise primer punto final de lado",

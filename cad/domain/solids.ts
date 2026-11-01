@@ -18,6 +18,7 @@ import {
   wedgeBrep,
 } from "../geometry/solids"
 import { arbitraryAxis, worldToAxes } from "../geometry/ocs"
+import { viewLines } from "../geometry/hiddenLines"
 import { createRegion } from "./regions"
 import { sweepMapped } from "./sweptSolids"
 import { createArc, createCircle, createLine } from "./entityFactories"
@@ -394,6 +395,45 @@ export function solidIsolineEntities(
   return brepIsolines(solid.brep, isolines).map((wire) =>
     wireEntity(solid, wire)
   )
+}
+
+/** The last solids and direction {@link solidViewEntities} answered, and its answer. */
+let lastView: {
+  readonly solids: readonly Solid3dEntity[]
+  readonly direction: Vec3
+  readonly lines: readonly (readonly Entity[])[]
+} | null = null
+
+/**
+ * What the Hidden visual style draws of each solid seen along `toViewer`
+ * (VIEWDIR): the stretches of its edges and of its curved faces' outlines no
+ * face of any of them hides, as the objects they draw as, of its id; no
+ * isolines (visualstyle/p02). The last answer is kept: a pan, a zoom or the
+ * cursor moving asks the same again.
+ */
+export function solidViewEntities(
+  solids: readonly Solid3dEntity[],
+  toViewer: Vec3
+): readonly (readonly Entity[])[] {
+  const last = lastView
+  if (
+    last &&
+    last.solids.length === solids.length &&
+    last.solids.every((solid, i) => solid === solids[i]) &&
+    last.direction.x === toViewer.x &&
+    last.direction.y === toViewer.y &&
+    last.direction.z === toViewer.z
+  ) {
+    return last.lines
+  }
+  const lines = viewLines(
+    solids.map((solid) => solid.brep),
+    toViewer
+  ).map((found, i) =>
+    found.filter((l) => l.visible).map((l) => wireEntity(solids[i], l.wire))
+  )
+  lastView = { solids, direction: toViewer, lines }
+  return lines
 }
 
 /**

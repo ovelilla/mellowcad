@@ -88,6 +88,7 @@
       "view": "Vistas predefinidas",
       "orbit": "Órbita 3D",
       "navvcube": "ViewCube",
+      "vscurrent": "Estilos visuais",
       "ltscale": "Escala do tipo de linha",
       "auprec": "Precisão do ângulo",
       "setvar": "Variáveis de sistema",
@@ -585,6 +586,7 @@
       "-VIEW": ["-VISTA", "-V"],
       "3DORBIT": ["ORBITA3D", "O3D"],
       "NAVVCUBE": ["CUBONAV", "CUBE"],
+      "VSCURRENT": ["EVATUAL", "EVA"],
       "UNITS": ["UNIDADES", "UN", "UNIDADESD"],
       "LTSCALE": ["ESCALATL", "ETL"],
       "AUPREC": ["AUPREC"],
@@ -1211,6 +1213,7 @@
         "ON": "Ativar",
         "OFF": "Desativar"
       },
+      "VSCURRENT": { "2dwireframe": "estruturadearame2d", "Hidden": "ocUlto" },
       "SETVAR": {
         "?": "?",
         "ON": "Ativado",
@@ -1620,6 +1623,9 @@
       "textJustifyOption": "Insira uma opção",
       "ucsiconOption": "Insira uma opção",
       "navvcubeOption": "Insira uma opção",
+      "vscurrentOption": "Insira uma opção",
+      "vscurrent2dWireframe": "estruturadearame2d",
+      "vscurrentHidden": "ocUlto",
       "inscribedShort": "I",
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Especificar primeiro ponto final da aresta",

@@ -33,7 +33,8 @@ import {
   faceBox,
   facePlace,
   lineSurfaceHits,
-  pointInSolid,
+  inBox,
+  solidBox,
 } from "./brepQueries"
 import { MODEL_TOLERANCE } from "./planarCurves"
 import { surfaceLevel } from "./surfaces"
@@ -712,8 +713,58 @@ function hidden(
     for (let i = 1; i < stops.length; i++) {
       if (stops[i] - stops[i - 1] <= gap) continue
       const mid = add3(p, scale3(frame.w, (stops[i - 1] + stops[i]) / 2))
-      if (pointInSolid(brep, mid, MODEL_TOLERANCE) === "inside") return true
+      if (insideSolid(brep, mid, frame.w)) return true
     }
+  }
+  return false
+}
+
+/**
+ * Directions a ray is cast in, after the view's, to count the faces it
+ * crosses: one that meets an edge cannot tell, and the next is tried.
+ */
+const PARITY_DIRECTIONS: readonly Vec3[] = [
+  { x: 0.3719, y: 0.6142, z: 0.6961 },
+  { x: -0.5287, y: 0.2903, z: -0.7976 },
+  { x: 0.8113, y: -0.5412, z: 0.2215 },
+]
+
+/**
+ * Whether `q` lies inside the solid, by the parity of the faces a ray from
+ * it crosses, cut as {@link rayHits} cuts the view's rays: `pointInSolid`'s
+ * own rays sample a swept face's level, seconds where this takes
+ * milliseconds. On a face, or every ray through an edge, it is taken as
+ * outside.
+ */
+function insideSolid(brep: Brep, q: Vec3, w: Vec3): boolean {
+  // On a face is on the solid's boundary: what runs along it hides nothing.
+  for (const face of brep.faces) {
+    if (!inBox(q, faceBox(brep, face), MODEL_TOLERANCE)) continue
+    if (Math.abs(surfaceLevel(face.surface, q).value) > MODEL_TOLERANCE)
+      continue
+    if (facePlace(brep, face, q, MODEL_TOLERANCE) !== "outside") return false
+  }
+  const box = solidBox(brep)
+  const reach =
+    length3(sub3(box.max, box.min)) +
+    length3(sub3(q, scale3(add3(box.min, box.max), 0.5)))
+  for (const d of [w, ...PARITY_DIRECTIONS]) {
+    let count = 0
+    let clean = true
+    for (const face of brep.faces) {
+      for (const t of rayHits(q, d, MODEL_TOLERANCE, reach, face)) {
+        const place = facePlace(
+          brep,
+          face,
+          add3(q, scale3(d, t)),
+          MODEL_TOLERANCE
+        )
+        if (place === "boundary") clean = false
+        else if (place === "inside") count++
+      }
+      if (!clean) break
+    }
+    if (clean) return count % 2 === 1
   }
   return false
 }

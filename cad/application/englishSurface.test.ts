@@ -2158,6 +2158,13 @@ describe("the engine's English surface", () => {
         .do("OFF", (c) => answer(c, "OFF"))
         .do("CUBE", (c) => c.command("CUBE"))
         .do("ON", (c) => answer(c, "ON"))
+        .do("VSCURRENT", (c) => c.command("VSCURRENT"))
+        .do("FOO", (c) => answer(c, "FOO"))
+        .do("H", (c) => answer(c, "H"))
+        .do("VS enter", (c) => c.command("VS"))
+        .do("enter keeps Hidden", (c) => c.enter())
+        .do("VSCURRENT 2", (c) => c.command("VSCURRENT"))
+        .do("2", (c) => answer(c, "2"))
     )
   })
 

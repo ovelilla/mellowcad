@@ -92,6 +92,7 @@ export const ar: EngineLocale = {
       "view": "المناظر المعدة مسبقًا",
       "orbit": "مدار ثلاثي الأبعاد",
       "navvcube": "مكعب العرض",
+      "vscurrent": "الأنماط المرئية",
       "ltscale": "مقياس نوع الخط",
       "auprec": "دقة الزوايا",
       "setvar": "متغيرات النظام",

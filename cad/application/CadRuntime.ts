@@ -6091,6 +6091,8 @@ export class CadRuntime extends Observable {
       lwDisplay: settings.lwDisplay,
       fillMode: settings.fillMode,
       isolines: settings.isolines,
+      visualStyle: settings.visualStyle,
+      viewDirection: this.viewport.direction,
       attributeDisplay: settings.attributeDisplay,
       snap: this.currentSnap ?? this.snapMarker?.snap ?? null,
       snapDeferred: this.snapMarker?.deferred ?? false,

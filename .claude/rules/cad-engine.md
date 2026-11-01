@@ -58,8 +58,8 @@ capability the app has belongs to the engine, behind a port; only the _mechanism
 ## Conventions
 
 - `geometry/` and `domain/` are pure: no I/O, no mutation of inputs, no hidden state — **except
-  the id counters** (`nextEntityId`, `nextLayerId`) and the memos of `hatchGeometry` and
-  `polylineCurve`. Entity helpers
+  the id counters** (`nextEntityId`, `nextLayerId`) and the memos of `hatchGeometry`,
+  `polylineCurve` and `solidViewEntities`. Entity helpers
   return new objects and either keep the id (in-place edit) or mint one (`*Copy` helpers).
 - Angles are **radians CCW from +X** in `geometry/` and `domain/`; degrees only at the UI boundary.
   Normalise with `normalizeAngle` / `normalizeDegrees` (`geometry/primitives`): a hand-rolled

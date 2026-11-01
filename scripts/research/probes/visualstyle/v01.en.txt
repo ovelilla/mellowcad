@@ -1,0 +1,45 @@
+_QAFLAGS
+2
+(getvar "VSCURRENT")
+_VSCURRENT
+FOO
+_VSCURRENT
+_H
+(getvar "VSCURRENT")
+(getvar "SHADEMODE")
+_VSCURRENT
+_C
+(getvar "VSCURRENT")
+_VSCURRENT
+_2
+(getvar "VSCURRENT")
+_VSCURRENT
+_U
+
+_-VISUALSTYLES
+?
+
+_SHADEMODE
+_H
+(getvar "VSCURRENT")
+_SHADEMODE
+
+(getvar "OBSCUREDLTYPE")
+(getvar "OBSCUREDCOLOR")
+(getvar "HALOGAP")
+(getvar "HIDETEXT")
+(getvar "INTERSECTIONDISPLAY")
+(getvar "INTERSECTIONCOLOR")
+(getvar "HIDEPRECISION")
+(getvar "VSEDGES")
+(getvar "VSSILHEDGES")
+(getvar "VSISOONTOP")
+(getvar "VSOBSCUREDEDGES")
+(getvar "VSEDGECOLOR")
+(getvar "VSFACESTYLE")
+(getvar "VSLIGHTINGQUALITY")
+(getvar "DEFAULTLIGHTING")
+(getvar "VSFACECOLORMODE")
+_HIDE
+_U
+_U
