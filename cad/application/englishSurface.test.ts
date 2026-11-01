@@ -1489,6 +1489,15 @@ describe("the engine's English surface", () => {
         )
         .do("LIST", (c) => submit(c, "LIST", "L", ""))
     )
+    walk("PRESSPULL", createHarness(), (s) =>
+      s
+        .do("RECTANG", (c) => submit(c, "RECTANG", "0,0", "100,50"))
+        .do("PRESSPULL refused", (c) => submit(c, "PRESSPULL", "FOO", "5,5"))
+        .do("click inside", (c) => c.click({ x: 10, y: 10 }))
+        .do("height", (c) => submit(c, "M"))
+        .do("click again", (c) => c.click({ x: 20, y: 20 }))
+        .do("Multiple's height", (c) => submit(c, "", "30", ""))
+    )
     walk(
       "JOIN made",
       createHarness({

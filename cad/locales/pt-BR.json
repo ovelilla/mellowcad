@@ -110,7 +110,8 @@
       "torus": "Toroide",
       "intersect": "Intersecção",
       "extrude": "Extrusão",
-      "revolve": "Revolução"
+      "revolve": "Revolução",
+      "presspull": "Pressionar/Puxar"
     },
     "description": {
       "U": "Desfaz a última ação",
@@ -608,7 +609,8 @@
       "SUBTRACT": ["SUBTRAIR", "SU"],
       "INTERSECT": ["INTERSEC", "INT"],
       "EXTRUDE": ["EXTRUSAO", "EX"],
-      "REVOLVE": ["REVOLUCAO", "REV"]
+      "REVOLVE": ["REVOLUCAO", "REV"],
+      "PRESSPULL": ["PRESSIONARPUXAR"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1259,7 +1261,8 @@
         "BYLAYER": "PORCamada"
       },
       "EXTRUDE": {"MOde": "MOdo", "SOlid": "SÓlido", "SUrface": "SUperfície", "Direction": "Direção", "Path": "Caminho", "Taper": "COnicidade", "Expression": "Expressão", "Yes": "Sim", "No": "Não"},
-      "REVOLVE": {"MOde": "MOdo", "SOlid": "SÓlido", "SUrface": "SUperfície", "Object": "Objeto", "X": "X", "Y": "Y", "Z": "Z", "STart": "INicial", "Reverse": "Reverter", "EXpression": "EXpressão", "Yes": "Sim", "No": "Não"}
+      "REVOLVE": {"MOde": "MOdo", "SOlid": "SÓlido", "SUrface": "SUperfície", "Object": "Objeto", "X": "X", "Y": "Y", "Z": "Z", "STart": "INicial", "Reverse": "Reverter", "EXpression": "EXpressão", "Yes": "Sim", "No": "Não"},
+      "PRESSPULL": {"Multiple": "Múltiplos"}
     },
     "promptKeywords": {
       "selectObjects": {
@@ -1883,7 +1886,9 @@
       "revolveAxisEnd": "Especificar ponto final do eixo",
       "revolveSelectAxis": "Selecionar um objeto",
       "revolveAngleOr": "Especifique um ângulo de revolução ou",
-      "revolveStartAngle": "Especificar ângulo inicial"
+      "revolveStartAngle": "Especificar ângulo inicial",
+      "presspullSelect": "Selecione o objeto ou área delimitada",
+      "presspullHeightOr": "Especifique a altura da extrusão ou"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2514,7 +2519,8 @@
       "revolveClosedAxis": "Não é possível obter direção do eixo a partir de uma curva ou aresta.",
       "listRevolveStart": "   Ângulo inicial: {angle}",
       "listRevolveAngle": "Ângulo de revolução: {angle}",
-      "listDirectionVector": " Vetor de direção: X = {x}Y = {y}Z = {z}"
+      "listDirectionVector": " Vetor de direção: X = {x}Y = {y}Z = {z}",
+      "presspullClick": "Clique em uma face, em uma curva ou dentro de uma área delimitada"
     },
     "feedback": {
       "snap": {

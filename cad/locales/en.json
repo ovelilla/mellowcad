@@ -110,7 +110,8 @@
       "torus": "Torus",
       "intersect": "Intersect",
       "extrude": "Extrude",
-      "revolve": "Revolve"
+      "revolve": "Revolve",
+      "presspull": "Presspull"
     },
     "description": {
       "U": "Undo the last action",
@@ -637,7 +638,8 @@
       "SUBTRACT": ["SUBTRACT", "SU"],
       "INTERSECT": ["INTERSECT", "IN"],
       "EXTRUDE": ["EXTRUDE", "EXT"],
-      "REVOLVE": ["REVOLVE", "REV"]
+      "REVOLVE": ["REVOLVE", "REV"],
+      "PRESSPULL": ["PRESSPULL"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1195,7 +1197,8 @@
       },
       "LWEIGHT": { "?": "?", "BYLAYER": "BYLayer" },
       "EXTRUDE": {"MOde": "MOde", "SOlid": "SOlid", "SUrface": "SUrface", "Direction": "Direction", "Path": "Path", "Taper": "Taper", "Expression": "Expression", "Yes": "Yes", "No": "No"},
-      "REVOLVE": {"MOde": "MOde", "SOlid": "SOlid", "SUrface": "SUrface", "Object": "Object", "X": "X", "Y": "Y", "Z": "Z", "STart": "STart", "Reverse": "Reverse", "EXpression": "EXpression", "Yes": "Yes", "No": "No"}
+      "REVOLVE": {"MOde": "MOde", "SOlid": "SOlid", "SUrface": "SUrface", "Object": "Object", "X": "X", "Y": "Y", "Z": "Z", "STart": "STart", "Reverse": "Reverse", "EXpression": "EXpression", "Yes": "Yes", "No": "No"},
+      "PRESSPULL": {"Multiple": "Multiple"}
     },
     "promptKeywords": {
       "selectObjects": {
@@ -1779,7 +1782,9 @@
       "revolveAxisEnd": "Specify axis endpoint",
       "revolveSelectAxis": "Select an object",
       "revolveAngleOr": "Specify angle of revolution or",
-      "revolveStartAngle": "Specify start angle"
+      "revolveStartAngle": "Specify start angle",
+      "presspullSelect": "Select object or bounded area",
+      "presspullHeightOr": "Specify extrusion height or"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2410,7 +2415,8 @@
       "revolveClosedAxis": "Cannot get axis direction from a closed curve or edge.",
       "listRevolveStart": "      Start angle: {angle}",
       "listRevolveAngle": "Angle of revolution: {angle}",
-      "listDirectionVector": " Direction vector: X = {x}Y = {y}Z = {z}"
+      "listDirectionVector": " Direction vector: X = {x}Y = {y}Z = {z}",
+      "presspullClick": "Click a face, curve, or inside a bounded area"
     },
     "feedback": {
       "snap": {

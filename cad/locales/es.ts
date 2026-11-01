@@ -114,7 +114,8 @@ export const es: EngineLocale = {
       "torus": "Toroide",
       "intersect": "Intersección",
       "extrude": "Extruir",
-      "revolve": "Revolución"
+      "revolve": "Revolución",
+      "presspull": "Presionar/Tirar"
     },
     "description": {
       "U": "Deshacer la última acción",
@@ -1167,6 +1168,10 @@ export const es: EngineLocale = {
       "REVOLVE": [
         "REVOLUCION",
         "RV"
+      ],
+      "PRESSPULL": [
+        "PRESIONARTIRAR",
+        "PULSARTIRAR"
       ]
     },
     "keywords": {
@@ -1887,6 +1892,9 @@ export const es: EngineLocale = {
         "EXpression": "EXpresión",
         "Yes": "Sí",
         "No": "No"
+      },
+      "PRESSPULL": {
+        "Multiple": "Múltiple"
       }
     },
     "promptKeywords": {
@@ -2561,7 +2569,9 @@ export const es: EngineLocale = {
       "revolveAxisEnd": "Precise punto final del eje",
       "revolveSelectAxis": "Designe un objeto",
       "revolveAngleOr": "Precise ángulo de revolución o",
-      "revolveStartAngle": "Precise ángulo inicial"
+      "revolveStartAngle": "Precise ángulo inicial",
+      "presspullSelect": "Seleccione un objeto o un área delimitada",
+      "presspullHeightOr": "Precise altura de extrusión o"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -6873,7 +6883,8 @@ export const es: EngineLocale = {
         [
           "z"
         ]
-      ]
+      ],
+      "presspullClick": "Haga clic en una cara, una curva o dentro de un área delimitada."
     },
     "feedback": {
       "snap": {

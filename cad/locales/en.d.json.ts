@@ -112,6 +112,7 @@ declare const source: {
       "intersect": string
       "extrude": string
       "revolve": string
+      "presspull": string
     }
     "description": {
       "U": string
@@ -644,6 +645,7 @@ declare const source: {
       "INTERSECT": string[]
       "EXTRUDE": string[]
       "REVOLVE": string[]
+      "PRESSPULL": string[]
     }
     "keywords": {
       "-OSNAP": {
@@ -1364,6 +1366,9 @@ declare const source: {
         "Yes": string
         "No": string
       }
+      "PRESSPULL": {
+        "Multiple": string
+      }
     }
     "promptKeywords": {
       "selectObjects": {
@@ -1988,6 +1993,8 @@ declare const source: {
       "revolveSelectAxis": string
       "revolveAngleOr": string
       "revolveStartAngle": string
+      "presspullSelect": string
+      "presspullHeightOr": string
     }
     "promptForms": {
       "convertToPolylines": string
@@ -2619,6 +2626,7 @@ declare const source: {
       "listRevolveStart": string
       "listRevolveAngle": string
       "listDirectionVector": string
+      "presspullClick": string
     }
     "feedback": {
       "snap": {

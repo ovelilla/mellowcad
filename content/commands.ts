@@ -72,6 +72,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   PYRAMID: { group: "draw" },
   EXTRUDE: { group: "draw" },
   REVOLVE: { group: "draw" },
+  PRESSPULL: { group: "draw" },
   UNION: { group: "modify" },
   SUBTRACT: { group: "modify" },
   INTERSECT: { group: "modify" },
