@@ -76,6 +76,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   SLICE: { group: "modify" },
   FILLETEDGE: { group: "modify" },
   CHAMFEREDGE: { group: "modify" },
+  SOLIDEDIT: { group: "modify" },
   SECTION: { group: "draw" },
   UNION: { group: "modify" },
   SUBTRACT: { group: "modify" },

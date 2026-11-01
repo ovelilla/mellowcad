@@ -55,6 +55,7 @@ import { RevolveTool } from "./tools/RevolveTool"
 import { PresspullTool } from "./tools/PresspullTool"
 import { PlaneCutTool } from "./tools/PlaneCutTool"
 import { EdgeBlendTool } from "./tools/EdgeBlendTool"
+import { SolideditTool } from "./tools/SolideditTool"
 import { sweepSettings } from "./tools/sweepSettings"
 import { RegionBooleanTool, SubtractTool } from "./tools/RegionBooleanTool"
 import { BreakTool } from "./tools/BreakTool"
@@ -194,6 +195,14 @@ export function defaultTools(
     new PlaneCutTool("section"),
     new EdgeBlendTool("fillet"),
     new EdgeBlendTool("chamfer"),
+    new SolideditTool(),
+    new SolideditTool("Extrude"),
+    new SolideditTool("Move"),
+    new SolideditTool("Offset"),
+    new SolideditTool("Rotate"),
+    new SolideditTool("Taper"),
+    new SolideditTool("Delete"),
+    new SolideditTool("Copy"),
     new BreakTool("gap", "break"),
     new BreakTool("atPoint", "breakatpoint"),
     new SplineEditTool(),

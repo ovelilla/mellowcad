@@ -120,7 +120,15 @@ export const ar: EngineLocale = {
       "slice": "تقطيع",
       "section": "مقطع",
       "filletedge": "تدوير الحافة",
-      "chamferedge": "شطف الحافة"
+      "chamferedge": "شطف الحافة",
+      "solidedit": "تحرير المجسمات",
+      "solideditextrude": "بثق الأوجه",
+      "solideditmove": "نقل الأوجه",
+      "solideditrotate": "تدوير الأوجه",
+      "solideditoffset": "إزاحة الأوجه",
+      "solidedittaper": "تسليب الأوجه",
+      "solideditdelete": "حذف الأوجه",
+      "solideditcopy": "نسخ الأوجه"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",

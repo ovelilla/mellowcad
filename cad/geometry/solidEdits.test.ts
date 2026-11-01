@@ -17,11 +17,15 @@ import {
 } from "./solids"
 import { brepMoments, solidInertia } from "./massProperties"
 import { SolidBooleanError, brepBoolean } from "./solidBooleans"
+import { brepEdgesBlended } from "./solidBlends"
 import {
   CutPlane,
   PlaneSection,
+  brepFaceDeleted,
   brepFaceExtruded,
   brepFaceOffset,
+  brepFacePlaneSet,
+  brepFacesExtruded,
   brepSection,
   brepSliced,
 } from "./solidEdits"
@@ -325,15 +329,20 @@ describe("a face pulled, pressed and offset", () => {
     expect(brepIsClosed(pressed)).toBe(true)
   })
 
-  it("refuses a face pushed through the solid, or beside a cone", () => {
+  it("refuses a face pushed through the solid", () => {
     const b = box(0, 0, 0, 10, 10, 10)
     expect(() => brepFaceOffset(b, faceAt(b, Z, 10), -12)).toThrow(
       SolidBooleanError
     )
+  })
+
+  it("slides a frustum's top down its cone (e03), not past its foot", () => {
     const frustum = roundBrep({ x: 20, y: 0, z: 0 }, Z, X, 5, 5, 10, 0.4)
-    expect(() => brepFaceOffset(frustum, faceAt(frustum, Z, 10), -4)).toThrow(
-      SolidBooleanError
-    )
+    const top = faceAt(frustum, Z, 10)
+    const pressed = brepFaceOffset(frustum, top, -4)
+    expect(brepVolume(pressed)).toBeCloseTo(321.9504, 4)
+    expect(brepIsClosed(pressed)).toBe(true)
+    expect(() => brepFaceOffset(frustum, top, -11)).toThrow(SolidBooleanError)
   })
 })
 
@@ -411,6 +420,72 @@ describe("any box's face offset", () => {
         }
       ),
       { numRuns: 40 }
+    )
+  })
+})
+
+describe("SOLIDEDIT's faces", () => {
+  it("lays a face in a turned plane, its neighbours carried on (solidedit/e07, e08)", () => {
+    const b = box(0, 0, 0, 10, 10, 10)
+    const a = (10 * Math.PI) / 180
+    const turned = { x: 0, y: -Math.sin(a), z: Math.cos(a) }
+    const rotated = brepFacePlaneSet(b, faceAt(b, Z, 10), {
+      normal: turned,
+      level: 10 * turned.z,
+    })
+    expect(brepVolume(rotated)).toBeCloseTo(1088.1634903542329, 9)
+    const tapered = { x: 0, y: -Math.cos(a), z: Math.sin(a) }
+    const front = faceAt(b, { x: 0, y: -1, z: 0 }, 0)
+    expect(
+      brepVolume(brepFacePlaneSet(b, front, { normal: tapered, level: 0 }))
+    ).toBeCloseTo(911.8365096457675, 9)
+    // A plane the corner cannot reach: the top laid past the bottom.
+    expect(() =>
+      brepFacePlaneSet(b, faceAt(b, Z, 10), { normal: Z, level: -1 })
+    ).toThrow(SolidBooleanError)
+  })
+
+  it("extrudes a face tapered, the prism narrowing as it rises (e08)", () => {
+    const b = box(0, 0, 0, 10, 10, 10)
+    const taper = (20 * Math.PI) / 180
+    const out = brepFacesExtruded(b, [faceAt(b, Z, 10)], 3, taper)!
+    const top = 10 - 2 * 3 * Math.tan(taper)
+    const frustum = (3 / 3) * (100 + top * top + 10 * top)
+    expect(brepVolume(out)).toBeCloseTo(1000 + frustum, 9)
+  })
+
+  it("deletes a hole's wall, a fillet or a chamfer, and refuses a box's side (e09)", () => {
+    const drilled = brepBoolean(
+      "subtract",
+      box(0, 0, 0, 20, 10, 10),
+      roundBrep({ x: 5, y: 5, z: -1 }, Z, X, 2, 2, 12, 1)
+    )!
+    const wall = drilled.faces.findIndex((f) => f.surface.kind === "cylinder")
+    const whole = brepFaceDeleted(drilled, wall)
+    expect(brepVolume(whole)).toBeCloseTo(2000, 9)
+    expect(counts(whole)).toEqual({ v: 8, e: 12, f: 6 })
+
+    const b = box(30, 0, 0, 10, 10, 10)
+    const edge = b.edges.findIndex(
+      (e) =>
+        b.vertices[e.start].y === 0 &&
+        b.vertices[e.end].y === 0 &&
+        b.vertices[e.start].z === 10 &&
+        b.vertices[e.end].z === 10
+    )
+    const rounded = brepEdgesBlended(b, [edge], { kind: "fillet", radius: 1 })
+    const back = brepFaceDeleted(rounded, 0)
+    expect(brepVolume(back)).toBeCloseTo(1000, 9)
+    expect(counts(back)).toEqual({ v: 8, e: 12, f: 6 })
+    const bevel = brepEdgesBlended(b, [edge], {
+      kind: "chamfer",
+      base: faceAt(b, Z, 10),
+      distance1: 1,
+      distance2: 2,
+    })
+    expect(brepVolume(brepFaceDeleted(bevel, 0))).toBeCloseTo(1000, 9)
+    expect(() => brepFaceDeleted(b, faceAt(b, Z, 10))).toThrow(
+      SolidBooleanError
     )
   })
 })

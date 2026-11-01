@@ -6,11 +6,18 @@ import {
 } from "../geometry/solidBooleans"
 import {
   CutPlane,
+  FacePlane,
+  brepFaceDeleted,
+  brepFaceOffset,
+  brepFacePlaneSet,
   brepFacesExtruded,
   brepFacesOffset,
   brepSection,
   brepSliced,
+  sizeTolerance,
 } from "../geometry/solidEdits"
+import { Vec3, dot3 } from "../geometry/Vec3"
+import { brepMapped, planarFace } from "../geometry/solids"
 import { EdgeBlend, brepEdgesBlended } from "../geometry/solidBlends"
 import { EntityId, RegionEntity, Solid3dEntity } from "./entityTypes"
 import { nextEntityId } from "./entityIds"
@@ -225,4 +232,120 @@ export function blendedSolid(
     if (error instanceof SolidBooleanError) return null
     throw error
   }
+}
+
+/**
+ * What SOLIDEDIT does to the faces taken (solidedit/e01–e12): Extrude, a
+ * height and a taper; Offset, a distance; Move, a displacement, which moves a
+ * planar face as far as it runs along its normal; a new plane for each face
+ * (Rotate, Taper); Delete.
+ */
+export type FaceEdit =
+  | {
+      readonly kind: "extrude"
+      readonly height: number
+      readonly taper: number
+    }
+  | { readonly kind: "offset"; readonly distance: number }
+  | { readonly kind: "move"; readonly displacement: Vec3 }
+  | { readonly kind: "plane"; readonly to: (face: FacePlane) => FacePlane }
+  | { readonly kind: "delete" }
+
+/**
+ * The solid with its faces edited, one after another, each found again by
+ * the plane it lay in; null where the kernel cannot make it or nothing would
+ * be left. It keeps its object and loses what made it.
+ */
+export function solidFacesEdited(
+  solid: Solid3dEntity,
+  faces: readonly number[],
+  edit: FaceEdit
+): Solid3dEntity | null {
+  try {
+    const brep = facesEdited(solid.brep, faces, edit)
+    return brep ? solidEdited(solid, brep) : null
+  } catch (error) {
+    if (error instanceof SolidBooleanError) return null
+    throw error
+  }
+}
+
+function facesEdited(
+  brep: Brep,
+  faces: readonly number[],
+  edit: FaceEdit
+): Brep | null {
+  switch (edit.kind) {
+    case "extrude":
+      return brepFacesExtruded(brep, faces, edit.height, edit.taper)
+    case "offset":
+      return brepFacesOffset(brep, faces, edit.distance)
+    case "delete": {
+      // From the last: taking a face out leaves those before where they were.
+      let out = brep
+      for (const f of [...faces].sort((a, b) => b - a)) {
+        out = brepFaceDeleted(out, f)
+      }
+      return out
+    }
+    case "move":
+    case "plane": {
+      const planes = faces.map((f) => {
+        const s = brep.faces[f]?.surface
+        if (!s || s.kind !== "plane") throw new SolidBooleanError("unsupported")
+        return { normal: s.normal, level: dot3(s.origin, s.normal) }
+      })
+      const tolerance = sizeTolerance(brep)
+      let out = brep
+      for (const plane of planes) {
+        const index = out.faces.findIndex(
+          (g) =>
+            g.surface.kind === "plane" &&
+            dot3(g.surface.normal, plane.normal) > 1 - 1e-9 &&
+            Math.abs(dot3(g.surface.origin, plane.normal) - plane.level) <=
+              tolerance
+        )
+        if (index < 0) throw new SolidBooleanError("failed")
+        out =
+          edit.kind === "move"
+            ? brepFaceOffset(out, index, dot3(edit.displacement, plane.normal))
+            : brepFacePlaneSet(out, index, edit.to(plane))
+      }
+      return out
+    }
+  }
+}
+
+/**
+ * SOLIDEDIT's Copy of planar faces (solidedit/e10): each a region where it
+ * lies moved by `displacement`, of `layerId`. A curved face, which AutoCAD
+ * copies into a surface, is left out (no surface here).
+ */
+export function copiedFaces(
+  solid: Solid3dEntity,
+  faces: readonly number[],
+  displacement: Vec3,
+  layerId: LayerId
+): RegionEntity[] {
+  const moved = brepMapped(
+    solid.brep,
+    (p) => ({
+      x: p.x + displacement.x,
+      y: p.y + displacement.y,
+      z: p.z + displacement.z,
+    }),
+    (d) => d,
+    false
+  )
+  return faces.flatMap((f) => {
+    const face = moved.faces[f]
+    if (!face || face.surface.kind !== "plane") return []
+    const flat = planarFace(moved, face)
+    return [
+      withNormal(
+        withElevation(createRegion([flat.face], layerId), flat.elevation),
+        flat.axes.z
+      ),
+    ]
+  })
 }

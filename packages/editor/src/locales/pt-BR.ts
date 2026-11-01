@@ -82,6 +82,7 @@ export const ptBR: EditorLocale = {
         "trim": "Aparar",
         "fillet": "Concord",
         "filletedge": "Aresta de concordância",
+        "solideditextrude": "Extrusão nas faces",
         "break": "Quebrar",
         "pedit": "Editar polilinha",
         "array": "Matriz",

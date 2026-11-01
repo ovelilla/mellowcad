@@ -120,7 +120,15 @@ export const ptBR: EngineLocale = {
       "slice": "Fatiar",
       "section": "Corte",
       "filletedge": "Aresta de concordância",
-      "chamferedge": "Chanfrar aresta"
+      "chamferedge": "Chanfrar aresta",
+      "solidedit": "Editar sólidos",
+      "solideditextrude": "Extrusão nas faces",
+      "solideditmove": "Mover faces",
+      "solideditrotate": "Rotacionar faces",
+      "solideditoffset": "Deslocar faces",
+      "solidedittaper": "Afilar faces",
+      "solideditdelete": "Excluir faces",
+      "solideditcopy": "Copiar faces"
     },
     "description": {
       "U": "Desfaz a última ação",
@@ -1206,6 +1214,9 @@ export const ptBR: EngineLocale = {
       ],
       "CHAMFEREDGE": [
         "CHANFRARARESTA"
+      ],
+      "SOLIDEDIT": [
+        "EDITARSOLIDO"
       ]
     },
     "keywords": {
@@ -1972,6 +1983,36 @@ export const ptBR: EngineLocale = {
         "Expression": "Expressão",
         "Accept": "Aceitar",
         "Next": "Próximo"
+      },
+      "SOLIDEDIT": {
+        "Face": "Face",
+        "Edge": "Aresta",
+        "Body": "Corpo",
+        "Undo": "Desfazer",
+        "eXit": "Sair",
+        "Extrude": "Extrusão",
+        "Move": "Mover",
+        "Rotate": "Rotacionar",
+        "Offset": "desLocamento",
+        "Taper": "Afilar",
+        "Delete": "eXcluir",
+        "Copy": "COpiar",
+        "coLor": "Cor",
+        "mAterial": "maTerial",
+        "Remove": "Remover",
+        "Add": "Adicionar",
+        "ALL": "Todas",
+        "Crossing": "Intersecção",
+        "Fence": "Cerca",
+        "CPolygon": "PIntersecção",
+        "Path": "Caminho",
+        "Axis": "Eixo",
+        "View": "Vista",
+        "Xaxis": "eixoX",
+        "Yaxis": "eixoY",
+        "Zaxis": "eixoZ",
+        "2points": "2pontos",
+        "Reference": "Referência"
       }
     },
     "promptKeywords": {
@@ -2685,7 +2726,24 @@ export const ptBR: EngineLocale = {
       "chamferEdgeLoopOr": "Selecionar aresta de loop ou",
       "chamferEdgeAccept": "Pressione Enter para aceitar o chanfro ou",
       "chamferEdgeDistance1Or": "Especifique a distância1 ou",
-      "chamferEdgeDistance2Or": "Especifique a distância2 ou"
+      "chamferEdgeDistance2Or": "Especifique a distância2 ou",
+      "solideditOption": "Inserir uma opção de edição de sólidos",
+      "solideditFaceOption": "Inserir uma opção de edição de face",
+      "selectFacesOr": "Selecionar faces ou",
+      "removeFacesOr": "Remover faces ou",
+      "solideditHeightOr": "Especificar altura da extrusão ou",
+      "solideditExtrudeTaper": "Especificar ângulo de conicidade para extrusão",
+      "solideditBase": "Especificar um ponto base ou deslocamento",
+      "solideditSecond": "Especificar um segundo ponto de deslocamento",
+      "solideditAxisOr": "Especificar um ponto do eixo ou",
+      "solideditAxisFirst": "Especificar o primeiro ponto no eixo de rotação",
+      "solideditAxisSecond": "Especificar o segundo ponto no eixo de rotação",
+      "solideditOrigin": "Especificar a origem da rotação",
+      "solideditAngleOr": "Especificar um ângulo de rotação ou",
+      "solideditOffset": "Especificar a distância de deslocamento",
+      "solideditTaperBase": "Especificar o ponto base",
+      "solideditTaperAxis": "Especificar outro ponto ao longo do eixo de conicidade",
+      "solideditTaperAngle": "Especificar o ângulo de conicidade"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -7124,7 +7182,53 @@ export const ptBR: EngineLocale = {
       "radiusTooSmall": "O raio é pequeno demais. *Inválido*",
       "distanceTooSmall": "Distância pequena demais. *Inválida*",
       "filletEdgeFailed": "Erro de operação de modelagem:\nFalha na execução da mesclagem.\nFalha durante a concordância.",
-      "chamferEdgeFailed": "Erro de operação de modelagem:\nError Code Number is 12069\nFalha na execução da mesclagem.\nFalha durante a aplicação de chanfragem."
+      "chamferEdgeFailed": "Erro de operação de modelagem:\nError Code Number is 12069\nFalha na execução da mesclagem.\nFalha durante a aplicação de chanfragem.",
+      "solideditChecking": "Verificação automática de edição de sólidos:  SOLIDCHECK=1",
+      "facesFound": [
+        [
+          "count",
+          2,
+          {
+            "one": "1 face encontrada.",
+            "other": [
+              0,
+              " faces encontradas."
+            ]
+          }
+        ]
+      ],
+      "facesFoundRemoved": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              "1 face encontrada, ",
+              [
+                "removed"
+              ],
+              " removida(s)."
+            ],
+            "other": [
+              0,
+              " faces encontradas, ",
+              [
+                "removed"
+              ],
+              " removidas."
+            ]
+          }
+        ]
+      ],
+      "solidValidationStarted": "Validação de sólido iniciada.",
+      "solidValidationCompleted": "Validação de sólido concluída.",
+      "modelingError": "Erro de operação de modelagem:",
+      "modelingErrorCode": [
+        "Erro de operação de modelagem:\nError Code Number is ",
+        [
+          "code"
+        ]
+      ]
     },
     "feedback": {
       "snap": {
@@ -7396,6 +7500,9 @@ export const ptBR: EngineLocale = {
       "SLICE": {
         "Object": "Objeto plano",
         "Both": "manter Ambos os lados"
+      },
+      "SOLIDEDIT": {
+        "Axis": "Eixo por objeto"
       }
     },
     "promptKeywordLabels": {

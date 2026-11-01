@@ -120,7 +120,15 @@ export const en: EngineCatalog = {
       "slice": "Slice",
       "section": "Section",
       "filletedge": "Fillet Edge",
-      "chamferedge": "Chamfer Edge"
+      "chamferedge": "Chamfer Edge",
+      "solidedit": "Solid Editing",
+      "solideditextrude": "Extrude faces",
+      "solideditmove": "Move faces",
+      "solideditrotate": "Rotate faces",
+      "solideditoffset": "Offset faces",
+      "solidedittaper": "Taper faces",
+      "solideditdelete": "Delete faces",
+      "solideditcopy": "Copy faces"
     },
     "description": {
       "U": "Undo the last action",
@@ -1212,6 +1220,9 @@ export const en: EngineCatalog = {
       ],
       "CHAMFEREDGE": [
         "CHAMFEREDGE"
+      ],
+      "SOLIDEDIT": [
+        "SOLIDEDIT"
       ]
     },
     "keywords": {
@@ -2070,7 +2081,24 @@ export const en: EngineCatalog = {
       "chamferEdgeLoopOr": "Select edge of loop or",
       "chamferEdgeAccept": "Press Enter to accept the chamfer or",
       "chamferEdgeDistance1Or": "Specify Distance1 or",
-      "chamferEdgeDistance2Or": "Specify Distance2 or"
+      "chamferEdgeDistance2Or": "Specify Distance2 or",
+      "solideditOption": "Enter a solids editing option",
+      "solideditFaceOption": "Enter a face editing option",
+      "selectFacesOr": "Select faces or",
+      "removeFacesOr": "Remove faces or",
+      "solideditHeightOr": "Specify height of extrusion or",
+      "solideditExtrudeTaper": "Specify angle of taper for extrusion",
+      "solideditBase": "Specify a base point or displacement",
+      "solideditSecond": "Specify a second point of displacement",
+      "solideditAxisOr": "Specify an axis point or",
+      "solideditAxisFirst": "Specify the first point on the rotation axis",
+      "solideditAxisSecond": "Specify the second point on the rotation axis",
+      "solideditOrigin": "Specify the origin of the rotation",
+      "solideditAngleOr": "Specify a rotation angle or",
+      "solideditOffset": "Specify the offset distance",
+      "solideditTaperBase": "Specify the base point",
+      "solideditTaperAxis": "Specify another point along the axis of tapering",
+      "solideditTaperAngle": "Specify the taper angle"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -6484,7 +6512,53 @@ export const en: EngineCatalog = {
       "radiusTooSmall": "Radius too small. *Invalid*",
       "distanceTooSmall": "Distance too small. *Invalid*",
       "filletEdgeFailed": "Modeling Operation Error:\nFailed to perform blend.\nFailure while filleting.",
-      "chamferEdgeFailed": "Modeling Operation Error:\nError Code Number is 12069\nFailed to perform blend.\nFailure while chamfering."
+      "chamferEdgeFailed": "Modeling Operation Error:\nError Code Number is 12069\nFailed to perform blend.\nFailure while chamfering.",
+      "solideditChecking": "Solids editing automatic checking:  SOLIDCHECK=1",
+      "facesFound": [
+        [
+          "count",
+          2,
+          {
+            "one": "1 face found.",
+            "other": [
+              0,
+              " faces found."
+            ]
+          }
+        ]
+      ],
+      "facesFoundRemoved": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              "1 face found, ",
+              [
+                "removed"
+              ],
+              " removed."
+            ],
+            "other": [
+              0,
+              " faces found, ",
+              [
+                "removed"
+              ],
+              " removed."
+            ]
+          }
+        ]
+      ],
+      "solidValidationStarted": "Solid validation started.",
+      "solidValidationCompleted": "Solid validation completed.",
+      "modelingError": "Modeling Operation Error:",
+      "modelingErrorCode": [
+        "Modeling Operation Error:\nError Code Number is ",
+        [
+          "code"
+        ]
+      ]
     },
     "feedback": {
       "snap": {
@@ -6756,6 +6830,9 @@ export const en: EngineCatalog = {
       "SLICE": {
         "Object": "planar Object",
         "Both": "keep Both sides"
+      },
+      "SOLIDEDIT": {
+        "Axis": "Axis by object"
       }
     },
     "promptKeywordLabels": {

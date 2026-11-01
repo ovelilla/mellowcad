@@ -1609,6 +1609,48 @@ describe("the engine's English surface", () => {
         )
         .do("CHAMFEREDGE of nothing", (c) => submit(c, "CHAMFEREDGE", ""))
     )
+    walk("SOLIDEDIT", createHarness(), (s) =>
+      s
+        .do("BOX, off plan", (c) =>
+          submit(c, "BOX", "0,0,0", "10,10", "10", "-VPOINT", "-1.3,-2.2,1.6")
+        )
+        .do("SOLIDEDIT Face", (c) =>
+          submit(c, "ZOOM", "E", "SOLIDEDIT", "E", "F", "L")
+        )
+        .do("Offset refused, Remove, Add, ALL", (c) =>
+          submit(c, "O", "FOO", "5,5,10", "R", "5,5,10", "A", "ALL", "U", "")
+        )
+        .do("offset", (c) => submit(c, "1"))
+        .do("Extrude", (c) =>
+          submit(c, "E", "5,5,11", "", "P", "2", "FOO", "5")
+        )
+        .do("Rotate by X", (c) =>
+          submit(c, "R", "5,0,5", "", "X", "", "R", "-10")
+        )
+        .do("Taper", (c) =>
+          submit(c, "T", "10,5,5", "", "0,0,0", "0,0,10", "5")
+        )
+        .do("Move, Copy, Delete", (c) =>
+          submit(
+            c,
+            "M",
+            "0,5,5",
+            "",
+            "FOO",
+            "0,0,0",
+            "-1,0,0",
+            "C",
+            "0,5,5",
+            "",
+            "0,0,0",
+            "",
+            "D",
+            "0,5,5",
+            ""
+          )
+        )
+        .do("Undo, eXit", (c) => submit(c, "U", "", "X"))
+    )
     walk("SECTION", createHarness(), (s) =>
       s
         .do("BOX", (c) => submit(c, "BOX", "0,0,0", "100,100", "100"))
