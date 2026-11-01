@@ -1417,7 +1417,9 @@ takes several clicks before one height. A typed point says `Click a face, curve,
 area` (presspull/p01, the console's answer to every point), FOO `2D point or option keyword
 required.`. The solid is EXTRUDE's (`Solid type = Extrusion`). The whole run is one undo step.
 
-**Missing:** a solid's face pressed or pulled (Ctrl+click offsets it), phase 4's; an open object,
+**Missing:** a solid's face pressed or pulled (Ctrl+click offsets it): the kernel's booleans would
+extrude it into the solid or out of it, but picking a face under the cursor is the sub-objects' work
+(the brief's phase 6), and an offset face drags its neighbours (SOLIDEDIT's); an open object,
 which it extrudes into a surface (no surface object here); the drag's live height along the normal
 and the jig's preview of the area as the cursor hovers it (here the height is the distance to a
 point); `%d extrusion(s) created` (55300), whose moment no probe has seen; whether a closed object
