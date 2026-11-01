@@ -1010,14 +1010,30 @@ edge hides a bottom one, the bottom's is found (s01). MOVE, COPY, ROTATE, SCALE 
 it, in a tilted UCS and with a Z too, a mirrored box still a box (t01: Rotation 330; t02); STRETCH
 moves it whole once the window takes a vertex, else leaves it (t03, t05). The Properties palette:
 3D Solid, Geometry's Solid type, Position X/Y/Z, Length, Width, Height and Rotation, Solid History's
-History and Show History, read only (d03). AREA's Object gives its surface, `Area = 700.0000,
+History and Show History (d03); Position (in the UCS), Length, Width and Height are typed, the rest
+greyed: a length or width of 0 or less refused without a word, a height of 0 refused, a negative one
+turning the box over its base (`Normal: 0,0,-1`, its size), one undo step U names `Modify Property`
+(g01). AREA's Object gives its surface, `Area = 700.0000,
 Perimeter = 0.0000` (p01); MASSPROP measures it, as every primitive (its entry, m01–m04); EXPLODE leaves a region of each face, facing out, which explode into
 lines (p09); REGION rejects it (`1 closed, degenerate or unsupported object rejected.`, e09);
 DIMLINEAR's object and UCS OBject take the edge picked as a line along it (e07, e08); BREAK, OFFSET,
 TRIM, EXTEND, PEDIT, DIMRADIUS and ARRAYPATH's path refuse it with their own words (e01–e06, e10).
 
-**Missing:** a box's grips — the base's corners, the edges' arrows, the height's, d02 — with editing
-its Geometry rows in the palette (phase 2c; none here, a click selects it); the 3D commands of its
+Its grips, as AutoCAD 2027's desktop lays them (g01's GripData and drags, d10's captures, SW
+Isometric): a square at the base's centre, which moves it, Z too; a square at each base corner,
+which moves in the base's plane, the opposite corner kept; an arrow out of the middle of each base
+edge, which sizes the box by the drag's run along it, the opposite face kept; and, where the view
+does not look along its axis, an arrow up at the top's centre and one down under the base's, which
+set the height by the point of the axis the cursor covers on the screen, the base or the top kept
+(g01: dragged 2,0,0 in SW Isometric it rises 1); in plan, none. A drag that would make a size 0 or
+less, or take a corner past the opposite one, leaves it as it was. While an arrow is hot its box
+says how far it has gone and, Tab's, the size it sets (g01: `2.6481` and `7.6481`), either typed; a
+corner's the distance it has moved, along the cursor. Snaps, Ortho and Polar bend the point as at
+any grip. One undo step, `Grip Edit`.
+
+**Missing:** the hot grip's other modes (Enter's Move, Rotate, Scale, Mirror, as at every grip
+here); a height dragged past the opposite face, which AutoCAD answers with no rule (g01: down 6
+leaves the box upright 1 high, down 7 turns it over 2 high), refused here; the 3D commands of its
 own (3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN), the gizmos and sub-objects
 (Ctrl+click), later phases; the dynamic UCS and the jig's 3D drag of the height (here a pick at the
 height prompt gives its distance, as the console does); FILLET and CHAMFER of its edges, which
@@ -1057,8 +1073,10 @@ palette show `Solid type = Wedge` and BOX's rows (w01, d05); AREA's Object gives
 (w06: Rotation 330 and 210); EXPLODE leaves a region of each face (w07). Everything else a solid
 does is BOX's entry.
 
-**Missing:** BOX's (the grips in phase 2c, the palette's edits, the 3D commands,
-Hidden and shaded styles, the per-drawing defaults on OPEN, **unverified**).
+Its grips and palette rows are BOX's, the top's arrow over its tall end (g01).
+
+**Missing:** BOX's (the 3D commands, Hidden and shaded styles, the per-drawing defaults on OPEN,
+**unverified**).
 
 ### `CYLINDER` / `CYL` · es `CILINDRO` / `CIL` · pt-BR `CILINDRO` / `CIL`
 
@@ -1107,14 +1125,17 @@ Nearest, Perpendicular and Tangent on them, no Endpoint at the seam, nothing on 
 s09, s10). LIST: `Solid type = Cylinder`, Position (the base's centre), Normal, `Radius`, Height; an
 elliptical one `Major radius`, `Minor radius`, Height and Rotation, its seam's heading (c01, c04).
 The palette: Solid type, Position X/Y/Z, Elliptical, Radius or Major and Minor radius and Rotation,
-Height (d05). AREA's Object gives its surface (`408.4070`, the ellipse's perimeter exact); MOVE,
+Height (d05), the radii and Height typed (0 or less refused, a negative height turning it over, g01).
+Its grips (g01, d10): BOX's square at the base's centre and its height arrows, and an arrow out at
+each quarter of the base — along X and across, an elliptical one's its own axis' —, which sizes
+that radius by the drag's run along it in the base's plane. AREA's Object gives its surface (`408.4070`, the ellipse's perimeter exact); MOVE,
 ROTATE, SCALE and MIRROR carry it (c10).
 
 **Missing:** what AutoCAD's EXPLODE makes of it — the regions of its ends and a SURFACE of its
 round face (c11): no surface object here, so it is refused as `Select objects:` finds it (`1 was
-not able to be exploded.`); BOX's (the grips in phase 2c — the base's and the top's
-centres, MPGRIPS —, the palette's edits, Hidden and shaded styles, DISPSILH's silhouettes, d04's
-`iso16s`); in plan, where the top circle hides the base's, Nearest finds the top's in AutoCAD (s03)
+not able to be exploded.`); BOX's (the hot grip's other modes, a height dragged past the base,
+Hidden and shaded styles); Elliptical typed, which AutoCAD lets a round one take, Major and Minor
+radius equal, then greys (g01; greyed here); DISPSILH's silhouettes, d04's `iso16s`; in plan, where the top circle hides the base's, Nearest finds the top's in AutoCAD (s03)
 and the base's here, as BOX's; an elliptical base tilted by Axis endpoint turns its seam to the
 plane's Y, its size kept (c12), its other in-plane turns **unverified**.
 
@@ -1137,11 +1158,14 @@ frustum's top. The apex is an Endpoint, the base's seam none; the rulings run fr
 apex or the top (s10, d04; with ISOLINES 0 AutoCAD draws the apex as a dot). LIST: `Solid type =
 Cone`, Position, Normal, `Base radius`, `Top radius`, Height; elliptical `Base major radius`, `Base
 minor radius`, `Top major radius`, Height, Rotation (k01, k03). The palette: Elliptical, Base radius
-and Top radius, or Base major, Base minor, Top major and Top minor radius and Rotation, Height (d05).
-AREA's Object gives its surface (`226.7284`; a frustum's `278.9986`, an elliptical one's from the
+and Top radius, or Base major, Base minor, Top major and Top minor radius and Rotation, Height (d05),
+typed as CYLINDER's, a top down to 0 (a point; g01). Its grips are CYLINDER's and a top radius
+arrow, on the top opposite its X or, on a point, 15 pixels off the apex outwards and down, which
+sets the top by where it is taken along the line of sight, from 0 (g01: dragged 2 out of a point,
+2.15). AREA's Object gives its surface (`226.7284`; a frustum's `278.9986`, an elliptical one's from the
 perimeter, k01, k03). Everything else a solid does is CYLINDER's and BOX's entries.
 
-**Missing:** CYLINDER's (EXPLODE's SURFACE, k06; the grips in 2c); the apex drawn as a
+**Missing:** CYLINDER's (EXPLODE's SURFACE, k06; Elliptical typed); the apex drawn as a
 dot with ISOLINES 0 (nothing here).
 
 ### `SPHERE` · es `ESFERA` · pt-BR `ESFERA`
@@ -1169,12 +1193,13 @@ picked and windowed by them. Center finds its centre from anywhere over an isoli
 itself only where one passes; nothing else snaps on it, its poles no Endpoint, Nearest `No found
 for specified point.` (s06, s09, s10). LIST: `Solid type = Sphere`, Position and `Radius`, never a
 Normal (h01, h04). The palette: Solid type, Position X/Y/Z, Radius and Diameter (d05). AREA's
-Object gives its surface (`Area = 314.1593`); MOVE, ROTATE, SCALE and MIRROR carry it (h04);
+Object gives its surface (`Area = 314.1593`); Radius and Diameter typed in the palette (g01). Its
+grips: a square at its centre, which moves it, and an arrow out at each quarter of its equator,
+which sizes the radius along the line of sight (g01, d10); MOVE, ROTATE, SCALE and MIRROR carry it (h04);
 STRETCH moves it whole once the window takes its centre, never by its rim alone (t06).
 
 **Missing:** what AutoCAD's EXPLODE makes of it, a SURFACE (h04): refused as CYLINDER's is; BOX's
-(its grip, its centre (MPGRIPS), in phase 2c, the palette's edits, the 3D commands,
-Hidden and shaded styles); DISPSILH's silhouette.
+(the hot grip's other modes, the 3D commands, Hidden and shaded styles); DISPSILH's silhouette.
 
 ### `TORUS` / `TOR` · es `TOROIDE` / `TOR` · pt-BR `TOROIDE` / `TORO`
 
@@ -1213,9 +1238,13 @@ else snaps on it (s07, s09, s10). LIST: `Solid type = Torus`, Position, Normal, 
 do tubo`). The palette: Solid type, Position X/Y/Z, Torus radius and Tube radius (d05). AREA's
 Object gives its surface (`789.5684`; an apple's, 2 round a tube of 4, `384.6763`; a lemon's, -4
 and 5, `26.7661`, r05's MPDUMP); MOVE, ROTATE, SCALE and MIRROR carry it (r04), STRETCH as
-SPHERE's (t06).
+SPHERE's (t06). The palette types Torus radius — 0 refused, a negative one only inside a tube
+wider still — and Tube radius, a lemon's only wider than its ring (g01). Its grips (g01, d10): a
+square at its centre, which moves it; at the tube opposite its X, |R| out whichever side the ring
+is, an arrow at the tube's centre, which sizes the ring, and four round it, which size the tube,
+each along the line of sight; a drag that would turn the ring across the axis leaves it.
 
-**Missing:** SPHERE's (EXPLODE's SURFACE, the grip in phase 2c, DISPSILH); an apple's or
+**Missing:** SPHERE's (EXPLODE's SURFACE, the hot grip's other modes, DISPSILH); an apple's or
 a lemon's poles as Endpoints (**unverified**: no probe snaps there; none here).
 
 ### `PYRAMID` / `PYR` · es `PIRAMIDE` / `PIR` · pt-BR `PIRAMIDE` / `PIR`
@@ -1257,12 +1286,18 @@ the slanted ones down (y01, y02, y09's MPDUMP). LIST: `Solid type = Pyramid`, Po
 `Inscribed base radius` (the corners' circle), `Circumscribed base radius` (the sides'), the top's
 two, Height, Rotation (the middle of a side's heading) and `Number of sides` (y01; es `Radio de base
 inscrito`, `Número de lados`). The palette: Solid type, Position X/Y/Z, Type, Base radius and Top
-radius as the Type reads them, Sides, Rotation, Height (d05). AREA's Object gives its surface
+radius as the Type reads them, Sides, Rotation, Height (d05): the radii, Sides and Height typed, a
+base radius of 0 or less and a top below 0 refused, Sides 3 to 32 kept on the circle of its corners
+(2, 33 refused), a negative height turning it over (g01). Its grips (g01, d10): BOX's square at the
+base's centre and height arrows (the top's at the apex or the top's centre); a square at each base
+corner and an arrow at the middle of each side, from the corner before its X round, which size the
+corners' circle or the sides' by where the cursor covers their radius on the screen; a top radius
+arrow on the top's side opposite its X or off the apex, as CONE's. AREA's Object gives its surface
 (`288.6796`); MOVE, ROTATE, SCALE and MIRROR carry it (y08: Rotation 52, then 308 mirrored);
 EXPLODE leaves a region of each face (y08). Everything else a solid does is BOX's entry.
 
-**Missing:** BOX's (the grips in phase 2c — its grips are the base's corners and the
-apex, MPGRIPS —, the palette's edits, the 3D commands, Hidden and shaded styles). The console's
+**Missing:** BOX's (the hot grip's other modes, the 3D commands, Hidden and shaded styles); its
+Type typed in the palette (greyed here: what it does to the solid **unverified**). The console's
 cursor in a tilted UCS turns a typed radius by its own projection (y07's Rotation 4), which the
 harness does not reproduce; a radius given by a point there is exact.
 

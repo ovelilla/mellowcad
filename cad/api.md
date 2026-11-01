@@ -2133,7 +2133,9 @@ export type EntityProperty = "startX" | "startY" | "endX" | "endY" | "radius" | 
 /** A path array's Method, a choice: 1 Measure, 0 Divide. */
  | "arrayMethod" | "arrayItemSpacing"
 /** A path array's Align items, a choice: 1 Yes, 0 No. */
- | "arrayAlignItems" | ZProperty;
+ | "arrayAlignItems"
+/** A primitive solid's Geometry (solid/g01): `radius` is a cylinder's or a sphere's. */
+ | SolidProperty | ZProperty;
 
 export type { EntityType }
 export type EntityType = "line" | "circle" | "arc" | "ellipse" | "spline" | "polyline" | "polyline3d" | "text" | "mtext" | "attdef" | "dimension" | "hatch" | "insert" | "region" | "solid3d";
@@ -3802,6 +3804,10 @@ interface BaseEntity {
      */
     readonly normal?: Vec3;
 }
+
+// domain/solidGrips.ts
+/** A primitive's Geometry rows the palette retypes (solid/g01). */
+export type SolidProperty = "solidLength" | "solidWidth" | "solidHeight" | "baseRadius" | "topRadius" | "sides" | "radius" | "diameter" | "majorRadius" | "minorRadius" | "baseMajorRadius" | "baseMinorRadius" | "topMajorRadius" | "topMinorRadius" | "torusRadius" | "tubeRadius";
 
 // domain/ucs.ts
 /**

@@ -361,6 +361,26 @@ function applyInUcs(
     const x = applyEntityProperty(entity, "vertexX", moved.x, vertex)
     return x && applyEntityProperty(x, "vertexY", moved.y, vertex)
   }
+  if (entity.type === "solid3d") {
+    // Its Position is its base's centre in space, read in the UCS: moved
+    // along that axis alone, the solid whole (solid/g01).
+    const axis =
+      property === "positionX"
+        ? "x"
+        : property === "positionY"
+          ? "y"
+          : property === "positionZ"
+            ? "z"
+            : null
+    if (!axis) return applyEntityProperty(entity, property, value)
+    const at = entity.primitive?.position
+    if (!at) return null
+    const target = ucsPointToWorld(ucs, {
+      ...worldPointToUcs(ucs, at),
+      [axis]: value,
+    })
+    return translateEntity(entity, sub3(target, at))
+  }
   if (planeAxes(entity) || !isUpright(ucs)) {
     return applyOffPlane(entity, property, value, ucs, vertex)
   }

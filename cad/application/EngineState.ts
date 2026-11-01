@@ -1812,30 +1812,31 @@ function singleEntityInfo(
         ],
       }
     case "solid3d": {
-      // Its primitive's Geometry and its Solid History, read only here
-      // (solid/d03, d05: AutoCAD types its sizes and Position, an edit that
-      // comes with its grips); 3D Visualization's Material is not built.
+      // Its primitive's Geometry, typed as AutoCAD's palette takes it
+      // (solid/d03, d05, g01: Rotation and Elliptical greyed), and its Solid
+      // History; 3D Visualization's Material is not built.
       const primitive = entity.primitive
       const placed = primitive && primitiveInUcs(primitive, settings.ucs)
       const sizes = (): PropertyRow[] => {
         if (!primitive) return []
+        const height = lengthRow(
+          "height",
+          "solidHeight",
+          "height" in primitive ? primitive.height : 0
+        )
         switch (primitive.kind) {
           case "box":
           case "wedge":
             return [
-              row("length", length(primitive.length)),
-              row("width", length(primitive.width)),
-              row("height", length(primitive.height)),
+              lengthRow("length", "solidLength", primitive.length),
+              lengthRow("width", "solidWidth", primitive.width),
+              height,
               row("rotation", degrees(placed?.rotation ?? 0)),
             ]
           case "pyramid": {
             // Its radii as its Type reads them (d05: Circumscribed, 5).
             const read = (r: number) =>
-              length(
-                primitive.inscribed
-                  ? r
-                  : r * Math.cos(Math.PI / primitive.sides)
-              )
+              primitive.inscribed ? r : r * Math.cos(Math.PI / primitive.sides)
             return [
               row(
                 "type",
@@ -1843,11 +1844,11 @@ function singleEntityInfo(
                   primitive.inscribed ? "inscribed" : "circumscribed"
                 )
               ),
-              row("baseRadius", read(primitive.radius)),
-              row("topRadius", read(primitive.topRadius)),
-              row("sides", String(primitive.sides)),
+              lengthRow("baseRadius", "baseRadius", read(primitive.radius)),
+              lengthRow("topRadius", "topRadius", read(primitive.topRadius)),
+              countRow("sides", "sides", primitive.sides),
               row("rotation", degrees(placed?.rotation ?? 0)),
-              row("height", length(primitive.height)),
+              height,
             ]
           }
           case "cylinder":
@@ -1858,14 +1859,17 @@ function singleEntityInfo(
               "elliptical",
               text.propertyValue(across === undefined ? "no" : "yes")
             )
-            const height = row("height", length(primitive.height))
             if (across === undefined) {
               return primitive.kind === "cylinder"
-                ? [elliptical, row("radius", length(primitive.radius)), height]
+                ? [
+                    elliptical,
+                    lengthRow("radius", "radius", primitive.radius),
+                    height,
+                  ]
                 : [
                     elliptical,
-                    row("baseRadius", length(primitive.radius)),
-                    row("topRadius", length(primitive.topRadius)),
+                    lengthRow("baseRadius", "baseRadius", primitive.radius),
+                    lengthRow("topRadius", "topRadius", primitive.topRadius),
                     height,
                   ]
             }
@@ -1875,8 +1879,8 @@ function singleEntityInfo(
             if (primitive.kind === "cylinder") {
               return [
                 elliptical,
-                row("majorRadius", length(major)),
-                row("minorRadius", length(minor)),
+                lengthRow("majorRadius", "majorRadius", major),
+                lengthRow("minorRadius", "minorRadius", minor),
                 rotation,
                 height,
               ]
@@ -1884,23 +1888,27 @@ function singleEntityInfo(
             const top = primitive.topRadius
             return [
               elliptical,
-              row("baseMajorRadius", length(major)),
-              row("baseMinorRadius", length(minor)),
-              row("topMajorRadius", length(top)),
-              row("topMinorRadius", length((top * minor) / major)),
+              lengthRow("baseMajorRadius", "baseMajorRadius", major),
+              lengthRow("baseMinorRadius", "baseMinorRadius", minor),
+              lengthRow("topMajorRadius", "topMajorRadius", top),
+              lengthRow(
+                "topMinorRadius",
+                "topMinorRadius",
+                (top * minor) / major
+              ),
               rotation,
               height,
             ]
           }
           case "sphere":
             return [
-              row("radius", length(primitive.radius)),
-              row("diameter", length(primitive.radius * 2)),
+              lengthRow("radius", "radius", primitive.radius),
+              lengthRow("diameter", "diameter", primitive.radius * 2),
             ]
           case "torus":
             return [
-              row("torusRadius", length(primitive.radius)),
-              row("tubeRadius", length(primitive.tubeRadius)),
+              lengthRow("torusRadius", "torusRadius", primitive.radius),
+              lengthRow("tubeRadius", "tubeRadius", primitive.tubeRadius),
             ]
         }
       }
@@ -1912,9 +1920,9 @@ function singleEntityInfo(
             ? [
                 group("geometry", [
                   row("solidType", text.propertyValue(primitive.kind)),
-                  row("positionX", coord(placed.position.x)),
-                  row("positionY", coord(placed.position.y)),
-                  row("positionZ", coord(placed.position.z)),
+                  coordRow("positionX", "positionX", placed.position.x),
+                  coordRow("positionY", "positionY", placed.position.y),
+                  coordRow("positionZ", "positionZ", placed.position.z),
                   ...sizes(),
                 ]),
               ]

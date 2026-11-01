@@ -1,4 +1,5 @@
 import { regionGripPoints } from "../../domain/regions"
+import { solidGrips } from "../../domain/solidGrips"
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, withZ } from "../../geometry/Vec3"
 import {
@@ -29,6 +30,7 @@ import { DimensionPoint, Grip, GripShape } from "./selectToolState"
 import {
   diameterFarRim,
   gripSegments,
+  gripView,
   mtextWidthGrip,
   mtextWidthSides,
 } from "./selectToolEdits"
@@ -324,10 +326,24 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
           grips.push({ entityId: id, role: { kind: "fixed" }, world: point })
         }
         break
-      // WHY none yet: a box's grips (its base's corners, its edges' arrows,
-      // its height's; solid/d02) come with editing a primitive (2c).
-      case "solid3d":
+      // A primitive's, as AutoCAD lays them (solid/g01, d10): the base's
+      // centre moves it, a corner of a box's or a pyramid's is a square, the
+      // rest arrows that size it; a solid no primitive made has none here.
+      case "solid3d": {
+        if (!entity.primitive) break
+        for (const grip of solidGrips(entity.primitive, gripView(ctx))) {
+          const sizes = grip.role.kind !== "move"
+          grips.push({
+            entityId: id,
+            role: sizes ? { kind: "solid", grip } : { kind: "move" },
+            world: grip.at,
+            ...(grip.along && !grip.square
+              ? { shape: "arrow", along: grip.along }
+              : {}),
+          })
+        }
         break
+      }
       default: {
         const unhandled: never = entity
         void unhandled
@@ -350,7 +366,9 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
     lifted.push({
       ...grip,
       world:
-        (entity.type === "line" || entity.type === "polyline3d") &&
+        (entity.type === "line" ||
+          entity.type === "polyline3d" ||
+          entity.type === "solid3d") &&
         "z" in grip.world
           ? grip.world
           : entityPointToWorld(entity, grip.world),

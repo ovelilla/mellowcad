@@ -4455,7 +4455,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
                    Height: 40.00
                  Rotation: 180
 > select the box
-  properties: 3D Solid (1) [Geometry: Solid type=Box, Position X=50.00, Position Y=25.00, Position Z=0.00, Length=100.00 mm, Width=50.00 mm, Height=30.00 mm, Rotation=0°] [Solid History: History=None, Show History=No]
+  properties: 3D Solid (1) [Geometry: Solid type=Box, Position X=50.00~, Position Y=25.00~, Position Z=0.00~, Length=100.00 mm~, Width=50.00 mm~, Height=30.00 mm~, Rotation=0°] [Solid History: History=None, Show History=No]
 > escape
   properties: -
   command| *Cancel*
@@ -4529,7 +4529,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
                    Height: 30.00
                  Rotation: 0
 > select the wedge
-  properties: 3D Solid (1) [Geometry: Solid type=Wedge, Position X=50.00, Position Y=25.00, Position Z=0.00, Length=100.00 mm, Width=50.00 mm, Height=30.00 mm, Rotation=0°] [Solid History: History=None, Show History=No]
+  properties: 3D Solid (1) [Geometry: Solid type=Wedge, Position X=50.00~, Position Y=25.00~, Position Z=0.00~, Length=100.00 mm~, Width=50.00 mm~, Height=30.00 mm~, Rotation=0°] [Solid History: History=None, Show History=No]
 > escape
   properties: -
   command| *Cancel*
@@ -4627,7 +4627,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
                    Height: 50.00
                  Rotation: 45
 > select the cylinder
-  properties: 3D Solid (1) [Geometry: Solid type=Cylinder, Position X=0.00, Position Y=0.00, Position Z=0.00, Elliptical=No, Radius=50.00 mm, Height=80.00 mm] [Solid History: History=None, Show History=No]
+  properties: 3D Solid (1) [Geometry: Solid type=Cylinder, Position X=0.00~, Position Y=0.00~, Position Z=0.00~, Elliptical=No, Radius=50.00 mm~, Height=80.00 mm~] [Solid History: History=None, Show History=No]
 > escape
   properties: -
   command| *Cancel*
@@ -4686,7 +4686,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
                    Height: 50.00
                  Rotation: 149
 > select the cone
-  properties: 3D Solid (1) [Geometry: Solid type=Cone, Position X=200.00, Position Y=0.00, Position Z=0.00, Elliptical=No, Base radius=50.00 mm, Top radius=20.00 mm, Height=60.00 mm] [Solid History: History=None, Show History=No]
+  properties: 3D Solid (1) [Geometry: Solid type=Cone, Position X=200.00~, Position Y=0.00~, Position Z=0.00~, Elliptical=No, Base radius=50.00 mm~, Top radius=20.00 mm~, Height=60.00 mm~] [Solid History: History=None, Show History=No]
 > escape
   properties: -
   command| *Cancel*
@@ -4737,7 +4737,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
                  Position, X = 350.00    Y = 50.00     Z = 0.00
                    Radius: 70.71
 > select the sphere
-  properties: 3D Solid (1) [Geometry: Solid type=Sphere, Position X=0.00, Position Y=0.00, Position Z=0.00, Radius=50.00 mm, Diameter=100.00 mm] [Solid History: History=None, Show History=No]
+  properties: 3D Solid (1) [Geometry: Solid type=Sphere, Position X=0.00~, Position Y=0.00~, Position Z=0.00~, Radius=50.00 mm~, Diameter=100.00 mm~] [Solid History: History=None, Show History=No]
 > escape
   properties: -
   command| *Cancel*
@@ -4803,7 +4803,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
              Torus radius: 50.00
               Tube radius: 10.00
 > select the torus
-  properties: 3D Solid (1) [Geometry: Solid type=Torus, Position X=0.00, Position Y=0.00, Position Z=0.00, Torus radius=50.00 mm, Tube radius=10.00 mm] [Solid History: History=None, Show History=No]
+  properties: 3D Solid (1) [Geometry: Solid type=Torus, Position X=0.00~, Position Y=0.00~, Position Z=0.00~, Torus radius=50.00 mm~, Tube radius=10.00 mm~] [Solid History: History=None, Show History=No]
 > escape
   properties: -
   command| *Cancel*
@@ -4891,7 +4891,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
                  Rotation: 270
           Number of sides: 6
 > select the pyramid
-  properties: 3D Solid (1) [Geometry: Solid type=Pyramid, Position X=0.00, Position Y=0.00, Position Z=0.00, Type=Circumscribed, Base radius=50.00 mm, Top radius=0.00 mm, Sides=4, Rotation=0°, Height=80.00 mm] [Solid History: History=None, Show History=No]
+  properties: 3D Solid (1) [Geometry: Solid type=Pyramid, Position X=0.00~, Position Y=0.00~, Position Z=0.00~, Type=Circumscribed, Base radius=50.00 mm~, Top radius=0.00 mm~, Sides=4~, Rotation=0°, Height=80.00 mm~] [Solid History: History=None, Show History=No]
 > escape
   properties: -
   command| *Cancel*

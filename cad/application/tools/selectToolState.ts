@@ -3,6 +3,7 @@ import { Vec3 } from "../../geometry/Vec3"
 import { Entity, EntityId } from "../../domain/entities"
 import type { Lasso } from "./boxSelection"
 import type { ArrayGripRole } from "./arrayGrips"
+import type { SolidGrip } from "../../domain/solidGrips"
 
 export type LineEnd = "start" | "end"
 
@@ -41,6 +42,8 @@ export type DimensionPoint =
  * - `ellipseEnd` — an elliptical arc's end: swing it round the ellipse.
  * - `array` — an array's grip that edits its parameters (`arrayGrips.ts`);
  *   its base square and a ring's centre are `move`.
+ * - `solid` — a primitive solid's corner or arrow (`domain/solidGrips.ts`);
+ *   its base's centre is `move`.
  */
 export type GripRole =
   | { readonly kind: "lineEnd"; readonly end: LineEnd }
@@ -56,6 +59,7 @@ export type GripRole =
   | { readonly kind: "ellipseAxis"; readonly quadrant: 0 | 1 | 2 | 3 }
   | { readonly kind: "ellipseEnd"; readonly end: LineEnd }
   | { readonly kind: "array"; readonly grip: ArrayEditRole }
+  | { readonly kind: "solid"; readonly grip: SolidGrip }
   | { readonly kind: "fixed" }
 
 /** The array grips that edit its parameters rather than move it. */
@@ -78,8 +82,8 @@ export interface Grip {
    * grips (desktop arrays/d11), else a square.
    */
   readonly shape?: GripShape
-  /** Where an arrow points, a unit vector in the WCS's plan. */
-  readonly along?: Vec2
+  /** Where an arrow points, a unit vector in the WCS's plan, or in space (a solid's). */
+  readonly along?: Vec2 | Vec3
 }
 
 export type GripShape = "square" | "round" | "arrow"
@@ -238,9 +242,22 @@ export type SelectToolState =
       /** Where the grip was taken, drawn hot there with its shape. */
       readonly origin: Vec3
       readonly shape: GripShape
-      readonly along?: Vec2
+      readonly along?: Vec2 | Vec3
       /** Live cursor position. */
       readonly current: Vec2
+      readonly pressScreen: Vec2
+    }
+  | {
+      /**
+       * A primitive solid's corner or arrow is hot: the solid as the drag
+       * makes it (`solidGripDragged`), its box the arrow's size.
+       */
+      readonly phase: "solidGrip"
+      readonly entityId: EntityId
+      readonly grip: SolidGrip
+      readonly shape: GripShape
+      /** Live cursor position, at its Z. */
+      readonly current: Vec3
       readonly pressScreen: Vec2
     }
   | {

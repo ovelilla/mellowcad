@@ -62,6 +62,9 @@ type, range and storage (MPSYSVARS), and, in the desktop only, command lookup (M
 command line history (MPHIST). Traps:
 
 - MPSYSVARS misses the legacy variables (OSMODE, AUTOSNAP…): read those with getvar.
+- MPGRIPDATA and MPGRIPDRAG are the desktop's grips (the GripData overload): the console crashes
+  dragging one (no graphics), and GetGripPoints leaves out what the view looks along — a
+  primitive solid's height arrows in plan: set the view first (`-VIEW _SWISO`, solid/g01).
 - An empty answer to a .NET prompt hangs the console: these commands take `-` for "none".
 - An exception escaping a .NET command opens a dialog that hangs the console; theirs are caught.
 - .NET cannot unload an assembly: an acad.exe that loaded the plugin keeps the old build until it

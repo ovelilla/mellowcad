@@ -1,3 +1,5 @@
+import { SolidProperty, primitiveRetyped } from "./solidGrips"
+import { solidRemade } from "./solids"
 import { Vec2, V } from "../geometry/Vec2"
 import { ellipseParamFromAngle, normalizeAngle } from "../geometry/primitives"
 import {
@@ -134,6 +136,8 @@ export type EntityProperty =
   | "arrayItemSpacing"
   /** A path array's Align items, a choice: 1 Yes, 0 No. */
   | "arrayAlignItems"
+  /** A primitive solid's Geometry (solid/g01): `radius` is a cylinder's or a sphere's. */
+  | SolidProperty
   | ZProperty
 
 /** The rows that write an object's Z, all in the WCS here. */
@@ -246,11 +250,14 @@ export function applyEntityProperty(
     case "region":
       // Its Area and Perimeter are greyed in the palette (region/d02).
       return null
-    case "solid3d":
-      // WHY: a box's Length, Width, Height and Position are typeable in
-      // AutoCAD's palette (solid/d03); editing a primitive comes with its
-      // grips (docs/next-solids.md, 2c).
-      return null
+    case "solid3d": {
+      // Its primitive's rows, which make it anew (solid/g01); its Position
+      // is the runtime's, read in the UCS.
+      const primitive =
+        entity.primitive &&
+        primitiveRetyped(entity.primitive, property as SolidProperty, value)
+      return primitive ? solidRemade(entity, primitive) : null
+    }
   }
 }
 

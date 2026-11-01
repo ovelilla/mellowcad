@@ -138,6 +138,17 @@ export function createSolid(
   }
 }
 
+/**
+ * The solid as `primitive` makes it, keeping its id, layer and overrides: a
+ * grip's or the palette's edit of what made it (solid/g01).
+ */
+export function solidRemade(
+  solid: Solid3dEntity,
+  primitive: SolidPrimitive
+): Solid3dEntity {
+  return { ...solid, ...createSolid(primitive, solid.layerId, solid.id) }
+}
+
 /** A similarity of space: `rotation` (a reflection when left-handed), then `scale`, then `translation`. */
 export interface SolidMap {
   readonly rotation: Axes3

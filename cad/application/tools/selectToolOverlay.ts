@@ -1,5 +1,5 @@
 import { V, Vec2 } from "../../geometry/Vec2"
-import { Vec3 } from "../../geometry/Vec3"
+import { Vec3, zOf } from "../../geometry/Vec3"
 import {
   Entity,
   EntityId,
@@ -33,6 +33,7 @@ import {
 import {
   arcStretchedThrough,
   arrayGripped,
+  solidGripped,
   ellipseGripped,
   movedDimension,
   mtextWidthGrip,
@@ -138,12 +139,15 @@ export function buildGrips(
 /** Where an arrow grip points on the screen, from its heading in the drawing. */
 export function arrowOnScreen(
   world: Vec3,
-  along: Vec2 | undefined,
+  along: Vec2 | Vec3 | undefined,
   ctx: ToolContext
 ): Vec2 | undefined {
   if (!along) return undefined
   return V.sub(
-    ctx.viewport.worldToScreen({ ...V.add(world, along), z: world.z }),
+    ctx.viewport.worldToScreen({
+      ...V.add(world, along),
+      z: world.z + zOf(along),
+    }),
     ctx.viewport.worldToScreen(world)
   )
 }
@@ -184,6 +188,32 @@ export function gripRubberBand(from: Vec2, to: Vec2): ScenePrimitive {
     b: to,
     stroke: { color: THEME.crosshair, width: 1, dash: [2, 3] },
   }
+}
+
+/**
+ * A primitive solid's grip dragged: the solid as the drag makes it, drawn as
+ * the drawing draws it, a dashed line from where the grip was taken to the
+ * cursor and the grip hot there; a drag the grip refuses shows none.
+ */
+export function buildSolidGripEdit(
+  state: Phase<"solidGrip">,
+  ctx: ToolContext
+): ScenePrimitive[] {
+  const { viewport } = ctx
+  const solid = ctx.document.get(state.entityId)
+  if (!solid) return []
+  const edited = solidGripped(solid, state.grip, state.current, ctx)
+  const at = viewport.worldToScreen(state.grip.at)
+  return [
+    ...(edited ? drawn(ctx, edited, "plain") : []),
+    gripRubberBand(at, viewport.worldToScreen(state.current)),
+    ...gripPrimitives(
+      at,
+      true,
+      state.shape,
+      arrowOnScreen(state.grip.at, state.grip.along, ctx)
+    ),
+  ]
 }
 
 /**

@@ -283,6 +283,12 @@ namespace MellowProbe
         [CommandMethod("MELLOWPROBE", "MPGRIPMOVE", CommandFlags.Modal | CommandFlags.NoHistory)]
         public static void MpGripMove() => Safe(MpGripMoveBody);
 
+        [CommandMethod("MELLOWPROBE", "MPGRIPDATA", CommandFlags.Modal | CommandFlags.NoHistory | CommandFlags.NoUndoMarker)]
+        public static void MpGripData() => Safe(MpGripDataBody);
+
+        [CommandMethod("MELLOWPROBE", "MPGRIPDRAG", CommandFlags.Modal | CommandFlags.NoHistory)]
+        public static void MpGripDrag() => Safe(MpGripDragBody);
+
         [CommandMethod("MELLOWPROBE", "MPSYSVARS", CommandFlags.Modal | CommandFlags.NoHistory | CommandFlags.NoUndoMarker)]
         public static void MpSysvars() => Safe(MpSysvarsBody);
 
@@ -555,6 +561,73 @@ namespace MellowProbe
                 tr.Commit();
             }
             Log.W($"gripmoved {Log.Q(handle)} {index.Value}");
+        }
+
+        // The grips a selected object shows in the desktop, by the GripData overload: a 3D
+        // solid's arrows are there, and only there (MPGRIPS' classic overload gives its
+        // vertices). The view is SW Isometric's, as -VIEW _SWISO sets it.
+        static GetGripPointsFlags GripFlags = GetGripPointsFlags.GripPointsOnly;
+
+        static GripDataCollection GripDataOf(Entity e)
+        {
+            var grips = new GripDataCollection();
+            e.GetGripPoints(grips, 0.01, 5, new Vector3d(-1, -1, 1).GetNormal(), GripFlags);
+            return grips;
+        }
+
+        // MPGRIPDATA: each entity of model space and its GripData grips, with their type and
+        // the flags that tell a square from an arrow.
+        static void MpGripDataBody()
+        {
+            var flags = Ed.GetInteger(new PromptIntegerOptions("\nFlags:"));
+            if (flags.Status == PromptStatus.OK) GripFlags = (GetGripPointsFlags)flags.Value;
+            var db = Application.DocumentManager.MdiActiveDocument.Database;
+            using (var tr = db.TransactionManager.StartOpenCloseTransaction())
+            {
+                var ms = (BlockTableRecord)tr.GetObject(SymbolUtilityServices.GetBlockModelSpaceId(db), OpenMode.ForRead);
+                foreach (ObjectId id in ms)
+                {
+                    var e = (Entity)tr.GetObject(id, OpenMode.ForRead);
+                    GripDataCollection grips;
+                    try { grips = GripDataOf(e); }
+                    catch (System.Exception ex) { Log.W($"gripdata {Log.Q(e.GetRXClass().DxfName)} {Log.Q(e.Handle.ToString())} error {Log.Q(ex.Message)}"); continue; }
+                    var i = 0;
+                    foreach (GripData g in grips)
+                    {
+                        var props = new List<string>();
+                        foreach (var p in g.GetType().GetProperties())
+                        {
+                            if (p.GetIndexParameters().Length > 0) continue;
+                            try { props.Add($"\"{p.Name}\":{Log.V(p.GetValue(g))}"); } catch { }
+                        }
+                        Log.W($"gripdata {Log.Q(e.Handle.ToString())} {i++} {Log.Q(g.GetType().FullName)} {{{string.Join(",", props)}}}");
+                    }
+                }
+            }
+        }
+
+        // MPGRIPDRAG handle|L index dx,dy,dz: drags one GripData grip by the offset, as the desktop's
+        // grip edit does (the GripData MoveGripPointsAt).
+        static void MpGripDragBody()
+        {
+            var handle = AskString("Handle:");
+            var index = Ed.GetInteger(new PromptIntegerOptions("\nGrip index:"));
+            var by = Ed.GetPoint(new PromptPointOptions("\nOffset:"));
+            if (handle == null || index.Status != PromptStatus.OK || by.Status != PromptStatus.OK) return;
+            var db = Application.DocumentManager.MdiActiveDocument.Database;
+            // L: the last object, as a probe that makes one cannot know its handle.
+            var id = handle.ToUpperInvariant() == "L"
+                ? Autodesk.AutoCAD.Internal.Utils.EntLast()
+                : db.GetObjectId(false, new Handle(Convert.ToInt64(handle, 16)), 0);
+            using (var tr = db.TransactionManager.StartTransaction())
+            {
+                var e = (Entity)tr.GetObject(id, OpenMode.ForWrite);
+                var grips = GripDataOf(e);
+                var one = new GripDataCollection { grips[index.Value] };
+                e.MoveGripPointsAt(one, by.Value - Point3d.Origin, (MoveGripPointsFlags)0);
+                tr.Commit();
+            }
+            Log.W($"gripdragged {Log.Q(handle)} {index.Value}");
         }
 
         // MPSYSVARS [file]: every system variable with its value, type, range and where it is

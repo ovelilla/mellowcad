@@ -1,5 +1,20 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3, planar, sub3, withZ, withZOf } from "../../geometry/Vec3"
+import {
+  Vec3,
+  add3,
+  length3,
+  planar,
+  scale3,
+  sub3,
+  withZ,
+  withZOf,
+} from "../../geometry/Vec3"
+import {
+  SolidGrip,
+  solidGripReading,
+  solidGripSized,
+} from "../../domain/solidGrips"
+import { solidRemade } from "../../domain/solids"
 import {
   Entity,
   EntityId,
@@ -45,6 +60,7 @@ import { hitGrip, sameGrip } from "./selectToolGrips"
 import {
   arrayGripped,
   arrayGripTyped,
+  solidGripped,
   movedDimension,
   mtextWidthThrough,
   arcStretchedThrough,
@@ -71,6 +87,7 @@ import {
   buildRadiusEdit,
   buildSegmentStretch,
   buildSelectionBox,
+  buildSolidGripEdit,
   buildVertexEdit,
   pickRolloverEntity,
 } from "./selectToolOverlay"
@@ -175,6 +192,10 @@ export class SelectTool implements Tool {
       this.placeArrayGrip(this.state, this.state.current, ctx)
       return
     }
+    if (this.state.phase === "solidGrip") {
+      this.placeSolidGrip(this.state, this.state.current, ctx)
+      return
+    }
     if (this.state.phase === "mtextWidth") {
       this.placeMTextWidth(this.state, this.state.width, ctx)
       return
@@ -238,6 +259,9 @@ export class SelectTool implements Tool {
           break
         case "array":
           this.beginArrayGrip(grip, grip.role.grip, input.screen, ctx)
+          break
+        case "solid":
+          this.beginSolidGrip(grip, grip.role.grip, input.screen, ctx)
           break
         case "fixed":
           break
@@ -342,6 +366,13 @@ export class SelectTool implements Tool {
         this.state = { ...this.state, current }
         const reading = this.arrayReading(this.state, ctx)
         if (reading !== null) ctx.dynamicInput.setLive("value", reading)
+        ctx.dynamicInput.setPosition(input.screen)
+        ctx.requestRender()
+        break
+      }
+      case "solidGrip": {
+        this.state = { ...this.state, current: input.point }
+        this.showSolidReading(this.state, ctx)
         ctx.dynamicInput.setPosition(input.screen)
         ctx.requestRender()
         break
@@ -573,6 +604,15 @@ export class SelectTool implements Tool {
         }
         return
       }
+      case "solidGrip": {
+        const dragged =
+          Math.hypot(
+            input.screen.x - this.state.pressScreen.x,
+            input.screen.y - this.state.pressScreen.y
+          ) >= DRAG_THRESHOLD_PX
+        if (dragged) this.placeSolidGrip(this.state, this.state.current, ctx)
+        return
+      }
       case "bulgeEdit": {
         const dragged =
           Math.hypot(
@@ -658,7 +698,8 @@ export class SelectTool implements Tool {
       if (
         this.state.phase === "moveDimPoint" ||
         this.state.phase === "mtextWidth" ||
-        this.state.phase === "arrayGrip"
+        this.state.phase === "arrayGrip" ||
+        this.state.phase === "solidGrip"
       ) {
         // Abort the definition-point drag, leaving the dimension untouched.
         ctx.dynamicInput.close()
@@ -722,7 +763,8 @@ export class SelectTool implements Tool {
       this.state.phase === "bulgeEdit" ||
       this.state.phase === "moveDimPoint" ||
       this.state.phase === "mtextWidth" ||
-      this.state.phase === "arrayGrip"
+      this.state.phase === "arrayGrip" ||
+      this.state.phase === "solidGrip"
     )
   }
 
@@ -752,7 +794,8 @@ export class SelectTool implements Tool {
       this.state.phase === "moveVertex" ||
       this.state.phase === "stretchSegment" ||
       this.state.phase === "arcStretch" ||
-      this.state.phase === "arrayGrip"
+      this.state.phase === "arrayGrip" ||
+      this.state.phase === "solidGrip"
     )
   }
 
@@ -776,6 +819,7 @@ export class SelectTool implements Tool {
     if (this.state.phase === "moveDimPoint") return this.state.origin
     if (this.state.phase === "mtextWidth") return this.state.origin
     if (this.state.phase === "arrayGrip") return this.state.origin
+    if (this.state.phase === "solidGrip") return this.state.grip.at
     if (this.state.phase === "stretchSegment") return this.state.origin
     if (this.state.phase === "bulgeEdit")
       return V.midpoint(this.state.a, this.state.b)
@@ -831,6 +875,8 @@ export class SelectTool implements Tool {
         return buildMTextWidthEdit(state, ctx)
       case "arrayGrip":
         return buildArrayGripEdit(state, ctx)
+      case "solidGrip":
+        return buildSolidGripEdit(state, ctx)
       default:
         return buildGrips(state, ctx)
     }
@@ -1171,6 +1217,132 @@ export class SelectTool implements Tool {
   }
 
   private finishArrayGrip(edited: InsertEntity, ctx: ToolContext): void {
+    ctx.dynamicInput.close()
+    this.state = { phase: "idle" }
+    const before = ctx.document.get(edited.id)
+    if (JSON.stringify(before) !== JSON.stringify(edited)) {
+      gripEdit(ctx, new UpdateEntitiesCommand([edited]))
+    }
+    ctx.requestRender()
+  }
+
+  /**
+   * Makes a primitive solid's corner or arrow hot. An arrow's box holds how
+   * far it has gone and, Tab's, the size it sets, as AutoCAD's dynamic
+   * dimensions do (solid/g01: a box's height shows 2.6481 and 7.6481); a
+   * corner's, the distance it has moved, read along the cursor.
+   */
+  private beginSolidGrip(
+    grip: Grip,
+    solidGrip: SolidGrip,
+    screen: Vec2,
+    ctx: ToolContext
+  ): void {
+    const solid = ctx.document.get(grip.entityId)
+    if (solid?.type !== "solid3d" || !solid.primitive) return
+    this.state = {
+      phase: "solidGrip",
+      entityId: grip.entityId,
+      grip: solidGrip,
+      shape: grip.shape ?? "square",
+      current: grip.world,
+      pressScreen: screen,
+    }
+    const sizes = solidGripReading(solid.primitive, solidGrip.role) !== null
+    ctx.dynamicInput.open({
+      fields: sizes
+        ? [
+            { id: "by", kind: "distance" },
+            { id: "size", kind: "distance" },
+          ]
+        : [{ id: "distance", prompt: "move", kind: "distance" }],
+      commit: (values, commitCtx) => this.commitSolidGrip(values, commitCtx),
+    })
+    this.showSolidReading(this.state, ctx)
+    ctx.dynamicInput.setPosition(screen)
+    ctx.requestRender()
+  }
+
+  /** The hot solid grip's box, read with the cursor where it is. */
+  private showSolidReading(
+    state: Extract<SelectToolState, { phase: "solidGrip" }>,
+    ctx: ToolContext
+  ): void {
+    const solid = ctx.document.get(state.entityId)
+    if (solid?.type !== "solid3d" || !solid.primitive) return
+    const was = solidGripReading(solid.primitive, state.grip.role)
+    if (was === null) {
+      ctx.dynamicInput.setLive(
+        "distance",
+        length3(sub3(state.current, state.grip.at))
+      )
+      return
+    }
+    const edited = solidGripped(solid, state.grip, state.current, ctx)
+    const now = edited?.primitive
+      ? solidGripReading(edited.primitive, state.grip.role)
+      : null
+    ctx.dynamicInput.setLive("by", now === null ? 0 : now - was)
+    ctx.dynamicInput.setLive("size", now ?? was)
+  }
+
+  /**
+   * A value typed while a solid's grip is hot: an arrow's first box moves it
+   * by that much, its second sets the size; a corner's runs along the cursor.
+   * Refused, the grip stays hot.
+   */
+  private commitSolidGrip(
+    values: Record<string, number>,
+    ctx: ToolContext
+  ): void {
+    const state = this.state
+    if (state.phase !== "solidGrip") return
+    const solid = ctx.document.get(state.entityId)
+    if (solid?.type !== "solid3d" || !solid.primitive) return
+    if ("distance" in values) {
+      const offset = sub3(state.current, state.grip.at)
+      const length = length3(offset)
+      if (length < 1e-9) return
+      const point = add3(
+        state.grip.at,
+        scale3(offset, values.distance / length)
+      )
+      const edited = solidGripped(solid, state.grip, point, ctx)
+      if (edited) this.finishSolidGrip(edited, ctx)
+      return
+    }
+    const total = ctx.dynamicInput.getText("size").trim() !== ""
+    const primitive = solidGripSized(
+      solid.primitive,
+      state.grip,
+      total ? values.size : values.by,
+      total
+    )
+    if (primitive) this.finishSolidGrip(solidRemade(solid, primitive), ctx)
+  }
+
+  /**
+   * Commits the solid its grip dragged to `cursor` makes, one undo step; a
+   * drag AutoCAD leaves the solid by (a size of 0 or less, a corner past the
+   * opposite one, g01) ends it unchanged.
+   */
+  private placeSolidGrip(
+    state: Extract<SelectToolState, { phase: "solidGrip" }>,
+    cursor: Vec3,
+    ctx: ToolContext
+  ): void {
+    const solid = ctx.document.get(state.entityId)
+    const edited = solid ? solidGripped(solid, state.grip, cursor, ctx) : null
+    if (edited) {
+      this.finishSolidGrip(edited, ctx)
+      return
+    }
+    ctx.dynamicInput.close()
+    this.state = { phase: "idle" }
+    ctx.requestRender()
+  }
+
+  private finishSolidGrip(edited: Entity, ctx: ToolContext): void {
     ctx.dynamicInput.close()
     this.state = { phase: "idle" }
     const before = ctx.document.get(edited.id)

@@ -1,5 +1,5 @@
 import { Vec2, V } from "../../geometry/Vec2"
-import { Vec3, planar } from "../../geometry/Vec3"
+import { Vec3, planar, sub3 } from "../../geometry/Vec3"
 import {
   arcFrom3Points,
   ellipseParamFromAngle,
@@ -42,7 +42,14 @@ import {
   rotatePoint,
   replacePolyline3dVertex,
 } from "../../domain/entities"
-import type { BlockLookup, InsertEntity } from "../../domain/entities"
+import type {
+  BlockLookup,
+  InsertEntity,
+  Solid3dEntity,
+} from "../../domain/entities"
+import { GripView, SolidGrip, solidGripDragged } from "../../domain/solidGrips"
+import { solidRemade } from "../../domain/solids"
+import type { ToolContext } from "./Tool"
 import { arrayPlacement } from "../../domain/arrayEdits"
 import {
   ArrayEditRole,
@@ -452,4 +459,32 @@ export function arrayGripTyped(
     value
   )
   return array && { ...insert, array }
+}
+
+/**
+ * The solid its primitive's grip dragged to `cursor` makes: one function for
+ * the preview and the commit, null where the drag is refused (solid/g01).
+ */
+export function solidGripped(
+  solid: Entity,
+  grip: SolidGrip,
+  cursor: Vec3,
+  ctx: ToolContext
+): Solid3dEntity | null {
+  if (solid.type !== "solid3d" || !solid.primitive) return null
+  const primitive = solidGripDragged(
+    solid.primitive,
+    grip,
+    sub3(cursor, grip.at),
+    gripView(ctx)
+  )
+  return primitive && solidRemade(solid, primitive)
+}
+
+/** The view a solid's grips are laid out and dragged in. */
+export function gripView(ctx: ToolContext): GripView {
+  return {
+    direction: ctx.viewport.direction,
+    pixel: ctx.viewport.screenToWorldDistance(1),
+  }
 }
