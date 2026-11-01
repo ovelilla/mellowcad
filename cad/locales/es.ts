@@ -1826,7 +1826,8 @@ export const es: EngineLocale = {
       },
       "VSCURRENT": {
         "2dwireframe": "estructuraalámbrica2d",
-        "Hidden": "ocUlto"
+        "Hidden": "ocUlto",
+        "Conceptual": "Conceptual"
       },
       "SETVAR": {
         "?": "?",
@@ -2304,6 +2305,7 @@ export const es: EngineLocale = {
       "vscurrentOption": "Indique una opción",
       "vscurrent2dWireframe": "estructuraalámbrica2d",
       "vscurrentHidden": "Oculto",
+      "vscurrentConceptual": "Conceptual",
       "inscribedShort": "I",
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Precise primer punto final de lado",

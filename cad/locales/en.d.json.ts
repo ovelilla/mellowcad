@@ -1297,6 +1297,7 @@ declare const source: {
       "VSCURRENT": {
         "2dwireframe": string
         "Hidden": string
+        "Conceptual": string
       }
       "SETVAR": {
         "?": string
@@ -1735,6 +1736,7 @@ declare const source: {
       "vscurrentOption": string
       "vscurrent2dWireframe": string
       "vscurrentHidden": string
+      "vscurrentConceptual": string
       "inscribedShort": string
       "circumscribedShort": string
       "specifyFirstEndpointOfEdge": string

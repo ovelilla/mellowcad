@@ -3866,8 +3866,8 @@ export interface SavedView {
 }
 
 // domain/units.ts
-/** The visual styles built: AutoCAD's 2D Wireframe and Hidden. */
-export type VisualStyle = "2dWireframe" | "hidden";
+/** The visual styles built: AutoCAD's 2D Wireframe, Hidden and Conceptual. */
+export type VisualStyle = "2dWireframe" | "hidden" | "conceptual";
 
 // domain/units.ts
 export interface DocumentSettings {

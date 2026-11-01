@@ -17,13 +17,14 @@ const STYLES: readonly {
 }[] = [
   { option: "2dwireframe", style: "2dWireframe", name: "vscurrent2dWireframe" },
   { option: "Hidden", style: "hidden", name: "vscurrentHidden" },
+  { option: "Conceptual", style: "conceptual", name: "vscurrentConceptual" },
 ]
 
 /**
  * AutoCAD's VSCURRENT (SHADEMODE runs it): `Enter an option [2dwireframe/
  * Wireframe/Hidden/Realistic/Conceptual/Shaded/shaded with Edges/shades of
  * Gray/SKetchy/X-ray/Other] <2dwireframe>:`, the current style's name as the
- * default (tables 23335, 23337), Enter keeping it. The style is the view's,
+ * default (tables 23335, 23337, 8027), Enter keeping it. The style is the view's,
  * saved in the drawing as its viewport's (visualstyle/v03, v04); a run is a
  * step U undoes (`VSCURRENT`, es `ESTVISACTUAL`, v02). Back to 2D Wireframe
  * it says `Regenerating model.`, its U does not (v02). Not transparent

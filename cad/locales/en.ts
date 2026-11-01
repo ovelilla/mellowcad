@@ -1740,6 +1740,7 @@ export const en: EngineCatalog = {
       "vscurrentOption": "Enter an option",
       "vscurrent2dWireframe": "2dwireframe",
       "vscurrentHidden": "Hidden",
+      "vscurrentConceptual": "Conceptual",
       "inscribedShort": "I",
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Specify first endpoint of edge",

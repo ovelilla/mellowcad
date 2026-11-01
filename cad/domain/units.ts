@@ -110,10 +110,14 @@ export type DraftingModes = Pick<
   "orthoMode" | "snapMode" | "snapUnit" | "gridMode"
 >
 
-/** The visual styles built: AutoCAD's 2D Wireframe and Hidden. */
-export type VisualStyle = "2dWireframe" | "hidden"
+/** The visual styles built: AutoCAD's 2D Wireframe, Hidden and Conceptual. */
+export type VisualStyle = "2dWireframe" | "hidden" | "conceptual"
 
-export const VISUAL_STYLES: readonly VisualStyle[] = ["2dWireframe", "hidden"]
+export const VISUAL_STYLES: readonly VisualStyle[] = [
+  "2dWireframe",
+  "hidden",
+  "conceptual",
+]
 
 export interface UcsIconSetting {
   readonly visible: boolean

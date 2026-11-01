@@ -7838,14 +7838,14 @@ Specify next point or
   options: -
   prompt| Enter an option [ON/OFF] <OFF>: ON
 > VSCURRENT
-  prompt: VSCURRENT Enter an option [2dwireframe/Hidden] <2dwireframe>:
+  prompt: VSCURRENT Enter an option [2dwireframe/Hidden/Conceptual] <2dwireframe>:
   asks: 
   tip: Enter an option
   dyn: 
-  options: [2] 2dwireframe, [H] Hidden
+  options: [2] 2dwireframe, [H] Hidden, [C] Conceptual
   command| VSCURRENT
 > FOO
-  prompt| Enter an option [2dwireframe/Hidden] <2dwireframe>: FOO
+  prompt| Enter an option [2dwireframe/Hidden/Conceptual] <2dwireframe>: FOO
   error| Invalid option keyword.
 > H
   prompt: Command:
@@ -7853,13 +7853,13 @@ Specify next point or
   tip: -
   dyn: -
   options: -
-  prompt| Enter an option [2dwireframe/Hidden] <2dwireframe>: H
+  prompt| Enter an option [2dwireframe/Hidden/Conceptual] <2dwireframe>: H
 > VS enter
-  prompt: VSCURRENT Enter an option [2dwireframe/Hidden] <Hidden>:
+  prompt: VSCURRENT Enter an option [2dwireframe/Hidden/Conceptual] <Hidden>:
   asks: 
   tip: Enter an option
   dyn: 
-  options: [2] 2dwireframe, [H] Hidden
+  options: [2] 2dwireframe, [H] Hidden, [C] Conceptual
   command| VS VSCURRENT
 > enter keeps Hidden
   prompt: Command:
@@ -7867,13 +7867,27 @@ Specify next point or
   tip: -
   dyn: -
   options: -
-  prompt| Enter an option [2dwireframe/Hidden] <Hidden>:
-> VSCURRENT 2
-  prompt: VSCURRENT Enter an option [2dwireframe/Hidden] <Hidden>:
+  prompt| Enter an option [2dwireframe/Hidden/Conceptual] <Hidden>:
+> VSCURRENT C
+  prompt: VSCURRENT Enter an option [2dwireframe/Hidden/Conceptual] <Hidden>:
   asks: 
   tip: Enter an option
   dyn: 
-  options: [2] 2dwireframe, [H] Hidden
+  options: [2] 2dwireframe, [H] Hidden, [C] Conceptual
+  command| VSCURRENT
+> C
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Enter an option [2dwireframe/Hidden/Conceptual] <Hidden>: C
+> VSCURRENT 2
+  prompt: VSCURRENT Enter an option [2dwireframe/Hidden/Conceptual] <Conceptual>:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [2] 2dwireframe, [H] Hidden, [C] Conceptual
   command| VSCURRENT
 > 2
   prompt: Command:
@@ -7881,7 +7895,7 @@ Specify next point or
   tip: -
   dyn: -
   options: -
-  prompt| Enter an option [2dwireframe/Hidden] <Hidden>: 2
+  prompt| Enter an option [2dwireframe/Hidden/Conceptual] <Conceptual>: 2
   info| Regenerating model.
 
 ## grips

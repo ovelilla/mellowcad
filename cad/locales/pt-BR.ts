@@ -1837,7 +1837,8 @@ export const ptBR: EngineLocale = {
       },
       "VSCURRENT": {
         "2dwireframe": "estruturadearame2d",
-        "Hidden": "ocUlto"
+        "Hidden": "ocUlto",
+        "Conceptual": "Conceitual"
       },
       "SETVAR": {
         "?": "?",
@@ -2316,6 +2317,7 @@ export const ptBR: EngineLocale = {
       "vscurrentOption": "Insira uma opção",
       "vscurrent2dWireframe": "estruturadearame2d",
       "vscurrentHidden": "ocUlto",
+      "vscurrentConceptual": "Conceitual",
       "inscribedShort": "I",
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Especificar primeiro ponto final da aresta",
