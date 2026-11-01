@@ -24,6 +24,7 @@ import {
   PenLine,
   Pentagon,
   Pyramid,
+  Rotate3d,
   RotateCw,
   Ruler,
   Scaling,
@@ -145,6 +146,7 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   torus: Donut,
   wedge: TriangleRight,
   extrude: ArrowUpFromLine,
+  revolve: Rotate3d,
   union: SquaresUnite,
   subtract: SquaresSubtract,
   intersect: SquaresIntersect,
@@ -200,6 +202,7 @@ type FlyoutId =
   | "measure"
   | "union"
   | "box"
+  | "extrude"
 
 type SectionId = "draw" | "modify" | "annotation" | "block" | "utilities"
 
@@ -261,7 +264,7 @@ const PALETTE: readonly PaletteSection[] = [
         "torus",
       ]),
       // Beside it the sweeps' drop-down, EXTRUDE first.
-      "extrude",
+      flyout("extrude", ["extrude", "revolve"]),
     ],
   },
   {

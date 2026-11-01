@@ -82,6 +82,7 @@ declare const source: {
       "measure": string
       "union": string
       "box": string
+      "extrude": string
     }
     "sections": {
       "draw": string

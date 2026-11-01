@@ -90,7 +90,8 @@ export const ar: EditorLocale = {
         "attributes": "السمات",
         "measure": "قياس",
         "union": "تحرير المجسمات",
-        "box": "النمذجة"
+        "box": "النمذجة",
+        "extrude": "بثق"
       },
       "sections": {
         "draw": "رسم",

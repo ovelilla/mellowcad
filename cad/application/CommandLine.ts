@@ -312,6 +312,7 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   subtract: "SUBTRACT",
   intersect: "INTERSECT",
   extrude: "EXTRUDE",
+  revolve: "REVOLVE",
   box: "BOX",
   wedge: "WEDGE",
   cylinder: "CYLINDER",

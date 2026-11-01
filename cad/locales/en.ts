@@ -113,7 +113,8 @@ export const en: EngineCatalog = {
       "sphere": "Sphere",
       "torus": "Torus",
       "intersect": "Intersect",
-      "extrude": "Extrude"
+      "extrude": "Extrude",
+      "revolve": "Revolve"
     },
     "description": {
       "U": "Undo the last action",
@@ -1180,6 +1181,10 @@ export const en: EngineCatalog = {
       "EXTRUDE": [
         "EXTRUDE",
         "EXT"
+      ],
+      "REVOLVE": [
+        "REVOLVE",
+        "REV"
       ]
     },
     "keywords": {
@@ -1994,7 +1999,13 @@ export const en: EngineCatalog = {
       "enterExpression": "Enter expression",
       "directionStart": "Specify start point of direction",
       "directionEnd": "Specify end point of direction",
-      "eraseDefiningObjects": "Erase defining objects?"
+      "eraseDefiningObjects": "Erase defining objects?",
+      "revolveSelectOr": "Select objects to revolve or",
+      "revolveAxisStartOr": "Specify axis start point or define axis by",
+      "revolveAxisEnd": "Specify axis endpoint",
+      "revolveSelectAxis": "Select an object",
+      "revolveAngleOr": "Specify angle of revolution or",
+      "revolveStartAngle": "Specify start angle"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -6242,6 +6253,54 @@ export const en: EngineCatalog = {
         [
           "angle"
         ]
+      ],
+      "revolveRefused": [
+        "Cannot revolve an object of this type.\n",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " object removed from selection set."
+            ],
+            "other": [
+              0,
+              " objects removed from selection set."
+            ]
+          }
+        ]
+      ],
+      "revolveOneSide": "The object should be on one side of the axis.",
+      "revolveUnable": "Unable to revolve the selected object.",
+      "revolvePerpendicular": "Axis of revolution is perpendicular to plane of revolve curve.",
+      "revolveZeroAxis": "Zero length axis is not permitted.",
+      "revolveClosedAxis": "Cannot get axis direction from a closed curve or edge.",
+      "listRevolveStart": [
+        "      Start angle: ",
+        [
+          "angle"
+        ]
+      ],
+      "listRevolveAngle": [
+        "Angle of revolution: ",
+        [
+          "angle"
+        ]
+      ],
+      "listDirectionVector": [
+        " Direction vector: X = ",
+        [
+          "x"
+        ],
+        "Y = ",
+        [
+          "y"
+        ],
+        "Z = ",
+        [
+          "z"
+        ]
       ]
     },
     "feedback": {
@@ -6507,6 +6566,9 @@ export const en: EngineCatalog = {
       },
       "EXTRUDE": {
         "Taper": "Taper angle"
+      },
+      "REVOLVE": {
+        "STart": "STart angle"
       }
     },
     "promptKeywordLabels": {

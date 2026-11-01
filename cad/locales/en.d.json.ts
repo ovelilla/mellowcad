@@ -111,6 +111,7 @@ declare const source: {
       "torus": string
       "intersect": string
       "extrude": string
+      "revolve": string
     }
     "description": {
       "U": string
@@ -642,6 +643,7 @@ declare const source: {
       "SUBTRACT": string[]
       "INTERSECT": string[]
       "EXTRUDE": string[]
+      "REVOLVE": string[]
     }
     "keywords": {
       "-OSNAP": {
@@ -1348,6 +1350,20 @@ declare const source: {
         "Yes": string
         "No": string
       }
+      "REVOLVE": {
+        "MOde": string
+        "SOlid": string
+        "SUrface": string
+        "Object": string
+        "X": string
+        "Y": string
+        "Z": string
+        "STart": string
+        "Reverse": string
+        "EXpression": string
+        "Yes": string
+        "No": string
+      }
     }
     "promptKeywords": {
       "selectObjects": {
@@ -1966,6 +1982,12 @@ declare const source: {
       "directionStart": string
       "directionEnd": string
       "eraseDefiningObjects": string
+      "revolveSelectOr": string
+      "revolveAxisStartOr": string
+      "revolveAxisEnd": string
+      "revolveSelectAxis": string
+      "revolveAngleOr": string
+      "revolveStartAngle": string
     }
     "promptForms": {
       "convertToPolylines": string
@@ -2588,6 +2610,15 @@ declare const source: {
       "expressionSyntax": string
       "listExtrusionHeight": string
       "listTaperAngle": string
+      "revolveRefused": string
+      "revolveOneSide": string
+      "revolveUnable": string
+      "revolvePerpendicular": string
+      "revolveZeroAxis": string
+      "revolveClosedAxis": string
+      "listRevolveStart": string
+      "listRevolveAngle": string
+      "listDirectionVector": string
     }
     "feedback": {
       "snap": {
@@ -2778,6 +2809,9 @@ declare const source: {
       }
       "EXTRUDE": {
         "Taper": string
+      }
+      "REVOLVE": {
+        "STart": string
       }
     }
     "promptKeywordLabels": {
