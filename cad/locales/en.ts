@@ -92,6 +92,7 @@ export const en: EngineCatalog = {
       "view": "Preset views",
       "orbit": "3D Orbit",
       "navvcube": "ViewCube",
+      "vscurrent": "Visual Styles",
       "ltscale": "Linetype scale",
       "auprec": "Angle precision",
       "setvar": "System variables",
@@ -1089,6 +1090,10 @@ export const en: EngineCatalog = {
         "NAVVCUBE",
         "CUBE"
       ],
+      "VSCURRENT": [
+        "VSCURRENT",
+        "VS"
+      ],
       "UNITS": [
         "UNITS",
         "UN",
@@ -1732,6 +1737,9 @@ export const en: EngineCatalog = {
       "textJustifyOption": "Enter an option",
       "ucsiconOption": "Enter an option",
       "navvcubeOption": "Enter an option",
+      "vscurrentOption": "Enter an option",
+      "vscurrent2dWireframe": "2dwireframe",
+      "vscurrentHidden": "Hidden",
       "inscribedShort": "I",
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Specify first endpoint of edge",

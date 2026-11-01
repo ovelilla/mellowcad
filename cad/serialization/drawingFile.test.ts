@@ -249,11 +249,23 @@ describe("round trip", () => {
       splineType: 5 as const,
       splineSegments: -4,
       isolines: 16,
+      visualStyle: "hidden" as const,
     }
     const parsed = parseDrawingFile(
       serializeDrawing(snapshotOf([], { settings }))
     )
     expect(parsed.settings).toEqual(settings)
+  })
+
+  it("saves the visual style, 2D Wireframe left out and anything else read as it (visualstyle/v03)", () => {
+    const plain = JSON.parse(serializeDrawing(snapshotOf([])))
+    expect(plain.settings.visualStyle).toBeUndefined()
+    for (const visualStyle of ["Realistic", 3, null]) {
+      const file = { ...plain, settings: { ...plain.settings, visualStyle } }
+      expect(parseDrawingFile(JSON.stringify(file)).settings.visualStyle).toBe(
+        "2dWireframe"
+      )
+    }
   })
 
   it("leaves TEXT's rotation out: per drawing, never saved (rectang/p311)", () => {

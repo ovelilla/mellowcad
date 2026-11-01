@@ -77,6 +77,7 @@ import { VPointTool } from "./tools/VPointTool"
 import { ViewTool } from "./tools/ViewTool"
 import { OrbitTool } from "./tools/OrbitTool"
 import { NavVCubeTool } from "./tools/NavVCubeTool"
+import { VsCurrentTool } from "./tools/VsCurrentTool"
 import { FillTool } from "./tools/FillTool"
 import { LtScaleTool } from "./tools/LtScaleTool"
 import { AuPrecTool } from "./tools/AuPrecTool"
@@ -213,6 +214,7 @@ export function defaultTools(
     new ViewTool(),
     new OrbitTool(),
     new NavVCubeTool(),
+    new VsCurrentTool(),
     new FillTool(),
     new LtScaleTool(),
     // AUPREC typed names SETVAR's last variable too (p162).

@@ -69,6 +69,8 @@ export interface DocumentSettings {
   readonly splineSegments: number
   /** ISOLINES: the lines drawn across each curved face of a solid, 0 to 2047. */
   readonly isolines: number
+  /** VSCURRENT: how the view draws solids, saved in the drawing (its viewport's, visualstyle/v03). */
+  readonly visualStyle: VisualStyle
   /** CHAMFERA: CHAMFER's first distance. */
   readonly chamferDistance1: number
   /** CHAMFERB: CHAMFER's second distance. */
@@ -107,6 +109,11 @@ export type DraftingModes = Pick<
   DocumentSettings,
   "orthoMode" | "snapMode" | "snapUnit" | "gridMode"
 >
+
+/** The visual styles built: AutoCAD's 2D Wireframe and Hidden. */
+export type VisualStyle = "2dWireframe" | "hidden"
+
+export const VISUAL_STYLES: readonly VisualStyle[] = ["2dWireframe", "hidden"]
 
 export interface UcsIconSetting {
   readonly visible: boolean
@@ -168,6 +175,7 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   splineSegments: 8,
   // Saved in the drawing (solid/v02, v03).
   isolines: 4,
+  visualStyle: "2dWireframe",
   chamferDistance1: 0,
   chamferDistance2: 0,
   textSize: DEFAULT_TEXT_HEIGHT,

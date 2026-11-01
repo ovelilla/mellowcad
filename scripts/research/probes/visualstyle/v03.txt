@@ -1,0 +1,5 @@
+_VSCURRENT
+_H
+_.SAVEAS
+2018
+C:\Users\oveli\AppData\Local\Temp\vs-saved.dwg

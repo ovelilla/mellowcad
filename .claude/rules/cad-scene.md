@@ -26,7 +26,8 @@ two presenters touch a rendering API: `CanvasScenePresenter`, which the editor p
 - **Derived geometry is computed in world coordinates, never at paint time in screen ones.** That
   is what lets the domain cache a hatch's clipped pattern per immutable entity (`hatchGeometry`):
   the result cannot depend on the camera, so panning and zooming stay free and the builder stays a
-  pure function of its input. Anything expensive and camera-independent goes on that side.
+  pure function of its input. Anything expensive and camera-independent goes on that side; Hidden's
+  lines depend on the line of sight alone (`solidViewEntities`), never on a pan or a zoom.
 - The `label` primitive is chrome: screen-space, fixed size, never rotated. Anything that belongs
   to the **drawing** uses `text`, which carries a world-derived size and angle. A world angle
   becomes a screen rotation through `screenRotation(camera, radians)` (the Y flip and the view's

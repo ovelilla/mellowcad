@@ -94,6 +94,7 @@ VPOINT ["VP","DDVPOINT"] "Viewpoint"
 VIEW ["V"] "Preset views"
 3DORBIT ["3DO","ORBIT"] "3D Orbit"
 NAVVCUBE ["CUBE"] "ViewCube"
+VSCURRENT ["VS"] "Visual Styles"
 FILL [] "Fill"
 LTSCALE ["LTS"] "Linetype scale"
 AUPREC [] "Angle precision"
@@ -238,6 +239,7 @@ vpoint "Viewpoint" VP
 view "Preset views" V
 orbit "3D Orbit" 3DO
 navvcube "ViewCube" CUBE
+vscurrent "Visual Styles" VS
 fill "Fill" FILL
 ltscale "Linetype scale" LTS
 auprec "Angle precision" AUPREC
@@ -7835,6 +7837,52 @@ Specify next point or
   dyn: -
   options: -
   prompt| Enter an option [ON/OFF] <OFF>: ON
+> VSCURRENT
+  prompt: VSCURRENT Enter an option [2dwireframe/Hidden] <2dwireframe>:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [2] 2dwireframe, [H] Hidden
+  command| VSCURRENT
+> FOO
+  prompt| Enter an option [2dwireframe/Hidden] <2dwireframe>: FOO
+  error| Invalid option keyword.
+> H
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Enter an option [2dwireframe/Hidden] <2dwireframe>: H
+> VS enter
+  prompt: VSCURRENT Enter an option [2dwireframe/Hidden] <Hidden>:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [2] 2dwireframe, [H] Hidden
+  command| VS VSCURRENT
+> enter keeps Hidden
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Enter an option [2dwireframe/Hidden] <Hidden>:
+> VSCURRENT 2
+  prompt: VSCURRENT Enter an option [2dwireframe/Hidden] <Hidden>:
+  asks: 
+  tip: Enter an option
+  dyn: 
+  options: [2] 2dwireframe, [H] Hidden
+  command| VSCURRENT
+> 2
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Enter an option [2dwireframe/Hidden] <Hidden>: 2
+  info| Regenerating model.
 
 ## grips
 > start

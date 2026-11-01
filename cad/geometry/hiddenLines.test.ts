@@ -157,6 +157,23 @@ describe("hidden lines", () => {
 /** Steps along a ray towards the viewer the oracle looks for a solid in. */
 const ORACLE_STEPS = 16
 
+/**
+ * Whether a wire is seen edge-on: an arc in a plane along the view, a
+ * segment down it. Its front and back are drawn on one line, so which of
+ * them shows is no matter; the generator lands there (a turn's rim seen
+ * square to its axis), and the oracle's rays run along the solid's faces.
+ */
+function edgeOn(wire: Wire, w: Vec3): boolean {
+  const along = (v: Vec3) => {
+    const n = normalize3(v)
+    return n !== null && Math.abs(n.x * w.x + n.y * w.y + n.z * w.z)
+  }
+  if (wire.kind === "arc") return (along(wire.normal) || 0) < 1e-6
+  if (wire.kind === "line")
+    return (along(sub3(wire.end, wire.start)) || 0) > 1 - 1e-9
+  return false
+}
+
 /** That no shown stretch has a solid in front of it, read by stepping towards the viewer. */
 function expectNothingInFront(breps: Brep[], w: Vec3, kind = ""): void {
   const boxes = breps.map((x) => brepBox(x)!)
@@ -171,6 +188,7 @@ function expectNothingInFront(breps: Brep[], w: Vec3, kind = ""): void {
   for (const line of viewLines(breps, w).flat()) {
     if (!line.visible) continue
     if (wireLength(line.wire) < reach * 1e-3) continue
+    if (edgeOn(line.wire, unit)) continue
     for (const f of [0.5]) {
       const p = wireAt(line.wire, f)
       for (let k = 1; k <= ORACLE_STEPS; k++) {

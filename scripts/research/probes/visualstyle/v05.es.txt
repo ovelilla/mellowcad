@@ -1,0 +1,9 @@
+_VSCURRENT
+_O
+?
+Oculto
+_VSCURRENT
+_O
+FOO
+?
+Oculto

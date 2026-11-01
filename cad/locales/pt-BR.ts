@@ -92,6 +92,7 @@ export const ptBR: EngineLocale = {
       "view": "Vistas predefinidas",
       "orbit": "Órbita 3D",
       "navvcube": "ViewCube",
+      "vscurrent": "Estilos visuais",
       "ltscale": "Escala do tipo de linha",
       "auprec": "Precisão do ângulo",
       "setvar": "Variáveis de sistema",
@@ -1086,6 +1087,10 @@ export const ptBR: EngineLocale = {
         "CUBONAV",
         "CUBE"
       ],
+      "VSCURRENT": [
+        "EVATUAL",
+        "EVA"
+      ],
       "UNITS": [
         "UNIDADES",
         "UN",
@@ -1830,6 +1835,10 @@ export const ptBR: EngineLocale = {
         "ON": "Ativar",
         "OFF": "Desativar"
       },
+      "VSCURRENT": {
+        "2dwireframe": "estruturadearame2d",
+        "Hidden": "ocUlto"
+      },
       "SETVAR": {
         "?": "?",
         "ON": "Ativado",
@@ -2304,6 +2313,9 @@ export const ptBR: EngineLocale = {
       "textJustifyOption": "Insira uma opção",
       "ucsiconOption": "Insira uma opção",
       "navvcubeOption": "Insira uma opção",
+      "vscurrentOption": "Insira uma opção",
+      "vscurrent2dWireframe": "estruturadearame2d",
+      "vscurrentHidden": "ocUlto",
       "inscribedShort": "I",
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Especificar primeiro ponto final da aresta",

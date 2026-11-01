@@ -88,6 +88,7 @@
       "view": "Preset views",
       "orbit": "3D Orbit",
       "navvcube": "ViewCube",
+      "vscurrent": "Visual Styles",
       "ltscale": "Linetype scale",
       "auprec": "Angle precision",
       "setvar": "System variables",
@@ -614,6 +615,7 @@
       "-VIEW": ["-VIEW", "-V"],
       "3DORBIT": ["3DORBIT", "3DO", "ORBIT"],
       "NAVVCUBE": ["NAVVCUBE", "CUBE"],
+      "VSCURRENT": ["VSCURRENT", "VS"],
       "UNITS": ["UNITS", "UN", "DDUNITS"],
       "LTSCALE": ["LTSCALE", "LTS"],
       "AUPREC": ["AUPREC"],
@@ -1150,6 +1152,7 @@
         "NWiso": "NWIso"
       },
       "NAVVCUBE": { "ON": "ON", "OFF": "OFF" },
+      "VSCURRENT": { "2dwireframe": "2dwireframe", "Hidden": "Hidden" },
       "SETVAR": {
         "?": "?",
         "ON": "ON",
@@ -1516,6 +1519,9 @@
       "textJustifyOption": "Enter an option",
       "ucsiconOption": "Enter an option",
       "navvcubeOption": "Enter an option",
+      "vscurrentOption": "Enter an option",
+      "vscurrent2dWireframe": "2dwireframe",
+      "vscurrentHidden": "Hidden",
       "inscribedShort": "I",
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Specify first endpoint of edge",

@@ -209,6 +209,37 @@ where AutoCAD's lists `[ON/OFF/Settings]`, es `[ACT/DES/Parámetros]`, p262, p26
 per visual style (none here); U and REDO putting NAVVCUBEDISPLAY back and forth,
 as AutoCAD 2027's console does (move/p238)
 
+### `VSCURRENT` / `VS` · es `ESTVISACTUAL` / `EVA` · pt-BR `EVATUAL` / `EVA`
+
+**Implemented:** `Enter an option [2dwireframe/Hidden] <2dwireframe>:` (es
+`Indique una opción [estructuraalámbrica2d/ocUlto]`, pt-BR `Insira uma opção
+[estruturadearame2d/ocUlto]`; keywords `2` and `H`, es and pt-BR `2` and `U`), the current style's
+name as the default (tables 23335, 23337: `<Hidden>`, es `<Oculto>`, pt-BR `<ocUlto>`), Enter
+keeping it, `Invalid option keyword.` for anything else (visualstyle/v02); the style is the view's,
+saved in the drawing as AutoCAD saves it with its viewport (v03, v04); a run is a step U and REDO
+name (`VSCURRENT`, es `ESTVISACTUAL`, pt-BR `EVATUAL`); back to 2D Wireframe it says
+`Regenerating model.`, its U does not (v02); not transparent (`** That command may not be invoked
+transparently **`, v02). **Hidden** draws each solid's edges and the outlines of its curved faces
+where no face of any solid hides them, in the object's colour, and no isolines (plotted with Shade
+plot As displayed, p02; `cad/geometry/hiddenLines.ts`); a solid behind another is hidden by it, also
+along an edge they share
+
+**Missing:** Wireframe, Realistic, Shaded, shaded with Edges, shades of Gray, SKetchy, X-ray and
+Other (`Enter a visual style name or [?]:`, es `Indique un nombre de estilo visual o [?]`, pt-BR
+`Inserir um nome de estilo visual ou [?]`; `?` lists the ten by name, an unknown one
+`The "FOO" visual style does not exist`, v05), refused here as any answer, so the prompt lists only
+the styles built; SHADEMODE (es MODOSOMBRA), which runs VSCURRENT; -VISUALSTYLES and the Visual
+Styles Manager; the viewport controls' style menu; in Hidden, what hides lines but a solid: regions,
+circles, wide polylines and objects with thickness ("Objects that can hide other objects", HIDE's
+page), and what a solid hides but its own kind: lines, curves, text, the grid (p02 hides a line
+behind the solids); solids inside block references (drawn in 2D Wireframe here); a solid on a layer
+that is off hiding others (**unverified**); picking a solid by its faces; AutoCAD's faceted
+outlines (p02 draws a sphere's as a polygon; here the exact curve); OBSCUREDLTYPE, OBSCUREDCOLOR,
+HALOGAP, INTERSECTIONDISPLAY and the VS* variables (Hidden's VSEDGES 2, VSSILHEDGES 1,
+VSOBSCUREDEDGES 0, VSEDGECOLOR ByEntity, v01). HIDE, which in 2027 shows the 2D Wireframe view with
+hidden lines removed only until the next REGEN or ZOOM, the solids faceted (p04), and in Wireframe
+switches to Hidden ("HIDE command after save causes items to vanish")
+
 ### ViewCube (top right)
 
 **Implemented:** the 26 parts, oriented to the current UCS (NAVVCUBEORIENT 1): a click looks along

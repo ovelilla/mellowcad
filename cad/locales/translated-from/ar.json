@@ -86,6 +86,7 @@
   "interface.tool.view": "Preset views",
   "interface.tool.orbit": "3D Orbit",
   "interface.tool.navvcube": "ViewCube",
+  "interface.tool.vscurrent": "Visual Styles",
   "interface.tool.ltscale": "Linetype scale",
   "interface.tool.auprec": "Angle precision",
   "interface.tool.setvar": "System variables",

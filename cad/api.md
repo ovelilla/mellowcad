@@ -3866,6 +3866,10 @@ export interface SavedView {
 }
 
 // domain/units.ts
+/** The visual styles built: AutoCAD's 2D Wireframe and Hidden. */
+export type VisualStyle = "2dWireframe" | "hidden";
+
+// domain/units.ts
 export interface DocumentSettings {
     readonly unit: LengthUnit;
     readonly precision: number;
@@ -3911,6 +3915,8 @@ export interface DocumentSettings {
     readonly splineSegments: number;
     /** ISOLINES: the lines drawn across each curved face of a solid, 0 to 2047. */
     readonly isolines: number;
+    /** VSCURRENT: how the view draws solids, saved in the drawing (its viewport's, visualstyle/v03). */
+    readonly visualStyle: VisualStyle;
     /** CHAMFERA: CHAMFER's first distance. */
     readonly chamferDistance1: number;
     /** CHAMFERB: CHAMFER's second distance. */
