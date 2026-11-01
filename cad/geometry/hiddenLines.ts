@@ -34,6 +34,7 @@ import {
   facePlace,
   lineSurfaceHits,
   inBox,
+  rayInBox,
   solidBox,
 } from "./brepQueries"
 import { MODEL_TOLERANCE } from "./planarCurves"
@@ -68,10 +69,13 @@ interface ViewCurve {
  * Hidden is faceted (visualstyle/p02), so a hair's slip at the ends is within
  * what it draws.
  */
-const VIEW_STRETCHES = 64
+const VIEW_STRETCHES = 32
 
 /** Bisections that pin where a curve passes behind a face, or leaves its face. */
 const VIEW_STEPS = 32
+
+/** Bisections that pin where a traced outline crosses a cell's side: a millionth of it. */
+const CROSSING_STEPS = 20
 
 /**
  * The cells a torus' or a revolution's parameters are cut into each way to
@@ -413,7 +417,7 @@ function contour(
     if (found) return found
     let lo = 0
     let hi = 1
-    for (let k = 0; k < VIEW_STEPS * 2; k++) {
+    for (let k = 0; k < CROSSING_STEPS; k++) {
       const m = (lo + hi) / 2
       const fm = f(a.u + (b.u - a.u) * m, a.v + (b.v - a.v) * m)
       if (up(fm) === up(fa)) lo = m
@@ -550,6 +554,7 @@ function rayHits(
   w: Vec3,
   from: number,
   to: number,
+  brep: Brep,
   face: BrepFace
 ): number[] {
   const s = face.surface
@@ -560,13 +565,20 @@ function rayHits(
     case "cone":
     case "sphere":
       return lineSurfaceHits(o, w, from, to, s, MODEL_TOLERANCE) ?? []
-    case "torus":
+    case "torus": {
+      // Sampled where the ray is in the face's box, not along all of it.
+      const span = rayInBox(o, w, faceBox(brep, face))
+      if (!span) return []
+      const a = Math.max(from, span[0])
+      const b = Math.min(to, span[1])
+      if (!(b > a)) return []
       return signRoots(
         (t) => surfaceLevel(s, add3(o, scale3(w, t))).value,
-        from,
-        to,
+        a,
+        b,
         RAY_SAMPLES
       )
+    }
     case "extrusion":
       return extrusionHits(o, w, s).filter(within)
     case "revolution":
@@ -697,6 +709,7 @@ function hidden(
       frame.w,
       gap,
       sh.near - depth + margin,
+      sh.brep,
       sh.face
     )) {
       if (!(t > gap)) continue
@@ -717,6 +730,48 @@ function hidden(
     }
   }
   return false
+}
+
+/** Samples a curve's spread across the view is taken over, padded by what bulges between them. */
+const SPREAD_SAMPLES = 32
+
+/**
+ * The faces that can hide some of a curve: those whose box, seen along the
+ * view, overlaps the curve's and reaches nearer the viewer than it. Most of
+ * a drawing's curves have none, and are shown whole without a ray cast.
+ */
+function shadowsOver(
+  trace: ViewCurve["trace"],
+  frame: ViewFrame,
+  shadows: readonly Shadow[],
+  gap: number
+): Shadow[] {
+  let a0 = Infinity
+  let a1 = -Infinity
+  let b0 = Infinity
+  let b1 = -Infinity
+  let far = Infinity
+  for (let i = 0; i <= SPREAD_SAMPLES; i++) {
+    const p = trace.point(
+      trace.t0 + ((trace.t1 - trace.t0) * i) / SPREAD_SAMPLES
+    )
+    const a = dot3(p, frame.e1)
+    const b = dot3(p, frame.e2)
+    a0 = Math.min(a0, a)
+    a1 = Math.max(a1, a)
+    b0 = Math.min(b0, b)
+    b1 = Math.max(b1, b)
+    far = Math.min(far, dot3(p, frame.w))
+  }
+  const pad = 0.02 * Math.max(a1 - a0, b1 - b0) + MODEL_TOLERANCE
+  return shadows.filter(
+    (sh) =>
+      sh.near > far + gap &&
+      sh.min[0] <= a1 + pad &&
+      sh.max[0] >= a0 - pad &&
+      sh.min[1] <= b1 + pad &&
+      sh.max[1] >= b0 - pad
+  )
 }
 
 /**
@@ -752,7 +807,7 @@ function insideSolid(brep: Brep, q: Vec3, w: Vec3): boolean {
     let count = 0
     let clean = true
     for (const face of brep.faces) {
-      for (const t of rayHits(q, d, MODEL_TOLERANCE, reach, face)) {
+      for (const t of rayHits(q, d, MODEL_TOLERANCE, reach, brep, face)) {
         const place = facePlace(
           brep,
           face,
@@ -812,12 +867,16 @@ export function viewLines(
     for (const curve of curves) {
       const { t0, t1 } = curve.trace
       if (!(t1 > t0)) continue
-      const shown = runsWhere(
-        (t) => !hidden(curve.trace.point(t), frame, shadows, gap),
-        t0,
-        t1,
-        stretchesOf(curve.trace, curve.angular ?? false)
-      )
+      const near = shadowsOver(curve.trace, frame, shadows, gap)
+      const shown =
+        near.length === 0
+          ? [[t0, t1] as const]
+          : runsWhere(
+              (t) => !hidden(curve.trace.point(t), frame, near, gap),
+              t0,
+              t1,
+              stretchesOf(curve.trace, curve.angular ?? false)
+            )
       let at = t0
       const push = (from: number, to: number, visible: boolean) => {
         if (!(to > from)) return

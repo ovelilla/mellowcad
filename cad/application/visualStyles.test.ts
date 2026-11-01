@@ -168,8 +168,8 @@ describe("the Conceptual visual style", () => {
     expect(style(cad)).toBe("conceptual")
     const scene = cad.scene().primitives
     const faces = scene.filter((p) => p.kind === "path" && p.fill)
-    // The top, the -X face and the -Y face, each 8 by 8 cells of two triangles.
-    expect(faces).toHaveLength(3 * 64 * 2)
+    // The top, the -X face and the -Y face, each 4 by 4 cells.
+    expect(faces).toHaveLength(3 * 16)
     const edges = scene.filter((p) => p.kind === "segment")
     expect(edges.filter((p) => p.stroke.color === THEME.entity).length).toBe(9)
     // Painted before every edge.
