@@ -114,6 +114,8 @@ declare const source: {
       "extrude": string
       "revolve": string
       "presspull": string
+      "slice": string
+      "section": string
     }
     "description": {
       "U": string
@@ -648,6 +650,8 @@ declare const source: {
       "EXTRUDE": string[]
       "REVOLVE": string[]
       "PRESSPULL": string[]
+      "SLICE": string[]
+      "SECTION": string[]
     }
     "keywords": {
       "-OSNAP": {
@@ -1376,6 +1380,26 @@ declare const source: {
       "PRESSPULL": {
         "Multiple": string
       }
+      "SLICE": {
+        "Object": string
+        "Surface": string
+        "Zaxis": string
+        "View": string
+        "XY": string
+        "YZ": string
+        "ZX": string
+        "3points": string
+        "Both": string
+      }
+      "SECTION": {
+        "Object": string
+        "Zaxis": string
+        "View": string
+        "XY": string
+        "YZ": string
+        "ZX": string
+        "3points": string
+      }
     }
     "promptKeywords": {
       "selectObjects": {
@@ -2007,6 +2031,23 @@ declare const source: {
       "presspullSelect": string
       "presspullHeightOr": string
       "presspullOffsetOr": string
+      "selectObjectsToSlice": string
+      "sliceStartOr": string
+      "sectionFirstPointOr": string
+      "planeSecondPoint": string
+      "sliceObject": string
+      "sectionObject": string
+      "sliceSurface": string
+      "planeSectionPoint": string
+      "planeZAxisPoint": string
+      "planeViewPoint": string
+      "planeXYPoint": string
+      "planeYZPoint": string
+      "planeZXPoint": string
+      "planeFirstPoint": string
+      "planeThirdPoint": string
+      "sliceSideOr": string
+      "sliceBoth": string
     }
     "promptForms": {
       "convertToPolylines": string
@@ -2020,6 +2061,7 @@ declare const source: {
       "ucsZdepth": string
       "undoEverything": string
       "viewOrthographic": string
+      "sliceStartOr": string
     }
     "answerForms": {
       "dimStyleRedefine": string
@@ -2047,6 +2089,7 @@ declare const source: {
       "promptWithKeywords": string
       "promptWithDefault": string
       "promptWithDefaultTight": string
+      "promptWithDefaultOpen": string
       "keywordSeparator": string
       "keywordOr": string
       "optionValue": string
@@ -2644,6 +2687,17 @@ declare const source: {
       "presspullClick": string
       "presspullExtruded": string
       "presspullOffset": string
+      "noSurfacesSelected": string
+      "planeZIdentical": string
+      "planeFirstSecondIdentical": string
+      "planeThirdCollinear": string
+      "sliceDistinctXY": string
+      "sliceOnPlane": string
+      "sliceMissedOne": string
+      "sliceMissed": string
+      "sectionMissedOne": string
+      "sectionMissed": string
+      "noSolidsSelected": string
     }
     "feedback": {
       "snap": {
@@ -2837,6 +2891,10 @@ declare const source: {
       }
       "REVOLVE": {
         "STart": string
+      }
+      "SLICE": {
+        "Object": string
+        "Both": string
       }
     }
     "promptKeywordLabels": {

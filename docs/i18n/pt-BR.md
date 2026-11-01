@@ -87,6 +87,8 @@ ours, as Spanish's are (`es.md`). The language is Brazil's, and `LANGUAGE_NAMES`
 |  | Extrude; Extrusion, Extrusion height, Taper angle | Extrusão; Extrusão, Altura de extrusão, Ângulo de conicidade | the console (extrude/x01–x11, pt-BR): prompts, keywords, messages and LIST's lines; the rail's `Extrusão`, ours | partly |
 |  | Revolve; Start angle, Angle of revolution, Direction vector | Revolução; Ângulo inicial, Ângulo de revolução, Vetor de direção | the console (revolve/r01–r09, pt-BR): prompts, keywords, messages and LIST's lines; `Revolução` on the rail, ours | partly |
 |  | Presspull; Select object or bounded area | Pressionar/Puxar; Selecione o objeto ou área delimitada | the 2027 tables (31244, 53916, 292); `Pressionar/Puxar` on the rail and `Múltiplos` as declared, **unverified** (no console run can click) | partly |
+|  | Presspull on a face: Specify offset distance; extrusion(s) created, face(s) offset | Especifique a distância de deslocamento; extrusões criadas, faces deslocadas | the 2027 tables (67, 55300, 11379), as the English desktop's lines show them | partly |
+|  | Slice, Section; slicing plane, keep Both sides, planar Object | Fatiar, Corte; plano de fatiamento, manter Ambos os lados, Objeto plano | X `ID_Slice`, `ID_Section`; the console (slice/s01–s13, section/c01–c09, pt-BR): prompts, keywords, messages, the start point's prompt with no colon | yes |
 |  | Sphere, Torus; Torus radius, Tube radius | Esfera, Toroide; Raio do toroide, Raio do tubo | X ID_Sphere, ID_Torus; LIST's lines (solid/h01, r01); the palette's rows, ours | partly |
 |  | Match properties; Array; Rectangular, Polar, Path array | Corresponder propriedades; Matriz; Matriz retangular, Matriz polar, Matriz de caminho | X ACAD_335, XLS_00021866, 00021843, 00021840 | yes |
 | Annotate | Text, Multiline text, Edit text | Texto, Texto multilinha, Editar texto | X T:ID_RBN_0020; P ax26res 32 | yes |
@@ -316,7 +318,8 @@ in the three languages by `cad/application/promptForms.test.ts`.
   aliases of COTALINEAR, but each is a command's name, and the name wins (names/p02); `COTAD` points
   at the English `DIMSTYLE`, which pt-BR reads as the system variable (names/p04). `TOR` points at
   `TORO`, which the console runs as TORUS while it refuses `TOR` (solid/n03): `TORO` is an alias
-  of TOROIDE here, `TOR` unknown.
+  of TOROIDE here, `TOR` unknown. `SEC` points at `SECAO`, itself an alias of CORTE (SECTION):
+  the console runs `SECAO` and refuses `SEC` (section/c10), as here.
 - **SNAP's Aspect is `ASpecto`**, as the prompt lists it and table 25920 declares it: the console's
   `initget` declares `Ativado` and `Aspecto`, one abbreviation for two keywords, which
   `locales.test.ts` refuses.

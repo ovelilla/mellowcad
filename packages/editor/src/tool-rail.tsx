@@ -33,6 +33,7 @@ import {
   Scissors,
   Shapes,
   Slash,
+  Slice,
   Spline,
   SplinePointer,
   Split,
@@ -149,6 +150,7 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   extrude: ArrowUpFromLine,
   revolve: Rotate3d,
   presspull: UnfoldVertical,
+  slice: Slice,
   union: SquaresUnite,
   subtract: SquaresSubtract,
   intersect: SquaresIntersect,
@@ -295,6 +297,8 @@ const PALETTE: readonly PaletteSection[] = [
       // ID_PanelSolidEdit): Drafting & Annotation's Home tab has none, and
       // they are what joins, cuts and overlaps regions.
       flyout("union", ["union", "subtract", "intersect"]),
+      // Beside them in that panel (ID_PanelSolidEdit's Slice).
+      "slice",
     ],
   },
   {
@@ -364,6 +368,8 @@ const RAIL_EXCLUDED = new Set([
   "massprop",
   // CHPROP is typed: no ribbon panel offers it.
   "chprop",
+  // SECTION is typed: the ribbon offers SECTIONPLANE in its place.
+  "section",
   "zoom",
   "pan",
   "dashpan",

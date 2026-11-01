@@ -112,7 +112,9 @@
       "intersect": "Intersect",
       "extrude": "Extrude",
       "revolve": "Revolve",
-      "presspull": "Presspull"
+      "presspull": "Presspull",
+      "slice": "Slice",
+      "section": "Section"
     },
     "description": {
       "U": "Undo the last action",
@@ -641,7 +643,9 @@
       "INTERSECT": ["INTERSECT", "IN"],
       "EXTRUDE": ["EXTRUDE", "EXT"],
       "REVOLVE": ["REVOLVE", "REV"],
-      "PRESSPULL": ["PRESSPULL"]
+      "PRESSPULL": ["PRESSPULL"],
+      "SLICE": ["SLICE", "SL"],
+      "SECTION": ["SECTION", "SEC"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1205,7 +1209,9 @@
       "LWEIGHT": { "?": "?", "BYLAYER": "BYLayer" },
       "EXTRUDE": {"MOde": "MOde", "SOlid": "SOlid", "SUrface": "SUrface", "Direction": "Direction", "Path": "Path", "Taper": "Taper", "Expression": "Expression", "Yes": "Yes", "No": "No"},
       "REVOLVE": {"MOde": "MOde", "SOlid": "SOlid", "SUrface": "SUrface", "Object": "Object", "X": "X", "Y": "Y", "Z": "Z", "STart": "STart", "Reverse": "Reverse", "EXpression": "EXpression", "Yes": "Yes", "No": "No"},
-      "PRESSPULL": {"Multiple": "Multiple"}
+      "PRESSPULL": {"Multiple": "Multiple"},
+      "SLICE": {"Object": "Object", "Surface": "Surface", "Zaxis": "Zaxis", "View": "View", "XY": "XY", "YZ": "YZ", "ZX": "ZX", "3points": "3points", "Both": "Both"},
+      "SECTION": {"Object": "Object", "Zaxis": "Zaxis", "View": "View", "XY": "XY", "YZ": "YZ", "ZX": "ZX", "3points": "3points"}
     },
     "promptKeywords": {
       "selectObjects": {
@@ -1796,7 +1802,24 @@
       "revolveStartAngle": "Specify start angle",
       "presspullSelect": "Select object or bounded area",
       "presspullHeightOr": "Specify extrusion height or",
-      "presspullOffsetOr": "Specify offset distance or"
+      "presspullOffsetOr": "Specify offset distance or",
+      "selectObjectsToSlice": "Select objects to slice",
+      "sliceStartOr": "Specify start point of slicing plane or",
+      "sectionFirstPointOr": "Specify first point on Section plane by",
+      "planeSecondPoint": "Specify second point on plane",
+      "sliceObject": "Select a circle, ellipse, arc, 2D-spline, 2D-polyline to define the slicing plane",
+      "sectionObject": "Select a circle, ellipse, arc, 2D-spline, 2D-polyline",
+      "sliceSurface": "Select a surface",
+      "planeSectionPoint": "Specify a point on the section plane",
+      "planeZAxisPoint": "Specify a point on the Z-axis (normal) of the plane",
+      "planeViewPoint": "Specify a point on the current view plane",
+      "planeXYPoint": "Specify a point on the XY-plane",
+      "planeYZPoint": "Specify a point on the YZ-plane",
+      "planeZXPoint": "Specify a point on the ZX-plane",
+      "planeFirstPoint": "Specify first point on plane",
+      "planeThirdPoint": "Specify third point on plane",
+      "sliceSideOr": "Specify a point on desired side or",
+      "sliceBoth": "Both"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -1809,7 +1832,8 @@
       "ucsReplace": "open",
       "ucsZdepth": "tight",
       "undoEverything": "open",
-      "viewOrthographic": "tight"
+      "viewOrthographic": "tight",
+      "sliceStartOr": "spaced"
     },
     "answerForms": {
       "dimStyleRedefine": "tight",
@@ -1837,6 +1861,7 @@
       "promptWithKeywords": "{head} <keywords>[{list}]</keywords>:",
       "promptWithDefault": "{head} <keywords>[{list}]</keywords> '<'{value}>:",
       "promptWithDefaultTight": "{head} <keywords>[{list}]</keywords>'<'{value}>:",
+      "promptWithDefaultOpen": "{head} <keywords>[{list}]</keywords> '<'{value}>",
       "keywordSeparator": "/",
       "keywordOr": " or ",
       "optionValue": "{keyword}: {value}",
@@ -2433,7 +2458,18 @@
       "listDirectionVector": " Direction vector: X = {x}Y = {y}Z = {z}",
       "presspullClick": "Click a face, curve, or inside a bounded area",
       "presspullExtruded": "{count} extrusion(s) created",
-      "presspullOffset": "{count} face(s) offset"
+      "presspullOffset": "{count} face(s) offset",
+      "noSurfacesSelected": "No surfaces selected.",
+      "planeZIdentical": "Point on plane and point on Z-axis cannot be identical.",
+      "planeFirstSecondIdentical": "1st and 2nd points cannot be identical.",
+      "planeThirdCollinear": "Need a point distinct from and not collinear with 1st and 2nd points.",
+      "sliceDistinctXY": "First and second points must have distinct X,Y coordinates. *Invalid*",
+      "sliceOnPlane": "The point should not be on the slicing plane.",
+      "sliceMissedOne": "Slicing plane does not intersect the selected solid.",
+      "sliceMissed": "Slicing plane does not intersect {count, plural, one {# selected solid} other {# selected solids}}.",
+      "sectionMissedOne": "Sectioning plane does not intersect the selected solid.",
+      "sectionMissed": "Sectioning plane does not intersect {count, plural, one {# selected solid} other {# selected solids}}.",
+      "noSolidsSelected": "No Solids, Surfaces or Meshes selected."
     },
     "feedback": {
       "snap": {
@@ -2561,7 +2597,8 @@
       "UCSICON": { "Noorigin": "Noorigin" },
       "OFFSET": { "Through": "Through" },
       "EXTRUDE": {"Taper": "Taper angle"},
-      "REVOLVE": {"STart": "STart angle"}
+      "REVOLVE": {"STart": "STart angle"},
+      "SLICE": {"Object": "planar Object", "Both": "keep Both sides"}
     },
     "promptKeywordLabels": {
       "ucsNewUcs": { "ZAxis": "ZAxis" }

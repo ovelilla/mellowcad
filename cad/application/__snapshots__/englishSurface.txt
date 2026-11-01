@@ -61,6 +61,8 @@ INTERSECT ["IN"] "Intersect"
 EXTRUDE ["EXT"] "Extrude"
 REVOLVE ["REV"] "Revolve"
 PRESSPULL [] "Presspull"
+SLICE ["SL"] "Slice"
+SECTION ["SEC"] "Section"
 BOX [] "Box"
 WEDGE ["WE"] "Wedge"
 CYLINDER ["CYL"] "Cylinder"
@@ -213,6 +215,8 @@ pyramid "Pyramid" PYR
 extrude "Extrude" EXT
 revolve "Revolve" REV
 presspull "Presspull" PRESSPULL
+slice "Slice" SL
+section "Section" SEC
 break "Break" BR
 breakatpoint "Break at point" BREAKATPOINT
 splinedit "Edit Spline" SPE
@@ -5177,6 +5181,155 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Select object or bounded area:
   prompt| Specify extrusion height or [Multiple]: 30
   prompt| Select object or bounded area:
+> a face, offset
+  prompt: PRESSPULL Select object or bounded area:
+  asks: "Select object or bounded area"
+  tip: Select object or bounded area:
+  dyn: "X,Y"=""||*
+  command| BOX
+  prompt| Specify first corner or [Center]: 200,0,0
+  prompt| Specify other corner or [Cube/Length]: 250,50
+  prompt| Specify height or [2Point]: 50
+  command| PRESSPULL
+> Ctrl+click its top
+  prompt: PRESSPULL Specify offset distance or [Multiple]:
+  asks: "Specify offset distance or"
+  tip: Specify offset distance or
+  dyn: "Specify offset distance or"=""||mm*
+  options: [M] Multiple
+  prompt| Select object or bounded area:
+> offset
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify offset distance or [Multiple]:10
+  info| 1 face(s) offset
+  prompt| Select object or bounded area:
+
+## SLICE
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> BOX
+  command| BOX
+  prompt| Specify first corner or [Center]: 0,0,0
+  prompt| Specify other corner or [Cube/Length]: 100,100
+  prompt| Specify height or [2Point]: 100
+> SLICE refused
+  prompt: SLICE Specify a point on desired side or [keep Both sides] <Both>:
+  asks: "Specify a point on desired side or"
+  tip: Specify a point on desired side or
+  dyn: "X,Y"=""||*
+  options: [B] keep Both sides
+  command| SLICE
+  prompt| Select objects to slice: L
+  info| 1 found
+  prompt| Select objects to slice:
+  prompt| Specify start point of slicing plane or [planar Object/Surface/Zaxis/View/XY/YZ/ZX/3points] <3points>: FOO
+  error| Point or option keyword required.
+  prompt| Specify start point of slicing plane or [planar Object/Surface/Zaxis/View/XY/YZ/ZX/3points] <3points>: 50,50
+  prompt| Specify second point on plane: 50,50,20
+  error| First and second points must have distinct X,Y coordinates. *Invalid*
+  prompt| Specify second point on plane: 50,0
+> side refused, then one
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify a point on desired side or [keep Both sides] <Both>: 50,50
+  error| The point should not be on the slicing plane.
+  prompt| Specify a point on desired side or [keep Both sides] <Both>: 0,0
+> SLICE Zaxis, missed
+  command| SLICE
+  prompt| Select objects to slice: L
+  info| 1 found
+  prompt| Select objects to slice:
+  prompt| Specify start point of slicing plane or [planar Object/Surface/Zaxis/View/XY/YZ/ZX/3points] <3points>: Z
+  prompt| Specify a point on the section plane: 0,0,200
+  prompt| Specify a point on the Z-axis (normal) of the plane: 0,0,200
+  error| Point on plane and point on Z-axis cannot be identical.
+  prompt| Specify a point on the Z-axis (normal) of the plane: 0,0,201
+  prompt| Specify a point on desired side or [keep Both sides] <Both>:
+  error| Slicing plane does not intersect the selected solid.
+> SLICE Surface
+  prompt: SLICE Select a surface:
+  command| SLICE
+  prompt| Select objects to slice: L
+  info| 1 found
+  prompt| Select objects to slice:
+  prompt| Specify start point of slicing plane or [planar Object/Surface/Zaxis/View/XY/YZ/ZX/3points] <3points>: S
+> a surface picked
+  prompt| Select a surface:
+  error| No surfaces selected.
+> Enter
+  prompt: Command:
+  prompt| Select a surface:
+> SLICE 3points, Both
+  command| SLICE
+  prompt| Select objects to slice: L
+  info| 1 found
+  prompt| Select objects to slice:
+  prompt| Specify start point of slicing plane or [planar Object/Surface/Zaxis/View/XY/YZ/ZX/3points] <3points>:
+  prompt| Specify first point on plane: 0,0,10
+  prompt| Specify second point on plane: 0,0,10
+  error| 1st and 2nd points cannot be identical.
+  prompt| Specify second point on plane: 10,0,10
+  prompt| Specify third point on plane: 0,0,10
+  error| Need a point distinct from and not collinear with 1st and 2nd points.
+  prompt| Specify third point on plane: 10,10,10
+  prompt| Specify a point on desired side or [keep Both sides] <Both>: B
+
+## SECTION
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> BOX
+  command| BOX
+  prompt| Specify first corner or [Center]: 0,0,0
+  prompt| Specify other corner or [Cube/Length]: 100,100
+  prompt| Specify height or [2Point]: 100
+> SECTION refused
+  command| SECTION
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  prompt| Specify first point on Section plane by [Object/Zaxis/View/XY/YZ/ZX/3points] <3points>: FOO
+  error| Point or option keyword required.
+  prompt| Specify first point on Section plane by [Object/Zaxis/View/XY/YZ/ZX/3points] <3points>: XY
+  prompt| Specify a point on the XY-plane <0,0,0>: 0,0,50
+> SECTION missed
+  command| SECTION
+  prompt| Select objects: ALL
+  info| 2 found
+  prompt| Select objects:
+  prompt| Specify first point on Section plane by [Object/Zaxis/View/XY/YZ/ZX/3points] <3points>: YZ
+  prompt| Specify a point on the YZ-plane <0,0,0>: 500,0,0
+  error| Sectioning plane does not intersect the selected solid.
+> SECTION of no solid
+  command| LINE
+  prompt| Specify first point: 0,0
+  prompt| Specify next point or [Undo]: 10,0
+  prompt| Specify next point or [Undo]:
+  command| SECTION
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  error| No Solids, Surfaces or Meshes selected.
 
 ## JOIN made
 > start

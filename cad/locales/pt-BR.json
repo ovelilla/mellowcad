@@ -112,7 +112,9 @@
       "intersect": "Intersecção",
       "extrude": "Extrusão",
       "revolve": "Revolução",
-      "presspull": "Pressionar/Puxar"
+      "presspull": "Pressionar/Puxar",
+      "slice": "Fatiar",
+      "section": "Corte"
     },
     "description": {
       "U": "Desfaz a última ação",
@@ -612,7 +614,9 @@
       "INTERSECT": ["INTERSEC", "INT"],
       "EXTRUDE": ["EXTRUSAO", "EX"],
       "REVOLVE": ["REVOLUCAO", "REV"],
-      "PRESSPULL": ["PRESSIONARPUXAR"]
+      "PRESSPULL": ["PRESSIONARPUXAR"],
+      "SLICE": ["FATIAR", "FAT"],
+      "SECTION": ["CORTE", "SECAO"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1269,7 +1273,9 @@
       },
       "EXTRUDE": {"MOde": "MOdo", "SOlid": "SÓlido", "SUrface": "SUperfície", "Direction": "Direção", "Path": "Caminho", "Taper": "COnicidade", "Expression": "Expressão", "Yes": "Sim", "No": "Não"},
       "REVOLVE": {"MOde": "MOdo", "SOlid": "SÓlido", "SUrface": "SUperfície", "Object": "Objeto", "X": "X", "Y": "Y", "Z": "Z", "STart": "INicial", "Reverse": "Reverter", "EXpression": "EXpressão", "Yes": "Sim", "No": "Não"},
-      "PRESSPULL": {"Multiple": "Múltiplos"}
+      "PRESSPULL": {"Multiple": "Múltiplos"},
+      "SLICE": {"Object": "Objeto", "Surface": "Superfície", "Zaxis": "eixoZ", "View": "Vista", "XY": "XY", "YZ": "YZ", "ZX": "ZX", "3points": "3pontos", "Both": "Ambos"},
+      "SECTION": {"Object": "Objeto", "Zaxis": "eixoZ", "View": "Vista", "XY": "XY", "YZ": "YZ", "ZX": "ZX", "3points": "3pontos"}
     },
     "promptKeywords": {
       "selectObjects": {
@@ -1900,7 +1906,24 @@
       "revolveStartAngle": "Especificar ângulo inicial",
       "presspullSelect": "Selecione o objeto ou área delimitada",
       "presspullHeightOr": "Especifique a altura da extrusão ou",
-      "presspullOffsetOr": "Especifique a distância de deslocamento ou"
+      "presspullOffsetOr": "Especifique a distância de deslocamento ou",
+      "selectObjectsToSlice": "Selecionar objetos a serem fatiados",
+      "sliceStartOr": "Especificar ponto inicial de plano de fatiamento ou",
+      "sectionFirstPointOr": "Especificar o primeiro ponto no Plano de corte por",
+      "planeSecondPoint": "Especificar o segundo ponto no plano",
+      "sliceObject": "Selecionar um círculo, elipse, arco, splice 2D, polilinha 2D para definir o plano de corte",
+      "sectionObject": "Selecionar um círculo, uma elipse, um arco, uma spline 2D, uma polilinha 2D",
+      "sliceSurface": "Selecionar uma superfície",
+      "planeSectionPoint": "Especificar um ponto no plano de corte",
+      "planeZAxisPoint": "Especificar um ponto no eixo Z (normal) do plano",
+      "planeViewPoint": "Especificar um ponto no plano de visualização atual",
+      "planeXYPoint": "Especificar um ponto no plano XY",
+      "planeYZPoint": "Especificar um ponto no plano YZ",
+      "planeZXPoint": "Especificar um ponto no plano ZX",
+      "planeFirstPoint": "Especificar o primeiro no plano",
+      "planeThirdPoint": "Especificar o terceiro ponto no plano",
+      "sliceSideOr": "Especificar um ponto no lado desejado ou",
+      "sliceBoth": "Ambos"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -1913,7 +1936,8 @@
       "ucsReplace": "open",
       "ucsZdepth": "spaced",
       "undoEverything": "open",
-      "viewOrthographic": "spaced"
+      "viewOrthographic": "spaced",
+      "sliceStartOr": "open"
     },
     "answerForms": {
       "dimStyleRedefine": "tight",
@@ -1941,6 +1965,7 @@
       "promptWithKeywords": "{head} <keywords>[{list}]</keywords>:",
       "promptWithDefault": "{head} <keywords>[{list}]</keywords> '<'{value}>:",
       "promptWithDefaultTight": "{head} <keywords>[{list}]</keywords>'<'{value}>:",
+      "promptWithDefaultOpen": "{head} <keywords>[{list}]</keywords> '<'{value}>",
       "keywordSeparator": "/",
       "keywordOr": " ou ",
       "optionValue": "{keyword}: {value}",
@@ -2537,7 +2562,18 @@
       "listDirectionVector": " Vetor de direção: X = {x}Y = {y}Z = {z}",
       "presspullClick": "Clique em uma face, em uma curva ou dentro de uma área delimitada",
       "presspullExtruded": "{count} extrusões criadas",
-      "presspullOffset": "{count} faces deslocadas"
+      "presspullOffset": "{count} faces deslocadas",
+      "noSurfacesSelected": "Nenhuma superfície selecionada.",
+      "planeZIdentical": "O ponto sobre o plano e o ponto sobre o eixo Z não podem ser idênticos.",
+      "planeFirstSecondIdentical": "O 1o. e o 2o. pontos não podem ser idênticos.",
+      "planeThirdCollinear": "É necessário um ponto de partida diferente e não colinear com o 1o. e o 2o. pontos.",
+      "sliceDistinctXY": "Primeiro e segundo pontos devem ter coordenadas X,Y distintas. *Inválido*",
+      "sliceOnPlane": "O ponto não deve estar no plano de fatiamento.",
+      "sliceMissedOne": "O plano de fatiamento não faz intersecção com o sólido selecionado.",
+      "sliceMissed": "O plano de fatiamento não faz intersecção com {count, plural, one {o 1o. sólido selecionado} other {# sólidos selecionados}}.",
+      "sectionMissedOne": "O plano de corte não faz intersecção com o sólido selecionado.",
+      "sectionMissed": "O plano de corte não faz intersecção com {count, plural, one {# sólido selecionado} other {# sólidos selecionados}}.",
+      "noSolidsSelected": "Nenhum sólido, superfície ou malha selecionado."
     },
     "feedback": {
       "snap": {
@@ -2712,7 +2748,8 @@
         "Through": "Através"
       },
       "EXTRUDE": {"Taper": "ângulo de COnicidade"},
-      "REVOLVE": {"STart": "ângulo INicial"}
+      "REVOLVE": {"STart": "ângulo INicial"},
+      "SLICE": {"Object": "Objeto plano", "Both": "manter Ambos os lados"}
     },
     "promptKeywordLabels": {
       "ucsNewUcs": { "ZAxis": "EIxo z" }

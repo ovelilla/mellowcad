@@ -116,7 +116,9 @@ export const ptBR: EngineLocale = {
       "intersect": "Intersecção",
       "extrude": "Extrusão",
       "revolve": "Revolução",
-      "presspull": "Pressionar/Puxar"
+      "presspull": "Pressionar/Puxar",
+      "slice": "Fatiar",
+      "section": "Corte"
     },
     "description": {
       "U": "Desfaz a última ação",
@@ -1188,6 +1190,14 @@ export const ptBR: EngineLocale = {
       ],
       "PRESSPULL": [
         "PRESSIONARPUXAR"
+      ],
+      "SLICE": [
+        "FATIAR",
+        "FAT"
+      ],
+      "SECTION": [
+        "CORTE",
+        "SECAO"
       ]
     },
     "keywords": {
@@ -1916,6 +1926,26 @@ export const ptBR: EngineLocale = {
       },
       "PRESSPULL": {
         "Multiple": "Múltiplos"
+      },
+      "SLICE": {
+        "Object": "Objeto",
+        "Surface": "Superfície",
+        "Zaxis": "eixoZ",
+        "View": "Vista",
+        "XY": "XY",
+        "YZ": "YZ",
+        "ZX": "ZX",
+        "3points": "3pontos",
+        "Both": "Ambos"
+      },
+      "SECTION": {
+        "Object": "Objeto",
+        "Zaxis": "eixoZ",
+        "View": "Vista",
+        "XY": "XY",
+        "YZ": "YZ",
+        "ZX": "ZX",
+        "3points": "3pontos"
       }
     },
     "promptKeywords": {
@@ -2598,7 +2628,24 @@ export const ptBR: EngineLocale = {
       "revolveStartAngle": "Especificar ângulo inicial",
       "presspullSelect": "Selecione o objeto ou área delimitada",
       "presspullHeightOr": "Especifique a altura da extrusão ou",
-      "presspullOffsetOr": "Especifique a distância de deslocamento ou"
+      "presspullOffsetOr": "Especifique a distância de deslocamento ou",
+      "selectObjectsToSlice": "Selecionar objetos a serem fatiados",
+      "sliceStartOr": "Especificar ponto inicial de plano de fatiamento ou",
+      "sectionFirstPointOr": "Especificar o primeiro ponto no Plano de corte por",
+      "planeSecondPoint": "Especificar o segundo ponto no plano",
+      "sliceObject": "Selecionar um círculo, elipse, arco, splice 2D, polilinha 2D para definir o plano de corte",
+      "sectionObject": "Selecionar um círculo, uma elipse, um arco, uma spline 2D, uma polilinha 2D",
+      "sliceSurface": "Selecionar uma superfície",
+      "planeSectionPoint": "Especificar um ponto no plano de corte",
+      "planeZAxisPoint": "Especificar um ponto no eixo Z (normal) do plano",
+      "planeViewPoint": "Especificar um ponto no plano de visualização atual",
+      "planeXYPoint": "Especificar um ponto no plano XY",
+      "planeYZPoint": "Especificar um ponto no plano YZ",
+      "planeZXPoint": "Especificar um ponto no plano ZX",
+      "planeFirstPoint": "Especificar o primeiro no plano",
+      "planeThirdPoint": "Especificar o terceiro ponto no plano",
+      "sliceSideOr": "Especificar um ponto no lado desejado ou",
+      "sliceBoth": "Ambos"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2611,7 +2658,8 @@ export const ptBR: EngineLocale = {
       "ucsReplace": "open",
       "ucsZdepth": "spaced",
       "undoEverything": "open",
-      "viewOrthographic": "spaced"
+      "viewOrthographic": "spaced",
+      "sliceStartOr": "open"
     },
     "answerForms": {
       "dimStyleRedefine": "tight",
@@ -2766,6 +2814,25 @@ export const ptBR: EngineLocale = {
           "value"
         ],
         ">:"
+      ],
+      "promptWithDefaultOpen": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        ">"
       ],
       "keywordSeparator": "/",
       "keywordOr": " ou ",
@@ -6943,7 +7010,49 @@ export const ptBR: EngineLocale = {
           "count"
         ],
         " faces deslocadas"
-      ]
+      ],
+      "noSurfacesSelected": "Nenhuma superfície selecionada.",
+      "planeZIdentical": "O ponto sobre o plano e o ponto sobre o eixo Z não podem ser idênticos.",
+      "planeFirstSecondIdentical": "O 1o. e o 2o. pontos não podem ser idênticos.",
+      "planeThirdCollinear": "É necessário um ponto de partida diferente e não colinear com o 1o. e o 2o. pontos.",
+      "sliceDistinctXY": "Primeiro e segundo pontos devem ter coordenadas X,Y distintas. *Inválido*",
+      "sliceOnPlane": "O ponto não deve estar no plano de fatiamento.",
+      "sliceMissedOne": "O plano de fatiamento não faz intersecção com o sólido selecionado.",
+      "sliceMissed": [
+        "O plano de fatiamento não faz intersecção com ",
+        [
+          "count",
+          2,
+          {
+            "one": "o 1o. sólido selecionado",
+            "other": [
+              0,
+              " sólidos selecionados"
+            ]
+          }
+        ],
+        "."
+      ],
+      "sectionMissedOne": "O plano de corte não faz intersecção com o sólido selecionado.",
+      "sectionMissed": [
+        "O plano de corte não faz intersecção com ",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " sólido selecionado"
+            ],
+            "other": [
+              0,
+              " sólidos selecionados"
+            ]
+          }
+        ],
+        "."
+      ],
+      "noSolidsSelected": "Nenhum sólido, superfície ou malha selecionado."
     },
     "feedback": {
       "snap": {
@@ -7211,6 +7320,10 @@ export const ptBR: EngineLocale = {
       },
       "REVOLVE": {
         "STart": "ângulo INicial"
+      },
+      "SLICE": {
+        "Object": "Objeto plano",
+        "Both": "manter Ambos os lados"
       }
     },
     "promptKeywordLabels": {

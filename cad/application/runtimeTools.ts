@@ -53,6 +53,7 @@ import { solidDefaults } from "./tools/solidDefaults"
 import { ExtrudeTool } from "./tools/ExtrudeTool"
 import { RevolveTool } from "./tools/RevolveTool"
 import { PresspullTool } from "./tools/PresspullTool"
+import { PlaneCutTool } from "./tools/PlaneCutTool"
 import { sweepSettings } from "./tools/sweepSettings"
 import { RegionBooleanTool, SubtractTool } from "./tools/RegionBooleanTool"
 import { BreakTool } from "./tools/BreakTool"
@@ -188,6 +189,8 @@ export function defaultTools(
     new ExtrudeTool(sweeps),
     new RevolveTool(sweeps),
     new PresspullTool(),
+    new PlaneCutTool("slice"),
+    new PlaneCutTool("section"),
     new BreakTool("gap", "break"),
     new BreakTool("atPoint", "breakatpoint"),
     new SplineEditTool(),

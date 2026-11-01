@@ -314,6 +314,8 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   extrude: "EXTRUDE",
   revolve: "REVOLVE",
   presspull: "PRESSPULL",
+  slice: "SLICE",
+  section: "SECTION",
   box: "BOX",
   wedge: "WEDGE",
   cylinder: "CYLINDER",

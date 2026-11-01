@@ -526,7 +526,9 @@ export class EngineText {
           ? format.promptWithKeywords
           : form === "tight"
             ? format.promptWithDefaultTight
-            : format.promptWithDefault,
+            : form === "open"
+              ? format.promptWithDefaultOpen
+              : format.promptWithDefault,
         { head, list: this.keywordList(keywords), value: fallback ?? "" },
         {
           keywords: (chunks) => ({
