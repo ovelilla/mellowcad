@@ -2006,6 +2006,7 @@ declare const source: {
       "revolveStartAngle": string
       "presspullSelect": string
       "presspullHeightOr": string
+      "presspullOffsetOr": string
     }
     "promptForms": {
       "convertToPolylines": string
@@ -2023,6 +2024,7 @@ declare const source: {
     "answerForms": {
       "dimStyleRedefine": string
       "mredoCount": string
+      "presspullOffsetOr": string
       "selectDimensionsToSpace": string
       "selectGripToEditPathArrayOr": string
       "selectPolylineOr": string
@@ -2640,6 +2642,8 @@ declare const source: {
       "listRevolveAngle": string
       "listDirectionVector": string
       "presspullClick": string
+      "presspullExtruded": string
+      "presspullOffset": string
     }
     "feedback": {
       "snap": {
