@@ -1,0 +1,26 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+(setq b (entlast))
+_CIRCLE
+5,5,4
+1
+(setq c (entlast))
+_SLICE
+!b
+
+_O
+!c
+0,0,0
+_SLICE
+!b
+
+_V
+0,0,2
+0,0,3
+(sslength (ssget "X"))
+MPDUMP
+-

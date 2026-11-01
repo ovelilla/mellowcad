@@ -1,0 +1,20 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+_BOX
+20,0,0
+30,10
+10
+_SLICE
+_ALL
+
+_XY
+0,0,5
+
+(sslength (ssget "X"))
+_LIST
+_ALL
+

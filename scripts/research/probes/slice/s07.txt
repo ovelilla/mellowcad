@@ -1,0 +1,41 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+(setq b (entlast))
+_SLICE
+!b
+
+_XY
+0,0,20
+0,0,0
+(sslength (ssget "X"))
+_SLICE
+!b
+
+_XY
+0,0,10
+0,0,0
+(sslength (ssget "X"))
+_SLICE
+!b
+
+
+10,0,0
+10,0,10
+20,10,0
+0,0,0
+(sslength (ssget "X"))
+_SLICE
+!b
+
+
+10,0,0
+20,0,-10
+10,10,-10
+0,0,0
+(sslength (ssget "X"))
+MPDUMP
+-

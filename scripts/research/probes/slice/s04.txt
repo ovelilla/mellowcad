@@ -1,0 +1,17 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+_SLICE
+_L
+
+_Z
+0,0,4
+0,0,4
+0,0,5
+0,0,0
+(sslength (ssget "X"))
+MPDUMP
+-

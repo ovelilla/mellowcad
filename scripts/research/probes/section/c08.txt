@@ -1,0 +1,24 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+_CIRCLE
+5,5,4
+1
+(setq c (entlast))
+_SECTION
+_ALL
+
+FOO
+_O
+!c
+_SECTION
+_ALL
+
+_V
+0,0,3
+_LIST
+_ALL
+

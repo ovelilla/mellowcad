@@ -1,0 +1,28 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+(setq b (entlast))
+_CYLINDER
+5,5,-1
+2
+12
+(setq h (entlast))
+_SUBTRACT
+!b
+
+!h
+
+_SECTION
+_ALL
+
+_XY
+0,0,5
+_MASSPROP
+_L
+
+_N
+MPDUMP
+-

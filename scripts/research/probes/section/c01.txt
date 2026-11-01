@@ -1,0 +1,21 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+_SECTION
+_L
+
+_XY
+0,0,5
+(sslength (ssget "X"))
+_LIST
+_L
+
+_MASSPROP
+_L
+
+_N
+MPDUMP
+-

@@ -221,6 +221,23 @@ function meetingCurve(c: SpaceCurve, a: number, b: number): BrepCurve {
   }
 }
 
+/**
+ * Whether a piece already made runs against one asked for from `start` along
+ * `curve`: from its other end, or round a closed curve the other way (a
+ * circle or an ellipse about the opposite normal).
+ */
+function runsAgainst(piece: Piece, start: number, curve: BrepCurve): boolean {
+  if (piece.start !== piece.end) return piece.start !== start
+  const a = piece.curve
+  if (
+    (a.kind === "circle" || a.kind === "ellipse") &&
+    (curve.kind === "circle" || curve.kind === "ellipse")
+  ) {
+    return dot3(a.normal, curve.normal) < 0
+  }
+  return false
+}
+
 function isClosedCurve(c: SpaceCurve): boolean {
   return (
     c.kind === "circle" ||
@@ -258,36 +275,46 @@ export function brepBoolean(op: SolidOperation, a: Brep, b: Brep): Brep | null {
   const pool = new Points(tolerance)
   const pieces: Piece[] = []
   const pieceIndex = new Map<string, number[]>()
-  const addPiece = (
+  // A piece found again (an edge of each solid on one curve) is the one
+  // already made, which may run the other way: the use says so.
+  const pieceUse = (
     start: number,
     end: number,
     curve: BrepCurve,
     mid: Vec3
-  ) => {
+  ): Use => {
     const key = start < end ? `${start}:${end}` : `${end}:${start}`
     for (const i of pieceIndex.get(key) ?? []) {
-      if (length3(sub3(pieces[i].mid, mid)) <= tolerance * 10) return i
+      if (length3(sub3(pieces[i].mid, mid)) <= tolerance * 10) {
+        return { piece: i, reversed: runsAgainst(pieces[i], start, curve) }
+      }
     }
     const index = pieces.length
     pieces.push({ start, end, curve, mid })
     const list = pieceIndex.get(key)
     if (list) list.push(index)
     else pieceIndex.set(key, [index])
-    return index
+    return { piece: index, reversed: false }
   }
+  const addPiece = (
+    start: number,
+    end: number,
+    curve: BrepCurve,
+    mid: Vec3
+  ): number => pieceUse(start, end, curve, mid).piece
   const vertexIds = solids.map((s) => s.vertices.map((p) => pool.add(p)))
   const boxes = solids.map((s) => s.faces.map((f) => faceBox(s, f)))
 
   // 1. Every edge cut where it pierces the other solid's faces, or crosses
   // the edges of a face it lies on, and where the other's vertices lie on it.
-  const edgePieces: number[][][] = [[], []]
+  const edgePieces: Use[][][] = [[], []]
   for (const x of [0, 1] as const) {
     const brep = solids[x]
     const other = solids[1 - x]
     brep.edges.forEach((edge, e) => {
       if (edge.curve.kind === "point") {
         edgePieces[x][e] = [
-          addPiece(
+          pieceUse(
             vertexIds[x][edge.start],
             vertexIds[x][edge.start],
             edge.curve,
@@ -355,7 +382,7 @@ export function brepBoolean(op: SolidOperation, a: Brep, b: Brep): Brep | null {
           ? vertexIds[x][edge.start]
           : pool.add(trace.point(s0))
         const end = last ? vertexIds[x][edge.end] : pool.add(trace.point(s1))
-        return addPiece(
+        return pieceUse(
           start,
           end,
           stretchCurve(edge.curve, s0, s1),
@@ -499,7 +526,7 @@ export function brepBoolean(op: SolidOperation, a: Brep, b: Brep): Brep | null {
       const otherSolid = solids[1 - x]
       for (const loop of otherFace.loops) {
         for (const c of loop) {
-          for (const index of edgePieces[1 - x][c.edge]) {
+          for (const { piece: index } of edgePieces[1 - x][c.edge]) {
             const piece = pieces[index]
             if (facePlace(solid, face, piece.mid, tolerance) === "inside") {
               cuts[x][own].add(index)
@@ -733,7 +760,7 @@ function splitFace(
   solid: Brep,
   x: 0 | 1,
   face: BrepFace,
-  edgePieces: number[][],
+  edgePieces: Use[][],
   cuts: number[],
   tolerance: number
 ): Patch[] {
@@ -742,8 +769,8 @@ function splitFace(
     loop.flatMap((c): Use[] => {
       const list = edgePieces[c.edge]
       return c.reversed
-        ? [...list].reverse().map((piece) => ({ piece, reversed: true }))
-        : list.map((piece) => ({ piece, reversed: false }))
+        ? [...list].reverse().map((u) => ({ ...u, reversed: !u.reversed }))
+        : list
     })
   )
   const untouched =
