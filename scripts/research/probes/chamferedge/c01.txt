@@ -1,0 +1,28 @@
+_QAFLAGS
+2
+(list (getvar "CHAMFERA") (getvar "CHAMFERB"))
+_BOX
+0,0,0
+10,10
+10
+_-VPOINT
+-1.3,-2.2,1.6
+_ZOOM
+_E
+_CHAMFEREDGE
+FOO
+_D
+FOO
+-1
+0
+1
+3
+5,0,10
+10,5,10
+0,5,10
+10,0,5
+
+
+(list (getvar "CHAMFERA") (getvar "CHAMFERB"))
+MPDUMP
+-

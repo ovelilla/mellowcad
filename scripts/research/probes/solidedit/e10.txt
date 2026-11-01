@@ -1,0 +1,37 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+20,10
+10
+(setq b (entlast))
+_CYLINDER
+5,5,-1
+2
+12
+(setq h (entlast))
+_SUBTRACT
+!b
+
+!h
+
+_-VPOINT
+-1.3,-2.2,1.6
+_ZOOM
+_E
+_SOLIDEDIT
+_F
+_C
+10,5,10
+
+0,0,0
+0,0,5
+_C
+6,6.732,9
+
+0,0,0
+30,0,0
+_X
+_X
+MPDUMP
+-

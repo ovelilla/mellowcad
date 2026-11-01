@@ -1,0 +1,40 @@
+_QAFLAGS
+2
+(getvar "FILLETRAD3D")
+_BOX
+0,0,0
+10,10
+10
+_-VPOINT
+-1.3,-2.2,1.6
+_ZOOM
+_E
+_FILLETEDGE
+FOO
+_R
+2
+5,0,10
+
+
+(getvar "FILLETRAD3D")
+(getvar "FILLETRAD")
+_LIST
+_L
+
+MPDUMP
+-
+_FILLETEDGE
+_R
+FOO
+-1
+0
+_E
+2*1.5
+10,5,10
+
+_R
+1
+
+(getvar "FILLETRAD3D")
+MPDUMP
+-
