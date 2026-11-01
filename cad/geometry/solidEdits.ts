@@ -151,7 +151,7 @@ export function brepSection(brep: Brep, plane: CutPlane): PlaneSection | null {
 }
 
 /** The model's tolerance as large as the solid's coordinates need. */
-function sizeTolerance(brep: Brep): number {
+export function sizeTolerance(brep: Brep): number {
   const box = solidBox(brep)
   const size = Math.max(
     1,
