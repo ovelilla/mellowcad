@@ -116,7 +116,9 @@ export const es: EngineLocale = {
       "intersect": "Intersección",
       "extrude": "Extruir",
       "revolve": "Revolución",
-      "presspull": "Presionar/Tirar"
+      "presspull": "Presionar/Tirar",
+      "slice": "Corte",
+      "section": "Sección"
     },
     "description": {
       "U": "Deshacer la última acción",
@@ -1177,6 +1179,14 @@ export const es: EngineLocale = {
       "PRESSPULL": [
         "PRESIONARTIRAR",
         "PULSARTIRAR"
+      ],
+      "SLICE": [
+        "CORTE",
+        "CO"
+      ],
+      "SECTION": [
+        "SECCION",
+        "SC"
       ]
     },
     "keywords": {
@@ -1905,6 +1915,26 @@ export const es: EngineLocale = {
       },
       "PRESSPULL": {
         "Multiple": "Múltiple"
+      },
+      "SLICE": {
+        "Object": "Objeto",
+        "Surface": "Superficie",
+        "Zaxis": "ejeZ",
+        "View": "Vista",
+        "XY": "XY",
+        "YZ": "YZ",
+        "ZX": "ZX",
+        "3points": "3puntos",
+        "Both": "Ambos"
+      },
+      "SECTION": {
+        "Object": "Objeto",
+        "Zaxis": "ejeZ",
+        "View": "Vista",
+        "XY": "XY",
+        "YZ": "YZ",
+        "ZX": "ZX",
+        "3points": "3puntos"
       }
     },
     "promptKeywords": {
@@ -2586,7 +2616,24 @@ export const es: EngineLocale = {
       "revolveStartAngle": "Precise ángulo inicial",
       "presspullSelect": "Seleccione un objeto o un área delimitada",
       "presspullHeightOr": "Precise altura de extrusión o",
-      "presspullOffsetOr": "Especifique la distancia de desfase o"
+      "presspullOffsetOr": "Especifique la distancia de desfase o",
+      "selectObjectsToSlice": "Designe objetos para cortar",
+      "sliceStartOr": "Precise punto inicial de plano cortante u",
+      "sectionFirstPointOr": "Precise primer punto en plano de sección mediante",
+      "planeSecondPoint": "Precise segundo punto en plano",
+      "sliceObject": "Seleccione un círculo, elipse, arco, spline 2D o polilínea 2D para definir el plano de corte",
+      "sectionObject": "Seleccionar un círculo, elipse, arco, spline 2D, polilínea 2D",
+      "sliceSurface": "Designe una superficie",
+      "planeSectionPoint": "Precise un punto en el plano de sección",
+      "planeZAxisPoint": "Precise un punto en el eje Z (normal) del plano",
+      "planeViewPoint": "Precise un punto en el plano de vista actual",
+      "planeXYPoint": "Precise un punto en el plano XY",
+      "planeYZPoint": "Precise un punto en el plano YZ",
+      "planeZXPoint": "Precise un punto en el plano ZX",
+      "planeFirstPoint": "Precise primer punto en plano",
+      "planeThirdPoint": "Precise tercer punto en plano",
+      "sliceSideOr": "Precise un punto en el lado deseado o",
+      "sliceBoth": "Ambos"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2599,7 +2646,8 @@ export const es: EngineLocale = {
       "ucsReplace": "open",
       "ucsZdepth": "tight",
       "undoEverything": "open",
-      "viewOrthographic": "tight"
+      "viewOrthographic": "tight",
+      "sliceStartOr": "spaced"
     },
     "answerForms": {
       "dimStyleRedefine": "tight",
@@ -2754,6 +2802,25 @@ export const es: EngineLocale = {
           "value"
         ],
         ">:"
+      ],
+      "promptWithDefaultOpen": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        ">"
       ],
       "keywordSeparator": "/",
       "keywordOr": " o ",
@@ -6920,7 +6987,52 @@ export const es: EngineLocale = {
           "count"
         ],
         " cara(s) desfasada(s)"
-      ]
+      ],
+      "noSurfacesSelected": "No hay ninguna superficie seleccionada.",
+      "planeZIdentical": "El punto del plano y el del eje Z no pueden ser iguales.",
+      "planeFirstSecondIdentical": "El 1er. punto y el 2º no pueden ser iguales.",
+      "planeThirdCollinear": "Tiene que ser un punto distinto del 1º y del 2º, y que no sea colinear a estos.",
+      "sliceDistinctXY": "Las coordenadas X,Y del primer y segundo puntos deben ser distintas. *No válido*",
+      "sliceOnPlane": "El punto no puede estar situado en el plano cortante.",
+      "sliceMissedOne": "El plano cortante no se interseca con el sólido designado.",
+      "sliceMissed": [
+        "El plano cortante no se interseca con ",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " sólido designado"
+            ],
+            "other": [
+              0,
+              " sólidos designados"
+            ]
+          }
+        ],
+        "."
+      ],
+      "sectionMissedOne": "El plano de sección no se interseca con el sólido designado.",
+      "sectionMissed": [
+        "El plano de sección no se interseca con ",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " sólido designado"
+            ],
+            "other": [
+              0,
+              " sólidos designados"
+            ]
+          }
+        ],
+        "."
+      ],
+      "noSolidsSelected": "No se ha seleccionado ningún sólido, superficie o malla."
     },
     "feedback": {
       "snap": {
@@ -7188,6 +7300,10 @@ export const es: EngineLocale = {
       },
       "REVOLVE": {
         "STart": "ángulo Inicial"
+      },
+      "SLICE": {
+        "Object": "Objeto plano",
+        "Both": "mantener Ambos lados"
       }
     },
     "promptKeywordLabels": {

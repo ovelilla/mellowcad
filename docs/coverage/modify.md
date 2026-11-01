@@ -1319,6 +1319,46 @@ SUBTRACT of a plane of the first set with nothing to subtract, left alone here (
 regions; **unverified**); a composite's Properties palette and grips (none here, **unverified**);
 DELOBJ-like history (SOLIDHIST, SHOWHISTORY).
 
+### `SLICE` / `SL` · es `CORTE` / `CO` · pt-BR `FATIAR` / `FAT`
+
+**Implemented:** As 2027's console asks it in en, es and pt-BR (slice/s01–s13): `Select objects to
+slice:` (es `Designe objetos para cortar`, pt-BR `Selecionar objetos a serem fatiados`), whole
+objects, what is no solid passed over (s09: a region and a line), none left ending it silently
+(section/c09). `Specify start point of slicing plane or [planar Object/Surface/Zaxis/View/XY/YZ/ZX/3points]
+<3points>:` (es `Precise punto inicial de plano cortante u [Objeto plano/…/3puntos] <3puntos>:`,
+pt-BR `Especificar ponto inicial de plano de fatiamento ou [Objeto plano/…/3pontos] <3pontos>`,
+no colon): a point there is the first of two the plane runs through square to the UCS's XY, its
+normal (p2 − p1) × Z (`Specify second point on plane:`; one on its X,Y says `First and second
+points must have distinct X,Y coordinates. *Invalid*` and is asked again, s08); planar Object takes
+a circle's, an arc's, an ellipse's, a 2D polyline's or a level spline's plane (`Select a circle,
+ellipse, arc, 2D-spline, 2D-polyline to define the slicing plane:`, s06); Zaxis asks `Specify a
+point on the section plane:` and `Specify a point on the Z-axis (normal) of the plane:` (`Point
+on plane and point on Z-axis cannot be identical.`, s04); View the plane facing the view through
+`Specify a point on the current view plane <0,0,0>:`; XY, YZ and ZX the UCS's through a point
+(`<0,0,0>`, s02, s03); 3points, also Enter there, `Specify first point on plane:`, `… second …`,
+`… third …` (s05; `1st and 2nd points cannot be identical.` and `Need a point distinct from and not
+collinear with 1st and 2nd points.` from the tables, 22069, 22071); Surface asks `Select a
+surface:`, every pick says `No surfaces selected.` and Enter ends it (slice/t1). Then `Specify a
+point on desired side or [keep Both sides] <Both>:` (es `[mantener Ambos lados] <Ambos>`, pt-BR
+`[manter Ambos os lados] <Ambos>`; on the plane `The point should not be on the slicing plane.`,
+s08): the side kept keeps the object (s02); Both keeps it on the side the plane's normal points to
+and makes the other a new solid of its layer, colour, linetype and lineweight (s01, s03, s05,
+s09). Either loses what made it (`History = None`, no Solid type, s01); a side of two lumps is one
+solid of two shells (s11). Every solid of the set is cut (s12); one the plane misses, or touches
+on a face, along an edge or at a vertex, stays, said after the side (`Slicing plane does not
+intersect the selected solid.`, es `El plano cortante no se interseca con el sólido designado.`;
+`… 1 selected solid.` among several, s07). The cut is the kernel's (`geometry/solidEdits.ts`), its
+halves adding up to the solid: a cylinder cut askew into 235.6194 and 549.7787, a sphere, a cone
+along its axis (s10). One undo step, `SLICE` (s13). Its rail slot is beside UNION's, as in the
+Solid Editing panel.
+
+**Missing:** surfaces, as the plane (Surface) and as objects sliced, and meshes; a planar 3D
+polyline as the plane's object (its help names it; here passed over as any other, and what
+AutoCAD says to an object that defines no plane is **unverified**); a torus or a turned profile
+cut neither square to its axis nor along it, and the other meetings with no closed form, which
+say `1 boolean operation(s) failed.` here (phase 7); what the desktop shows of the plane and the
+side kept as the cursor moves (**unverified**).
+
 ### `JOIN` / `J` · es `UNIR` / `U` · pt-BR `UNIR` / `UNE`
 
 **Implemented:** `Select source object or multiple objects to join at once:`, then

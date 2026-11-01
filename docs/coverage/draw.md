@@ -1034,8 +1034,8 @@ any grip. One undo step, `Grip Edit`.
 **Missing:** the hot grip's other modes (Enter's Move, Rotate, Scale, Mirror, as at every grip
 here); a height dragged past the opposite face, which AutoCAD answers with no rule (g01: down 6
 leaves the box upright 1 high, down 7 turns it over 2 high), refused here; the 3D commands of its
-own (3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN), the gizmos and sub-objects
-(Ctrl+click), later phases; the dynamic UCS and the jig's 3D drag of the height (here a pick at the
+own (3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN), the gizmos and the edits of its sub-objects
+(Ctrl+click selects them: command-line.md), later phases; the dynamic UCS and the jig's 3D drag of the height (here a pick at the
 height prompt gives its distance, as the console does); FILLET and CHAMFER of its edges, which
 AutoCAD asks with `Enter fillet radius or [Expression]:` and `Base surface selection...` (phase
 6; here the pick is passed over); JOIN with a solid picked first, which AutoCAD answers with `Line,
@@ -1403,28 +1403,64 @@ axis (the whole turn is previewed); its grips and the palette's rows under Solid
 
 ### `PRESSPULL` · es `PRESIONARTIRAR` / `PULSARTIRAR` · pt-BR `PRESSIONARPUXAR`
 
-**Implemented:** PRESSPULL on a closed object or an area its objects bound, which its help says
-extrude into a 3D solid (`PRESSPULL (Command)`, `To Work With Pressing or Pulling Bounded Areas or
-Objects`), worded by 2027's tables (31244, 53916, 292, 26301): `Select object or bounded area:` (es
-`Seleccione un objeto o un área delimitada`, pt-BR `Selecione o objeto ou área delimitada`) until
-Enter — a click on a circle, an ellipse, a closed polyline or spline or a region, or inside an area
-the objects in plan bound (HATCH's boundary, its islands holes) —, then `Specify extrusion height or
-[Multiple]:` (es `Precise altura de extrusión o [Múltiple]`, pt-BR `Especifique a altura da extrusão
-ou [Múltiplos]`), the solid along the profile's normal (the UCS's Z for an area), of the current
-layer and properties, its objects kept, and the selection asked again (its help: "The command
-repeats automatically until you press Esc, Enter, or the spacebar"). Multiple, at either prompt,
-takes several clicks before one height. A typed point says `Click a face, curve, or inside a bounded
-area` (presspull/p01, the console's answer to every point), FOO `2D point or option keyword
-required.`. The solid is EXTRUDE's (`Solid type = Extrusion`). The whole run is one undo step.
+**Implemented:** PRESSPULL on a closed object, an area its objects bound, or a planar face of a
+solid (`PRESSPULL (Command)`, `To Work With Pressing or Pulling Bounded Areas or Objects`, `To Work
+with Pressing or Pulling 3D Solid Faces`), worded by 2027's tables (31244, 53916, 67, 292, 26301,
+55300, 11379): `Select object or bounded area:` (es `Seleccione un objeto o un área delimitada`,
+pt-BR `Selecione o objeto ou área delimitada`) until Enter — a click on a circle, an ellipse, a
+closed polyline or spline or a region, or inside an area the objects in plan bound (HATCH's
+boundary, its islands holes), extruded into a solid along its normal (the UCS's Z for an area), of
+the current layer and properties, its objects kept, `Specify extrusion height or [Multiple]:` (es
+`Precise altura de extrusión o [Múltiple]`, pt-BR `Especifique a altura da extrusão ou
+[Múltiplos]`); a click on a planar face of a solid, the one nearest the viewer under it (after a
+closed object, before an area), extrudes the face, its neighbours left as they were, the same
+prompt then `1 extrusion(s) created`; Ctrl+click offsets the face, its neighbours carried on to
+meet it, `Specify offset distance or [Multiple]:` with the answer against the colon (es
+`Especifique la distancia de desfase o [Múltiple]:`, pt-BR `Especifique a distância de
+deslocamento ou [Múltiplos]:`), then `1 face(s) offset` (desktop, a box seen from (-1.3, -2.2,
+1.6)). A face's height is how far along its outward normal the cursor stands where that normal is
+drawn, or typed, negative pressing in; extruded, the face's prism is added or taken out
+(solidedit/e01: a box's top to 1200 or 700; e02: beside a slope it rises square, a new side, 950);
+offset, sloping planes beside it run on (e02: 960, six faces) and a cylinder or an extrusion
+square to it grows (e03: 1021.0176; a drilled box's top pressed 3, 612.0354), the kernel's
+(`geometry/solidEdits.ts`). Ctrl held lights the face a click would take; the faces taken glow as
+selected, the whole solid for an offset. The solid keeps its object and loses what made it (LIST:
+`History = None`, no Solid type). Multiple, at either prompt, takes several clicks before one
+height, several faces of one solid among them. A typed point says `Click a face, curve, or inside a
+bounded area` (presspull/p01, the console's answer to every point), FOO `2D point or option keyword
+required.`. The solid an object or an area makes is EXTRUDE's (`Solid type = Extrusion`). The whole
+run is one undo step, `PRESSPULL` (desktop).
 
-**Missing:** a solid's face pressed or pulled (Ctrl+click offsets it): the kernel's booleans would
-extrude it into the solid or out of it, but picking a face under the cursor is the sub-objects' work
-(the brief's phase 6), and an offset face drags its neighbours (SOLIDEDIT's); an open object,
-which it extrudes into a surface (no surface object here); the drag's live height along the normal
-and the jig's preview of the area as the cursor hovers it (here the height is the distance to a
-point); `%d extrusion(s) created` (55300), whose moment no probe has seen; whether a closed object
-pulled is kept or erased, and what an area bounded off the UCS's plane does (**unverified**: the
-console cannot click, presspull/p01, and no desktop pass has been made).
+**Missing:** a curved face, which AutoCAD offsets too (refused here as no face: `Click a face,
+curve, or inside a bounded area`); an offset whose neighbours are cones, spheres, tori or
+revolutions, or planes and curved faces together, and one the topology cannot take (a face pushed
+through the one across it), each leaving the solid as it was, where AutoCAD's message is
+**unverified**; Ctrl+Shift+E, IMPLIEDFACE and an imprinted face's area (no IMPRINT here); an open
+object, which it extrudes into a surface (no surface object here); the drag's live preview of the
+united solid (here a face's prism, or the solid an object makes) and the hover highlight of an
+area or a face without Ctrl; whether a closed object pulled says `%d extrusion(s) created` (seen
+after a face) and is kept or erased, and what an area bounded off the UCS's plane does
+(**unverified**: no desktop pass of objects).
+
+### `SECTION` / `SEC` · es `SECCION` / `SC` · pt-BR `CORTE` / `SECAO`
+
+**Implemented:** As 2027's console asks it in en, es and pt-BR (section/c01–c09): `Select
+objects:`, whole objects, what is no solid passed over (c08: a circle); a set with no solid says
+`No Solids, Surfaces or Meshes selected.` (es `No se ha seleccionado ningún sólido, superficie o
+malla.`, pt-BR `Nenhum sólido, superfície ou malha selecionado.`) and ends (c06). Then `Specify
+first point on Section plane by [Object/Zaxis/View/XY/YZ/ZX/3points] <3points>:` (es `Precise
+primer punto en plano de sección mediante […] <3puntos>`, pt-BR `Especificar o primeiro ponto no
+Plano de corte por […] <3pontos>`): a point there is the first of three; the options are SLICE's
+but Surface, Object asking `Select a circle, ellipse, arc, 2D-spline, 2D-polyline:` (22073). Each
+solid the plane cuts gets a region where it cuts it, in the plane and facing its normal (c01: 100
+at Z 5; c03: a cylinder along its axis 100, askew an ellipse of 84.5900; c05: a drilled box's ring
+87.4336); a plane holding a face gives that face (c06); one it misses says `Sectioning plane does
+not intersect the selected solid.` (`… 1 selected solid.`, `… 2 selected solids.` among several,
+c04). The regions wear the current layer and properties, not the solid's (c09); the solids stay.
+One undo step, `SECTION` (c07). Typed only, as the ribbon offers SECTIONPLANE in its place.
+
+**Missing:** surfaces and meshes; the meetings with no closed form, as SLICE's (`1 boolean
+operation(s) failed.` here); SECTIONPLANE and live sectioning.
 
 ### `BLOCK` / `B` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOCK` / `-B` · es `BLOQUE` / `BQ` / `MODBLQ` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOQUE` / `-BQ` · pt-BR `BLOCO` / `CB` / `ACADBLOCKDIALOG` / `CRIARB` / `DEFB`, `-BLOCO` / `-CB`
 

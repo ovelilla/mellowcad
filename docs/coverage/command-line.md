@@ -283,8 +283,10 @@ so `S` is Subobjeto there; after a global `_S` the question names the global wor
 `SIngle o SUbobject?`, p130, p131)
 
 **Missing:** Group (`Enter group name:`, `Invalid group name.`, p134) and Multiple (its picks
-counted at Enter, `2 selected, 2 found`, p135); SUbobject's faces, edges and vertices and the Ctrl+pick that
-selects them (no object here has sub-objects); a pick or a typed point on an object on a locked
+counted at Enter, `2 selected, 2 found`, p135); SUbobject's faces, edges and vertices and the
+Ctrl+pick that takes them at MOVE's, ROTATE's, SCALE's and ERASE's `Select objects:`, each counted
+(desktop: MOVE's `1 found`, `1 found, 2 total`; phase 6c), where here Ctrl picks as a plain click,
+as LIST's and COPY's do there; a pick or a typed point on an object on a locked
 layer (here it finds nothing and starts a window; AutoCAD says `1 found` / `1 was on a locked
 layer.`, erase/p211, p257; at `Command:` it is selected, properties/d02-1); **unverified** whether
 the commands that change nothing (COPYCLIP, ZOOM Object) leave locked finds out at `Select
@@ -296,6 +298,27 @@ polygon's first point; PICKADD, PICKAUTO, PICKDRAG and SELECTIONPREVIEW as varia
 defaults are the behaviour); the Previous set lasts the session, not the drawing; a press starts a
 lasso here once it moves 4 px (`DRAG_THRESHOLD_PX`), where AutoCAD's goes past 7 px across and 8
 down, 6 and 6 still a click (desktop erase/d15, at `Command:`, PICKBOX 3 or 10 alike)
+
+### Ctrl+click · a solid's faces, edges and vertices (subobjects)
+
+**Implemented:** At `Command:`, Ctrl held over a solid lights the subobject under the cursor and
+Ctrl+click selects it, as AutoCAD 2027's desktop does (a box seen from (-1.3, -2.2, 1.6), 2D
+Wireframe, LEGACYCTRLPICK 2, SUBOBJSELECTIONMODE 0): a vertex within the pick box before its edges,
+an edge before the faces it bounds — in 2D Wireframe a back one too, drawn over a face —, then the
+faces the line of sight crosses, nearest the viewer first; in Hidden and Conceptual only what
+Hidden draws. Ctrl+Space walks to the next under the cursor (the top, then the back), round;
+Ctrl+Shift+click takes one out; Escape drops them with the rest. Held over, a face's edges and an
+edge glow as a rollover, a vertex a light disc; selected, they glow blue and wear a red grip, a
+disc lying in the face at its centre, a bar along the edge at its middle, a dot on the vertex. The
+subobjects are no set a command takes: with only them selected ERASE asks `Select objects:`
+(desktop).
+
+**Missing:** dragging their grips and the gizmo, and MOVE, ROTATE, SCALE and ERASE acting on them
+(3DMOVE's and 3DROTATE's, phase 6c); LIST taking a selected subobject's solid, as the desktop's
+does; SUBOBJSELECTIONMODE (Shift+F1–F5's filters and their cursor badges), LEGACYCTRLPICK, the
+history subobjects of a composite (SOLIDHIST); the highlight changing as Ctrl is pressed with the
+cursor still (here at the next move); the Properties palette of a face, an edge or a vertex
+(**unverified**).
 
 ### Typed and confirmed
 

@@ -116,7 +116,9 @@ export const en: EngineCatalog = {
       "intersect": "Intersect",
       "extrude": "Extrude",
       "revolve": "Revolve",
-      "presspull": "Presspull"
+      "presspull": "Presspull",
+      "slice": "Slice",
+      "section": "Section"
     },
     "description": {
       "U": "Undo the last action",
@@ -1194,6 +1196,14 @@ export const en: EngineCatalog = {
       ],
       "PRESSPULL": [
         "PRESSPULL"
+      ],
+      "SLICE": [
+        "SLICE",
+        "SL"
+      ],
+      "SECTION": [
+        "SECTION",
+        "SEC"
       ]
     },
     "keywords": {
@@ -2021,7 +2031,24 @@ export const en: EngineCatalog = {
       "revolveStartAngle": "Specify start angle",
       "presspullSelect": "Select object or bounded area",
       "presspullHeightOr": "Specify extrusion height or",
-      "presspullOffsetOr": "Specify offset distance or"
+      "presspullOffsetOr": "Specify offset distance or",
+      "selectObjectsToSlice": "Select objects to slice",
+      "sliceStartOr": "Specify start point of slicing plane or",
+      "sectionFirstPointOr": "Specify first point on Section plane by",
+      "planeSecondPoint": "Specify second point on plane",
+      "sliceObject": "Select a circle, ellipse, arc, 2D-spline, 2D-polyline to define the slicing plane",
+      "sectionObject": "Select a circle, ellipse, arc, 2D-spline, 2D-polyline",
+      "sliceSurface": "Select a surface",
+      "planeSectionPoint": "Specify a point on the section plane",
+      "planeZAxisPoint": "Specify a point on the Z-axis (normal) of the plane",
+      "planeViewPoint": "Specify a point on the current view plane",
+      "planeXYPoint": "Specify a point on the XY-plane",
+      "planeYZPoint": "Specify a point on the YZ-plane",
+      "planeZXPoint": "Specify a point on the ZX-plane",
+      "planeFirstPoint": "Specify first point on plane",
+      "planeThirdPoint": "Specify third point on plane",
+      "sliceSideOr": "Specify a point on desired side or",
+      "sliceBoth": "Both"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2034,7 +2061,8 @@ export const en: EngineCatalog = {
       "ucsReplace": "open",
       "ucsZdepth": "tight",
       "undoEverything": "open",
-      "viewOrthographic": "tight"
+      "viewOrthographic": "tight",
+      "sliceStartOr": "spaced"
     },
     "answerForms": {
       "dimStyleRedefine": "tight",
@@ -2189,6 +2217,25 @@ export const en: EngineCatalog = {
           "value"
         ],
         ">:"
+      ],
+      "promptWithDefaultOpen": [
+        [
+          "head"
+        ],
+        " ",
+        [
+          "keywords",
+          "[",
+          [
+            "list"
+          ],
+          "]"
+        ],
+        " <",
+        [
+          "value"
+        ],
+        ">"
       ],
       "keywordSeparator": "/",
       "keywordOr": " or ",
@@ -6338,7 +6385,52 @@ export const en: EngineCatalog = {
           "count"
         ],
         " face(s) offset"
-      ]
+      ],
+      "noSurfacesSelected": "No surfaces selected.",
+      "planeZIdentical": "Point on plane and point on Z-axis cannot be identical.",
+      "planeFirstSecondIdentical": "1st and 2nd points cannot be identical.",
+      "planeThirdCollinear": "Need a point distinct from and not collinear with 1st and 2nd points.",
+      "sliceDistinctXY": "First and second points must have distinct X,Y coordinates. *Invalid*",
+      "sliceOnPlane": "The point should not be on the slicing plane.",
+      "sliceMissedOne": "Slicing plane does not intersect the selected solid.",
+      "sliceMissed": [
+        "Slicing plane does not intersect ",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " selected solid"
+            ],
+            "other": [
+              0,
+              " selected solids"
+            ]
+          }
+        ],
+        "."
+      ],
+      "sectionMissedOne": "Sectioning plane does not intersect the selected solid.",
+      "sectionMissed": [
+        "Sectioning plane does not intersect ",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " selected solid"
+            ],
+            "other": [
+              0,
+              " selected solids"
+            ]
+          }
+        ],
+        "."
+      ],
+      "noSolidsSelected": "No Solids, Surfaces or Meshes selected."
     },
     "feedback": {
       "snap": {
@@ -6606,6 +6698,10 @@ export const en: EngineCatalog = {
       },
       "REVOLVE": {
         "STart": "STart angle"
+      },
+      "SLICE": {
+        "Object": "planar Object",
+        "Both": "keep Both sides"
       }
     },
     "promptKeywordLabels": {

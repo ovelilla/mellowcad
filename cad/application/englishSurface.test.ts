@@ -1548,6 +1548,55 @@ describe("the engine's English surface", () => {
         .do("height", (c) => submit(c, "M"))
         .do("click again", (c) => c.click({ x: 20, y: 20 }))
         .do("Multiple's height", (c) => submit(c, "", "30", ""))
+        .do("a face, offset", (c) =>
+          submit(c, "BOX", "200,0,0", "250,50", "50", "PRESSPULL")
+        )
+        .do("Ctrl+click its top", (c) =>
+          c.click({ x: 225, y: 25 }, { ctrlKey: true })
+        )
+        .do("offset", (c) => submit(c, "10", ""))
+    )
+    walk("SLICE", createHarness(), (s) =>
+      s
+        .do("BOX", (c) => submit(c, "BOX", "0,0,0", "100,100", "100"))
+        .do("SLICE refused", (c) =>
+          submit(c, "SLICE", "L", "", "FOO", "50,50", "50,50,20", "50,0")
+        )
+        .do("side refused, then one", (c) => submit(c, "50,50", "0,0"))
+        .do("SLICE Zaxis, missed", (c) =>
+          submit(c, "SLICE", "L", "", "Z", "0,0,200", "0,0,200", "0,0,201", "")
+        )
+        .do("SLICE Surface", (c) => submit(c, "SLICE", "L", "", "S"))
+        .do("a surface picked", (c) => c.click({ x: 0, y: 0 }))
+        .do("Enter", (c) => submit(c, ""))
+        .do("SLICE 3points, Both", (c) =>
+          submit(
+            c,
+            "SLICE",
+            "L",
+            "",
+            "",
+            "0,0,10",
+            "0,0,10",
+            "10,0,10",
+            "0,0,10",
+            "10,10,10",
+            "B"
+          )
+        )
+    )
+    walk("SECTION", createHarness(), (s) =>
+      s
+        .do("BOX", (c) => submit(c, "BOX", "0,0,0", "100,100", "100"))
+        .do("SECTION refused", (c) =>
+          submit(c, "SECTION", "L", "", "FOO", "XY", "0,0,50")
+        )
+        .do("SECTION missed", (c) =>
+          submit(c, "SECTION", "ALL", "", "YZ", "500,0,0")
+        )
+        .do("SECTION of no solid", (c) =>
+          submit(c, "LINE", "0,0", "10,0", "", "SECTION", "L", "")
+        )
     )
     walk(
       "JOIN made",

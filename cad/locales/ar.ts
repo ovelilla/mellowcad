@@ -116,7 +116,9 @@ export const ar: EngineLocale = {
       "intersect": "تقاطع",
       "extrude": "بثق",
       "revolve": "دوران",
-      "presspull": "ضغط/سحب"
+      "presspull": "ضغط/سحب",
+      "slice": "تقطيع",
+      "section": "مقطع"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",

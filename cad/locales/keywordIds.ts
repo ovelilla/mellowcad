@@ -725,5 +725,25 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
   ],
   "PRESSPULL": [
     "Multiple"
+  ],
+  "SLICE": [
+    "Object",
+    "Surface",
+    "Zaxis",
+    "View",
+    "XY",
+    "YZ",
+    "ZX",
+    "3points",
+    "Both"
+  ],
+  "SECTION": [
+    "Object",
+    "Zaxis",
+    "View",
+    "XY",
+    "YZ",
+    "ZX",
+    "3points"
   ]
 }
