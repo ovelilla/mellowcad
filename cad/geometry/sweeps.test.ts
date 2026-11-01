@@ -486,7 +486,9 @@ describe("swept solids, any", () => {
           }
         }
       }),
-      { numRuns: 40 }
+      // 2.5 to 6.2 s alone with coverage at 40 runs (1/11/2026), over the
+      // 10 s limit with the whole suite beside it: half as many keep it under.
+      { numRuns: 20 }
     )
   }, 30_000)
 })
