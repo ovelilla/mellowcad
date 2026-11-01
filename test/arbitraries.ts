@@ -49,9 +49,15 @@ import type { Vec2 } from "../cad/geometry/Vec2"
 import type { PlanarCurve } from "../cad/geometry/planarCurves"
 import type { RegionFace } from "../cad/geometry/planarRegions"
 import { arbitraryAxis, axesToWorld } from "../cad/geometry/ocs"
-import { Vec3, add3, scale3 } from "../cad/geometry/Vec3"
+import { Vec3, add3, scale3, sub3 } from "../cad/geometry/Vec3"
 import { curveBox, curveMapped } from "../cad/geometry/planarCurves"
-import type { Brep } from "../cad/geometry/solids"
+import {
+  type Brep,
+  boxBrep,
+  brepBox,
+  roundBrep,
+  sphereBrep,
+} from "../cad/geometry/solids"
 import {
   PlanarProfile,
   extrusionBrep,
@@ -1156,3 +1162,124 @@ export const drawingSnapshot: fc.Arbitrary<DrawingSnapshot> = fc
         }
       )
   )
+
+/**
+ * Two solids to combine, in the meetings the kernel has closed forms for
+ * (`geometry/intersections.ts`): a primitive or an extruded sweep and a box
+ * turned any way across it; a revolved sweep and a cylinder on its axis; two
+ * spheres. The box and the spheres are sized and placed to overlap the
+ * first solid somewhere. Neither is a sliver: thinner than a fiftieth of its
+ * length, or an elliptical round side flatter than 1 : 10.
+ */
+export const solidPair: fc.Arbitrary<{ a: Brep; b: Brep; kind: string }> = fc
+  .tuple(
+    fc
+      .oneof(
+        solidEntity.map((s) => ({
+          brep: s.brep,
+          kind: s.primitive?.kind ?? "solid",
+          sweep: null as Sweep | null,
+        })),
+        sweep.map((s) => ({ brep: s.brep, kind: s.kind, sweep: s }))
+      )
+      .filter(({ brep }) => {
+        // No sliver: a solid thinner than a fiftieth of its length one way is
+        // finer than a boolean at the model's tolerance tells apart.
+        const box = brepBox(brep)!
+        const d = [
+          box.max.x - box.min.x,
+          box.max.y - box.min.y,
+          box.max.z - box.min.z,
+        ].sort((p, q) => p - q)
+        const flat = brep.faces.some(
+          (f) =>
+            (f.surface.kind === "cylinder" || f.surface.kind === "cone") &&
+            (f.surface.ratio < 0.1 || f.surface.ratio > 10)
+        )
+        return !flat && d[0] >= d[2] / 50 && d[0] >= 0.5
+      }),
+    fc.tuple(
+      fc.double({ min: -0.6, max: 0.6, noNaN: true }),
+      fc.double({ min: -0.6, max: 0.6, noNaN: true }),
+      fc.double({ min: -0.6, max: 0.6, noNaN: true })
+    ),
+    fc.tuple(
+      fc.double({ min: 0.3, max: 1.5, noNaN: true }),
+      fc.double({ min: 0.3, max: 1.5, noNaN: true }),
+      fc.double({ min: 0.3, max: 1.5, noNaN: true })
+    ),
+    fc.double({ min: -Math.PI, max: Math.PI, noNaN: true }),
+    fc.double({ min: -Math.PI / 2, max: Math.PI / 2, noNaN: true }),
+    fc.double({ min: -Math.PI, max: Math.PI, noNaN: true }),
+    fc.boolean()
+  )
+  .map(([first, shift, sizes, azimuth, tilt, turn, sphere]) => {
+    const box = brepBox(first.brep)!
+    const center = scale3(add3(box.min, box.max), 0.5)
+    const extent = Math.max(
+      box.max.x - box.min.x,
+      box.max.y - box.min.y,
+      box.max.z - box.min.z
+    )
+    const at = add3(center, {
+      x: shift[0] * extent,
+      y: shift[1] * extent,
+      z: shift[2] * extent,
+    })
+    if (first.sweep?.kind === "revolve") {
+      // A cylinder on the turn's axis, as wide as a share of the solid.
+      const s = first.sweep
+      const axes = arbitraryAxis(s.axis)!
+      const reach = extent * (1 + sizes[0])
+      const b = roundBrep(
+        add3(s.origin, scale3(s.axis, -reach + shift[0] * extent)),
+        axes.z,
+        axes.x,
+        extent * sizes[1] * 0.5,
+        extent * sizes[1] * 0.5,
+        2 * reach,
+        1
+      )
+      return { a: first.brep, b, kind: "revolve/cylinder" }
+    }
+    if (sphere && first.kind === "sphere") {
+      return {
+        a: first.brep,
+        b: sphereBrep(
+          at,
+          { x: 0, y: 0, z: 1 },
+          { x: 1, y: 0, z: 0 },
+          extent * sizes[0] * 0.5
+        ),
+        kind: "spheres",
+      }
+    }
+    // Never along the world's axes, where the solids often are: within the
+    // tolerance of their faces but not on them is no case a boolean can sort.
+    const t = tilt * 0.8 + 0.21
+    const normal = {
+      x: Math.cos(t) * Math.cos(azimuth + 0.37),
+      y: Math.cos(t) * Math.sin(azimuth + 0.37),
+      z: Math.sin(t),
+    }
+    const axes = arbitraryAxis(normal)!
+    const turned = turn + 0.53
+    const u = add3(
+      scale3(axes.x, Math.cos(turned)),
+      scale3(axes.y, Math.sin(turned))
+    )
+    const v = add3(
+      scale3(axes.x, -Math.sin(turned)),
+      scale3(axes.y, Math.cos(turned))
+    )
+    const w = axes.z
+    const du = scale3(u, extent * sizes[0])
+    const dv = scale3(v, extent * sizes[1])
+    const dw = scale3(w, extent * sizes[2])
+    const corner = sub3(at, scale3(add3(add3(du, dv), dw), 0.5))
+    return {
+      a: first.brep,
+      b: boxBrep(corner, du, dv, dw),
+      kind: `${first.kind}/box`,
+    }
+  })

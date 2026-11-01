@@ -1,0 +1,22 @@
+_QAFLAGS
+2
+_SPHERE
+0,0,0
+10
+(setq s (entlast))
+_BOX
+-20,-20,0
+20,20
+20
+(setq b (entlast))
+_SUBTRACT
+!s
+
+!b
+
+_MASSPROP
+!s
+
+_N
+MPDUMP
+-

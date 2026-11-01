@@ -70,7 +70,7 @@ describe("Green in a face's parameters", () => {
     }
   })
 
-  it("closes a face round the pole it reaches, which no loop bounds (solid/a6)", () => {
+  it("closes a face round the pole it reaches, which no loop bounds (union/k07)", () => {
     // SUBTRACT's hemisphere: the sphere's face below its equator, the plane over it.
     const r = 10
     const brep: Brep = {
