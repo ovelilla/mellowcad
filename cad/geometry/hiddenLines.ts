@@ -893,3 +893,75 @@ export function viewLines(
     return out
   })
 }
+
+/**
+ * Whether a point of the solids is drawn in Hidden seen along `toViewer`: no
+ * face of any of them hides it, as {@link viewLines} cuts their lines. What a
+ * Ctrl+click finds of an edge in a shaded style, where a hidden one is not
+ * drawn; null for a direction of no length.
+ */
+export function pointShown(
+  breps: readonly Brep[],
+  toViewer: Vec3
+): ((p: Vec3) => boolean) | null {
+  const w = normalize3(toViewer)
+  const axes = w && arbitraryAxis(w)
+  if (!w || !axes) return null
+  const frame: ViewFrame = { e1: axes.x, e2: axes.y, w }
+  const shadows = breps.flatMap((brep) =>
+    brep.faces.map((face) => shadowOf(brep, face, frame))
+  )
+  const reach = shadows.reduce(
+    (m, sh) =>
+      Math.max(
+        m,
+        Math.abs(sh.min[0]),
+        Math.abs(sh.min[1]),
+        Math.abs(sh.max[0]),
+        Math.abs(sh.max[1]),
+        Math.abs(sh.near)
+      ),
+    1
+  )
+  const gap = Math.max(MODEL_TOLERANCE, reach * 1e-9)
+  return (p) => !hidden(p, frame, shadows, gap)
+}
+
+/** A face the line of sight crosses, and how far towards the viewer along it. */
+export interface FaceCrossing {
+  readonly face: number
+  readonly depth: number
+}
+
+/**
+ * The faces the line of sight through `point` along `toViewer` crosses,
+ * nearest the viewer first, each once: what a Ctrl+click on a face takes, and
+ * Ctrl+Space the next behind it (desktop, the box's top then its back). Cut
+ * as the view's rays are; a face it only grazes is not crossed.
+ */
+export function facesAlong(
+  brep: Brep,
+  point: Vec3,
+  toViewer: Vec3
+): FaceCrossing[] {
+  const w = normalize3(toViewer)
+  if (!w) return []
+  const box = solidBox(brep)
+  const pad = length3(sub3(box.max, box.min)) * 0.01 + MODEL_TOLERANCE
+  const span = rayInBox(point, w, {
+    min: sub3(box.min, { x: pad, y: pad, z: pad }),
+    max: add3(box.max, { x: pad, y: pad, z: pad }),
+  })
+  if (!span) return []
+  const found: FaceCrossing[] = []
+  brep.faces.forEach((face, index) => {
+    let best = -Infinity
+    for (const t of rayHits(point, w, span[0], span[1], brep, face)) {
+      const q = add3(point, scale3(w, t))
+      if (facePlace(brep, face, q, MODEL_TOLERANCE) === "outside") continue
+      best = Math.max(best, t)
+    }
+    if (best > -Infinity) found.push({ face: index, depth: best })
+  })
+  return found.sort((a, b) => b.depth - a.depth)
+}

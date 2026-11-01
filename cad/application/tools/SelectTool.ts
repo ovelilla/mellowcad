@@ -92,6 +92,8 @@ import {
   pickRolloverEntity,
 } from "./selectToolOverlay"
 import { DRAG_THRESHOLD_PX } from "../input/dragThreshold"
+import { SubobjectRef, sameSubobject } from "../../domain/solidSubobjects"
+import { subobjectsAt } from "../subobjectPick"
 
 /**
  * The select tool's interaction flow as an explicit state machine:
@@ -131,6 +133,11 @@ export class SelectTool implements Tool {
   readonly shortcut = "s"
 
   private state: SelectToolState = { phase: "idle" }
+  /** The subobjects under the cursor where Ctrl was last held, and which of them Ctrl+Space has reached. */
+  private subobjects: { list: SubobjectRef[]; at: number } = {
+    list: [],
+    at: 0,
+  }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("default")
@@ -267,6 +274,19 @@ export class SelectTool implements Tool {
           break
       }
       return
+    }
+
+    // Ctrl+click takes the face, edge or vertex under the cursor, Ctrl+Shift
+    // takes it out (To Work With Subobject Selection); on none it picks as
+    // any click does.
+    if (input.ctrlKey && this.state.phase === "idle") {
+      const sub = this.subobjectUnder(input.screen, ctx)
+      if (sub) {
+        if (input.shiftKey) ctx.selection.removeSubobject(sub)
+        else ctx.selection.addSubobject(sub)
+        ctx.requestRender()
+        return
+      }
     }
 
     // Selection boxes track the raw cursor, not snapped/constrained points.
@@ -477,16 +497,31 @@ export class SelectTool implements Tool {
         // separately via magneticCursor(). Also track the unselected entity
         // under the cursor for AutoCAD's selection-preview (rollover) highlight.
         const hoverGrip = hitGrip(input.screen, ctx)
-        const { id: hoverEntityId, locked: hoverLocked } = pickRolloverEntity(
-          input,
-          ctx
-        )
+        // With Ctrl held the face, edge or vertex under the cursor glows in
+        // the object's place (desktop: Ctrl over a box's top lights its edges).
+        const hoverSubobject = input.ctrlKey
+          ? this.subobjectUnder(input.screen, ctx)
+          : null
+        const rollover = pickRolloverEntity(input, ctx)
+        const hoverEntityId = hoverSubobject ? null : rollover.id
+        const hoverLocked = hoverSubobject ? false : rollover.locked
         const gripChanged = !sameGrip(hoverGrip, this.state.hoverGrip ?? null)
         const entityChanged =
           hoverEntityId !== (this.state.hoverEntityId ?? null) ||
           hoverLocked !== (this.state.hoverLocked ?? false)
-        if (gripChanged || entityChanged) {
-          this.state = { phase: "idle", hoverGrip, hoverEntityId, hoverLocked }
+        const before = this.state.hoverSubobject ?? null
+        const subChanged =
+          before === null || hoverSubobject === null
+            ? before !== hoverSubobject
+            : !sameSubobject(before, hoverSubobject)
+        if (gripChanged || entityChanged || subChanged) {
+          this.state = {
+            phase: "idle",
+            hoverGrip,
+            hoverEntityId,
+            hoverLocked,
+            hoverSubobject,
+          }
           ctx.requestRender()
         }
         break
@@ -725,7 +760,7 @@ export class SelectTool implements Tool {
       }
       // Idle with nothing in progress: Escape clears the current selection,
       // just like pressing Esc in AutoCAD deselects and removes the grips.
-      if (!ctx.selection.isEmpty()) {
+      if (!ctx.selection.isEmpty() || ctx.selection.subobjects().length > 0) {
         ctx.selection.clear()
         ctx.requestRender()
       }
@@ -837,6 +872,39 @@ export class SelectTool implements Tool {
     return this.state.phase === "idle" && this.state.hoverLocked
       ? "locked"
       : null
+  }
+
+  cycleSubobject(ctx: ToolContext): boolean {
+    if (this.state.phase !== "idle" || !this.state.hoverSubobject) return false
+    const { list, at } = this.subobjects
+    if (list.length < 2) return false
+    const next = (at + 1) % list.length
+    this.subobjects = { list, at: next }
+    this.state = { ...this.state, hoverSubobject: list[next] }
+    ctx.requestRender()
+    return true
+  }
+
+  /**
+   * The subobject a Ctrl+click at `screen` takes: the first under it, or the
+   * one Ctrl+Space has walked to while the same ones are under it.
+   */
+  private subobjectUnder(screen: Vec2, ctx: ToolContext): SubobjectRef | null {
+    const solids = ctx.document
+      .getEntities()
+      .filter(
+        (e): e is Extract<Entity, { type: "solid3d" }> =>
+          e.type === "solid3d" &&
+          ctx.document.isEntityVisible(e) &&
+          ctx.document.isEntityEditable(e)
+      )
+    const shaded = ctx.document.getSettings().visualStyle !== "2dWireframe"
+    const list = subobjectsAt(solids, ctx.viewport, screen, shaded)
+    const same =
+      list.length === this.subobjects.list.length &&
+      list.every((r, i) => sameSubobject(r, this.subobjects.list[i]))
+    this.subobjects = { list, at: same ? this.subobjects.at : 0 }
+    return list[this.subobjects.at] ?? null
   }
 
   rolloverEntityId(): EntityId | null {

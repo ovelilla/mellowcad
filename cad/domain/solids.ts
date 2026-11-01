@@ -303,6 +303,15 @@ function edgeEntity(solid: Solid3dEntity, edge: BrepEdge): Entity | null {
   return dressed(solid, withNormal(withElevation(piece, c.z), curve.normal))
 }
 
+/** Its edge of index `index` as the object it draws as: null for an apex's. */
+export function solidEdgeEntity(
+  solid: Solid3dEntity,
+  index: number
+): Entity | null {
+  const edge = solid.brep.edges[index]
+  return edge ? edgeEntity(solid, edge) : null
+}
+
 /**
  * Its edges as the objects they draw as, of its own id: what it is snapped
  * by and what a command taking "the edge picked" reads (solid/s01, s10,
