@@ -70,6 +70,7 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   SPHERE: { group: "draw" },
   TORUS: { group: "draw" },
   PYRAMID: { group: "draw" },
+  EXTRUDE: { group: "draw" },
   UNION: { group: "modify" },
   SUBTRACT: { group: "modify" },
   INTERSECT: { group: "modify" },

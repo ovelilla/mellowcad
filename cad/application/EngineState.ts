@@ -1926,7 +1926,15 @@ function singleEntityInfo(
                   ...sizes(),
                 ]),
               ]
-            : []),
+            : entity.sweep
+              ? [
+                  // WHY the type alone: the rows the desktop shows under it
+                  // are unverified (no desktop pass of a swept solid's).
+                  group("geometry", [
+                    row("solidType", text.propertyValue(entity.sweep.kind)),
+                  ]),
+                ]
+              : []),
           group("solidHistory", [
             row("history", text.propertyValue("historyNone")),
             row("showHistory", text.propertyValue("no")),

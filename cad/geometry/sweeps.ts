@@ -701,6 +701,13 @@ function sideFace(
   )
 }
 
+/** What rounding leaves of an arc's centre on the axis, relative to its radius. */
+const EXACT = 1e-12
+
+/** The slope under which a cone's apex lies too far off to integrate on, and under which a segment lies square to the axis. */
+const ALONG = 1e-3
+const ACROSS = 1e-12
+
 /** Why a profile cannot be turned round an axis, in REVOLVE's words (r05). */
 export type RevolveRefusal = "crossesAxis" | "perpendicularAxis" | "notInPlane"
 
@@ -976,8 +983,9 @@ function revolvedFace(
   const s = at(edgeStart(e))
   const f = at(edgeEnd(e))
   if (e.kind === "line") {
-    const tol = MODEL_TOLERANCE * Math.max(1, Math.abs(s.rho), Math.abs(f.rho))
-    if (Math.abs(s.rho - f.rho) <= tol) {
+    const run = Math.abs(f.h - s.h)
+    const rise = Math.abs(f.rho - s.rho)
+    if (rise <= EXACT * Math.max(1, run, Math.abs(s.rho))) {
       b.face(
         {
           kind: "cylinder",
@@ -992,13 +1000,38 @@ function revolvedFace(
       )
       return
     }
-    if (Math.abs(s.h - f.h) <= tol) {
+    if (rise < ALONG * run) {
+      // WHY no cone: a segment a hair off parallel makes one whose apex lies
+      // far off, which no double integrates well; the segment turned as a
+      // spline of degree 1 is the same surface, well conditioned.
+      const line: BSplineCurve = {
+        degree: 1,
+        knots: [0, 0, 1, 1],
+        controlPoints: [edgeStart(e), edgeEnd(e)],
+      }
+      b.face(
+        {
+          kind: "revolution",
+          profile: { kind: "spline", curve: line },
+          origin,
+          axis: A,
+        },
+        loops,
+        { u, v: [0, 1] }
+      )
+      return
+    }
+    if (run <= ACROSS * rise) {
       // A plane square to the axis: its outside ∂θ × ∂s at the profile.
       const turn = cross3(A, out)
       const along = sub3(edgeEnd(e), edgeStart(e))
       const normal = normalize3(cross3(turn, along))!
       b.face(
-        { kind: "plane", origin: add3(origin, scale3(A, s.h)), normal },
+        {
+          kind: "plane",
+          origin: add3(origin, scale3(A, (s.h + f.h) / 2)),
+          normal,
+        },
         loops
       )
       return
@@ -1042,7 +1075,7 @@ function revolvedFace(
     const sign = dot3(cross3(out, A), plane) > 0 ? 1 : -1
     const phi0 = Math.atan2(s.h - c.h, s.rho - c.rho)
     const v: [number, number] = [phi0, phi0 + sign * (e.to - e.from)]
-    if (Math.abs(c.rho) <= MODEL_TOLERANCE * Math.max(1, r)) {
+    if (Math.abs(c.rho) <= EXACT * Math.max(1, r)) {
       b.face(
         { kind: "sphere", center, axis: A, xAxis: out, radius: r },
         loops,

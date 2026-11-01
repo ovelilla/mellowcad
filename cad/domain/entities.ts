@@ -55,6 +55,7 @@ export type {
   SpherePrimitive,
   TorusPrimitive,
   SolidPrimitive,
+  SolidSweep,
   Solid3dEntity,
   Entity,
   Bounds,

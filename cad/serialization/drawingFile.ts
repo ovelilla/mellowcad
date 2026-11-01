@@ -63,6 +63,7 @@ import {
   withNormal,
   withThickness,
   SolidPrimitive,
+  SolidSweep,
 } from "../domain/entities"
 import {
   DEFAULT_HATCH_ANGLE,
@@ -612,6 +613,21 @@ function cloneEntityShape(entity: Entity): Entity {
         ...overrides,
         brep: storedBrep(entity.brep),
         ...(entity.primitive ? { primitive: { ...entity.primitive } } : {}),
+        ...(entity.sweep ? { sweep: storedSweep(entity.sweep) } : {}),
+      }
+  }
+}
+
+function storedSweep(sweep: SolidSweep): SolidSweep {
+  switch (sweep.kind) {
+    case "extrusion":
+      return { kind: "extrusion", height: sweep.height, taper: sweep.taper }
+    case "revolve":
+      return {
+        kind: "revolve",
+        start: sweep.start,
+        angle: sweep.angle,
+        axis: storedVec3(sweep.axis),
       }
   }
 }
@@ -1594,6 +1610,7 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
       const brep = parseBrep(raw.brep)
       if (!brep) return null
       const primitive = parsePrimitive(raw.primitive)
+      const sweep = primitive ? null : parseSweep(raw.sweep)
       return {
         id,
         type: "solid3d",
@@ -1601,6 +1618,7 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
         ...overrides,
         brep,
         ...(primitive ? { primitive } : {}),
+        ...(sweep ? { sweep } : {}),
       }
     }
     default:
@@ -1794,6 +1812,27 @@ function parseSurface(raw: unknown): BrepSurface | null {
       const { majorRadius, minorRadius } = raw
       if (!isFiniteNumber(majorRadius) || !positive(minorRadius)) return null
       return { kind: "torus", center, axis, xAxis, majorRadius, minorRadius }
+    }
+    default:
+      return null
+  }
+}
+
+/** What swept a solid (since 47); malformed, the solid keeps no history. */
+function parseSweep(raw: unknown): SolidSweep | null {
+  if (!isRecord(raw)) return null
+  switch (raw.kind) {
+    case "extrusion": {
+      const { height, taper } = raw
+      return isFiniteNumber(height) && height !== 0 && isFiniteNumber(taper)
+        ? { kind: "extrusion", height, taper }
+        : null
+    }
+    case "revolve": {
+      const { start, angle } = raw
+      const axis = parseVec3(raw.axis)
+      if (!axis || !isFiniteNumber(start) || !isFiniteNumber(angle)) return null
+      return angle !== 0 ? { kind: "revolve", start, angle, axis } : null
     }
     default:
       return null

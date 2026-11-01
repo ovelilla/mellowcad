@@ -692,5 +692,16 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
   "LWEIGHT": [
     "?",
     "BYLAYER"
+  ],
+  "EXTRUDE": [
+    "MOde",
+    "SOlid",
+    "SUrface",
+    "Direction",
+    "Path",
+    "Taper",
+    "Expression",
+    "Yes",
+    "No"
   ]
 }

@@ -845,10 +845,30 @@ export type SolidPrimitive =
  * (`geometry/solids.ts`), in the WCS. Like a 3D polyline it has no plane:
  * `normal` and `elevation` are never set.
  */
+/**
+ * What swept a solid out of a profile, which LIST shows as its `Solid type`
+ * (extrude/x01; revolve/r01): EXTRUDE's height (Direction's length) and
+ * taper (radians), REVOLVE's start and angle (radians) and its axis' way in
+ * the WCS.
+ */
+export type SolidSweep =
+  | {
+      readonly kind: "extrusion"
+      readonly height: number
+      readonly taper: number
+    }
+  | {
+      readonly kind: "revolve"
+      readonly start: number
+      readonly angle: number
+      readonly axis: Vec3
+    }
+
 export interface Solid3dEntity extends BaseEntity {
   readonly type: "solid3d"
   readonly brep: Brep
   readonly primitive?: SolidPrimitive
+  readonly sweep?: SolidSweep
 }
 
 export type Entity =

@@ -110,6 +110,7 @@ declare const source: {
       "sphere": string
       "torus": string
       "intersect": string
+      "extrude": string
     }
     "description": {
       "U": string
@@ -475,6 +476,8 @@ declare const source: {
         "measure": string
         "predefined": string
         "outer": string
+        "extrusion": string
+        "revolve": string
       }
       "justify": {
         "left": string
@@ -638,6 +641,7 @@ declare const source: {
       "UNION": string[]
       "SUBTRACT": string[]
       "INTERSECT": string[]
+      "EXTRUDE": string[]
     }
     "keywords": {
       "-OSNAP": {
@@ -1333,6 +1337,17 @@ declare const source: {
         "?": string
         "BYLAYER": string
       }
+      "EXTRUDE": {
+        "MOde": string
+        "SOlid": string
+        "SUrface": string
+        "Direction": string
+        "Path": string
+        "Taper": string
+        "Expression": string
+        "Yes": string
+        "No": string
+      }
     }
     "promptKeywords": {
       "selectObjects": {
@@ -1941,6 +1956,16 @@ declare const source: {
       "exitLower": string
       "nextShort": string
       "previousShort": string
+      "extrudeSelectOr": string
+      "closedProfilesMode": string
+      "closedProfilesSolid": string
+      "extrudeHeightOr": string
+      "extrudeHeightDefaultOr": string
+      "extrudeTaperOr": string
+      "enterExpression": string
+      "directionStart": string
+      "directionEnd": string
+      "eraseDefiningObjects": string
     }
     "promptForms": {
       "convertToPolylines": string
@@ -2552,6 +2577,17 @@ declare const source: {
       "listRegionArea": string
       "listRegionPerimeter": string
       "listRegionBounds": string
+      "sweepDensity": string
+      "sweepRefused": string
+      "sweepNothingSelected": string
+      "sweepSelfIntersecting": string
+      "extrudeValueNonzero": string
+      "taperAngleRange": string
+      "directionCoincident": string
+      "directionParallel": string
+      "expressionSyntax": string
+      "listExtrusionHeight": string
+      "listTaperAngle": string
     }
     "feedback": {
       "snap": {
@@ -2739,6 +2775,9 @@ declare const source: {
       }
       "OFFSET": {
         "Through": string
+      }
+      "EXTRUDE": {
+        "Taper": string
       }
     }
     "promptKeywordLabels": {

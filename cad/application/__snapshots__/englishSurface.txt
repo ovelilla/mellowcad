@@ -58,6 +58,7 @@ REGION ["REG"] "Region"
 UNION ["UNI"] "Union"
 SUBTRACT ["SU"] "Subtract"
 INTERSECT ["IN"] "Intersect"
+EXTRUDE ["EXT"] "Extrude"
 BOX [] "Box"
 WEDGE ["WE"] "Wedge"
 CYLINDER ["CYL"] "Cylinder"
@@ -206,6 +207,7 @@ cone "Cone" CONE
 sphere "Sphere" SPHERE
 torus "Torus" TOR
 pyramid "Pyramid" PYR
+extrude "Extrude" EXT
 break "Break" BR
 breakatpoint "Break at point" BREAKATPOINT
 splinedit "Edit Spline" SPE
@@ -4895,6 +4897,85 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
 > escape
   properties: -
   command| *Cancel*
+
+## EXTRUDE
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> RECTANG
+  command| RECTANG
+  prompt| Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: 0,0
+  prompt| Specify other corner point or [Area/Dimensions/Rotation]: 100,50
+> EXTRUDE refused
+  prompt: EXTRUDE Specify angle of taper for extrusion or [Expression] <0>:
+  asks: "Specify angle of taper for extrusion or"
+  tip: Specify angle of taper for extrusion or
+  dyn: "Specify angle of taper for extrusion or"=""|0|°*
+  options: [E] Expression
+  command| EXTRUDE
+  info| Current wire frame density:  ISOLINES=4, Closed profiles creation mode = Solid
+  prompt| Select objects to extrude or [MOde]: MO
+  prompt| Closed profiles creation mode [SOlid/SUrface] <Solid>: SU
+  error| Invalid option keyword.
+  prompt| Closed profiles creation mode [SOlid/SUrface] <Solid>:
+  prompt| Select objects to extrude or [MOde]: L
+  info| 1 found
+  prompt| Select objects to extrude or [MOde]:
+  prompt| Specify height of extrusion or [Direction/Path/Taper angle/Expression]: FOO
+  error| Requires numeric distance, second point, or option keyword.
+  prompt| Specify height of extrusion or [Direction/Path/Taper angle/Expression]: 0
+  error| Value must be nonzero.
+  prompt| Specify height of extrusion or [Direction/Path/Taper angle/Expression]: T
+  prompt| Specify angle of taper for extrusion or [Expression] <0>: 95
+  error| Angle must be greater than -90 degrees and less than 90 degrees.
+> EXTRUDE taper and expression
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify angle of taper for extrusion or [Expression] <0>: 10
+  prompt| Specify height of extrusion or [Direction/Path/Taper angle/Expression]: E
+  prompt| Enter expression: FOO
+  error| The syntax is incorrect or a variable is not defined.  Reenter the expression or value.
+  prompt| Enter expression: 2*20
+> EXTRUDE Direction
+  command| CIRCLE
+  prompt| Specify center point for circle or [3P/2P/Ttr (tan tan radius)]: 300,0
+  prompt| Specify radius of circle or [Diameter]: 40
+  command| DELOBJ
+  prompt| Enter new value for DELOBJ <3>: -1
+  command| EXTRUDE
+  info| Current wire frame density:  ISOLINES=4, Closed profiles creation mode = Solid
+  prompt| Select objects to extrude or [MOde]: L
+  info| 1 found
+  prompt| Select objects to extrude or [MOde]:
+  prompt| Specify height of extrusion or [Direction/Path/Taper angle/Expression] <40.00>: D
+  prompt| Specify start point of direction: 0,0,0
+  prompt| Specify end point of direction: 0,0,0
+  error| Points are coincident.
+  prompt| Specify end point of direction: 0,0,60
+  prompt| Erase defining objects? [Yes/No] <Yes>: N
+> LIST
+  command| LIST
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info|                   3DSOLID   Layer: "0"
+                                    Space: Model space
+                 History = None
+            Show History = No
+              Solid type = Extrusion
+         Extrusion height: 60.00
+              Taper angle: 10
+           Bounding Box: Lower Bound X = 260.00   , Y = -40.00   , Z = 0.00
+                         Upper Bound X = 340.00   , Y = 40.00    , Z = 60.00
 
 ## JOIN made
 > start

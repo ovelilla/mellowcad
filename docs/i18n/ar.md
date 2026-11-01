@@ -70,6 +70,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | Box, 3D Solid, Solid type, History, Show History, Solid History | صندوق، مجسم ثلاثي الأبعاد، نوع المجسم، السجل، إظهار السجل، سجل المجسم (C) |
 |  | Wedge, Pyramid, Modeling, Base radius, Top radius, Sides, Inscribed, Circumscribed | إسفين، هرم، النمذجة، نصف قطر القاعدة، نصف القطر العلوي، الأضلاع، محاط، محيط (C) |
 |  | Cylinder, Cone, Elliptical, Base/Top major and minor radius | أسطوانة، مخروط، إهليلجي، نصف القطر الأكبر/الأصغر للقاعدة والعلوي (C) |
+|  | Extrude, Extrusion | بثق، بثق (C) |
 |  | Sphere, Torus, Torus radius, Tube radius | كرة، طارة، نصف قطر الطارة، نصف قطر الأنبوب (C) |
 | Annotate | Single line text, Edit | نص بسطر واحد، تحرير (C) |
 |  | Linear, Aligned, Angular, Radius, Diameter, Baseline, Continue, Adjust space | خطي، محاذٍ، زاوي، نصف القطر، القطر، خط أساس، متتابع، تباعد (C) † |

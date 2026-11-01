@@ -532,6 +532,7 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
     read: (ctx) => ctx.inquiry().cleanScreenState,
   },
   heldInteger("CLIPROMPTLINES", 0, 50),
+  heldInteger("DELOBJ", -3, 3),
   {
     type: "angle",
     name: "POLARANG",
