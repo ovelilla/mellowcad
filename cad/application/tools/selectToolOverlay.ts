@@ -12,7 +12,19 @@ import {
 import { polarPoint } from "../../geometry/primitives"
 import { ScenePrimitive, StrokeStyle } from "../../scene/types"
 import { drawnColor, THEME } from "../../scene/theme"
-import { arcScenePrimitive, entityScenePrimitive } from "../SceneBuilder"
+import {
+  arcScenePrimitive,
+  entityScenePrimitive,
+  selectionGlow,
+} from "../SceneBuilder"
+import { arbitraryAxis } from "../../geometry/ocs"
+import { add3, scale3 } from "../../geometry/Vec3"
+import {
+  SubobjectRef,
+  subobjectEdgeEntities,
+  subobjectGrip,
+} from "../../domain/solidSubobjects"
+import { GRIP_HALF_PX } from "./selectToolGrips"
 import {
   buildLassoOverlay,
   buildSelectionBoxOverlay,
@@ -88,6 +100,7 @@ export function buildGrips(
       pushRolloverHighlight(out, entity, ctx)
     }
   }
+  pushSubobjects(out, state, ctx)
   const hover = state.phase === "idle" ? (state.hoverGrip ?? null) : null
   const editable = ctx.selection
     .toArray()
@@ -282,6 +295,139 @@ export function pickRolloverEntity(
  * with a thicker, lighter outline so the user sees exactly what a click would
  * pick before committing to the selection.
  */
+/**
+ * The subobjects of solids: the one Ctrl holds the cursor over glowing as a
+ * rollover does, a vertex a light disc on it; each selected glowing blue as a
+ * selected object, with its grip red — a face's a disc in its plane at its
+ * centre, an edge's a bar along it at its middle, a vertex's a dot (desktop,
+ * a box in a custom view, 2D Wireframe).
+ */
+function pushSubobjects(
+  out: ScenePrimitive[],
+  state: SelectToolState,
+  ctx: ToolContext
+): void {
+  const solidOf = (ref: SubobjectRef) => {
+    const entity = ctx.document.get(ref.id)
+    return entity?.type === "solid3d" ? entity : null
+  }
+  const hovered = state.phase === "idle" ? state.hoverSubobject : null
+  if (hovered) {
+    const solid = solidOf(hovered)
+    if (solid) {
+      for (const edge of subobjectEdgeEntities(solid, hovered)) {
+        pushRolloverHighlight(out, edge, ctx)
+      }
+      if (hovered.kind === "vertex") {
+        const grip = subobjectGrip(solid, hovered)
+        if (grip) {
+          out.push(
+            disc(ctx.viewport.worldToScreen(grip.point), THEME.entityHover)
+          )
+        }
+      }
+    }
+  }
+  for (const ref of ctx.selection.subobjects()) {
+    const solid = solidOf(ref)
+    if (!solid) continue
+    for (const edge of subobjectEdgeEntities(solid, ref)) {
+      out.push(
+        ...selectionGlow(ctx.viewport, edge, { color: THEME.entity, width: 1 })
+      )
+    }
+    const grip = subobjectGrip(solid, ref)
+    if (!grip) continue
+    out.push(subobjectGripShape(grip, ctx))
+  }
+}
+
+/** A filled dot of the grip's half size round `at`. */
+function disc(at: Vec2, color: string): ScenePrimitive {
+  return {
+    kind: "path",
+    points: Array.from({ length: 12 }, (_, i) =>
+      polarPoint(at, GRIP_HALF_PX, (i * Math.PI) / 6)
+    ),
+    closed: true,
+    fill: color,
+  }
+}
+
+/** A selected subobject's grip, filled red as a hot one. */
+function subobjectGripShape(
+  grip: ReturnType<typeof subobjectGrip> & object,
+  ctx: ToolContext
+): ScenePrimitive {
+  const { viewport } = ctx
+  const at = viewport.worldToScreen(grip.point)
+  const r = viewport.screenToWorldDistance(GRIP_HALF_PX)
+  if (grip.normal) {
+    // A disc lying in the face, flattened as its plane is seen.
+    const axes = arbitraryAxis(grip.normal)
+    if (axes) {
+      return {
+        kind: "path",
+        points: Array.from({ length: 16 }, (_, i) => {
+          const a = (i * Math.PI) / 8
+          return viewport.worldToScreen(
+            add3(
+              grip.point,
+              add3(
+                scale3(axes.x, r * Math.cos(a)),
+                scale3(axes.y, r * Math.sin(a))
+              )
+            )
+          )
+        }),
+        closed: true,
+        fill: THEME.gripHot,
+      }
+    }
+  }
+  if (grip.along) {
+    const ahead = viewport.worldToScreen(
+      add3(grip.point, scale3(grip.along, r))
+    )
+    const d = V.sub(ahead, at)
+    const size = Math.hypot(d.x, d.y)
+    if (size > 1e-9) {
+      // A bar along the edge, twice the grip long and half as wide.
+      const u = { x: d.x / size, y: d.y / size }
+      const v = { x: -u.y, y: u.x }
+      const half = GRIP_HALF_PX * 1.75
+      const thin = GRIP_HALF_PX * 0.6
+      const corner = (a: number, b: number) => ({
+        x: at.x + u.x * a + v.x * b,
+        y: at.y + u.y * a + v.y * b,
+      })
+      return {
+        kind: "path",
+        points: [
+          corner(-half, -thin),
+          corner(half, -thin),
+          corner(half, thin),
+          corner(-half, thin),
+        ],
+        closed: true,
+        fill: THEME.gripHot,
+      }
+    }
+  }
+  const h = GRIP_HALF_PX * 0.6
+  return {
+    kind: "path",
+    points: [
+      { x: at.x - h, y: at.y - h },
+      { x: at.x + h, y: at.y - h },
+      { x: at.x + h, y: at.y + h },
+      { x: at.x - h, y: at.y + h },
+    ],
+    closed: true,
+    fill: THEME.gripHot,
+  }
+}
+
 function pushRolloverHighlight(
   out: ScenePrimitive[],
   entity: Entity,

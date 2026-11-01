@@ -794,6 +794,13 @@ export interface Tool {
   cycleLasso?(ctx: ToolContext): boolean
 
   /**
+   * Ctrl+Space with Ctrl held over a solid: the next face, edge or vertex
+   * under the cursor (desktop: the box's top, then its back). Returns whether
+   * there was another to take.
+   */
+  cycleSubobject?(ctx: ToolContext): boolean
+
+  /**
    * The command options (keywords) the tool offers right now — AutoCAD's
    * `[Close/Undo]` prompt. Recomputed on every engine-state rebuild so options
    * appear and disappear with the interaction. Defaults to none.

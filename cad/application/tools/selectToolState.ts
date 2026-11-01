@@ -1,3 +1,4 @@
+import type { SubobjectRef } from "../../domain/solidSubobjects"
 import { Vec2 } from "../../geometry/Vec2"
 import { Vec3 } from "../../geometry/Vec3"
 import { Entity, EntityId } from "../../domain/entities"
@@ -97,6 +98,8 @@ export type SelectToolState =
       readonly hoverEntityId?: EntityId | null
       /** Whether the object under the cursor is on a locked layer: the padlock. */
       readonly hoverLocked?: boolean
+      /** The face, edge or vertex Ctrl holds the cursor over, which a click selects. */
+      readonly hoverSubobject?: SubobjectRef | null
     }
   | {
       readonly phase: "pressed"

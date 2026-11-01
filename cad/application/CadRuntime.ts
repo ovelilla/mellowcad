@@ -6786,6 +6786,16 @@ export class CadRuntime extends Observable {
     // shows. Handled before the command prompt, which would otherwise take the
     // space as an Enter.
     if (e.key === " " && e.shiftKey && this.cycleSelection()) return true
+    // Ctrl+Space walks the subobjects under the cursor (About Cycling Through
+    // and Filtering Subobjects), before Space is Enter.
+    if (
+      e.key === " " &&
+      e.ctrlKey &&
+      this.activeTool.cycleSubobject?.(this.toolContext)
+    ) {
+      this.host.requestRender()
+      return true
+    }
 
     if (e.ctrlKey && (e.key === "z" || e.key === "Z")) {
       if (e.shiftKey) this.redo()
