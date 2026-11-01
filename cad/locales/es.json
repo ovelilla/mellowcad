@@ -1171,7 +1171,11 @@
         "NWiso": "NOIso"
       },
       "NAVVCUBE": { "ON": "ACT", "OFF": "DES" },
-      "VSCURRENT": { "2dwireframe": "estructuraalámbrica2d", "Hidden": "ocUlto" },
+      "VSCURRENT": {
+        "2dwireframe": "estructuraalámbrica2d",
+        "Hidden": "ocUlto",
+        "Conceptual": "Conceptual"
+      },
       "SETVAR": {
         "?": "?",
         "ON": "ACT",
@@ -1545,6 +1549,7 @@
       "vscurrentOption": "Indique una opción",
       "vscurrent2dWireframe": "estructuraalámbrica2d",
       "vscurrentHidden": "Oculto",
+      "vscurrentConceptual": "Conceptual",
       "inscribedShort": "I",
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Precise primer punto final de lado",

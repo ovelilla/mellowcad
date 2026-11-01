@@ -1213,7 +1213,11 @@
         "ON": "Ativar",
         "OFF": "Desativar"
       },
-      "VSCURRENT": { "2dwireframe": "estruturadearame2d", "Hidden": "ocUlto" },
+      "VSCURRENT": {
+        "2dwireframe": "estruturadearame2d",
+        "Hidden": "ocUlto",
+        "Conceptual": "Conceitual"
+      },
       "SETVAR": {
         "?": "?",
         "ON": "Ativado",
@@ -1626,6 +1630,7 @@
       "vscurrentOption": "Insira uma opção",
       "vscurrent2dWireframe": "estruturadearame2d",
       "vscurrentHidden": "ocUlto",
+      "vscurrentConceptual": "Conceitual",
       "inscribedShort": "I",
       "circumscribedShort": "C",
       "specifyFirstEndpointOfEdge": "Especificar primeiro ponto final da aresta",

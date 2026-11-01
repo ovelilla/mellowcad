@@ -2163,6 +2163,8 @@ describe("the engine's English surface", () => {
         .do("H", (c) => answer(c, "H"))
         .do("VS enter", (c) => c.command("VS"))
         .do("enter keeps Hidden", (c) => c.enter())
+        .do("VSCURRENT C", (c) => c.command("VSCURRENT"))
+        .do("C", (c) => answer(c, "C"))
         .do("VSCURRENT 2", (c) => c.command("VSCURRENT"))
         .do("2", (c) => answer(c, "2"))
     )

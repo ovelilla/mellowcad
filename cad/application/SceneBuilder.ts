@@ -1,5 +1,6 @@
 import { regionLevelEdgeEntities } from "../domain/regions"
 import { solidViewEntities, solidWireEntities } from "../domain/solids"
+import { shadedTriangles } from "./shading"
 import { DEFAULT_DOCUMENT_SETTINGS, VisualStyle } from "../domain/units"
 import { Vec2, V } from "../geometry/Vec2"
 import { Vec3, scale3, withZOf, zOf } from "../geometry/Vec3"
@@ -192,6 +193,8 @@ export interface SceneInput {
   readonly visualStyle?: VisualStyle
   /** VIEWDIR: the unit vector from the drawing towards the viewer, which Hidden hides along; +Z when absent. */
   readonly viewDirection?: Vec3
+  /** The world direction drawn pointing up, which Conceptual's light follows; +Y when absent. */
+  readonly viewUp?: Vec3
   /** ATTMODE: which attributes block references show; Normal when absent. */
   readonly attributeDisplay?: AttributeDisplay
   readonly snap: SnapResult | null
@@ -265,7 +268,8 @@ export function buildScene(input: SceneInput): Scene {
     input.fillMode ?? true,
     input.isolines,
     input.visualStyle ?? "2dWireframe",
-    input.viewDirection ?? { x: 0, y: 0, z: 1 }
+    input.viewDirection ?? { x: 0, y: 0, z: 1 },
+    input.viewUp ?? { x: 0, y: 1, z: 0 }
   )
   if (input.ucsIcon) {
     pushUcsIcon(primitives, aid, input.ucs, input.ucsIcon)
@@ -1773,13 +1777,15 @@ function pushEntities(
   fillMode: boolean,
   isolines: number | undefined,
   visualStyle: VisualStyle,
-  viewDirection: Vec3
+  viewDirection: Vec3,
+  viewUp: Vec3
 ): void {
   const layerById = new Map<LayerId, Layer>()
   for (const layer of layers) layerById.set(layer.id, layer)
-  // In Hidden every solid shown hides what lies behind it in any other.
+  // In Hidden and Conceptual every solid shown hides what lies behind it in
+  // any other; Conceptual paints their faces first, its edges over them.
   let solidLines: Map<Entity, readonly Entity[]> | undefined
-  if (visualStyle === "hidden") {
+  if (visualStyle !== "2dWireframe") {
     const solids = entities.filter(
       (entity): entity is Solid3dEntity =>
         entity.type === "solid3d" &&
@@ -1788,6 +1794,30 @@ function pushEntities(
     )
     const lines = solidViewEntities(solids, viewDirection)
     solidLines = new Map(solids.map((solid, i) => [solid, lines[i]]))
+    if (visualStyle === "conceptual") {
+      const shaded = shadedTriangles(
+        solids.map((solid) => ({
+          brep: solid.brep,
+          color: (
+            solid.color ??
+            layerById.get(solid.layerId)?.color ??
+            DEFAULT_LAYER_COLOR
+          ).toLowerCase(),
+        })),
+        viewDirection,
+        viewUp
+      )
+      for (const { points, fill } of shaded) {
+        out.push({
+          kind: "path",
+          points: points.map((point) => camera.worldToScreen(point)),
+          closed: true,
+          fill,
+          // Stroked in its own fill, so neighbours leave no seam of background.
+          stroke: { color: fill, width: 1 },
+        })
+      }
+    }
   }
   const dimStyleById = new Map<DimStyleId, DimStyle>()
   for (const style of dimStyles) dimStyleById.set(style.id, style)
@@ -1815,10 +1845,15 @@ function pushEntities(
       { ltScale, lwDisplay },
       isFaded
     )
+    // Conceptual draws edges in colour 7 whatever the object's (VSEDGECOLOR "7", visualstyle/v06).
+    const edged =
+      visualStyle === "conceptual" && entity.type === "solid3d"
+        ? { ...drawn, color: isFaded ? fadedColor(THEME.entity) : THEME.entity }
+        : drawn
     const stroke =
       locked && !isFaded
-        ? { ...drawn, color: fadedColor(drawn.color, LOCKED_LAYER_OPACITY) }
-        : drawn
+        ? { ...edged, color: fadedColor(edged.color, LOCKED_LAYER_OPACITY) }
+        : edged
     if (entity.type === "insert") {
       // Each object inside the block keeps its own colour, linetype and
       // lineweight, so a reference is not painted flat: the reference's layer
