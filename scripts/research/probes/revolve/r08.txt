@@ -1,0 +1,44 @@
+_QAFLAGS
+2
+_LINE
+0,0
+0,10
+
+(setq ax (entlast))
+_RECTANG
+10,0
+20,5
+_REVOLVE
+_L
+
+_O
+!ax
+_ST
+-30
+_EX
+FOO
+45*2
+_LIST
+_L
+
+_PLINE
+100,0
+100,20
+130,20
+
+(setq pl (entlast))
+_RECTANG
+110,0
+120,5
+_REVOLVE
+_L
+
+_O
+!pl
+_R
+_R
+90
+_LIST
+_L
+
+(sslength (ssget "X"))

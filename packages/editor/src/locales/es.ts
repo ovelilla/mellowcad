@@ -90,7 +90,8 @@ export const es: EditorLocale = {
         "attributes": "Atributos",
         "measure": "Medir",
         "union": "Editar sólidos",
-        "box": "Modelado"
+        "box": "Modelado",
+        "extrude": "Extrusión"
       },
       "sections": {
         "draw": "Dibujo",

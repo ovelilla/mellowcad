@@ -65,6 +65,7 @@
   "ToolRail.flyouts.measure": "Measure",
   "ToolRail.flyouts.union": "Solid Editing",
   "ToolRail.flyouts.box": "Modeling",
+  "ToolRail.flyouts.extrude": "Extrude",
   "ToolRail.sections.draw": "Draw",
   "ToolRail.sections.modify": "Modify",
   "ToolRail.sections.annotation": "Annotation",

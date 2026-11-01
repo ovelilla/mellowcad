@@ -936,8 +936,21 @@ class Report {
           angle: this.angle((sweep.taper * 180) / Math.PI),
         })
         break
-      case "revolve":
+      case "revolve": {
+        // Signed and unturned as REVOLVE took them (r03: -90; r08: -30).
+        const degrees = (radians: number) =>
+          formatAngle((radians * 180) / Math.PI, this.settings)
+        const axis = worldDirectionToUcs(this.settings.ucs, sweep.axis)
+        const left = (value: number) => this.length(value).padEnd(10)
+        this.say("listRevolveStart", { angle: degrees(sweep.start) })
+        this.say("listRevolveAngle", { angle: degrees(sweep.angle) })
+        this.say("listDirectionVector", {
+          x: left(axis.x),
+          y: left(axis.y),
+          z: this.length(axis.z),
+        })
         break
+      }
     }
     const ucs = this.settings.ucs
     const box = brepBox(

@@ -59,6 +59,7 @@ UNION ["UNI"] "Union"
 SUBTRACT ["SU"] "Subtract"
 INTERSECT ["IN"] "Intersect"
 EXTRUDE ["EXT"] "Extrude"
+REVOLVE ["REV"] "Revolve"
 BOX [] "Box"
 WEDGE ["WE"] "Wedge"
 CYLINDER ["CYL"] "Cylinder"
@@ -208,6 +209,7 @@ sphere "Sphere" SPHERE
 torus "Torus" TOR
 pyramid "Pyramid" PYR
 extrude "Extrude" EXT
+revolve "Revolve" REV
 break "Break" BR
 breakatpoint "Break at point" BREAKATPOINT
 splinedit "Edit Spline" SPE
@@ -4976,6 +4978,81 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
               Taper angle: 10
            Bounding Box: Lower Bound X = 260.00   , Y = -40.00   , Z = 0.00
                          Upper Bound X = 340.00   , Y = 40.00    , Z = 60.00
+
+## REVOLVE
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> RECTANG
+  command| RECTANG
+  prompt| Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: 100,0
+  prompt| Specify other corner point or [Area/Dimensions/Rotation]: 150,50
+> REVOLVE refused
+  command| REVOLVE
+  info| Current wire frame density:  ISOLINES=4, Closed profiles creation mode = Solid
+  prompt| Select objects to revolve or [MOde]: MO
+  prompt| Closed profiles creation mode [SOlid/SUrface] <Solid>: SO
+  prompt| Select objects to revolve or [MOde]: L
+  info| 1 found
+  prompt| Select objects to revolve or [MOde]:
+  prompt| Specify axis start point or define axis by [Object/X/Y/Z] <Object>: FOO
+  error| Point or option keyword required.
+  prompt| Specify axis start point or define axis by [Object/X/Y/Z] <Object>: 0,0
+  prompt| Specify axis endpoint: 0,0
+  error| Zero length axis is not permitted.
+> REVOLVE across
+  command| REVOLVE
+  info| Current wire frame density:  ISOLINES=4, Closed profiles creation mode = Solid
+  prompt| Select objects to revolve or [MOde]: L
+  info| 1 found
+  prompt| Select objects to revolve or [MOde]:
+  prompt| Specify axis start point or define axis by [Object/X/Y/Z] <Object>: 120,0
+  prompt| Specify axis endpoint: 120,10
+  prompt| Specify angle of revolution or [STart angle/Reverse/EXpression] <360>: 90
+  error| The object should be on one side of the axis.
+  error| Unable to revolve the selected object.
+> REVOLVE Object, Reverse, STart, EXpression
+  command| LINE
+  prompt| Specify first point: 0,0
+  prompt| Specify next point or [Undo]: 0,100
+  prompt| Specify next point or [Undo]:
+  command| REVOLVE
+  info| Current wire frame density:  ISOLINES=4, Closed profiles creation mode = Solid
+  prompt| Select objects to revolve or [MOde]: P
+  info| 1 found
+  prompt| Select objects to revolve or [MOde]:
+  prompt| Specify axis start point or define axis by [Object/X/Y/Z] <Object>:
+  prompt| Select an object: 0,50
+  prompt| Specify angle of revolution or [STart angle/Reverse/EXpression] <360>: R
+  prompt| Specify angle of revolution or [STart angle/Reverse/EXpression] <360>: ST
+  prompt| Specify start angle <0.0>: FOO
+  error| Requires valid numeric angle, second point, or option keyword.
+  prompt| Specify start angle <0.0>: 30
+  prompt| Specify angle of revolution or [STart angle/EXpression] <360>: EX
+  prompt| Enter expression: FOO
+  error| The syntax is incorrect or a variable is not defined.  Reenter the expression or value.
+  prompt| Enter expression: 45*2
+> LIST
+  command| LIST
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info|                   3DSOLID   Layer: "0"
+                                    Space: Model space
+                 History = None
+            Show History = No
+              Solid type = Revolve
+              Start angle: 30
+        Angle of revolution: 90
+         Direction vector: X = 0.00      Y = -1.00     Z = 0.00
+           Bounding Box: Lower Bound X = -75.00   , Y = 0.00     , Z = 50.00
+                         Upper Bound X = 129.90   , Y = 50.00    , Z = 150.00
 
 ## JOIN made
 > start

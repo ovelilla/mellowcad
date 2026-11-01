@@ -1356,6 +1356,51 @@ count, i6); its grips and the palette's rows under Solid type, which no desktop 
 self-intersecting curve`) where AutoCAD's console was not probed; the tilted UCS's console run
 (x08) only checked by MASSPROP.
 
+### `REVOLVE` / `REV` · es `REVOLUCION` / `RV` · pt-BR `REVOLUCAO` / `REV`
+
+**Implemented:** REVOLVE as 2027's console asks it (revolve/r01–r09), in en, es and pt-BR: EXTRUDE's
+first line, its set as `Select objects to revolve or [MOde]:` (es `Designe objetos para revolución o
+[MOdo]`, pt-BR `Selecione objetos para revolução ou [MOdo]`), sifted as Enter closes it with `Cannot
+revolve an object of this type.` (r02), and its MOde. Then `Specify axis start point or define axis
+by [Object/X/Y/Z] <Object>:` (es `Precise punto inicial del eje o defina el eje mediante`, pt-BR
+`Especificar ponto inicial para eixo ou definir eixo por`; FOO `Point or option keyword
+required.`): a point and `Specify axis endpoint:` (`Zero length axis is not permitted.` ends it,
+r09); Object or Enter, `Select an object:`, a line from its start or a polyline's straight segment
+nearest the pick, a closed one saying `Cannot get axis direction from a closed curve or edge.` and
+ending (r01, r08); X, Y or Z, the UCS's axis through its origin. Then `Specify angle of revolution
+or [STart angle/Reverse/EXpression] <360>:` (es `[ángulo Inicial/iNvertir/EXpresión]`, pt-BR
+`Especifique um ângulo de revolução ou [ângulo INicial/Reverter/EXpressão]`): degrees, right-handed
+about the axis, negative backwards, 0 or a turn or more either way a whole turn (r05, r07); FOO
+`Requires valid numeric angle, second point, or option keyword.`. STart angle asks `Specify start
+angle <0.0>:`, the profile turned there first, and the angle again without Reverse (r01); Reverse
+turns the axis round and asks it again (r03); EXpression EXTRUDE's. A profile across the axis says
+`The object should be on one side of the axis.`, one square to it `Axis of revolution is
+perpendicular to plane of revolve curve.`, each with `Unable to revolve the selected object.`, and the
+command ends (r05). DELOBJ as EXTRUDE's (r09). Each profile a solid of the current layer and
+properties; one undo step.
+
+The object, a 3D solid (file version 47), as ACIS builds it (r01–r06's MPDUMP): a face for each edge
+off the axis — a cylinder, a cone or a plane for a segment, a sphere or a torus for an arc, a
+revolution for an elliptical arc or a spline —, the profile at its start and its end short of a
+turn; an edge on the axis none, a cone's apex an edge of no length on a whole turn, a sphere or
+doughnut turned whole no edge at all (r06). Volume and MASSPROP exact (r01's `8246.6807`, r02's
+doughnut, r03's sphere wedge, r06's cylinder round a cone; r04's ellipse to the eleventh digit,
+where AutoCAD's own sum strays). Its isolines every 360/ISOLINES degrees from the profile (i3, i5),
+a sphere's and a torus' parallels as theirs, a revolution's ISOLINES circles along its profile. LIST:
+`Solid type = Revolve`, `      Start angle: 30`, `Angle of revolution: 90` (signed, as given),
+` Direction vector: X = 0.0000    Y = 1.0000    Z = 0.0000` (Reverse's `-1.0000`) and its box (es
+`Ángulo inicial`, `Ángulo de revolución`, `Vector de dirección`; pt-BR `Ângulo de revolução`, `Vetor
+de direção`); the palette's Solid type `Revolve`. It snaps, moves and mirrors as BOX does.
+
+**Missing:** an axis off the profile's plane, which AutoCAD turns the profile round into surfaces
+this kernel does not hold (r05: 40,0,0 to 40,10,10), refused with `Unable to revolve the selected
+object.` alone; an arc, a spline or a solid's edge as the Object axis (refused as a closed curve
+is, **unverified**); SUrface and open profiles (EXTRUDE's); a self-intersecting profile is said
+`Unable to revolve the selected object.` alone, AutoCAD's `Cannot revolve a self-intersecting
+curve.` (r04) having no table string to word it in es and pt-BR; the jig's angle dragged round the
+axis (the whole turn is previewed); its grips and the palette's rows under Solid type
+(**unverified**: no desktop pass).
+
 ### `BLOCK` / `B` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOCK` / `-B` · es `BLOQUE` / `BQ` / `MODBLQ` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOQUE` / `-BQ` · pt-BR `BLOCO` / `CB` / `ACADBLOCKDIALOG` / `CRIARB` / `DEFB`, `-BLOCO` / `-CB`
 
 **Implemented:** -BLOCK's command line, which BLOCK asks too (p151, p152; aliases from the 2027

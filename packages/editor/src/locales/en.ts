@@ -90,7 +90,8 @@ export const en: EditorCatalog = {
         "attributes": "Attributes",
         "measure": "Measure",
         "union": "Solid Editing",
-        "box": "Modeling"
+        "box": "Modeling",
+        "extrude": "Extrude"
       },
       "sections": {
         "draw": "Draw",

@@ -1457,6 +1457,38 @@ describe("the engine's English surface", () => {
         )
         .do("LIST", (c) => submit(c, "LIST", "L", ""))
     )
+    walk("REVOLVE", createHarness(), (s) =>
+      s
+        .do("RECTANG", (c) => submit(c, "RECTANG", "100,0", "150,50"))
+        .do("REVOLVE refused", (c) =>
+          submit(c, "REVOLVE", "MO", "SO", "L", "", "FOO", "0,0", "0,0")
+        )
+        .do("REVOLVE across", (c) =>
+          submit(c, "REVOLVE", "L", "", "120,0", "120,10", "90")
+        )
+        .do("REVOLVE Object, Reverse, STart, EXpression", (c) =>
+          submit(
+            c,
+            "LINE",
+            "0,0",
+            "0,100",
+            "",
+            "REVOLVE",
+            "P",
+            "",
+            "",
+            "0,50",
+            "R",
+            "ST",
+            "FOO",
+            "30",
+            "EX",
+            "FOO",
+            "45*2"
+          )
+        )
+        .do("LIST", (c) => submit(c, "LIST", "L", ""))
+    )
     walk(
       "JOIN made",
       createHarness({

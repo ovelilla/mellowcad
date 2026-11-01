@@ -113,7 +113,8 @@ export const ptBR: EngineLocale = {
       "sphere": "Esfera",
       "torus": "Toroide",
       "intersect": "Intersecção",
-      "extrude": "Extrusão"
+      "extrude": "Extrusão",
+      "revolve": "Revolução"
     },
     "description": {
       "U": "Desfaz a última ação",
@@ -1174,6 +1175,10 @@ export const ptBR: EngineLocale = {
       "EXTRUDE": [
         "EXTRUSAO",
         "EX"
+      ],
+      "REVOLVE": [
+        "REVOLUCAO",
+        "REV"
       ]
     },
     "keywords": {
@@ -1880,6 +1885,20 @@ export const ptBR: EngineLocale = {
         "Expression": "Expressão",
         "Yes": "Sim",
         "No": "Não"
+      },
+      "REVOLVE": {
+        "MOde": "MOdo",
+        "SOlid": "SÓlido",
+        "SUrface": "SUperfície",
+        "Object": "Objeto",
+        "X": "X",
+        "Y": "Y",
+        "Z": "Z",
+        "STart": "INicial",
+        "Reverse": "Reverter",
+        "EXpression": "EXpressão",
+        "Yes": "Sim",
+        "No": "Não"
       }
     },
     "promptKeywords": {
@@ -2549,7 +2568,13 @@ export const ptBR: EngineLocale = {
       "enterExpression": "Insira a expressão",
       "directionStart": "Especificar ponto inicial de direção",
       "directionEnd": "Especificar ponto final de direção",
-      "eraseDefiningObjects": "Apagar objetos definidos?"
+      "eraseDefiningObjects": "Apagar objetos definidos?",
+      "revolveSelectOr": "Selecione objetos para revolução ou",
+      "revolveAxisStartOr": "Especificar ponto inicial para eixo ou definir eixo por",
+      "revolveAxisEnd": "Especificar ponto final do eixo",
+      "revolveSelectAxis": "Selecionar um objeto",
+      "revolveAngleOr": "Especifique um ângulo de revolução ou",
+      "revolveStartAngle": "Especificar ângulo inicial"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -6824,6 +6849,54 @@ export const ptBR: EngineLocale = {
         [
           "angle"
         ]
+      ],
+      "revolveRefused": [
+        "Não é possível revolver um objeto desse tipo.\n",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " objeto removido do conjunto de seleção."
+            ],
+            "other": [
+              0,
+              " objetos removidos do conjunto de seleção."
+            ]
+          }
+        ]
+      ],
+      "revolveOneSide": "O objeto precisa estar em um lado do eixo.",
+      "revolveUnable": "Não é possível efetuar a revolução do objeto selecionado.",
+      "revolvePerpendicular": "Eixo de revolução é perpendicular ao plano de curva de revolução.",
+      "revolveZeroAxis": "Não é permitido comprimento zero para o eixo.",
+      "revolveClosedAxis": "Não é possível obter direção do eixo a partir de uma curva ou aresta.",
+      "listRevolveStart": [
+        "   Ângulo inicial: ",
+        [
+          "angle"
+        ]
+      ],
+      "listRevolveAngle": [
+        "Ângulo de revolução: ",
+        [
+          "angle"
+        ]
+      ],
+      "listDirectionVector": [
+        " Vetor de direção: X = ",
+        [
+          "x"
+        ],
+        "Y = ",
+        [
+          "y"
+        ],
+        "Z = ",
+        [
+          "z"
+        ]
       ]
     },
     "feedback": {
@@ -7089,6 +7162,9 @@ export const ptBR: EngineLocale = {
       },
       "EXTRUDE": {
         "Taper": "ângulo de COnicidade"
+      },
+      "REVOLVE": {
+        "STart": "ângulo INicial"
       }
     },
     "promptKeywordLabels": {

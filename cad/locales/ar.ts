@@ -113,7 +113,8 @@ export const ar: EngineLocale = {
       "sphere": "كرة",
       "torus": "طارة",
       "intersect": "تقاطع",
-      "extrude": "بثق"
+      "extrude": "بثق",
+      "revolve": "دوران"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",

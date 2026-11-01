@@ -51,6 +51,7 @@ import { PyramidTool } from "./tools/PyramidTool"
 import { RoundSolidTool } from "./tools/RoundSolidTool"
 import { solidDefaults } from "./tools/solidDefaults"
 import { ExtrudeTool } from "./tools/ExtrudeTool"
+import { RevolveTool } from "./tools/RevolveTool"
 import { sweepSettings } from "./tools/sweepSettings"
 import { RegionBooleanTool, SubtractTool } from "./tools/RegionBooleanTool"
 import { BreakTool } from "./tools/BreakTool"
@@ -183,6 +184,7 @@ export function defaultTools(
     new RoundSolidTool("torus", primitives),
     new PyramidTool(primitives),
     new ExtrudeTool(sweeps),
+    new RevolveTool(sweeps),
     new BreakTool("gap", "break"),
     new BreakTool("atPoint", "breakatpoint"),
     new SplineEditTool(),

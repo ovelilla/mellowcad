@@ -114,6 +114,24 @@ const FROM_SCRATCH: ReadonlyArray<
       c.command("PYRAMID").click(p(0, 0)).type("20").enter().type("30").enter(),
   ],
   ["SPHERE", (c) => c.command("SPHERE").click(p(0, 0)).type("20").enter()],
+  // probe revolve/r01: as EXTRUDE's.
+  [
+    "REVOLVE",
+    (c) =>
+      c
+        .command("CIRCLE")
+        .click(p(100, 0))
+        .type("20")
+        .enter()
+        .command("REVOLVE")
+        .type("L")
+        .enter()
+        .enter()
+        .type("Y")
+        .enter()
+        .type("90")
+        .enter(),
+  ],
   // probe extrude/x10: the circle on its layer, the solid on the current one.
   [
     "EXTRUDE",

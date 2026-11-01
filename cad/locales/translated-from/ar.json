@@ -108,6 +108,7 @@
   "interface.tool.torus": "Torus",
   "interface.tool.intersect": "Intersect",
   "interface.tool.extrude": "Extrude",
+  "interface.tool.revolve": "Revolve",
   "interface.description.U": "Undo the last action",
   "interface.description.REDO": "Redo the last undone action",
   "interface.description.SNAP": "Force the cursor onto the snap increments",

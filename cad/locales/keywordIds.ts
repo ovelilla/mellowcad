@@ -703,5 +703,19 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
     "Expression",
     "Yes",
     "No"
+  ],
+  "REVOLVE": [
+    "MOde",
+    "SOlid",
+    "SUrface",
+    "Object",
+    "X",
+    "Y",
+    "Z",
+    "STart",
+    "Reverse",
+    "EXpression",
+    "Yes",
+    "No"
   ]
 }

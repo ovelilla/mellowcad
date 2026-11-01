@@ -109,7 +109,8 @@
       "sphere": "Sphere",
       "torus": "Torus",
       "intersect": "Intersect",
-      "extrude": "Extrude"
+      "extrude": "Extrude",
+      "revolve": "Revolve"
     },
     "description": {
       "U": "Undo the last action",
@@ -635,7 +636,8 @@
       "UNION": ["UNION", "UNI"],
       "SUBTRACT": ["SUBTRACT", "SU"],
       "INTERSECT": ["INTERSECT", "IN"],
-      "EXTRUDE": ["EXTRUDE", "EXT"]
+      "EXTRUDE": ["EXTRUDE", "EXT"],
+      "REVOLVE": ["REVOLVE", "REV"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1192,7 +1194,8 @@
         "BYLayer": "BYLayer"
       },
       "LWEIGHT": { "?": "?", "BYLAYER": "BYLayer" },
-      "EXTRUDE": {"MOde": "MOde", "SOlid": "SOlid", "SUrface": "SUrface", "Direction": "Direction", "Path": "Path", "Taper": "Taper", "Expression": "Expression", "Yes": "Yes", "No": "No"}
+      "EXTRUDE": {"MOde": "MOde", "SOlid": "SOlid", "SUrface": "SUrface", "Direction": "Direction", "Path": "Path", "Taper": "Taper", "Expression": "Expression", "Yes": "Yes", "No": "No"},
+      "REVOLVE": {"MOde": "MOde", "SOlid": "SOlid", "SUrface": "SUrface", "Object": "Object", "X": "X", "Y": "Y", "Z": "Z", "STart": "STart", "Reverse": "Reverse", "EXpression": "EXpression", "Yes": "Yes", "No": "No"}
     },
     "promptKeywords": {
       "selectObjects": {
@@ -1770,7 +1773,13 @@
       "enterExpression": "Enter expression",
       "directionStart": "Specify start point of direction",
       "directionEnd": "Specify end point of direction",
-      "eraseDefiningObjects": "Erase defining objects?"
+      "eraseDefiningObjects": "Erase defining objects?",
+      "revolveSelectOr": "Select objects to revolve or",
+      "revolveAxisStartOr": "Specify axis start point or define axis by",
+      "revolveAxisEnd": "Specify axis endpoint",
+      "revolveSelectAxis": "Select an object",
+      "revolveAngleOr": "Specify angle of revolution or",
+      "revolveStartAngle": "Specify start angle"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2392,7 +2401,16 @@
       "directionParallel": "Extrude direction is parallel to plane of sweep curve.",
       "expressionSyntax": "The syntax is incorrect or a variable is not defined.  Reenter the expression or value.",
       "listExtrusionHeight": " Extrusion height: {height}",
-      "listTaperAngle": "      Taper angle: {angle}"
+      "listTaperAngle": "      Taper angle: {angle}",
+      "revolveRefused": "Cannot revolve an object of this type.\n{count, plural, one {# object removed from selection set.} other {# objects removed from selection set.}}",
+      "revolveOneSide": "The object should be on one side of the axis.",
+      "revolveUnable": "Unable to revolve the selected object.",
+      "revolvePerpendicular": "Axis of revolution is perpendicular to plane of revolve curve.",
+      "revolveZeroAxis": "Zero length axis is not permitted.",
+      "revolveClosedAxis": "Cannot get axis direction from a closed curve or edge.",
+      "listRevolveStart": "      Start angle: {angle}",
+      "listRevolveAngle": "Angle of revolution: {angle}",
+      "listDirectionVector": " Direction vector: X = {x}Y = {y}Z = {z}"
     },
     "feedback": {
       "snap": {
@@ -2519,7 +2537,8 @@
       "COPY": { "Displacement": "Displacement" },
       "UCSICON": { "Noorigin": "Noorigin" },
       "OFFSET": { "Through": "Through" },
-      "EXTRUDE": {"Taper": "Taper angle"}
+      "EXTRUDE": {"Taper": "Taper angle"},
+      "REVOLVE": {"STart": "STart angle"}
     },
     "promptKeywordLabels": {
       "ucsNewUcs": { "ZAxis": "ZAxis" }

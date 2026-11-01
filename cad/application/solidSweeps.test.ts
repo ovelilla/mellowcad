@@ -252,3 +252,195 @@ describe("EXTRUDE", () => {
     ])
   })
 })
+
+describe("REVOLVE", () => {
+  it("turns a rectangle round Y from 30° through 90°, as r01's MASSPROP", () => {
+    const cad = console()
+    answer(cad, "RECTANG", "100,0", "110,5")
+    expect(
+      written(cad, "REVOLVE", "_L", "", "_Y", "_ST", "FOO", "30", "FOO", "90")
+    ).toEqual([
+      "REVOLVE",
+      "Current wire frame density:  ISOLINES=4, Closed profiles creation mode = Solid",
+      "Select objects to revolve or [MOde]: _L",
+      "1 found",
+      "Select objects to revolve or [MOde]:",
+      "Specify axis start point or define axis by [Object/X/Y/Z] <Object>: _Y",
+      "Specify angle of revolution or [STart angle/Reverse/EXpression] <360>: _ST",
+      "Specify start angle <0.0>: FOO",
+      "Requires valid numeric angle, second point, or option keyword.",
+      "Specify start angle <0.0>: 30",
+      "Specify angle of revolution or [STart angle/EXpression] <360>: FOO",
+      "Requires valid numeric angle, second point, or option keyword.",
+      "Specify angle of revolution or [STart angle/EXpression] <360>: 90",
+    ])
+    const solid = last(cad)
+    expect(brepVolume(solid.brep)).toBeCloseTo(8246.6807, 4)
+    const m = solidInertia(brepMoments(solid.brep))
+    expect(m.centroid.x).toBeCloseTo(24.4855, 4)
+    expect(m.centroid.z).toBeCloseTo(-91.3811, 4)
+    expect(listed(cad)).toEqual([
+      "      Solid type = Revolve",
+      "      Start angle: 30",
+      "Angle of revolution: 90",
+      " Direction vector: X = 0.0000    Y = 1.0000    Z = 0.0000",
+      "   Bounding Box: Lower Bound X = -55.0000 , Y = 0.0000   , Z = -110.0000",
+      "                 Upper Bound X = 95.2628  , Y = 5.0000   , Z = -50.0000",
+    ])
+  })
+
+  it("takes two points, Reverse and a negative angle, a whole turn for 0 or past a turn (r03, r07)", () => {
+    const cad = console()
+    answer(cad, "PLINE", "0,-5", "_A", "_CE", "0,0", "0,5", "_L", "_C")
+    answer(cad, "REVOLVE", "_L", "", "_Y", "_R", "-90")
+    expect(brepVolume(last(cad).brep)).toBeCloseTo(130.8997, 4)
+    expect(solidInertia(brepMoments(last(cad).brep)).centroid.z).toBeCloseTo(
+      -1.875,
+      9
+    )
+    expect(listed(cad).slice(1, 4)).toEqual([
+      "      Start angle: 0",
+      "Angle of revolution: -90",
+      " Direction vector: X = 0.0000    Y = -1.0000   Z = 0.0000",
+    ])
+    answer(
+      cad,
+      "RECTANG",
+      "10,50",
+      "20,55",
+      "REVOLVE",
+      "_L",
+      "",
+      "0,0",
+      "10,0",
+      "-400"
+    )
+    expect(listed(cad).slice(2, 4)).toEqual([
+      "Angle of revolution: 360",
+      " Direction vector: X = 1.0000    Y = 0.0000    Z = 0.0000",
+    ])
+    answer(cad, "RECTANG", "10,100", "20,105", "REVOLVE", "_L", "", "_Y", "0")
+    expect(brepVolume(last(cad).brep)).toBeCloseTo(Math.PI * 300 * 5, 6)
+  })
+
+  it("turns round a line it is given, by an expression (r08)", () => {
+    const cad = console()
+    answer(cad, "LINE", "0,0", "0,10", "", "RECTANG", "10,0", "20,5")
+    expect(
+      written(
+        cad,
+        "REVOLVE",
+        "_L",
+        "",
+        "_O",
+        "0,5",
+        "_ST",
+        "-30",
+        "_EX",
+        "FOO",
+        "45*2"
+      )
+    ).toEqual([
+      "REVOLVE",
+      "Current wire frame density:  ISOLINES=4, Closed profiles creation mode = Solid",
+      "Select objects to revolve or [MOde]: _L",
+      "1 found",
+      "Select objects to revolve or [MOde]:",
+      "Specify axis start point or define axis by [Object/X/Y/Z] <Object>: _O",
+      "Select an object: 0,5",
+      "Specify angle of revolution or [STart angle/Reverse/EXpression] <360>: _ST",
+      "Specify start angle <0.0>: -30",
+      "Specify angle of revolution or [STart angle/EXpression] <360>: _EX",
+      "Enter expression: FOO",
+      "The syntax is incorrect or a variable is not defined.  Reenter the expression or value.",
+      "Enter expression: 45*2",
+    ])
+    expect(listed(cad).slice(1, 3)).toEqual([
+      "      Start angle: -30",
+      "Angle of revolution: 90",
+    ])
+    const box = listed(cad).slice(4)
+    expect(box).toEqual([
+      "   Bounding Box: Lower Bound X = 5.0000   , Y = 0.0000   , Z = -17.3205",
+      "                 Upper Bound X = 20.0000  , Y = 5.0000   , Z = 10.0000",
+    ])
+  })
+
+  it("refuses an axis across the profile, square to it, of no length or closed (r01, r05, r09)", () => {
+    const cad = console()
+    answer(cad, "RECTANG", "0,0", "10,5", "REVOLVE", "_L", "", "5,0")
+    expect(written(cad, "5,10", "90")).toEqual([
+      "Specify axis endpoint: 5,10",
+      "Specify angle of revolution or [STart angle/Reverse/EXpression] <360>: 90",
+      "The object should be on one side of the axis.",
+      "Unable to revolve the selected object.",
+    ])
+    answer(cad, "REVOLVE", "_L", "", "20,0,0", "20,0,10")
+    expect(written(cad, "90")).toEqual([
+      "Specify angle of revolution or [STart angle/Reverse/EXpression] <360>: 90",
+      "Axis of revolution is perpendicular to plane of revolve curve.",
+      "Unable to revolve the selected object.",
+    ])
+    answer(cad, "REVOLVE", "_L", "", "0,0")
+    expect(written(cad, "0,0")).toEqual([
+      "Specify axis endpoint: 0,0",
+      "Zero length axis is not permitted.",
+    ])
+    answer(cad, "REVOLVE", "_L", "", "_O")
+    expect(written(cad, "_L")).toEqual([
+      "Select an object: _L",
+      "Cannot get axis direction from a closed curve or edge.",
+    ])
+    expect(solids(cad)).toHaveLength(0)
+  })
+
+  it("asks to erase by DELOBJ, and asks in Spanish and Brazilian Portuguese (r09, r01)", () => {
+    const cad = console()
+    answer(
+      cad,
+      "DELOBJ",
+      "-1",
+      "CIRCLE",
+      "30,0",
+      "5",
+      "REVOLVE",
+      "_L",
+      "",
+      "_Y",
+      "90"
+    )
+    expect(written(cad, "_N")).toEqual([
+      "Erase defining objects? [Yes/No] <Yes>: _N",
+    ])
+    expect(cad.entities()).toHaveLength(2)
+    const spanish = console(es)
+    answer(spanish, "RECTANG", "100,0", "110,5")
+    expect(
+      written(spanish, "REVOLUCION", "_L", "", "_Y", "_ST", "30", "90").slice(
+        -4
+      )
+    ).toEqual([
+      "Precise punto inicial del eje o defina el eje mediante [Objeto/X/Y/Z] <Objeto>: _Y",
+      "Precise ángulo de revolución o [ángulo Inicial/iNvertir/EXpresión] <360>: _ST",
+      "Precise ángulo inicial <0.0>: 30",
+      "Precise ángulo de revolución o [ángulo Inicial/EXpresión] <360>: 90",
+    ])
+    const portuguese = console(ptBR)
+    answer(portuguese, "_RECTANG", "100,0", "110,5")
+    expect(
+      written(portuguese, "REVOLUCAO", "_L", "", "_Y", "90").slice(-2)
+    ).toEqual([
+      "Especificar ponto inicial para eixo ou definir eixo por [Objeto/X/Y/Z] <Objeto>: _Y",
+      "Especifique um ângulo de revolução ou [ângulo INicial/Reverter/EXpressão] <360>: 90",
+    ])
+    expect(
+      written(portuguese, "_LIST", "_L", "").flatMap((l) => l.split("\n"))
+    ).toEqual(
+      expect.arrayContaining([
+        "   Ângulo inicial: 0",
+        "Ângulo de revolução: 90",
+        " Vetor de direção: X = 0.0000    Y = 1.0000    Z = 0.0000",
+      ])
+    )
+  })
+})

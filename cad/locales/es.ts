@@ -113,7 +113,8 @@ export const es: EngineLocale = {
       "sphere": "Esfera",
       "torus": "Toroide",
       "intersect": "Intersección",
-      "extrude": "Extruir"
+      "extrude": "Extruir",
+      "revolve": "Revolución"
     },
     "description": {
       "U": "Deshacer la última acción",
@@ -1162,6 +1163,10 @@ export const es: EngineLocale = {
       "EXTRUDE": [
         "EXTRUSION",
         "EXT"
+      ],
+      "REVOLVE": [
+        "REVOLUCION",
+        "RV"
       ]
     },
     "keywords": {
@@ -1868,6 +1873,20 @@ export const es: EngineLocale = {
         "Expression": "Expresión",
         "Yes": "Sí",
         "No": "No"
+      },
+      "REVOLVE": {
+        "MOde": "MOdo",
+        "SOlid": "Sólido",
+        "SUrface": "SUperficie",
+        "Object": "Objeto",
+        "X": "X",
+        "Y": "Y",
+        "Z": "Z",
+        "STart": "Inicial",
+        "Reverse": "iNvertir",
+        "EXpression": "EXpresión",
+        "Yes": "Sí",
+        "No": "No"
       }
     },
     "promptKeywords": {
@@ -2536,7 +2555,13 @@ export const es: EngineLocale = {
       "enterExpression": "Introduzca expresión",
       "directionStart": "Precise punto inicial de dirección",
       "directionEnd": "Precise punto final de dirección",
-      "eraseDefiningObjects": "¿Desea borrar los objetos de definición?"
+      "eraseDefiningObjects": "¿Desea borrar los objetos de definición?",
+      "revolveSelectOr": "Designe objetos para revolución o",
+      "revolveAxisStartOr": "Precise punto inicial del eje o defina el eje mediante",
+      "revolveAxisEnd": "Precise punto final del eje",
+      "revolveSelectAxis": "Designe un objeto",
+      "revolveAngleOr": "Precise ángulo de revolución o",
+      "revolveStartAngle": "Precise ángulo inicial"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -6798,6 +6823,56 @@ export const es: EngineLocale = {
         [
           "angle"
         ]
+      ],
+      "revolveRefused": [
+        "No se puede efectuar la revolución de un objeto de este tipo.\n",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              "Se ha eliminado ",
+              0,
+              " objeto del conjunto de selección."
+            ],
+            "other": [
+              "Se han eliminado ",
+              0,
+              " objetos del conjunto de selección."
+            ]
+          }
+        ]
+      ],
+      "revolveOneSide": "El objeto debe encontrarse a un lado del eje.",
+      "revolveUnable": "Imposible efectuar la revolución del objeto designado.",
+      "revolvePerpendicular": "El eje de revolución es perpendicular al plano de la curva de revolución.",
+      "revolveZeroAxis": "El eje no puede tener longitud cero.",
+      "revolveClosedAxis": "No se puede obtener la dirección del eje a partir de una curva cerrada o una arista.",
+      "listRevolveStart": [
+        "   Ángulo inicial: ",
+        [
+          "angle"
+        ]
+      ],
+      "listRevolveAngle": [
+        "Ángulo de revolución: ",
+        [
+          "angle"
+        ]
+      ],
+      "listDirectionVector": [
+        "Vector de dirección: X = ",
+        [
+          "x"
+        ],
+        "Y = ",
+        [
+          "y"
+        ],
+        "Z = ",
+        [
+          "z"
+        ]
       ]
     },
     "feedback": {
@@ -7063,6 +7138,9 @@ export const es: EngineLocale = {
       },
       "EXTRUDE": {
         "Taper": "ángulo Inclinación"
+      },
+      "REVOLVE": {
+        "STart": "ángulo Inicial"
       }
     },
     "promptKeywordLabels": {

@@ -90,7 +90,8 @@ export const ptBR: EditorLocale = {
         "attributes": "Atributos",
         "measure": "Medir",
         "union": "Editar sólidos",
-        "box": "Modelagem"
+        "box": "Modelagem",
+        "extrude": "Extrusão"
       },
       "sections": {
         "draw": "Desenhar",
