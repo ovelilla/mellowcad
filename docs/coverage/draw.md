@@ -1401,6 +1401,29 @@ curve.` (r04) having no table string to word it in es and pt-BR; the jig's angle
 axis (the whole turn is previewed); its grips and the palette's rows under Solid type
 (**unverified**: no desktop pass).
 
+### `PRESSPULL` · es `PRESIONARTIRAR` / `PULSARTIRAR` · pt-BR `PRESSIONARPUXAR`
+
+**Implemented:** PRESSPULL on a closed object or an area its objects bound, which its help says
+extrude into a 3D solid (`PRESSPULL (Command)`, `To Work With Pressing or Pulling Bounded Areas or
+Objects`), worded by 2027's tables (31244, 53916, 292, 26301): `Select object or bounded area:` (es
+`Seleccione un objeto o un área delimitada`, pt-BR `Selecione o objeto ou área delimitada`) until
+Enter — a click on a circle, an ellipse, a closed polyline or spline or a region, or inside an area
+the objects in plan bound (HATCH's boundary, its islands holes) —, then `Specify extrusion height or
+[Multiple]:` (es `Precise altura de extrusión o [Múltiple]`, pt-BR `Especifique a altura da extrusão
+ou [Múltiplos]`), the solid along the profile's normal (the UCS's Z for an area), of the current
+layer and properties, its objects kept, and the selection asked again (its help: "The command
+repeats automatically until you press Esc, Enter, or the spacebar"). Multiple, at either prompt,
+takes several clicks before one height. A typed point says `Click a face, curve, or inside a bounded
+area` (presspull/p01, the console's answer to every point), FOO `2D point or option keyword
+required.`. The solid is EXTRUDE's (`Solid type = Extrusion`). The whole run is one undo step.
+
+**Missing:** a solid's face pressed or pulled (Ctrl+click offsets it), phase 4's; an open object,
+which it extrudes into a surface (no surface object here); the drag's live height along the normal
+and the jig's preview of the area as the cursor hovers it (here the height is the distance to a
+point); `%d extrusion(s) created` (55300), whose moment no probe has seen; whether a closed object
+pulled is kept or erased, and what an area bounded off the UCS's plane does (**unverified**: the
+console cannot click, presspull/p01, and no desktop pass has been made).
+
 ### `BLOCK` / `B` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOCK` / `-B` · es `BLOQUE` / `BQ` / `MODBLQ` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOQUE` / `-BQ` · pt-BR `BLOCO` / `CB` / `ACADBLOCKDIALOG` / `CRIARB` / `DEFB`, `-BLOCO` / `-CB`
 
 **Implemented:** -BLOCK's command line, which BLOCK asks too (p151, p152; aliases from the 2027

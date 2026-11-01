@@ -114,6 +114,20 @@ const FROM_SCRATCH: ReadonlyArray<
       c.command("PYRAMID").click(p(0, 0)).type("20").enter().type("30").enter(),
   ],
   ["SPHERE", (c) => c.command("SPHERE").click(p(0, 0)).type("20").enter()],
+  // As EXTRUDE's (its help: a solid; **unverified** in the desktop).
+  [
+    "PRESSPULL",
+    (c) =>
+      c
+        .command("CIRCLE")
+        .click(p(200, 0))
+        .type("20")
+        .enter()
+        .command("PRESSPULL")
+        .click(p(200, 0))
+        .type("30")
+        .enter(),
+  ],
   // probe revolve/r01: as EXTRUDE's.
   [
     "REVOLVE",

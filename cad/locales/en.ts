@@ -114,7 +114,8 @@ export const en: EngineCatalog = {
       "torus": "Torus",
       "intersect": "Intersect",
       "extrude": "Extrude",
-      "revolve": "Revolve"
+      "revolve": "Revolve",
+      "presspull": "Presspull"
     },
     "description": {
       "U": "Undo the last action",
@@ -1185,6 +1186,9 @@ export const en: EngineCatalog = {
       "REVOLVE": [
         "REVOLVE",
         "REV"
+      ],
+      "PRESSPULL": [
+        "PRESSPULL"
       ]
     },
     "keywords": {
@@ -2005,7 +2009,9 @@ export const en: EngineCatalog = {
       "revolveAxisEnd": "Specify axis endpoint",
       "revolveSelectAxis": "Select an object",
       "revolveAngleOr": "Specify angle of revolution or",
-      "revolveStartAngle": "Specify start angle"
+      "revolveStartAngle": "Specify start angle",
+      "presspullSelect": "Select object or bounded area",
+      "presspullHeightOr": "Specify extrusion height or"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -6301,7 +6307,8 @@ export const en: EngineCatalog = {
         [
           "z"
         ]
-      ]
+      ],
+      "presspullClick": "Click a face, curve, or inside a bounded area"
     },
     "feedback": {
       "snap": {

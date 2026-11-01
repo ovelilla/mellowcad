@@ -18,6 +18,7 @@ import {
   LocateFixed,
   Merge,
   type LucideIcon,
+  UnfoldVertical,
   MousePointer2,
   Move,
   Paintbrush,
@@ -147,6 +148,7 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   wedge: TriangleRight,
   extrude: ArrowUpFromLine,
   revolve: Rotate3d,
+  presspull: UnfoldVertical,
   union: SquaresUnite,
   subtract: SquaresSubtract,
   intersect: SquaresIntersect,
@@ -265,6 +267,7 @@ const PALETTE: readonly PaletteSection[] = [
       ]),
       // Beside it the sweeps' drop-down, EXTRUDE first.
       flyout("extrude", ["extrude", "revolve"]),
+      "presspull",
     ],
   },
   {

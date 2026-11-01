@@ -60,6 +60,7 @@ SUBTRACT ["SU"] "Subtract"
 INTERSECT ["IN"] "Intersect"
 EXTRUDE ["EXT"] "Extrude"
 REVOLVE ["REV"] "Revolve"
+PRESSPULL [] "Presspull"
 BOX [] "Box"
 WEDGE ["WE"] "Wedge"
 CYLINDER ["CYL"] "Cylinder"
@@ -210,6 +211,7 @@ torus "Torus" TOR
 pyramid "Pyramid" PYR
 extrude "Extrude" EXT
 revolve "Revolve" REV
+presspull "Presspull" PRESSPULL
 break "Break" BR
 breakatpoint "Break at point" BREAKATPOINT
 splinedit "Edit Spline" SPE
@@ -5053,6 +5055,55 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
          Direction vector: X = 0.00      Y = -1.00     Z = 0.00
            Bounding Box: Lower Bound X = -75.00   , Y = 0.00     , Z = 50.00
                          Upper Bound X = 129.90   , Y = 50.00    , Z = 150.00
+
+## PRESSPULL
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> RECTANG
+  command| RECTANG
+  prompt| Specify first corner point or [Chamfer/Elevation/Fillet/Thickness/Width]: 0,0
+  prompt| Specify other corner point or [Area/Dimensions/Rotation]: 100,50
+> PRESSPULL refused
+  prompt: PRESSPULL Select object or bounded area:
+  asks: "Select object or bounded area"
+  tip: Select object or bounded area:
+  dyn: "X,Y"=""||*
+  command| PRESSPULL
+  prompt| Select object or bounded area: FOO
+  error| 2D point or option keyword required.
+  prompt| Select object or bounded area: 5,5
+  error| Click a face, curve, or inside a bounded area
+> click inside
+  prompt: PRESSPULL Specify extrusion height or [Multiple]:
+  asks: "Specify extrusion height or"
+  tip: Specify extrusion height or
+  dyn: "Specify extrusion height or"=""||mm*
+  options: [M] Multiple
+  prompt| Select object or bounded area:
+> height
+  prompt: PRESSPULL Select object or bounded area:
+  asks: "Select object or bounded area"
+  tip: Select object or bounded area:
+  dyn: "X,Y"=""||*
+  options: -
+  prompt| Specify extrusion height or [Multiple]: M
+> click again
+  prompt| Select object or bounded area:
+> Multiple's height
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  prompt| Select object or bounded area:
+  prompt| Specify extrusion height or [Multiple]: 30
+  prompt| Select object or bounded area:
 
 ## JOIN made
 > start

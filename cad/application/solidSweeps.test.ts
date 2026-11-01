@@ -444,3 +444,46 @@ describe("REVOLVE", () => {
     )
   })
 })
+
+describe("PRESSPULL", () => {
+  it("pulls the area its objects bound, its islands holes, and asks again (its help; presspull/p01)", () => {
+    const cad = console()
+    answer(cad, "RECTANG", "0,0", "100,60", "CIRCLE", "50,30", "10")
+    expect(written(cad, "PRESSPULL", "FOO", "5,5")).toEqual([
+      "PRESSPULL",
+      "Select object or bounded area: FOO",
+      "2D point or option keyword required.",
+      "Select object or bounded area: 5,5",
+      "Click a face, curve, or inside a bounded area",
+    ])
+    cad.click({ x: 10, y: 10 })
+    expect(written(cad, "20")).toEqual([
+      "Specify extrusion height or [Multiple]: 20",
+    ])
+    const solid = last(cad)
+    expect(brepIsClosed(solid.brep)).toBe(true)
+    expect(brepVolume(solid.brep)).toBeCloseTo((6000 - Math.PI * 100) * 20, 6)
+    // Its objects stay; it asks again until Enter.
+    expect(cad.entities().map((e) => e.type)).toEqual([
+      "polyline",
+      "circle",
+      "solid3d",
+    ])
+    cad.click({ x: 50, y: 30 })
+    answer(cad, "5", "")
+    expect(brepVolume(last(cad).brep)).toBeCloseTo(Math.PI * 100 * 5, 6)
+    expect(cad.commandLog().at(-1)).toBe("Select object or bounded area:")
+    answer(cad, "U")
+    expect(solids(cad)).toHaveLength(0)
+  })
+
+  it("takes several before one height with Multiple", () => {
+    const cad = console()
+    answer(cad, "CIRCLE", "0,0", "5", "CIRCLE", "50,0", "5", "PRESSPULL", "_M")
+    cad.click({ x: 0, y: 0 })
+    cad.click({ x: 50, y: 0 })
+    answer(cad, "", "3", "")
+    expect(solids(cad)).toHaveLength(2)
+    expect(solids(cad).every((s) => brepVolume(s.brep) > 235)).toBe(true)
+  })
+})
