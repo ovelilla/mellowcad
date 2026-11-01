@@ -2355,6 +2355,8 @@
       "regionSelfIntersections": "    Self intersections                     : {count, plural, one {# loop.} other {# loops.}}",
       "regionsCreated": "{count, plural, one {# Region created.} other {# Regions created.}}",
       "nullRegion": "Null region created - deleted",
+      "nullSolid": "Null solid created - deleted",
+      "booleanFailed": "{count} boolean operation(s) failed.",
       "booleanNeedsTwo": "At least 2 solids, surfaces, or coplanar regions must be selected.",
       "subtractFrom": "Select solids, surfaces, and regions to subtract from ..",
       "subtractWhat": "Select solids, surfaces, and regions to subtract ..",

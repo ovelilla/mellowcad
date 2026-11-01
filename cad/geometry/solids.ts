@@ -19,7 +19,13 @@ import {
 } from "./nurbs"
 import { MODEL_TOLERANCE, PlanarCurve } from "./planarCurves"
 import { RegionFace, facesArea } from "./planarRegions"
-import { faceRegionMeasures } from "./faceRegions"
+import {
+  faceRegion,
+  faceRegionMeasures,
+  isoRuns,
+  regionContains,
+  surfaceParams,
+} from "./faceRegions"
 import {
   spreadIsolines,
   surfacePoint,
@@ -1103,9 +1109,17 @@ export function brepBox(brep: Brep): Box3 | null {
         : (((param(end) - from) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)
     points.push(...ellipticalArcExtremes(c.center, major, minor, from, sweep))
   }
-  for (const { surface, domain } of brep.faces) {
+  for (const face of brep.faces) {
+    const { surface, domain } = face
     if (domain && surface.kind !== "plane") {
-      points.push(...domainExtremes(surface, domain))
+      // A face a boolean trimmed reaches no further than its edges where
+      // its surface would.
+      const region = faceRegion(brep, face)
+      points.push(
+        ...domainExtremes(surface, domain).filter(
+          (p) => !region || regionContains(region, surfaceParams(surface, p))
+        )
+      )
       continue
     }
     const reach = closedSurfaceReach(surface)
@@ -1281,7 +1295,11 @@ export function brepIsolines(brep: Brep, count: number): Wire[] {
     const s = face.surface
     if (s.kind === "plane") continue
     if (face.domain) {
-      out.push(...domainIsolines(s, face.domain, count))
+      const region = faceRegion(brep, face)
+      const runs: IsoRuns = region
+        ? (along, at, from, to) => isoRuns(region, along, at, from, to)
+        : (_along, _at, from, to) => [[from, to]]
+      out.push(...domainIsolines(s, face.domain, count, runs))
       continue
     }
     if (s.kind === "extrusion" || s.kind === "revolution") continue
@@ -1465,14 +1483,22 @@ function profileWire(
  * `count` rulings spread along its profile (i06 also draws profiles across
  * it, ACIS's own count: none here).
  */
-function domainIsolines(s: Curved, d: FaceDomain, count: number): Wire[] {
+function domainIsolines(
+  s: Curved,
+  d: FaceDomain,
+  count: number,
+  runs: IsoRuns
+): Wire[] {
   const out: Wire[] = []
   const add = (w: Wire | null) => {
     if (w) out.push(w)
   }
   const at = (u: number, v: number) => unsigned0(surfacePoint(s, u, v))
-  const ruling = (u: number) =>
-    add({ kind: "line", start: at(u, d.v[0]), end: at(u, d.v[1]) })
+  const ruling = (u: number) => {
+    for (const [a, b] of runs("v", u, d.v[0], d.v[1])) {
+      add({ kind: "line", start: at(u, a), end: at(u, b) })
+    }
+  }
   const inside = (range: readonly [number, number], t: number) =>
     t > Math.min(...range) + 1e-9 && t < Math.max(...range) - 1e-9
   switch (s.kind) {
@@ -1488,14 +1514,16 @@ function domainIsolines(s: Curved, d: FaceDomain, count: number): Wire[] {
       const out3 = (u: number) =>
         add3(scale3(s.xAxis, Math.cos(u)), scale3(y, Math.sin(u)))
       for (const u of turnIsolines(d.u, count)) {
-        add(
-          arcWire(
-            add3(s.center, scale3(out3(u), R)),
-            cross3(out3(u), s.axis),
-            at(u, d.v[0]),
-            d.v[1] - d.v[0]
+        for (const [a, b] of runs("v", u, d.v[0], d.v[1])) {
+          add(
+            arcWire(
+              add3(s.center, scale3(out3(u), R)),
+              cross3(out3(u), s.axis),
+              at(u, a),
+              b - a
+            )
           )
-        )
+        }
       }
       const across =
         s.kind === "sphere"
@@ -1516,32 +1544,38 @@ function domainIsolines(s: Curved, d: FaceDomain, count: number): Wire[] {
       const wholeTube = Math.abs(d.v[1] - d.v[0]) >= 2 * Math.PI - 1e-9
       for (const v of across) {
         if (!(s.kind === "torus" && wholeTube) && !inside(d.v, v)) continue
-        add(
-          arcWire(
-            add3(s.center, scale3(s.axis, r * Math.sin(v))),
-            s.axis,
-            at(d.u[0], v),
-            d.u[1] - d.u[0]
+        for (const [a, b] of runs("u", v, d.u[0], d.u[1])) {
+          add(
+            arcWire(
+              add3(s.center, scale3(s.axis, r * Math.sin(v))),
+              s.axis,
+              at(a, v),
+              b - a
+            )
           )
-        )
+        }
       }
       break
     }
     case "revolution": {
       for (const u of turnIsolines(d.u, count)) {
-        add(
-          profileWire(s.profile, d.v[0], d.v[1], (p) =>
-            turnedAbout(p, s.origin, s.axis, u)
+        for (const [a, b] of runs("v", u, d.v[0], d.v[1])) {
+          add(
+            profileWire(s.profile, a, b, (p) =>
+              turnedAbout(p, s.origin, s.axis, u)
+            )
           )
-        )
+        }
       }
       for (const v of spreadIsolines(d.v, count)) {
-        const p = at(d.u[0], v)
-        const center = add3(
-          s.origin,
-          scale3(s.axis, dot3(sub3(p, s.origin), s.axis))
-        )
-        add(arcWire(center, s.axis, p, d.u[1] - d.u[0]))
+        for (const [a, b] of runs("u", v, d.u[0], d.u[1])) {
+          const p = at(a, v)
+          const center = add3(
+            s.origin,
+            scale3(s.axis, dot3(sub3(p, s.origin), s.axis))
+          )
+          add(arcWire(center, s.axis, p, b - a))
+        }
       }
       break
     }
@@ -1565,6 +1599,18 @@ function domainIsolines(s: Curved, d: FaceDomain, count: number): Wire[] {
   }
   return out
 }
+
+/**
+ * The runs of the line of a face's parameters `along` held at `at`, from
+ * `from` to `to`, that lie inside the face: all of it on a face its domain
+ * bounds, its pieces between the edges a boolean cut it by.
+ */
+type IsoRuns = (
+  along: "u" | "v",
+  at: number,
+  from: number,
+  to: number
+) => (readonly [number, number])[]
 
 /** Whether `p` lies on the face's surface, within `tolerance`. */
 function onSurface(s: BrepSurface, p: Vec3, tolerance: number): boolean {

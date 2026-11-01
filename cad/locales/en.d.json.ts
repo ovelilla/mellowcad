@@ -2565,6 +2565,8 @@ declare const source: {
       "regionSelfIntersections": string
       "regionsCreated": string
       "nullRegion": string
+      "nullSolid": string
+      "booleanFailed": string
       "booleanNeedsTwo": string
       "subtractFrom": string
       "subtractWhat": string

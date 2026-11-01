@@ -1264,32 +1264,60 @@ its pieces as it draws them, its texts at X's size (INSERT's Missing)
 
 ### `INTERSECT` / `IN` · es `INTERSEC` / `INT` · pt-BR `INTERSEC` / `INT`
 
-**Implemented** (regions; region/b01–b11, n01): UNION and INTERSECT ask `Select objects:` (whole
-objects); SUBTRACT reports `Select solids, surfaces, and regions to subtract from ..` then asks
-`Select objects:`, then `Select solids, surfaces, and regions to subtract ..` and asks again (es
-both `Designe sólidos, superficies y regiones de las que sustraer...`; pt-BR `… a subtrair de ..` /
-`… a subtrair ..`), Enter on an empty set ending it with nothing done (b07). Whatever is found is
-counted, and what is no region passed over: with fewer than two regions in any one plane UNION and
-INTERSECT say `At least 2 solids, surfaces, or coplanar regions must be selected.` (b07). Regions
-are combined **plane by plane** (b08: two pairs at Z 0 and 10 give two regions), the first of a
-plane keeping its object and the others erased (b01, b10); SUBTRACT joins the first set's regions
-of a plane (b10's two squares became one region) and takes out of them every region of the
-second set in that plane, erasing those whether they overlapped or not (b05), leaving one in another
-plane as it was (b10's circle at Z 5). A result is exact (`geometry/planarRegions.ts`: edges cut
-where they cross or run along each other, each piece kept by where it lies against the other
-region): a circle inside a square becomes its hole (b02, area 321.4602, perimeter 111.4159, the
-hole counted in it), a cut in two leaves one region of two faces (b06: 160 and 72), disjoint
-regions unite into one of two faces (b04), a ring of four bars into one with a hole (b11: 224,
-224); shared sides merge (b11). A result of nothing says `Null region created - deleted` (es
-`Región nula creada - eliminada.`, pt-BR `Foi criada uma região nula - excluída`) and erases the
-regions (b05, b06). One undo step each (b09). Their rail slot is the 3D Modeling workspace's
+**Implemented** (regions and solids; region/b01–b11, n01; union/k01–k08, s01–s10): UNION and
+INTERSECT ask `Select objects:` (whole objects); SUBTRACT reports `Select solids, surfaces, and
+regions to subtract from ..` then asks `Select objects:`, then `Select solids, surfaces, and regions
+to subtract ..` and asks again (es both `Designe sólidos, superficies y regiones de las que
+sustraer...`; pt-BR `… a subtrair de ..` / `… a subtrair ..`), Enter on an empty set ending it with
+nothing done (b07). Whatever is found is counted, and what is neither a solid nor a region passed
+over. **Solids and regions are combined apart** (s01, s09): the solids all become one, the regions
+plane by plane; with fewer than two solids and fewer than two regions in any one plane UNION and
+INTERSECT say `At least 2 solids, surfaces, or coplanar regions must be selected.` (b07, s05: one
+solid and one region; s10: one solid and two coplanar regions unites the regions alone). The first
+object of a set keeps its object, layer and colour, the others erased (b01, b10, s07); a combined
+solid loses what made it: LIST shows `History = None`, `Show History = No` and its `Bounding Box`,
+no `Solid type` (k01), and the palette only Solid History. Regions are combined **plane by plane**
+(b08: two pairs at Z 0 and 10 give two regions); SUBTRACT joins the first set's regions of a plane
+(b10's two squares became one region) and takes out of them every region of the second set in that
+plane, erasing those whether they overlapped or not (b05), leaving one in another plane as it was
+(b10's circle at Z 5), and does the same with the solids: the first set's joined (s03: two boxes
+apart, one solid of two shells), the second's taken out and erased; a region with no region of the
+first set in its plane stays (s03). A region result is exact (`geometry/planarRegions.ts`): a
+circle inside a square becomes its hole (b02, area 321.4602, perimeter 111.4159, the hole counted
+in it), a cut in two leaves one region of two faces (b06: 160 and 72), disjoint regions unite into
+one of two faces (b04), a ring of four bars into one with a hole (b11: 224, 224); shared sides
+merge (b11). A solid result is the kernel's (`geometry/solidBooleans.ts`), measured exactly: two
+boxes at a corner unite into V20 E30 F12, 2375 (k01), side by side into one box of six faces (k02),
+apart into one solid of two shells (k03), a box drilled through V10 E14 F7 (k04), a sphere cut by a
+box V1 E1 F2 (k07), two cylinders of one radius in four elliptical arcs (k06, 2474.9260), of two
+in ACIS's cubic through their quartic (k05); solids touching at a point or along a line unite into
+one (s04). A result of nothing says `Null region created - deleted` (es `Región nula creada -
+eliminada.`, pt-BR `Foi criada uma região nula - excluída`) or `Null solid created - deleted` (es
+`Sólido nulo creado - eliminado`, pt-BR `Foi criado um sólido nulo - excluído`) and erases them
+(b05, b06, s02, s08). One undo step each (b09, s06). Their rail slot is the 3D Modeling workspace's
 Solid Editing drop-down.
 
-**Missing:** solids and surfaces (the brief's phases 2–4); SUBTRACT of a plane of the first set
-with nothing to subtract, left alone here (AutoCAD may join its regions; **unverified**); which
-region keeps its object when the set was taken by `ALL` (AutoCAD's order then is the newest
-first, b01; here the first in the set); a preselection's part in SUBTRACT (taken as the first set,
-**unverified**).
+**Deviations:** MASSPROP of a solid bounded by an approximate intersection curve (two cylinders of
+two radii, k05) is exact here, 1866.9127, where AutoCAD prints 1866.8100: ACIS integrates such faces
+only roughly (its INTERSECT of the same pair, 269.3665 against the exact 269.3703, does not add up
+with it, k08); with exact curves the figures agree (k06). Solids that only touch at a point stay two
+shells of the one solid, where ACIS joins them (s04, its MPDUMP's 3 shells). A pair of surfaces with
+no closed form here, where their faces meet, says AutoCAD's `1 boolean operation(s) failed.`
+(22133; es `Fallaron 1 operaciones booleanas.`, pt-BR `Falha de 1 operação(ções) booleana(s).`) and
+leaves the solids as they were.
+
+**Missing:** surfaces (no such object here); a meeting with no closed form (the brief's phase 7):
+a cylinder, cone, sphere or torus whose axes neither coincide, run parallel nor (two cylinders)
+cross; a cone with any but a coaxial or a plane; a torus with a plane neither square to its axis nor
+through it, or with any other surface off its axis; a revolution with a plane neither way, or with
+another not on its axis; an extrusion with anything but a plane or a surface drawn its way;
+tangency where a cut meets an edge tangentially (s04's cylinder, tangent to the box's sides at its
+top edges), faces within the tolerance of each other but not on one surface, and a thin sliver between a cut and an edge (about 1 in 1,000 random pairs, `solidPair`), each refused as above; which object keeps
+its own when the set was taken by `ALL` (AutoCAD's order then is the newest first, b01, s07; here
+the first in the set); a preselection's part in SUBTRACT (taken as the first set, **unverified**);
+SUBTRACT of a plane of the first set with nothing to subtract, left alone here (AutoCAD may join its
+regions; **unverified**); a composite's Properties palette and grips (none here, **unverified**);
+DELOBJ-like history (SOLIDHIST, SHOWHISTORY).
 
 ### `JOIN` / `J` · es `UNIR` / `U` · pt-BR `UNIR` / `UNE`
 

@@ -6555,6 +6555,14 @@ export const ptBR: EngineLocale = {
         " criada(s)."
       ],
       "nullRegion": "Foi criada uma região nula - excluída",
+      "nullSolid": "Foi criado um sólido nulo - excluído",
+      "booleanFailed": [
+        "Falha de ",
+        [
+          "count"
+        ],
+        " operação(ções) booleana(s)."
+      ],
       "booleanNeedsTwo": "Pelo menos 2 sólidos, superfícies ou regiões coplanares precisam estar selecionados.",
       "subtractFrom": "Selecionar sólidos, superfícies e regiões a subtrair de ..",
       "subtractWhat": "Selecionar sólidos, superfícies e regiões a subtrair ..",

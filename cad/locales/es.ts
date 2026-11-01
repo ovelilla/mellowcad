@@ -6528,6 +6528,14 @@ export const es: EngineLocale = {
         " creada(s)."
       ],
       "nullRegion": "Región nula creada - eliminada.",
+      "nullSolid": "Sólido nulo creado - eliminado",
+      "booleanFailed": [
+        "Fallaron ",
+        [
+          "count"
+        ],
+        " operaciones booleanas."
+      ],
       "booleanNeedsTwo": "Hay que designar al menos 2 sólidos, superficies o regiones coplanares.",
       "subtractFrom": "Designe sólidos, superficies y regiones de las que sustraer...",
       "subtractWhat": "Designe sólidos, superficies y regiones de las que sustraer...",

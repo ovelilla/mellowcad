@@ -1240,6 +1240,57 @@ describe("the engine's English surface", () => {
             )
           )
     )
+    walk("UNION SUBTRACT INTERSECT of solids", createHarness(), (s) =>
+      s
+        .do("UNION", (c) =>
+          submit(
+            c,
+            "BOX",
+            "0,0,0",
+            "100,100",
+            "100",
+            "BOX",
+            "50,50,50",
+            "150,150",
+            "150",
+            "UNION",
+            "ALL",
+            ""
+          )
+        )
+        .do("LIST", (c) => submit(c, "LIST", "L", ""))
+        .do("SUBTRACT", (c) =>
+          submit(
+            c,
+            "SPHERE",
+            "0,0,100",
+            "30",
+            "SUBTRACT",
+            "100,0",
+            "",
+            "30,0",
+            ""
+          )
+        )
+        .do("INTERSECT null", (c) =>
+          submit(c, "BOX", "300,0,0", "350,50", "50", "INTERSECT", "ALL", "")
+        )
+        .do("UNION failed", (c) =>
+          submit(
+            c,
+            "SPHERE",
+            "0,0,0",
+            "50",
+            "CYLINDER",
+            "30,0,-100",
+            "30",
+            "200",
+            "UNION",
+            "ALL",
+            ""
+          )
+        )
+    )
     walk("BOX", createHarness(), (s) =>
       s
         .do("BOX", (c) => submit(c, "BOX", "0,0,0", "100,50", "30"))

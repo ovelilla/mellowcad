@@ -1,0 +1,26 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+_SPHERE
+10,10,10
+5
+_CIRCLE
+40,0
+5
+_CIRCLE
+45,0
+5
+_REGION
+(ssget "X" '((0 . "CIRCLE")))
+
+_UNION
+_ALL
+
+_LIST
+_ALL
+
+MPDUMP
+-

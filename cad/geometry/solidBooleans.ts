@@ -1161,7 +1161,11 @@ function planarPoint(pf: ReturnType<typeof planarFace>, p: Vec3): Vec2 {
  * its left in the face's tangent plane (the face is on a loop's left), at a
  * step halved until the point lies inside and clear of every edge.
  */
-function insidePoint(work: Brep, patch: Patch, tolerance: number): Vec3 | null {
+function* insidePoints(
+  work: Brep,
+  patch: Patch,
+  tolerance: number
+): Generator<Vec3> {
   const face = loneFace(patch.surface, patch.domain, patch.loops)
   const uses = patch.loops
     .flat()
@@ -1187,7 +1191,10 @@ function insidePoint(work: Brep, patch: Patch, tolerance: number): Vec3 | null {
       if (!left) continue
       for (let step = size * 0.05; step > tolerance * 20; step /= 3) {
         const q = ontoSurface(patch.surface, add3(m, scale3(left, step)))
-        if (facePlace(work, face, q, tolerance * 5) === "inside") return q
+        if (facePlace(work, face, q, tolerance * 5) === "inside") {
+          yield q
+          break
+        }
       }
     }
   }
@@ -1210,10 +1217,9 @@ function insidePoint(work: Brep, patch: Patch, tolerance: number): Vec3 | null {
         u[0] + (u[1] - u[0]) * i,
         v[0] + (v[1] - v[0]) * j
       )
-      if (facePlace(work, face, q, tolerance * 5) === "inside") return q
+      if (facePlace(work, face, q, tolerance * 5) === "inside") yield q
     }
   }
-  return null
 }
 
 function ontoSurface(s: BrepSurface, p: Vec3): Vec3 {
@@ -1230,19 +1236,30 @@ function placeOf(
   other: Brep,
   tolerance: number
 ): Place {
-  const q = insidePoint(work, patch, tolerance)
-  if (!q) throw new SolidBooleanError("failed")
-  for (const g of other.faces) {
-    if (!sameSurface(patch.surface, g.surface, tolerance)) continue
-    const place: FacePlace = facePlace(other, g, q, tolerance)
-    if (place === "outside") continue
-    const n = normalAt(patch.surface, patch.domain, q)
-    return dot3(n, faceNormal(other, g, q)) > 0 ? "same" : "opposite"
+  // A point where the solids only touch (two spheres, solid/s04) is on the
+  // other's boundary yet not on a face of its surface: another is tried.
+  let tries = 0
+  for (const q of insidePoints(work, patch, tolerance)) {
+    if (++tries > INSIDE_TRIES) break
+    let on: Place | null = null
+    for (const g of other.faces) {
+      if (!sameSurface(patch.surface, g.surface, tolerance)) continue
+      const place: FacePlace = facePlace(other, g, q, tolerance)
+      if (place === "outside") continue
+      if (place === "boundary") break
+      const n = normalAt(patch.surface, patch.domain, q)
+      on = dot3(n, faceNormal(other, g, q)) > 0 ? "same" : "opposite"
+      break
+    }
+    if (on) return on
+    const where = pointInSolid(other, q, tolerance)
+    if (where !== "boundary") return where
   }
-  const where = pointInSolid(other, q, tolerance)
-  if (where === "boundary") throw new SolidBooleanError("failed")
-  return where
+  throw new SolidBooleanError("failed")
 }
+
+/** Points of a patch tried for one clear of the other solid's boundary. */
+const INSIDE_TRIES = 12
 
 /**
  * The kept patches sewn into one B-rep on the pieces they share, each used
@@ -1286,6 +1303,7 @@ function assembled(
       ),
     }
   })
+  faces = faces.map((face) => seamless(work, face))
   faces = merged(work, faces, tolerance)
   ;({ work, faces } = joinedPieces(work, faces, tolerance))
   // Each piece used once along and once against.
@@ -1324,6 +1342,32 @@ type Built = {
   surface: BrepSurface
   domain: FaceDomain | undefined
   loops: Use[][]
+}
+
+/**
+ * A face's pieces it runs both ways — where two solids only touch along a
+ * line (a cylinder lying on a plane, union/s04), a seam of its own — taken
+ * out and the rest walked again.
+ */
+function seamless(work: Brep, face: Built): Built {
+  const along = new Set<number>()
+  const against = new Set<number>()
+  for (const loop of face.loops) {
+    for (const u of loop) (u.reversed ? against : along).add(u.piece)
+  }
+  const seams = [...along].filter(
+    (p) => against.has(p) && work.edges[p].curve.kind !== "point"
+  )
+  if (seams.length === 0) return face
+  const drop = new Set(seams)
+  const rest = face.loops.flat().filter((u) => !drop.has(u.piece))
+  const loops = walked(
+    work,
+    loneFace(face.surface, face.domain, face.loops),
+    face.domain,
+    rest
+  )
+  return { ...face, loops }
 }
 
 /**
@@ -1464,6 +1508,7 @@ function joinedPieces(
       if (!oneCurve(work.vertices, ep, eq, tolerance)) continue
       // Where a face runs one into the other, the joined edge runs its way.
       let joined = -1
+      let way: Use | null = null
       for (const f of list) {
         for (const loop of f.loops) {
           for (let i = 0; i < loop.length; i++) {
@@ -1480,13 +1525,13 @@ function joinedPieces(
                   ? { ...c, normal: unsigned0(scale3(c.normal, -1)) }
                   : c
               joined = edges.length
+              way = u1
               edges.push({ start: startOf(u1), end: endOf(u2), curve })
             }
           }
         }
       }
       if (joined < 0) continue
-      const s0 = edges[joined].start
       for (const f of list) {
         f.loops = f.loops.map((loop) => {
           for (let i = 0; i < loop.length; i++) {
@@ -1497,7 +1542,10 @@ function joinedPieces(
               (u1.piece === p && u2.piece === q) ||
               (u1.piece === q && u2.piece === p)
             if (!pair || endOf(u1) !== v) continue
-            const use: Use = { piece: joined, reversed: startOf(u1) !== s0 }
+            // Its way is the first face's: a loop closed on one vertex says none.
+            const forward =
+              u1.piece === way!.piece && u1.reversed === way!.reversed
+            const use: Use = { piece: joined, reversed: !forward }
             const out = loop.filter((_, k) => k !== i && k !== j)
             out.splice(Math.min(i, out.length), 0, use)
             return j === 0 ? [use, ...loop.slice(1, i)] : out

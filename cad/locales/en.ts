@@ -5956,6 +5956,13 @@ export const en: EngineCatalog = {
         ]
       ],
       "nullRegion": "Null region created - deleted",
+      "nullSolid": "Null solid created - deleted",
+      "booleanFailed": [
+        [
+          "count"
+        ],
+        " boolean operation(s) failed."
+      ],
       "booleanNeedsTwo": "At least 2 solids, surfaces, or coplanar regions must be selected.",
       "subtractFrom": "Select solids, surfaces, and regions to subtract from ..",
       "subtractWhat": "Select solids, surfaces, and regions to subtract ..",
