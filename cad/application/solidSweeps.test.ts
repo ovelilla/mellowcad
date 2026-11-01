@@ -499,8 +499,12 @@ describe("PRESSPULL", () => {
     ])
     expect(last(cad).id).toBe(id)
     expect(brepVolume(last(cad).brep)).toBeCloseTo(1200, 9)
-    // Pressed in, the face's prism taken out.
+    // As the height is dragged the face's prism shows over the solid.
     cad.click(TOP)
+    const before = cad.scene().primitives.length
+    cad.moveTo({ x: 3, y: 7, z: 14 })
+    expect(cad.scene().primitives.length).toBeGreaterThan(before)
+    // Pressed in, the face's prism taken out.
     answer(cad, "-5")
     expect(brepVolume(last(cad).brep)).toBeCloseTo(700, 9)
     expect(written(cad, "")).toEqual(["Select object or bounded area:"])

@@ -170,6 +170,21 @@ function faceProfile(brep: Brep, face: BrepFace): PlanarProfile {
   return { axes: flat.axes, elevation: flat.elevation, faces: [flat.face] }
 }
 
+/**
+ * A planar face swept `distance` along its outward normal: what PRESSPULL
+ * adds or takes, drawn as its height is dragged. Null for a curved face.
+ */
+export function brepFacePrism(
+  brep: Brep,
+  faceIndex: number,
+  distance: number
+): Brep | null {
+  const face = brep.faces[faceIndex]
+  const n = face && planeNormal(face)
+  if (!n || distance === 0) return null
+  return extrusionBrep(faceProfile(brep, face), scale3(n, distance))
+}
+
 /** The face's outward normal, or null when it is not planar. */
 function planeNormal(face: BrepFace): Vec3 | null {
   return face.surface.kind === "plane" ? face.surface.normal : null

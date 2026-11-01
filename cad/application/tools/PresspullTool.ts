@@ -1,6 +1,7 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Vec3, add3, length3, scale3, sub3 } from "../../geometry/Vec3"
 import { facesAlong } from "../../geometry/hiddenLines"
+import { brepFacePrism } from "../../geometry/solidEdits"
 import { bulgeToArc } from "../../geometry/primitives"
 import { PlanarCurve } from "../../geometry/planarCurves"
 import { loopArea, loopReversed } from "../../geometry/planarRegions"
@@ -242,11 +243,29 @@ export class PresspullTool implements Tool {
     if (height === 0) return out
     const stroke = { color: currentColor(ctx), width: 1 }
     out.push(
-      ...this.made(height, ctx, false).flatMap((entity) =>
-        entityScenePrimitive(ctx.viewport, entity, stroke)
-      )
+      ...[
+        ...this.made(height, ctx, false),
+        ...this.prisms(height, ctx),
+      ].flatMap((entity) => entityScenePrimitive(ctx.viewport, entity, stroke))
     )
     return out
+  }
+
+  /** The faces' prisms at the height, as the drag shows what it adds or takes. */
+  private prisms(height: number, ctx: ToolContext): Entity[] {
+    return this.picks.flatMap((pick, i) => {
+      if (pick.kind !== "face") return []
+      const solid = this.solidOf(pick.id, ctx)
+      const brep = solid && brepFacePrism(solid.brep, pick.face, height)
+      if (!brep) return []
+      const ghost: Solid3dEntity = {
+        id: `${PREVIEW_ID}-face-${i}`,
+        type: "solid3d",
+        layerId: solid.layerId,
+        brep,
+      }
+      return [ghost]
+    })
   }
 
   /**
