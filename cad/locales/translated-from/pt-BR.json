@@ -2270,6 +2270,8 @@
   "commands.messages.regionSelfIntersections": "    Self intersections                     : {count, plural, one {# loop.} other {# loops.}}",
   "commands.messages.regionsCreated": "{count, plural, one {# Region created.} other {# Regions created.}}",
   "commands.messages.nullRegion": "Null region created - deleted",
+  "commands.messages.nullSolid": "Null solid created - deleted",
+  "commands.messages.booleanFailed": "{count} boolean operation(s) failed.",
   "commands.messages.booleanNeedsTwo": "At least 2 solids, surfaces, or coplanar regions must be selected.",
   "commands.messages.subtractFrom": "Select solids, surfaces, and regions to subtract from ..",
   "commands.messages.subtractWhat": "Select solids, surfaces, and regions to subtract ..",

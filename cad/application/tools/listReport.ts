@@ -952,6 +952,11 @@ class Report {
         break
       }
     }
+    this.solidBounds(solid)
+  }
+
+  /** A solid's box in the UCS, padded as a region's: a swept one's, a composite's (union/k01). */
+  private solidBounds(solid: Solid3dEntity): void {
     const ucs = this.settings.ucs
     const box = brepBox(
       brepMapped(
@@ -986,7 +991,10 @@ class Report {
       return
     }
     const primitive = solid.primitive
-    if (!primitive) return
+    if (!primitive) {
+      this.solidBounds(solid)
+      return
+    }
     const placed = primitiveInUcs(primitive, this.settings.ucs)
     this.say("listSolidType", { type: primitive.kind })
     this.say("listBoxPosition", this.leftXyz(placed.position))

@@ -1,0 +1,30 @@
+_QAFLAGS
+2
+_DELOBJ
+1
+_BOX
+0,0,0
+10,10
+10
+_CIRCLE
+40,0
+5
+_CIRCLE
+45,0
+5
+_REGION
+(ssget "X" '((0 . "CIRCLE")))
+
+_UNION
+_ALL
+
+(sslength (ssget "X"))
+_LIST
+_ALL
+
+_INTERSECT
+_ALL
+
+(sslength (ssget "X"))
+MPDUMP
+-

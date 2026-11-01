@@ -1106,3 +1106,54 @@ export function regionContains(region: FaceRegion, at: UV): boolean {
   }
   return (count % 2 === 1) !== top
 }
+
+/** Stretches an iso line is sampled in for where it leaves and enters a face. */
+const ISO_STRETCHES = 48
+
+/** Bisections that pin where an iso line crosses an edge. */
+const ISO_STEPS = 40
+
+/**
+ * The runs of the line of the face's parameters `along` held at `at`, from
+ * `from` to `to` and that way round, that lie inside the face: its stretches'
+ * middles tested, and where they change, the crossing pinned between them.
+ */
+export function isoRuns(
+  region: FaceRegion,
+  along: "u" | "v",
+  at: number,
+  from: number,
+  to: number
+): (readonly [number, number])[] {
+  const point = (t: number): UV =>
+    along === "v" ? { u: at, v: t } : { u: t, v: at }
+  const n = ISO_STRETCHES
+  const step = (to - from) / n
+  const inside = Array.from({ length: n }, (_, i) =>
+    regionContains(region, point(from + step * (i + 0.5)))
+  )
+  // Where two stretches disagree, the edge between their middles.
+  const edge = (i: number): number => {
+    let lo = from + step * (i + 0.5)
+    let hi = from + step * (i + 1.5)
+    const was = inside[i]
+    for (let k = 0; k < ISO_STEPS; k++) {
+      const m = (lo + hi) / 2
+      if (regionContains(region, point(m)) === was) lo = m
+      else hi = m
+    }
+    return (lo + hi) / 2
+  }
+  const out: [number, number][] = []
+  let start: number | null = inside[0] ? from : null
+  for (let i = 0; i + 1 < n; i++) {
+    if (inside[i] === inside[i + 1]) continue
+    const t = edge(i)
+    if (inside[i]) {
+      out.push([start as number, t])
+      start = null
+    } else start = t
+  }
+  if (start !== null) out.push([start, to])
+  return out
+}

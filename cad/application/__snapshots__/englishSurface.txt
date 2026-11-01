@@ -4385,6 +4385,77 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   info| 1 found, 2 total
   prompt| Select objects:
 
+## UNION SUBTRACT INTERSECT of solids
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> UNION
+  command| BOX
+  prompt| Specify first corner or [Center]: 0,0,0
+  prompt| Specify other corner or [Cube/Length]: 100,100
+  prompt| Specify height or [2Point]: 100
+  command| BOX
+  prompt| Specify first corner or [Center]: 50,50,50
+  prompt| Specify other corner or [Cube/Length]: 150,150
+  prompt| Specify height or [2Point] <100.00>: 150
+  command| UNION
+  prompt| Select objects: ALL
+  info| 2 found
+  prompt| Select objects:
+> LIST
+  command| LIST
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info|                   3DSOLID   Layer: "0"
+                                    Space: Model space
+                 History = None
+            Show History = No
+           Bounding Box: Lower Bound X = 0.00     , Y = 0.00     , Z = 0.00
+                         Upper Bound X = 150.00   , Y = 150.00   , Z = 200.00
+> SUBTRACT
+  command| SPHERE
+  prompt| Specify center point or [3P/2P/Ttr]: 0,0,100
+  prompt| Specify radius or [Diameter]: 30
+  command| SUBTRACT
+  info| Select solids, surfaces, and regions to subtract from ..
+  prompt| Select objects: 100,0
+  info| 1 found
+  prompt| Select objects:
+  info| Select solids, surfaces, and regions to subtract ..
+  prompt| Select objects: 30,0
+  info| 1 found
+  prompt| Select objects:
+> INTERSECT null
+  command| BOX
+  prompt| Specify first corner or [Center]: 300,0,0
+  prompt| Specify other corner or [Cube/Length]: 350,50
+  prompt| Specify height or [2Point] <150.00>: 50
+  command| INTERSECT
+  prompt| Select objects: ALL
+  info| 2 found
+  prompt| Select objects:
+  info| Null solid created - deleted
+> UNION failed
+  command| SPHERE
+  prompt| Specify center point or [3P/2P/Ttr]: 0,0,0
+  prompt| Specify radius or [Diameter] <30.00>: 50
+  command| CYLINDER
+  prompt| Specify center point of base or [3P/2P/Ttr/Elliptical]: 30,0,-100
+  prompt| Specify base radius or [Diameter] <50.00>: 30
+  prompt| Specify height or [2Point/Axis endpoint] <50.00>: 200
+  command| UNION
+  prompt| Select objects: ALL
+  info| 2 found
+  prompt| Select objects:
+  info| 1 boolean operation(s) failed.
+
 ## BOX
 > start
   prompt: Command:

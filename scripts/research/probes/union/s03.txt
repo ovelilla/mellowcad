@@ -1,0 +1,36 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+(setq a (entlast))
+_BOX
+20,0,0
+30,10
+10
+(setq b (entlast))
+_SPHERE
+5,5,10
+3
+(setq c (entlast))
+_CIRCLE
+5,5,10
+2
+_REGION
+_L
+
+(setq r (entlast))
+_SUBTRACT
+!a
+!b
+
+!c
+!r
+
+(sslength (ssget "X"))
+_LIST
+_ALL
+
+MPDUMP
+-
