@@ -957,7 +957,7 @@ take the edge picked as that object (e03–e05).
 **Missing:** DELOBJ (always 3 here); BOUNDARY's Region object type; a region from a hatch's
 boundary; its 3D Visualization's Material row (no materials); the hot grip's `** STRETCH **` and
 the grip modes (a click on a grip does nothing); LIST's `Handle =` line (no handles); SUBTRACT,
-UNION and INTERSECT of solids and surfaces (none yet); Hidden and shaded styles; the edges as a
+UNION and INTERSECT of solids and surfaces (none yet); the visual styles VSCURRENT lacks (view.md); the edges as a
 TRIM or EXTEND edge in Quick mode (the Standard set refuses it, `1 was not a valid edge or
 selection method.`, e01's first run; Quick **unverified**); the order of a loop's edges and where
 it starts as AutoCAD keeps them (here counter-clockwise from the chain's first edge; EXPLODE gives
@@ -1042,7 +1042,7 @@ AutoCAD asks with `Enter fillet radius or [Expression]:` and `Base surface selec
 open polyline, arc, elliptical arc, or open spline expected.  Select a supported object:` (here
 discarded, as a region); LIST of a solid with no primitive (none is made yet; here its History
 lines alone); Solid History's Record History (SOLIDHIST) and Show History; its 3D Visualization's
-Material row; Hidden, shaded and Conceptual styles; the per-drawing defaults reset on OPEN as
+Material row; the visual styles VSCURRENT lacks (view.md: Hidden and Conceptual are built); the per-drawing defaults reset on OPEN as
 CIRCLERAD's (**unverified**: no OPEN probe of BOX's).
 
 ### `WEDGE` / `WE` · es `CUÑA` · pt-BR `CUNHA` / `CN`
@@ -1075,7 +1075,7 @@ does is BOX's entry.
 
 Its grips and palette rows are BOX's, the top's arrow over its tall end (g01).
 
-**Missing:** BOX's (the 3D commands, Hidden and shaded styles, the per-drawing defaults on OPEN,
+**Missing:** BOX's (the 3D commands, the visual styles VSCURRENT lacks, the per-drawing defaults on OPEN,
 **unverified**).
 
 ### `CYLINDER` / `CYL` · es `CILINDRO` / `CIL` · pt-BR `CILINDRO` / `CIL`
@@ -1134,7 +1134,7 @@ ROTATE, SCALE and MIRROR carry it (c10).
 **Missing:** what AutoCAD's EXPLODE makes of it — the regions of its ends and a SURFACE of its
 round face (c11): no surface object here, so it is refused as `Select objects:` finds it (`1 was
 not able to be exploded.`); BOX's (the hot grip's other modes, a height dragged past the base,
-Hidden and shaded styles); Elliptical typed, which AutoCAD lets a round one take, Major and Minor
+the visual styles VSCURRENT lacks); Elliptical typed, which AutoCAD lets a round one take, Major and Minor
 radius equal, then greys (g01; greyed here); DISPSILH's silhouettes, d04's `iso16s`; in plan, where the top circle hides the base's, Nearest finds the top's in AutoCAD (s03)
 and the base's here, as BOX's; an elliptical base tilted by Axis endpoint turns its seam to the
 plane's Y, its size kept (c12), its other in-plane turns **unverified**.
@@ -1199,7 +1199,7 @@ which sizes the radius along the line of sight (g01, d10); MOVE, ROTATE, SCALE a
 STRETCH moves it whole once the window takes its centre, never by its rim alone (t06).
 
 **Missing:** what AutoCAD's EXPLODE makes of it, a SURFACE (h04): refused as CYLINDER's is; BOX's
-(the hot grip's other modes, the 3D commands, Hidden and shaded styles); DISPSILH's silhouette.
+(the hot grip's other modes, the 3D commands, the visual styles VSCURRENT lacks); DISPSILH's silhouette.
 
 ### `TORUS` / `TOR` · es `TOROIDE` / `TOR` · pt-BR `TOROIDE` / `TORO`
 
@@ -1296,7 +1296,7 @@ arrow on the top's side opposite its X or off the apex, as CONE's. AREA's Object
 (`288.6796`); MOVE, ROTATE, SCALE and MIRROR carry it (y08: Rotation 52, then 308 mirrored);
 EXPLODE leaves a region of each face (y08). Everything else a solid does is BOX's entry.
 
-**Missing:** BOX's (the hot grip's other modes, the 3D commands, Hidden and shaded styles); its
+**Missing:** BOX's (the hot grip's other modes, the 3D commands, the visual styles VSCURRENT lacks); its
 Type typed in the palette (greyed here: what it does to the solid **unverified**). The console's
 cursor in a tilted UCS turns a typed radius by its own projection (y07's Rotation 4), which the
 harness does not reproduce; a radius given by a point there is exact.

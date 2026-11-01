@@ -129,6 +129,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | SW / SE / NE / NW Isometric | متساوي القياس جنوبي غربي / جنوبي شرقي / شمالي شرقي / شمالي غربي (M) † |
 |  | Custom View | منظر مخصص (L) |
 |  | Orbit; 3D Orbit | مدار؛ مدار ثلاثي الأبعاد (L) † |
+|  | Visual Styles (the tool) | الأنماط المرئية (L) † |
 |  | Plan view, View point, Preset views, UCS icon, Elevation (tool names) | المسقط الأفقي، نقطة النظر، المناظر المعدة مسبقًا، أيقونة نظام الإحداثيات، المنسوب (M) † |
 | ViewCube | ViewCube; Home; Parallel; Set Current View as Home | مكعب العرض؛ الرئيسي؛ متوازٍ؛ تعيين العرض الحالي عرضًا رئيسيًا (L) † |
 |  | TOP, FRONT, LEFT; BOTTOM, BACK, RIGHT (faces); N, E, S, W | أعلى، أمام، يسار؛ أسفل، خلف، يمين؛ ش، ق، ج، غ — the initials Arabic maps use (شمال، شرق، جنوب، غرب) (M) † |

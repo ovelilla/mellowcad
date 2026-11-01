@@ -1,7 +1,7 @@
 # Sólidos 3D con núcleo propio — brief
 
-> **Estado:** en curso: las fases 1 a 4 están hechas (1/11/2026); lo siguiente, la fase 5:
-> estilo Hidden y sombreado. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> **Estado:** en curso: las fases 1 a 5 están hechas (1/11/2026); lo siguiente, la fase 6:
+> edición (SLICE, SECTION, CHAMFEREDGE, FILLETEDGE, subobjetos). Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 
@@ -102,10 +102,22 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación en
    extruir la cara; Ctrl+clic: desplazarla), que pide escoger caras con el cursor, de la fase 6
    (subobjetos), y desplazar caras con sus vecinas extendidas (SOLIDEDIT); INTERFERE, que la
    consola no carga (AcInterfere.dll) y cuyo diálogo pide el escritorio.
-5. **Estilo Hidden** (líneas ocultas en el motor), sombreado en canvas, VSCURRENT. **Lo
-   siguiente.**
+5. **Estilo Hidden** (líneas ocultas en el motor), sombreado en canvas, VSCURRENT. **Hecha**
+   (1/11/2026): las líneas ocultas en `cad/geometry/hiddenLines.ts` (aristas y siluetas de las
+   caras curvas —reglas de cilindros, conos y extrusiones, el círculo máximo de la esfera, el
+   contorno de toros y revoluciones trazado en sus parámetros—, cortadas por rayos hacia el
+   observador contra las caras de todos los sólidos, con topes documentados), contrastadas con los
+   planos de la consola (visualstyle/p01–p06) y con tests de propiedades; la malla de cada cara en
+   `cad/geometry/faceMesh.ts` (rejilla en sus parámetros, nunca guardada); VSCURRENT con 2D
+   Wireframe, Hidden y Conceptual (Gooch ajustado al plano p03, aristas en color 7), el estilo
+   guardado en el dibujo (versión 48), el SVG de Hidden con su snapshot; medido en Chrome con 24
+   sólidos: unos 50 ms al girar la vista y menos de 10 ms al moverse. Lo que falta, en la entrada
+   de VSCURRENT de `docs/coverage/view.md`: los demás estilos y Other, que Hidden oculte objetos que
+   no son sólidos (líneas, la rejilla), las siluetas de 3 px y el tinte de un color en Conceptual;
+   HIDE, que en 2027 es la vista facetada y temporal de 2D Wireframe (p04).
 6. **Edición**: SLICE, SECTION, CHAMFEREDGE, FILLETEDGE en los casos analíticos, SOLIDEDIT de caras;
-   sub-objetos con Ctrl+clic, 3DMOVE / 3DROTATE, UCS Face y el SCP dinámico (UCSDETECT).
+   sub-objetos con Ctrl+clic, 3DMOVE / 3DROTATE, UCS Face y el SCP dinámico (UCSDETECT); con los
+   subobjetos, PRESSPULL sobre caras de sólidos (pendiente de la fase 4). **Lo siguiente.**
 7. **SWEEP, LOFT** y superficies NURBS generales; las booleanas y empalmes que las tocan.
 
 ## 5. Riesgos
