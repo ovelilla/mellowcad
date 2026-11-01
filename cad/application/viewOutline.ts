@@ -19,7 +19,9 @@ const OUTLINE_STROKE = { color: "", width: 0 }
  * tells where it is.
  */
 export function drawsTilted(entity: Entity, blocks?: BlockLookup): boolean {
-  if (isTilted(entity)) return true
+  // A solid's points are the world's, its isolines its drawing's: only its
+  // outline tells where it is drawn.
+  if (isTilted(entity) || entity.type === "solid3d") return true
   return (
     entity.type === "insert" &&
     !!blocks &&
@@ -37,10 +39,12 @@ export function drawsTilted(entity: Entity, blocks?: BlockLookup): boolean {
 export function entityScreenOutline(
   camera: CameraTransform,
   entity: Entity,
-  blocks?: BlockLookup
+  blocks?: BlockLookup,
+  isolines?: number
 ): Vec2[][] {
   return entityScenePrimitive(camera, entity, OUTLINE_STROKE, {
     blocks,
+    isolines,
   }).flatMap(primitiveOutline)
 }
 

@@ -3,7 +3,11 @@ import { describe, expect, it } from "vitest"
 import { type CadHarness, createHarness } from "../../test/harness"
 import type { Vec3 } from "../geometry/Vec3"
 import { brepArea, brepIsClosed, brepVolume } from "../geometry/solids"
-import type { RegionEntity, Solid3dEntity } from "../domain/entities"
+import {
+  lineStartZ,
+  type RegionEntity,
+  type Solid3dEntity,
+} from "../domain/entities"
 import {
   parseDrawingFile,
   serializeDrawing,
@@ -726,5 +730,601 @@ describe("the primitives' defaults", () => {
     expect(written(cad, "BOX", "200,0,0", "L", "5")[3]).toBe(
       "Specify length <20.0000>: 5"
     )
+  })
+})
+
+/** Where a LINE starts snapped by `mode` at `at`, or the refusal it met. */
+function snapped(cad: CadHarness, mode: string, at: string): Vec3 | string {
+  const out = written(cad, "LINE", mode, at, "@1,0,0", "")
+  const line = cad.latest()
+  if (line.type !== "line" || out.some((l) => l.startsWith("No "))) {
+    answer(cad, "\u001b")
+    return out.find((l) => l.startsWith("No ")) ?? out.join(" | ")
+  }
+  answer(cad, "ERASE", "L", "")
+  return { ...line.start, z: lineStartZ(line) }
+}
+
+describe("CYLINDER", () => {
+  it("asks a base and a height, its seam on the UCS's X (solid/c01)", () => {
+    const cad = console()
+    expect(written(cad, "CYLINDER", "0,0,0", "5", "8")).toEqual([
+      "CYLINDER",
+      "Specify center point of base or [3P/2P/Ttr/Elliptical]: 0,0,0",
+      "Specify base radius or [Diameter]: 5",
+      "Specify height or [2Point/Axis endpoint]: 8",
+    ])
+    expect(listed(cad)).toEqual([
+      "      Solid type = Cylinder",
+      "         Position, X = 0.0000    Y = 0.0000    Z = 0.0000",
+      "           Radius: 5.0000",
+      "           Height: 8.0000",
+    ])
+    const { brep } = last(cad)
+    expect(brepIsClosed(brep)).toBe(true)
+    // ACIS's: a vertex on each circle, the base's run about -Z (c01's MPDUMP).
+    expect(brep.vertices).toEqual([
+      { x: 5, y: 0, z: 0 },
+      { x: 5, y: 0, z: 8 },
+    ])
+    expect(brep.edges.map((e) => e.curve.kind)).toEqual(["circle", "circle"])
+    const base = brep.edges[0].curve
+    expect(base.kind === "circle" && base.normal).toEqual({ x: 0, y: 0, z: -1 })
+    expect(brep.faces.map((f) => f.surface.kind)).toEqual([
+      "cylinder",
+      "plane",
+      "plane",
+    ])
+    expect(brepVolume(brep)).toBeCloseTo(628.318531, 6)
+    expect(written(cad, "AREA", "O", "L").at(-1)).toBe(
+      "Area = 408.4070, Perimeter = 0.0000"
+    )
+  })
+
+  it("takes 3P, 2P and Diameter, a 3P base tilted into its points' plane (c02)", () => {
+    const cad = console()
+    answer(cad, "CYLINDER", "3P", "0,0,0", "10,0,0", "0,10,0", "5")
+    expect(listed(cad).slice(1, 3)).toEqual([
+      "         Position, X = 5.0000    Y = 5.0000    Z = 0.0000",
+      "           Radius: 7.0711",
+    ])
+    expect(
+      written(cad, "CYLINDER", "2P", "50,0,0", "60,0,0", "5").slice(1, 3)
+    ).toEqual([
+      "Specify center point of base or [3P/2P/Ttr/Elliptical]: 2P",
+      "Specify first end point of diameter: 50,0,0",
+    ])
+    expect(listed(cad)[2]).toBe("           Radius: 5.0000")
+    expect(
+      written(cad, "CYLINDER", "100,0,0", "D", "6", "5").slice(2, 4)
+    ).toEqual([
+      "Specify base radius or [Diameter] <5.0000>: D",
+      "Specify diameter <10.0000>: 6",
+    ])
+    answer(cad, "CYLINDER", "3P", "200,0,0", "210,0,0", "200,0,10", "5")
+    expect(listed(cad).slice(1, 4)).toEqual([
+      "         Position, X = 205.0000  Y = 0.0000    Z = 5.0000",
+      "           Normal: X = 0.0000    Y = -1.0000   Z = 0.0000",
+      "           Radius: 7.0711",
+    ])
+    // Its seam turned to the plane's arbitrary axis' -X (c02's MPDUMP).
+    expectAt(last(cad).brep.vertices[0], { x: 197.928932, y: 0, z: 5 })
+    // 2P's second point is read in the first's plane (c02).
+    answer(cad, "CYLINDER", "2P", "300,0,0", "310,0,4", "5")
+    expect(listed(cad).slice(1, 3)).toEqual([
+      "         Position, X = 305.0000  Y = 0.0000    Z = 0.0000",
+      "           Radius: 5.0000",
+    ])
+  })
+
+  it("makes Ttr's base tangent to two objects picked under TAN (c03, v05)", () => {
+    const cad = console()
+    answer(cad, "LINE", "0,0", "100,0", "", "LINE", "0,0", "0,100", "")
+    answer(cad, "ZOOM", "E")
+    expect(
+      written(
+        cad,
+        "CYLINDER",
+        "T",
+        "FOO",
+        "50,0",
+        "_TAN",
+        "50,0",
+        "_TAN",
+        "0,50",
+        "FOO",
+        "",
+        "0",
+        "10",
+        "5"
+      )
+    ).toEqual([
+      "CYLINDER",
+      "Specify center point of base or [3P/2P/Ttr/Elliptical]: T",
+      "Specify point on object for first tangent: FOO",
+      "Requires a TAN object-snap and selection of Circle, Arc, or Line.",
+      "Specify point on object for first tangent: 50,0",
+      "*Requires a TAN object-snap and selection of Circle, Arc, or Line.",
+      "Specify point on object for first tangent: _TAN to 50,0",
+      "Specify point on object for second tangent: _TAN to 0,50",
+      "Specify radius of circle: FOO",
+      "Requires numeric distance or two points.",
+      "Specify radius of circle:",
+      "Requires numeric distance or two points.",
+      "Specify radius of circle: 0",
+      "Value must be positive and nonzero.",
+      "Specify radius of circle: 10",
+      "Specify height or [2Point/Axis endpoint]: 5",
+    ])
+    expect(listed(cad).slice(1, 3)).toEqual([
+      "         Position, X = 10.0000   Y = 10.0000   Z = 0.0000",
+      "           Radius: 10.0000",
+    ])
+    answer(cad, "CIRCLE", "300,300", "5")
+    expect(
+      written(
+        cad,
+        "CYLINDER",
+        "T",
+        "_TAN",
+        "50,0",
+        "_TAN",
+        "305,300",
+        "1"
+      ).slice(-2)
+    ).toEqual([
+      "Specify radius of circle <10.0000>: 1",
+      "Circle does not exist.",
+    ])
+  })
+
+  it("takes Elliptical's axes, the second's end giving the seam (c04, v05)", () => {
+    const cad = console()
+    expect(
+      written(cad, "CYLINDER", "E", "0,0,0", "10,0,0", "0,3,0", "8").slice(1, 5)
+    ).toEqual([
+      "Specify center point of base or [3P/2P/Ttr/Elliptical]: E",
+      "Specify endpoint of first axis or [Center]: 0,0,0",
+      "Specify other endpoint of first axis: 10,0,0",
+      "Specify endpoint of second axis: 0,3,0",
+    ])
+    expect(listed(cad).slice(1)).toEqual([
+      "         Position, X = 5.0000    Y = 0.0000    Z = 0.0000",
+      "     Major radius: 5.8310",
+      "     Minor radius: 5.0000",
+      "           Height: 8.0000",
+      "         Rotation: 149",
+    ])
+    expect(last(cad).brep.vertices[0]).toEqual({ x: 0, y: 3, z: 0 })
+    expect(
+      written(cad, "CYLINDER", "E", "C", "50,0,0", "5", "3", "8").slice(2, 6)
+    ).toEqual([
+      "Specify endpoint of first axis or [Center]: C",
+      "Specify center point: 50,0,0",
+      "Specify distance to first axis: 5",
+      "Specify endpoint of second axis: 3",
+    ])
+    expect(listed(cad).slice(2, 6)).toEqual([
+      "     Major radius: 5.0000",
+      "     Minor radius: 3.0000",
+      "           Height: 8.0000",
+      "         Rotation: 26",
+    ])
+    answer(cad, "CYLINDER", "E", "100,0,0", "100,10,0", "103,5,0", "8")
+    expect(listed(cad).at(-1)).toBe("         Rotation: 0")
+    expect(
+      written(
+        cad,
+        "CYLINDER",
+        "E",
+        "C",
+        "0,0,0",
+        "FOO",
+        "",
+        "0",
+        "-2",
+        "5"
+      ).slice(4)
+    ).toEqual([
+      "Specify distance to first axis: FOO",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify distance to first axis:",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify distance to first axis: 0",
+      "Value must be positive and nonzero.",
+      "Specify distance to first axis: -2",
+      "Value must be positive and nonzero.",
+      "Specify distance to first axis: 5",
+    ])
+    expect(written(cad, "FOO", "0,0,0", "3", "8").slice(0, 4)).toEqual([
+      "Specify endpoint of second axis: FOO",
+      "Point or option keyword required.",
+      "Specify endpoint of second axis: 0,0,0",
+      "Ellipse axes lengths must be positive and nonzero",
+    ])
+    // A first axis of no length refuses every second axis (c07).
+    expect(
+      written(cad, "CYLINDER", "E", "50,0,0", "50,0,0", "60,0,0").slice(-1)
+    ).toEqual(["Ellipse axes lengths must be positive and nonzero"])
+    answer(cad, "\u001b")
+  })
+
+  it("rises to Axis endpoint or 2Point, down when negative (c05, c07, c13)", () => {
+    const cad = console()
+    answer(cad, "CYLINDER", "0,0,0", "5", "A", "10,0,10")
+    expect(listed(cad).slice(1, 5)).toEqual([
+      "         Position, X = 0.0000    Y = 0.0000    Z = 0.0000",
+      "           Normal: X = 0.7071    Y = 0.0000    Z = 0.7071",
+      "           Radius: 5.0000",
+      "           Height: 14.1421",
+    ])
+    // Its seam at the axis' arbitrary axis' -X (c05's MPDUMP).
+    expectAt(last(cad).brep.vertices[0], { x: 0, y: -5, z: 0 })
+    answer(cad, "CYLINDER", "50,0,0", "5", "2P", "0,0,0", "0,0,7")
+    expect(listed(cad).at(-1)).toBe("           Height: 7.0000")
+    answer(cad, "CYLINDER", "100,0,0", "5", "-6")
+    expect(listed(cad)[2]).toBe(
+      "           Normal: X = 0.0000    Y = 0.0000    Z = -1.0000"
+    )
+    expect(
+      written(
+        cad,
+        "CYLINDER",
+        "0,0,0",
+        "5",
+        "A",
+        "FOO",
+        "0,0,0",
+        "0,0,9"
+      ).slice(3)
+    ).toEqual([
+      "Specify height or [2Point/Axis endpoint] <-6.0000>: A",
+      "Specify axis endpoint: FOO",
+      "Point or option keyword required.",
+      "Specify axis endpoint: 0,0,0",
+      "Value must be nonzero.",
+      "Specify axis endpoint: 0,0,9",
+    ])
+    // Straight up its seam stays on the UCS's X (c15).
+    expect(last(cad).brep.vertices[0]).toEqual({ x: 5, y: 0, z: 0 })
+    // Center, which the height declares, asks the axis endpoint (c13).
+    expect(
+      written(cad, "CYLINDER", "0,0,0", "2", "C", "0,0,4").slice(-2)
+    ).toEqual([
+      "Specify height or [2Point/Axis endpoint] <9.0000>: C",
+      "Specify axis endpoint: 0,0,4",
+    ])
+  })
+
+  it("refuses what makes no cylinder (c06, c08)", () => {
+    const cad = console()
+    expect(
+      written(
+        cad,
+        "CYLINDER",
+        "FOO",
+        "",
+        "0,0,0",
+        "FOO",
+        "",
+        "0",
+        "-2",
+        "D",
+        "FOO",
+        "",
+        "0",
+        "10",
+        "FOO",
+        "",
+        "0",
+        "4"
+      ).slice(1)
+    ).toEqual([
+      "Specify center point of base or [3P/2P/Ttr/Elliptical]: FOO",
+      "Point or option keyword required.",
+      "Specify center point of base or [3P/2P/Ttr/Elliptical]:",
+      "Point or option keyword required.",
+      "Specify center point of base or [3P/2P/Ttr/Elliptical]: 0,0,0",
+      "Specify base radius or [Diameter]: FOO",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify base radius or [Diameter]:",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify base radius or [Diameter]: 0",
+      "Value must be positive and nonzero.",
+      "Specify base radius or [Diameter]: -2",
+      "Value must be positive and nonzero.",
+      "Specify base radius or [Diameter]: D",
+      "Specify diameter: FOO",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify diameter:",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify diameter: 0",
+      "Value must be positive and nonzero.",
+      "Specify diameter: 10",
+      "Specify height or [2Point/Axis endpoint]: FOO",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify height or [2Point/Axis endpoint]:",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify height or [2Point/Axis endpoint]: 0",
+      "Value must be nonzero.",
+      "Specify height or [2Point/Axis endpoint]: 4",
+    ])
+    expect(written(cad, "CYLINDER", "50,0,0", "", "").slice(2)).toEqual([
+      "Specify base radius or [Diameter] <5.0000>:",
+      "Specify height or [2Point/Axis endpoint] <4.0000>:",
+    ])
+    expect(
+      written(
+        cad,
+        "CYLINDER",
+        "3P",
+        "0,0,0",
+        "0,0,0",
+        "10,0,0",
+        "20,0,0",
+        "0,10,0",
+        "5"
+      ).slice(3, 8)
+    ).toEqual([
+      "Specify second point: 0,0,0",
+      "Points cannot be collinear. *Invalid*",
+      "Specify second point: 10,0,0",
+      "Specify third point: 20,0,0",
+      "Points cannot be collinear. *Invalid*",
+    ])
+    expect(
+      written(cad, "CYLINDER", "2P", "50,0,0", "50,0,0", "60,0,0", "5").slice(
+        3,
+        5
+      )
+    ).toEqual([
+      "Specify second end point of diameter: 50,0,0",
+      "Points cannot be coincident. *Invalid*",
+    ])
+  })
+
+  it("lies in the UCS, an ellipse's Rotation read there (c09)", () => {
+    const cad = console()
+    answer(cad, "UCS", "X", "30", "CYLINDER", "0,0,0", "5", "8")
+    answer(cad, "UCS", "W", "UCS", "Z", "30")
+    answer(cad, "CYLINDER", "E", "50,0,3", "60,0", "52,3", "5")
+    expect(listed(cad).slice(2, 4)).toEqual([
+      "     Major radius: 5.0000",
+      "     Minor radius: 4.2426",
+    ])
+    expect(listed(cad).at(-1)).toBe("         Rotation: 135")
+    answer(cad, "UCS", "W")
+    const [ellipse, tilted] = listedAll(cad)
+    expect(ellipse.at(-1)).toBe("         Rotation: 165")
+    expect(tilted[2]).toBe(
+      "           Normal: X = 0.0000    Y = -0.5000   Z = 0.8660"
+    )
+    // In a tilted UCS its seam is the UCS's X (c09's MPDUMP).
+    expect(solids(cad)[0].brep.vertices[0]).toEqual({ x: 5, y: 0, z: 0 })
+  })
+
+  it("moves, turns, mirrors and scales as a cylinder, not exploded (c10, c11)", () => {
+    const cad = console()
+    answer(cad, "CYLINDER", "0,0,0", "5", "8")
+    answer(
+      cad,
+      "MOVE",
+      "L",
+      "",
+      "0,0,0",
+      "5,5,3",
+      "ROTATE",
+      "L",
+      "",
+      "0,0",
+      "30"
+    )
+    expect(listed(cad)[1]).toBe(
+      "         Position, X = 1.8301    Y = 6.8301    Z = 3.0000"
+    )
+    answer(
+      cad,
+      "MIRROR",
+      "L",
+      "",
+      "0,40",
+      "10,40",
+      "N",
+      "SCALE",
+      "L",
+      "",
+      "0,0",
+      "2"
+    )
+    expect(listed(cad).slice(1)).toEqual([
+      "         Position, X = 3.6603    Y = 146.3397  Z = 6.0000",
+      "           Radius: 10.0000",
+      "           Height: 16.0000",
+    ])
+    answer(cad, "CYLINDER", "E", "100,0,0", "110,0", "102,3", "5")
+    answer(
+      cad,
+      "ROTATE",
+      "L",
+      "",
+      "100,0",
+      "30",
+      "MIRROR",
+      "L",
+      "",
+      "0,40",
+      "10,40",
+      "Y"
+    )
+    expect(listed(cad).at(-1)).toBe("         Rotation: 195")
+    for (const solid of solids(cad)) expect(brepIsClosed(solid.brep)).toBe(true)
+    expect(brepVolume(solids(cad)[1].brep)).toBeCloseTo(8 * 628.318531, 5)
+    // AutoCAD explodes it into regions and a SURFACE: no surface here.
+    expect(written(cad, "EXPLODE", "L", "").slice(1, 4)).toEqual([
+      "Select objects: L",
+      "1 found",
+      "1 was not able to be exploded.",
+    ])
+    answer(cad, "")
+  })
+
+  it("snaps at its circles' centres and quadrants, nothing on its isolines (s03, s10)", () => {
+    const cad = console()
+    answer(
+      cad,
+      "ZOOM",
+      "W",
+      "-10,-10",
+      "40,40",
+      "CYLINDER",
+      "10,10,0",
+      "5",
+      "8"
+    )
+    expect(snapped(cad, "_END", "15.1,10.1")).toBe(
+      "No Endpoint found for specified point."
+    )
+    expect(snapped(cad, "_CEN", "15.1,10.1")).toEqual({ x: 10, y: 10, z: 0 })
+    expectAt(snapped(cad, "_QUA", "10.1,15.1") as Vec3, { x: 10, y: 15, z: 0 })
+    answer(cad, "-VIEW", "_SEISO", "ZOOM", "E")
+    expect(snapped(cad, "_NEA", "10,15,4")).toBe(
+      "No Nearest found for specified point."
+    )
+    expect(snapped(cad, "_CEN", "10,15,4")).toBe(
+      "No Center found for specified point."
+    )
+    expectAt(snapped(cad, "_QUA", "10,15,7.9") as Vec3, { x: 10, y: 15, z: 8 })
+    expectAt(snapped(cad, "_CEN", "10,15,7.9") as Vec3, { x: 10, y: 10, z: 8 })
+  })
+})
+
+describe("CONE", () => {
+  it("narrows to an apex, an Endpoint (solid/k01, s10)", () => {
+    const cad = console()
+    expect(written(cad, "CONE", "0,0,0", "5", "8")).toEqual([
+      "CONE",
+      "Specify center point of base or [3P/2P/Ttr/Elliptical]: 0,0,0",
+      "Specify base radius or [Diameter]: 5",
+      "Specify height or [2Point/Axis endpoint/Top radius]: 8",
+    ])
+    expect(listed(cad)).toEqual([
+      "      Solid type = Cone",
+      "         Position, X = 0.0000    Y = 0.0000    Z = 0.0000",
+      "      Base radius: 5.0000",
+      "       Top radius: 0.0000",
+      "           Height: 8.0000",
+    ])
+    const { brep } = last(cad)
+    expect(brep.vertices).toEqual([
+      { x: 5, y: 0, z: 0 },
+      { x: 0, y: 0, z: 8 },
+    ])
+    expect(brep.edges.map((e) => e.curve.kind)).toEqual(["circle", "point"])
+    expect(brepIsClosed(brep)).toBe(true)
+    expect(brepVolume(brep)).toBeCloseTo(209.43951, 5)
+    expect(written(cad, "AREA", "O", "L").at(-1)).toBe(
+      "Area = 226.7284, Perimeter = 0.0000"
+    )
+    answer(cad, "-VIEW", "_SEISO", "ZOOM", "E")
+    expect(snapped(cad, "_END", "0,0,8")).toEqual({ x: 0, y: 0, z: 8 })
+    expect(snapped(cad, "_END", "5,0,0")).toBe(
+      "No Endpoint found for specified point."
+    )
+  })
+
+  it("takes Top radius, kept for the next, a top as wide making a cylinder (k02, k04)", () => {
+    const cad = console()
+    expect(written(cad, "CONE", "0,0,0", "5", "T", "2", "8").slice(3)).toEqual([
+      "Specify height or [2Point/Axis endpoint/Top radius]: T",
+      "Specify top radius <0.0000>: 2",
+      "Specify height or [2Point/Axis endpoint]: 8",
+    ])
+    expect(written(cad, "AREA", "O", "L").at(-1)).toBe(
+      "Area = 278.9986, Perimeter = 0.0000"
+    )
+    expect(written(cad, "CONE", "50,0,0", "5", "T", "5", "8")[4]).toBe(
+      "Specify top radius <2.0000>: 5"
+    )
+    expect(last(cad).brep.faces[0].surface.kind).toBe("cylinder")
+    answer(cad, "CONE", "100,0,0", "5", "T", "8", "6")
+    expect(listed(cad).slice(2, 4)).toEqual([
+      "      Base radius: 5.0000",
+      "       Top radius: 8.0000",
+    ])
+    expect(brepArea(last(cad).brep)).toBeCloseTo(553.569521, 5)
+    expect(
+      written(cad, "CONE", "150,0,0", "5", "T", "FOO", "-1", "", "-4").slice(4)
+    ).toEqual([
+      "Specify top radius <8.0000>: FOO",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify top radius <8.0000>: -1",
+      "Value must be positive.",
+      "Specify top radius <8.0000>:",
+      "Specify height or [2Point/Axis endpoint] <6.0000>: -4",
+    ])
+    expect(listed(cad)[2]).toBe(
+      "           Normal: X = 0.0000    Y = 0.0000    Z = -1.0000"
+    )
+  })
+
+  it("takes Elliptical, LIST giving its base's radii and its top's major (k03)", () => {
+    const cad = console()
+    answer(cad, "CONE", "E", "0,0,0", "10,0,0", "0,3,0", "8")
+    expect(listed(cad).slice(2)).toEqual([
+      "Base major radius: 5.8310",
+      "Base minor radius: 5.0000",
+      " Top major radius: 0.0000",
+      "           Height: 8.0000",
+      "         Rotation: 149",
+    ])
+    expect(brepVolume(last(cad).brep)).toBeCloseTo(244.246342, 5)
+    answer(cad, "CONE", "E", "50,0,0", "60,0,0", "50,3,0", "T", "2", "8")
+    expect(listed(cad)[4]).toBe(" Top major radius: 2.0000")
+    expect(written(cad, "AREA", "O", "L").at(-1)).toBe(
+      "Area = 302.5128, Perimeter = 0.0000"
+    )
+  })
+
+  it("asks in each language, by its own name (n02)", () => {
+    const spanish = console(es)
+    expect(written(spanish, "CONO", "0,0,0", "5", "R", "2", "8")).toEqual([
+      "CONO",
+      "Precise centro de base o [3P/2P/Ttr/Elíptico]: 0,0,0",
+      "Precise radio de base o [Diámetro]: 5",
+      "Indique altura o [2Puntos/punto final Eje/Radio superior]: R",
+      "Precise radio superior <0.0000>: 2",
+      "Precise altura o [2Puntos/punto final Eje]: 8",
+    ])
+    expect(listed(spanish).slice(2, 4)).toEqual([
+      "    Radio de base: 5.0000",
+      "   Radio superior: 2.0000",
+    ])
+    const portuguese = console(ptBR)
+    expect(
+      written(portuguese, "CILINDRO", "E", "0,0,0", "10,0,0", "0,3,0", "8")
+    ).toEqual([
+      "CILINDRO",
+      "Especificar centro do ponto base ou [3P/2P/Ttr/Elíptico]: E",
+      "Especificar ponto final do primeiro eixo ou [Centro]: 0,0,0",
+      "Especificar outro ponto final do primeiro eixo: 10,0,0",
+      "Especificar ponto final do segundo eixo: 0,3,0",
+      "Especificar altura ou [2Pontos/ponto final Eixo]: 8",
+    ])
+    expect(listed(portuguese).slice(2, 4)).toEqual([
+      "       Raio maior: 5.8310",
+      "       Raio menor: 5.0000",
+    ])
+  })
+
+  it("is saved and read back, a frustum and an elliptical cone too", () => {
+    const cad = console()
+    answer(cad, "CONE", "0,0,0", "5", "T", "2", "8")
+    answer(cad, "CONE", "E", "50,0,0", "60,0,0", "50,3,0", "8")
+    answer(cad, "CYLINDER", "100,0,0", "5", "A", "110,0,10")
+    const document = cad.runtime.document
+    const file = serializeDrawing(
+      snapshotOf(document.getEntities(), { settings: document.getSettings() })
+    )
+    expect(parseDrawingFile(file).entities).toEqual(document.getEntities())
   })
 })

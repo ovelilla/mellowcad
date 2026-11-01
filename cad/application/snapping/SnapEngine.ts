@@ -1,5 +1,5 @@
 import { regionEdgeEntities } from "../../domain/regions"
-import { solidEdgeEntities } from "../../domain/solids"
+import { solidApexes, solidEdgeEntities } from "../../domain/solids"
 import { Observable } from "../../shared/Observable"
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, length3, planar, sub3, withZ } from "../../geometry/Vec3"
@@ -38,6 +38,7 @@ import {
   SnapProvider,
   SnapResult,
   SnapType,
+  SolidSnapPoint,
 } from "./types"
 
 /** World distance under which two candidates are considered the same point. */
@@ -81,9 +82,13 @@ function tierOf(type: SnapType): Tier {
  * lines of its id. Built once per resolve so the expansion is not repeated by each of
  * the ten providers.
  */
-function snapEntities(document: DocumentReader): Entity[] {
+function snapEntities(document: DocumentReader): {
+  entities: Entity[]
+  solidPoints: SolidSnapPoint[]
+} {
   const blocks = document.blockLookup()
   const entities: Entity[] = []
+  const solidPoints: SolidSnapPoint[] = []
   for (const entity of document.getEntities()) {
     const drawn =
       entity.type === "insert" ? insertFlatGeometry(entity, blocks) : [entity]
@@ -95,9 +100,15 @@ function snapEntities(document: DocumentReader): Entity[] {
         continue
       }
       if (piece.type === "solid3d") {
-        // Its edges, lines of its id: ends, middles, nearest and
-        // perpendicular points; no geometric centre (solid/s01, s02).
+        // Its edges, objects of its id: ends, middles, centres, quadrants,
+        // nearest and perpendicular points; no geometric centre, nothing on
+        // its isolines (solid/s01, s02, s03, s10). A cone's apex, an end.
         entities.push(...solidEdgeEntities(piece))
+        if (document.isEntityVisible(piece)) {
+          for (const point of solidApexes(piece)) {
+            solidPoints.push({ type: SnapType.Endpoint, point, id: piece.id })
+          }
+        }
         continue
       }
       if (piece.type !== "polyline3d") {
@@ -113,7 +124,7 @@ function snapEntities(document: DocumentReader): Entity[] {
       }
     }
   }
-  return entities
+  return { entities, solidPoints }
 }
 
 /**
@@ -390,7 +401,7 @@ export class SnapEngine extends Observable {
     if (!on || acquired.length === 0) return []
     return extensionLines({
       document,
-      entities: snapEntities(document),
+      entities: snapEntities(document).entities,
       acquired,
     })
   }
@@ -457,7 +468,7 @@ export class SnapEngine extends Observable {
     parallelSourceIds: ReadonlySet<EntityId>,
     acquired: readonly AcquiredPoint[]
   ): SnapContext {
-    const entities = snapEntities(document)
+    const { entities, solidPoints } = snapEntities(document)
     const blocks = document.blockLookup()
     const touched = new Map<Entity, Vec3 | null>()
     // `reach` (in plan only, where a world distance means the same everywhere)
@@ -486,6 +497,7 @@ export class SnapEngine extends Observable {
     const shared = {
       document,
       entities,
+      solidPoints,
       construction,
       anchor,
       parallelSourceIds,

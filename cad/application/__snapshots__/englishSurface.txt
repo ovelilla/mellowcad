@@ -60,6 +60,8 @@ SUBTRACT ["SU"] "Subtract"
 INTERSECT ["IN"] "Intersect"
 BOX [] "Box"
 WEDGE ["WE"] "Wedge"
+CYLINDER ["CYL"] "Cylinder"
+CONE [] "Cone"
 PYRAMID ["PYR"] "Pyramid"
 BREAK ["BR"] "Break"
 BREAKATPOINT [] "Break at point"
@@ -196,6 +198,8 @@ subtract "Subtract" SU
 intersect "Intersect" IN
 box "Box" BOX
 wedge "Wedge" WE
+cylinder "Cylinder" CYL
+cone "Cone" CONE
 pyramid "Pyramid" PYR
 break "Break" BR
 breakatpoint "Break at point" BREAKATPOINT
@@ -4520,6 +4524,163 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
                  Rotation: 0
 > select the wedge
   properties: 3D Solid (1) [Geometry: Solid type=Wedge, Position X=50.00, Position Y=25.00, Position Z=0.00, Length=100.00 mm, Width=50.00 mm, Height=30.00 mm, Rotation=0°] [Solid History: History=None, Show History=No]
+> escape
+  properties: -
+  command| *Cancel*
+
+## CYLINDER
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> CYLINDER
+  command| CYLINDER
+  prompt| Specify center point of base or [3P/2P/Ttr/Elliptical]: 0,0,0
+  prompt| Specify base radius or [Diameter]: 50
+  prompt| Specify height or [2Point/Axis endpoint]: 80
+> CYLINDER refused
+  prompt: CYLINDER Specify height or [2Point/Axis endpoint] <80.00>:
+  asks: "Specify height or"
+  tip: Specify height or
+  dyn: "Specify height or"=""|80.00|mm*
+  options: [2P] 2Point, [A] Axis endpoint
+  command| CYLINDER
+  prompt| Specify center point of base or [3P/2P/Ttr/Elliptical]: FOO
+  error| Point or option keyword required.
+  prompt| Specify center point of base or [3P/2P/Ttr/Elliptical]: 200,0
+  prompt| Specify base radius or [Diameter] <50.00>: 0
+  error| Value must be positive and nonzero.
+  prompt| Specify base radius or [Diameter] <50.00>: D
+  prompt| Specify diameter <100.00>: FOO
+  error| Requires numeric distance, second point, or option keyword.
+  prompt| Specify diameter <100.00>: 60
+  prompt| Specify height or [2Point/Axis endpoint] <80.00>: 0
+  error| Value must be nonzero.
+> CYLINDER Axis endpoint
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  prompt| Specify height or [2Point/Axis endpoint] <80.00>: A
+  prompt| Specify axis endpoint: FOO
+  error| Point or option keyword required.
+  prompt| Specify axis endpoint: 200,0
+  error| Value must be nonzero.
+  prompt| Specify axis endpoint: 200,0,90
+> CYLINDER 3P
+  command| CYLINDER
+  prompt| Specify center point of base or [3P/2P/Ttr/Elliptical]: 3P
+  prompt| Specify first point: 300,0
+  prompt| Specify second point: 300,0
+  error| Points cannot be collinear. *Invalid*
+  prompt| Specify second point: 400,0
+  prompt| Specify third point: 300,100
+  prompt| Specify height or [2Point/Axis endpoint] <90.00>: -40
+> CYLINDER 2P
+  command| CYLINDER
+  prompt| Specify center point of base or [3P/2P/Ttr/Elliptical]: 2P
+  prompt| Specify first end point of diameter: 0,300
+  prompt| Specify second end point of diameter: 0,300
+  error| Points cannot be coincident. *Invalid*
+  prompt| Specify second end point of diameter: 100,300
+  prompt| Specify height or [2Point/Axis endpoint] <-40.00>: 2P
+  prompt| Specify first point: 0,0
+  prompt| Specify second point: 0,0,30
+> CYLINDER Elliptical
+  command| CYLINDER
+  prompt| Specify center point of base or [3P/2P/Ttr/Elliptical]: E
+  prompt| Specify endpoint of first axis or [Center]: C
+  prompt| Specify center point: 300,300
+  prompt| Specify distance to first axis:
+  error| Requires numeric distance, second point, or option keyword.
+  prompt| Specify distance to first axis: 40
+  prompt| Specify endpoint of second axis: 300,300
+  error| Ellipse axes lengths must be positive and nonzero
+  prompt| Specify endpoint of second axis: 330,330
+  prompt| Specify height or [2Point/Axis endpoint] <30.00>: C
+  prompt| Specify axis endpoint: 300,300,50
+> LIST
+  command| LIST
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info|                   3DSOLID   Layer: "0"
+                                    Space: Model space
+                 History = None
+            Show History = No
+              Solid type = Cylinder
+                 Position, X = 300.00    Y = 300.00    Z = 0.00
+             Major radius: 42.43
+             Minor radius: 40.00
+                   Height: 50.00
+                 Rotation: 45
+> select the cylinder
+  properties: 3D Solid (1) [Geometry: Solid type=Cylinder, Position X=0.00, Position Y=0.00, Position Z=0.00, Elliptical=No, Radius=50.00 mm, Height=80.00 mm] [Solid History: History=None, Show History=No]
+> escape
+  properties: -
+  command| *Cancel*
+
+## CONE
+> start
+  prompt: Command:
+  asks: -
+  tip: -
+  dyn: -
+  options: -
+  canvas: -
+  properties: -
+  cycling: -
+> CONE
+  command| CONE
+  prompt| Specify center point of base or [3P/2P/Ttr/Elliptical]: 0,0,0
+  prompt| Specify base radius or [Diameter]: 50
+  prompt| Specify height or [2Point/Axis endpoint/Top radius]: 80
+> CONE Top radius
+  command| CONE
+  prompt| Specify center point of base or [3P/2P/Ttr/Elliptical]: 200,0
+  prompt| Specify base radius or [Diameter] <50.00>: 50
+  prompt| Specify height or [2Point/Axis endpoint/Top radius] <80.00>: T
+  prompt| Specify top radius <0.00>: FOO
+  error| Requires numeric distance, second point, or option keyword.
+  prompt| Specify top radius <0.00>: -1
+  error| Value must be positive.
+  prompt| Specify top radius <0.00>: 20
+  prompt| Specify height or [2Point/Axis endpoint] <80.00>: 2P
+  prompt| Specify first point: 0,0
+  prompt| Specify second point: 0,0,60
+> CONE Elliptical
+  command| CONE
+  prompt| Specify center point of base or [3P/2P/Ttr/Elliptical]: E
+  prompt| Specify endpoint of first axis or [Center]: 400,0
+  prompt| Specify other endpoint of first axis: 500,0
+  prompt| Specify endpoint of second axis: 400,30
+  prompt| Specify height or [2Point/Axis endpoint/Top radius] <60.00>: T
+  prompt| Specify top radius <20.00>:
+  prompt| Specify height or [2Point/Axis endpoint] <60.00>: 50
+> LIST
+  command| LIST
+  prompt| Select objects: L
+  info| 1 found
+  prompt| Select objects:
+  info|                   3DSOLID   Layer: "0"
+                                    Space: Model space
+                 History = None
+            Show History = No
+              Solid type = Cone
+                 Position, X = 450.00    Y = 0.00      Z = 0.00
+        Base major radius: 58.31
+        Base minor radius: 50.00
+         Top major radius: 20.00
+                   Height: 50.00
+                 Rotation: 149
+> select the cone
+  properties: 3D Solid (1) [Geometry: Solid type=Cone, Position X=200.00, Position Y=0.00, Position Z=0.00, Elliptical=No, Base radius=50.00 mm, Top radius=20.00 mm, Height=60.00 mm] [Solid History: History=None, Show History=No]
 > escape
   properties: -
   command| *Cancel*

@@ -107,6 +107,8 @@ export const en: EngineCatalog = {
       "box": "Box",
       "wedge": "Wedge",
       "pyramid": "Pyramid",
+      "cylinder": "Cylinder",
+      "cone": "Cone",
       "intersect": "Intersect"
     },
     "description": {
@@ -458,6 +460,11 @@ export const en: EngineCatalog = {
         "baseRadius": "Base radius",
         "topRadius": "Top radius",
         "sides": "Sides",
+        "elliptical": "Elliptical",
+        "baseMajorRadius": "Base major radius",
+        "baseMinorRadius": "Base minor radius",
+        "topMajorRadius": "Top major radius",
+        "topMinorRadius": "Top minor radius",
         "currentVertex": "Current Vertex",
         "vertex": "Vertex",
         "startSegmentWidth": "Start segment width",
@@ -586,6 +593,8 @@ export const en: EngineCatalog = {
         "pyramid": "Pyramid",
         "inscribed": "Inscribed",
         "circumscribed": "Circumscribed",
+        "cylinder": "Cylinder",
+        "cone": "Cone",
         "chord": "Chord",
         "sqrtChord": "SqrtChord",
         "uniform": "Uniform",
@@ -1125,6 +1134,13 @@ export const en: EngineCatalog = {
         "PYRAMID",
         "PYR"
       ],
+      "CYLINDER": [
+        "CYLINDER",
+        "CYL"
+      ],
+      "CONE": [
+        "CONE"
+      ],
       "REGION": [
         "REGION",
         "REG"
@@ -1646,6 +1662,18 @@ export const en: EngineCatalog = {
       "solidHeightOr": "Specify height or",
       "specifyAxisEndpoint": "Specify axis endpoint",
       "specifyTopRadius": "Specify top radius",
+      "roundBaseCenterOr": "Specify center point of base or",
+      "specifyDiameter": "Specify diameter",
+      "specifyThirdPoint": "Specify third point",
+      "firstEndOfDiameter": "Specify first end point of diameter",
+      "secondEndOfDiameter": "Specify second end point of diameter",
+      "firstTangentPoint": "Specify point on object for first tangent",
+      "secondTangentPoint": "Specify point on object for second tangent",
+      "firstAxisEndpointOr": "Specify endpoint of first axis or",
+      "otherFirstAxisEndpoint": "Specify other endpoint of first axis",
+      "secondAxisEndpoint": "Specify endpoint of second axis",
+      "specifyCenterPoint": "Specify center point",
+      "distanceToFirstAxis": "Specify distance to first axis",
       "specifyFirstPoint": "Specify first point",
       "specifyNextPointOr": "Specify next point or",
       "specifyNextPointOrClose": "Specify next point or",
@@ -5630,6 +5658,20 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "pointsCollinear": "Points cannot be collinear. *Invalid*",
+      "pointsCoincident": "Points cannot be coincident. *Invalid*",
+      "ellipseAxesNonzero": "Ellipse axes lengths must be positive and nonzero",
+      "solidTangentRequired": [
+        [
+          "typed",
+          1,
+          {
+            "yes": "*",
+            "other": ""
+          }
+        ],
+        "Requires a TAN object-snap and selection of Circle, Arc, or Line."
+      ],
       "listSolidHistory": "         History = None\n    Show History = No",
       "listSolidType": [
         "      Solid type = ",
@@ -5639,6 +5681,8 @@ export const en: EngineCatalog = {
           {
             "wedge": "Wedge",
             "pyramid": "Pyramid",
+            "cylinder": "Cylinder",
+            "cone": "Cone",
             "other": "Box"
           }
         ]
@@ -5723,6 +5767,54 @@ export const en: EngineCatalog = {
         "  Number of sides: ",
         [
           "sides"
+        ]
+      ],
+      "listRoundRadius": [
+        "           Radius: ",
+        [
+          "radius"
+        ]
+      ],
+      "listRoundMajorRadius": [
+        "     Major radius: ",
+        [
+          "radius"
+        ]
+      ],
+      "listRoundMinorRadius": [
+        "     Minor radius: ",
+        [
+          "radius"
+        ]
+      ],
+      "listConeBaseRadius": [
+        "      Base radius: ",
+        [
+          "radius"
+        ]
+      ],
+      "listConeTopRadius": [
+        "       Top radius: ",
+        [
+          "radius"
+        ]
+      ],
+      "listConeBaseMajorRadius": [
+        "Base major radius: ",
+        [
+          "radius"
+        ]
+      ],
+      "listConeBaseMinorRadius": [
+        "Base minor radius: ",
+        [
+          "radius"
+        ]
+      ],
+      "listConeTopMajorRadius": [
+        " Top major radius: ",
+        [
+          "radius"
         ]
       ],
       "listRegionArea": [
@@ -5887,6 +5979,13 @@ export const en: EngineCatalog = {
         "Circumscribed": "Circumscribed about circle"
       },
       "PYRAMID": {
+        "Axis": "Axis endpoint",
+        "Top": "Top radius"
+      },
+      "CYLINDER": {
+        "Axis": "Axis endpoint"
+      },
+      "CONE": {
         "Axis": "Axis endpoint",
         "Top": "Top radius"
       },

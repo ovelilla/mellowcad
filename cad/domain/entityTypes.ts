@@ -775,10 +775,42 @@ export interface PyramidPrimitive {
 }
 
 /**
+ * A cylinder on the circle round `position` in the plane normal to
+ * `normal`, `height` along it; `xAxis` is where ACIS starts the base round
+ * (its seam, solid/c01). An elliptical one is `radius` along `xAxis` and
+ * `radiusY` across (its second axis' and its first's, c04), LIST's Rotation
+ * the heading of `xAxis`.
+ */
+export interface CylinderPrimitive {
+  readonly kind: "cylinder"
+  readonly position: Vec3
+  readonly xAxis: Vec3
+  readonly normal: Vec3
+  readonly radius: number
+  readonly radiusY?: number
+  readonly height: number
+}
+
+/**
+ * A cone or a frustum: a cylinder's base narrowing, or widening, to a top
+ * `topRadius` round, its larger axis' when elliptical (LIST's `Top major
+ * radius`, k03), to a point at 0.
+ */
+export interface ConePrimitive extends Omit<CylinderPrimitive, "kind"> {
+  readonly kind: "cone"
+  readonly topRadius: number
+}
+
+/**
  * What made a solid, kept while it is still that primitive: LIST's `Solid
  * type` and the Properties palette's Geometry (solid/p01, d03, d05).
  */
-export type SolidPrimitive = BoxPrimitive | WedgePrimitive | PyramidPrimitive
+export type SolidPrimitive =
+  | BoxPrimitive
+  | WedgePrimitive
+  | PyramidPrimitive
+  | CylinderPrimitive
+  | ConePrimitive
 
 /**
  * A 3D solid (DXF's 3DSOLID): its boundary as the kernel's B-rep

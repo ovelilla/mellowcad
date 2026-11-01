@@ -1850,6 +1850,48 @@ function singleEntityInfo(
               row("height", length(primitive.height)),
             ]
           }
+          case "cylinder":
+          case "cone": {
+            // Elliptical says which rows follow (d05).
+            const across = primitive.radiusY
+            const elliptical = row(
+              "elliptical",
+              text.propertyValue(across === undefined ? "no" : "yes")
+            )
+            const height = row("height", length(primitive.height))
+            if (across === undefined) {
+              return primitive.kind === "cylinder"
+                ? [elliptical, row("radius", length(primitive.radius)), height]
+                : [
+                    elliptical,
+                    row("baseRadius", length(primitive.radius)),
+                    row("topRadius", length(primitive.topRadius)),
+                    height,
+                  ]
+            }
+            const major = Math.max(primitive.radius, across)
+            const minor = Math.min(primitive.radius, across)
+            const rotation = row("rotation", degrees(placed?.rotation ?? 0))
+            if (primitive.kind === "cylinder") {
+              return [
+                elliptical,
+                row("majorRadius", length(major)),
+                row("minorRadius", length(minor)),
+                rotation,
+                height,
+              ]
+            }
+            const top = primitive.topRadius
+            return [
+              elliptical,
+              row("baseMajorRadius", length(major)),
+              row("baseMinorRadius", length(minor)),
+              row("topMajorRadius", length(top)),
+              row("topMinorRadius", length((top * minor) / major)),
+              rotation,
+              height,
+            ]
+          }
         }
       }
       return {

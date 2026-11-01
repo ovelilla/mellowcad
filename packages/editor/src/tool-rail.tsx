@@ -5,10 +5,12 @@ import {
   ArrowRightToLine,
   Box,
   CopyPlus,
+  Cylinder,
   Eraser,
   Eye,
   Grid3x3,
   CircleDotDashed,
+  Cone,
   LetterText,
   LocateFixed,
   Merge,
@@ -134,6 +136,8 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   region: Shapes,
   box: Box,
   pyramid: Pyramid,
+  cylinder: Cylinder,
+  cone: Cone,
   wedge: TriangleRight,
   union: SquaresUnite,
   subtract: SquaresSubtract,
@@ -241,7 +245,7 @@ const PALETTE: readonly PaletteSection[] = [
       // The 3D Modeling workspace's Modeling panel (acad.cuix
       // ID_Panel3D_Modeling), whose primitives' drop-down BOX opens, in
       // its order.
-      flyout("box", ["box", "pyramid", "wedge"]),
+      flyout("box", ["box", "cylinder", "cone", "pyramid", "wedge"]),
     ],
   },
   {

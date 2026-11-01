@@ -1273,6 +1273,88 @@ describe("the engine's English surface", () => {
         )
         .do("escape", (c) => c.escape())
     )
+    walk("CYLINDER", createHarness(), (s) =>
+      s
+        .do("CYLINDER", (c) => submit(c, "CYLINDER", "0,0,0", "50", "80"))
+        .do("CYLINDER refused", (c) =>
+          submit(c, "CYLINDER", "FOO", "200,0", "0", "D", "FOO", "60", "0")
+        )
+        .do("CYLINDER Axis endpoint", (c) =>
+          submit(c, "A", "FOO", "200,0", "200,0,90")
+        )
+        .do("CYLINDER 3P", (c) =>
+          submit(
+            c,
+            "CYLINDER",
+            "3P",
+            "300,0",
+            "300,0",
+            "400,0",
+            "300,100",
+            "-40"
+          )
+        )
+        .do("CYLINDER 2P", (c) =>
+          submit(
+            c,
+            "CYLINDER",
+            "2P",
+            "0,300",
+            "0,300",
+            "100,300",
+            "2P",
+            "0,0",
+            "0,0,30"
+          )
+        )
+        .do("CYLINDER Elliptical", (c) =>
+          submit(
+            c,
+            "CYLINDER",
+            "E",
+            "C",
+            "300,300",
+            "",
+            "40",
+            "300,300",
+            "330,330",
+            "C",
+            "300,300,50"
+          )
+        )
+        .do("LIST", (c) => submit(c, "LIST", "L", ""))
+        .do("select the cylinder", (c) =>
+          c.select(c.entities().find((e) => e.type === "solid3d")!.id)
+        )
+        .do("escape", (c) => c.escape())
+    )
+    walk("CONE", createHarness(), (s) =>
+      s
+        .do("CONE", (c) => submit(c, "CONE", "0,0,0", "50", "80"))
+        .do("CONE Top radius", (c) =>
+          submit(
+            c,
+            "CONE",
+            "200,0",
+            "50",
+            "T",
+            "FOO",
+            "-1",
+            "20",
+            "2P",
+            "0,0",
+            "0,0,60"
+          )
+        )
+        .do("CONE Elliptical", (c) =>
+          submit(c, "CONE", "E", "400,0", "500,0", "400,30", "T", "", "50")
+        )
+        .do("LIST", (c) => submit(c, "LIST", "L", ""))
+        .do("select the cone", (c) =>
+          c.select(c.entities().filter((e) => e.type === "solid3d")[1]!.id)
+        )
+        .do("escape", (c) => c.escape())
+    )
     walk("PYRAMID", createHarness(), (s) =>
       s
         .do("PYRAMID", (c) => submit(c, "PYRAMID", "0,0,0", "50", "80"))

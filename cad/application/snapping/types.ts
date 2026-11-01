@@ -158,6 +158,18 @@ export interface SnapContext {
    * endpoint the cursor has passed over, never every line in the drawing.
    */
   readonly acquired: readonly AcquiredPoint[]
+  /**
+   * A solid's points no edge of it offers: a cone's apex, an Endpoint
+   * (solid/s09, s10). Its edges are in `entities`.
+   */
+  readonly solidPoints?: readonly SolidSnapPoint[]
+}
+
+/** A point of a visible solid, by the snap that finds it. */
+export interface SolidSnapPoint {
+  readonly type: SnapType.Endpoint
+  readonly point: Vec3
+  readonly id: EntityId
 }
 
 /**

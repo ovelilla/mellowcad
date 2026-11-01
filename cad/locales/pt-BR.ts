@@ -107,6 +107,8 @@ export const ptBR: EngineLocale = {
       "box": "Caixa",
       "wedge": "Cunha",
       "pyramid": "Pirâmide",
+      "cylinder": "Cilindro",
+      "cone": "Cone",
       "intersect": "Intersecção"
     },
     "description": {
@@ -452,6 +454,11 @@ export const ptBR: EngineLocale = {
         "baseRadius": "Raio da base",
         "topRadius": "Raio superior",
         "sides": "Lados",
+        "elliptical": "Elíptico",
+        "baseMajorRadius": "Raio da base maior",
+        "baseMinorRadius": "Raio da base menor",
+        "topMajorRadius": "Raio superior maior",
+        "topMinorRadius": "Raio superior menor",
         "currentVertex": "Vértice atual",
         "vertex": "Vértice",
         "startSegmentWidth": "Largura inicial do segmento",
@@ -580,6 +587,8 @@ export const ptBR: EngineLocale = {
         "pyramid": "Pirâmide",
         "inscribed": "Inscrito",
         "circumscribed": "Circunscrito",
+        "cylinder": "Cilindro",
+        "cone": "Cone",
         "chord": "Banzo",
         "sqrtChord": "RaizQuadBanzo",
         "uniform": "Uniforme",
@@ -1120,6 +1129,13 @@ export const ptBR: EngineLocale = {
         "PIRAMIDE",
         "PIR"
       ],
+      "CYLINDER": [
+        "CILINDRO",
+        "CIL"
+      ],
+      "CONE": [
+        "CONE"
+      ],
       "REGION": [
         "REGIAO",
         "REG"
@@ -1334,6 +1350,27 @@ export const ptBR: EngineLocale = {
         "Sides": "Lados",
         "Inscribed": "Inscrito",
         "Circumscribed": "Circunscrito",
+        "2Point": "2Pontos",
+        "Axis": "Eixo",
+        "Top": "Raio"
+      },
+      "CYLINDER": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Elliptical": "Elíptico",
+        "Diameter": "Diâmetro",
+        "Center": "Centro",
+        "2Point": "2Pontos",
+        "Axis": "Eixo"
+      },
+      "CONE": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Elliptical": "Elíptico",
+        "Diameter": "Diâmetro",
+        "Center": "Centro",
         "2Point": "2Pontos",
         "Axis": "Eixo",
         "Top": "Raio"
@@ -2152,6 +2189,18 @@ export const ptBR: EngineLocale = {
       "solidHeightOr": "Especificar altura ou",
       "specifyAxisEndpoint": "Especificar ponto final do eixo",
       "specifyTopRadius": "Especificar raio superior",
+      "roundBaseCenterOr": "Especificar centro do ponto base ou",
+      "specifyDiameter": "Especificar diâmetro",
+      "specifyThirdPoint": "Especificar terceiro ponto",
+      "firstEndOfDiameter": "Especificar o primeiro ponto final do diâmetro",
+      "secondEndOfDiameter": "Especificar o segundo ponto final do diâmetro",
+      "firstTangentPoint": "Especificar o ponto no objeto da primeira tangente",
+      "secondTangentPoint": "Especificar ponto no objeto para segunda tangente",
+      "firstAxisEndpointOr": "Especificar ponto final do primeiro eixo ou",
+      "otherFirstAxisEndpoint": "Especificar outro ponto final do primeiro eixo",
+      "secondAxisEndpoint": "Especificar ponto final do segundo eixo",
+      "specifyCenterPoint": "Especificar centro",
+      "distanceToFirstAxis": "Especificar distância do primeiro eixo",
       "specifyFirstPoint": "Especificar primeiro ponto",
       "specifyNextPointOr": "Especificar próximo ponto ou",
       "specifyNextPointOrClose": "Especificar próximo ponto ou",
@@ -6163,6 +6212,20 @@ export const ptBR: EngineLocale = {
           }
         ]
       ],
+      "pointsCollinear": "Pontos não podem ser colineares. *Inválido*",
+      "pointsCoincident": "Pontos não podem ser coincidentes. *Inválido*",
+      "ellipseAxesNonzero": "Comprimentos de eixos de elipse devem ser positivos e não zero",
+      "solidTangentRequired": [
+        [
+          "typed",
+          1,
+          {
+            "yes": "*",
+            "other": ""
+          }
+        ],
+        "Requer um snap ao objeto TAN e a seleção de um círculo, arco ou linha."
+      ],
       "listSolidHistory": "       Histórico = Nenhum\nMostrar histórico = Não",
       "listSolidType": [
         "  Tipo de sólido = ",
@@ -6172,6 +6235,8 @@ export const ptBR: EngineLocale = {
           {
             "wedge": "Cunha",
             "pyramid": "Pirâmide",
+            "cylinder": "Cilindro",
+            "cone": "Cone",
             "other": "Caixa"
           }
         ]
@@ -6256,6 +6321,54 @@ export const ptBR: EngineLocale = {
         "  Número de lados: ",
         [
           "sides"
+        ]
+      ],
+      "listRoundRadius": [
+        "             Raio: ",
+        [
+          "radius"
+        ]
+      ],
+      "listRoundMajorRadius": [
+        "       Raio maior: ",
+        [
+          "radius"
+        ]
+      ],
+      "listRoundMinorRadius": [
+        "       Raio menor: ",
+        [
+          "radius"
+        ]
+      ],
+      "listConeBaseRadius": [
+        "     Raio da base: ",
+        [
+          "radius"
+        ]
+      ],
+      "listConeTopRadius": [
+        "    Raio superior: ",
+        [
+          "radius"
+        ]
+      ],
+      "listConeBaseMajorRadius": [
+        "Raio da base maior: ",
+        [
+          "radius"
+        ]
+      ],
+      "listConeBaseMinorRadius": [
+        "Raio da base menor: ",
+        [
+          "radius"
+        ]
+      ],
+      "listConeTopMajorRadius": [
+        "Raio superior maior: ",
+        [
+          "radius"
         ]
       ],
       "listRegionArea": [
@@ -6420,6 +6533,13 @@ export const ptBR: EngineLocale = {
         "Circumscribed": "Circunscrito sobre o círculo"
       },
       "PYRAMID": {
+        "Axis": "ponto final Eixo",
+        "Top": "Raio superior"
+      },
+      "CYLINDER": {
+        "Axis": "ponto final Eixo"
+      },
+      "CONE": {
         "Axis": "ponto final Eixo",
         "Top": "Raio superior"
       },

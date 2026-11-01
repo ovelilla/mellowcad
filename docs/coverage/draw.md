@@ -1017,8 +1017,7 @@ lines (p09); REGION rejects it (`1 closed, degenerate or unsupported object reje
 DIMLINEAR's object and UCS OBject take the edge picked as a line along it (e07, e08); BREAK, OFFSET,
 TRIM, EXTEND, PEDIT, DIMRADIUS and ARRAYPATH's path refuse it with their own words (e01–e06, e10).
 
-**Missing:** the other primitives — CYLINDER, CONE, SPHERE, TORUS — and the isolines of their
-curved faces (the brief's phase 2b); MASSPROP (its numbers are in the probes'
+**Missing:** SPHERE and TORUS (the brief's phase 2b); MASSPROP (its numbers are in the probes'
 MPDUMP) and a box's grips — the base's corners, the edges' arrows, the height's, d02 — with editing
 its Geometry rows in the palette (phase 2c; none here, a click selects it); the 3D commands of its
 own (3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN), the gizmos and sub-objects
@@ -1062,6 +1061,90 @@ does is BOX's entry.
 
 **Missing:** BOX's (MASSPROP and the grips in phase 2c, the palette's edits, the 3D commands,
 Hidden and shaded styles, the per-drawing defaults on OPEN, **unverified**).
+
+### `CYLINDER` / `CYL` · es `CILINDRO` / `CIL` · pt-BR `CILINDRO` / `CIL`
+
+**Implemented:** CYLINDER as 2027's console asks it (solid/c01–c15, v05), in en, es and pt-BR:
+`Specify center point of base or [3P/2P/Ttr/Elliptical]:`, `Specify base radius or [Diameter]:`,
+`Specify height or [2Point/Axis endpoint]:` (es `Precise centro de base o [3P/2P/Ttr/Elíptico]`,
+`Precise radio de base o [Diámetro]`, `Precise altura o [2Puntos/punto final Eje]`; pt-BR
+`Especificar centro do ponto base ou`, `Especificar raio de base ou [Diâmetro]`, `Especificar altura
+ou [2Pontos/ponto final Eixo]`). Diameter asks `Specify diameter <10.0000>:` (twice the radius
+offered). 3P asks `Specify first point:`, `Specify second point:`, `Specify third point:` and lays
+the base in their plane, its normal theirs unless that plane is the UCS's XY's (c02: 200,0,0 /
+210,0,0 / 200,0,10 makes Normal 0,-1,0; c15: points run clockwise in the XY plane still rise
+along Z). 2P asks `Specify first end point of diameter:` and `Specify second end point of
+diameter:`, the second read in the first's plane (c02: 300,0,0 / 310,0,4 makes radius 5 at Z 0).
+Ttr asks `Specify point on object for first tangent:`, `… second tangent:` and `Specify radius of
+circle:`, the base tangent to two lines, circles or arcs picked under TAN, nearest the picks, at
+their height (c03); none says `Circle does not exist.` and ends (v05). Elliptical asks `Specify
+endpoint of first axis or [Center]:`, `Specify other endpoint of first axis:` and `Specify endpoint
+of second axis:`, Center `Specify center point:` and `Specify distance to first axis:`: the second
+axis' point gives its way and its size, the first axis lying square to it its own half length
+(c04: 0,0,0 / 10,0,0 / 0,3,0 makes 5.8310 along 149° and 5 across; v05: a typed second axis runs
+towards the cursor). Axis endpoint asks `Specify axis endpoint:` (the height declares Center too,
+which asks it, c13) and 2Point two points; the height rises along the base's normal, down when
+negative (c05). Refusals: `Point or option keyword required.` at the point prompts and the axis
+endpoint (FOO, Enter), `Requires numeric distance, second point, or option keyword.` at the radius,
+diameter, distance and height, `Requires numeric distance or two points.` at Ttr's radius, `Value
+must be positive and nonzero.` for a radius, diameter or distance of 0 or less, `Value must be
+nonzero.` for a height of 0 and an axis or 2Point of no length, `Points cannot be collinear.
+*Invalid*` at 3P's second on its first or third on their line, `Points cannot be coincident.
+*Invalid*` at 2P's (c08), `Ellipse axes lengths must be positive and nonzero` at a second axis of
+no length, or every one after a first of none (c07), `Requires a TAN object-snap and selection of
+Circle, Arc, or Line.` at Ttr's FOO and Enter, starred for a point typed without TAN (c03; es
+`Requiere una REFENT TAN y la designación de un círculo, arco o línea.`, pt-BR `Requer um snap ao
+objeto TAN …`, unlike CIRCLE's). The radius (not an ellipse's), the height and Ttr's radius are the
+primitives' shared defaults (x01–x06). It lies in a tilted UCS and at its Z (c09); it wears the
+current layer and properties; one undo step (u01).
+
+The object, a 3D solid (file version 45), as ACIS makes it (c01's MPDUMP): a vertex on each
+circle, at its seam; the base's circle or ellipse run about the base's outward normal, the top's
+about the axis; the round face (a cylinder, or an elliptical one), the base, the top. The seam is
+the UCS's X, the second axis' way for an ellipse, or — tilted by 3P or Axis endpoint — the arbitrary
+axis' −X of its plane read in the UCS, an ellipse's Y (c12, c14, c15); straight along the UCS's Z it
+stays. 2D Wireframe draws its edges and ISOLINES' rulings round it from the seam (d04: 4, 16 and 3
+lines; 0 none); it is picked and windowed by both. It snaps at its circles' Center and Quadrant,
+Nearest, Perpendicular and Tangent on them, no Endpoint at the seam, nothing on the isolines (s03,
+s09, s10). LIST: `Solid type = Cylinder`, Position (the base's centre), Normal, `Radius`, Height; an
+elliptical one `Major radius`, `Minor radius`, Height and Rotation, its seam's heading (c01, c04).
+The palette: Solid type, Position X/Y/Z, Elliptical, Radius or Major and Minor radius and Rotation,
+Height (d05). AREA's Object gives its surface (`408.4070`, the ellipse's perimeter exact); MOVE,
+ROTATE, SCALE and MIRROR carry it (c10).
+
+**Missing:** what AutoCAD's EXPLODE makes of it — the regions of its ends and a SURFACE of its
+round face (c11): no surface object here, so it is refused as `Select objects:` finds it (`1 was
+not able to be exploded.`); BOX's (MASSPROP and the grips in phase 2c — the base's and the top's
+centres, MPGRIPS —, the palette's edits, Hidden and shaded styles, DISPSILH's silhouettes, d04's
+`iso16s`); in plan, where the top circle hides the base's, Nearest finds the top's in AutoCAD (s03)
+and the base's here, as BOX's; an elliptical base tilted by Axis endpoint turns its seam to the
+plane's Y, its size kept (c12), its other in-plane turns **unverified**.
+
+### `CONE` · es `CONO` · pt-BR `CONE`
+
+**Implemented:** CONE asks CYLINDER's prompts (solid/k01–k07), its height `Specify height or
+[2Point/Axis endpoint/Top radius]:` (es `Indique altura o [2Puntos/punto final Eje/Radio superior]`,
+pt-BR `Especificar altura ou [2Pontos/ponto final Eixo/Raio superior]`). Top radius asks `Specify top
+radius <0.0000>:` — the last top radius, PYRAMID's too (y10) — and the height again without it,
+`Specify height or [2Point/Axis endpoint]:`, which still declares Top (k02); a top as wide as the
+base makes a cylinder's face, wider a cone widening up, LIST still `Cone` (k02). Its refusals are
+CYLINDER's, the top radius' `Requires numeric distance, second point, or option keyword.` for FOO
+(PYRAMID's has no keyword) and `Value must be positive.` below 0 (k04). An elliptical cone's top
+is its base shrunk to the top radius given as its major (k03). It lies in a tilted UCS and at its Z
+(k05); one undo step (u01).
+
+The object, a 3D solid (file version 45): the base's circle or ellipse and, at the apex, an edge of
+no length at one vertex, the cone's face's second loop (k01's MPDUMP: ACIS's degenerate edge), or a
+frustum's top. The apex is an Endpoint, the base's seam none; the rulings run from the base to the
+apex or the top (s10, d04; with ISOLINES 0 AutoCAD draws the apex as a dot). LIST: `Solid type =
+Cone`, Position, Normal, `Base radius`, `Top radius`, Height; elliptical `Base major radius`, `Base
+minor radius`, `Top major radius`, Height, Rotation (k01, k03). The palette: Elliptical, Base radius
+and Top radius, or Base major, Base minor, Top major and Top minor radius and Rotation, Height (d05).
+AREA's Object gives its surface (`226.7284`; a frustum's `278.9986`, an elliptical one's from the
+perimeter, k01, k03). Everything else a solid does is CYLINDER's and BOX's entries.
+
+**Missing:** CYLINDER's (EXPLODE's SURFACE, k06; MASSPROP and the grips in 2c); the apex drawn as a
+dot with ISOLINES 0 (nothing here).
 
 ### `PYRAMID` / `PYR` · es `PIRAMIDE` / `PIR` · pt-BR `PIRAMIDE` / `PIR`
 

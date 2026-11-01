@@ -112,7 +112,13 @@ import { Vec2 } from "../geometry/Vec2"
 import { bsplineDomain } from "../geometry/nurbs"
 import { PlanarCurve } from "../geometry/planarCurves"
 import { RegionFace } from "../geometry/planarRegions"
-import { Brep, BrepFace, brepIsClosed } from "../geometry/solids"
+import {
+  Brep,
+  BrepCurve,
+  BrepFace,
+  BrepSurface,
+  brepIsClosed,
+} from "../geometry/solids"
 import { Vec3, dot3, length3 } from "../geometry/Vec3"
 import {
   DEFAULT_DOCUMENT_SETTINGS,
@@ -126,7 +132,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 44
+export const DRAWING_FILE_VERSION = 45
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -611,22 +617,72 @@ function cloneEntityShape(entity: Entity): Entity {
 /** A solid's boundary as the file holds it, nothing but its own fields. */
 function storedBrep(brep: Brep): Brep {
   return {
-    vertices: brep.vertices.map((v) => ({ x: v.x, y: v.y, z: v.z })),
+    vertices: brep.vertices.map(storedVec3),
     edges: brep.edges.map((e) => ({
       start: e.start,
       end: e.end,
-      curve: { kind: e.curve.kind },
+      curve: storedCurve(e.curve),
     })),
     faces: brep.faces.map((face) => ({
-      surface: {
-        kind: face.surface.kind,
-        origin: { ...face.surface.origin },
-        normal: { ...face.surface.normal },
-      },
+      surface: storedSurface(face.surface),
       loops: face.loops.map((loop) =>
         loop.map((c) => ({ edge: c.edge, reversed: c.reversed }))
       ),
     })),
+  }
+}
+
+const storedVec3 = (v: Vec3): Vec3 => ({ x: v.x, y: v.y, z: v.z })
+
+function storedCurve(c: BrepCurve): BrepCurve {
+  switch (c.kind) {
+    case "line":
+    case "point":
+      return { kind: c.kind }
+    case "circle":
+      return {
+        kind: "circle",
+        center: storedVec3(c.center),
+        normal: storedVec3(c.normal),
+        radius: c.radius,
+      }
+    case "ellipse":
+      return {
+        kind: "ellipse",
+        center: storedVec3(c.center),
+        normal: storedVec3(c.normal),
+        majorAxis: storedVec3(c.majorAxis),
+        ratio: c.ratio,
+      }
+  }
+}
+
+function storedSurface(s: BrepSurface): BrepSurface {
+  switch (s.kind) {
+    case "plane":
+      return {
+        kind: "plane",
+        origin: storedVec3(s.origin),
+        normal: storedVec3(s.normal),
+      }
+    case "cylinder":
+      return {
+        kind: "cylinder",
+        origin: storedVec3(s.origin),
+        axis: storedVec3(s.axis),
+        xAxis: storedVec3(s.xAxis),
+        radius: s.radius,
+        ratio: s.ratio,
+      }
+    case "cone":
+      return {
+        kind: "cone",
+        apex: storedVec3(s.apex),
+        axis: storedVec3(s.axis),
+        xAxis: storedVec3(s.xAxis),
+        slope: s.slope,
+        ratio: s.ratio,
+      }
   }
 }
 
@@ -1469,7 +1525,7 @@ function parseEntityShape(raw: unknown, version: number): Entity | null {
       return { id, type: "region", layerId, ...overrides, faces }
     }
     case "solid3d": {
-      // Since 43; a wedge or a pyramid since 44. A boundary that does not
+      // Since 43; a wedge or a pyramid since 44, a cylinder or a cone 45. A boundary that does not
       // close loses the solid; a malformed primitive only its history.
       const brep = parseBrep(raw.brep)
       if (!brep) return null
@@ -1497,22 +1553,24 @@ function parseBrep(raw: unknown): Brep | null {
   if (points.some((p) => p === null)) return null
   const index = (value: unknown) =>
     Number.isInteger(value) && (value as number) >= 0 ? (value as number) : -1
+  const curves = edges.map((e) => (isRecord(e) ? parseCurve(e.curve) : null))
+  const surfaces = faces.map((f) =>
+    isRecord(f) ? parseSurface(f.surface) : null
+  )
+  if (curves.some((c) => c === null) || surfaces.some((s) => s === null)) {
+    return null
+  }
   const brep: Brep = {
     vertices: points as Vec3[],
-    edges: edges.map((e) => ({
+    edges: edges.map((e, i) => ({
       start: isRecord(e) ? index(e.start) : -1,
       end: isRecord(e) ? index(e.end) : -1,
-      curve: { kind: "line" },
+      curve: curves[i] as BrepCurve,
     })),
-    faces: faces.map((f): BrepFace => {
-      const surface = isRecord(f) && isRecord(f.surface) ? f.surface : {}
+    faces: faces.map((f, i): BrepFace => {
       const loops = isRecord(f) && Array.isArray(f.loops) ? f.loops : []
       return {
-        surface: {
-          kind: "plane",
-          origin: parseVec3(surface.origin) ?? { x: NaN, y: NaN, z: NaN },
-          normal: parseVec3(surface.normal) ?? { x: 0, y: 0, z: 0 },
-        },
+        surface: surfaces[i] as BrepSurface,
         loops: loops.map((loop) =>
           (Array.isArray(loop) ? loop : []).map((c) => ({
             edge: isRecord(c) ? index(c.edge) : -1,
@@ -1522,13 +1580,76 @@ function parseBrep(raw: unknown): Brep | null {
       }
     }),
   }
-  const lines = edges.every(
-    (e) => isRecord(e) && isRecord(e.curve) && e.curve.kind === "line"
-  )
-  const planes = faces.every(
-    (f) => isRecord(f) && isRecord(f.surface) && f.surface.kind === "plane"
-  )
-  return lines && planes && brepIsClosed(brep) ? brep : null
+  return brepIsClosed(brep) ? brep : null
+}
+
+/** An edge's curve; a circle or an ellipse since 45. */
+function parseCurve(raw: unknown): BrepCurve | null {
+  if (!isRecord(raw)) return null
+  switch (raw.kind) {
+    case "line":
+    case "point":
+      return { kind: raw.kind }
+    case "circle": {
+      const center = parseVec3(raw.center)
+      const normal = parseVec3(raw.normal)
+      if (!center || !normal || !positive(raw.radius)) return null
+      return { kind: "circle", center, normal, radius: raw.radius }
+    }
+    case "ellipse": {
+      const center = parseVec3(raw.center)
+      const normal = parseVec3(raw.normal)
+      const majorAxis = parseVec3(raw.majorAxis)
+      if (!center || !normal || !majorAxis || !positive(raw.ratio)) {
+        return null
+      }
+      return { kind: "ellipse", center, normal, majorAxis, ratio: raw.ratio }
+    }
+    default:
+      return null
+  }
+}
+
+/** A face's surface; a cylinder or a cone since 45. */
+function parseSurface(raw: unknown): BrepSurface | null {
+  if (!isRecord(raw)) return null
+  switch (raw.kind) {
+    case "plane": {
+      const origin = parseVec3(raw.origin)
+      const normal = parseVec3(raw.normal)
+      return origin && normal ? { kind: "plane", origin, normal } : null
+    }
+    case "cylinder":
+    case "cone": {
+      const axis = parseVec3(raw.axis)
+      const xAxis = parseVec3(raw.xAxis)
+      if (!axis || !xAxis || !positive(raw.ratio)) return null
+      if (raw.kind === "cylinder") {
+        const origin = parseVec3(raw.origin)
+        if (!origin || !positive(raw.radius)) return null
+        return {
+          kind: "cylinder",
+          origin,
+          axis,
+          xAxis,
+          radius: raw.radius,
+          ratio: raw.ratio,
+        }
+      }
+      const apex = parseVec3(raw.apex)
+      if (!apex || !positive(raw.slope)) return null
+      return {
+        kind: "cone",
+        apex,
+        axis,
+        xAxis,
+        slope: raw.slope,
+        ratio: raw.ratio,
+      }
+    }
+    default:
+      return null
+  }
 }
 
 /** A primitive's frame: a position and two unit axes square to each other. */
@@ -1575,6 +1696,22 @@ function parsePrimitive(raw: unknown): SolidPrimitive | null {
         height,
         inscribed: inscribed === true,
       }
+    }
+    case "cylinder":
+    case "cone": {
+      // Since 45.
+      const { radius, radiusY, height, topRadius } = raw
+      if (!positive(radius) || !positive(height)) return null
+      if (radiusY !== undefined && !positive(radiusY)) return null
+      const common = {
+        ...frame,
+        radius,
+        ...(radiusY !== undefined ? { radiusY } : {}),
+        height,
+      }
+      if (raw.kind === "cylinder") return { kind: "cylinder", ...common }
+      if (!isFiniteNumber(topRadius) || topRadius < 0) return null
+      return { kind: "cone", ...common, topRadius }
     }
     default:
       return null

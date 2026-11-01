@@ -94,15 +94,18 @@ export function planDistanceToEntity(
   camera: CameraTransform,
   entity: Entity,
   world: Vec2,
-  blocks: BlockLookup
+  blocks: BlockLookup,
+  isolines?: number
 ): number {
-  if (isTilted(entity)) {
+  // A solid is picked by what it draws, its isolines too (solid/d04).
+  if (isTilted(entity) || entity.type === "solid3d") {
     return (
       screenDistanceToEntity(
         camera,
         entity,
         camera.worldToScreen(world),
-        blocks
+        blocks,
+        isolines
       ) / camera.worldToScreenDistance(1)
     )
   }
@@ -127,7 +130,8 @@ export function screenDistanceToEntity(
   camera: CameraTransform,
   entity: Entity,
   screen: Vec2,
-  blocks?: BlockLookup
+  blocks?: BlockLookup,
+  isolines?: number
 ): number {
   if (entity.type === "insert") {
     const at = camera.worldToScreen(entityPointToWorld(entity, entity.position))
@@ -143,7 +147,7 @@ export function screenDistanceToEntity(
   }
   const thickness = entityThickness(entity)
   const outlineDistance = () =>
-    entityScreenOutline(camera, entity, blocks).reduce(
+    entityScreenOutline(camera, entity, blocks, isolines).reduce(
       (best, line) => Math.min(best, polylineDistance(line, screen)),
       Number.POSITIVE_INFINITY
     )

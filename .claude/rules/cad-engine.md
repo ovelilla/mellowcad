@@ -137,8 +137,10 @@ Dependencies run types → per-type modules → overrides → transforms → que
   hodograph of a weighted curve (`bsplineDerivativeCurve` ignores the weights).
 - **A region and a solid are the kernel's** (`planarRegions.ts`, `solids.ts`; one tolerance
   `MODEL_TOLERANCE`), drawn, picked and snapped as their edges (`regionLevelEdgeEntities`,
-  `regionEdgeEntities`, `solidEdgeEntities`); a boolean is `regionBoolean`, never a tool's cut. A
-  solid's points are the WCS's; it moves only by `transformEntity` and holds no -0 (`unsigned0`).
+  `regionEdgeEntities`, `solidEdgeEntities`); a solid's isolines (`solidWireEntities`) are drawn
+  and picked, never snapped, an apex snapped through `SnapContext.solidPoints`. A boolean is
+  `regionBoolean`, never a tool's cut. A solid's points are the WCS's; it moves only by
+  `transformEntity` and holds no -0 (`unsigned0`).
 - **MTEXT keeps AutoCAD's contents string**, `\P` and escapes included: `mtextPlainText` reads it
   (codes it does not draw vanish from the reading, never from the object), `mtextContents` writes
   it, nothing else parses or builds it.

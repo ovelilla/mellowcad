@@ -107,6 +107,8 @@ export const es: EngineLocale = {
       "box": "Prisma rectangular",
       "wedge": "Cuña",
       "pyramid": "Pirámide",
+      "cylinder": "Cilindro",
+      "cone": "Cono",
       "intersect": "Intersección"
     },
     "description": {
@@ -452,6 +454,11 @@ export const es: EngineLocale = {
         "baseRadius": "Radio de base",
         "topRadius": "Radio superior",
         "sides": "Lados",
+        "elliptical": "Elíptico",
+        "baseMajorRadius": "Radio mayor de base",
+        "baseMinorRadius": "Radio menor de base",
+        "topMajorRadius": "Radio mayor superior",
+        "topMinorRadius": "Radio menor superior",
         "currentVertex": "Vértice actual",
         "vertex": "Vértice",
         "startSegmentWidth": "Anchura inicial del segmento",
@@ -580,6 +587,8 @@ export const es: EngineLocale = {
         "pyramid": "Pirámide",
         "inscribed": "Inscrito",
         "circumscribed": "Circunscrito",
+        "cylinder": "Cilindro",
+        "cone": "Cono",
         "chord": "Cuerda",
         "sqrtChord": "RaízcuadradaCuerda",
         "uniform": "Uniforme",
@@ -1107,6 +1116,13 @@ export const es: EngineLocale = {
         "PIRAMIDE",
         "PIR"
       ],
+      "CYLINDER": [
+        "CILINDRO",
+        "CIL"
+      ],
+      "CONE": [
+        "CONO"
+      ],
       "REGION": [
         "REGION",
         "REG"
@@ -1322,6 +1338,27 @@ export const es: EngineLocale = {
         "Sides": "Lados",
         "Inscribed": "Inscrito",
         "Circumscribed": "Circunscrito",
+        "2Point": "2Puntos",
+        "Axis": "Eje",
+        "Top": "Radio"
+      },
+      "CYLINDER": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Elliptical": "Elíptico",
+        "Diameter": "Diámetro",
+        "Center": "Centro",
+        "2Point": "2Puntos",
+        "Axis": "Eje"
+      },
+      "CONE": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Elliptical": "Elíptico",
+        "Diameter": "Diámetro",
+        "Center": "Centro",
         "2Point": "2Puntos",
         "Axis": "Eje",
         "Top": "Radio"
@@ -2139,6 +2176,18 @@ export const es: EngineLocale = {
       "solidHeightOr": "Precise altura o",
       "specifyAxisEndpoint": "Precise punto final de eje",
       "specifyTopRadius": "Precise radio superior",
+      "roundBaseCenterOr": "Precise centro de base o",
+      "specifyDiameter": "Precise diámetro",
+      "specifyThirdPoint": "Precise tercer punto",
+      "firstEndOfDiameter": "Precise primer punto final de diámetro",
+      "secondEndOfDiameter": "Precise segundo punto final de diámetro",
+      "firstTangentPoint": "Precise punto en objeto para primera tangente",
+      "secondTangentPoint": "Precise punto en objeto para segunda tangente",
+      "firstAxisEndpointOr": "Precise punto final de primer eje o",
+      "otherFirstAxisEndpoint": "Precise otro punto final de primer eje",
+      "secondAxisEndpoint": "Precise punto final de segundo eje",
+      "specifyCenterPoint": "Precise centro",
+      "distanceToFirstAxis": "Precise distancia a primer eje",
       "specifyFirstPoint": "Precise primer punto",
       "specifyNextPointOr": "Precise punto siguiente o",
       "specifyNextPointOrClose": "Precise siguiente punto o",
@@ -6135,6 +6184,20 @@ export const es: EngineLocale = {
           }
         ]
       ],
+      "pointsCollinear": "Los puntos no pueden ser colineales. *No válido*",
+      "pointsCoincident": "Los puntos no pueden coincidir. *No válido*",
+      "ellipseAxesNonzero": "Las longitudes de los ejes de la elipse deben ser positivas y distintas de cero",
+      "solidTangentRequired": [
+        [
+          "typed",
+          1,
+          {
+            "yes": "*",
+            "other": ""
+          }
+        ],
+        "Requiere una REFENT TAN y la designación de un círculo, arco o línea."
+      ],
       "listSolidHistory": "         Historial = Ninguno\n Mostrar historial = No",
       "listSolidType": [
         "    Tipo de sólido = ",
@@ -6144,6 +6207,8 @@ export const es: EngineLocale = {
           {
             "wedge": "Cuña",
             "pyramid": "Pirámide",
+            "cylinder": "Cilindro",
+            "cone": "Cono",
             "other": "Prisma"
           }
         ]
@@ -6228,6 +6293,54 @@ export const es: EngineLocale = {
         "  Número de lados: ",
         [
           "sides"
+        ]
+      ],
+      "listRoundRadius": [
+        "            Radio: ",
+        [
+          "radius"
+        ]
+      ],
+      "listRoundMajorRadius": [
+        "      Radio mayor: ",
+        [
+          "radius"
+        ]
+      ],
+      "listRoundMinorRadius": [
+        "      Radio menor: ",
+        [
+          "radius"
+        ]
+      ],
+      "listConeBaseRadius": [
+        "    Radio de base: ",
+        [
+          "radius"
+        ]
+      ],
+      "listConeTopRadius": [
+        "   Radio superior: ",
+        [
+          "radius"
+        ]
+      ],
+      "listConeBaseMajorRadius": [
+        "Radio mayor de base: ",
+        [
+          "radius"
+        ]
+      ],
+      "listConeBaseMinorRadius": [
+        "Radio menor de base: ",
+        [
+          "radius"
+        ]
+      ],
+      "listConeTopMajorRadius": [
+        "Radio mayor superior: ",
+        [
+          "radius"
         ]
       ],
       "listRegionArea": [
@@ -6392,6 +6505,13 @@ export const es: EngineLocale = {
         "Circumscribed": "Circunscrito alrededor del círculo"
       },
       "PYRAMID": {
+        "Axis": "punto final Eje",
+        "Top": "Radio superior"
+      },
+      "CYLINDER": {
+        "Axis": "punto final Eje"
+      },
+      "CONE": {
         "Axis": "punto final Eje",
         "Top": "Radio superior"
       },

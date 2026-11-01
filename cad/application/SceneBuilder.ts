@@ -1,5 +1,6 @@
 import { regionLevelEdgeEntities } from "../domain/regions"
-import { solidEdgeEntities } from "../domain/solids"
+import { solidWireEntities } from "../domain/solids"
+import { DEFAULT_DOCUMENT_SETTINGS } from "../domain/units"
 import { Vec2, V } from "../geometry/Vec2"
 import { Vec3, scale3, withZOf, zOf } from "../geometry/Vec3"
 import { axesToWorld } from "../geometry/ocs"
@@ -185,6 +186,8 @@ export interface SceneInput {
   readonly lwDisplay: boolean
   /** FILLMODE: wide polylines filled, or their outline only. On when absent. */
   readonly fillMode?: boolean
+  /** ISOLINES: a solid's curved faces' isolines; a new drawing's 4 when absent. */
+  readonly isolines?: number
   /** ATTMODE: which attributes block references show; Normal when absent. */
   readonly attributeDisplay?: AttributeDisplay
   readonly snap: SnapResult | null
@@ -255,7 +258,8 @@ export function buildScene(input: SceneInput): Scene {
     input.ltScale,
     input.lwDisplay,
     input.attributeDisplay ?? "normal",
-    input.fillMode ?? true
+    input.fillMode ?? true,
+    input.isolines
   )
   if (input.ucsIcon) {
     pushUcsIcon(primitives, aid, input.ucs, input.ucsIcon)
@@ -690,6 +694,8 @@ export interface EntityDrawOptions {
   readonly blocks?: BlockLookup
   /** FILLMODE, for a wide polyline; on when absent. */
   readonly fill?: boolean
+  /** ISOLINES, for a solid's curved faces; a new drawing's 4 when absent. */
+  readonly isolines?: number
   /**
    * The stroke's dash is the object's linetype, which a line lays centred; a
    * ghost's dash is the editor's own and runs from the start.
@@ -1016,14 +1022,15 @@ function planarPrimitives(
   }
 }
 
-/** A solid in 2D Wireframe: its edges, each a line between its ends at their heights. */
+/** A solid in 2D Wireframe: its edges and its curved faces' isolines (solid/d04). */
 function solidPrimitives(
   camera: CameraTransform,
   solid: Solid3dEntity,
   stroke: StrokeStyle,
   options: EntityDrawOptions
 ): ScenePrimitive[] {
-  return solidEdgeEntities(solid).flatMap((edge) =>
+  const isolines = options.isolines ?? DEFAULT_DOCUMENT_SETTINGS.isolines
+  return solidWireEntities(solid, isolines).flatMap((edge) =>
     entityScenePrimitive(camera, edge, stroke, options)
   )
 }
@@ -1743,7 +1750,8 @@ function pushEntities(
   ltScale: number,
   lwDisplay: boolean,
   attributeDisplay: AttributeDisplay,
-  fillMode: boolean
+  fillMode: boolean,
+  isolines: number | undefined
 ): void {
   const layerById = new Map<LayerId, Layer>()
   for (const layer of layers) layerById.set(layer.id, layer)
@@ -1793,6 +1801,7 @@ function pushEntities(
     }
     const options = {
       fill: fillMode,
+      isolines,
       linetype: true,
       dimStyle:
         entity.type === "dimension"

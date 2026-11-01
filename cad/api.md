@@ -3097,6 +3097,17 @@ export interface ArcEntity extends BaseEntity, Thick {
 
 // domain/entityTypes.ts
 /**
+ * A cone or a frustum: a cylinder's base narrowing, or widening, to a top
+ * `topRadius` round, its larger axis' when elliptical (LIST's `Top major
+ * radius`, k03), to a point at 0.
+ */
+export interface ConePrimitive extends Omit<CylinderPrimitive, "kind"> {
+    readonly kind: "cone";
+    readonly topRadius: number;
+}
+
+// domain/entityTypes.ts
+/**
  * A curve ARRAYPATH runs along, from the end it starts at: its pieces in
  * that order and its length.
  */
@@ -3104,6 +3115,24 @@ export interface ArrayPath {
     readonly pieces: readonly ArrayPathPiece[];
     readonly length: number;
     readonly closed: boolean;
+}
+
+// domain/entityTypes.ts
+/**
+ * A cylinder on the circle round `position` in the plane normal to
+ * `normal`, `height` along it; `xAxis` is where ACIS starts the base round
+ * (its seam, solid/c01). An elliptical one is `radius` along `xAxis` and
+ * `radiusY` across (its second axis' and its first's, c04), LIST's Rotation
+ * the heading of `xAxis`.
+ */
+export interface CylinderPrimitive {
+    readonly kind: "cylinder";
+    readonly position: Vec3;
+    readonly xAxis: Vec3;
+    readonly normal: Vec3;
+    readonly radius: number;
+    readonly radiusY?: number;
+    readonly height: number;
 }
 
 // domain/entityTypes.ts
@@ -3553,7 +3582,7 @@ export type ArrayParameters = (RectangularArray & {
  * What made a solid, kept while it is still that primitive: LIST's `Solid
  * type` and the Properties palette's Geometry (solid/p01, d03, d05).
  */
-export type SolidPrimitive = BoxPrimitive | WedgePrimitive | PyramidPrimitive;
+export type SolidPrimitive = BoxPrimitive | WedgePrimitive | PyramidPrimitive | CylinderPrimitive | ConePrimitive;
 
 // domain/entityTypes.ts
 /**
@@ -3987,6 +4016,67 @@ export interface Brep {
 }
 
 // geometry/solids.ts
+/**
+ * The curve an edge lies on, which it runs from its start round to its end
+ * counter-clockwise about the curve's `normal`; a whole circle or ellipse
+ * starts and ends at one vertex (ACIS's, solid/c01). `point` is a cone's
+ * apex: an edge of no length at one vertex, a face's loop round it (k01).
+ *
+ * - `circle`: `radius` round `center` in the plane normal to `normal`.
+ * - `ellipse`: `majorAxis` from `center` to the end of its major axis, the
+ *   minor `ratio` times as long (0 < ratio ≤ 1).
+ */
+export type BrepCurve = {
+    readonly kind: "line";
+} | {
+    readonly kind: "circle";
+    readonly center: Vec3;
+    readonly normal: Vec3;
+    readonly radius: number;
+} | {
+    readonly kind: "ellipse";
+    readonly center: Vec3;
+    readonly normal: Vec3;
+    readonly majorAxis: Vec3;
+    readonly ratio: number;
+} | {
+    readonly kind: "point";
+};
+
+// geometry/solids.ts
+/**
+ * The surface a face lies on, its outside the plane's `normal` side or away
+ * from the axis. `axis` and `xAxis` are unit and square; `xAxis` is where
+ * ACIS starts the surface round (its seam, solid/c01), the Y axis
+ * `axis × xAxis`, and an elliptical one is `ratio` times as wide along Y as
+ * along X.
+ *
+ * - `plane`: through `origin`.
+ * - `cylinder`: `radius` along X from the axis through `origin`.
+ * - `cone`: widening from `apex` along `axis`, `slope` along X per unit along
+ *   it (the tangent of its half angle there).
+ */
+export type BrepSurface = {
+    readonly kind: "plane";
+    readonly origin: Vec3;
+    readonly normal: Vec3;
+} | {
+    readonly kind: "cylinder";
+    readonly origin: Vec3;
+    readonly axis: Vec3;
+    readonly xAxis: Vec3;
+    readonly radius: number;
+    readonly ratio: number;
+} | {
+    readonly kind: "cone";
+    readonly apex: Vec3;
+    readonly axis: Vec3;
+    readonly xAxis: Vec3;
+    readonly slope: number;
+    readonly ratio: number;
+};
+
+// geometry/solids.ts
 /** A face's use of an edge: along it, or against it when `reversed`. */
 export interface Coedge {
     readonly edge: number;
@@ -4000,20 +4090,6 @@ export interface BrepEdge {
     readonly end: number;
     readonly curve: BrepCurve;
 }
-
-// geometry/solids.ts
-/** The curve an edge lies on: so far the straight line through its ends. */
-export type BrepCurve = {
-    readonly kind: "line";
-};
-
-// geometry/solids.ts
-/** The surface a face lies on: a plane through `origin`, `normal` the unit outward one. */
-export type BrepSurface = {
-    readonly kind: "plane";
-    readonly origin: Vec3;
-    readonly normal: Vec3;
-};
 
 // geometry/solids.ts
 export interface BrepFace {

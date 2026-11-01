@@ -521,13 +521,21 @@ export function entityBounds(drawn: Entity, blocks?: BlockLookup): Bounds {
           max: { x: 0, y: 0 },
         }
       )
-    case "solid3d":
-      return (
-        entitiesBounds(solidEdgeEntities(entity)) ?? {
-          min: { x: 0, y: 0 },
-          max: { x: 0, y: 0 },
-        }
-      )
+    case "solid3d": {
+      // Its edges and its vertices: a cone's apex is on no edge.
+      const edges = entitiesBounds(solidEdgeEntities(entity))
+      const xs = entity.brep.vertices.map((p) => p.x)
+      const ys = entity.brep.vertices.map((p) => p.y)
+      if (edges) {
+        xs.push(edges.min.x, edges.max.x)
+        ys.push(edges.min.y, edges.max.y)
+      }
+      if (xs.length === 0) return { min: { x: 0, y: 0 }, max: { x: 0, y: 0 } }
+      return {
+        min: { x: Math.min(...xs), y: Math.min(...ys) },
+        max: { x: Math.max(...xs), y: Math.max(...ys) },
+      }
+    }
   }
 }
 

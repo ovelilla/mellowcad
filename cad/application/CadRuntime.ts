@@ -4649,9 +4649,11 @@ export class CadRuntime extends Observable {
   ): Entity[] {
     const { document, viewport } = this.frame
     const blocks = document.blockLookup()
+    const { isolines } = document.getSettings()
     if (viewport.isPlan) {
       return document.pickAllBy(
-        (entity) => planDistanceToEntity(viewport, entity, world, blocks),
+        (entity) =>
+          planDistanceToEntity(viewport, entity, world, blocks, isolines),
         worldTolerance,
         locked
       )
@@ -4660,7 +4662,8 @@ export class CadRuntime extends Observable {
       "z" in world ? world : withZ(world, this.workPlaneZ())
     )
     return document.pickAllBy(
-      (entity) => screenDistanceToEntity(viewport, entity, screen, blocks),
+      (entity) =>
+        screenDistanceToEntity(viewport, entity, screen, blocks, isolines),
       viewport.worldToScreenDistance(worldTolerance),
       locked
     )
@@ -6079,6 +6082,7 @@ export class CadRuntime extends Observable {
       ltScale: settings.ltScale,
       lwDisplay: settings.lwDisplay,
       fillMode: settings.fillMode,
+      isolines: settings.isolines,
       attributeDisplay: settings.attributeDisplay,
       snap: this.currentSnap ?? this.snapMarker?.snap ?? null,
       snapDeferred: this.snapMarker?.deferred ?? false,

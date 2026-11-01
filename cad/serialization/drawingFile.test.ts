@@ -24,10 +24,13 @@ import {
   Entity,
   HatchEntity,
   InsertEntity,
+  type Solid3dEntity,
+  type SolidPrimitive,
   createBlockDefinition,
   createDimension,
   createHatch,
   createInsert,
+  createSolid,
 } from "../domain/entities"
 import {
   drawingSnapshot,
@@ -615,6 +618,77 @@ describe("tolerates damaged and legacy content", () => {
       ])
     )
     expect(parsed.entities).toEqual([])
+  })
+
+  it("keeps a solid while its boundary closes, its history while it reads", () => {
+    const round = (kind: "cylinder" | "cone", radiusY?: number) =>
+      createSolid(
+        {
+          kind,
+          position: { x: 0, y: 0, z: 0 },
+          xAxis: { x: 1, y: 0, z: 0 },
+          normal: { x: 0, y: 0, z: 1 },
+          radius: 5,
+          ...(radiusY ? { radiusY } : {}),
+          height: 8,
+          ...(kind === "cone" ? { topRadius: 2 } : {}),
+        } as SolidPrimitive,
+        DEFAULT_LAYER_ID,
+        kind
+      )
+    const stored = (solid: Solid3dEntity) =>
+      JSON.parse(serializeDrawing(snapshotOf([solid]))).entities[0]
+    const read = (raw: unknown) => parseDrawingFile(fileWith([raw])).entities
+    const cone = stored(round("cone"))
+    const ellipse = stored(round("cylinder", 3))
+    expect(read(cone)).toHaveLength(1)
+    expect(read(ellipse)).toHaveLength(1)
+    const broken = (
+      raw: { brep: Record<string, unknown[]> },
+      part: string,
+      i: number,
+      patch: object
+    ) => {
+      const copy = structuredClone(raw)
+      copy.brep[part][i] = { ...(copy.brep[part][i] as object), ...patch }
+      return copy
+    }
+    // A curve or a surface that cannot be read loses the solid.
+    for (const raw of [
+      broken(cone, "edges", 0, { curve: { kind: "spiral" } }),
+      broken(cone, "edges", 0, {
+        curve: { kind: "circle", center: { x: 0, y: 0, z: 0 } },
+      }),
+      broken(ellipse, "edges", 0, { curve: { kind: "ellipse", ratio: 0.6 } }),
+      broken(cone, "faces", 0, { surface: { kind: "sphere" } }),
+      broken(cone, "faces", 0, {
+        surface: { kind: "cone", axis: { x: 0, y: 0, z: 1 } },
+      }),
+      broken(ellipse, "faces", 0, {
+        surface: {
+          kind: "cylinder",
+          axis: { x: 0, y: 0, z: 1 },
+          xAxis: { x: 1, y: 0, z: 0 },
+          ratio: 0.6,
+        },
+      }),
+      broken(cone, "faces", 1, { surface: { kind: "plane" } }),
+      { ...cone, brep: { ...cone.brep, edges: [] } },
+    ]) {
+      expect(read(raw)).toEqual([])
+    }
+    // A primitive that cannot be read loses its history alone.
+    for (const primitive of [
+      { ...cone.primitive, topRadius: -1 },
+      { ...ellipse.primitive, radiusY: 0 },
+      { ...cone.primitive, height: 0 },
+      { ...cone.primitive, kind: "sphere" },
+      { ...cone.primitive, kind: "pyramid", sides: 2 },
+      { ...cone.primitive, xAxis: { x: 0, y: 0, z: 1 } },
+    ]) {
+      const [solid] = read({ ...cone, primitive })
+      expect(solid.type === "solid3d" && solid.primitive).toBeUndefined()
+    }
   })
 
   it("drops malformed vertices but keeps a usable polyline", () => {

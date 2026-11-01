@@ -104,6 +104,8 @@ declare const source: {
       "box": string
       "wedge": string
       "pyramid": string
+      "cylinder": string
+      "cone": string
       "intersect": string
     }
     "description": {
@@ -318,6 +320,11 @@ declare const source: {
         "baseRadius": string
         "topRadius": string
         "sides": string
+        "elliptical": string
+        "baseMajorRadius": string
+        "baseMinorRadius": string
+        "topMajorRadius": string
+        "topMinorRadius": string
         "currentVertex": string
         "vertex": string
         "startSegmentWidth": string
@@ -446,6 +453,8 @@ declare const source: {
         "pyramid": string
         "inscribed": string
         "circumscribed": string
+        "cylinder": string
+        "cone": string
         "chord": string
         "sqrtChord": string
         "uniform": string
@@ -613,6 +622,8 @@ declare const source: {
       "BOX": string[]
       "WEDGE": string[]
       "PYRAMID": string[]
+      "CYLINDER": string[]
+      "CONE": string[]
       "REGION": string[]
       "UNION": string[]
       "SUBTRACT": string[]
@@ -816,6 +827,27 @@ declare const source: {
         "Sides": string
         "Inscribed": string
         "Circumscribed": string
+        "2Point": string
+        "Axis": string
+        "Top": string
+      }
+      "CYLINDER": {
+        "3P": string
+        "2P": string
+        "Ttr": string
+        "Elliptical": string
+        "Diameter": string
+        "Center": string
+        "2Point": string
+        "Axis": string
+      }
+      "CONE": {
+        "3P": string
+        "2P": string
+        "Ttr": string
+        "Elliptical": string
+        "Diameter": string
+        "Center": string
         "2Point": string
         "Axis": string
         "Top": string
@@ -1594,6 +1626,18 @@ declare const source: {
       "solidHeightOr": string
       "specifyAxisEndpoint": string
       "specifyTopRadius": string
+      "roundBaseCenterOr": string
+      "specifyDiameter": string
+      "specifyThirdPoint": string
+      "firstEndOfDiameter": string
+      "secondEndOfDiameter": string
+      "firstTangentPoint": string
+      "secondTangentPoint": string
+      "firstAxisEndpointOr": string
+      "otherFirstAxisEndpoint": string
+      "secondAxisEndpoint": string
+      "specifyCenterPoint": string
+      "distanceToFirstAxis": string
       "specifyFirstPoint": string
       "specifyNextPointOr": string
       "specifyNextPointOrClose": string
@@ -2437,6 +2481,10 @@ declare const source: {
       "wedgeZeroLength": string
       "wedgeZeroWidth": string
       "pyramidSettings": string
+      "pointsCollinear": string
+      "pointsCoincident": string
+      "ellipseAxesNonzero": string
+      "solidTangentRequired": string
       "listSolidHistory": string
       "listSolidType": string
       "listBoxPosition": string
@@ -2450,6 +2498,14 @@ declare const source: {
       "listPyramidInscribedTop": string
       "listPyramidCircumscribedTop": string
       "listPyramidSides": string
+      "listRoundRadius": string
+      "listRoundMajorRadius": string
+      "listRoundMinorRadius": string
+      "listConeBaseRadius": string
+      "listConeTopRadius": string
+      "listConeBaseMajorRadius": string
+      "listConeBaseMinorRadius": string
+      "listConeTopMajorRadius": string
       "listRegionArea": string
       "listRegionPerimeter": string
       "listRegionBounds": string
@@ -2503,6 +2559,13 @@ declare const source: {
         "Circumscribed": string
       }
       "PYRAMID": {
+        "Axis": string
+        "Top": string
+      }
+      "CYLINDER": {
+        "Axis": string
+      }
+      "CONE": {
         "Axis": string
         "Top": string
       }

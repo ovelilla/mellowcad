@@ -148,8 +148,19 @@ const QUADRANT_ANGLES = [0, Math.PI / 2, Math.PI, (3 * Math.PI) / 2]
 /** Endpoint is the primary snap (highest priority). */
 export const endpointProvider: SnapProvider = {
   type: SnapType.Endpoint,
-  collect({ document, entities, touch }: SnapContext): SnapCandidate[] {
-    const candidates: SnapCandidate[] = []
+  collect({
+    document,
+    entities,
+    touch,
+    solidPoints = [],
+  }: SnapContext): SnapCandidate[] {
+    const candidates: SnapCandidate[] = solidPoints
+      .filter((p) => p.type === SnapType.Endpoint)
+      .map((p) => ({
+        type: SnapType.Endpoint,
+        point: p.point,
+        sourceIds: [p.id],
+      }))
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       if (entity.type === "line") {

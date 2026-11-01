@@ -70,7 +70,13 @@ export function objectsInWindow(
   include: ObjectFilter
 ): EntityId[] {
   const blocks = document.blockLookup()
-  const onScreen = screenBox(viewport, start, current, crossing)
+  const onScreen = screenBox(
+    viewport,
+    start,
+    current,
+    crossing,
+    document.getSettings().isolines
+  )
   if (!viewport.isPlan) {
     return document
       .getEntities()
@@ -109,7 +115,8 @@ function screenBox(
   viewport: Viewport,
   start: Vec2,
   current: Vec2,
-  crossing: boolean
+  crossing: boolean,
+  isolines: number
 ): (entity: Entity, blocks: BlockLookup) => boolean {
   const a = viewport.worldToScreen(start)
   const b = viewport.worldToScreen(current)
@@ -118,7 +125,7 @@ function screenBox(
   const inside = (p: Vec2) =>
     p.x >= min.x && p.x <= max.x && p.y >= min.y && p.y <= max.y
   return (entity, blocks) => {
-    const outline = entityScreenOutline(viewport, entity, blocks)
+    const outline = entityScreenOutline(viewport, entity, blocks, isolines)
     const points = outline.flat()
     if (points.length === 0) return false
     return crossing
@@ -181,7 +188,14 @@ export function objectsOnFence(
     .filter(
       (entity) =>
         include(entity) &&
-        fence.meets(entityScreenOutline(viewport, entity, blocks))
+        fence.meets(
+          entityScreenOutline(
+            viewport,
+            entity,
+            blocks,
+            document.getSettings().isolines
+          )
+        )
     )
     .map((entity) => entity.id)
 }
@@ -206,7 +220,12 @@ export function objectsInPolygon(
   const hits: EntityId[] = []
   for (const entity of document.getEntities()) {
     if (!include(entity)) continue
-    const outline = entityScreenOutline(viewport, entity, blocks)
+    const outline = entityScreenOutline(
+      viewport,
+      entity,
+      blocks,
+      document.getSettings().isolines
+    )
     const vertices = outline.flat()
     if (vertices.length === 0) continue
     const takes = crossing

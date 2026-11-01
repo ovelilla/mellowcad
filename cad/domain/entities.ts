@@ -50,6 +50,8 @@ export type {
   BoxPrimitive,
   WedgePrimitive,
   PyramidPrimitive,
+  CylinderPrimitive,
+  ConePrimitive,
   SolidPrimitive,
   Solid3dEntity,
   Entity,
@@ -359,6 +361,7 @@ export {
   createSolid,
   primitiveInUcs,
   solidArea,
+  solidHasCurvedFaces,
   solidEdgeEntities,
   solidFaceRegions,
 } from "./solids"

@@ -2,26 +2,29 @@ import { Vec3, add3, cross3, length3, scale3 } from "../geometry/Vec3"
 import { Axes3, axesToWorld } from "../geometry/ocs"
 import {
   Brep,
+  BrepEdge,
   boxBrep,
-  pyramidBrep,
-  wedgeBrep,
   brepArea,
-  brepEdgeSegments,
+  brepIsolines,
   brepMapped,
   planarFace,
+  pyramidBrep,
+  roundBrep,
   unsigned0,
+  wedgeBrep,
 } from "../geometry/solids"
+import { arbitraryAxis, worldToAxes } from "../geometry/ocs"
 import { createRegion } from "./regions"
-import { createLine } from "./entityFactories"
+import { createArc, createCircle, createLine } from "./entityFactories"
+import { createEllipse } from "./ellipses"
 import { nextEntityId } from "./entityIds"
 import { DEFAULT_LAYER_ID, LayerId } from "./layers"
 import { withElevation, withNormal } from "./elevation"
 import { Ucs, worldDirectionToUcs, worldPointToUcs } from "./ucs"
-import { normalizeDegrees } from "../geometry/primitives"
+import { normalizeAngle, normalizeDegrees } from "../geometry/primitives"
 import {
   Entity,
   EntityId,
-  LineEntity,
   RegionEntity,
   Solid3dEntity,
   SolidPrimitive,
@@ -78,6 +81,22 @@ export function primitiveBrep(primitive: SolidPrimitive): Brep {
         topRadius > 0 ? ring(topRadius, height) : null
       )
     }
+    case "cylinder":
+    case "cone": {
+      const { radius, height } = primitive
+      const radiusY = primitive.radiusY ?? radius
+      return roundBrep(
+        primitive.position,
+        primitive.normal,
+        primitive.xAxis,
+        radius,
+        radiusY,
+        height,
+        primitive.kind === "cylinder"
+          ? 1
+          : primitive.topRadius / Math.max(radius, radiusY)
+      )
+    }
   }
 }
 
@@ -126,7 +145,7 @@ export function solidMapped(
   const primitive = solid.primitive
   return {
     ...solid,
-    brep: brepMapped(solid.brep, point, direction, reflects),
+    brep: brepMapped(solid.brep, point, direction, reflects, map.scale),
     ...(primitive
       ? { primitive: primitiveMapped(primitive, point, direction, map.scale) }
       : {}),
@@ -162,6 +181,20 @@ function primitiveMapped(
         topRadius: primitive.topRadius * scale,
         height: primitive.height * scale,
       }
+    case "cylinder":
+    case "cone":
+      return {
+        ...primitive,
+        ...placed,
+        radius: primitive.radius * scale,
+        ...(primitive.radiusY !== undefined
+          ? { radiusY: primitive.radiusY * scale }
+          : {}),
+        ...(primitive.kind === "cone"
+          ? { topRadius: primitive.topRadius * scale }
+          : {}),
+        height: primitive.height * scale,
+      }
   }
 }
 
@@ -176,14 +209,91 @@ function dressed<T extends Entity>(solid: Solid3dEntity, piece: T): T {
 }
 
 /**
- * What the solid draws as, is picked and snapped by in 2D Wireframe: its
- * edges, as lines of its own id from end to end at their heights. A plane
- * has no isolines (solid/d01: ISOLINES 4 and 16 draw a box alike).
+ * An edge's curve as the object it draws as, of the solid's id, in the plane
+ * of its normal: a line, a circle or arc, an ellipse or elliptical arc; a
+ * whole one when it starts and ends at one vertex. An apex draws nothing.
  */
-export function solidEdgeEntities(solid: Solid3dEntity): LineEntity[] {
-  return brepEdgeSegments(solid.brep).map(([a, b]) =>
-    dressed(solid, createLine(a, b, solid.layerId, solid.id))
-  )
+function edgeEntity(solid: Solid3dEntity, edge: BrepEdge): Entity | null {
+  const from = solid.brep.vertices[edge.start]
+  const to = solid.brep.vertices[edge.end]
+  const curve = edge.curve
+  const { layerId, id } = solid
+  if (curve.kind === "point") return null
+  if (curve.kind === "line") {
+    return dressed(solid, createLine(from, to, layerId, id))
+  }
+  const axes = arbitraryAxis(curve.normal)
+  if (!axes) return null
+  const c = worldToAxes(axes, curve.center)
+  const center = { x: c.x, y: c.y }
+  const whole = edge.start === edge.end
+  const angle = (p: Vec3) => {
+    const q = worldToAxes(axes, p)
+    return normalizeAngle(Math.atan2(q.y - c.y, q.x - c.x))
+  }
+  let piece: Entity
+  if (curve.kind === "circle") {
+    piece = whole
+      ? createCircle(center, curve.radius, layerId, id)
+      : createArc(center, curve.radius, angle(from), angle(to), layerId, id)
+  } else {
+    const m = worldToAxes(axes, curve.majorAxis)
+    const major = { x: m.x, y: m.y }
+    const size = Math.hypot(major.x, major.y)
+    const param = (p: Vec3) => {
+      const q = worldToAxes(axes, p)
+      const u = ((q.x - c.x) * major.x + (q.y - c.y) * major.y) / size
+      const v = (-(q.x - c.x) * major.y + (q.y - c.y) * major.x) / size
+      return normalizeAngle(Math.atan2(v / curve.ratio, u))
+    }
+    piece = createEllipse(center, major, curve.ratio, {
+      layerId,
+      id,
+      ...(whole ? {} : { startParam: param(from), endParam: param(to) }),
+    })
+  }
+  return dressed(solid, withNormal(withElevation(piece, c.z), curve.normal))
+}
+
+/**
+ * Its edges as the objects they draw as, of its own id: what it is snapped
+ * by and what a command taking "the edge picked" reads (solid/s01, s10,
+ * e07). A cone's apex is none: {@link solidApexes}.
+ */
+export function solidEdgeEntities(solid: Solid3dEntity): Entity[] {
+  return solid.brep.edges.flatMap((edge) => edgeEntity(solid, edge) ?? [])
+}
+
+/** A cone's apex, a vertex no edge runs to: an Endpoint (solid/s09, s10). */
+export function solidApexes(solid: Solid3dEntity): Vec3[] {
+  return solid.brep.edges
+    .filter((edge) => edge.curve.kind === "point")
+    .map((edge) => solid.brep.vertices[edge.start])
+}
+
+/**
+ * What the solid draws as and is picked by in 2D Wireframe: its edges and
+ * the isolines ISOLINES draws on its curved faces (solid/d04), these snapped
+ * by nothing (s10). A plane has none (d01).
+ */
+export function solidWireEntities(
+  solid: Solid3dEntity,
+  isolines: number
+): Entity[] {
+  return [
+    ...solidEdgeEntities(solid),
+    ...brepIsolines(solid.brep, isolines).map(([a, b]) =>
+      dressed(solid, createLine(a, b, solid.layerId, solid.id))
+    ),
+  ]
+}
+
+/**
+ * Whether a face of it is curved, which AutoCAD's EXPLODE leaves as a
+ * SURFACE object (solid/c11, k06), none here.
+ */
+export function solidHasCurvedFaces(solid: Solid3dEntity): boolean {
+  return solid.brep.faces.some((face) => face.surface.kind !== "plane")
 }
 
 /** The points STRETCH catches it by: its vertices (solid/t03, t05). */

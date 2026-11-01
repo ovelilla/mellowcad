@@ -93,6 +93,22 @@ const FROM_SCRATCH: ReadonlyArray<
       c.command("WEDGE").click(p(0, 0)).click(p(100, 50)).type("30").enter(),
   ],
   [
+    "CYLINDER",
+    (c) =>
+      c
+        .command("CYLINDER")
+        .click(p(0, 0))
+        .type("20")
+        .enter()
+        .type("30")
+        .enter(),
+  ],
+  [
+    "CONE",
+    (c) =>
+      c.command("CONE").click(p(0, 0)).type("20").enter().type("30").enter(),
+  ],
+  [
     "PYRAMID",
     (c) =>
       c.command("PYRAMID").click(p(0, 0)).type("20").enter().type("30").enter(),

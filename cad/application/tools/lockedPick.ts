@@ -26,6 +26,12 @@ export function lockedObjectAt(
       document.isEntityVisible(entity) &&
       (over === null ||
         (entityDrawOrder(entity) - entityDrawOrder(over) || i - below) > 0) &&
-      screenDistanceToEntity(viewport, entity, screen, ctx.blocks) <= pixels
+      screenDistanceToEntity(
+        viewport,
+        entity,
+        screen,
+        ctx.blocks,
+        document.getSettings().isolines
+      ) <= pixels
   )
 }

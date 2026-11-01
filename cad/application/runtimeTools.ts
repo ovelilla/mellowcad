@@ -48,6 +48,7 @@ import { JoinTool } from "./tools/JoinTool"
 import { RegionTool } from "./tools/RegionTool"
 import { BoxTool } from "./tools/BoxTool"
 import { PyramidTool } from "./tools/PyramidTool"
+import { RoundSolidTool } from "./tools/RoundSolidTool"
 import { solidDefaults } from "./tools/solidDefaults"
 import { RegionBooleanTool, SubtractTool } from "./tools/RegionBooleanTool"
 import { BreakTool } from "./tools/BreakTool"
@@ -172,6 +173,8 @@ export function defaultTools(
     new RegionBooleanTool("intersect"),
     new BoxTool("box", primitives),
     new BoxTool("wedge", primitives),
+    new RoundSolidTool("cylinder", primitives),
+    new RoundSolidTool("cone", primitives),
     new PyramidTool(primitives),
     new BreakTool("gap", "break"),
     new BreakTool("atPoint", "breakatpoint"),

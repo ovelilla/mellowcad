@@ -20,7 +20,7 @@ import {
 } from "../../domain/hatchPatterns"
 import { DEFAULT_LINETYPE_ID } from "../../domain/linetypes"
 import { createRegion, regionEdgeEntity } from "../../domain/regions"
-import { solidFaceRegions } from "../../domain/solids"
+import { solidFaceRegions, solidHasCurvedFaces } from "../../domain/solids"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
 import type { MessageId } from "../EngineText"
 import type { ObjectSelectorOptions } from "./objectSelection"
@@ -95,12 +95,16 @@ export class ExplodeTool extends SelectionActionTool {
   // dimension is refused, though AutoCAD 2027 explodes it into lines, SOLIDs
   // for its arrowheads and an MTEXT (pieces/p258): there is no SOLID object
   // here to make them.
+  // WHY a solid with a curved face is refused, though AutoCAD 2027 explodes
+  // it into regions and a SURFACE of each curved face (solid/c11, k06):
+  // there is no surface object here to make them.
   protected refusal(): ObjectSelectorOptions["refuse"] {
     return {
       rejects: (entity) =>
-        !EXPLODED.has(entity.type) &&
-        entity.type !== "spline" &&
-        entity.type !== "ellipse",
+        (!EXPLODED.has(entity.type) &&
+          entity.type !== "spline" &&
+          entity.type !== "ellipse") ||
+        (entity.type === "solid3d" && solidHasCurvedFaces(entity)),
       message: "explodeRejected",
     }
   }

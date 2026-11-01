@@ -966,6 +966,38 @@ class Report {
         this.say("listPyramidSides", { sides: primitive.sides })
         return
       }
+      case "cylinder":
+      case "cone": {
+        // An elliptical one's radii by size, its Rotation its seam's
+        // heading (c04, k03); a circle's alone (c01, k01).
+        const radius = (r: number) => ({ radius: this.length(r) })
+        const height = () =>
+          this.say("listBoxHeight", { height: this.length(primitive.height) })
+        const across = primitive.radiusY
+        if (across === undefined) {
+          if (primitive.kind === "cylinder") {
+            this.say("listRoundRadius", radius(primitive.radius))
+          } else {
+            this.say("listConeBaseRadius", radius(primitive.radius))
+            this.say("listConeTopRadius", radius(primitive.topRadius))
+          }
+          height()
+          return
+        }
+        const major = Math.max(primitive.radius, across)
+        const minor = Math.min(primitive.radius, across)
+        if (primitive.kind === "cylinder") {
+          this.say("listRoundMajorRadius", radius(major))
+          this.say("listRoundMinorRadius", radius(minor))
+        } else {
+          this.say("listConeBaseMajorRadius", radius(major))
+          this.say("listConeBaseMinorRadius", radius(minor))
+          this.say("listConeTopMajorRadius", radius(primitive.topRadius))
+        }
+        height()
+        rotation()
+        return
+      }
     }
   }
 

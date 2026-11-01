@@ -785,9 +785,9 @@ export const regionEntity: fc.Arbitrary<RegionEntity> = fc
   )
 
 /**
- * A primitive solid — a box, a wedge or a pyramid of 3 to 32 sides, maybe
- * with a top —, any size, anywhere, its base facing any way and turned any
- * way in it.
+ * A primitive solid — a box, a wedge, a pyramid of 3 to 32 sides, a
+ * cylinder or a cone, maybe with a top, maybe elliptical —, any size,
+ * anywhere, its base facing any way and turned any way in it.
  */
 export const solidEntity: fc.Arbitrary<Solid3dEntity> = fc
   .tuple(
@@ -799,7 +799,7 @@ export const solidEntity: fc.Arbitrary<Solid3dEntity> = fc
     positiveLength,
     positiveLength,
     positiveLength,
-    fc.constantFrom("box", "wedge", "pyramid"),
+    fc.constantFrom("box", "wedge", "pyramid", "cylinder", "cone"),
     fc.integer({ min: 3, max: 32 }),
     fc.double({ min: 0, max: 2, noNaN: true }),
     fc.boolean()
@@ -833,19 +833,34 @@ export const solidEntity: fc.Arbitrary<Solid3dEntity> = fc
         ),
         normal: axes.z,
       }
-      const primitive: SolidPrimitive =
-        kind === "pyramid"
-          ? {
-              kind,
-              ...frame,
-              sides,
-              radius: length,
-              // Half the time a point, else a top up to twice the base.
-              topRadius: top < 1 ? 0 : (top - 1) * 2 * length,
-              height,
-              inscribed,
-            }
-          : { kind, ...frame, length, width, height }
+      // Half the time a point, else a top up to twice the base.
+      const topRadius = top < 1 ? 0 : (top - 1) * 2 * length
+      let primitive: SolidPrimitive
+      if (kind === "pyramid") {
+        primitive = {
+          kind,
+          ...frame,
+          sides,
+          radius: length,
+          topRadius,
+          height,
+          inscribed,
+        }
+      } else if (kind === "cylinder" || kind === "cone") {
+        // An elliptical base half the time, its width across.
+        const round = {
+          ...frame,
+          radius: length,
+          ...(inscribed ? { radiusY: width } : {}),
+          height,
+        }
+        primitive =
+          kind === "cylinder"
+            ? { kind, ...round }
+            : { kind, ...round, topRadius }
+      } else {
+        primitive = { kind, ...frame, length, width, height }
+      }
       return createSolid(primitive, DEFAULT_LAYER_ID, "solid")
     }
   )

@@ -6,6 +6,8 @@ import { arbitraryAxis } from "./ocs"
 import {
   Brep,
   boxBrep,
+  ellipsePerimeter,
+  roundBrep,
   brepArea,
   brepIsClosed,
   brepMapped,
@@ -49,11 +51,16 @@ const box = fc
     }
   })
 
-/** V − E + F − (L − F): 2 for one shell of genus 0, holes in faces counted. */
+/**
+ * The Euler characteristic V − E + Σ χ(face), 2 for one shell of genus 0:
+ * each face an open surface with its loops as holes, χ = 2 − L for a disc's
+ * or an annulus's; an apex's edge of no length is only its vertex, its loop a
+ * puncture the vertex fills (a cone's side, χ 0, plus that vertex).
+ */
 function euler(brep: Brep): number {
-  const loops = brep.faces.reduce((n, f) => n + f.loops.length, 0)
-  const faces = brep.faces.length
-  return brep.vertices.length - brep.edges.length + faces - (loops - faces)
+  const edges = brep.edges.filter((e) => e.curve.kind !== "point").length
+  const faces = brep.faces.reduce((n, f) => n + 2 - f.loops.length, 0)
+  return brep.vertices.length - edges + faces
 }
 
 /** Each edge used by exactly two faces, once each way. */
@@ -72,16 +79,26 @@ function faceUses(brep: Brep): Map<number, string[]> {
   return uses
 }
 
-/** Every vertex of a face on its plane's outer side's boundary, its loop turning about the normal. */
+/**
+ * Every plane's loops turning counter-clockwise about its outward normal: a
+ * polygon's by its corners, a whole circle's or ellipse's by its normal and
+ * the coedge's sense. A curved face's are the closing check's.
+ */
 function loopsTurnOutward(brep: Brep): boolean {
   return brep.faces.every((face) =>
     face.loops.every((loop) => {
+      const s = face.surface
+      if (s.kind !== "plane") return true
+      const only = brep.edges[loop[0].edge].curve
+      if (loop.length === 1 && only.kind !== "line" && only.kind !== "point") {
+        return dot3(only.normal, s.normal) * (loop[0].reversed ? -1 : 1) > 0
+      }
       const points = loop.map((c) => brep.vertices[coedgeStart(brep, c)])
       let n: Vec3 = { x: 0, y: 0, z: 0 }
       points.forEach((p, i) => {
         n = add3(n, cross3(p, points[(i + 1) % points.length]))
       })
-      return dot3(n, face.surface.normal) > 0
+      return dot3(n, s.normal) > 0
     })
   )
 }
@@ -149,7 +166,8 @@ describe("a box's B-rep", () => {
             brep,
             (p) => add3(scale3(direction(p), k), shift),
             direction,
-            reflects
+            reflects,
+            k
           )
           expect(brepIsClosed(moved)).toBe(true)
           expect(loopsTurnOutward(moved)).toBe(true)
@@ -203,7 +221,11 @@ describe("a box's B-rep", () => {
       ]
     )
     expect(brep.edges.slice(8).every((e) => at(e.start)[2] === 5)).toBe(true)
-    expect(brep.faces.map((f) => f.surface.normal)).toEqual([
+    expect(
+      brep.faces.map((f) =>
+        f.surface.kind === "plane" ? f.surface.normal : null
+      )
+    ).toEqual([
       { x: 0, y: 0, z: 1 },
       { x: 0, y: 0, z: -1 },
       { x: 0, y: -1, z: 0 },
@@ -359,6 +381,126 @@ describe("a pyramid's B-rep", () => {
         expect(loopsTurnOutward(moved)).toBe(true)
         expect(close(brepVolume(moved), brepVolume(brep))).toBe(true)
       })
+    )
+  })
+})
+
+/**
+ * A cylinder, cone or frustum anywhere, circular or elliptical: `scale` 1, 0
+ * or another top.
+ */
+const round = fc
+  .tuple(
+    frame,
+    size,
+    fc.oneof(fc.constant(null), size),
+    size,
+    fc.oneof(
+      fc.constant(1),
+      fc.constant(0),
+      fc.double({ min: 0.05, max: 3, noNaN: true })
+    )
+  )
+  .map(([f, rx, across, h, scale]) => {
+    const ry = across ?? rx
+    return {
+      brep: roundBrep(f.origin, f.z, f.x, rx, ry, h, scale),
+      rx,
+      ry,
+      h,
+      scale,
+    }
+  })
+
+/** ∫₀^2π √(a² sin²θ + b² cos²θ) dθ by the trapezoid rule, exact fast on a periodic integrand. */
+function perimeterBySum(a: number, b: number): number {
+  const n = 4096
+  let sum = 0
+  for (let k = 0; k < n; k++) {
+    const t = (2 * Math.PI * k) / n
+    sum += Math.hypot(a * Math.sin(t), b * Math.cos(t))
+  }
+  return (sum * 2 * Math.PI) / n
+}
+
+describe("the perimeter of an ellipse", () => {
+  it("is a circle's for equal axes and the sum's for any", () => {
+    expect(ellipsePerimeter(3, 3)).toBeCloseTo(6 * Math.PI, 12)
+    expect(ellipsePerimeter(2, 1)).toBeCloseTo(9.688448220547675, 12)
+    fc.assert(
+      fc.property(size, size, (a, b) => {
+        expect(close(ellipsePerimeter(a, b), perimeterBySum(a, b))).toBe(true)
+      })
+    )
+  })
+})
+
+describe("a cylinder's, a cone's and a frustum's B-rep", () => {
+  it("is one closed shell: its circles' vertices, an apex's, its faces' loops", () => {
+    fc.assert(
+      fc.property(round, ({ brep, scale }) => {
+        expect([
+          brep.vertices.length,
+          brep.edges.length,
+          brep.faces.length,
+        ]).toEqual([2, 2, scale === 0 ? 2 : 3])
+        expect(brep.faces[0].loops).toHaveLength(2)
+        expect(euler(brep)).toBe(2)
+        expect(brepIsClosed(brep)).toBe(true)
+        expect(loopsTurnOutward(brep)).toBe(true)
+      })
+    )
+  })
+
+  it("encloses π·rx·ry·h·(1 + s + s²)/3, bounded by its caps and its side", () => {
+    fc.assert(
+      fc.property(round, ({ brep, rx, ry, h, scale: s }) => {
+        const volume = (Math.PI * rx * ry * h * (1 + s + s * s)) / 3
+        expect(close(brepVolume(brep), volume)).toBe(true)
+        // The side's area, ∫ of its slant along its height, by the sum.
+        const major = Math.max(rx, ry)
+        const k = (major * Math.abs(1 - s)) / h / major
+        const side =
+          s === 1
+            ? perimeterBySum(rx, ry) * h
+            : (Math.abs(1 - s * s) / 2) *
+              (h / Math.abs(1 - s)) ** 2 *
+              perimeterBySum(
+                Math.hypot(ry * k, rx * ry * k * k),
+                Math.hypot(rx * k, rx * ry * k * k)
+              )
+        const caps = Math.PI * rx * ry * (1 + s * s)
+        expect(close(brepArea(brep), side + caps)).toBe(true)
+      })
+    )
+  })
+
+  it("keeps all that through a turn, a scale, a shift and a reflection", () => {
+    fc.assert(
+      fc.property(
+        round,
+        unitVector,
+        fc.double({ min: 0.1, max: 10, noNaN: true }),
+        point,
+        fc.boolean(),
+        ({ brep }, n, k, shift, reflects) => {
+          const axes = arbitraryAxis(n)!
+          const z = reflects ? scale3(axes.z, -1) : axes.z
+          const direction = (d: Vec3) =>
+            add3(add3(scale3(axes.x, d.x), scale3(axes.y, d.y)), scale3(z, d.z))
+          const moved = brepMapped(
+            brep,
+            (p) => add3(scale3(direction(p), k), shift),
+            direction,
+            reflects,
+            k
+          )
+          expect(brepIsClosed(moved)).toBe(true)
+          expect(loopsTurnOutward(moved)).toBe(true)
+          expect(close(brepVolume(moved), brepVolume(brep) * k ** 3)).toBe(true)
+          expect(close(brepArea(moved), brepArea(brep) * k ** 2)).toBe(true)
+        }
+      )
     )
   })
 })
