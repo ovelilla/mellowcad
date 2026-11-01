@@ -21,9 +21,15 @@ import {
   MODEL_TOLERANCE,
   PlanarCurve,
   curveEnd,
+  curveMeetings,
   curveStart,
 } from "./planarCurves"
-import { RegionFace, RegionLoop, loopSelfIntersects } from "./planarRegions"
+import {
+  RegionFace,
+  RegionLoop,
+  loopSelfIntersects,
+  pointInFaces,
+} from "./planarRegions"
 import {
   Brep,
   BrepCurve,
@@ -501,6 +507,9 @@ export function extrusionBrep(
           if (!moved) return null
           loops.push(moved)
         }
+        // A hole widened into its outline makes no solid (AutoCAD's EXTRUDE
+        // fails it): the tapered loops must still keep apart.
+        if (loopsMeet(loops)) return null
         faces.push({ loops })
       }
       tops = { ...profile, faces }
@@ -601,6 +610,31 @@ export function extrusionBrep(
     )
   })
   return b.brep()
+}
+
+/**
+ * Whether any two of a face's loops touch or cross, or a hole has left its
+ * outline (widened past it) or got into another.
+ */
+function loopsMeet(loops: readonly RegionLoop[]): boolean {
+  for (let i = 1; i < loops.length; i++) {
+    const probe = curveStart(loops[i][0])
+    if (!pointInFaces(probe, [{ loops: [loops[0]] }])) return true
+    for (let j = 1; j < loops.length; j++) {
+      if (j !== i && pointInFaces(probe, [{ loops: [loops[j]] }])) return true
+    }
+  }
+  for (let i = 0; i < loops.length; i++) {
+    for (let j = i + 1; j < loops.length; j++) {
+      for (const a of loops[i]) {
+        for (const b of loops[j]) {
+          const { meetings, overlaps } = curveMeetings(a, b)
+          if (meetings.length > 0 || overlaps.length > 0) return true
+        }
+      }
+    }
+  }
+  return false
 }
 
 function conicCenter(e: SpaceEdge): Vec3 {
@@ -814,24 +848,10 @@ export function revolutionBrep(
   const turnDir = (d: Vec3, a: number) =>
     sub3(turnedAbout(add3(origin, d), origin, A, a), origin)
   const at = (p: Vec3) => meridian(p, origin, A, out)
-  const scale = profile.faces.reduce(
-    (m, f) =>
-      f.loops.reduce(
-        (m2, loop) =>
-          loop.reduce(
-            (m3, c) =>
-              Math.max(
-                m3,
-                Math.abs(curveStart(c).x),
-                Math.abs(curveStart(c).y)
-              ),
-            m2
-          ),
-        m
-      ),
-    1
-  )
-  const onAxis = (p: Vec3) => Math.abs(at(p).rho) <= MODEL_TOLERANCE * scale
+  // WHY absolute, as ACIS's resabs: scaled by how far the profile lies from
+  // the origin, a vertex 1e-4 off an axis 1000 away read as on it, and its
+  // face lost the ring it runs to.
+  const onAxis = (p: Vec3) => Math.abs(at(p).rho) <= MODEL_TOLERANCE
   const b = new Builder()
   const sides: (() => void)[] = []
   const caps: { start: BrepLoop[]; end: BrepLoop[] }[] = profile.faces.map(

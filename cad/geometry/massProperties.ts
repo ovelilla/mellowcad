@@ -3,7 +3,7 @@ import { Vec3, add3, cross3, dot3, scale3, sub3 } from "./Vec3"
 import { Axes3, axesToWorld } from "./ocs"
 import { bsplineIntegral } from "./nurbs"
 import { polynomialRule, trigRule } from "./quadrature"
-import { domainSamples } from "./faceDomains"
+import { faceSamples } from "./faceRegions"
 import { PlanarCurve, curveDerivative, curvePoint } from "./planarCurves"
 import { RegionFace } from "./planarRegions"
 import {
@@ -140,8 +140,9 @@ export function brepMoments(brep: Brep): Moments {
 function faceFlux(brep: Brep, face: BrepFace, about: Vec3, flux: Flux): void {
   const s = face.surface
   if (s.kind !== "plane" && face.domain) {
-    // A swept face's own rules, exact for these integrands (faceDomains.ts).
-    for (const { p, n, w } of domainSamples(s, face.domain, true)) {
+    // Green's theorem in its parameters, exact for these integrands round a
+    // domain's rectangle (faceRegions.ts).
+    for (const { p, n, w } of faceSamples(brep, face, true)) {
       flux.add(sub3(p, about), n, w)
     }
     return

@@ -19,8 +19,8 @@ import {
 } from "./nurbs"
 import { MODEL_TOLERANCE, PlanarCurve } from "./planarCurves"
 import { RegionFace, facesArea } from "./planarRegions"
+import { faceRegionMeasures } from "./faceRegions"
 import {
-  domainFaceMeasures,
   spreadIsolines,
   surfacePoint,
   turnIsolines,
@@ -916,7 +916,7 @@ function faceMeasures(
 ): { area: number; flux: number } {
   const s = face.surface
   if (s.kind !== "plane" && face.domain) {
-    return domainFaceMeasures(s, face.domain, about)
+    return faceRegionMeasures(brep, face, about)
   }
   switch (s.kind) {
     case "extrusion":
