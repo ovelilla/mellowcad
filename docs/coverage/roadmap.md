@@ -38,8 +38,11 @@ us to walk again, whereas a command costs the same before or after it.
    and `geometry/faceDomains.ts`, file version 47), their grips and palette rows waiting for a
    desktop pass. Phase 4 is done: UNION, SUBTRACT and INTERSECT of solids (modify.md; the
    kernel's booleans in `geometry/solidBooleans.ts`, curved faces measured by Green in
-   `geometry/faceRegions.ts`), PRESSPULL on a solid's faces and INTERFERE left for later. Next,
-   phase 5: the Hidden style and shading.
+   `geometry/faceRegions.ts`), PRESSPULL on a solid's faces and INTERFERE left for later. Phase
+   5 is done: VSCURRENT with 2D Wireframe, Hidden and Conceptual (view.md; the kernel's hidden
+   lines in `geometry/hiddenLines.ts`, the faces' mesh in `geometry/faceMesh.ts`, file version 48),
+   HIDE left out. Next, phase 6: SLICE, SECTION, CHAMFEREDGE and FILLETEDGE, and the sub-objects
+   picked with Ctrl+click that PRESSPULL on a solid's faces waits for.
 
 Left out of the 2.5D model: POINT's thickness, with POINT (below). TRIM, EXTEND and JOIN of 3D
 polylines are done, cut and grown in plan at the Z they have there, a closed one left in two at
@@ -114,7 +117,7 @@ with the area. The order puts first the commands whose review settles what the l
 | 19  | Blocks           | BLOCK, INSERT, ATTDEF, -ATTDEF, ATTEDIT, EATTEDIT, ATTDISP, BLOCKSPALETTE, PURGE                                         | blocks and attributes                                                                                                                                                                                                              | done  |
 | 20  | Dimensions       | DIMLINEAR, DIMALIGNED, DIMBASELINE, DIMCONTINUE, DIMSPACE, DIMRADIUS, DIMDIAMETER, DIMANGULAR, DIMSTYLE                  | the dimension objects and styles                                                                                                                                                                                                   | done  |
 | 21  | Inquiry          | DIST, AREA, ID                                                                                                           |                                                                                                                                                                                                                                    | done  |
-| 22  | View             | ZOOM, PAN, -PAN, PLAN, VPOINT, -VPOINT, VIEW, -VIEW, 3DORBIT, NAVVCUBE; the ViewCube, the viewport controls, the navigation bar, the wheel | the view and its undo                                                                                                                                                                                                              | done  |
+| 22  | View             | ZOOM, PAN, -PAN, PLAN, VPOINT, -VPOINT, VIEW, -VIEW, 3DORBIT, NAVVCUBE, VSCURRENT; the ViewCube, the viewport controls, the navigation bar, the wheel | the view and its undo                                                                                                                                                                                                              | done  |
 | 23  | UCS              | UCS, UCSICON, ELEV                                                                                                       |                                                                                                                                                                                                                                    | done  |
 | 24  | Workspace        | UNITS, AUPREC, SETVAR, CLEANSCREENON, CLEANSCREENOFF; the status bar, the top bar, the tool palette, the palette panel, the shortcut menus | system variables typed as commands                                                                                                                                                                                                 | done  |
 | 25  | Clipboard, files | COPYCLIP, CUTCLIP, COPYBASE, PASTECLIP, NEW, QNEW, QSAVE, SAVEAS, OPEN                                                    |                                                                                                                                                                                                                                    | done  |

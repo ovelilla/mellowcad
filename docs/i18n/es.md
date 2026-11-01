@@ -126,6 +126,7 @@ the 5,124 probes run in `es-ES` with their English twins (`research/console/es.m
 |  | SW / SE / NE / NW Isometric | Isométrica SO / SE / NE / NO | desktop view/e01-3 | yes |
 |  | Custom View | Vista personalizada | P acadres 40867 | yes |
 |  | Orbit; 3D Orbit | Órbita; Órbita 3D | P AcVMToolsRes 47091; C 85CE824C-0AF4-4890-8487-ADBC92BF08F1 | yes |
+|  | Visual Styles (the tool); 2D Wireframe, Hidden, Conceptual; VSCURRENT's keywords and defaults | Estilos visuales; Estructura alámbrica 2D, Oculto, Conceptual; `[estructuraalámbrica2d/ocUlto/Conceptual]`, `<Oculto>` | acadres 41794, 41445, 8027, 23314, 23337; the console (visualstyle/v02, v05); the tool's name, ours beside 62833's `Controles de estilo visual` | partly |
 |  | Plan view, View point, Preset views, UCS icon, Elevation (tool names) | Vista en planta, Punto de vista, Vistas predefinidas, Icono SCP, Elevación | X ACAD_112, P acrenderRes 2085; X ID_TbViewpoi; P AcSceneRes 5143; P AcVMToolsRes 4115; P ax26res 59 | yes |
 | ViewCube | ViewCube; Home; Parallel; Set Current View as Home | ViewCube; Inicio; Paralelo; Definir vista actual como inicio | C E6D3896C-AF39-4F5C-A57C-CACE2A1117F9, C 3CE31F02-64A5-4BB8-9461-4C4F659C63B7 | yes |
 |  | TOP, FRONT, LEFT; BOTTOM, BACK, RIGHT (faces); N, E, S, W | SUPERIOR, FRONTAL, IZQUIERDA; INFERIOR, POSTERIOR, DERECHA; N, E, S, O | desktop view/e01-1 and names/e01 (each face in the WCS; AcVMToolsRes 629–634, `Atrás` for Back, are not the cube's); the help's captures | yes |
