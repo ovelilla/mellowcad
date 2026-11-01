@@ -36,7 +36,10 @@ us to walk again, whereas a command costs the same before or after it.
    (`domain/solidGrips.ts`, draw.md). Phase 3 is done: EXTRUDE, REVOLVE and PRESSPULL of
    closed profiles and bounded areas (draw.md; the kernel's swept faces in `geometry/sweeps.ts`
    and `geometry/faceDomains.ts`, file version 47), their grips and palette rows waiting for a
-   desktop pass. Next, phase 4: UNION, SUBTRACT and INTERSECT of solids.
+   desktop pass. Phase 4 is done: UNION, SUBTRACT and INTERSECT of solids (modify.md; the
+   kernel's booleans in `geometry/solidBooleans.ts`, curved faces measured by Green in
+   `geometry/faceRegions.ts`), PRESSPULL on a solid's faces and INTERFERE left for later. Next,
+   phase 5: the Hidden style and shading.
 
 Left out of the 2.5D model: POINT's thickness, with POINT (below). TRIM, EXTEND and JOIN of 3D
 polylines are done, cut and grown in plan at the Z they have there, a closed one left in two at

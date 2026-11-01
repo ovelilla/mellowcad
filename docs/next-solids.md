@@ -1,7 +1,7 @@
 # Sólidos 3D con núcleo propio — brief
 
-> **Estado:** en curso: las fases 1, 2 y 3 están hechas (1/11/2026); lo siguiente, la fase 4:
-> booleanas 3D. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> **Estado:** en curso: las fases 1 a 4 están hechas (1/11/2026); lo siguiente, la fase 5:
+> estilo Hidden y sombreado. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 
@@ -87,8 +87,23 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación en
    paleta (MPGRIPDATA con -VIEW _SWISO), lo que PRESSPULL muestra al pasar y arrastrar, y lo que
    quedó de la 2c (las cajas dinámicas de las esquinas de BOX y los cuadrantes de CYLINDER con Ortho,
    Polar y un snap; Elliptical = Sí en un cilindro circular; Type de la pirámide en la paleta).
-4. **Booleanas 3D** entre planos y cuádricas. **Lo siguiente.**
-5. **Estilo Hidden** (líneas ocultas en el motor), sombreado en canvas, VSCURRENT.
+4. **Booleanas 3D** entre planos y cuádricas. **Hecha** (1/11/2026): las caras curvas se miden por
+   Green en sus parámetros, sobre sus bucles (`cad/geometry/faceRegions.ts`; polos, el corte de un
+   toro), exactas como antes; el núcleo de booleanas en `cad/geometry/solidBooleans.ts`
+   (clasificación punto–sólido en `brepQueries.ts`, las intersecciones con forma cerrada en
+   `intersections.ts`: plano con plano, cilindro, cono —elipse, parábola, hipérbola, rectas por el
+   ápice—, esfera, toro y barridos en sus casos; superficies coaxiales; superficies de una misma
+   dirección; cilindros de ejes que se cortan), con tests de propiedades (cerrado, Euler, la
+   identidad de volúmenes) y contrastado con MPDUMP y MASSPROP (union/k01–k08); UNION, SUBTRACT e
+   INTERSECT de sólidos y regiones mezclados, con LIST del compuesto (union/s01–s10). Lo que falta,
+   en su entrada de `docs/coverage/modify.md`: las intersecciones sin forma cerrada (fase 7), la
+   tangencia en una esquina, las láminas finas, que el núcleo rechaza con `1 boolean operation(s)
+   failed.` (1 de cada 1.000 pares al azar). **Pendiente:** PRESSPULL sobre caras de sólidos (clic:
+   extruir la cara; Ctrl+clic: desplazarla), que pide escoger caras con el cursor, de la fase 6
+   (subobjetos), y desplazar caras con sus vecinas extendidas (SOLIDEDIT); INTERFERE, que la
+   consola no carga (AcInterfere.dll) y cuyo diálogo pide el escritorio.
+5. **Estilo Hidden** (líneas ocultas en el motor), sombreado en canvas, VSCURRENT. **Lo
+   siguiente.**
 6. **Edición**: SLICE, SECTION, CHAMFEREDGE, FILLETEDGE en los casos analíticos, SOLIDEDIT de caras;
    sub-objetos con Ctrl+clic, 3DMOVE / 3DROTATE, UCS Face y el SCP dinámico (UCSDETECT).
 7. **SWEEP, LOFT** y superficies NURBS generales; las booleanas y empalmes que las tocan.

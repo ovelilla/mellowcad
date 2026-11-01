@@ -1,0 +1,12 @@
+(arxload "AcInterfere.dll")
+_BOX
+0,0,0
+10,10
+10
+_BOX
+5,5,5
+15,15
+15
+_INTERFERE
+_ALL
+
