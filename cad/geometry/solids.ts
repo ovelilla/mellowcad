@@ -9,8 +9,23 @@ import {
   sub3,
 } from "./Vec3"
 import { Axes3, arbitraryAxis, worldToAxes } from "./ocs"
+import {
+  BSplineCurve,
+  bsplineDomain,
+  bsplinePoint,
+  bsplineReversed,
+  bsplineSegment,
+  conicArcCurve,
+} from "./nurbs"
 import { MODEL_TOLERANCE, PlanarCurve } from "./planarCurves"
 import { RegionFace, facesArea } from "./planarRegions"
+import {
+  domainFaceMeasures,
+  spreadIsolines,
+  surfacePoint,
+  turnIsolines,
+  turnedAbout,
+} from "./faceDomains"
 
 /**
  * A solid's boundary, as ACIS keeps one (docs/next-solids.md §3): its
@@ -41,6 +56,9 @@ export interface BrepEdge {
  * - `circle`: `radius` round `center` in the plane normal to `normal`.
  * - `ellipse`: `majorAxis` from `center` to the end of its major axis, the
  *   minor `ratio` times as long (0 < ratio ≤ 1).
+ * - `spline`: the NURBS over its whole domain, from its start to its end: a
+ *   profile's spline swept, or its copy (x09: ACIS's edge of an extruded
+ *   spline is the spline itself).
  */
 export type BrepCurve =
   | { readonly kind: "line" }
@@ -58,6 +76,7 @@ export type BrepCurve =
       readonly ratio: number
     }
   | { readonly kind: "point" }
+  | { readonly kind: "spline"; readonly curve: BSplineCurve }
 
 /** A face's use of an edge: along it, or against it when `reversed`. */
 export interface Coedge {
@@ -89,6 +108,10 @@ export type BrepLoop = readonly Coedge[]
  *   that sweep leaves outside the axis (ρ ≥ 0). A negative `majorRadius`
  *   puts the circle's centre across the axis: a lemon; one under
  *   `minorRadius` an apple (r03, r05, r06).
+ * - `extrusion`: the profile swept along the unit `direction` (an oblique
+ *   EXTRUDE's, or a spline's: x02, x09's NurbSurface).
+ * - `revolution`: the profile turned round the unit `axis` through
+ *   `origin`, right-handed (an ellipse's or a spline's REVOLVE).
  */
 export type BrepSurface =
   | {
@@ -127,10 +150,51 @@ export type BrepSurface =
       readonly majorRadius: number
       readonly minorRadius: number
     }
+  | {
+      readonly kind: "extrusion"
+      readonly profile: SweptCurve
+      readonly direction: Vec3
+    }
+  | {
+      readonly kind: "revolution"
+      readonly profile: SweptCurve
+      readonly origin: Vec3
+      readonly axis: Vec3
+    }
+
+/**
+ * A profile a swept surface carries, by its own parameter: an ellipse's
+ * `center + majorAxis cos t + minorAxis sin t` (a circle's when its axes are
+ * as long and square), a spline's NURBS on its knots.
+ */
+export type SweptCurve =
+  | {
+      readonly kind: "ellipse"
+      readonly center: Vec3
+      readonly majorAxis: Vec3
+      readonly minorAxis: Vec3
+    }
+  | { readonly kind: "spline"; readonly curve: BSplineCurve }
+
+/**
+ * Where on its surface a face made by a sweep lies: `u` from `u[0]` to `u[1]`
+ * and `v` likewise, in the surface's own parameters (`surfacePoint`) — round
+ * its axis and along it for a cylinder or a cone, round and over the tube for
+ * a sphere or a torus, round the axis and along the profile for a revolution,
+ * along the profile and the direction for an extrusion. The face's outside is
+ * where `∂u × ∂v` points while both run their way: a range run backwards turns
+ * it inwards, as a hole's wall faces its axis (r01, ACIS's `IsOuterNormal`).
+ * A face without one is a primitive's: a whole turn round, between its loops.
+ */
+export interface FaceDomain {
+  readonly u: readonly [number, number]
+  readonly v: readonly [number, number]
+}
 
 export interface BrepFace {
   readonly surface: BrepSurface
   readonly loops: readonly BrepLoop[]
+  readonly domain?: FaceDomain
 }
 
 /**
@@ -139,6 +203,20 @@ export interface BrepFace {
  */
 export function unsigned0(v: Vec3): Vec3 {
   return { x: v.x + 0, y: v.y + 0, z: v.z + 0 }
+}
+
+/** A domain with no -0, as {@link unsigned0}. */
+export function unsignedDomain(d: FaceDomain): FaceDomain {
+  return { u: [d.u[0] + 0, d.u[1] + 0], v: [d.v[0] + 0, d.v[1] + 0] }
+}
+
+/** A NURBS with no -0 in its points or its knots. */
+export function unsignedNurbs(curve: BSplineCurve): BSplineCurve {
+  return {
+    ...curve,
+    knots: curve.knots.map((k) => k + 0),
+    controlPoints: curve.controlPoints.map(unsigned0),
+  }
 }
 
 /**
@@ -538,8 +616,20 @@ export function brepMapped(
           majorAxis: unsigned0(scale3(direction(c.majorAxis), scale)),
           ratio: c.ratio,
         }
+      case "spline":
+        return { kind: "spline", curve: splineMapped(c.curve, at) }
     }
   }
+  const vector = (v: Vec3) => unsigned0(scale3(direction(v), scale))
+  const profile = (c: SweptCurve): SweptCurve =>
+    c.kind === "ellipse"
+      ? {
+          kind: "ellipse",
+          center: at(c.center),
+          majorAxis: vector(c.majorAxis),
+          minorAxis: vector(c.minorAxis),
+        }
+      : { kind: "spline", curve: splineMapped(c.curve, at) }
   const surface = (s: BrepSurface): BrepSurface => {
     switch (s.kind) {
       case "plane":
@@ -576,6 +666,22 @@ export function brepMapped(
           majorRadius: s.majorRadius * scale,
           minorRadius: s.minorRadius * scale,
         }
+      case "extrusion": {
+        // Mirrored, the profile runs backwards so `∂u × ∂v` still points out.
+        const mapped = profile(s.profile)
+        return {
+          kind: "extrusion",
+          profile: reflects ? sweptReversed(mapped) : mapped,
+          direction: unit(s.direction),
+        }
+      }
+      case "revolution":
+        return {
+          kind: "revolution",
+          profile: profile(s.profile),
+          origin: at(s.origin),
+          axis: unit(s.axis),
+        }
     }
   }
   return {
@@ -588,8 +694,61 @@ export function brepMapped(
             [...loop].reverse().map((c) => ({ ...c, reversed: !c.reversed }))
           )
         : face.loops,
+      ...(face.domain
+        ? {
+            domain: unsignedDomain(
+              domainMapped(face.surface, face.domain, reflects, scale)
+            ),
+          }
+        : {}),
     })),
   }
+}
+
+function splineMapped(
+  curve: BSplineCurve,
+  point: (p: Vec3) => Vec3
+): BSplineCurve {
+  return unsignedNurbs({
+    ...curve,
+    controlPoints: curve.controlPoints.map(point),
+  })
+}
+
+/** The profile run the other way: an ellipse's angle and a spline's knots mirrored. */
+function sweptReversed(c: SweptCurve): SweptCurve {
+  return c.kind === "ellipse"
+    ? { ...c, minorAxis: unsigned0(scale3(c.minorAxis, -1)) }
+    : { kind: "spline", curve: unsignedNurbs(bsplineReversed(c.curve)) }
+}
+
+/**
+ * A face's domain through a similarity: lengths along an axis or a
+ * direction scale; a reflection turns every angle round the other way (the
+ * surface's Y is its axis × its X, mapped: `S'(u, v) = M S(−u, v)`), and an
+ * extrusion's profile, run backwards, takes its parameter from the other end.
+ */
+function domainMapped(
+  s: BrepSurface,
+  d: FaceDomain,
+  reflects: boolean,
+  scale: number
+): FaceDomain {
+  const lengthwise = s.kind === "cylinder" || s.kind === "cone"
+  const v: [number, number] =
+    lengthwise || s.kind === "extrusion"
+      ? [d.v[0] * scale, d.v[1] * scale]
+      : [d.v[0], d.v[1]]
+  if (!reflects) return { u: [d.u[0], d.u[1]], v }
+  if (s.kind === "extrusion") {
+    const c =
+      s.profile.kind === "ellipse"
+        ? 0
+        : s.profile.curve.knots[0] +
+          s.profile.curve.knots[s.profile.curve.knots.length - 1]
+    return { u: [c - d.u[1], c - d.u[0]], v }
+  }
+  return { u: [-d.u[1], -d.u[0]], v }
 }
 
 /** A planar face as a region of its plane: the plane's frame and the face's loops in it. */
@@ -635,6 +794,16 @@ export function planarFace(
       const b = flat(brep.vertices[to])
       if (curve.kind === "line" || curve.kind === "point") {
         return { kind: "line", start: a, end: b }
+      }
+      if (curve.kind === "spline") {
+        const { start: lo, end: hi } = bsplineDomain(curve.curve)
+        const flatCurve = splineMapped(curve.curve, (p) => ({
+          ...flat(p),
+          z: 0,
+        }))
+        return coedge.reversed
+          ? { kind: "spline", curve: flatCurve, from: hi, to: lo }
+          : { kind: "spline", curve: flatCurve, from: lo, to: hi }
       }
       // Counter-clockwise in the face's plane when its normal and the
       // curve's agree, the coedge's own way.
@@ -746,7 +915,14 @@ function faceMeasures(
   about: Vec3
 ): { area: number; flux: number } {
   const s = face.surface
+  if (s.kind !== "plane" && face.domain) {
+    return domainFaceMeasures(s, face.domain, about)
+  }
   switch (s.kind) {
+    case "extrusion":
+    case "revolution":
+      // Never without its domain (brepIsClosed).
+      return { area: 0, flux: 0 }
     case "plane": {
       const flat = planarFace(brep, face, about)
       const area = facesArea([flat.face])
@@ -897,6 +1073,11 @@ export function brepBox(brep: Brep): Box3 | null {
   const points: Vec3[] = [...brep.vertices]
   for (const edge of brep.edges) {
     const c = edge.curve
+    if (c.kind === "spline") {
+      const { start, end } = bsplineDomain(c.curve)
+      points.push(...curveExtremes((t) => bsplinePoint(c.curve, t), start, end))
+      continue
+    }
     if (c.kind !== "circle" && c.kind !== "ellipse") continue
     const start = brep.vertices[edge.start]
     const end = brep.vertices[edge.end]
@@ -922,12 +1103,99 @@ export function brepBox(brep: Brep): Box3 | null {
         : (((param(end) - from) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)
     points.push(...ellipticalArcExtremes(c.center, major, minor, from, sweep))
   }
-  for (const { surface } of brep.faces) {
+  for (const { surface, domain } of brep.faces) {
+    if (domain && surface.kind !== "plane") {
+      points.push(...domainExtremes(surface, domain))
+      continue
+    }
     const reach = closedSurfaceReach(surface)
     if (!reach || !("center" in surface)) continue
     points.push(sub3(surface.center, reach), add3(surface.center, reach))
   }
   return boxOfPoints(points)
+}
+
+/** Samples a piece of curve is searched by for where a coordinate turns. */
+const EXTREME_SAMPLES = 64
+
+/**
+ * The points of `f` on `[a, b]` where a world coordinate is greatest or
+ * least: its ends and each turn, bracketed by {@link EXTREME_SAMPLES} samples
+ * and closed in by golden sections. A smooth curve turns no more often than
+ * that; what the sections leave is far under the model's tolerance.
+ */
+function curveExtremes(f: (t: number) => Vec3, a: number, b: number): Vec3[] {
+  const ts = Array.from(
+    { length: EXTREME_SAMPLES + 1 },
+    (_, k) => a + ((b - a) * k) / EXTREME_SAMPLES
+  )
+  const ps = ts.map(f)
+  const out = [ps[0], ps[ps.length - 1]]
+  for (const k of ["x", "y", "z"] as const) {
+    for (const sign of [1, -1]) {
+      // The ends too: a turn just inside one is bracketed by it.
+      for (let i = 0; i < ts.length; i++) {
+        const here = sign * ps[i][k]
+        const before = Math.max(0, i - 1)
+        const after = Math.min(ts.length - 1, i + 1)
+        if (here < sign * ps[before][k] || here < sign * ps[after][k]) continue
+        let lo = ts[before]
+        let hi = ts[after]
+        for (let step = 0; step < 60; step++) {
+          const m1 = hi - (hi - lo) / GOLDEN
+          const m2 = lo + (hi - lo) / GOLDEN
+          if (sign * f(m1)[k] > sign * f(m2)[k]) hi = m2
+          else lo = m1
+        }
+        out.push(f((lo + hi) / 2))
+      }
+    }
+  }
+  return out
+}
+
+const GOLDEN = (1 + Math.sqrt(5)) / 2
+
+/**
+ * Where a swept face round an axis reaches furthest along each world axis
+ * inside it: on the meridians where that axis' heading turns, each at its
+ * own furthest. Its edges hold the rest.
+ */
+function domainExtremes(s: Curved, d: FaceDomain): Vec3[] {
+  if (s.kind !== "sphere" && s.kind !== "torus" && s.kind !== "revolution") {
+    return []
+  }
+  const axis = s.axis
+  let x: Vec3
+  if (s.kind === "revolution") {
+    // The profile's own meridian: its point furthest from the axis.
+    const q = curveExtremes(
+      (t) => surfacePoint(s, 0, t),
+      d.v[0],
+      d.v[1]
+    ).reduce((far, p) => {
+      const w = sub3(p, s.origin)
+      const r = sub3(w, scale3(axis, dot3(w, axis)))
+      return length3(r) > length3(far) ? r : far
+    }, ORIGIN)
+    x = normalize3(q) ?? arbitraryAxis(axis)!.x
+  } else {
+    x = s.xAxis
+  }
+  const y = cross3(axis, x)
+  const thetas = [d.u[0], d.u[1]]
+  for (const k of ["x", "y", "z"] as const) {
+    const turn = Math.atan2(y[k], x[k])
+    for (const base of [turn, turn + Math.PI]) {
+      const lo = Math.min(d.u[0], d.u[1])
+      const span = Math.abs(d.u[1] - d.u[0])
+      const into = (((base - lo) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI)
+      if (into <= span) thetas.push(lo + into)
+    }
+  }
+  return thetas.flatMap((u) =>
+    curveExtremes((v) => surfacePoint(s, u, v), d.v[0], d.v[1])
+  )
 }
 
 /**
@@ -967,11 +1235,12 @@ export function brepVolume(brep: Brep): number {
 }
 
 /**
- * A wire drawn on a face: a segment, or an arc `sweep` radians round
- * `normal` from `start` (a whole circle at 2π).
+ * A wire drawn on a face: a segment, an arc `sweep` radians round `normal`
+ * from `start` (a whole circle at 2π), or a profile's copy, as its NURBS.
  */
 export type Wire =
   | { readonly kind: "line"; readonly start: Vec3; readonly end: Vec3 }
+  | { readonly kind: "curve"; readonly curve: BSplineCurve }
   | {
       readonly kind: "arc"
       readonly center: Vec3
@@ -1006,6 +1275,11 @@ export function brepIsolines(brep: Brep, count: number): Wire[] {
   for (const face of brep.faces) {
     const s = face.surface
     if (s.kind === "plane") continue
+    if (face.domain) {
+      out.push(...domainIsolines(s, face.domain, count))
+      continue
+    }
+    if (s.kind === "extrusion" || s.kind === "revolution") continue
     const y = cross3(s.axis, s.xAxis)
     const way = (theta: number) =>
       add3(scale3(s.xAxis, Math.cos(theta)), scale3(y, Math.sin(theta)))
@@ -1132,6 +1406,161 @@ export function brepIsolines(brep: Brep, count: number): Wire[] {
   return out
 }
 
+type Curved = Exclude<BrepSurface, { kind: "plane" }>
+
+/** The arc round `axis` through `start`, `sweep` radians, run forwards. */
+function arcWire(
+  center: Vec3,
+  axis: Vec3,
+  start: Vec3,
+  sweep: number
+): Wire | null {
+  const radius = length3(sub3(start, center))
+  if (!(radius > MODEL_TOLERANCE) || sweep === 0) return null
+  return sweep > 0
+    ? { kind: "arc", center, normal: axis, radius, start, sweep }
+    : {
+        kind: "arc",
+        center,
+        normal: scale3(axis, -1),
+        radius,
+        start,
+        sweep: -sweep,
+      }
+}
+
+/** The profile's piece from `from` to `to`, carried by `place`, as a NURBS. */
+function profileWire(
+  c: SweptCurve,
+  from: number,
+  to: number,
+  place: (p: Vec3) => Vec3
+): Wire {
+  let curve: BSplineCurve
+  if (c.kind === "ellipse") {
+    curve = conicArcCurve(c.center, c.majorAxis, c.minorAxis, from, to - from)
+  } else {
+    const { start, end } = bsplineDomain(c.curve)
+    const lo = Math.min(from, to)
+    const hi = Math.max(from, to)
+    curve = lo <= start && hi >= end ? c.curve : bsplineSegment(c.curve, lo, hi)
+  }
+  return {
+    kind: "curve",
+    curve: splineMapped(curve, (p) => unsigned0(place(p))),
+  }
+}
+
+/**
+ * A swept face's isolines: round its axis every `2π / count` from where its
+ * turn starts (r03's revolved faces; an extruded arc's from the arc's start,
+ * x09's ReferenceAxis), and across it what the primitive of its surface
+ * draws there — a sphere's parallels, a torus' — within the face; a
+ * revolution's `count` circles spread along its profile; an extrusion's
+ * `count` rulings spread along its profile (i06 also draws profiles across
+ * it, ACIS's own count: none here).
+ */
+function domainIsolines(s: Curved, d: FaceDomain, count: number): Wire[] {
+  const out: Wire[] = []
+  const add = (w: Wire | null) => {
+    if (w) out.push(w)
+  }
+  const at = (u: number, v: number) => unsigned0(surfacePoint(s, u, v))
+  const ruling = (u: number) =>
+    add({ kind: "line", start: at(u, d.v[0]), end: at(u, d.v[1]) })
+  const inside = (range: readonly [number, number], t: number) =>
+    t > Math.min(...range) + 1e-9 && t < Math.max(...range) - 1e-9
+  switch (s.kind) {
+    case "cylinder":
+    case "cone":
+      for (const u of turnIsolines(d.u, count)) ruling(u)
+      break
+    case "sphere":
+    case "torus": {
+      const R = s.kind === "sphere" ? 0 : s.majorRadius
+      const r = s.kind === "sphere" ? s.radius : s.minorRadius
+      const y = cross3(s.axis, s.xAxis)
+      const out3 = (u: number) =>
+        add3(scale3(s.xAxis, Math.cos(u)), scale3(y, Math.sin(u)))
+      for (const u of turnIsolines(d.u, count)) {
+        add(
+          arcWire(
+            add3(s.center, scale3(out3(u), R)),
+            cross3(out3(u), s.axis),
+            at(u, d.v[0]),
+            d.v[1] - d.v[0]
+          )
+        )
+      }
+      const across =
+        s.kind === "sphere"
+          ? Array.from(
+              { length: sphereParallels(count) },
+              (_, j) =>
+                -Math.PI / 2 +
+                (Math.PI * (j + 1)) / (sphereParallels(count) + 1)
+            )
+          : turnIsolines([Math.PI, 3 * Math.PI], count).map((phi) => {
+              // Into the face's own range of the tube, a turn at a time.
+              const lo = Math.min(...d.v)
+              return (
+                lo +
+                ((((phi - lo) % (2 * Math.PI)) + 2 * Math.PI) % (2 * Math.PI))
+              )
+            })
+      const wholeTube = Math.abs(d.v[1] - d.v[0]) >= 2 * Math.PI - 1e-9
+      for (const v of across) {
+        if (!(s.kind === "torus" && wholeTube) && !inside(d.v, v)) continue
+        add(
+          arcWire(
+            add3(s.center, scale3(s.axis, r * Math.sin(v))),
+            s.axis,
+            at(d.u[0], v),
+            d.u[1] - d.u[0]
+          )
+        )
+      }
+      break
+    }
+    case "revolution": {
+      for (const u of turnIsolines(d.u, count)) {
+        add(
+          profileWire(s.profile, d.v[0], d.v[1], (p) =>
+            turnedAbout(p, s.origin, s.axis, u)
+          )
+        )
+      }
+      for (const v of spreadIsolines(d.v, count)) {
+        const p = at(d.u[0], v)
+        const center = add3(
+          s.origin,
+          scale3(s.axis, dot3(sub3(p, s.origin), s.axis))
+        )
+        add(arcWire(center, s.axis, p, d.u[1] - d.u[0]))
+      }
+      break
+    }
+    case "extrusion": {
+      const whole =
+        s.profile.kind === "ellipse"
+          ? Math.abs(d.u[1] - d.u[0]) >= 2 * Math.PI - 1e-9
+          : Math.abs(d.u[1] - d.u[0]) >=
+            bsplineDomain(s.profile.curve).end -
+              bsplineDomain(s.profile.curve).start -
+              1e-9
+      const us = whole
+        ? Array.from(
+            { length: count - 1 },
+            (_, k) => d.u[0] + ((d.u[1] - d.u[0]) * (k + 1)) / count
+          )
+        : spreadIsolines(d.u, count)
+      for (const u of us) ruling(u)
+      break
+    }
+  }
+  return out
+}
+
 /** Whether `p` lies on the face's surface, within `tolerance`. */
 function onSurface(s: BrepSurface, p: Vec3, tolerance: number): boolean {
   switch (s.kind) {
@@ -1151,6 +1580,11 @@ function onSurface(s: BrepSurface, p: Vec3, tolerance: number): boolean {
     }
     case "sphere":
       return Math.abs(length3(sub3(p, s.center)) - s.radius) <= tolerance
+    case "extrusion":
+    case "revolution":
+      // Its vertices are its profile's ends, swept: what brepIsClosed reads
+      // of them is that its edges meet there.
+      return true
     case "torus": {
       // At its distance ρ from the axis and z along it, on the tube's circle.
       const d = sub3(p, s.center)
@@ -1167,6 +1601,12 @@ function onSurface(s: BrepSurface, p: Vec3, tolerance: number): boolean {
 /** Whether `p` lies on the curve, within `tolerance`. */
 function onCurve(c: BrepCurve, p: Vec3, tolerance: number): boolean {
   if (c.kind === "line" || c.kind === "point") return true
+  if (c.kind === "spline") {
+    const { start, end } = bsplineDomain(c.curve)
+    return [start, end].some(
+      (t) => length3(sub3(bsplinePoint(c.curve, t), p)) <= tolerance
+    )
+  }
   const d = sub3(p, c.center)
   if (Math.abs(dot3(d, c.normal)) > tolerance) return false
   if (c.kind === "circle") return Math.abs(length3(d) - c.radius) <= tolerance
@@ -1215,6 +1655,14 @@ export function brepIsClosed(brep: Brep): boolean {
         if (!(length3(c.majorAxis) > 0)) return false
         if (Math.abs(dot3(c.majorAxis, c.normal)) > tolerance) return false
         break
+      case "spline": {
+        if (!isSpline(c.curve)) return false
+        const { start, end } = bsplineDomain(c.curve)
+        const near = (p: Vec3, t: number) =>
+          length3(sub3(bsplinePoint(c.curve, t), p)) <= tolerance
+        if (!near(a, start) || !near(b, end)) return false
+        continue
+      }
       default:
         return false
     }
@@ -1222,9 +1670,26 @@ export function brepIsClosed(brep: Brep): boolean {
   }
   for (const face of faces) {
     const s = face.surface
+    const d = face.domain
+    if (d) {
+      const range = (r: readonly number[]) =>
+        Array.isArray(r) &&
+        r.length === 2 &&
+        r.every(Number.isFinite) &&
+        r[0] !== r[1]
+      if (s.kind === "plane" || !range(d.u) || !range(d.v)) return false
+    } else if (s.kind === "extrusion" || s.kind === "revolution") {
+      return false
+    }
     switch (s.kind) {
       case "plane":
         if (!isUnit(s.normal)) return false
+        break
+      case "extrusion":
+        if (!isUnit(s.direction) || !isSweptCurve(s.profile)) return false
+        break
+      case "revolution":
+        if (!isUnit(s.axis) || !isSweptCurve(s.profile)) return false
         break
       case "cylinder":
       case "cone":
@@ -1245,7 +1710,7 @@ export function brepIsClosed(brep: Brep): boolean {
         if (!sized) return false
         // A face closed on itself has no loop: a sphere, a doughnut.
         const closed = s.kind === "sphere" || s.majorRadius > s.minorRadius
-        if (closed !== (face.loops.length === 0)) return false
+        if (!d && closed !== (face.loops.length === 0)) return false
         break
       }
       default:
@@ -1274,4 +1739,35 @@ export function brepIsClosed(brep: Brep): boolean {
       ? uses[i].along + uses[i].against === 1
       : uses[i].along === 1 && uses[i].against === 1
   )
+}
+
+/** A NURBS well formed: its knots one more than its points and its degree, never falling, its weights positive. */
+function isSpline(curve: BSplineCurve): boolean {
+  const { degree, knots, controlPoints, weights } = curve
+  if (!Number.isInteger(degree) || degree < 1) return false
+  if (!Array.isArray(knots) || !Array.isArray(controlPoints)) return false
+  if (controlPoints.length <= degree) return false
+  if (knots.length !== controlPoints.length + degree + 1) return false
+  if (
+    !knots.every((k, i) => Number.isFinite(k) && (i === 0 || k >= knots[i - 1]))
+  ) {
+    return false
+  }
+  const { start, end } = bsplineDomain(curve)
+  if (!(end > start)) return false
+  if (
+    weights &&
+    (weights.length !== controlPoints.length || !weights.every((w) => w > 0))
+  ) {
+    return false
+  }
+  return controlPoints.every(
+    (p) => Number.isFinite(p.x) && Number.isFinite(p.y) && Number.isFinite(p.z)
+  )
+}
+
+function isSweptCurve(c: SweptCurve): boolean {
+  return c.kind === "ellipse"
+    ? length3(c.majorAxis) > 0 && length3(c.minorAxis) > 0
+    : isSpline(c.curve)
 }

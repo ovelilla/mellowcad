@@ -100,7 +100,11 @@ function loopsTurnOutward(brep: Brep): boolean {
       const s = face.surface
       if (s.kind !== "plane") return true
       const only = brep.edges[loop[0].edge].curve
-      if (loop.length === 1 && only.kind !== "line" && only.kind !== "point") {
+      if (loop.length === 1 && only.kind === "spline") return true
+      if (
+        loop.length === 1 &&
+        (only.kind === "circle" || only.kind === "ellipse")
+      ) {
         return dot3(only.normal, s.normal) * (loop[0].reversed ? -1 : 1) > 0
       }
       const points = loop.map((c) => brep.vertices[coedgeStart(brep, c)])

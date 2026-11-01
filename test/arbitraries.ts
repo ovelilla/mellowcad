@@ -48,8 +48,16 @@ import { LINEWEIGHTS, LINEWEIGHT_BYLAYER } from "../cad/domain/lineweights"
 import type { Vec2 } from "../cad/geometry/Vec2"
 import type { PlanarCurve } from "../cad/geometry/planarCurves"
 import type { RegionFace } from "../cad/geometry/planarRegions"
-import { arbitraryAxis } from "../cad/geometry/ocs"
-import { add3, scale3 } from "../cad/geometry/Vec3"
+import { arbitraryAxis, axesToWorld } from "../cad/geometry/ocs"
+import { Vec3, add3, scale3 } from "../cad/geometry/Vec3"
+import { curveBox, curveMapped } from "../cad/geometry/planarCurves"
+import type { Brep } from "../cad/geometry/solids"
+import {
+  PlanarProfile,
+  extrusionBrep,
+  revolutionBrep,
+  revolveSide,
+} from "../cad/geometry/sweeps"
 import { createSolid } from "../cad/domain/solids"
 import type { DrawingSnapshot } from "../cad/serialization/drawingFile"
 import { snapshotOf } from "./builders"
@@ -883,6 +891,169 @@ export const solidEntity: fc.Arbitrary<Solid3dEntity> = fc
     }
   )
 
+/** Where and how a swept solid was made: its profile and what it was swept by. */
+export interface Sweep {
+  readonly profile: PlanarProfile
+  readonly kind: "extrude" | "slant" | "revolve"
+  /** The extrusion's offset; the axis' point, direction and side for a revolution. */
+  readonly offset: Vec3
+  readonly taper: number
+  readonly origin: Vec3
+  readonly axis: Vec3
+  readonly start: number
+  readonly angle: number
+  readonly brep: Brep
+}
+
+/**
+ * A region face swept into a solid, its plane facing any way anywhere:
+ * extruded along its normal (a polygon's or a circle's maybe tapered, either
+ * way), slanted along any direction off its plane, or turned any part of a
+ * turn, forwards or back, round an axis in its plane clear of it.
+ */
+export const sweep: fc.Arbitrary<Sweep> = fc
+  .tuple(
+    regionFace,
+    point,
+    coordinate,
+    fc.double({ min: -Math.PI, max: Math.PI, noNaN: true }),
+    fc.double({ min: -Math.PI / 2, max: Math.PI / 2, noNaN: true }),
+    fc.constantFrom("extrude", "slant", "revolve") as fc.Arbitrary<
+      Sweep["kind"]
+    >,
+    positiveLength,
+    fc.double({ min: -1.2, max: 1.2, noNaN: true }),
+    fc.double({ min: 0, max: Math.PI, noNaN: true }),
+    fc.double({ min: 0.01, max: 2, noNaN: true }),
+    fc.double({ min: -2 * Math.PI, max: 2 * Math.PI, noNaN: true }),
+    fc.boolean()
+  )
+  .map(
+    ([
+      face,
+      at,
+      z,
+      azimuth,
+      tilt,
+      kind,
+      height,
+      lean,
+      heading,
+      gap,
+      angle,
+      whole,
+    ]): Sweep => {
+      const normal = {
+        x: Math.cos(tilt) * Math.cos(azimuth),
+        y: Math.cos(tilt) * Math.sin(azimuth),
+        z: Math.sin(tilt),
+      }
+      const axes = arbitraryAxis(normal)!
+      const profile: PlanarProfile = { axes, elevation: z, faces: [face] }
+      const shifted = {
+        ...profile,
+        faces: [
+          {
+            loops: face.loops.map((loop) =>
+              loop.map((c) =>
+                curveMapped(c, {
+                  linear: { xx: 1, xy: 0, yx: 0, yy: 1 },
+                  translation: { x: at.x, y: at.y },
+                })
+              )
+            ),
+          },
+        ],
+      }
+      const none = {
+        taper: 0,
+        origin: { x: 0, y: 0, z: 0 },
+        axis: normal,
+        start: 0,
+        angle: 0,
+      }
+      if (kind === "revolve") {
+        const box = shifted.faces[0].loops
+          .flat()
+          .map(curveBox)
+          .reduce((a, b) => ({
+            min: {
+              x: Math.min(a.min.x, b.min.x),
+              y: Math.min(a.min.y, b.min.y),
+            },
+            max: {
+              x: Math.max(a.max.x, b.max.x),
+              y: Math.max(a.max.y, b.max.y),
+            },
+          }))
+        const d = { x: Math.cos(heading), y: Math.sin(heading) }
+        const across = { x: -d.y, y: d.x }
+        const corners = [
+          box.min,
+          box.max,
+          { x: box.min.x, y: box.max.y },
+          { x: box.max.x, y: box.min.y },
+        ]
+        const reach = Math.max(
+          ...corners.map((c) => c.x * across.x + c.y * across.y)
+        )
+        const size = Math.max(box.max.x - box.min.x, box.max.y - box.min.y)
+        const on = reach + gap * size
+        const origin = axesToWorld(profile.axes, {
+          x: across.x * on,
+          y: across.y * on,
+          z: profile.elevation,
+        })
+        const axis = axesToWorld(profile.axes, { x: d.x, y: d.y, z: 0 })
+        const out = revolveSide(shifted, origin, axis) as Vec3
+        // Never a sliver: a turn of 3° at least, either way.
+        const turn = whole
+          ? 2 * Math.PI
+          : (angle < 0 ? -1 : 1) * Math.max(0.05, Math.abs(angle))
+        return {
+          ...none,
+          profile: shifted,
+          kind,
+          offset: { x: 0, y: 0, z: 0 },
+          origin,
+          axis,
+          start: lean,
+          angle: turn,
+          brep: revolutionBrep(shifted, origin, axis, out, lean, turn),
+        }
+      }
+      const up = scale3(normal, height * (lean < 0 ? -1 : 1))
+      if (kind === "slant") {
+        const offset = add3(up, scale3(axes.x, lean * height))
+        return {
+          ...none,
+          profile: shifted,
+          kind,
+          offset,
+          brep: extrusionBrep(shifted, offset)!,
+        }
+      }
+      // A taper a third of the time, from 0.3 rad down until the profile takes it.
+      let taper = Math.abs(lean) > 0.8 ? 0.3 * Math.sign(lean) : 0
+      let brep = extrusionBrep(shifted, up, taper)
+      while (!brep) {
+        taper /= 2
+        if (Math.abs(taper) < 1e-3) taper = 0
+        brep = extrusionBrep(shifted, up, taper)
+      }
+      return { ...none, profile: shifted, kind, offset: up, taper, brep }
+    }
+  )
+
+/** A swept solid as an object of the drawing. */
+export const sweptSolidEntity: fc.Arbitrary<Solid3dEntity> = sweep.map(
+  ({ brep }) =>
+    withId<Solid3dEntity>(
+      { type: "solid3d", layerId: DEFAULT_LAYER_ID, brep },
+      "solid"
+    )
+)
+
 export const entity: fc.Arbitrary<Entity> = fc
   .tuple(
     fc.oneof(
@@ -900,7 +1071,8 @@ export const entity: fc.Arbitrary<Entity> = fc
       hatchEntity,
       insertEntity,
       regionEntity,
-      solidEntity
+      solidEntity,
+      sweptSolidEntity
     ),
     zValue,
     zValue,

@@ -4032,6 +4032,22 @@ export interface RegionFace {
 
 // geometry/solids.ts
 /**
+ * A profile a swept surface carries, by its own parameter: an ellipse's
+ * `center + majorAxis cos t + minorAxis sin t` (a circle's when its axes are
+ * as long and square), a spline's NURBS on its knots.
+ */
+export type SweptCurve = {
+    readonly kind: "ellipse";
+    readonly center: Vec3;
+    readonly majorAxis: Vec3;
+    readonly minorAxis: Vec3;
+} | {
+    readonly kind: "spline";
+    readonly curve: BSplineCurve;
+};
+
+// geometry/solids.ts
+/**
  * A run of coedges end to end, closed. Seen from outside the solid, a face's
  * first loop turns counter-clockwise about its outward normal and its holes
  * clockwise, so the face is on every coedge's left.
@@ -4062,6 +4078,9 @@ export interface Brep {
  * - `circle`: `radius` round `center` in the plane normal to `normal`.
  * - `ellipse`: `majorAxis` from `center` to the end of its major axis, the
  *   minor `ratio` times as long (0 < ratio ≤ 1).
+ * - `spline`: the NURBS over its whole domain, from its start to its end: a
+ *   profile's spline swept, or its copy (x09: ACIS's edge of an extruded
+ *   spline is the spline itself).
  */
 export type BrepCurve = {
     readonly kind: "line";
@@ -4078,6 +4097,9 @@ export type BrepCurve = {
     readonly ratio: number;
 } | {
     readonly kind: "point";
+} | {
+    readonly kind: "spline";
+    readonly curve: BSplineCurve;
 };
 
 // geometry/solids.ts
@@ -4098,6 +4120,10 @@ export type BrepCurve = {
  *   that sweep leaves outside the axis (ρ ≥ 0). A negative `majorRadius`
  *   puts the circle's centre across the axis: a lemon; one under
  *   `minorRadius` an apple (r03, r05, r06).
+ * - `extrusion`: the profile swept along the unit `direction` (an oblique
+ *   EXTRUDE's, or a spline's: x02, x09's NurbSurface).
+ * - `revolution`: the profile turned round the unit `axis` through
+ *   `origin`, right-handed (an ellipse's or a spline's REVOLVE).
  */
 export type BrepSurface = {
     readonly kind: "plane";
@@ -4130,7 +4156,38 @@ export type BrepSurface = {
     readonly xAxis: Vec3;
     readonly majorRadius: number;
     readonly minorRadius: number;
+} | {
+    readonly kind: "extrusion";
+    readonly profile: SweptCurve;
+    readonly direction: Vec3;
+} | {
+    readonly kind: "revolution";
+    readonly profile: SweptCurve;
+    readonly origin: Vec3;
+    readonly axis: Vec3;
 };
+
+// geometry/solids.ts
+/**
+ * Where on its surface a face made by a sweep lies: `u` from `u[0]` to `u[1]`
+ * and `v` likewise, in the surface's own parameters (`surfacePoint`) — round
+ * its axis and along it for a cylinder or a cone, round and over the tube for
+ * a sphere or a torus, round the axis and along the profile for a revolution,
+ * along the profile and the direction for an extrusion. The face's outside is
+ * where `∂u × ∂v` points while both run their way: a range run backwards turns
+ * it inwards, as a hole's wall faces its axis (r01, ACIS's `IsOuterNormal`).
+ * A face without one is a primitive's: a whole turn round, between its loops.
+ */
+export interface FaceDomain {
+    readonly u: readonly [
+        number,
+        number
+    ];
+    readonly v: readonly [
+        number,
+        number
+    ];
+}
 
 // geometry/solids.ts
 /** A face's use of an edge: along it, or against it when `reversed`. */
@@ -4151,6 +4208,7 @@ export interface BrepEdge {
 export interface BrepFace {
     readonly surface: BrepSurface;
     readonly loops: readonly BrepLoop[];
+    readonly domain?: FaceDomain;
 }
 
 // i18n/keywords.ts

@@ -2,6 +2,8 @@ import { Vec2 } from "./Vec2"
 import { Vec3, add3, cross3, dot3, scale3, sub3 } from "./Vec3"
 import { Axes3, axesToWorld } from "./ocs"
 import { bsplineIntegral } from "./nurbs"
+import { polynomialRule, trigRule } from "./quadrature"
+import { domainSamples } from "./faceDomains"
 import { PlanarCurve, curveDerivative, curvePoint } from "./planarCurves"
 import { RegionFace } from "./planarRegions"
 import {
@@ -92,58 +94,6 @@ export function momentsSum(all: readonly Moments[]): Moments | null {
     }))
 }
 
-/** A rule `∫ f ≈ Σ wᵢ f(tᵢ)`. */
-type Rule = readonly { readonly t: number; readonly w: number }[]
-
-/** Gauss–Legendre's five nodes on [−1, 1]: exact for a polynomial up to degree 9. */
-const LEGENDRE_5 = [
-  [0, 128 / 225],
-  [Math.sqrt(5 - 2 * Math.sqrt(10 / 7)) / 3, (322 + 13 * Math.sqrt(70)) / 900],
-  [Math.sqrt(5 + 2 * Math.sqrt(10 / 7)) / 3, (322 - 13 * Math.sqrt(70)) / 900],
-] as const
-
-/** Gauss–Legendre on `[a, b]`, exact for the polynomials here (degree ≤ 9). */
-function polynomialRule(a: number, b: number): Rule {
-  const half = (b - a) / 2
-  const middle = (a + b) / 2
-  return LEGENDRE_5.flatMap(([x, w]) =>
-    x === 0
-      ? [{ t: middle, w: w * half }]
-      : [
-          { t: middle - x * half, w: w * half },
-          { t: middle + x * half, w: w * half },
-        ]
-  )
-}
-
-/**
- * Samples over a turn: a trigonometric polynomial of degree below half of
- * them is known exactly from its values there, the most any integrand here
- * has (5: a torus' tube; 4: an elliptical arc's Green's moments).
- */
-const TRIG_SAMPLES = 18
-
-/**
- * The rule exact on `[a, b]` for a trigonometric polynomial of degree up to
- * {@link TRIG_SAMPLES}/2 − 1: its Fourier coefficients from the samples, each
- * harmonic integrated in closed form, gathered as weights on the samples. No
- * Gauss rule is exact for a sine, which a tube or an arc's end cuts anywhere.
- */
-function trigRule(a: number, b: number): Rule {
-  const n = TRIG_SAMPLES
-  return Array.from({ length: n }, (_, j) => {
-    const t = (2 * Math.PI * j) / n
-    let w = (b - a) / n
-    for (let k = 1; k < n / 2; k++) {
-      w +=
-        (2 / n / k) *
-        (Math.cos(k * t) * (Math.sin(k * b) - Math.sin(k * a)) +
-          Math.sin(k * t) * (Math.cos(k * a) - Math.cos(k * b)))
-    }
-    return { t, w }
-  })
-}
-
 /** Gathers `∫ φ dV` for φ 1, p and p pᵀ by the divergence theorem, a face's flux at a time. */
 class Flux {
   measure = 0
@@ -189,6 +139,13 @@ export function brepMoments(brep: Brep): Moments {
 
 function faceFlux(brep: Brep, face: BrepFace, about: Vec3, flux: Flux): void {
   const s = face.surface
+  if (s.kind !== "plane" && face.domain) {
+    // A swept face's own rules, exact for these integrands (faceDomains.ts).
+    for (const { p, n, w } of domainSamples(s, face.domain, true)) {
+      flux.add(sub3(p, about), n, w)
+    }
+    return
+  }
   const round = trigRule(0, 2 * Math.PI)
   const along = (o: Vec3, axis: Vec3, x: Vec3) => {
     const y = cross3(axis, x)
@@ -268,6 +225,10 @@ function faceFlux(brep: Brep, face: BrepFace, about: Vec3, flux: Flux): void {
       }
       return
     }
+    case "extrusion":
+    case "revolution":
+      // Never without its domain (brepIsClosed).
+      return
     case "sphere":
     case "torus": {
       // A sphere is the torus round no ring: its tube is the whole circle's
