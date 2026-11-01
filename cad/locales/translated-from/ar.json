@@ -113,6 +113,8 @@
   "interface.tool.presspull": "Presspull",
   "interface.tool.slice": "Slice",
   "interface.tool.section": "Section",
+  "interface.tool.filletedge": "Fillet Edge",
+  "interface.tool.chamferedge": "Chamfer Edge",
   "interface.description.U": "Undo the last action",
   "interface.description.REDO": "Redo the last undone action",
   "interface.description.SNAP": "Force the cursor onto the snap increments",

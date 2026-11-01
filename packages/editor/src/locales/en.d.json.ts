@@ -72,6 +72,7 @@ declare const source: {
       "rectangle": string
       "trim": string
       "fillet": string
+      "filletedge": string
       "break": string
       "pedit": string
       "array": string

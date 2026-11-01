@@ -1359,6 +1359,66 @@ cut neither square to its axis nor along it, and the other meetings with no clos
 say `1 boolean operation(s) failed.` here (phase 7); what the desktop shows of the plane and the
 side kept as the cursor moves (**unverified**).
 
+### `FILLETEDGE` · es `ARISTAEMPALME` · pt-BR `ARESTACONCORD`
+
+### `CHAMFEREDGE` · es `ACHAFLANAARISTA` · pt-BR `CHANFRARARESTA`
+
+**Implemented** (filletedge/f01–f07, chamferedge/c01–c07, en, es and pt-BR; desktop): FILLETEDGE
+says `Radius = 1.0000` (es `Radio =`, pt-BR `Raio =`), FILLETRAD3D, saved in the drawing (an OPEN
+keeps it; file version 49), and asks `Select an edge or [Chain/Loop/Radius]:` until Enter (es
+`Designe una arista o [Cadena/Bucle/Radio]`, pt-BR `Selecionar uma aresta ou [Cadeia/Loop/Raio]`);
+CHAMFEREDGE says `Distance1 = 1.0000, Distance2 = 1.0000` from CHAMFERA and CHAMFERB, 1 where they
+are 0 (c01, c07), and asks `Select an edge or [Loop/Distance]:`, after the first `Select another
+edge on the same face or [Loop/Distance]:`, an edge on no face the others share refused with
+`Edges must belong to one face.` (c01). A click takes the edge under the cursor, lit as it passes
+over (desktop), Ctrl+Space the next one there; a typed point the edge drawn through it (f01: 5,0,10
+off plan the top front edge, in plan the bottom one); FOO `*Invalid selection*` / `Expects a point
+or Chain/Loop` (`… or Loop`). Chain takes the edges tangent to the one picked (`Select an edge
+chain or [Edge/Radius]:`, f02: the eight round a rounded block's top); Loop asks `Select edge of
+loop or [Edge/Chain/Radius]:` (CHAMFEREDGE's `[Edge/Distance]`) and `Enter an option [Accept/Next]
+<Accept>:`, the loop of the edge's later face first, Next the other's (f03, c02). The edges taken
+glow blue with the blend they make drawn over the solid (desktop: its mesh). Radius asks `Enter
+fillet radius or [Expression] <1.0000>:`, Distance `Specify Distance1 or [Expression]` and
+`Specify Distance2 or [Expression]`, a point there the distance to a second, Expression `Enter
+expression:`; 0 or less says `Radius too small. *Invalid*` or `Distance too small. *Invalid*`.
+Enter reports `N edge(s) selected for fillet.` (FILLETEDGE only), none `No fillet to be computed.`
+or `No edges to chamfer.`, and asks `Press Enter to accept the fillet or [Radius]:` (`Specify
+Radius or [Expression] <…>:` there) or `Press Enter to accept the chamfer or [Distance]:`, the
+answer against the colon, over the solid as it will be; FILLETEDGE's arrow grip at the middle of
+the first fillet sets the radius by its drag (desktop: `Specify radius or [eXit]:`). Enter makes
+it, the radius or the distances saved; Escape leaves all as it was. The kernel's
+(`geometry/solidBlends.ts`): a straight edge between two planes becomes a cylinder or a plane, a
+circle between a plane and a cylinder about it a torus or a cone (a rim, a hole's edge, a boss's
+foot, f04, c03), the faces beside trimmed, an end closed in the face across by an arc, an ellipse
+or a line; a chain of tangent edges runs on through its cross-sections, two corners' fillets meet
+in an ellipse (f03), three at a corner in a sphere (f06), a corner's chamfers in a line (c01); a
+radius as wide as a face takes it away (f05). Volumes and topology as the console's: 991.4159
+(f01), 970.9938 (f02), 991.7994 (f03), 778.9574, 1742.9779, 2257.0221 (f04), 191.4159 (f05),
+983.5988, 975.5870 (f06), 957 (c01), 985 (c02), 756.0766, 1721.4455 (c03). CHAMFEREDGE's first
+distance runs along the face the edges share, a lone edge's later face (c06: of a box's top front
+edge the front, of a cylinder's rim the top). The solid keeps its object and loses what made it
+(`History = None`). One undo step, `FILLETEDGE` / `CHAMFEREDGE` (f07). Their rail slot is the
+Solid Editing panel's Fillet Edge split button.
+
+**Deviations:** a blend the kernel cannot make says `Modeling Operation Error:`, `Failed to
+perform blend.` and `Failure while filleting.` (es `Error en operación de modelado:`, pt-BR `Erro
+de operação de modelagem:`), CHAMFEREDGE with ACIS's `Error Code Number is 12069` between (c04),
+and ends: where a fillet is wider than a face beside it ACIS rolls the ball over the next edge
+(f05: 2.5 on a 2 thick plate, a cylinder through the far edge; f07), which this kernel refuses, so
+FILLETEDGE's code was never seen. A fillet's face draws ISOLINES' rulings a turn's step apart from
+its side (ISOLINES 8 on a quarter-round: one at its middle), where AutoCAD spreads
+⌊ISOLINES × its turn⌋ of them evenly (desktop: two, at a third and two thirds).
+
+**Missing:** fillets of two radii meeting, or ending on a curved face (f01's second: ACIS's NURBS
+there), a fillet rolling over a face too narrow (f05), a corner of three edges of a chamfer, a
+straight edge beside a curved face, a circle not about its cylinder's axis, any edge of a sphere,
+a torus, an extrusion or a revolution, each refused as above (phase 7); a corner where two
+fillets' tangent lines meet the edge between at different points (non-square corners of unequal
+slopes); CHAMFEREDGE's grips, and FILLETEDGE's grip on a later edge; edges of another solid once
+one is taken (passed over here, **unverified**); surfaces; FILLET and CHAMFER of a solid's edge
+(their `Enter fillet radius or [Expression]:` and `Base surface selection...`, BOX's entry); the
+preview drawn as a mesh.
+
 ### `JOIN` / `J` · es `UNIR` / `U` · pt-BR `UNIR` / `UNE`
 
 **Implemented:** `Select source object or multiple objects to join at once:`, then

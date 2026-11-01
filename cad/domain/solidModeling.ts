@@ -11,6 +11,7 @@ import {
   brepSection,
   brepSliced,
 } from "../geometry/solidEdits"
+import { EdgeBlend, brepEdgesBlended } from "../geometry/solidBlends"
 import { EntityId, RegionEntity, Solid3dEntity } from "./entityTypes"
 import { nextEntityId } from "./entityIds"
 import { LayerId } from "./layers"
@@ -202,6 +203,24 @@ export function pressPulledSolid(
       ? brepFacesOffset(solid.brep, faces, distance)
       : brepFacesExtruded(solid.brep, faces, distance)
     return brep ? solidEdited(solid, brep) : null
+  } catch (error) {
+    if (error instanceof SolidBooleanError) return null
+    throw error
+  }
+}
+
+/**
+ * FILLETEDGE or CHAMFEREDGE of a solid's edges (filletedge/f01–f06,
+ * chamferedge/c01–c06): the solid keeps its object and loses what made it
+ * (LIST: `History = None`). Null where the kernel cannot blend them.
+ */
+export function blendedSolid(
+  solid: Solid3dEntity,
+  edges: readonly number[],
+  blend: EdgeBlend
+): Solid3dEntity | null {
+  try {
+    return solidEdited(solid, brepEdgesBlended(solid.brep, edges, blend))
   } catch (error) {
     if (error instanceof SolidBooleanError) return null
     throw error

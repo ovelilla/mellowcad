@@ -71,6 +71,8 @@ export interface DocumentSettings {
   readonly isolines: number
   /** VSCURRENT: how the view draws solids, saved in the drawing (its viewport's, visualstyle/v03). */
   readonly visualStyle: VisualStyle
+  /** FILLETRAD3D: the radius FILLETEDGE rounds with, the last one it made. */
+  readonly filletRadius3d: number
   /** CHAMFERA: CHAMFER's first distance. */
   readonly chamferDistance1: number
   /** CHAMFERB: CHAMFER's second distance. */
@@ -180,6 +182,8 @@ export const DEFAULT_DOCUMENT_SETTINGS: DocumentSettings = {
   // Saved in the drawing (solid/v02, v03).
   isolines: 4,
   visualStyle: "2dWireframe",
+  // Saved in the drawing (filletedge/f01: 1 at first; an OPEN keeps it).
+  filletRadius3d: 1,
   chamferDistance1: 0,
   chamferDistance2: 0,
   textSize: DEFAULT_TEXT_HEIGHT,

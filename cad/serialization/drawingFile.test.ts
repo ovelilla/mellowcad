@@ -234,6 +234,7 @@ describe("round trip", () => {
       fillMode: false,
       polylineWidth: 4,
       filletRadius: 3,
+      filletRadius3d: 2.5,
       chamferDistance1: 2,
       chamferDistance2: 1,
       textSize: 3.5,
@@ -294,7 +295,7 @@ describe("round trip", () => {
   it("keeps FILLETRAD, CHAMFERA/B, TEXTSIZE, the justification and the drafting modes out at their defaults, as before 28", () => {
     const text = serializeDrawing(snapshotOf([]))
     expect(text).not.toMatch(
-      /filletRadius|chamferDistance|textSize|textJustify|orthoMode|snapMode|snapUnit|gridMode/
+      /filletRadius|filletRadius3d|chamferDistance|textSize|textJustify|orthoMode|snapMode|snapUnit|gridMode/
     )
   })
 
@@ -302,7 +303,7 @@ describe("round trip", () => {
     const parsed = parseDrawingFile(
       serializeDrawing(snapshotOf([])).replace(
         '"namedUcs": []',
-        `"namedUcs": [], "filletRadius": -1, "chamferDistance1": "2",
+        `"namedUcs": [], "filletRadius": -1, "filletRadius3d": 0, "chamferDistance1": "2",
         "chamferDistance2": null, "textSize": 0, "textJustify": "sideways",
         "orthoMode": 1, "snapMode": "yes", "snapUnit": { "x": 0, "y": 5 },
         "gridMode": 0`
@@ -310,6 +311,7 @@ describe("round trip", () => {
     ).settings
     expect(parsed).toMatchObject({
       filletRadius: 0,
+      filletRadius3d: 1,
       chamferDistance1: 0,
       chamferDistance2: 0,
       textSize: DEFAULT_DOCUMENT_SETTINGS.textSize,

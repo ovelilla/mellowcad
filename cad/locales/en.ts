@@ -118,7 +118,9 @@ export const en: EngineCatalog = {
       "revolve": "Revolve",
       "presspull": "Presspull",
       "slice": "Slice",
-      "section": "Section"
+      "section": "Section",
+      "filletedge": "Fillet Edge",
+      "chamferedge": "Chamfer Edge"
     },
     "description": {
       "U": "Undo the last action",
@@ -1204,6 +1206,12 @@ export const en: EngineCatalog = {
       "SECTION": [
         "SECTION",
         "SEC"
+      ],
+      "FILLETEDGE": [
+        "FILLETEDGE"
+      ],
+      "CHAMFEREDGE": [
+        "CHAMFEREDGE"
       ]
     },
     "keywords": {
@@ -2048,7 +2056,21 @@ export const en: EngineCatalog = {
       "planeFirstPoint": "Specify first point on plane",
       "planeThirdPoint": "Specify third point on plane",
       "sliceSideOr": "Specify a point on desired side or",
-      "sliceBoth": "Both"
+      "sliceBoth": "Both",
+      "filletEdgeSelectOr": "Select an edge or",
+      "filletEdgeChainOr": "Select an edge chain or",
+      "filletEdgeLoopOr": "Select edge of loop or",
+      "edgeLoopOption": "Enter an option",
+      "filletEdgeAccept": "Press Enter to accept the fillet or",
+      "filletEdgeRadiusOr": "Enter fillet radius or",
+      "filletEdgeAcceptRadiusOr": "Specify Radius or",
+      "filletEdgeGripRadiusOr": "Specify radius or",
+      "chamferEdgeSelectOr": "Select an edge or",
+      "chamferEdgeAnotherOr": "Select another edge on the same face or",
+      "chamferEdgeLoopOr": "Select edge of loop or",
+      "chamferEdgeAccept": "Press Enter to accept the chamfer or",
+      "chamferEdgeDistance1Or": "Specify Distance1 or",
+      "chamferEdgeDistance2Or": "Specify Distance2 or"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2073,7 +2095,10 @@ export const en: EngineCatalog = {
       "selectPolylineOr": "spaced",
       "spaceBaseDimension": "tight",
       "specifyDistanceBetweenRowsOfCell": "spaced",
-      "unitCellFirstCorner": "spaced"
+      "unitCellFirstCorner": "spaced",
+      "filletEdgeAccept": "tight",
+      "chamferEdgeAccept": "tight",
+      "filletEdgeGripRadiusOr": "tight"
     },
     "format": {
       "idle": "Command",
@@ -6430,7 +6455,36 @@ export const en: EngineCatalog = {
         ],
         "."
       ],
-      "noSolidsSelected": "No Solids, Surfaces or Meshes selected."
+      "noSolidsSelected": "No Solids, Surfaces or Meshes selected.",
+      "filletEdgeRadius": [
+        "Radius = ",
+        [
+          "radius"
+        ]
+      ],
+      "chamferEdgeDistances": [
+        "Distance1 = ",
+        [
+          "distance1"
+        ],
+        ", Distance2 = ",
+        [
+          "distance2"
+        ]
+      ],
+      "filletEdgesSelected": [
+        [
+          "count"
+        ],
+        " edge(s) selected for fillet."
+      ],
+      "noFilletComputed": "No fillet to be computed.",
+      "noEdgesToChamfer": "No edges to chamfer.",
+      "edgesOneFace": "Edges must belong to one face.",
+      "radiusTooSmall": "Radius too small. *Invalid*",
+      "distanceTooSmall": "Distance too small. *Invalid*",
+      "filletEdgeFailed": "Modeling Operation Error:\nFailed to perform blend.\nFailure while filleting.",
+      "chamferEdgeFailed": "Modeling Operation Error:\nError Code Number is 12069\nFailed to perform blend.\nFailure while chamfering."
     },
     "feedback": {
       "snap": {
@@ -6707,6 +6761,9 @@ export const en: EngineCatalog = {
     "promptKeywordLabels": {
       "ucsNewUcs": {
         "ZAxis": "ZAxis"
+      },
+      "filletEdgeLoopOr": {
+        "Edge": "Edge"
       }
     },
     "listing": {

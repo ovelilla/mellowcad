@@ -116,6 +116,8 @@ declare const source: {
       "presspull": string
       "slice": string
       "section": string
+      "filletedge": string
+      "chamferedge": string
     }
     "description": {
       "U": string
@@ -652,6 +654,8 @@ declare const source: {
       "PRESSPULL": string[]
       "SLICE": string[]
       "SECTION": string[]
+      "FILLETEDGE": string[]
+      "CHAMFEREDGE": string[]
     }
     "keywords": {
       "-OSNAP": {
@@ -1400,6 +1404,24 @@ declare const source: {
         "ZX": string
         "3points": string
       }
+      "FILLETEDGE": {
+        "Chain": string
+        "Loop": string
+        "Radius": string
+        "Edge": string
+        "Expression": string
+        "Accept": string
+        "Next": string
+        "eXit": string
+      }
+      "CHAMFEREDGE": {
+        "Loop": string
+        "Distance": string
+        "Edge": string
+        "Expression": string
+        "Accept": string
+        "Next": string
+      }
     }
     "promptKeywords": {
       "selectObjects": {
@@ -2048,6 +2070,20 @@ declare const source: {
       "planeThirdPoint": string
       "sliceSideOr": string
       "sliceBoth": string
+      "filletEdgeSelectOr": string
+      "filletEdgeChainOr": string
+      "filletEdgeLoopOr": string
+      "edgeLoopOption": string
+      "filletEdgeAccept": string
+      "filletEdgeRadiusOr": string
+      "filletEdgeAcceptRadiusOr": string
+      "filletEdgeGripRadiusOr": string
+      "chamferEdgeSelectOr": string
+      "chamferEdgeAnotherOr": string
+      "chamferEdgeLoopOr": string
+      "chamferEdgeAccept": string
+      "chamferEdgeDistance1Or": string
+      "chamferEdgeDistance2Or": string
     }
     "promptForms": {
       "convertToPolylines": string
@@ -2073,6 +2109,9 @@ declare const source: {
       "spaceBaseDimension": string
       "specifyDistanceBetweenRowsOfCell": string
       "unitCellFirstCorner": string
+      "filletEdgeAccept": string
+      "chamferEdgeAccept": string
+      "filletEdgeGripRadiusOr": string
     }
     "format": {
       "idle": string
@@ -2698,6 +2737,16 @@ declare const source: {
       "sectionMissedOne": string
       "sectionMissed": string
       "noSolidsSelected": string
+      "filletEdgeRadius": string
+      "chamferEdgeDistances": string
+      "filletEdgesSelected": string
+      "noFilletComputed": string
+      "noEdgesToChamfer": string
+      "edgesOneFace": string
+      "radiusTooSmall": string
+      "distanceTooSmall": string
+      "filletEdgeFailed": string
+      "chamferEdgeFailed": string
     }
     "feedback": {
       "snap": {
@@ -2900,6 +2949,9 @@ declare const source: {
     "promptKeywordLabels": {
       "ucsNewUcs": {
         "ZAxis": string
+      }
+      "filletEdgeLoopOr": {
+        "Edge": string
       }
     }
     "listing": {

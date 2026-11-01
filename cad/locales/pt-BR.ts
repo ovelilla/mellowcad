@@ -118,7 +118,9 @@ export const ptBR: EngineLocale = {
       "revolve": "Revolução",
       "presspull": "Pressionar/Puxar",
       "slice": "Fatiar",
-      "section": "Corte"
+      "section": "Corte",
+      "filletedge": "Aresta de concordância",
+      "chamferedge": "Chanfrar aresta"
     },
     "description": {
       "U": "Desfaz a última ação",
@@ -1198,6 +1200,12 @@ export const ptBR: EngineLocale = {
       "SECTION": [
         "CORTE",
         "SECAO"
+      ],
+      "FILLETEDGE": [
+        "ARESTACONCORD"
+      ],
+      "CHAMFEREDGE": [
+        "CHANFRARARESTA"
       ]
     },
     "keywords": {
@@ -1946,6 +1954,24 @@ export const ptBR: EngineLocale = {
         "YZ": "YZ",
         "ZX": "ZX",
         "3points": "3pontos"
+      },
+      "FILLETEDGE": {
+        "Chain": "Cadeia",
+        "Loop": "Loop",
+        "Radius": "Raio",
+        "Edge": "Aresta",
+        "Expression": "Expressão",
+        "Accept": "Aceitar",
+        "Next": "Próximo",
+        "eXit": "saIr"
+      },
+      "CHAMFEREDGE": {
+        "Loop": "Loop",
+        "Distance": "Distância",
+        "Edge": "Aresta",
+        "Expression": "Expressão",
+        "Accept": "Aceitar",
+        "Next": "Próximo"
       }
     },
     "promptKeywords": {
@@ -2645,7 +2671,21 @@ export const ptBR: EngineLocale = {
       "planeFirstPoint": "Especificar o primeiro no plano",
       "planeThirdPoint": "Especificar o terceiro ponto no plano",
       "sliceSideOr": "Especificar um ponto no lado desejado ou",
-      "sliceBoth": "Ambos"
+      "sliceBoth": "Ambos",
+      "filletEdgeSelectOr": "Selecionar uma aresta ou",
+      "filletEdgeChainOr": "Selecionar uma cadeia de aresta ou",
+      "filletEdgeLoopOr": "Selecionar aresta de loop ou",
+      "edgeLoopOption": "Inserir uma opção",
+      "filletEdgeAccept": "Pressione Enter para aceitar a concordância ou",
+      "filletEdgeRadiusOr": "Insira o raio da concordância ou",
+      "filletEdgeAcceptRadiusOr": "Especifique o raio ou",
+      "filletEdgeGripRadiusOr": "Especifique o raio ou",
+      "chamferEdgeSelectOr": "Selecione uma aresta ou",
+      "chamferEdgeAnotherOr": "Selecionar outra aresta na mesma face ou",
+      "chamferEdgeLoopOr": "Selecionar aresta de loop ou",
+      "chamferEdgeAccept": "Pressione Enter para aceitar o chanfro ou",
+      "chamferEdgeDistance1Or": "Especifique a distância1 ou",
+      "chamferEdgeDistance2Or": "Especifique a distância2 ou"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2670,7 +2710,10 @@ export const ptBR: EngineLocale = {
       "selectPolylineOr": "tight",
       "spaceBaseDimension": "tight",
       "specifyDistanceBetweenRowsOfCell": "tight",
-      "unitCellFirstCorner": "spaced"
+      "unitCellFirstCorner": "spaced",
+      "filletEdgeAccept": "tight",
+      "chamferEdgeAccept": "tight",
+      "filletEdgeGripRadiusOr": "tight"
     },
     "format": {
       "idle": "Comando",
@@ -7052,7 +7095,36 @@ export const ptBR: EngineLocale = {
         ],
         "."
       ],
-      "noSolidsSelected": "Nenhum sólido, superfície ou malha selecionado."
+      "noSolidsSelected": "Nenhum sólido, superfície ou malha selecionado.",
+      "filletEdgeRadius": [
+        "Raio = ",
+        [
+          "radius"
+        ]
+      ],
+      "chamferEdgeDistances": [
+        "Distância1 = ",
+        [
+          "distance1"
+        ],
+        ", Distância2 = ",
+        [
+          "distance2"
+        ]
+      ],
+      "filletEdgesSelected": [
+        [
+          "count"
+        ],
+        " aresta(s) selecionada(s) para concordância."
+      ],
+      "noFilletComputed": "Não há nenhuma concordância a ser computada.",
+      "noEdgesToChamfer": "Não há arestas a chanfrar.",
+      "edgesOneFace": "As arestas precisam pertencer a uma face.",
+      "radiusTooSmall": "O raio é pequeno demais. *Inválido*",
+      "distanceTooSmall": "Distância pequena demais. *Inválida*",
+      "filletEdgeFailed": "Erro de operação de modelagem:\nFalha na execução da mesclagem.\nFalha durante a concordância.",
+      "chamferEdgeFailed": "Erro de operação de modelagem:\nError Code Number is 12069\nFalha na execução da mesclagem.\nFalha durante a aplicação de chanfragem."
     },
     "feedback": {
       "snap": {
@@ -7329,6 +7401,9 @@ export const ptBR: EngineLocale = {
     "promptKeywordLabels": {
       "ucsNewUcs": {
         "ZAxis": "EIxo z"
+      },
+      "filletEdgeLoopOr": {
+        "Edge": "arEsta"
       }
     },
     "listing": {

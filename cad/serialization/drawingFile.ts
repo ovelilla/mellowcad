@@ -136,7 +136,7 @@ import { DRAWING_FILE_TYPE } from "./drawingSummary"
 export { DRAWING_FILE_TYPE }
 
 /** Current schema version written by {@link serializeDrawing}. */
-export const DRAWING_FILE_VERSION = 48
+export const DRAWING_FILE_VERSION = 49
 
 /** MIME type a serialised drawing is handed to the host as. */
 export const DRAWING_FILE_MIME_TYPE = "application/json"
@@ -215,6 +215,7 @@ type SavedCommandSetting =
   | "splineSegments"
   | "isolines"
   | "visualStyle"
+  | "filletRadius3d"
   | "chamferDistance1"
   | "chamferDistance2"
   | "textSize"
@@ -961,6 +962,7 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     splineSegments,
     isolines,
     visualStyle,
+    filletRadius3d,
     chamferDistance1,
     chamferDistance2,
     textSize,
@@ -1014,6 +1016,7 @@ function storedSettings(settings: DocumentSettings): StoredSettings {
     ...(splineSegments !== 8 ? { splineSegments } : {}),
     ...(isolines !== 4 ? { isolines } : {}),
     ...(visualStyle !== "2dWireframe" ? { visualStyle } : {}),
+    ...(filletRadius3d !== 1 ? { filletRadius3d } : {}),
     ...(chamferDistance1 ? { chamferDistance1 } : {}),
     ...(chamferDistance2 ? { chamferDistance2 } : {}),
     ...(textSize !== DEFAULT_DOCUMENT_SETTINGS.textSize ? { textSize } : {}),
@@ -1146,6 +1149,11 @@ function parseSettings(value: unknown): DocumentSettings {
     visualStyle:
       VISUAL_STYLES.find((style) => style === value.visualStyle) ??
       "2dWireframe",
+    // A drawing from before 49 has acadiso's.
+    filletRadius3d:
+      isFiniteNumber(value.filletRadius3d) && value.filletRadius3d > 0
+        ? value.filletRadius3d
+        : 1,
     chamferDistance1: nonNegative(value.chamferDistance1),
     chamferDistance2: nonNegative(value.chamferDistance2),
     textSize:

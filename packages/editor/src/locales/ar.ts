@@ -81,6 +81,7 @@ export const ar: EditorLocale = {
         "rectangle": "مستطيل",
         "trim": "تشذيب",
         "fillet": "تقويس",
+        "filletedge": "تدوير الحافة",
         "break": "كسر",
         "pedit": "تحرير الخط المتعدد",
         "array": "مصفوفة",

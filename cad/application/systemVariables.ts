@@ -153,6 +153,7 @@ function distance(
     | "thickness"
     | "polylineWidth"
     | "filletRadius"
+    | "filletRadius3d"
     | "chamferDistance1"
     | "chamferDistance2"
     | "hatchPatternScale",
@@ -332,6 +333,7 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
   heldInteger("EDGEMODE", 0, 1),
   distance("ELEVATION", "elevation", anyValue),
   distance("FILLETRAD", "filletRadius", notNegative),
+  distance("FILLETRAD3D", "filletRadius3d", (value) => value > 0),
   toggle("FILLMODE", "fillMode"),
   toggle("GRIDMODE", "gridMode"),
   {

@@ -81,6 +81,7 @@ export const es: EditorLocale = {
         "rectangle": "Rectángulo",
         "trim": "Recortar",
         "fillet": "Empalme",
+        "filletedge": "Empalmar aristas",
         "break": "Partir",
         "pedit": "Editar polilínea",
         "array": "Matriz",
