@@ -1,4 +1,4 @@
-import { Vec3, add3, cross3, dot3, length3, scale3, sub3 } from "./Vec3"
+import { Vec3, add3, cross3, dot3, scale3, sub3 } from "./Vec3"
 import {
   BSplineCurve,
   bsplineBreakpoints,
@@ -15,7 +15,7 @@ import type { BrepSurface, FaceDomain, SweptCurve } from "./solids"
  * revolution and an extrusion through the profile they carry.
  */
 
-type Curved = Exclude<BrepSurface, { kind: "plane" }>
+export type Curved = Exclude<BrepSurface, { kind: "plane" }>
 
 const differentials = new WeakMap<
   BSplineCurve,
@@ -39,7 +39,7 @@ export function sweptCurvePoint(c: SweptCurve, t: number): Vec3 {
   )
 }
 
-function sweptCurveDerivative(c: SweptCurve, t: number): Vec3 {
+export function sweptCurveDerivative(c: SweptCurve, t: number): Vec3 {
   if (c.kind === "spline") return splineDerivative(c.curve, t)
   return add3(
     scale3(c.majorAxis, -Math.sin(t)),
@@ -67,7 +67,7 @@ export function turnedAbout(
 }
 
 /** The point at `(u, v)` of a curved surface and its derivatives there. */
-function surfaceFrame(
+export function surfaceFrame(
   s: Curved,
   u: number,
   v: number
@@ -138,9 +138,9 @@ export function surfacePoint(s: Curved, u: number, v: number): Vec3 {
 }
 
 /** How each parameter of a surface runs: round a turn, along a line, or along a profile. */
-type Param = "angle" | "linear" | SweptCurve
+export type Param = "angle" | "linear" | SweptCurve
 
-function parameters(s: Curved): [Param, Param] {
+export function parameters(s: Curved): [Param, Param] {
   switch (s.kind) {
     case "cylinder":
     case "cone":
@@ -184,7 +184,12 @@ function splineRule(
 /** A quarter turn's worth of Gauss pieces: an integrand no rule is exact for. */
 const AREA_PIECE = Math.PI / 4
 
-function ruleOf(param: Param, a: number, b: number, exact: boolean): Rule {
+export function ruleOf(
+  param: Param,
+  a: number,
+  b: number,
+  exact: boolean
+): Rule {
   if (param === "linear") return polynomialRule(a, b)
   if (param === "angle" || param.kind === "ellipse") {
     return exact
@@ -223,23 +228,6 @@ export function domainSamples(
     }
   }
   return out
-}
-
-/** A swept face's area and its flux `∫ (x − about) · n dA`. */
-export function domainFaceMeasures(
-  s: Curved,
-  domain: FaceDomain,
-  about: Vec3
-): { area: number; flux: number } {
-  let flux = 0
-  for (const { p, n, w } of domainSamples(s, domain, true)) {
-    flux += dot3(sub3(p, about), n) * w
-  }
-  let area = 0
-  for (const { n, w } of domainSamples(s, domain, false)) {
-    area += length3(n) * Math.abs(w)
-  }
-  return { area, flux }
 }
 
 /**
