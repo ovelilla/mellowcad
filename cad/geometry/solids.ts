@@ -1200,12 +1200,17 @@ function domainExtremes(s: Curved, d: FaceDomain): Vec3[] {
 
 /**
  * The point a B-rep is placed and measured by: its first vertex, else the
- * centre of a sphere or a doughnut, which have none.
+ * centre of a sphere or a doughnut, which have none, or of a turned profile.
  */
 export function brepAnchor(brep: Brep): Vec3 {
   if (brep.vertices.length > 0) return brep.vertices[0]
   for (const { surface } of brep.faces) {
     if ("center" in surface) return surface.center
+    // A doughnut turned of a closed profile: its profile's centre.
+    if (surface.kind === "revolution" || surface.kind === "extrusion") {
+      const c = surface.profile
+      return c.kind === "ellipse" ? c.center : c.curve.controlPoints[0]
+    }
   }
   return ORIGIN
 }

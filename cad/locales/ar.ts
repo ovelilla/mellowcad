@@ -112,7 +112,8 @@ export const ar: EngineLocale = {
       "cone": "مخروط",
       "sphere": "كرة",
       "torus": "طارة",
-      "intersect": "تقاطع"
+      "intersect": "تقاطع",
+      "extrude": "بثق"
     },
     "description": {
       "U": "التراجع عن آخر إجراء",
@@ -630,7 +631,9 @@ export const ar: EngineLocale = {
         "historyNone": "بلا",
         "measure": "قياس",
         "predefined": "معرّف مسبقًا",
-        "outer": "خارجي"
+        "outer": "خارجي",
+        "extrusion": "بثق",
+        "revolve": "دوران"
       },
       "justify": {
         "left": "يسار",

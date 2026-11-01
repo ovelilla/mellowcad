@@ -112,7 +112,8 @@ export const es: EngineLocale = {
       "cone": "Cono",
       "sphere": "Esfera",
       "torus": "Toroide",
-      "intersect": "Intersección"
+      "intersect": "Intersección",
+      "extrude": "Extruir"
     },
     "description": {
       "U": "Deshacer la última acción",
@@ -608,7 +609,9 @@ export const es: EngineLocale = {
         "historyNone": "Ninguno",
         "measure": "Medir",
         "predefined": "Predefinido",
-        "outer": "Exterior"
+        "outer": "Exterior",
+        "extrusion": "Extrusión",
+        "revolve": "Revolución"
       },
       "justify": {
         "left": "Izquierda",
@@ -1155,6 +1158,10 @@ export const es: EngineLocale = {
       "INTERSECT": [
         "INTERSEC",
         "INT"
+      ],
+      "EXTRUDE": [
+        "EXTRUSION",
+        "EXT"
       ]
     },
     "keywords": {
@@ -1850,6 +1857,17 @@ export const es: EngineLocale = {
       "LWEIGHT": {
         "?": "?",
         "BYLAYER": "porCapa"
+      },
+      "EXTRUDE": {
+        "MOde": "MOdo",
+        "SOlid": "Sólido",
+        "SUrface": "SUperficie",
+        "Direction": "Dirección",
+        "Path": "Trayectoria",
+        "Taper": "Inclinación",
+        "Expression": "Expresión",
+        "Yes": "Sí",
+        "No": "No"
       }
     },
     "promptKeywords": {
@@ -2508,7 +2526,17 @@ export const es: EngineLocale = {
       "joinTypeBoth": "Ambos",
       "exitLower": "salir",
       "nextShort": "G",
-      "previousShort": "P"
+      "previousShort": "P",
+      "extrudeSelectOr": "Designe objetos para extruir o",
+      "closedProfilesMode": "Modo de creación de perfiles cerrados",
+      "closedProfilesSolid": "Sólido",
+      "extrudeHeightOr": "Precise altura de extrusión o",
+      "extrudeHeightDefaultOr": "Precise altura de extrusión o",
+      "extrudeTaperOr": "Precise ángulo de inclinación para extrusión o",
+      "enterExpression": "Introduzca expresión",
+      "directionStart": "Precise punto inicial de dirección",
+      "directionEnd": "Precise punto final de dirección",
+      "eraseDefiningObjects": "¿Desea borrar los objetos de definición?"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -6534,6 +6562,8 @@ export const es: EngineLocale = {
           "type",
           1,
           {
+            "extrusion": "Extrusión",
+            "revolve": "Revolución",
             "wedge": "Cuña",
             "pyramid": "Pirámide",
             "cylinder": "Cilindro",
@@ -6722,6 +6752,51 @@ export const es: EngineLocale = {
         ", Z = ",
         [
           "maxZ"
+        ]
+      ],
+      "sweepDensity": [
+        "Densidad de estructura alámbrica actual: ISOLINES=",
+        [
+          "isolines"
+        ],
+        ", Modo de creación de perfiles cerrados = Sólido"
+      ],
+      "sweepRefused": [
+        "No se puede barrer ni extruir un objeto de este tipo.\n",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              "Se ha eliminado ",
+              0,
+              " objeto del conjunto de selección."
+            ],
+            "other": [
+              "Se han eliminado ",
+              0,
+              " objetos del conjunto de selección."
+            ]
+          }
+        ]
+      ],
+      "sweepNothingSelected": "No se ha designado nada.",
+      "sweepSelfIntersecting": "No se puede barrer ni extruir una curva que se interseca a sí misma",
+      "extrudeValueNonzero": "El valor debe ser diferente de cero.",
+      "taperAngleRange": "Debe ser un ángulo superior a -90º e inferior a 90º.",
+      "directionCoincident": "Los puntos coinciden.",
+      "directionParallel": "La dirección de extrusión es paralela al plano de la curva de barrido.",
+      "expressionSyntax": "La sintaxis no es correcta o no se ha definido una variable. Vuelva a introducir la expresión o el valor.",
+      "listExtrusionHeight": [
+        "Altura de extrusión: ",
+        [
+          "height"
+        ]
+      ],
+      "listTaperAngle": [
+        "Ángulo Inclinación: ",
+        [
+          "angle"
         ]
       ]
     },
@@ -6985,6 +7060,9 @@ export const es: EngineLocale = {
       },
       "OFFSET": {
         "Through": "punto a Atravesar"
+      },
+      "EXTRUDE": {
+        "Taper": "ángulo Inclinación"
       }
     },
     "promptKeywordLabels": {

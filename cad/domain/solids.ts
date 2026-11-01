@@ -5,6 +5,7 @@ import {
   BrepEdge,
   Wire,
   boxBrep,
+  brepAnchor,
   brepArea,
   brepIsolines,
   brepMapped,
@@ -18,6 +19,7 @@ import {
 } from "../geometry/solids"
 import { arbitraryAxis, worldToAxes } from "../geometry/ocs"
 import { createRegion } from "./regions"
+import { sweepMapped } from "./sweptSolids"
 import { createArc, createCircle, createLine } from "./entityFactories"
 import { createEllipse } from "./ellipses"
 import { createSpline } from "./splines"
@@ -174,11 +176,15 @@ export function solidMapped(
   const point = (p: Vec3) =>
     add3(scale3(direction(p), map.scale), map.translation)
   const primitive = solid.primitive
+  const sweep = solid.sweep
   return {
     ...solid,
     brep: brepMapped(solid.brep, point, direction, reflects, map.scale),
     ...(primitive
       ? { primitive: primitiveMapped(primitive, point, direction, map.scale) }
+      : {}),
+    ...(sweep
+      ? { sweep: sweepMapped(sweep, direction, map.scale, reflects) }
       : {}),
   }
 }
@@ -400,10 +406,12 @@ export function solidHasCurvedFaces(solid: Solid3dEntity): boolean {
 
 /**
  * The points STRETCH catches it by: its vertices (solid/t03, t05), a sphere's
- * or a torus' centre (t06).
+ * or a torus' centre (t06); a doughnut turned of a spline or an ellipse, its
+ * profile's (**unverified**: no STRETCH probe of one).
  */
 export function solidStretchPoints(solid: Solid3dEntity): readonly Vec3[] {
-  return [...solid.brep.vertices, ...solidCenters(solid)]
+  const points = [...solid.brep.vertices, ...solidCenters(solid)]
+  return points.length > 0 ? points : [brepAnchor(solid.brep)]
 }
 
 /**

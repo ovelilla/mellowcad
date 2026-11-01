@@ -1428,6 +1428,35 @@ describe("the engine's English surface", () => {
         )
         .do("escape", (c) => c.escape())
     )
+    walk("EXTRUDE", createHarness(), (s) =>
+      s
+        .do("RECTANG", (c) => submit(c, "RECTANG", "0,0", "100,50"))
+        .do("EXTRUDE refused", (c) =>
+          submit(c, "EXTRUDE", "MO", "SU", "", "L", "", "FOO", "0", "T", "95")
+        )
+        .do("EXTRUDE taper and expression", (c) =>
+          submit(c, "10", "E", "FOO", "2*20")
+        )
+        .do("EXTRUDE Direction", (c) =>
+          submit(
+            c,
+            "CIRCLE",
+            "300,0",
+            "40",
+            "DELOBJ",
+            "-1",
+            "EXTRUDE",
+            "L",
+            "",
+            "D",
+            "0,0,0",
+            "0,0,0",
+            "0,0,60",
+            "N"
+          )
+        )
+        .do("LIST", (c) => submit(c, "LIST", "L", ""))
+    )
     walk(
       "JOIN made",
       createHarness({

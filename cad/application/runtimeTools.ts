@@ -50,6 +50,8 @@ import { BoxTool } from "./tools/BoxTool"
 import { PyramidTool } from "./tools/PyramidTool"
 import { RoundSolidTool } from "./tools/RoundSolidTool"
 import { solidDefaults } from "./tools/solidDefaults"
+import { ExtrudeTool } from "./tools/ExtrudeTool"
+import { sweepSettings } from "./tools/sweepSettings"
 import { RegionBooleanTool, SubtractTool } from "./tools/RegionBooleanTool"
 import { BreakTool } from "./tools/BreakTool"
 import { SplineEditTool } from "./tools/SplineEditTool"
@@ -100,6 +102,7 @@ export function defaultTools(
 ): Tool[] {
   const circleRadius = { radius: 0 }
   const primitives = solidDefaults()
+  const sweeps = sweepSettings()
   const trimExtendMode: TrimExtendMode = { standard: false, edgeExtend: false }
   const splineSettings = defaultSplineSettings()
   const associativity: ArrayAssociativity = { associative: true }
@@ -179,6 +182,7 @@ export function defaultTools(
     new RoundSolidTool("sphere", primitives),
     new RoundSolidTool("torus", primitives),
     new PyramidTool(primitives),
+    new ExtrudeTool(sweeps),
     new BreakTool("gap", "break"),
     new BreakTool("atPoint", "breakatpoint"),
     new SplineEditTool(),

@@ -136,7 +136,7 @@ export function extractRegions(entities: readonly Entity[]): RegionExtraction {
   }
 }
 
-type ClosedLoop = {
+export type ClosedLoop = {
   readonly curves: PlanarCurve[]
   readonly normal: Vec3
   readonly elevation: number
@@ -146,7 +146,7 @@ type ClosedLoop = {
  * The loop a closed object is in its own plane, `"open"` for an object
  * whose ends do not meet, `null` for one REGION rejects.
  */
-function closedLoop(drawn: Entity): ClosedLoop | "open" | null {
+export function closedLoop(drawn: Entity): ClosedLoop | "open" | null {
   const entity = entityShape(drawn)
   switch (entity.type) {
     case "line":

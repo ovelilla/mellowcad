@@ -3,6 +3,7 @@
 import { Fragment, useState, type ReactElement } from "react"
 import {
   ArrowRightToLine,
+  ArrowUpFromLine,
   Box,
   CopyPlus,
   Cylinder,
@@ -143,6 +144,7 @@ const TOOL_ICONS: Record<string, LucideIcon> = {
   sphere: Globe,
   torus: Donut,
   wedge: TriangleRight,
+  extrude: ArrowUpFromLine,
   union: SquaresUnite,
   subtract: SquaresSubtract,
   intersect: SquaresIntersect,
@@ -258,6 +260,8 @@ const PALETTE: readonly PaletteSection[] = [
         "wedge",
         "torus",
       ]),
+      // Beside it the sweeps' drop-down, EXTRUDE first.
+      "extrude",
     ],
   },
   {

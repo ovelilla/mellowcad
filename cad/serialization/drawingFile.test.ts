@@ -8,6 +8,9 @@ import {
   serializeDrawing,
   toDrawingFile,
 } from "./drawingFile"
+import { createSweptSolid } from "../domain/sweptSolids"
+import { revolutionBrep, revolveSide } from "../geometry/sweeps"
+import type { Vec3 } from "../geometry/Vec3"
 import { DEFAULT_LAYER_ID } from "../domain/layers"
 import { DEFAULT_LINETYPE_ID } from "../domain/linetypes"
 import { DEFAULT_LINEWEIGHT } from "../domain/lineweights"
@@ -741,6 +744,124 @@ describe("tolerates damaged and legacy content", () => {
       const [solid] = read({ ...raw, primitive })
       expect(solid.type === "solid3d" && solid.primitive).toBeUndefined()
     }
+  })
+
+  it("keeps a swept solid while its faces read, what swept it while that does", () => {
+    const WORLD = {
+      x: { x: 1, y: 0, z: 0 },
+      y: { x: 0, y: 1, z: 0 },
+      z: { x: 0, y: 0, z: 1 },
+    }
+    const curve = {
+      degree: 3,
+      knots: [0, 0, 0, 0, 1, 1, 1, 1],
+      controlPoints: [
+        { x: 10, y: 0, z: 0 },
+        { x: 14, y: 3, z: 0 },
+        { x: 12, y: 7, z: 0 },
+        { x: 16, y: 10, z: 0 },
+      ],
+    }
+    const profile = {
+      axes: WORLD,
+      elevation: 0,
+      faces: [
+        {
+          loops: [
+            [
+              { kind: "spline" as const, curve, from: 0, to: 1 },
+              {
+                kind: "line" as const,
+                start: { x: 16, y: 10 },
+                end: { x: 10, y: 10 },
+              },
+              {
+                kind: "line" as const,
+                start: { x: 10, y: 10 },
+                end: { x: 10, y: 0 },
+              },
+            ],
+          ],
+        },
+      ],
+    }
+    const Y = { x: 0, y: 1, z: 0 }
+    const out = revolveSide(profile, { x: 0, y: 0, z: 0 }, Y) as Vec3
+    const turned = createSweptSolid(
+      revolutionBrep(profile, { x: 0, y: 0, z: 0 }, Y, out, 0, 1),
+      { kind: "revolve", start: 0, angle: 1, axis: Y },
+      DEFAULT_LAYER_ID,
+      "turned"
+    )
+    const stored = JSON.parse(serializeDrawing(snapshotOf([turned])))
+      .entities[0]
+    const read = (raw: unknown) => parseDrawingFile(fileWith([raw])).entities
+    expect(read(stored)).toEqual([turned])
+    const face = (patch: object) => ({
+      ...stored,
+      brep: {
+        ...stored.brep,
+        faces: [
+          { ...stored.brep.faces[0], ...patch },
+          ...stored.brep.faces.slice(1),
+        ],
+      },
+    })
+    const edge = (patch: object) => ({
+      ...stored,
+      brep: {
+        ...stored.brep,
+        edges: stored.brep.edges.map((e: object, i: number) =>
+          i === 2 ? { ...e, ...patch } : e
+        ),
+      },
+    })
+    // A surface, a domain or a spline that cannot be read loses the solid.
+    for (const raw of [
+      face({ domain: { u: [0, 0], v: [0, 1] } }),
+      face({ domain: { u: [0], v: [0, 1] } }),
+      face({ domain: null }),
+      face({ surface: { kind: "revolution", origin: { x: 0, y: 0, z: 0 } } }),
+      face({
+        surface: {
+          ...stored.brep.faces[0].surface,
+          profile: { kind: "helix" },
+        },
+      }),
+      face({
+        surface: {
+          kind: "extrusion",
+          profile: { kind: "ellipse", center: { x: 0, y: 0, z: 0 } },
+        },
+      }),
+      edge({ curve: { kind: "spline", curve: { degree: 3, knots: [0, 1] } } }),
+      edge({ curve: { kind: "spline", curve: { ...curve, degree: "3" } } }),
+      edge({ curve: { kind: "spline", curve: { ...curve, knots: [0, 1] } } }),
+    ]) {
+      expect(read(raw)).toEqual([])
+    }
+    // What swept it, unreadable, is dropped alone.
+    for (const sweep of [
+      { kind: "revolve", start: 0, angle: 0, axis: Y },
+      { kind: "revolve", start: "0", angle: 1, axis: Y },
+      { kind: "revolve", start: 0, angle: 1 },
+      { kind: "extrusion", height: 0, taper: 0 },
+      { kind: "extrusion", height: 5 },
+      { kind: "helix" },
+      "extrusion",
+    ]) {
+      const [solid] = read({ ...stored, sweep })
+      expect(solid.type === "solid3d" && solid.sweep).toBeUndefined()
+    }
+    const [extruded] = read({
+      ...stored,
+      sweep: { kind: "extrusion", height: 5, taper: 0.1 },
+    })
+    expect(extruded.type === "solid3d" && extruded.sweep).toEqual({
+      kind: "extrusion",
+      height: 5,
+      taper: 0.1,
+    })
   })
 
   it("drops malformed vertices but keeps a usable polyline", () => {

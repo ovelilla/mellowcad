@@ -1,5 +1,6 @@
 import { regionArea, regionPerimeter } from "../../domain/regions"
 import { primitiveInUcs } from "../../domain/solids"
+import { brepBox, brepMapped } from "../../geometry/solids"
 import { curveBox, curveTessellation } from "../../geometry/planarCurves"
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, add3, cross3, length3, sub3 } from "../../geometry/Vec3"
@@ -18,6 +19,7 @@ import type {
   HatchEntity,
   RegionEntity,
   Solid3dEntity,
+  SolidSweep,
   InsertEntity,
   LineEntity,
   MTextEntity,
@@ -922,6 +924,43 @@ class Report {
   }
 
   /**
+   * What swept it and its box in the UCS (extrude/x01, x03: `Taper angle:
+   * 330` for -30), padded as a region's.
+   */
+  private swept(solid: Solid3dEntity, sweep: SolidSweep): void {
+    this.say("listSolidType", { type: sweep.kind })
+    switch (sweep.kind) {
+      case "extrusion":
+        this.say("listExtrusionHeight", { height: this.length(sweep.height) })
+        this.say("listTaperAngle", {
+          angle: this.angle((sweep.taper * 180) / Math.PI),
+        })
+        break
+      case "revolve":
+        break
+    }
+    const ucs = this.settings.ucs
+    const box = brepBox(
+      brepMapped(
+        solid.brep,
+        (p) => worldPointToUcs(ucs, p),
+        (d) => worldDirectionToUcs(ucs, d),
+        false
+      )
+    )
+    if (!box) return
+    const left = (value: number) => this.length(value).padEnd(9)
+    this.say("listRegionBounds", {
+      minX: left(box.min.x),
+      minY: left(box.min.y),
+      minZ: left(box.min.z),
+      maxX: left(box.max.x),
+      maxY: left(box.max.y),
+      maxZ: left(box.max.z),
+    })
+  }
+
+  /**
    * Its history, and its primitive's parameters in the UCS: the base's
    * centre, the normal when it is not the UCS's Z, the sizes, the heading of
    * its X (solid/p01, p06, p13, w01, y01).
@@ -929,6 +968,10 @@ class Report {
   private solid(solid: Solid3dEntity): void {
     this.header("solid3d", solid)
     this.say("listSolidHistory")
+    if (solid.sweep) {
+      this.swept(solid, solid.sweep)
+      return
+    }
     const primitive = solid.primitive
     if (!primitive) return
     const placed = primitiveInUcs(primitive, this.settings.ucs)

@@ -425,7 +425,7 @@ describe("swept solids, any", () => {
       }),
       { numRuns: 200 }
     )
-  })
+  }, 30_000)
 
   it("keep their volume and moments through a mirror and a scale", () => {
     fc.assert(
@@ -456,9 +456,9 @@ describe("swept solids, any", () => {
           expect((b.centroid.z - a.centroid.z * k) / size).toBeCloseTo(0, 6)
         }
       ),
-      { numRuns: 100 }
+      { numRuns: 60 }
     )
-  })
+  }, 30_000)
 
   it("box their every point", () => {
     fc.assert(

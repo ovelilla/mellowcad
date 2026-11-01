@@ -475,6 +475,7 @@ export interface HeldValues {
   readonly OFFSETDIST: number
   readonly POLYSIDES: number
   readonly AFLAGS: number
+  readonly DELOBJ: number
 }
 
 export interface HeldVariable<T> {

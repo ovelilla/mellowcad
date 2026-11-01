@@ -108,7 +108,8 @@
       "cone": "Cone",
       "sphere": "Sphere",
       "torus": "Torus",
-      "intersect": "Intersect"
+      "intersect": "Intersect",
+      "extrude": "Extrude"
     },
     "description": {
       "U": "Undo the last action",
@@ -468,7 +469,9 @@
         "historyNone": "None",
         "measure": "Measure",
         "predefined": "Predefined",
-        "outer": "Outer"
+        "outer": "Outer",
+        "extrusion": "Extrusion",
+        "revolve": "Revolve"
       },
       "justify": {
         "left": "Left",
@@ -631,7 +634,8 @@
       "REGION": ["REGION", "REG"],
       "UNION": ["UNION", "UNI"],
       "SUBTRACT": ["SUBTRACT", "SU"],
-      "INTERSECT": ["INTERSECT", "IN"]
+      "INTERSECT": ["INTERSECT", "IN"],
+      "EXTRUDE": ["EXTRUDE", "EXT"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1187,7 +1191,8 @@
         "BYLAYER": "BYLayer",
         "BYLayer": "BYLayer"
       },
-      "LWEIGHT": { "?": "?", "BYLAYER": "BYLayer" }
+      "LWEIGHT": { "?": "?", "BYLAYER": "BYLayer" },
+      "EXTRUDE": {"MOde": "MOde", "SOlid": "SOlid", "SUrface": "SUrface", "Direction": "Direction", "Path": "Path", "Taper": "Taper", "Expression": "Expression", "Yes": "Yes", "No": "No"}
     },
     "promptKeywords": {
       "selectObjects": {
@@ -1755,7 +1760,17 @@
       "joinTypeBoth": "Both",
       "exitLower": "exit",
       "nextShort": "N",
-      "previousShort": "P"
+      "previousShort": "P",
+      "extrudeSelectOr": "Select objects to extrude or",
+      "closedProfilesMode": "Closed profiles creation mode",
+      "closedProfilesSolid": "Solid",
+      "extrudeHeightOr": "Specify height of extrusion or",
+      "extrudeHeightDefaultOr": "Specify height of extrusion or",
+      "extrudeTaperOr": "Specify angle of taper for extrusion or",
+      "enterExpression": "Enter expression",
+      "directionStart": "Specify start point of direction",
+      "directionEnd": "Specify end point of direction",
+      "eraseDefiningObjects": "Erase defining objects?"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2342,7 +2357,7 @@
       "solidTangentRequired": "{typed, select, yes {*} other {}}Requires a TAN object-snap and selection of Circle, Arc, or Line.",
       "torusTubeTooSmall": "If torus radius is {radius}, tube radius must be greater than {minimum}.",
       "listSolidHistory": "         History = None\n    Show History = No",
-      "listSolidType": "      Solid type = {type, select, wedge {Wedge} pyramid {Pyramid} cylinder {Cylinder} cone {Cone} sphere {Sphere} torus {Torus} other {Box}}",
+      "listSolidType": "      Solid type = {type, select, extrusion {Extrusion} revolve {Revolve} wedge {Wedge} pyramid {Pyramid} cylinder {Cylinder} cone {Cone} sphere {Sphere} torus {Torus} other {Box}}",
       "listBoxPosition": "         Position, X = {x} Y = {y} Z = {z}",
       "listBoxNormal": "           Normal: X = {x} Y = {y} Z = {z}",
       "listBoxLength": "           Length: {length}",
@@ -2366,7 +2381,18 @@
       "listTubeRadius": "      Tube radius: {radius}",
       "listRegionArea": "                             Area: {area}",
       "listRegionPerimeter": "                        Perimeter: {perimeter}",
-      "listRegionBounds": "   Bounding Box: Lower Bound X = {minX}, Y = {minY}, Z = {minZ}\n                 Upper Bound X = {maxX}, Y = {maxY}, Z = {maxZ}"
+      "listRegionBounds": "   Bounding Box: Lower Bound X = {minX}, Y = {minY}, Z = {minZ}\n                 Upper Bound X = {maxX}, Y = {maxY}, Z = {maxZ}",
+      "sweepDensity": "Current wire frame density:  ISOLINES={isolines}, Closed profiles creation mode = Solid",
+      "sweepRefused": "Cannot sweep or extrude an object of this type.\n{count, plural, one {# object removed from selection set.} other {# objects removed from selection set.}}",
+      "sweepNothingSelected": "Nothing selected.",
+      "sweepSelfIntersecting": "Cannot sweep or extrude a self-intersecting curve",
+      "extrudeValueNonzero": "Value must be nonzero.",
+      "taperAngleRange": "Angle must be greater than -90 degrees and less than 90 degrees.",
+      "directionCoincident": "Points are coincident.",
+      "directionParallel": "Extrude direction is parallel to plane of sweep curve.",
+      "expressionSyntax": "The syntax is incorrect or a variable is not defined.  Reenter the expression or value.",
+      "listExtrusionHeight": " Extrusion height: {height}",
+      "listTaperAngle": "      Taper angle: {angle}"
     },
     "feedback": {
       "snap": {
@@ -2492,7 +2518,8 @@
       },
       "COPY": { "Displacement": "Displacement" },
       "UCSICON": { "Noorigin": "Noorigin" },
-      "OFFSET": { "Through": "Through" }
+      "OFFSET": { "Through": "Through" },
+      "EXTRUDE": {"Taper": "Taper angle"}
     },
     "promptKeywordLabels": {
       "ucsNewUcs": { "ZAxis": "ZAxis" }

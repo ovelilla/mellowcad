@@ -108,7 +108,8 @@
       "cone": "Cone",
       "sphere": "Esfera",
       "torus": "Toroide",
-      "intersect": "Intersecção"
+      "intersect": "Intersecção",
+      "extrude": "Extrusão"
     },
     "description": {
       "U": "Desfaz a última ação",
@@ -439,7 +440,9 @@
         "historyNone": "Nenhum",
         "measure": "Medir",
         "predefined": "Predefinido",
-        "outer": "Externa"
+        "outer": "Externa",
+        "extrusion": "Extrusão",
+        "revolve": "Revolução"
       },
       "justify": {
         "left": "Esquerda",
@@ -602,7 +605,8 @@
       "REGION": ["REGIAO", "REG"],
       "UNION": ["UNIAO"],
       "SUBTRACT": ["SUBTRAIR", "SU"],
-      "INTERSECT": ["INTERSEC", "INT"]
+      "INTERSECT": ["INTERSEC", "INT"],
+      "EXTRUDE": ["EXTRUSAO", "EX"]
     },
     "keywords": {
       "-OSNAP": {
@@ -1251,7 +1255,8 @@
       "LWEIGHT": {
         "?": "?",
         "BYLAYER": "PORCamada"
-      }
+      },
+      "EXTRUDE": {"MOde": "MOdo", "SOlid": "SÓlido", "SUrface": "SUperfície", "Direction": "Direção", "Path": "Caminho", "Taper": "COnicidade", "Expression": "Expressão", "Yes": "Sim", "No": "Não"}
     },
     "promptKeywords": {
       "selectObjects": {
@@ -1859,7 +1864,17 @@
       "joinTypeBoth": "Ambos",
       "exitLower": "sair",
       "nextShort": "P",
-      "previousShort": "A"
+      "previousShort": "A",
+      "extrudeSelectOr": "Selecione objetos para extrusão ou",
+      "closedProfilesMode": "Modo de criação de perfis fechados",
+      "closedProfilesSolid": "Sólido",
+      "extrudeHeightOr": "Especifique a altura ou extrusão ou",
+      "extrudeHeightDefaultOr": "Especifique a altura da extrusão ou",
+      "extrudeTaperOr": "Especifique o ângulo de conicidade para a extrusão ou",
+      "enterExpression": "Insira a expressão",
+      "directionStart": "Especificar ponto inicial de direção",
+      "directionEnd": "Especificar ponto final de direção",
+      "eraseDefiningObjects": "Apagar objetos definidos?"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -2446,7 +2461,7 @@
       "solidTangentRequired": "{typed, select, yes {*} other {}}Requer um snap ao objeto TAN e a seleção de um círculo, arco ou linha.",
       "torusTubeTooSmall": "Se o raio do toroide for {radius}, o raio do tubo deverá ser maior do que {minimum}.",
       "listSolidHistory": "       Histórico = Nenhum\nMostrar histórico = Não",
-      "listSolidType": "  Tipo de sólido = {type, select, wedge {Cunha} pyramid {Pirâmide} cylinder {Cilindro} cone {Cone} sphere {Esfera} torus {Toroide} other {Caixa}}",
+      "listSolidType": "  Tipo de sólido = {type, select, extrusion {Extrusão} revolve {Revolução} wedge {Cunha} pyramid {Pirâmide} cylinder {Cilindro} cone {Cone} sphere {Esfera} torus {Toroide} other {Caixa}}",
       "listBoxPosition": "          Posição, X = {x} Y = {y} Z = {z}",
       "listBoxNormal": "           Normal: X = {x} Y = {y} Z = {z}",
       "listBoxLength": "      Comprimento: {length}",
@@ -2470,7 +2485,18 @@
       "listTubeRadius": "     Raio do tubo: {radius}",
       "listRegionArea": "                             Área: {area}",
       "listRegionPerimeter": "                        Perímetro: {perimeter}",
-      "listRegionBounds": "Caixa delimitadora: Limite inferior X = {minX}, Y = {minY}, Z = {minZ}\n                 Limite superior X = {maxX}, Y = {maxY}, Z = {maxZ}"
+      "listRegionBounds": "Caixa delimitadora: Limite inferior X = {minX}, Y = {minY}, Z = {minZ}\n                 Limite superior X = {maxX}, Y = {maxY}, Z = {maxZ}",
+      "sweepDensity": "Densidade da estrutura de arame atual:  ISOLINES={isolines}, Modo de criação de perfis fechados = Sólido",
+      "sweepRefused": "Não é possível efetuar a varredura de um objeto deste tipo.\n{count, plural, one {# objeto removido do conjunto de seleção.} other {# objetos removidos do conjunto de seleção.}}",
+      "sweepNothingSelected": "Não há nada selecionado.",
+      "sweepSelfIntersecting": "Não é possível efetuar a varredura ou extrusão de uma curva de autointersecção",
+      "extrudeValueNonzero": "O valor deve ser diferente de zero.",
+      "taperAngleRange": "O ângulo deve ser maior do que -90 graus e menor do que 90 graus.",
+      "directionCoincident": "Pontos são coincidentes.",
+      "directionParallel": "A direção de extrusão é paralela ao plano da curva de varredura.",
+      "expressionSyntax": "A sintaxe está incorreta ou a variável não está definida. Reinsira a expressão ou valor,",
+      "listExtrusionHeight": "Altura de extrusão: {height}",
+      "listTaperAngle": "Ângulo de conicidade: {angle}"
     },
     "feedback": {
       "snap": {
@@ -2643,7 +2669,8 @@
       "UCSICON": { "Noorigin": "Sem origem" },
       "OFFSET": {
         "Through": "Através"
-      }
+      },
+      "EXTRUDE": {"Taper": "ângulo de COnicidade"}
     },
     "promptKeywordLabels": {
       "ucsNewUcs": { "ZAxis": "EIxo z" }

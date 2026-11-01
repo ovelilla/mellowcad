@@ -112,7 +112,8 @@ export const en: EngineCatalog = {
       "cone": "Cone",
       "sphere": "Sphere",
       "torus": "Torus",
-      "intersect": "Intersect"
+      "intersect": "Intersect",
+      "extrude": "Extrude"
     },
     "description": {
       "U": "Undo the last action",
@@ -614,7 +615,9 @@ export const en: EngineCatalog = {
         "historyNone": "None",
         "measure": "Measure",
         "predefined": "Predefined",
-        "outer": "Outer"
+        "outer": "Outer",
+        "extrusion": "Extrusion",
+        "revolve": "Revolve"
       },
       "justify": {
         "left": "Left",
@@ -1173,6 +1176,10 @@ export const en: EngineCatalog = {
       "INTERSECT": [
         "INTERSECT",
         "IN"
+      ],
+      "EXTRUDE": [
+        "EXTRUDE",
+        "EXT"
       ]
     },
     "keywords": {
@@ -1977,7 +1984,17 @@ export const en: EngineCatalog = {
       "joinTypeBoth": "Both",
       "exitLower": "exit",
       "nextShort": "N",
-      "previousShort": "P"
+      "previousShort": "P",
+      "extrudeSelectOr": "Select objects to extrude or",
+      "closedProfilesMode": "Closed profiles creation mode",
+      "closedProfilesSolid": "Solid",
+      "extrudeHeightOr": "Specify height of extrusion or",
+      "extrudeHeightDefaultOr": "Specify height of extrusion or",
+      "extrudeTaperOr": "Specify angle of taper for extrusion or",
+      "enterExpression": "Enter expression",
+      "directionStart": "Specify start point of direction",
+      "directionEnd": "Specify end point of direction",
+      "eraseDefiningObjects": "Erase defining objects?"
     },
     "promptForms": {
       "convertToPolylines": "open",
@@ -5991,6 +6008,8 @@ export const en: EngineCatalog = {
           "type",
           1,
           {
+            "extrusion": "Extrusion",
+            "revolve": "Revolve",
             "wedge": "Wedge",
             "pyramid": "Pyramid",
             "cylinder": "Cylinder",
@@ -6179,6 +6198,49 @@ export const en: EngineCatalog = {
         ", Z = ",
         [
           "maxZ"
+        ]
+      ],
+      "sweepDensity": [
+        "Current wire frame density:  ISOLINES=",
+        [
+          "isolines"
+        ],
+        ", Closed profiles creation mode = Solid"
+      ],
+      "sweepRefused": [
+        "Cannot sweep or extrude an object of this type.\n",
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " object removed from selection set."
+            ],
+            "other": [
+              0,
+              " objects removed from selection set."
+            ]
+          }
+        ]
+      ],
+      "sweepNothingSelected": "Nothing selected.",
+      "sweepSelfIntersecting": "Cannot sweep or extrude a self-intersecting curve",
+      "extrudeValueNonzero": "Value must be nonzero.",
+      "taperAngleRange": "Angle must be greater than -90 degrees and less than 90 degrees.",
+      "directionCoincident": "Points are coincident.",
+      "directionParallel": "Extrude direction is parallel to plane of sweep curve.",
+      "expressionSyntax": "The syntax is incorrect or a variable is not defined.  Reenter the expression or value.",
+      "listExtrusionHeight": [
+        " Extrusion height: ",
+        [
+          "height"
+        ]
+      ],
+      "listTaperAngle": [
+        "      Taper angle: ",
+        [
+          "angle"
         ]
       ]
     },
@@ -6442,6 +6504,9 @@ export const en: EngineCatalog = {
       },
       "OFFSET": {
         "Through": "Through"
+      },
+      "EXTRUDE": {
+        "Taper": "Taper angle"
       }
     },
     "promptKeywordLabels": {

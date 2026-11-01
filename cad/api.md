@@ -3026,18 +3026,6 @@ export interface Polyline3dEntity extends BaseEntity {
 
 // domain/entityTypes.ts
 /**
- * A 3D solid (DXF's 3DSOLID): its boundary as the kernel's B-rep
- * (`geometry/solids.ts`), in the WCS. Like a 3D polyline it has no plane:
- * `normal` and `elevation` are never set.
- */
-export interface Solid3dEntity extends BaseEntity {
-    readonly type: "solid3d";
-    readonly brep: Brep;
-    readonly primitive?: SolidPrimitive;
-}
-
-// domain/entityTypes.ts
-/**
  * A block reference (AutoCAD's INSERT object): one placement of a
  * {@link BlockDefinition}, positioned, scaled and rotated as a whole.
  *
@@ -3619,6 +3607,24 @@ export type SolidPrimitive = BoxPrimitive | WedgePrimitive | PyramidPrimitive | 
 
 // domain/entityTypes.ts
 /**
+ * What swept a solid out of a profile, which LIST shows as its `Solid type`
+ * (extrude/x01; revolve/r01): EXTRUDE's height (Direction's length) and
+ * taper (radians), REVOLVE's start and angle (radians) and its axis' way in
+ * the WCS.
+ */
+export type SolidSweep = {
+    readonly kind: "extrusion";
+    readonly height: number;
+    readonly taper: number;
+} | {
+    readonly kind: "revolve";
+    readonly start: number;
+    readonly angle: number;
+    readonly axis: Vec3;
+};
+
+// domain/entityTypes.ts
+/**
  * Where a multiline text object's box hangs off its
  * {@link MTextEntity.position} (DXF 71). The column also aligns every line in
  * the box, and the row decides which way the box grows as lines are added.
@@ -3763,6 +3769,14 @@ export interface CircleEntity extends BaseEntity, Thick {
     readonly type: "circle";
     readonly center: Vec2;
     readonly radius: number;
+}
+
+// domain/entityTypes.ts
+export interface Solid3dEntity extends BaseEntity {
+    readonly type: "solid3d";
+    readonly brep: Brep;
+    readonly primitive?: SolidPrimitive;
+    readonly sweep?: SolidSweep;
 }
 
 // domain/entityTypes.ts
