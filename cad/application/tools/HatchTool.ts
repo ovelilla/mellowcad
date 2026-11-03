@@ -14,7 +14,7 @@ import {
   entityBounds,
   entityElevation,
   hatchGeometry,
-  hatchLoopFromEntity,
+  hatchLoopsFromEntity,
   isLevel,
   pointInsideHatch,
   readsInPlan,
@@ -426,10 +426,10 @@ export class HatchTool implements Tool {
       const entity = ctx.document.get(id)
       const box = entity && readsInPlan(entity) ? textIslandBox(entity) : null
       if (box) texts.push(box)
-      const loop = entity ? hatchLoopFromEntity(entity) : null
-      if (!entity || !loop || !this.canBound(entity, plane)) continue
+      const bounds = entity ? hatchLoopsFromEntity(entity) : null
+      if (!entity || !bounds || !this.canBound(entity, plane)) continue
       plane ??= entityElevation(entity)
-      loops.push(loop)
+      loops.push(...bounds)
     }
     const areas = loops.map((loop) => createHatch([loop]))
     for (const box of texts) {
@@ -449,7 +449,7 @@ export class HatchTool implements Tool {
   private canBound(entity: Entity, plane: number | null): boolean {
     return (
       readsInPlan(entity) &&
-      hatchLoopFromEntity(entity) !== null &&
+      hatchLoopsFromEntity(entity) !== null &&
       (plane === null || samePlane(entityElevation(entity), plane))
     )
   }

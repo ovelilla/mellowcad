@@ -63,6 +63,8 @@ Tangent from the point projected onto the circle's plane (i04); Intersection nee
 meet in space (none where they cross in plan at Z 0 and Z 30, i02), a vertical line meeting what it
 passes through at that object's height (i06, i14); Apparent Intersection is at the newer object's
 height in plan and on the older one in SEISO, whichever was drawn first (i02, i03, i12, i13),
+and crosses arcs, circles and polyline arcs with lines and one another in plan as Intersection does
+(regions/p200: an arc across a rectangle, as plain objects and as regions' edges),
 and under an override it is a real crossing too (osnapz/o04). OSNAPZ (SETVAR, workspace.md: 0
 or 1, program-wide, which OPEN and NEW leave, osnapz/o01–o03) at 1 finds every snap as at 0 — the
 Perpendicular foot and the Tangent point in space, Intersection only where the objects meet (o05,
@@ -82,7 +84,8 @@ Intersection on ellipses, Perpendicular and Tangent on ellipses (ellipse/p308–
 (spline/p313, p315, p316), a closed spline's Geometric Center (spline/p311), a polyline arc segment's Quadrant in a rotated
 UCS and Perpendicular off its sweep (**unverified**, left at its OCS's and both feet until PLINE's
 object is probed), extended Intersection and extended Apparent
-Intersection (picked object by object, as an override), Extension from a polyline's arc end, the
+Intersection (picked object by object, as an override), Apparent Intersection of arcs and
+circles off the plan (lines only there: an arc's image is an ellipse on the screen), Extension from a polyline's arc end, the
 tooltip's distance and angle (`Extension: 12.00 < 0°`), the snapped object's blue glow while Tab
 cycles (d26), APERTURE and AUTOSNAP's settings as variables, per-entity opt-in still required for every
 new entity type (OSOPTIONS-like, deliberate), Intersection between objects in different planes,

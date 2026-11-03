@@ -358,7 +358,7 @@ function translatePlanar(entity: FlatEntity, delta: Vec2): FlatEntity {
  * polyline's arc segment with one end moved is refitted; both caught move it
  * whole, its centre alone nothing (transforms/p271, p281). A circle, an
  * ellipse, text and a reference move whole with their centre or insertion
- * point, else stay.
+ * point, else stay; a region with any of its grips, a solid with a vertex.
  *
  * A Z in `delta` moves what moves whole, and a line's caught end; an object
  * with several vertices in one plane cannot tilt, so caught in part it ignores
@@ -373,6 +373,16 @@ export function stretchEntity(
   if (entity.type === "solid3d") {
     // Moved whole once the frame catches a vertex, else left (solid/t03, t05).
     return solidStretchPoints(entity).some(inFrame)
+      ? translateEntity(entity, delta)
+      : entity
+  }
+  if (entity.type === "region") {
+    // Moved whole once the frame catches a corner or a whole loop's centre
+    // (its grips), else left: an edge or a rim caught alone holds it
+    // (region/e02, regions/p205). Read in space, as a tilted one is drawn.
+    return regionGripPoints(entity)
+      .map((point) => entityPointToWorld(entity, point))
+      .some(inFrame)
       ? translateEntity(entity, delta)
       : entity
   }
@@ -477,8 +487,6 @@ function stretchVertices(entity: FlatEntity): readonly Vec2[] {
     }
     case "hatch":
       return entity.loops.flatMap((loop) => loop.vertices)
-    // WHY: unverified; a region's grips drag nothing (region/s03), so it is
-    // taken to have no stretch points either and moves only when all are caught.
     case "region":
       return regionGripPoints(entity)
     case "circle":

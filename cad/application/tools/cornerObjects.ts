@@ -149,6 +149,9 @@ export function typeRefusal(
     case "text":
     case "attdef":
       return again(any)
+    // Picked first (region/e06); second, the same words assumed (unprobed).
+    case "region":
+      return again(any)
     case "mtext":
     case "hatch":
       return second

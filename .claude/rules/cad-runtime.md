@@ -228,9 +228,9 @@ runtime picks for the tool" feature.
 - **FROM asks in the place of the tool** (`questionInstead`, no keywords); a point filter keeps
   its question, reworded (`filterPrompt`), in UCS coordinates. Both park the tool's box. A point
   reaches them through `pickAnswer` and `placePoint`, the last typed first, as must a new way.
-- Providers read `SnapContext.entities`, **not** `document.getEntities()`: the drawing with every
-  block reference expanded (AutoCAD snaps inside a block), built once per resolve.
-  `insertionProvider` is the exception: it offers the reference's own insertion point.
+- Providers read `SnapContext.entities`, never `document.getEntities()`: blocks expanded (AutoCAD
+  snaps in them), a region as its edges (Quadrants at their own axes in any UCS, regions/p222),
+  built once per resolve; `insertionProvider` offers a reference's.
 
 ## Commands and history
 

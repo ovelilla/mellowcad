@@ -9,7 +9,12 @@ import {
   withZOf,
   zOf,
 } from "../../geometry/Vec3"
-import { axesToWorld } from "../../geometry/ocs"
+import {
+  Axes3,
+  arbitraryAxis,
+  axesToWorld,
+  worldToAxes,
+} from "../../geometry/ocs"
 import {
   BSplineCurve,
   bsplinePoint,
@@ -360,17 +365,43 @@ function quadrantTurn(circle: Entity, ucs: Ucs): number | null {
   return Math.atan2(dot3(ucs.xAxis, axes.y), dot3(ucs.xAxis, axes.x))
 }
 
+/**
+ * Where a region's circle or arc edge starts its quadrants: at its own OCS's
+ * X, whatever the UCS and however oblique (regions/p222, p203), as an
+ * ellipse's. In a tilted UCS's frame its OCS is the frame's, so its own is
+ * worked out from its normal in the WCS (`ucs.wcs`, the WCS as the frame
+ * reads it).
+ */
+function ownQuadrantTurn(edge: Entity, ucs: Ucs): number {
+  if (!ucs.wcs) return 0
+  const wcs: Axes3 = {
+    x: ucs.wcs.xAxis,
+    y: ucs.wcs.yAxis,
+    z: ucsZAxis(ucs.wcs),
+  }
+  const axes = entityAxes(edge)
+  const own = arbitraryAxis(worldToAxes(wcs, axes.z))
+  if (!own) return 0
+  const x = axesToWorld(wcs, own.x)
+  return Math.atan2(dot3(x, axes.y), dot3(x, axes.x))
+}
+
 /** Snaps to the 0°/90°/180°/270° cardinal points of a circle, and to the
  * endpoints of an ellipse's axes. */
 export const quadrantProvider: SnapProvider = {
   type: SnapType.Quadrant,
   collect({ document, entities, touch }: SnapContext): SnapCandidate[] {
     const candidates: SnapCandidate[] = []
+    const ucs = document.getSettings().ucs
+    const turnOf = (entity: Entity) =>
+      document.get(entity.id)?.type === "region"
+        ? ownQuadrantTurn(entity, ucs)
+        : quadrantTurn(entity, ucs)
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       if (entity.type === "circle") {
         const { center: c, radius: r } = entity
-        const turn = quadrantTurn(entity, document.getSettings().ucs)
+        const turn = turnOf(entity)
         if (turn === null) continue
         const points =
           turn === 0
@@ -386,7 +417,7 @@ export const quadrantProvider: SnapProvider = {
         }
       } else if (entity.type === "arc") {
         // Only the quadrants the sweep actually passes through (arc/p201, p203).
-        const turn = quadrantTurn(entity, document.getSettings().ucs)
+        const turn = turnOf(entity)
         if (turn === null) continue
         for (const quadrant of QUADRANT_ANGLES) {
           const angle = turn + quadrant
@@ -1040,7 +1071,8 @@ export const apparentIntersectionProvider: SnapProvider = {
     view,
     construction,
   }: SnapContext): SnapCandidate[] {
-    const segments = collectShapes(document, entities, construction).filter(
+    const shapes = collectShapes(document, entities, construction)
+    const segments = shapes.filter(
       (s): s is SegmentShape => s.kind === "segment"
     )
     // Edges in other planes than the world's cross, if at all, on the screen.
@@ -1048,6 +1080,31 @@ export const apparentIntersectionProvider: SnapProvider = {
       return apparentOnScreen(segments, view, isNear)
     }
     const candidates: SnapCandidate[] = []
+    // Arcs and circles cross lines and one another in plan, as Intersection
+    // crosses them, at the later one's height (regions/p200: an arc's edge
+    // across a rectangle's, and plain ARC and LINE objects alike).
+    const flat = shapes.filter((s) => !shapeAxes(s))
+    for (let i = 0; i < flat.length; i++) {
+      for (let j = i + 1; j < flat.length; j++) {
+        const a = flat[i]
+        const b = flat[j]
+        if (a.kind === "segment" && b.kind === "segment") continue
+        if (a.fromConstruction && b.fromConstruction) continue
+        for (const crossing of intersectShapes(a, b)) {
+          const point = withZ(
+            crossing,
+            heightOn(b, crossing) ?? heightOn(a, crossing) ?? 0
+          )
+          if (!isNear(point, 8)) continue
+          candidates.push({
+            type: SnapType.ApparentIntersection,
+            point,
+            sourceIds: [...a.sourceIds, ...b.sourceIds],
+            transient: a.fromConstruction || b.fromConstruction,
+          })
+        }
+      }
+    }
 
     for (let i = 0; i < segments.length; i++) {
       for (let j = i + 1; j < segments.length; j++) {

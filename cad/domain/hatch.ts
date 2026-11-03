@@ -62,6 +62,48 @@ export function hatchLoopFromEntity(drawn: Entity): HatchLoop | null {
 }
 
 /**
+ * The boundary loops an object contributes to a hatch: its one loop, or every
+ * loop of a region's faces, its holes islands (regions/p215, -HATCH's Select
+ * objects); `null` when it encloses no area, or for a region with an
+ * elliptical or spline edge, which no loop here can hold.
+ */
+export function hatchLoopsFromEntity(drawn: Entity): HatchLoop[] | null {
+  if (drawn.type !== "region") {
+    const loop = hatchLoopFromEntity(drawn)
+    return loop ? [loop] : null
+  }
+  const loops: HatchLoop[] = []
+  for (const face of drawn.faces) {
+    for (const loop of face.loops) {
+      const vertices: Vec2[] = []
+      const bulges: number[] = []
+      for (const edge of loop) {
+        if (edge.kind === "line") {
+          vertices.push({ x: edge.start.x, y: edge.start.y })
+          bulges.push(0)
+        } else if (edge.kind === "arc") {
+          // A bulge spans less than a whole turn: a circle goes in halves.
+          const pieces = Math.abs(edge.sweep) > Math.PI ? 2 : 1
+          const sweep = edge.sweep / pieces
+          for (let i = 0; i < pieces; i++) {
+            vertices.push(
+              polarPoint(edge.center, edge.radius, edge.startAngle + sweep * i)
+            )
+            bulges.push(Math.tan(sweep / 4))
+          }
+        } else {
+          return null
+        }
+      }
+      loops.push(
+        bulges.some((b) => b !== 0) ? { vertices, bulges } : { vertices }
+      )
+    }
+  }
+  return loops
+}
+
+/**
  * The concrete geometry of a boundary loop, segment by segment. A loop always
  * closes, including the two-vertex ring a circle becomes.
  */

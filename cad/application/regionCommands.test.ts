@@ -9,8 +9,21 @@ import {
   polylineOf,
   rectOf,
 } from "../../test/builders"
-import type { Entity, RegionEntity } from "../domain/entities"
-import { regionArea, regionPerimeter } from "../domain/regions"
+import {
+  assignEntityColor,
+  assignEntityLinetype,
+  assignEntityLineweight,
+  entityPointToWorld,
+  type Entity,
+  type LineEntity,
+  type RegionEntity,
+} from "../domain/entities"
+import {
+  regionArea,
+  regionGripPoints,
+  regionPerimeter,
+} from "../domain/regions"
+import type { Vec3 } from "../geometry/Vec3"
 import { curvePoint, curveStart } from "../geometry/planarCurves"
 import { es } from "../locales/es"
 import { THEME } from "../scene/theme"
@@ -1136,7 +1149,599 @@ describe("UNION, SUBTRACT and INTERSECT against AutoCAD 2027 (the Regions review
   })
 })
 
+/** A harness as the console prints, LUPREC 4, its view the probe's ZOOM Window. */
+function consoleCad(from?: string, to?: string): CadHarness {
+  const cad = createHarness()
+  answer(cad, "LUPREC", "4")
+  if (from && to) answer(cad, "ZOOM", "W", from, to)
+  return cad
+}
+
+/** The point ID reports for `at` typed under the override `snap`, else the line refusing it. */
+function identified(cad: CadHarness, snap: string, at: string): Vec3 | string {
+  const lines = written(cad, "ID", snap, at)
+  const found = lines.at(-1)?.match(/X = (\S+)\s+Y = (\S+)\s+Z = (\S+)/)
+  if (found) return { x: +found[1], y: +found[2], z: +found[3] }
+  cad.escape()
+  return lines.find((line) => line.startsWith("No ")) ?? lines.join(" | ")
+}
+
+const at = (x: number, y: number, z = 0) => ({
+  x: expect.closeTo(x, 3),
+  y: expect.closeTo(y, 3),
+  z: expect.closeTo(z, 3),
+})
+
+/** A region's grips in the WCS, `x,y,z` rounded to 4 places, sorted. */
+function gripsOf(region: RegionEntity): string[] {
+  const round = (n: number) => Math.round(n * 1e4) / 1e4 + 0
+  return regionGripPoints(region)
+    .map((grip) => entityPointToWorld(region, grip))
+    .map(({ x, y, z }) => `${round(x)},${round(y)},${round(z)}`)
+    .sort()
+}
+
+/** regions/p200: an arc-and-line region, a rectangle's across it, a line across both. */
+function p200(): CadHarness {
+  const cad = consoleCad("-10,-10", "40,30")
+  answer(cad, "ARC", "0,0", "10,10", "20,0", "LINE", "0,0", "20,0", "")
+  answer(cad, "REGION", "ALL", "", "RECTANG", "15,-3", "25,3")
+  answer(cad, "REGION", "L", "", "LINE", "5,-5", "5,15", "")
+  return cad
+}
+
+/** regions/p201: a spline-and-line region, a lower half ellipse's, two lines across. */
+function p201(): CadHarness {
+  const cad = consoleCad("-10,-15", "50,15")
+  answer(cad, "SPLINE", "0,0", "5,5", "10,0", "", "LINE", "10,0", "0,0", "")
+  answer(cad, "ELLIPSE", "A", "20,0", "40,0", "5", "0", "180")
+  answer(cad, "LINE", "20,0", "40,0", "", "REGION", "ALL", "")
+  answer(cad, "LINE", "5,-10", "5,10", "", "LINE", "25,-10", "25,10", "")
+  return cad
+}
+
+/** regions/p203: a square and a circle region made in UCS X 90, back to World. */
+function p203(): CadHarness {
+  const cad = consoleCad()
+  answer(cad, "UCS", "X", "90", "RECTANG", "0,0", "10,10", "REGION", "L", "")
+  answer(cad, "CIRCLE", "25,0", "5", "REGION", "L", "")
+  answer(cad, "UCS", "W", "ZOOM", "W", "-10,-10", "40,30")
+  return cad
+}
+
+/** A holed square region: 0..20, a circle hole of 5 at 10,10 (region/b02, s01). */
+function holedSquare(from = "-10,-10", to = "30,30"): CadHarness {
+  const cad = consoleCad(from, to)
+  answer(cad, "RECTANG", "0,0", "20,20", "CIRCLE", "10,10", "5")
+  answer(cad, "REGION", "ALL", "", "SUBTRACT", "20,10", "", "15,10", "")
+  return cad
+}
+
 describe("a region in the other commands", () => {
+  describe("its edges snap as the objects they are (regions/p200)", () => {
+    it.each([
+      ["_CEN", "17.2,7.1", at(10, 0)],
+      ["_NEA", "17.2,7.1", at(17.1203, 7.02145)],
+      ["_END", "19.9,0.1", at(20, 0)],
+      ["_INT", "19.9,0.1", at(20, 0)],
+      ["_INT", "5.1,0.1", at(5, 0)],
+      ["_INT", "5.1,8.6", at(5, 8.66025)],
+      ["_INT", "15.1,0.1", at(15, 0)],
+      ["_INT", "19.5,3.1", at(19.5394, 3)],
+      ["_APP", "15.1,0.1", at(15, 0)],
+      ["_APP", "19.5,3.1", at(19.5394, 3)],
+      ["_QUA", "10.1,9.9", at(10, 10)],
+      ["_MID", "10,0.1", at(10, 0)],
+      // NOD and GCEN, which find nothing there too, are not built here
+      // (drafting-aids.md's Missing).
+      ["_INS", "1,0.1", "No Insert found for specified point."],
+    ])("%s %s", (snap, point, want) => {
+      expect(identified(p200(), snap, point)).toEqual(want)
+    })
+
+    it("PER and TAN to the arc edge", () => {
+      const cad = p200()
+      answer(cad, "LINE", "25,15", "_PER", "17.2,7.1", "")
+      expect((cad.latest() as LineEntity).end).toEqual({
+        x: expect.closeTo(17.0711, 3),
+        y: expect.closeTo(7.07107, 3),
+      })
+      answer(cad, "LINE", "30,10", "_TAN", "14,9.1", "")
+      expect((cad.latest() as LineEntity).end).toEqual({
+        x: expect.closeTo(10, 3),
+        y: expect.closeTo(10, 3),
+      })
+    })
+
+    it("APP crosses a plain arc with a polyline and a line too (regions/p200's crossing)", () => {
+      const cad = consoleCad("-10,-10", "40,30")
+      answer(cad, "ARC", "0,0", "10,10", "20,0", "RECTANG", "15,-3", "25,3")
+      answer(cad, "LINE", "5,-5", "5,15", "")
+      expect(identified(cad, "_APP", "19.5,3.1")).toEqual(at(19.5394, 3))
+      expect(identified(cad, "_APP", "5.1,8.6")).toEqual(at(5, 8.66025))
+    })
+  })
+
+  it.each([
+    ["_END", "0.1,0.1", at(0, 0)],
+    ["_MID", "5,5.1", at(5, 5)],
+    ["_NEA", "3,4.1", at(3.0694, 4.02575)],
+    ["_QUA", "5,5.1", "No Quadrant found for specified point."],
+    ["_CEN", "3,4.1", "No Center found for specified point."],
+    ["_INT", "5.1,4.9", at(5, 5)],
+    ["_INT", "5.1,0.1", at(5, 0)],
+    ["_END", "20.1,0.1", at(20, 0)],
+    ["_MID", "30.1,-5.1", at(30, -5)],
+    ["_CEN", "30.1,-4.9", at(30, 0)],
+    ["_QUA", "30.1,-5.1", at(30, -5)],
+    ["_INT", "25.1,0.1", at(25, 0)],
+  ])(
+    "snaps %s %s on spline and elliptical-arc edges (regions/p201)",
+    (snap, point, want) => {
+      expect(identified(p201(), snap, point)).toEqual(want)
+    }
+  )
+
+  it.each([
+    ["_END", "9.9,0.1", at(10, 0)],
+    ["_MID", "5,0.1", at(5, 0)],
+    ["_INT", "0.1,0.1", at(0, 0)],
+    ["_NEA", "3,0.1", at(3, 0)],
+    ["_CEN", "22,0.1", at(25, 0)],
+    ["_CEN", "25,0.1", at(25, 0)],
+    // By the circle's own axes, never oblique; (25,0,±5) tie at 25.1,0.1,
+    // left out (REGIONS-D20).
+    ["_QUA", "20.1,0.1", at(20, 0)],
+    ["_QUA", "29.9,0.1", at(30, 0)],
+  ])(
+    "snaps %s %s on a tilted region in plan (regions/p203)",
+    (snap, point, want) => {
+      expect(identified(p203(), snap, point)).toEqual(want)
+    }
+  )
+
+  it("takes QUA by its own axes in a turned UCS, where a circle takes the UCS's (regions/p222; circle/p212)", () => {
+    const cad = consoleCad("-20,-20", "60,40")
+    answer(cad, "CIRCLE", "0,0", "10", "REGION", "L", "")
+    answer(cad, "CIRCLE", "40,0", "10", "UCS", "Z", "30")
+    answer(cad, "LINE", "*0,-30", "_QUA", "*9.9,0.1", "")
+    const region = cad.latest() as LineEntity
+    answer(cad, "LINE", "*0,-30", "_QUA", "*49.9,0.1", "")
+    const circle = cad.latest() as LineEntity
+    expect(region.end).toEqual({
+      x: expect.closeTo(10, 6),
+      y: expect.closeTo(0, 6),
+    })
+    expect(circle.end).toEqual({
+      x: expect.closeTo(48.6603, 4),
+      y: expect.closeTo(5, 6),
+    })
+  })
+
+  it.each([
+    ["_END", "9.9,0.1,0", at(10, 0)],
+    ["_MID", "5.1,0.1,0", at(5, 0)],
+    ["_INT", "5.1,0.1,0", at(5, 0)],
+    ["_INT", "0.1,0.1,0", at(0, 0)],
+    ["_CEN", "20.1,5.1,0", at(25, 5)],
+    ["_QUA", "25.1,9.9,0", at(25, 10)],
+    ["_MID", "5,0,9.9", at(5, 0, 10)],
+    ["_INT", "0,0,9.9", at(0, 0, 10)],
+    ["_APP", "5.1,10,0", at(5, 10)],
+  ])("snaps %s %s in SE isometric (regions/p204)", (snap, point, want) => {
+    const cad = consoleCad()
+    answer(cad, "RECTANG", "0,0", "10,10", "REGION", "L", "")
+    answer(cad, "CIRCLE", "25,5", "5", "REGION", "L", "")
+    answer(cad, "UCS", "X", "90", "RECTANG", "0,0", "10,10", "REGION", "L", "")
+    answer(cad, "UCS", "W", "LINE", "5,-5", "5,15", "")
+    answer(cad, "VPOINT", "1,-1,1", "ZOOM", "E")
+    expect(identified(cad, snap, point)).toEqual(want)
+  })
+
+  it("takes an override's point on the edge under the cursor (regions/p218, p220)", () => {
+    const cad = consoleCad("-10,-10", "50,30")
+    answer(cad, "ARC", "0,0", "10,10", "20,0", "LINE", "0,0", "20,0", "")
+    answer(cad, "REGION", "ALL", "", "RECTANG", "25,0", "45,20")
+    answer(cad, "CIRCLE", "35,10", "5", "REGION", "W", "24,-1", "46,21", "")
+    answer(cad, "SUBTRACT", "45,5", "", "40,10", "")
+    answer(cad, "RECTANG", "0,-8", "20,-6", "REGION", "L", "")
+    const noCenter = "No Center found for specified point."
+    for (const point of ["2,0.1", "10,0.1", "15,0.1"]) {
+      expect(identified(cad, "_CEN", point)).toBe(noCenter)
+    }
+    const noQuadrant = "No Quadrant found for specified point."
+    expect(identified(cad, "_QUA", "5,0.1")).toBe(noQuadrant)
+    expect(identified(cad, "_CEN", "44.9,2")).toBe(noCenter)
+    expect(identified(cad, "_QUA", "44.9,2")).toBe(noQuadrant)
+    expect(identified(cad, "_MID", "1,-7.9")).toEqual(at(10, -8))
+    expect(identified(cad, "_MID", "26,0.1")).toEqual(at(35, 0))
+  })
+
+  it("finds no centre at an arc edge's or an elliptical edge's own centre (region/s02)", () => {
+    const cad = consoleCad("-10,-10", "30,30")
+    answer(cad, "ARC", "0,0", "10,10", "20,0", "LINE", "0,0", "20,0", "")
+    answer(cad, "ELLIPSE", "0,15", "10,15", "2", "REGION", "ALL", "")
+    // The harness parks the cursor at the view's centre, (10,10), on the
+    // arc: its Center held there would answer (REGIONS-D22).
+    cad.moveTo({ x: -9, y: -9 })
+    expect(identified(cad, "_CEN", "10,0.1")).toBe(
+      "No Center found for specified point."
+    )
+    expect(identified(cad, "_CEN", "5.1,15.1")).toBe(
+      "No Center found for specified point."
+    )
+  })
+
+  describe("STRETCH", () => {
+    const square = () => {
+      const cad = consoleCad("-10,-10", "50,30")
+      return answer(cad, "RECTANG", "0,0", "10,10", "REGION", "L", "")
+    }
+
+    it("moves it whole when a corner is caught (region/e02)", () => {
+      const cad = square()
+      answer(cad, "STRETCH", "C", "8,-2", "12,12", "", "5,0", "")
+      expect(gripsOf(regions(cad)[0])).toEqual([
+        "15,0,0",
+        "15,10,0",
+        "5,0,0",
+        "5,10,0",
+      ])
+      answer(cad, "STRETCH", "C", "-2,-2", "22,12", "", "5,0", "")
+      expect(gripsOf(regions(cad)[0])).toEqual([
+        "10,0,0",
+        "10,10,0",
+        "20,0,0",
+        "20,10,0",
+      ])
+    })
+
+    it("leaves it when an edge or a circle's rim is caught alone (regions/p205)", () => {
+      const cad = square()
+      answer(cad, "CIRCLE", "30,5", "5", "REGION", "L", "")
+      answer(cad, "STRETCH", "C", "4,-2", "6,2", "", "5,0", "")
+      answer(cad, "STRETCH", "C", "33,3", "37,7", "", "0,5", "")
+      const [box, circle] = regions(cad)
+      expect(gripsOf(box)).toEqual(["0,0,0", "0,10,0", "10,0,0", "10,10,0"])
+      expect(gripsOf(circle)).toEqual(["30,5,0"])
+    })
+
+    it("moves a tilted one whole by a corner caught in plan, as a flat one (REGIONS-D24)", () => {
+      const cad = consoleCad()
+      answer(
+        cad,
+        "UCS",
+        "X",
+        "90",
+        "RECTANG",
+        "0,0",
+        "10,10",
+        "REGION",
+        "L",
+        ""
+      )
+      answer(cad, "UCS", "W", "ZOOM", "W", "-10,-10", "40,30")
+      answer(cad, "STRETCH", "C", "8,-2", "12,2", "", "5,0", "")
+      expect(gripsOf(regions(cad)[0])).toEqual([
+        "15,0,0",
+        "15,0,10",
+        "5,0,0",
+        "5,0,10",
+      ])
+    })
+  })
+
+  it("moves, turns, scales and mirrors whole (region/e02)", () => {
+    const cad = consoleCad("-10,-10", "40,30")
+    answer(cad, "RECTANG", "10,0", "20,10", "REGION", "L", "")
+    answer(cad, "MOVE", "L", "", "0,0", "3,4", "ROTATE", "L", "", "0,0", "90")
+    answer(cad, "SCALE", "L", "", "0,0", "2")
+    answer(cad, "MIRROR", "L", "", "0,0", "0,10", "Y")
+    expect(gripsOf(regions(cad)[0])).toEqual([
+      "28,26,0",
+      "28,46,0",
+      "8,26,0",
+      "8,46,0",
+    ])
+  })
+
+  it("moves, turns, scales and mirrors a tilted one in space (regions/p206)", () => {
+    const cad = consoleCad()
+    answer(cad, "UCS", "X", "90", "RECTANG", "0,0", "10,10", "REGION", "L", "")
+    answer(cad, "UCS", "W", "ZOOM", "W", "-30,-30", "30,30")
+    answer(cad, "MOVE", "L", "", "0,0", "5,5")
+    expect(gripsOf(regions(cad)[0])).toEqual([
+      "15,5,0",
+      "15,5,10",
+      "5,5,0",
+      "5,5,10",
+    ])
+    answer(cad, "ROTATE", "L", "", "0,0", "90")
+    expect(gripsOf(regions(cad)[0])).toEqual([
+      "-5,15,0",
+      "-5,15,10",
+      "-5,5,0",
+      "-5,5,10",
+    ])
+    answer(cad, "SCALE", "L", "", "0,0", "2")
+    expect(regionArea(regions(cad)[0])).toBeCloseTo(400, 6)
+    expect(regionPerimeter(regions(cad)[0])).toBeCloseTo(80, 6)
+    answer(cad, "MIRROR", "L", "", "0,0", "10,10", "Y")
+    const [mirrored] = regions(cad)
+    expect(gripsOf(mirrored)).toEqual([
+      "10,-10,0",
+      "10,-10,20",
+      "30,-10,0",
+      "30,-10,20",
+    ])
+    expect(mirrored.normal?.y).toBeCloseTo(1, 9)
+  })
+
+  it("mirrors an arc edge, the source kept (regions/p207)", () => {
+    const cad = consoleCad("-10,-20", "40,20")
+    answer(cad, "ARC", "0,0", "10,10", "20,0", "LINE", "0,0", "20,0", "")
+    answer(cad, "REGION", "ALL", "", "MIRROR", "L", "", "0,-5", "20,-5", "N")
+    const [, copy] = regions(cad)
+    expect(gripsOf(copy)).toEqual(["0,-10,0", "20,-10,0"])
+    expect(regionArea(copy)).toBeCloseTo(157.0796, 4)
+    expect(regionPerimeter(copy)).toBeCloseTo(51.4159, 4)
+  })
+
+  it("is copied with its colour, linetype and tilted plane", () => {
+    const cad = consoleCad()
+    answer(cad, "CECOLOR", "1", "CELTYPE", "DASHED", "UCS", "X", "90")
+    answer(cad, "CIRCLE", "25,0", "5", "REGION", "L", "", "UCS", "W")
+    answer(cad, "COPY", "L", "", "0,0,0", "0,0,7")
+    const [source, copy] = regions(cad)
+    expect(copy.color).toBe(source.color)
+    expect(copy.linetype).toBe(source.linetype)
+    expect(gripsOf(copy)).toEqual(["25,0,7"])
+  })
+
+  it("is arrayed at its elevation, each item a region (regions/p208, p209)", () => {
+    const cad = consoleCad()
+    answer(cad, "ELEVATION", "5", "RECTANG", "0,0", "10,10", "REGION", "L", "")
+    answer(cad, "ELEVATION", "0", "ARRAYRECT", "L", "", "X")
+    const listed = written(cad, "LIST", "L", "").join("\n")
+    expect(listed).toContain(
+      "Base point:  X=   5.0000  Y=   5.0000  Z=   5.0000"
+    )
+    expect(listed).toContain("Column spacing:    15.0000")
+    answer(cad, "EXPLODE", "L", "")
+    expect(cad.typeCounts()).toEqual({ region: 12 })
+    expect(new Set(regions(cad).map((r) => r.elevation))).toEqual(new Set([5]))
+
+    const polar = consoleCad("-40,-40", "40,40")
+    answer(polar, "CIRCLE", "20,0", "5", "REGION", "L", "")
+    answer(polar, "ARRAYPOLAR", "L", "", "0,0", "X")
+    expect(written(polar, "LIST", "L", "").join("\n")).toContain(
+      "Base point:  X=  20.0000  Y=   0.0000  Z=   0.0000"
+    )
+    answer(polar, "EXPLODE", "L", "")
+    expect(polar.typeCounts()).toEqual({ region: 6 })
+  })
+
+  it("explodes into its edges' objects on its layer and colour (regions/p210)", () => {
+    const cad = consoleCad("-10,-15", "80,15")
+    const l1 = cad.runtime.createLayer("L1")
+    answer(cad, "CECOLOR", "1", "SPLINE", "0,0", "5,5", "10,0", "")
+    answer(cad, "LINE", "10,0", "0,0", "", "ELLIPSE", "A", "20,0", "40,0")
+    answer(cad, "5", "0", "180", "LINE", "20,0", "40,0", "")
+    answer(cad, "PLINE", "50,0", "60,0", "A", "60,10", "L", "50,10", "C")
+    answer(cad, "REGION", "ALL", "", "CECOLOR", "BYLAYER")
+    cad.runtime.setCurrentLayer("0")
+    answer(cad, "EXPLODE", "ALL", "")
+    // Their order and directions are REGION's Missing (REGIONS-D21).
+    expect(cad.typeCounts()).toEqual({ spline: 1, line: 5, ellipse: 1, arc: 1 })
+    for (const piece of cad.entities()) {
+      expect([piece.layerId, piece.color]).toEqual([l1, "#ff0000"])
+    }
+  })
+
+  it("explodes a tilted holed one in its plane (regions/p211)", () => {
+    const cad = consoleCad()
+    answer(cad, "UCS", "X", "90", "PLAN", "", "ZOOM", "W", "-10,-10", "30,30")
+    answer(cad, "RECTANG", "0,0", "20,20", "CIRCLE", "10,10", "5")
+    answer(cad, "REGION", "ALL", "", "SUBTRACT", "20,10", "", "15,10", "")
+    answer(cad, "UCS", "W", "EXPLODE", "ALL", "")
+    expect(cad.typeCounts()).toEqual({ line: 4, circle: 1 })
+    const circle = cad.entities().find((e) => e.type === "circle")!
+    expect(
+      circle.type === "circle" && entityPointToWorld(circle, circle.center)
+    ).toEqual(at(10, 0, 10))
+    expect(circle.normal?.y).toBeCloseTo(-1, 9)
+  })
+
+  it("shows grips at its corners only, whatever its edges (regions/p202)", () => {
+    const cad = consoleCad("-10,-15", "80,15")
+    answer(cad, "SPLINE", "0,0", "5,5", "10,0", "", "LINE", "10,0", "0,0", "")
+    answer(cad, "ELLIPSE", "A", "20,0", "40,0", "5", "0", "180")
+    answer(cad, "LINE", "20,0", "40,0", "")
+    answer(cad, "PLINE", "50,0", "60,0", "A", "60,10", "L", "50,10", "C")
+    answer(cad, "REGION", "ALL", "")
+    expect(regions(cad).map(gripsOf).sort()).toEqual([
+      ["0,0,0", "10,0,0"],
+      ["20,0,0", "40,0,0"],
+      ["50,0,0", "50,10,0", "60,0,0", "60,10,0"],
+    ])
+  })
+
+  it("shows grips at its corners and a whole loop's centre, in space (region/s01; regions/p203)", () => {
+    expect(gripsOf(regions(holedSquare())[0])).toEqual([
+      "0,0,0",
+      "0,20,0",
+      "10,10,0",
+      "20,0,0",
+      "20,20,0",
+    ])
+    expect(regions(p203()).map(gripsOf)).toEqual([
+      ["0,0,0", "0,0,10", "10,0,0", "10,0,10"],
+      ["25,0,0"],
+    ])
+    const cad = regionOf([square(0, 0, 20, 20), circleOf(p(40, 10), 5)])
+    cad.selectAll()
+    const grips = cad
+      .scene()
+      .primitives.filter((q) => q.kind === "rect" && q.fill === THEME.grip)
+    expect(grips).toHaveLength(5)
+  })
+
+  it("drags nothing by a grip (region/s03)", () => {
+    const cad = consoleCad()
+    answer(cad, "RECTANG", "0,0", "200,200", "REGION", "L", "")
+    const before = cad.entities()
+    cad.select(before[0].id)
+    cad.click(p(200, 200)).click(p(300, 300)).escape()
+    expect(cad.entities()).toEqual(before)
+  })
+
+  it("takes the palette's layer and colour, each a step U names CHPROP", () => {
+    const cad = consoleCad()
+    answer(cad, "RECTANG", "0,0", "10,10", "REGION", "L", "")
+    const [before] = regions(cad)
+    const l1 = cad.runtime.createLayer("L1")
+    cad.select(before.id)
+    cad.runtime.setSelectionLayer(l1)
+    cad.runtime.setSelectionColor("#ff0000")
+    expect(regions(cad)[0]).toEqual({
+      ...before,
+      layerId: l1,
+      color: "#ff0000",
+    })
+    cad.escape()
+    expect(written(cad, "U")).toEqual(["U", "CHPROP"])
+    expect(regions(cad)[0]).toEqual({ ...before, layerId: l1 })
+  })
+
+  describe.each([
+    [
+      "en",
+      undefined,
+      {
+        BREAK: "Object can't be broken",
+        OFFSET: "Cannot offset that object.",
+        FILLET: "Fillet requires 2 lines, arcs, or circles.",
+        CHAMFER: "Chamfer requires 2 lines.",
+        PEDIT: "Object selected is not a polyline",
+        TRIM: "Cannot TRIM this object.",
+        EXTEND: "Cannot EXTEND this object.",
+        JOIN: "0 objects joined, 2 objects discarded from the operation",
+      },
+    ],
+    [
+      "es",
+      es,
+      {
+        BREAK: "Imposible partir este objeto",
+        OFFSET: "Imposible transponer este objeto.",
+        FILLET: "Empalme requiere 2 líneas, arcos o círculos.",
+        CHAMFER: "Chaflán requiere 2 líneas.",
+        PEDIT: "El objeto designado no es una polilínea",
+        TRIM: "Este objeto no se puede RECORTAR.",
+        EXTEND: "Este objeto no se puede ALARGAR.",
+        JOIN: "0 objetos unidos, 2 objetos descartados de la operación",
+      },
+    ],
+  ] as const)(
+    "is refused in %s (region/e01, e06, e08–e10)",
+    (_, locale, words) => {
+      // FILLET and CHAMFER say it and ask again (region/e06): a second pick says
+      // it again.
+      const answers: Record<keyof typeof words, string[]> = {
+        BREAK: ["10,5"],
+        OFFSET: ["1", "10,5"],
+        FILLET: ["10,5", "20,5"],
+        CHAMFER: ["10,5", "20,5"],
+        PEDIT: ["10,5"],
+        TRIM: ["30,5"],
+        EXTEND: ["30,5"],
+        JOIN: ["10,5", "20,5", ""],
+      }
+      it.each(Object.keys(words) as (keyof typeof words)[])("by %s", (name) => {
+        const cad = createHarness(locale ? { locale } : {})
+        answer(
+          cad,
+          "_ZOOM",
+          "_W",
+          "-10,-10",
+          "40,30",
+          "_RECTANG",
+          "0,0",
+          "10,10"
+        )
+        answer(cad, "_CIRCLE", "25,5", "5", "_REGION", "_ALL", "")
+        const said = written(cad, `_${name}`, ...answers[name]).filter(
+          (line) => line === words[name]
+        )
+        expect(said).toHaveLength(
+          name === "FILLET" || name === "CHAMFER" ? 2 : 1
+        )
+      })
+    }
+  )
+
+  it("is dimensioned by its circle edge, refused by a line edge, and gives UCS OBject its edge (region/e03–e05)", () => {
+    const cad = regionOf([square(0, 0, 10, 10), circleOf(p(25, 5), 5)])
+    answer(cad, "LUPREC", "4", "ZOOM", "W", "-10,-10", "40,30")
+    expect(written(cad, "DIMLINEAR", "", "20,5", "20,15")).toContain(
+      "Dimension text = 10"
+    )
+    const radius = written(
+      cad,
+      "DIMRADIUS",
+      "20,5",
+      "40,20",
+      "DIMRADIUS",
+      "10,5"
+    )
+    expect(radius).toContain("Dimension text = 5")
+    expect(radius).toContain("Object selected is not a circle or arc.")
+    cad.escape()
+    answer(cad, "UCS", "OB", "10,5")
+    const onLine = cad.runtime.document.getSettings().ucs
+    answer(cad, "UCS", "W", "UCS", "OB", "20,5")
+    const onCircle = cad.runtime.document.getSettings().ucs
+    expect([onLine.origin.x, onLine.xAxis.y]).toEqual([
+      expect.closeTo(10, 6),
+      expect.closeTo(1, 6),
+    ])
+    expect([onCircle.origin.x, onCircle.xAxis.x]).toEqual([
+      expect.closeTo(25, 6),
+      expect.closeTo(-1, 6),
+    ])
+  })
+
+  it("is measured by AREA's Object, Add and Subtract, DIST and ID (regions/p213)", () => {
+    const cad = consoleCad("-10,-10", "50,30")
+    answer(cad, "RECTANG", "0,0", "20,20", "CIRCLE", "35,10", "5")
+    answer(cad, "REGION", "ALL", "")
+    const lines = written(
+      cad,
+      ...["AREA", "O", "20,10", "AREA", "A", "O", "20,10", "40,10", ""],
+      ...["S", "O", "40,10", "", "", "DIST", "_END", "19.9,0.1"],
+      ...["_CEN", "39.9,10.1", "ID", "_MID", "10,0.1"]
+    )
+    expect(
+      lines.filter((l) => /^(Area|Total|Distance|Delta| X)/.test(l))
+    ).toEqual([
+      "Area = 400.0000, Trimmed area = 0.0000 , Perimeter = 80.0000",
+      "Area = 400.0000, Trimmed area = 0.0000 , Perimeter = 80.0000",
+      "Total area = 400.0000",
+      "Area = 78.5398, Trimmed area = 0.0000 , Perimeter = 31.4159",
+      "Total area = 478.5398",
+      "Area = 78.5398, Trimmed area = 0.0000 , Perimeter = 31.4159",
+      "Total area = 478.5398",
+      "Area = 78.5398, Trimmed area = 0.0000 , Perimeter = 31.4159",
+      "Total area = 400.0000",
+      "Area = 78.5398, Trimmed area = 0.0000 , Perimeter = 31.4159",
+      "Total area = 400.0000",
+      "Total area = 400.0000",
+      "Distance = 18.0278,  Angle in XY Plane = 34,  Angle from XY Plane = 0\n" +
+        "Delta X = 15.0000,  Delta Y = 10.0000,   Delta Z = 0.0000",
+      " X = 10.0000     Y = 0.0000     Z = 0.0000",
+    ])
+  })
+
   it("reports its area as AREA's Object does (region/p01)", () => {
     const cad = regionOf([circleOf(p(30, 5), 5)])
     answer(cad, "LUPREC", "4")
@@ -1158,36 +1763,117 @@ describe("a region in the other commands", () => {
     )
   })
 
-  it("explodes one face into its edges (b02, p09)", () => {
-    const cad = regionOf([square(0, 0, 20, 20), circleOf(p(10, 10), 5)])
-    answer(cad, "SUBTRACT", "20,10", "", "15,10", "", "EXPLODE", "ALL", "")
-    expect(cad.typeCounts()).toEqual({ line: 4, circle: 1 })
+  it.each([
+    ["a pick inside", ["5,5"], "0 found"],
+    ["a crossing inside", ["C", "4,4", "6,6"], "0 found"],
+    ["a window round it", ["W", "-1,-1", "11,11"], "1 found"],
+    ["a window round part", ["W", "-1,-1", "9,11"], "0 found"],
+    ["a crossing over an edge", ["C", "9,4", "12,6"], "1 found"],
+    ["a pick on an edge", ["10.05,5"], "1 found"],
+  ])("is found by its edges: %s (regions/p221)", (_, selection, found) => {
+    const cad = consoleCad("-10,-10", "30,30")
+    answer(cad, "RECTANG", "0,0", "10,10", "REGION", "L", "")
+    const lines = written(cad, "ERASE", ...selection)
+    expect(lines.find((line) => / found$/.test(line)) ?? "0 found").toBe(found)
   })
 
-  it("cannot be broken, offset, trimmed or extended (e01, e09, e10)", () => {
-    const cad = regionOf([square(0, 0, 10, 10)])
-    expect(written(cad, "BREAK", "10,5").at(-1)).toBe("Object can't be broken")
-    answer(cad, "")
-    expect(written(cad, "OFFSET", "1", "10,5").at(-1)).toBe(
-      "Cannot offset that object."
+  it("draws every edge in the linetype it wears (region/p07)", () => {
+    const cad = consoleCad()
+    answer(cad, "CELTYPE", "DASHED", "RECTANG", "-300,-200", "300,200")
+    answer(cad, "REGION", "L", "", "CELTYPE", "BYLAYER")
+    cad.moveTo({ x: 450, y: 350 })
+    const dashed = cad
+      .scene()
+      .primitives.filter((q) => "stroke" in q && q.stroke?.dash)
+    expect(dashed.length).toBeGreaterThanOrEqual(4)
+  })
+
+  it("is hatched by -HATCH's Select objects, its hole an island (regions/p215)", () => {
+    const cad = holedSquare("-10,-10", "50,30")
+    answer(cad, "-HATCH", "S", "20,10", "", "P", "SOLID", "")
+    expect(cad.typeCounts()).toEqual({ region: 1, hatch: 1 })
+    const hatch = cad.latest()
+    expect(hatch.type === "hatch" ? hatch.loops : []).toHaveLength(2)
+    expect(written(cad, "AREA", "O", "L").at(-1)).toBe(
+      "Area = 321.4602, Perimeter = 111.4159"
     )
   })
 
-  it("shows grips at its corners and a circle's centre (s01, s02)", () => {
-    const cad = regionOf([square(0, 0, 20, 20), circleOf(p(40, 10), 5)])
-    cad.selectAll()
-    const grips = cad
-      .scene()
-      .primitives.filter((q) => q.kind === "rect" && q.fill === THEME.grip)
-    expect(grips).toHaveLength(5)
+  it("is hatched tilted in a UCS of its plane, left out at an angle to it (REGIONS-D73)", () => {
+    const cad = consoleCad()
+    answer(cad, "UCS", "X", "90", "PLAN", "", "ZOOM", "W", "-10,-10", "30,30")
+    answer(cad, "RECTANG", "0,0", "20,20", "CIRCLE", "10,10", "5")
+    answer(cad, "REGION", "ALL", "", "SUBTRACT", "20,10", "", "15,10", "")
+    answer(cad, "-HATCH", "S", "20,10", "", "P", "SOLID", "")
+    expect(written(cad, "AREA", "O", "L").at(-1)).toBe(
+      "Area = 321.4602, Perimeter = 111.4159"
+    )
+    answer(cad, "UCS", "W")
+    expect(written(cad, "-HATCH", "S", "ALL", "", "").at(-1)).toBe(
+      "Unable to hatch the boundary."
+    )
   })
 
-  it("moves, turns and mirrors whole, its area kept", () => {
-    const cad = regionOf([square(0, 0, 10, 10)])
-    answer(cad, "MOVE", "L", "", "0,0", "3,4")
-    answer(cad, "ROTATE", "L", "", "0,0", "90")
-    answer(cad, "MIRROR", "L", "", "0,0", "0,10", "Y")
-    expect(areas(cad)).toEqual([100])
-    expect(regions(cad)[0].faces[0].loops[0].length).toBe(4)
+  it("is taken silently by TRIM's cutting edges, and is no edge (region/e07)", () => {
+    const cad = regionOf([square(0, 0, 10, 10), circleOf(p(25, 5), 5)])
+    answer(cad, "ZOOM", "W", "-10,-10", "40,30", "LINE", "-5,5", "35,5", "")
+    const lines = written(cad, "TRIM", "T", "10,5", "", "-3,5", "")
+    expect(lines).toContain("1 found")
+    expect(lines.join("\n")).not.toMatch(/valid edge/)
+    expect(cad.typeCounts()).toEqual({ region: 2 })
+  })
+
+  describe("in a file", () => {
+    /** regions/p219's drawing, and region/b06's region of two faces. */
+    function drawing(): CadHarness {
+      const cad = consoleCad("-10,-15", "80,30")
+      answer(cad, "SPLINE", "0,0", "5,5", "10,0", "", "LINE", "10,0", "0,0", "")
+      answer(cad, "ELLIPSE", "A", "20,0", "40,0", "5", "0", "180")
+      answer(cad, "LINE", "20,0", "40,0", "")
+      answer(cad, "PLINE", "50,0", "60,0", "A", "60,10", "L", "50,10", "C")
+      answer(cad, "RECTANG", "0,15", "20,25", "CIRCLE", "5,20", "2")
+      answer(cad, "CIRCLE", "15,20", "2", "REGION", "ALL", "")
+      answer(cad, "SUBTRACT", "20,18", "", "5,22", "15,22", "")
+      answer(cad, "UCS", "X", "90", "CIRCLE", "70,0", "5", "REGION", "L", "")
+      answer(cad, "UCS", "W", "RECTANG", "30,15", "60,20", "REGION", "L", "")
+      answer(cad, "RECTANG", "43,10", "47,25", "REGION", "L", "")
+      answer(cad, "SUBTRACT", "30,17", "", "45,25", "")
+      expect(areas(cad)).toEqual([
+        31.25, 78.5398, 78.5398, 130, 139.2699, 174.8673,
+      ])
+      return cad
+    }
+
+    it("survives save and open field for field, its overrides too (regions/p219; region/b06)", () => {
+      const cad = drawing()
+      cad.runtime.document.load(
+        cad.entities().map((entity, i) => {
+          const coloured = i % 2 ? entity : assignEntityColor(entity, "#0a141e")
+          const dashed =
+            i % 3 ? coloured : assignEntityLinetype(coloured, "Dashed")
+          return i % 2 ? assignEntityLineweight(dashed, 0.5) : dashed
+        })
+      )
+      const text = cad.runtime.serializeDrawing()
+      const copy = createHarness()
+      copy.runtime.loadDrawing(text)
+      expect(copy.entities()).toEqual(cad.entities())
+      expect(copy.runtime.serializeDrawing()).toBe(text)
+    })
+
+    it("is carried by COPYBASE and PASTECLIP, its plane kept", async () => {
+      const cad = drawing()
+      const before = regions(cad)
+      answer(cad, "COPYBASE", "0,0,0", "ALL", "")
+      await cad.runtime.pasteFromClipboard()
+      answer(cad, "100,0")
+      const pasted = regions(cad).slice(before.length)
+      expect(areas(cad)).toEqual(
+        [...before, ...before]
+          .map((r) => Number(regionArea(r).toFixed(4)))
+          .sort((a, b) => a - b)
+      )
+      expect(pasted.map((r) => r.normal)).toEqual(before.map((r) => r.normal))
+    })
   })
 })

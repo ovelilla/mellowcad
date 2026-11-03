@@ -850,7 +850,8 @@ too (`1 found` for an open line, erase/p222), which the hatch leaves out silentl
 (p222), while Enter ending a run whose set bounds no area says `Unable to hatch the boundary.` (es
 `Imposible sombrear el contorno.`, table 20770; an open line, a TEXT, an MTEXT alone: p223, p226,
 p227), an empty run nothing (p224, p204); a TEXT or MTEXT it takes inside a boundary it takes is an
-island box (p228). Undo, which the prompt declares but does not list (es `desHacer`), takes back
+island box (p228); a region gives every loop of its faces, its holes islands (regions/p215: a holed
+square, SOLID, one hatch of 2 loops, AREA 321.4602 and 111.4159). Undo, which the prompt declares but does not list (es `desHacer`), takes back
 the last internal point's boundaries without a word and asks again, leaving what Select objects
 took, and with no internal point left says `No boundary to Undo.` (es `Ningún contorno por
 deshacer.`). **Properties** asks `Enter a pattern name or [?/Solid] <ANGLE>:` (`Unknown pattern
@@ -901,7 +902,8 @@ between about 27 800 and 32 100 members (p365, p367), by a rule **unverified**, 
 that and the cap is made here and refused there
 
 **Missing:** ellipse and spline boundaries at the internal point (p138–p141: AutoCAD traces them;
-here they bound nothing); Outer's third loop (p130: AutoCAD stores the island's island as a loop of
+here they bound nothing), and a selected region with an elliptical or spline edge (left out: a loop
+here holds lines and arcs only); Outer's third loop (p130: AutoCAD stores the island's island as a loop of
 its own, flagged not outermost, filling the same area: here 2 loops); a text box's rule for
 several MTEXT lines, an attribute, a text across a boundary or a pick inside a text's box
 (**unverified**); a tilted UCS at the internal point (p156: the console refuses a point off the
@@ -963,24 +965,37 @@ REDO (regions/p103–p105, p128); not transparent (regions/p102). The object (fi
 faces of loops of exact edges — lines, circular and
 elliptical arcs, NURBS pieces —, the kernel's (`geometry/planarRegions.ts`, tolerance 1e-6). It
 draws as its edges, nothing filled (2D Wireframe, d01); it is picked by them and a window takes it
-by them; it snaps as its edges do — Endpoint, Midpoint, Center, Quadrant, Intersection, Nearest,
-Tangent, Perpendicular —, no Geometric Center, Node or Insertion (s01, s02); its grips are its
-corners and the centre of a loop that is a whole circle or ellipse (s01–s03, d01), and dragging one
+by them (regions/p221); it snaps as its edges do — Endpoint, Midpoint, Center, Quadrant, Intersection,
+Apparent Intersection (arc edges too, regions/p200), Nearest, Tangent, Perpendicular, in plan, in an
+isometric view and tilted (regions/p200, p201, p203, p204) —, no Geometric Center, Node or Insertion
+(s01, s02); an override takes the edge under the cursor, a Center none from a line edge
+(regions/p218, p220); a circle or arc edge's Quadrants are at its own axes, whatever the UCS and
+however oblique (regions/p222, p203); its grips are its
+corners and the centre of a loop that is a whole circle or ellipse (s01–s03, d01; regions/p202), and dragging one
 changes nothing (MoveGripPointsAt leaves it, s03). MOVE, COPY, ROTATE, SCALE, MIRROR, ALIGN-free 3D
-transforms and STRETCH (whole, when the window takes every corner; **unverified**) carry it. The
-Properties palette: Region, Geometry's Area and Perimeter, read only (d02). LIST, AREA, MASSPROP
-and EXPLODE: their entries. BREAK says `Object can't be broken`, OFFSET `Cannot offset that object.`, TRIM and
+transforms carry it, tilted too (e02; regions/p206, p207); STRETCH moves it whole when the
+crossing catches a corner or a whole loop's centre, else leaves it, an edge or a rim caught alone
+(e02; regions/p205); ARRAYRECT and ARRAYPOLAR array it at its elevation (regions/p208, p209). The
+Properties palette: Region, Geometry's Area and Perimeter, read only (d02); its layer and colour
+edits, each a step U names `CHPROP`. LIST, AREA (Add and Subtract too, regions/p213), MASSPROP
+and EXPLODE: their entries. -HATCH's Select objects hatches it, its holes islands (regions/p215:
+SOLID, a hatch of 2 loops), in a plane parallel to the UCS's XY plane as any boundary. BREAK says
+`Object can't be broken`, OFFSET `Cannot offset that object.`, TRIM and
 EXTEND `Cannot TRIM this object.` / `Cannot EXTEND this object.` (es `Este objeto no se puede
-RECORTAR.` / `… ALARGAR.`), FILLET and CHAMFER refuse it, JOIN discards it, PEDIT `Object selected
-is not a polyline` (e01, e06–e10); DIMLINEAR, DIMALIGNED, DIMRADIUS, DIMDIAMETER and UCS OBject
+RECORTAR.` / `… ALARGAR.`), FILLET `Fillet requires 2 lines, arcs, or circles.` and CHAMFER
+`Chamfer requires 2 lines.` and ask again (es `Empalme requiere 2 líneas, arcos o círculos.`,
+`Chaflán requiere 2 líneas.`; picked second, the same words, **unverified**), JOIN discards it,
+PEDIT `Object selected is not a polyline` (e01, e06–e10); TRIM's Standard set takes it silently
+and it is no edge (e07); DIMLINEAR, DIMALIGNED, DIMRADIUS, DIMDIAMETER and UCS OBject
 take the edge picked as that object (e03–e05).
 
 **Missing:** DELOBJ (always 3 here); BOUNDARY's Region object type; a region from a hatch's
 boundary; its 3D Visualization's Material row (no materials); the hot grip's `** STRETCH **` and
 the grip modes (a click on a grip does nothing); LIST's `Handle =` line (no handles); SUBTRACT,
 UNION and INTERSECT of surfaces (none yet); the visual styles VSCURRENT lacks (view.md); the edges as a
-TRIM or EXTEND edge in Quick mode (the Standard set refuses it, `1 was not a valid edge or
-selection method.`, e01's first run; Quick **unverified**); the order of a loop's edges and where
+TRIM or EXTEND edge in Quick mode, where AutoCAD cuts and extends at them (regions/p216, p217: here
+TRIM Quick erases the object and EXTEND refuses it); -HATCH of a region with an elliptical or spline
+edge, which no hatch loop here holds; the order of a loop's edges and where
 it starts as AutoCAD keeps them (here counter-clockwise from the chain's first edge; EXPLODE gives
 the same objects in another order); two spline edges running along each other in a boolean unless
 they are one curve; a tangent touch between an ellipse or spline edge and another, which is not

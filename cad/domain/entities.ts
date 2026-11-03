@@ -155,6 +155,7 @@ export {
 export type { HatchGeometry } from "./hatch"
 export {
   hatchLoopFromEntity,
+  hatchLoopsFromEntity,
   hatchLoopSegments,
   MAX_HATCH_LINES,
   hatchGeometry,

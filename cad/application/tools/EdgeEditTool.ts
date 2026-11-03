@@ -2347,7 +2347,9 @@ function circleEdgeCrossPoints(
     case "dimension":
     case "hatch":
     case "insert":
-    // WHY: "1 was not a valid edge or selection method." (region/e01's first run).
+    // WHY: no edge here. The Standard set takes a region silently and cuts
+    // nothing at it (region/e07); AutoCAD's Quick mode does cut and extend at
+    // its edges (regions/p216, p217), a gap in REGION's coverage entry.
     case "region":
     case "solid3d":
       return []
