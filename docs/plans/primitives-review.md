@@ -1,9 +1,9 @@
 # 3D primitives review (BOX, WEDGE, CYLINDER, CONE, SPHERE, TORUS, PYRAMID)
 
 > **Status:** group 1 executed, 2026-11-03: the console blocks PBX, SHD, PCY, PST, PPY, PLP, SPK,
-> STF, SWR and SFL, one commit each (index below). Group 2, the desktop block PDT, waits for a
-> session with the owner's mouse (grips, palette, the jig, what each prompt reads from the
-> cursor); once it lands the plan shrinks to its summary and index.
+> STF, SWR and SFL, one commit each (index below). Group 2 reviewed on the desktop the same day
+> (d01–d13, the owner's mouse): its blocks PDT (the seven's behaviour) and PDJ (their jig) follow
+> in the same session; once they land the plan shrinks to its summary and index.
 >
 > It owns the solid object (its B-rep, 2D Wireframe and isolines, picking, snaps, transforms,
 > file), a height or radius given with the mouse off the plan, the primitives' grips, palette
@@ -13,8 +13,7 @@
 
 ## Summary
 
-**Findings:** 0 critical, 4 high, 14 medium, 20 low, in ten console blocks; PDT holds the cells
-only the desktop answers.
+**Findings:** 0 critical, 5 high, 19 medium, 23 low, in ten console blocks and two desktop ones.
 
 | Block | What                                                    | Critical | High | Medium | Low |
 | ----- | ------------------------------------------------------- | -------- | ---- | ------ | --- |
@@ -28,7 +27,8 @@ only the desktop answers.
 | STF   | transforms and other commands on a solid                | 0        | 0    | 1      | 2   |
 | SWR   | 2D Wireframe, ISOLINES, REGEN                           | 0        | 0    | 1      | 1   |
 | SFL   | file and clipboard                                      | 0        | 0    | 0      | 1   |
-| PDT   | the desktop (group 2)                                   | —        | —    | —      | —   |
+| PDT   | the desktop: what the seven read and keep               | 0        | 1    | 2      | 2   |
+| PDJ   | the desktop: the jig (dynamic input, rubber band, ghost) | 0       | 0    | 3      | 1   |
 
 The worst:
 
@@ -126,6 +126,10 @@ stopped by LIST's paging before QAFLAGS was added; what precedes it stands.
 | p400–p407          | the solids' snaps (plan, SE Isometric, running), picks, CEN at a centre         |
 | p408–p416, p420–p425 | ID/DIST/MOVE's LASTPOINT; MIRROR, SCALE, STRETCH, ARRAYRECT, EXPLODE; plots  |
 | p417–p419, p426    | ISOLINES and REGEN; every kind to a DWG and back; a typed point at `Select objects:` |
+| d01–d04            | desktop: the height, a radius, BOX's corner, length and width, Ortho and `<30` with the mouse |
+| d05–d07            | desktop: Escape at every keyword's prompt, what a cancelled run keeps, U, the right button |
+| d08–d10            | desktop: a turned box's and wedge's grips, the hover and markers, an apple's isolines |
+| d11–d13            | desktop: each prompt's jig and dynamic input; es-ES's menu; pt-BR's Enter by COM |
 
 ## Matrix
 
@@ -287,6 +291,40 @@ Prompts: centre `[Edge/Sides]`, Sides, Edge's two points, base radius `[Inscribe
 | COPYBASE / PASTECLIP between drawings | owned (Clipboard) · contract holds |
 | N | **SFL-01** |
 
+### PDT, PDJ — the desktop (group 2)
+
+Desktop probes d01–d13 (`scripts/research/probes/primitives/d<id>.sh`, each header saying what it
+saw; screenshots in `research/probes/primitives/desk/`), 2026-11-03 with the owner's mouse: en-US
+(d01–d11), es-ES (d12) and pt-BR (d13, COM alone), plan and SE Isometric. Scratch tests
+`research/review/primitives/e/` (the cursor, the aids, dynamic input), `f/` (Escape, U, the
+defaults, the right button), `h/` (grips); the browser's screenshots of the same scenes beside
+AutoCAD's in the session's scratchpad (`g/`). PDT is the seven's behaviour, PDJ their jig.
+
+| Row | Cell | State |
+| --- | --- | --- |
+| C | CYLINDER's, CONE's, PYRAMID's height read from the cursor in SE Isometric, up, down, aside | untested · d01 · scratch e/d01 (sH:81 holds them under a snap only) |
+| C | a radius picked in SE Isometric with its centre off the work plane; CONE's top | **differs PDT-02** · d02 |
+| C | `<30` at BOX's other corner, then a click or a number; a bare number there, a direct distance (p117's refusal was the console's) | untested · d03 a–c |
+| C | the width's side with the cursor exactly on the length's line | **differs PDT-04** · d03 f (settles PBX-07, PRIM-D6) |
+| D | Ortho at BOX's other corner | **differs PDT-01** · d03 d |
+| D | Ortho at Length and the width, clicked and typed | untested · d03 e |
+| D | Ortho and `<30` at Edge's second point, the axis endpoint, Elliptical's three points (bent and locked from the first point, the base's centre, the ellipse's centre) | untested · d04 · scratch e/d04 |
+| D | dynamic input: what the height, radius, tube, top, length, width and other corner boxes read | **differs PDJ-01** · d01, d03 c, d11 |
+| D | dynamic input: `10,5` typed at the other corner is relative; the Down arrow's list | owned (LINE; the list's look: known, drafting-aids.md) · d11, d12 |
+| F | U after a run cancelled halfway: `BOX`, nothing undone | untested · d06 · scratch f/d06 (undoEcho.test.ts:254 holds the rule for ID) |
+| G | one Escape cancels the command at every prompt a keyword opens, none steps back | untested · d05 · scratch f/d05 |
+| G | what a cancelled run leaves as the next one's default | **differs PDT-03** · d06 |
+| G | the right button: Enter, Cancel, the visible keywords, Osnap Overrides; Enter where no option | untested · d07, d12 · scratch f/d07 (Recent Input, SteeringWheels, QuickCalc: known, workspace.md) |
+| I | a box and a wedge turned 180: their grips and drags | match but the wedge's base arrow: **differs PDT-05** · d08 · scratch h/d08 |
+| K | pt-BR's Enter at CONE's and PYRAMID's height with no default ends them on the desktop too | known (PRIM-D20, D40) · d13 |
+| M | the ghost at the height of the seven, at SPHERE's radius, TORUS's tube | match · d01, d11 |
+| M | the dashed rubber band from the centre, ring point or base at the round solids' prompts | **differs PDJ-02** · d02, d07, d11, d12 |
+| M | the ghost at the base radius, the ring, Elliptical's axes, the Top radius, the axis endpoint, BOX's length and width | **differs PDJ-03** · d11 |
+| M | PYRAMID's base ghost | **differs PDJ-04** · d11 |
+| P | the rollover and its tooltip, Endpoint's and Center's markers on a solid | match · d09 |
+| Q | the crosshair off the plan (AutoCAD's three coloured arms) | known (coordinate-systems.md, UCS's Missing) · d09, d11 |
+| D | an apple's isolines at its outer equator: drawn, picked, Center to the torus' centre | match · d10 (SPK-07 refuted) |
+
 ## Findings
 
 ### High
@@ -345,6 +383,17 @@ Prompts: centre `[Edge/Sides]`, Sides, Edge's two points, base radius `[Inscribe
 - **Fix:** no INT or APP candidate from any solid edge (PRIM-D60). **Regression test:**
   `solidCommands.test.ts`, p400 and p401's cases.
 - **Rules:** `cad-engine.md`'s solid paragraph says it.
+
+#### PDT-01 — Ortho bends BOX's and WEDGE's other corner, so under Ortho two corners make no box; AutoCAD leaves the corner as picked
+
+- **Severity:** high · **Row:** D · **Status:** verified (reviewer: scratch e/d03 d)
+- **Where:** `cad/application/tools/BoxTool.ts:291-297` (`getConstraintAnchor` gives the first
+  corner at `other`)
+- **AutoCAD:** d03 d (en-US, ORTHOMODE 1): `BOX 0,0,0`, a click at 10.07,6.07, 5: Length 10.0742,
+  Width 6.0663; `<30` there still locks it (d03 a, b).
+- **mellowcad:** `Box of zero width not permitted.` twice, nothing made.
+- **Scenario:** Ortho on (F8), BOX by two clicks → refused until Ortho is turned off.
+- **Fix:** PRIM-D80. **Regression test:** `solidCommands.test.ts`, d03 d's box; WEDGE alike.
 
 ### Medium
 
@@ -479,7 +528,71 @@ Prompts: centre `[Edge/Sides]`, Sides, Edge's two points, base radius `[Inscribe
   (`Regenerating model.`). **mellowcad:** at once; `Unknown command "REGEN"`.
 - **Fix:** PRIM-D62.
 
+#### PDT-02 — A radius picked in a 3D view with its centre off the work plane is read on the work plane; AutoCAD on the plane through the centre
+
+- **Severity:** medium · **Row:** C · **Status:** verified (scratch e/d02; the browser's ghost too)
+- **Where:** `RoundSolidTool.ts:617` (`distanceTo(state.center, at)`, `at` on the work plane), the
+  top at `:693`, the ghost's `reach` at `:561`; `PyramidTool.ts:383-384`
+- **AutoCAD:** d02, SE Isometric, a click 100 px right of the centre's pixel: CYLINDER, SPHERE,
+  PYRAMID (circumscribed) and TORUS at 300,100,30 give 25.8839, as at z 0 (25.8846); CONE's top
+  28.3120, in the top's plane at the height the cursor read when Top was typed (the ghost's top
+  sits there).
+- **mellowcad:** 57.8858 (PYRAMID 81.8629 inscribed), CONE's top 54.1128; the ghost well past the
+  cursor.
+- **Fix:** PRIM-D82. **Regression test:** `solidHeights.test.ts`, the five at z 30, CONE's top.
+
+#### PDT-03 — A size answered in a cancelled run is the next run's default; AutoCAD keeps the shared defaults only from a solid made
+
+- **Severity:** medium · **Row:** G · **Status:** verified (scratch f/d06)
+- **Where:** `PyramidTool.ts:659` (sides), `:505` (radius), `:540` (top), `:249` (Inscribed);
+  `RoundSolidTool.ts:936`, `:729`, `:735`, `:719` (Diameter); `BoxTool.ts:510`, `:586`
+- **AutoCAD:** d06: `PYRAMID _S 6`, Escape → the next ` 4 sides  Circumscribed`; `CYLINDER 0,0,0 7`,
+  Escape → `<2.0000>`; `BOX 0,0,0 _L 12`, Escape → `<10.0000>`; CONE's `_T 2`, Escape → `<0.0000>`.
+- **mellowcad:** ` 6 sides`, `<7.0000>`, `<12.0000>`; a cancelled PYRAMID's top leaks to CONE.
+- **Fix:** PRIM-D83. **Regression test:** `solidPrimitives.test.ts` beside `:1287`, d06's four.
+
+#### PDJ-01 — Dynamic input reads no distance from the cursor, and BOX's other corner shows one X,Y field
+
+- **Severity:** medium · **Row:** D · **Status:** verified (scratch e/d01, e/dynplan; the browser)
+- **Where:** `BoxTool.ts:684`, `:700`, `RoundSolidTool.ts:1157-1190`, `PyramidTool.ts:678`: no label,
+  no `dynamicInput.setLive` (CIRCLE's at `CircleTool.ts:458`)
+- **AutoCAD:** d01, d11: the height's box reads the cursor (31.5291 up, 30.9048 down: its size)
+  beside a dotted dimension from the base; the radius 25.8846 beside one from the centre; the tube
+  28.0104, the top 111.5499, the length 49.1578 with its angle, the width 5.1103; the other corner
+  a length and a width field (10.0742, 5.0467), a `10` typed there the length (d03 c, dynamic input
+  on).
+- **mellowcad:** the prompt's words or the default in the box, one `X,Y` field at the other corner.
+- **Fix:** PRIM-D81. **Coverage:** BOX's Missing loses "the height box's reading of the cursor".
+
+#### PDJ-02 — The round solids draw no dashed rubber band at their distance prompts
+
+- **Severity:** medium · **Row:** M · **Status:** verified (the browser: g/m-d11-sphere-radius,
+  m-d11-torus-tube, m-d07-cylinder-height)
+- **Where:** `RoundSolidTool.ts:537-588` (no `THEME.dashedRubberBand`; CIRCLE's at
+  `CircleTool.ts:766-771`); PyramidTool alike
+- **AutoCAD:** d02, d07, d11, d12: an amber dashed line from the centre, the ring's point or the base
+  to the cursor at the radius, tube, top and height (in plan too).
+- **Fix:** PRIM-D86.
+
+#### PDJ-03 — Several prompts draw no ghost, or a wrong one
+
+- **Severity:** medium · **Row:** M · **Status:** verified (the browser)
+- **Where:** `RoundSolidTool.ts:566-584` (only SPHERE at the radius; Elliptical and Top fall to
+  `[]`; the axis endpoint a height), `BoxTool.ts:310-341` (only `other` and `height`)
+- **AutoCAD:** d11: CYLINDER's and CONE's base circle and TORUS's ring through the cursor at the
+  radius; the ellipse at Elliptical's axes; the frustum at Top; the cylinder leaning to the cursor
+  at Axis endpoint; a line from the corner at BOX's Length and the footprint at its width.
+- **Fix:** PRIM-D87.
+
 ### Low
+
+- **PDT-04** — With the cursor exactly on the length's line, a typed width always goes right
+  (`BoxTool.ts:593`); AutoCAD's goes right only with the cursor past the length's end, left between
+  and behind its start (d03 f, SNAPMODE putting the cursor on the line). PRIM-D84.
+- **PDT-05** — A wedge's base arrow sits under its centre (`solidGrips.ts:96`); AutoCAD's under its
+  tall end with the top's (d08: 20,10,-0.1 and 20,10,5 on a wedge turned 180). PRIM-D85.
+- **PDJ-04** — PYRAMID's base ghost is its outline alone (`PyramidTool.ts:330-341`); AutoCAD's has
+  its edges to the centre, a pyramid of no height (d11). PRIM-D87.
 
 - **PBX-07** — A typed width's side with the cursor on the length's line flips with the console's
   floating noise (right at 22°, 26°, 31°, left at 159°, 164°: p03, x07, p124), so the coverage's
@@ -575,6 +688,26 @@ Prompts: centre `[Edge/Sides]`, Sides, Edge's two points, base radius `[Inscribe
 - **PRIM-D65:** Center is found by touch for every curve, as for a sphere and a torus (SPK-02), in
   the object snaps' area under this review's ID.
 
+- **PRIM-D80:** BOX's and WEDGE's other corner is exempt from Ortho (d03 d); `<a` still locks it
+  (d03 a, b); Polar there is unprobed and left as it is.
+- **PRIM-D81:** the height, radius, diameter, tube, top, length and width prompts label their box
+  and feed `setLive` with the cursor's reading (its size), as CIRCLE does; BOX's other corner shows
+  RECTANG's length and width fields. The dotted dimension is drawn as CIRCLE's radius one.
+- **PRIM-D82:** a radius, diameter, tube or top picked freely (no snap, not typed) is read where the
+  line of sight meets the plane through the centre (for the top, the top's plane at the height the
+  cursor read last), as `PointResolver.onBasePlane`; a snapped or typed point keeps its distance in
+  space (p242). The ghost reads it alike.
+- **PRIM-D83:** a run keeps its answers in its state and writes the shared defaults when the solid is
+  made, as PRIM-D25 does for CONE's top; Inscribed and Diameter, unprobed one by one, follow d06.
+- **PRIM-D84:** on the length's line the width goes right with the cursor past the length's end,
+  left otherwise.
+- **PRIM-D85:** a wedge's base arrow sits under its tall end, with the top's; a wedge turned 0 is
+  taken from d08's frame (MPGRIPDATA needs the desktop).
+- **PRIM-D86:** the dashed rubber band runs from each distance prompt's base (the centre, the ring's
+  point, the base's centre, the top's centre) to the cursor, as CIRCLE's.
+- **PRIM-D87:** the ghosts of PDJ-03 and PDJ-04 are drawn as AutoCAD's d11 shows them; Cube's and
+  2Point's, unprobed, stay as they are.
+
 ## Tests proposed
 
 The regression tests are in each finding. The untested cells, by file:
@@ -590,6 +723,12 @@ The regression tests are in each finding. The untested cells, by file:
   current properties and a tilted UCS (p234, p235, p243); PYRAMID's Sides bounds, Edge's and the
   axis' Enter, every point form, transparency (p304–p326); the shared defaults' chain (p156, p157).
 - `currentProperties.test.ts`: the probe of each row (p121, p234, p325).
+
+- PDT's untested cells: `solidHeights.test.ts`, the free cursor's height for CYLINDER, CONE and
+  PYRAMID (d01); `solidCommands.test.ts`, `<30` and a bare number at the other corner, Ortho at
+  Length and the width (d03), U after a cancelled BOX (d06); `solidPrimitives.test.ts`, Ortho and
+  `<30` at the five base-less prompts (d04), one Escape at each keyword's prompt (d05), the Command
+  menu's keywords and a right-click as Enter (d07).
 
 ## What is not tested and why
 
@@ -624,6 +763,15 @@ The regression tests are in each finding. The untested cells, by file:
 - The sweep's pt-BR flags on `pyramidCenterOr`, `pyramidBaseRadiusOr`, `specifyBaseRadiusOr`, and
   `requiresIntegerBetween` (AcDimRes:5318 is another string): the console prints the catalog's.
 - `_.BOX`, `_.PYRAMID`, `_M2P`: known (command-line.md, drafting-aids.md).
+
+- SPK-07, an apple's isoline at its outer equator: the desktop draws the meridians out to it, and
+  a hover there highlights the apple and finds Center at its centre (d10), as here; p407's nil was
+  the console's.
+- The browser's G-10 (the first point's empty `X,Y` box) and G-11 (the Down arrow's list): a rule
+  (`cad-tools.md`) and a deviation with its `WHY` (drafting-aids.md). G-8 (the crosshair's coloured
+  arms off the plan): known, UCS's Missing. G-12 (tracking along an edge's own line drawn across
+  the view where AutoCAD labels an Extension, d09-mid): the probe ran with DYNMODE 0 and Polar
+  unknown, so unverified; for the 3D interaction review.
 
 ## Coverage ↔ code ↔ AutoCAD, rules ↔ code
 
@@ -673,9 +821,12 @@ Group 1, one commit per block, in this order (each blocks the next only where sa
 9. **SWR** — REGEN and REGENALL, ISOLINES' tests and `WHY`; an hour.
 10. **SFL** — every kind's round trip and a version 43 file; an hour.
 
-Group 2, **PDT**: one desktop session with the owner's mouse (SE Isometric and plan, es and en
-profiles): the cells listed under "could not be reviewed", g01's grips and d05's palette again
-after the group's fixes, the seven's look (rows M, P, Q) and dynamic input (DYNMODE 3).
+Group 2, after the desktop session (d01–d13), one commit per block:
+
+11. **PDT** — Ortho at the other corner, the radius on the centre's plane, the defaults from a solid
+    made, the width on the line, the wedge's base arrow, d01–d07's untested cells; half a day.
+12. **PDJ** — the boxes' live readings and BOX's two fields, the dashed rubber band, the missing
+    ghosts; half a day. After PDT: PDT-02's plane is what the ghost and the box read.
 
 ## Changes the execution makes
 
@@ -687,7 +838,10 @@ after the group's fixes, the seven's look (rows M, P, Q) and dynamic input (DYNM
   key's choice per input function needs a line.
 - **Catalogs**: es `CU`; the new zero key in en, es, pt-BR; `npm run locales`.
 - **i18n**: `docs/i18n/pt-BR.md`, the Enter quirk (PRIM-D20, D40).
-- **Roadmap**: review 26's state `plan`, `done` after PDT; the suspects of PRIM-D41 for reviews 27
+- **PDT, PDJ**: BOX's Missing loses the height box's reading; the unverified side on the line
+  (PBX-07) and an apple's isoline (SPK-07) settled; CYLINDER's and PYRAMID's "the cursor's
+  reading **unverified** on the desktop" settled (d01); each entry says what a cancelled run keeps.
+- **Roadmap**: review 26's state `plan`, `done` after PDT and PDJ; the suspects of PRIM-D41 for reviews 27
   to 31.
 
 ## Template improvements
@@ -704,3 +858,12 @@ after the group's fixes, the seven's look (rows M, P, Q) and dynamic input (DYNM
 - **A refusal key chosen per input function**: three subagents found the same mix (the command's
   words or the input function's) in three tools; template §4.5 asks, per prompt, which of the two a
   refusal is, from the trace's AllowZero/AllowNone.
+- **A cursor exactly on a line, on the desktop**: SNAPMODE 1 with SNAPUNIT 1 puts it there (d03 f),
+  where the console's fixed cursor and a hand-placed pixel cannot (PBX-07). annex-probes.md §4.
+- **A keyword typed mid-jig freezes what the jig read**: CONE's Top measured in the plane of the
+  height the cursor gave when `T` was typed (d02); a desktop probe moves the cursor to a known
+  place before typing a keyword. annex-probes.md §4.
+- **The browser's look against the desktop's screenshots, by a subagent given the PNGs**: rows M
+  and Q of seven commands in one pass (twelve findings, four refuted as known or ruled). Template
+  §4.8: such a subagent gets the known gaps first (the crosshair, the Down list, the first point's
+  box), or it reports them.
