@@ -1,0 +1,9 @@
+_QAFLAGS
+2
+_ARC
+0,0
+5,5
+10,0
+_REGION
+_ALL
+

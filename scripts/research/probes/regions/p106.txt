@@ -1,0 +1,11 @@
+_QAFLAGS
+2
+_CIRCLE
+0,0
+5
+_CIRCLE
+20,0
+5
+(sssetfirst nil (ssget "_X"))
+_REGION
+(sslength (ssget "_X" '((0 . "REGION"))))

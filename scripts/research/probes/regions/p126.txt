@@ -1,0 +1,32 @@
+_QAFLAGS
+2
+_-LAYER
+_M
+LK
+
+_CIRCLE
+0,0
+5
+_LINE
+20,0
+30,0
+30,10
+20,10
+_C
+_-LAYER
+_S
+0
+_LO
+LK
+
+_CIRCLE
+50,0
+5
+_REGION
+_ALL
+
+(sslength (ssget "_X" '((0 . "REGION"))))
+(sslength (ssget "_X" '((0 . "CIRCLE"))))
+(sslength (ssget "_X" '((0 . "LINE"))))
+MPDUMP
+-

@@ -1,0 +1,17 @@
+_QAFLAGS
+2
+_CIRCLE
+0,0
+5
+_REGION
+_L
+
+(sssetfirst nil (ssget "_X"))
+_EXTRUDE
+10
+(sssetfirst nil (ssget "_X"))
+_SLICE
+_XY
+0,0,5
+_B
+(sslength (ssget "_X"))

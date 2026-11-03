@@ -1,0 +1,43 @@
+_QAFLAGS
+2
+_RECTANG
+0,0
+10,10
+_REGION
+_L
+
+_CIRCLE
+25,5
+5
+_REGION
+_L
+
+_UCS
+_X
+90
+_RECTANG
+0,0
+10,10
+_REGION
+_L
+
+_UCS
+_W
+_LINE
+5,-5
+5,15
+
+_VPOINT
+1,-1,1
+_ZOOM
+_E
+(osnap '(9.9 0.1 0) "_end")
+(osnap '(5.1 0.1 0) "_mid")
+(osnap '(5.1 0.1 0) "_int")
+(osnap '(0.1 0.1 0) "_int")
+(osnap '(20.1 5.1 0) "_cen")
+(osnap '(25.1 9.9 0) "_qua")
+(osnap '(10 0 9.9) "_end")
+(osnap '(5 0 9.9) "_mid")
+(osnap '(0 0 9.9) "_int")
+(osnap '(5.1 10 0) "_app")

@@ -1,0 +1,21 @@
+_QAFLAGS
+2
+_CIRCLE
+0,0
+5
+_CIRCLE
+6,0
+5
+_REGION
+_ALL
+
+_ZOOM
+_W
+-20,-20
+30,30
+(setvar "LASTPOINT" '(100 100 0))
+_INTERSECT
+-5,0
+11,0
+
+(getvar "LASTPOINT")

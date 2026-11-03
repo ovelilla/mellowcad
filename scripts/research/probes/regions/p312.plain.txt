@@ -1,0 +1,19 @@
+_ZOOM
+_W
+-10,-10
+40,10
+_CIRCLE
+0,0
+5
+_CIRCLE
+3,0
+5
+_REGION
+_ALL
+
+_SUBTRACT
+-5,0
+
+
+_U
+(sslength (ssget "_X"))

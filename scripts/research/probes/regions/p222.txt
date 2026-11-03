@@ -1,0 +1,22 @@
+_QAFLAGS
+2
+_ZOOM
+_W
+-20,-20
+60,40
+_CIRCLE
+0,0
+10
+_REGION
+_L
+
+_CIRCLE
+40,0
+10
+_UCS
+_Z
+30
+(trans (osnap (trans '(9.9 0.1 0) 0 1) "_qua") 1 0)
+(trans (osnap (trans '(8.7 5.1 0) 0 1) "_qua") 1 0)
+(trans (osnap (trans '(49.9 0.1 0) 0 1) "_qua") 1 0)
+(trans (osnap (trans '(48.7 5.1 0) 0 1) "_qua") 1 0)

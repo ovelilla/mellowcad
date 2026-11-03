@@ -1,0 +1,17 @@
+_QAFLAGS
+2
+_LINE
+0,0
+10,5
+0,10
+_C
+_LINE
+10,5
+20,0
+20,10
+_C
+_REGION
+_ALL
+
+MPDUMP
+-

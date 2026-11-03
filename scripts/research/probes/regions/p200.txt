@@ -1,0 +1,55 @@
+_QAFLAGS
+2
+_ZOOM
+_W
+-10,-10
+40,30
+_ARC
+0,0
+10,10
+20,0
+_LINE
+0,0
+20,0
+
+_REGION
+_ALL
+
+_RECTANG
+15,-3
+25,3
+_REGION
+_L
+
+_LINE
+5,-5
+5,15
+
+(osnap '(17.2 7.1 0) "_cen")
+(osnap '(17.2 7.1 0) "_nea")
+(osnap '(19.9 0.1 0) "_end")
+(osnap '(19.9 0.1 0) "_int")
+(osnap '(5.1 0.1 0) "_int")
+(osnap '(5.1 8.6 0) "_int")
+(osnap '(15.1 0.1 0) "_int")
+(osnap '(19.5 3.1 0) "_int")
+(osnap '(15.1 0.1 0) "_app")
+(osnap '(19.5 3.1 0) "_app")
+(osnap '(10.1 9.9 0) "_qua")
+(osnap '(10 0.1 0) "_mid")
+(osnap '(7.1 7.2 0) "_mid")
+(osnap '(1 0.1 0) "_nod")
+(osnap '(1 0.1 0) "_ins")
+(osnap '(10 4 0) "_gcen")
+_LINE
+25,15
+_PER
+17.2,7.1
+
+(cdr (assoc 11 (entget (entlast))))
+_LINE
+30,10
+_TAN
+14,9.1
+
+(cdr (assoc 11 (entget (entlast))))

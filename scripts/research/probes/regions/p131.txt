@@ -1,0 +1,10 @@
+_QAFLAGS
+2
+_CIRCLE
+0,0
+5
+(setvar "LASTPOINT" '(100 100 0))
+_REGION
+_ALL
+
+(getvar "LASTPOINT")

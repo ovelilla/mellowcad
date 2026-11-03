@@ -1,0 +1,17 @@
+_ZOOM
+_W
+-10,-10
+40,10
+_CIRCLE
+0,0
+5
+_REGION
+_L
+
+_UNION
+_ALL
+
+_U
+(sslength (ssget "_X"))
+_U
+(if (ssget "_X") (sslength (ssget "_X")) 0)

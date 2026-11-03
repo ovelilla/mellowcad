@@ -1,0 +1,35 @@
+_QAFLAGS
+2
+_ZOOM
+_W
+-10,-10
+30,30
+_RECTANG
+0,0
+20,20
+_CIRCLE
+10,10
+5
+_REGION
+_ALL
+
+_SUBTRACT
+20,10
+
+15,10
+
+_ROTATE3D
+_ALL
+
+_X
+0,0,0
+90
+(progn (setq ss (ssget "_X") i 0) (repeat (sslength ss) (setq e (entget (ssname ss i))) (terpri) (princ (list (cdr (assoc 5 e)) (cdr (assoc 0 e)))) (setq i (1+ i))) (princ))
+MPDUMP
+-
+_EXPLODE
+_ALL
+
+(progn (setq ss (ssget "_X") i 0) (repeat (sslength ss) (setq e (entget (ssname ss i))) (terpri) (princ (list (cdr (assoc 5 e)) (cdr (assoc 0 e)) (cdr (assoc 10 e)) (cdr (assoc 11 e)) (cdr (assoc 38 e)) (cdr (assoc 210 e)))) (setq i (1+ i))) (princ))
+MPDUMP
+-

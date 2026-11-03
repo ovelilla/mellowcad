@@ -1,0 +1,52 @@
+_QAFLAGS
+2
+_ZOOM
+_W
+-10,-10
+40,20
+_CIRCLE
+0,0,0
+5
+_REGION
+_L
+
+(setq a (entlast))
+_CIRCLE
+20,0,0
+5
+_REGION
+_L
+
+(setq b (entlast))
+_CIRCLE
+0,0,10
+5
+_REGION
+_L
+
+(setq c (entlast))
+_CIRCLE
+3,0,10
+5
+_REGION
+_L
+
+(setq d (entlast))
+_CIRCLE
+23,0,0
+5
+_REGION
+_L
+
+(setq e (entlast))
+_SUBTRACT
+!a
+!b
+!c
+
+!d
+!e
+
+_LIST
+_ALL
+

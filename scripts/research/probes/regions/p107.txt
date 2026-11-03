@@ -1,0 +1,19 @@
+_QAFLAGS
+2
+_CIRCLE
+0,0
+5
+_LINE
+20,0
+30,0
+
+_CIRCLE
+50,0
+5
+_REGION
+_ALL
+
+(ssget "_I")
+_SELECT
+_P
+

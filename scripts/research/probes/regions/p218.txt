@@ -1,0 +1,45 @@
+_QAFLAGS
+2
+_ZOOM
+_W
+-10,-10
+50,30
+_ARC
+0,0
+10,10
+20,0
+_LINE
+0,0
+20,0
+
+_REGION
+_L
+_P
+
+_RECTANG
+25,0
+45,20
+_CIRCLE
+35,10
+5
+_REGION
+_W
+24,-1
+46,21
+
+_SUBTRACT
+45,5
+
+40,10
+
+_RECTANG
+0,-8
+20,-6
+_REGION
+_L
+
+(osnap '(2 0.1 0) "_cen")
+(osnap '(44.9 2 0) "_cen")
+(osnap '(44.9 2 0) "_qua")
+(osnap '(1 -7.9 0) "_mid")
+(osnap '(26 0.1 0) "_mid")

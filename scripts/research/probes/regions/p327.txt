@@ -1,0 +1,23 @@
+_QAFLAGS
+2
+_CONE
+0,0,0
+5
+10
+(setq a (entlast))
+_CYLINDER
+0,0,-1
+2
+12
+(setq b (entlast))
+_SUBTRACT
+!a
+
+!b
+
+_MASSPROP
+_ALL
+
+_N
+MPDUMP
+-
