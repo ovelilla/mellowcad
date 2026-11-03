@@ -283,6 +283,13 @@ export const centerProvider: SnapProvider = {
         })
       }
     }
+    // By touch alone: the curve must pass through the aperture; at the
+    // centre itself AutoCAD finds none (primitives/p407, solid/s03).
+    const centre = (entity: Entity, point: Vec2) =>
+      candidates.push({
+        ...notable(SnapType.Center, entity, point, touch),
+        byTouch: true,
+      })
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       if (
@@ -290,12 +297,11 @@ export const centerProvider: SnapProvider = {
         entity.type === "arc" ||
         entity.type === "ellipse"
       ) {
-        candidates.push(notable(SnapType.Center, entity, entity.center, touch))
+        centre(entity, entity.center)
       } else if (entity.type === "polyline") {
         // An arc segment is an arc: CENter "snaps to the center of an arc".
         for (const seg of polylineSegmentGeometries(entity)) {
-          if (seg.kind !== "arc") continue
-          candidates.push(notable(SnapType.Center, entity, seg.center, touch))
+          if (seg.kind === "arc") centre(entity, seg.center)
         }
       }
     }
@@ -823,8 +829,16 @@ export const nearestProvider: SnapProvider = {
     entities,
     cursorOn,
     isNear,
+    solidPoints = [],
   }: SnapContext): SnapCandidate[] {
-    const candidates: SnapCandidate[] = []
+    // A cone's apex is an edge of no length: Nearest finds it (primitives/p402).
+    const candidates: SnapCandidate[] = solidPoints
+      .filter((p) => p.type === SnapType.Endpoint && isNear(p.point))
+      .map((p) => ({
+        type: SnapType.Nearest,
+        point: p.point,
+        sourceIds: [p.id],
+      }))
     for (const entity of entities) {
       if (!document.isEntityVisible(entity)) continue
       const cursor = cursorOn(entity)
@@ -898,8 +912,8 @@ export const intersectionProvider: SnapProvider = {
         if (
           a.kind === "segment" &&
           b.kind === "segment" &&
-          ((a.curveId !== undefined && a.curveId === b.curveId) ||
-            (a.edgeOf !== undefined && a.edgeOf === b.edgeOf))
+          a.curveId !== undefined &&
+          a.curveId === b.curveId
         ) {
           continue
         }
@@ -1136,11 +1150,6 @@ type SegmentShape = {
   readonly source: Entity | null
   /** The spline this is a chord of. */
   readonly curveId?: EntityId
-  /**
-   * The solid this is an edge of: its edges meet only at its vertices, where
-   * AutoCAD finds no Intersection (solid/s01).
-   */
-  readonly edgeOf?: EntityId
   /** Its curve and the parameters the chord spans, to refine a crossing onto. */
   readonly chordOf?: {
     readonly curve: BSplineCurve
@@ -1230,6 +1239,10 @@ function collectShapes(
   const shapes: SnapShape[] = []
   for (const entity of entities) {
     if (!document.isEntityVisible(entity)) continue
+    // A solid's edges cross nothing, not even each other: Intersection and
+    // Apparent Intersection "do not work with edges or corners of 3D solids"
+    // (the help's Object Snap tab; primitives/p400, p401). A region's do.
+    if (document.get(entity.id)?.type === "solid3d") continue
     if (entity.type === "spline") {
       if (!near) continue
       const { curve, params, points } = splineChords(entity)
@@ -1252,7 +1265,6 @@ function collectShapes(
       }
     } else if (entity.type === "line") {
       const [a, b] = lineEnds(entity)
-      const solid = document.get(entity.id)?.type === "solid3d"
       shapes.push({
         kind: "segment",
         a,
@@ -1260,7 +1272,6 @@ function collectShapes(
         sourceIds: [entity.id],
         fromConstruction: false,
         source: entity,
-        ...(solid ? { edgeOf: entity.id } : {}),
       })
     } else if (entity.type === "circle") {
       shapes.push({

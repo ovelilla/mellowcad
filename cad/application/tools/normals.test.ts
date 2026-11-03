@@ -101,8 +101,9 @@ describe("an object with a normal of its own", () => {
     expectAt(cad.state().snap?.point, { x: 100, y: 0, z: 50 })
     cad.escape()
 
+    // Off the plan from its rim: not at the centre itself (primitives/p407).
     cad.command("VPOINT").type("1,-1,1").enter()
-    cad.command("LINE").moveTo({ x: 100, y: 0, z: 50 })
+    cad.command("LINE").moveTo({ x: 150, y: 0, z: 50 })
     expect(cad.state().snap?.type).toBe("center")
     expectAt(cad.state().snap?.point, { x: 100, y: 0, z: 50 })
   })

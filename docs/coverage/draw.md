@@ -1024,10 +1024,15 @@ ACIS's do (p01's MPDUMP). It keeps its primitive as LIST and the palette show it
 UCS's Z), `Length`, `Width`, `Height`, `Rotation` (its length's heading on the UCS's XY plane), in
 the current UCS (p01, p06, p13, t02). It draws in 2D Wireframe as its edges, a plane having no
 isolines (d01: ISOLINES 4 and 16 draw a box alike; ISOLINES is saved with the drawing); it is
-picked by its edges, in plan and off it, and a window takes it by them; it snaps at its vertices
-(Endpoint), the middles of its edges, Nearest and Perpendicular on them, no Intersection where
-its own edges meet and no Geometric Center or Center on a box (s01, s02); in plan, where a top
-edge hides a bottom one, the bottom's is found (s01). MOVE, COPY, ROTATE, SCALE and MIRROR carry
+picked by its edges, in plan and off it, and a window, a crossing and a fence take it by them, a
+solid of curved faces by its isolines too (primitives/p405, p406); a point typed at `Select
+objects:` picks, or starts a window, at its own pixel, as a click there (p426: `55,10,5` finds a
+sphere at 50,10,5 r5 in SE Isometric, `50,10,5` starts a window). It snaps at its vertices
+(Endpoint), the middles of its edges, Nearest and Perpendicular on them, no Geometric Center or
+Center on a box (s01, s02), the running snaps alike (p404: OSMODE 4133, 512, 2); no Intersection or Apparent Intersection on
+any solid's edge, with a line, another solid or its own (the help's Object Snap tab: they "do not
+work with edges or corners of 3D solids"; p400 in plan, p401 in SE Isometric); in plan, where a
+top edge hides a bottom one, the bottom's is found (s01). MOVE, COPY, ROTATE, SCALE and MIRROR carry
 it, in a tilted UCS and with a Z too, a mirrored box still a box (t01: Rotation 330; t02); STRETCH
 moves it whole once the window takes a vertex, else leaves it (t03, t05). The Properties palette:
 3D Solid, Geometry's Solid type, Position X/Y/Z, Length, Width, Height and Rotation, Solid History's
@@ -1093,7 +1098,8 @@ current layer and properties; one undo step; LASTPOINT as BOX's (primitives/p342
 
 The object is a 3D solid (file version 44) of 6 vertices, 9 edges and 5 faces, built as ACIS
 builds it: the end triangle swept along the width, its edges in ACIS's order and sense (w01's
-MPDUMP), which decides the edge found in plan where the slope hides a side of the base. LIST and the
+MPDUMP), which decides the Midpoint found in plan where the slope hides a side of the base
+(primitives/p402: 95,0,0), not the Endpoint (Missing). LIST and the
 palette show `Solid type = Wedge` and BOX's rows (w01, d05); AREA's Object gives its surface
 (`Area = 573.6068`); MOVE, ROTATE, SCALE and MIRROR carry it, a mirrored wedge still a wedge
 (w06: Rotation 330 and 210); EXPLODE leaves a region of each face (w07). Everything else a solid
@@ -1101,7 +1107,9 @@ does is BOX's entry.
 
 Its grips and palette rows are BOX's, the top's arrow over its tall end (g01).
 
-**Missing:** BOX's (the 3D commands, the visual styles VSCURRENT lacks).
+**Missing:** BOX's (the 3D commands, the visual styles VSCURRENT lacks); in plan, the Endpoint
+under the tall end: AutoCAD's `_END` at 90.05,0.05 finds the base's 90,0,0, here the top's 90,0,5
+(primitives/p402), as CYLINDER's Nearest and Quadrant.
 
 ### `CYLINDER` / `CYL` · es `CILINDRO` / `CIL` · pt-BR `CILINDRO` / `CIL`
 
@@ -1161,7 +1169,8 @@ the axis' Y, the seam at the second axis' end, Y when it is the minor and −X w
 (primitives/p240's five turns; equal axes, untried, take Y). 2D Wireframe draws its edges and
 ISOLINES' rulings round it from the seam (d04: 4, 16 and 3 lines; 0 none); it is picked and windowed by both. It snaps at its circles' Center and Quadrant,
 Nearest, Perpendicular and Tangent on them, no Endpoint at the seam, nothing on the isolines (s03,
-s09, s10). LIST: `Solid type = Cylinder`, Position (the base's centre), Normal, `Radius`, Height; an
+s09, s10), an elliptical one's so too, in plan and SE Isometric (primitives/p402, p403); Center
+only from the curve, none with the cursor at the centre itself (p407). LIST: `Solid type = Cylinder`, Position (the base's centre), Normal, `Radius`, Height; an
 elliptical one `Major radius`, `Minor radius`, Height and Rotation, its seam's heading (c01, c04).
 The palette: Solid type, Position X/Y/Z, Elliptical, Radius or Major and Minor radius and Rotation,
 Height (d05), the radii and Height typed (0 or less refused, a negative height turning it over, g01).
@@ -1175,7 +1184,8 @@ round face (c11): no surface object here, so it is refused as `Select objects:` 
 not able to be exploded.`); BOX's (the hot grip's other modes, a height dragged past the base,
 the visual styles VSCURRENT lacks); Elliptical typed, which AutoCAD lets a round one take, Major and Minor
 radius equal, then greys (g01; greyed here); DISPSILH's silhouettes, d04's `iso16s`; in plan, where the top circle hides the base's, Nearest finds the top's in AutoCAD (s03)
-and the base's here, as BOX's.
+and the base's here, as BOX's, and an elliptical one's Quadrant so too (primitives/p402: `_QUA` at
+5.1,3.1 gives 5,3,8, here 5,3,0); WEDGE's Endpoint likewise.
 
 ### `CONE` · es `CONO` · pt-BR `CONE`
 
@@ -1195,7 +1205,10 @@ is its base shrunk to the top radius given as its major (k03). It lies in a tilt
 
 The object, a 3D solid (file version 45): the base's circle or ellipse and, at the apex, an edge of
 no length at one vertex, the cone's face's second loop (k01's MPDUMP: ACIS's degenerate edge), or a
-frustum's top. The apex is an Endpoint, the base's seam none; the rulings run from the base to the
+frustum's top. The apex is an Endpoint and Nearest's point there (primitives/p402: `_NEA` at
+55.05,0.05 gives 55,0,8), the base's seam none, the base's centre not found from the apex above
+it in plan (p402); a frustum's top and an elliptical base give Center and Quadrant as CYLINDER's
+(p402, p403). The rulings run from the base to the
 apex or the top (s10, d04; with ISOLINES 0 AutoCAD draws the apex as a dot). LIST: `Solid type =
 Cone`, Position, Normal, `Base radius`, `Top radius`, Height; elliptical `Base major radius`, `Base
 minor radius`, `Top major radius`, Height, Rotation (k01, k03). The palette: Elliptical, Base radius
@@ -1287,7 +1300,9 @@ round a doughnut with no edge; an apple's or a lemon's with an edge of no length
 the tube meets the axis, a vortex's (its tube as wide as its ring) both at its centre. 2D Wireframe
 draws ISOLINES' tube circles, the first opposite its seam, and as many parallels round the tube
 from its inside, spread over an apple's or a lemon's arc (d06–d09); it is picked and windowed by
-them. Center finds its centre from anywhere over an isoline, never at the centre itself; Endpoint
+them. Center finds its centre from anywhere over an isoline, at the centre itself only where one
+passes — in plan an apple's or a lemon's meridians, seen edge-on, run through it (primitives/p402:
+150.02,0.02 on a lemon zoomed in); Endpoint
 an apple's or a lemon's poles, as AutoCAD's (primitives/p241, p402: 2 round a tube of 4 at
 0,0,±3.4641; -4 and 5 at 50,0,3); nothing else snaps on it (s07, s09, s10). LIST: `Solid type = Torus`, Position, Normal, `Torus radius`,
 `Tube radius` (r01, r04; es `Radio de toroide`, `Radio de sección`; pt-BR `Raio do toroide`, `Raio
@@ -1300,7 +1315,11 @@ square at its centre, which moves it; at the tube opposite its X, |R| out whiche
 is, an arrow at the tube's centre, which sizes the ring, and four round it, which size the tube,
 each along the line of sight; a drag that would turn the ring across the axis leaves it.
 
-**Missing:** SPHERE's (EXPLODE's SURFACE, the hot grip's other modes, DISPSILH).
+**Missing:** SPHERE's (EXPLODE's SURFACE, the hot grip's other modes, DISPSILH). **Unverified**:
+an apple's isoline at its outer equator in plan: its meridian, seen edge-on, reaches it here, so
+Center and a pick find it there; AutoCAD neither (primitives/p402: `_CEN` at 136.05,0.05 on 2 round
+a tube of 4 at 130,0; p407: a pick at 46,0 on one at 40,0), unsettled as geometry: the desktop's
+(PRIM-D64).
 
 ### `PYRAMID` / `PYR` · es `PIRAMIDE` / `PIR` · pt-BR `PIRAMIDE` / `PIR`
 

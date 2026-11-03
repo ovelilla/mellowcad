@@ -221,7 +221,7 @@ describe("flat objects", () => {
 
     cad.command("CIRCLE")
     cad.runtime.setSnapOverride(SnapType.Center)
-    cad.click(p(1, 1)).type("5").enter()
+    cad.click(p(19.9, 1)).type("5").enter()
 
     const circle = cad
       .entities()

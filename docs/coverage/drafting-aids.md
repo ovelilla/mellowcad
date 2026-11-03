@@ -10,7 +10,8 @@ to the center of the aperture box"): a point under the aperture (APERTURE 10: En
 from its point and not at 11, desktop line/d25), then the one already held within 13 px (the
 magnet), then Extension or Parallel, then Nearest, then Center, Perpendicular or Tangent of any
 object the aperture crosses, however far (the centre from the rim: "the cursor must pass over the
-circumference"), and under an override any snap of the object picked — the crosshair stays on the
+circumference"; at the centre itself none, running or forced, primitives/p407; a circle seen
+edge-on gives it from its image, osnapz/o07), and under an override any snap of the object picked — the crosshair stays on the
 pointer then, and the marker and the rubber band go to the point; Tab cycles through the snaps under
 the cursor; a snap is never bent by Ortho or Polar ("Ortho is ignored when you … specify an object
 snap"); Intersection and Apparent Intersection find where an engaged polar path crosses an object
@@ -72,8 +73,8 @@ LASTPOINT and the point filters take that Z (`.Z` of `_END` is ELEVATION's, o08,
 **Missing:** OSNAPZ 1 under OTRACK: an acquired point keeps its object's Z here, and its guide
 with it (**unverified**: desktop pass `scripts/research/probes/osnapz/dsk.sh`, not run), and the
 marker off the plan is drawn on the object (**unverified**, the same pass); snaps of an object seen
-edge-on in plan (a circle in a vertical plane gives its Center from the rim in AutoCAD, none here:
-osnapz/o07); Node and Geometric Center (no POINT object; a dimension's definition points snap as
+edge-on in plan but a circle's Center (o07), and the `Oblique, non-uniformly scaled objects were
+ignored.` AutoCAD says before refusing a Quadrant there (o07); Node and Geometric Center (no POINT object; a dimension's definition points snap as
 Endpoint; Spanish `PUN` and `PUNTO` at OFFSET's distance are Node, `de`, where here PUNTO is refused
 and PUN is Thru, offset/p109, p110), deferred Perpendicular and Tangent at the first point of a
 command other than LINE and CIRCLE (refused there as finding nothing, as at PLINE's start, pline/p29),

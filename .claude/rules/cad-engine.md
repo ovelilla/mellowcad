@@ -134,14 +134,14 @@ Dependencies run types → per-type modules → overrides → transforms → que
   points on one spline take `splineNearest` once (`closestPointOnSpline` tessellates per call). A
   rational curve's derivatives come from `bsplineDifferentials` (`bsplineDerivativeCurve` ignores
   the weights).
-- **A region and a solid are the kernel's** (`planarRegions.ts`, `solids.ts`; one tolerance
-  `MODEL_TOLERANCE`), drawn, picked and snapped as their edges (`regionLevelEdgeEntities`,
-  `regionEdgeEntities`, `solidEdgeEntities`); a solid's isolines (`solidWireEntities`) are drawn
-  and picked, snapped only at a sphere's or torus' centre (`SnapContext.solidPoints`), END at an
-  apex or a torus pole. A boolean, cut, offset or blend is the kernel's (`brepBoolean`,
-  `solidEdits.ts`, `solidBlends.ts`), never a tool's. A solid's points are the WCS's; it moves
-  only by `transformEntity`, holds no -0 (`unsigned0`), is measured exactly per face (`faceFlux`,
-  curved ones by Green), never as a mesh.
+- **A region and a solid are the kernel's** (`planarRegions.ts`, `solids.ts`; tolerance
+  `MODEL_TOLERANCE`), drawn, picked, snapped as their edges (`regionLevelEdgeEntities`,
+  `regionEdgeEntities`, `solidEdgeEntities`), a solid's with no INT or APP (help); its isolines
+  (`solidWireEntities`) drawn, picked, snapped only at a sphere's or torus' centre
+  (`SnapContext.solidPoints`), END, NEA at an apex or pole. A boolean, cut, offset or blend is the
+  kernel's (`brepBoolean`, `solidEdits.ts`, `solidBlends.ts`), never a tool's. A solid's points are
+  the WCS's; it moves only by `transformEntity`, holds no -0 (`unsigned0`), is measured per face
+  (`faceFlux`, curved by Green), not as a mesh.
 - **MTEXT keeps AutoCAD's contents string**, `\P` and escapes included: `mtextPlainText` reads it
   (codes it does not draw vanish from the reading, never from the object), `mtextContents` writes
   it, nothing else parses or builds it.

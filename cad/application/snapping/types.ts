@@ -61,8 +61,8 @@ export interface SnapCandidate {
    */
   readonly touch?: Vec3
   /**
-   * Found only through `touch`, never by its point under the cursor: a
-   * sphere's or a torus' centre, where no isoline need pass (solid/s07).
+   * Found only through `touch`, never by its point under the cursor: every
+   * Center, where no curve need pass (solid/s07, primitives/p407).
    */
   readonly byTouch?: boolean
   /**

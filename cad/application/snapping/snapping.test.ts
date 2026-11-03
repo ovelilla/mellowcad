@@ -67,13 +67,14 @@ describe("running object snaps", () => {
     expect(drawn.start).toBeCloseToPoint(p(50, 0))
   })
 
-  it("pulls a pick onto a circle's centre", () => {
+  // From the circle, never from the centre itself (primitives/p407).
+  it("pulls a pick over a circle onto its centre", () => {
     const cad = createHarness({
       entities: [circleOf(p(200, 200), 80, { id: "C1" })],
       snap: true,
     })
 
-    cad.command("LINE").click(p(202, 202)).click(p(0, 0)).escape()
+    cad.command("LINE").click(p(279.4, 210)).click(p(0, 0)).escape()
 
     expect(cad.only<LineEntity>("line").start).toBeCloseToPoint(p(200, 200))
   })

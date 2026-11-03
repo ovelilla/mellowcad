@@ -145,10 +145,10 @@ describe("OSNAPZ 1", () => {
     )
   })
 
-  // probe osnapz/o07; its circle seen edge-on in plan finds no Center here
-  // (drafting-aids.md, Missing)
+  // probe osnapz/o07
   it("puts a 3D polyline's and a 3D spline's snaps at the elevation", () => {
     const cad = drawing(
+      ...["UCS", "X", "90", "CIRCLE", "50,20", "10", "UCS", "W"],
       ...["3DPOLY", "0,-30,0", "10,-30,5", "10,-20,-3", "20,-20,0", ""],
       ...["SPLINE", "60,-30,5", "70,-20,5", "80,-30,8", "90,-20,-3", ""],
       ...["OSNAPZ", "1", "ELEVATION", "2"]
@@ -162,9 +162,16 @@ describe("OSNAPZ 1", () => {
     ]) {
       expect(identified(cad, snap, pick)).toBe(at(x, y, "2.0000"))
     }
+    // A circle seen edge-on gives its Center from its image's end.
+    expect(identified(cad, "_CEN", "60,0")).toBe(
+      at("50.0000", "0.0000", "2.0000")
+    )
     answer(cad, "ELEVATION", "0", "OSNAPZ", "0")
     expect(identified(cad, "_MID", "5,-30")).toBe(
       at("5.0000", "-30.0000", "2.5000")
+    )
+    expect(identified(cad, "_CEN", "60,0")).toBe(
+      at("50.0000", "0.0000", "20.0000")
     )
   })
 

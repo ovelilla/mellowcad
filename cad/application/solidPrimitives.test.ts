@@ -1403,11 +1403,19 @@ function snapped(cad: CadHarness, mode: string, at: string): Vec3 | string {
   const out = written(cad, "LINE", mode, at, "@1,0,0", "")
   const line = cad.latest()
   if (line.type !== "line" || out.some((l) => l.startsWith("No "))) {
-    answer(cad, "\u001b")
+    cad.escape()
     return out.find((l) => l.startsWith("No ")) ?? out.join(" | ")
   }
   answer(cad, "ERASE", "L", "")
   return { ...line.start, z: lineStartZ(line) }
+}
+
+/** {@link snapped}, its point to the console's four places. */
+function printed(cad: CadHarness, mode: string, at: string): Vec3 | string {
+  const point = snapped(cad, mode, at)
+  if (typeof point === "string") return point
+  const round = (n: number) => Math.round(n * 1e4) / 1e4 + 0
+  return { x: round(point.x), y: round(point.y), z: round(point.z) }
 }
 
 describe("CYLINDER", () => {
@@ -1970,6 +1978,10 @@ describe("CYLINDER", () => {
       "No Endpoint found for specified point."
     )
     expect(snapped(cad, "_CEN", "15.1,10.1")).toEqual({ x: 10, y: 10, z: 0 })
+    // Not at the centre itself, where no edge passes (primitives/p407).
+    expect(snapped(cad, "_CEN", "10.2,10.1")).toBe(
+      "No Center found for specified point."
+    )
     expectAt(snapped(cad, "_QUA", "10.1,15.1") as Vec3, { x: 10, y: 15, z: 0 })
     answer(cad, "-VIEW", "_SEISO", "ZOOM", "E")
     expect(snapped(cad, "_NEA", "10,15,4")).toBe(
@@ -1981,9 +1993,95 @@ describe("CYLINDER", () => {
     expectAt(snapped(cad, "_QUA", "10,15,7.9") as Vec3, { x: 10, y: 15, z: 8 })
     expectAt(snapped(cad, "_CEN", "10,15,7.9") as Vec3, { x: 10, y: 10, z: 8 })
   })
+
+  it("snaps an elliptical base's centre and quadrants, in plan and in SE Isometric (primitives/p402, p403)", () => {
+    const drawn = () => {
+      const cad = createHarness({ width: 942, height: 534 })
+      return answer(cad, "CYLINDER", "E", "0,0,0", "10,0", "5,3", "8")
+    }
+    const plan = answer(drawn(), "ZOOM", "W", "-5,-10", "15,10")
+    expect(printed(plan, "_CEN", "10.1,0.1")).toEqual({ x: 5, y: 0, z: 0 })
+    expect(printed(plan, "_QUA", "10.1,0.1")).toEqual({ x: 10, y: 0, z: 0 })
+    expect(printed(plan, "_END", "10.1,0.1")).toBe(
+      "No Endpoint found for specified point."
+    )
+    expect(printed(plan, "_MID", "10.1,0.1")).toBe(
+      "No Midpoint found for specified point."
+    )
+    expectAt(
+      snapped(plan, "_NEA", "10.1,0.1") as Vec3,
+      { x: 9.99751, y: 0.0946105, z: 0 },
+      4
+    )
+    const iso = answer(drawn(), "VPOINT", "1,-1,1", "ZOOM", "C", "5,0,4", "25")
+    expect(printed(iso, "_QUA", "10,0,8")).toEqual({ x: 10, y: 0, z: 8 })
+    expect(printed(iso, "_CEN", "10,0,8")).toEqual({ x: 5, y: 0, z: 8 })
+    expect(printed(iso, "_END", "10,0,8")).toBe(
+      "No Endpoint found for specified point."
+    )
+    expect(printed(iso, "_QUA", "5,3,0")).toEqual({ x: 5, y: 3, z: 0 })
+  })
 })
 
 describe("CONE", () => {
+  it("snaps a frustum's and an elliptical base's centres and quadrants, its apex as an Endpoint and Nearest (primitives/p402, p403)", () => {
+    const drawn = () => {
+      const cad = createHarness({ width: 942, height: 534 })
+      answer(cad, "CONE", "30,0,0", "5", "T", "2", "8")
+      return answer(cad, "CONE", "E", "50,0,0", "60,0", "55,3", "8")
+    }
+    const frustum = answer(drawn(), "ZOOM", "W", "20,-10", "40,10")
+    expect(printed(frustum, "_CEN", "32.05,0.05")).toEqual({
+      x: 30,
+      y: 0,
+      z: 8,
+    })
+    expect(printed(frustum, "_QUA", "32.05,0.05")).toEqual({
+      x: 32,
+      y: 0,
+      z: 8,
+    })
+    expect(printed(frustum, "_END", "32.05,0.05")).toBe(
+      "No Endpoint found for specified point."
+    )
+    expectAt(
+      snapped(frustum, "_NEA", "32.05,0.05") as Vec3,
+      { x: 31.9994, y: 0.048766, z: 8 },
+      4
+    )
+    expect(printed(frustum, "_CEN", "35.05,0.05")).toEqual({
+      x: 30,
+      y: 0,
+      z: 0,
+    })
+    expect(printed(frustum, "_QUA", "35.05,0.05")).toEqual({
+      x: 35,
+      y: 0,
+      z: 0,
+    })
+    const cone = answer(drawn(), "ZOOM", "W", "45,-10", "65,10")
+    expect(printed(cone, "_END", "55.05,0.05")).toEqual({ x: 55, y: 0, z: 8 })
+    expect(printed(cone, "_NEA", "55.05,0.05")).toEqual({ x: 55, y: 0, z: 8 })
+    // Not its base's centre, which lies under the apex in plan (p402).
+    expect(printed(cone, "_CEN", "55.05,0.05")).toBe(
+      "No Center found for specified point."
+    )
+    expect(printed(cone, "_CEN", "60.05,0.05")).toEqual({ x: 55, y: 0, z: 0 })
+    expect(printed(cone, "_QUA", "60.05,0.05")).toEqual({ x: 60, y: 0, z: 0 })
+    const iso = answer(drawn(), "VPOINT", "1,-1,1")
+    answer(iso, "ZOOM", "C", "30,0,4", "25")
+    expect(printed(iso, "_CEN", "32,0,8")).toEqual({ x: 30, y: 0, z: 8 })
+    expect(printed(iso, "_QUA", "32,0,8")).toEqual({ x: 32, y: 0, z: 8 })
+    expect(printed(iso, "_END", "32,0,8")).toBe(
+      "No Endpoint found for specified point."
+    )
+    expect(printed(iso, "_QUA", "35,0,0")).toEqual({ x: 35, y: 0, z: 0 })
+    answer(iso, "ZOOM", "C", "55,0,4", "25")
+    expect(printed(iso, "_END", "55,0,8")).toEqual({ x: 55, y: 0, z: 8 })
+    expect(printed(iso, "_CEN", "60,0,0")).toEqual({ x: 55, y: 0, z: 0 })
+    expect(printed(iso, "_QUA", "55,3,0")).toEqual({ x: 55, y: 3, z: 0 })
+  })
+
   it("measures a point typed at Top radius from where the height prompt left the axis (primitives/p248)", () => {
     const cad = console()
     answer(cad, "_CONE", "0,0,0", "5", "_T", "@2,0", "8")
@@ -3322,6 +3420,16 @@ describe("TORUS", () => {
     expect(snapped(cad, "_NEA", "20,10,2")).toBe(
       "No found for specified point."
     )
+  })
+
+  it("snaps a lemon's centre from a meridian seen edge-on, zoomed in (primitives/p402)", () => {
+    const cad = createHarness({ width: 942, height: 534 })
+    answer(cad, "TORUS", "150,0,0", "-4", "5", "TORUS", "130,0,0", "2", "4")
+    answer(cad, "ZOOM", "W", "145,-5", "155,5")
+    expect(snapped(cad, "_CEN", "150.02,0.02")).toEqual({ x: 150, y: 0, z: 0 })
+    expect(snapped(cad, "_CEN", "151.02,0.02")).toEqual({ x: 150, y: 0, z: 0 })
+    answer(cad, "ZOOM", "W", "120,-10", "140,10")
+    expect(snapped(cad, "_CEN", "130.05,0.05")).toEqual({ x: 130, y: 0, z: 0 })
   })
 
   it("snaps an apple's and a lemon's poles as Endpoints (primitives/p241, p402)", () => {

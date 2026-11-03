@@ -550,7 +550,9 @@ export class ObjectSelector {
     if (this.step.kind !== "objects" || (one && !one.pick)) return false
     const point = typedPick(text, ctx)
     if (!point) return false
-    const at = { x: point.x, y: point.y }
+    // Its Z kept: off the plan it picks, and a window starts, at its
+    // pixel, as a click there (primitives/p426).
+    const at: Vec2 = point
     if (one?.pick) {
       one.pick(point, ctx)
       ctx.requestRender()
@@ -1366,7 +1368,7 @@ export class ObjectSelector {
         })
       : null
     if (point) {
-      this.place({ x: point.x, y: point.y }, ctx)
+      this.place(point, ctx)
       return true
     }
     if (step.kind === "firstCorner" || step.kind === "oppositeCorner") {

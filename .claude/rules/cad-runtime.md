@@ -164,7 +164,7 @@ clarify...`): a keyword answers, Enter writes `Invalid option keyword.`, anythin
 
 ## Transparent commands
 
-A command typed with an apostrophe runs **inside** the running one, which is suspended, never ended.
+A command typed with an apostrophe runs **inside** the running one, suspended, never ended.
 Add one to `TRANSPARENT_COMMANDS` (`runtimeCommands.ts`) **only after typing it so at LINE's prompt
 in AutoCAD's console** (`>>` prompts, or `** That command may not be invoked transparently **`), the
 desktop's where it lacks one (MATCHPROP, workspace/d02).
@@ -195,9 +195,9 @@ runtime picks for the tool" feature.
   `defaultSnapProviders` only breaks ties.
 - **Some snaps are found from anywhere over their object**: `notable(type, entity, point, touch)`
   sets `SnapCandidate.touch` from `SnapContext.touch(entity)`, and the engine honours it only for
-  `FOUND_FROM_AFAR` (running Center, Perpendicular, Tangent) or under an override. A running
-  Endpoint or Midpoint engages only near its point: from the whole line, every line drawn across
-  another jumped to its ends, a magnet AutoCAD does not have.
+  `FOUND_FROM_AFAR` (running Center, Perpendicular, Tangent) or under an override; Center only so
+  (`byTouch`: none at the centre itself, p407). A running Endpoint or Midpoint engages only near
+  its point, or lines drawn across others jump to their ends.
 - Tab cycles the engaged snaps (`cycleNext`); it takes Tab only with something to cycle and nothing
   typed.
 - **The rubber band is not an object.** The only construction geometry is the alignment paths the

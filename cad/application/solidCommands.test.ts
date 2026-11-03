@@ -53,6 +53,16 @@ function console(locale?: typeof es): CadHarness {
   return cad
 }
 
+/** The point ID takes under the override `mode` at `at`, or its refusal. */
+function identified(cad: CadHarness, mode: string, at: string): Vec3 | string {
+  answer(cad, "ID", mode, at)
+  const log = cad.commandLog()
+  const found = log.at(-1)?.match(/X = (\S+)\s+Y = (\S+)\s+Z = (\S+)/)
+  if (found) return { x: +found[1], y: +found[2], z: +found[3] }
+  cad.escape()
+  return log.findLast((line) => line.startsWith("No ")) ?? log.join(" | ")
+}
+
 /** LIST of the last object, its own lines. */
 function listed(cad: CadHarness): string[] {
   return written(cad, "_LIST", "_L", "")
@@ -708,18 +718,178 @@ describe("a 3D solid", () => {
     expectAt(first(cad, "_END", "0.2,0.1"), { x: 0, y: 0, z: 0 })
     expectAt(first(cad, "_MID", "10.1,9.8"), { x: 10, y: 10, z: 0 })
     expectAt(first(cad, "_NEA", "10.1,9.8"), { x: 10, y: 9.8, z: 0 })
-    // No crossing at a vertex of its own: AutoCAD finds none (s01).
-    expect(written(cad, "LINE", "_INT", "0.1,0.1").at(-1)).not.toMatch(
-      /^Specify next/
-    )
-    answer(cad, "\u001b")
     const iso = boxed()
     answer(iso, "-VIEW", "_SEISO", "ZOOM", "E")
-    const top = iso.toScreen({ x: 10, y: 20, z: 5 })
-    void top
     expectAt(first(iso, "_END", "10,20,5"), { x: 10, y: 20, z: 5 })
     const line = iso.latest()
     expect(line.type === "line" && lineEndZ(line)).toBe(5)
+  })
+
+  it("offers no Intersection or Apparent Intersection on its edges (primitives/p400, p401)", () => {
+    // The help's Object Snap tab: they "do not work with edges or corners of
+    // 3D solids", against a line, another solid or its own edges.
+    const drawn = () => {
+      const cad = console()
+      answer(cad, "ZOOM", "W", "-10,-10", "40,40")
+      answer(cad, "BOX", "0,0,0", "10,20", "5", "BOX", "5,-5,0", "15,5", "5")
+      return answer(cad, "LINE", "-5,10", "13,10", "")
+    }
+    const none = (mode: string) =>
+      mode === "_INT"
+        ? "No Intersection found for specified point."
+        : "No found for specified point."
+    const plan: [string, string][] = [
+      ["_INT", "0.1,10.1"],
+      ["_INT", "10.1,5.1"],
+      ["_INT", "10.1,20.1"],
+      ["_APP", "0.1,10.1"],
+      ["_APP", "10.1,5.1"],
+      ["_APP", "10.1,20.1"],
+    ]
+    for (const [mode, at] of plan) {
+      expect(identified(drawn(), mode, at), `${mode} ${at}`).toBe(none(mode))
+    }
+    const iso: [string, string][] = [
+      ["_INT", "10,5,5"],
+      ["_INT", "10,5,0"],
+      ["_INT", "5,0,5"],
+      ["_INT", "0,10,0"],
+      ["_INT", "10,15,5"],
+      ["_APP", "0,10,0"],
+      ["_APP", "10,15,5"],
+      ["_APP", "10,5,5"],
+    ]
+    for (const [mode, at] of iso) {
+      const cad = answer(drawn(), "-VIEW", "_SEISO", "ZOOM", "E")
+      expect(identified(cad, mode, at), `${mode} ${at}`).toBe(none(mode))
+    }
+  })
+
+  it("snaps under the running object snaps (primitives/p404)", () => {
+    // The console's typed points under OSNAPCOORD 0, here clicks there.
+    const cad = createHarness({ width: 942, height: 534, snap: true })
+    answer(cad, "LUPREC", "4", "ZOOM", "W", "-10,-10", "40,40")
+    answer(cad, "BOX", "0,0,0", "10,20", "5", "CYLINDER", "30,10,0", "5", "8")
+    const at = (x: number, y: number, z = 0) => {
+      answer(cad, "ID")
+      cad.moveTo({ x, y, z }).click({ x, y, z })
+      return cad.commandLog().at(-1)!.trim()
+    }
+    const printed = (x: string, y: string, z: string) =>
+      `X = ${x}     Y = ${y}     Z = ${z}`
+    expect(at(0.1, 0.1)).toBe(printed("0.0000", "0.0000", "0.0000"))
+    expect(at(35.1, 10.1)).toBe(printed("30.0000", "10.0000", "0.0000"))
+    expect(at(33.6, 13.6)).toBe(printed("30.0000", "10.0000", "0.0000"))
+    answer(cad, "OSMODE", "512")
+    expect(at(5.1, 0.1)).toBe(printed("5.1000", "0.0000", "0.0000"))
+    expect(at(33.6, 13.6)).toBe(printed("33.5355", "13.5355", "0.0000"))
+    answer(cad, "OSMODE", "2")
+    expect(at(5.1, 0.1)).toBe(printed("5.0000", "0.0000", "0.0000"))
+    answer(cad, "VPOINT", "1,-1,1", "ZOOM", "E", "OSMODE", "4133")
+    expect(at(10, 20, 5)).toBe(printed("10.0000", "20.0000", "5.0000"))
+    expect(at(35, 10, 8)).toBe(printed("30.0000", "10.0000", "8.0000"))
+  })
+
+  it("is picked, windowed, crossed and fenced by what it draws (primitives/p405, p406)", () => {
+    const drawn = (height: string) => {
+      const cad = createHarness({ width: 942, height: 534 })
+      answer(cad, "BOX", "0,0,0", "10,20", "5")
+      answer(cad, "CYLINDER", "30,10,0", "5", height, "SPHERE", "50,10,5", "5")
+      return answer(
+        cad,
+        "TORUS",
+        "75,10,0",
+        "10",
+        "2",
+        "CONE",
+        "100,10,0",
+        "5",
+        "8"
+      )
+    }
+    /** 1 when `Select objects:` finds something with `answers`, else 0. */
+    const finds = (cad: CadHarness, ...answers: string[]) => {
+      const lines = written(cad, "ERASE", ...answers)
+      cad.escape().escape()
+      return /^[1-9]/.test(lines.find((l) => /found/.test(l)) ?? "") ? 1 : 0
+    }
+    const plan = answer(drawn("8"), "ZOOM", "W", "-5,-5", "105,25")
+    const picks = [
+      ["10,10", 1],
+      ["5,10", 0],
+      ["9.5,10", 0],
+      ["35,10", 1],
+      ["30,10", 0],
+      ["32,10", 0],
+      ["50,10", 1],
+      ["53.5355,10", 1],
+      ["54,10", 1],
+      ["52,11.5", 0],
+      ["75,10", 0],
+      ["75,20", 1],
+      ["82.7942,14.5", 0],
+      ["102.5,10", 1],
+      ["101.5,11.5", 0],
+    ] as const
+    for (const [point, found] of picks) {
+      expect(finds(plan, point), point).toBe(found)
+    }
+    const windows = [
+      ["W", "44,4", "56,16", 1],
+      ["W", "-1,-1", "11,15", 0],
+      ["C", "49.8,9.8", "50.2,10.2", 1],
+      ["C", "4,9", "6,11", 0],
+      ["C", "51.8,11.3", "52.2,11.7", 0],
+      ["C", "74.8,9.8", "75.2,10.2", 0],
+    ] as const
+    for (const [mode, from, to, found] of windows) {
+      expect(finds(plan, mode, from, to), `${mode} ${from}`).toBe(found)
+    }
+    const fences = [
+      ["5,5", "5,15", 0],
+      ["22,10", "27,10", 1],
+      ["51,8", "51,12", 1],
+      ["52,11", "52.5,11.5", 0],
+    ] as const
+    for (const [from, to, found] of fences) {
+      expect(finds(plan, "F", from, to, ""), `F ${from}`).toBe(found)
+    }
+    const iso = answer(drawn("20"), "VPOINT", "1,-1,1", "ZOOM", "E")
+    const clicks = [
+      ["10,10,5", 1],
+      ["5,10,5", 1],
+      ["5,10,0", 1],
+      ["35,10,10", 1],
+      ["30,10,10", 0],
+      ["50,10,5", 0],
+      ["50,10,10", 1],
+      ["55,10,5", 1],
+      ["75,10,0", 0],
+      ["85,10,2", 1],
+      ["100,10,4", 1],
+      ["102.5,10,4", 1],
+    ] as const
+    for (const [point, found] of clicks) {
+      expect(finds(iso, point), point).toBe(found)
+    }
+    expect(finds(iso, "C", "49.8,9.8,5", "50.2,10.2,5")).toBe(0)
+    expect(finds(iso, "C", "4.8,9.8,5", "5.2,10.2,5")).toBe(1)
+  })
+
+  it("is picked by a point typed at Select objects: off the plan, as a click there (primitives/p426)", () => {
+    const cad = console()
+    answer(cad, "SPHERE", "50,10,5", "5", "VPOINT", "1,-1,1", "ZOOM", "E")
+    expect(written(cad, "ERASE", "55,10,5", "")).toEqual([
+      "ERASE",
+      "Select objects: 55,10,5",
+      "1 found",
+      "Select objects:",
+    ])
+    expect(solids(cad)).toEqual([])
+    answer(cad, "U", "ERASE", "50,10,5")
+    expect(cad.state().commandLine.prompt).toBe(
+      "ERASE Specify opposite corner:"
+    )
   })
 
   it("is saved and read back, ISOLINES with the drawing (v01–v03)", () => {
@@ -739,7 +909,7 @@ describe("a 3D solid", () => {
     expect(read.settings.isolines).toBe(16)
   })
 
-  it("shows its box in the Properties palette, read only (d03)", () => {
+  it("shows its box in the Properties palette (d03)", () => {
     const cad = boxed()
     cad.escape().select(last(cad).id)
     const info = cad.state().properties.info

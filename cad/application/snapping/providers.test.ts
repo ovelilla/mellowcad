@@ -135,9 +135,32 @@ describe("center", () => {
       snap: true,
     })
 
-    const drawn = firstPointWith(cad, SnapType.Center, p(44, 23))
+    const drawn = firstPointWith(cad, SnapType.Center, p(139.9, 21))
 
     expect(drawn.start).toBeCloseToPoint(p(40, 20), 5)
+  })
+
+  // probe primitives/p407: `(osnap '(0.2 0.1 0) "_cen")` on a circle at the
+  // origin is nil; the curve must pass through the aperture.
+  it.each([
+    ["a circle", circleOf(p(0, 0), 5, { id: "REF-C" })],
+    ["an arc", arcOf(p(0, 0), 5, 0, Math.PI, { id: "REF-A" })],
+    ["an ellipse", ellipseOf(p(0, 0), p(5, 0), 0.5, { id: "REF-E" })],
+    [
+      "a polyline's arc",
+      polylineOf([p(-5, 0), p(5, 0)], { id: "REF-P", bulges: [1, 0] }),
+    ],
+  ])("finds no Center at %s's centre itself", (_, entity) => {
+    const cad = createHarness({ entities: [entity], snap: true })
+    for (const text of ["ZOOM", "W", "-10,-10", "10,10"]) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+
+    expect(missedWith(cad, SnapType.Center, null, p(0.2, 0.1))).toEqual([
+      "No Center found for specified point.",
+      "Invalid point.",
+    ])
   })
 })
 
@@ -551,7 +574,7 @@ describe("a polyline's arc segment", () => {
   it("has a centre", () => {
     const cad = createHarness({ entities: [arched()], snap: true })
 
-    const drawn = firstPointWith(cad, SnapType.Center, p(52, 2))
+    const drawn = firstPointWith(cad, SnapType.Center, p(52, -49.9))
 
     expect(drawn.start).toBeCloseToPoint(p(50, 0), 5)
   })

@@ -2496,7 +2496,7 @@ describe("the engine's English surface", () => {
         SnapType.Center,
         [ellipseOf(p(40, 20), p(100, 0), 0.5)],
         null,
-        p(44, 23),
+        p(139.9, 21),
       ],
       [
         SnapType.Intersection,

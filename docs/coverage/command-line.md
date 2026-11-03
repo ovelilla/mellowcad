@@ -215,7 +215,8 @@ removing, its count on the next line (`3 found, 5 total`, d09) —, what a windo
 way would take glowing as the hover does (SELECTIONPREVIEW 3, d02-1, d03-1, d05-1; ERASE's fading),
 a point typed there — `@` from LASTPOINT, a number a
 direct distance from it towards the cursor, LASTPOINT itself after — picking the object at it or, on
-nothing, starting that window (a wrong opposite corner, a keyword or Enter says
+nothing, starting that window, off the plan both at its own pixel as a click there (primitives/p426:
+`55,10,5` picks a sphere at 50,10,5 r5 in SE Isometric, `50,10,5` starts a window) (a wrong opposite corner, a keyword or Enter says
 `Invalid window specification.`, then the prompt the window started at, and asks the opposite corner
 again on its line: `Select objects: Specify opposite corner:`,
 `Remove objects: Specify opposite corner:`, ARRAYPATH's
@@ -292,7 +293,9 @@ layer.`, erase/p211, p257; at `Command:` it is selected, properties/d02-1); **un
 the commands that change nothing (COPYCLIP, ZOOM Object) leave locked finds out at `Select
 objects:` as the edits do (the console never gave them one); a point typed there or at a single object's pick tests the whole
 drawing, where AutoCAD tests only what the view shows (`No object found` off the screen, LASTPOINT
-moved all the same: pieces/p158, p159; on it, p176); PICKFIRST (a set selected before the command is always taken; with
+moved all the same: pieces/p158, p159; on it, p176); a window of no width on the screen, typed off
+the plan (primitives/p426: `50,10,5` then `50,10,10` in SE Isometric finds a sphere there; here a
+window, `0 found`); PICKFIRST (a set selected before the command is always taken; with
 PICKFIRST 0 AutoCAD ignores it, erase/p230); the lasso `pick/drag cursor` offers at a fence's or
 polygon's first point; PICKADD, PICKAUTO, PICKDRAG and SELECTIONPREVIEW as variables (their
 defaults are the behaviour); the Previous set lasts the session, not the drawing; a press starts a

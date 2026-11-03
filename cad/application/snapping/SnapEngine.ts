@@ -110,9 +110,10 @@ function snapEntities(
       }
       if (piece.type === "solid3d") {
         // Its edges, objects of its id: ends, middles, centres, quadrants,
-        // nearest and perpendicular points; no geometric centre, nothing on
-        // its isolines but a sphere's or a torus' centre (solid/s01, s02,
-        // s03, s09, s10). A cone's apex, an end.
+        // nearest and perpendicular points; no crossing (`collectShapes`),
+        // no geometric centre, nothing on its isolines but a sphere's or a
+        // torus' centre (solid/s01, s02, s03, s09, s10). A cone's apex, an
+        // end and a nearest point.
         entities.push(...solidEdgeEntities(piece))
         if (document.isEntityVisible(piece)) {
           for (const point of solidApexes(piece)) {
@@ -508,6 +509,11 @@ export class SnapEngine extends Observable {
       (cursorOn: SnapContext["cursorOn"], reach: number | null) =>
       (entity: Entity): Vec3 | null => {
         if (touched.has(entity)) return touched.get(entity)!
+        const edgeOn = edgeOnTouch(viewport, entity, screenCursor)
+        if (edgeOn !== undefined) {
+          touched.set(entity, edgeOn)
+          return edgeOn
+        }
         const cursor = cursorOn(entity)
         let point: Vec3 | null = null
         if (
@@ -597,6 +603,78 @@ export class SnapEngine extends Observable {
         this.releaseTolerance * reach,
     }
   }
+}
+
+/**
+ * The point of a circle, an arc or an ellipse seen edge-on drawn nearest
+ * `screen`; `undefined` for anything else. Its plane cannot say which of its
+ * points lies under the cursor (`cursorOnEntityPlane` gives the plane's point
+ * nearest its origin), and a meridian of a torus in plan passes through the
+ * centre (primitives/p402: a lemon's Center there).
+ */
+function edgeOnTouch(
+  viewport: Viewport,
+  entity: Entity,
+  screen: Vec2
+): Vec3 | null | undefined {
+  if (!planeAxes(entity)) return undefined
+  let u: Vec2
+  let v: Vec2
+  let range: readonly [number, number] | null = null
+  if (entity.type === "circle" || entity.type === "arc") {
+    u = { x: entity.radius, y: 0 }
+    v = { x: 0, y: entity.radius }
+    if (entity.type === "arc") range = [entity.startAngle, entity.endAngle]
+  } else if (entity.type === "ellipse") {
+    u = entity.majorAxis
+    v = V.scale({ x: -u.y, y: u.x }, entity.ratio)
+    if (entity.startParam !== undefined && entity.endParam !== undefined) {
+      range = [entity.startParam, entity.endParam]
+    }
+  } else {
+    return undefined
+  }
+  const { center } = entity
+  const at = (t: number) =>
+    entityPointToWorld(entity, {
+      x: center.x + u.x * Math.cos(t) + v.x * Math.sin(t),
+      y: center.y + u.y * Math.cos(t) + v.y * Math.sin(t),
+    })
+  const c = viewport.worldToScreen(entityPointToWorld(entity, center))
+  const U = V.sub(viewport.worldToScreen(at(0)), c)
+  const W = V.sub(viewport.worldToScreen(at(Math.PI / 2)), c)
+  const largest = Math.max(V.length(U), V.length(W))
+  if (!(largest > 0) || Math.abs(V.cross(U, W)) >= 1e-3 * largest * largest) {
+    return undefined
+  }
+  // Drawn as a line along `e`: the points at the cursor's place along it,
+  // or the ends of its image.
+  const e = V.normalize(V.length(U) >= V.length(W) ? U : W)
+  const alpha = V.dot(e, U)
+  const beta = V.dot(e, W)
+  const phase = Math.atan2(beta, alpha)
+  const reach = Math.hypot(alpha, beta)
+  const along = V.dot(e, V.sub(screen, c)) / reach
+  const ts = [phase, phase + Math.PI, ...(range ?? [])]
+  if (Math.abs(along) <= 1) {
+    const turn = Math.acos(along)
+    ts.push(phase + turn, phase - turn)
+  }
+  const TAU = 2 * Math.PI
+  const sweep = range ? (((range[1] - range[0]) % TAU) + TAU) % TAU || TAU : 0
+  const inRange = (t: number) =>
+    range === null || (((t - range[0]) % TAU) + TAU) % TAU <= sweep + 1e-12
+  let best: Vec3 | null = null
+  let nearest = Infinity
+  for (const t of ts.filter(inRange)) {
+    const point = at(t)
+    const distance = V.distance(viewport.worldToScreen(point), screen)
+    if (distance < nearest) {
+      nearest = distance
+      best = point
+    }
+  }
+  return best
 }
 
 function withinBox(bounds: Bounds, point: Vec2, margin: number): boolean {
