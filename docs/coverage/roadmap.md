@@ -136,9 +136,9 @@ with the area. The order puts first the commands whose review settles what the l
 Reviews 26 to 32 take what was built after the order was set (3 November 2026), the solids first:
 phase 6c builds on them, and their mouse had never been compared with the desktop's (BOX's height
 followed the cursor on the work plane, c38e7a24). The 3D primitives review fixed LASTPOINT in its tools
-(PLP, `docs/plans/primitives-review.md`): ArrayPolarTool, ExtrudeTool, SolideditTool, SplineEditTool,
-PlaneCutTool and RevolveTool also refuse at a point prompt with no `setsLastPoint()`: suspects for
-reviews 28, 29 and 31, and ARRAYPOLAR's for the Arrays area (done) when it is next touched. SLICE takes a preselection AutoCAD drops (regions/p349): for review 29. A curved face a boolean cuts draws its isolines otherwise, by a rule two shots do not give (RGD-02, `docs/plans/regions-review.md`): a desktop series through COM and shots alone, for review 28 or 29. A review's state is `plan` while its plan runs, and `done` once executed, its plan reduced to an
+(PLP, `docs/plans/primitives-review.md`): ArrayPolarTool, SolideditTool, SplineEditTool and
+PlaneCutTool also refuse at a point prompt with no `setsLastPoint()`: suspects for reviews 29 and
+31 (the Sweeps review fixed ExtrudeTool's and RevolveTool's, SLP-01, SLP-02), and ARRAYPOLAR's for the Arrays area (done) when it is next touched. SLICE takes a preselection AutoCAD drops (regions/p349): for review 29. A curved face a boolean cuts draws its isolines otherwise, by a rule two shots do not give (RGD-02, `docs/plans/regions-review.md`): its desktop series is the Sweeps review's SWD (`docs/plans/sweeps-review.md` §13). A review's state is `plan` while its plan runs, and `done` once executed, its plan reduced to an
 index (LINE's: `docs/plans/line-review.md`); a command added later takes the place its area gives
 it. Transforms found STRETCH's look and zero displacement MOVE's (MOVE-D3, D6 hold) and the
 LASTPOINT of its Displacement its own (STR-05: `docs/plans/transforms-review.md`). The Blocks review takes PURGE's report words from ERASE's

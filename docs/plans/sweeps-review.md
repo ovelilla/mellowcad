@@ -1,9 +1,9 @@
 # Sweeps review (EXTRUDE, REVOLVE, PRESSPULL)
 
-> **Status:** plan, 2026-11-03. Group 1, the console blocks EXT, RVL, PPL and SWO, probed and
-> reviewed in one session; its execution follows in the same session, one commit per block
-> (§12). Group 2, the desktop block SWD (grips, palette, isolines with RGD-02's series, the jigs,
-> PRESSPULL's clicks), needs the owner's mouse and goes in a later session (§13).
+> **Status:** group 1 executed, 2026-11-04: the console blocks EXT, RVL, PPL and SWO, one commit
+> each (Execution, below). Group 2, the desktop block SWD (grips, palette, isolines with RGD-02's
+> series, the jigs, PRESSPULL's clicks), needs the owner's mouse and goes in a later session
+> (§13); then the plan shrinks to its summary and index.
 >
 > This review owns the profiles a sweep takes (their kinds, sift and base), the swept solid
 > (its faces, history, LIST, transforms, EXPLODE, file) and PRESSPULL's bounded areas. It cites:
@@ -47,6 +47,32 @@ The worst:
   `revolve/r01–r09`, `presspull/p01`.
 - `acad.cuix`'s MenuGroup and RibbonRoot (Home > Modeling) and each language's `acad.pgp`.
 - The tables of 2026-10-31. AutoCAD 2027, ACADVER 26.0, X.118.0.0 (p100). Tree at e6951e03.
+
+## Execution
+
+| Block | Findings                                                                       | Commit   |
+| ----- | ------------------------------------------------------------------------------ | -------- |
+| EXT   | EXT-01 to EXT-07, EXT-09, EXT-10, SLP-01, SWO-01; EXT-08 unverified in Missing | c3f7a43b |
+| RVL   | RVL-01 to RVL-08, RVL-10, RVL-11, SLP-02; the Object axis's tie (SWEEPS-D38)   | a701ce63 |
+| PPL   | PPL-01, PPL-04 to PPL-06; SLP-03, PPL-02, PPL-03 unverified for SWD            | a1b5d7e5 |
+| SWO   | SWO-02 to SWO-10                                                               | 13499e6f |
+
+Left for SWD: EXT-08, RVL-09, SLP-03, PPL-02, PPL-03 and the desktop cells of §13. What the
+execution found beside the plan:
+
+- The rule's line of §14 for `cad-tools.md` was not written: the rule has no byte left
+  (`test/knowledge.test.ts`); the base is `profileBase`'s JSDoc and draw.md's.
+- An expression's 0 reuses `boxValueNonzero` (BOX's 22257), no new key (EXT-09).
+- A macro of a tool's own command (EXTRUDE's, REVOLVE's) is typed only when the chrome starts
+  it: `CadRuntime.startMacro` reads whether the command was typed (EXT-10).
+- A region's first face gives EXTRUDE's base (p306's trace: `[25,5,0]`); REVOLVE's from it too,
+  **unverified** (p332 cannot tell).
+- SWO-06's seam made two kernel paths fail, fixed with it: a boolean's cut of no length on a
+  closed curve's seam (`solidBooleans.ts`), and a face's area on a surface closed both ways
+  (`faceRegions.ts`, `withoutSeams`).
+- Two property tests fail now and then by seed, before this review too: `solidBooleans.test.ts`
+  "close, keep Euler's count…" (sphere/box) and `sweeps.test.ts` "keep their volume and moments
+  through a mirror and a scale" (seed −858124732, 1.00000008 against 5e-8).
 
 ## 2. Inventory
 
@@ -588,6 +614,8 @@ Column: Select object or bounded area (and Multiple).
 - **SWEEPS-D36:** REVOLVE refuses a profile (one side, square, self-intersecting) as the axis is
   complete, whichever way it was given, and ends.
 - **SWEEPS-D37:** X, Y and Z are the UCS's, through its origin.
+- **SWEEPS-D38:** a pick at the Object axis's middle is a tie AutoCAD breaks either way (a line
+  from its start, p402; an arc from its end, p236): kept out of the tests, taken from the start.
 - **SWEEPS-D60:** one solid per face of a region, the face drawn second first as p306 and p332
   show; the general order stays **unverified**.
 - **SWEEPS-D61:** `listSolidBounds`, a key of its own beside `listRegionBounds`.
