@@ -46,6 +46,10 @@ wording (skill `autocad-research`). How a tool is written: `.claude/rules/cad-to
 7. **Tests** with the harness (`.claude/rules/testing.md`): `cad/application/tools/*.test.ts`, or a
    file of its own beside the runtime when it is about history or routing (`cad/application/dashPan.test.ts`,
    `cad/application/mredoCommand.test.ts`). Cite the console probe or table id in each test that reproduces one.
+   **What it reads from the cursor** (a jig's height, a drag, what its own object offers the snaps)
+   is seen on the desktop with the mouse, in plan and in a 3D view, and tested so with `moveTo` and
+   `click`: the console has no cursor, and its typed answers are not read as the cursor is (BOX's
+   height, solid/d11–d14 against p06; PLINE's own segments, pline/p259, d13).
 8. **The English surface.** Add a walk of the command's prompts to `englishSurface.test.ts`
    (6d870a7's `.do("-PAN", …)`), then update the snapshots and read the diff:
    `npx vitest run cad/application/englishSurface.test.ts -u` (its command list changes with any
