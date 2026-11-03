@@ -1501,23 +1501,35 @@ unprobed (none here).
 estructura alámbrica actual: ISOLINES=4, Modo de creación de perfiles cerrados = Sólido`), then
 `Select objects to extrude or [MOde]:` (es `Designe objetos para extruir o [MOdo]`, pt-BR `Selecione
 objetos para extrusão ou [MOdo]`), which sifts the set as Enter closes it — `Cannot sweep or extrude
-an object of this type.` and `1 object removed from selection set.`, asked again, `Nothing
-selected.` on an empty one (x10, x11). MOde asks `Closed profiles creation mode [SOlid/SUrface]
-<Solid>:` (x02). Then `Specify height of extrusion or [Direction/Path/Taper angle/Expression]:`, the
-last height its `<default>` (es `Precise altura de extrusión o [Dirección/Trayectoria/ángulo
-Inclinación/Expresión]`; pt-BR `Especifique a altura ou extrusão ou`, with a default `Especifique a
-altura da extrusão ou`): a number, or a point read as BOX's height is, along the first profile's
-normal through its middle — off the plan a snapped one by how far it lies along it (desktop d05,
-console solid/z02: to a box's top corner, below a line's end), the cursor or a typed one where it
-falls on the normal as drawn, however far beside it (d02–d04; z02: `300,-400,0` from a profile at
-`400,-400,0` in SE Isometric is 50), in plan its distance from the middle; `Value must be nonzero.` for
-0 and `Requires numeric distance, second point, or option keyword.` for FOO and Enter with no
-default (x03). Taper angle asks `Specify angle of taper for extrusion or [Expression] <0>:`, the
-last one its default, `Angle must be greater than -90 degrees and less than 90 degrees.` past a
-right angle, and the height again (x01, x06). Expression asks `Enter expression:`, `2*3` a height
-of 6, `The syntax is incorrect or a variable is not defined.  Reenter the expression or value.`
-for what is none (x02). Direction asks `Specify start point of direction:` and `Specify end point
-of direction:` (`Points are coincident.` and asked again), the profiles extruded along the vector,
+a self-intersecting curve.`, then `Cannot sweep or extrude an object of this type.`, each once, and
+one `2 objects removed from selection set.`, asked again, `Nothing selected.` on an empty one (x10,
+x11, sweeps/p146, p162). MOde asks `Closed profiles creation mode [SOlid/SUrface] <Solid>:` (x02).
+Then `Specify height of extrusion or [Direction/Path/Taper angle/Expression]:`, the last height its
+`<default>`, a negative one offered negative and listed positive (p129) (es `Precise altura de
+extrusión o [Dirección/Trayectoria/ángulo Inclinación/Expresión]`; pt-BR `Especifique a altura ou
+extrusão ou`, with a default `Especifique a altura da extrusão ou`): a number, or a point read as
+BOX's height is, along the first profile's normal through its base — off the plan a snapped one by
+how far it lies along it (desktop d05, console solid/z02: to a box's top corner, below a line's
+end), the cursor or a typed one where it falls on the normal as drawn, however far beside it
+(d02–d04; z02: `300,-400,0` from a profile at `400,-400,0` in SE Isometric is 50), in plan its
+distance from the base (p107, p163). The base is the prompt's traced BasePoint, fitted to 1e-15
+(p101–p106, x04, x09): a polyline's the mean of 20 points at arc lengths k·L/19 from its start, the
+start twice (a rectangle drawn from its other corner has another); a spline's, a circle's and an
+ellipse's of 19 at parameters k/19; a region's its centroid; the first profile picked gives it
+(p106); a 3D polyline's and a spline-fit polyline's take the polyline's rule (**unverified**). The
+prompt opening puts LASTPOINT there, in the UCS (p108–p111, p144), after a taper and a refused
+expression too; Direction's points set it, an end refused as parallel too (p112, p153). `Value must
+be nonzero.` for 0 and `Requires numeric distance, second point, or option keyword.` for FOO and
+Enter with no default (x03). Taper angle asks `Specify angle of taper for extrusion or [Expression]
+<0>:`, the last one its default, `Angle must be greater than -90 degrees and less than 90 degrees.`
+past a right angle, and the height again (x01, x06); a run tapers only when it is answered (p335,
+p336). Expression asks `Enter expression:`, `2*3` a height of 6, `The syntax is incorrect or a
+variable is not defined.  Reenter the expression or value.` for what is none (x02); a value refused
+asks its prompt again (p132, p133; an expression's 0 is BOX's words in es `No puede ser un valor
+igual a cero.` and pt-BR, a typed one the distance's), Enter ends EXTRUDE, nothing made (p131).
+The height and the taper defaults are the program's, kept across OPEN (p149). Direction asks
+`Specify start point of direction:` and `Specify end point of direction:` (`Invalid point.` for FOO
+and Enter, p134; `Points are coincident.` and asked again), the profiles extruded along the vector,
 their tops copies of them, untapered though LIST keeps the taper (x02, x06); along a profile's
 plane it says `Extrude direction is parallel to plane of sweep curve.` and ends (x11). A circle, an
 ellipse, a closed polyline, spline or 3D polyline, a loop whose ends meet and a region's faces are
@@ -1527,7 +1539,9 @@ cone 5 high), and a profile the taper cannot take makes nothing, silently (x06: 
 60° to 10). DELOBJ erases the profiles (3, its initial value; 1, 2), keeps them (0), or asks `Erase
 defining objects? [Yes/No] <Yes>:` when negative, the last answer its default (x07; es `¿Desea
 borrar los objetos de definición? [Sí/No]`, pt-BR `Apagar objetos definidos? [Sim/Não]`). One undo
-step.
+step. The rail's button runs the ribbon's macro `^C^C^R_extrude _MO _SO;` (acad.cuix ID_Extrude;
+p400): `_extrude`, MOde answered `_MO` and `_SO` on the prompt's line, Enter afterwards the bare
+EXTRUDE, U `EXTRUDE GROUP`.
 
 The object, a 3D solid (file version 47), as ACIS builds it (x01, x09's MPDUMP): a side face for
 each edge — a plane for a segment, a cylinder for an arc (its seam at the arc's start), a cone when
@@ -1549,9 +1563,10 @@ ACIS joins the faces by (x09's NurbCurve3d), refused here as a taper the profile
 Expression's parameters and functions (arithmetic only); the default after Direction, which the
 console sets from its cursor (x02's `<312.4376>`); a spline side's isolines across it (ACIS's own
 count, i6); its grips and the palette's rows under Solid type, which no desktop pass has seen yet
-(**unverified**); a self-intersecting profile is said (`Cannot sweep or extrude a
-self-intersecting curve`) where AutoCAD's console was not probed; the tilted UCS's console run
-(x08) only checked by MASSPROP.
+(**unverified**); a point given for the taper, read here as its distance from the base in degrees, which the
+console reads in a UCS at the profile's start, its X the normal, as atan(Y / d), d the height its
+fixed cursor gave (p111, p115–p118: `60,10` → `2.14746830`; **unverified**, the desktop decides); the
+tilted UCS's console run (x08) only checked by MASSPROP.
 
 ### `REVOLVE` / `REV` · es `REVOLUCION` / `RV` · pt-BR `REVOLUCAO` / `REV`
 

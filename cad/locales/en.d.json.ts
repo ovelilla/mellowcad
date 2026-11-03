@@ -2770,6 +2770,8 @@ declare const source: {
       "listRegionBounds": string
       "sweepDensity": string
       "sweepRefused": string
+      "sweepRefusedType": string
+      "sweepRemoved": string
       "sweepNothingSelected": string
       "sweepSelfIntersecting": string
       "extrudeValueNonzero": string

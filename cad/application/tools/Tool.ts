@@ -588,7 +588,9 @@ export interface Tool {
    * AutoCAD's ribbon macro the tool runs, where it is a mode of another
    * command (`^C^C_circle _2p`): that command's keywords are the tool's, the
    * rail echoes, repeats and undoes it, and its answers are typed each time
-   * the tool starts. Null or omitted: the tool's own command.
+   * the tool starts. Null or omitted: the tool's own command. A macro of the
+   * tool's own command (EXTRUDE's `_MO _SO`) is typed only when the chrome
+   * starts it: that command typed or repeated asks as typed.
    */
   ribbonMacro?(): RibbonMacro | null
   /**

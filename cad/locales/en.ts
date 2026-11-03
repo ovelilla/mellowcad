@@ -6374,8 +6374,25 @@ export const en: EngineCatalog = {
           }
         ]
       ],
+      "sweepRefusedType": "Cannot sweep or extrude an object of this type.",
+      "sweepRemoved": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " object removed from selection set."
+            ],
+            "other": [
+              0,
+              " objects removed from selection set."
+            ]
+          }
+        ]
+      ],
       "sweepNothingSelected": "Nothing selected.",
-      "sweepSelfIntersecting": "Cannot sweep or extrude a self-intersecting curve",
+      "sweepSelfIntersecting": "Cannot sweep or extrude a self-intersecting curve.",
       "extrudeValueNonzero": "Value must be nonzero.",
       "taperAngleRange": "Angle must be greater than -90 degrees and less than 90 degrees.",
       "directionCoincident": "Points are coincident.",

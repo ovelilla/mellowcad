@@ -1,11 +1,13 @@
 import { Vec2 } from "../../geometry/Vec2"
-import { Vec3, add3, dot3, length3, scale3, sub3 } from "../../geometry/Vec3"
-import { axesToWorld } from "../../geometry/ocs"
-import { curveBox } from "../../geometry/planarCurves"
+import { Vec3, dot3, length3, scale3, sub3 } from "../../geometry/Vec3"
 import { MODEL_TOLERANCE } from "../../geometry/planarCurves"
 import { PlanarProfile, extrusionBrep } from "../../geometry/sweeps"
 import { Entity, EntityId } from "../../domain/entities"
-import { createSweptSolid, sweepProfile } from "../../domain/sweptSolids"
+import {
+  createSweptSolid,
+  profileBase,
+  sweepProfile,
+} from "../../domain/sweptSolids"
 import { normalizeDegrees } from "../../geometry/primitives"
 import {
   AddEntitiesCommand,
@@ -25,6 +27,7 @@ import {
   HeldVariables,
   PointerInput,
   QuestionInput,
+  RibbonMacro,
   Tool,
   ToolContext,
   ToolQuestion,
@@ -34,10 +37,11 @@ import { pickedHeight, pointAsCursor } from "./heightPick"
 import { ObjectSelector } from "./objectSelection"
 import { SweepSettings, sweepSettings } from "./sweepSettings"
 
-/** A profile EXTRUDE took, and the object it came from. */
+/** A profile EXTRUDE took, its object, and its base ({@link profileBase}). */
 interface Profile {
   readonly id: EntityId
-  readonly profile: PlanarProfile | "crosses"
+  readonly profile: PlanarProfile
+  readonly base: Vec3
 }
 
 type ExtrudeState =
@@ -60,15 +64,18 @@ const PREVIEW_ID = "extrude-preview"
  * AutoCAD's EXTRUDE, as 2027's console asks it (extrude/x01–x12), in en, es
  * and pt-BR: it says the wire frame density and the creation mode, asks
  * `Select objects to extrude or [MOde]:`, sifts the set as Enter closes it
- * (`Cannot sweep or extrude an object of this type.`, x10, x11), then
- * `Specify height of extrusion or [Direction/Path/Taper angle/Expression]:`,
- * the last height its default. Taper angle asks its angle, under a right
- * angle either way, and the height again; Direction two points, the profiles
- * extruded along them, untapered (x06); Expression a value. Each closed
- * profile becomes a solid of the current layer and properties (x10), a
- * region's faces one; one a taper cannot take makes nothing, silently (x06).
- * DELOBJ erases the profiles (3, its initial value), keeps them (0) or asks
- * (negative, x07). One undo step.
+ * (a self-intersecting curve, then what it cannot sweep, each said once, then
+ * one count: x10, x11, sweeps/p146, p162), then `Specify height of extrusion
+ * or [Direction/Path/Taper angle/Expression]:`, the last height its default
+ * (program-wide, p149). Taper angle asks its angle, under a right angle
+ * either way, the last one its default, and the height again: the taper is
+ * this run's, none unless asked (p335, p336); Direction two points, the
+ * profiles extruded along them, untapered (x06); Expression a value. Each
+ * closed profile becomes a solid of the current layer and properties (x10),
+ * a region's faces one; one a taper cannot take makes nothing, silently
+ * (x06). DELOBJ erases the profiles (3, its initial value), keeps them (0) or
+ * asks (negative, x07). One undo step. The rail runs the ribbon's macro
+ * ({@link ExtrudeTool.ribbonMacro}).
  *
  * WHY no Path and no SUrface: a path sweeps the profile (x12's `Solid type =
  * Sweep`), and a surface is an object this engine has none of; both stay
@@ -80,6 +87,8 @@ export class ExtrudeTool implements Tool {
 
   private state: ExtrudeState = { phase: "select" }
   private profiles: readonly Profile[] = []
+  /** This run's taper, in degrees: 0 until Taper angle is answered (p335). */
+  private taper = 0
   /** The height the mouse gives while the height is asked, which the ghost shows. */
   private rise = 0
   private lastScreen: Vec2 | null = null
@@ -102,14 +111,19 @@ export class ExtrudeTool implements Tool {
     }
   }
 
-  onNewDrawing(): void {
-    this.settings.height = null
-    this.settings.taper = 0
+  /**
+   * The ribbon's Extrude (acad.cuix ID_Extrude, Home > Modeling):
+   * `^C^C^R_extrude _MO _SO;` (sweeps/p400). Typed, EXTRUDE asks as typed:
+   * the runtime answers a macro of the command typed only from the chrome.
+   */
+  ribbonMacro(): RibbonMacro {
+    return { command: "EXTRUDE", answers: ["_MO", "_SO"] }
   }
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("crosshair")
     this.profiles = []
+    this.taper = 0
     this.state = { phase: "select" }
     ctx.report(
       ctx.text.message("sweepDensity", {
@@ -173,10 +187,16 @@ export class ExtrudeTool implements Tool {
         }
       case "directionStart":
       case "directionEnd":
-        return { refusal: "pointOrKeywordRequired" }
+        return { refusal: "invalidPoint" }
       case "expression":
         return null
     }
+  }
+
+  /** Direction's points move LASTPOINT, an end refused as parallel too (p112, p153). */
+  setsLastPoint(): boolean | null {
+    const phase = this.state.phase
+    return phase === "directionStart" || phase === "directionEnd" ? true : null
   }
 
   /**
@@ -336,27 +356,37 @@ export class ExtrudeTool implements Tool {
     if (state.phase === "select") return this.selector.buildOverlay(ctx)
     if (state.phase !== "height" || this.rise === 0) return []
     const stroke = { color: currentColor(ctx), width: 1 }
-    return this.solids(this.rise, null, this.settings.taper, ctx).flatMap(
-      (solid) => entityScenePrimitive(ctx.viewport, solid, stroke)
+    return this.solids(this.rise, null, ctx).flatMap((solid) =>
+      entityScenePrimitive(ctx.viewport, solid, stroke)
     )
   }
 
   /**
-   * The set closed: what cannot be swept leaves it, said as AutoCAD says it
-   * on Enter, and with nothing left it is asked again (x11).
+   * The set closed: what cannot be swept leaves it as Enter closes it, a
+   * self-intersecting curve said first, then what is no profile, each once,
+   * then one count (p146, p162); with nothing left it is asked again (x11).
    */
   private closeSet(ctx: ToolContext): void {
     const ids = ctx.selection.toArray()
     const profiles: Profile[] = []
+    let crossing = 0
     let refused = 0
     for (const id of ids) {
       const entity = ctx.document.get(id)
       const profile = entity ? sweepProfile(entity) : null
-      if (profile === null || profile === "open") refused++
-      else profiles.push({ id, profile })
+      const base = entity ? profileBase(entity) : null
+      if (profile === "crosses") crossing++
+      else if (profile === null || profile === "open" || base === null) {
+        refused++
+      } else profiles.push({ id, profile, base })
     }
-    if (refused > 0) {
-      ctx.report(ctx.text.message("sweepRefused", { count: refused }), "error")
+    if (crossing + refused > 0) {
+      const lines = [
+        ...(crossing > 0 ? [ctx.text.message("sweepSelfIntersecting")] : []),
+        ...(refused > 0 ? [ctx.text.message("sweepRefusedType")] : []),
+        ctx.text.message("sweepRemoved", { count: crossing + refused }),
+      ]
+      ctx.report(lines.join("\n"), "error")
     }
     if (profiles.length === 0) {
       ctx.selection.clear()
@@ -367,8 +397,18 @@ export class ExtrudeTool implements Tool {
     }
     this.profiles = profiles
     ctx.selection.clear()
-    this.state = { phase: "height", cursor: this.base() }
+    this.askHeight(ctx)
+  }
+
+  /**
+   * The height prompt opening, which puts LASTPOINT at the base: as the set
+   * closes, after a taper and after an expression it refused (p108–p111).
+   */
+  private askHeight(ctx: ToolContext): void {
+    const base = this.base()
+    this.state = { phase: "height", cursor: base }
     this.rise = 0
+    ctx.setLastPoint(base)
     this.openValue(
       ctx,
       this.settings.height === null
@@ -377,21 +417,9 @@ export class ExtrudeTool implements Tool {
     )
   }
 
-  /** Where the height is measured from: the middle of the first profile's outline. */
+  /** Where a height is measured from: the first profile's base (p106). */
   private base(): Vec3 {
-    const first = this.profiles.find((p) => p.profile !== "crosses")
-    if (!first || first.profile === "crosses") return { x: 0, y: 0, z: 0 }
-    const { axes, elevation, faces } = first.profile
-    const boxes = faces[0].loops[0].map(curveBox)
-    const x =
-      (Math.min(...boxes.map((b) => b.min.x)) +
-        Math.max(...boxes.map((b) => b.max.x))) /
-      2
-    const y =
-      (Math.min(...boxes.map((b) => b.min.y)) +
-        Math.max(...boxes.map((b) => b.max.y))) /
-      2
-    return axesToWorld(axes, { x, y, z: elevation })
+    return this.profiles[0]?.base ?? { x: 0, y: 0, z: 0 }
   }
 
   /** The height the mouse gives along the first profile's normal. */
@@ -399,9 +427,9 @@ export class ExtrudeTool implements Tool {
     input: Parameters<typeof pickedHeight>[0],
     ctx: ToolContext
   ): number {
-    const first = this.profiles.find((p) => p.profile !== "crosses")
-    if (!first || first.profile === "crosses") return 0
-    return pickedHeight(input, this.base(), first.profile.axes.z, ctx.viewport)
+    const first = this.profiles[0]
+    if (!first) return 0
+    return pickedHeight(input, first.base, first.profile.axes.z, ctx.viewport)
   }
 
   private takePoint(point: Vec3, ctx: ToolContext): void {
@@ -434,10 +462,22 @@ export class ExtrudeTool implements Tool {
     }
   }
 
-  /** `Value must be nonzero.` for none, and the prompt asked again (x03). */
-  private takeHeight(height: number, ctx: ToolContext): void {
+  /**
+   * `Value must be nonzero.` for none, and the prompt asked again (x03); an
+   * expression's 0 is worded as BOX's (es, pt-BR: p132).
+   */
+  private takeHeight(
+    height: number,
+    ctx: ToolContext,
+    expression = false
+  ): void {
     if (height === 0) {
-      ctx.report(ctx.text.message("extrudeValueNonzero"), "error")
+      ctx.report(
+        ctx.text.message(
+          expression ? "boxValueNonzero" : "extrudeValueNonzero"
+        ),
+        "error"
+      )
       return
     }
     this.settings.height = height
@@ -451,36 +491,24 @@ export class ExtrudeTool implements Tool {
       return
     }
     this.settings.taper = degrees
-    this.state = { phase: "height", cursor: this.base() }
-    this.rise = 0
-    this.openValue(
-      ctx,
-      this.settings.height === null
-        ? "extrudeHeightOr"
-        : "extrudeHeightDefaultOr"
-    )
+    this.taper = degrees
+    this.askHeight(ctx)
   }
 
   /**
-   * The solids: each profile along its normal `height`, tapered, or along
-   * `offset` (Direction) untapered, its history still the taper given (x06).
+   * The solids: each profile along its normal `height`, tapered by this run's
+   * taper, or along `offset` (Direction) untapered, its history still the
+   * taper given (x06). The history keeps the height unsigned (p129).
    */
   private solids(
     height: number | null,
     offset: Vec3 | null,
-    degrees: number,
     ctx: ToolContext,
     report = false
   ): Entity[] {
     const made: Entity[] = []
-    const taper = (degrees * Math.PI) / 180
+    const taper = (this.taper * Math.PI) / 180
     for (const { profile } of this.profiles) {
-      if (profile === "crosses") {
-        if (report) {
-          ctx.report(ctx.text.message("sweepSelfIntersecting"), "error")
-        }
-        continue
-      }
       const along = offset ?? scale3(profile.axes.z, height ?? 0)
       const brep = extrusionBrep(profile, along, offset ? 0 : taper)
       if (!brep) continue
@@ -488,7 +516,7 @@ export class ExtrudeTool implements Tool {
         brep,
         {
           kind: "extrusion",
-          height: offset ? length3(offset) : (height ?? 0),
+          height: offset ? length3(offset) : Math.abs(height ?? 0),
           taper,
         },
         ctx.document.getCurrentLayerId(),
@@ -508,9 +536,8 @@ export class ExtrudeTool implements Tool {
       // A direction along a profile's plane extrudes nothing (x11).
       const flat = this.profiles.some(
         ({ profile }) =>
-          profile !== "crosses" &&
           Math.abs(dot3(offset, profile.axes.z)) <=
-            MODEL_TOLERANCE * length3(offset)
+          MODEL_TOLERANCE * length3(offset)
       )
       if (flat) {
         ctx.report(ctx.text.message("directionParallel"), "error")
@@ -519,11 +546,8 @@ export class ExtrudeTool implements Tool {
         return
       }
     }
-    const made = this.solids(height, offset, this.settings.taper, ctx, true)
-    const used = this.profiles
-      .filter((_, i) => i < this.profiles.length)
-      .filter(({ profile }) => profile !== "crosses")
-      .map(({ id }) => id)
+    const made = this.solids(height, offset, ctx, true)
+    const used = this.profiles.map(({ id }) => id)
     const delobj = this.settings.delobj
     if (made.length > 0 && delobj < 0) {
       this.state = { phase: "erase", made, used }
@@ -600,12 +624,23 @@ export class ExtrudeTool implements Tool {
     ctx.requestRender()
   }
 
+  /**
+   * `Enter expression:`: Enter ends EXTRUDE, nothing made, nothing said
+   * (p131); a value reopens the prompt it answers before taking it, so a
+   * refused one leaves that prompt asked (p132, p133).
+   */
   private openExpression(ctx: ToolContext): void {
     ctx.dynamicInput.open({
       fields: [{ id: "expression", prompt: "enterExpression", kind: "text" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
         const text = commitCtx.dynamicInput.getText("expression").trim()
+        if (text === "") {
+          this.state = { phase: "select" }
+          commitCtx.dynamicInput.close()
+          commitCtx.endCommand()
+          return true
+        }
         const value = evaluateExpression(text)
         if (value === null) {
           commitCtx.report(commitCtx.text.message("expressionSyntax"), "error")
@@ -615,10 +650,11 @@ export class ExtrudeTool implements Tool {
         if (state.phase !== "expression") return true
         if (state.of === "taper") {
           this.state = { phase: "taper" }
+          this.openValue(commitCtx, "extrudeTaperOr")
           this.takeTaper(value, commitCtx)
         } else {
-          this.state = { phase: "height", cursor: this.base() }
-          this.takeHeight(value, commitCtx)
+          this.askHeight(commitCtx)
+          this.takeHeight(value, commitCtx, true)
         }
         return true
       },
@@ -632,7 +668,7 @@ export class ExtrudeTool implements Tool {
     const field = ctx.dynamicInput.getActiveFieldId()
     const text = field === null ? "" : ctx.dynamicInput.getText(field).trim()
     if (!ctx.dynamicInput.hasTypedText()) {
-      ctx.report(ctx.text.message("pointOrKeywordRequired"), "error")
+      ctx.report(ctx.text.message("invalidPoint"), "error")
       return true
     }
     if (!isCoordinateExpression(text)) return false
@@ -653,5 +689,3 @@ export class ExtrudeTool implements Tool {
 export function taperDegrees(taper: number): number {
   return normalizeDegrees((taper * 180) / Math.PI)
 }
-
-void add3

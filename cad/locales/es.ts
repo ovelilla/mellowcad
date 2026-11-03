@@ -7023,8 +7023,27 @@ export const es: EngineLocale = {
           }
         ]
       ],
+      "sweepRefusedType": "No se puede barrer ni extruir un objeto de este tipo.",
+      "sweepRemoved": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              "Se ha eliminado ",
+              0,
+              " objeto del conjunto de selección."
+            ],
+            "other": [
+              "Se han eliminado ",
+              0,
+              " objetos del conjunto de selección."
+            ]
+          }
+        ]
+      ],
       "sweepNothingSelected": "No se ha designado nada.",
-      "sweepSelfIntersecting": "No se puede barrer ni extruir una curva que se interseca a sí misma",
+      "sweepSelfIntersecting": "No se puede barrer ni extruir una curva que interseca consigo misma.",
       "extrudeValueNonzero": "El valor debe ser diferente de cero.",
       "taperAngleRange": "Debe ser un ángulo superior a -90º e inferior a 90º.",
       "directionCoincident": "Los puntos coinciden.",

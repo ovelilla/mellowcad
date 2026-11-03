@@ -1362,7 +1362,13 @@ export class CadRuntime extends Observable {
 
   /** Types the ribbon macro `tool` runs, if any ({@link RibbonMacro}). */
   private startMacro(tool: Tool): void {
-    const answers = tool.ribbonMacro?.()?.answers ?? []
+    const macro = tool.ribbonMacro?.()
+    // A tool whose own command its button's macro answers (EXTRUDE's `_MO
+    // _SO`) asks as typed when that command is typed or repeated: only the
+    // chrome runs the macro (sweeps/p400). A mode typed by a name of its own
+    // (CIRCLE2P) still runs it.
+    const typedAsIs = macro && this.starting === macro.command
+    const answers = (!typedAsIs && macro?.answers) || []
     this.macro = answers.length > 0 ? { tool, answers } : null
     this.feedMacro()
   }

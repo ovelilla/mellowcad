@@ -7048,8 +7048,25 @@ export const ptBR: EngineLocale = {
           }
         ]
       ],
+      "sweepRefusedType": "Não é possível efetuar a varredura de um objeto deste tipo.",
+      "sweepRemoved": [
+        [
+          "count",
+          2,
+          {
+            "one": [
+              0,
+              " objeto removido do conjunto de seleção."
+            ],
+            "other": [
+              0,
+              " objetos removidos do conjunto de seleção."
+            ]
+          }
+        ]
+      ],
       "sweepNothingSelected": "Não há nada selecionado.",
-      "sweepSelfIntersecting": "Não é possível efetuar a varredura ou extrusão de uma curva de autointersecção",
+      "sweepSelfIntersecting": "Não é possível efetuar a varredura ou extrusão de uma curva de autointersecção.",
       "extrudeValueNonzero": "O valor deve ser diferente de zero.",
       "taperAngleRange": "O ângulo deve ser maior do que -90 graus e menor do que 90 graus.",
       "directionCoincident": "Pontos são coincidentes.",
