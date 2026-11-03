@@ -5315,6 +5315,14 @@ export class CadRuntime extends Observable {
     session: DynamicInputSession,
     field: DynamicField | undefined
   ): boolean {
+    if (session.coordinateAsNumber === true && field) {
+      // The `#` is the absolute prefix a command-line coordinate comes with.
+      const typed = this.dynamicInput.getText(field.id).trim().replace(/^#/, "")
+      const first = /^([^,@*<]+),/.exec(typed)
+      if (first && isCoordinateExpression(typed)) {
+        this.dynamicInput.setText(field.id, first[1])
+      }
+    }
     this.pointTyped = this.typedPoint(field)
     const values = this.dynamicInput.resolveValues()
     const override = this.snapping.getOverride()

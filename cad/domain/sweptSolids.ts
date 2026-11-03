@@ -1,5 +1,5 @@
 import { Vec2 } from "../geometry/Vec2"
-import { Vec3, scale3 } from "../geometry/Vec3"
+import { Vec3, add3, dot3, scale3, sub3 } from "../geometry/Vec3"
 import { planarMoments } from "../geometry/massProperties"
 import {
   bsplineDomain,
@@ -10,6 +10,7 @@ import {
 import { arbitraryAxis, axesToWorld } from "../geometry/ocs"
 import {
   PlanarCurve,
+  curveCentroid,
   curveLength,
   curvePoint,
   curveStart,
@@ -138,6 +139,41 @@ function pointsByParameter(curves: readonly PlanarCurve[], n: number): Vec2[] {
     points.push(curvePoint(curves[i], t - i))
   }
   return points
+}
+
+/**
+ * Where REVOLVE's angle prompt opens LASTPOINT (sweeps/p119–p125, p151): the
+ * profile's perimeter centroid, each curve's centroid weighed by its length,
+ * projected on the axis through `origin` along the unit `direction`. p151's L
+ * is 375/70 up the axis, where its area's centroid and EXTRUDE's base are
+ * not. A region weighs every loop of its faces (**unverified**: not probed).
+ */
+export function revolveBase(
+  profile: PlanarProfile,
+  origin: Vec3,
+  direction: Vec3
+): Vec3 {
+  let length = 0
+  let x = 0
+  let y = 0
+  for (const face of profile.faces) {
+    for (const loop of face.loops) {
+      for (const curve of loop) {
+        const l = curveLength(curve)
+        const c = curveCentroid(curve)
+        length += l
+        x += l * c.x
+        y += l * c.y
+      }
+    }
+  }
+  const centroid = axesToWorld(profile.axes, {
+    x: length === 0 ? 0 : x / length,
+    y: length === 0 ? 0 : y / length,
+    z: profile.elevation,
+  })
+  const along = dot3(sub3(centroid, origin), direction)
+  return add3(origin, scale3(direction, along))
 }
 
 /** The solid a sweep made, keeping what made it. */

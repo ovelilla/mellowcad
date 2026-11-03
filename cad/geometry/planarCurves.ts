@@ -238,6 +238,47 @@ export function curveLength(c: PlanarCurve): number {
   }
 }
 
+/** Parts a spline's or an ellipse's centroid is summed over, as its length is. */
+const CENTROID_PARTS = 64
+
+/**
+ * The curve's centroid as a wire, each length of it weighing the same: a
+ * line's middle, an arc's on its bisector at `r·sin(h)/h` (h half its sweep);
+ * an elliptical arc's and a spline's summed by Gauss–Legendre.
+ */
+export function curveCentroid(c: PlanarCurve): Vec2 {
+  switch (c.kind) {
+    case "line":
+      return V.lerp(c.start, c.end, 0.5)
+    case "arc": {
+      const half = Math.abs(c.sweep) / 2
+      const mid = c.startAngle + c.sweep / 2
+      const r = half === 0 ? c.radius : (c.radius * Math.sin(half)) / half
+      return {
+        x: c.center.x + r * Math.cos(mid),
+        y: c.center.y + r * Math.sin(mid),
+      }
+    }
+    case "ellipse":
+    case "spline": {
+      let length = 0
+      let x = 0
+      let y = 0
+      for (let i = 0; i < CENTROID_PARTS; i++) {
+        for (const [node, w] of GAUSS_8) {
+          const s = (i + (node + 1) / 2) / CENTROID_PARTS
+          const weight = w * V.length(curveDerivative(c, s))
+          const p = curvePoint(c, s)
+          length += weight
+          x += weight * p.x
+          y += weight * p.y
+        }
+      }
+      return length === 0 ? curveStart(c) : { x: x / length, y: y / length }
+    }
+  }
+}
+
 /**
  * Half `∫ (x dy − y dx)` along the curve: summed round a closed loop, its
  * signed area, positive counter-clockwise (Green). Exact for every kind but a

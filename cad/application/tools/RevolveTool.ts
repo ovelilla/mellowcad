@@ -1,4 +1,4 @@
-import { Vec2 } from "../../geometry/Vec2"
+import { V, Vec2 } from "../../geometry/Vec2"
 import { Vec3, length3, normalize3, scale3, sub3 } from "../../geometry/Vec3"
 import { MODEL_TOLERANCE } from "../../geometry/planarCurves"
 import {
@@ -9,12 +9,22 @@ import {
 import {
   Entity,
   EntityId,
-  polylineSegmentGeometries,
+  arcEndPoint,
+  arcStartPoint,
+  entityPointToWorld,
+  lineEndZ,
+  lineStartZ,
+  splineEndPoint,
+  splineStartPoint,
 } from "../../domain/entities"
 import { entityShape } from "../../domain/polylineFits"
 import { closedLoop } from "../../domain/regionModeling"
-import { createSweptSolid, sweepProfile } from "../../domain/sweptSolids"
-import { lineEndZ, lineStartZ } from "../../domain/entities"
+import {
+  createSweptSolid,
+  revolveBase,
+  sweepProfile,
+} from "../../domain/sweptSolids"
+import { ucsZAxis } from "../../domain/ucs"
 import {
   AddEntitiesCommand,
   ReplaceEntitiesCommand,
@@ -34,6 +44,7 @@ import {
   HeldVariables,
   PointerInput,
   QuestionInput,
+  RibbonMacro,
   Tool,
   ToolContext,
   ToolQuestion,
@@ -78,28 +89,27 @@ type RevolveState =
 
 const PREVIEW_ID = "revolve-preview"
 const ORIGIN: Vec3 = { x: 0, y: 0, z: 0 }
-const UNIT: Record<"X" | "Y" | "Z", Vec3> = {
-  X: { x: 1, y: 0, z: 0 },
-  Y: { x: 0, y: 1, z: 0 },
-  Z: { x: 0, y: 0, z: 1 },
-}
 
 /**
  * AutoCAD's REVOLVE, as 2027's console asks it (revolve/r01–r09), in en, es
  * and pt-BR: EXTRUDE's first line, set and MOde (`Select objects to revolve
  * or [MOde]:`, `Cannot revolve an object of this type.`), then `Specify axis
  * start point or define axis by [Object/X/Y/Z] <Object>:` — two points
- * (`Zero length axis is not permitted.` ends it), a line or a straight
- * segment of a polyline (Object; a closed one `Cannot get axis direction
- * from a closed curve or edge.`), or the UCS's X, Y or Z through its origin
- * — and `Specify angle of revolution or [STart angle/Reverse/EXpression]
- * <360>:`: 0 or a turn or more is a whole one (r05, r07), negative turns
- * back; STart angle asks `Specify start angle <0.0>:` and the angle again
- * without Reverse; Reverse turns the axis round. A profile across the axis
- * says `The object should be on one side of the axis.`, one square to it
- * `Axis of revolution is perpendicular to plane of revolve curve.`, each with
- * `Unable to revolve the selected object.`, and the command ends (r05).
- * DELOBJ as EXTRUDE's (r09). One undo step.
+ * (`Zero length axis is not permitted.` ends it), the chord of a line, a
+ * polyline, an arc or a spline from its end nearer the pick (Object; a
+ * closed one `Cannot get axis direction from a closed curve or edge.`), or
+ * the UCS's X, Y or Z through its origin (sweeps/p205, p211). The axis given,
+ * a profile across it says `The object should be on one side of the axis.`,
+ * one square to it `Axis of revolution is perpendicular to plane of revolve
+ * curve.`, one crossing itself `Cannot revolve a self-intersecting curve.`,
+ * each with `Unable to revolve the selected object.`, and the command ends
+ * (r05, p244, p245). Then `Specify angle of revolution or [STart
+ * angle/Reverse/EXpression] <360>:`, LASTPOINT put on the axis
+ * ({@link revolveBase}): 0 or a turn or more is a whole one (r05, r07),
+ * negative turns back, a coordinate typed its first number (p228); STart
+ * angle asks `Specify start angle <0.0>:` and the angle again without
+ * Reverse; Reverse turns the axis round. DELOBJ as EXTRUDE's (r09). One undo
+ * step. The rail runs the ribbon's macro ({@link RevolveTool.ribbonMacro}).
  *
  * WHY an axis off the profile's plane is refused (`Unable to revolve the
  * selected object.` alone): AutoCAD turns the profile round it (r05's
@@ -123,17 +133,22 @@ export class RevolveTool implements Tool {
     question: () => "revolveSelectAxis",
     modes: ONE_OBJECT_MODES,
     one: {
-      take: (entity, ctx, find) => this.takeAxisObject(entity, find.last, ctx),
+      // What a mode found has no pick: its axis runs from its start (p242).
+      take: (entity, ctx) => this.takeAxisObject(entity, undefined, ctx),
       newest: true,
-      pick: (point, ctx) => {
-        const hit = ctx.pick(point)
-        if (hit) this.takeAxisObject(hit, point, ctx)
-        else ctx.report(ctx.text.message("noObjectFound"))
-      },
+      pick: (point, ctx) => this.pickAxis(point, ctx),
     },
   })
 
   constructor(private readonly settings: SweepSettings = sweepSettings()) {}
+
+  /**
+   * The ribbon's Revolve (acad.cuix ID_Revolve, Home > Modeling):
+   * `^C^C^R_revolve _MO _SO;` (sweeps/p401). Typed, REVOLVE asks as typed.
+   */
+  ribbonMacro(): RibbonMacro {
+    return { command: "REVOLVE", answers: ["_MO", "_SO"] }
+  }
 
   heldVariables(): Partial<HeldVariables> {
     return {
@@ -207,8 +222,9 @@ export class RevolveTool implements Tool {
       case "erase":
         return "keyword"
       case "axisStart":
-      case "axisEnd":
         return { refusal: "pointOrKeywordRequired" }
+      case "axisEnd":
+        return { refusal: "invalidPoint" }
       case "angle":
       case "startAngle":
         return {
@@ -218,6 +234,12 @@ export class RevolveTool implements Tool {
       case "expression":
         return null
     }
+  }
+
+  /** The axis points move LASTPOINT (p119), which the angle prompt then puts on the axis. */
+  setsLastPoint(): boolean | null {
+    const phase = this.state.phase
+    return phase === "axisStart" || phase === "axisEnd" ? true : null
   }
 
   commandOptions(): readonly CommandOption[] {
@@ -268,7 +290,10 @@ export class RevolveTool implements Tool {
           return "continue"
         }
         if (id === "X" || id === "Y" || id === "Z") {
-          this.askAngle({ origin: ORIGIN, direction: UNIT[id] }, null, ctx)
+          const ucs = ctx.ucs
+          const direction =
+            id === "X" ? ucs.xAxis : id === "Y" ? ucs.yAxis : ucsZAxis(ucs)
+          this.axisGiven({ origin: ucs.origin, direction }, ctx)
           return "continue"
         }
         return "unhandled"
@@ -383,10 +408,8 @@ export class RevolveTool implements Tool {
       return
     }
     if (this.state.phase === "object") {
-      if (input.button !== 0) return
-      const hit = ctx.pick(input.point)
-      if (hit) this.takeAxisObject(hit, input.point, ctx)
-      else ctx.report(ctx.text.message("noObjectFound"))
+      if (this.axisPick.inMode()) this.axisPick.onPointerDown(input, ctx)
+      else if (input.button === 0) this.pickAxis(input.point, ctx)
       return
     }
     if (input.button !== 0) return
@@ -395,6 +418,9 @@ export class RevolveTool implements Tool {
 
   onPointerUp(input: PointerInput, ctx: ToolContext): void {
     if (this.state.phase === "select") this.selector.onPointerUp(input, ctx)
+    else if (this.state.phase === "object") {
+      this.axisPick.onPointerUp(input, ctx)
+    }
   }
 
   /** The set as it closes, the axis as it is dragged, then the whole turn the angle starts from. */
@@ -404,7 +430,7 @@ export class RevolveTool implements Tool {
     if (state.phase === "object") return this.axisPick.buildOverlay(ctx)
     if (state.phase !== "angle") return []
     const stroke = { color: currentColor(ctx), width: 1 }
-    return this.solids(state.axis, 0, 2 * Math.PI, ctx, false).made.flatMap(
+    return this.solids(state.axis, 0, 2 * Math.PI, ctx, false).flatMap(
       (solid) => entityScenePrimitive(ctx.viewport, solid, stroke)
     )
   }
@@ -443,61 +469,43 @@ export class RevolveTool implements Tool {
     ctx.requestRender()
   }
 
+  /** A pick at `Select an object:`: on nothing AUto's window starts there (p241). */
+  private pickAxis(point: Vec3, ctx: ToolContext): void {
+    const hit = ctx.pick(point)
+    if (hit) this.takeAxisObject(hit, point, ctx)
+    else this.axisPick.startWindow(point, ctx)
+  }
+
   /**
-   * The axis along a line from its start, or along the straight segment of a
-   * polyline nearest the pick, from where it starts (r08); a closed object
-   * gives none and ends the command (r01).
+   * The axis an object gives: the chord of its two ends — a line's, a
+   * polyline's of any segments, an arc's, a spline's — from the end nearer
+   * the pick in a straight line (sweeps/p233–p237, p265–p267, p403, p404),
+   * from its start with no pick (a mode, r08's entity name, p242); a closed
+   * object gives none and ends the command (r01). WHY a tie is not settled:
+   * AutoCAD broke it from a line's start (p402) and an arc's end (p236).
    */
   private takeAxisObject(
     entity: Entity,
     at: Vec2 | undefined,
     ctx: ToolContext
   ): void {
-    const loop = closedLoop(entity)
-    if (loop !== null && loop !== "open") {
-      ctx.report(ctx.text.message("revolveClosedAxis"), "error")
-      ctx.endCommand()
-      return
-    }
-    let ends: [Vec3, Vec3] | null = null
-    if (entity.type === "line") {
-      ends = [
-        { ...entity.start, z: lineStartZ(entity) },
-        { ...entity.end, z: lineEndZ(entity) },
-      ]
-    } else if (entity.type === "polyline") {
-      const z = entity.elevation ?? 0
-      const segments = polylineSegmentGeometries(entityShape(entity)).filter(
-        (s) => s.kind === "line"
-      )
-      const near = (s: (typeof segments)[number]) => {
-        if (!at) return 0
-        const mx = (s.a.x + s.b.x) / 2 - at.x
-        const my = (s.a.y + s.b.y) / 2 - at.y
-        return Math.hypot(mx, my)
-      }
-      const best = segments.reduce<(typeof segments)[number] | null>(
-        (b, s) => (b === null || near(s) < near(b) ? s : b),
-        null
-      )
-      if (best)
-        ends = [
-          { ...best.a, z },
-          { ...best.b, z },
-        ]
-    }
+    const ends = closedLoop(entity) === "open" ? objectEnds(entity) : null
     if (!ends) {
       ctx.report(ctx.text.message("revolveClosedAxis"), "error")
       ctx.endCommand()
       return
     }
-    const direction = normalize3(sub3(ends[1], ends[0]))
+    const [start, end] =
+      at && V.distance(at, ends[1]) < V.distance(at, ends[0])
+        ? [ends[1], ends[0]]
+        : ends
+    const direction = normalize3(sub3(end, start))
     if (!direction) {
       ctx.report(ctx.text.message("revolveZeroAxis"), "error")
       ctx.endCommand()
       return
     }
-    this.askAngle({ origin: ends[0], direction }, null, ctx)
+    this.axisGiven({ origin: start, direction }, ctx)
   }
 
   private takePoint(point: Vec3, ctx: ToolContext): void {
@@ -516,16 +524,42 @@ export class RevolveTool implements Tool {
         ctx.endCommand()
         return
       }
-      this.askAngle(
+      this.axisGiven(
         { origin: state.start, direction: normalize3(direction)! },
-        null,
         ctx
       )
     }
   }
 
+  /**
+   * The axis complete, however it was given: every profile it cannot turn
+   * is said, and the command ends before any angle is asked (r05, r07,
+   * p244, p245).
+   */
+  private axisGiven(axis: Axis, ctx: ToolContext): void {
+    const lines = this.profiles.flatMap(({ profile }) =>
+      refusalOf(profile, axis)
+    )
+    if (lines.length > 0) {
+      for (const id of lines) ctx.report(ctx.text.message(id), "error")
+      this.state = { phase: "select" }
+      ctx.dynamicInput.close()
+      ctx.endCommand()
+      return
+    }
+    this.askAngle(axis, null, ctx)
+  }
+
+  /**
+   * The angle asked, LASTPOINT put on the axis across the first profile
+   * (p119–p123, p151), where a typed angle or point leaves it (p120).
+   */
   private askAngle(axis: Axis, start: number | null, ctx: ToolContext): void {
     this.state = { phase: "angle", axis, start }
+    const first = this.profiles[0]?.profile
+    if (first && first !== "crosses") {
+      ctx.setLastPoint(revolveBase(first, axis.origin, axis.direction))
+    }
     this.openValue(ctx, "revolveAngleOr")
   }
 
@@ -541,34 +575,20 @@ export class RevolveTool implements Tool {
     this.revolve(state.axis, state.start ?? 0, angle, ctx)
   }
 
-  /** The solids, each profile on its own; what cannot be turned, said. */
+  /** The solids, each profile on its own, every one turnable (axisGiven). */
   private solids(
     axis: Axis,
     startDegrees: number,
     angleRadians: number,
     ctx: ToolContext,
-    report: boolean,
-    startRadians = (startDegrees * Math.PI) / 180
-  ): { made: Entity[]; refused: boolean } {
+    report: boolean
+  ): Entity[] {
     const made: Entity[] = []
-    let refused = false
-    const say = (id: MessageId) => {
-      if (report) ctx.report(ctx.text.message(id), "error")
-    }
+    const startRadians = (startDegrees * Math.PI) / 180
     for (const { profile } of this.profiles) {
-      if (profile === "crosses") {
-        say("revolveUnable")
-        refused = true
-        continue
-      }
+      if (profile === "crosses") continue
       const out = revolveSide(profile, axis.origin, axis.direction)
-      if (typeof out === "string") {
-        if (out === "crossesAxis") say("revolveOneSide")
-        if (out === "perpendicularAxis") say("revolvePerpendicular")
-        say("revolveUnable")
-        refused = true
-        continue
-      }
+      if (typeof out === "string") continue
       const brep = revolutionBrep(
         profile,
         axis.origin,
@@ -590,7 +610,7 @@ export class RevolveTool implements Tool {
       )
       made.push(report ? withCurrentProperties(solid, ctx) : solid)
     }
-    return { made, refused }
+    return made
   }
 
   private revolve(
@@ -599,19 +619,13 @@ export class RevolveTool implements Tool {
     angleDegrees: number,
     ctx: ToolContext
   ): void {
-    const { made, refused } = this.solids(
+    const made = this.solids(
       axis,
       startDegrees,
       (angleDegrees * Math.PI) / 180,
       ctx,
       true
     )
-    // A profile it cannot turn ends the command, nothing made (r05).
-    if (refused) {
-      ctx.dynamicInput.close()
-      ctx.endCommand()
-      return
-    }
     const used = this.profiles.map(({ id }) => id)
     if (made.length > 0 && this.settings.delobj < 0) {
       this.state = { phase: "erase", made, used }
@@ -653,10 +667,14 @@ export class RevolveTool implements Tool {
     ctx.requestRender()
   }
 
-  /** An angle's box: degrees typed; Enter its `<360>` or `<0.0>`. */
+  /**
+   * An angle's box: degrees typed, a coordinate its first number (p228,
+   * p230); Enter its `<360>` or `<0.0>`.
+   */
   private openValue(ctx: ToolContext, prompt: PromptId): void {
     ctx.dynamicInput.open({
       fields: [{ id: "value", prompt, kind: "angle" }],
+      coordinateAsNumber: true,
       commit: (values, commitCtx) => {
         if (Number.isFinite(values.value))
           this.takeValue(values.value, commitCtx)
@@ -685,15 +703,19 @@ export class RevolveTool implements Tool {
       fields: [{ id: "expression", prompt: "enterExpression", kind: "text" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
-        const value = evaluateExpression(
-          commitCtx.dynamicInput.getText("expression").trim()
-        )
+        const state = this.state
+        if (state.phase !== "expression") return true
+        const text = commitCtx.dynamicInput.getText("expression").trim()
+        // Enter goes back to the angle, nothing said (p225).
+        if (text === "") {
+          this.askAngle(state.axis, state.start, commitCtx)
+          return true
+        }
+        const value = evaluateExpression(text)
         if (value === null) {
           commitCtx.report(commitCtx.text.message("expressionSyntax"), "error")
           return true
         }
-        const state = this.state
-        if (state.phase !== "expression") return true
         this.state = { phase: "angle", axis: state.axis, start: state.start }
         this.takeAngle(value, commitCtx)
         return true
@@ -709,7 +731,7 @@ export class RevolveTool implements Tool {
         this.askObject(ctx)
         return true
       }
-      ctx.report(ctx.text.message("pointOrKeywordRequired"), "error")
+      ctx.report(ctx.text.message("invalidPoint"), "error")
       return true
     }
     const field = ctx.dynamicInput.getActiveFieldId()
@@ -728,4 +750,52 @@ export class RevolveTool implements Tool {
   }
 }
 
-void ORIGIN
+/**
+ * The lines REVOLVE says of a profile it cannot turn round `axis` (r05, r07,
+ * p244); none for one it can.
+ */
+function refusalOf(profile: Profile["profile"], axis: Axis): MessageId[] {
+  if (profile === "crosses") return ["revolveSelfIntersecting", "revolveUnable"]
+  const out = revolveSide(profile, axis.origin, axis.direction)
+  if (out === "crossesAxis") return ["revolveOneSide", "revolveUnable"]
+  if (out === "perpendicularAxis") {
+    return ["revolvePerpendicular", "revolveUnable"]
+  }
+  return out === "notInPlane" ? ["revolveUnable"] : []
+}
+
+/** An open object's two ends, read where it lies; null for one with none here. */
+function objectEnds(entity: Entity): [Vec3, Vec3] | null {
+  switch (entity.type) {
+    case "line":
+      return [
+        { ...entity.start, z: lineStartZ(entity) },
+        { ...entity.end, z: lineEndZ(entity) },
+      ]
+    case "arc":
+      return [
+        entityPointToWorld(entity, arcStartPoint(entity)),
+        entityPointToWorld(entity, arcEndPoint(entity)),
+      ]
+    case "spline":
+      return [
+        entityPointToWorld(entity, splineStartPoint(entity)),
+        entityPointToWorld(entity, splineEndPoint(entity)),
+      ]
+    case "polyline": {
+      const vertices = entityShape(entity).vertices
+      if (vertices.length < 2) return null
+      return [
+        entityPointToWorld(entity, vertices[0]),
+        entityPointToWorld(entity, vertices[vertices.length - 1]),
+      ]
+    }
+    case "polyline3d": {
+      const vertices = entityShape(entity).vertices
+      if (vertices.length < 2) return null
+      return [vertices[0], vertices[vertices.length - 1]]
+    }
+    default:
+      return null
+  }
+}

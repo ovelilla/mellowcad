@@ -1570,26 +1570,39 @@ tilted UCS's console run (x08) only checked by MASSPROP.
 
 ### `REVOLVE` / `REV` · es `REVOLUCION` / `RV` · pt-BR `REVOLUCAO` / `REV`
 
-**Implemented:** REVOLVE as 2027's console asks it (revolve/r01–r09), in en, es and pt-BR: EXTRUDE's
-first line, its set as `Select objects to revolve or [MOde]:` (es `Designe objetos para revolución o
-[MOdo]`, pt-BR `Selecione objetos para revolução ou [MOdo]`), sifted as Enter closes it with `Cannot
-revolve an object of this type.` (r02), and its MOde. Then `Specify axis start point or define axis
-by [Object/X/Y/Z] <Object>:` (es `Precise punto inicial del eje o defina el eje mediante`, pt-BR
-`Especificar ponto inicial para eixo ou definir eixo por`; FOO `Point or option keyword
-required.`): a point and `Specify axis endpoint:` (`Zero length axis is not permitted.` ends it,
-r09); Object or Enter, `Select an object:`, a line from its start or a polyline's straight segment
-nearest the pick, a closed one saying `Cannot get axis direction from a closed curve or edge.` and
-ending (r01, r08); X, Y or Z, the UCS's axis through its origin. Then `Specify angle of revolution
-or [STart angle/Reverse/EXpression] <360>:` (es `[ángulo Inicial/iNvertir/EXpresión]`, pt-BR
-`Especifique um ângulo de revolução ou [ângulo INicial/Reverter/EXpressão]`): degrees, right-handed
-about the axis, negative backwards, 0 or a turn or more either way a whole turn (r05, r07); FOO
-`Requires valid numeric angle, second point, or option keyword.`. STart angle asks `Specify start
-angle <0.0>:`, the profile turned there first, and the angle again without Reverse (r01); Reverse
-turns the axis round and asks it again (r03); EXpression EXTRUDE's. A profile across the axis says
-`The object should be on one side of the axis.`, one square to it `Axis of revolution is
-perpendicular to plane of revolve curve.`, each with `Unable to revolve the selected object.`, and the
-command ends (r05). DELOBJ as EXTRUDE's (r09). Each profile a solid of the current layer and
-properties; one undo step.
+**Implemented:** REVOLVE as 2027's console asks it (revolve/r01–r09, sweeps/p200–p267), in en, es and
+pt-BR: EXTRUDE's first line, its set as `Select objects to revolve or [MOde]:` (es `Designe objetos
+para revolución o [MOdo]`, pt-BR `Selecione objetos para revolução ou [MOdo]`), sifted as Enter closes
+it with `Cannot revolve an object of this type.` (r02), and its MOde; the rail runs the ribbon's
+`^C^C^R_revolve _MO _SO;` (acad.cuix ID_Revolve, p401), typed it asks as typed. Then `Specify axis
+start point or define axis by [Object/X/Y/Z] <Object>:` (es `Precise punto inicial del eje o defina el
+eje mediante`, pt-BR `Especificar ponto inicial para eixo ou definir eixo por`; FOO `Point or option
+keyword required.`): a point and `Specify axis endpoint:` (Enter, a keyword or `#30,10` `Invalid
+point.`, es `Punto no válido.`, pt-BR `Ponto inválido.`, p206, p213, p220; `Zero length axis is not
+permitted.` ends it, r09); Object or Enter, `Select an object:`, the chord of a line's, a polyline's
+(of any segments), an arc's or a spline's two ends, from the end nearer the pick in a straight line
+(p233–p237, p265–p267, p403, p404; a pick at the middle, a tie AutoCAD broke from a line's start,
+p402, and an arc's end, p236, is not settled), from its start with no pick (a window, r08's entity name, p242), a pick on
+nothing starting AUto's window (`Specify opposite corner:`, p241), a closed object saying `Cannot get
+axis direction from a closed curve or edge.` and ending (r01); X, Y or Z, the UCS's axis through its
+origin (p205, p211, p224). The axis given, however it was, a profile across it says `The object
+should be on one side of the axis.`, one square to it `Axis of revolution is perpendicular to plane
+of revolve curve.`, one crossing itself `Cannot revolve a self-intersecting curve.` (es `No se puede
+efectuar la revolución de una curva que interseca consigo misma.`, pt-BR `Não é possível revolver uma
+curva de autointersecção.`), each with `Unable to revolve the selected object.`, and the command ends
+before any angle is asked (r04, r05, r07, p244, p245). Then `Specify angle of revolution or [STart
+angle/Reverse/EXpression] <360>:` (es `[ángulo Inicial/iNvertir/EXpresión]`, pt-BR `Especifique um
+ângulo de revolução ou [ângulo INicial/Reverter/EXpressão]`): degrees, right-handed about the axis,
+negative backwards, 0 or a turn or more either way a whole turn (r05, r07), a coordinate typed its
+first number (`5,7.5` 5°, `0,12.5` a whole turn: p227–p231); FOO `Requires valid numeric angle,
+second point, or option keyword.`. STart angle asks `Specify start angle <0.0>:` (a coordinate its
+first number too, p230), the profile turned there first, and the angle again without Reverse (r01);
+Reverse turns the axis round and asks it again (r03); EXpression EXTRUDE's, Enter there asking the
+angle again (p225). `<360>` and `<0.0>` never change (p223, r02). LASTPOINT: each axis point sets
+it; the angle prompt opening puts it on the axis across the first profile's perimeter centroid (p151's
+L `0,5.357142857142857,0`), where a typed angle or point leaves it (p119–p125). DELOBJ as EXTRUDE's
+(r09). Each profile a solid of the current layer and properties; one undo step, U giving the
+profile back (p218, p219).
 
 The object, a 3D solid (file version 47), as ACIS builds it (r01–r06's MPDUMP): a face for each edge
 off the axis — a cylinder, a cone or a plane for a segment, a sphere or a torus for an arc, a
@@ -1597,21 +1610,21 @@ revolution for an elliptical arc or a spline —, the profile at its start and i
 turn; an edge on the axis none, a cone's apex an edge of no length on a whole turn, a sphere or
 doughnut turned whole no edge at all (r06). Volume and MASSPROP exact (r01's `8246.6807`, r02's
 doughnut, r03's sphere wedge, r06's cylinder round a cone; r04's ellipse to the eleventh digit,
-where AutoCAD's own sum strays). Its isolines every 360/ISOLINES degrees from the profile (i3, i5),
-a sphere's and a torus' parallels as theirs, a revolution's ISOLINES circles along its profile. LIST:
-`Solid type = Revolve`, `      Start angle: 30`, `Angle of revolution: 90` (signed, as given),
-` Direction vector: X = 0.0000    Y = 1.0000    Z = 0.0000` (Reverse's `-1.0000`) and its box (es
-`Ángulo inicial`, `Ángulo de revolución`, `Vector de dirección`; pt-BR `Ângulo de revolução`, `Vetor
-de direção`); the palette's Solid type `Revolve`. It snaps, moves and mirrors as BOX does.
+where AutoCAD's own sum strays; p248's region with a hole). Its isolines every 360/ISOLINES degrees
+from the profile (i3, i5), a sphere's and a torus' parallels as theirs, a revolution's ISOLINES
+circles along its profile. LIST: `Solid type = Revolve`, `      Start angle: 30`, `Angle of
+revolution: 90` (signed, as given), ` Direction vector: X = 0.0000    Y = 1.0000    Z = 0.0000` in
+the UCS (p210; Reverse's `-1.0000`) and its box (es `Ángulo inicial`, `Ángulo de revolución`,
+`Vector de dirección`; pt-BR `Ângulo de revolução`, `Vetor de direção`); the palette's Solid type
+`Revolve`. It snaps, moves and mirrors as BOX does.
 
 **Missing:** an axis off the profile's plane, which AutoCAD turns the profile round into surfaces
-this kernel does not hold (r05: 40,0,0 to 40,10,10), refused with `Unable to revolve the selected
-object.` alone; an arc, a spline or a solid's edge as the Object axis (refused as a closed curve
-is, **unverified**); SUrface and open profiles (EXTRUDE's); a self-intersecting profile is said
-`Unable to revolve the selected object.` alone, AutoCAD's `Cannot revolve a self-intersecting
-curve.` (r04) having no table string to word it in es and pt-BR; the jig's angle dragged round the
-axis (the whole turn is previewed); its grips and the palette's rows under Solid type
-(**unverified**: no desktop pass).
+this kernel does not hold (r05: 40,0,0 to 40,10,10; p249: Y through a profile at ELEVATION 7),
+refused with `Unable to revolve the selected object.` alone; an elliptical arc or a solid's edge as
+the Object axis (refused as a closed curve is, **unverified**); SUrface and open profiles
+(EXTRUDE's); the jig's angle dragged round the axis (the whole turn is previewed) and an angle or
+start angle clicked (**unverified**: the console's getangle reads it otherwise); its grips and the
+palette's rows under Solid type (**unverified**: no desktop pass).
 
 ### `PRESSPULL` · es `PRESIONARTIRAR` / `PULSARTIRAR` · pt-BR `PRESSIONARPUXAR`
 

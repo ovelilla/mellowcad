@@ -7085,6 +7085,7 @@ export const es: EngineLocale = {
       "revolvePerpendicular": "El eje de revolución es perpendicular al plano de la curva de revolución.",
       "revolveZeroAxis": "El eje no puede tener longitud cero.",
       "revolveClosedAxis": "No se puede obtener la dirección del eje a partir de una curva cerrada o una arista.",
+      "revolveSelfIntersecting": "No se puede efectuar la revolución de una curva que interseca consigo misma.",
       "listRevolveStart": [
         "   Ángulo inicial: ",
         [

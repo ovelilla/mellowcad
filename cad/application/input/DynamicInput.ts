@@ -103,6 +103,12 @@ export interface DynamicInputSession {
    * corner (rectang/p08, d03).
    */
   readonly commandLinePoint?: boolean
+  /**
+   * A plain coordinate typed in the lone field (`5,7.5`: no `@`, `*` or `<`)
+   * answers as its first number, never as a point measured: REVOLVE's
+   * angles, which AutoCAD's console reads so (sweeps/p228, p230).
+   */
+  readonly coordinateAsNumber?: boolean
 }
 
 interface FieldState {

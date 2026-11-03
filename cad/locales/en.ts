@@ -6432,6 +6432,7 @@ export const en: EngineCatalog = {
       "revolvePerpendicular": "Axis of revolution is perpendicular to plane of revolve curve.",
       "revolveZeroAxis": "Zero length axis is not permitted.",
       "revolveClosedAxis": "Cannot get axis direction from a closed curve or edge.",
+      "revolveSelfIntersecting": "Cannot revolve a self-intersecting curve.",
       "listRevolveStart": [
         "      Start angle: ",
         [

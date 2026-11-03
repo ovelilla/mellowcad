@@ -2,7 +2,9 @@ import { describe, expect, it } from "vitest"
 
 import { circleOf, ellipseOf, lineOf, p, polylineOf } from "../../test/builders"
 import { createRegion, faceOfLoop, regionCurvesOf } from "./regions"
-import { profileBase } from "./sweptSolids"
+import type { PlanarProfile } from "../geometry/sweeps"
+import type { Entity } from "./entityTypes"
+import { profileBase, revolveBase, sweepProfile } from "./sweptSolids"
 
 const L = [p(0, 0), p(20, 0), p(20, 5), p(5, 5), p(5, 15), p(0, 15)]
 
@@ -83,5 +85,46 @@ describe("profileBase", () => {
   it("nothing for what no sweep takes", () => {
     expect(profileBase(lineOf(p(0, 0), p(10, 0)))).toBeNull()
     expect(profileBase(polylineOf(L))).toBeNull()
+  })
+})
+
+const ORIGIN = { x: 0, y: 0, z: 0 }
+const Y = { x: 0, y: 1, z: 0 }
+const X = { x: 1, y: 0, z: 0 }
+
+function profileOf(entity: Entity): PlanarProfile {
+  const profile = sweepProfile(entity)
+  if (profile === null || typeof profile === "string") throw new Error()
+  return profile
+}
+
+// Where REVOLVE's angle prompt puts LASTPOINT (probes sweeps/p119–p125, p151).
+describe("revolveBase", () => {
+  it("the perimeter's centroid on the axis, not the area's (p151: 375/70)", () => {
+    const L = [p(10, 0), p(30, 0), p(30, 5), p(15, 5), p(15, 15), p(10, 15)]
+    const profile = profileOf(polylineOf(L, { closed: true }))
+    near(revolveBase(profile, ORIGIN, Y), 0, 375 / 70)
+  })
+
+  it("a rectangle about Y and about X (p119, p122)", () => {
+    const rect = [p(10, 0), p(20, 0), p(20, 5), p(10, 5)]
+    const profile = profileOf(polylineOf(rect, { closed: true }))
+    near(revolveBase(profile, ORIGIN, Y), 0, 2.5)
+    near(revolveBase(profile, ORIGIN, X), 15, 0)
+  })
+
+  it("an arc weighs its own centroid, an ellipse its centre", () => {
+    const half = polylineOf([p(25, 0), p(15, 0)], {
+      closed: true,
+      bulges: [1, 0],
+    })
+    const r = 5
+    near(
+      revolveBase(profileOf(half), ORIGIN, Y),
+      0,
+      (Math.PI * r * ((2 * r) / Math.PI)) / (Math.PI * r + 2 * r)
+    )
+    const ellipse = profileOf(ellipseOf(p(30, 4), p(6, 0), 0.5))
+    near(revolveBase(ellipse, ORIGIN, Y), 0, 4)
   })
 })

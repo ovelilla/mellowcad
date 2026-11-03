@@ -7106,6 +7106,7 @@ export const ptBR: EngineLocale = {
       "revolvePerpendicular": "Eixo de revolução é perpendicular ao plano de curva de revolução.",
       "revolveZeroAxis": "Não é permitido comprimento zero para o eixo.",
       "revolveClosedAxis": "Não é possível obter direção do eixo a partir de uma curva ou aresta.",
+      "revolveSelfIntersecting": "Não é possível revolver uma curva de autointersecção.",
       "listRevolveStart": [
         "   Ângulo inicial: ",
         [

@@ -135,7 +135,7 @@ const FROM_SCRATCH: ReadonlyArray<
         .type("30")
         .enter(),
   ],
-  // probe revolve/r01: as EXTRUDE's.
+  // probe sweeps/p249: the current layer, colour, linetype and lineweight.
   [
     "REVOLVE",
     (c) =>

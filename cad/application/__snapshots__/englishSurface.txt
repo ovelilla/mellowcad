@@ -5108,9 +5108,9 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Select objects to revolve or [MOde]:
   prompt| Specify axis start point or define axis by [Object/X/Y/Z] <Object>: 120,0
   prompt| Specify axis endpoint: 120,10
-  prompt| Specify angle of revolution or [STart angle/Reverse/EXpression] <360>: 90
   error| The object should be on one side of the axis.
   error| Unable to revolve the selected object.
+  error| Unknown command "90".  Press F1 for help.
 > REVOLVE Object, Reverse, STart, EXpression
   command| LINE
   prompt| Specify first point: 0,0

@@ -1204,6 +1204,8 @@ describe("REVOLVE", () => {
     expect(brepVolume(last(cad).brep)).toBeCloseTo(Math.PI * 300 * 5, 6)
   })
 
+  // Picked near its start, the line's axis runs from it, as r08's (by its
+  // entity name) does: its midpoint would be a tie (RVL-10; p265).
   it("turns round a line it is given, by an expression (r08)", () => {
     const cad = console()
     answer(cad, "LINE", "0,0", "0,10", "", "RECTANG", "10,0", "20,5")
@@ -1214,7 +1216,7 @@ describe("REVOLVE", () => {
         "_L",
         "",
         "_O",
-        "0,5",
+        "0,1",
         "_ST",
         "-30",
         "_EX",
@@ -1228,7 +1230,7 @@ describe("REVOLVE", () => {
       "1 found",
       "Select objects to revolve or [MOde]:",
       "Specify axis start point or define axis by [Object/X/Y/Z] <Object>: _O",
-      "Select an object: 0,5",
+      "Select an object: 0,1",
       "Specify angle of revolution or [STart angle/Reverse/EXpression] <360>: _ST",
       "Specify start angle <0.0>: -30",
       "Specify angle of revolution or [STart angle/EXpression] <360>: _EX",
@@ -1247,20 +1249,21 @@ describe("REVOLVE", () => {
     ])
   })
 
-  it("refuses an axis across the profile, square to it, of no length or closed (r01, r05, r09)", () => {
+  it("refuses an axis across the profile, square to it, of no length or closed, as the axis is given (RVL-01; r01, r05, r09)", () => {
     const cad = console()
     answer(cad, "RECTANG", "0,0", "10,5", "REVOLVE", "_L", "", "5,0")
     expect(written(cad, "5,10", "90")).toEqual([
       "Specify axis endpoint: 5,10",
-      "Specify angle of revolution or [STart angle/Reverse/EXpression] <360>: 90",
       "The object should be on one side of the axis.",
       "Unable to revolve the selected object.",
+      'Unknown command "90".  Press F1 for help.',
     ])
-    answer(cad, "REVOLVE", "_L", "", "20,0,0", "20,0,10")
-    expect(written(cad, "90")).toEqual([
-      "Specify angle of revolution or [STart angle/Reverse/EXpression] <360>: 90",
+    answer(cad, "REVOLVE", "_L", "", "20,0,0")
+    expect(written(cad, "20,0,10", "90")).toEqual([
+      "Specify axis endpoint: 20,0,10",
       "Axis of revolution is perpendicular to plane of revolve curve.",
       "Unable to revolve the selected object.",
+      'Unknown command "90".  Press F1 for help.',
     ])
     answer(cad, "REVOLVE", "_L", "", "0,0")
     expect(written(cad, "0,0")).toEqual([
@@ -1323,6 +1326,448 @@ describe("REVOLVE", () => {
         " Vetor de direção: X = 0.0000    Y = 1.0000    Z = 0.0000",
       ])
     )
+  })
+})
+
+/** LIST _L's revolution lines: its history, box and properties. */
+function revolution(cad: CadHarness): string[] {
+  return written(cad, "_LIST", "_L", "")
+    .flatMap((l) => l.split("\n"))
+    .filter((l) =>
+      /angle|Angle|Direction|Bound|Layer|Color|Linetype|LineWeight/.test(l)
+    )
+}
+
+describe("REVOLVE's axis (the Sweeps review)", () => {
+  it("refuses as the axis is given, no angle asked (RVL-01; r05, r07, p245)", () => {
+    const cad = console()
+    answer(cad, "RECTANG", "-5,0", "5,5", "REVOLVE", "_L", "")
+    expect(written(cad, "_Y", "90")).toEqual([
+      "Specify axis start point or define axis by [Object/X/Y/Z] <Object>: _Y",
+      "The object should be on one side of the axis.",
+      "Unable to revolve the selected object.",
+      'Unknown command "90".  Press F1 for help.',
+    ])
+    answer(cad, "RECTANG", "10,100", "20,105", "REVOLVE", "_L", "")
+    expect(written(cad, "_Z")).toEqual([
+      "Specify axis start point or define axis by [Object/X/Y/Z] <Object>: _Z",
+      "Axis of revolution is perpendicular to plane of revolve curve.",
+      "Unable to revolve the selected object.",
+    ])
+    answer(cad, "LINE", "-50,-30", "-50,-20", "")
+    answer(cad, "RECTANG", "-55,0", "-45,5", "REVOLVE", "_L", "", "_O")
+    expect(written(cad, "-50,-21")).toEqual([
+      "Select an object: -50,-21",
+      "The object should be on one side of the axis.",
+      "Unable to revolve the selected object.",
+    ])
+    expect(solids(cad)).toHaveLength(0)
+  })
+
+  // revolve/r04 (en-US, es-ES), sweeps/p244 (en-US, es-ES, pt-BR).
+  it("says a self-intersecting curve in each language, at the axis (RVL-02; r04, p244)", () => {
+    const cases = [
+      [undefined, "Cannot revolve a self-intersecting curve."],
+      [
+        es,
+        "No se puede efectuar la revolución de una curva que interseca consigo misma.",
+      ],
+      [ptBR, "Não é possível revolver uma curva de autointersecção."],
+    ] as const
+    for (const [locale, words] of cases) {
+      const cad = console(locale)
+      answer(
+        cad,
+        "_PLINE",
+        "10,0",
+        "20,10",
+        "20,0",
+        "10,10",
+        "_C",
+        "_REVOLVE",
+        "_L",
+        ""
+      )
+      const out = written(cad, "_Y", "90")
+      expect(out[1]).toBe(words)
+      expect(out).toHaveLength(4)
+      expect(cad.entities()).toHaveLength(1)
+    }
+  })
+
+  // sweeps/p265 (en-US, es-ES): a line picked near its end turns round it
+  // from that end.
+  it("runs a line's axis from the end nearer the pick (RVL-03; p265)", () => {
+    const cad = console()
+    answer(cad, "LINE", "0,0", "0,10", "", "RECTANG", "10,0", "20,5")
+    answer(cad, "ZOOM", "W", "-20,-20", "30,20")
+    answer(cad, "REVOLVE", "_L", "", "_O", "0,9", "90")
+    expect(revolution(cad)).toEqual(
+      expect.arrayContaining([
+        " Direction vector: X = 0.0000    Y = -1.0000   Z = 0.0000",
+        "   Bounding Box: Lower Bound X = 0.0000   , Y = 0.0000   , Z = 0.0000",
+        "                 Upper Bound X = 20.0000  , Y = 5.0000   , Z = 20.0000",
+      ])
+    )
+  })
+
+  // sweeps/p233, p234, p235: a polyline's axis is the chord between its
+  // ends, from the end nearer the pick.
+  it("takes a polyline's chord from the end nearer the pick (RVL-03; p233, p234, p235)", () => {
+    const run = (pick: string) => {
+      const cad = console()
+      answer(cad, "PLINE", "100,0", "100,20", "130,20", "")
+      answer(cad, "RECTANG", "110,0", "120,5", "ZOOM", "W", "90,-10", "140,30")
+      answer(cad, "REVOLVE", "_L", "", "_O", pick, "90")
+      return revolution(cad)
+    }
+    expect(run("120,20")).toContain(
+      " Direction vector: X = -0.8321   Y = -0.5547   Z = 0.0000"
+    )
+    expect(run("100,10")).toContain(
+      " Direction vector: X = 0.8321    Y = 0.5547    Z = 0.0000"
+    )
+    const c = console()
+    answer(c, "PLINE", "0,0", "0,100", "5,100", "", "RECTANG", "10,10", "20,15")
+    answer(c, "ZOOM", "W", "-10,-10", "110,110")
+    answer(c, "REVOLVE", "_L", "", "_O", "0,95", "90")
+    expect(revolution(c)).toContain(
+      " Direction vector: X = -0.0499   Y = -0.9988   Z = 0.0000"
+    )
+  })
+
+  // sweeps/p267 (en-US, es-ES): 0,50 is before half its length, nearer its
+  // end in a straight line.
+  it("finds the nearer end by distance, not along the curve (RVL-03; p267)", () => {
+    const cad = console()
+    answer(cad, "PLINE", "0,0", "0,100", "10,100", "10,90", "")
+    answer(cad, "RECTANG", "20,0", "30,5", "ZOOM", "W", "-10,-10", "110,110")
+    answer(cad, "REVOLVE", "_L", "", "_O", "0,50", "90")
+    expect(revolution(cad)).toEqual(
+      expect.arrayContaining([
+        " Direction vector: X = -0.1104   Y = -0.9939   Z = 0.0000",
+        "   Bounding Box: Lower Bound X = 0.2439   , Y = 0.0000   , Z = 0.0000",
+        "                 Upper Bound X = 30.0000  , Y = 8.2317   , Z = 29.8165",
+      ])
+    )
+  })
+
+  // sweeps/p403, p404 (an arc picked near each end; p236's pick at its
+  // middle is a tie, kept out), p237 (a spline), p266 (a polyline's arc and
+  // line), p242 (a window: from the start).
+  it("takes an arc's, a spline's and a window's object by its chord (RVL-03; p403, p404, p237, p266, p242)", () => {
+    for (const [pick, x, z] of [
+      ["-28.660254,5", "X = 1.0000 ", "Z = 0.0000"],
+      ["-11.339746,5", "X = -1.0000", "Z = -5.0000"],
+    ]) {
+      const arc = console()
+      answer(arc, "ARC", "-30,0", "-20,10", "-10,0", "RECTANG", "10,0", "20,5")
+      answer(arc, "ZOOM", "W", "-40,-20", "30,20")
+      answer(arc, "REVOLVE", "_L", "", "_O", pick, "90")
+      const lines = revolution(arc)
+      expect(lines.find((l) => l.includes("Direction vector"))).toContain(
+        `Direction vector: ${x}`
+      )
+      expect(lines.find((l) => l.includes("Lower Bound"))).toContain(z)
+    }
+    const spline = console()
+    answer(spline, "SPLINE", "_M", "_F", "-30,0", "-20,3", "-10,0", "")
+    answer(spline, "RECTANG", "10,0", "20,5", "ZOOM", "W", "-40,-20", "30,20")
+    answer(spline, "REVOLVE", "_L", "", "_O", "-30,0", "90")
+    expect(revolution(spline)).toContain(
+      " Direction vector: X = 1.0000    Y = 0.0000    Z = 0.0000"
+    )
+    const bulged = console()
+    answer(bulged, "PLINE", "-30,0", "_A", "_S", "-20,10", "-10,0", "_L")
+    answer(bulged, "-10,-20", "", "RECTANG", "10,0", "20,5")
+    answer(bulged, "ZOOM", "W", "-40,-30", "30,20")
+    answer(bulged, "REVOLVE", "_L", "", "_O", "-20,10", "90")
+    expect(revolution(bulged)).toEqual(
+      expect.arrayContaining([
+        " Direction vector: X = 0.7071    Y = -0.7071   Z = 0.0000",
+        "   Bounding Box: Lower Bound X = -12.5000 , Y = -25.0000 , Z = 0.0000",
+        "                 Upper Bound X = 20.0000  , Y = 5.0000   , Z = 38.8909",
+      ])
+    )
+    const window = console()
+    answer(window, "LINE", "0,0", "0,10", "", "RECTANG", "10,0", "20,5")
+    answer(window, "ZOOM", "W", "-20,-20", "60,60")
+    answer(window, "REVOLVE", "_L", "", "_O", "_W", "-1,-1", "1,11", "90")
+    expect(revolution(window)).toEqual(
+      expect.arrayContaining([
+        " Direction vector: X = 0.0000    Y = 1.0000    Z = 0.0000",
+        "   Bounding Box: Lower Bound X = 0.0000   , Y = 0.0000   , Z = -20.0000",
+      ])
+    )
+  })
+
+  // sweeps/p211 (UCS Z 30, X), p224 (the same, Y, LIST in the WCS), p205
+  // (UCS origin 5,0, Y), p210 (two points typed `*` in UCS Z 30): the UCS's
+  // axes through its origin, LIST in the UCS.
+  it("takes X, Y and Z as the UCS's, through its origin (RVL-04; p211, p224, p205, p210)", () => {
+    const a = console()
+    answer(a, "UCS", "Z", "30", "RECTANG", "10,0", "20,5")
+    answer(a, "REVOLVE", "_L", "", "_X", "90")
+    expect(revolution(a)).toEqual(
+      expect.arrayContaining([
+        " Direction vector: X = 1.0000    Y = 0.0000    Z = 0.0000",
+        "   Bounding Box: Lower Bound X = 10.0000  , Y = 0.0000   , Z = 0.0000",
+        "                 Upper Bound X = 20.0000  , Y = 5.0000   , Z = 5.0000",
+      ])
+    )
+    const w = console()
+    answer(w, "UCS", "Z", "30", "RECTANG", "10,0", "20,5")
+    answer(w, "REVOLVE", "_L", "", "_Y", "90", "UCS", "_W")
+    expect(revolution(w)).toEqual(
+      expect.arrayContaining([
+        " Direction vector: X = -0.5000   Y = 0.8660    Z = 0.0000",
+        "   Bounding Box: Lower Bound X = -2.5000  , Y = 0.0000   , Z = -20.0000",
+        "                 Upper Bound X = 17.3205  , Y = 14.3301  , Z = 0.0000",
+      ])
+    )
+    const b = console()
+    answer(b, "UCS", "_O", "5,0", "RECTANG", "10,0", "20,5")
+    answer(b, "REVOLVE", "_L", "", "_Y", "90")
+    expect(revolution(b)).toEqual(
+      expect.arrayContaining([
+        " Direction vector: X = 0.0000    Y = 1.0000    Z = 0.0000",
+        "   Bounding Box: Lower Bound X = 0.0000   , Y = 0.0000   , Z = -20.0000",
+        "                 Upper Bound X = 20.0000  , Y = 5.0000   , Z = 0.0000",
+      ])
+    )
+    const t = console()
+    answer(t, "UCS", "Z", "30", "RECTANG", "10,0", "20,5")
+    answer(t, "REVOLVE", "_L", "", "*0,0", "*0,10", "90")
+    expect(revolution(t)).toEqual(
+      expect.arrayContaining([
+        " Direction vector: X = 0.5000    Y = 0.8660    Z = 0.0000",
+        "   Bounding Box: Lower Bound X = 2.5000   , Y = 0.0000   , Z = -17.3205",
+        "                 Upper Bound X = 20.0000  , Y = 12.4103  , Z = 0.0000",
+      ])
+    )
+  })
+
+  // sweeps/p220, p206, p213 (en-US, es-ES, pt-BR).
+  it("refuses at the axis endpoint in a point's words (RVL-06; p220, p206, p213)", () => {
+    const cases = [
+      [undefined, "Invalid point."],
+      [es, "Punto no válido."],
+      [ptBR, "Ponto inválido."],
+    ] as const
+    for (const [locale, words] of cases) {
+      const cad = console(locale)
+      answer(cad, "_RECTANG", "10,0", "20,5", "_REVOLVE", "_L", "", "0,0")
+      const out = written(cad, "", "_Y", "#30,10")
+      expect(out[1]).toBe(words)
+      expect(out[3]).toBe(words)
+      expect(out[5]).toBe(words)
+    }
+  })
+
+  // sweeps/p241 (en-US, es-ES): a typed point on nothing at `Select an
+  // object:` starts AUto's window.
+  it("starts a window at a pick on nothing (RVL-08; p241)", () => {
+    const cad = console()
+    answer(cad, "LINE", "0,0", "0,10", "", "RECTANG", "10,0", "20,5")
+    answer(cad, "ZOOM", "W", "-20,-20", "60,60", "REVOLVE", "_L", "", "_O")
+    expect(written(cad, "50,50")).toEqual(["Select an object: 50,50"])
+    expect(cad.state().commandLine.prompt).toBe(
+      "REVOLVE Specify opposite corner:"
+    )
+    // A crossing window over the line's top, clear of the rectangle.
+    answer(cad, "-1,8", "90")
+    expect(revolution(cad)).toContain(
+      " Direction vector: X = 0.0000    Y = 1.0000    Z = 0.0000"
+    )
+  })
+})
+
+describe("REVOLVE's angles (the Sweeps review)", () => {
+  // sweeps/p225 (en-US, es-ES, pt-BR): back to the angle, nothing said.
+  it("asks the angle again at Enter at the expression (RVL-05; p225)", () => {
+    const cad = console()
+    answer(cad, "RECTANG", "10,0", "20,5", "REVOLVE", "_L", "", "_Y", "_EX")
+    expect(written(cad, "", "90")).toEqual([
+      "Enter expression:",
+      "Specify angle of revolution or [STart angle/Reverse/EXpression] <360>: 90",
+    ])
+    expect(solids(cad)).toHaveLength(1)
+    answer(cad, "RECTANG", "10,50", "20,55", "REVOLVE", "_L", "", "_Y")
+    answer(cad, "_ST", "30", "_EX")
+    expect(written(cad, "")).toEqual(["Enter expression:"])
+    expect(cad.state().commandLine.prompt).toBe(
+      "REVOLVE Specify angle of revolution or [STart angle/EXpression] <360>:"
+    )
+  })
+
+  // sweeps/p228, p227, p229, p231, p230, p120, p124: a typed coordinate at
+  // the angle or the start angle is its first number, in degrees.
+  it("takes a typed coordinate's first number as the angle (RVL-07; p228, p227, p231, p230)", () => {
+    const a = console()
+    answer(a, "RECTANG", "100,0", "110,5", "REVOLVE", "_L", "", "_Y")
+    expect(written(a, "5,7.5")).toEqual([
+      "Specify angle of revolution or [STart angle/Reverse/EXpression] <360>: 5,7.5",
+    ])
+    expect(revolution(a)).toEqual(
+      expect.arrayContaining(["      Start angle: 0", "Angle of revolution: 5"])
+    )
+    answer(a, "RECTANG", "100,50", "110,55", "REVOLVE", "_L", "", "_Y")
+    answer(a, "0,12.5")
+    expect(revolution(a)).toContain("Angle of revolution: 360")
+    answer(a, "RECTANG", "10,50", "20,55", "REVOLVE", "_L", "", "_X")
+    answer(a, "15,10")
+    expect(revolution(a)).toEqual(
+      expect.arrayContaining([
+        "Angle of revolution: 15",
+        "                 Upper Bound X = 20.0000  , Y = 55.0000  , Z = 14.2350",
+      ])
+    )
+    const b = console()
+    answer(b, "RECTANG", "100,0", "110,5", "REVOLVE", "_L", "", "_Y", "_ST")
+    expect(written(b, "0,12.5")).toEqual(["Specify start angle <0.0>: 0,12.5"])
+    expect(b.state().commandLine.prompt).toBe(
+      "REVOLVE Specify angle of revolution or [STart angle/EXpression] <360>:"
+    )
+    answer(b, "90")
+    expect(revolution(b)).toEqual(
+      expect.arrayContaining([
+        "      Start angle: 0",
+        "Angle of revolution: 90",
+        "   Bounding Box: Lower Bound X = 0.0000   , Y = 0.0000   , Z = -110.0000",
+      ])
+    )
+  })
+
+  // sweeps/p223, revolve/r02: the defaults never follow an answer (RVL-10).
+  it("offers <360> and <0.0> whatever was answered last (p223, r02)", () => {
+    const cad = console()
+    answer(cad, "RECTANG", "10,0", "20,5", "REVOLVE", "_L", "", "_Y")
+    answer(cad, "_ST", "30", "90")
+    answer(cad, "RECTANG", "10,50", "20,55", "REVOLVE", "_L", "", "_Y")
+    expect(written(cad, "_ST", "")).toEqual([
+      "Specify angle of revolution or [STart angle/Reverse/EXpression] <360>: _ST",
+      "Specify start angle <0.0>:",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "REVOLVE Specify angle of revolution or [STart angle/EXpression] <360>:"
+    )
+  })
+})
+
+describe("REVOLVE's LASTPOINT (the Sweeps review, SLP-02)", () => {
+  const rect = ["RECTANG", "10,0", "20,5", "LASTPOINT", "7,7,7"]
+
+  it("two points: the angle's base, on the axis across the profile (p119: 0,2.5,0)", () => {
+    const cad = console()
+    answer(cad, ...rect, "REVOLVE", "_L", "", "0,0", "0,10", "90")
+    near(lastPoint(cad), [0, 2.5, 0])
+  })
+
+  it("the axis start sets it while the endpoint is asked (p119: 0,0,0)", () => {
+    const cad = console()
+    answer(cad, ...rect, "REVOLVE", "_L", "", "0,0")
+    expect(written(cad, "'LASTPOINT", "").join("\n")).toContain(
+      "0.0000,0.0000,0.0000"
+    )
+  })
+
+  it("the angle prompt opening sets it, kept after a typed point there (p119, p120)", () => {
+    const cad = console()
+    answer(cad, ...rect, "REVOLVE", "_L", "", "0,0", "0,10")
+    expect(written(cad, "'LASTPOINT", "").join("\n")).toContain(
+      "0.0000,2.5000,0.0000"
+    )
+    answer(cad, "5,5,0")
+    near(lastPoint(cad), [0, 2.5, 0])
+  })
+
+  it("X: the angle's base (p122: 15,0,0)", () => {
+    const cad = console()
+    answer(cad, ...rect, "REVOLVE", "_L", "", "_X", "90")
+    near(lastPoint(cad), [15, 0, 0])
+  })
+
+  it("Object, a typed pick: the angle's base (p121)", () => {
+    const cad = console()
+    answer(cad, "ZOOM", "_W", "-10,-10", "100,100", "LINE", "0,0", "0,10", "")
+    answer(cad, ...rect, "REVOLVE", "_L", "", "", "0,5", "90")
+    near(lastPoint(cad), [0, 2.5, 0])
+  })
+
+  it("a start angle: the angle's base (p123, p124)", () => {
+    const cad = console()
+    answer(cad, ...rect, "REVOLVE", "_L", "", "0,0", "0,10", "_ST", "30", "90")
+    near(lastPoint(cad), [0, 2.5, 0])
+    const typed = console()
+    answer(typed, ...rect, "REVOLVE", "_L", "", "0,0", "0,10", "_ST", "5,5,0")
+    answer(typed, "90")
+    near(lastPoint(typed), [0, 2.5, 0])
+  })
+
+  it("a typed pick at its select prompt (p125: 20,2,0)", () => {
+    const cad = console()
+    answer(cad, "ZOOM", "_W", "-10,-10", "100,100", ...rect, "REVOLVE", "20,2")
+    expect(written(cad, "'LASTPOINT", "").join("\n")).toContain(
+      "20.0000,2.0000,0.0000"
+    )
+  })
+
+  // p151: the L's perimeter centroid, 375/70 up its side, not its area's.
+  it("the first profile's perimeter centroid, projected on the axis (p151: 0,5.3571,0)", () => {
+    const cad = console()
+    answer(cad, "PLINE", "10,0", "30,0", "30,5", "15,5", "15,15", "10,15", "_C")
+    answer(cad, "LASTPOINT", "7,7,7", "REVOLVE", "_L", "", "0,0", "0,10", "90")
+    near(lastPoint(cad), [0, 375 / 70, 0])
+  })
+})
+
+describe("REVOLVE's runs (the Sweeps review)", () => {
+  // sweeps/p248: a region with a hole turned whole about Y.
+  it("turns a region with a hole (p248: MASSPROP 10098.9695)", () => {
+    const cad = createHarness()
+    answer(cad, "RECTANG", "10,0", "30,20", "CIRCLE", "20,10", "5")
+    answer(cad, "REGION", "_ALL", "", "ZOOM", "E", "SUBTRACT")
+    cad.click({ x: 20, y: 0 })
+    answer(cad, "")
+    cad.click({ x: 25, y: 10 })
+    answer(cad, "", "REVOLVE", "_L", "", "_Y", "90")
+    expect(brepVolume(last(cad).brep)).toBeCloseTo(10098.9695, 3)
+  })
+
+  // sweeps/p218, p219: U undoes it whole, the profile erased by DELOBJ back.
+  it("undoes in one step, the profile back, UNDO 2 naming both (p218, p219)", () => {
+    const cad = createHarness()
+    answer(cad, "RECTANG", "10,0", "20,5", "RECTANG", "30,0", "40,5")
+    answer(cad, "REVOLVE", "_L", "", "_Y", "90")
+    expect(written(cad, "_UNDO", "2").at(-1)).toBe("REVOLVE RECTANG")
+    const b = createHarness()
+    answer(b, "RECTANG", "10,0", "20,5", "REVOLVE", "_L", "", "_Y", "90")
+    expect(b.entities().map((e) => e.type)).toEqual(["solid3d"])
+    answer(b, "_U")
+    expect(b.entities().map((e) => e.type)).toEqual(["polyline"])
+  })
+})
+
+describe("the rail's REVOLVE runs the ribbon's macro (RVL-11; p401)", () => {
+  // acad.cuix, Home > Modeling, ID_Revolve: `^C^C^R_revolve _MO _SO;`.
+  it("echoes `_revolve` and answers `_MO` and `_SO`", () => {
+    const cad = createHarness()
+    cad.tool("revolve")
+    expect(cad.commandLog()).toEqual([
+      "_revolve",
+      "Current wire frame density:  ISOLINES=4, Closed profiles creation mode = Solid",
+      "Select objects to revolve or [MOde]: _MO Closed profiles creation mode [SOlid/SUrface] <Solid>: _SO",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "REVOLVE Select objects to revolve or [MOde]:"
+    )
+  })
+
+  it("typed, asks as typed", () => {
+    expect(written(console(), "REVOLVE")).toEqual([
+      "REVOLVE",
+      "Current wire frame density:  ISOLINES=4, Closed profiles creation mode = Solid",
+    ])
   })
 })
 

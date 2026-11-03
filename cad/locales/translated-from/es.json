@@ -2480,6 +2480,7 @@
   "commands.messages.revolvePerpendicular": "Axis of revolution is perpendicular to plane of revolve curve.",
   "commands.messages.revolveZeroAxis": "Zero length axis is not permitted.",
   "commands.messages.revolveClosedAxis": "Cannot get axis direction from a closed curve or edge.",
+  "commands.messages.revolveSelfIntersecting": "Cannot revolve a self-intersecting curve.",
   "commands.messages.listRevolveStart": "      Start angle: {angle}",
   "commands.messages.listRevolveAngle": "Angle of revolution: {angle}",
   "commands.messages.listDirectionVector": " Direction vector: X = {x}Y = {y}Z = {z}",

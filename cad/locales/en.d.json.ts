@@ -2787,6 +2787,7 @@ declare const source: {
       "revolvePerpendicular": string
       "revolveZeroAxis": string
       "revolveClosedAxis": string
+      "revolveSelfIntersecting": string
       "listRevolveStart": string
       "listRevolveAngle": string
       "listDirectionVector": string
