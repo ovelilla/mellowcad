@@ -1033,8 +1033,15 @@ Center on a box (s01, s02), the running snaps alike (p404: OSMODE 4133, 512, 2);
 any solid's edge, with a line, another solid or its own (the help's Object Snap tab: they "do not
 work with edges or corners of 3D solids"; p400 in plan, p401 in SE Isometric); in plan, where a
 top edge hides a bottom one, the bottom's is found (s01). MOVE, COPY, ROTATE, SCALE and MIRROR carry
-it, in a tilted UCS and with a Z too, a mirrored box still a box (t01: Rotation 330; t02); STRETCH
-moves it whole once the window takes a vertex, else leaves it (t03, t05). The Properties palette:
+it, in a tilted UCS and with a Z too, a mirrored box still a box (t01: Rotation 330; t02; every
+kind mirrored in a tilted UCS and tilted in the WCS, primitives/p410, p424); SCALE refuses −2 and 0
+(`Value must be positive and nonzero.`, p411); ID, DIST and MOVE on its vertices leave LASTPOINT
+as AutoCAD's (p408). STRETCH moves it whole once the window takes a vertex, else leaves it (t03,
+t05): any solid's vertex but a closed circle's or ellipse's seam, the centre of a circle or
+ellipse of its edges, a sphere's or torus' centre (PRIM-D61; p423: a pyramid's frustum by a top
+corner). ARRAYRECT bases its array at its
+centre in space (primitives/p413: `Base point:  X=   5.0000  Y=  10.0000  Z=   2.5000`, levels
+7.5 apart, the items its copies). The Properties palette:
 3D Solid, Geometry's Solid type, Position X/Y/Z, Length, Width, Height and Rotation, Solid History's
 History and Show History (d03); Position (in the UCS), Length, Width and Height are typed, the rest
 greyed: a length or width of 0 or less refused without a word, a height of 0 refused, a negative one
@@ -1177,7 +1184,9 @@ Height (d05), the radii and Height typed (0 or less refused, a negative height t
 Its grips (g01, d10): BOX's square at the base's centre and its height arrows, and an arrow out at
 each quarter of the base — along X and across, an elliptical one's its own axis' —, which sizes
 that radius by the drag's run along it in the base's plane. AREA's Object gives its surface (`408.4070`, the ellipse's perimeter exact); MOVE,
-ROTATE, SCALE and MIRROR carry it (c10).
+ROTATE, SCALE and MIRROR carry it (c10). STRETCH moves it whole once the window takes its base's
+or top's centre, the seam's vertex alone found and left (primitives/p412, p425; an elliptical
+one's by the same rule, unprobed).
 
 **Missing:** what AutoCAD's EXPLODE makes of it — the regions of its ends and a SURFACE of its
 round face (c11): no surface object here, so it is refused as `Select objects:` finds it (`1 was
@@ -1217,7 +1226,8 @@ typed as CYLINDER's, a top down to 0 (a point; g01). Its grips are CYLINDER's an
 arrow, on the top opposite its X or, on a point, 15 pixels off the apex outwards and down, which
 sets the top by where it is taken along the line of sight, from 0 (g01: dragged 2 out of a point,
 2.15). AREA's Object gives its surface (`226.7284`; a frustum's `278.9986`, an elliptical one's from the
-perimeter, k01, k03). Everything else a solid does is CYLINDER's and BOX's entries.
+perimeter, k01, k03). STRETCH takes it by its apex or a circle's centre, a frustum's base's too
+(primitives/p412, p425). Everything else a solid does is CYLINDER's and BOX's entries.
 
 **Missing:** CYLINDER's (EXPLODE's SURFACE, k06; Elliptical typed); the apex drawn as a
 dot with ISOLINES 0 (nothing here). pt-BR's console ends CONE with nothing made at Enter on a
@@ -1315,7 +1325,9 @@ square at its centre, which moves it; at the tube opposite its X, |R| out whiche
 is, an arrow at the tube's centre, which sizes the ring, and four round it, which size the tube,
 each along the line of sight; a drag that would turn the ring across the axis leaves it.
 
-**Missing:** SPHERE's (EXPLODE's SURFACE, the hot grip's other modes, DISPSILH). **Unverified**:
+**Missing:** what AutoCAD's EXPLODE makes of it, a SURFACE of a doughnut and two POINTs of an
+apple (primitives/p414; a lemon unprobed): refused as CYLINDER's is; SPHERE's (the hot grip's
+other modes, DISPSILH). **Unverified**:
 an apple's isoline at its outer equator in plan: its meridian, seen edge-on, reaches it here, so
 Center and a pick find it there; AutoCAD neither (primitives/p402: `_CEN` at 136.05,0.05 on 2 round
 a tube of 4 at 130,0; p407: a pick at 46,0 on one at 40,0), unsettled as geometry: the desktop's

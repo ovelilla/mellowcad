@@ -636,6 +636,221 @@ describe("a 3D solid", () => {
     expectAt(centroid(last(cad)), { x: 10, y: 10, z: 2.5 })
   })
 
+  it("is stretched by a vertex off its circles or a circle's centre (primitives/p412, p423, p425)", () => {
+    const positions = (cad: CadHarness) =>
+      written(cad, "_LIST", "_ALL", "")
+        .flatMap((line) => line.split("\n"))
+        .filter((line) => line.includes("Position"))
+        .map((line) => line.trim().replace(/\s+/g, " "))
+    const stretch = (cad: CadHarness, from: string, to: string) =>
+      answer(cad, "STRETCH", "C", from, to, "", "0,0", "0,10")
+    const zoomed = () => answer(console(), "ZOOM", "W", "-10,-10", "60,20")
+
+    // p412: a cone by its apex; a cylinder by its seam's vertex is found and
+    // left, and a crossing round its centre alone finds nothing.
+    const seam = zoomed()
+    answer(seam, "CONE", "0,0,0", "5", "8", "CYLINDER", "20,0,0", "5", "8")
+    answer(seam, "CYLINDER", "40,0,0", "5", "8")
+    stretch(seam, "-0.5,-0.5", "0.5,0.5")
+    expect(written(seam, "STRETCH", "C", "19.5,-0.5", "20.5,0.5")).toContain(
+      "0 found"
+    )
+    seam.escape()
+    expect(
+      written(seam, "STRETCH", "C", "44.5,-0.5", "45.5,0.5", "")
+    ).toContain("1 found")
+    answer(seam, "40,0", "0,10")
+    expect(positions(seam)).toEqual([
+      "Position, X = 40.0000 Y = 0.0000 Z = 0.0000",
+      "Position, X = 20.0000 Y = 0.0000 Z = 0.0000",
+      "Position, X = 0.0000 Y = 10.0000 Z = 0.0000",
+    ])
+
+    // p425: a cylinder and a frustum by their base's centre alone.
+    const centre = zoomed()
+    answer(centre, "CYLINDER", "0,0,0", "5", "8")
+    answer(centre, "CONE", "30,0,0", "5", "T", "2", "8")
+    stretch(centre, "-0.5,-0.5", "0.5,5.5")
+    stretch(centre, "29.5,-0.5", "30.5,2.5")
+    expect(positions(centre)).toEqual([
+      "Position, X = 30.0000 Y = 10.0000 Z = 0.0000",
+      "Position, X = 0.0000 Y = 10.0000 Z = 0.0000",
+    ])
+
+    // p423: a pyramid's frustum by a top corner.
+    const corner = zoomed()
+    answer(corner, "CYLINDER", "0,0,0", "5", "8")
+    answer(corner, "PYRAMID", "30,0,0", "35,0", "T", "2", "8")
+    stretch(corner, "-0.5,-0.5", "5.5,0.5")
+    stretch(corner, "31.5,1.5", "32.5,2.5")
+    expect(positions(corner)).toEqual([
+      "Position, X = 30.0000 Y = 10.0000 Z = 0.0000",
+      "Position, X = 0.0000 Y = 10.0000 Z = 0.0000",
+    ])
+  })
+
+  it("is mirrored in a tilted UCS, and tilted in the WCS (primitives/p410, p424)", () => {
+    const placements = (cad: CadHarness) =>
+      written(cad, "_LIST", "_ALL", "")
+        .flatMap((line) => line.split("\n"))
+        .filter((line) => /Solid type|Position|Normal|Rotation/.test(line))
+        .map((line) => line.trim().replace(/\s+/g, " "))
+    const tilted = console()
+    answer(tilted, "UCS", "X", "30", "CYLINDER", "0,0,0", "5", "8")
+    answer(tilted, "MIRROR", "L", "", "0,0", "10,0", "N")
+    answer(tilted, "CONE", "E", "20,0,0", "30,0", "25,3", "8")
+    answer(tilted, "MIRROR", "L", "", "20,0", "30,0", "N")
+    answer(tilted, "TORUS", "50,0,0", "10", "2")
+    answer(tilted, "MIRROR", "L", "", "50,0", "60,10", "N")
+    answer(tilted, "WEDGE", "80,0,0", "90,20", "5")
+    answer(tilted, "MIRROR", "L", "", "80,0", "90,0", "N", "UCS", "W")
+    const down = "Normal: X = 0.0000 Y = -0.5000 Z = 0.8660"
+    const up = "Normal: X = 0.0000 Y = 0.5000 Z = 0.8660"
+    const cylinder = [
+      "Solid type = Cylinder",
+      "Position, X = 0.0000 Y = 0.0000 Z = 0.0000",
+    ]
+    const cone = [
+      "Solid type = Cone",
+      "Position, X = 25.0000 Y = 0.0000 Z = 0.0000",
+    ]
+    const torus = [
+      "Solid type = Torus",
+      "Position, X = 50.0000 Y = 0.0000 Z = 0.0000",
+      down,
+    ]
+    const pyramid = [
+      "Solid type = Pyramid",
+      "Position, X = 70.0000 Y = 0.0000 Z = 0.0000",
+    ]
+    expect(placements(tilted)).toEqual([
+      "Solid type = Wedge",
+      "Position, X = 85.0000 Y = -8.6603 Z = -5.0000",
+      down,
+      "Rotation: 0",
+      "Solid type = Wedge",
+      "Position, X = 85.0000 Y = 8.6603 Z = 5.0000",
+      down,
+      "Rotation: 0",
+      ...torus,
+      ...torus,
+      ...[...cone, down, "Rotation: 270"],
+      ...[...cone, down, "Rotation: 90"],
+      ...[...cylinder, down],
+      ...[...cylinder, down],
+    ])
+
+    const world = console()
+    answer(world, "UCS", "X", "30", "CYLINDER", "0,0,0", "5", "8")
+    answer(world, "CONE", "E", "20,0,0", "30,0", "25,3", "8")
+    answer(world, "WEDGE", "40,0,0", "50,20", "5")
+    answer(world, "PYRAMID", "70,0,0", "5,0", "8")
+    answer(world, "UCS", "W", "MIRROR", "ALL", "", "0,0", "10,0", "N")
+    expect(placements(world)).toEqual([
+      ...[...pyramid, up, "Rotation: 180"],
+      "Solid type = Wedge",
+      "Position, X = 45.0000 Y = -8.6603 Z = 5.0000",
+      up,
+      "Rotation: 0",
+      ...[...cone, up, "Rotation: 270"],
+      ...[...cylinder, up],
+      ...[...pyramid, down, "Rotation: 180"],
+      "Solid type = Wedge",
+      "Position, X = 45.0000 Y = 8.6603 Z = 5.0000",
+      down,
+      "Rotation: 0",
+      ...[...cone, down, "Rotation: 90"],
+      ...[...cylinder, down],
+    ])
+  })
+
+  it("refuses a scale factor of -2 or 0 (primitives/p411)", () => {
+    const cad = boxed()
+    expect(written(cad, "SCALE", "L", "", "0,0", "-2", "0", "2")).toEqual([
+      "SCALE",
+      "Select objects: L",
+      "1 found",
+      "Select objects:",
+      "Specify base point: 0,0",
+      "Specify scale factor or [Copy/Reference]: -2",
+      "Value must be positive and nonzero.",
+      "Specify scale factor or [Copy/Reference]: 0",
+      "Value must be positive and nonzero.",
+      "Specify scale factor or [Copy/Reference]: 2",
+    ])
+    expect(shape(cad).slice(1)).toEqual([
+      "         Position, X = 10.0000   Y = 20.0000   Z = 0.0000",
+      "           Length: 20.0000",
+      "            Width: 40.0000",
+      "           Height: 10.0000",
+      "         Rotation: 0",
+    ])
+  })
+
+  it("leaves LASTPOINT where ID, DIST and MOVE leave it on its vertices (primitives/p408)", () => {
+    const cad = console()
+    answer(cad, "BOX", "0,0,0", "10,20", "5", "VPOINT", "1,-1,1", "ZOOM", "E")
+    const lastPoint = () => {
+      const [, x, y, z] = written(cad, "ID", "@")
+        .at(-1)!
+        .match(/X = (\S+)\s+Y = (\S+)\s+Z = (\S+)/)!
+      return { x: +x, y: +y, z: +z }
+    }
+    expect(identified(cad, "_END", "10,20,5")).toEqual({ x: 10, y: 20, z: 5 })
+    expect(lastPoint()).toEqual({ x: 10, y: 20, z: 5 })
+    expect(
+      written(cad, "DIST", "_END", "0,0,0", "_END", "10,20,5").join("\n")
+    ).toContain("Distance = 22.9129")
+    expect(lastPoint()).toEqual({ x: 0, y: 0, z: 0 })
+    answer(cad, "MOVE", "L", "", "_END", "10,0,5", "@5,0,0")
+    expect(lastPoint()).toEqual({ x: 15, y: 0, z: 5 })
+    expect(identified(cad, "_MID", "15,10,5")).toEqual({ x: 15, y: 10, z: 5 })
+  })
+
+  it("is arrayed about its centre in space (primitives/p413)", () => {
+    const cad = console()
+    answer(cad, "BOX", "0,0,0", "10,20", "5", "ZOOM", "E")
+    answer(cad, "ARRAYRECT", "L", "", "")
+    const array = written(cad, "_LIST", "_L", "")
+      .flatMap((line) => line.split("\n"))
+      .filter((line) => /Base point|Level spacing/.test(line))
+    expect(array).toEqual([
+      "      Base point:  X=   5.0000  Y=  10.0000  Z=   2.5000",
+      "            Level spacing:     7.5000",
+    ])
+    answer(cad, "EXPLODE", "L", "")
+    const items = written(cad, "_LIST", "_ALL", "")
+      .flatMap((line) => line.split("\n"))
+      .filter((line) => line.includes("Position"))
+      .map((line) => line.trim().replace(/\s+/g, " "))
+    expect(items.sort()).toEqual(
+      [5, 20, 35, 50]
+        .flatMap((x) => [10, 40, 70].map((y) => [x, y]))
+        .map(
+          ([x, y]) =>
+            `Position, X = ${x.toFixed(4)} Y = ${y.toFixed(4)} Z = 0.0000`
+        )
+        .sort()
+    )
+  })
+
+  it("gives each kind's surface to AREA's Object (solid/c01, k01, h01, r01, r05, w01, y01)", () => {
+    const area = (...make: string[]) => {
+      const cad = console()
+      answer(cad, ...make)
+      return written(cad, "AREA", "O", "L").at(-1)
+    }
+    const surface = (value: string) => `Area = ${value}, Perimeter = 0.0000`
+    expect(area("CYLINDER", "0,0,0", "5", "8")).toBe(surface("408.4070"))
+    expect(area("CONE", "0,0,0", "5", "8")).toBe(surface("226.7284"))
+    expect(area("SPHERE", "0,0,0", "5")).toBe(surface("314.1593"))
+    expect(area("TORUS", "0,0,0", "10", "2")).toBe(surface("789.5684"))
+    expect(area("TORUS", "0,0,0", "2", "4")).toBe(surface("384.6763"))
+    expect(area("TORUS", "0,0,0", "-4", "5")).toBe(surface("26.7661"))
+    expect(area("WEDGE", "0,0,0", "10,20", "5")).toBe(surface("573.6068"))
+    expect(area("PYRAMID", "0,0,0", "5", "8")).toBe(surface("288.6796"))
+  })
+
   it("explodes into a region of each face, facing out (p09)", () => {
     const cad = boxed()
     answer(cad, "EXPLODE", "L", "")

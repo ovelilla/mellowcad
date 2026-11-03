@@ -260,7 +260,8 @@ The array object (the three commands'): one block reference, named for its kind 
 selection list and the palette's object filter, a type of its own there (properties/d06-2) — to an anonymous block `*U<n>` holding the source where it stood, the source
 consumed into it (p01–p03, p400); on the current layer, colour, linetype and lineweight, the
 objects inside keeping theirs, those on layer 0 shown on its layer as in any block (p403); at the
-source's extents centre (p403, p404), ARRAYPOLAR's at the centre, the extents centre its base point
+source's extents centre (p403, p404), its Z the middle of the source's rise (p436: Z 3 for a line
+from Z 0 to 6; p437: 2 for a circle 4 thick; primitives/p413: 2.5 for a box 5 high), ARRAYPOLAR's at the centre, the extents centre its base point
 (p405), ARRAYPATH's at the path's start (p406). Its items are derived from its parameters, kept in
 the block's coordinates, so they are drawn, picked, bounded and snapped to as the drawing's own: a
 pick on any item takes the array (p408), `_END` finds an item's end (p412), and MOVE, COPY (a
@@ -351,9 +352,8 @@ move grip is hot at the main prompt; the
 palette's Base X and Base Y edits, which move the base point alone, the items staying (d20b: the
 Base point option), and Center X, Y and Z edits (**unverified**); the palette's rows of options not
 built — a ring's or a path array's Rows, Row spacing, Row elevation increment, Levels and Level
-spacing, Start offset, Fill entire path (d13); the base point's Z, the middle of the source's rise
-in AutoCAD (p436: Z 3 for a line from Z 0 to 6; p437: 2 for a circle 4 thick), here the
-reference's; a level grip in a 3D view (`** LEVEL COUNT **`, `** LEVEL SPACING **`,
+spacing, Start offset, Fill entire path (d13); ARRAYPOLAR's and ARRAYPATH's base point's Z for a
+source with a rise (**unverified**: no probe); a level grip in a 3D view (`** LEVEL COUNT **`, `** LEVEL SPACING **`,
 `** TOTAL LEVEL SPACING **`, AcArrayRes 5729–5731: whether one shows, **unverified**, no desktop
 pass); ARRAYEDIT (p419–p421) and
 ARRAYCLOSE; no cap on the items but 32767 each way, a large array costing what as many loose

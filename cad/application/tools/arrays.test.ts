@@ -768,6 +768,34 @@ describe("ARRAYRECT's Levels", () => {
     )
   })
 
+  // probes arrays/p436, p437: the base point in the middle of the source's
+  // rise, its items where the source is.
+  it("bases the array at the middle of the source's rise", () => {
+    const base = (cad: CadHarness) => {
+      answer(cad, "_ARRAYRECT", "_L", "", "_L", "2", "", "_X")
+      return answer(cad, "_LIST", "_L", "")
+        .commandLog()
+        .flatMap((line) => line.split("\n"))
+        .find((line) => line.includes("Base point:"))
+    }
+    const rising = answer(createHarness(), "LUPREC", "4")
+    answer(rising, "_LINE", "10,10,0", "12,12,6", "")
+    expect(base(rising)).toBe(
+      "      Base point:  X=  11.0000  Y=  11.0000  Z=   3.0000"
+    )
+    answer(rising, "_EXPLODE", "_L", "")
+    expect(rising.entities()[0]).toMatchObject({
+      start: { x: 10, y: 10 },
+      end: { x: 12, y: 12 },
+      deltaZ: 6,
+    })
+    const thick = answer(createHarness(), "LUPREC", "4")
+    answer(thick, "THICKNESS", "4", "_CIRCLE", "10,10", "2", "THICKNESS", "0")
+    expect(base(thick)).toBe(
+      "      Base point:  X=  10.0000  Y=  10.0000  Z=   2.0000"
+    )
+  })
+
   // probe arrays/p435: two points measure in space, at the distance and at
   // Total.
   it("takes two points in space at the distance and at Total", () => {

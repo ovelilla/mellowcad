@@ -1,10 +1,12 @@
 import { Vec2, V } from "../../geometry/Vec2"
+import { Vec3, zOf } from "../../geometry/Vec3"
 import {
   ArrayParameters,
   Entity,
   anonymousBlockName,
   createBlockDefinition,
   createInsert,
+  withElevation,
 } from "../../domain/entities"
 import {
   ArrayItem,
@@ -107,7 +109,8 @@ export function arrayPreview(
  * source where it stands, with `base` the block's base point and the
  * reference's position, so the parameters stay in the drawing's coordinates
  * of the moment (ARRAYS-D8), the reference `offset` from it once a move grip
- * moved the preview (ARRAYS-D77). The source is consumed into it and U brings it
+ * moved the preview (ARRAYS-D77). A `base` with a Z is the block's and the
+ * reference's elevation, which LIST reads as the Base point's Z. The source is consumed into it and U brings it
  * back with its ids (p01–p03, p409). Not associative: the items' loose
  * copies, the source left as item 1 (p04–p06), moved where a grip moved it.
  */
@@ -115,7 +118,7 @@ export function makeArray(
   ctx: ToolContext,
   originals: readonly Entity[],
   array: ArrayParameters,
-  base: Vec2,
+  base: Vec2 | Vec3,
   mode: ArrayAssociativity,
   offset: Vec2 = STILL
 ): void {
@@ -136,12 +139,16 @@ export function makeArray(
   }
   if (originals.length === 0) return
   const name = anonymousBlockName(ctx.document.getBlocks())
-  const block = createBlockDefinition(name, base, originals)
+  const z = zOf(base)
+  const block = createBlockDefinition(name, base, originals, z)
   const reference = withCurrentProperties(
-    createInsert(name, V.add(base, offset), {
-      layerId: ctx.document.getCurrentLayerId(),
-      array,
-    }),
+    withElevation(
+      createInsert(name, V.add(base, offset), {
+        layerId: ctx.document.getCurrentLayerId(),
+        array,
+      }),
+      z
+    ),
     ctx
   )
   ctx.execute(

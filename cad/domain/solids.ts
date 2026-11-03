@@ -454,12 +454,30 @@ export function solidHasCurvedFaces(solid: Solid3dEntity): boolean {
 }
 
 /**
- * The points STRETCH catches it by: its vertices (solid/t03, t05), a sphere's
- * or a torus' centre (t06); a doughnut turned of a spline or an ellipse, its
- * profile's (**unverified**: no STRETCH probe of one).
+ * The points STRETCH catches it by (PRIM-D61): its vertices (solid/t03, t05;
+ * a cone's apex, a frustum's corner, primitives/p412, p423) but a closed
+ * circle's or ellipse's seam (p412: found, left), the centres of its circles
+ * and ellipses (p425), a sphere's or a torus' centre (t06); a doughnut turned
+ * of a spline or an ellipse, its profile's (**unverified**: no STRETCH probe
+ * of one).
  */
 export function solidStretchPoints(solid: Solid3dEntity): readonly Vec3[] {
-  const points = [...solid.brep.vertices, ...solidCenters(solid)]
+  const { vertices, edges } = solid.brep
+  const seams = new Set(
+    edges
+      .filter(
+        ({ start, end, curve }) =>
+          start === end && (curve.kind === "circle" || curve.kind === "ellipse")
+      )
+      .map(({ start }) => start)
+  )
+  const points = [
+    ...vertices.filter((_, i) => !seams.has(i)),
+    ...edges.flatMap(({ curve }) =>
+      curve.kind === "circle" || curve.kind === "ellipse" ? [curve.center] : []
+    ),
+    ...solidCenters(solid),
+  ]
   return points.length > 0 ? points : [brepAnchor(solid.brep)]
 }
 

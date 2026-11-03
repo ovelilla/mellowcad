@@ -95,9 +95,10 @@ type ArrayState =
       readonly originals: readonly Entity[]
       /**
        * The block's base point, the source's extents centre (probes
-       * arrays/p403, p404), where the rectangular grips count from.
+       * arrays/p403, p404), its Z the middle of the source's rise (p436,
+       * p437; primitives/p413), where the rectangular grips count from.
        */
-      readonly base: Vec2
+      readonly base: Vec3
       readonly grid: Grid
       readonly step: Step
       /** Unit cell's first corner, in the UCS, once given. */
@@ -561,15 +562,19 @@ export class ArrayTool implements Tool {
       ctx
     )
     // The base point is the source's extents centre (probes arrays/p403,
-    // p404).
+    // p404), in space (p436, p437; primitives/p413: 5,10,2.5 for a box
+    // 0..10, 0..20, 0..5).
     const box = entitiesBounds(originals, ctx.blocks)
+    const rise = sourceBox(originals, ctx)
     this.grips.start()
     this.state = {
       phase: "edit",
       originals,
-      base: box
-        ? { x: (box.min.x + box.max.x) / 2, y: (box.min.y + box.max.y) / 2 }
-        : { x: 0, y: 0 },
+      base: {
+        x: box ? (box.min.x + box.max.x) / 2 : 0,
+        y: box ? (box.min.y + box.max.y) / 2 : 0,
+        z: rise ? (rise.min.z + rise.max.z) / 2 : 0,
+      },
       grid: {
         columns: DEFAULT_COLUMNS,
         rows: DEFAULT_ROWS,
@@ -848,13 +853,7 @@ function defaultSpacing(
     entitiesBounds(originals, ctx.blocks),
     ctx.ucs
   )
-  const box = drawingBox(
-    originals.flatMap((entity) =>
-      entity.type === "insert"
-        ? insertFlatGeometry(entity, ctx.blocks)
-        : [entity]
-    )
-  )
+  const box = sourceBox(originals, ctx)
   const rise = box ? box.max.z - box.min.z : 0
   const spaced = (size: number) => (size > 1e-6 ? size * 1.5 : 1)
   return {
@@ -862,4 +861,18 @@ function defaultSpacing(
     rowSpacing: spaced(height),
     levelSpacing: spaced(rise),
   }
+}
+
+/** The source's box in space, a reference's by what it shows. */
+function sourceBox(
+  originals: readonly Entity[],
+  ctx: Pick<ToolContext, "blocks">
+): { readonly min: Vec3; readonly max: Vec3 } | null {
+  return drawingBox(
+    originals.flatMap((entity) =>
+      entity.type === "insert"
+        ? insertFlatGeometry(entity, ctx.blocks)
+        : [entity]
+    )
+  )
 }

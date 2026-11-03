@@ -17,6 +17,7 @@ import {
   lineEndZ,
   splineCurve,
 } from "../domain/entities"
+import { brepBox } from "../geometry/solids"
 import { Viewport } from "./Viewport"
 
 /** Radians the view turns per pixel dragged: half a turn across 400 px. */
@@ -90,10 +91,18 @@ export function drawingBox(
   let low = Number.POSITIVE_INFINITY
   let high = Number.NEGATIVE_INFINITY
   for (const entity of entities) {
-    if (entity.type === "polyline3d" || entity.type === "solid3d") {
-      const vertices =
-        entity.type === "solid3d" ? entity.brep.vertices : entity.vertices
-      for (const vertex of vertices) {
+    if (entity.type === "solid3d") {
+      // Its exact box: a sphere or a torus has no vertex (ARRAYRECT's base
+      // and level spacing, primitives/p413).
+      const box = brepBox(entity.brep)
+      if (box) {
+        low = Math.min(low, box.min.z)
+        high = Math.max(high, box.max.z)
+      }
+      continue
+    }
+    if (entity.type === "polyline3d") {
+      for (const vertex of entity.vertices) {
         low = Math.min(low, vertex.z)
         high = Math.max(high, vertex.z)
       }
