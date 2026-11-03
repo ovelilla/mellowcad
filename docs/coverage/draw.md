@@ -1220,8 +1220,11 @@ there is one. 3P asks CYLINDER's three points and centres the sphere on the circ
 circle:`, the centre on the circle tangent to both, at their height (h02). Refusals are CYLINDER's
 (`Point or option keyword required.`, `Requires numeric distance, second point, or option
 keyword.`, `Value must be positive and nonzero.` for a radius or a diameter of 0 or less, `Points
-cannot be collinear. *Invalid*` at 3P's third), but 3P's second point on its first is `Points cannot
-be coincident. *Invalid*`, as 2P's (h03). The radius is the primitives' shared default (x01–x05).
+cannot be collinear. *Invalid*` at 3P's third), but Enter, a word or another prompt's keyword at
+3P's first two points and 2P's ends is `Invalid point.` (es `Punto no válido.`, pt-BR `Ponto
+inválido.`; 3P's third keeps `Point or option keyword required.`, primitives/p143, p153, p212,
+p237), and 3P's second point on its first is `Points cannot be coincident. *Invalid*`, as 2P's
+(h03). Another prompt's keyword at the centre or the radius is refused in their words (p208). The radius is the primitives' shared default (x01–x05).
 It lies in a tilted UCS and at its Z (h04); it wears the current layer and properties; one undo
 step.
 
@@ -1255,9 +1258,13 @@ lays the ring in the points' plane, its normal their turn even when that points 
 plane's arbitrary axis (r05's MPDUMP); 2P in the first's plane (r07); Ttr as CYLINDER's (r04). A
 point at the tube's prompt measures from the ring's point last given: the radius' point or, typed,
 the radius toward the cursor, 3P's third, 2P's second in the first's plane, Ttr's along the UCS's
-X, a negative ring's centre (the console's BasePoint, r01–r07). A radius typed negative makes an
-apple's or a lemon's ring, its tube wider (r03, r05). Refusals: SPHERE's, with `Value must be
-nonzero.` for a radius of 0, `Value must be positive and nonzero.` for a tube or a tube diameter of
+X, a negative ring's centre (the console's BasePoint, r01–r07). `@` there is read from that point, a bare `@`
+that point itself, refused (primitives/p217, p220). A radius typed negative makes an
+apple's or a lemon's ring, its tube wider (r03, r05). Refusals: SPHERE's — `Invalid point.` at
+3P's third point too and at the tube's 2Point (primitives/p144, p153, p212, p237, p350), another
+prompt's keyword refused at the centre, the radius and the tube (p209) — with `Value must be
+nonzero.` for a radius or a diameter of 0 (a negative diameter a lemon's, p213), `Value must be
+positive and nonzero.` for a tube or a tube diameter of
 0 or less, and `If torus radius is -5.0000, tube radius must be greater than 5.0000.` for a tube no
 wider than a negative ring, asked again — and for 2Point's second point on its first whatever the
 ring (`If torus radius is 10.0000, …`), which asks that point again (r06, r09; es `Si el radio del
@@ -1272,8 +1279,9 @@ round a doughnut with no edge; an apple's or a lemon's with an edge of no length
 the tube meets the axis, a vortex's (its tube as wide as its ring) both at its centre. 2D Wireframe
 draws ISOLINES' tube circles, the first opposite its seam, and as many parallels round the tube
 from its inside, spread over an apple's or a lemon's arc (d06–d09); it is picked and windowed by
-them. Center finds its centre from anywhere over an isoline, never at the centre itself; nothing
-else snaps on it (s07, s09, s10). LIST: `Solid type = Torus`, Position, Normal, `Torus radius`,
+them. Center finds its centre from anywhere over an isoline, never at the centre itself; Endpoint
+an apple's or a lemon's poles, as AutoCAD's (primitives/p241, p402: 2 round a tube of 4 at
+0,0,±3.4641; -4 and 5 at 50,0,3); nothing else snaps on it (s07, s09, s10). LIST: `Solid type = Torus`, Position, Normal, `Torus radius`,
 `Tube radius` (r01, r04; es `Radio de toroide`, `Radio de sección`; pt-BR `Raio do toroide`, `Raio
 do tubo`). The palette: Solid type, Position X/Y/Z, Torus radius and Tube radius (d05). AREA's
 Object gives its surface (`789.5684`; an apple's, 2 round a tube of 4, `384.6763`; a lemon's, -4
@@ -1284,8 +1292,7 @@ square at its centre, which moves it; at the tube opposite its X, |R| out whiche
 is, an arrow at the tube's centre, which sizes the ring, and four round it, which size the tube,
 each along the line of sight; a drag that would turn the ring across the axis leaves it.
 
-**Missing:** SPHERE's (EXPLODE's SURFACE, the hot grip's other modes, DISPSILH); an apple's or
-a lemon's poles as Endpoints (**unverified**: no probe snaps there; none here).
+**Missing:** SPHERE's (EXPLODE's SURFACE, the hot grip's other modes, DISPSILH).
 
 ### `PYRAMID` / `PYR` · es `PIRAMIDE` / `PIR` · pt-BR `PIRAMIDE` / `PIR`
 
@@ -1311,7 +1318,8 @@ endpoint:` and tilts the base into the plane normal to the axis, turned by the s
 plane's OCS, the UCS's arbitrary axis (y09); 2Point asks two points. The height rises along the
 UCS's Z, down when negative; a point, the cursor or a snap gives it as at BOX's (z01; the cursor's
 reading **unverified** on the desktop). Refusals: `Point or option keyword
-required.` at the centre and 2Point's, `Invalid point.` at Edge's and the axis' (y06), `Requires
+required.` at the centre, `Invalid point.` at Edge's, the axis' (y06) and 2Point's (primitives/p154,
+p312), `Requires
 numeric distance, second point, or option keyword.` at the radius and the height, `Requires numeric
 distance or second point.` at the top radius, `Value must be positive and nonzero.` for a radius of
 0 or less and an edge of no length, `Value must be nonzero.` for a height of 0 and an axis or 2Point

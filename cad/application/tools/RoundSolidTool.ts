@@ -316,10 +316,23 @@ export class RoundSolidTool implements Tool {
       refusal: "requiresDistance" as const,
       values: { points, keyword },
     })
-    switch (this.state.phase) {
-      case "center":
+    const state = this.state
+    switch (state.phase) {
       case "threePoint":
       case "twoPoint":
+        // SPHERE's and TORUS's own points are bare: `Invalid point.`, but
+        // SPHERE's third, as CYLINDER's and CONE's (primitives/p143, p144,
+        // p212, p237).
+        return this.round ||
+          (this.kind === "sphere" &&
+            state.phase === "threePoint" &&
+            state.points.length === 2)
+          ? { refusal: "pointOrKeywordRequired" }
+          : { refusal: "invalidPoint" }
+      case "tubeFirst":
+      case "tubeSecond":
+        return { refusal: "invalidPoint" }
+      case "center":
       case "ellipseFirst":
       case "ellipseOther":
       case "ellipseCenter":
@@ -327,8 +340,6 @@ export class RoundSolidTool implements Tool {
       case "twoFirst":
       case "twoSecond":
       case "axis":
-      case "tubeFirst":
-      case "tubeSecond":
         return { refusal: "pointOrKeywordRequired" }
       case "tangentFirst":
       case "tangentSecond":

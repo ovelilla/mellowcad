@@ -572,6 +572,38 @@ describe("PYRAMID", () => {
     ])
   })
 
+  it("refuses Enter, FOO and a keyword at 2Point's points with `Invalid point.` (primitives/p154, p312)", () => {
+    const cad = console()
+    const out = written(
+      cad,
+      "_PYRAMID",
+      "0,0,0",
+      "5",
+      "_2P",
+      "",
+      "FOO",
+      "_A",
+      "1,1,1",
+      "",
+      "FOO",
+      "1,1,6"
+    )
+    expect(out.slice(5)).toEqual([
+      "Specify first point:",
+      "Invalid point.",
+      "Specify first point: FOO",
+      "Invalid point.",
+      "Specify first point: _A",
+      "Invalid point.",
+      "Specify first point: 1,1,1",
+      "Specify second point:",
+      "Invalid point.",
+      "Specify second point: FOO",
+      "Invalid point.",
+      "Specify second point: 1,1,6",
+    ])
+  })
+
   it("takes the top radius and the last ones as defaults, Enter's base unturned (y05, y10)", () => {
     const cad = console()
     expect(
@@ -2230,6 +2262,113 @@ describe("SPHERE", () => {
     ])
   })
 
+  it("says `Invalid point.` at 3P's first two points and 2P's ends, the third keeping the keyword's words (primitives/p143, p153, p212, p237)", () => {
+    const cad = console()
+    expect(
+      written(
+        cad,
+        "_SPHERE",
+        "_3P",
+        "",
+        "FOO",
+        "_U",
+        "0,0,0",
+        "",
+        "FOO",
+        "_U",
+        "10,0,0",
+        "",
+        "FOO",
+        "_U",
+        "0,10,0"
+      ).slice(2)
+    ).toEqual([
+      "Specify first point:",
+      "Invalid point.",
+      "Specify first point: FOO",
+      "Invalid point.",
+      "Specify first point: _U",
+      "Invalid point.",
+      "Specify first point: 0,0,0",
+      "Specify second point:",
+      "Invalid point.",
+      "Specify second point: FOO",
+      "Invalid point.",
+      "Specify second point: _U",
+      "Invalid point.",
+      "Specify second point: 10,0,0",
+      "Specify third point:",
+      "Point or option keyword required.",
+      "Specify third point: FOO",
+      "Point or option keyword required.",
+      "Specify third point: _U",
+      "Point or option keyword required.",
+      "Specify third point: 0,10,0",
+    ])
+    expect(
+      written(cad, "_SPHERE", "_2P", "", "_U", "50,0,0", "FOO", "60,0,0").slice(
+        2
+      )
+    ).toEqual([
+      "Specify first end point of diameter:",
+      "Invalid point.",
+      "Specify first end point of diameter: _U",
+      "Invalid point.",
+      "Specify first end point of diameter: 50,0,0",
+      "Specify second end point of diameter: FOO",
+      "Invalid point.",
+      "Specify second end point of diameter: 60,0,0",
+    ])
+    expect(solids(cad)).toHaveLength(2)
+    const refusals = (locale: typeof es) =>
+      written(
+        console(locale),
+        "_SPHERE",
+        "_3P",
+        "",
+        "0,0,0",
+        "10,0,0",
+        "",
+        "0,10,0"
+      )
+        .slice(1)
+        .filter((line) => !line.includes(":"))
+    expect(refusals(es)).toEqual([
+      "Punto no válido.",
+      "Se requiere un punto o una opción.",
+    ])
+    expect(refusals(ptBR)).toEqual([
+      "Ponto inválido.",
+      "Ponto ou opção necessário.",
+    ])
+  })
+
+  it("refuses another prompt's keyword at its centre and radius (primitives/p208)", () => {
+    expect(
+      written(
+        console(),
+        "_SPHERE",
+        "_E",
+        "_A",
+        "0,0,0",
+        "_A",
+        "_2P",
+        "5"
+      ).slice(1)
+    ).toEqual([
+      "Specify center point or [3P/2P/Ttr]: _E",
+      "Point or option keyword required.",
+      "Specify center point or [3P/2P/Ttr]: _A",
+      "Point or option keyword required.",
+      "Specify center point or [3P/2P/Ttr]: 0,0,0",
+      "Specify radius or [Diameter]: _A",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify radius or [Diameter]: _2P",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify radius or [Diameter]: 5",
+    ])
+  })
+
   it("lies in the UCS, moves, turns, mirrors and scales, not exploded (h04, h05)", () => {
     const cad = console()
     answer(cad, "UCS", "X", "30", "SPHERE", "0,0,0", "5")
@@ -2517,6 +2656,143 @@ describe("TORUS", () => {
     for (const solid of solids(cad)) expect(brepIsClosed(solid.brep)).toBe(true)
   })
 
+  it("says `Invalid point.` at 3P's points, 2P's ends and the tube's 2Point (primitives/p144, p153, p212, p237, p350)", () => {
+    const cad = console()
+    expect(
+      written(
+        cad,
+        "_TORUS",
+        "_3P",
+        "",
+        "100,0,0",
+        "FOO",
+        "110,0,0",
+        "_U",
+        "100,10,0",
+        "2"
+      ).slice(2, -1)
+    ).toEqual([
+      "Specify first point:",
+      "Invalid point.",
+      "Specify first point: 100,0,0",
+      "Specify second point: FOO",
+      "Invalid point.",
+      "Specify second point: 110,0,0",
+      "Specify third point: _U",
+      "Invalid point.",
+      "Specify third point: 100,10,0",
+    ])
+    expect(
+      written(
+        cad,
+        "_TORUS",
+        "_2P",
+        "_U",
+        "200,0,0",
+        "",
+        "210,0,0",
+        "_2P",
+        "",
+        "FOO",
+        "0,0,0",
+        "_D",
+        "0,0,2"
+      ).slice(2)
+    ).toEqual([
+      "Specify first end point of diameter: _U",
+      "Invalid point.",
+      "Specify first end point of diameter: 200,0,0",
+      "Specify second end point of diameter:",
+      "Invalid point.",
+      "Specify second end point of diameter: 210,0,0",
+      "Specify tube radius or [2Point/Diameter] <2.0000>: _2P",
+      "Specify first point:",
+      "Invalid point.",
+      "Specify first point: FOO",
+      "Invalid point.",
+      "Specify first point: 0,0,0",
+      "Specify second point: _D",
+      "Invalid point.",
+      "Specify second point: 0,0,2",
+    ])
+    expect(solids(cad)).toHaveLength(2)
+    const refusals = (locale: typeof es) =>
+      written(
+        console(locale),
+        "_TORUS",
+        "300,0,0",
+        "10",
+        "_2P",
+        "",
+        "0,0,0",
+        "0,0,2"
+      )
+        .slice(1)
+        .filter((line) => !line.includes(":"))
+    expect(refusals(es)).toEqual(["Punto no válido."])
+    expect(refusals(ptBR)).toEqual(["Ponto inválido."])
+  })
+
+  it("refuses another prompt's keyword at its centre, radius and tube (primitives/p209)", () => {
+    expect(
+      written(
+        console(),
+        "_TORUS",
+        "_E",
+        "0,0,0",
+        "_A",
+        "10",
+        "_A",
+        "_C",
+        "_E",
+        "2"
+      ).slice(1)
+    ).toEqual([
+      "Specify center point or [3P/2P/Ttr]: _E",
+      "Point or option keyword required.",
+      "Specify center point or [3P/2P/Ttr]: 0,0,0",
+      "Specify radius or [Diameter]: _A",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify radius or [Diameter]: 10",
+      "Specify tube radius or [2Point/Diameter]: _A",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify tube radius or [2Point/Diameter]: _C",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify tube radius or [2Point/Diameter]: _E",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify tube radius or [2Point/Diameter]: 2",
+    ])
+  })
+
+  it("refuses a diameter of 0 and takes a negative one, a lemon's (primitives/p213)", () => {
+    const cad = console()
+    expect(
+      written(cad, "_TORUS", "0,0,0", "_D", "0", "-10", "6").slice(3)
+    ).toEqual([
+      "Specify diameter of torus: 0",
+      "Value must be nonzero.",
+      "Specify diameter of torus: -10",
+      "Specify tube radius or [2Point/Diameter]: 6",
+    ])
+    expect(listed(cad).slice(2)).toEqual([
+      "     Torus radius: -5.0000",
+      "      Tube radius: 6.0000",
+    ])
+    expect(written(console(es), "_TORUS", "0,0,0", "_D", "0").at(-1)).toBe(
+      "El valor debe ser diferente de cero."
+    )
+  })
+
+  it("reads `@` at the tube from the ring's point, a bare `@` that point itself (primitives/p217, p220)", () => {
+    const cad = console()
+    answer(cad, "_TORUS", "0,0,0", "10", "@0,3")
+    expect(listed(cad).at(-1)).toBe("      Tube radius: 3.0000")
+    expect(written(cad, "_TORUS", "50,0,0", "10", "@").slice(-2)).toEqual([
+      "Specify tube radius or [2Point/Diameter] <3.0000>: @",
+      "Value must be positive and nonzero.",
+    ])
+  })
+
   it("lies in its 3P's plane, turned as they turn (r05's MPDUMP)", () => {
     const cad = console()
     answer(cad, "TORUS", "3P", "0,0,0", "20,0,0", "0,0,20", "2")
@@ -2597,6 +2873,27 @@ describe("TORUS", () => {
     expect(snapped(cad, "_NEA", "20,10,2")).toBe(
       "No found for specified point."
     )
+  })
+
+  it("snaps an apple's and a lemon's poles as Endpoints (primitives/p241, p402)", () => {
+    const cad = console()
+    answer(cad, "_TORUS", "0,0,0", "2", "4", "_TORUS", "50,0,0", "-4", "5")
+    answer(cad, "-VIEW", "_SEISO", "_ZOOM", "_E")
+    expect(snapped(cad, "_END", "0.05,0,3.42")).toEqual({
+      x: 0,
+      y: 0,
+      z: expect.closeTo(3.4641, 4),
+    })
+    expect(snapped(cad, "_END", "0.05,0,-3.42")).toEqual({
+      x: 0,
+      y: 0,
+      z: expect.closeTo(-3.4641, 4),
+    })
+    expect(snapped(cad, "_END", "50.05,0,2.97")).toEqual({
+      x: 50,
+      y: 0,
+      z: expect.closeTo(3, 4),
+    })
   })
 
   it("asks in each language, by its own name and alias (n02, n03)", () => {

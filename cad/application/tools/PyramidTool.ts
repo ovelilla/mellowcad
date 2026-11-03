@@ -193,10 +193,9 @@ export class PyramidTool implements Tool {
       case "edgeFirst":
       case "edgeSecond":
       case "axis":
-        return { refusal: "invalidPoint" }
       case "twoFirst":
       case "twoSecond":
-        return { refusal: "pointOrKeywordRequired" }
+        return { refusal: "invalidPoint" }
       case "radius":
       case "height":
         return {
