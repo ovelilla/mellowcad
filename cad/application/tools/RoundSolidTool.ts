@@ -54,11 +54,7 @@ import {
 } from "./Tool"
 import { currentColor, withCurrentProperties } from "./currentProperties"
 import { pickedHeight, pointAsCursor } from "./heightPick"
-import {
-  SolidDefaults,
-  resetSolidDefaults,
-  solidDefaults,
-} from "./solidDefaults"
+import { SolidDefaults, resetTopRadius, solidDefaults } from "./solidDefaults"
 
 /**
  * The solid CYLINDER makes, or CONE, which asks the same and a top radius;
@@ -197,7 +193,7 @@ export class RoundSolidTool implements Tool {
   }
 
   onNewDrawing(): void {
-    resetSolidDefaults(this.defaults)
+    resetTopRadius(this.defaults)
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {

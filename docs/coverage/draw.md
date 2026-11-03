@@ -1002,7 +1002,10 @@ negative cube or length is twice as long, the box centred on the point (w09, x07
 and width a cube or Length made — their sizes, a negative or doubled one's too (p10, w09) — and the
 last height, with its sign, are offered as `<default>`s and Enter takes them; with none, Enter is
 refused as `FOO` is (p02, p04, p11). They are the primitives' shared ones: WEDGE's length and
-width, and the height of WEDGE, PYRAMID, CYLINDER and CONE (w02, x06, x07). Refusals: `Point or option keyword required.` at every point prompt,
+width, and the height of WEDGE, PYRAMID, CYLINDER and CONE (w02, x06, x07, x01), an Axis endpoint's
+length too (primitives/p156). They are session values, not saved: OPEN keeps every one but CONE's
+and PYRAMID's top radius, `<0.0000>` again (p155, p158), and NEW does as OPEN (the console has
+none, PRIM-D1); U takes none back (p148). Refusals: `Point or option keyword required.` at every point prompt,
 `Requires numeric distance, second point, or option keyword.` at every distance, `Box of zero
 length not permitted.` / `Box of zero width not permitted.` for a corner on the first's X or Y or
 a length of 0, `Value must be nonzero.` for a height of 0 and for 2Point's second point on its
@@ -1058,8 +1061,7 @@ pick is passed over; FILLETEDGE and CHAMFEREDGE round and bevel them, modify.md)
 open polyline, arc, elliptical arc, or open spline expected.  Select a supported object:` (here
 discarded, as a region); LIST of a solid with no primitive (none is made yet; here its History
 lines alone); Solid History's Record History (SOLIDHIST) and Show History; its 3D Visualization's
-Material row; the visual styles VSCURRENT lacks (view.md: Hidden and Conceptual are built); the per-drawing defaults reset on OPEN as
-CIRCLERAD's (**unverified**: no OPEN probe of BOX's); a box turned 180 by its corners runs its edges
+Material row; the visual styles VSCURRENT lacks (view.md: Hidden and Conceptual are built); a box turned 180 by its corners runs its edges
 as p01's mirrored (p123's MPDUMP: the far X's top edge up the Y), here as a box turned, which UCS
 OBject's X on that edge would read. **Unverified**: a Cube by a point from the centre, doubled here
 as Length's (p500); which side a typed width takes with the cursor on the length's line, and Ortho
@@ -1097,8 +1099,7 @@ does is BOX's entry.
 
 Its grips and palette rows are BOX's, the top's arrow over its tall end (g01).
 
-**Missing:** BOX's (the 3D commands, the visual styles VSCURRENT lacks, the per-drawing defaults on OPEN,
-**unverified**).
+**Missing:** BOX's (the 3D commands, the visual styles VSCURRENT lacks).
 
 ### `CYLINDER` / `CYL` · es `CILINDRO` / `CIL` · pt-BR `CILINDRO` / `CIL`
 
@@ -1134,7 +1135,7 @@ no length, or every one after a first of none (c07), `Requires a TAN object-snap
 Circle, Arc, or Line.` at Ttr's FOO and Enter, starred for a point typed without TAN (c03; es
 `Requiere una REFENT TAN y la designación de un círculo, arco o línea.`, pt-BR `Requer um snap ao
 objeto TAN …`, unlike CIRCLE's). The radius (not an ellipse's), the height and Ttr's radius are the
-primitives' shared defaults (x01–x06). It lies in a tilted UCS and at its Z (c09); it wears the
+primitives' shared defaults (x01–x06, primitives/p157), kept over OPEN (BOX's entry). It lies in a tilted UCS and at its Z (c09); it wears the
 current layer and properties; one undo step (u01).
 
 The object, a 3D solid (file version 45), as ACIS makes it (c01's MPDUMP): a vertex on each
@@ -1167,7 +1168,7 @@ plane's Y, its size kept (c12), its other in-plane turns **unverified**.
 **Implemented:** CONE asks CYLINDER's prompts (solid/k01–k07), its height `Specify height or
 [2Point/Axis endpoint/Top radius]:` (es `Indique altura o [2Puntos/punto final Eje/Radio superior]`,
 pt-BR `Especificar altura ou [2Pontos/ponto final Eixo/Raio superior]`). Top radius asks `Specify top
-radius <0.0000>:` — the last top radius, PYRAMID's too (y10) — and the height again without it,
+radius <0.0000>:` — the last top radius, PYRAMID's too (y10), 0 again after OPEN (primitives/p155) — and the height again without it,
 `Specify height or [2Point/Axis endpoint]:`, which still declares Top (k02); a top as wide as the
 base makes a cylinder's face, wider a cone widening up, LIST still `Cone` (k02). Its refusals are
 CYLINDER's, the top radius' `Requires numeric distance, second point, or option keyword.` for FOO
@@ -1233,7 +1234,7 @@ pt-BR `Especificar raio ou [2Pontos/Diâmetro]`, the radius' words). Diameter as
 of torus:`, the tube's `Specify tube diameter:` (es `Precise diámetro de toroide`, `Precise diámetro
 de sección`; pt-BR `Especificar o diâmetro do toroide`, `Especificar diâmetro`), twice the defaults;
 before any tube, once CYLINDER, CONE or SPHERE took a diameter, the tube's offers `<0.0000>`, which
-Enter does not take (r07, r08). 2Point asks `Specify first point:` and `Specify second point:`. 3P
+Enter does not take (r07, r08), still after OPEN (primitives/p158). 2Point asks `Specify first point:` and `Specify second point:`. 3P
 lays the ring in the points' plane, its normal their turn even when that points down, its seam that
 plane's arbitrary axis (r05's MPDUMP); 2P in the first's plane (r07); Ttr as CYLINDER's (r04). A
 point at the tube's prompt measures from the ring's point last given: the radius' point or, typed,
@@ -1283,8 +1284,8 @@ Eixo/Raio superior]`). Sides asks `Enter number of sides <4>:`, 3 to 32 (`Requir
 between 3 and 32.`), and the centre again with no new line (y02, y03). Edge asks `Specify first
 endpoint of edge:` and `Specify second endpoint of edge:`, the base to the edge's left (y02, y06).
 Inscribed and Circumscribed switch how a radius is read — to a corner, or to the middle of a side
-— and ask it again; the sides and the Type are kept for the next PYRAMID and said in its first line
-(y02). A typed radius turns the base towards the cursor, a point towards itself: Circumscribed puts
+— and ask it again; the sides and the Type are kept for the next PYRAMID, over OPEN too
+(primitives/p158), and said in its first line (y02). A typed radius turns the base towards the cursor, a point towards itself: Circumscribed puts
 the middle of a side there, Inscribed a corner (y01: Rotation 22 = the cursor's heading; y02: 56 =
 26 + 30); Enter takes the last radius as the circle its corners lie on, a corner then on the UCS's X
 (y05, v04: Rotation 0 Circumscribed, 45 Inscribed). Top radius asks `Specify top radius <0.0000>:`,

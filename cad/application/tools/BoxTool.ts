@@ -32,11 +32,7 @@ import {
 } from "./Tool"
 import { currentColor, withCurrentProperties } from "./currentProperties"
 import { pickedHeight, pointAsCursor } from "./heightPick"
-import {
-  SolidDefaults,
-  resetSolidDefaults,
-  solidDefaults,
-} from "./solidDefaults"
+import { SolidDefaults, resetTopRadius, solidDefaults } from "./solidDefaults"
 
 /**
  * Where the solid's footprint lies, in the UCS: its centre, the way its
@@ -149,7 +145,7 @@ export class BoxTool implements Tool {
   }
 
   onNewDrawing(): void {
-    resetSolidDefaults(this.defaults)
+    resetTopRadius(this.defaults)
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {

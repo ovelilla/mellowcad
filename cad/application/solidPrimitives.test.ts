@@ -747,6 +747,7 @@ describe("the primitives' defaults", () => {
       "Specify width <6.0000>: 7",
       "Specify height or [2Point] <4.0000>:",
     ])
+    // The height reaches PYRAMID as it does CONE (x01).
     expect(written(cad, "PYRAMID", "100,0,0", "3", "")[4]).toBe(
       "Specify height or [2Point/Axis endpoint/Top radius] <4.0000>:"
     )
@@ -758,6 +759,169 @@ describe("the primitives' defaults", () => {
       "Specify length <20.0000>: 5"
     )
   })
+
+  it("share no length with the radius, and a negative height everywhere (primitives/p156)", () => {
+    const cad = console()
+    answer(cad, "BOX", "0,0,0", "_L", "10", "6", "4")
+    expect(written(cad, "CYLINDER", "50,0,0", "3", "")[2]).toBe(
+      "Specify base radius or [Diameter]: 3"
+    )
+    expect(written(cad, "BOX", "100,0,0", "_L", "7", "7", "")[3]).toBe(
+      "Specify length <10.0000>: 7"
+    )
+    answer(cad, "BOX", "200,0,0", "210,20", "-5")
+    for (const [cmd, ...rest] of [
+      ["CYLINDER", "250,0,0", "3", ""],
+      ["PYRAMID", "300,0,0", "3", ""],
+      ["CONE", "350,0,0", "3", ""],
+      ["WEDGE", "400,0,0", "410,20", ""],
+    ]) {
+      expect(written(cad, cmd, ...rest).at(-1)).toMatch(/<-5\.0000>:$/)
+    }
+    // An Axis endpoint's length is the next height.
+    answer(cad, "PYRAMID", "500,0,0", "3", "_A", "500,0,9")
+    expect(written(cad, "BOX", "600,0,0", "610,20", "").at(-1)).toBe(
+      "Specify height or [2Point] <9.0000>:"
+    )
+  })
+
+  it("take Ttr's radius as the shared radius (primitives/p157)", () => {
+    const cad = console()
+    answer(cad, "LINE", "200,0", "300,0", "", "LINE", "200,0", "200,100", "")
+    answer(cad, "ZOOM", "E")
+    const ttr = ["_T", "_TAN", "250,0", "_TAN", "200,50"]
+    expect(written(cad, "CYLINDER", ...ttr, "7", "5")[4]).toBe(
+      "Specify radius of circle: 7"
+    )
+    expect(written(cad, "SPHERE", "400,0,0", "3")[2]).toBe(
+      "Specify radius or [Diameter] <7.0000>: 3"
+    )
+    expect(written(cad, "TORUS", ...ttr, "4", "1").slice(4)).toEqual([
+      "Specify radius of circle <3.0000>: 4",
+      "Specify tube radius or [2Point/Diameter]: 1",
+    ])
+    expect(written(cad, "CONE", ...ttr, "5", "3").slice(4)).toEqual([
+      "Specify radius of circle <4.0000>: 5",
+      "Specify height or [2Point/Axis endpoint/Top radius] <5.0000>: 3",
+    ])
+    answer(cad, "PYRAMID", "600,0,0", "2", "3")
+    expect(written(cad, "SPHERE", ...ttr, "6")[4]).toBe(
+      "Specify radius of circle <2.8284>: 6"
+    )
+  })
+
+  it("leave the defaults as the undone run set them (primitives/p148)", () => {
+    const cad = console()
+    answer(
+      cad,
+      "BOX",
+      "0,0,0",
+      "10,20",
+      "5",
+      "BOX",
+      "50,0,0",
+      "_L",
+      "12",
+      "7",
+      "9",
+      "_U"
+    )
+    expect(
+      written(cad, "BOX", "100,0,0", "_L", "3", "3", "3").slice(3)
+    ).toEqual([
+      "Specify length <12.0000>: 3",
+      "Specify width <7.0000>: 3",
+      "Specify height or [2Point] <9.0000>: 3",
+    ])
+    answer(cad, "CYLINDER", "150,0,0", "6", "11", "_U")
+    answer(cad, "CYLINDER", "200,0,0", "2", "2", "_U", "_U")
+    expect(
+      written(cad, "BOX", "250,0,0", "_L", "3", "3", "3").slice(3)
+    ).toEqual([
+      "Specify length <3.0000>: 3",
+      "Specify width <3.0000>: 3",
+      "Specify height or [2Point] <2.0000>: 3",
+    ])
+  })
+
+  // NEW too: the console has none, NEW stands for the blank drawing OPEN
+  // brings (PRIM-D1). LUPREC is the drawing's, so it is set again.
+  const RESETS: [string, (cad: CadHarness) => void][] = [
+    ["NEW", (cad) => answer(cad, "_NEW", "LUPREC", "4")],
+    [
+      "OPEN",
+      (cad) => {
+        cad.runtime.loadDrawing(serializeDrawing(snapshotOf([])))
+        answer(cad, "LUPREC", "4")
+      },
+    ],
+  ]
+
+  it.each(RESETS)(
+    "survive %s, all but the top radius (primitives/p155, p158)",
+    (_, reset) => {
+      const cad = console()
+      answer(
+        cad,
+        "BOX",
+        "0,0,0",
+        "_L",
+        "10",
+        "6",
+        "4",
+        "CYLINDER",
+        "50,0,0",
+        "5",
+        "8",
+        "CONE",
+        "80,0,0",
+        "5",
+        "_T",
+        "2",
+        "8",
+        "TORUS",
+        "100,0,0",
+        "5",
+        "1",
+        "PYRAMID",
+        "_S",
+        "6",
+        "120,0,0",
+        "_I",
+        "5",
+        "8"
+      )
+      reset(cad)
+      expect(
+        written(cad, "BOX", "0,0,0", "_L", "3", "3", "3").slice(3)
+      ).toEqual([
+        "Specify length <10.0000>: 3",
+        "Specify width <6.0000>: 3",
+        "Specify height or [2Point] <8.0000>: 3",
+      ])
+      expect(written(cad, "CONE", "80,0,0", "3", "_T", "1", "3")[4]).toBe(
+        "Specify top radius <0.0000>: 1"
+      )
+      expect(written(cad, "TORUS", "100,0,0", "3", "0.5")[3]).toBe(
+        "Specify tube radius or [2Point/Diameter] <1.0000>: 0.5"
+      )
+      expect(written(cad, "PYRAMID", "120,0,0", "3", "3")[1]).toBe(
+        " 6 sides  Inscribed"
+      )
+    }
+  )
+
+  it.each(RESETS)(
+    "keep TORUS's tube diameter offer after a diameter over %s (primitives/p158)",
+    (_, reset) => {
+      const cad = console()
+      answer(cad, "CYLINDER", "50,0,0", "_D", "6", "4")
+      reset(cad)
+      expect(written(cad, "TORUS", "150,0,0", "5", "_D", "2")[4]).toBe(
+        "Specify tube diameter <0.0000>: 2"
+      )
+    }
+  )
 })
 
 /** Where a LINE starts snapped by `mode` at `at`, or the refusal it met. */

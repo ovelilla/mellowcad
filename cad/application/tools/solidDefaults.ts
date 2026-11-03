@@ -6,7 +6,8 @@
  * its base is inscribed in (x01: `<9.8995>` after a circumscribed 7); CONE and
  * PYRAMID a top radius, 0 at first; TORUS a tube radius (r02). A length or a
  * width is the size made, a negative one's or a doubled one's too (p10, w09).
- * Per drawing and not saved, as CIRCLERAD is (**unverified**: no OPEN probe).
+ * Session values, not saved: they survive OPEN, and NEW as OPEN (PRIM-D1),
+ * but the top radius (primitives/p155, p158); U takes none back (p148).
  */
 export interface SolidDefaults {
   length: number | null
@@ -39,7 +40,7 @@ export function solidDefaults(): SolidDefaults {
   }
 }
 
-/** Back to a new drawing's: what each tool's `onNewDrawing` does. */
-export function resetSolidDefaults(defaults: SolidDefaults): void {
-  Object.assign(defaults, solidDefaults())
+/** What each tool's `onNewDrawing` does: OPEN offers `<0.0000>` again (p155). */
+export function resetTopRadius(defaults: SolidDefaults): void {
+  defaults.topRadius = 0
 }

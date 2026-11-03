@@ -28,11 +28,7 @@ import {
 } from "./Tool"
 import { currentColor, withCurrentProperties } from "./currentProperties"
 import { pickedHeight, pointAsCursor } from "./heightPick"
-import {
-  SolidDefaults,
-  resetSolidDefaults,
-  solidDefaults,
-} from "./solidDefaults"
+import { SolidDefaults, resetTopRadius, solidDefaults } from "./solidDefaults"
 
 const MIN_SIDES = 3
 const MAX_SIDES = 32
@@ -118,7 +114,7 @@ export class PyramidTool implements Tool {
   }
 
   onNewDrawing(): void {
-    resetSolidDefaults(this.defaults)
+    resetTopRadius(this.defaults)
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
