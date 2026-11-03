@@ -2775,6 +2775,7 @@ export const ptBR: EngineLocale = {
       "dimStyleRedefine": "tight",
       "mredoCount": "tight",
       "presspullOffsetOr": "tight",
+      "presspullSelect": "tight",
       "selectDimensionsToSpace": "tight",
       "selectGripToEditPathArrayOr": "tight",
       "selectPolylineOr": "tight",

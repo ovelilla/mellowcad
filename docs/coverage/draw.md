@@ -1632,29 +1632,32 @@ palette's rows under Solid type (**unverified**: no desktop pass).
 solid (`PRESSPULL (Command)`, `To Work With Pressing or Pulling Bounded Areas or Objects`, `To Work
 with Pressing or Pulling 3D Solid Faces`), worded by 2027's tables (31244, 53916, 67, 292, 26301,
 55300, 11379): `Select object or bounded area:` (es `Seleccione un objeto o un área delimitada`,
-pt-BR `Selecione o objeto ou área delimitada`) until Enter — a click on a circle, an ellipse, a
-closed polyline or spline or a region, or inside an area the objects in plan bound (HATCH's
-boundary, its islands holes), extruded into a solid along its normal (the UCS's Z for an area), of
-the current layer and properties, its objects kept, `Specify extrusion height or [Multiple]:` (es
-`Precise altura de extrusión o [Múltiple]`, pt-BR `Especifique a altura da extrusão ou
-[Múltiplos]`); a click on a planar face of a solid, the one nearest the viewer under it (after a
-closed object, before an area), extrudes the face, its neighbours left as they were, the same
-prompt then `1 extrusion(s) created`; Ctrl+click offsets the face, its neighbours carried on to
-meet it, `Specify offset distance or [Multiple]:` with the answer against the colon (es
-`Especifique la distancia de desfase o [Múltiple]:`, pt-BR `Especifique a distância de
-deslocamento ou [Múltiplos]:`), then `1 face(s) offset` (desktop, a box seen from (-1.3, -2.2,
-1.6)). A face's height is how far along its outward normal the cursor stands where that normal is
-drawn, or typed, negative pressing in; extruded, the face's prism is added or taken out
-(solidedit/e01: a box's top to 1200 or 700; e02: beside a slope it rises square, a new side, 950);
-offset, sloping planes beside it run on (e02: 960, six faces) and a cylinder or an extrusion
-square to it grows (e03: 1021.0176; a drilled box's top pressed 3, 612.0354), the kernel's
-(`geometry/solidEdits.ts`). Ctrl held lights the face a click would take; the faces taken glow as
-selected, the whole solid for an offset. The solid keeps its object and loses what made it (LIST:
-`History = None`, no Solid type). Multiple, at either prompt, takes several clicks before one
-height, several faces of one solid among them. A typed point says `Click a face, curve, or inside a
-bounded area` (presspull/p01, the console's answer to every point), FOO `2D point or option keyword
-required.`. The solid an object or an area makes is EXTRUDE's (`Solid type = Extrusion`). The whole
-run is one undo step, `PRESSPULL` (desktop).
+pt-BR `Selecione o objeto ou área delimitada`), its answer against the colon in each language
+(presspull/p01, sweeps/p263), until Enter — a click on a circle, an ellipse, a closed polyline or
+spline or a region, or inside an area the objects in plan bound (HATCH's boundary, its islands
+holes), extruded into a solid along its normal (the UCS's Z for an area), of the current layer and
+properties, its objects kept, after `Specify extrusion height or [Multiple]:` (es `Precise altura
+de extrusión o [Múltiple]`, pt-BR `Especifique a altura da extrusão ou [Múltiplos]`), then
+`1 extrusion(s) created` (sweeps/p164, p160: the object kept, `(sslength (ssget "X"))` 2); a click on
+a planar face of a solid, the one nearest the viewer under it (after a closed object, before an
+area), extrudes the face, its neighbours left as they were, the same prompt then `1 extrusion(s)
+created`; Ctrl+click offsets the face, its neighbours carried on to meet it, `Specify offset
+distance or [Multiple]:` with the answer against the colon (es `Especifique la distancia de desfase
+o [Múltiple]:`, pt-BR `Especifique a distância de deslocamento ou [Múltiplos]:`), then `1 face(s)
+offset` (desktop, a box seen from (-1.3, -2.2, 1.6)). A face's height is how far along its outward
+normal the cursor stands where that normal is drawn, or typed, negative pressing in; extruded, the
+face's prism is added or taken out (solidedit/e01: a box's top to 1200 or 700; e02: beside a slope
+it rises square, a new side, 950); offset, sloping planes beside it run on (e02: 960, six faces)
+and a cylinder or an extrusion square to it grows (e03: 1021.0176; a drilled box's top pressed 3,
+612.0354), the kernel's (`geometry/solidEdits.ts`). Ctrl held lights the face a click would take;
+the faces taken glow as selected, the whole solid for an offset. The solid keeps its object and
+loses what made it (LIST: `History = None`, no Solid type). Multiple, at either prompt, takes
+several clicks before one height, several faces of one solid among them, and is taken again
+(sweeps/p262); Enter after it with nothing taken asks again (sweeps/p257). FOO says `2D point or
+option keyword required.`. The solid an object or an area makes is EXTRUDE's (`Solid type =
+Extrusion`). The whole run is one undo step, `PRESSPULL` (desktop); U after a run that made nothing
+names it too (sweeps/p260). A preselection is dropped (sweeps/p261); `'PRESSPULL` is refused
+transparently (sweeps/p256) and `'ZOOM` runs at its prompt (sweeps/p259).
 
 **Missing:** a curved face, which AutoCAD offsets too (refused here as no face: `Click a face,
 curve, or inside a bounded area`); an offset whose neighbours are cones, spheres, tori or
@@ -1664,9 +1667,14 @@ across it), each leaving the solid as it was, where AutoCAD's message is
 **unverified**; Ctrl+Shift+E, IMPLIEDFACE and an imprinted face's area (no IMPRINT here); an open
 object, which it extrudes into a surface (no surface object here); the drag's live preview of the
 united solid (here a face's prism, or the solid an object makes) and the hover highlight of an
-area or a face without Ctrl; whether a closed object pulled says `%d extrusion(s) created` (seen
-after a face) and is kept or erased, and what an area bounded off the UCS's plane does
-(**unverified**: no desktop pass of objects).
+area or a face without Ctrl. **Unverified** until the desktop (SWEEPS-D91): a typed point says
+`Click a face, curve, or inside a bounded area` and a bare number `2D point or option keyword
+required.`, where the console reads a typed point as an offset from its fixed cursor and pulls
+what it lands on (sweeps/p126, p158, p159, p164: `57,14.9` pulled the rectangle at 5,5; a `7`,
+p127, p160), and a failed pick after Multiple says `Click a face…` where the console says nothing
+(p258, from the same cursor); a run of Multiple taking an object and a face says one line of the
+total (`2 extrusion(s) created`), no probe mixing them; and what an area bounded off the UCS's
+plane does (no desktop pass of objects).
 
 ### `SECTION` / `SEC` · es `SECCION` / `SC` · pt-BR `CORTE` / `SECAO`
 

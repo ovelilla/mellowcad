@@ -1863,6 +1863,7 @@
   "commands.answerForms.dimStyleRedefine": "tight",
   "commands.answerForms.mredoCount": "spaced",
   "commands.answerForms.presspullOffsetOr": "tight",
+  "commands.answerForms.presspullSelect": "tight",
   "commands.answerForms.selectDimensionsToSpace": "tight",
   "commands.answerForms.selectGripToEditPathArrayOr": "spaced",
   "commands.answerForms.selectPolylineOr": "spaced",

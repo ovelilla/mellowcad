@@ -1777,14 +1777,15 @@ describe("PRESSPULL", () => {
     answer(cad, "RECTANG", "0,0", "100,60", "CIRCLE", "50,30", "10")
     expect(written(cad, "PRESSPULL", "FOO", "5,5")).toEqual([
       "PRESSPULL",
-      "Select object or bounded area: FOO",
+      "Select object or bounded area:FOO",
       "2D point or option keyword required.",
-      "Select object or bounded area: 5,5",
+      "Select object or bounded area:5,5",
       "Click a face, curve, or inside a bounded area",
     ])
     cad.click({ x: 10, y: 10 })
     expect(written(cad, "20")).toEqual([
       "Specify extrusion height or [Multiple]: 20",
+      "1 extrusion(s) created",
     ])
     const solid = last(cad)
     expect(brepIsClosed(solid.brep)).toBe(true)
@@ -1902,8 +1903,172 @@ describe("PRESSPULL", () => {
     answer(cad, "CIRCLE", "0,0", "5", "CIRCLE", "50,0", "5", "PRESSPULL", "_M")
     cad.click({ x: 0, y: 0 })
     cad.click({ x: 50, y: 0 })
-    answer(cad, "", "3", "")
+    expect(written(cad, "", "3", "")).toEqual([
+      "Select object or bounded area:",
+      "Specify extrusion height or [Multiple]: 3",
+      "2 extrusion(s) created",
+      "Select object or bounded area:",
+    ])
     expect(solids(cad)).toHaveLength(2)
-    expect(solids(cad).every((s) => brepVolume(s.brep) > 235)).toBe(true)
+    for (const solid of solids(cad)) {
+      expect(brepVolume(solid.brep)).toBeCloseTo(75 * Math.PI, 9)
+    }
+  })
+})
+
+describe("PRESSPULL's console cells (the Sweeps review)", () => {
+  function rectangle(locale?: typeof es): CadHarness {
+    const cad = console(locale)
+    answer(cad, "RECTANG", "0,0", "10,10")
+    return cad
+  }
+
+  it("asks again at Enter after Multiple with nothing taken (PPL-01; p257)", () => {
+    const cad = rectangle()
+    expect(written(cad, "PRESSPULL", "_M", "")).toEqual([
+      "PRESSPULL",
+      "Select object or bounded area:_M",
+      "Select object or bounded area:",
+    ])
+    expect(cad.activeToolId()).toBe("presspull")
+    // Still Multiple: a pick waits for Enter before the height.
+    cad.click({ x: 5, y: 5 })
+    expect(written(cad, "", "2", "")).toEqual([
+      "Select object or bounded area:",
+      "Specify extrusion height or [Multiple]: 2",
+      "1 extrusion(s) created",
+      "Select object or bounded area:",
+    ])
+    expect(cad.activeToolId()).toBe("select")
+    const es_ = rectangle(es)
+    expect(written(es_, "PRESIONARTIRAR", "_M", "").slice(1)).toEqual([
+      "Seleccione un objeto o un área delimitada:_M",
+      "Seleccione un objeto o un área delimitada:",
+    ])
+    expect(es_.activeToolId()).toBe("presspull")
+    const pt = rectangle(ptBR)
+    expect(written(pt, "PRESSIONARPUXAR", "_M", "").slice(1)).toEqual([
+      "Selecione o objeto ou área delimitada:_M",
+      "Selecione o objeto ou área delimitada:",
+    ])
+    expect(pt.activeToolId()).toBe("presspull")
+  })
+
+  it("writes the pick's answer against the colon (PPL-04; presspull/p01, p263)", () => {
+    expect(written(rectangle(), "PRESSPULL", "FOO", "_M", "_M")).toEqual([
+      "PRESSPULL",
+      "Select object or bounded area:FOO",
+      "2D point or option keyword required.",
+      "Select object or bounded area:_M",
+      "Select object or bounded area:_M",
+    ])
+    expect(written(rectangle(es), "PRESIONARTIRAR", "FOO")).toEqual([
+      "PRESIONARTIRAR",
+      "Seleccione un objeto o un área delimitada:FOO",
+      "Se requiere un punto 2D o una opción.",
+    ])
+    expect(written(rectangle(ptBR), "PRESSIONARPUXAR", "FOO")).toEqual([
+      "PRESSIONARPUXAR",
+      "Selecione o objeto ou área delimitada:FOO",
+      "Ponto 2D ou opção necessário.",
+    ])
+  })
+
+  it("says a closed object pulled, keeping it (PPL-06; p164)", () => {
+    const cad = rectangle()
+    answer(cad, "PRESSPULL")
+    cad.click({ x: 0, y: 5 })
+    expect(written(cad, "5", "")).toEqual([
+      "Specify extrusion height or [Multiple]: 5",
+      "1 extrusion(s) created",
+      "Select object or bounded area:",
+    ])
+    // (sslength (ssget "X")) 2: the rectangle and the solid.
+    expect(cad.entities().map((e) => e.type)).toEqual(["polyline", "solid3d"])
+  })
+
+  it("says an area pulled (PPL-06; p160)", () => {
+    const cad = console()
+    answer(cad, "LINE", "0,0", "10,0", "10,10", "0,10", "_C", "PRESSPULL")
+    cad.click({ x: 5, y: 5 })
+    expect(written(cad, "5")).toEqual([
+      "Specify extrusion height or [Multiple]: 5",
+      "1 extrusion(s) created",
+    ])
+    expect(brepVolume(last(cad).brep)).toBeCloseTo(500, 9)
+  })
+
+  it("says one total for an object and a face taken with Multiple (PPL-06, unverified)", () => {
+    const cad = console()
+    answer(cad, "BOX", "0,0,0", "10,10", "10", "CIRCLE", "50,0", "5")
+    answer(cad, "PRESSPULL", "_M")
+    cad.click({ x: 5, y: 5 })
+    cad.click({ x: 50, y: 0 })
+    expect(written(cad, "", "2")).toEqual([
+      "Select object or bounded area:",
+      "Specify extrusion height or [Multiple]: 2",
+      "2 extrusion(s) created",
+    ])
+  })
+
+  it("is named in each language, the es alias echoing the name, and Enter repeats it (p253–p255)", () => {
+    expect(written(console(), "PRESSPULL", "", "", "")).toEqual([
+      "PRESSPULL",
+      "Select object or bounded area:",
+      "PRESSPULL",
+      "Select object or bounded area:",
+    ])
+    expect(
+      written(console(es), "PRESIONARTIRAR", "", "PULSARTIRAR", "")
+    ).toEqual([
+      "PRESIONARTIRAR",
+      "Seleccione un objeto o un área delimitada:",
+      "PULSARTIRAR PRESIONARTIRAR",
+      "Seleccione un objeto o un área delimitada:",
+    ])
+    expect(written(console(ptBR), "PRESSIONARPUXAR", "")).toEqual([
+      "PRESSIONARPUXAR",
+      "Selecione o objeto ou área delimitada:",
+    ])
+  })
+
+  it("'PRESSPULL at LINE's prompt is refused (p256)", () => {
+    const cad = console()
+    expect(written(cad, "LINE", "'_PRESSPULL", "0,0", "10,0", "")).toEqual([
+      "LINE",
+      "Specify first point: 'PRESSPULL",
+      "** That command may not be invoked transparently **",
+      "Invalid point.",
+      "Specify first point: 0,0",
+      "Specify next point or [Undo]: 10,0",
+      "Specify next point or [Undo]:",
+    ])
+  })
+
+  it("'ZOOM E at its prompt, resumed (p259)", () => {
+    const cad = rectangle()
+    answer(cad, "PRESSPULL")
+    const log = written(cad, "'_ZOOM", "_E")
+    expect(log[0]).toBe("Select object or bounded area:'ZOOM")
+    expect(log.at(-1)).toBe("Resuming PRESSPULL command.")
+    expect(cad.activeToolId()).toBe("presspull")
+    expect(written(cad, "")).toEqual(["Select object or bounded area:"])
+  })
+
+  it("U after an empty run takes it back by name, nothing undone (p260)", () => {
+    const cad = rectangle()
+    answer(cad, "PRESSPULL", "")
+    expect(written(cad, "_U")).toEqual(["U", "PRESSPULL"])
+    expect(cad.entities()).toHaveLength(1)
+  })
+
+  it("drops a preselection, none left after (p261)", () => {
+    const cad = rectangle()
+    cad.select(cad.entities()[0].id)
+    answer(cad, "PRESSPULL")
+    expect(cad.selectedIds()).toEqual([])
+    expect(written(cad, "")).toEqual(["Select object or bounded area:"])
+    expect(cad.selectedIds()).toEqual([])
+    expect(solids(cad)).toHaveLength(0)
   })
 })

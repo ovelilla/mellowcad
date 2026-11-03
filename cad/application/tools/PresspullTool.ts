@@ -80,10 +80,12 @@ const PREVIEW_ID = "presspull-preview"
  * a solid it extrudes the face, its neighbours left as they were, and with
  * Ctrl held offsets it, its neighbours carried on to meet it (its help;
  * desktop: `Specify offset distance or [Multiple]:`, then `1 face(s)
- * offset`; the plain click's `1 extrusion(s) created`). Multiple, at either
- * prompt, takes several clicks before one height. A point typed where it
- * asks for a click says `Click a face, curve, or inside a bounded area`
- * (presspull/p01: the console, which cannot click, says it for every point).
+ * offset`; the plain click's, an object's or an area's `1 extrusion(s)
+ * created`, sweeps/p164). Multiple, at either prompt, takes several clicks
+ * before one height. A point typed where it asks for a click says `Click a
+ * face, curve, or inside a bounded area` (presspull/p01; **unverified**: the
+ * console reads a typed point from its fixed cursor, sweeps/p126, p158, p164,
+ * so the desktop decides, SWEEPS-D91).
  *
  * WHY no open object: it extrudes into a surface, which has no object here.
  */
@@ -143,13 +145,17 @@ export class PresspullTool implements Tool {
     return "continue"
   }
 
-  /** Enter ends the command, or Multiple's picks for their height. */
+  /**
+   * Enter ends the command, or Multiple's picks for their height; after
+   * Multiple with nothing taken it asks again (sweeps/p257).
+   */
   onEnter(ctx: ToolContext): boolean {
-    if (this.state.phase === "pick" && this.picks.length > 0) {
+    if (this.state.phase !== "pick") return false
+    if (this.picks.length > 0) {
       this.askHeight(ctx)
       return true
     }
-    return false
+    return this.state.multiple
   }
 
   wantsSnap(): boolean {
@@ -419,17 +425,22 @@ export class PresspullTool implements Tool {
     const offset = this.offsets()
     const added = this.made(height, ctx, true)
     const changed = this.changed(height, ctx)
-    const faces = this.picks.filter((p) => p.kind === "face").length
+    const faces =
+      changed.length > 0
+        ? this.picks.filter((p) => p.kind === "face").length
+        : 0
     this.picks = []
     this.state = { phase: "pick", multiple: false }
     if (added.length > 0) ctx.execute(new AddEntitiesCommand(added))
-    if (changed.length > 0) {
-      ctx.execute(new UpdateEntitiesCommand(changed))
-      ctx.report(
-        ctx.text.message(offset ? "presspullOffset" : "presspullExtruded", {
-          count: faces,
-        })
-      )
+    if (changed.length > 0) ctx.execute(new UpdateEntitiesCommand(changed))
+    if (offset && faces > 0) {
+      ctx.report(ctx.text.message("presspullOffset", { count: faces }))
+    }
+    // An object or area pulled is counted as a face is (sweeps/p164, p160);
+    // with Multiple, one line of the total (unverified: no probe mixes them).
+    const extrusions = added.length + (offset ? 0 : faces)
+    if (extrusions > 0) {
+      ctx.report(ctx.text.message("presspullExtruded", { count: extrusions }))
     }
     // It asks again until Enter (its help: "The command repeats").
     this.openPick(ctx)

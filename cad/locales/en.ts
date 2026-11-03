@@ -2129,6 +2129,7 @@ export const en: EngineCatalog = {
       "dimStyleRedefine": "tight",
       "mredoCount": "spaced",
       "presspullOffsetOr": "tight",
+      "presspullSelect": "tight",
       "selectDimensionsToSpace": "tight",
       "selectGripToEditPathArrayOr": "spaced",
       "selectPolylineOr": "spaced",

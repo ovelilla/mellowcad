@@ -2763,6 +2763,7 @@ export const es: EngineLocale = {
       "dimStyleRedefine": "tight",
       "mredoCount": "spaced",
       "presspullOffsetOr": "tight",
+      "presspullSelect": "tight",
       "selectDimensionsToSpace": "tight",
       "selectGripToEditPathArrayOr": "spaced",
       "selectPolylineOr": "spaced",

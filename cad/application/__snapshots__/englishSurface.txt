@@ -5168,9 +5168,9 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   tip: Select object or bounded area:
   dyn: "X,Y"=""||*
   command| PRESSPULL
-  prompt| Select object or bounded area: FOO
+  prompt| Select object or bounded area:FOO
   error| 2D point or option keyword required.
-  prompt| Select object or bounded area: 5,5
+  prompt| Select object or bounded area:5,5
   error| Click a face, curve, or inside a bounded area
 > click inside
   prompt: PRESSPULL Specify extrusion height or [Multiple]:
@@ -5195,6 +5195,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: -
   prompt| Select object or bounded area:
   prompt| Specify extrusion height or [Multiple]: 30
+  info| 2 extrusion(s) created
   prompt| Select object or bounded area:
 > a face, offset
   prompt: PRESSPULL Select object or bounded area:

@@ -2164,6 +2164,7 @@ declare const source: {
       "dimStyleRedefine": string
       "mredoCount": string
       "presspullOffsetOr": string
+      "presspullSelect": string
       "selectDimensionsToSpace": string
       "selectGripToEditPathArrayOr": string
       "selectPolylineOr": string
