@@ -1,8 +1,8 @@
 # Regions review (REGION, UNION, SUBTRACT, INTERSECT)
 
 > **Status:** group 1 executed, 2026-11-03: the console blocks RGN, BLN, BSL and RGO, one commit
-> each (§1, Execution). Group 2, the desktop block RGD (§12), needs the owner's mouse in a session of
-> its own; once it lands, the plan shrinks to its summary and index.
+> each (§1, Execution). Group 2, the desktop block RGD, probed the same day (§12); its execution
+> follows, then the plan shrinks to its summary and index.
 >
 > This review owns the region object (loops, plane, drawing, picking, snaps, grips, palette rows,
 > transforms, EXPLODE, file) and the booleans of regions and solids. It cites:
@@ -15,7 +15,7 @@
 
 ## 1. Summary
 
-**Findings:** 0 critical, 3 high, 14 medium, 10 low.
+**Findings:** 0 critical, 3 high, 16 medium, 13 low.
 
 | Block | What                                                 | Critical | High | Medium | Low |
 | ----- | ---------------------------------------------------- | -------- | ---- | ------ | --- |
@@ -23,6 +23,7 @@
 | BLN   | UNION, SUBTRACT, INTERSECT: the commands and regions | 0        | 2    | 4      | 2   |
 | BSL   | the booleans of solids                               | 0        | 0    | 1      | 3   |
 | RGO   | the region object in other commands                  | 0        | 0    | 5      | 2   |
+| RGD   | the desktop: grips, palette, look                    | 0        | 0    | 2      | 3   |
 
 The worst:
 
@@ -652,6 +653,98 @@ Group 2, the desktop, a session of its own with the owner's mouse, block **RGD**
   region.
 - **d05:** BSL-03's composite in 2D Wireframe; a hatched region.
 - The browser's look against the PNGs, by one subagent (template §4.8).
+
+### Group 2: RGD, the desktop (2026-11-03)
+
+AutoCAD 2027 desktop, es-ES profile (DYNMODE −1, OSMODE 4133, both left as found). The probes are
+`scripts/research/probes/regions/d01.sh`–`d06.sh` (helpers `lib.sh`, from primitives'); the shots
+and histories are in `research/probes/regions/desk/`. The harness side is
+`research/review/regions/d/rgd.test.ts`.
+
+| Probe | What it asks                                                                                           | Answer                                                                                                                                        |
+| ----- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| d01   | REGIONS-D71 through COM: a preselection, then REGION, UNION and SUBTRACT; MOVE first as the control    | MOVE takes it (moved 0,1); the three ask `Designe objetos:` and drop it (0 regions, nothing united); typed with grips, they go (d01-1, d01-2) |
+| d02   | SUBTRACT's sets typed: the first's highlight at the second prompt; Escape at each set                  | the first set unhighlighted, the second highlighted (d02-1, d02-2); Escape at either, `*Cancelado*`, nothing done                            |
+| d03   | a composite (BOX and CYLINDER united): grips in plan, SE iso, Front, turned; the palette                | one grip at the WCS box's X-Y centre and lowest Z (19,10,0; d03-1–3, d03-6–7), `**ESTIRAR**` moves it whole (d03-5); palette d03-4           |
+| d04   | MATCHPROP onto and from a region (by handle); the rollover on a region's edge                          | layer, colour, lineweight both ways; a line's thickness 3 kept under a region's; the whole region glows, tip Región/Color/Capa/Tipo de línea |
+| d05   | BSL-03's composite in 2D Wireframe, SE iso; -HATCH ANSI31 of a region by Select objects                 | the contact line is drawn (the cylinder's lowest isoline); the hatch fills the region, one loop                                               |
+| d06   | a rectangle's and a circle's regions gripped                                                           | the corners' and the centre's grips, the blue glow                                                                                           |
+
+Matrix, the desktop's cells (each against the harness's scratch test):
+
+- REGIONS-D71 holds: RGN-01 and BLN-01 stay (d01). REGION's, UNION's and INTERSECT's Escape is the
+  shared `Select objects:`'s (ERASE review), SUBTRACT's d02-4: match.
+- SUBTRACT's highlights and Escape: match (`ctx.selection.clear()` at the second set).
+- A composite's palette: match (General, Solid History; 3D Visualization's Material known).
+- A composite's grip: differs, RGD-01.
+- MATCHPROP onto and from a region, the thickness kept: match (`hasThickness`).
+- The rollover and its tip on a region: match (`Region`, the glow).
+- BSL-03 in 2D Wireframe: the contact line is drawn (an isoline here). The isolines' count
+  differs, RGD-02.
+- The browser against the shots (subagent B, `/es/draw`): d01, d02, d03-1, d04-2, d05-2 and d06
+  match; RGD-02 to RGD-05 below.
+
+#### RGD-01 — A composite solid shows no grip; AutoCAD shows one, which moves it
+
+- **Severity:** medium · **Row:** I · **Status:** verified
+- **Where:** `cad/application/tools/selectToolGrips.ts:332-345` (`solid3d`: none without a primitive).
+- **AutoCAD:** regions/d03 (es-ES desktop): a BOX united with a CYLINDER, selected, shows one grip
+  at its bounding box's X-Y centre and lowest Z (19,10,0 of 0,0,0–38,20,10), turned too (d03-6,
+  d03-7); a click on it is `**ESTIRAR**`, `@10,0` moves the solid whole (box 10,0,0–48,20,10).
+- **mellowcad:** scratch `d/rgd.test.ts`: no grip.
+- **Scenario:** a user selects a united solid to drag it by its grip → nothing to grab → AutoCAD
+  moves it by its one grip.
+- **Fix:** a composite (no primitive, no sweep) gets one move grip at `brepBox`'s bottom centre
+  (REGIONS-D78). **Alternative:** none.
+- **Regression test:** `cad/application/solidGrips.test.ts`: one grip, `@10,0` moves it (d03).
+- **Coverage, rules or catalogs affected:** modify.md UNION's Implemented and Missing.
+
+#### RGD-02 — A composite's curved face cut by a boolean draws its isolines otherwise
+
+- **Severity:** medium · **Row:** O (render) · **Status:** verified for d03; the rule unknown
+- **Where:** `cad/geometry/faceDomains.ts:239` (`turnIsolines`: every `2π / count` from the
+  range's start, from REVOLVE's r03 and EXTRUDE's x09).
+- **AutoCAD:** d03-3 (Front): the half cylinder outside the box, ISOLINES 4, draws four rulings
+  at θ ±18° and ±54°, the range spread in five. d05-1: the cylinder lying on the box, whose side
+  is one face (p348's F10), draws about eight.
+- **mellowcad:** scratch `d/rgd.test.ts`: one ruling at θ 0 (d03); four (d05).
+- **Fix:** none here (REGIONS-D79). **Regression test:** none yet.
+- **Coverage, rules or catalogs affected:** modify.md UNION's Missing.
+
+#### RGD-03 — One object selected names its type with `(1)` in the palette's drop-down
+
+- **Severity:** low · **Row:** I · **Status:** verified
+- **Where:** `cad/application/runtimeProperties.ts:580-590`.
+- **AutoCAD:** d03-4: `Sólido 3D`. **mellowcad:** `Sólido 3D (1)`, `Región (1)` (subagent B).
+- **Fix:** one object alone, the type without its count; several of one type keep it
+  (properties.md). **Regression test:** `runtimeProperties` or the palette's test (d03-4).
+
+#### RGD-04 — The command line's placeholder shows while a command asks
+
+- **Severity:** low · **Row:** L · **Status:** verified
+- **Where:** `packages/editor/src/command-line.tsx:88`.
+- **AutoCAD:** d01-2, d02-1: an empty field after `REGION Designe objetos:`; `Escriba un
+  comando` only at `Command:` (d01-1). **mellowcad:** the placeholder after the prompt.
+- **Fix:** the placeholder only when no command runs (`commandLine.command` null).
+
+#### RGD-05 — The rollover glow covers the object's colour
+
+- **Severity:** low · **Row:** O (render) · **Status:** verified
+- **AutoCAD:** d04-1: the red region keeps its red under a grey halo. **mellowcad:** a 2 px
+  `THEME.entityHover` stroke over it (every object; the area is ERASE's, `Select objects:`).
+- **Fix:** none here (REGIONS-D80).
+
+Decisions:
+
+- **REGIONS-D79:** RGD-02 goes to UNION's Missing with d03 and d05. Two cases give no rule (the
+  spread of d03 would draw four in d05, not eight), and the console draws nothing: it needs a
+  desktop series through COM and shots alone (faces of 90°, 180°, 270° and a seamed turn, at
+  ISOLINES 4 and 6).
+- **REGIONS-D80:** RGD-05 goes to command-line.md's Missing: the glow is every object's, drawn
+  as ERASE's review designed it, and a halo under the object is a presenter change of its own.
+- **REGIONS-D78:** the grip goes on a solid with neither a primitive nor a sweep: d03 probed a
+  union. A swept solid's grips are EXTRUDE's (review 28). Its box is the frame's: d03 ran in the
+  WCS, and a turned UCS is unprobed (noted in Missing).
 
 ## 13. Changes the execution makes
 
