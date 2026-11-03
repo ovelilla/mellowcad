@@ -269,6 +269,21 @@ export class BoxTool implements Tool {
     return "unhandled"
   }
 
+  /**
+   * The centre and 2Point's points set LASTPOINT, though their refusal is
+   * the command's (primitives/p341, p342).
+   */
+  setsLastPoint(): boolean | null {
+    switch (this.state.phase) {
+      case "center":
+      case "twoFirst":
+      case "twoSecond":
+        return true
+      default:
+        return null
+    }
+  }
+
   wantsSnap(): boolean {
     return true
   }
@@ -603,6 +618,9 @@ export class BoxTool implements Tool {
 
   private askHeight(footprint: Footprint, from: Vec3, ctx: ToolContext): void {
     this.state = { phase: "height", footprint, from, cursor: from }
+    // The height prompt's base is LASTPOINT: after Length the far corner,
+    // from the centre at its Z (primitives/p341, p356, p500).
+    ctx.setLastPoint(from)
     this.rise = 0
     this.openDistance(ctx, this.defaults.height)
     ctx.requestRender()

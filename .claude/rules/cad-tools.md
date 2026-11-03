@@ -293,10 +293,10 @@ returns `true`; `false` ends the command.
 - **LASTPOINT is the runtime's, never a tool's.** A typed first point passes `lastPoint:
 ctx.lastPoint` with `relativeByDefault: false`; one with a base passes `base ?? ctx.lastPoint`.
   The runtime sets it after every answer whose question takes a point; a question the console shows
-  keeping it, or setting it though its refusal is its own, says so with `setsLastPoint()` — check
-  with `ID @` after the command in the console. A tool moves it with no point given, or keeps it
-  at its own refusal, only through `ctx.setLastPoint`, which wins. UCS puts it at the WCS's origin
-  as it starts (`UcsTool.onActivate`).
+  keeping it, or setting it despite its own refusal, says so with `setsLastPoint()` (`ID @` tells).
+  A tool moves it with no point given (UCS's start: the WCS's origin; a prompt opening on a base: a
+  solid's height, TORUS's tube, primitives/p349), or keeps it at its own refusal, only through
+  `ctx.setLastPoint`, which wins.
 - **A point has a Z; keep it.** `input.point` and `parseCoordinate` give a `Vec3`. A point computed
   in the plane from another (`V.add(start, dir * length)`) keeps the base's Z: `withZOf(point,
 base)`, because every `V` helper returns a `Vec2`. Type a state field that feeds `lastPoint` or a

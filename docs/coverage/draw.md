@@ -1012,7 +1012,9 @@ a length of 0, `Value must be nonzero.` for a height of 0 and for 2Point's secon
 first, which is asked again (p05, p06, p12; es `No puede ser un Prisma de longitud cero.`, `No
 puede ser un valor igual a cero.`; pt-BR `Não é permitido uma Caixa de comprimento zero.`). It lies
 in a tilted UCS and at its Z or ELEVATION (p07); it wears the current layer and properties; one
-undo step (p08).
+undo step (p08). LASTPOINT is the height prompt's base, the other corner or, after Length, the far
+one (from the centre at its Z); after a Cube the first corner or the centre, after 2Point its
+second point (primitives/p341, p349, p356, p500).
 
 The object, a 3D solid (file version 43): a B-rep, the kernel's (`geometry/solids.ts`) — vertices,
 edges with their curve, faces with their surface and loops of coedges, every edge in two faces run
@@ -1087,7 +1089,7 @@ cero.`, pt-BR `Não é permitido uma Cunha de comprimento zero.`, `Não é permi
 largura zero.`), and Enter at a width with no default says the latter where BOX's says `Requires
 numeric distance, second point, or option keyword.` (w04). Its length, width and height are BOX's
 shared defaults (w02, x07). It lies in a tilted UCS and at its Z or ELEVATION (w05); it wears the
-current layer and properties; one undo step.
+current layer and properties; one undo step; LASTPOINT as BOX's (primitives/p342, p356).
 
 The object is a 3D solid (file version 44) of 6 vertices, 9 edges and 5 faces, built as ACIS
 builds it: the end triangle swept along the width, its edges in ACIS's order and sense (w01's
@@ -1145,7 +1147,9 @@ bare number from the base toward the cursor (p221, p222); a radius point off the
 gives its distance in space (p242); Ttr takes a circle and an arc (p225); Ortho leaves a typed
 point and bends a bare number (p228). It lies in a tilted UCS and at its Z, ELEVATION too (c09,
 p243); it wears the current layer and properties, those set mid-command as it ends, ELEVATION as
-the centre is given (p234, p235); one undo step (u01).
+the centre is given (p234, p235); one undo step (u01). LASTPOINT is the centre given, the base's
+centre after 3P, 2P, Ttr and Elliptical, Axis endpoint's point, 2Point's second; a radius,
+diameter or height, typed or a point, leaves it (primitives/p343–p345, p353).
 
 The object, a 3D solid (file version 45), as ACIS makes it (c01's MPDUMP): a vertex on each
 circle, at its seam; the base's circle or ellipse run about the base's outward normal, the top's
@@ -1187,7 +1191,7 @@ CYLINDER's, Center refused at the height (primitives/p206), the top radius' `Req
 distance, second point, or option keyword.` for FOO (PYRAMID's has no keyword) and `Value must be
 positive.` below 0 (k04); 3P's and 2P's points refuse Enter (p238). An elliptical cone's top
 is its base shrunk to the top radius given as its major (k03). It lies in a tilted UCS and at its Z
-(k05); one undo step (u01).
+(k05); one undo step (u01); LASTPOINT as CYLINDER's, which a top radius leaves (primitives/p346).
 
 The object, a 3D solid (file version 45): the base's circle or ellipse and, at the apex, an edge of
 no length at one vertex, the cone's face's second loop (k01's MPDUMP: ACIS's degenerate edge), or a
@@ -1226,7 +1230,8 @@ inválido.`; 3P's third keeps `Point or option keyword required.`, primitives/p1
 p237), and 3P's second point on its first is `Points cannot be coincident. *Invalid*`, as 2P's
 (h03). Another prompt's keyword at the centre or the radius is refused in their words (p208). The radius is the primitives' shared default (x01–x05).
 It lies in a tilted UCS and at its Z (h04); it wears the current layer and properties; one undo
-step.
+step. LASTPOINT is the centre given, 3P's third point or 2P's second; Ttr and a radius leave it
+(primitives/p345, p347, p353).
 
 The object, a 3D solid (file version 46), as ACIS makes it (h01's MPDUMP): one spherical face with
 no edge, vertex or loop, its axis the UCS's Z and its seam the UCS's X whatever gave it (h02, h05).
@@ -1270,7 +1275,10 @@ wider than a negative ring, asked again — and for 2Point's second point on its
 ring (`If torus radius is 10.0000, …`), which asks that point again (r06, r09; es `Si el radio del
 toroide es -5.0000, el radio de sección debe ser superior a 5.0000.`). The radius is the
 primitives' shared default, a negative one not kept (r03, r05); the tube radius its own (x01–x05).
-It lies in a tilted UCS and at its Z (r04); one undo step. pt-BR's `TOR`, which its `acad.pgp` sends
+It lies in a tilted UCS and at its Z (r04); one undo step. LASTPOINT is the tube prompt's base, the
+ring's point (the radius' point, or typed towards the cursor; 3P's third, 2P's second in the
+first's plane, Ttr's along the UCS's X), which a tube leaves but 2Point's second point
+(primitives/p348, p353). pt-BR's `TOR`, which its `acad.pgp` sends
 to `TORO`, is refused by its console (`Comando "TOR" desconhecido.`) and is unknown here; `TORO`
 runs it (n03).
 
@@ -1339,6 +1347,8 @@ the primitives' shared ones: the height BOX's, the radius kept as the corners' c
 after a circumscribed 5, y05), which CYLINDER, CONE, SPHERE and TORUS share (x01), and the top
 radius CONE's (y10). It lies in a tilted UCS and at its Z (y07); it wears the current layer and
 properties, those of its end when set mid-command (primitives/p325, p326); one undo step.
+LASTPOINT is the base's centre, Edge's first endpoint while the second is asked, Axis endpoint's
+point, 2Point's second; a radius, height or top radius leaves it (primitives/p340, p349).
 
 The object, a 3D solid (file version 44): the base, the triangles or a frustum's quadrilaterals
 and its top, its edges run as ACIS runs them — the base's round the base, the top's round the top,

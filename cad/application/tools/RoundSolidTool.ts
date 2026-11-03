@@ -139,6 +139,21 @@ type State =
       readonly cursor: Vec3
     }
 
+const POINT_PHASES: ReadonlySet<State["phase"]> = new Set([
+  "center",
+  "threePoint",
+  "twoPoint",
+  "ellipseFirst",
+  "ellipseOther",
+  "ellipseCenter",
+  "ellipseSecond",
+  "twoFirst",
+  "twoSecond",
+  "axis",
+  "tubeFirst",
+  "tubeSecond",
+])
+
 const PREVIEW_ID = "round-preview"
 const UCS_Z: Vec3 = { x: 0, y: 0, z: 1 }
 const UCS_X: Vec3 = { x: 1, y: 0, z: 0 }
@@ -443,6 +458,15 @@ export class RoundSolidTool implements Tool {
     }
   }
 
+  /**
+   * Every point given sets LASTPOINT, though its refusal is the command's;
+   * Ttr's objects, the distances and the height do not (primitives/p343–p348,
+   * p353).
+   */
+  setsLastPoint(): boolean | null {
+    return POINT_PHASES.has(this.state.phase) ? true : null
+  }
+
   /** Ttr's radius and the distances measure their own picks but Ttr's, which the runtime measures. */
   wantsSnap(): boolean {
     return this.state.phase !== "ttrRadius"
@@ -709,12 +733,10 @@ export class RoundSolidTool implements Tool {
     if (this.kind === "torus") {
       // A negative radius is no default (r03, r05).
       if (base.radius > 0) this.defaults.radius = base.radius
-      this.state = {
-        phase: "tube",
-        base,
-        ring,
-        cursor: ucsPointToWorld(ctx.ucs, ring),
-      }
+      const cursor = ucsPointToWorld(ctx.ucs, ring)
+      this.state = { phase: "tube", base, ring, cursor }
+      // The tube prompt's base is LASTPOINT (primitives/p348).
+      ctx.setLastPoint(cursor)
       this.openDistance(ctx)
       return
     }
@@ -912,12 +934,11 @@ export class RoundSolidTool implements Tool {
 
   private askHeight(base: Base, ctx: ToolContext): void {
     if (base.radiusY === null) this.defaults.radius = base.radius
-    this.state = {
-      phase: "height",
-      base,
-      top: null,
-      cursor: ucsPointToWorld(ctx.ucs, base.center),
-    }
+    const cursor = ucsPointToWorld(ctx.ucs, base.center)
+    this.state = { phase: "height", base, top: null, cursor }
+    // The height prompt's base is LASTPOINT: 3P's, 2P's, Elliptical's and
+    // Ttr's centre (primitives/p343–p346, p349).
+    ctx.setLastPoint(cursor)
     this.rise = 0
     this.openDistance(ctx)
   }

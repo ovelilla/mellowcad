@@ -270,6 +270,23 @@ export class PyramidTool implements Tool {
     return "unhandled"
   }
 
+  /**
+   * Edge's, Axis endpoint's and 2Point's points set LASTPOINT, though their
+   * refusal is the command's (primitives/p340, p349).
+   */
+  setsLastPoint(): boolean | null {
+    switch (this.state.phase) {
+      case "edgeFirst":
+      case "edgeSecond":
+      case "axis":
+      case "twoFirst":
+      case "twoSecond":
+        return true
+      default:
+        return null
+    }
+  }
+
   wantsSnap(): boolean {
     return this.state.phase !== "sides"
   }
@@ -487,6 +504,8 @@ export class PyramidTool implements Tool {
   private askHeight(base: Base, ctx: ToolContext): void {
     this.defaults.radius = base.radius
     this.state = { phase: "height", base, top: null, cursor: base.center }
+    // The height prompt's base is LASTPOINT: Edge's centre (primitives/p349).
+    ctx.setLastPoint(base.center)
     this.rise = 0
     this.openDistance(ctx)
   }
