@@ -1,8 +1,8 @@
 # Regions review (REGION, UNION, SUBTRACT, INTERSECT)
 
-> **Status:** plan, 2026-11-03. Group 1 is the console: blocks RGN, BLN, BSL and RGO, executed in
-> this order, one commit each. Group 2 is the desktop, RGD (§12), and needs the owner's mouse in a
-> session of its own.
+> **Status:** group 1 executed, 2026-11-03: the console blocks RGN, BLN, BSL and RGO, one commit
+> each (§1, Execution). Group 2, the desktop block RGD (§12), needs the owner's mouse in a session of
+> its own; once it lands, the plan shrinks to its summary and index.
 >
 > This review owns the region object (loops, plane, drawing, picking, snaps, grips, palette rows,
 > transforms, EXPLODE, file) and the booleans of regions and solids. It cites:
@@ -44,6 +44,15 @@ The worst:
 - `acad.cuix`'s MenuGroup and each language's `acad.pgp`.
 - The tables of 2026-10-31.
 - AutoCAD 2027, ACADVER 26.0, X.118.0.0 (p100). Tree at 96e8a896.
+
+## Execution
+
+| Block | Findings                                                                         | Commit   |
+| ----- | -------------------------------------------------------------------------------- | -------- |
+| RGN   | RGN-01 to RGN-08; the colinear line's order settled by p150 (REGIONS-D2)         | c3706f83 |
+| BLN   | BLN-01 to BLN-08, BSL-02; BLN-05 in SUBTRACT's Missing (REGIONS-D70)             | 3e4dc75e |
+| BSL   | BSL-01, BSL-03 (in UNION's Missing, REGIONS-D77), BSL-04                         | b148a08c |
+| RGO   | RGO-01 to RGO-07; HATCH of a region of elliptical or spline edges in its Missing | f0e78c57 |
 
 ## 2. Inventory
 
@@ -547,6 +556,11 @@ SUBTRACT's two sets; UNION's and INTERSECT's one set.
   the screen crossing the segments use, it goes to drafting-aids.md's Missing.
 - **REGIONS-D75:** RGN-03 is fixed if the Spline-fit curve is a B-spline of the frame
   (`polylineFits.ts`); else it goes to REGION's Missing.
+- **REGIONS-D76:** SLICE drops a preselection too (p349). It is review 29's (Solid edits): left in
+  command-line.md's Missing and noted in the roadmap.
+- **REGIONS-D77:** BSL-03's shell is a topology difference, not fixed here. The cylinder shares
+  only the contact line's end vertices with the box, where ACIS keeps that line as an edge; the
+  volume and the one solid agree. It goes to UNION's Missing.
 
 ## 7. Tests proposed
 
