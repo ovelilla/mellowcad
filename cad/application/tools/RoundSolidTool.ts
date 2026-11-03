@@ -22,9 +22,12 @@ import {
   SolidPrimitive,
   SpherePrimitive,
   TorusPrimitive,
+  createCircle,
+  createEllipse,
   createSolid,
   entityElevation,
   readsInPlan,
+  withElevation,
 } from "../../domain/entities"
 import {
   ucsDirectionToWorld,
@@ -55,6 +58,7 @@ import {
 import { currentColor, withCurrentProperties } from "./currentProperties"
 import { pickedHeight, pickedOnPlaneOf, pointAsCursor } from "./heightPick"
 import { SolidDefaults, resetTopRadius, solidDefaults } from "./solidDefaults"
+import { heightDimension, sizeBand } from "./solidJig"
 
 /**
  * The solid CYLINDER makes, or CONE, which asks the same and a top radius;
@@ -242,8 +246,25 @@ export class RoundSolidTool implements Tool {
       this.rise = this.heightAt(input, state.base, ctx)
     }
     this.sizing = this.sized(input, ctx)
+    this.showReading(ctx)
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
+  }
+
+  /**
+   * The box reads the size the cursor gives, as CIRCLE's radius: the height's
+   * size (30.9048 below the base), a radius, diameter, tube or top on its
+   * base's plane (desktop primitives/d01, d11; PRIM-D81).
+   */
+  private showReading(ctx: ToolContext): void {
+    if (this.state.phase === "height") {
+      ctx.dynamicInput.setLive("value", Math.abs(this.rise))
+      return
+    }
+    const from = this.sizing && this.getConstraintAnchor(ctx)
+    if (from && this.sizing) {
+      ctx.dynamicInput.setLive("value", length3(sub3(this.sizing, from)))
+    }
   }
 
   /** The point a size prompt takes from the mouse, null at any other. */
@@ -561,57 +582,148 @@ export class RoundSolidTool implements Tool {
     }
   }
 
-  /** The base as the cursor sizes it, then the solid as it rises. */
+  /**
+   * The base as the cursor sizes it, then the solid as it rises, and the
+   * dashed band from a size's base to the cursor (desktop primitives/d02,
+   * d07, d11; PRIM-D86, D87).
+   */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const state = this.state
+    const view = ctx.viewport
     const stroke = { color: currentColor(ctx), width: 1 }
-    const ghost = (base: Base | null, height: number, top: number | null) => {
-      // A cylinder or a cone rises either way; a sphere's or a tube's size is a radius.
-      if (!base || !(this.round ? height !== 0 : height > 0)) return []
-      if (this.kind === "torus" && base.radius + height <= 0) return []
-      const primitive = this.round
-        ? this.primitive(base, top, { height }, ctx)
-        : this.ballPrimitive(base, height, ctx)
-      return primitive
+    const layer = ctx.document.getCurrentLayerId()
+    const solid = (primitive: SolidPrimitive | null) =>
+      primitive
         ? entityScenePrimitive(
-            ctx.viewport,
-            createSolid(
-              primitive,
-              ctx.document.getCurrentLayerId(),
-              PREVIEW_ID
-            ),
+            view,
+            createSolid(primitive, layer, PREVIEW_ID),
             stroke,
             { isolines: ctx.document.getSettings().isolines }
           )
         : []
+    const ghost = (base: Base | null, height: number, top: number | null) => {
+      // A cylinder or a cone rises either way; a sphere's or a tube's size is a radius.
+      if (!base || !(this.round ? height !== 0 : height > 0)) return []
+      if (this.kind === "torus" && base.radius + height <= 0) return []
+      return solid(
+        this.round
+          ? this.primitive(base, top, { height }, ctx)
+          : this.ballPrimitive(base, height, ctx)
+      )
     }
     const raw = "cursor" in state ? state.cursor : null
     const cursor = SIZE_PHASES.has(state.phase) ? (this.sizing ?? raw) : raw
-    const reach = (from: Vec3) =>
-      cursor ? this.distanceTo(from, worldPointToUcs(ctx.ucs, cursor)) : 0
+    const at = cursor && worldPointToUcs(ctx.ucs, cursor)
+    const reach = (from: Vec3) => (at ? this.distanceTo(from, at) : 0)
+    const band = (from: Vec3) =>
+      cursor ? [sizeBand(view, ucsPointToWorld(ctx.ucs, from), cursor)] : []
     switch (state.phase) {
-      case "height":
-        return ghost(state.base, this.rise, state.top)
+      case "height": {
+        const { base } = state
+        const center = ucsPointToWorld(ctx.ucs, base.center)
+        return [
+          ...ghost(base, this.rise, state.top),
+          sizeBand(view, center, state.cursor),
+          ...heightDimension(
+            view,
+            center,
+            this.upOf(base, ctx),
+            this.rise,
+            this.acrossOf(base, ctx)
+          ),
+        ]
+      }
       case "axis":
-        return ghost(state.base, reach(state.base.center), state.top)
+        return at
+          ? solid(this.primitive(state.base, state.top, { axis: at }, ctx))
+          : []
       case "radius":
       case "diameter": {
-        if (this.kind !== "sphere") return []
         const size = reach(state.center) / (state.phase === "diameter" ? 2 : 1)
-        return ghost(this.levelBase(state.center, size), size, null)
+        // A sphere shows itself; a base and a ring their circle (d11).
+        const shape =
+          this.kind === "sphere"
+            ? ghost(this.levelBase(state.center, size), size, null)
+            : this.circleGhost(state.center, size, ctx)
+        return [...shape, ...band(state.center)]
+      }
+      case "ellipseOther": {
+        // The circle on the first axis, as ELLIPSE's (d11-cylinder-ell1).
+        if (!at) return []
+        const [first] = state.points
+        const middle = { ...V.lerp(first, at, 0.5), z: first.z }
+        return this.circleGhost(middle, V.distance(first, at) / 2, ctx)
+      }
+      case "ellipseSecond": {
+        // The base the second axis' end would make (d11-cylinder-ell2).
+        if (!at) return []
+        const way = V.sub(at, state.center)
+        const size = V.length(way)
+        if (!(size > 0) || !(state.half > 0)) return []
+        const center = ucsPointToWorld(ctx.ucs, state.center)
+        return this.flatGhost(
+          createEllipse(
+            center,
+            ucsDirectionToWorld(ctx.ucs, way),
+            state.half / size,
+            {
+              layerId: layer,
+              id: PREVIEW_ID,
+            }
+          ),
+          state.center,
+          ctx
+        )
+      }
+      case "top": {
+        // The frustum, its top where the height was read when Top was typed.
+        const from = this.topFrom(state.base, ctx)
+        return [...ghost(state.base, this.rise, reach(from)), ...band(from)]
       }
       case "tube":
       case "tubeDiameter":
-        return ghost(
-          state.base,
-          reach(state.ring) / (state.phase === "tubeDiameter" ? 2 : 1),
-          null
-        )
+        return [
+          ...ghost(
+            state.base,
+            reach(state.ring) / (state.phase === "tubeDiameter" ? 2 : 1),
+            null
+          ),
+          ...band(state.ring),
+        ]
       case "tubeSecond":
         return ghost(state.base, reach(state.first), null)
       default:
         return []
     }
+  }
+
+  /** A base's circle about `center` (in the UCS), none of no size. */
+  private circleGhost(
+    center: Vec3,
+    radius: number,
+    ctx: ToolContext
+  ): ScenePrimitive[] {
+    if (!(radius > 0)) return []
+    const at = ucsPointToWorld(ctx.ucs, center)
+    const layer = ctx.document.getCurrentLayerId()
+    return this.flatGhost(
+      createCircle(at, radius, layer, PREVIEW_ID),
+      center,
+      ctx
+    )
+  }
+
+  /** A flat base's ghost, a circle or an ellipse at `center`'s height (in the UCS). */
+  private flatGhost(
+    entity: Entity,
+    center: Vec3,
+    ctx: ToolContext
+  ): ScenePrimitive[] {
+    const z = ucsPointToWorld(ctx.ucs, center).z
+    return entityScenePrimitive(ctx.viewport, withElevation(entity, z), {
+      color: currentColor(ctx),
+      width: 1,
+    })
   }
 
   /** CYLINDER's and CONE's: a base, rising. */
@@ -1034,6 +1146,12 @@ export class RoundSolidTool implements Tool {
     )
   }
 
+  /** Across the base, square to its seam, in the frame: the height's dimension's side. */
+  private acrossOf(base: Base, ctx: ToolContext): Vec3 {
+    const across = ucsDirectionToWorld(ctx.ucs, cross3(base.normal, base.xAxis))
+    return scale3(across, 1 / length3(across))
+  }
+
   /** The base's normal in the frame, of unit length. */
   private upOf(base: Base, ctx: ToolContext): Vec3 {
     const up = ucsDirectionToWorld(ctx.ucs, base.normal)
@@ -1195,7 +1313,9 @@ export class RoundSolidTool implements Tool {
         ? null
         : question.enter
     ctx.dynamicInput.open({
-      fields: [{ id: "value", prompt, kind: "distance" }],
+      fields: [
+        { id: "value", prompt: this.label() ?? prompt, kind: "distance" },
+      ],
       commit: (values, commitCtx) => {
         if (Number.isFinite(values.value))
           this.takeValue(values.value, commitCtx)
@@ -1219,6 +1339,23 @@ export class RoundSolidTool implements Tool {
     if (enter !== null) ctx.dynamicInput.setDefault("value", enter)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
+  }
+
+  /** The box's label at a size the cursor reads, as CIRCLE's (PRIM-D81). */
+  private label(): PromptId | null {
+    switch (this.state.phase) {
+      case "radius":
+      case "tube":
+      case "top":
+        return "radius"
+      case "diameter":
+      case "tubeDiameter":
+        return "diameter"
+      case "height":
+        return "height"
+      default:
+        return null
+    }
   }
 
   /** A typed radius, diameter, distance, height or top radius. */

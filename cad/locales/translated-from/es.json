@@ -1267,6 +1267,7 @@
   "commands.prompts.center": "Center",
   "commands.prompts.radius": "Radius",
   "commands.prompts.diameter": "Diameter",
+  "commands.prompts.height": "Height",
   "commands.prompts.firstPoint": "First point",
   "commands.prompts.secondPoint": "Second point",
   "commands.prompts.thirdPoint": "Third point",

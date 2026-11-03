@@ -29,6 +29,7 @@ import {
 import { currentColor, withCurrentProperties } from "./currentProperties"
 import { pickedHeight, pickedOnPlaneOf, pointAsCursor } from "./heightPick"
 import { SolidDefaults, resetTopRadius, solidDefaults } from "./solidDefaults"
+import { heightDimension } from "./solidJig"
 
 const MIN_SIDES = 3
 const MAX_SIDES = 32
@@ -138,8 +139,24 @@ export class PyramidTool implements Tool {
       this.rise = this.heightAt(input, state.base, ctx)
     }
     this.sizing = this.sized(input, ctx)
+    this.showReading(ctx)
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
+  }
+
+  /**
+   * The box reads the size the cursor gives: the height's size, the radius
+   * or the top on its plane (desktop primitives/d01, d11; PRIM-D81).
+   */
+  private showReading(ctx: ToolContext): void {
+    if (this.state.phase === "height") {
+      ctx.dynamicInput.setLive("value", Math.abs(this.rise))
+      return
+    }
+    const from = this.sizing && this.getConstraintAnchor(ctx)
+    if (from && this.sizing) {
+      ctx.dynamicInput.setLive("value", this.distanceTo(from, this.sizing))
+    }
   }
 
   /** The point the radius or the top radius takes from the mouse, null at any other prompt. */
@@ -332,7 +349,12 @@ export class PyramidTool implements Tool {
     }
   }
 
-  /** The base as the cursor turns and sizes it, then the pyramid as it rises. */
+  /**
+   * The base as the cursor turns and sizes it, then the pyramid as it rises,
+   * beside its height's dimension off the plan. No dashed band: AutoCAD's
+   * PYRAMID draws none at its radius or its height (desktop primitives/d02,
+   * d11), where CONE does.
+   */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const state = this.state
     const stroke = { color: currentColor(ctx), width: 1 }
@@ -363,12 +385,28 @@ export class PyramidTool implements Tool {
         )
         return base ? this.baseOutline(base, ctx, stroke) : []
       }
-      case "height":
-        return this.rise !== 0
-          ? ghost(
-              this.primitive(state.base, state.top, { height: this.rise }, ctx)
-            )
-          : []
+      case "height": {
+        const across = ucsDirectionToWorld(ctx.ucs, { x: 0, y: 1, z: 0 })
+        return [
+          ...(this.rise !== 0
+            ? ghost(
+                this.primitive(
+                  state.base,
+                  state.top,
+                  { height: this.rise },
+                  ctx
+                )
+              )
+            : []),
+          ...heightDimension(
+            ctx.viewport,
+            state.base.center,
+            this.up(ctx),
+            this.rise,
+            scale3(across, 1 / length3(across))
+          ),
+        ]
+      }
       case "axis":
         return ghost(
           this.primitive(state.base, state.top, { axis: state.cursor }, ctx)
@@ -645,7 +683,17 @@ export class PyramidTool implements Tool {
         })
       )
     })
-    return [{ kind: "path", points, closed: true, stroke }]
+    // A pyramid of no height: its edges run in to the centre (d11).
+    const apex = ctx.viewport.worldToScreen(base.center)
+    return [
+      { kind: "path", points, closed: true, stroke },
+      ...points.map((point): ScenePrimitive => ({
+        kind: "segment",
+        a: point,
+        b: apex,
+        stroke,
+      })),
+    ]
   }
 
   private openSides(ctx: ToolContext): void {
@@ -699,13 +747,19 @@ export class PyramidTool implements Tool {
    */
   private openDistance(ctx: ToolContext): void {
     const question = this.question()
-    const prompt = typeof question === "string" ? question : question.id
     const enter =
       typeof question === "string" || typeof question.enter !== "number"
         ? null
         : question.enter
     ctx.dynamicInput.open({
-      fields: [{ id: "value", prompt, kind: "distance" }],
+      fields: [
+        {
+          id: "value",
+          // Labelled as CIRCLE's where the box reads the cursor (PRIM-D81).
+          prompt: this.state.phase === "height" ? "height" : "radius",
+          kind: "distance",
+        },
+      ],
       // Enter commits the default the box holds: read as the default it is.
       commit: (values, commitCtx) => {
         if (!Number.isFinite(values.value)) return

@@ -1564,6 +1564,7 @@ declare const source: {
       "center": string
       "radius": string
       "diameter": string
+      "height": string
       "firstPoint": string
       "secondPoint": string
       "thirdPoint": string

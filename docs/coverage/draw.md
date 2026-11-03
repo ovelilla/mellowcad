@@ -1023,6 +1023,17 @@ undo step (p08). LASTPOINT is the height prompt's base, the other corner or, aft
 one (from the centre at its Z); after a Cube the first corner or the centre, after 2Point its
 second point (primitives/p341, p349, p356, p500).
 
+While it asks, dynamic input reads the cursor (desktop primitives/d01, d11; PRIM-D81): the
+other corner's box holds RECTANG's Length and Width, a number typed there the length and the width
+the cursor's, as RECTANG's (desktop primitives/d03 c's first run, dynamic input on: `10` made 10 by
+5.0467), `10,5` the corner relative to the first, while a number at the command line is
+still a direct distance; Cube's and Length's box its length in plan and heading, an angle typed
+beside a length laying it that way; the width's its distance square to the length; the height's its
+size, below the corner too (d01: `30.9048` for −30.9048), off the plan beside a dotted dimension up
+the Z from the corner. Enter still takes the `<default>`. The ghost is the footprint at the other
+corner, a line from the corner at Length, the footprint at the width and the box at the height; no
+dashed band (d11).
+
 The object, a 3D solid (file version 43): a B-rep, the kernel's (`geometry/solids.ts`) — vertices,
 edges with their curve, faces with their surface and loops of coedges, every edge in two faces run
 opposite ways, the tolerance 1e-6 —, each planar face a region of its plane; its edges run as
@@ -1081,8 +1092,9 @@ any grip. One undo step, `Grip Edit`.
 here); a height dragged past the opposite face, which AutoCAD answers with no rule (g01: down 6
 leaves the box upright 1 high, down 7 turns it over 2 high), refused here; the 3D commands of its
 own (3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN), the gizmos and the edits of its sub-objects
-(Ctrl+click selects them: command-line.md), later phases; the dynamic UCS; the height box's reading of the cursor (d12: `38.6155` as it drags;
-the default here); FILLET and CHAMFER of its edges, which
+(Ctrl+click selects them: command-line.md), later phases; the dynamic UCS; the dotted dimensions
+AutoCAD draws at the other corner, Length and the width, and the value box beside them (here the
+box's fields at the cursor, as RECTANG's; d11); FILLET and CHAMFER of its edges, which
 AutoCAD asks with `Enter fillet radius or [Expression]:` and `Base surface selection...` (here the
 pick is passed over; FILLETEDGE and CHAMFEREDGE round and bevel them, modify.md); JOIN with a solid picked first, which AutoCAD answers with `Line,
 open polyline, arc, elliptical arc, or open spline expected.  Select a supported object:` (here
@@ -1092,7 +1104,8 @@ Material row; a linetype scale of its own (none here: CELTSCALE, properties.md),
 leaves at 1 on a solid whatever CELTSCALE says (p421); the visual styles VSCURRENT lacks (view.md: Hidden and Conceptual are built); a box turned 180 by its corners runs its edges
 as p01's mirrored (p123's MPDUMP: the far X's top edge up the Y), here as a box turned, which UCS
 OBject's X on that edge would read. **Unverified**: a Cube by a point from the centre, doubled here
-as Length's (p500); Polar at the other corner, which bends it here as at any point.
+as Length's (p500); Polar at the other corner, which bends it here as at any point; the corner
+from the centre, whose box stays a point's here; Cube's ghost, none here.
 
 ### `WEDGE` / `WE` · es `CUÑA` / `CU` · pt-BR `CUNHA` / `CN`
 
@@ -1114,6 +1127,8 @@ largura zero.`), and Enter at a width with no default says the latter where BOX'
 numeric distance, second point, or option keyword.` (w04). Its length, width and height are BOX's
 shared defaults (w02, x07). It lies in a tilted UCS and at its Z or ELEVATION (w05); it wears the
 current layer and properties; one undo step; LASTPOINT as BOX's (primitives/p342, p356).
+Dynamic input reads the cursor as BOX's (d11): the other corner's Length and Width, the length's
+and the width's distance in space with no heading, the height's size beside its dotted dimension.
 
 The object is a 3D solid (file version 44) of 6 vertices, 9 edges and 5 faces, built as ACIS
 builds it: the end triangle swept along the width, its edges in ACIS's order and sense (w01's
@@ -1129,7 +1144,8 @@ wedge turned 180 too (g01, desktop primitives/d08: 20,10,5 and 20,10,-0.1 on `20
 
 **Missing:** BOX's (the 3D commands, the visual styles VSCURRENT lacks); in plan, the Endpoint
 under the tall end: AutoCAD's `_END` at 90.05,0.05 finds the base's 90,0,0, here the top's 90,0,5
-(primitives/p402), as CYLINDER's Nearest and Quadrant.
+(primitives/p402), as CYLINDER's Nearest and Quadrant. **Unverified**: the ghost at Length and the
+width, none here (d11 shot BOX's alone).
 
 ### `CYLINDER` / `CYL` · es `CILINDRO` / `CIL` · pt-BR `CILINDRO` / `CIL`
 
@@ -1182,6 +1198,15 @@ the centre is given (p234, p235); one undo step (u01). LASTPOINT is the centre g
 centre after 3P, 2P, Ttr and Elliptical, Axis endpoint's point, 2Point's second; a radius,
 diameter or height, typed or a point, leaves it (primitives/p343–p345, p353).
 
+While it asks (desktop primitives/d01, d02, d07, d11; PRIM-D81, D86, D87): the box reads the
+cursor, `Radius` or `Diameter` as it is read (the cursor's distance, a diameter's too, as CIRCLE's)
+and `Height` its size, below the base too (`30.9048`), Enter still taking the `<default>`; an amber
+dashed band runs from the centre at the radius and the diameter and from the base's centre at the
+height, in plan and off it, where a dotted dimension rises beside the axis; the ghost is the base's
+circle through the cursor (half as far for a diameter), the circle on the first axis and then the
+ellipse at Elliptical's points, the cylinder at the height and, leaning to the cursor, at Axis
+endpoint.
+
 The object, a 3D solid (file version 45), as ACIS makes it (c01's MPDUMP): a vertex on each
 circle, at its seam; the base's circle or ellipse run about the base's outward normal, the top's
 about the axis; the round face (a cylinder, or an elliptical one), the base, the top. The seam is
@@ -1207,7 +1232,8 @@ one's by the same rule, unprobed).
 **Missing:** what AutoCAD's EXPLODE makes of it — the regions of its ends and a SURFACE of its
 round face (c11): no surface object here, so it is refused as `Select objects:` finds it (`1 was
 not able to be exploded.`); BOX's (the hot grip's other modes, a height dragged past the base,
-the visual styles VSCURRENT lacks); Elliptical typed, which AutoCAD lets a round one take, Major and Minor
+the visual styles VSCURRENT lacks); the dotted dimensions AutoCAD draws at the radius, Elliptical's
+points and Axis endpoint, with their angle boxes (d11: here the band and the point's box); Elliptical typed, which AutoCAD lets a round one take, Major and Minor
 radius equal, then greys (g01; greyed here); DISPSILH's silhouettes, d04's `iso16s`; in plan, where the top circle hides the base's, Nearest finds the top's in AutoCAD (s03)
 and the base's here, as BOX's, and an elliptical one's Quadrant so too (primitives/p402: `_QUA` at
 5.1,3.1 gives 5,3,8, here 5,3,0); WEDGE's Endpoint likewise.
@@ -1228,6 +1254,9 @@ distance, second point, or option keyword.` for FOO (PYRAMID's has no keyword) a
 positive.` below 0 (k04); 3P's and 2P's points refuse Enter (p238). An elliptical cone's top
 is its base shrunk to the top radius given as its major (k03). It lies in a tilted UCS and at its Z
 (k05); one undo step (u01); LASTPOINT as CYLINDER's, which a top radius leaves (primitives/p346).
+While it asks, the box, the band and the ghosts are CYLINDER's, and at Top radius the box reads
+`Radius`, the band runs from the top's centre and the ghost is the frustum, its top at the height
+the cursor gave as Top was typed (desktop primitives/d11-cone-top: 111.5499).
 
 The object, a 3D solid (file version 45): the base's circle or ellipse and, at the apex, an edge of
 no length at one vertex, the cone's face's second loop (k01's MPDUMP: ACIS's degenerate edge), or a
@@ -1273,7 +1302,9 @@ radius picked with the mouse is read as CYLINDER's, on the plane through the cen
 primitives/d02). The radius is the primitives' shared default (x01–x05).
 It lies in a tilted UCS and at its Z (h04); it wears the current layer and properties; one undo
 step. LASTPOINT is the centre given, 3P's third point or 2P's second; Ttr and a radius leave it
-(primitives/p345, p347, p353).
+(primitives/p345, p347, p353). While the radius is asked the box reads it from the cursor
+(`Radius`, `Diameter`), an amber dashed band runs from the centre and the sphere is the ghost
+(desktop primitives/d11).
 
 The object, a 3D solid (file version 46), as ACIS makes it (h01's MPDUMP): one spherical face with
 no edge, vertex or loop, its axis the UCS's Z and its seam the UCS's X whatever gave it (h02, h05).
@@ -1324,7 +1355,9 @@ ring's point (the radius' point, or typed towards the cursor; 3P's third, 2P's s
 first's plane, Ttr's along the UCS's X), which a tube leaves but 2Point's second point
 (primitives/p348, p353). pt-BR's `TOR`, which its `acad.pgp` sends
 to `TORO`, is refused by its console (`Comando "TOR" desconhecido.`) and is unknown here; `TORO`
-runs it (n03).
+runs it (n03). While it asks, the box reads the cursor's radius, diameter or tube (`28.0104`), an
+amber dashed band runs from the centre at the radius and from the ring's point at the tube, and the
+ghost is the ring's circle through the cursor, then the torus (desktop primitives/d11).
 
 The object, a 3D solid (file version 46), as ACIS makes it (r01, r05's MPDUMP): one toroidal face,
 round a doughnut with no edge; an apple's or a lemon's with an edge of no length at each pole, where
@@ -1401,7 +1434,11 @@ after a circumscribed 5, y05), which CYLINDER, CONE, SPHERE and TORUS share (x01
 radius CONE's (y10). It lies in a tilted UCS and at its Z (y07); it wears the current layer and
 properties, those of its end when set mid-command (primitives/p325, p326); one undo step.
 LASTPOINT is the base's centre, Edge's first endpoint while the second is asked, Axis endpoint's
-point, 2Point's second; a radius, height or top radius leaves it (primitives/p340, p349).
+point, 2Point's second; a radius, height or top radius leaves it (primitives/p340, p349). While it
+asks, the box reads the radius, the top and the height's size from the cursor (`Radius`, `Height`),
+off the plan beside a dotted dimension up the axis; the ghost is the base with its edges in to the
+centre, a pyramid of no height, at the radius and Edge's second point, then the pyramid, leaning
+to the cursor at Axis endpoint; no dashed band, where CONE draws one (desktop primitives/d02, d11).
 
 The object, a 3D solid (file version 44): the base, the triangles or a frustum's quadrilaterals
 and its top, its edges run as ACIS runs them — the base's round the base, the top's round the top,
@@ -1423,7 +1460,9 @@ EXPLODE leaves a region of each face (y08). Everything else a solid does is BOX'
 Type typed in the palette (greyed here: what it does to the solid **unverified**). The console's
 cursor in a tilted or a rotated UCS turns a typed radius by its own projection (y07's Rotation 4,
 primitives/p317's 346), which the harness does not reproduce, as `<a` at its prompts (p319): the
-desktop's (PDT); a radius given by a point there is exact.
+desktop's (PDT); a radius given by a point there is exact. The dotted dimensions AutoCAD draws at
+the radius and Edge's second point, with their angle box (d11); the frustum's ghost at Top radius,
+unprobed (none here).
 
 ### `EXTRUDE` / `EXT` · es `EXTRUSION` / `EXT` · pt-BR `EXTRUSAO` / `EX`
 

@@ -2113,6 +2113,7 @@ export const es: EngineLocale = {
       "center": "Centro",
       "radius": "Radio",
       "diameter": "Diámetro",
+      "height": "Altura",
       "firstPoint": "Primer punto",
       "secondPoint": "Segundo punto",
       "thirdPoint": "Tercer punto",

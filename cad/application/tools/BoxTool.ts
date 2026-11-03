@@ -3,6 +3,7 @@ import { Vec3, length3, scale3, sub3 } from "../../geometry/Vec3"
 import {
   BoxPrimitive,
   WedgePrimitive,
+  createLine,
   createPolyline,
   createSolid,
 } from "../../domain/entities"
@@ -31,8 +32,11 @@ import {
   ToolQuestion,
 } from "./Tool"
 import { currentColor, withCurrentProperties } from "./currentProperties"
+import { pointAlongCursor } from "./directDistance"
 import { pickedHeight, pointAsCursor } from "./heightPick"
 import { SolidDefaults, resetTopRadius, solidDefaults } from "./solidDefaults"
+import { heightDimension } from "./solidJig"
+import { acuteHeading, headingInUcs } from "./ucsHeading"
 
 /**
  * Where the solid's footprint lies, in the UCS: its centre, the way its
@@ -164,8 +168,54 @@ export class BoxTool implements Tool {
     if (this.state.phase === "height") {
       this.rise = this.heightAt(input, this.state.from, ctx)
     }
+    this.showReading(ctx)
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
+  }
+
+  /**
+   * The box reads what the cursor gives: the other corner's length and width
+   * as RECTANG's, Length's length and heading, the width, the height's size
+   * (desktop primitives/d01, d11; PRIM-D81).
+   */
+  private showReading(ctx: ToolContext): void {
+    const state = this.state
+    const live = (field: string, value: number) =>
+      ctx.dynamicInput.setLive(field, value)
+    switch (state.phase) {
+      case "other": {
+        if (state.mode !== "corner") return
+        const from = worldPointToUcs(ctx.ucs, state.base)
+        const to = worldPointToUcs(ctx.ucs, state.cursor)
+        live("length", Math.abs(to.x - from.x))
+        live("width", Math.abs(to.y - from.y))
+        return
+      }
+      case "cube":
+      case "length": {
+        const reach =
+          this.kind === "box"
+            ? this.planDistance(state.base, state.cursor, ctx)
+            : this.distanceTo(state.base, state.cursor)
+        live("value", state.mode === "center" ? 2 * reach : reach)
+        const way = V.sub(state.cursor, state.base)
+        if (this.kind === "box" && V.length(way) > 0) {
+          live("angle", acuteHeading(headingInUcs(ctx.ucs, way)))
+        }
+        return
+      }
+      case "width":
+        live(
+          "value",
+          this.kind === "box"
+            ? this.squareToLength(state, state.cursor, ctx)
+            : this.distanceTo(this.widthBase(state, ctx), state.cursor)
+        )
+        return
+      case "height":
+        live("value", Math.abs(this.rise))
+        return
+    }
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
@@ -231,6 +281,9 @@ export class BoxTool implements Tool {
       case "twoFirst":
       case "twoSecond":
         return { refusal: "pointOrKeywordRequired" }
+      case "other":
+        // Its box holds a length and a width, and it still takes a point.
+        return "point"
       case "cube":
       case "length":
       case "width":
@@ -333,28 +386,64 @@ export class BoxTool implements Tool {
         state.cursor,
         ctx
       )
-      if (!footprint) return []
-      const outline = createPolyline(
-        footprintCorners(footprint).map((p) =>
-          ucsPointToWorld(ctx.ucs, { ...p, z: footprint.z })
-        ),
-        true,
+      return footprint ? this.outline(footprint, ctx, stroke) : []
+    }
+    // BOX's length is a line from the corner, its width the footprint
+    // (desktop primitives/d11); WEDGE's, unprobed, show none, as Cube's.
+    if (state.phase === "length" && this.kind === "box") {
+      const line = createLine(
+        state.base,
+        { ...state.cursor, z: state.base.z },
         ctx.document.getCurrentLayerId(),
-        undefined,
         PREVIEW_ID
       )
-      return entityScenePrimitive(ctx.viewport, outline, stroke)
+      return entityScenePrimitive(ctx.viewport, line, stroke)
+    }
+    if (state.phase === "width" && this.kind === "box") {
+      const width = this.squareToLength(state, state.cursor, ctx)
+      if (width === 0) return []
+      const { footprint } = this.widthFootprint(state, width, state.cursor, ctx)
+      return this.outline(footprint, ctx, stroke)
     }
     if (state.phase === "height") {
-      if (this.rise === 0) return []
+      const up = ucsDirectionToWorld(ctx.ucs, { x: 0, y: 0, z: 1 })
+      const across = ucsDirectionToWorld(ctx.ucs, { x: 0, y: 1, z: 0 })
+      const dimension = heightDimension(
+        ctx.viewport,
+        state.from,
+        scale3(up, 1 / length3(up)),
+        this.rise,
+        scale3(across, 1 / length3(across))
+      )
+      if (this.rise === 0) return dimension
       const solid = createSolid(
         this.primitive(state.footprint, this.rise, ctx),
         ctx.document.getCurrentLayerId(),
         PREVIEW_ID
       )
-      return entityScenePrimitive(ctx.viewport, solid, stroke)
+      return [
+        ...entityScenePrimitive(ctx.viewport, solid, stroke),
+        ...dimension,
+      ]
     }
     return []
+  }
+
+  private outline(
+    footprint: Footprint,
+    ctx: ToolContext,
+    stroke: { color: string; width: number }
+  ): ScenePrimitive[] {
+    const outline = createPolyline(
+      footprintCorners(footprint).map((p) =>
+        ucsPointToWorld(ctx.ucs, { ...p, z: footprint.z })
+      ),
+      true,
+      ctx.document.getCurrentLayerId(),
+      undefined,
+      PREVIEW_ID
+    )
+    return entityScenePrimitive(ctx.viewport, outline, stroke)
   }
 
   private takePoint(point: Vec3, ctx: ToolContext): void {
@@ -368,10 +457,8 @@ export class BoxTool implements Tool {
           base: point,
           cursor: point,
         }
-        this.openPoint(
-          ctx,
-          state.phase === "first" ? "boxOtherCornerOr" : "boxCornerOr"
-        )
+        if (state.phase === "first") this.openCorner(ctx)
+        else this.openPoint(ctx, "boxCornerOr")
         return
       case "other":
         this.takeCorner(point, ctx)
@@ -597,8 +684,21 @@ export class BoxTool implements Tool {
       ctx.report(ctx.text.message(ZERO_WIDTH[this.kind]), "error")
       return
     }
+    this.run.width = Math.abs(width)
+    const { footprint, far } = this.widthFootprint(state, width, toward, ctx)
+    // The height is measured from the far corner, centre plus half of each
+    // from the centre (p124: 11.6619 and 5.8310 at the first point).
+    this.askHeight(footprint, far, ctx)
+  }
+
+  /** The footprint {@link takeWidth} makes, and its far corner. */
+  private widthFootprint(
+    state: Extract<BoxToolState, { phase: "width" }>,
+    width: number,
+    toward: Vec3,
+    ctx: ToolContext
+  ): { footprint: Footprint; far: Vec3 } {
     const size = Math.abs(width)
-    this.run.width = size
     const base = worldPointToUcs(ctx.ucs, state.base)
     let side: Vec2
     if (this.kind === "wedge") {
@@ -624,13 +724,10 @@ export class BoxTool implements Tool {
       z: base.z,
       centered,
     }
-    // The height is measured from the far corner, centre plus half of each
-    // from the centre (p124: 11.6619 and 5.8310 at the first point).
-    this.askHeight(
+    return {
       footprint,
-      this.footprintPoint(state, V.scale(side, size), ctx),
-      ctx
-    )
+      far: this.footprintPoint(state, V.scale(side, size), ctx),
+    }
   }
 
   private askHeight(footprint: Footprint, from: Vec3, ctx: ToolContext): void {
@@ -710,28 +807,97 @@ export class BoxTool implements Tool {
   }
 
   /**
+   * The other corner's box, RECTANG's: the length and the width the cursor
+   * gives (desktop primitives/d11), a number typed in it a side, the other
+   * the cursor's (desktop primitives/d03 c's first run, dynamic input on:
+   * `10` with the cursor at 10,5.05 made 10 by 5.0467); a coordinate typed in it is the corner, relative to the
+   * first (d11). The command line still answers the corner, a number
+   * there a direct distance (`commandLinePoint`).
+   */
+  private openCorner(ctx: ToolContext): void {
+    ctx.dynamicInput.open({
+      fields: [
+        { id: "length", prompt: "length", kind: "distance" },
+        { id: "width", prompt: "width", kind: "distance" },
+      ],
+      commit: (values, commitCtx) =>
+        this.takeSides(values.length, values.width, commitCtx),
+      commitRaw: (commitCtx) => this.commitTypedPoint(commitCtx),
+      commandLinePoint: true,
+    })
+    ctx.dynamicInput.setLive("length", 0)
+    ctx.dynamicInput.setLive("width", 0)
+    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+    ctx.requestRender()
+  }
+
+  /** The corner `length` by `width` from the first, in the cursor's quadrant. */
+  private takeSides(length: number, width: number, ctx: ToolContext): void {
+    const state = this.state
+    if (state.phase !== "other") return
+    const from = worldPointToUcs(ctx.ucs, state.base)
+    const to = worldPointToUcs(ctx.ucs, state.cursor)
+    const sign = (value: number) => (value < 0 ? -1 : 1)
+    this.takeCorner(
+      ucsPointToWorld(ctx.ucs, {
+        x: from.x + sign(to.x - from.x) * length,
+        y: from.y + sign(to.y - from.y) * width,
+        z: from.z,
+      }),
+      ctx
+    )
+  }
+
+  /**
    * A distance's box, `<default>` the last one given if any: a number typed
    * is the value, a coordinate a point measured from the prompt's base, and
    * Enter takes the default or is refused as `FOO` is (p04, p11) — but at
-   * WEDGE's width, where it is a width of 0 (w04).
+   * WEDGE's width, where it is a width of 0 (w04). BOX's length shows its
+   * heading beside it (d11).
    */
   private openDistance(ctx: ToolContext, value: number | null): void {
-    const prompt = this.question()
+    const { phase } = this.state
+    const heading =
+      this.kind === "box" && (phase === "cube" || phase === "length")
     ctx.dynamicInput.open({
       fields: [
         {
           id: "value",
-          prompt: typeof prompt === "string" ? prompt : prompt.id,
+          // Labelled as RECTANG's and CIRCLE's, the box reading the cursor.
+          prompt:
+            phase === "width"
+              ? "width"
+              : phase === "height"
+                ? "height"
+                : "length",
           kind: "distance",
         },
+        ...(heading
+          ? [{ id: "angle", prompt: "angle" as const, kind: "angle" as const }]
+          : []),
       ],
       commit: (values, commitCtx) => {
-        if (Number.isFinite(values.value))
-          this.takeValue(values.value, commitCtx)
+        if (!Number.isFinite(values.value)) return
+        const state = this.state
+        const angle = commitCtx.dynamicInput.getText("angle").trim()
+        if ((state.phase === "cube" || state.phase === "length") && angle) {
+          const toward = pointAlongCursor(commitCtx, state.base, state.cursor, {
+            distance: 1,
+            angle: values.angle,
+          })
+          this.takeLength(values.value, toward ?? state.cursor, commitCtx)
+          return
+        }
+        this.takeValue(values.value, commitCtx)
       },
       commitRaw: (commitCtx) => {
         if (commitCtx.dynamicInput.hasTypedText()) {
           return this.commitTypedPoint(commitCtx)
+        }
+        // The box shows the cursor's reading, Enter the default.
+        if (value !== null) {
+          this.takeValue(value, commitCtx)
+          return true
         }
         if (this.kind === "wedge" && this.state.phase === "width") {
           commitCtx.report(
@@ -751,6 +917,8 @@ export class BoxTool implements Tool {
       },
     })
     if (value !== null) ctx.dynamicInput.setDefault("value", value)
+    // A length typed alone takes the cursor's heading, never none.
+    if (heading) ctx.dynamicInput.setLive("angle", 0)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }

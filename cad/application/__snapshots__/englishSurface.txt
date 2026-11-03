@@ -4496,9 +4496,9 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Specify height or [2Point]: 30
 > BOX refused
   prompt: BOX Specify height or [2Point] <30.00>:
-  asks: "Specify height or"
+  asks: "Height"
   tip: Specify height or
-  dyn: "Specify height or"=""|30.00|mm*
+  dyn: "Height"=""|304.14|mm*
   options: [2P] 2Point
   command| BOX
   prompt| Specify first corner or [Center]: FOO
@@ -4582,9 +4582,9 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Specify height or [2Point]: 30
 > WEDGE refused
   prompt: WEDGE Specify height or [2Point] <30.00>:
-  asks: "Specify height or"
+  asks: "Height"
   tip: Specify height or
-  dyn: "Specify height or"=""|30.00|mm*
+  dyn: "Height"=""|304.14|mm*
   options: [2P] 2Point
   command| WEDGE
   prompt| Specify first corner or [Center]: FOO
@@ -4651,9 +4651,9 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Specify height or [2Point/Axis endpoint]: 80
 > CYLINDER refused
   prompt: CYLINDER Specify height or [2Point/Axis endpoint] <80.00>:
-  asks: "Specify height or"
+  asks: "Height"
   tip: Specify height or
-  dyn: "Specify height or"=""|80.00|mm*
+  dyn: "Height"=""|200.00|mm*
   options: [2P] 2Point, [A] Axis endpoint
   command| CYLINDER
   prompt| Specify center point of base or [3P/2P/Ttr/Elliptical]: FOO
@@ -4924,9 +4924,9 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Specify height or [2Point/Axis endpoint/Top radius]: 80
 > PYRAMID refused
   prompt: PYRAMID Specify height or [2Point/Axis endpoint/Top radius] <80.00>:
-  asks: "Specify height or"
+  asks: "Height"
   tip: Specify height or
-  dyn: "Specify height or"=""|80.00|mm*
+  dyn: "Height"=""|200.00|mm*
   options: [2P] 2Point, [A] Axis endpoint, [T] Top radius
   command| PYRAMID
   info|  4 sides  Circumscribed

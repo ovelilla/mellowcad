@@ -5,9 +5,11 @@
 # exactly on the length's line (SNAPMODE 1, SNAPUNIT 1, put back to 0), Ortho (ORTHOMODE 1, put
 # back to 0) at the other corner, the length and the width, `<30` and a bare number at the other
 # corner. Each box read with LIST.
-# Seen: a) 9.7409 x 5.6239 on the 30° line; b) 8.6603,5; c) 8.9408,4.4790 (a direct distance), c2)
-# 10,0.0338; d) 10.0742,6.0663 (Ortho not applied); e) length 10.0742 along X, width 6.0663; e3)
-# along X, +Y; f) the cursor at 15,0: -Y; at 5,0 and -5,0: +Y.
+# A first run with dynamic input still on (a COM DYNMODE 0 did not hold): c) `10` was the box's
+# length, the width the cursor's (10 by 5.0467). Seen: a) 9.7409 x 5.6239 on the 30° line; b)
+# 8.6603,5; c) 8.9408,4.4790 (a direct distance), c2) 10,0.0338; d) 10.0742,6.0663 (Ortho not
+# applied); e) length 10.0742 along X, width 6.0663; e3) along X, +Y; f) the cursor at 15,0: -Y; at
+# 5,0 and -5,0: +Y.
 source "$(dirname "$0")/lib.sh"
 list() { esc; $A com send "_LIST _L \n" >/dev/null; $A com hist 16 | grep -i 'length\|width\|position\|rotation\|height'; }
 start() { # $1 typed

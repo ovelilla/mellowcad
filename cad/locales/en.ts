@@ -1479,6 +1479,7 @@ export const en: EngineCatalog = {
       "center": "Center",
       "radius": "Radius",
       "diameter": "Diameter",
+      "height": "Height",
       "firstPoint": "First point",
       "secondPoint": "Second point",
       "thirdPoint": "Third point",

@@ -2123,6 +2123,7 @@ export const ptBR: EngineLocale = {
       "center": "Centro",
       "radius": "Raio",
       "diameter": "Diâmetro",
+      "height": "Altura",
       "firstPoint": "Primeiro ponto",
       "secondPoint": "Segundo ponto",
       "thirdPoint": "Terceiro ponto",

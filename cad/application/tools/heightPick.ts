@@ -30,13 +30,17 @@ export function pickedHeight(
   view: Viewport
 ): number {
   const line = lineOnScreen(view, base, axis)
-  if (Math.hypot(line.dir.x, line.dir.y) < MIN_AXIS_ON_SCREEN * view.scale) {
-    return length3(sub3(input.point, base))
-  }
+  if (!axisOnScreen(view, axis)) return length3(sub3(input.point, base))
   if (input.snap || input.tracking) {
     return dot3(sub3(input.point, base), axis)
   }
   return footOnScreen(line, input.screen)?.t ?? 0
+}
+
+/** Whether `axis` (a unit vector) shows on the screen, as it does off the plan. */
+export function axisOnScreen(view: Viewport, axis: Vec3): boolean {
+  const { dir } = lineOnScreen(view, { x: 0, y: 0, z: 0 }, axis)
+  return Math.hypot(dir.x, dir.y) >= MIN_AXIS_ON_SCREEN * view.scale
 }
 
 /**
