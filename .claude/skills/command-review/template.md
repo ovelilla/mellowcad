@@ -400,4 +400,5 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
 - 2026-10-29, Clipboard: the console's clipboard, a Lisp stub, DYNMODE under COM, a menu key in U
   (annex-probes.md §2, §4); a run awaiting a port (§4.1).
 - 2026-11-03, 3D primitives: QAFLAGS first, a snap's help, the capped log (annex-probes.md §2,
-  §5); a refusal's words per input function (annex-catalogs.md §3).
+  §5); a refusal's words per input function (annex-catalogs.md §3); the desktop's cursor on a
+  line, a keyword mid-jig, the look by PNGs (annex-probes.md §4).

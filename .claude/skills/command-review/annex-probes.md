@@ -277,6 +277,13 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   earlier steps mix in. A status-bar click right after `com new` is lost: click the drawing
   first (Workspace review, WSD).
 
+- A cursor exactly on a line, which a hand-placed pixel never is, comes from SNAPMODE 1 with
+  SNAPUNIT 1, put back after (primitives/d03 f). A keyword typed mid-jig freezes what the jig read
+  (CONE's Top in the plane of the height the cursor gave as `T` was typed, d02): move the cursor
+  to a known place before typing one. The browser's look against the desktop's screenshots goes to
+  one subagent given the PNGs and the known gaps first (the crosshair off the plan, the Down list),
+  or it reports them (3D primitives, PDJ).
+
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).
 
