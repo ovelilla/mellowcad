@@ -1,0 +1,11 @@
+_CIRCLE
+0,0
+5
+_EXTRUDE
+_L
+
+5
+_U
+_REDO
+(sslength (ssget "X"))
+(cdr (assoc 0 (entget (entlast))))

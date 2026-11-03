@@ -1,0 +1,24 @@
+_ZOOM
+_W
+-10,-10
+100,100
+_QAFLAGS
+2
+_CIRCLE
+0,0
+5
+_LINE
+20,0,0
+20,0,10
+
+_EXTRUDE
+_C
+-6,-6
+6,6
+
+_END
+20,0,10
+_LIST
+_L
+
+(getvar "LASTPOINT")

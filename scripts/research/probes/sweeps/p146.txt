@@ -1,0 +1,11 @@
+_PLINE
+0,0
+10,10
+10,0
+0,10
+_C
+_EXTRUDE
+_L
+
+5
+(sslength (ssget "X"))

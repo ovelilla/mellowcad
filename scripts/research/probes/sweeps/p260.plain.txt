@@ -1,0 +1,7 @@
+_RECTANG
+0,0
+10,10
+_PRESSPULL
+
+_U
+(sslength (ssget "X"))

@@ -1,0 +1,22 @@
+_QAFLAGS
+2
+_RECTANG
+10,0
+20,5
+(setvar "LASTPOINT" '(7.0 7.0 7.0))
+_REVOLVE
+_L
+
+0,0
+0,10
+_ST
+5,5,0
+'_SETVAR
+LASTPOINT
+
+90
+(getvar "LASTPOINT")
+(setvar "AUPREC" 8)
+_LIST
+_L
+

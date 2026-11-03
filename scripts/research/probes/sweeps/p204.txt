@@ -1,0 +1,11 @@
+_RECTANG
+10,0
+20,5
+_REVOLVE
+_MO
+FOO
+
+_L
+
+_Y
+90

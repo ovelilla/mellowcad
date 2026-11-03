@@ -1,0 +1,19 @@
+_QAFLAGS
+2
+_PLINE
+0,0
+10,0
+10,10
+_C
+_EXTRUDE
+_L
+
+_T
+10
+4
+_EXPLODE
+_L
+
+(sslength (ssget "X"))
+MPDUMP
+-

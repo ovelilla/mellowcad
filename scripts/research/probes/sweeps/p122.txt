@@ -1,0 +1,13 @@
+_RECTANG
+10,0
+20,5
+(setvar "LASTPOINT" '(7.0 7.0 7.0))
+_REVOLVE
+_L
+
+_X
+'_SETVAR
+LASTPOINT
+
+90
+(getvar "LASTPOINT")

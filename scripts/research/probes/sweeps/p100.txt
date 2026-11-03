@@ -1,0 +1,9 @@
+(getvar "ACADVER")
+(getvar "_VERNUM")
+_RECTANG
+0,0
+10,10
+_EXTRUDE
+_L
+
+5

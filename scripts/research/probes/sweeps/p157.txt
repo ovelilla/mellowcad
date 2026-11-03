@@ -1,0 +1,15 @@
+_QAFLAGS
+2
+_RECTANG
+10,0
+20,5
+_REVOLVE
+_L
+
+0,0
+0,10
+3,7,0
+(setvar "AUPREC" 8)
+_LIST
+_L
+

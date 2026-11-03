@@ -1,0 +1,19 @@
+_QAFLAGS
+2
+_CIRCLE
+50,0
+5
+(setvar "LASTPOINT" '(7.0 7.0 7.0))
+_EXTRUDE
+_L
+
+_D
+1,2,3
+'_SETVAR
+LASTPOINT
+
+4,5,9
+(getvar "LASTPOINT")
+_LIST
+_L
+

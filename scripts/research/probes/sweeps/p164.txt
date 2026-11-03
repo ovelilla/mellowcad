@@ -1,0 +1,14 @@
+_ZOOM
+_W
+-10,-10
+100,100
+_RECTANG
+0,0
+10,10
+(setvar "LASTPOINT" (quote (7.0 7.0 7.0)))
+_PRESSPULL
+57,14.9
+5
+
+(getvar "LASTPOINT")
+(sslength (ssget "X"))

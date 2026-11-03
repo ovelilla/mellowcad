@@ -1,0 +1,26 @@
+_QAFLAGS
+2
+_RECTANG
+10,0
+20,10
+_RECTANG
+30,0
+40,10
+_REGION
+_ALL
+
+_UNION
+_ALL
+
+(sslength (ssget "X"))
+_REVOLVE
+_L
+
+_Y
+90
+(sslength (ssget "X"))
+_LIST
+_ALL
+
+MPDUMP
+-

@@ -1,0 +1,13 @@
+_CIRCLE
+0,0
+5
+_EXTRUDE
+_L
+
+_D
+FOO
+
+0,0,0
+FOO
+
+0,0,5

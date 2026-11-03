@@ -1,0 +1,10 @@
+_RECTANG
+10,0
+20,5
+_REVOLVE
+_L
+
+5
+_Y
+90
+(getvar "LASTPOINT")

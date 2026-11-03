@@ -1,0 +1,12 @@
+(setvar "DELOBJ" -1)
+_RECTANG
+10,0
+20,5
+_REVOLVE
+_L
+
+_Y
+90
+FOO
+
+(sslength (ssget "X"))

@@ -1,0 +1,11 @@
+_RECTANG
+10,0
+20,5
+_REVOLVE
+_L
+
+_Y
+_EX
+
+90
+(sslength (ssget "X"))

@@ -1,0 +1,16 @@
+_PLINE
+10,0
+30,0
+30,5
+15,5
+15,15
+10,15
+_C
+(setvar "LASTPOINT" (quote (7.0 7.0 7.0)))
+_REVOLVE
+_L
+
+0,0
+0,10
+90
+(getvar "LASTPOINT")

@@ -1,0 +1,11 @@
+_CIRCLE
+0,0
+5
+_EXTRUDE
+_L
+
+'_ZOOM
+_E
+'_ORTHOMODE
+1
+5

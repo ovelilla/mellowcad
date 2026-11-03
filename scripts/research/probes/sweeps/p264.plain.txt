@@ -1,0 +1,12 @@
+_RECTANG
+10,0
+20,5
+_REVOLVE
+_L
+
+_Y
+90
+_U
+_REDO
+(sslength (ssget "X"))
+(cdr (assoc 0 (entget (ssname (ssget "X") 0))))

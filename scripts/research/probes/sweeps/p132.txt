@@ -1,0 +1,15 @@
+_QAFLAGS
+2
+_CIRCLE
+0,0
+5
+_EXTRUDE
+_L
+
+_E
+0
+-3
+-3
+_LIST
+_L
+

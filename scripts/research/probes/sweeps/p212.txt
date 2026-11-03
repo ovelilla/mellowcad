@@ -1,0 +1,16 @@
+_QAFLAGS
+2
+_UCS
+_X
+90
+_RECTANG
+10,0
+20,5
+_REVOLVE
+_L
+
+_Y
+90
+_LIST
+_L
+

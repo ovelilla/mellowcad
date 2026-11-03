@@ -1,0 +1,28 @@
+_QAFLAGS
+2
+_ELLIPSE
+_C
+0,0
+10,0
+4
+_EXTRUDE
+_L
+
+5
+_ELLIPSE
+_C
+40,0
+@10<30
+4
+_EXTRUDE
+_L
+
+5
+_ZOOM
+_W
+-15,-10
+55,15
+(mapcar (quote (lambda (m) (list m (osnap (quote (10.05 0.05 0)) m)))) (list "_end" "_mid" "_nea" "_cen" "_qua"))
+(mapcar (quote (lambda (m) (list m (osnap (quote (0.05 4.05 0)) m)))) (list "_qua" "_nea" "_cen" "_end"))
+(mapcar (quote (lambda (m) (list m (osnap (quote (5.05 3.5 0)) m)))) (list "_cen" "_nea" "_qua"))
+(mapcar (quote (lambda (m) (list m (osnap (quote (48.7 5.05 0)) m)))) (list "_end" "_qua" "_cen" "_nea"))

@@ -1,0 +1,16 @@
+_QAFLAGS
+2
+_CIRCLE
+50,0
+5
+_EXTRUDE
+_L
+
+_T
+60,10
+5
+(setvar "AUPREC" 8)
+_LIST
+_L
+
+(getvar "LASTPOINT")

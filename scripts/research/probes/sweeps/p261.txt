@@ -1,0 +1,7 @@
+_RECTANG
+0,0
+10,10
+(sssetfirst nil (ssget "_L"))
+_PRESSPULL
+
+(ssget "_I")

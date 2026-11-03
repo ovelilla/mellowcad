@@ -1,0 +1,13 @@
+(getvar "DELOBJ")
+_RECTANG
+10,0
+20,5
+_REVOLVE
+_L
+
+_Y
+90
+(sslength (ssget "X"))
+_U
+(sslength (ssget "X"))
+(cdr (assoc 0 (entget (ssname (ssget "X") 0))))

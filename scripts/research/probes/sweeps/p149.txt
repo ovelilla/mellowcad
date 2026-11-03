@@ -1,0 +1,43 @@
+(getvar "DELOBJ")
+_FILEDIA
+0
+_.SAVEAS
+2018
+swpA
+_CIRCLE
+0,0
+5
+_EXTRUDE
+_L
+
+_T
+15
+7
+(setvar "DELOBJ" 0)
+_.SAVEAS
+2018
+swpB
+_.OPEN
+swpA
+(getvar "DELOBJ")
+_CIRCLE
+50,0
+5
+_EXTRUDE
+_L
+
+_T
+
+3
+_.OPEN
+swpB
+(getvar "DELOBJ")
+_CIRCLE
+80,0
+5
+_EXTRUDE
+_L
+
+_T
+
+3

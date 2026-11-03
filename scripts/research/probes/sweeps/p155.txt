@@ -1,0 +1,15 @@
+_QAFLAGS
+2
+_UCS
+_Z
+30
+_CIRCLE
+*50,0
+5
+_EXTRUDE
+_L
+
+*53,4
+_LIST
+_L
+

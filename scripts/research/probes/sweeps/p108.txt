@@ -1,0 +1,12 @@
+_CIRCLE
+50,0
+5
+(setvar "LASTPOINT" '(7.0 7.0 7.0))
+_EXTRUDE
+_L
+
+'_SETVAR
+LASTPOINT
+
+5
+(getvar "LASTPOINT")

@@ -1,0 +1,44 @@
+_QAFLAGS
+2
+_UCS
+_X
+90
+_RECTANG
+10,0
+20,5
+_REVOLVE
+_L
+
+_Y
+
+_RECTANG
+40,0
+50,5
+_REVOLVE
+_L
+
+_Y
+90
+_PLINE
+0,20
+5,20
+0,30
+_C
+_REVOLVE
+_L
+
+_Y
+
+_UCS
+_W
+_ZOOM
+_W
+-25,-25
+55,55
+MPDUMP
+-
+(mapcar (quote (lambda (m) (list m (osnap (quote (20.05 0.05 0)) m)))) (list "_end" "_mid" "_nea" "_cen" "_qua"))
+(mapcar (quote (lambda (m) (list m (osnap (quote (0.05 20.05 0)) m)))) (list "_qua" "_nea" "_cen"))
+(mapcar (quote (lambda (m) (list m (osnap (quote (50.05 0.05 0)) m)))) (list "_end" "_mid" "_cen" "_nea"))
+(mapcar (quote (lambda (m) (list m (osnap (quote (35.4 35.4 0)) m)))) (list "_mid" "_nea" "_cen"))
+(mapcar (quote (lambda (m) (list m (osnap (quote (0.05 0.05 0)) m)))) (list "_end" "_cen" "_nea" "_nod"))

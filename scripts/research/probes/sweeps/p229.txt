@@ -1,0 +1,13 @@
+_QAFLAGS
+2
+_RECTANG
+100,0
+110,5
+_REVOLVE
+_L
+
+_Y
+0,2.5,10
+_LIST
+_L
+

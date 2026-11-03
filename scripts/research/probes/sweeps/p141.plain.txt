@@ -1,0 +1,7 @@
+_CIRCLE
+0,0
+5
+_EXTRUDE
+
+_U
+(sslength (ssget "X"))

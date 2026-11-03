@@ -1,0 +1,9 @@
+_RECTANG
+0,0
+10,10
+_EXTRUDE
+_MO
+_SO
+_L
+
+5

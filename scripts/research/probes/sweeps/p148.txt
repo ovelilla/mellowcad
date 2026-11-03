@@ -1,0 +1,11 @@
+_CIRCLE
+0,0
+5
+_LINE
+20,0
+30,0
+
+(sssetfirst nil (ssget "X"))
+_EXTRUDE
+5
+(sslength (ssget "X"))

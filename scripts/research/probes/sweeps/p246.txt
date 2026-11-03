@@ -1,0 +1,9 @@
+_RECTANG
+10,0
+20,5
+(sssetfirst nil (ssget "_L"))
+_REVOLVE
+_Y
+90
+(sslength (ssget "X"))
+(ssget "_I")
