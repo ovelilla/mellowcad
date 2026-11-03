@@ -1,0 +1,70 @@
+(setvar "LASTPOINT" '(7 7 7))
+_BOX
+1,2,0
+11,12
+5
+(getvar "LASTPOINT")
+(setvar "LASTPOINT" '(7 7 7))
+_BOX
+1,2,0
+11,12
+3,3,9
+(getvar "LASTPOINT")
+(setvar "LASTPOINT" '(7 7 7))
+_BOX
+_C
+1,2,0
+11,12
+5
+(getvar "LASTPOINT")
+(setvar "LASTPOINT" '(7 7 7))
+_BOX
+1,2,0
+_L
+10
+6
+5
+(getvar "LASTPOINT")
+(setvar "LASTPOINT" '(7 7 7))
+_BOX
+1,2,0
+_C
+10
+(getvar "LASTPOINT")
+(setvar "LASTPOINT" '(7 7 7))
+_BOX
+1,2,0
+_L
+4,6,0
+6
+5
+(getvar "LASTPOINT")
+(setvar "LASTPOINT" '(7 7 7))
+_BOX
+1,2,0
+11,12
+_2P
+0,0,1
+0,0,6
+(getvar "LASTPOINT")
+(setvar "LASTPOINT" '(7 7 7))
+_BOX
+1,2,0
+_L
+10
+3,9,0
+5
+(getvar "LASTPOINT")
+(setvar "LASTPOINT" '(7 7 7))
+_BOX
+1,2,0
+_C
+4,6,0
+(getvar "LASTPOINT")
+(setvar "LASTPOINT" '(7 7 7))
+_BOX
+1,2,0
+11,12,5
+(getvar "LASTPOINT")
+_ID
+@

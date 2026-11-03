@@ -1,0 +1,38 @@
+_LINE
+0,0
+10,0
+
+(sssetfirst nil (ssget "_X"))
+_CYLINDER
+(progn (setq s1 (ssget "_I")) (list 20 0 0))
+5
+8
+(if s1 (sslength s1) 0)
+(if (ssget "_I") (sslength (ssget "_I")) 0)
+(sssetfirst nil (ssget "_X"))
+_CONE
+(progn (setq s2 (ssget "_I")) (list 40 0 0))
+5
+8
+(if s2 (sslength s2) 0)
+(if (ssget "_I") (sslength (ssget "_I")) 0)
+(sssetfirst nil (ssget "_X"))
+_SPHERE
+(progn (setq s3 (ssget "_I")) (list 60 0 0))
+5
+(if s3 (sslength s3) 0)
+(if (ssget "_I") (sslength (ssget "_I")) 0)
+(sssetfirst nil (ssget "_X"))
+_TORUS
+(progn (setq s4 (ssget "_I")) (list 80 0 0))
+5
+1
+(if s4 (sslength s4) 0)
+(if (ssget "_I") (sslength (ssget "_I")) 0)
+(sssetfirst nil (ssget "_X"))
+_PYRAMID
+(progn (setq s5 (ssget "_I")) (list 100 0 0))
+5
+8
+(if s5 (sslength s5) 0)
+(if (ssget "_I") (sslength (ssget "_I")) 0)

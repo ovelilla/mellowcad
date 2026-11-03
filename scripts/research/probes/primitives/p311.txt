@@ -1,0 +1,13 @@
+_QAFLAGS
+2
+_PYRAMID
+0,0,0
+5
+_A
+
+_T
+0
+5
+_LIST
+_L
+

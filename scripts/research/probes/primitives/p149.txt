@@ -1,0 +1,19 @@
+_LINE
+0,0
+10,0
+
+(sssetfirst nil (ssget "_X"))
+(if (ssget "_I") (sslength (ssget "_I")) 0)
+_BOX
+(progn (setq s1 (ssget "_I")) (list 20 0 0))
+30,20
+5
+(if s1 (sslength s1) 0)
+(if (ssget "_I") (sslength (ssget "_I")) 0)
+(sssetfirst nil (ssget "_X"))
+_WEDGE
+(progn (setq s2 (ssget "_I")) (list 40 0 0))
+50,20
+5
+(if s2 (sslength s2) 0)
+(if (ssget "_I") (sslength (ssget "_I")) 0)

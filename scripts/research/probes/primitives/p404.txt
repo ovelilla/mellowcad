@@ -1,0 +1,46 @@
+_QAFLAGS
+2
+_ZOOM
+_W
+-10,-10
+40,40
+_BOX
+0,0,0
+10,20
+5
+_CYLINDER
+30,10,0
+5
+8
+(list (getvar "OSMODE") (getvar "OSNAPCOORD"))
+_OSNAPCOORD
+0
+_ID
+0.1,0.1
+_ID
+10.1,10.1
+_ID
+35.1,10.1
+_ID
+33.6,13.6
+_OSMODE
+512
+_ID
+5.1,0.1
+_ID
+33.6,13.6
+_OSMODE
+2
+_ID
+5.1,0.1
+_VPOINT
+1,-1,1
+_ZOOM
+_E
+_OSMODE
+4133
+_ID
+(trans (quote (10 20 5)) 0 1)
+(getvar "LASTPOINT")
+_ID
+(trans (quote (35 10 8)) 0 1)

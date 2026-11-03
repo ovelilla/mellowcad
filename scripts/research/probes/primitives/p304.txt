@@ -1,0 +1,12 @@
+_QAFLAGS
+2
+_PYRAMID
+_S
+4.5
+3
+0,0,0
+5
+8
+_LIST
+_L
+

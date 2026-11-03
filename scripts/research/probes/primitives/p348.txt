@@ -1,0 +1,50 @@
+(setvar "LASTPOINT" '(7 7 7))
+_TORUS
+1,2,0
+5
+1
+(getvar "LASTPOINT")
+(setvar "LASTPOINT" '(7 7 7))
+_TORUS
+1,2,0
+4,6,0
+1
+(getvar "LASTPOINT")
+(setvar "LASTPOINT" '(7 7 7))
+_TORUS
+1,2,0
+5
+4,6,0
+(getvar "LASTPOINT")
+(setvar "LASTPOINT" '(7 7 7))
+_TORUS
+1,2,0
+5
+_2P
+0,0,0
+0,0,2
+(getvar "LASTPOINT")
+(setvar "LASTPOINT" '(7 7 7))
+_TORUS
+_3P
+0,0,0
+10,0,0
+0,10,0
+1
+(getvar "LASTPOINT")
+(setvar "LASTPOINT" '(7 7 7))
+_TORUS
+_2P
+0,0,0
+10,0,0
+1
+(getvar "LASTPOINT")
+(setvar "LASTPOINT" '(7 7 7))
+_TORUS
+1,2,0
+5
+_D
+3,3,0
+(getvar "LASTPOINT")
+_ID
+@

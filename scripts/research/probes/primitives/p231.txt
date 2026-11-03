@@ -1,0 +1,13 @@
+_TORUS
+'_ZOOM
+_E
+0,0,0
+'_ORTHOMODE
+1
+10
+'_ZOOM
+_E
+_D
+'_ZOOM
+_E
+4

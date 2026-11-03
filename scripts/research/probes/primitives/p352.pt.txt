@@ -1,0 +1,11 @@
+_PYRAMID
+0,0,0
+5
+
+(getvar "CMDNAMES")
+(entlast)
+_CYLINDER
+20,0,0
+5
+
+(getvar "CMDNAMES")

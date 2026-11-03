@@ -1,0 +1,67 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,20
+5
+_BOX
+5,-5,0
+15,5
+5
+_LINE
+-5,10
+13,10
+
+_VPOINT
+1,-1,1
+_ZOOM
+_E
+(list (getvar "SCREENSIZE") (getvar "VIEWSIZE"))
+_ID
+_INT
+(trans (quote (10 5 5)) 0 1)
+0,0,0
+_ID
+_INT
+(trans (quote (10 5 0)) 0 1)
+0,0,0
+_ID
+_INT
+(trans (quote (5 0 5)) 0 1)
+0,0,0
+_ID
+_INT
+(trans (quote (0 10 0)) 0 1)
+0,0,0
+_ID
+_APP
+(trans (quote (0 10 0)) 0 1)
+0,0,0
+_ID
+_APP
+(trans (quote (10 15 5)) 0 1)
+0,0,0
+_ID
+_INT
+(trans (quote (10 15 5)) 0 1)
+0,0,0
+_ID
+_APP
+(trans (quote (10 5 5)) 0 1)
+0,0,0
+_ID
+_INT
+(trans (quote (10 20 5)) 0 1)
+0,0,0
+_ID
+_APP
+(trans (quote (10 20 5)) 0 1)
+0,0,0
+_ID
+_TAN
+(trans (quote (10 10 5)) 0 1)
+0,0,0
+_ID
+_EXT
+(trans (quote (10 25 5)) 0 1)
+0,0,0

@@ -1,0 +1,37 @@
+_-LINETYPE
+_L
+DASHED
+acadiso.lin
+
+_CELTYPE
+DASHED
+_BOX
+0,0,0
+100,60
+40
+_CYLINDER
+200,30,0
+30
+40
+_SPHERE
+330,30,30
+30
+_VPOINT
+1,-1,1
+_-PLOT
+_Y
+Model
+PublishToWeb PNG.pc3
+Sun Standard (1152.00 x 900.00 píxeles)
+_L
+_N
+_D
+_F
+_C
+_Y
+monochrome.ctb
+_Y
+_A
+C:\Users\oveli\AppData\Local\Temp\p416.png
+_N
+_Y

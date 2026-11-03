@@ -1,0 +1,35 @@
+_LINE
+0,0
+100,0
+
+_LINE
+0,0
+0,100
+
+_ZOOM
+_E
+(setvar "LASTPOINT" '(7 7 7))
+_CYLINDER
+_T
+50,0
+0,50
+10
+8
+(getvar "LASTPOINT")
+(setvar "LASTPOINT" '(7 7 7))
+_CYLINDER
+_T
+50,0
+0,50
+3,4
+8
+(getvar "LASTPOINT")
+(setvar "LASTPOINT" '(7 7 7))
+_SPHERE
+_T
+50,0
+0,50
+10
+(getvar "LASTPOINT")
+_ID
+@

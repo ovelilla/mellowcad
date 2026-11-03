@@ -1,0 +1,28 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,20
+5
+_CYLINDER
+30,10,0
+5
+20
+_SPHERE
+50,10,5
+5
+_TORUS
+75,10,0
+10
+2
+_CONE
+100,10,0
+5
+8
+_VPOINT
+1,-1,1
+_ZOOM
+_E
+(list (getvar "VIEWSIZE") (getvar "VIEWDIR"))
+(mapcar (quote (lambda (p) (list p (if (ssget (trans p 0 1)) 1 0)))) (list (quote (10 10 5)) (quote (5 10 5)) (quote (5 10 0)) (quote (35 10 10)) (quote (30 10 10)) (quote (50 10 5)) (quote (50 10 10)) (quote (55 10 5)) (quote (75 10 0)) (quote (85 10 2)) (quote (100 10 4)) (quote (102.5 10 4))))
+(mapcar (quote (lambda (w) (list w (if (ssget (car w) (trans (cadr w) 0 1) (trans (caddr w) 0 1)) 1 0)))) (list (list "_C" (quote (49.8 9.8 5)) (quote (50.2 10.2 5))) (list "_C" (quote (4.8 9.8 5)) (quote (5.2 10.2 5)))))

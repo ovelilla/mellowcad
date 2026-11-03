@@ -1,0 +1,8 @@
+_LINE
+0,0
+'_CYLINDER
+'_CONE
+'_SPHERE
+'_TORUS
+10,0
+

@@ -1,0 +1,184 @@
+_QAFLAGS
+2
+_CYLINDER
+_E
+0,0,0
+10,0
+5,3
+8
+_CONE
+30,0,0
+5
+_T
+2
+8
+_CONE
+_E
+50,0,0
+60,0
+55,3
+8
+_PYRAMID
+70,0,0
+5
+_T
+2
+8
+_WEDGE
+90,0,0
+100,20
+5
+_TORUS
+130,0,0
+2
+4
+_TORUS
+150,0,0
+-4
+5
+_VPOINT
+1,-1,1
+_ZOOM
+_C
+(trans (quote (5 0 4)) 0 1)
+25
+_ID
+_QUA
+(trans (quote (10 0 8)) 0 1)
+0,0,0
+_ID
+_CEN
+(trans (quote (10 0 8)) 0 1)
+0,0,0
+_ID
+_END
+(trans (quote (10 0 8)) 0 1)
+0,0,0
+_ID
+_QUA
+(trans (quote (5 3 0)) 0 1)
+0,0,0
+_ID
+_NEA
+(trans (quote (5 3 4)) 0 1)
+0,0,0
+_ID
+_CEN
+(trans (quote (5 3 4)) 0 1)
+0,0,0
+_ZOOM
+_C
+(trans (quote (30 0 4)) 0 1)
+25
+_ID
+_CEN
+(trans (quote (32 0 8)) 0 1)
+0,0,0
+_ID
+_QUA
+(trans (quote (32 0 8)) 0 1)
+0,0,0
+_ID
+_END
+(trans (quote (32 0 8)) 0 1)
+0,0,0
+_ID
+_QUA
+(trans (quote (35 0 0)) 0 1)
+0,0,0
+_ZOOM
+_C
+(trans (quote (55 0 4)) 0 1)
+25
+_ID
+_END
+(trans (quote (55 0 8)) 0 1)
+0,0,0
+_ID
+_NOD
+(trans (quote (55 0 8)) 0 1)
+0,0,0
+_ID
+_CEN
+(trans (quote (60 0 0)) 0 1)
+0,0,0
+_ID
+_QUA
+(trans (quote (55 3 0)) 0 1)
+0,0,0
+_ZOOM
+_C
+(trans (quote (70 0 4)) 0 1)
+25
+_ID
+_END
+(trans (quote (72 2 8)) 0 1)
+0,0,0
+_ID
+_MID
+(trans (quote (72 0 8)) 0 1)
+0,0,0
+_ID
+_MID
+(trans (quote (75 0 0)) 0 1)
+0,0,0
+_ID
+_END
+(trans (quote (75 5 0)) 0 1)
+0,0,0
+_ID
+_MID
+(trans (quote (73.5 3.5 4)) 0 1)
+0,0,0
+_ZOOM
+_C
+(trans (quote (95 10 2.5)) 0 1)
+30
+_ID
+_MID
+(trans (quote (95 0 2.5)) 0 1)
+0,0,0
+_ID
+_END
+(trans (quote (90 0 5)) 0 1)
+0,0,0
+_ID
+_MID
+(trans (quote (90 10 5)) 0 1)
+0,0,0
+_ID
+_MID
+(trans (quote (100 10 0)) 0 1)
+0,0,0
+_ZOOM
+_C
+(trans (quote (130 0 0)) 0 1)
+20
+_ID
+_CEN
+(trans (quote (136 0 0)) 0 1)
+0,0,0
+_ID
+_NEA
+(trans (quote (136 0 0)) 0 1)
+0,0,0
+_ID
+_QUA
+(trans (quote (136 0 0)) 0 1)
+0,0,0
+_ID
+_CEN
+(trans (quote (130 0 0)) 0 1)
+0,0,0
+_ZOOM
+_C
+(trans (quote (150 0 0)) 0 1)
+8
+_ID
+_CEN
+(trans (quote (151 0 0)) 0 1)
+0,0,0
+_ID
+_NEA
+(trans (quote (151 0 0)) 0 1)
+0,0,0

@@ -1,0 +1,23 @@
+_QAFLAGS
+2
+_CIRCLE
+0,0,0
+5
+_CYLINDER
+20,0,0
+5
+8
+_TORUS
+40,0,0
+2
+4
+_TORUS
+60,0,0
+-4
+5
+_ZOOM
+_W
+-10,-10
+70,10
+(mapcar (quote (lambda (p) (list p (osnap p "_cen")))) (list (quote (0.2 0.1 0)) (quote (20.2 0.1 0)) (quote (40.05 0.05 0)) (quote (60.05 0.05 0)) (quote (60.5 0.05 0)) (quote (44 0.05 0)) (quote (40.05 4 0)) (quote (42.8284 2.8284 0))))
+(mapcar (quote (lambda (p) (list p (if (ssget p) 1 0)))) (list (quote (40 0)) (quote (44 0)) (quote (40 4)) (quote (36 0)) (quote (40 -4)) (quote (42.8284 2.8284)) (quote (37.1716 2.8284)) (quote (45.6542 0)) (quote (46 0)) (quote (43.2361 0)) (quote (60 0)) (quote (60.5 0)) (quote (60 0.5)) (quote (60.5 0.5)) (quote (60.95 0))))

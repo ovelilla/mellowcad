@@ -1,0 +1,90 @@
+_QAFLAGS
+2
+_CYLINDER
+_E
+0,0,0
+10,0
+5,3
+8
+_CONE
+30,0,0
+5
+_T
+2
+8
+_CONE
+_E
+50,0,0
+60,0
+55,3
+8
+_PYRAMID
+70,0,0
+5
+_T
+2
+8
+_WEDGE
+90,0,0
+100,20
+5
+_TORUS
+130,0,0
+2
+4
+_TORUS
+150,0,0
+-4
+5
+_ZOOM
+_W
+-5,-10
+15,10
+(mapcar (quote (lambda (m) (list m (osnap (quote (10.1 0.1 0)) m)))) (list "_cen" "_qua" "_end" "_mid" "_nea" "_int" "_gcen" "_nod"))
+(mapcar (quote (lambda (m) (list m (osnap (quote (5.1 3.1 0)) m)))) (list "_cen" "_qua" "_nea"))
+_LINE
+5,20
+_TAN
+7.1,2.6
+
+_LIST
+_L
+
+_ZOOM
+_W
+20,-10
+40,10
+(mapcar (quote (lambda (m) (list m (osnap (quote (32.05 0.05 0)) m)))) (list "_cen" "_qua" "_end" "_nea"))
+(mapcar (quote (lambda (m) (list m (osnap (quote (35.05 0.05 0)) m)))) (list "_cen" "_qua" "_end" "_nea"))
+_ZOOM
+_W
+45,-10
+65,10
+(mapcar (quote (lambda (m) (list m (osnap (quote (55.05 0.05 0)) m)))) (list "_end" "_cen" "_nod" "_nea"))
+(mapcar (quote (lambda (m) (list m (osnap (quote (60.05 0.05 0)) m)))) (list "_cen" "_qua" "_end"))
+_ZOOM
+_W
+60,-10
+80,10
+(mapcar (quote (lambda (m) (list m (osnap (quote (72.05 2.05 0)) m)))) (list "_end" "_int" "_mid" "_nea"))
+(mapcar (quote (lambda (m) (list m (osnap (quote (72.05 0.05 0)) m)))) (list "_mid" "_nea" "_end"))
+(mapcar (quote (lambda (m) (list m (osnap (quote (75.05 0.05 0)) m)))) (list "_mid" "_nea"))
+_ZOOM
+_W
+85,-5
+105,25
+(mapcar (quote (lambda (m) (list m (osnap (quote (95.05 0.05 0)) m)))) (list "_mid" "_nea"))
+(mapcar (quote (lambda (m) (list m (osnap (quote (90.05 0.05 0)) m)))) (list "_end"))
+(mapcar (quote (lambda (m) (list m (osnap (quote (100.05 10.05 0)) m)))) (list "_mid" "_end"))
+_ZOOM
+_W
+120,-10
+140,10
+(mapcar (quote (lambda (m) (list m (osnap (quote (136.05 0.05 0)) m)))) (list "_cen" "_nea" "_qua" "_end"))
+(mapcar (quote (lambda (m) (list m (osnap (quote (130.05 0.05 0)) m)))) (list "_cen" "_end" "_nea"))
+_ZOOM
+_W
+145,-5
+155,5
+(mapcar (quote (lambda (m) (list m (osnap (quote (151.02 0.02 0)) m)))) (list "_cen" "_nea" "_qua" "_end"))
+(mapcar (quote (lambda (m) (list m (osnap (quote (150.02 0.02 0)) m)))) (list "_cen" "_end" "_nea"))

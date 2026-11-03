@@ -1,0 +1,42 @@
+_QAFLAGS
+2
+_ZOOM
+_W
+-12,-12
+12,12
+_SPHERE
+0,0,0
+10
+(list (getvar "ISOLINES") (getvar "DISPSILH"))
+_ID
+_CEN
+3.049,1.263
+0,0,0
+(if (ssget (quote (3.049 1.263))) 1 0)
+_ISOLINES
+16
+_ID
+_CEN
+3.049,1.263
+0,0,0
+(if (ssget (quote (3.049 1.263))) 1 0)
+_REGEN
+_ID
+_CEN
+3.049,1.263
+0,0,0
+(if (ssget (quote (3.049 1.263))) 1 0)
+_ISOLINES
+0
+_ID
+_CEN
+10,0
+0,0,0
+(if (ssget (quote (10 0))) 1 0)
+_BOX
+20,0,0
+'_ISOLINES
+8
+30,20
+5
+(getvar "ISOLINES")
