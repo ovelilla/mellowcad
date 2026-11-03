@@ -2,7 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import { type CadHarness, createHarness } from "../../test/harness"
 import type { Vec3 } from "../geometry/Vec3"
-import { brepIsClosed } from "../geometry/solids"
+import { brepBox, brepIsClosed } from "../geometry/solids"
 import type { Solid3dEntity, SolidPrimitive } from "../domain/entities"
 import { THEME } from "../scene/theme"
 
@@ -127,6 +127,41 @@ describe("a primitive's grips in the editor (solid/g01, d10)", () => {
     sphere.escape().select(solid(sphere).id)
     sphere.click(at(5, 0, 0)).click(at(7, 0, 0))
     expect(primitive(sphere, "sphere").radius).toBeCloseTo(7, 9)
+  })
+})
+
+describe("a composite's grip (desktop regions/d03)", () => {
+  /** BOX 0,0,0 30,20,10 united with CYLINDER 30,10,0 r 8 h 10, selected: d03's. */
+  function union(view?: "SEISO" | "FRONT"): CadHarness {
+    const cad = createHarness()
+    answer(cad, "_BOX", "0,0,0", "30,20", "10")
+    answer(cad, "_CYLINDER", "30,10,0", "8", "10")
+    answer(cad, "_UNION", "ALL", "")
+    if (view) answer(cad, "-VIEW", `_${view}`)
+    cad.escape().select(solid(cad).id)
+    return cad
+  }
+
+  it("shows one, at the box's X-Y centre and lowest Z, in plan and off it", () => {
+    expect(solid(union()).primitive).toBeUndefined()
+    expect(gripCount(union())).toBe(1)
+    expect(gripCount(union("SEISO"))).toBe(1)
+    expect(gripCount(union("FRONT"))).toBe(1)
+  })
+
+  it("moves it whole, @10,0 typed, one undo step", () => {
+    const cad = union()
+    cad.click(at(19, 10, 0))
+    answer(cad, "@10,0")
+    const box = brepBox(solid(cad).brep)!
+    expect(box.min.x).toBeCloseTo(10, 9)
+    expect(box.max.x).toBeCloseTo(48, 9)
+    expect(box.min.y).toBeCloseTo(0, 9)
+    expect(box.min.z).toBeCloseTo(0, 9)
+    cad.escape()
+    answer(cad, "_U")
+    expect(brepBox(solid(cad).brep)!.min.x).toBeCloseTo(0, 9)
+    expect(cad.commandLog().at(-1)).toBe("Grip Edit")
   })
 })
 

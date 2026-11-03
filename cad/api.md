@@ -1036,7 +1036,10 @@ export type { PropertiesFilterOption }
 export interface PropertiesFilterOption {
     /** The type it narrows the palette to; null is All. */
     readonly type: ObjectType | null;
-    /** `All (6)`, `Line (5)`, `Array (Rectangular) (1)`. */
+    /**
+     * `All (6)`, `Line (5)`, `Array (Rectangular) (1)`; one object selected
+     * alone, its type without the count, `Line`.
+     */
     readonly label: string;
 }
 
@@ -2527,9 +2530,10 @@ export declare class EngineText {
     propertyTitle(id: keyof Property["title"], count?: number): string;
     /**
      * An entry of the Properties palette's object type drop-down: `All (6)`,
-     * `Line (5)`, `Array (Rectangular) (1)`.
+     * `Line (5)`, `Array (Rectangular) (1)`; with no count, the type alone
+     * (`Line`), as one object selected alone is named.
      */
-    propertiesFilter(type: ObjectType | null, count: number): string;
+    propertiesFilter(type: ObjectType | null, count?: number): string;
     propertyGroup(id: keyof Property["group"]): string;
     propertyRow(id: keyof Property["row"]): string;
     propertyValue(id: keyof Property["value"]): string;

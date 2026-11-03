@@ -323,7 +323,8 @@ folded below, and the panel's width and fold are remembered; the object type dro
 `Todos (7)`, `Línea (3)`, `Referencia a bloque (2)`, `Círculo (1)`, `Matriz (rectangular) (1)`,
 e01), an array a type of its own named by its kind (`Array (Polar)`, `Array (Path)`, es
 `Matriz (polar)`, `Matriz (de ruta)`: AcArrayRes 39923, 887, unseen in the drop-down), only the type
-when the selection has one — narrows what the palette shows and edits ("modify the properties of a
+when the selection has one, and one object alone named without its count (`Sólido 3D`, desktop
+regions/d03-4; several of one type keep it, `Circle (2)`, unprobed) — narrows what the palette shows and edits ("modify the properties of a
 single object type at a time") and keeps the selection; it goes back to All when the selection
 changes; an edit in the palette is one undo step U and REDO name `Modify Property` (desktop
 arrays/d20), a palette edit while a command runs that command's; `No selection`

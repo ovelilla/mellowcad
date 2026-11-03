@@ -154,7 +154,10 @@ export function objectType(entity: Entity): ObjectType {
 export interface PropertiesFilterOption {
   /** The type it narrows the palette to; null is All. */
   readonly type: ObjectType | null
-  /** `All (6)`, `Line (5)`, `Array (Rectangular) (1)`. */
+  /**
+   * `All (6)`, `Line (5)`, `Array (Rectangular) (1)`; one object selected
+   * alone, its type without the count, `Line`.
+   */
   readonly label: string
 }
 

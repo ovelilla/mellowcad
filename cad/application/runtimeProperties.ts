@@ -581,7 +581,11 @@ export function buildPropertiesUi(
     .sort(([, a], [, b]) => b - a)
     .map(([type, count]) => ({
       type,
-      label: text.propertiesFilter(type, count),
+      // One object alone is named without its count (desktop regions/d03-4).
+      label: text.propertiesFilter(
+        type,
+        entities.length === 1 ? undefined : count
+      ),
     }))
   const filters: PropertiesFilterOption[] =
     types.length > 1

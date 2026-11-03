@@ -164,17 +164,20 @@ export class EngineText {
 
   /**
    * An entry of the Properties palette's object type drop-down: `All (6)`,
-   * `Line (5)`, `Array (Rectangular) (1)`.
+   * `Line (5)`, `Array (Rectangular) (1)`; with no count, the type alone
+   * (`Line`), as one object selected alone is named.
    */
-  propertiesFilter(type: ObjectType | null, count: number): string {
+  propertiesFilter(type: ObjectType | null, count?: number): string {
     const title = this.ui.property.title
-    if (type === null) return this.format(title.all, { count })
+    if (type === null) return this.format(title.all, { count: count ?? 1 })
     const name = type.endsWith("Array")
       ? this.format(this.ui.array[type.slice(0, -"Array".length) as ArrayKind])
       : type.endsWith("Dimension")
         ? this.propertyTitle(type as `${DimensionKind}Dimension`)
         : this.entity(type as EntityType, 1)
-    return this.format(title.type, { type: name, count })
+    return count === undefined
+      ? name
+      : this.format(title.type, { type: name, count })
   }
 
   propertyGroup(id: keyof Property["group"]): string {

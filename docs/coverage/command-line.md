@@ -90,7 +90,9 @@ Ctrl+9 hides and shows it, from a field too, as acad.cuix's `^C^C_commandlinehid
 here, so no undo group (**unverified**: by analogy with Ctrl+1's `GROUP PROPERTIES` it would be
 `GROUP COMMANDLINEHIDE`, unprobed) and with no question (Missing); and it comes back while something is typed — WHY docked
 into the workspace's grid: nothing floats on the drawing here, but it behaves as the floating
-one-line window AutoCAD starts with (F2 opens the text window only on a docked one)
+one-line window AutoCAD starts with (F2 opens the text window only on a docked one); its field
+hints `Type a command` only at `Command:`, and is empty while a command asks, as AutoCAD's is
+after `REGION Designe objetos:` (desktop regions/d01-1, d01-2, d02-1)
 
 **Missing:** the questions of every command but LINE, PLINE, CIRCLE, ARC, RECTANG, POLYGON, ELLIPSE,
 SPLINE, MOVE, COPY, STRETCH, ERASE, EXPLODE, JOIN, COPYCLIP, CUTCLIP, COPYBASE, ROTATE, SCALE,
@@ -304,7 +306,10 @@ PICKFIRST 0 AutoCAD ignores it, erase/p230); the lasso `pick/drag cursor` offers
 polygon's first point; PICKADD, PICKAUTO, PICKDRAG and SELECTIONPREVIEW as variables (their
 defaults are the behaviour); the Previous set lasts the session, not the drawing; a press starts a
 lasso here once it moves 4 px (`DRAG_THRESHOLD_PX`), where AutoCAD's goes past 7 px across and 8
-down, 6 and 6 still a click (desktop erase/d15, at `Command:`, PICKBOX 3 or 10 alike)
+down, 6 and 6 still a click (desktop erase/d15, at `Command:`, PICKBOX 3 or 10 alike); the
+rollover glow of an object under the pick box keeps its colour under a grey halo in AutoCAD (a red
+region stays red, desktop regions/d04-1), where here a 2 px `THEME.entityHover` stroke covers it,
+every object alike (REGIONS-D80: a halo drawn under the object is a presenter change of its own)
 
 ### Ctrl+click · a solid's faces, edges and vertices (subobjects)
 

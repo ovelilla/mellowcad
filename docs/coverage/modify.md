@@ -1284,8 +1284,11 @@ unites the regions alone; p317). The first object of the set keeps its object, l
 the others erased: the first picked (regions/p314, p322; b10's oldest), the newest of what a
 window, a crossing or `ALL` finds (p315: the third of three regions, on layer C; s07: the green box
 of layer A; b01), as `ssget` lists them; a combined solid loses what made it: LIST shows `History =
-None`, `Show History = No` and its `Bounding Box`, no `Solid type` (k01), and the palette only Solid
-History. Regions are combined **plane by plane** (b08: two pairs at Z 0 and 10 give two regions;
+None`, `Show History = No` and its `Bounding Box`, no `Solid type` (k01), and the palette General and Solid History (desktop
+regions/d03-4). Selected, a combined solid shows one grip, at its box's X-Y centre and lowest Z
+(19,10,0 for a box 0,0,0–38,20,10), in plan and off it, which moves it whole as AutoCAD's
+`**STRETCH**` there does (`@10,0`: the box 10,0,0–48,20,10; desktop regions/d03, d03-5–d03-7); one
+undo step. Regions are combined **plane by plane** (b08: two pairs at Z 0 and 10 give two regions;
 p316: coplanar regions of opposite normals unite; p319: a plane's lone region is left). SUBTRACT's
 **first subset** is the first set's solids, or with none the plane of its first region (the UNION
 help's "first subset"): when nothing of the second set can be taken out of it, it says `At least
@@ -1336,8 +1339,12 @@ two (regions/p348: V10 E17 F10 there, one shell; V10 E16 F9 here, the cylinder s
 line's end vertices with the box); the order of a
 fence's find (taken as found) and of Previous's (taken as `ALL`'s), unprobed; `Previous` after
 SUBTRACT, which finds `0 found` (the erased second set) in AutoCAD and says `No previous selection
-set.` here (regions/p334); a composite's Properties palette and grips (none here, **unverified**);
-DELOBJ-like history (SOLIDHIST, SHOWHISTORY).
+set.` here (regions/p334); where a combined solid's grip lies under a turned UCS (its box is
+taken in the UCS here; d03 ran in the WCS, the turned UCS unprobed); a curved face a boolean cuts
+draws its isolines otherwise (REGIONS-D79, rule unprobed): d03-3's half cylinder outside the box
+(Front, ISOLINES 4) draws four rulings at θ ±18° and ±54° in AutoCAD, here one at θ 0, as
+`turnIsolines` steps 2π/ISOLINES from the range's start; d05-1's cylinder lying on a box draws
+about eight there, four here; DELOBJ-like history (SOLIDHIST, SHOWHISTORY).
 
 ### `SLICE` / `SL` · es `CORTE` / `CO` · pt-BR `FATIAR` / `FAT`
 

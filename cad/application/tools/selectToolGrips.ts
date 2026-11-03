@@ -1,5 +1,6 @@
 import { regionGripPoints } from "../../domain/regions"
 import { solidGrips } from "../../domain/solidGrips"
+import { brepBox } from "../../geometry/solids"
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, withZ } from "../../geometry/Vec3"
 import {
@@ -328,9 +329,24 @@ export function selectedGrips(ctx: ToolContext): Grip[] {
         break
       // A primitive's, as AutoCAD lays them (solid/g01, d10): the base's
       // centre moves it, a corner of a box's or a pyramid's is a square, the
-      // rest arrows that size it; a solid no primitive made has none here.
+      // rest arrows that size it. A composite (a boolean's) has one, moving it
+      // whole, at its box's X-Y centre and lowest Z (desktop regions/d03); a
+      // swept one's are EXTRUDE's, none here yet.
       case "solid3d": {
-        if (!entity.primitive) break
+        if (!entity.primitive) {
+          const box = entity.sweep ? null : brepBox(entity.brep)
+          if (box)
+            grips.push({
+              entityId: id,
+              role: { kind: "move" },
+              world: {
+                x: (box.min.x + box.max.x) / 2,
+                y: (box.min.y + box.max.y) / 2,
+                z: box.min.z,
+              },
+            })
+          break
+        }
         for (const grip of solidGrips(entity.primitive, gripView(ctx))) {
           const sizes = grip.role.kind !== "move"
           grips.push({

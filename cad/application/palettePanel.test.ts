@@ -131,15 +131,42 @@ describe("the Properties palette's object type drop-down", () => {
     expect(properties.info?.count).toBe(3)
   })
 
-  it("has one entry, the type, when the selection is of one type", () => {
+  it("has one entry, the type with its count, when the selection is of one type", () => {
+    const cad = createHarness({
+      entities: [
+        circleOf(p(0, 0), 10, { id: "C1" }),
+        circleOf(p(50, 0), 10, { id: "C2" }),
+      ],
+    })
+    cad.select("C1", "C2")
+    expect(cad.state().properties.filters).toEqual([
+      { type: "circle", label: "Circle (2)" },
+    ])
+    expect(cad.state().properties.filter).toBe("circle")
+  })
+
+  // desktop regions/d03-4: a solid selected alone reads `Sólido 3D`.
+  it("names one object alone by its type, without the count (desktop regions/d03-4)", () => {
     const cad = createHarness({
       entities: [circleOf(p(0, 0), 10, { id: "C1" })],
     })
     cad.select("C1")
     expect(cad.state().properties.filters).toEqual([
-      { type: "circle", label: "Circle (1)" },
+      { type: "circle", label: "Circle" },
     ])
-    expect(cad.state().properties.filter).toBe("circle")
+    const solid = createHarness({ locale: es })
+    for (const text of ["_BOX", "0,0,0", "30,20", "10"]) {
+      solid.runtime.setCommandLineText(text)
+      solid.runtime.submitCommandLine()
+    }
+    solid.selectAll()
+    expect(
+      solid.state().properties.filters.map((entry) => entry.label)
+    ).toEqual(["Sólido 3D"])
+    const array = withArray(0, 0, 0, es)
+    expect(
+      array.state().properties.filters.map((entry) => entry.label)
+    ).toEqual(["Matriz (rectangular)"])
   })
 
   it("is empty with nothing selected", () => {

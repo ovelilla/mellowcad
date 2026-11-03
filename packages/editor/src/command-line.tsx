@@ -85,7 +85,11 @@ export function CommandLine({
           lang={lang}
           aria-label={t("label")}
           className="h-full min-w-0 flex-1 bg-transparent text-foreground uppercase outline-none placeholder:text-faint-foreground placeholder:normal-case"
-          placeholder={t("placeholder")}
+          // AutoCAD's hint is `Command:`'s alone: a command's prompt leaves
+          // the field empty (desktop regions/d01-2, d02-1).
+          placeholder={
+            state.commandLine.command === null ? t("placeholder") : undefined
+          }
         />
         {/* The arrow at the command window's right end ("Press F2. Click the
             arrow at the right end of the command window"). */}
