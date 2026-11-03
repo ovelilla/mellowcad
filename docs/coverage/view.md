@@ -251,6 +251,17 @@ are exact); OBSCUREDLTYPE, OBSCUREDCOLOR, HALOGAP, INTERSECTIONDISPLAY and the V
 solids faceted (p04), and in Wireframe switches to Hidden ("HIDE command after save causes items
 to vanish")
 
+### `REGEN` / `RE` / `REGENALL` / `REA` · es `REGEN` / `RG` / `REGENT` / `RGT` · pt-BR `REGEN` / `RG` / `REGENTUDO` / `RGT`
+
+**Implemented:** both redraw and say `Regenerating model.` (es and pt-BR `Regenerando modelo.`),
+asking nothing; a step U names (`REGEN`, `REGENALL`; es `REGENT`, pt-BR `REGENTUDO`) and takes
+nothing back with, saying no more; not transparent (`** That command may not be invoked
+transparently **`, then the prompt's refusal, `Invalid point.` at LINE's first; primitives/p502).
+WHY nothing to rebuild: every object is drawn from the drawing as it is, so what AutoCAD shows only
+after a REGEN shows here at once: a solid's isolines under a new ISOLINES (p417, PRIM-D62)
+
+**Missing:** REGENALL's other viewports (one viewport here, so the two do the same)
+
 ### ViewCube (top right)
 
 **Implemented:** the 26 parts, oriented to the current UCS (NAVVCUBEORIENT 1): a click looks along

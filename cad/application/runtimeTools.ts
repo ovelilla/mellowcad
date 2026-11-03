@@ -87,6 +87,7 @@ import { AuPrecTool } from "./tools/AuPrecTool"
 import type { SystemVariableTool } from "./tools/SystemVariableTool"
 import { UndoTool } from "./tools/UndoTool"
 import { MredoTool } from "./tools/MredoTool"
+import { RegenTool } from "./tools/RegenTool"
 import { OsnapTool } from "./tools/OsnapTool"
 import { SnapTool } from "./tools/SnapTool"
 import { ColorTool } from "./tools/ColorTool"
@@ -230,6 +231,8 @@ export function defaultTools(
     new OrbitTool(),
     new NavVCubeTool(),
     new VsCurrentTool(),
+    new RegenTool("regen"),
+    new RegenTool("regenall"),
     new FillTool(),
     new LtScaleTool(),
     // AUPREC typed names SETVAR's last variable too (p162).

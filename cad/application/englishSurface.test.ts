@@ -2281,6 +2281,9 @@ describe("the engine's English surface", () => {
         .do("C", (c) => answer(c, "C"))
         .do("VSCURRENT 2", (c) => c.command("VSCURRENT"))
         .do("2", (c) => answer(c, "2"))
+        .do("REGEN", (c) => c.command("REGEN"))
+        .do("U names it", (c) => c.command("U"))
+        .do("REA", (c) => c.command("REA"))
     )
   })
 

@@ -93,6 +93,8 @@ export const ar: EngineLocale = {
       "orbit": "مدار ثلاثي الأبعاد",
       "navvcube": "مكعب العرض",
       "vscurrent": "الأنماط المرئية",
+      "regen": "إعادة التوليد",
+      "regenall": "إعادة توليد الكل",
       "ltscale": "مقياس نوع الخط",
       "auprec": "دقة الزوايا",
       "setvar": "متغيرات النظام",

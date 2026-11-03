@@ -162,6 +162,8 @@ export const COMMAND_FILING: Readonly<Record<string, Filing>> = {
   "3DORBIT": { group: "inquiry" },
   NAVVCUBE: { group: "inquiry" },
   VSCURRENT: { group: "inquiry" },
+  REGEN: { group: "inquiry" },
+  REGENALL: { group: "inquiry" },
   FILL: { group: "inquiry" },
   UNITS: { group: "inquiry" },
   CLEANSCREENON: { group: "inquiry" },

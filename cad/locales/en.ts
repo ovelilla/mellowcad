@@ -93,6 +93,8 @@ export const en: EngineCatalog = {
       "orbit": "3D Orbit",
       "navvcube": "ViewCube",
       "vscurrent": "Visual Styles",
+      "regen": "Regen",
+      "regenall": "Regen All",
       "ltscale": "Linetype scale",
       "auprec": "Angle precision",
       "setvar": "System variables",
@@ -1105,6 +1107,14 @@ export const en: EngineCatalog = {
       "VSCURRENT": [
         "VSCURRENT",
         "VS"
+      ],
+      "REGEN": [
+        "REGEN",
+        "RE"
+      ],
+      "REGENALL": [
+        "REGENALL",
+        "REA"
       ],
       "UNITS": [
         "UNITS",

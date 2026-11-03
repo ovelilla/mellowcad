@@ -93,6 +93,8 @@ export const es: EngineLocale = {
       "orbit": "Órbita 3D",
       "navvcube": "ViewCube",
       "vscurrent": "Estilos visuales",
+      "regen": "Regenerar",
+      "regenall": "Regenerar todo",
       "ltscale": "Escala de tipo de línea",
       "auprec": "Precisión de ángulos",
       "setvar": "Variables de sistema",
@@ -1090,6 +1092,14 @@ export const es: EngineLocale = {
       "VSCURRENT": [
         "ESTVISACTUAL",
         "EVA"
+      ],
+      "REGEN": [
+        "REGEN",
+        "RG"
+      ],
+      "REGENALL": [
+        "REGENT",
+        "RGT"
       ],
       "UNITS": [
         "UNIDADES",

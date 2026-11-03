@@ -419,6 +419,9 @@ const RAIL_EXCLUDED = new Set([
   "navvcube",
   // VSCURRENT is the viewport controls' visual style list, not built.
   "vscurrent",
+  // REGEN and REGENALL are typed: no panel here offers them.
+  "regen",
+  "regenall",
   // FILL is typed, as AutoCAD's: no panel offers it.
   "fill",
   "ltscale",

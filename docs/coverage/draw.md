@@ -1023,7 +1023,10 @@ ACIS's do (p01's MPDUMP). It keeps its primitive as LIST and the palette show it
 `Show History = No`, `Solid type = Box`, `Position` (its base's centre), `Normal` (when not the
 UCS's Z), `Length`, `Width`, `Height`, `Rotation` (its length's heading on the UCS's XY plane), in
 the current UCS (p01, p06, p13, t02). It draws in 2D Wireframe as its edges, a plane having no
-isolines (d01: ISOLINES 4 and 16 draw a box alike; ISOLINES is saved with the drawing); it is
+isolines (d01: ISOLINES 4 and 16 draw a box alike; ISOLINES is saved with the drawing; a new one
+redraws every solid at once, where AutoCAD waits for REGEN, view.md, p417), on the current layer in
+CECOLOR, CELTYPE and CELWEIGHT, its edges and isolines dashed under a dashed linetype (p415, p420);
+it is
 picked by its edges, in plan and off it, and a window, a crossing and a fence take it by them, a
 solid of curved faces by its isolines too (primitives/p405, p406); a point typed at `Select
 objects:` picks, or starts a window, at its own pixel, as a click there (p426: `55,10,5` finds a
@@ -1075,7 +1078,8 @@ pick is passed over; FILLETEDGE and CHAMFEREDGE round and bevel them, modify.md)
 open polyline, arc, elliptical arc, or open spline expected.  Select a supported object:` (here
 discarded, as a region); LIST of a solid with no primitive (none is made yet; here its History
 lines alone); Solid History's Record History (SOLIDHIST) and Show History; its 3D Visualization's
-Material row; the visual styles VSCURRENT lacks (view.md: Hidden and Conceptual are built); a box turned 180 by its corners runs its edges
+Material row; a linetype scale of its own (none here: CELTSCALE, properties.md), which AutoCAD
+leaves at 1 on a solid whatever CELTSCALE says (p421); the visual styles VSCURRENT lacks (view.md: Hidden and Conceptual are built); a box turned 180 by its corners runs its edges
 as p01's mirrored (p123's MPDUMP: the far X's top edge up the Y), here as a box turned, which UCS
 OBject's X on that edge would read. **Unverified**: a Cube by a point from the centre, doubled here
 as Length's (p500); which side a typed width takes with the cursor on the length's line, and Ortho

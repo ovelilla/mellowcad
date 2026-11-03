@@ -353,6 +353,8 @@ export const TOOL_COMMANDS: Readonly<Record<string, string>> = {
   orbit: "3DORBIT",
   navvcube: "NAVVCUBE",
   vscurrent: "VSCURRENT",
+  regen: "REGEN",
+  regenall: "REGENALL",
   fill: "FILL",
   ltscale: "LTSCALE",
   auprec: "AUPREC",

@@ -1124,6 +1124,95 @@ describe("a 3D solid", () => {
     expect(read.settings.isolines).toBe(16)
   })
 
+  it("takes ISOLINES 0 to 2047, refusing FOO, -1 and 2048 (solid/v01)", () => {
+    const cad = console()
+    expect(
+      written(cad, "ISOLINES", "FOO", "-1", "2048", "2047", "ISOLINES", "0")
+    ).toEqual([
+      "ISOLINES",
+      "Enter new value for ISOLINES <4>: FOO",
+      "Requires an integer between 0 and 2047.",
+      "Enter new value for ISOLINES <4>: -1",
+      "Requires an integer between 0 and 2047.",
+      "Enter new value for ISOLINES <4>: 2048",
+      "Requires an integer between 0 and 2047.",
+      "Enter new value for ISOLINES <4>: 2047",
+      "ISOLINES",
+      "Enter new value for ISOLINES <2047>: 0",
+    ])
+    expect(cad.runtime.document.getSettings().isolines).toBe(0)
+  })
+
+  it("takes 'ISOLINES inside BOX (p417)", () => {
+    const cad = console()
+    expect(
+      written(cad, "BOX", "20,0,0", "'ISOLINES", "8", "30,20", "5")
+    ).toEqual([
+      "BOX",
+      "Specify first corner or [Center]: 20,0,0",
+      "Specify other corner or [Cube/Length]: 'ISOLINES",
+      ">>Enter new value for ISOLINES <4>: 8",
+      "Resuming BOX command.",
+      "Specify other corner or [Cube/Length]: 30,20",
+      "Specify height or [2Point]: 5",
+    ])
+    expect(solids(cad)).toHaveLength(1)
+    expect(cad.runtime.document.getSettings().isolines).toBe(8)
+  })
+
+  // A deviation: no display list here (systemVariables.ts' WHY).
+  it("redraws the solids under a new ISOLINES at once, where AutoCAD waits for REGEN (p417)", () => {
+    const cad = console()
+    answer(cad, "ZOOM", "W", "-12,-12", "12,12", "SPHERE", "0,0,0", "10")
+    // A point of the 16 isolines' that the 4 lack.
+    expect(identified(cad, "_CEN", "3.049,1.263")).toBe(
+      "No Center found for specified point."
+    )
+    answer(cad, "ISOLINES", "16")
+    expect(identified(cad, "_CEN", "3.049,1.263")).toEqual({ x: 0, y: 0, z: 0 })
+  })
+
+  it("draws its edges and isolines in a dashed linetype (p415, p420)", () => {
+    /** A box and a sphere in red under `linetype`, seen from SE Isometric. */
+    const drawn = (linetype: string) => {
+      const cad = console()
+      answer(cad, "CECOLOR", "1", "CELTYPE", linetype)
+      answer(cad, "BOX", "0,0,0", "100,60", "40", "SPHERE", "330,30,30", "30")
+      answer(cad, "VPOINT", "1,-1,1", "ZOOM", "E")
+      cad.moveTo({ x: 1000, y: 1000, z: 0 })
+      const red = cad
+        .scene()
+        .primitives.filter(
+          (p) => "stroke" in p && p.stroke?.color === "#ff0000"
+        )
+      const edges = red.flatMap((p) => (p.kind === "segment" ? [p] : []))
+      // The sphere's isolines and outline: ellipses seen so, whole or in dashes.
+      const sweeps = red.flatMap((p) =>
+        p.kind === "ellipse" ? [Math.abs(p.endAngle - p.startAngle)] : []
+      )
+      return { edges, sweeps }
+    }
+    const continuous = drawn("CONTINUOUS")
+    expect(Math.max(...continuous.sweeps)).toBeGreaterThan(Math.PI)
+    expect(continuous.edges.every((e) => e.stroke?.dash === undefined)).toBe(
+      true
+    )
+
+    const dashed = drawn("DASHED")
+    expect(dashed.sweeps.length).toBeGreaterThan(continuous.sweeps.length)
+    expect(Math.max(...dashed.sweeps)).toBeLessThan(Math.PI / 4)
+    // Each of the box's twelve edges carries the pattern, its ends drawn as
+    // the short dashes they end in.
+    const patterned = dashed.edges.filter((e) => e.stroke?.dash)
+    expect(patterned).toHaveLength(12)
+    const dash = patterned[0].stroke!.dash![0]
+    const length = (e: (typeof dashed.edges)[number]) =>
+      Math.hypot(e.b.x - e.a.x, e.b.y - e.a.y)
+    expect(
+      dashed.edges.filter((e) => !e.stroke?.dash && length(e) > dash)
+    ).toEqual([])
+  })
+
   it("shows its box in the Properties palette (d03)", () => {
     const cad = boxed()
     cad.escape().select(last(cad).id)

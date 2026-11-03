@@ -175,7 +175,8 @@ above, explains):
   `CIRCULO2P`, `CIRCULO3P`, `ARCOICF` (Inicio, Centro, Fin), `ARCOCIF`, `ELIPSEC`, `ELIPSEARCO`.
   Rows without their own line: `UNDO` `DESHACER`, `U` → `H` (a command of its own in Spanish, "equivale a
   deshacer 1"), `REDO` `REHACER`, `SNAP` `FORZCURSOR` / `FC`, `FROM` `DESDE`,
-  `BLOCKSPALETTE` `PALETABLOQUES`.
+  `BLOCKSPALETTE` `PALETABLOQUES`. `REGEN` / `RG` and `REGENT` / `RGT` (REGENALL) from the 2027
+  `acad.pgp` and the console's U (primitives/p502).
 - **Workspace:** `UNIDADES`, `ESCALATL`, `LIMPIAPANTACT` and `LIMPIAPANTDES` from the Spanish pages
   with the English GUIDs (1DAE2080, 47B3793A, 1D51E778, 7C9CDCC6); the dialog's
   `Unidades de dibujo`, `Longitud`, `Tipo`, `Precisión`, `Decimales`, `Escala de inserción`,

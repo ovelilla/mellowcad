@@ -90,6 +90,8 @@ declare const source: {
       "orbit": string
       "navvcube": string
       "vscurrent": string
+      "regen": string
+      "regenall": string
       "ltscale": string
       "auprec": string
       "setvar": string
@@ -634,6 +636,8 @@ declare const source: {
       "3DORBIT": string[]
       "NAVVCUBE": string[]
       "VSCURRENT": string[]
+      "REGEN": string[]
+      "REGENALL": string[]
       "UNITS": string[]
       "LTSCALE": string[]
       "AUPREC": string[]

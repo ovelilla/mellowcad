@@ -220,7 +220,8 @@ is an alias of CAMADA, and `COTAD` of the English `DIMSTYLE` (the file's own odd
 - **Names.** `(getcname "_LINE")` for every AutoCAD command (names/p01); the PTB help pages for those
   it does not answer (`PROPIG`, `ELIMINAR`, `PALETABLOCOS`, `EDITARATRIBA`, `MATRIZRETANG`,
   `QUEBRAREMPONTO`, `FECHARCAMADA`, `FECHARPROP`, `PROPRIEDADES`, `UNIDADES`, `VISTA`, `RETANGULO`,
-  `TEXTOM`, `LISTA`, `CUBONAV`, `ORBITA3D`); aliases from `acad.pgp`. U is `D` and FROM is `DE`, with
+  `TEXTOM`, `LISTA`, `CUBONAV`, `ORBITA3D`), or the console's U (`REGEN`, `REGENTUDO`,
+  primitives/p502); aliases from `acad.pgp`. U is `D` and FROM is `DE`, with
   `Ponto base:` and `<Deslocamento>:` (names/p02, p03). Our own commands take the base name and the
   initials of the ribbon's words, as Spanish: `CIRCULOD`, `CIRCULO2P`, `CIRCULO3P`, `ARCOICF`
   (Início, Centro, Fim), `ARCOCIF`, `ELIPSEC`, `ELIPSEARCO`.

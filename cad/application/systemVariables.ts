@@ -379,6 +379,9 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
       return unit === undefined ? null : patch({ unit })
     }
   ),
+  // WHY the solids redraw at once: AutoCAD's keep their isolines until REGEN
+  // (primitives/p417), but here no display list holds them; every frame draws
+  // them from the drawing's ISOLINES (PRIM-D62).
   integer(
     "ISOLINES",
     0,

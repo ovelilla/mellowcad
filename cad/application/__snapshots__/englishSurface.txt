@@ -100,6 +100,8 @@ VIEW ["V"] "Preset views"
 3DORBIT ["3DO","ORBIT"] "3D Orbit"
 NAVVCUBE ["CUBE"] "ViewCube"
 VSCURRENT ["VS"] "Visual Styles"
+REGEN ["RE"] "Regen"
+REGENALL ["REA"] "Regen All"
 FILL [] "Fill"
 LTSCALE ["LTS"] "Linetype scale"
 AUPREC [] "Angle precision"
@@ -257,6 +259,8 @@ view "Preset views" V
 orbit "3D Orbit" 3DO
 navvcube "ViewCube" CUBE
 vscurrent "Visual Styles" VS
+regen "Regen" RE
+regenall "Regen All" REA
 fill "Fill" FILL
 ltscale "Linetype scale" LTS
 auprec "Angle precision" AUPREC
@@ -8296,6 +8300,15 @@ Specify next point or
   dyn: -
   options: -
   prompt| Enter an option [2dwireframe/Hidden/Conceptual] <Conceptual>: 2
+  info| Regenerating model.
+> REGEN
+  command| REGEN
+  info| Regenerating model.
+> U names it
+  command| U
+  info| REGEN
+> REA
+  command| REA REGENALL
   info| Regenerating model.
 
 ## grips
