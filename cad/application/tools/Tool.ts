@@ -40,6 +40,11 @@ export interface PointerInput {
    * Its Z is the snapped object's, or the UCS's XY plane (see `ResolvedPoint`).
    */
   readonly point: Vec3
+  /**
+   * A point the keyboard gave (typed, FROM's offset, a filter's), handed on
+   * as a pick: what reads the cursor's line of sight leaves it as it is.
+   */
+  readonly typed?: boolean
   readonly button: number
   readonly shiftKey: boolean
   readonly ctrlKey: boolean
@@ -829,6 +834,13 @@ export interface Tool {
    * (DIST's Multiple points, inquiry/p170).
    */
   getConstraintAnchor?(ctx: ToolContext): Vec2 | Vec3 | null
+
+  /**
+   * Whether Ortho leaves the point alone though the prompt has a base point,
+   * which `<angle`, a direct distance and Polar still run from: BOX's and
+   * WEDGE's other corner (desktop primitives/d03). False, the default.
+   */
+  ignoresOrtho?(): boolean
 
   /**
    * Whether the tool is currently acquiring a point and therefore wants object

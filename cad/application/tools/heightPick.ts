@@ -56,3 +56,24 @@ export function pointAsCursor(
     tracking: null,
   }
 }
+
+/**
+ * A size given with the mouse from `from`: a radius, a diameter, a tube, a
+ * top radius. The free cursor is read where its line of sight meets the plane
+ * through `from` parallel to the UCS's XY (desktop primitives/d02: 25.8839 at
+ * Z 30 as 25.8846 at Z 0, where the work plane's point is 57.9 away); a point
+ * an object snap or a tracking guide gave keeps its distance in space, as a
+ * typed one does (p242). Ortho and Polar have already put it on that plane.
+ */
+export function pickedOnPlaneOf(
+  input: Pick<PointerInput, "point" | "snap" | "tracking" | "typed">,
+  from: Vec3,
+  view: Viewport
+): Vec3 {
+  const { point } = input
+  if (input.typed || input.snap || input.tracking || point.z === from.z) {
+    return point
+  }
+  const on = view.screenToPlane(view.worldToScreen(point), from.z)
+  return on === null ? point : { x: on.x, y: on.y, z: from.z }
+}

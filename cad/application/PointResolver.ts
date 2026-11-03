@@ -55,7 +55,9 @@ export class PointResolver {
     private readonly currentUcs: () => Ucs,
     private readonly currentExtensions: () => readonly TrackingGuide[] = () => [],
     /** The Z OSNAPZ 1 puts a snap at (the work plane's), null under 0. */
-    private readonly snapZ: () => number | null = () => null
+    private readonly snapZ: () => number | null = () => null,
+    /** Whether the question asked is one Ortho leaves alone (`Tool.ignoresOrtho`). */
+    private readonly orthoFree: () => boolean = () => false
   ) {}
 
   /**
@@ -152,7 +154,14 @@ export class PointResolver {
     const view = this.currentView()
     const cursor = this.onBasePlane(world, anchor)
     const point = allowSnapMode ? this.snapMode.snapPoint(cursor, ucs) : cursor
-    return { anchor, world: cursor, point, ucs, view }
+    return {
+      anchor,
+      world: cursor,
+      point,
+      ucs,
+      view,
+      orthoFree: this.orthoFree(),
+    }
   }
 
   /**

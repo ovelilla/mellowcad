@@ -286,6 +286,12 @@ describe("BOX", () => {
     answer(cad, "BOX", "0,0,0", "10,20", "5", "BOX", "50,0,0", "60,20", "5")
     expect(written(cad, "U")).toEqual(["U", "BOX"])
     expect(solids(cad)).toHaveLength(1)
+    // A run cancelled halfway is a step of its own, which U takes back
+    // alone (primitives/d06).
+    answer(cad, "LINE", "0,0", "10,10", "", "BOX", "0,0,0")
+    cad.escape()
+    expect(written(cad, "_U")).toEqual(["U", "BOX"])
+    expect(cad.typeCounts()).toEqual({ line: 1, solid3d: 1 })
   })
 
   it("lies in the UCS, at its Z or the ELEVATION (p07)", () => {
@@ -357,6 +363,85 @@ describe("BOX", () => {
     expect(shape(cad)[3]).toBe("            Width: 5.5688")
     answer(cad, "BOX", "100,0,0", "_L", "20<45", "@5<135", "3")
     expect(shape(cad)[3]).toBe("            Width: 2.9139")
+  })
+
+  it("puts a width typed with the cursor on the length's line right only past its end (primitives/d03 f)", () => {
+    for (const [x, side] of [
+      [15, -1],
+      [5, 1],
+      [-5, 1],
+    ]) {
+      const cad = console()
+      answer(cad, "SNAPUNIT", "1,1", "SNAPMODE", "1", "BOX", "0,0,0", "_L")
+      cad.moveTo({ x: 15, y: 0 })
+      answer(cad, "10")
+      cad.moveTo({ x, y: 0 })
+      answer(cad, "6", "5")
+      expect(last(cad).primitive).toMatchObject({ position: { y: 3 * side } })
+    }
+  })
+
+  it("leaves the other corner to Ortho, but not to `<30` (primitives/d03 a, b, c, d)", () => {
+    const cad = console()
+    const far = (solid: Solid3dEntity) => {
+      const p = solid.primitive!
+      if (p.kind !== "box" && p.kind !== "wedge") throw new Error(p.kind)
+      return [p.length, p.width]
+    }
+    answer(cad, "ORTHOMODE", "1")
+    for (const [command, from] of [
+      ["BOX", 0],
+      ["WEDGE", 100],
+    ] as const) {
+      answer(cad, command, `${from},0,0`)
+      cad.click({ x: from + 10.07, y: 6.07 })
+      answer(cad, "5")
+      expect(far(last(cad))[0]).toBeCloseTo(10.07, 9)
+      expect(far(last(cad))[1]).toBeCloseTo(6.07, 9)
+    }
+    // `<30` locks the corner to its line, under Ortho too: a click is
+    // projected on it, a number runs along it.
+    const cursor = { x: 10.0742, y: 5.0467 }
+    const along = cursor.x * Math.cos(Math.PI / 6) + cursor.y / 2
+    answer(cad, "BOX", "0,0,0", "<30")
+    cad.click(cursor)
+    answer(cad, "5")
+    expect(far(last(cad))[0]).toBeCloseTo(along * Math.cos(Math.PI / 6), 9)
+    expect(far(last(cad))[1]).toBeCloseTo(along / 2, 9)
+    answer(cad, "ORTHOMODE", "0", "BOX", "0,0,0", "<30")
+    cad.moveTo({ x: 10, y: 5 })
+    answer(cad, "10", "5")
+    expect(far(last(cad))[0]).toBeCloseTo(8.660254, 6)
+    expect(far(last(cad))[1]).toBeCloseTo(5, 9)
+    // A bare number is a direct distance towards the cursor.
+    answer(cad, "BOX", "0,0,0")
+    cad.moveTo({ x: 10, y: 5 })
+    answer(cad, "10", "5")
+    expect(far(last(cad))[0]).toBeCloseTo(20 / Math.sqrt(5), 9)
+    expect(far(last(cad))[1]).toBeCloseTo(10 / Math.sqrt(5), 9)
+  })
+
+  it("bends Length and the width under Ortho, clicked or typed (primitives/d03 e)", () => {
+    const cad = console()
+    answer(cad, "ORTHOMODE", "1", "BOX", "0,0,0", "_L")
+    cad.click({ x: 10.07, y: 3 })
+    cad.click({ x: 12, y: 6.07 })
+    answer(cad, "5")
+    expect(last(cad).primitive).toMatchObject({
+      xAxis: { x: 1, y: 0 },
+      length: expect.closeTo(10.07, 9),
+      width: expect.closeTo(6.07, 9),
+      position: { y: expect.closeTo(3.035, 9) },
+    })
+    answer(cad, "BOX", "0,0,0", "_L")
+    cad.moveTo({ x: 10, y: 3 })
+    answer(cad, "10")
+    cad.moveTo({ x: 12, y: 6 })
+    answer(cad, "6", "5")
+    expect(last(cad).primitive).toMatchObject({
+      xAxis: { x: 1, y: 0 },
+      position: { x: 5, y: 3 },
+    })
   })
 
   it("measures Length's height from the far corner, not the length's end (p124)", () => {

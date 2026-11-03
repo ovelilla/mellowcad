@@ -7,6 +7,7 @@ import {
   lineStartZ,
   type RegionEntity,
   type Solid3dEntity,
+  type SolidPrimitive,
 } from "../domain/entities"
 import {
   parseDrawingFile,
@@ -1209,6 +1210,139 @@ describe("PYRAMID, answer by answer", () => {
   })
 })
 
+describe("the primitives at the desktop", () => {
+  it("bend the prompts with no traced base from theirs under Ortho, and lock them under `<30` (primitives/d04)", () => {
+    const pick = { x: 10.07, y: 3 }
+    const way = { x: Math.cos(Math.PI / 6), y: 0.5 }
+    const onWay = (from: number) => (pick.x - from) * way.x + pick.y * way.y
+    type Read = (p: SolidPrimitive) => number
+    const major: Read = (p) =>
+      p.kind === "cylinder" ? Math.max(p.radius, p.radiusY ?? 0) : NaN
+    const cases: [string[], string[], Read, number, number][] = [
+      // Edge's second point, from the first: the base's centre.
+      [
+        ["PYRAMID", "_E", "0,0,0"],
+        ["5"],
+        (p) => p.position.x,
+        pick.x / 2,
+        (onWay(0) / 2) * (way.x - way.y),
+      ],
+      // The axis endpoint, from the base's centre.
+      [
+        ["CYLINDER", "0,0,0", "2", "_A"],
+        [],
+        (p) => ("height" in p ? p.height : NaN),
+        pick.x,
+        onWay(0),
+      ],
+      // Elliptical's other first-axis end, its second axis' (from the
+      // ellipse's centre), Center's first axis' end.
+      [
+        ["CYLINDER", "_E", "0,0,0"],
+        ["4", "5"],
+        major,
+        pick.x / 2,
+        onWay(0) / 2,
+      ],
+      [
+        ["CYLINDER", "_E", "0,0,0", "10,0,0"],
+        ["5"],
+        major,
+        pick.x - 5,
+        onWay(5),
+      ],
+      [["CYLINDER", "_E", "_C", "0,0,0"], ["2", "5"], major, pick.x, onWay(0)],
+    ]
+    for (const [before, after, read, ortho, locked] of cases) {
+      for (const [aid, expected] of [
+        ["ortho", ortho],
+        ["angle", locked],
+      ] as const) {
+        const cad = console()
+        if (aid === "ortho") answer(cad, "ORTHOMODE", "1")
+        answer(cad, ...before)
+        if (aid === "angle") answer(cad, "<30")
+        cad.click(pick)
+        answer(cad, ...after)
+        expect(read(last(cad).primitive!)).toBeCloseTo(expected, 9)
+      }
+    }
+  })
+
+  it("cancel at one Escape at every prompt a keyword opens (primitives/d05)", () => {
+    for (const inputs of [
+      ["_BOX", "_C"],
+      ["_BOX", "0,0,0", "_L", "5"],
+      ["_BOX", "0,0,0", "10,10", "_2P", "0,0,0"],
+      ["_CYLINDER", "_3P"],
+      ["_CYLINDER", "_T"],
+      ["_CYLINDER", "_E", "_C"],
+      ["_CYLINDER", "0,0,0", "_D"],
+      ["_CYLINDER", "0,0,0", "5", "_A"],
+      ["_CONE", "0,0,0", "5", "_T"],
+      ["_SPHERE", "_2P"],
+      ["_TORUS", "0,0,0", "5", "_2P"],
+      ["_PYRAMID", "_S"],
+      ["_PYRAMID", "_E"],
+      ["_PYRAMID", "0,0,0", "_I"],
+    ]) {
+      const cad = console()
+      answer(cad, ...inputs)
+      cad.escape()
+      expect(cad.activeToolId()).toBe("select")
+      expect(cad.commandLog().at(-1)).toMatch(/\*Cancel\*$/)
+      expect(solids(cad)).toHaveLength(0)
+    }
+  })
+
+  it("list the prompt's shown keywords in the Command menu; with none a right-click is Enter (primitives/d07)", () => {
+    const clear = { x: 300, y: 300 }
+    for (const [inputs, keywords] of [
+      [
+        ["_CYLINDER", "0,0,0", "5"],
+        ["2Point", "Axis endpoint"],
+      ],
+      [
+        ["_CONE", "0,0,0", "5"],
+        ["2Point", "Axis endpoint", "Top radius"],
+      ],
+      [
+        ["_CONE", "0,0,0", "5", "_T", "2"],
+        ["2Point", "Axis endpoint"],
+      ],
+      [["_PYRAMID"], ["Edge", "Sides"]],
+      [
+        ["_BOX", "0,0,0"],
+        ["Cube", "Length"],
+      ],
+      [
+        ["_TORUS", "0,0,0", "5"],
+        ["2Point", "Diameter"],
+      ],
+    ]) {
+      const cad = console()
+      answer(cad, ...inputs)
+      const menu = cad.rightClick(clear).state().shortcutMenu
+      expect(menu?.mode).toBe("command")
+      const entries = menu!.groups.flat()
+      expect(
+        entries.flatMap((e) => (e.kind === "option" ? [e.option.label] : []))
+      ).toEqual(keywords)
+      expect(entries.some((e) => e.kind === "snapOverrides")).toBe(true)
+    }
+    const cad = console()
+    answer(cad, "_BOX", "100,0,0", "_L", "10", "6", "5", "_BOX", "0,0,0", "_L")
+    cad.rightClick(clear)
+    expect(cad.state().shortcutMenu).toBeNull()
+    expect(cad.state().commandLine.prompt).toBe("BOX Specify width <6.0000>:")
+    answer(cad.escape(), "_CONE", "200,0,0", "5", "_T")
+    cad.rightClick(clear)
+    expect(cad.state().commandLine.prompt).toBe(
+      "CONE Specify height or [2Point/Axis endpoint] <5.0000>:"
+    )
+  })
+})
+
 describe("the primitives' defaults", () => {
   it("share a height, a length and a width, kept as made (x06, x07, p10)", () => {
     const cad = console()
@@ -1316,6 +1450,47 @@ describe("the primitives' defaults", () => {
       "Specify width <3.0000>: 3",
       "Specify height or [2Point] <2.0000>: 3",
     ])
+  })
+
+  it("keep nothing a cancelled run answered (primitives/d06)", () => {
+    const cad = console()
+    answer(cad, "BOX", "100,0,0", "_L", "10", "6", "5")
+    answer(cad, "CYLINDER", "200,0,0", "2", "5")
+    const cancelled = (...texts: string[]) => answer(cad, ...texts).escape()
+    const asked = (...texts: string[]) =>
+      answer(cad, ...texts).state().commandLine.prompt
+    cancelled("PYRAMID", "_S", "6")
+    cancelled("PYRAMID", "0,0,0", "_I")
+    expect(written(cad, "PYRAMID")[1]).toBe(" 4 sides  Circumscribed")
+    cad.escape()
+    cancelled("CYLINDER", "0,0,0", "7")
+    cancelled("PYRAMID", "0,0,0", "9")
+    cancelled("TORUS", "0,0,0", "8")
+    expect(asked("SPHERE", "0,0,0")).toBe(
+      "SPHERE Specify radius or [Diameter] <2.0000>:"
+    )
+    cad.escape()
+    cancelled("BOX", "0,0,0", "_L", "12", "8")
+    expect(written(cad, "BOX", "0,0,0", "_L", "").at(-1)).toBe(
+      "Specify length <10.0000>:"
+    )
+    expect(asked()).toBe("BOX Specify width <6.0000>:")
+    cad.escape()
+    cancelled("PYRAMID", "0,0,0", "5", "_T", "2")
+    cancelled("CONE", "0,0,0", "5", "_T", "3")
+    expect(asked("CONE", "0,0,0", "5", "_T")).toBe(
+      "CONE Specify top radius <0.0000>:"
+    )
+    cad.escape()
+    cancelled("CYLINDER", "0,0,0", "_D", "4")
+    expect(asked("TORUS", "0,0,0", "5", "_D")).toBe(
+      "TORUS Specify tube diameter:"
+    )
+    cad.escape()
+    // A run reads its own answers, and a solid made keeps them (y02).
+    answer(cad, "PYRAMID", "_S", "6", "0,0,0", "_I", "3", "4")
+    expect(last(cad).primitive).toMatchObject({ sides: 6, inscribed: true })
+    expect(written(cad, "PYRAMID")[1]).toBe(" 6 sides  Inscribed")
   })
 
   // NEW too: the console has none, NEW stands for the blank drawing OPEN

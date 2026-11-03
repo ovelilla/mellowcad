@@ -985,8 +985,13 @@ on the point, in height too (p02, p13). Cube asks `Specify length:` and makes a 
 backwards (p03, p10: Rotation 22, 202), a point gives its distance and heading in plan (p114,
 p125: `0,30,8` from `0,0,0` is 30, Rotation 90), from the centre twice its distance (p500); the
 cube's width lies to the left of its length, Length's to the side the cursor or the width's point
-is, a typed width's sign unread (p03, p10), a point giving its distance from the length's line in
-plan (p124: `0,6` after a length heading 21.85° is 5.5688; p108, p109). The height rises along
+is — with the cursor exactly on the length's line, the right only past the length's end, else the
+left (desktop primitives/d03 f) —, a typed width's sign unread (p03, p10), a point giving its
+distance from the length's line in plan (p124: `0,6` after a length heading 21.85° is 5.5688; p108,
+p109). Ortho leaves the other corner as picked, where it would make every box flat, and bends Length
+and the width, clicked or typed; `<30` at the other corner holds it to that line from the first
+corner, a click projected on it and a number along it, and a bare number there is a direct distance
+towards the cursor (desktop d03 a–e). The height rises along
 the UCS's Z, down when negative (LIST then adds `Normal:`, p06), from the other corner or, after
 Length, the far one (the length's end and the width; from the centre, the centre plus half of
 each: p124, `600,0,0` at the height of `_L 10 6` from it is 11.6619, from the centre 5.8310); a
@@ -1001,7 +1006,9 @@ rise from the centre, p06, p13), one typed without a Z lies at the first's (p07)
 negative cube or length is twice as long, the box centred on the point (w09, x07). The last length
 and width a cube or Length made — their sizes, a negative or doubled one's too (p10, w09) — and the
 last height, with its sign, are offered as `<default>`s and Enter takes them; with none, Enter is
-refused as `FOO` is (p02, p04, p11). They are the primitives' shared ones: WEDGE's length and
+refused as `FOO` is (p02, p04, p11). A run offers its own answers and leaves them for the next only
+once its solid is made: one cancelled keeps none, and U after it echoes `BOX` and takes back nothing
+else (desktop primitives/d06). They are the primitives' shared ones: WEDGE's length and
 width, and the height of WEDGE, PYRAMID, CYLINDER and CONE (w02, x06, x07, x01), an Axis endpoint's
 length too (primitives/p156). They are session values, not saved: OPEN keeps every one but CONE's
 and PYRAMID's top radius, `<0.0000>` again (p155, p158), and NEW does as OPEN (the console has
@@ -1085,9 +1092,7 @@ Material row; a linetype scale of its own (none here: CELTSCALE, properties.md),
 leaves at 1 on a solid whatever CELTSCALE says (p421); the visual styles VSCURRENT lacks (view.md: Hidden and Conceptual are built); a box turned 180 by its corners runs its edges
 as p01's mirrored (p123's MPDUMP: the far X's top edge up the Y), here as a box turned, which UCS
 OBject's X on that edge would read. **Unverified**: a Cube by a point from the centre, doubled here
-as Length's (p500); which side a typed width takes with the cursor on the length's line, and Ortho
-and `<a` at the other corner and the length, which the console's fixed cursor decides (p03, x07,
-p113, p116, p117: the desktop's to settle).
+as Length's (p500); Polar at the other corner, which bends it here as at any point.
 
 ### `WEDGE` / `WE` · es `CUÑA` / `CU` · pt-BR `CUNHA` / `CN`
 
@@ -1119,7 +1124,8 @@ palette show `Solid type = Wedge` and BOX's rows (w01, d05); AREA's Object gives
 (w06: Rotation 330 and 210); EXPLODE leaves a region of each face (w07). Everything else a solid
 does is BOX's entry.
 
-Its grips and palette rows are BOX's, the top's arrow over its tall end (g01).
+Its grips and palette rows are BOX's, the top's arrow over its tall end and the base's under it, a
+wedge turned 180 too (g01, desktop primitives/d08: 20,10,5 and 20,10,-0.1 on `20,0,0 10,20 5`).
 
 **Missing:** BOX's (the 3D commands, the visual styles VSCURRENT lacks); in plan, the Endpoint
 under the tall end: AutoCAD's `_END` at 90.05,0.05 finds the base's 90,0,0, here the top's 90,0,5
@@ -1149,7 +1155,8 @@ square to it its own half length (c04: 0,0,0 / 10,0,0 / 0,3,0 makes 5.8310 along
 across; v05: a typed second axis runs towards the cursor). Axis endpoint asks `Specify axis endpoint:` (the height declares Center too,
 which asks it, c13) and 2Point two points; the height rises along the base's normal, down when
 negative (c05), and a point, the cursor or a snap gives it as at BOX's (z01: a box's top corner, 50
-high, gives 50 in SE Isometric; the cursor's reading not seen on the desktop, **unverified**). Refusals: `Point or option keyword required.` at the point prompts and the axis
+high, gives 50 in SE Isometric; desktop primitives/d01: the cursor where it falls on the axis as
+drawn, up, down and beside it, 31.5291 and -30.9048). Refusals: `Point or option keyword required.` at the point prompts and the axis
 endpoint (FOO, Enter), `Requires numeric distance, second point, or option keyword.` at the radius,
 diameter, distance and height, `Requires numeric distance or two points.` at Ttr's radius, `Value
 must be positive and nonzero.` for a radius, diameter or distance of 0 or less, `Value must be
@@ -1165,8 +1172,10 @@ objeto TAN …`, unlike CIRCLE's). The radius (not an ellipse's), the height and
 primitives' shared defaults (x01–x06, primitives/p157), kept over OPEN (BOX's entry). Every point
 prompt refuses Enter and another prompt's keyword as FOO (primitives/p205, p210, p211); `@` runs
 from the prompt's base, a bare `@` at the second axis is its centre, refused (p216, p218, p219); a
-bare number from the base toward the cursor (p221, p222); a radius point off the base's plane
-gives its distance in space (p242); Ttr takes a circle and an arc (p225); Ortho leaves a typed
+bare number from the base toward the cursor (p221, p222); a radius or a diameter picked with the
+mouse in a 3D view is read where its line of sight meets the plane through the centre (desktop
+primitives/d02: 25.8839 at Z 30 as 25.8846 at Z 0), a point typed or snapped to off the base's plane
+its distance in space (p242); Ttr takes a circle and an arc (p225); Ortho leaves a typed
 point and bends a bare number (p228). It lies in a tilted UCS and at its Z, ELEVATION too (c09,
 p243); it wears the current layer and properties, those set mid-command as it ends, ELEVATION as
 the centre is given (p234, p235); one undo step (u01). LASTPOINT is the centre given, the base's
@@ -1211,7 +1220,8 @@ pt-BR `Especificar altura ou [2Pontos/ponto final Eixo/Raio superior]`). Top rad
 radius <0.0000>:` — the top radius of the last cone made, 0 if it had none, PYRAMID's too (y10,
 primitives/p418); asked twice in one run it offers the last cone's still (p207); 0 again after OPEN
 (p155) — and the height again without it, `Specify height or [2Point/Axis endpoint]:`, which still
-declares Top (k02); a top as wide as the
+declares Top (k02); a top picked with the mouse is read on the top's plane, at the height the cursor
+gave as Top was typed (desktop primitives/d02: 28.3120); a top as wide as the
 base makes a cylinder's face, wider a cone widening up, LIST still `Cone` (k02). Its refusals are
 CYLINDER's, Center refused at the height (primitives/p206), the top radius' `Requires numeric
 distance, second point, or option keyword.` for FOO (PYRAMID's has no keyword) and `Value must be
@@ -1258,7 +1268,9 @@ cannot be collinear. *Invalid*` at 3P's third), but Enter, a word or another pro
 3P's first two points and 2P's ends is `Invalid point.` (es `Punto no válido.`, pt-BR `Ponto
 inválido.`; 3P's third keeps `Point or option keyword required.`, primitives/p143, p153, p212,
 p237), and 3P's second point on its first is `Points cannot be coincident. *Invalid*`, as 2P's
-(h03). Another prompt's keyword at the centre or the radius is refused in their words (p208). The radius is the primitives' shared default (x01–x05).
+(h03). Another prompt's keyword at the centre or the radius is refused in their words (p208). A
+radius picked with the mouse is read as CYLINDER's, on the plane through the centre (desktop
+primitives/d02). The radius is the primitives' shared default (x01–x05).
 It lies in a tilted UCS and at its Z (h04); it wears the current layer and properties; one undo
 step. LASTPOINT is the centre given, 3P's third point or 2P's second; Ttr and a radius leave it
 (primitives/p345, p347, p353).
@@ -1293,7 +1305,9 @@ lays the ring in the points' plane, its normal their turn even when that points 
 plane's arbitrary axis (r05's MPDUMP); 2P in the first's plane (r07); Ttr as CYLINDER's (r04). A
 point at the tube's prompt measures from the ring's point last given: the radius' point or, typed,
 the radius toward the cursor, 3P's third, 2P's second in the first's plane, Ttr's along the UCS's
-X, a negative ring's centre (the console's BasePoint, r01–r07). `@` there is read from that point, a bare `@`
+X, a negative ring's centre (the console's BasePoint, r01–r07); the radius and the tube picked with
+the mouse are read as CYLINDER's radius, on the plane through the centre and the ring's point
+(desktop primitives/d02). `@` there is read from that point, a bare `@`
 that point itself, refused (primitives/p217, p220). A radius typed negative makes an
 apple's or a lemon's ring, its tube wider (r03, r05). Refusals: SPHERE's — `Invalid point.` at
 3P's third point too and at the tube's 2Point (primitives/p144, p153, p212, p237, p350), another
@@ -1319,7 +1333,9 @@ draws ISOLINES' tube circles, the first opposite its seam, and as many parallels
 from its inside, spread over an apple's or a lemon's arc (d06–d09); it is picked and windowed by
 them. Center finds its centre from anywhere over an isoline, at the centre itself only where one
 passes — in plan an apple's or a lemon's meridians, seen edge-on, run through it (primitives/p402:
-150.02,0.02 on a lemon zoomed in); Endpoint
+150.02,0.02 on a lemon zoomed in), and an apple's reach its outer equator, where a hover picks it
+and Center finds the torus' centre (desktop primitives/d10: 46,0 on 2 round a tube of 4 at 40,0;
+p402's and p407's nothing there was the console's); Endpoint
 an apple's or a lemon's poles, as AutoCAD's (primitives/p241, p402: 2 round a tube of 4 at
 0,0,±3.4641; -4 and 5 at 50,0,3); nothing else snaps on it (s07, s09, s10). LIST: `Solid type = Torus`, Position, Normal, `Torus radius`,
 `Tube radius` (r01, r04; es `Radio de toroide`, `Radio de sección`; pt-BR `Raio do toroide`, `Raio
@@ -1334,11 +1350,7 @@ each along the line of sight; a drag that would turn the ring across the axis le
 
 **Missing:** what AutoCAD's EXPLODE makes of it, a SURFACE of a doughnut and two POINTs of an
 apple (primitives/p414; a lemon unprobed): refused as CYLINDER's is; SPHERE's (the hot grip's
-other modes, DISPSILH). **Unverified**:
-an apple's isoline at its outer equator in plan: its meridian, seen edge-on, reaches it here, so
-Center and a pick find it there; AutoCAD neither (primitives/p402: `_CEN` at 136.05,0.05 on 2 round
-a tube of 4 at 130,0; p407: a pick at 46,0 on one at 40,0), unsettled as geometry: the desktop's
-(PRIM-D64).
+other modes, DISPSILH).
 
 ### `PYRAMID` / `PYR` · es `PIRAMIDE` / `PIR` · pt-BR `PIRAMIDE` / `PIR`
 
@@ -1354,19 +1366,22 @@ Sides asks `Enter number of sides <4>:`, 3 to 32 (`Requires an integer between 3
 4.5, −4, 0 or a keyword), and the centre again with no new line (y02, y03, primitives/p304–p306).
 Edge asks `Specify first endpoint of edge:` and `Specify second endpoint of edge:`, the base to the
 edge's left (y02, y06). Inscribed and Circumscribed switch how a radius is read — to a corner, or to
-the middle of a side — and ask it again; the sides and the Type are kept for the next PYRAMID, over
-OPEN too (primitives/p158), and said in its first line (y02). A typed radius turns the base towards
+the middle of a side — and ask it again; the sides and the Type are kept for the next PYRAMID once
+one is made, a run cancelled keeping neither (desktop primitives/d06), over OPEN too
+(primitives/p158), and said in its first line (y02). A typed radius turns the base towards
 the cursor, a point towards itself: Circumscribed puts the middle of a side there, Inscribed a
 corner (y01: Rotation 22 = the cursor's heading; y02: 56 = 26 + 30); Enter takes the last radius as
 the circle its corners lie on, a corner then on the UCS's X (y05, v04: Rotation 0 Circumscribed, 45
 Inscribed). Top radius asks `Specify top radius <0.0000>:`, read by the Type, and the height again
 as `Specify height or [2Point/Axis endpoint]:` (es `Precise altura o`); a top as large as the base
 makes a prism (y05). A point there is measured from the axis at the height the cursor gave as Top
-was typed, which the point does not move (`@2,0` a top of exactly 2, primitives/p315). Axis endpoint
+was typed, which the point does not move (`@2,0` a top of exactly 2, primitives/p315); the radius
+and the top picked with the mouse are read as CONE's, on the base's or the top's plane (desktop
+primitives/d02). Axis endpoint
 asks `Specify axis endpoint:` and tilts the base into the plane normal to the axis, turned by the
 same angle in that plane's OCS, the UCS's arbitrary axis (y09); 2Point asks two points. The height
 rises along the UCS's Z, down when negative; a point, the cursor or a snap gives it as at BOX's
-(z01; the cursor's reading **unverified** on the desktop). Every point form: ELEVATION, `@`, polar,
+(z01; desktop primitives/d01). Every point form: ELEVATION, `@`, polar,
 `*` (LIST then reads it in the UCS), a bare number along the cursor, END, MID and FRO, Ortho leaving
 typed points alone (primitives/p314–p318, p320–p322). Refusals, another prompt's keyword too
 (p306–p310): `Point or option keyword required.` at the centre, `Invalid point.` at Edge's, the

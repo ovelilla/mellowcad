@@ -65,9 +65,19 @@ describe("a primitive's grips, as AutoCAD 2027's desktop lays them (solid/g01)",
     expect(solidGrips(box, PLAN)).toHaveLength(9)
   })
 
-  it("a wedge's top over its tall end", () => {
+  it("a wedge's top and base arrows under its tall end, turned 180 too (primitives/d08)", () => {
     const wedge = { ...box, kind: "wedge" as const, position: at(25, 10, 0) }
     expectPoint(solidGrips(wedge, SWISO)[9].at, at(20, 10, 5))
+    expectPoint(solidGrips(wedge, SWISO)[10].at, at(20, 10, -0.1))
+    // WEDGE 20,0,0 10,20 5: its tall end at X 20, both arrows there.
+    const turned = { ...wedge, position: at(15, 10, 0), xAxis: at(-1, 0, 0) }
+    const grips = solidGrips(turned, SWISO)
+    expectPoint(grips[9].at, at(20, 10, 5))
+    expectPoint(grips[10].at, at(20, 10, -0.1))
+    expect(drag(turned, 10, at(0, 0, -2))).toMatchObject({
+      position: at(15, 10, -2),
+      height: 7,
+    })
   })
 
   it("a pyramid's corners and sides from the corner before its X, the top's arrow off the apex", () => {

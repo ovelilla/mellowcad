@@ -67,7 +67,7 @@ export class OrthoConstraint implements Constraint {
 
   private axis(context: ConstraintContext): OrthoAxis | null {
     const { anchor, world, ucs, view } = context
-    if (!anchor) return null
+    if (!anchor || context.orthoFree) return null
     if (zOnScreen(view) === null) {
       const local = worldDirectionToUcs(ucs, {
         x: world.x - anchor.x,

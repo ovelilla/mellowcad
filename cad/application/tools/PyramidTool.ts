@@ -27,7 +27,7 @@ import {
   ToolQuestion,
 } from "./Tool"
 import { currentColor, withCurrentProperties } from "./currentProperties"
-import { pickedHeight, pointAsCursor } from "./heightPick"
+import { pickedHeight, pickedOnPlaneOf, pointAsCursor } from "./heightPick"
 import { SolidDefaults, resetTopRadius, solidDefaults } from "./solidDefaults"
 
 const MIN_SIDES = 3
@@ -94,17 +94,28 @@ export class PyramidTool implements Tool {
    * (k02, primitives/p315).
    */
   private rise = 0
+  /** The cursor as the radius reads it ({@link pickedOnPlaneOf}): the ghost's. */
+  private sizing: Vec3 | null = null
+  /**
+   * This run's copy of the shared defaults, which its answers go into and its
+   * prompts offer: the shared ones take it only when a solid is made, so a
+   * cancelled run leaves them as they were (desktop primitives/d06).
+   */
+  private run: SolidDefaults
 
-  constructor(private readonly defaults: SolidDefaults = solidDefaults()) {}
+  constructor(private readonly defaults: SolidDefaults = solidDefaults()) {
+    this.run = { ...defaults }
+  }
 
   onActivate(ctx: ToolContext): void {
+    this.run = { ...this.defaults }
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.state = { phase: "center" }
     ctx.report(
       ctx.text.message("pyramidSettings", {
-        sides: this.defaults.sides,
-        type: this.defaults.inscribed ? "inscribed" : "circumscribed",
+        sides: this.run.sides,
+        type: this.run.inscribed ? "inscribed" : "circumscribed",
       })
     )
     this.openPoint(ctx, "pyramidCenterOr")
@@ -126,8 +137,19 @@ export class PyramidTool implements Tool {
     if (state.phase === "height") {
       this.rise = this.heightAt(input, state.base, ctx)
     }
+    this.sizing = this.sized(input, ctx)
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
+  }
+
+  /** The point the radius or the top radius takes from the mouse, null at any other prompt. */
+  private sized(input: PointerInput, ctx: ToolContext): Vec3 | null {
+    const { phase } = this.state
+    const from =
+      phase === "radius" || phase === "top"
+        ? this.getConstraintAnchor(ctx)
+        : null
+    return from && pickedOnPlaneOf(input, from, ctx.viewport)
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
@@ -137,7 +159,7 @@ export class PyramidTool implements Tool {
       this.takeHeight(this.heightAt(input, state.base, ctx), ctx)
       return
     }
-    this.takePoint(input.point, ctx)
+    this.takePoint(this.sized(input, ctx) ?? input.point, ctx)
   }
 
   onKeyDown(input: KeyInput, ctx: ToolContext): void {
@@ -150,7 +172,7 @@ export class PyramidTool implements Tool {
 
   question(): PromptId | ToolQuestion {
     const state = this.state
-    const { radius, height, sides, inscribed, topRadius } = this.defaults
+    const { radius, height, sides, inscribed, topRadius } = this.run
     switch (state.phase) {
       case "center":
         return "pyramidCenterOr"
@@ -220,7 +242,7 @@ export class PyramidTool implements Tool {
       case "center":
         return [{ id: "Edge" }, { id: "Sides" }]
       case "radius":
-        return [{ id: this.defaults.inscribed ? "Circumscribed" : "Inscribed" }]
+        return [{ id: this.run.inscribed ? "Circumscribed" : "Inscribed" }]
       case "height":
         return state.top === null
           ? [{ id: "2Point" }, { id: "Axis" }, { id: "Top" }]
@@ -246,7 +268,7 @@ export class PyramidTool implements Tool {
       state.phase === "radius" &&
       (id === "Inscribed" || id === "Circumscribed")
     ) {
-      this.defaults.inscribed = id === "Inscribed"
+      this.run.inscribed = id === "Inscribed"
       this.openDistance(ctx)
       return "continue"
     }
@@ -332,10 +354,11 @@ export class PyramidTool implements Tool {
         return base ? this.baseOutline(base, ctx, stroke) : []
       }
       case "radius": {
+        const cursor = this.sizing ?? state.cursor
         const base = this.radiusBase(
           state.center,
-          this.distanceTo(state.center, state.cursor),
-          state.cursor,
+          this.distanceTo(state.center, cursor),
+          cursor,
           ctx
         )
         return base ? this.baseOutline(base, ctx, stroke) : []
@@ -445,7 +468,7 @@ export class PyramidTool implements Tool {
     const side = V.sub(b, a)
     const size = V.length(side)
     if (size === 0) return null
-    const n = this.defaults.sides
+    const n = this.run.sides
     const left = V.perpendicular(V.scale(side, 1 / size))
     const apothem = size / (2 * Math.tan(Math.PI / n))
     const middle = V.lerp(a, b, 0.5)
@@ -470,8 +493,8 @@ export class PyramidTool implements Tool {
     ctx: ToolContext
   ): Base | null {
     if (!(radius > 0)) return null
-    const n = this.defaults.sides
-    const { inscribed } = this.defaults
+    const n = this.run.sides
+    const { inscribed } = this.run
     const offset = toward
       ? V.sub(
           worldPointToUcs(ctx.ucs, toward),
@@ -502,7 +525,7 @@ export class PyramidTool implements Tool {
   }
 
   private askHeight(base: Base, ctx: ToolContext): void {
-    this.defaults.radius = base.radius
+    this.run.radius = base.radius
     this.state = { phase: "height", base, top: null, cursor: base.center }
     // The height prompt's base is LASTPOINT: Edge's centre (primitives/p349).
     ctx.setLastPoint(base.center)
@@ -533,11 +556,9 @@ export class PyramidTool implements Tool {
       ctx.report(ctx.text.message("valueMustBePositive"), "error")
       return
     }
-    const n = this.defaults.sides
-    const top = this.defaults.inscribed
-      ? radius
-      : radius / Math.cos(Math.PI / n)
-    this.defaults.topRadius = top
+    const n = this.run.sides
+    const top = this.run.inscribed ? radius : radius / Math.cos(Math.PI / n)
+    this.run.topRadius = top
     this.state = { ...state, phase: "height", top }
     this.openDistance(ctx)
   }
@@ -582,11 +603,11 @@ export class PyramidTool implements Tool {
       position: base.center,
       xAxis,
       normal,
-      sides: this.defaults.sides,
+      sides: this.run.sides,
       radius: base.radius,
       topRadius: top ?? 0,
       height,
-      inscribed: this.defaults.inscribed,
+      inscribed: this.run.inscribed,
     }
   }
 
@@ -598,7 +619,8 @@ export class PyramidTool implements Tool {
   ): void {
     const primitive = this.primitive(base, top, rise, ctx)
     if (!primitive) return
-    this.defaults.height = "height" in rise ? rise.height : primitive.height
+    this.run.height = "height" in rise ? rise.height : primitive.height
+    Object.assign(this.defaults, this.run)
     const solid = createSolid(primitive, ctx.document.getCurrentLayerId())
     this.state = { phase: "center" }
     ctx.execute(new AddEntityCommand(withCurrentProperties(solid, ctx)))
@@ -610,7 +632,7 @@ export class PyramidTool implements Tool {
     ctx: ToolContext,
     stroke: { color: string; width: number }
   ): ScenePrimitive[] {
-    const n = this.defaults.sides
+    const n = this.run.sides
     const center = worldPointToUcs(ctx.ucs, base.center)
     const turn = Math.atan2(base.along.y, base.along.x)
     const points = Array.from({ length: n }, (_, k) => {
@@ -631,7 +653,7 @@ export class PyramidTool implements Tool {
       fields: [{ id: "sides", prompt: "numberOfSides", kind: "number" }],
       commit: (values, commitCtx) => this.takeSides(values.sides, commitCtx),
     })
-    ctx.dynamicInput.setDefault("sides", this.defaults.sides)
+    ctx.dynamicInput.setDefault("sides", this.run.sides)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
   }
 
@@ -656,7 +678,7 @@ export class PyramidTool implements Tool {
       this.openSides(ctx)
       return
     }
-    this.defaults.sides = value
+    this.run.sides = value
     this.state = { phase: "center" }
     this.openPoint(ctx, "pyramidCenterOr")
   }
@@ -725,7 +747,7 @@ export class PyramidTool implements Tool {
     switch (state.phase) {
       case "radius": {
         if (from === "default") {
-          const { inscribed, sides } = this.defaults
+          const { inscribed, sides } = this.run
           const base = this.radiusBase(
             state.center,
             inscribed ? value : value * Math.cos(Math.PI / sides),

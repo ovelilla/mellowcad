@@ -743,7 +743,8 @@ export class CadRuntime extends Observable {
       this.snapMode,
       () => this.frame.ucs,
       () => this.extensionGuides(),
-      () => (this.osnapZ === 1 ? this.workPlaneZ() : null)
+      () => (this.osnapZ === 1 ? this.workPlaneZ() : null),
+      () => this.activeTool.ignoresOrtho?.() === true
     )
     this.autosave = new AutosaveService(store, () => this.serializeDrawing())
 
@@ -3988,6 +3989,7 @@ export class CadRuntime extends Observable {
       snap: null,
       tracking: null,
       point,
+      typed: true,
       button: 0,
       shiftKey: false,
       ctrlKey: false,

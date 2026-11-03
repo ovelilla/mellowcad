@@ -53,7 +53,7 @@ import {
   ToolQuestion,
 } from "./Tool"
 import { currentColor, withCurrentProperties } from "./currentProperties"
-import { pickedHeight, pointAsCursor } from "./heightPick"
+import { pickedHeight, pickedOnPlaneOf, pointAsCursor } from "./heightPick"
 import { SolidDefaults, resetTopRadius, solidDefaults } from "./solidDefaults"
 
 /**
@@ -154,6 +154,15 @@ const POINT_PHASES: ReadonlySet<State["phase"]> = new Set([
   "tubeSecond",
 ])
 
+/** The prompts whose size a point gives from their base point (PRIM-D82). */
+const SIZE_PHASES: ReadonlySet<State["phase"]> = new Set([
+  "radius",
+  "diameter",
+  "tube",
+  "tubeDiameter",
+  "top",
+])
+
 const PREVIEW_ID = "round-preview"
 const UCS_Z: Vec3 = { x: 0, y: 0, z: 1 }
 const UCS_X: Vec3 = { x: 1, y: 0, z: 0 }
@@ -191,15 +200,25 @@ export class RoundSolidTool implements Tool {
    * (k02, primitives/p248).
    */
   private rise = 0
+  /** The cursor as a size prompt reads it ({@link pickedOnPlaneOf}): the ghost's. */
+  private sizing: Vec3 | null = null
+  /**
+   * This run's copy of the shared defaults, which its answers go into and its
+   * prompts offer: the shared ones take it only when a solid is made, so a
+   * cancelled run leaves them as they were (desktop primitives/d06).
+   */
+  private run: SolidDefaults
 
   constructor(
     private readonly kind: RoundKind,
     private readonly defaults: SolidDefaults = solidDefaults()
   ) {
     this.id = kind
+    this.run = { ...defaults }
   }
 
   onActivate(ctx: ToolContext): void {
+    this.run = { ...this.defaults }
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.state = { phase: "center" }
@@ -222,8 +241,17 @@ export class RoundSolidTool implements Tool {
     if (state.phase === "height") {
       this.rise = this.heightAt(input, state.base, ctx)
     }
+    this.sizing = this.sized(input, ctx)
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
+  }
+
+  /** The point a size prompt takes from the mouse, null at any other. */
+  private sized(input: PointerInput, ctx: ToolContext): Vec3 | null {
+    const from = SIZE_PHASES.has(this.state.phase)
+      ? this.getConstraintAnchor(ctx)
+      : null
+    return from && pickedOnPlaneOf(input, from, ctx.viewport)
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
@@ -238,7 +266,7 @@ export class RoundSolidTool implements Tool {
       this.takeHeight(this.heightAt(input, state.base, ctx), ctx)
       return
     }
-    this.takePoint(input.point, ctx)
+    this.takePoint(this.sized(input, ctx) ?? input.point, ctx)
   }
 
   onKeyDown(input: KeyInput, ctx: ToolContext): void {
@@ -251,7 +279,7 @@ export class RoundSolidTool implements Tool {
 
   question(): PromptId | ToolQuestion {
     const state = this.state
-    const { radius, height, topRadius, tubeRadius } = this.defaults
+    const { radius, height, topRadius, tubeRadius } = this.run
     const sized = (id: PromptId, value: number | null) =>
       value === null ? id : { id, enter: value }
     const twice = (value: number | null) => (value === null ? null : value * 2)
@@ -274,7 +302,7 @@ export class RoundSolidTool implements Tool {
         // Before any tube, `<0.0000>` once a diameter was given (r08).
         return sized(
           "tubeDiameter",
-          twice(tubeRadius ?? (this.defaults.diameterGiven ? 0 : null))
+          twice(tubeRadius ?? (this.run.diameterGiven ? 0 : null))
         )
       case "tubeFirst":
         return "specifyFirstPoint"
@@ -557,7 +585,8 @@ export class RoundSolidTool implements Tool {
           )
         : []
     }
-    const cursor = "cursor" in state ? state.cursor : null
+    const raw = "cursor" in state ? state.cursor : null
+    const cursor = SIZE_PHASES.has(state.phase) ? (this.sizing ?? raw) : raw
     const reach = (from: Vec3) =>
       cursor ? this.distanceTo(from, worldPointToUcs(ctx.ucs, cursor)) : 0
     switch (state.phase) {
@@ -716,7 +745,7 @@ export class RoundSolidTool implements Tool {
       return
     }
     if (state.phase === "diameter" && this.kind !== "torus") {
-      this.defaults.diameterGiven = true
+      this.run.diameterGiven = true
     }
     const base = this.levelBase(state.center, radius)
     const way = toward ?? worldPointToUcs(ctx.ucs, state.cursor)
@@ -726,13 +755,13 @@ export class RoundSolidTool implements Tool {
   /** What follows the base: CYLINDER's and CONE's height, TORUS's tube; a sphere is made. */
   private askRest(base: Base, ring: Vec3, ctx: ToolContext): void {
     if (this.kind === "sphere") {
-      this.defaults.radius = base.radius
+      this.run.radius = base.radius
       this.commitPrimitive(this.ballPrimitive(base, 0, ctx), ctx)
       return
     }
     if (this.kind === "torus") {
       // A negative radius is no default (r03, r05).
-      if (base.radius > 0) this.defaults.radius = base.radius
+      if (base.radius > 0) this.run.radius = base.radius
       const cursor = ucsPointToWorld(ctx.ucs, ring)
       this.state = { phase: "tube", base, ring, cursor }
       // The tube prompt's base is LASTPOINT (primitives/p348).
@@ -774,7 +803,7 @@ export class RoundSolidTool implements Tool {
       )
       return
     }
-    this.defaults.tubeRadius = tube
+    this.run.tubeRadius = tube
     this.commitPrimitive(this.ballPrimitive(base, tube, ctx), ctx)
   }
 
@@ -933,7 +962,7 @@ export class RoundSolidTool implements Tool {
   }
 
   private askHeight(base: Base, ctx: ToolContext): void {
-    if (base.radiusY === null) this.defaults.radius = base.radius
+    if (base.radiusY === null) this.run.radius = base.radius
     const cursor = ucsPointToWorld(ctx.ucs, base.center)
     this.state = { phase: "height", base, top: null, cursor }
     // The height prompt's base is LASTPOINT: 3P's, 2P's, Elliptical's and
@@ -1098,13 +1127,14 @@ export class RoundSolidTool implements Tool {
   ): void {
     const primitive = this.primitive(base, top, rise, ctx)
     if (!primitive) return
-    this.defaults.height = "height" in rise ? rise.height : primitive.height
+    this.run.height = "height" in rise ? rise.height : primitive.height
     // A cone with no Top radius leaves 0 for the next (primitives/p418).
-    if (primitive.kind === "cone") this.defaults.topRadius = primitive.topRadius
+    if (primitive.kind === "cone") this.run.topRadius = primitive.topRadius
     this.commitPrimitive(primitive, ctx)
   }
 
   private commitPrimitive(primitive: SolidPrimitive, ctx: ToolContext): void {
+    Object.assign(this.defaults, this.run)
     const solid = createSolid(primitive, ctx.document.getCurrentLayerId())
     this.state = { phase: "center" }
     ctx.execute(new AddEntityCommand(withCurrentProperties(solid, ctx)))
@@ -1161,7 +1191,7 @@ export class RoundSolidTool implements Tool {
     const enter =
       typeof question === "string" ||
       typeof question.enter !== "number" ||
-      (this.state.phase === "tubeDiameter" && this.defaults.tubeRadius === null)
+      (this.state.phase === "tubeDiameter" && this.run.tubeRadius === null)
         ? null
         : question.enter
     ctx.dynamicInput.open({

@@ -321,18 +321,18 @@ first)`, later points projected (`withZOf(point, first)`). SPLINE and 3DPOLY kee
   internal pick): read `input.world` there, `input.point` under a typed snap (`takesSnapOverride`).
 - **A distance or an angle takes a point too.** A lone `distance` / `length` / `angle` box gets it
   one of two ways, and `wantsSnap()` says which. True: the tool measures its own pick
-  (CIRCLE's radius, POLYGON's, TEXT's height; SCALE's factor is the distance over half the set's
-  extents; a solid's height, `pickedHeight`). False: the runtime measures it (`runtimeMeasure.ts`)
-  from `getConstraintAnchor()` or asks ` Specify second point:` itself, and answers the box as if
-  typed. Never write a two-point distance or angle in a tool; the console tells which a prompt is
-  (`0,0` then `ID @`, or its ` Specify second point:`).
+  (CIRCLE's radius, POLYGON's, TEXT's height, SCALE's factor; a solid's height, `pickedHeight`).
+  False: the runtime measures it (`runtimeMeasure.ts`) from `getConstraintAnchor()` or asks
+  ` Specify second point:` itself, and answers the box as if typed. Never write a two-point
+  distance or angle in a tool; the console tells which a prompt is (`0,0` then `ID @`, or its
+  ` Specify second point:`).
 - **A typed length is direct distance: `pointAlongCursor`** (`tools/directDistance.ts`), never
   rebuilt from `directionFromUcsHeading`. Feed the live fields with `showRise(ctx, base, point)`
   first: on the `+Z` / `-Z` guide `resolveValues` leaves the angle out, so a commit passes
   `angle: null`.
 - `getConstraintAnchor()` — the base Ortho/Polar restrict against, in every phase defining a
   direction, with its Z; none where Ortho leaves the pick alone, whatever `UseBasePoint` says
-  (circle/d12, arc/d06).
+  (circle/d12, arc/d06; `<a` kept: `ignoresOrtho()`, primitives/d03).
 - Ghosts are not objects to the snaps; what AutoCAD has added while it asks (PLINE's polyline,
   pline/p259) is: `objectsBeingDrawn`.
 - **A Tangent or Perpendicular that finds nothing** reaches the tool where `defersSnap(kind,

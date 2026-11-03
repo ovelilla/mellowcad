@@ -124,15 +124,23 @@ export class BoxTool implements Tool {
   private lastScreen: Vec2 | null = null
   /** The height the mouse gives while the height is asked, which the ghost shows. */
   private rise = 0
+  /**
+   * This run's copy of the shared defaults, which its answers go into and its
+   * prompts offer: the shared ones take it only when a solid is made, so a
+   * cancelled run leaves them as they were (desktop primitives/d06).
+   */
+  private run: SolidDefaults
 
   constructor(
     private readonly kind: BlockKind = "box",
     private readonly defaults: SolidDefaults = solidDefaults()
   ) {
     this.id = kind
+    this.run = { ...defaults }
   }
 
   onActivate(ctx: ToolContext): void {
+    this.run = { ...this.defaults }
     ctx.setCursor("crosshair")
     ctx.selection.clear()
     this.state = { phase: "first" }
@@ -186,7 +194,7 @@ export class BoxTool implements Tool {
 
   question(): PromptId | ToolQuestion {
     const state = this.state
-    const { length, width, height } = this.defaults
+    const { length, width, height } = this.run
     switch (state.phase) {
       case "first":
         return "boxFirstCornerOr"
@@ -258,7 +266,7 @@ export class BoxTool implements Tool {
     }
     if (state.phase === "other" && (id === "Cube" || id === "Length")) {
       this.state = { ...state, phase: id === "Cube" ? "cube" : "length" }
-      this.openDistance(ctx, this.defaults.length)
+      this.openDistance(ctx, this.run.length)
       return "continue"
     }
     if (state.phase === "height" && id === "2Point") {
@@ -304,6 +312,14 @@ export class BoxTool implements Tool {
       default:
         return null
     }
+  }
+
+  /**
+   * The other corner is as picked under Ortho, which would make every box
+   * flat; `<30` still locks it (desktop primitives/d03 a, b, d).
+   */
+  ignoresOrtho(): boolean {
+    return this.state.phase === "other"
   }
 
   /** The footprint as the cursor stretches it, then the solid as its height does. */
@@ -507,7 +523,7 @@ export class BoxTool implements Tool {
     const along = length < 0 ? V.scale(along0, -1) : along0
     const centered = state.mode === "center"
     const size = Math.abs(length) * (centered && length < 0 ? 2 : 1)
-    this.defaults.length = size
+    this.run.length = size
     if (state.phase === "length") {
       this.state = {
         phase: "width",
@@ -517,7 +533,7 @@ export class BoxTool implements Tool {
         length: size,
         cursor: state.cursor,
       }
-      this.openDistance(ctx, this.defaults.width)
+      this.openDistance(ctx, this.run.width)
       return
     }
     // A box's cube is wide to the left of its length (p03, p10); a wedge's
@@ -568,12 +584,11 @@ export class BoxTool implements Tool {
 
   /**
    * Length's width. BOX's lies on the side of the length the cursor or the
-   * point is, the right one with the cursor on its line, where the console's
-   * cursor, which gave the length its heading, falls either way (p03, x07,
-   * p124: the desktop's to settle); a typed width's sign is not read (p10's
-   * -5). WEDGE's lies
-   * towards the UCS's Y, back when typed negative, a point giving its
-   * distance alone (w08).
+   * point is; with the cursor exactly on its line, the right one only past
+   * the length's end, else the left (desktop primitives/d03 f: the console's
+   * sides there were its cursor's noise, p03, x07, p124); a typed width's sign
+   * is not read (p10's -5). WEDGE's lies towards the UCS's Y, back when typed
+   * negative, a point giving its distance alone (w08).
    */
   private takeWidth(width: number, toward: Vec3, ctx: ToolContext): void {
     const state = this.state
@@ -583,14 +598,16 @@ export class BoxTool implements Tool {
       return
     }
     const size = Math.abs(width)
-    this.defaults.width = size
+    this.run.width = size
     const base = worldPointToUcs(ctx.ucs, state.base)
     let side: Vec2
     if (this.kind === "wedge") {
       side = V.scale(UCS_Y, Math.sign(width))
     } else {
-      const aim = worldPointToUcs(ctx.ucs, toward)
-      const left = V.cross(state.along, V.sub(aim, base)) > 0
+      const off = V.sub(worldPointToUcs(ctx.ucs, toward), base)
+      const turn = V.cross(state.along, off)
+      const end = state.length * (state.mode === "center" ? 0.5 : 1)
+      const left = turn > 0 || (turn === 0 && V.dot(state.along, off) <= end)
       side = V.scale(V.perpendicular(state.along), left ? 1 : -1)
     }
     const centered = state.mode === "center"
@@ -622,7 +639,7 @@ export class BoxTool implements Tool {
     // from the centre at its Z (primitives/p341, p356, p500).
     ctx.setLastPoint(from)
     this.rise = 0
-    this.openDistance(ctx, this.defaults.height)
+    this.openDistance(ctx, this.run.height)
     ctx.requestRender()
   }
 
@@ -671,7 +688,8 @@ export class BoxTool implements Tool {
   }
 
   private commit(footprint: Footprint, height: number, ctx: ToolContext): void {
-    this.defaults.height = height
+    this.run.height = height
+    Object.assign(this.defaults, this.run)
     const solid = createSolid(
       this.primitive(footprint, height, ctx),
       ctx.document.getCurrentLayerId()

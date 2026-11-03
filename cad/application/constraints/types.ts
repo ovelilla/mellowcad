@@ -42,6 +42,8 @@ export interface ConstraintContext {
   readonly ucs: Ucs
   /** The camera, in the same frame: off the plan the guides are measured on the screen. */
   readonly view: Viewport
+  /** Ortho leaves the point alone here, Polar not: the tool's `ignoresOrtho`. */
+  readonly orthoFree?: boolean
 }
 
 /** A single, composable point constraint. */

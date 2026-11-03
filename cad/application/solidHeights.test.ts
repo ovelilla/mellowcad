@@ -89,6 +89,21 @@ describe("a solid's height given with the mouse in a 3D view", () => {
     }
   })
 
+  it("follows the free cursor for CYLINDER, CONE and PYRAMID too (primitives/d01)", () => {
+    const cad = seIsometric(createHarness())
+    for (const command of ["CYLINDER", "CONE", "PYRAMID"]) {
+      for (const [at, low, high] of [
+        [{ x: 300, y: 100, z: 40 }, 0, 40],
+        [{ x: 300, y: 100, z: -25 }, -25, 0],
+        [{ x: 330, y: 130, z: 40 }, 0, 40],
+      ] as const) {
+        answer(cad, command, "300,100,0", "20")
+        cad.moveTo(at).click(at)
+        expectRange(cad, low, high)
+      }
+    }
+  })
+
   it("follows the cursor along EXTRUDE's profile, up, down and beside it (extrude/d02–d04)", () => {
     const cad = seIsometric(createHarness())
 
@@ -143,5 +158,86 @@ describe("a solid's height given with the mouse in plan", () => {
     const end = { x: 250, y: -100, z: 50 }
     cad.moveTo(end).click(end)
     expectRange(cad, 0, Math.sqrt(45000))
+  })
+})
+
+/** The last solid's primitive. */
+function made(cad: CadHarness) {
+  return cad
+    .entities()
+    .filter((e): e is Solid3dEntity => e.type === "solid3d")
+    .at(-1)!.primitive!
+}
+
+// Desktop primitives/d02, SE Isometric: a radius clicked 100 px right of a
+// centre at Z 30 reads 25.8839, as at Z 0, where its line of sight meets the
+// plane through the centre; the work plane's point is 57.9 away.
+describe("a size given with the mouse in a 3D view", () => {
+  it("reads a radius or a diameter on the plane through the centre", () => {
+    const cad = seIsometric(createHarness())
+    const rim = { x: 325, y: 100, z: 30 }
+    for (const [command, ...rest] of [
+      ["CYLINDER", "10"],
+      ["SPHERE"],
+      ["TORUS", "5"],
+    ]) {
+      answer(cad, command, "300,100,30")
+      cad.moveTo(rim).click(rim)
+      answer(cad, ...rest)
+      expect(made(cad)).toMatchObject({ radius: expect.closeTo(25, 9) })
+    }
+    answer(cad, "PYRAMID", "300,100,30")
+    cad.moveTo(rim).click(rim)
+    answer(cad, "10")
+    expect(made(cad)).toMatchObject({
+      radius: expect.closeTo(25 * Math.SQRT2, 9),
+    })
+    answer(cad, "CONE", "300,100,30", "_D")
+    const across = { x: 350, y: 100, z: 30 }
+    cad.moveTo(across).click(across)
+    answer(cad, "10")
+    expect(made(cad)).toMatchObject({ radius: expect.closeTo(25, 9) })
+  })
+
+  it("reads TORUS's tube on the ring's plane", () => {
+    const cad = seIsometric(createHarness())
+    answer(cad, "TORUS", "300,100,30")
+    for (const at of [
+      { x: 340, y: 100, z: 30 },
+      { x: 347, y: 100, z: 30 },
+    ]) {
+      cad.moveTo(at).click(at)
+    }
+    expect(made(cad)).toMatchObject({
+      radius: expect.closeTo(40, 9),
+      tubeRadius: expect.closeTo(7, 9),
+    })
+  })
+
+  it("reads CONE's top on the top's plane, at the height the cursor read at Top", () => {
+    const cad = seIsometric(createHarness())
+    answer(cad, "CONE", "300,100,0", "20")
+    cad.moveTo({ x: 300, y: 100, z: 21.85 })
+    answer(cad, "_T")
+    const edge = { x: 328, y: 100, z: 21.85 }
+    cad.moveTo(edge).click(edge)
+    answer(cad, "30")
+    expect(made(cad)).toMatchObject({ topRadius: expect.closeTo(28, 6) })
+  })
+
+  it("keeps a point snapped to or typed at its distance in space (primitives/p242)", () => {
+    const cad = seIsometric(createHarness({ snap: true }))
+    answer(cad, "LINE", "325,100,0", "325,150,0", "")
+    answer(cad, "CYLINDER", "300,100,30")
+    const end = { x: 325, y: 100, z: 0 }
+    cad.moveTo(end).click(end)
+    answer(cad, "10")
+    expect(made(cad)).toMatchObject({
+      radius: expect.closeTo(Math.hypot(25, 30), 9),
+    })
+    answer(cad, "CYLINDER", "300,100,30", "@25,0,-30", "10")
+    expect(made(cad)).toMatchObject({
+      radius: expect.closeTo(Math.hypot(25, 30), 9),
+    })
   })
 })

@@ -11,8 +11,8 @@ import { SolidPrimitive } from "./entityTypes"
  *   (−1 or 1).
  * - `side`: an arrow at the middle of a box's or wedge's base edge, on side
  *   `sign` of `axis`.
- * - `height`: the top's arrow (a wedge's over its tall end), or the base's,
- *   under its centre.
+ * - `height`: the top's arrow, or the base's under it: a wedge's both under
+ *   its tall end (primitives/d08), every other's on its axis.
  * - `polygon`: a pyramid's base corner or the middle of a side, `index`
  *   round from the corner before its X.
  * - `top`: a pyramid's or a cone's top radius.
@@ -58,7 +58,7 @@ export interface GripView {
 
 /**
  * Pixels a grip AutoCAD draws beside another stands off it: the base's
- * height arrow under the base's centre (`-0.1` at a view unit of 0.01, g01),
+ * height arrow under the top's (`-0.1` at a view unit of 0.01, g01),
  * a pointed top's radius arrow out from the apex and down (`0.15`).
  */
 const BASE_ARROW_PX = 10
@@ -87,13 +87,13 @@ export function solidGrips(
     add3(p, add3(add3(scale3(x, u), scale3(y, v)), scale3(n, w)))
   const out: SolidGrip[] = [{ role: { kind: "move" }, at: p }]
   const shows = Math.abs(dot3(n, view.direction)) < 1 - EDGE_ON
-  const heights = (height: number, top: Vec3) =>
+  const heights = (height: number, top: Vec3, foot: Vec3 = p) =>
     shows
       ? [
           { role: { kind: "height", end: "top" } as const, at: top, along: n },
           {
             role: { kind: "height", end: "base" } as const,
-            at: sub3(p, scale3(n, BASE_ARROW_PX * view.pixel)),
+            at: sub3(foot, scale3(n, BASE_ARROW_PX * view.pixel)),
             along: scale3(n, -1),
           },
         ]
@@ -128,8 +128,14 @@ export function solidGrips(
         })
       }
       // A wedge's top is the edge over its tall end.
-      const top = at(primitive.kind === "wedge" ? -l : 0, 0, primitive.height)
-      out.push(...heights(primitive.height, top))
+      const end = primitive.kind === "wedge" ? -l : 0
+      out.push(
+        ...heights(
+          primitive.height,
+          at(end, 0, primitive.height),
+          at(end, 0, 0)
+        )
+      )
       return out
     }
     case "pyramid": {
