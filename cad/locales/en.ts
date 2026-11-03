@@ -6012,6 +6012,7 @@ export const en: EngineCatalog = {
         ]
       ],
       "regionOpenNotCoplanar": "Open objects must be coplanar.",
+      "regionOpenEdgesColinear": "All open edges cannot be colinear.",
       "regionLoopsExtracted": [
         [
           "count",

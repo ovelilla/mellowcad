@@ -924,28 +924,43 @@ pattern); a double-click, which in AutoCAD opens the Hatch Editor tab and Quick 
 
 ### `REGION` / `REG` · es `REGION` / `REG` · pt-BR `REGIAO` / `REG`
 
-**Implemented:** `Select objects:` (whole objects) and every loop the set makes becomes a REGION:
-each closed object a loop of its own — a circle, an ellipse, a closed polyline (fitted ones by
-their curve), a closed or self-closing spline, a closed planar 3D polyline, and an open one whose
+**Implemented:** `Select objects:` (whole objects; a set selected before the command is dropped
+and asked again, while MOVE takes it in the same run, regions/p129; a typed pick there sets
+LASTPOINT, ALL leaves it, regions/p130, p131; objects on a locked layer counted, `N were on a
+locked layer.`, and left, regions/p126) and every loop the set makes becomes a REGION:
+each closed object a loop of its own — a circle, an ellipse, a closed polyline (a Fit one by its
+arcs, a Spline-fit one as one NURBS edge, the exact B-spline of its frame, regions/p132), a closed
+or self-closing spline, a closed planar 3D polyline, and an open one whose
 ends meet (region/p02, p12) —, and the open ones (lines, arcs, elliptical arcs, open polylines,
 splines and 3D polylines) chained **end to end, never at crossings** (p04: a line touching mid-side
-and a tail are left), loose chains dropped; where three meet, each face the chains enclose and,
-round more than one, their outline too (p10: two squares of lines give both and the rectangle;
-p13: a grid of four, the four and the outline). Nested loops give separate regions, no hole (p08).
-A region lies in its loop's plane: at Z (p06), tilted (a circle in a turned UCS, a planar 3D
-polyline, p06, p12). The objects that went into a region are erased (DELOBJ's initial 3), the
+and a tail are left; a gap of 1e-7 closes, 1e-5 does not, regions/p122), loose chains dropped;
+where three meet, each face the chains enclose and, round faces sharing an edge, their outline too
+(p10: two squares of lines give both and the rectangle; p13: a grid of four, the four and the
+outline), none round loops meeting only at a vertex (regions/p120, p137). Of two coincident edges
+the later goes into the region and the first stays; a closed loop coincident with one already made
+is counted in both counts and its object erased, but makes no second region (regions/p123). The
+regions come in AutoCAD's order: the open chains' first, then the closed objects' in the set's
+order (regions/p125, p114). Nested loops give separate regions, no hole (p08).
+A region lies in its loop's plane: at Z (p06; ELEVATION, regions/p118), tilted (a circle in a
+turned UCS, a planar 3D polyline, p06, p12; regions/p116, p117), with no thickness
+(regions/p119). The objects that went into a region are erased (DELOBJ's initial 3), the
 others kept; the regions wear the **current** layer, colour, linetype and lineweight, not the
 objects' (p07, p10), a polyline's width ignored (p07). The console's report, in its order:
 `N closed, degenerate or unsupported objects rejected.` (a region, a hatch, text, a reference,
 a zero-length object, a closed spline or 3D polyline in no plane; p06, p11, p14), then
+`All open edges cannot be colinear.` when the open objects are straight with every end on one line,
+those then unused (regions/p133, p135, p150; a lone arc says nothing, regions/p134), then
 `N loops extracted.` or, with open objects in no one plane, `Open objects must be coplanar.` in
 its place, those then unused (p06, p15), then `N loops rejected.` and
 `    Self intersections                     : N loops.` for a loop crossing or folding on itself
 (a bow tie, a closed polyline of two vertices; p03, p14, p15), then `N Regions created.`; Enter on
 an empty set says `None found.` (p05) — es `bucle(s) extraído(s)`, `regiones creada(s)`,
-`Se ha rechazado N objetos cerrado, dañado o no admitido.`, `No se ha encontrado ninguno.`; pt-BR
-`loops extraído(s)`, `Regiões criada(s)` (0 in the plural, p15), `Não foi encontrado nada.`
-One undo step. The object (file version 42): faces of loops of exact edges — lines, circular and
+`Se ha rechazado N objetos cerrado, dañado o no admitido.`, `Todas las aristas abiertas no pueden
+ser colineales.`, `No se ha encontrado ninguno.`; pt-BR `loops extraído(s)`, `Regiões criada(s)`
+(0 in the plural, p15), `Todas as arestas abertas não podem ser colineares.`, `Não foi encontrado
+nada.` (regions/p105, p127, p135). One undo step, even making nothing, named `REGION` by U and
+REDO (regions/p103–p105, p128); not transparent (regions/p102). The object (file version 42):
+faces of loops of exact edges — lines, circular and
 elliptical arcs, NURBS pieces —, the kernel's (`geometry/planarRegions.ts`, tolerance 1e-6). It
 draws as its edges, nothing filled (2D Wireframe, d01); it is picked by them and a window takes it
 by them; it snaps as its edges do — Endpoint, Midpoint, Center, Quadrant, Intersection, Nearest,

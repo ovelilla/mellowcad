@@ -23,7 +23,8 @@ import {
  * EXPLODE, JOIN, ERASE and friends. It supports both invocation orders:
  *
  * - **noun→verb**: with a pre-selection, the action runs immediately on
- *   activation (picking the tool with objects already selected);
+ *   activation (picking the tool with objects already selected), unless the
+ *   command says {@link takesPreselection} false;
  * - **verb→noun**: with nothing selected, it asks `Select objects:`
  *   ({@link ObjectSelector}) and runs on Enter/Space.
  *
@@ -80,7 +81,17 @@ export abstract class SelectionActionTool implements Tool {
    */
   protected begin(ctx: ToolContext): void {
     this.selector.start()
-    if (this.selector.preselect(ctx)) this.execute(ctx)
+    if (!this.takesPreselection()) ctx.selection.clear()
+    else if (this.selector.preselect(ctx)) this.execute(ctx)
+  }
+
+  /**
+   * Whether the command takes the set selected before it. AutoCAD registers
+   * some without the pickfirst set: they drop it and ask `Select objects:`,
+   * while MOVE takes the same set in the same run (regions/p129, p335, p349).
+   */
+  protected takesPreselection(): boolean {
+    return true
   }
 
   /** Whether the set takes objects on a locked layer, as a command that only reads them does. */

@@ -2547,6 +2547,7 @@
       "regionNoneFound": "Não foi encontrado nada.",
       "regionObjectsRejected": "{count, plural, =0 {# objetos} one {# objeto} other {# objetos}} rejeitado(s), fechado(s), danificado(s) ou não suportado(s).",
       "regionOpenNotCoplanar": "Objetos abertos devem ser coplanares.",
+      "regionOpenEdgesColinear": "Todas as arestas abertas não podem ser colineares.",
       "regionLoopsExtracted": "{count, plural, =0 {# loops} one {# loop} other {# loops}} extraído(s).",
       "regionLoopsRejected": "{count, plural, =0 {# loops} one {# loop} other {# loops}} rejeitado(s).",
       "regionSelfIntersections": "    Autointersecções                     : {count, plural, =0 {# loops.} one {# loop.} other {# loops.}}",

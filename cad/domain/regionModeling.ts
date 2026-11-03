@@ -19,6 +19,8 @@ import {
 import {
   RegionFace,
   RegionOperation,
+  facesArea,
+  facesPerimeter,
   loopSelfIntersects,
   loopsFromCurves,
   regionBoolean,
@@ -26,6 +28,7 @@ import {
 import {
   entityElevation,
   entityNormal,
+  entityPointToWorld,
   facesAlong,
   isLevel,
   lineEndZ,
@@ -58,27 +61,44 @@ export interface RegionExtraction {
   readonly selfIntersecting: number
   /** The open objects lie in no one plane: none of them is used (p06, p15). */
   readonly openNotCoplanar: boolean
+  /**
+   * The open objects are straight, every end on one line: "All open edges
+   * cannot be colinear.", none used (regions/p133, p135; an arc is not, p134).
+   */
+  readonly openColinear: boolean
+  /**
+   * The regions REGION says it made: a loop coincident with one already made
+   * is counted, its object erased, but no second region made (regions/p123).
+   */
+  readonly regionsCreated: number
   readonly consumed: readonly EntityId[]
 }
 
 /** Below this, relative to the drawing's size, a point lies on a plane. */
 const PLANE_TOLERANCE = 1e-9
 
+/** Below this, relative to a region's size, two regions' measures agree. */
+const COINCIDENT_TOLERANCE = 1e-9
+
 /**
  * REGION: each closed object a loop of its own — a circle, an ellipse, a
  * closed polyline, spline or 3D polyline, or one whose ends meet (p12) —,
  * and the open ones (lines, arcs, elliptical arcs, open polylines and
- * splines) chained end to end in their one plane (`loopsFromCurves`). A
+ * splines) chained end to end in their one plane (`loopsFromCurves`). The
+ * chains' regions come first, then the closed objects' in the set's order. A
  * loop that crosses itself is rejected; an object of another kind (a region,
  * a hatch, text) or degenerate is too, counted before anything else.
  */
 export function extractRegions(entities: readonly Entity[]): RegionExtraction {
   const regions: ExtractedRegion[] = []
+  const sizes: { area: number; perimeter: number }[] = []
   const consumed: EntityId[] = []
   let rejectedObjects = 0
   let loopsExtracted = 0
   let selfIntersecting = 0
+  let duplicates = 0
   const open: Entity[] = []
+  const closed: { loop: ClosedLoop; id: EntityId }[] = []
   const take = (
     loop: readonly PlanarCurve[],
     plane: { normal: Vec3; elevation: number },
@@ -89,23 +109,31 @@ export function extractRegions(entities: readonly Entity[]): RegionExtraction {
       selfIntersecting += 1
       return
     }
-    regions.push({ face: faceOfLoop(loop), ...plane })
     consumed.push(...ids)
+    const region = { face: faceOfLoop(loop), ...plane }
+    const size = {
+      area: facesArea([region.face]),
+      perimeter: facesPerimeter([region.face]),
+    }
+    const made = regions.some((other, i) =>
+      coincident(region, size, other, sizes[i])
+    )
+    if (made) {
+      duplicates += 1
+      return
+    }
+    regions.push(region)
+    sizes.push(size)
   }
   for (const entity of entities) {
     const planar = closedLoop(entity)
-    if (planar === "open") {
-      open.push(entity)
-      continue
-    }
-    if (planar === null) {
-      rejectedObjects += 1
-      continue
-    }
-    take(planar.curves, planar, [entity.id])
+    if (planar === "open") open.push(entity)
+    else if (planar === null) rejectedObjects += 1
+    else closed.push({ loop: planar, id: entity.id })
   }
   let openNotCoplanar = false
-  if (open.length > 0) {
+  const openColinear = open.length > 0 && allColinear(open)
+  if (open.length > 0 && !openColinear) {
     const plane = commonPlane(open)
     if (plane === null) {
       openNotCoplanar = true
@@ -126,14 +154,74 @@ export function extractRegions(entities: readonly Entity[]): RegionExtraction {
       }
     }
   }
+  // The closed objects' regions come after the chains' (regions/p125, p114).
+  for (const { loop, id } of closed) take(loop.curves, loop, [id])
   return {
     regions,
     rejectedObjects,
     loopsExtracted,
     selfIntersecting,
     openNotCoplanar,
+    openColinear,
+    regionsCreated: regions.length + duplicates,
     consumed: [...new Set(consumed)],
   }
+}
+
+/** Whether two regions cover the same place in the same plane. */
+function coincident(
+  a: ExtractedRegion,
+  aSize: { area: number; perimeter: number },
+  b: ExtractedRegion,
+  bSize: { area: number; perimeter: number }
+): boolean {
+  const tolerance = COINCIDENT_TOLERANCE * Math.max(1, aSize.area)
+  if (Math.abs(aSize.area - bSize.area) > tolerance) return false
+  if (
+    Math.abs(aSize.perimeter - bSize.perimeter) >
+    COINCIDENT_TOLERANCE * Math.max(1, aSize.perimeter)
+  )
+    return false
+  if (dot3(a.normal, b.normal) < 1 - PLANE_TOLERANCE) return false
+  const size = Math.max(1, Math.abs(a.elevation))
+  if (Math.abs(a.elevation - b.elevation) > PLANE_TOLERANCE * size) return false
+  const union = facesArea(regionBoolean("union", [a.face], [b.face]))
+  return Math.abs(union - aSize.area) <= tolerance
+}
+
+/**
+ * Whether every open object is straight with all its ends on one line, a
+ * vertical line's too (REGIONS-D3): a line, a polyline of no arcs, a 3D
+ * polyline. An arc, an elliptical arc or a spline is never straight (p134).
+ */
+function allColinear(open: readonly Entity[]): boolean {
+  const points: Vec3[] = []
+  for (const entity of open) {
+    const shape = entityShape(entity)
+    if (shape.type === "line" || shape.type === "polyline3d") {
+      points.push(...worldEnds(shape))
+    } else if (
+      shape.type === "polyline" &&
+      !(shape.bulges ?? []).some((b) => b !== 0)
+    ) {
+      points.push(...shape.vertices.map((v) => entityPointToWorld(shape, v)))
+    } else {
+      return false
+    }
+  }
+  if (points.length === 0) return false
+  const a = points[0]
+  let far = a
+  for (const q of points) {
+    if (length3(sub3(q, a)) > length3(sub3(far, a))) far = q
+  }
+  const run = length3(sub3(far, a))
+  if (run === 0) return true
+  const d = sub3(far, a)
+  const size = Math.max(1, ...points.map((q) => length3(q)))
+  return points.every(
+    (q) => length3(cross3(d, sub3(q, a))) / run <= PLANE_TOLERANCE * size
+  )
 }
 
 export type ClosedLoop = {
@@ -195,7 +283,7 @@ export function closedLoop(drawn: Entity): ClosedLoop | "open" | null {
     case "circle":
     case "ellipse":
     case "polyline": {
-      const curves = regionCurvesOf(entity)
+      const curves = regionCurvesOf(drawn)
       if (!curves || curves.length === 0) return null
       if (curves.every((c) => curveLength(c) <= MODEL_TOLERANCE)) return null
       if (!closesItself(curves)) return "open"

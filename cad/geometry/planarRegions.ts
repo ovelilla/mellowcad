@@ -367,6 +367,9 @@ export function loopSelfIntersects(loop: RegionLoop): boolean {
   )
 }
 
+/** How near two ends lie to be one node of REGION's chains. */
+const NODE_TOLERANCE = MODEL_TOLERANCE * 10
+
 /** How much open geometry one REGION will chain: the faces' walk is quadratic in it. */
 export const MAX_REGION_EDGES = 4000
 
@@ -376,7 +379,9 @@ export const MAX_REGION_EDGES = 4000
  * each connected piece gives each face its walk closes and, round more than
  * one face, its outline too: three lines making two squares give the two
  * squares and the rectangle round both (region/p10), a grid of four the four
- * and the outline (p13). Every loop runs counter-clockwise, and `sources`
+ * and the outline (p13). Faces meeting only at a vertex get none: that walk
+ * passes the vertex twice (regions/p120, p137). Of two coincident edges the
+ * later is taken (p123). Every loop runs counter-clockwise, and `sources`
  * says which of `curves` each of its edges is. `null` past
  * {@link MAX_REGION_EDGES}.
  */
@@ -384,7 +389,7 @@ export function loopsFromCurves(
   curves: readonly PlanarCurve[]
 ): { loops: RegionLoop[]; sources: number[][] } | null {
   if (curves.length > MAX_REGION_EDGES) return null
-  const nodes = new Nodes(MODEL_TOLERANCE * 10)
+  const nodes = new Nodes(NODE_TOLERANCE)
   const edges = curves
     .map((curve, source) => ({
       curve,
@@ -393,6 +398,7 @@ export function loopsFromCurves(
       to: nodes.add(curveEnd(curve)),
     }))
     .filter((e) => e.from !== e.to || curveLength(e.curve) > MODEL_TOLERANCE)
+    .filter((e, i, all) => !coincidesLater(all, i))
   const alive = pruneLoose(edges, nodes.points.length)
   const live = edges.filter((_, i) => alive[i])
   // Both ways along each edge; the walk keeps the face on its left.
@@ -420,9 +426,13 @@ export function loopsFromCurves(
     if (visited[start]) continue
     const cycle: PlanarCurve[] = []
     const sources: number[] = []
+    const passed = new Set<number>()
+    let simple = true
     let current = start
     while (!visited[current]) {
       visited[current] = true
+      if (passed.has(directed[current].from)) simple = false
+      passed.add(directed[current].from)
       cycle.push(directed[current].curve)
       sources.push(directed[current].source)
       const back = arrivingAngle(directed[current].curve) + Math.PI
@@ -457,7 +467,7 @@ export function loopsFromCurves(
       const list = faces.get(key)
       if (list) list.push({ loop: cycle, sources })
       else faces.set(key, [{ loop: cycle, sources }])
-    } else {
+    } else if (simple) {
       outlines.set(key, {
         loop: loopReversed(cycle),
         sources: [...sources].reverse(),
@@ -474,6 +484,29 @@ export function loopsFromCurves(
     loops: found.map((f) => f.loop),
     sources: found.map((f) => f.sources),
   }
+}
+
+/**
+ * Whether a later edge runs over edge `i`, end to end: of two coincident
+ * edges REGION takes the later and leaves the first (regions/p123).
+ */
+function coincidesLater(
+  edges: readonly { curve: PlanarCurve; from: number; to: number }[],
+  i: number
+): boolean {
+  const { from, to } = edges[i]
+  let middle: Vec2 | null = null
+  for (let j = i + 1; j < edges.length; j++) {
+    const other = edges[j]
+    const same =
+      (other.from === from && other.to === to) ||
+      (other.from === to && other.to === from)
+    if (!same) continue
+    middle ??= curvePoint(edges[i].curve, 0.5)
+    if (V.distance(curvePoint(other.curve, 0.5), middle) <= NODE_TOLERANCE)
+      return true
+  }
+  return false
 }
 
 function pruneLoose(

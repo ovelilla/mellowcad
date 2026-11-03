@@ -1,9 +1,17 @@
 import { describe, expect, it } from "vitest"
 
 import { type CadHarness, createHarness } from "../../test/harness"
-import { circleOf, lineOf, p, polylineOf, rectOf } from "../../test/builders"
+import {
+  circleOf,
+  layerOf,
+  lineOf,
+  p,
+  polylineOf,
+  rectOf,
+} from "../../test/builders"
 import type { Entity, RegionEntity } from "../domain/entities"
 import { regionArea, regionPerimeter } from "../domain/regions"
+import { curvePoint, curveStart } from "../geometry/planarCurves"
 import { es } from "../locales/es"
 import { THEME } from "../scene/theme"
 import { ptBR } from "../locales/pt-BR"
@@ -171,9 +179,12 @@ describe("REGION", () => {
     ])
   })
 
-  it("says None found. to an empty set (p05)", () => {
-    const cad = createHarness()
-    expect(written(cad, "REGION", "").at(-1)).toBe("None found.")
+  it("says None found. to an empty set (p05; regions/p127, p135 in es-ES, pt-BR)", () => {
+    const none = (locale?: typeof es) =>
+      written(createHarness(locale ? { locale } : {}), "_REGION", "").at(-1)
+    expect(none()).toBe("None found.")
+    expect(none(es)).toBe("No se ha encontrado ninguno.")
+    expect(none(ptBR)).toBe("Não foi encontrado nada.")
   })
 
   it("wears the current layer and properties, not the objects' (p07, p10)", () => {
@@ -186,10 +197,15 @@ describe("REGION", () => {
     expect(region.layerId).toBe(cad.runtime.document.getCurrentLayerId())
   })
 
-  it("is one undo step", () => {
+  it("is one undo step, which U and REDO name (regions/p103, p128)", () => {
     const cad = regionOf(P01)
-    answer(cad, "U")
+    expect(written(cad, "U").at(-1)).toBe("REGION")
     expect(cad.typeCounts()).toEqual({ line: 4, circle: 1 })
+    expect(written(cad, "REDO").slice(-2)).toEqual([
+      "REGION",
+      "Everything has been redone",
+    ])
+    expect(cad.typeCounts()).toEqual({ region: 2 })
   })
 
   it("speaks Spanish AutoCAD's words (p01, p03 in es-ES)", () => {
@@ -211,6 +227,279 @@ describe("REGION", () => {
       "    Autointersecções                     : 1 loop.",
       "0 Regiões criada(s).",
     ])
+  })
+})
+
+describe("REGION against AutoCAD 2027 (the Regions review)", () => {
+  it("drops a preselection and asks Select objects: (regions/p129)", () => {
+    const cad = createHarness({
+      entities: [circleOf(p(0, 0), 5), circleOf(p(20, 0), 5)],
+    })
+    cad.selectAll()
+    expect(written(cad, "REGION")).toEqual(["REGION"])
+    expect(cad.selectedIds()).toEqual([])
+    expect(cad.state().commandLine.prompt).toBe("REGION Select objects:")
+    expect(written(cad, "").at(-1)).toBe("None found.")
+    expect(cad.typeCounts()).toEqual({ circle: 2 })
+  })
+
+  it("says the open edges cannot be colinear: a line, two apart (regions/p135, p133)", () => {
+    for (const entities of [
+      [lineOf(p(0, 0), p(10, 0))],
+      [lineOf(p(0, 0), p(10, 0)), lineOf(p(20, 0), p(30, 0))],
+    ]) {
+      expect(regionOf(entities).commandLog().slice(-3)).toEqual([
+        "All open edges cannot be colinear.",
+        "0 loops extracted.",
+        "0 Regions created.",
+      ])
+    }
+  })
+
+  it("says it after the rejected objects, before the loops (regions/p150, p107)", () => {
+    const cad = regionOf([circleOf(p(0, 0), 5)])
+    answer(cad, "LINE", "20,0", "30,0", "")
+    expect(written(cad, "REGION", "ALL", "").slice(-4)).toEqual([
+      "1 closed, degenerate or unsupported object rejected.",
+      "All open edges cannot be colinear.",
+      "0 loops extracted.",
+      "0 Regions created.",
+    ])
+    const among = regionOf([
+      circleOf(p(0, 0), 5),
+      lineOf(p(20, 0), p(30, 0)),
+      circleOf(p(50, 0), 5),
+    ])
+    expect(among.commandLog().slice(-3)).toEqual([
+      "All open edges cannot be colinear.",
+      "2 loops extracted.",
+      "2 Regions created.",
+    ])
+  })
+
+  it("says nothing of it for a lone arc (regions/p134)", () => {
+    const cad = createHarness()
+    answer(cad, "ARC", "0,0", "5,5", "10,0")
+    expect(written(cad, "REGION", "ALL", "").slice(-2)).toEqual([
+      "0 loops extracted.",
+      "0 Regions created.",
+    ])
+  })
+
+  it("says it in es-ES and pt-BR (regions/p105, p135)", () => {
+    const said = (locale: typeof es) =>
+      written(
+        createHarness({ entities: [lineOf(p(0, 0), p(10, 0))], locale }),
+        "_REGION",
+        "_ALL",
+        ""
+      ).slice(-3)
+    expect(said(es)).toEqual([
+      "Todas las aristas abiertas no pueden ser colineales.",
+      "0 bucles extraído(s).",
+      "0 regiones creada(s).",
+    ])
+    expect(said(ptBR)).toEqual([
+      "Todas as arestas abertas não podem ser colineares.",
+      "0 loops extraído(s).",
+      "0 Regiões criada(s).",
+    ])
+  })
+
+  it("makes a Spline-fit polyline's region of its B-spline, one edge (regions/p132)", () => {
+    const cad = createHarness()
+    answer(cad, "PLINE", "80,0", "100,0", "100,10", "80,10", "C")
+    answer(cad, "PEDIT", "L", "S", "", "REGION", "ALL", "")
+    const [region] = regions(cad)
+    expect(regionArea(region)).toBeCloseTo(135.555556, 6)
+    expect(regionPerimeter(region)).toBeCloseTo(44.910132, 6)
+    const [edge, ...rest] = region.faces[0].loops[0]
+    expect(rest).toEqual([])
+    expect(edge.kind).toBe("spline")
+    expect(curveStart(edge)).toBeCloseToPoint(p(96.666667, 1.666667), 6)
+  })
+
+  it("makes the open chains' regions first, then the closed objects' (regions/p125)", () => {
+    const cad = createHarness()
+    answer(cad, "CIRCLE", "50,0", "5")
+    answer(cad, "LINE", "0,0", "10,0", "10,10", "0,10", "C")
+    answer(cad, "CIRCLE", "30,0", "5", "RECTANG", "60,0", "70,10")
+    answer(cad, "REGION", "ALL", "")
+    const leftmost = (r: RegionEntity) =>
+      Math.round(
+        Math.min(
+          ...r.faces[0].loops[0].flatMap((c) =>
+            [0, 0.25, 0.5, 0.75].map((s) => curvePoint(c, s).x)
+          )
+        )
+      )
+    expect(regions(cad).map(leftmost)).toEqual([0, 45, 25, 60])
+  })
+
+  it("rejects no outline round loops meeting at a vertex (regions/p120, p137)", () => {
+    const triangles = createHarness()
+    answer(triangles, "LINE", "0,0", "10,0", "5,8", "C")
+    answer(triangles, "LINE", "10,0", "20,0", "15,8", "C")
+    const eight = createHarness()
+    answer(eight, "LINE", "0,0", "10,5", "0,10", "C")
+    answer(eight, "LINE", "10,5", "20,0", "20,10", "C")
+    for (const cad of [triangles, eight]) {
+      expect(written(cad, "REGION", "ALL", "").slice(-3)).toEqual([
+        "Select objects:",
+        "2 loops extracted.",
+        "2 Regions created.",
+      ])
+      expect(cad.typeCounts()).toEqual({ region: 2 })
+    }
+  })
+
+  it("counts a coincident circle but makes one region; keeps the first of two lines (regions/p123)", () => {
+    const cad = createHarness()
+    answer(cad, "LINE", "0,0", "10,0", "10,10", "0,10", "C")
+    answer(cad, "LINE", "0,0", "10,0", "")
+    answer(cad, "CIRCLE", "30,0", "5", "CIRCLE", "30,0", "5")
+    const first = cad.entities()[0].id
+    expect(written(cad, "REGION", "ALL", "").slice(-2)).toEqual([
+      "3 loops extracted.",
+      "3 Regions created.",
+    ])
+    expect(cad.typeCounts()).toEqual({ line: 1, region: 2 })
+    expect(cad.entities().find((e) => e.type === "line")?.id).toBe(first)
+  })
+})
+
+describe("REGION: the cells the Regions review settled", () => {
+  /** What `ID @` reads LASTPOINT as. */
+  const lastPoint = (cad: CadHarness) => written(cad, "ID", "@").at(-1)
+
+  it("sets LASTPOINT at a typed pick, never at ALL (regions/p130, p131)", () => {
+    const picked = createHarness({ entities: [circleOf(p(0, 0), 5)] })
+    answer(picked, "LASTPOINT", "100,100,0", "REGION", "5,0", "")
+    expect(regions(picked)).toHaveLength(1)
+    expect(lastPoint(picked)).toMatch(/X = 5\.0+ +Y = 0\.0+ /)
+    const all = createHarness({ entities: [circleOf(p(0, 0), 5)] })
+    answer(all, "LASTPOINT", "100,100,0", "REGION", "ALL", "")
+    expect(lastPoint(all)).toMatch(/X = 100\.0+ +Y = 100\.0+ /)
+  })
+
+  it("is refused transparently (regions/p102)", () => {
+    const cad = createHarness({ entities: [circleOf(p(0, 0), 5)] })
+    expect(written(cad, "LINE", "20,0", "'_REGION").slice(-2)).toEqual([
+      "** That command may not be invoked transparently **",
+      "Point or option keyword required.",
+    ])
+  })
+
+  it("takes a command typed at its prompt as an invalid selection (region/p05)", () => {
+    const cad = createHarness({ entities: [circleOf(p(0, 0), 5)] })
+    expect(written(cad, "REGION", "_REGION").at(-2)).toBe("*Invalid selection*")
+  })
+
+  it("is a step named REGION when it makes nothing; UNDO 2 names two (regions/p105, p104)", () => {
+    const cad = createHarness({ entities: [circleOf(p(0, 0), 5)] })
+    answer(cad, "REGION", "")
+    expect(written(cad, "U").at(-1)).toBe("REGION")
+    answer(cad, "LINE", "20,0", "30,0", "", "REGION", "L", "")
+    expect(written(cad, "U").at(-1)).toBe("REGION")
+    expect(cad.typeCounts()).toEqual({ circle: 1, line: 1 })
+    answer(cad, "REGION", "ALL", "", "CIRCLE", "50,0", "5", "REGION", "L", "")
+    expect(written(cad, "UNDO", "2").at(-1)).toBe("REGION CIRCLE")
+    expect(cad.typeCounts()).toEqual({ line: 1, region: 1 })
+  })
+
+  it("leaves nothing selected and the unused objects as Previous (regions/p107)", () => {
+    const cad = regionOf([
+      circleOf(p(0, 0), 5),
+      lineOf(p(20, 0), p(30, 0)),
+      circleOf(p(50, 0), 5),
+    ])
+    expect(cad.selectedIds()).toEqual([])
+    expect(written(cad, "ERASE", "P").at(-1)).toBe("1 found")
+  })
+
+  it("counts and leaves the objects on a locked layer (regions/p126)", () => {
+    const cad = createHarness()
+    const locked = (entity: Entity) => ({ ...entity, layerId: "LK" })
+    cad.runtime.document.load(
+      [
+        locked(circleOf(p(0, 0), 5)),
+        ...square(20, 0, 30, 10).vertices.map((v, i, all) =>
+          locked(lineOf(v, all[(i + 1) % all.length]))
+        ),
+        circleOf(p(50, 0), 5),
+      ],
+      { layers: [layerOf("0"), layerOf("LK", { locked: true })] }
+    )
+    const lines = written(cad, "REGION", "ALL", "")
+    expect(lines).toContain("5 were on a locked layer.")
+    expect(lines.slice(-2)).toEqual(["1 loop extracted.", "1 Region created."])
+    expect(cad.typeCounts()).toEqual({ circle: 1, line: 4, region: 1 })
+  })
+
+  /** A square of lines and a circle drawn after `setup`, made regions. */
+  function squareAndCircle(...setup: string[]): CadHarness {
+    const cad = createHarness()
+    answer(cad, ...setup, "LINE", "0,0", "10,0", "10,10", "0,10", "C")
+    answer(cad, "CIRCLE", "30,0", "5", "THICKNESS", "0", "REGION", "ALL", "")
+    expect(regions(cad).map((r) => Number(regionArea(r).toFixed(6)))).toEqual([
+      100, 78.539816,
+    ])
+    return cad
+  }
+
+  it("lies in the UCS's plane: turned about Z, tilted about X (regions/p116, p117)", () => {
+    for (const r of regions(squareAndCircle("UCS", "Z", "30"))) {
+      expect(r.normal).toBeUndefined()
+    }
+    for (const r of regions(squareAndCircle("UCS", "X", "90"))) {
+      expect(r.normal?.x).toBeCloseTo(0, 9)
+      expect(r.normal?.y).toBeCloseTo(-1, 9)
+      expect(r.normal?.z).toBeCloseTo(0, 9)
+    }
+  })
+
+  it("lies at their ELEVATION and takes no THICKNESS (regions/p118, p119)", () => {
+    const raised = squareAndCircle("ELEVATION", "5")
+    expect(regions(raised).map((r) => r.elevation)).toEqual([5, 5])
+    const thick = squareAndCircle("THICKNESS", "2")
+    for (const r of regions(thick)) expect("thickness" in r).toBe(false)
+  })
+
+  it("closes a gap of 1e-7, not one of 1e-5 (regions/p122)", () => {
+    const cad = createHarness()
+    for (const [x, gap] of [
+      [0, "0.0000001"],
+      [20, "0.00001"],
+      [40, "0.001"],
+    ] as const) {
+      answer(cad, "LINE", `${x},0`, `${x + 10},0`, `${x + 10},10`, `${x},10`)
+      answer(cad, `${x},${gap}`, "")
+    }
+    expect(written(cad, "REGION", "ALL", "").slice(-2)).toEqual([
+      "1 loop extracted.",
+      "1 Region created.",
+    ])
+    expect(cad.typeCounts()).toEqual({ line: 8, region: 1 })
+  })
+
+  it("chains lines and an arc, elliptical arcs, splines (regions/p121, p114, p115)", () => {
+    const arc = createHarness()
+    answer(arc, "LINE", "0,0", "10,0", "10,10", "")
+    answer(arc, "ARC", "10,10", "2.9289321881345,7.0710678118655", "0,0")
+    answer(arc, "REGION", "ALL", "")
+    expect(regionArea(regions(arc)[0])).toBeCloseTo(78.539816, 6)
+    expect(regionPerimeter(regions(arc)[0])).toBeCloseTo(35.707963, 6)
+    const curves = createHarness()
+    answer(curves, "ELLIPSE", "A", "40,0", "60,0", "5", "0", "180")
+    answer(curves, "ELLIPSE", "A", "40,0", "60,0", "5", "180", "360")
+    answer(curves, "SPLINE", "0,0", "5,5", "10,0", "")
+    answer(curves, "SPLINE", "10,0", "5,-5", "0,0", "")
+    answer(curves, "REGION", "ALL", "")
+    expect(regions(curves).map((r) => regionArea(r))).toEqual([
+      expect.closeTo(157.079633, 6),
+      expect.closeTo(62.5, 6),
+    ])
+    expect(regionPerimeter(regions(curves)[0])).toBeCloseTo(48.442241, 6)
   })
 })
 
@@ -285,6 +574,19 @@ describe("UNION, SUBTRACT and INTERSECT of regions", () => {
       "At least 2 solids, surfaces, or coplanar regions must be selected.",
     ])
     expect(cad.typeCounts()).toEqual({ region: 1, line: 1 })
+  })
+
+  it("set LASTPOINT at their last typed pick (regions/p109–p111)", () => {
+    for (const run of [
+      ["UNION", "-5,0", "11,0", ""],
+      ["INTERSECT", "-5,0", "11,0", ""],
+      ["SUBTRACT", "-5,0", "", "11,0", ""],
+    ]) {
+      const cad = regionOf([circleOf(p(0, 0), 5), circleOf(p(6, 0), 5)])
+      answer(cad, "LASTPOINT", "100,100,0", ...run)
+      expect(regions(cad)).toHaveLength(1)
+      expect(written(cad, "ID", "@").at(-1)).toMatch(/X = 11\.0+ +Y = 0\.0+ /)
+    }
   })
 
   it("combines plane by plane (b08)", () => {

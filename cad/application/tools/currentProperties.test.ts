@@ -169,6 +169,20 @@ const FROM_SCRATCH: ReadonlyArray<
         .type("30")
         .enter(),
   ],
+  // probe regions/p124: CECOLOR, CELTYPE and CELWEIGHT, not the circle's.
+  [
+    "REGION",
+    (c) =>
+      c
+        .command("CIRCLE")
+        .click(p(0, 0))
+        .type("20")
+        .enter()
+        .command("REGION")
+        .type("L")
+        .enter()
+        .enter(),
+  ],
   // probe primitives/p234, p235, as CYLINDER's.
   [
     "TORUS",

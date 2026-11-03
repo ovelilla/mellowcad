@@ -2716,6 +2716,7 @@ declare const source: {
       "regionNoneFound": string
       "regionObjectsRejected": string
       "regionOpenNotCoplanar": string
+      "regionOpenEdgesColinear": string
       "regionLoopsExtracted": string
       "regionLoopsRejected": string
       "regionSelfIntersections": string

@@ -2466,6 +2466,7 @@
       "regionNoneFound": "No se ha encontrado ninguno.",
       "regionObjectsRejected": "Se ha rechazado {count, plural, one {# objeto} other {# objetos}} cerrado, dañado o no admitido.",
       "regionOpenNotCoplanar": "Los objetos abiertos deben ser coplanares.",
+      "regionOpenEdgesColinear": "Todas las aristas abiertas no pueden ser colineales.",
       "regionLoopsExtracted": "{count, plural, one {# bucle} other {# bucles}} extraído(s).",
       "regionLoopsRejected": "{count, plural, one {# bucle} other {# bucles}} rechazado(s).",
       "regionSelfIntersections": "    Autointersecciones                     : {count, plural, one {# bucle.} other {# bucles.}}",

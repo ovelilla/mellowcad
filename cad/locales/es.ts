@@ -6655,6 +6655,7 @@ export const es: EngineLocale = {
         " cerrado, dañado o no admitido."
       ],
       "regionOpenNotCoplanar": "Los objetos abiertos deben ser coplanares.",
+      "regionOpenEdgesColinear": "Todas las aristas abiertas no pueden ser colineales.",
       "regionLoopsExtracted": [
         [
           "count",

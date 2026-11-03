@@ -6665,6 +6665,7 @@ export const ptBR: EngineLocale = {
         " rejeitado(s), fechado(s), danificado(s) ou não suportado(s)."
       ],
       "regionOpenNotCoplanar": "Objetos abertos devem ser coplanares.",
+      "regionOpenEdgesColinear": "Todas as arestas abertas não podem ser colineares.",
       "regionLoopsExtracted": [
         [
           "count",

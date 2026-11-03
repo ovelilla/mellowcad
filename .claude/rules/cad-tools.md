@@ -33,16 +33,17 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
   the set takes no sub-objects (`takes: () => "wholeObjects"`: what its refusal lists, and so which
   modes it offers), and where needed `question`, `accept` (a silent filter), `refuse` and
   `noneFound` (EXPLODE's lines) and `onAdded` (STRETCH's frames); a preselection goes through
-  `preselect`. Never re-implement a pick, a box or a mode. A **single object's pick** that takes the
-  modes (BREAK's `Select object:`, UCS OBject's, ARRAYPATH's path) holds one too, with `modes`
+  `preselect`. A **single object's pick** that takes the modes (BREAK's `Select object:`, UCS
+  OBject's, ARRAYPATH's path) holds one too, with `modes`
   (`ONE_OBJECT_MODES`) and `one` (`take`, given the `ModeFind`, its `last` point; `newest`, `pair`,
   `silent`, `locked`: said per locked one found, never taken; UCS OBject's `takesLocked`): it keeps
   its pick (the newest under the box, locked or not: `lockedObjectAt`) and Enter, the rest to the
   selector while `inMode()`; a typed point is its pick (`typedPick`; on nothing, where AUto is
   offered, `startWindow`).
 - `SelectionActionTool` — one action over a set, noun-verb and verb-noun (Erase, Explode, Join,
-  COPYCLIP). A command that asks something **before** the set (COPYBASE's base point) overrides
-  `onActivate` and calls `begin(ctx)` once it has the answer, rather than forking the class.
+  COPYCLIP); `takesPreselection()` false where AutoCAD drops a preselection (REGION). One
+  asking something **before** the set (COPYBASE's base point) overrides `onActivate` and calls
+  `begin(ctx)` with the answer.
 - `boxSelection.ts` — what a window, lasso, fence or polygon takes (`objectsInWindow`,
   `lassoSelect`, `objectsOnFence`, `objectsInPolygon`) and their previews; never re-implement it.
   Each takes `ctx.viewport`: the box is upright on the screen, which a turned view is not.
@@ -73,12 +74,12 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
   commands offer the same AutoCAD keyword, the prompt belongs in a shared helper: identical wording
   is fidelity. `measurementOf` (`DimensionTool.ts`) is the measurement at Text's `<default>` and in
   `Dimension text =`. TEXT's `POINT_PROMPT` and `listTextStyles` are ATTDEF's too.
-- **Ghosts and overlays draw through `SceneBuilder.entityScenePrimitive`**, the one way an
-  entity draws, so a new type renders everywhere for free. It returns a
-  **list**: spread it, and never add a nesting "group" primitive — tests, selection cycling and
-  pixel checks filter the scene by `kind`. Pass `{ blocks: ctx.blocks }` wherever the entity can
-  be one the user selected, or a block reference ghosts as nothing. A preview that needs an entity
-  reuses a fixed id (`"circle-preview"`), never one minted per frame (it burns entity ids).
+- **Ghosts and overlays draw through `SceneBuilder.entityScenePrimitive`**, the one way an entity
+  draws, so a new type renders everywhere for free. It returns a **list**: spread it, and never add
+  a nesting "group" primitive — tests, selection cycling and pixel checks filter the scene by
+  `kind`. Pass `{ blocks: ctx.blocks }` wherever the entity can be one the user selected, or a block
+  reference ghosts as nothing. A preview that needs an entity reuses a fixed id
+  (`"circle-preview"`), never one minted per frame (it burns entity ids).
 - A tool editing an object **in place** lists it in `hiddenEntityIds()`, or the new state is
   painted over the old one.
 

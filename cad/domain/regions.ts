@@ -1,5 +1,6 @@
 import { V, Vec2 } from "../geometry/Vec2"
 import { normalizeAngle } from "../geometry/primitives"
+import { splineFitCurve } from "../geometry/splineFit"
 import {
   bsplineDomain,
   bsplineReversed,
@@ -236,8 +237,8 @@ export function regionGripPoints(region: RegionEntity): Vec2[] {
 /**
  * The edges an object of a region's plane gives, in its own order, read as
  * it stores its points (its OCS), or `null` for one no region is made of. A
- * polyline's arcs keep the way their bulge turns; a 3D polyline is read by
- * the caller, which knows its plane.
+ * polyline's arcs keep the way their bulge turns, a Spline-fit one is its
+ * B-spline; a 3D polyline is read by the caller, which knows its plane.
  */
 export function regionCurvesOf(entity: Entity): PlanarCurve[] | null {
   switch (entity.type) {
@@ -281,7 +282,19 @@ export function regionCurvesOf(entity: Entity): PlanarCurve[] | null {
         },
       ]
     }
-    case "polyline":
+    case "polyline": {
+      const fit = entity.fit
+      if (fit && fit.kind !== "curve" && entity.vertices.length >= 3) {
+        // WHY: a Spline-fit polyline's region is one SPLINE edge, the exact
+        // B-spline of its frame, not SPLINESEGS' chords (regions/p132).
+        const curve = splineFitCurve(
+          entity.vertices.map((v) => ({ x: v.x, y: v.y, z: 0 })),
+          entity.closed,
+          fit.kind === "quadratic" ? 2 : 3
+        )
+        const domain = bsplineDomain(curve)
+        return [{ kind: "spline", curve, from: domain.start, to: domain.end }]
+      }
       return polylineSegmentGeometries(entityShape(entity)).map(
         (seg): PlanarCurve =>
           seg.kind === "line"
@@ -297,6 +310,7 @@ export function regionCurvesOf(entity: Entity): PlanarCurve[] | null {
                 sweep: 4 * Math.atan(seg.bulge),
               }
       )
+    }
     case "spline": {
       const curve = splineCurve(entity)
       const flat = {

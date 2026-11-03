@@ -267,7 +267,10 @@ and sifted the same way — one on a locked layer, which `Command:` selects, cou
 (MOVE's `2 found` / `1 was on a locked layer.`, Previous holding the other, properties/p381), by
 every command taking a set, as its own `Select objects:` leaves a window's locked finds out
 (COPYCLIP's too, which changes nothing; ZOOM Object frames a preselection whole, counting nothing); with nothing left the command asks `Select objects:`, closing the set at
-the first selection that adds something (EXPLODE's, p241, p242). The set is dropped as the command
+the first selection that adds something (EXPLODE's, p241, p242). AutoCAD registers some commands
+without it: REGION, UNION, SUBTRACT, INTERSECT and SLICE drop it and ask `Select objects:`, while
+MOVE and EXTRUDE take the same set in the same run (regions/p129, p335, p349); REGION does so here
+(the others: Missing). The set is dropped as the command
 ends or is cancelled, so the next one asks `Select objects:` — `(ssget "_I")` is nil after MOVE,
 COPY, ROTATE, SCALE, MIRROR, STRETCH, JOIN, ARRAYRECT, EXPLODE, -BLOCK, and LINE, ID and ZOOM started
 with one (p249–p251, p261, p262, p264), nothing selected after Escape (desktop d10) — but by COPYCLIP
@@ -295,7 +298,8 @@ objects:` as the edits do (the console never gave them one); a point typed there
 drawing, where AutoCAD tests only what the view shows (`No object found` off the screen, LASTPOINT
 moved all the same: pieces/p158, p159; on it, p176); a window of no width on the screen, typed off
 the plan (primitives/p426: `50,10,5` then `50,10,10` in SE Isometric finds a sphere there; here a
-window, `0 found`); PICKFIRST (a set selected before the command is always taken; with
+window, `0 found`); UNION, SUBTRACT, INTERSECT and SLICE still take a set selected before them
+(regions/p335, p349); PICKFIRST (a set selected before the command is always taken; with
 PICKFIRST 0 AutoCAD ignores it, erase/p230); the lasso `pick/drag cursor` offers at a fence's or
 polygon's first point; PICKADD, PICKAUTO, PICKDRAG and SELECTIONPREVIEW as variables (their
 defaults are the behaviour); the Previous set lasts the session, not the drawing; a press starts a

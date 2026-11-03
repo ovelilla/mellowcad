@@ -2409,6 +2409,7 @@
   "commands.messages.regionNoneFound": "None found.",
   "commands.messages.regionObjectsRejected": "{count, plural, one {# closed, degenerate or unsupported object rejected.} other {# closed, degenerate or unsupported objects rejected.}}",
   "commands.messages.regionOpenNotCoplanar": "Open objects must be coplanar.",
+  "commands.messages.regionOpenEdgesColinear": "All open edges cannot be colinear.",
   "commands.messages.regionLoopsExtracted": "{count, plural, one {# loop extracted.} other {# loops extracted.}}",
   "commands.messages.regionLoopsRejected": "{count, plural, one {# loop rejected.} other {# loops rejected.}}",
   "commands.messages.regionSelfIntersections": "    Self intersections                     : {count, plural, one {# loop.} other {# loops.}}",

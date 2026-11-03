@@ -172,6 +172,45 @@ describe("the region booleans, against AutoCAD 2027's figures (region/b01–b11)
     )
     expect(loopSelfIntersects(sq(0, 0, 1, 1).loops[0])).toBe(false)
   })
+
+  const L = (a: number[], b: number[]): PlanarCurve => ({
+    kind: "line",
+    start: { x: a[0], y: a[1] },
+    end: { x: b[0], y: b[1] },
+  })
+
+  it("gives faces meeting only at a vertex no outline (regions/p120, p137)", () => {
+    const triangles = loopsFromCurves([
+      L([0, 0], [10, 0]),
+      L([10, 0], [5, 8]),
+      L([5, 8], [0, 0]),
+      L([10, 0], [20, 0]),
+      L([20, 0], [15, 8]),
+      L([15, 8], [10, 0]),
+    ])!.loops
+    expect(triangles.map(loopArea)).toEqual([40, 40])
+    const eight = loopsFromCurves([
+      L([0, 0], [10, 5]),
+      L([10, 5], [0, 10]),
+      L([0, 10], [0, 0]),
+      L([10, 5], [20, 0]),
+      L([20, 0], [20, 10]),
+      L([20, 10], [10, 5]),
+    ])!.loops
+    expect(eight.map(loopArea)).toEqual([50, 50])
+  })
+
+  it("takes the later of two coincident edges (regions/p123)", () => {
+    const found = loopsFromCurves([
+      L([0, 0], [10, 0]),
+      L([10, 0], [10, 10]),
+      L([10, 10], [0, 10]),
+      L([0, 10], [0, 0]),
+      L([10, 0], [0, 0]),
+    ])!
+    expect(found.loops.map(loopArea)).toEqual([100])
+    expect([...found.sources[0]].sort()).toEqual([1, 2, 3, 4])
+  })
 })
 
 /** Every loop closed end to end, outlines counter-clockwise and holes clockwise. */

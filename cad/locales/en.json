@@ -2443,6 +2443,7 @@
       "regionNoneFound": "None found.",
       "regionObjectsRejected": "{count, plural, one {# closed, degenerate or unsupported object rejected.} other {# closed, degenerate or unsupported objects rejected.}}",
       "regionOpenNotCoplanar": "Open objects must be coplanar.",
+      "regionOpenEdgesColinear": "All open edges cannot be colinear.",
       "regionLoopsExtracted": "{count, plural, one {# loop extracted.} other {# loops extracted.}}",
       "regionLoopsRejected": "{count, plural, one {# loop rejected.} other {# loops rejected.}}",
       "regionSelfIntersections": "    Self intersections                     : {count, plural, one {# loop.} other {# loops.}}",
