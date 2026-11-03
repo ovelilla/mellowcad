@@ -3,7 +3,8 @@
 ### Object snaps
 
 **Implemented:** Endpoint, Midpoint, Center, Quadrant, Intersection, Extension, Insertion,
-Perpendicular, Tangent, Nearest, Apparent Intersection, Parallel; AutoCAD's running set (OSMODE
+Perpendicular, Tangent, Nearest, Apparent Intersection, Parallel, on the objects drawn and on the
+polyline PLINE is drawing (draw.md's PLINE, pline/p259); AutoCAD's running set (OSMODE
 4133: Endpoint, Center, Intersection, Extension); the snap nearest the cursor wins ("a point closest
 to the center of the aperture box"): a point under the aperture (APERTURE 10: Endpoint engages 10 px
 from its point and not at 11, desktop line/d25), then the one already held within 13 px (the

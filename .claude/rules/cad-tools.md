@@ -333,9 +333,8 @@ first)`, later points projected (`withZOf(point, first)`). SPLINE and 3DPOLY kee
 - `getConstraintAnchor()` — the base Ortho/Polar restrict against, in every phase defining a
   direction, with its Z; none where Ortho leaves the pick alone, whatever `UseBasePoint` says
   (circle/d12, arc/d06).
-- No hook exposes a preview to the snaps: ghosts are not objects.
+- Ghosts are not objects to the snaps; what AutoCAD has added while it asks (PLINE's polyline,
+  pline/p259) is: `objectsBeingDrawn`.
 - **A Tangent or Perpendicular that finds nothing** reaches the tool where `defersSnap(kind,
 entity)` says so: it reads `ctx.snapOverride()` and `ctx.pick`, as LINE (`tools/deferredSnap.ts`)
   and CIRCLE (`circlesMeetingThree`, `circleOnDiameter`) do.
-- `retainsTrackingAfterPointerDown()` — true when a click _begins_ an edit, so tracking survives
-  the drag.

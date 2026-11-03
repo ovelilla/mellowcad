@@ -85,16 +85,20 @@ function tierOf(type: SnapType): Tier {
  * the polyline's, each at its own Z (3dpoly/p21), seen along their image in
  * any view. A region is its edges, objects of its id, and a solid its edges,
  * lines of its id. Built once per resolve so the expansion is not repeated by each of
- * the ten providers.
+ * the ten providers. What the running command already holds in the drawing
+ * (`Tool.objectsBeingDrawn`) is in it too.
  */
-function snapEntities(document: DocumentReader): {
+function snapEntities(
+  document: DocumentReader,
+  beingDrawn: readonly Entity[]
+): {
   entities: Entity[]
   solidPoints: SolidSnapPoint[]
 } {
   const blocks = document.blockLookup()
   const entities: Entity[] = []
   const solidPoints: SolidSnapPoint[] = []
-  for (const entity of document.getEntities()) {
+  for (const entity of [...document.getEntities(), ...beingDrawn]) {
     const drawn =
       entity.type === "insert" ? insertFlatGeometry(entity, blocks) : [entity]
     for (const piece of drawn) {
@@ -271,7 +275,8 @@ export class SnapEngine extends Observable {
     construction: readonly ConstructionGeometry[] = [],
     anchor: Vec2 | null = null,
     parallelSourceIds: ReadonlySet<EntityId> = new Set(),
-    acquired: readonly AcquiredPoint[] = []
+    acquired: readonly AcquiredPoint[] = [],
+    beingDrawn: readonly Entity[] = []
   ): SnapResult | null {
     // A forced "none" override suppresses snapping for this pick entirely.
     if (this.override === "none") {
@@ -292,7 +297,8 @@ export class SnapEngine extends Observable {
       construction,
       anchor,
       parallelSourceIds,
-      acquired
+      acquired,
+      beingDrawn
     )
 
     // WHY tiers and then distance, not a fixed priority: AutoCAD applies the
@@ -412,7 +418,8 @@ export class SnapEngine extends Observable {
    */
   extensionLines(
     document: DocumentReader,
-    acquired: readonly AcquiredPoint[]
+    acquired: readonly AcquiredPoint[],
+    beingDrawn: readonly Entity[] = []
   ): ExtensionLine[] {
     const on =
       this.override === SnapType.Extension ||
@@ -422,7 +429,7 @@ export class SnapEngine extends Observable {
     if (!on || acquired.length === 0) return []
     return extensionLines({
       document,
-      entities: snapEntities(document).entities,
+      entities: snapEntities(document, beingDrawn).entities,
       acquired,
     })
   }
@@ -444,7 +451,8 @@ export class SnapEngine extends Observable {
   endpointUnder(
     screenCursor: Vec2,
     document: DocumentReader,
-    viewport: Viewport
+    viewport: Viewport,
+    beingDrawn: readonly Entity[] = []
   ): SnapResult | null {
     const provider = this.providers.find((p) => p.type === SnapType.Endpoint)
     if (!provider) return null
@@ -455,7 +463,8 @@ export class SnapEngine extends Observable {
       [],
       null,
       new Set(),
-      []
+      [],
+      beingDrawn
     )
     let nearest: SnapResult | null = null
     for (const candidate of provider.collect(context)) {
@@ -487,9 +496,10 @@ export class SnapEngine extends Observable {
     construction: readonly ConstructionGeometry[],
     anchor: Vec2 | null,
     parallelSourceIds: ReadonlySet<EntityId>,
-    acquired: readonly AcquiredPoint[]
+    acquired: readonly AcquiredPoint[],
+    beingDrawn: readonly Entity[]
   ): SnapContext {
-    const { entities, solidPoints } = snapEntities(document)
+    const { entities, solidPoints } = snapEntities(document, beingDrawn)
     const blocks = document.blockLookup()
     const touched = new Map<Entity, Vec3 | null>()
     // `reach` (in plan only, where a world distance means the same everywhere)

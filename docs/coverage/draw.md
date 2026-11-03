@@ -97,7 +97,11 @@ sub-prompt's point `Invalid 2D point.`; p18–p20, p137), the dynamic-input box 
 zero-length vertex (p17); direct distance along the cursor, 0 a zero-length vertex and a negative
 one the other way (p195); a Tangent or Perpendicular override at the start point, with nothing to
 measure from, finds nothing (`No found for specified point.`, `Invalid point.`, p29); in the first
-vertex's plane, the others projected onto it; the layer, colour, linetype, lineweight and THICKNESS
+vertex's plane, the others projected onto it, the chain so far and the rubber band drawn there; the
+chain so far an object to the running snaps, the overrides and OTRACK, as AutoCAD adds the polyline
+at its start point: Endpoint, Midpoint, Center, Perpendicular and Nearest on its segments and arcs
+(p259, desktop d13; 3DPOLY's chain finds nothing, 3dpoly/p79), a snapped vertex kept as the snap's
+point exactly (p259's `50,0`); the layer, colour, linetype, lineweight and THICKNESS
 current at the start point, whatever is set during the command (p39, p181–p183), in whose colour
 the chain so far and the rubber band are drawn (desktop d01), in arc mode with an amber dashed
 chord from the arc's start to the endpoint asked (d03, d06); Halfwidth and Width (es `Mitad grosor`, declared `Mitad`, and `Grosor`), in line and
@@ -609,7 +613,9 @@ converted to splines.` and `Unable to convert the selected object.` (es `Solo pu
 en splines las polilíneas ajustadas como spline.`, `Imposible convertir el objeto designado.`,
 22427, 22428; p178).
 
-**Missing:** toLerance (not offered: a tolerance above 0 is an approximation Autodesk does not
+**Missing:** the spline being drawn as an object to the snaps and OTRACK, which AutoCAD has (p333:
+`_END` at its start point closes it there; nothing here, as for 3DPOLY's chain); toLerance (not
+offered: a tolerance above 0 is an approximation Autodesk does not
 document; AutoCAD asks `Specify fit tolerance <0.0000>:`, es `Precise tolerancia de ajuste
 <0.0000>:`, p115, p131); Object's DELOBJ (the polyline always erased here, as at its default) and
 its spline of a cubic frame of three (the Bézier on the middle vertex twice here, **unverified**); the deferred Tangent at the end tangent on a line, an ellipse or a

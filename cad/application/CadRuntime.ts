@@ -7217,7 +7217,11 @@ export class CadRuntime extends Observable {
   /** Extension's straight paths from the acquired ends, as tracking guides. */
   private extensionGuides(): TrackingGuide[] {
     return this.snapping
-      .extensionLines(this.frame.document, this.tracking.getAcquired())
+      .extensionLines(
+        this.frame.document,
+        this.tracking.getAcquired(),
+        this.objectsBeingDrawn()
+      )
       .map((line, i) => ({
         point: {
           id: `extension-${i}`,
@@ -7230,6 +7234,11 @@ export class CadRuntime extends Observable {
         angle: Math.atan2(line.dir.y, line.dir.x),
         kind: "extension",
       }))
+  }
+
+  /** What the running command already holds in the drawing, for the snaps and tracking. */
+  private objectsBeingDrawn(): readonly Entity[] {
+    return this.activeTool.objectsBeingDrawn?.(this.toolContext) ?? []
   }
 
   /** Clears acquired references and the cached guide so nothing lingers. */
@@ -7307,6 +7316,7 @@ export class CadRuntime extends Observable {
         typed === null ? (this.activeTool.impliedSnap?.() ?? null) : null
       const override = typed ?? implied
       const measuredFrom = anchor ?? this.snapBase(override)
+      const beingDrawn = this.objectsBeingDrawn()
       this.tracking.acquireEndpoints =
         override === SnapType.Extension ||
         (override === null &&
@@ -7324,7 +7334,8 @@ export class CadRuntime extends Observable {
               construction,
               measuredFrom,
               this.parallelRefs.getAcquired(),
-              this.tracking.getAcquired()
+              this.tracking.getAcquired(),
+              beingDrawn
             )
       // Followed along one path to where another crosses it, the crossing is
       // the point, not the snap sliding with the cursor (Extension, Nearest…).
@@ -7344,7 +7355,12 @@ export class CadRuntime extends Observable {
       const acquiredFrom =
         this.tracking.acquireEndpoints &&
         !this.tracking.canAcquire(this.currentSnap)
-          ? this.snapping.endpointUnder(screen, frame.document, frame.viewport)
+          ? this.snapping.endpointUnder(
+              screen,
+              frame.document,
+              frame.viewport,
+              beingDrawn
+            )
           : this.currentSnap
       this.tracking.observeHover(
         acquiredFrom,

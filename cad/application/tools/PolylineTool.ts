@@ -3,6 +3,7 @@ import { Vec3, vec3, withZOf } from "../../geometry/Vec3"
 import {
   createPolyline,
   onPlaneOf,
+  type PolylineEntity,
   type PolylineWidth,
 } from "../../domain/entities"
 import {
@@ -377,6 +378,34 @@ export class PolylineTool implements Tool {
     return !this.arc.active || this.arc.wantsSnap()
   }
 
+  /**
+   * The polyline as drawn so far: AutoCAD adds it at the start point, so its
+   * segments are snapped to and tracked from while the command runs
+   * (pline/p259, desktop d13).
+   */
+  objectsBeingDrawn(): readonly PolylineEntity[] {
+    const soFar = this.soFar()
+    return soFar ? [soFar] : []
+  }
+
+  /** The segments placed, as the polyline they make: on the start's plane, wide and curved as drawn. */
+  private soFar(): PolylineEntity | null {
+    if (this.state.phase !== "drawing") return null
+    const { vertices, bulges, widths, properties } = this.state
+    if (vertices.length < 2) return null
+    return onPlaneOf(
+      createPolyline(
+        vertices,
+        false,
+        properties.layerId,
+        bulges,
+        "polyline-so-far",
+        widths
+      ),
+      vertices[0]
+    )
+  }
+
   getConstraintAnchor(): Vec2 | null {
     if (this.state.phase !== "drawing") return null
     return this.arc.active ? this.arc.anchor() : this.lastVertex(this.state)
@@ -393,17 +422,8 @@ export class PolylineTool implements Tool {
 
     // The chain committed so far, drawn as it will look once materialised
     // (arcs and widths included, via the shared entity renderer).
-    if (this.state.vertices.length >= 2) {
-      const committed = createPolyline(
-        this.state.vertices,
-        false,
-        ctx.document.getCurrentLayerId(),
-        this.state.bulges,
-        undefined,
-        this.state.widths
-      )
-      out.push(...entityScenePrimitive(viewport, committed, stroke))
-    }
+    const soFar = this.soFar()
+    if (soFar) out.push(...entityScenePrimitive(viewport, soFar, stroke))
     if (this.askingWidth) {
       // A width is measured from the last vertex: AutoCAD's base-point rubber
       // band, dashed (probe pline/p200, desktop pline/d06).
@@ -434,14 +454,17 @@ export class PolylineTool implements Tool {
       bulge = this.pendingBulge(this.state, end) ?? 0
       chord = this.state.arcMode
     }
-    // The next segment, as wide as it will be drawn.
-    const next = createPolyline(
-      [last, end],
-      false,
-      ctx.document.getCurrentLayerId(),
-      [bulge],
-      "polyline-preview",
-      [this.state.width]
+    // The next segment, as wide as it will be drawn, on the polyline's plane.
+    const next = onPlaneOf(
+      createPolyline(
+        [last, end],
+        false,
+        ctx.document.getCurrentLayerId(),
+        [bulge],
+        "polyline-preview",
+        [this.state.width]
+      ),
+      this.state.vertices[0]
     )
     out.push(...entityScenePrimitive(viewport, next, stroke))
     if (chord) {
@@ -962,6 +985,9 @@ export class PolylineTool implements Tool {
 
     const typedDist = parseField(ctx, "distance")
     const typedAngle = parseField(ctx, "angle")
+    // WHY the cursor as it is with nothing typed: rebuilt from its heading and
+    // length, a snapped vertex came out 1e-14 off (pline/p259's 50,0).
+    if (typedDist === null && typedAngle === null) return rawCursor
     return (
       pointAlongCursor(ctx, start, rawCursor, {
         distance: typedDist,

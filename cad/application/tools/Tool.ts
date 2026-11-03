@@ -839,6 +839,16 @@ export interface Tool {
   wantsSnap?(): boolean
 
   /**
+   * The object AutoCAD already holds in the drawing while the command asks for
+   * more of it, in the tool's frame: PLINE's polyline, whose segments are
+   * snapped to and tracked from before it ends (probe pline/p259, desktop
+   * pline/d13). The snaps and object snap tracking see it as any object; it
+   * is never picked, and the tool's preview draws it. A ghost the command has
+   * not added (LINE's rubber band, 3DPOLY's chain, 3dpoly/p79) stays out.
+   */
+  objectsBeingDrawn?(ctx: ToolContext): readonly Entity[]
+
+  /**
    * Whether the drawing crosshair replaces the OS cursor while this tool is
    * active. View tools (PAN) return `false` so the cursor they set — a hand —
    * stays visible, matching AutoCAD, where the crosshair belongs to drawing and
