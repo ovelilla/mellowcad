@@ -154,7 +154,8 @@ export class JoinTool extends SelectionActionTool {
 
   // WHY a window's (and a crossing's) find newest first: `ssget` lists it so
   // (pieces/p390), which makes another source and another chain (p324, p341,
-  // p377). A fence and the named modes keep the drawing's order (unprobed).
+  // p377). A fence and the named modes keep the drawing's order (unprobed for
+  // JOIN; UNION takes ALL's newest first, union/s07, regions/p323).
   protected selectionAdded(
     ids: readonly EntityId[],
     added: AddedBy,

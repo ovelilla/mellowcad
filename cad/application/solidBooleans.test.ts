@@ -56,9 +56,9 @@ function boxes(cad: CadHarness): CadHarness {
 }
 
 describe("UNION of solids", () => {
-  it("makes the set one solid, the first's, and lists it with no history (union/k01, s07)", () => {
+  it("makes the set one solid, ALL's newest, and lists it with no history (union/k01, s07)", () => {
     const cad = boxes(console())
-    const [first] = solids(cad)
+    const [, newest] = solids(cad)
     expect(written(cad, "UNION", "ALL", "")).toEqual([
       "UNION",
       "Select objects: ALL",
@@ -67,7 +67,7 @@ describe("UNION of solids", () => {
     ])
     const [one] = solids(cad)
     expect(solids(cad)).toHaveLength(1)
-    expect(one.id).toBe(first.id)
+    expect(one.id).toBe(newest.id)
     expect(one.primitive).toBeUndefined()
     expect(brepIsClosed(one.brep)).toBe(true)
     expect(brepVolume(one.brep)).toBeCloseTo(2375, 9)
@@ -159,6 +159,90 @@ describe("UNION of solids", () => {
       (e) => e.type === "solid3d"
     ) as Solid3dEntity
     expect(brepVolume(back.brep)).toBeCloseTo(2375, 9)
+  })
+})
+
+describe("UNION and SUBTRACT of solids against AutoCAD 2027 (the Regions review)", () => {
+  const NONE = "No solids, surfaces, or regions selected."
+  const TWO =
+    "At least two solids, surfaces, or coplanar regions must be selected."
+
+  /** A red box on layer B, then a green one on layer A (union/s07, regions/p322). */
+  function coloured(): { cad: CadHarness; a: string; b: string } {
+    const cad = console()
+    const [a, b] = ["A", "B"].map((name) => cad.runtime.createLayer(name))
+    cad.runtime.setCurrentLayer(b)
+    answer(cad, "COLOR", "1", "BOX", "0,0,0", "10,10", "10")
+    cad.runtime.setCurrentLayer(a)
+    answer(cad, "COLOR", "3", "BOX", "5,5,5", "15,15", "15")
+    return { cad, a, b }
+  }
+
+  it("ALL keeps the newest: its id, layer A and green (union/s07)", () => {
+    const { cad, a } = coloured()
+    const [, newest] = solids(cad)
+    answer(cad, "UNION", "ALL", "")
+    expect(solids(cad).map((s) => [s.id, s.layerId, s.color])).toEqual([
+      [newest.id, a, newest.color],
+    ])
+  })
+
+  it("picks keep their order: the first picked kept (regions/p322; region/b10 picks the oldest first)", () => {
+    const { cad, a } = coloured()
+    answer(cad, "ZOOM", "W", "-10,-10", "40,30")
+    const [, newest] = solids(cad)
+    answer(cad, "UNION", "L", "2,0", "")
+    expect(solids(cad).map((s) => [s.id, s.layerId])).toEqual([[newest.id, a]])
+    const again = coloured()
+    answer(again.cad, "ZOOM", "W", "-10,-10", "40,30")
+    const [first] = solids(again.cad)
+    answer(again.cad, "UNION", "2,0", "L", "")
+    expect(solids(again.cad).map((s) => [s.id, s.layerId])).toEqual([
+      [first.id, again.b],
+    ])
+  })
+
+  it("SUBTRACT says none was selected of a solid in both sets, both kept (regions/p325)", () => {
+    const cad = boxes(console())
+    answer(cad, "ZOOM", "W", "-10,-10", "40,30")
+    expect(written(cad, "SUBTRACT", "2,0", "", "2,0", "").at(-1)).toBe(NONE)
+    expect(solids(cad)).toHaveLength(2)
+  })
+
+  it("SUBTRACT of a solid by a region, or a region by a solid: two are needed (regions/p341, p342)", () => {
+    for (const [from, to] of [
+      ["25,0", "0,5"],
+      ["0,5", "25,0"],
+    ]) {
+      const cad = console()
+      answer(cad, "ZOOM", "W", "-10,-10", "40,20", "BOX", "0,0,0", "10,10")
+      answer(cad, "10", "CIRCLE", "30,0", "5", "REGION", "L", "")
+      expect(written(cad, "SUBTRACT", from, "", to, "").at(-1)).toBe(TWO)
+      expect(kinds(cad)).toEqual(["region", "solid3d"])
+      expect(solids(cad)[0].primitive?.kind).toBe("box")
+    }
+  })
+
+  it("SUBTRACT takes from the solids, a region of the first set left (regions/p340)", () => {
+    const cad = console()
+    answer(cad, "ZOOM", "W", "-10,-10", "40,20", "BOX", "0,0,0", "10,10", "10")
+    answer(cad, "CIRCLE", "30,0", "5", "REGION", "L", "")
+    answer(cad, "SPHERE", "10,10,10", "3")
+    answer(cad, "SUBTRACT", "0,5", "25,0", "", "L", "")
+    expect(kinds(cad)).toEqual(["region", "solid3d"])
+    expect(brepVolume(solids(cad)[0].brep)).toBeCloseTo(985.8628, 4)
+  })
+
+  it("UNION of three, two apart: one solid of two shells (regions/p323)", () => {
+    const cad = console()
+    answer(cad, "BOX", "0,0,0", "10,10", "10", "BOX", "5,5,5", "15,15", "15")
+    answer(cad, "BOX", "30,0,0", "40,10", "10")
+    const newest = solids(cad).at(-1)!
+    answer(cad, "UNION", "ALL", "")
+    const [one] = solids(cad)
+    expect(solids(cad)).toHaveLength(1)
+    expect(one.id).toBe(newest.id)
+    expect(brepVolume(one.brep)).toBeCloseTo(3375, 9)
   })
 })
 

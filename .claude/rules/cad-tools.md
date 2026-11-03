@@ -41,9 +41,9 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
   selector while `inMode()`; a typed point is its pick (`typedPick`; on nothing, where AUto is
   offered, `startWindow`).
 - `SelectionActionTool` — one action over a set, noun-verb and verb-noun (Erase, Explode, Join,
-  COPYCLIP); `takesPreselection()` false where AutoCAD drops a preselection (REGION). One
-  asking something **before** the set (COPYBASE's base point) overrides `onActivate` and calls
-  `begin(ctx)` with the answer.
+  COPYCLIP); `takesPreselection()` false where AutoCAD drops a preselection (REGION, the
+  booleans). One asking something **before** the set (COPYBASE's base point) overrides
+  `onActivate` and calls `begin(ctx)` with the answer.
 - `boxSelection.ts` — what a window, lasso, fence or polygon takes (`objectsInWindow`,
   `lassoSelect`, `objectsOnFence`, `objectsInPolygon`) and their previews; never re-implement it.
   Each takes `ctx.viewport`: the box is upright on the screen, which a turned view is not.

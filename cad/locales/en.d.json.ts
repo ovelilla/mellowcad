@@ -2727,6 +2727,8 @@ declare const source: {
       "booleanNeedsTwo": string
       "subtractFrom": string
       "subtractWhat": string
+      "subtractNeedsTwo": string
+      "noSolidsOrRegionsSelected": string
       "regionAreaReport": string
       "boxZeroLength": string
       "boxZeroWidth": string

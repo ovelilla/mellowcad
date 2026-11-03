@@ -1,4 +1,9 @@
-import { Entity, RegionEntity, Solid3dEntity } from "../../domain/entities"
+import {
+  Entity,
+  EntityId,
+  RegionEntity,
+  Solid3dEntity,
+} from "../../domain/entities"
 import {
   BooleanOutcome,
   combineRegions,
@@ -11,6 +16,7 @@ import {
 } from "../../domain/solidModeling"
 import { ReplaceEntitiesCommand } from "../commands/entityCommands"
 import { SelectionActionTool } from "./SelectionActionTool"
+import type { AddedBy, ModeFind } from "./objectSelection"
 import { QuestionInput, ToolContext } from "./Tool"
 
 function regionsOf(entities: readonly Entity[]): RegionEntity[] {
@@ -51,14 +57,71 @@ function apply(
 }
 
 /**
+ * A set of the three booleans, kept in AutoCAD's order: its first object is
+ * the one a result keeps (its id, layer and colour).
+ */
+abstract class BooleanSetTool extends SelectionActionTool {
+  private order: EntityId[] = []
+
+  // WHY: AutoCAD drops the set selected before them and asks, though MOVE
+  // takes the same set in the same run (regions/p331–p335).
+  protected takesPreselection(): boolean {
+    return false
+  }
+
+  protected selectionInput(): QuestionInput {
+    return "wholeObjects"
+  }
+
+  // WHY newest first: a window keeps the newest of three regions
+  // (regions/p315), ALL the newest of two solids (union/s07, regions/p323), as
+  // `ssget` lists them; picks as picked (p314, p322). A fence is unprobed and
+  // kept as found, as JOIN keeps it; Previous is unprobed and taken as ALL.
+  protected selectionAdded(
+    ids: readonly EntityId[],
+    added: AddedBy,
+    find: ModeFind
+  ): void {
+    void added
+    const newestFirst = find.by !== "fence"
+    this.order = [
+      ...this.order.filter((id) => !ids.includes(id)),
+      ...(newestFirst ? [...ids].reverse() : ids),
+    ]
+  }
+
+  /** The set's objects in its order. */
+  protected ordered(entities: readonly Entity[]): Entity[] {
+    const rank = new Map(this.order.map((id, index) => [id, index]))
+    const at = (entity: Entity) => rank.get(entity.id) ?? rank.size
+    return [...entities].sort((a, b) => at(a) - at(b))
+  }
+
+  /** Starts the order afresh, for a new set. */
+  protected restartOrder(): void {
+    this.order = []
+  }
+
+  onActivate(ctx: ToolContext): void {
+    this.order = []
+    super.onActivate(ctx)
+  }
+
+  onDeactivate(ctx: ToolContext): void {
+    this.order = []
+    super.onDeactivate(ctx)
+  }
+}
+
+/**
  * AutoCAD's UNION and INTERSECT of solids and regions — one class, a mode
  * per command. `Select objects:` counts whatever it finds; what is neither is
  * passed over. The solids become one (union/s04), the regions plane by plane
- * (region/b08); with fewer than two solids and two regions in any one plane
- * it says so (region/b07, union/s05, s10). A result of nothing erases them
- * (region/b05, union/s02).
+ * (region/b08), each into the first of the set's order; with fewer than two
+ * solids and two regions in any one plane it says so (region/b07, union/s05,
+ * s10). A result of nothing erases them (region/b05, union/s02).
  */
-export class RegionBooleanTool extends SelectionActionTool {
+export class RegionBooleanTool extends BooleanSetTool {
   readonly id: "union" | "intersect"
 
   constructor(mode: "union" | "intersect") {
@@ -66,13 +129,10 @@ export class RegionBooleanTool extends SelectionActionTool {
     this.id = mode
   }
 
-  protected selectionInput(): QuestionInput {
-    return "wholeObjects"
-  }
-
   protected run(entities: readonly Entity[], ctx: ToolContext): void {
-    const regions = combineRegions(this.id, regionsOf(entities))
-    const solids = combineSolids(this.id, solidsOf(entities))
+    const set = this.ordered(entities)
+    const regions = combineRegions(this.id, regionsOf(set))
+    const solids = combineSolids(this.id, solidsOf(set))
     if (regions === null && solids === null) {
       ctx.report(ctx.text.message("booleanNeedsTwo"))
       return
@@ -84,18 +144,21 @@ export class RegionBooleanTool extends SelectionActionTool {
 /**
  * AutoCAD's SUBTRACT of solids and regions: `Select solids, surfaces, and
  * regions to subtract from ..`, a set; then `… to subtract ..`, another;
- * Enter on an empty one ends it doing nothing (region/b07). The first set's
- * solids are joined and the second's taken out of them (union/s03); its
- * regions of a plane likewise with the second's of that plane (b02, b06,
- * b10); a region left nothing to take from stays (s03).
+ * Enter on an empty one ends it doing nothing (region/b07, regions/p312).
+ * A set holding no solid or region, once the first set's objects are left
+ * out of the second, says so and ends (regions/p304–p306, p325, p336).
+ *
+ * The first subset is the first set's solids, or with none the plane of its
+ * first region (REGIONS-D41): with nothing of the second set to take from it,
+ * it says so and changes nothing (p317, p320, p341, p342). Otherwise the
+ * first set's solids are joined and the second's taken out of them
+ * (union/s03); its regions of each plane likewise with the second's of that
+ * plane, joined whether or not something is taken (b02, b10, p338); a region
+ * of the second set in no plane of the first stays (s03).
  */
-export class SubtractTool extends SelectionActionTool {
+export class SubtractTool extends BooleanSetTool {
   readonly id = "subtract"
   private from: readonly Entity[] | null = null
-
-  protected selectionInput(): QuestionInput {
-    return "wholeObjects"
-  }
 
   onActivate(ctx: ToolContext): void {
     this.from = null
@@ -110,17 +173,35 @@ export class SubtractTool extends SelectionActionTool {
 
   protected run(entities: readonly Entity[], ctx: ToolContext): boolean {
     if (this.from === null) {
-      this.from = entities
+      const from = this.ordered(entities)
+      if (regionsOf(from).length + solidsOf(from).length === 0) {
+        ctx.report(ctx.text.message("noSolidsOrRegionsSelected"))
+        return false
+      }
+      this.from = from
+      this.restartOrder()
       ctx.selection.clear()
       ctx.report(ctx.text.message("subtractWhat"))
       this.begin(ctx)
       return true
     }
-    apply(
-      subtractRegions(regionsOf(this.from), regionsOf(entities)),
-      subtractSolids(solidsOf(this.from), solidsOf(entities)),
-      ctx
-    )
+    const bases = new Set(this.from.map((entity) => entity.id))
+    const set = this.ordered(entities).filter((e) => !bases.has(e.id))
+    const regions = regionsOf(set)
+    const solids = solidsOf(set)
+    if (regions.length + solids.length === 0) {
+      ctx.report(ctx.text.message("noSolidsOrRegionsSelected"))
+      return false
+    }
+    const fromSolids = solidsOf(this.from)
+    const regionOutcome = subtractRegions(regionsOf(this.from), regions)
+    const takes =
+      fromSolids.length > 0 ? solids.length > 0 : regionOutcome.firstTakes
+    if (!takes) {
+      ctx.report(ctx.text.message("subtractNeedsTwo"))
+      return false
+    }
+    apply(regionOutcome, subtractSolids(fromSolids, solids), ctx)
     return false
   }
 }

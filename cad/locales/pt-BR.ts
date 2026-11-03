@@ -1190,7 +1190,8 @@ export const ptBR: EngineLocale = {
         "REG"
       ],
       "UNION": [
-        "UNIAO"
+        "UNIAO",
+        "U"
       ],
       "SUBTRACT": [
         "SUBTRAIR",
@@ -6762,6 +6763,8 @@ export const ptBR: EngineLocale = {
       "booleanNeedsTwo": "Pelo menos 2 sólidos, superfícies ou regiões coplanares precisam estar selecionados.",
       "subtractFrom": "Selecionar sólidos, superfícies e regiões a subtrair de ..",
       "subtractWhat": "Selecionar sólidos, superfícies e regiões a subtrair ..",
+      "subtractNeedsTwo": "Pelo menos dois sólidos, superfícies ou regiões coplanares precisam estar selecionados.",
+      "noSolidsOrRegionsSelected": "Não há sólidos, superfícies ou regiões selecionados.",
       "regionAreaReport": [
         "Área = ",
         [

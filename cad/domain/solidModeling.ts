@@ -79,10 +79,11 @@ function folded(
 }
 
 /**
- * UNION or INTERSECT of solids: all of them become the first (union/s04:
- * six solids, touching and apart, one solid of three shells), the others
- * erased. `null` with fewer than two — the caller's "At least 2 solids…"
- * when no plane of regions has two either (s05, s10).
+ * UNION or INTERSECT of solids: all of them become the first as given
+ * (union/s04: six solids, touching and apart, one solid of three shells; the
+ * caller's order, newest first under ALL, s07), the others erased. `null`
+ * with fewer than two — the caller's "At least 2 solids…" when no plane of
+ * regions has two either (s05, s10).
  */
 export function combineSolids(
   op: Exclude<SolidOperation, "subtract">,
@@ -104,10 +105,10 @@ export function combineSolids(
 }
 
 /**
- * SUBTRACT of solids: the first set's joined into its first (union/s03:
- * two boxes apart, one solid of two shells) and every solid of the second
- * set taken out of it and erased. Nothing to take, or nothing to take it
- * from, leaves them alone.
+ * SUBTRACT of solids: the first set's joined into its first as given
+ * (union/s03: two boxes apart, one solid of two shells) and every solid of
+ * the second set taken out of it and erased. Nothing to take, or nothing to
+ * take it from, leaves them alone (the caller says 22214, regions/p342).
  */
 export function subtractSolids(
   from: readonly Solid3dEntity[],

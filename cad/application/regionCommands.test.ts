@@ -621,6 +621,521 @@ describe("UNION, SUBTRACT and INTERSECT of regions", () => {
   })
 })
 
+describe("UNION, SUBTRACT and INTERSECT against AutoCAD 2027 (the Regions review)", () => {
+  const NONE = "No solids, surfaces, or regions selected."
+  const TWO =
+    "At least two solids, surfaces, or coplanar regions must be selected."
+  const TWO_DIGIT =
+    "At least 2 solids, surfaces, or coplanar regions must be selected."
+  const ZW = ["ZOOM", "W", "-10,-10", "40,30"]
+
+  /** Two overlapping circles' regions and a small one apart (regions/p305, p306, p331–p333). */
+  function lens(locale?: typeof es): CadHarness {
+    const cad = createHarness(locale ? { locale } : {})
+    const all = locale ? "_ALL" : "ALL"
+    return answer(
+      cad,
+      ...ZW,
+      "_CIRCLE",
+      "0,0",
+      "5",
+      "_CIRCLE",
+      "3,0",
+      "5",
+      "_CIRCLE",
+      "20,0",
+      "3",
+      "_REGION",
+      all,
+      ""
+    )
+  }
+
+  /** p320's regions, apart in plan so a point picks one: a (0,0,0), b (20,0,0), c (0,20,10), d (3,20,10), e (23,0,0). */
+  function planes(): CadHarness {
+    const cad = answer(createHarness(), ...ZW)
+    for (const centre of ["0,0,0", "20,0,0", "0,20,10", "3,20,10", "23,0,0"]) {
+      answer(cad, "CIRCLE", centre, "5")
+    }
+    return answer(cad, "REGION", "ALL", "")
+  }
+
+  /** A circle's region and a line apart (regions/p304, p336). */
+  function regionAndLine(locale?: typeof es): CadHarness {
+    const cad = createHarness(locale ? { locale } : {})
+    return answer(
+      cad,
+      ...ZW,
+      "_CIRCLE",
+      "0,0",
+      "5",
+      "_REGION",
+      "_L",
+      "",
+      "_LINE",
+      "20,0",
+      "30,0",
+      ""
+    )
+  }
+
+  /** Three regions on layers A, B and C, made in that order (regions/p314, p315). */
+  function threeLayers(): { cad: CadHarness; layers: string[] } {
+    const cad = answer(createHarness(), ...ZW)
+    const layers = ["A", "B", "C"].map((name, i) => {
+      const layer = cad.runtime.createLayer(name)
+      cad.runtime.setCurrentLayer(layer)
+      answer(cad, "CIRCLE", `${6 * i},0`, "5", "REGION", "L", "")
+      return layer
+    })
+    return { cad, layers }
+  }
+
+  it("UNION and INTERSECT drop a preselection and ask (regions/p331, p332, p335)", () => {
+    for (const name of ["UNION", "INTERSECT"]) {
+      const cad = lens()
+      cad.select(...regions(cad).map((r) => r.id))
+      expect(written(cad, name)).toEqual([name])
+      expect(cad.selectedIds()).toEqual([])
+      expect(cad.state().commandLine.prompt).toBe(`${name} Select objects:`)
+      answer(cad, "")
+      expect(regions(cad)).toHaveLength(3)
+    }
+  })
+
+  it("SUBTRACT drops a preselection and asks its first set (regions/p333, p335)", () => {
+    const cad = lens()
+    cad.select(...regions(cad).map((r) => r.id))
+    expect(written(cad, "SUBTRACT")).toEqual([
+      "SUBTRACT",
+      "Select solids, surfaces, and regions to subtract from ..",
+    ])
+    expect(cad.selectedIds()).toEqual([])
+    expect(cad.state().commandLine.prompt).toBe("SUBTRACT Select objects:")
+    answer(cad, "-5,0", "", "8,0", "")
+    expect(areas(cad)).toEqual([28.2743, 29.5437])
+  })
+
+  it("leaves nothing selected, the survivor as Previous after UNION (regions/p331, p334)", () => {
+    const cad = lens()
+    answer(cad, "UNION", "-5,0", "8,0", "")
+    expect(cad.selectedIds()).toEqual([])
+    expect(written(cad, "LIST", "P", "").at(2)).toBe("1 found")
+  })
+
+  it("keeps the newest under a window: its id and layer (regions/p315)", () => {
+    const { cad, layers } = threeLayers()
+    const newest = regions(cad).at(-1)!
+    answer(cad, "UNION", "W", "-6,-6", "18,6", "")
+    expect(regions(cad).map((r) => [r.id, r.layerId])).toEqual([
+      [newest.id, layers[2]],
+    ])
+  })
+
+  it("keeps the newest under a crossing and ALL (regions/p315, region/b01)", () => {
+    for (const mode of [["C", "-6,-6", "18,6"], ["ALL"]]) {
+      const { cad, layers } = threeLayers()
+      const newest = regions(cad).at(-1)!
+      answer(cad, "UNION", ...mode, "")
+      expect(regions(cad).map((r) => [r.id, r.layerId])).toEqual([
+        [newest.id, layers[2]],
+      ])
+    }
+  })
+
+  it("keeps the first picked, newest or not (regions/p314, region/b10)", () => {
+    const newestFirst = threeLayers()
+    answer(newestFirst.cad, "UNION", "17,0", "-5,0", "6,5", "")
+    expect(regions(newestFirst.cad).map((r) => r.layerId)).toEqual([
+      newestFirst.layers[2],
+    ])
+    expect(areas(newestFirst.cad)).toEqual([190.8899])
+    const oldestFirst = threeLayers()
+    answer(oldestFirst.cad, "UNION", "6,5", "17,0", "-5,0", "")
+    expect(regions(oldestFirst.cad).map((r) => r.layerId)).toEqual([
+      oldestFirst.layers[1],
+    ])
+  })
+
+  it("SUBTRACT joins the first set's squares, takes the bar, leaves the circle at Z 5 (region/b10)", () => {
+    const cad = answer(
+      createHarness(),
+      "ZOOM",
+      "W",
+      "-10,-10",
+      "60,30",
+      "RECTANG",
+      "0,0",
+      "10,10",
+      "RECTANG",
+      "20,0",
+      "30,10",
+      "RECTANG",
+      "5,2",
+      "25,8",
+      "CIRCLE",
+      "0,0,5",
+      "3",
+      "REGION",
+      "ALL",
+      ""
+    )
+    const first = regions(cad)[0]
+    answer(cad, "SUBTRACT", "0,5", "30,5", "", "25,2", "0,3", "")
+    expect(areas(cad)).toEqual([28.2743, 140])
+    const kept = regions(cad).find((r) => r.id === first.id)!
+    expect(Number(regionArea(kept).toFixed(4))).toBe(140)
+    expect(regionPerimeter(kept)).toBeCloseTo(100, 9)
+    expect(
+      regions(cad)
+        .map((r) => r.elevation ?? 0)
+        .sort()
+    ).toEqual([0, 5])
+  })
+
+  it("SUBTRACT says two are needed when the first plane has nothing to take: nothing changes (regions/p317, p320)", () => {
+    const parallel = planes()
+    expect(written(parallel, "SUBTRACT", "-5,0", "", "8,20", "").at(-1)).toBe(
+      TWO
+    )
+    expect(regions(parallel)).toHaveLength(5)
+    const cad = planes()
+    expect(
+      written(cad, "SUBTRACT", "-5,0", "15,0", "-5,20", "", "8,20", "").at(-1)
+    ).toBe(TWO)
+    expect(areas(cad)).toEqual([78.5398, 78.5398, 78.5398, 78.5398, 78.5398])
+  })
+
+  it("SUBTRACT joins another plane of the first set, nothing taken from it (regions/p338)", () => {
+    const cad = planes()
+    answer(cad, "SUBTRACT", "-5,20", "-5,0", "15,0", "", "8,20", "")
+    expect(areas(cad)).toEqual([29.5437, 78.5398, 157.0796])
+  })
+
+  it("SUBTRACT takes from every plane of the first set (regions/p339)", () => {
+    const cad = planes()
+    answer(cad, "SUBTRACT", "-5,0", "15,0", "-5,20", "", "8,20", "28,0", "")
+    expect(areas(cad)).toEqual([29.5437, 108.0835])
+  })
+
+  it("SUBTRACT ends on a first set with no region, saying so, before the second prompt (regions/p304)", () => {
+    const cad = regionAndLine()
+    expect(written(cad, "SUBTRACT", "25,0", "")).toEqual([
+      "SUBTRACT",
+      "Select solids, surfaces, and regions to subtract from ..",
+      "Select objects: 25,0",
+      "1 found",
+      "Select objects:",
+      NONE,
+    ])
+    expect(cad.activeToolId()).not.toBe("subtract")
+    expect(cad.typeCounts()).toEqual({ region: 1, line: 1 })
+  })
+
+  it("SUBTRACT says none was selected of a second set holding the first's object, its Previous, a line (regions/p305, p306, p336)", () => {
+    const same = lens()
+    expect(written(same, "SUBTRACT", "-5,0", "", "-5,0", "").at(-1)).toBe(NONE)
+    expect(regions(same)).toHaveLength(3)
+    const previous = lens()
+    expect(
+      written(previous, "SUBTRACT", "-5,0", "", "P", "").slice(-3)
+    ).toEqual(["1 found", "Select objects:", NONE])
+    expect(regions(previous)).toHaveLength(3)
+    const line = regionAndLine()
+    expect(written(line, "SUBTRACT", "-5,0", "", "25,0", "").at(-1)).toBe(NONE)
+    expect(line.typeCounts()).toEqual({ region: 1, line: 1 })
+  })
+
+  it("SUBTRACT ends silently on an empty set, the first (region/b07) or the second (regions/p312)", () => {
+    const first = lens()
+    expect(written(first, "SUBTRACT", "")).toEqual([
+      "SUBTRACT",
+      "Select solids, surfaces, and regions to subtract from ..",
+      "Select objects:",
+    ])
+    expect(first.activeToolId()).not.toBe("subtract")
+    const second = lens()
+    expect(written(second, "SUBTRACT", "-5,0", "", "").at(-1)).toBe(
+      "Select objects:"
+    )
+    expect(regions(second)).toHaveLength(3)
+  })
+
+  it("UNION counts a locked region and leaves it out (regions/p321)", () => {
+    const cad = createHarness()
+    const locked = cad.runtime.createLayer("L", undefined, false)
+    answer(cad, ...ZW, "CIRCLE", "0,0", "5", "REGION", "L", "")
+    cad.runtime.setCurrentLayer(locked)
+    answer(cad, "CIRCLE", "3,0", "5", "REGION", "L", "")
+    cad.runtime.setCurrentLayer(cad.runtime.document.getLayers()[0].id)
+    cad.runtime.updateLayer(locked, { locked: true })
+    expect(written(cad, "UNION", "ALL", "").slice(-4)).toEqual([
+      "2 found",
+      "1 was on a locked layer.",
+      "Select objects:",
+      TWO_DIGIT,
+    ])
+    expect(regions(cad)).toHaveLength(2)
+  })
+
+  it("unites coplanar regions of opposite normals (regions/p316)", () => {
+    const cad = answer(
+      createHarness(),
+      ...ZW,
+      "CIRCLE",
+      "0,0",
+      "5",
+      "REGION",
+      "L",
+      "",
+      "UCS",
+      "X",
+      "180",
+      "CIRCLE",
+      "3,0",
+      "5",
+      "REGION",
+      "L",
+      "",
+      "UCS",
+      "W"
+    )
+    answer(cad, "UNION", "ALL", "")
+    expect(areas(cad)).toEqual([108.0835])
+  })
+
+  it("UNION and INTERSECT of one region in each of two planes: At least 2 (regions/p317)", () => {
+    const cad = answer(
+      createHarness(),
+      ...ZW,
+      "CIRCLE",
+      "0,0,0",
+      "5",
+      "REGION",
+      "L",
+      "",
+      "CIRCLE",
+      "3,0,10",
+      "5",
+      "REGION",
+      "L",
+      ""
+    )
+    expect(written(cad, "UNION", "ALL", "").at(-1)).toBe(TWO_DIGIT)
+    expect(written(cad, "INTERSECT", "ALL", "").at(-1)).toBe(TWO_DIGIT)
+  })
+
+  it("INTERSECT of three meeting only in pairs: one null region (regions/p318)", () => {
+    const cad = createHarness({
+      entities: [
+        circleOf(p(0, 0), 5.5),
+        circleOf(p(10, 0), 5.5),
+        circleOf(p(5, 8.660254), 5.5),
+      ],
+    })
+    answer(cad, "REGION", "ALL", "")
+    expect(written(cad, "INTERSECT", "ALL", "").at(-1)).toBe(
+      "Null region created - deleted"
+    )
+    expect(cad.entities()).toEqual([])
+  })
+
+  it("INTERSECT leaves a plane's lone region (regions/p319)", () => {
+    const cad = answer(
+      createHarness(),
+      "CIRCLE",
+      "0,0,0",
+      "5",
+      "CIRCLE",
+      "3,0,0",
+      "5",
+      "CIRCLE",
+      "0,0,10",
+      "5",
+      "REGION",
+      "ALL",
+      ""
+    )
+    answer(cad, "INTERSECT", "ALL", "")
+    expect(areas(cad)).toEqual([48.9961, 78.5398])
+  })
+
+  it("is named UNI, SU and IN, and Enter repeats it (regions/p300)", () => {
+    const cad = createHarness()
+    expect(
+      written(cad, "UNI", "", "SU", "", "IN", "", "UNION", "", "", "")
+    ).toEqual([
+      "UNI UNION",
+      "Select objects:",
+      "SU SUBTRACT",
+      "Select solids, surfaces, and regions to subtract from ..",
+      "Select objects:",
+      "IN INTERSECT",
+      "Select objects:",
+      "UNION",
+      "Select objects:",
+      "UNION",
+      "Select objects:",
+    ])
+  })
+
+  it("is refused transparently (regions/p303)", () => {
+    const cad = createHarness()
+    expect(written(cad, "LINE", "0,0", "'_UNION").slice(-2)).toEqual([
+      "** That command may not be invoked transparently **",
+      "Point or option keyword required.",
+    ])
+  })
+
+  it("takes a command typed at either set as an invalid selection (regions/p311)", () => {
+    const cad = lens()
+    expect(written(cad, "SUBTRACT", "LINE").at(-2)).toBe("*Invalid selection*")
+    expect(written(cad, "-5,0", "", "LINE").at(-2)).toBe("*Invalid selection*")
+    expect(written(cad, "8,0", "").at(-1)).toBe("Select objects:")
+    expect(regions(cad)).toHaveLength(2)
+  })
+
+  it("is one step U names, even one that made nothing (regions/p307, p308, p312, p313)", () => {
+    const nulled = answer(
+      createHarness({
+        entities: [circleOf(p(0, 0), 5), circleOf(p(20, 0), 5)],
+      }),
+      "REGION",
+      "ALL",
+      "",
+      "INTERSECT",
+      "ALL",
+      ""
+    )
+    expect(nulled.entities()).toEqual([])
+    expect(written(nulled, "U")).toEqual(["U", "INTERSECT"])
+    expect(regions(nulled)).toHaveLength(2)
+    const refused = regionOf([circleOf(p(0, 0), 5)])
+    answer(refused, "UNION", "ALL", "")
+    expect(written(refused, "U")).toEqual(["U", "UNION"])
+    const empty = lens()
+    answer(empty, "UNION", "")
+    expect(written(empty, "U")).toEqual(["U", "UNION"])
+    answer(empty, "SUBTRACT", "-5,0", "", "")
+    expect(written(empty, "U")).toEqual(["U", "SUBTRACT"])
+    expect(regions(empty)).toHaveLength(3)
+  })
+
+  it("U, REDO and UNDO 2 after SUBTRACT (regions/p337, p309)", () => {
+    const cad = answer(createHarness(), ...ZW)
+    answer(cad, "CIRCLE", "0,0", "5", "CIRCLE", "3,0", "5", "REGION", "ALL", "")
+    answer(cad, "SUBTRACT", "-5,0", "", "8,0", "")
+    expect(regions(cad)).toHaveLength(1)
+    expect(written(cad, "U")).toEqual(["U", "SUBTRACT"])
+    expect(regions(cad)).toHaveLength(2)
+    expect(written(cad, "REDO")).toEqual([
+      "REDO",
+      "SUBTRACT",
+      "Everything has been redone",
+    ])
+    expect(regions(cad)).toHaveLength(1)
+    answer(cad, "U")
+    expect(written(cad, "UNDO", "2").at(-1)).toBe("REGION CIRCLE")
+    expect(cad.typeCounts()).toEqual({ circle: 1 })
+  })
+
+  it("speaks Spanish and Brazilian Portuguese AutoCAD's words (regions/p301, p302, p304, p308, p317, p318)", () => {
+    for (const [locale, words] of [
+      [
+        es,
+        {
+          names: ["DIF", "DIFERENCIA", "INT", "INTERSEC"],
+          from: "Designe sólidos, superficies y regiones de las que sustraer...",
+          what: "Designe sólidos, superficies y regiones de las que sustraer...",
+          none: "No se ha designado sólido, superficie o región.",
+          two: "Hay que designar al menos dos sólidos, superficies o regiones coplanares.",
+          twoDigit:
+            "Hay que designar al menos 2 sólidos, superficies o regiones coplanares.",
+          nullRegion: "Región nula creada - eliminada.",
+        },
+      ],
+      [
+        ptBR,
+        {
+          names: ["SU", "SUBTRAIR", "INT", "INTERSEC"],
+          from: "Selecionar sólidos, superfícies e regiões a subtrair de ..",
+          what: "Selecionar sólidos, superfícies e regiões a subtrair ..",
+          none: "Não há sólidos, superfícies ou regiões selecionados.",
+          two: "Pelo menos dois sólidos, superfícies ou regiões coplanares precisam estar selecionados.",
+          twoDigit:
+            "Pelo menos 2 sólidos, superfícies ou regiões coplanares precisam estar selecionados.",
+          nullRegion: "Foi criada uma região nula - excluída",
+        },
+      ],
+    ] as const) {
+      const [sub, subName, int, intName] = words.names
+      const names = createHarness({ locale })
+      const echoed = written(names, sub, "", int, "")
+      expect(echoed).toContain(`${sub} ${subName}`)
+      expect(echoed).toContain(`${int} ${intName}`)
+      const line = regionAndLine(locale)
+      const said = written(line, "_SUBTRACT", "25,0", "")
+      expect(said.filter((l) => l === words.from)).toHaveLength(1)
+      expect(said.at(-1)).toBe(words.none)
+      const second = lens(locale)
+      expect(written(second, "_SUBTRACT", "-5,0", "", "25,0", "")).toContain(
+        words.what
+      )
+      const parallel = createHarness({ locale })
+      answer(
+        parallel,
+        "_ZOOM",
+        "_W",
+        "-10,-10",
+        "40,30",
+        "_CIRCLE",
+        "0,0,0",
+        "5",
+        "_REGION",
+        "_L",
+        "",
+        "_CIRCLE",
+        "3,0,10",
+        "5",
+        "_REGION",
+        "_L",
+        ""
+      )
+      expect(written(parallel, "_UNION", "_ALL", "").at(-1)).toBe(
+        words.twoDigit
+      )
+      expect(written(parallel, "_SUBTRACT", "_L", "", "-5,0", "").at(-1)).toBe(
+        words.two
+      )
+      const apart = createHarness({
+        locale,
+        entities: [circleOf(p(0, 0), 5), circleOf(p(20, 0), 5)],
+      })
+      answer(apart, "_REGION", "_ALL", "")
+      expect(written(apart, "_INTERSECT", "_ALL", "").at(-1)).toBe(
+        words.nullRegion
+      )
+    }
+  })
+
+  it("pt-BR U is UNIAO's alias; Ctrl+Z still undoes (regions/p400, pt-BR acad.pgp)", () => {
+    const cad = createHarness({
+      locale: ptBR,
+      entities: [circleOf(p(0, 0), 5), circleOf(p(3, 0), 5)],
+    })
+    answer(cad, "REGIAO", "TUDO", "")
+    expect(written(cad, "U", "_ALL", "").slice(0, 3)).toEqual([
+      "U UNIAO",
+      "Selecionar objetos: _ALL",
+      "2 encontrado(s)",
+    ])
+    expect(cad.typeCounts()).toEqual({ region: 1 })
+    cad.press("z", { ctrlKey: true })
+    expect(cad.commandLog().at(-1)).toBe("UNIAO")
+    expect(cad.typeCounts()).toEqual({ region: 2 })
+  })
+})
+
 describe("a region in the other commands", () => {
   it("reports its area as AREA's Object does (region/p01)", () => {
     const cad = regionOf([circleOf(p(30, 5), 5)])

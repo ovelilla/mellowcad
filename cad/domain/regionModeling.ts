@@ -514,8 +514,9 @@ export interface BooleanOutcome {
 
 /**
  * UNION or INTERSECT of regions, plane by plane: the regions of one plane
- * become the first of them (b01, b08), the others erased; a plane with one
- * region is left alone. `null` when no plane holds two — "At least 2 solids,
+ * become the first of them as given (b01, b08; the caller's order, newest
+ * first under a window or ALL, regions/p315), the others erased; a plane
+ * with one region is left alone. `null` when no plane holds two — "At least 2 solids,
  * surfaces, or coplanar regions must be selected." (b07).
  */
 export function combineRegions(
@@ -543,30 +544,40 @@ export function combineRegions(
   return { changed, erased, nullResults }
 }
 
+/** What SUBTRACT of regions leaves, and whether `from`'s first plane had any taken out. */
+export interface SubtractOutcome extends BooleanOutcome {
+  readonly firstTakes: boolean
+}
+
 /**
- * SUBTRACT: in each plane holding some of `from`, those regions joined into
- * the first and every region of `subtract` in that plane taken out of it and
- * erased, whether it overlapped or not (b05, b10). A region of `subtract` in a
- * plane `from` has none of is left as it was (b10's circle at Z 5), and so is
- * a plane of `from` with nothing to subtract (**unverified**).
+ * SUBTRACT: each plane holding some of `from` joined into its first region,
+ * whether or not something is taken from it (regions/p338, b10), and every
+ * region of `subtract` in that plane taken out of it and erased, whether it
+ * overlapped or not (b05, b10). A region of `subtract` in a plane `from` has
+ * none of is left as it was (b10's circle at Z 5). `firstTakes` says whether
+ * the plane of `from`'s first region had something taken: AutoCAD's first
+ * subset when the first set holds no solid, whose caller refuses the whole
+ * run without it (REGIONS-D41; p317, p320).
  */
 export function subtractRegions(
   from: readonly RegionEntity[],
   subtract: readonly RegionEntity[]
-): BooleanOutcome {
+): SubtractOutcome {
   const bases = new Set(from.map((r) => r.id))
   const tools = subtract.filter((r) => !bases.has(r.id))
   const changed: RegionEntity[] = []
   const erased: EntityId[] = []
   let nullResults = 0
-  for (const group of planeGroups(from)) {
+  let firstTakes = false
+  for (const [index, group] of planeGroups(from).entries()) {
     const taken = tools
       .map((tool) => ({ tool, faces: facesIn(tool, group.first) }))
       .filter(
         (t): t is { tool: RegionEntity; faces: readonly RegionFace[] } =>
           t.faces !== null
       )
-    if (taken.length === 0) continue
+    if (index === 0) firstTakes = taken.length > 0
+    if (taken.length === 0 && group.members.length === 1) continue
     let faces: readonly RegionFace[] = group.members[0].faces
     for (const member of group.members.slice(1)) {
       faces = regionBoolean("union", faces, member.faces)
@@ -583,5 +594,5 @@ export function subtractRegions(
       changed.push({ ...group.first, faces })
     }
   }
-  return { changed, erased: [...new Set(erased)], nullResults }
+  return { changed, erased: [...new Set(erased)], nullResults, firstTakes }
 }

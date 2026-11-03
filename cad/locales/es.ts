@@ -6736,6 +6736,8 @@ export const es: EngineLocale = {
       "booleanNeedsTwo": "Hay que designar al menos 2 sólidos, superficies o regiones coplanares.",
       "subtractFrom": "Designe sólidos, superficies y regiones de las que sustraer...",
       "subtractWhat": "Designe sólidos, superficies y regiones de las que sustraer...",
+      "subtractNeedsTwo": "Hay que designar al menos dos sólidos, superficies o regiones coplanares.",
+      "noSolidsOrRegionsSelected": "No se ha designado sólido, superficie o región.",
       "regionAreaReport": [
         "Área = ",
         [

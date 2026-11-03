@@ -978,7 +978,7 @@ take the edge picked as that object (e03–e05).
 **Missing:** DELOBJ (always 3 here); BOUNDARY's Region object type; a region from a hatch's
 boundary; its 3D Visualization's Material row (no materials); the hot grip's `** STRETCH **` and
 the grip modes (a click on a grip does nothing); LIST's `Handle =` line (no handles); SUBTRACT,
-UNION and INTERSECT of solids and surfaces (none yet); the visual styles VSCURRENT lacks (view.md); the edges as a
+UNION and INTERSECT of surfaces (none yet); the visual styles VSCURRENT lacks (view.md); the edges as a
 TRIM or EXTEND edge in Quick mode (the Standard set refuses it, `1 was not a valid edge or
 selection method.`, e01's first run; Quick **unverified**); the order of a loop's edges and where
 it starts as AutoCAD keeps them (here counter-clockwise from the chain's first edge; EXPLODE gives

@@ -2420,6 +2420,8 @@
   "commands.messages.booleanNeedsTwo": "At least 2 solids, surfaces, or coplanar regions must be selected.",
   "commands.messages.subtractFrom": "Select solids, surfaces, and regions to subtract from ..",
   "commands.messages.subtractWhat": "Select solids, surfaces, and regions to subtract ..",
+  "commands.messages.subtractNeedsTwo": "At least two solids, surfaces, or coplanar regions must be selected.",
+  "commands.messages.noSolidsOrRegionsSelected": "No solids, surfaces, or regions selected.",
   "commands.messages.regionAreaReport": "Area = {area}, Trimmed area = {trimmed} , Perimeter = {around}",
   "commands.messages.boxZeroLength": "Box of zero length not permitted.",
   "commands.messages.boxZeroWidth": "Box of zero width not permitted.",

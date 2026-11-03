@@ -1258,34 +1258,50 @@ associative here; exploded MTEXT's positions differ by the font's metrics (EXP-0
 9.324693,39.822647 in AutoCAD, 9.338336,40 here by Arimo's ink); ByBlock resolution; a reference scaled unequally gives
 its pieces as it draws them, its texts at X's size (INSERT's Missing)
 
-### `UNION` / `UNI` · es `UNION` / `UNI` · pt-BR `UNIAO`
+### `UNION` / `UNI` · es `UNION` / `UNI` · pt-BR `UNIAO` / `U`
 
 ### `SUBTRACT` / `SU` · es `DIFERENCIA` / `DIF` · pt-BR `SUBTRAIR` / `SU`
 
 ### `INTERSECT` / `IN` · es `INTERSEC` / `INT` · pt-BR `INTERSEC` / `INT`
 
-**Implemented** (regions and solids; region/b01–b11, n01; union/k01–k08, s01–s10): UNION and
-INTERSECT ask `Select objects:` (whole objects); SUBTRACT reports `Select solids, surfaces, and
-regions to subtract from ..` then asks `Select objects:`, then `Select solids, surfaces, and regions
-to subtract ..` and asks again (es both `Designe sólidos, superficies y regiones de las que
-sustraer...`; pt-BR `… a subtrair de ..` / `… a subtrair ..`), Enter on an empty set ending it with
-nothing done (b07). Whatever is found is counted, and what is neither a solid nor a region passed
-over. **Solids and regions are combined apart** (s01, s09): the solids all become one, the regions
-plane by plane; with fewer than two solids and fewer than two regions in any one plane UNION and
-INTERSECT say `At least 2 solids, surfaces, or coplanar regions must be selected.` (b07, s05: one
-solid and one region; s10: one solid and two coplanar regions unites the regions alone). The first
-object of a set keeps its object, layer and colour, the others erased (b01, b10, s07); a combined
-solid loses what made it: LIST shows `History = None`, `Show History = No` and its `Bounding Box`,
-no `Solid type` (k01), and the palette only Solid History. Regions are combined **plane by plane**
-(b08: two pairs at Z 0 and 10 give two regions); SUBTRACT joins the first set's regions of a plane
-(b10's two squares became one region) and takes out of them every region of the second set in that
-plane, erasing those whether they overlapped or not (b05), leaving one in another plane as it was
-(b10's circle at Z 5), and does the same with the solids: the first set's joined (s03: two boxes
-apart, one solid of two shells), the second's taken out and erased; a region with no region of the
-first set in its plane stays (s03). A region result is exact (`geometry/planarRegions.ts`): a
-circle inside a square becomes its hole (b02, area 321.4602, perimeter 111.4159, the hole counted
-in it), a cut in two leaves one region of two faces (b06: 160 and 72), disjoint regions unite into
-one of two faces (b04), a ring of four bars into one with a hole (b11: 224, 224); shared sides
+**Implemented** (regions and solids; region/b01–b11, n01; union/k01–k08, s01–s10; regions/p300–p342,
+p400): UNION and INTERSECT ask `Select objects:` (whole objects); SUBTRACT reports `Select solids,
+surfaces, and regions to subtract from ..` then asks `Select objects:`, then `Select solids,
+surfaces, and regions to subtract ..` and asks again (es both `Designe sólidos, superficies y
+regiones de las que sustraer...`; pt-BR `… a subtrair de ..` / `… a subtrair ..`), Enter on an empty
+set ending it with nothing done (b07, regions/p312). All three drop a set selected before them and
+ask, as 2027 registers them without the pickfirst set (regions/p331–p335). Whatever is found is
+counted; UNION and INTERSECT pass over what is neither a solid nor a region. SUBTRACT says `No
+solids, surfaces, or regions selected.` (22205; es `No se ha designado sólido, superficie o
+región.`, pt-BR `Não há sólidos, superfícies ou regiões selecionados.`) and ends when its first set
+holds neither, before the second prompt (p304), or when its second set found something but holds
+neither once the first set's objects are left out of it: the same object (p305, p325), Previous
+(the first set, p306), a line (p336). **Solids and regions are combined apart** (s01, s09): the
+solids all become one, the regions plane by plane; with fewer than two solids and fewer than two
+regions in any one plane UNION and INTERSECT say `At least 2 solids, surfaces, or coplanar regions
+must be selected.` (b07, s05: one solid and one region; s10: one solid and two coplanar regions
+unites the regions alone; p317). The first object of the set keeps its object, layer and colour,
+the others erased: the first picked (regions/p314, p322; b10's oldest), the newest of what a
+window, a crossing or `ALL` finds (p315: the third of three regions, on layer C; s07: the green box
+of layer A; b01), as `ssget` lists them; a combined solid loses what made it: LIST shows `History =
+None`, `Show History = No` and its `Bounding Box`, no `Solid type` (k01), and the palette only Solid
+History. Regions are combined **plane by plane** (b08: two pairs at Z 0 and 10 give two regions;
+p316: coplanar regions of opposite normals unite; p319: a plane's lone region is left). SUBTRACT's
+**first subset** is the first set's solids, or with none the plane of its first region (the UNION
+help's "first subset"): when nothing of the second set can be taken out of it, it says `At least
+two solids, surfaces, or coplanar regions must be selected.` (22214, "two" spelt; es `Hay que
+designar al menos dos sólidos, superficies o regiones coplanares.`, pt-BR `Pelo menos dois sólidos,
+superfícies ou regiões coplanares precisam estar selecionados.`) and changes nothing (p317, p320:
+the first picked region's plane has none; p341: a solid out of a region; p342: a region out of a
+solid). Otherwise it joins the first set's regions of every plane (b10's two squares became one
+region; p338: two regions of a plane with nothing to take joined into one of 157.0796) and takes
+out of them every region of the second set in that plane, erasing those whether they overlapped or
+not (b05, p339), leaving one in another plane as it was (b10's circle at Z 5), and does the same
+with the solids: the first set's joined (s03: two boxes apart, one solid of two shells), the
+second's taken out and erased; a region with no region of the first set in its plane stays (s03,
+p340). A region result is exact (`geometry/planarRegions.ts`): a circle inside a square becomes its
+hole (b02, area 321.4602, perimeter 111.4159, the hole counted in it), a cut in two leaves one
+region of two faces (b06: 160 and 72), disjoint regions unite into one of two faces (b04), a ring of four bars into one with a hole (b11: 224, 224); shared sides
 merge (b11). A solid result is the kernel's (`geometry/solidBooleans.ts`), measured exactly: two
 boxes at a corner unite into V20 E30 F12, 2375 (k01), side by side into one box of six faces (k02),
 apart into one solid of two shells (k03), a box drilled through V10 E14 F7 (k04), a sphere cut by a
@@ -1294,8 +1310,8 @@ in ACIS's cubic through their quartic (k05); solids touching at a point or along
 one (s04). A result of nothing says `Null region created - deleted` (es `Región nula creada -
 eliminada.`, pt-BR `Foi criada uma região nula - excluída`) or `Null solid created - deleted` (es
 `Sólido nulo creado - eliminado`, pt-BR `Foi criado um sólido nulo - excluído`) and erases them
-(b05, b06, s02, s08). One undo step each (b09, s06). Their rail slot is the 3D Modeling workspace's
-Solid Editing drop-down.
+(b05, b06, s02, s08). One undo step each, one that makes nothing too (b09, s06; regions/p307,
+p308, p312, p313). Their rail slot is the 3D Modeling workspace's Solid Editing drop-down.
 
 **Deviations:** MASSPROP of a solid bounded by an approximate intersection curve (two cylinders of
 two radii, k05) is exact here, 1866.9127, where AutoCAD prints 1866.8100: ACIS integrates such faces
@@ -1312,11 +1328,10 @@ cross; a cone with any but a coaxial or a plane; a torus with a plane neither sq
 through it, or with any other surface off its axis; a revolution with a plane neither way, or with
 another not on its axis; an extrusion with anything but a plane or a surface drawn its way;
 tangency where a cut meets an edge tangentially (s04's cylinder, tangent to the box's sides at its
-top edges), faces within the tolerance of each other but not on one surface, and a thin sliver between a cut and an edge (about 1 in 1,000 random pairs, `solidPair`), each refused as above; which object keeps
-its own when the set was taken by `ALL` (AutoCAD's order then is the newest first, b01, s07; here
-the first in the set); a preselection's part in SUBTRACT (taken as the first set, **unverified**);
-SUBTRACT of a plane of the first set with nothing to subtract, left alone here (AutoCAD may join its
-regions; **unverified**); a composite's Properties palette and grips (none here, **unverified**);
+top edges), faces within the tolerance of each other but not on one surface, and a thin sliver between a cut and an edge (about 1 in 1,000 random pairs, `solidPair`), each refused as above; the order of a
+fence's find (taken as found) and of Previous's (taken as `ALL`'s), unprobed; `Previous` after
+SUBTRACT, which finds `0 found` (the erased second set) in AutoCAD and says `No previous selection
+set.` here (regions/p334); a composite's Properties palette and grips (none here, **unverified**);
 DELOBJ-like history (SOLIDHIST, SHOWHISTORY).
 
 ### `SLICE` / `SL` · es `CORTE` / `CO` · pt-BR `FATIAR` / `FAT`

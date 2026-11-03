@@ -6089,6 +6089,8 @@ export const en: EngineCatalog = {
       "booleanNeedsTwo": "At least 2 solids, surfaces, or coplanar regions must be selected.",
       "subtractFrom": "Select solids, surfaces, and regions to subtract from ..",
       "subtractWhat": "Select solids, surfaces, and regions to subtract ..",
+      "subtractNeedsTwo": "At least two solids, surfaces, or coplanar regions must be selected.",
+      "noSolidsOrRegionsSelected": "No solids, surfaces, or regions selected.",
       "regionAreaReport": [
         "Area = ",
         [
