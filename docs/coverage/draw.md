@@ -978,14 +978,20 @@ pt-BR): `Specify first corner or [Center]:`, `Specify other corner or [Cube/Leng
 height or [2Point]:` (es `Precise primera esquina o [Centro]`, `Precise otra esquina o
 [Cubo/Longitud]`, `Precise altura o [2Puntos]`; pt-BR `Especificar primeiro canto ou [Centro]`,
 `… outro canto ou [CUbo/COmprimento]`, `… altura ou [2Pontos]`). Two corners make a box on the
-UCS's axes; Center asks `Specify center:` and `Specify corner or [Cube/Length]:` and centres the box
+UCS's axes, turned 180 when the other corner lies at a smaller X, from the centre too (primitives/p123,
+p105: `Rotation: 180`); Center asks `Specify center:` and `Specify corner or [Cube/Length]:` and centres the box
 on the point, in height too (p02, p13). Cube asks `Specify length:` and makes a cube; Length asks
 `Specify length:` and `Specify width:`; a typed length runs towards the cursor and a negative one
-backwards (p03, p10: Rotation 22, 202), a point gives its distance and heading; the cube's width
-lies to the left of its length, Length's to the side the cursor or the width's point is, the right
-one with the cursor on the line, a typed width's sign unread (p03, p10). The height rises along
-the UCS's Z, down when negative (LIST then adds `Normal:`, p06); a point gives its distance from
-the corner in plan (p06, p10), and off it the height along the Z through the corner, with its sign:
+backwards (p03, p10: Rotation 22, 202), a point gives its distance and heading in plan (p114,
+p125: `0,30,8` from `0,0,0` is 30, Rotation 90), from the centre twice its distance (p500); the
+cube's width lies to the left of its length, Length's to the side the cursor or the width's point
+is, a typed width's sign unread (p03, p10), a point giving its distance from the length's line in
+plan (p124: `0,6` after a length heading 21.85° is 5.5688; p108, p109). The height rises along
+the UCS's Z, down when negative (LIST then adds `Normal:`, p06), from the other corner or, after
+Length, the far one (the length's end and the width; from the centre, the centre plus half of
+each: p124, `600,0,0` at the height of `_L 10 6` from it is 11.6619, from the centre 5.8310); a
+point gives its distance from that corner in plan (p06, p10, p124), and off it the height along
+the Z through the corner, with its sign:
 a point an object snap or a tracking guide gives by its own Z, so another solid's top corner gives
 its height and a point below a negative one (desktop d13, console z01), the cursor or a point typed
 where it falls on the Z as drawn, however far beside it (d11, d12; z01: `100,200,0` from
@@ -1053,12 +1059,17 @@ open polyline, arc, elliptical arc, or open spline expected.  Select a supported
 discarded, as a region); LIST of a solid with no primitive (none is made yet; here its History
 lines alone); Solid History's Record History (SOLIDHIST) and Show History; its 3D Visualization's
 Material row; the visual styles VSCURRENT lacks (view.md: Hidden and Conceptual are built); the per-drawing defaults reset on OPEN as
-CIRCLERAD's (**unverified**: no OPEN probe of BOX's).
+CIRCLERAD's (**unverified**: no OPEN probe of BOX's); a box turned 180 by its corners runs its edges
+as p01's mirrored (p123's MPDUMP: the far X's top edge up the Y), here as a box turned, which UCS
+OBject's X on that edge would read. **Unverified**: a Cube by a point from the centre, doubled here
+as Length's (p500); which side a typed width takes with the cursor on the length's line, and Ortho
+and `<a` at the other corner and the length, which the console's fixed cursor decides (p03, x07,
+p113, p116, p117: the desktop's to settle).
 
-### `WEDGE` / `WE` · es `CUÑA` · pt-BR `CUNHA` / `CN`
+### `WEDGE` / `WE` · es `CUÑA` / `CU` · pt-BR `CUNHA` / `CN`
 
-**Implemented:** WEDGE asks what BOX asks, in the same words (solid/w01–w09, v04; es `CUÑA`, pt-BR
-`CUNHA` / `CN`, `getcname`, n02): `Specify first corner or [Center]:`, `Specify other corner or
+**Implemented:** WEDGE asks what BOX asks, in the same words (solid/w01–w09, v04; es `CUÑA` / `CU`, primitives/p100,
+pt-BR `CUNHA` / `CN`, `getcname`, n02): `Specify first corner or [Center]:`, `Specify other corner or
 [Cube/Length]:`, `Specify height or [2Point]:`, Center's `Specify center:` and `Specify corner or
 [Cube/Length]:`, the solid centred on it in height too. The wedge is a box whose top slopes down
 from its tall end, at the first corner, to the other corner's side: from (0,0,0) to (10,20) it rises
@@ -1066,8 +1077,9 @@ from its tall end, at the first corner, to the other corner's side: from (0,0,0)
 (w09); a corner at a smaller X turns it, `Rotation: 180` (w08). Unlike BOX's, its Cube and Length run
 along the UCS's X and its width along its Y, backwards when typed negative (w08: length -10, width
 -6, Position 145,-3, Rotation 180; v04: a cube of -8 from 0,0,0 lies at -4,-4), and a point gives
-the distance alone, never the heading (w08: 110,10 gives 14.1421 along X); from the centre a
-negative one is twice as long, as BOX's (w04, w09). Refusals, BOX's in its own words: `Wedge of zero
+the distance alone in space, never the heading (w08: 110,10 gives 14.1421 along X; primitives/p125:
+`0,30,8` gives 31.0483), the width's from the length's end (p124: `300,6` after `300,0,0 _L 10` is
+11.6619); from the centre a negative one or a point is twice as long, as BOX's (w04, w09, p356). Refusals, BOX's in its own words: `Wedge of zero
 length not permitted.`, `Wedge of zero width not permitted.` (es `No puede ser un Cuña de longitud
 cero.`, pt-BR `Não é permitido uma Cunha de comprimento zero.`, `Não é permitida uma Cunha de
 largura zero.`), and Enter at a width with no default says the latter where BOX's says `Requires

@@ -186,6 +186,33 @@ describe("dragging a box's grips (g01)", () => {
     ])
     expectPoint(corner.position, at(0.8301, 11.1603, 0))
   })
+
+  it("lays a box drawn towards a smaller X, Rotation 180, on its own footprint (primitives/p123)", () => {
+    const back = { ...box, position: at(-5, 10, 0), xAxis: at(-1, 0, 0) }
+    const points = solidGrips(back, PLAN).map((g) =>
+      [g.at.x, g.at.y, g.at.z].map((n) => n + 0)
+    )
+    expect(points).toEqual([
+      [-5, 10, 0],
+      [0, 20, 0],
+      [-10, 20, 0],
+      [-10, 0, 0],
+      [0, 0, 0],
+      [0, 10, 0],
+      [-10, 10, 0],
+      [-5, 20, 0],
+      [-5, 0, 0],
+    ])
+    // Its corner at 0,20 dragged out, the one at -10,0 kept.
+    const corner = solidGripDragged(
+      back,
+      solidGrips(back, PLAN)[1],
+      at(2, 3, 0),
+      PLAN
+    ) as typeof box
+    expect([corner.length, corner.width]).toEqual([12, 23])
+    expectPoint(corner.position, at(-4, 11.5, 0))
+  })
 })
 
 describe("dragging the other primitives' grips (g01)", () => {

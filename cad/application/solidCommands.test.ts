@@ -60,6 +60,9 @@ function listed(cad: CadHarness): string[] {
     .flatMap((line) => line.split("\n"))
 }
 
+/** LIST of the last object, from its Solid type line on. */
+const shape = (cad: CadHarness) => listed(cad).slice(4)
+
 /** The middle of its vertices: a box's centroid, MASSPROP's. */
 function centroid(solid: Solid3dEntity): Vec3 {
   const { vertices } = solid.brep
@@ -308,6 +311,254 @@ describe("BOX", () => {
     expect(written(portuguese, "CAIXA", "0,0", "0,0")[3]).toBe(
       "Não é permitido uma Caixa de comprimento zero."
     )
+  })
+
+  it("turns a box whose other corner lies at a smaller X: Rotation 180 (primitives/p123, p105)", () => {
+    const cad = console()
+    answer(cad, "BOX", "0,0,0", "-10,20", "5")
+    expect(shape(cad).slice(1)).toEqual([
+      "         Position, X = -5.0000   Y = 10.0000   Z = 0.0000",
+      "           Length: 10.0000",
+      "            Width: 20.0000",
+      "           Height: 5.0000",
+      "         Rotation: 180",
+    ])
+    answer(cad, "BOX", "50,0,0", "60,-20", "5")
+    expect(shape(cad).at(-1)).toBe("         Rotation: 0")
+    answer(cad, "BOX", "100,0,0", "90,-20", "5")
+    expect(shape(cad).at(-1)).toBe("         Rotation: 180")
+    answer(cad, "BOX", "_C", "200,0,0", "190,-20", "5")
+    expect(shape(cad).at(-1)).toBe("         Rotation: 180")
+  })
+
+  it("measures Length's width point square to the length's line (p124, p108, p109)", () => {
+    const cad = console()
+    answer(cad, "BOX", "0,0,0", "_L", "10", "0,6", "4")
+    expect(shape(cad).slice(1, 4)).toEqual([
+      "         Position, X = 3.6042    Y = 4.4455    Z = 0.0000",
+      "           Length: 10.0000",
+      "            Width: 5.5688",
+    ])
+    answer(cad, "BOX", "0,0,0", "_L", "10", "@0,6", "4")
+    expect(shape(cad)[3]).toBe("            Width: 5.5688")
+    answer(cad, "BOX", "100,0,0", "_L", "20<45", "@5<135", "3")
+    expect(shape(cad)[3]).toBe("            Width: 2.9139")
+  })
+
+  it("measures Length's height from the far corner, not the length's end (p124)", () => {
+    const cad = console()
+    answer(cad, "BOX", "600,0,0", "_L", "10", "6", "600,0,0")
+    expect(shape(cad)[4]).toBe("           Height: 11.6619")
+    answer(cad, "BOX", "_C", "800,0,0", "_L", "10", "6", "800,0,0")
+    expect(shape(cad).slice(1, 5)).toEqual([
+      "         Position, X = 800.0000  Y = 0.0000    Z = -2.9155",
+      "           Length: 10.0000",
+      "            Width: 6.0000",
+      "           Height: 5.8310",
+    ])
+  })
+
+  it("reads a cube or length from a raised point in plan (p114, p125)", () => {
+    const cad = console()
+    answer(cad, "BOX", "0,0,0", "_C", "0,30,8")
+    expect(shape(cad).slice(1)).toEqual([
+      "         Position, X = -15.0000  Y = 15.0000   Z = 0.0000",
+      "           Length: 30.0000",
+      "            Width: 30.0000",
+      "           Height: 30.0000",
+      "         Rotation: 90",
+    ])
+    answer(cad, "BOX", "300,0,0", "_L", "300,30,8", "6", "4")
+    expect(shape(cad)[2]).toBe("           Length: 30.0000")
+    // The next default is the plan length (p114).
+    expect(written(cad, "BOX", "50,0,0", "_C", "").at(-1)).toBe(
+      "Specify length <30.0000>:"
+    )
+  })
+
+  it("from its centre, Length by a point is twice its distance, towards it (p500)", () => {
+    const cad = console()
+    answer(cad, "_BOX", "_C", "1,2,0", "_L", "4,6,0", "6", "5")
+    expect(shape(cad).slice(1)).toEqual([
+      "         Position, X = 1.0000    Y = 2.0000    Z = -2.5000",
+      "           Length: 10.0000",
+      "            Width: 6.0000",
+      "           Height: 5.0000",
+      "         Rotation: 53",
+    ])
+  })
+
+  it("repeats on an empty line, offering the last height (p103)", () => {
+    const cad = console()
+    expect(
+      written(cad, "BOX", "0,0,0", "10,20", "5", "", "50,0,0", "60,20", "")
+    ).toEqual([
+      "BOX",
+      "Specify first corner or [Center]: 0,0,0",
+      "Specify other corner or [Cube/Length]: 10,20",
+      "Specify height or [2Point]: 5",
+      "BOX",
+      "Specify first corner or [Center]: 50,0,0",
+      "Specify other corner or [Cube/Length]: 60,20",
+      "Specify height or [2Point] <5.0000>:",
+    ])
+    expect(solids(cad)).toHaveLength(2)
+  })
+
+  it("is refused transparently, 'BOX and 'WEDGE at LINE's prompt (p104)", () => {
+    const cad = console()
+    const out = written(cad, "LINE", "0,0", "'_BOX", "'_WEDGE", "10,0", "")
+    expect(out.filter((l) => l.startsWith("**"))).toEqual([
+      "** That command may not be invoked transparently **",
+      "** That command may not be invoked transparently **",
+    ])
+    expect(
+      out.filter((l) => l === "Point or option keyword required.")
+    ).toHaveLength(2)
+  })
+
+  it("refuses a keyword of another prompt, in each prompt's words (p106)", () => {
+    const cad = console()
+    expect(
+      written(cad, "BOX", "_L", "_2P", "0,0,0", "_2P", "10,20", "_C", "5")
+    ).toEqual([
+      "BOX",
+      "Specify first corner or [Center]: _L",
+      "Point or option keyword required.",
+      "Specify first corner or [Center]: _2P",
+      "Point or option keyword required.",
+      "Specify first corner or [Center]: 0,0,0",
+      "Specify other corner or [Cube/Length]: _2P",
+      "Point or option keyword required.",
+      "Specify other corner or [Cube/Length]: 10,20",
+      "Specify height or [2Point]: _C",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify height or [2Point]: 5",
+    ])
+  })
+
+  it("takes the local keywords, pt-BR's ambiguous C clarified (p107)", () => {
+    expect(
+      written(
+        console(es),
+        "PRISMARECT",
+        "C",
+        "0,0,0",
+        "L",
+        "10",
+        "6",
+        "2P",
+        "0,0,0",
+        "0,0,3"
+      )
+    ).toEqual([
+      "PRISMARECT",
+      "Precise primera esquina o [Centro]: C",
+      "Precise centro: 0,0,0",
+      "Precise esquina o [Cubo/Longitud]: L",
+      "Precise longitud: 10",
+      "Precise anchura: 6",
+      "Precise altura o [2Puntos]: 2P",
+      "Precise primer punto: 0,0,0",
+      "Precise segundo punto: 0,0,3",
+    ])
+    expect(written(console(ptBR), "CAIXA", "0,0,0", "C", "CU", "5")).toEqual([
+      "CAIXA",
+      "Especificar primeiro canto ou [Centro]: 0,0,0",
+      "Especificar outro canto ou [CUbo/COmprimento]: C",
+      "Resposta ambígua, esclareça...",
+      "CUbo ou COmprimento? CU",
+      "Especificar comprimento: 5",
+    ])
+  })
+
+  it("reads `*x,y` in the WCS at every point and length (p125, p111)", () => {
+    const cad = console()
+    answer(cad, "UCS", "_Z", "30", "BOX", "*10,0", "*40,30", "5")
+    expect(shape(cad).slice(1, 4)).toEqual([
+      "         Position, X = 29.1506   Y = 0.4904    Z = 0.0000",
+      "           Length: 40.9808",
+      "            Width: 10.9808",
+    ])
+    answer(cad, "BOX", "100,0,0", "_L", "*130,30", "6", "4")
+    expect(shape(cad)[2]).toBe("           Length: 47.7843")
+    expect(shape(cad).at(-1)).toBe("         Rotation: 305")
+    // A typed other corner without a Z lies at the first's, `*` at the
+    // WCS's 0 (p111).
+    answer(cad, "UCS", "_W", "BOX", "0,0,3", "*20,10")
+    expect(shape(cad).slice(1, 3)).toEqual([
+      "         Position, X = 10.0000   Y = 5.0000    Z = 3.0000",
+      "           Normal: X = 0.0000    Y = 0.0000    Z = -1.0000",
+    ])
+    expect(written(cad, "BOX", "50,0,3", "#70,10")[3]).toBe(
+      "Point or option keyword required."
+    )
+  })
+
+  it("takes `@` and bare numbers at every point prompt (p105, p108, p112)", () => {
+    const cad = console()
+    answer(cad, "ID", "30,40", "BOX", "@", "@10,20", "@")
+    expect(cad.commandLog().at(-1)).toBe("Value must be nonzero.")
+    answer(cad, "5")
+    expect(shape(cad)[1]).toBe(
+      "         Position, X = 35.0000   Y = 50.0000   Z = 0.0000"
+    )
+    answer(cad, "ID", "30,40", "BOX", "10", "10", "5")
+    expect(shape(cad).slice(1, 4)).toEqual([
+      "         Position, X = 44.3929   Y = 44.2242   Z = 0.0000",
+      "           Length: 9.5953",
+      "            Width: 2.8162",
+    ])
+  })
+
+  it("wears the layer, colour and lineweight set transparently mid-command (p122)", () => {
+    const cad = console()
+    cad.runtime.createLayer("L2")
+    answer(cad, "CLAYER", "0")
+    answer(
+      cad,
+      "BOX",
+      "'-COLOR",
+      "1",
+      "0,0",
+      "'CLAYER",
+      "L2",
+      "10,20",
+      "'CELWEIGHT",
+      "30",
+      "5"
+    )
+    const box = last(cad)
+    expect(cad.runtime.document.getLayer(box.layerId)?.name).toBe("L2")
+    expect(box.color).toBe("#ff0000")
+    expect(box.lineweight).toBe(0.3)
+  })
+
+  it("lies at ELEVATION, in the UCS too, and takes no THICKNESS (p121)", () => {
+    const cad = console()
+    answer(cad, "THICKNESS", "3", "ELEVATION", "7", "BOX", "0,0", "10,20", "5")
+    expect("thickness" in last(cad)).toBe(false)
+    answer(
+      cad,
+      ...["WEDGE", "20,0", "30,20", "5", "UCS", "_Z", "30"],
+      ...["BOX", "50,0", "60,20", "5", "UCS", "_X", "90"],
+      ...["WEDGE", "0,0", "10,20", "5", "UCS", "_W"]
+    )
+    // MPDUMP's extents of each.
+    expect(
+      solids(cad).map(({ brep: { vertices: v } }) =>
+        (["x", "y", "z"] as const)
+          .flatMap((k) =>
+            [Math.min, Math.max].map((f) => f(...v.map((p) => p[k])))
+          )
+          .map((n) => Math.round(n * 1e4) / 1e4 + 0)
+      )
+    ).toEqual([
+      [0, 10, 0, 20, 7, 12],
+      [20, 30, 0, 20, 7, 12],
+      [33.3013, 51.9615, 25, 47.3205, 7, 12],
+      [3.5, 12.1603, -10.3923, -1.0622, 0, 20],
+    ])
   })
 })
 

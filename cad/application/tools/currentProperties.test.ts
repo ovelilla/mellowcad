@@ -83,6 +83,8 @@ const FROM_SCRATCH: ReadonlyArray<
         .enter(),
   ],
   ["RECTANG", (c) => c.command("RECTANG").click(p(0, 0)).click(p(100, 50))],
+  // probe primitives/p121: BOX's and WEDGE's colour, linetype and lineweight
+  // (ELEVATION and THICKNESS: solidCommands.test.ts).
   [
     "BOX",
     (c) => c.command("BOX").click(p(0, 0)).click(p(100, 50)).type("30").enter(),

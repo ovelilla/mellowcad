@@ -108,14 +108,16 @@ const ZERO_WIDTH: Record<BlockKind, MessageId> = {
  * asks the same (w01–w09): `Specify first corner or [Center]:`, then `Specify
  * other corner or [Cube/Length]:` and `Specify height or [2Point]:`. Center
  * asks `Specify center:` and `Specify corner or [Cube/Length]:`, the solid
- * then centred on it in height too; a negative cube or length is twice as
- * long about it (w09, x07). A corner at another Z sets the height without
- * asking it (p06, p13). The height rises along the UCS's Z, down when
- * negative; a point gives its distance (p06, p10). BOX's cube and length turn
- * towards the cursor or the point given (p03), its width to their side, a
- * typed width's sign unread (p10); WEDGE's run along the UCS's X and its width
- * along its Y, back when typed negative, a point giving the distance alone
- * (w08). A wedge's tall end is at the first corner, or opposite the corner
+ * then centred on it in height too; a negative cube or length, or one given
+ * by a point, is twice as long about it (w09, x07, p356). A corner at another
+ * Z sets the height without asking it (p06, p13). The height rises along the
+ * UCS's Z, down when negative, from the other corner or, after Length, the
+ * far one; a point gives its distance (p06, p10, p124). BOX's cube and length
+ * turn towards the cursor or the point given, in plan (p03, p114), its width
+ * to their side, a point's square to the length (p124), a typed width's sign
+ * unread (p10); WEDGE's run along the UCS's X and its width along its Y, back
+ * when typed negative, a point giving the distance alone, in space (w08,
+ * p125). A wedge's tall end is at the first corner, or opposite the corner
  * given from its centre (w02, w09). The defaults are the primitives' shared
  * ones ({@link SolidDefaults}).
  */
@@ -275,7 +277,7 @@ export class BoxTool implements Tool {
     return true
   }
 
-  getConstraintAnchor(): Vec3 | null {
+  getConstraintAnchor(ctx: ToolContext): Vec3 | null {
     const state = this.state
     switch (state.phase) {
       case "other":
@@ -283,7 +285,7 @@ export class BoxTool implements Tool {
       case "length":
         return state.base
       case "width":
-        return this.widthBase(state)
+        return this.widthBase(state, ctx)
       case "height":
         return state.from
       case "twoSecond":
@@ -348,12 +350,21 @@ export class BoxTool implements Tool {
         this.takeCorner(point, ctx)
         return
       case "cube":
-      case "length":
-        this.takeLength(this.distanceTo(state.base, point), point, ctx)
+      case "length": {
+        // BOX's in plan, WEDGE's in space (p114, p125); from the centre, the
+        // point is half the length away (p356, p500).
+        const reach =
+          this.kind === "box"
+            ? this.planDistance(state.base, point, ctx)
+            : this.distanceTo(state.base, point)
+        this.takeLength(state.mode === "center" ? 2 * reach : reach, point, ctx)
         return
+      }
       case "width":
         this.takeWidth(
-          this.distanceTo(this.widthBase(state), point),
+          this.kind === "box"
+            ? this.squareToLength(state, point, ctx)
+            : this.distanceTo(this.widthBase(state, ctx), point),
           point,
           ctx
         )
@@ -385,6 +396,26 @@ export class BoxTool implements Tool {
     return length3(sub3(to, from))
   }
 
+  private planDistance(from: Vec3, to: Vec3, ctx: ToolContext): number {
+    return V.length(
+      V.sub(worldPointToUcs(ctx.ucs, to), worldPointToUcs(ctx.ucs, from))
+    )
+  }
+
+  /**
+   * BOX's width given by a point: its distance from the length's line in
+   * plan (p124: `0,6` after a length heading 21.85° is 5.5688; p108, p109).
+   */
+  private squareToLength(
+    state: Extract<BoxToolState, { phase: "width" }>,
+    point: Vec3,
+    ctx: ToolContext
+  ): number {
+    const base = worldPointToUcs(ctx.ucs, state.base)
+    const aim = worldPointToUcs(ctx.ucs, point)
+    return Math.abs(V.cross(state.along, V.sub(aim, base)))
+  }
+
   /**
    * The other corner: a footprint on the UCS's axes, refused with no length
    * or width (p06); one at another Z than the first gives the height too.
@@ -413,8 +444,10 @@ export class BoxTool implements Tool {
   }
 
   /**
-   * A box's footprint runs along the UCS's X; a wedge's slopes down away
-   * from the first corner, or towards the corner given from its centre (w09).
+   * The footprint runs along the UCS's X, turned 180 when the corner lies at
+   * a smaller X (p123: BOX's `Rotation: 180`, as WEDGE's, w08): a wedge's
+   * slopes down away from the first corner, or towards the corner given from
+   * its centre (w09).
    */
   private cornerFootprint(
     mode: Mode,
@@ -428,7 +461,7 @@ export class BoxTool implements Tool {
     const dy = Math.abs(to.y - from.y)
     if (dx === 0 || dy === 0) return null
     const centered = mode === "center"
-    const back = this.kind === "wedge" && to.x < from.x
+    const back = to.x < from.x
     return {
       center: centered ? from : V.lerp(from, to, 0.5),
       along: back ? V.scale(UCS_X, -1) : UCS_X,
@@ -443,7 +476,8 @@ export class BoxTool implements Tool {
    * Cube's or Length's length: typed, BOX's along the cursor, WEDGE's along
    * the UCS's X, either backwards when negative (p10, w08); a point, its
    * distance, BOX's towards it (p03). From the centre a negative one is twice
-   * as long (w09, x07). The length made is the next one offered (p10).
+   * as long (w09, x07), as a point is (p356, p500). The length made is the
+   * next one offered (p10).
    */
   private takeLength(length: number, toward: Vec3, ctx: ToolContext): void {
     const state = this.state
@@ -495,17 +529,38 @@ export class BoxTool implements Tool {
   }
 
   /** Where the width is measured from: the length's far end (its prompt's base point, p02). */
-  private widthBase(state: Extract<BoxToolState, { phase: "width" }>): Vec3 {
-    const reach = state.mode === "center" ? state.length / 2 : state.length
-    const end = V.add(state.base, V.scale(state.along, reach))
-    return { ...end, z: state.base.z }
+  private widthBase(
+    state: Extract<BoxToolState, { phase: "width" }>,
+    ctx: ToolContext
+  ): Vec3 {
+    return this.footprintPoint(state, { x: 0, y: 0 }, ctx)
+  }
+
+  /**
+   * The point `side` (a width, signed) beside the length's far end, in the
+   * world, at the base's Z: the width's base with none, the far corner with
+   * the width's (p124).
+   */
+  private footprintPoint(
+    state: Extract<BoxToolState, { phase: "width" }>,
+    side: Vec2,
+    ctx: ToolContext
+  ): Vec3 {
+    const half = state.mode === "center" ? 0.5 : 1
+    const base = worldPointToUcs(ctx.ucs, state.base)
+    const end = V.add(
+      base,
+      V.scale(V.add(V.scale(state.along, state.length), side), half)
+    )
+    return ucsPointToWorld(ctx.ucs, { ...end, z: base.z })
   }
 
   /**
    * Length's width. BOX's lies on the side of the length the cursor or the
-   * point is, the right one with the cursor on its line: what a typed length
-   * always leaves in the console, whose cursor gave the length its heading
-   * (p03, p10); a typed width's sign is not read (p10's -5). WEDGE's lies
+   * point is, the right one with the cursor on its line, where the console's
+   * cursor, which gave the length its heading, falls either way (p03, x07,
+   * p124: the desktop's to settle); a typed width's sign is not read (p10's
+   * -5). WEDGE's lies
    * towards the UCS's Y, back when typed negative, a point giving its
    * distance alone (w08).
    */
@@ -541,7 +596,13 @@ export class BoxTool implements Tool {
       z: base.z,
       centered,
     }
-    this.askHeight(footprint, this.widthBase(state), ctx)
+    // The height is measured from the far corner, centre plus half of each
+    // from the centre (p124: 11.6619 and 5.8310 at the first point).
+    this.askHeight(
+      footprint,
+      this.footprintPoint(state, V.scale(side, size), ctx),
+      ctx
+    )
   }
 
   private askHeight(footprint: Footprint, from: Vec3, ctx: ToolContext): void {
@@ -688,7 +749,7 @@ export class BoxTool implements Tool {
       return true
     }
     if (!isCoordinateExpression(text)) return false
-    const base = this.getConstraintAnchor()
+    const base = this.getConstraintAnchor(ctx)
     const state = this.state
     const point = parseCoordinate(text, {
       lastPoint: base ?? ctx.lastPoint,

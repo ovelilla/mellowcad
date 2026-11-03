@@ -1142,7 +1142,8 @@ export const es: EngineLocale = {
         "PRISMARECT"
       ],
       "WEDGE": [
-        "CUÑA"
+        "CUÑA",
+        "CU"
       ],
       "PYRAMID": [
         "PIRAMIDE",

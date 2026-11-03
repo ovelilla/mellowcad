@@ -607,7 +607,7 @@
       "LWEIGHT": ["GROSORLIN", "LINEWEIGHT"],
       "-LWEIGHT": ["-GROSORLIN"],
       "BOX": ["PRISMARECT"],
-      "WEDGE": ["CUÑA"],
+      "WEDGE": ["CUÑA", "CU"],
       "PYRAMID": ["PIRAMIDE", "PIR"],
       "CYLINDER": ["CILINDRO", "CIL"],
       "CONE": ["CONO"],

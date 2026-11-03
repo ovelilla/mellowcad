@@ -222,6 +222,30 @@ describe("WEDGE", () => {
     expect(tall.map((p) => p.x)).toEqual([910, 910])
   })
 
+  it("measures a width or a cube's point in space, from the length's end or the corner (primitives/p124, p125)", () => {
+    const cad = console()
+    answer(cad, "WEDGE", "300,0,0", "_L", "10", "300,6", "4")
+    expect(listed(cad)[3]).toBe("            Width: 11.6619")
+    answer(cad, "WEDGE", "400,0,0", "_L", "410,10", "@0,6", "4")
+    expect(listed(cad)[3]).toBe("            Width: 6.0000")
+    answer(cad, "WEDGE", "200,0,0", "_L", "10", "210,6,8", "4")
+    expect(listed(cad)[3]).toBe("            Width: 10.0000")
+    answer(cad, "WEDGE", "0,0,0", "_C", "0,30,8")
+    expect(listed(cad)[2]).toBe("           Length: 31.0483")
+  })
+
+  it("from its centre, Length by a point is twice its distance, unturned (p356)", () => {
+    const cad = console()
+    answer(cad, "_WEDGE", "_C", "1,2,0", "_L", "4,6,0", "6", "5")
+    expect(listed(cad).slice(1)).toEqual([
+      "         Position, X = 1.0000    Y = 2.0000    Z = -2.5000",
+      "           Length: 10.0000",
+      "            Width: 6.0000",
+      "           Height: 5.0000",
+      "         Rotation: 0",
+    ])
+  })
+
   it("refuses as BOX does, in its own words, and Enter at the width too (w03, w04)", () => {
     const cad = console()
     expect(
@@ -364,6 +388,9 @@ describe("WEDGE", () => {
       "No puede ser un Cuña de longitud cero.",
     ])
     answer(spanish, "10,20", "5")
+    expect(listed(spanish)[0]).toBe("    Tipo de sólido = Cuña")
+    // es acad.pgp's `CU, *CUÑA` (primitives/p100).
+    expect(written(spanish, "CU", "0,0,0", "10,20", "5")[0]).toBe("CU CUÑA")
     expect(listed(spanish)[0]).toBe("    Tipo de sólido = Cuña")
     const portuguese = console(ptBR)
     expect(written(portuguese, "CN", "0,0", "10,0")[3]).toBe(
