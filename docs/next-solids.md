@@ -1,7 +1,8 @@
 # Sólidos 3D con núcleo propio — brief
 
-> **Estado:** en curso: las fases 1 a 5 y las entregas 6a y 6b están hechas (1/11/2026); lo
-> siguiente, la 6c: 3DMOVE, 3DROTATE, UCS Face y UCSDETECT. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> **Estado:** en pausa hasta revisar lo hecho (revisiones 26 a 30 del roadmap, desde el 3/11/2026);
+> las fases 1 a 5 y las entregas 6a y 6b están hechas (1/11/2026), y la 6c será 3DMOVE, 3DROTATE,
+> UCS Face y UCSDETECT. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 

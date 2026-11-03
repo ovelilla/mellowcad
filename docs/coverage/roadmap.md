@@ -45,7 +45,8 @@ us to walk again, whereas a command costs the same before or after it.
    vertices selected with Ctrl+click (command-line.md), PRESSPULL on its faces, SLICE and SECTION
    (the kernel's cut, section and face offset in `geometry/solidEdits.ts`); 6b is done:
    FILLETEDGE, CHAMFEREDGE and SOLIDEDIT's faces (modify.md; the kernel's blends in
-   `geometry/solidBlends.ts`). Next, 6c: 3DMOVE, 3DROTATE, UCS Face and UCSDETECT.
+   `geometry/solidBlends.ts`). 6c (3DMOVE, 3DROTATE, UCS Face and UCSDETECT) waits for the
+   reviews of what is built, 26 to 30 under "Command reviews".
 
 Left out of the 2.5D model: POINT's thickness, with POINT (below). TRIM, EXTEND and JOIN of 3D
 polylines are done, cut and grown in plan at the Z they have there, a closed one left in two at
@@ -124,8 +125,17 @@ with the area. The order puts first the commands whose review settles what the l
 | 23  | UCS              | UCS, UCSICON, ELEV                                                                                                       |                                                                                                                                                                                                                                    | done  |
 | 24  | Workspace        | UNITS, AUPREC, SETVAR, CLEANSCREENON, CLEANSCREENOFF; the status bar, the top bar, the tool palette, the palette panel, the shortcut menus | system variables typed as commands                                                                                                                                                                                                 | done  |
 | 25  | Clipboard, files | COPYCLIP, CUTCLIP, COPYBASE, PASTECLIP, NEW, QNEW, QSAVE, SAVEAS, OPEN                                                    |                                                                                                                                                                                                                                    | done  |
+| 26  | 3D primitives    | BOX, WEDGE, CYLINDER, CONE, SPHERE, TORUS, PYRAMID                                                                       | the solid object (its B-rep, 2D Wireframe and isolines, picking, snaps, transforms, file), a height or radius given with the mouse off the plan, the primitives' grips, palette rows and shared defaults                           |       |
+| 27  | Regions          | REGION, UNION, SUBTRACT, INTERSECT                                                                                       | the region object, the booleans of regions and solids                                                                                                                                                                              |       |
+| 28  | Sweeps           | EXTRUDE, REVOLVE, PRESSPULL                                                                                              | profiles, the swept solid, PRESSPULL's bounded areas                                                                                                                                                                               |       |
+| 29  | Solid edits      | SLICE, SECTION, FILLETEDGE, CHAMFEREDGE, SOLIDEDIT                                                                       | sub-objects (Ctrl+click, their highlight, grips and selection)                                                                                                                                                                     |       |
+| 30  | Solid inquiry    | MASSPROP; VSCURRENT's Hidden and Conceptual                                                                              | the visual styles                                                                                                                                                                                                                  |       |
+| 31  | PEDIT, SPLINEDIT | 3DPOLY, PEDIT, SPLINEDIT                                                                                                 | the 3D polyline object                                                                                                                                                                                                             |       |
+| 32  | LIST, CHPROP     | LIST, CHPROP                                                                                                             | LIST's report of every object                                                                                                                                                                                                      |       |
 
-A review's state is `plan` while its plan runs, and `done` once executed, its plan reduced to an
+Reviews 26 to 32 take what was built after the order was set (3 November 2026), the solids first:
+phase 6c builds on them, and their mouse had never been compared with the desktop's (BOX's height
+followed the cursor on the work plane, c38e7a24). A review's state is `plan` while its plan runs, and `done` once executed, its plan reduced to an
 index (LINE's: `docs/plans/line-review.md`); a command added later takes the place its area gives
 it. Transforms found STRETCH's look and zero displacement MOVE's (MOVE-D3, D6 hold) and the
 LASTPOINT of its Displacement its own (STR-05: `docs/plans/transforms-review.md`). The Blocks review takes PURGE's report words from ERASE's
