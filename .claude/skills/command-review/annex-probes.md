@@ -60,7 +60,10 @@ Writing one (the traps of `console.md` hold; these are the review's):
   Its paste is text's, an MTEXT's point: its refusals and its `(ssget "_I")` say nothing of an
   object paste, which is INSERT's jig (p108–p110 and erase/p263 refuted by clipboard/d02, d04).
 - What a result is: `MPDUMP` with `-` after the command (every property, full precision);
-  `(getvar "LASTPOINT")` for LASTPOINT; `QAFLAGS 2` before LIST.
+  `(getvar "LASTPOINT")` for LASTPOINT; `_QAFLAGS 2` as the first line of any probe that
+  LISTs (LIST's paging ate three subagents' es-ES runs, 3D primitives).
+- Before probing a new object's snaps one by one, read its help's Drafting Settings, Object Snap
+  tab: "do not work with edges or corners of 3D solids" settled Intersection there (SPK-01).
 - A setting the cell needs is set inside the probe (`CECOLOR`, `-LAYER`, `_ELEVATION`,
   `_THICKNESS`, `_UCS _Z 30`, `_UCS _X 90`, `-LINETYPE _L`): each run is isolated, so nothing
   needs restoring.
@@ -300,6 +303,8 @@ export default defineConfig({
 
 Run with `npx vitest run --config research/review/vitest.config.mts research/review/<command>`.
 Their `console.log` is swallowed: write what to read to a scratchpad file (Node's appendFileSync).
+`commandLog()` is capped: a `written()` sliced by the log's old length returns `[]` once it is
+full, and a long scratch run reads "not found" (3D primitives): a fresh harness per case.
 A harness option the config does not know is dropped in silence (`layers` locked nothing, and a
 `differs` went into the Corners plan): read a scratch test's setup back before trusting it. Each
 scratch test names the probe it reproduces; in the execution it moves, as is, into the

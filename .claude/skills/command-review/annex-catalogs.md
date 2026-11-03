@@ -42,6 +42,11 @@ how a string is worded, the console which string a prompt uses.
 
 ## 3. Beyond the tables
 
+- **A refusal is the input function's words or the command's**, and es and pt-BR word the two
+  apart where English does not (`Value must be nonzero.`: es `El valor debe ser diferente de cero.`
+  from a distance, `No puede ser un valor igual a cero.` from BOX, `El valor no puede ser cero.`
+  from an axis): pick the catalog key per prompt from each language's console, never from the
+  English (three tools mixed them, PCY-01, PPY-01, PST-01).
 - **Keywords** are not in the sweep: their capitals are per prompt (`initget`). A traced probe of
   each prompt (annex-probes.md) lists `g` (Spanish) and `l` (English): compare with
   `commands.keywords`, `keywordLabels`, `promptKeywords` and `promptKeywordLabels`; and where each

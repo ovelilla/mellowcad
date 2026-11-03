@@ -1,9 +1,9 @@
 # 3D primitives review (BOX, WEDGE, CYLINDER, CONE, SPHERE, TORUS, PYRAMID)
 
-> **Status:** plan, 2026-11-03. Roadmap review 26, the first of the solids. Group 1 (this
-> session, phases 0–5): the console blocks PBX, SHD, PCY, PST, PPY, PLP, SPK, STF, SWR and SFL.
-> Group 2: the desktop block PDT, a session with the owner's mouse (grips, palette, the jig, what
-> each prompt reads from the cursor).
+> **Status:** group 1 executed, 2026-11-03: the console blocks PBX, SHD, PCY, PST, PPY, PLP, SPK,
+> STF, SWR and SFL, one commit each (index below). Group 2, the desktop block PDT, waits for a
+> session with the owner's mouse (grips, palette, the jig, what each prompt reads from the
+> cursor); once it lands the plan shrinks to its summary and index.
 >
 > It owns the solid object (its B-rep, 2D Wireframe and isolines, picking, snaps, transforms,
 > file), a height or radius given with the mouse off the plan, the primitives' grips, palette
@@ -47,6 +47,30 @@ The worst:
 p200–p248, p300–p356, p400–p426, on AutoCAD 2027 (ACADVER 26.0, X.118.0.0; p01); the committed
 build probes `solid/*` (2026-10-31 to 11-01, same build); `acad.cuix`'s RibbonRoot and MenuGroup;
 each language's `acad.pgp`; the tables of 2026-10-31.
+
+## Execution
+
+| Block | Findings                                                                 | Commit   |
+| ----- | ------------------------------------------------------------------------ | -------- |
+| PBX   | PBX-01 to PBX-07 (BOX's Cube by a point from the centre doubled, p500)   | 3f031cad |
+| SHD   | SHD-01                                                                   | 13cd770b |
+| PCY   | PCY-01 to PCY-06                                                         | 7c7ad69a |
+| PST   | PST-01, PST-02                                                           | bb26a486 |
+| PPY   | PPY-01 to PPY-04; CONE's Top radius drifted as PYRAMID's (PPY-02, p248) | bf57cc9b |
+| PLP   | PLP-01 to PLP-03                                                         | f80bb46b |
+| SPK   | SPK-01 to SPK-08; an edge-on circle's Center from its rim (osnapz/o07)  | ed93ef45 |
+| STF   | STF-01 to STF-03; ARRAYRECT's base Z for every object (arrays/p436)     | 08fa1e24 |
+| SWR   | SWR-01, SWR-02: REGEN and REGENALL (p502)                                | faa3a067 |
+| SFL   | SFL-01                                                                   | 9e4ae037 |
+
+Left open by the execution, each in its coverage entry: a box turned 180 runs its edges as a box
+turned, where ACIS mirrors p01's (BOX); a Cube by a point from the centre, doubled as Length's,
+**unverified** (BOX); a typed window with no width on the screen finds nothing (p426,
+command-line.md); `Oblique, non-uniformly scaled objects were ignored.` before a refused Quadrant
+(osnapz/o07, drafting-aids.md); an elliptical cylinder's isoline offers NEA and CEN in AutoCAD
+(p403), and NEA, PER and MID off the geometry in SE Isometric differ a little (s09); `20<45` at
+BOX's Length read as an absolute point (p109: 87.0148), untested and in no entry yet. PRIM-D41's suspects are in the
+roadmap for reviews 27 to 31.
 
 ## Inventory
 

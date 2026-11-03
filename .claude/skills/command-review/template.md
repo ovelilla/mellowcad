@@ -393,13 +393,11 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
   desktop pass first).
 - 2026-10-23: Properties (the whole monitor before a click, U's echo of an edit outside a command,
   resource DLLs), Text (an editor's Escape, spaces in answers, txt.shx).
-- 2026-10-26, 10-27: HATCH (a ribbon twin, AutoCAD's log), Blocks (a skipped dialog, a path two
-  commands share), Dimensions (the shared contracts' sweep, asserting scratch tests), Inquiry (the
-  ribbon's macro, read-only variables, Escape at a sub-prompt), View (`acad.pgp`, hangs, gestures
-  as undo steps, U before evals).
-- 2026-10-28: UCS (transcripts and old citations counted, findings without gaps, a look and a
-  refutation as the console's artefact wait for the desktop, a relative box at a base); Workspace
-  (acad.cuix first, a batched probe's fallback, SETVAR's default, `AllowSpaces`, AutoComplete and
-  U's names on the desktop, Chrome's reserved keys).
-- 2026-10-29, Clipboard: the console's clipboard and paste, a Lisp stub, DYNMODE under COM, a
-  menu key in U (annex-probes.md §2, §4); a run awaiting a port (§4.1).
+- 2026-10-26, 10-27: HATCH, Blocks, Dimensions (the shared contracts' sweep, asserting scratch
+  tests), Inquiry, View (`acad.pgp`, hangs, gestures as undo steps).
+- 2026-10-28: UCS (old citations counted, findings without gaps, a refutation as the console's
+  artefact waits for the desktop); Workspace (acad.cuix first, AutoComplete, Chrome's keys).
+- 2026-10-29, Clipboard: the console's clipboard, a Lisp stub, DYNMODE under COM, a menu key in U
+  (annex-probes.md §2, §4); a run awaiting a port (§4.1).
+- 2026-11-03, 3D primitives: QAFLAGS first, a snap's help, the capped log (annex-probes.md §2,
+  §5); a refusal's words per input function (annex-catalogs.md §3).
