@@ -1314,9 +1314,10 @@ eliminada.`, pt-BR `Foi criada uma região nula - excluída`) or `Null solid cre
 p308, p312, p313). Their rail slot is the 3D Modeling workspace's Solid Editing drop-down.
 
 **Deviations:** MASSPROP of a solid bounded by an approximate intersection curve (two cylinders of
-two radii, k05) is exact here, 1866.9127, where AutoCAD prints 1866.8100: ACIS integrates such faces
-only roughly (its INTERSECT of the same pair, 269.3665 against the exact 269.3703, does not add up
-with it, k08); with exact curves the figures agree (k06). Solids that only touch at a point stay two
+two radii, k05) is exact here, 1866.9127, where AutoCAD prints 1866.8100: its MASSPROP integrates
+such faces only roughly (its INTERSECT of the same pair, 269.3665 against the exact 269.3703, does
+not add up with it, k08), while MPDUMP's B-rep volume, 1866.9126769560326, is the exact figure
+(regions/p345); with exact curves the figures agree (k06). Solids that only touch at a point stay two
 shells of the one solid, where ACIS joins them (s04, its MPDUMP's 3 shells). A pair of surfaces with
 no closed form here, where their faces meet, says AutoCAD's `1 boolean operation(s) failed.`
 (22133; es `Fallaron 1 operaciones booleanas.`, pt-BR `Falha de 1 operação(ções) booleana(s).`) and
@@ -1328,7 +1329,11 @@ cross; a cone with any but a coaxial or a plane; a torus with a plane neither sq
 through it, or with any other surface off its axis; a revolution with a plane neither way, or with
 another not on its axis; an extrusion with anything but a plane or a surface drawn its way;
 tangency where a cut meets an edge tangentially (s04's cylinder, tangent to the box's sides at its
-top edges), faces within the tolerance of each other but not on one surface, and a thin sliver between a cut and an edge (about 1 in 1,000 random pairs, `solidPair`), each refused as above; the order of a
+top edges), faces within the tolerance of each other but not on one surface, and a thin sliver between a cut and an edge (about 1 in 1,000 random pairs, `solidPair`), each refused as above;
+a cylinder lying along a box's face, which unites into the right volume, 1282.7433, but one edge
+and face fewer than ACIS's, which keeps the line they touch along as an edge splitting the face in
+two (regions/p348: V10 E17 F10 there, one shell; V10 E16 F9 here, the cylinder sharing only that
+line's end vertices with the box); the order of a
 fence's find (taken as found) and of Previous's (taken as `ALL`'s), unprobed; `Previous` after
 SUBTRACT, which finds `0 found` (the erased second set) in AutoCAD and says `No previous selection
 set.` here (regions/p334); a composite's Properties palette and grips (none here, **unverified**);

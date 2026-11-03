@@ -81,7 +81,7 @@ describe("booleans of solids", () => {
     expect(brepVolume(d)).toBeCloseTo(700, 9)
   })
 
-  it("unites boxes apart into one of two shells (union/k03)", () => {
+  it("unites boxes apart into one of two shells (union/k03, regions/p343)", () => {
     const r = brepBoolean(
       "union",
       box(0, 0, 0, 10, 10, 10),
@@ -92,7 +92,7 @@ describe("booleans of solids", () => {
     expect(solidInertia(brepMoments(r)).centroid.x).toBeCloseTo(15, 9)
   })
 
-  it("drills a cylinder through a box (union/k04)", () => {
+  it("drills a cylinder through a box (union/k04, regions/p344)", () => {
     const r = brepBoolean(
       "subtract",
       box(0, 0, 0, 20, 20, 10),
@@ -107,16 +107,19 @@ describe("booleans of solids", () => {
     expect(counts(r)).toEqual({ v: 10, e: 14, f: 7 })
   })
 
-  it("unites two cylinders square to each other (union/k05, k06, k08)", () => {
+  it("unites two cylinders square to each other (union/k05, k06, k08; regions/p345–p347)", () => {
     const upright = roundBrep({ x: 0, y: 0, z: -10 }, Z, X, 5, 5, 20, 1)
     const thin = roundBrep({ x: -10, y: 0, z: 0 }, X, Y, 3, 3, 20, 1)
     const tee = brepBoolean("union", upright, thin)!
     expect(brepIsClosed(tee)).toBe(true)
-    // WHY not AutoCAD's 1866.8100: ACIS integrates a face bounded by its
-    // approximate intersection curve only roughly (its INTERSECT of the same
-    // pair, 269.3665, does not add up with it); this is π(25 + 9)·20 less
-    // 36 ∫ cos²φ √(25 − 9 sin²φ) dφ.
+    expect(counts(tee)).toEqual({ v: 6, e: 6, f: 7 })
+    // WHY not AutoCAD's 1866.8100: MASSPROP integrates a face bounded by
+    // ACIS's approximate intersection curve only roughly (its INTERSECT of the
+    // same pair, 269.3665, does not add up with it, p347); MPDUMP's B-rep
+    // volume, 1866.9126769560326 (p345), is this exact figure to 1e-7:
+    // π(25 + 9)·20 less 36 ∫ cos²φ √(25 − 9 sin²φ) dφ.
     expect(brepVolume(tee)).toBeCloseTo(1866.9126769129991, 9)
+    expect(brepVolume(tee)).toBeCloseTo(1866.9126769560326, 6)
     const even = brepBoolean(
       "union",
       upright,
@@ -124,9 +127,10 @@ describe("booleans of solids", () => {
     )!
     expect(brepIsClosed(even)).toBe(true)
     expect(brepVolume(even)).toBeCloseTo(2474.925986923126, 6)
+    expect(counts(even)).toEqual({ v: 6, e: 8, f: 8 })
   })
 
-  it("cuts a sphere's upper half off with a box (union/k07)", () => {
+  it("cuts a sphere's upper half off with a box (union/k07, regions/p328)", () => {
     const r = brepBoolean(
       "subtract",
       sphereBrep({ x: 0, y: 0, z: 0 }, Z, X, 10),

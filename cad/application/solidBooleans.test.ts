@@ -8,6 +8,7 @@ import {
   serializeDrawing,
 } from "../serialization/drawingFile"
 import { snapshotOf } from "../../test/builders"
+import { shellCount } from "../../test/breps"
 import { es } from "../locales/es"
 import { ptBR } from "../locales/pt-BR"
 
@@ -120,7 +121,7 @@ describe("UNION of solids", () => {
     expect(written(cad, "INTERSECT", "ALL", "").at(-1)).toBe(two)
   })
 
-  it("unites solids touching at a point or along a line, and apart, into one (union/s04)", () => {
+  it("unites solids touching at a point or along a line, and apart, into one (union/s04, regions/p348)", () => {
     const cad = console()
     answer(cad, "SPHERE", "30,0,0", "5", "SPHERE", "40,0,0", "5")
     answer(cad, "BOX", "50,0,0", "60,10", "10", "BOX", "55,5,10", "65,15", "20")
@@ -138,12 +139,26 @@ describe("UNION of solids", () => {
     )
     expect(written(cad, "UNION", "ALL", "").at(-1)).toBe("Select objects:")
     expect(solids(cad)).toHaveLength(1)
-    // s04's spheres and boxes (5636.2462 with its cylinder, 2 · 523.5988 + 3000 without), and
-    // a box with a cylinder lying on it.
+    // s04's spheres and boxes (5636.2462 with s04's own cylinder, 2 · 523.5988 + 3000 without),
+    // and in place of s04's box and cylinder p348's: a cylinder lying on a box, 1000 + 90π.
     expect(brepVolume(solids(cad)[0].brep)).toBeCloseTo(
       (8 / 3) * Math.PI * 125 + 3000 + 1000 + Math.PI * 90,
       6
     )
+  })
+
+  it("unites a cylinder lying along a box's top into one solid of 1282.7433 (regions/p348)", () => {
+    const cad = console()
+    answer(cad, "BOX", "0,0,0", "10,10", "10")
+    answer(cad, "CYLINDER", "0,5,13", "3", "_A", "10,5,13", "UNION", "ALL", "")
+    const [one] = solids(cad)
+    expect(solids(cad)).toHaveLength(1)
+    // WHY not AutoCAD's V10 E17 F10, one shell: ACIS keeps the line the
+    // cylinder touches the top along as an edge, the top two faces of 50
+    // (p348's MPDUMP); here that line is no edge and the top one face,
+    // V10 E16 F9, the cylinder sharing only the line's end vertices with it
+    // (modify.md, UNION's Missing).
+    expect(brepVolume(one.brep).toFixed(4)).toBe("1282.7433")
   })
 
   it("saves and reads a composite back", () => {
@@ -159,6 +174,44 @@ describe("UNION of solids", () => {
       (e) => e.type === "solid3d"
     ) as Solid3dEntity
     expect(brepVolume(back.brep)).toBeCloseTo(2375, 9)
+  })
+
+  it("saves and reads back a composite of curved faces, of NURBS edges and of two shells (union/k03, k05, k07; regions/p343, p345, p328)", () => {
+    const cad = console()
+    answer(cad, "CYLINDER", "0,0,-10", "5", "20")
+    answer(cad, "CYLINDER", "-10,0,0", "3", "_A", "10,0,0", "UNION", "ALL", "")
+    answer(cad, "SPHERE", "100,0,0", "10", "BOX", "80,-20,0", "120,20", "20")
+    answer(cad, "SUBTRACT", "C", "89,-1", "91,1", "", "L", "")
+    answer(cad, "BOX", "200,0,0", "210,10", "10", "BOX", "220,0,0", "230,10")
+    answer(cad, "10", "UNION", "C", "199,-1", "231,11", "")
+    const measure = (s: Solid3dEntity) => ({
+      v: s.brep.vertices.length,
+      e: s.brep.edges.length,
+      f: s.brep.faces.length,
+      shells: shellCount(s.brep),
+      volume: brepVolume(s.brep).toFixed(9),
+    })
+    expect(solids(cad).map(measure)).toEqual([
+      { v: 6, e: 6, f: 7, shells: 1, volume: "1866.912676913" },
+      { v: 1, e: 1, f: 2, shells: 1, volume: "2094.395102393" },
+      { v: 16, e: 24, f: 12, shells: 2, volume: "2000.000000000" },
+    ])
+    const document = cad.runtime.document
+    const file = serializeDrawing(
+      snapshotOf(document.getEntities(), { settings: document.getSettings() })
+    )
+    const read = parseDrawingFile(file)
+    const back = read.entities.filter(
+      (e): e is Solid3dEntity => e.type === "solid3d"
+    )
+    expect(back.map(measure)).toEqual(solids(cad).map(measure))
+    expect(
+      back.some((s) => s.brep.edges.some((e) => e.curve.kind === "spline"))
+    ).toBe(true)
+    // -0 is written 0: the file read back writes the same file.
+    expect(
+      serializeDrawing(snapshotOf(read.entities, { settings: read.settings }))
+    ).toBe(file)
   })
 })
 
