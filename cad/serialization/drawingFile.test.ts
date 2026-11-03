@@ -1674,6 +1674,91 @@ describe("hatches", () => {
     )
     expect(parsed.entities).toHaveLength(1)
   })
+
+  it("version 43 — the first 3D solid, a box, reads back with ISOLINES 4", () => {
+    const box = {
+      kind: "box" as const,
+      position: { x: 5, y: 10, z: 0 },
+      xAxis: { x: 1, y: 0, z: 0 },
+      normal: { x: 0, y: 0, z: 1 },
+      length: 10,
+      width: 20,
+      height: 5,
+    }
+    const corners = [
+      [0, 0, 0],
+      [10, 0, 0],
+      [10, 20, 0],
+      [0, 20, 0],
+      [0, 0, 5],
+      [10, 0, 5],
+      [10, 20, 5],
+      [0, 20, 5],
+    ]
+    const ends = [
+      [0, 3],
+      [3, 2],
+      [2, 1],
+      [1, 0],
+      [4, 5],
+      [5, 6],
+      [6, 7],
+      [7, 4],
+      [4, 0],
+      [5, 1],
+      [6, 2],
+      [7, 3],
+    ]
+    // Each face: its origin, its normal and its loop, ~ a reversed edge.
+    const faces: [number[], number[], string][] = [
+      [[0, 0, 5], [0, 0, 1], "4 5 6 7"],
+      [[0, 0, 0], [0, 0, -1], "0 1 2 3"],
+      [[0, 0, 0], [0, -1, 0], "~3 ~9 ~4 8"],
+      [[0, 20, 0], [-1, 0, 0], "~0 ~8 ~7 11"],
+      [[10, 20, 0], [0, 1, 0], "~1 ~11 ~6 10"],
+      [[10, 0, 0], [1, 0, 0], "~2 ~10 ~5 9"],
+    ]
+    const xyz = ([x, y, z]: number[]) => ({ x, y, z })
+    // ISOLINES 4, the default, was left out of the file.
+    const parsed = parseDrawingFile(
+      JSON.stringify({
+        type: DRAWING_FILE_TYPE,
+        version: 43,
+        settings: { unit: "mm", precision: 4 },
+        entities: [
+          {
+            id: "s1",
+            type: "solid3d",
+            layerId: "0",
+            brep: {
+              vertices: corners.map(xyz),
+              edges: ends.map(([start, end]) => ({
+                start,
+                end,
+                curve: { kind: "line" },
+              })),
+              faces: faces.map(([origin, normal, loop]) => ({
+                surface: {
+                  kind: "plane",
+                  origin: xyz(origin),
+                  normal: xyz(normal),
+                },
+                loops: [
+                  loop.split(" ").map((edge) => ({
+                    edge: Number(edge.replace("~", "")),
+                    reversed: edge.startsWith("~"),
+                  })),
+                ],
+              })),
+            },
+            primitive: box,
+          },
+        ],
+      })
+    )
+    expect(parsed.entities).toEqual([createSolid(box, DEFAULT_LAYER_ID, "s1")])
+    expect(parsed.settings.isolines).toBe(4)
+  })
 })
 
 describe("blocks", () => {

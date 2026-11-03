@@ -1022,9 +1022,12 @@ opposite ways, the tolerance 1e-6 —, each planar face a region of its plane; i
 ACIS's do (p01's MPDUMP). It keeps its primitive as LIST and the palette show it: `History = None`,
 `Show History = No`, `Solid type = Box`, `Position` (its base's centre), `Normal` (when not the
 UCS's Z), `Length`, `Width`, `Height`, `Rotation` (its length's heading on the UCS's XY plane), in
-the current UCS (p01, p06, p13, t02). It draws in 2D Wireframe as its edges, a plane having no
-isolines (d01: ISOLINES 4 and 16 draw a box alike; ISOLINES is saved with the drawing; a new one
-redraws every solid at once, where AutoCAD waits for REGEN, view.md, p417), on the current layer in
+the current UCS (p01, p06, p13, t02). Every kind is saved and opened with its primitive, its
+B-rep and ISOLINES, as AutoCAD's DWG keeps them (primitives/p418, p419: LIST of each reopened
+alike), and a file of version 43 opens with its box; COPYBASE and PASTECLIP carry it, primitive
+and all, into another drawing. It draws in 2D Wireframe as its edges, a plane having no isolines
+(d01: ISOLINES 4 and 16 draw a box alike; ISOLINES is saved with the drawing; a new one redraws
+every solid at once, where AutoCAD waits for REGEN, view.md, p417), on the current layer in
 CECOLOR, CELTYPE and CELWEIGHT, its edges and isolines dashed under a dashed linetype (p415, p420);
 it is
 picked by its edges, in plan and off it, and a window, a crossing and a fence take it by them, a

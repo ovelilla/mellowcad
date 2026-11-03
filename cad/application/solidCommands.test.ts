@@ -1,6 +1,10 @@
 import { describe, expect, it } from "vitest"
 
-import { type CadHarness, createHarness } from "../../test/harness"
+import {
+  type CadHarness,
+  MemoryClipboard,
+  createHarness,
+} from "../../test/harness"
 import type { Vec3 } from "../geometry/Vec3"
 import { brepIsClosed, brepVolume } from "../geometry/solids"
 import {
@@ -1122,6 +1126,120 @@ describe("a 3D solid", () => {
     const read = parseDrawingFile(file)
     expect(read.entities).toEqual(document.getEntities())
     expect(read.settings.isolines).toBe(16)
+  })
+
+  it("keeps every kind, its primitive and ISOLINES through the file (primitives/p418, p419)", () => {
+    const cad = console()
+    answer(cad, "CYLINDER", "220,0,0", "5", "8", "CONE", "240,0,0", "5", "8")
+    answer(cad, "PYRAMID", "260,0,0", "5", "8")
+    // p418's ten: AutoCAD's DWG keeps each primitive, p419 LISTs them reopened.
+    answer(cad, "BOX", "0,0,0", "L", "10", "20", "5")
+    answer(cad, "WEDGE", "20,0,0", "30,20", "5")
+    answer(cad, "CYLINDER", "E", "40,0,0", "50,0", "45,3", "8")
+    answer(cad, "CONE", "60,0,0", "5", "T", "2", "8")
+    answer(cad, "CONE", "E", "80,0,0", "90,0", "85,3", "-8")
+    answer(cad, "SPHERE", "100,0,0", "5")
+    answer(cad, "TORUS", "130,0,0", "10", "2", "TORUS", "160,0,0", "2", "4")
+    answer(cad, "TORUS", "180,0,0", "-4", "5")
+    answer(cad, "PYRAMID", "S", "6", "200,0,0", "I", "5", "T", "2")
+    answer(cad, "A", "200,10,10", "ISOLINES", "9")
+    const document = cad.runtime.document
+    const reopened = console()
+    reopened.runtime.loadDrawing(
+      serializeDrawing(
+        snapshotOf(document.getEntities(), { settings: document.getSettings() })
+      )
+    )
+    expect(reopened.entities()).toEqual(cad.entities())
+    expect(reopened.runtime.document.getSettings().isolines).toBe(9)
+    const shown =
+      /Solid type|Position|Normal|radius|Radius|Length:|Width:|Height:|Rotation:|sides/
+    const rows = written(reopened, "_LIST", "_ALL", "")
+      .flatMap((line) => line.split("\n"))
+      .filter((line) => shown.test(line))
+      .map((line) => line.trim().replace(/\s+/g, " "))
+    const p419 = [
+      "Solid type = Pyramid",
+      "Position, X = 200.0000 Y = 0.0000 Z = 0.0000",
+      "Normal: X = 0.0000 Y = 0.7071 Z = 0.7071",
+      "Inscribed base radius: 5.0000",
+      "Circumscribed base radius: 4.3301",
+      "Inscribed top radius: 2.0000",
+      "Circumscribed top radius: 1.7321",
+      "Height: 14.1421",
+      "Rotation: 259",
+      "Number of sides: 6",
+      "Solid type = Torus",
+      "Position, X = 180.0000 Y = 0.0000 Z = 0.0000",
+      "Torus radius: -4.0000",
+      "Tube radius: 5.0000",
+      "Solid type = Torus",
+      "Position, X = 160.0000 Y = 0.0000 Z = 0.0000",
+      "Torus radius: 2.0000",
+      "Tube radius: 4.0000",
+      "Solid type = Torus",
+      "Position, X = 130.0000 Y = 0.0000 Z = 0.0000",
+      "Torus radius: 10.0000",
+      "Tube radius: 2.0000",
+      "Solid type = Sphere",
+      "Position, X = 100.0000 Y = 0.0000 Z = 0.0000",
+      "Radius: 5.0000",
+      "Solid type = Cone",
+      "Position, X = 85.0000 Y = 0.0000 Z = 0.0000",
+      "Normal: X = 0.0000 Y = 0.0000 Z = -1.0000",
+      "Base major radius: 5.0000",
+      "Base minor radius: 3.0000",
+      "Top major radius: 0.0000",
+      "Height: 8.0000",
+      "Rotation: 90",
+      "Solid type = Cone",
+      "Position, X = 60.0000 Y = 0.0000 Z = 0.0000",
+      "Base radius: 5.0000",
+      "Top radius: 2.0000",
+      "Height: 8.0000",
+      "Solid type = Cylinder",
+      "Position, X = 45.0000 Y = 0.0000 Z = 0.0000",
+      "Major radius: 5.0000",
+      "Minor radius: 3.0000",
+      "Height: 8.0000",
+      "Rotation: 90",
+      "Solid type = Wedge",
+      "Position, X = 25.0000 Y = 10.0000 Z = 0.0000",
+      "Length: 10.0000",
+      "Width: 20.0000",
+      "Height: 5.0000",
+      "Rotation: 0",
+      "Solid type = Box",
+      "Position, X = 8.3631 Y = -7.4201 Z = 0.0000",
+      "Length: 10.0000",
+      "Width: 20.0000",
+      "Height: 5.0000",
+      "Rotation: 22",
+    ]
+    expect(rows.slice(0, p419.length)).toEqual(p419)
+    expect(rows.filter((row) => row.startsWith("Solid type"))).toEqual([
+      ...p419.filter((row) => row.startsWith("Solid type")),
+      "Solid type = Pyramid",
+      "Solid type = Cone",
+      "Solid type = Cylinder",
+    ])
+  })
+
+  it("is copied with its primitive into another drawing (COPYBASE, PASTECLIP)", async () => {
+    // The clipboard's contract is the Clipboard review's; this holds a solid to it.
+    const clipboard = new MemoryClipboard()
+    const source = createHarness({ clipboard })
+    answer(source, "TORUS", "0,0,0", "10", "2", "COPYBASE", "0,0,0", "L", "")
+    const target = createHarness({ clipboard })
+    await target.runtime.pasteFromClipboard()
+    answer(target, "50,0")
+    const [torus] = solids(source)
+    const [pasted] = solids(target)
+    expect(pasted.primitive).toEqual({
+      ...torus.primitive,
+      position: { x: 50, y: 0, z: 0 },
+    })
+    expect(brepVolume(pasted.brep)).toBeCloseTo(brepVolume(torus.brep), 9)
   })
 
   it("takes ISOLINES 0 to 2047, refusing FOO, -1 and 2048 (solid/v01)", () => {
