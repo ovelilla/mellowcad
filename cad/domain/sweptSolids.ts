@@ -1,5 +1,5 @@
 import { Vec2 } from "../geometry/Vec2"
-import { Vec3, add3, dot3, scale3, sub3 } from "../geometry/Vec3"
+import { Vec3, add3, dot3, normalize3, scale3, sub3 } from "../geometry/Vec3"
 import { planarMoments } from "../geometry/massProperties"
 import {
   bsplineDomain,
@@ -55,6 +55,18 @@ export function sweepProfile(
 }
 
 /**
+ * The profiles a sweep makes one solid of each: a region's faces one by one
+ * (sweeps/p306, p332: a region UNION made of two rectangles extrudes and
+ * revolves into two solids, the face of the rectangle drawn second first,
+ * which is the first face UNION leaves here; any other order **unverified**),
+ * any other profile whole.
+ */
+export function sweptFaces(profile: PlanarProfile): PlanarProfile[] {
+  if (profile.faces.length <= 1) return [profile]
+  return profile.faces.map((face) => ({ ...profile, faces: [face] }))
+}
+
+/**
  * Where EXTRUDE measures a height given by a point from, and LASTPOINT as its
  * height prompt opens: the traced BasePoint of AutoCAD's prompt, fitted to
  * 1e-15 over varied profiles (sweeps/p101–p107, extrude/x04, x09). A
@@ -62,17 +74,20 @@ export function sweepProfile(
  * its start, k = 0…19, the start counted twice (so a rectangle drawn from
  * the other corner has another); a spline's, a circle's or an ellipse's the
  * mean of 19 points at parameters k/19 of its range, k = 0…18; a region's
- * its area's centroid. A 3D polyline takes the polyline's rule
- * (**unverified**: not probed), as does a spline-fit polyline, measured
- * along its curve (**unverified**). Null for what no sweep takes.
+ * its first face's area centroid, the face swept first ({@link sweptFaces};
+ * p306: 25,5 of two squares, where the region's is 15,5). A 3D polyline
+ * takes the polyline's rule (**unverified**: not probed), as does a
+ * spline-fit polyline, measured along its curve (**unverified**). Null for
+ * what no sweep takes.
  */
 export function profileBase(entity: Entity): Vec3 | null {
   if (entity.type === "region") {
     const axes = arbitraryAxis(entityNormal(entity))
-    const first = entity.faces[0]?.loops[0]?.[0]
+    const face = entity.faces[0]
+    const first = face?.loops[0]?.[0]
     if (!axes || !first) return null
     const about = curveStart(first)
-    const m = planarMoments(entity.faces, about)
+    const m = planarMoments([face], about)
     if (m.area === 0) return null
     return axesToWorld(axes, {
       x: about.x + m.u / m.area,
@@ -146,7 +161,9 @@ function pointsByParameter(curves: readonly PlanarCurve[], n: number): Vec2[] {
  * profile's perimeter centroid, each curve's centroid weighed by its length,
  * projected on the axis through `origin` along the unit `direction`. p151's L
  * is 375/70 up the axis, where its area's centroid and EXTRUDE's base are
- * not. A region weighs every loop of its faces (**unverified**: not probed).
+ * not. A region weighs every loop of its first face, the one swept first, as
+ * EXTRUDE's base does (**unverified**: p332's two faces lie level, so either
+ * rule gives its 0,5,0).
  */
 export function revolveBase(
   profile: PlanarProfile,
@@ -156,7 +173,7 @@ export function revolveBase(
   let length = 0
   let x = 0
   let y = 0
-  for (const face of profile.faces) {
+  for (const face of profile.faces.slice(0, 1)) {
     for (const loop of face.loops) {
       for (const curve of loop) {
         const l = curveLength(curve)
@@ -176,7 +193,7 @@ export function revolveBase(
   return add3(origin, scale3(direction, along))
 }
 
-/** The solid a sweep made, keeping what made it. */
+/** The solid a sweep made, keeping what made it: a revolution's axis made unit here only (p327). */
 export function createSweptSolid(
   brep: Brep,
   sweep: SolidSweep,
@@ -190,31 +207,31 @@ export function createSweptSolid(
     brep,
     sweep:
       sweep.kind === "revolve"
-        ? { ...sweep, axis: unsigned0(sweep.axis) }
+        ? { ...sweep, axis: unsigned0(normalize3(sweep.axis) ?? sweep.axis) }
         : sweep,
   }
 }
 
 /**
- * The sweep through a similarity: lengths scale, a revolution's axis turns
- * with the solid and, mirrored, turns the other way round it — its angle
- * kept, as the solid's sense is (**unverified**: no MIRROR probe of LIST's).
+ * The sweep through a similarity: lengths scale, and a revolution's axis is
+ * carried as the vector it is — turned, reflected and scaled with the solid,
+ * never made unit again (sweeps/p311: ROTATE 30 gives -0.5, 0.866, MIRROR
+ * about y = 40 then -0.5, -0.866, SCALE 2 -1, -1.7321; p333: kept across
+ * x = 0, turned to X across y = x, SCALE 0.5 makes it 0.5 long). Its angles
+ * are kept, as LIST shows them.
  */
 export function sweepMapped(
   sweep: SolidSweep,
   direction: (d: Vec3) => Vec3,
-  scale: number,
-  reflects: boolean
+  scale: number
 ): SolidSweep {
   switch (sweep.kind) {
     case "extrusion":
       return { ...sweep, height: sweep.height * scale }
-    case "revolve": {
-      const axis = direction(sweep.axis)
+    case "revolve":
       return {
         ...sweep,
-        axis: unsigned0(reflects ? scale3(axis, -1) : axis),
+        axis: unsigned0(scale3(direction(sweep.axis), scale)),
       }
-    }
   }
 }

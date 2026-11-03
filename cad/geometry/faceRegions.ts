@@ -14,7 +14,7 @@ import {
   sweptCurveDerivative,
   sweptCurvePoint,
 } from "./faceDomains"
-import type { Brep, BrepFace, FaceDomain, SweptCurve } from "./solids"
+import type { Brep, BrepFace, BrepLoop, FaceDomain, SweptCurve } from "./solids"
 
 /**
  * A curved face as a region of its surface's parameters `(u, v)`
@@ -589,11 +589,19 @@ export function faceRegion(brep: Brep, face: BrepFace): FaceRegion | null {
       ? -1
       : 1
   const periods = surfacePeriods(s)
-  const loops = mapLoops(s, brep, face, domain, sense, periods)
+  const closedBothWays = periods.v !== null && periods.u !== null
+  const loops = mapLoops(
+    s,
+    brep,
+    closedBothWays ? withoutSeams(face) : face,
+    domain,
+    sense,
+    periods
+  )
   const lo = Math.min(domain.v[0], domain.v[1])
   const hi = Math.max(domain.v[0], domain.v[1])
   let region: FaceRegion
-  if (periods.v !== null && periods.u !== null) {
+  if (closedBothWays) {
     region = cutRegion(s, domain, sense, periods, loops)
   } else {
     const poles = facePoles(s, domain, periods)
@@ -610,6 +618,39 @@ export function faceRegion(brep: Brep, face: BrepFace): FaceRegion | null {
   }
   regions.set(face, { brep, region })
   return region
+}
+
+/**
+ * The face with each edge it runs both ways left out, its loops split where
+ * one was: a revolution's seam turned whole (revolve/r04, sweeps/p308). On a
+ * surface closed both ways its two runs lie a period apart and bound
+ * nothing, but read where the periods wrap they could cancel the face or
+ * count it whole; what is left (a ring the seam's end traces, run each way)
+ * is what the face had without its seam.
+ */
+function withoutSeams(face: BrepFace): BrepFace {
+  const loops: BrepLoop[] = []
+  for (const loop of face.loops) {
+    const twice = (edge: number) =>
+      loop.some((c) => c.edge === edge && !c.reversed) &&
+      loop.some((c) => c.edge === edge && c.reversed)
+    if (!loop.some((c) => twice(c.edge))) {
+      loops.push(loop)
+      continue
+    }
+    // From just after a seam, so no run is split across the loop's start.
+    const at = loop.findIndex((c) => twice(c.edge))
+    let run: BrepLoop[number][] = []
+    for (let k = 1; k <= loop.length; k++) {
+      const c = loop[(at + k) % loop.length]
+      if (twice(c.edge)) {
+        if (run.length > 0) loops.push(run)
+        run = []
+      } else run.push(c)
+    }
+    if (run.length > 0) loops.push(run)
+  }
+  return { ...face, loops }
 }
 
 /**

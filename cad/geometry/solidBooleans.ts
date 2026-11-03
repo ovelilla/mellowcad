@@ -488,14 +488,18 @@ export function brepBoolean(op: SolidOperation, a: Brep, b: Brep): Brep | null {
         }
         for (const [s0, s1] of stretches) {
           const spline = curve.kind === "spline"
-          // A closed spline cut across its seam is two stretches of it.
-          const parts: [number, number][] =
+          // A closed spline cut across its seam is two stretches of it; cut
+          // on its seam (a revolution's seam edge crossing it there), one.
+          const split: [number, number][] =
             spline && closed && s1 > trace.t1
               ? [
                   [s0, trace.t1],
                   [trace.t0, s1 - (trace.t1 - trace.t0)],
                 ]
               : [[s0, s1]]
+          const parts = split.filter(
+            ([p0, p1]) => p1 - p0 > 1e-12 * (trace.t1 - trace.t0)
+          )
           for (const [p0, p1] of parts) {
             const mid = trace.point((p0 + p1) / 2)
             if (!onBoth(f.surface, g.surface, mid, tolerance * 10)) continue

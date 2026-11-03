@@ -2769,6 +2769,7 @@ declare const source: {
       "listRegionArea": string
       "listRegionPerimeter": string
       "listRegionBounds": string
+      "listSolidBounds": string
       "sweepDensity": string
       "sweepRefused": string
       "sweepRefusedType": string

@@ -968,7 +968,9 @@ class Report {
     )
     if (!box) return
     const left = (value: number) => this.length(value).padEnd(9)
-    this.say("listRegionBounds", {
+    // A solid's words of its own in es and pt-BR, a region's are other
+    // (sweeps/p329, p311; extrude/x01); English one.
+    this.say("listSolidBounds", {
       minX: left(box.min.x),
       minY: left(box.min.y),
       minZ: left(box.min.z),

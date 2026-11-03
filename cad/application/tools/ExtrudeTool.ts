@@ -7,6 +7,7 @@ import {
   createSweptSolid,
   profileBase,
   sweepProfile,
+  sweptFaces,
 } from "../../domain/sweptSolids"
 import { normalizeDegrees } from "../../geometry/primitives"
 import {
@@ -508,7 +509,8 @@ export class ExtrudeTool implements Tool {
   ): Entity[] {
     const made: Entity[] = []
     const taper = (this.taper * Math.PI) / 180
-    for (const { profile } of this.profiles) {
+    // A region's faces each make a solid (sweeps/p306).
+    for (const profile of this.profiles.flatMap((p) => sweptFaces(p.profile))) {
       const along = offset ?? scale3(profile.axes.z, height ?? 0)
       const brep = extrusionBrep(profile, along, offset ? 0 : taper)
       if (!brep) continue

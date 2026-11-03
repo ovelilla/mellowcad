@@ -828,12 +828,55 @@
         "Length": "Length",
         "2Point": "2Point"
       },
-      "WEDGE": { "Center": "Center", "Cube": "Cube", "Length": "Length", "2Point": "2Point" },
-      "PYRAMID": { "Edge": "Edge", "Sides": "Sides", "Inscribed": "Inscribed", "Circumscribed": "Circumscribed", "2Point": "2Point", "Axis": "Axis", "Top": "Top" },
-      "CYLINDER": { "3P": "3P", "2P": "2P", "Ttr": "Ttr", "Elliptical": "Elliptical", "Diameter": "Diameter", "Center": "Center", "2Point": "2Point", "Axis": "Axis" },
-      "CONE": { "3P": "3P", "2P": "2P", "Ttr": "Ttr", "Elliptical": "Elliptical", "Diameter": "Diameter", "Center": "Center", "2Point": "2Point", "Axis": "Axis", "Top": "Top" },
-      "SPHERE": { "3P": "3P", "2P": "2P", "Ttr": "Ttr", "Diameter": "Diameter" },
-      "TORUS": { "3P": "3P", "2P": "2P", "Ttr": "Ttr", "Diameter": "Diameter", "2Point": "2Point" },
+      "WEDGE": {
+        "Center": "Center",
+        "Cube": "Cube",
+        "Length": "Length",
+        "2Point": "2Point"
+      },
+      "PYRAMID": {
+        "Edge": "Edge",
+        "Sides": "Sides",
+        "Inscribed": "Inscribed",
+        "Circumscribed": "Circumscribed",
+        "2Point": "2Point",
+        "Axis": "Axis",
+        "Top": "Top"
+      },
+      "CYLINDER": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Elliptical": "Elliptical",
+        "Diameter": "Diameter",
+        "Center": "Center",
+        "2Point": "2Point",
+        "Axis": "Axis"
+      },
+      "CONE": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Elliptical": "Elliptical",
+        "Diameter": "Diameter",
+        "Center": "Center",
+        "2Point": "2Point",
+        "Axis": "Axis",
+        "Top": "Top"
+      },
+      "SPHERE": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Diameter": "Diameter"
+      },
+      "TORUS": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Diameter": "Diameter",
+        "2Point": "2Point"
+      },
       "MASSPROP": { "Yes": "Yes", "No": "No" },
       "RECTANG": {
         "Chamfer": "Chamfer",
@@ -1224,14 +1267,100 @@
         "BYLayer": "BYLayer"
       },
       "LWEIGHT": { "?": "?", "BYLAYER": "BYLayer" },
-      "EXTRUDE": {"MOde": "MOde", "SOlid": "SOlid", "SUrface": "SUrface", "Direction": "Direction", "Path": "Path", "Taper": "Taper", "Expression": "Expression", "Yes": "Yes", "No": "No"},
-      "REVOLVE": {"MOde": "MOde", "SOlid": "SOlid", "SUrface": "SUrface", "Object": "Object", "X": "X", "Y": "Y", "Z": "Z", "STart": "STart", "Reverse": "Reverse", "EXpression": "EXpression", "Yes": "Yes", "No": "No"},
-      "PRESSPULL": {"Multiple": "Multiple"},
-      "SLICE": {"Object": "Object", "Surface": "Surface", "Zaxis": "Zaxis", "View": "View", "XY": "XY", "YZ": "YZ", "ZX": "ZX", "3points": "3points", "Both": "Both"},
-      "SECTION": {"Object": "Object", "Zaxis": "Zaxis", "View": "View", "XY": "XY", "YZ": "YZ", "ZX": "ZX", "3points": "3points"},
-      "FILLETEDGE": {"Chain": "Chain", "Loop": "Loop", "Radius": "Radius", "Edge": "Edge", "Expression": "Expression", "Accept": "Accept", "Next": "Next", "eXit": "eXit"},
-      "CHAMFEREDGE": {"Loop": "Loop", "Distance": "Distance", "Edge": "Edge", "Expression": "Expression", "Accept": "Accept", "Next": "Next"},
-      "SOLIDEDIT": {"Face": "Face", "Edge": "Edge", "Body": "Body", "Undo": "Undo", "eXit": "eXit", "Extrude": "Extrude", "Move": "Move", "Rotate": "Rotate", "Offset": "Offset", "Taper": "Taper", "Delete": "Delete", "Copy": "Copy", "coLor": "coLor", "mAterial": "mAterial", "Remove": "Remove", "Add": "Add", "ALL": "ALL", "Crossing": "Crossing", "Fence": "Fence", "CPolygon": "CPolygon", "Path": "Path", "Axis": "Axis", "View": "View", "Xaxis": "Xaxis", "Yaxis": "Yaxis", "Zaxis": "Zaxis", "2points": "2points", "Reference": "Reference"}
+      "EXTRUDE": {
+        "MOde": "MOde",
+        "SOlid": "SOlid",
+        "SUrface": "SUrface",
+        "Direction": "Direction",
+        "Path": "Path",
+        "Taper": "Taper",
+        "Expression": "Expression",
+        "Yes": "Yes",
+        "No": "No"
+      },
+      "REVOLVE": {
+        "MOde": "MOde",
+        "SOlid": "SOlid",
+        "SUrface": "SUrface",
+        "Object": "Object",
+        "X": "X",
+        "Y": "Y",
+        "Z": "Z",
+        "STart": "STart",
+        "Reverse": "Reverse",
+        "EXpression": "EXpression",
+        "Yes": "Yes",
+        "No": "No"
+      },
+      "PRESSPULL": { "Multiple": "Multiple" },
+      "SLICE": {
+        "Object": "Object",
+        "Surface": "Surface",
+        "Zaxis": "Zaxis",
+        "View": "View",
+        "XY": "XY",
+        "YZ": "YZ",
+        "ZX": "ZX",
+        "3points": "3points",
+        "Both": "Both"
+      },
+      "SECTION": {
+        "Object": "Object",
+        "Zaxis": "Zaxis",
+        "View": "View",
+        "XY": "XY",
+        "YZ": "YZ",
+        "ZX": "ZX",
+        "3points": "3points"
+      },
+      "FILLETEDGE": {
+        "Chain": "Chain",
+        "Loop": "Loop",
+        "Radius": "Radius",
+        "Edge": "Edge",
+        "Expression": "Expression",
+        "Accept": "Accept",
+        "Next": "Next",
+        "eXit": "eXit"
+      },
+      "CHAMFEREDGE": {
+        "Loop": "Loop",
+        "Distance": "Distance",
+        "Edge": "Edge",
+        "Expression": "Expression",
+        "Accept": "Accept",
+        "Next": "Next"
+      },
+      "SOLIDEDIT": {
+        "Face": "Face",
+        "Edge": "Edge",
+        "Body": "Body",
+        "Undo": "Undo",
+        "eXit": "eXit",
+        "Extrude": "Extrude",
+        "Move": "Move",
+        "Rotate": "Rotate",
+        "Offset": "Offset",
+        "Taper": "Taper",
+        "Delete": "Delete",
+        "Copy": "Copy",
+        "coLor": "coLor",
+        "mAterial": "mAterial",
+        "Remove": "Remove",
+        "Add": "Add",
+        "ALL": "ALL",
+        "Crossing": "Crossing",
+        "Fence": "Fence",
+        "CPolygon": "CPolygon",
+        "Path": "Path",
+        "Axis": "Axis",
+        "View": "View",
+        "Xaxis": "Xaxis",
+        "Yaxis": "Yaxis",
+        "Zaxis": "Zaxis",
+        "2points": "2points",
+        "Reference": "Reference"
+      }
     },
     "promptKeywords": {
       "selectObjects": {
@@ -2496,6 +2625,7 @@
       "listRegionArea": "                             Area: {area}",
       "listRegionPerimeter": "                        Perimeter: {perimeter}",
       "listRegionBounds": "   Bounding Box: Lower Bound X = {minX}, Y = {minY}, Z = {minZ}\n                 Upper Bound X = {maxX}, Y = {maxY}, Z = {maxZ}",
+      "listSolidBounds": "   Bounding Box: Lower Bound X = {minX}, Y = {minY}, Z = {minZ}\n                 Upper Bound X = {maxX}, Y = {maxY}, Z = {maxZ}",
       "sweepDensity": "Current wire frame density:  ISOLINES={isolines}, Closed profiles creation mode = Solid",
       "sweepRefused": "Cannot sweep or extrude an object of this type.\n{count, plural, one {# object removed from selection set.} other {# objects removed from selection set.}}",
       "sweepRefusedType": "Cannot sweep or extrude an object of this type.",
@@ -2676,14 +2806,14 @@
       "COPY": { "Displacement": "Displacement" },
       "UCSICON": { "Noorigin": "Noorigin" },
       "OFFSET": { "Through": "Through" },
-      "EXTRUDE": {"Taper": "Taper angle"},
-      "REVOLVE": {"STart": "STart angle"},
-      "SLICE": {"Object": "planar Object", "Both": "keep Both sides"},
-      "SOLIDEDIT": {"Axis": "Axis by object"}
+      "EXTRUDE": { "Taper": "Taper angle" },
+      "REVOLVE": { "STart": "STart angle" },
+      "SLICE": { "Object": "planar Object", "Both": "keep Both sides" },
+      "SOLIDEDIT": { "Axis": "Axis by object" }
     },
     "promptKeywordLabels": {
       "ucsNewUcs": { "ZAxis": "ZAxis" },
-      "filletEdgeLoopOr": {"Edge": "Edge"}
+      "filletEdgeLoopOr": { "Edge": "Edge" }
     },
     "listing": {
       "dimVariable": "{name}{value}{description}",

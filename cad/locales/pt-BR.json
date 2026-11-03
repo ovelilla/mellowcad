@@ -822,12 +822,55 @@
         "Length": "COmprimento",
         "2Point": "2Pontos"
       },
-      "WEDGE": { "Center": "Centro", "Cube": "CUbo", "Length": "COmprimento", "2Point": "2Pontos" },
-      "PYRAMID": { "Edge": "Aresta", "Sides": "Lados", "Inscribed": "Inscrito", "Circumscribed": "Circunscrito", "2Point": "2Pontos", "Axis": "Eixo", "Top": "Raio" },
-      "CYLINDER": { "3P": "3P", "2P": "2P", "Ttr": "Ttr", "Elliptical": "Elíptico", "Diameter": "Diâmetro", "Center": "Centro", "2Point": "2Pontos", "Axis": "Eixo" },
-      "CONE": { "3P": "3P", "2P": "2P", "Ttr": "Ttr", "Elliptical": "Elíptico", "Diameter": "Diâmetro", "Center": "Centro", "2Point": "2Pontos", "Axis": "Eixo", "Top": "Raio" },
-      "SPHERE": { "3P": "3P", "2P": "2P", "Ttr": "Ttr", "Diameter": "Diâmetro" },
-      "TORUS": { "3P": "3P", "2P": "2P", "Ttr": "Ttr", "Diameter": "Diâmetro", "2Point": "2Pontos" },
+      "WEDGE": {
+        "Center": "Centro",
+        "Cube": "CUbo",
+        "Length": "COmprimento",
+        "2Point": "2Pontos"
+      },
+      "PYRAMID": {
+        "Edge": "Aresta",
+        "Sides": "Lados",
+        "Inscribed": "Inscrito",
+        "Circumscribed": "Circunscrito",
+        "2Point": "2Pontos",
+        "Axis": "Eixo",
+        "Top": "Raio"
+      },
+      "CYLINDER": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Elliptical": "Elíptico",
+        "Diameter": "Diâmetro",
+        "Center": "Centro",
+        "2Point": "2Pontos",
+        "Axis": "Eixo"
+      },
+      "CONE": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Elliptical": "Elíptico",
+        "Diameter": "Diâmetro",
+        "Center": "Centro",
+        "2Point": "2Pontos",
+        "Axis": "Eixo",
+        "Top": "Raio"
+      },
+      "SPHERE": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Diameter": "Diâmetro"
+      },
+      "TORUS": {
+        "3P": "3P",
+        "2P": "2P",
+        "Ttr": "Ttr",
+        "Diameter": "Diâmetro",
+        "2Point": "2Pontos"
+      },
       "MASSPROP": { "Yes": "Sim", "No": "Não" },
       "RECTANG": {
         "Chamfer": "CHanfro",
@@ -1288,14 +1331,100 @@
         "?": "?",
         "BYLAYER": "PORCamada"
       },
-      "EXTRUDE": {"MOde": "MOdo", "SOlid": "SÓlido", "SUrface": "SUperfície", "Direction": "Direção", "Path": "Caminho", "Taper": "COnicidade", "Expression": "Expressão", "Yes": "Sim", "No": "Não"},
-      "REVOLVE": {"MOde": "MOdo", "SOlid": "SÓlido", "SUrface": "SUperfície", "Object": "Objeto", "X": "X", "Y": "Y", "Z": "Z", "STart": "INicial", "Reverse": "Reverter", "EXpression": "EXpressão", "Yes": "Sim", "No": "Não"},
-      "PRESSPULL": {"Multiple": "Múltiplos"},
-      "SLICE": {"Object": "Objeto", "Surface": "Superfície", "Zaxis": "eixoZ", "View": "Vista", "XY": "XY", "YZ": "YZ", "ZX": "ZX", "3points": "3pontos", "Both": "Ambos"},
-      "SECTION": {"Object": "Objeto", "Zaxis": "eixoZ", "View": "Vista", "XY": "XY", "YZ": "YZ", "ZX": "ZX", "3points": "3pontos"},
-      "FILLETEDGE": {"Chain": "Cadeia", "Loop": "Loop", "Radius": "Raio", "Edge": "Aresta", "Expression": "Expressão", "Accept": "Aceitar", "Next": "Próximo", "eXit": "saIr"},
-      "CHAMFEREDGE": {"Loop": "Loop", "Distance": "Distância", "Edge": "Aresta", "Expression": "Expressão", "Accept": "Aceitar", "Next": "Próximo"},
-      "SOLIDEDIT": {"Face": "Face", "Edge": "Aresta", "Body": "Corpo", "Undo": "Desfazer", "eXit": "Sair", "Extrude": "Extrusão", "Move": "Mover", "Rotate": "Rotacionar", "Offset": "desLocamento", "Taper": "Afilar", "Delete": "eXcluir", "Copy": "COpiar", "coLor": "Cor", "mAterial": "maTerial", "Remove": "Remover", "Add": "Adicionar", "ALL": "Todas", "Crossing": "Intersecção", "Fence": "Cerca", "CPolygon": "PIntersecção", "Path": "Caminho", "Axis": "Eixo", "View": "Vista", "Xaxis": "eixoX", "Yaxis": "eixoY", "Zaxis": "eixoZ", "2points": "2pontos", "Reference": "Referência"}
+      "EXTRUDE": {
+        "MOde": "MOdo",
+        "SOlid": "SÓlido",
+        "SUrface": "SUperfície",
+        "Direction": "Direção",
+        "Path": "Caminho",
+        "Taper": "COnicidade",
+        "Expression": "Expressão",
+        "Yes": "Sim",
+        "No": "Não"
+      },
+      "REVOLVE": {
+        "MOde": "MOdo",
+        "SOlid": "SÓlido",
+        "SUrface": "SUperfície",
+        "Object": "Objeto",
+        "X": "X",
+        "Y": "Y",
+        "Z": "Z",
+        "STart": "INicial",
+        "Reverse": "Reverter",
+        "EXpression": "EXpressão",
+        "Yes": "Sim",
+        "No": "Não"
+      },
+      "PRESSPULL": { "Multiple": "Múltiplos" },
+      "SLICE": {
+        "Object": "Objeto",
+        "Surface": "Superfície",
+        "Zaxis": "eixoZ",
+        "View": "Vista",
+        "XY": "XY",
+        "YZ": "YZ",
+        "ZX": "ZX",
+        "3points": "3pontos",
+        "Both": "Ambos"
+      },
+      "SECTION": {
+        "Object": "Objeto",
+        "Zaxis": "eixoZ",
+        "View": "Vista",
+        "XY": "XY",
+        "YZ": "YZ",
+        "ZX": "ZX",
+        "3points": "3pontos"
+      },
+      "FILLETEDGE": {
+        "Chain": "Cadeia",
+        "Loop": "Loop",
+        "Radius": "Raio",
+        "Edge": "Aresta",
+        "Expression": "Expressão",
+        "Accept": "Aceitar",
+        "Next": "Próximo",
+        "eXit": "saIr"
+      },
+      "CHAMFEREDGE": {
+        "Loop": "Loop",
+        "Distance": "Distância",
+        "Edge": "Aresta",
+        "Expression": "Expressão",
+        "Accept": "Aceitar",
+        "Next": "Próximo"
+      },
+      "SOLIDEDIT": {
+        "Face": "Face",
+        "Edge": "Aresta",
+        "Body": "Corpo",
+        "Undo": "Desfazer",
+        "eXit": "Sair",
+        "Extrude": "Extrusão",
+        "Move": "Mover",
+        "Rotate": "Rotacionar",
+        "Offset": "desLocamento",
+        "Taper": "Afilar",
+        "Delete": "eXcluir",
+        "Copy": "COpiar",
+        "coLor": "Cor",
+        "mAterial": "maTerial",
+        "Remove": "Remover",
+        "Add": "Adicionar",
+        "ALL": "Todas",
+        "Crossing": "Intersecção",
+        "Fence": "Cerca",
+        "CPolygon": "PIntersecção",
+        "Path": "Caminho",
+        "Axis": "Eixo",
+        "View": "Vista",
+        "Xaxis": "eixoX",
+        "Yaxis": "eixoY",
+        "Zaxis": "eixoZ",
+        "2points": "2pontos",
+        "Reference": "Referência"
+      }
     },
     "promptKeywords": {
       "selectObjects": {
@@ -2600,6 +2729,7 @@
       "listRegionArea": "                             Área: {area}",
       "listRegionPerimeter": "                        Perímetro: {perimeter}",
       "listRegionBounds": "Caixa delimitadora: Limite inferior X = {minX}, Y = {minY}, Z = {minZ}\n                 Limite superior X = {maxX}, Y = {maxY}, Z = {maxZ}",
+      "listSolidBounds": "Caixa delimitadora. Limite inferior. X = {minX}, Y = {minY}, Z = {minZ}\n                 Limite superior. X = {maxX}, Y = {maxY}, Z = {maxZ}",
       "sweepDensity": "Densidade da estrutura de arame atual:  ISOLINES={isolines}, Modo de criação de perfis fechados = Sólido",
       "sweepRefused": "Não é possível efetuar a varredura de um objeto deste tipo.\n{count, plural, one {# objeto removido do conjunto de seleção.} other {# objetos removidos do conjunto de seleção.}}",
       "sweepRefusedType": "Não é possível efetuar a varredura de um objeto deste tipo.",
@@ -2827,14 +2957,14 @@
       "OFFSET": {
         "Through": "Através"
       },
-      "EXTRUDE": {"Taper": "ângulo de COnicidade"},
-      "REVOLVE": {"STart": "ângulo INicial"},
-      "SLICE": {"Object": "Objeto plano", "Both": "manter Ambos os lados"},
-      "SOLIDEDIT": {"Axis": "Eixo por objeto"}
+      "EXTRUDE": { "Taper": "ângulo de COnicidade" },
+      "REVOLVE": { "STart": "ângulo INicial" },
+      "SLICE": { "Object": "Objeto plano", "Both": "manter Ambos os lados" },
+      "SOLIDEDIT": { "Axis": "Eixo por objeto" }
     },
     "promptKeywordLabels": {
       "ucsNewUcs": { "ZAxis": "EIxo z" },
-      "filletEdgeLoopOr": {"Edge": "arEsta"}
+      "filletEdgeLoopOr": { "Edge": "arEsta" }
     },
     "listing": {
       "dimVariable": "{name}{value}{description}",

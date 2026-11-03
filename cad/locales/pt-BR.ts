@@ -7025,6 +7025,32 @@ export const ptBR: EngineLocale = {
           "maxZ"
         ]
       ],
+      "listSolidBounds": [
+        "Caixa delimitadora. Limite inferior. X = ",
+        [
+          "minX"
+        ],
+        ", Y = ",
+        [
+          "minY"
+        ],
+        ", Z = ",
+        [
+          "minZ"
+        ],
+        "\n                 Limite superior. X = ",
+        [
+          "maxX"
+        ],
+        ", Y = ",
+        [
+          "maxY"
+        ],
+        ", Z = ",
+        [
+          "maxZ"
+        ]
+      ],
       "sweepDensity": [
         "Densidade da estrutura de arame atual:  ISOLINES=",
         [

@@ -5,6 +5,7 @@ import { boxBrep, brepIsClosed, brepVolume } from "../geometry/solids"
 import { brepSliced } from "../geometry/solidEdits"
 import { brepMoments, solidInertia } from "../geometry/massProperties"
 import type { Solid3dEntity } from "../domain/entities"
+import { regionArea } from "../domain/regions"
 import {
   parseDrawingFile,
   serializeDrawing,
@@ -2070,5 +2071,298 @@ describe("PRESSPULL's console cells (the Sweeps review)", () => {
     expect(written(cad, "")).toEqual(["Select object or bounded area:"])
     expect(cad.selectedIds()).toEqual([])
     expect(solids(cad)).toHaveLength(0)
+  })
+})
+
+describe("a region of several faces swept (the Sweeps review, SWO-02)", () => {
+  const unioned = (cad: CadHarness, x0: number) => {
+    answer(cad, "_RECTANG", `${x0},0`, `${x0 + 10},10`)
+    answer(cad, "_RECTANG", `${x0 + 20},0`, `${x0 + 30},10`)
+    answer(cad, "_REGION", "_ALL", "", "_UNION", "_ALL", "")
+    expect(cad.entities().map((e) => e.type)).toEqual(["region"])
+  }
+  const lowX = (s: Solid3dEntity) =>
+    Math.min(...s.brep.vertices.map((v) => v.x))
+
+  it("extrudes a solid of each face, the second rectangle's first, its height from that face (sweeps/p306)", () => {
+    const cad = console()
+    unioned(cad, 0)
+    answer(cad, "_EXTRUDE", "_L", "", "5")
+    expect(solids(cad).map((s) => brepVolume(s.brep))).toEqual([500, 500])
+    expect(solids(cad).map(lowX)).toEqual([20, 0])
+    // DELOBJ 3: the region erased, once.
+    expect(cad.entities().map((e) => e.type)).toEqual(["solid3d", "solid3d"])
+    // The height prompt's BasePoint, where a typed height leaves LASTPOINT:
+    // the first face's centroid, not the region's (15,5).
+    near(lastPoint(cad), [25, 5, 0])
+    // One step, after ID's.
+    answer(cad, "U", "U")
+    expect(cad.entities().map((e) => e.type)).toEqual(["region"])
+  })
+
+  it("revolves a solid of each face (sweeps/p332)", () => {
+    const cad = console()
+    unioned(cad, 10)
+    answer(cad, "_REVOLVE", "_L", "", "_Y", "90")
+    near(lastPoint(cad), [0, 5, 0])
+    expect(solids(cad)).toHaveLength(2)
+    expect(cad.entities()).toHaveLength(2)
+    for (const s of solids(cad)) expect(brepIsClosed(s.brep)).toBe(true)
+  })
+})
+
+describe("a swept solid's LIST in Spanish and Brazilian Portuguese (the Sweeps review, SWO-03)", () => {
+  const lines = (cad: CadHarness) =>
+    written(cad, "_LIST", "_L", "").flatMap((l) => l.split("\n"))
+  const run = (cad: CadHarness) => {
+    answer(cad, "_CIRCLE", "0,0", "5", "_EXTRUDE", "_L", "", "_T", "-30", "5")
+    const extrusion = lines(cad)
+    answer(cad, "_RECTANG", "100,0", "110,5")
+    answer(cad, "_REVOLVE", "_L", "", "_Y", "_ST", "30", "-90")
+    const revolution = lines(cad)
+    answer(cad, "_RECTANG", "300,0", "310,10", "_REGION", "_L", "")
+    return { extrusion, revolution, region: lines(cad) }
+  }
+  const composite = (locale: typeof es) => {
+    const cad = console(locale)
+    answer(
+      cad,
+      "_BOX",
+      "200,0,0",
+      "210,10",
+      "5",
+      "_BOX",
+      "205,5,0",
+      "215,15",
+      "5"
+    )
+    answer(cad, "_UNION", "_ALL", "")
+    return lines(cad)
+  }
+
+  it("words the box as a solid's, a composite's too, a region's its own (sweeps/p329 es-ES)", () => {
+    const { extrusion, revolution, region } = run(console(es))
+    expect(extrusion.slice(-7)).toEqual([
+      "         Historial = Ninguno",
+      " Mostrar historial = No",
+      "    Tipo de sólido = Extrusión",
+      "Altura de extrusión: 5.0000",
+      "Ángulo Inclinación: 330",
+      "Caja de contorno: Límite inferior X = -7.8868  , Y = -7.8868  , Z = 0.0000",
+      "                  Límite superior X = 7.8868   , Y = 7.8868   , Z = 5.0000",
+    ])
+    expect(revolution.slice(-6)).toEqual([
+      "    Tipo de sólido = Revolución",
+      "   Ángulo inicial: 30",
+      "Ángulo de revolución: -90",
+      "Vector de dirección: X = 0.0000    Y = 1.0000    Z = 0.0000",
+      "Caja de contorno: Límite inferior X = 50.0000  , Y = 0.0000   , Z = -55.0000",
+      "                  Límite superior X = 110.0000 , Y = 5.0000   , Z = 95.2628",
+    ])
+    expect(composite(es).slice(-2)).toEqual([
+      "Caja de contorno: Límite inferior X = 200.0000 , Y = 0.0000   , Z = 0.0000",
+      "                  Límite superior X = 215.0000 , Y = 15.0000  , Z = 5.0000",
+    ])
+    expect(region).toEqual(
+      expect.arrayContaining([
+        expect.stringMatching(/^Cuadro delimitador: Límite inferior X = 300/),
+      ])
+    )
+  })
+
+  it("words the box as a solid's, a composite's too, a region's its own (sweeps/p329 pt-BR, p311 pt-BR)", () => {
+    const { extrusion, revolution, region } = run(console(ptBR))
+    expect(extrusion.slice(-7)).toEqual([
+      "       Histórico = Nenhum",
+      "Mostrar histórico = Não",
+      "  Tipo de sólido = Extrusão",
+      "Altura de extrusão: 5.0000",
+      "Ângulo de conicidade: 330",
+      "Caixa delimitadora. Limite inferior. X = -7.8868  , Y = -7.8868  , Z = 0.0000",
+      "                 Limite superior. X = 7.8868   , Y = 7.8868   , Z = 5.0000",
+    ])
+    expect(revolution.slice(-6)).toEqual([
+      "  Tipo de sólido = Revolução",
+      "   Ângulo inicial: 30",
+      "Ângulo de revolução: -90",
+      " Vetor de direção: X = 0.0000    Y = 1.0000    Z = 0.0000",
+      "Caixa delimitadora. Limite inferior. X = 50.0000  , Y = 0.0000   , Z = -55.0000",
+      "                 Limite superior. X = 110.0000 , Y = 5.0000   , Z = 95.2628",
+    ])
+    expect(composite(ptBR).slice(-2)).toEqual([
+      "Caixa delimitadora. Limite inferior. X = 200.0000 , Y = 0.0000   , Z = 0.0000",
+      "                 Limite superior. X = 215.0000 , Y = 15.0000  , Z = 5.0000",
+    ])
+    expect(region).toEqual(
+      expect.arrayContaining([
+        expect.stringMatching(/^Caixa delimitadora: Limite inferior X = 300/),
+      ])
+    )
+  })
+})
+
+describe("a swept solid's history through the transforms (the Sweeps review, SWO-04)", () => {
+  it("an extrusion's: its type kept, its height scaled, a 330 taper kept (sweeps/p310)", () => {
+    const cad = console()
+    answer(cad, "_CIRCLE", "0,0", "5", "_EXTRUDE", "_L", "", "_T", "-30", "5")
+    answer(cad, "_MOVE", "_L", "", "0,0,0", "5,5,3")
+    expect(listed(cad).slice(1, 5)).toEqual([
+      " Extrusion height: 5.0000",
+      "      Taper angle: 330",
+      "   Bounding Box: Lower Bound X = -2.8868  , Y = -2.8868  , Z = 3.0000",
+      "                 Upper Bound X = 12.8868  , Y = 12.8868  , Z = 8.0000",
+    ])
+    answer(cad, "_ROTATE", "_L", "", "0,0", "30")
+    expect(listed(cad).slice(3, 5)).toEqual([
+      "   Bounding Box: Lower Bound X = -6.0566  , Y = -1.0566  , Z = 3.0000",
+      "                 Upper Bound X = 9.7169   , Y = 14.7169  , Z = 8.0000",
+    ])
+    answer(cad, "_SCALE", "_L", "", "0,0", "2")
+    answer(cad, "_MIRROR", "_L", "", "0,40", "10,40", "_N")
+    expect(listed(cad)).toEqual([
+      "      Solid type = Extrusion",
+      " Extrusion height: 10.0000",
+      "      Taper angle: 330",
+      "   Bounding Box: Lower Bound X = -12.1132 , Y = 50.5662  , Z = 6.0000",
+      "                 Upper Bound X = 19.4338  , Y = 82.1132  , Z = 16.0000",
+    ])
+  })
+
+  const turned = () => {
+    const cad = console()
+    answer(cad, "_RECTANG", "100,0", "110,5")
+    answer(cad, "_REVOLVE", "_L", "", "_Y", "_ST", "30", "90")
+    return cad
+  }
+
+  it("a revolution's Direction vector turned by ROTATE, reflected by MIRROR (sweeps/p311)", () => {
+    const cad = turned()
+    answer(cad, "_ROTATE", "_L", "", "0,0", "30")
+    expect(listed(cad)[3]).toBe(
+      " Direction vector: X = -0.5000   Y = 0.8660    Z = 0.0000"
+    )
+    answer(cad, "_MIRROR", "_L", "", "0,40", "10,40", "_N")
+    expect(listed(cad).slice(1, 6)).toEqual([
+      "      Start angle: 30",
+      "Angle of revolution: 90",
+      " Direction vector: X = -0.5000   Y = -0.8660   Z = 0.0000",
+      "   Bounding Box: Lower Bound X = -50.1314 , Y = 28.0385  , Z = -110.0000",
+      "                 Upper Bound X = 82.5000  , Y = 107.5000 , Z = -50.0000",
+    ])
+    answer(cad, "_SCALE", "_L", "", "0,0", "2")
+    expect(listed(cad)[3]).toBe(
+      " Direction vector: X = -1.0000   Y = -1.7321   Z = 0.0000"
+    )
+  })
+
+  it("kept along a mirror line, turned across a 45° one, as long as SCALE makes it (sweeps/p333)", () => {
+    const cad = turned()
+    answer(cad, "_MIRROR", "_L", "", "0,0", "0,10", "_Y")
+    expect(listed(cad).slice(3, 6)).toEqual([
+      " Direction vector: X = 0.0000    Y = 1.0000    Z = 0.0000",
+      "   Bounding Box: Lower Bound X = -95.2628 , Y = 0.0000   , Z = -110.0000",
+      "                 Upper Bound X = 55.0000  , Y = 5.0000   , Z = -50.0000",
+    ])
+    answer(cad, "_MIRROR", "_L", "", "0,0", "10,10", "_Y")
+    expect(listed(cad)[3]).toBe(
+      " Direction vector: X = 1.0000    Y = 0.0000    Z = 0.0000"
+    )
+    const scaled = turned()
+    answer(scaled, "_SCALE", "_L", "", "0,0", "0.5")
+    expect(listed(scaled)[3]).toBe(
+      " Direction vector: X = 0.0000    Y = 0.5000    Z = 0.0000"
+    )
+    answer(scaled, "_SCALE", "_L", "", "0,0", "4")
+    expect(listed(scaled)[3]).toBe(
+      " Direction vector: X = 0.0000    Y = 2.0000    Z = 0.0000"
+    )
+  })
+
+  it("saves and opens each history as LIST gives it (sweeps/p334, p324)", () => {
+    const cad = console()
+    answer(cad, "_CIRCLE", "0,0", "5", "_EXTRUDE", "_L", "", "_T", "-30", "5")
+    answer(
+      cad,
+      "_CIRCLE",
+      "0,50",
+      "3",
+      "_EXTRUDE",
+      "_L",
+      "",
+      "_D",
+      "0,0,0",
+      "3,0,4"
+    )
+    answer(cad, "_RECTANG", "100,0", "110,5")
+    answer(cad, "_REVOLVE", "_L", "", "_Y", "_R", "_ST", "30", "90")
+    answer(cad, "_SCALE", "_L", "", "0,0", "2")
+    answer(cad, "_CIRCLE", "200,0", "5", "_REVOLVE", "_L", "", "_Y", "")
+    answer(
+      cad,
+      "_ELLIPSE",
+      "_C",
+      "300,0",
+      "305,0",
+      "2",
+      "_REVOLVE",
+      "_L",
+      "",
+      "_Y",
+      ""
+    )
+    const all = (c: CadHarness) =>
+      written(c, "_LIST", "_ALL", "").flatMap((l) => l.split("\n"))
+    const before = all(cad)
+    // p334: the Reverse revolution lists Y = -1, here scaled twice.
+    expect(before).toContain(
+      " Direction vector: X = 0.0000    Y = -2.0000   Z = 0.0000"
+    )
+    const document = cad.runtime.document
+    const text = serializeDrawing(
+      snapshotOf(document.getEntities(), { settings: document.getSettings() })
+    )
+    expect(
+      parseDrawingFile(text).entities.filter((e) => e.type === "solid3d")
+    ).toEqual(solids(cad))
+    const other = console()
+    other.runtime.loadDrawing(text)
+    expect(all(other)).toEqual(before)
+  })
+})
+
+describe("EXPLODE of a planar sweep (the Sweeps review, SWO-07)", () => {
+  const pieces = (cad: CadHarness) =>
+    cad.entities().map((e) => {
+      if (e.type !== "region") return e.type
+      const n = e.normal ?? { x: 0, y: 0, z: 1 }
+      const r = (v: number) => Math.round(v * 1e4) / 1e4 + 0
+      return `${r(n.x)},${r(n.y)},${r(n.z)} ${r(regionArea(e))}`
+    })
+
+  it("a rectangle's: the sides from its last edge back, then the top and the bottom (sweeps/p316)", () => {
+    const cad = console()
+    answer(cad, "_RECTANG", "0,0", "10,20", "_EXTRUDE", "_L", "", "5")
+    answer(cad, "_EXPLODE", "_L", "")
+    expect(pieces(cad)).toEqual([
+      "-1,0,0 100",
+      "0,1,0 50",
+      "1,0,0 100",
+      "0,-1,0 50",
+      "0,0,1 200",
+      "0,0,-1 200",
+    ])
+  })
+
+  it("a tapered triangle's (sweeps/p319)", () => {
+    const cad = console()
+    answer(cad, "_PLINE", "0,0", "10,0", "10,10", "_C")
+    answer(cad, "_EXTRUDE", "_L", "", "_T", "10", "4", "_EXPLODE", "_L", "")
+    expect(pieces(cad)).toEqual([
+      "-0.6964,0.6964,0.1736 50.5251",
+      "0.9848,0,0.1736 35.7266",
+      "0,-0.9848,0.1736 35.7266",
+      "0,0,1 28.8187",
+      "0,0,-1 50",
+    ])
   })
 })

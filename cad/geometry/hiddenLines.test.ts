@@ -314,9 +314,15 @@ describe("hidden lines of swept solids", () => {
     const [side, back] = viewLines([ring, behind], { x: 0, y: -1, z: 0 })
     expect(total(side, true)).toBeGreaterThan(40)
     expect(back.every((l) => !l.visible)).toBe(true)
-    // From above, the circles at its widest and narrowest.
+    // From above, the circles at its widest and narrowest, and its seam
+    // (sweeps/p308, revolve/r04): the circle the profile's start traces, on
+    // the widest, and the upper half of the profile (Ramanujan's perimeter).
     const [top] = viewLines([ring], Z)
-    expect(total(top, true)).toBeCloseTo(2 * Math.PI * 13 + 2 * Math.PI * 7, 1)
+    const half = (Math.PI / 2) * (3 * 4.5 - Math.sqrt(10.5 * 7.5))
+    expect(total(top, true)).toBeCloseTo(
+      2 * 2 * Math.PI * 13 + 2 * Math.PI * 7 + half,
+      1
+    )
   })
 })
 

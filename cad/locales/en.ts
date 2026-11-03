@@ -6351,6 +6351,32 @@ export const en: EngineCatalog = {
           "maxZ"
         ]
       ],
+      "listSolidBounds": [
+        "   Bounding Box: Lower Bound X = ",
+        [
+          "minX"
+        ],
+        ", Y = ",
+        [
+          "minY"
+        ],
+        ", Z = ",
+        [
+          "minZ"
+        ],
+        "\n                 Upper Bound X = ",
+        [
+          "maxX"
+        ],
+        ", Y = ",
+        [
+          "maxY"
+        ],
+        ", Z = ",
+        [
+          "maxZ"
+        ]
+      ],
       "sweepDensity": [
         "Current wire frame density:  ISOLINES=",
         [

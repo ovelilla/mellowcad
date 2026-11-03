@@ -7,6 +7,7 @@ import { domainSamples } from "./faceDomains"
 
 import { brepMoments, solidInertia } from "./massProperties"
 import {
+  Brep,
   brepArea,
   brepBox,
   brepIsClosed,
@@ -391,6 +392,258 @@ describe("revolutionBrep", () => {
       expect(brepIsClosed(brep)).toBe(true)
       expect(brepVolume(brep)).toBeCloseTo(angle * centroid * area, 9)
     }
+  })
+})
+
+/** The faces and edges as MPDUMP counts them, a seam's two coedges once (p304). */
+function kinds(b: Brep) {
+  const count = (xs: string[]) =>
+    xs
+      .sort()
+      .reduce<Record<string, number>>(
+        (a, x) => ((a[x] = (a[x] ?? 0) + 1), a),
+        {}
+      )
+  return {
+    faces: count(b.faces.map((f) => f.surface.kind)),
+    edges: count(b.edges.map((e) => e.curve.kind)),
+    vertices: b.vertices.length,
+  }
+}
+
+/** V − E + F − (L − F): 2(1 − genus) for one closed shell. */
+const euler = (b: Brep) =>
+  b.vertices.length -
+  b.edges.length +
+  2 * b.faces.length -
+  b.faces.reduce((n, f) => n + f.loops.length, 0)
+
+const arcOf = (
+  cx: number,
+  cy: number,
+  radius: number,
+  startAngle: number,
+  sweep: number
+): PlanarCurve => ({
+  kind: "arc",
+  center: { x: cx, y: cy },
+  radius,
+  startAngle,
+  sweep,
+})
+
+describe("a swept profile's runs merged (the Sweeps review, SWO-05)", () => {
+  it("extrudes a vertex mid-side and two arcs of one circle as one face each (sweeps/p330)", () => {
+    const brep = extrusionBrep(
+      flat([
+        line(0, 0, 10, 0),
+        line(10, 0, 20, 0),
+        arcOf(20, 10, 10, -Math.PI / 2, Math.PI / 2),
+        arcOf(20, 10, 10, 0, Math.PI / 2),
+        line(20, 20, 0, 20),
+        line(0, 20, 0, 0),
+      ]),
+      { x: 0, y: 0, z: 5 }
+    )!
+    expect(brepIsClosed(brep)).toBe(true)
+    expect(kinds(brep)).toEqual({
+      faces: { cylinder: 1, plane: 5 },
+      edges: { circle: 2, line: 10 },
+      vertices: 8,
+    })
+    expect(brepVolume(brep)).toBeCloseTo(2785.398163, 6)
+  })
+
+  it("extrudes an ellipse in two halves as a whole one, the merge across the loop's start too (p302's B-rep)", () => {
+    const half = (startParam: number) => ({
+      kind: "ellipse" as const,
+      center: { x: 0, y: 0 },
+      majorAxis: { x: 10, y: 0 },
+      ratio: 0.4,
+      startParam,
+      sweep: Math.PI,
+    })
+    const brep = extrusionBrep(flat([half(0), half(Math.PI)]), {
+      x: 0,
+      y: 0,
+      z: 5,
+    })!
+    expect(brepIsClosed(brep)).toBe(true)
+    expect(kinds(brep)).toEqual({
+      faces: { cylinder: 1, plane: 2 },
+      edges: { ellipse: 2 },
+      vertices: 2,
+    })
+    expect(brepVolume(brep)).toBeCloseTo(Math.PI * 40 * 5, 9)
+    const square = extrusionBrep(
+      flat([
+        line(5, 0, 10, 0),
+        line(10, 0, 10, 10),
+        line(10, 10, 0, 10),
+        line(0, 10, 0, 0),
+        line(0, 0, 5, 0),
+      ]),
+      { x: 0, y: 0, z: 1 }
+    )!
+    expect(kinds(square).vertices).toBe(8)
+    expect(brepVolume(square)).toBeCloseTo(100, 9)
+  })
+
+  it("turns collinear sides through 90° as a rectangle's (sweeps/p331)", () => {
+    const brep = revolved(
+      flat([
+        line(10, 0, 15, 0),
+        line(15, 0, 20, 0),
+        line(20, 0, 20, 5),
+        line(20, 5, 10, 5),
+        line(10, 5, 10, 0),
+      ]),
+      0,
+      90 * DEG
+    )
+    expect(brepIsClosed(brep)).toBe(true)
+    expect(kinds(brep)).toEqual({
+      faces: { cylinder: 2, plane: 4 },
+      edges: { circle: 4, line: 8 },
+      vertices: 8,
+    })
+    expect(brepVolume(brep)).toBeCloseTo(1178.097245, 6)
+  })
+
+  it("turns two quarter arcs on the axis whole into one sphere face, no edge or vertex (sweeps/p309)", () => {
+    const brep = revolved(
+      flat([
+        arcOf(0, 0, 5, -Math.PI / 2, Math.PI / 2),
+        arcOf(0, 0, 5, 0, Math.PI / 2),
+        line(0, 5, 0, -5),
+      ]),
+      0,
+      2 * Math.PI
+    )
+    expect(brepIsClosed(brep)).toBe(true)
+    expect(kinds(brep)).toEqual({
+      faces: { sphere: 1 },
+      edges: {},
+      vertices: 0,
+    })
+    expect(brepVolume(brep)).toBeCloseTo(523.598776, 6)
+  })
+})
+
+describe("a revolution surface turned whole keeps its seam (the Sweeps review, SWO-06)", () => {
+  it("an ellipse: its profile and the circle its start traces, one vertex (revolve/r04)", () => {
+    const brep = revolved(
+      flat([
+        {
+          kind: "ellipse",
+          center: { x: 50, y: 0 },
+          majorAxis: { x: 5, y: 0 },
+          ratio: 0.4,
+          startParam: 0,
+          sweep: 2 * Math.PI,
+        },
+      ]),
+      0,
+      2 * Math.PI
+    )
+    expect(brepIsClosed(brep)).toBe(true)
+    expect(kinds(brep)).toEqual({
+      faces: { revolution: 1 },
+      edges: { circle: 1, ellipse: 1 },
+      vertices: 1,
+    })
+    // A ring: genus 1.
+    expect(euler(brep)).toBe(0)
+    expect(brep.vertices[0].x).toBeCloseTo(55, 9)
+    expect(brepVolume(brep)).toBeCloseTo(9869.604401089357, 8)
+  })
+
+  it("a CV spline's region: the spline beside three circles (sweeps/p308)", () => {
+    const spline = {
+      degree: 3,
+      knots: [0, 0, 0, 0, 1, 1, 1, 1],
+      controlPoints: [
+        { x: 10, y: 0, z: 0 },
+        { x: 14, y: 3, z: 0 },
+        { x: 12, y: 7, z: 0 },
+        { x: 16, y: 10, z: 0 },
+      ],
+    }
+    const profile = flat([
+      { kind: "spline", curve: spline, from: 0, to: 1 },
+      line(16, 10, 10, 10),
+      line(10, 10, 10, 0),
+    ])
+    const brep = revolved(profile, 0, 2 * Math.PI)
+    expect(brepIsClosed(brep)).toBe(true)
+    expect(kinds(brep)).toEqual({
+      faces: { cylinder: 1, plane: 1, revolution: 1 },
+      edges: { circle: 3, spline: 1 },
+      vertices: 3,
+    })
+    expect(euler(brep)).toBe(0)
+    expect(brepVolume(brep)).toBeCloseTo(2226.401834, 5)
+    // A small one near its axis still measures by its loops, its seam
+    // bounding nothing where the periods wrap (the property below, shrunk).
+    const tilt = 2.698641310416861e-9
+    const small = revolutionBrep(
+      {
+        axes: {
+          x: { x: 0, y: 1, z: 0 },
+          y: { x: tilt, y: 0, z: 1 },
+          z: { x: 1, y: 0, z: -tilt },
+        },
+        elevation: 64.01,
+        faces: [
+          {
+            loops: [
+              [
+                {
+                  kind: "ellipse",
+                  center: { x: 0, y: 0 },
+                  majorAxis: { x: 0.01, y: 0 },
+                  ratio: 0.5,
+                  startParam: 0,
+                  sweep: 2 * Math.PI,
+                },
+              ],
+            ],
+          },
+        ],
+      },
+      { x: 64.01000000001684, y: 0, z: 0.006237446416158235 },
+      Y,
+      { x: 0, y: 0, z: -1 },
+      0,
+      2 * Math.PI
+    )
+    expect(brepIsClosed(small)).toBe(true)
+    // The ellipse's centre lies 64.01·tilt below the plane z = 0.
+    const R = 0.006237446416158235 + 64.01 * tilt
+    const pappus = 2 * Math.PI ** 2 * R * 0.01 * 0.005
+    expect(brepVolume(small) / pappus).toBeCloseTo(1, 6)
+    // Short of a turn it is closed by the profile at each end, as before.
+    expect(brepIsClosed(revolved(profile, 0, 90 * DEG))).toBe(true)
+  })
+})
+
+describe("an extrusion's faces in ACIS's order (the Sweeps review, SWO-07)", () => {
+  it("the sides from the profile's last edge back, then the top and the bottom (sweeps/p316)", () => {
+    const brep = extrusionBrep(rectangle(0, 0, 10, 20), { x: 0, y: 0, z: 5 })!
+    expect(
+      brep.faces.map(({ surface }) =>
+        surface.kind === "plane"
+          ? [surface.normal.x + 0, surface.normal.y + 0, surface.normal.z + 0]
+          : surface.kind
+      )
+    ).toEqual([
+      [-1, 0, 0],
+      [0, 1, 0],
+      [1, 0, 0],
+      [0, -1, 0],
+      [0, 0, 1],
+      [0, 0, -1],
+    ])
   })
 })
 

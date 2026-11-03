@@ -23,6 +23,7 @@ import {
   createSweptSolid,
   revolveBase,
   sweepProfile,
+  sweptFaces,
 } from "../../domain/sweptSolids"
 import { ucsZAxis } from "../../domain/ucs"
 import {
@@ -585,8 +586,11 @@ export class RevolveTool implements Tool {
   ): Entity[] {
     const made: Entity[] = []
     const startRadians = (startDegrees * Math.PI) / 180
-    for (const { profile } of this.profiles) {
-      if (profile === "crosses") continue
+    // A region's faces each make a solid (sweeps/p332).
+    const faces = this.profiles.flatMap(({ profile }) =>
+      profile === "crosses" ? [] : sweptFaces(profile)
+    )
+    for (const profile of faces) {
       const out = revolveSide(profile, axis.origin, axis.direction)
       if (typeof out === "string") continue
       const brep = revolutionBrep(

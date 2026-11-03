@@ -2462,6 +2462,7 @@
   "commands.messages.listRegionArea": "                             Area: {area}",
   "commands.messages.listRegionPerimeter": "                        Perimeter: {perimeter}",
   "commands.messages.listRegionBounds": "   Bounding Box: Lower Bound X = {minX}, Y = {minY}, Z = {minZ}\n                 Upper Bound X = {maxX}, Y = {maxY}, Z = {maxZ}",
+  "commands.messages.listSolidBounds": "   Bounding Box: Lower Bound X = {minX}, Y = {minY}, Z = {minZ}\n                 Upper Bound X = {maxX}, Y = {maxY}, Z = {maxZ}",
   "commands.messages.sweepDensity": "Current wire frame density:  ISOLINES={isolines}, Closed profiles creation mode = Solid",
   "commands.messages.sweepRefused": "Cannot sweep or extrude an object of this type.\n{count, plural, one {# object removed from selection set.} other {# objects removed from selection set.}}",
   "commands.messages.sweepRefusedType": "Cannot sweep or extrude an object of this type.",

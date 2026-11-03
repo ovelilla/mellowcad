@@ -43,6 +43,7 @@ import {
   unsigned0,
 } from "./solids"
 import { turnedAbout } from "./faceDomains"
+import { normalizeAngle } from "./primitives"
 
 /**
  * A planar region in space, as EXTRUDE and REVOLVE take a profile: its
@@ -250,8 +251,23 @@ class Builder {
     })
   }
 
+  /** The B-rep, a vertex no edge runs from dropped (sweeps/p309: a sphere turned from the axis has none). */
   brep(): Brep {
-    return { vertices: this.vertices, edges: this.edges, faces: this.faces }
+    const used = new Set(this.edges.flatMap((e) => [e.start, e.end]))
+    if (used.size === this.vertices.length) {
+      return { vertices: this.vertices, edges: this.edges, faces: this.faces }
+    }
+    const index = this.vertices.map(() => -1)
+    const vertices: Vec3[] = []
+    this.vertices.forEach((v, i) => {
+      if (used.has(i)) index[i] = vertices.push(v) - 1
+    })
+    const edges = this.edges.map((e) => ({
+      ...e,
+      start: index[e.start],
+      end: index[e.end],
+    }))
+    return { vertices, edges, faces: this.faces }
   }
 }
 
@@ -359,6 +375,77 @@ function spaceLoops(
       }
     })
   )
+}
+
+/**
+ * The profile with each run of collinear segments, of arcs of one circle and
+ * of elliptical arcs of one ellipse in a loop made one curve, as ACIS's sweep
+ * takes it (sweeps/p330: a vertex mid-side and two arcs of one circle extrude
+ * into 6 faces, 12 edges, 8 vertices; p331 turned the same; p309: two
+ * quarter arcs turn into one sphere face). A run across the loop's start
+ * joins its last curve (**unverified**: no probe starts a loop mid-side).
+ * REGION keeps the curves apart; only the sweep merges them.
+ */
+function mergedProfile(profile: PlanarProfile): PlanarProfile {
+  return {
+    ...profile,
+    faces: profile.faces.map((face) => ({ loops: face.loops.map(mergedLoop) })),
+  }
+}
+
+function mergedLoop(loop: RegionLoop): RegionLoop {
+  const out: PlanarCurve[] = []
+  for (const c of loop) {
+    const joined = out.length > 0 ? curvesJoined(out[out.length - 1], c) : null
+    if (joined) out[out.length - 1] = joined
+    else out.push(c)
+  }
+  while (out.length > 1) {
+    const joined = curvesJoined(out[out.length - 1], out[0])
+    if (!joined) break
+    out[out.length - 1] = joined
+    out.shift()
+  }
+  return out.length === loop.length ? loop : out
+}
+
+/** `a` and the `b` that follows it as one curve, when they lie on one line, circle or ellipse running on. */
+function curvesJoined(a: PlanarCurve, b: PlanarCurve): PlanarCurve | null {
+  const near = (p: Vec2, q: Vec2) =>
+    Math.hypot(p.x - q.x, p.y - q.y) <= MODEL_TOLERANCE
+  if (!near(curveEnd(a), curveStart(b))) return null
+  if (a.kind === "line" && b.kind === "line") {
+    const dx = a.end.x - a.start.x
+    const dy = a.end.y - a.start.y
+    const length = Math.hypot(dx, dy)
+    const ex = b.end.x - a.start.x
+    const ey = b.end.y - a.start.y
+    const off = Math.abs(dx * ey - dy * ex) / length
+    const ahead = (b.end.x - b.start.x) * dx + (b.end.y - b.start.y) * dy > 0
+    return off <= MODEL_TOLERANCE && ahead
+      ? { kind: "line", start: a.start, end: b.end }
+      : null
+  }
+  if (a.kind === "arc" && b.kind === "arc") {
+    const same =
+      near(a.center, b.center) &&
+      Math.abs(a.radius - b.radius) <= MODEL_TOLERANCE &&
+      Math.sign(a.sweep) === Math.sign(b.sweep) &&
+      Math.abs(a.sweep + b.sweep) <= 2 * Math.PI + 1e-9
+    return same ? { ...a, sweep: a.sweep + b.sweep } : null
+  }
+  if (a.kind === "ellipse" && b.kind === "ellipse") {
+    const gap = normalizeAngle(a.startParam + a.sweep - b.startParam)
+    const same =
+      near(a.center, b.center) &&
+      near(a.majorAxis, b.majorAxis) &&
+      Math.abs(a.ratio - b.ratio) <= 1e-9 &&
+      Math.sign(a.sweep) === Math.sign(b.sweep) &&
+      Math.abs(a.sweep + b.sweep) <= 2 * Math.PI + 1e-9 &&
+      Math.min(gap, 2 * Math.PI - gap) <= 1e-9
+    return same ? { ...a, sweep: a.sweep + b.sweep } : null
+  }
+  return null
 }
 
 /**
@@ -472,10 +559,11 @@ function cornerOf(a: PlanarCurve, b: PlanarCurve): Vec2 | null {
  * spline.
  */
 export function extrusionBrep(
-  profile: PlanarProfile,
+  swept: PlanarProfile,
   offset: Vec3,
   taper = 0
 ): Brep | null {
+  const profile = mergedProfile(swept)
   const normal = profile.axes.z
   const rise = dot3(offset, normal)
   if (Math.abs(rise) <= MODEL_TOLERANCE) return null
@@ -585,8 +673,10 @@ export function extrusionBrep(
       )
     })
   })
-  // ACIS's order: the sides, then the top, then the bottom (x01).
-  for (const side of sides) side()
+  // ACIS's order: the sides from the last edge back, then the top, then the
+  // bottom (x01; sweeps/p316, p319: −X, +Y, +X, −Y for RECTANG 0,0 10,20;
+  // extrude/x08: a hole's wall before its outline's), so EXPLODE reads them so.
+  for (const side of sides.reverse()) side()
   topLoops.forEach((loops) => {
     if (loops.length > 0) {
       b.face(
@@ -825,13 +915,14 @@ function edgeSamples(e: SpaceEdge): Vec3[] {
  * whole has no edge at all (r06's half disc).
  */
 export function revolutionBrep(
-  profile: PlanarProfile,
+  swept: PlanarProfile,
   origin: Vec3,
   axis: Vec3,
   out: Vec3,
   start: number,
   angle: number
 ): Brep {
+  const profile = mergedProfile(swept)
   const whole = Math.abs(angle) >= 2 * Math.PI - 1e-12
   // Turned backwards is turned forwards round the axis reversed.
   const A = angle < 0 ? scale3(axis, -1) : axis
@@ -863,10 +954,16 @@ export function revolutionBrep(
     const closedOne = n === 1 && isClosedEdge(loop[0])
     const points = loop.map(edgeStart)
     const axial = points.map(onAxis)
-    // Vertices: at the start and, short of a turn, at the end; one on the axis.
-    const v0 = points.map((p) =>
-      closedOne && whole ? -1 : b.vertex(turn(p, from))
+    // A revolution surface turned whole keeps the profile as a seam, where
+    // an analytic one keeps none (revolve/r04: the ellipse and the circle
+    // its start traces, one vertex; sweeps/p308: the spline; p305's torus
+    // and p309's sphere have no edge).
+    const seamed = loop.map(
+      (e) => whole && (e.kind === "spline" || (e.kind === "conic" && !e.circle))
     )
+    const bare = closedOne && whole && !seamed[0]
+    // Vertices: at the start and, short of a turn, at the end; one on the axis.
+    const v0 = points.map((p) => (bare ? -1 : b.vertex(turn(p, from))))
     const v1 = points.map((p, i) =>
       whole || axial[i] ? v0[i] : b.vertex(turn(p, to))
     )
@@ -875,7 +972,7 @@ export function revolutionBrep(
     )
     // The circle or arc each vertex off the axis traces.
     const rings = points.map((p, i) => {
-      if (axial[i] || (closedOne && whole)) return -1
+      if (axial[i] || bare) return -1
       const { h } = at(p)
       return b.edge(v0[i], v1[i], {
         kind: "circle",
@@ -884,6 +981,21 @@ export function revolutionBrep(
         radius: at(p).rho,
       })
     })
+    const seams = loop.map((e, i) =>
+      seamed[i]
+        ? b.edge(
+            v0[i],
+            v0[(i + 1) % n],
+            brepCurve(
+              edgeMapped(
+                e,
+                (p) => turn(p, from),
+                (d) => turnDir(d, from)
+              )
+            )
+          )
+        : -1
+    )
     const startEdges = whole
       ? []
       : loop.map((e, i) =>
@@ -928,7 +1040,15 @@ export function revolutionBrep(
       if (lying[i]) return
       const j = (i + 1) % n
       let faceLoops: BrepLoop[]
-      if (closedOne && whole) {
+      if (seamed[i]) {
+        // The seam run both ways, as a turn short of whole runs its two ends.
+        const coedges: BrepLoop[number][] = []
+        if (rings[i] >= 0) coedges.push({ edge: rings[i], reversed: false })
+        coedges.push({ edge: seams[i], reversed: false })
+        if (rings[j] >= 0) coedges.push({ edge: rings[j], reversed: true })
+        coedges.push({ edge: seams[i], reversed: true })
+        faceLoops = [coedges]
+      } else if (closedOne && whole) {
         faceLoops = []
       } else if (whole) {
         faceLoops = []

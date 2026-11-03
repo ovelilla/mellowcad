@@ -6998,6 +6998,32 @@ export const es: EngineLocale = {
           "maxZ"
         ]
       ],
+      "listSolidBounds": [
+        "Caja de contorno: Límite inferior X = ",
+        [
+          "minX"
+        ],
+        ", Y = ",
+        [
+          "minY"
+        ],
+        ", Z = ",
+        [
+          "minZ"
+        ],
+        "\n                  Límite superior X = ",
+        [
+          "maxX"
+        ],
+        ", Y = ",
+        [
+          "maxY"
+        ],
+        ", Z = ",
+        [
+          "maxZ"
+        ]
+      ],
       "sweepDensity": [
         "Densidad de estructura alámbrica actual: ISOLINES=",
         [

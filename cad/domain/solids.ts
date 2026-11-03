@@ -184,9 +184,7 @@ export function solidMapped(
     ...(primitive
       ? { primitive: primitiveMapped(primitive, point, direction, map.scale) }
       : {}),
-    ...(sweep
-      ? { sweep: sweepMapped(sweep, direction, map.scale, reflects) }
-      : {}),
+    ...(sweep ? { sweep: sweepMapped(sweep, direction, map.scale) } : {}),
   }
 }
 

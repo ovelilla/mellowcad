@@ -1515,8 +1515,8 @@ end), the cursor or a typed one where it falls on the normal as drawn, however f
 distance from the base (p107, p163). The base is the prompt's traced BasePoint, fitted to 1e-15
 (p101–p106, x04, x09): a polyline's the mean of 20 points at arc lengths k·L/19 from its start, the
 start twice (a rectangle drawn from its other corner has another); a spline's, a circle's and an
-ellipse's of 19 at parameters k/19; a region's its centroid; the first profile picked gives it
-(p106); a 3D polyline's and a spline-fit polyline's take the polyline's rule (**unverified**). The
+ellipse's of 19 at parameters k/19; a region's its first face's centroid (p103; p306: 25,5 of two
+squares); the first profile picked gives it (p106); a 3D polyline's and a spline-fit polyline's take the polyline's rule (**unverified**). The
 prompt opening puts LASTPOINT there, in the UCS (p108–p111, p144), after a taper and a refused
 expression too; Direction's points set it, an end refused as parallel too (p112, p153). `Value must
 be nonzero.` for 0 and `Requires numeric distance, second point, or option keyword.` for FOO and
@@ -1532,8 +1532,10 @@ The height and the taper defaults are the program's, kept across OPEN (p149). Di
 and Enter, p134; `Points are coincident.` and asked again), the profiles extruded along the vector,
 their tops copies of them, untapered though LIST keeps the taper (x02, x06); along a profile's
 plane it says `Extrude direction is parallel to plane of sweep curve.` and ends (x11). A circle, an
-ellipse, a closed polyline, spline or 3D polyline, a loop whose ends meet and a region's faces are
-each a solid of the current layer and properties (x10), along the profile's normal; a taper narrows
+ellipse, a closed polyline, spline or 3D polyline, a loop whose ends meet and each face of a region
+are each a solid of the current layer and properties (x10), along the profile's normal — a region of
+two faces two solids, the face of the rectangle drawn second first (p306; the order of other
+regions **unverified**), the region erased once; a taper narrows
 it, a circle shut before the height ending at its apex (x03: 45° on a radius 5 to 10 high makes a
 cone 5 high), and a profile the taper cannot take makes nothing, silently (x06: a 10 × 10 square,
 60° to 10). DELOBJ erases the profiles (3, its initial value; 1, 2), keeps them (0), or asks `Erase
@@ -1544,15 +1546,21 @@ p400): `_extrude`, MOde answered `_MO` and `_SO` on the prompt's line, Enter aft
 EXTRUDE, U `EXTRUDE GROUP`.
 
 The object, a 3D solid (file version 47), as ACIS builds it (x01, x09's MPDUMP): a side face for
-each edge — a plane for a segment, a cylinder for an arc (its seam at the arc's start), a cone when
+each edge, from the profile's last edge back (p316, p319: −X, +Y, +X, −Y for `RECTANG 0,0 10,20`;
+x08: a hole's wall before its outline's), collinear segments and arcs of one circle or ellipse
+merged into one (p330: 6 faces, 12 edges, 8 vertices; a run across the loop's start joins its last
+curve, **unverified**) — a plane for a segment, a cylinder for an arc (its seam at the arc's start), a cone when
 tapered, an elliptical cylinder for an elliptical arc, an extrusion of a spline (a closed one with
 its seam ruling) or, slanted, of the curve —, the top and the bottom; its volume and MASSPROP exact
 (x01's frustum `467.7253`, x04's fit spline `515.8584`). Its isolines rule a curved side every
 360/ISOLINES degrees from its seam (d01), a spline's side by ISOLINES rulings along it. LIST:
 `Solid type = Extrusion`, ` Extrusion height: 5.0000` (Direction's length), `      Taper angle: 0`
 (-30 lists `330`), and its `Bounding Box` (es `Altura de extrusión`, `Ángulo Inclinación`; pt-BR
-`Altura de extrusão`, `Ângulo de conicidade`); the palette's Solid type `Extrusion`. It snaps,
-moves, mirrors and explodes as BOX does.
+`Altura de extrusão`, `Ângulo de conicidade`; the box a solid's own words, es `Caja de contorno:
+Límite inferior`, pt-BR `Caixa delimitadora. Limite inferior. X`, a composite's too, where a
+region's are other: p329, p311); the palette's Solid type `Extrusion`. It snaps, moves and mirrors
+as BOX does, MOVE, ROTATE, SCALE and MIRROR keeping its history (p310); with planar sides it
+explodes into a region of each face in that order (p316, p319).
 
 **Missing:** Path, which sweeps the profile along a path (x12's `Solid type = Sweep`, SWEEP's
 solid, phase 7), refused as an option not built; SUrface and the open profiles AutoCAD makes a
@@ -1562,8 +1570,11 @@ taper on an ellipse, a spline or an arc meeting its neighbour at a corner, whose
 ACIS joins the faces by (x09's NurbCurve3d), refused here as a taper the profile cannot take;
 Expression's parameters and functions (arithmetic only); the default after Direction, which the
 console sets from its cursor (x02's `<312.4376>`); a spline side's isolines across it (ACIS's own
-count, i6); its grips and the palette's rows under Solid type, which no desktop pass has seen yet
-(**unverified**); a point given for the taper, read here as its distance from the base in degrees, which the
+count, i6); EXPLODE of one with a curved face, which AutoCAD makes a SURFACE of each curved face and
+a REGION of each planar one (p317, p320), refused here as `1 was not able to be exploded.` (no
+surface object); its grips, MPGRIPDATA's the profile's corners and midpoints at its base and one on
+its top (p305), none here, their look **unverified** (the desktop), and the palette's rows under
+Solid type (**unverified**); a point given for the taper, read here as its distance from the base in degrees, which the
 console reads in a UCS at the profile's start, its X the normal, as atan(Y / d), d the height its
 fixed cursor gave (p111, p115–p118: `60,10` → `2.14746830`; **unverified**, the desktop decides); the
 tilted UCS's console run (x08) only checked by MASSPROP.
@@ -1601,30 +1612,40 @@ Reverse turns the axis round and asks it again (r03); EXpression EXTRUDE's, Ente
 angle again (p225). `<360>` and `<0.0>` never change (p223, r02). LASTPOINT: each axis point sets
 it; the angle prompt opening puts it on the axis across the first profile's perimeter centroid (p151's
 L `0,5.357142857142857,0`), where a typed angle or point leaves it (p119–p125). DELOBJ as EXTRUDE's
-(r09). Each profile a solid of the current layer and properties; one undo step, U giving the
+(r09). Each profile a solid of the current layer and properties, each face of a region one (p332;
+its angle's LASTPOINT from the first face, **unverified**: p332's lie level); one undo step, U giving the
 profile back (p218, p219).
 
 The object, a 3D solid (file version 47), as ACIS builds it (r01–r06's MPDUMP): a face for each edge
 off the axis — a cylinder, a cone or a plane for a segment, a sphere or a torus for an arc, a
 revolution for an elliptical arc or a spline —, the profile at its start and its end short of a
-turn; an edge on the axis none, a cone's apex an edge of no length on a whole turn, a sphere or
-doughnut turned whole no edge at all (r06). Volume and MASSPROP exact (r01's `8246.6807`, r02's
+turn; collinear segments and arcs of one circle or ellipse merged first, as EXTRUDE's (p331; p309:
+two quarter arcs one sphere face); an edge on the axis none, a cone's apex an edge of no length on a
+whole turn, a sphere or doughnut turned whole no edge at all (r06), a revolution turned whole its
+profile as a seam and the circle the seam's end traces, a vertex there (r04: the ellipse and a
+circle r55 at 55,0,0; p308: the spline and three circles). Volume and MASSPROP exact (r01's `8246.6807`, r02's
 doughnut, r03's sphere wedge, r06's cylinder round a cone; r04's ellipse to the eleventh digit,
 where AutoCAD's own sum strays; p248's region with a hole). Its isolines every 360/ISOLINES degrees
 from the profile (i3, i5), a sphere's and a torus' parallels as theirs, a revolution's ISOLINES
 circles along its profile. LIST: `Solid type = Revolve`, `      Start angle: 30`, `Angle of
 revolution: 90` (signed, as given), ` Direction vector: X = 0.0000    Y = 1.0000    Z = 0.0000` in
 the UCS (p210; Reverse's `-1.0000`) and its box (es `Ángulo inicial`, `Ángulo de revolución`,
-`Vector de dirección`; pt-BR `Ângulo de revolução`, `Vetor de direção`); the palette's Solid type
-`Revolve`. It snaps, moves and mirrors as BOX does.
+`Vector de dirección`; pt-BR `Ângulo de revolução`, `Vetor de direção`; the box EXTRUDE's words);
+the palette's Solid type `Revolve`. It snaps and moves as BOX does; ROTATE and MIRROR carry the
+Direction vector as a vector, SCALE scales it, unit only as made (p311: ROTATE 30 `-0.5000 0.8660`,
+MIRROR about y = 40 `-0.5000 -0.8660`, SCALE 2 `-1.0000 -1.7321`; p333).
 
 **Missing:** an axis off the profile's plane, which AutoCAD turns the profile round into surfaces
 this kernel does not hold (r05: 40,0,0 to 40,10,10; p249: Y through a profile at ELEVATION 7),
 refused with `Unable to revolve the selected object.` alone; an elliptical arc or a solid's edge as
 the Object axis (refused as a closed curve is, **unverified**); SUrface and open profiles
 (EXTRUDE's); the jig's angle dragged round the axis (the whole turn is previewed) and an angle or
-start angle clicked (**unverified**: the console's getangle reads it otherwise); its grips and the
-palette's rows under Solid type (**unverified**: no desktop pass).
+start angle clicked (**unverified**: the console's getangle reads it otherwise); EXPLODE, which
+AutoCAD makes SURFACEs and REGIONs of (p318: two and four for a rectangle turned 90°), refused here
+(no surface object); its grips, MPGRIPDATA's the profile at the start angle, a point on the axis and
+one at the end angle, a circle turned whole its centre and quadrants (p305), none here, their look
+**unverified** (the desktop), and the palette's rows under Solid type (**unverified**: no desktop
+pass).
 
 ### `PRESSPULL` · es `PRESIONARTIRAR` / `PULSARTIRAR` · pt-BR `PRESSIONARPUXAR`
 
