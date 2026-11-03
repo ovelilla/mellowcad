@@ -4,7 +4,8 @@
  * CYLINDER, CONE and PYRAMID a height, kept with its sign (w09: `<-5.0000>`);
  * CYLINDER, CONE, SPHERE, TORUS and PYRAMID a radius, PYRAMID's the circle
  * its base is inscribed in (x01: `<9.8995>` after a circumscribed 7); CONE and
- * PYRAMID a top radius, 0 at first; TORUS a tube radius (r02). A length or a
+ * PYRAMID a top radius, 0 at first, CONE's the one a cone is made with
+ * (primitives/p207, p418); TORUS a tube radius (r02). A length or a
  * width is the size made, a negative one's or a doubled one's too (p10, w09).
  * Session values, not saved: they survive OPEN, and NEW as OPEN (PRIM-D1),
  * but the top radius (primitives/p155, p158); U takes none back (p148).

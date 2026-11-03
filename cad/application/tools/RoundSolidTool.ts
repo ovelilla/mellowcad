@@ -153,8 +153,10 @@ const UCS_X: Vec3 = { x: 1, y: 0, z: 0 }
  * giving its way and size, the first square to it. The seam, where ACIS
  * starts the base round, is the UCS's X, the second axis' way, or — for a
  * base tilted by 3P or by Axis endpoint — the arbitrary axis' −X of the plane
- * in UCS terms, an ellipse's Y (c12, c14, c15). The radius, the height and the
- * top radius are the primitives' shared defaults ({@link SolidDefaults}).
+ * in UCS terms, an ellipse's second axis' end turned onto that axis' Y or −X
+ * (c12, c14, c15, primitives/p240). The radius (Elliptical's distance to the
+ * first axis offers it), the height and the top radius are the primitives'
+ * shared defaults ({@link SolidDefaults}).
  *
  * SPHERE and TORUS (solid/h01–h05, r01–r09) ask `Specify center point or
  * [3P/2P/Ttr]:` and `Specify radius or [Diameter]:`: 3P puts a sphere's
@@ -286,7 +288,8 @@ export class RoundSolidTool implements Tool {
       case "ellipseCenter":
         return "specifyCenterPoint"
       case "ellipseDistance":
-        return "distanceToFirstAxis"
+        // The shared radius, which no ellipse sets (primitives/p236, p247).
+        return sized("distanceToFirstAxis", radius)
       case "ellipseSecond":
         return "secondAxisEndpoint"
       case "height":
@@ -906,18 +909,31 @@ export class RoundSolidTool implements Tool {
     this.openDistance(ctx)
   }
 
-  /** `Value must be nonzero.` for none (c06); a negative one runs back along the normal. */
+  /**
+   * `Value must be nonzero.` for none (c06), in the words of the distance's
+   * input function, 2Point's in the command's (es and pt-BR word them apart,
+   * primitives/p214); a negative one runs back along the normal.
+   */
   private takeHeight(height: number, ctx: ToolContext): void {
     const state = this.state
     if (state.phase !== "height" && state.phase !== "twoSecond") return
     if (height === 0) {
-      ctx.report(ctx.text.message("boxValueNonzero"), "error")
+      ctx.report(
+        ctx.text.message(
+          state.phase === "height" ? "valueMustBeNonzero" : "boxValueNonzero"
+        ),
+        "error"
+      )
       return
     }
     this.commit(state.base, state.top, { height }, ctx)
   }
 
-  /** CONE's top radius; `Value must be positive.` below 0 (k04). */
+  /**
+   * CONE's top radius; `Value must be positive.` below 0 (k04). It becomes
+   * the default once the cone is made: asked again in the run, Top still
+   * offers the last cone's (primitives/p207).
+   */
   private takeTop(radius: number, ctx: ToolContext): void {
     const state = this.state
     if (state.phase !== "top") return
@@ -925,7 +941,6 @@ export class RoundSolidTool implements Tool {
       ctx.report(ctx.text.message("valueMustBePositive"), "error")
       return
     }
-    this.defaults.topRadius = radius
     this.state = { ...state, phase: "height", top: radius }
     this.openDistance(ctx)
   }
@@ -984,12 +999,12 @@ export class RoundSolidTool implements Tool {
       if (!n) return null
       const level = Math.abs(n.x) < PLUMB && Math.abs(n.y) < PLUMB
       normal = n
-      if (!level || !base.level) xAxis = seamOf(n, base.radiusY !== null)
+      if (!level || !base.level) xAxis = seamOf(n, base)
       if (level && base.level && n.z < 0) normal = { x: 0, y: 0, z: -1 }
     } else {
       height = Math.abs(rise.height)
       if (rise.height < 0) normal = scale3(normal, -1)
-      if (!base.level) xAxis = seamOf(base.normal, base.radiusY !== null)
+      if (!base.level) xAxis = seamOf(base.normal, base)
     }
     const unit = (d: Vec3) => {
       const w = ucsDirectionToWorld(ctx.ucs, d)
@@ -1050,6 +1065,8 @@ export class RoundSolidTool implements Tool {
     const primitive = this.primitive(base, top, rise, ctx)
     if (!primitive) return
     this.defaults.height = "height" in rise ? rise.height : primitive.height
+    // A cone with no Top radius leaves 0 for the next (primitives/p418).
+    if (primitive.kind === "cone") this.defaults.topRadius = primitive.topRadius
     this.commitPrimitive(primitive, ctx)
   }
 
@@ -1127,6 +1144,10 @@ export class RoundSolidTool implements Tool {
           this.takeValue(enter, commitCtx)
           return true
         }
+        // WHY: pt-BR's console ends CONE with nothing made at Enter on a
+        // height with no default (solid/k04, primitives/p215, p239: an empty
+        // keyword status), a defect of that translation alone: en, es and
+        // pt-BR's CYLINDER refuse, as every language does here (PRIM-D20).
         this.refuse(commitCtx)
         return true
       },
@@ -1203,12 +1224,16 @@ const PLUMB = 1e-10
 
 /**
  * Where ACIS starts a base tilted to `normal` (in UCS terms) round: the
- * arbitrary axis' −X for a circle, its Y for an ellipse (c12, c14, c15).
+ * arbitrary axis' −X for a circle (c12, c14, c15). An ellipse drops its turn
+ * in the plane, its major along −X and its minor along Y, the seam at the
+ * second axis' end: Y when that is the minor, −X when the major
+ * (primitives/p240). Equal axes take the minor's way, which no probe told.
  */
-function seamOf(normal: Vec3, elliptical: boolean): Vec3 {
+function seamOf(normal: Vec3, base: Pick<Base, "radius" | "radiusY">): Vec3 {
   const axes = arbitraryAxis(normal)
   if (!axes) return UCS_X
-  return elliptical ? axes.y : scale3(axes.x, -1)
+  const secondIsMinor = base.radiusY !== null && base.radius <= base.radiusY
+  return secondIsMinor ? axes.y : scale3(axes.x, -1)
 }
 
 /**
@@ -1236,7 +1261,7 @@ function circleThrough(a: Vec3, b: Vec3, c: Vec3): Base | null {
   return {
     center,
     normal: level ? UCS_Z : normal,
-    xAxis: level ? UCS_X : seamOf(normal, false),
+    xAxis: level ? UCS_X : seamOf(normal, { radius, radiusY: null }),
     radius,
     radiusY: null,
     level,

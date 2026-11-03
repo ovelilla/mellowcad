@@ -4699,9 +4699,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Specify center point of base or [3P/2P/Ttr/Elliptical]: E
   prompt| Specify endpoint of first axis or [Center]: C
   prompt| Specify center point: 300,300
-  prompt| Specify distance to first axis:
-  error| Requires numeric distance, second point, or option keyword.
-  prompt| Specify distance to first axis: 40
+  prompt| Specify distance to first axis <50.00>:
   prompt| Specify endpoint of second axis: 300,300
   error| Ellipse axes lengths must be positive and nonzero
   prompt| Specify endpoint of second axis: 330,330
@@ -4718,8 +4716,8 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
             Show History = No
               Solid type = Cylinder
                  Position, X = 300.00    Y = 300.00    Z = 0.00
-             Major radius: 42.43
-             Minor radius: 40.00
+             Major radius: 50.00
+             Minor radius: 42.43
                    Height: 50.00
                  Rotation: 45
 > select the cylinder

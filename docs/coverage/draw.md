@@ -1118,33 +1118,44 @@ Ttr asks `Specify point on object for first tangent:`, `… second tangent:` and
 circle:`, the base tangent to two lines, circles or arcs picked under TAN, nearest the picks, at
 their height (c03); none says `Circle does not exist.` and ends (v05). Elliptical asks `Specify
 endpoint of first axis or [Center]:`, `Specify other endpoint of first axis:` and `Specify endpoint
-of second axis:`, Center `Specify center point:` and `Specify distance to first axis:`: the second
-axis' point gives its way and its size, the first axis lying square to it its own half length
-(c04: 0,0,0 / 10,0,0 / 0,3,0 makes 5.8310 along 149° and 5 across; v05: a typed second axis runs
-towards the cursor). Axis endpoint asks `Specify axis endpoint:` (the height declares Center too,
+of second axis:`, Center `Specify center point:` and `Specify distance to first axis <7.0000>:`,
+offering the shared radius, which Enter takes and no ellipse sets (primitives/p151, p236, p247;
+none before any radius): the second axis' point gives its way and its size, the first axis lying
+square to it its own half length (c04: 0,0,0 / 10,0,0 / 0,3,0 makes 5.8310 along 149° and 5
+across; v05: a typed second axis runs towards the cursor). Axis endpoint asks `Specify axis endpoint:` (the height declares Center too,
 which asks it, c13) and 2Point two points; the height rises along the base's normal, down when
 negative (c05), and a point, the cursor or a snap gives it as at BOX's (z01: a box's top corner, 50
 high, gives 50 in SE Isometric; the cursor's reading not seen on the desktop, **unverified**). Refusals: `Point or option keyword required.` at the point prompts and the axis
 endpoint (FOO, Enter), `Requires numeric distance, second point, or option keyword.` at the radius,
 diameter, distance and height, `Requires numeric distance or two points.` at Ttr's radius, `Value
 must be positive and nonzero.` for a radius, diameter or distance of 0 or less, `Value must be
-nonzero.` for a height of 0 and an axis or 2Point of no length, `Points cannot be collinear.
-*Invalid*` at 3P's second on its first or third on their line, `Points cannot be coincident.
-*Invalid*` at 2P's (c08), `Ellipse axes lengths must be positive and nonzero` at a second axis of
+nonzero.` for a height of 0 and an axis or 2Point of no length, worded apart in es and pt-BR: the
+height's `El valor debe ser diferente de cero.` / `O valor deve ser diferente de zero.`, the axis'
+and 2Point's `No puede ser un valor igual a cero.` / `Este valor precisa ser diferente de zero.`
+(c06, c07, primitives/p214), `Points cannot be collinear. *Invalid*` at 3P's second on its first
+or third on their line, `Points cannot be coincident. *Invalid*` at 2P's (c08), `Ellipse axes lengths must be positive and nonzero` at a second axis of
 no length, or every one after a first of none (c07), `Requires a TAN object-snap and selection of
 Circle, Arc, or Line.` at Ttr's FOO and Enter, starred for a point typed without TAN (c03; es
 `Requiere una REFENT TAN y la designación de un círculo, arco o línea.`, pt-BR `Requer um snap ao
 objeto TAN …`, unlike CIRCLE's). The radius (not an ellipse's), the height and Ttr's radius are the
-primitives' shared defaults (x01–x06, primitives/p157), kept over OPEN (BOX's entry). It lies in a tilted UCS and at its Z (c09); it wears the
-current layer and properties; one undo step (u01).
+primitives' shared defaults (x01–x06, primitives/p157), kept over OPEN (BOX's entry). Every point
+prompt refuses Enter and another prompt's keyword as FOO (primitives/p205, p210, p211); `@` runs
+from the prompt's base, a bare `@` at the second axis is its centre, refused (p216, p218, p219); a
+bare number from the base toward the cursor (p221, p222); a radius point off the base's plane
+gives its distance in space (p242); Ttr takes a circle and an arc (p225); Ortho leaves a typed
+point and bends a bare number (p228). It lies in a tilted UCS and at its Z, ELEVATION too (c09,
+p243); it wears the current layer and properties, those set mid-command as it ends, ELEVATION as
+the centre is given (p234, p235); one undo step (u01).
 
 The object, a 3D solid (file version 45), as ACIS makes it (c01's MPDUMP): a vertex on each
 circle, at its seam; the base's circle or ellipse run about the base's outward normal, the top's
 about the axis; the round face (a cylinder, or an elliptical one), the base, the top. The seam is
 the UCS's X, the second axis' way for an ellipse, or — tilted by 3P or Axis endpoint — the arbitrary
-axis' −X of its plane read in the UCS, an ellipse's Y (c12, c14, c15); straight along the UCS's Z it
-stays. 2D Wireframe draws its edges and ISOLINES' rulings round it from the seam (d04: 4, 16 and 3
-lines; 0 none); it is picked and windowed by both. It snaps at its circles' Center and Quadrant,
+axis' −X of its plane read in the UCS (c12, c14, c15); straight along the UCS's Z it stays. An
+elliptical base tilted so drops its turn in the plane: its major along that −X, its minor along
+the axis' Y, the seam at the second axis' end, Y when it is the minor and −X when the major
+(primitives/p240's five turns; equal axes, untried, take Y). 2D Wireframe draws its edges and
+ISOLINES' rulings round it from the seam (d04: 4, 16 and 3 lines; 0 none); it is picked and windowed by both. It snaps at its circles' Center and Quadrant,
 Nearest, Perpendicular and Tangent on them, no Endpoint at the seam, nothing on the isolines (s03,
 s09, s10). LIST: `Solid type = Cylinder`, Position (the base's centre), Normal, `Radius`, Height; an
 elliptical one `Major radius`, `Minor radius`, Height and Rotation, its seam's heading (c01, c04).
@@ -1160,19 +1171,21 @@ round face (c11): no surface object here, so it is refused as `Select objects:` 
 not able to be exploded.`); BOX's (the hot grip's other modes, a height dragged past the base,
 the visual styles VSCURRENT lacks); Elliptical typed, which AutoCAD lets a round one take, Major and Minor
 radius equal, then greys (g01; greyed here); DISPSILH's silhouettes, d04's `iso16s`; in plan, where the top circle hides the base's, Nearest finds the top's in AutoCAD (s03)
-and the base's here, as BOX's; an elliptical base tilted by Axis endpoint turns its seam to the
-plane's Y, its size kept (c12), its other in-plane turns **unverified**.
+and the base's here, as BOX's.
 
 ### `CONE` · es `CONO` · pt-BR `CONE`
 
 **Implemented:** CONE asks CYLINDER's prompts (solid/k01–k07), its height `Specify height or
 [2Point/Axis endpoint/Top radius]:` (es `Indique altura o [2Puntos/punto final Eje/Radio superior]`,
 pt-BR `Especificar altura ou [2Pontos/ponto final Eixo/Raio superior]`). Top radius asks `Specify top
-radius <0.0000>:` — the last top radius, PYRAMID's too (y10), 0 again after OPEN (primitives/p155) — and the height again without it,
-`Specify height or [2Point/Axis endpoint]:`, which still declares Top (k02); a top as wide as the
+radius <0.0000>:` — the top radius of the last cone made, 0 if it had none, PYRAMID's too (y10,
+primitives/p418); asked twice in one run it offers the last cone's still (p207); 0 again after OPEN
+(p155) — and the height again without it, `Specify height or [2Point/Axis endpoint]:`, which still
+declares Top (k02); a top as wide as the
 base makes a cylinder's face, wider a cone widening up, LIST still `Cone` (k02). Its refusals are
-CYLINDER's, the top radius' `Requires numeric distance, second point, or option keyword.` for FOO
-(PYRAMID's has no keyword) and `Value must be positive.` below 0 (k04). An elliptical cone's top
+CYLINDER's, Center refused at the height (primitives/p206), the top radius' `Requires numeric
+distance, second point, or option keyword.` for FOO (PYRAMID's has no keyword) and `Value must be
+positive.` below 0 (k04); 3P's and 2P's points refuse Enter (p238). An elliptical cone's top
 is its base shrunk to the top radius given as its major (k03). It lies in a tilted UCS and at its Z
 (k05); one undo step (u01).
 
@@ -1190,7 +1203,10 @@ sets the top by where it is taken along the line of sight, from 0 (g01: dragged 
 perimeter, k01, k03). Everything else a solid does is CYLINDER's and BOX's entries.
 
 **Missing:** CYLINDER's (EXPLODE's SURFACE, k06; Elliptical typed); the apex drawn as a
-dot with ISOLINES 0 (nothing here).
+dot with ISOLINES 0 (nothing here). pt-BR's console ends CONE with nothing made at Enter on a
+height with no default (k04, primitives/p215, p239: an empty keyword status); refused here as in
+English, Spanish and pt-BR's CYLINDER, a defect of one translation not copied (`docs/i18n/pt-BR.md`;
+the desktop unchecked).
 
 ### `SPHERE` · es `ESFERA` · pt-BR `ESFERA`
 

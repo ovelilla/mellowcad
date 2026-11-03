@@ -1035,6 +1035,7 @@ describe("CYLINDER", () => {
       "Specify point on object for first tangent: FOO",
       "Requires a TAN object-snap and selection of Circle, Arc, or Line.",
       "Specify point on object for first tangent: 50,0",
+      // Starred for a point typed without TAN (primitives/p244).
       "*Requires a TAN object-snap and selection of Circle, Arc, or Line.",
       "Specify point on object for first tangent: _TAN to 50,0",
       "Specify point on object for second tangent: _TAN to 0,50",
@@ -1294,6 +1295,125 @@ describe("CYLINDER", () => {
     expect(solids(cad)[0].brep.vertices[0]).toEqual({ x: 5, y: 0, z: 0 })
   })
 
+  // probe primitives/p240: whichever axis was given second, its major lies
+  // along the axis' arbitrary -X, its minor along its Y (0.8944, 0.4472, 0
+  // here), its seam at the second axis' end.
+  it.each([
+    [["0,0,0", "10,0", "5,3"], 5, 3, { x: 5.8944, y: -1.7889, z: 2.2361 }],
+    [["50,0,0", "60,0", "58,0"], 5, 3, { x: 55.8944, y: -1.7889, z: 2.2361 }],
+    [
+      ["100,0,0", "110,0", "108,3"],
+      5,
+      4.2426,
+      { x: 106.2649, y: -2.5298, z: 3.1623 },
+    ],
+    [["150,0,0", "160,0", "155,8"], 8, 5, { x: 162.1554, y: 3.5777, z: 0 }],
+    [["200,0,0", "210,0", "197,0"], 8, 5, { x: 212.1554, y: 3.5777, z: 0 }],
+  ])(
+    "tilts an elliptical base %j by Axis endpoint, its major along the arbitrary -X (primitives/p240)",
+    ([first, other, second], major, minor, seam) => {
+      const cad = console()
+      const center = first.split(",").map(Number)
+      const axis = `${center[0]},10,10`
+      answer(cad, "CYLINDER", "E", first, other, second, "A", axis)
+      const { brep } = last(cad)
+      const base = brep.edges[0].curve
+      if (base.kind !== "ellipse") throw new Error(base.kind)
+      const length = Math.hypot(
+        base.majorAxis.x,
+        base.majorAxis.y,
+        base.majorAxis.z
+      )
+      expect(length).toBeCloseTo(major, 4)
+      expect(length * base.ratio).toBeCloseTo(minor, 4)
+      expect(Math.abs(base.majorAxis.x / length)).toBeCloseTo(0.8944, 4)
+      expect(Math.abs(base.majorAxis.y / length)).toBeCloseTo(0.4472, 4)
+      expect(base.majorAxis.z).toBeCloseTo(0, 9)
+      expectAt(brep.vertices[0], seam, 4)
+    }
+  )
+
+  it("says a height of 0 in the input function's words, 2Point's and the axis' none in its own (primitives/p214, solid/c06, c07)", () => {
+    const spanish = console(es)
+    expect(
+      written(
+        spanish,
+        "CILINDRO",
+        "0,0,0",
+        "5",
+        "0",
+        "_2P",
+        "0,0,0",
+        "0,0,0",
+        "0,0,8",
+        "CILINDRO",
+        "50,0,0",
+        "5",
+        "_A",
+        "50,0,0",
+        "50,0,9",
+        "CONO",
+        "100,0,0",
+        "5",
+        "0",
+        "8"
+      )
+    ).toEqual([
+      "CILINDRO",
+      "Precise centro de base o [3P/2P/Ttr/Elíptico]: 0,0,0",
+      "Precise radio de base o [Diámetro]: 5",
+      "Precise altura o [2Puntos/punto final Eje]: 0",
+      "El valor debe ser diferente de cero.",
+      "Precise altura o [2Puntos/punto final Eje]: _2P",
+      "Precise primer punto: 0,0,0",
+      "Precise segundo punto: 0,0,0",
+      "No puede ser un valor igual a cero.",
+      "Precise segundo punto: 0,0,8",
+      "CILINDRO",
+      "Precise centro de base o [3P/2P/Ttr/Elíptico]: 50,0,0",
+      "Precise radio de base o [Diámetro] <5.0000>: 5",
+      "Precise altura o [2Puntos/punto final Eje] <8.0000>: _A",
+      "Precise punto final de eje: 50,0,0",
+      "No puede ser un valor igual a cero.",
+      "Precise punto final de eje: 50,0,9",
+      "CONO",
+      "Precise centro de base o [3P/2P/Ttr/Elíptico]: 100,0,0",
+      "Precise radio de base o [Diámetro] <5.0000>: 5",
+      "Indique altura o [2Puntos/punto final Eje/Radio superior] <9.0000>: 0",
+      "El valor debe ser diferente de cero.",
+      "Indique altura o [2Puntos/punto final Eje/Radio superior] <9.0000>: 8",
+    ])
+    const portuguese = console(ptBR)
+    expect(
+      written(
+        portuguese,
+        "CILINDRO",
+        "0,0,0",
+        "5",
+        "0",
+        "_2P",
+        "0,0,0",
+        "0,0,0",
+        "0,0,8",
+        "CILINDRO",
+        "50,0,0",
+        "5",
+        "_A",
+        "50,0,0",
+        "50,0,9",
+        "CONE",
+        "100,0,0",
+        "5",
+        "0"
+      ).filter((line) => line.endsWith("zero."))
+    ).toEqual([
+      "O valor deve ser diferente de zero.",
+      "Este valor precisa ser diferente de zero.",
+      "Este valor precisa ser diferente de zero.",
+      "O valor deve ser diferente de zero.",
+    ])
+  })
+
   it("moves, turns, mirrors and scales as a cylinder, not exploded (c10, c11)", () => {
     const cad = console()
     answer(cad, "CYLINDER", "0,0,0", "5", "8")
@@ -1476,6 +1596,79 @@ describe("CONE", () => {
     )
   })
 
+  it("offers the shared radius at Elliptical's distance to the first axis, which an ellipse leaves (primitives/p151, p236, p247)", () => {
+    const cad = console()
+    answer(cad, "CYLINDER", "0,0,0", "7", "8")
+    expect(
+      written(cad, "CYLINDER", "_E", "_C", "50,0,0", "", "50,3,0", "8").slice(
+        4,
+        6
+      )
+    ).toEqual([
+      "Specify distance to first axis <7.0000>:",
+      "Specify endpoint of second axis: 50,3,0",
+    ])
+    expect(listed(cad).slice(2, 4)).toEqual([
+      "     Major radius: 7.0000",
+      "     Minor radius: 3.0000",
+    ])
+    answer(cad, "CYLINDER", "_E", "_C", "100,0,0", "4", "100,2,0", "8")
+    expect(
+      written(cad, "CONE", "_E", "_C", "150,0,0", "", "150,2,0", "8")[4]
+    ).toBe("Specify distance to first axis <7.0000>:")
+    answer(cad, "CONE", "_E", "200,0,0", "212,0", "206,3", "8")
+    answer(cad, "SPHERE", "300,0,0", "3")
+    expect(
+      written(cad, "CONE", "_E", "_C", "350,0,0", "", "350,1,0", "8")[4]
+    ).toBe("Specify distance to first axis <3.0000>:")
+    expect(listed(cad).slice(2, 4)).toEqual([
+      "Base major radius: 3.0000",
+      "Base minor radius: 1.0000",
+    ])
+    expect(written(cad, "CYLINDER", "400,0,0", "", "8")[2]).toBe(
+      "Specify base radius or [Diameter] <3.0000>:"
+    )
+  })
+
+  it("offers the top radius the last cone was made with, not one answered in its run (primitives/p207, p418)", () => {
+    const cad = console()
+    expect(
+      written(cad, "CONE", "0,0,0", "5", "_T", "_D", "2", "_T", "3", "8").slice(
+        3
+      )
+    ).toEqual([
+      "Specify height or [2Point/Axis endpoint/Top radius]: _T",
+      "Specify top radius <0.0000>: _D",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify top radius <0.0000>: 2",
+      "Specify height or [2Point/Axis endpoint]: _T",
+      "Specify top radius <0.0000>: 3",
+      "Specify height or [2Point/Axis endpoint]: 8",
+    ])
+    expect(listed(cad)[3]).toBe("       Top radius: 3.0000")
+    // A cone made with no Top radius leaves 0 for the next, PYRAMID's too.
+    answer(cad, "CONE", "60,0,0", "5", "_T", "2", "8")
+    answer(cad, "CONE", "_E", "80,0,0", "90,0", "85,3", "-8")
+    expect(
+      written(cad, "PYRAMID", "200,0,0", "5", "_T", "2", "8").slice(4, 6)
+    ).toEqual([
+      "Specify height or [2Point/Axis endpoint/Top radius] <-8.0000>: _T",
+      "Specify top radius <0.0000>: 2",
+    ])
+  })
+
+  it("refuses Enter at a height with no default in pt-BR too (k04, p215, p239: pt-BR's console ends it)", () => {
+    const portuguese = console(ptBR)
+    expect(written(portuguese, "CONE", "0,0,0", "5", "", "8").slice(3)).toEqual(
+      [
+        "Especificar altura ou [2Pontos/ponto final Eixo/Raio superior]:",
+        "Requer distância numérica, segundo ponto ou opção.",
+        "Especificar altura ou [2Pontos/ponto final Eixo/Raio superior]: 8",
+      ]
+    )
+    expect(solids(portuguese)).toHaveLength(1)
+  })
+
   it("asks in each language, by its own name (n02)", () => {
     const spanish = console(es)
     expect(written(spanish, "CONO", "0,0,0", "5", "R", "2", "8")).toEqual([
@@ -1517,6 +1710,373 @@ describe("CONE", () => {
       snapshotOf(document.getEntities(), { settings: document.getSettings() })
     )
     expect(parseDrawingFile(file).entities).toEqual(document.getEntities())
+  })
+})
+
+describe("CYLINDER and CONE, answer by answer", () => {
+  it("refuses another prompt's keyword at each prompt (primitives/p205, p206, p210)", () => {
+    const cad = console()
+    expect(
+      written(
+        cad,
+        "_CYLINDER",
+        "_D",
+        "_A",
+        "0,0,0",
+        "_A",
+        "_E",
+        "5",
+        "_T",
+        "_D",
+        "_E",
+        "8"
+      ).slice(1)
+    ).toEqual([
+      "Specify center point of base or [3P/2P/Ttr/Elliptical]: _D",
+      "Point or option keyword required.",
+      "Specify center point of base or [3P/2P/Ttr/Elliptical]: _A",
+      "Point or option keyword required.",
+      "Specify center point of base or [3P/2P/Ttr/Elliptical]: 0,0,0",
+      "Specify base radius or [Diameter]: _A",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify base radius or [Diameter]: _E",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify base radius or [Diameter]: 5",
+      "Specify height or [2Point/Axis endpoint]: _T",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify height or [2Point/Axis endpoint]: _D",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify height or [2Point/Axis endpoint]: _E",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify height or [2Point/Axis endpoint]: 8",
+    ])
+    // CONE's height takes no Center, which CYLINDER's hides (p206).
+    expect(written(cad, "_CONE", "50,0,0", "5", "_C", "8").slice(3)).toEqual([
+      "Specify height or [2Point/Axis endpoint/Top radius] <8.0000>: _C",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify height or [2Point/Axis endpoint/Top radius] <8.0000>: 8",
+    ])
+    answer(cad, "_LINE", "0,0", "100,0", "", "_LINE", "0,0", "0,100", "")
+    answer(cad, "_ZOOM", "_E")
+    expect(
+      written(
+        cad,
+        "_CYLINDER",
+        "_T",
+        "_D",
+        "_TAN",
+        "50,0",
+        "_D",
+        "_TAN",
+        "0,50",
+        "_D",
+        "10",
+        "5"
+      ).slice(1)
+    ).toEqual([
+      "Specify center point of base or [3P/2P/Ttr/Elliptical]: _T",
+      "Specify point on object for first tangent: _D",
+      "Requires a TAN object-snap and selection of Circle, Arc, or Line.",
+      "Specify point on object for first tangent: _TAN to 50,0",
+      "Specify point on object for second tangent: _D",
+      "Requires a TAN object-snap and selection of Circle, Arc, or Line.",
+      "Specify point on object for second tangent: _TAN to 0,50",
+      "Specify radius of circle <5.0000>: _D",
+      "Requires numeric distance or two points.",
+      "Specify radius of circle <5.0000>: 10",
+      "Specify height or [2Point/Axis endpoint] <8.0000>: 5",
+    ])
+  })
+
+  it("refuses Enter at every point prompt (primitives/p211, p238)", () => {
+    const cad = console()
+    expect(
+      written(
+        cad,
+        "_CYLINDER",
+        "_3P",
+        "",
+        "0,0,0",
+        "",
+        "10,0,0",
+        "",
+        "0,10,0",
+        "5"
+      ).slice(2)
+    ).toEqual([
+      "Specify first point:",
+      "Point or option keyword required.",
+      "Specify first point: 0,0,0",
+      "Specify second point:",
+      "Point or option keyword required.",
+      "Specify second point: 10,0,0",
+      "Specify third point:",
+      "Point or option keyword required.",
+      "Specify third point: 0,10,0",
+      "Specify height or [2Point/Axis endpoint]: 5",
+    ])
+    expect(
+      written(cad, "_CYLINDER", "_2P", "", "50,0,0", "", "60,0,0", "5").slice(2)
+    ).toEqual([
+      "Specify first end point of diameter:",
+      "Point or option keyword required.",
+      "Specify first end point of diameter: 50,0,0",
+      "Specify second end point of diameter:",
+      "Point or option keyword required.",
+      "Specify second end point of diameter: 60,0,0",
+      "Specify height or [2Point/Axis endpoint] <5.0000>: 5",
+    ])
+    expect(
+      written(
+        cad,
+        "_CYLINDER",
+        "_E",
+        "",
+        "100,0,0",
+        "",
+        "110,0,0",
+        "",
+        "100,3,0",
+        "5"
+      ).slice(2)
+    ).toEqual([
+      "Specify endpoint of first axis or [Center]:",
+      "Point or option keyword required.",
+      "Specify endpoint of first axis or [Center]: 100,0,0",
+      "Specify other endpoint of first axis:",
+      "Point or option keyword required.",
+      "Specify other endpoint of first axis: 110,0,0",
+      "Specify endpoint of second axis:",
+      "Point or option keyword required.",
+      "Specify endpoint of second axis: 100,3,0",
+      "Specify height or [2Point/Axis endpoint] <5.0000>: 5",
+    ])
+    expect(
+      written(
+        cad,
+        "_CYLINDER",
+        "_E",
+        "_C",
+        "",
+        "150,0,0",
+        "3",
+        "",
+        "150,5,0",
+        "5"
+      ).slice(3)
+    ).toEqual([
+      "Specify center point:",
+      "Point or option keyword required.",
+      "Specify center point: 150,0,0",
+      "Specify distance to first axis <5.0000>: 3",
+      "Specify endpoint of second axis:",
+      "Point or option keyword required.",
+      "Specify endpoint of second axis: 150,5,0",
+      "Specify height or [2Point/Axis endpoint] <5.0000>: 5",
+    ])
+    expect(
+      written(cad, "_CYLINDER", "200,0,0", "5", "_A", "", "200,0,8").slice(4)
+    ).toEqual([
+      "Specify axis endpoint:",
+      "Point or option keyword required.",
+      "Specify axis endpoint: 200,0,8",
+    ])
+    expect(
+      written(
+        cad,
+        "_CYLINDER",
+        "250,0,0",
+        "5",
+        "_2P",
+        "",
+        "0,0,0",
+        "",
+        "0,0,5"
+      ).slice(4)
+    ).toEqual([
+      "Specify first point:",
+      "Point or option keyword required.",
+      "Specify first point: 0,0,0",
+      "Specify second point:",
+      "Point or option keyword required.",
+      "Specify second point: 0,0,5",
+    ])
+    expect(
+      written(
+        cad,
+        "_CONE",
+        "_3P",
+        "",
+        "300,0,0",
+        "",
+        "310,0,0",
+        "",
+        "300,10,0",
+        "5"
+      ).slice(2, 4)
+    ).toEqual(["Specify first point:", "Point or option keyword required."])
+    expect(
+      written(cad, "_CONE", "_2P", "", "350,0,0", "", "360,0,0", "5").slice(
+        2,
+        4
+      )
+    ).toEqual([
+      "Specify first end point of diameter:",
+      "Point or option keyword required.",
+    ])
+    expect(solids(cad)).toHaveLength(8)
+  })
+
+  it("reads `@` from the prompt's base, a bare `@` its base itself (primitives/p216, p218, p219)", () => {
+    const cad = console()
+    answer(cad, "_CYLINDER", "_E", "0,0,0", "10,0,0", "@0,3", "8")
+    expect(listed(cad).slice(2)).toEqual([
+      "     Major radius: 5.0000",
+      "     Minor radius: 3.0000",
+      "           Height: 8.0000",
+      "         Rotation: 90",
+    ])
+    answer(cad, "_CYLINDER", "0,0,0", "10,0,0", "@0,5,0")
+    expect(listed(cad).slice(2)).toEqual([
+      "           Radius: 10.0000",
+      "           Height: 5.0000",
+    ])
+    answer(cad, "_CYLINDER", "50,0,0", "60,0,0", "_A", "@0,0,9")
+    expect(listed(cad).slice(1)).toEqual([
+      "         Position, X = 50.0000   Y = 0.0000    Z = 0.0000",
+      "           Radius: 10.0000",
+      "           Height: 9.0000",
+    ])
+    expect(
+      written(cad, "_CYLINDER", "_E", "0,0,0", "10,0,0", "@").slice(-2)
+    ).toEqual([
+      "Specify endpoint of second axis: @",
+      "Ellipse axes lengths must be positive and nonzero",
+    ])
+  })
+
+  it("runs a bare number from the base toward the cursor (primitives/p221, p222)", () => {
+    const cad = console()
+    answer(cad, "_CYLINDER", "_E", "0,0,0", "10,0,0", "3", "8")
+    expect(listed(cad).slice(2)).toEqual([
+      "     Major radius: 5.0000",
+      "     Minor radius: 3.0000",
+      "           Height: 8.0000",
+      "         Rotation: 22",
+    ])
+    answer(cad, "_CYLINDER", "_3P", "0,0,0", "10", "0,10,0", "5")
+    expect(listed(cad).slice(1, 3)).toEqual([
+      "         Position, X = 3.3818    Y = 5.0000    Z = 0.0000",
+      "           Radius: 6.0363",
+    ])
+    answer(cad, "_CYLINDER", "100,0,0", "5", "_A", "8")
+    expect(listed(cad).slice(1, 5)).toEqual([
+      "         Position, X = 100.0000  Y = 0.0000    Z = 0.0000",
+      "           Normal: X = 0.8529    Y = 0.5221    Z = 0.0000",
+      "           Radius: 5.0000",
+      "           Height: 8.0000",
+    ])
+  })
+
+  it("measures a radius point off the base's plane in space (primitives/p242)", () => {
+    const cad = console()
+    answer(cad, "_CYLINDER", "0,0,0", "3,0,4", "8")
+    expect(listed(cad)[2]).toBe("           Radius: 5.0000")
+    answer(cad, "_SPHERE", "50,0,0", "53,0,4")
+    expect(listed(cad)[2]).toBe("           Radius: 5.0000")
+    answer(cad, "_TORUS", "100,0,0", "103,0,4", "1")
+    expect(listed(cad)[2]).toBe("     Torus radius: 5.0000")
+  })
+
+  it("makes Ttr's base tangent to a circle and an arc (primitives/p225)", () => {
+    const cad = console()
+    answer(cad, "_CIRCLE", "0,0", "10", "_ARC", "_C", "30,0", "40,0", "20,0")
+    answer(cad, "_ZOOM", "_E")
+    answer(cad, "_CYLINDER", "_T", "_TAN", "0,10", "_TAN", "30,10", "10", "5")
+    expect(listed(cad).slice(1, 3)).toEqual([
+      "         Position, X = 15.0000   Y = 13.2288   Z = 0.0000",
+      "           Radius: 10.0000",
+    ])
+  })
+
+  it("leaves a typed point to Ortho, which bends a bare number (primitives/p228)", () => {
+    const cad = console()
+    answer(cad, "_ORTHOMODE", "1", "_CYLINDER", "0,0,0", "3,4", "8")
+    answer(cad, "_CYLINDER", "50,0,0", "5", "_A", "53,0,4")
+    answer(cad, "_CYLINDER", "150,0,0", "5", "_A", "8")
+    const [bent, typed, radius] = listedAll(cad)
+    expect(bent.slice(1, 3)).toEqual([
+      "         Position, X = 150.0000  Y = 0.0000    Z = 0.0000",
+      "           Normal: X = 1.0000    Y = 0.0000    Z = 0.0000",
+    ])
+    expect(typed.slice(2, 5)).toEqual([
+      "           Normal: X = 0.6000    Y = 0.0000    Z = 0.8000",
+      "           Radius: 5.0000",
+      "           Height: 5.0000",
+    ])
+    expect(radius[2]).toBe("           Radius: 5.0000")
+  })
+
+  it("wears the current layer and properties at ELEVATION, those of its end when set mid-command (primitives/p234, p235)", () => {
+    const cad = console()
+    const l1 = cad.runtime.createLayer("L1", undefined, true)
+    answer(cad, "_-COLOR", "3", "_CELTYPE", "DASHED", "_CELWEIGHT", "50")
+    answer(cad, "_ELEVATION", "5", "_THICKNESS", "3")
+    answer(cad, "_CYLINDER", "0,0", "5", "8", "_CONE", "20,0", "5", "8")
+    answer(cad, "_SPHERE", "40,0", "5", "_TORUS", "60,0", "5", "1")
+    for (const solid of solids(cad)) {
+      expect(solid).toMatchObject({
+        layerId: l1,
+        color: "#00ff00",
+        linetype: "Dashed",
+        lineweight: 0.5,
+      })
+      expect(solid.primitive?.position.z).toBe(5)
+    }
+    const later = console()
+    const l2 = later.runtime.createLayer("L2", undefined, true)
+    answer(
+      later,
+      "_CYLINDER",
+      "0,0",
+      "'_-COLOR",
+      "1",
+      "5",
+      "'_ELEVATION",
+      "7",
+      "8"
+    )
+    answer(later, "_TORUS", "50,0", "'_CLAYER", "0", "5", "'_-COLOR", "4", "1")
+    const [cylinder, torus] = solids(later)
+    expect(cylinder).toMatchObject({ layerId: l2, color: "#ff0000" })
+    expect(cylinder.primitive?.position.z).toBe(0)
+    expect(torus).toMatchObject({ layerId: "0", color: "#00ffff" })
+    expect(torus.primitive?.position.z).toBe(7)
+  })
+
+  it("lies in a tilted UCS at its ELEVATION (primitives/p243)", () => {
+    const cad = console()
+    answer(cad, "_UCS", "_X", "30", "_ELEVATION", "5")
+    answer(cad, "_SPHERE", "0,0", "5", "_TORUS", "50,0", "10", "2")
+    answer(
+      cad,
+      "_CONE",
+      "100,0",
+      "5",
+      "8",
+      "_CYLINDER",
+      "_2P",
+      "150,0",
+      "160,0",
+      "8"
+    )
+    answer(cad, "_UCS", "_W")
+    expect(listedAll(cad).map((block) => block[1])).toEqual([
+      "         Position, X = 155.0000  Y = -2.5000   Z = 4.3301",
+      "         Position, X = 100.0000  Y = -2.5000   Z = 4.3301",
+      "         Position, X = 50.0000   Y = -2.5000   Z = 4.3301",
+      "         Position, X = 0.0000    Y = -2.5000   Z = 4.3301",
+    ])
   })
 })
 

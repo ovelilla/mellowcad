@@ -1366,7 +1366,6 @@ describe("the engine's English surface", () => {
             "C",
             "300,300",
             "",
-            "40",
             "300,300",
             "330,330",
             "C",

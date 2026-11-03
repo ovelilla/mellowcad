@@ -94,6 +94,8 @@ const FROM_SCRATCH: ReadonlyArray<
     (c) =>
       c.command("WEDGE").click(p(0, 0)).click(p(100, 50)).type("30").enter(),
   ],
+  // probe primitives/p234: CYLINDER's and CONE's, at ELEVATION; p235: set
+  // mid-command, those of the end (solidPrimitives.test.ts).
   [
     "CYLINDER",
     (c) =>
@@ -115,6 +117,7 @@ const FROM_SCRATCH: ReadonlyArray<
     (c) =>
       c.command("PYRAMID").click(p(0, 0)).type("20").enter().type("30").enter(),
   ],
+  // probe primitives/p234, as CYLINDER's.
   ["SPHERE", (c) => c.command("SPHERE").click(p(0, 0)).type("20").enter()],
   // As EXTRUDE's (its help: a solid; **unverified** in the desktop).
   [
@@ -164,6 +167,7 @@ const FROM_SCRATCH: ReadonlyArray<
         .type("30")
         .enter(),
   ],
+  // probe primitives/p234, p235, as CYLINDER's.
   [
     "TORUS",
     (c) =>
