@@ -6767,6 +6767,7 @@ export const ptBR: EngineLocale = {
       "boxZeroLength": "Não é permitido uma Caixa de comprimento zero.",
       "boxZeroWidth": "Não é permitida uma Caixa de largura zero.",
       "boxValueNonzero": "Este valor precisa ser diferente de zero.",
+      "solidAxisNonzero": "Este valor precisa ser diferente de zero.",
       "wedgeZeroLength": "Não é permitido uma Cunha de comprimento zero.",
       "wedgeZeroWidth": "Não é permitida uma Cunha de largura zero.",
       "pyramidSettings": [

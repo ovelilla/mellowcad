@@ -2418,6 +2418,7 @@
   "commands.messages.boxZeroLength": "Box of zero length not permitted.",
   "commands.messages.boxZeroWidth": "Box of zero width not permitted.",
   "commands.messages.boxValueNonzero": "Value must be nonzero.",
+  "commands.messages.solidAxisNonzero": "Value must be nonzero.",
   "commands.messages.wedgeZeroLength": "Wedge of zero length not permitted.",
   "commands.messages.wedgeZeroWidth": "Wedge of zero width not permitted.",
   "commands.messages.pyramidSettings": " {sides} sides  {type, select, inscribed {Inscribed} other {Circumscribed}}",

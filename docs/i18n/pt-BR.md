@@ -328,10 +328,10 @@ in the three languages by `cad/application/promptForms.test.ts`.
 - **-OSNAP's Endpoint is `pONto`** (27408): pt-BR's console takes `PON` and `PONTO` as Node
   (`Ponto`), which is not built here, refuses `EXTR` and `ON`, and no typed word reaches Endpoint
   but `_END` (names/p07–p09).
-- **CONE refuses Enter at a height with no default**, as English, Spanish and pt-BR's CYLINDER
-  do: pt-BR's console ends CONE there with nothing made (solid/k04, primitives/p215, p239: the
-  distance comes back as an empty keyword), a defect of this translation alone (PRIM-D20). The
-  desktop is unchecked.
+- **CONE and PYRAMID refuse Enter at a height with no default**, as English, Spanish and pt-BR's
+  CYLINDER do: pt-BR's console ends them there with nothing made (CONE solid/k04, primitives/p215,
+  p239: the distance comes back as an empty keyword; PYRAMID solid/y03, primitives/p352), a defect
+  of this translation alone (PRIM-D20, PRIM-D40). The desktop is unchecked.
 
 ### Unverified
 

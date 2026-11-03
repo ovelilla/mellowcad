@@ -88,8 +88,10 @@ export class PyramidTool implements Tool {
   private state: PyramidToolState = { phase: "center" }
   private lastScreen: Vec2 | null = null
   /**
-   * The height the mouse gives while the height or Top radius is asked: the
-   * ghost's, and the axis' point Top radius measures from.
+   * The height the mouse gives while the height is asked: the ghost's, and
+   * the axis' point Top radius measures from, kept while it asks — its
+   * prompt's base point is fixed, so a point typed there does not move it
+   * (k02, primitives/p315).
    */
   private rise = 0
 
@@ -121,7 +123,7 @@ export class PyramidTool implements Tool {
     this.lastScreen = input.screen
     const state = this.state
     if ("cursor" in state) this.state = { ...state, cursor: input.point }
-    if (state.phase === "height" || state.phase === "top") {
+    if (state.phase === "height") {
       this.rise = this.heightAt(input, state.base, ctx)
     }
     ctx.dynamicInput.setPosition(input.screen)
@@ -354,8 +356,8 @@ export class PyramidTool implements Tool {
       case "edgeSecond": {
         const base = this.edgeBase(state.first, point, ctx)
         if (!base) {
-          // Asked again (y06).
-          ctx.report(ctx.text.message("positiveNonzero"), "error")
+          // Asked again, in words of its own in es (y06).
+          ctx.report(ctx.text.message("areaPositiveNonzero"), "error")
           return
         }
         this.askHeight(base, ctx)
@@ -374,12 +376,18 @@ export class PyramidTool implements Tool {
         this.state = { ...state, phase: "twoSecond", first: point }
         this.openPoint(ctx, "specifySecondPoint")
         return
-      case "twoSecond":
-        this.takeHeight(this.distanceTo(state.first, point), ctx)
+      case "twoSecond": {
+        const height = this.distanceTo(state.first, point)
+        if (height === 0) {
+          ctx.report(ctx.text.message("solidAxisNonzero"), "error")
+          return
+        }
+        this.commit(state.base, state.top, { height }, ctx)
         return
+      }
       case "axis":
         if (this.distanceTo(state.base.center, point) === 0) {
-          ctx.report(ctx.text.message("boxValueNonzero"), "error")
+          ctx.report(ctx.text.message("solidAxisNonzero"), "error")
           return
         }
         this.commit(state.base, state.top, { axis: point }, ctx)
@@ -483,12 +491,16 @@ export class PyramidTool implements Tool {
     this.openDistance(ctx)
   }
 
-  /** `Value must be nonzero.` for none (y03); a negative one runs down. */
+  /**
+   * `Value must be nonzero.` for none, in the distance's words (y03,
+   * primitives/p351; 2Point's and the axis' are others in es and pt-BR, y06);
+   * a negative one runs down.
+   */
   private takeHeight(height: number, ctx: ToolContext): void {
     const state = this.state
-    if (state.phase !== "height" && state.phase !== "twoSecond") return
+    if (state.phase !== "height") return
     if (height === 0) {
-      ctx.report(ctx.text.message("boxValueNonzero"), "error")
+      ctx.report(ctx.text.message("valueMustBeNonzero"), "error")
       return
     }
     this.commit(state.base, state.top, { height }, ctx)
@@ -667,6 +679,10 @@ export class PyramidTool implements Tool {
           this.takeValue(enter, "default", commitCtx)
           return true
         }
+        // WHY: pt-BR's console ends PYRAMID with nothing made at Enter on a
+        // height with no default (solid/y03, primitives/p352), a defect of
+        // that translation alone, as CONE's: en, es and pt-BR's CYLINDER
+        // refuse, as every language does here (PRIM-D40).
         this.refuse(commitCtx)
         return true
       },

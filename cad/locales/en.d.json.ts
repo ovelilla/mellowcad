@@ -2725,6 +2725,7 @@ declare const source: {
       "boxZeroLength": string
       "boxZeroWidth": string
       "boxValueNonzero": string
+      "solidAxisNonzero": string
       "wedgeZeroLength": string
       "wedgeZeroWidth": string
       "pyramidSettings": string

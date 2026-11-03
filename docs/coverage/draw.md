@@ -1296,38 +1296,49 @@ each along the line of sight; a drag that would turn the ring across the axis le
 
 ### `PYRAMID` / `PYR` · es `PIRAMIDE` / `PIR` · pt-BR `PIRAMIDE` / `PIR`
 
-**Implemented:** PYRAMID as 2027's console asks it (solid/y01–y10, v04), in en, es and pt-BR:
-first ` 4 sides  Circumscribed` (es and pt-BR ` 4 lados circunscritos`, ` 6 lados inscritos`), then
+**Implemented:** PYRAMID as 2027's console asks it (solid/y01–y10, v04), in en, es and pt-BR: first
+` 4 sides  Circumscribed` (es and pt-BR ` 4 lados circunscritos`, ` 6 lados inscritos`), then
 `Specify center point of base or [Edge/Sides]:`, `Specify base radius or [Inscribed]:` and `Specify
-height or [2Point/Axis endpoint/Top radius]:` (es `Precise centro de base o [Arista/Lados]`, `Precise
-radio de base o [Inscrito]`, `Indique altura o [2Puntos/punto final Eje/Radio superior]`; pt-BR
-`Especificar ponto central da base ou [Aresta/Lados]`, `Especificar raio base  ou [Inscrito]` with
-its two spaces, `… raio de base ou [Circunscrito]`, `Especificar altura ou [2Pontos/ponto final
-Eixo/Raio superior]`). Sides asks `Enter number of sides <4>:`, 3 to 32 (`Requires an integer
-between 3 and 32.`), and the centre again with no new line (y02, y03). Edge asks `Specify first
-endpoint of edge:` and `Specify second endpoint of edge:`, the base to the edge's left (y02, y06).
-Inscribed and Circumscribed switch how a radius is read — to a corner, or to the middle of a side
-— and ask it again; the sides and the Type are kept for the next PYRAMID, over OPEN too
-(primitives/p158), and said in its first line (y02). A typed radius turns the base towards the cursor, a point towards itself: Circumscribed puts
-the middle of a side there, Inscribed a corner (y01: Rotation 22 = the cursor's heading; y02: 56 =
-26 + 30); Enter takes the last radius as the circle its corners lie on, a corner then on the UCS's X
-(y05, v04: Rotation 0 Circumscribed, 45 Inscribed). Top radius asks `Specify top radius <0.0000>:`,
-read by the Type, and the height again as `Specify height or [2Point/Axis endpoint]:` (es `Precise
-altura o`); a top as large as the base makes a prism (y05). Axis endpoint asks `Specify axis
-endpoint:` and tilts the base into the plane normal to the axis, turned by the same angle in that
-plane's OCS, the UCS's arbitrary axis (y09); 2Point asks two points. The height rises along the
-UCS's Z, down when negative; a point, the cursor or a snap gives it as at BOX's (z01; the cursor's
-reading **unverified** on the desktop). Refusals: `Point or option keyword
-required.` at the centre, `Invalid point.` at Edge's, the axis' (y06) and 2Point's (primitives/p154,
-p312), `Requires
-numeric distance, second point, or option keyword.` at the radius and the height, `Requires numeric
-distance or second point.` at the top radius, `Value must be positive and nonzero.` for a radius of
-0 or less and an edge of no length, `Value must be nonzero.` for a height of 0 and an axis or 2Point
-of no length, `Value must be positive.` for a negative top radius (y03–y06; es `El valor debe ser
-positivo y diferente de cero.`). The defaults are the primitives' shared ones: the height BOX's,
-the radius kept as the corners' circle (`<7.0711>` after a circumscribed 5, y05), which CYLINDER,
-CONE, SPHERE and TORUS share (x01), and the top radius CONE's (y10). It lies in a tilted UCS
-and at its Z (y07); it wears the current layer and properties; one undo step.
+height or [2Point/Axis endpoint/Top radius]:` (es `Precise centro de base o [Arista/Lados]`,
+`Precise radio de base o [Inscrito]`, `Indique altura o [2Puntos/punto final Eje/Radio superior]`;
+pt-BR `Especificar ponto central da base ou [Aresta/Lados]`, `Especificar raio base  ou [Inscrito]`
+with its two spaces, `… raio de base ou [Circunscrito]`, `Especificar altura ou [2Pontos/ponto final
+Eixo/Raio superior]`); repeated by Enter, it says its sides and Type again (primitives/p300, p302).
+Sides asks `Enter number of sides <4>:`, 3 to 32 (`Requires an integer between 3 and 32.` for 2, 33,
+4.5, −4, 0 or a keyword), and the centre again with no new line (y02, y03, primitives/p304–p306).
+Edge asks `Specify first endpoint of edge:` and `Specify second endpoint of edge:`, the base to the
+edge's left (y02, y06). Inscribed and Circumscribed switch how a radius is read — to a corner, or to
+the middle of a side — and ask it again; the sides and the Type are kept for the next PYRAMID, over
+OPEN too (primitives/p158), and said in its first line (y02). A typed radius turns the base towards
+the cursor, a point towards itself: Circumscribed puts the middle of a side there, Inscribed a
+corner (y01: Rotation 22 = the cursor's heading; y02: 56 = 26 + 30); Enter takes the last radius as
+the circle its corners lie on, a corner then on the UCS's X (y05, v04: Rotation 0 Circumscribed, 45
+Inscribed). Top radius asks `Specify top radius <0.0000>:`, read by the Type, and the height again
+as `Specify height or [2Point/Axis endpoint]:` (es `Precise altura o`); a top as large as the base
+makes a prism (y05). A point there is measured from the axis at the height the cursor gave as Top
+was typed, which the point does not move (`@2,0` a top of exactly 2, primitives/p315). Axis endpoint
+asks `Specify axis endpoint:` and tilts the base into the plane normal to the axis, turned by the
+same angle in that plane's OCS, the UCS's arbitrary axis (y09); 2Point asks two points. The height
+rises along the UCS's Z, down when negative; a point, the cursor or a snap gives it as at BOX's
+(z01; the cursor's reading **unverified** on the desktop). Every point form: ELEVATION, `@`, polar,
+`*` (LIST then reads it in the UCS), a bare number along the cursor, END, MID and FRO, Ortho leaving
+typed points alone (primitives/p314–p318, p320–p322). Refusals, another prompt's keyword too
+(p306–p310): `Point or option keyword required.` at the centre, `Invalid point.` at Edge's, the
+axis' (y06, primitives/p311, p313) and 2Point's (primitives/p154, p312), `Requires numeric distance,
+second point, or option keyword.` at the radius and the height, `Requires numeric distance or second
+point.` at the top radius, Enter too where nothing is offered; `Value must be positive and nonzero.`
+for a radius of 0 or less (y03, y04; es `El valor debe ser positivo y diferente de cero.`) and an
+edge of no length (y06; es `… y distinto de cero.`), `Value must be nonzero.` for a height of 0, a
+point or a value (y03, primitives/p351; es `El valor debe ser diferente de cero.`, pt-BR `O valor
+deve ser diferente de zero.`), and for an axis or 2Point of no length (y06, p311; es `El valor no
+puede ser cero.`, pt-BR `Este valor precisa ser diferente de zero.`), `Value must be positive.` for
+a negative top radius (p309). pt-BR's console ends PYRAMID with nothing made at Enter on a height
+with no default (y03, p352); here it refuses, as in en and es (PRIM-D40, `docs/i18n/pt-BR.md`).
+Transparent commands run at its prompts, `'PYRAMID` is refused (p303, p323, p324). The defaults are
+the primitives' shared ones: the height BOX's, the radius kept as the corners' circle (`<7.0711>`
+after a circumscribed 5, y05), which CYLINDER, CONE, SPHERE and TORUS share (x01), and the top
+radius CONE's (y10). It lies in a tilted UCS and at its Z (y07); it wears the current layer and
+properties, those of its end when set mid-command (primitives/p325, p326); one undo step.
 
 The object, a 3D solid (file version 44): the base, the triangles or a frustum's quadrilaterals
 and its top, its edges run as ACIS runs them — the base's round the base, the top's round the top,
@@ -1347,8 +1358,9 @@ EXPLODE leaves a region of each face (y08). Everything else a solid does is BOX'
 
 **Missing:** BOX's (the hot grip's other modes, the 3D commands, the visual styles VSCURRENT lacks); its
 Type typed in the palette (greyed here: what it does to the solid **unverified**). The console's
-cursor in a tilted UCS turns a typed radius by its own projection (y07's Rotation 4), which the
-harness does not reproduce; a radius given by a point there is exact.
+cursor in a tilted or a rotated UCS turns a typed radius by its own projection (y07's Rotation 4,
+primitives/p317's 346), which the harness does not reproduce, as `<a` at its prompts (p319): the
+desktop's (PDT); a radius given by a point there is exact.
 
 ### `EXTRUDE` / `EXT` · es `EXTRUSION` / `EXT` · pt-BR `EXTRUSAO` / `EX`
 

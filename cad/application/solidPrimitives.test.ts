@@ -767,6 +767,448 @@ describe("PYRAMID", () => {
   })
 })
 
+describe("PYRAMID, answer by answer", () => {
+  it("refuses a zero height, axis, 2Point and edge in each language's words (solid/y03, y06, primitives/p311, p351)", () => {
+    const zeros = (cad: CadHarness) => [
+      written(cad, "_PYRAMID", "0,0,0", "5", "0").at(-1),
+      written(cad, "0,0,0").at(-1),
+      written(cad, "_A", "0,0,0").at(-1),
+      written(cad, "0").at(-1),
+      written(
+        cad.escape(),
+        "_PYRAMID",
+        "0,0,0",
+        "5",
+        "_2P",
+        "0,0,0",
+        "0,0,0"
+      ).at(-1),
+      written(cad.escape(), "_PYRAMID", "_E", "0,0,0", "0,0").at(-1),
+    ]
+    expect(zeros(console())).toEqual([
+      "Value must be nonzero.",
+      "Value must be nonzero.",
+      "Value must be nonzero.",
+      "Value must be nonzero.",
+      "Value must be nonzero.",
+      "Value must be positive and nonzero.",
+    ])
+    expect(zeros(console(es))).toEqual([
+      "El valor debe ser diferente de cero.",
+      "El valor debe ser diferente de cero.",
+      "El valor no puede ser cero.",
+      "El valor no puede ser cero.",
+      "El valor no puede ser cero.",
+      "El valor debe ser positivo y distinto de cero.",
+    ])
+    expect(zeros(console(ptBR))).toEqual([
+      "O valor deve ser diferente de zero.",
+      "O valor deve ser diferente de zero.",
+      "Este valor precisa ser diferente de zero.",
+      "Este valor precisa ser diferente de zero.",
+      "Este valor precisa ser diferente de zero.",
+      "O valor deve ser positivo e diferente de zero.",
+    ])
+  })
+
+  it("measures a point typed at Top radius from where the height prompt left the axis (primitives/p315)", () => {
+    const cad = console()
+    answer(cad, "_PYRAMID", "150,0,0", "5", "_T", "@2,0", "8")
+    expect(listed(cad).slice(4, 6)).toEqual([
+      "     Inscribed top radius: 2.8284",
+      " Circumscribed top radius: 2.0000",
+    ])
+    const top = last(cad).primitive
+    expect(top?.kind === "pyramid" && top.topRadius).toBeCloseTo(
+      2 / Math.cos(Math.PI / 4),
+      9
+    )
+  })
+
+  it("refuses Enter at a height with no default in pt-BR too (solid/y03, primitives/p352: pt-BR's console ends it, PRIM-D40)", () => {
+    const portuguese = console(ptBR)
+    expect(
+      written(portuguese, "_PYRAMID", "0,0,0", "5", "", "8").slice(4)
+    ).toEqual([
+      "Especificar altura ou [2Pontos/ponto final Eixo/Raio superior]:",
+      "Requer distância numérica, segundo ponto ou opção.",
+      "Especificar altura ou [2Pontos/ponto final Eixo/Raio superior]: 8",
+    ])
+    expect(solids(portuguese)).toHaveLength(1)
+  })
+
+  it("says its sides and Type again when repeated by Enter (primitives/p300, p302)", () => {
+    const cad = console()
+    answer(cad, "_PYRAMID", "_S", "6", "0,0,0", "_I", "5", "8")
+    expect(written(cad, "", "10,0,0", "5", "8")).toEqual([
+      "PYRAMID",
+      " 6 sides  Inscribed",
+      "Specify center point of base or [Edge/Sides]: 10,0,0",
+      "Specify base radius or [Circumscribed] <5.0000>: 5",
+      "Specify height or [2Point/Axis endpoint/Top radius] <8.0000>: 8",
+    ])
+    expect(listed(cad).slice(1, 4)).toEqual([
+      "         Position, X = 10.0000   Y = 0.0000    Z = 0.0000",
+      "    Inscribed base radius: 5.0000",
+      "Circumscribed base radius: 4.3301",
+    ])
+    expect(listed(cad)[7]).toBe("         Rotation: 53")
+    const portuguese = console(ptBR)
+    answer(portuguese, "PIR", "0,0,0", "5", "8")
+    expect(written(portuguese, "", "10,0,0", "5", "8")).toEqual([
+      "PIRAMIDE",
+      " 4 lados circunscritos",
+      "Especificar ponto central da base ou [Aresta/Lados]: 10,0,0",
+      "Especificar raio base  ou [Inscrito] <7.0711>: 5",
+      "Especificar altura ou [2Pontos/ponto final Eixo/Raio superior] <8.0000>: 8",
+    ])
+  })
+
+  it("is refused transparently, 'PYRAMID at LINE's prompt (primitives/p303)", () => {
+    const cad = console()
+    expect(
+      written(cad, "_LINE", "'_PYRAMID", "0,0", "10,0", "").slice(2, 5)
+    ).toEqual([
+      "** That command may not be invoked transparently **",
+      "Invalid point.",
+      "Specify first point: 0,0",
+    ])
+  })
+
+  it("takes 3 to 32 sides and refuses 4.5, -4 and 0 (primitives/p304, p305)", () => {
+    const cad = console()
+    expect(
+      written(cad, "_PYRAMID", "_S", "4.5", "3", "0,0,0", "5", "8").slice(3, 6)
+    ).toEqual([
+      "Enter number of sides <4>: 4.5",
+      "Requires an integer between 3 and 32.",
+      "Enter number of sides <4>: 3",
+    ])
+    expect(listed(cad).slice(2, 4)).toEqual([
+      "    Inscribed base radius: 10.0000",
+      "Circumscribed base radius: 5.0000",
+    ])
+    expect(
+      written(cad, "_PYRAMID", "_S", "-4", "0", "32", "0,0,0", "5", "8").slice(
+        3,
+        8
+      )
+    ).toEqual([
+      "Enter number of sides <3>: -4",
+      "Requires an integer between 3 and 32.",
+      "Enter number of sides <3>: 0",
+      "Requires an integer between 3 and 32.",
+      "Enter number of sides <3>: 32",
+    ])
+    expect(listed(cad).slice(2, 4)).toEqual([
+      "    Inscribed base radius: 5.0242",
+      "Circumscribed base radius: 5.0000",
+    ])
+    expect(listed(cad)[8]).toBe("  Number of sides: 32")
+  })
+
+  it("refuses another prompt's keyword at each prompt (primitives/p306–p310)", () => {
+    const cad = console()
+    expect(
+      written(cad, "_PYRAMID", "_S", "_E", "3", "_I", "_T", "0,0,0").slice(3)
+    ).toEqual([
+      "Enter number of sides <4>: _E",
+      "Requires an integer between 3 and 32.",
+      "Enter number of sides <4>: 3",
+      "Specify center point of base or [Edge/Sides]: _I",
+      "Point or option keyword required.",
+      "Specify center point of base or [Edge/Sides]: _T",
+      "Point or option keyword required.",
+      "Specify center point of base or [Edge/Sides]: 0,0,0",
+    ])
+    expect(written(cad, "_C", "_T", "_S", "_I", "_I", "5")).toEqual([
+      "Specify base radius or [Inscribed]: _C",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify base radius or [Inscribed]: _T",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify base radius or [Inscribed]: _S",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify base radius or [Inscribed]: _I",
+      "Specify base radius or [Circumscribed]: _I",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify base radius or [Circumscribed]: 5",
+    ])
+    expect(written(cad, "_I", "_E", "_S", "_T", "2", "_T", "3")).toEqual([
+      "Specify height or [2Point/Axis endpoint/Top radius]: _I",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify height or [2Point/Axis endpoint/Top radius]: _E",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify height or [2Point/Axis endpoint/Top radius]: _S",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify height or [2Point/Axis endpoint/Top radius]: _T",
+      "Specify top radius <0.0000>: 2",
+      "Specify height or [2Point/Axis endpoint]: _T",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify height or [2Point/Axis endpoint]: 3",
+    ])
+    expect(listed(cad).slice(2, 7)).toEqual([
+      "    Inscribed base radius: 5.0000",
+      "Circumscribed base radius: 2.5000",
+      "     Inscribed top radius: 2.0000",
+      " Circumscribed top radius: 1.0000",
+      "           Height: 3.0000",
+    ])
+  })
+
+  it("refuses Enter and other keywords at Edge's points and the axis, a 0 there along the cursor (primitives/p311, p313)", () => {
+    const cad = console()
+    expect(
+      written(cad, "_PYRAMID", "_E", "", "_S", "0,0,0", "", "_S", "10,0", "4")
+    ).toEqual([
+      "PYRAMID",
+      " 4 sides  Circumscribed",
+      "Specify center point of base or [Edge/Sides]: _E",
+      "Specify first endpoint of edge:",
+      "Invalid point.",
+      "Specify first endpoint of edge: _S",
+      "Invalid point.",
+      "Specify first endpoint of edge: 0,0,0",
+      "Specify second endpoint of edge:",
+      "Invalid point.",
+      "Specify second endpoint of edge: _S",
+      "Invalid point.",
+      "Specify second endpoint of edge: 10,0",
+      "Specify height or [2Point/Axis endpoint/Top radius]: 4",
+    ])
+    expect(listed(cad)[1]).toBe(
+      "         Position, X = 5.0000    Y = 5.0000    Z = 0.0000"
+    )
+    expect(
+      written(cad, "_PYRAMID", "0,0,0", "5", "_A", "", "_T", "0", "5").slice(4)
+    ).toEqual([
+      "Specify height or [2Point/Axis endpoint/Top radius] <4.0000>: _A",
+      "Specify axis endpoint:",
+      "Invalid point.",
+      "Specify axis endpoint: _T",
+      "Invalid point.",
+      "Specify axis endpoint: 0",
+      "Value must be nonzero.",
+      "Specify axis endpoint: 5",
+    ])
+    expect(listed(cad).slice(2, 3)).toEqual([
+      "           Normal: X = 0.9281    Y = 0.3722    Z = 0.0000",
+    ])
+  })
+
+  it("takes every point form: ELEVATION, `@`, polar, `*` and a bare number (primitives/p314–p318)", () => {
+    const cad = console()
+    answer(cad, "_ELEVATION", "3", "_PYRAMID", "0,0", "5", "8")
+    answer(cad, "_PYRAMID", "_E", "10,0", "20,0", "8")
+    answer(cad, "_PYRAMID", "50,0", "5", "_A", "50,5")
+    answer(cad, "_PYRAMID", "100,0", "5", "_2P", "0,0", "0,10")
+    answer(cad, "_PYRAMID", "150,0,1", "5", "8")
+    expect(listedAll(cad).map((block) => block.slice(1, 3))).toEqual([
+      [
+        "         Position, X = 150.0000  Y = 0.0000    Z = 1.0000",
+        "    Inscribed base radius: 7.0711",
+      ],
+      [
+        "         Position, X = 100.0000  Y = 0.0000    Z = 3.0000",
+        "    Inscribed base radius: 7.0711",
+      ],
+      [
+        "         Position, X = 50.0000   Y = 0.0000    Z = 3.0000",
+        "           Normal: X = 0.0000    Y = 1.0000    Z = 0.0000",
+      ],
+      [
+        "         Position, X = 15.0000   Y = 5.0000    Z = 3.0000",
+        "    Inscribed base radius: 7.0711",
+      ],
+      [
+        "         Position, X = 0.0000    Y = 0.0000    Z = 3.0000",
+        "    Inscribed base radius: 7.0711",
+      ],
+    ])
+    expect(listedAll(cad)[1][6]).toBe("           Height: 10.0000")
+    const typed = console()
+    answer(typed, "_PYRAMID", "0,0,0", "@3,4", "8")
+    expect(listed(typed)[7]).toBe("         Rotation: 53")
+    answer(typed, "_PYRAMID", "_E", "10,0,0", "@10,0", "_A", "@0,0,10")
+    expect(listed(typed).slice(1, 2)).toEqual([
+      "         Position, X = 15.0000   Y = 5.0000    Z = 0.0000",
+    ])
+    expect(listed(typed)[6]).toBe("           Height: 10.0000")
+    answer(typed, "_PYRAMID", "100,0,0", "5", "_2P", "@", "@0,0,6")
+    expect(listed(typed)[6]).toBe("           Height: 6.0000")
+    const polar = console()
+    answer(polar, "_PYRAMID", "10<30", "5", "8")
+    answer(polar, "_PYRAMID", "_E", "10,0,0", "@10<90", "8")
+    answer(polar, "_PYRAMID", "50,0,0", "@5<45", "8")
+    answer(polar, "_PYRAMID", "100,0,0", "5", "_A", "@10<90")
+    const [axis, radius, edge, centre] = listedAll(polar)
+    expect(centre[1]).toBe(
+      "         Position, X = 8.6603    Y = 5.0000    Z = 0.0000"
+    )
+    expect([edge[1], edge[7]]).toEqual([
+      "         Position, X = 5.0000    Y = 5.0000    Z = 0.0000",
+      "         Rotation: 0",
+    ])
+    expect(radius[7]).toBe("         Rotation: 45")
+    expect(axis.slice(2, 3)).toEqual([
+      "           Normal: X = 0.0000    Y = 1.0000    Z = 0.0000",
+    ])
+    const world = console()
+    answer(world, "_UCS", "_Z", "30", "_PYRAMID", "*10,0,0", "5", "8")
+    answer(world, "_PYRAMID", "_E", "*100,0,0", "*110,0,0", "8")
+    answer(world, "_PYRAMID", "300,0,0", "5", "_2P", "*0,0,0", "*0,0,6")
+    // LIST reads them in the UCS, as the console's (p317).
+    const [twoPoint, worldEdge, worldCentre] = listedAll(world)
+    expect(worldCentre[1]).toBe(
+      "         Position, X = 8.6603    Y = -5.0000   Z = 0.0000"
+    )
+    expect(worldEdge[1]).toBe(
+      "         Position, X = 93.4327   Y = -48.1699  Z = 0.0000"
+    )
+    expect(worldEdge[7]).toBe("         Rotation: 240")
+    expect(twoPoint[6]).toBe("           Height: 6.0000")
+    const bare = console()
+    answer(bare, "_PYRAMID", "10", "5", "8")
+    answer(bare, "_PYRAMID", "_E", "50,0,0", "10", "8")
+    answer(bare, "_PYRAMID", "100,0,0", "5", "_A", "10")
+    answer(bare, "_PYRAMID", "150,0,0", "5", "_2P", "150,0,0", "6")
+    const [bareTwo, bareAxis, bareEdge, bareCentre] = listedAll(bare)
+    expect(bareCentre[1]).toBe(
+      "         Position, X = 9.2813    Y = 3.7225    Z = 0.0000"
+    )
+    expect([bareEdge[1], bareEdge[7]]).toEqual([
+      "         Position, X = 52.3189   Y = 6.6800    Z = 0.0000",
+      "         Rotation: 296",
+    ])
+    expect(bareAxis.slice(2, 3)).toEqual([
+      "           Normal: X = 0.8529    Y = 0.5221    Z = 0.0000",
+    ])
+    expect(bareTwo[6]).toBe("           Height: 6.0000")
+  })
+
+  it("takes END, MID and FRO at its prompts (primitives/p320, p321)", () => {
+    const cad = console()
+    answer(cad, "_LINE", "0,0,0", "10,0,0", "10,10,4", "", "_ZOOM", "_E")
+    answer(cad, "_PYRAMID", "_END", "9.9,0.1", "_MID", "5.1,0.1")
+    answer(cad, "_END", "10.1,9.9")
+    expect(listed(cad).slice(1, 7)).toEqual([
+      "         Position, X = 10.0000   Y = 0.0000    Z = 0.0000",
+      "    Inscribed base radius: 7.0711",
+      "Circumscribed base radius: 5.0000",
+      "     Inscribed top radius: 0.0000",
+      " Circumscribed top radius: 0.0000",
+      "           Height: 10.7703",
+    ])
+    answer(cad, "_PYRAMID", "_E", "_END", "0.1,0.1", "_MID", "5,0.1")
+    answer(cad, "_A", "_END", "10.1,9.9")
+    expect(listed(cad).slice(1, 4)).toEqual([
+      "         Position, X = 2.5000    Y = 2.5000    Z = 0.0000",
+      "           Normal: X = 0.6616    Y = 0.6616    Z = 0.3529",
+      "    Inscribed base radius: 3.5355",
+    ])
+    expect(listed(cad)[7]).toBe("           Height: 11.3358")
+    answer(cad, "_PYRAMID", "20,0,0", "5", "_2P", "_END", "0.1,0.1")
+    answer(cad, "_END", "10.1,9.9")
+    expect(listed(cad)[6]).toBe("           Height: 14.6969")
+    const from = console()
+    answer(from, "_PYRAMID", "_FRO", "10,0,0", "@5,5", "5", "8")
+    expect(listed(from)[1]).toBe(
+      "         Position, X = 15.0000   Y = 5.0000    Z = 0.0000"
+    )
+    answer(from, "_PYRAMID", "150,0,0", "_FRO", "150,0,0", "@3,4", "8")
+    expect(listed(from)[7]).toBe("         Rotation: 53")
+  })
+
+  it("leaves typed points to Ortho (primitives/p322)", () => {
+    const cad = console()
+    answer(cad, "ORTHOMODE", "1", "_PYRAMID", "_E", "0,0,0", "10,3", "8")
+    answer(cad, "_PYRAMID", "50,0,0", "53,4", "8")
+    answer(cad, "_PYRAMID", "100,0,0", "5", "_A", "103,4,10")
+    answer(cad, "_PYRAMID", "150,0,0", "5", "_2P", "150,0,0", "153,4,6")
+    const [twoPoint, axis, radius, edge] = listedAll(cad)
+    expect(edge.slice(1, 4)).toEqual([
+      "         Position, X = 3.5000    Y = 6.5000    Z = 0.0000",
+      "    Inscribed base radius: 7.3824",
+      "Circumscribed base radius: 5.2202",
+    ])
+    expect(radius[7]).toBe("         Rotation: 53")
+    expect(axis.slice(2, 3)).toEqual([
+      "           Normal: X = 0.2683    Y = 0.3578    Z = 0.8944",
+    ])
+    expect(twoPoint[6]).toBe("           Height: 7.8102")
+  })
+
+  it("lets transparent commands run at its prompts (primitives/p323, p324)", () => {
+    const cad = console()
+    const out = written(
+      cad,
+      "_PYRAMID",
+      "'_ZOOM",
+      "_E",
+      "_S",
+      "'ORTHOMODE",
+      "1",
+      "6",
+      "0,0,0",
+      "'_LINE",
+      "5",
+      "'_-PAN",
+      "0,0",
+      "1,1",
+      "8"
+    )
+    expect(
+      out.filter((l) => l.startsWith("**") || l.startsWith("Resum"))
+    ).toEqual([
+      "** Requires a regen, cannot be transparent.",
+      "Resuming PYRAMID command.",
+      "Resuming PYRAMID command.",
+      "** That command may not be invoked transparently **",
+      "Resuming PYRAMID command.",
+    ])
+    expect(listed(cad)[8]).toBe("  Number of sides: 6")
+    const edge = console()
+    answer(
+      edge,
+      "_PYRAMID",
+      "_E",
+      "'ORTHOMODE",
+      "0",
+      "0,0,0",
+      "'ORTHOMODE",
+      "0"
+    )
+    answer(edge, "10,0", "_T", "'_ZOOM", "_E", "", "_2P", "'ORTHOMODE", "0")
+    answer(edge, "0,0,0", "'ORTHOMODE", "0", "0,0,5")
+    expect(listed(edge).slice(1, 7)).toEqual([
+      "         Position, X = 5.0000    Y = 5.0000    Z = 0.0000",
+      "    Inscribed base radius: 7.0711",
+      "Circumscribed base radius: 5.0000",
+      "     Inscribed top radius: 0.0000",
+      " Circumscribed top radius: 0.0000",
+      "           Height: 5.0000",
+    ])
+  })
+
+  it("wears the current layer and properties at ELEVATION, those of its end when set mid-command (primitives/p325, p326)", () => {
+    const cad = console()
+    const l1 = cad.runtime.createLayer("L1", undefined, true)
+    answer(cad, "_-COLOR", "1", "_CELWEIGHT", "50", "_ELEVATION", "3")
+    answer(cad, "_PYRAMID", "0,0", "5", "8")
+    expect(last(cad)).toMatchObject({
+      layerId: l1,
+      color: "#ff0000",
+      lineweight: 0.5,
+    })
+    expect(last(cad).primitive?.position.z).toBe(3)
+    const later = console()
+    const l2 = later.runtime.createLayer("L2", undefined, false)
+    answer(later, "_PYRAMID", "'CECOLOR", "3", "0,0", "'ELEVATION", "5", "5")
+    answer(later, "'CECOLOR", "5", "'CLAYER", "L2", "8")
+    expect(last(later)).toMatchObject({ layerId: l2, color: "#0000ff" })
+    expect(last(later).primitive?.position.z).toBe(0)
+  })
+})
+
 describe("the primitives' defaults", () => {
   it("share a height, a length and a width, kept as made (x06, x07, p10)", () => {
     const cad = console()
@@ -1542,6 +1984,13 @@ describe("CYLINDER", () => {
 })
 
 describe("CONE", () => {
+  it("measures a point typed at Top radius from where the height prompt left the axis (primitives/p248)", () => {
+    const cad = console()
+    answer(cad, "_CONE", "0,0,0", "5", "_T", "@2,0", "8")
+    const top = last(cad).primitive
+    expect(top?.kind === "cone" && top.topRadius).toBeCloseTo(2, 9)
+  })
+
   it("narrows to an apex, an Endpoint (solid/k01, s10)", () => {
     const cad = console()
     expect(written(cad, "CONE", "0,0,0", "5", "8")).toEqual([

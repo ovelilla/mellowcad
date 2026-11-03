@@ -6094,6 +6094,7 @@ export const en: EngineCatalog = {
       "boxZeroLength": "Box of zero length not permitted.",
       "boxZeroWidth": "Box of zero width not permitted.",
       "boxValueNonzero": "Value must be nonzero.",
+      "solidAxisNonzero": "Value must be nonzero.",
       "wedgeZeroLength": "Wedge of zero length not permitted.",
       "wedgeZeroWidth": "Wedge of zero width not permitted.",
       "pyramidSettings": [

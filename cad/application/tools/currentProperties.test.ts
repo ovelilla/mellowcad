@@ -112,6 +112,8 @@ const FROM_SCRATCH: ReadonlyArray<
     (c) =>
       c.command("CONE").click(p(0, 0)).type("20").enter().type("30").enter(),
   ],
+  // probe primitives/p325: PYRAMID's, at ELEVATION; p326: set mid-command,
+  // those of the end (solidPrimitives.test.ts).
   [
     "PYRAMID",
     (c) =>

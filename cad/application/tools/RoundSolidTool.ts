@@ -170,8 +170,10 @@ export class RoundSolidTool implements Tool {
   private state: State = { phase: "center" }
   private lastScreen: Vec2 | null = null
   /**
-   * The height the mouse gives while the height or Top radius is asked: the
-   * ghost's, and the axis' point Top radius measures from.
+   * The height the mouse gives while the height is asked: the ghost's, and
+   * the axis' point Top radius measures from, kept while it asks — its
+   * prompt's base point is fixed, so a point typed there does not move it
+   * (k02, primitives/p248).
    */
   private rise = 0
 
@@ -202,7 +204,7 @@ export class RoundSolidTool implements Tool {
     this.lastScreen = input.screen
     const state = this.state
     if ("cursor" in state) this.state = { ...state, cursor: input.point }
-    if (state.phase === "height" || state.phase === "top") {
+    if (state.phase === "height") {
       this.rise = this.heightAt(input, state.base, ctx)
     }
     ctx.dynamicInput.setPosition(input.screen)

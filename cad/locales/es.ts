@@ -6741,6 +6741,7 @@ export const es: EngineLocale = {
       "boxZeroLength": "No puede ser un Prisma de longitud cero.",
       "boxZeroWidth": "No puede ser un Prisma de anchura cero.",
       "boxValueNonzero": "No puede ser un valor igual a cero.",
+      "solidAxisNonzero": "El valor no puede ser cero.",
       "wedgeZeroLength": "No puede ser un Cuña de longitud cero.",
       "wedgeZeroWidth": "No puede ser un Cuña de anchura cero.",
       "pyramidSettings": [
