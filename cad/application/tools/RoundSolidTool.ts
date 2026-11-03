@@ -53,6 +53,7 @@ import {
   ToolQuestion,
 } from "./Tool"
 import { currentColor, withCurrentProperties } from "./currentProperties"
+import { pickedHeight, pointAsCursor } from "./heightPick"
 import {
   SolidDefaults,
   resetSolidDefaults,
@@ -170,6 +171,11 @@ export class RoundSolidTool implements Tool {
 
   private state: State = { phase: "center" }
   private lastScreen: Vec2 | null = null
+  /**
+   * The height the mouse gives while the height or Top radius is asked: the
+   * ghost's, and the axis' point Top radius measures from.
+   */
+  private rise = 0
 
   constructor(
     private readonly kind: RoundKind,
@@ -198,6 +204,9 @@ export class RoundSolidTool implements Tool {
     this.lastScreen = input.screen
     const state = this.state
     if ("cursor" in state) this.state = { ...state, cursor: input.point }
+    if (state.phase === "height" || state.phase === "top") {
+      this.rise = this.heightAt(input, state.base, ctx)
+    }
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
   }
@@ -210,6 +219,10 @@ export class RoundSolidTool implements Tool {
       return
     }
     if (state.phase === "ttrRadius") return
+    if (state.phase === "height") {
+      this.takeHeight(this.heightAt(input, state.base, ctx), ctx)
+      return
+    }
     this.takePoint(input.point, ctx)
   }
 
@@ -472,7 +485,7 @@ export class RoundSolidTool implements Tool {
       case "axis":
         return state.base.center
       case "top":
-        return this.topFrom(state.base, state.cursor, ctx)
+        return this.topFrom(state.base, ctx)
       case "twoSecond":
       case "tubeSecond":
         return state.first
@@ -489,7 +502,8 @@ export class RoundSolidTool implements Tool {
     const state = this.state
     const stroke = { color: currentColor(ctx), width: 1 }
     const ghost = (base: Base | null, height: number, top: number | null) => {
-      if (!base || !(height > 0)) return []
+      // A cylinder or a cone rises either way; a sphere's or a tube's size is a radius.
+      if (!base || !(this.round ? height !== 0 : height > 0)) return []
       if (this.kind === "torus" && base.radius + height <= 0) return []
       const primitive = this.round
         ? this.primitive(base, top, { height }, ctx)
@@ -512,6 +526,7 @@ export class RoundSolidTool implements Tool {
       cursor ? this.distanceTo(from, worldPointToUcs(ctx.ucs, cursor)) : 0
     switch (state.phase) {
       case "height":
+        return ghost(state.base, this.rise, state.top)
       case "axis":
         return ghost(state.base, reach(state.base.center), state.top)
       case "radius":
@@ -620,7 +635,10 @@ export class RoundSolidTool implements Tool {
         this.takeSecondAxis(at, ctx)
         return
       case "height":
-        this.takeHeight(this.distanceTo(state.base.center, at), ctx)
+        this.takeHeight(
+          this.heightAt(pointAsCursor(point, ctx.viewport), state.base, ctx),
+          ctx
+        )
         return
       case "twoFirst":
         this.state = { ...state, phase: "twoSecond", first: at }
@@ -637,10 +655,7 @@ export class RoundSolidTool implements Tool {
         this.commit(state.base, state.top, { axis: at }, ctx)
         return
       case "top":
-        this.takeTop(
-          this.distanceTo(this.topFrom(state.base, state.cursor, ctx), at),
-          ctx
-        )
+        this.takeTop(this.distanceTo(this.topFrom(state.base, ctx), at), ctx)
         return
       default:
         return
@@ -891,6 +906,7 @@ export class RoundSolidTool implements Tool {
       top: null,
       cursor: ucsPointToWorld(ctx.ucs, base.center),
     }
+    this.rise = 0
     this.openDistance(ctx)
   }
 
@@ -920,15 +936,34 @@ export class RoundSolidTool implements Tool {
 
   /**
    * Where a point at Top radius is measured from: the axis at the height the
-   * cursor gave the ghost (the console's BasePoint, k02).
+   * cursor gives (the console's BasePoint, k02).
    */
-  private topFrom(base: Base, cursor: Vec3, ctx: ToolContext): Vec3 {
+  private topFrom(base: Base, ctx: ToolContext): Vec3 {
     const center = ucsPointToWorld(ctx.ucs, base.center)
-    const up = ucsDirectionToWorld(ctx.ucs, base.normal)
     return worldPointToUcs(
       ctx.ucs,
-      add3(center, scale3(up, this.distanceTo(center, cursor)))
+      add3(center, scale3(this.upOf(base, ctx), this.rise))
     )
+  }
+
+  /** The height the mouse gives along the base's normal. */
+  private heightAt(
+    input: Parameters<typeof pickedHeight>[0],
+    base: Base,
+    ctx: ToolContext
+  ): number {
+    return pickedHeight(
+      input,
+      ucsPointToWorld(ctx.ucs, base.center),
+      this.upOf(base, ctx),
+      ctx.viewport
+    )
+  }
+
+  /** The base's normal in the frame, of unit length. */
+  private upOf(base: Base, ctx: ToolContext): Vec3 {
+    const up = ucsDirectionToWorld(ctx.ucs, base.normal)
+    return scale3(up, 1 / length3(up))
   }
 
   /**

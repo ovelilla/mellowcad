@@ -27,6 +27,7 @@ import {
   ToolQuestion,
 } from "./Tool"
 import { currentColor, withCurrentProperties } from "./currentProperties"
+import { pickedHeight, pointAsCursor } from "./heightPick"
 import {
   SolidDefaults,
   resetSolidDefaults,
@@ -90,6 +91,11 @@ export class PyramidTool implements Tool {
 
   private state: PyramidToolState = { phase: "center" }
   private lastScreen: Vec2 | null = null
+  /**
+   * The height the mouse gives while the height or Top radius is asked: the
+   * ghost's, and the axis' point Top radius measures from.
+   */
+  private rise = 0
 
   constructor(private readonly defaults: SolidDefaults = solidDefaults()) {}
 
@@ -119,12 +125,20 @@ export class PyramidTool implements Tool {
     this.lastScreen = input.screen
     const state = this.state
     if ("cursor" in state) this.state = { ...state, cursor: input.point }
+    if (state.phase === "height" || state.phase === "top") {
+      this.rise = this.heightAt(input, state.base, ctx)
+    }
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
   }
 
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
-    if (input.button !== 0 || this.state.phase === "sides") return
+    const state = this.state
+    if (input.button !== 0 || state.phase === "sides") return
+    if (state.phase === "height") {
+      this.takeHeight(this.heightAt(input, state.base, ctx), ctx)
+      return
+    }
     this.takePoint(input.point, ctx)
   }
 
@@ -274,7 +288,7 @@ export class PyramidTool implements Tool {
       case "axis":
         return state.base.center
       case "top":
-        return this.topFrom(state.base, state.cursor, ctx)
+        return this.topFrom(state.base, ctx)
       case "twoSecond":
         return state.first
       default:
@@ -312,12 +326,12 @@ export class PyramidTool implements Tool {
         )
         return base ? this.baseOutline(base, ctx, stroke) : []
       }
-      case "height": {
-        const height = this.distanceTo(state.base.center, state.cursor)
-        return height > 0
-          ? ghost(this.primitive(state.base, state.top, { height }, ctx))
+      case "height":
+        return this.rise !== 0
+          ? ghost(
+              this.primitive(state.base, state.top, { height: this.rise }, ctx)
+            )
           : []
-      }
       case "axis":
         return ghost(
           this.primitive(state.base, state.top, { axis: state.cursor }, ctx)
@@ -356,7 +370,10 @@ export class PyramidTool implements Tool {
         this.takeRadius(this.distanceTo(state.center, point), point, ctx)
         return
       case "height":
-        this.takeHeight(this.distanceTo(state.base.center, point), ctx)
+        this.takeHeight(
+          this.heightAt(pointAsCursor(point, ctx.viewport), state.base, ctx),
+          ctx
+        )
         return
       case "twoFirst":
         this.state = { ...state, phase: "twoSecond", first: point }
@@ -373,21 +390,32 @@ export class PyramidTool implements Tool {
         this.commit(state.base, state.top, { axis: point }, ctx)
         return
       case "top":
-        this.takeTop(
-          this.distanceTo(this.topFrom(state.base, state.cursor, ctx), point),
-          ctx
-        )
+        this.takeTop(this.distanceTo(this.topFrom(state.base, ctx), point), ctx)
         return
     }
   }
 
   /**
    * Where a point at Top radius is measured from: the axis at the height the
-   * cursor gave the ghost (the console's BasePoint, k02).
+   * cursor gives (the console's BasePoint, k02).
    */
-  private topFrom(base: Base, cursor: Vec3, ctx: ToolContext): Vec3 {
+  private topFrom(base: Base, ctx: ToolContext): Vec3 {
+    return add3(base.center, scale3(this.up(ctx), this.rise))
+  }
+
+  /** The height the mouse gives up the UCS's Z from the base's centre. */
+  private heightAt(
+    input: Parameters<typeof pickedHeight>[0],
+    base: Base,
+    ctx: ToolContext
+  ): number {
+    return pickedHeight(input, base.center, this.up(ctx), ctx.viewport)
+  }
+
+  /** The UCS's Z in the frame, of unit length. */
+  private up(ctx: ToolContext): Vec3 {
     const up = ucsDirectionToWorld(ctx.ucs, { x: 0, y: 0, z: 1 })
-    return add3(base.center, scale3(up, this.distanceTo(base.center, cursor)))
+    return scale3(up, 1 / length3(up))
   }
 
   /** The polygon on the edge from `first` to `second`, to its left (y02, y06). */
@@ -456,6 +484,7 @@ export class PyramidTool implements Tool {
   private askHeight(base: Base, ctx: ToolContext): void {
     this.defaults.radius = base.radius
     this.state = { phase: "height", base, top: null, cursor: base.center }
+    this.rise = 0
     this.openDistance(ctx)
   }
 

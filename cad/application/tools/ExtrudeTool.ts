@@ -30,6 +30,7 @@ import {
   ToolQuestion,
 } from "./Tool"
 import { currentColor, withCurrentProperties } from "./currentProperties"
+import { pickedHeight, pointAsCursor } from "./heightPick"
 import { ObjectSelector } from "./objectSelection"
 import { SweepSettings, sweepSettings } from "./sweepSettings"
 
@@ -79,6 +80,8 @@ export class ExtrudeTool implements Tool {
 
   private state: ExtrudeState = { phase: "select" }
   private profiles: readonly Profile[] = []
+  /** The height the mouse gives while the height is asked, which the ghost shows. */
+  private rise = 0
   private lastScreen: Vec2 | null = null
   private readonly selector = new ObjectSelector({
     done: (ctx) => this.closeSet(ctx),
@@ -304,6 +307,7 @@ export class ExtrudeTool implements Tool {
     }
     if (this.state.phase === "height") {
       this.state = { phase: "height", cursor: input.point }
+      this.rise = this.heightAt(input, ctx)
     }
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
@@ -315,6 +319,10 @@ export class ExtrudeTool implements Tool {
       return
     }
     if (input.button !== 0) return
+    if (this.state.phase === "height") {
+      this.takeHeight(this.heightAt(input, ctx), ctx)
+      return
+    }
     this.takePoint(input.point, ctx)
   }
 
@@ -326,11 +334,9 @@ export class ExtrudeTool implements Tool {
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const state = this.state
     if (state.phase === "select") return this.selector.buildOverlay(ctx)
-    if (state.phase !== "height") return []
-    const height = length3(sub3(state.cursor, this.base()))
-    if (!(height > 0)) return []
+    if (state.phase !== "height" || this.rise === 0) return []
     const stroke = { color: currentColor(ctx), width: 1 }
-    return this.solids(height, null, this.settings.taper, ctx).flatMap(
+    return this.solids(this.rise, null, this.settings.taper, ctx).flatMap(
       (solid) => entityScenePrimitive(ctx.viewport, solid, stroke)
     )
   }
@@ -362,6 +368,7 @@ export class ExtrudeTool implements Tool {
     this.profiles = profiles
     ctx.selection.clear()
     this.state = { phase: "height", cursor: this.base() }
+    this.rise = 0
     this.openValue(
       ctx,
       this.settings.height === null
@@ -387,11 +394,24 @@ export class ExtrudeTool implements Tool {
     return axesToWorld(axes, { x, y, z: elevation })
   }
 
+  /** The height the mouse gives along the first profile's normal. */
+  private heightAt(
+    input: Parameters<typeof pickedHeight>[0],
+    ctx: ToolContext
+  ): number {
+    const first = this.profiles.find((p) => p.profile !== "crosses")
+    if (!first || first.profile === "crosses") return 0
+    return pickedHeight(input, this.base(), first.profile.axes.z, ctx.viewport)
+  }
+
   private takePoint(point: Vec3, ctx: ToolContext): void {
     const state = this.state
     switch (state.phase) {
       case "height":
-        this.takeHeight(length3(sub3(point, this.base())), ctx)
+        this.takeHeight(
+          this.heightAt(pointAsCursor(point, ctx.viewport), ctx),
+          ctx
+        )
         return
       case "taper":
         // A point gives the angle of the line from the base to it, as a
@@ -432,6 +452,7 @@ export class ExtrudeTool implements Tool {
     }
     this.settings.taper = degrees
     this.state = { phase: "height", cursor: this.base() }
+    this.rise = 0
     this.openValue(
       ctx,
       this.settings.height === null

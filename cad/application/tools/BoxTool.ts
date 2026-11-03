@@ -1,5 +1,5 @@
 import { V, Vec2 } from "../../geometry/Vec2"
-import { Vec3, length3, sub3 } from "../../geometry/Vec3"
+import { Vec3, length3, scale3, sub3 } from "../../geometry/Vec3"
 import {
   BoxPrimitive,
   WedgePrimitive,
@@ -31,6 +31,7 @@ import {
   ToolQuestion,
 } from "./Tool"
 import { currentColor, withCurrentProperties } from "./currentProperties"
+import { pickedHeight, pointAsCursor } from "./heightPick"
 import {
   SolidDefaults,
   resetSolidDefaults,
@@ -123,6 +124,8 @@ export class BoxTool implements Tool {
 
   private state: BoxToolState = { phase: "first" }
   private lastScreen: Vec2 | null = null
+  /** The height the mouse gives while the height is asked, which the ghost shows. */
+  private rise = 0
 
   constructor(
     private readonly kind: BlockKind = "box",
@@ -152,6 +155,9 @@ export class BoxTool implements Tool {
     if (this.state.phase !== "first" && this.state.phase !== "center") {
       this.state = { ...this.state, cursor: input.point }
     }
+    if (this.state.phase === "height") {
+      this.rise = this.heightAt(input, this.state.from, ctx)
+    }
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
   }
@@ -159,6 +165,10 @@ export class BoxTool implements Tool {
   onPointerDown(input: PointerInput, ctx: ToolContext): void {
     if (input.button !== 0) return
     const state = this.state
+    if (state.phase === "height") {
+      this.takeHeight(this.heightAt(input, state.from, ctx), ctx)
+      return
+    }
     // The other corner is dragged in the first's plane; a snap keeps its own Z.
     this.takePoint(
       state.phase === "other" && !input.snap
@@ -307,10 +317,9 @@ export class BoxTool implements Tool {
       return entityScenePrimitive(ctx.viewport, outline, stroke)
     }
     if (state.phase === "height") {
-      const height = length3(sub3(state.cursor, state.from))
-      if (!(height > 0)) return []
+      if (this.rise === 0) return []
       const solid = createSolid(
-        this.primitive(state.footprint, height, ctx),
+        this.primitive(state.footprint, this.rise, ctx),
         ctx.document.getCurrentLayerId(),
         PREVIEW_ID
       )
@@ -350,7 +359,10 @@ export class BoxTool implements Tool {
         )
         return
       case "height":
-        this.takeHeight(this.distanceTo(state.from, point), ctx)
+        this.takeHeight(
+          this.heightAt(pointAsCursor(point, ctx.viewport), state.from, ctx),
+          ctx
+        )
         return
       case "twoFirst":
         this.state = { ...state, phase: "twoSecond", first: point }
@@ -534,8 +546,19 @@ export class BoxTool implements Tool {
 
   private askHeight(footprint: Footprint, from: Vec3, ctx: ToolContext): void {
     this.state = { phase: "height", footprint, from, cursor: from }
+    this.rise = 0
     this.openDistance(ctx, this.defaults.height)
     ctx.requestRender()
+  }
+
+  /** The height the mouse gives up the UCS's Z from `from`. */
+  private heightAt(
+    input: Parameters<typeof pickedHeight>[0],
+    from: Vec3,
+    ctx: ToolContext
+  ): number {
+    const up = ucsDirectionToWorld(ctx.ucs, { x: 0, y: 0, z: 1 })
+    return pickedHeight(input, from, scale3(up, 1 / length3(up)), ctx.viewport)
   }
 
   /** `Value must be nonzero.` for none, and the prompt asked again (p06). */

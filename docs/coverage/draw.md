@@ -985,7 +985,11 @@ backwards (p03, p10: Rotation 22, 202), a point gives its distance and heading; 
 lies to the left of its length, Length's to the side the cursor or the width's point is, the right
 one with the cursor on the line, a typed width's sign unread (p03, p10). The height rises along
 the UCS's Z, down when negative (LIST then adds `Normal:`, p06); a point gives its distance from
-the corner (p06, p10), 2Point the distance between `Specify first point:` and `Specify second
+the corner in plan (p06, p10), and off it the height along the Z through the corner, with its sign:
+a point an object snap or a tracking guide gives by its own Z, so another solid's top corner gives
+its height and a point below a negative one (desktop d13, console z01), the cursor or a point typed
+where it falls on the Z as drawn, however far beside it (d11, d12; z01: `100,200,0` from
+`300,500,0` in SE Isometric is -50), in plan a snapped point's distance in space (d14, z03); 2Point the distance between `Specify first point:` and `Specify second
 point:` (p03); a corner at another Z than the first sets the height without asking it (twice its
 rise from the centre, p06, p13), one typed without a Z lies at the first's (p07); from the centre a
 negative cube or length is twice as long, the box centred on the point (w09, x07). The last length
@@ -1041,8 +1045,8 @@ any grip. One undo step, `Grip Edit`.
 here); a height dragged past the opposite face, which AutoCAD answers with no rule (g01: down 6
 leaves the box upright 1 high, down 7 turns it over 2 high), refused here; the 3D commands of its
 own (3DMOVE, 3DROTATE, 3DSCALE, MIRROR3D, ROTATE3D, ALIGN, 3DALIGN), the gizmos and the edits of its sub-objects
-(Ctrl+click selects them: command-line.md), later phases; the dynamic UCS and the jig's 3D drag of the height (here a pick at the
-height prompt gives its distance, as the console does); FILLET and CHAMFER of its edges, which
+(Ctrl+click selects them: command-line.md), later phases; the dynamic UCS; the height box's reading of the cursor (d12: `38.6155` as it drags;
+the default here); FILLET and CHAMFER of its edges, which
 AutoCAD asks with `Enter fillet radius or [Expression]:` and `Base surface selection...` (here the
 pick is passed over; FILLETEDGE and CHAMFEREDGE round and bevel them, modify.md); JOIN with a solid picked first, which AutoCAD answers with `Line,
 open polyline, arc, elliptical arc, or open spline expected.  Select a supported object:` (here
@@ -1106,7 +1110,8 @@ axis' point gives its way and its size, the first axis lying square to it its ow
 (c04: 0,0,0 / 10,0,0 / 0,3,0 makes 5.8310 along 149° and 5 across; v05: a typed second axis runs
 towards the cursor). Axis endpoint asks `Specify axis endpoint:` (the height declares Center too,
 which asks it, c13) and 2Point two points; the height rises along the base's normal, down when
-negative (c05). Refusals: `Point or option keyword required.` at the point prompts and the axis
+negative (c05), and a point, the cursor or a snap gives it as at BOX's (z01: a box's top corner, 50
+high, gives 50 in SE Isometric; the cursor's reading not seen on the desktop, **unverified**). Refusals: `Point or option keyword required.` at the point prompts and the axis
 endpoint (FOO, Enter), `Requires numeric distance, second point, or option keyword.` at the radius,
 diameter, distance and height, `Requires numeric distance or two points.` at Ttr's radius, `Value
 must be positive and nonzero.` for a radius, diameter or distance of 0 or less, `Value must be
@@ -1275,7 +1280,8 @@ read by the Type, and the height again as `Specify height or [2Point/Axis endpoi
 altura o`); a top as large as the base makes a prism (y05). Axis endpoint asks `Specify axis
 endpoint:` and tilts the base into the plane normal to the axis, turned by the same angle in that
 plane's OCS, the UCS's arbitrary axis (y09); 2Point asks two points. The height rises along the
-UCS's Z, down when negative; a point gives its distance. Refusals: `Point or option keyword
+UCS's Z, down when negative; a point, the cursor or a snap gives it as at BOX's (z01; the cursor's
+reading **unverified** on the desktop). Refusals: `Point or option keyword
 required.` at the centre and 2Point's, `Invalid point.` at Edge's and the axis' (y06), `Requires
 numeric distance, second point, or option keyword.` at the radius and the height, `Requires numeric
 distance or second point.` at the top radius, `Value must be positive and nonzero.` for a radius of
@@ -1319,7 +1325,11 @@ selected.` on an empty one (x10, x11). MOde asks `Closed profiles creation mode 
 <Solid>:` (x02). Then `Specify height of extrusion or [Direction/Path/Taper angle/Expression]:`, the
 last height its `<default>` (es `Precise altura de extrusión o [Dirección/Trayectoria/ángulo
 Inclinación/Expresión]`; pt-BR `Especifique a altura ou extrusão ou`, with a default `Especifique a
-altura da extrusão ou`): a number, a point's distance from the profile, `Value must be nonzero.` for
+altura da extrusão ou`): a number, or a point read as BOX's height is, along the first profile's
+normal through its middle — off the plan a snapped one by how far it lies along it (desktop d05,
+console solid/z02: to a box's top corner, below a line's end), the cursor or a typed one where it
+falls on the normal as drawn, however far beside it (d02–d04; z02: `300,-400,0` from a profile at
+`400,-400,0` in SE Isometric is 50), in plan its distance from the middle; `Value must be nonzero.` for
 0 and `Requires numeric distance, second point, or option keyword.` for FOO and Enter with no
 default (x03). Taper angle asks `Specify angle of taper for extrusion or [Expression] <0>:`, the
 last one its default, `Angle must be greater than -90 degrees and less than 90 degrees.` past a
