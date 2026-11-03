@@ -64,6 +64,9 @@ Writing one (the traps of `console.md` hold; these are the review's):
   LISTs (LIST's paging ate three subagents' es-ES runs, 3D primitives).
 - Before probing a new object's snaps one by one, read its help's Drafting Settings, Object Snap
   tab: "do not work with edges or corners of 3D solids" settled Intersection there (SPK-01).
+- A behaviour that may be the console's carries a known command as its control in the same run:
+  MOVE before REGION (p129), EXTRUDE and SLICE beside the booleans (p349) settled the
+  preselection, and the desktop agreed (regions/d01; Regions).
 - A setting the cell needs is set inside the probe (`CECOLOR`, `-LAYER`, `_ELEVATION`,
   `_THICKNESS`, `_UCS _Z 30`, `_UCS _X 90`, `-LINETYPE _L`): each run is isolated, so nothing
   needs restoring.
@@ -283,6 +286,9 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   to a known place before typing one. The browser's look against the desktop's screenshots goes to
   one subagent given the PNGs and the known gaps first (the crosshair off the plan, the Down list),
   or it reports them (3D primitives, PDJ).
+
+- COM is locked while a command waits, so compute every pixel (`px`) before typing it; a name
+  prompt (CHPROP's layer) takes spaces: end it with `\n` (regions/d02, d04; Regions).
 
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).

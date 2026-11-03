@@ -17,6 +17,8 @@
 # text entry, LAYER) is cut after ACC_TIMEOUT seconds (90). See
 # .claude/skills/autocad-research/console.md.
 set -uo pipefail
+# A subagent's shell can start without Windows' PATH (`cmd.exe: command not found`, Regions review).
+[[ :$PATH: == *:/mnt/c/Windows/System32:* ]] || PATH=$PATH:/mnt/c/Windows/System32
 here=$(cd "$(dirname "$0")" && pwd)
 ACCORE=${ACCORE:-"/mnt/c/Program Files/Autodesk/AutoCAD 2027/accoreconsole.exe"}
 trace= real= dwg=

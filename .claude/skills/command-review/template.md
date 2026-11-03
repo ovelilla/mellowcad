@@ -21,7 +21,7 @@
 
 The plan is committed as soon as it is written (`docs: <COMMAND> review plan`): other sessions
 share the tree and the hook checks it whole, so nothing waits uncommitted. The execution does not
-wait for the owner's approval (the owner's word, 2026-10-21): it follows in the same session unless
+wait for the owner's approval (the owner, 2026-10-21): it follows in the same session unless
 a fresh one would do it better — the context is nearly spent, or the blocks need the owner's mouse
 at another time. The owner corrects the plan, or what was executed, with a new commit.
 
@@ -118,8 +118,8 @@ is **owned by the first review whose command uses it**, in the roadmap's order:
 - A block is the command itself, or one cross-cutting area it owns. Each has a three-letter prefix
   no other review used.
 - A session takes as many blocks as fit. With subagents probing in parallel (§4.8), LINE's
-  session took twelve blocks and about 110 console probes. Desktop probes are slower and need the
-  owner's mouse: they go in a session of their own, planned in the plan's order.
+  session took twelve blocks and some 110 console probes. Desktop probes are slower and need the
+  owner's mouse: a session of their own, planned in the plan's order.
 - Order: the blocks whose result other blocks rely on first (the catalogs before any wording
   finding; the command line before transparency in a later block).
 
@@ -385,7 +385,7 @@ a finding that needed a question the template does not ask, a step that cost mor
 probe pattern worth reusing. They are proposed in the plan (§6.14) and applied here at the
 review's close (the owner waived the wait for approval on 2026-10-21), each with its date.
 
-Applied (each change's detail is in `git log -- .claude/skills/command-review`):
+Applied (the detail: `git log -- .claude/skills/command-review`):
 
 - 2026-10-21: LINE, PLINE, CIRCLE, ARC, RECTANG and POLYGON, ELLIPSE, SPLINE, ERASE; the matrix's
   P, Q and snaps three ways (owner).
@@ -401,4 +401,5 @@ Applied (each change's detail is in `git log -- .claude/skills/command-review`):
   (annex-probes.md §2, §4); a run awaiting a port (§4.1).
 - 2026-11-03, 3D primitives: QAFLAGS first, a snap's help, the capped log (annex-probes.md §2,
   §5); a refusal's words per input function (annex-catalogs.md §3); the desktop's cursor on a
-  line, a keyword mid-jig, the look by PNGs (annex-probes.md §4).
+  line, a keyword mid-jig, the look by PNGs (annex-probes.md §4). Regions: a same-run control,
+  COM's pixels, a shadowing alias (annex-probes.md §2, §4; matrix.md A).
