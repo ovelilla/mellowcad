@@ -48,7 +48,9 @@ plan each block has its table, a cell reading `match · p07 · LineTool.test.ts:
 - Absolute `x,y`, `x,y,z`; relative `@dx,dy`; polar `d<a` and `@d<a`; `@` alone; `#x,y` and
   `*x,y` (with and without dynamic input); a bare number (direct distance) along the cursor, along
   Ortho, Polar and an OTRACK guide; the `<a` angle override, then a distance.
-- What LASTPOINT is after each answer (`ID @`), and at the first prompt before any point.
+- What LASTPOINT is after each answer (`ID @`), and at the first prompt before any point; after a
+  click at an object's pick, which the console cannot make: the cursor's point on the work plane
+  (solid-edits/d06).
 - Unit formats other than decimal (UNITS), a typed value with the drawing's precision.
 
 **D. Drafting aids** — at every point prompt:
@@ -83,7 +85,9 @@ off, and with the menu), Escape (once, twice), another command typed mid-prompt,
 (Close, Continue); what is kept and what LASTPOINT is afterwards. A command with a ribbon twin
 (HATCH and -HATCH) answers Escape, its preview and the look after a pick under each name
 (hatch/d01, d02). Escape also at each prompt a keyword opens: AutoCAD can step back to the prompt
-that opened it instead of cancelling (DIST's Length, inquiry/d05).
+that opened it instead of cancelling (DIST's Length, inquiry/d05; FILLETEDGE's accept Radius,
+solid-edits/d04-d); and what a value answered before the Escape leaves in its variable (FILLETRAD3D
+none, d04-d).
 
 **H. What it produces** — read with MPDUMP and with the harness's `latest()`:
 
@@ -97,7 +101,8 @@ that opened it instead of cancelling (DIST's Length, inquiry/d05).
 
 **I. Editing afterwards** — for its object: the grips (which, where, hover, what a drag does, the
 multifunctional grip's menu) and the Properties palette (rows, order, units, which edit, what an
-edit does).
+edit does). A grip the command draws at its own prompt (FILLETEDGE's arrow) is a nested command:
+its `>>` prompt, the rule a click reads, Enter, Escape and eXit are cells (solid-edits/d04-c).
 
 **J. Persistence** — save and open, the autosave, a file from an older version, copy and paste;
 the object comes back identical.

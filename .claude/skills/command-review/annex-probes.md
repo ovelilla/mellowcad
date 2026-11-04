@@ -41,8 +41,8 @@ Writing one (the traps of `console.md` hold; these are the review's):
   silently in LINE's first probes.
 - **An empty line at `Command:` repeats the last command**: end a probe on the command's own last
   answer, not on an extra Enter (FILLET ran twice in LINE's p60).
-- A command that hangs the console (real-time PAN, 3DORBIT) goes last, in a probe of its own: every
-  answer after it is lost. Between U and REDO read with `getvar` only: an `(ssget "_X")` there left
+- A command that hangs the console (real-time PAN, 3DORBIT) goes last, alone: every answer after
+  it is lost. Between U and REDO read with `getvar` only: an `(ssget "_X")` there left
   REDO `Nothing to redo` (View review).
 - Typed coordinates are taken as typed: with the console's OSMODE 4133 and OSNAPCOORD 2, a point
   typed beside an endpoint was not snapped (checked 2026-10-21). A snap is probed with a typed
@@ -167,17 +167,19 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   Spanish desktop types keywords in their global form (`_R`: FILLET's `R` is Recortar) (Corners).
 - Escape with dynamic input's Down list open cancels the command, not the list: close it with
   Enter or the arrows mid-probe. The owner's Spanish profile shows only Spanish labels: plan the
-  English ones apart (`ax26res.dll`, or a pass launched with `en-US`) or they stay unverified
-  (ELLIPSE's review).
+  English ones apart (`ax26res.dll`, or an `en-US` pass) or they stay unverified (ELLIPSE's
+  review).
 - The console's answer at a jig prompt to Enter or a keyword can be its artefact: SPLINE's p118
   took the fixed cursor as a tangent and p148 asked a tangent the desktop refuses (d11, d12). Check
   it on the desktop through COM alone, with no mouse; COM's space is an Enter, so `_T \n` is two
   answers (SPLINE's review).
 
 - A press and drag (a lasso, a window by drag) needs the button held between screenshots:
-  `scripts/research/probes/erase/drag.ps1` presses, moves, sends a key and releases in separate
-  calls, the button held between them; a key held across a screenshot (Shift's badge) is a
-  SendInput key-down in one process and its key-up in another (ERASE's review).
+  `scripts/research/probes/erase/drag.ps1` presses, moves, keys and releases in separate calls; a
+  key held across a shot (Shift's badge, Ctrl's glow: `solid-edits/ctrl.ps1`) is a SendInput
+  key-down in one process and its key-up in another (ERASE's review).
+- Start a command by `com send … &` and move twice before a click: typed keys and first clicks
+  were lost (solid-edits/d02). Fit a grip's drag rule to clicks solved back to its plane (d04-c).
 - `acad.sh click` moves the cursor 3 px off and back before clicking, which restarts selection
   cycling's stack: which candidate a click takes after Shift+Space needs a click without the
   jiggle (ERASE's review).

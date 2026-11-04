@@ -349,7 +349,7 @@ faces / Move face / Allow triangulation` (es `Alargar las caras adyacentes / Mov
 triangulación`), an edge's `… / Move edge / …` (`Mover arista`, d01-j); SUBOBJSELECTIONMODE
 (Shift+F1–F5's filters and their cursor badges; at 3 a plain click inside a face started a window,
 d01-i, inconclusive), LEGACYCTRLPICK, the history subobjects of a composite (SOLIDHIST). The Solid
-edits review's desktop block probed them (`docs/plans/solid-edits-review.md`, §13).
+edits review's desktop block probed them (SED, `docs/plans/solid-edits-review.md`).
 
 ### Typed and confirmed
 

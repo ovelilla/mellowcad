@@ -262,6 +262,8 @@ deviation without a `WHY` and a coverage note is a finding.
 - Their high and critical findings are verified by the reviewer, in person, before the plan.
 - A desktop surprise goes at once to the subagent owning that prompt (SendMessage): the console
   then settles it case by case (SCALE's factor, transforms/d06 → p219, within the hour).
+- While the reviewer drives the desktop, one subagent pins mellowcad's side of its cells in scratch
+  tests, turned to AutoCAD's answers as the shots come (SED).
 
 ## 5. Evidence
 
@@ -395,4 +397,5 @@ to View; 10-28 UCS, Workspace; 10-29 Clipboard; 11-03 3D primitives, Regions; 11
 traced BasePoint, a pick from the cursor, a jig prompt twice, pixels in two views, a POINT under
 Node: annex-probes.md §2, §4; the ribbon's answers, a run after options, the desktop drawing's
 variables: §4.1, §4.8, §5.3), Solid edits (the others' suspects, a new variable's OPEN test, a
-shared default, a sibling's pairing: §4.1, §4.8, matrix.md B, annex-catalogs.md §1).
+shared default, a sibling's pairing: §4.1, §4.8, matrix.md B, annex-catalogs.md §1), its desktop
+(matrix.md C, G, I; annex-probes.md §4; §4.8).
