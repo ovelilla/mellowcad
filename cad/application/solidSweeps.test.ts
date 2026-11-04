@@ -1785,7 +1785,7 @@ describe("PRESSPULL", () => {
     ])
     cad.click({ x: 10, y: 10 })
     expect(written(cad, "20")).toEqual([
-      "Specify extrusion height or [Multiple]: 20",
+      "Specify extrusion height or [Multiple]:20",
       "1 extrusion(s) created",
     ])
     const solid = last(cad)
@@ -1821,7 +1821,7 @@ describe("PRESSPULL", () => {
     answer(cad, "PRESSPULL")
     cad.click(TOP)
     expect(written(cad, "2")).toEqual([
-      "Specify extrusion height or [Multiple]: 2",
+      "Specify extrusion height or [Multiple]:2",
       "1 extrusion(s) created",
     ])
     expect(last(cad).id).toBe(id)
@@ -1905,8 +1905,9 @@ describe("PRESSPULL", () => {
     cad.click({ x: 0, y: 0 })
     cad.click({ x: 50, y: 0 })
     expect(written(cad, "", "3", "")).toEqual([
-      "Select object or bounded area:",
-      "Specify extrusion height or [Multiple]: 3",
+      "Select object:",
+      "Specify extrusion height or [Multiple]:",
+      "Specify extrusion height or [Multiple]:3",
       "2 extrusion(s) created",
       "Select object or bounded area:",
     ])
@@ -1935,8 +1936,9 @@ describe("PRESSPULL's console cells (the Sweeps review)", () => {
     // Still Multiple: a pick waits for Enter before the height.
     cad.click({ x: 5, y: 5 })
     expect(written(cad, "", "2", "")).toEqual([
-      "Select object or bounded area:",
-      "Specify extrusion height or [Multiple]: 2",
+      "Select object:",
+      "Specify extrusion height or [Multiple]:",
+      "Specify extrusion height or [Multiple]:2",
       "1 extrusion(s) created",
       "Select object or bounded area:",
     ])
@@ -1980,7 +1982,7 @@ describe("PRESSPULL's console cells (the Sweeps review)", () => {
     answer(cad, "PRESSPULL")
     cad.click({ x: 0, y: 5 })
     expect(written(cad, "5", "")).toEqual([
-      "Specify extrusion height or [Multiple]: 5",
+      "Specify extrusion height or [Multiple]:5",
       "1 extrusion(s) created",
       "Select object or bounded area:",
     ])
@@ -1993,7 +1995,7 @@ describe("PRESSPULL's console cells (the Sweeps review)", () => {
     answer(cad, "LINE", "0,0", "10,0", "10,10", "0,10", "_C", "PRESSPULL")
     cad.click({ x: 5, y: 5 })
     expect(written(cad, "5")).toEqual([
-      "Specify extrusion height or [Multiple]: 5",
+      "Specify extrusion height or [Multiple]:5",
       "1 extrusion(s) created",
     ])
     expect(brepVolume(last(cad).brep)).toBeCloseTo(500, 9)
@@ -2006,8 +2008,9 @@ describe("PRESSPULL's console cells (the Sweeps review)", () => {
     cad.click({ x: 5, y: 5 })
     cad.click({ x: 50, y: 0 })
     expect(written(cad, "", "2")).toEqual([
-      "Select object or bounded area:",
-      "Specify extrusion height or [Multiple]: 2",
+      "Select object:",
+      "Specify extrusion height or [Multiple]:",
+      "Specify extrusion height or [Multiple]:2",
       "2 extrusion(s) created",
     ])
   })
@@ -2363,6 +2366,334 @@ describe("EXPLODE of a planar sweep (the Sweeps review, SWO-07)", () => {
       "0,-0.9848,0.1736 35.7266",
       "0,0,1 28.8187",
       "0,0,-1 50",
+    ])
+  })
+})
+
+describe("the desktop's cells (the Sweeps review, SWD)", () => {
+  const degrees = (radians: number) => (radians * 180) / Math.PI
+
+  // sweeps/d05 (es-ES desktop, plan view, the cursor on 20,30 as `T` was
+  // typed): atan(((p − start)·Y) / d), d the height the jig read then
+  // (25.5792 and 21.7722); LIST's 21, 57.4 and 49.5 are rounded.
+  it("takes a taper by a point from the first profile's start and the height the cursor gave (EXT-08; d05)", () => {
+    const cases: Array<
+      [string, string, { x: number; y: number }, number, number]
+    > = [
+      ["0,0", "10,20", { x: 40, y: 10 }, 21, 0],
+      ["0,0", "10,20", { x: 20, y: 40 }, 57.4, 1],
+      ["0,0", "10,20", { x: 4.7368, y: 30 }, 49.5, 0],
+      ["0,5", "10,25", { x: 40, y: 10 }, 12.9337293, 7],
+      ["0,5", "10,25", { x: 20, y: 40 }, 58.11574295, 7],
+    ]
+    for (const [from, to, pick, taper, digits] of cases) {
+      const cad = console()
+      answer(cad, "RECTANG", from, to, "EXTRUDE", "_L", "")
+      cad.moveTo({ x: 20, y: 30 })
+      answer(cad, "_T")
+      cad.click(pick)
+      answer(cad, "1")
+      const sweep = last(cad).sweep
+      expect(sweep?.kind).toBe("extrusion")
+      if (sweep?.kind !== "extrusion") continue
+      expect(degrees(sweep.taper)).toBeCloseTo(taper, digits)
+    }
+    const cad = console()
+    answer(cad, "RECTANG", "0,0", "10,20", "EXTRUDE", "_L", "")
+    cad.moveTo({ x: 20, y: 30 })
+    answer(cad, "_T")
+    cad.click({ x: 40, y: 10 })
+    answer(cad, "5")
+    expect(listed(cad)).toContain("      Taper angle: 21")
+  })
+
+  // sweeps/d06: the plan angle from the angle's base (SLP-02's 0,5,0 here)
+  // to the point clicked, counter-clockwise from X, 0–360.
+  it("takes a click at the angle as the angle from its base (RVL-07; d06)", () => {
+    for (const [pick, angle] of [
+      [{ x: 10, y: 15 }, 45],
+      [{ x: -10, y: 15 }, 135],
+      [{ x: 10, y: -5 }, 315],
+    ] as const) {
+      const cad = console()
+      answer(cad, "RECTANG", "20,0", "30,10", "REVOLVE", "_L", "", "_Y")
+      const from = cad.commandLog().length
+      cad.click(pick)
+      expect(cad.commandLog().slice(from)).toEqual([
+        "Specify angle of revolution or [STart angle/Reverse/EXpression] <360>:",
+      ])
+      const sweep = last(cad)?.sweep
+      expect(sweep?.kind).toBe("revolve")
+      if (sweep?.kind !== "revolve") continue
+      expect(degrees(sweep.angle)).toBeCloseTo(angle, 9)
+      expect(sweep.start).toBe(0)
+    }
+  })
+
+  it("takes a click at the start angle so too (RVL-07; d06: 10,15 → 45, then 90)", () => {
+    const cad = console()
+    answer(cad, "RECTANG", "20,0", "30,10", "REVOLVE", "_L", "", "_Y", "_ST")
+    cad.click({ x: 10, y: 15 })
+    expect(cad.state().commandLine.prompt).toBe(
+      "REVOLVE Specify angle of revolution or [STart angle/EXpression] <360>:"
+    )
+    answer(cad, "90")
+    const sweep = last(cad).sweep
+    expect(sweep?.kind).toBe("revolve")
+    if (sweep?.kind !== "revolve") return
+    expect(degrees(sweep.start)).toBeCloseTo(45, 9)
+    expect(degrees(sweep.angle)).toBeCloseTo(90, 9)
+  })
+
+  // d05, d06 were drawn in the WCS; their rule reads the point in the UCS,
+  // as every plan angle and Y is read there.
+  it("reads the clicked angle and taper in a turned UCS", () => {
+    const rev = console()
+    answer(rev, "UCS", "Z", "90", "RECTANG", "20,0", "30,10")
+    answer(rev, "REVOLVE", "_L", "", "_Y")
+    rev.click({ x: -15, y: 10 }) // UCS 10,15: 45° from the base 0,5
+    const sweep = last(rev).sweep
+    expect(sweep?.kind === "revolve" && degrees(sweep.angle)).toBeCloseTo(45, 9)
+    const ext = console()
+    answer(
+      ext,
+      "UCS",
+      "Z",
+      "90",
+      "RECTANG",
+      "0,5",
+      "10,25",
+      "EXTRUDE",
+      "_L",
+      ""
+    )
+    ext.moveTo({ x: -30, y: 20 }) // UCS 20,30
+    answer(ext, "_T")
+    ext.click({ x: -10, y: 40 }) // UCS 40,10
+    answer(ext, "1")
+    const taper = last(ext).sweep
+    expect(taper?.kind === "extrusion" && degrees(taper.taper)).toBeCloseTo(
+      12.9337293,
+      6
+    )
+  })
+
+  /** d07, d08's drawing: a rectangle, four lines bounding a square, a box. */
+  function scene(locale?: typeof es): CadHarness {
+    const cad = console(locale)
+    answer(cad, "_RECTANG", "0,0", "10,10")
+    answer(cad, "_LINE", "20,0", "30,0", "30,10", "20,10", "_C")
+    answer(cad, "_BOX", "40,0,0", "50,10,5")
+    return cad
+  }
+
+  it("says a bare number at the pick is no click (PPL-03; d07 b)", () => {
+    expect(written(scene(), "PRESSPULL", "7", "-5")).toEqual([
+      "PRESSPULL",
+      "Select object or bounded area:7",
+      "Click a face, curve, or inside a bounded area",
+      "Select object or bounded area:-5",
+      "Click a face, curve, or inside a bounded area",
+    ])
+  })
+
+  it("says nothing of a pick that finds nothing after Multiple (PPL-02; d07 d, d08 f)", () => {
+    const cad = scene()
+    answer(cad, "PRESSPULL", "_M")
+    const from = cad.commandLog().length
+    cad.click({ x: 60, y: 20 })
+    expect(cad.commandLog().slice(from)).toEqual([
+      "Select object or bounded area:",
+    ])
+    // Without Multiple it still says it (presspull/p01).
+    const plain = scene()
+    answer(plain, "PRESSPULL")
+    const at = plain.commandLog().length
+    plain.click({ x: 60, y: 20 })
+    expect(plain.commandLog().slice(at)).toEqual([
+      "Select object or bounded area:",
+      "Click a face, curve, or inside a bounded area",
+    ])
+  })
+
+  // p164's trace: a distance prompt, then a point prompt of the same words;
+  // d08 a–g: written bare, then with the answer against the colon.
+  it("writes the height prompt twice, the answer against the colon (SWD-04; p164, d08 a)", () => {
+    const cad = scene()
+    answer(cad, "PRESSPULL")
+    const from = cad.commandLog().length
+    cad.click({ x: 0, y: 5 })
+    answer(cad, "3")
+    expect(cad.commandLog().slice(from)).toEqual([
+      "Select object or bounded area:",
+      "Specify extrusion height or [Multiple]:",
+      "Specify extrusion height or [Multiple]:3",
+      "1 extrusion(s) created",
+    ])
+    // A refusal asks on the second line's words alone (d08 g).
+    const refused = scene()
+    answer(refused, "PRESSPULL")
+    refused.click({ x: 0, y: 5 })
+    expect(written(refused, "FOO", "0")).toEqual([
+      "Specify extrusion height or [Multiple]:FOO",
+      "Requires numeric distance, second point, or option keyword.",
+      "Specify extrusion height or [Multiple]:0",
+      "Value must be nonzero.",
+    ])
+    const es_ = scene(es)
+    answer(es_, "PRESIONARTIRAR")
+    const at = es_.commandLog().length
+    es_.click({ x: 0, y: 5 })
+    answer(es_, "3")
+    expect(es_.commandLog().slice(at, at + 3)).toEqual([
+      "Seleccione un objeto o un área delimitada:",
+      "Precise altura de extrusión o [Múltiple]:",
+      "Precise altura de extrusión o [Múltiple]:3",
+    ])
+  })
+
+  // d08 b, c: REGION's words, after the pick and before the height.
+  it("says the loop and the region an area or the inside of a closed object makes (SWD-05; d08 b, c)", () => {
+    for (const inside of [
+      { x: 5, y: 5 },
+      { x: 25, y: 5 },
+    ]) {
+      const cad = scene()
+      answer(cad, "PRESSPULL")
+      const from = cad.commandLog().length
+      cad.click(inside)
+      answer(cad, "3")
+      expect(cad.commandLog().slice(from)).toEqual([
+        "Select object or bounded area:",
+        "1 loop extracted.",
+        "1 Region created.",
+        "Specify extrusion height or [Multiple]:",
+        "Specify extrusion height or [Multiple]:3",
+        "1 extrusion(s) created",
+      ])
+    }
+  })
+
+  // d08 f: `_M`, nothing (silent), the rectangle's side, the box's top.
+  it("counts Multiple's picks under `Select object:`, a face after an object filtered (SWD-06; d08 f)", () => {
+    const cad = scene()
+    answer(cad, "PRESSPULL", "_M")
+    const from = cad.commandLog().length
+    cad.click({ x: 60, y: 20 })
+    cad.click({ x: 0, y: 5 })
+    expect(cad.state().commandLine.prompt).toBe("PRESSPULL Select object:")
+    cad.click({ x: 45, y: 5 })
+    answer(cad, "", "3")
+    expect(cad.commandLog().slice(from)).toEqual([
+      "Select object or bounded area:",
+      "Select object or bounded area:",
+      "1 selected, 1 total",
+      "Select object:",
+      "1 filtered, 1 total",
+      "Select object:",
+      "Specify extrusion height or [Multiple]:",
+      "Specify extrusion height or [Multiple]:3",
+      "1 extrusion(s) created",
+    ])
+    // The box is left as it was: only the rectangle was taken.
+    expect(solids(cad).map((s) => brepVolume(s.brep))).toEqual([500, 300])
+    const es_ = scene(es)
+    answer(es_, "PRESIONARTIRAR", "_M")
+    const at = es_.commandLog().length
+    es_.click({ x: 0, y: 5 })
+    es_.click({ x: 45, y: 5 })
+    expect(es_.commandLog().slice(at)).toEqual([
+      "Seleccione un objeto o un área delimitada:",
+      "1 seleccionados, 1 en total",
+      "Designe objeto:",
+      "1 filtrados, 1 en total",
+    ])
+    const pt = scene(ptBR)
+    answer(pt, "PRESSIONARPUXAR", "_M")
+    const atPt = pt.commandLog().length
+    pt.click({ x: 0, y: 5 })
+    pt.click({ x: 45, y: 5 })
+    expect(pt.commandLog().slice(atPt)).toEqual([
+      "Selecione o objeto ou área delimitada:",
+      "1 selecionados, 1 total",
+      "Selecionar objeto:",
+      "1 filtrados, 1 total",
+    ])
+  })
+
+  /** The selected object's Geometry rows, labels and values. */
+  function geometry(cad: CadHarness): string[][] {
+    cad.escape().select(last(cad).id)
+    const group = cad
+      .state()
+      .properties.info!.groups.find((g) => g.id === "geometry")!
+    return group.rows.map((r) => [r.label, r.value])
+  }
+
+  // d04 (es-ES desktop; English labels ax26res.dll 680, 681, 687, 689).
+  it("shows a sweep's height and taper, or its angle and axis direction (SWD-03; d04)", () => {
+    const extrusion = createHarness()
+    answer(
+      extrusion,
+      "CIRCLE",
+      "30,0",
+      "5",
+      "EXTRUDE",
+      "_L",
+      "",
+      "_T",
+      "10",
+      "8"
+    )
+    expect(geometry(extrusion)).toEqual([
+      ["Solid type", "Extrusion"],
+      ["Height", "8.00 mm"],
+      ["Taper angle", "10°"],
+    ])
+    const revolution = createHarness()
+    answer(revolution, "RECTANG", "100,0", "110,5", "REVOLVE", "_L", "", "_Y")
+    answer(revolution, "_ST", "30", "90")
+    expect(geometry(revolution)).toEqual([
+      ["Solid type", "Revolve"],
+      ["Angle of revolution", "90°"],
+      ["Axis direction X", "0.00"],
+      ["Axis direction Y", "1.00"],
+      ["Axis direction Z", "0.00"],
+    ])
+    // Read-only: AutoCAD's edits are the coverage's Missing.
+    for (const cad of [extrusion, revolution]) {
+      const rows = cad
+        .state()
+        .properties.info!.groups.find((g) => g.id === "geometry")!.rows
+      expect(rows.every((r) => r.edit === undefined)).toBe(true)
+    }
+  })
+
+  it("words the rows in Spanish and Brazilian Portuguese (SWD-03; ax26res.dll 680–689)", () => {
+    const labels = (locale: typeof es) => {
+      const a = createHarness({ locale })
+      answer(a, "_CIRCLE", "30,0", "5", "_EXTRUDE", "_L", "", "8")
+      const b = createHarness({ locale })
+      answer(b, "_RECTANG", "100,0", "110,5", "_REVOLVE", "_L", "", "_Y", "90")
+      return [...geometry(a), ...geometry(b)].map(([label]) => label).slice(1)
+    }
+    expect(labels(es)).toEqual([
+      "Altura",
+      "Ángulo Inclinación",
+      expect.any(String),
+      "Ángulo de revolución",
+      "Dirección eje X",
+      "Dirección eje Y",
+      "Dirección eje Z",
+    ])
+    expect(labels(ptBR)).toEqual([
+      "Altura",
+      "Ângulo de conicidade",
+      expect.any(String),
+      "Ângulo de revolução",
+      "Direção eixo X",
+      "Direção eixo Y",
+      "Direção eixo Z",
     ])
   })
 })

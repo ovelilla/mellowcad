@@ -491,6 +491,11 @@ export const es: EngineLocale = {
         "contents": "Contenido",
         "justify": "Justificar",
         "height": "Altura",
+        "taperAngle": "Ángulo Inclinación",
+        "angleOfRevolution": "Ángulo de revolución",
+        "axisDirectionX": "Dirección eje X",
+        "axisDirectionY": "Dirección eje Y",
+        "axisDirectionZ": "Dirección eje Z",
         "history": "Historial",
         "rotation": "Rotación",
         "lineSpaceFactor": "Factor de espacio de línea",
@@ -2762,6 +2767,7 @@ export const es: EngineLocale = {
     "answerForms": {
       "dimStyleRedefine": "tight",
       "mredoCount": "spaced",
+      "presspullHeightOr": "tight",
       "presspullOffsetOr": "tight",
       "presspullSelect": "tight",
       "selectDimensionsToSpace": "tight",
@@ -7151,6 +7157,26 @@ export const es: EngineLocale = {
           "count"
         ],
         " cara(s) desfasada(s)"
+      ],
+      "presspullSelected": [
+        [
+          "count"
+        ],
+        " seleccionados, ",
+        [
+          "total"
+        ],
+        " en total"
+      ],
+      "presspullFiltered": [
+        [
+          "count"
+        ],
+        " filtrados, ",
+        [
+          "total"
+        ],
+        " en total"
       ],
       "noSurfacesSelected": "No hay ninguna superficie seleccionada.",
       "planeZIdentical": "El punto del plano y el del eje Z no pueden ser iguales.",

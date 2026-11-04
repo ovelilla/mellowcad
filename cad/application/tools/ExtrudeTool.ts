@@ -1,6 +1,8 @@
 import { Vec2 } from "../../geometry/Vec2"
 import { Vec3, dot3, length3, scale3, sub3 } from "../../geometry/Vec3"
-import { MODEL_TOLERANCE } from "../../geometry/planarCurves"
+import { axesToWorld } from "../../geometry/ocs"
+import { worldPointToUcs } from "../../domain/ucs"
+import { MODEL_TOLERANCE, curveStart } from "../../geometry/planarCurves"
 import { PlanarProfile, extrusionBrep } from "../../geometry/sweeps"
 import { Entity, EntityId } from "../../domain/entities"
 import {
@@ -92,6 +94,8 @@ export class ExtrudeTool implements Tool {
   private taper = 0
   /** The height the mouse gives while the height is asked, which the ghost shows. */
   private rise = 0
+  /** {@link rise} as Taper angle was answered: a point's taper is read against it (d05). */
+  private taperRise = 0
   private lastScreen: Vec2 | null = null
   private readonly selector = new ObjectSelector({
     done: (ctx) => this.closeSet(ctx),
@@ -250,6 +254,7 @@ export class ExtrudeTool implements Tool {
           return "continue"
         }
         if (id === "Taper") {
+          this.taperRise = this.rise
           this.state = { phase: "taper" }
           this.openValue(ctx, "extrudeTaperOr")
           return "continue"
@@ -443,9 +448,7 @@ export class ExtrudeTool implements Tool {
         )
         return
       case "taper":
-        // A point gives the angle of the line from the base to it, as a
-        // distance prompt's second point gives its length.
-        this.takeTaper(length3(sub3(point, this.base())), ctx)
+        this.takeTaper(this.taperAt(point, ctx), ctx)
         return
       case "directionStart":
         this.state = { phase: "directionEnd", start: point }
@@ -483,6 +486,23 @@ export class ExtrudeTool implements Tool {
     }
     this.settings.height = height
     this.extrude(height, null, ctx)
+  }
+
+  /**
+   * A point's taper: atan(((p − start)·Y) / d), start the first profile's,
+   * Y the UCS's, d the height the cursor gave as Taper was typed (desktop
+   * sweeps/d05). Off the plan **unverified**.
+   */
+  private taperAt(point: Vec3, ctx: ToolContext): number {
+    const first = this.profiles[0]?.profile
+    const curve = first?.faces[0]?.loops[0]?.[0]
+    if (!first || !curve) return Number.NaN
+    const start = worldPointToUcs(
+      ctx.ucs,
+      axesToWorld(first.axes, { ...curveStart(curve), z: first.elevation })
+    )
+    const rise = worldPointToUcs(ctx.ucs, point).y - start.y
+    return (Math.atan(rise / this.taperRise) * 180) / Math.PI
   }
 
   /** Degrees, strictly between -90 and 90 (x06); then the height again. */

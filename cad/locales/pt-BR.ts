@@ -491,6 +491,11 @@ export const ptBR: EngineLocale = {
         "contents": "Conteúdo",
         "justify": "Justificar",
         "height": "Altura",
+        "taperAngle": "Ângulo de conicidade",
+        "angleOfRevolution": "Ângulo de revolução",
+        "axisDirectionX": "Direção eixo X",
+        "axisDirectionY": "Direção eixo Y",
+        "axisDirectionZ": "Direção eixo Z",
         "history": "Histórico",
         "rotation": "Rotação",
         "lineSpaceFactor": "Fator de espaçamento de linha",
@@ -2774,6 +2779,7 @@ export const ptBR: EngineLocale = {
     "answerForms": {
       "dimStyleRedefine": "tight",
       "mredoCount": "tight",
+      "presspullHeightOr": "tight",
       "presspullOffsetOr": "tight",
       "presspullSelect": "tight",
       "selectDimensionsToSpace": "tight",
@@ -7172,6 +7178,26 @@ export const ptBR: EngineLocale = {
           "count"
         ],
         " faces deslocadas"
+      ],
+      "presspullSelected": [
+        [
+          "count"
+        ],
+        " selecionados, ",
+        [
+          "total"
+        ],
+        " total"
+      ],
+      "presspullFiltered": [
+        [
+          "count"
+        ],
+        " filtrados, ",
+        [
+          "total"
+        ],
+        " total"
       ],
       "noSurfacesSelected": "Nenhuma superfície selecionada.",
       "planeZIdentical": "O ponto sobre o plano e o ponto sobre o eixo Z não podem ser idênticos.",

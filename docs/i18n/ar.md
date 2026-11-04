@@ -76,6 +76,7 @@ marks a choice between competing terms that a native review should settle first 
 |  | Fillet Edge, Chamfer Edge | تقويس الحافة، شطف الحافة (C) |
 |  | Extrude, Taper, Move, Copy, Offset, Delete, Rotate faces | بثق، تسليب، نقل، نسخ، إزاحة متوازية، حذف، تدوير الأوجه (C; تسليب L †) |
 |  | Sphere, Torus, Torus radius, Tube radius | كرة، طارة، نصف قطر الطارة، نصف قطر الأنبوب (C) |
+|  | Taper angle, Angle of revolution, Axis direction X (a swept solid's rows) | زاوية التسليب، زاوية الدوران، اتجاه المحور X (L; تسليب as the faces' Taper) |
 | Annotate | Single line text, Edit | نص بسطر واحد، تحرير (C) |
 |  | Linear, Aligned, Angular, Radius, Diameter, Baseline, Continue, Adjust space | خطي، محاذٍ، زاوي، نصف القطر، القطر، خط أساس، متتابع، تباعد (C) † |
 | Block | Create block, Insert, Purge | إنشاء كتلة، إدراج، تنظيف (C) † |
@@ -176,7 +177,7 @@ available. Where one should look first, if one ever is, in this order:
 2. **What was written after 01/10/2026**, which no one has reread (counted on 31/10/2026 against
    the catalogs of `4ffac941`): 154 keys of `cad/locales/ar.json`, above all the Properties
    palette's rows (114 of `interface.property`: splines, arrays, hatches, attributes, regions) and
-   30 tool names; in `packages/editor/src/locales/ar.json`, split from the site's catalog since,
+   30 tool names, and 5 swept solid rows since (04/11/2026); in `packages/editor/src/locales/ar.json`, split from the site's catalog since,
    the layer dialogs (`Layers.dialog`), the rail's flyouts and MTEXT's unsaved-changes dialog;
    in `messages/ar.json`, 79 new keys (the docs' pages and shortcuts, `Docs.*`) and 18 rewritten
    (the FAQ, the Status section).

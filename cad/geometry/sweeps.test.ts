@@ -3,17 +3,20 @@ import { describe, expect, it } from "vitest"
 
 import { sweep } from "../../test/arbitraries"
 import { Vec3, dot3, length3, scale3, sub3 } from "./Vec3"
-import { domainSamples } from "./faceDomains"
+import { domainSamples, turnIsolines } from "./faceDomains"
+import { brepBoolean } from "./solidBooleans"
 
 import { brepMoments, solidInertia } from "./massProperties"
 import {
   Brep,
+  boxBrep,
   brepArea,
   brepBox,
   brepIsClosed,
   brepIsolines,
   brepMapped,
   brepVolume,
+  roundBrep,
 } from "./solids"
 import {
   PlanarProfile,
@@ -22,7 +25,7 @@ import {
   revolveSide,
 } from "./sweeps"
 import { PlanarCurve } from "./planarCurves"
-import { bsplineDomain } from "./nurbs"
+import { bsplineDomain, bsplinePoint } from "./nurbs"
 import { createSpline, splineCurve } from "../domain/splines"
 
 const WORLD = {
@@ -750,15 +753,111 @@ describe("a swept face's isolines", () => {
   const lines = (brep: ReturnType<typeof extrusionBrep>, count: number) =>
     brepIsolines(brep!, count).length
 
-  it("rule a turned face every 2π/n from where it starts (r03's i3)", () => {
-    const brep = revolved(rectangle(10, 0, 20, 5), 0, 120 * DEG)
-    expect(lines(brep, 4)).toBe(2)
-    expect(lines(brep, 6)).toBe(2)
-    expect(lines(brep, 8)).toBe(4)
-    expect(lines(revolved(rectangle(10, 0, 20, 5), 0, 2 * Math.PI), 4)).toBe(8)
+  /** Degrees round +Y, from +X towards −Z (a right-handed turn), 0 to 360. */
+  const aroundY = (p: Vec3) =>
+    (((Math.atan2(-p.z, p.x) / DEG) % 360) + 360) % 360
+
+  /** The angles of the rulings parallel to `axis` at `radius` from it. */
+  function rulings(
+    wires: ReturnType<typeof brepIsolines>,
+    radius: number,
+    angle: (p: Vec3) => number,
+    axis: "y" | "z" = "y"
+  ): number[] {
+    const across = axis === "y" ? (["x", "z"] as const) : (["x", "y"] as const)
+    return wires
+      .filter(
+        (w): w is Extract<typeof w, { kind: "line" }> =>
+          w.kind === "line" &&
+          across.every((k) => Math.abs(w.start[k] - w.end[k]) < 1e-9) &&
+          Math.abs(
+            Math.hypot(w.start[across[0]], w.start[across[1]]) - radius
+          ) < 1e-6
+      )
+      .map((w) => angle(w.start))
+      .sort((a, b) => a - b)
+  }
+
+  const expectAngles = (got: number[], want: number[]) => {
+    expect(got).toHaveLength(want.length)
+    got.forEach((a, k) => expect(Math.abs(a - want[k])).toBeLessThan(0.1))
+  }
+
+  // sweeps/d01, d02 at ISOLINES N: a part of a turn of s° (N, s, the
+  // rulings in degrees from where it starts).
+  const partial: [number, number, number[]][] = [
+    [4, 20, [10]],
+    [4, 90, [45]],
+    [4, 100, [50]],
+    [4, 135, [45, 90]],
+    [4, 150, [50, 100]],
+    [4, 180, [60, 120]],
+    [4, 203, [67.67, 135.33]],
+    [4, 250, [62.5, 125, 187.5]],
+    [4, 270, [67.5, 135, 202.5]],
+    [4, 300, [75, 150, 225]],
+    [6, 45, [22.5]],
+    [6, 100, [33.33, 66.67]],
+    [6, 180, [45, 90, 135]],
+    [8, 20, [10]],
+    [8, 45, [22.5]],
+    [8, 100, [33.33, 66.67]],
+    [8, 180, [36, 72, 108, 144]],
+  ]
+
+  it("spread max(1, round(N·s/360)) inside a part of a turn, a whole turn's N from its seam (sweeps/d01, d02)", () => {
+    for (const [n, s, want] of partial) {
+      expectAngles(
+        turnIsolines([0, s * DEG], n).map((t) => t / DEG),
+        want
+      )
+      // Backwards from where it starts alike.
+      expectAngles(
+        turnIsolines([1, 1 - s * DEG], n).map((t) => (1 - t) / DEG),
+        want
+      )
+    }
+    expectAngles(
+      turnIsolines([0, 2 * Math.PI], 4).map((t) => t / DEG),
+      [0, 90, 180, 270]
+    )
+    expect(turnIsolines([0, Math.PI], 0)).toEqual([])
+    expect(turnIsolines([0, 2 * Math.PI], 0)).toEqual([])
   })
 
-  it("rule an extruded arc from the arc's start (x09)", () => {
+  it("rule a turned rectangle's side the same way (sweeps/d01: REVOLVE)", () => {
+    for (const [n, s, want] of partial) {
+      const brep = revolved(rectangle(0, 0, 10, 20), 0, s * DEG)
+      expectAngles(rulings(brepIsolines(brep, n), 10, aroundY), want)
+    }
+    const whole = revolved(rectangle(0, 0, 10, 20), 0, 2 * Math.PI)
+    expectAngles(
+      rulings(brepIsolines(whole, 4), 10, aroundY),
+      [0, 90, 180, 270]
+    )
+    expect(
+      brepIsolines(revolved(rectangle(0, 0, 10, 20), 0, Math.PI), 0)
+    ).toEqual([])
+  })
+
+  it("rule a cylinder cut in half by SUBTRACT inside what is left (sweeps/d01 c3)", () => {
+    const cylinder = roundBrep(O, WORLD.z, WORLD.x, 10, 10, 20, 1)
+    const box = boxBrep(
+      { x: -20, y: -20, z: -1 },
+      { x: 20, y: 0, z: 0 },
+      { x: 0, y: 40, z: 0 },
+      { x: 0, y: 0, z: 22 }
+    )
+    const half = brepBoolean("subtract", cylinder, box)!
+    const atan = (p: Vec3) => (((Math.atan2(p.y, p.x) / DEG) % 360) + 360) % 360
+    expectAngles(rulings(brepIsolines(half, 4), 10, atan, "z"), [30, 330])
+    expectAngles(
+      rulings(brepIsolines(half, 8), 10, atan, "z"),
+      [18, 54, 306, 342]
+    )
+  })
+
+  it("rule an extruded half circle inside it, from the arc's start (sweeps/d01: EXTRUDE of an arc)", () => {
     const brep = extrusionBrep(
       flat([
         line(0, 0, 10, 0),
@@ -775,16 +874,23 @@ describe("a swept face's isolines", () => {
       { x: 0, y: 0, z: 8 }
     )
     const wires = brepIsolines(brep!, 4)
-    expect(wires).toEqual([
+    // 60° and 120° from −90°.
+    expect(wires).toHaveLength(2)
+    expect(wires.map((w) => (w.kind === "line" ? w.start : null))).toEqual([
       {
-        kind: "line",
-        start: { x: 15, y: 5, z: 0 },
-        end: { x: 15, y: 5, z: 8 },
+        x: expect.closeTo(10 + 5 * Math.cos(-30 * DEG), 9),
+        y: expect.closeTo(2.5, 9),
+        z: 0,
+      },
+      {
+        x: expect.closeTo(10 + 5 * Math.cos(30 * DEG), 9),
+        y: expect.closeTo(7.5, 9),
+        z: 0,
       },
     ])
   })
 
-  it("draw a torus' tube circles and parallels within a part of a turn (i5)", () => {
+  it("draw a torus' tube circles inside a part of a turn, its parallels round the tube (sweeps/d01, d02)", () => {
     const brep = revolved(
       flat([
         {
@@ -799,14 +905,102 @@ describe("a swept face's isolines", () => {
       150 * DEG
     )
     const wires = brepIsolines(brep, 4)
-    // One tube circle at 90°, four parallels round the tube.
-    expect(
-      wires.filter((w) => w.kind === "arc" && w.radius === 4)
-    ).toHaveLength(1)
-    expect(wires).toHaveLength(5)
+    // Two tube circles, at 50° and 100°; four parallels round the tube.
+    const tubes = wires.filter(
+      (w) => w.kind === "arc" && Math.abs(w.radius - 4) < 1e-9
+    )
+    expectAngles(
+      tubes.map((w) => (w.kind === "arc" ? aroundY(w.center) : NaN)),
+      [50, 100]
+    )
+    expect(wires).toHaveLength(6)
   })
 
-  it("draw a revolution's profiles round it and circles along it, an extrusion's rulings", () => {
+  it("turns a hair off the axis' cone with a cone's rulings and no circles", () => {
+    const brep = revolved(
+      flat([
+        line(0, 0, 10, 0),
+        line(10, 0, 10.005, 20),
+        line(10.005, 20, 0, 20),
+        line(0, 20, 0, 0),
+      ]),
+      0,
+      180 * DEG
+    )
+    const wires = brepIsolines(brep, 4)
+    expect(wires).toHaveLength(2)
+    expect(wires.every((w) => w.kind === "curve")).toBe(true)
+  })
+
+  // p308's one-span CV spline, closed by a polyline back to its start, as d02 and d03 drew it.
+  const p308 = () => {
+    const curve = splineCurve(
+      createSpline("cv", [
+        { x: 10, y: 0 },
+        { x: 14, y: 3 },
+        { x: 12, y: 7 },
+        { x: 16, y: 10 },
+      ])
+    )
+    const { start, end } = bsplineDomain(curve)
+    return {
+      curve,
+      start,
+      end,
+      profile: flat([
+        { kind: "spline", curve, from: start, to: end },
+        line(16, 10, 10, 10),
+        line(10, 10, 10, 0),
+      ]),
+    }
+  }
+
+  it("split a turned spline in N − 3 parts each way, the seam on a whole turn (sweeps/d02)", () => {
+    const { curve, start, end, profile } = p308()
+    const meridians = (brep: Brep, n: number) =>
+      brepIsolines(brep, n)
+        .filter((w) => w.kind === "curve")
+        .map((w) =>
+          w.kind === "curve" ? aroundY(w.curve.controlPoints[0]) : NaN
+        )
+        .sort((a, b) => a - b)
+    const rings = (brep: Brep, n: number) =>
+      brepIsolines(brep, n)
+        .filter((w) => w.kind === "arc")
+        .map((w) => (w.kind === "arc" ? w.radius : NaN))
+        .sort((a, b) => a - b)
+    const half = revolved(profile, 0, Math.PI)
+    expect(meridians(half, 4)).toEqual([])
+    expectAngles(meridians(half, 6), [60, 120])
+    expectAngles(meridians(half, 8), [36, 72, 108, 144])
+    expectAngles(
+      meridians(revolved(profile, 0, Math.PI / 2), 8),
+      [18, 36, 54, 72]
+    )
+    expect(rings(half, 4)).toEqual([])
+    // The radii d02 measured: 12.43, 13.55 at 6; 11.77, 12.68, 13.30, 14.22 at 8.
+    const radius = (t: number) =>
+      bsplinePoint(curve, start + (end - start) * t).x
+    expect(rings(half, 6)).toEqual([
+      expect.closeTo(radius(1 / 3), 9),
+      expect.closeTo(radius(2 / 3), 9),
+    ])
+    expect(rings(half, 6)[0]).toBeCloseTo(12.43, 1)
+    expect(rings(half, 6)[1]).toBeCloseTo(13.55, 1)
+    expect(rings(half, 8)).toEqual(
+      [1, 2, 3, 4].map((k) => expect.closeTo(radius(k / 5), 9))
+    )
+    expect(rings(half, 8)[0]).toBeCloseTo(11.77, 1)
+    expect(rings(half, 8)[3]).toBeCloseTo(14.22, 1)
+    const whole = revolved(profile, 0, 2 * Math.PI)
+    expectAngles(meridians(whole, 4), [0])
+    expectAngles(meridians(whole, 6), [0, 120, 240])
+    expectAngles(meridians(whole, 8), [0, 72, 144, 216, 288])
+    expect(rings(whole, 8)).toHaveLength(4)
+    expect(brepIsolines(whole, 0)).toEqual([])
+  })
+
+  it("split a turned whole ellipse in N − 3 parts each way, both seams drawn (sweeps/d02: r04)", () => {
     const ellipse = revolved(
       flat([
         {
@@ -821,10 +1015,48 @@ describe("a swept face's isolines", () => {
       0,
       2 * Math.PI
     )
-    const wires = brepIsolines(ellipse, 4)
-    expect(wires.filter((w) => w.kind === "curve")).toHaveLength(4)
-    expect(wires.filter((w) => w.kind === "arc")).toHaveLength(4)
+    const kinds = (n: number) => brepIsolines(ellipse, n).map((w) => w.kind)
+    expect(kinds(4).filter((k) => k === "curve")).toHaveLength(1)
+    expect(kinds(4).filter((k) => k === "arc")).toHaveLength(1)
+    expect(kinds(6).filter((k) => k === "curve")).toHaveLength(3)
+    expect(kinds(6).filter((k) => k === "arc")).toHaveLength(3)
+  })
 
+  it("split an extruded spline side in N − 3 parts each way: rulings and profiles across (sweeps/d03)", () => {
+    const { curve, start, end, profile } = p308()
+    const brep = extrusionBrep(profile, { x: 0, y: 0, z: 20 })!
+    expect(brepIsolines(brep, 4)).toEqual([])
+    for (const n of [6, 8]) {
+      const parts = n - 3
+      const wires = brepIsolines(brep, n)
+      const ruled = wires.filter((w) => w.kind === "line")
+      expect(ruled).toHaveLength(parts - 1)
+      ruled.forEach((w, k) => {
+        const at = bsplinePoint(
+          curve,
+          start + ((end - start) * (k + 1)) / parts
+        )
+        expect(w.kind === "line" && w.start).toEqual({
+          x: expect.closeTo(at.x, 9),
+          y: expect.closeTo(at.y, 9),
+          z: 0,
+        })
+        expect(w.kind === "line" && w.end.z).toBeCloseTo(20, 9)
+      })
+      const across = wires.filter((w) => w.kind === "curve")
+      expect(
+        across.map((w) =>
+          w.kind === "curve" ? w.curve.controlPoints[0].z : NaN
+        )
+      ).toEqual(
+        Array.from({ length: parts - 1 }, (_, k) =>
+          expect.closeTo((20 * (k + 1)) / parts, 9)
+        )
+      )
+    }
+  })
+
+  it("rule a closed spline's extruded side from its seam, mirrored too (sweeps/d03)", () => {
     const curve = splineCurve(
       createSpline(
         "fit",
@@ -842,11 +1074,14 @@ describe("a swept face's isolines", () => {
       flat([{ kind: "spline", curve, from: start, to: end }]),
       { x: 0, y: 0, z: 4 }
     )!
-    expect(brepIsolines(spline, 4).map((w) => w.kind)).toEqual([
-      "line",
-      "line",
-      "line",
-    ])
+    expect(brepIsolines(spline, 4).map((w) => w.kind)).toEqual(["line"])
+    const seam = bsplinePoint(curve, start)
+    expect(brepIsolines(spline, 4)[0]).toMatchObject({
+      start: { x: expect.closeTo(seam.x, 9), y: expect.closeTo(seam.y, 9) },
+    })
+    const six = brepIsolines(spline, 6).map((w) => w.kind)
+    expect(six.filter((k) => k === "line")).toHaveLength(3)
+    expect(six.filter((k) => k === "curve")).toHaveLength(2)
     // Mirrored, its profile runs backwards and its volume stays.
     const mirrored = brepMapped(
       spline,
@@ -856,6 +1091,7 @@ describe("a swept face's isolines", () => {
     )
     expect(brepIsClosed(mirrored)).toBe(true)
     expect(brepVolume(mirrored)).toBeCloseTo(515.858363810842, 9)
-    expect(brepIsolines(mirrored, 4)).toHaveLength(3)
+    expect(brepIsolines(mirrored, 4)).toHaveLength(1)
+    expect(lines(mirrored, 6)).toBe(5)
   })
 })

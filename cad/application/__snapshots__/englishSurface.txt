@@ -5179,22 +5179,29 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   dyn: "Specify extrusion height or"=""||mm*
   options: [M] Multiple
   prompt| Select object or bounded area:
+  info| 1 loop extracted.
+  info| 1 Region created.
+  prompt| Specify extrusion height or [Multiple]:
 > height
-  prompt: PRESSPULL Select object or bounded area:
-  asks: "Select object or bounded area"
-  tip: Select object or bounded area:
+  prompt: PRESSPULL Select object:
+  asks: "Select object"
+  tip: Select object:
   dyn: "X,Y"=""||*
   options: -
-  prompt| Specify extrusion height or [Multiple]: M
+  prompt| Specify extrusion height or [Multiple]:M
 > click again
-  prompt| Select object or bounded area:
+  prompt| Select object:
+  info| 1 loop extracted.
+  info| 1 Region created.
+  info| 1 selected, 2 total
 > Multiple's height
   prompt: Command:
   asks: -
   tip: -
   dyn: -
-  prompt| Select object or bounded area:
-  prompt| Specify extrusion height or [Multiple]: 30
+  prompt| Select object:
+  prompt| Specify extrusion height or [Multiple]:
+  prompt| Specify extrusion height or [Multiple]:30
   info| 2 extrusion(s) created
   prompt| Select object or bounded area:
 > a face, offset

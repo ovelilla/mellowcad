@@ -23,6 +23,7 @@ import {
   EntityProperty,
   EntityType,
   MTextEntity,
+  SolidSweep,
   TextEntity,
   arcEndPoint,
   arcLength,
@@ -1820,6 +1821,26 @@ function singleEntityInfo(
       // History; 3D Visualization's Material is not built.
       const primitive = entity.primitive
       const placed = primitive && primitiveInUcs(primitive, settings.ucs)
+      // The rows its history holds, read-only (desktop sweeps/d04): AutoCAD's
+      // edits and the rows not stored (Direction, Axis position) are Missing.
+      const sweepRows = (sweep: SolidSweep): PropertyRow[] => {
+        if (sweep.kind === "extrusion") {
+          return [
+            row("height", length(sweep.height)),
+            row(
+              "taperAngle",
+              degrees(normalizeDegrees((sweep.taper * 180) / Math.PI))
+            ),
+          ]
+        }
+        const axis = worldDirectionToUcs(settings.ucs, sweep.axis)
+        return [
+          row("angleOfRevolution", degrees((sweep.angle * 180) / Math.PI)),
+          row("axisDirectionX", coord(axis.x)),
+          row("axisDirectionY", coord(axis.y)),
+          row("axisDirectionZ", coord(axis.z)),
+        ]
+      }
       const sizes = (): PropertyRow[] => {
         if (!primitive) return []
         const height = lengthRow(
@@ -1931,10 +1952,9 @@ function singleEntityInfo(
               ]
             : entity.sweep
               ? [
-                  // WHY the type alone: the rows the desktop shows under it
-                  // are unverified (no desktop pass of a swept solid's).
                   group("geometry", [
                     row("solidType", text.propertyValue(entity.sweep.kind)),
+                    ...sweepRows(entity.sweep),
                   ]),
                 ]
               : []),

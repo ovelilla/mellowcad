@@ -1075,7 +1075,11 @@ B-rep and ISOLINES, as AutoCAD's DWG keeps them (primitives/p418, p419: LIST of 
 alike), and a file of version 43 opens with its box; COPYBASE and PASTECLIP carry it, primitive
 and all, into another drawing. It draws in 2D Wireframe as its edges, a plane having no isolines
 (d01: ISOLINES 4 and 16 draw a box alike; ISOLINES is saved with the drawing; a new one redraws
-every solid at once, where AutoCAD waits for REGEN, view.md, p417), on the current layer in
+every solid at once, where AutoCAD waits for REGEN, view.md, p417); a curved face short of a whole
+turn round its axis, however made (REVOLVE, a boolean, SLICE, an extruded arc, SOLIDEDIT), draws
+max(1, round(ISOLINES·s/360)) rulings spread inside its s degrees (sweeps/d01, d02: 180° at 4 two
+at 60° and 120°, at 8 four 36° apart), and a spline surface splits each parameter in ISOLINES − 3
+equal parts (d02, d03; a one-span spline probed); on the current layer in
 CECOLOR, CELTYPE and CELWEIGHT, its edges and isolines dashed under a dashed linetype (p415, p420);
 it is
 picked by its edges, in plan and off it, and a window, a crossing and a fence take it by them, a
@@ -1512,7 +1516,8 @@ BOX's height is, along the first profile's normal through its base — off the p
 how far it lies along it (desktop d05, console solid/z02: to a box's top corner, below a line's
 end), the cursor or a typed one where it falls on the normal as drawn, however far beside it
 (d02–d04; z02: `300,-400,0` from a profile at `400,-400,0` in SE Isometric is 50), in plan its
-distance from the base (p107, p163). The base is the prompt's traced BasePoint, fitted to 1e-15
+distance from the base (p107, p163; a click alike on the desktop, sweeps/d05, its rubber band
+dashed from the base). The base is the prompt's traced BasePoint, fitted to 1e-15
 (p101–p106, x04, x09): a polyline's the mean of 20 points at arc lengths k·L/19 from its start, the
 start twice (a rectangle drawn from its other corner has another); a spline's, a circle's and an
 ellipse's of 19 at parameters k/19; a region's its first face's centroid (p103; p306: 25,5 of two
@@ -1523,7 +1528,9 @@ be nonzero.` for 0 and `Requires numeric distance, second point, or option keywo
 Enter with no default (x03). Taper angle asks `Specify angle of taper for extrusion or [Expression]
 <0>:`, the last one its default, `Angle must be greater than -90 degrees and less than 90 degrees.`
 past a right angle, and the height again (x01, x06); a run tapers only when it is answered (p335,
-p336). Expression asks `Enter expression:`, `2*3` a height of 6, `The syntax is incorrect or a
+p336); a point given there is atan(Y / d), Y its UCS Y from the first profile's start and d the
+height the cursor gave as `T` was typed (desktop sweeps/d05: from a start at y 5, `40,10` →
+`12.93372930`; off the plan **unverified**). Expression asks `Enter expression:`, `2*3` a height of 6, `The syntax is incorrect or a
 variable is not defined.  Reenter the expression or value.` for what is none (x02); a value refused
 asks its prompt again (p132, p133; an expression's 0 is BOX's words in es `No puede ser un valor
 igual a cero.` and pt-BR, a typed one the distance's), Enter ends EXTRUDE, nothing made (p131).
@@ -1552,13 +1559,16 @@ merged into one (p330: 6 faces, 12 edges, 8 vertices; a run across the loop's st
 curve, **unverified**) — a plane for a segment, a cylinder for an arc (its seam at the arc's start), a cone when
 tapered, an elliptical cylinder for an elliptical arc, an extrusion of a spline (a closed one with
 its seam ruling) or, slanted, of the curve —, the top and the bottom; its volume and MASSPROP exact
-(x01's frustum `467.7253`, x04's fit spline `515.8584`). Its isolines rule a curved side every
-360/ISOLINES degrees from its seam (d01), a spline's side by ISOLINES rulings along it. LIST:
+(x01's frustum `467.7253`, x04's fit spline `515.8584`). Its isolines rule a whole curved side every
+360/ISOLINES degrees from its seam (d01), an arc's as BOX's partial turn (sweeps/d01: a half disc
+at 4 two at ±30°), a spline's side in ISOLINES − 3 parts each way, rulings along it and profiles
+across (sweeps/d03). LIST:
 `Solid type = Extrusion`, ` Extrusion height: 5.0000` (Direction's length), `      Taper angle: 0`
 (-30 lists `330`), and its `Bounding Box` (es `Altura de extrusión`, `Ángulo Inclinación`; pt-BR
 `Altura de extrusão`, `Ângulo de conicidade`; the box a solid's own words, es `Caja de contorno:
 Límite inferior`, pt-BR `Caixa delimitadora. Limite inferior. X`, a composite's too, where a
-region's are other: p329, p311); the palette's Solid type `Extrusion`. It snaps, moves and mirrors
+region's are other: p329, p311); the palette's Solid type `Extrusion`, `Height` and `Taper angle`
+(sweeps/d04; es `Altura`, `Ángulo Inclinación`; ax26res 680, 681), read-only. It snaps, moves and mirrors
 as BOX does, MOVE, ROTATE, SCALE and MIRROR keeping its history (p310); with planar sides it
 explodes into a region of each face in that order (p316, p319).
 
@@ -1569,15 +1579,13 @@ faces of solids and the areas a click inside bounded objects finds (Ctrl+click, 
 taper on an ellipse, a spline or an arc meeting its neighbour at a corner, whose edges are conics
 ACIS joins the faces by (x09's NurbCurve3d), refused here as a taper the profile cannot take;
 Expression's parameters and functions (arithmetic only); the default after Direction, which the
-console sets from its cursor (x02's `<312.4376>`); a spline side's isolines across it (ACIS's own
-count, i6); EXPLODE of one with a curved face, which AutoCAD makes a SURFACE of each curved face and
+console sets from its cursor (x02's `<312.4376>`); EXPLODE of one with a curved face, which AutoCAD makes a SURFACE of each curved face and
 a REGION of each planar one (p317, p320), refused here as `1 was not able to be exploded.` (no
 surface object); its grips, MPGRIPDATA's the profile's corners and midpoints at its base and one on
-its top (p305), none here, their look **unverified** (the desktop), and the palette's rows under
-Solid type (**unverified**); a point given for the taper, read here as its distance from the base in degrees, which the
-console reads in a UCS at the profile's start, its X the normal, as atan(Y / d), d the height its
-fixed cursor gave (p111, p115–p118: `60,10` → `2.14746830`; **unverified**, the desktop decides); the
-tilted UCS's console run (x08) only checked by MASSPROP.
+its top (p305), squares at the profile's points and a triangle at the top's centre (sweeps/d04),
+none here; the palette's `Direction X/Y/Z` (the height's vector, read-only there; not stored here)
+and its Height and Taper angle edited; the tilted UCS's console run (x08) only checked by
+MASSPROP.
 
 ### `REVOLVE` / `REV` · es `REVOLUCION` / `RV` · pt-BR `REVOLUCAO` / `REV`
 
@@ -1605,9 +1613,10 @@ before any angle is asked (r04, r05, r07, p244, p245). Then `Specify angle of re
 angle/Reverse/EXpression] <360>:` (es `[ángulo Inicial/iNvertir/EXpresión]`, pt-BR `Especifique um
 ângulo de revolução ou [ângulo INicial/Reverter/EXpressão]`): degrees, right-handed about the axis,
 negative backwards, 0 or a turn or more either way a whole turn (r05, r07), a coordinate typed its
-first number (`5,7.5` 5°, `0,12.5` a whole turn: p227–p231); FOO `Requires valid numeric angle,
+first number (`5,7.5` 5°, `0,12.5` a whole turn: p227–p231), a click the plan angle from the
+angle's base below to it (desktop sweeps/d06: `10,15` from 0,5 45°, `10,-5` 315°); FOO `Requires valid numeric angle,
 second point, or option keyword.`. STart angle asks `Specify start angle <0.0>:` (a coordinate its
-first number too, p230), the profile turned there first, and the angle again without Reverse (r01);
+first number too, p230, a click as the angle's, d06), the profile turned there first, and the angle again without Reverse (r01);
 Reverse turns the axis round and asks it again (r03); EXpression EXTRUDE's, Enter there asking the
 angle again (p225). `<360>` and `<0.0>` never change (p223, r02). LASTPOINT: each axis point sets
 it; the angle prompt opening puts it on the axis across the first profile's perimeter centroid (p151's
@@ -1626,12 +1635,16 @@ profile as a seam and the circle the seam's end traces, a vertex there (r04: the
 circle r55 at 55,0,0; p308: the spline and three circles). Volume and MASSPROP exact (r01's `8246.6807`, r02's
 doughnut, r03's sphere wedge, r06's cylinder round a cone; r04's ellipse to the eleventh digit,
 where AutoCAD's own sum strays; p248's region with a hole). Its isolines every 360/ISOLINES degrees
-from the profile (i3, i5), a sphere's and a torus' parallels as theirs, a revolution's ISOLINES
-circles along its profile. LIST: `Solid type = Revolve`, `      Start angle: 30`, `Angle of
+from the profile (i3, i5), short of a turn as BOX's partial face (sweeps/d01, d02), a sphere's and
+a torus' parallels as theirs, a revolution's (a spline's or an ellipse's) ISOLINES − 3 parts each
+way, its seam drawn (d02). LIST: `Solid type = Revolve`, `      Start angle: 30`, `Angle of
 revolution: 90` (signed, as given), ` Direction vector: X = 0.0000    Y = 1.0000    Z = 0.0000` in
 the UCS (p210; Reverse's `-1.0000`) and its box (es `Ángulo inicial`, `Ángulo de revolución`,
 `Vector de dirección`; pt-BR `Ângulo de revolução`, `Vetor de direção`; the box EXTRUDE's words);
-the palette's Solid type `Revolve`. It snaps and moves as BOX does; ROTATE and MIRROR carry the
+the palette's Solid type `Revolve`, `Angle of revolution` and `Axis direction X/Y/Z` (sweeps/d04;
+es `Ángulo de revolución`, `Dirección eje X`; ax26res 687, 689), read-only. `'ZOOM` runs at its
+prompts; AutoCAD refuses `'ZOOM E` at the angle with the profile outside the view (p215, desktop
+d06 c), a regen View does not model (view.md). It snaps and moves as BOX does; ROTATE and MIRROR carry the
 Direction vector as a vector, SCALE scales it, unit only as made (p311: ROTATE 30 `-0.5000 0.8660`,
 MIRROR about y = 40 `-0.5000 -0.8660`, SCALE 2 `-1.0000 -1.7321`; p333).
 
@@ -1639,13 +1652,13 @@ MIRROR about y = 40 `-0.5000 -0.8660`, SCALE 2 `-1.0000 -1.7321`; p333).
 this kernel does not hold (r05: 40,0,0 to 40,10,10; p249: Y through a profile at ELEVATION 7),
 refused with `Unable to revolve the selected object.` alone; an elliptical arc or a solid's edge as
 the Object axis (refused as a closed curve is, **unverified**); SUrface and open profiles
-(EXTRUDE's); the jig's angle dragged round the axis (the whole turn is previewed) and an angle or
-start angle clicked (**unverified**: the console's getangle reads it otherwise); EXPLODE, which
+(EXTRUDE's); the jig's angle dragged round the axis (the whole turn is previewed); EXPLODE, which
 AutoCAD makes SURFACEs and REGIONs of (p318: two and four for a rectangle turned 90°), refused here
 (no surface object); its grips, MPGRIPDATA's the profile at the start angle, a point on the axis and
-one at the end angle, a circle turned whole its centre and quadrants (p305), none here, their look
-**unverified** (the desktop), and the palette's rows under Solid type (**unverified**: no desktop
-pass).
+one at the end angle, a circle turned whole its centre and quadrants (p305), squares on the
+profile and a triangle (sweeps/d04), none here; the palette's `Axis position X/Y/Z` (the angle's
+base: p305's 0, 2.5, 0; not stored here) and its Angle of revolution edited; a half disc turned
+180°, whose isolines AutoCAD draws round the profile plane's normal, a hemisphere's (d02 s180).
 
 ### `PRESSPULL` · es `PRESIONARTIRAR` / `PULSARTIRAR` · pt-BR `PRESSIONARPUXAR`
 
@@ -1657,7 +1670,10 @@ pt-BR `Selecione o objeto ou área delimitada`), its answer against the colon in
 (presspull/p01, sweeps/p263), until Enter — a click on a circle, an ellipse, a closed polyline or
 spline or a region, or inside an area the objects in plan bound (HATCH's boundary, its islands
 holes), extruded into a solid along its normal (the UCS's Z for an area), of the current layer and
-properties, its objects kept, after `Specify extrusion height or [Multiple]:` (es `Precise altura
+properties, its objects kept — an area (inside a closed object or objects) first saying `1 loop
+extracted.` and `1 Region created.` (desktop sweeps/d08 b, c) — after `Specify extrusion height or
+[Multiple]:`, written bare and again with its answer against the colon (p164's trace: a distance
+prompt, then a point prompt; d08) (es `Precise altura
 de extrusión o [Múltiple]`, pt-BR `Especifique a altura da extrusão ou [Múltiplos]`), then
 `1 extrusion(s) created` (sweeps/p164, p160: the object kept, `(sslength (ssget "X"))` 2); a click on
 a planar face of a solid, the one nearest the viewer under it (after a closed object, before an
@@ -1674,8 +1690,12 @@ and a cylinder or an extrusion square to it grows (e03: 1021.0176; a drilled box
 the faces taken glow as selected, the whole solid for an offset. The solid keeps its object and
 loses what made it (LIST: `History = None`, no Solid type). Multiple, at either prompt, takes
 several clicks before one height, several faces of one solid among them, and is taken again
-(sweeps/p262); Enter after it with nothing taken asks again (sweeps/p257). FOO says `2D point or
-option keyword required.`. The solid an object or an area makes is EXTRUDE's (`Solid type =
+(sweeps/p262); Enter after it with nothing taken asks again (sweeps/p257); a pick taken says `1
+selected, 1 total` and the prompt becomes `Select object:` (es `Designe objeto:`), a face after an
+object or an area `1 filtered, 1 total`, not taken, and a pick on nothing nothing (d07 d, d08 f).
+FOO says `2D point or option keyword required.`; a bare number or a typed point `Click a face,
+curve, or inside a bounded area` (d07: AutoCAD reads it from the cursor, where it lands on
+nothing). The solid an object or an area makes is EXTRUDE's (`Solid type =
 Extrusion`). The whole run is one undo step, `PRESSPULL` (desktop); U after a run that made nothing
 names it too (sweeps/p260). A preselection is dropped (sweeps/p261); `'PRESSPULL` is refused
 transparently (sweeps/p256) and `'ZOOM` runs at its prompt (sweeps/p259).
@@ -1687,15 +1707,12 @@ planes and curved faces together, and one the topology cannot take (a face pushe
 across it), each leaving the solid as it was, where AutoCAD's message is
 **unverified**; Ctrl+Shift+E, IMPLIEDFACE and an imprinted face's area (no IMPRINT here); an open
 object, which it extrudes into a surface (no surface object here); the drag's live preview of the
-united solid (here a face's prism, or the solid an object makes) and the hover highlight of an
-area or a face without Ctrl. **Unverified** until the desktop (SWEEPS-D91): a typed point says
-`Click a face, curve, or inside a bounded area` and a bare number `2D point or option keyword
-required.`, where the console reads a typed point as an offset from its fixed cursor and pulls
-what it lands on (sweeps/p126, p158, p159, p164: `57,14.9` pulled the rectangle at 5,5; a `7`,
-p127, p160), and a failed pick after Multiple says `Click a face…` where the console says nothing
-(p258, from the same cursor); a run of Multiple taking an object and a face says one line of the
-total (`2 extrusion(s) created`), no probe mixing them; and what an area bounded off the UCS's
-plane does (no desktop pass of objects).
+united solid (here a face's prism, or the solid an object makes) and the rollover of a face's solid
+without Ctrl (d08 j: an area shows none); LASTPOINT, which AutoCAD moves where it read a typed
+point from the cursor (d07); Enter at the height after a refusal, which made an extrusion there
+(d08 g, its height unread); the other mixes of Multiple (a face then an object, an area's islands
+counted) and Multiple at the height once a pick is taken, **unverified**; and what an area bounded
+off the UCS's plane does (no desktop pass of objects).
 
 ### `SECTION` / `SEC` · es `SECCION` / `SC` · pt-BR `CORTE` / `SECAO`
 

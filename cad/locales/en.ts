@@ -497,6 +497,11 @@ export const en: EngineCatalog = {
         "contents": "Contents",
         "justify": "Justify",
         "height": "Height",
+        "taperAngle": "Taper angle",
+        "angleOfRevolution": "Angle of revolution",
+        "axisDirectionX": "Axis direction X",
+        "axisDirectionY": "Axis direction Y",
+        "axisDirectionZ": "Axis direction Z",
         "history": "History",
         "rotation": "Rotation",
         "lineSpaceFactor": "Line space factor",
@@ -2128,6 +2133,7 @@ export const en: EngineCatalog = {
     "answerForms": {
       "dimStyleRedefine": "tight",
       "mredoCount": "spaced",
+      "presspullHeightOr": "tight",
       "presspullOffsetOr": "tight",
       "presspullSelect": "tight",
       "selectDimensionsToSpace": "tight",
@@ -6498,6 +6504,26 @@ export const en: EngineCatalog = {
           "count"
         ],
         " face(s) offset"
+      ],
+      "presspullSelected": [
+        [
+          "count"
+        ],
+        " selected, ",
+        [
+          "total"
+        ],
+        " total"
+      ],
+      "presspullFiltered": [
+        [
+          "count"
+        ],
+        " filtered, ",
+        [
+          "total"
+        ],
+        " total"
       ],
       "noSurfacesSelected": "No surfaces selected.",
       "planeZIdentical": "Point on plane and point on Z-axis cannot be identical.",

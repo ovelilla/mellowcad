@@ -1,6 +1,7 @@
 import { V, Vec2 } from "../../geometry/Vec2"
 import { Vec3, length3, normalize3, scale3, sub3 } from "../../geometry/Vec3"
 import { MODEL_TOLERANCE } from "../../geometry/planarCurves"
+import { normalizeDegrees } from "../../geometry/primitives"
 import {
   PlanarProfile,
   revolutionBrep,
@@ -25,7 +26,7 @@ import {
   sweepProfile,
   sweptFaces,
 } from "../../domain/sweptSolids"
-import { ucsZAxis } from "../../domain/ucs"
+import { ucsZAxis, worldPointToUcs } from "../../domain/ucs"
 import {
   AddEntitiesCommand,
   ReplaceEntitiesCommand,
@@ -107,7 +108,8 @@ const ORIGIN: Vec3 = { x: 0, y: 0, z: 0 }
  * (r05, p244, p245). Then `Specify angle of revolution or [STart
  * angle/Reverse/EXpression] <360>:`, LASTPOINT put on the axis
  * ({@link revolveBase}): 0 or a turn or more is a whole one (r05, r07),
- * negative turns back, a coordinate typed its first number (p228); STart
+ * negative turns back, a coordinate typed its first number (p228), a click
+ * the plan angle from LASTPOINT's place (desktop d06); STart
  * angle asks `Specify start angle <0.0>:` and the angle again without
  * Reverse; Reverse turns the axis round. DELOBJ as EXTRUDE's (r09). One undo
  * step. The rail runs the ribbon's macro ({@link RevolveTool.ribbonMacro}).
@@ -378,6 +380,9 @@ export class RevolveTool implements Tool {
         return this.axisPick.wantsSnap()
       case "axisStart":
       case "axisEnd":
+      // A click at the angles is measured here, from their base (d06).
+      case "angle":
+      case "startAngle":
         return true
       default:
         return false
@@ -385,7 +390,12 @@ export class RevolveTool implements Tool {
   }
 
   getConstraintAnchor(): Vec3 | null {
-    return this.state.phase === "axisEnd" ? this.state.start : null
+    const state = this.state
+    if (state.phase === "axisEnd") return state.start
+    if (state.phase === "angle" || state.phase === "startAngle") {
+      return this.angleBase(state.axis)
+    }
+    return null
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
@@ -511,6 +521,17 @@ export class RevolveTool implements Tool {
 
   private takePoint(point: Vec3, ctx: ToolContext): void {
     const state = this.state
+    if (state.phase === "angle" || state.phase === "startAngle") {
+      // The plan angle from the base to the point, counter-clockwise from
+      // the UCS's X, 0–360 (desktop sweeps/d06: 10,15 from 0,5 is 45).
+      const base = worldPointToUcs(ctx.ucs, this.angleBase(state.axis))
+      const at = worldPointToUcs(ctx.ucs, point)
+      const degrees = normalizeDegrees(
+        (Math.atan2(at.y - base.y, at.x - base.x) * 180) / Math.PI
+      )
+      this.takeValue(degrees, ctx)
+      return
+    }
     if (state.phase === "axisStart") {
       this.state = { phase: "axisEnd", start: point }
       this.openPoint(ctx, "revolveAxisEnd")
@@ -557,11 +578,16 @@ export class RevolveTool implements Tool {
    */
   private askAngle(axis: Axis, start: number | null, ctx: ToolContext): void {
     this.state = { phase: "angle", axis, start }
-    const first = this.profiles[0]?.profile
-    if (first && first !== "crosses") {
-      ctx.setLastPoint(revolveBase(first, axis.origin, axis.direction))
-    }
+    ctx.setLastPoint(this.angleBase(axis))
     this.openValue(ctx, "revolveAngleOr")
+  }
+
+  /** The angles' base: the first profile's {@link revolveBase} on `axis`. */
+  private angleBase(axis: Axis): Vec3 {
+    const first = this.profiles[0]?.profile
+    return first && first !== "crosses"
+      ? revolveBase(first, axis.origin, axis.direction)
+      : axis.origin
   }
 
   /**

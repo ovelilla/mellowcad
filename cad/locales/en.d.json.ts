@@ -357,6 +357,11 @@ declare const source: {
         "contents": string
         "justify": string
         "height": string
+        "taperAngle": string
+        "angleOfRevolution": string
+        "axisDirectionX": string
+        "axisDirectionY": string
+        "axisDirectionZ": string
         "history": string
         "rotation": string
         "lineSpaceFactor": string
@@ -2163,6 +2168,7 @@ declare const source: {
     "answerForms": {
       "dimStyleRedefine": string
       "mredoCount": string
+      "presspullHeightOr": string
       "presspullOffsetOr": string
       "presspullSelect": string
       "selectDimensionsToSpace": string
@@ -2796,6 +2802,8 @@ declare const source: {
       "presspullClick": string
       "presspullExtruded": string
       "presspullOffset": string
+      "presspullSelected": string
+      "presspullFiltered": string
       "noSurfacesSelected": string
       "planeZIdentical": string
       "planeFirstSecondIdentical": string

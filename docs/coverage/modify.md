@@ -1340,11 +1340,8 @@ line's end vertices with the box); the order of a
 fence's find (taken as found) and of Previous's (taken as `ALL`'s), unprobed; `Previous` after
 SUBTRACT, which finds `0 found` (the erased second set) in AutoCAD and says `No previous selection
 set.` here (regions/p334); where a combined solid's grip lies under a turned UCS (its box is
-taken in the UCS here; d03 ran in the WCS, the turned UCS unprobed); a curved face a boolean cuts
-draws its isolines otherwise (REGIONS-D79, rule unprobed): d03-3's half cylinder outside the box
-(Front, ISOLINES 4) draws four rulings at θ ±18° and ±54° in AutoCAD, here one at θ 0, as
-`turnIsolines` steps 2π/ISOLINES from the range's start; d05-1's cylinder lying on a box draws
-about eight there, four here; DELOBJ-like history (SOLIDHIST, SHOWHISTORY).
+taken in the UCS here; d03 ran in the WCS, the turned UCS unprobed); DELOBJ-like history
+(SOLIDHIST, SHOWHISTORY).
 
 ### `SLICE` / `SL` · es `CORTE` / `CO` · pt-BR `FATIAR` / `FAT`
 

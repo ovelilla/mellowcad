@@ -20,6 +20,7 @@ import {
 import { MODEL_TOLERANCE, PlanarCurve } from "./planarCurves"
 import { RegionFace, facesArea } from "./planarRegions"
 import {
+  FaceRegion,
   faceRegion,
   faceRegionMeasures,
   isoRuns,
@@ -27,7 +28,7 @@ import {
   surfaceParams,
 } from "./faceRegions"
 import {
-  spreadIsolines,
+  splitIsolines,
   surfacePoint,
   turnIsolines,
   turnedAbout,
@@ -1299,7 +1300,7 @@ export function brepIsolines(brep: Brep, count: number): Wire[] {
       const runs: IsoRuns = region
         ? (along, at, from, to) => isoRuns(region, along, at, from, to)
         : (_along, _at, from, to) => [[from, to]]
-      out.push(...domainIsolines(s, face.domain, count, runs))
+      out.push(...domainIsolines(s, face.domain, count, runs, region))
       continue
     }
     if (s.kind === "extrusion" || s.kind === "revolution") continue
@@ -1475,19 +1476,19 @@ function profileWire(
 }
 
 /**
- * A swept face's isolines: round its axis every `2π / count` from where its
- * turn starts (r03's revolved faces; an extruded arc's from the arc's start,
- * x09's ReferenceAxis), and across it what the primitive of its surface
- * draws there — a sphere's parallels, a torus' — within the face; a
- * revolution's `count` circles spread along its profile; an extrusion's
- * `count` rulings spread along its profile (i06 also draws profiles across
- * it, ACIS's own count: none here).
+ * A swept face's isolines: a cylinder's, a cone's, a sphere's or a torus'
+ * round its axis by {@link turnIsolines}, and across it what the primitive of
+ * its surface draws there within the face; a revolution's and an extrusion's
+ * of a spline or an ellipse by {@link splitIsolines} both ways (sweeps/d02,
+ * d03) — the profile's copies round the axis and circles along it; rulings
+ * along the profile and its copies across.
  */
 function domainIsolines(
   s: Curved,
   d: FaceDomain,
   count: number,
-  runs: IsoRuns
+  runs: IsoRuns,
+  region: FaceRegion | null
 ): Wire[] {
   const out: Wire[] = []
   const add = (w: Wire | null) => {
@@ -1504,7 +1505,9 @@ function domainIsolines(
   switch (s.kind) {
     case "cylinder":
     case "cone":
-      for (const u of turnIsolines(d.u, count)) ruling(u)
+      for (const u of turnIsolines(turnRange(region, d, runs), count)) {
+        ruling(u)
+      }
       break
     case "sphere":
     case "torus": {
@@ -1513,7 +1516,7 @@ function domainIsolines(
       const y = cross3(s.axis, s.xAxis)
       const out3 = (u: number) =>
         add3(scale3(s.xAxis, Math.cos(u)), scale3(y, Math.sin(u)))
-      for (const u of turnIsolines(d.u, count)) {
+      for (const u of turnIsolines(turnRange(region, d, runs), count)) {
         for (const [a, b] of runs("v", u, d.v[0], d.v[1])) {
           add(
             arcWire(
@@ -1558,7 +1561,21 @@ function domainIsolines(
       break
     }
     case "revolution": {
-      for (const u of turnIsolines(d.u, count)) {
+      // WHY: a segment a hair off the axis' line or square is turned as a
+      // spline of degree 1 (revolvedFace), where ACIS makes a cone: a cone's
+      // rulings, no circles.
+      const cone =
+        s.profile.kind === "spline" &&
+        s.profile.curve.degree === 1 &&
+        s.profile.curve.controlPoints.length === 2
+      const round = cone
+        ? turnIsolines(d.u, count)
+        : splitIsolines(
+            d.u,
+            count,
+            Math.abs(d.u[1] - d.u[0]) >= 2 * Math.PI - 1e-9
+          )
+      for (const u of round) {
         for (const [a, b] of runs("v", u, d.v[0], d.v[1])) {
           add(
             profileWire(s.profile, a, b, (p) =>
@@ -1567,7 +1584,12 @@ function domainIsolines(
           )
         }
       }
-      for (const v of spreadIsolines(d.v, count)) {
+      // A spline of several spans is split by its knots' parameter, as one of
+      // one span (p308's) was measured: unverified.
+      const along = cone
+        ? []
+        : splitIsolines(d.v, count, closedOver(s.profile, d.v))
+      for (const v of along) {
         for (const [a, b] of runs("u", v, d.u[0], d.u[1])) {
           const p = at(a, v)
           const center = add3(
@@ -1580,24 +1602,80 @@ function domainIsolines(
       break
     }
     case "extrusion": {
-      const whole =
-        s.profile.kind === "ellipse"
-          ? Math.abs(d.u[1] - d.u[0]) >= 2 * Math.PI - 1e-9
-          : Math.abs(d.u[1] - d.u[0]) >=
-            bsplineDomain(s.profile.curve).end -
-              bsplineDomain(s.profile.curve).start -
-              1e-9
-      const us = whole
-        ? Array.from(
-            { length: count - 1 },
-            (_, k) => d.u[0] + ((d.u[1] - d.u[0]) * (k + 1)) / count
+      // An ellipse extruded askew is ACIS's elliptical cylinder: rulings round
+      // its angle, as a cylinder's (unverified askew).
+      if (s.profile.kind === "ellipse") {
+        for (const u of turnIsolines(d.u, count)) ruling(u)
+        break
+      }
+      for (const u of splitIsolines(d.u, count, closedOver(s.profile, d.u))) {
+        ruling(u)
+      }
+      for (const v of splitIsolines(d.v, count, false)) {
+        for (const [a, b] of runs("u", v, d.u[0], d.u[1])) {
+          add(
+            profileWire(s.profile, a, b, (p) => add3(p, scale3(s.direction, v)))
           )
-        : spreadIsolines(d.u, count)
-      for (const u of us) ruling(u)
+        }
+      }
       break
     }
   }
   return out
+}
+
+/**
+ * The part of a turn a face spans round its axis: its domain's, or what a
+ * boolean or a slice left of it, ruled the same (sweeps/d01). Read off its
+ * boundary's angles: the gap between two of them that the face does not
+ * reach is what it lacks of a turn. A loop round the axis keeps the turn.
+ */
+function turnRange(
+  region: FaceRegion | null,
+  d: FaceDomain,
+  runs: IsoRuns
+): readonly [number, number] {
+  if (!region || region.loops.some((loop) => loop.winding.u !== 0)) return d.u
+  const TURN = 2 * Math.PI
+  const at: number[] = []
+  for (const loop of region.loops) {
+    for (const run of loop.runs) {
+      const us =
+        run.kind === "pole" ? [run.from, run.to] : run.samples.map((p) => p.u)
+      for (const u of us) at.push((((u - d.u[0]) % TURN) + TURN) % TURN)
+    }
+  }
+  if (at.length === 0) return d.u
+  at.sort((a, b) => a - b)
+  const gaps = at.map((a, k) => ({
+    from: a,
+    to: k + 1 < at.length ? at[k + 1] : at[0] + TURN,
+  }))
+  gaps.sort((a, b) => b.to - b.from - (a.to - a.from))
+  const sign = d.u[1] >= d.u[0] ? 1 : -1
+  for (const { from, to } of gaps) {
+    if (to - from <= 1e-9) break
+    const middle = d.u[0] + (from + to) / 2
+    if (runs("v", middle, d.v[0], d.v[1]).length > 0) continue
+    // Exactly the domain's when nothing was cut from it.
+    if (TURN - (to - from) >= Math.abs(d.u[1] - d.u[0]) - 1e-9) return d.u
+    const a = d.u[0] + to
+    const b = d.u[0] + from + TURN
+    return sign > 0 ? [a, b] : [b, a]
+  }
+  return d.u
+}
+
+/** Whether `range` of a swept curve runs it round to where it began: a seam. */
+function closedOver(c: SweptCurve, range: readonly [number, number]): boolean {
+  const span = Math.abs(range[1] - range[0])
+  if (c.kind === "ellipse") return span >= 2 * Math.PI - 1e-9
+  const { start, end } = bsplineDomain(c.curve)
+  return (
+    span >= end - start - 1e-9 &&
+    length3(sub3(bsplinePoint(c.curve, start), bsplinePoint(c.curve, end))) <=
+      MODEL_TOLERANCE
+  )
 }
 
 /**

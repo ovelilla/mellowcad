@@ -17,6 +17,7 @@ import { pressPulledSolid } from "../../domain/solidModeling"
 import { subobjectEdgeEntities } from "../../domain/solidSubobjects"
 import { traceBoundaryLoops } from "../../domain/boundary"
 import { createSweptSolid, sweepProfile } from "../../domain/sweptSolids"
+import { parseNumber } from "../../domain/units"
 import {
   AddEntitiesCommand,
   UpdateEntitiesCommand,
@@ -82,10 +83,10 @@ const PREVIEW_ID = "presspull-preview"
  * desktop: `Specify offset distance or [Multiple]:`, then `1 face(s)
  * offset`; the plain click's, an object's or an area's `1 extrusion(s)
  * created`, sweeps/p164). Multiple, at either prompt, takes several clicks
- * before one height. A point typed where it asks for a click says `Click a
- * face, curve, or inside a bounded area` (presspull/p01; **unverified**: the
- * console reads a typed point from its fixed cursor, sweeps/p126, p158, p164,
- * so the desktop decides, SWEEPS-D91).
+ * before one height. A point or a number typed where it asks for a click
+ * says `Click a face, curve, or inside a bounded area` (presspull/p01;
+ * desktop sweeps/d07 a–c: the desktop reads a typed point from its cursor,
+ * landing on nothing).
  *
  * WHY no open object: it extrudes into a surface, which has no object here.
  */
@@ -112,8 +113,17 @@ export class PresspullTool implements Tool {
   }
 
   question(): PromptId | ToolQuestion {
-    if (this.state.phase === "pick") return "presspullSelect"
+    if (this.state.phase === "pick") return this.pickPrompt()
     return this.offsets() ? "presspullOffsetOr" : "presspullHeightOr"
+  }
+
+  /** Multiple's picks after the first are asked `Select object:` (desktop d08 f). */
+  private pickPrompt(): PromptId {
+    return this.state.phase === "pick" &&
+      this.state.multiple &&
+      this.picks.length > 0
+      ? "selectObject"
+      : "presspullSelect"
   }
 
   /** Whether the height asked is a face's offset: the first click's Ctrl. */
@@ -193,15 +203,46 @@ export class PresspullTool implements Tool {
       this.takeHeight(this.heightAt(input.point, input.screen, ctx), ctx)
       return
     }
+    const multiple = this.state.multiple
     const pick = this.pickAt(input, ctx)
     if (!pick) {
-      ctx.report(ctx.text.message("presspullClick"), "error")
+      // After Multiple a pick that finds nothing is silent (desktop d07 d, d08 f).
+      if (!multiple) ctx.report(ctx.text.message("presspullClick"), "error")
       return
+    }
+    // A face after an object or an area is filtered out (d08 f); the other
+    // mixes **unverified**, taken.
+    if (
+      multiple &&
+      pick.pick.kind === "face" &&
+      this.picks.some((p) => p.kind === "profile")
+    ) {
+      ctx.report(
+        ctx.text.message("presspullFiltered", {
+          count: 1,
+          total: this.picks.length,
+        })
+      )
+      return
+    }
+    if (pick.loops > 0) {
+      // REGION's words for the area traced (d08 b, c); with islands
+      // **unverified** (one probe's loop).
+      ctx.report(
+        ctx.text.message("regionLoopsExtracted", { count: pick.loops })
+      )
+      ctx.report(ctx.text.message("regionsCreated", { count: 1 }))
     }
     this.picks.push(pick.pick)
     this.base = pick.base
-    if (this.state.multiple) {
-      ctx.requestRender()
+    if (multiple) {
+      ctx.report(
+        ctx.text.message("presspullSelected", {
+          count: 1,
+          total: this.picks.length,
+        })
+      )
+      this.openPick(ctx)
       return
     }
     this.askHeight(ctx)
@@ -302,14 +343,15 @@ export class PresspullTool implements Tool {
   }
 
   /**
-   * What a click takes, and the point its height is measured from: with Ctrl
-   * the face under it, offset; else the closed object under it, the planar
-   * face nearest the viewer under it, or the area the objects in plan bound.
+   * What a click takes, the point its height is measured from and the loops
+   * an area traced (none for an object or a face): with Ctrl the face under
+   * it, offset; else the closed object under it, the planar face nearest the
+   * viewer under it, or the area the objects in plan bound.
    */
   private pickAt(
     input: PointerInput,
     ctx: ToolContext
-  ): { pick: Pick; base: Vec3 } | null {
+  ): { pick: Pick; base: Vec3; loops: number } | null {
     const faceAt = () => {
       const found = this.faceAt(input.screen, ctx)
       if (!found) return null
@@ -324,6 +366,7 @@ export class PresspullTool implements Tool {
           normal: s.normal,
         },
         base: found.at,
+        loops: 0,
       }
     }
     if (input.ctrlKey) {
@@ -334,14 +377,22 @@ export class PresspullTool implements Tool {
     if (hit) {
       const profile = sweepProfile(hit)
       if (profile && profile !== "open" && profile !== "crosses") {
-        return { pick: { kind: "profile", profile }, base: input.point }
+        return {
+          pick: { kind: "profile", profile },
+          base: input.point,
+          loops: 0,
+        }
       }
     }
     const face = faceAt()
     if (face) return face
     const profile = this.areaAt(input.world, ctx)
     return profile
-      ? { pick: { kind: "profile", profile }, base: input.point }
+      ? {
+          pick: { kind: "profile", profile },
+          base: input.point,
+          loops: profile.faces[0]?.loops.length ?? 0,
+        }
       : null
   }
 
@@ -398,6 +449,11 @@ export class PresspullTool implements Tool {
       phase: "height",
       cursor: this.base,
       screen: ctx.viewport.worldToScreen(this.base),
+    }
+    // Asked twice, a distance then a point, the history writing the first
+    // bare (p164's trace; desktop d08 a–g); the offset once (d08 i).
+    if (!this.offsets()) {
+      ctx.report(ctx.text.prompt("presspullHeightOr", ["Multiple"]), "prompt")
     }
     ctx.dynamicInput.open({
       fields: [
@@ -485,15 +541,17 @@ export class PresspullTool implements Tool {
     return out
   }
 
-  /** A typed point is no click (p01). */
+  /** A typed point or a bare number is no click (p01; desktop d07 b). */
   private openPick(ctx: ToolContext): void {
     ctx.dynamicInput.open({
-      fields: [{ id: "point", prompt: "presspullSelect", kind: "coordinate" }],
+      fields: [{ id: "point", prompt: this.pickPrompt(), kind: "coordinate" }],
       commit: () => {},
       commitRaw: (commitCtx) => {
         if (!commitCtx.dynamicInput.hasTypedText()) return false
         const text = commitCtx.dynamicInput.getText("point").trim()
-        if (!isCoordinateExpression(text)) return false
+        if (!isCoordinateExpression(text) && parseNumber(text) === null) {
+          return false
+        }
         commitCtx.report(commitCtx.text.message("presspullClick"), "error")
         return true
       },

@@ -231,22 +231,46 @@ export function domainSamples(
 }
 
 /**
- * Where ISOLINES' lines cross a range of a turn: every `2π / count` from the
- * range's start (r03's revolved faces, x09's arc extruded from the arc's
- * start, ACIS's seam), the ends left out where the range is short of a
- * turn, as an edge runs there; a whole turn's `count`, its start included.
+ * Where ISOLINES' lines cross a range of a turn (sweeps/d01, d02): a whole
+ * turn's `count` from its start (ACIS's seam); a part of one, max(1,
+ * round(count·span/2π)) spread inside it, its ends left out as edges run
+ * there — whatever made the face.
  */
 export function turnIsolines(
   range: readonly [number, number],
   count: number
 ): number[] {
+  if (count <= 0) return []
   const [a, b] = range
   const span = Math.abs(b - a)
+  if (span < 2 * Math.PI - 1e-12) {
+    // Half up: 135° at 4 draws two (d01); the guard keeps 1.5 from rounding down.
+    const n = Math.round((count * span) / (2 * Math.PI) + 1e-9)
+    return spreadIsolines(range, Math.max(1, n))
+  }
   const step = (2 * Math.PI) / count
-  const whole = span >= 2 * Math.PI - 1e-12
+  return Array.from(
+    { length: count },
+    (_, k) => a + Math.sign(b - a) * k * step
+  )
+}
+
+/**
+ * Where ISOLINES' lines cross a spline surface's parameter (sweeps/d02,
+ * d03): the range split in max(1, count − 3) equal parts, a line at each
+ * inner split, and at its start (the seam) when the direction is closed.
+ */
+export function splitIsolines(
+  range: readonly [number, number],
+  count: number,
+  closed: boolean
+): number[] {
+  if (count <= 0) return []
+  const [a, b] = range
+  const parts = Math.max(1, count - 3)
   const out: number[] = []
-  for (let k = whole ? 0 : 1; k < count && k * step < span - 1e-9; k++) {
-    out.push(a + Math.sign(b - a) * k * step)
+  for (let k = closed ? 0 : 1; k < parts; k++) {
+    out.push(a + ((b - a) * k) / parts)
   }
   return out
 }
