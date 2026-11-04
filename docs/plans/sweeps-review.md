@@ -1,9 +1,8 @@
 # Sweeps review (EXTRUDE, REVOLVE, PRESSPULL)
 
 > **Status:** group 1 executed, 2026-11-04: the console blocks EXT, RVL, PPL and SWO, one commit
-> each (Execution, below). Group 2, the desktop block SWD (grips, palette, isolines with RGD-02's
-> series, the jigs, PRESSPULL's clicks), needs the owner's mouse and goes in a later session
-> (§13); then the plan shrinks to its summary and index.
+> each (Execution, below). Group 2, the desktop block SWD, probed the same day (§13); its
+> execution follows, then the plan shrinks to its summary and index.
 >
 > This review owns the profiles a sweep takes (their kinds, sift and base), the swept solid
 > (its faces, history, LIST, transforms, EXPLODE, file) and PRESSPULL's bounded areas. It cites:
@@ -715,25 +714,146 @@ EXT-08, RVL-09, SLP-03, PPL-02 and PPL-03 wait for SWD.
 
 ## 13. Group 2: the desktop (SWD)
 
-A session with the owner's mouse, `scripts/research/probes/sweeps/d<n>.sh` (es-ES, and en-US
-for the English labels):
+Executed 2026-11-04 with the owner's mouse (es-ES profile; English labels from `ax26res.dll`).
+Inputs `scripts/research/probes/sweeps/d<n>.sh` (d01–d09) and `lib.sh`; shots and histories in
+`research/probes/sweeps/desk/`; scratch tests `research/review/sweeps/d/swd.test.ts` (all 23
+`differs` before the block).
 
-- **Grips and palette:** p305's solids (an extrusion, a tapered one, a region with a hole, a
-  revolution with STart, a torus): their grips, each hover menu, a plain drag of each kind; the
-  Properties palette's rows under Geometry and Solid History, Reverse's.
-- **Isolines and RGD-02's series** (ISOLINES 4 then 6, SE Isometric, through COM and shots
-  alone): a whole cylinder; REVOLVE of a rectangle through 180°; a cylinder minus a box over
-  x < 0 (d03's case) and over y < 0; SLICE at x = 0; EXTRUDE of a half disc; UNION of the 180°
-  revolution with a box apart; SOLIDEDIT offset of its curved face; r04's and p308's whole turns
-  (are the seams drawn?).
-- **The jigs:** EXTRUDE's rubber band and ghost from the base (a rectangle, an L); the taper by a
-  click (EXT-08); REVOLVE's angle by a click (RVL-07); DYNMODE 3 at each point prompt (Direction's
-  end and the axis endpoint in the box); Escape and the right button at each prompt; MOde from the
-  Down list; `'ZOOM _E` and `_W` at REVOLVE's angle (RVL-09).
-- **PRESSPULL:** a click on a closed object, inside an area, on a face, with Ctrl, on nothing,
-  with and without Multiple; its height prompt (FOO, 0, Enter); Escape and Enter after Multiple
-  with picks; the hover without Ctrl; an area off the UCS's plane; U's name; a typed point and a
-  bare number through COM (SLP-03, PPL-02, PPL-03).
+| Ids | What they ask                                                                                          |
+| --- | ------------------------------------------------------------------------------------------------------ |
+| d01 | a partial turn's rulings by pixels (Front and Right): REVOLVE 20°–300°, SUBTRACT, SLICE, EXTRUDE of an arc, UNION, SOLIDEDIT; ISOLINES 4, 6, 8 |
+| d02 | the meridians of a partial sphere, torus and spline revolution in Top; whole turns of r04's ellipse and p308's spline |
+| d03 | an extruded spline side's rulings and profiles across, ISOLINES 4, 6, 8                                  |
+| d04 | p305's solids gripped and their Properties palette                                                     |
+| d05 | EXTRUDE's height and taper by a click (each target a POINT under Node)                                 |
+| d06 | REVOLVE's angle and start angle by a click; `'ZOOM _E` at the angle with the profile outside the view  |
+| d07 | PRESSPULL's pick answered through COM: a point, a bare number, a failed pick after Multiple            |
+| d08 | PRESSPULL's clicks: a closed object, inside it, an area, a face, nothing, Multiple, the height's refusals, Esc, Ctrl, the hover |
+| d09 | DYNMODE 3 at the point prompts: lost twice to AutoComplete, settles nothing                           |
+
+### Settled from group 1
+
+- **EXT-01 holds on the desktop**: a click on 20,30 makes `25.5792`, LASTPOINT the base (d05 a);
+  the rubber band is dashed, from the base (d05-a).
+- **EXT-08 → medium, verified**: a point at the taper is atan(Y / d), Y the point's UCS Y from the
+  first profile's start, d the height the cursor gave as `T` was typed (d05: `40,10` → 21, `20,40`
+  → 57; from a start at y 5, `12.93372930`, `58.11574295`). mellowcad stored 0.6155.
+- **RVL-07 → high, verified**: a click at the angle (or start angle) is the angle in the UCS's XY
+  plane from the angle's base (SLP-02's point) to it, counter-clockwise from X (d06: `10,15` → 45,
+  `-10,15` → 135, `10,-5` → 315; STart 45). mellowcad asked `Specify second point:`.
+- **RVL-09 holds as View's rule**: the desktop says `** Regeneración necesaria, no puede ser
+  transparente.` there too (d06 c); View owns it (nothing generated ahead here): no change.
+- **SLP-03 → coverage**: a typed point is read from the cursor, lands on nothing and says `Click a
+  face, curve, or inside a bounded area` (d07 a, c: `30,5` inside a circle pulled nothing);
+  LASTPOINT moves to a place the cursor decides, not reproduced.
+- **PPL-02 verified**: after Multiple a failed pick says nothing (d07 d, d08 f).
+- **PPL-03 → low, verified**: a bare number says `Click a face…` (d07 b); mellowcad
+  `2D point or option keyword required.`.
+
+### Findings
+
+#### SWD-01 — A partial turn ruled every 360/N from its start; AutoCAD spreads round(N·s/360)
+
+- **Severity:** medium · **Row:** M · **Status:** verified
+- **Where:** `cad/geometry/faceDomains.ts` (`turnIsolines`), used by cylinders, cones, spheres and
+  tori in `solids.ts` (`domainIsolines`).
+- **AutoCAD:** d01: a partial turn of s degrees draws max(1, round(N·s/360)) rulings spread evenly
+  inside it, its ends left out: N 4 — 20° one at 10, 90° 45, 135° 45 and 90, 180° 60 and 120, 250°
+  62.5, 125, 187.5, 300° 75, 150, 225; N 6 — 180° 45, 90, 135, 100° 33.3, 66.7; N 8 — 100° the
+  same, 180° ±18, ±54. The same whatever made the face: REVOLVE, a CYLINDER cut by SUBTRACT or
+  SLICE, EXTRUDE of an arc, UNION, SOLIDEDIT's offset (c8: 203° two). A torus and a quarter sphere
+  alike (d02). A whole turn keeps N from the seam (c1).
+- **RGD-02 closes:** its d03-3 was read at ISOLINES 8, the owner's drawing (not 4): four at ±18°,
+  ±54° is this rule (d01 8-c3).
+- **mellowcad:** scratch `d/swd.test.ts`: 180° N 4 one at 90, 300° 90, 180, 270.
+- **Fix:** SWEEPS-D92. **Regression test:** d01's cases into `faceDomains`' and `sweeps.test.ts`.
+
+#### SWD-02 — A spline surface took ISOLINES lines; AutoCAD splits each parameter in N − 3
+
+- **Severity:** low · **Row:** M · **Status:** verified
+- **Where:** `solids.ts` `domainIsolines`, `revolution` and `extrusion` cases.
+- **AutoCAD:** d02, d03: a spline or ellipse turned (a surface of revolution) and an extruded spline
+  side split each parameter in N − 3 equal parts: interior lines at the splits, and the seam on a
+  closed direction — p308's spline turned 180° 0, 2, 4 meridians and circles at N 4, 6, 8, turned
+  whole 1, 3, 5 meridians from the seam (60°, 72° apart); the extruded side 0, 2, 4 rulings at
+  t = k/(N − 3) and as many profiles across. A whole turn's seam is drawn (SWO-06).
+- **mellowcad:** N meridians every 360/N, N circles; an extrusion N rulings, no profile across.
+- **Fix:** SWEEPS-D93.
+
+#### SWD-03 — The palette showed a sweep's Solid type alone
+
+- **Severity:** medium · **Row:** I · **Status:** verified
+- **Where:** `EngineState.ts` (the `entity.sweep` group, its WHY).
+- **AutoCAD:** d04 (es; English `ax26res.dll` 680–689): under Geometry an extrusion's Solid type,
+  `Height`, `Taper angle` (editable) and `Direction X/Y/Z` (read-only, the height's vector); a
+  revolution's `Angle of revolution` (editable), `Axis position X/Y/Z` (editable: the angle's base,
+  p305's 0, 2.5, 0) and `Axis direction X/Y/Z` (read-only). No row for the start angle.
+- **Fix:** SWEEPS-D95.
+
+#### SWD-04 — PRESSPULL's height prompt was written once, the answer after a space
+
+- **Severity:** low · **Row:** L · **Status:** verified
+- **AutoCAD:** p164's trace: a distance prompt, then a point prompt of the same words, both
+  `\nSpecify extrusion height or [Multiple]:`; the history writes it bare, then with the answer
+  against the colon (d08 a–g: `Precise altura de extrusión o [Múltiple]:3`). The offset prompt
+  once (d08 i).
+- **Fix:** SWEEPS-D98.
+
+#### SWD-05 — An area pulled said nothing of its loop and region
+
+- **Severity:** low · **Row:** L · **Status:** verified
+- **AutoCAD:** d08 b, c: inside a closed polyline or the lines bounding an area, `1 bucle
+  extraído(s).` and `1 región creada(s).` before the height (REGION's words); a click on the
+  closed object's side none (d08 a). A box's top clicked in plan said them too and merged (d08 d).
+- **Fix:** SWEEPS-D99.
+
+#### SWD-06 — Multiple's picks counted nothing; AutoCAD counts them under `Select object:`
+
+- **Severity:** low · **Row:** B/L · **Status:** verified
+- **AutoCAD:** d08 f: after `_M` a pick on nothing silent, the rectangle's side `1 seleccionados, 1
+  en total` (45695) and the prompt `Designe objeto:` (20348), then the box's top `1 filtrados, 1 en
+  total` (14571), not taken: `1 extrusión/extrusiones creada(s)`.
+- **Fix:** SWEEPS-D100.
+
+#### SWD-07 — Coverage: grips' look, the hover, Enter at the height, a hemisphere's isolines
+
+- **Severity:** low · **Status:** verified as gaps
+- d04: an extrusion's grips are squares at the profile's corners and midpoints with a triangle at
+  the top's centre; a revolution's squares on the profile at one end, a triangle at the other.
+  d08 j: without Ctrl an area shows no rollover, a solid's face lights the solid. d08 g: Enter at
+  the height after two refusals made an extrusion (its height unread). d02 s180: a half disc
+  turned 180° draws its isolines round the profile plane's normal (a hemisphere), not the axis.
+- **Fix:** SWEEPS-D101 (Missing).
+
+### Decisions
+
+- **SWEEPS-D92:** `turnIsolines` of a partial range: max(1, round(N·s/2π)) lines spread inside
+  (N 0 none); a whole turn unchanged.
+- **SWEEPS-D93:** a revolution's meridians and circles and an extruded spline's rulings and
+  profiles across: N − 3 equal parts of each parameter (N ≤ 3 one part), interior lines, the seam
+  on a closed direction. A one-span spline was probed: a multi-span one is split evenly in its
+  knot domain, **unverified**.
+- **SWEEPS-D94:** EXT-08: the taper by a point is atan(((p − start)·Y) / d), Y the UCS's, d the
+  height the jig read as Taper was typed; off the plan **unverified**.
+- **SWEEPS-D95:** the palette's rows the history holds: Height and Taper angle; Angle of revolution
+  and Axis direction X/Y/Z; read-only. Direction X/Y/Z and Axis position X/Y/Z (not stored) and
+  editing go to Missing.
+- **SWEEPS-D96:** RVL-07: a click at the angle or start angle is the plan angle from the base,
+  0–360; a typed coordinate keeps its first number (p227–p231).
+- **SWEEPS-D97:** PPL-02: a failed pick after Multiple is silent; PPL-03: a bare number says `Click
+  a face…`; SLP-03: a typed point keeps saying it.
+- **SWEEPS-D98:** the height prompt written bare, then again with the answer against the colon.
+- **SWEEPS-D99:** an area pick says `regionLoopsExtracted` and `regionsCreated` (1, 1) before the
+  height; a face says nothing (d08 d in plan, **unverified** whether a face or an area there).
+- **SWEEPS-D100:** after Multiple, each pick taken says `%d selected, %d total` and the prompt
+  becomes `Select object:`; a face after an object or an area is `%d filtered, %d total`, not
+  taken; the other mixes **unverified**.
+- **SWEEPS-D101:** SWD-07's four go to the entries' Missing; the DYNMODE 3 pass (d09) is not done:
+  dynamic input is the LINE review's area, and its boxes at Direction's end and the axis endpoint
+  stay **unverified**.
+
+Execution: one block, SWD, in two subagents with disjoint files run together — the kernel
+(SWD-01, SWD-02) and the tools (EXT-08, RVL-07, PPL-02, PPL-03, SWD-03 to SWD-06) — one commit.
 
 ## 14. Changes to coverage, rules, catalogs and roadmap
 
