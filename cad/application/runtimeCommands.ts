@@ -390,9 +390,13 @@ export function commandPrompt(
           id,
           typeof asked === "object" && asked !== null ? asked.values : undefined
         )
-  // A transparent command's prompts are headed `>>`, as AutoCAD writes them.
+  // A transparent command's prompts are headed `>>`, as AutoCAD writes them,
+  // and so is a question nested in the command (FILLETEDGE's arrow grip).
+  const nested = typeof asked === "object" && asked?.nested === true
   const question =
-    asking !== null && transparent ? text.transparentPrompt(asking) : asking
+    asking !== null && (transparent || nested)
+      ? text.transparentPrompt(asking)
+      : asking
   const value =
     typeof asked === "object" && asked !== null && asked.enter !== undefined
       ? enterValue(asked.enter, text, settings, asked.trimmed === true)

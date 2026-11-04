@@ -138,6 +138,13 @@ export interface ToolQuestion {
    * workspace/d06, ucs/d05).
    */
   readonly takesSpaces?: true
+  /**
+   * Asked as a command nested in the running one, headed `>>` as a
+   * transparent command's prompt is: FILLETEDGE's arrow grip, `>>Specify
+   * radius or [eXit]:` (desktop solid-edits/d04-c). The tool says `Resuming
+   * … command.` as it leaves it ({@link ToolText.commandName}).
+   */
+  readonly nested?: true
 }
 
 /** UNDO's operations on the undo history, which only its tool uses. */
@@ -539,6 +546,11 @@ export interface ToolText {
   commandKeyword(command: string, id: string): string
   /** `text` headed as a transparent command's prompt (`>>BYLAYER`). */
   transparentPrompt(text: string): string
+  /**
+   * The running command's name in the command language, as its prompts are
+   * headed (`ARISTAEMPALME`): what `Resuming … command.` names.
+   */
+  commandName(): string
   /**
    * A prompt as it is asked, with the keywords `keywords` names by id
    * (`Select objects:`, `…to extend or [Crossing]:`).

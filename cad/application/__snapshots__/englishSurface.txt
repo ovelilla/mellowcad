@@ -5352,9 +5352,9 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   info| Regenerating model.
 > FILLETEDGE refused
   prompt: FILLETEDGE Select an edge or [Chain/Loop/Radius]:
-  asks: "Select an edge or"
+  asks: 
   tip: Select an edge or
-  dyn: "X,Y"=""||*
+  dyn: 
   options: [C] Chain, [L] Loop, [R] Radius
   command| ZOOM
   prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: E
@@ -5370,7 +5370,6 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Enter expression: 2*1
 > Chain, Loop
   prompt: FILLETEDGE Select edge of loop or [Edge/Chain/Radius]:
-  asks: "Select edge of loop or"
   tip: Select edge of loop or
   options: [E] Edge, [C] Chain, [R] Radius
   prompt| Select an edge or [Chain/Loop/Radius]: C
@@ -5426,9 +5425,9 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Specify height or [2Point] <10.00>: 10
 > CHAMFEREDGE
   prompt: CHAMFEREDGE Select another edge on the same face or [Loop/Distance]:
-  asks: "Select another edge on the same face or"
+  asks: 
   tip: Select another edge on the same face or
-  dyn: "X,Y"=""||*
+  dyn: 
   options: [L] Loop, [D] Distance
   command| CHAMFEREDGE
   info| Distance1 = 1.00, Distance2 = 1.00

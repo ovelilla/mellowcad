@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest"
 
 import { type CadHarness, createHarness } from "../../test/harness"
 import { brepIsClosed, brepVolume } from "../geometry/solids"
+import type { Vec2 } from "../geometry/Vec2"
 import type { Vec3 } from "../geometry/Vec3"
 import type { Solid3dEntity } from "../domain/entities"
 import { es } from "../locales/es"
@@ -55,6 +56,56 @@ function box(locale?: typeof es, height = "10"): CadHarness {
   answer(cad, "_BOX", "0,0,0", "10,10", height)
   answer(cad, "_-VPOINT", "-1.3,-2.2,1.6", "_ZOOM", "_E")
   return cad
+}
+
+/** A press and release of the left button at a screen point. */
+function clickAt(cad: CadHarness, at: Vec2): void {
+  const event = {
+    screen: at,
+    button: 0,
+    shiftKey: false,
+    ctrlKey: false,
+    altKey: false,
+  }
+  cad.runtime.pointerMove(event)
+  cad.runtime.pointerDown(event)
+  cad.runtime.pointerUp(event)
+}
+
+/** The arrow grips drawn, each as its points' middle on the screen. */
+function arrows(cad: CadHarness): Vec2[] {
+  return cad.scene().primitives.flatMap((p) =>
+    p.kind === "path" && (p.fill === THEME.grip || p.fill === THEME.gripHot)
+      ? [
+          {
+            x: p.points.reduce((sum, q) => sum + q.x, 0) / p.points.length,
+            y: p.points.reduce((sum, q) => sum + q.y, 0) / p.points.length,
+          },
+        ]
+      : []
+  )
+}
+
+/** FILLETEDGE's top front edge taken, at its accept prompt, its arrow clicked. */
+function atGrip(): CadHarness {
+  const cad = box()
+  answer(cad, "_FILLETEDGE", "5,0,10", "")
+  clickAt(cad, arrows(cad)[0])
+  return cad
+}
+
+/** The top front edge's fillet's middle at `radius`: 1 − √½ of it in from the front and the top. */
+const filletMiddle = (radius: number): Vec3 => ({
+  x: 5,
+  y: radius * (1 - Math.SQRT1_2),
+  z: 10 - radius * (1 - Math.SQRT1_2),
+})
+
+/** LASTPOINT, as `ID @` says it at LUPREC 4. */
+function lastPoint(cad: CadHarness): number[] {
+  answer(cad, "LUPREC", "4")
+  const said = written(cad, "ID", "@").join(" ")
+  return (said.match(/-?\d+(\.\d+)?/g) ?? []).map(Number).slice(-3)
 }
 
 describe("FILLETEDGE", () => {
@@ -256,7 +307,7 @@ describe("CHAMFEREDGE", () => {
 })
 
 describe("an edge picked with the mouse", () => {
-  it("lights the edge under the cursor and takes it on a click (desktop)", () => {
+  it("lights the edge under the cursor and takes it on a click (solid-edits/d04-a)", () => {
     const cad = box()
     answer(cad, "FILLETEDGE")
     const front = { x: 5, y: 0, z: 10 }
@@ -281,30 +332,22 @@ describe("an edge picked with the mouse", () => {
     expect(volumes(cad)).toEqual([997.854])
   })
 
-  it("sets the radius by dragging the fillet's grip (desktop)", () => {
+  it("shows the fillet's arrow grip at the accept prompt (solid-edits/d04-b)", () => {
     const cad = box()
     answer(cad, "FILLETEDGE", "5,0,10", "")
     expect(cad.state().commandLine.prompt).toBe(
       "FILLETEDGE Press Enter to accept the fillet or [Radius]:"
     )
-    const grips = cad
-      .scene()
-      .primitives.filter((p) => p.kind === "path" && p.fill === THEME.grip)
-    expect(grips).toHaveLength(1)
     // One arrow, at the middle of the fillet's face: 1 − √½ in from the
     // front and the top of the edge at a radius of 1.
-    const [arrow] = grips
-    const points = arrow.kind === "path" ? arrow.points : []
-    const middle = {
-      x: points.reduce((sum, q) => sum + q.x, 0) / points.length,
-      y: points.reduce((sum, q) => sum + q.y, 0) / points.length,
-    }
-    const at = screen(cad, { x: 5, y: 1 - Math.SQRT1_2, z: 9 + Math.SQRT1_2 })
+    const [middle, ...more] = arrows(cad)
+    expect(more).toEqual([])
+    const at = screen(cad, filletMiddle(1))
     expect(Math.hypot(middle.x - at.x, middle.y - at.y)).toBeLessThan(2)
   })
 })
 
-describe("the sizes, saved as answered (solid-edits/p208–p210, p222–p234)", () => {
+describe("the sizes, written as the run ends (solid-edits/p208–p210, p222–p234, d04-d)", () => {
   it("saves the radius by two points with no fillet made (p209)", () => {
     const cad = box()
     expect(written(cad, "_FILLETEDGE", "_R", "0,0", "3,4", "")).toEqual([
@@ -508,6 +551,8 @@ describe("Enter expression: (solid-edits/p206, p212, p228, p232, p235, p266)", (
       "The syntax is incorrect or a variable is not defined.  Reenter the expression or value.",
       "Enter expression: 2",
     ])
+    // FILLETRAD3D takes it as the run ends (solid-edits/d04-d).
+    answer(cad, "")
     expect(settingsOf(cad)[0]).toBe(2)
   })
 })
@@ -884,6 +929,309 @@ describe("the run (solid-edits/p200, p201, p226, p227)", () => {
       cad.tool(id)
       expect(cad.commandLog()[from]).toBe(echo)
       answer(cad, "")
+    }
+  })
+})
+
+describe("FILLETEDGE's arrow grip (solid-edits/d04-c)", () => {
+  it("asks the radius as a nested command's point, which a click answers and FILLETEDGE resumes", () => {
+    const cad = box()
+    answer(cad, "_FILLETEDGE", "5,0,10", "")
+    const from = cad.commandLog().length
+    clickAt(cad, arrows(cad)[0])
+    // No default: Enter is refused there.
+    expect(cad.state().commandLine.prompt).toBe(
+      "FILLETEDGE >>Specify radius or [eXit]:"
+    )
+    // (5,3,7) lies on the plane square to the edge through its middle, 6/√2
+    // in along the fillet's bisector.
+    cad.click({ x: 5, y: 3, z: 7 })
+    expect(cad.commandLog().slice(from)).toEqual([
+      "Press Enter to accept the fillet or [Radius]:",
+      ">>Specify radius or [eXit]:",
+      "Resuming FILLETEDGE command.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "FILLETEDGE Press Enter to accept the fillet or [Radius]:"
+    )
+    expect(settingsOf(cad)[0]).toBe(1)
+    answer(cad, "")
+    expect(settingsOf(cad)[0]).toBeCloseTo(6 / Math.SQRT2, 9)
+    expect(filletAxis(cad)).toEqual({
+      y: Math.round((6 / Math.SQRT2) * 1e6) / 1e6,
+      z: Math.round((10 - 6 / Math.SQRT2) * 1e6) / 1e6,
+    })
+  })
+
+  it("follows the cursor: its distance in along the bisector, on the plane square to the edge", () => {
+    const cad = atGrip()
+    cad.moveTo({ x: 5, y: 3, z: 7 })
+    const [arrow] = arrows(cad)
+    const at = screen(cad, filletMiddle(6 / Math.SQRT2))
+    expect(Math.hypot(arrow.x - at.x, arrow.y - at.y)).toBeLessThan(2)
+    // Off the plane, the line of sight through the cursor meets it.
+    cad.moveTo({ x: 5 + 1.3, y: 2 + 2.2, z: 8 - 1.6 })
+    const [moved] = arrows(cad)
+    const there = screen(cad, filletMiddle(4 / Math.SQRT2))
+    expect(Math.hypot(moved.x - there.x, moved.y - there.y)).toBeLessThan(2)
+  })
+
+  it("takes a typed point by the same rule; a number, as getpoint does, from the arrow towards the cursor (EDITS-D130)", () => {
+    const typed = atGrip()
+    expect(written(typed, "5,3,7")).toEqual([
+      ">>Specify radius or [eXit]:5,3,7",
+      "Resuming FILLETEDGE command.",
+    ])
+    answer(typed, "")
+    expect(settingsOf(typed)[0]).toBeCloseTo(6 / Math.SQRT2, 9)
+    // AutoCAD's mapping of a number is unverified (2 inwards gave 4.34861):
+    // here 2 from the arrow at (5, 1 − √½, 9 + √½) towards (5,6,0) in the
+    // plane, which is 2√2 − 1 in along the bisector.
+    const number = atGrip()
+    number.moveTo({ x: 5, y: 6, z: 0 })
+    expect(written(number, "2")).toEqual([
+      ">>Specify radius or [eXit]:2",
+      "Resuming FILLETEDGE command.",
+    ])
+    answer(number, "")
+    expect(settingsOf(number)[0]).toBeCloseTo(2 * Math.SQRT2 - 1, 9)
+  })
+
+  it("refuses Enter with `Point or option keyword required.` and asks again", () => {
+    const cad = atGrip()
+    expect(written(cad, "")).toEqual([
+      ">>Specify radius or [eXit]:",
+      "Point or option keyword required.",
+    ])
+    cad.enter()
+    expect(cad.commandLog().slice(-2)).toEqual([
+      ">>Specify radius or [eXit]:",
+      "Point or option keyword required.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "FILLETEDGE >>Specify radius or [eXit]:"
+    )
+  })
+
+  it("goes back to the accept prompt at eXit and at Escape, the radius kept", () => {
+    const exit = atGrip()
+    expect(written(exit, "_X")).toEqual([
+      ">>Specify radius or [eXit]:_X",
+      "Resuming FILLETEDGE command.",
+    ])
+    const escaped = atGrip()
+    escaped.moveTo({ x: 5, y: 3, z: 7 })
+    const from = escaped.commandLog().length
+    escaped.escape()
+    expect(escaped.commandLog().slice(from)).toEqual([
+      ">>Specify radius or [eXit]:*Cancel*",
+      "Resuming FILLETEDGE command.",
+    ])
+    for (const cad of [exit, escaped]) {
+      expect(cad.state().commandLine.prompt).toBe(
+        "FILLETEDGE Press Enter to accept the fillet or [Radius]:"
+      )
+      answer(cad, "")
+      expect(volumes(cad)).toEqual([997.854])
+      expect(settingsOf(cad)[0]).toBe(1)
+    }
+  })
+
+  it("asks in Spanish with the command's Spanish name", () => {
+    const cad = box(es)
+    answer(cad, "ARISTAEMPALME", "5,0,10", "")
+    clickAt(cad, arrows(cad)[0])
+    expect(written(cad, "S")).toEqual([
+      ">>Precise radio o [Salir]:S",
+      "Reanudando el comando ARISTAEMPALME.",
+    ])
+  })
+})
+
+describe("Escape (solid-edits/d04-d)", () => {
+  it("goes back to the accept prompt from its Radius, which counts only once the run ends without Escape", () => {
+    const cad = box()
+    answer(cad, "_FILLETEDGE", "5,0,10", "", "_R")
+    cad.escape()
+    expect(cad.commandLog().at(-1)).toBe(
+      "Specify Radius or [Expression] <1.00>: *Cancel*"
+    )
+    expect(cad.state().commandLine.prompt).toBe(
+      "FILLETEDGE Press Enter to accept the fillet or [Radius]:"
+    )
+    answer(cad, "_R", "3")
+    cad.escape()
+    expect(cad.activeToolId()).toBe("select")
+    expect(settingsOf(cad)[0]).toBe(1)
+    expect(volumes(cad)).toEqual([1000])
+    answer(cad, "_FILLETEDGE", "5,0,10", "", "_R", "3", "")
+    expect(settingsOf(cad)[0]).toBe(3)
+  })
+
+  it("goes back to CHAMFEREDGE's accept prompt from either distance, the edges kept", () => {
+    for (const typed of [[], ["2"]]) {
+      const cad = box()
+      answer(cad, "_CHAMFEREDGE", "5,0,10", "", "_D", ...typed)
+      cad.escape()
+      expect(cad.state().commandLine.prompt).toBe(
+        "CHAMFEREDGE Press Enter to accept the chamfer or [Distance]:"
+      )
+      answer(cad, "")
+      expect(cad.activeToolId()).toBe("select")
+      expect(volumes(cad)[0]).toBeLessThan(1000)
+    }
+  })
+
+  it("at FILLETEDGE's picks and their radius, says the edges and that nothing is filleted, FILLETRAD3D kept", () => {
+    const cases: [string[], string, number][] = [
+      [["_R", "3"], "Select an edge or [Chain/Loop/Radius]: *Cancel*", 0],
+      [["5,0,10"], "Select an edge or [Chain/Loop/Radius]: *Cancel*", 1],
+      [["_C"], "Select an edge chain or [Edge/Radius]: *Cancel*", 0],
+      [["_L"], "Select edge of loop or [Edge/Chain/Radius]: *Cancel*", 0],
+      [["_R"], "Enter fillet radius or [Expression] <1.00>: *Cancel*", 0],
+      [
+        ["5,0,10", "_R"],
+        "Enter fillet radius or [Expression] <1.00>: *Cancel*",
+        1,
+      ],
+    ]
+    for (const [typed, line, count] of cases) {
+      const cad = box()
+      answer(cad, "_FILLETEDGE", ...typed)
+      const from = cad.commandLog().length
+      cad.escape()
+      expect(cad.commandLog().slice(from)).toEqual([
+        line,
+        `${count} edge(s) selected for fillet.`,
+        "No fillet to be computed.",
+      ])
+      expect(cad.activeToolId()).toBe("select")
+      expect(settingsOf(cad)[0]).toBe(1)
+      expect(volumes(cad)).toEqual([1000])
+    }
+  })
+
+  it("at CHAMFEREDGE's picks and distances, says no edges to chamfer, CHAMFERA and CHAMFERB kept", () => {
+    const cases: [string[], string][] = [
+      [["_D", "2", "3"], "Select an edge or [Loop/Distance]: *Cancel*"],
+      [
+        ["5,0,10"],
+        "Select another edge on the same face or [Loop/Distance]: *Cancel*",
+      ],
+      [["_D", "2"], "Specify Distance2 or [Expression] <1.00>: *Cancel*"],
+    ]
+    for (const [typed, line] of cases) {
+      const cad = box()
+      answer(cad, "_CHAMFEREDGE", ...typed)
+      const from = cad.commandLog().length
+      cad.escape()
+      expect(cad.commandLog().slice(from)).toEqual([
+        line,
+        "No edges to chamfer.",
+      ])
+      expect(settingsOf(cad).slice(1)).toEqual([0, 0])
+      expect(volumes(cad)).toEqual([1000])
+    }
+  })
+
+  it("writes the sizes only as the run ends: none while it runs, the pick's at Enter", () => {
+    const cad = box()
+    answer(cad, "_FILLETEDGE", "_R", "3")
+    expect(settingsOf(cad)[0]).toBe(1)
+    answer(cad, "")
+    expect(settingsOf(cad)[0]).toBe(3)
+    const chamfer = box()
+    answer(chamfer, "_CHAMFEREDGE", "_D", "2", "3")
+    expect(settingsOf(chamfer).slice(1)).toEqual([0, 0])
+    answer(chamfer, "")
+    expect(settingsOf(chamfer).slice(1)).toEqual([2, 3])
+  })
+})
+
+describe("the edge pick on the desktop (solid-edits/d04-b, d04-e, d04-f, d04-g, d06)", () => {
+  it("hides the solid while edges are taken, the result drawn as the solid, the edges taken blue (d04-b)", () => {
+    const cad = box()
+    answer(cad, "_FILLETEDGE")
+    cad.click({ x: 5, y: 0, z: 10 })
+    cad.moveTo({ x: 30, y: -30, z: 0 })
+    const a = screen(cad, { x: 0, y: 0, z: 10 })
+    const b = screen(cad, { x: 10, y: 0, z: 10 })
+    const near = (p: Vec2, q: Vec2) => Math.hypot(p.x - q.x, p.y - q.y) < 0.5
+    // The edge taken, gone from the result, is drawn blue alone: the solid's
+    // own is hidden.
+    const onEdge = cad
+      .scene()
+      .primitives.filter(
+        (p) =>
+          p.kind === "segment" &&
+          ((near(p.a, a) && near(p.b, b)) || (near(p.a, b) && near(p.b, a)))
+      )
+    expect(onEdge.map((p) => "stroke" in p && p.stroke?.color)).toEqual([
+      THEME.selected,
+    ])
+    const hover = cad
+      .scene()
+      .primitives.filter(
+        (p) => "stroke" in p && p.stroke?.color === THEME.entityHover
+      )
+    expect(hover).toEqual([])
+  })
+
+  it("does nothing at Ctrl+Space (d04-e)", () => {
+    const cad = box()
+    answer(cad, "_FILLETEDGE")
+    // Near the corner, where three edges meet.
+    cad.moveTo({ x: 9.5, y: 0, z: 10 })
+    const lit = () =>
+      cad
+        .scene()
+        .primitives.filter(
+          (p) => "stroke" in p && p.stroke?.color === THEME.entityHover
+        )
+    const before = lit()
+    expect(before).toHaveLength(1)
+    cad.press(" ", { ctrlKey: true })
+    expect(lit()).toEqual(before)
+    expect(cad.state().commandLine.prompt).toBe(
+      "FILLETEDGE Select an edge or [Chain/Loop/Radius]:"
+    )
+  })
+
+  it("asks the picks with no coordinate box, typed points and numbers taken at the command line (d04-f)", () => {
+    const cad = box()
+    answer(cad, "_FILLETEDGE")
+    expect(cad.state().dynamicInput?.fields).toEqual([])
+    expect(cad.hasFocusedField()).toBe(false)
+    answer(cad, "_C")
+    expect(cad.state().dynamicInput?.fields).toEqual([])
+    answer(cad, "_L")
+    expect(cad.state().dynamicInput?.fields).toEqual([])
+    const chamfer = box()
+    answer(chamfer, "_CHAMFEREDGE", "5,0,10")
+    expect(chamfer.state().commandLine.prompt).toBe(
+      "CHAMFEREDGE Select another edge on the same face or [Loop/Distance]:"
+    )
+    expect(chamfer.state().dynamicInput?.fields).toEqual([])
+  })
+
+  it("draws no arrow at CHAMFEREDGE's accept prompt (d04-g)", () => {
+    const cad = box()
+    answer(cad, "_CHAMFEREDGE", "5,0,10", "")
+    expect(cad.state().commandLine.prompt).toBe(
+      "CHAMFEREDGE Press Enter to accept the chamfer or [Distance]:"
+    )
+    expect(arrows(cad)).toEqual([])
+  })
+
+  it("sets LASTPOINT at a click that takes an edge to the cursor's point on the work plane (d06)", () => {
+    // The line of sight through (5,0,10) meets Z 0 at (5,0,10) + 6.25·(1.3,2.2,−1.6).
+    for (const command of ["_FILLETEDGE", "_CHAMFEREDGE"]) {
+      const cad = box()
+      answer(cad, "ID", "7,7,7", command)
+      cad.click({ x: 5, y: 0, z: 10 })
+      cad.escape()
+      const [x, y, z] = lastPoint(cad)
+      expect([x, y, z]).toEqual([13.125, 13.75, 0])
     }
   })
 })

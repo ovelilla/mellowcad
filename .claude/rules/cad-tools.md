@@ -77,10 +77,9 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
   `Dimension text =`. TEXT's `POINT_PROMPT` and `listTextStyles` are ATTDEF's too.
 - **Ghosts and overlays draw through `SceneBuilder.entityScenePrimitive`**, the one way an entity
   draws, so a new type renders everywhere for free. It returns a **list**: spread it, and never add
-  a nesting "group" primitive — tests, selection cycling and pixel checks filter the scene by
-  `kind`. Pass `{ blocks: ctx.blocks }` wherever the entity can be one the user selected, or a block
-  reference ghosts as nothing. A preview that needs an entity reuses a fixed id
-  (`"circle-preview"`), never one minted per frame (it burns entity ids).
+  a nesting "group" primitive (`cad-scene.md`). Pass `{ blocks: ctx.blocks }` wherever the entity
+  can be one the user selected, or a block reference ghosts as nothing. A preview that needs an
+  entity reuses a fixed id (`"circle-preview"`), never one minted per frame (it burns entity ids).
 - A tool editing an object **in place** lists it in `hiddenEntityIds()`, or the new state is
   painted over the old one.
 
@@ -124,16 +123,17 @@ objects:` pick found), only a line written since the running command started.
   from (`DynamicInputSession.directDistance`). Where the tool picks no point, the number reaches its
   `commitRaw` (ZOOM's factor); a box whose number is no point says `"typed"`. With no box
   (`Select objects:`, a single object's pick), `typedPick` reads it through `ctx.pointAtDistance`.
-- Run transparently (`'ZOOM`), a tool's own prompt written with `ctx.report(text, "prompt")` gets
-  the `>>` head; plain reports do not. Ask `ctx.runsTransparently()` only for what AutoCAD does
-  differently then (ZOOM leaves out `Regenerating model.`, -VIEW refuses views). A change AutoCAD
-  regenerates for is said with `ctx.regenerate()`, never by reporting `regeneratingModel`: the
-  runtime writes `Regen queued.` or `Regenerating model.` and marks the undo step, which U and
-  REDO repeat (a view step, only if its line of sight turned: view/p339, p350).
+- Run transparently (`'ZOOM`), a tool's prompt (`ctx.report(text, "prompt")` too) gets the `>>`
+  head, a `nested` question always (solid-edits/d04-c); plain reports do not. Ask
+  `ctx.runsTransparently()` only for what AutoCAD does differently then (ZOOM leaves out
+  `Regenerating model.`, -VIEW refuses views). A change AutoCAD regenerates for is said with
+  `ctx.regenerate()`, never by reporting `regeneratingModel`: the runtime writes `Regen queued.` or
+  `Regenerating model.` and marks the undo step, which U and REDO repeat (a view step, only if its
+  line of sight turned: view/p339, p350).
 
 ## System variables
 
-A system variable typed by name is an entry of `SYSTEM_VARIABLES` (`systemVariables.ts`), no tool or
+A system variable typed by name is a `SYSTEM_VARIABLES` entry (`systemVariables.ts`), no tool or
 command: SETVAR's tool (`SystemVariableTool`) asks, refuses by its `type` and writes it with
 `formatVariable` (a length at LUPREC, an angle at AUPREC; LTSCALE's factor `%.4f` always,
 properties/p234). Its `set` returns the `Command` storing it, null for `Cannot set`; with none it is
@@ -142,12 +142,12 @@ only to be filed on the landing (`AuPrecTool`).
 
 Where a value lives is the console's OPEN test, not the help's "Saved in:" (RECTANG-D40). **Saved in
 the drawing** (FILLETRAD): a `DocumentSettings` field, set by `setCommandSettings` once answered,
-not at the commit (solid-edits/p208): U undoes it. **Per drawing, unsaved** (CIRCLERAD): a tool
-field `onNewDrawing` resets; one U restores (TEXT's rotation), a `DocumentSettings` field not saved.
-**Program-wide** or **registry** (OSMODE): a session tool field, noted in its coverage; one U
-restores via `SessionSettingCommand` (TEXTEDITMODE). `onActivate` resets none AutoCAD keeps; a
-shared one is one object `defaultTools` hands each. Typed, either is a `heldVariables()` entry, set
-via `ctx.held` (`heldInteger`).
+not at the commit (solid-edits/p208; FILLETEDGE's as its run ends bar Escape, d04-d): U undoes
+it. **Per drawing, unsaved** (CIRCLERAD): a tool field `onNewDrawing` resets; one U restores
+(TEXT's rotation), a `DocumentSettings` field not saved. **Program-wide** or **registry** (OSMODE):
+a session tool field, noted in its coverage; one U restores via `SessionSettingCommand`
+(TEXTEDITMODE). `onActivate` resets none AutoCAD keeps; a shared one is one object `defaultTools`
+hands each. Typed, either is a `heldVariables()` entry, set via `ctx.held` (`heldInteger`).
 
 ## What a new object wears
 

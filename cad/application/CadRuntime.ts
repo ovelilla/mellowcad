@@ -891,6 +891,7 @@ export class CadRuntime extends Observable {
         },
         commandKeyword: (command, id) => this.text.keyword(command, id),
         transparentPrompt: (text) => this.text.transparentPrompt(text),
+        commandName: () => this.commandName(),
         prompt: (id, keywords = []) => {
           const command = toolCommand(this.activeTool)
           return promptString(
@@ -1526,6 +1527,14 @@ export class CadRuntime extends Observable {
       )
       return
     }
+    this.commandLine.write(
+      "info",
+      this.text.message("resumingCommand", { command: this.commandName() })
+    )
+  }
+
+  /** The running command's name as its prompts are headed, in the command language. */
+  private commandName(): string {
     const { command } = commandPrompt(
       this.activeTool,
       this.text,
@@ -1533,10 +1542,7 @@ export class CadRuntime extends Observable {
       this.document.getSettings(),
       this.startedAs
     )
-    this.commandLine.write(
-      "info",
-      this.text.message("resumingCommand", { command: command ?? "" })
-    )
+    return command ?? ""
   }
 
   /** Ends the transparent command and puts back the one it interrupted. */
@@ -7020,9 +7026,14 @@ export class CadRuntime extends Observable {
     }
 
     // Space is Enter mid-command, as at AutoCAD's prompt: it confirms a
-    // selection set, takes a default or ends the command.
+    // selection set, takes a default or ends the command. Not Ctrl+Space,
+    // subobject cycling's key, which does nothing where there is none to
+    // cycle (FILLETEDGE's edge pick, desktop solid-edits/d04-e).
     const key =
-      e.key === " " && !e.shiftKey && this.activeTool.id !== "select"
+      e.key === " " &&
+      !e.shiftKey &&
+      !e.ctrlKey &&
+      this.activeTool.id !== "select"
         ? "Enter"
         : e.key
     if (key === "Enter" && this.clarifyingWords() !== null) {

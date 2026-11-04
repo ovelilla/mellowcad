@@ -10,10 +10,14 @@ import {
 } from "../../geometry/solidBlends"
 import { EntityId, Solid3dEntity } from "../../domain/entities"
 import { blendedSolid } from "../../domain/solidModeling"
-import { SubobjectRef, sameSubobject } from "../../domain/solidSubobjects"
+import { SubobjectRef } from "../../domain/solidSubobjects"
 import { solidEdgeEntity } from "../../domain/solids"
 import { DocumentSettings, formatLength } from "../../domain/units"
 import { UpdateEntitiesCommand } from "../commands/entityCommands"
+import {
+  isCoordinateExpression,
+  parseCoordinate,
+} from "../input/coordinateInput"
 import { evaluateExpression } from "../input/expression"
 import type { PromptId } from "../../locales/types"
 import { ScenePrimitive } from "../../scene/types"
@@ -26,6 +30,7 @@ import { typedPick } from "./typedPick"
 import {
   CommandOption,
   CommandOptionOutcome,
+  KeyInput,
   PointerInput,
   QuestionInput,
   Tool,
@@ -69,29 +74,29 @@ const PREVIEW_ID = "edgeblend-preview"
 
 /**
  * AutoCAD's FILLETEDGE and CHAMFEREDGE (their help; filletedge/f01–f07,
- * chamferedge/c01–c07; desktop), one class in two modes. FILLETEDGE says
- * `Radius = 1.0000` (FILLETRAD3D, saved in the drawing) and asks `Select an
- * edge or [Chain/Loop/Radius]:` until Enter, a click taking the edge under
- * the cursor (Ctrl+Space the next there) and a typed point the edge drawn
- * through it; Chain takes the edges tangent to the one picked (`Select an
- * edge chain or [Edge/Radius]:`), Loop the loop of a face it bounds, its
- * later face's first, `Enter an option [Accept/Next] <Accept>:` offering the
- * other (f03). Enter reports `N edge(s) selected for fillet.`, then `Press
- * Enter to accept the fillet or [Radius]:` over the filleted solid with an
- * arrow grip whose drag sets the radius (desktop); Enter makes it. The radius
- * is asked `Enter fillet radius or [Expression] <1.0000>:`, at the accept
+ * chamferedge/c01–c07; desktop solid-edits/d04), one class in two modes.
+ * FILLETEDGE says `Radius = 1.0000` (FILLETRAD3D, saved in the drawing) and
+ * asks `Select an edge or [Chain/Loop/Radius]:` until Enter, a click taking
+ * the edge under the cursor and a typed point the edge drawn through it;
+ * Chain takes the edges tangent to the one picked (`Select an edge chain or
+ * [Edge/Radius]:`), Loop the loop of a face it bounds, its later face's
+ * first, `Enter an option [Accept/Next] <Accept>:` offering the other (f03).
+ * Enter reports `N edge(s) selected for fillet.`, then `Press Enter to
+ * accept the fillet or [Radius]:` over the filleted solid with an arrow grip
+ * that asks the radius by the cursor (d04-c); Enter makes it. The radius is
+ * asked `Enter fillet radius or [Expression] <1.0000>:`, at the accept
  * prompt `Specify Radius or [Expression] <…>:`, 0 or less typed `Radius too
- * small. *Invalid*`, saved as answered (solid-edits/p208, p209). CHAMFEREDGE
- * likewise, from CHAMFERA and CHAMFERB (1 where they are 0, c07):
- * `Distance1 = 1.0000, Distance2 = 1.0000`, `Select an edge or
- * [Loop/Distance]:`, then `Select another edge on the same face or
- * [Loop/Distance]:` (`Edges must belong to one face.`), its first distance
- * along the face they share — a lone edge's later face (c06) —, Enter on
- * none `No edges to chamfer.`; its accept prompt's Distance asks the base
- * and the other surface's for that run alone (p222, p234). A blend the
- * kernel cannot make ends the command with AutoCAD's modelling error,
- * nothing changed and the sizes answered rolled back (c04, p224). One undo
- * step, named as the command (f07).
+ * small. *Invalid*`. CHAMFEREDGE likewise, from CHAMFERA and CHAMFERB (1
+ * where they are 0, c07): `Distance1 = 1.0000, Distance2 = 1.0000`, `Select
+ * an edge or [Loop/Distance]:`, then `Select another edge on the same face
+ * or [Loop/Distance]:` (`Edges must belong to one face.`), its first
+ * distance along the face they share — a lone edge's later face (c06) —,
+ * Enter on none `No edges to chamfer.`; its accept prompt's Distance asks
+ * the base and the other surface's for that run alone (p222, p234). The
+ * sizes are written as the run ends without Escape (p208–p210, d04-d). A
+ * blend the kernel cannot make ends the command with AutoCAD's modelling
+ * error, nothing changed, no size written (c04, p224). One undo step, named
+ * as the command (f07).
  */
 export class EdgeBlendTool implements Tool {
   readonly id: "filletedge" | "chamferedge"
@@ -104,11 +109,10 @@ export class EdgeBlendTool implements Tool {
   private radius = 1
   private distance1 = 1
   private distance2 = 1
-  /** What the run found saved, put back if the blend fails (solid-edits/p224). */
-  private saved: Partial<DocumentSettings> = {}
+  /** The sizes the picks' prompts took, written as the run ends without Escape (solid-edits/d04-d). */
+  private answered: Partial<DocumentSettings> = {}
   /** The solid as the blend would leave it, or why it cannot: built as the edges or the size change. */
   private preview: Solid3dEntity | "failed" | null = null
-  private under: { list: SubobjectRef[]; at: number } = { list: [], at: 0 }
   private lastScreen: Vec2 | null = null
 
   constructor(private readonly kind: "fillet" | "chamfer") {
@@ -124,13 +128,7 @@ export class EdgeBlendTool implements Tool {
     this.edges = []
     this.preview = null
     this.radius = settings.filletRadius3d
-    this.saved =
-      this.kind === "fillet"
-        ? { filletRadius3d: settings.filletRadius3d }
-        : {
-            chamferDistance1: settings.chamferDistance1,
-            chamferDistance2: settings.chamferDistance2,
-          }
+    this.answered = {}
     // CHAMFERA and CHAMFERB, or 1 where they are 0 (c01, c07).
     this.distance1 = settings.chamferDistance1 || 1
     this.distance2 = settings.chamferDistance2 || 1
@@ -177,7 +175,8 @@ export class EdgeBlendTool implements Tool {
       case "accept":
         return fillet ? "filletEdgeAccept" : "chamferEdgeAccept"
       case "grip":
-        return { id: "filletEdgeGripRadiusOr", enter: state.radius }
+        // A nested command's point, no default (solid-edits/d04-c).
+        return { id: "filletEdgeGripRadiusOr", nested: true }
     }
   }
 
@@ -230,11 +229,12 @@ export class EdgeBlendTool implements Tool {
       case "accept":
         return "keyword"
       case "size":
-      case "grip":
         return {
           refusal: "requiresDistance",
           values: { points: "two", keyword: "yes" },
         }
+      case "grip":
+        return "point"
       case "expression":
         return null
     }
@@ -332,7 +332,7 @@ export class EdgeBlendTool implements Tool {
         return "continue"
       case "grip":
         if (id !== "eXit") return "unhandled"
-        this.toAccept(ctx)
+        this.leaveGrip(ctx)
         return "continue"
       default:
         return "unhandled"
@@ -352,34 +352,77 @@ export class EdgeBlendTool implements Tool {
         ctx.endCommand()
         return true
       case "grip":
-        this.toAccept(ctx)
-        return true
+        return this.refuseNoPoint(ctx)
       default:
         return false
     }
   }
 
-  /** WHY no snap: a size takes two points (`Requires numeric distance, two points, …`), which the runtime asks. */
-  wantsSnap(): boolean {
+  /**
+   * Escape at a prompt the accept prompt opened goes back to it, `*Cancel*`
+   * on the line it leaves: its Radius or Distance, the grip's (desktop
+   * solid-edits/d04-c, d04-d). Everywhere else it cancels the command.
+   */
+  onEscape(ctx: ToolContext): boolean | "cancelled" {
+    const state = this.state
+    if (state.phase === "size" && state.after === "accept") {
+      this.toAccept(ctx)
+      return "cancelled"
+    }
+    if (state.phase === "grip") {
+      this.leaveGrip(ctx)
+      return "cancelled"
+    }
     return false
   }
 
+  /**
+   * Escape at a pick or at its size says what Enter there says, the edges
+   * counted and nothing made, no size written (solid-edits/d04-d).
+   */
+  onKeyDown(input: KeyInput, ctx: ToolContext): void {
+    if (input.key !== "Escape") return
+    const state = this.state
+    if (
+      state.phase === "pick" ||
+      (state.phase === "size" && state.after === "pick")
+    ) {
+      this.closingLines(ctx)
+    }
+  }
+
+  /**
+   * WHY no snap but at the grip, a point it measures: a size takes two
+   * points (`Requires numeric distance, two points, …`), which the runtime
+   * asks, and a pick takes objects.
+   */
+  wantsSnap(): boolean {
+    return this.state.phase === "grip"
+  }
+
+  /** The grip's prompt is a point's from the arrow: a number typed is its direct distance (EDITS-D130). */
+  getConstraintAnchor(ctx: ToolContext): Vec3 | null {
+    if (this.state.phase !== "grip") return null
+    const frame = this.gripFrame(ctx)
+    return frame && this.arrowPoint(frame, this.radius)
+  }
+
+  /** The solid while the blend is shown in its place (solid-edits/d04-b). */
   hiddenEntityIds(): readonly EntityId[] {
-    const showing = this.state.phase === "accept" || this.state.phase === "grip"
-    return showing && this.solid && this.preview !== "failed" && this.preview
+    return this.solid && this.preview && this.preview !== "failed"
       ? [this.solid]
       : []
   }
 
-  cycleSubobject(ctx: ToolContext): boolean {
-    const state = this.state
-    if (state.phase !== "pick" || !state.hover) return false
-    const { list, at } = this.under
-    if (list.length < 2) return false
-    const next = (at + 1) % list.length
-    this.under = { list, at: next }
-    this.state = { ...state, hover: list[next] }
-    ctx.requestRender()
+  /** A point typed at a pick takes the edge drawn through it (FED-06's number its direct distance). */
+  answerTyped(text: string, ctx: ToolContext): boolean {
+    if (this.state.phase !== "pick") return false
+    // f01: 5,0,10 in a view off plan takes the top front edge, in plan the
+    // bottom one; a number is its distance from LASTPOINT (solid-edits/p204);
+    // either becomes LASTPOINT (p121, p122).
+    const point = typedPick(text, ctx)
+    if (!point) return false
+    this.pickAt(ctx.viewport.worldToScreen(point), ctx)
     return true
   }
 
@@ -389,7 +432,7 @@ export class EdgeBlendTool implements Tool {
     if (state.phase === "pick") {
       this.state = { ...state, hover: this.edgeUnder(input.screen, ctx) }
     } else if (state.phase === "grip") {
-      const radius = this.gripRadius(input.screen, ctx)
+      const radius = this.gripRadius(input.point, ctx)
       if (radius !== null) {
         this.state = { phase: "grip", radius }
         this.build(ctx, radius)
@@ -403,50 +446,49 @@ export class EdgeBlendTool implements Tool {
     if (input.button !== 0) return
     const state = this.state
     if (state.phase === "pick") {
-      this.pickAt(input.screen, ctx)
+      // A click that takes an edge is LASTPOINT, the cursor's point on the
+      // work plane (solid-edits/d06); one on nothing is unverified.
+      if (this.pickAt(input.screen, ctx)) ctx.setLastPoint(input.point)
       return
     }
-    if (state.phase === "accept" && this.kind === "fillet") {
+    if (state.phase === "accept") {
       const grip = this.grip(ctx)
       if (
         grip &&
         Math.hypot(grip.at.x - input.screen.x, grip.at.y - input.screen.y) <= 8
       ) {
-        // Dragged, the grip asks the radius by the cursor (desktop:
-        // `>>Specify radius or [eXit]:`).
+        // The grip asks the radius by the cursor, as a nested command
+        // (solid-edits/d04-c).
         this.state = { phase: "grip", radius: this.radius }
-        this.openSize(ctx)
+        this.openGrip(ctx)
       }
       return
     }
-    if (state.phase === "grip") {
-      const radius = this.gripRadius(input.screen, ctx)
-      if (radius !== null) this.radius = radius
-      this.toAccept(ctx)
-    }
+    if (state.phase === "grip") this.takeGripPoint(input.point, ctx)
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const out: ScenePrimitive[] = []
     const state = this.state
     const solid = this.solidOf(ctx)
+    // The blend drawn in the solid's place, hidden (solid-edits/d04-b; the
+    // desktop meshes its face while edges are picked).
+    if (this.preview && this.preview !== "failed") {
+      out.push(
+        ...entityScenePrimitive(ctx.viewport, this.preview, {
+          color: THEME.entity,
+          width: 1,
+        })
+      )
+    }
     if (state.phase === "accept" || state.phase === "grip") {
-      if (this.preview && this.preview !== "failed") {
-        out.push(
-          ...entityScenePrimitive(ctx.viewport, this.preview, {
-            color: THEME.entity,
-            width: 1,
-          })
-        )
-      }
       const grip = this.grip(ctx)
       if (grip)
         pushGrip(out, grip.at, state.phase === "grip", "arrow", grip.along)
       return out
     }
     if (solid) {
-      // The edges taken glow blue, the blend they make drawn over the solid
-      // (desktop: its mesh while the edges are picked).
+      // The edges taken glow blue over it.
       for (const index of this.edges) {
         const edge = solidEdgeEntity(solid, index)
         if (edge) {
@@ -457,14 +499,6 @@ export class EdgeBlendTool implements Tool {
             })
           )
         }
-      }
-      if (this.preview && this.preview !== "failed") {
-        out.push(
-          ...entityScenePrimitive(ctx.viewport, this.preview, {
-            color: THEME.entityHover,
-            width: 1,
-          })
-        )
       }
     }
     const lit =
@@ -502,15 +536,16 @@ export class EdgeBlendTool implements Tool {
   /**
    * A pick at `screen`: the edge under it taken, or, where a locked solid's
    * edge comes first, `The object is on a locked layer.` (solid-edits/p215:
-   * the entity prompt finds it to refuse it).
+   * the entity prompt finds it to refuse it). Whether it found one to take.
    */
-  private pickAt(screen: Vec2, ctx: ToolContext): void {
-    const edge = this.edgeUnder(screen, ctx)
-    if (this.under.at === 0 && this.lockedEdgeFirst(screen, ctx)) {
+  private pickAt(screen: Vec2, ctx: ToolContext): boolean {
+    if (this.lockedEdgeFirst(screen, ctx)) {
       ctx.report(ctx.text.message("objectOnLockedLayer"), "error")
-      return
+      return false
     }
+    const edge = this.edgeUnder(screen, ctx)
     if (edge) this.takeEdge(edge, ctx)
+    return edge !== null
   }
 
   /** Whether the first edge at `screen`, locked solids included, is a locked one's. */
@@ -529,7 +564,7 @@ export class EdgeBlendTool implements Tool {
     return owner !== undefined && !ctx.document.isEntityEditable(owner)
   }
 
-  /** The edge a click at `screen` takes: the first there, or the one Ctrl+Space walked to. */
+  /** The edge a click at `screen` takes: the first there (Ctrl+Space walks none, solid-edits/d04-e). */
   private edgeUnder(screen: Vec2, ctx: ToolContext): SubobjectRef | null {
     const solids = ctx.document
       .getEntities()
@@ -540,14 +575,11 @@ export class EdgeBlendTool implements Tool {
           ctx.document.isEntityEditable(e)
       )
     const shaded = ctx.document.getSettings().visualStyle !== "2dWireframe"
-    const list = subobjectsAt(solids, ctx.viewport, screen, shaded).filter(
-      (r) => r.kind === "edge"
+    return (
+      subobjectsAt(solids, ctx.viewport, screen, shaded).find(
+        (r) => r.kind === "edge"
+      ) ?? null
     )
-    const same =
-      list.length === this.under.list.length &&
-      list.every((r, i) => sameSubobject(r, this.under.list[i]))
-    this.under = { list, at: same ? this.under.at : 0 }
-    return list[this.under.at] ?? null
   }
 
   private takeEdge(ref: SubobjectRef, ctx: ToolContext): void {
@@ -664,8 +696,6 @@ export class EdgeBlendTool implements Tool {
     }
     this.build(ctx)
     if (this.preview === "failed" || !this.preview) {
-      // The sizes answered go back with the run (solid-edits/p224).
-      setCommandSettings(this.saved, ctx)
       // WHY ACIS's error without its code for FILLETEDGE: ACIS rolls a ball
       // too wide for a face over the edge beyond (f05, f07), where this
       // kernel stops; its code for such a failure was never seen.
@@ -680,8 +710,15 @@ export class EdgeBlendTool implements Tool {
     return true
   }
 
-  /** The run ends with no blend: FILLETEDGE counts the edges taken, however many (solid-edits/p266). */
+  /** The run ends at Enter with no blend, the sizes the picks took written (solid-edits/p208–p210). */
   private nothingMade(ctx: ToolContext): void {
+    setCommandSettings(this.answered, ctx)
+    this.closingLines(ctx)
+    ctx.dynamicInput.close()
+  }
+
+  /** No blend made: FILLETEDGE counts the edges taken, however many (solid-edits/p266, d04-d). */
+  private closingLines(ctx: ToolContext): void {
     const fillet = this.kind === "fillet"
     if (fillet) {
       ctx.report(
@@ -691,7 +728,6 @@ export class EdgeBlendTool implements Tool {
     ctx.report(
       ctx.text.message(fillet ? "noFilletComputed" : "noEdgesToChamfer")
     )
-    ctx.dynamicInput.close()
   }
 
   private toAccept(ctx: ToolContext): void {
@@ -701,10 +737,10 @@ export class EdgeBlendTool implements Tool {
   }
 
   /**
-   * The blend made. FILLETRAD3D takes the radius the grip dragged; CHAMFERA
-   * and CHAMFERB stay as answered at the picks, 1 where they are 0, never
-   * the accept prompt's (solid-edits/p234: `(1.0 1.0)` from `(0.0 0.0)` after
-   * 2 and 3 there).
+   * The blend made. FILLETRAD3D takes the run's radius, the accept prompt's
+   * and the grip's too (solid-edits/d04-c, d04-d); CHAMFERA and CHAMFERB the
+   * picks' distances, else 1 where they are 0, never the accept prompt's
+   * (p234: `(1.0 1.0)` from `(0.0 0.0)` after 2 and 3 there).
    */
   private commit(ctx: ToolContext): void {
     const solid = this.solidOf(ctx)
@@ -717,8 +753,10 @@ export class EdgeBlendTool implements Tool {
       const settings = ctx.document.getSettings()
       setCommandSettings(
         {
-          chamferDistance1: settings.chamferDistance1 || 1,
-          chamferDistance2: settings.chamferDistance2 || 1,
+          chamferDistance1:
+            this.answered.chamferDistance1 ?? (settings.chamferDistance1 || 1),
+          chamferDistance2:
+            this.answered.chamferDistance2 ?? (settings.chamferDistance2 || 1),
         },
         ctx
       )
@@ -743,9 +781,10 @@ export class EdgeBlendTool implements Tool {
 
   /**
    * A size answered: 0 or less refused, a chamfer's first asking its second,
-   * then back where it was asked. Saved in the drawing as answered, not at
-   * the commit (solid-edits/p208–p210, p233; U puts it back, p230), but the
-   * accept prompt's distances, which serve the run alone (p234).
+   * then back where it was asked. A pick's is written as the run ends
+   * without Escape (solid-edits/p208–p210, p233, d04-d; U puts it back,
+   * p230), the accept prompt's distances never: they serve the run alone
+   * (p234).
    */
   private takeSize(value: number, ctx: ToolContext): void {
     const state = this.state
@@ -767,14 +806,16 @@ export class EdgeBlendTool implements Tool {
     if (state.size === "radius") this.radius = value
     else if (state.size === "distance1") this.distance1 = value
     else this.distance2 = value
-    const saved: Partial<DocumentSettings> | null =
-      state.size === "radius"
-        ? { filletRadius3d: value }
-        : state.after === "accept"
-          ? null
+    if (state.after === "pick") {
+      this.answered = {
+        ...this.answered,
+        ...(state.size === "radius"
+          ? { filletRadius3d: value }
           : state.size === "distance1"
             ? { chamferDistance1: value }
-            : { chamferDistance2: value }
+            : { chamferDistance2: value }),
+      }
+    }
     if (state.size === "distance1") {
       this.askSize("distance2", state.after, state.mode, ctx)
     } else if (state.after === "accept") {
@@ -783,32 +824,57 @@ export class EdgeBlendTool implements Tool {
       this.build(ctx)
       this.toPick(state.mode, ctx)
     }
-    if (saved) setCommandSettings(saved, ctx)
   }
 
-  /** The radius the grip's drag sets: along the fillet's bisector from the edge, as the cursor covers it on the screen. */
-  private gripRadius(screen: Vec2, ctx: ToolContext): number | null {
+  /** A point at the grip's prompt: the radius it gives, FILLETEDGE resumed. */
+  private takeGripPoint(point: Vec3, ctx: ToolContext): void {
+    // WHY kept where it gives none (a point outwards): unverified, as a
+    // number typed outwards changed nothing (solid-edits/d04-c).
+    const radius = this.gripRadius(point, ctx)
+    if (radius !== null) this.radius = radius
+    this.leaveGrip(ctx)
+  }
+
+  /** The grip's prompt left, its way back said as a nested command's (solid-edits/d04-c). */
+  private leaveGrip(ctx: ToolContext): void {
+    ctx.report(
+      ctx.text.message("resumingCommand", { command: ctx.text.commandName() })
+    )
+    this.toAccept(ctx)
+  }
+
+  /** Enter at the grip's prompt is refused, and the point asked again (solid-edits/d04-c). */
+  private refuseNoPoint(ctx: ToolContext): boolean {
+    ctx.report(ctx.text.message("pointOrKeywordRequired"), "error")
+    return true
+  }
+
+  /**
+   * The radius the grip takes from `point`: where the line of sight through
+   * it meets the plane square to the first edge through its middle, how far
+   * in that lies along the fillet's bisector (solid-edits/d04-c: three clicks
+   * within 0.1%). Seen along that plane, the point's own reading.
+   */
+  private gripRadius(point: Vec3, ctx: ToolContext): number | null {
     const frame = this.gripFrame(ctx)
     if (!frame) return null
-    const { viewport } = ctx
-    const s0 = viewport.worldToScreen(frame.edge)
-    const s1 = viewport.worldToScreen(add3(frame.edge, frame.out))
-    const dx = s1.x - s0.x
-    const dy = s1.y - s0.y
-    const run = dx * dx + dy * dy
-    if (run <= 1e-9) return null
-    const t = -((screen.x - s0.x) * dx + (screen.y - s0.y) * dy) / run
-    const radius = t / frame.reach
+    const sight = ctx.viewport.direction
+    const across = dot3(sight, frame.along)
+    const off = dot3(sub3(point, frame.edge), frame.along)
+    const onPlane =
+      Math.abs(across) > 1e-9 ? sub3(point, scale3(sight, off / across)) : point
+    const radius = -dot3(sub3(onPlane, frame.edge), frame.out)
     return radius > 0 ? radius : null
   }
 
   /**
-   * The first edge's middle, the way out of the solid between its faces, and
-   * how far in along it the fillet's middle lies per unit of radius.
+   * The first edge's middle and its direction there, the way out of the
+   * solid between its faces, and how far in along it the fillet's middle
+   * lies per unit of radius.
    */
   private gripFrame(
     ctx: ToolContext
-  ): { edge: Vec3; out: Vec3; reach: number } | null {
+  ): { edge: Vec3; along: Vec3; out: Vec3; reach: number } | null {
     const solid = this.solidOf(ctx)
     if (!solid || this.edges.length === 0) return null
     const { brep } = solid
@@ -820,7 +886,10 @@ export class EdgeBlendTool implements Tool {
       )
     if (faces.length !== 2) return null
     const trace = edgeTrace(brep, e)
-    const edge = trace.point((trace.t0 + trace.t1) / 2)
+    const middle = (trace.t0 + trace.t1) / 2
+    const edge = trace.point(middle)
+    const along = normalize3(trace.derivative(middle))
+    if (!along) return null
     const na = faceNormal(brep, faces[0].f, edge)
     const nb = faceNormal(brep, faces[1].f, edge)
     const out = normalize3(add3(na, nb))
@@ -829,50 +898,40 @@ export class EdgeBlendTool implements Tool {
     // The ball's centre lies r / cos(half) in from the edge, its rim r nearer.
     const reach = 1 / Math.cos(half) - 1
     if (!(reach > 1e-9)) return null
-    return { edge, out, reach }
+    return { edge, along, out, reach }
   }
 
-  /** The fillet's grip: an arrow at the middle of the first edge's fillet, pointing out (desktop). */
+  /** The middle of the first edge's fillet at `radius`. */
+  private arrowPoint(
+    frame: { edge: Vec3; out: Vec3; reach: number },
+    radius: number
+  ): Vec3 {
+    return sub3(frame.edge, scale3(frame.out, frame.reach * radius))
+  }
+
+  /**
+   * FILLETEDGE's grip: an arrow at the middle of the first edge's fillet,
+   * pointing out (solid-edits/d04-b). CHAMFEREDGE's two arrows, one per
+   * distance (d04-g), are not built: none.
+   */
   private grip(ctx: ToolContext): { at: Vec2; along: Vec2 } | null {
+    if (this.kind !== "fillet") return null
     const frame = this.gripFrame(ctx)
     if (!frame) return null
     const radius = this.state.phase === "grip" ? this.state.radius : this.radius
-    const at = sub3(frame.edge, scale3(frame.out, frame.reach * radius))
+    const at = this.arrowPoint(frame, radius)
     const s = ctx.viewport.worldToScreen(at)
     const tip = ctx.viewport.worldToScreen(add3(at, frame.out))
     const along = { x: tip.x - s.x, y: tip.y - s.y }
     return { at: s, along }
   }
 
+  /**
+   * A pick's prompt shows at the cursor with no coordinate box (desktop
+   * solid-edits/d04-f, DYNMODE 3): what is typed reaches {@link answerTyped}.
+   */
   private openPick(ctx: ToolContext): void {
-    ctx.dynamicInput.open({
-      fields: [
-        {
-          id: "point",
-          prompt: this.question() as PromptId,
-          kind: "coordinate",
-        },
-      ],
-      commit: () => {},
-      commitRaw: (commitCtx) => {
-        if (!commitCtx.dynamicInput.hasTypedText()) {
-          if (!this.closePicks(commitCtx)) commitCtx.endCommand()
-          return true
-        }
-        // A typed point takes the edge drawn through it (f01: 5,0,10 in a
-        // view off plan takes the top front edge, in plan the bottom one), a
-        // number its distance from LASTPOINT (solid-edits/p204), and becomes
-        // LASTPOINT (p121, p122).
-        const text = commitCtx.dynamicInput.getText("point").trim()
-        const point = typedPick(text, commitCtx)
-        if (!point) return false
-        this.pickAt(commitCtx.viewport.worldToScreen(point), commitCtx)
-        return true
-      },
-      directDistance: "typed",
-    })
-    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
-    ctx.requestRender()
+    this.openKeywords(ctx)
   }
 
   private openKeywords(ctx: ToolContext): void {
@@ -895,23 +954,44 @@ export class EdgeBlendTool implements Tool {
       ],
       commit: (values, commitCtx) => {
         if (!Number.isFinite(values.value)) return
-        if (this.state.phase === "grip") {
-          if (values.value > 0) this.radius = values.value
-          else {
-            commitCtx.report(commitCtx.text.message("radiusTooSmall"), "error")
-            return
-          }
-          this.toAccept(commitCtx)
-          return
-        }
         this.takeSize(values.value, commitCtx)
       },
     })
     if (state.phase === "size") {
       ctx.dynamicInput.setDefault("value", this.sizeOf(state.size))
-    } else if (state.phase === "grip") {
-      ctx.dynamicInput.setDefault("value", state.radius)
     }
+    ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
+    ctx.requestRender()
+  }
+
+  /**
+   * The grip's point box: a point typed read from the arrow, Enter refused;
+   * a number is the runtime's direct distance, given as a click.
+   */
+  private openGrip(ctx: ToolContext): void {
+    ctx.dynamicInput.open({
+      fields: [
+        { id: "point", prompt: "filletEdgeGripRadiusOr", kind: "coordinate" },
+      ],
+      commit: () => {},
+      commitRaw: (commitCtx) => {
+        const typed = commitCtx.dynamicInput.getText("point").trim()
+        if (typed === "") return this.refuseNoPoint(commitCtx)
+        const frame = this.gripFrame(commitCtx)
+        const point =
+          frame && isCoordinateExpression(typed)
+            ? parseCoordinate(typed, {
+                lastPoint: this.arrowPoint(frame, this.radius),
+                relativeByDefault: true,
+                ucs: commitCtx.ucs,
+                elevation: commitCtx.elevation,
+              })
+            : null
+        if (!point) return false
+        this.takeGripPoint(point, commitCtx)
+        return true
+      },
+    })
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }
