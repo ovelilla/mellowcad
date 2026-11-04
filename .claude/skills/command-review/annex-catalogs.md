@@ -18,7 +18,9 @@ node scripts/research/console-pair.mjs --lang pt-BR               # the catalog 
 
 The sweep reads the tables; `console-pair.mjs` the console, from the transcripts the reviews'
 probes left in both languages: a key it reports `differs` or `several` is the console's word on the
-table's `lang-differs` and `lang-several`, per command.
+table's `lang-differs` and `lang-several`, per command. A `differs` on a message with a sibling
+(one solid missed, or one among several) may pair the two: read the probe's set first
+(`sliceMissed`, solid-edits/p140).
 
 `--from` takes the files that name the command's ids (its tool and the helpers it asks through).
 The tables must be current (skill `autocad-research`, "The string tables"); the ones from before

@@ -139,7 +139,7 @@ followed the cursor on the work plane, c38e7a24). The 3D primitives review fixed
 (PLP, `docs/plans/primitives-review.md`): ArrayPolarTool and SplineEditTool also refuse at a
 point prompt with no `setsLastPoint()`: suspects for review 31 (the Sweeps review fixed
 ExtrudeTool's and RevolveTool's, SLP-01, SLP-02; the Solid edits review PlaneCutTool's and
-SolideditTool's, ELP-01, ELP-03), and ARRAYPOLAR's for the Arrays area (done) when it is next touched. The Sweeps review closed RGD-02 (a partial turn's isolines, SWD-01: `docs/plans/sweeps-review.md`); the dynamic input's boxes at its point prompts stay unprobed (d09), for the dynamic input's next pass. A review's state is `plan` while its plan runs, and `done` once executed, its plan reduced to an
+SolideditTool's, ELP-01, ELP-03), and ARRAYPOLAR's for the Arrays area (done) when it is next touched. The Solid edits review leaves SUbobject mode on solids, and moving sub-objects, to phase 6c (SUB-01, `docs/plans/solid-edits-review.md`), and DELOBJ's place in SETVAR's `?` listing (workspace/p127) to the Workspace area. The Sweeps review closed RGD-02 (a partial turn's isolines, SWD-01: `docs/plans/sweeps-review.md`); the dynamic input's boxes at its point prompts stay unprobed (d09), for the dynamic input's next pass. A review's state is `plan` while its plan runs, and `done` once executed, its plan reduced to an
 index (LINE's: `docs/plans/line-review.md`); a command added later takes the place its area gives
 it. Transforms found STRETCH's look and zero displacement MOVE's (MOVE-D3, D6 hold) and the
 LASTPOINT of its Displacement its own (STR-05: `docs/plans/transforms-review.md`). The Blocks review takes PURGE's report words from ERASE's

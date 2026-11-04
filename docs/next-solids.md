@@ -146,7 +146,8 @@ Cada una se entrega terminada (skill `finish-feature`), con su investigación en
    caras curvas, la bola que rueda sobre una cara estrecha (f05), coLor y mAterial, Edge y Body,
    las caras curvas en Move, Rotate, Taper y Copy, las ediciones que cambian la topología (e12).
    **6c, lo siguiente:** 3DMOVE y 3DROTATE (también de subobjetos, con MOVE,
-   ROTATE, SCALE y ERASE sobre ellos), UCS Face y el SCP dinámico (UCSDETECT).
+   ROTATE, SCALE y ERASE sobre ellos y el modo SUbobject de `Select objects:`, que la consola mostró
+   en solid-edits/p241–p264: SUB-01 de `docs/plans/solid-edits-review.md`), UCS Face y el SCP dinámico (UCSDETECT).
 7. **SWEEP, LOFT** y superficies NURBS generales; las booleanas y empalmes que las tocan.
 
 ## 5. Riesgos

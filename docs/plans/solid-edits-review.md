@@ -1,10 +1,10 @@
 # Solid edits review (SLICE, SECTION, FILLETEDGE, CHAMFEREDGE, SOLIDEDIT)
 
-> **Status:** plan, 2026-11-04. Group 1, the console blocks SLC, FED, SUB and SOE (with the
-> LASTPOINT sweep ELP), probed and reviewed in one session; its execution follows in the same
-> session, one commit per block (§12). Group 2, the desktop block SED (the sub-objects' Ctrl
-> gestures and look, the hovers, previews and grips, Escape and the right button, the clicks the
-> console reads from its cursor), needs the owner's mouse and goes in a later session (§13).
+> **Status:** group 1 executed, 2026-11-04: the console blocks SLC, FED, SUB and SOE (with the
+> LASTPOINT sweep ELP), one commit each (Execution, below). Group 2, the desktop block SED (the
+> sub-objects' Ctrl gestures and look, the hovers, previews and grips, Escape and the right
+> button, the clicks the console reads from its cursor), needs the owner's mouse and goes in a
+> later session (§13); then the plan shrinks to its summary and index.
 >
 > This review owns the sub-objects: Ctrl+click and Ctrl+Space at `Command:`, their highlight,
 > grips and selection, and `Select objects:`'s SUbobject mode on solids. It cites:
@@ -50,6 +50,32 @@ The worst:
   `regions/p349`.
 - `acad.cuix`'s MenuGroup.cui (the Solid Editing macros) and each language's `acad.pgp`.
 - The tables of 2026-10-31. AutoCAD 2027, ACADVER 26.0, X.118.0.0 (p100). Tree at ae43b3f3.
+
+## Execution
+
+| Block   | Findings                                                    | Commit   |
+| ------- | ----------------------------------------------------------- | -------- |
+| SLC     | SLC-01 to SLC-08, SEC-01, ELP-01                            | 5671b1ab |
+| FED     | FED-01 to FED-09, ELP-02, SUB-01, SUB-02 (docs, EDITS-D49)  | ec871bc9 |
+| SOE (1) | SOE-01, SOE-04 to SOE-10, SOE-16, SOE-21, ELP-03            | 59a9024f |
+| SOE (2) | SOE-02, SOE-03, SOE-11 to SOE-15, SOE-17 to SOE-20          | f874966c |
+
+Left for SED: SLC-03's preselection through COM, SOE-04's and SOE-05's reach by a click, and the
+desktop cells of §13. What the execution found beside the plan:
+
+- CHAMFERA and CHAMFERB go from 0 to 1 with a chamfer made from the pick's defaults (p234): set
+  at the commit here; whether AutoCAD sets them as the command starts is **unverified** (Missing).
+- The rail's echo of a macro AutoCAD spells in capitals is the tool's `buttonEcho` (FED-08).
+- With no height given yet, Enter at SOLIDEDIT's extrusion height is refused (`Requires numeric
+  distance, two points, or option keyword.`, p406); the shared height keeps its sign (p407). It is
+  `SolidDefaults.height`, program-wide as the primitives' and EXTRUDE's both were (PRIM-D1,
+  EXT-07), each command setting it when it did before.
+- SOE-11's bound reads the solid's box in the tool's frame: in a tilted UCS, **unverified**.
+- A planar 3D polyline as SLICE's plane (p165) and the `_.` prefix (p104, p360) stay in Missing.
+- `cad-tools.md` is at its byte cap: SLC's and FED's lines were made room for by tightening the
+  same sections (`test/knowledge.test.ts`).
+- Outside this review: SETVAR's `?` listing files DELOBJ with the newer variables, where
+  workspace/p127 lists it with the older (Workspace's area, when next touched).
 
 ## 2. Inventory
 
@@ -828,6 +854,8 @@ for the English labels), on a box seen from (−1.3, −2.2, 1.6):
   6c (`docs/next-solids.md`).
 
 ## 15. Template improvements
+
+Applied on 2026-11-04 (template.md §4.1, §4.8; matrix.md row B; annex-catalogs.md §1):
 
 - **A suspect one subagent finds in its tool is a suspect in the others'.** A's SLC-01 (the
   frame's axes) was SOE-12 in C's tool, found apart, and A's hint gave SOE-20 and SOE-21, which C

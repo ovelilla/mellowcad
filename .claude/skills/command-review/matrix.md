@@ -40,6 +40,8 @@ plan each block has its table, a cell reading `match · p07 · LineTool.test.ts:
 - Enter, Space, `0`, a negative, `FOO` (the refusal words differ per input function), a keyword of
   another prompt, a keyword typed in the other language's global form.
 - The loop: what each answer leads to, and what the command reports.
+- A default after another command's run that sets it too: EXTRUDE's taper is SOLIDEDIT's, BOX's
+  height EXTRUDE's (solid-edits/p369, p372), which two reviews had not seen.
 
 **C. Point entry** — at every point prompt:
 

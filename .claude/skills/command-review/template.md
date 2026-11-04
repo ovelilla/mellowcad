@@ -176,6 +176,8 @@ the review, not an "n/a".
   left behind is the next command's preselection (ERASE's SEL-43).
 - A look (a hover, a band, an icon) is changed by a rule's analogy only after the desktop pass:
   UCB-09 gave UCS OBject's hover BREAK's rollover, and d06 showed the selection's glow (UCD-03).
+- A variable a fix will add is placed by the OPEN test in the review, not left **unverified** for
+  the execution (SOLIDCHECK, solid-edits/p405).
 - An editor's Escape is a cell of its own, with and without changes: it keeps, drops or asks
   (TEXT's drops the line being typed, TEXTEDIT's the edit, MTEXT's asks; text/d01, d05, d06).
 
@@ -255,7 +257,8 @@ deviation without a `WHY` and a coverage note is a finding.
   `picksLocked`, `THEME.entityHover`) across all the review's tools and gives that sweep to one
   subagent by name: three found LASTPOINT broken, each in its own tools (Dimensions).
 - They return the cells they answered (findings numbered without gaps), what they could not
-  check, and the tests they read, as text: a subagent cannot write a report file, so the reviewer keeps it in the scratchpad.
+  check, the tests they read, and the suspects their tool showed for the others' (SLICE's UCS
+  axes read as the frame's were SOLIDEDIT's too: SOE-12, SOE-20), which the reviewer probes, as text: a subagent cannot write a report file, so the reviewer keeps it in the scratchpad.
 - Their high and critical findings are verified by the reviewer, in person, before the plan.
 - A desktop surprise goes at once to the subagent owning that prompt (SendMessage): the console
   then settles it case by case (SCALE's factor, transforms/d06 → p219, within the hour).
@@ -391,4 +394,5 @@ matrix's P, Q and snaps (owner); 10-22 MOVE to Arrays; 10-23 Properties, Text; 1
 to View; 10-28 UCS, Workspace; 10-29 Clipboard; 11-03 3D primitives, Regions; 11-04 Sweeps (a
 traced BasePoint, a pick from the cursor, a jig prompt twice, pixels in two views, a POINT under
 Node: annex-probes.md §2, §4; the ribbon's answers, a run after options, the desktop drawing's
-variables: §4.1, §4.8, §5.3).
+variables: §4.1, §4.8, §5.3), Solid edits (the others' suspects, a new variable's OPEN test, a
+shared default, a sibling's pairing: §4.1, §4.8, matrix.md B, annex-catalogs.md §1).
