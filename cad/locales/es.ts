@@ -2732,6 +2732,8 @@ export const es: EngineLocale = {
       "chamferEdgeAccept": "Pulse Intro para aceptar el chaflán o",
       "chamferEdgeDistance1Or": "Precise distancia1 o",
       "chamferEdgeDistance2Or": "Precise distancia2 o",
+      "chamferEdgeBaseDistanceOr": "Precise superficie de base distancia de chaflán o",
+      "chamferEdgeOtherDistanceOr": "Precise otra superficie distancia de chaflán o",
       "solideditOption": "Indique una opción de edición de sólidos",
       "solideditFaceOption": "Indique opción de edición de caras",
       "selectFacesOr": "Designe caras o",
@@ -7256,6 +7258,10 @@ export const es: EngineLocale = {
       "distanceTooSmall": "Distancia demasiado pequeña. *No válida*",
       "filletEdgeFailed": "Error en operación de modelado:\nImposible efectuar la operación.\nHubo un fallo en la construcción del empalme.",
       "chamferEdgeFailed": "Error en operación de modelado:\nError Code Number is 12069\nImposible efectuar la operación.\nHubo un fallo en la construcción del chaflán.",
+      "filletMultipleBodies": "No se pueden empalmar varios cuerpos.",
+      "chamferMultipleBodies": "No se pueden achaflanar varias entidades.",
+      "edgeAlreadyPicked": "Esta arista ya se ha designado.",
+      "noTangentChainEdges": "No se han encontrado aristas tangentes adyacentes en cadena.",
       "solideditChecking": "Comprobación automática de edición de sólidos:  SOLIDCHECK=1",
       "facesFound": [
         [

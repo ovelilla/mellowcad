@@ -2744,6 +2744,8 @@ export const ptBR: EngineLocale = {
       "chamferEdgeAccept": "Pressione Enter para aceitar o chanfro ou",
       "chamferEdgeDistance1Or": "Especifique a distância1 ou",
       "chamferEdgeDistance2Or": "Especifique a distância2 ou",
+      "chamferEdgeBaseDistanceOr": "Especifique a distância da superfície de base do chanfro ou",
+      "chamferEdgeOtherDistanceOr": "Especifique a distância da outra superfície do chanfro ou",
       "solideditOption": "Inserir uma opção de edição de sólidos",
       "solideditFaceOption": "Inserir uma opção de edição de face",
       "selectFacesOr": "Selecionar faces ou",
@@ -7274,6 +7276,10 @@ export const ptBR: EngineLocale = {
       "distanceTooSmall": "Distância pequena demais. *Inválida*",
       "filletEdgeFailed": "Erro de operação de modelagem:\nFalha na execução da mesclagem.\nFalha durante a concordância.",
       "chamferEdgeFailed": "Erro de operação de modelagem:\nError Code Number is 12069\nFalha na execução da mesclagem.\nFalha durante a aplicação de chanfragem.",
+      "filletMultipleBodies": "Não é possível fazer a concordância de corpos múltiplos.",
+      "chamferMultipleBodies": "O chanframento de múltiplos corpos não é permitido.",
+      "edgeAlreadyPicked": "A aresta já foi selecionada.",
+      "noTangentChainEdges": "Nenhuma aresta de tangente adjacente encontrada na cadeia.",
       "solideditChecking": "Verificação automática de edição de sólidos:  SOLIDCHECK=1",
       "facesFound": [
         [

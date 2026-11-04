@@ -1048,9 +1048,10 @@ export class ObjectSelector {
     ctx: ToolContext,
     find: (include: (entity: Entity) => boolean) => EntityId[]
   ): EntityId[] {
-    // WHY nothing in SUbobject: it takes the faces, edges and vertices of 3D
-    // solids, surfaces and meshes, which no object here has; AutoCAD 2023's
-    // console finds `0 found` on a line too.
+    // WHY nothing in SUbobject: AutoCAD takes a solid's faces, edges and
+    // vertices there (`1 found`, solid-edits/p241–p243) for commands that
+    // reshape them (p244–p261), which are phase 6c's; on a line it finds
+    // `0 found` too (erase/p132).
     if (this.subobject) return []
     return find((entity) => ctx.document.isEntityVisible(entity))
   }

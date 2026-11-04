@@ -5401,6 +5401,20 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   error| Modeling Operation Error:
         Failed to perform blend.
         Failure while filleting.
+> Picked again, Chain, Enter at the expression
+  command| FILLETEDGE
+  info| Radius = 1.00
+  prompt| Select an edge or [Chain/Loop/Radius]: 5,10,0
+  prompt| Select an edge or [Chain/Loop/Radius]: 5,10,0
+  error| Edge has already been picked.
+  prompt| Select an edge or [Chain/Loop/Radius]: C
+  prompt| Select an edge chain or [Edge/Radius]: 0,5,0
+  info| No adjacent tangent edges found in chain.
+  prompt| Select an edge chain or [Edge/Radius]: R
+  prompt| Enter fillet radius or [Expression] <1.00>: E
+  prompt| Enter expression:
+  info| 2 edge(s) selected for fillet.
+  info| No fillet to be computed.
 > CHAMFEREDGE of a new box
   command| ERASE
   prompt| Select objects: ALL
@@ -5438,14 +5452,28 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   error| Edges must belong to one face.
   prompt| Select edge of loop or [Edge/Distance]:
   prompt| Press Enter to accept the chamfer or [Distance]:D
-  prompt| Specify Distance1 or [Expression] <1.00>: 1
-  prompt| Specify Distance2 or [Expression] <2.00>: 1
+  prompt| Specify base surface chamfer distance or [Expression] <1.00>: 1
+  prompt| Specify other surface chamfer distance or [Expression] <2.00>: 1
   prompt| Press Enter to accept the chamfer or [Distance]:
 > CHAMFEREDGE of nothing
   command| CHAMFEREDGE
-  info| Distance1 = 1.00, Distance2 = 1.00
+  info| Distance1 = 1.00, Distance2 = 2.00
   prompt| Select an edge or [Loop/Distance]:
   info| No edges to chamfer.
+> CHAMFEREDGE of two boxes
+  command| BOX
+  prompt| Specify first corner or [Center]: 20,0,0
+  prompt| Specify other corner or [Cube/Length]: 30,10
+  prompt| Specify height or [2Point] <10.00>: 10
+  command| ZOOM
+  prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: E
+  command| CHAMFEREDGE
+  info| Distance1 = 1.00, Distance2 = 2.00
+  prompt| Select an edge or [Loop/Distance]: 25,0,10
+  prompt| Select another edge on the same face or [Loop/Distance]: 5,10,0
+  error| Chamfering multiple bodies not allowed.
+  prompt| Select another edge on the same face or [Loop/Distance]:
+  prompt| Press Enter to accept the chamfer or [Distance]:
 
 ## SOLIDEDIT
 > start

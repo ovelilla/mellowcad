@@ -607,6 +607,11 @@ export interface Tool {
    */
   readonly buttonCommand?: string
   /**
+   * The rail's echo where acad.cuix spells its button's macro otherwise than
+   * `_` and the command lowercased (`^C^C_FILLETEDGE`). Omitted: `_line`.
+   */
+  readonly buttonEcho?: string
+  /**
    * The system variable the tool sets (AUPREC), empty while SETVAR asks its
    * name: it heads the prompt as it is named in every language but in a
    * SETVAR run, AutoCAD resumes it as SETVAR, and typed at its own prompt it

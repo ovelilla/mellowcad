@@ -1614,6 +1614,19 @@ describe("the engine's English surface", () => {
         .do("FILLETEDGE too wide", (c) =>
           submit(c, "FILLETEDGE", "R", "20", "5,0,0", "")
         )
+        .do("Picked again, Chain, Enter at the expression", (c) =>
+          submit(
+            c,
+            "FILLETEDGE",
+            "5,10,0",
+            "5,10,0",
+            "C",
+            "0,5,0",
+            "R",
+            "E",
+            ""
+          )
+        )
         .do("CHAMFEREDGE of a new box", (c) =>
           submit(c, "ERASE", "ALL", "", "BOX", "0,0,0", "10,10", "10")
         )
@@ -1624,6 +1637,22 @@ describe("the engine's English surface", () => {
           submit(c, "L", "5,10,10", "", "", "D", "1", "1", "")
         )
         .do("CHAMFEREDGE of nothing", (c) => submit(c, "CHAMFEREDGE", ""))
+        .do("CHAMFEREDGE of two boxes", (c) =>
+          submit(
+            c,
+            "BOX",
+            "20,0,0",
+            "30,10",
+            "10",
+            "ZOOM",
+            "E",
+            "CHAMFEREDGE",
+            "25,0,10",
+            "5,10,0",
+            "",
+            ""
+          )
+        )
     )
     walk("SOLIDEDIT", createHarness(), (s) =>
       s

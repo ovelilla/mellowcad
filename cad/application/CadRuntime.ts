@@ -1192,7 +1192,12 @@ export class CadRuntime extends Observable {
       )
       return
     }
-    this.startEchoed(id, command ?? id, command, true)
+    this.startEchoed(
+      id,
+      next.buttonEcho ?? `_${(command ?? id).toLowerCase()}`,
+      command,
+      true
+    )
   }
 
   /**
@@ -1257,7 +1262,7 @@ export class CadRuntime extends Observable {
   }
 
   /**
-   * Starts `id` echoed `_echo`, as a macro runs it, and a run of `command`
+   * Starts `id` echoed as a macro runs it (`_line`), and a run of `command`
    * (Enter repeats it, U names it) when given; from a menu (`menu`), in a
    * group U names `LINE GROUP`.
    */
@@ -1268,7 +1273,7 @@ export class CadRuntime extends Observable {
     menu = false
   ): void {
     this.echoMark = this.commandLine.mark()
-    this.commandLine.write("command", `_${echo.toLowerCase()}`)
+    this.commandLine.write("command", echo)
     if (command !== undefined) {
       const [name] = this.text.commandNames(command)
       this.commandLine.pushHistory(name)
@@ -6581,7 +6586,7 @@ export class CadRuntime extends Observable {
       // `^C^C_eattedit` answered with the point picked, as AutoCAD writes it
       // (`Select a block: 40.004639,19.953271,0.000000`, desktop d04).
       this.attEdit.startOn()
-      this.startEchoed(this.attEdit.id, "EATTEDIT", "EATTEDIT")
+      this.startEchoed(this.attEdit.id, "_eattedit", "EATTEDIT")
       const ucs = worldPointToUcs(this.frame.ucs, at)
       this.answering(
         [ucs.x, ucs.y, ucs.z].map((value) => value.toFixed(6)).join(","),
@@ -6593,20 +6598,20 @@ export class CadRuntime extends Observable {
     } else if (hit?.type === "text" || hit?.type === "attdef") {
       // `^C^C_textedit` (DoubleClickRoot.cui; desktop text/d06).
       this.textEdit.startOn(hit, false)
-      this.startEchoed(this.textEdit.id, "TEXTEDIT", "TEXTEDIT")
+      this.startEchoed(this.textEdit.id, "_textedit", "TEXTEDIT")
     } else if (hit?.type === "mtext") {
       // WHY TEXTEDIT under `_mtedit`: AutoCAD's macro runs MTEDIT, which is
       // not built here, so TEXTEDIT edits that one object as MTEDIT does —
       // no settings line, ended with the editor (desktop text/d06) — and
       // the run is TEXTEDIT's for U and Enter.
       this.textEdit.startOn(hit, true)
-      this.startEchoed(this.textEdit.id, "MTEDIT", "TEXTEDIT")
+      this.startEchoed(this.textEdit.id, "_mtedit", "TEXTEDIT")
     } else if (hit?.type === "polyline" || hit?.type === "polyline3d") {
       // `^C^C_pedit ` with the polyline selected (DoubleClickRoot.cui's
       // LWPOLYLINE and POLYLINE): straight to its options, as a polyline
       // selected before PEDIT is (pedit/p37).
       this.pedit.startOn(hit.id)
-      this.startEchoed(this.pedit.id, "PEDIT", "PEDIT")
+      this.startEchoed(this.pedit.id, "_pedit", "PEDIT")
     } else {
       return false
     }

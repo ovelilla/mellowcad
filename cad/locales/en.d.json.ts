@@ -2133,6 +2133,8 @@ declare const source: {
       "chamferEdgeAccept": string
       "chamferEdgeDistance1Or": string
       "chamferEdgeDistance2Or": string
+      "chamferEdgeBaseDistanceOr": string
+      "chamferEdgeOtherDistanceOr": string
       "solideditOption": string
       "solideditFaceOption": string
       "selectFacesOr": string
@@ -2829,6 +2831,10 @@ declare const source: {
       "distanceTooSmall": string
       "filletEdgeFailed": string
       "chamferEdgeFailed": string
+      "filletMultipleBodies": string
+      "chamferMultipleBodies": string
+      "edgeAlreadyPicked": string
+      "noTangentChainEdges": string
       "solideditChecking": string
       "facesFound": string
       "facesFoundRemoved": string

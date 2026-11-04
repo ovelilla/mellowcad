@@ -133,21 +133,21 @@ objects:` pick found), only a line written since the running command started.
 
 ## System variables
 
-A system variable typed by its name is an entry of `SYSTEM_VARIABLES` (`systemVariables.ts`), no
-tool or command: SETVAR's tool (`SystemVariableTool`) asks and refuses by its `type` and writes it
-with `formatVariable` (a length at LUPREC, an angle at AUPREC; LTSCALE's factor `%.4f` always,
-properties/p234). Its `set` returns the `Command` storing the value, null for `Cannot set`; without
-one it is read only (`inquiry()` for what the runtime keeps). A command of its name wins (AREA);
-AUPREC is one only to be filed on the landing (`AuPrecTool`).
+A system variable typed by name is an entry of `SYSTEM_VARIABLES` (`systemVariables.ts`), no tool or
+command: SETVAR's tool (`SystemVariableTool`) asks, refuses by its `type` and writes it with
+`formatVariable` (a length at LUPREC, an angle at AUPREC; LTSCALE's factor `%.4f` always,
+properties/p234). Its `set` returns the `Command` storing it, null for `Cannot set`; with none it is
+read only (`inquiry()` for what the runtime keeps). A command of its name wins (AREA); AUPREC is one
+only to be filed on the landing (`AuPrecTool`).
 
-Where a value lives is the console's OPEN test, never the help's "Saved in:" (RECTANG-D40).
-**Saved in the drawing** (FILLETRAD): a `DocumentSettings` field, set in the run by
-`setCommandSettings` so U undoes it. **Per drawing, unsaved** (CIRCLERAD): a tool field
-`onNewDrawing` resets; one U restores (TEXT's rotation), a `DocumentSettings` field not saved.
-**Program-wide** or **registry** (OSMODE): a session tool field, noted in the coverage entry; one U
+Where a value lives is the console's OPEN test, not the help's "Saved in:" (RECTANG-D40). **Saved in
+the drawing** (FILLETRAD): a `DocumentSettings` field, set by `setCommandSettings` once answered,
+not at the commit (solid-edits/p208): U undoes it. **Per drawing, unsaved** (CIRCLERAD): a tool
+field `onNewDrawing` resets; one U restores (TEXT's rotation), a `DocumentSettings` field not saved.
+**Program-wide** or **registry** (OSMODE): a session tool field, noted in its coverage; one U
 restores via `SessionSettingCommand` (TEXTEDITMODE). `onActivate` resets none AutoCAD keeps; a
-shared one is one object `defaultTools` hands each. Typed, either is its tool's `heldVariables()`
-entry, set through `ctx.held` (`heldInteger`).
+shared one is one object `defaultTools` hands each. Typed, either is a `heldVariables()` entry, set
+via `ctx.held` (`heldInteger`).
 
 ## What a new object wears
 

@@ -40,7 +40,8 @@ CIRCLE's 2P and 3P ones, which refuse a Z or `*` typed there too, circle/p16, p1
 `Requires an integer value.`, `Invalid option keyword.`, at `Select objects:` `*Invalid selection*`
 and
 `Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object`
-(MIRROR and JOIN without SUbobject/Object, STRETCH without Group too), at a single object's pick
+(MIRROR, JOIN and LIST without SUbobject/Object, STRETCH without Group too), at a single object's
+pick
 `*Invalid selection*` and `Expects a point or` its keywords, and CIRCLE's, Ttr's and POLYGON's own
 (`Requires numeric radius, point on circumference, or "D".`); es in Autodesk's table's words
 (`Punto no válido.`, `Se requiere un punto o una opción.`, `*Designación no válida*` /
@@ -249,13 +250,16 @@ selection back, silently, at `Remove objects:` asking `Select objects:` again, p
 own behaviour), SIngle (the first selection that finds anything closes the set), and SUbobject and
 Object where the set takes sub-objects — there `S` says `Ambiguous response, please clarify...` and
 asks `SIngle or SUbobject?`, while in a set of whole objects — MIRROR's, JOIN's, STRETCH's, ZOOM
-Object's, EXPLODE's, COPYCLIP's, the arrays', BLOCK's, whose refusals list no `SUbobject/Object`
-(erase/p02, p138, p223, p251, p259, p260; CUTCLIP's does) — `S` is taken and does nothing, `SI`
+Object's, EXPLODE's, COPYCLIP's, the arrays', BLOCK's, LIST's, whose refusals list no
+`SUbobject/Object` (erase/p02, p138, p223, p251, p259, p260; solid-edits/p248; CUTCLIP's does) —
+`S` is taken and does nothing, `SI`
 being SIngle (p153, p154, p158; MIRROR's probed), and `SU` is refused —: in
-SUbobject a pick, a window, a fence or a polygon finds `0 found` (no object
-here has sub-objects), Last and ALL are refused with its own list
-(`Window/Crossing/BOX/Fence/…/SIngle/SUbobject/Object`), Previous takes its set, and Object goes
-back. Each says what it found on the line AutoCAD says it — after a pick on the prompt's line, after
+SUbobject a pick, a window, a fence or a polygon finds `0 found` (erase/p132), on a solid too, whose
+faces, edges and vertices are phase 6c's (Missing; a crossing inside a face finds none in AutoCAD
+either, solid-edits/p258, and a pick on nothing starts a window, p263), Last and ALL are refused
+with its own list (`Window/Crossing/BOX/Fence/…/SIngle/SUbobject/Object`), Previous takes its set
+(`No previous selection set.` with none, solid-edits/p256), and Object goes back. Each says what
+it found on the line AutoCAD says it — after a pick on the prompt's line, after
 a typed answer on a line of its own: `2 found (1 duplicate), 3 total`,
 `1 found, 1 removed, 2 total`, the total once a selection has found anything (after Undo too, and
 what was refused counts: `1 found, 0 total`, erase/p241); `0 found` on nothing stands alone, but a
@@ -289,10 +293,16 @@ so `S` is Subobjeto there; after a global `_S` the question names the global wor
 `SIngle o SUbobject?`, p130, p131)
 
 **Missing:** Group (`Enter group name:`, `Invalid group name.`, p134) and Multiple (its picks
-counted at Enter, `2 selected, 2 found`, p135); SUbobject's faces, edges and vertices and the
-Ctrl+pick that takes them at MOVE's, ROTATE's, SCALE's and ERASE's `Select objects:`, each counted
-(desktop: MOVE's `1 found`, `1 found, 2 total`; phase 6c), where here Ctrl picks as a plain click,
-as LIST's and COPY's do there; a pick or a typed point on an object on a locked
+counted at Enter, `2 selected, 2 found`, p135); SUbobject's faces, edges and vertices (AutoCAD
+2027's console: a pick on a face, an edge or a vertex `1 found`, solid-edits/p241–p243; a window
+round a box `20 found`, p257; one again `1 found (1 duplicate), 1 total`, Remove `1 found, 1
+removed, 0 total`, p260; a locked solid's `1 found` / `1 was on a locked layer.`, p254; `_O` then a
+pick `1 found, 1 total`, p259), MOVE, ROTATE and SCALE reshaping the solid by them (p244–p246,
+p249, p261, p262), COPY copying the whole solid (p247), ERASE leaving it, its primitive dropped
+(p241, p264), and the Ctrl+pick that takes them at MOVE's, ROTATE's, SCALE's and ERASE's `Select
+objects:`, each counted (desktop: MOVE's `1 found`, `1 found, 2 total`; phase 6c), where here Ctrl
+picks as a plain click, as LIST's and COPY's do there; a pick or a typed point on an object on a
+locked
 layer (here it finds nothing and starts a window; AutoCAD says `1 found` / `1 was on a locked
 layer.`, erase/p211, p257; at `Command:` it is selected, properties/d02-1); **unverified** whether
 the commands that change nothing (COPYCLIP, ZOOM Object) leave locked finds out at `Select
@@ -330,7 +340,8 @@ subobjects are no set a command takes: with only them selected ERASE asks `Selec
 does; SUBOBJSELECTIONMODE (Shift+F1–F5's filters and their cursor badges), LEGACYCTRLPICK, the
 history subobjects of a composite (SOLIDHIST); the highlight changing as Ctrl is pressed with the
 cursor still (here at the next move); the Properties palette of a face, an edge or a vertex
-(**unverified**).
+(**unverified**). The Solid edits review owns them (`docs/plans/solid-edits-review.md`): its desktop
+block, SED, probes these cells again.
 
 ### Typed and confirmed
 

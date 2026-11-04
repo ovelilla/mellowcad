@@ -2098,6 +2098,8 @@ export const en: EngineCatalog = {
       "chamferEdgeAccept": "Press Enter to accept the chamfer or",
       "chamferEdgeDistance1Or": "Specify Distance1 or",
       "chamferEdgeDistance2Or": "Specify Distance2 or",
+      "chamferEdgeBaseDistanceOr": "Specify base surface chamfer distance or",
+      "chamferEdgeOtherDistanceOr": "Specify other surface chamfer distance or",
       "solideditOption": "Enter a solids editing option",
       "solideditFaceOption": "Enter a face editing option",
       "selectFacesOr": "Select faces or",
@@ -6603,6 +6605,10 @@ export const en: EngineCatalog = {
       "distanceTooSmall": "Distance too small. *Invalid*",
       "filletEdgeFailed": "Modeling Operation Error:\nFailed to perform blend.\nFailure while filleting.",
       "chamferEdgeFailed": "Modeling Operation Error:\nError Code Number is 12069\nFailed to perform blend.\nFailure while chamfering.",
+      "filletMultipleBodies": "Cannot fillet multiple bodies.",
+      "chamferMultipleBodies": "Chamfering multiple bodies not allowed.",
+      "edgeAlreadyPicked": "Edge has already been picked.",
+      "noTangentChainEdges": "No adjacent tangent edges found in chain.",
       "solideditChecking": "Solids editing automatic checking:  SOLIDCHECK=1",
       "facesFound": [
         [

@@ -536,7 +536,7 @@ describe("Select objects' modes", () => {
     ])
   })
 
-  it("finds nothing in SUbobject, refuses Last and ALL there, and Object goes back", () => {
+  it("finds nothing in SUbobject, refuses Last and ALL there, and Object goes back (erase/p132; solid-edits/p256)", () => {
     const cad = createHarness({ entities: drawing() })
     cad.command("ERASE")
     answer(cad, "SU", "L", "50,0", "W", "-10,-10", "110,60", "O", "L")

@@ -14,7 +14,8 @@ function answer(cad: CadHarness, ...texts: string[]): CadHarness {
 /**
  * A 10 box seen from (-1.3, -2.2, 1.6), the desktop's view of it: its top,
  * front (Y 0) and left (X 0) towards the viewer, no two edges drawn over each
- * other as SW Isometric draws them.
+ * other as SW Isometric draws them. "(desktop)" is AutoCAD 2027's desktop,
+ * in a session that numbered no probes.
  */
 function box(): CadHarness {
   const cad = createHarness()
@@ -136,5 +137,64 @@ describe("a solid's subobjects, Ctrl+clicked", () => {
     const cad = box()
     cad.click({ x: 40, y: 40, z: 0 }, CTRL)
     expect(subobjects(cad)).toEqual([])
+  })
+})
+
+// AutoCAD's SUbobject mode takes a solid's faces, edges and vertices (`1
+// found`, solid-edits/p241–p264), phase 6c's here, where it finds nothing
+// (command-line.md, Missing). What it answers already as AutoCAD does:
+describe("SUbobject at Select objects: on a solid", () => {
+  const written = (cad: CadHarness, ...texts: string[]) => {
+    const from = cad.commandLog().length
+    answer(cad, ...texts)
+    return cad.commandLog().slice(from)
+  }
+  const SU_MODES =
+    "Window/Crossing/BOX/Fence/WPolygon/CPolygon/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object"
+
+  it("refuses ALL and Last, and Previous says there is none (solid-edits/p256)", () => {
+    const cad = box()
+    answer(cad, "_ERASE", "_SU")
+    expect(written(cad, "_ALL", "_L", "_P")).toEqual([
+      "Select objects: _ALL",
+      "*Invalid selection*",
+      `Expects a point or ${SU_MODES}`,
+      "Select objects: _L",
+      "*Invalid selection*",
+      `Expects a point or ${SU_MODES}`,
+      "Select objects: _P",
+      "No previous selection set.",
+    ])
+  })
+
+  it("finds nothing in a crossing inside a face (solid-edits/p258)", () => {
+    const cad = box()
+    answer(cad, "_MOVE", "_SU")
+    expect(written(cad, "_C", "4,4,10", "6,6,10")).toEqual([
+      "Select objects: _C",
+      "Specify first corner: 4,4,10",
+      "Specify opposite corner: 6,6,10",
+      "0 found",
+    ])
+  })
+
+  it("starts a window at a point on nothing (solid-edits/p263)", () => {
+    const cad = box()
+    answer(cad, "_MOVE", "_SU")
+    expect(written(cad, "50,50,50", "60,60,60")).toEqual([
+      "Select objects: 50,50,50",
+      "Specify opposite corner: 60,60,60",
+      "0 found",
+    ])
+  })
+
+  it("is refused by LIST, whose set is of whole objects (solid-edits/p248)", () => {
+    const cad = box()
+    answer(cad, "_LIST")
+    expect(written(cad, "_SU")).toEqual([
+      "Select objects: _SU",
+      "*Invalid selection*",
+      "Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle",
+    ])
   })
 })

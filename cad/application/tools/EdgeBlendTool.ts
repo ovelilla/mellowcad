@@ -12,13 +12,9 @@ import { EntityId, Solid3dEntity } from "../../domain/entities"
 import { blendedSolid } from "../../domain/solidModeling"
 import { SubobjectRef, sameSubobject } from "../../domain/solidSubobjects"
 import { solidEdgeEntity } from "../../domain/solids"
-import { formatLength } from "../../domain/units"
+import { DocumentSettings, formatLength } from "../../domain/units"
 import { UpdateEntitiesCommand } from "../commands/entityCommands"
 import { evaluateExpression } from "../input/expression"
-import {
-  isCoordinateExpression,
-  parseCoordinate,
-} from "../input/coordinateInput"
 import type { PromptId } from "../../locales/types"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
@@ -26,6 +22,7 @@ import { entityScenePrimitive, selectionGlow } from "../SceneBuilder"
 import { subobjectsAt } from "../subobjectPick"
 import { setCommandSettings } from "./commandSettings"
 import { pushGrip } from "./selectToolGrips"
+import { typedPick } from "./typedPick"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -83,18 +80,23 @@ const PREVIEW_ID = "edgeblend-preview"
  * Enter to accept the fillet or [Radius]:` over the filleted solid with an
  * arrow grip whose drag sets the radius (desktop); Enter makes it. The radius
  * is asked `Enter fillet radius or [Expression] <1.0000>:`, at the accept
- * prompt `Specify Radius or [Expression] <…>:`, 0 or less `Radius too small.
- * *Invalid*`. CHAMFEREDGE likewise, from CHAMFERA and CHAMFERB (1 where they
- * are 0, c07): `Distance1 = 1.0000, Distance2 = 1.0000`, `Select an edge or
+ * prompt `Specify Radius or [Expression] <…>:`, 0 or less typed `Radius too
+ * small. *Invalid*`, saved as answered (solid-edits/p208, p209). CHAMFEREDGE
+ * likewise, from CHAMFERA and CHAMFERB (1 where they are 0, c07):
+ * `Distance1 = 1.0000, Distance2 = 1.0000`, `Select an edge or
  * [Loop/Distance]:`, then `Select another edge on the same face or
  * [Loop/Distance]:` (`Edges must belong to one face.`), its first distance
  * along the face they share — a lone edge's later face (c06) —, Enter on
- * none `No edges to chamfer.`. A blend the kernel cannot make ends the
- * command with AutoCAD's modelling error, nothing changed and nothing saved
- * (c04). One undo step, named as the command (f07).
+ * none `No edges to chamfer.`; its accept prompt's Distance asks the base
+ * and the other surface's for that run alone (p222, p234). A blend the
+ * kernel cannot make ends the command with AutoCAD's modelling error,
+ * nothing changed and the sizes answered rolled back (c04, p224). One undo
+ * step, named as the command (f07).
  */
 export class EdgeBlendTool implements Tool {
   readonly id: "filletedge" | "chamferedge"
+  /** acad.cuix's `^C^C_FILLETEDGE` (ID_FILLET_EDGE), `^C^C_CHAMFEREDGE` (ID_CHAMFER_EDGE). */
+  readonly buttonEcho: string
 
   private state: EdgeBlendState = { phase: "pick", mode: "edge", hover: null }
   private solid: EntityId | null = null
@@ -102,6 +104,8 @@ export class EdgeBlendTool implements Tool {
   private radius = 1
   private distance1 = 1
   private distance2 = 1
+  /** What the run found saved, put back if the blend fails (solid-edits/p224). */
+  private saved: Partial<DocumentSettings> = {}
   /** The solid as the blend would leave it, or why it cannot: built as the edges or the size change. */
   private preview: Solid3dEntity | "failed" | null = null
   private under: { list: SubobjectRef[]; at: number } = { list: [], at: 0 }
@@ -109,6 +113,7 @@ export class EdgeBlendTool implements Tool {
 
   constructor(private readonly kind: "fillet" | "chamfer") {
     this.id = kind === "fillet" ? "filletedge" : "chamferedge"
+    this.buttonEcho = kind === "fillet" ? "_FILLETEDGE" : "_CHAMFEREDGE"
   }
 
   onActivate(ctx: ToolContext): void {
@@ -119,6 +124,13 @@ export class EdgeBlendTool implements Tool {
     this.edges = []
     this.preview = null
     this.radius = settings.filletRadius3d
+    this.saved =
+      this.kind === "fillet"
+        ? { filletRadius3d: settings.filletRadius3d }
+        : {
+            chamferDistance1: settings.chamferDistance1,
+            chamferDistance2: settings.chamferDistance2,
+          }
     // CHAMFERA and CHAMFERB, or 1 where they are 0 (c01, c07).
     this.distance1 = settings.chamferDistance1 || 1
     this.distance2 = settings.chamferDistance2 || 1
@@ -175,6 +187,11 @@ export class EdgeBlendTool implements Tool {
         ? "filletEdgeAcceptRadiusOr"
         : "filletEdgeRadiusOr"
     }
+    if (state.after === "accept") {
+      return state.size === "distance1"
+        ? "chamferEdgeBaseDistanceOr"
+        : "chamferEdgeOtherDistanceOr"
+    }
     return state.size === "distance1"
       ? "chamferEdgeDistance1Or"
       : "chamferEdgeDistance2Or"
@@ -193,14 +210,17 @@ export class EdgeBlendTool implements Tool {
   }
 
   /**
-   * An edge's pick, refused with all but the last of its keywords, as the
-   * console says (f01: `Expects a point or Chain/Loop`; c01: `… or Loop`).
+   * An edge's pick, refused with all but the last of the keywords it lists,
+   * as the console says (f01: `Expects a point or Chain/Loop`; c01: `… or
+   * Loop`; solid-edits/p205).
    */
   takes(): QuestionInput | null {
     const state = this.state
     switch (state.phase) {
       case "pick": {
-        const ids = this.options().map((o) => o.id)
+        const ids = this.options()
+          .filter((o) => !o.hidden)
+          .map((o) => o.id)
         return {
           refusal: ["invalidSelection", "expectsPointOr"],
           keywords: { ids: ids.slice(0, -1) },
@@ -224,17 +244,29 @@ export class EdgeBlendTool implements Tool {
     const state = this.state
     const fillet = this.kind === "fillet"
     switch (state.phase) {
-      case "pick":
-        if (!fillet) {
-          return state.mode === "loop"
-            ? [{ id: "Edge" }, { id: "Distance" }]
-            : [{ id: "Loop" }, { id: "Distance" }]
-        }
-        if (state.mode === "chain") return [{ id: "Edge" }, { id: "Radius" }]
-        if (state.mode === "loop") {
-          return [{ id: "Edge" }, { id: "Chain" }, { id: "Radius" }]
-        }
-        return [{ id: "Chain" }, { id: "Loop" }, { id: "Radius" }]
+      case "pick": {
+        const listed = !fillet
+          ? state.mode === "loop"
+            ? ["Edge", "Distance"]
+            : ["Loop", "Distance"]
+          : state.mode === "chain"
+            ? ["Edge", "Radius"]
+            : state.mode === "loop"
+              ? ["Edge", "Chain", "Radius"]
+              : ["Chain", "Loop", "Radius"]
+        // Each pick prompt's initget declares every keyword of the command's
+        // picks; the unlisted ones are taken (solid-edits/p205, p223; traced
+        // at f01, p204, c01, c02).
+        const declared = fillet
+          ? ["Edge", "Chain", "Radius", "Loop"]
+          : ["Edge", "Loop", "Distance"]
+        return [
+          ...listed.map((id) => ({ id })),
+          ...declared
+            .filter((id) => !listed.includes(id))
+            .map((id) => ({ id, hidden: true as const })),
+        ]
+      }
       case "loop":
         return [{ id: "Accept" }, { id: "Next" }]
       case "size":
@@ -371,8 +403,7 @@ export class EdgeBlendTool implements Tool {
     if (input.button !== 0) return
     const state = this.state
     if (state.phase === "pick") {
-      const edge = this.edgeUnder(input.screen, ctx)
-      if (edge) this.takeEdge(edge, ctx)
+      this.pickAt(input.screen, ctx)
       return
     }
     if (state.phase === "accept" && this.kind === "fillet") {
@@ -468,6 +499,36 @@ export class EdgeBlendTool implements Tool {
     return entity?.type === "solid3d" ? entity : null
   }
 
+  /**
+   * A pick at `screen`: the edge under it taken, or, where a locked solid's
+   * edge comes first, `The object is on a locked layer.` (solid-edits/p215:
+   * the entity prompt finds it to refuse it).
+   */
+  private pickAt(screen: Vec2, ctx: ToolContext): void {
+    const edge = this.edgeUnder(screen, ctx)
+    if (this.under.at === 0 && this.lockedEdgeFirst(screen, ctx)) {
+      ctx.report(ctx.text.message("objectOnLockedLayer"), "error")
+      return
+    }
+    if (edge) this.takeEdge(edge, ctx)
+  }
+
+  /** Whether the first edge at `screen`, locked solids included, is a locked one's. */
+  private lockedEdgeFirst(screen: Vec2, ctx: ToolContext): boolean {
+    const solids = ctx.document
+      .getEntities()
+      .filter(
+        (e): e is Solid3dEntity =>
+          e.type === "solid3d" && ctx.document.isEntityVisible(e)
+      )
+    const shaded = ctx.document.getSettings().visualStyle !== "2dWireframe"
+    const first = subobjectsAt(solids, ctx.viewport, screen, shaded).find(
+      (r) => r.kind === "edge"
+    )
+    const owner = first && ctx.document.get(first.id)
+    return owner !== undefined && !ctx.document.isEntityEditable(owner)
+  }
+
   /** The edge a click at `screen` takes: the first there, or the one Ctrl+Space walked to. */
   private edgeUnder(screen: Vec2, ctx: ToolContext): SubobjectRef | null {
     const solids = ctx.document
@@ -492,9 +553,18 @@ export class EdgeBlendTool implements Tool {
   private takeEdge(ref: SubobjectRef, ctx: ToolContext): void {
     const state = this.state
     if (state.phase !== "pick") return
-    // WHY edges of the solid first taken only: the help's "edges on the same
-    // solid body"; what AutoCAD says to another's is unverified.
-    if (this.solid && ref.id !== this.solid) return
+    // Edges of the solid first taken only (solid-edits/p216, p231).
+    if (this.solid && ref.id !== this.solid) {
+      ctx.report(
+        ctx.text.message(
+          this.kind === "fillet"
+            ? "filletMultipleBodies"
+            : "chamferMultipleBodies"
+        ),
+        "error"
+      )
+      return
+    }
     const owner = ctx.document.get(ref.id)
     if (owner?.type !== "solid3d") return
     const brep = owner.brep
@@ -503,6 +573,16 @@ export class EdgeBlendTool implements Tool {
       if (loops.length === 0) return
       this.state = { phase: "loop", loops, at: 0, id: ref.id }
       this.openKeywords(ctx)
+      return
+    }
+    // WHY FILLETEDGE's alone: CHAMFEREDGE takes it again silently (p217,
+    // p231), Chain says its own words again (p236).
+    if (
+      this.kind === "fillet" &&
+      state.mode === "edge" &&
+      this.edges.includes(ref.index)
+    ) {
+      ctx.report(ctx.text.message("edgeAlreadyPicked"), "error")
       return
     }
     const taken =
@@ -518,6 +598,10 @@ export class EdgeBlendTool implements Tool {
     this.solid = ref.id
     this.edges = edges
     this.build(ctx)
+    // The edge is taken all the same (solid-edits/p218).
+    if (state.mode === "chain" && taken.length === 1) {
+      ctx.report(ctx.text.message("noTangentChainEdges"))
+    }
     // Its box asks as the prompt now does (`Select another edge on the same face`).
     this.openPick(ctx)
   }
@@ -569,20 +653,19 @@ export class EdgeBlendTool implements Tool {
   /** Enter after the edges: none ends it, else the blend is shown to accept or refused. */
   private closePicks(ctx: ToolContext): boolean {
     const fillet = this.kind === "fillet"
+    if (this.edges.length === 0) {
+      this.nothingMade(ctx)
+      return false
+    }
     if (fillet) {
       ctx.report(
         ctx.text.message("filletEdgesSelected", { count: this.edges.length })
       )
     }
-    if (this.edges.length === 0) {
-      ctx.report(
-        ctx.text.message(fillet ? "noFilletComputed" : "noEdgesToChamfer")
-      )
-      ctx.dynamicInput.close()
-      return false
-    }
     this.build(ctx)
     if (this.preview === "failed" || !this.preview) {
+      // The sizes answered go back with the run (solid-edits/p224).
+      setCommandSettings(this.saved, ctx)
       // WHY ACIS's error without its code for FILLETEDGE: ACIS rolls a ball
       // too wide for a face over the edge beyond (f05, f07), where this
       // kernel stops; its code for such a failure was never seen.
@@ -597,13 +680,32 @@ export class EdgeBlendTool implements Tool {
     return true
   }
 
+  /** The run ends with no blend: FILLETEDGE counts the edges taken, however many (solid-edits/p266). */
+  private nothingMade(ctx: ToolContext): void {
+    const fillet = this.kind === "fillet"
+    if (fillet) {
+      ctx.report(
+        ctx.text.message("filletEdgesSelected", { count: this.edges.length })
+      )
+    }
+    ctx.report(
+      ctx.text.message(fillet ? "noFilletComputed" : "noEdgesToChamfer")
+    )
+    ctx.dynamicInput.close()
+  }
+
   private toAccept(ctx: ToolContext): void {
     this.state = { phase: "accept" }
     this.build(ctx)
     this.openKeywords(ctx)
   }
 
-  /** The blend made, and the size it took saved in the drawing (FILLETRAD3D; CHAMFERA, CHAMFERB, c01). */
+  /**
+   * The blend made. FILLETRAD3D takes the radius the grip dragged; CHAMFERA
+   * and CHAMFERB stay as answered at the picks, 1 where they are 0, never
+   * the accept prompt's (solid-edits/p234: `(1.0 1.0)` from `(0.0 0.0)` after
+   * 2 and 3 there).
+   */
   private commit(ctx: ToolContext): void {
     const solid = this.solidOf(ctx)
     const made = this.preview
@@ -612,8 +714,12 @@ export class EdgeBlendTool implements Tool {
     if (this.kind === "fillet") {
       setCommandSettings({ filletRadius3d: this.radius }, ctx)
     } else {
+      const settings = ctx.document.getSettings()
       setCommandSettings(
-        { chamferDistance1: this.distance1, chamferDistance2: this.distance2 },
+        {
+          chamferDistance1: settings.chamferDistance1 || 1,
+          chamferDistance2: settings.chamferDistance2 || 1,
+        },
         ctx
       )
     }
@@ -635,17 +741,25 @@ export class EdgeBlendTool implements Tool {
     this.openSize(ctx)
   }
 
-  /** A size answered: 0 or less refused, a chamfer's first asking its second, then back where it was asked. */
+  /**
+   * A size answered: 0 or less refused, a chamfer's first asking its second,
+   * then back where it was asked. Saved in the drawing as answered, not at
+   * the commit (solid-edits/p208–p210, p233; U puts it back, p230), but the
+   * accept prompt's distances, which serve the run alone (p234).
+   */
   private takeSize(value: number, ctx: ToolContext): void {
     const state = this.state
     if (state.phase !== "size" && state.phase !== "expression") return
     if (!(value > 0)) {
-      ctx.report(
-        ctx.text.message(
-          state.size === "radius" ? "radiusTooSmall" : "distanceTooSmall"
-        ),
-        "error"
-      )
+      // An expression's asks again in silence (p208, p233, p236).
+      if (state.phase === "size") {
+        ctx.report(
+          ctx.text.message(
+            state.size === "radius" ? "radiusTooSmall" : "distanceTooSmall"
+          ),
+          "error"
+        )
+      }
       this.state = { ...state, phase: "size" }
       this.openSize(ctx)
       return
@@ -653,16 +767,23 @@ export class EdgeBlendTool implements Tool {
     if (state.size === "radius") this.radius = value
     else if (state.size === "distance1") this.distance1 = value
     else this.distance2 = value
+    const saved: Partial<DocumentSettings> | null =
+      state.size === "radius"
+        ? { filletRadius3d: value }
+        : state.after === "accept"
+          ? null
+          : state.size === "distance1"
+            ? { chamferDistance1: value }
+            : { chamferDistance2: value }
     if (state.size === "distance1") {
       this.askSize("distance2", state.after, state.mode, ctx)
-      return
-    }
-    if (state.after === "accept") {
+    } else if (state.after === "accept") {
       this.toAccept(ctx)
-      return
+    } else {
+      this.build(ctx)
+      this.toPick(state.mode, ctx)
     }
-    this.build(ctx)
-    this.toPick(state.mode, ctx)
+    if (saved) setCommandSettings(saved, ctx)
   }
 
   /** The radius the grip's drag sets: along the fillet's bisector from the edge, as the cursor covers it on the screen. */
@@ -738,22 +859,14 @@ export class EdgeBlendTool implements Tool {
           if (!this.closePicks(commitCtx)) commitCtx.endCommand()
           return true
         }
-        const text = commitCtx.dynamicInput.getText("point").trim()
-        if (!isCoordinateExpression(text)) return false
-        const point = parseCoordinate(text, {
-          lastPoint: commitCtx.lastPoint,
-          relativeByDefault: false,
-          ucs: commitCtx.ucs,
-          elevation: commitCtx.elevation,
-        })
-        if (!point) return false
         // A typed point takes the edge drawn through it (f01: 5,0,10 in a
-        // view off plan takes the top front edge, in plan the bottom one).
-        const edge = this.edgeUnder(
-          commitCtx.viewport.worldToScreen(point),
-          commitCtx
-        )
-        if (edge) this.takeEdge(edge, commitCtx)
+        // view off plan takes the top front edge, in plan the bottom one), a
+        // number its distance from LASTPOINT (solid-edits/p204), and becomes
+        // LASTPOINT (p121, p122).
+        const text = commitCtx.dynamicInput.getText("point").trim()
+        const point = typedPick(text, commitCtx)
+        if (!point) return false
+        this.pickAt(commitCtx.viewport.worldToScreen(point), commitCtx)
         return true
       },
       directDistance: "typed",
@@ -809,6 +922,18 @@ export class EdgeBlendTool implements Tool {
       commit: () => {},
       commitRaw: (commitCtx) => {
         const text = commitCtx.dynamicInput.getText("expression").trim()
+        const state = this.state
+        if (text === "" && state.phase === "expression") {
+          // Enter: from the accept prompt's size back to it, from a pick's
+          // the run's end, nothing made (solid-edits/p206, p212, p232, p235).
+          if (state.after === "accept") {
+            this.toAccept(commitCtx)
+            return true
+          }
+          this.nothingMade(commitCtx)
+          commitCtx.endCommand()
+          return true
+        }
         const value = evaluateExpression(text)
         if (value === null) {
           commitCtx.report(commitCtx.text.message("expressionSyntax"), "error")
