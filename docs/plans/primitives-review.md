@@ -5,7 +5,7 @@
 > left is in the coverage entries' **Missing:** and **unverified** (`docs/coverage/draw.md`, BOX to
 > PYRAMID; drafting-aids.md; command-line.md).
 >
-> The full plan is in git: `git show 54e98171:docs/plans/primitives-review.md`. It holds the
+> The full plan is in git: `git show 6495ac79:docs/plans/primitives-review.md`. It holds the
 > inventory, the probes' index, the matrix of every block, each finding with its evidence, the
 > decisions PRIM-D1 to PRIM-D87 and what was refuted.
 >
@@ -55,52 +55,52 @@ SE Isometric), on AutoCAD 2027 (ACADVER 26.0, X.118.0.0); the inputs in
 
 | Id     | What it was                                                                    | Commit   |
 | ------ | ------------------------------------------------------------------------------ | -------- |
-| PBX-01 | BOX towards a smaller X kept Rotation 0 (AutoCAD 180, as WEDGE)                 | 3f031cad |
-| PBX-02 | after Length, the height measured from the length's end (AutoCAD: far corner)  | 3f031cad |
-| PBX-03 | a width by a point was its distance from the length's end (AutoCAD: square)    | 3f031cad |
-| PBX-04 | Cube or Length from a raised point took the distance in space (AutoCAD: plan)  | 3f031cad |
-| PBX-05 | es `CU` unknown                                                                | 3f031cad |
-| PBX-06 | WEDGE from its centre, Length by a point, half as long                         | 3f031cad |
-| PBX-07 | the width's side on the length's line rested on the console's noise            | 3f031cad |
-| SHD-01 | OPEN reset the shared defaults (AutoCAD keeps them but the top radius)         | 13cd770b |
-| PCY-01 | a height of 0 said BOX's words in es and pt-BR                                 | 7c7ad69a |
-| PCY-02 | Elliptical's distance to the first axis offered no default                    | 7c7ad69a |
-| PCY-03 | an elliptical base tilted by Axis endpoint lay turned 90°                      | 7c7ad69a |
-| PCY-04 | CONE's Top asked twice offered what was just typed                             | 7c7ad69a |
-| PCY-05 | pt-BR's CONE ends at Enter on a height with no default (kept out, PRIM-D20)    | 7c7ad69a |
-| PCY-06 | AutoCAD values in tests without a source                                       | 7c7ad69a |
-| PST-01 | SPHERE's, TORUS's, PYRAMID's bare point prompts refused in the wrong words     | bb26a486 |
-| PST-02 | TORUS's Missing denied an apple's and a lemon's poles as Endpoints             | bb26a486 |
-| PPY-01 | PYRAMID's zero refusals in es and pt-BR                                        | bf57cc9b |
-| PPY-02 | a point at Top radius measured from a base the cursor moved                    | bf57cc9b |
-| PPY-03 | pt-BR's PYRAMID ends at Enter on a height with no default (kept out, PRIM-D40) | bf57cc9b |
-| PPY-04 | PYRAMID's coverage: 2Point's refusal, a citation, the es words                 | bf57cc9b |
-| PLP-01 | CYLINDER, CONE, SPHERE and TORUS never moved LASTPOINT                         | f80bb46b |
-| PLP-02 | PYRAMID's Edge, Axis endpoint and 2Point left LASTPOINT wrong                  | f80bb46b |
-| PLP-03 | BOX and WEDGE left LASTPOINT wrong but after two corners                       | f80bb46b |
-| SPK-01 | INT and APP found points on a solid's edges                                    | ed93ef45 |
-| SPK-02 | `_CEN` at a circle's centre itself took it                                     | ed93ef45 |
-| SPK-03 | a typed `x,y,z` at `Select objects:` off the plan dropped its Z                | ed93ef45 |
-| SPK-04 | in plan, the edge found under another (END, QUA)                               | ed93ef45 |
-| SPK-05 | NEA at a cone's apex found nothing                                             | ed93ef45 |
-| SPK-06 | a lemon's Center near its centre, zoomed in, found nothing                     | ed93ef45 |
-| SPK-07 | an apple's isoline at its outer equator: as AutoCAD's (desktop d10), refuted   | ed93ef45 |
-| SPK-08 | `solidCommands.test.ts`: dead checks, a typed Escape, a stale title            | ed93ef45 |
-| STF-01 | STRETCH took a cylinder by its seam (AutoCAD: its base's centre)               | 08fa1e24 |
-| STF-02 | ARRAYRECT's base point at Z 0 (AutoCAD: the 3D centre)                         | 08fa1e24 |
-| STF-03 | TORUS's Missing: an apple explodes into two POINTs                             | 08fa1e24 |
-| SWR-01 | REGEN and REGENALL unknown                                                     | faa3a067 |
-| SWR-02 | ISOLINES' refusals untested                                                    | faa3a067 |
-| SFL-01 | the file round trip tested for a box only                                      | 9e4ae037 |
-| PDT-01 | Ortho bent BOX's and WEDGE's other corner, so no box by two corners            | 03ba17a1 |
-| PDT-02 | a radius picked off the work plane was read on it (AutoCAD: the centre's)      | 03ba17a1 |
-| PDT-03 | a cancelled run's answers became the next run's defaults                       | 03ba17a1 |
-| PDT-04 | a width on the length's line always went right                                 | 03ba17a1 |
-| PDT-05 | a wedge's base arrow under its centre (AutoCAD: its tall end)                  | 03ba17a1 |
-| PDJ-01 | dynamic input read no distance; BOX's other corner one X,Y field               | b2c27257 |
-| PDJ-02 | no dashed rubber band at the round solids' distance prompts                    | b2c27257 |
-| PDJ-03 | no ghost at the base radius, ring, ellipse, Top, axis endpoint, length, width  | b2c27257 |
-| PDJ-04 | PYRAMID's base ghost without its edges to the centre                           | b2c27257 |
+| PBX-01 | BOX towards a smaller X kept Rotation 0 (AutoCAD 180, as WEDGE)                 | bdbfe83b |
+| PBX-02 | after Length, the height measured from the length's end (AutoCAD: far corner)  | bdbfe83b |
+| PBX-03 | a width by a point was its distance from the length's end (AutoCAD: square)    | bdbfe83b |
+| PBX-04 | Cube or Length from a raised point took the distance in space (AutoCAD: plan)  | bdbfe83b |
+| PBX-05 | es `CU` unknown                                                                | bdbfe83b |
+| PBX-06 | WEDGE from its centre, Length by a point, half as long                         | bdbfe83b |
+| PBX-07 | the width's side on the length's line rested on the console's noise            | bdbfe83b |
+| SHD-01 | OPEN reset the shared defaults (AutoCAD keeps them but the top radius)         | 8e79a536 |
+| PCY-01 | a height of 0 said BOX's words in es and pt-BR                                 | fe42d0c4 |
+| PCY-02 | Elliptical's distance to the first axis offered no default                    | fe42d0c4 |
+| PCY-03 | an elliptical base tilted by Axis endpoint lay turned 90°                      | fe42d0c4 |
+| PCY-04 | CONE's Top asked twice offered what was just typed                             | fe42d0c4 |
+| PCY-05 | pt-BR's CONE ends at Enter on a height with no default (kept out, PRIM-D20)    | fe42d0c4 |
+| PCY-06 | AutoCAD values in tests without a source                                       | fe42d0c4 |
+| PST-01 | SPHERE's, TORUS's, PYRAMID's bare point prompts refused in the wrong words     | 07aa05bd |
+| PST-02 | TORUS's Missing denied an apple's and a lemon's poles as Endpoints             | 07aa05bd |
+| PPY-01 | PYRAMID's zero refusals in es and pt-BR                                        | e434f0fe |
+| PPY-02 | a point at Top radius measured from a base the cursor moved                    | e434f0fe |
+| PPY-03 | pt-BR's PYRAMID ends at Enter on a height with no default (kept out, PRIM-D40) | e434f0fe |
+| PPY-04 | PYRAMID's coverage: 2Point's refusal, a citation, the es words                 | e434f0fe |
+| PLP-01 | CYLINDER, CONE, SPHERE and TORUS never moved LASTPOINT                         | 85fadd42 |
+| PLP-02 | PYRAMID's Edge, Axis endpoint and 2Point left LASTPOINT wrong                  | 85fadd42 |
+| PLP-03 | BOX and WEDGE left LASTPOINT wrong but after two corners                       | 85fadd42 |
+| SPK-01 | INT and APP found points on a solid's edges                                    | a9ef58e2 |
+| SPK-02 | `_CEN` at a circle's centre itself took it                                     | a9ef58e2 |
+| SPK-03 | a typed `x,y,z` at `Select objects:` off the plan dropped its Z                | a9ef58e2 |
+| SPK-04 | in plan, the edge found under another (END, QUA)                               | a9ef58e2 |
+| SPK-05 | NEA at a cone's apex found nothing                                             | a9ef58e2 |
+| SPK-06 | a lemon's Center near its centre, zoomed in, found nothing                     | a9ef58e2 |
+| SPK-07 | an apple's isoline at its outer equator: as AutoCAD's (desktop d10), refuted   | a9ef58e2 |
+| SPK-08 | `solidCommands.test.ts`: dead checks, a typed Escape, a stale title            | a9ef58e2 |
+| STF-01 | STRETCH took a cylinder by its seam (AutoCAD: its base's centre)               | 08fa95ab |
+| STF-02 | ARRAYRECT's base point at Z 0 (AutoCAD: the 3D centre)                         | 08fa95ab |
+| STF-03 | TORUS's Missing: an apple explodes into two POINTs                             | 08fa95ab |
+| SWR-01 | REGEN and REGENALL unknown                                                     | b88bc372 |
+| SWR-02 | ISOLINES' refusals untested                                                    | b88bc372 |
+| SFL-01 | the file round trip tested for a box only                                      | 27ea5d0d |
+| PDT-01 | Ortho bent BOX's and WEDGE's other corner, so no box by two corners            | d699ca75 |
+| PDT-02 | a radius picked off the work plane was read on it (AutoCAD: the centre's)      | d699ca75 |
+| PDT-03 | a cancelled run's answers became the next run's defaults                       | d699ca75 |
+| PDT-04 | a width on the length's line always went right                                 | d699ca75 |
+| PDT-05 | a wedge's base arrow under its centre (AutoCAD: its tall end)                  | d699ca75 |
+| PDJ-01 | dynamic input read no distance; BOX's other corner one X,Y field               | effd8cfb |
+| PDJ-02 | no dashed rubber band at the round solids' distance prompts                    | effd8cfb |
+| PDJ-03 | no ghost at the base radius, ring, ellipse, Top, axis endpoint, length, width  | effd8cfb |
+| PDJ-04 | PYRAMID's base ghost without its edges to the centre                           | effd8cfb |
 
 Left open, each in its coverage entry: a box turned 180 runs its edges as a box turned, where ACIS
 mirrors them (BOX); a Cube by a point from the centre, doubled as Length's, **unverified**; Polar

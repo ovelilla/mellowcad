@@ -6,7 +6,7 @@
 > (`docs/coverage/modify.md` SLICE, FILLETEDGE / CHAMFEREDGE, SOLIDEDIT; `docs/coverage/draw.md`
 > SECTION; `docs/coverage/command-line.md` for the sub-objects).
 >
-> The full plan is in git: `git show 441a04e4:docs/plans/solid-edits-review.md`. It holds the
+> The full plan is in git: `git show d91b6506:docs/plans/solid-edits-review.md`. It holds the
 > inventory, the probes' index, the matrix of every block, each finding with its evidence, the
 > decisions EDITS-D1 to EDITS-D134 and what was refuted.
 >
@@ -52,60 +52,60 @@ The worst:
 
 | Id     | What it was                                                                           | Commit             |
 | ------ | ------------------------------------------------------------------------------------- | ------------------ |
-| SLC-01 | YZ and ZX cut through the frame's axes, not the UCS's                                 | 5671b1ab           |
-| SLC-02 | Enter's `<0,0,0>` at View, XY, YZ and ZX was the WCS's origin                         | 5671b1ab           |
-| SLC-03 | SLICE and SECTION acted on a preselection AutoCAD drops (d05-a by click)              | 5671b1ab           |
-| SLC-04 | Enter on an empty set was silent                                                      | 5671b1ab           |
-| SLC-05 | planar Object passed over in silence what AutoCAD refuses with words                  | 5671b1ab           |
-| SLC-06 | planar Object's and Surface's picks took other answers than entsel's                  | 5671b1ab           |
-| SLC-07 | ALL's halves and regions in drawing order; AutoCAD's newest first                     | 5671b1ab           |
-| SLC-08 | tests and citations                                                                   | 5671b1ab           |
-| SEC-01 | a region where the plane holds a face faced the plane's normal                        | 5671b1ab           |
-| ELP-01 | SLICE and SECTION never moved LASTPOINT                                               | 5671b1ab           |
-| ELP-02 | FILLETEDGE's and CHAMFEREDGE's typed edge did not set LASTPOINT                       | ec871bc9           |
-| ELP-03 | three SOLIDEDIT answers did not set LASTPOINT                                         | 59a9024f           |
-| FED-01 | CHAMFEREDGE's accept Distance asked the pick's prompts and saved them                 | ec871bc9           |
-| FED-02 | the sizes saved at the commit (then as answered; at the run's end since SED-04)       | ec871bc9           |
-| FED-03 | Enter at `Enter expression:` refused with the syntax message                          | ec871bc9           |
-| FED-04 | an expression of 0 or less said `Radius too small. *Invalid*`                         | ec871bc9           |
-| FED-05 | the hidden keywords were refused                                                      | ec871bc9           |
-| FED-06 | a bare number at the edge pick was refused                                            | ec871bc9           |
-| FED-07 | four refusals were silent                                                             | ec871bc9           |
-| FED-08 | the rail echoed `_filletedge`; the ribbon's macro is `^C^C_FILLETEDGE`                | ec871bc9           |
-| FED-09 | tests and citations                                                                   | ec871bc9           |
-| SUB-01 | SUbobject mode finds nothing on a solid (phase 6c, Missing)                           | ec871bc9           |
-| SUB-02 | a stale WHY and a false coverage line                                                 | ec871bc9           |
-| SOE-01 | Enter at a point or value prompt ended SOLIDEDIT                                      | 59a9024f           |
-| SOE-02 | the extrusion's taper always offered `<0>`; AutoCAD EXTRUDE's last                    | f874966c           |
-| SOE-03 | Enter at the extrusion's height ended it; AutoCAD the primitives' height              | f874966c           |
-| SOE-04 | a pick on an edge took one face; AutoCAD both (d02-c by click)                        | 59a9024f           |
-| SOE-05 | a face picked again: the one behind it (d02-a by click)                               | 59a9024f           |
-| SOE-06 | its Undo never said `Command has been completely undone.`                             | 59a9024f           |
-| SOE-07 | Undo at `Select faces` and `Remove faces`                                             | 59a9024f           |
-| SOE-08 | what Remove and ALL say, and when ALL is offered                                      | 59a9024f           |
-| SOE-09 | a pick on nothing, or on a locked solid, was silent                                   | 59a9024f           |
-| SOE-10 | zero and out-of-range values made an edit                                             | 59a9024f           |
-| SOE-11 | the negative offset's bound, −(the largest box side)/2                                | f874966c           |
-| SOE-12 | Rotate's Xaxis and Yaxis were the frame's axes                                        | f874966c           |
-| SOE-13 | the kernel refuses edits AutoCAD makes (Missing)                                      | f874966c           |
-| SOE-14 | SOLIDCHECK did not exist                                                              | f874966c           |
-| SOE-15 | a huge offset changes nothing in AutoCAD (Missing)                                    | f874966c           |
-| SOE-16 | a rotation axis of no length                                                          | 59a9024f           |
-| SOE-17 | Copy's region had no row in `currentProperties.test.ts`                               | f874966c           |
-| SOE-18 | `solidedit.test.ts`' pins and citations                                               | f874966c           |
-| SOE-19 | Missing's "faces of several solids at once" was no gap                                | f874966c           |
-| SOE-20 | Rotate's origin `<0,0,0>` was the WCS's origin                                        | f874966c           |
-| SOE-21 | a point at Rotate's angle asked a second point                                        | 59a9024f           |
-| SED-01 | FILLETEDGE's arrow grip: a second point asked, the radius 2.4 times AutoCAD's (d04-c) | 18902765           |
-| SED-02 | a click at SOLIDEDIT Rotate's axis point was not taken (d02-e)                        | ecc32ac2           |
-| SED-03 | Escape at the accept's Radius, Distance or grip cancelled the command (d04-c, d04-d)  | 18902765           |
-| SED-04 | Escape kept the sizes and said nothing of the edges (d04-d)                           | 18902765           |
-| SED-05 | no rubber band at SOLIDEDIT's and SLICE's second points (d02, d05)                    | ecc32ac2           |
-| SED-06 | a click at an object's pick left LASTPOINT (d06)                                      | 18902765, ecc32ac2 |
-| SED-07 | Ctrl+Space walked FILLETEDGE's edges, and through the box ended it (d04-e)            | 18902765           |
-| SED-08 | a selected sub-object is the preselection of AutoCAD's LIST, MOVE, ERASE (Missing)    | ecc32ac2           |
-| SED-09 | SOLIDEDIT's face pick lit faces; AutoCAD the solid over an edge (d02-b)               | ecc32ac2           |
-| SED-10 | FILLETEDGE's and CHAMFEREDGE's look at the pick and accept (d04)                      | 18902765           |
-| SED-11 | Surface's pick lit nothing (d05-d)                                                    | ecc32ac2           |
-| SED-12 | Ctrl with the cursor still, and a locked solid under Ctrl (d01-a, h)                  | ecc32ac2           |
-| SED-13 | what the desktop settled for the coverage and the tests (d01)                         | ecc32ac2           |
+| SLC-01 | YZ and ZX cut through the frame's axes, not the UCS's                                 | 8720e13f           |
+| SLC-02 | Enter's `<0,0,0>` at View, XY, YZ and ZX was the WCS's origin                         | 8720e13f           |
+| SLC-03 | SLICE and SECTION acted on a preselection AutoCAD drops (d05-a by click)              | 8720e13f           |
+| SLC-04 | Enter on an empty set was silent                                                      | 8720e13f           |
+| SLC-05 | planar Object passed over in silence what AutoCAD refuses with words                  | 8720e13f           |
+| SLC-06 | planar Object's and Surface's picks took other answers than entsel's                  | 8720e13f           |
+| SLC-07 | ALL's halves and regions in drawing order; AutoCAD's newest first                     | 8720e13f           |
+| SLC-08 | tests and citations                                                                   | 8720e13f           |
+| SEC-01 | a region where the plane holds a face faced the plane's normal                        | 8720e13f           |
+| ELP-01 | SLICE and SECTION never moved LASTPOINT                                               | 8720e13f           |
+| ELP-02 | FILLETEDGE's and CHAMFEREDGE's typed edge did not set LASTPOINT                       | cea754ae           |
+| ELP-03 | three SOLIDEDIT answers did not set LASTPOINT                                         | d7911c5a           |
+| FED-01 | CHAMFEREDGE's accept Distance asked the pick's prompts and saved them                 | cea754ae           |
+| FED-02 | the sizes saved at the commit (then as answered; at the run's end since SED-04)       | cea754ae           |
+| FED-03 | Enter at `Enter expression:` refused with the syntax message                          | cea754ae           |
+| FED-04 | an expression of 0 or less said `Radius too small. *Invalid*`                         | cea754ae           |
+| FED-05 | the hidden keywords were refused                                                      | cea754ae           |
+| FED-06 | a bare number at the edge pick was refused                                            | cea754ae           |
+| FED-07 | four refusals were silent                                                             | cea754ae           |
+| FED-08 | the rail echoed `_filletedge`; the ribbon's macro is `^C^C_FILLETEDGE`                | cea754ae           |
+| FED-09 | tests and citations                                                                   | cea754ae           |
+| SUB-01 | SUbobject mode finds nothing on a solid (phase 6c, Missing)                           | cea754ae           |
+| SUB-02 | a stale WHY and a false coverage line                                                 | cea754ae           |
+| SOE-01 | Enter at a point or value prompt ended SOLIDEDIT                                      | d7911c5a           |
+| SOE-02 | the extrusion's taper always offered `<0>`; AutoCAD EXTRUDE's last                    | a5603063           |
+| SOE-03 | Enter at the extrusion's height ended it; AutoCAD the primitives' height              | a5603063           |
+| SOE-04 | a pick on an edge took one face; AutoCAD both (d02-c by click)                        | d7911c5a           |
+| SOE-05 | a face picked again: the one behind it (d02-a by click)                               | d7911c5a           |
+| SOE-06 | its Undo never said `Command has been completely undone.`                             | d7911c5a           |
+| SOE-07 | Undo at `Select faces` and `Remove faces`                                             | d7911c5a           |
+| SOE-08 | what Remove and ALL say, and when ALL is offered                                      | d7911c5a           |
+| SOE-09 | a pick on nothing, or on a locked solid, was silent                                   | d7911c5a           |
+| SOE-10 | zero and out-of-range values made an edit                                             | d7911c5a           |
+| SOE-11 | the negative offset's bound, −(the largest box side)/2                                | a5603063           |
+| SOE-12 | Rotate's Xaxis and Yaxis were the frame's axes                                        | a5603063           |
+| SOE-13 | the kernel refuses edits AutoCAD makes (Missing)                                      | a5603063           |
+| SOE-14 | SOLIDCHECK did not exist                                                              | a5603063           |
+| SOE-15 | a huge offset changes nothing in AutoCAD (Missing)                                    | a5603063           |
+| SOE-16 | a rotation axis of no length                                                          | d7911c5a           |
+| SOE-17 | Copy's region had no row in `currentProperties.test.ts`                               | a5603063           |
+| SOE-18 | `solidedit.test.ts`' pins and citations                                               | a5603063           |
+| SOE-19 | Missing's "faces of several solids at once" was no gap                                | a5603063           |
+| SOE-20 | Rotate's origin `<0,0,0>` was the WCS's origin                                        | a5603063           |
+| SOE-21 | a point at Rotate's angle asked a second point                                        | d7911c5a           |
+| SED-01 | FILLETEDGE's arrow grip: a second point asked, the radius 2.4 times AutoCAD's (d04-c) | 69049b7d           |
+| SED-02 | a click at SOLIDEDIT Rotate's axis point was not taken (d02-e)                        | a7c84dba           |
+| SED-03 | Escape at the accept's Radius, Distance or grip cancelled the command (d04-c, d04-d)  | 69049b7d           |
+| SED-04 | Escape kept the sizes and said nothing of the edges (d04-d)                           | 69049b7d           |
+| SED-05 | no rubber band at SOLIDEDIT's and SLICE's second points (d02, d05)                    | a7c84dba           |
+| SED-06 | a click at an object's pick left LASTPOINT (d06)                                      | 69049b7d, a7c84dba |
+| SED-07 | Ctrl+Space walked FILLETEDGE's edges, and through the box ended it (d04-e)            | 69049b7d           |
+| SED-08 | a selected sub-object is the preselection of AutoCAD's LIST, MOVE, ERASE (Missing)    | a7c84dba           |
+| SED-09 | SOLIDEDIT's face pick lit faces; AutoCAD the solid over an edge (d02-b)               | a7c84dba           |
+| SED-10 | FILLETEDGE's and CHAMFEREDGE's look at the pick and accept (d04)                      | 69049b7d           |
+| SED-11 | Surface's pick lit nothing (d05-d)                                                    | a7c84dba           |
+| SED-12 | Ctrl with the cursor still, and a locked solid under Ctrl (d01-a, h)                  | a7c84dba           |
+| SED-13 | what the desktop settled for the coverage and the tests (d01)                         | a7c84dba           |

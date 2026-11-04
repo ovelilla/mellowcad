@@ -135,7 +135,7 @@ with the area. The order puts first the commands whose review settles what the l
 
 Reviews 26 to 32 take what was built after the order was set (3 November 2026), the solids first:
 phase 6c builds on them, and their mouse had never been compared with the desktop's (BOX's height
-followed the cursor on the work plane, c38e7a24). The 3D primitives review fixed LASTPOINT in its tools
+followed the cursor on the work plane, bf6d9928). The 3D primitives review fixed LASTPOINT in its tools
 (PLP, `docs/plans/primitives-review.md`): ArrayPolarTool and SplineEditTool also refuse at a
 point prompt with no `setsLastPoint()`: suspects for review 31 (the Sweeps review fixed
 ExtrudeTool's and RevolveTool's, SLP-01, SLP-02; the Solid edits review PlaneCutTool's and

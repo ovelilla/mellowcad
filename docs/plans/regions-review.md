@@ -5,7 +5,7 @@
 > left is in the coverage entries' **Missing:** (`docs/coverage/draw.md` REGION, `modify.md`
 > UNION / SUBTRACT / INTERSECT, `command-line.md`).
 >
-> The full plan is in git: `git show 103f0009:docs/plans/regions-review.md`. It holds the
+> The full plan is in git: `git show 956c15e1:docs/plans/regions-review.md`. It holds the
 > inventory, the probes' index, the matrix of every block, each finding with its evidence, the
 > decisions REGIONS-D1 to REGIONS-D80 and what was refuted.
 >
@@ -47,35 +47,35 @@ earlier `region/*` and `union/*`; on AutoCAD 2027 (ACADVER 26.0, X.118.0.0). The
 
 | Id     | What it was                                                                       | Commit   |
 | ------ | --------------------------------------------------------------------------------- | -------- |
-| RGN-01 | REGION acted on a preselection; AutoCAD drops it and asks                         | c3706f83 |
-| RGN-02 | `All open edges cannot be colinear.` was never said                               | c3706f83 |
-| RGN-03 | a Spline-fit polyline's region was its chord polygon, not its curve               | c3706f83 |
-| RGN-04 | regions made in the wrong order (AutoCAD: the chains', then the closed objects')  | c3706f83 |
-| RGN-05 | loops meeting only at a vertex reported an extra rejected outline                 | c3706f83 |
-| RGN-06 | two coincident circles made two stacked regions; AutoCAD one per place            | c3706f83 |
-| RGN-07 | of two coincident lines, the first was used; AutoCAD uses the later               | c3706f83 |
-| RGN-08 | REGION's untested cells                                                           | c3706f83 |
-| BLN-01 | UNION, SUBTRACT and INTERSECT acted on a preselection                             | 3e4dc75e |
-| BLN-02 | a window, a crossing or ALL kept the oldest object; AutoCAD the newest            | 3e4dc75e |
-| BLN-03 | SUBTRACT ignored AutoCAD's first-subset rule (22214)                              | 3e4dc75e |
-| BLN-04 | SUBTRACT never said `No solids, surfaces, or regions selected.` (22205)           | 3e4dc75e |
-| BLN-05 | Previous after SUBTRACT: `No previous selection set.`, AutoCAD `0 found` (Missing) | 3e4dc75e |
-| BLN-06 | the region booleans' languages and b10's SUBTRACT untested                        | 3e4dc75e |
-| BLN-07 | draw.md's REGION Missing stale on the booleans of solids                          | 3e4dc75e |
-| BLN-08 | pt-BR `U`, UNIAO's alias, was an unknown command                                  | 3e4dc75e |
-| BSL-01 | a composite's file round trip tested for two boxes only                           | b148a08c |
-| BSL-02 | a test pinned the oldest's survival under ALL, citing s07 (the newest)            | 3e4dc75e |
-| BSL-03 | a cylinder lying on a box: V10 E16 F9 against ACIS's V10 E17 F10 (Missing)        | b148a08c |
-| BSL-04 | k03–k08 cited without counts for k05 and k06                                      | b148a08c |
-| RGO-01 | STRETCH left a region caught in part; AutoCAD moves it whole                      | f0e78c57 |
-| RGO-02 | QUA on a region's curved edge followed the UCS; AutoCAD the region's axes         | f0e78c57 |
-| RGO-03 | FILLET and CHAMFER passed over a region in silence                                | f0e78c57 |
-| RGO-04 | -HATCH's Select objects could not take a region                                   | f0e78c57 |
-| RGO-05 | Apparent Intersection found nothing between an arc or circle and a line           | f0e78c57 |
-| RGO-06 | TRIM and EXTEND Quick on a region's edges, settled                                | f0e78c57 |
-| RGO-07 | the "a region in the other commands" tests protected less than their titles       | f0e78c57 |
-| RGD-01 | a composite solid showed no grip; AutoCAD one at its box's X-Y centre, lowest Z   | 91b97958 |
-| RGD-02 | a boolean-cut curved face's isolines (d03-3, d05-1: ISOLINES 8; ruled by SWD-01) | 91b97958 |
-| RGD-03 | one object named `Type (1)` in the palette's drop-down; AutoCAD the type alone    | 91b97958 |
-| RGD-04 | the command line's placeholder showed while a command asked                       | 91b97958 |
-| RGD-05 | the rollover glow covers the object's colour (Missing, REGIONS-D80)               | 91b97958 |
+| RGN-01 | REGION acted on a preselection; AutoCAD drops it and asks                         | f1ec780b |
+| RGN-02 | `All open edges cannot be colinear.` was never said                               | f1ec780b |
+| RGN-03 | a Spline-fit polyline's region was its chord polygon, not its curve               | f1ec780b |
+| RGN-04 | regions made in the wrong order (AutoCAD: the chains', then the closed objects')  | f1ec780b |
+| RGN-05 | loops meeting only at a vertex reported an extra rejected outline                 | f1ec780b |
+| RGN-06 | two coincident circles made two stacked regions; AutoCAD one per place            | f1ec780b |
+| RGN-07 | of two coincident lines, the first was used; AutoCAD uses the later               | f1ec780b |
+| RGN-08 | REGION's untested cells                                                           | f1ec780b |
+| BLN-01 | UNION, SUBTRACT and INTERSECT acted on a preselection                             | 1c7ec6bc |
+| BLN-02 | a window, a crossing or ALL kept the oldest object; AutoCAD the newest            | 1c7ec6bc |
+| BLN-03 | SUBTRACT ignored AutoCAD's first-subset rule (22214)                              | 1c7ec6bc |
+| BLN-04 | SUBTRACT never said `No solids, surfaces, or regions selected.` (22205)           | 1c7ec6bc |
+| BLN-05 | Previous after SUBTRACT: `No previous selection set.`, AutoCAD `0 found` (Missing) | 1c7ec6bc |
+| BLN-06 | the region booleans' languages and b10's SUBTRACT untested                        | 1c7ec6bc |
+| BLN-07 | draw.md's REGION Missing stale on the booleans of solids                          | 1c7ec6bc |
+| BLN-08 | pt-BR `U`, UNIAO's alias, was an unknown command                                  | 1c7ec6bc |
+| BSL-01 | a composite's file round trip tested for two boxes only                           | a715db0b |
+| BSL-02 | a test pinned the oldest's survival under ALL, citing s07 (the newest)            | 1c7ec6bc |
+| BSL-03 | a cylinder lying on a box: V10 E16 F9 against ACIS's V10 E17 F10 (Missing)        | a715db0b |
+| BSL-04 | k03–k08 cited without counts for k05 and k06                                      | a715db0b |
+| RGO-01 | STRETCH left a region caught in part; AutoCAD moves it whole                      | 396615cf |
+| RGO-02 | QUA on a region's curved edge followed the UCS; AutoCAD the region's axes         | 396615cf |
+| RGO-03 | FILLET and CHAMFER passed over a region in silence                                | 396615cf |
+| RGO-04 | -HATCH's Select objects could not take a region                                   | 396615cf |
+| RGO-05 | Apparent Intersection found nothing between an arc or circle and a line           | 396615cf |
+| RGO-06 | TRIM and EXTEND Quick on a region's edges, settled                                | 396615cf |
+| RGO-07 | the "a region in the other commands" tests protected less than their titles       | 396615cf |
+| RGD-01 | a composite solid showed no grip; AutoCAD one at its box's X-Y centre, lowest Z   | 8e5507fa |
+| RGD-02 | a boolean-cut curved face's isolines (d03-3, d05-1: ISOLINES 8; ruled by SWD-01) | 8e5507fa |
+| RGD-03 | one object named `Type (1)` in the palette's drop-down; AutoCAD the type alone    | 8e5507fa |
+| RGD-04 | the command line's placeholder showed while a command asked                       | 8e5507fa |
+| RGD-05 | the rollover glow covers the object's colour (Missing, REGIONS-D80)               | 8e5507fa |
