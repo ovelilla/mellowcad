@@ -1,10 +1,9 @@
 # Solid edits review (SLICE, SECTION, FILLETEDGE, CHAMFEREDGE, SOLIDEDIT)
 
 > **Status:** group 1 executed, 2026-11-04: the console blocks SLC, FED, SUB and SOE (with the
-> LASTPOINT sweep ELP), one commit each (Execution, below). Group 2, the desktop block SED (the
-> sub-objects' Ctrl gestures and look, the hovers, previews and grips, Escape and the right
-> button, the clicks the console reads from its cursor), needs the owner's mouse and goes in a
-> later session (§13); then the plan shrinks to its summary and index.
+> LASTPOINT sweep ELP), one commit each (Execution, below). Group 2, the desktop block SED, probed
+> the same day (d01–d06, §13) and planned there; its execution follows in two commits, then the
+> plan shrinks to its summary and index.
 >
 > This review owns the sub-objects: Ctrl+click and Ctrl+Space at `Command:`, their highlight,
 > grips and selection, and `Select objects:`'s SUbobject mode on solids. It cites:
@@ -18,7 +17,7 @@
 
 ## 1. Summary
 
-**Findings:** 0 critical, 9 high, 21 medium, 14 low.
+**Findings:** 0 critical, 12 high, 26 medium, 19 low.
 
 | Block | What                                                    | Critical | High | Medium | Low |
 | ----- | ------------------------------------------------------- | -------- | ---- | ------ | --- |
@@ -28,6 +27,7 @@
 | FED   | FILLETEDGE, CHAMFEREDGE                                 | 0        | 1    | 5      | 3   |
 | SUB   | sub-objects (the area this review owns)                 | 0        | 0    | 1      | 1   |
 | SOE   | SOLIDEDIT                                               | 0        | 5    | 10     | 6   |
+| SED   | the desktop (§13)                                       | 0        | 3    | 5      | 5   |
 
 The worst:
 
@@ -60,8 +60,8 @@ The worst:
 | SOE (1) | SOE-01, SOE-04 to SOE-10, SOE-16, SOE-21, ELP-03            | 59a9024f |
 | SOE (2) | SOE-02, SOE-03, SOE-11 to SOE-15, SOE-17 to SOE-20          | f874966c |
 
-Left for SED: SLC-03's preselection through COM, SOE-04's and SOE-05's reach by a click, and the
-desktop cells of §13. What the execution found beside the plan:
+SED's probes confirmed SLC-03, SOE-04 and SOE-05 by click (d02, d05-a); its own findings are in
+§13. What the execution found beside the plan:
 
 - CHAMFERA and CHAMFERB go from 0 to 1 with a chamfer made from the pick's defaults (p234): set
   at the commit here; whether AutoCAD sets them as the command starts is **unverified** (Missing).
@@ -137,6 +137,7 @@ subagent of each command (they are each command's own).
 | p265–p266 | FILLETEDGE's back edge in 2D Wireframe; Enter at Expression with an edge taken                                                                  |
 | p300–p349 | SOLIDEDIT's Undo at every level; U, REDO, `UNDO 2`; the taper's default; the face pick (hidden, edge, twice, nothing, locked, two solids, C, F, CP, ALL, Remove); refusals at every prompt; Enter at the height; UCS axes; Copy's properties; SOLIDCHECK; the rail's macro; `'SOLIDEDIT`; Edge, Body, coLor, mAterial; the offset's bound |
 | p350–p374 | `'ZOOM` at the fifteen prompts; names; `_.`; View; an axis of no length; the shared height and taper (p363, p364, p369, p372, p373); the plurals; the walk's edits; Remove's Undo |
+| d01–d06   | the desktop (SED, §13): subobjects at `Command:`; SOLIDEDIT's clicks, bands and Escape; the right button's menus; FILLETEDGE's and CHAMFEREDGE's look, arrow grip and Escape; SLICE's preselection, bands and hovers; LASTPOINT after a pick's click |
 | p400–p405 | Enter's refusal at Rotate's second axis point and angle, Taper's axis point and angle (p400, p401); Move's displacement by Enter (p402); p403 slipped; Rotate's origin by Enter in a moved UCS (p404); SOLIDCHECK across OPEN (p405) |
 
 The transcripts are in `research/probes/solid-edits/` (gitignored). The scratch tests are in
@@ -819,21 +820,189 @@ SOE-04's and SOE-05's reach, SLC-03's preselection and the desktop cells wait fo
 
 ## 13. Group 2: the desktop (SED)
 
-A session with the owner's mouse, `scripts/research/probes/solid-edits/d<n>.sh` (es-ES, and en-US
-for the English labels), on a box seen from (−1.3, −2.2, 1.6):
+Probed on 2026-11-04 with the owner's mouse, AutoCAD's es-ES profile (DYNMODE −1, SHORTCUTMENU 11,
+LEGACYCTRLPICK 2, SUBOBJSELECTIONMODE 0, put back after), on lib.sh's box seen from
+(−1.3, −2.2, 1.6), 2D Wireframe. Inputs `scripts/research/probes/solid-edits/d01.sh`–`d06.sh`
+(each header says what was seen), shots in `research/probes/solid-edits/desk/`. mellowcad's side:
+subagent S's scratch tests (`research/review/solid-edits/s/`, as it is) and the reviewer's
+(`r/sed.test.ts`, AutoCAD's answers: 24 fail, each a cell below; `r/sed2.test.ts` passes).
 
-- **Sub-objects:** Ctrl's hover on a face, an edge, a vertex, with Ctrl pressed and the cursor
-  still; Ctrl+click, Ctrl+Space's order, Ctrl+Shift+click; the grips and their colours; a locked
-  solid under Ctrl; LIST, ERASE and MOVE with a face selected; the palette of a face, an edge, a
-  vertex; SUBOBJSELECTIONMODE's filters and badges.
-- **SOLIDEDIT:** a click on an edge (two faces?, SOE-04) and on a face taken (the one behind?,
-  SOE-05); the face's hover and selected look; the rubber bands at MS, A2, TA; coLor's dialog;
-  the rail's macro echo; Escape mid-run and U after; the right button at each prompt.
-- **FILLETEDGE, CHAMFEREDGE:** the edge's hover, Ctrl+Space, the preview, the arrow grip and its
-  `Specify radius or [eXit]:`, Escape after a size is answered (kept?), dynamic input at the pick.
-- **SLICE, SECTION:** the preselection through COM (SLC-03); the plane and side as the cursor
-  moves; the rubber band; the hovers at planar Object and Surface; LASTPOINT after a click at each
-  pick and after Escape.
+**Findings:** 0 critical, 3 high, 5 medium, 5 low.
+
+### Matrix (the desktop cells)
+
+| Cell                                                                                              | State                       |
+| ------------------------------------------------------------------------------------------------- | --------------------------- |
+| SUB: Ctrl over a face, an edge, a vertex (four edges, a halo, a disc); Ctrl+click's blue and red grips; Ctrl+Space's order (top, back, round); a click after it; Ctrl+Shift+click | match · d01 · `subobjects.test.ts` |
+| SUB: Ctrl pressed or released with the cursor still lights or unlights at once                    | differs SED-12 · d01-a      |
+| SUB: a locked solid under Ctrl: the padlock, no glow; Ctrl+click takes the face, no grip          | differs SED-12 · d01-h      |
+| SUB: LIST, MOVE, ERASE with a face selected: `1 found` (LIST the solid, ERASE drops `Box`, MOVE the base point) | differs SED-08 · d01-f |
+| SUB: the palette (`Solid face`, `Solid edge`, `Solid vertex`), the grips' hover menus, SUBOBJSELECTIONMODE 3 | known, Missing (SED-13) · d01-g, j, i |
+| SOE: a click on an edge `2 faces found.`; a face clicked again, the one behind (SOE-04, SOE-05)   | match · d02-a, c · SE      |
+| SOE: Select faces' hover: nothing inside a face, the solid's rollover over an edge                | differs SED-09 · d02-b      |
+| SOE: a click at Rotate's axis point                                                                | differs SED-02 · d02-e      |
+| SOE: the dashed band at MS, A2, AN (from A2), TA; none at TG                                       | differs SED-05 · d02-d–f    |
+| SOE: Escape after an edit keeps it, U `SOLIDEDIT`; Escape with none, U `SOLIDEDIT`                | match · d02-g, h · S `b.test.ts:155`, `:172` |
+| G: the right button's menus at every prompt of the five commands (options in order); Enter at an empty `Select objects to slice:` | match · d03 · S `d.test.ts` |
+| FED: the edge's hover; at the accept prompt the result and the arrow at the fillet's middle       | match · d04-a, b · S `a.test.ts:41`, `:84` |
+| FED: the arrow's prompt, click, radius, Enter, Escape, eXit, FILLETRAD3D                          | differs SED-01 · d04-c      |
+| FED: Escape at the accept's Radius or Distance goes back to the accept prompt                     | differs SED-03 · d04-d      |
+| FED: Escape at the pick (its words), the sizes Escape drops                                       | differs SED-04 · d04-d      |
+| FED: Ctrl+Space at the pick does nothing                                                          | differs SED-07 · d04-e      |
+| FED: the preview while picking, the cursor's badge, DYNMODE 3's prompt, CHAMFEREDGE's two arrows  | differs SED-10 · d04-a, b, f, g |
+| SLC: the preselection dropped after a click at `Command:`, MOVE as control (SLC-03)               | match · d05-a · `sliceSection.test.ts` |
+| SLC: the dashed band at S3, S9's second and third (from the first), S6's second                   | differs SED-05 · d05-b, c   |
+| SLC: no preview at the side prompt; a side point on the plane refused, LASTPOINT set to it        | untested · d05-b · `r/sed2.test.ts` |
+| SLC: 3points' LASTPOINT the first point after Escape at the third (EDITS-D3)                      | match · d05-c · `sliceSection.test.ts` |
+| SLC: planar Object's hover (the circle, the box over its edge)                                    | match · d05-d · S `c.test.ts:91` |
+| SLC: Surface's hover                                                                               | differs SED-11 · d05-d      |
+| C: LASTPOINT after a click at the edge, face and planar Object picks                              | differs SED-06 · d06        |
+
+### Findings
+
+#### SED-01 — FILLETEDGE's arrow grip: the next click asks a second point, and the drag's radius is 2.4 times AutoCAD's
+
+- **Severity:** high · **Row:** I, P, L · **Status:** verified (reviewer: d04-c, `r/sed.test.ts`)
+- **Where:** `EdgeBlendTool.ts` (`question()`'s `grip`, `onPointerDown`, `gripRadius`).
+- **AutoCAD:** d04-c: a click on the arrow writes `>>Specify radius or [eXit]:` (11093; es
+  `>>Precise radio o [Salir]:`), no default; the radius follows the cursor; a click sets it and
+  writes `Resuming FILLETEDGE command.` (20230), the accept prompt again; Enter at the grip's prompt
+  `Point or option keyword required.` (26300) and asks again; Escape and eXit go back to the accept
+  prompt with `Resuming…`. The radius is the cursor's distance in along the fillet's bisector,
+  on the plane square to the edge through its middle (three clicks: 4.64557, 1.61298, 7.13265,
+  each within 0.1%). Enter at the accept then makes it and FILLETRAD3D takes it (4.64557).
+- **mellowcad:** `Specify radius or [eXit] <1.00>:`, a distance box: the next click starts the
+  runtime's ` Specify second point:` and the radius becomes the two clicks' distance; the drag
+  reads `t / (√2 − 1)`; Enter keeps 1; Escape cancels FILLETEDGE.
+- **Fix:** EDITS-D130. **Regression test:** `edgeBlends.test.ts`, d04-c.
+
+#### SED-02 — A click at SOLIDEDIT Rotate's axis point is not taken
+
+- **Severity:** high · **Row:** P, C · **Status:** verified (reviewer: d02-e, `r/sed.test.ts`)
+- **Where:** `SolideditTool.ts` (`wantsSnap()` leaves the axis phase out; `setsLastPoint()` there).
+- **AutoCAD:** d02-e: the click is the first axis point, `Specify the second point on the rotation
+axis:` follows. **mellowcad:** the prompt asked again, LASTPOINT moved; a typed point works.
+- **Scenario:** Rotate faces, a click on a corner for the axis → nothing happens.
+- **Fix:** the axis phase picks a point as its typed form does. **Regression test:** d02-e.
+
+#### SED-03 — Escape at the accept's Radius or Distance, and at the grip's prompt, cancels the command
+
+- **Severity:** high · **Row:** G · **Status:** verified (reviewer: d04-c, d04-d)
+- **AutoCAD:** `Precise radio o [Expresión] <1.0000>: *Cancelado*` then `Pulse Intro para aceptar
+el empalme o [Radio]:` again; CHAMFEREDGE's base distance alike; the grip's prompt as SED-01.
+- **mellowcad:** `Command:`, the edges taken lost. **Fix:** EDITS-D131. **Test:** d04-d.
+
+#### SED-04 — Escape keeps the sizes answered and says nothing of the edges
+
+- **Severity:** medium · **Row:** G, J, L · **Status:** verified
+- **AutoCAD:** d04-d: `_R 3`, Escape at the pick: `*Cancel*`, `0 edge(s) selected for fillet.`
+  (22181), `No fillet to be computed.` (22182), FILLETRAD3D 1; an edge taken: `1 edge(s)…`, the
+  same, nothing made; CHAMFEREDGE: `No edges to chamfer.` (22199), CHAMFERA and CHAMFERB as they
+  were; the accept's `_R 3` then Escape: 1; then Enter: 3. Saved at a run's end, as p208–p210
+  showed it after `No fillet to be computed.`, never on Escape or a failure (p224).
+- **mellowcad:** `*Cancel*` alone; FILLETRAD3D 3, CHAMFERA 2, CHAMFERB 3 kept.
+- **Fix:** EDITS-D132. **Coverage, rules:** `cad-tools.md`' "set once answered" names the
+  exception; EDITS-D40 superseded.
+
+#### SED-05 — No rubber band at SOLIDEDIT's and SLICE's second points
+
+- **Severity:** medium · **Row:** M · **Status:** verified
+- **AutoCAD:** a dashed amber band (the traces' `UseDashedLine`) from Move's base at MS, from the
+  first axis point at A2, from the second at the angle, from Taper's base at TA (none at TG,
+  d02-d–f); from SLICE's start at S3, from the first point at S9's second and third, from Zaxis'
+  plane point at S6's second (d05-b, c; SECTION shares them). **mellowcad:** none.
+- **Fix:** each draws `THEME.dashedRubberBand` from its base, as `UcsTool` does.
+
+#### SED-06 — A click at an object's pick leaves LASTPOINT
+
+- **Severity:** medium · **Row:** C · **Status:** verified (d06)
+- **AutoCAD:** the cursor's point on the work plane, Z 0: FILLETEDGE's and CHAMFEREDGE's edge,
+  SOLIDEDIT's face, SLICE's planar Object (13.1528,13.8095,0 for a click on 5,0,10).
+- **mellowcad:** unchanged. **Fix:** a click those picks take sets it (`ctx.setLastPoint`); a
+  click that takes nothing **unverified**, left alone. **Test:** d06.
+
+#### SED-07 — Ctrl+Space walks the edges at FILLETEDGE's pick; through the box it ends the command
+
+- **Severity:** medium · **Row:** P, G · **Status:** verified (d04-e; subagent S's suspect)
+- **AutoCAD:** nothing: the same edge lit, the command waiting. **mellowcad:** the corner's three
+  edges in turn (`EdgeBlendTool.cycleSubobject`); with the coordinate box focused, Ctrl+Space is
+  its Enter: `0 edge(s) selected… No fillet to be computed.`.
+- **Fix:** no `cycleSubobject` there; with SED-10's prompt there is no box at the pick.
+
+#### SED-08 — A selected face, edge or vertex is a preselection AutoCAD's LIST, MOVE and ERASE take
+
+- **Severity:** medium · **Row:** O · **Status:** verified (d01-f)
+- **AutoCAD:** `1 found`; LIST lists the solid; ERASE leaves its geometry and drops `Box` (as
+  p241); MOVE asks the base point (p244's move of the face). **mellowcad:** `Select objects:`, and
+  command-line.md says ERASE asks it "(desktop)", false.
+- **Fix:** EDITS-D133: docs (phase 6c).
+
+#### SED-09 — SOLIDEDIT's face pick lights faces; AutoCAD lights the solid over an edge, nothing in a face
+
+- **Severity:** low · **Row:** M, Q · **Fix:** the solid's rollover while the pick box touches its
+  edge, nothing else (d02-b). The faces taken stay blue (match).
+
+#### SED-10 — FILLETEDGE's and CHAMFEREDGE's look at the pick and the accept prompt
+
+- **Severity:** low · **Row:** M, Q, D
+- d04-b: while edges are picked AutoCAD hides the solid and draws the result, the blend's face as a
+  mesh; here the result is drawn over the solid in the hover colour. **Fix:** hidden, the result
+  in the entity's colour, as at the accept prompt; the mesh to Missing.
+- d04-a: a cube badge beside the pick box over an edge: Missing.
+- d04-f: DYNMODE 3 shows the prompt at the cursor, no `X,Y` box (here a coordinate field).
+  **Fix:** a keyword prompt (`fields: []`, OFFSET's object prompt's), typed points kept.
+- d04-g: CHAMFEREDGE's accept shows two arrows, one per distance; here FILLETEDGE's one arrow,
+  which does nothing. **Fix:** none drawn; the two to Missing (its grips are Missing already).
+
+#### SED-11 — Surface's pick lights nothing
+
+- **Severity:** low · **Row:** M · **AutoCAD:** d05-d: the object under the cursor lit, as planar
+  Object's. **Fix:** the same rollover.
+
+#### SED-12 — Ctrl with the cursor still, and a locked solid under Ctrl
+
+- **Severity:** low · **Row:** P, Q · **AutoCAD:** d01-a: the face lit as Ctrl goes down, unlit as
+  it comes up, no move; d01-h: over a locked solid the padlock and no glow, Ctrl+click takes the
+  face, blue, no grip. **mellowcad:** at the next move; a locked solid ignored (a window starts).
+- **Fix:** SelectTool reads Ctrl's key down and up; locked solids' subobjects found, shown with
+  the padlock, taken without grips. **Coverage:** the Missing line on Ctrl goes.
+
+#### SED-13 — What the desktop settled for the coverage and the tests
+
+- **Severity:** low · command-line.md: the palette's rows (d01-g: `Solid face` Color and Material
+  editable, `Solid edge` Color, `Solid vertex` none; es `Cara de sólido`, `Arista de sólido`,
+  `Vértice de sólido`), the grips' hover menus (d01-j), SUBOBJSELECTIONMODE 3's click starting a
+  window (d01-i, inconclusive) into Missing; "(desktop)" claims cite d01. modify.md: SOE-04,
+  SOE-05 and SLC-03 confirmed by click (d02, d05-a); FILLETEDGE's typed number at the grip
+  **unverified** (2 inwards 4.34861, outwards none, 0.5 1.10042). The plan's §9 LASTPOINT cell is
+  settled (a refused side point sets it, d05-b, as here). `subobjects.test.ts`' "(desktop)" cites
+  d01; SED-01's comment at `EdgeBlendTool.ts` cites d04-c.
+
+### Refuted
+
+- **`[Radius]:*Cancel*` glued** (S's suspect): AutoCAD writes `[Radio]:*Cancelado*` (d04).
+- **planar Object lighting the solid under the cursor** (S's suspect): AutoCAD does (d05-d2).
+- **A refused collinear third point setting LASTPOINT** (S's suspect): not probed; a refused side
+  point sets it (d05-b), so it stays as it is.
+
+### Decisions
+
+- **EDITS-D130:** the grip's prompt is a point prompt asked as a nested command: `>>` (a
+  question flagged so), no default, `pointOrKeywordRequired` at Enter, eXit and Escape back to the
+  accept prompt; a click or a point takes the radius as the point's distance in along the bisector
+  on the edge's square plane; each way out writes `resumingCommand` (FILLETEDGE). A typed number
+  is the point at that distance towards the cursor (getpoint's rule; AutoCAD's mapping
+  **unverified**, Missing).
+- **EDITS-D131:** Escape at a prompt the accept prompt opened (Radius, Distance1, Distance2, the
+  grip's) goes back to it, as DIST's Length steps back (inquiry/d05).
+- **EDITS-D132:** the sizes are written once, as the run ends without Escape (a blend made, or
+  `No fillet to be computed.` / `No edges to chamfer.`), the accept's Radius and the grip's
+  counting as FILLETRAD3D, the accept's distances never (FED-01); Escape and a failure write
+  none. Escape at the pick writes the count and the closing message as Enter does.
+- **EDITS-D133:** SED-08 and the palette are phase 6c's: docs only, no partial LIST.
+- **EDITS-D134:** two commits: SED (1) FILLETEDGE and CHAMFEREDGE (SED-01, SED-03, SED-04,
+  SED-07, SED-10, their part of SED-06); SED (2) SOLIDEDIT, SLICE and the subobjects (SED-02,
+  SED-05, the rest of SED-06, SED-08, SED-09, SED-11 to SED-13).
 
 ## 14. Changes to coverage, rules, catalogs and roadmap
 
