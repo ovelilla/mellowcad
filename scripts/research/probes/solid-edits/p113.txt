@@ -1,0 +1,19 @@
+_QAFLAGS
+2
+_BOX
+-5,-5,-5
+5,5
+10
+_SECTION
+_L
+
+_S
+_V
+
+(sslength (ssget "X"))
+_SECTION
+_ALL
+
+_XY
+
+(sslength (ssget "X"))

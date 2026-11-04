@@ -1,0 +1,17 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+_-VPOINT
+-1.3,-2.2,1.6
+_ZOOM
+_E
+(sssetfirst nil (ssget "_X"))
+_CHAMFEREDGE
+5,0,10
+
+
+(ssget "_I")
+(if (ssget "_P") (sslength (ssget "_P")))

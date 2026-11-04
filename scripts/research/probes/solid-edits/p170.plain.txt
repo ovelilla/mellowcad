@@ -1,0 +1,24 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+_SLICE
+_L
+
+_XY
+0,0,5
+
+_U
+_REDO
+(sslength (ssget "_X"))
+_SECTION
+_ALL
+
+_XY
+0,0,2
+(sslength (ssget "_X"))
+_UNDO
+2
+(sslength (ssget "_X"))

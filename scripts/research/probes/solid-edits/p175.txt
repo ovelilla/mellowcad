@@ -1,0 +1,20 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+(setq b1 (entlast))
+_BOX
+20,0,0
+30,10
+10
+(setq b2 (entlast))
+_SECTION
+!b1
+!b2
+
+_XY
+0,0,5
+MPDUMP
+-

@@ -1,0 +1,18 @@
+_.SAVEAS
+2018
+secB
+(getvar "SOLIDCHECK")
+_SOLIDCHECK
+0
+(getvar "SOLIDCHECK")
+_.SAVEAS
+2018
+secX
+_.OPEN
+secB
+(getvar "DWGNAME")
+(getvar "SOLIDCHECK")
+_.OPEN
+secX
+(getvar "DWGNAME")
+(getvar "SOLIDCHECK")

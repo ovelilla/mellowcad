@@ -1,0 +1,23 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+_SLICE
+_L
+
+_V
+'_ZOOM
+_E
+0,0,5
+_B
+_SLICE
+_L
+
+5,0
+'_ORTHOMODE
+1
+5,10
+_B
+(sslength (ssget "_X"))

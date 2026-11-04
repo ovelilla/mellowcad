@@ -1,0 +1,22 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+(sssetfirst nil (ssget "_X"))
+_MOVE
+0,0,0
+0,0,0
+(ssget "_I")
+(if (ssget "_P") (sslength (ssget "_P")))
+(sssetfirst nil (ssget "_X"))
+_SLICE
+
+0,0,5
+10,0,5
+0,10,5
+0,0,0
+(sslength (ssget "_X"))
+(ssget "_I")
+(if (ssget "_P") (sslength (ssget "_P")))

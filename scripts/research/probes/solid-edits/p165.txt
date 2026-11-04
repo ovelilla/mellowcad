@@ -1,0 +1,22 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+(setq b (entlast))
+_3DPOLY
+0,0,4
+10,0,4
+10,10,4
+
+(setq p (entlast))
+_SLICE
+!b
+
+_O
+!p
+0,0,0
+(sslength (ssget "_X"))
+MPDUMP
+-

@@ -1,0 +1,17 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+_UCS
+_Z
+30
+_SLICE
+_L
+
+_YZ
+2,0,0
+
+MPDUMP
+-

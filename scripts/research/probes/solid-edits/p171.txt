@@ -1,0 +1,35 @@
+_QAFLAGS
+2
+_-LAYER
+_N
+LK
+
+_BOX
+0,0,0
+10,10
+10
+(setq b (entlast))
+_CIRCLE
+5,5,4
+1
+(setq c (entlast))
+_CHPROP
+_L
+
+_LA
+LK
+
+_-LAYER
+_LO
+LK
+
+_SLICE
+!b
+
+_O
+_L
+FOO
+
+!c
+0,0,0
+(sslength (ssget "_X"))

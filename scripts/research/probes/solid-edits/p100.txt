@@ -1,0 +1,16 @@
+_QAFLAGS
+2
+(getvar "ACADVER")
+(getvar "_VERNUM")
+_BOX
+0,0,0
+10,10
+10
+_SLICE
+_L
+
+5,0
+5,10
+
+(sslength (ssget "X"))
+(getvar "LASTPOINT")

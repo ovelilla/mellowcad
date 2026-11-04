@@ -1,0 +1,22 @@
+_QAFLAGS
+2
+_BOX
+-5,-5,-5
+5,5
+10
+_ID
+7,7,7
+_SECTION
+_L
+
+_XY
+
+(getvar "LASTPOINT")
+_ID
+7,7,7
+_SECTION
+_ALL
+
+_V
+0,0,1
+(getvar "LASTPOINT")

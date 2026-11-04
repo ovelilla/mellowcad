@@ -1,0 +1,24 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+(setq b (entlast))
+_CIRCLE
+5,5,4
+1
+(setq c (entlast))
+_LINE
+0,0,4
+10,10,4
+
+(setq l (entlast))
+_SLICE
+!b
+
+_O
+!l
+!c
+0,0,0
+(sslength (ssget "_X"))

@@ -1,0 +1,23 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+_CIRCLE
+5,5,4
+1
+_ZOOM
+_E
+_ID
+7,7,7
+_SLICE
+_ALL
+
+_O
+6,5,4
+'_SETVAR
+LASTPOINT
+
+0,0,0
+(getvar "LASTPOINT")

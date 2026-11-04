@@ -1,0 +1,23 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+(setq b (entlast))
+_UCS
+_X
+90
+_CIRCLE
+5,5,-5
+1
+(setq c (entlast))
+_UCS
+_W
+_SECTION
+!b
+
+_O
+!c
+MPDUMP
+-

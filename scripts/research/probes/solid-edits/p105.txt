@@ -1,0 +1,14 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+_LINE
+20,0
+'_SLICE
+30,0
+'_SECTION
+40,0
+
+(sslength (ssget "X"))

@@ -1,0 +1,22 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,20
+6
+_EXTRUDE
+_L
+
+_T
+10
+5
+(getvar "LASTPOINT")
+_SOLIDEDIT
+_F
+_E
+5,5,11
+
+FOO
+4
+_X
+_X

@@ -1,0 +1,24 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+_CIRCLE
+30,0
+5
+_REGION
+_L
+
+_SLICE
+_ALL
+
+_XY
+0,0,20
+
+_SECTION
+_ALL
+
+_XY
+0,0,20
+(sslength (ssget "_X"))

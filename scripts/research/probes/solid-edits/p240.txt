@@ -1,0 +1,1 @@
+(list (getvar "SUBOBJSELECTIONMODE") (getvar "LEGACYCTRLPICK") (getvar "SELECTIONCYCLING") (getvar "PICKFIRST"))
