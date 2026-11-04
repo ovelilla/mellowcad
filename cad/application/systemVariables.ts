@@ -550,6 +550,7 @@ export const SYSTEM_VARIABLES: readonly SystemVariable[] = [
     },
   },
   heldInteger("SELECTIONCYCLING", -2, 2),
+  heldInteger("SOLIDCHECK", 0, 1),
   heldInteger("SPLDEGREE", 1, 10),
   heldInteger("SPLKNOTS", 0, 2),
   heldInteger("SPLMETHOD", 0, 1),

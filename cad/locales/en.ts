@@ -6609,7 +6609,12 @@ export const en: EngineCatalog = {
       "chamferMultipleBodies": "Chamfering multiple bodies not allowed.",
       "edgeAlreadyPicked": "Edge has already been picked.",
       "noTangentChainEdges": "No adjacent tangent edges found in chain.",
-      "solideditChecking": "Solids editing automatic checking:  SOLIDCHECK=1",
+      "solideditChecking": [
+        "Solids editing automatic checking:  SOLIDCHECK=",
+        [
+          "value"
+        ]
+      ],
       "facesFound": [
         [
           "count",
@@ -6659,7 +6664,14 @@ export const en: EngineCatalog = {
       "noSolidsDetected": "No solids detected.",
       "taperAngleNonzero": "The taper angle must be non-zero and between -90 and 90.",
       "zeroDisplacement": "No change due to a zero displacement vector.",
-      "zeroRotation": "No change due to a zero rotation angle."
+      "zeroRotation": "No change due to a zero rotation angle.",
+      "offsetDistanceBound": [
+        "The offset distance must be greater than ",
+        [
+          "distance"
+        ],
+        "."
+      ]
     },
     "feedback": {
       "snap": {

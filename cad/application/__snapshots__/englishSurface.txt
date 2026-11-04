@@ -5605,6 +5605,34 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>:
   info| Solids editing automatic checking:  SOLIDCHECK=1
   prompt| Enter a solids editing option [Face/Edge/Body/Undo/eXit] <eXit>: X
+> SOLIDCHECK 0, the last height, the offset's bound
+  command| BOX
+  prompt| Specify first corner or [Center]: 20,0,0
+  prompt| Specify other corner or [Cube/Length]: 30,10
+  prompt| Specify height or [2Point] <10.00>: 4
+  command| ZOOM
+  prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: E
+  command| SOLIDCHECK
+  prompt| Enter new value for SOLIDCHECK <1>: 0
+  command| SOLIDEDIT
+  info| Solids editing automatic checking:  SOLIDCHECK=0
+  prompt| Enter a solids editing option [Face/Edge/Body/Undo/eXit] <eXit>: F
+  prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>: E
+  prompt| Select faces or [Undo/Remove]: 25,5,4
+  info| 1 face found.
+  prompt| Select faces or [Undo/Remove/ALL]:
+  prompt| Specify height of extrusion or [Path]:
+  prompt| Specify angle of taper for extrusion <5>:
+  prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>: O
+  prompt| Select faces or [Undo/Remove]: 25,5,8
+  info| 1 face found.
+  prompt| Select faces or [Undo/Remove/ALL]:
+  prompt| Specify the offset distance: -100
+  error| The offset distance must be greater than -5.00.
+  prompt| Specify the offset distance: 1
+  prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>: X
+  info| Solids editing automatic checking:  SOLIDCHECK=0
+  prompt| Enter a solids editing option [Face/Edge/Body/Undo/eXit] <eXit>: X
 
 ## SECTION
 > start

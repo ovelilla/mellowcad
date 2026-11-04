@@ -11,6 +11,7 @@ import {
 } from "../../geometry/Vec3"
 import { edgeFaces } from "../../geometry/solidBlends"
 import { FacePlane } from "../../geometry/solidEdits"
+import { brepBox } from "../../geometry/solids"
 import { EntityId, Solid3dEntity } from "../../domain/entities"
 import {
   FaceEdit,
@@ -18,6 +19,8 @@ import {
   solidFacesEdited,
 } from "../../domain/solidModeling"
 import { subobjectEdgeEntities } from "../../domain/solidSubobjects"
+import { ucsZAxis } from "../../domain/ucs"
+import { formatLength } from "../../domain/units"
 import { subobjectsAt } from "../subobjectPick"
 import {
   AddEntitiesCommand,
@@ -33,9 +36,12 @@ import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { entityScenePrimitive, selectionGlow } from "../SceneBuilder"
 import { withCurrentProperties } from "./currentProperties"
+import { SolidDefaults, solidDefaults } from "./solidDefaults"
+import { SweepSettings, sweepSettings } from "./sweepSettings"
 import {
   CommandOption,
   CommandOptionOutcome,
+  HeldVariables,
   PointerInput,
   QuestionInput,
   RibbonMacro,
@@ -104,6 +110,26 @@ const OPTIONS: readonly string[] = [
 
 const DEGREE = Math.PI / 180
 
+/**
+ * What SOLIDEDIT reads and keeps, one object its tools share: SOLIDCHECK, 1
+ * at first, the program's (solid-edits/p405: it outlives OPEN, no drawing
+ * saves it); EXTRUDE's taper, which the extrusion offers and sets (p370,
+ * p372, p373); the primitives' height, which Enter at the extrusion's height
+ * takes and the extrusion leaves (p326, p342, p364, p369).
+ */
+export interface SolideditSettings {
+  solidCheck: number
+  readonly sweeps: SweepSettings
+  readonly primitives: SolidDefaults
+}
+
+export function solideditSettings(
+  sweeps: SweepSettings = sweepSettings(),
+  primitives: SolidDefaults = solidDefaults()
+): SolideditSettings {
+  return { solidCheck: 1, sweeps, primitives }
+}
+
 /** What a face's pick finds: the faces a pick takes, of one solid, or a locked solid. */
 type FacePick =
   | { readonly solid: Solid3dEntity; readonly faces: readonly number[] }
@@ -112,34 +138,38 @@ type FacePick =
 
 /**
  * AutoCAD's SOLIDEDIT, its faces (solidedit/e01–e12, en, es and pt-BR): it
- * says `Solids editing automatic checking:  SOLIDCHECK=1` and asks `Enter a
- * solids editing option [Face/Edge/Body/Undo/eXit] <eXit>:`; Face asks
- * `Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/
- * Copy/coLor/mAterial/Undo/eXit] <eXit>:` and each option `Select faces or
- * [Undo/Remove]:` (`… /ALL]` once a face is taken, `Remove faces or
- * [Undo/Add/ALL]:` after Remove), a click or a typed point taking the two
- * faces of an edge drawn under it, else the face nearest the viewer
- * (`1 face found.`, `1 face found, 1 removed.`), ALL every face of the solid
- * (`6 faces found.`, e11). Then:
- * Extrude `Specify height of extrusion or [Path]:` and `Specify angle of
- * taper for extrusion <0>:`, the face's prism added or taken, narrowing as
- * it rises (e08); Move `Specify a base point or displacement:` and `Specify
- * a second point of displacement:` (e06); Rotate an axis by two points, the
- * UCS's X, Y or Z or the view's through `Specify the origin of the rotation
- * <0,0,0>:`, then `Specify a rotation angle or [Reference]:` (e07); Offset
- * `Specify the offset distance:` (e01–e05); Taper `Specify the base
- * point:`, `Specify another point along the axis of tapering:` and
+ * says `Solids editing automatic checking:  SOLIDCHECK=1`, SOLIDCHECK's value
+ * (solid-edits/p335), and asks `Enter a solids editing option
+ * [Face/Edge/Body/Undo/eXit] <eXit>:`; Face asks `Enter a face editing option
+ * [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit]
+ * <eXit>:` and each option `Select faces or [Undo/Remove]:` (`… /ALL]` once a
+ * face is taken, `Remove faces or [Undo/Add/ALL]:` after Remove), a click or
+ * a typed point taking the two faces of an edge drawn under it, else the face
+ * nearest the viewer (`1 face found.`, `1 face found, 1 removed.`), ALL every
+ * face of the solid (`6 faces found.`, e11). Then:
+ * Extrude `Specify height of extrusion or [Path]:`, Enter there the
+ * primitives' last height, and `Specify angle of taper for extrusion <0>:`,
+ * EXTRUDE's last taper ({@link SolideditSettings}), the face's prism added or
+ * taken, narrowing as it rises (e08); Move `Specify a base point or
+ * displacement:` and `Specify a second point of displacement:` (e06); Rotate
+ * an axis by two points, the UCS's X, Y or Z or the view's through `Specify
+ * the origin of the rotation <0,0,0>:`, the UCS's, then `Specify a rotation
+ * angle or [Reference]:` (e07); Offset `Specify the offset distance:`
+ * (e01–e05), no further in than half the solid's largest side (`The offset
+ * distance must be greater than -5.0000.`, e04, p344); Taper `Specify the
+ * base point:`, `Specify another point along the axis of tapering:` and
  * `Specify the taper angle:`, the face turned about where it meets the plane
  * square to the axis through the base point, inwards for a positive angle
  * (e08, e12); Delete closes a hole or a fillet's or a chamfer's strip (e09);
  * Copy a planar face into a region (e10). Each edit says `Solid validation
- * started.` and `Solid validation completed.`, or AutoCAD's modelling error
- * with the solid left as it was, and asks for the next option; a Move or a
- * Rotate by zero is said and edits nothing (solid-edits/p328, p330). Undo
- * there takes the last back, `Command has been completely undone.` once none
- * is left (p302); eXit or Enter leaves Face, then the command. The
- * rail's buttons are its face options answered (acad.cuix `_solidedit _face
- * _extrude`…). One undo step, `SOLIDEDIT` (filletedge/f07).
+ * started.` and `Solid validation completed.` while SOLIDCHECK is 1 (p335),
+ * or AutoCAD's modelling error with the solid left as it was, and asks for
+ * the next option; a Move or a Rotate by zero is said and edits nothing
+ * (solid-edits/p328, p330). Undo there takes the last back, `Command has been
+ * completely undone.` once none is left (p302); eXit or Enter leaves Face,
+ * then the command. The rail's buttons are its face options answered
+ * (acad.cuix `_solidedit _face _extrude`…). One undo step, `SOLIDEDIT`
+ * (filletedge/f07).
  *
  * WHY Edge, Body, coLor, mAterial, Path, Axis by object and Reference are
  * offered and refused: their words are AutoCAD's prompts', the options not
@@ -158,8 +188,22 @@ export class SolideditTool implements Tool {
   private marks: number[] = []
   private lastScreen: Vec2 | null = null
 
-  constructor(private readonly start: FaceOption | null = null) {
+  constructor(
+    private readonly start: FaceOption | null = null,
+    private readonly settings: SolideditSettings = solideditSettings()
+  ) {
     this.id = start ? `solidedit${start.toLowerCase()}` : "solidedit"
+  }
+
+  heldVariables(): Partial<HeldVariables> {
+    return {
+      SOLIDCHECK: {
+        read: () => this.settings.solidCheck,
+        write: (value) => {
+          this.settings.solidCheck = value
+        },
+      },
+    }
   }
 
   /** A rail button's macro: SOLIDEDIT answered Face and its option (acad.cuix ID_FaceExtru…). */
@@ -197,7 +241,10 @@ export class SolideditTool implements Tool {
       case "height":
         return "solideditHeightOr"
       case "taper":
-        return { id: "solideditExtrudeTaper", enter: { angle: 0 } }
+        return {
+          id: "solideditExtrudeTaper",
+          enter: { angle: this.settings.sweeps.taper },
+        }
       case "base":
         return "solideditBase"
       case "second":
@@ -400,8 +447,25 @@ export class SolideditTool implements Tool {
       case "select":
         this.closeFaces(state.option, ctx)
         return true
+      case "height": {
+        // The primitives' and EXTRUDE's last height, shown nowhere; with
+        // none yet, the prompt's refusal (solid-edits/p326, p364, p406).
+        const height = this.settings.primitives.height
+        if (height === null) {
+          ctx.report(
+            ctx.text.message("requiresDistance", {
+              points: "two",
+              keyword: "yes",
+            }),
+            "error"
+          )
+        } else {
+          this.ask({ phase: "taper", height }, ctx)
+        }
+        return true
+      }
       case "taper":
-        this.apply({ kind: "extrude", height: state.height, taper: 0 }, ctx)
+        this.takeValue(this.settings.sweeps.taper, ctx)
         return true
       case "second":
         // Enter takes the base point as the displacement, MOVE's way.
@@ -411,10 +475,10 @@ export class SolideditTool implements Tool {
         this.ask({ phase: "axisFirst" }, ctx)
         return true
       case "origin":
-        // Enter's origin moves no LASTPOINT, though the angle then measures
-        // from it (solid-edits/p136).
+        // The UCS's origin (p404). Enter's moves no LASTPOINT, though the
+        // angle then measures from it (solid-edits/p136).
         ctx.setLastPoint(ctx.lastPoint)
-        this.toAngle(state.by, { x: 0, y: 0, z: 0 }, ctx)
+        this.toAngle(state.by, ctx.ucs.origin, ctx)
         return true
       case "base":
       case "axisFirst":
@@ -557,7 +621,11 @@ export class SolideditTool implements Tool {
   }
 
   private toSolids(ctx: ToolContext): void {
-    ctx.report(ctx.text.message("solideditChecking"))
+    ctx.report(
+      ctx.text.message("solideditChecking", {
+        value: String(this.settings.solidCheck),
+      })
+    )
     this.state = { phase: "solids" }
     this.openKeywords(ctx)
   }
@@ -774,20 +842,25 @@ export class SolideditTool implements Tool {
     }
   }
 
-  /** The point typed at the axis prompt is its first point (2points). */
+  /**
+   * The axis through `origin`: the UCS's X, Y or Z as the tool's frame reads
+   * them, never the frame's (solid-edits/p331, p332, p366, p367), or the
+   * line of sight.
+   */
   private toAngle(
     by: Exclude<AxisBy, "2points">,
     origin: Vec3,
     ctx: ToolContext
   ): void {
+    const { ucs } = ctx
     const axis =
       by === "Xaxis"
-        ? { x: 1, y: 0, z: 0 }
+        ? ucs.xAxis
         : by === "Yaxis"
-          ? { x: 0, y: 1, z: 0 }
+          ? ucs.yAxis
           : by === "Zaxis"
-            ? { x: 0, y: 0, z: 1 }
-            : (normalize3(ctx.viewport.direction) ?? { x: 0, y: 0, z: 1 })
+            ? ucsZAxis(ucs)
+            : (normalize3(ctx.viewport.direction) ?? ucsZAxis(ucs))
     this.ask({ phase: "angle", from: origin, axis, anchor: origin }, ctx)
   }
 
@@ -812,18 +885,31 @@ export class SolideditTool implements Tool {
           refuse("taperAngleRange")
           return
         }
+        // EXTRUDE's default from now on, which an Undo leaves (p370, p373).
+        this.settings.sweeps.taper = value
         this.apply(
           { kind: "extrude", height: state.height, taper: value * DEGREE },
           ctx
         )
         return
-      case "offset":
+      case "offset": {
         if (value === 0) {
           refuse("valueMustBeNonzero")
           return
         }
+        const bound = this.offsetBound(ctx)
+        if (bound !== null && value <= bound) {
+          ctx.report(
+            ctx.text.message("offsetDistanceBound", {
+              distance: formatLength(bound, ctx.document.getSettings()),
+            }),
+            "error"
+          )
+          return
+        }
         this.apply({ kind: "offset", distance: value }, ctx)
         return
+      }
       case "angle": {
         const { from, axis } = state
         const angle = value * DEGREE
@@ -856,6 +942,19 @@ export class SolideditTool implements Tool {
         return
       }
     }
+  }
+
+  /**
+   * How far in an offset may go: half the largest side of the solid's box,
+   * whichever faces are taken (solid-edits/e04, p344–p348, p365); the box in
+   * the tool's frame, the WCS's but in a tilted UCS (unprobed there).
+   */
+  private offsetBound(ctx: ToolContext): number | null {
+    const solid = this.solidOf(ctx)
+    const box = solid && brepBox(solid.brep)
+    if (!box) return null
+    const { min, max } = box
+    return -Math.max(max.x - min.x, max.y - min.y, max.z - min.z) / 2
   }
 
   private moved(
@@ -905,8 +1004,10 @@ export class SolideditTool implements Tool {
       this.toFaces(ctx)
       return
     }
-    ctx.report(ctx.text.message("solidValidationStarted"))
-    ctx.report(ctx.text.message("solidValidationCompleted"))
+    if (this.settings.solidCheck !== 0) {
+      ctx.report(ctx.text.message("solidValidationStarted"))
+      ctx.report(ctx.text.message("solidValidationCompleted"))
+    }
     this.marks.push(ctx.historyDepth())
     ctx.execute(new UpdateEntitiesCommand([made]))
     this.toFaces(ctx)
@@ -991,7 +1092,9 @@ export class SolideditTool implements Tool {
           this.takeValue(values.value, commitCtx)
       },
     })
-    if (this.state.phase === "taper") ctx.dynamicInput.setDefault("value", 0)
+    if (this.state.phase === "taper") {
+      ctx.dynamicInput.setDefault("value", this.settings.sweeps.taper)
+    }
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()
   }

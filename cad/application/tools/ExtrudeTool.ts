@@ -38,6 +38,7 @@ import {
 import { currentColor, withCurrentProperties } from "./currentProperties"
 import { pickedHeight, pointAsCursor } from "./heightPick"
 import { ObjectSelector } from "./objectSelection"
+import { SolidDefaults, solidDefaults } from "./solidDefaults"
 import { SweepSettings, sweepSettings } from "./sweepSettings"
 
 /** A profile EXTRUDE took, its object, and its base ({@link profileBase}). */
@@ -69,9 +70,10 @@ const PREVIEW_ID = "extrude-preview"
  * `Select objects to extrude or [MOde]:`, sifts the set as Enter closes it
  * (a self-intersecting curve, then what it cannot sweep, each said once, then
  * one count: x10, x11, sweeps/p146, p162), then `Specify height of extrusion
- * or [Direction/Path/Taper angle/Expression]:`, the last height its default
- * (program-wide, p149). Taper angle asks its angle, under a right angle
- * either way, the last one its default, and the height again: the taper is
+ * or [Direction/Path/Taper angle/Expression]:`, the last height its default,
+ * the primitives' (program-wide, p149; solid-edits/p369, p373). Taper angle
+ * asks its angle, under a right angle either way, the last one its default,
+ * SOLIDEDIT's extrusion's too, and the height again: the taper is
  * this run's, none unless asked (p335, p336); Direction two points, the
  * profiles extruded along them, untapered (x06); Expression a value. Each
  * closed profile becomes a solid of the current layer and properties (x10),
@@ -103,7 +105,11 @@ export class ExtrudeTool implements Tool {
     noneFound: "sweepNothingSelected",
   })
 
-  constructor(private readonly settings: SweepSettings = sweepSettings()) {}
+  constructor(
+    private readonly settings: SweepSettings = sweepSettings(),
+    /** The primitives' height, which is EXTRUDE's (solid-edits/p369, p373). */
+    private readonly primitives: SolidDefaults = solidDefaults()
+  ) {}
 
   heldVariables(): Partial<HeldVariables> {
     return {
@@ -147,7 +153,8 @@ export class ExtrudeTool implements Tool {
   }
 
   question(): PromptId | ToolQuestion {
-    const { height, taper } = this.settings
+    const { taper } = this.settings
+    const { height } = this.primitives
     switch (this.state.phase) {
       case "select":
         return this.selector.question()
@@ -417,7 +424,7 @@ export class ExtrudeTool implements Tool {
     ctx.setLastPoint(base)
     this.openValue(
       ctx,
-      this.settings.height === null
+      this.primitives.height === null
         ? "extrudeHeightOr"
         : "extrudeHeightDefaultOr"
     )
@@ -484,7 +491,7 @@ export class ExtrudeTool implements Tool {
       )
       return
     }
-    this.settings.height = height
+    this.primitives.height = height
     this.extrude(height, null, ctx)
   }
 
@@ -640,7 +647,7 @@ export class ExtrudeTool implements Tool {
         return true
       },
     })
-    const value = taper ? this.settings.taper : this.settings.height
+    const value = taper ? this.settings.taper : this.primitives.height
     if (value !== null) ctx.dynamicInput.setDefault("value", value)
     ctx.dynamicInput.setPosition(this.lastScreen ?? { x: 0, y: 0 })
     ctx.requestRender()

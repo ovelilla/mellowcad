@@ -7280,7 +7280,12 @@ export const ptBR: EngineLocale = {
       "chamferMultipleBodies": "O chanframento de múltiplos corpos não é permitido.",
       "edgeAlreadyPicked": "A aresta já foi selecionada.",
       "noTangentChainEdges": "Nenhuma aresta de tangente adjacente encontrada na cadeia.",
-      "solideditChecking": "Verificação automática de edição de sólidos:  SOLIDCHECK=1",
+      "solideditChecking": [
+        "Verificação automática de edição de sólidos:  SOLIDCHECK=",
+        [
+          "value"
+        ]
+      ],
       "facesFound": [
         [
           "count",
@@ -7330,7 +7335,14 @@ export const ptBR: EngineLocale = {
       "noSolidsDetected": "Sólidos não detectados.",
       "taperAngleNonzero": "O ângulo de conicidade deve ser diferente de zero e estar entre -90 e 90.",
       "zeroDisplacement": "Nenhuma alteração devido ao vetor de deslocamento zero.",
-      "zeroRotation": "Nenhuma alteração devido ao ângulo de rotação zero."
+      "zeroRotation": "Nenhuma alteração devido ao ângulo de rotação zero.",
+      "offsetDistanceBound": [
+        "A distância de deslocamento deve ser maior que ",
+        [
+          "distance"
+        ],
+        "."
+      ]
     },
     "feedback": {
       "snap": {

@@ -82,19 +82,28 @@ describe("SOLIDEDIT", () => {
     expect(volumes(cad)).toEqual([1000])
   })
 
-  it("extrudes a face tapered and takes it back with Undo (e01, e08)", () => {
+  it("extrudes a face tapered, takes it back with Undo and keeps the taper (e08, solid-edits/p370)", () => {
     const cad = box()
     answer(cad, "SOLIDEDIT", "F", "E", "5,5,10", "", "3")
     expect(written(cad, "FOO")).toContain(
       "Requires valid numeric angle or two points."
     )
     answer(cad, "20")
-    const top = 10 - 6 * Math.tan((20 * Math.PI) / 180)
-    expect(volumes(cad)[0]).toBeCloseTo(1000 + (100 + top * top + 10 * top), 4)
+    // The frustum's h/3·(A + a + √(Aa)), which gives p370's 1172.2954 at h 2.
+    const frustum = (h: number) => {
+      const top = 10 - 2 * h * Math.tan((20 * Math.PI) / 180)
+      return (h / 3) * (100 + top * top + 10 * top)
+    }
+    expect(volumes(cad)[0]).toBeCloseTo(1000 + frustum(3), 4)
     answer(cad, "U")
     expect(volumes(cad)).toEqual([1000])
-    answer(cad, "E", "5,5,10", "", "2", "")
-    expect(volumes(cad)).toEqual([1200])
+    answer(cad, "E", "5,5,10", "", "2")
+    expect(prompt(cad)).toBe(
+      "SOLIDEDIT Specify angle of taper for extrusion <20>:"
+    )
+    answer(cad, "")
+    expect(volumes(cad)).toEqual([1172.2954])
+    expect(1000 + frustum(2)).toBeCloseTo(1172.2954, 4)
   })
 
   it("rotates a face about two points, and tapers one (e07, e08)", () => {
@@ -108,19 +117,20 @@ describe("SOLIDEDIT", () => {
     const other = box()
     answer(other, "SOLIDEDIT", "F", "T", "5,0,5", "", "0,0,0", "0,0,10", "10")
     expect(volumes(other)).toEqual([911.8365])
-    // A top tapered along X, down its length (e12's way, at 30°).
+    // A top tapered along X, down its length (e12's axis), by e08's 10°: it
+    // loses the wedge e08's side does, 500·tan 10°.
     const top = box()
-    answer(top, "SOLIDEDIT", "F", "T", "5,5,10", "", "0,0,10", "10,0,10", "30")
-    expect(volumes(top)[0]).toBeCloseTo(1000 - 500 * Math.tan(Math.PI / 6), 4)
+    answer(top, "SOLIDEDIT", "F", "T", "5,5,10", "", "0,0,10", "10,0,10", "10")
+    expect(volumes(top)).toEqual([911.8365])
   })
 
-  it("moves a face, and refuses one moved through the solid (e06, e12)", () => {
+  it("refuses a face moved through the solid, and moves one (e12, e06)", () => {
     const cad = drilled()
-    answer(cad, "SOLIDEDIT", "F", "M", "10,5,10", "", "0,0,0", "0,0,3")
-    expect(volumes(cad)).toEqual([2436.6372])
-    expect(written(cad, "M", "10,5,13", "", "0,0,0", "0,0,-15")).toContain(
-      "Modeling Operation Error:\nError Code Number is 103009"
-    )
+    expect(
+      written(cad, "SOLIDEDIT", "F", "M", "10,5,10", "", "0,0,0", "0,0,-12")
+    ).toContain("Modeling Operation Error:\nError Code Number is 103009")
+    expect(volumes(cad)).toEqual([1874.3363])
+    answer(cad, "M", "10,5,10", "", "0,0,0", "0,0,3")
     expect(volumes(cad)).toEqual([2436.6372])
   })
 
@@ -139,7 +149,10 @@ describe("SOLIDEDIT", () => {
     expect(solids(cad).every((s) => brepIsClosed(s.brep))).toBe(true)
   })
 
-  it("selects with Remove, Add, ALL and Undo (e11)", () => {
+  // e11 then offsets the seven faces by -1 and takes it back with Undo: the
+  // hole's wall among them, which the kernel cannot offset yet (modify.md's
+  // Missing); the Undo is p302's.
+  it("selects with Remove, Add and ALL (e11)", () => {
     const cad = drilled()
     expect(
       written(cad, "SOLIDEDIT", "F", "O", "FOO", "10,5,10", "10,0,5", "R")
@@ -674,6 +687,268 @@ describe("SOLIDEDIT's rotation angle (SOE-16, SOE-21)", () => {
     expect(prompt(cad)).toBe(
       "SOLIDEDIT Specify the origin of the rotation <0,0,0>:"
     )
+  })
+})
+
+describe("SOLIDEDIT's taper and height defaults (SOE-02, SOE-03, EDITS-D81, EDITS-D82, EDITS-D121)", () => {
+  const TAPER = "SOLIDEDIT Specify angle of taper for extrusion"
+
+  it("offers the last taper, later in the run and in the next (solid-edits/p308)", () => {
+    const cad = box()
+    answer(cad, "SOLIDEDIT", "F", "E", "5,5,10", "", "2", "10")
+    answer(cad, "E", "5,5,12", "", "1")
+    expect(prompt(cad)).toBe(`${TAPER} <10>:`)
+    answer(cad, "", "X", "X", "SOLIDEDIT", "F", "E", "5,5,13", "", "1")
+    expect(prompt(cad)).toBe(`${TAPER} <10>:`)
+    answer(cad, "", "X", "X")
+    expect(volumes(cad)).toEqual([1346.2285])
+  })
+
+  it("shares the taper with EXTRUDE's, either way (p372, p373)", () => {
+    const cad = createHarness()
+    answer(cad, "RECTANG", "0,0", "10,10", "EXTRUDE", "L", "", "T", "10", "5")
+    view(cad)
+    answer(cad, "SOLIDEDIT", "F", "E", "5,5,1", "", "1")
+    expect(prompt(cad)).toBe(`${TAPER} <10>:`)
+    const other = box()
+    answer(other, "SOLIDEDIT", "F", "E", "5,5,10", "", "1", "15", "X", "X")
+    answer(other, "LUPREC", "4", "RECTANG", "20,0", "30,10", "EXTRUDE", "L", "")
+    expect(prompt(other)).toBe(
+      "EXTRUDE Specify height of extrusion or [Direction/Path/Taper angle/Expression] <10.0000>:"
+    )
+    answer(other, "T")
+    expect(prompt(other)).toBe(
+      "EXTRUDE Specify angle of taper for extrusion or [Expression] <15>:"
+    )
+  })
+
+  it("extrudes by the primitives' last height at Enter, then asks the taper (p326, p343)", () => {
+    const cad = box()
+    answer(cad, "SOLIDEDIT", "F", "E", "5,5,10", "")
+    expect(written(cad, "")).toEqual(["Specify height of extrusion or [Path]:"])
+    expect(prompt(cad)).toBe(`${TAPER} <0>:`)
+    answer(cad, "0")
+    expect(volumes(cad)).toEqual([2000])
+    const low = createHarness()
+    view(answer(low, "_BOX", "0,0,0", "10,10", "6"))
+    answer(low, "SOLIDEDIT", "F", "E", "5,5,6", "", "", "0")
+    expect(volumes(low)).toEqual([1200])
+  })
+
+  it("is not set by its own extrusion (p342)", () => {
+    const cad = box()
+    answer(cad, "SOLIDEDIT", "F", "E", "5,5,10", "", "3", "0")
+    answer(cad, "E", "5,5,13", "", "", "0")
+    expect(volumes(cad)).toEqual([2300])
+  })
+
+  it("takes a CYLINDER's height after a BOX's (p363), EXTRUDE's (p364)", () => {
+    const cad = createHarness()
+    answer(cad, "_BOX", "0,0,0", "10,10", "10")
+    answer(cad, "_CYLINDER", "30,0,0", "2", "4")
+    view(cad)
+    answer(cad, "SOLIDEDIT", "F", "E", "5,5,10", "", "", "0")
+    expect(volumes(cad)[0]).toBe(1400)
+    const extruded = createHarness()
+    answer(extruded, "RECTANG", "0,0", "10,10", "EXTRUDE", "L", "", "7")
+    view(extruded)
+    answer(extruded, "SOLIDEDIT", "F", "E", "5,5,7", "", "", "0")
+    expect(volumes(extruded)).toEqual([1400])
+  })
+
+  it("keeps the sign EXTRUDE gave it (p407)", () => {
+    const cad = createHarness()
+    answer(cad, "RECTANG", "0,0", "10,10", "EXTRUDE", "L", "", "20")
+    answer(cad, "RECTANG", "30,0", "40,10", "EXTRUDE", "L", "", "-3")
+    view(cad)
+    answer(cad, "SOLIDEDIT", "F", "E", "5,5,20", "", "", "0")
+    expect(volumes(cad)).toEqual([1700, 300])
+  })
+
+  it("is BOX's and EXTRUDE's one height (p369, p373)", () => {
+    const cad = createHarness()
+    answer(cad, "LUPREC", "4", "RECTANG", "20,0", "30,10", "EXTRUDE", "L")
+    answer(cad, "", "7", "_BOX", "0,0,0", "10,10")
+    expect(prompt(cad)).toBe("BOX Specify height or [2Point] <7.0000>:")
+    answer(cad, "3")
+    view(cad)
+    answer(cad, "SOLIDEDIT", "F", "E", "5,5,3", "", "", "0")
+    expect(volumes(cad)).toEqual([700, 600])
+  })
+
+  it("refuses Enter with no height yet, and asks again (p406)", () => {
+    const cad = createHarness()
+    answer(cad, "_SPHERE", "0,0,0", "5")
+    answer(cad, "_SLICE", "_L", "", "_XY", "0,0,0", "0,0,-10")
+    view(cad)
+    answer(cad, "SOLIDEDIT", "F", "E", "1,1,0", "")
+    expect(written(cad, "", "1")).toEqual([
+      "Specify height of extrusion or [Path]:",
+      "Requires numeric distance, two points, or option keyword.",
+      "Specify height of extrusion or [Path]: 1",
+    ])
+    expect(prompt(cad)).toBe(`${TAPER} <0>:`)
+  })
+})
+
+describe("SOLIDEDIT's offset bound (SOE-11, EDITS-D85)", () => {
+  const bounded: [string, string[], string[], string][] = [
+    ["a 10 box's top (solidedit/e04)", ["10,10", "10"], ["5,5,10"], "-5.0000"],
+    [
+      "a 20 × 10 × 6 box's top (solid-edits/p344)",
+      ["20,10", "6"],
+      ["10,5,6"],
+      "-10.0000",
+    ],
+    ["its front (p345)", ["20,10", "6"], ["10,0,3"], "-10.0000"],
+    ["its side (p346)", ["20,10", "6"], ["0,5,3"], "-10.0000"],
+    [
+      "two of its faces (p348)",
+      ["20,10", "6"],
+      ["10,5,6", "10,0,3"],
+      "-10.0000",
+    ],
+    ["a 6 × 10 × 40 box's top (p365)", ["6,10", "40"], ["3,5,40"], "-20.0000"],
+  ]
+  for (const [name, size, picks, bound] of bounded) {
+    it(`refuses an offset past −(the largest side)/2 on ${name}, asked again`, () => {
+      // The probes' LUPREC, acadiso's 4.
+      const cad = view(
+        answer(createHarness(), "LUPREC", "4", "_BOX", "0,0,0", ...size)
+      )
+      answer(cad, "SOLIDEDIT", "F", "O", ...picks, "")
+      const before = volumes(cad)
+      expect(written(cad, "-100")).toEqual([
+        "Specify the offset distance: -100",
+        `The offset distance must be greater than ${bound}.`,
+      ])
+      expect(prompt(cad)).toBe("SOLIDEDIT Specify the offset distance:")
+      expect(volumes(cad)).toEqual(before)
+      expect(written(cad, "-1")).toContain("Solid validation completed.")
+    })
+  }
+
+  it("bounds a cylinder by its box (p347), in Spanish and Portuguese (p344)", () => {
+    const cad = createHarness()
+    view(answer(cad, "LUPREC", "4", "_CYLINDER", "0,0,0", "5", "10"))
+    answer(cad, "SOLIDEDIT", "F", "O", "0,0,10", "")
+    expect(written(cad, "-100")).toContain(
+      "The offset distance must be greater than -5.0000."
+    )
+    const spanish = createHarness({ locale: es })
+    view(answer(spanish, "LUPREC", "4", "_BOX", "0,0,0", "20,10", "6"))
+    answer(spanish, "EDITSOLIDO", "C", "E", "10,5,6", "")
+    expect(written(spanish, "-100")).toContain(
+      "La distancia de desfase debe ser mayor que -10.0000."
+    )
+    const portuguese = createHarness({ locale: ptBR })
+    view(answer(portuguese, "LUPREC", "4", "_BOX", "0,0,0", "20,10", "6"))
+    answer(portuguese, "EDITARSOLIDO", "F", "L", "10,5,6", "")
+    expect(written(portuguese, "-100")).toContain(
+      "A distância de deslocamento deve ser maior que -10.0000."
+    )
+  })
+})
+
+describe("SOLIDEDIT's Rotate in a UCS (SOE-12, SOE-20, EDITS-D90)", () => {
+  const turned: [string, string[], string[], number][] = [
+    [
+      "Xaxis is the UCS's X turned about Z (solid-edits/p331)",
+      ["Z", "30"],
+      ["*5,5,10", "", "X", "*0,0,10"],
+      1032.2701,
+    ],
+    [
+      "Yaxis is the UCS's Y turned about Z (p367)",
+      ["Z", "30"],
+      ["*5,5,10", "", "Y", "*0,0,10"],
+      879.5664,
+    ],
+    [
+      "Xaxis is the UCS's X turned about Y, the WCS's −Z (p366)",
+      ["Y", "90"],
+      ["*5,0,5", "", "X", "*0,0,0"],
+      1088.1635,
+    ],
+    [
+      "Zaxis is the UCS's Z turned about X (p332)",
+      ["X", "90"],
+      ["*5,5,10", "", "Z", "*0,0,10"],
+      1088.1635,
+    ],
+    [
+      "Enter's origin is the UCS's (p404)",
+      ["O", "10,0,0"],
+      ["*5,5,10", "", "Y", ""],
+      1103.5901,
+    ],
+  ]
+  for (const [name, ucs, setup, volume] of turned) {
+    it(name, () => {
+      const cad = box()
+      answer(cad, "UCS", ...ucs, "SOLIDEDIT", "F", "R", ...setup, "10")
+      expect(volumes(cad)).toEqual([volume])
+    })
+  }
+
+  it("turns the UCS's X about the origin given (p366's extents)", () => {
+    const cad = box()
+    answer(cad, "UCS", "Y", "90", "SOLIDEDIT", "F", "R", "*5,0,5", "", "X")
+    answer(cad, "*0,0,0", "10")
+    expect(extents(cad).min.y).toBeCloseTo(-1.7632698, 6)
+    const moved = box()
+    answer(moved, "UCS", "O", "10,0,0", "SOLIDEDIT", "F", "R", "*5,5,10", "")
+    answer(moved, "Y", "", "10")
+    expect(extents(moved).max.z).toBeCloseTo(11.9175359, 6)
+  })
+})
+
+describe("SOLIDCHECK (SOE-14, EDITS-D89)", () => {
+  it("is asked as 1, and 0 says so and writes no validation lines (solid-edits/p335)", () => {
+    const cad = box()
+    expect(written(cad, "SOLIDCHECK", "0")).toEqual([
+      "SOLIDCHECK",
+      "Enter new value for SOLIDCHECK <1>: 0",
+    ])
+    expect(written(cad, "SOLIDEDIT", "F", "O", "5,5,10", "", "1")).toEqual([
+      "SOLIDEDIT",
+      "Solids editing automatic checking:  SOLIDCHECK=0",
+      `${SOLIDS_OPTION} F`,
+      `${FACE_OPTION} O`,
+      "Select faces or [Undo/Remove]: 5,5,10",
+      "1 face found.",
+      "Select faces or [Undo/Remove/ALL]:",
+      "Specify the offset distance: 1",
+    ])
+    expect(volumes(cad)).toEqual([1100])
+    expect(written(cad, "X")).toContain(
+      "Solids editing automatic checking:  SOLIDCHECK=0"
+    )
+  })
+
+  it("says its value in Spanish and Portuguese (p335)", () => {
+    const spanish = box(es)
+    expect(written(spanish, "SOLIDCHECK", "0", "EDITSOLIDO")).toEqual([
+      "SOLIDCHECK",
+      "Indique nuevo valor para SOLIDCHECK <1>: 0",
+      "EDITSOLIDO",
+      "Comprobación automática de edición de sólidos:  SOLIDCHECK=0",
+    ])
+    const portuguese = box(ptBR)
+    expect(written(portuguese, "SOLIDCHECK", "0", "EDITARSOLIDO")).toEqual([
+      "SOLIDCHECK",
+      "Inserir o novo valor para SOLIDCHECK <1>: 0",
+      "EDITARSOLIDO",
+      "Verificação automática de edição de sólidos:  SOLIDCHECK=0",
+    ])
+  })
+
+  it("outlives opening another drawing (p405)", () => {
+    const cad = box()
+    answer(cad, "SOLIDCHECK", "0")
+    cad.runtime.newDrawing()
+    answer(cad, "SOLIDCHECK")
+    expect(prompt(cad)).toBe("SOLIDCHECK Enter new value for SOLIDCHECK <0>:")
   })
 })
 

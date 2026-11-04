@@ -1709,6 +1709,33 @@ describe("the engine's English surface", () => {
         )
         .do("Move by zero", (c) => submit(c, "M", "0,5,5", "", "0,0,0", ""))
         .do("Undo, eXit", (c) => submit(c, "U", "", "X"))
+        .do("SOLIDCHECK 0, the last height, the offset's bound", (c) =>
+          submit(
+            c,
+            "BOX",
+            "20,0,0",
+            "30,10",
+            "4",
+            "ZOOM",
+            "E",
+            "SOLIDCHECK",
+            "0",
+            "SOLIDEDIT",
+            "F",
+            "E",
+            "25,5,4",
+            "",
+            "",
+            "",
+            "O",
+            "25,5,8",
+            "",
+            "-100",
+            "1",
+            "X",
+            "X"
+          )
+        )
     )
     walk("SECTION", createHarness(), (s) =>
       s

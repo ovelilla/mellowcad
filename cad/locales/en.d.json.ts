@@ -2847,6 +2847,7 @@ declare const source: {
       "taperAngleNonzero": string
       "zeroDisplacement": string
       "zeroRotation": string
+      "offsetDistanceBound": string
     }
     "feedback": {
       "snap": {

@@ -1,7 +1,9 @@
 /**
  * The values AutoCAD's solid primitives offer as `<default>`, one set shared
  * by them all (solid/x01–x07): BOX and WEDGE share a length and a width; they,
- * CYLINDER, CONE and PYRAMID a height, kept with its sign (w09: `<-5.0000>`);
+ * CYLINDER, CONE and PYRAMID a height, kept with its sign (w09: `<-5.0000>`),
+ * which EXTRUDE offers and sets too and SOLIDEDIT's extrusion takes at Enter
+ * without setting it (solid-edits/p342, p364, p369, p373, p407);
  * CYLINDER, CONE, SPHERE, TORUS and PYRAMID a radius, PYRAMID's the circle
  * its base is inscribed in (x01: `<9.8995>` after a circumscribed 7); CONE and
  * PYRAMID a top radius, 0 at first, CONE's the one a cone is made with

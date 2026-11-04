@@ -1038,11 +1038,13 @@ and width a cube or Length made — their sizes, a negative or doubled one's too
 last height, with its sign, are offered as `<default>`s and Enter takes them; with none, Enter is
 refused as `FOO` is (p02, p04, p11). A run offers its own answers and leaves them for the next only
 once its solid is made: one cancelled keeps none, and U after it echoes `BOX` and takes back nothing
-else (desktop primitives/d06). They are the primitives' shared ones: WEDGE's length and
-width, and the height of WEDGE, PYRAMID, CYLINDER and CONE (w02, x06, x07, x01), an Axis endpoint's
-length too (primitives/p156). They are session values, not saved: OPEN keeps every one but CONE's
-and PYRAMID's top radius, `<0.0000>` again (p155, p158), and NEW does as OPEN (the console has
-none, PRIM-D1); U takes none back (p148). Refusals: `Point or option keyword required.` at every point prompt,
+else (desktop primitives/d06). They are the primitives' shared ones: WEDGE's length and width, and
+the height of WEDGE, PYRAMID, CYLINDER and CONE (w02, x06, x07, x01), an Axis endpoint's length too
+(primitives/p156); the height is EXTRUDE's too, either way (`<7.0000>` after EXTRUDE's 7,
+solid-edits/p369, p373), and what Enter at SOLIDEDIT's extrusion height takes (modify.md). They are
+session values, not saved: OPEN keeps every one but CONE's and PYRAMID's top radius, `<0.0000>`
+again (p155, p158), and NEW does as OPEN (the console has none, PRIM-D1); U takes none back (p148).
+Refusals: `Point or option keyword required.` at every point prompt,
 `Requires numeric distance, second point, or option keyword.` at every distance, `Box of zero
 length not permitted.` / `Box of zero width not permitted.` for a corner on the first's X or Y or
 a length of 0, `Value must be nonzero.` for a height of 0 and for 2Point's second point on its
@@ -1509,7 +1511,8 @@ a self-intersecting curve.`, then `Cannot sweep or extrude an object of this typ
 one `2 objects removed from selection set.`, asked again, `Nothing selected.` on an empty one (x10,
 x11, sweeps/p146, p162). MOde asks `Closed profiles creation mode [SOlid/SUrface] <Solid>:` (x02).
 Then `Specify height of extrusion or [Direction/Path/Taper angle/Expression]:`, the last height its
-`<default>`, a negative one offered negative and listed positive (p129) (es `Precise altura de
+`<default>`, the primitives' (BOX's `<10.0000>` after a BOX, solid-edits/p373; p369), a negative one
+offered negative and listed positive (p129) (es `Precise altura de
 extrusión o [Dirección/Trayectoria/ángulo Inclinación/Expresión]`; pt-BR `Especifique a altura ou
 extrusão ou`, with a default `Especifique a altura da extrusão ou`): a number, or a point read as
 BOX's height is, along the first profile's normal through its base — off the plan a snapped one by
@@ -1526,7 +1529,8 @@ prompt opening puts LASTPOINT there, in the UCS (p108–p111, p144), after a tap
 expression too; Direction's points set it, an end refused as parallel too (p112, p153). `Value must
 be nonzero.` for 0 and `Requires numeric distance, second point, or option keyword.` for FOO and
 Enter with no default (x03). Taper angle asks `Specify angle of taper for extrusion or [Expression]
-<0>:`, the last one its default, `Angle must be greater than -90 degrees and less than 90 degrees.`
+<0>:`, the last one its default, SOLIDEDIT's extrusion's too (`<15>` after its 15, solid-edits/p372,
+p373), `Angle must be greater than -90 degrees and less than 90 degrees.`
 past a right angle, and the height again (x01, x06); a run tapers only when it is answered (p335,
 p336); a point given there is atan(Y / d), Y its UCS Y from the first profile's start and d the
 height the cursor gave as `T` was typed (desktop sweeps/d05: from a start at y 5, `40,10` →

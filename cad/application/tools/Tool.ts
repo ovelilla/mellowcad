@@ -483,6 +483,7 @@ export interface HeldValues {
   readonly POLYSIDES: number
   readonly AFLAGS: number
   readonly DELOBJ: number
+  readonly SOLIDCHECK: number
 }
 
 export interface HeldVariable<T> {

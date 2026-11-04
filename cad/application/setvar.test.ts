@@ -758,6 +758,8 @@ describe("the variables kept outside the drawing", () => {
       ["OFFSETDIST", "-1.00"],
       ["POLYSIDES", "4"],
       ["AFLAGS", "16"],
+      // solid-edits/p335
+      ["SOLIDCHECK", "1"],
     ]) {
       answer(cad, name)
       expect(prompt(cad)).toBe(
@@ -1025,6 +1027,7 @@ describe("the variables kept outside the drawing", () => {
       ["OFFSETDIST", "4", "-1.00"],
       ["POLYSIDES", "6", "4"],
       ["AFLAGS", "3", "16"],
+      ["SOLIDCHECK", "0", "1"],
     ]) {
       answer(cad, name, typed)
       expect(written(cad, "U")).toEqual(["U", name])
@@ -1065,6 +1068,8 @@ describe("the variables kept outside the drawing", () => {
       ["SPLDEGREE", "4", "4"],
       ["ARRAYASSOCIATIVITY", "0", "0"],
       ["AFLAGS", "3", "3"],
+      // solid-edits/p405: the program's.
+      ["SOLIDCHECK", "0", "0"],
     ]
     for (const [name, value] of typed) answer(cad, name, value)
     answer(cad, "_NEW")

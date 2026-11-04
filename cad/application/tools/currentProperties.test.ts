@@ -214,6 +214,21 @@ const FROM_SCRATCH: ReadonlyArray<
         .enter(),
     [boxSolid("S1")],
   ],
+  // probe solid-edits/p334: Copy's region on the current layer, in the
+  // current properties, not the solid's.
+  [
+    "SOLIDEDIT",
+    (c) =>
+      c
+        .command("SOLIDEDIT")
+        .option("Face")
+        .option("Copy")
+        .click(p(50, 25))
+        .enter()
+        .click(p(0, 0))
+        .click(p(0, 100)),
+    [boxSolid("S1")],
+  ],
   // probe primitives/p234, p235, as CYLINDER's.
   [
     "TORUS",

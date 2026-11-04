@@ -113,7 +113,8 @@ kept without a snap, 16384 suspended as F3 does), OSNAPZ (a snap at ELEVATION's 
 osnapz/o01–o03), POLARANG (degrees, put in 0–360), POLARDIST (any
 sign, 0 at first: PolarSnap then steps by Snap X), SELECTIONCYCLING (−2 to 2), CLIPROMPTLINES (0–50,
 the temporary prompt lines), TRIMEXTENDMODE, EDGEMODE, TEXTEDITMODE, SPLMETHOD, SPLKNOTS (0–2),
-SPLDEGREE (1–10), ARRAYASSOCIATIVITY, AFLAGS (0–63); per drawing, which NEW and OPEN put back,
+SPLDEGREE (1–10), ARRAYASSOCIATIVITY, AFLAGS (0–63), SOLIDCHECK (SOLIDEDIT's validation lines,
+modify.md; solid-edits/p335, p405); per drawing, which NEW and OPEN put back,
 INSNAME (`Enter new value for INSNAME, or . for none <"">:`, es `Indique nuevo valor para INSNAME, o .
 para ninguno`, a name no block has taken, `.` none; INSERT finds it case-blind), LASTPOINT (typed in
 the UCS, a 2D point at ELEVATION, `@` from itself, kept in the WCS; p212, p224), CIRCLERAD (not

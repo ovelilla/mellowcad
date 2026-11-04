@@ -1485,7 +1485,7 @@ commit; no probe tells them apart, **unverified**).
 
 **Implemented** (its faces; solidedit/e01–e12, en, es and pt-BR): it says `Solids editing automatic
 checking:  SOLIDCHECK=1` (es `Comprobación automática de edición de sólidos:`, pt-BR `Verificação
-automática de edição de sólidos:`) and asks `Enter a solids editing option
+automática de edição de sólidos:`), SOLIDCHECK's value, and asks `Enter a solids editing option
 [Face/Edge/Body/Undo/eXit] <eXit>:` (es `Indique una opción de edición de sólidos
 [Cara/Arista/cUerpo/desHacer/Salir] <Salir>`, pt-BR `[Face/Aresta/Corpo/Desfazer/Sair] <Sair>`); Face
 asks `Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit]
@@ -1509,32 +1509,42 @@ Crossing/Fence/CPolygon/Undo`; Enter with none asks the option again (p301). Ent
 prompt but Move's second and the origin says `Invalid point.`, at the offset `Requires numeric
 distance or two points.`, at the rotation angle `Requires valid numeric angle, second point, or
 option keyword.`, at the taper angle `Requires valid numeric angle or two points.`, and asks again
-(p324, p328, p330, p333, p400, p401). Extrude: `Specify height of extrusion or [Path]:` and
-`Specify angle of taper for extrusion <0>:`, each face's prism added or taken out, narrowing as it
-rises by a positive angle (e01, e08; -2 and -5 cut a slab, p325); a height of 0 says `Value must be
-nonzero.`, a taper of ±90 or past `Angle must be greater than -90 degrees and less than 90
-degrees.`, each asked again (p325, p327). Move: `Specify a base point or displacement:` and
+(p324, p328, p330, p333, p400, p401). Extrude: `Specify height of extrusion or [Path]:`, Enter
+there the last height BOX, CYLINDER (the primitives') or EXTRUDE took, with its sign and shown
+nowhere, never one this extrusion took (p326, p342, p343, p363, p364, p369, p407; with none yet
+`Requires numeric distance, two points, or option keyword.` and asked again, p406), and `Specify
+angle of taper for extrusion <0>:`, the last taper it or EXTRUDE took, an Undo leaving it (p308,
+p370, p372, p373); each face's prism added or taken out, narrowing as it rises by a positive angle
+(e01, e08; -2 and -5 cut a slab, p325); a height of 0 says `Value must be nonzero.`, a taper of ±90
+or past `Angle must be greater than -90 degrees and less than 90 degrees.`, each asked again (p325,
+p327). Move: `Specify a base point or displacement:` and
 `Specify a second point of displacement:`, Enter there the base point as the displacement (p329); a
 planar face moves as far as that runs along its normal, its neighbours carried on (e06: a drilled
 box's top up 3, 2436.6372); by zero `No change due to a zero displacement vector.` (p328, p402).
 Rotate: `Specify an axis point or [Axis by object/View/Xaxis/Yaxis/Zaxis] <2points>:` — a point
 there or Enter's `Specify the first point on the rotation axis:` and `Specify the second point on
-the rotation axis:`, two that are one taken (p362), Xaxis, Yaxis, Zaxis (the UCS's) and View through
-`Specify the origin of the rotation <0,0,0>:` — then `Specify a rotation angle or [Reference]:`,
-right-handed about the axis (e07: a box's top 10°, 1088.1635), a point there the angle from the
-second axis point or the origin (p125); by 0 `No change due to a zero rotation angle.` (p330,
-p362). Offset: `Specify the offset distance:`, as PRESSPULL's Ctrl+click, a planar face's
-neighbours carried on: planes any way they slope, cylinders and extrusions square to it, and
-coaxial cylinders and cones round it (e03: a frustum's top -4, 321.9504); 0 says `Value must be
-nonzero.` and asks again (p324). Taper: `Specify the base point:`, `Specify another point along the
-axis of tapering:` and `Specify the taper angle:`, the face turned about where it meets the plane
-square to the axis through the base point, a positive angle leaning it in along the axis (e08: a
-side 10°, 911.8365); 0 or ±90 and past says `The taper angle must be non-zero and between -90 and
-90.` and asks again (p333). Delete: a hole's wall closes the hole, a fillet's or a chamfer's strip
-gives way to the edge it replaced (e09: 2000, 1000). Copy: a planar face becomes a region where it
-lies, moved (e10), of the current layer and properties (p334), by zero too (p362). Each edit says `Solid validation started.` and `Solid validation
-completed.` and asks the option again; a Move or a Rotate by zero edits nothing and is no step for
-Undo. Undo there takes the last one back, `Command has been completely undone.` once none is left,
+the rotation axis:`, two that are one taken (p362), Xaxis, Yaxis, Zaxis (the UCS's, turned or
+tilted: p331, p332, p366, p367) and View through `Specify the origin of the rotation <0,0,0>:`,
+Enter the UCS's origin (p404) — then `Specify a rotation angle or [Reference]:`, right-handed about
+the axis (e07: a box's top 10°, 1088.1635), a point there the angle from the second axis point or
+the origin (p125); by 0 `No change due to a zero rotation angle.` (p330, p362). Offset: `Specify the
+offset distance:`, as PRESSPULL's Ctrl+click, a planar face's neighbours carried on: planes any way
+they slope, cylinders and extrusions square to it, and coaxial cylinders and cones round it (e03: a
+frustum's top -4, 321.9504); 0 says `Value must be nonzero.` and asks again (p324), and so does one
+as far in as half the largest side of the solid's box, whichever faces, `The offset distance must be
+greater than -10.0000.` (22361, at LUPREC; es `La distancia de desfase debe ser mayor que`, pt-BR `A
+distância de deslocamento deve ser maior que`; e04, p344–p348, p365; in a tilted UCS the box is the
+frame's, unprobed). Taper: `Specify the base point:`, `Specify another point along the axis of
+tapering:` and `Specify the taper angle:`, the face turned about where it meets the plane square to
+the axis through the base point, a positive angle leaning it in along the axis (e08: a side 10°,
+911.8365); 0 or ±90 and past says `The taper angle must be non-zero and between -90 and 90.` and
+asks again (p333). Delete: a hole's wall closes the hole, a fillet's or a chamfer's strip gives way
+to the edge it replaced (e09: 2000, 1000). Copy: a planar face becomes a region where it lies, moved
+(e10), of the current layer and properties (p334), by zero too (p362). Each edit says `Solid
+validation started.` and `Solid validation completed.` and asks the option again, without them while
+SOLIDCHECK is 0 (a system variable, 0 or 1, 1 at first, program-wide: OPEN keeps it, no drawing
+saves it; p335, p405); a Move or a Rotate by zero edits nothing and is no step for Undo.
+Undo there takes the last one back, `Command has been completely undone.` once none is left,
 or none was (p301, p302); at the solids option it takes no face edit back, saying so with none made
 (p300, p303); eXit or Enter leaves Face, then the command. The face's typed point, Move's base and
 the axis prompt's point set LASTPOINT, Enter's origin and an angle by a point keep it (p123–p125,
@@ -1548,16 +1558,18 @@ does; plain SOLIDEDIT is typed.
 **Deviations:** an edit the kernel cannot make says `Modeling Operation Error:` (es `Error en
 operación de modelado:`, pt-BR `Erro de operação de modelagem:`) and leaves the solid; with ACIS's
 code where the console showed one for that failure — `Error Code Number is 103013` deleting a box's
-face, `103009` moving its top through it (e09, e12) — and none for the others, never seen. An
-offset past what the solid can take is refused that way, where AutoCAD asks again with `The offset
-distance must be greater than -5.0000.` (e04: its bound's rule is **unverified**).
+face, `103009` moving its top through it (e09, e12) — and none for the others, never seen.
 
 **Missing:** Edge and Body, coLor (the Select Color dialog, desktop; no solid holds a colour per
 face yet) and mAterial, Path, Axis by object and Reference, each offered and refused; Crossing,
 Fence and CPolygon at `Select faces`; a curved face moved, rotated, tapered, offset among other
 neighbours, deleted when no hole's or strip's, or copied (a surface in AutoCAD, e10); an edit that
-changes the topology (e12: a top tapered 80° wears its far side away, 88.1635); faces of several
-solids at once (here the first's); a preview while a distance or an angle is given. The click on an
+changes the topology (e12: a top tapered 80° wears its far side away, 88.1635); edits beside a face
+extruded with a taper, which AutoCAD makes and the kernel refuses (p371: the top extruded 2 at 5°,
+then the front rotated -10° about Xaxis, the right side tapered 5° and the left moved -1, 1218.2160;
+here `Modeling Operation Error:` twice, then 103009); an offset too far out to make, which AutoCAD
+drops in silence (p349: 100000 on a 20 × 10 × 6 box's top) and the kernel makes; a preview while a
+distance or an angle is given. The click on an
 edge and on a face taken are the console's typed points; the desktop's reach waits for the review's
 SED.
 

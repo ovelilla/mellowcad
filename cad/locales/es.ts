@@ -7262,7 +7262,12 @@ export const es: EngineLocale = {
       "chamferMultipleBodies": "No se pueden achaflanar varias entidades.",
       "edgeAlreadyPicked": "Esta arista ya se ha designado.",
       "noTangentChainEdges": "No se han encontrado aristas tangentes adyacentes en cadena.",
-      "solideditChecking": "Comprobación automática de edición de sólidos:  SOLIDCHECK=1",
+      "solideditChecking": [
+        "Comprobación automática de edición de sólidos:  SOLIDCHECK=",
+        [
+          "value"
+        ]
+      ],
       "facesFound": [
         [
           "count",
@@ -7312,7 +7317,14 @@ export const es: EngineLocale = {
       "noSolidsDetected": "Ningún sólido detectado.",
       "taperAngleNonzero": "El ángulo de inclinación debe ser distinto de cero y estar entre -90 y 90.",
       "zeroDisplacement": "Ningún cambio debido a vector de desplazamiento cero.",
-      "zeroRotation": "Ningún cambio debido a ángulo de rotación cero."
+      "zeroRotation": "Ningún cambio debido a ángulo de rotación cero.",
+      "offsetDistanceBound": [
+        "La distancia de desfase debe ser mayor que ",
+        [
+          "distance"
+        ],
+        "."
+      ]
     },
     "feedback": {
       "snap": {

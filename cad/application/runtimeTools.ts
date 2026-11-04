@@ -55,7 +55,7 @@ import { RevolveTool } from "./tools/RevolveTool"
 import { PresspullTool } from "./tools/PresspullTool"
 import { PlaneCutTool } from "./tools/PlaneCutTool"
 import { EdgeBlendTool } from "./tools/EdgeBlendTool"
-import { SolideditTool } from "./tools/SolideditTool"
+import { SolideditTool, solideditSettings } from "./tools/SolideditTool"
 import { sweepSettings } from "./tools/sweepSettings"
 import { RegionBooleanTool, SubtractTool } from "./tools/RegionBooleanTool"
 import { BreakTool } from "./tools/BreakTool"
@@ -110,6 +110,7 @@ export function defaultTools(
   const circleRadius = { radius: 0 }
   const primitives = solidDefaults()
   const sweeps = sweepSettings()
+  const solidedit = solideditSettings(sweeps, primitives)
   const trimExtendMode: TrimExtendMode = { standard: false, edgeExtend: false }
   const splineSettings = defaultSplineSettings()
   const associativity: ArrayAssociativity = { associative: true }
@@ -189,21 +190,21 @@ export function defaultTools(
     new RoundSolidTool("sphere", primitives),
     new RoundSolidTool("torus", primitives),
     new PyramidTool(primitives),
-    new ExtrudeTool(sweeps),
+    new ExtrudeTool(sweeps, primitives),
     new RevolveTool(sweeps),
     new PresspullTool(),
     new PlaneCutTool("slice"),
     new PlaneCutTool("section"),
     new EdgeBlendTool("fillet"),
     new EdgeBlendTool("chamfer"),
-    new SolideditTool(),
-    new SolideditTool("Extrude"),
-    new SolideditTool("Move"),
-    new SolideditTool("Offset"),
-    new SolideditTool("Rotate"),
-    new SolideditTool("Taper"),
-    new SolideditTool("Delete"),
-    new SolideditTool("Copy"),
+    new SolideditTool(null, solidedit),
+    new SolideditTool("Extrude", solidedit),
+    new SolideditTool("Move", solidedit),
+    new SolideditTool("Offset", solidedit),
+    new SolideditTool("Rotate", solidedit),
+    new SolideditTool("Taper", solidedit),
+    new SolideditTool("Delete", solidedit),
+    new SolideditTool("Copy", solidedit),
     new BreakTool("gap", "break"),
     new BreakTool("atPoint", "breakatpoint"),
     new SplineEditTool(),
