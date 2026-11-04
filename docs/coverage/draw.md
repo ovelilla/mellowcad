@@ -1716,23 +1716,31 @@ off the UCS's plane does (no desktop pass of objects).
 
 ### `SECTION` / `SEC` · es `SECCION` / `SC` · pt-BR `CORTE` / `SECAO`
 
-**Implemented:** As 2027's console asks it in en, es and pt-BR (section/c01–c09): `Select
-objects:`, whole objects, what is no solid passed over (c08: a circle); a set with no solid says
-`No Solids, Surfaces or Meshes selected.` (es `No se ha seleccionado ningún sólido, superficie o
-malla.`, pt-BR `Nenhum sólido, superfície ou malha selecionado.`) and ends (c06). Then `Specify
-first point on Section plane by [Object/Zaxis/View/XY/YZ/ZX/3points] <3points>:` (es `Precise
-primer punto en plano de sección mediante […] <3puntos>`, pt-BR `Especificar o primeiro ponto no
-Plano de corte por […] <3pontos>`): a point there is the first of three; the options are SLICE's
-but Surface, Object asking `Select a circle, ellipse, arc, 2D-spline, 2D-polyline:` (22073). Each
-solid the plane cuts gets a region where it cuts it, in the plane and facing its normal (c01: 100
-at Z 5; c03: a cylinder along its axis 100, askew an ellipse of 84.5900; c05: a drilled box's ring
-87.4336); a plane holding a face gives that face (c06); one it misses says `Sectioning plane does
-not intersect the selected solid.` (`… 1 selected solid.`, `… 2 selected solids.` among several,
-c04). The regions wear the current layer and properties, not the solid's (c09); the solids stay.
-One undo step, `SECTION` (c07). Typed only, as the ribbon offers SECTIONPLANE in its place.
+**Implemented:** As 2027's console asks it in en, es and pt-BR (section/c01–c09, solid-edits/p104–p179):
+a preselection is dropped and the set asked (solid-edits/p131); `Select objects:`, whole objects,
+what is no solid passed over (c08: a circle), a locked solid counted `1 was on a locked layer.`
+(p159); a set with no solid says `No Solids, Surfaces or Meshes selected.` (es `No se ha seleccionado
+ningún sólido, superficie o malla.`, pt-BR `Nenhum sólido, superfície ou malha selecionado.`) and
+ends (c06, p161), Enter on none `No objects selected.No Solids, Surfaces or Meshes selected.` on one
+line as the console prints the two (p131; EDITS-D6). Then `Specify first point on Section plane by
+[Object/Zaxis/View/XY/YZ/ZX/3points] <3points>:` (es `Precise primer punto en plano de sección
+mediante […] <3puntos>`, pt-BR `Especificar o primeiro ponto no Plano de corte por […] <3pontos>`): a
+point there is the first of three; the options and their refusals are SLICE's but Surface (`_S`
+refused, p113), Object asking `Select a circle, ellipse, arc, 2D-spline, 2D-polyline:` (22073), its
+XY, YZ and ZX the UCS's and Enter's `<0,0,0>` its origin (p151, p177). Each solid the plane cuts gets
+a region where it cuts it, in the plane and facing its normal (c01: 100 at Z 5; c03: a cylinder along
+its axis 100, askew an ellipse of 84.5900; c05: a drilled box's ring 87.4336; a tilted circle's
+plane, p167); a plane holding a face gives that face, facing out of the solid as the face does (c06,
+p177: a bottom face's region faces −Z); one it misses says `Sectioning plane does not intersect the
+selected solid.` (`… 1 selected solid.`, `… 2 selected solids.` among several, c04, p140). The
+regions wear the current layer and properties, not the solid's (c09, p151), made in the set's order,
+ALL's newest first (p151, p175); the solids stay. Every point answered sets LASTPOINT as SLICE's
+(p120, p135). One undo step, `SECTION` (c07, p170). Typed only, as the ribbon offers SECTIONPLANE in
+its place.
 
-**Missing:** surfaces and meshes; the meetings with no closed form, as SLICE's (`1 boolean
-operation(s) failed.` here); SECTIONPLANE and live sectioning.
+**Missing:** surfaces and meshes; a planar 3D polyline as Object's plane, as SLICE's; the meetings
+with no closed form, as SLICE's (`1 boolean operation(s) failed.` here); SECTIONPLANE and live
+sectioning.
 
 ### `BLOCK` / `B` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOCK` / `-B` · es `BLOQUE` / `BQ` / `MODBLQ` / `BMAKE` / `BMOD` / `ACADBLOCKDIALOG`, `-BLOQUE` / `-BQ` · pt-BR `BLOCO` / `CB` / `ACADBLOCKDIALOG` / `CRIARB` / `DEFB`, `-BLOCO` / `-CB`
 

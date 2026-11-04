@@ -42,8 +42,9 @@ How prompts, keywords and messages are worded and named: `cad-catalogs.md`.
   offered, `startWindow`).
 - `SelectionActionTool` — one action over a set, noun-verb and verb-noun (Erase, Explode, Join,
   COPYCLIP); `takesPreselection()` false where AutoCAD drops a preselection (REGION, the
-  booleans). One asking something **before** the set (COPYBASE's base point) overrides
-  `onActivate` and calls `begin(ctx)` with the answer.
+  booleans); an `ObjectSelector` tool whose preselection AutoCAD drops (SLICE) clears it on
+  activate. One asking something **before** the set (COPYBASE's base point)
+  overrides `onActivate` and calls `begin(ctx)` with the answer.
 - `boxSelection.ts` — what a window, lasso, fence or polygon takes (`objectsInWindow`,
   `lassoSelect`, `objectsOnFence`, `objectsInPolygon`) and their previews; never re-implement it.
   Each takes `ctx.viewport`: the box is upright on the screen, which a turned view is not.
@@ -104,12 +105,9 @@ A tool never touches an adapter: what it needs outside the document (`ctx.copyTo
 ## What a question takes
 
 `takes()`, a `QuestionInput`, is how the runtime refuses a wrong answer. Leave it out where the
-default reads right: `selectObjects` / `removeObjects` are a set with sub-objects; a box with a
-coordinate field (or a distance and an angle) a point, a lone distance or angle field that, a
-number field a number; with no box, a point when `wantsSnap()`, else a keyword. Declare what the box
-cannot tell: a single object's pick (`"object"`), a 2D point (MIRROR's, ARC's and PLINE's later
-points, CIRCLE's 2P and 3P ones), a keyword prompt that keeps snaps on, a set of whole objects,
-STRETCH's crossing set or BREAK's one object (`"oneObject"`; UCS OBject's `"singleSet"`), a count
+default reads right (its JSDoc says which). Declare what the box cannot tell: a single object's
+pick (`"object"`), a 2D point (MIRROR's, ARC's and PLINE's later points, CIRCLE's 2P and 3P ones),
+a keyword prompt that keeps snaps on, a set of whole objects, STRETCH's crossing set or BREAK's one object (`"oneObject"`; UCS OBject's `"singleSet"`), a count
 (`"integer"`), and a command's own words (`{ refusal: "requiresRadius" }`; with `values`; a list of ids for several
 lines; `keywords` by id; at a point prompt it refuses a Z and says `setsLastPoint()`, ARC's
 centre end). Type `FOO` there in AutoCAD's console before declaring one: the words differ
@@ -279,10 +277,11 @@ returns `true`; `false` ends the command.
 - **A tool works in the frame of the UCS's XY plane** (`cad-runtime.md`): `ctx.document`,
   `ctx.viewport`, `ctx.ucs`, `ctx.pick` and every point are given there, where that plane is level,
   and `ctx.execute` takes the result back. Write a tool as if the UCS were level; never convert to
-  the WCS yourself. A tool that sets the WCS or the view (UCS, PLAN, VPOINT, -VIEW, 3DORBIT)
-  declares `readonly inWorld = true` and gets the real document, viewport and UCS; one that sets the
-  UCS builds the patch with `ucsChange(settings, ucs, name)` (`UcsTool.ts`) as one
-  `UpdateSettingsCommand`.
+  the WCS yourself. A prompt naming the UCS's axes or origin (YZ, Xaxis, `<0,0,0>`) reads
+  `ctx.ucs`, never the frame's. A tool that sets the WCS or the view (UCS,
+  PLAN, VPOINT, -VIEW, 3DORBIT) declares `readonly inWorld = true` and gets the real document,
+  viewport and UCS; one that sets the UCS builds the patch with `ucsChange(settings, ucs, name)`
+  (`UcsTool.ts`) as one `UpdateSettingsCommand`.
 - **A tool with flat geometry acts only on `readsInPlan` objects** (level in the frame, and lines):
   JOIN, HATCH, ARRAYPATH's path, the dimensions and their picks (TRIM / EXTEND: ±Z).
   Filter at the pick. FILLET, CHAMFER and BREAK cut a polyline in its OCS instead.

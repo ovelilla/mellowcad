@@ -2550,6 +2550,7 @@ declare const source: {
       "expectsSingleObject": string
       "expectsCornerObject": string
       "lastKeyword": string
+      "groupKeyword": string
       "noObjectSelected": string
       "notLineArcOrCircleToDimension": string
       "associativeDimensionRequired": string
@@ -2815,6 +2816,9 @@ declare const source: {
       "sectionMissedOne": string
       "sectionMissed": string
       "noSolidsSelected": string
+      "noObjectsSelected": string
+      "noObjectsNoSolidsSelected": string
+      "unableToExtractPlane": string
       "filletEdgeRadius": string
       "chamferEdgeDistances": string
       "filletEdgesSelected": string

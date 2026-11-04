@@ -5291,6 +5291,7 @@ export const es: EngineLocale = {
         ]
       ],
       "lastKeyword": "úLTimo",
+      "groupKeyword": "Grupo",
       "noObjectSelected": "No se ha designado ningún objeto.",
       "notLineArcOrCircleToDimension": "El objeto designado no es ni una línea ni un círculo.",
       "associativeDimensionRequired": "Requiere una cota asociativa lineal, de coordenada o angular.",
@@ -7223,6 +7224,9 @@ export const es: EngineLocale = {
         "."
       ],
       "noSolidsSelected": "No se ha seleccionado ningún sólido, superficie o malla.",
+      "noObjectsSelected": "No hay ningún objeto seleccionado.",
+      "noObjectsNoSolidsSelected": "No hay ningún objeto seleccionado.No se ha seleccionado ningún sólido, superficie o malla.",
+      "unableToExtractPlane": "Imposible extraer el plano del objeto designado.",
       "filletEdgeRadius": [
         "Radio = ",
         [

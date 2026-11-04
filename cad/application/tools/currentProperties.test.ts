@@ -7,6 +7,7 @@ import {
   assignEntityLineweight,
   createBlockDefinition,
   createDimension,
+  createSolid,
   createSpline,
   Entity,
   entityElevation,
@@ -42,6 +43,22 @@ function drawn(cad: CadHarness, draw: (cad: CadHarness) => void): Entity[] {
 const BAR = createBlockDefinition("BAR", p(0, 0), [
   lineOf(p(0, 0), p(100, 0), { id: "bar-line" }),
 ])
+
+/** A box 100 by 50 by 30 on the origin's corner, on layer 0. */
+const boxSolid = (id: string) =>
+  createSolid(
+    {
+      kind: "box",
+      position: { x: 50, y: 25, z: 0 },
+      xAxis: { x: 1, y: 0, z: 0 },
+      normal: { x: 0, y: 0, z: 1 },
+      length: 100,
+      width: 50,
+      height: 30,
+    },
+    "0",
+    id
+  )
 
 const BASE_DIMENSION = createDimension(
   "linear",
@@ -182,6 +199,20 @@ const FROM_SCRATCH: ReadonlyArray<
         .type("L")
         .enter()
         .enter(),
+  ],
+  // probe section/c09: the region on the current layer, in the current
+  // properties, not the solid's.
+  [
+    "SECTION",
+    (c) =>
+      c
+        .command("SECTION")
+        .click(p(0, 25))
+        .enter()
+        .option("XY")
+        .type("0,0,15")
+        .enter(),
+    [boxSolid("S1")],
   ],
   // probe primitives/p234, p235, as CYLINDER's.
   [
@@ -520,6 +551,21 @@ const DERIVED: ReadonlyArray<
         .option("Go")
         .enter(),
     [blueLine(0, 100, "L1")],
+  ],
+  // probe solid-edits/p158: the half wears the solid's layer, colour,
+  // linetype and lineweight, not the current ones.
+  [
+    "SLICE",
+    (c) =>
+      c
+        .command("SLICE")
+        .click(p(0, 25))
+        .enter()
+        .option("XY")
+        .type("0,0,15")
+        .enter()
+        .enter(),
+    [blue(boxSolid("S1"))],
   ],
   [
     "PASTECLIP",

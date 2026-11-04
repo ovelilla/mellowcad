@@ -5299,6 +5299,7 @@ export const ptBR: EngineLocale = {
         ]
       ],
       "lastKeyword": "Último",
+      "groupKeyword": "Grupo",
       "noObjectSelected": "Nenhum objeto selecionado.",
       "notLineArcOrCircleToDimension": "O objeto selecionado não é uma linha, um arco ou um círculo.",
       "associativeDimensionRequired": "Cotas associativas lineares, ordenadas ou angulares são necessárias.",
@@ -7241,6 +7242,9 @@ export const ptBR: EngineLocale = {
         "."
       ],
       "noSolidsSelected": "Nenhum sólido, superfície ou malha selecionado.",
+      "noObjectsSelected": "Nenhum objeto selecionado.",
+      "noObjectsNoSolidsSelected": "Nenhum objeto selecionado.Nenhum sólido, superfície ou malha selecionado.",
+      "unableToExtractPlane": "Não é possível extrair o plano do objeto selecionado.",
       "filletEdgeRadius": [
         "Raio = ",
         [

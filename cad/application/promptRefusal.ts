@@ -94,6 +94,13 @@ export function promptRefusal(
           keywords: [text.message("lastKeyword"), ...asked.keywords].join("/"),
         }),
       ]
+    case "objectOrGroup":
+      return [
+        text.message("invalidSelection"),
+        text.message("expectsPointOr", {
+          keywords: text.message("groupKeyword"),
+        }),
+      ]
     case "singleObject":
       return [
         text.message("invalidSelection"),

@@ -5310,6 +5310,26 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   error| Need a point distinct from and not collinear with 1st and 2nd points.
   prompt| Specify third point on plane: 10,10,10
   prompt| Specify a point on desired side or [keep Both sides] <Both>: B
+> SLICE of nothing
+  command| SLICE
+  prompt| Select objects to slice:
+  info| No objects selected.
+> planar Object refused
+  command| LINE
+  prompt| Specify first point: 0,0,50
+  prompt| Specify next point or [Undo]: 100,100,50
+  prompt| Specify next point or [Undo]:
+  command| SLICE
+  prompt| Select objects to slice: ALL
+  info| 3 found
+  prompt| Select objects to slice:
+  prompt| Specify start point of slicing plane or [planar Object/Surface/Zaxis/View/XY/YZ/ZX/3points] <3points>: O
+  prompt| Select a circle, ellipse, arc, 2D-spline, 2D-polyline to define the slicing plane: L
+  error| *Invalid selection*
+  error| Expects a point or Group
+  prompt| Select a circle, ellipse, arc, 2D-spline, 2D-polyline to define the slicing plane: 50,50,50
+  error| Unable to extract the plane of the selected object.
+  prompt| Select a circle, ellipse, arc, 2D-spline, 2D-polyline to define the slicing plane:
 
 ## FILLETEDGE
 > start
@@ -5589,6 +5609,10 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   info| 1 found
   prompt| Select objects:
   error| No Solids, Surfaces or Meshes selected.
+> SECTION of nothing
+  command| SECTION
+  prompt| Select objects:
+  info| No objects selected.No Solids, Surfaces or Meshes selected.
 
 ## JOIN made
 > start

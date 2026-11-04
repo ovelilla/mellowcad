@@ -4650,6 +4650,7 @@ export const en: EngineCatalog = {
         ]
       ],
       "lastKeyword": "Last",
+      "groupKeyword": "Group",
       "noObjectSelected": "No object selected.",
       "notLineArcOrCircleToDimension": "Object selected is not a line, arc or circle.",
       "associativeDimensionRequired": "Linear, ordinate, or angular associative dimension required.",
@@ -6570,6 +6571,9 @@ export const en: EngineCatalog = {
         "."
       ],
       "noSolidsSelected": "No Solids, Surfaces or Meshes selected.",
+      "noObjectsSelected": "No objects selected.",
+      "noObjectsNoSolidsSelected": "No objects selected.No Solids, Surfaces or Meshes selected.",
+      "unableToExtractPlane": "Unable to extract the plane of the selected object.",
       "filletEdgeRadius": [
         "Radius = ",
         [

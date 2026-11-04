@@ -1583,6 +1583,23 @@ describe("the engine's English surface", () => {
             "B"
           )
         )
+        .do("SLICE of nothing", (c) => submit(c, "SLICE", ""))
+        .do("planar Object refused", (c) =>
+          submit(
+            c,
+            "LINE",
+            "0,0,50",
+            "100,100,50",
+            "",
+            "SLICE",
+            "ALL",
+            "",
+            "O",
+            "L",
+            "50,50,50",
+            ""
+          )
+        )
     )
     walk("FILLETEDGE", createHarness(), (s) =>
       s
@@ -1662,6 +1679,7 @@ describe("the engine's English surface", () => {
         .do("SECTION of no solid", (c) =>
           submit(c, "LINE", "0,0", "10,0", "", "SECTION", "L", "")
         )
+        .do("SECTION of nothing", (c) => submit(c, "SECTION", ""))
     )
     walk(
       "JOIN made",

@@ -10,7 +10,7 @@ import {
 } from "./Vec3"
 import { arbitraryAxis } from "./ocs"
 import { MODEL_TOLERANCE } from "./planarCurves"
-import { RegionFace, loopArea, loopReversed } from "./planarRegions"
+import { RegionFace, loopArea } from "./planarRegions"
 import { SolidBooleanError, brepBoolean } from "./solidBooleans"
 import { solidBox } from "./brepQueries"
 import { PlanarProfile, extrusionBrep } from "./sweeps"
@@ -117,46 +117,52 @@ export function brepSliced(brep: Brep, plane: CutPlane): BrepHalves {
 /**
  * Where the plane cuts the solid, as a region of the plane facing its normal
  * (SECTION, section/c01–c06): the faces the cut leaves behind it on the
- * plane, or, where the plane holds a face of the solid, that face (c06: the
- * top of a box, a region of 100). Null where it misses the solid or only
- * touches it on an edge or at a vertex. Throws `SolidBooleanError`.
+ * plane, or, where the plane holds a face of the solid, that face, facing out
+ * of the solid whichever way the plane faces (c06: the top of a box, a region
+ * of 100; solid-edits/p177: a bottom face's region faces −Z). Null where it
+ * misses the solid or only touches it on an edge or at a vertex. Throws
+ * `SolidBooleanError`.
  */
 export function brepSection(brep: Brep, plane: CutPlane): PlaneSection | null {
   const axes = arbitraryAxis(plane.normal)
   if (!axes) return null
   const n = axes.z
-  const onPlane = (piece: Brep | null, facing: 1 | -1): RegionFace[] => {
+  const onPlane = (piece: Brep | null, out: Vec3): RegionFace[] => {
     if (!piece) return []
-    const out: RegionFace[] = []
+    const faces: RegionFace[] = []
     for (const face of piece.faces) {
       const s = face.surface
       if (s.kind !== "plane") continue
-      if (dot3(s.normal, n) * facing < 1 - 1e-9) continue
+      if (dot3(s.normal, out) < 1 - 1e-9) continue
       const level = dot3(sub3(s.origin, plane.origin), n)
       if (Math.abs(level) > sizeTolerance(brep)) continue
-      // Read in the plane's own frame, so every face shares one.
-      const flat = planarFace(piece, {
-        ...face,
-        surface: { kind: "plane", origin: s.origin, normal: n },
-      }).face
-      out.push(
-        facing > 0 ? flat : { loops: flat.loops.map((l) => loopReversed(l)) }
+      // Read in the frame of `out`, so every face shares one.
+      faces.push(
+        planarFace(piece, {
+          ...face,
+          surface: { kind: "plane", origin: s.origin, normal: out },
+        }).face
       )
     }
-    return out
+    return faces
   }
   const behind = halfSpace(brep, plane, -1)
-  let faces = onPlane(behind ? brepBoolean("intersect", brep, behind) : null, 1)
+  let out = n
+  let faces = onPlane(
+    behind ? brepBoolean("intersect", brep, behind) : null,
+    out
+  )
   if (faces.length === 0) {
     // The plane on a face facing away from its normal: the piece in front
-    // keeps it.
+    // keeps it, and the region faces as the face does (p177).
+    out = unsigned0(scale3(n, -1))
     const ahead = halfSpace(brep, plane, 1)
-    faces = onPlane(ahead ? brepBoolean("intersect", brep, ahead) : null, -1)
+    faces = onPlane(ahead ? brepBoolean("intersect", brep, ahead) : null, out)
   }
   if (faces.length === 0) return null
   return {
-    normal: unsigned0(n),
-    elevation: dot3(plane.origin, n),
+    normal: unsigned0(out),
+    elevation: dot3(plane.origin, out),
     faces,
   }
 }

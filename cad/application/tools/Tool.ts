@@ -178,8 +178,9 @@ export interface UndoHistory {
  * JOIN's, STRETCH's crossing one,
  * BREAK's set of one object, UCS OBject's, which takes a group, UCS Face's,
  * which takes Crossing, Fence and CPolygon only, or ARRAYPATH's path curve), one object picked (`*Invalid selection*` and
- * its keywords, `Last` first for a plain pick as DIMSPACE's base dimension, or
- * `Expects a single object.` for the dimension commands' picks), or a
+ * its keywords, `Last` first for a plain pick as DIMSPACE's base dimension,
+ * `Group` for one that takes no selection mode as SLICE's planar Object and
+ * Surface, or `Expects a single object.` for the dimension commands' picks), or a
  * command's own refusal (CIRCLE's radius, POLYGON's sides), a line each when
  * it is several (-VPOINT's `Invalid input. Try again.` and the current view
  * direction again).
@@ -202,6 +203,7 @@ export type QuestionInput =
   | "pathCurve"
   | "object"
   | "objectOrLast"
+  | "objectOrGroup"
   | "singleObject"
   | {
       readonly refusal: MessageId | readonly MessageId[]

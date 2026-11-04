@@ -58,6 +58,11 @@ function through(a: Vec3, b: Vec3, c: Vec3): CutPlane {
 
 const centroid = (b: Brep) => solidInertia(brepMoments(b)).centroid
 
+function expectDirection(actual: Vec3, expected: Vec3) {
+  expect(actual).toBeCloseToPoint(expected, 12)
+  expect(actual.z).toBeCloseTo(expected.z, 12)
+}
+
 function counts(b: Brep) {
   return { v: b.vertices.length, e: b.edges.length, f: b.faces.length }
 }
@@ -212,7 +217,7 @@ describe("a solid's section by a plane", () => {
       normal: Z,
     })!
     expect(square.elevation).toBeCloseTo(5, 12)
-    expect(square.normal).toEqual(Z)
+    expectDirection(square.normal, Z)
     expect(square.faces).toHaveLength(1)
     expect(facesArea(square.faces)).toBeCloseTo(100, 9)
     const cylinder = roundBrep({ x: 0, y: 0, z: 0 }, Z, X, 5, 5, 10, 1)
@@ -245,12 +250,22 @@ describe("a solid's section by a plane", () => {
     expect(facesArea(ring.faces)).toBeCloseTo(87.43362938564083, 9)
   })
 
-  it("is a face the plane holds, either way it faces (c06)", () => {
-    const b = box(0, 0, 0, 10, 10, 10)
-    for (const z of [10, 0]) {
-      const face = brepSection(b, { origin: { x: 0, y: 0, z }, normal: Z })!
-      expect(facesArea(face.faces)).toBeCloseTo(100, 9)
-      expect(face.elevation).toBeCloseTo(z, 12)
+  it("is a face the plane holds, facing out of the solid (c06, solid-edits/p177)", () => {
+    // p177: View at Z 3 across a box sliced there, the lower half's top +Z
+    // and the upper half's bottom −Z, whichever way the plane faces.
+    const lower = box(0, 0, 0, 10, 10, 3)
+    const upper = box(0, 0, 3, 10, 10, 7)
+    for (const normal of [Z, { x: 0, y: 0, z: -1 }]) {
+      const plane = { origin: { x: 0, y: 0, z: 3 }, normal }
+      const top = brepSection(lower, plane)!
+      expect(facesArea(top.faces)).toBeCloseTo(100, 9)
+      expectDirection(top.normal, Z)
+      expect(top.elevation).toBeCloseTo(3, 12)
+      const bottom = brepSection(upper, plane)!
+      expect(facesArea(bottom.faces)).toBeCloseTo(100, 9)
+      expectDirection(bottom.normal, { x: 0, y: 0, z: -1 })
+      expect(bottom.elevation).toBeCloseTo(-3, 12)
+      expect(closedLoops(top) && closedLoops(bottom)).toBe(true)
     }
   })
 
