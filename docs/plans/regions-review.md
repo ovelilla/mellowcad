@@ -75,7 +75,7 @@ earlier `region/*` and `union/*`; on AutoCAD 2027 (ACADVER 26.0, X.118.0.0). The
 | RGO-06 | TRIM and EXTEND Quick on a region's edges, settled                                | f0e78c57 |
 | RGO-07 | the "a region in the other commands" tests protected less than their titles       | f0e78c57 |
 | RGD-01 | a composite solid showed no grip; AutoCAD one at its box's X-Y centre, lowest Z   | 91b97958 |
-| RGD-02 | a boolean-cut curved face's isolines differ (d03-3, d05-1; rule unprobed, Missing) | 91b97958 |
+| RGD-02 | a boolean-cut curved face's isolines (d03-3, d05-1: ISOLINES 8; ruled by SWD-01) | 91b97958 |
 | RGD-03 | one object named `Type (1)` in the palette's drop-down; AutoCAD the type alone    | 91b97958 |
 | RGD-04 | the command line's placeholder showed while a command asked                       | 91b97958 |
 | RGD-05 | the rollover glow covers the object's colour (Missing, REGIONS-D80)               | 91b97958 |

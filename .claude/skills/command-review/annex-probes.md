@@ -80,6 +80,10 @@ false a prompt Ortho and Polar leave alone (circle/d12). The flag says where to 
 where the command draws its own jig, Ortho bends a prompt the trace marks UseBasePoint false
 (RECTANG's corner, POLYGON's edge: rectang/d01, d02), and `<a` then a number there, ignored by the
 console, is honoured on the desktop (rectang/p08, d03).
+A traced `BasePoint` is evidence of its own: varied inputs fit it to 1e-15 (EXTRUDE's height,
+sweeps/EXT-01). A pick the console cannot click reads a typed point from its fixed cursor: those
+answers wait for the desktop (PRESSPULL, SLP-03). Two `Prompting` events with one message (a
+distance, then a point) are two history lines (p164, SWD-04).
 
 A command the ribbon runs in modes has its buttons' macros in `acad.cuix`, a zip (read it with
 Python's `zipfile`; `unzip` is not installed): `^C^C_circle \_d` is what the history echoes.
@@ -289,6 +293,11 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
 
 - COM is locked while a command waits, so compute every pixel (`px`) before typing it; a name
   prompt (CHPROP's layer) takes spaces: end it with `\n` (regions/d02, d04; Regions).
+
+- A line's place is read from pixels in two orthogonal views (a ruling's cos in Front, its sin in
+  Right; sweeps/d01); a click lands within a pixel, so the target is a POINT snapped by Node (d05).
+  AutoCAD may move monitors between probes: a white shot means `acad.sh children` again; a fresh
+  launch needs `com netload` before `com hist` (Sweeps).
 
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).

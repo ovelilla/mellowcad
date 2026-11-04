@@ -169,7 +169,8 @@ the review, not an "n/a".
 - An edit made outside a command (a palette, a drop-down, a grip) is a row of its own for U's
   echo: AutoCAD names it (`CHPROP`, `Modify Property`, `Grip Edit`; properties/d05-2).
 - The chrome's keys, menus and buttons are read in acad.cuix first (AcceleratorRoot, PopMenuRoot,
-  RibbonRoot): order, labels, macros (`^C^C` cancels, `'` is transparent; Workspace, MAC-01).
+  RibbonRoot): order, labels, macros (`^C^C` cancels, `'` is transparent; Workspace, MAC-01), which
+  may answer the command's options (EXTRUDE's `_MO _SO`, EXT-10).
 - A run that awaits a port (the clipboard's read): probe its U name and a command typed meanwhile.
 - Read what each command leaves selected (`(ssget "_I")` after it ends or is cancelled): a set
   left behind is the next command's preselection (ERASE's SEL-43).
@@ -245,7 +246,7 @@ deviation without a `WHY` and a coverage note is a finding.
   two subagents with the same prompts found ELLIPSE's differences twice; a case every prompt meets,
   such as a zero vector, goes to one of them, or MOVE's turned up under three ids), the finding format
   (§5.1), its prefix and a range of decision ids of its own (the Undo keyword's listing and steps
-  at every prompt, the preselection and the review of the
+  at every prompt, the preselection, a run after one with options (SWO-01) and the review of the
   existing tests go to one subagent by name: OFFSET's turned up three times; so does a path two
   commands share, BLOCK's Convert asking INSERT's values: found twice), the order to claim nothing about
   AutoCAD without a probe id the reviewer gave it, and the patterns found earlier in the review
@@ -303,7 +304,7 @@ Before delivering, each finding tries to refute itself:
 - Is it **already in Missing**? Then it is `known`, not new (unless the reason changed).
 - Does the probe show **AutoCAD's default profile**? The isolated console starts every registry
   variable at its default; the desktop has the owner's settings (DYNMODE 0, the command line
-  hidden). A difference between the two is a setting, not a behaviour.
+  hidden, ISOLINES 8 in a new drawing: RGD-02 read it as 4, SWD-01). A difference between the two is a setting, not a behaviour.
 - Is it the **console's artefact**? The console has no jig, no dynamic input, a fixed cursor
   (annex-probes.md §2): a jig-only behaviour is settled on the desktop. A suspicion **refuted** as the
   console's artefact waits for the desktop too: UCS's p237 kept a Save name's space, refuted by
@@ -385,21 +386,9 @@ a finding that needed a question the template does not ask, a step that cost mor
 probe pattern worth reusing. They are proposed in the plan (§6.14) and applied here at the
 review's close (the owner waived the wait for approval on 2026-10-21), each with its date.
 
-Applied (the detail: `git log -- .claude/skills/command-review`):
-
-- 2026-10-21: LINE, PLINE, CIRCLE, ARC, RECTANG and POLYGON, ELLIPSE, SPLINE, ERASE; the matrix's
-  P, Q and snaps three ways (owner).
-- 2026-10-22: MOVE and COPY, Transforms, OFFSET, TRIM, Corners, Arrays (desktop traps, the object's
-  desktop pass first).
-- 2026-10-23: Properties (the whole monitor before a click, U's echo of an edit outside a command,
-  resource DLLs), Text (an editor's Escape, spaces in answers, txt.shx).
-- 2026-10-26, 10-27: HATCH, Blocks, Dimensions (the shared contracts' sweep, asserting scratch
-  tests), Inquiry, View (`acad.pgp`, hangs, gestures as undo steps).
-- 2026-10-28: UCS (old citations counted, findings without gaps, a refutation as the console's
-  artefact waits for the desktop); Workspace (acad.cuix first, AutoComplete, Chrome's keys).
-- 2026-10-29, Clipboard: the console's clipboard, a Lisp stub, DYNMODE under COM, a menu key in U
-  (annex-probes.md §2, §4); a run awaiting a port (§4.1).
-- 2026-11-03, 3D primitives: QAFLAGS first, a snap's help, the capped log (annex-probes.md §2,
-  §5); a refusal's words per input function (annex-catalogs.md §3); the desktop's cursor on a
-  line, a keyword mid-jig, the look by PNGs (annex-probes.md §4). Regions: a same-run control,
-  COM's pixels, a shadowing alias (annex-probes.md §2, §4; matrix.md A).
+Applied (the detail: `git log -- .claude/skills/command-review`): 2026-10-21 LINE to ERASE, the
+matrix's P, Q and snaps (owner); 10-22 MOVE to Arrays; 10-23 Properties, Text; 10-26, 10-27 HATCH
+to View; 10-28 UCS, Workspace; 10-29 Clipboard; 11-03 3D primitives, Regions; 11-04 Sweeps (a
+traced BasePoint, a pick from the cursor, a jig prompt twice, pixels in two views, a POINT under
+Node: annex-probes.md §2, §4; the ribbon's answers, a run after options, the desktop drawing's
+variables: §4.1, §4.8, §5.3).
