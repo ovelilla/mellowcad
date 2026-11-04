@@ -13,6 +13,7 @@ import { regionArea } from "../domain/regions"
 import type { Entity, RegionEntity, Solid3dEntity } from "../domain/entities"
 import { es } from "../locales/es"
 import { ptBR } from "../locales/pt-BR"
+import { THEME } from "../scene/theme"
 
 function answer(cad: CadHarness, ...texts: string[]): CadHarness {
   for (const text of texts) {
@@ -89,6 +90,11 @@ function twoBoxes(): CadHarness {
 /** The box with a circle on its plane at Z 4 (radius 1 about 5,5), zoomed to it. */
 function boxAndCircle(locale?: typeof es): CadHarness {
   return answer(box(locale), "_CIRCLE", "5,5,4", "1", "_ZOOM", "_E")
+}
+
+/** The box seen as the desktop probes saw it (solid-edits/d05, d06). */
+function viewed(): CadHarness {
+  return answer(box(), "_-VPOINT", "-1.3,-2.2,1.6", "_ZOOM", "_E")
 }
 
 /** A layer made locked, `entity` moved onto it. */
@@ -1029,6 +1035,36 @@ describe("LASTPOINT (ELP-01, EDITS-D3)", () => {
       [0, 0, 0],
     ])
   })
+
+  it("sets it at a side point on the plane, refused and asked again (solid-edits/d05-b)", () => {
+    const cad = box()
+    answer(cad, "ID", "7,7,7", "SLICE", "_ALL", "", "0,0,0", "10,0,0")
+    expect(written(cad, "0,0,10")).toEqual([
+      "Specify a point on desired side or [keep Both sides] <Both>: 0,0,10",
+      "The point should not be on the slicing plane.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "SLICE Specify a point on desired side or [keep Both sides] <Both>:"
+    )
+    const said = written(cad, "'SETVAR", "LASTPOINT", "").join(" ")
+    expect(said).toContain("LASTPOINT <0.00,0.00,10.00>")
+  })
+
+  it("sets it at a click that takes planar Object's plane, the cursor's point on the work plane (solid-edits/d06)", () => {
+    // The line of sight through 8,5,5 meets Z 0 at 8,5,5 + 3.125 × (1.3,
+    // 2.2, −1.6); AutoCAD read 12.0971,11.9228,0 at its pixel.
+    for (const command of ["SLICE", "SECTION"]) {
+      const cad = viewed()
+      answer(cad, "CIRCLE", "5,5,5", "3", "ID", "7,7,7")
+      answer(cad, command, "_ALL", "", "_O")
+      cad.click({ x: 8, y: 5, z: 5 })
+      cad.escape()
+      answer(cad, "LUPREC", "4")
+      expect(written(cad, "ID", "@")).toContain(
+        " X = 12.0625     Y = 11.8750     Z = 0.0000"
+      )
+    }
+  })
 })
 
 describe("SECTION's region of a face (SEC-01)", () => {
@@ -1043,6 +1079,77 @@ describe("SECTION's region of a face (SEC-01)", () => {
     for (const region of [top, bottom]) {
       expect(regionArea(region)).toBeCloseTo(100, 9)
       expectPoint(regionCentroid(region), { x: 5, y: 5, z: 3 })
+    }
+  })
+})
+
+describe("on the desktop (SED-05, SED-11)", () => {
+  const bands = (cad: CadHarness) =>
+    cad
+      .scene()
+      .primitives.flatMap((p) =>
+        p.kind === "segment" && p.stroke.color === THEME.dashedRubberBand
+          ? [p]
+          : []
+      )
+  /** The one dashed band drawn, from `base`. */
+  const bandFrom = (cad: CadHarness, base: Vec3) => {
+    const drawn = bands(cad)
+    expect(drawn).toHaveLength(1)
+    expect(drawn[0].a).toBeCloseToPoint(cad.toScreen(base), 6)
+    expect(drawn[0].stroke).toMatchObject({ width: 1, dash: [2, 3] })
+  }
+  const ORIGIN: Vec3 = { x: 0, y: 0, z: 0 }
+
+  it("draws a dashed band from the start point at the second, none at the side (solid-edits/d05-b)", () => {
+    for (const command of ["SLICE", "SECTION"]) {
+      const cad = viewed()
+      answer(cad, command, "_ALL", "")
+      cad.moveTo({ x: 8, y: 5, z: 0 })
+      expect(bands(cad)).toEqual([])
+      answer(cad, "0,0,0")
+      cad.moveTo({ x: 8, y: 5, z: 0 })
+      bandFrom(cad, ORIGIN)
+    }
+    const cad = viewed()
+    answer(cad, "SLICE", "_ALL", "", "0,0,0", "10,0,0")
+    cad.moveTo({ x: 3, y: 3, z: 0 })
+    expect(bands(cad)).toEqual([])
+  })
+
+  it("draws it from 3points' first at the second and the third, from Zaxis' plane point (solid-edits/d05-c)", () => {
+    const cad = viewed()
+    answer(cad, "SLICE", "_ALL", "", "", "0,0,0")
+    cad.moveTo({ x: 8, y: 5, z: 0 })
+    bandFrom(cad, ORIGIN)
+    answer(cad, "10,0,0")
+    cad.moveTo({ x: 3, y: 3, z: 0 })
+    bandFrom(cad, ORIGIN)
+    const z = viewed()
+    answer(z, "SLICE", "_ALL", "", "_Z")
+    z.moveTo({ x: 3, y: 3, z: 0 })
+    expect(bands(z)).toEqual([])
+    answer(z, "0,0,5")
+    z.moveTo({ x: 3, y: 3, z: 0 })
+    bandFrom(z, { x: 0, y: 0, z: 5 })
+  })
+
+  it("lights the object under the cursor at Surface's pick, as at planar Object's (solid-edits/d05-d)", () => {
+    const hover = (cad: CadHarness) =>
+      cad
+        .scene()
+        .primitives.filter(
+          (p) => "stroke" in p && p.stroke?.color === THEME.entityHover
+        ).length
+    for (const option of ["_O", "_S"]) {
+      const cad = viewed()
+      answer(cad, "CIRCLE", "5,5,5", "3", "SLICE", "_ALL", "", option)
+      cad.moveTo({ x: 30, y: 30, z: 0 })
+      expect(hover(cad)).toBe(0)
+      cad.moveTo({ x: 8, y: 5, z: 5 })
+      expect(hover(cad)).toBeGreaterThan(0)
+      cad.moveTo({ x: 5, y: 0, z: 10 })
+      expect(hover(cad)).toBe(12)
     }
   })
 })

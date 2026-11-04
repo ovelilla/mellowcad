@@ -3,9 +3,11 @@ import { describe, expect, it } from "vitest"
 import { type CadHarness, createHarness } from "../../test/harness"
 import { brepBox, brepIsClosed, brepVolume } from "../geometry/solids"
 import { regionArea } from "../domain/regions"
+import type { Vec3 } from "../geometry/Vec3"
 import type { RegionEntity, Solid3dEntity } from "../domain/entities"
 import { es } from "../locales/es"
 import { ptBR } from "../locales/pt-BR"
+import { THEME } from "../scene/theme"
 
 function answer(cad: CadHarness, ...texts: string[]): CadHarness {
   for (const text of texts) {
@@ -1160,5 +1162,107 @@ describe("SOLIDEDIT's run (solid-edits/p306, p307, p334, p337, p338, p350–p357
       )
       expect(prompt(cad)).toBe(asked)
     }
+  })
+})
+
+describe("SOLIDEDIT on the desktop (SED-02, SED-05, SED-06, SED-09)", () => {
+  const hoverStrokes = (cad: CadHarness) =>
+    cad
+      .scene()
+      .primitives.filter(
+        (p) => "stroke" in p && p.stroke?.color === THEME.entityHover
+      ).length
+  const bands = (cad: CadHarness) =>
+    cad
+      .scene()
+      .primitives.flatMap((p) =>
+        p.kind === "segment" && p.stroke.color === THEME.dashedRubberBand
+          ? [p]
+          : []
+      )
+  /** The one dashed band drawn, from `base`. */
+  const bandFrom = (cad: CadHarness, base: Vec3) => {
+    const drawn = bands(cad)
+    expect(drawn).toHaveLength(1)
+    expect(drawn[0].a).toBeCloseToPoint(cad.toScreen(base), 6)
+    expect(drawn[0].stroke).toMatchObject({ width: 1, dash: [2, 3] })
+  }
+
+  it("takes a click at Rotate's axis point as its first, snapped as the other points (solid-edits/d02-e)", () => {
+    const clicked = view(
+      answer(createHarness({ snap: true }), "_BOX", "0,0,0", "10,10", "10")
+    )
+    answer(clicked, "SOLIDEDIT", "_F", "_R", "3,7,10", "")
+    clicked.click({ x: 0, y: 0, z: 10 })
+    expect(prompt(clicked)).toBe(
+      "SOLIDEDIT Specify the second point on the rotation axis:"
+    )
+    answer(clicked, "10,0,10", "10")
+    const typed = box()
+    answer(typed, "SOLIDEDIT", "_F", "_R", "3,7,10", "", "0,0,10")
+    answer(typed, "10,0,10", "10")
+    expect(volumes(clicked)).toEqual(volumes(typed))
+    expect(volumes(typed)).not.toEqual([1000])
+  })
+
+  it("draws a dashed band from Move's base at its second point (solid-edits/d02-d)", () => {
+    const cad = box()
+    answer(cad, "SOLIDEDIT", "_F", "_M", "3,7,10", "")
+    cad.moveTo({ x: -5, y: 0, z: 15 })
+    expect(bands(cad)).toEqual([])
+    answer(cad, "0,0,10")
+    cad.moveTo({ x: -5, y: 0, z: 15 })
+    bandFrom(cad, { x: 0, y: 0, z: 10 })
+  })
+
+  it("draws it from Rotate's first axis point, then from the second at the angle (solid-edits/d02-e)", () => {
+    const cad = box()
+    answer(cad, "SOLIDEDIT", "_F", "_R", "3,7,10", "")
+    cad.moveTo({ x: 9, y: 0, z: 12 })
+    expect(bands(cad)).toEqual([])
+    answer(cad, "0,0,10")
+    cad.moveTo({ x: 9, y: 0, z: 12 })
+    bandFrom(cad, { x: 0, y: 0, z: 10 })
+    answer(cad, "10,0,10")
+    cad.moveTo({ x: 5, y: 10, z: 12 })
+    bandFrom(cad, { x: 10, y: 0, z: 10 })
+  })
+
+  it("draws it from Taper's base point, none at the angle (solid-edits/d02-f)", () => {
+    const cad = box()
+    answer(cad, "SOLIDEDIT", "_F", "_T", "3,7,10", "", "0,0,10")
+    cad.moveTo({ x: 0, y: 0, z: 3 })
+    bandFrom(cad, { x: 0, y: 0, z: 10 })
+    answer(cad, "0,0,0")
+    cad.moveTo({ x: 4, y: 0, z: 3 })
+    expect(bands(cad)).toEqual([])
+  })
+
+  it("sets LASTPOINT at a click that takes faces, the cursor's point on the work plane (solid-edits/d06)", () => {
+    const cad = box()
+    answer(cad, "ID", "7,7,7", "SOLIDEDIT", "_F", "_M")
+    cad.click({ x: 5, y: 0, z: 10 })
+    cad.escape()
+    answer(cad, "LUPREC", "4")
+    // The line of sight through 5,0,10 meets Z 0 at 5,0,10 + 6.25 × (1.3,
+    // 2.2, −1.6); AutoCAD read 13.1528,13.8095,0 at its pixel.
+    expect(written(cad, "ID", "@")).toContain(
+      " X = 13.1250     Y = 13.7500     Z = 0.0000"
+    )
+  })
+
+  it("lights nothing inside a face, the whole solid over its edge (solid-edits/d02-b)", () => {
+    const cad = box()
+    answer(cad, "SOLIDEDIT", "_F", "_M")
+    cad.moveTo({ x: 3, y: 7, z: 10 })
+    expect(hoverStrokes(cad)).toBe(0)
+    cad.moveTo({ x: 5, y: 0, z: 10 })
+    expect(hoverStrokes(cad)).toBe(12)
+    // The faces taken glow as selected; the rollover goes on over an edge.
+    cad.click({ x: 3, y: 7, z: 10 })
+    cad.moveTo({ x: 3, y: 7, z: 10 })
+    expect(hoverStrokes(cad)).toBe(0)
+    cad.moveTo({ x: 10, y: 5, z: 10 })
+    expect(hoverStrokes(cad)).toBe(12)
   })
 })

@@ -299,8 +299,10 @@ export function pickRolloverEntity(
  * The subobjects of solids: the one Ctrl holds the cursor over glowing as a
  * rollover does, a vertex a light disc on it; each selected glowing blue as a
  * selected object, with its grip red — a face's a disc in its plane at its
- * centre, an edge's a bar along it at its middle, a vertex's a dot (desktop,
- * a box in a custom view, 2D Wireframe).
+ * centre, an edge's a bar along it at its middle, a vertex's a dot (desktop
+ * solid-edits/d01-b, d01-c: a box in a custom view, 2D Wireframe). A locked
+ * solid's glows not under Ctrl, the padlock saying why, and wears no grip
+ * once taken (d01-h).
  */
 function pushSubobjects(
   out: ScenePrimitive[],
@@ -314,7 +316,7 @@ function pushSubobjects(
   const hovered = state.phase === "idle" ? state.hoverSubobject : null
   if (hovered) {
     const solid = solidOf(hovered)
-    if (solid) {
+    if (solid && ctx.document.isEntityEditable(solid)) {
       for (const edge of subobjectEdgeEntities(solid, hovered)) {
         pushRolloverHighlight(out, edge, ctx)
       }
@@ -336,7 +338,9 @@ function pushSubobjects(
         ...selectionGlow(ctx.viewport, edge, { color: THEME.entity, width: 1 })
       )
     }
-    const grip = subobjectGrip(solid, ref)
+    const grip = ctx.document.isEntityEditable(solid)
+      ? subobjectGrip(solid, ref)
+      : null
     if (!grip) continue
     out.push(subobjectGripShape(grip, ctx))
   }

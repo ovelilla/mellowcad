@@ -6677,11 +6677,14 @@ export class CadRuntime extends Observable {
     this.host.requestRender()
   }
 
-  /** A key let go: only Shift's matters, for the badge it shows. */
+  /** A key let go: Shift's for the badge it shows, and the tool's (Ctrl's). */
   keyUp(e: KeyEventData): void {
-    if (e.key !== "Shift" || !this.pointerShift) return
-    this.pointerShift = false
-    this.host.requestRender()
+    if (e.key === "Shift" && this.pointerShift) {
+      this.pointerShift = false
+      this.host.requestRender()
+    }
+    this.activeTool.onKeyUp?.(e, this.toolContext)
+    this.observeRollover()
   }
 
   /**
@@ -7060,6 +7063,7 @@ export class CadRuntime extends Observable {
       return consumed
     }
     this.activeTool.onKeyDown?.(e, this.toolContext)
+    this.observeRollover()
     this.host.requestRender()
     return false
   }

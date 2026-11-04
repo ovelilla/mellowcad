@@ -14,8 +14,7 @@ function answer(cad: CadHarness, ...texts: string[]): CadHarness {
 /**
  * A 10 box seen from (-1.3, -2.2, 1.6), the desktop's view of it: its top,
  * front (Y 0) and left (X 0) towards the viewer, no two edges drawn over each
- * other as SW Isometric draws them. "(desktop)" is AutoCAD 2027's desktop,
- * in a session that numbered no probes.
+ * other as SW Isometric draws them (AutoCAD 2027's desktop, solid-edits/d01).
  */
 function box(): CadHarness {
   const cad = createHarness()
@@ -35,8 +34,18 @@ const filled = (cad: CadHarness, color: string) =>
   cad.scene().primitives.filter((p) => p.kind === "path" && p.fill === color)
     .length
 
+const stroked = (cad: CadHarness, color: string) =>
+  cad
+    .scene()
+    .primitives.filter((p) => "stroke" in p && p.stroke?.color === color).length
+
+const padlock = (cad: CadHarness) =>
+  cad
+    .scene()
+    .primitives.some((p) => p.kind === "rect" && p.fill === THEME.lockedBadge)
+
 describe("a solid's subobjects, Ctrl+clicked", () => {
-  it("takes the face under the cursor, its edges glowing and its grip red", () => {
+  it("takes the face under the cursor, its edges glowing and its grip red (solid-edits/d01-b, d01-c)", () => {
     const cad = box()
     cad.moveTo({ x: 3, y: 7, z: 10 }, CTRL)
     // Held over it, its four edges glow as a rollover does.
@@ -62,7 +71,7 @@ describe("a solid's subobjects, Ctrl+clicked", () => {
     ).toBe(4)
   })
 
-  it("takes a vertex over its edges, an edge over its faces, and adds them up", () => {
+  it("takes a vertex over its edges, an edge over its faces, and adds them up (solid-edits/d01-b, d01-c)", () => {
     const cad = box()
     cad.click({ x: 10, y: 0, z: 10 }, CTRL)
     cad.click({ x: 5, y: 0, z: 10 }, CTRL)
@@ -83,7 +92,7 @@ describe("a solid's subobjects, Ctrl+clicked", () => {
     ])
   })
 
-  it("takes one out with Ctrl+Shift, and Escape drops them all", () => {
+  it("takes one out with Ctrl+Shift, and Escape drops them all (solid-edits/d01-e)", () => {
     const cad = box()
     cad.click({ x: 3, y: 7, z: 10 }, CTRL)
     cad.click({ x: 5, y: 0, z: 10 }, CTRL)
@@ -93,7 +102,7 @@ describe("a solid's subobjects, Ctrl+clicked", () => {
     expect(subobjects(cad)).toEqual([])
   })
 
-  it("walks to the face behind with Ctrl+Space (desktop: the top, then the back)", () => {
+  it("walks to the face behind with Ctrl+Space: the top, then the back (solid-edits/d01-d, d01-e)", () => {
     const cad = box()
     cad.moveTo({ x: 3, y: 7, z: 10 }, CTRL)
     expect(cad.press(" ", CTRL)).toBe(true)
@@ -119,7 +128,9 @@ describe("a solid's subobjects, Ctrl+clicked", () => {
     expect(subobjects(hidden).map((s) => s.kind)).toEqual(["face"])
   })
 
-  it("is no set a command takes: ERASE asks for objects", () => {
+  // WHY no `1 found`: AutoCAD's LIST, MOVE and ERASE take a selected face
+  // as their preselection (solid-edits/d01-f), phase 6c's here (EDITS-D133).
+  it("is no set a command takes here: ERASE asks for objects", () => {
     const cad = box()
     cad.click({ x: 3, y: 7, z: 10 }, CTRL)
     const from = cad.commandLog().length
@@ -137,6 +148,30 @@ describe("a solid's subobjects, Ctrl+clicked", () => {
     const cad = box()
     cad.click({ x: 40, y: 40, z: 0 }, CTRL)
     expect(subobjects(cad)).toEqual([])
+  })
+
+  it("lights the face as Ctrl goes down with the cursor still, unlit as it comes up (solid-edits/d01-a)", () => {
+    const cad = box()
+    cad.moveTo({ x: 3, y: 7, z: 10 })
+    expect(stroked(cad, THEME.entityHover)).toBe(0)
+    cad.press("Control", CTRL)
+    expect(stroked(cad, THEME.entityHover)).toBe(4)
+    cad.release("Control")
+    expect(stroked(cad, THEME.entityHover)).toBe(0)
+  })
+
+  it("shows a locked solid's face with the padlock and no glow, and takes it with no grip (solid-edits/d01-h)", () => {
+    const cad = box()
+    cad.runtime.updateLayer(cad.latest().layerId, { locked: true })
+    cad.moveTo({ x: 3, y: 7, z: 10 }, CTRL)
+    expect(padlock(cad)).toBe(true)
+    expect(stroked(cad, THEME.entityHover)).toBe(0)
+    cad.click({ x: 3, y: 7, z: 10 }, CTRL)
+    expect(subobjects(cad)).toEqual([{ kind: "face", index: TOP }])
+    cad.moveTo({ x: 500, y: 500, z: 0 })
+    expect(padlock(cad)).toBe(false)
+    expect(stroked(cad, THEME.selected)).toBe(4)
+    expect(filled(cad, THEME.gripHot)).toBe(0)
   })
 })
 

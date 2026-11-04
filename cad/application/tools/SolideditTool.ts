@@ -18,7 +18,10 @@ import {
   copiedFaces,
   solidFacesEdited,
 } from "../../domain/solidModeling"
-import { subobjectEdgeEntities } from "../../domain/solidSubobjects"
+import {
+  SubobjectRef,
+  subobjectEdgeEntities,
+} from "../../domain/solidSubobjects"
 import { ucsZAxis } from "../../domain/ucs"
 import { formatLength } from "../../domain/units"
 import { subobjectsAt } from "../subobjectPick"
@@ -34,8 +37,10 @@ import type { PromptId } from "../../locales/types"
 import type { MessageId } from "../EngineText"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
-import { entityScenePrimitive, selectionGlow } from "../SceneBuilder"
+import { selectionGlow } from "../SceneBuilder"
 import { withCurrentProperties } from "./currentProperties"
+import { rollover } from "./ghostLook"
+import { sizeBand } from "./solidJig"
 import { SolidDefaults, solidDefaults } from "./solidDefaults"
 import { SweepSettings, sweepSettings } from "./sweepSettings"
 import {
@@ -64,10 +69,8 @@ type SolideditState =
       readonly phase: "select"
       readonly option: FaceOption
       readonly removing: boolean
-      readonly hover: {
-        readonly id: EntityId
-        readonly faces: readonly number[]
-      } | null
+      /** The solid whose edge the pick box touches, lit whole. */
+      readonly hover: EntityId | null
     }
   | { readonly phase: "height" }
   | { readonly phase: "taper"; readonly height: number }
@@ -187,6 +190,7 @@ export class SolideditTool implements Tool {
   /** The history's depth before each edit of this run, for its Undo. */
   private marks: number[] = []
   private lastScreen: Vec2 | null = null
+  private cursor: Vec3 | null = null
 
   constructor(
     private readonly start: FaceOption | null = null,
@@ -528,6 +532,9 @@ export class SolideditTool implements Tool {
     return (
       phase === "base" ||
       phase === "second" ||
+      // A click at the axis prompt is its first point (desktop
+      // solid-edits/d02-e), as the typed one.
+      phase === "axis" ||
       phase === "axisFirst" ||
       phase === "axisSecond" ||
       phase === "origin" ||
@@ -547,18 +554,11 @@ export class SolideditTool implements Tool {
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
+    this.cursor = input.point
     const state = this.state
     if (state.phase === "select") {
-      const found = this.facesAt(input.screen, ctx, !state.removing)
-      this.state = {
-        ...state,
-        hover:
-          found !== null &&
-          found !== "locked" &&
-          (this.solid === null || found.solid.id === this.solid)
-            ? { id: found.solid.id, faces: found.faces }
-            : null,
-      }
+      const hover = this.rolloverAt(input.screen, ctx)
+      if (hover !== state.hover) this.state = { ...state, hover }
     }
     ctx.dynamicInput.setPosition(input.screen)
     ctx.requestRender()
@@ -568,7 +568,9 @@ export class SolideditTool implements Tool {
     if (input.button !== 0) return
     const state = this.state
     if (state.phase === "select") {
-      this.pickFace(input.screen, ctx)
+      // A click that takes faces is LASTPOINT, the cursor's point on the
+      // work plane (desktop solid-edits/d06); one taking none is unverified.
+      if (this.pickFace(input.screen, ctx)) ctx.setLastPoint(input.point)
       return
     }
     if (this.wantsSnap()) this.takePoint(input.point, ctx)
@@ -594,22 +596,15 @@ export class SolideditTool implements Tool {
       }
     }
     if (state.phase === "select" && state.hover) {
-      const owner = ctx.document.get(state.hover.id)
-      if (owner?.type === "solid3d") {
-        for (const index of state.hover.faces) {
-          for (const edge of subobjectEdgeEntities(owner, {
-            kind: "face",
-            index,
-          })) {
-            out.push(
-              ...entityScenePrimitive(ctx.viewport, edge, {
-                color: THEME.entityHover,
-                width: 2,
-              })
-            )
-          }
-        }
-      }
+      const owner = ctx.document.get(state.hover)
+      if (owner) out.push(...rollover(ctx, owner))
+    }
+    // The dashed band from the prompt's base: Move's second point, Rotate's
+    // second axis point and its angle, Taper's axis; none at Taper's angle
+    // (desktop solid-edits/d02-d, d02-e, d02-f).
+    const from = this.getConstraintAnchor()
+    if (from && this.cursor) {
+      out.push(sizeBand(ctx.viewport, from, this.cursor))
     }
     return out
   }
@@ -681,6 +676,35 @@ export class SolideditTool implements Tool {
     this.openPick(ctx)
   }
 
+  /** The edges and faces of the solids under `screen`, edges first. */
+  private edgesAndFacesAt(screen: Vec2, ctx: ToolContext): SubobjectRef[] {
+    const { document } = ctx
+    const solids = document
+      .getEntities()
+      .filter(
+        (e): e is Solid3dEntity =>
+          e.type === "solid3d" && document.isEntityVisible(e)
+      )
+    const shaded = document.getSettings().visualStyle !== "2dWireframe"
+    return subobjectsAt(solids, ctx.viewport, screen, shaded).filter(
+      (ref) => ref.kind !== "vertex"
+    )
+  }
+
+  /**
+   * The solid a pick at `screen` lights: the one whose edge the pick box
+   * touches, whole, as a set prompt's rollover; none inside a face (desktop
+   * solid-edits/d02-b). Locked, or another than the faces' solid, none
+   * (unverified).
+   */
+  private rolloverAt(screen: Vec2, ctx: ToolContext): EntityId | null {
+    const first = this.edgesAndFacesAt(screen, ctx)[0]
+    if (first?.kind !== "edge") return null
+    const owner = ctx.document.get(first.id)
+    if (!owner || !ctx.document.isEntityEditable(owner)) return null
+    return this.solid === null || owner.id === this.solid ? owner.id : null
+  }
+
   /**
    * What a pick at `screen` finds, the first solid under it deciding: the two
    * faces of an edge drawn within the pick box (solid-edits/p313, p361), else
@@ -690,16 +714,7 @@ export class SolideditTool implements Tool {
    */
   private facesAt(screen: Vec2, ctx: ToolContext, adding: boolean): FacePick {
     const { document } = ctx
-    const solids = document
-      .getEntities()
-      .filter(
-        (e): e is Solid3dEntity =>
-          e.type === "solid3d" && document.isEntityVisible(e)
-      )
-    const shaded = document.getSettings().visualStyle !== "2dWireframe"
-    const found = subobjectsAt(solids, ctx.viewport, screen, shaded).filter(
-      (ref) => ref.kind !== "vertex"
-    )
+    const found = this.edgesAndFacesAt(screen, ctx)
     const owner = found.length > 0 ? document.get(found[0].id) : undefined
     if (owner?.type !== "solid3d") return null
     if (!document.isEntityEditable(owner)) return "locked"
@@ -718,10 +733,12 @@ export class SolideditTool implements Tool {
     return first && { solid: owner, faces: first }
   }
 
-  private pickFace(screen: Vec2, ctx: ToolContext): void {
+  /** A face's pick at `screen`: whether it took faces into the set or out of it. */
+  private pickFace(screen: Vec2, ctx: ToolContext): boolean {
     const state = this.state
-    if (state.phase !== "select") return
+    if (state.phase !== "select") return false
     const found = this.facesAt(screen, ctx, !state.removing)
+    let took = false
     if (found === null || found === "locked") {
       if (found === "locked") {
         ctx.report(ctx.text.message("objectOnLockedLayer"), "error")
@@ -733,6 +750,7 @@ export class SolideditTool implements Tool {
       const removed = found.faces.filter((f) => this.faces.includes(f))
       // Nothing is said for a face not in the set (p322).
       if (removed.length > 0) {
+        took = true
         this.faces = this.faces.filter((f) => !removed.includes(f))
         this.removed.push(removed)
         ctx.report(
@@ -746,12 +764,14 @@ export class SolideditTool implements Tool {
       const added = found.faces.filter((f) => !this.faces.includes(f))
       this.solid = found.solid.id
       if (added.length > 0) {
+        took = true
         this.faces = [...this.faces, ...added]
         this.added.push(added)
         ctx.report(ctx.text.message("facesFound", { count: added.length }))
       }
     }
     this.openPick(ctx)
+    return took
   }
 
   /**

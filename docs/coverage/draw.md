@@ -1721,7 +1721,8 @@ off the UCS's plane does (no desktop pass of objects).
 ### `SECTION` / `SEC` · es `SECCION` / `SC` · pt-BR `CORTE` / `SECAO`
 
 **Implemented:** As 2027's console asks it in en, es and pt-BR (section/c01–c09, solid-edits/p104–p179):
-a preselection is dropped and the set asked (solid-edits/p131); `Select objects:`, whole objects,
+a preselection is dropped and the set asked (solid-edits/p131; a click's too, desktop d05-a);
+`Select objects:`, whole objects,
 what is no solid passed over (c08: a circle), a locked solid counted `1 was on a locked layer.`
 (p159); a set with no solid says `No Solids, Surfaces or Meshes selected.` (es `No se ha seleccionado
 ningún sólido, superficie o malla.`, pt-BR `Nenhum sólido, superfície ou malha selecionado.`) and
@@ -1739,8 +1740,9 @@ p177: a bottom face's region faces −Z); one it misses says `Sectioning plane d
 selected solid.` (`… 1 selected solid.`, `… 2 selected solids.` among several, c04, p140). The
 regions wear the current layer and properties, not the solid's (c09, p151), made in the set's order,
 ALL's newest first (p151, p175); the solids stay. Every point answered sets LASTPOINT as SLICE's
-(p120, p135). One undo step, `SECTION` (c07, p170). Typed only, as the ribbon offers SECTIONPLANE in
-its place.
+(p120, p135), and so does a click that takes Object's plane (desktop d06); its dashed bands are
+SLICE's (d05-b, d05-c). One undo step, `SECTION` (c07, p170). Typed only, as the ribbon offers
+SECTIONPLANE in its place.
 
 **Missing:** surfaces and meshes; a planar 3D polyline as Object's plane, as SLICE's; the meetings
 with no closed form, as SLICE's (`1 boolean operation(s) failed.` here); SECTIONPLANE and live

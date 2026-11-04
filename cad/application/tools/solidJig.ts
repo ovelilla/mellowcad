@@ -12,9 +12,10 @@ import { axisOnScreen } from "./heightPick"
 const DIMENSION_OFFSET_PX = 38
 
 /**
- * The amber dashed band from a size prompt's base to the cursor, as CIRCLE's
+ * The amber dashed band from a prompt's base to the cursor, as CIRCLE's
  * radius draws it: a solid's radius, diameter, tube, top and height (desktop
- * primitives/d02, d07, d11).
+ * primitives/d02, d07, d11); SOLIDEDIT's and SLICE's later points
+ * (solid-edits/d02, d05).
  */
 export function sizeBand(view: Viewport, from: Vec3, to: Vec3): ScenePrimitive {
   return {

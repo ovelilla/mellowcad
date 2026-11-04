@@ -44,6 +44,7 @@ import {
 import { withCurrentProperties } from "./currentProperties"
 import { lockedObjectAt } from "./lockedPick"
 import { ModeFind, ObjectSelector } from "./objectSelection"
+import { sizeBand } from "./solidJig"
 import { typedPick } from "./typedPick"
 
 type Axis = "XY" | "YZ" | "ZX"
@@ -133,9 +134,11 @@ export class PlaneCutTool implements Tool {
   /** The set in AutoCAD's order, which the cut follows. */
   private order: EntityId[] = []
   private lastScreen: Vec2 | null = null
+  private cursor: Vec3 | null = null
   private readonly selector: ObjectSelector
   // WHY no modes: Object's and Surface's picks are AutoCAD's `entsel`, which
-  // refuses `_L` and FOO alike (solid-edits/p171, p174).
+  // refuses `_L` and FOO alike (solid-edits/p171, p174). Surface's lights
+  // what is under the cursor as Object's does (desktop solid-edits/d05-d).
   private readonly objectPick = new ObjectSelector({
     done: () => {},
     question: () => (this.id === "slice" ? "sliceObject" : "sectionObject"),
@@ -291,6 +294,7 @@ export class PlaneCutTool implements Tool {
           case "Surface":
             if (this.id !== "slice") return "unhandled"
             this.state = { phase: "surface" }
+            this.objectPick.start()
             ctx.dynamicInput.close()
             return "continue"
           case "Zaxis":
@@ -393,11 +397,12 @@ export class PlaneCutTool implements Tool {
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
     this.lastScreen = input.screen
+    this.cursor = input.point
     if (this.state.phase === "select") {
       this.selector.onPointerMove(input, ctx)
       return
     }
-    if (this.state.phase === "object") {
+    if (this.state.phase === "object" || this.state.phase === "surface") {
       this.objectPick.onPointerMove(input, ctx)
       return
     }
@@ -412,7 +417,7 @@ export class PlaneCutTool implements Tool {
     }
     if (input.button !== 0) return
     if (this.state.phase === "object") {
-      this.pickObject(input.point, ctx)
+      this.pickObject(input.point, ctx, input.point)
       return
     }
     if (this.state.phase === "surface") {
@@ -428,9 +433,18 @@ export class PlaneCutTool implements Tool {
   }
 
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
-    if (this.state.phase === "select") return this.selector.buildOverlay(ctx)
-    if (this.state.phase === "object") return this.objectPick.buildOverlay(ctx)
-    return []
+    const state = this.state
+    if (state.phase === "select") return this.selector.buildOverlay(ctx)
+    if (state.phase === "object" || state.phase === "surface") {
+      return this.objectPick.buildOverlay(ctx)
+    }
+    // The dashed band from the plane's first point, 3points' third's too,
+    // and from Zaxis' point on the plane; none at the side (desktop
+    // solid-edits/d05-b, d05-c).
+    const from = this.getConstraintAnchor()
+    return from && this.cursor
+      ? [sizeBand(ctx.viewport, from, this.cursor)]
+      : []
   }
 
   // WHY newest first: ALL's halves and regions are made newest first, as
@@ -489,19 +503,23 @@ export class PlaneCutTool implements Tool {
   }
 
   /**
-   * Object's pick, clicked or typed: on nothing the prompt again, silently
-   * (solid-edits/p163); on an object of a locked layer, the newest under the
-   * pick box tested, `The object is on a locked layer.` and the prompt again
-   * (p178).
+   * Object's pick, clicked (at `clicked`, the cursor's point) or typed: on
+   * nothing the prompt again, silently (solid-edits/p163); on an object of a
+   * locked layer, the newest under the pick box tested, `The object is on a
+   * locked layer.` and the prompt again (p178).
    */
-  private pickObject(world: Vec2 | Vec3, ctx: ToolContext): void {
+  private pickObject(
+    world: Vec2 | Vec3,
+    ctx: ToolContext,
+    clicked: Vec3 | null = null
+  ): void {
     const at = { x: world.x, y: world.y }
     const hit = ctx.pick(at)
     if (lockedObjectAt(ctx.viewport.worldToScreen(world), ctx, hit)) {
       ctx.report(ctx.text.message("objectOnLockedLayer"), "error")
       return
     }
-    if (hit) this.takeObject(hit, ctx)
+    if (hit) this.takeObject(hit, ctx, clicked)
   }
 
   /**
@@ -510,7 +528,11 @@ export class PlaneCutTool implements Tool {
    * the solid itself, is refused and the prompt asked again (solid-edits/
    * p164, p178).
    */
-  private takeObject(entity: Entity, ctx: ToolContext): void {
+  private takeObject(
+    entity: Entity,
+    ctx: ToolContext,
+    clicked: Vec3 | null
+  ): void {
     const planar =
       entity.type === "circle" ||
       entity.type === "arc" ||
@@ -531,6 +553,9 @@ export class PlaneCutTool implements Tool {
       y: 0,
       z: entityElevation(entity),
     })
+    // A click that takes the plane is LASTPOINT, the cursor's point on the
+    // work plane (desktop solid-edits/d06); a refused one is unverified.
+    if (clicked) ctx.setLastPoint(clicked)
     this.cut({ origin, normal: axes.z }, ctx)
   }
 

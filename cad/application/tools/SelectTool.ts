@@ -138,6 +138,8 @@ export class SelectTool implements Tool {
     list: [],
     at: 0,
   }
+  /** The cursor's last move, which Ctrl pressed or let go reads again. */
+  private resting: PointerInput | null = null
 
   onActivate(ctx: ToolContext): void {
     ctx.setCursor("default")
@@ -302,6 +304,7 @@ export class SelectTool implements Tool {
   }
 
   onPointerMove(input: PointerInput, ctx: ToolContext): void {
+    this.resting = input
     switch (this.state.phase) {
       case "grip": {
         // STRETCH, the default grip mode: the end goes where a click would
@@ -504,7 +507,12 @@ export class SelectTool implements Tool {
           : null
         const rollover = pickRolloverEntity(input, ctx)
         const hoverEntityId = hoverSubobject ? null : rollover.id
-        const hoverLocked = hoverSubobject ? false : rollover.locked
+        // A locked solid's shows the padlock and no glow (desktop
+        // solid-edits/d01-h).
+        const owner = hoverSubobject && ctx.document.get(hoverSubobject.id)
+        const hoverLocked = owner
+          ? !ctx.document.isEntityEditable(owner)
+          : rollover.locked
         const gripChanged = !sameGrip(hoverGrip, this.state.hoverGrip ?? null)
         const entityChanged =
           hoverEntityId !== (this.state.hoverEntityId ?? null) ||
@@ -703,6 +711,10 @@ export class SelectTool implements Tool {
   }
 
   onKeyDown(input: KeyInput, ctx: ToolContext): void {
+    if (input.key === "Control") {
+      this.ctrlTurned(true, ctx)
+      return
+    }
     if (input.key === "Escape") {
       if (this.state.phase === "grip" || this.state.phase === "moveLine") {
         // Abort the grip edit, leaving the line untouched.
@@ -765,6 +777,20 @@ export class SelectTool implements Tool {
         ctx.requestRender()
       }
       return
+    }
+  }
+
+  onKeyUp(input: KeyInput, ctx: ToolContext): void {
+    if (input.key === "Control") this.ctrlTurned(false, ctx)
+  }
+
+  /**
+   * Ctrl pressed or let go with the cursor still lights or unlights the
+   * subobject under it at once (desktop solid-edits/d01-a), as a move would.
+   */
+  private ctrlTurned(held: boolean, ctx: ToolContext): void {
+    if (this.state.phase === "idle" && this.resting) {
+      this.onPointerMove({ ...this.resting, ctrlKey: held }, ctx)
     }
   }
 
@@ -887,16 +913,15 @@ export class SelectTool implements Tool {
 
   /**
    * The subobject a Ctrl+click at `screen` takes: the first under it, or the
-   * one Ctrl+Space has walked to while the same ones are under it.
+   * one Ctrl+Space has walked to while the same ones are under it. A locked
+   * solid's too, taken but never edited (desktop solid-edits/d01-h).
    */
   private subobjectUnder(screen: Vec2, ctx: ToolContext): SubobjectRef | null {
     const solids = ctx.document
       .getEntities()
       .filter(
         (e): e is Extract<Entity, { type: "solid3d" }> =>
-          e.type === "solid3d" &&
-          ctx.document.isEntityVisible(e) &&
-          ctx.document.isEntityEditable(e)
+          e.type === "solid3d" && ctx.document.isEntityVisible(e)
       )
     const shaded = ctx.document.getSettings().visualStyle !== "2dWireframe"
     const list = subobjectsAt(solids, ctx.viewport, screen, shaded)

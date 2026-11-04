@@ -1345,60 +1345,67 @@ taken in the UCS here; d03 ran in the WCS, the turned UCS unprobed); DELOBJ-like
 
 ### `SLICE` / `SL` · es `CORTE` / `CO` · pt-BR `FATIAR` / `FAT`
 
-**Implemented:** As 2027's console asks it in en, es and pt-BR (slice/s01–s13, solid-edits/p100–p179):
-a preselection is dropped and the set asked, as MOVE takes it in the same run (solid-edits/p130;
-EDITS-D4). `Select objects to slice:` (es `Designe objetos para cortar`, pt-BR `Selecionar objetos a
-serem fatiados`), whole objects, what is no solid passed over (s09; a region, a line and a block
-reference end it silently, p157, p160), a locked solid counted `1 was on a locked layer.` (p162);
-Enter on none says `No objects selected.` (33672; es `No hay ningún objeto seleccionado.`, pt-BR
-`Nenhum objeto selecionado.`, p130). `Specify start point of slicing plane or [planar
-Object/Surface/Zaxis/View/XY/YZ/ZX/3points] <3points>:` (es `Precise punto inicial de plano cortante u
-[Objeto plano/…/3puntos] <3puntos>:`, pt-BR `Especificar ponto inicial de plano de fatiamento ou
+**Implemented:** As 2027's console asks it in en, es and pt-BR (slice/s01–s13,
+solid-edits/p100–p179): a preselection is dropped and the set asked, as MOVE takes it in the same
+run (solid-edits/p130; EDITS-D4; a click's too, MOVE `1 found` as control, desktop d05-a). `Select
+objects to slice:` (es `Designe objetos para cortar`, pt-BR `Selecionar objetos a serem fatiados`),
+whole objects, what is no solid passed over (s09; a region, a line and a block reference end it
+silently, p157, p160), a locked solid counted `1 was on a locked layer.` (p162); Enter on none says
+`No objects selected.` (33672; es `No hay ningún objeto seleccionado.`, pt-BR `Nenhum objeto
+selecionado.`, p130). `Specify start point of slicing plane or [planar
+Object/Surface/Zaxis/View/XY/YZ/ZX/3points] <3points>:` (es `Precise punto inicial de plano cortante
+u [Objeto plano/…/3puntos] <3puntos>:`, pt-BR `Especificar ponto inicial de plano de fatiamento ou
 [Objeto plano/…/3pontos] <3pontos>`, no colon): a point there is the first of two the plane runs
 through square to the UCS's XY, its normal (p2 − p1) × Z (`Specify second point on plane:`; one on
 its X,Y says `First and second points must have distinct X,Y coordinates. *Invalid*` and is asked
 again, s08; in a UCS turned about Z or X, p146, p148); planar Object takes a circle's, an arc's, an
 ellipse's, a 2D polyline's or a level spline's plane, a tilted circle's too (`Select a circle,
 ellipse, arc, 2D-spline, 2D-polyline to define the slicing plane:`, s06, p166): its pick is an
-`entsel`, a point there a pick (p163: on nothing asked again, silently), no selection mode taken
-(`_L` and FOO `*Invalid selection*`, `Expects a point or Group`, p171), a line or the solid itself
-`Unable to extract the plane of the selected object.` (22074; es `Imposible extraer el plano del
-objeto designado.`, pt-BR `Não é possível extrair o plano do objeto selecionado.`, p164, p178), an
-object of a locked layer `The object is on a locked layer.` (p178), each asked again, and Enter ends
-(p171); Zaxis asks `Specify a point on the section plane:` and `Specify a point on the Z-axis
-(normal) of the plane:` (`Point on plane and point on Z-axis cannot be identical.`, s04); View the
-plane facing the view through `Specify a point on the current view plane <0,0,0>:` (p150); XY, YZ
-and ZX the UCS's planes, their normals its Z, X and Y, through a point, Enter's `<0,0,0>` its origin
-(s02, s03; p147, p149, p172, p173, p177; EDITS-D9); 3points, also Enter there, `Specify first point
-on plane:`, `… second …`, `… third …` (s05; `1st and 2nd points cannot be identical.` and `Need a
-point distinct from and not collinear with 1st and 2nd points.`, 22069, 22071, p110); FOO or Enter
-at a point prompt `Invalid point.`, another prompt's keyword `Point or option keyword required.` at
-the start (p106–p111). Surface asks `Select a surface:`, an `entsel` as Object's: a pick or a point
-typed says `No surfaces selected.`, FOO `Expects a point or Group`, Enter ends (p174). Then `Specify
-a point on desired side or [keep Both sides] <Both>:` (es `[mantener Ambos lados] <Ambos>`, pt-BR
-`[manter Ambos os lados] <Ambos>`; on the plane `The point should not be on the slicing plane.`,
-s08): the side kept keeps the object (s02); Both keeps it on the side the plane's normal points to
-and makes the other a new solid of its layer, colour, linetype and lineweight, not the current ones
-(s01, s03, s05, s09, p158; no object linetype scale here). Either loses what made it (`History =
-None`, no Solid type, s01); a side of two lumps is one solid of two shells (s11). Every solid of the
-set is cut in the set's order, ALL's newest first as `ssget` lists it, picks as picked, the new
-halves added so (p175, p176); one the plane misses, or touches on a face, along an edge or at a
-vertex, stays, said after the side (`Slicing plane does not intersect the selected solid.`, es `El
-plano cortante no se interseca con el sólido designado.`; `… 1 selected solid.` among several,
-p140, p179). Every point answered sets LASTPOINT, Enter's `<0,0,0>` and the keywords keep it, and
-the third of 3points is asked on the first, which it becomes (p100, p114–p119; EDITS-D3). The cut is
-the kernel's (`geometry/solidEdits.ts`), its halves adding up to the solid: a cylinder cut askew into
-235.6194 and 549.7787, a sphere, a cone along its axis (s10). `'ZOOM` and `'ORTHOMODE` run at its
-prompts (p168, p169); `'SLICE` is refused (p105). One undo step, `SLICE`, also for REDO and `UNDO 2`
-(s13, p170). Its rail slot is beside UNION's, as in the Solid Editing panel.
+`entsel`, lighting the object under the cursor (desktop d05-d), a point there a pick (p163: on
+nothing asked again, silently), no selection mode taken (`_L` and FOO `*Invalid selection*`,
+`Expects a point or Group`, p171), a line or the solid itself `Unable to extract the plane of the
+selected object.` (22074; es `Imposible extraer el plano del objeto designado.`, pt-BR `Não é
+possível extrair o plano do objeto selecionado.`, p164, p178), an object of a locked layer `The
+object is on a locked layer.` (p178), each asked again, and Enter ends (p171); Zaxis asks `Specify a
+point on the section plane:` and `Specify a point on the Z-axis (normal) of the plane:` (`Point on
+plane and point on Z-axis cannot be identical.`, s04); View the plane facing the view through
+`Specify a point on the current view plane <0,0,0>:` (p150); XY, YZ and ZX the UCS's planes, their
+normals its Z, X and Y, through a point, Enter's `<0,0,0>` its origin (s02, s03; p147, p149, p172,
+p173, p177; EDITS-D9); 3points, also Enter there, `Specify first point on plane:`, `… second …`, `…
+third …` (s05; `1st and 2nd points cannot be identical.` and `Need a point distinct from and not
+collinear with 1st and 2nd points.`, 22069, 22071, p110); FOO or Enter at a point prompt `Invalid
+point.`, another prompt's keyword `Point or option keyword required.` at the start (p106–p111). A
+dashed band runs to the cursor from the start point at `Specify second point on plane:`, from
+3points' first point at its second and third, from Zaxis' point on the plane at its Z-axis point;
+none at the side prompt, which previews nothing (desktop d05-b, d05-c). Surface asks `Select a
+surface:`, an `entsel` as Object's, lit alike (d05-d): a pick or a point typed says `No surfaces
+selected.`, FOO `Expects a point or Group`, Enter ends (p174). Then `Specify a point on desired side
+or [keep Both sides] <Both>:` (es `[mantener Ambos lados] <Ambos>`, pt-BR `[manter Ambos os lados]
+<Ambos>`; on the plane `The point should not be on the slicing plane.`, s08, asked again, LASTPOINT
+set to it, d05-b): the side kept keeps the object (s02); Both keeps it on the side the plane's
+normal points to and makes the other a new solid of its layer, colour, linetype and lineweight, not
+the current ones (s01, s03, s05, s09, p158; no object linetype scale here). Either loses what made
+it (`History = None`, no Solid type, s01); a side of two lumps is one solid of two shells (s11).
+Every solid of the set is cut in the set's order, ALL's newest first as `ssget` lists it, picks as
+picked, the new halves added so (p175, p176); one the plane misses, or touches on a face, along an
+edge or at a vertex, stays, said after the side (`Slicing plane does not intersect the selected
+solid.`, es `El plano cortante no se interseca con el sólido designado.`; `… 1 selected solid.`
+among several, p140, p179). Every point answered sets LASTPOINT, Enter's `<0,0,0>` and the keywords
+keep it, and the third of 3points is asked on the first, which it becomes (p100, p114–p119;
+EDITS-D3); a click that takes planar Object's plane sets it to the cursor's point on the work plane
+(desktop d06). The cut is the kernel's (`geometry/solidEdits.ts`), its halves adding up to the
+solid: a cylinder cut askew into 235.6194 and 549.7787, a sphere, a cone along its axis (s10).
+`'ZOOM` and `'ORTHOMODE` run at its prompts (p168, p169); `'SLICE` is refused (p105). One undo step,
+`SLICE`, also for REDO and `UNDO 2` (s13, p170). Its rail slot is beside UNION's, as in the Solid
+Editing panel.
 
 **Missing:** surfaces, as the plane (Surface) and as objects sliced, and meshes; a planar 3D
 polyline as the plane's object, which AutoCAD takes (solid-edits/p165; here `Unable to extract the
 plane of the selected object.`); a torus or a turned profile cut neither square to its axis nor
 along it, and the other meetings with no closed form, which say `1 boolean operation(s) failed.`
-here (phase 7); whether a refused point sets LASTPOINT (**unverified**: no probe separates it); what
-the desktop shows of the plane and the side kept as the cursor moves, and a click's LASTPOINT (the
-SED block).
+here (phase 7); whether a refused second or third point sets LASTPOINT, as here (**unverified**: a
+refused side point does, desktop d05-b), and a click on nothing or on an object refused at Object's
+pick (**unverified**).
 
 ### `FILLETEDGE` · es `ARISTAEMPALME` · pt-BR `ARESTACONCORD`
 
@@ -1509,9 +1516,11 @@ pt-BR `[Extrusão/Mover/Rotacionar/desLocamento/Afilar/eXcluir/COpiar/Cor/maTeri
 and each option `Select faces or [Undo/Remove]:`, `… [Undo/Remove/ALL]:` once a pick has taken a
 face, the set emptied or not (solid-edits/p322, p323), `Remove faces or [Undo/Add/ALL]:` after
 Remove. A click or a typed point takes the two faces of an edge drawn within the pick box
-(`2 faces found.`, p313, p361), else the face nearest the viewer under it (p311, p312), lit as the
-cursor passes; a face already taken gives the next one behind it along the line of sight (p314,
-p316). Removed: `1 face found, 1 removed.`, `2 faces found, 2 removed.` (p368), a face not in the
+(`2 faces found.`, p313, p361; a click, desktop solid-edits/d02-c), else the face nearest the viewer
+under it (p311, p312); a face already taken gives the next one behind it along the line of sight
+(p314, p316; a click, d02-a). Meanwhile the pick box lights nothing inside a face and the whole
+solid, as a set prompt's rollover, while it touches one of its edges; the faces taken glow blue
+(d02-b). Removed: `1 face found, 1 removed.`, `2 faces found, 2 removed.` (p368), a face not in the
 set in silence (p322). ALL takes every face of its solid, those added counted (e11: `6 faces
 found.`; p317: `5 faces found.` beside one), at Remove empties the set in silence (p322). Undo takes
 back the faces the last pick or ALL added, at Remove puts back those the last pick removed, `Face
@@ -1537,12 +1546,13 @@ p327). Move: `Specify a base point or displacement:` and
 planar face moves as far as that runs along its normal, its neighbours carried on (e06: a drilled
 box's top up 3, 2436.6372); by zero `No change due to a zero displacement vector.` (p328, p402).
 Rotate: `Specify an axis point or [Axis by object/View/Xaxis/Yaxis/Zaxis] <2points>:` — a point
-there or Enter's `Specify the first point on the rotation axis:` and `Specify the second point on
-the rotation axis:`, two that are one taken (p362), Xaxis, Yaxis, Zaxis (the UCS's, turned or
-tilted: p331, p332, p366, p367) and View through `Specify the origin of the rotation <0,0,0>:`,
-Enter the UCS's origin (p404) — then `Specify a rotation angle or [Reference]:`, right-handed about
-the axis (e07: a box's top 10°, 1088.1635), a point there the angle from the second axis point or
-the origin (p125); by 0 `No change due to a zero rotation angle.` (p330, p362). Offset: `Specify the
+there, typed or clicked (d02-e), or Enter's `Specify the first point on the rotation axis:` and
+`Specify the second point on the rotation axis:`, two that are one taken (p362), Xaxis, Yaxis,
+Zaxis (the UCS's, turned or tilted: p331, p332, p366, p367) and View through `Specify the origin
+of the rotation <0,0,0>:`, Enter the UCS's origin (p404) — then `Specify a rotation angle or
+[Reference]:`, right-handed about the axis (e07: a box's top 10°, 1088.1635), a point there the
+angle from the second axis point or the origin (p125); by 0 `No change due to a zero rotation
+angle.` (p330, p362). Offset: `Specify the
 offset distance:`, as PRESSPULL's Ctrl+click, a planar face's neighbours carried on: planes any way
 they slope, cylinders and extrusions square to it, and coaxial cylinders and cones round it (e03: a
 frustum's top -4, 321.9504); 0 says `Value must be nonzero.` and asks again (p324), and so does one
@@ -1553,8 +1563,11 @@ frame's, unprobed). Taper: `Specify the base point:`, `Specify another point alo
 tapering:` and `Specify the taper angle:`, the face turned about where it meets the plane square to
 the axis through the base point, a positive angle leaning it in along the axis (e08: a side 10°,
 911.8365); 0 or ±90 and past says `The taper angle must be non-zero and between -90 and 90.` and
-asks again (p333). Delete: a hole's wall closes the hole, a fillet's or a chamfer's strip gives way
-to the edge it replaced (e09: 2000, 1000). Copy: a planar face becomes a region where it lies, moved
+asks again (p333). A dashed band runs to the cursor from Move's base at its second point, from the
+first axis point at the second, from the second (or the origin) at the rotation angle, from
+Taper's base point at its axis point; none at the taper angle (desktop d02-d, d02-e, d02-f).
+Delete: a hole's wall closes the hole, a fillet's or a chamfer's strip gives way to the edge it
+replaced (e09: 2000, 1000). Copy: a planar face becomes a region where it lies, moved
 (e10), of the current layer and properties (p334), by zero too (p362). Each edit says `Solid
 validation started.` and `Solid validation completed.` and asks the option again, without them while
 SOLIDCHECK is 0 (a system variable, 0 or 1, 1 at first, program-wide: OPEN keeps it, no drawing
@@ -1563,12 +1576,13 @@ Undo there takes the last one back, `Command has been completely undone.` once n
 or none was (p301, p302); at the solids option it takes no face edit back, saying so with none made
 (p300, p303); eXit or Enter leaves Face, then the command. The face's typed point, Move's base and
 the axis prompt's point set LASTPOINT, Enter's origin and an angle by a point keep it (p123–p125,
-p136). Enter at `Command:` runs it again from the solids option, after a rail run too (p337);
-`'SOLIDEDIT` is refused (p338). The solid keeps its object and loses what made it. One undo step,
-`SOLIDEDIT` (f07; U, REDO and `UNDO 2`, an empty run too: p306, p307, p360). Its rail slot is the
-Solid Editing panel's faces split button (Extrude, Taper, Move, Copy, Offset, Delete and Rotate
-faces, in RibbonRoot's order), each SOLIDEDIT answered as acad.cuix's `_solidedit _face _extrude`
-does; plain SOLIDEDIT is typed.
+p136); a click that takes faces sets it to the cursor's point on the work plane (desktop d06; one
+taking none **unverified**). Enter at `Command:` runs it again from the solids option, after a
+rail run too (p337); `'SOLIDEDIT` is refused (p338). The solid keeps its object and loses what
+made it. One undo step, `SOLIDEDIT` (f07; U, REDO and `UNDO 2`, an empty run too: p306, p307,
+p360). Its rail slot is the Solid Editing panel's faces split button (Extrude, Taper, Move, Copy,
+Offset, Delete and Rotate faces, in RibbonRoot's order), each SOLIDEDIT answered as acad.cuix's
+`_solidedit _face _extrude` does; plain SOLIDEDIT is typed.
 
 **Deviations:** an edit the kernel cannot make says `Modeling Operation Error:` (es `Error en
 operación de modelado:`, pt-BR `Erro de operação de modelagem:`) and leaves the solid; with ACIS's
@@ -1584,9 +1598,7 @@ extruded with a taper, which AutoCAD makes and the kernel refuses (p371: the top
 then the front rotated -10° about Xaxis, the right side tapered 5° and the left moved -1, 1218.2160;
 here `Modeling Operation Error:` twice, then 103009); an offset too far out to make, which AutoCAD
 drops in silence (p349: 100000 on a 20 × 10 × 6 box's top) and the kernel makes; a preview while a
-distance or an angle is given. The click on an
-edge and on a face taken are the console's typed points; the desktop's reach waits for the review's
-SED.
+distance or an angle is given.
 
 ### `JOIN` / `J` · es `UNIR` / `U` · pt-BR `UNIR` / `UNE`
 

@@ -769,6 +769,8 @@ export interface Tool {
   onPointerMove?(input: PointerInput, ctx: ToolContext): void
   onPointerUp?(input: PointerInput, ctx: ToolContext): void
   onKeyDown?(input: KeyInput, ctx: ToolContext): void
+  /** A key let go, wherever focus is: Ctrl's unlights a subobject at once (solid-edits/d01-a). */
+  onKeyUp?(input: KeyInput, ctx: ToolContext): void
 
   /**
    * Whether Escape finds a multiline text editor holding changes, which

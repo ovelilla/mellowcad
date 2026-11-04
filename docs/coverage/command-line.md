@@ -325,24 +325,31 @@ every object alike (REGIONS-D80: a halo drawn under the object is a presenter ch
 ### Ctrl+click · a solid's faces, edges and vertices (subobjects)
 
 **Implemented:** At `Command:`, Ctrl held over a solid lights the subobject under the cursor and
-Ctrl+click selects it, as AutoCAD 2027's desktop does (a box seen from (-1.3, -2.2, 1.6), 2D
-Wireframe, LEGACYCTRLPICK 2, SUBOBJSELECTIONMODE 0): a vertex within the pick box before its edges,
-an edge before the faces it bounds — in 2D Wireframe a back one too, drawn over a face —, then the
-faces the line of sight crosses, nearest the viewer first; in Hidden and Conceptual only what
-Hidden draws. Ctrl+Space walks to the next under the cursor (the top, then the back), round;
-Ctrl+Shift+click takes one out; Escape drops them with the rest. Held over, a face's edges and an
-edge glow as a rollover, a vertex a light disc; selected, they glow blue and wear a red grip, a
-disc lying in the face at its centre, a bar along the edge at its middle, a dot on the vertex. The
-subobjects are no set a command takes: with only them selected ERASE asks `Select objects:`
-(desktop).
+Ctrl+click selects it, as AutoCAD 2027's desktop does (solid-edits/d01: a box seen from (-1.3,
+-2.2, 1.6), 2D Wireframe, LEGACYCTRLPICK 2, SUBOBJSELECTIONMODE 0): a vertex within the pick box
+before its edges, an edge before the faces it bounds — in 2D Wireframe a back one too, drawn over a
+face —, then the faces the line of sight crosses, nearest the viewer first (d01-b); in Hidden and
+Conceptual only what Hidden draws. Ctrl pressed or let go with the cursor still lights or unlights
+it at once (d01-a). Ctrl+Space walks to the next under the cursor (the top, then the back), round
+(d01-d), and a click then takes that one; Ctrl+Shift+click takes one out (d01-e); Escape drops
+them with the rest. Held over, a face's edges and an edge glow as a rollover, a vertex a light disc
+(d01-b); selected, they glow blue and wear a red grip, a disc lying in the face at its centre, a
+bar along the edge at its middle, a dot on the vertex (d01-c). A locked solid's shows the padlock
+and no glow under Ctrl, and Ctrl+click takes it, blue, with no grip (d01-h). Here the subobjects
+are no set a command takes: with only them selected LIST, MOVE and ERASE ask `Select objects:`.
 
 **Missing:** dragging their grips and the gizmo, and MOVE, ROTATE, SCALE and ERASE acting on them
-(3DMOVE's and 3DROTATE's, phase 6c); LIST taking a selected subobject's solid, as the desktop's
-does; SUBOBJSELECTIONMODE (Shift+F1–F5's filters and their cursor badges), LEGACYCTRLPICK, the
-history subobjects of a composite (SOLIDHIST); the highlight changing as Ctrl is pressed with the
-cursor still (here at the next move); the Properties palette of a face, an edge or a vertex
-(**unverified**). The Solid edits review owns them (`docs/plans/solid-edits-review.md`): its desktop
-block, SED, probes these cells again.
+(3DMOVE's and 3DROTATE's, phase 6c); a selected face, edge or vertex as the preselection LIST, MOVE
+and ERASE take, `1 found`: LIST lists the solid, ERASE leaves its geometry and drops `Box` from its
+LIST (as solid-edits/p241), MOVE asks the base point (d01-f; phase 6c, EDITS-D133); the Properties
+palette's titles and rows: `Solid face` (es `Cara de sólido`), General's Color editable, the rest
+grey, 3D Visualization's Material; `Solid edge` (`Arista de sólido`), Color editable; `Solid
+vertex` (`Vértice de sólido`), all grey (d01-g); the grips' hover menus, a face's `Extend adjacent
+faces / Move face / Allow triangulation` (es `Alargar las caras adyacentes / Mover cara / Permitir
+triangulación`), an edge's `… / Move edge / …` (`Mover arista`, d01-j); SUBOBJSELECTIONMODE
+(Shift+F1–F5's filters and their cursor badges; at 3 a plain click inside a face started a window,
+d01-i, inconclusive), LEGACYCTRLPICK, the history subobjects of a composite (SOLIDHIST). The Solid
+edits review's desktop block probed them (`docs/plans/solid-edits-review.md`, §13).
 
 ### Typed and confirmed
 
