@@ -1662,8 +1662,21 @@ describe("the engine's English surface", () => {
         .do("SOLIDEDIT Face", (c) =>
           submit(c, "ZOOM", "E", "SOLIDEDIT", "E", "F", "L")
         )
-        .do("Offset refused, Remove, Add, ALL", (c) =>
-          submit(c, "O", "FOO", "5,5,10", "R", "5,5,10", "A", "ALL", "U", "")
+        .do("Offset refused, Remove, Add, ALL, Undo, nothing", (c) =>
+          submit(
+            c,
+            "O",
+            "FOO",
+            "5,5,10",
+            "R",
+            "5,5,10",
+            "A",
+            "ALL",
+            "U",
+            "U",
+            "-20,-20,0",
+            ""
+          )
         )
         .do("offset", (c) => submit(c, "1"))
         .do("Extrude", (c) =>
@@ -1694,6 +1707,7 @@ describe("the engine's English surface", () => {
             ""
           )
         )
+        .do("Move by zero", (c) => submit(c, "M", "0,5,5", "", "0,0,0", ""))
         .do("Undo, eXit", (c) => submit(c, "U", "", "X"))
     )
     walk("SECTION", createHarness(), (s) =>

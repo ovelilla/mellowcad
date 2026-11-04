@@ -5509,7 +5509,7 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Enter a solids editing option [Face/Edge/Body/Undo/eXit] <eXit>: F
   prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>: L
   error| Invalid option keyword.
-> Offset refused, Remove, Add, ALL
+> Offset refused, Remove, Add, ALL, Undo, nothing
   prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>: O
   prompt| Select faces or [Undo/Remove]: FOO
   error| *Invalid selection*
@@ -5520,11 +5520,14 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Remove faces or [Undo/Add/ALL]: 5,5,10
   info| 1 face found, 1 removed.
   prompt| Remove faces or [Undo/Add/ALL]: A
-  prompt| Select faces or [Undo/Remove]: ALL
-  error| *Invalid selection*
-  error| Expects a point or Crossing/Fence/CPolygon/Undo
-  prompt| Select faces or [Undo/Remove]: U
-  prompt| Select faces or [Undo/Remove]:
+  prompt| Select faces or [Undo/Remove/ALL]: ALL
+  info| 6 faces found.
+  prompt| Select faces or [Undo/Remove/ALL]: U
+  prompt| Select faces or [Undo/Remove/ALL]: U
+  info| Face selection has been completely undone.
+  prompt| Select faces or [Undo/Remove/ALL]: -20,-20,0
+  error| No solids detected.
+  prompt| Select faces or [Undo/Remove/ALL]:
 > offset
   prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>: 1
   error| Invalid option keyword.
@@ -5584,6 +5587,14 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Select faces or [Undo/Remove/ALL]:
   error| Modeling Operation Error:
         Error Code Number is 103013
+> Move by zero
+  prompt| Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/Copy/coLor/mAterial/Undo/eXit] <eXit>: M
+  prompt| Select faces or [Undo/Remove]: 0,5,5
+  info| 1 face found.
+  prompt| Select faces or [Undo/Remove/ALL]:
+  prompt| Specify a base point or displacement: 0,0,0
+  prompt| Specify a second point of displacement:
+  info| No change due to a zero displacement vector.
 > Undo, eXit
   prompt: Command:
   asks: -

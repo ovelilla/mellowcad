@@ -2842,6 +2842,11 @@ declare const source: {
       "solidValidationCompleted": string
       "modelingError": string
       "modelingErrorCode": string
+      "faceSelectionUndone": string
+      "noSolidsDetected": string
+      "taperAngleNonzero": string
+      "zeroDisplacement": string
+      "zeroRotation": string
     }
     "feedback": {
       "snap": {

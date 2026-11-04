@@ -7325,7 +7325,12 @@ export const ptBR: EngineLocale = {
         [
           "code"
         ]
-      ]
+      ],
+      "faceSelectionUndone": "A seleção de face foi completamente desfeita.",
+      "noSolidsDetected": "Sólidos não detectados.",
+      "taperAngleNonzero": "O ângulo de conicidade deve ser diferente de zero e estar entre -90 e 90.",
+      "zeroDisplacement": "Nenhuma alteração devido ao vetor de deslocamento zero.",
+      "zeroRotation": "Nenhuma alteração devido ao ângulo de rotação zero."
     },
     "feedback": {
       "snap": {

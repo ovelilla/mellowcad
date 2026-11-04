@@ -6654,7 +6654,12 @@ export const en: EngineCatalog = {
         [
           "code"
         ]
-      ]
+      ],
+      "faceSelectionUndone": "Face selection has been completely undone.",
+      "noSolidsDetected": "No solids detected.",
+      "taperAngleNonzero": "The taper angle must be non-zero and between -90 and 90.",
+      "zeroDisplacement": "No change due to a zero displacement vector.",
+      "zeroRotation": "No change due to a zero rotation angle."
     },
     "feedback": {
       "snap": {

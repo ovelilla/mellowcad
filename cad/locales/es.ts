@@ -7307,7 +7307,12 @@ export const es: EngineLocale = {
         [
           "code"
         ]
-      ]
+      ],
+      "faceSelectionUndone": "La selección de cara se ha deshecho completamente.",
+      "noSolidsDetected": "Ningún sólido detectado.",
+      "taperAngleNonzero": "El ángulo de inclinación debe ser distinto de cero y estar entre -90 y 90.",
+      "zeroDisplacement": "Ningún cambio debido a vector de desplazamiento cero.",
+      "zeroRotation": "Ningún cambio debido a ángulo de rotación cero."
     },
     "feedback": {
       "snap": {

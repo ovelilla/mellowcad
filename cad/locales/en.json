@@ -2697,7 +2697,12 @@
       "solidValidationStarted": "Solid validation started.",
       "solidValidationCompleted": "Solid validation completed.",
       "modelingError": "Modeling Operation Error:",
-      "modelingErrorCode": "Modeling Operation Error:\nError Code Number is {code}"
+      "modelingErrorCode": "Modeling Operation Error:\nError Code Number is {code}",
+      "faceSelectionUndone": "Face selection has been completely undone.",
+      "noSolidsDetected": "No solids detected.",
+      "taperAngleNonzero": "The taper angle must be non-zero and between -90 and 90.",
+      "zeroDisplacement": "No change due to a zero displacement vector.",
+      "zeroRotation": "No change due to a zero rotation angle."
     },
     "feedback": {
       "snap": {

@@ -4,11 +4,12 @@ import {
   add3,
   cross3,
   dot3,
+  length3,
   normalize3,
   scale3,
   sub3,
 } from "../../geometry/Vec3"
-import { facesAlong } from "../../geometry/hiddenLines"
+import { edgeFaces } from "../../geometry/solidBlends"
 import { FacePlane } from "../../geometry/solidEdits"
 import { EntityId, Solid3dEntity } from "../../domain/entities"
 import {
@@ -17,6 +18,7 @@ import {
   solidFacesEdited,
 } from "../../domain/solidModeling"
 import { subobjectEdgeEntities } from "../../domain/solidSubobjects"
+import { subobjectsAt } from "../subobjectPick"
 import {
   AddEntitiesCommand,
   UpdateEntitiesCommand,
@@ -26,6 +28,7 @@ import {
   parseCoordinate,
 } from "../input/coordinateInput"
 import type { PromptId } from "../../locales/types"
+import type { MessageId } from "../EngineText"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
 import { entityScenePrimitive, selectionGlow } from "../SceneBuilder"
@@ -55,7 +58,10 @@ type SolideditState =
       readonly phase: "select"
       readonly option: FaceOption
       readonly removing: boolean
-      readonly hover: { readonly id: EntityId; readonly face: number } | null
+      readonly hover: {
+        readonly id: EntityId
+        readonly faces: readonly number[]
+      } | null
     }
   | { readonly phase: "height" }
   | { readonly phase: "taper"; readonly height: number }
@@ -69,7 +75,14 @@ type SolideditState =
   | { readonly phase: "axisFirst" }
   | { readonly phase: "axisSecond"; readonly first: Vec3 }
   | { readonly phase: "origin"; readonly by: Exclude<AxisBy, "2points"> }
-  | { readonly phase: "angle"; readonly from: Vec3; readonly axis: Vec3 }
+  | {
+      readonly phase: "angle"
+      readonly from: Vec3
+      /** Null for two axis points that are one: taken, as AutoCAD takes it (solid-edits/p362). */
+      readonly axis: Vec3 | null
+      /** Where a point given for the angle is measured from (p125's `BasePoint`). */
+      readonly anchor: Vec3
+    }
   | { readonly phase: "offset" }
   | { readonly phase: "taperBase" }
   | { readonly phase: "taperAxis"; readonly base: Vec3 }
@@ -91,16 +104,23 @@ const OPTIONS: readonly string[] = [
 
 const DEGREE = Math.PI / 180
 
+/** What a face's pick finds: the faces a pick takes, of one solid, or a locked solid. */
+type FacePick =
+  | { readonly solid: Solid3dEntity; readonly faces: readonly number[] }
+  | "locked"
+  | null
+
 /**
  * AutoCAD's SOLIDEDIT, its faces (solidedit/e01–e12, en, es and pt-BR): it
  * says `Solids editing automatic checking:  SOLIDCHECK=1` and asks `Enter a
  * solids editing option [Face/Edge/Body/Undo/eXit] <eXit>:`; Face asks
  * `Enter a face editing option [Extrude/Move/Rotate/Offset/Taper/Delete/
  * Copy/coLor/mAterial/Undo/eXit] <eXit>:` and each option `Select faces or
- * [Undo/Remove]:` (`… /ALL]` once one is taken, `Remove faces or
- * [Undo/Add/ALL]:` after Remove), a click or a typed point taking the face
- * nearest the viewer under it (`1 face found.`, `1 face found, 1
- * removed.`), ALL every face of the solid (`6 faces found.`, e11). Then:
+ * [Undo/Remove]:` (`… /ALL]` once a face is taken, `Remove faces or
+ * [Undo/Add/ALL]:` after Remove), a click or a typed point taking the two
+ * faces of an edge drawn under it, else the face nearest the viewer
+ * (`1 face found.`, `1 face found, 1 removed.`), ALL every face of the solid
+ * (`6 faces found.`, e11). Then:
  * Extrude `Specify height of extrusion or [Path]:` and `Specify angle of
  * taper for extrusion <0>:`, the face's prism added or taken, narrowing as
  * it rises (e08); Move `Specify a base point or displacement:` and `Specify
@@ -114,8 +134,10 @@ const DEGREE = Math.PI / 180
  * (e08, e12); Delete closes a hole or a fillet's or a chamfer's strip (e09);
  * Copy a planar face into a region (e10). Each edit says `Solid validation
  * started.` and `Solid validation completed.`, or AutoCAD's modelling error
- * with the solid left as it was, and asks for the next option; Undo there
- * takes the last back; eXit or Enter leaves Face, then the command. The
+ * with the solid left as it was, and asks for the next option; a Move or a
+ * Rotate by zero is said and edits nothing (solid-edits/p328, p330). Undo
+ * there takes the last back, `Command has been completely undone.` once none
+ * is left (p302); eXit or Enter leaves Face, then the command. The
  * rail's buttons are its face options answered (acad.cuix `_solidedit _face
  * _extrude`…). One undo step, `SOLIDEDIT` (filletedge/f07).
  *
@@ -129,6 +151,9 @@ export class SolideditTool implements Tool {
   private state: SolideditState = { phase: "solids" }
   private solid: EntityId | null = null
   private faces: number[] = []
+  /** The faces each pick or ALL added and removed, for Select faces' and Remove faces' Undo. */
+  private added: number[][] = []
+  private removed: number[][] = []
   /** The history's depth before each edit of this run, for its Undo. */
   private marks: number[] = []
   private lastScreen: Vec2 | null = null
@@ -156,8 +181,7 @@ export class SolideditTool implements Tool {
 
   onDeactivate(ctx: ToolContext): void {
     this.state = { phase: "solids" }
-    this.solid = null
-    this.faces = []
+    this.clearFaces()
     ctx.dynamicInput.close()
   }
 
@@ -204,6 +228,14 @@ export class SolideditTool implements Tool {
     if (phase === "solids" || phase === "faces") return "eXit"
     if (phase === "axis") return "2points"
     return null
+  }
+
+  // WHY said here: Move's base point and the axis prompt declare their
+  // refusal's words, which read as no point to the runtime, and both set it
+  // (solid-edits/p123, p125).
+  setsLastPoint(): boolean | null {
+    const phase = this.state.phase
+    return phase === "base" || phase === "axis" ? true : null
   }
 
   takes(): QuestionInput | null {
@@ -258,10 +290,12 @@ export class SolideditTool implements Tool {
       case "faces":
         return OPTIONS.map((id) => ({ id }))
       case "select":
+        // ALL stays once a pick has taken a face, the set emptied or not
+        // (solid-edits/p322, p323).
         return [
           { id: "Undo" },
           { id: state.removing ? "Add" : "Remove" },
-          ...(this.faces.length > 0 || state.removing ? [{ id: "ALL" }] : []),
+          ...(this.solid !== null || state.removing ? [{ id: "ALL" }] : []),
         ]
       case "height":
         return [{ id: "Path" }]
@@ -287,7 +321,8 @@ export class SolideditTool implements Tool {
           return "continue"
         }
         if (id === "Undo") {
-          this.undoOne(ctx)
+          // Undo here takes no face edit back (solid-edits/p303).
+          if (this.marks.length === 0) this.sayUndone(ctx)
           this.toSolids(ctx)
           return "continue"
         }
@@ -307,8 +342,7 @@ export class SolideditTool implements Tool {
           return "continue"
         }
         if (isBuilt(id)) {
-          this.faces = []
-          this.solid = null
+          this.clearFaces()
           this.state = {
             phase: "select",
             option: id,
@@ -326,9 +360,7 @@ export class SolideditTool implements Tool {
           return "continue"
         }
         if (id === "Undo") {
-          this.faces.pop()
-          if (this.faces.length === 0) this.solid = null
-          this.openPick(ctx)
+          this.undoPick(state.removing, ctx)
           return "continue"
         }
         if (id === "ALL") {
@@ -379,10 +411,50 @@ export class SolideditTool implements Tool {
         this.ask({ phase: "axisFirst" }, ctx)
         return true
       case "origin":
+        // Enter's origin moves no LASTPOINT, though the angle then measures
+        // from it (solid-edits/p136).
+        ctx.setLastPoint(ctx.lastPoint)
         this.toAngle(state.by, { x: 0, y: 0, z: 0 }, ctx)
+        return true
+      case "base":
+      case "axisFirst":
+      case "axisSecond":
+      case "offset":
+      case "angle":
+      case "taperBase":
+      case "taperAxis":
+      case "taperAngle":
+        // AllowNone false: refused in the prompt's words, asked again
+        // (solid-edits/p324, p328, p330, p333, p400, p401).
+        ctx.report(this.enterRefusal(state.phase, ctx), "error")
         return true
       default:
         return false
+    }
+  }
+
+  private enterRefusal(
+    phase: SolideditState["phase"],
+    ctx: ToolContext
+  ): string {
+    switch (phase) {
+      case "offset":
+        return ctx.text.message("requiresDistance", {
+          points: "two",
+          keyword: "no",
+        })
+      case "angle":
+        return ctx.text.message("requiresAngle", {
+          points: "second",
+          keyword: "yes",
+        })
+      case "taperAngle":
+        return ctx.text.message("requiresAngle", {
+          points: "two",
+          keyword: "no",
+        })
+      default:
+        return ctx.text.message("invalidPoint")
     }
   }
 
@@ -404,6 +476,7 @@ export class SolideditTool implements Tool {
     const state = this.state
     if (state.phase === "second") return state.base
     if (state.phase === "axisSecond") return state.first
+    if (state.phase === "angle") return state.anchor
     if (state.phase === "taperAxis") return state.base
     return null
   }
@@ -412,10 +485,15 @@ export class SolideditTool implements Tool {
     this.lastScreen = input.screen
     const state = this.state
     if (state.phase === "select") {
-      const found = this.faceAt(input.screen, ctx)
+      const found = this.facesAt(input.screen, ctx, !state.removing)
       this.state = {
         ...state,
-        hover: found && { id: found.solid.id, face: found.face },
+        hover:
+          found !== null &&
+          found !== "locked" &&
+          (this.solid === null || found.solid.id === this.solid)
+            ? { id: found.solid.id, faces: found.faces }
+            : null,
       }
     }
     ctx.dynamicInput.setPosition(input.screen)
@@ -454,16 +532,18 @@ export class SolideditTool implements Tool {
     if (state.phase === "select" && state.hover) {
       const owner = ctx.document.get(state.hover.id)
       if (owner?.type === "solid3d") {
-        for (const edge of subobjectEdgeEntities(owner, {
-          kind: "face",
-          index: state.hover.face,
-        })) {
-          out.push(
-            ...entityScenePrimitive(ctx.viewport, edge, {
-              color: THEME.entityHover,
-              width: 2,
-            })
-          )
+        for (const index of state.hover.faces) {
+          for (const edge of subobjectEdgeEntities(owner, {
+            kind: "face",
+            index,
+          })) {
+            out.push(
+              ...entityScenePrimitive(ctx.viewport, edge, {
+                color: THEME.entityHover,
+                width: 2,
+              })
+            )
+          }
         }
       }
     }
@@ -484,85 +564,142 @@ export class SolideditTool implements Tool {
 
   private toFaces(ctx: ToolContext): void {
     this.state = { phase: "faces" }
-    this.faces = []
-    this.solid = null
+    this.clearFaces()
     this.openKeywords(ctx)
   }
 
-  /** Undo at an option prompt: the last edit of this run taken back. */
+  private clearFaces(): void {
+    this.faces = []
+    this.solid = null
+    this.added = []
+    this.removed = []
+  }
+
+  /**
+   * Undo at the face option: the last edit of this run taken back, and
+   * `Command has been completely undone.` once none is left, or none was
+   * (solid-edits/p301, p302).
+   */
   private undoOne(ctx: ToolContext): void {
     const mark = this.marks.pop()
     if (mark !== undefined) ctx.undoTo(mark)
+    if (this.marks.length === 0) this.sayUndone(ctx)
   }
 
-  /** The face nearest the viewer under `screen`, of an editable solid. */
-  private faceAt(
-    screen: Vec2,
-    ctx: ToolContext
-  ): { solid: Solid3dEntity; face: number } | null {
-    const { viewport, document } = ctx
-    const sight = viewport.screenToFacing(screen)
-    let best: { solid: Solid3dEntity; face: number; depth: number } | null =
-      null
-    for (const entity of document.getEntities()) {
-      if (entity.type !== "solid3d") continue
-      if (
-        !document.isEntityVisible(entity) ||
-        !document.isEntityEditable(entity)
-      ) {
-        continue
-      }
-      const [front] = facesAlong(entity.brep, sight, viewport.direction)
-      if (front && (!best || front.depth > best.depth)) {
-        best = { solid: entity, face: front.face, depth: front.depth }
+  private sayUndone(ctx: ToolContext): void {
+    ctx.report(ctx.text.message("commandCompletelyUndone"))
+  }
+
+  /**
+   * Undo at `Select faces` takes back the faces the last pick or ALL added,
+   * at `Remove faces` puts back those the last pick removed, saying `Face
+   * selection has been completely undone.` once none is left, or none was
+   * (solid-edits/p304, p305, p368, p374).
+   */
+  private undoPick(removing: boolean, ctx: ToolContext): void {
+    const stack = removing ? this.removed : this.added
+    const last = stack.pop()
+    if (last && removing) {
+      this.faces = [
+        ...this.faces,
+        ...last.filter((f) => !this.faces.includes(f)),
+      ]
+    } else if (last) {
+      this.faces = this.faces.filter((f) => !last.includes(f))
+    }
+    if (stack.length === 0) {
+      ctx.report(ctx.text.message("faceSelectionUndone"))
+    }
+    this.openPick(ctx)
+  }
+
+  /**
+   * What a pick at `screen` finds, the first solid under it deciding: the two
+   * faces of an edge drawn within the pick box (solid-edits/p313, p361), else
+   * the face nearest the viewer (e01); adding, the first of these with a face
+   * not yet taken, so a face picked again gives the next one behind it
+   * (p314, p316). A locked solid's is `"locked"` (p321).
+   */
+  private facesAt(screen: Vec2, ctx: ToolContext, adding: boolean): FacePick {
+    const { document } = ctx
+    const solids = document
+      .getEntities()
+      .filter(
+        (e): e is Solid3dEntity =>
+          e.type === "solid3d" && document.isEntityVisible(e)
+      )
+    const shaded = document.getSettings().visualStyle !== "2dWireframe"
+    const found = subobjectsAt(solids, ctx.viewport, screen, shaded).filter(
+      (ref) => ref.kind !== "vertex"
+    )
+    const owner = found.length > 0 ? document.get(found[0].id) : undefined
+    if (owner?.type !== "solid3d") return null
+    if (!document.isEntityEditable(owner)) return "locked"
+    let first: readonly number[] | null = null
+    for (const ref of found) {
+      if (ref.id !== owner.id) continue
+      const faces =
+        ref.kind === "edge"
+          ? [...new Set(edgeFaces(owner.brep, ref.index))]
+          : [ref.index]
+      first ??= faces
+      if (!adding || faces.some((f) => !this.faces.includes(f))) {
+        return { solid: owner, faces }
       }
     }
-    return best && { solid: best.solid, face: best.face }
+    return first && { solid: owner, faces: first }
   }
 
   private pickFace(screen: Vec2, ctx: ToolContext): void {
     const state = this.state
     if (state.phase !== "select") return
-    const found = this.faceAt(screen, ctx)
-    // WHY a pick on nothing or another solid passes: what AutoCAD answers
-    // to either is unverified (its console's misses say `No solids
-    // detected.` only before ZOOM E, e12).
-    if (!found || (this.solid && found.solid.id !== this.solid)) return
-    if (state.removing) {
-      const had = this.faces.includes(found.face)
-      this.faces = this.faces.filter((f) => f !== found.face)
-      ctx.report(
-        ctx.text.message("facesFoundRemoved", {
-          count: 1,
-          removed: had ? 1 : 0,
-        })
-      )
+    const found = this.facesAt(screen, ctx, !state.removing)
+    if (found === null || found === "locked") {
+      if (found === "locked") {
+        ctx.report(ctx.text.message("objectOnLockedLayer"), "error")
+      }
+      ctx.report(ctx.text.message("noSolidsDetected"), "error")
+    } else if (this.solid !== null && found.solid.id !== this.solid) {
+      // Another solid's face passes in silence, as in AutoCAD (p315).
+    } else if (state.removing) {
+      const removed = found.faces.filter((f) => this.faces.includes(f))
+      // Nothing is said for a face not in the set (p322).
+      if (removed.length > 0) {
+        this.faces = this.faces.filter((f) => !removed.includes(f))
+        this.removed.push(removed)
+        ctx.report(
+          ctx.text.message("facesFoundRemoved", {
+            count: found.faces.length,
+            removed: removed.length,
+          })
+        )
+      }
     } else {
-      if (!this.faces.includes(found.face)) this.faces.push(found.face)
+      const added = found.faces.filter((f) => !this.faces.includes(f))
       this.solid = found.solid.id
-      ctx.report(ctx.text.message("facesFound", { count: 1 }))
+      if (added.length > 0) {
+        this.faces = [...this.faces, ...added]
+        this.added.push(added)
+        ctx.report(ctx.text.message("facesFound", { count: added.length }))
+      }
     }
-    if (this.faces.length === 0) this.solid = null
     this.openPick(ctx)
   }
 
-  /** ALL: every face of the solid taken (e11: `6 faces found.` beside the one picked). */
+  /**
+   * ALL: every face of the solid taken, those added counted (e11, p317,
+   * p323); at Remove faces, every one removed in silence (p322).
+   */
   private takeAll(removing: boolean, ctx: ToolContext): void {
     const solid = this.solidOf(ctx)
-    if (!solid) {
-      this.openPick(ctx)
-      return
-    }
-    const all = solid.brep.faces.map((_, i) => i)
-    if (removing) {
-      const count = this.faces.length
+    if (solid && removing) {
+      if (this.faces.length > 0) this.removed.push(this.faces)
       this.faces = []
-      this.solid = null
-      ctx.report(
-        ctx.text.message("facesFoundRemoved", { count, removed: count })
-      )
-    } else {
-      const added = all.filter((f) => !this.faces.includes(f))
+    } else if (solid) {
+      const added = solid.brep.faces
+        .map((_, i) => i)
+        .filter((f) => !this.faces.includes(f))
+      if (added.length > 0) this.added.push(added)
       this.faces = [...this.faces, ...added]
       ctx.report(ctx.text.message("facesFound", { count: added.length }))
     }
@@ -611,12 +748,17 @@ export class SolideditTool implements Tool {
       case "axisFirst":
         this.ask({ phase: "axisSecond", first: point }, ctx)
         return
-      case "axisSecond": {
-        const axis = normalize3(sub3(point, state.first))
-        if (!axis) return
-        this.ask({ phase: "angle", from: state.first, axis }, ctx)
+      case "axisSecond":
+        this.ask(
+          {
+            phase: "angle",
+            from: state.first,
+            axis: normalize3(sub3(point, state.first)),
+            anchor: point,
+          },
+          ctx
+        )
         return
-      }
       case "origin":
         this.toAngle(state.by, point, ctx)
         return
@@ -646,29 +788,56 @@ export class SolideditTool implements Tool {
           : by === "Zaxis"
             ? { x: 0, y: 0, z: 1 }
             : (normalize3(ctx.viewport.direction) ?? { x: 0, y: 0, z: 1 })
-    this.ask({ phase: "angle", from: origin, axis }, ctx)
+    this.ask({ phase: "angle", from: origin, axis, anchor: origin }, ctx)
   }
 
+  /**
+   * A value answered: a zero or out-of-range one refused in AutoCAD's words
+   * and asked again, a zero rotation said and the edit dropped, neither an
+   * edit nor a step (solid-edits/p324, p325, p327, p330, p333).
+   */
   private takeValue(value: number, ctx: ToolContext): void {
     const state = this.state
+    const refuse = (id: MessageId) => ctx.report(ctx.text.message(id), "error")
     switch (state.phase) {
       case "height":
+        if (value === 0) {
+          refuse("valueMustBeNonzero")
+          return
+        }
         this.ask({ phase: "taper", height: value }, ctx)
         return
       case "taper":
+        if (!(Math.abs(value) < 90)) {
+          refuse("taperAngleRange")
+          return
+        }
         this.apply(
           { kind: "extrude", height: state.height, taper: value * DEGREE },
           ctx
         )
         return
       case "offset":
+        if (value === 0) {
+          refuse("valueMustBeNonzero")
+          return
+        }
         this.apply({ kind: "offset", distance: value }, ctx)
         return
       case "angle": {
         const { from, axis } = state
         const angle = value * DEGREE
+        if (value === 0) {
+          ctx.report(ctx.text.message("zeroRotation"))
+          this.toFaces(ctx)
+          return
+        }
+        // A turn about an axis of no length is unprobed: the modelling
+        // error any failed edit says.
         this.apply(
-          { kind: "plane", to: (p) => turned(p, from, axis, angle) },
+          axis
+            ? { kind: "plane", to: (p) => turned(p, from, axis, angle) }
+            : null,
           ctx
         )
         return
@@ -676,6 +845,10 @@ export class SolideditTool implements Tool {
       case "taperAngle": {
         const { base, axis } = state
         const angle = value * DEGREE
+        if (value === 0 || !(Math.abs(value) < 90)) {
+          refuse("taperAngleNonzero")
+          return
+        }
         this.apply(
           { kind: "plane", to: (p) => tapered(p, base, axis, angle) },
           ctx
@@ -691,6 +864,12 @@ export class SolideditTool implements Tool {
     ctx: ToolContext
   ): void {
     if (option === "Move") {
+      if (length3(displacement) === 0) {
+        // Copy by zero still makes its region (solid-edits/p362).
+        ctx.report(ctx.text.message("zeroDisplacement"))
+        this.toFaces(ctx)
+        return
+      }
       this.apply({ kind: "move", displacement }, ctx)
       return
     }
@@ -709,14 +888,14 @@ export class SolideditTool implements Tool {
   }
 
   /** An edit made, said and marked for Undo, or AutoCAD's modelling error with nothing changed. */
-  private apply(edit: FaceEdit, ctx: ToolContext): void {
+  private apply(edit: FaceEdit | null, ctx: ToolContext): void {
     const solid = this.solidOf(ctx)
-    const made = solid && solidFacesEdited(solid, this.faces, edit)
+    const made = solid && edit && solidFacesEdited(solid, this.faces, edit)
     if (!made) {
       // The code ACIS gives each failure seen (e09: 103013 deleting a box's
       // side, e12: 103009 moving its top through it); others never seen.
       const code =
-        edit.kind === "delete" ? 103013 : edit.kind === "move" ? 103009 : null
+        edit?.kind === "delete" ? 103013 : edit?.kind === "move" ? 103009 : null
       ctx.report(
         code === null
           ? ctx.text.message("modelingError")
@@ -766,7 +945,10 @@ export class SolideditTool implements Tool {
     ctx.requestRender()
   }
 
-  /** A face's pick: a typed point takes the face drawn through it, as a click there (e01). */
+  /**
+   * A face's pick: a typed point takes the faces drawn through it, as a click
+   * there (e01), and becomes LASTPOINT (solid-edits/p123).
+   */
   private openPick(ctx: ToolContext): void {
     ctx.dynamicInput.open({
       fields: [{ id: "point", prompt: this.prompt(), kind: "coordinate" }],
@@ -775,6 +957,7 @@ export class SolideditTool implements Tool {
         if (!commitCtx.dynamicInput.hasTypedText()) return false
         const point = this.typed(commitCtx)
         if (!point) return false
+        commitCtx.setLastPoint(point)
         this.pickFace(commitCtx.viewport.worldToScreen(point), commitCtx)
         return true
       },
