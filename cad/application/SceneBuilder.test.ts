@@ -236,6 +236,39 @@ describe("appearance resolution", () => {
     expect("stroke" in dashed ? dashed.stroke?.dash : undefined).toBeDefined()
   })
 
+  // probes 3dpoly/p118, p122 (plots): a DASHED 3D polyline is drawn solid
+  // beside a dashed LINE; p123: it keeps DASHED. A fitted one is the same
+  // object (unprobed).
+  it("draws a 3D polyline continuous whatever its linetype", () => {
+    const cad = createHarness()
+    for (const text of [
+      ...["CELTYPE", "DASHED", "LINE", "0,0", "30,0", ""],
+      ...["3DPOLY", "40,0", "70,0", "70,-30", ""],
+      ...["3DPOLY", "80,0", "110,0,5", "110,-30", ""],
+      ...["PEDIT", "110,-15", "S", ""],
+    ]) {
+      cad.runtime.setCommandLineText(text)
+      cad.runtime.submitCommandLine()
+    }
+    expect(
+      cad.entities().map((e) => [e.type, e.linetype, "fit" in e && !!e.fit])
+    ).toEqual([
+      ["line", "Dashed", false],
+      ["polyline3d", "Dashed", false],
+      ["polyline3d", "Dashed", true],
+    ])
+    cad.moveTo(p(500, 500))
+    const dashed = strokes(cad.scene().primitives, THEME.entity).filter(
+      (q) => "stroke" in q && q.stroke?.dash
+    )
+    expect(dashed.length).toBeGreaterThan(0)
+    for (const q of dashed) {
+      if (q.kind !== "segment") throw new Error(q.kind)
+      for (const end of [q.a, q.b])
+        expect(cad.runtime.viewport.screenToWorld(end).x).toBeLessThan(31)
+    }
+  })
+
   it("scales the dash pattern with LTSCALE", () => {
     const cad = createHarness({
       entities: [lineOf(p(-500, 0), p(500, 0), { id: "L1" })],

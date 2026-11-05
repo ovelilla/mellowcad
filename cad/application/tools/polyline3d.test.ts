@@ -339,6 +339,17 @@ describe("3DPOLY's points", () => {
       [17, 5, 0],
     ])
   })
+
+  it("keeps the last vertex's Z under ORTHOMODE off the plan", () => {
+    const cad = typed(createHarness(), "VPOINT", "1,-1,1", "ORTHOMODE", "1")
+    typed(cad, "3DPOLY", "0,0,50")
+    cad.click({ x: 30, y: 7, z: 50 })
+    typed(cad, "")
+    expect(vertices(polylines(cad)[0])).toEqual([
+      [0, 0, 50],
+      [30, 0, 50],
+    ])
+  })
 })
 
 describe("3DPOLY in the session", () => {
@@ -541,6 +552,37 @@ describe("a 3D polyline in the other commands", () => {
       [11, 2, 8],
       [11, 12, 0],
       [21, 12, 3],
+    ])
+  })
+
+  // p124: ROTATE 30, SCALE 2 (Z too) and MIRROR keeping the source, read
+  // back with entget.
+  it("rotates, scales in Z too and mirrors in space (p124)", () => {
+    const cad = typed(createHarness(), "3DPOLY", "0,0,0", "10,0,5", "10,10,-3")
+    typed(cad, "", "ROTATE", "L", "", "0,0", "30")
+    expect(vertices(polylines(cad)[0])).toEqual([
+      [0, 0, 0],
+      [8.6603, 5, 5],
+      [3.6603, 13.6603, -3],
+    ])
+    typed(cad, "SCALE", "L", "", "0,0", "2")
+    expect(vertices(polylines(cad)[0])).toEqual([
+      [0, 0, 0],
+      [17.3205, 10, 10],
+      [7.3205, 27.3205, -6],
+    ])
+    typed(cad, "MIRROR", "L", "", "0,-50", "100,-50", "N")
+    expect(polylines(cad).map(vertices)).toEqual([
+      [
+        [0, 0, 0],
+        [17.3205, 10, 10],
+        [7.3205, 27.3205, -6],
+      ],
+      [
+        [0, -100, 0],
+        [17.3205, -110, 10],
+        [7.3205, -127.3205, -6],
+      ],
     ])
   })
 

@@ -148,7 +148,7 @@ export class Polyline3dTool implements Tool {
     return true
   }
 
-  getConstraintAnchor(): Vec2 | null {
+  getConstraintAnchor(): Vec3 | null {
     return this.state.phase === "drawing" ? this.lastVertex(this.state) : null
   }
 

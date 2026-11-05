@@ -97,7 +97,7 @@ past 2048 periods unfitted as a circle's; an ellipse's laid as a circle's, from 
 (parameter 0) in whole stretched periods (13 round a 50 by 25 one, level or turned), and an
 elliptical arc's centred over its length as an arc's, each dash a piece of the ellipse found along
 its length, solid under one period (ellipse/p330 on the plot; the screen **unverified**, as the
-arc's was alike); LTSCALE asks
+arc's was alike); a 3D polyline drawn continuous, its linetype kept (3dpoly/p118, p122, p123); LTSCALE asks
 `Enter new linetype scale factor <current>:` (es
 `Indique nuevo factor de escala del tipo de línea`), offering the current factor with four
 decimals whatever the drawing's precision (`<1.0000>`, `<1.2346>`, table 20988, p234); anything but

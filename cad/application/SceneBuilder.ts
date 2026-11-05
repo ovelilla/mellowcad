@@ -827,8 +827,7 @@ function linePrimitives(
 
 /**
  * A 3D polyline, in plan or off it: each segment drawn as a line between its
- * vertices at their own Z, its linetype laid per segment as a line's
- * (**unverified**: PLINEGEN is a 2D polyline's).
+ * vertices at their own Z, continuous ({@link entityStroke}).
  */
 function polyline3dPrimitives(
   camera: CameraTransform,
@@ -1942,7 +1941,12 @@ export function entityStroke(
   // Resolve the linetype ByObject → ByLayer, then turn its world-unit pattern
   // into a screen-pixel dash (scaled by LTSCALE and the current zoom).
   const linetypeId = entity.linetype ?? layer?.linetype ?? DEFAULT_LINETYPE_ID
-  const dash = dashFor(linetypeId, look.ltScale, camera.scale)
+  // WHY: AutoCAD draws a 3D polyline continuous whatever linetype it keeps
+  // (3dpoly/p118, p122, p123); a fitted one is the same object.
+  const dash =
+    entity.type === "polyline3d"
+      ? undefined
+      : dashFor(linetypeId, look.ltScale, camera.scale)
   const lineweight =
     entity.lineweight ?? layer?.lineweight ?? DEFAULT_LINEWEIGHT
   // "Wide polylines display lineweights only when displayed outside of

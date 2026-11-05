@@ -656,8 +656,8 @@ honoured before a length, which the console ignores (p104; the desktop honours i
 rectang/d03); dynamic input asks Length and Angle as PLINE does. Its name and alias, and the
 ribbon's place (Home ▸ Draw, expanded, beside Spline Fit and Spline CV: acad.cuix ID_PanelDraw),
 from the 2027 `acad.pgp` and `acad.cuix`. LINE's Continue starts at its last vertex, Z and all
-(p23). It draws and is picked as its segments in any view; its linetype is laid per segment, as a
-line's (**unverified**: PLINEGEN is a 2D polyline's). What the other commands do with one is in
+(p23). It draws and is picked as its segments in any view, drawn continuous whatever its linetype,
+which it keeps (p118, p122, p123; a fitted one, the same object, alike, unprobed). What the other commands do with one is in
 their entries: MOVE, COPY, ROTATE, SCALE, MIRROR and the arrays carry it whole, STRETCH, EXPLODE,
 BREAK, OFFSET, FILLET, CHAMFER, TRIM / EXTEND, JOIN (modify.md), AREA (inquiry.md), DIMLINEAR
 (dimensions.md), UCS OBject (coordinate-systems.md), the snaps and grips (drafting-aids.md), the
