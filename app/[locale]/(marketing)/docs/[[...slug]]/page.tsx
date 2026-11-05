@@ -11,17 +11,19 @@ import { DocsSearch } from "@/components/docs/docs-search"
 import { DocsToc } from "@/components/docs/docs-toc"
 import { ForwardArrow } from "@/components/marketing/forward-arrow"
 import { localePath } from "@/i18n/navigation"
-import { DIRECTION, type AppLocale, segmentLocale } from "@/i18n/routing"
+import { DIRECTION, type AppLocale, routing, segmentLocale } from "@/i18n/routing"
 import { docsSource } from "@/lib/docs/docs-source"
 import { DOCS_PACKAGES, DOCS_PATH } from "@/lib/docs/packages"
 import {
   canonicalPath,
   type DocsPage,
+  englishBuildNodes,
   isPublished,
   isTranslated,
   navSections,
   pageLanguage,
   pageSource,
+  servedIn,
 } from "@/lib/docs/pages"
 import { USE_PAGES } from "@/lib/docs/use"
 import { pageMetadata } from "@/lib/metadata"
@@ -39,7 +41,10 @@ export function generateStaticParams({
   if (!locale) return []
   return [
     { slug: [] },
-    ...docsSource.getPages(locale).map((page) => ({ slug: page.slugs })),
+    ...docsSource
+      .getPages(locale)
+      .filter((page) => servedIn(page, locale))
+      .map((page) => ({ slug: page.slugs })),
   ]
 }
 
@@ -80,6 +85,32 @@ export async function generateMetadata({
   }
 }
 
+/**
+ * A link to a page of the docs. One in another language is a plain link,
+ * marked so: crossing languages is a full page load (`i18n.md`).
+ */
+function DocsLink({
+  href,
+  hrefLang,
+  className,
+  children,
+}: {
+  href: string
+  hrefLang?: AppLocale
+  className?: string
+  children: React.ReactNode
+}) {
+  return hrefLang ? (
+    <a href={href} hrefLang={hrefLang} className={className}>
+      {children}
+    </a>
+  ) : (
+    <Link href={href} className={className}>
+      {children}
+    </Link>
+  )
+}
+
 function StatusBadge({
   published,
   label,
@@ -102,6 +133,9 @@ function StatusBadge({
 
 async function DocsIndex({ locale }: { locale: AppLocale }) {
   const t = await getTranslations("Docs")
+  // "Build" is English only, at its English URLs (`servedIn`).
+  const english = routing.defaultLocale
+  const hrefLang = locale === english ? undefined : english
   return (
     <div className="flex flex-col gap-12">
       <header className="flex flex-col gap-4">
@@ -144,8 +178,8 @@ async function DocsIndex({ locale }: { locale: AppLocale }) {
         </div>
         <ul className="grid gap-4 md:grid-cols-3">
           {DOCS_PACKAGES.map((pkg) => {
-            const guide = docsSource.getPage([pkg.slug], locale)
-            const api = docsSource.getPage([pkg.slug, "api"], locale)
+            const guide = docsSource.getPage([pkg.slug], english)
+            const api = docsSource.getPage([pkg.slug, "api"], english)
             const published = isPublished(pkg)
             if (!guide) return null
             return (
@@ -154,7 +188,9 @@ async function DocsIndex({ locale }: { locale: AppLocale }) {
                 className="flex flex-col gap-4 rounded-lg border border-border bg-bg-raised p-5"
               >
                 <div className="flex flex-wrap items-center justify-between gap-2">
-                  <h3 className="font-semibold">{guide.data.title}</h3>
+                  <h3 lang="en" className="font-semibold">
+                    {guide.data.title}
+                  </h3>
                   <StatusBadge
                     published={published}
                     label={published ? t("published") : t("notPublished")}
@@ -168,13 +204,13 @@ async function DocsIndex({ locale }: { locale: AppLocale }) {
                   {guide.data.description}
                 </p>
                 <div className="flex flex-wrap gap-x-4 gap-y-1 text-sm">
-                  <Link href={guide.url} className="underline-link">
+                  <DocsLink href={guide.url} hrefLang={hrefLang} className="underline-link">
                     {t("guide")}
-                  </Link>
+                  </DocsLink>
                   {api && (
-                    <Link href={api.url} className="underline-link">
+                    <DocsLink href={api.url} hrefLang={hrefLang} className="underline-link">
                       {t("api")}
-                    </Link>
+                    </DocsLink>
                   )}
                 </div>
               </li>
@@ -191,7 +227,15 @@ async function DocsArticle({ page, locale }: { page: DocsPage; locale: AppLocale
   const language = pageLanguage(page)
   const source = pageSource(page)
   const published = source ? isPublished(source.pkg) : true
-  const { previous, next } = findNeighbour(docsSource.getPageTree(locale), page.url)
+  // Another language's previous and next stay within its own pages: "Build"
+  // is English, at its English URLs.
+  const tree = docsSource.getPageTree(locale)
+  const { previous, next } = findNeighbour(
+    locale === routing.defaultLocale
+      ? tree
+      : { ...tree, children: navSections(tree.children).use },
+    page.url
+  )
   const Body = page.data.body
   return (
     <div className="flex flex-col gap-10">
@@ -223,7 +267,7 @@ async function DocsArticle({ page, locale }: { page: DocsPage; locale: AppLocale
       </article>
       <footer className="flex flex-col gap-6 border-t border-border pt-6 text-sm">
         <div className="flex flex-wrap gap-x-5 gap-y-1">
-          <a href={`${canonicalPath(page)}.md`} className="underline-link">
+          <a href={`${localePath(language, canonicalPath(page))}.md`} className="underline-link">
             {t("markdown")}
           </a>
           {source && (
@@ -264,9 +308,10 @@ async function DocsArticle({ page, locale }: { page: DocsPage; locale: AppLocale
 }
 
 /**
- * `/docs` and its pages, in every language: the chrome is the page's
- * language, and a page with no file of its own in it is served the English
- * one under its prefix, marked so (`docs.md`).
+ * `/docs` and its pages, in every language but "Build"'s, which is English
+ * only (`servedIn`). The chrome is the page's language; a draft's page with
+ * no file of its own is served the English one under its prefix, marked so
+ * (`docs.md`).
  */
 export default async function DocsPageRoute({
   params,
@@ -278,11 +323,19 @@ export default async function DocsPageRoute({
   const tree = docsSource.getPageTree(locale)
   const active = page?.url ?? localePath(locale, DOCS_PATH)
   const { use, build } = navSections(tree.children)
+  const english = locale === routing.defaultLocale
   const nav = (
     <DocsNav
       sections={[
         { title: t("useTitle"), nodes: use },
-        { title: t("buildTitle"), nodes: build },
+        english
+          ? { title: t("buildTitle"), nodes: build }
+          : {
+              title: t("buildTitle"),
+              nodes: englishBuildNodes(),
+              note: t("inEnglish"),
+              hrefLang: routing.defaultLocale,
+            },
       ]}
       active={active}
       label={t("navLabel")}

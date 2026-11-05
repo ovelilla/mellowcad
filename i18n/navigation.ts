@@ -1,3 +1,4 @@
+import { DOCS_PATH, isEnglishOnlyPath } from "@/lib/docs/packages"
 import { SITE_URL } from "@/lib/site"
 
 import {
@@ -52,12 +53,18 @@ export function unlocalizedPath(pathname: string): string {
  * `path` (unlocalized) in every live language — none when only one is live.
  * Plain links, so a crawler follows them and a switch is a full page load:
  * changing language changes `lang`, `dir`, the fonts and the engine's catalog.
+ * A page written in English only has no other version: the other languages
+ * offer their docs' index, the nearest page they have.
  */
 export function languageLinks(current: AppLocale, path: string) {
   if (LIVE_LOCALES.length < 2) return []
+  const english = isEnglishOnlyPath(path)
   return LIVE_LOCALES.map((locale) => ({
     locale,
-    href: localePath(locale, path),
+    href: localePath(
+      locale,
+      english && locale !== routing.defaultLocale ? DOCS_PATH : path
+    ),
     name: LANGUAGE_NAMES[locale],
     current: locale === current,
   }))

@@ -12,6 +12,7 @@ import {
   DOCS_PACKAGES,
   DOCS_PATH,
   type DocsPackage,
+  isEnglishOnlyPath,
   packagePageFile,
 } from "./packages"
 
@@ -32,9 +33,8 @@ export function canonicalPath(page: DocsPage): string {
 
 /**
  * Whether the page is written in every live language ("Use"): each then has
- * its own URL and the others as its hreflang alternates. A page in English
- * only ("Build"), or one a draft has not translated yet, is served under
- * every prefix, canonical to the English one.
+ * its own URL and the others as its hreflang alternates. One a draft has not
+ * translated yet is served under its prefix, canonical to the English one.
  */
 export function isTranslated(page: DocsPage): boolean {
   return LIVE_LOCALES.every((locale) => {
@@ -52,6 +52,27 @@ export function navSections(nodes: Node[]): { use: Node[]; build: Node[] } {
     use: nodes.filter((node) => node.type === "page"),
     build: nodes.filter((node) => node.type !== "page"),
   }
+}
+
+/**
+ * Whether `locale` serves the page under its prefix: every page but the
+ * packages' ("Build"), which exist in English only and have one URL, the
+ * English one (`isEnglishOnlyPath`).
+ */
+export function servedIn(page: DocsPage, locale: string | undefined): boolean {
+  return locale === routing.defaultLocale || !isEnglishOnlyPath(canonicalPath(page))
+}
+
+/**
+ * "Build" as another language's navigation lists it: each package's first
+ * page, at its English URL. The pages under it are in English only, and so is
+ * the navigation that lists them.
+ */
+export function englishBuildNodes(): Node[] {
+  const { build } = navSections(docsSource.getPageTree(routing.defaultLocale).children)
+  return build.flatMap((node) =>
+    node.type === "folder" && node.index ? [{ ...node.index, name: node.name }] : []
+  )
 }
 
 /** Whether a package is on npm: one still `private` is "not published yet". */

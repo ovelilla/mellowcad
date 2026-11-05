@@ -262,6 +262,7 @@
     "published": "No npm",
     "notPublished": "Ainda não publicado",
     "englishOnly": "Esta seção está escrita somente em inglês.",
+    "inEnglish": "Em inglês",
     "onThisPage": "Nesta página",
     "menu": "Menu da documentação",
     "closeMenu": "Fechar o menu da documentação",

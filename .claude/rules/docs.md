@@ -21,13 +21,14 @@ claims follow `i18n.md`.
 
 ## Languages
 
-- **"Build" is English, served under every prefix.** `/docs/engine` is the page; `/es/docs/engine`
-  and `/ar/docs/engine` serve the same English article in that language's chrome — header, menu,
-  labels, the language selector staying on the page — with the article `lang="en"` and
-  `dir="ltr"`, a notice (`Docs.englishOnly`), the English URL as canonical and no hreflang
-  (`pageMetadata`'s `contentLocale`). Only the English URL is in the sitemap, `llms.txt` and the
-  `.md`. One indexable URL per text, and nobody is thrown out of their language's site. Fumadocs'
-  `fallbackLanguage` does it: a language without the file gets English's.
+- **"Build" is English only, at one URL.** `/docs/engine` is the page: under another prefix a page
+  and its `.md` 308 to the English ones (`i18n/rewrites.ts`, `isEnglishOnlyPath`), and nothing is
+  prerendered there (`servedIn`). Another language's sidebar lists each package's first page at its
+  English URL, plain `<a hrefLang="en">` under `Docs.inEnglish`; its `/docs` cards and search
+  results lead there too, and an English-only page's language selector offers each language's
+  `/docs`. WHY: served in each language's chrome they were 45 URLs canonical to their twin, a third
+  of the site's internal links, and navigation in one language around text in another, which Google
+  advises against. Fumadocs' `fallbackLanguage` stays for a draft's missing "Use" page.
 - `/docs` itself is the site's (messages `Docs`), in every language with its hreflang.
 - A page's language is its file's (`name.<tag>.mdx`, none for English); its slug follows
   `i18n.md`.
@@ -112,7 +113,8 @@ claims follow `i18n.md`.
   repeated query.
 - **The docs' islands never reach the landing**: their Base UI dialogs are ~22 KB Brotli, and a
   prefetched `/docs` loads its chunks into `/` (measured +27 KB on the first load). The landing
-  links the docs with `Link prefetch={false}`.
+  links the docs with `Link prefetch={false}`, and so does the sidebar: in view, its links
+  prefetched every page (402 KB on a desktop).
 
 ## `docs:check`
 

@@ -262,6 +262,7 @@
     "published": "On npm",
     "notPublished": "Not published yet",
     "englishOnly": "This section is written in English only.",
+    "inEnglish": "In English",
     "onThisPage": "On this page",
     "menu": "Docs menu",
     "closeMenu": "Close the docs menu",

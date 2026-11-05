@@ -262,6 +262,7 @@
     "published": "على npm",
     "notPublished": "لم يُنشر بعد",
     "englishOnly": "هذا القسم مكتوب بالإنجليزية فقط.",
+    "inEnglish": "بالإنجليزية",
     "onThisPage": "في هذه الصفحة",
     "menu": "قائمة التوثيق",
     "closeMenu": "إغلاق قائمة التوثيق",

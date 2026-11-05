@@ -7,6 +7,9 @@ import { FileText, Hash, Search, X } from "lucide-react"
 import Link from "next/link"
 import { useEffect, useState } from "react"
 
+import { localePath, unlocalizedPath } from "@/i18n/navigation"
+import type { AppLocale } from "@/i18n/routing"
+
 export interface DocsSearchLabels {
   search: string
   title: string
@@ -39,7 +42,7 @@ export function DocsSearch({
   locale,
   labels,
 }: {
-  locale: string
+  locale: AppLocale
   labels: DocsSearchLabels
 }) {
   const [open, setOpen] = useState(false)
@@ -101,9 +104,14 @@ export function DocsSearch({
               </p>
             ) : (
               <ul className="flex flex-col">
-                {found.map((result) => (
+                {found.map((result) => {
+                  // A result in English only, from another language's search,
+                  // is a full page load (`i18n.md`).
+                  const path = result.url.split("#")[0]
+                  const Anchor = localePath(locale, unlocalizedPath(path)) === path ? Link : "a"
+                  return (
                   <li key={result.id}>
-                    <Link
+                    <Anchor
                       href={result.url}
                       onClick={() => setOpen(false)}
                       className={`flex items-start gap-3 rounded-md px-3 py-2 text-sm hover:bg-bg focus-visible:bg-bg ${result.type === "page" ? "text-fg" : "ps-9 text-fg-muted"}`}
@@ -114,9 +122,10 @@ export function DocsSearch({
                         <Hash className="mt-0.5 size-4 shrink-0 text-fg-subtle" aria-hidden="true" />
                       ) : null}
                       <span className="line-clamp-2">{plain(result.content)}</span>
-                    </Link>
+                    </Anchor>
                   </li>
-                ))}
+                  )
+                })}
               </ul>
             )}
           </div>

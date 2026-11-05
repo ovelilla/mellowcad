@@ -225,6 +225,7 @@
   "Docs.published": "On npm",
   "Docs.notPublished": "Not published yet",
   "Docs.englishOnly": "This section is written in English only.",
+  "Docs.inEnglish": "In English",
   "Docs.onThisPage": "On this page",
   "Docs.menu": "Docs menu",
   "Docs.closeMenu": "Close the docs menu",

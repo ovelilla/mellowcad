@@ -1,5 +1,6 @@
 import type { NextConfig } from "next"
 
+import { DOCS_PACKAGES, DOCS_PATH } from "../lib/docs/packages"
 import { OG_IMAGE_PATH } from "../lib/site"
 
 type Redirect = Awaited<
@@ -41,7 +42,8 @@ function segments({ locales, localePrefix }: LocaleRouting): string[] {
   return locales.map((locale) => prefixes?.[locale]?.slice(1) ?? locale)
 }
 
-export function localeRedirects({ defaultLocale }: LocaleRouting): Redirect[] {
+export function localeRedirects(routing: LocaleRouting): Redirect[] {
+  const { defaultLocale } = routing
   return [
     { source: `/${defaultLocale}`, destination: "/", permanent: true },
     {
@@ -49,8 +51,39 @@ export function localeRedirects({ defaultLocale }: LocaleRouting): Redirect[] {
       destination: "/:path*",
       permanent: true,
     },
+    ...englishOnlyRedirects(routing),
     // The share card moved to a route of its own inside `[locale]`.
     { source: "/opengraph-image", destination: OG_IMAGE_PATH, permanent: true },
+  ]
+}
+
+/**
+ * The docs' "Build" pages are written in English only, so each has one URL:
+ * under another language's prefix, a page and its Markdown redirect to the
+ * English ones (`/es/docs/engine/api` → `/docs/engine/api`). WHY not the page
+ * in that language's chrome around English text: it was 45 more URLs for
+ * crawlers, each canonical to its English twin, a third of the site's links,
+ * and the navigation in one language around content in another, which Google
+ * advises against.
+ */
+function englishOnlyRedirects(routing: LocaleRouting): Redirect[] {
+  const prefixed = segments(routing).filter(
+    (segment) => segment !== routing.defaultLocale
+  )
+  if (prefixed.length === 0) return []
+  const base = `/:locale(${prefixed.join("|")})${DOCS_PATH}/:folder(${DOCS_PACKAGES.map((pkg) => pkg.slug).join("|")})`
+  return [
+    { source: base, destination: `${DOCS_PATH}/:folder`, permanent: true },
+    {
+      source: `${base}.md`,
+      destination: `${DOCS_PATH}/:folder.md`,
+      permanent: true,
+    },
+    {
+      source: `${base}/:path+`,
+      destination: `${DOCS_PATH}/:folder/:path+`,
+      permanent: true,
+    },
   ]
 }
 

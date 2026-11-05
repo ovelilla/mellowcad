@@ -48,8 +48,8 @@ export async function pageMetadata({
   description: string
   /**
    * The one language a page is written in, when it has no other (the docs'
-   * "Build" section is English): every language's URL names that one as its
-   * canonical, and there are no language versions to list.
+   * "Build" section, or a page a draft serves in English): its URL in that
+   * language is the canonical, and there are no language versions to list.
    */
   contentLocale?: AppLocale
 }): Promise<Metadata> {

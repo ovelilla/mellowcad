@@ -55,7 +55,7 @@ describe("the locale URL scheme", () => {
     // A language whose prefix is not its tag is served under the prefix.
     ["/pt-br", "route /pt-br"],
     ["/pt-br/draw", "route /pt-br/draw"],
-    ["/pt-br/docs/engine.md", "route /pt-br/docs-md/engine"],
+    ["/pt-br/docs/commands.md", "route /pt-br/docs-md/commands"],
     ["/en", "redirect /"],
     ["/en/draw", "redirect /draw"],
     ["/opengraph-image", "redirect /og"],
@@ -70,8 +70,19 @@ describe("the locale URL scheme", () => {
     ["/docs/engine", "route /en/docs/engine"],
     ["/docs/engine.md", "route /en/docs-md/engine"],
     ["/docs/engine/api.md", "route /en/docs-md/engine/api"],
-    ["/es/docs/engine/api.md", "route /es/docs-md/engine/api"],
     ["/en/docs/engine.md", "redirect /docs/engine.md"],
+    // "Build" is English only: one URL per page, whatever the prefix.
+    ["/es/docs/engine", "redirect /docs/engine"],
+    ["/ar/docs/engine/api", "redirect /docs/engine/api"],
+    ["/pt-br/docs/editor/nextjs", "redirect /docs/editor/nextjs"],
+    ["/es/docs/react.md", "redirect /docs/react.md"],
+    ["/es/docs/engine/api.md", "redirect /docs/engine/api.md"],
+    // "Use" is written in every language, and a word that merely starts
+    // like a package's folder is no folder.
+    ["/es/docs/commands", "route /es/docs/commands"],
+    ["/es/docs/commands.md", "route /es/docs-md/commands"],
+    ["/es/docs/engineering", "route /es/docs/engineering"],
+    ["/es/docs", "route /es/docs"],
     // Router requests, as Vercel rewrites them from the `RSC` header.
     ["/index.rsc", "route /en.rsc"],
     [
@@ -110,7 +121,8 @@ describe("a prefix that is not the tag", () => {
   it.each([
     ["/zz", "route /zz"],
     ["/zz/draw", "route /zz/draw"],
-    ["/zz/docs/engine.md", "route /zz/docs-md/engine"],
+    ["/zz/docs/commands.md", "route /zz/docs-md/commands"],
+    ["/zz/docs/engine/api", "redirect /docs/engine/api"],
     // The tag is no prefix: an English path, which answers 404.
     ["/xx-YY/draw", "route /en/xx-YY/draw"],
   ])("%s → %s", (path, expected) => {

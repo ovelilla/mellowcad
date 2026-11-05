@@ -16,6 +16,18 @@ export type DocsPackage = (typeof DOCS_PACKAGES)[number]
 /** The docs' own URL space, unprefixed: English, as every page is built. */
 export const DOCS_PATH = "/docs"
 
+/**
+ * The packages' folders ("Build"), written in English only: each page has one
+ * URL, its English one. Another language's prefix redirects there
+ * (`i18n/rewrites.ts`) and its pages link there, marked as English.
+ */
+export const ENGLISH_ONLY_PATHS = DOCS_PACKAGES.map((pkg) => `${DOCS_PATH}/${pkg.slug}`)
+
+/** Whether an unprefixed path is a page of "Build", which exists in English only. */
+export function isEnglishOnlyPath(path: string): boolean {
+  return ENGLISH_ONLY_PATHS.some((base) => path === base || path.startsWith(`${base}/`))
+}
+
 /** The page each package file is: its README the package's, `api.md` its reference. */
 export const PACKAGE_PAGES = [
   { file: "README.md", page: "" },

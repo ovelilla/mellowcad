@@ -16,8 +16,7 @@ const PAGES = ["/", "/privacy", DOCS_PATH]
  * `changeFrequency` and `priority` altogether, so neither is set.
  *
  * A docs page is listed in the languages it is written in: one written in
- * every language with its hreflang set, one in English only without, since
- * the others serve it under their prefix, canonical to it. It has no
+ * every language with its hreflang set, one in English only without. It has no
  * `lastModified`: it changes with its README or the engine's catalog, which
  * no date here follows.
  */

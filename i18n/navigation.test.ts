@@ -82,4 +82,18 @@ describe("languageLinks", () => {
       expect(link.current).toBe(link.locale === "es")
     }
   })
+
+  it("offers a page written in English only as each language's docs instead", () => {
+    const links = languageLinks("en", "/docs/engine/api")
+    for (const link of links) {
+      expect(link.href).toBe(
+        link.locale === routing.defaultLocale
+          ? "/docs/engine/api"
+          : localePath(link.locale, "/docs")
+      )
+    }
+    expect(
+      languageLinks("en", "/docs/commands").map((link) => link.href)
+    ).toEqual(links.map((link) => localePath(link.locale, "/docs/commands")))
+  })
 })
