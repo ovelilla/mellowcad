@@ -1,8 +1,8 @@
 # Visibilidad y tráfico orgánico — plan maestro
 
-> **Estado:** auditoría, plan y sesión 01 hechos (5/11/2026), y por decisión del dueño la
-> visibilidad va antes que cualquier funcionalidad; siguiente: la sesión 02, posicionamiento y
-> metadatos (§5), y el push de 01 con sus acciones de §7. Esperan detrás
+> **Estado:** auditoría, plan y sesiones 01 y 02 hechos (5/11/2026), y por decisión del dueño la
+> visibilidad va antes que cualquier funcionalidad; siguiente: el push de 01 y 02 con sus acciones
+> de §7, y las sesiones 03 y 04 (§5), que pueden ir en paralelo. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -262,8 +262,10 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    URLs → «Request indexing» de `/docs/commands` y `/pt-br`, hoy «descubiertas pero no rastreadas»;
    un Site Scan para que el informe de SEO tenga datos.
 4. **GitHub y npm**: la descripción y los temas del repositorio, ya, con el comando `gh repo edit`
-   de `docs/plans/seo/launch-kit.md` §0 (hoy 0 estrellas, sin temas, «2D engine»); la descripción
-   de los paquetes sale con su próxima publicación.
+   de `docs/plans/seo/launch-kit.md` §0, al día con la sesión 02 (hoy 0 estrellas, sin temas, «2D
+   engine»). La descripción y las palabras clave nuevas de los tres paquetes y los README del motor
+   y del editor llegan a npm con su próxima publicación: hasta entonces npm dice «A 2D CAD drafting
+   engine» y el editor, tres idiomas.
 5. **Directorios** con cuenta propia (AlternativeTo, SaaSHub, TheCADHub y los demás del kit, §6):
    ya, no esperan a la landing.
 6. **Show HN, Reddit, Product Hunt**, con los textos y el calendario del kit, cuando 02–04 estén
@@ -283,7 +285,13 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   Lighthouse igual (100 en `/`, `/es` y `/docs/commands`) y `/docs/commands` de 777 a 320 KB en
   escritorio. Quedan del dueño (§7): el push, IndexNow y la prueba de resultados enriquecidos.
   `/pt-BR` sigue en 404 (una redirección pide rutas sensibles a mayúsculas, sin verificar en Vercel).
-- 02 Posicionamiento y metadatos: pendiente.
+- 02 Posicionamiento y metadatos: hecha el 5/11/2026 (`353027e8`, `146fffea`), sin push. La tabla
+  de consultas de cada home, en L2; las 21 ubicaciones de `technical.md` §6.2, reescritas (16) o
+  conservadas por estar ya bien (5: el `featureList`, «Todavía no» y «A continuación», el README y
+  los recuentos de idiomas), cada una con su motivo en los commits. Titles de 52 a 59 caracteres y
+  descriptions de 145 a 155, con la consulta principal delante, sostenidos por
+  `i18n/messages.test.ts`; el FAQ pregunta por el 3D; las tarjetas OG, vistas en los cuatro
+  idiomas. Quedan del dueño (§7): el push, el `gh repo edit` y la próxima publicación en npm.
 - 03 Una página por comando: pendiente.
 - 04 Rediseño de la landing: pendiente.
 - 05 Lanzamiento: pendiente (los directorios pueden ir ya).
