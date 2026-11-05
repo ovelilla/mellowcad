@@ -1810,10 +1810,13 @@ AutoCAD while the click takes the marker (desktop d13), here it follows the poin
 ### `SPLINEDIT` / `SPE` · es `EDITSPLINE` / `SPE` · pt-BR `EDITARSPLINE` / `ESPL`
 
 **Implemented:** as AutoCAD 2027's console asks it and leaves the spline (probes
-spline-knots/k11, k57–k146 and splinedit/p100–p166, traced, MPDUMP, en, es and pt-BR; not
-transparent, k146; Enter repeats it, p100): `Select spline:`
+spline-knots/k11, k57–k146, splinedit/p100–p166 and pedit/p320–p338, traced, MPDUMP, en, es and
+pt-BR; not transparent, k146; Enter repeats it, p100): `Select spline:`
 (es `Designe spline:`), a pick or a mode typed there (Window, Last, Crossing, BOX, ALL, Fence,
-WPolygon, CPolygon, Previous, AUto), on nothing a window, anything but a spline
+WPolygon, CPolygon, Previous, AUto), on nothing a window, LASTPOINT the point typed, the point an
+object snap typed there found or a click's on the work plane (pedit/p320, p327), a spline on a
+locked layer `1 was on a locked layer.` (es `1 estaba en una capa bloqueada.`) and the prompt
+again (p328), anything but a spline
 `Object selected is not a spline.` (es `El objeto designado no es una spline.`) and the prompt
 again, a Fit polyline too (p103), Enter ending the command (k93, k96, k118); the newest spline
 selected before it is the one edited, the rest dropped (k121, p145, p158), a set with none said of
@@ -1854,7 +1857,10 @@ and `<P>` from the last, staying put at either end, a closed fit spline's last s
 point, the first again (p111, p112: PEDIT-D41), Select point's `Specify existing fit point on
 spline <exit>:`, a miss `Not a fit point.` and the prompt again (k64, k80, k97, k107–k109, k145,
 p110); `@`, a number along the cursor, `*`, a polar point, a snap and Ortho as at any point
-prompt (p114–p119), `@` at Add from the fit point picked (p166); Close / Open, staying in Fit data; Purge, the
+prompt (p114–p119), `@` at Add from the fit point picked (p166). LASTPOINT is Move's point, so
+`@5,0` next moves on from it (pedit/p321, p325, p335, p336), Add's new point, else the existing
+one picked (p329, p338), the end fit point after Tangents (p323, p330, p334); Delete keeps it
+(p337); Close / Open, staying in Fit data; Purge, the
 fit data dropped and back at the first prompt (k65, k101); Tangents' `Specify start tangent or
 [System default]:` and `Specify end tangent or [System default]:`, the start one unit from the
 point given to the start, the end one from the end to it, Enter keeping one, System default
@@ -1865,7 +1871,7 @@ the tangents (k114, k138, k140); a closed one's own knots 1 apart stay Uniform t
 Delete (p106, p107). **Edit vertex**: `Enter a vertex editing option
 [Add/Delete/Elevate order/Move/Weight/eXit] <eXit>:` (es `Indique una opción de edición de
 vértices [Añadir/sUprimir/Elevar orden/Desplazar/Peso/Salir] <Salir>:`), a fit spline's fit data
-dropped at its first edit (k75, k102, k127). Add's `Specify a point on the spline <exit>:`: a knot
+dropped at its first edit (k75, k102, k127). Add's `Specify a point on the spline <exit>:` (LASTPOINT kept, as at Delete, pedit/p324, p331): a knot
 at the parameter nearest the point and the point itself a vertex, between those whose Greville
 abscissae the knot falls nearest, the curve changing; nothing at an end (k68, k83, k84, k124,
 k129). Delete's `Specify control vertex to delete:`, the inner knot nearest the vertex's Greville
@@ -1913,17 +1919,23 @@ a closed one of another degree (the knot nearest the Greville abscissa half a de
 a Z typed at Fit data's Move and Add and at Edit vertex's Add (projected onto the spline's plane
 here; Edit vertex's Move keeps it, p120); Undo at `Specify new fit point to add` with nothing
 added (nothing said here) and where the points then go (after the first here); whether U restores
-the precision; a spline-fit polyline selected before it (turned into its spline, as picked).
+the precision; a spline-fit polyline selected before it (turned into its spline, as picked); a
+mode finding only locked splines at `Select spline:` (said as a pick's and asked again here,
+pedit/p328); LASTPOINT after Select point and at Add's `[After/Before]` (the point given here),
+after Move's Enter and keywords and at Tangents' start (kept here).
 
 ### `PEDIT` / `PE` · es `EDITPOL` / `PE` · pt-BR `EDITARP` / `EDP`
 
 **Implemented:** as AutoCAD 2027's console asks it and leaves the polyline (probes
-pedit/p01–p253, traced, MPDUMP, en, es and pt-BR; not transparent, `** That command may not be
+pedit/p01–p253 and p300–p308, p332, p333, traced, MPDUMP, en, es and pt-BR; not transparent, `** That command may not be
 invoked transparently **`, p220). `Select polyline or [Multiple]:` (es
 `Designe polilínea o [Múltiple]:`; pt-BR `Selecionar polilinha ou [Múltiplo]:`, its answer written
 against the colon, `[Múltiplo]:_Y`, 21229, pedit/p18), a pick or a mode typed there (Window, Last, Crossing, BOX, ALL,
-Fence, WPolygon, CPolygon), a miss and Enter asked again in silence and Escape the only way out
-(p03, p38), a word `*Invalid selection*` and `Expects a point or
+Fence, WPolygon, CPolygon), the newest of two under it (p308), a miss and Enter asked again in
+silence and Escape the only way out (p03, p38), LASTPOINT the point typed, the point an object
+snap typed there found or a click's on the work plane (p300, p306), a polyline on a locked layer
+`The object is on a locked layer.` (es `El objeto está en una capa bloqueada.`) and the prompt
+again (p307), a word `*Invalid selection*` and `Expects a point or
 Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Multiple]:`, the stray bracket AutoCAD's (es
 `Requiere un punto o …/Múltiple]:`); a polyline selected before it is the one edited, a set of more
 not taken, nothing left selected after (p37, p38, p244), and a double-click on a polyline or a 3D polyline at `Command:` runs it on
@@ -1955,8 +1967,8 @@ segments added to polyline` (es `3 segmentos añadidos a la polilínea`; p17, p4
 one `Can't join to a closed polyline` (es `Imposible unir a una polilínea cerrada`) and the prompt
 again (p18); at another height nothing (p44); a 3D polyline joins nothing, `0 segments added to
 polyline`, as the console (p43, p77, p103, p104). **Width**: `Specify new width for all segments:`
-(es `Precise nuevo grosor para todos los segmentos:`), a value or two points, `Requires numeric
-distance or two points.`, `Value must be positive.`, Enter back at the main prompt, 0 taking the
+(es `Precise nuevo grosor para todos los segmentos:`), a value or two points the runtime measures
+(` Specify second point:`, LASTPOINT kept, p305), `Requires numeric distance or two points.`, `Value must be positive.`, Enter back at the main prompt, 0 taking the
 widths away (p20, p75, p110, p200, p225). **Ltype gen**: `Enter
 polyline linetype generation option [ON/OFF] <Off>:` (es `[ACT/DES] <DES>`), its default the
 polyline's own, a word refused, Enter keeping it (p32, p224): on, the linetype laid in one pattern along all of it, a model property of
@@ -1972,7 +1984,9 @@ keeping its bulge and widths and the new one straight as wide as it ended, the X
 p109, p115, p118, p128); Move's `Specify new location for marked vertex:`, the bulges kept (p23),
 both doing nothing at Enter (p74), with their Z on a 3D polyline (p30), `@` read from the X, not
 LASTPOINT, with its Z on a 3D polyline (p227, p251), a Z, `*`, a keyword or a command on a 2D one
-`Invalid 2D point.` (p228, p229, p238), an object snap taken, Ortho leaving a typed point (p230); Break's and Straighten's
+`Invalid 2D point.` (p228, p229, p238), an object snap taken, Ortho leaving a typed point (p230),
+LASTPOINT the point given (p301, p302), Edit vertex entered, stepped and left keeping it (p250,
+p332); Break's and Straighten's
 `Enter an option [Next/Previous/Go/eXit] <N>:` (es `[sigUiente/Precedente/Ejecutar/Salir]`), Go
 breaking between the vertex they began at and the X — the runs before the lower and after the
 higher, a closed one read from its first vertex round to it again, the piece from the start
@@ -1981,9 +1995,11 @@ an end or over all of it, a new piece in the polyline's properties (p66–p71, p
 p243; a 3D polyline's too, p245), eXit back at the vertex prompt (p239) — or straightening, the vertices between
 dropped and the segment straight with the lower one's widths, at one vertex the arc after it
 (p26, p27, p72, p73, p129, p131, p246), the X then on the lower; Width's `Specify starting width for next
-segment <…>:` and `Specify ending width for next segment <…>:` from the X, `Requires numeric
-distance or second point.`, `Value must be positive.` (p22, p29, p79, p80); Tangent's `Specify
-direction of vertex tangent:` (`Requires valid numeric angle or second point.`), taken and kept by
+segment <…>:` and `Specify ending width for next segment <…>:` from the X, a point measured from
+it (`10,10` from 0,0 then `<14.1421>`, p303), `Requires numeric distance or second point.`,
+`Value must be positive.` (p22, p29, p79, p80); Tangent's `Specify direction of vertex tangent:`
+(`Requires valid numeric angle or second point.`), a point its direction from the X (p304); both
+leave LASTPOINT on the X, a number or a point given (p303, p304, p333); a tangent is taken and kept by
 nothing, as AutoCAD drops it from a polyline that is not fitted (p28), Enter giving none (p226);
 Regen. **Undo**: the last
 step of the main prompt back, a whole Edit vertex at once, `Command has been completely undone.`
@@ -2084,7 +2100,8 @@ helixes and meshes; plotted with it on, the frame is not drawn, p193).
 **Unverified:** a fitted polyline's tangent through Reverse (0 here, as an unfitted one's), a
 spline-fit one's Break from its first vertex (the rest its frame here), the fuzz an arc end moves
 within (its straight distance here; p207 within both), MID just past a Fit joint (p215: a tie in
-the aperture).
+the aperture), a mode finding only locked polylines at `Select polyline` (said as a pick's and
+asked again here, p307).
 
 ### `MATCHPROP` / `MA` / `PAINTER` · es `IGUALARPROP` / `IP` / `COPIARPROP` · pt-BR `PROPIG` / `PI` / `PINTOR`
 

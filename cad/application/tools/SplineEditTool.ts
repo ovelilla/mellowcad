@@ -39,6 +39,7 @@ import {
 import type { PromptId } from "../../locales/types"
 import { glow, rollover } from "./ghostLook"
 import { joinToSpline } from "./JoinTool"
+import { lockedObjectAt } from "./lockedPick"
 import { ONE_OBJECT_MODES, ObjectSelector } from "./objectSelection"
 import { newestFirst } from "./listReport"
 import { gripRubberBand } from "./selectToolOverlay"
@@ -155,6 +156,10 @@ export class SplineEditTool implements Tool {
     one: {
       take: (entity, ctx) => this.take(entity, ctx),
       newest: true,
+      // A mode's locked find said as the pick's is (pedit/p328), as
+      // ARRAYPATH's `Select path curve:` says it (**unverified** for the modes).
+      locked: "onLockedLayer",
+      lockedAsksAgain: true,
       pick: (point, ctx) => this.pickSpline(point, ctx),
     },
   })
@@ -334,6 +339,31 @@ export class SplineEditTool implements Tool {
         return { refusal: "pointOrKeywordRequired" }
       default:
         return "point"
+    }
+  }
+
+  /**
+   * WHY none at the point steps but Select point's and Add's existing point,
+   * which the runtime sets: the tool sets it where AutoCAD does (Move's and
+   * Add's point, Tangents' end fit point), since their Enter and keywords
+   * move the base the runtime would follow; vertex Add and Delete and fit
+   * Delete keep it (pedit/p321–p338).
+   */
+  setsLastPoint(): boolean | null {
+    const step = this.step
+    switch (step.kind) {
+      case "existing":
+        return step.purpose === "delete" ? false : null
+      case "move":
+      case "addWhere":
+      case "addPoint":
+      case "tangentStart":
+      case "tangentEnd":
+      case "vertexAdd":
+      case "vertexDelete":
+        return false
+      default:
+        return null
     }
   }
 
@@ -689,10 +719,18 @@ export class SplineEditTool implements Tool {
     this.begin(entity, ctx)
   }
 
-  /** A pick at `Select spline:`: on nothing a window, as AUto makes it (k96). */
+  /**
+   * A pick at `Select spline:`: on nothing a window, as AUto makes it (k96);
+   * on a locked spline `1 was on a locked layer.` and the prompt again
+   * (pedit/p328).
+   */
   private pickSpline(world: Vec2 | Vec3, ctx: ToolContext): void {
     const at = { x: world.x, y: world.y }
     const hit = ctx.pick(at)
+    if (lockedObjectAt(ctx.viewport.worldToScreen(world), ctx, hit)) {
+      ctx.report(ctx.text.message("onLockedLayer", { count: 1 }), "error")
+      return
+    }
     if (!hit) this.modes.startWindow(at, ctx)
     else this.take(hit, ctx)
   }
@@ -837,12 +875,18 @@ export class SplineEditTool implements Tool {
       }
       case "addWhere":
         if (!point) this.ask({ kind: "existing", purpose: "add" }, ctx)
-        else
+        else {
+          ctx.setLastPoint(point)
           this.addFitPoint({ kind: "addPoint", at: 0, marks: [] }, point, ctx)
+        }
         return
       case "addPoint":
+        // Enter leaves the existing point LASTPOINT (pedit/p338).
         if (!point) this.ask({ kind: "existing", purpose: "add" }, ctx)
-        else this.addFitPoint(step, point, ctx)
+        else {
+          ctx.setLastPoint(point)
+          this.addFitPoint(step, point, ctx)
+        }
         return
       case "tangentStart":
         this.ask({ kind: "tangentEnd", start: point ?? undefined }, ctx)
@@ -890,6 +934,8 @@ export class SplineEditTool implements Tool {
           this.stepTo(this.steppingForward(step.walked), step.walked, ctx)
           return
         }
+        // The point moved to, `@` read from it next (pedit/p321, p325, p335).
+        ctx.setLastPoint(point)
         const index = this.pointIndex(step.walked)
         this.edit(ctx, (s) => {
           const target = step.walked === "fit" ? s : SplineEditTool.vertices(s)
@@ -959,6 +1005,10 @@ export class SplineEditTool implements Tool {
     ctx: ToolContext
   ): void {
     this.edit(ctx, (s) => splineTangentsAt(s, start, end))
+    // The end tangent's base point, whatever was given (pedit/p323, p330,
+    // p334 and their traces' BasePoint).
+    const last = this.walkedPoints(ctx, "fit").at(-1)
+    if (last) ctx.setLastPoint(last)
     this.ask({ kind: "fit" }, ctx)
   }
 
@@ -1079,6 +1129,14 @@ export class SplineEditTool implements Tool {
     }
   }
 
+  /**
+   * WHY at `Select spline:`: an object snap typed there picks at the point it
+   * finds, LASTPOINT (pedit/p327).
+   */
+  takesSnapOverride(): boolean {
+    return this.step.kind === "select" && !this.modes.inMode()
+  }
+
   cycleLasso(ctx: ToolContext): boolean {
     if (this.step.kind === "select") return this.modes.cycleLasso(ctx)
     if (this.step.kind === "join") return this.joiner.cycleLasso(ctx)
@@ -1111,8 +1169,16 @@ export class SplineEditTool implements Tool {
     if (input.button !== 0) return
     const step = this.step
     if (step.kind === "select") {
-      if (this.modes.inMode()) this.modes.onPointerDown(input, ctx)
-      else this.pickSpline(input.snap ? input.point : input.world, ctx)
+      if (this.modes.inMode()) {
+        this.modes.onPointerDown(input, ctx)
+        return
+      }
+      // A click that picks is LASTPOINT, as a typed pick is (pedit/p320),
+      // the cursor's point on the work plane (VSD-04, SED-06) or the
+      // override's (p327).
+      const at = input.snap ? input.point : input.world
+      if (ctx.pick(at)) ctx.setLastPoint(input.point)
+      this.pickSpline(at, ctx)
       return
     }
     if (step.kind === "join") {

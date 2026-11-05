@@ -11,7 +11,14 @@ import {
   polylineSegments,
 } from "../../domain/entities"
 import { createHarness } from "../../../test/harness"
-import { arcOf, circleOf, lineOf, p, polylineOf } from "../../../test/builders"
+import {
+  arcOf,
+  circleOf,
+  layerOf,
+  lineOf,
+  p,
+  polylineOf,
+} from "../../../test/builders"
 import { es } from "../../locales/es"
 import { ptBR } from "../../locales/pt-BR"
 
@@ -319,7 +326,7 @@ describe("PEDIT on what is not a polyline", () => {
 })
 
 describe("PEDIT's options", () => {
-  it("gives every segment one width, a point measured two (p20, p75)", () => {
+  it("gives every segment one width, a number or two points measured (p20, p75, p305)", () => {
     const cad = edit(pl())
     cad.option("Width")
     expect(asked(cad)).toBe("Specify new width for all segments:")
@@ -340,6 +347,9 @@ describe("PEDIT's options", () => {
     cad.option("Width")
     typeAnswer(cad, "0")
     expect(poly(cad).widths).toBeUndefined()
+    cad.option("Width")
+    answer(cad, "10,10", "13,14")
+    expect(poly(cad).widths?.[0]).toEqual([5, 5])
   })
 
   it("closes on an arc tangent to the last one (p78, p130, p133)", () => {
@@ -1365,5 +1375,160 @@ describe("PEDIT's Edit vertex and Undo on a 3D polyline", () => {
     expect(cad.byId<Polyline3dEntity>("Q").fit).toBeUndefined()
     answer(cad, "_U")
     expect(cad.commandLog().at(-1)).toBe("Command has been completely undone.")
+  })
+})
+
+// AutoCAD 2027's console, en-US and es-ES (probes pedit/p250, p300–p308,
+// p332, p333): LASTPOINT after `Select polyline` and each point PEDIT takes,
+// as `ID @` says it once PEDIT ends.
+describe("PEDIT's LASTPOINT and its pick", () => {
+  /** p300's polyline, LASTPOINT moved off it first. */
+  const drawn = () =>
+    answer(
+      createHarness(),
+      ...["_PLINE", "0,0", "100,0", "100,50", "", "_ID", "99,99"]
+    )
+  const lastPoint = (cad: Harness) =>
+    answer(cad, "_ID", "@").commandLog().at(-1)
+  const at = (x: number, y: number) =>
+    ` X = ${x.toFixed(2)}     Y = ${y.toFixed(2)}     Z = 0.00`
+
+  it("is the point a pick typed or clicked, on the plane off the plan too (p300, LPT-04)", () => {
+    expect(lastPoint(answer(drawn(), "_PEDIT", "50,0", ""))).toBe(at(50, 0))
+    const clicked = drawn()
+    clicked.command("PEDIT").click(p(50, 0))
+    expect(lastPoint(answer(clicked, ""))).toBe(at(50, 0))
+    // Seen from 1,-1,1, the pixel of 50,0,20 is that of 30,20,0 on the
+    // work plane, where a click that picks leaves LASTPOINT (solid-inquiry/d10).
+    const off = answer(
+      createHarness(),
+      ...["ELEVATION", "20", "_PLINE", "0,0", "100,0", "", "ELEVATION", "0"],
+      ...["VPOINT", "1,-1,1", "_ID", "7,7,7", "_PEDIT"]
+    )
+    off.click({ x: 50, y: 0, z: 20 })
+    expect(asked(off)).toBe(MAIN)
+    expect(lastPoint(answer(off, ""))).toBe(at(30, 20))
+  })
+
+  it("is the point an object snap override found at the pick (p306)", () => {
+    const cad = answer(drawn(), "_PEDIT", "_END", "98,1")
+    expect(asked(cad)).toBe(MAIN)
+    expect(lastPoint(answer(cad, ""))).toBe(at(100, 0))
+  })
+
+  it("says a locked polyline and asks again (p307)", () => {
+    for (const [locale, lines] of [
+      [
+        undefined,
+        [
+          "Select polyline or [Multiple]: 50,0",
+          "The object is on a locked layer.",
+          "Select polyline or [Multiple]: 50,50",
+        ],
+      ],
+      [
+        es,
+        [
+          "Designe polilínea o [Múltiple]: 50,0",
+          "El objeto está en una capa bloqueada.",
+          "Designe polilínea o [Múltiple]: 50,50",
+        ],
+      ],
+    ] as const) {
+      const cad = createHarness({ locale })
+      cad.runtime.document.load(
+        [
+          polylineOf([p(0, 0), p(100, 0)], { id: "K", layerId: "L1" }),
+          polylineOf([p(0, 50), p(100, 50)], { id: "P" }),
+        ],
+        { layers: [layerOf("0"), layerOf("L1", { locked: true })] }
+      )
+      answer(cad, "_PEDIT", "50,0", "50,50")
+      expect(cad.commandLog().slice(-3)).toEqual(lines)
+      answer(cad, "_C", "")
+      expect(poly(cad).closed).toBe(true)
+      expect(poly(cad, "K").closed).toBe(false)
+      expect(lastPoint(cad)).toMatch(/50[.,]00 .* 50[.,]00 /)
+    }
+    const clicked = createHarness()
+    clicked.runtime.document.load(
+      [polylineOf([p(0, 0), p(100, 0)], { id: "K", layerId: "L1" })],
+      { layers: [layerOf("0"), layerOf("L1", { locked: true })] }
+    )
+    clicked.command("PEDIT").click(p(50, 0))
+    expect(clicked.commandLog().at(-1)).toBe("The object is on a locked layer.")
+    expect(asked(clicked)).toBe("Select polyline or [Multiple]:")
+  })
+
+  it("takes the newest of two under the pick (p308)", () => {
+    const cad = answer(
+      createHarness(),
+      ...["_PLINE", "0,0", "100,0", "100,50", ""],
+      ...["_PLINE", "0,0", "100,0", "100,-50", ""],
+      ...["_PEDIT", "50,0", "_C", ""]
+    )
+    const closed = cad.entities().map((e) => (e as PolylineEntity).closed)
+    expect(closed).toEqual([false, true])
+  })
+
+  it("is the point Move and Insert give, `@` from the X (p301, p302)", () => {
+    const moved = answer(drawn(), "_PEDIT", "50,0", "_E", "_M", "@30,30")
+    expect(lastPoint(answer(moved, "_X", ""))).toBe(at(30, 30))
+    const inserted = answer(drawn(), "_PEDIT", "50,0", "_E", "_I", "40,10")
+    expect(lastPoint(answer(inserted, "_X", ""))).toBe(at(40, 10))
+  })
+
+  it("is kept by Edit vertex entered, stepped and left (p250, p332)", () => {
+    const cad = answer(drawn(), "_PEDIT", "50,0", "_E", "_N", "_X", "")
+    expect(lastPoint(cad)).toBe(at(50, 0))
+  })
+
+  it("measures main Width's two points, LASTPOINT kept (p305)", () => {
+    const typed = answer(drawn(), "_PEDIT", "50,0", "_W", "10,10")
+    expect(asked(typed)).toBe("Specify second point:")
+    answer(typed, "13,14")
+    expect(asked(typed)).toBe(MAIN)
+    const widths = typed.entities()[0] as PolylineEntity
+    expect(widths.widths).toEqual([
+      [5, 5],
+      [5, 5],
+    ])
+    expect(lastPoint(answer(typed, ""))).toBe(at(50, 0))
+    const clicked = edit(p5())
+    clicked.option("Width").click(p(10, 10)).click(p(13, 14))
+    expect(poly(clicked).widths?.[0]).toEqual([5, 5])
+  })
+
+  it("measures Edit vertex's widths from the X, LASTPOINT on it (p303, p333)", () => {
+    const cad = answer(drawn(), "_PEDIT", "50,0", "_E", "_W", "10,10")
+    expect(asked(cad)).toBe("Specify ending width for next segment <14.14>:")
+    answer(cad, "13,14")
+    const widths = (cad.entities()[0] as PolylineEntity).widths?.[0]
+    expect(widths?.[0]).toBeCloseTo(Math.hypot(10, 10), 9)
+    expect(widths?.[1]).toBeCloseTo(Math.hypot(13, 14), 9)
+    expect(lastPoint(answer(cad, "", "_X", ""))).toBe(at(0, 0))
+    const numbers = answer(drawn(), "_PEDIT", "50,0", "_E", "_N", "_W", "2")
+    expect(lastPoint(answer(numbers, "3", "_X", ""))).toBe(at(100, 0))
+    const clicked = edit(p5())
+    clicked.option("Edit vertex").option("Width").click(p(10, 10))
+    expect(asked(clicked)).toBe(
+      "Specify ending width for next segment <14.14>:"
+    )
+  })
+
+  it("takes Tangent's direction from the X, LASTPOINT on it (p304)", () => {
+    const cad = answer(drawn(), "_PEDIT", "50,0", "_E", "_N", "_T", "110,10")
+    expect(asked(cad)).toBe(`${VERTEX} <N>:`)
+    const twin = answer(drawn(), "_PEDIT", "50,0", "_E", "_N", "_T", "45")
+    answer(cad, "_X", "_F")
+    answer(twin, "_X", "_F")
+    expect(cad.entities()[0]).toEqual({
+      ...twin.entities()[0],
+      id: cad.entities()[0].id,
+    })
+    expect(lastPoint(answer(cad, ""))).toBe(at(100, 0))
+    const clicked = edit(p5())
+    clicked.option("Edit vertex").option("Tangent").click(p(10, 10))
+    expect(asked(clicked)).toBe(`${VERTEX} <N>:`)
   })
 })

@@ -67,6 +67,7 @@ import {
 import type { PromptId } from "../../locales/types"
 import { glow, rollover } from "./ghostLook"
 import { joinToPolyline } from "./JoinTool"
+import { lockedObjectAt } from "./lockedPick"
 import {
   type AddedBy,
   type ModeFind,
@@ -186,6 +187,10 @@ export class PolylineEditTool implements Tool {
     one: {
       take: (entity, ctx) => this.take(entity, ctx),
       newest: true,
+      // A mode's locked find said as the pick's is (p307), the prompt
+      // asked again (**unverified** for the modes).
+      locked: "objectOnLockedLayer",
+      lockedAsksAgain: true,
       pick: (point, ctx) => this.pickPolyline(point, ctx),
     },
   })
@@ -899,9 +904,16 @@ export class PolylineEditTool implements Tool {
     }
   }
 
-  /** A pick on nothing asks again in silence (p03). */
+  /**
+   * A pick on nothing asks again in silence (p03); on a locked polyline it
+   * says so and asks again (p307).
+   */
   private pickPolyline(world: Vec2 | Vec3, ctx: ToolContext): void {
     const hit = ctx.pick({ x: world.x, y: world.y })
+    if (lockedObjectAt(ctx.viewport.worldToScreen(world), ctx, hit)) {
+      ctx.report(ctx.text.message("objectOnLockedLayer"), "error")
+      return
+    }
     if (hit) this.take(hit, ctx)
   }
 
@@ -1097,6 +1109,7 @@ export class PolylineEditTool implements Tool {
   private answerTangent(degrees: number, ctx: ToolContext): void {
     const poly = this.polyline(ctx)
     if (poly?.type === "polyline" && Number.isFinite(degrees)) {
+      this.lastPointOnX(ctx)
       const tangents = [
         ...(this.tangentsOf(poly) ?? poly.vertices.map(() => null)),
       ]
@@ -1148,6 +1161,7 @@ export class PolylineEditTool implements Tool {
         this.joinWithin(value, ctx)
         return
       case "vertexWidth": {
+        this.lastPointOnX(ctx)
         if (step.start === null) {
           this.ask({ kind: "vertexWidth", start: value }, ctx)
           return
@@ -1165,6 +1179,16 @@ export class PolylineEditTool implements Tool {
         return
       }
     }
+  }
+
+  /**
+   * Edit vertex's widths and Tangent leave LASTPOINT on the X, their
+   * distance's and angle's base point, a number or a point given (p303, p304,
+   * p333); main Width's two points leave it (p305).
+   */
+  private lastPointOnX(ctx: ToolContext): void {
+    const poly = this.polyline(ctx)
+    if (poly) ctx.setLastPoint(vertexInWorld(poly, this.current))
   }
 
   private answerPointText(ctx: ToolContext): boolean {
@@ -1289,14 +1313,21 @@ export class PolylineEditTool implements Tool {
         return this.joiner.wantsSnap()
       case "insert":
       case "move":
-      case "width":
       case "fuzz":
-      case "vertexWidth":
-      case "tangent":
         return true
       default:
+        // WHY Width, Edit vertex's widths and Tangent too: the runtime
+        // measures their points, from the X or two (p303–p305).
         return false
     }
+  }
+
+  /**
+   * WHY at `Select polyline`: an object snap typed there picks at the point
+   * it finds, LASTPOINT (p306).
+   */
+  takesSnapOverride(): boolean {
+    return this.step.kind === "select" && !this.modes.inMode()
   }
 
   cycleLasso(ctx: ToolContext): boolean {
@@ -1331,8 +1362,15 @@ export class PolylineEditTool implements Tool {
     if (input.button !== 0) return
     const step = this.step
     if (step.kind === "select") {
-      if (this.modes.inMode()) this.modes.onPointerDown(input, ctx)
-      else this.pickPolyline(input.snap ? input.point : input.world, ctx)
+      if (this.modes.inMode()) {
+        this.modes.onPointerDown(input, ctx)
+        return
+      }
+      // A click that picks is LASTPOINT, as a typed pick is (p300), the
+      // cursor's point on the work plane (VSD-04, SED-06) or the override's (p306).
+      const at = input.snap ? input.point : input.world
+      if (ctx.pick(at)) ctx.setLastPoint(input.point)
+      this.pickPolyline(at, ctx)
       return
     }
     if (step.kind === "set" || step.kind === "join") {

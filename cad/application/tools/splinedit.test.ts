@@ -13,7 +13,7 @@ import {
 import { splineInWorld } from "../../domain/splineEdits"
 import { bsplinePoint, periodicLoop } from "../../geometry/nurbs"
 import { createHarness } from "../../../test/harness"
-import { lineOf, p } from "../../../test/builders"
+import { layerOf, lineOf, p } from "../../../test/builders"
 import { es } from "../../locales/es"
 import { ptBR } from "../../locales/pt-BR"
 
@@ -1290,5 +1290,137 @@ describe("SPLINEDIT in Brazilian Portuguese (splinedit/p102, p108, p110, p113 pt
     expect(asked(cad)).toBe(
       "Insira uma opção [Abrir/AJustar dados/Editar vértice/converter para Polilinha/Reverter/Desfazer/saIr] <saIr>:"
     )
+  })
+})
+
+// AutoCAD 2027's console, en-US and es-ES (probes pedit/p320–p338):
+// LASTPOINT after `Select spline:` and each point SPLINEDIT asks, as `ID @`
+// says it once SPLINEDIT ends.
+describe("SPLINEDIT's LASTPOINT and its pick", () => {
+  type Harness = ReturnType<typeof createHarness>
+  /** p320's fit spline, LASTPOINT moved off it first. */
+  const fitted = () =>
+    answer(
+      createHarness(),
+      ...["_SPLINE", "0,0", "50,30", "100,0", "", "_ID", "99,99"]
+    )
+  /** p324's CV spline. */
+  const byVertices = () =>
+    answer(
+      createHarness(),
+      ...["_SPLINE", "_M", "_CV", "0,0", "30,40", "70,40", "100,0", ""],
+      ...["_ID", "99,99"]
+    )
+  const lastPoint = (cad: Harness) =>
+    answer(cad, "_ID", "@").commandLog().at(-1)
+  const at = (x: number, y: number) =>
+    ` X = ${x.toFixed(2)}     Y = ${y.toFixed(2)}     Z = 0.00`
+  const only = (cad: Harness) => cad.only<SplineEntity>("spline")
+
+  it("is the point a pick typed or clicked, on the plane off the plan too (p320, LPT-04)", () => {
+    expect(lastPoint(answer(fitted(), "_SPLINEDIT", "0,0", ""))).toBe(at(0, 0))
+    const clicked = fitted()
+    clicked.command("SPLINEDIT").click(p(0, 0))
+    expect(lastPoint(answer(clicked, ""))).toBe(at(0, 0))
+    // Seen from 1,-1,1, the pixel of 0,0,20 is that of -20,20,0 on the work
+    // plane, where a click that picks leaves LASTPOINT (solid-inquiry/d10).
+    const off = answer(
+      createHarness(),
+      ...["_SPLINE", "0,0,20", "50,30,20", "100,0,20", ""],
+      ...["VPOINT", "1,-1,1", "_ID", "7,7,7", "_SPLINEDIT"]
+    )
+    off.click({ x: 0, y: 0, z: 20 })
+    expect(asked(off)).toMatch(/^Enter an option/)
+    expect(lastPoint(answer(off, ""))).toBe(at(-20, 20))
+  })
+
+  it("is the point an object snap override found at the pick (p327)", () => {
+    const cad = answer(fitted(), "_SPLINEDIT", "_END", "1,1")
+    expect(asked(cad)).toMatch(/^Enter an option/)
+    expect(lastPoint(answer(cad, ""))).toBe(at(0, 0))
+  })
+
+  it("says a locked spline and asks again, no window (p328)", () => {
+    for (const [locale, lines] of [
+      [
+        undefined,
+        [
+          "Select spline: 0,0",
+          "1 was on a locked layer.",
+          "Select spline: 0,40",
+        ],
+      ],
+      [
+        es,
+        [
+          "Designe spline: 0,0",
+          "1 estaba en una capa bloqueada.",
+          "Designe spline: 0,40",
+        ],
+      ],
+    ] as const) {
+      const cad = createHarness({ locale })
+      cad.runtime.document.load(
+        [
+          createSpline("fit", [p(0, 0), p(50, 30), p(100, 0)], {
+            id: "K",
+            layerId: "L1",
+          }),
+          createSpline("fit", [p(0, 40), p(50, 70), p(100, 40)], { id: "S" }),
+        ],
+        { layers: [layerOf("0"), layerOf("L1", { locked: true })] }
+      )
+      answer(cad, "_SPLINEDIT", "0,0", "0,40")
+      expect(cad.commandLog().slice(-3)).toEqual(lines)
+      answer(cad, "_C", "")
+      expect(spline(cad).closed).toBe(true)
+      expect(cad.byId<SplineEntity>("K").closed).toBe(false)
+      expect(lastPoint(cad)).toMatch(/ 0[.,]00 .* 40[.,]00 /)
+    }
+  })
+
+  it("is the point fit data's and Edit vertex's Move give, `@` from it (p321, p325, p335, p336)", () => {
+    const fit = answer(fitted(), "_SPLINEDIT", "0,0", "_F", "_M", "10,10")
+    expect(lastPoint(answer(fit, "_X", "_X", ""))).toBe(at(10, 10))
+    const cv = answer(byVertices(), "_SPLINEDIT", "0,0", "_E", "_M", "10,10")
+    expect(lastPoint(answer(cv, "_X", "_X", ""))).toBe(at(10, 10))
+    const fitAt = answer(fitted(), "_SPLINEDIT", "0,0", "_F", "_M", "10,10")
+    answer(fitAt, "@5,0", "_X", "_X")
+    expect(only(fitAt).points[0]).toEqual({ x: 15, y: 10, z: 0 })
+    const cvAt = answer(byVertices(), "_SPLINEDIT", "0,0", "_E", "_M", "10,10")
+    answer(cvAt, "@5,0", "_X", "_X")
+    expect(only(cvAt).points[0]).toEqual({ x: 15, y: 10, z: 0 })
+  })
+
+  it("is fit Add's new point, else the existing one picked (p329, p338)", () => {
+    const added = answer(fitted(), "_SPLINEDIT", "0,0", "_F", "_A", "50,30")
+    answer(added, "70,25", "", "", "_X", "")
+    expect(lastPoint(added)).toBe(at(70, 25))
+    const none = answer(fitted(), "_SPLINEDIT", "0,0", "_F", "_A", "50,30")
+    expect(lastPoint(answer(none, "", "", "_X", ""))).toBe(at(50, 30))
+  })
+
+  it("is the end fit point after Tangents (p323, p330, p334)", () => {
+    for (const answers of [
+      ["10,10", "20,0"],
+      ["10,10", ""],
+      ["_S", "20,0"],
+    ]) {
+      const cad = answer(fitted(), "_SPLINEDIT", "0,0", "_F", "_T", ...answers)
+      expect(lastPoint(answer(cad, "_X", ""))).toBe(at(100, 0))
+    }
+  })
+
+  it("is kept by Edit vertex's Add and Delete and fit data's Delete (p324, p331, p337)", () => {
+    const add = answer(byVertices(), "_SPLINEDIT", "0,0", "_E", "_A", "50,30")
+    expect(lastPoint(answer(add, "", "_X", ""))).toBe(at(0, 0))
+    const del = answer(byVertices(), "_SPLINEDIT", "0,0", "_E", "_D", "30,40")
+    expect(lastPoint(answer(del, "", "_X", ""))).toBe(at(0, 0))
+    const fitDelete = answer(
+      createHarness(),
+      ...["_SPLINE", "0,0", "50,30", "70,10", "100,0", "", "_ID", "99,99"],
+      ...["_SPLINEDIT", "0,0", "_F", "_D", "50,30", "", "_X", ""]
+    )
+    expect(lastPoint(fitDelete)).toBe(at(0, 0))
   })
 })
