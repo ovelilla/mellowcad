@@ -437,6 +437,36 @@ describe("MASSPROP's prompts and refusals", () => {
   })
 })
 
+describe("MASSPROP at the cursor", () => {
+  it("shows its Select objects: alone in the dynamic tip, in each language (desktop solid-inquiry/d10)", () => {
+    for (const [locale, words] of [
+      [undefined, "Select objects:"],
+      [es, "Designe objetos:"],
+    ] as const) {
+      const cad = harness(locale)
+      answer(cad, "_MASSPROP")
+      cad.moveTo({ x: 30, y: 30 })
+      expect(cad.state().dynamicInput).toMatchObject({
+        prompt: words,
+        fields: [],
+      })
+    }
+  })
+
+  it("is cancelled by Escape at Write analysis, which it echoes (desktop solid-inquiry/d09, d11)", () => {
+    for (const [locale, line] of [
+      [undefined, "Write analysis to a file? [Yes/No] <N>: *Cancel*"],
+      [es, "¿Escribir análisis en un archivo? [Sí/No] <N>: *Cancelado*"],
+    ] as const) {
+      const cad = harness(locale)
+      answer(cad, "_BOX", "0,0,0", "10,20", "5", "_MASSPROP", "_ALL", "")
+      cad.escape()
+      expect(cad.commandLog().at(-1)).toBe(line)
+      expect(cad.activeToolId()).toBe("select")
+    }
+  })
+})
+
 describe("MASSPROP in other languages", () => {
   it("takes the bare S and N of es and pt-BR (probes solid-inquiry/p101, p102)", () => {
     for (const [locale, name] of [

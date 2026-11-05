@@ -33,7 +33,7 @@ import {
 import { PointerInput, ToolContext } from "./Tool"
 import { SelectToolState } from "./selectToolState"
 import { arrayPlacement, placeArrayPoint } from "../../domain/arrayEdits"
-import { drawn } from "./ghostLook"
+import { drawn, drawnSolidLines } from "./ghostLook"
 import {
   gripPrimitives,
   pushGrip,
@@ -77,7 +77,12 @@ export function buildSelectionBox(
           state.startWorld,
           state.currentWorld
         )),
-    ...buildSelectionPreview(ctx.viewport, ctx.document, state.preview),
+    ...buildSelectionPreview(
+      ctx.viewport,
+      ctx.document,
+      state.preview,
+      drawnSolidLines(ctx)
+    ),
   ]
 }
 
@@ -442,7 +447,7 @@ function pushRolloverHighlight(
       ctx.viewport,
       entity,
       { color: THEME.entityHover, width: 2 },
-      { blocks: ctx.blocks }
+      { blocks: ctx.blocks, solidLines: drawnSolidLines(ctx) }
     )
   )
 }

@@ -1352,6 +1352,15 @@ describe("ERASE", () => {
     expect(cad.entityCount).toBe(2)
   })
 
+  it("shows Select objects: alone at the cursor, with no box (desktop solid-inquiry/d10)", () => {
+    const cad = createHarness({ entities: [SHORT, FAR] })
+    cad.command("ERASE").moveTo(p(30, 30))
+    expect(cad.state().dynamicInput).toMatchObject({
+      prompt: "Select objects:",
+      fields: [],
+    })
+  })
+
   it("asks for objects when nothing is selected and erases them on Enter", () => {
     const cad = createHarness({ entities: [SHORT, FAR] })
 

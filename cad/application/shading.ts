@@ -14,7 +14,7 @@ import { brepMesh } from "../geometry/faceMesh"
 export interface ShadedCell {
   readonly points: readonly Vec3[]
   readonly fill: string
-  /** Its solid's layer is locked: the cell fades as the solid's edges do. */
+  /** Its solid's layer is locked: already shaded so (`goochFill`'s `locked`). */
   readonly locked?: boolean
 }
 
@@ -27,26 +27,36 @@ export interface ShadedSolid {
 
 /**
  * The default lighting's direction in the view (DEFAULTLIGHTING 1: it
- * follows the viewpoint), as right, up and towards the viewer: fitted to
- * visualstyle/p03, where a white box seen from SW Isometric shows its top
- * at 130, its left face at 122 and its right one at 85.
+ * follows the viewpoint), as right, up and towards the viewer: fitted to a
+ * white sphere's pixels on AutoCAD 2027's screen in Conceptual (desktop
+ * solid-inquiry/d02, 3593 of them, RMS 0.4), which a box's three faces in SW
+ * Isometric confirm (d03, within 1.1).
  */
-const LIGHT = { right: -0.323, up: 0.267, toward: 0.908 }
+const LIGHT = { right: -0.5709, up: 0.4876, toward: 0.6605 }
 
 /**
- * A white face's grey for `cos` of its angle to the light, `BASE + SLOPE ·
- * cos` (p03: 70 + 81 cos of 255), and the blue the cool side takes on, up to
- * {@link COOL} where it turns from the light (85, 85, 101 on the box's shaded
- * face). A coloured face here is its colour so scaled: AutoCAD's tints a
- * blue one towards teal on its shaded side (p03), which no Gooch pair of
- * warm and cool fitted to the grey reproduces.
+ * Gooch's shading as the screen draws it, per channel (red and green alike,
+ * blue apart): `base + slope · c`, `c` the face's cosine to the light, each
+ * of the two linear in the object's channel `k` (over 255) by its `Share`.
+ * Fitted to the d02 sphere (white) and d06's red box (k 0 in green and blue,
+ * within 0.5); red below 1 is unprobed, taken as green's. The plot shades
+ * otherwise (visualstyle/p03: a white box's 130, 122 and 85 grey), and the
+ * screen is what the user sees.
  */
-const BASE = 0.274
-const SLOPE = 0.318
-const COOL = 39
+const RAMP = {
+  redGreen: { base: 56.88, baseShare: 81.81, slope: 58.02, slopeShare: 58.25 },
+  blue: { base: 121.32, baseShare: 76.02, slope: -57.66, slopeShare: 77.04 },
+}
 
-/** The least share of its colour a face turned from the light keeps. */
-const DARKEST = 0.06
+/**
+ * A locked layer's solid (LAYLOCKFADECTL 50): its faces lighter and yellower,
+ * not faded into the background as its 2D Wireframe lines are. No mix of the
+ * shaded colour with another fits; the object's channels kept by `share`,
+ * shaded, then raised by `tint`, land within 0.5 of the locked white box's
+ * three faces (desktop solid-inquiry/d06: 220,220,160, 199,200,162 and
+ * 114,119,171). A coloured locked solid is unprobed.
+ */
+const LOCKED = { share: [0.8187, 0.7332, 0.6053], tint: [13.5, 24.4, 1.21] }
 
 /** The light's direction for a view looking along `-toViewer` with `up` drawn up. */
 export function lightDirection(toViewer: Vec3, up: Vec3): Vec3 {
@@ -62,16 +72,26 @@ export function lightDirection(toViewer: Vec3, up: Vec3): Vec3 {
 }
 
 /** A face's colour under the light: Gooch's cool blue where it turns away. */
-export function goochFill(color: string, normal: Vec3, light: Vec3): string {
+export function goochFill(
+  color: string,
+  normal: Vec3,
+  light: Vec3,
+  locked = false
+): string {
   const c = dot3(normal, light)
-  const share = Math.max(BASE + SLOPE * c, DARKEST)
-  const cool = COOL * (1 - (1 + c) / 2)
-  const channel = (offset: number, tint: number) => {
-    const value = parseInt(color.slice(offset, offset + 2), 16)
-    return Math.max(0, Math.min(255, Math.round(value * share + tint)))
+  const channel = (i: number) => {
+    const ramp = i === 2 ? RAMP.blue : RAMP.redGreen
+    let k = parseInt(color.slice(1 + 2 * i, 3 + 2 * i), 16) / 255
+    if (locked) k *= LOCKED.share[i]
+    const value =
+      ramp.base +
+      ramp.baseShare * k +
+      (ramp.slope + ramp.slopeShare * k) * c +
+      (locked ? LOCKED.tint[i] : 0)
+    return Math.max(0, Math.min(255, Math.round(value)))
   }
   const hex = (n: number) => n.toString(16).padStart(2, "0")
-  return `#${hex(channel(1, 0))}${hex(channel(3, 0))}${hex(channel(5, cool))}`
+  return `#${hex(channel(0))}${hex(channel(1))}${hex(channel(2))}`
 }
 
 /** The last solids and view {@link shadedCells} answered, and its answer. */
@@ -129,7 +149,7 @@ export function shadedCells(
       found.push({
         cell: {
           points,
-          fill: goochFill(color, t.normal, light),
+          fill: goochFill(color, t.normal, light, locked),
           ...(locked ? { locked } : {}),
         },
         depth,

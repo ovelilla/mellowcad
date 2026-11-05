@@ -26,6 +26,7 @@ import {
   objectsOnFence,
   startLasso,
 } from "./boxSelection"
+import { drawnSolidLines } from "./ghostLook"
 import { CommandOption, PointerInput, QuestionInput, ToolContext } from "./Tool"
 import { typedPick } from "./typedPick"
 import { lockedObjectAt } from "./lockedPick"
@@ -678,6 +679,10 @@ export class ObjectSelector {
     if (step.kind === "pressed") {
       const under = ctx.pick(input.world)
       if (under) {
+        // A click that picks an object is LASTPOINT, the cursor's point on
+        // the work plane (desktop solid-inquiry/d10: MASSPROP, LIST, ERASE);
+        // a window's corners leave it.
+        ctx.setLastPoint(input.point)
         this.step = { kind: "objects", hover: null }
         this.select(
           this.found(ctx, () => [under.id]),
@@ -844,7 +849,12 @@ export class ObjectSelector {
   buildOverlay(ctx: ToolContext, glow = true): ScenePrimitive[] {
     const step = this.step
     const preview = glow
-      ? buildSelectionPreview(ctx.viewport, ctx.document, this.previewed())
+      ? buildSelectionPreview(
+          ctx.viewport,
+          ctx.document,
+          this.previewed(),
+          drawnSolidLines(ctx)
+        )
       : []
     switch (step.kind) {
       case "objects":

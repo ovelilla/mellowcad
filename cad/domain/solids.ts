@@ -404,42 +404,44 @@ export function solidIsolineEntities(
   )
 }
 
-/** The last solids and direction {@link solidViewEntities} answered, and its answer. */
-let lastView: {
+/**
+ * The last two solids and directions {@link solidViewEntities} answered, and
+ * its answers: the scene asks in the WCS and a tool's highlight in the UCS's
+ * frame, which with a tilted UCS reads other objects.
+ */
+let lastViews: readonly {
   readonly solids: readonly Solid3dEntity[]
   readonly direction: Vec3
   readonly lines: readonly (readonly Entity[])[]
-} | null = null
+}[] = []
 
 /**
  * What the Hidden visual style draws of each solid seen along `toViewer`
  * (VIEWDIR): the stretches of its edges and of its curved faces' outlines no
  * face of any of them hides, as the objects they draw as, of its id; no
- * isolines (visualstyle/p02). The last answer is kept: a pan, a zoom or the
+ * isolines (visualstyle/p02). The last answers are kept: a pan, a zoom or the
  * cursor moving asks the same again.
  */
 export function solidViewEntities(
   solids: readonly Solid3dEntity[],
   toViewer: Vec3
 ): readonly (readonly Entity[])[] {
-  const last = lastView
-  if (
-    last &&
-    last.solids.length === solids.length &&
-    last.solids.every((solid, i) => solid === solids[i]) &&
-    last.direction.x === toViewer.x &&
-    last.direction.y === toViewer.y &&
-    last.direction.z === toViewer.z
-  ) {
-    return last.lines
-  }
+  const kept = lastViews.find(
+    (last) =>
+      last.solids.length === solids.length &&
+      last.solids.every((solid, i) => solid === solids[i]) &&
+      last.direction.x === toViewer.x &&
+      last.direction.y === toViewer.y &&
+      last.direction.z === toViewer.z
+  )
+  if (kept) return kept.lines
   const lines = viewLines(
     solids.map((solid) => solid.brep),
     toViewer
   ).map((found, i) =>
     found.filter((l) => l.visible).map((l) => wireEntity(solids[i], l.wire))
   )
-  lastView = { solids, direction: toViewer, lines }
+  lastViews = [{ solids, direction: toViewer, lines }, ...lastViews.slice(0, 1)]
   return lines
 }
 

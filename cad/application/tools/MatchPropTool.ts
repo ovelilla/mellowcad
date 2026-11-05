@@ -1,3 +1,4 @@
+import { drawnSolidLines } from "./ghostLook"
 import { Entity, EntityId, matchEntityProperties } from "../../domain/entities"
 import { ScenePrimitive } from "../../scene/types"
 import { THEME } from "../../scene/theme"
@@ -160,7 +161,7 @@ export class MatchPropTool implements Tool {
             ctx.viewport,
             state.hover,
             { color: THEME.entityHover, width: 2 },
-            { blocks: ctx.blocks }
+            { blocks: ctx.blocks, solidLines: drawnSolidLines(ctx) }
           )
         : []
     }

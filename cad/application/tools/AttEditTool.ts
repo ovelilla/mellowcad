@@ -1,3 +1,4 @@
+import { drawnSolidLines } from "./ghostLook"
 import { Vec2 } from "../../geometry/Vec2"
 import {
   Entity,
@@ -158,7 +159,7 @@ export class AttEditTool implements Tool {
             ctx.viewport,
             this.state.hover,
             { color: THEME.entityHover, width: 2 },
-            { blocks: ctx.blocks }
+            { blocks: ctx.blocks, solidLines: drawnSolidLines(ctx) }
           )
         : []
     }

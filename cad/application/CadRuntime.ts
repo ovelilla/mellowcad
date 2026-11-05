@@ -17,6 +17,7 @@ import { COLOR_BYLAYER, EntityColor } from "../domain/colors"
 import { Solid3dEntity } from "../domain/entityTypes"
 import { solidViewEntities } from "../domain/solids"
 import { facesAlong } from "../geometry/hiddenLines"
+import { Box3, Brep, brepBox } from "../geometry/solids"
 import {
   createLayer,
   DEFAULT_LAYER_COLOR,
@@ -188,6 +189,7 @@ import {
   buildSelectionCandidates,
   buildTextStyleInfos,
   CommandOptionUi,
+  DynamicInputUi,
   EngineState,
   ObjectType,
   RolloverUi,
@@ -2242,6 +2244,19 @@ export class CadRuntime extends Observable {
     return words === null
       ? prompt
       : keywordChoicePrompt(prompt, this.text, words, this.suspended !== null)
+  }
+
+  /**
+   * `Select objects:` (`Remove objects:`) alone in the dynamic tip at the
+   * cursor, with no box to type in: AutoCAD shows it so with dynamic input on
+   * (desktop solid-inquiry/d10), where no command opens a session of its own.
+   */
+  private selectionTip(prompt: string | null): DynamicInputUi | null {
+    const screen = this.lastPointerScreen
+    if (prompt === null || screen === null) return null
+    const asked = askedPrompt(this.asking())
+    if (asked !== "selectObjects" && asked !== "removeObjects") return null
+    return { screen, prompt, fields: [], clearance: 0 }
   }
 
   /**
@@ -4704,7 +4719,10 @@ export class CadRuntime extends Observable {
     const screen = viewport.worldToScreen(
       "z" in world ? world : withZ(world, this.workPlaneZ())
     )
-    const shaded = this.shadedSolidPick(screen)
+    const shaded = this.shadedSolidPick(
+      screen,
+      viewport.worldToScreenDistance(worldTolerance)
+    )
     if (viewport.isPlan) {
       const perUnit = viewport.worldToScreenDistance(1)
       return document.pickAllBy(
@@ -4737,7 +4755,8 @@ export class CadRuntime extends Observable {
    * `solidViewEntities` answers from its memo.
    */
   private shadedSolidPick(
-    screen: Vec2
+    screen: Vec2,
+    reach: number
   ): ((entity: Entity) => number | undefined) | null {
     if (this.document.getSettings().visualStyle === "2dWireframe") return null
     const hidden = new Set(this.activeTool.hiddenEntityIds?.() ?? [])
@@ -4753,9 +4772,41 @@ export class CadRuntime extends Observable {
     const view = this.viewport
     const lines = solidViewEntities(solids, view.direction)
     const sight = view.screenToFacing(screen)
+    // WHY: a solid whose box on the screen, grown by the reach, misses the
+    // cursor can be neither in front nor near: measuring every solid's lines
+    // on each pointer move cost 50 ms with 400 of them (VSD-03).
+    const within = (solid: Solid3dEntity, by: number) => {
+      const box = this.solidBox(solid.brep)
+      if (!box) return true
+      let [left, top, right, bottom] = [
+        Infinity,
+        Infinity,
+        -Infinity,
+        -Infinity,
+      ]
+      for (const x of [box.min.x, box.max.x])
+        for (const y of [box.min.y, box.max.y])
+          for (const z of [box.min.z, box.max.z]) {
+            const at = view.worldToScreen({ x, y, z })
+            left = Math.min(left, at.x)
+            right = Math.max(right, at.x)
+            top = Math.min(top, at.y)
+            bottom = Math.max(bottom, at.y)
+          }
+      return (
+        screen.x >= left - by &&
+        screen.x <= right + by &&
+        screen.y >= top - by &&
+        screen.y <= bottom + by
+      )
+    }
+    const near = new Set(
+      solids.filter((solid) => within(solid, reach)).map((solid) => solid.id)
+    )
     let front: EntityId | null = null
     let nearest = Number.NEGATIVE_INFINITY
     for (const solid of solids) {
+      if (!near.has(solid.id)) continue
       const [first] = facesAlong(solid.brep, sight, view.direction)
       if (first && first.depth > nearest) {
         nearest = first.depth
@@ -4766,6 +4817,7 @@ export class CadRuntime extends Observable {
     return (entity) => {
       if (entity.type !== "solid3d") return undefined
       if (entity.id === front) return 0
+      if (!near.has(entity.id)) return Number.POSITIVE_INFINITY
       const wires = drawn.get(entity.id)
       if (!wires) return undefined
       let best = Number.POSITIVE_INFINITY
@@ -4775,6 +4827,18 @@ export class CadRuntime extends Observable {
       return best
     }
   }
+
+  /** A solid's box, its B-rep's (`brepBox`), worked out once per B-rep. */
+  private solidBox(brep: Brep): Box3 | null {
+    let box = this.solidBoxes.get(brep)
+    if (box === undefined) {
+      box = brepBox(brep)
+      this.solidBoxes.set(brep, box)
+    }
+    return box
+  }
+
+  private readonly solidBoxes = new WeakMap<Brep, Box3 | null>()
 
   /**
    * Whether a pick takes a locked layer's objects: at `Command:` it selects
@@ -7698,15 +7762,16 @@ export class CadRuntime extends Observable {
       snapModeType: this.snapMode.getType(),
       snapSpacing: this.snapMode.getSpacing(),
       snapPolarDistance: this.snapMode.getPolarDistance(),
-      dynamicInput: buildDynamicInputUi(
-        this.dynamicInput,
-        settings,
-        this.text,
-        this.dynamicPrompt(prompt.dynamic),
-        ((this.currentSnap || this.snapMarker ? 1 : 0) +
-          (this.buildPolarGuide() ? 1 : 0)) *
-          CURSOR_TOOLTIP_ROW
-      ),
+      dynamicInput:
+        buildDynamicInputUi(
+          this.dynamicInput,
+          settings,
+          this.text,
+          this.dynamicPrompt(prompt.dynamic),
+          ((this.currentSnap || this.snapMarker ? 1 : 0) +
+            (this.buildPolarGuide() ? 1 : 0)) *
+            CURSOR_TOOLTIP_ROW
+        ) ?? this.selectionTip(this.dynamicPrompt(prompt.dynamic)),
       documentUnit: settings.unit,
       documentPrecision: settings.precision,
       documentAnglePrecision: settings.anglePrecision,

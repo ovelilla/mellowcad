@@ -6,6 +6,7 @@ import {
   entityScenePrimitive,
   entityStroke,
   selectionGlow,
+  shownSolidLines,
 } from "../SceneBuilder"
 import { ToolContext } from "./Tool"
 
@@ -57,7 +58,27 @@ export function rollover(ctx: ToolContext, entity: Entity): ScenePrimitive[] {
     ctx.viewport,
     entity,
     { color: THEME.entityHover, width: 2 },
-    { blocks: ctx.blocks, ...(dimStyle ? { dimStyle } : {}) }
+    {
+      blocks: ctx.blocks,
+      solidLines: drawnSolidLines(ctx),
+      ...(dimStyle ? { dimStyle } : {}),
+    }
+  )
+}
+
+/**
+ * What of each solid the scene draws, for a highlight to light no more: off
+ * 2D Wireframe only its visible stretches (desktop solid-inquiry/d04-a, d05),
+ * in 2D Wireframe `undefined`, its whole wireframe.
+ */
+export function drawnSolidLines(
+  ctx: Pick<ToolContext, "document" | "viewport">
+): ReadonlyMap<Entity, readonly Entity[]> | undefined {
+  if (ctx.document.getSettings().visualStyle === "2dWireframe") return undefined
+  return shownSolidLines(
+    ctx.document.getEntities(),
+    (entity) => ctx.document.isEntityVisible(entity),
+    ctx.viewport.direction
   )
 }
 

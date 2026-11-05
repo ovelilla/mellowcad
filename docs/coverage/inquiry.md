@@ -234,8 +234,13 @@ at once, a download named as the drawing (`drawing-2026-11-01.mpr`): AutoCAD ask
 `… already exists, do you want to replace it? [Yes/No] <N>:`, m06), and in a browser the download
 is the save dialog, as SAVE's is here; with no file transport it says `Unable to open mass and area
 properties file drawing-….mpr.` (22138). The file is AutoCAD's byte for byte: the report's lines
-with their empty unit fields' spaces, CRLF (m10). Typed only, as in AutoCAD, whose ribbon has no
-button for it (acad.cuix's `ID_Massprop` is the Inquiry toolbar's and the Tools menu's)
+with their empty unit fields' spaces, CRLF (m10). Escape at `Write analysis` ends it, `*Cancel*` (es
+`*Cancelado*`, desktop solid-inquiry/d09, d11). WHY the report at once, with no `Press ENTER to
+continue:` (es `Pulse INTRO para continuar:`) before the principal moments: the pause pages the
+text window the desktop opens for the report, and Escape there skips the rest of it to `Write
+analysis` (d08, d09, d11); the history here scrolls, as LIST's. Typed only, as in AutoCAD, whose
+ribbon has no button for it (acad.cuix's `ID_Massprop` is the Inquiry toolbar's and the Tools
+menu's)
 
 **Missing:** the units after each number with architectural or engineering units (m08, p122:
 `41.2000 sq in`, `40.3000 in`, `1030.0000 cu in`, `lb`, `lb sq in`, a region's moments

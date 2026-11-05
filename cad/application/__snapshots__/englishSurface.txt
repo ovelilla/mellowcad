@@ -299,9 +299,13 @@ lweight "Lineweight" LW
   prompt| Specify first point: *Cancel*
 > ERASE with nothing selected
   prompt: ERASE Select objects:
+  tip: Select objects:
+  dyn: 
   command| ERASE
 > ERASE one
   prompt: Command:
+  tip: -
+  dyn: -
   prompt| Select objects: *Cancel*
   command| E ERASE 1 found
 > UNDO
@@ -1933,14 +1937,16 @@ lweight "Lineweight" LW
 > base
   prompt: BLOCK Select objects:
   asks: -
-  tip: -
-  dyn: -
+  tip: Select objects:
+  dyn: 
   prompt| Specify insertion base point:
 > pick
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
+  tip: -
+  dyn: -
   properties: -
   prompt| Select objects:
 
@@ -1984,8 +1990,8 @@ lweight "Lineweight" LW
 > raised base
   prompt: -BLOCK Select objects:
   asks: -
-  tip: -
-  dyn: -
+  tip: Select objects:
+  dyn: 
   prompt| Specify insertion base point: 0,0,5
   info| Beware, Z insertion base is not zero.
 > pick
@@ -1993,6 +1999,8 @@ lweight "Lineweight" LW
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
+  tip: -
+  dyn: -
   properties: -
   prompt| Select objects:
   info| Block "BAR" redefined
@@ -2024,14 +2032,16 @@ lweight "Lineweight" LW
 > base
   prompt: -BLOCK Select objects:
   asks: -
-  tip: -
-  dyn: -
+  tip: Select objects:
+  dyn: 
   prompt| Specify insertion base point: 0,0
 > pick its reference
   properties: Block Reference (1) [Geometry: Position X=0.00~, Position Y=200.00~, Position Z=0.00~, Scale X=1.00~, Scale Y=1.00~, Scale Z=1.00] [Misc: Name=BAR, Rotation=0°~]
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
+  tip: -
+  dyn: -
   properties: -
   prompt| Select objects:
   error| Block "BAR" references itself
@@ -3572,6 +3582,8 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   cycling: -
 > MOVE
   prompt: MOVE Select objects:
+  tip: Select objects:
+  dyn: 
   command| M MOVE
 > pick
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
@@ -3614,6 +3626,8 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   cycling: -
 > COPY
   prompt: COPY Select objects:
+  tip: Select objects:
+  dyn: 
   command| CO COPY
 > pick
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
@@ -3661,6 +3675,8 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   cycling: -
 > STRETCH
   prompt: STRETCH Select objects:
+  tip: Select objects:
+  dyn: 
   command| S STRETCH
   info| Select objects to stretch by crossing-window or crossing-polygon...
 > pick
@@ -4329,10 +4345,14 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   info| 1 was not able to be exploded.
 > EXPLODE two rejected
   prompt: EXPLODE Select objects:
+  tip: Select objects:
+  dyn: 
   command| X EXPLODE 2 found
   info| 2 were not able to be exploded.
 > escape
   prompt: Command:
+  tip: -
+  dyn: -
   prompt| Select objects: *Cancel*
 > JOIN
   command| J JOIN 2 found
@@ -5960,6 +5980,8 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Do you want to turn it into one? <Y>
 > J
   prompt: PEDIT Select objects:
+  tip: Select objects:
+  dyn: 
   options: -
   prompt| Enter an option [Close/Join/Width/Edit vertex/Fit/Spline/Decurve/Ltype gen/Reverse/Undo]: J
 > pick
@@ -5967,6 +5989,8 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   prompt| Select objects: 1 found
 > enter
   prompt: PEDIT Enter an option [Close/Join/Width/Edit vertex/Fit/Spline/Decurve/Ltype gen/Reverse/Undo]:
+  tip: -
+  dyn: -
   options: [C] Close, [J] Join, [W] Width, [E] Edit vertex, [F] Fit, [S] Spline, [D] Decurve, [L] Ltype gen, [R] Reverse, [U] Undo
   properties: -
   prompt| Select objects:
@@ -6252,6 +6276,8 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   command| PE PEDIT
 > M
   prompt: PEDIT Select objects:
+  tip: Select objects:
+  dyn: 
   options: -
   prompt| Select polyline or [Multiple]: M
 > ALL
@@ -6261,6 +6287,8 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
 > enter
   prompt: PEDIT Convert Lines, Arcs and Splines to polylines [Yes/No]? <Y>
   asks: 
+  tip: -
+  dyn: -
   properties: -
   prompt| Select objects:
 > Y
@@ -6330,12 +6358,16 @@ SECOND, Justify=Middle center, Text height=10.00 mm~, Rotation=0°~, Line space 
   cycling: -
 > COPYCLIP
   prompt: COPYCLIP Select objects:
+  tip: Select objects:
+  dyn: 
   command| COPYCLIP
 > pick
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
+  tip: -
+  dyn: -
   properties: -
   prompt| Select objects:
 > CUTCLIP
@@ -6594,8 +6626,8 @@ Specify next point or
 > O
   prompt: ZOOM Select objects:
   asks: -
-  tip: -
-  dyn: -
+  tip: Select objects:
+  dyn: 
   options: -
   prompt| Specify corner of window, enter a scale factor (nX or nXP), or [All/Extents/Previous/Scale/Window/Object]: O
 > pick
@@ -6603,6 +6635,8 @@ Specify next point or
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
+  tip: -
+  dyn: -
   properties: -
   prompt| Select objects:
   info| Regenerating model.
@@ -7789,6 +7823,8 @@ Specify next point or
         DIMZIN      8                    Zero suppression
 > A
   prompt: -DIMSTYLE Select objects:
+  tip: Select objects:
+  dyn: 
   command| -DIMSTYLE
   info| Current dimension style: ISO-25   Annotative: No
   prompt| Enter a dimension style option [Save/Restore/STatus/Variables/Apply/?] <Restore>: A
@@ -7797,6 +7833,8 @@ Specify next point or
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
+  tip: -
+  dyn: -
   properties: -
   prompt| Select objects:
 > ?
@@ -7916,6 +7954,8 @@ Specify next point or
   cycling: -
 > CHPROP
   prompt: CHPROP Select objects:
+  tip: Select objects:
+  dyn: 
   command| CHPROP
 > pick
   properties: Line (1) {Thickness=0.00 mm~} [Geometry: Start X=0.00~, Start Y=0.00~, Start Z=0.00~, End X=100.00~, End Y=0.00~, End Z=0.00~, Delta X=100.00 mm, Delta Y=0.00 mm, Delta Z=0.00 mm, Length=100.00 mm, Angle=0°]
@@ -7924,7 +7964,6 @@ Specify next point or
   prompt: CHPROP Enter property to change [Color/LAyer/LType/LWeight/Thickness]:
   asks: 
   tip: Enter property to change
-  dyn: 
   options: [C] Color, [LA] LAyer, [LT] LType, [LW] LWeight, [T] Thickness
   prompt| Select objects:
 > Color
@@ -8048,6 +8087,8 @@ Specify next point or
   cycling: -
 > LI
   prompt: LIST Select objects:
+  tip: Select objects:
+  dyn: 
   command| LI LIST
 > FOO
   prompt| Select objects: FOO
@@ -8058,6 +8099,8 @@ Specify next point or
   prompt| Select objects: 1 found
 > enter
   prompt: Command:
+  tip: -
+  dyn: -
   properties: -
   prompt| Select objects:
   info|                   LINE      Layer: "0"
@@ -8068,9 +8111,13 @@ Specify next point or
                           Delta X =   100.00, Delta Y =      0.00, Delta Z =     0.00
 > LS
   prompt: LIST Select objects:
+  tip: Select objects:
+  dyn: 
   command| LS LIST
 > enter
   prompt: Command:
+  tip: -
+  dyn: -
   prompt| Select objects:
 
 ## MASSPROP
@@ -9200,6 +9247,8 @@ Specify next point or
   prompt| Specify next point or [Undo]: *Cancel*
 > ERASE
   prompt: ERASE Select objects:
+  tip: Select objects:
+  dyn: 
   command| ERASE
 > FOO
   prompt| Select objects: FOO
@@ -9207,6 +9256,8 @@ Specify next point or
   error| Expects a point or Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Group/Add/Remove/Multiple/Previous/Undo/AUto/SIngle/SUbobject/Object
 > escape
   prompt: Command:
+  tip: -
+  dyn: -
   prompt| Select objects: *Cancel*
 > OFFSET
   prompt: OFFSET Specify offset distance or [Through/Erase/Layer] <Through>:

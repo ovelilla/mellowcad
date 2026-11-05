@@ -38,11 +38,73 @@ function isoBox(locale?: typeof es): CadHarness {
 const segments = (cad: CadHarness) =>
   cad.scene().primitives.filter((p) => p.kind === "segment")
 
+/** The colours of the segments that are neither the grid's nor the crosshair's. */
+const solidStrokes = (cad: CadHarness) =>
+  segments(cad).flatMap((p) =>
+    p.kind === "segment" &&
+    ![
+      THEME.gridMinor,
+      THEME.gridMajor,
+      THEME.axisX,
+      THEME.axisY,
+      THEME.crosshair,
+    ].some((aid) => aid === p.stroke.color)
+      ? [p.stroke.color]
+      : []
+  )
+
 /** The segments drawn in the objects' white: the solids' edges, the grid off. */
 const edges = (cad: CadHarness) =>
   segments(cad).filter(
     (p) => p.kind === "segment" && p.stroke.color === THEME.entity
   )
+
+/** `#rrggbb` or `rgba(r, g, b, a)` as its three channels. */
+function rgb(color: string): number[] {
+  if (color.startsWith("#"))
+    return [1, 3, 5].map((i) => parseInt(color.slice(i, i + 2), 16))
+  return color
+    .replace(/[^\d.,]/g, "")
+    .split(",")
+    .slice(0, 3)
+    .map(Number)
+}
+
+function near(got: readonly number[], want: readonly number[], by: number) {
+  got.forEach((g, i) => expect(Math.abs(g - want[i])).toBeLessThanOrEqual(by))
+}
+
+/**
+ * The fills of a box's top, -X and -Y faces as {@link isoBox} shows them: the
+ * cell nearest each face's middle on the screen.
+ */
+function boxFaces(cad: CadHarness): number[][] {
+  const fills = cad
+    .scene()
+    .primitives.flatMap((p) => (p.kind === "path" && p.fill ? [p] : []))
+  const at = (world: { x: number; y: number; z: number }) => {
+    const s = cad.runtime.viewport.worldToScreen(world)
+    let best = fills[0]
+    let d = Infinity
+    for (const f of fills) {
+      const c = f.points.reduce(
+        (m, q) => ({
+          x: m.x + q.x / f.points.length,
+          y: m.y + q.y / f.points.length,
+        }),
+        { x: 0, y: 0 }
+      )
+      const e = Math.hypot(c.x - s.x, c.y - s.y)
+      if (e < d) [best, d] = [f, e]
+    }
+    return rgb(best.fill as string)
+  }
+  return [
+    at({ x: 5, y: 5, z: 10 }),
+    at({ x: 0, y: 5, z: 5 }),
+    at({ x: 5, y: 0, z: 5 }),
+  ]
+}
 
 describe("VSCURRENT", () => {
   it("offers the styles built, the current one's name at Enter (visualstyle/v02)", () => {
@@ -257,6 +319,79 @@ describe("picking in Hidden and Conceptual", () => {
     }
   })
 
+  it("takes the front solid by a click at Command: too (solid-inquiry/d04-c)", () => {
+    for (const style of ["_H", "_C"]) {
+      const { cad, a } = twoBoxes(style)
+      cad.click({ x: 17, y: 15, z: 0 })
+      expect(cad.runtime.selection.toArray()).toEqual([a])
+    }
+  })
+
+  const hovered = (cad: CadHarness) =>
+    cad
+      .scene()
+      .primitives.filter(
+        (p) => p.kind === "segment" && p.stroke.color === THEME.entityHover
+      )
+
+  it("lights only the edges the style draws under the rollover (solid-inquiry/d04-a)", () => {
+    // AutoCAD thickens A's nine visible edges; its three hidden ones stay unseen.
+    for (const [style, count] of [
+      ["_2", 12],
+      ["_H", 9],
+      ["_C", 9],
+    ] as const) {
+      const { cad } = twoBoxes(style)
+      cad.moveTo({ x: 5, y: 5, z: 10 })
+      expect(hovered(cad)).toHaveLength(count)
+    }
+  })
+
+  it("names the solid under the cursor in the rollover tooltip (solid-inquiry/d04-a, d11)", () => {
+    for (const [locale, title, byLayer] of [
+      [undefined, "3D Solid", "ByLayer"],
+      [es, "Sólido 3D", "PorCapa"],
+    ] as const) {
+      const cad = createHarness(locale ? { locale } : {})
+      answer(cad, "_BOX", "0,0,0", "10,10", "10", "-VIEW", "_SWISO")
+      answer(cad, "_VSCURRENT", "_C")
+      cad.moveTo({ x: 5, y: 5, z: 10 })
+      expect(cad.state().rollover).toMatchObject({
+        title,
+        color: byLayer,
+        layer: "0",
+        linetype: byLayer,
+      })
+    }
+  })
+
+  it("previews a window's catch by the edges the style draws (solid-inquiry/d05)", () => {
+    for (const style of ["_H", "_C"]) {
+      const { cad } = twoBoxes(style)
+      const corners = [
+        { x: 0, y: 0, z: 0 },
+        { x: 10, y: 0, z: 0 },
+        { x: 0, y: 10, z: 0 },
+        { x: 10, y: 10, z: 0 },
+        { x: 0, y: 0, z: 10 },
+        { x: 10, y: 0, z: 10 },
+        { x: 0, y: 10, z: 10 },
+        { x: 10, y: 10, z: 10 },
+      ].map((c) => cad.toScreen(c))
+      const xs = corners.map((c) => c.x)
+      const ys = corners.map((c) => c.y)
+      // The window's corners, on the work plane under two screen points.
+      const onPlane = (x: number, y: number) => {
+        const at = cad.runtime.viewport.screenToPlane({ x, y }, 0)
+        if (!at) throw new Error("edge-on")
+        return { ...at, z: 0 }
+      }
+      cad.click(onPlane(Math.min(...xs) - 15, Math.min(...ys) - 15))
+      cad.moveTo(onPlane(Math.max(...xs) + 15, Math.max(...ys) + 15))
+      expect(hovered(cad)).toHaveLength(9)
+    }
+  })
+
   it("snaps to a vertex a face hides (solid-inquiry/p313)", () => {
     for (const style of ["_2", "_H", "_C"]) {
       const cad = createHarness({})
@@ -400,6 +535,28 @@ describe("what Hidden and Conceptual draw", () => {
   })
 })
 
+describe("the UCS icon in Hidden and Conceptual", () => {
+  it("draws its arms and letters red, green and blue there, in one colour in 2D Wireframe (solid-inquiry/d03)", () => {
+    const icon = (style: string) => {
+      const cad = createHarness({ ucsIcon: true })
+      answer(cad, "BOX", "0,0,0", "10,10", "10", "-VIEW", "_SWISO")
+      answer(cad, "VSCURRENT", style)
+      cad.moveTo({ x: 1e6, y: 1e6, z: 0 })
+      return new Set(
+        cad
+          .scene()
+          .primitives.flatMap((p) => (p.kind === "label" ? [p.color] : []))
+      )
+    }
+    expect(icon("_2")).toEqual(new Set([THEME.ucsIcon]))
+    for (const style of ["_H", "_C"]) {
+      expect(icon(style)).toEqual(
+        new Set([THEME.ucsIconX, THEME.ucsIconY, THEME.ucsIconZ])
+      )
+    }
+  })
+})
+
 describe("the Conceptual visual style", () => {
   it("paints a box's three faces towards the viewer, its edges over them in colour 7 (visualstyle/p03, v06)", () => {
     const cad = isoBox()
@@ -422,53 +579,92 @@ describe("the Conceptual visual style", () => {
     ).toBeGreaterThan(lastFace)
   })
 
-  it("fades a locked solid's faces as its edges, into the background (solid-inquiry/p310)", () => {
-    const fills = (locked: boolean) => {
-      const cad = isoBox()
-      const layer = cad.runtime.document.getCurrentLayerId()
-      cad.runtime.updateLayer(layer, { locked })
-      answer(cad, "VSCURRENT", "C")
-      cad.moveTo({ x: 1e6, y: 1e6, z: 0 })
-      return cad
-        .scene()
-        .primitives.flatMap((p) =>
-          p.kind === "path" && p.fill ? [p.fill] : []
-        )
+  it("shades a locked solid's faces lighter and yellower, its edges at 0.7 of their colour (solid-inquiry/d06)", () => {
+    const cad = isoBox()
+    const layer = cad.runtime.document.getCurrentLayerId()
+    cad.runtime.updateLayer(layer, { locked: true })
+    answer(cad, "VSCURRENT", "C")
+    cad.moveTo({ x: 1e6, y: 1e6, z: 0 })
+    const [top, left, right] = boxFaces(cad)
+    // d06: the locked white box's top, -X and -Y faces on screen.
+    near(top, [220, 220, 160], 4)
+    near(left, [199, 200, 162], 4)
+    near(right, [114, 119, 171], 4)
+    // Off 2D Wireframe its edges keep 0.7 of their colour, neutral (255 →
+    // 178,178,178); 2D Wireframe's fade half into the background.
+    const kept = rgb(THEME.entity).map((c) => c * 0.7)
+    for (const s of ["C", "H"]) {
+      answer(cad, "VSCURRENT", s)
+      const strokes = solidStrokes(cad)
+      expect(strokes).toHaveLength(9)
+      for (const color of strokes) near(rgb(color), kept, 1)
     }
-    const rgb = (hex: string) =>
-      [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
-    const shown = fills(false)
-    const faded = fills(true)
-    expect(faded).toHaveLength(shown.length)
-    const back = rgb(THEME.background)
-    faded.forEach((fill, i) => {
-      const want = rgb(shown[i]).map((c, k) => (c + back[k]) / 2)
-      rgb(fill).forEach((c, k) =>
-        expect(Math.abs(c - want[k])).toBeLessThanOrEqual(1)
-      )
-    })
+    answer(cad, "VSCURRENT", "2")
+    for (const color of solidStrokes(cad)) expect(color).toMatch(/0\.5\)$/)
   })
 
-  it("shades a white box as AutoCAD does from SW Isometric (visualstyle/p03)", () => {
+  it("shades a white sphere as AutoCAD's screen does from SW Isometric (solid-inquiry/d02)", () => {
+    const n = Math.sqrt(3)
+    const toward = { x: -1 / n, y: -1 / n, z: 1 / n }
+    const up = { x: 1 / Math.sqrt(6), y: 1 / Math.sqrt(6), z: 2 / Math.sqrt(6) }
+    const right = { x: 1 / Math.sqrt(2), y: -1 / Math.sqrt(2), z: 0 }
+    const light = lightDirection(toward, up)
+    // d02-b: the sphere's normal at a pixel, as right, up and towards the
+    // viewer, and AutoCAD's colour there.
+    for (const [[r, u, t], want] of [
+      [
+        [0, -0.0012, 1],
+        [215, 215, 210],
+      ],
+      [
+        [0.9011, -0.0012, 0.4337],
+        [112, 112, 193],
+      ],
+      [
+        [-0.6007, 0.5995, 0.5289],
+        [253, 253, 216],
+      ],
+      [
+        [0, -0.8999, 0.4361],
+        [121, 121, 194],
+      ],
+      [
+        [0.5006, -0.4994, 0.7071],
+        [132, 132, 196],
+      ],
+      [
+        [-0.9011, -0.199, 0.3853],
+        [216, 216, 210],
+      ],
+    ] as const) {
+      const normal = {
+        x: r * right.x + u * up.x + t * toward.x,
+        y: r * right.y + u * up.y + t * toward.y,
+        z: r * right.z + u * up.z + t * toward.z,
+      }
+      near(rgb(goochFill("#ffffff", normal, light)), want, 4)
+    }
+  })
+
+  it("shades a white and a red box as AutoCAD's screen does from SW Isometric (solid-inquiry/d03, d06)", () => {
     const n = Math.sqrt(3)
     const w = { x: -1 / n, y: -1 / n, z: 1 / n }
     // Z drawn up: its part square to the line of sight.
     const up = { x: 1 / Math.sqrt(6), y: 1 / Math.sqrt(6), z: 2 / Math.sqrt(6) }
     const light = lightDirection(w, up)
-    const rgb = (hex: string) =>
-      [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
-    const near = (got: number[], want: number[]) =>
-      got.forEach((g, i) =>
-        expect(Math.abs(g - want[i])).toBeLessThanOrEqual(4)
-      )
-    near(
-      rgb(goochFill("#ffffff", { x: 0, y: 0, z: 1 }, light)),
-      [130, 130, 133]
-    )
-    near(
-      rgb(goochFill("#ffffff", { x: -1, y: 0, z: 0 }, light)),
-      [122, 122, 127]
-    )
-    near(rgb(goochFill("#ffffff", { x: 0, y: -1, z: 0 }, light)), [85, 85, 101])
+    const faces = (color: string) =>
+      [
+        { x: 0, y: 0, z: 1 },
+        { x: -1, y: 0, z: 0 },
+        { x: 0, y: -1, z: 0 },
+      ].map((normal) => rgb(goochFill(color, normal, light)))
+    const [top, left, right] = faces("#ffffff")
+    near(top, [230, 230, 212], 3)
+    near(left, [207, 207, 209], 3)
+    near(right, [114, 114, 193], 3)
+    const [redTop, redLeft, redRight] = faces("#ff0000")
+    near(redTop, [230, 102, 76], 3)
+    near(redLeft, [207, 91, 88], 3)
+    near(redRight, [114, 44, 134], 3)
   })
 })

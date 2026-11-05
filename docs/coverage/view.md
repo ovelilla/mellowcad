@@ -237,9 +237,15 @@ hides them, in the object's colour, and no isolines (plotted with Shade plot As 
 share. **Conceptual** paints the faces towards the viewer back to front, cut into triangles
 (`cad/geometry/faceMesh.ts`, never saved), in the object's colour with Gooch's cool blue on the side
 turned from the light (VSFACESTYLE 2, v06), the light following the viewpoint (DEFAULTLIGHTING 1),
-fitted to a white box's three faces in SW Isometric (p03: 130, 122 and 85 grey); and over them
-Hidden's lines in colour 7 whatever the object's (VSEDGECOLOR `7`, v06), a locked solid's faces
-faded into the background as its edges are (solid-inquiry/p310). In both, what is not a solid draws
+the light and the shading fitted to the screen: a white sphere's pixels (desktop solid-inquiry/d02,
+within 0.4 on average) and a red box's faces (d06: 230,102,76, 207,91,88, 114,44,134), which a
+white box's confirm (d03: 230,230,212, 207,207,209, 114,114,193); the plot shades darker, p03's
+130, 122 and 85 grey; and over them Hidden's lines in colour 7
+whatever the object's (VSEDGECOLOR `7`, v06). A locked solid's edges keep 0.7 of their colour in
+both (d06: 178 grey), its faces lighter and yellower (220,220,160, 199,200,162, 114,119,171 for the
+white box; a coloured one unprobed), where 2D Wireframe fades it half into the background. The
+rollover, a window's or a crossing's preview and the selection light only the lines the style
+draws (d04, d05). In both, what is not a solid draws
 as in 2D Wireframe, in its colours (p301, p302); a fillet's tangent edges are drawn (p306), and in
 plan a cylinder or a cone shows its circle alone (p307); a solid on a layer that is off neither
 shows nor hides another (p309; frozen layers are not modelled). A click takes the solid whose face
@@ -258,13 +264,17 @@ plain circle ("Objects that can hide other objects", HIDE's page; solid-inquiry/
 Conceptual also shades as faces with colour 7 edges (p302's region filled, p316's tube; here their
 lines alone), and what a solid hides but its own kind: lines, curves, text, the grid (p02, p315
 hide a line behind the solids); solids inside block references and associative arrays (hidden and
-shaded in AutoCAD, p304, p305; drawn in 2D Wireframe here, isolines and all); AutoCAD's faceted outlines (p02 draws a sphere's as a polygon; here the exact curve); Conceptual's
-3 px silhouettes (VSSILHWIDTH 3, v06; here as wide as the edges), its smooth shading across a
-curved face (here flat per triangle, 11.25° a step), the tint of a coloured face (p03 turns a blue
-cylinder from 77,107,167 where lit to 47,119,107 where shaded, which no Gooch pair fitted to the
-grey reproduces: here its colour scaled, with the same cool blue), and a painter's order that a long
-face beside a short one can get wrong where the triangles overlap on the screen (the edges on top
-are exact); OBSCUREDLTYPE, OBSCUREDCOLOR, HALOGAP, INTERSECTIONDISPLAY and the VS* variables
+shaded in AutoCAD, p304, p305; drawn in 2D Wireframe here, isolines and all); AutoCAD's faceted
+outlines (p02 draws a sphere's as a polygon, the screen too, d02; here the exact curve; its
+silhouettes are as wide as its edges on the screen, 1 or 2 px, whatever VSSILHWIDTH 3 says, d02,
+d03, as here); Conceptual's smooth shading across a curved face (here flat per triangle, 11.25° a
+step), and a painter's order that a long face beside a short one can get wrong where the triangles
+overlap on the screen (the edges on top are exact); the faces' tint under the rollover, a preview,
+the selection and Ctrl: Hidden fills a solid's visible faces 49,71,112 hovered and 40,74,140
+selected, Conceptual turns them blue (a white box's top 184,201,224 hovered, 148,179,230 selected),
+Ctrl the one face, and a face taken shows no tint but the gizmo (d04, d05; here the lines alone);
+lineweights narrower than 2D Wireframe's (0.80 mm: 6 px against 9–10, d06; the absolute scale
+**unverified**, the profile's Lineweight Settings display scale unread); OBSCUREDLTYPE, OBSCUREDCOLOR, HALOGAP, INTERSECTIONDISPLAY and the VS* variables
 (Hidden's VSEDGES 2, VSSILHEDGES 1, VSOBSCUREDEDGES 0, VSEDGECOLOR ByEntity, v01). HIDE, which in
 2027 shows the 2D Wireframe view with hidden lines removed only until the next REGEN or ZOOM, the
 solids faceted (p04), and in Wireframe switches to Hidden ("HIDE command after save causes items
@@ -334,7 +344,9 @@ and the click is the command's (d06, VIEW-D66); its label is the preset the came
 turned plan is none), else Custom View / es Vista personalizada (table 40867); the list opens
 downwards (**unverified**)
 
-**Missing:** the `[−]` and visual style controls (`[-][Top][2D Wireframe]`, d06), VPCONTROL as a
+**Missing:** the `[−]` and visual style controls (`[-][Top][2D Wireframe]`, d06; `[Hidden (Fast)]`,
+`[Conceptual (Fast)]`, es `[Oculto (Rápido)]`, `[Conceptual (Rápido)]` off 2D Wireframe,
+solid-inquiry/d03, d11), VPCONTROL as a
 variable, Custom Model Views, Parallel / Perspective and the View Manager in the list
 
 ### Navigation bar

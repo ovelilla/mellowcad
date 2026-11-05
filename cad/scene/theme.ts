@@ -14,11 +14,13 @@ export const THEME = {
    */
   ucsIcon: "#ffffff",
   /**
-   * The 2D icon's axis colours, which the scene no longer draws (the 3D icon
-   * is one colour); kept as THEME is public.
+   * The icon's arms and letters in Hidden and Conceptual, X red, Y green and
+   * Z blue, each its lit side as AutoCAD 2027 draws them there (desktop
+   * solid-inquiry/d03); 2D Wireframe draws {@link THEME.ucsIcon}.
    */
-  ucsIconX: "#f87171",
-  ucsIconY: "#4ade80",
+  ucsIconX: "#a94b4c",
+  ucsIconY: "#65d264",
+  ucsIconZ: "#609fff",
   entity: "#e2e8f0",
   entityHover: "#cbd5e1",
   /**

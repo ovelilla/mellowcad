@@ -673,7 +673,8 @@ export function buildLassoOverlay(
 export function buildSelectionPreview(
   viewport: Viewport,
   document: DocumentReader,
-  ids: readonly EntityId[]
+  ids: readonly EntityId[],
+  solidLines?: ReadonlyMap<Entity, readonly Entity[]>
 ): ScenePrimitive[] {
   const blocks = document.blockLookup()
   return ids.flatMap((id) => {
@@ -685,6 +686,7 @@ export function buildSelectionPreview(
           { color: THEME.entityHover, width: 2 },
           {
             blocks,
+            solidLines,
             dimStyle:
               entity.type === "dimension"
                 ? document.getDimStyle(entity.styleId)

@@ -192,7 +192,9 @@ letter at its arm's end, a square at the origin when the UCS is the WCS (d01-2, 
 origin while it fits, else in the lower-left corner (lifted clear of the status readout, d01-4);
 off the plan its arms are projected and a Z arm with its letter shows where the UCS's Z does
 (d01-5, d01-7), an arm seen end-on left out, so the XY plane edge-on draws X and Z (d01-6: no
-broken pencil, the 2D style's); `'UCSICON`, at the Command prompt or mid-command (es
+broken pencil, the 2D style's); in Hidden and Conceptual its arms and letters X red, Y green and Z
+blue, and thicker (desktop solid-inquiry/d03: AutoCAD shades them as tubes; here each arm flat in
+its lit side's colour, 3 px); `'UCSICON`, at the Command prompt or mid-command (es
 also bare, `UCSICON`, its command being SIMBSCP), sets the system variable through SETVAR
 (workspace.md), as 2027's console asks it (ucs/p353–p356): `Enter new value for UCSICON <3>:` (es `Indique nuevo valor para UCSICON <3>`), 1 for the
 icon shown plus 2 for it at the origin (else `Requires an integer between 0 and 3.`), one undo step
@@ -231,8 +233,11 @@ object prompts, where it is a typed pick — but at ARRAYRECT's unit cell's firs
 cell's side; the cursor's last place on the drawing is kept while the mouse is off it, and with
 none, or one on the point, it runs along the UCS's X (WHY: the console's cursor is fixed on its
 screen, so its heading follows the view). A distance given by a point (CIRCLE's radius), a window's
-corner (ZOOM Window's first one too), DIST's second point, COPY's second points and a keyword
-(LINE's Close) leave it, and a transparent command keeps the one it interrupts (`@` after `'ID` is
+corner (ZOOM Window's first one too; a click on nothing at `Select objects:` too, **unverified**),
+DIST's second point, COPY's second points and a keyword
+(LINE's Close) leave it; a click that picks an object at `Select objects:` is the cursor's point
+on the work plane, off the plan too (MASSPROP, LIST, ERASE, desktop solid-inquiry/d10), as a click
+at a single object's pick that takes a face or an edge is (solid-edits/d06); and a transparent command keeps the one it interrupts (`@` after `'ID` is
 still from the point before) — AutoCAD 2023's console, each followed by `ID @`. The runtime keeps
 it, so every command shares it. Typed as a variable (SETVAR, workspace.md) it is a point in the UCS,
 a 2D one at ELEVATION, `@` from itself, kept in the WCS, a step U takes back (workspace/p212, p218,

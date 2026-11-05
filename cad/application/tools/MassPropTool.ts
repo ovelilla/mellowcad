@@ -185,7 +185,10 @@ export class MassPropTool extends SelectionActionTool {
     }
     const analysis = analysisText(report, ctx)
     // The console's lines end at their last word: the unit fields' spaces
-    // are the file's alone (solid/m10).
+    // are the file's alone (solid/m10). WHY all at once, with no `Press ENTER
+    // to continue:` before the principal moments: that pause pages the text
+    // window the desktop opens for the report (solid-inquiry/d08, d09, d11),
+    // and the history here scrolls, as LIST's does.
     ctx.report(analysis.replace(/ +$/gm, "").replace(/\n$/, ""))
     this.analysis = analysis.replace(/\n/g, "\r\n")
     // A keyword-only prompt: the chips, and Enter takes No.

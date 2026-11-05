@@ -272,7 +272,13 @@ export function buildScene(input: SceneInput): Scene {
     input.viewUp ?? { x: 0, y: 1, z: 0 }
   )
   if (input.ucsIcon) {
-    pushUcsIcon(primitives, aid, input.ucs, input.ucsIcon)
+    pushUcsIcon(
+      primitives,
+      aid,
+      input.ucs,
+      input.ucsIcon,
+      (input.visualStyle ?? "2dWireframe") !== "2dWireframe"
+    )
   }
   pushTracking(primitives, aid, input.acquiredTrackingPoints, input.tracking)
   pushParallelReferences(
@@ -448,13 +454,15 @@ const UCS_ICON_CORNER_LIFT = 64
  * the UCS's Z does on the screen (d01-5, d01-7); an arm seen end-on is left
  * out, so the XY plane edge-on draws X and Z (d01-6). With UCSICON at ORigin
  * it sits on the origin while the whole icon fits in the view, and in the
- * lower-left corner otherwise.
+ * lower-left corner otherwise. In Hidden and Conceptual (`shaded`) its arms
+ * and letters are X red, Y green and Z blue, and thicker (solid-inquiry/d03).
  */
 function pushUcsIcon(
   out: ScenePrimitive[],
   camera: CameraTransform,
   ucs: Ucs,
-  icon: UcsIconInput
+  icon: UcsIconInput,
+  shaded: boolean
 ): void {
   const axes = ucsIconAxes(camera, ucs)
   if (!axes) return
@@ -472,19 +480,30 @@ function pushUcsIcon(
     icon.atOrigin && fits(origin) ? origin : cornerPlacement(camera, dirs)
 
   const color = THEME.ucsIcon
-  const arm = (dir: Vec2, letter: string) => {
+  const arm = (dir: Vec2, letter: string, axisColor: string) => {
     const length = V.length(dir)
     if (!(length > END_ON)) return
     const end = V.add(at, V.scale(dir, UCS_ICON_ARM))
     const unit = V.scale(dir, 1 / length)
+    const drawn = shaded ? axisColor : color
     out.push(
-      { kind: "segment", a: at, b: end, stroke: { color, width: 1 } },
-      { kind: "label", at: V.add(end, V.scale(unit, 6)), text: letter, color }
+      {
+        kind: "segment",
+        a: at,
+        b: end,
+        stroke: { color: drawn, width: shaded ? 3 : 1 },
+      },
+      {
+        kind: "label",
+        at: V.add(end, V.scale(unit, 6)),
+        text: letter,
+        color: drawn,
+      }
     )
   }
-  arm(xDir, icon.xLabel)
-  arm(yDir, icon.yLabel)
-  arm(zDir, icon.zLabel)
+  arm(xDir, icon.xLabel, THEME.ucsIconX)
+  arm(yDir, icon.yLabel, THEME.ucsIconY)
+  arm(zDir, icon.zLabel, THEME.ucsIconZ)
   if (icon.world && V.length(xDir) > END_ON && V.length(yDir) > END_ON) {
     const side = 7
     out.push({
@@ -1786,14 +1805,14 @@ function pushEntities(
   // any other; Conceptual paints their faces first, its edges over them.
   let solidLines: Map<Entity, readonly Entity[]> | undefined
   if (visualStyle !== "2dWireframe") {
-    const solids = entities.filter(
-      (entity): entity is Solid3dEntity =>
-        entity.type === "solid3d" &&
+    solidLines = shownSolidLines(
+      entities,
+      (entity) =>
         !hiddenIds.has(entity.id) &&
-        layerById.get(entity.layerId)?.visible !== false
+        layerById.get(entity.layerId)?.visible !== false,
+      viewDirection
     )
-    const lines = solidViewEntities(solids, viewDirection)
-    solidLines = new Map(solids.map((solid, i) => [solid, lines[i]]))
+    const solids = [...solidLines.keys()] as Solid3dEntity[]
     if (visualStyle === "conceptual") {
       const shaded = shadedCells(
         solids.map((solid) => ({
@@ -1808,12 +1827,7 @@ function pushEntities(
         viewDirection,
         viewUp
       )
-      for (const { points, fill: lit, locked } of shaded) {
-        // A locked solid's faces fade as its edges do, into the background
-        // (solid-inquiry/p310), opaque so no face behind shows through.
-        const fill = locked
-          ? mixedColor(lit, THEME.background, LOCKED_LAYER_OPACITY)
-          : lit
+      for (const { points, fill } of shaded) {
         out.push({
           kind: "path",
           points: points.map((point) => camera.worldToScreen(point)),
@@ -1858,7 +1872,20 @@ function pushEntities(
         : drawn
     const stroke =
       locked && !isFaded
-        ? { ...edged, color: fadedColor(edged.color, LOCKED_LAYER_OPACITY) }
+        ? {
+            ...edged,
+            color:
+              // Off 2D Wireframe a locked solid's edges keep 0.7 of their
+              // colour, neutral, where 2D Wireframe fades them half into the
+              // background (desktop solid-inquiry/d06: 255 → 178,178,178).
+              visualStyle !== "2dWireframe" && entity.type === "solid3d"
+                ? mixedColor(
+                    normalizeColor(edged.color) ?? THEME.entity,
+                    "#000000",
+                    LOCKED_EDGE_SHARE
+                  )
+                : fadedColor(edged.color, LOCKED_LAYER_OPACITY),
+          }
         : edged
     if (entity.type === "insert") {
       // Each object inside the block keeps its own colour, linetype and
@@ -1934,6 +1961,26 @@ export function entityStroke(
 }
 
 /**
+ * The stretches of each solid Hidden and Conceptual draw (`solidViewEntities`),
+ * by solid, among those of `entities` that `shows` keeps: what the scene
+ * passes as `solidLines`, and what a highlight of a solid passes off 2D
+ * Wireframe so it lights only what the style draws (desktop solid-inquiry/d04-a,
+ * d05).
+ */
+export function shownSolidLines(
+  entities: readonly Entity[],
+  shows: (entity: Entity) => boolean,
+  viewDirection: Vec3
+): Map<Entity, readonly Entity[]> {
+  const solids = entities.filter(
+    (entity): entity is Solid3dEntity =>
+      entity.type === "solid3d" && shows(entity)
+  )
+  const lines = solidViewEntities(solids, viewDirection)
+  return new Map(solids.map((solid, i) => [solid, lines[i]]))
+}
+
+/**
  * AutoCAD's selection effect over an object drawn with `stroke`: the object
  * as it is, glowing blue (desktop d15).
  */
@@ -1964,6 +2011,9 @@ const FADED_OPACITY = 0.22
  * properties/d00-2). LAYLOCKFADECTL cannot be typed here.
  */
 const LOCKED_LAYER_OPACITY = 0.5
+
+/** How much of its colour a locked solid's edge keeps in Hidden and Conceptual (d06). */
+const LOCKED_EDGE_SHARE = 0.7
 
 /** An object's colour as ERASE's preview fades it, or as `opacity` keeps it. */
 export function fadedColor(

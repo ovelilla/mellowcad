@@ -318,7 +318,8 @@ prompt cannot take dropped, the angle of a direction (LINE, PLINE, SPLINE, MOVE,
 shown acute ("all angles are displayed as 180 degrees or less") and a typed one read on the cursor's
 side, absolute `#`, relative `@`, `*` for the WCS, `x,y`, `dist<ang` (all in the UCS), `x,y,z` and
 cylindrical `dist<ang,z` / spherical `dist<ang<ang` in the same box, multi-field forms, keyword
-prompts; on the Z guide (or straight above or below the base point) the length reads the height and
+prompts; `Select objects:` (`Remove objects:`) alone in the tip at the cursor, no box (desktop
+solid-inquiry/d10); on the Z guide (or straight above or below the base point) the length reads the height and
 the angle `+Z` / `-Z`, and a typed length runs along it — LINE, MOVE, COPY, STRETCH and a grip move
 go up or down, PLINE keeps its plane, SPLINE's next point goes up or down too (its points keep
 their Z, draw.md, SPLINE); a typed angle brings it back to the plane

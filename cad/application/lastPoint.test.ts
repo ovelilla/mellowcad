@@ -1067,3 +1067,29 @@ describe("A number typed at a window's corner or where objects are picked", () =
     expect(lastPoint(nothing)).toMatch(/14[.,]62 .* 1[.,]92 /)
   })
 })
+
+describe("A click that picks an object at Select objects", () => {
+  // Desktop solid-inquiry/d10: LASTPOINT 7,7,7, a box seen from SW Isometric
+  // clicked on its edge at 5,0,10: MASSPROP, LIST and ERASE each leave
+  // 15.0514,10.0266,0, the cursor's point on the work plane (its pixel's);
+  // the line of sight through 5,0,10 meets Z 0 at 15,10,0.
+  it("sets LASTPOINT to the cursor's point on the work plane, off the plan too", () => {
+    for (const run of [
+      ["_MASSPROP", "", "_N"],
+      ["LIST", ""],
+      ["ERASE", ""],
+    ]) {
+      const cad = createHarness()
+      answer(cad, "BOX", "0,0,0", "10,10", "10", "-VIEW", "_SWISO")
+      answer(cad, "ID", "7,7,7", run[0])
+      cad.click({ x: 5, y: 0, z: 10 })
+      answer(cad, ...run.slice(1))
+      expect(lastPoint(cad)).toBe(" X = 15.00     Y = 10.00     Z = 0.00")
+    }
+    const plan = createHarness()
+    answer(plan, "BOX", "0,0,0", "10,10", "10", "ID", "7,7,7", "LIST")
+    plan.click({ x: 10, y: 4 })
+    answer(plan, "")
+    expect(lastPoint(plan)).toBe(" X = 10.00     Y = 4.00     Z = 0.00")
+  })
+})
