@@ -81,7 +81,8 @@ export function DocsToc({
     const container = list.current
     const link = container?.querySelector<HTMLElement>('[aria-current="location"]')
     if (!container || !link) return
-    const top = link.offsetTop - container.offsetTop
+    // The list is `relative`, so a link's offsetTop is already measured from it.
+    const top = link.offsetTop
     if (top < container.scrollTop || top + link.offsetHeight > container.scrollTop + container.clientHeight) {
       container.scrollTop = top - container.clientHeight / 2
     }
@@ -89,7 +90,9 @@ export function DocsToc({
 
   if (shown.length === 0) return null
   return (
-    <nav aria-label={title} className="flex max-h-full flex-col text-sm">
+    // WHY min-h-0: a flex item's minimum height is its content's, so without it
+    // a long list never shrank to the sticky column and ran off the screen.
+    <nav aria-label={title} className="flex min-h-0 flex-col text-sm">
       <p className="mb-3 label-mono">{title}</p>
       <div
         ref={list}
