@@ -1,12 +1,12 @@
 {
   "Metadata": {
-    "title": "CAD 2D online gratis con comandos de AutoCAD — MellowCAD",
+    "title": "CAD online gratis: 2D, 3D y comandos de AutoCAD — MellowCAD",
     "titleTemplate": "%s · MellowCAD",
-    "description": "CAD 2D gratis en tu navegador con los comandos, alias y referencias a objetos de AutoCAD. Sin instalación ni registro; tus dibujos no salen de tu equipo.",
+    "description": "Programa CAD gratis en tu navegador, con los comandos y alias de AutoCAD en español: dibujo 2D y sólidos 3D, aún parciales. Sin descargas ni registro.",
     "drawTitle": "Dibujar",
-    "drawDescription": "Dibujo 2D de precisión con los comandos, las referencias a objetos y el flujo de teclado que ya conocen los usuarios de AutoCAD, en una pestaña del navegador y sin instalar nada.",
+    "drawDescription": "CAD gratis en una pestaña del navegador: dibujo 2D y sólidos 3D, aún parciales, con los comandos, las referencias a objetos y el teclado de AutoCAD.",
     "ogAlt": "Una brida dibujada en MellowCAD, con las palabras: Escribe L. Pulsa Intro. Dibuja.",
-    "appDescription": "Dibujo 2D en el navegador con los comandos, alias y referencias a objetos de AutoCAD.",
+    "appDescription": "CAD gratis en el navegador con los comandos, alias y referencias a objetos de AutoCAD: dibujo 2D y sólidos 3D, aún parciales.",
     "browserRequirements": "Requiere JavaScript y un navegador de escritorio actual."
   },
   "Common": {
@@ -29,9 +29,9 @@
     "cta": "Dibujar"
   },
   "Hero": {
-    "eyebrow": "CAD 2D en tu navegador",
+    "eyebrow": "CAD online gratis con comandos de AutoCAD",
     "title": "Escribe L. Pulsa Intro. Dibuja.",
-    "lead": "MellowCAD es CAD 2D gratis en tu navegador que funciona como AutoCAD: los mismos comandos, alias, solicitudes y referencias a objetos. Nada que instalar, sin cuenta, y tus dibujos nunca salen de tu dispositivo.",
+    "lead": "MellowCAD funciona en tu navegador como AutoCAD en español: los mismos comandos, alias y referencias a objetos, y las solicitudes en el mismo orden, con las mismas letras de opción. Dibuja en 2D y modela sólidos 3D, aún parciales. Nada que instalar, sin cuenta, y tus dibujos nunca salen de tu dispositivo.",
     "secondaryCta": "Ver los comandos",
     "continue": "{count, plural, one {Seguir dibujando · # objeto} other {Seguir dibujando · # objetos}}",
     "proof": "Gratis · Sin registro · Nada que instalar · Autoguardado local",
@@ -49,7 +49,7 @@
   "SendToDesktop": {
     "action": "Enviar a mi equipo",
     "copied": "Enlace copiado",
-    "shareTitle": "MellowCAD — CAD 2D en tu navegador",
+    "shareTitle": "MellowCAD — CAD online gratis con comandos de AutoCAD",
     "shareText": "Ábrelo en un equipo para empezar a dibujar."
   },
   "Commands": {
@@ -97,7 +97,7 @@
   },
   "Toolset": {
     "label": "03 · Herramientas",
-    "title": "Herramientas de dibujo 2D de verdad, y cada vez más.",
+    "title": "Herramientas CAD de verdad, del dibujo 2D a los sólidos 3D, y cada vez más.",
     "lead": "{commands, number} comandos hoy, ordenados como en la cinta de opciones. Cada uno hace las preguntas de AutoCAD en el orden de AutoCAD; las opciones que aún faltan constan en la hoja de ruta.",
     "sheet": "Hoja {number}",
     "drawBody": "Líneas, polilíneas con segmentos de arco, círculos, arcos y elipses en todas sus construcciones, splines, rectángulos, polígonos y sombreados.",
@@ -192,13 +192,15 @@
     "q8": "¿Funciona en tabletas o móviles?",
     "a8": "Se abre, pero está pensado para teclado y ratón, como AutoCAD. Usa un equipo de escritorio o un portátil.",
     "q9": "¿Qué comandos incluye?",
-    "a9": "{commands, number} comandos, entre ellos LINEA, POL, CIRCULO, ARCO, ELIPSE, SOMBREA, DESFASE, RECORTA, EMPALME, MATRIZ, las cotas, los bloques y las capas. La <reference>referencia de comandos</reference> los recoge todos, con sus alias y su primera solicitud."
+    "a9": "{commands, number} comandos, entre ellos LINEA, POL, CIRCULO, ARCO, ELIPSE, SOMBREA, DESFASE, RECORTA, EMPALME, MATRIZ, las cotas, los bloques y las capas. La <reference>referencia de comandos</reference> los recoge todos, con sus alias y su primera solicitud.",
+    "q10": "¿Sirve para 3D?",
+    "a10": "En parte. Construye sólidos 3D —primitivas, extrusiones y revoluciones, uniones, diferencias e intersecciones, cortes y secciones, aristas empalmadas y achaflanadas, caras editadas—, calcula sus propiedades físicas y los muestra en órbita, desde el ViewCube y con estilos visuales sombreados. Todavía no hay barridos, solevaciones, mallas ni renderizado."
   },
   "FinalCta": {
     "title": "Tu mesa de dibujo está a una tecla."
   },
   "Footer": {
-    "tagline": "CAD 2D en tu navegador",
+    "tagline": "CAD online gratis con comandos de AutoCAD",
     "product": "Producto",
     "contact": "Contacto",
     "code": "Código",
@@ -247,7 +249,7 @@
     "cta": "Empezar a dibujar"
   },
   "Og": {
-    "tagline": "CAD 2D en tu navegador",
+    "tagline": "CAD online gratis con comandos de AutoCAD",
     "drawTitle": "Empezar a dibujar"
   },
   "Docs": {

@@ -120,7 +120,24 @@ descripciones, el eyebrow del H1, el lead, la imagen OG, el manifest, el JSON-LD
 README, npm y GitHub, con las palabras de §2.3. **Terminado:** las 21 ubicaciones de
 `technical.md` §6.2 reescritas o conservadas con su motivo; title ≤ 60 caracteres y description
 ≤ 155 por idioma, con la consulta principal al principio; las traducciones revisadas;
-`CONTENT_UPDATED`. La sesión deja aquí la tabla de consultas principales por idioma.
+`CONTENT_UPDATED`.
+
+**Las consultas de la home por idioma** (sesión 02, con los datos de §2; los textos escritos con
+ellas, en «Search texts» de `docs/i18n/<tag>.md`):
+
+| Home | Principal | Secundarias | Title |
+| --- | --- | --- | --- |
+| `/` | free online cad | online cad, cad online free, 2d cad online, AutoCAD commands, no sign-up | «Free online CAD, 2D & 3D, with AutoCAD commands — MellowCAD» (59) |
+| `/es` | cad online gratis | cad gratis online, cad 2d online gratis, programa cad gratis online, cad online, sin registro, comandos de AutoCAD en español | «CAD online gratis: 2D, 3D y comandos de AutoCAD — MellowCAD» (59) |
+| `/pt-br` | cad online grátis | cad online, cad online gratuito, cad 2d online grátis, programa cad gratuito, sem cadastro, comandos do AutoCAD em português | «CAD online grátis: 2D, 3D e comandos do AutoCAD — MellowCAD» (59) |
+| `/ar` | رسم هندسي اون لاين | اوتوكاد اون لاين، بديل اوتوكاد مجاني، برنامج رسم هندسي مجاني، رسم ثنائي الابعاد اون لاين، أوامر الأوتوكاد واختصاراتها | «رسم هندسي أون لاين مجانًا بأوامر أوتوكاد — MellowCAD» (52) |
+
+La home no persigue «autocad online gratis» ni «autocad web» (consultas de marca: Autodesk), «cad 3d
+online» (Tinkercad, Onshape: el 3D se dice, no se persigue) ni DXF y DWG (L7). Las demás familias
+son de otras páginas: la lista de comandos y cada comando (L3: «comandos de autocad», «autocad
+commands», «comandos do autocad em português e inglês», «اوامر الاوتوكاد واختصاراتها»), la
+práctica (L6: «practicar autocad online», «autocad practice», «exercícios autocad») y la
+alternativa a AutoCAD (L6: «alternativa a autocad gratis», «alternativa ao autocad gratuito»).
 
 ### L3. La referencia de comandos: una página por comando
 

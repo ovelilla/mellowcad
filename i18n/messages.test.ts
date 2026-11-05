@@ -5,6 +5,7 @@ import { describe, expect, it } from "vitest"
 
 import { editorTags, readEditorCatalog } from "../scripts/locales/editor"
 import { type Tree, flatten, plurals, signature } from "../scripts/locales/icu"
+import { TITLE_MAX } from "../lib/docs/check"
 import { mergeMessages } from "./messages"
 import { LOCALE_STATUS, routing } from "./routing"
 
@@ -58,6 +59,27 @@ describe("the app's message catalogs", () => {
       expect([...flatten(catalog(locale)).keys()].sort(), locale).toEqual(
         [...english.keys()].sort()
       )
+    }
+  })
+})
+
+// What a search result shows before it cuts, as the docs' pages are held
+// (lib/docs/check.ts): the landing's title with its brand, and the
+// descriptions of the landing and the editor at Google's ~155 characters.
+// Each title opens with its language's main query (docs/i18n/<tag>.md,
+// "Search texts"), which a reader checks, not a test.
+const LANDING_DESCRIPTION_MAX = 155
+
+describe("the landing's and the editor's metadata", () => {
+  it.each(TRANSLATED)("fit a search result in %s", (locale) => {
+    const messages = flatten(catalog(locale))
+    const title = messages.get("Metadata.title")!
+    expect(title.length, `${locale}: ${title}`).toBeLessThanOrEqual(TITLE_MAX)
+    for (const key of ["Metadata.description", "Metadata.drawDescription"]) {
+      expect(
+        messages.get(key)!.length,
+        `${locale}: ${key}`
+      ).toBeLessThanOrEqual(LANDING_DESCRIPTION_MAX)
     }
   })
 })

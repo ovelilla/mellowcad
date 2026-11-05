@@ -138,7 +138,7 @@ the 5,124 probes run in `es-ES` with their English twins (`research/console/es.m
 | UCS menu | WCS; New UCS; Unnamed | SCU; Nuevo SCP; S-nombre | C 00815EB6-B218-410D-AF53-A5241BB53AA0; S-nombre the 2027 desktop's menu (probe ucs/e01-8) | yes |
 | Open source | Open source; the code; MIT licence | Código abierto; el código; licencia MIT | the landing's own words, no AutoCAD term (`.claude/rules/i18n.md`, «Claims and copy») | — |
 | Docs | Docs; Documentation; Build with MellowCAD; API reference; Not published yet | Documentación; Construir con MellowCAD; Referencia de la API; Aún no publicado | the site's own words, no AutoCAD term; «Build» is written in English only (`.claude/rules/docs.md`) | — |
-| Search | 2D CAD online, free, no sign-up, AutoCAD commands, aliases | CAD 2D online, gratis, sin registro, comandos de AutoCAD, alias | Spanish Google autocomplete and ranking titles, 27/09/2026 (see Search texts, below) | yes |
+| Search | Free online CAD, 2D and 3D, no sign-up, AutoCAD commands, aliases | CAD online gratis, 2D y 3D, sin descargas ni registro, comandos de AutoCAD en español, alias | Spanish Google autocomplete and ranking titles, 27/09/2026; the visibility audit, 05/11/2026 (see Search texts, below) | yes |
 
 ## Register
 
@@ -150,14 +150,19 @@ the 5,124 probes run in `es-ES` with their English twins (`research/console/es.m
 
 ## Search texts
 
-- **Spanish** (Google's suggestions in Spain, Mexico, Argentina, Colombia and Chile, and the titles
-  ranking there, 27/09/2026; no volumes, Trends could not be read): «gratis» goes with every query
-  («cad online gratis», «cad 2d online gratis»); «CAD online» is said so, not «en línea», which
-  finds file viewers; «sin registro» is how _no sign-up_ is said; «comandos de AutoCAD» is common.
-  Never «AutoCAD online gratis», which would read as if this were AutoCAD. Title: «CAD 2D online
-  gratis con comandos de AutoCAD — MellowCAD» (56); description: «CAD 2D gratis en tu navegador con
-  los comandos, alias y referencias a objetos de AutoCAD. Sin instalación ni registro; tus dibujos
-  no salen de tu equipo.» (153). The lead carries the terms the H1 lacks.
+- **Spanish** (Google's suggestions in Spain, Mexico, Argentina, Colombia and Chile and the titles
+  ranking there, 27/09/2026; Trends, autocomplete and results pages of the visibility audit,
+  05/11/2026, `~/seo-data/audit-2026-11-05/keywords-es-pt.md`): the home's main query is «cad online
+  gratis», with «cad gratis online», «cad 2d online gratis» and «programa cad gratis online» —
+  KulmanLab is n.º 1 for all four in Spain and Mexico with exact titles — and «cad online» (2.0 in
+  Spain, «autocad» = 100). The modifiers people add: «sin registro», «2d», «en español» and, in
+  Mexico, «en línea»; «CAD online» is still said so, as «en línea» alone finds file viewers. Never
+  «AutoCAD online gratis»: it is Autodesk's brand query and would read as if this were AutoCAD.
+  Title: «CAD online gratis: 2D, 3D y comandos de AutoCAD — MellowCAD» (59); description: «Programa
+  CAD gratis en tu navegador, con los comandos y alias de AutoCAD en español: dibujo 2D y sólidos
+  3D, aún parciales. Sin descargas ni registro.» (150); the H1's eyebrow, the share card and the
+  footer: «CAD online gratis con comandos de AutoCAD». The lead carries the terms the H1 lacks
+  (navegador, en español, 2D, 3D).
 
 ## Command language
 

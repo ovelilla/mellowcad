@@ -8,7 +8,7 @@ import { productFacts } from "@/lib/facts"
 import { SectionHeading } from "./section-heading"
 import { sourceLinks } from "./source-links"
 
-const QUESTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const
+const QUESTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10] as const
 
 /** Native disclosure widgets: no script, and every answer is in the HTML. */
 export async function FaqSection() {

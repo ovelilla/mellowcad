@@ -1,12 +1,12 @@
 {
   "Metadata": {
-    "title": "CAD 2D online grátis com os comandos do AutoCAD — MellowCAD",
+    "title": "CAD online grátis: 2D, 3D e comandos do AutoCAD — MellowCAD",
     "titleTemplate": "%s · MellowCAD",
-    "description": "CAD 2D grátis no navegador com os comandos, atalhos e snaps ao objeto do AutoCAD. Sem instalar nada e sem cadastro; seus desenhos não saem do seu computador.",
+    "description": "Programa CAD gratuito no navegador, com os comandos e atalhos do AutoCAD em português: desenho 2D e sólidos 3D, ainda parciais. Sem instalar, sem cadastro.",
     "drawTitle": "Desenhar",
-    "drawDescription": "Desenho 2D de precisão com os comandos, os snaps e o fluxo de teclado que os usuários do AutoCAD já conhecem, em uma aba do navegador e sem instalar nada.",
+    "drawDescription": "CAD grátis em uma aba do navegador: desenho 2D e sólidos 3D, ainda parciais, com os comandos, os snaps e o teclado que você já conhece do AutoCAD.",
     "ogAlt": "Um flange desenhado no MellowCAD, com as palavras: Digite L. Pressione Enter. Desenhe.",
-    "appDescription": "Desenho 2D no navegador com os comandos, aliases e snaps ao objeto do AutoCAD.",
+    "appDescription": "CAD grátis no navegador com os comandos, aliases e snaps ao objeto do AutoCAD: desenho 2D e sólidos 3D, ainda parciais.",
     "browserRequirements": "Requer JavaScript e um navegador de desktop atual."
   },
   "Common": {
@@ -29,9 +29,9 @@
     "cta": "Desenhar"
   },
   "Hero": {
-    "eyebrow": "CAD 2D no seu navegador",
+    "eyebrow": "CAD online grátis com os comandos do AutoCAD",
     "title": "Digite L. Pressione Enter. Desenhe.",
-    "lead": "O MellowCAD é CAD 2D grátis no seu navegador que funciona como o AutoCAD: os mesmos comandos, aliases, prompts e snaps ao objeto. Nada para instalar, sem conta, e seus desenhos nunca saem do seu dispositivo.",
+    "lead": "O MellowCAD funciona no seu navegador como o AutoCAD em português: os mesmos comandos, aliases e snaps ao objeto, e os prompts na mesma ordem, com as mesmas letras de opção. Desenhe em 2D e modele sólidos 3D, ainda parciais. Nada para instalar, sem conta, e seus desenhos nunca saem do seu dispositivo.",
     "secondaryCta": "Ver os comandos",
     "continue": "{count, plural, one {Continuar desenhando · # objeto} other {Continuar desenhando · # objetos}}",
     "proof": "Grátis · Sem cadastro · Nada para instalar · Salvamento automático local",
@@ -49,7 +49,7 @@
   "SendToDesktop": {
     "action": "Enviar para o meu computador",
     "copied": "Link copiado",
-    "shareTitle": "MellowCAD — CAD 2D no seu navegador",
+    "shareTitle": "MellowCAD — CAD online grátis com os comandos do AutoCAD",
     "shareText": "Abra isto em um computador para começar a desenhar."
   },
   "Commands": {
@@ -97,7 +97,7 @@
   },
   "Toolset": {
     "label": "03 · Ferramentas",
-    "title": "Ferramentas de desenho 2D de verdade, e cada vez mais.",
+    "title": "Ferramentas CAD de verdade, do desenho 2D aos sólidos 3D, e cada vez mais.",
     "lead": "{commands, number} comandos hoje, organizados como na faixa de opções. Cada um faz as perguntas do AutoCAD na ordem do AutoCAD; as opções que ainda faltam estão no roteiro.",
     "sheet": "Folha {number}",
     "drawBody": "Linhas, polilinhas com segmentos de arco, círculos, arcos e elipses em todas as suas construções, splines, retângulos, polígonos e hachuras.",
@@ -192,13 +192,15 @@
     "q8": "Funciona em tablets ou celulares?",
     "a8": "Ele abre, mas foi feito para teclado e mouse, como o AutoCAD. Use um computador.",
     "q9": "Quais comandos estão incluídos?",
-    "a9": "{commands, number} comandos, entre eles LINHA, PLINHA, CIRCULO, ARCO, ELIPSE, HACHURA, DESLOCAMENTO, APARAR, CONCORD, MATRIZ, as cotas, os blocos e as camadas. A <reference>referência de comandos</reference> traz todos, com seus aliases e o primeiro prompt."
+    "a9": "{commands, number} comandos, entre eles LINHA, PLINHA, CIRCULO, ARCO, ELIPSE, HACHURA, DESLOCAMENTO, APARAR, CONCORD, MATRIZ, as cotas, os blocos e as camadas. A <reference>referência de comandos</reference> traz todos, com seus aliases e o primeiro prompt.",
+    "q10": "Faz 3D?",
+    "a10": "Em parte. Ele constrói sólidos 3D — primitivas, extrusões e revoluções, uniões, subtrações e intersecções, fatias e cortes, arestas com concordância e chanfro, faces editadas —, calcula suas propriedades de massa e os mostra em órbita, pelo ViewCube e em estilos visuais sombreados. Ainda não há varreduras, lofts, malhas nem renderização."
   },
   "FinalCta": {
     "title": "Sua prancheta está a uma tecla de distância."
   },
   "Footer": {
-    "tagline": "CAD 2D no seu navegador",
+    "tagline": "CAD online grátis com os comandos do AutoCAD",
     "product": "Produto",
     "contact": "Contato",
     "code": "Código",
@@ -247,7 +249,7 @@
     "cta": "Começar a desenhar"
   },
   "Og": {
-    "tagline": "CAD 2D no seu navegador",
+    "tagline": "CAD online grátis com os comandos do AutoCAD",
     "drawTitle": "Começar a desenhar"
   },
   "Docs": {

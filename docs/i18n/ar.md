@@ -140,7 +140,7 @@ marks a choice between competing terms that a native review should settle first 
 | UCS menu | WCS; New UCS; Unnamed | نظام الإحداثيات العام؛ نظام إحداثيات مستخدم جديد؛ بلا اسم (M) |
 | Open source | Open source; the code; MIT licence | مفتوح المصدر؛ الشيفرة؛ رخصة MIT (M) |
 | Docs | Docs; Documentation; Build with MellowCAD; API reference; Not published yet | التوثيق؛ البناء باستخدام MellowCAD؛ مرجع الواجهة البرمجية؛ لم يُنشر بعد (M) |
-| Search | 2D CAD online, free, no sign-up, AutoCAD commands, aliases | رسم هندسي، ثنائي الأبعاد، أون لاين، مجاني، أوامر أوتوكاد، اختصارات — Google's Arabic suggestions in SA, EG, AE, MA, IQ and JO, 01/10/2026 (see Search texts, below) |
+| Search | Technical drawing online, free, 2D and 3D, AutoCAD commands, aliases, AutoCAD alternative | رسم هندسي، أون لاين، مجاني، ثنائي الأبعاد، ثلاثي الأبعاد، أوامر أوتوكاد، اختصارات، بديل أوتوكاد — Google's Arabic suggestions in SA, EG, AE, MA, IQ and JO, 01/10/2026, and the visibility audit, 05/11/2026 (see Search texts, below) |
 
 ## Register
 
@@ -155,11 +155,28 @@ marks a choice between competing terms that a native review should settle first 
 ## Search texts
 
 - **Arabic** (Google's suggestions in Saudi Arabia, Egypt, the Emirates, Morocco, Iraq and Jordan,
-  01/10/2026): «أوتوكاد» (with or without hamza), «رسم هندسي» (technical drawing), «ثنائي
-  الأبعاد», «أون لاين» (not «عبر الإنترنت»), «مجاني/مجانا» and «أوامر الأوتوكاد واختصاراتها»
-  («اختصارات» is the word for aliases). «كاد» alone finds Cadillac, and «بديل أوتوكاد» is not
-  searched and would read as if this were AutoCAD. Title: «رسم هندسي ثنائي الأبعاد أون لاين مجانًا
-  بأوامر أوتوكاد — MellowCAD».
+  01/10/2026; the visibility audit's Trends, autocomplete and results pages, 05/11/2026,
+  `~/seo-data/audit-2026-11-05/languages.md` part A): the home's main query is «رسم هندسي اون لاين»
+  (technical drawing online), where `/ar` is n.º 5 on Google in Egypt and gets most of the site's
+  clicks; then «اوتوكاد اون لاين», «بديل اوتوكاد» (مجاني / اون لاين), «برنامج رسم هندسي مجاني», «رسم
+  ثنائي الابعاد اون لاين» and «أوامر الأوتوكاد واختصاراتها» («اختصارات» is the word for aliases).
+  Every one is below Trends' floor and suggested in all six countries: a long tail with weak
+  results (Facebook posts, PDFs, videos, no tool).
+- **AutoCAD is typed without hamza**: «اوتوكاد» carries nearly all of the Arabic-script searches
+  (Egypt 22.6 against 0.02 for «أوتوكاد»), but Google matches the two as one — pages titled
+  «أوتوكاد أون لاين» rank for «اوتوكاد اون لاين» — so the copy keeps the standard spelling,
+  «أوتوكاد» and «أون لاين».
+- **«بديل أوتوكاد» is searched** (suggested in all six countries, «بديل اوتوكاد مجاني» and «… اون
+  لاين» among them), and an alternative is not a claim to be AutoCAD: the description says «بديل
+  لأوتوكاد». «كاد» alone now finds Tinkercad (it found Cadillac on 01/10/2026).
+- Only 28–37 % of the AutoCAD searches of Egypt, Saudi Arabia and Iraq are in Arabic script, and
+  0–4 % in the Maghreb, which searches «autocad gratuit» in latin letters: `/ar` cannot reach it.
+- Title: «رسم هندسي أون لاين مجانًا بأوامر أوتوكاد — MellowCAD» (52), with no room left for «ثنائي
+  وثلاثي الأبعاد», which the description carries: «برنامج رسم هندسي مجاني في متصفحك، بديل لأوتوكاد
+  بأوامره واختصاراتها: رسم ثنائي الأبعاد ومجسمات ثلاثية الأبعاد لا تزال جزئية. بلا تثبيت ولا
+  تسجيل.» (145). The H1's eyebrow, the share card and the footer: «رسم هندسي أون لاين مجانًا بأوامر
+  أوتوكاد», which fills the card's line (445 of 470 px at 24 px in Readex Pro): a longer one would
+  run off it, as the card never wraps a right-to-left line (`marketing.md`).
 
 ## Font
 
@@ -180,7 +197,9 @@ available. Where one should look first, if one ever is, in this order:
    30 tool names, and 5 swept solid rows since (04/11/2026); in `packages/editor/src/locales/ar.json`, split from the site's catalog since,
    the layer dialogs (`Layers.dialog`), the rail's flyouts and MTEXT's unsaved-changes dialog;
    in `messages/ar.json`, 79 new keys (the docs' pages and shortcuts, `Docs.*`) and 18 rewritten
-   (the FAQ, the Status section).
+   (the FAQ, the Status section), and on 05/11/2026 the search texts (`Metadata`'s title and
+   descriptions, `Hero.eyebrow` and `Hero.lead`, the taglines, `Toolset.title`) and the FAQ's 3D
+   question (`Faq.q10`, `Faq.a10`).
 3. **The rest** of `messages/ar.json` and `cad/locales/ar.json`, the plurals' six categories first.
 
 A review received goes in as any fix, and the status lines then name its date.

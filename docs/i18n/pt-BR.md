@@ -137,7 +137,7 @@ ours, as Spanish's are (`es.md`). The language is Brazil's, and `LANGUAGE_NAMES`
 | Dialogs | Properties - Locked objects; Multiline Text - Unsaved Changes | Propriedades – Objetos bloqueados; Texto multilinha - Alterações não salvas | N AcTaskDialogs (TaskDialog 181; «Texto multilinha» and «Alterações não salvas» from 104 and 215) | yes; partial |
 | Keys | Enter, Esc, Shift, Tab, Spacebar | Enter, Esc, Shift, Tab, barra de espaço | GS 6B8B7254-94CD-42DB-8F27-1339CAECE9ED («pressionar Enter ou a barra de espaço») | yes |
 | Open source, Docs | Open source; Docs; Build with MellowCAD | Código aberto; Documentação; Construir com o MellowCAD | the site's own words, no AutoCAD term | — |
-| Search | 2D CAD online, free, no sign-up, AutoCAD commands, aliases | CAD 2D online, grátis, sem cadastro, comandos do AutoCAD, atalhos (the description) / aliases (Autodesk's word, the body) | Search texts, below | yes |
+| Search | Free online CAD, 2D and 3D, no sign-up, AutoCAD commands, aliases | CAD online grátis, 2D e 3D, sem cadastro, comandos do AutoCAD em português, atalhos (the description) / aliases (Autodesk's word, the body) | Search texts, below | yes |
 
 ## Register
 
@@ -157,11 +157,16 @@ Google's suggestions in Brazil (`hl=pt-BR`, `gl=br`), 31/10/2026: «autocad onli
 «programa cad gratuito», «desenhar planta baixa online grátis», «alternativa ao autocad gratuito»,
 and — the one MellowCAD answers best — «comandos autocad português e inglês», «atalhos autocad em
 português»: **atalhos** is the word for aliases, and the two command languages side by side are
-what people look for. «grátis» and «gratuito» are both searched; «sem cadastro» is not suggested.
-Title: «CAD 2D online grátis com os comandos do AutoCAD — MellowCAD» (58); description: «CAD 2D
-grátis no navegador com os comandos, atalhos e snaps ao objeto do AutoCAD. Sem instalar nada e sem
-cadastro; seus desenhos não saem do seu computador.» (153). «sem cadastro» is the plain wording
-even if not suggested; «AutoCAD online grátis» is never written, as it would read as AutoCAD itself.
+what people look for. The visibility audit (05/11/2026, Trends, «autocad» = 100,
+`~/seo-data/audit-2026-11-05/keywords-es-pt.md`): «cad online» 3.9, the largest relative head of
+any market, «programa cad» 1.0; KulmanLab is n.º 1 for «cad online grátis» and n.º 2 for «cad
+online». So the main query is «cad online grátis», with «cad online gratuito», «cad 2d online
+grátis», «programa cad gratuito» and «sem cadastro». «grátis» and «gratuito» are both searched:
+the title says one, the description the other. Title: «CAD online grátis: 2D, 3D e comandos do
+AutoCAD — MellowCAD» (59); description: «Programa CAD gratuito no navegador, com os comandos e
+atalhos do AutoCAD em português: desenho 2D e sólidos 3D, ainda parciais. Sem instalar, sem
+cadastro.» (155); the H1's eyebrow, the share card and the footer: «CAD online grátis com os
+comandos do AutoCAD». «AutoCAD online grátis» is never written, as it would read as AutoCAD itself.
 
 ## Command language
 

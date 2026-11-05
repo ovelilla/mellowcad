@@ -1,12 +1,12 @@
 {
   "Metadata": {
-    "title": "Online 2D CAD with AutoCAD commands — MellowCAD",
+    "title": "Free online CAD, 2D & 3D, with AutoCAD commands — MellowCAD",
     "titleTemplate": "%s · MellowCAD",
-    "description": "2D drafting in your browser with the commands, aliases and object snaps AutoCAD users know. No install, no sign-up; drawings stay on your device.",
+    "description": "Free CAD in your browser that works like AutoCAD, with its commands and aliases: 2D drafting and 3D solids, still partial. No install, no sign-up.",
     "drawTitle": "Draw",
-    "drawDescription": "Precision 2D drafting with the commands, snaps and keyboard flow AutoCAD users already know — in a browser tab, nothing to install.",
+    "drawDescription": "Free CAD in a browser tab: 2D drafting and 3D solids, still partial, with the commands, object snaps and keyboard flow AutoCAD users already know.",
     "ogAlt": "A flange drawn in MellowCAD, with the words: Type L. Press Enter. Draw.",
-    "appDescription": "2D drafting in the browser with AutoCAD commands, aliases and object snaps.",
+    "appDescription": "Free CAD in the browser with AutoCAD commands, aliases and object snaps: 2D drafting and 3D solids, still partial.",
     "browserRequirements": "Requires JavaScript and a modern desktop browser."
   },
   "Common": {
@@ -29,9 +29,9 @@
     "cta": "Start drawing"
   },
   "Hero": {
-    "eyebrow": "2D CAD in your browser",
+    "eyebrow": "Free online CAD with AutoCAD commands",
     "title": "Type L. Press Enter. Draw.",
-    "lead": "MellowCAD is 2D drafting in your browser that works the way AutoCAD does: the same commands, aliases, prompts and object snaps. Nothing to install, no account — and your drawings never leave your device.",
+    "lead": "MellowCAD runs in your browser and works the way AutoCAD does: the same commands, aliases and object snaps, and the prompts in the same order with the same option letters. Draft in 2D and build 3D solids, still partial. Nothing to install, no account — and your drawings never leave your device.",
     "secondaryCta": "See the commands",
     "continue": "{count, plural, one {Continue drawing · # object} other {Continue drawing · # objects}}",
     "proof": "Free · No sign-up · Nothing to install · Local autosave",
@@ -49,7 +49,7 @@
   "SendToDesktop": {
     "action": "Send to my computer",
     "copied": "Link copied",
-    "shareTitle": "MellowCAD — 2D CAD in your browser",
+    "shareTitle": "MellowCAD — Free online CAD with AutoCAD commands",
     "shareText": "Open this on a computer to start drawing."
   },
   "Commands": {
@@ -97,7 +97,7 @@
   },
   "Toolset": {
     "label": "03 · Toolset",
-    "title": "A real 2D drafting toolset — and growing.",
+    "title": "A real CAD toolset, from 2D drafting to 3D solids — and growing.",
     "lead": "{commands, number} commands today, filed the way the ribbon files them. Each asks AutoCAD's questions in AutoCAD's order; the options still missing are tracked on the roadmap.",
     "sheet": "Sheet {number}",
     "drawBody": "Lines, polylines with arc segments, circles, arcs and ellipses in all their constructions, splines, rectangles, polygons and hatches.",
@@ -192,13 +192,15 @@
     "q8": "Does it work on tablets or phones?",
     "a8": "It opens, but it's built for a keyboard and mouse, like AutoCAD. Use a computer.",
     "q9": "Which commands are supported?",
-    "a9": "{commands, number} commands, including LINE, PLINE, CIRCLE, ARC, ELLIPSE, HATCH, OFFSET, TRIM, FILLET, ARRAY, dimensions, blocks and layers. The <reference>command reference</reference> lists every one, with its aliases and first prompt."
+    "a9": "{commands, number} commands, including LINE, PLINE, CIRCLE, ARC, ELLIPSE, HATCH, OFFSET, TRIM, FILLET, ARRAY, dimensions, blocks and layers. The <reference>command reference</reference> lists every one, with its aliases and first prompt.",
+    "q10": "Does it do 3D?",
+    "a10": "In part. It builds 3D solids — primitives, extrusions and revolutions, unions, subtractions and intersections, slices and sections, filleted and chamfered edges, edited faces — measures their mass properties, and shows them in orbit, from the ViewCube and in shaded visual styles. Sweeps, lofts, meshes and rendering are not there yet."
   },
   "FinalCta": {
     "title": "Your drafting table is one keystroke away."
   },
   "Footer": {
-    "tagline": "2D CAD in your browser",
+    "tagline": "Free online CAD with AutoCAD commands",
     "product": "Product",
     "contact": "Contact",
     "code": "Code",
@@ -247,7 +249,7 @@
     "cta": "Start drawing"
   },
   "Og": {
-    "tagline": "2D CAD in your browser",
+    "tagline": "Free online CAD with AutoCAD commands",
     "drawTitle": "Start drawing"
   },
   "Docs": {

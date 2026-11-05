@@ -140,6 +140,11 @@ script — updates it in the same change.
 
 - Pages build their metadata with `pageMetadata()` (`lib/metadata.ts`): Next merges `openGraph` and
   `twitter` shallowly, so a page that sets either sets all of it.
+- **The landing's title opens with its language's main query**, the description carries the
+  rest, and both are written from what that language searches, never translated (its
+  `docs/i18n/<tag>.md`, "Search texts"). The H1's category is `Hero.eyebrow`; `Og.tagline`,
+  `Footer.tagline` and `SendToDesktop.shareTitle` say the same. `i18n/messages.test.ts` holds the
+  title to 60 characters with the brand, and the landing's and the editor's descriptions to 155.
 - **The OG images and manifests are named route handlers**: the language's `/og`
   (`app/[locale]/og/route.tsx`), the editor's `/og/draw`, referenced by path (`OG_IMAGE_PATH`), and
   `app/[locale]/manifest.webmanifest` per language, so each installs as its own app. A metadata
