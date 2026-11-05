@@ -21,6 +21,7 @@ export async function StatusSection() {
         t("today3", { lineweights: facts.lineweights }),
         t("today4"),
         t("today5"),
+        t("today6"),
       ],
     },
     {

@@ -28,10 +28,7 @@ export const CONTACT_EMAIL = "o.velillaa@gmail.com"
 /** The public repository, whose code is MIT: the footer, Engine and the FAQ link it. */
 export const REPOSITORY_URL = "https://github.com/ovelilla/mellowcad"
 
-/**
- * The one package on npm so far; react and the editor are named only once
- * they are published (`.claude/rules/i18n.md`, "Claims and copy").
- */
+/** The engine's package, the one the landing links (`.claude/rules/i18n.md`, "Claims and copy"). */
 export const ENGINE_PACKAGE = "@mellowcad/engine"
 export const ENGINE_PACKAGE_URL = `https://www.npmjs.com/package/${ENGINE_PACKAGE}`
 
@@ -47,4 +44,4 @@ export const DATA_CONTROLLER = "Oscar Velilla Abril"
  * `lastModified`, which Google only trusts if it moves with the content, so it
  * is bumped by hand with the copy — never stamped with the build time.
  */
-export const CONTENT_UPDATED = "2026-11-01"
+export const CONTENT_UPDATED = "2026-11-05"

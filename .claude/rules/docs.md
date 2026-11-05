@@ -29,8 +29,8 @@ claims follow `i18n.md`.
   `.md`. One indexable URL per text, and nobody is thrown out of their language's site. Fumadocs'
   `fallbackLanguage` does it: a language without the file gets English's.
 - `/docs` itself is the site's (messages `Docs`), in every language with its hreflang.
-- A page's language is its file's (`name.<tag>.mdx`, none for English); slugs are never
-  translated (`i18n.md`).
+- A page's language is its file's (`name.<tag>.mdx`, none for English); its slug follows
+  `i18n.md`.
 
 ## One source
 

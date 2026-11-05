@@ -59,6 +59,7 @@ export async function homeStructuredData(): Promise<Graph> {
           status("today3", { lineweights: facts.lineweights }),
           status("today4"),
           status("today5"),
+          status("today6"),
         ],
         screenshot: localeUrl(locale, OG_IMAGE_PATH),
         softwareVersion: facts.version,

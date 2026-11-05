@@ -35,9 +35,11 @@ the landing use `Link`; to the docs, `prefetch={false}` (`docs.md`). Every href 
 language's (`sitePaths()`, `localePath()`; `i18n.md`); a client island gets it as a prop. Copy,
 claims and tone: `i18n.md`.
 
-**The site is the landing, the 404, `/privacy` and the docs** (`/docs`, `docs.md`) — decided: no
-changelog or comparison pages, and the commands' reference is the docs' (`/docs/commands`), never a
-hub or cheat sheet of its own. Never propose a new page without Search Console data behind it.
+**The site exists to be found**: a page that answers a real search (a command, a task, a
+comparison, a file format the product opens, a changelog) is welcome, decided on the demand data
+at hand, since a page that does not exist cannot show demand of its own. A page of the product's
+facts is generated from their source (the engine's catalog, `docs/coverage/`, `lib/facts.ts`) so it
+stays true, and every indexable page is in the sitemap, the hreflang set and the internal links.
 
 **`/privacy` is the notice GDPR requires** (Article 13): the host and both Vercel measurements
 process personal data (the IP address, a visitor hash kept 24 hours), and so does the contact
