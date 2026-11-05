@@ -1,8 +1,9 @@
 # Visibilidad y tráfico orgánico — plan maestro
 
-> **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), y por decisión
-> del dueño la visibilidad va antes que cualquier funcionalidad; siguiente: las acciones del dueño
-> de §7 y las sesiones 03 y 04 (§5), que pueden ir en paralelo. Esperan detrás
+> **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), y la 03 con su
+> mecánica y 38 comandos (sin publicar), y por decisión del dueño la visibilidad va antes que
+> cualquier funcionalidad; siguiente: el push de la 03 y las acciones del dueño de §7, la sesión 04
+> (§5) y las tandas de comandos que quedan. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -146,7 +147,30 @@ catálogo del motor y de `docs/coverage/` (nombre localizado y global, alias, so
 lo que falta, una figura del motor, «pruébalo»), y el índice como «lista de comandos de AutoCAD»;
 F1 lleva a la página. **Terminado:** todas en los cuatro idiomas, en el sitemap con hreflang, sin
 páginas finas, indexadas antes de mediados de enero. Los comandos que se buscan y no existen
-(XLINE, OVERKILL, MEASURE, DIVIDE, ALIGN, MLINE, XREF, PLOT) quedan anotados para el roadmap.
+quedan anotados para el roadmap (abajo).
+
+**Entrada para el roadmap: comandos que se buscan y no existen** (sin página hasta que existan;
+sugerencias de autocompletado con el nombre y «autocad», 5/11/2026, en inglés / español /
+portugués, de `keywords-en-autocomplete.csv` y `keywords-es-pt-universe.csv`):
+
+| Comando | en | es | pt | Nota |
+| --- | --: | --: | --: | --- |
+| LAYOUT (presentaciones) | 56 | 15 | 29 | con PLOT, la base de imprimir; hoy sin presentaciones |
+| MEASURE | 52 | 53 | 52 | inflado: «measure/medir» también es medir distancias (DIST ya existe) |
+| PLOT | 39 | 9 | 27 | «trazar», «plotar»; nada de PDF ni impresión hoy (`i18n.md`) |
+| ALIGN | 34 | 16 | 9 | «alinear», «alinhar» |
+| DIVIDE | 32 | 6 | 5 | con MEASURE y POINT/DDPTYPE |
+| TABLE | 32 | 3 | 5 | |
+| BOUNDARY | 31 | 2 | 1 | |
+| GROUP | 28 | 4 | 4 | |
+| XREF | 28 | 5 | 14 | con XCLIP (3 / 2 / 4) |
+| XLINE | 26 | 0 | 3 | Bing: help.autodesk.com n.º 1 en «autocad xline command» |
+| OVERKILL | 20 | 0 | 23 | «command to delete overlapping lines» es la consulta «qué comando» más buscada |
+| SWEEP, LOFT | 19, 17 | 0 | 2 | los que el 3D aún no tiene (Estado los nombra) |
+| MLEADER | 8 | 1 | 1 | |
+| LENGTHEN | 7 | 4 | 0 | |
+| WBLOCK | 6 | 0 | 0 | |
+| MLINE | 1 | 6 | 4 | «multilínea»: más en español y portugués |
 
 ### L4. Rediseño de la landing
 
@@ -292,7 +316,19 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   descriptions de 145 a 155, con la consulta principal delante, sostenidos por
   `i18n/messages.test.ts`; el FAQ pregunta por el 3D; las tarjetas OG, vistas en los cuatro
   idiomas. Quedan del dueño (§7): el `gh repo edit` y la próxima publicación en npm.
-- 03 Una página por comando: pendiente.
+- 03 Una página por comando: la mecánica y la primera tanda hechas el 5/11/2026, sin publicar (el
+  push es del dueño, y tras él la indexación de §7). **38 comandos con página** en los cuatro
+  idiomas (152 URLs más en el sitemap, con hreflang): BLOCK, INSERT, TEXT, MTEXT, SCALE, LAYER,
+  HATCH (con la galería de patrones del motor), las siete cotas y DIMSTYLE, PLINE, FILLET, OFFSET,
+  TRIM y EXTEND, ARRAY y sus tres tipos; el 3D (EXTRUDE, REVOLVE, PRESSPULL, BOX, UNION, SUBTRACT,
+  INTERSECT, SLICE); y LINE, CIRCLE, MOVE, COPY, ROTATE, MIRROR. Cada una se genera de sus notas
+  (`content/commands/`) y del motor, y `docs:check` la tiene al día con su entrada de cobertura; F1
+  abre la página del comando. El índice, «AutoCAD commands list» / «Lista de comandos de AutoCAD
+  en español e inglés» / «Comandos do AutoCAD em português e inglês» / «قائمة أوامر الأوتوكاد
+  واختصاراتها», con los dos nombres y un enlace a cada página. **Quedan 102 comandos sin página**,
+  por tandas con la skill `command-page` (el orden y la lista, en `docs/plans/seo/03-comandos.md`,
+  «Lo que queda»). Para la sesión 04: el tablero de comandos de la landing puede enlazar cada
+  comando con página (`commandPageIds`).
 - 04 Rediseño de la landing: pendiente.
 - 05 Lanzamiento: pendiente (los directorios pueden ir ya).
 - 06 Práctica y guías: pendiente.
