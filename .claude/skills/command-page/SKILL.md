@@ -71,4 +71,5 @@ scratch test you delete): no error line, something drawn.
 3. Read the generated pages in every language: headings, letters, links, the access list.
 4. `npx vitest run content/figures.test.ts lib/docs/sessions.test.ts`, the gate, and
    `finish-feature`. A batch is one commit; the plan's line in `docs/next-seo.md` §8 says what is
-   left.
+   left. Once the owner's push has deployed it, its pages join Google's indexing queue
+   (`marketing.md`, "Metadata and SEO").

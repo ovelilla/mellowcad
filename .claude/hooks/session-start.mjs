@@ -3,6 +3,7 @@
 // and picks up an agreed brief. Plain-text stdout becomes context.
 import { execFileSync } from "node:child_process"
 import { readdirSync, readFileSync } from "node:fs"
+import { homedir } from "node:os"
 import { join } from "node:path"
 
 const ROOT = process.env.CLAUDE_PROJECT_DIR ?? process.cwd()
@@ -65,6 +66,43 @@ function depsReview() {
     : `- ${due}: skill deps-review as soon as the current task is committed.`
 }
 
+// Google's indexing requests waiting for its daily quota, a queue the owner
+// asked sessions to keep without him (2026-11-06): ~/seo-data/scripts holds
+// the URLs (gsc-request-pending.txt) and each answer gsc-request.mjs had
+// (gsc-request-log.json). Once a day has passed since the quota stopped the
+// last batch, the next session sends the next one. No folder, no queue.
+function indexingQueue() {
+  const dir = join(process.env.SEO_DATA ?? join(homedir(), "seo-data"), "scripts")
+  let pending, log
+  try {
+    pending = readFileSync(join(dir, "gsc-request-pending.txt"), "utf8")
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean)
+    log = JSON.parse(readFileSync(join(dir, "gsc-request-log.json"), "utf8"))
+  } catch {
+    return null
+  }
+  const left = pending.filter(
+    (url) => !String(log[url] ?? "").startsWith("requested")
+  )
+  if (left.length === 0) return null
+  const stopped = Math.max(
+    0,
+    ...Object.values(log)
+      .map(String)
+      .filter((answer) => answer.startsWith("quota"))
+      .map((answer) => Date.parse(answer.match(/\d{4}-\d{2}-\d{2}T[\d:.]+Z/)?.[0] ?? ""))
+      .filter(Number.isFinite)
+  )
+  const ready = stopped + DAY_MS
+  if (Date.now() < ready) {
+    const when = new Date(ready).toISOString().slice(0, 16).replace("T", " ")
+    return `- ${left.length} URLs wait to be submitted to Google for indexing until its daily quota resets, after ${when} UTC (docs/next-seo.md §7): not yet.`
+  }
+  return `- Indexing requests due: ${left.length} URLs still to submit to Google (docs/next-seo.md §7). Send the next batch at the start, in the background, as it touches nothing in the repo: start the owner's Chrome as ~/seo-data/scripts/README.md says (ask the owner only if a tab asks to sign in), then \`node gsc-request.mjs gsc-request-pending.txt\` there, which stops at the quota; note what is left in §7 with your next commit.`
+}
+
 // Each brief with the first sentence of its status line, so a session tells
 // one in progress from one not started without opening them all.
 function briefs() {
@@ -113,6 +151,9 @@ if (status === "") {
 
 const review = depsReview()
 if (review) lines.push(review)
+
+const queue = indexingQueue()
+if (queue) lines.push(queue)
 
 const open = briefs()
 if (open.length > 0) {

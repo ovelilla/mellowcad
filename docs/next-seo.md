@@ -284,7 +284,10 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    OFFSET y TRIM en casi todos los idiomas, 11 URLs, hasta la cuota diaria de Google. Quedan 33 de
    la lista (diez comandos por idioma), una docena al día:
    `node gsc-request.mjs gsc-request-pending.txt` en ~/seo-data/scripts (con el Chrome del README
-   de esa carpeta abierto), que salta las ya pedidas.
+   de esa carpeta abierto), que salta las ya pedidas. **La cola la llevan las sesiones**, no el
+   dueño: el hook de inicio (`.claude/hooks/session-start.mjs`) avisa cuando quedan URLs y ha
+   pasado un día desde que la cuota cortó la última tanda, y la sesión la envía al empezar. Las URLs
+   de una tanda nueva, ya publicada, se añaden a esa lista.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la

@@ -170,6 +170,10 @@ script — updates it in the same change.
 - IndexNow's key is `INDEXNOW_KEY`, served as `public/<key>.txt` (`test/indexnow.test.ts`).
   `npm run indexnow` lists the live sitemap's URLs and `-- --send` submits them: the owner runs it
   after a deploy that adds or changes pages, never a session (it sends data out).
+- Google's "Request indexing" of new pages is a queue the owner gave to the sessions
+  (2026-11-06): ~/seo-data/scripts/gsc-request-pending.txt, sent a dozen a day by its
+  gsc-request.mjs; the session hook says when the next batch is due
+  (`test/indexing-queue.test.ts`). A published batch of pages adds its URLs there.
 - Icons are generated from `lib/brand.ts` by `node scripts/icons/generate.ts`; the mark and the logo
   component share that geometry.
 
