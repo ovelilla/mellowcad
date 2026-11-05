@@ -657,8 +657,8 @@ reaches no edge says why, as the console does — a line whose other end would r
 `No edge in that direction.`, else a line or an arc
 `Path does not intersect with the bounding edge.` (es
 `La trayectoria no se interseca con la arista de contorno.`), an open polyline's end
-`Object does not intersect an edge.` (es `El objeto no se interseca con ninguna arista.`), an
-elliptical arc too, a closed polyline, a whole ellipse, a closed spline, an MTEXT or a hatch
+`Object does not intersect an edge.` (es `El objeto no se interseca con ninguna arista.`; a
+spline-fit one the path's, pedit/p212), an elliptical arc too, a closed polyline, a whole ellipse, a closed spline, an MTEXT or a hatch
 `Cannot EXTEND this object.` (es `Este objeto no se puede ALARGAR.`), a circle, a TEXT, an
 attribute definition or a block reference the same (es `Objeto no procesado por ALARGA.`: p191,
 p193, p199, p207–p211, p410), a dimension the path's; worked out in the UCS's XY plane
@@ -742,7 +742,8 @@ ends where the polynomial meets the edge, 5.6e-4 off k10's along it — the same
 before; where a fit spline's growth meets the edge inside its easing (here cut there,
 **unverified**); a spline standing upright on the UCS (refused as any such object,
 **unverified**); the piece after a polyline's own crossing, which the console
-starts with a zero-length segment; **unverified**: the reasons when TRIM's Shift extends (EXTEND's,
+starts with a zero-length segment; EXTEND of a Fit polyline, whose last arc AutoCAD grows off the
+edge (pedit/p211; refused here, PEDIT-D27); **unverified**: the reasons when TRIM's Shift extends (EXTEND's,
 the same code here), and whether a crossing at the pick bounds the trim of an arc, a circle or a
 polyline (a line's does not, p261; here theirs does); the circle-and-slash over what EXTEND
 refuses (only TRIM's refusals were seen), the look of EXTEND's fence or window running (here its
@@ -1653,7 +1654,8 @@ ending silently (p309). The set is read in its order, a window's or a crossing's
   only by its ends and a closed one never (p373, p388, p389); arcs become bulges; a line or an arc
   after the polyline's end takes the width it ends at, before its start its first segment's widths
   (p354–p356); at the plane's elevation (p345), what touches in plan at another height discarded
-  (p346).
+  (p346). A Fit (curve-fit) polyline joins as its curve, its vertices and arcs, and as a source
+  makes a new polyline, both objects erased: `2 objects converted to 1 polyline` (pedit/p213).
 
 A spline or an elliptical arc picked alone and Enter is a source: `Select any open curves to join
 to source:` (es `Designe cualesquiera curvas abiertas para unir al origen`; p406), a set whose
@@ -1715,7 +1717,8 @@ among them (pieces/p353), discarded here; the count when a closed or a level 3D 
 joins nothing, which AutoCAD gives as `1 object discarded` of two (3dpoly/p53, p76: two here); a
 3D polyline picked alone, which may ask `Select lines to join to source:` as a line does
 (unprobed); a 3D polyline in a tilted plane (grown in space here) and a fitted 2D polyline joined
-into one (its frame here), both **unverified**
+into one (its frame here), both **unverified**; a spline-fit polyline (unprobed: its frame here,
+the polyline kept)
 
 ### `BREAK` / `BR` / `BREAKATPOINT` · es `PARTE` / `P` · `PARTIRENPUNTO` · pt-BR `QUEBRAR` / `QU` / `QUEBRAREMPONTO`
 
@@ -1915,14 +1918,15 @@ the precision; a spline-fit polyline selected before it (turned into its spline,
 ### `PEDIT` / `PE` · es `EDITPOL` / `PE` · pt-BR `EDITARP` / `EDP`
 
 **Implemented:** as AutoCAD 2027's console asks it and leaves the polyline (probes
-pedit/p01–p199, traced, MPDUMP, en and es; not transparent). `Select polyline or [Multiple]:` (es
+pedit/p01–p253, traced, MPDUMP, en, es and pt-BR; not transparent, `** That command may not be
+invoked transparently **`, p220). `Select polyline or [Multiple]:` (es
 `Designe polilínea o [Múltiple]:`; pt-BR `Selecionar polilinha ou [Múltiplo]:`, its answer written
 against the colon, `[Múltiplo]:_Y`, 21229, pedit/p18), a pick or a mode typed there (Window, Last, Crossing, BOX, ALL,
 Fence, WPolygon, CPolygon), a miss and Enter asked again in silence and Escape the only way out
 (p03, p38), a word `*Invalid selection*` and `Expects a point or
 Window/Last/Crossing/BOX/ALL/Fence/WPolygon/CPolygon/Multiple]:`, the stray bracket AutoCAD's (es
 `Requiere un punto o …/Múltiple]:`); a polyline selected before it is the one edited, a set of more
-not taken (p37, p38), and a double-click on a polyline or a 3D polyline at `Command:` runs it on
+not taken, nothing left selected after (p37, p38, p244), and a double-click on a polyline or a 3D polyline at `Command:` runs it on
 it as the ribbon's `^C^C_pedit` does (DoubleClickRoot.cui), echoed `_pedit`. A line, an arc or a
 spline says `Object selected is not a polyline` (es `El objeto designado no es una polilínea`) and
 asks `Do you want to turn it into one? <Y>` (es `¿Lo quiere transformar en una? <S>`; `Yes or No,
@@ -1939,8 +1943,11 @@ PEDIT-D43); anything else is said and asked again (p96). Then `Enter an option
 Open in Close's place on a closed one, both answering either way, with the hidden X, EXit (es `SA`,
 `SAlir`) and Defit (es `ELiminarcurva`), Decurve's twin (p198); a 3D polyline's `[Close/Join/Edit
 vertex/Spline curve/Decurve/Reverse/Undo]:` (es `[Cerrar/Unir/Editar vértices/curva
-Spline/anularcuRVatura/Invertir/desHacer]`, the keyword `Spline` in both); a word `Invalid option
-keyword.`, Enter ending (p01, p02, p09, p10, p51, p55). **Close** draws the closing segment straight, or an
+Spline/anularcuRVatura/Invertir/desHacer]`, the keyword `Spline` in both; pt-BR `Insira uma opção
+[Fechar/Unir/Editar vértice/curva Spline/desfCurva/Reverter/Desfazer]:`, p09, p39); a word, a
+number or another prompt's keyword `Invalid option keyword.`, Enter ending (p01, p02, p09, p10,
+p51, p55, p221–p223). Transparent commands run at each of its prompts, `'LINE` refused there
+(`Invalid option keyword.`, p231–p234), and its Undo takes one back with the step (p235). **Close** draws the closing segment straight, or an
 arc tangent to the last segment where that is an arc (p02, p78, p130, p133); **Open** drops it.
 **Join** on an open polyline asks `Select objects:` and grows it as JOIN grows a polyline source —
 lines, arcs and open polylines meeting its ends in its plane, their widths JOIN's —, saying `3
@@ -1949,9 +1956,10 @@ one `Can't join to a closed polyline` (es `Imposible unir a una polilínea cerra
 again (p18); at another height nothing (p44); a 3D polyline joins nothing, `0 segments added to
 polyline`, as the console (p43, p77, p103, p104). **Width**: `Specify new width for all segments:`
 (es `Precise nuevo grosor para todos los segmentos:`), a value or two points, `Requires numeric
-distance or two points.`, `Value must be positive.` (p20, p75, p110). **Ltype gen**: `Enter
+distance or two points.`, `Value must be positive.`, Enter back at the main prompt, 0 taking the
+widths away (p20, p75, p110, p200, p225). **Ltype gen**: `Enter
 polyline linetype generation option [ON/OFF] <Off>:` (es `[ACT/DES] <DES>`), its default the
-polyline's own (p32): on, the linetype laid in one pattern along all of it, a model property of
+polyline's own, a word refused, Enter keeping it (p32, p224): on, the linetype laid in one pattern along all of it, a model property of
 the polyline (DXF 70 flag 128) saved from drawing file version 39. **Reverse**, in no words: the
 vertices the other way, each segment's bulge negated and widths swapped, a closed one from its
 last vertex (p33, p113). **Edit vertex**: `Enter a vertex editing option
@@ -1962,36 +1970,47 @@ the way Next or Previous last went, staying put at either end of an open or a cl
 p29, p63–p65); Insert's `Specify location for new vertex:` after the X, the segment it splits
 keeping its bulge and widths and the new one straight as wide as it ended, the X onto it (p23,
 p109, p115, p118, p128); Move's `Specify new location for marked vertex:`, the bulges kept (p23),
-both doing nothing at Enter (p74), with their Z on a 3D polyline (p30); Break's and Straighten's
+both doing nothing at Enter (p74), with their Z on a 3D polyline (p30), `@` read from the X, not
+LASTPOINT, with its Z on a 3D polyline (p227, p251), a Z, `*`, a keyword or a command on a 2D one
+`Invalid 2D point.` (p228, p229, p238), an object snap taken, Ortho leaving a typed point (p230); Break's and Straighten's
 `Enter an option [Next/Previous/Go/eXit] <N>:` (es `[sigUiente/Precedente/Ejecutar/Salir]`), Go
 breaking between the vertex they began at and the X — the runs before the lower and after the
 higher, a closed one read from its first vertex round to it again, the piece from the start
 keeping the polyline and the other a new object, at one vertex cut in two there, `*Invalid*` at
-an end or over all of it (p66–p71, p100–p102, p111) — or straightening, the vertices between
+an end or over all of it, a new piece in the polyline's properties (p66–p71, p100–p102, p111,
+p243; a 3D polyline's too, p245), eXit back at the vertex prompt (p239) — or straightening, the vertices between
 dropped and the segment straight with the lower one's widths, at one vertex the arc after it
-(p26, p27, p72, p73, p129, p131), the X then on the lower; Width's `Specify starting width for next
+(p26, p27, p72, p73, p129, p131, p246), the X then on the lower; Width's `Specify starting width for next
 segment <…>:` and `Specify ending width for next segment <…>:` from the X, `Requires numeric
 distance or second point.`, `Value must be positive.` (p22, p29, p79, p80); Tangent's `Specify
 direction of vertex tangent:` (`Requires valid numeric angle or second point.`), taken and kept by
-nothing, as AutoCAD drops it from a polyline that is not fitted (p28); Regen. **Undo**: the last
+nothing, as AutoCAD drops it from a polyline that is not fitted (p28), Enter giving none (p226);
+Regen. **Undo**: the last
 step of the main prompt back, a whole Edit vertex at once, `Command has been completely undone.`
 (es `Todos los efectos del comando han sido deshechos.`) once none is left, even as it takes back
-the last (p34, p35, p46, p81); a conversion stays (p112). Escape keeps what was done; U after the
-command takes it all back, named PEDIT (es EDITPOL; p36, p47). **Multiple**: `Select objects:`,
+the last (p34, p35, p46, p81; a 3D polyline's, p247); a conversion stays (p112). Escape keeps
+what was done; U after the command takes it all back, named PEDIT (es EDITPOL; p36, p47), a run
+that changed nothing too, and UNDO and MREDO count it (p236, p237). A converted line or arc keeps
+its properties, in a turned UCS its plane and elevation (p240, p241). **Multiple**: `Select objects:`,
 read newest first (p12, p14, p93), its lines, arcs and splines asked about with `Convert Lines,
 Arcs and Splines to polylines [Yes/No]? <Y>` (es `¿Convertir líneas, arcos y splines en
 polilíneas? [Sí/No]? <S>`) and a spline's `Specify a precision for spline conversion <10>:`
-(p12, p114), No asking for a polyline again (p41); then `Enter an option
+(p12, p114), No and a set with nothing in it asking for a polyline again, in silence (p41,
+p201); then `Enter an option
 [Close/Open/Join/Width/Fit/Spline/Decurve/Ltype gen/Reverse/Undo]:`, `[Close/Open/Spline
 curve/Decurve/Reverse/Undo]:` with a 3D polyline in the set (p39, p196, p197), each option done to
 them all (p95), Spline curve to its 2D polylines too. Its Join says `Join Type = Extend` (es
 `Tipo de junta = Alargar`) and asks `Enter fuzz distance or [Jointype] <0.0000>:` (es `Indique la
 distancia de aproximación o [Tipo de junta]`; `Requires numeric distance, two points, or option
 keyword.`), Jointype's `Enter join type [Extend/Add/Both] <Extend>:` (es
-`[Alargar/aÑadir/aMbos] <Alargar>`) kept for the session (`Add segment`, `Both (Extend or Add)`;
-p12); from the set's first, each polyline joined onto a chain's end in turn: touching, as JOIN;
-Extend, where the straight end segments' lines meet with neither end moving farther than the fuzz,
-trimmed back or grown, parallel ones never (p13, p16, p86–p88, p92, p106, p107); Add, the nearest
+`[Alargar/aÑadir/aMbos] <Alargar>`; pt-BR `[Tipounião]` and `[Estender/Adicionar/aMbos]
+<aMbos>`, the default written as the keyword, p12, p205), both kept program-wide, through OPEN,
+the fuzz 0 until one is given (`Add segment`, `Both (Extend or Add)`, es `<Ambos>`; p12, p202,
+p204–p206); from the set's first — a pick's order, the first picked first (p202, p203) —, each
+polyline joined onto a chain's end in turn: touching, as JOIN; Extend, where the straight end
+segments' lines meet with neither end moving farther than the fuzz, trimmed back or grown,
+parallel ones never, or an arc end segment grown on its circle to a straight end's line (p13, p16,
+p86–p88, p92, p106, p107, p207); Add, the nearest
 two ends joined by a segment where their gap is less than the fuzz times the distance between the
 other two ends — the rule twenty probes give, no help states it (p83, p105, p108, p116–p127,
 p134–p146); Both, Extend where it can, else Add (p15, p85, p91, p93); `1 segments added to
@@ -2003,18 +2022,22 @@ in and out and each turn the angle between the chords at the next vertex on (1 w
 none), so a straight run keeps its direction; at an open end the circle's through it and the next
 two; Edit vertex's Tangent where one is given. Each pair of arcs meets at the incentre of the
 triangle the tangents make with the chord where they lie either side of it, and where they lie on
-one side so that `r₁ sin α = r₂ sin β`; a tangent along the chord leaves the segment straight. No
+one side so that `r₁ sin α = r₂ sin β`; a tangent along the chord leaves the segment straight, as
+at a corner between straight runs (p208). No
 help states either rule: they reproduce the 47 fitted polylines of the probes, closed ones and
 given tangents among them, to the last digit (p51, p59, p147–p151, p184–p186; `geometry/arcFit.ts`).
 The frame's own arcs are dropped (p151); a segment's widths run on through its joint by length
 (p151, p156). The arcs are the polyline's, as AutoCAD keeps its curve-fit vertices: Edit vertex's
 Move, Insert and Straighten change the frame and leave them (Insert's and Straighten's segment
 straight, p152, p153, p155), while a Tangent given refits it (p150), as Close and Open do (p166)
-and STRETCH and a grip (p176); Reverse turns them round (p166), Break leaves the piece from the
-start a polyline of the curve's vertices and the rest fitted (p154). **Spline** lays SPLINESEGS
+and STRETCH and a grip (p176); Reverse turns them round (p166) and sets each tangent given 0
+(p209, p252), Break leaves the piece from the start a polyline of the curve's vertices and the rest
+fitted (p154), or, from the first vertex, the rest a polyline of its curve (p210). Its snaps find
+the curve's vertices, the joints too (END, p215). **Spline** lays SPLINESEGS
 points a knot span on the uniform B-spline its vertices frame, SPLINETYPE's quadratic or cubic (5,
 6), clamped to an open frame's ends, periodic round a closed one from where its first span begins
-(p52–p56, p160); a frame of three, cubic, is the Bézier on its middle vertex twice (p158, p190); of
+(p52–p56, p160; a closed frame of three, cubic, from `(P0 + 4·P1 + P2) / 6`, p214); an open
+frame of three, cubic, is the Bézier on its middle vertex twice (p158, p190); of
 two, left as it is (p190); with a negative SPLINESEGS, Fit's arcs through |SPLINESEGS| points a span
 (p54, p162, p198); its width runs by length from the frame's first to its last (p60, p157, p163).
 Its curve follows the frame through every edit: Move, Insert, Straighten (p58, p157, p159),
@@ -2029,15 +2052,21 @@ Decurve for a Fit later in the run (p188, p192) and go as PEDIT ends on one left
 Edit vertex walks the frame; Width, Join (`0 segments added to polyline`, else the frame grown and
 decurved, p60, p168, p183), Ltype gen and Undo (p62, p167) as on any polyline. Of a fitted one,
 OFFSET, TRIM, BREAK and EXPLODE make polylines, lines and arcs of its curve (p169–p174), its own
-vertices cutting nothing; FILLET and CHAMFER refuse it picked second, `Fillet requires 2 lines, arcs,
+vertices cutting nothing; JOIN a Fit one's curve, into a new polyline, `2 objects converted to 1
+polyline` (p213); EXTEND refuses a spline-fit one `Path does not intersect with the bounding
+edge.` (p212); FILLET and CHAMFER refuse it picked second, `Fillet requires 2 lines, arcs,
 or circles.` and `Chamfer requires 2 lines.` (p194, p195); MOVE, MIRROR and the rest carry its
 arcs (p191). The curve is `polylineCurve`'s: drawn, picked, snapped and measured; the grips are the
 frame's vertices alone.
 
 **Missing:** PEDITACCEPT (the question left out, p06) and PLINECONVERTMODE's arcs (p08); a spline's vertices
 as SPLINEDIT's convert to Polyline makes them, far finer than AutoCAD's on a fit spline (31 at
-precision 10, p07; SPLINEDIT's entry); Multiple's prompt when the set is all 3D polylines (the 2D
-one, p40, effect unprobed); the meshes; the X's look on the desktop (**unverified**: a red cross
+precision 10, p07; SPLINEDIT's entry); Multiple's prompt when the set is all 3D polylines: AutoCAD's is the 2D one, its
+Width asked and nothing changed, Fit silent, Ltype gen's `[ON/OFF]` with no default, Spline
+fitting them (p40, p249; the 3D one here, PEDIT-D29); Extend of two arc end segments
+(**unverified**, never here: PEDIT-D23); JOIN of a spline-fit polyline (unprobed; its frame here);
+EXTEND of a Fit one, whose last arc AutoCAD grows off the edge (p211; refused here, as it finds no
+edge); the meshes; the X's look on the desktop (**unverified**: a red cross
 here); the widths of Close's segment, AutoCAD's the last vertex's, which nothing stores here
 (the last segment's end width here, PLINE's and Width's alike, p34, p78), and of an open
 polyline's last vertex, which Edit vertex's Width sets and nothing here keeps (p79); the bulge
@@ -2052,13 +2081,10 @@ fitted polyline's grips on the desktop and its palette (the 2D one's Fit/Smooth,
 (inquiry.md); the small arcs OFFSET rounds some outer corners of a spline-fit
 one's copy with (p169); SPLFRAME, which 2027 no longer ties to spline-fit polylines (its help:
 helixes and meshes; plotted with it on, the frame is not drawn, p193).
-**Unverified:** Enter at Width (back at the main prompt here), Multiple's set with nothing in it,
-a pick's order in Multiple's set, where Jointype is kept, Spanish `<Ambos>`, Enter at a fuzz
-distance never given (0 here), Extend of an arc end segment (never here); a tangent where both
-neighbouring runs are straight (the circle's here), a tangent turned by Reverse (a half turn here),
-a Break whose piece from the start is empty (the rest keeps its fit here), EXTEND of a fitted
-polyline (its curve, as TRIM), JOIN of one (its frame, as PEDIT's Join), where a closed frame of
-three cubic begins, where the snaps find its curve's added vertices (End here).
+**Unverified:** a fitted polyline's tangent through Reverse (0 here, as an unfitted one's), a
+spline-fit one's Break from its first vertex (the rest its frame here), the fuzz an arc end moves
+within (its straight distance here; p207 within both), MID just past a Fit joint (p215: a tie in
+the aperture).
 
 ### `MATCHPROP` / `MA` / `PAINTER` · es `IGUALARPROP` / `IP` / `COPIARPROP` · pt-BR `PROPIG` / `PI` / `PINTOR`
 

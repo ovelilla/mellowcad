@@ -2676,7 +2676,7 @@ export const ptBR: EngineLocale = {
       "convertToPolylines": "Converter linhas, arcos e splines em polilinhas [Sim/Não]?",
       "specifyPrecisionForSplineConversion": "Especifique uma precisão para a conversão da spline",
       "peditOption": "Inserir uma opção",
-      "peditOption3d": "Inserir uma opção",
+      "peditOption3d": "Insira uma opção",
       "enterFuzzDistanceOr": "Inserir distância aproximada ou",
       "enterJoinType": "Inserir tipo de união",
       "specifyNewWidthForAllSegments": "Especificar nova largura para todos os segmentos",
@@ -2691,7 +2691,7 @@ export const ptBR: EngineLocale = {
       "peditNextShort": "P",
       "joinTypeExtend": "Estender",
       "joinTypeAdd": "Adicionar",
-      "joinTypeBoth": "Ambos",
+      "joinTypeBoth": "aMbos",
       "exitLower": "sair",
       "nextShort": "P",
       "previousShort": "A",
@@ -7577,8 +7577,8 @@ export const ptBR: EngineLocale = {
         "Edit vertex": "Editar vértice",
         "Ltype gen": "gerar Tipolinha",
         "OFF": "Desativado",
-        "Jointype": "Tipo de união",
-        "Spline curve": "Spline"
+        "Jointype": "Tipounião",
+        "Spline curve": "curva Spline"
       },
       "HATCH": {
         "Select objects": "Selecionar objetos"

@@ -1,7 +1,12 @@
 import { Vec2, V } from "../../geometry/Vec2"
 import { Vec3, cross3, normalize3, sub3 } from "../../geometry/Vec3"
 import { arbitraryAxis, axesToWorld, worldToAxes } from "../../geometry/ocs"
-import { infiniteLineIntersection } from "../../geometry/primitives"
+import {
+  bulgeToArc,
+  infiniteLineIntersection,
+  lineCircleIntersectionParams,
+  normalizeAngle,
+} from "../../geometry/primitives"
 import { nextEntityId } from "../../domain/entityIds"
 import {
   Entity,
@@ -155,8 +160,9 @@ export class PolylineEditTool implements Tool {
   /** The way Break's and Straighten's Enter steps. */
   private walkForward = true
   private cursor: Vec3 | null = null
-  /** Multiple's join type, for the session (**unverified** where AutoCAD keeps it). */
+  /** Multiple's join type and fuzz distance, program-wide: kept through OPEN (p204). */
   private joinType: JoinType = "extend"
+  private fuzz = 0
   /** Multiple's set in the order it reads it (pedit/p12, p14, p93: newest first). */
   private order: EntityId[] = []
   /** The polyline a double-click starts the run on. */
@@ -281,7 +287,7 @@ export class PolylineEditTool implements Tool {
       case "join":
         return this.joiner.question()
       case "fuzz":
-        return { id: "enterFuzzDistanceOr", enter: 0 }
+        return { id: "enterFuzzDistanceOr", enter: this.fuzz }
       case "joinType":
         return { id: "enterJoinType", enter: JOIN_TYPE_PHRASE[this.joinType] }
       case "width":
@@ -967,7 +973,7 @@ export class PolylineEditTool implements Tool {
   /**
    * Multiple's set closed: its lines, arcs and splines asked about first
    * (p12), its polylines then edited together; with none, the first prompt
-   * again (**unverified**).
+   * again (as an empty set, p201).
    */
   private setClosed(ctx: ToolContext): void {
     const set = ctx.selection
@@ -1138,6 +1144,7 @@ export class PolylineEditTool implements Tool {
         )
         return
       case "fuzz":
+        this.fuzz = value
         this.joinWithin(value, ctx)
         return
       case "vertexWidth": {
@@ -1167,8 +1174,11 @@ export class PolylineEditTool implements Tool {
       return true
     }
     if (!isCoordinateExpression(text)) return false
+    // `@` is read from the X, its Z on a 3D polyline: the trace's BasePoint,
+    // whatever LASTPOINT holds (p227, p251).
+    const poly = this.polyline(ctx)
     const point = parseCoordinate(text, {
-      lastPoint: ctx.lastPoint,
+      lastPoint: poly ? vertexInWorld(poly, this.current) : ctx.lastPoint,
       relativeByDefault: false,
       ucs: ctx.ucs,
       elevation: ctx.elevation,
@@ -1219,7 +1229,9 @@ export class PolylineEditTool implements Tool {
         this.ask(step, ctx)
         return true
       case "set":
-        return this.setSelector.onEnter(ctx)
+        // An empty set asks for a polyline again, in silence (p201).
+        if (!this.setSelector.onEnter(ctx)) this.answerNo(ctx)
+        return true
       case "join":
         return this.joiner.onEnter(ctx)
       case "convert":
@@ -1230,7 +1242,7 @@ export class PolylineEditTool implements Tool {
         ctx.endCommand()
         return true
       case "fuzz":
-        this.joinWithin(0, ctx)
+        this.joinWithin(this.fuzz, ctx)
         return true
       case "joinType":
         this.askFuzz(ctx)
@@ -1583,58 +1595,105 @@ export function fuzzJoined(
 }
 
 /**
- * The two polylines with an end of each moved to where their straight end
- * segments' lines meet, both within `fuzz` of it, the pair moving least;
- * null where none does (parallel ones never, p13).
+ * The two polylines with an end of each moved to where their end segments
+ * meet, both within `fuzz` of it, the pair moving least; null where none does
+ * (parallel ones never, p13). Two straight ends meet where their lines cross;
+ * an arc end meets a straight one's line on its circle, grown or cut back
+ * along it (p207); two arc ends never here (**unverified**: PEDIT-D23).
  */
 function extendedToMeet(
   chain: PolylineEntity,
   other: PolylineEntity,
   fuzz: number
 ): [PolylineEntity, PolylineEntity] | null {
-  const endsOf = (poly: PolylineEntity) => {
-    const n = poly.vertices.length
-    const segments = polylineSegments(poly).length
-    return [
-      { index: 0, from: 1, straight: polylineBulge(poly, 0) === 0 },
-      {
-        index: n - 1,
-        from: n - 2,
-        straight: polylineBulge(poly, segments - 1) === 0,
-      },
-    ]
-  }
-  let best: { move: number; a: number; b: number; at: Vec2 } | null = null
-  for (const a of endsOf(chain)) {
-    for (const b of endsOf(other)) {
-      if (!a.straight || !b.straight) continue
-      const hit = infiniteLineIntersection(
-        chain.vertices[a.from],
-        chain.vertices[a.index],
-        other.vertices[b.from],
-        other.vertices[b.index]
-      )
-      if (!hit) continue
-      const at = hit.point
-      const move = Math.max(
-        V.distance(at, chain.vertices[a.index]),
-        V.distance(at, other.vertices[b.index])
-      )
-      if (move <= fuzz + TOUCH && (!best || move < best.move)) {
-        best = { move, a: a.index, b: b.index, at }
+  let best: {
+    move: number
+    a: PolylineEnd
+    b: PolylineEnd
+    at: Vec2
+  } | null = null
+  for (const a of polylineEnds(chain)) {
+    for (const b of polylineEnds(other)) {
+      for (const at of endsMeeting(a, b)) {
+        const move = Math.max(V.distance(at, a.end), V.distance(at, b.end))
+        if (move <= fuzz + TOUCH && (!best || move < best.move)) {
+          best = { move, a, b, at }
+        }
       }
     }
   }
   if (!best) return null
+  return [movedEnd(chain, best.a, best.at), movedEnd(other, best.b, best.at)]
+}
+
+/** An end of an open polyline: its vertex, the segment's other one and that segment's bulge. */
+interface PolylineEnd {
+  readonly index: number
+  readonly segment: number
+  readonly end: Vec2
+  readonly from: Vec2
+  readonly bulge: number
+}
+
+function polylineEnds(poly: PolylineEntity): PolylineEnd[] {
+  const n = poly.vertices.length
+  const last = polylineSegments(poly).length - 1
   return [
-    replacePolylineVertex(chain, best.a, best.at),
-    replacePolylineVertex(other, best.b, best.at),
+    {
+      index: 0,
+      segment: 0,
+      end: poly.vertices[0],
+      from: poly.vertices[1],
+      bulge: polylineBulge(poly, 0),
+    },
+    {
+      index: n - 1,
+      segment: last,
+      end: poly.vertices[n - 1],
+      from: poly.vertices[n - 2],
+      bulge: polylineBulge(poly, last),
+    },
   ]
 }
 
-/** Tangents turned round with their polyline: the other way, each a half turn on (**unverified**). */
+/** Where two end segments meet, prolonged: their lines' crossing, or an arc's circle on a line. */
+function endsMeeting(a: PolylineEnd, b: PolylineEnd): Vec2[] {
+  if (a.bulge !== 0 && b.bulge !== 0) return []
+  if (a.bulge === 0 && b.bulge === 0) {
+    const hit = infiniteLineIntersection(a.from, a.end, b.from, b.end)
+    return hit ? [hit.point] : []
+  }
+  const [arc, line] = a.bulge !== 0 ? [a, b] : [b, a]
+  const { center, radius } = bulgeToArc(arc.from, arc.end, arc.bulge)
+  return lineCircleIntersectionParams(line.from, line.end, center, radius)
+    .map((t) => V.lerp(line.from, line.end, t))
+    .filter((at) => V.distance(at, arc.from) > TOUCH)
+}
+
+/** `poly` with `end` moved to `at`, an arc end segment re-bulged on its circle. */
+function movedEnd(
+  poly: PolylineEntity,
+  end: PolylineEnd,
+  at: Vec2
+): PolylineEntity {
+  const moved = replacePolylineVertex(poly, end.index, at)
+  if (end.bulge === 0) return moved
+  const { center } = bulgeToArc(end.from, end.end, end.bulge)
+  const angle = (p: Vec2) => Math.atan2(p.y - center.y, p.x - center.x)
+  // The sweep from the segment's start to its end, the way it turned.
+  const [start, stop] =
+    end.index === 0
+      ? [angle(at), angle(end.from)]
+      : [angle(end.from), angle(at)]
+  const sweep = normalizeAngle(end.bulge > 0 ? stop - start : start - stop)
+  const bulges = polylineSegments(poly).map((_, i) => polylineBulge(poly, i))
+  bulges[end.segment] = Math.sign(end.bulge) * Math.tan(sweep / 4)
+  return { ...moved, bulges }
+}
+
+/** Tangents turned round with their polyline: the other way, each given one 0 (p209, p252). */
 function turnedRound(tangents: readonly (number | null)[]): (number | null)[] {
-  return tangents.map((t) => (t === null ? null : t + Math.PI)).reverse()
+  return tangents.map((t) => (t === null ? null : 0)).reverse()
 }
 
 function copied(

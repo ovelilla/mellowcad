@@ -47,6 +47,7 @@ import {
   readsInPlan,
   withElevation,
   withLineZ,
+  polylineCurve,
   polylineDecurved,
 } from "../../domain/entities"
 import { joinCurve, joinedSpline } from "../../domain/splineJoin"
@@ -870,7 +871,13 @@ interface Piece {
   readonly width: PolylineWidth | null
 }
 
-function piecesOf(entity: Entity): Piece[] {
+/**
+ * Who joins a polyline fitted with Fit: JOIN takes its curve (pedit/p213),
+ * PEDIT's Join its frame, as it decurves what it grows (pedit/p168, p183).
+ */
+type FitJoin = "curve" | "frame"
+
+function piecesOf(entity: Entity, fitJoin: FitJoin = "frame"): Piece[] {
   switch (entity.type) {
     case "line":
       return [{ a: entity.start, b: entity.end, bulge: 0, width: null }]
@@ -884,9 +891,14 @@ function piecesOf(entity: Entity): Piece[] {
         },
       ]
     case "polyline": {
-      // A fitted one joins as its frame, straight: PEDIT's Join decurves
-      // what it grows (pedit/p168, p183; JOIN's **unverified**).
-      const frame = entity.fit ? polylineDecurved(entity) : entity
+      // A fitted one joins as its frame, straight, but a Fit one to JOIN as
+      // its curve (FitJoin); a spline-fit one's to JOIN **unverified**.
+      const frame =
+        fitJoin === "curve" && entity.fit?.kind === "curve"
+          ? polylineCurve(entity)
+          : entity.fit
+            ? polylineDecurved(entity)
+            : entity
       return polylineSegmentGeometries(frame).map((segment, i) => ({
         a: segment.a,
         b: segment.b,
@@ -943,9 +955,10 @@ function joinPolylines(set: readonly Entity[]): Joined | null {
   while (left.length > 0) {
     const source = left.find((entity) => entity.type === "polyline") ?? left[0]
     left.splice(left.indexOf(source), 1)
-    const chain = chainOf(source, left)
+    const chain = chainOf(source, left, "curve")
     if (!chain) continue
-    polylineSource = source.type === "polyline"
+    // A Fit one's curve makes a new polyline, its objects counted (p213).
+    polylineSource = source.type === "polyline" && !curveFitted(source)
     segments = chain.segments
     made.push(chain.polyline)
     removed.push(...chain.members)
@@ -986,14 +999,15 @@ function joinPolylines(set: readonly Entity[]): Joined | null {
  */
 function chainOf(
   source: Entity,
-  left: Entity[]
+  left: Entity[],
+  fitJoin: FitJoin = "frame"
 ): { polyline: PolylineEntity; members: EntityId[]; segments: number } | null {
-  const pieces = piecesOf(source)
+  const pieces = piecesOf(source, fitJoin)
   const members = [source.id]
   let closed = false
   for (let i = 0; i < left.length && !closed; i++) {
     const member = left[i]
-    const grown = coplanar(member, source) && attach(pieces, member)
+    const grown = coplanar(member, source) && attach(pieces, member, fitJoin)
     if (!grown) continue
     left.splice(i, 1)
     members.push(member.id)
@@ -1015,14 +1029,17 @@ function chainOf(
           closed,
           source.layerId,
           pieces.map((piece) => piece.bulge),
-          source.type === "polyline" ? source.id : undefined,
+          source.type === "polyline" &&
+            !(fitJoin === "curve" && curveFitted(source))
+            ? source.id
+            : undefined,
           joinedWidths(pieces.map((piece) => piece.width))
         ),
         elevation
       )
     ),
     members,
-    segments: pieces.length - piecesOf(source).length,
+    segments: pieces.length - piecesOf(source, fitJoin).length,
   }
 }
 
@@ -1050,8 +1067,12 @@ export function joinToPolyline(
  * Adds `member`'s pieces at whichever end of the chain it meets — its tail
  * first —, turned round where it meets it backwards. False if it meets none.
  */
-function attach(pieces: Piece[], member: Entity): boolean {
-  const own = piecesOf(member)
+function attach(
+  pieces: Piece[],
+  member: Entity,
+  fitJoin: FitJoin = "frame"
+): boolean {
+  const own = piecesOf(member, fitJoin)
   if (own.length === 0) return false
   const start = own[0].a
   const end = own[own.length - 1].b
@@ -1063,6 +1084,10 @@ function attach(pieces: Piece[], member: Entity): boolean {
   else if (samePoint(start, head)) pieces.unshift(...reversedPieces(own))
   else return false
   return true
+}
+
+function curveFitted(entity: Entity): boolean {
+  return entity.type === "polyline" && entity.fit?.kind === "curve"
 }
 
 function samePoint(p: Vec2, q: Vec2): boolean {

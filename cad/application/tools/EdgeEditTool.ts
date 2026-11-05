@@ -2006,7 +2006,7 @@ function planTrim(
  * ellipse, a closed spline, an MTEXT and a hatch 54's (probes trim/p191,
  * p193, p195, p199, p204–p211, p410); an open spline as an open polyline's
  * end (spline-knots/k20); a 3D polyline as a line, closed in words of its
- * own (3dpoly/p13, p39).
+ * own (3dpoly/p13, p39); a spline-fit polyline as a line (pedit/p212).
  */
 function extendRefusal(target: Entity): MessageId | null {
   switch (target.type) {
@@ -2017,7 +2017,9 @@ function extendRefusal(target: Entity): MessageId | null {
     case "polyline":
       return target.closed
         ? "cannotExtendThisObject"
-        : "objectDoesNotIntersectEdge"
+        : target.fit && target.fit.kind !== "curve"
+          ? "pathDoesNotIntersectBoundingEdge"
+          : "objectDoesNotIntersectEdge"
     case "ellipse":
       return isFullEllipse(target)
         ? "cannotExtendThisObject"

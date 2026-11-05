@@ -13,9 +13,10 @@ import {
 import { createHarness } from "../../../test/harness"
 import { arcOf, circleOf, lineOf, p, polylineOf } from "../../../test/builders"
 import { es } from "../../locales/es"
+import { ptBR } from "../../locales/pt-BR"
 
 // PEDIT, as AutoCAD 2027's console asks it and leaves the polyline (probes
-// pedit/p01–p146, traced, MPDUMP, en and es).
+// pedit/p01–p253, traced, MPDUMP, en, es and pt-BR).
 
 const ARC = -1.0000000000000004
 const RED = "#ff0000"
@@ -49,6 +50,26 @@ const typeAnswer = (cad: Harness, text: string) => {
   return cad
 }
 const xy = (poly: PolylineEntity) => poly.vertices.map((v) => [v.x, v.y])
+const answer = (cad: Harness, ...texts: string[]) => {
+  for (const text of texts) typeAnswer(cad, text)
+  return cad
+}
+const since = (cad: Harness, from: number) => cad.commandLog().slice(from)
+const rising = () =>
+  createPolyline3d(
+    [
+      { x: 0, y: 0, z: 0 },
+      { x: 10, y: 0, z: 5 },
+      { x: 20, y: 0, z: 0 },
+      { x: 30, y: 0, z: 5 },
+      { x: 40, y: 0, z: 0 },
+    ],
+    false,
+    undefined,
+    "Q"
+  )
+const MAIN_3D =
+  "Enter an option [Close/Join/Edit vertex/Spline curve/Decurve/Reverse/Undo]:"
 
 const MAIN =
   "Enter an option [Close/Join/Width/Edit vertex/Fit/Spline/Decurve/Ltype gen/Reverse/Undo]:"
@@ -170,6 +191,51 @@ describe("PEDIT's prompts", () => {
     expect(asked(cad)).toMatch(/^Indique una opción \[Cerrar/)
     typeAnswer(cad, "SA")
     expect(cad.state().activeToolId).toBe("select")
+  })
+
+  it("takes Brazilian AutoCAD's words at the 3D, fuzz and join type prompts (p09, p12, p39, p205, pt-BR)", () => {
+    const three = createHarness({
+      entities: [
+        createPolyline3d(
+          [
+            { x: 0, y: 0, z: 0 },
+            { x: 10, y: 0, z: 5 },
+            { x: 20, y: 5, z: 0 },
+          ],
+          false,
+          undefined,
+          "Q"
+        ),
+      ],
+      locale: ptBR,
+    })
+    three.command("EDITARP").click(p(5, 0))
+    expect(asked(three)).toBe(
+      "Insira uma opção [Fechar/Unir/Editar vértice/curva Spline/desfCurva/Reverter/Desfazer]:"
+    )
+    const cad = createHarness({
+      entities: [
+        polylineOf([p(0, 0), p(10, 0)], { id: "A" }),
+        polylineOf([p(12, 0), p(20, 0)], { id: "B" }),
+      ],
+      locale: ptBR,
+    })
+    cad.command("EDITARP").option("Multiple")
+    typeAnswer(cad, "_ALL")
+    cad.enter()
+    cad.option("Join")
+    expect(asked(cad)).toBe(
+      "Inserir distância aproximada ou [Tipounião] <0.00>:"
+    )
+    cad.option("Jointype").option("Both")
+    cad.option("Jointype")
+    expect(asked(cad)).toBe(
+      "Inserir tipo de união [Estender/Adicionar/aMbos] <aMbos>:"
+    )
+    cad.option("Add").option("Jointype")
+    expect(asked(cad)).toBe(
+      "Inserir tipo de união [Estender/Adicionar/aMbos] <Adicionar>:"
+    )
   })
 })
 
@@ -549,6 +615,23 @@ describe("PEDIT's Edit vertex", () => {
     expect(asked(cad)).toBe(`${VERTEX} <N>:`)
   })
 
+  it("reads `@` at Move and Insert from the X, not LASTPOINT (p227, p251)", () => {
+    // p227: LASTPOINT at 100,100 (ID), then the pick 5,0; the trace's
+    // BasePoint is the X, [10,0,0].
+    const cad = createHarness({ entities: [p5()] })
+    typeAnswer(typeAnswer(cad, "_ID"), "100,100")
+    cad.command("PEDIT").click(p(5, 0)).option("Edit vertex").option("Next")
+    cad.option("Move")
+    typeAnswer(cad, "@5,5")
+    expect(poly(cad).vertices[1]).toEqual(p(15, 5))
+    const insert = createHarness({ entities: [p5()] })
+    typeAnswer(typeAnswer(insert, "_ID"), "100,100")
+    insert.command("PEDIT").click(p(5, 0)).option("Edit vertex")
+    insert.option("Next").option("Next").option("Insert")
+    typeAnswer(insert, "@0,5")
+    expect(poly(insert).vertices[3]).toEqual(p(20, 5))
+  })
+
   it("is undone whole by PEDIT's Undo (p35, p81)", () => {
     const cad = edit(p5())
     cad.option("Edit vertex").option("Next").option("Next").option("Break")
@@ -740,6 +823,128 @@ describe("PEDIT's Multiple", () => {
     ])
   })
 
+  it("asks for a polyline again, in silence, at an empty set (p201)", () => {
+    const cad = createHarness({ entities: [pl()] })
+    cad.command("PEDIT").option("Multiple")
+    cad.enter()
+    expect(cad.commandLog().slice(-2)).toEqual([
+      "Select polyline or [Multiple]: M",
+      "Select objects:",
+    ])
+    expect(asked(cad)).toBe("Select polyline or [Multiple]:")
+  })
+
+  it("keeps Jointype and the fuzz for the next run (p204)", () => {
+    const pair = () =>
+      two(
+        [
+          [0, 0],
+          [10, 0],
+        ],
+        [
+          [12, 0],
+          [20, 0],
+        ]
+      )
+    const cad = join(multiple(...pair()), "Add", "5")
+    expect(cad.commandLog().at(-1)).toBe("2 segments added to polyline")
+    cad.enter()
+    cad.command("PEDIT").option("Multiple")
+    typeAnswer(cad, "ALL")
+    cad.enter()
+    cad.option("Join")
+    expect(cad.commandLog().at(-1)).toBe("Join Type = Add segment")
+    expect(asked(cad)).toBe("Enter fuzz distance or [Jointype] <5.00>:")
+    cad.option("Jointype")
+    expect(asked(cad)).toBe("Enter join type [Extend/Add/Both] <Add>:")
+    cad.enter()
+    expect(asked(cad)).toBe("Enter fuzz distance or [Jointype] <5.00>:")
+  })
+
+  it("grows an arc end on its circle to a straight end's line (p207)", () => {
+    const cad = multiple(
+      polylineOf([p(0, 0), p(10, 0), p(15, 5)], {
+        id: "A",
+        bulges: [0, Math.tan(Math.PI / 8)],
+      }),
+      polylineOf([p(12, 9), p(2, 9)], { id: "B" })
+    )
+    join(cad, "Extend", "6")
+    expect(cad.commandLog().at(-1)).toBe("2 segments added to polyline")
+    expect(cad.entities()).toHaveLength(1)
+    const made = cad.entities()[0] as PolylineEntity
+    expect(xy(made)).toEqual([
+      [0, 0],
+      [10, 0],
+      [13, 9],
+      [2, 9],
+    ])
+    expect(made.bulges?.[0] ?? 0).toBe(0)
+    expect(made.bulges?.[1]).toBeCloseTo(0.7207592200561265, 12)
+    expect(made.bulges?.[2] ?? 0).toBe(0)
+  })
+
+  it("joins onto the first picked, at a fuzz never given 0 (p202, p203, p206)", () => {
+    const touching = () =>
+      two(
+        [
+          [0, 0],
+          [10, 0],
+        ],
+        [
+          [10, 0],
+          [20, 0],
+        ]
+      )
+    for (const [first, second, kept] of [
+      [p(5, 0), p(15, 0), "A"],
+      [p(15, 0), p(5, 0), "B"],
+    ] as const) {
+      const cad = createHarness({ entities: touching() })
+      cad.command("PEDIT").option("Multiple").click(first).click(second)
+      cad.enter()
+      cad.option("Join")
+      expect(asked(cad)).toBe("Enter fuzz distance or [Jointype] <0.00>:")
+      cad.enter()
+      expect(cad.commandLog().at(-1)).toBe("1 segments added to polyline")
+      expect(cad.entities().map((e) => e.id)).toEqual([kept])
+      expect(xy(poly(cad, kept))).toEqual([
+        [0, 0],
+        [10, 0],
+        [20, 0],
+      ])
+    }
+    const all = multiple(...touching())
+    all.option("Join")
+    all.enter()
+    expect(all.entities().map((e) => e.id)).toEqual(["B"])
+  })
+
+  it("keeps Both, Spanish AutoCAD's default <Ambos> (p205, es)", () => {
+    const cad = createHarness({
+      entities: two(
+        [
+          [0, 0],
+          [10, 0],
+        ],
+        [
+          [12, 0],
+          [20, 0],
+        ]
+      ),
+      locale: es,
+    })
+    answer(cad, "EDITPOL", "_M", "_ALL", "", "_J", "_J", "_B", "0", "")
+    answer(cad, "EDITPOL", "_M", "_ALL", "", "_J")
+    expect(cad.commandLog().at(-1)).toBe(
+      "Tipo de junta = Ambos (Alargar o Añadir)"
+    )
+    answer(cad, "_J")
+    expect(asked(cad)).toBe(
+      "Indique el tipo de junta [Alargar/aÑadir/aMbos] <Ambos>:"
+    )
+  })
+
   it("closes, widens and reverses them all, Undo one step (p95)", () => {
     const cad = multiple(
       ...two(
@@ -795,6 +1000,18 @@ describe("PEDIT on a 3D polyline", () => {
     ])
   })
 
+  it("reads `@` at Move from the X with its Z (p227's rule)", () => {
+    const cad = createHarness({ entities: [poly3d()] })
+    cad.command("PEDIT").click(p(5, 0)).option("Edit vertex").option("Next")
+    cad.option("Move")
+    typeAnswer(cad, "@1,2,3")
+    expect(cad.byId<Polyline3dEntity>("Q").vertices[1]).toEqual({
+      x: 11,
+      y: 2,
+      z: 8,
+    })
+  })
+
   it("joins nothing to it, as the console (p43, p103, p104)", () => {
     const cad = createHarness({
       entities: [
@@ -821,5 +1038,332 @@ describe("PEDIT on a 3D polyline", () => {
       y: 10,
       z: 3,
     })
+  })
+})
+
+describe("PEDIT's start, refusals and Enter", () => {
+  it("repeats at Enter, refuses 'PEDIT, echoes the rail's macro (p219, p220)", () => {
+    const cad = edit(pl())
+    cad.enter()
+    const from = cad.commandLog().length
+    cad.enter()
+    expect(since(cad, from)).toEqual(["PEDIT"])
+    expect(asked(cad)).toBe("Select polyline or [Multiple]:")
+
+    const line = createHarness()
+    answer(line, "_LINE", "0,0")
+    const at = line.commandLog().length
+    answer(line, "'_PEDIT")
+    expect(since(line, at)).toEqual([
+      "Specify next point or [Undo]: 'PEDIT",
+      "** That command may not be invoked transparently **",
+      "Point or option keyword required.",
+    ])
+
+    const rail = createHarness({ entities: [pl()] })
+    const start = rail.commandLog().length
+    rail.tool("pedit")
+    expect(since(rail, start)).toEqual(["_pedit"])
+  })
+
+  it("opens a 3D polyline double-clicked on its own prompt (DoubleClickRoot.cui)", () => {
+    const cad = createHarness({ entities: [rising()] })
+    cad.doubleClick(p(5, 0))
+    expect(asked(cad)).toBe(MAIN_3D)
+  })
+
+  it("goes back to the main prompt at Width's Enter, nothing changed (p200)", () => {
+    const cad = edit(pl())
+    cad.option("Width")
+    cad.enter()
+    expect(asked(cad)).toBe(MAIN)
+    expect(poly(cad).widths).toBeUndefined()
+    typeAnswer(cad, "2")
+    expect(cad.commandLog().at(-1)).toBe("Invalid option keyword.")
+  })
+
+  it("refuses numbers, other prompts' keywords and a command at its prompts (p221–p223)", () => {
+    const main = edit(pl())
+    for (const text of ["0", "-1", "_N", "_G", "_LINE", "_T"]) {
+      answer(main, text)
+      expect(main.commandLog().at(-1)).toBe("Invalid option keyword.")
+      expect(asked(main)).toBe(MAIN)
+    }
+    const vertex = edit(p5())
+    vertex.option("Edit vertex")
+    for (const text of ["FOO", "0", "_C", "_U", "_J", "_F"]) {
+      answer(vertex, text)
+      expect(vertex.commandLog().at(-1)).toBe("Invalid option keyword.")
+      expect(asked(vertex)).toBe(`${VERTEX} <N>:`)
+    }
+    const three = createHarness({ entities: [rising()] })
+    three.command("PEDIT").click(p(5, 0))
+    for (const text of ["FOO", "_F", "_W", "_L"]) {
+      answer(three, text)
+      expect(three.commandLog().at(-1)).toBe("Invalid option keyword.")
+      expect(asked(three)).toBe(MAIN_3D)
+    }
+  })
+
+  it("refuses a word at Ltype gen, whose Enter keeps it as it stands (p224)", () => {
+    const cad = edit(pl())
+    answer(cad, "_L", "FOO")
+    expect(cad.commandLog().at(-1)).toBe("Invalid option keyword.")
+    answer(cad, "_ON", "_L")
+    expect(asked(cad)).toBe(
+      "Enter polyline linetype generation option [ON/OFF] <On>:"
+    )
+    cad.enter()
+    expect(asked(cad)).toBe(MAIN)
+    expect(poly(cad).linetypeGeneration).toBe(true)
+  })
+
+  it("takes the widths away at Width 0 (p225)", () => {
+    const cad = edit(pl())
+    answer(cad, "_W", "2", "_W", "0")
+    for (const [start, end] of poly(cad).widths ?? []) {
+      expect([start, end]).toEqual([0, 0])
+    }
+  })
+
+  it("goes back to the vertex prompt at Tangent's Enter, no tangent given (p226)", () => {
+    const cad = edit(p5())
+    cad.option("Edit vertex").option("Tangent")
+    cad.enter()
+    expect(asked(cad)).toBe(`${VERTEX} <N>:`)
+    cad.option("eXit").option("Fit")
+    expect(poly(cad).fit?.tangents).toBeUndefined()
+  })
+})
+
+describe("PEDIT's points", () => {
+  it("refuses a Z, a keyword and a command at Move as no 2D point (p228, p238)", () => {
+    const cad = edit(p5())
+    cad.option("Edit vertex").option("Next").option("Move")
+    for (const text of ["15,5,7", "_N", "_LINE"]) {
+      answer(cad, text)
+      expect(cad.commandLog().at(-1)).toBe("Invalid 2D point.")
+      expect(asked(cad)).toBe("Specify new location for marked vertex:")
+    }
+  })
+
+  it("refuses `*` at Move in a turned UCS, a point read in it (p229)", () => {
+    const cad = createHarness({ entities: [p5()] })
+    answer(cad, "_UCS", "_Z", "30", "_PEDIT", "*5,0", "_E", "_N", "_M", "*15,5")
+    expect(cad.commandLog().at(-1)).toBe("Invalid 2D point.")
+    answer(cad, "15,5")
+    expect(poly(cad).vertices[1].x).toBeCloseTo(10.49038105676658, 9)
+    expect(poly(cad).vertices[1].y).toBeCloseTo(11.830127018922195, 9)
+  })
+
+  it("snaps Move to an END, leaves a typed Insert to ORTHOMODE (p230)", () => {
+    const cad = createHarness({
+      entities: [p5(), lineOf(p(50, 10), p(60, 20))],
+    })
+    answer(cad, "_ORTHOMODE", "1", "_PEDIT", "5,0", "_E", "_N", "_M")
+    answer(cad, "_END", "59.9,19.9", "_N", "_I", "33,7")
+    expect(xy(poly(cad))).toEqual([
+      [0, 0],
+      [60, 20],
+      [20, 0],
+      [33, 7],
+      [30, 0],
+      [40, 0],
+    ])
+  })
+})
+
+describe("PEDIT's transparent commands and undo", () => {
+  it("runs them at its prompts and resumes, refusing 'LINE (p231–p234)", () => {
+    const cad = edit(p5())
+    let from = cad.commandLog().length
+    answer(cad, "'_ORTHOMODE", "1")
+    expect(since(cad, from)).toEqual([
+      `${MAIN} 'ORTHOMODE`,
+      ">>Enter new value for ORTHOMODE <0>: 1",
+      "Resuming PEDIT command.",
+    ])
+    from = cad.commandLog().length
+    answer(cad, "'_LINE")
+    expect(since(cad, from)).toEqual([
+      `${MAIN} 'LINE`,
+      "** That command may not be invoked transparently **",
+      "Invalid option keyword.",
+    ])
+    answer(cad, "_E", "'_ORTHOMODE", "0", "_N", "_M", "'_ORTHOMODE", "1")
+    expect(cad.commandLog().at(-1)).toBe("Resuming PEDIT command.")
+    expect(asked(cad)).toBe("Specify new location for marked vertex:")
+    answer(cad, "15,5", "_I", "'_-OSNAP", "_END")
+    expect(asked(cad)).toBe("Specify location for new vertex:")
+    answer(cad, "25,5", "_W", "'_ORTHOMODE", "0")
+    expect(asked(cad)).toBe("Specify starting width for next segment <0.00>:")
+    answer(cad, "3", "", "_X", "_W", "'_ORTHOMODE", "1", "2", "_L")
+    answer(cad, "'_ORTHOMODE", "0", "_ON")
+    expect(xy(poly(cad)).slice(0, 3)).toEqual([
+      [0, 0],
+      [15, 5],
+      [25, 5],
+    ])
+    expect(poly(cad).widths?.[0]).toEqual([2, 2])
+    expect(poly(cad).linetypeGeneration).toBe(true)
+  })
+
+  it("takes back a transparent change with its step at Undo (p235)", () => {
+    const cad = createHarness({ entities: [pl()] })
+    answer(cad, "_ORTHOMODE", "0", "_PEDIT", "5,0", "_W", "2")
+    answer(cad, "'_ORTHOMODE", "1", "_U")
+    expect(cad.commandLog().at(-1)).toBe("Command has been completely undone.")
+    expect(cad.state().orthoActive).toBe(false)
+    expect(poly(cad).widths).toBeUndefined()
+  })
+
+  it("is a step of UNDO and MREDO named PEDIT (p236)", () => {
+    const cad = edit(pl())
+    answer(cad, "_W", "2", "", "_PEDIT", "5,0", "_C", "")
+    const from = cad.commandLog().length
+    answer(cad, "_UNDO", "2", "_MREDO", "1", "_MREDO", "1")
+    const log = since(cad, from)
+    expect(log).toContain("PEDIT PEDIT")
+    expect(log.at(-1)).toBe("Everything has been redone")
+    expect(poly(cad).closed).toBe(true)
+  })
+
+  it("is a step for U and REDO even when it changed nothing (p237, en and es)", () => {
+    const cad = edit(pl())
+    cad.enter()
+    const from = cad.commandLog().length
+    answer(cad, "_U", "_REDO")
+    expect(since(cad, from)).toEqual([
+      "U",
+      "PEDIT",
+      "REDO",
+      "PEDIT",
+      "Everything has been redone",
+    ])
+    const spanish = createHarness({ entities: [pl()], locale: es })
+    answer(spanish, "_PEDIT", "5,0", "")
+    const at = spanish.commandLog().length
+    answer(spanish, "_U", "_REDO")
+    expect(since(spanish, at)).toEqual([
+      "H",
+      "EDITPOL",
+      "REHACER",
+      "EDITPOL",
+      "Todo repetido",
+    ])
+  })
+})
+
+describe("what PEDIT makes and leaves", () => {
+  it("goes back to the vertex prompt at eXit in Break's walk (p239)", () => {
+    const cad = edit(p5())
+    cad.option("Edit vertex").option("Break").option("Next").option("eXit")
+    expect(asked(cad)).toBe(`${VERTEX} <N>:`)
+    expect(cad.entities()).toHaveLength(1)
+  })
+
+  it("turns a line and an arc into polylines in their properties (p240)", () => {
+    const cad = createHarness()
+    cad.runtime.createLayer("L1")
+    answer(cad, "_CECOLOR", "1", "_CELTYPE", "DASHED", "_CELWEIGHT", "30")
+    answer(cad, "_THICKNESS", "2", "_LINE", "0,0", "10,0", "")
+    answer(cad, "_ARC", "20,0", "25,5", "30,0", "_CLAYER", "0")
+    answer(cad, "_CECOLOR", "BYLAYER", "_CELTYPE", "BYLAYER")
+    answer(cad, "_CELWEIGHT", "-1", "_THICKNESS", "0")
+    answer(cad, "_PEDIT", "5,0", "_Y", "_X", "_PEDIT", "25,5", "_Y", "_X")
+    const made = cad.entities() as PolylineEntity[]
+    expect(made.map((e) => e.type)).toEqual(["polyline", "polyline"])
+    for (const e of made) {
+      expect(e.layerId).not.toBe("0")
+      expect(e.color).toBe(RED)
+      expect(e.linetype).toBe("Dashed")
+      expect(e.lineweight).toBe(0.3)
+      expect(e.thickness).toBe(2)
+    }
+  })
+
+  it("keeps a converted line in its plane at its elevation, read in a turned UCS (p241)", () => {
+    const cad = createHarness()
+    answer(cad, "_UCS", "_Z", "30", "_ELEVATION", "3", "_LINE", "0,0", "10,0")
+    answer(cad, "", "_ELEVATION", "0", "_PEDIT", "5,0", "_Y", "_X")
+    const made = cad.entities()[0] as PolylineEntity
+    expect(made.elevation).toBe(3)
+    expect(made.vertices[1].x).toBeCloseTo(8.660254037844387, 9)
+    expect(made.vertices[1].y).toBeCloseTo(5, 9)
+  })
+
+  it("gives Break's new piece the polyline's properties (p243)", () => {
+    const cad = createHarness({
+      entities: [
+        {
+          ...p5(),
+          color: RED,
+          linetype: "Dashed",
+          lineweight: 0.3,
+          thickness: 2,
+        },
+      ],
+    })
+    answer(cad, "_PEDIT", "5,0", "_E", "_N", "_B", "_N", "_G", "_X", "_X")
+    const [kept, piece] = cad.entities() as PolylineEntity[]
+    expect(kept.id).toBe("P")
+    expect(piece.id).not.toBe("P")
+    for (const e of [kept, piece]) {
+      expect(e.color).toBe(RED)
+      expect(e.linetype).toBe("Dashed")
+      expect(e.lineweight).toBe(0.3)
+      expect(e.thickness).toBe(2)
+    }
+  })
+
+  it("edits the one selected before it and leaves nothing selected (p244)", () => {
+    const cad = createHarness({ entities: [pl()] })
+    cad.select("P")
+    answer(cad, "_PEDIT", "_W", "2", "_X")
+    expect(poly(cad).widths?.[0]).toEqual([2, 2])
+    expect(cad.selectedIds()).toEqual([])
+  })
+})
+
+describe("PEDIT's Edit vertex and Undo on a 3D polyline", () => {
+  it("breaks it in two, a new piece after (p245)", () => {
+    const cad = createHarness({ entities: [rising()] })
+    answer(cad, "_PEDIT", "5,0", "_E", "_N", "_B", "_N", "_G", "_X", "_X")
+    const [kept, piece] = cad.entities() as Polyline3dEntity[]
+    expect(kept.id).toBe("Q")
+    expect(kept.vertices).toEqual([
+      { x: 0, y: 0, z: 0 },
+      { x: 10, y: 0, z: 5 },
+    ])
+    expect(piece.vertices).toEqual([
+      { x: 20, y: 0, z: 0 },
+      { x: 30, y: 0, z: 5 },
+      { x: 40, y: 0, z: 0 },
+    ])
+  })
+
+  it("straightens between two vertices, then closes (p246)", () => {
+    const cad = createHarness({ entities: [rising()] })
+    answer(cad, "_PEDIT", "5,0", "_E", "_N", "_S", "_N", "_N", "_G", "_X")
+    answer(cad, "_C", "_X")
+    const q = cad.byId<Polyline3dEntity>("Q")
+    expect(q.vertices).toEqual([
+      { x: 0, y: 0, z: 0 },
+      { x: 10, y: 0, z: 5 },
+      { x: 30, y: 0, z: 5 },
+      { x: 40, y: 0, z: 0 },
+    ])
+    expect(q.closed).toBe(true)
+  })
+
+  it("undoes Close, then Spline curve, then says so (p247)", () => {
+    const cad = createHarness({ entities: [rising()] })
+    answer(cad, "_PEDIT", "5,0", "_S", "_C", "_U")
+    expect(cad.byId<Polyline3dEntity>("Q").closed).toBe(false)
+    answer(cad, "_U")
+    expect(cad.commandLog().at(-1)).toBe("Command has been completely undone.")
+    expect(cad.byId<Polyline3dEntity>("Q").fit).toBeUndefined()
+    answer(cad, "_U")
+    expect(cad.commandLog().at(-1)).toBe("Command has been completely undone.")
   })
 })

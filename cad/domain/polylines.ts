@@ -571,8 +571,9 @@ export function polylineReversed(poly: PolylineEntity): PolylineEntity {
   )
   const fit = poly.fit
   if (!fit) return reversed
-  // A Fit's arcs run back the other way (pedit/p166), each tangent turned
-  // round (**unverified**).
+  // A Fit's arcs run back the other way (pedit/p166), each given tangent
+  // set to 0 as an unfitted one's is (p209, p252; a fitted one's
+  // **unverified**).
   const arcs =
     fit.kind === "curve"
       ? widths.map((_, k) => {
@@ -585,9 +586,7 @@ export function polylineReversed(poly: PolylineEntity): PolylineEntity {
             : null
         })
       : null
-  const tangents = fit.tangents
-    ?.map((t) => (t === null ? null : normalizeAngle(t + Math.PI)))
-    .reverse()
+  const tangents = fit.tangents?.map((t) => (t === null ? null : 0)).reverse()
   return withFitParts(reversed, arcs, tangents)
 }
 
@@ -719,9 +718,10 @@ export function polylineBrokenAt(
     const tangents = fit.tangents?.slice(a, b + 1)
     return withFitParts(cut, arcs, tangents)
   }
-  // The piece from the start is no longer fitted: a Fit's keeps its arcs as
-  // vertices of its own, a Spline's is its frame (pedit/p154, p158); the
-  // other stays fitted.
+  // The piece that keeps the object, from the start or, with none there, the
+  // rest, is no longer fitted: a Fit's keeps its arcs as vertices of its own,
+  // a Spline's is its frame (pedit/p154, p158, p210); a new piece stays
+  // fitted.
   const unfitted = (a: number, b: number): PolylineEntity | null => {
     if (b <= a) return null
     if (fit?.kind !== "curve") {
@@ -740,7 +740,8 @@ export function polylineBrokenAt(
       span.widths
     )
   }
-  return { first: unfitted(0, lo), second: piece(hi, end) }
+  const first = unfitted(0, lo)
+  return { first, second: first ? piece(hi, end) : unfitted(hi, end) }
 }
 
 /** Edit vertex's Width: the segment after vertex `index` that wide; none after an open one's last. */

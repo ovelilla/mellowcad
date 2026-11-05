@@ -18,8 +18,8 @@ import { p, polylineOf } from "../../../test/builders"
 import { es } from "../../locales/es"
 
 // PEDIT's Fit, Spline and Decurve, as AutoCAD 2027's console leaves the
-// polyline (probes pedit/p50–p62, p147–p199, traced, MPDUMP, en and es):
-// each curve below is MPDUMP's to the ninth decimal.
+// polyline (probes pedit/p50–p62, p147–p199, p208–p215, p252, traced,
+// MPDUMP, en and es): each curve below is MPDUMP's to the ninth decimal.
 
 type Harness = ReturnType<typeof createHarness>
 const poly = (cad: Harness, id = "P") => cad.byId<PolylineEntity>(id)
@@ -116,6 +116,31 @@ describe("PEDIT's Fit", () => {
       [28.372995466, 3.927936413, -0.198912367],
       [30, 0, 0],
     ])
+  })
+
+  it("leaves a corner between straight runs straight, adding no joint (p208)", () => {
+    const cad = edit(
+      polylineOf([p(0, 0), p(10, 0), p(20, 0), p(20, 10), p(20, 20)], {
+        id: "P",
+      })
+    )
+    cad.option("Fit")
+    expectCurve(poly(cad), [
+      [0, 0, 0],
+      [10, 0, 0],
+      [20, 0, 0],
+      [20, 10, 0],
+      [20, 20, 0],
+    ])
+  })
+
+  it("gives END at its curve's added vertices (p215)", () => {
+    const cad = edit(polylineOf(FIVE, { id: "P" }))
+    cad.option("Fit").enter()
+    typeAnswer(typeAnswer(typeAnswer(cad, "_ID"), "_END"), "3.8,1.1")
+    expect(cad.commandLog().at(-1)).toBe(" X = 3.76     Y = 1.04     Z = 0.00")
+    typeAnswer(typeAnswer(typeAnswer(cad, "_ID"), "_END"), "9.5,7.7")
+    expect(cad.commandLog().at(-1)).toBe(" X = 9.58     Y = 7.80     Z = 0.00")
   })
 
   it("runs a segment's widths on through its joint by length (p151)", () => {
@@ -224,6 +249,21 @@ describe("PEDIT's Fit", () => {
     expectCurve(second, P147.slice(6))
   })
 
+  it("breaks from its first vertex into the rest as a polyline of its curve (p210)", () => {
+    const cad = edit(polylineOf(FIVE, { id: "P" }))
+    cad.option("Fit").option("Edit vertex")
+    cad.option("Break").option("Next").option("Next").option("Go")
+    expect(cad.entities()).toHaveLength(1)
+    expect(poly(cad).fit).toBeUndefined()
+    expectCurve(poly(cad), [
+      [12, 11, -0.1552239739967265],
+      [14.770599726171852, 11.174810678210896, -0.07471015104778962],
+      [20, 9, -0.09630359791982131],
+      [23.73299755052374, 5.623609359403069, -0.09409393196859306],
+      [26, 1, 0],
+    ])
+  })
+
   it("widens a fitted segment through its joint (p156)", () => {
     const cad = edit(polylineOf(FIVE, { id: "P" }))
     cad.option("Fit").option("Edit vertex").option("Next").option("Width")
@@ -261,6 +301,25 @@ describe("PEDIT's Fit", () => {
       [3.757002689, 1.038838344, -0.067665424],
       [0, 0, 0],
     ])
+  })
+
+  it("sets a given tangent to 0 as it reverses (p209, p252)", () => {
+    for (const angle of ["90", "45"]) {
+      const cad = edit(
+        polylineOf([p(0, 0), p(10, 0), p(20, 10), p(30, 10)], { id: "P" })
+      )
+      cad.option("Edit vertex").option("Next").option("Tangent")
+      cad.type(angle).enter()
+      cad.option("eXit").option("Reverse").option("Fit")
+      expectCurve(poly(cad), [
+        [30, 10, 0.08061157167053518],
+        [24.49286103688998, 10.893685625155612, 0.09849140335716408],
+        [20, 10, 0.09849140335716428],
+        [8.923494025032813, 2.5989153247414496, 0.6681786379192984],
+        [10, 0, 0],
+        [0, 0, 0],
+      ])
+    }
   })
 
   it("is refitted by STRETCH, its arcs carried by MOVE and MIRROR (p176, p191)", () => {
@@ -360,6 +419,19 @@ describe("PEDIT's Spline", () => {
       [0, 0, 0],
       [30, 10, 0],
     ])
+  })
+
+  it("starts a closed frame of three at (P0 + 4·P1 + P2) / 6 (p214)", () => {
+    const cad = edit(
+      polylineOf([p(0, 0), p(10, 0), p(5, 8)], { id: "P", closed: true })
+    )
+    cad.option("Spline")
+    const curve = curveOf(poly(cad))
+    expect(curve).toHaveLength(24)
+    expect(curve[0][0]).toBeCloseTo(7.5, 9)
+    expect(curve[0][1]).toBeCloseTo(4 / 3, 9)
+    expect(curve[1][0]).toBeCloseTo(7.7001953125, 9)
+    expect(curve[1][1]).toBeCloseTo(1.8880208333333333, 9)
   })
 
   it("is periodic round a closed frame (p56)", () => {
@@ -635,6 +707,29 @@ describe("what other commands make of a fitted polyline", () => {
     expect(left.vertices).toHaveLength(11)
     expect(left.vertices.at(-1)!.x).toBeCloseTo(15, 9)
     expect(left.vertices.at(-1)!.y).toBeCloseTo(9.047210593, 6)
+  })
+
+  it("JOIN takes a Fit one as its curve, into a new polyline (p213)", () => {
+    const cad = createHarness({
+      entities: [fitted(), createLine(p(26, 1), p(35, 1))],
+    })
+    cad.command("JOIN").click(p(0, 0)).click(p(35, 1)).enter()
+    expect(cad.commandLog().at(-1)).toBe("2 objects converted to 1 polyline")
+    expect(cad.entities()).toHaveLength(1)
+    const made = cad.entities()[0] as PolylineEntity
+    expect(made.id).not.toBe("P")
+    expect(made.fit).toBeUndefined()
+    expectCurve(made, [...P147.slice(0, -1), [26, 1, 0], [35, 1, 0]])
+  })
+
+  it("EXTEND refuses a spline-fit one in the path's words (p212)", () => {
+    const cad = createHarness({
+      entities: [splined(), createLine(p(35, -10), p(35, 20))],
+    })
+    cad.command("EXTEND").click(p(26, 1))
+    expect(cad.commandLog()).toContain(
+      "Path does not intersect with the bounding edge."
+    )
   })
 
   it("FILLET refuses one in AutoCAD's words (p194)", () => {
