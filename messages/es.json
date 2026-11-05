@@ -288,13 +288,13 @@
     "useLead": "Para quien dibuja: los primeros pasos, cada comando y atajo, y en qué se aparta MellowCAD de AutoCAD.",
     "pages": {
       "commands": {
-        "title": "Comandos",
-        "metaTitle": "Comandos de AutoCAD en español y sus alias",
-        "description": "Cada comando de AutoCAD que ejecuta MellowCAD, por grupo de la cinta: su nombre, sus alias y lo primero que pregunta.",
-        "lead": "Cada comando como se escribe en la línea de comandos, con el nombre que tiene en AutoCAD en español, bajo el grupo de la cinta donde lo buscarías. Con un guion bajo delante se escribe el nombre inglés, como en AutoCAD (`_LINE`). La primera solicitud es la del propio motor: el mismo orden y las mismas letras de opción que verás al ejecutarlo."
+        "title": "Comandos de AutoCAD",
+        "metaTitle": "Lista de comandos de AutoCAD en español e inglés",
+        "description": "Los comandos de AutoCAD en español con su nombre inglés, sus alias y su primera solicitud, por grupo de la cinta; los principales, con página propia.",
+        "lead": "Cada comando como se escribe en la línea de comandos, con el nombre que tiene en AutoCAD en español y, entre paréntesis, el inglés, bajo el grupo de la cinta donde lo buscarías. Con un guion bajo delante se escribe el nombre inglés, como en AutoCAD (`_LINE`). La primera solicitud es la del propio motor: el mismo orden y las mismas letras de opción que verás al ejecutarlo. Un comando con página propia la enlaza: sus opciones, una sesión dibujada por el motor y lo que aún no hace."
       },
       "shortcuts": {
-        "title": "Atajos de teclado",
+        "title": "Atajos de teclado de AutoCAD",
         "metaTitle": "Atajos de teclado de AutoCAD: teclas F y Ctrl",
         "description": "Las teclas que responde MellowCAD: las ayudas al dibujo, la edición y los archivos, la ventana y la línea de comandos.",
         "lead": "Las teclas que responde MellowCAD, las que un usuario de AutoCAD ya tiene en los dedos. Cada comando se nombra como lo escribirías; sus alias están en la página de comandos."
@@ -304,6 +304,20 @@
       "aliases": "Alias",
       "firstPrompt": "Primera solicitud",
       "coverage": "Qué hace y qué le falta, en detalle (en inglés)"
+    },
+    "command": {
+      "command": "Comando",
+      "english": "En inglés",
+      "englishValue": "{name}, que se escribe {typed} en cualquier idioma",
+      "panel": "Grupo",
+      "try": "Pruébalo",
+      "tryText": "<editor>Abre el editor</editor>, escribe {key} y pulsa Intro.",
+      "session": "En la línea de comandos",
+      "sessionLead": "El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.",
+      "options": "Opciones",
+      "missing": "Lo que aún no hace",
+      "questions": "Preguntas frecuentes",
+      "related": "Comandos relacionados"
     },
     "shortcuts": {
       "key": "Tecla",

@@ -111,7 +111,20 @@ objects and for unsaved text. The engine waits on their answer, so the editor al
   <CadEditor help={{ index: "/help", command: "/help/commands#{command}" }} />
   ```
 
-  F1 during LINE opens `/help/commands#line`. Without `help`, F1 is the browser's.
+  F1 during LINE opens `/help/commands#line`. A command with a page of its own is listed in
+  `commands`, by its global name in lower case, and F1 opens that page instead:
+
+  ```tsx
+  <CadEditor
+    help={{
+      index: "/help",
+      command: "/help/commands#{command}",
+      commands: { offset: "/help/commands/offset" },
+    }}
+  />
+  ```
+
+  Without `help`, F1 is the browser's.
 - **`layoutStorage`** names the `localStorage` keys under which this browser remembers the palette
   panel's width and fold (`palette`) and what the status bar shows (`statusBar`). A part without a
   key is not remembered. On a page rendered on a server, `palette` needs

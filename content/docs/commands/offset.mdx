@@ -1,0 +1,78 @@
+---
+title: "OFFSET in AutoCAD"
+metaTitle: "OFFSET in AutoCAD: command, options and alias"
+description: "How AutoCAD's OFFSET (O) works, prompt by prompt: a distance or Through, Erase and Layer, one object and one side at a time. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for OFFSET in AutoCAD?","answer":"O, then Enter or Space. The full name works too, and _OFFSET in any language of AutoCAD."},{"question":"Why can't I offset an object?","answer":"OFFSET offsets lines, arcs, circles, 2D polylines, ellipses and splines. It refuses text, multiline text, block references, dimensions and hatches with “Cannot offset that object.”, and so it does when the distance would shrink a circle, an arc or a polyline to nothing. An object on a locked layer cannot be picked, and a 3D polyline is passed over."},{"question":"How do I offset the same line several times?","answer":"Pick the line, then type the letter of Multiple at the side prompt: each pick on that side makes one more copy, each a distance beyond the last. Or keep the default and pick the newest copy each time."},{"question":"How do I put the offset copies on the current layer?","answer":"Choose Layer at the first prompt, then Current. From then on every copy goes on the layer that is current, until you choose Source again."}]
+---
+
+OFFSET draws a copy of an object parallel to it, at a distance you type or through a point you pick: a line gives a parallel line, a circle or an arc a concentric one, a polyline an outline inside or outside it, an ellipse or a spline a spline that follows it. As in AutoCAD, it takes one object at a time: you give the distance once, then pick an object and the side to put its copy on, as many times as you like. Enter ends it.
+
+- **Command:** `OFFSET`
+- **Aliases:** `O`
+- **Panel:** [Modify](/docs/commands#modify)
+- **Try it:** [Open the editor](/draw), type `O` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="offset" caption="A rectangle offset 6 inside and a circle offset 6 outside, each picked, then its side." />
+
+## Options [#options]
+
+### `Through` (`T`) [#through]
+
+Instead of a distance, each copy passes through a point you pick or type. It is the first prompt's default, so Enter there chooses it until a distance has been given; from then on Enter repeats the last distance, in that drawing.
+
+### `Erase` (`E`) [#erase]
+
+Asks whether to erase each source object once it is offset, `Yes` or `No` (the default). With `Yes`, the copy replaces the object. The choice is kept for the rest of the session, and the next OFFSET says it in its first line.
+
+### `Layer` (`L`) [#layer]
+
+Asks where the copies go: on the `Current` layer, or on the `Source` object's (the default). Kept for the session too.
+
+### `Exit` (`E`) [#exit]
+
+Ends the command, as Enter does at the object prompt.
+
+### `Multiple` (`M`) [#multiple]
+
+At the side prompt: keep offsetting the same object without picking it again, each copy one distance further out from the last, until Enter or `Exit`.
+
+### `Undo` (`U`) [#undo]
+
+Takes back the last copy, whichever object it came from, and asks for an object again. With no copy left to take back, it says so.
+
+## What it does not do yet [#missing]
+
+OFFSETGAPTYPE 1 and 2: the corners of an offset polyline are always closed as with 0, the segments extended to meet. A spline's or an ellipse's offset is within AutoCAD's tolerance, but its knots fall where MellowCAD puts them, not where AutoCAD does. Through on a spline shows X and Y in its tooltip, not the distance.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#offset--o--es-desfase--df--eq--pt-br-deslocamento)
+
+## Questions [#questions]
+
+### What is the shortcut for OFFSET in AutoCAD?
+
+`O`, then Enter or Space. The full name works too, and `_OFFSET` in any language of AutoCAD.
+
+### Why can't I offset an object?
+
+OFFSET offsets lines, arcs, circles, 2D polylines, ellipses and splines. It refuses text, multiline text, block references, dimensions and hatches with `Cannot offset that object.`, and so it does when the distance would shrink a circle, an arc or a polyline to nothing. An object on a locked layer cannot be picked, and a 3D polyline is passed over.
+
+### How do I offset the same line several times?
+
+Pick the line, then type the letter of `Multiple` at the side prompt: each pick on that side makes one more copy, each a distance beyond the last. Or keep the default and pick the newest copy each time.
+
+### How do I put the offset copies on the current layer?
+
+Choose `Layer` at the first prompt, then `Current`. From then on every copy goes on the layer that is current, until you choose `Source` again.
+
+## Related commands [#related]
+
+- [TRIM in AutoCAD](/docs/commands/trim)
+- [EXTEND](/docs/commands#extend): Extend
+- [FILLET](/docs/commands#fillet): Fillet
+- [COPY](/docs/commands#copy): Copy

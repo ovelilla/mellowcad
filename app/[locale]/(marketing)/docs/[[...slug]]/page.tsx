@@ -20,6 +20,7 @@ import {
   canonicalPath,
   type DocsPage,
   englishBuildNodes,
+  isCommandPage,
   isPublished,
   isTranslated,
   navSections,
@@ -297,9 +298,14 @@ async function DocsArticle({ page, locale }: { page: DocsPage; locale: AppLocale
   )
   const Body = page.data.body
   const steps = await breadcrumbSteps(locale, page)
+  const faq = page.data.faq && {
+    questions: page.data.faq,
+    url: localeUrl(language, canonicalPath(page)),
+    locale: language,
+  }
   return (
     <div className="flex flex-col gap-10">
-      <JsonLd data={breadcrumbStructuredData(steps)} />
+      <JsonLd data={breadcrumbStructuredData(steps, faq)} />
       {language !== locale && (
         <p className="rounded-md border border-border bg-bg-raised px-4 py-3 text-sm text-fg-muted">
           {t("englishOnly")}
@@ -383,7 +389,11 @@ export default async function DocsPageRoute({
   if (slug?.length && !page) notFound()
   const t = await getTranslations("Docs")
   const tree = docsSource.getPageTree(locale)
-  const active = page?.url ?? localePath(locale, DOCS_PATH)
+  // A command's own page is not in the navigation: the reference stands for it.
+  const active =
+    page && isCommandPage(page)
+      ? (docsSource.getPage(page.slugs.slice(0, 1), locale)?.url ?? page.url)
+      : (page?.url ?? localePath(locale, DOCS_PATH))
   const { use, build } = navSections(tree.children)
   const english = locale === routing.defaultLocale
   const nav = (

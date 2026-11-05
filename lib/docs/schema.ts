@@ -23,4 +23,9 @@ export const docsPageSchema = pageSchema.extend({
   sourceHash: z.string().optional(),
   /** A page written by a test from its sources, never by hand: that test. */
   generated: z.string().optional(),
+  /**
+   * A command's page: its questions and answers as plain text, for the
+   * page's `FAQPage` (the same words its Questions section shows).
+   */
+  faq: z.array(z.object({ question: z.string(), answer: z.string() })).optional(),
 })

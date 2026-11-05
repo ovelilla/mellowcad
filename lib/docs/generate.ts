@@ -1,11 +1,10 @@
-import { readFileSync, readdirSync } from "node:fs"
-import { join } from "node:path"
-
 import {
   commandCatalog,
   demo,
+  engineText,
   recordDemo,
   type EngineLocale,
+  type EngineText,
 } from "@mellowcad/engine"
 import type { EditorLocale } from "@mellowcad/editor"
 import { en as editorEnglish } from "@mellowcad/editor/locales/en"
@@ -14,11 +13,21 @@ import { COMMAND_GROUPS } from "@/content/commands"
 import { loadEditorLocale } from "@/i18n/editor"
 import { loadEngineLocale } from "@/i18n/engine"
 import { loadMessages } from "@/i18n/messages"
+import { localePath } from "@/i18n/navigation"
 import { DIRECTION, routing, type AppLocale } from "@/i18n/routing"
-import { autocadCommands } from "@/lib/facts"
-import { REPOSITORY_URL } from "@/lib/site"
+import { autocadCommands, type CatalogCommand } from "@/lib/facts"
+import { EDITOR_PATH, REPOSITORY_URL } from "@/lib/site"
 import en from "@/messages/en.json"
 
+import {
+  COMMANDS_PATH,
+  commandPagePath,
+  commandSlug,
+  coverageEntry,
+  notedCommands,
+  readNotes,
+  type CommandNotes,
+} from "./command-pages"
 import {
   SHORTCUT_SECTIONS,
   type KeyCombo,
@@ -26,6 +35,11 @@ import {
   type ShortcutMode,
 } from "./shortcuts"
 import { COVERAGE_DIR, githubAnchor } from "./use"
+
+/** The generated pages that are not a command's own, by their file's base. */
+export const GENERATED_PAGES = { commands: "commands/index", shortcuts: "shortcuts" } as const
+
+export type GeneratedPage = keyof typeof GENERATED_PAGES
 
 /**
  * The pages of "Use MellowCAD" a test writes from their sources (the
@@ -43,7 +57,7 @@ type Messages = typeof en
  * another language once its site catalog names the page. Until then a draft
  * is served the English page, as its missing keys are.
  */
-export async function translatesPage(locale: AppLocale, page: "commands" | "shortcuts"): Promise<boolean> {
+export async function translatesPage(locale: AppLocale, page: GeneratedPage): Promise<boolean> {
   if (locale === routing.defaultLocale) return true
   const own = (await import(`@/messages/${locale}.json`)) as {
     default: { Docs?: { pages?: Partial<Record<string, unknown>> } }
@@ -77,8 +91,10 @@ function code(text: string): string {
   return `${fence}${pad}${text}${pad}${fence}`
 }
 
-function frontmatter(fields: Record<string, string>): string {
-  const lines = Object.entries(fields).map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
+function frontmatter(fields: Record<string, unknown>): string {
+  const lines = Object.entries(fields)
+    .filter(([, value]) => value !== undefined)
+    .map(([key, value]) => `${key}: ${JSON.stringify(value)}`)
   return `---\n${lines.join("\n")}\n---\n`
 }
 
@@ -87,15 +103,8 @@ function frontmatter(fields: Record<string, string>): string {
  * it in a code span. A command with none fails the page.
  */
 export function coverageUrl(id: string, root = process.cwd()): string {
-  const dir = join(root, COVERAGE_DIR)
-  for (const file of readdirSync(dir).sort()) {
-    for (const line of readFileSync(join(dir, file), "utf8").split("\n")) {
-      if (line.startsWith("### ") && line.includes(`\`${id}\``)) {
-        return `${REPOSITORY_URL}/blob/main/${COVERAGE_DIR}/${file}#${githubAnchor(line.slice(4))}`
-      }
-    }
-  }
-  throw new Error(`${id} has no ### heading in ${COVERAGE_DIR}/`)
+  const { file, heading } = coverageEntry(root, id)
+  return `${REPOSITORY_URL}/blob/main/${COVERAGE_DIR}/${file}#${githubAnchor(heading)}`
 }
 
 /** What a command asks first, as the history writes it; null when it asks nothing. */
@@ -105,9 +114,19 @@ async function firstPrompt(id: string, locale: EngineLocale | undefined): Promis
   return echo ? echo.map((segment) => segment.text).join("") : null
 }
 
-/** A page's file for `locale`: `commands.mdx`, `commands.es.mdx`. */
-export function pageFile(page: string, locale: AppLocale): string {
-  return locale === routing.defaultLocale ? `${page}.mdx` : `${page}.${locale}.mdx`
+/** A page's file for `locale`: `shortcuts.mdx`, `commands/index.es.mdx`. */
+export function pageFile(page: GeneratedPage, locale: AppLocale): string {
+  const base = GENERATED_PAGES[page]
+  return locale === routing.defaultLocale ? `${base}.mdx` : `${base}.${locale}.mdx`
+}
+
+/**
+ * A command as a heading names it: in the page's command language and, where
+ * that is not the global name (`DESFASE`), with it, as both are searched.
+ */
+function commandHeading(command: Pick<CatalogCommand, "id" | "name">, locale: AppLocale): string {
+  const name = command.name === command.id ? command.name : `${command.name} (${command.id})`
+  return isolate(prose(name), locale)
 }
 
 /**
@@ -126,14 +145,20 @@ export async function commandsPage(locale: AppLocale): Promise<string> {
     blocks.push(`## ${prose(t.Groups[group])} [#${group}]`)
     for (const command of commands.filter((entry) => entry.group === group)) {
       const prompt = await firstPrompt(command.id, engineLocale)
+      const notes = readNotes(process.cwd(), command.id, locale)
+      // A command with a page of its own leads there, its notes' title the
+      // link's words; one without, to what its coverage entry says.
+      const more = notes
+        ? `- [${prose(notes.data.title)}](${commandPagePath(command.id)})`
+        : `- [${prose(t.Docs.reference.coverage)}](${coverageUrl(command.id)})`
       const facts = [
         command.aliases.length > 0 &&
           `- **${prose(t.Docs.reference.aliases)}:** ${command.aliases.map(code).join(", ")}`,
         prompt && `- **${prose(t.Docs.reference.firstPrompt)}:** ${code(prompt)}`,
-        `- [${prose(t.Docs.reference.coverage)}](${coverageUrl(command.id)})`,
+        more,
       ].filter(Boolean)
       blocks.push(
-        `### ${isolate(prose(command.name), locale)} [#${command.id.toLowerCase()}]`,
+        `### ${commandHeading(command, locale)} [#${commandSlug(command.id)}]`,
         prose(command.description),
         facts.join("\n")
       )
@@ -237,3 +262,181 @@ export async function shortcutsPage(locale: AppLocale): Promise<string> {
     generated: GENERATOR,
   })}\n${blocks.join("\n\n")}\n`
 }
+
+/**
+ * A message as Markdown prose with its arguments filled in: `{name}` by its
+ * value, and `<tag>words</tag>` by what `tags` makes of the words (a link),
+ * both kept out of the escaping. The site's messages are plain ICU; these
+ * have no plural or select.
+ */
+function fill(
+  message: string,
+  values: Record<string, string>,
+  tags: Record<string, (words: string) => string> = {}
+): string {
+  const kept: string[] = []
+  const keep = (markdown: string) => `\u0000${kept.push(markdown) - 1}\u0000`
+  const marked = message
+    .replace(/<(\w+)>(.*?)<\/\1>/g, (_, tag: string, words: string) => {
+      const make = tags[tag]
+      if (!make) throw new Error(`No tag <${tag}> for "${message}"`)
+      return keep(make(prose(words)))
+    })
+    .replace(/\{(\w+)\}/g, (_, name: string) => {
+      if (!(name in values)) throw new Error(`No value {${name}} for "${message}"`)
+      return keep(values[name])
+    })
+  return prose(marked).replace(/\u0000(\d+)\u0000/g, (_, index: string) => kept[Number(index)])
+}
+
+/** An option's anchor: its global id in lower case, words joined by `-`. */
+export function optionAnchor(id: string): string {
+  return id.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "") || "list"
+}
+
+/** How each language quotes a phrase in running text. */
+const QUOTES: Record<AppLocale, readonly [string, string]> = {
+  en: ["\u201c", "\u201d"],
+  es: ["\u00ab", "\u00bb"],
+  "pt-BR": ["\u201c", "\u201d"],
+  ar: ["\u00ab", "\u00bb"],
+}
+
+/**
+ * Markdown as plain text, for structured data: links and marks dropped, and
+ * code bare — a name or a letter — or quoted when it is a message.
+ */
+function plainText(markdown: string, locale: AppLocale): string {
+  const [open, close] = QUOTES[locale]
+  return markdown
+    .replace(/\[([^\]]*)\]\([^)]*\)/g, "$1")
+    .replace(/`+([^`]*)`+/g, (_, inner: string) => (inner.includes(" ") ? `${open}${inner}${close}` : inner))
+    .replace(/\*\*([^*]*)\*\*/g, "$1")
+    .replace(/[\u2068\u2069]/g, "")
+    .replace(/\s+/g, " ")
+    .trim()
+}
+
+/**
+ * A notes text with the engine's words put in: `<Keyword id="Through" />` is
+ * the keyword as the command language spells it, `<Message id="…" />` what
+ * the command line says, `<Command id="TRIM" />` the command's name, a link to
+ * its page when it has one. Notes never type them: in Spanish Through is
+ * `Atravesar`, and the engine is the one to say so.
+ */
+function engineWords(
+  markdown: string,
+  command: string,
+  text: EngineText,
+  paged: ReadonlySet<string>
+): string {
+  return markdown
+    .replace(/<Keyword\s+(?:command="([^"]+)"\s+)?id="([^"]+)"\s*\/>/g, (_, other: string | undefined, id: string) =>
+      code(text.keyword(other ?? command, id))
+    )
+    .replace(/<Message\s+id="([^"]+)"\s*\/>/g, (_, id: string) =>
+      code(text.message(id as Parameters<EngineText["message"]>[0]))
+    )
+    .replace(/<Command\s+id="([^"]+)"\s*\/>/g, (_, id: string) => {
+      const [name] = text.commandNames(id)
+      if (!name) throw new Error(`<Command id="${id}" /> names no command`)
+      return id !== command && paged.has(id) ? `[${code(name)}](${commandPagePath(id)})` : code(name)
+    })
+}
+
+/**
+ * A command's own page in `locale`: its notes (the lead, what each option
+ * does, what it lacks, the questions people search) around what the engine
+ * says — its names and aliases, each keyword as the command language spells
+ * it and its letters, and a session it draws and writes the history of. The
+ * page is the notes' language's; a live language without them fails here.
+ */
+export async function commandPage(id: string, locale: AppLocale): Promise<string> {
+  const root = process.cwd()
+  const notes = readNotes(root, id, locale)
+  const english = readNotes(root, id, routing.defaultLocale)
+  if (!notes || !english) throw new Error(`${id} has no notes in ${locale} (${COMMAND_NOTES_NOTE})`)
+  const t = await loadMessages(locale)
+  const labels = t.Docs.command
+  const engineLocale = await loadEngineLocale(locale)
+  const text = engineText(engineLocale)
+  const command = autocadCommands(engineLocale).find((entry) => entry.id === id)
+  if (!command) throw new Error(`${id} is no AutoCAD command of the engine's catalog`)
+  const paged = new Set(notedCommands(root))
+  const words = (markdown: string) => engineWords(markdown, id, text, paged)
+
+  const access = [
+    `- **${prose(labels.command)}:** ${code(command.name)}`,
+    command.name !== command.id &&
+      `- **${prose(labels.english)}:** ${fill(labels.englishValue, { name: code(command.id), typed: code(`_${command.id}`) })}`,
+    command.aliases.length > 0 &&
+      `- **${prose(t.Docs.reference.aliases)}:** ${command.aliases.map(code).join(", ")}`,
+    `- **${prose(labels.panel)}:** [${prose(t.Groups[command.group])}](${COMMANDS_PATH}#${command.group})`,
+    `- **${prose(labels.try)}:** ${fill(labels.tryText, { key: code(command.key) }, { editor: (words) => `[${words}](${localePath(locale, EDITOR_PATH)})` })}`,
+  ].filter(Boolean)
+
+  const blocks: string[] = [
+    words(notes.lead),
+    access.join("\n"),
+    `## ${prose(labels.session)} [#session]`,
+    prose(labels.sessionLead),
+    `<Session name="${commandSlug(id)}" caption="${notes.data.figure}" />`,
+  ]
+
+  if (notes.options.length > 0) {
+    blocks.push(`## ${prose(labels.options)} [#options]`)
+    for (const option of notes.options) {
+      // As the prompt lists it: Spanish OFFSET's Through is `punto a Atravesar`.
+      const word = text.keywordLabel(id, option.id) ?? text.keyword(id, option.id)
+      const letters = text.abbreviation(id, option.id)
+      const name = letters && letters !== word ? `${code(word)} (${code(letters)})` : code(word)
+      blocks.push(`### ${isolate(name, locale)} [#${optionAnchor(option.id)}]`, words(option.text))
+    }
+  }
+
+  const coverage = `[${prose(t.Docs.reference.coverage)}](${coverageUrl(id, root)})`
+  if (notes.missing) {
+    blocks.push(`## ${prose(labels.missing)} [#missing]`, words(notes.missing), coverage)
+  }
+
+  blocks.push(`## ${prose(labels.questions)} [#questions]`)
+  for (const { question, answer } of notes.questions) {
+    blocks.push(`### ${words(question)}`, words(answer))
+  }
+
+  const related = english.data.related ?? []
+  if (related.length > 0) {
+    const catalog = new Map(autocadCommands(engineLocale).map((entry) => [entry.id, entry]))
+    blocks.push(
+      `## ${prose(labels.related)} [#related]`,
+      related
+        .map((other) => {
+          const entry = catalog.get(other)
+          if (!entry) throw new Error(`${id}'s related ${other} is no AutoCAD command of the engine's catalog`)
+          const page = readNotes(root, other, locale)
+          return page
+            ? `- [${prose(page.data.title)}](${commandPagePath(other)})`
+            : `- [${commandHeading(entry, locale)}](${COMMANDS_PATH}#${commandSlug(other)}): ${prose(entry.description)}`
+        })
+        .join("\n")
+    )
+  }
+  if (!notes.missing) blocks.push(coverage)
+
+  return `${frontmatter({
+    title: notes.data.title,
+    metaTitle: notes.data.metaTitle,
+    description: notes.data.description,
+    type: "reference",
+    generated: GENERATOR,
+    faq: notes.questions.map(({ question, answer }) => ({
+      question: plainText(words(question), locale),
+      answer: plainText(words(answer), locale),
+    })),
+  })}\n${blocks.join("\n\n")}\n`
+}
+
+/** Where a command's notes are, for an error that names them. */
+const COMMAND_NOTES_NOTE = "content/commands/"
+
+export type { CommandNotes }

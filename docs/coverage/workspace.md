@@ -164,8 +164,9 @@ tooltip, command, palette or dialog box"; HELP: "Press F1 … when command is ac
 for that command"): the running command's global name — a transparent one's inside another
 (`'ZOOM` in LINE), `LINE` from `LINEA` — or none at `Command:` (`EngineHost.showHelp`,
 `CadEngineOptions.onHelp`); taken from a focused field too, as every function key. `/draw` opens
-the command's entry in the docs' reference (`/docs/commands#line`, in the page's language) or, at
-rest, Getting started, in a tab of its own, as AutoCAD opens its Help in a browser. A host that
+the command's own page in the docs (`/docs/commands/offset`, in the page's language), its entry in
+the reference where it has none (`/docs/commands#line`) or, at rest, Getting started, in a tab of
+its own, as AutoCAD opens its Help in a browser. A host that
 shows no help leaves F1 to the browser. WHY a page may take it: Chrome's F1 is
 `IDC_HELP_PAGE_VIA_KEYBOARD`, not in `kReservedCommandIds` (`chrome/browser/ui/accelerator_table.cc`,
 main, 2026-10-30)

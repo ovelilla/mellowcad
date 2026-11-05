@@ -1,0 +1,79 @@
+---
+title: "Desfase en AutoCAD: DESFASE (OFFSET)"
+metaTitle: "Desfase en AutoCAD: comando DESFASE (OFFSET)"
+description: "Cómo funciona DESFASE (OFFSET, alias DF) de AutoCAD en español, solicitud a solicitud: distancia o punto a Atravesar, Borrar y Capa. Pruébalo gratis online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando OFFSET en español?","answer":"DESFASE, con los alias DF y EQ. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _OFFSET."},{"question":"¿Por qué no puedo desfasar un objeto?","answer":"DESFASE desfasa líneas, arcos, círculos, polilíneas 2D, elipses y splines. Rechaza los textos, los textos de líneas múltiples, las referencias a bloque, las cotas y los sombreados con «Imposible transponer este objeto.», y lo mismo cuando la distancia reduciría a nada un círculo, un arco o una polilínea. Un objeto de una capa bloqueada no se puede designar, y una polilínea 3D se pasa por alto."},{"question":"¿Cómo desfaso la misma línea varias veces?","answer":"Designa la línea y escribe la letra de Múltiple en la solicitud del lado: cada punto de ese lado hace una copia más, cada una una distancia más allá de la anterior. O deja la opción por defecto y designa cada vez la copia más reciente."},{"question":"¿Cómo pongo las copias en la capa actual?","answer":"Elige Capa en la primera solicitud y después Actual. Desde entonces, cada copia va a la capa actual, hasta que vuelvas a elegir Origen."}]
+---
+
+DESFASE (OFFSET en inglés) dibuja una copia de un objeto paralela a él, a la distancia que escribes o pasando por un punto que señalas: una línea da una línea paralela; un círculo o un arco, uno concéntrico; una polilínea, un contorno por dentro o por fuera, y una elipse o una spline, una spline que la sigue. Como en AutoCAD, toma un objeto cada vez: das la distancia una vez y después designas un objeto y el lado donde va su copia, tantas veces como quieras. Intro lo termina.
+
+- **Comando:** `DESFASE`
+- **En inglés:** `OFFSET`, que se escribe `_OFFSET` en cualquier idioma
+- **Alias:** `DF`, `EQ`
+- **Grupo:** [Modificar](/docs/commands#modify)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `DF` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="offset" caption="Un rectángulo desfasado 6 hacia dentro y un círculo 6 hacia fuera: cada uno designado y después su lado." />
+
+## Opciones [#options]
+
+### `punto a Atravesar` (`A`) [#through]
+
+En lugar de una distancia, cada copia pasa por un punto que señalas o escribes. Es la opción por defecto de la primera solicitud, así que Intro la elige mientras no se haya dado una distancia; a partir de entonces, Intro repite la última distancia en ese dibujo.
+
+### `Borrar` (`B`) [#erase]
+
+Pregunta si se borra cada objeto de origen después de desfasarlo, `Sí` o `No` (por defecto). Con `Sí`, la copia sustituye al objeto. La elección se mantiene el resto de la sesión, y el siguiente DESFASE la dice en su primera línea.
+
+### `Capa` (`C`) [#layer]
+
+Pregunta dónde van las copias: en la capa `Actual` o en la del objeto de `Origen` (por defecto). También se mantiene durante la sesión.
+
+### `Salir` (`S`) [#exit]
+
+Termina el comando, como Intro en la solicitud del objeto.
+
+### `Múltiple` (`M`) [#multiple]
+
+En la solicitud del lado: sigue desfasando el mismo objeto sin volver a designarlo, cada copia una distancia más allá de la anterior, hasta Intro o `Salir`.
+
+### `Deshacer` (`D`) [#undo]
+
+Deshace la última copia, sea del objeto que sea, y vuelve a pedir un objeto. Si no queda ninguna copia que deshacer, lo dice.
+
+## Lo que aún no hace [#missing]
+
+OFFSETGAPTYPE 1 y 2: las esquinas de una polilínea desfasada se cierran siempre como con 0, alargando los segmentos hasta que se encuentran. El desfase de una spline o de una elipse queda dentro de la tolerancia de AutoCAD, pero sus nodos caen donde los pone MellowCAD, no donde los pone AutoCAD. Con punto a atravesar sobre una spline, la información de herramientas muestra X e Y, no la distancia.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#offset--o--es-desfase--df--eq--pt-br-deslocamento)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando OFFSET en español?
+
+DESFASE, con los alias `DF` y `EQ`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_OFFSET`.
+
+### ¿Por qué no puedo desfasar un objeto?
+
+DESFASE desfasa líneas, arcos, círculos, polilíneas 2D, elipses y splines. Rechaza los textos, los textos de líneas múltiples, las referencias a bloque, las cotas y los sombreados con `Imposible transponer este objeto.`, y lo mismo cuando la distancia reduciría a nada un círculo, un arco o una polilínea. Un objeto de una capa bloqueada no se puede designar, y una polilínea 3D se pasa por alto.
+
+### ¿Cómo desfaso la misma línea varias veces?
+
+Designa la línea y escribe la letra de `Múltiple` en la solicitud del lado: cada punto de ese lado hace una copia más, cada una una distancia más allá de la anterior. O deja la opción por defecto y designa cada vez la copia más reciente.
+
+### ¿Cómo pongo las copias en la capa actual?
+
+Elige `Capa` en la primera solicitud y después `Actual`. Desde entonces, cada copia va a la capa actual, hasta que vuelvas a elegir `Origen`.
+
+## Comandos relacionados [#related]
+
+- [Recortar en AutoCAD: RECORTA (TRIM)](/docs/commands/trim)
+- [ALARGA (EXTEND)](/docs/commands#extend): Alargar
+- [EMPALME (FILLET)](/docs/commands#fillet): Empalme
+- [COPIA (COPY)](/docs/commands#copy): Copiar

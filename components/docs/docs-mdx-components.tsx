@@ -165,9 +165,9 @@ export function docsMdxComponents(
         </CodeBlock>
       )
     },
-    Session: ({ name }: { name: string }) => {
+    Session: ({ name, caption }: { name: string; caption?: string }) => {
       if (!isSession(name)) throw new Error(`<Session name="${name}" /> names no session`)
-      return <DocsSession id={name} locale={locale} />
+      return <DocsSession id={name} locale={locale} caption={caption} />
     },
     table: (props) => (
       <div className="my-6 overflow-x-auto rounded-lg border border-border">

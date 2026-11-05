@@ -288,14 +288,14 @@
     "useLead": "For whoever draws: the first steps, every command and shortcut, and where MellowCAD differs from AutoCAD.",
     "pages": {
       "commands": {
-        "title": "Commands",
-        "metaTitle": "AutoCAD commands and aliases, by ribbon panel",
-        "description": "Every AutoCAD command MellowCAD runs, by ribbon panel: its name, its aliases and the first thing it asks.",
-        "lead": "Each command as you type it at the command line, filed under the ribbon panel you would look for it on. The first prompt is the engine's own: the same order and the same option letters you will see when you run it."
+        "title": "AutoCAD commands",
+        "metaTitle": "AutoCAD commands list, with aliases and prompts",
+        "description": "The AutoCAD commands MellowCAD runs, by ribbon panel: each name and alias, the first thing it asks and, for the main ones, a page with every option.",
+        "lead": "Each command as you type it at the command line, filed under the ribbon panel you would look for it on. The first prompt is the engine's own: the same order and the same option letters you will see when you run it. A command with a page of its own links to it: its options, a session the engine draws and what it does not do yet."
       },
       "shortcuts": {
-        "title": "Keyboard shortcuts",
-        "metaTitle": "AutoCAD keyboard shortcuts: F-keys and Ctrl keys",
+        "title": "AutoCAD keyboard shortcuts",
+        "metaTitle": "AutoCAD shortcut keys: F-keys and Ctrl keys",
         "description": "The keys MellowCAD answers: the drafting aids, editing and files, the window and the command line.",
         "lead": "The keys MellowCAD answers, the ones an AutoCAD user already has in their fingers. A command is named as you would type it; its aliases are on the commands page."
       }
@@ -304,6 +304,20 @@
       "aliases": "Aliases",
       "firstPrompt": "First prompt",
       "coverage": "What it does and still lacks, in detail (in English)"
+    },
+    "command": {
+      "command": "Command",
+      "english": "In English",
+      "englishValue": "{name}, typed {typed} in any language",
+      "panel": "Panel",
+      "try": "Try it",
+      "tryText": "<editor>Open the editor</editor>, type {key} and press Enter.",
+      "session": "At the command line",
+      "sessionLead": "The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.",
+      "options": "Options",
+      "missing": "What it does not do yet",
+      "questions": "Questions",
+      "related": "Related commands"
     },
     "shortcuts": {
       "key": "Key",

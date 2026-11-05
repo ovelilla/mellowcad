@@ -1,0 +1,82 @@
+---
+title: "Comando TRIM (APARAR) no AutoCAD"
+description: "Como funciona o TRIM do AutoCAD em português, APARAR (alias AP), prompt a prompt: modos Rápido e Padrão, arestas de corte e cerca. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando TRIM no AutoCAD em português?","answer":"APARAR, com o alias AP. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _TRIM."},{"question":"Por que o trim apaga a linha inteira?","answer":"Porque o comando está no modo Rápido, o padrão do AutoCAD desde a versão 2021: selecionar um objeto que nenhuma aresta cruza o apaga. Escolha mOdo e depois Padrão para que ele o deixe e avise."},{"question":"Como aparar várias linhas de uma vez?","answer":"Clique num ponto vazio e indique um segundo ponto: cada objeto que essa cerca cruza é aparado num só passo. Ou escolha Intersecção e desenhe uma janela sobre os trechos a tirar."},{"question":"Como estender uma linha com o trim?","answer":"Segure Shift ao selecionar a linha perto da ponta a estender: ela cresce até a aresta mais próxima, como com ESTENDER, e a próxima seleção sem Shift volta a aparar."}]
+---
+
+O TRIM, APARAR no AutoCAD em português, apara um objeto até onde outros o cruzam: você seleciona o trecho a tirar, e ele some até o cruzamento mais próximo de cada lado. Começa no modo Rápido, como o do AutoCAD: todo objeto é aresta de corte, e um objeto que nada cruza é apagado inteiro. Segurando Shift ao selecionar, o objeto é estendido até a aresta mais próxima, como com `ESTENDER`. Cada seleção é um passo que o Desfazer reverte; Enter encerra o comando.
+
+- **Comando:** `APARAR`
+- **Em inglês:** `TRIM`, que se digita `_TRIM` em qualquer idioma
+- **Aliases:** `AP`
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `AP` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="trim" caption="Uma linha aparada até as duas linhas que a cruzam: cada ponta selecionada uma vez, no modo Rápido." />
+
+## Opções [#options]
+
+### `Arestas de corte` (`A`) [#cutting]
+
+Escolhe quais objetos cortam: selecione-os, ou pressione Enter para usar todos. Daí em diante só eles cortam, qualquer que seja o modo, até o comando terminar.
+
+### `Cerca` (`C`) [#fence]
+
+Pede os pontos de uma linha, quantos você quiser até Enter: cada objeto que ela cruza é aparado onde é cruzado, num só passo. O modo Padrão a lista; o Rápido também a aceita, e nele uma seleção no vazio já começa uma cerca de dois pontos.
+
+### `Intersecção` (`I`) [#crossing]
+
+Pede os dois cantos de uma janela: tudo o que o contorno dela cruza é aparado, num só passo. Um objeto inteiro dentro da janela não é cruzado por ela.
+
+### `mOdo` (`O`) [#mode]
+
+Alterna entre `Rápido` e `Padrão`. No modo Padrão, o APARAR pede primeiro as arestas de corte (Enter usa todas), deixa o objeto que nenhuma aresta cruza com `Não interseciona com a aresta de corte.`, lista Cerca e Aresta, e uma seleção no vazio começa uma janela de intersecção. O modo vale para o APARAR e o ESTENDER, e dura a sessão.
+
+### `Aresta` (`A`) [#edge]
+
+Só no modo Padrão. Com `Estender`, uma aresta corta também onde cruzaria se fosse estendida: uma linha para os dois lados, um arco pelo círculo inteiro; `Não` é o padrão.
+
+### `aPagar` (`P`) [#erase]
+
+Apaga objetos sem sair do comando: selecione-os e o Enter os apaga, como mais um passo do APARAR que o Desfazer pode reverter.
+
+### `Desfazer` (`D`) [#undo]
+
+Aparece assim que o prompt teve uma resposta (uma seleção, uma cerca, uma janela): desfaz o último corte e, quando não resta nada a desfazer, avisa.
+
+## O que ainda não faz [#missing]
+
+Projeção: a opção de projeção do AutoCAD (Nenhuma, UCS, Vista) não é oferecida, e tudo é calculado projetado no plano XY do UCS, que é o padrão do AutoCAD, UCS. A cerca ainda não pode ser arrastada com o cursor, só indicada ponto a ponto. O modo de aparar e a escolha de Aresta duram a sessão, enquanto o AutoCAD os guarda de uma sessão para outra. Um objeto inclinado em relação ao UCS, exceto uma spline, não corta nem é aparado.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al--pt-br-aparar--ap--estender--est)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando TRIM no AutoCAD em português?
+
+APARAR, com o alias `AP`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_TRIM`.
+
+### Por que o trim apaga a linha inteira?
+
+Porque o comando está no modo Rápido, o padrão do AutoCAD desde a versão 2021: selecionar um objeto que nenhuma aresta cruza o apaga. Escolha `mOdo` e depois `Padrão` para que ele o deixe e avise.
+
+### Como aparar várias linhas de uma vez?
+
+Clique num ponto vazio e indique um segundo ponto: cada objeto que essa cerca cruza é aparado num só passo. Ou escolha `Intersecção` e desenhe uma janela sobre os trechos a tirar.
+
+### Como estender uma linha com o trim?
+
+Segure Shift ao selecionar a linha perto da ponta a estender: ela cresce até a aresta mais próxima, como com `ESTENDER`, e a próxima seleção sem Shift volta a aparar.
+
+## Comandos relacionados [#related]
+
+- [ESTENDER (EXTEND)](/docs/commands#extend): Estender
+- [Comando OFFSET (DESLOCAMENTO) no AutoCAD](/docs/commands/offset)
+- [CONCORD (FILLET)](/docs/commands#fillet): Concordância
+- [QUEBRAR (BREAK)](/docs/commands#break): Quebrar

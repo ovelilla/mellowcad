@@ -132,7 +132,7 @@ and what each option does must be the ones they already know.
 - **`.claude/rules/`** — the rules of each area, loaded with the files their `paths:` match (by
   Claude Code and by Copilot). Before creating something in an area whose files you have not
   opened, read its rule; the index is `grep -H '^description:' .claude/rules/*.md`.
-- **Skills** (`.claude/skills/`, loaded on demand): `new-command`, `extend-model`,
+- **Skills** (`.claude/skills/`, loaded on demand): `new-command`, `command-page`, `extend-model`,
   `autocad-research`, `browser-verify`, `add-language`, `language-review`, `finish-feature`,
   `deps-review`, `command-review`.
 - **`docs/coverage/`** — what each implemented command does and which AutoCAD options it still

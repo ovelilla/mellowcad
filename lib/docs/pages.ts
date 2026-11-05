@@ -7,6 +7,7 @@ import type { AppLocale } from "@/i18n/routing"
 import { LIVE_LOCALES, routing } from "@/i18n/routing"
 import { REPOSITORY_URL } from "@/lib/site"
 
+import { COMMANDS_PATH } from "./command-pages"
 import { docsSource } from "./docs-source"
 import {
   DOCS_PACKAGES,
@@ -43,15 +44,39 @@ export function isTranslated(page: DocsPage): boolean {
   })
 }
 
+/** Whether a node of the page tree is a package's folder ("Build"). */
+function isPackageFolder(node: Node): boolean {
+  return (
+    node.type === "folder" &&
+    DOCS_PACKAGES.some((pkg) => node.index?.url.endsWith(`${DOCS_PATH}/${pkg.slug}`))
+  )
+}
+
 /**
- * The navigation's two sections: "Use" is the pages at the docs' root,
- * "Build" the packages' folders (`content/docs/meta.json` orders both).
+ * The navigation's two sections: "Use" is the pages at the docs' root, and
+ * the command reference, a folder only for the commands' own pages under it,
+ * listed as its index; "Build" the packages' folders (`content/docs/meta.json`
+ * orders both).
  */
 export function navSections(nodes: Node[]): { use: Node[]; build: Node[] } {
   return {
-    use: nodes.filter((node) => node.type === "page"),
-    build: nodes.filter((node) => node.type !== "page"),
+    use: nodes.flatMap((node): Node[] => {
+      if (node.type === "page") return [node]
+      if (node.type === "folder" && node.index && !isPackageFolder(node)) {
+        return [{ ...node.index, name: node.name }]
+      }
+      return []
+    }),
+    build: nodes.filter(isPackageFolder),
   }
+}
+
+/**
+ * Whether the page is a command's own (`/docs/commands/offset`): not in the
+ * navigation, which lists the reference that leads to each.
+ */
+export function isCommandPage(page: DocsPage): boolean {
+  return page.slugs.length === 2 && `${DOCS_PATH}/${page.slugs[0]}` === COMMANDS_PATH
 }
 
 /**
@@ -95,8 +120,9 @@ export function pageSource(
 }
 
 /**
- * Every page with its own file in `locale`, in the navigation's order: what
- * the `.md` routes and `llms.txt` serve.
+ * Every page with its own file in `locale`, in the navigation's order, and
+ * the commands' own pages, which it does not list, after it by name: what
+ * the `.md` routes, the sitemap and `llms.txt` serve.
  */
 export function ownPages(locale: AppLocale): DocsPage[] {
   const order: string[] = []
@@ -110,8 +136,12 @@ export function ownPages(locale: AppLocale): DocsPage[] {
     }
   }
   visit(docsSource.getPageTree(locale).children)
+  const rank = (page: DocsPage) => {
+    const index = order.indexOf(page.url)
+    return index === -1 ? order.length : index
+  }
   return docsSource
     .getPages(locale)
     .filter((page) => pageLanguage(page) === locale)
-    .sort((a, b) => order.indexOf(a.url) - order.indexOf(b.url))
+    .sort((a, b) => rank(a) - rank(b) || a.url.localeCompare(b.url))
 }

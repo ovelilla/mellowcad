@@ -76,16 +76,23 @@ export interface SheetTransition {
 export interface HelpLinks {
   readonly index: string
   readonly command: string
+  /**
+   * The commands with a help page of their own, by global name in lower case
+   * (`offset`): F1 opens that page rather than `command`'s.
+   */
+  readonly commands?: Readonly<Record<string, string>>
 }
 
 /** The page F1 opens for `command`, the running command's global name, or for none. */
 export function helpUrl(help: HelpLinks, command: string | null): string {
-  return command === null
-    ? help.index
-    : help.command.replace(
-        "{command}",
-        encodeURIComponent(command.toLowerCase())
-      )
+  if (command === null) return help.index
+  const name = command.toLowerCase()
+  return (
+    (Object.hasOwn(help.commands ?? {}, name)
+      ? help.commands?.[name]
+      : undefined) ??
+    help.command.replace("{command}", encodeURIComponent(name))
+  )
 }
 
 /**

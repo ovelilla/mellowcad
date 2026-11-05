@@ -36,6 +36,8 @@ description: Close a feature, command or fix in mellowcad — the gate, the cove
      `Faq`, and the section the feature belongs to (`Precision`, `Toolset`, `LocalFirst`);
    - the written "Use" pages (`getting-started`, `content/docs/*.mdx`), each with its
      translations' `sourceHash` (`docs.md`);
+   - a command's notes (`content/commands/<slug>.md` and its languages), when it has a page:
+     `docs:check` fails on a coverage entry whose Missing changed until they say it (`docs.md`);
    - a figure or `DOCS_SESSIONS` script, only where a section shows the feature
      (`content/figures.ts`);
    - with any of these changed, `CONTENT_UPDATED` in `lib/site.ts` (`marketing.md`).

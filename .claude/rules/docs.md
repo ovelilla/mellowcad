@@ -2,6 +2,7 @@
 description: The site's /docs — one source per page, languages, Fumadocs and the MDX pipeline, search, llms.txt and the .md routes
 paths:
   - "content/docs/**"
+  - "content/commands/**"
   - "lib/docs/**"
   - "components/docs/**"
   - "app/*/*marketing*/docs/**"
@@ -61,15 +62,40 @@ claims follow `i18n.md`.
   canonical to it, as a missing key is English's; a generated one is written for a language once
   its messages name the page (`translatesPage`).
 - **A generated page is a file snapshot** of `lib/docs/generate.test.ts` (`generated:` in its
-  frontmatter), written from the engine's catalog, the messages and `docs/coverage/`: never edit
-  one; change its source and run `npx vitest run lib/docs/generate.test.ts -u`. WHY in Vitest:
-  Node resolves `@mellowcad/engine` to its untracked `dist/`, and the macro bundles with packages
-  external, so neither `docs:check` nor a remark plugin can read the catalog.
+  frontmatter), written from the engine's catalog, the messages, `docs/coverage/` and a command's
+  notes: never edit one; change its source and run `npx vitest run lib/docs/generate.test.ts -u`.
+  WHY in Vitest: Node resolves `@mellowcad/engine` to its untracked `dist/`, and the macro bundles
+  with packages external, so neither `docs:check` nor a remark plugin can read the catalog. WHY a
+  file: the build reads only `content/docs/`, so a page changes in the commit that changes its
+  source, and a commit of Markdown alone, which the deploy skips (`scripts/vercel/ignore-build.sh`),
+  never leaves a page stale.
 - Every command has a `###` heading in `docs/coverage/` naming it in a code span: the reference
   links to it and fails without one.
-- **The reference's anchors are global names in lower case** (`#line`, `#-hatch`), the same in
-  every language: F1 in `/draw` opens them (its page's `help`), so renaming one breaks the editor's
-  help.
+- **The reference** is `commands/index.mdx` (`/docs/commands`), the navigation's "Use" entry for
+  the folder; its anchors are global names in lower case (`#line`, `#-hatch`), the same in every
+  language, which links and F1 opened before a command had a page: never rename one.
+
+## A command's own page
+
+- `/docs/commands/<global name in lower case>`, in every live language, generated
+  (`commandPage`) from its **notes**, `content/commands/<slug>.md` and one per language
+  (`offset.es.md`): what is written by hand — title, description, lead, what each option does,
+  what it lacks, the questions its searchers ask — around what the engine says: names, aliases,
+  each keyword with its letters, a session (`content/demos/commands/<slug>.ts`, registered in
+  `COMMAND_SESSIONS`). No notes, no page: a command that does not fill one stays in the reference.
+  How to write one: skill `command-page`.
+- Notes never type the engine's words: `<Keyword id="Yes" />`, `<Message id="…" />` and
+  `<Command id="TRIM" />` (a link where TRIM has a page) are the command language's; option and
+  section headings are ids, the same in every language (`parseNotes`).
+- **They keep up with their sources**, held by `docs:check` (`checkCommandNotes`): the English
+  notes carry `coverage`, the hash of their coverage entry's Missing, so a command that gains or
+  loses an option fails until its page says so; a translation carries the English notes'
+  `sourceHash`, with the same options and as many questions. Their words follow `i18n.md`'s
+  claims, and their titles each language's searches (`docs/i18n/<tag>.md`): the searched word
+  first, both names where they differ.
+- F1 opens a command's page where it has one (`HelpLinks.commands`, from the pages' folder), and
+  the reference's anchor otherwise. Not in the navigation: the reference stands for them, and their
+  questions are their `FAQPage` (frontmatter `faq`).
 - **A written page never types a command's name**: `<Command id="NEW" />` is the name in the page's
   command language (`NUEVO` in Spanish), read from `cad/locales/*.json` by `remarkCommandNames`,
   which a remark plugin can read without the engine.
@@ -133,11 +159,15 @@ claims follow `i18n.md`.
   lists and the FAQ (`t.markup`, links as Markdown), its numbers from `lib/facts.ts`; each live
   language with the command names its users type (from the engine) and its "Use" pages; then every
   English page's `.md`. `llms-full.txt` is every English page's Markdown, one after another.
+- **A command's own page is in neither**: the reference's `.md` links each one, and listed they
+  would be most of `llms.txt` and several times `llms-full.txt` (325 KB before them; about 5 KB
+  more per command), past what an agent reads whole. Its `.md` is served like any page's.
 
 ## `docs:check`
 
 `npm run docs:check`, in the hook and CI: frontmatter and `meta.json`, each package's pages (its
 README, `api.md` and every guide) and their includes, each "Use" page in every live language and its translations' `sourceHash`, each
+command's notes and pages, each
 `<Command id>`, the differences' quotes and sections, the links of the package files and of
 written pages (a fragment to a root page's heading), the examples blocks name, the homepage, and
 every page's search title (`metaTitle`, else `title`, with ` · MellowCAD`) and description: each its

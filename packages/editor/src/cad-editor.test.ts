@@ -183,4 +183,11 @@ describe("CadEditor's help", () => {
   it("opens the index with no command running", () => {
     expect(helpUrl(help, null)).toBe("/docs/getting-started")
   })
+
+  it("opens a command's own page where the host has one", () => {
+    const pages = { ...help, commands: { offset: "/es/docs/commands/offset" } }
+    expect(helpUrl(pages, "OFFSET")).toBe("/es/docs/commands/offset")
+    expect(helpUrl(pages, "LINE")).toBe("/es/docs/commands#line")
+    expect(helpUrl(pages, "CONSTRUCTOR")).toBe("/es/docs/commands#constructor")
+  })
 })

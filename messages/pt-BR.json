@@ -288,13 +288,13 @@
     "useLead": "Para quem desenha: os primeiros passos, cada comando e atalho de teclado, e onde o MellowCAD difere do AutoCAD.",
     "pages": {
       "commands": {
-        "title": "Comandos",
-        "metaTitle": "Comandos do AutoCAD em português e seus aliases",
-        "description": "Cada comando do AutoCAD que o MellowCAD executa, por painel da faixa de opções: seu nome, seus aliases e a primeira coisa que ele pergunta.",
-        "lead": "Cada comando como você o digita na linha de comando, com o nome que ele tem no AutoCAD em português, sob o painel da faixa de opções em que você o procuraria. Com um sublinhado na frente, digita-se o nome em inglês, como no AutoCAD (`_LINE`). O primeiro prompt é o do próprio motor: a mesma ordem e as mesmas letras de opção que você verá ao executá-lo."
+        "title": "Comandos do AutoCAD",
+        "metaTitle": "Comandos do AutoCAD em português e inglês",
+        "description": "Os comandos do AutoCAD em português com o nome em inglês, os aliases e o primeiro prompt, por painel da faixa de opções; os principais, com página própria.",
+        "lead": "Cada comando como você o digita na linha de comando, com o nome que ele tem no AutoCAD em português e, entre parênteses, o inglês, sob o painel da faixa de opções em que você o procuraria. Com um sublinhado na frente, digita-se o nome em inglês, como no AutoCAD (`_LINE`). O primeiro prompt é o do próprio motor: a mesma ordem e as mesmas letras de opção que você verá ao executá-lo. Um comando com página própria tem o link dela: as opções, uma sessão desenhada pelo motor e o que ele ainda não faz."
       },
       "shortcuts": {
-        "title": "Atalhos de teclado",
+        "title": "Atalhos de teclado do AutoCAD",
         "metaTitle": "Atalhos de teclado do AutoCAD: teclas F e Ctrl",
         "description": "As teclas a que o MellowCAD responde: os auxílios de desenho, a edição e os arquivos, a janela e a linha de comando.",
         "lead": "As teclas a que o MellowCAD responde, as que um usuário do AutoCAD já tem nos dedos. Cada comando é nomeado como você o digitaria; seus aliases estão na página de comandos."
@@ -304,6 +304,20 @@
       "aliases": "Aliases",
       "firstPrompt": "Primeiro prompt",
       "coverage": "O que ele faz e o que ainda falta, em detalhe (em inglês)"
+    },
+    "command": {
+      "command": "Comando",
+      "english": "Em inglês",
+      "englishValue": "{name}, que se digita {typed} em qualquer idioma",
+      "panel": "Painel",
+      "try": "Experimente",
+      "tryText": "<editor>Abra o editor</editor>, digite {key} e pressione Enter.",
+      "session": "Na linha de comando",
+      "sessionLead": "O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.",
+      "options": "Opções",
+      "missing": "O que ainda não faz",
+      "questions": "Perguntas frequentes",
+      "related": "Comandos relacionados"
     },
     "shortcuts": {
       "key": "Tecla",

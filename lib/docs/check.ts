@@ -17,6 +17,7 @@ import { commandElements, commandNames } from "./remark-command-names.ts"
 import { resolvePackageLink } from "./remark-package-source.ts"
 import { docsPageSchema, metaSchema } from "./schema.ts"
 import { USE_PAGES, githubAnchor, sourceHash } from "./use.ts"
+import { COMMAND_PAGES_DIR, checkCommandNotes } from "./command-pages.ts"
 import { LOCALE_STATUS, routing } from "../../i18n/routing.ts"
 import { SITE_NAME, SITE_URL } from "../site.ts"
 
@@ -97,18 +98,26 @@ export function checkDocs(root: string): string[] {
   const names = commandNames(root, "en")
   const anchors = new Map(
     pages
-      .filter((page) => !page.includes("/") && !LOCALE_SUFFIX.test(page))
+      .filter((page) => !pagePackage(`${CONTENT_DIR}/${page}`) && !LOCALE_SUFFIX.test(page))
       .map((page) => [contentPagePath(page), headingAnchors(source(page))])
   )
 
+  // A "Use" page is a file at the root, or a folder's index when pages of its
+  // own hang from it (the command reference, `commands/index.mdx`).
+  const pageBase = (name: string) => (pages.includes(`${name}/index.mdx`) ? `${name}/index` : name)
   for (const page of pages.filter((page) => !page.includes("/"))) {
     const name = page.replace(LOCALE_SUFFIX, "").replace(/\.mdx$/, "")
     if (!(USE_PAGES as readonly string[]).includes(name)) {
       report(`${CONTENT_DIR}/${page}`, `"${name}" is not in USE_PAGES (lib/docs/use.ts)`)
     }
   }
+  for (const page of pages.filter((page) => page.includes("/") && !pagePackage(`${CONTENT_DIR}/${page}`))) {
+    if (`${CONTENT_DIR}/${page.split("/")[0]}` !== COMMAND_PAGES_DIR) {
+      report(`${CONTENT_DIR}/${page}`, "a folder of the docs is a package's, or the commands' pages")
+    }
+  }
   for (const name of USE_PAGES) {
-    const english = `${name}.mdx`
+    const english = `${pageBase(name)}.mdx`
     if (!pages.includes(english)) {
       report(`${CONTENT_DIR}/${english}`, "missing: a page of USE_PAGES")
       continue
@@ -119,7 +128,7 @@ export function checkDocs(root: string): string[] {
     }
     const hash = sourceHash(source(english))
     for (const locale of routing.locales.filter((tag) => tag !== routing.defaultLocale)) {
-      const translation = `${name}.${locale}.mdx`
+      const translation = `${pageBase(name)}.${locale}.mdx`
       const file = `${CONTENT_DIR}/${translation}`
       if (!pages.includes(translation)) {
         if (LOCALE_STATUS[locale] === "live") report(file, `missing: ${english} in ${locale}`)
@@ -138,6 +147,16 @@ export function checkDocs(root: string): string[] {
       }
     }
   }
+
+  checkCommandNotes(
+    root,
+    {
+      all: routing.locales,
+      live: routing.locales.filter((locale) => LOCALE_STATUS[locale] === "live"),
+      english: routing.defaultLocale,
+    },
+    report
+  )
 
   const flat = (text: string) => text.replace(/\s+/g, " ")
   for (const { id, sources } of DIFFERENCES) {

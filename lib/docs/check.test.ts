@@ -6,6 +6,7 @@ import { fileURLToPath } from "node:url"
 import { afterEach, describe, expect, it } from "vitest"
 
 import { checkDocs, contentPagePath, markdownLinks } from "./check"
+import { coverageEntry, parseNotes } from "./command-pages"
 import { resolvePackageLink } from "./remark-package-source"
 import { DIFFERENCES, DIFFERENCES_PAGE } from "./differences"
 import { USE_PAGES, sourceHash } from "./use"
@@ -199,6 +200,86 @@ describe("docs:check", () => {
         new RegExp(`^${file(second).replace(/\./g, "\\.")}: its title in search results, ".+", is over 60`)
       ),
       `${file(third)}: ${file(first)} has the same description: give one a metaTitle or reword it`,
+    ])
+  })
+})
+
+describe("a command's notes", () => {
+  const notes = (fields: string, body: string) => `---\n${fields}\n---\n\n${body}\n`
+  const questions = "## Questions\n\n### Q1?\n\nA1.\n\n### Q2?\n\nA2."
+
+  it("hold its pages, its coverage entry, the engine's words and its English", () => {
+    const tree = packages()
+    tree["cad/locales/en.json"] = JSON.stringify({
+      commands: {
+        names: { LINE: ["LINE", "L"], OFFSET: ["OFFSET", "O"] },
+        keywords: { OFFSET: { Through: "Through", Erase: "Erase" } },
+        messages: { cannotOffsetObject: "Cannot offset that object." },
+      },
+    })
+    tree["docs/coverage/modify.md"] =
+      "# Modify\n\n### `OFFSET` / `O`\n\n**Implemented:** most.\n\n**Missing:** OFFSETGAPTYPE 1 and 2\n"
+    const english = notes(
+      'title: "OFFSET"\ndescription: "D"\nfigure: "F"\nrelated: ["NOPE"]\ncoverage: "old"',
+      `Lead <Message id="nope" />.\n\n## Options\n\n### Through\n\nT.\n\n### Spin\n\nS.\n\n${questions}`
+    )
+    tree["content/commands/offset.md"] = english
+    const [stale, missing] = LIVE
+    tree[`content/commands/offset.${stale}.md`] = notes(
+      'title: "O2"\ndescription: "D2"\nfigure: "F2"\nsourceHash: "old"',
+      `Lead.\n\n## Options\n\n### Through\n\nT.\n\n## Missing\n\nM.\n\n${questions}`
+    )
+    for (const locale of LIVE) {
+      if (locale === stale || locale === missing) continue
+      tree[`content/commands/offset.${locale}.md`] = notes(
+        `title: "O${locale}"\ndescription: "D${locale}"\nfigure: "F"\nsourceHash: "${sourceHash(english)}"`,
+        `Lead.\n\n## Options\n\n### Through\n\nT.\n\n### Spin\n\nS.\n\n${questions}`
+      )
+    }
+    tree["content/docs/commands/line.mdx"] = page("A page no notes write.")
+    const hash = sourceHash(english)
+    const coverage = sourceHash("OFFSETGAPTYPE 1 and 2")
+    const unwritten = (locale: string) =>
+      `content/docs/commands/offset${locale === "en" ? "" : `.${locale}`}.mdx: missing: run npx vitest run lib/docs/generate.test.ts -u`
+    const others = LIVE.filter((locale) => locale !== stale && locale !== missing)
+    expect(checkDocs(repo(tree))).toEqual([
+      "content/docs/commands/line.mdx: no notes write it (content/commands/line.md)",
+      `content/commands/offset.md: out of date with its entry in docs/coverage/modify.md ("\`OFFSET\` / \`O\`"): say what it lacks as its Missing does, then set coverage: "${coverage}"`,
+      "content/commands/offset.md: its coverage entry lists what it lacks: so does ## Missing",
+      "content/commands/offset.md: related: NOPE is no command of cad/locales/en.json",
+      unwritten("en"),
+      "content/commands/offset.md: Spin is no keyword of OFFSET (cad/locales/en.json)",
+      'content/commands/offset.md: <Message id="nope" /> names no message of cad/locales/en.json without arguments',
+      unwritten(stale),
+      `content/commands/offset.${stale}.md: out of date with content/commands/offset.md: bring it up to date, then set sourceHash: "${hash}"`,
+      `content/commands/offset.${stale}.md: its options are the English notes', in order: Through, Spin`,
+      `content/commands/offset.${stale}.md: ## Missing goes with the English notes'`,
+      `content/commands/offset.${missing}.md: missing: OFFSET's notes in ${missing}, a live language`,
+      ...others.flatMap((locale) => [unwritten(locale), `content/commands/offset.${locale}.md: Spin is no keyword of OFFSET (cad/locales/en.json)`]),
+    ])
+  })
+
+  it("read stacked headings as one entry, the last one's", () => {
+    const root = repo({
+      "docs/coverage/modify.md":
+        "# Modify\n\n### `UNION`\n\n### `INTERSECT`\n\n**Implemented:** both.\n\n**Missing:** a gap\n\n### `SLICE`\n\n**Implemented:** all.\n",
+    })
+    expect(coverageEntry(root, "UNION")).toEqual({ file: "modify.md", heading: "`UNION`", missing: "a gap" })
+    expect(coverageEntry(root, "SLICE")).toEqual({ file: "modify.md", heading: "`SLICE`", missing: undefined })
+  })
+
+  it("are refused when they do not parse", () => {
+    expect(() => parseNotes("---\ntitle: T\n---\n\nLead.\n", "x.md")).toThrow("description is missing")
+    const fields = 'title: "T"\ndescription: "D"\nfigure: "F"'
+    expect(() => parseNotes(notes(fields, "Lead.\n\n## Steps\n\nS."), "x.md")).toThrow('"## Steps" is none of')
+    expect(() => parseNotes(notes(fields, `Lead.\n\n${questions}\n\n## Options`), "x.md")).toThrow("in this order")
+    expect(() => parseNotes(notes(fields, "Lead.\n\n## Questions\n\n### Q?\n\nA."), "x.md")).toThrow("two at least")
+    const parsed = parseNotes(notes(fields, `Lead.\n\n## Options\n\n### Through\n\nT.\n\n${questions}`), "offset.es.md")
+    expect([parsed.id, parsed.locale, parsed.options, parsed.questions.length]).toEqual([
+      "OFFSET",
+      "es",
+      [{ id: "Through", text: "T." }],
+      2,
     ])
   })
 })

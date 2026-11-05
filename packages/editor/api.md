@@ -84,6 +84,11 @@ export type { HelpLinks }
 export interface HelpLinks {
     readonly index: string;
     readonly command: string;
+    /**
+     * The commands with a help page of their own, by global name in lower case
+     * (`offset`): F1 opens that page rather than `command`'s.
+     */
+    readonly commands?: Readonly<Record<string, string>>;
 }
 
 export { paletteLayoutScript }

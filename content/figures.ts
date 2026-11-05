@@ -11,6 +11,8 @@ import {
   firstLine,
   offsetRectangle,
 } from "./demos/docs"
+import { sessions as offsetSessions } from "./demos/commands/offset"
+import { sessions as trimSessions } from "./demos/commands/trim"
 import { hero } from "./demos/hero"
 import { offsetSession } from "./demos/offset"
 import {
@@ -97,10 +99,21 @@ export const DIAGRAMS = {
 export type FigureId = keyof typeof FIGURES
 
 /**
- * The docs' sessions (`<Session name="…" />` in a written page): a figure and
- * its history from the command `from` names on, or none for a live figure.
+ * The sessions of the commands' own pages (`content/demos/commands/`), each
+ * named after its command's slug (`offset`): the page of a command with notes
+ * shows it.
+ */
+export const COMMAND_SESSIONS = {
+  ...offsetSessions,
+  ...trimSessions,
+}
+
+/**
+ * The docs' sessions (`<Session name="…" />` in a page): a figure and its
+ * history from the command `from` names on, or none for a live figure.
  */
 export const DOCS_SESSIONS = {
+  ...COMMAND_SESSIONS,
   firstLine: {
     figure: { script: firstLine, width: 320, height: 200, padding: 20 },
     from: "LINE",

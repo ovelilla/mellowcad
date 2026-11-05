@@ -6,6 +6,12 @@ import { loadEditorLocale } from "@/i18n/editor"
 import { loadEngineLocale } from "@/i18n/engine"
 import { languageLinks, localePath } from "@/i18n/navigation"
 import { DIRECTION } from "@/i18n/routing"
+import {
+  COMMANDS_PATH,
+  commandPageIds,
+  commandPagePath,
+  commandSlug,
+} from "@/lib/docs/command-pages"
 import { DOCS_PATH } from "@/lib/docs/packages"
 import { EDITOR_LAYOUT_STORAGE, EDITOR_PATH } from "@/lib/site"
 import { EDITOR_SHEET_ID, SHEET_TRANSITION } from "@/lib/view-transition"
@@ -14,8 +20,9 @@ import { EDITOR_SHEET_ID, SHEET_TRANSITION } from "@/lib/view-transition"
 // the page's language without waiting for another request. The site's own parts
 // of the editor — its direction, its mark, its languages, its storage keys and
 // the sheet the landing grows into, which the layout's head reads too — are
-// filled in here, and so is F1's help: the command's entry in the docs'
-// reference (`/docs/commands#line`), or getting started at rest.
+// filled in here, and so is F1's help: the command's own page
+// (`/docs/commands/offset`), its entry in the docs' reference where it has
+// none (`/docs/commands#line`), or getting started at rest.
 export default async function Page() {
   const locale = await getLocale()
   return (
@@ -29,7 +36,13 @@ export default async function Page() {
       sheet={{ id: EDITOR_SHEET_ID, name: SHEET_TRANSITION }}
       help={{
         index: localePath(locale, `${DOCS_PATH}/getting-started`),
-        command: `${localePath(locale, `${DOCS_PATH}/commands`)}#{command}`,
+        command: `${localePath(locale, COMMANDS_PATH)}#{command}`,
+        commands: Object.fromEntries(
+          commandPageIds(/*turbopackIgnore: true*/ process.cwd()).map((id) => [
+            commandSlug(id),
+            localePath(locale, commandPagePath(id)),
+          ])
+        ),
       }}
     />
   )

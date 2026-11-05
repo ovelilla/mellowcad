@@ -7,19 +7,23 @@ import { canonicalPath, pageLanguage } from "./pages"
 import { DOCS_PATH } from "./packages"
 import { historyLine, isSession, renderSession } from "./sessions"
 
-const SESSION = /<Session\s+name="([^"]+)"\s*\/>/g
+const SESSION = /<Session\s+name="([^"]+)"(?:\s+caption="([^"]*)")?\s*\/>/g
 
 /**
- * Each `<Session>` as its history in a text block, recorded in the page's
- * language: what the figure shows, as an agent can read it.
+ * Each `<Session>` as its caption, when the page gives one, and its history
+ * in a text block, recorded in the page's language: what the figure shows,
+ * as an agent can read it.
  */
 async function sessionsAsText(markdown: string, language: Parameters<typeof loadEngineLocale>[0]) {
   const locale = await loadEngineLocale(language)
   const blocks = await Promise.all(
-    [...markdown.matchAll(SESSION)].map(async ([, name]) => {
+    [...markdown.matchAll(SESSION)].map(async ([, name, caption]) => {
       if (!isSession(name)) throw new Error(`<Session name="${name}" /> names no session`)
       const { lines, text } = await renderSession(name, locale)
-      return lines.length ? `\`\`\`text\n${lines.map((line) => historyLine(line, text)).join("\n")}\n\`\`\`` : ""
+      const history = lines.length
+        ? `\`\`\`text\n${lines.map((line) => historyLine(line, text)).join("\n")}\n\`\`\``
+        : ""
+      return [caption, history].filter(Boolean).join("\n\n")
     })
   )
   let index = 0

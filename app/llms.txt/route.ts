@@ -12,7 +12,12 @@ import { engineText } from "@mellowcad/engine"
 import { docsSource } from "@/lib/docs/docs-source"
 import { llmsText, markdownUrl, pageLink } from "@/lib/docs/markdown"
 import { DOCS_PATH } from "@/lib/docs/packages"
-import { navSections, ownPages } from "@/lib/docs/pages"
+import {
+  isCommandPage,
+  navSections,
+  ownPages,
+  pageSource,
+} from "@/lib/docs/pages"
 import { productFacts } from "@/lib/facts"
 import {
   EDITOR_PATH,
@@ -50,6 +55,7 @@ async function languages(): Promise<string[]> {
         locale === routing.defaultLocale
           ? ""
           : `; docs: ${ownPages(locale)
+              .filter((page) => !isCommandPage(page))
               .map((page) => `[${page.data.title}](${markdownUrl(page)})`)
               .join(", ")}`
       return `[${LANGUAGE_NAMES[locale]}](${localeUrl(locale, "/")}): ${english.of(locale)}, with ${commands}${pages}`
@@ -93,7 +99,9 @@ export async function GET() {
     })
   )
 
-  // "Use" is the pages at the docs' root, "Build" the packages' folders.
+  // "Use" is the navigation's pages, "Build" the packages'. A command's own
+  // page is left out: the reference's Markdown links each one, and listed
+  // here they would be most of the file (`docs.md`, "For agents").
   const pages = ownPages(locale)
   const { use } = navSections(docsSource.getPageTree(locale).children)
   const isUse = (page: (typeof pages)[number]) =>
@@ -116,7 +124,9 @@ export async function GET() {
       { title: t("useTitle"), entries: pages.filter(isUse).map(pageLink) },
       {
         title: t("buildTitle"),
-        entries: pages.filter((page) => !isUse(page)).map(pageLink),
+        entries: pages
+          .filter((page) => pageSource(page) !== undefined)
+          .map(pageLink),
       },
       {
         title: "Optional",

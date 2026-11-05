@@ -84,10 +84,16 @@ export async function homeStructuredData(): Promise<Graph> {
 /**
  * A page's place in the site, from the home page down, as a search result
  * shows it instead of the URL. Each step is a full URL in the language its
- * page is served in.
+ * page is served in. A page that answers questions (a command's) adds them as
+ * its `FAQPage`, in the words the page shows.
  */
 export function breadcrumbStructuredData(
-  steps: readonly { name: string; url: string }[]
+  steps: readonly { name: string; url: string }[],
+  faq?: {
+    readonly questions: readonly { question: string; answer: string }[]
+    readonly url: string
+    readonly locale: string
+  }
 ): Graph {
   return {
     "@context": "https://schema.org",
@@ -101,6 +107,21 @@ export function breadcrumbStructuredData(
           item: step.url,
         })),
       },
+      ...(faq && faq.questions.length > 0
+        ? [
+            {
+              "@type": "FAQPage" as const,
+              "@id": `${faq.url}#questions`,
+              url: faq.url,
+              inLanguage: faq.locale,
+              mainEntity: faq.questions.map(({ question, answer }) => ({
+                "@type": "Question" as const,
+                name: question,
+                acceptedAnswer: { "@type": "Answer" as const, text: answer },
+              })),
+            },
+          ]
+        : []),
     ],
   }
 }
