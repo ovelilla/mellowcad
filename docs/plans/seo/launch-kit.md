@@ -15,16 +15,16 @@ aliases, 12 object snaps, about 5,800 tests): take them from the landing on the 
 
 ## 0. Before any post
 
-1. **Push.** Production still lists 3D solids under "Not yet" and says "Online 2D CAD": a post that
-   mentions 3D must not land on a page that denies it. The launch posts (§2–§5) wait for sessions 02
-   and 04 to be published; the directories (§6) need only this push.
+1. **Push** of sessions 01 and 02. Until then production lists 3D solids under "Not yet" and says
+   "Online 2D CAD": a post that mentions 3D must not land on a page that denies it. The launch posts
+   (§2–§5) wait for session 04 to be published too; the directories (§6) need only this push.
 2. **GitHub**: 0 stars, no topics, and a description that says "2D engine". Topics are free
-   discovery:
+   discovery; the description opens with the English home's main query (`docs/next-seo.md`, L2):
 
    ```sh
    gh repo edit ovelilla/mellowcad \
-     --description "Free CAD in the browser that works like AutoCAD: its commands, aliases and prompt order, 2D drafting and partial 3D solids. A DOM-free TypeScript engine and its React editor. Not affiliated with Autodesk." \
-     --add-topic cad,autocad,drafting,cad-software,2d-drafting,3d-modeling,b-rep,geometry,browser,typescript,canvas,react,open-source
+     --description "Free online CAD that works like AutoCAD: its commands, aliases and prompt order, for 2D drafting and partial 3D solids. A DOM-free TypeScript engine and its React editor. Not affiliated with Autodesk." \
+     --add-topic cad,online-cad,autocad,drafting,cad-software,2d-drafting,3d,solid-modeling,b-rep,geometry,browser,typescript,canvas,react,open-source
    ```
 
 3. **Accounts**, personal ones: Hacker News, Reddit, Product Hunt, AlternativeTo, SaaSHub, dev.to.

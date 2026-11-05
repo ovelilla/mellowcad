@@ -1,9 +1,9 @@
 # MellowCAD engine
 
-The 2D drafting engine behind [MellowCAD](https://mellowcad.com), in TypeScript and with no
-framework. It works the way AutoCAD does — the same commands and aliases, the same prompts and
-keywords, object snaps, Ortho, Polar, grips, undo — so someone who drafts in AutoCAD every day can
-draw with it from muscle memory.
+The CAD engine behind [MellowCAD](https://mellowcad.com), for 2D drafting and, still in part, 3D
+solids, in TypeScript and with no framework. It works the way AutoCAD does — the same commands and
+aliases, the same prompts and keywords, object snaps, Ortho, Polar, grips, undo — so someone who
+drafts in AutoCAD every day can draw with it from muscle memory.
 
 Give it a `<canvas>` and it draws, takes the mouse and the keyboard, and runs commands. Give it
 nothing and it runs headless, in Node, on a server or in a test.

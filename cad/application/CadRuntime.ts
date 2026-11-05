@@ -6961,7 +6961,8 @@ export class CadRuntime extends Observable {
     // Selection cycling. AutoCAD toggles it with Ctrl+W, which browsers reserve
     // for closing the tab and never deliver, so F4 is the shortcut we can
     // actually promise (F4 is free here; AutoCAD spends it on 3D object snap,
-    // which does not exist in a 2D drafter). Ctrl+W is still handled for the
+    // which does not exist yet: 3D Osnap is Missing in
+    // docs/coverage/drafting-aids.md). Ctrl+W is still handled for the
     // browsers that do pass it through.
     if (e.key === "F4" || (e.ctrlKey && (e.key === "w" || e.key === "W"))) {
       this.toggleSelectionCycling()
