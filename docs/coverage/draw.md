@@ -643,12 +643,17 @@ punto o una opción.`, p06, as `FOO` is, p02). Enter at the start is refused, `I
 `Punto no válido.`), and asked again — no Continue (p03); later Enter ends, and keeps even the
 start alone as a polyline of one vertex, which U takes back with the rest as `3DPOLY` (p05). Undo
 steps back one vertex, `All segments already undone.` (es `Ya se han deshecho todos los
-segmentos.`, table 20288) with none (p06); Close joins the start and ends. A point with no Z lies
+segmentos.`, table 20288) with none (p06), and nothing else: a transparent command run since
+stays, unlike PLINE's ('LTSCALE, p112, p117; the regeneration it queued is done as 3DPOLY ends),
+and UNDO Control None stops nothing (p125). Close joins the start and ends. A point with no Z lies
 at ELEVATION, a typed Z is kept, a pick lies at the elevation it is on (p04); points are read in the
 UCS and stored in the WCS (p07). Not transparent (p18). The polyline wears what is current at its
 start, and is added at the end, Escape included (**unverified**: the console cannot press Escape;
 AutoCAD appends it at the start point, p01's trace). The jig draws the chain and the next segment
-in its colour; dynamic input asks Length and Angle as PLINE does. Its name and alias, and the
+in its colour (**unverified**: AutoCAD's endpoint prompt has a dashed band from its base, p116's
+trace, and appends the polyline at its start, p01's; the desktop pass PSD settles it). `<45` is
+honoured before a length, which the console ignores (p104; the desktop honours it elsewhere,
+rectang/d03); dynamic input asks Length and Angle as PLINE does. Its name and alias, and the
 ribbon's place (Home ▸ Draw, expanded, beside Spline Fit and Spline CV: acad.cuix ID_PanelDraw),
 from the 2027 `acad.pgp` and `acad.cuix`. LINE's Continue starts at its last vertex, Z and all
 (p23). It draws and is picked as its segments in any view; its linetype is laid per segment, as a

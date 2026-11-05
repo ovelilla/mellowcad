@@ -30,11 +30,6 @@ type Polyline3dToolState =
       readonly phase: "drawing"
       /** Every vertex placed so far, each at its own Z. */
       readonly vertices: readonly Vec3[]
-      /**
-       * The history's depth when each segment was added: Undo takes back to
-       * the last, so a transparent command run since goes with the segment.
-       */
-      readonly marks: readonly number[]
       /** What is current at the start point, which the polyline keeps. */
       readonly properties: CurrentProperties
       readonly cursor: Vec3
@@ -53,9 +48,11 @@ type Drawing = Extract<Polyline3dToolState, { phase: "drawing" }>
  * says `Invalid point.` and asks again — no Continue (p02, p03); Enter later
  * ends, keeping even the start point alone as a 3D polyline of one vertex
  * (p05). A point with no Z lies at ELEVATION (p04). Undo steps back one
- * vertex, `All segments already undone.` with none (p06); Close joins the
- * start and ends. The polyline is added when the command ends, Escape
- * included, wearing what was current at its start, like PLINE.
+ * vertex, `All segments already undone.` with none (p06), and nothing else:
+ * unlike PLINE's, a transparent command run since stays (p112, p117) and
+ * UNDO Control None stops nothing (p125). Close joins the start and ends.
+ * The polyline is added when the command ends, Escape included, wearing what
+ * was current at its start, like PLINE.
  */
 export class Polyline3dTool implements Tool {
   readonly id = "polyline3d"
@@ -176,7 +173,6 @@ export class Polyline3dTool implements Tool {
     this.state = {
       phase: "drawing",
       vertices: [start],
-      marks: [],
       properties: currentProperties(ctx),
       cursor: start,
       direction: null,
@@ -192,7 +188,6 @@ export class Polyline3dTool implements Tool {
     this.state = {
       ...this.state,
       vertices: [...this.state.vertices, point],
-      marks: [...this.state.marks, ctx.historyDepth()],
       cursor: point,
       direction: null,
     }
@@ -204,8 +199,9 @@ export class Polyline3dTool implements Tool {
 
   /**
    * The last vertex taken back, the command going on from the one before.
-   * The polyline is added only at the end, so what the history takes back to
-   * the segment's mark is a transparent command run since, as PLINE's.
+   * WHY no history: the polyline is added only at the end, and AutoCAD's
+   * Undo here leaves a transparent 'LTSCALE run since (p117), its queued
+   * regeneration done as the command ends, under UNDO Control None too (p125).
    */
   private undoLastVertex(ctx: ToolContext): void {
     if (this.state.phase !== "drawing") return
@@ -213,17 +209,13 @@ export class Polyline3dTool implements Tool {
       ctx.report(ctx.text.message("all3dSegmentsUndone"), "error")
       return
     }
-    if (ctx.undoHistory.settings().control === "none") return
     const vertices = this.state.vertices.slice(0, -1)
-    const mark = this.state.marks[this.state.marks.length - 1]
     this.state = {
       ...this.state,
       vertices,
-      marks: this.state.marks.slice(0, -1),
       cursor: vertices[vertices.length - 1],
       direction: null,
     }
-    ctx.undoTo(mark)
     ctx.dynamicInput.clearTexts()
     ctx.dynamicInput.setLive("distance", 0)
     ctx.dynamicInput.setLive("angle", null)

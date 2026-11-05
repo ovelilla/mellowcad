@@ -15,7 +15,7 @@ import { ptBR } from "../../locales/pt-BR"
 
 // AutoCAD 2027's console is the reference for every prompt, refusal and
 // point below: the same answers there, read back with entget (probes
-// 3dpoly/p01–p78; TRIM, EXTEND and JOIN p30 on).
+// 3dpoly/p01–p126; TRIM, EXTEND and JOIN p30 on).
 
 function typed(cad: CadHarness, ...answers: string[]): CadHarness {
   for (const text of answers) {
@@ -44,6 +44,16 @@ function vertices(entity: Entity | undefined): number[][] {
   return entity.vertices.map((v) => [round(v.x), round(v.y), round(v.z)])
 }
 
+/** LASTPOINT as ID reports it. */
+function lastPoint(cad: CadHarness): string | undefined {
+  typed(cad, "ID", "@")
+  return cad.commandLog().at(-1)?.trim()
+}
+
+function layerName(cad: CadHarness, entity: Entity): string | undefined {
+  return cad.runtime.document.getLayer(entity.layerId)?.name
+}
+
 function lineEnds(line: LineEntity): number[][] {
   return [
     [round(line.start.x), round(line.start.y), round(lineStartZ(line))],
@@ -59,17 +69,13 @@ describe("3DPOLY", () => {
   it("asks its points and closes from the second segment (p01)", () => {
     const cad = createHarness()
     cad.command("3DPOLY")
-    expect(
-      written(cad, "0,0,0", "10,0,5", "10,10,-3", "C").concat(
-        cad.commandLog().slice(-1)
-      )
-    ).toEqual([
+    expect(written(cad, "0,0,0", "10,0,5", "10,10,-3", "C")).toEqual([
       "Specify start point of polyline: 0,0,0",
       "Specify endpoint of line or [Undo]: 10,0,5",
       "Specify endpoint of line or [Undo]: 10,10,-3",
       "Specify endpoint of line or [Close/Undo]: C",
-      "Specify endpoint of line or [Close/Undo]: C",
     ])
+    expect(cad.activeToolId()).not.toBe("polyline3d")
     const [poly] = polylines(cad)
     expect(vertices(poly)).toEqual([
       [0, 0, 0],
@@ -130,7 +136,9 @@ describe("3DPOLY", () => {
     ])
   })
 
-  it("takes a pick at the elevation it is on, whatever the last vertex's Z", () => {
+  // The console types no pick: a point without Z lies at ELEVATION, not at
+  // the last vertex's Z (p04), and a pick is the cursor on that plane.
+  it("takes a pick on the work plane, whatever the last vertex's Z (p04)", () => {
     const cad = typed(createHarness(), "3DPOLY", "0,0,50")
     cad.click(p(100, 100)).enter()
     expect(vertices(polylines(cad)[0])).toEqual([
@@ -172,6 +180,308 @@ describe("3DPOLY", () => {
       "Precise punto final de línea o [Cerrar/desHacer]: C",
     ])
     expect(polylines(cad)[0].closed).toBe(true)
+  })
+})
+
+describe("3DPOLY's Undo keyword", () => {
+  it("leaves a transparent LTSCALE run after the segment (p112)", () => {
+    const cad = typed(createHarness(), "3DPOLY", "0,0", "10,0")
+    typed(cad, "'LTSCALE", "2", "U", "")
+    expect(cad.runtime.document.getSettings().ltScale).toBe(2)
+    expect(vertices(polylines(cad)[0])).toEqual([[0, 0, 0]])
+  })
+
+  it("regenerates once the command ends, as queued (p117)", () => {
+    const cad = typed(createHarness(), "3DPOLY", "0,0", "10,0", "10,10")
+    expect(written(cad, "'LTSCALE", "2", "U", "")).toEqual([
+      "Specify endpoint of line or [Close/Undo]: 'LTSCALE",
+      ">>Enter new linetype scale factor <1.0000>: 2",
+      "Regen queued.",
+      "Resuming 3DPOLY command.",
+      "Specify endpoint of line or [Close/Undo]: U",
+      "Specify endpoint of line or [Undo]:",
+      "Regenerating model.",
+    ])
+    expect(cad.runtime.document.getSettings().ltScale).toBe(2)
+    expect(vertices(polylines(cad)[0])).toEqual([
+      [0, 0, 0],
+      [10, 0, 0],
+    ])
+  })
+
+  it("steps back under UNDO Control None (p125)", () => {
+    const cad = typed(createHarness(), "UNDO", "C", "N")
+    typed(cad, "3DPOLY", "0,0", "10,0", "10,10", "U", "")
+    expect(vertices(polylines(cad)[0])).toEqual([
+      [0, 0, 0],
+      [10, 0, 0],
+    ])
+  })
+
+  it("leaves LASTPOINT on the vertex it steps back to (p107)", () => {
+    const cad = typed(createHarness(), "3DPOLY", "0,0", "10,0,3", "20,5")
+    typed(cad, "U", "")
+    expect(lastPoint(cad)).toBe("X = 10.00     Y = 0.00     Z = 3.00")
+  })
+})
+
+describe("3DPOLY's points", () => {
+  it("takes @, polar and @ alone, which gives a vertex twice (p100)", () => {
+    const cad = typed(createHarness(), "3DPOLY", "0,0,0", "@10,0", "20<90")
+    typed(cad, "@5<0", "@", "")
+    expect(vertices(polylines(cad)[0])).toEqual([
+      [0, 0, 0],
+      [10, 0, 0],
+      [0, 20, 0],
+      [5, 20, 0],
+      [5, 20, 0],
+    ])
+    expect(lastPoint(cad)).toBe("X = 5.00     Y = 20.00     Z = 0.00")
+  })
+
+  it("reads * as the WCS in a UCS turned about Z (p101)", () => {
+    const cad = typed(createHarness(), "UCS", "Z", "30", "3DPOLY", "10,0")
+    typed(cad, "*10,0", "@10,0", "")
+    expect(vertices(polylines(cad)[0])).toEqual([
+      [8.6603, 5, 0],
+      [10, 0, 0],
+      [18.6603, 5, 0],
+    ])
+  })
+
+  it("refuses # at the command line (p102)", () => {
+    const cad = typed(createHarness(), "3DPOLY", "0,0")
+    expect(written(cad, "#10,0", "5,5", "")).toEqual([
+      "Specify endpoint of line or [Undo]: #10,0",
+      "Point or option keyword required.",
+      "Specify endpoint of line or [Undo]: 5,5",
+      "Specify endpoint of line or [Undo]:",
+    ])
+    expect(vertices(polylines(cad)[0])).toEqual([
+      [0, 0, 0],
+      [5, 5, 0],
+    ])
+  })
+
+  // The console's cursor stood towards (289.98, 116.30) in p103 and p104.
+  const CURSOR = p(289.98397, 116.30379)
+
+  it("takes a bare number along the cursor (p103)", () => {
+    const cad = typed(createHarness(), "3DPOLY", "0,0")
+    cad.moveTo(CURSOR)
+    typed(cad, "10", "")
+    expect(vertices(polylines(cad)[0])).toEqual([
+      [0, 0, 0],
+      [9.2813, 3.7225, 0],
+    ])
+  })
+
+  // WHY: the console leaves `<45` out at 3DPOLY (p104 gives p103's point);
+  // the desktop honours it elsewhere (rectang/d03), so it stays (PEDIT-D14).
+  it("honours <45 before a number (p104, PEDIT-D14)", () => {
+    const cad = typed(createHarness(), "3DPOLY", "0,0")
+    cad.moveTo(CURSOR)
+    expect(written(cad, "<45", "10", "")).toEqual([
+      "Specify endpoint of line or [Undo]: <45",
+      "Angle Override: 45",
+      "Specify endpoint of line or [Undo]: 10",
+      "Specify endpoint of line or [Undo]:",
+    ])
+    expect(vertices(polylines(cad)[0])).toEqual([
+      [0, 0, 0],
+      [7.0711, 7.0711, 0],
+    ])
+  })
+
+  it("leaves LASTPOINT on the start alone (p105)", () => {
+    const cad = typed(createHarness(), "ID", "99,99", "3DPOLY", "5,5,5", "")
+    expect(lastPoint(cad)).toBe("X = 5.00     Y = 5.00     Z = 5.00")
+  })
+
+  it("leaves LASTPOINT on the last vertex after Close (p106)", () => {
+    const cad = typed(createHarness(), "3DPOLY", "0,0", "10,0,3", "10,10", "C")
+    expect(lastPoint(cad)).toBe("X = 10.00     Y = 10.00     Z = 0.00")
+  })
+
+  it("takes INT, PER and NEA overrides (p108)", () => {
+    const cad = typed(
+      createHarness(),
+      ...["LINE", "0,0", "100,0", "", "LINE", "50,-50", "50,50", ""],
+      ...["ZOOM", "W", "-20,-60", "120,60"],
+      ...["3DPOLY", "INT", "50.5,0.5", "20,20", "PER", "50.4,30"],
+      ...["NEA", "99,0.3", ""]
+    )
+    expect(vertices(polylines(cad)[0])).toEqual([
+      [50, 0, 0],
+      [20, 20, 0],
+      [50, 20, 0],
+      [99, 0, 0],
+    ])
+  })
+
+  it("takes FROM (p109)", () => {
+    const cad = typed(createHarness(), "3DPOLY", "FRO", "0,0", "@10,10")
+    typed(cad, "20,0", "")
+    expect(vertices(polylines(cad)[0])).toEqual([
+      [10, 10, 0],
+      [20, 0, 0],
+    ])
+  })
+
+  it("keeps a typed point under ORTHOMODE, bending a number (p110)", () => {
+    const cad = typed(createHarness(), "ORTHOMODE", "1", "3DPOLY", "0,0")
+    typed(cad, "10,5")
+    cad.moveTo(CURSOR)
+    typed(cad, "7", "")
+    expect(vertices(polylines(cad)[0])).toEqual([
+      [0, 0, 0],
+      [10, 5, 0],
+      [17, 5, 0],
+    ])
+  })
+})
+
+describe("3DPOLY in the session", () => {
+  it("runs 'ORTHOMODE and '-OSNAP inside, refuses 'LINE (p111)", () => {
+    const cad = createHarness()
+    expect(
+      written(cad, "3DPOLY", "0,0", "'ORTHOMODE", "1", "10,0", "'-OSNAP")
+    ).toEqual([
+      "3DPOLY",
+      "Specify start point of polyline: 0,0",
+      "Specify endpoint of line or [Undo]: 'ORTHOMODE",
+      ">>Enter new value for ORTHOMODE <0>: 1",
+      "Resuming 3DPOLY command.",
+      "Specify endpoint of line or [Undo]: 10,0",
+      "Specify endpoint of line or [Undo]: '-OSNAP",
+      "Current osnap modes: End,Cen,Int,Ext",
+    ])
+    expect(written(cad, "END", "10,10", "'LINE", "20,20", "")).toEqual([
+      ">>Enter list of object snap modes: END",
+      "Resuming 3DPOLY command.",
+      "Specify endpoint of line or [Undo]: 10,10",
+      "Specify endpoint of line or [Close/Undo]: 'LINE",
+      "** That command may not be invoked transparently **",
+      "Point or option keyword required.",
+      "Specify endpoint of line or [Close/Undo]: 20,20",
+      "Specify endpoint of line or [Close/Undo]:",
+    ])
+    expect(vertices(polylines(cad)[0])).toEqual([
+      [0, 0, 0],
+      [10, 0, 0],
+      [10, 10, 0],
+      [20, 20, 0],
+    ])
+  })
+
+  it("refuses 'ZOOM Extents at its start, which would regenerate (p111)", () => {
+    const cad = typed(createHarness(), "3DPOLY")
+    // ZOOM's own prompt lacks options: its coverage entry.
+    const lines = written(cad, "'ZOOM", "E")
+    expect(lines[0]).toBe("Specify start point of polyline: 'ZOOM")
+    expect(lines.slice(-2)).toEqual([
+      "** Requires a regen, cannot be transparent.",
+      "Resuming 3DPOLY command.",
+    ])
+    expect(cad.state().commandLine.prompt).toBe(
+      "3DPOLY Specify start point of polyline:"
+    )
+  })
+
+  it("is echoed 3DPOLY by U, REDO, UNDO and MREDO (p113)", () => {
+    const cad = typed(createHarness(), "3DPOLY", "0,0", "10,0", "")
+    typed(cad, "3DPOLY", "0,5", "10,5", "")
+    expect(written(cad, "U", "REDO", "UNDO", "2", "MREDO", "1")).toEqual([
+      "U",
+      "3DPOLY",
+      "REDO",
+      "3DPOLY",
+      "Everything has been redone",
+      "UNDO",
+      "Current settings: Auto = On, Control = All, Combine = Yes, Layer = Yes",
+      "Enter the number of operations to undo or [Auto/Control/BEgin/End/Mark/Back] <1>: 2",
+      "3DPOLY 3DPOLY",
+      "MREDO",
+      "Enter number of actions or [All/Last]: 1",
+      "3DPOLY",
+    ])
+    expect(polylines(cad)).toHaveLength(1)
+  })
+
+  it("refuses a command typed at its prompt and goes on (p114)", () => {
+    const cad = typed(createHarness(), "3DPOLY", "0,0", "10,0")
+    expect(written(cad, "LINE", "20,0", "")).toEqual([
+      "Specify endpoint of line or [Undo]: LINE",
+      "Point or option keyword required.",
+      "Specify endpoint of line or [Undo]: 20,0",
+      "Specify endpoint of line or [Close/Undo]:",
+    ])
+    expect(vertices(polylines(cad)[0])).toEqual([
+      [0, 0, 0],
+      [10, 0, 0],
+      [20, 0, 0],
+    ])
+  })
+
+  it("wears the current layer, colour, linetype and lineweight, no thickness (p115)", () => {
+    const cad = createHarness()
+    cad.runtime.createLayer("L1")
+    typed(cad, "CECOLOR", "1", "CELTYPE", "DASHED", "CELWEIGHT", "50")
+    typed(cad, "ELEVATION", "5", "THICKNESS", "3")
+    typed(cad, "3DPOLY", "0,0", "10,0", "10,10,2", "")
+    const [poly] = polylines(cad)
+    expect(vertices(poly)).toEqual([
+      [0, 0, 5],
+      [10, 0, 5],
+      [10, 10, 2],
+    ])
+    expect(layerName(cad, poly)).toBe("L1")
+    expect(poly).toMatchObject({
+      color: "#ff0000",
+      linetype: "Dashed",
+      lineweight: 0.5,
+    })
+    expect(poly).not.toHaveProperty("thickness")
+  })
+
+  it("wears what was current at its start, not a change mid-command (p116)", () => {
+    const cad = createHarness()
+    cad.runtime.createLayer("L1")
+    typed(cad, "CLAYER", "0")
+    typed(cad, "3DPOLY", "0,0", "'-COLOR", "1", "'CLAYER", "L1", "10,0", "")
+    const [poly] = polylines(cad)
+    expect(layerName(cad, poly)).toBe("0")
+    expect(poly).not.toHaveProperty("color")
+  })
+
+  it("drops a preselection and leaves nothing selected (p120)", () => {
+    const cad = typed(createHarness(), "LINE", "0,0", "10,10", "")
+    expect(cad.selectAll().selectedIds()).toHaveLength(1)
+    typed(cad, "3DPOLY", "0,5")
+    expect(cad.selectedIds()).toEqual([])
+    typed(cad, "10,5", "")
+    expect(cad.selectedIds()).toEqual([])
+  })
+
+  it("is repeated by Enter at Command: (p121)", () => {
+    const cad = typed(createHarness(), "3DPOLY", "0,0", "10,0", "")
+    expect(written(cad, "", "5,5", "10,10", "")).toEqual([
+      "3DPOLY",
+      "Specify start point of polyline: 5,5",
+      "Specify endpoint of line or [Undo]: 10,10",
+      "Specify endpoint of line or [Undo]:",
+    ])
+    expect(polylines(cad)).toHaveLength(2)
+  })
+
+  it("refuses Close with two vertices and goes on (p126)", () => {
+    const cad = typed(createHarness(), "3DPOLY", "0,0", "10,0")
+    expect(written(cad, "C", "20,5")).toEqual([
+      "Specify endpoint of line or [Undo]: C",
+      "Point or option keyword required.",
+      "Specify endpoint of line or [Undo]: 20,5",
+    ])
+    expect(cad.activeToolId()).toBe("polyline3d")
   })
 })
 

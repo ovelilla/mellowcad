@@ -199,10 +199,10 @@ layer.
   (SPLINE's at one point does nothing, spline/p125; TRIM's says all undone after any answer,
   trim/p380, DIMBASELINE's too, dimensions/p213; TEXTEDIT's also as it undoes the last,
   text/p285), or `ctx.undo()` backs out an earlier command. Offer it from the first point a prompt holds. A transparent command run since a
-  step ('LTSCALE) goes back with it: mark `ctx.historyDepth()` per step, take back with
-  `ctx.undoTo(mark)`. A looping command restores its state **whatever the undo returns**: under
-  UNDO Control None it pops nothing and LINE still steps back, while PLINE, which commits at its
-  end, keeps its chain (pline/p42).
+  step ('LTSCALE) goes back with PLINE's (pline/p26; not 3DPOLY's, 3dpoly/p117): mark each step's
+  `ctx.historyDepth()` for `ctx.undoTo(mark)`. A looping command restores its state **whatever the
+  undo returns**: under UNDO Control None it pops nothing and LINE still steps back; PLINE,
+  committing at its end, keeps its chain (pline/p42).
 - **Preview must equal commit**: one resolver shared by `buildOverlay` and the pointer / Enter
   paths, so a typed value locks the click as it locks the rubber band. An expensive preview (a
   hatch's pattern) is built into the state when its inputs change, never per frame.
