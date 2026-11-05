@@ -50,6 +50,12 @@ function walk(node: Nodes, visit: (node: Nodes, parent?: Parent) => void, parent
 const EXPORT = /^export (?:type )?\{ (\w+) \}$/
 
 /**
+ * The meta word of an API report's blocks: a listing of declarations, whose
+ * comments alone are coloured (`transformerTokenClasses`).
+ */
+export const REPORT_META = "report"
+
+/**
  * An API report's code is the page, and search indexes no code: each export
  * becomes a record of its own, its declaration's first line, so a search for
  * `CadDriver` finds the reference.
@@ -110,7 +116,11 @@ export function remarkPackageSource() {
       }
       if (node.type === "code") {
         const code = node as Code
-        if (apiReport) indexExports(code)
+        if (apiReport) {
+          indexExports(code)
+          // Not recorded: the `.md` is the report as GitHub shows it.
+          code.meta = [code.meta, REPORT_META].filter(Boolean).join(" ")
+        }
         if (!code.meta?.startsWith("examples/")) return
         const source = code.meta
         code.value = readFileSync(path.join(root, source), "utf8").replace(/\r?\n$/, "")

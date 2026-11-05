@@ -98,10 +98,15 @@ claims follow `i18n.md`.
   (`lib/docs/check.ts`, `lib/docs/schema.ts`), never `docsSource`, and what they import uses
   `.ts` extensions, for Node to run it.
 - Code is coloured by Shiki's CSS-variables theme, from the `--syntax-*` tokens of
-  `marketing.css`: never a theme's literal colours.
+  `marketing.css`: never a theme's literal colours. `transformerTokenClasses` makes each colour a
+  class, drops the elements of the block's own colour, flattens a block with no numbers and no
+  marked line to tokens and newlines (`plain`), and colours an API report's comments only
+  (`REPORT_META`). WHY: every element is written twice, in the HTML and the RSC payload; the
+  engine's API reference was 9.1 MB, and is 0.6 MB.
 - A block is shadcn's Code Block (`components/docs/code-block.tsx`, its registry's `cn` pointed at
   `lib/utils.ts`), rendered on the server over Shiki's lines; only the copy button is an island,
-  announcing the copy in a live region. Its meta is `title="…"`, `lineNumbers[=n]` and `wrap`
+  announcing the copy in a live region. It reads the block's text from the page when pressed: as a
+  prop, every block's code was in the RSC payload once more. Its meta is `title="…"`, `lineNumbers[=n]` and `wrap`
   (`parseCodeMeta`); a line is marked by Shiki's notation, `// [!code highlight]`, `++`, `--`.
 
 ## Rendering and weight
@@ -111,6 +116,9 @@ claims follow `i18n.md`.
   index of three languages passed Vercel's 20 MB limit for a static body
   (`FALLBACK_BODY_TOO_LARGE`) and every reader downloaded it whole. A day of CDN cache answers a
   repeated query.
+- **A page stays under 1 MB of HTML**, payload included: Googlebot reads the first 2 MB and Bing
+  advises under one. Measure a long page on a production build after changing how code or a
+  generated page renders.
 - **The docs' islands never reach the landing**: their Base UI dialogs are ~22 KB Brotli, and a
   prefetched `/docs` loads its chunks into `/` (measured +27 KB on the first load). The landing
   links the docs with `Link prefetch={false}`, and so does the sidebar: in view, its links

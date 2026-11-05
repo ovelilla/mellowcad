@@ -70,11 +70,14 @@ function CodeBlockContent({
   wrap = false,
   lineNumbers = false,
   startLine = 1,
+  plain = false,
   ...props
 }: ComponentProps<"pre"> & {
   wrap?: boolean
   lineNumbers?: boolean
   startLine?: number
+  /** The code as text and newlines, no element per line (no numbers, no marked line). */
+  plain?: boolean
 }) {
   return (
     <pre
@@ -92,7 +95,11 @@ function CodeBlockContent({
     >
       <code
         data-slot="code-block-code"
-        className="grid min-h-lh min-w-max grid-cols-[minmax(0,1fr)] content-start in-data-numbered:grid-cols-[auto_minmax(0,1fr)] in-data-wrap:min-w-0"
+        className={
+          plain
+            ? "block min-h-lh min-w-max in-data-wrap:min-w-0"
+            : "grid min-h-lh min-w-max grid-cols-[minmax(0,1fr)] content-start in-data-numbered:grid-cols-[auto_minmax(0,1fr)] in-data-wrap:min-w-0"
+        }
       >
         {lineNumbers && typeof children === "string"
           ? children

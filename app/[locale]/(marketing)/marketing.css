@@ -564,6 +564,36 @@ html:lang(ar) body,
   }
 }
 
+/* A code token's colour, a class for each `--syntax-token-*`
+   (lib/docs/code-tokens.ts): an inline style per token was most of a page. */
+.sx-k {
+  color: var(--syntax-token-keyword);
+}
+.sx-s {
+  color: var(--syntax-token-string);
+}
+.sx-e {
+  color: var(--syntax-token-string-expression);
+}
+.sx-f {
+  color: var(--syntax-token-function);
+}
+.sx-n {
+  color: var(--syntax-token-constant);
+}
+.sx-a {
+  color: var(--syntax-token-parameter);
+}
+.sx-p {
+  color: var(--syntax-token-punctuation);
+}
+.sx-c {
+  color: var(--syntax-token-comment);
+}
+.sx-l {
+  color: var(--syntax-token-link);
+}
+
 details > summary {
   cursor: pointer;
   list-style: none;

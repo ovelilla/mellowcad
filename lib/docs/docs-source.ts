@@ -1,26 +1,18 @@
 import { defineI18n } from "fumadocs-core/i18n"
 import { loader } from "fumadocs-core/source"
 import { parseCodeBlockAttributes } from "fumadocs-core/mdx-plugins/codeblock-utils"
+import { rehypeCodeDefaultOptions } from "fumadocs-core/mdx-plugins/rehype-code.core"
 import { applyMdxPreset } from "fumadocs-mdx/config"
 import { defineDocs } from "fumadocs-mdx/macro"
-import { createCssVariablesTheme } from "shiki/core"
 
 import { localePath } from "../../i18n/navigation"
 import { routing } from "../../i18n/routing"
 
+import { codeTheme, transformerTokenClasses } from "./code-tokens"
 import { DOCS_PATH } from "./packages"
 import { remarkCommandNames } from "./remark-command-names"
 import { remarkPackageSource } from "./remark-package-source"
 import { docsPageSchema, metaSchema } from "./schema"
-
-// Code is coloured by the site's tokens (`--syntax-*` in marketing.css), not
-// by a theme's literal colours.
-const codeTheme = createCssVariablesTheme({
-  name: "mellowcad",
-  variablePrefix: "--syntax-",
-  variableDefaults: {},
-  fontStyle: true,
-})
 
 /**
  * A block's meta (`ts title="main.ts" lineNumbers wrap`), as the `pre`'s
@@ -54,6 +46,10 @@ const docs = defineDocs({
         defaultColor: "dark",
         icon: false,
         parseMetaString: parseCodeMeta,
+        // Fewer elements, each written twice (HTML and RSC payload): adjacent
+        // tokens of one colour as one, and colours as classes.
+        mergeSameStyleTokens: true,
+        transformers: [...(rehypeCodeDefaultOptions().transformers ?? []), transformerTokenClasses()],
       },
     }),
   },

@@ -21,34 +21,40 @@ import { DocsSession } from "./docs-session"
 
 type Parent = { children?: ReactNode; className?: string }
 
-/** The text a highlighted block shows, what its copy button copies. */
-function textOf(node: ReactNode): string {
-  if (typeof node === "string" || typeof node === "number") return String(node)
-  if (Array.isArray(node)) return node.map(textOf).join("")
-  if (isValidElement<Parent>(node)) return textOf(node.props.children)
-  return ""
+/** How a line is marked by the notation Shiki's transformers read. */
+function lineVariant(line: Parent): "added" | "removed" | "highlighted" | "default" {
+  const classes = line.className?.split(" ") ?? []
+  return classes.includes("add")
+    ? "added"
+    : classes.includes("remove")
+      ? "removed"
+      : classes.includes("highlighted")
+        ? "highlighted"
+        : "default"
 }
 
+const isLine = (node: ReactNode) =>
+  isValidElement<Parent>(node) && node.props.className?.split(" ").includes("line") === true
+
 /**
- * Shiki's lines (`span.line`, inside its `code`) as the Code Block's, each
- * marked by the notation its transformers read (`// [!code highlight]`,
- * `// [!code ++]`, `// [!code --]`). The newlines between them go: each line
- * is a block of its own.
+ * A block's code for the Code Block. Shiki's lines (`span.line`) become its
+ * lines, each marked by the notation its transformers read
+ * (`// [!code highlight]`, `// [!code ++]`, `// [!code --]`), the newlines
+ * between them gone. A block `transformerTokenClasses` flattened, with no
+ * numbers and no marked line, is its tokens and newlines as they come
+ * (`plain`): mapping them would give each a key, in the RSC payload too.
  */
-function codeLines(code: ReactNode): ReactNode {
-  const lines = isValidElement<Parent>(code) ? code.props.children : code
-  return Children.map(lines, (line) => {
-    if (!isValidElement<Parent>(line)) return null
-    const classes = line.props.className?.split(" ") ?? []
-    const variant = classes.includes("add")
-      ? "added"
-      : classes.includes("remove")
-        ? "removed"
-        : classes.includes("highlighted")
-          ? "highlighted"
-          : "default"
-    return <CodeBlockLine variant={variant}>{line.props.children}</CodeBlockLine>
-  })
+function codeLines(code: ReactNode): { plain: boolean; lines: ReactNode } {
+  const children = isValidElement<Parent>(code) ? code.props.children : code
+  if (!Children.toArray(children).some(isLine)) return { plain: true, lines: children }
+  return {
+    plain: false,
+    lines: Children.map(children, (line) =>
+      isValidElement<Parent>(line) && isLine(line) ? (
+        <CodeBlockLine variant={lineVariant(line.props)}>{line.props.children}</CodeBlockLine>
+      ) : null
+    ),
+  }
 }
 
 function heading(Tag: "h2" | "h3" | "h4", className: string) {
@@ -132,9 +138,10 @@ export function docsMdxComponents(
     }) => {
       const copy = (
         <CodeBlockActions>
-          <CodeBlockCopyButton value={textOf(children)} labels={labels} />
+          <CodeBlockCopyButton labels={labels} />
         </CodeBlockActions>
       )
+      const { plain, lines } = codeLines(children)
       return (
         <CodeBlock>
           {title ? (
@@ -151,8 +158,9 @@ export function docsMdxComponents(
             lineNumbers={lineNumbers}
             startLine={startLine}
             wrap={wrap}
+            plain={plain}
           >
-            {codeLines(children)}
+            {lines}
           </CodeBlockContent>
         </CodeBlock>
       )
