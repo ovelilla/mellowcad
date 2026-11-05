@@ -1,6 +1,7 @@
 # Para quien integra — brief
 
-> **Estado:** sin acordar; nada empezado. Los tres paquetes están en npm desde el 2026-10-31 (motor
+> **Estado:** en pausa: la visibilidad va antes por decisión del dueño del 5/11/2026; sin acordar,
+> nada empezado. El plan de la visibilidad es `docs/next-seo.md`. Los tres paquetes están en npm desde el 2026-10-31 (motor
 > 0.2.0, react y editor 0.1.0). Se borra cuando cada idea esté hecha o descartada.
 
 Lo que queda del brief de la librería, cerrado el 2026-10-31 con los tres paquetes publicados (está

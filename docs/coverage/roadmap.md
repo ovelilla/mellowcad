@@ -46,7 +46,7 @@ us to walk again, whereas a command costs the same before or after it.
    (the kernel's cut, section and face offset in `geometry/solidEdits.ts`); 6b is done:
    FILLETEDGE, CHAMFEREDGE and SOLIDEDIT's faces (modify.md; the kernel's blends in
    `geometry/solidBlends.ts`). 6c (3DMOVE, 3DROTATE, UCS Face and UCSDETECT) waits for the
-   reviews of what is built under "Command reviews": 26 to 30 are done (2026-11-05), 31 and 32 remain.
+   reviews of what is built under "Command reviews": 26 to 31 are done (2026-11-05), 32 remains.
 
 Left out of the 2.5D model: POINT's thickness, with POINT (below). TRIM, EXTEND and JOIN of 3D
 polylines are done, cut and grown in plan at the Z they have there, a closed one left in two at
@@ -92,6 +92,9 @@ BATTMAN, ATTEXT / DATAEXTRACTION, multiline attributes.
 DXF import/export and plot-to-PDF remain end-of-roadmap and unscheduled.
 
 ## Command reviews
+
+**Paused behind visibility** (`docs/next-seo.md`): on 2026-11-05 the owner put being found ahead of
+every feature, so review 32 and phase 6c wait until its sessions are done.
 
 Before more features, every implemented command is reviewed against AutoCAD 2027, one at a time,
 with skill `command-review`, in this order. A review **owns** the cross-cutting areas it lists: it

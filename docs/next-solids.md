@@ -1,8 +1,9 @@
 # Sólidos 3D con núcleo propio — brief
 
-> **Estado:** en pausa hasta terminar las revisiones de lo hecho (26 a 30 del roadmap, hechas el
-> 5/11/2026; quedan la 31 y la 32); las fases 1 a 5 y las entregas 6a y 6b están hechas
-> (1/11/2026), y la 6c será 3DMOVE, 3DROTATE, UCS Face y UCSDETECT. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
+> **Estado:** en pausa: la visibilidad va antes por decisión del dueño del 5/11/2026, y después la
+> revisión 32 del roadmap (de la 26 a la 31, hechas el 5/11/2026); las fases 1 a 5 y las entregas 6a
+> y 6b están hechas (1/11/2026), y la 6c será 3DMOVE, 3DROTATE, UCS Face y UCSDETECT. El plan de la
+> visibilidad es `docs/next-seo.md`. Se borra cuando la fase 7 esté hecha; hasta entonces cada fase cerrada se marca aquí.
 
 ## 1. Objetivo
 

@@ -27,12 +27,8 @@ const SKILL_DESCRIPTION_MAX = 1024
 const RULE_DESCRIPTION_MAX = 200
 
 // Cited on purpose without existing in the repo or a declared package.
-const ABSENT_CITATIONS: Record<string, { reason: string; values: string[] }> = {
-  "docs/next-launch.md": {
-    reason: "the landing's brief, deleted once it shipped; it is in git",
-    values: ["docs/next-landing.md"],
-  },
-}
+const ABSENT_CITATIONS: Record<string, { reason: string; values: string[] }> =
+  {}
 
 const ALWAYS_LOADED = ["AGENTS.md"]
 const SOURCE_PATTERN =
