@@ -1,0 +1,29 @@
+_ZOOM
+_W
+-20,-20
+60,40
+_PLINE
+0,0
+10,0
+
+_PLINE
+14,0
+20,0
+
+_ID
+30,30
+_PEDIT
+_M
+_ALL
+
+_J
+10,10
+13,14
+(getvar "LASTPOINT")
+_PEDIT
+_M
+_ALL
+
+_J
+0
+(getvar "LASTPOINT")

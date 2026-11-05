@@ -1,0 +1,12 @@
+_ZOOM
+_W
+-10,-10
+40,30
+_3DPOLY
+0,0
+10,0
+10,10
+_END
+4,0.2
+
+(getvar "LASTPOINT")

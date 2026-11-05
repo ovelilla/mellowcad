@@ -1,13 +1,12 @@
 # PEDIT, SPLINEDIT review (3DPOLY, PEDIT, SPLINEDIT; the 3D polyline object)
 
 > **Status:** console blocks executed, 2026-11-05 (TPL, TPO, SPE, PED, LPT: §15); block PSD, the
-> three commands' look on the desktop with the owner's mouse, is next, in a session of its own.
-> Phases 0–3 in one session with three subagents, the execution in the same session.
+> three commands' look on the desktop with the owner's mouse, planned 2026-11-05 (§16), executed in
+> the same session. Phases 0–3 in one session with three subagents, the execution in the same session.
 
 ## 1. Summary
 
-**Findings:** 0 critical, 1 high, 18 medium, 17 low; one more medium unverified until the desktop
-(TPL-03).
+**Findings:** 0 critical, 1 high, 23 medium, 20 low; TPL-03 confirmed on the desktop as PSD-02.
 
 | Block | What                                               | Critical | High | Medium | Low |
 | ----- | -------------------------------------------------- | -------- | ---- | ------ | --- |
@@ -16,7 +15,7 @@
 | LPT   | LASTPOINT and the object picks of the three tools  | 0        | 0    | 3      | 2   |
 | PED   | PEDIT                                              | 0        | 1    | 4      | 5   |
 | SPE   | SPLINEDIT and the spline's conversion              | 0        | 0    | 9      | 6   |
-| PSD   | the three on the desktop (to come)                 | –        | –    | –      | –   |
+| PSD   | the three on the desktop, and Multiple's fuzz      | 0        | 0    | 5      | 3   |
 
 The worst:
 
@@ -440,7 +439,7 @@ States per matrix.md. Rows I, M, P, Q and Escape and the right button of G are b
 
 - **TPL-03** — 3DPOLY's jig: AutoCAD's endpoint prompt has a dashed band from its base (p116's
   trace) and appends the polyline at its start (p01's), so the chain on the screen is the object;
-  here one solid ghost. Medium if the desktop confirms it (PSD).
+  here one solid ghost. Confirmed on the desktop: PSD-02 (§16).
 
 ## 6. Decisions
 
@@ -581,3 +580,149 @@ polyline's frame and curve; carryOverrides on conversion; `currentProperties.tes
   as Width's was: a console probe and a test settle it before the desktop.
 - The template improvements of §14 are applied in matrix.md's A, C and M rows (template.md's and
   annex-probes.md's budgets are full).
+
+## 16. Block PSD (the desktop, 2026-11-05)
+
+Desktop probes in es-ES with the owner's mouse (`scripts/research/probes/pedit/lib.sh`, its
+helpers; shots in `research/probes/<command>/desk/`), console probes en-US and es-ES; mellowcad's
+side from scratch tests (`research/review/pedit/psd/`). Settings read and put back: DYNMODE −1,
+OSMODE 4133, FILEDIA 1, CELTYPE ByLayer.
+
+| Id                 | What it asks                                                                    |
+| ------------------ | ------------------------------------------------------------------------------- |
+| pedit/p339, p340   | Multiple Join's fuzz answered with two points; LASTPOINT; the next run's default |
+| 3dpoly/p127, p128  | a typed point on the last vertex; `_END` on the chain being drawn               |
+| 3dpoly/d04–d08     | the jig, a click on the last vertex, Escape; dynamic input; the linetype on the screen; the grips' hover menus; a running Endpoint over the chain |
+| pedit/d01, d02     | the rollover; Edit vertex's X, Move's and Insert's bands, Escape at each; the main prompt; a Fit polyline's grips, hover menu and palette |
+| splinedit/d01, d02 | the rollover; the main prompt, Fit data, Edit vertex and their Moves; the double-click's echo |
+
+**Matrix** (row, cell, state · AutoCAD · mellowcad):
+
+| Row | Cell                                                           | State                                       |
+| --- | -------------------------------------------------------------- | ------------------------------------------- |
+| B   | PEDIT Multiple Join's fuzz by two points                       | differs PSD-01 · p340 · scratch fuzz.test.ts |
+| O   | Join Extend of two collinear ends within the fuzz: none added  | match · p339 · scratch                      |
+| M   | 3DPOLY's jig: the chain the object, the band amber and dashed  | differs PSD-02 · d04-1, d04-3, d05-2 · Polyline3dTool `buildOverlay` |
+| G   | 3DPOLY's Escape keeps the polyline drawn                       | match · d04-4 · scratch (subagent's dump)   |
+| C   | 3DPOLY: a point on the last vertex, typed / clicked            | match / differs PSD-07 · p127, d04-3 · cells.test.ts |
+| P   | 3DPOLY's dynamic input: the endpoint's Length and Angle        | match · d05-2                               |
+| P   | 3DPOLY's start point: X, Y and Z fields                        | differs PSD-08 · d05-1 · cells.test.ts      |
+| D   | the chain being drawn finds no Endpoint                        | match · d08-1, p128 · no `objectsBeingDrawn` |
+| M   | a 3D polyline drawn continuous whatever its linetype           | match · d06-1 (TPO-01) · polyline3d.test.ts |
+| I   | a 3D polyline's grips' hover menus                             | known · d07-1–d07-3 (no hover menu is built) |
+| I   | the rollover at `Select polyline`, `Select spline:`            | match · pedit/d01-1, splinedit/d01-1 · `THEME.entityHover` |
+| M   | PEDIT's main prompt glows the polyline                         | match · d02-1 · cells.test.ts               |
+| M   | Edit vertex: the X, no glow                                    | differs PSD-03 · d01-2 · cells.test.ts      |
+| M   | Edit vertex's Move and Insert bands                            | differs PSD-04 · d01-3, d01-5 · `buildOverlay` |
+| G   | Escape at Move, Insert, Edit vertex's prompt: PEDIT ends, edits kept | match · d01-4, d01-6, d01-7 · scratch |
+| M   | SPLINEDIT's main prompt and Fit data: glow and fit points' grips | match · splinedit/d01-2, d01-3          |
+| M   | SPLINEDIT's Moves: a ghost of the curve, an amber band         | differs PSD-05 · d01-4, d01-6, d02-2, d02-3 |
+| M   | Edit vertex: round grips on the control vertices, the frame dashed | differs PSD-06 · d01-5                  |
+| A   | a double-click on a spline echoes `_splinedit`, the main prompt | match · splinedit/d01-7 · scratch          |
+| I   | a Fit polyline's grips: the frame's vertices only              | match · pedit/d02-2 · scratch               |
+| I   | a Fit polyline's hover menu, palette title and Fit/Smooth      | known · d02-3, d02-4                        |
+
+**Findings:**
+
+#### PSD-01 — Multiple Join's fuzz distance takes no point
+
+- **Severity:** medium · **Row:** B, C · **Status:** verified
+- **Where:** `PolylineEditTool.ts` `wantsSnap()`: `fuzz` true, as Width's was before LPT-02.
+- **AutoCAD:** p340 (es, en): `10,10` → ` Specify second point:` (es `Designe segundo punto:`) `13,14`
+  → fuzz 5, `2 segments added to polyline`; LASTPOINT kept (30,30); the next run's `<5.0000>`.
+- **mellowcad:** the prompt asked again, typed or clicked.
+- **Fix:** `wantsSnap()` false at `fuzz`: the runtime measures (PEDIT-D12's mechanism).
+  **Regression test:** pedit.test.ts, p340 typed, clicked and in Spanish.
+
+#### PSD-02 — 3DPOLY's band is one solid ghost; AutoCAD's is amber and dashed (TPL-03)
+
+- **Severity:** medium · **Row:** M · **Status:** verified
+- **Where:** `Polyline3dTool.ts` `buildOverlay`.
+- **AutoCAD:** d04-1, d04-3, d05-2: the chain drawn as the object, solid in its colour (#dadcdd
+  over the white layer); from the last vertex to the cursor a dashed line in `#d7a320`, 16 px dashes
+  and 9 px gaps, as PLINE's arc chord (`THEME.dashedRubberBand`).
+- **mellowcad:** chain and band one ghost in the current colour, solid.
+- **Fix:** the chain as now, the band `THEME.dashedRubberBand` dashed. **Regression test:**
+  polyline3d.test.ts, the band's stroke, citing d04. **Coverage:** draw.md's **unverified** jig.
+
+#### PSD-03 — Edit vertex's X is small and red, over the selection's glow
+
+- **Severity:** medium · **Row:** M · **Status:** verified
+- **Where:** `PolylineEditTool.ts` `buildOverlay`, `MARK_SIZE`.
+- **AutoCAD:** d01-2, d01-5: an X in the crosshair's colour (`#e4e5e6`), 24 px each way along both
+  diagonals, 1 px; the polyline drawn plain at Edit vertex (glowing at the main prompt, d02-1).
+- **mellowcad:** ±6 px in `THEME.gripHot`, 1.5 px, the polyline in the glow.
+- **Fix:** `THEME.crosshair`, 24 px, width 1; no glow while Edit vertex runs. **Regression test:**
+  pedit.test.ts, the X's primitives and no glow, citing d01-2.
+
+#### PSD-04 — Move's and Insert's bands are in the crosshair's colour; AutoCAD's are amber
+
+- **Severity:** low · **Row:** M · **Status:** verified
+- **AutoCAD:** d01-3, d01-5: amber dashed from the X's vertex, no ghost of the polyline.
+- **Fix:** `THEME.dashedRubberBand`.
+
+#### PSD-05 — SPLINEDIT's Moves drag no ghost of the curve, and their band is the crosshair's colour
+
+- **Severity:** medium · **Row:** M · **Status:** verified
+- **Where:** `SplineEditTool.ts` `buildOverlay`.
+- **AutoCAD:** d01-4, d02-2, d02-3 (Fit data's Move), d01-6 (Edit vertex's): the spline as it would
+  be with the point at the cursor, white and thin, and an amber dashed band from the point; its grip
+  hot.
+- **mellowcad:** the band alone, `THEME.crosshair`.
+- **Fix:** the ghost through the same edit the answer makes (`splineEditing.ts`), the band
+  `THEME.dashedRubberBand`. **Regression test:** splinedit.test.ts, both Moves.
+
+#### PSD-06 — SPLINEDIT's Edit vertex draws no control frame
+
+- **Severity:** medium · **Row:** M · **Status:** verified
+- **AutoCAD:** d01-5, d01-6: the control polygon dashed in `#7f493a` through round grips on the
+  control vertices, at Edit vertex's prompt and its Move.
+- **mellowcad:** the round grips alone.
+- **Fix:** the frame dashed in that colour while Edit vertex runs (a `THEME` token, cited).
+
+#### PSD-07 — A click on 3DPOLY's last vertex is dropped; AutoCAD makes a zero-length segment
+
+- **Severity:** low · **Row:** C · **Status:** verified
+- **AutoCAD:** d04-3: a fourth vertex on the third, `[Close/Undo]` kept; p127: typed, the same
+  (mellowcad already keeps a typed one).
+- **Fix:** drop the guard in `onPointerDown`. **Regression test:** polyline3d.test.ts, d04.
+
+#### PSD-08 — 3DPOLY's start point shows X, Y and Z fields
+
+- **Severity:** low · **Row:** P · **Status:** verified
+- **AutoCAD:** d05-1: `Precise punto inicial de polilínea:` with three fields, Z `0`.
+- **mellowcad:** the one coordinate box (X, Y; a Z typed with a comma).
+- **Fix:** none now: a third field is the dynamic input's, owned by the LINE review (PEDIT-D51).
+
+**Decisions:**
+
+- **PEDIT-D50** PSD-01 takes the shared measurement, as LPT-02 did for Width.
+- **PEDIT-D51** PSD-08 goes to draw.md's Missing: the coordinate box has no Z field anywhere yet.
+- **PEDIT-D52** The X keeps 24 physical pixels as CSS pixels: a grip measured 8 there (d07) is 8
+  here.
+- **PEDIT-D53** The hover menus stay Missing; their words go to the coverage (d07, d02-3): 3D
+  polyline start `Stretch`, `Add Vertex`, `Remove Vertex`, `New Start Point`, `Lengthen`; middle
+  the first three; end `Stretch`, `Remove Vertex`, `New Endpoint`, `Lengthen` (es `Estirar`,
+  `Insertar vértice`, `Eliminar vértice`, `Nuevo punto inicial`, `Nuevo punto final`, `Longitud`);
+  a Fit polyline's vertex `Stretch`, `Remove Vertex`, `Tangent Direction` (es `Dirección de
+  tangente`); the English **unverified** (es-ES profile only).
+
+**Coverage** (no finding): a Fit polyline's palette is AutoCAD's `2D Polyline` (es `Polilínea 2D`,
+Fit makes the object a POLYLINE), Fit/Smooth `Curve fit` (es `Ajuste de curva`) — the
+**unverified** "which palette shows it" settled —, Linetype generation, Area 302.5533 for d02's open
+one (inquiry.md's Missing); its grips the frame's vertices (the `selectToolGrips.ts` **unverified**
+settled).
+
+**Could not be reviewed:** a `+` SPLINEDIT draws on the current point (amber at Fit data's and
+Edit vertex's prompts, green under Move; splinedit/d02), whose rule no probe separated; the English
+labels of the hover menus.
+
+**Order:** PSD-01, PSD-07 (small), PSD-02, PSD-03, PSD-04 (overlays), PSD-05, PSD-06 (SPLINEDIT's
+overlay), one commit.
+
+**Template improvements proposed:** the desktop helpers write each command's shots to its own
+folder (`OUT`, set before `source`: a prefixed assignment does not outlive it in bash); the Spanish
+profile's linetypes are Spanish (`DASHED` is `TRAZOS`); `type.ps1` hands the focus back when
+AutoCAD was not in front, so hovers show nothing until a click in the view (`focus`); an owner's
+window over AutoCAD is minimised by the owner, asked, before the first click; drawing through
+`(command …)` in `com eval` never leaves a prompt open.
