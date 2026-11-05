@@ -1803,11 +1803,17 @@ function pushEntities(
             layerById.get(solid.layerId)?.color ??
             DEFAULT_LAYER_COLOR
           ).toLowerCase(),
+          locked: layerById.get(solid.layerId)?.locked === true,
         })),
         viewDirection,
         viewUp
       )
-      for (const { points, fill } of shaded) {
+      for (const { points, fill: lit, locked } of shaded) {
+        // A locked solid's faces fade as its edges do, into the background
+        // (solid-inquiry/p310), opaque so no face behind shows through.
+        const fill = locked
+          ? mixedColor(lit, THEME.background, LOCKED_LAYER_OPACITY)
+          : lit
         out.push({
           kind: "path",
           points: points.map((point) => camera.worldToScreen(point)),
@@ -1969,6 +1975,19 @@ export function fadedColor(
     Number.parseInt(hex.slice(at, at + 2), 16)
   )
   return `rgba(${r}, ${g}, ${b}, ${opacity})`
+}
+
+/** `color` kept by `share`, the rest `under`'s: both `#rrggbb`, the result too. */
+function mixedColor(color: string, under: string, share: number): string {
+  const channel = (hex: string, at: number) =>
+    Number.parseInt(hex.slice(at, at + 2), 16)
+  return `#${[1, 3, 5]
+    .map((at) =>
+      Math.round(channel(color, at) * share + channel(under, at) * (1 - share))
+        .toString(16)
+        .padStart(2, "0")
+    )
+    .join("")}`
 }
 
 /** The hairline width every entity gets before its lineweight is applied. */

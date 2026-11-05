@@ -76,7 +76,7 @@ describe("hidden lines", () => {
     expect(total(lines, false)).toBeCloseTo(30, 6)
   })
 
-  it("show a cylinder's top, its base's front half and its two outlines", () => {
+  it("show a cylinder's top, its base's front half and its two outlines (solid-inquiry/p306)", () => {
     const [lines] = viewLines(
       [roundBrep({ x: 0, y: 0, z: 0 }, Z, X, 5, 5, 10, 1)],
       SW_ISO
@@ -103,7 +103,7 @@ describe("hidden lines", () => {
     expect(rulings.every((l) => l.visible)).toBe(true)
   })
 
-  it("draw no outline of a cylinder seen down its axis", () => {
+  it("draw no outline of a cylinder seen down its axis (solid-inquiry/p307)", () => {
     const [lines] = viewLines(
       [roundBrep({ x: 0, y: 0, z: 0 }, Z, X, 5, 5, 10, 1)],
       Z
@@ -112,7 +112,7 @@ describe("hidden lines", () => {
     expect(total(lines, true)).toBeCloseTo(4 * Math.PI * 5, 6)
   })
 
-  it("show a sphere's outline whole and nothing else", () => {
+  it("show a sphere's outline whole and nothing else (solid-inquiry/p306, p307)", () => {
     const [lines] = viewLines(
       [sphereBrep({ x: 1, y: 2, z: 3 }, Z, X, 5)],
       SW_ISO
@@ -121,7 +121,7 @@ describe("hidden lines", () => {
     expect(total(lines, true)).toBeCloseTo(2 * Math.PI * 5, 6)
   })
 
-  it("show a doughnut's outer outline and the hole's front", () => {
+  it("show a doughnut's outer outline and the hole's front (solid-inquiry/p306)", () => {
     const [lines] = viewLines([torusBrep({ x: 0, y: 0, z: 0 }, Z, X, 6, 2)], Z)
     // Seen along its axis: the outer circle and the hole's, both shown.
     expect(total(lines, true)).toBeCloseTo(2 * Math.PI * 8 + 2 * Math.PI * 4, 1)

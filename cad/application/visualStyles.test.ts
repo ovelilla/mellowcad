@@ -38,6 +38,12 @@ function isoBox(locale?: typeof es): CadHarness {
 const segments = (cad: CadHarness) =>
   cad.scene().primitives.filter((p) => p.kind === "segment")
 
+/** The segments drawn in the objects' white: the solids' edges, the grid off. */
+const edges = (cad: CadHarness) =>
+  segments(cad).filter(
+    (p) => p.kind === "segment" && p.stroke.color === THEME.entity
+  )
+
 describe("VSCURRENT", () => {
   it("offers the styles built, the current one's name at Enter (visualstyle/v02)", () => {
     const cad = isoBox()
@@ -56,12 +62,12 @@ describe("VSCURRENT", () => {
   })
 
   it("draws a box's nine edges in Hidden, its twelve in 2D Wireframe (visualstyle/p01, p02)", () => {
-    const cad = isoBox()
-    // The grid and the crosshair draw segments too: three edges fewer.
-    cad.moveTo({ x: 500, y: 500, z: 0 })
-    const wireframe = segments(cad).length
+    const cad = answer(isoBox(), "GRIDMODE", "0")
+    cad.moveTo({ x: 1e6, y: 1e6, z: 0 })
+    expect(edges(cad)).toHaveLength(12)
     answer(cad, "VSCURRENT", "_HIDDEN")
-    expect(segments(cad).length).toBe(wireframe - 3)
+    cad.moveTo({ x: 1e6, y: 1e6, z: 0 })
+    expect(edges(cad)).toHaveLength(9)
   })
 
   it("is a step U takes back, Enter's run too (probe solid-inquiry/p205)", () => {
@@ -225,6 +231,44 @@ describe("VSCURRENT", () => {
   })
 })
 
+describe("picking in Hidden and Conceptual", () => {
+  /** Box A in front of box B from SW Isometric, as probe solid-inquiry/p314 draws them. */
+  function twoBoxes(style: string): { cad: CadHarness; a: string; b: string } {
+    const cad = createHarness({})
+    answer(cad, "BOX", "0,0,0", "10,10", "10")
+    const a = cad.entities()[0].id
+    answer(cad, "BOX", "15,15,0", "25,25", "10")
+    const b = cad.entities()[1].id
+    answer(cad, "-VIEW", "_SWISO", "ZOOM", "E", "VSCURRENT", style)
+    return { cad, a, b }
+  }
+
+  it("takes the solid whose face is in front, never an edge it hides (solid-inquiry/p314)", () => {
+    // 17,15,0 lies on B's edge, hidden by A's top: 2D Wireframe takes B,
+    // Hidden and Conceptual take A.
+    for (const [style, taken] of [
+      ["_2", "b"],
+      ["_H", "a"],
+      ["_C", "a"],
+    ] as const) {
+      const { cad, a, b } = twoBoxes(style)
+      answer(cad, "ERASE", "17,15,0", "")
+      expect(cad.entities().map((e) => e.id)).toEqual(taken === "a" ? [b] : [a])
+    }
+  })
+
+  it("snaps to a vertex a face hides (solid-inquiry/p313)", () => {
+    for (const style of ["_2", "_H", "_C"]) {
+      const cad = createHarness({})
+      answer(cad, "LUPREC", "4", "BOX", "0,0,0", "20,10", "10")
+      answer(cad, "-VIEW", "_SWISO", "ZOOM", "E", "VSCURRENT", style)
+      expect(written(cad, "ID", "_END", "19.9,9.9,0").at(-1)).toBe(
+        " X = 20.0000     Y = 10.0000     Z = 0.0000"
+      )
+    }
+  })
+})
+
 describe("the Hidden visual style", () => {
   it("draws as SVG what it draws on the canvas: the lines no face hides (visualstyle/p02)", async () => {
     // visualstyle/p02's scene, less the torus and the overlapping pair.
@@ -271,6 +315,91 @@ describe("the Hidden visual style", () => {
   })
 })
 
+describe("what Hidden and Conceptual draw", () => {
+  it("leaves a solid on a layer that is off undrawn and hiding nothing (solid-inquiry/p309)", () => {
+    for (const style of ["_H", "_C"]) {
+      const cad = createHarness({})
+      answer(cad, "GRIDMODE", "0", "BOX", "15,15,0", "25,25", "10")
+      answer(cad, "-VIEW", "_SWISO", "ZOOM", "E", "VSCURRENT", style)
+      cad.moveTo({ x: 1e6, y: 1e6, z: 0 })
+      const alone = edges(cad).length
+      const off = cad.runtime.createLayer("OFFL")
+      answer(
+        cad,
+        "BOX",
+        "0,0,0",
+        "10,10",
+        "10",
+        "CHPROP",
+        "L",
+        "",
+        "LA",
+        "OFFL",
+        ""
+      )
+      cad.moveTo({ x: 1e6, y: 1e6, z: 0 })
+      expect(edges(cad).length).toBeGreaterThan(alone)
+      cad.runtime.updateLayer(off, { visible: false })
+      cad.moveTo({ x: 1e6, y: 1e6, z: 0 })
+      expect(edges(cad)).toHaveLength(alone)
+    }
+  })
+
+  it("draws lines, circles, text and hatches as in 2D Wireframe, in their colours (solid-inquiry/p301, p302)", () => {
+    const drawn = (style: string) => {
+      const cad = createHarness({})
+      answer(cad, "GRIDMODE", "0", "LINE", "0,0", "20,10", "")
+      answer(cad, "CHPROP", "L", "", "C", "1", "", "CIRCLE", "35,5", "5")
+      answer(cad, "CHPROP", "L", "", "C", "3", "", "-TEXT", "0,30", "5", "0")
+      answer(cad, "Abc", "CHPROP", "L", "", "C", "4", "")
+      answer(cad, "RECTANG", "70,25", "85,40", "-HATCH", "P", "ANSI31", "1")
+      answer(cad, "0", "77,32", "", "CHPROP", "L", "", "C", "6", "")
+      answer(cad, "BOX", "120,-10,0", "140,10", "10")
+      answer(cad, "-VIEW", "_SWISO", "ZOOM", "E", "VSCURRENT", style)
+      cad.moveTo({ x: 1e6, y: 1e6, z: 0 })
+      return cad
+        .scene()
+        .primitives.filter((p) => !("fill" in p && p.fill))
+        .map((p) => JSON.stringify(p))
+    }
+    const wire = new Set(drawn("_2"))
+    for (const style of ["_H", "_C"]) {
+      // Every primitive of the 2D objects is the same; only the box's edges change.
+      const shown = drawn(style).filter((p) => !p.includes(THEME.entity))
+      // The line, the circle, the text and the hatch's lines, the
+      // rectangle in white aside.
+      expect(shown.length).toBeGreaterThan(4)
+      for (const p of shown) expect(wire.has(p)).toBe(true)
+    }
+  })
+
+  it("draws a fillet's tangent edges in Hidden (solid-inquiry/p306)", () => {
+    const cad = createHarness({})
+    answer(cad, "GRIDMODE", "0", "BOX", "0,0,0", "20,10", "10")
+    answer(cad, "-VPOINT", "-1.3,-2.2,1.6", "ZOOM", "E")
+    answer(cad, "FILLETEDGE", "_R", "3", "10,0,10", "", "", "VSCURRENT", "_H")
+    cad.moveTo({ x: 1e6, y: 1e6, z: 0 })
+    // Seven of the box's edges, the bottom's left and front, and the two
+    // lines where the round meets the top and the front.
+    expect(edges(cad)).toHaveLength(10)
+  })
+
+  it("draws a cylinder's circle and a cone's without its apex lines in plan (solid-inquiry/p307)", () => {
+    for (const shape of [
+      ["CYLINDER", "0,0,0", "5", "10"],
+      ["CONE", "0,0,0", "5", "10"],
+    ]) {
+      const cad = createHarness({})
+      answer(cad, "GRIDMODE", "0", ...shape)
+      cad.moveTo({ x: 1e6, y: 1e6, z: 0 })
+      expect(edges(cad).length).toBeGreaterThan(0)
+      answer(cad, "VSCURRENT", "_H")
+      cad.moveTo({ x: 1e6, y: 1e6, z: 0 })
+      expect(edges(cad)).toHaveLength(0)
+    }
+  })
+})
+
 describe("the Conceptual visual style", () => {
   it("paints a box's three faces towards the viewer, its edges over them in colour 7 (visualstyle/p03, v06)", () => {
     const cad = isoBox()
@@ -291,6 +420,33 @@ describe("the Conceptual visual style", () => {
         (p) => p.kind === "segment" && p.stroke.color === THEME.entity
       )
     ).toBeGreaterThan(lastFace)
+  })
+
+  it("fades a locked solid's faces as its edges, into the background (solid-inquiry/p310)", () => {
+    const fills = (locked: boolean) => {
+      const cad = isoBox()
+      const layer = cad.runtime.document.getCurrentLayerId()
+      cad.runtime.updateLayer(layer, { locked })
+      answer(cad, "VSCURRENT", "C")
+      cad.moveTo({ x: 1e6, y: 1e6, z: 0 })
+      return cad
+        .scene()
+        .primitives.flatMap((p) =>
+          p.kind === "path" && p.fill ? [p.fill] : []
+        )
+    }
+    const rgb = (hex: string) =>
+      [1, 3, 5].map((i) => parseInt(hex.slice(i, i + 2), 16))
+    const shown = fills(false)
+    const faded = fills(true)
+    expect(faded).toHaveLength(shown.length)
+    const back = rgb(THEME.background)
+    faded.forEach((fill, i) => {
+      const want = rgb(shown[i]).map((c, k) => (c + back[k]) / 2)
+      rgb(fill).forEach((c, k) =>
+        expect(Math.abs(c - want[k])).toBeLessThanOrEqual(1)
+      )
+    })
   })
 
   it("shades a white box as AutoCAD does from SW Isometric (visualstyle/p03)", () => {

@@ -238,7 +238,13 @@ share. **Conceptual** paints the faces towards the viewer back to front, cut int
 (`cad/geometry/faceMesh.ts`, never saved), in the object's colour with Gooch's cool blue on the side
 turned from the light (VSFACESTYLE 2, v06), the light following the viewpoint (DEFAULTLIGHTING 1),
 fitted to a white box's three faces in SW Isometric (p03: 130, 122 and 85 grey); and over them
-Hidden's lines in colour 7 whatever the object's (VSEDGECOLOR `7`, v06)
+Hidden's lines in colour 7 whatever the object's (VSEDGECOLOR `7`, v06), a locked solid's faces
+faded into the background as its edges are (solid-inquiry/p310). In both, what is not a solid draws
+as in 2D Wireframe, in its colours (p301, p302); a fillet's tangent edges are drawn (p306), and in
+plan a cylinder or a cone shows its circle alone (p307); a solid on a layer that is off neither
+shows nor hides another (p309; frozen layers are not modelled). A click takes the solid whose face
+is nearest the viewer under it, never one by an edge a face hides (p314: 2D Wireframe takes the
+edge's solid), and the object snaps still find every edge (p313)
 
 **Missing:** Wireframe, Realistic, Shaded, shaded with Edges, shades of Gray, SKetchy, X-ray and
 Other (`Enter a visual style name or [?]:`, es `Indique un nombre de estilo visual o [?]`, pt-BR
@@ -247,11 +253,12 @@ Other (`Enter a visual style name or [?]:`, es `Indique un nombre de estilo visu
 the styles built, and the hidden `3DWIREFRAME` (`3`, Wireframe) and `EDGES` (Shaded with edges)
 refused with them (p204); SHADEMODE (es MODOSOMBRA), which runs VSCURRENT; -VISUALSTYLES and the Visual
 Styles Manager; the viewport controls' style menu; in Hidden and Conceptual, what hides lines but a
-solid: regions, circles, wide polylines and objects with thickness ("Objects that can hide other
-objects", HIDE's page), and what a solid hides but its own kind: lines, curves, text, the grid (p02
-hides a line behind the solids); solids inside block references (drawn in 2D Wireframe here); a
-solid on a layer that is off hiding others (**unverified**); picking a solid by its faces;
-AutoCAD's faceted outlines (p02 draws a sphere's as a polygon; here the exact curve); Conceptual's
+solid: regions, wide polylines and objects with thickness, a circle with thickness among them, not a
+plain circle ("Objects that can hide other objects", HIDE's page; solid-inquiry/p315), which
+Conceptual also shades as faces with colour 7 edges (p302's region filled, p316's tube; here their
+lines alone), and what a solid hides but its own kind: lines, curves, text, the grid (p02, p315
+hide a line behind the solids); solids inside block references and associative arrays (hidden and
+shaded in AutoCAD, p304, p305; drawn in 2D Wireframe here, isolines and all); AutoCAD's faceted outlines (p02 draws a sphere's as a polygon; here the exact curve); Conceptual's
 3 px silhouettes (VSSILHWIDTH 3, v06; here as wide as the edges), its smooth shading across a
 curved face (here flat per triangle, 11.25° a step), the tint of a coloured face (p03 turns a blue
 cylinder from 77,107,167 where lit to 47,119,107 where shaded, which no Gooch pair fitted to the

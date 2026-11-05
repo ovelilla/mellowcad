@@ -14,6 +14,9 @@ import {
   splineDataPoints,
 } from "../domain/entities"
 import { COLOR_BYLAYER, EntityColor } from "../domain/colors"
+import { Solid3dEntity } from "../domain/entityTypes"
+import { solidViewEntities } from "../domain/solids"
+import { facesAlong } from "../geometry/hiddenLines"
 import {
   createLayer,
   DEFAULT_LAYER_COLOR,
@@ -4698,23 +4701,79 @@ export class CadRuntime extends Observable {
     const { document, viewport } = this.frame
     const blocks = document.blockLookup()
     const { isolines } = document.getSettings()
+    const screen = viewport.worldToScreen(
+      "z" in world ? world : withZ(world, this.workPlaneZ())
+    )
+    const shaded = this.shadedSolidPick(screen)
     if (viewport.isPlan) {
+      const perUnit = viewport.worldToScreenDistance(1)
       return document.pickAllBy(
-        (entity) =>
-          planDistanceToEntity(viewport, entity, world, blocks, isolines),
+        (entity) => {
+          const pixels = shaded?.(entity)
+          return pixels !== undefined
+            ? pixels / perUnit
+            : planDistanceToEntity(viewport, entity, world, blocks, isolines)
+        },
         worldTolerance,
         locked
       )
     }
-    const screen = viewport.worldToScreen(
-      "z" in world ? world : withZ(world, this.workPlaneZ())
-    )
     return document.pickAllBy(
       (entity) =>
+        shaded?.(entity) ??
         screenDistanceToEntity(viewport, entity, screen, blocks, isolines),
       viewport.worldToScreenDistance(worldTolerance),
       locked
     )
+  }
+
+  /**
+   * How far, in pixels, a pick at `screen` is from a solid in Hidden or
+   * Conceptual: none from the one whose face is nearest the viewer under it,
+   * else from the stretches of its lines the scene draws; undefined for
+   * anything else, and in 2D Wireframe. WHY: there AutoCAD takes the solid
+   * in front, never one by an edge a face hides (solid-inquiry/p314); the
+   * snaps still find every edge (p313). The solids are the scene's, so
+   * `solidViewEntities` answers from its memo.
+   */
+  private shadedSolidPick(
+    screen: Vec2
+  ): ((entity: Entity) => number | undefined) | null {
+    if (this.document.getSettings().visualStyle === "2dWireframe") return null
+    const hidden = new Set(this.activeTool.hiddenEntityIds?.() ?? [])
+    const solids = this.document
+      .getEntities()
+      .filter(
+        (entity): entity is Solid3dEntity =>
+          entity.type === "solid3d" &&
+          !hidden.has(entity.id) &&
+          this.document.getLayer(entity.layerId)?.visible !== false
+      )
+    if (solids.length === 0) return null
+    const view = this.viewport
+    const lines = solidViewEntities(solids, view.direction)
+    const sight = view.screenToFacing(screen)
+    let front: EntityId | null = null
+    let nearest = Number.NEGATIVE_INFINITY
+    for (const solid of solids) {
+      const [first] = facesAlong(solid.brep, sight, view.direction)
+      if (first && first.depth > nearest) {
+        nearest = first.depth
+        front = solid.id
+      }
+    }
+    const drawn = new Map(solids.map((solid, i) => [solid.id, lines[i]]))
+    return (entity) => {
+      if (entity.type !== "solid3d") return undefined
+      if (entity.id === front) return 0
+      const wires = drawn.get(entity.id)
+      if (!wires) return undefined
+      let best = Number.POSITIVE_INFINITY
+      for (const wire of wires) {
+        best = Math.min(best, screenDistanceToEntity(view, wire, screen))
+      }
+      return best
+    }
   }
 
   /**

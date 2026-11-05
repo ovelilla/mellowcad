@@ -14,12 +14,15 @@ import { brepMesh } from "../geometry/faceMesh"
 export interface ShadedCell {
   readonly points: readonly Vec3[]
   readonly fill: string
+  /** Its solid's layer is locked: the cell fades as the solid's edges do. */
+  readonly locked?: boolean
 }
 
 /** A solid to shade and the colour it is drawn in, `#rrggbb` (index 7 white). */
 export interface ShadedSolid {
   readonly brep: Brep
   readonly color: string
+  readonly locked?: boolean
 }
 
 /**
@@ -98,14 +101,17 @@ export function shadedCells(
     same(last.up, up) &&
     last.solids.length === solids.length &&
     last.solids.every(
-      (s, i) => s.brep === solids[i].brep && s.color === solids[i].color
+      (s, i) =>
+        s.brep === solids[i].brep &&
+        s.color === solids[i].color &&
+        s.locked === solids[i].locked
     )
   ) {
     return last.cells
   }
   const light = lightDirection(toViewer, up)
   const found: { cell: ShadedCell; depth: number }[] = []
-  for (const { brep, color } of solids) {
+  for (const { brep, color, locked } of solids) {
     const mesh = brepMesh(brep)
     for (let i = 0; i < mesh.length; i++) {
       const t = mesh[i]
@@ -121,7 +127,11 @@ export function shadedCells(
       const depth =
         points.reduce((sum, p) => sum + dot3(p, toViewer), 0) / points.length
       found.push({
-        cell: { points, fill: goochFill(color, t.normal, light) },
+        cell: {
+          points,
+          fill: goochFill(color, t.normal, light),
+          ...(locked ? { locked } : {}),
+        },
         depth,
       })
     }

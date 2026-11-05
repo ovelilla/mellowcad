@@ -62,8 +62,7 @@ capability the app has belongs to the engine, behind a port; only the _mechanism
   `polylineCurve`, `solidViewEntities` and `brepMesh`. Entity helpers
   return new objects and either keep the id (in-place edit) or mint one (`*Copy` helpers).
 - Angles are **radians CCW from +X** in `geometry/` and `domain/`; degrees only at the UI boundary.
-  Normalise with `normalizeAngle` / `normalizeDegrees` (`geometry/primitives`): a hand-rolled
-  `deg + 360` lands a tiny negative angle on exactly 360 (ESLint).
+  Normalise with `normalizeAngle` / `normalizeDegrees`, never `deg + 360` (ESLint).
 - `ArcEntity` is **always CCW from `startAngle` to `endAngle`**: a transform that reverses
   orientation (mirror) reflects _and swaps_ the angles.
 - Polyline `bulges[i]` is AutoCAD's `tan(θ/4)` for segment `i`; mirroring negates them.
@@ -135,8 +134,9 @@ Dependencies run types → per-type modules → overrides → transforms → que
   rational curve's derivatives come from `bsplineDifferentials` (`bsplineDerivativeCurve` ignores
   the weights).
 - **A region and a solid are the kernel's** (`planarRegions.ts`, `solids.ts`; tolerance
-  `MODEL_TOLERANCE`), drawn, picked, snapped as their edges (`regionLevelEdgeEntities`,
-  `regionEdgeEntities`, `solidEdgeEntities`), a solid's with no INT or APP (help); its isolines
+  `MODEL_TOLERANCE`), drawn, picked (a solid off 2D Wireframe by its front face), snapped as their
+  edges (`regionLevelEdgeEntities`, `regionEdgeEntities`, `solidEdgeEntities`), a solid's no INT or
+  APP; its isolines
   (`solidWireEntities`) drawn, picked, snapped only at a sphere's or torus' centre
   (`SnapContext.solidPoints`), END, NEA at an apex or pole. A boolean, cut, offset or blend is the
   kernel's (`brepBoolean`, `solidEdits.ts`, `solidBlends.ts`), never a tool's. A solid's points are
