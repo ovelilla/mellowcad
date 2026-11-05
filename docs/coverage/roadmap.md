@@ -45,8 +45,8 @@ us to walk again, whereas a command costs the same before or after it.
    vertices selected with Ctrl+click (command-line.md), PRESSPULL on its faces, SLICE and SECTION
    (the kernel's cut, section and face offset in `geometry/solidEdits.ts`); 6b is done:
    FILLETEDGE, CHAMFEREDGE and SOLIDEDIT's faces (modify.md; the kernel's blends in
-   `geometry/solidBlends.ts`). 6c (3DMOVE, 3DROTATE, UCS Face and UCSDETECT) waits for the
-   reviews of what is built, 26 to 30 under "Command reviews".
+   `geometry/solidBlends.ts`). 6c (3DMOVE, 3DROTATE, UCS Face and UCSDETECT) is next: the
+   reviews of what is built, 26 to 30 under "Command reviews", are done (2026-11-05).
 
 Left out of the 2.5D model: POINT's thickness, with POINT (below). TRIM, EXTEND and JOIN of 3D
 polylines are done, cut and grown in plan at the Z they have there, a closed one left in two at
@@ -129,7 +129,7 @@ with the area. The order puts first the commands whose review settles what the l
 | 27  | Regions          | REGION, UNION, SUBTRACT, INTERSECT                                                                                       | the region object, the booleans of regions and solids, a composite solid's grip and palette                                                                                                                                        | done  |
 | 28  | Sweeps           | EXTRUDE, REVOLVE, PRESSPULL                                                                                              | profiles and their base, the swept solid (its history, LIST, palette rows, transforms, EXPLODE, file), a partial turn's and a spline surface's isolines, PRESSPULL's bounded areas | done  |
 | 29  | Solid edits      | SLICE, SECTION, FILLETEDGE, CHAMFEREDGE, SOLIDEDIT                                                                       | sub-objects (Ctrl+click, Ctrl+Space, their highlight, grips and selection), a command's own grip as a nested command                                                                                                          | done  |
-| 30  | Solid inquiry    | MASSPROP; VSCURRENT's Hidden and Conceptual                                                                              | the visual styles                                                                                                                                                                                                                  | plan  |
+| 30  | Solid inquiry    | MASSPROP; VSCURRENT's Hidden and Conceptual                                                                              | the visual styles                                                                                                                                                                                                                  | done  |
 | 31  | PEDIT, SPLINEDIT | 3DPOLY, PEDIT, SPLINEDIT                                                                                                 | the 3D polyline object                                                                                                                                                                                                             |       |
 | 32  | LIST, CHPROP     | LIST, CHPROP                                                                                                             | LIST's report of every object                                                                                                                                                                                                      |       |
 

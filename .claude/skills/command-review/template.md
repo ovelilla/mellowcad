@@ -171,13 +171,13 @@ the review, not an "n/a".
 - The chrome's keys, menus and buttons are read in acad.cuix first (AcceleratorRoot, PopMenuRoot,
   RibbonRoot): order, labels, macros (`^C^C` cancels, `'` is transparent; Workspace, MAC-01), which
   may answer the command's options (EXTRUDE's `_MO _SO`, EXT-10).
-- A run that awaits a port (the clipboard's read): probe its U name and a command typed meanwhile.
-- Read what each command leaves selected (`(ssget "_I")` after it ends or is cancelled): a set
+- A run awaiting a port (the clipboard's read): probe its U name and a command typed meanwhile.
+- Read what each command leaves selected (`(ssget "_I")` after its end or cancel): a set
   left behind is the next command's preselection (ERASE's SEL-43).
 - A look (a hover, a band, an icon) is changed by a rule's analogy only after the desktop pass:
   UCB-09 gave UCS OBject's hover BREAK's rollover, and d06 showed the selection's glow (UCD-03).
-- A variable a fix will add is placed by the OPEN test in the review, not left **unverified** for
-  the execution (SOLIDCHECK, solid-edits/p405).
+- A variable a fix will add is placed by the OPEN test in the review, not left **unverified**
+  (SOLIDCHECK, solid-edits/p405).
 - An editor's Escape is a cell of its own, with and without changes: it keeps, drops or asks
   (TEXT's drops the line being typed, TEXTEDIT's the edit, MTEXT's asks; text/d01, d05, d06).
 
@@ -397,4 +397,5 @@ traced BasePoint, a pick from the cursor, a jig prompt twice, pixels in two view
 Node: annex-probes.md §2, §4; the ribbon's answers, a run after options, the desktop drawing's
 variables: §4.1, §4.8, §5.3), Solid edits (the others' suspects, a new variable's OPEN test, a
 shared default, a sibling's pairing: §4.1, §4.8, matrix.md B, annex-catalogs.md §1), its desktop
-(matrix.md C, G, I; annex-probes.md §4; §4.8); 11-05 Solid inquiry (annex-probes.md §2, §4; §4.8).
+(matrix.md C, G, I; annex-probes.md §4; §4.8); 11-05 Solid inquiry (annex-probes.md §2, §4; §4.8),
+and its desktop (annex-probes.md §2, §4).

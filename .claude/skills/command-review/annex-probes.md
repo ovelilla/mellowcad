@@ -83,8 +83,9 @@ sweeps/EXT-01). A pick the console cannot click reads a typed point from its fix
 answers wait for the desktop (PRESSPULL, SLP-03). Two `Prompting` events with one message (a
 distance, then a point) are two history lines (p164, SWD-04).
 
-A look is plotted As displayed (console.md) and its pixels read against the scene's primitives
-(solid-inquiry/p300–p316).
+A look is plotted As displayed (console.md) for what it draws, not its colours: the plot shades
+otherwise, and a shading is fitted to a sphere's pixels on the screen, never a box's three faces
+(solid-inquiry/p300–p316, VSD-01).
 
 A command the ribbon runs in modes has its buttons' macros in `acad.cuix`, a zip (read it with
 Python's `zipfile`; `unzip` is not installed): `^C^C_circle \_d` is what the history echoes.
@@ -185,8 +186,7 @@ Traps seen on the desktop:
   cycling's stack: which candidate a click takes after Shift+Space needs a click without the
   jiggle (ERASE's review).
 - A function key sent with `acad.sh key` (F10 for Polar) can open the ribbon's key tips as Alt does,
-  and the next digit typed runs a Quick Access Toolbar button: a `5` ran Plot, whose dialog was
-  cancelled with WM_COMMAND IDCANCEL. Set the variable through COM instead, for Polar
+  and the next digit runs a Quick Access Toolbar button (a `5` ran Plot). Set the variable through COM instead, for Polar
   `(setvar "AUTOSNAP" 63)`, for Ortho ORTHOMODE. What such an accident writes lands in AutoCAD's
   working directory, the repo's root (`plot.log`): look there afterwards (MOVE's review).
 - The harness draws one world unit per pixel: a press within a few units of a short line's end
@@ -197,9 +197,8 @@ Traps seen on the desktop:
   and read the object back (SCALE's factor is the distance over half the set's extents,
   transforms/d06, d07). Wait a second after typing a command before its first pick, or the pick
   can miss and Enter end the command empty (Transforms' review).
-- A desktop drawing's variable can start otherwise than the console's: every new desktop drawing
-  read OFFSETDIST 1 where the console, isolated, with `-r` and with acadiso.dwt, read −1 (offset/p05,
-  d01-1). Read the desktop's value before trusting a default there. Plan each Enter a desktop step
+- A new desktop drawing's variable can differ from the console's (OFFSETDIST 1 against −1,
+  offset/p05, d01-1): read the desktop's value before trusting a default there. Plan each Enter a desktop step
   sends against the prompt it lands on: at a prompt whose Enter is Exit it ends the command, and the
   next click starts a window (OFFSET's review).
 - A registry variable a desktop step changes (TRIMEXTENDMODE by mOde) reaches the console's
@@ -266,8 +265,8 @@ Traps seen on the desktop:
   (AREA's green, inquiry/d03-1). What dynamic input shows depends on the profile's DYNMODE
   features, not only its sign: probe it with DYNMODE 3 too (inquiry/d02-1 against e01-1).
 
-- COM's SendCommand turns DYNMODE negative while it runs and puts it back after: `com set` and
-  `(setvar)` do not hold it, and a command sent through COM shows no dynamic input. Set it and start
+- COM's SendCommand turns DYNMODE negative (off) while it runs: `com set` and `(setvar)` do not
+  hold it, and a command sent through COM shows no dynamic input. Set it and start
   the command by typing (`type -text '-1\n'`: a bare `-1` is a PowerShell switch). U names a menu
   entry showing a key with the key glued (`PasteCtrl+V GROUP`): probe one apart (Clipboard, CFD).
 
@@ -302,8 +301,9 @@ Traps seen on the desktop:
   AutoCAD may move monitors between probes: a white shot means `acad.sh children` again; a fresh
   launch needs `com netload` before `com hist` (Sweeps).
 
-- A console finding COM can show (a history line, a `sssetfirst` preselection) is checked through
-  COM alone in the console session; `_MASSPROP\n\n` ends either branch (solid-inquiry/d01).
+- A console finding COM can show (a history line, a preselection) is checked through COM alone in
+  the console session; `_MASSPROP\n\n` ends either branch (solid-inquiry/d01). MASSPROP's and
+  LIST's text window takes the keys and the view's middle: `_GRAPHSCR` before a click (d09).
 
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).
