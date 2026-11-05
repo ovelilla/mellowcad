@@ -397,5 +397,5 @@ traced BasePoint, a pick from the cursor, a jig prompt twice, pixels in two view
 Node: annex-probes.md §2, §4; the ribbon's answers, a run after options, the desktop drawing's
 variables: §4.1, §4.8, §5.3), Solid edits (the others' suspects, a new variable's OPEN test, a
 shared default, a sibling's pairing: §4.1, §4.8, matrix.md B, annex-catalogs.md §1), its desktop
-(matrix.md C, G, I; annex-probes.md §4; §4.8); 11-05 Solid inquiry (annex-probes.md §2, §4; §4.8),
-and its desktop (annex-probes.md §2, §4).
+(matrix.md C, G, I; annex-probes.md §4; §4.8); 11-05 Solid inquiry and its desktop (annex-probes.md
+§2, §4; §4.8), PEDIT, SPLINEDIT (matrix.md A, C, M).

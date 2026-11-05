@@ -1,8 +1,8 @@
 # PEDIT, SPLINEDIT review (3DPOLY, PEDIT, SPLINEDIT; the 3D polyline object)
 
-> **Status:** plan, 2026-11-05. Console blocks TPL, TPO, LPT, PED and SPE reviewed (Phases 0–3 in
-> one session, three subagents); their execution follows in the same session, one commit per
-> block. The look on the desktop (block PSD) needs the owner's mouse: a later session.
+> **Status:** console blocks executed, 2026-11-05 (TPL, TPO, SPE, PED, LPT: §15); block PSD, the
+> three commands' look on the desktop with the owner's mouse, is next, in a session of its own.
+> Phases 0–3 in one session with three subagents, the execution in the same session.
 
 ## 1. Summary
 
@@ -547,3 +547,37 @@ polyline's frame and curve; carryOverrides on conversion; `currentProperties.tes
   touches (SPE-01).
 - **annex-probes.md §2:** an object's linetype is plotted beside a LINE of the same linetype as
   its control (TPO-01).
+
+## 15. Execution
+
+| Id               | What it was                                                                   | Commit   |
+| ---------------- | ----------------------------------------------------------------------------- | -------- |
+| TPL-01           | 3DPOLY's Undo took back a transparent command run since                       | 8609726e |
+| TPL-02           | its Undo stopped under UNDO Control None                                      | 8609726e |
+| TPL-04           | tests (p100–p126)                                                             | 8609726e |
+| TPO-01           | a 3D polyline drawn with its linetype                                         | 4b468230 |
+| TPO-02, TPO-03   | the anchor's type; ROTATE, SCALE, MIRROR tests                                | 4b468230 |
+| SPE-01           | no double-click on a spline                                                   | 9727b8f1 |
+| SPE-02, SPE-03   | a preselection of several splines, or of none                                 | 9727b8f1 |
+| SPE-04           | the conversion's precision not kept nor shared                                | 9727b8f1 |
+| SPE-05 to SPE-08 | a closed spline's Delete floor and knot, own knots, the walk                  | 9727b8f1 |
+| SPE-09           | a Z typed at Edit vertex's Move (Fit data's **unverified**)                   | 9727b8f1 |
+| SPE-10           | a tilted spline converted to a 2D polyline                                    | 9727b8f1 |
+| SPE-11 to SPE-15 | the misses' words, After/Before's Undo, Spanish `_E`, pt-BR labels, tests     | 9727b8f1 |
+| PED-01           | `@` at Move and Insert from LASTPOINT                                         | 601379bd |
+| PED-02 to PED-04 | Multiple's empty set, the fuzz kept, an arc end's Extend                      | 601379bd |
+| PED-05           | JOIN of a Fit polyline                                                        | 601379bd |
+| PED-06 to PED-10 | Reverse's tangent, Break's empty piece, EXTEND's words, pt-BR, tests          | 601379bd |
+| LPT-01 to LPT-05 | LASTPOINT at SPLINEDIT's prompts; Width's points; locked picks; picks' points | b1a995e0 |
+
+- **SPE-14 in part:** pt-BR lists After/Before `[Antes/Depois]`; the catalog has no per-language
+  order of a prompt's keywords, so the order stays English's (pt-BR.md's deviations, Missing).
+- **SPE-04** became one object `CadRuntime` hands both tools (`defaultTools` takes SPLINEDIT's);
+  whether U restores the precision is unprobed (Missing).
+- **LPT-03** gave both picks' modes the locked refusal too (`lockedAsksAgain`): **unverified** for a
+  window, in the coverage.
+- **For PSD's session, first:** Multiple Join's fuzz keeps `wantsSnap()` true as Width did before
+  LPT-02; its refusal words name two points (pedit/p12), so a point there is probably refused here
+  as Width's was: a console probe and a test settle it before the desktop.
+- The template improvements of §14 are applied in matrix.md's A, C and M rows (template.md's and
+  annex-probes.md's budgets are full).

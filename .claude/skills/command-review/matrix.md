@@ -29,7 +29,8 @@ plan each block has its table, a cell reading `match · p07 · LineTool.test.ts:
   regions/p400).
 - Repeating it: Enter or Space at `Command:`, the right button's Repeat, the recent commands.
 - Typed transparently (`'LINE`): refused as AutoCAD refuses it, or run as it runs.
-- The rail entry and any shortcut key.
+- The rail entry and any shortcut key; a double-click on its object (DoubleClickRoot.cui: a
+  spline runs SPLINEDIT, pedit SPE-01).
 
 **B. Prompts and options** — for each prompt:
 
@@ -51,6 +52,9 @@ plan each block has its table, a cell reading `match · p07 · LineTool.test.ts:
 - What LASTPOINT is after each answer (`ID @`), and at the first prompt before any point; after a
   click at an object's pick, which the console cannot make: the cursor's point on the work plane
   (solid-edits/d06).
+- A point typed and clicked at every prompt that takes one, a value prompt taking two points
+  included (PEDIT's Width, pedit LPT-02); `@dx,dy` after an `_ID` elsewhere at a later prompt, whose
+  traced `BasePoint` may be its base, not LASTPOINT (Edit vertex's X, PED-01).
 - Unit formats other than decimal (UNITS), a typed value with the drawing's precision.
 
 **D. Drafting aids** — at every point prompt:
@@ -116,7 +120,8 @@ Arabic, a left-to-right run inside right-to-left text). The catalog sweep for th
 the echo of options, refusals, reports, `>>` lines, what F2 shows.
 
 **M. Render** — the rubber band and the ghost while asking, the final object; the canvas and the
-SVG presenter; linetype dashes and lineweight; hover and selection highlight. The desktop shows
+SVG presenter; linetype dashes (plotted beside a LINE of the same linetype: a 3D polyline's are
+none, pedit TPO-01) and lineweight; hover and selection highlight. The desktop shows
 AutoCAD's (template §2).
 
 **P. Pointer gestures** — the command used with the mouse alone, as most users use it: started

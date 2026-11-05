@@ -136,8 +136,8 @@ with the area. The order puts first the commands whose review settles what the l
 Reviews 26 to 32 take what was built after the order was set (3 November 2026), the solids first:
 phase 6c builds on them, and their mouse had never been compared with the desktop's (BOX's height
 followed the cursor on the work plane, bf6d9928). The 3D primitives review fixed LASTPOINT in its tools
-(PLP, `docs/plans/primitives-review.md`): ArrayPolarTool and SplineEditTool also refuse at a
-point prompt with no `setsLastPoint()`: suspects for review 31 (the Sweeps review fixed
+(PLP, `docs/plans/primitives-review.md`): ArrayPolarTool also refuses at a point prompt with
+no `setsLastPoint()` (SplineEditTool's, LPT-01: `docs/plans/pedit-review.md`; the Sweeps review fixed
 ExtrudeTool's and RevolveTool's, SLP-01, SLP-02; the Solid edits review PlaneCutTool's and
 SolideditTool's, ELP-01, ELP-03), and ARRAYPOLAR's for the Arrays area (done) when it is next touched. The Solid edits review leaves SUbobject mode on solids, and moving sub-objects, to phase 6c (SUB-01, SED-08, `docs/plans/solid-edits-review.md`); a click at an object's pick sets LASTPOINT to the cursor's point on the work plane (SED-06, solid-edits/d06), and so does a click that picks at `Select objects:` (VSD-04, solid-inquiry/d10): the single-object picks of other commands are suspects off the plan; and DELOBJ's place in SETVAR's `?` listing (workspace/p127) to the Workspace area. The Sweeps review closed RGD-02 (a partial turn's isolines, SWD-01: `docs/plans/sweeps-review.md`); the dynamic input's boxes at its point prompts stay unprobed (d09), for the dynamic input's next pass. A review's state is `plan` while its plan runs, and `done` once executed, its plan reduced to an
 index (LINE's: `docs/plans/line-review.md`); a command added later takes the place its area gives
