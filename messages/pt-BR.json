@@ -57,6 +57,7 @@
     "title": "Os comandos que você já conhece, aliases incluídos.",
     "lead": "Digite L para LINHA, CI para CIRCULO, AP para APARAR. O MellowCAD entende os mesmos aliases do AutoCAD em português, faz as mesmas perguntas na mesma ordem e aceita as mesmas letras de opção; e os nomes globais, com _ na frente (_LINE), também funcionam.",
     "count": "{commands, number} comandos do AutoCAD, {aliases, number} aliases",
+    "reference": "Cada comando, com seus aliases e o primeiro prompt",
     "boardLabel": "Comandos e seus aliases, agrupados como na faixa de opções",
     "also": "Também: {aliases}",
     "tryLabel": "Experimente",
@@ -191,7 +192,7 @@
     "q8": "Funciona em tablets ou celulares?",
     "a8": "Ele abre, mas foi feito para teclado e mouse, como o AutoCAD. Use um computador.",
     "q9": "Quais comandos estão incluídos?",
-    "a9": "{commands, number} comandos, entre eles LINHA, PLINHA, CIRCULO, ARCO, ELIPSE, HACHURA, DESLOCAMENTO, APARAR, CONCORD, MATRIZ, as cotas, os blocos e as camadas. A lista completa, com os aliases, está mais acima."
+    "a9": "{commands, number} comandos, entre eles LINHA, PLINHA, CIRCULO, ARCO, ELIPSE, HACHURA, DESLOCAMENTO, APARAR, CONCORD, MATRIZ, as cotas, os blocos e as camadas. A <reference>referência de comandos</reference> traz todos, com seus aliases e o primeiro prompt."
   },
   "FinalCta": {
     "title": "Sua prancheta está a uma tecla de distância."
@@ -202,6 +203,7 @@
     "contact": "Contato",
     "code": "Código",
     "docs": "Documentação",
+    "commands": "Referência de comandos",
     "repository": "GitHub",
     "npm": "npm",
     "licence": "Licença MIT",

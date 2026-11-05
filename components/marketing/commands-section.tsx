@@ -1,3 +1,4 @@
+import Link from "next/link"
 import { getFormatter, getTranslations } from "next-intl/server"
 
 import { type EngineLocale, engineText, transcript } from "@mellowcad/engine"
@@ -9,6 +10,7 @@ import { pageEngineLocale, renderFigure } from "@/lib/plot"
 
 import { CommandTry } from "./command-try"
 import { Drawing } from "./drawing"
+import { ForwardArrow } from "./forward-arrow"
 import { SectionHeading } from "./section-heading"
 import { SnapCorners } from "./snap-corners"
 
@@ -50,9 +52,22 @@ export async function CommandsSection() {
       />
 
       <div className="flex flex-col gap-6">
-        <p className="data-mono text-fg-subtle">
-          {t("count", { commands: facts.commands, aliases: facts.aliases })}
-        </p>
+        <div className="flex flex-wrap items-baseline justify-between gap-x-6 gap-y-2">
+          <p className="data-mono text-fg-subtle">
+            {t("count", { commands: facts.commands, aliases: facts.aliases })}
+          </p>
+          <Link
+            href={paths.commands}
+            prefetch={false}
+            className="text-sm font-medium underline-link"
+          >
+            {t("reference")}
+            <span aria-hidden="true">
+              &nbsp;
+              <ForwardArrow />
+            </span>
+          </Link>
+        </div>
         <div
           role="group"
           aria-label={t("boardLabel")}

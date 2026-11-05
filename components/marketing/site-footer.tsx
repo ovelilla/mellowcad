@@ -46,7 +46,7 @@ export async function SiteFooter() {
 
   const links = [
     [common("startDrawing"), paths.editor],
-    [header("commands"), `${paths.home}#commands`],
+    [t("commands"), paths.commands],
     [header("roadmap"), `${paths.home}#roadmap`],
     [header("faq"), `${paths.home}#faq`],
   ] as const
@@ -73,14 +73,24 @@ export async function SiteFooter() {
                       {label}
                     </a>
                   ) : (
-                    <Link href={href} className="underline-link">
+                    // WHY no prefetch: from every page it fetched the home's
+                    // or the docs' payload, unasked.
+                    <Link
+                      href={href}
+                      prefetch={false}
+                      className="underline-link"
+                    >
                       {label}
                     </Link>
                   )}
                 </li>
               ))}
               <li>
-                <Link href={paths.privacy} className="underline-link">
+                <Link
+                  href={paths.privacy}
+                  prefetch={false}
+                  className="underline-link"
+                >
                   {t("privacy")}
                 </Link>
               </li>

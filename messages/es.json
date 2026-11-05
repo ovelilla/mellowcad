@@ -57,6 +57,7 @@
     "title": "Los comandos que ya conoces, alias incluidos.",
     "lead": "Escribe L para LINEA, DF para DESFASE, RR para RECORTA. MellowCAD entiende los mismos alias que AutoCAD en español, hace las mismas preguntas en el mismo orden y acepta las mismas letras de opción; y los nombres globales, con _ delante (_LINE), también funcionan.",
     "count": "{commands, number} comandos de AutoCAD, {aliases, number} alias",
+    "reference": "Cada comando, con sus alias y su primera solicitud",
     "boardLabel": "Comandos y sus alias, agrupados como en la cinta de opciones",
     "also": "También: {aliases}",
     "tryLabel": "Pruébalo",
@@ -191,7 +192,7 @@
     "q8": "¿Funciona en tabletas o móviles?",
     "a8": "Se abre, pero está pensado para teclado y ratón, como AutoCAD. Usa un equipo de escritorio o un portátil.",
     "q9": "¿Qué comandos incluye?",
-    "a9": "{commands, number} comandos, entre ellos LINEA, POL, CIRCULO, ARCO, ELIPSE, SOMBREA, DESFASE, RECORTA, EMPALME, MATRIZ, las cotas, los bloques y las capas. La lista completa, con los alias, está más arriba."
+    "a9": "{commands, number} comandos, entre ellos LINEA, POL, CIRCULO, ARCO, ELIPSE, SOMBREA, DESFASE, RECORTA, EMPALME, MATRIZ, las cotas, los bloques y las capas. La <reference>referencia de comandos</reference> los recoge todos, con sus alias y su primera solicitud."
   },
   "FinalCta": {
     "title": "Tu mesa de dibujo está a una tecla."
@@ -202,6 +203,7 @@
     "contact": "Contacto",
     "code": "Código",
     "docs": "Documentación",
+    "commands": "Referencia de comandos",
     "repository": "GitHub",
     "npm": "npm",
     "licence": "Licencia MIT",

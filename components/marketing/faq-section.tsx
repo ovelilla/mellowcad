@@ -1,6 +1,8 @@
 import { Plus } from "lucide-react"
+import Link from "next/link"
 import { getTranslations } from "next-intl/server"
 
+import { sitePaths } from "@/i18n/site-paths"
 import { productFacts } from "@/lib/facts"
 
 import { SectionHeading } from "./section-heading"
@@ -12,6 +14,12 @@ const QUESTIONS = [1, 2, 3, 4, 5, 6, 7, 8, 9] as const
 export async function FaqSection() {
   const t = await getTranslations("Faq")
   const facts = productFacts()
+  const paths = await sitePaths()
+  const reference = (chunks: React.ReactNode) => (
+    <Link href={paths.commands} prefetch={false} className="underline-link">
+      {chunks}
+    </Link>
+  )
 
   return (
     <section
@@ -31,7 +39,11 @@ export async function FaqSection() {
               />
             </summary>
             <p className="measure pb-6 text-fg-muted">
-              {t.rich(`a${n}`, { ...sourceLinks, commands: facts.commands })}
+              {t.rich(`a${n}`, {
+                ...sourceLinks,
+                reference,
+                commands: facts.commands,
+              })}
             </p>
           </details>
         ))}

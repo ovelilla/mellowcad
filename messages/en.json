@@ -57,6 +57,7 @@
     "title": "The commands you know, down to the aliases.",
     "lead": "Type L for LINE, O for OFFSET, TR for TRIM. MellowCAD reads the same aliases, asks the same questions in the same order and takes the same option letters.",
     "count": "{commands, number} AutoCAD commands, {aliases, number} aliases",
+    "reference": "Every command, with its aliases and first prompt",
     "boardLabel": "Commands and their aliases, grouped as on the ribbon",
     "also": "Also: {aliases}",
     "tryLabel": "Try it",
@@ -191,7 +192,7 @@
     "q8": "Does it work on tablets or phones?",
     "a8": "It opens, but it's built for a keyboard and mouse, like AutoCAD. Use a computer.",
     "q9": "Which commands are supported?",
-    "a9": "{commands, number} commands, including LINE, PLINE, CIRCLE, ARC, ELLIPSE, HATCH, OFFSET, TRIM, FILLET, ARRAY, dimensions, blocks and layers. The full list, with aliases, is above."
+    "a9": "{commands, number} commands, including LINE, PLINE, CIRCLE, ARC, ELLIPSE, HATCH, OFFSET, TRIM, FILLET, ARRAY, dimensions, blocks and layers. The <reference>command reference</reference> lists every one, with its aliases and first prompt."
   },
   "FinalCta": {
     "title": "Your drafting table is one keystroke away."
@@ -202,6 +203,7 @@
     "contact": "Contact",
     "code": "Code",
     "docs": "Docs",
+    "commands": "Command reference",
     "repository": "GitHub",
     "npm": "npm",
     "licence": "MIT licence",
