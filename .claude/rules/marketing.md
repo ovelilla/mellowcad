@@ -152,9 +152,11 @@ script — updates it in the same change.
   last — the whole static TTF (`assets/fonts`), as the Arabic subset alone makes the shaper throw.
   Retire them when Satori reorders on its own, and look at the card: a passing build can still draw
   the words backwards.
-- Structured data is one `@graph` (`lib/structured-data.ts`), typed with `schema-dts`, rendered by
-  `JsonLd` with `<` escaped as `"\\u003c"` in source — with one backslash the string _is_ `<` and the
-  escape does nothing. No invented ratings, ever.
+- Structured data is one `@graph` per page (`lib/structured-data.ts`), typed with `schema-dts`,
+  rendered by `JsonLd` with `<` escaped as `"\\u003c"` in source — with one backslash the string
+  _is_ `<` and the escape does nothing: the home's site, app and publisher (its `sameAs`, the
+  repository and the engine's npm page; its `softwareVersion`, the engine's), and each docs page's
+  `BreadcrumbList`, the same steps it draws above the article. No invented ratings, ever.
 - `robots.ts` allows everything, `/draw` included (it must be fetchable for its `noindex` to be
   read). `sitemap.ts` lists indexable pages once per live language with their `hreflang` and
   `CONTENT_UPDATED` — bump it with the copy.

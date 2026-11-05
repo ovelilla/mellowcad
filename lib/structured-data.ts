@@ -7,7 +7,9 @@ import { pageEngineLocale } from "@/lib/plot"
 import {
   CONTACT_EMAIL,
   EDITOR_PATH,
+  ENGINE_PACKAGE_URL,
   OG_IMAGE_PATH,
+  REPOSITORY_URL,
   SITE_NAME,
   SITE_URL,
 } from "@/lib/site"
@@ -72,6 +74,32 @@ export async function homeStructuredData(): Promise<Graph> {
         url: `${SITE_URL}/`,
         logo: `${SITE_URL}/icon.svg`,
         email: CONTACT_EMAIL,
+        // Where else the publisher is found: its code and its package.
+        sameAs: [REPOSITORY_URL, ENGINE_PACKAGE_URL],
+      },
+    ],
+  }
+}
+
+/**
+ * A page's place in the site, from the home page down, as a search result
+ * shows it instead of the URL. Each step is a full URL in the language its
+ * page is served in.
+ */
+export function breadcrumbStructuredData(
+  steps: readonly { name: string; url: string }[]
+): Graph {
+  return {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "BreadcrumbList",
+        itemListElement: steps.map((step, index) => ({
+          "@type": "ListItem",
+          position: index + 1,
+          name: step.name,
+          item: step.url,
+        })),
       },
     ],
   }

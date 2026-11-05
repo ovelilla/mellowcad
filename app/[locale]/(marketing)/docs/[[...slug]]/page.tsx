@@ -1,4 +1,5 @@
 import { findNeighbour } from "fumadocs-core/page-tree"
+import { ChevronRight } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -10,7 +11,8 @@ import { DocsNav } from "@/components/docs/docs-nav"
 import { DocsSearch } from "@/components/docs/docs-search"
 import { DocsToc } from "@/components/docs/docs-toc"
 import { ForwardArrow } from "@/components/marketing/forward-arrow"
-import { localePath } from "@/i18n/navigation"
+import { JsonLd } from "@/components/marketing/json-ld"
+import { localePath, localeUrl } from "@/i18n/navigation"
 import { DIRECTION, type AppLocale, routing, segmentLocale } from "@/i18n/routing"
 import { docsSource } from "@/lib/docs/docs-source"
 import { DOCS_PACKAGES, DOCS_PATH } from "@/lib/docs/packages"
@@ -28,6 +30,7 @@ import {
 import { USE_PAGES } from "@/lib/docs/use"
 import { pageMetadata } from "@/lib/metadata"
 import { SITE_NAME } from "@/lib/site"
+import { breadcrumbStructuredData } from "@/lib/structured-data"
 
 // Every page of every language is prerendered; any other slug is a 404.
 export const dynamicParams = false
@@ -112,6 +115,59 @@ function DocsLink({
   )
 }
 
+/**
+ * Where the page is, from the home page down: its package's first page for
+ * a page of "Build". Drawn above the article and given to search engines,
+ * which show it in place of the URL.
+ */
+async function breadcrumbSteps(locale: AppLocale, page: DocsPage | undefined) {
+  const t = await getTranslations("Docs")
+  const steps = [
+    { name: SITE_NAME, path: "/" },
+    { name: t("label"), path: DOCS_PATH },
+  ]
+  const folder = page && page.slugs.length > 1 ? docsSource.getPage(page.slugs.slice(0, 1), locale) : undefined
+  if (folder) steps.push({ name: folder.data.title, path: canonicalPath(folder) })
+  if (page) steps.push({ name: page.data.title, path: canonicalPath(page) })
+  return steps.map((step) => ({ ...step, href: localePath(locale, step.path), url: localeUrl(locale, step.path) }))
+}
+
+async function DocsBreadcrumbs({
+  steps,
+  locale,
+}: {
+  steps: Awaited<ReturnType<typeof breadcrumbSteps>>
+  locale: AppLocale
+}) {
+  const t = await getTranslations("Docs")
+  // In the site's language, inside an article that may be in another.
+  return (
+    <nav
+      aria-label={t("breadcrumb")}
+      lang={locale}
+      dir={DIRECTION[locale]}
+      className="mb-6 text-sm text-fg-muted"
+    >
+      <ol className="flex flex-wrap items-center gap-x-1.5 gap-y-1">
+        {steps.map((step, index) => (
+          <li key={step.path} className="flex items-center gap-1.5">
+            {index > 0 && <ChevronRight className="size-3.5 text-fg-subtle rtl:-scale-x-100" aria-hidden="true" />}
+            {index === steps.length - 1 ? (
+              <span aria-current="page" className="text-fg">
+                {step.name}
+              </span>
+            ) : (
+              <Link href={step.href} prefetch={false} className="hover:text-fg">
+                {step.name}
+              </Link>
+            )}
+          </li>
+        ))}
+      </ol>
+    </nav>
+  )
+}
+
 function StatusBadge({
   published,
   label,
@@ -134,11 +190,13 @@ function StatusBadge({
 
 async function DocsIndex({ locale }: { locale: AppLocale }) {
   const t = await getTranslations("Docs")
+  const steps = await breadcrumbSteps(locale, undefined)
   // "Build" is English only, at its English URLs (`servedIn`).
   const english = routing.defaultLocale
   const hrefLang = locale === english ? undefined : english
   return (
     <div className="flex flex-col gap-12">
+      <JsonLd data={breadcrumbStructuredData(steps)} />
       <header className="flex flex-col gap-4">
         <p className="label-mono">{t("label")}</p>
         <h1 className="text-h2">{t("title")}</h1>
@@ -238,14 +296,17 @@ async function DocsArticle({ page, locale }: { page: DocsPage; locale: AppLocale
     page.url
   )
   const Body = page.data.body
+  const steps = await breadcrumbSteps(locale, page)
   return (
     <div className="flex flex-col gap-10">
+      <JsonLd data={breadcrumbStructuredData(steps)} />
       {language !== locale && (
         <p className="rounded-md border border-border bg-bg-raised px-4 py-3 text-sm text-fg-muted">
           {t("englishOnly")}
         </p>
       )}
       <article lang={language} dir={DIRECTION[language]} className="min-w-0">
+        <DocsBreadcrumbs steps={steps} locale={locale} />
         <header className="mb-10 flex flex-col gap-4">
           <div className="flex flex-wrap items-center gap-3">
             <p className="label-mono" lang={locale} dir="auto">

@@ -15,7 +15,6 @@ import {
   COMMAND_GROUPS,
   type CommandGroup,
 } from "@/content/commands"
-import packageJson from "@/package.json"
 
 /**
  * Every number and list the landing states about the product, derived from
@@ -64,6 +63,11 @@ export interface ProductFacts {
   readonly hatchPatterns: number
   /** Automated tests in the repository, rounded down to the hundred. */
   readonly tests: number
+  /**
+   * The engine's version, the one on npm: the app is that engine in the
+   * editor, and the site itself has no release of its own (its
+   * `package.json` stays at 0.1.0).
+   */
   readonly version: string
 }
 
@@ -78,8 +82,20 @@ export function productFacts(locale?: EngineLocale): ProductFacts {
     linetypes: LINETYPES.length,
     hatchPatterns: HATCH_PATTERNS.length,
     tests: Math.floor(countTests() / 100) * 100,
-    version: packageJson.version,
+    version: engineVersion(),
   }
+}
+
+/**
+ * The engine's version, read from its manifest at build time: its entry
+ * points are the only imports the site makes into it (`cad/entryPoints.test.ts`).
+ */
+function engineVersion(): string {
+  const manifest = readFileSync(
+    join(/*turbopackIgnore: true*/ process.cwd(), "cad", "package.json"),
+    "utf8"
+  )
+  return (JSON.parse(manifest) as { version: string }).version
 }
 
 // WHY packages/editor and not packages/: the editor's tests were lib's until

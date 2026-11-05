@@ -250,6 +250,7 @@
   },
   "Docs": {
     "navLabel": "Documentação",
+    "breadcrumb": "Trilha de navegação",
     "metaTitle": "Documentação",
     "metaDescription": "Como desenhar com o MellowCAD e como construir com ele: cada comando e atalho de teclado, as diferenças em relação ao AutoCAD, e o motor, suas ligações para React e o editor.",
     "label": "Documentação",

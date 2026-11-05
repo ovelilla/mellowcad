@@ -213,6 +213,7 @@
   "Og.tagline": "2D CAD in your browser",
   "Og.drawTitle": "Start drawing",
   "Docs.navLabel": "Documentation",
+  "Docs.breadcrumb": "Breadcrumb",
   "Docs.metaTitle": "Documentation",
   "Docs.metaDescription": "How to draw with MellowCAD and how to build with it: every command and shortcut, the differences from AutoCAD, and the engine, its React bindings and the editor.",
   "Docs.label": "Docs",
