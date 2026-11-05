@@ -45,8 +45,8 @@ us to walk again, whereas a command costs the same before or after it.
    vertices selected with Ctrl+click (command-line.md), PRESSPULL on its faces, SLICE and SECTION
    (the kernel's cut, section and face offset in `geometry/solidEdits.ts`); 6b is done:
    FILLETEDGE, CHAMFEREDGE and SOLIDEDIT's faces (modify.md; the kernel's blends in
-   `geometry/solidBlends.ts`). 6c (3DMOVE, 3DROTATE, UCS Face and UCSDETECT) is next: the
-   reviews of what is built, 26 to 30 under "Command reviews", are done (2026-11-05).
+   `geometry/solidBlends.ts`). 6c (3DMOVE, 3DROTATE, UCS Face and UCSDETECT) waits for the
+   reviews of what is built under "Command reviews": 26 to 30 are done (2026-11-05), 31 and 32 remain.
 
 Left out of the 2.5D model: POINT's thickness, with POINT (below). TRIM, EXTEND and JOIN of 3D
 polylines are done, cut and grown in plan at the Z they have there, a closed one left in two at
