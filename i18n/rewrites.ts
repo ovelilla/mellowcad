@@ -54,6 +54,13 @@ export function localeRedirects(routing: LocaleRouting): Redirect[] {
     ...englishOnlyRedirects(routing),
     // The share card moved to a route of its own inside `[locale]`.
     { source: "/opengraph-image", destination: OG_IMAGE_PATH, permanent: true },
+    // Some clients ask for the touch icon by its old names without reading
+    // the page's `<link rel="apple-touch-icon">`, which is `app/apple-icon.png`.
+    {
+      source: "/apple-touch-icon:suffix(|-precomposed).png",
+      destination: "/apple-icon.png",
+      permanent: true,
+    },
   ]
 }
 

@@ -55,12 +55,14 @@ export function ContinueDrawing({
           <ForwardArrow />
         </span>
       </span>
+      {/* WHY from an attribute: as text, the reserved label was part of
+          the link's text for crawlers ("Start drawing → Continue drawing ·
+          999 objects →"). */}
       <span
         aria-hidden="true"
-        className="invisible col-start-1 row-start-1 text-center"
-      >
-        {widest} →
-      </span>
+        data-label={`${widest} →`}
+        className="invisible col-start-1 row-start-1 text-center after:content-[attr(data-label)]"
+      />
     </a>
   )
 }

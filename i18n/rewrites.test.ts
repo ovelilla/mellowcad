@@ -59,6 +59,8 @@ describe("the locale URL scheme", () => {
     ["/en", "redirect /"],
     ["/en/draw", "redirect /draw"],
     ["/opengraph-image", "redirect /og"],
+    ["/apple-touch-icon.png", "redirect /apple-icon.png"],
+    ["/apple-touch-icon-precomposed.png", "redirect /apple-icon.png"],
     // Unknown pages reach English's catch-all, which answers 404.
     ["/xx", "route /en/xx"],
     ["/xx/yy", "route /en/xx/yy"],

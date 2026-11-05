@@ -159,7 +159,8 @@ script — updates it in the same change.
   `BreadcrumbList`, the same steps it draws above the article. No invented ratings, ever.
 - `robots.ts` allows everything, `/draw` included (it must be fetchable for its `noindex` to be
   read). `sitemap.ts` lists indexable pages once per live language with their `hreflang` and
-  `CONTENT_UPDATED` — bump it with the copy.
+  `CONTENT_UPDATED` — bump it with the copy; a docs page, the day of its files' last commit
+  (`lastCommitDay`), left out where a shallow clone cannot know it.
 - Search Console / Bing tokens come from `GOOGLE_SITE_VERIFICATION` / `BING_SITE_VERIFICATION`.
 - IndexNow's key is `INDEXNOW_KEY`, served as `public/<key>.txt` (`test/indexnow.test.ts`).
   `npm run indexnow` lists the live sitemap's URLs and `-- --send` submits them: the owner runs it

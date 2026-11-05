@@ -3,7 +3,13 @@ import type { MetadataRoute } from "next"
 import { localeUrl } from "@/i18n/navigation"
 import { LIVE_LOCALES } from "@/i18n/routing"
 import { DOCS_PATH } from "@/lib/docs/packages"
-import { canonicalPath, isTranslated, ownPages } from "@/lib/docs/pages"
+import { lastCommitDay } from "@/lib/docs/last-modified"
+import {
+  canonicalPath,
+  isTranslated,
+  ownPages,
+  pageSource,
+} from "@/lib/docs/pages"
 import { languageAlternates } from "@/lib/metadata"
 import { CONTENT_UPDATED } from "@/lib/site"
 
@@ -16,9 +22,10 @@ const PAGES = ["/", "/privacy", DOCS_PATH]
  * `changeFrequency` and `priority` altogether, so neither is set.
  *
  * A docs page is listed in the languages it is written in: one written in
- * every language with its hreflang set, one in English only without. It has no
- * `lastModified`: it changes with its README or the engine's catalog, which
- * no date here follows.
+ * every language with its hreflang set, one in English only without. Its
+ * `lastModified` is the last commit to its file and the package file it
+ * includes (a generated page's file is rewritten with what it says), left
+ * out where the build's history cannot tell.
  */
 export default function sitemap(): MetadataRoute.Sitemap {
   const site = PAGES.flatMap((path) => {
@@ -34,8 +41,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       const languages = isTranslated(page)
         ? languageAlternates(canonicalPath(page), localeUrl)
         : undefined
+      const files = [page.data.info.fullPath, pageSource(page)?.file]
+      const lastModified = lastCommitDay(
+        files.filter((file) => file !== undefined)
+      )
       return {
         url: localeUrl(locale, canonicalPath(page)),
+        ...(lastModified && { lastModified }),
         ...(languages && { alternates: { languages } }),
       }
     })
