@@ -285,7 +285,7 @@ export function optionKeywords(
   return options.map((option) => ({
     id: option.id,
     word: text.keyword(command, option.id, option.prompt ?? asked),
-    global: option.id,
+    global: option.global ?? option.id,
   }))
 }
 

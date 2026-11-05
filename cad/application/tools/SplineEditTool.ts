@@ -26,6 +26,7 @@ import {
   splineWithFitData,
 } from "../../domain/splineEditing"
 import { formatLength } from "../../domain/units"
+import { WORLD_UCS, ucsZAxis } from "../../domain/ucs"
 import type { ScenePrimitive } from "../../scene/types"
 import {
   ReplaceEntitiesCommand,
@@ -39,6 +40,7 @@ import type { PromptId } from "../../locales/types"
 import { glow, rollover } from "./ghostLook"
 import { joinToSpline } from "./JoinTool"
 import { ONE_OBJECT_MODES, ObjectSelector } from "./objectSelection"
+import { newestFirst } from "./listReport"
 import { gripRubberBand } from "./selectToolOverlay"
 import { gripPrimitives, vertexGripShape } from "./selectToolGrips"
 import {
@@ -83,9 +85,26 @@ type Step =
   | { readonly kind: "weight" }
   | { readonly kind: "precision" }
 
-/** AutoCAD's default and range at `Specify a precision <10>:` (k73, k95). */
+/** AutoCAD's first default and range at `Specify a precision <10>:` (k73, k95). */
 const DEFAULT_PRECISION = 10
 const MAX_PRECISION = 99
+
+/**
+ * convert to Polyline's precision: one value for the program's session, which
+ * SPLINEDIT's and PEDIT's precision prompts both offer and set (PEDIT-D40,
+ * splinedit/p148, p150–p152), kept through NEW and OPEN and saved in no
+ * drawing (p159, p163). Whether U restores it is unprobed.
+ */
+export interface SplineConversion {
+  precision: number
+}
+
+export function splineConversion(): SplineConversion {
+  return { precision: DEFAULT_PRECISION }
+}
+
+/** eXit, declared `EXit` at every prompt, so `_E` is it at Fit data (splinedit/p139). */
+const EXIT: CommandOption = { id: "eXit", global: "EXit" }
 
 /**
  * SPLINEDIT, as AutoCAD 2027's console asks it (probes spline-knots/k11,
@@ -117,6 +136,12 @@ export class SplineEditTool implements Tool {
   private order = 3
   private weightShown = ""
   private methodShown: Walked = "fit"
+  /** The spline a double-click starts the run on. */
+  private pending: EntityId | null = null
+
+  constructor(
+    private readonly conversion: SplineConversion = splineConversion()
+  ) {}
 
   /**
    * The selection modes typed at `Select spline:`, Previous and AUto too, as
@@ -142,16 +167,28 @@ export class SplineEditTool implements Tool {
     done: (ctx) => this.join(ctx),
   })
 
+  /** Starts the run on `id`, as the double-click's `^C^C^R_splinedit` with it selected does. */
+  startOn(id: EntityId): void {
+    this.pending = id
+  }
+
   onActivate(ctx: ToolContext): void {
     this.reset()
     ctx.setCursor("crosshair")
-    const [only, ...more] = ctx.selection.toArray()
-    const preselected = only !== undefined && ctx.document.get(only)
+    const pending = this.pending
+    this.pending = null
+    const set = (
+      pending ? [pending] : newestFirst(ctx.selection.toArray(), ctx)
+    )
+      .map((id) => ctx.document.get(id))
+      .filter((entity): entity is Entity => entity !== undefined)
     ctx.selection.clear()
-    // A spline selected before the command is the one it edits (k121).
-    if (preselected && more.length === 0 && preselected.type === "spline") {
-      this.begin(preselected, ctx)
-    }
+    // The newest spline selected before the command is the one it edits
+    // (k121, splinedit/p145, p158: PEDIT-D42); a set of none is said of its
+    // newest object and asked again (p146).
+    const spline = set.find((entity) => entity.type === "spline")
+    if (spline) this.begin(spline, ctx)
+    else if (set.length > 0) this.take(set[0], ctx)
   }
 
   onDeactivate(ctx: ToolContext): void {
@@ -259,7 +296,10 @@ export class SplineEditTool implements Tool {
           values: { weight: this.weightShown },
         }
       case "precision":
-        return { id: "specifyPrecision", enter: { count: DEFAULT_PRECISION } }
+        return {
+          id: "specifyPrecision",
+          enter: { count: this.conversion.precision },
+        }
     }
   }
 
@@ -320,7 +360,7 @@ export class SplineEditTool implements Tool {
           { id: "convert to Polyline" },
           { id: "Reverse" },
           { id: "Undo" },
-          { id: "eXit" },
+          EXIT,
           { id: "Data", hidden: true },
           { id: "R", hidden: true },
           { id: "X", hidden: true },
@@ -336,7 +376,7 @@ export class SplineEditTool implements Tool {
           { id: "Move" },
           { id: "Purge" },
           ...(this.closed ? [] : [{ id: "Tangents" }]),
-          { id: "eXit" },
+          EXIT,
           { id: "X", hidden: true },
         ]
       case "vertex":
@@ -346,7 +386,7 @@ export class SplineEditTool implements Tool {
           { id: "Elevate order" },
           { id: "Move" },
           { id: "Weight" },
-          { id: "eXit" },
+          EXIT,
           { id: "Order", hidden: true },
           { id: "X", hidden: true },
         ]
@@ -356,7 +396,7 @@ export class SplineEditTool implements Tool {
           { id: "Next" },
           { id: "Previous" },
           { id: "Select point" },
-          { id: "eXit" },
+          EXIT,
           { id: "Point", hidden: true },
           { id: "X", hidden: true },
         ]
@@ -406,8 +446,12 @@ export class SplineEditTool implements Tool {
           )
           return "continue"
         }
-        // WHY: Undo with nothing added yet does nothing (unprobed past k106).
-        return id === "Undo" ? "continue" : "unhandled"
+        if (id !== "Undo") return "unhandled"
+        // Nothing added yet, it says so and asks for a point to add, as
+        // After does (splinedit/p113).
+        ctx.report(ctx.text.message("allAdditionsUndone"))
+        this.ask({ kind: "addPoint", at: 1, marks: [] }, ctx)
+        return "continue"
       case "addPoint":
         if (id !== "Undo") return "unhandled"
         this.undoAdded(ctx)
@@ -663,18 +707,33 @@ export class SplineEditTool implements Tool {
   }
 
   /**
+   * The stops a walk makes: each point, and on a closed fit spline its
+   * closing point last, the first again (splinedit/p112: PEDIT-D41); a closed
+   * CV spline's ends at its last vertex (p161).
+   */
+  private stops(walked: Walked): number {
+    return this.counts[walked] + (walked === "fit" && this.closed ? 1 : 0)
+  }
+
+  /** The point the walk's stop is on. */
+  private pointIndex(walked: Walked): number {
+    return this.current % Math.max(1, this.counts[walked])
+  }
+
+  /**
    * Which way Enter steps: the way it last went, but back from the last
    * point and on from the first, where it stays put (k80, k97, k107–k109).
    */
   private steppingForward(walked: Walked): boolean {
-    const count = this.counts[walked]
+    const count = this.stops(walked)
     if (this.current >= count - 1) return false
     if (this.current <= 0) return true
     return this.forward
   }
 
   private stepTo(next: boolean, walked: Walked, ctx: ToolContext): void {
-    const count = this.walkedPoints(ctx, walked).length
+    this.refresh(ctx)
+    const count = this.stops(walked)
     this.forward = next
     this.current = Math.max(
       0,
@@ -753,10 +812,13 @@ export class SplineEditTool implements Tool {
           ctx.pickTolerance()
         )
         if (index === null) {
-          // A Select point that finds none asks again in silence (unprobed).
-          if (step.purpose !== "select") {
-            ctx.report(ctx.text.message("notAFitPoint"))
-          }
+          // Select point's miss on Edit vertex's names the vertex, under the
+          // fit point's prompt (splinedit/p110, p160).
+          ctx.report(
+            ctx.text.message(
+              walked === "cv" ? "notAControlVertex" : "notAFitPoint"
+            )
+          )
           this.ask(step, ctx)
           return
         }
@@ -817,7 +879,7 @@ export class SplineEditTool implements Tool {
         this.edit(ctx, (s) =>
           controlVertexDeleted(SplineEditTool.vertices(s), index)
         )
-        if (vertices.points.length - 1 <= 2) {
+        if (vertices.points.length - 1 <= deleteFloor(spline)) {
           ctx.report(ctx.text.message("cannotDeleteBeyond"))
           this.ask({ kind: "vertex" }, ctx)
         } else this.ask(step, ctx)
@@ -828,14 +890,15 @@ export class SplineEditTool implements Tool {
           this.stepTo(this.steppingForward(step.walked), step.walked, ctx)
           return
         }
-        const index = this.current
+        const index = this.pointIndex(step.walked)
         this.edit(ctx, (s) => {
           const target = step.walked === "fit" ? s : SplineEditTool.vertices(s)
+          // A Z typed at Edit vertex's Move is kept, the spline leaving its
+          // plane (splinedit/p120); Fit data's is unprobed.
+          const to = step.walked === "fit" ? this.onPlane(s, point) : point
           return {
             ...target,
-            points: target.points.map((p, i) =>
-              i === index ? this.onPlane(s, point) : p
-            ),
+            points: target.points.map((p, i) => (i === index ? to : p)),
           }
         })
         this.ask(step, ctx)
@@ -876,13 +939,15 @@ export class SplineEditTool implements Tool {
   }
 
   /**
-   * Delete takes fit points until two are left, then says so and goes back
-   * to Fit data (k62, k103).
+   * Delete takes fit points until two are left, three on a closed spline,
+   * then says so and goes back to Fit data (k62, k103; splinedit/p107, p154,
+   * p156).
    */
   private deleteFitPoint(index: number, ctx: ToolContext): void {
-    const count = this.shown(ctx)?.points.length ?? 0
+    const shown = this.shown(ctx)
+    if (!shown) return
     this.edit(ctx, (s) => fitPointDeleted(s, index))
-    if (count - 1 <= 2) {
+    if (shown.points.length - 1 <= deleteFloor(shown)) {
       ctx.report(ctx.text.message("cannotDeleteBeyond"))
       this.ask({ kind: "fit" }, ctx)
     } else this.ask({ kind: "existing", purpose: "delete" }, ctx)
@@ -928,7 +993,6 @@ export class SplineEditTool implements Tool {
         return
       }
       case "precision": {
-        const precision = value ?? DEFAULT_PRECISION
         if (value !== null && !integerIn(typed, value, 0, MAX_PRECISION)) {
           ctx.report(
             ctx.text.message("requiresIntegerBetween", {
@@ -940,7 +1004,8 @@ export class SplineEditTool implements Tool {
           this.ask(step, ctx)
           return
         }
-        this.convert(precision, ctx)
+        if (value !== null) this.conversion.precision = value
+        this.convert(this.conversion.precision, ctx)
         return
       }
       case "weight": {
@@ -970,7 +1035,7 @@ export class SplineEditTool implements Tool {
     ctx.execute(
       new ReplaceEntitiesCommand(
         [spline.id],
-        [splinePolyline(spline, precision)]
+        [splinePolyline(spline, precision, worldZOf(ctx))]
       )
     )
     ctx.endCommand()
@@ -1071,7 +1136,10 @@ export class SplineEditTool implements Tool {
   private anchor(ctx: ToolContext): Vec3 | null {
     const step = this.step
     if (step.kind === "move") {
-      return this.walkedPoints(ctx, step.walked)[this.current] ?? null
+      return (
+        this.walkedPoints(ctx, step.walked)[this.pointIndex(step.walked)] ??
+        null
+      )
     }
     if (step.kind === "addPoint" || step.kind === "addWhere") {
       const points = this.walkedPoints(ctx, "fit")
@@ -1107,7 +1175,8 @@ export class SplineEditTool implements Tool {
     const shape = vertexGripShape(target)
     target.points.forEach((point, i) => {
       const hot =
-        (step.kind === "move" || step.kind === "weight") && i === this.current
+        (step.kind === "move" || step.kind === "weight") &&
+        i === this.pointIndex(walked)
       out.push(...gripPrimitives(ctx.viewport.worldToScreen(point), hot, shape))
     })
     const from = this.anchor(ctx)
@@ -1134,6 +1203,16 @@ export class SplineEditTool implements Tool {
     const weight = vertices.weights?.[this.current] ?? 1
     this.weightShown = formatLength(weight, ctx.document.getSettings())
   }
+}
+
+/** The WCS's Z in the tool's frame, which convert to Polyline's 2D or 3D polyline is read against. */
+export function worldZOf(ctx: ToolContext): Vec3 {
+  return ucsZAxis(ctx.ucs.wcs ?? WORLD_UCS)
+}
+
+/** The fewest points Delete leaves: two, three on a closed spline (splinedit/p107, p108). */
+function deleteFloor(spline: SplineEntity): number {
+  return spline.closed ? 3 : 2
 }
 
 /** Whether `typed` is an integer from `min` to `max`, as AutoCAD's integer prompts take one. */

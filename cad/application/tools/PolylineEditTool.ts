@@ -69,7 +69,12 @@ import {
   ObjectSelector,
 } from "./objectSelection"
 import { gripRubberBand } from "./selectToolOverlay"
-import { integerIn } from "./SplineEditTool"
+import {
+  SplineConversion,
+  integerIn,
+  splineConversion,
+  worldZOf,
+} from "./SplineEditTool"
 import {
   CommandOption,
   CommandOptionOutcome,
@@ -113,8 +118,7 @@ type Step =
       readonly from: number
     }
 
-/** AutoCAD's default and range at `Specify a precision <10>:` (pedit/p07). */
-const DEFAULT_PRECISION = 10
+/** AutoCAD's range at `Specify a precision <10>:` (pedit/p07). */
 const MAX_PRECISION = 99
 
 /** World tolerance within which two ends touch. */
@@ -194,6 +198,11 @@ export class PolylineEditTool implements Tool {
     done: (ctx) => this.join(ctx),
   })
 
+  /** SPLINEDIT's precision, which PEDIT's prompts share (splinedit/p152). */
+  constructor(
+    private readonly conversion: SplineConversion = splineConversion()
+  ) {}
+
   /** Starts the run on `id`, as the double-click's `^C^C_pedit` with it selected does. */
   startOn(id: EntityId): void {
     this.pending = id
@@ -254,7 +263,10 @@ export class PolylineEditTool implements Tool {
       case "convert":
         return { id: "turnIntoPolyline", enter: "undoYes" }
       case "precision":
-        return { id: "specifyPrecision", enter: { count: DEFAULT_PRECISION } }
+        return {
+          id: "specifyPrecision",
+          enter: { count: this.conversion.precision },
+        }
       case "set":
         return this.setSelector.question()
       case "convertSet":
@@ -262,7 +274,7 @@ export class PolylineEditTool implements Tool {
       case "setPrecision":
         return {
           id: "specifyPrecisionForSplineConversion",
-          enter: { count: DEFAULT_PRECISION },
+          enter: { count: this.conversion.precision },
         }
       case "main":
         return this.main3d ? "peditOption3d" : "peditOption"
@@ -892,11 +904,11 @@ export class PolylineEditTool implements Tool {
     if (step.kind === "convert") {
       if (step.entity.type === "spline") {
         this.ask({ kind: "precision", entity: step.entity }, ctx)
-      } else this.convertOne(step.entity, DEFAULT_PRECISION, ctx)
+      } else this.convertOne(step.entity, this.conversion.precision, ctx)
     } else if (step.kind === "convertSet") {
       if (step.set.some((entity) => entity.type === "spline")) {
         this.ask({ kind: "setPrecision", set: step.set }, ctx)
-      } else this.convertSet(step.set, DEFAULT_PRECISION, ctx)
+      } else this.convertSet(step.set, this.conversion.precision, ctx)
     }
   }
 
@@ -912,7 +924,7 @@ export class PolylineEditTool implements Tool {
     precision: number,
     ctx: ToolContext
   ): void {
-    const polyline = asPolyline(entity, precision)
+    const polyline = asPolyline(entity, precision, ctx)
     ctx.execute(new ReplaceEntitiesCommand([entity.id], [polyline]))
     this.begin([polyline.id], false, ctx)
   }
@@ -932,7 +944,8 @@ export class PolylineEditTool implements Tool {
       this.ask(step, ctx)
       return
     }
-    const precision = value ?? DEFAULT_PRECISION
+    if (value !== null) this.conversion.precision = value
+    const precision = this.conversion.precision
     if (step.kind === "precision") this.convertOne(step.entity, precision, ctx)
     else this.convertSet(step.set, precision, ctx)
   }
@@ -966,7 +979,7 @@ export class PolylineEditTool implements Tool {
       this.ask({ kind: "convertSet", set }, ctx)
       return
     }
-    this.convertSet(set, DEFAULT_PRECISION, ctx)
+    this.convertSet(set, this.conversion.precision, ctx)
   }
 
   /** Multiple's lines, arcs and splines turned into polylines in one command (p12, p114). */
@@ -978,7 +991,7 @@ export class PolylineEditTool implements Tool {
     const made = new Map<EntityId, EditedPolyline>()
     for (const entity of set) {
       if (convertible(entity))
-        made.set(entity.id, asPolyline(entity, precision))
+        made.set(entity.id, asPolyline(entity, precision, ctx))
     }
     if (made.size > 0) {
       ctx.execute(
@@ -1449,8 +1462,14 @@ function convertible(entity: Entity): boolean {
  * its normal Z × the line (p97), a spline as convert to Polyline leaves it,
  * a 3D polyline where it lies in no plane (p07, p99).
  */
-function asPolyline(entity: Entity, precision: number): EditedPolyline {
-  if (entity.type === "spline") return splinePolyline(entity, precision)
+function asPolyline(
+  entity: Entity,
+  precision: number,
+  ctx: ToolContext
+): EditedPolyline {
+  if (entity.type === "spline") {
+    return splinePolyline(entity, precision, worldZOf(ctx))
+  }
   if (entity.type === "arc") {
     return carryOverrides(
       entity,

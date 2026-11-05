@@ -246,7 +246,8 @@ UNDO's `OK? <S>` is pt-BR's too (line/p109). Keywords per prompt (`promptKeyword
 (`SAir`), SPLINEDIT's eXit and X at Weight's and Move's (`Sair`, `S`). Labels pt-BR declares
 otherwise (English's entry beside): ATTDISP's `ATivado`, DIST's arc `DIreção` and `LInha`,
 SPLINEDIT's `Depois`, COPY's `Descolamento` (Autodesk's spelling, with `<Deslocamento>` kept as the
-default, a phrase), UCSICON's `Sem origem`.
+default, a phrase), UCSICON's `Sem origem`. SPLINEDIT lists `REverter` at its open prompt and
+`Reverter` at its closed one (`promptKeywordLabels.splineditOptionClosed`; splinedit/p102, p108).
 
 **-OSNAP's words take their three capitals** (`MEIo`, `CENtro`, `QUAdrante`, `INTersecção`,
 `EXTensão`, `INSerção`, `PERpendicular`, `TANgente`, `MAIspróximo`, `APArente`, `PARalela`,
@@ -329,6 +330,9 @@ in the three languages by `cad/application/promptForms.test.ts`.
 - **-OSNAP's Endpoint is `pONto`** (27408): pt-BR's console takes `PON` and `PONTO` as Node
   (`Ponto`), which is not built here, refuses `EXTR` and `ON`, and no typed word reaches Endpoint
   but `_END` (names/p07–p09).
+- **SPLINEDIT's Add lists `[Depois/Antes]`** at an open spline's first fit point, English's order:
+  the console lists `[Antes/Depois]`, declaring `DEpois` first (splinedit/p113), and the catalog
+  holds no language's own order of a prompt's keywords. The words answer as AutoCAD's.
 - **CONE and PYRAMID refuse Enter at a height with no default**, as English, Spanish and pt-BR's
   CYLINDER do: pt-BR's console ends them there with nothing made (CONE solid/k04, primitives/p215,
   p239: the distance comes back as an empty keyword; PYRAMID solid/y03, primitives/p352), a defect

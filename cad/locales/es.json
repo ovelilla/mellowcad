@@ -2454,6 +2454,7 @@
       "joinTypeIs": "Tipo de junta = {type, select, extend {Alargar} add {Añadir segmento} other {Ambos (Alargar o Añadir)}}",
       "notAFitPoint": "No es ningún punto de ajuste.",
       "notAControlVertex": "No es un vértice de control.",
+      "allAdditionsUndone": "Se ha deshecho todo lo que se añadió.",
       "listObjectName": "{name, select, line {LINEA} circle {CIRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINEA} vertex {VERTICE} endSequence {FIN SECUENCIA} text {TEXT} mtext {MTEXT} attdef {DEFINICIÓN DE ATRIBUTO} attribute {ATRIBUTO} dimension {ACOTACION} hatch {HATCH} insert {REFERENCIA A BLOQUE} region {REGION} solid3d {3DSOLID} other {MATRIZ}}",
       "listObject": "                  {name}  Capa: \"{layer}\"",
       "listSpace": "                            Espacio: Espacio modelo",
@@ -2861,7 +2862,8 @@
     },
     "promptKeywordLabels": {
       "ucsNewUcs": { "ZAxis": "ejEZ" },
-      "filletEdgeLoopOr": { "Edge": "Arista" }
+      "filletEdgeLoopOr": { "Edge": "Arista" },
+      "splineditOptionClosed": { "Reverse": "Invertir" }
     },
     "listing": {
       "dimVariable": "{name}{value}{description}",

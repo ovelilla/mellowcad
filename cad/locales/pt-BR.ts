@@ -5349,6 +5349,7 @@ export const ptBR: EngineLocale = {
       ],
       "notAFitPoint": "Não é um ponto de ajuste.",
       "notAControlVertex": "Não é um vértice de controle.",
+      "allAdditionsUndone": "Todas as adições foram desfeitas.",
       "listObjectName": [
         [
           "name",
@@ -7566,7 +7567,7 @@ export const ptBR: EngineLocale = {
         "Fit data": "AJustar dados",
         "Edit vertex": "Editar vértice",
         "convert to Polyline": "converter para Polilinha",
-        "Reverse": "Reverter",
+        "Reverse": "REverter",
         "eXit": "saIr",
         "Elevate order": "Ordem de elevação",
         "Select point": "SElecionar ponto",
@@ -7626,6 +7627,9 @@ export const ptBR: EngineLocale = {
       },
       "filletEdgeLoopOr": {
         "Edge": "arEsta"
+      },
+      "splineditOptionClosed": {
+        "Reverse": "Reverter"
       }
     },
     "listing": {

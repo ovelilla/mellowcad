@@ -105,7 +105,8 @@ export function defaultTools(
   paste: PasteTool,
   attEdit: AttEditTool,
   setvar: SystemVariableTool,
-  pedit: PolylineEditTool
+  pedit: PolylineEditTool,
+  splineEdit: SplineEditTool
 ): Tool[] {
   const circleRadius = { radius: 0 }
   const primitives = solidDefaults()
@@ -207,7 +208,7 @@ export function defaultTools(
     new SolideditTool("Copy", solidedit),
     new BreakTool("gap", "break"),
     new BreakTool("atPoint", "breakatpoint"),
-    new SplineEditTool(),
+    splineEdit,
     pedit,
     new MatchPropTool(),
     new ChPropTool(),

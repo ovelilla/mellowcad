@@ -2575,6 +2575,7 @@ declare const source: {
       "joinTypeIs": string
       "notAFitPoint": string
       "notAControlVertex": string
+      "allAdditionsUndone": string
       "listObjectName": string
       "listObject": string
       "listSpace": string
@@ -3057,6 +3058,9 @@ declare const source: {
       }
       "filletEdgeLoopOr": {
         "Edge": string
+      }
+      "splineditOptionClosed": {
+        "Reverse": string
       }
     }
     "listing": {

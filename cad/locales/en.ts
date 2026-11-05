@@ -4699,6 +4699,7 @@ export const en: EngineCatalog = {
       ],
       "notAFitPoint": "Not a fit point.",
       "notAControlVertex": "Not a control vertex.",
+      "allAdditionsUndone": "All the additions are undone.",
       "listObjectName": [
         [
           "name",
@@ -6954,6 +6955,9 @@ export const en: EngineCatalog = {
       },
       "filletEdgeLoopOr": {
         "Edge": "Edge"
+      },
+      "splineditOptionClosed": {
+        "Reverse": "Reverse"
       }
     },
     "listing": {

@@ -96,6 +96,12 @@ export interface CommandOption {
    * taken and does nothing: `S` at a whole-object set's SIngle (erase/p153).
    */
   readonly shortDoesNothing?: true
+  /**
+   * The global word `_` types, where AutoCAD's `initget` declares it
+   * otherwise than the id: SPLINEDIT's `EXit`, which takes `_E` at Fit data
+   * (splinedit/p139).
+   */
+  readonly global?: string
 }
 
 /**

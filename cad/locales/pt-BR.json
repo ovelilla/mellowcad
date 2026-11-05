@@ -2535,6 +2535,7 @@
       "joinTypeIs": "Tipo de união = {type, select, extend {Estender} add {Adicionar segmento} other {Ambos (Estender ou Adicionar)}}",
       "notAFitPoint": "Não é um ponto de ajuste.",
       "notAControlVertex": "Não é um vértice de controle.",
+      "allAdditionsUndone": "Todas as adições foram desfeitas.",
       "listObjectName": "{name, select, line {LINHA} circle {CÍRCULO} arc {ARCO} ellipse {ELLIPSE} spline {SPLINE} lwpolyline {LWPOLYLINE} polyline {POLILINHA} vertex {VÉRTICE} endSequence {END SEQUENCE} text {TEXT} mtext {MTEXT} attdef {DEFINIÇÃO DE ATRIBUTO} attribute {ATRIBUTO} dimension {COTA} hatch {HATCH} insert {REFERÊNCIA DE BLOCO} region {REGION} solid3d {3DSOLID} other {MATRIZ}}",
       "listObject": "                  {name}  Camada: \"{layer}\"",
       "listSpace": "                            Espaço: Espaço do modelo",
@@ -2946,7 +2947,7 @@
         "Fit data": "AJustar dados",
         "Edit vertex": "Editar vértice",
         "convert to Polyline": "converter para Polilinha",
-        "Reverse": "Reverter",
+        "Reverse": "REverter",
         "eXit": "saIr",
         "Elevate order": "Ordem de elevação",
         "Select point": "SElecionar ponto",
@@ -2989,7 +2990,8 @@
     },
     "promptKeywordLabels": {
       "ucsNewUcs": { "ZAxis": "EIxo z" },
-      "filletEdgeLoopOr": { "Edge": "arEsta" }
+      "filletEdgeLoopOr": { "Edge": "arEsta" },
+      "splineditOptionClosed": { "Reverse": "Reverter" }
     },
     "listing": {
       "dimVariable": "{name}{value}{description}",

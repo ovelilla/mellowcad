@@ -1,5 +1,13 @@
 import { Vec2 } from "../geometry/Vec2"
-import { Vec3, add3, length3, scale3, sub3 } from "../geometry/Vec3"
+import {
+  Vec3,
+  WORLD_Z,
+  add3,
+  cross3,
+  length3,
+  scale3,
+  sub3,
+} from "../geometry/Vec3"
 import {
   BSplineCurve,
   bsplineBreakpoints,
@@ -147,6 +155,27 @@ export function splineWithFitData(spline: SplineEntity): SplineEntity {
   }
 }
 
+/**
+ * A closed fit spline's own knots when they are 1 apart, Uniform, which Add
+ * and Delete keep so for its new count of points (splinedit/p106: 0..5,
+ * p107: 0..3); null for any other. Non-uniform ones are **unverified** and
+ * worked out again as derived ones.
+ */
+function uniformLoop(
+  spline: SplineEntity,
+  count: number
+): { knotVector: number[] } | null {
+  const knots = spline.knotVector
+  if (!spline.closed || !knots || knots.length < 2) return null
+  const uniform = knots.every(
+    (k, i) => Math.abs(k - knots[0] - i) <= 1e-9 * Math.max(1, Math.abs(k))
+  )
+  if (!uniform) return null
+  return {
+    knotVector: Array.from({ length: count + 1 }, (_, i) => knots[0] + i),
+  }
+}
+
 /** An open fit spline's fit point parameters on its own knots, or null on derived ones. */
 function ownParams(spline: SplineEntity): number[] | null {
   if (!spline.knotVector || spline.closed) return null
@@ -166,6 +195,8 @@ export function fitPointAdded(
 ): SplineEntity {
   const points = [...spline.points]
   points.splice(index, 0, point)
+  const loop = uniformLoop(spline, points.length)
+  if (loop) return { ...spline, points, ...loop }
   const params = ownParams(spline)
   if (!params) {
     return { ...without(spline, "knotVector"), points }
@@ -189,6 +220,8 @@ export function fitPointDeleted(
   index: number
 ): SplineEntity {
   const points = spline.points.filter((_, i) => i !== index)
+  const loop = uniformLoop(spline, points.length)
+  if (loop) return { ...spline, points, ...loop }
   const params = ownParams(spline)
   if (!params) return { ...without(spline, "knotVector"), points }
   return {
@@ -339,7 +372,10 @@ function loopKnot(knots: readonly number[], count: number) {
 /**
  * Edit vertex's Delete: the vertex goes with the inner knot nearest its
  * Greville abscissa (k85, k111–k113, k130); with no inner knot left the
- * degree drops by one instead (k69, k104).
+ * degree drops by one instead (k69, k104). WHY a periodic one's mean is
+ * taken half a degree back: AutoCAD drops the knot at the vertex's own index
+ * there (splinedit/p108: [0,1,3,4] of 0..4 deleting vertex 2; p153), two
+ * knots before the Greville abscissa of a cubic; other degrees unprobed.
  */
 export function controlVertexDeleted(
   spline: SplineEntity,
@@ -359,8 +395,9 @@ export function controlVertexDeleted(
   let knotVector: number[]
   if (inner.length > 0) {
     const knotAt = periodic ? loopKnot(knots, count) : (i: number) => knots[i]
+    const back = periodic ? Math.ceil(p / 2) : 0
     let mean = 0
-    for (let s = 1; s <= p; s++) mean += knotAt(index + s)
+    for (let s = 1; s <= p; s++) mean += knotAt(index + s - back)
     mean /= p
     const period = periodic ? knots[count] - knots[0] : null
     const drop = inner.reduce((best, i) =>
@@ -474,27 +511,33 @@ export function splinePolylinePoints(
 /**
  * The spline as convert to Polyline and PEDIT leave it (k73, pedit/p07,
  * p99): a polyline of straight segments through {@link splinePolylinePoints}
- * in its plane, a 3D polyline where it lies in none, its properties carried.
- * PLINECONVERTMODE's arcs are not built.
+ * at its elevation where it lies in a plane whose normal is ±Z (splinedit/
+ * p144), a 3D polyline otherwise, a tilted plane too (p143, p157, p164:
+ * PEDIT-D43), its properties carried. PLINECONVERTMODE's arcs are not built.
+ * `worldZ` is the WCS's Z where the spline is read in a UCS's frame.
  */
 export function splinePolyline(
   spline: SplineEntity,
-  precision: number
+  precision: number,
+  worldZ: Vec3 = WORLD_Z
 ): PolylineEntity | Polyline3dEntity {
-  const polyline = isLevelSpline(spline)
-    ? createPolyline(
-        splinePolylinePoints(spline, precision).map((p) => ({
-          x: p.x,
-          y: p.y,
-        })),
-        spline.closed,
-        spline.layerId
-      )
-    : createPolyline3d(
-        splinePolylinePoints(splineInWorld(spline), precision),
-        spline.closed,
-        spline.layerId
-      )
+  const normal = spline.normal ?? WORLD_Z
+  const alongZ = length3(cross3(normal, worldZ)) <= 1e-9
+  const polyline =
+    alongZ && isLevelSpline(spline)
+      ? createPolyline(
+          splinePolylinePoints(spline, precision).map((p) => ({
+            x: p.x,
+            y: p.y,
+          })),
+          spline.closed,
+          spline.layerId
+        )
+      : createPolyline3d(
+          splinePolylinePoints(splineInWorld(spline), precision),
+          spline.closed,
+          spline.layerId
+        )
   return carryOverrides(spline, polyline)
 }
 

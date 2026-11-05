@@ -1807,25 +1807,33 @@ AutoCAD while the click takes the marker (desktop d13), here it follows the poin
 ### `SPLINEDIT` / `SPE` · es `EDITSPLINE` / `SPE` · pt-BR `EDITARSPLINE` / `ESPL`
 
 **Implemented:** as AutoCAD 2027's console asks it and leaves the spline (probes
-spline-knots/k11, k57–k146, traced, MPDUMP, en and es; not transparent, k146): `Select spline:`
+spline-knots/k11, k57–k146 and splinedit/p100–p166, traced, MPDUMP, en, es and pt-BR; not
+transparent, k146; Enter repeats it, p100): `Select spline:`
 (es `Designe spline:`), a pick or a mode typed there (Window, Last, Crossing, BOX, ALL, Fence,
 WPolygon, CPolygon, Previous, AUto), on nothing a window, anything but a spline
 `Object selected is not a spline.` (es `El objeto designado no es una spline.`) and the prompt
-again, Enter ending the command (k93, k96, k118); a spline selected before it is the one edited
-(k121); a polyline PEDIT's Spline fitted turned at once, in silence, into the CV spline of its curve,
+again, a Fit polyline too (p103), Enter ending the command (k93, k96, k118); the newest spline
+selected before it is the one edited, the rest dropped (k121, p145, p158), a set with none said of
+its newest, `Object selected is not a spline.`, and `Select spline:` asked (p146), nothing left
+selected (p147); a double-click on a spline at `Command:` runs it on it as acad.cuix's
+`^C^C^R_splinedit ` does (DoubleClickRoot.cui `DC_0012`), echoed `_splinedit` (what `^R` echoes is
+**unverified**); a polyline PEDIT's Spline fitted turned at once, in silence, into the CV spline of its curve,
 as SPLINE's Object makes it (k94, pedit/p180). Then `Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit]
 <eXit>:` (es `Indique una opción [Cerrar/Unir/Ajustar datos/Editar vértices/coNvertir en
 polilínea/Invertir/desHacer/Salir] <Salir>:`), a closed spline's with Open (es `aBrir`) and no Join,
 its Spanish declaring `Polilínea` where it lists `coNvertir`; the hidden words Data, R, X and
 Toggle (es `daTos`, `I`, `SA`, `COnmutar`; Toggle closes or opens, k139); a word it lacks
-`Invalid option keyword.` (es `Opción no válida.`, k95), Enter eXit. **Close / Open**: a fit
+`Invalid option keyword.` (es `Opción no válida.`, k95; a number, another command's name, p133–p138),
+Enter eXit; eXit's global word is `EXit` at every prompt, so `_E` (and English `E`) at Fit data
+is eXit (p139, p155). Its pt-BR lists `REverter` open and `Reverter` closed (p102, p108). **Close / Open**: a fit
 spline periodic through its fit points as SPLINE's Close makes it, or open on them again, its
-tangents dropped (k57, k59, k100); a CV spline periodic on its vertices, knots 1 apart, or clamped
+tangents dropped (k57, k59, k100), on knots of its own too, chord ones worked out (p104, p105); a CV spline periodic on its vertices, knots 1 apart, or clamped
 on them, whatever knots it had (k58, k60, k122). **Join**: `Select any open curves to join to
 source:`, JOIN's spline source and its rules, `1 object joined to source`, nothing said when
 nothing is picked, back at the first prompt (k72, k117). **Reverse**: `Spline has been reversed.`
 (es `Se ha invertido la spline.`), the points, weights and knots the other way, the tangents
-swapped and turned, a closed one keeping its first point (k74, k126, k141, k142). **Fit data**
+swapped and turned, a closed one keeping its first point (k74, k126, k141, k142), on knots of
+its own then Uniform (p109). **Fit data**
 gives a CV spline its fit data on the spot, the curve's points at its distinct knots, an open
 one's end tangents the derivatives there, its weights dropped, Uniform on knots 1 apart, Custom on
 its own and closed (k76, k114, k115); `Enter a fit data option [Add/Close/Delete/Move/Purge/
@@ -1833,44 +1841,56 @@ Tangents/eXit] <eXit>:` (es `Indique una opción de datos de ajuste [añaDIr/Cer
 dEsplazar/Limpiar/Tangentes/Salir] <Salir>:`): Add's `Specify existing fit point on spline
 <exit>:`, then `Specify new fit point to add <exit>:` again and again, each after the last, with a
 hidden Undo, at an open spline's first point `Specify new point or [After/Before] <exit>:` (a
-point there before it; k77, k78, k105, k106, k125); Delete's same prompt until two are left,
-`Cannot delete beyond this.` (es `Imposible eliminar nada más.`), a miss `Not a fit point.` (es
-`No es ningún punto de ajuste.`; k62, k103, k128); Move's `Specify new location or
+point there before it; k77, k78, k105, k106, k125), whose Undo says `All the additions are
+undone.` (es `Se ha deshecho todo lo que se añadió.`) and asks `Specify new fit point to add
+<exit>:` (p113); Delete's same prompt until two are left, three on a closed spline (p107, p154,
+p156), `Cannot delete beyond this.` (es `Imposible eliminar nada más.`) and Fit data's prompt, a
+miss `Not a fit point.` (es `No es ningún punto de ajuste.`; k62, k103, k128); Move's `Specify new location or
 [Next/Previous/Select point/eXit] <N>:`, from the first point, Enter stepping the way it last went
-and `<P>` from the last, staying put at either end, Select point's `Specify existing fit point on
-spline <exit>:` (k64, k80, k97, k107–k109, k145); Close / Open, staying in Fit data; Purge, the
+and `<P>` from the last, staying put at either end, a closed fit spline's last stop its closing
+point, the first again (p111, p112: PEDIT-D41), Select point's `Specify existing fit point on
+spline <exit>:`, a miss `Not a fit point.` and the prompt again (k64, k80, k97, k107–k109, k145,
+p110); `@`, a number along the cursor, `*`, a polar point, a snap and Ortho as at any point
+prompt (p114–p119), `@` at Add from the fit point picked (p166); Close / Open, staying in Fit data; Purge, the
 fit data dropped and back at the first prompt (k65, k101); Tangents' `Specify start tangent or
 [System default]:` and `Specify end tangent or [System default]:`, the start one unit from the
 point given to the start, the end one from the end to it, Enter keeping one, System default
 dropping the start's, at the end's both (k66, k82, k110). Derived knots are worked out again on
 each edit, the tangents kept (k135–k137); on knots of its own Move keeps them and the tangents
 (k14), Add puts its parameter at the middle of its span and Delete drops the last, both dropping
-the tangents (k114, k138, k140). **Edit vertex**: `Enter a vertex editing option
+the tangents (k114, k138, k140); a closed one's own knots 1 apart stay Uniform through Add and
+Delete (p106, p107). **Edit vertex**: `Enter a vertex editing option
 [Add/Delete/Elevate order/Move/Weight/eXit] <eXit>:` (es `Indique una opción de edición de
 vértices [Añadir/sUprimir/Elevar orden/Desplazar/Peso/Salir] <Salir>:`), a fit spline's fit data
 dropped at its first edit (k75, k102, k127). Add's `Specify a point on the spline <exit>:`: a knot
 at the parameter nearest the point and the point itself a vertex, between those whose Greville
 abscissae the knot falls nearest, the curve changing; nothing at an end (k68, k83, k84, k124,
 k129). Delete's `Specify control vertex to delete:`, the inner knot nearest the vertex's Greville
-abscissa going with it, the degree dropping where none is left, down to two vertices and
-`Cannot delete beyond this.`, a miss `Not a control vertex.` (es `No es un vértice de control.`;
+abscissa going with it, a closed cubic's the knot at the vertex's own index (p108, p153), the
+degree dropping where none is left, down to two vertices, three on a closed spline (p108, p153),
+and `Cannot delete beyond this.` and Edit vertex's prompt, a miss `Not a control vertex.` (es `No es un vértice de control.`;
 k69, k85, k104, k111–k113, k129, k130). Elevate order's `Enter new order <4>:`, from the current
 order to 26, `Requires an integer between 4 and 26.` (es `Requiere un nº entero entre 4 y 26.`),
 Piegl & Tiller's raising, a closed one clamped where its curve starts and closed but no longer
-periodic (k70, k86, k123). Move, as Fit data's. Weight's `Enter new weight (current = 1.0000) or
+periodic (k70, k86, k123), the current order the default (p149). Move, as Fit data's, a closed
+spline's walk ending at its last vertex (p161), a Select point's miss `Not a control vertex.`
+(p160), a Z typed kept, the spline leaving its plane (p120). Weight's `Enter new weight (current = 1.0000) or
 [Next/Previous/Select point/eXit] <N>:`, at LUPREC (k15), after `Spline is not rational. Will
 make it so.` (es `Spline no racional. Se va a convertir.`), rational once a weight is set
 (k143), `Value must be positive and nonzero.` and `Requires numeric value or option keyword.`
 (k11, k87, k99, k109). **convert to Polyline**: `Specify a precision <10>:`, 0 to 99,
-`Requires an integer between 0 and 99.` (k95), the spline replaced by a polyline of straight
-segments in its plane wearing its properties, a 3D polyline where it lies in none, and the command
-ended; a span halved on its parameter until the curve's middle is within the control frame's
+`Requires an integer between 0 and 99.` (k95, p141), the answer kept for the session as the next
+default, shared with PEDIT's precision prompts, through NEW and OPEN and saved in no drawing
+(p148, p150–p152, p159, p163: PEDIT-D40); the spline replaced by a polyline of straight segments
+at its elevation wearing its properties where it lies in a plane whose normal is ±Z (p142, p144),
+a 3D polyline otherwise, in a tilted plane too (p143, p157: PEDIT-D43), and the command ended; a span halved on its parameter until the curve's middle is within the control frame's
 diagonal over 10⁴(precision + 1)² of the chord's, which gives a single-span CV spline 86, 229,
 455 and 871 vertices at precisions 0, 2, 5 and 10 against AutoCAD's 86, 227, 453 and 866 (k73,
 k90–k92, k119, k131). **Undo** takes back the last option of the first prompt, a whole Fit data
 or Edit vertex at once, `Command has been completely undone.` (es `Comando deshecho
-totalmente.`) when none is left (k88, k98, k116); the command is one step for U (k89). Saved as
-any spline; a degree up to 25 on knots of its own.
+totalmente.`) when none is left (k88, k98, k116); the command is one step for U, named `SPLINEDIT` (es `EDITSPLINE`) by U, REDO
+and UNDO, even when it changed nothing (k89, p130–p132). `'ZOOM` runs at every prompt, `'LINE` is
+refused (p121–p129). Saved as any spline; a degree up to 25 on knots of its own.
 
 **Missing:** Kink, Fit data's and Edit vertex's hidden one (a knot of three at the point, a fit
 point there and the end tangents the derivatives, k63; AutoCAD refits afterwards only the piece
@@ -1880,15 +1900,17 @@ Tangents of a closed spline (`Specify tangent or [System default]:`, then still 
 tangent`, k144): not offered. convert to Polyline's own vertices on a fit spline, which AutoCAD
 leaves far coarser (5, 7, 13 and 31 at precisions 0, 1, 3 and 10, at the fit points and between,
 against 74, 144, 286 and 786 here: k120, k132–k134), PLINECONVERTMODE's arcs and DELOBJ's keeping
-of the spline; Group at `Select spline:`; what it says of a Fit polyline there (**unverified**:
-`Object selected is not a spline.` here); the look of the prompts on the desktop (here the spline glows with
+of the spline; Group at `Select spline:`; pt-BR's listing `[Antes/Depois]` at Add's first point
+(p113 pt-BR; `[Depois/Antes]` here: a language's own order of a prompt's keywords has no place in
+the catalog yet); the look of the prompts on the desktop (here the spline glows with
 its fit points' or vertices' grips, Move's and Weight's hot, a dashed line from the point to the
-cursor: **unverified**). **Unverified:** Close / Open of a fit spline on knots of its own (its knots
-dropped here, chord ones worked out), Add and Delete on a closed one's own knots, Delete on a
-closed CV spline (its inner knot nearest the Greville abscissa), Reverse of a closed one on knots
-of its own and the SqrtChord AutoCAD then reports (k141), Select point finding nothing (asked
-again in silence), Next and Previous at the ends of a closed one (staying put, as k99's), Undo at
-`Specify new point or [After/Before]`.
+cursor: **unverified**). **Unverified:** Add and Delete on a closed spline's own knots that are not
+1 apart (worked out again as chord ones here); Delete of a closed CV spline's first vertex and of
+a closed one of another degree (the knot nearest the Greville abscissa half a degree back here);
+a Z typed at Fit data's Move and Add and at Edit vertex's Add (projected onto the spline's plane
+here; Edit vertex's Move keeps it, p120); Undo at `Specify new fit point to add` with nothing
+added (nothing said here) and where the points then go (after the first here); whether U restores
+the precision; a spline-fit polyline selected before it (turned into its spline, as picked).
 
 ### `PEDIT` / `PE` · es `EDITPOL` / `PE` · pt-BR `EDITARP` / `EDP`
 
@@ -1908,8 +1930,10 @@ please.`), No asking for a polyline again (p05); Yes or Enter puts a new polylin
 its properties, which U takes back with the command (p04, p11): a line at its height (p98), a
 rising one in the upright plane holding it, its normal Z × the line (p97), an arc from its start
 counter-clockwise (p06), a spline after `Specify a precision <10>:` (0 to 99, `Requires an integer
-between 0 and 99.`) as SPLINEDIT's convert to Polyline leaves it, a 3D polyline where it lies in
-no plane (p07, p99); anything else is said and asked again (p96). Then `Enter an option
+between 0 and 99.`; the session's precision, which SPLINEDIT's and Multiple's prompts share and
+any of them sets, splinedit/p150–p152: PEDIT-D40) as SPLINEDIT's convert to Polyline leaves it, a
+3D polyline where it lies in no plane or in one whose normal is not ±Z (p07, p99, splinedit/p164:
+PEDIT-D43); anything else is said and asked again (p96). Then `Enter an option
 [Close/Join/Width/Edit vertex/Fit/Spline/Decurve/Ltype gen/Reverse/Undo]:` (es `Indique una opción
 [Cerrar/Juntar/Grosor/Editar vértices/curVar/Spline/anularcuRVatura/generarTlínea/Invertir/desHacer]:`),
 Open in Close's place on a closed one, both answering either way, with the hidden X, EXit (es `SA`,

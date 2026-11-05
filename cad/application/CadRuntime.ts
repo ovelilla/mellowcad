@@ -136,6 +136,7 @@ import {
 import { MeasureTool } from "./tools/MeasureTool"
 import { InsertTool } from "./tools/InsertTool"
 import { PolylineEditTool } from "./tools/PolylineEditTool"
+import { SplineEditTool, splineConversion } from "./tools/SplineEditTool"
 import { TextEditTool } from "./tools/TextEditTool"
 import { AttEditTool } from "./tools/AttEditTool"
 import { PasteTool } from "./tools/PasteTool"
@@ -700,7 +701,11 @@ export class CadRuntime extends Observable {
 
   // Held as a field so a double-click can hand it the object directly.
   private readonly textEdit = new TextEditTool()
-  private readonly pedit = new PolylineEditTool()
+  // SPLINEDIT and PEDIT, held as fields for the double-click, share one
+  // conversion precision for the session (splinedit/p152, PEDIT-D40).
+  private readonly conversion = splineConversion()
+  private readonly pedit = new PolylineEditTool(this.conversion)
+  private readonly splineEdit = new SplineEditTool(this.conversion)
   // Held as a field so a double-click can hand it the block reference.
   private readonly attEdit = new AttEditTool()
   // Held as a field so the Blocks palette can name the block for it.
@@ -990,7 +995,8 @@ export class CadRuntime extends Observable {
       this.paste,
       this.attEdit,
       this.setvar,
-      this.pedit
+      this.pedit,
+      this.splineEdit
     )) {
       this.registerTool(tool)
     }
@@ -6762,6 +6768,12 @@ export class CadRuntime extends Observable {
       // selected before PEDIT is (pedit/p37).
       this.pedit.startOn(hit.id)
       this.startEchoed(this.pedit.id, "_pedit", "PEDIT")
+    } else if (hit?.type === "spline") {
+      // `^C^C^R_splinedit ` with the spline selected (DoubleClickRoot.cui's
+      // SPLINE, DC_0012): straight to its options, as a spline selected
+      // before SPLINEDIT is (k121). `^R`'s echo is unverified.
+      this.splineEdit.startOn(hit.id)
+      this.startEchoed(this.splineEdit.id, "_splinedit", "SPLINEDIT")
     } else {
       return false
     }

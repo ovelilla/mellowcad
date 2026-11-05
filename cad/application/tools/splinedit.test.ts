@@ -1,18 +1,26 @@
 import { describe, expect, it } from "vitest"
 import type {
   Entity,
+  Polyline3dEntity,
   PolylineEntity,
   SplineEntity,
 } from "../../domain/entities"
-import { createSpline, splineCurve } from "../../domain/entities"
+import {
+  createPolyline3d,
+  createSpline,
+  splineCurve,
+} from "../../domain/entities"
+import { splineInWorld } from "../../domain/splineEdits"
 import { bsplinePoint, periodicLoop } from "../../geometry/nurbs"
 import { createHarness } from "../../../test/harness"
 import { lineOf, p } from "../../../test/builders"
 import { es } from "../../locales/es"
+import { ptBR } from "../../locales/pt-BR"
 
 // SPLINEDIT, as AutoCAD 2027's console asks it and leaves the spline (probes
-// spline-knots/k11, k57–k146, traced, MPDUMP, en and es): each case the
-// dump's control points, knots and weights, a fit spline's as its curve.
+// spline-knots/k11, k57–k146 and splinedit/p100–p166, traced, MPDUMP, en, es
+// and pt-BR): each case the dump's control points, knots and weights, a fit
+// spline's as its curve.
 
 const ROOT2 = Math.SQRT2
 const fit = () =>
@@ -52,6 +60,14 @@ const spline = (cad: ReturnType<typeof createHarness>) =>
 const asked = (cad: ReturnType<typeof createHarness>) =>
   cad.state().commandLine.prompt.replace(/^\S+ /, "")
 const said = (cad: ReturnType<typeof createHarness>) => cad.commandLog()
+/** Answers typed at the command line, one after another. */
+function answer(cad: ReturnType<typeof createHarness>, ...texts: string[]) {
+  for (const text of texts) {
+    cad.runtime.setCommandLineText(text)
+    cad.runtime.submitCommandLine()
+  }
+  return cad
+}
 const pts = (rows: readonly (readonly number[])[]) =>
   rows.map(([x, y]) => p(x, y))
 
@@ -681,9 +697,9 @@ describe("Join, convert to Polyline", () => {
     expect(polyline.type).toBe("polyline")
     expect(cad.typeCounts().spline ?? 0).toBe(0)
     expect(cad.state().activeToolId).toBe("select")
-    // AutoCAD's: 866 vertices on 2⁻¹⁰ of the span.
-    expect(polyline.vertices.length).toBeGreaterThan(800)
-    expect(polyline.vertices.length).toBeLessThan(950)
+    // AutoCAD's are 866 vertices on 2⁻¹⁰ of the span (k92); the tolerance
+    // that rule is read by gives 871 here, the known gap.
+    expect(polyline.vertices).toHaveLength(871)
     const curve = splineCurve(cv())
     expect(polyline.vertices[1]).toBeCloseToPoint(
       bsplinePoint(curve, 1 / 1024),
@@ -714,5 +730,565 @@ describe("Undo", () => {
     cad.undo()
     expect(spline(cad)).toMatchObject({ closed: false })
     expect(spline(cad).points[1]).toBeCloseToPoint(p(5, 15))
+  })
+})
+
+const closedCv5 = () =>
+  createSpline("cv", [p(30, 0), p(50, 0), p(55, 10), p(50, 20), p(30, 20)], {
+    id: "S",
+    closed: true,
+  })
+const closedFit5 = () =>
+  createSpline("fit", [p(0, 0), p(20, 0), p(25, 10), p(20, 20), p(0, 20)], {
+    id: "S",
+    closed: true,
+  })
+/** SPLINEDIT on the only spline, by Last. */
+const editLast = (s: SplineEntity) =>
+  answer(createHarness({ entities: [s] }), "_SPLINEDIT", "_L")
+
+describe("starting it (splinedit/p100, p145–p147, p158)", () => {
+  it("repeats at Enter and echoes the rail's start (p100)", () => {
+    const cad = edit(fit())
+    cad.option("eXit").enter()
+    expect(asked(cad)).toBe("Select spline:")
+    const rail = createHarness({ entities: [fit()] }).tool("splinedit")
+    expect(said(rail)[0]).toBe("_splinedit")
+  })
+
+  it("opens on a spline double-clicked, as `^C^C^R_splinedit` (DoubleClickRoot.cui)", () => {
+    const cad = createHarness({ entities: [fit()] })
+    cad.doubleClick(p(10, 10))
+    expect(said(cad)).toEqual(["_splinedit"])
+    expect(cad.activeToolId()).toBe("splinedit")
+    expect(asked(cad)).toMatch(/^Enter an option \[Close\/Join/)
+  })
+
+  it("edits the newest of the splines selected before it (p145, p158)", () => {
+    const cad = createHarness({
+      entities: [
+        fit(),
+        createSpline("fit", [p(0, 20), p(10, 30), p(20, 20)], { id: "T" }),
+      ],
+    })
+    cad.select("T", "S").command("SPLINEDIT")
+    expect(asked(cad)).toMatch(/^Enter an option \[Close\/Join/)
+    cad.option("Close").option("eXit")
+    expect(cad.byId<SplineEntity>("T").closed).toBe(true)
+    expect(spline(cad).closed).toBe(false)
+  })
+
+  it("says a line selected before it is no spline and asks (p146)", () => {
+    const cad = createHarness({ entities: [lineOf(p(0, 0), p(10, 10))] })
+    cad.select(cad.entities()[0].id).command("SPLINEDIT")
+    expect(said(cad).slice(-2)).toEqual([
+      "SPLINEDIT",
+      "Object selected is not a spline.",
+    ])
+    expect(asked(cad)).toBe("Select spline:")
+  })
+
+  it("leaves nothing selected (p147)", () => {
+    const cad = createHarness({ entities: [fit()] })
+    cad.select("S").command("SPLINEDIT").option("Close").option("eXit")
+    expect(cad.selectedIds()).toEqual([])
+  })
+
+  it("says a Fit polyline is no spline (p103)", () => {
+    const cad = createHarness({})
+    answer(cad, "_PLINE", "0,0", "10,10", "20,0", "30,10", "")
+    answer(cad, "_PEDIT", "0,0", "_F", "_X", "_SPLINEDIT", "0,0")
+    expect(said(cad).at(-1)).toBe("Object selected is not a spline.")
+    expect(asked(cad)).toBe("Select spline:")
+  })
+
+  it("takes a spline-fit 3D polyline as the CV spline on its frame (p165)", () => {
+    const frame = [
+      { x: 0, y: 0, z: 0 },
+      { x: 10, y: 10, z: 5 },
+      { x: 20, y: 0, z: 0 },
+      { x: 30, y: 10, z: 5 },
+    ]
+    const cad = createHarness({ entities: [createPolyline3d(frame)] })
+    answer(cad, "_PEDIT", "_L", "_S", "_X", "_SPLINEDIT", "_L", "_X")
+    const made = cad.latest() as SplineEntity
+    expect(made).toMatchObject({ type: "spline", method: "cv" })
+    expect(made.knotVector).toEqual([0, 0, 0, 0, 1, 1, 1, 1])
+    const points = splineInWorld(made).points
+    frame.forEach((q, i) => {
+      expect(points[i].x).toBeCloseTo(q.x, 9)
+      expect(points[i].y).toBeCloseTo(q.y, 9)
+      expect(points[i].z).toBeCloseTo(q.z, 9)
+    })
+  })
+})
+
+describe("a closed spline's edits (splinedit/p104–p112, p153–p156, p161)", () => {
+  /** A fit spline cut by BREAK, so its knots are its own. */
+  const ownKnotsPiece = () => {
+    const cad = createHarness({})
+    answer(cad, "_SPLINE", "0,0", "10,10", "20,0", "30,10", "")
+    answer(cad, "_BREAK", "0,0", "_F", "12,6", "22,3")
+    const piece = cad
+      .entities()
+      .find(
+        (e): e is SplineEntity =>
+          e.type === "spline" && Math.abs(e.points[0].x) < 1e-9
+      )!
+    return { cad, id: piece.id }
+  }
+
+  it("closes and opens a fit spline on knots of its own on chord knots, its tangents dropped (p104, p105)", () => {
+    const { cad, id } = ownKnotsPiece()
+    answer(cad, "_SPLINEDIT", "0,0", "_C")
+    const closed = cad.byId<SplineEntity>(id)
+    expect(closed.startTangent).toBeUndefined()
+    expectCurve(
+      closed,
+      [
+        [18.00967051234051, 4.112092843116738],
+        [-9.326750735407735, -7.111327918333692],
+        [6.996659776828878, 13.722095953082112],
+      ],
+      [0, 14.14213562373095, 18.577249982673884, 33.72268394987358],
+      6
+    )
+    answer(cad, "_O", "_X")
+    expectCurve(
+      cad.byId<SplineEntity>(id),
+      [
+        [0, 0],
+        [3.2388942153613174, 5.768811354802938],
+        [7.4935378637532075, 13.346779314693622],
+        [12.237065745826257, 8.316975921549409],
+        [13.369530919167282, 7.116165614727936],
+      ],
+      [
+        0, 0, 0, 0, 14.14213562373095, 18.577249982673884, 18.577249982673884,
+        18.577249982673884, 18.577249982673884,
+      ],
+      6
+    )
+  })
+
+  it("adds on a closed spline's uniform knots keeping them uniform (p106)", () => {
+    const cad = editClosedCv()
+    answer(cad, "_F", "_A", "33.33333333,16.66666667", "40,25", "", "")
+    answer(cad, "_X", "_X")
+    expectCurve(
+      spline(cad),
+      [
+        [47.272727272727266, 35.90909090909091],
+        [25.454545454545453, -4.090909090909092],
+        [50.909090909090914, 0.454545454545456],
+        [50.909090909090885, 22.27272727272727],
+        [25.454545454545432, 10.454545454545464],
+      ],
+      [0, 1, 2, 3, 4, 5],
+      6
+    )
+  })
+
+  it("deletes a closed spline's fit points down to three, then says so (p107, p156, p154)", () => {
+    const cad = editClosedCv()
+    answer(cad, "_F", "_D", "33.33333333,16.66666667")
+    expect(said(cad).at(-1)).toBe("Cannot delete beyond this.")
+    expect(asked(cad)).toMatch(/^Enter a fit data option \[Add\/Open/)
+    // Its uniform knots stay uniform (p107).
+    expectCurve(
+      spline(cad),
+      [
+        [51.11111111111111, -1.1111111111111092],
+        [51.11111111111109, 25.555555555555554],
+        [24.444444444444436, -1.1111111111111214],
+      ],
+      [0, 1, 2, 3],
+      6
+    )
+    const four = editLast(closedFit())
+    answer(four, "_F", "_D", "20,20")
+    expect(said(four).at(-1)).toBe("Cannot delete beyond this.")
+    expect(asked(four)).toMatch(/^Enter a fit data option/)
+    expect(spline(four).points).toBeCloseToPoints(
+      pts([
+        [0, 0],
+        [20, 0],
+        [0, 20],
+      ])
+    )
+    expectCurve(
+      spline(four),
+      [
+        [-4.204012916545805, 34.652167915095475],
+        [-6.306019374818705, -6.306019374818708],
+        [34.65216791509545, -4.2040129165458024],
+      ],
+      [0, 20, 48.28427124746189, 68.28427124746189],
+      6
+    )
+    const five = editLast(closedFit5())
+    answer(five, "_F", "_D", "25,10")
+    expect(said(five)).not.toContain("Cannot delete beyond this.")
+    answer(five, "20,20")
+    expect(said(five).at(-1)).toBe("Cannot delete beyond this.")
+    expect(spline(five).points).toHaveLength(3)
+  })
+
+  it("deletes a closed CV spline's vertices down to three with AutoCAD's knot (p108, p153)", () => {
+    const cad = editClosedCv()
+    answer(cad, "_E", "_D", "50,20")
+    expect(said(cad).at(-1)).toBe("Cannot delete beyond this.")
+    expect(asked(cad)).toMatch(/^Enter a vertex editing option/)
+    expectCurve(
+      spline(cad),
+      [
+        [30, 0],
+        [50, 0],
+        [30, 20],
+      ],
+      [0, 1, 3, 4]
+    )
+    const five = editLast(closedCv5())
+    answer(five, "_E", "_D", "55,10")
+    expect(said(five)).not.toContain("Cannot delete beyond this.")
+    answer(five, "50,20")
+    expect(said(five).at(-1)).toBe("Cannot delete beyond this.")
+    expectCurve(
+      spline(five),
+      [
+        [30, 0],
+        [50, 0],
+        [30, 20],
+      ],
+      [0, 1, 4, 5]
+    )
+  })
+
+  it("reverses a closed one on knots of its own to uniform knots (p109)", () => {
+    const cad = editClosedCv()
+    answer(cad, "_F", "_X", "_R", "_X")
+    expectCurve(
+      spline(cad),
+      [
+        [30, 0],
+        [30, 20],
+        [50, 20],
+        [50, 0],
+      ],
+      [0, 1, 2, 3, 4],
+      6
+    )
+  })
+
+  it("walks a closed fit spline round to its closing point, the first again (p111, p112)", () => {
+    const cad = edit(closedFit())
+    answer(cad, "_F", "_M", "_P")
+    // Previous at the first stays there (p111).
+    expect(asked(cad)).toMatch(/<N>:$/)
+    answer(cad, "_N", "_N", "_N")
+    expect(asked(cad)).toMatch(/<N>:$/)
+    answer(cad, "_N")
+    expect(asked(cad)).toMatch(/<P>:$/)
+    answer(cad, "-5,25", "_X", "_X", "_X")
+    expect(spline(cad).points).toBeCloseToPoints(
+      pts([
+        [-5, 25],
+        [20, 0],
+        [20, 20],
+        [0, 20],
+      ])
+    )
+  })
+
+  it("stops at a closed CV spline's last vertex (p161)", () => {
+    const cad = editLast(closedCv5())
+    answer(cad, "_E", "_M", "_N", "_N", "_N", "_N")
+    expect(asked(cad)).toMatch(/<P>:$/)
+    answer(cad, "_N", "35,25", "_X", "_X", "_X")
+    expect(spline(cad).points).toBeCloseToPoints(
+      pts([
+        [30, 0],
+        [50, 0],
+        [55, 10],
+        [50, 20],
+        [35, 25],
+      ])
+    )
+  })
+})
+
+describe("its prompts' answers (splinedit/p110, p113–p140, p149, p155, p160, p166)", () => {
+  it("says a Select point that finds nothing, and asks again (p110, p160)", () => {
+    const cad = edit(fit())
+    answer(cad, "_F", "_M", "_S", "50,30")
+    expect(said(cad).slice(-2)).toEqual([
+      "Specify existing fit point on spline <exit>: 50,30",
+      "Not a fit point.",
+    ])
+    expect(asked(cad)).toBe("Specify existing fit point on spline <exit>:")
+    cad.enter()
+    expect(asked(cad)).toMatch(/^Specify new location or/)
+    const vertex = edit(cv())
+    answer(vertex, "_E", "_M", "_S", "50,30")
+    expect(said(vertex).at(-1)).toBe("Not a control vertex.")
+    expect(asked(vertex)).toBe("Specify existing fit point on spline <exit>:")
+  })
+
+  it("says Undo at After or Before undoes all, and asks a fit point (p113)", () => {
+    const cad = edit(fit())
+    answer(cad, "_F", "_A", "0,0", "_U")
+    expect(said(cad).at(-1)).toBe("All the additions are undone.")
+    expect(asked(cad)).toBe("Specify new fit point to add <exit>:")
+    cad.enter()
+    expect(asked(cad)).toBe("Specify existing fit point on spline <exit>:")
+    const spanish = createHarness({ entities: [fit()], locale: es })
+    answer(spanish, "_SPLINEDIT", "0,0", "_F", "_A", "0,0", "_U")
+    expect(said(spanish).at(-1)).toBe("Se ha deshecho todo lo que se añadió.")
+  })
+
+  it("reads `@`, a number, `*` and a polar point at Move, and `@` at Add from the point (p114, p115, p118, p119, p166)", () => {
+    const at = edit(fit())
+    answer(at, "_F", "_M", "@5,5", "_X", "_X", "_X")
+    expect(spline(at).points[0]).toBeCloseToPoint(p(5, 5))
+    const along = edit(fit())
+    answer(along, "_F", "_M")
+    along.moveTo(p(-4.2760177096543535 * 4, -2.5914614692721822 * 4))
+    answer(along, "5", "_X", "_X", "_X")
+    expect(spline(along).points[0]).toBeCloseToPoint(
+      p(-4.2760177096543535, -2.5914614692721822),
+      6
+    )
+    const world = createHarness({ entities: [cv()] })
+    answer(world, "_UCS", "_Z", "30", "_SPLINEDIT", "0,0", "_E", "_M")
+    answer(world, "*1,2", "_X", "_X", "_X")
+    expect(spline(world).points[0]).toBeCloseToPoint(p(1, 2))
+    const polar = edit(cv())
+    answer(polar, "_E", "_M", "10<45", "_X", "_X", "_X")
+    expect(spline(polar).points[0]).toBeCloseToPoint(
+      p(7.0710678118654755, 7.0710678118654755)
+    )
+    const add = edit(fit())
+    answer(add, "_F", "_A", "10.05,10.05", "@5,0", "", "", "_X", "_X")
+    expect(spline(add).points[2]).toBeCloseToPoint(p(15, 10))
+  })
+
+  it("keeps a Z typed at Edit vertex's Move, off the spline's plane (p120)", () => {
+    const cad = edit(cv())
+    answer(cad, "_E", "_M", "1,2,7", "_X", "_X", "_X")
+    const points = splineInWorld(spline(cad)).points
+    expect(points[0].x).toBeCloseTo(1, 9)
+    expect(points[0].y).toBeCloseTo(2, 9)
+    expect(points[0].z).toBeCloseTo(7, 9)
+    expect(points[1].z).toBeCloseTo(0, 9)
+  })
+
+  it("takes an object snap and leaves a typed point to Ortho (p116, p117)", () => {
+    const snapped = createHarness({
+      entities: [lineOf(p(-10, 20), p(-5, 25)), fit()],
+    })
+    answer(snapped, "_SPLINEDIT", "0,0", "_F", "_M", "_END", "-5.2,24.8")
+    answer(snapped, "_X", "_X", "_X")
+    expect(spline(snapped).points[0]).toBeCloseToPoint(p(-5, 25))
+    const ortho = createHarness({ entities: [fit()] })
+    answer(ortho, "ORTHOMODE", "1", "_SPLINEDIT", "0,0", "_F", "_M", "3,7")
+    answer(ortho, "_X", "_X", "_X")
+    expect(spline(ortho).points[0]).toBeCloseToPoint(p(3, 7))
+  })
+
+  it("refuses at each prompt as AutoCAD does (p133–p138, p140)", () => {
+    const cad = edit(fit())
+    for (const typed of ["0", "-1", "_A", "_LINE"]) {
+      answer(cad, typed)
+      expect(said(cad).at(-1)).toBe("Invalid option keyword.")
+    }
+    answer(cad, "_F", "_U")
+    expect(said(cad).at(-1)).toBe("Invalid option keyword.")
+    answer(cad, "_M")
+    for (const typed of ["_U", "_LINE"]) {
+      answer(cad, typed)
+      expect(said(cad).at(-1)).toBe("Point or option keyword required.")
+    }
+    answer(cad, "_X", "_X", "_E")
+    for (const typed of ["_U", "_C"]) {
+      answer(cad, typed)
+      expect(said(cad).at(-1)).toBe("Invalid option keyword.")
+    }
+  })
+
+  it("takes E, and `_E` in any language, as Fit data's eXit (p139, p155)", () => {
+    const cad = edit(fit())
+    answer(cad, "_F", "E")
+    expect(asked(cad)).toMatch(/^Enter an option \[Close\/Join/)
+    const spanish = createHarness({ entities: [fit()], locale: es })
+    answer(spanish, "_SPLINEDIT", "0,0", "_F", "_E")
+    expect(asked(spanish)).toMatch(/^Indique una opción \[Cerrar\/Unir/)
+  })
+
+  it("offers the current order at Elevate order (p149)", () => {
+    const cad = edit(cv())
+    answer(cad, "_E", "_O", "6", "_X", "_X", "_SPLINEDIT", "0,0", "_E", "_O")
+    expect(asked(cad)).toBe("Enter new order <6>:")
+  })
+})
+
+describe("transparency and undo (splinedit/p121–p132)", () => {
+  it("runs 'ZOOM at every prompt and resumes; refuses 'LINE (p121–p129)", () => {
+    const steps: [string[], RegExp][] = [
+      [["_SPLINEDIT"], /^Select spline:/],
+      [["0,0"], /^Enter an option/],
+      [["_F"], /^Enter a fit data option/],
+      [["_M"], /^Specify new location/],
+      [["_X", "_T"], /^Specify start tangent/],
+      [["", "", "_X", "_E", "_W"], /^Enter new weight/],
+      [["_X", "_O"], /^Enter new order/],
+      [["", "_X", "_P"], /^Specify a precision/],
+    ]
+    const cad = createHarness({ entities: [fit()] })
+    for (const [answers, prompt] of steps) {
+      answer(cad, ...answers)
+      expect(asked(cad)).toMatch(prompt)
+      answer(cad, "'_ZOOM", "_E")
+      expect(asked(cad)).toMatch(prompt)
+      expect(said(cad).at(-1)).toBe("Resuming SPLINEDIT command.")
+    }
+    const line = edit(fit())
+    answer(line, "'_LINE")
+    expect(said(line).slice(-2)).toEqual([
+      "** That command may not be invoked transparently **",
+      "Invalid option keyword.",
+    ])
+  })
+
+  it("is named for U, REDO, MREDO and UNDO (p130–p132)", () => {
+    const cad = edit(fit())
+    answer(cad, "_C", "_X", "_U")
+    expect(said(cad).at(-1)).toBe("SPLINEDIT")
+    answer(cad, "_REDO")
+    expect(said(cad).slice(-2)).toEqual([
+      "SPLINEDIT",
+      "Everything has been redone",
+    ])
+    answer(cad, "_MREDO", "1")
+    expect(said(cad).at(-1)).toBe("Nothing to redo")
+    const spanish = createHarness({ entities: [fit()], locale: es })
+    answer(spanish, "_SPLINEDIT", "0,0", "_C", "_X", "_U")
+    expect(said(spanish).at(-1)).toBe("EDITSPLINE")
+    // A run that changed nothing is a step too (p131).
+    const nothing = edit(fit())
+    answer(nothing, "_X", "_U")
+    expect(said(nothing).at(-1)).toBe("SPLINEDIT")
+    const two = createHarness({})
+    answer(two, "_SPLINE", "0,0", "10,10", "20,0", "30,10", "")
+    answer(two, "_SPLINEDIT", "0,0", "_C", "_R", "_X", "_UNDO", "2")
+    expect(said(two).at(-1)).toBe("SPLINEDIT SPLINE")
+  })
+})
+
+describe("convert to Polyline (splinedit/p142–p152, p157, p159, p163, p164)", () => {
+  it("carries the spline's properties (p142)", () => {
+    const cad = createHarness({
+      entities: [
+        {
+          ...fit(),
+          color: "#ff0000",
+          linetype: "Dashed",
+          lineweight: 0.5,
+        },
+      ],
+    })
+    answer(cad, "_SPLINEDIT", "0,0", "_P", "")
+    expect(cad.latest()).toMatchObject({
+      type: "polyline",
+      color: "#ff0000",
+      linetype: "Dashed",
+      lineweight: 0.5,
+    })
+  })
+
+  it("makes a 3D polyline of a tilted spline, in both commands (p143, p157, p164)", () => {
+    const tilted = () => {
+      const cad = createHarness({})
+      answer(cad, "_UCS", "_X", "90")
+      answer(cad, "_SPLINE", "0,0", "10,10", "20,0", "30,10", "")
+      return cad
+    }
+    const world = answer(tilted(), "_UCS", "_W", "_SPLINEDIT", "_L", "_P", "")
+    expect(world.latest().type).toBe("polyline3d")
+    const inIts = answer(tilted(), "_SPLINEDIT", "_L", "_P", "")
+    const made = inIts.latest() as Polyline3dEntity
+    expect(made.type).toBe("polyline3d")
+    expect(made.vertices.at(-1)!.x).toBeCloseTo(30, 9)
+    expect(made.vertices.at(-1)!.z).toBeCloseTo(10, 9)
+    const pedit = answer(tilted(), "_UCS", "_W", "_PEDIT", "_L", "", "", "_X")
+    expect(pedit.latest().type).toBe("polyline3d")
+  })
+
+  it("makes a 2D polyline at the elevation of a spline lying level (p144)", () => {
+    const cad = createHarness({})
+    answer(cad, "_SPLINE", "0,0,5", "10,10,5", "20,0,5", "30,10,5", "")
+    answer(cad, "_UCS", "_Z", "30", "_SPLINEDIT", "_L", "_P", "")
+    expect(cad.latest()).toMatchObject({ type: "polyline", elevation: 5 })
+  })
+
+  it("keeps its precision for the session, shared with PEDIT, not with the drawing (p148, p150–p152, p159, p163)", () => {
+    const cad = createHarness({ entities: [cv()] })
+    answer(cad, "_SPLINEDIT", "0,0", "_P", "5")
+    answer(cad, "_SPLINE", "_M", "_CV", "0,20", "5,35", "20,15", "40,30", "")
+    answer(cad, "_SPLINEDIT", "_L", "_P")
+    expect(asked(cad)).toBe("Specify a precision <5>:")
+    answer(cad, "")
+    // PEDIT asks the same value and sets it for both (p152).
+    answer(cad, "_SPLINE", "_M", "_CV", "0,-20", "5,-5", "20,-25", "40,-10", "")
+    answer(cad, "_PEDIT", "_L", "")
+    expect(asked(cad)).toBe("Specify a precision <5>:")
+    answer(cad, "4", "_X")
+    answer(cad, "_SPLINE", "_M", "_CV", "0,40", "5,55", "20,35", "40,50", "")
+    answer(cad, "_PEDIT", "_M", "_L", "", "")
+    expect(asked(cad)).toBe("Specify a precision for spline conversion <4>:")
+    answer(cad, "3", "_X")
+    // Through NEW and OPEN, kept (p159, p163).
+    const file = cad.runtime.serializeDrawing()
+    cad.runtime.newDrawing()
+    cad.runtime.loadDrawing(file)
+    answer(cad, "_SPLINE", "_M", "_CV", "0,60", "5,75", "20,55", "40,70", "")
+    answer(cad, "_SPLINEDIT", "_L", "_P")
+    expect(asked(cad)).toBe("Specify a precision <3>:")
+  })
+
+  it("refuses a precision out of range, in both commands (p141, p150, p151)", () => {
+    const cad = edit(cv())
+    answer(cad, "_P")
+    for (const typed of ["FOO", "-1", "5.5", "100"]) {
+      answer(cad, typed)
+      expect(said(cad).at(-1)).toBe("Requires an integer between 0 and 99.")
+    }
+    const pedit = createHarness({ entities: [cv()] })
+    answer(pedit, "_PEDIT", "0,0", "")
+    for (const typed of ["FOO", "100", "-1", "5.5"]) {
+      answer(pedit, typed)
+      expect(said(pedit).at(-1)).toBe("Requires an integer between 0 and 99.")
+    }
+    const multiple = createHarness({ entities: [cv()] })
+    answer(multiple, "_PEDIT", "_M", "0,0", "", "")
+    for (const typed of ["FOO", "100"]) {
+      answer(multiple, typed)
+      expect(said(multiple).at(-1)).toBe(
+        "Requires an integer between 0 and 99."
+      )
+    }
+  })
+})
+
+describe("SPLINEDIT in Brazilian Portuguese (splinedit/p102, p108, p110, p113 pt-BR)", () => {
+  it("lists Reverse as the open and the closed prompt list it", () => {
+    const cad = createHarness({ entities: [fit()], locale: ptBR })
+    answer(cad, "_SPLINEDIT", "0,0")
+    expect(asked(cad)).toBe(
+      "Insira uma opção [Fechar/Unir/AJustar dados/Editar vértice/converter para Polilinha/REverter/Desfazer/saIr] <saIr>:"
+    )
+    answer(cad, "_C")
+    expect(asked(cad)).toBe(
+      "Insira uma opção [Abrir/AJustar dados/Editar vértice/converter para Polilinha/Reverter/Desfazer/saIr] <saIr>:"
+    )
   })
 })

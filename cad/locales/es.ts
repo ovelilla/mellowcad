@@ -5341,6 +5341,7 @@ export const es: EngineLocale = {
       ],
       "notAFitPoint": "No es ningún punto de ajuste.",
       "notAControlVertex": "No es un vértice de control.",
+      "allAdditionsUndone": "Se ha deshecho todo lo que se añadió.",
       "listObjectName": [
         [
           "name",
@@ -7608,6 +7609,9 @@ export const es: EngineLocale = {
       },
       "filletEdgeLoopOr": {
         "Edge": "Arista"
+      },
+      "splineditOptionClosed": {
+        "Reverse": "Invertir"
       }
     },
     "listing": {
