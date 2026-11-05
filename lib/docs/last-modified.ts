@@ -1,6 +1,4 @@
 import { execFileSync } from "node:child_process"
-import { existsSync, readFileSync } from "node:fs"
-import { isAbsolute, join } from "node:path"
 
 // WHY without GIT_*: inside a hook git exports GIT_DIR, which would answer
 // for that repository whatever `cwd` says.
@@ -25,12 +23,11 @@ const git = (args: string[], cwd: string) =>
  */
 export function lastCommitDay(files: readonly string[], root = process.cwd()): string | undefined {
   try {
-    const last = git(["log", "-1", "--format=%H %cs", "--", ...files], root)
+    const last = git(["log", "-1", "--format=%cs %P", "--", ...files], root)
     if (!last) return undefined
-    const [hash, day] = last.split(" ")
-    const shallow = git(["rev-parse", "--git-path", "shallow"], root)
-    const boundary = isAbsolute(shallow) ? shallow : join(root, shallow)
-    if (existsSync(boundary) && readFileSync(boundary, "utf8").split("\n").includes(hash)) {
+    const [day, ...parents] = last.split(" ").filter(Boolean)
+    // The boundary of a shallow clone shows no parents: its date is not the files'.
+    if (parents.length === 0 && git(["rev-parse", "--is-shallow-repository"], root) === "true") {
       return undefined
     }
     return day
