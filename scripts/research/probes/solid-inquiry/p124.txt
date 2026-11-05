@@ -1,0 +1,18 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,20
+5
+(sssetfirst nil (ssget "_X"))
+_LIST
+(sssetfirst nil (ssget "_X"))
+_MASSPROP
+
+(sssetfirst nil (ssget "_X"))
+_MOVE
+0,0
+0,0
+(sssetfirst nil (ssget "_X"))
+_AREA
+_O

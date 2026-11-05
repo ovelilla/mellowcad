@@ -1,0 +1,35 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10
+10
+(cdr (assoc 5 (entget (entlast))))
+_BOX
+15,15,0
+25,25
+10
+(cdr (assoc 5 (entget (entlast))))
+_-VIEW
+_SWISO
+_ZOOM
+_E
+_SELECT
+17,15,0
+17.001,15.001,0
+
+(if (setq s (ssget "_P")) (cdr (assoc 5 (entget (ssname s 0)))) "none")
+_VSCURRENT
+_H
+_SELECT
+17,15,0
+17.001,15.001,0
+
+(if (setq s (ssget "_P")) (cdr (assoc 5 (entget (ssname s 0)))) "none")
+_VSCURRENT
+_C
+_SELECT
+17,15,0
+17.001,15.001,0
+
+(if (setq s (ssget "_P")) (cdr (assoc 5 (entget (ssname s 0)))) "none")

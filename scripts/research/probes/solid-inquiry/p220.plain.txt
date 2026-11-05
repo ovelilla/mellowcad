@@ -1,0 +1,16 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,10,10
+_VSCURRENT
+_H
+_-VPOINT
+1,1,1
+_U
+_-VIEW
+_TOP
+_U
+_REDO
+_REGEN
+_U

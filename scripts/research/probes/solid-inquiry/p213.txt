@@ -1,0 +1,8 @@
+_QAFLAGS
+2
+_LINE
+0,0
+'_VSCURRENT
+10,0
+
+(getvar "VSCURRENT")

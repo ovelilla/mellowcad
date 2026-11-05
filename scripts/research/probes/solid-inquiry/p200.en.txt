@@ -1,0 +1,10 @@
+_QAFLAGS
+2
+VSCURRENT
+_H
+VS
+_2
+_.VSCURRENT
+_C
+
+_2

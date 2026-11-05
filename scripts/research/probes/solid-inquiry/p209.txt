@@ -1,0 +1,12 @@
+_QAFLAGS
+2
+(getvar "VSCURRENT")
+(getvar "SHADEMODE")
+_SETVAR
+VSCURRENT
+(setvar "VSCURRENT" "Hidden")
+(getvar "VSCURRENT")
+_VSCURRENT
+_C
+(getvar "VSCURRENT")
+(getvar "SHADEMODE")

@@ -1,0 +1,15 @@
+_QAFLAGS
+2
+_LINE
+0,0
+10,0
+
+(sssetfirst nil (ssget "_X"))
+(ssgetfirst)
+_ZOOM
+_E
+(ssgetfirst)
+(sssetfirst nil (ssget "_X"))
+_VSCURRENT
+_H
+(ssgetfirst)

@@ -1,0 +1,12 @@
+_QAFLAGS
+2
+_VSCURRENT
+_H
+_VSCURRENT
+_2
+_U
+(getvar "VSCURRENT")
+_REDO
+(getvar "VSCURRENT")
+_VSCURRENT
+_2

@@ -1,0 +1,17 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,20
+5
+_LINE
+0,0
+10,0
+
+_MASSPROP
+_ALL
+
+_N
+_UNDO
+2
+(sslength (ssget "_X"))

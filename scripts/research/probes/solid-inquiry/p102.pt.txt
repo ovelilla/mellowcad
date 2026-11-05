@@ -1,0 +1,15 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,20
+5
+PROPMASS
+_L
+
+N
+PROPMASS
+_L
+
+S
+C:\Users\Public\mellowp102pt.mpr

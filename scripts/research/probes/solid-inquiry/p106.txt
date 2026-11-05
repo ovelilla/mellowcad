@@ -1,0 +1,26 @@
+_QAFLAGS
+2
+_BOX
+0,0,0
+10,20
+5
+(sssetfirst nil (ssget "_X"))
+_MASSPROP
+_N
+(ssget "_I")
+_MASSPROP
+_L
+
+_N
+(ssget "_I")
+(setvar "LASTPOINT" (list 7 7 7))
+_ZOOM
+_E
+_MASSPROP
+5,10,5
+
+_N
+(getvar "LASTPOINT")
+(getvar "AREA")
+(getvar "PERIMETER")
+(getvar "DISTANCE")
