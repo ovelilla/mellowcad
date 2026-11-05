@@ -48,19 +48,22 @@ export async function pageMarkdown(page: DocsPage): Promise<string> {
   return `# ${page.data.title}\n\n> ${page.data.description}\n\n${body.trim()}\n`
 }
 
-/** `llms.txt` (llmstxt.org): the site in a line, then every page's Markdown. */
+/** A list entry of `llms.txt` for a page: its title, its Markdown and what it holds. */
+export function pageLink(page: DocsPage): string {
+  return `[${page.data.title}](${markdownUrl(page)}): ${page.data.description}`
+}
+
+/**
+ * `llms.txt` (llmstxt.org): the site in a line, what to know first, then
+ * sections of list entries, each a link with what it holds.
+ */
 export function llmsText(
-  description: string,
-  sections: { title: string; pages: DocsPage[] }[]
+  summary: string,
+  details: string,
+  sections: { title: string; entries: string[] }[]
 ): string {
-  const blocks = sections.map(({ title, pages }) =>
-    [
-      `## ${title}`,
-      "",
-      ...pages.map(
-        (page) => `- [${page.data.title}](${markdownUrl(page)}): ${page.data.description}`
-      ),
-    ].join("\n")
-  )
-  return `${[`# ${SITE_NAME}`, `> ${description}`, ...blocks].join("\n\n")}\n`
+  const blocks = sections
+    .filter(({ entries }) => entries.length > 0)
+    .map(({ title, entries }) => [`## ${title}`, "", ...entries.map((entry) => `- ${entry}`)].join("\n"))
+  return `${[`# ${SITE_NAME}`, `> ${summary}`, details, ...blocks].join("\n\n")}\n`
 }

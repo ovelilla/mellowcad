@@ -8,6 +8,7 @@ paths:
   - "app/*/docs-md/**"
   - "app/api/search/**"
   - "app/llms.txt/**"
+  - "app/llms-full.txt/**"
   - "scripts/docs/**"
 ---
 
@@ -113,8 +114,8 @@ claims follow `i18n.md`.
 
 ## Rendering and weight
 
-- Pages are `●`; the `.md` (`[locale]/docs-md`, reached through `markdownRewrites`) and
-  `llms.txt` are force-static. **`/api/search` is the one `ƒ`, on purpose**: nubigest's static
+- Pages are `●`; the `.md` (`[locale]/docs-md`, reached through `markdownRewrites`), `llms.txt`
+  and `llms-full.txt` are force-static. **`/api/search` is the one `ƒ`, on purpose**: nubigest's static
   index of three languages passed Vercel's 20 MB limit for a static body
   (`FALLBACK_BODY_TOO_LARGE`) and every reader downloaded it whole. A day of CDN cache answers a
   repeated query.
@@ -125,6 +126,13 @@ claims follow `i18n.md`.
   prefetched `/docs` loads its chunks into `/` (measured +27 KB on the first load). The landing
   links the docs with `Link prefetch={false}`, and so does the sidebar: in view, its links
   prefetched every page (402 KB on a desktop).
+
+## For agents
+
+- `llms.txt` is English and says only what the landing says: `Metadata.description`, Status's
+  lists and the FAQ (`t.markup`, links as Markdown), its numbers from `lib/facts.ts`; each live
+  language with the command names its users type (from the engine) and its "Use" pages; then every
+  English page's `.md`. `llms-full.txt` is every English page's Markdown, one after another.
 
 ## `docs:check`
 
