@@ -7,7 +7,7 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"What is the shortcut for TRIM in AutoCAD?","answer":"TR, then Enter or Space. The full name works too, and _TRIM in any language of AutoCAD."},{"question":"Why does TRIM delete the whole line?","answer":"Because TRIM is in Quick mode, AutoCAD's default since its 2021 release: a pick on an object that no edge crosses deletes it. Choose mOde and then Standard to have TRIM leave it and say so instead."},{"question":"How do I trim many lines at once?","answer":"Pick on an empty spot and pick a second point: every object that fence crosses is trimmed in one step. Or choose Crossing and draw a window over the pieces to remove."},{"question":"How do I extend a line with TRIM?","answer":"Hold Shift as you pick the line near the end to extend: it grows to the nearest edge, as with EXTEND, and the next pick without Shift trims again."}]
 ---
 
-TRIM cuts an object back to where other objects cross it: you pick the piece to take away, and it goes up to the nearest crossing on either side. It starts in Quick mode, as AutoCAD's does: every object is a cutting edge, and an object that nothing crosses is deleted whole. Holding Shift as you pick extends the object to the nearest edge instead, as `EXTEND` does. Each pick is one step that Undo takes back; Enter ends the command.
+TRIM cuts an object back to where other objects cross it: you pick the piece to take away, and it goes up to the nearest crossing on either side. It starts in Quick mode, as AutoCAD's does: every object is a cutting edge, and an object that nothing crosses is deleted whole. Holding Shift as you pick extends the object to the nearest edge instead, as [`EXTEND`](/docs/commands/extend) does. Each pick is one step that Undo takes back; Enter ends the command.
 
 - **Command:** `TRIM`
 - **Aliases:** `TR`
@@ -72,11 +72,11 @@ Pick on an empty spot and pick a second point: every object that fence crosses i
 
 ### How do I extend a line with TRIM?
 
-Hold Shift as you pick the line near the end to extend: it grows to the nearest edge, as with `EXTEND`, and the next pick without Shift trims again.
+Hold Shift as you pick the line near the end to extend: it grows to the nearest edge, as with [`EXTEND`](/docs/commands/extend), and the next pick without Shift trims again.
 
 ## Related commands [#related]
 
-- [EXTEND](/docs/commands#extend): Extend
+- [EXTEND in AutoCAD](/docs/commands/extend)
 - [OFFSET in AutoCAD](/docs/commands/offset)
-- [FILLET](/docs/commands#fillet): Fillet
+- [FILLET in AutoCAD](/docs/commands/fillet)
 - [BREAK](/docs/commands#break): Break

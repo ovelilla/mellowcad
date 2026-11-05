@@ -1,0 +1,62 @@
+---
+title: "Comando LINE (LINHA) no AutoCAD"
+description: "Como funciona o LINE do AutoCAD em português, LINHA (alias L), prompt a prompt: pontos indicados ou digitados, Desfazer e Fechar. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando LINE no AutoCAD em português?","answer":"LINHA, com o alias L. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _LINE."},{"question":"Como desenhar uma linha com ângulo e comprimento?","answer":"Dê o primeiro ponto e digite o seguinte como comprimento e ângulo: @100<30 desenha 100 a 30°. Ou ligue o rastreamento polar, siga a guia dele nesse ângulo e digite só o comprimento."},{"question":"Como continuar a partir da última linha que desenhei?","answer":"Execute o LINHA e pressione Enter no primeiro ponto: ele começa no fim da última linha, polilinha ou arco. A partir de um arco, a linha segue tangente a ele e o LINHA pede só o comprimento. Quando não há de onde continuar, ele diz “Não há linha ou arco para continuar.”."},{"question":"Por que minha linha é feita de pedaços separados?","answer":"Cada segmento que o LINHA desenha é uma linha própria, como no AutoCAD. Para um único objeto, desenhe com o PLINHA ou junte as linhas depois com o UNIR."}]
+---
+
+O LINE, LINHA no AutoCAD em português, desenha segmentos retos, cada um um objeto próprio: você dá o primeiro ponto e depois cada ponto seguinte, até o Enter. Um ponto é indicado, pego com o snap ao objeto ou digitado. Como no AutoCAD com a entrada dinâmica ligada, um ponto digitado depois do primeiro é medido a partir do anterior, então `80,0` desenha 80 em X e o histórico o escreve `@80,0`; um número sozinho é uma distância na direção do cursor, e `<30` fixa o ponto seguinte a 30°. Enter ou o botão direito no primeiro ponto continuam a partir do fim da última linha, polilinha ou arco, tangente a um arco e pedindo só o comprimento. Quantos segmentos ele desenhar, um único U desfaz o comando inteiro.
+
+- **Comando:** `LINHA`
+- **Em inglês:** `LINE`, que se digita `_LINE` em qualquer idioma
+- **Aliases:** `L`
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `L` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="line" caption="Um triângulo: o primeiro ponto digitado, os dois seguintes a partir do último ponto, e depois Fechar." />
+
+## Opções [#options]
+
+### `Desfazer` (`D`) [#undo]
+
+Desfaz o último segmento e volta a perguntar a partir do ponto anterior. Quando não resta segmento, diz `Todos os segmentos já foram desfeitos.` e volta a pedir o primeiro ponto.
+
+### `Fechar` (`F`) [#close]
+
+Oferecido a partir do segundo segmento: desenha o último segmento de volta ao primeiro ponto e encerra o comando, fechando a figura.
+
+## O que ainda não faz [#missing]
+
+Tangente ou Perpendicular digitadas no primeiro ponto esperam o seguinte (um snap adiado), como no AutoCAD, mas só sobre linhas, círculos e arcos, não sobre um segmento de polilinha, uma elipse ou uma spline, e duas Perpendiculares adiadas não são resolvidas.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#line--l--es-linea--l--pt-br-linha--l)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando LINE no AutoCAD em português?
+
+LINHA, com o alias `L`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_LINE`.
+
+### Como desenhar uma linha com ângulo e comprimento?
+
+Dê o primeiro ponto e digite o seguinte como comprimento e ângulo: `@100<30` desenha 100 a 30°. Ou ligue o rastreamento polar, siga a guia dele nesse ângulo e digite só o comprimento.
+
+### Como continuar a partir da última linha que desenhei?
+
+Execute o LINHA e pressione Enter no primeiro ponto: ele começa no fim da última linha, polilinha ou arco. A partir de um arco, a linha segue tangente a ele e o LINHA pede só o comprimento. Quando não há de onde continuar, ele diz `Não há linha ou arco para continuar.`.
+
+### Por que minha linha é feita de pedaços separados?
+
+Cada segmento que o LINHA desenha é uma linha própria, como no AutoCAD. Para um único objeto, desenhe com o [`PLINHA`](/docs/commands/pline) ou junte as linhas depois com o `UNIR`.
+
+## Comandos relacionados [#related]
+
+- [Polilinha no AutoCAD: comando PLINHA (PLINE)](/docs/commands/pline)
+- [Comando OFFSET (DESLOCAMENTO) no AutoCAD](/docs/commands/offset)
+- [Comando TRIM (APARAR) no AutoCAD](/docs/commands/trim)
+- [UNIR (JOIN)](/docs/commands#join): Unir

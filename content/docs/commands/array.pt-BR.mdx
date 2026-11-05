@@ -1,0 +1,67 @@
+---
+title: "Comando ARRAY (MATRIZ) no AutoCAD"
+description: "Como funciona o ARRAY do AutoCAD em português, MATRIZ (alias MA), prompt a prompt: matriz retangular, polar ou de caminho, editada ao vivo. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando ARRAY no AutoCAD em português?","answer":"MATRIZ, com o alias MA. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _ARRAY. MATRIZRETANG, MATRIZPOLAR e MATRIZCAMINHO não têm alias e, digitados por inteiro, pulam a pergunta do tipo."},{"question":"Como fazer um array polar?","answer":"Escolha POlar, ou execute o MATRIZPOLAR, e indique o ponto central: a seleção é copiada em volta dele, com 6 itens no início. Mude quantos são com itEns, e o ângulo que ocupam com Preenchimento."},{"question":"Como explodir um array?","answer":"Selecione-o e execute o EXPLODIR: a matriz vira os objetos dos seus itens, cada objeto na sua própria camada. Para ter cópias soltas desde o início, responda Não a ASsociativa antes de pressionar Enter."},{"question":"Como alterar um array depois de criado?","answer":"Selecione-o. As alças o alteram: o quadrado no ponto base o move, as setas definem as quantidades e os espaçamentos, e um número digitado enquanto uma seta de quantidade está ativa é a quantidade. A paleta Propriedades mostra as colunas, linhas e espaçamentos, ou os itens e ângulos, para digitá-los de novo. O ARRAYEDIT ainda não existe."}]
+---
+
+O ARRAY, MATRIZ no AutoCAD em português, copia uma seleção num padrão: em colunas e linhas, em volta de um centro ou ao longo de um caminho. Ele pede os objetos e depois o tipo de matriz, e o Enter escolhe a retangular; então passa a seleção ao [`MATRIZRETANG`](/docs/commands/arrayrect), ao [`MATRIZPOLAR`](/docs/commands/arraypolar) ou ao [`MATRIZCAMINHO`](/docs/commands/arraypath), que continuam sem pedir os objetos de novo. Cada um mostra a matriz na hora e a edita ao vivo, com suas opções e suas alças, até o Enter criá-la: um objeto de matriz, ou cópias soltas se você disse que ela não deve ser associativa. A execução inteira é um só passo que o Desfazer reverte, e o Enter no prompt de comando repete o MATRIZ.
+
+- **Comando:** `MATRIZ`
+- **Em inglês:** `ARRAY`, que se digita `_ARRAY` em qualquer idioma
+- **Aliases:** `MA`
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `MA` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="array" caption="Um quadrado e seu círculo em matriz com os valores padrão: Enter para uma retangular, 4 colunas e 3 linhas." />
+
+## Opções [#options]
+
+### `Retangular` (`R`) [#rectangular]
+
+Colunas e linhas, e níveis empilhados em Z se você quiser: [`MATRIZRETANG`](/docs/commands/arrayrect). Começa com 4 colunas e 3 linhas, afastadas uma vez e meia o tamanho da seleção.
+
+### `CAminho` (`CA`) [#path]
+
+Ao longo de uma linha, um arco, um círculo ou uma polilinha: [`MATRIZCAMINHO`](/docs/commands/arraypath). Pede a curva de caminho e distribui os itens ao longo dela, cada um girado conforme o caminho gira.
+
+### `POlar` (`PO`) [#polar]
+
+Em volta de um ponto central: [`MATRIZPOLAR`](/docs/commands/arraypolar). Pede o centro e começa com 6 itens numa volta completa.
+
+## O que ainda não faz [#missing]
+
+O tipo oferecido é sempre `Retangular`: a ARRAYTYPE, a variável que define o padrão do AutoCAD, não é lida.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#array--ar--es-matriz--ma--pt-br-matriz--ma)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando ARRAY no AutoCAD em português?
+
+MATRIZ, com o alias `MA`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_ARRAY`. [`MATRIZRETANG`](/docs/commands/arrayrect), [`MATRIZPOLAR`](/docs/commands/arraypolar) e [`MATRIZCAMINHO`](/docs/commands/arraypath) não têm alias e, digitados por inteiro, pulam a pergunta do tipo.
+
+### Como fazer um array polar?
+
+Escolha `POlar`, ou execute o [`MATRIZPOLAR`](/docs/commands/arraypolar), e indique o ponto central: a seleção é copiada em volta dele, com 6 itens no início. Mude quantos são com `itEns`, e o ângulo que ocupam com `Preenchimento`.
+
+### Como explodir um array?
+
+Selecione-o e execute o `EXPLODIR`: a matriz vira os objetos dos seus itens, cada objeto na sua própria camada. Para ter cópias soltas desde o início, responda `Não` a `ASsociativa` antes de pressionar Enter.
+
+### Como alterar um array depois de criado?
+
+Selecione-o. As alças o alteram: o quadrado no ponto base o move, as setas definem as quantidades e os espaçamentos, e um número digitado enquanto uma seta de quantidade está ativa é a quantidade. A paleta Propriedades mostra as colunas, linhas e espaçamentos, ou os itens e ângulos, para digitá-los de novo. O ARRAYEDIT ainda não existe.
+
+## Comandos relacionados [#related]
+
+- [Comando ARRAYRECT (MATRIZRETANG) no AutoCAD](/docs/commands/arrayrect)
+- [Comando ARRAYPOLAR (MATRIZPOLAR) no AutoCAD](/docs/commands/arraypolar)
+- [Comando ARRAYPATH (MATRIZCAMINHO) no AutoCAD](/docs/commands/arraypath)
+- [Comando COPY (COPIAR) no AutoCAD](/docs/commands/copy)
+- [EXPLODIR (EXPLODE)](/docs/commands#explode): Explodir

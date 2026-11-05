@@ -7,7 +7,7 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"¿Cómo se llama el comando TRIM en español?","answer":"RECORTA, con el alias RR. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _TRIM."},{"question":"¿Por qué RECORTA borra la línea entera?","answer":"Porque está en modo Rápido, el de AutoCAD por defecto desde la versión 2021: designar un objeto que ninguna arista cruza lo borra. Elige MOdo y después Estándar para que lo deje y lo diga."},{"question":"¿Cómo recorto muchas líneas a la vez?","answer":"Designa en un punto vacío y señala un segundo punto: se recorta, en un solo paso, cada objeto que cruza ese borde. O elige Captura y dibuja una ventana sobre los trozos que quieres quitar."},{"question":"¿Cómo alargo una línea con RECORTA?","answer":"Mantén Mayús al designar la línea cerca del extremo que quieres alargar: crece hasta la arista más cercana, como con ALARGA, y la siguiente designación sin Mayús vuelve a recortar."}]
 ---
 
-RECORTA (TRIM en inglés) recorta un objeto hasta donde lo cruzan otros: designas el trozo que quieres quitar y desaparece hasta el cruce más cercano a cada lado. Empieza en modo Rápido, como el de AutoCAD: todos los objetos son aristas de corte, y un objeto que nada cruza se borra entero. Si mantienes Mayús al designar, el objeto se alarga hasta la arista más cercana, como con `ALARGA`. Cada designación es un paso que Deshacer revierte; Intro termina el comando.
+RECORTA (TRIM en inglés) recorta un objeto hasta donde lo cruzan otros: designas el trozo que quieres quitar y desaparece hasta el cruce más cercano a cada lado. Empieza en modo Rápido, como el de AutoCAD: todos los objetos son aristas de corte, y un objeto que nada cruza se borra entero. Si mantienes Mayús al designar, el objeto se alarga hasta la arista más cercana, como con [`ALARGA`](/docs/commands/extend). Cada designación es un paso que Deshacer revierte; Intro termina el comando.
 
 - **Comando:** `RECORTA`
 - **En inglés:** `TRIM`, que se escribe `_TRIM` en cualquier idioma
@@ -73,11 +73,11 @@ Designa en un punto vacío y señala un segundo punto: se recorta, en un solo pa
 
 ### ¿Cómo alargo una línea con RECORTA?
 
-Mantén Mayús al designar la línea cerca del extremo que quieres alargar: crece hasta la arista más cercana, como con `ALARGA`, y la siguiente designación sin Mayús vuelve a recortar.
+Mantén Mayús al designar la línea cerca del extremo que quieres alargar: crece hasta la arista más cercana, como con [`ALARGA`](/docs/commands/extend), y la siguiente designación sin Mayús vuelve a recortar.
 
 ## Comandos relacionados [#related]
 
-- [ALARGA (EXTEND)](/docs/commands#extend): Alargar
+- [Alargar en AutoCAD: ALARGA (EXTEND)](/docs/commands/extend)
 - [Desfase en AutoCAD: DESFASE (OFFSET)](/docs/commands/offset)
-- [EMPALME (FILLET)](/docs/commands#fillet): Empalme
+- [Empalme en AutoCAD: EMPALME (FILLET)](/docs/commands/fillet)
 - [PARTE (BREAK)](/docs/commands#break): Partir

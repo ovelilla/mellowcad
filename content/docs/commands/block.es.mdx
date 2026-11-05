@@ -1,0 +1,65 @@
+---
+title: "Crear bloques en AutoCAD: BLOQUE (BLOCK)"
+metaTitle: "Crear bloques en AutoCAD: comando BLOQUE (BLOCK)"
+description: "Cómo funciona BLOQUE (BLOCK, alias BQ) de AutoCAD en español, solicitud a solicitud: nombre, punto base y objetos; redefinir, atributos. Pruébalo gratis online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando BLOCK en español?","answer":"BLOQUE, con el alias BQ (en AutoCAD en español, B es BORRA). Como allí, el nombre inglés también funciona con un guion bajo delante: _BLOCK. En AutoCAD abre el cuadro de diálogo Definición de bloque; aquí pregunta en la línea de comandos, como -BQ (-BLOQUE)."},{"question":"¿Cómo se crea un bloque en AutoCAD?","answer":"Escribe BQ y un nombre, precisa el punto base —una esquina, o el centro del borde sobre el que se apoyará el bloque— y designa los objetos. Intro define el bloque y convierte los objetos en una referencia a él. Una designación hecha antes del comando también se toma, después del punto base."},{"question":"¿Cómo redefino un bloque?","answer":"Ejecuta BLOQUE con el nombre del bloque y responde Sí; después precisa un punto base y designa los objetos nuevos: cada referencia al bloque muestra la nueva definición. Los objetos no pueden incluir una referencia al propio bloque: un conjunto así se rechaza y el comando termina."},{"question":"¿Cómo creo un bloque con atributos?","answer":"Define primero los atributos con ATRDEF y desígnalos con los demás objetos: entran en el bloque en el orden en que los designas. La referencia que los sustituye abre un cuadro con un campo por atributo, rotulado con su solicitud y relleno con su valor por defecto: Intro aplica los valores y Esc conserva los de por defecto."},{"question":"¿Cómo se explota (descompone) un bloque?","answer":"DESCOMP convierte una referencia de nuevo en los objetos que muestra, un nivel de anidamiento cada vez, cada uno en su capa y con su color. Los atributos vuelven como sus definiciones, y los valores se pierden."}]
+---
+
+BLOQUE (BLOCK en inglés) guarda un conjunto de objetos en el dibujo con un nombre, para que [`INSERT`](/docs/commands/insert) pueda colocarlo de nuevo tantas veces como quieras, cada copia una referencia a esa única definición. Pide el nombre, después el punto base de inserción —el punto por el que se coloca cada referencia— y después los objetos. Intro termina la designación y define el bloque, y los objetos designados se convierten en una referencia a él, donde estaban. Todo el comando es un paso que Deshacer revierte.
+
+El BLOQUE de AutoCAD abre el cuadro de diálogo Definición de bloque, que MellowCAD no tiene: aquí BLOQUE pide en la línea de comandos lo mismo que `-BLOQUE`, como hace la consola de AutoCAD. Un nombre puede tener espacios y hasta 255 caracteres, pero ninguno de `< > / \ " : ; ? * | , =` ni el acento grave: Intro solo o un nombre así dice `Nombre bloque no válido.` y vuelve a preguntar. Un nombre que el dibujo ya tiene, en mayúsculas o en minúsculas, pregunta si se redefine ese bloque, `Sí` o `No` (por defecto, que termina el comando).
+
+- **Comando:** `BLOQUE`
+- **En inglés:** `BLOCK`, que se escribe `_BLOCK` en cualquier idioma
+- **Alias:** `BQ`, `MODBLQ`, `ACADBLOCKDIALOG`, `BMAKE`, `BMOD`
+- **Grupo:** [Organizar](/docs/commands#organize)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `BQ` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="block" caption="Una silla, un rectángulo y una línea, convertida en el bloque B1: su nombre, un punto base en el centro de su borde delantero y los dos objetos designados." />
+
+## Opciones [#options]
+
+### `?` [#list]
+
+Enumera los bloques del dibujo: pregunta cuáles, `*` (todos) por defecto o un nombre con comodines, escribe los nombres que coinciden y cuántos hay de cada tipo, y termina. Los bloques anónimos, como los de una matriz, se cuentan, pero nunca se nombran.
+
+## Lo que aún no hace [#missing]
+
+El cuadro de diálogo Definición de bloque de AutoCAD: BLOQUE pregunta en la línea de comandos. En el punto base, las opciones para hacer el bloque anotativo y para conservar o borrar los objetos: aquí siempre se convierten en una referencia. ATTREQ 0, que se salta el cuadro de valores de atributo, y los comandos que sincronizan y ordenan los atributos de un bloque (`_ATTSYNC`, `_ATTREDEF`, `_BATTMAN`, `_BATTORDER`): un bloque redefinido deja los atributos de sus referencias como estaban, como hace AutoCAD. PorBloque: un objeto dentro de un bloque no puede tomar el color, el tipo de línea ni el grosor de línea propios de la referencia, como hace en AutoCAD uno dibujado PorBloque. En un SCP girado, AutoCAD 2027 desplaza los objetos que convierte; aquí se quedan donde estaban, a propósito.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#block--b--bmake--bmod--acadblockdialog--block---b--es-bloque--bq--modblq--bmake--bmod--acadblockdialog--bloque---bq--pt-br-bloco--cb--acadblockdialog--criarb--defb--bloco---cb)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando BLOCK en español?
+
+BLOQUE, con el alias `BQ` (en AutoCAD en español, `B` es `BORRA`). Como allí, el nombre inglés también funciona con un guion bajo delante: `_BLOCK`. En AutoCAD abre el cuadro de diálogo Definición de bloque; aquí pregunta en la línea de comandos, como `-BQ` (`-BLOQUE`).
+
+### ¿Cómo se crea un bloque en AutoCAD?
+
+Escribe `BQ` y un nombre, precisa el punto base —una esquina, o el centro del borde sobre el que se apoyará el bloque— y designa los objetos. Intro define el bloque y convierte los objetos en una referencia a él. Una designación hecha antes del comando también se toma, después del punto base.
+
+### ¿Cómo redefino un bloque?
+
+Ejecuta BLOQUE con el nombre del bloque y responde `Sí`; después precisa un punto base y designa los objetos nuevos: cada referencia al bloque muestra la nueva definición. Los objetos no pueden incluir una referencia al propio bloque: un conjunto así se rechaza y el comando termina.
+
+### ¿Cómo creo un bloque con atributos?
+
+Define primero los atributos con `ATRDEF` y desígnalos con los demás objetos: entran en el bloque en el orden en que los designas. La referencia que los sustituye abre un cuadro con un campo por atributo, rotulado con su solicitud y relleno con su valor por defecto: Intro aplica los valores y Esc conserva los de por defecto.
+
+### ¿Cómo se explota (descompone) un bloque?
+
+`DESCOMP` convierte una referencia de nuevo en los objetos que muestra, un nivel de anidamiento cada vez, cada uno en su capa y con su color. Los atributos vuelven como sus definiciones, y los valores se pierden.
+
+## Comandos relacionados [#related]
+
+- [Insertar bloques en AutoCAD: INSERT](/docs/commands/insert)
+- [ATRDEF (ATTDEF)](/docs/commands#attdef): Definir atributos
+- [DESCOMP (EXPLODE)](/docs/commands#explode): Descomponer
+- [LIMPIA (PURGE)](/docs/commands#purge): Limpiar

@@ -1,0 +1,62 @@
+---
+title: "DIMRADIUS in AutoCAD"
+metaTitle: "DIMRADIUS in AutoCAD: radius dimension and alias"
+description: "How AutoCAD's DIMRADIUS (DRA) dimensions a circle, an arc or a fillet: pick the curve, then place the R text inside or outside. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for DIMRADIUS in AutoCAD?","answer":"DRA, or DIMRAD, then Enter or Space. The full name works too, and _DIMRADIUS in any language of AutoCAD."},{"question":"How do I dimension a fillet or a rounded corner?","answer":"Pick the round: a fillet is an arc, or a polyline's arc segment, as the corners RECTANG rounds with its Fillet option, and DIMRADIUS takes either."},{"question":"Why can't I select the object to dimension?","answer":"DIMRADIUS takes a circle, an arc or a polyline's arc segment, on a locked layer too. Anything else, an ellipse included, says “Object selected is not a circle or arc.” and asks again; a curve inside a block reference cannot be picked yet."},{"question":"How do I add TYP to a radius dimension?","answer":"Choose Text before placing it and type “<> TYP”: <> is the measurement with its R, so the dimension reads “R10 TYP”. Once placed, the Properties palette's Text override changes it."}]
+---
+
+DIMRADIUS dimensions the radius of a circle, an arc or a polyline's arc segment. Pick the curve, and the command line says the measurement at once; then place the dimension, and the command ends. As in AutoCAD, its text is the radius after an R, on a line along a radius that ends in one arrowhead on the curve, inside or outside the curve as you place it. Outside, the line goes on across the curve to the centre, as ISO-25 draws it.
+
+- **Command:** `DIMRADIUS`
+- **Aliases:** `DIMRAD`, `DRA`
+- **Panel:** [Annotate](/docs/commands#annotate)
+- **Try it:** [Open the editor](/draw), type `DRA` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="dimradius" caption="A plate's rounded corner dimensioned outside and its hole inside: each curve picked, then the text placed." />
+
+## Options [#options]
+
+### `Text` (`T`) [#text]
+
+Asks for the text to write instead of the measurement, which it offers as the default: Enter keeps the measurement. In what you type, `<>` stands for the measurement with its R, so `<> TYP` writes `R10 TYP` for a radius of 10.
+
+### `Angle` (`A`) [#angle]
+
+Asks for the angle of the text, which is then drawn at that angle, its middle on the line, and the line stops at it. 0 puts it back along the line.
+
+## What it does not do yet [#missing]
+
+Mtext: a dimension's text is one line, set with `Text` at the command line, never in the text editor. On an arc, the arrowhead stays between its ends, where AutoCAD draws an arc extension line to a dimension placed beyond them. A curve inside a block reference cannot be picked. The style's centre lines (a negative centre mark size) are not drawn, and its settings for text outside the curve are not offered: the text always runs along the line, with no landing, as ISO-25 draws it. A dimension is not associative: it does not follow the curve it measures.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimradius--dimrad--dra--es-acoradio--acorad--pt-br-cotaraios--cra--dimrad)
+
+## Questions [#questions]
+
+### What is the shortcut for DIMRADIUS in AutoCAD?
+
+`DRA`, or `DIMRAD`, then Enter or Space. The full name works too, and `_DIMRADIUS` in any language of AutoCAD.
+
+### How do I dimension a fillet or a rounded corner?
+
+Pick the round: a fillet is an arc, or a polyline's arc segment, as the corners `RECTANG` rounds with its `Fillet` option, and DIMRADIUS takes either.
+
+### Why can't I select the object to dimension?
+
+DIMRADIUS takes a circle, an arc or a polyline's arc segment, on a locked layer too. Anything else, an ellipse included, says `Object selected is not a circle or arc.` and asks again; a curve inside a block reference cannot be picked yet.
+
+### How do I add TYP to a radius dimension?
+
+Choose `Text` before placing it and type `<> TYP`: `<>` is the measurement with its R, so the dimension reads `R10 TYP`. Once placed, the Properties palette's Text override changes it.
+
+## Related commands [#related]
+
+- [DIMDIAMETER in AutoCAD](/docs/commands/dimdiameter)
+- [DIMANGULAR in AutoCAD](/docs/commands/dimangular)
+- [Dimensioning in AutoCAD: DIMLINEAR](/docs/commands/dimlinear)
+- [DIMSTYLE in AutoCAD](/docs/commands/dimstyle)

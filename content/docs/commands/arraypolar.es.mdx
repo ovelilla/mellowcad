@@ -1,0 +1,78 @@
+---
+title: "Matriz polar en AutoCAD: MATRIZPOLAR (ARRAYPOLAR)"
+metaTitle: "Matriz polar en AutoCAD: comando MATRIZPOLAR"
+description: "Cómo funciona MATRIZPOLAR (ARRAYPOLAR) de AutoCAD en español, solicitud a solicitud: el centro, los elementos, el ángulo de relleno y el giro. Pruébalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo hago una matriz polar?","answer":"Escribe MATRIZPOLAR, designa los objetos, pulsa Intro y precisa el punto central; o escribe MA para MATRIZ y elige POlar después de los objetos. Luego elige Elementos para fijar cuántos son, y pulsa Intro para crearla."},{"question":"¿Cómo hago una matriz en solo una parte del círculo?","answer":"Elige Relleno y escribe el ángulo: 180 reparte los elementos en medio círculo en sentido antihorario, y -180 en sentido horario. Se mantiene el número de elementos, el primero y el último en los extremos del ángulo."},{"question":"¿Cómo evito que los elementos giren?","answer":"Elige Girar y responde No: cada elemento se desplaza alrededor del centro sin girar."},{"question":"¿Cómo cambio el radio de una matriz polar?","answer":"Designa la matriz y arrastra su pinzamiento cuadrado del punto base hacia el centro o alejándolo de él: la distancia al centro es el nuevo radio. O escribe de nuevo el Radio en la paleta Propiedades."}]
+---
+
+MATRIZPOLAR (ARRAYPOLAR en inglés) copia una selección alrededor de un punto central, como un solo objeto de matriz. Pide los objetos, dice el tipo y si la matriz es asociativa, pide el punto central y muestra la matriz al momento: 6 elementos en una vuelta completa, cada uno girado a medida que da la vuelta. Después, una sola solicitud la edita en vivo hasta que Intro la crea, con sus opciones o con los pinzamientos de la vista previa, como en AutoCAD. Los objetos designados pasan a ser su primer elemento.
+
+- **Comando:** `MATRIZPOLAR`
+- **En inglés:** `ARRAYPOLAR`, que se escribe `_ARRAYPOLAR` en cualquier idioma
+- **Grupo:** [Modificar](/docs/commands#modify)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `MATRIZPOLAR` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="arraypolar" caption="Un agujero de una brida en matriz alrededor del centro de la brida: 8 elementos en una vuelta completa." />
+
+## Opciones [#options]
+
+### `Asociativa` (`A`) [#associative]
+
+`Sí`, la opción por defecto, crea un solo objeto de matriz, que sus pinzamientos y la paleta Propiedades cambian después; `No` crea copias independientes junto a los objetos designados. La respuesta se mantiene durante la sesión, también para [`MATRIZRECTANG`](/docs/commands/arrayrect) y [`MATRIZCAMINO`](/docs/commands/arraypath).
+
+### `Elementos` (`E`) [#items]
+
+El número de elementos, de 1 a 32767; se mantiene el ángulo que ocupan.
+
+### `ángUlo entre` (`U`) [#angle-between]
+
+El ángulo de un elemento al siguiente. El ángulo de relleno pasa a ser ese número de pasos, en el mismo sentido, y una vuelta completa cuando llegan a 360°.
+
+### `ángulo de Relleno` (`R`) [#fill-angle]
+
+El ángulo que ocupan los elementos, positivo en sentido antihorario y negativo en sentido horario; se mantiene el número de elementos. En una vuelta completa, los elementos quedan a una vuelta dividida entre su número; en menos, el último cae al final del ángulo.
+
+### `Girar objetos` (`G`) [#rotate-items]
+
+`Sí`, la opción por defecto, gira cada elemento a medida que rodea el centro; `No` solo lo desplaza, así que todos quedan orientados como el primero.
+
+### `Salir` (`S`) [#exit]
+
+Crea la matriz y termina el comando, como Intro.
+
+## Lo que aún no hace [#missing]
+
+El punto base; el eje de rotación, para una matriz alrededor de un eje en el espacio; `Filas` y Niveles, para anillos de elementos y copias apiladas en Z; Expresión, que vincula un valor con los parámetros del dibujo. Los menús de los pinzamientos de la matriz (Radio de estiramiento, Conteo de elementos, Ángulo de relleno…) y Ctrl para recorrerlos.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arraypolar--es-matrizpolar--pt-br-matrizpolar)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo hago una matriz polar?
+
+Escribe `MATRIZPOLAR`, designa los objetos, pulsa Intro y precisa el punto central; o escribe `MA` para [`MATRIZ`](/docs/commands/array) y elige `POlar` después de los objetos. Luego elige `Elementos` para fijar cuántos son, y pulsa Intro para crearla.
+
+### ¿Cómo hago una matriz en solo una parte del círculo?
+
+Elige `Relleno` y escribe el ángulo: 180 reparte los elementos en medio círculo en sentido antihorario, y -180 en sentido horario. Se mantiene el número de elementos, el primero y el último en los extremos del ángulo.
+
+### ¿Cómo evito que los elementos giren?
+
+Elige `Girar` y responde `No`: cada elemento se desplaza alrededor del centro sin girar.
+
+### ¿Cómo cambio el radio de una matriz polar?
+
+Designa la matriz y arrastra su pinzamiento cuadrado del punto base hacia el centro o alejándolo de él: la distancia al centro es el nuevo radio. O escribe de nuevo el Radio en la paleta Propiedades.
+
+## Comandos relacionados [#related]
+
+- [Matriz en AutoCAD: MATRIZ (ARRAY)](/docs/commands/array)
+- [Matriz rectangular en AutoCAD: MATRIZRECTANG (ARRAYRECT)](/docs/commands/arrayrect)
+- [Matriz de camino en AutoCAD: MATRIZCAMINO (ARRAYPATH)](/docs/commands/arraypath)
+- [Girar en AutoCAD: GIRA (ROTATE)](/docs/commands/rotate)

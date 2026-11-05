@@ -1,0 +1,37 @@
+---
+title: "Capas en AutoCAD: CAPA (LAYER)"
+metaTitle: "Capas en AutoCAD: comando CAPA (LAYER)"
+description: "Cómo funciona CAPA (LAYER, alias CA) de AutoCAD en español: Administrador de propiedades de capas, crear, suprimir, desactivar y bloquear. Pruébalo gratis."
+figure: "Tres capas, cada una hecha actual antes de dibujar en ella: los muros en blanco, una puerta en amarillo y un eje en rojo de trazo y punto."
+sourceHash: "0d282504181d"
+---
+
+CAPA (LAYER en inglés) abre el Administrador de propiedades de capas, donde se crean, se nombran y se ajustan las capas del dibujo. Como en AutoCAD, es una paleta y no un cuadro de diálogo: sigue abierta mientras dibujas, aquí como ficha del panel de paletas, hasta que la cierra <Command id="LAYERCLOSE" />, y escrita con un apóstrofo delante dentro de otro comando se abre sin terminarlo. Cada objeto está en una capa, y su color, su tipo de línea y su grosor de línea, cuando son PorCapa, son los de la capa. Los objetos nuevos van a la capa actual.
+
+Cada capa es una fila, con las columnas en el orden de AutoCAD: Estado, con una marca en la capa actual, y después Nombre, Act, Bloquear, Color, Tipo de línea y Grosor de línea, más cuántos objetos contiene; las filas se ordenan por nombre. Nueva capa añade una capa con el color, el tipo de línea y el grosor de línea de la designada, con su nombre listo para escribir, y deja la capa actual como estaba. Definir actual, o un doble clic en una fila, hace actual una capa. Un clic en el nombre de la capa designada, o F2, le cambia el nombre, y se rechaza un nombre en uso o con caracteres que AutoCAD no admite, igual que cambiar el de la capa 0. Suprimir capa elimina una capa, pero nunca la capa 0, la actual ni una que contenga objetos: el cuadro Capa - Sin suprimir de AutoCAD dice cuáles. Cada cambio en el administrador es un paso que Deshacer revierte, y los consecutivos, juntos.
+
+## Missing
+
+-CAPA, LAYDEL y las demás herramientas del grupo Capas: la que hace actual la capa de un objeto, la que iguala capas, la de capa previa y el resto, y los iconos de activar, inutilizar y bloquear de su lista desplegable. Las capas no se pueden inutilizar, y el administrador no tiene las columnas de inutilizar, trazar, transparencia, estilo de trazado, inutilizar en ventanas nuevas ni descripción, ni reordenación de columnas, filtros de capas, árbol o cuadro de parámetros. Ejecutar CAPA no es un paso de deshacer propio. Una capa nueva se ordena enseguida, donde AutoCAD la muestra debajo de la designada hasta que se le cambia el nombre, y el grosor de línea de la capa 0 es 0,25 mm, no Por defecto. LAYLOCKFADECTL no se puede escribir: los objetos de una capa bloqueada siempre se atenúan a medias.
+
+## Questions
+
+### ¿Cómo se llama el comando LAYER en español?
+
+CAPA, con los alias `CA`, `LAYER` y `DDLMODES`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_LAYER`. Abre el Administrador de propiedades de capas, que se cierra con <Command id="LAYERCLOSE" />.
+
+### ¿Cómo cambio un objeto de capa?
+
+Designa el objeto y elige la capa en la lista desplegable Capas de la barra superior: pasa a ella en un solo paso de deshacer, y la capa actual sigue siendo la misma. La fila Capa de la paleta Propiedades hace lo mismo. Sin nada designado, la lista desplegable hace actual la capa elegida.
+
+### ¿Cómo borro una capa en AutoCAD?
+
+Desígnala en el Administrador de propiedades de capas y pulsa Suprimir capa. La capa 0, la capa actual y una capa que contiene objetos, también dentro de una definición de bloque, no se pueden suprimir: borra o cambia de capa antes sus objetos y haz actual otra capa.
+
+### ¿Qué diferencia hay entre desactivar una capa y bloquearla?
+
+Una capa desactivada oculta sus objetos: no se pueden designar ni tomar con referencias a objetos, y salen de la designación. Los objetos de una capa bloqueada siguen a la vista, atenuados, y admiten referencias a objetos y designación, pero ningún comando los modifica: el que los recibe los cuenta y los deja fuera. Desactivar la capa actual pregunta antes, como en AutoCAD.
+
+### ¿Cómo creo una capa nueva?
+
+Pulsa Nueva capa en el Administrador de propiedades de capas y escribe su nombre: la capa toma el color, el tipo de línea y el grosor de línea de la designada, que luego cambias en su fila. Hazla actual para dibujar en ella.

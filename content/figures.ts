@@ -11,7 +11,35 @@ import {
   firstLine,
   offsetRectangle,
 } from "./demos/docs"
+import { sessions as arraySessions } from "./demos/commands/array"
+import { sessions as arraypathSessions } from "./demos/commands/arraypath"
+import { sessions as arraypolarSessions } from "./demos/commands/arraypolar"
+import { sessions as arrayrectSessions } from "./demos/commands/arrayrect"
+import { sessions as blockSessions } from "./demos/commands/block"
+import { sessions as circleSessions } from "./demos/commands/circle"
+import { sessions as copySessions } from "./demos/commands/copy"
+import { sessions as dimalignedSessions } from "./demos/commands/dimaligned"
+import { sessions as dimangularSessions } from "./demos/commands/dimangular"
+import { sessions as dimbaselineSessions } from "./demos/commands/dimbaseline"
+import { sessions as dimcontinueSessions } from "./demos/commands/dimcontinue"
+import { sessions as dimdiameterSessions } from "./demos/commands/dimdiameter"
+import { sessions as dimlinearSessions } from "./demos/commands/dimlinear"
+import { sessions as dimradiusSessions } from "./demos/commands/dimradius"
+import { sessions as dimstyleSessions } from "./demos/commands/dimstyle"
+import { sessions as extendSessions } from "./demos/commands/extend"
+import { sessions as filletSessions } from "./demos/commands/fillet"
+import { sessions as hatchSessions } from "./demos/commands/hatch"
+import { sessions as insertSessions } from "./demos/commands/insert"
+import { sessions as layerSessions } from "./demos/commands/layer"
+import { sessions as lineSessions } from "./demos/commands/line"
+import { sessions as mirrorSessions } from "./demos/commands/mirror"
+import { sessions as moveSessions } from "./demos/commands/move"
+import { sessions as mtextSessions } from "./demos/commands/mtext"
 import { sessions as offsetSessions } from "./demos/commands/offset"
+import { sessions as plineSessions } from "./demos/commands/pline"
+import { sessions as rotateSessions } from "./demos/commands/rotate"
+import { sessions as scaleSessions } from "./demos/commands/scale"
+import { sessions as textSessions } from "./demos/commands/text"
 import { sessions as trimSessions } from "./demos/commands/trim"
 import { hero } from "./demos/hero"
 import { offsetSession } from "./demos/offset"
@@ -104,7 +132,35 @@ export type FigureId = keyof typeof FIGURES
  * shows it.
  */
 export const COMMAND_SESSIONS = {
+  ...arraySessions,
+  ...arraypathSessions,
+  ...arraypolarSessions,
+  ...arrayrectSessions,
+  ...blockSessions,
+  ...circleSessions,
+  ...copySessions,
+  ...dimalignedSessions,
+  ...dimangularSessions,
+  ...dimbaselineSessions,
+  ...dimcontinueSessions,
+  ...dimdiameterSessions,
+  ...dimlinearSessions,
+  ...dimradiusSessions,
+  ...dimstyleSessions,
+  ...extendSessions,
+  ...filletSessions,
+  ...hatchSessions,
+  ...insertSessions,
+  ...layerSessions,
+  ...lineSessions,
+  ...mirrorSessions,
+  ...moveSessions,
+  ...mtextSessions,
   ...offsetSessions,
+  ...plineSessions,
+  ...rotateSessions,
+  ...scaleSessions,
+  ...textSessions,
   ...trimSessions,
 }
 

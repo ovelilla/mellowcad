@@ -1,0 +1,107 @@
+---
+title: "Polilínea en AutoCAD: POL (PLINE)"
+metaTitle: "Polilínea en AutoCAD: comando POL (PLINE)"
+description: "Cómo funciona POL (PLINE, alias PL) de AutoCAD en español, solicitud a solicitud: líneas y arcos, Grosor, Longitud y Cerrar. Pruébalo gratis online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando PLINE en español?","answer":"POL, con el alias PL. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _PLINE."},{"question":"¿Cómo hago una polilínea curva?","answer":"Elige Arco: cada punto termina entonces un arco tangente al segmento anterior, hasta líNea. Para suavizar por sus vértices una polilínea ya dibujada, usa EDITPOL y su opción curVar o Spline."},{"question":"¿Por qué la polilínea me sale gruesa?","answer":"El grosor dado en una polilínea anterior se mantiene, y la siguiente empieza con él, como dice la línea que sigue a su punto inicial. Elige Grosor y da 0 dos veces para volver a dibujarla fina. Con RELLENAR desactivado, las polilíneas con grosor se ven sin relleno, solo su contorno."},{"question":"¿Cómo uno varias líneas en una polilínea?","answer":"Ejecuta UNIR y designa líneas, arcos y polilíneas que se toquen por sus extremos: cada cadena se convierte en una polilínea. O ejecuta EDITPOL sobre una línea, responde Sí para convertirla en polilínea y añade las demás con Juntar."},{"question":"¿Cómo mido una polilínea?","answer":"Ejecuta AREA, pulsa Intro para elegir Objeto y designa la polilínea: una cerrada da su área y su perímetro; una abierta, su longitud."}]
+---
+
+POL (PLINE en inglés) dibuja una polilínea: un solo objeto hecho de segmentos rectos y arcos unidos por sus extremos, cada uno con su grosor. Tras el punto inicial dice el grosor actual; después cada punto añade un segmento, hasta que Intro o `Cerrar` lo terminan. Como en AutoCAD, empieza con líneas: `Arco` pasa a arcos, cada uno tangente al segmento anterior, y `líNea` vuelve a las líneas. Intro en el punto inicial continúa desde el final de la última línea, arco o polilínea dibujados.
+
+- **Comando:** `POL`
+- **En inglés:** `PLINE`, que se escribe `_PLINE` en cualquier idioma
+- **Alias:** `PL`
+- **Grupo:** [Dibujo](/docs/commands#draw)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `PL` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="pline" caption="Una línea, un arco tangente y una línea de vuelta, y una punta de grosor 10 a 0: una sola polilínea." />
+
+## Opciones [#options]
+
+### `Arco` (`A`) [#arc]
+
+Modo arco: cada punto final dibuja un arco tangente al último segmento o, si es el primero, saliendo en la dirección en que termina la última línea, arco o polilínea dibujados. Mantén pulsada la tecla Ctrl para cambiar su sentido. Las opciones siguientes dan forma al próximo arco.
+
+### `Cerrar` (`C`) [#close]
+
+Aparece en cuanto hay un segmento: cierra la polilínea hasta su inicio y termina el comando; en modo arco, con un arco tangente.
+
+### `Mitad grosor` (`M`) [#halfwidth]
+
+Como `Grosor`, pero cada grosor se mide desde el centro del segmento hasta su borde.
+
+### `Longitud` (`L`) [#length]
+
+Una línea de la longitud que indiques, en la dirección que lleva la polilínea: a lo largo del último segmento, o tangente al último arco. Una longitud negativa va hacia atrás.
+
+### `desHacer` (`H`) [#undo]
+
+Deshace el último segmento y sigue en el modo del anterior. Si no queda ninguno, dice `Ya están deshechos todos los segmentos.`
+
+### `Grosor` (`G`) [#width]
+
+El grosor inicial y después el final, cada uno escrito o precisado desde el último vértice: de 10 a 0 se estrecha hasta un punto, como una punta de flecha. El grosor final sigue en los segmentos siguientes y, como PLINEWID, en la siguiente polilínea.
+
+### `ángUlo` (`U`) [#angle]
+
+Modo arco: el ángulo incluido del arco y después su punto final, su centro o su radio.
+
+### `cEntro` (`E`) [#center]
+
+Modo arco: el centro del arco y después su punto final, su ángulo incluido o la longitud de su cuerda.
+
+### `Dirección` (`D`) [#direction]
+
+Modo arco: la dirección en que el arco sale del último vértice, en lugar de la tangente, y después su punto final.
+
+### `líNea` (`N`) [#line]
+
+Modo arco: vuelve a los segmentos rectos.
+
+### `Radio` (`R`) [#radius]
+
+Modo arco: el radio del arco y después su punto final o su ángulo incluido. Un radio negativo dibuja el arco mayor.
+
+### `Segundo pto.` (`S`) [#second-pt]
+
+Modo arco: un punto por el que pasa el arco y después su punto final: un arco por tres puntos.
+
+## Lo que aún no hace [#missing]
+
+PLINEGEN: una polilínea nueva aplica su tipo de línea segmento a segmento, como con PLINEGEN 0 (`generarTlínea` de `EDITPOL` lo activa en una polilínea). Un tipo de línea discontinuo sobre un segmento con grosor se dibuja continuo. La vista previa de un segmento con grosor no se dibuja en un tono más tenue, y la solicitud del arco se escribe en una sola línea donde AutoCAD la parte en dos.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#pline--pl--es-pol--pl--pt-br-plinha--pl)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando PLINE en español?
+
+POL, con el alias `PL`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_PLINE`.
+
+### ¿Cómo hago una polilínea curva?
+
+Elige `Arco`: cada punto termina entonces un arco tangente al segmento anterior, hasta `líNea`. Para suavizar por sus vértices una polilínea ya dibujada, usa `EDITPOL` y su opción `curVar` o `Spline`.
+
+### ¿Por qué la polilínea me sale gruesa?
+
+El grosor dado en una polilínea anterior se mantiene, y la siguiente empieza con él, como dice la línea que sigue a su punto inicial. Elige `Grosor` y da 0 dos veces para volver a dibujarla fina. Con `RELLENAR` desactivado, las polilíneas con grosor se ven sin relleno, solo su contorno.
+
+### ¿Cómo uno varias líneas en una polilínea?
+
+Ejecuta `UNIR` y designa líneas, arcos y polilíneas que se toquen por sus extremos: cada cadena se convierte en una polilínea. O ejecuta `EDITPOL` sobre una línea, responde `Sí` para convertirla en polilínea y añade las demás con `Juntar`.
+
+### ¿Cómo mido una polilínea?
+
+Ejecuta `AREA`, pulsa Intro para elegir `Objeto` y designa la polilínea: una cerrada da su área y su perímetro; una abierta, su longitud.
+
+## Comandos relacionados [#related]
+
+- [EDITPOL (PEDIT)](/docs/commands#pedit): Editar polilínea
+- [UNIR (JOIN)](/docs/commands#join): Juntar
+- [RECTANG](/docs/commands#rectang): Rectángulo
+- [DESCOMP (EXPLODE)](/docs/commands#explode): Descomponer

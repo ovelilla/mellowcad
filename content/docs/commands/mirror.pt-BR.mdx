@@ -1,0 +1,62 @@
+---
+title: "Comando MIRROR (ESPELHAR) no AutoCAD"
+description: "Como funciona o MIRROR do AutoCAD em português, ESPELHAR (alias ESP), prompt a prompt: dois pontos da linha de espelhamento e excluir ou não a origem."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando MIRROR no AutoCAD em português?","answer":"ESPELHAR, com o alias ESP. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _MIRROR."},{"question":"Como espelhar sem o texto ficar invertido?","answer":"Não precisa fazer nada: como no AutoCAD com o MIRRTEXT em 0, um texto espelhado continua sendo lido normalmente, colocado onde cai o reflexo do retângulo dele."},{"question":"Como espelhar e apagar o original?","answer":"Responda Sim quando o ESPELHAR perguntar se exclui os objetos de origem."},{"question":"Como espelhar na horizontal ou na vertical?","answer":"Ligue o Orto (F8) e dê os dois pontos da linha de espelhamento ao longo do eixo em relação ao qual quer refletir: uma linha vertical inverte esquerda e direita; uma horizontal, cima e baixo."}]
+---
+
+O MIRROR, ESPELHAR no AutoCAD em português, reflete os objetos que você seleciona em relação a uma linha: você os seleciona, dá o primeiro e o segundo ponto da linha de espelhamento e depois diz se os objetos de origem são excluídos. O reflexo é uma cópia e, com a resposta padrão, Não, os originais ficam: é assim que se desenha uma peça simétrica pela metade. Os dois pontos são tomados na planta do UCS, então uma linha de espelhamento desenhada com Orto reflete reto, na horizontal ou na vertical. Como no AutoCAD com o MIRRTEXT em 0, seu valor padrão, um texto continua sendo lido da esquerda para a direita no reflexo, e uma hachura mantém o ângulo do padrão. O espelhamento é um passo que o Desfazer reverte.
+
+- **Comando:** `ESPELHAR`
+- **Em inglês:** `MIRROR`, que se digita `_MIRROR` em qualquer idioma
+- **Aliases:** `ESP`
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `ESP` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="mirror" caption="Um contorno fechado espelhado em relação a uma linha de espelhamento vertical, mantendo a origem." />
+
+## Opções [#options]
+
+### `Sim` (`S`) [#yes]
+
+Exclui os objetos de origem e só fica o reflexo: uma inversão no lugar.
+
+### `Não` (`N`) [#no]
+
+A resposta padrão: mantém os objetos de origem ao lado do reflexo.
+
+## O que ainda não faz [#missing]
+
+O MIRRTEXT e o MIRRHATCH ficam em 0: um texto nunca é espelhado para ser lido ao contrário, e um padrão de hachura nunca é refletido. Um texto dentro de uma referência de bloco espelhada volta a ser lido como um solto, enquanto o AutoCAD o espelha com o bloco. Uma elipse espelhada mantém a normal, então o ângulo inicial e o ângulo final dela são lidos de outro jeito que no AutoCAD para a mesma curva. Enquanto acompanha o cursor, o reflexo tem a cor de cada objeto, não o tipo de linha nem a espessura de linha.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#mirror--mi--es-simetria--si--pt-br-espelhar--esp)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando MIRROR no AutoCAD em português?
+
+ESPELHAR, com o alias `ESP`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_MIRROR`.
+
+### Como espelhar sem o texto ficar invertido?
+
+Não precisa fazer nada: como no AutoCAD com o MIRRTEXT em 0, um texto espelhado continua sendo lido normalmente, colocado onde cai o reflexo do retângulo dele.
+
+### Como espelhar e apagar o original?
+
+Responda `Sim` quando o ESPELHAR perguntar se exclui os objetos de origem.
+
+### Como espelhar na horizontal ou na vertical?
+
+Ligue o Orto (F8) e dê os dois pontos da linha de espelhamento ao longo do eixo em relação ao qual quer refletir: uma linha vertical inverte esquerda e direita; uma horizontal, cima e baixo.
+
+## Comandos relacionados [#related]
+
+- [Comando COPY (COPIAR) no AutoCAD](/docs/commands/copy)
+- [Comando ROTATE (ROTAC) no AutoCAD](/docs/commands/rotate)
+- [Comando MOVE (MOVER) no AutoCAD](/docs/commands/move)
+- [Comando ARRAYPOLAR (MATRIZPOLAR) no AutoCAD](/docs/commands/arraypolar)

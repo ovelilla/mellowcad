@@ -1,0 +1,67 @@
+---
+title: "Girar en AutoCAD: GIRA (ROTATE)"
+metaTitle: "Girar en AutoCAD: comando GIRA (ROTATE)"
+description: "Cómo funciona GIRA (ROTATE, alias GI) de AutoCAD en español, solicitud a solicitud: punto base y ángulo, Copiar y Referencia. Pruébalo gratis online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando ROTATE en español?","answer":"GIRA, con el alias GI. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _ROTATE."},{"question":"¿Cómo giro un objeto para alinearlo con otro?","answer":"Elige Referencia, señala dos puntos de la arista del objeto, elige Puntos y señala dos puntos de la línea con la que debe quedar alineado."},{"question":"¿Cómo giro un objeto y conservo el original?","answer":"Elige Copiar antes de dar el ángulo: gira la copia y el original se queda."},{"question":"¿Por qué GIRA gira hacia el otro lado?","answer":"Un ángulo positivo gira en sentido contrario a las agujas del reloj, como dice ANGDIR en la primera línea. Escribe un ángulo negativo, -30, para girar en el sentido de las agujas del reloj."}]
+---
+
+GIRA (ROTATE en inglés) gira los objetos que designas alrededor de un punto base: los designas, das el punto base y después el ángulo, escrito o señalado como un punto cuya dirección desde el punto base es el ángulo. Su primera línea dice en qué sentido es positivo, el contrario a las agujas del reloj por defecto (ANGDIR), y dónde está el 0 (ANGBASE). Intro en el ángulo repite el último giro, 0 en un dibujo nuevo. Los objetos giran sobre un eje paralelo a la Z del SCP que pasa por el punto base, así que en 3D conservan su altura. El giro es un paso que Deshacer revierte.
+
+- **Comando:** `GIRA`
+- **En inglés:** `ROTATE`, que se escribe `_ROTATE` en cualquier idioma
+- **Alias:** `GI`
+- **Grupo:** [Modificar](/docs/commands#modify)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `GI` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="rotate" caption="Un rectángulo girado 30° sobre su esquina con Copiar: el original se conserva." />
+
+## Opciones [#options]
+
+### `Copiar` (`C`) [#copy]
+
+Gira una copia y deja los objetos donde estaban, diciendo `Girando una copia de los objetos seleccionados.`. Después vuelve a pedir el ángulo.
+
+### `Referencia` (`R`) [#reference]
+
+Gira desde un ángulo que tienes hasta el que quieres: pide el ángulo de referencia (escrito, o dos puntos que lo miden) y después el nuevo ángulo, y gira la diferencia. Para dejar horizontal una arista inclinada, señala sus dos extremos como referencia y escribe 0.
+
+### `Puntos` (`P`) [#points]
+
+En el nuevo ángulo de Referencia: el nuevo ángulo es el de una línea entre dos puntos que señalas, así que los objetos se alinean con una arista ya dibujada.
+
+## Lo que aún no hace [#missing]
+
+Mientras das el ángulo, el conjunto girado sigue al cursor con el color de cada objeto, pero no con su tipo de línea ni su grosor de línea.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#rotate--ro--es-gira--gi--pt-br-rotac--ro)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando ROTATE en español?
+
+GIRA, con el alias `GI`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_ROTATE`.
+
+### ¿Cómo giro un objeto para alinearlo con otro?
+
+Elige `Referencia`, señala dos puntos de la arista del objeto, elige `Puntos` y señala dos puntos de la línea con la que debe quedar alineado.
+
+### ¿Cómo giro un objeto y conservo el original?
+
+Elige `Copiar` antes de dar el ángulo: gira la copia y el original se queda.
+
+### ¿Por qué GIRA gira hacia el otro lado?
+
+Un ángulo positivo gira en sentido contrario a las agujas del reloj, como dice ANGDIR en la primera línea. Escribe un ángulo negativo, `-30`, para girar en el sentido de las agujas del reloj.
+
+## Comandos relacionados [#related]
+
+- [Desplazar en AutoCAD: DESPLAZA (MOVE)](/docs/commands/move)
+- [Copiar en AutoCAD: COPIA (COPY)](/docs/commands/copy)
+- [Simetría en AutoCAD: comando SIMETRIA (MIRROR)](/docs/commands/mirror)
+- [Escalar en AutoCAD: ESCALA (SCALE)](/docs/commands/scale)

@@ -1,0 +1,79 @@
+---
+title: "Alargar en AutoCAD: ALARGA (EXTEND)"
+metaTitle: "Alargar en AutoCAD: comando ALARGA (EXTEND)"
+description: "Cómo funciona ALARGA (EXTEND, alias AL) de AutoCAD en español, solicitud a solicitud: modos Rápido y Estándar, aristas de contorno y borde. Pruébalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando EXTEND en español?","answer":"ALARGA, con el alias AL. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _EXTEND."},{"question":"¿Por qué ALARGA dice que no hay arista?","answer":"Porque nada se cruza en el camino que seguiría ese extremo. Una línea dice «No hay límite en esta dirección.» cuando su otro extremo sí llegaría a una arista, y una línea o un arco, «La trayectoria no se interseca con la arista de contorno.» en los demás casos; una polilínea o una spline dice «El objeto no se interseca con ninguna arista.». Designa cerca del otro extremo o, en modo Estándar, elige Arista y Alargar para que cuente un contorno que se queda corto como si se prolongara. Un círculo, una polilínea cerrada, una elipse entera, un texto o un sombreado no se pueden alargar: «Objeto no procesado por ALARGA.»"},{"question":"¿Cómo alargo varias líneas a la vez?","answer":"Designa en un punto vacío y señala un segundo punto: cada objeto que cruza ese borde crece por su extremo más cercano, en un solo paso. O elige Captura y dibuja una ventana sobre los extremos que quieres alargar."},{"question":"¿Cómo recorto con ALARGA?","answer":"Mantén Mayús al designar: el trozo se recorta hasta los cruces más cercanos, como lo haría RECORTA, y un objeto que nada cruza se borra. La siguiente designación sin Mayús vuelve a alargar."}]
+---
+
+ALARGA (EXTEND en inglés) prolonga un objeto hasta que se encuentra con otro: lo designas cerca del extremo que debe crecer, y ese extremo sigue hasta la arista más cercana en su camino. Alarga líneas, arcos, arcos elípticos, polilíneas abiertas (por su segmento final, recto o siguiendo su arco), polilíneas 3D y splines abiertas. Empieza en modo Rápido, como el de AutoCAD: todos los objetos son contornos. Si mantienes Mayús al designar, recorta en su lugar, como [`RECORTA`](/docs/commands/trim). Cada designación es un paso que Deshacer revierte; Intro termina el comando.
+
+- **Comando:** `ALARGA`
+- **En inglés:** `EXTEND`, que se escribe `_EXTEND` en cualquier idioma
+- **Alias:** `AL`
+- **Grupo:** [Modificar](/docs/commands#modify)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `AL` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="extend" caption="Dos líneas alargadas hasta la línea que se cruza en su camino: cada una designada una vez cerca del extremo que crece, en modo Rápido." />
+
+## Opciones [#options]
+
+### `aristas de COrte` (`CO`) [#boundary]
+
+Elige qué objetos hacen de contorno: desígnalos, o pulsa Intro para tomarlos todos. Desde entonces solo hacen de contorno esos, sea cual sea el modo, hasta que termina el comando.
+
+### `Borde` (`B`) [#fence]
+
+Pide los puntos de una línea, tantos como quieras hasta Intro: cada objeto que cruza se alarga por el extremo más cercano a donde lo cruza, en un solo paso. El modo Estándar la ofrece; el Rápido también la acepta.
+
+### `Captura` (`C`) [#crossing]
+
+Pide las dos esquinas de una ventana: se alarga cada objeto que cruza su contorno, en un solo paso.
+
+### `MOdo` (`MO`) [#mode]
+
+Cambia entre `Rápido` y `Estándar`. En modo Estándar, ALARGA pide primero las aristas de contorno (Intro las toma todas) y ofrece Borde y Arista. El modo es a la vez el de ALARGA y el de RECORTA, y dura la sesión.
+
+### `Arista` (`A`) [#edge]
+
+Solo en modo Estándar. Con `Alargar`, un objeto también se detiene donde estaría un contorno si se prolongara —una línea por los dos lados, un arco por toda su circunferencia—, de modo que una línea puede crecer hasta otra que no llega a su camino; `No alargar` es la opción por defecto.
+
+### `desHacer` (`H`) [#undo]
+
+Aparece en cuanto la solicitud ha tenido una respuesta (una designación, un borde, una ventana): deshace el último alargamiento y, si no queda nada que deshacer, lo dice.
+
+## Lo que aún no hace [#missing]
+
+Proyección: no se ofrece la opción de proyección de AutoCAD (Ninguna, SCP, Vista), y todo se calcula proyectado en el plano XY del SCP, que es la de AutoCAD por defecto, SCP. El borde todavía no se puede arrastrar con el cursor, solo señalar punto a punto. El modo y la elección de Arista duran la sesión, mientras que AutoCAD los conserva de una sesión a otra. Un objeto inclinado respecto al SCP, salvo una spline, ni hace de contorno ni se alarga, y una polilínea suavizada con `curVar` de `EDITPOL` se rechaza, mientras que AutoCAD alarga su último arco.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al--pt-br-aparar--ap--estender--est)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando EXTEND en español?
+
+ALARGA, con el alias `AL`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_EXTEND`.
+
+### ¿Por qué ALARGA dice que no hay arista?
+
+Porque nada se cruza en el camino que seguiría ese extremo. Una línea dice `No hay límite en esta dirección.` cuando su otro extremo sí llegaría a una arista, y una línea o un arco, `La trayectoria no se interseca con la arista de contorno.` en los demás casos; una polilínea o una spline dice `El objeto no se interseca con ninguna arista.`. Designa cerca del otro extremo o, en modo Estándar, elige `Arista` y `Alargar` para que cuente un contorno que se queda corto como si se prolongara. Un círculo, una polilínea cerrada, una elipse entera, un texto o un sombreado no se pueden alargar: `Objeto no procesado por ALARGA.`
+
+### ¿Cómo alargo varias líneas a la vez?
+
+Designa en un punto vacío y señala un segundo punto: cada objeto que cruza ese borde crece por su extremo más cercano, en un solo paso. O elige `Captura` y dibuja una ventana sobre los extremos que quieres alargar.
+
+### ¿Cómo recorto con ALARGA?
+
+Mantén Mayús al designar: el trozo se recorta hasta los cruces más cercanos, como lo haría [`RECORTA`](/docs/commands/trim), y un objeto que nada cruza se borra. La siguiente designación sin Mayús vuelve a alargar.
+
+## Comandos relacionados [#related]
+
+- [Recortar en AutoCAD: RECORTA (TRIM)](/docs/commands/trim)
+- [Desfase en AutoCAD: DESFASE (OFFSET)](/docs/commands/offset)
+- [Empalme en AutoCAD: EMPALME (FILLET)](/docs/commands/fillet)
+- [UNIR (JOIN)](/docs/commands#join): Juntar

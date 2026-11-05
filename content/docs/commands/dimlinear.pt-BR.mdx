@@ -1,0 +1,78 @@
+---
+title: "Cotas no AutoCAD: comando COTALINEAR (DIMLINEAR)"
+metaTitle: "Cota linear no AutoCAD: COTALINEAR (DIMLINEAR)"
+description: "Como cotar no AutoCAD em português com o COTALINEAR (DIMLINEAR, atalho CLI): duas origens ou um objeto e a linha, horizontal ou vertical. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando DIMLINEAR no AutoCAD em português?","answer":"COTALINEAR, com os aliases CLI e DIMLIN. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _DIMLINEAR."},{"question":"Quais são os comandos de cota do AutoCAD?","answer":"COTALINEAR para distâncias horizontais e verticais, COTAALIN para uma distância ao longo de um lado inclinado, COTARAIOS e COTADIAMETRO para arcos e círculos, COTAANG para ângulos, COTASERIE e COTALINBASE para cadeias de cotas, ESPACOCOTA para igualar o espaçamento entre elas e ESTILOCOTA para a aparência. O DIM do AutoCAD, que faz qualquer tipo de cota num só prompt, e o QDIM, que cota vários objetos de uma vez (os nomes em inglês), ainda não estão no MellowCAD."},{"question":"Por que a cota não acompanha o objeto quando eu o altero?","answer":"Porque as cotas do MellowCAD ainda não são associativas, como diz “Cota não associativa criada.”: uma cota guarda os pontos que recebeu. Estique os dois juntos: pegue a ponta que você move e a origem da cota que está nela numa janela de intersecção do ESTICAR, e a medida é calculada de novo; ou arraste a alça da origem até o novo lugar."},{"question":"Como mudar o tamanho do texto e das setas da cota?","answer":"No estilo de cota, como no AutoCAD: o ESTILOCOTA (EC) abre os estilos de cota, aqui na paleta Estilos, onde o AutoCAD tem o Gerenciador de estilos de cota. Ali se definem a altura do texto, o tamanho da seta, a escala global e as casas decimais do estilo atual, e todas as cotas desse estilo acompanham."}]
+---
+
+O DIMLINEAR, COTALINEAR no AutoCAD em português, mede a distância entre dois pontos em X ou em Y e a desenha como uma cota: duas linhas de extensão, uma linha de cota com as suas setas e a medida acima dela. Você especifica a origem da primeira e da segunda linha de extensão e depois a localização da linha de cota, e onde você a coloca escolhe a direção, como no AutoCAD: acima ou abaixo dos dois pontos, ele mede na horizontal; ao lado deles, na vertical. Se você pressionar Enter no primeiro prompt, seleciona uma linha, um arco, um segmento de polilinha ou um círculo: as duas pontas dele, ou o diâmetro do círculo, são as origens. A linha de comando diz então a medida, e o comando termina.
+
+A cota é desenhada no estilo de cota atual, ISO-25 num desenho novo: vírgula decimal e sem zeros à direita, como nos desenhos métricos do AutoCAD. `COTAHORIZONTAL`, `COTAVERTICAL` e `COTAROTACIONADA`, só digitados, são o COTALINEAR com a direção fixa.
+
+- **Comando:** `COTALINEAR`
+- **Em inglês:** `DIMLINEAR`, que se digita `_DIMLINEAR` em qualquer idioma
+- **Aliases:** `CLI`, `DIMLIN`
+- **Painel:** [Anotação](/docs/commands#annotate)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `CLI` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="dimlinear" caption="Um retângulo cotado duas vezes: o lado de cima pelos dois cantos, o da direita com Enter e selecionando-o." />
+
+## Opções [#options]
+
+### `Texto` (`T`) [#text]
+
+Pede o texto a escrever no lugar da medida, que ele oferece como padrão: Enter mantém a medida. No que você digita, `<>` representa a medida, então `<> mm` a escreve seguida da unidade.
+
+### `âNgulo` (`N`) [#angle]
+
+Pede o ângulo do texto, que passa a ser desenhado nesse ângulo em vez de ao longo da linha de cota. 0 o devolve à linha.
+
+### `Horizontal` (`H`) [#horizontal]
+
+Mede em X onde quer que você coloque a linha de cota, que fica horizontal; o prompt então oferece só `Texto` e `âNgulo`.
+
+### `Vertical` (`V`) [#vertical]
+
+Mede em Y onde quer que você coloque a linha de cota, que fica vertical.
+
+### `Rotacionada` (`R`) [#rotated]
+
+Pede o ângulo da linha de cota, `0` por padrão, e mede ao longo dele a distância entre as origens. Num lado inclinado, o ângulo do próprio lado dá o seu comprimento, como faz o [`COTAALIN`](/docs/commands/dimaligned).
+
+## O que ainda não faz [#missing]
+
+A opção de texto multilinha: o texto de uma cota é uma linha só, definida com `Texto` na linha de comando, nunca no editor de texto. Com um ângulo definido em `âNgulo`, o AutoCAD centraliza o texto sobre a linha de cota; aqui ele fica acima dela, como sem ângulo. Uma cota não é associativa: ela não acompanha o objeto que mede.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimlinear--dimlin--dli--es-acolineal--acolin--dimlin--pt-br-cotalinear--cli--dimlin)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando DIMLINEAR no AutoCAD em português?
+
+COTALINEAR, com os aliases `CLI` e `DIMLIN`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_DIMLINEAR`.
+
+### Quais são os comandos de cota do AutoCAD?
+
+`COTALINEAR` para distâncias horizontais e verticais, [`COTAALIN`](/docs/commands/dimaligned) para uma distância ao longo de um lado inclinado, [`COTARAIOS`](/docs/commands/dimradius) e [`COTADIAMETRO`](/docs/commands/dimdiameter) para arcos e círculos, [`COTAANG`](/docs/commands/dimangular) para ângulos, [`COTASERIE`](/docs/commands/dimcontinue) e [`COTALINBASE`](/docs/commands/dimbaseline) para cadeias de cotas, `ESPACOCOTA` para igualar o espaçamento entre elas e [`ESTILOCOTA`](/docs/commands/dimstyle) para a aparência. O DIM do AutoCAD, que faz qualquer tipo de cota num só prompt, e o QDIM, que cota vários objetos de uma vez (os nomes em inglês), ainda não estão no MellowCAD.
+
+### Por que a cota não acompanha o objeto quando eu o altero?
+
+Porque as cotas do MellowCAD ainda não são associativas, como diz `Cota não associativa criada.`: uma cota guarda os pontos que recebeu. Estique os dois juntos: pegue a ponta que você move e a origem da cota que está nela numa janela de intersecção do `ESTICAR`, e a medida é calculada de novo; ou arraste a alça da origem até o novo lugar.
+
+### Como mudar o tamanho do texto e das setas da cota?
+
+No estilo de cota, como no AutoCAD: o [`ESTILOCOTA`](/docs/commands/dimstyle) (`EC`) abre os estilos de cota, aqui na paleta Estilos, onde o AutoCAD tem o Gerenciador de estilos de cota. Ali se definem a altura do texto, o tamanho da seta, a escala global e as casas decimais do estilo atual, e todas as cotas desse estilo acompanham.
+
+## Comandos relacionados [#related]
+
+- [Comando DIMALIGNED (COTAALIN) no AutoCAD](/docs/commands/dimaligned)
+- [Cota contínua no AutoCAD: COTASERIE (DIMCONTINUE)](/docs/commands/dimcontinue)
+- [Comando DIMBASELINE (COTALINBASE) no AutoCAD](/docs/commands/dimbaseline)
+- [Comando DIMRADIUS (COTARAIOS) no AutoCAD](/docs/commands/dimradius)
+- [Estilo de cota no AutoCAD: comando ESTILOCOTA (DIMSTYLE)](/docs/commands/dimstyle)

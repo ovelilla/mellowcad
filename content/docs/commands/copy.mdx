@@ -1,0 +1,66 @@
+---
+title: "COPY in AutoCAD"
+metaTitle: "COPY in AutoCAD: command, multiple copies, alias"
+description: "How AutoCAD's COPY (CO, CP) works, prompt by prompt: a base point, then as many copies as you place, with Undo and Exit, or one by displacement. Try it free."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for COPY in AutoCAD?","answer":"CO or CP, then Enter or Space. The full name works too, and _COPY in any language of AutoCAD."},{"question":"How do I make several copies at once?","answer":"Keep placing: each point you give is one more copy from the same base point, until Enter. For copies in rows, columns or round a centre, ARRAY makes them in one go."},{"question":"How do I copy an object a set distance?","answer":"Give the base point, then type the second point as the distance: 30,0 copies it 30 along X, as dynamic input reads a point after the first from it. Or point the cursor the way to go, with Ortho or polar tracking, and type only the distance."},{"question":"Why is there no Array option in COPY?","answer":"MellowCAD does not offer it yet. For a row of evenly spaced copies, ARRAYRECT with one row makes the same, and keeps them as one array you can edit."}]
+---
+
+COPY places copies of the objects you select: select them, give a base point, then a second point for each copy. As in AutoCAD, whose copy mode is Multiple by default, it keeps asking for one more until you press Enter or choose Exit, every copy measured from the same base point. The copies keep the objects' layer, colour and every other property. Objects selected before the command are the ones it copies, and while you place a copy the set follows the cursor.
+
+- **Command:** `COPY`
+- **Aliases:** `CO`, `CP`
+- **Panel:** [Modify](/docs/commands#modify)
+- **Try it:** [Open the editor](/draw), type `CO` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="copy" caption="A circle copied three times along X from one base point, then Enter." />
+
+## Options [#options]
+
+### `Displacement` (`D`) [#displacement]
+
+Chosen at the base point prompt, or by Enter there: asks for one move as a vector, `30,0` placing one copy 30 along X, and ends. Its default is the last one COPY used in that drawing.
+
+### `Exit` (`E`) [#exit]
+
+Ends the command, as Enter does once a copy is placed.
+
+### `Undo` (`U`) [#undo]
+
+Takes back the last copy placed. Taking back the first one says `Command has been completely undone.` and asks for the second point again.
+
+## What it does not do yet [#missing]
+
+COPYMODE's Single (copy once and end) is not offered: COPY is always Multiple, so the base point prompt lists only `Displacement`. The second point's Array, AutoCAD's row of evenly spaced copies, is not offered either.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#copy--co--es-copia--cp--dup--pt-br-copiar--co--cp)
+
+## Questions [#questions]
+
+### What is the shortcut for COPY in AutoCAD?
+
+`CO` or `CP`, then Enter or Space. The full name works too, and `_COPY` in any language of AutoCAD.
+
+### How do I make several copies at once?
+
+Keep placing: each point you give is one more copy from the same base point, until Enter. For copies in rows, columns or round a centre, [`ARRAY`](/docs/commands/array) makes them in one go.
+
+### How do I copy an object a set distance?
+
+Give the base point, then type the second point as the distance: `30,0` copies it 30 along X, as dynamic input reads a point after the first from it. Or point the cursor the way to go, with Ortho or polar tracking, and type only the distance.
+
+### Why is there no Array option in COPY?
+
+MellowCAD does not offer it yet. For a row of evenly spaced copies, [`ARRAYRECT`](/docs/commands/arrayrect) with one row makes the same, and keeps them as one array you can edit.
+
+## Related commands [#related]
+
+- [MOVE in AutoCAD](/docs/commands/move)
+- [ARRAY in AutoCAD](/docs/commands/array)
+- [OFFSET in AutoCAD](/docs/commands/offset)
+- [MIRROR in AutoCAD](/docs/commands/mirror)

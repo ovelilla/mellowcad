@@ -1,0 +1,68 @@
+---
+title: "SCALE in AutoCAD"
+metaTitle: "SCALE in AutoCAD: Reference, Copy and alias"
+description: "How AutoCAD's SCALE (SC) resizes objects about a base point, prompt by prompt: a factor, Copy, and Reference for a known length. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for SCALE in AutoCAD?","answer":"SC, then Enter or Space. _SCALE works in any language of AutoCAD."},{"question":"How do I scale with a reference in AutoCAD?","answer":"Choose Reference at the factor, pick the two ends of an edge whose length you know, then type the length it should have. Everything selected is scaled by the new length over the old, so a drawing at the wrong size comes right from one known dimension."},{"question":"How do I scale an object and keep the original?","answer":"Choose Copy at the factor: the copy is scaled, the original stays where it was."},{"question":"How do I change the linetype scale?","answer":"Not with SCALE, which resizes the objects: LTSCALE sets how long the dashes and gaps of every linetype are drawn."},{"question":"How do I set a plot or layout scale?","answer":"MellowCAD has no layouts, viewports or plotting: you draw at full size in model space, and SCALE changes the size of the objects themselves, not how they would print."}]
+---
+
+SCALE makes the objects you select larger or smaller about a base point, which stays where it is: a factor of 2 doubles them, 0.5 halves them, the same in every direction. Select the objects, pick the base point, then type the factor, or move the cursor and pick: the objects follow it. Enter there, with nothing typed, scales by the last factor used. Each run is one step that Undo takes back.
+
+It scales everything it takes as AutoCAD does: a hatch's pattern grows with its boundary, a dimension measures its new length, an object above the plane scales in Z about the base point too.
+
+- **Command:** `SCALE`
+- **Aliases:** `SC`
+- **Panel:** [Modify](/docs/commands#modify)
+- **Try it:** [Open the editor](/draw), type `SC` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="scale" caption="A plate and its hole scaled on a copy by Reference, about its corner: the 40 long edge picked, then made 60." />
+
+## Options [#options]
+
+### `Copy` (`C`) [#copy]
+
+Scales a copy and leaves the objects as they were: it says `Scaling a copy of the selected objects.` and asks for the factor again, `Copy` still listed.
+
+### `Reference` (`R`) [#reference]
+
+Asks a reference length, typed or picked as two points, then the length it should have: the factor is the new length over the reference. The new length is typed, or a point whose distance from the base point it is; `Points` asks two points instead and measures between them. Both lengths offer the last ones given, 1 in a new drawing.
+
+## What it does not do yet [#missing]
+
+Enter at the first or second point of `Points` ends the command unscaled, where AutoCAD scales by the cursor's reading there. A tiny factor is applied in silence, where AutoCAD says it ignores it. The objects dragged are drawn as [`MOVE`](/docs/commands/move) drags them, in their colour only.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#scale--sc--es-escala--es--pt-br-escala--es)
+
+## Questions [#questions]
+
+### What is the shortcut for SCALE in AutoCAD?
+
+`SC`, then Enter or Space. `_SCALE` works in any language of AutoCAD.
+
+### How do I scale with a reference in AutoCAD?
+
+Choose `Reference` at the factor, pick the two ends of an edge whose length you know, then type the length it should have. Everything selected is scaled by the new length over the old, so a drawing at the wrong size comes right from one known dimension.
+
+### How do I scale an object and keep the original?
+
+Choose `Copy` at the factor: the copy is scaled, the original stays where it was.
+
+### How do I change the linetype scale?
+
+Not with SCALE, which resizes the objects: `LTSCALE` sets how long the dashes and gaps of every linetype are drawn.
+
+### How do I set a plot or layout scale?
+
+MellowCAD has no layouts, viewports or plotting: you draw at full size in model space, and SCALE changes the size of the objects themselves, not how they would print.
+
+## Related commands [#related]
+
+- [ROTATE in AutoCAD](/docs/commands/rotate)
+- [MOVE in AutoCAD](/docs/commands/move)
+- [STRETCH](/docs/commands#stretch): Stretch
+- [LTSCALE](/docs/commands#ltscale): Linetype scale

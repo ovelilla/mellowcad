@@ -1,0 +1,73 @@
+---
+title: "Comando ARRAYPATH (MATRIZCAMINHO) no AutoCAD"
+description: "Como funciona o ARRAYPATH do AutoCAD em português, MATRIZCAMINHO, prompt a prompt: o caminho, Medir ou Dividir, os itens e o alinhamento. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Como fazer um array ao longo de uma curva?","answer":"Digite MATRIZCAMINHO, selecione os objetos, pressione Enter e selecione o caminho perto da ponta por onde ele deve começar; ou digite MA para o MATRIZ e escolha CAminho depois dos objetos. Então defina a distância ou a quantidade de itens, e pressione Enter para criá-la."},{"question":"Por que o array não acompanha o caminho?","answer":"Aqui uma matriz mantém o caminho como ele era quando ela foi criada: se você mover ou esticar o caminho depois, a matriz fica como está, enquanto a matriz de caminho associativa do AutoCAD o acompanharia. Apagar o caminho também mantém a matriz. Se os itens não giram com o caminho, escolha Alinhar e responda Sim."},{"question":"Como mudar o sentido de um array de caminho?","answer":"Selecione o caminho perto da outra ponta: um caminho aberto começa pela ponta mais próxima do ponto selecionado. Um círculo sempre vai no sentido anti-horário a partir do ângulo 0."},{"question":"Como distribuir os itens por igual em todo o caminho?","answer":"Escolha Método, depois Dividir e depois ITens, e digite quantos: eles são distribuídos por igual, o primeiro e o último nas pontas de um caminho aberto."}]
+---
+
+O ARRAYPATH, MATRIZCAMINHO no AutoCAD em português, copia uma seleção ao longo de um caminho (uma linha, um arco, um círculo ou uma polilinha) como um só objeto de matriz. Ele pede os objetos, diz o tipo e se a matriz é associativa, pede a curva de caminho e mostra a matriz na hora: os itens afastados uma vez e meia o tamanho da seleção, quantos couberem ao longo do caminho, cada um girado conforme o caminho gira. Um caminho aberto começa pela ponta mais próxima do ponto selecionado; um círculo, no seu ângulo 0, no sentido anti-horário. Depois, um só prompt edita a matriz ao vivo até o Enter criá-la, com as opções ou com as alças da visualização, como no AutoCAD. Os objetos selecionados ficam onde estão, como o primeiro item.
+
+- **Comando:** `MATRIZCAMINHO`
+- **Em inglês:** `ARRAYPATH`, que se digita `_ARRAYPATH` em qualquer idioma
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `MATRIZCAMINHO` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="arraypath" caption="Um quadrado pequeno no início de um arco, em matriz ao longo dele: Dividir, 7 itens, cada um girado com o arco." />
+
+## Opções [#options]
+
+### `ASsociativa` (`AS`) [#associative]
+
+`Sim`, o padrão, cria um só objeto de matriz, que as alças e a paleta Propriedades alteram depois; `Não` cria cópias independentes ao lado dos objetos selecionados. A resposta vale pela sessão, também para o [`MATRIZRETANG`](/docs/commands/arrayrect) e o [`MATRIZPOLAR`](/docs/commands/arraypolar).
+
+### `Método` (`M`) [#method]
+
+`Medir`, o padrão, põe os itens a uma distância, quantos couberem; `Dividir` distribui uma quantidade de itens por igual ao longo de todo o caminho, um em cada ponta de um caminho aberto.
+
+### `ITens` (`IT`) [#items]
+
+Com `Dividir`, a quantidade de itens. Com `Medir`, a distância entre eles e depois quantos, até o máximo que cabe, que ele informa; `Preencha` usa todos.
+
+### `Alinhar itens` (`A`) [#align-items]
+
+`Sim`, o padrão, gira cada item conforme o caminho gira desde o início; `Não` só o move ao longo dele.
+
+### `saIr` (`I`) [#exit]
+
+Cria a matriz e encerra o comando, como o Enter.
+
+## O que ainda não faz [#missing]
+
+A matriz não acompanha o caminho: se você editar o caminho depois, a matriz mantém o caminho com que foi criada. Splines, elipses e polilinhas 3D ainda não podem ser caminhos, nem um caminho fora do plano do UCS. Não são oferecidos o ponto base, a direção da tangente, as linhas, os níveis, a direção Z nem Expressão, nem um grupo no prompt do caminho, e as alças da matriz não têm menus.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arraypath--es-matrizcamino--pt-br-matrizcaminho)
+
+## Perguntas frequentes [#questions]
+
+### Como fazer um array ao longo de uma curva?
+
+Digite `MATRIZCAMINHO`, selecione os objetos, pressione Enter e selecione o caminho perto da ponta por onde ele deve começar; ou digite `MA` para o [`MATRIZ`](/docs/commands/array) e escolha `CAminho` depois dos objetos. Então defina a distância ou a quantidade de itens, e pressione Enter para criá-la.
+
+### Por que o array não acompanha o caminho?
+
+Aqui uma matriz mantém o caminho como ele era quando ela foi criada: se você mover ou esticar o caminho depois, a matriz fica como está, enquanto a matriz de caminho associativa do AutoCAD o acompanharia. Apagar o caminho também mantém a matriz. Se os itens não giram com o caminho, escolha `Alinhar` e responda `Sim`.
+
+### Como mudar o sentido de um array de caminho?
+
+Selecione o caminho perto da outra ponta: um caminho aberto começa pela ponta mais próxima do ponto selecionado. Um círculo sempre vai no sentido anti-horário a partir do ângulo 0.
+
+### Como distribuir os itens por igual em todo o caminho?
+
+Escolha `Método`, depois `Dividir` e depois `ITens`, e digite quantos: eles são distribuídos por igual, o primeiro e o último nas pontas de um caminho aberto.
+
+## Comandos relacionados [#related]
+
+- [Comando ARRAY (MATRIZ) no AutoCAD](/docs/commands/array)
+- [Comando ARRAYRECT (MATRIZRETANG) no AutoCAD](/docs/commands/arrayrect)
+- [Comando ARRAYPOLAR (MATRIZPOLAR) no AutoCAD](/docs/commands/arraypolar)
+- [Polilinha no AutoCAD: comando PLINHA (PLINE)](/docs/commands/pline)

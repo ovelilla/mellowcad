@@ -6,7 +6,7 @@ generated: "lib/docs/generate.test.ts"
 faq: [{"question":"Qual é o comando TRIM no AutoCAD em português?","answer":"APARAR, com o alias AP. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _TRIM."},{"question":"Por que o trim apaga a linha inteira?","answer":"Porque o comando está no modo Rápido, o padrão do AutoCAD desde a versão 2021: selecionar um objeto que nenhuma aresta cruza o apaga. Escolha mOdo e depois Padrão para que ele o deixe e avise."},{"question":"Como aparar várias linhas de uma vez?","answer":"Clique num ponto vazio e indique um segundo ponto: cada objeto que essa cerca cruza é aparado num só passo. Ou escolha Intersecção e desenhe uma janela sobre os trechos a tirar."},{"question":"Como estender uma linha com o trim?","answer":"Segure Shift ao selecionar a linha perto da ponta a estender: ela cresce até a aresta mais próxima, como com ESTENDER, e a próxima seleção sem Shift volta a aparar."}]
 ---
 
-O TRIM, APARAR no AutoCAD em português, apara um objeto até onde outros o cruzam: você seleciona o trecho a tirar, e ele some até o cruzamento mais próximo de cada lado. Começa no modo Rápido, como o do AutoCAD: todo objeto é aresta de corte, e um objeto que nada cruza é apagado inteiro. Segurando Shift ao selecionar, o objeto é estendido até a aresta mais próxima, como com `ESTENDER`. Cada seleção é um passo que o Desfazer reverte; Enter encerra o comando.
+O TRIM, APARAR no AutoCAD em português, apara um objeto até onde outros o cruzam: você seleciona o trecho a tirar, e ele some até o cruzamento mais próximo de cada lado. Começa no modo Rápido, como o do AutoCAD: todo objeto é aresta de corte, e um objeto que nada cruza é apagado inteiro. Segurando Shift ao selecionar, o objeto é estendido até a aresta mais próxima, como com [`ESTENDER`](/docs/commands/extend). Cada seleção é um passo que o Desfazer reverte; Enter encerra o comando.
 
 - **Comando:** `APARAR`
 - **Em inglês:** `TRIM`, que se digita `_TRIM` em qualquer idioma
@@ -72,11 +72,11 @@ Clique num ponto vazio e indique um segundo ponto: cada objeto que essa cerca cr
 
 ### Como estender uma linha com o trim?
 
-Segure Shift ao selecionar a linha perto da ponta a estender: ela cresce até a aresta mais próxima, como com `ESTENDER`, e a próxima seleção sem Shift volta a aparar.
+Segure Shift ao selecionar a linha perto da ponta a estender: ela cresce até a aresta mais próxima, como com [`ESTENDER`](/docs/commands/extend), e a próxima seleção sem Shift volta a aparar.
 
 ## Comandos relacionados [#related]
 
-- [ESTENDER (EXTEND)](/docs/commands#extend): Estender
+- [Comando EXTEND (ESTENDER) no AutoCAD](/docs/commands/extend)
 - [Comando OFFSET (DESLOCAMENTO) no AutoCAD](/docs/commands/offset)
-- [CONCORD (FILLET)](/docs/commands#fillet): Concordância
+- [Comando FILLET (CONCORD) no AutoCAD](/docs/commands/fillet)
 - [QUEBRAR (BREAK)](/docs/commands#break): Quebrar

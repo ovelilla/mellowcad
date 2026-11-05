@@ -1,0 +1,59 @@
+---
+title: "LAYER in AutoCAD"
+metaTitle: "LAYER in AutoCAD: Layer Properties Manager"
+description: "How AutoCAD's LAYER (LA) works: the Layer Properties Manager's columns, New, Delete and Set Current, and how On and Lock act on objects. Try it free online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for LAYER in AutoCAD?","answer":"LA, then Enter or Space; DDLMODES too, and _LAYER in any language of AutoCAD. It opens the Layer Properties Manager, and LAYERCLOSE closes it."},{"question":"How do I change an object's layer?","answer":"Select the object, then choose the layer in the Layers drop-down of the top bar: it moves there in one undo step, and the current layer stays as it was. The Properties palette's Layer row does the same. With nothing selected, the drop-down makes the layer chosen current."},{"question":"How do I delete a layer in AutoCAD?","answer":"Select it in the Layer Properties Manager and press Delete. Layer 0, the current layer and a layer that holds objects, in a block definition too, cannot be deleted: erase or move its objects and make another layer current first."},{"question":"What is the difference between turning a layer off and locking it?","answer":"A layer turned off hides its objects: they cannot be picked or snapped to, and leave the selection. A locked layer's objects stay in sight, faded, and can be snapped to and selected, but no command edits them: one given them counts them and leaves them out. Turning the current layer off asks first, as in AutoCAD."},{"question":"How do I create a new layer?","answer":"Press New in the Layer Properties Manager and type its name: the layer takes the colour, linetype and lineweight of the one selected, which you then change in its row. Set it current to draw on it."}]
+---
+
+LAYER opens the Layer Properties Manager, where a drawing's layers are made, named and set. As in AutoCAD it is a palette, not a dialog: it stays open while you draw, here as a tab of the palette panel, until `LAYERCLOSE` closes it, and typed with an apostrophe in front inside another command, it opens without ending that command. Every object is on a layer, and its colour, linetype and lineweight, when they are ByLayer, are the layer's. New objects go on the current layer.
+
+Each layer is a row, in AutoCAD's order of columns: Status, a check mark on the current layer, then Name, On, Lock, Color, Linetype and Lineweight, and how many objects it holds; the rows are sorted by name. New adds a layer with the selected layer's colour, linetype and lineweight, its name open for typing, and leaves the current layer as it is. Set Current, or a double-click on a row, makes a layer current. A click on the selected layer's name, or F2, renames it, and a name in use or with characters AutoCAD forbids is refused, as layer 0 is. Delete removes a layer, but never layer 0, the current layer or one holding objects: AutoCAD's Layer - Not Deleted dialog says which. Each change in the manager is a step U takes back, consecutive ones together.
+
+- **Command:** `LAYER`
+- **Aliases:** `LA`, `DDLMODES`
+- **Panel:** [Organize](/docs/commands#organize)
+- **Try it:** [Open the editor](/draw), type `LA` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="layer" caption="Three layers, each made current before drawing on it: walls in white, a door in yellow, an axis in red with the Center linetype." />
+
+## What it does not do yet [#missing]
+
+-LAYER, LAYDEL and the Layers panel's other tools: Make Object's Layer Current, Match Layer, Layer Previous and the rest, and the On, Freeze and Lock icons in its drop-down. Layers cannot be frozen, and the manager has no Freeze, Plot, Transparency, Plot Style, New VP Freeze or Description columns, no reordering of the columns, no layer filters or tree and no settings dialog. Running LAYER is not an undo step of its own. A new layer is sorted at once, where AutoCAD shows it under the selected one until renamed, and layer 0's lineweight is 0.25 mm, not Default. LAYLOCKFADECTL cannot be typed: a locked layer's objects are always faded half way.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/properties.md#layers--layer--la--ddlmodes--layerclose--es-capa--ca--layer--ddlmodes--cerrarcapa--pt-br-camada--ca--layer--ddlmodes--fecharcamada)
+
+## Questions [#questions]
+
+### What is the shortcut for LAYER in AutoCAD?
+
+`LA`, then Enter or Space; `DDLMODES` too, and `_LAYER` in any language of AutoCAD. It opens the Layer Properties Manager, and `LAYERCLOSE` closes it.
+
+### How do I change an object's layer?
+
+Select the object, then choose the layer in the Layers drop-down of the top bar: it moves there in one undo step, and the current layer stays as it was. The Properties palette's Layer row does the same. With nothing selected, the drop-down makes the layer chosen current.
+
+### How do I delete a layer in AutoCAD?
+
+Select it in the Layer Properties Manager and press Delete. Layer 0, the current layer and a layer that holds objects, in a block definition too, cannot be deleted: erase or move its objects and make another layer current first.
+
+### What is the difference between turning a layer off and locking it?
+
+A layer turned off hides its objects: they cannot be picked or snapped to, and leave the selection. A locked layer's objects stay in sight, faded, and can be snapped to and selected, but no command edits them: one given them counts them and leaves them out. Turning the current layer off asks first, as in AutoCAD.
+
+### How do I create a new layer?
+
+Press New in the Layer Properties Manager and type its name: the layer takes the colour, linetype and lineweight of the one selected, which you then change in its row. Set it current to draw on it.
+
+## Related commands [#related]
+
+- [PROPERTIES](/docs/commands#properties): Show the properties of the selected objects
+- [MATCHPROP](/docs/commands#matchprop): Match properties
+- [COLOR](/docs/commands#color): Color
+- [LINETYPE](/docs/commands#linetype): Linetype
+- [LWEIGHT](/docs/commands#lweight): Lineweight

@@ -1,0 +1,80 @@
+---
+title: "MTEXT in AutoCAD"
+metaTitle: "MTEXT in AutoCAD: multiline text, options, alias"
+description: "How AutoCAD's MTEXT (T) works, prompt by prompt: two corners or Width, Height, Justify and Line spacing, paragraphs wrapped in one object. Try it free online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for MTEXT in AutoCAD?","answer":"T or MT, then Enter or Space; _MTEXT in any language of AutoCAD. -MTEXT, -T, asks the same and takes the text at the command line."},{"question":"How do I start a new line in multiline text?","answer":"Press Enter: it starts a new paragraph. Within a paragraph the lines wrap by themselves at the box's width. Ctrl+Enter, or a click outside the frame, closes the editor and keeps the text."},{"question":"How do I change the width of multiline text?","answer":"Select it and drag the grip on its side: the text wraps again as the width changes, about its justification point. The Properties palette's Defined width does it by number, and its line space rows change the spacing."},{"question":"How do I convert MTEXT to single-line text?","answer":"EXPLODE it: each of its lines becomes a TEXT, left-justified where the line stood, as AutoCAD does. Double-click it instead to retype it in its editor."}]
+---
+
+MTEXT writes multiline text: one object holding paragraphs that wrap to a width. You pick a first corner and the opposite one, and the box between them sets the width; then you type in an editor drawn in place, where Enter starts a new paragraph and Ctrl+Enter, or a click outside the frame, keeps the text. Escape with something typed asks whether to save it, as AutoCAD's Unsaved Changes dialog does. For lines that are each an object of their own, use [`TEXT`](/docs/commands/text).
+
+The first line says the current style and height. Every option is asked at the opposite corner prompt and comes back to it, so a run sets the height, the justification and the rest before the box is closed. Words wrap where a line would pass the width, and a word longer than the width runs past it. The height is shared with [`TEXT`](/docs/commands/text) and kept in the drawing; the justification, the rotation and the line spacing start from their defaults at every run. `-MTEXT` asks the same, then takes the text at the command line, a line at a time.
+
+- **Command:** `MTEXT`
+- **Aliases:** `T`, `MT`
+- **Panel:** [Annotate](/docs/commands#annotate)
+- **Try it:** [Open the editor](/draw), type `T` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="mtext" caption="A note in a box: the height set first, then the opposite corner, and one paragraph wrapped to the width between them." />
+
+## Options [#options]
+
+### `Height` (`H`) [#height]
+
+Sets the text height, typed or as the distance from the first corner to a point; it must be more than zero. It stays for the next run, and for [`TEXT`](/docs/commands/text).
+
+### `Justify` (`J`) [#justify]
+
+Sets which of the box's nine points the text hangs from: top left by default, or top, middle and bottom by left, centre and right, as the prompt lists them. The text hangs from that point of the box, whichever way the box was dragged.
+
+### `Line spacing` (`L`) [#line-spacing]
+
+Asks for the type, at least (the default), which makes room for a line with taller letters, or exactly, then for a factor written with an x, as `2x`, or a distance. Single spacing is 1x, and the factor goes from 0.25x to 4x.
+
+### `Rotation` (`R`) [#rotation]
+
+Turns the box and its text, by an angle typed or pointed from the first corner.
+
+### `Style` (`S`) [#style]
+
+Makes a text style current, by name; `?` lists the drawing's styles, and a name it does not have is refused. Styles are made in the palette that `STYLE` opens.
+
+### `Width` (`W`) [#width]
+
+Asks for the width instead of the opposite corner, typed or as the distance to a point, then opens the editor. A width of 0, or Enter, leaves the lines unwrapped, each as long as typed.
+
+## What it does not do yet [#missing]
+
+Columns, which AutoCAD 2027 lists at the opposite corner prompt, are not offered. Formatting within the text, such as a word's height, font or colour, stacked fractions or underline, is not drawn or applied, and the editor has no ruler, tabs, indents, lists or Text Editor ribbon tab, nor a caret on the drawing. There is no background mask or text frame, no defined height, no annotative scaling and no Node snap on its corners, and a click inside its box picks it even off its letters, where AutoCAD picks nothing.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#mtext--t--mt---mtext---t--es-textom--txm--mtext---textom---txm--pt-br-textom--t--txm---textom---t)
+
+## Questions [#questions]
+
+### What is the shortcut for MTEXT in AutoCAD?
+
+`T` or `MT`, then Enter or Space; `_MTEXT` in any language of AutoCAD. `-MTEXT`, `-T`, asks the same and takes the text at the command line.
+
+### How do I start a new line in multiline text?
+
+Press Enter: it starts a new paragraph. Within a paragraph the lines wrap by themselves at the box's width. Ctrl+Enter, or a click outside the frame, closes the editor and keeps the text.
+
+### How do I change the width of multiline text?
+
+Select it and drag the grip on its side: the text wraps again as the width changes, about its justification point. The Properties palette's Defined width does it by number, and its line space rows change the spacing.
+
+### How do I convert MTEXT to single-line text?
+
+`EXPLODE` it: each of its lines becomes a [`TEXT`](/docs/commands/text), left-justified where the line stood, as AutoCAD does. Double-click it instead to retype it in its editor.
+
+## Related commands [#related]
+
+- [TEXT in AutoCAD](/docs/commands/text)
+- [TEXTEDIT](/docs/commands#textedit): Edit text
+- [STYLE](/docs/commands#style): Create and modify text styles
+- [EXPLODE](/docs/commands#explode): Explode

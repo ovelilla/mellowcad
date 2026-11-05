@@ -1,0 +1,75 @@
+---
+title: "Sombreado en AutoCAD: SOMBREA (HATCH)"
+metaTitle: "Sombreado en AutoCAD: comando SOMBREA (HATCH)"
+description: "Cómo funciona SOMBREA (HATCH, alias SB) de AutoCAD en español: punto interno u objetos, patrón, escala, ángulo e islas. Pruébalo gratis online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando HATCH en español?","answer":"SOMBREA, con los alias SB y SMB (en AutoCAD en español, H es H, deshacer). Como allí, el nombre inglés también funciona con un guion bajo delante: _HATCH. Sin la ficha Creación de sombreado, pregunta en la línea de comandos, como -SOMBREA."},{"question":"¿Por qué no funciona el sombreado?","answer":"Casi siempre porque el área no está cerrada: dice «No se ha encontrado un contorno de sombreado válido.», y basta el hueco más pequeño, porque nada lo salva. Cierra el contorno y vuelve a precisar el punto. Un área cerrada por una elipse o una spline todavía no se encuentra, y los objetos de una capa desactivada no se ven."},{"question":"¿Qué patrones de sombreado hay y puedo descargar más?","answer":"Una selección de acadiso.pat, el archivo de patrones métrico de AutoCAD: SOLID, ANGLE, de ANSI31 a ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL y ZIGZAG. ? en Propiedades los enumera. Todavía no se puede cargar un archivo de patrones propio o descargado."},{"question":"¿Cómo cambio la escala de un sombreado?","answer":"Antes de precisar el punto, en Propiedades: la escala va después del nombre del patrón. Una vez hecho, designa el sombreado y cambia Escala en la paleta Propiedades, o dale el patrón, la escala y el ángulo de otro con IGUALARPROP. Una escala tan pequeña que el patrón necesitaría demasiadas líneas dice «Intervalo de sombreado demasiado denso o trazo demasiado pequeño.» y no hace el sombreado."},{"question":"¿Cómo calculo el área de un sombreado?","answer":"Desígnalo y lee Área en Geometría, en la paleta Propiedades, sin sus islas; con varios designados, Área acumulada las suma. O ejecuta AREA, elige Objeto y designa el sombreado."}]
+---
+
+SOMBREA (HATCH en inglés) rellena un área cerrada con un patrón de líneas, o sólido. Precisa un punto dentro del área y encuentra el contorno en los objetos que la rodean, dejando libre como isla lo que hay dentro —un círculo en un rectángulo, un texto—; o designa los objetos que la delimitan. Señala tantas áreas como quieras: Intro, o Esc, hace un solo sombreado de todas, en la capa actual y detrás de su contorno. Todo el comando es un paso que Deshacer revierte.
+
+El SOMBREA de AutoCAD define su patrón en la ficha contextual Creación de sombreado o en un cuadro de diálogo, que MellowCAD no tiene: aquí pregunta en la línea de comandos lo mismo que `-SOMBREA`, con el patrón en `Propiedades`. Solo se diferencian en Esc, que en `-SOMBREA` descarta las áreas. Cada sombreado empieza con el patrón, la escala y el ángulo que se dieron al anterior: ANGLE, a escala 1 y ángulo 0, en un dibujo nuevo.
+
+- **Comando:** `SOMBREA`
+- **En inglés:** `HATCH`, que se escribe `_HATCH` en cualquier idioma
+- **Alias:** `SB`, `SMB`, `-SMB`
+- **Grupo:** [Dibujo](/docs/commands#draw)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `SB` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="hatch" caption="Un rectángulo con un círculo dentro, sombreado con ANSI31 desde un punto interno: el círculo queda libre, como isla." />
+
+## Opciones [#options]
+
+### `Propiedades` (`P`) [#properties]
+
+Pide el nombre del patrón, en mayúsculas o en minúsculas, ofreciendo el actual: `Sólido` rellena el área, y `?` enumera los patrones con sus descripciones y vuelve al punto. Para un patrón, pide después la escala —un número mayor que 0, o dos puntos medidos— y el ángulo, escrito o con dos puntos. El siguiente sombreado conserva los tres.
+
+<Session name="hatchPatterns" caption="SOLID y once patrones de acadiso.pat, cada uno sombreado en un cuadrado de 30 de lado a escala 1, y AR-CONC y AR-SAND a 0.08 y 0.1." />
+
+### `Designar objetos` (`D`) [#select-objects]
+
+En lugar de un punto interno, designa los objetos que delimitan el área; Intro vuelve al punto. Un objeto que no cierra ningún área se deja fuera; cuando ninguno delimita una, Intro dice `Imposible sombrear el contorno.` y no hace nada. Una región da su contorno, y sus huecos como islas.
+
+### `desHacer` (`H`) [#undo]
+
+No aparece en la solicitud, pero se acepta en ella: deshace las áreas del último punto señalado y vuelve a preguntar, sin tocar los objetos designados. Dice `Ningún contorno por deshacer.` cuando no queda ningún punto que deshacer.
+
+## Lo que aún no hace [#missing]
+
+Elipses y splines como contorno: un área que cierran no se encuentra, y una región con una arista así se deja fuera. Tolerancia de huecos (HPGAPTOL): el área tiene que estar cerrada del todo. Sombreados asociativos, los estilos de isla Normal e Ignorar, degradados, patrones definidos por el usuario y el resto de patrones de acadiso.pat. Las demás opciones de `-SOMBREA`: dibujar un contorno, eliminar contornos, opciones avanzadas, orden de dibujo, origen, anotativo, color, capa y transparencia. La edición de sombreados (`_HATCHEDIT`) y su ficha contextual, que en AutoCAD abre un doble clic. MIRRHATCH 1: un sombreado reflejado con simetría conserva siempre el ángulo de su patrón. Los menús de los pinzamientos de un sombreado.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#hatch--h--bh--bhatch--hatch---h---bh---bhatch--es-sombrea--sb--smb---smb--sombrea--pt-br-hachura--hc--hachura---h)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando HATCH en español?
+
+SOMBREA, con los alias `SB` y `SMB` (en AutoCAD en español, `H` es `H`, deshacer). Como allí, el nombre inglés también funciona con un guion bajo delante: `_HATCH`. Sin la ficha Creación de sombreado, pregunta en la línea de comandos, como `-SOMBREA`.
+
+### ¿Por qué no funciona el sombreado?
+
+Casi siempre porque el área no está cerrada: dice `No se ha encontrado un contorno de sombreado válido.`, y basta el hueco más pequeño, porque nada lo salva. Cierra el contorno y vuelve a precisar el punto. Un área cerrada por una elipse o una spline todavía no se encuentra, y los objetos de una capa desactivada no se ven.
+
+### ¿Qué patrones de sombreado hay y puedo descargar más?
+
+Una selección de acadiso.pat, el archivo de patrones métrico de AutoCAD: SOLID, ANGLE, de ANSI31 a ANSI38, AR-CONC, AR-SAND, BRICK, CROSS, DASH, DOTS, EARTH, HONEY, LINE, NET, NET3, SQUARE, STEEL y ZIGZAG. `?` en `Propiedades` los enumera. Todavía no se puede cargar un archivo de patrones propio o descargado.
+
+### ¿Cómo cambio la escala de un sombreado?
+
+Antes de precisar el punto, en `Propiedades`: la escala va después del nombre del patrón. Una vez hecho, designa el sombreado y cambia Escala en la paleta Propiedades, o dale el patrón, la escala y el ángulo de otro con `IGUALARPROP`. Una escala tan pequeña que el patrón necesitaría demasiadas líneas dice `Intervalo de sombreado demasiado denso o trazo demasiado pequeño.` y no hace el sombreado.
+
+### ¿Cómo calculo el área de un sombreado?
+
+Desígnalo y lee Área en Geometría, en la paleta Propiedades, sin sus islas; con varios designados, Área acumulada las suma. O ejecuta `AREA`, elige `Objeto` y designa el sombreado.
+
+## Comandos relacionados [#related]
+
+- [AREA](/docs/commands#area): Área
+- [REGION](/docs/commands#region): Región
+- [IGUALARPROP (MATCHPROP)](/docs/commands#matchprop): Igualar propiedades
+- [DESCOMP (EXPLODE)](/docs/commands#explode): Descomponer

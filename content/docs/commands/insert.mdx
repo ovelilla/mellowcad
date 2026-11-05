@@ -1,0 +1,68 @@
+---
+title: "INSERT in AutoCAD"
+metaTitle: "INSERT in AutoCAD: how to insert a block"
+description: "How AutoCAD's INSERT (I) places a block: the Blocks palette, or -INSERT at the command line with scale, rotation and attributes. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for INSERT in AutoCAD?","answer":"I, then Enter or Space: it opens the Blocks palette, as AutoCAD 2027's does. -I is -INSERT, which asks at the command line. _INSERT works in any language of AutoCAD."},{"question":"How do I insert a block from the command line?","answer":"Type -I and the block's name, then pick the insertion point and answer the scale and the rotation, Enter keeping each default. ? at the name lists the blocks there are."},{"question":"How do I insert a block at a different scale?","answer":"Type the X scale factor after the insertion point, and Enter at the Y factor to keep them equal; or choose Scale before the point and type one factor for both. A negative factor mirrors the block."},{"question":"How do I insert a block from another drawing?","answer":"Not from its file: INSERT places only blocks defined in the drawing. Copy a reference of it instead (Ctrl+C), open the drawing you want it in and paste it (Ctrl+V): its block comes with it, unless that drawing already has a block of that name, whose definition is kept."}]
+---
+
+INSERT places a block defined in the drawing as a reference: one more copy of it, with a point, a scale and a rotation of its own, drawn from the one definition [`BLOCK`](/docs/commands/block) made. As AutoCAD 2027's INSERT does, it opens the Blocks palette, which shows the drawing's blocks; click one and the command line asks for its insertion point, the block dragged under the cursor, then its scale and rotation. The palette stays open, so one block after another is a click on each.
+
+`-INSERT` asks it all at the command line: the block's name (Enter takes the one offered: the last block inserted, or else the last defined), the insertion point, then the X scale factor, the Y scale factor (Enter takes X's) and the rotation angle. A negative factor reflects the block, and unequal ones stretch it: a circle in it is drawn as an ellipse. A block with attributes then asks each value by its prompt, offering its default. The block's objects on layer 0 take the reference's layer, the others keep theirs. Each insertion is one step that Undo takes back.
+
+- **Command:** `INSERT`
+- **Aliases:** `I`
+- **Panel:** [Organize](/docs/commands#organize)
+- **Try it:** [Open the editor](/draw), type `I` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="insert" caption="A chair made a block, then inserted twice at a table: turned 180 after its point, then 90 by Rotate before it." />
+
+## Options [#options]
+
+### `?` [#list]
+
+At the block's name: lists the blocks in the drawing, as [`BLOCK`](/docs/commands/block) does, and ends.
+
+### `Scale` (`S`) [#scale]
+
+At the insertion point: asks one factor for both axes, then asks for the point again, the block dragged at that size. After the point, the X and Y factors are not asked.
+
+### `Rotate` (`R`) [#rotate]
+
+At the insertion point: asks the angle, typed or between two points, then asks for the point again, the block dragged turned. After the point, the rotation is not asked.
+
+## What it does not do yet [#missing]
+
+Inserting another drawing file: only blocks defined in the drawing can be inserted, and a name it does not hold is refused. At the insertion point, Basepoint, X, Y, Z, Explode and Repeat; at the X scale, Corner and XYZ, and a point picked for the opposite corner. Under unequal X and Y factors, a text or an attribute is drawn at X's size instead of stretched, and a polyline's arc stays an arc; a negative X does not write a text backwards. ATTDIA 1, the Edit Attributes dialog at insertion, and ATTREQ 0. The Properties palette's Annotative, Block Unit and Unit factor. ByBlock: an object inside a block cannot take the reference's own colour, linetype or lineweight, as one drawn ByBlock does in AutoCAD.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#insert--i--insert---i--es-insert--in--insert---in--pt-br-inserir--i--inserirurl--inserird--inserir---i)
+
+## Questions [#questions]
+
+### What is the shortcut for INSERT in AutoCAD?
+
+`I`, then Enter or Space: it opens the Blocks palette, as AutoCAD 2027's does. `-I` is `-INSERT`, which asks at the command line. `_INSERT` works in any language of AutoCAD.
+
+### How do I insert a block from the command line?
+
+Type `-I` and the block's name, then pick the insertion point and answer the scale and the rotation, Enter keeping each default. `?` at the name lists the blocks there are.
+
+### How do I insert a block at a different scale?
+
+Type the X scale factor after the insertion point, and Enter at the Y factor to keep them equal; or choose `Scale` before the point and type one factor for both. A negative factor mirrors the block.
+
+### How do I insert a block from another drawing?
+
+Not from its file: INSERT places only blocks defined in the drawing. Copy a reference of it instead (Ctrl+C), open the drawing you want it in and paste it (Ctrl+V): its block comes with it, unless that drawing already has a block of that name, whose definition is kept.
+
+## Related commands [#related]
+
+- [BLOCK in AutoCAD](/docs/commands/block)
+- [BLOCKSPALETTE](/docs/commands#blockspalette): Show the blocks palette
+- [ATTEDIT](/docs/commands#attedit): Edit attributes
+- [EXPLODE](/docs/commands#explode): Explode

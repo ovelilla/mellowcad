@@ -1,0 +1,59 @@
+---
+title: "Desplazar en AutoCAD: DESPLAZA (MOVE)"
+metaTitle: "Desplazar en AutoCAD: comando DESPLAZA (MOVE)"
+description: "Cómo funciona DESPLAZA (MOVE, alias D) de AutoCAD en español, solicitud a solicitud: punto base y segundo punto, o un desplazamiento X,Y,Z. Pruébalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando MOVE en español?","answer":"DESPLAZA, con el alias D. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _MOVE."},{"question":"¿Cómo desplazo un objeto una distancia exacta?","answer":"Da el punto base y escribe el desplazamiento como segundo punto: 50,0 lo mueve 50 en X. Con la entrada dinámica activada, como al empezar, un punto después del primero es relativo a él, así que el historial lo escribe @50,0. O apunta el cursor hacia donde quieres ir, con Orto o el rastreo polar, y escribe solo la distancia."},{"question":"¿Cómo subo objetos en 3D?","answer":"Da al desplazamiento una Z: 0,0,5 como segundo punto, o como Desplazamiento, sube el conjunto 5. Un punto escrito sin Z queda a la elevación actual."},{"question":"¿Qué diferencia hay entre DESPLAZA y ESTIRA?","answer":"DESPLAZA mueve objetos enteros. ESTIRA mueve solo los extremos y vértices que quedan dentro de su ventana de captura, y estira los objetos a los que pertenecen."}]
+---
+
+DESPLAZA (MOVE en inglés) lleva los objetos que designas de un sitio a otro: los designas, das un punto base y después un segundo punto, y se mueven la distancia y en la dirección que van del primero al segundo. Nada más cambia en ellos. Como en AutoCAD, si había objetos designados antes del comando, son esos los que mueve; un punto se puede señalar, tomar con una referencia a objetos o escribir, y mientras eliges el segundo punto el conjunto sigue al cursor, con una línea desde el punto base. El desplazamiento es un paso que Deshacer revierte.
+
+- **Comando:** `DESPLAZA`
+- **En inglés:** `MOVE`, que se escribe `_MOVE` en cualquier idioma
+- **Alias:** `D`
+- **Grupo:** [Modificar](/docs/commands#modify)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `D` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="move" caption="Un círculo desplazado 50 a la derecha: designado, su centro como punto base y el segundo punto escrito." />
+
+## Opciones [#options]
+
+### `Desplazamiento` (`D`) [#displacement]
+
+Se elige en la solicitud del punto base, o con Intro en ella, que es la opción por defecto: pide el desplazamiento como un vector, `10,5` mueve 10 en X y 5 en Y, y propone el último que usó DESPLAZA en ese dibujo. En el segundo punto, Intro hace lo mismo con el punto base: sus coordenadas son el desplazamiento.
+
+## Lo que aún no hace [#missing]
+
+Dos de los modos de designación de AutoCAD en la solicitud de objetos, Grupo y Múltiple, y designar con Ctrl las caras, aristas o vértices de un sólido para darle otra forma. Mientras el conjunto sigue al cursor lleva el color de cada objeto, pero no su tipo de línea ni su grosor de línea, y los objetos de una referencia a bloque llevan todos el color de la referencia.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#move--m--es-desplaza--d--pt-br-mover--m)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando MOVE en español?
+
+DESPLAZA, con el alias `D`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_MOVE`.
+
+### ¿Cómo desplazo un objeto una distancia exacta?
+
+Da el punto base y escribe el desplazamiento como segundo punto: `50,0` lo mueve 50 en X. Con la entrada dinámica activada, como al empezar, un punto después del primero es relativo a él, así que el historial lo escribe `@50,0`. O apunta el cursor hacia donde quieres ir, con Orto o el rastreo polar, y escribe solo la distancia.
+
+### ¿Cómo subo objetos en 3D?
+
+Da al desplazamiento una Z: `0,0,5` como segundo punto, o como `Desplazamiento`, sube el conjunto 5. Un punto escrito sin Z queda a la elevación actual.
+
+### ¿Qué diferencia hay entre DESPLAZA y ESTIRA?
+
+DESPLAZA mueve objetos enteros. `ESTIRA` mueve solo los extremos y vértices que quedan dentro de su ventana de captura, y estira los objetos a los que pertenecen.
+
+## Comandos relacionados [#related]
+
+- [Copiar en AutoCAD: COPIA (COPY)](/docs/commands/copy)
+- [Girar en AutoCAD: GIRA (ROTATE)](/docs/commands/rotate)
+- [ESTIRA (STRETCH)](/docs/commands#stretch): Estirar
+- [Escalar en AutoCAD: ESCALA (SCALE)](/docs/commands/scale)

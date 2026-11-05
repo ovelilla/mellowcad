@@ -1,0 +1,65 @@
+---
+title: "Cota contínua no AutoCAD: COTASERIE (DIMCONTINUE)"
+metaTitle: "Comando cota contínua no AutoCAD: COTASERIE"
+description: "Como funciona o DIMCONTINUE do AutoCAD em português, COTASERIE (atalho CSE): cotas em série a partir da última, Selecionar e Desfazer. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando DIMCONTINUE no AutoCAD em português?","answer":"COTASERIE, com os aliases CSE e DIMCONT. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _DIMCONTINUE."},{"question":"Qual a diferença entre cota contínua e cota de linha de base?","answer":"O COTASERIE põe as cotas uma depois da outra numa linha, cada uma a partir de onde a anterior terminou. O COTALINBASE mede todas a partir da mesma linha de extensão, cada uma numa linha mais afastada."},{"question":"Como continuar a partir de uma cota que não é a última?","answer":"Pressione Enter no primeiro prompt, ou escolha Selecionar, e selecione a cota perto da linha de extensão de onde seguir: a série cresce a partir dali."},{"question":"Por que o COTASERIE pede para selecionar uma cota?","answer":"Porque não há cota para continuar: nenhuma cota linear ou alinhada foi feita desde que o desenho foi aberto, como no AutoCAD ao abrir um, ou a última feita é angular. Selecione a cota a partir da qual continuar."}]
+---
+
+O DIMCONTINUE, COTASERIE no AutoCAD em português, desenha uma série de cotas uma depois da outra: cada uma começa na segunda linha de extensão da anterior e mede até o próximo ponto que você especifica, na mesma linha de cota. Ele continua a última cota linear ou alinhada feita desde que o desenho foi aberto, por isso costuma vir depois do [`COTALINEAR`](/docs/commands/dimlinear) ou do [`COTAALIN`](/docs/commands/dimaligned); sem nenhuma, pergunta qual continuar. A linha de comando diz cada medida assim que ela é feita. Enter no prompt da origem escolhe `Selecionar`, e Enter ali encerra o comando, como Esc.
+
+Como no AutoCAD, cada cota nova mede na direção da sua base e recebe o estilo de cota e a camada da base, com a cor, o tipo de linha e a espessura de linha atuais.
+
+- **Comando:** `COTASERIE`
+- **Em inglês:** `DIMCONTINUE`, que se digita `_DIMCONTINUE` em qualquer idioma
+- **Aliases:** `CSE`, `DIMCONT`
+- **Painel:** [Anotação](/docs/commands#annotate)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `CSE` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="dimcontinue" caption="Um perfil em degraus cotado 30 e continuado 40 e 30 na mesma linha: duas origens e depois Enter duas vezes." />
+
+## Opções [#options]
+
+### `Selecionar` (`S`) [#select]
+
+Pede a cota a partir da qual continuar: selecione uma linear ou alinhada perto da linha de extensão de onde seguir. Um ponto digitado ali também seleciona. Uma cota de raio ou de diâmetro é recusada com `Cotas associativas lineares, ordenadas ou angulares são necessárias.`, e a pergunta volta.
+
+### `Desfazer` (`D`) [#undo]
+
+Desfaz a última cota da série e segue a partir da anterior, tantas vezes quantas cotas houver. Quando não resta nenhuma, responde `O comando foi desfeito completamente.` e o prompt continua.
+
+## O que ainda não faz [#missing]
+
+Uma cota não é associativa: a série não acompanha os objetos que mede. Uma cota angular não pode ser continuada: o AutoCAD continua a que foi feita por último ou a selecionada; aqui, se for a última, o comando pede uma cota, e se for selecionada, é recusada como uma de raio. As cotas de coordenada ainda não existem.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimcontinue--dco--es-acocontinua--acocont--pt-br-cotaserie--cse--dimcont)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando DIMCONTINUE no AutoCAD em português?
+
+COTASERIE, com os aliases `CSE` e `DIMCONT`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_DIMCONTINUE`.
+
+### Qual a diferença entre cota contínua e cota de linha de base?
+
+O COTASERIE põe as cotas uma depois da outra numa linha, cada uma a partir de onde a anterior terminou. O [`COTALINBASE`](/docs/commands/dimbaseline) mede todas a partir da mesma linha de extensão, cada uma numa linha mais afastada.
+
+### Como continuar a partir de uma cota que não é a última?
+
+Pressione Enter no primeiro prompt, ou escolha `Selecionar`, e selecione a cota perto da linha de extensão de onde seguir: a série cresce a partir dali.
+
+### Por que o COTASERIE pede para selecionar uma cota?
+
+Porque não há cota para continuar: nenhuma cota linear ou alinhada foi feita desde que o desenho foi aberto, como no AutoCAD ao abrir um, ou a última feita é angular. Selecione a cota a partir da qual continuar.
+
+## Comandos relacionados [#related]
+
+- [Comando DIMBASELINE (COTALINBASE) no AutoCAD](/docs/commands/dimbaseline)
+- [Cotas no AutoCAD: comando COTALINEAR (DIMLINEAR)](/docs/commands/dimlinear)
+- [ESPACOCOTA (DIMSPACE)](/docs/commands#dimspace): Ajustar espaço
+- [Comando DIMALIGNED (COTAALIN) no AutoCAD](/docs/commands/dimaligned)

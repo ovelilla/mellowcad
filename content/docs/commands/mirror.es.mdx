@@ -1,0 +1,63 @@
+---
+title: "Simetría en AutoCAD: comando SIMETRIA (MIRROR)"
+metaTitle: "Simetría en AutoCAD: comando SIMETRIA (MIRROR)"
+description: "Cómo funciona SIMETRIA (MIRROR, alias SI) de AutoCAD en español, solicitud a solicitud: dos puntos de la línea de simetría y borrar o no el origen. Pruébalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando MIRROR en español?","answer":"SIMETRIA, con el alias SI. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _MIRROR."},{"question":"¿Cómo hago una simetría sin que el texto quede al revés?","answer":"No tienes que hacer nada: como en AutoCAD con MIRRTEXT a 0, un texto reflejado se sigue leyendo con normalidad, colocado donde cae el reflejo de su recuadro."},{"question":"¿Cómo hago una simetría y borro el original?","answer":"Responde Sí cuando SIMETRIA pregunta si se borran los objetos de origen."},{"question":"¿Cómo hago una simetría horizontal o vertical?","answer":"Activa Orto (F8) y da los dos puntos de la línea de simetría a lo largo del eje respecto al que reflejas: una línea vertical voltea izquierda y derecha; una horizontal, arriba y abajo."}]
+---
+
+SIMETRIA (MIRROR en inglés) refleja los objetos que designas respecto a una línea: los designas, das el primer y el segundo punto de la línea de simetría y después dices si se borran los objetos de origen. El reflejo es una copia y, con la respuesta por defecto, No, los originales se quedan: así se dibuja por mitades una pieza simétrica. Los dos puntos se toman en la planta del SCP, de modo que una línea de simetría dibujada con Orto refleja en recto, en horizontal o en vertical. Como en AutoCAD con MIRRTEXT a 0, su valor por defecto, un texto se sigue leyendo de izquierda a derecha en el reflejo, y un sombreado conserva el ángulo de su patrón. La simetría es un paso que Deshacer revierte.
+
+- **Comando:** `SIMETRIA`
+- **En inglés:** `MIRROR`, que se escribe `_MIRROR` en cualquier idioma
+- **Alias:** `SI`
+- **Grupo:** [Modificar](/docs/commands#modify)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `SI` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="mirror" caption="Un contorno cerrado reflejado respecto a una línea de simetría vertical, conservando el origen." />
+
+## Opciones [#options]
+
+### `Sí` (`S`) [#yes]
+
+Borra los objetos de origen y solo queda el reflejo: un volteo en su sitio.
+
+### `No` (`N`) [#no]
+
+La respuesta por defecto: conserva los objetos de origen junto a su reflejo.
+
+## Lo que aún no hace [#missing]
+
+MIRRTEXT y MIRRHATCH se quedan en 0: un texto nunca se refleja para leerse al revés y un patrón de sombreado nunca se refleja. Un texto dentro de una referencia a bloque reflejada vuelve a leerse como uno suelto, mientras que AutoCAD lo refleja con el bloque. Una elipse reflejada conserva su normal, así que su ángulo inicial y su ángulo final se leen distintos de los de AutoCAD para la misma curva. Mientras el reflejo sigue al cursor lleva el color de cada objeto, no su tipo de línea ni su grosor de línea.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#mirror--mi--es-simetria--si--pt-br-espelhar--esp)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando MIRROR en español?
+
+SIMETRIA, con el alias `SI`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_MIRROR`.
+
+### ¿Cómo hago una simetría sin que el texto quede al revés?
+
+No tienes que hacer nada: como en AutoCAD con MIRRTEXT a 0, un texto reflejado se sigue leyendo con normalidad, colocado donde cae el reflejo de su recuadro.
+
+### ¿Cómo hago una simetría y borro el original?
+
+Responde `Sí` cuando SIMETRIA pregunta si se borran los objetos de origen.
+
+### ¿Cómo hago una simetría horizontal o vertical?
+
+Activa Orto (F8) y da los dos puntos de la línea de simetría a lo largo del eje respecto al que reflejas: una línea vertical voltea izquierda y derecha; una horizontal, arriba y abajo.
+
+## Comandos relacionados [#related]
+
+- [Copiar en AutoCAD: COPIA (COPY)](/docs/commands/copy)
+- [Girar en AutoCAD: GIRA (ROTATE)](/docs/commands/rotate)
+- [Desplazar en AutoCAD: DESPLAZA (MOVE)](/docs/commands/move)
+- [Matriz polar en AutoCAD: MATRIZPOLAR (ARRAYPOLAR)](/docs/commands/arraypolar)

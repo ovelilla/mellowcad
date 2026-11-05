@@ -1,0 +1,81 @@
+---
+title: "Comando MTEXT (TEXTOM) no AutoCAD"
+metaTitle: "Caixa de texto no AutoCAD: MTEXT (TEXTOM)"
+description: "O MTEXT do AutoCAD em português, TEXTOM (alias T): dois cantos ou Largura, Altura, Justificar e espaçamento de linha, parágrafos num objeto. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando MTEXT no AutoCAD em português?","answer":"TEXTOM, com os aliases T e TXM. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _MTEXT. O -TEXTOM, -T, pergunta o mesmo e recebe o texto na linha de comando."},{"question":"Como quebrar linha no texto multilinha?","answer":"Pressione Enter: começa um novo parágrafo. Dentro de um parágrafo, as linhas se ajustam sozinhas à largura da caixa. Ctrl+Enter, ou um clique fora do quadro, fecha o editor e mantém o texto."},{"question":"Como mudar a largura de um texto multilinha?","answer":"Selecione-o e arraste a alça do lado: o texto se ajusta de novo à largura, a partir do seu ponto de justificação. A linha Largura definida da paleta Propriedades faz o mesmo por número, e as linhas de espaçamento de linha mudam o espaçamento."},{"question":"Como explodir um texto multilinha no AutoCAD?","answer":"Use o EXPLODIR: cada linha dele vira um TEXTO, justificado à esquerda onde a linha estava, como no AutoCAD. Para redigitá-lo, em vez disso, clique duas vezes nele e o editor se abre."}]
+---
+
+O MTEXT, TEXTOM no AutoCAD em português, escreve texto multilinha: um só objeto com parágrafos que se ajustam a uma largura. Você especifica um primeiro canto e o oposto, e a caixa entre eles define a largura; depois digita num editor desenhado no lugar, onde Enter começa um novo parágrafo e Ctrl+Enter, ou um clique fora do quadro, mantém o texto. Esc com algo digitado pergunta se você quer salvá-lo, como a caixa de alterações não salvas do AutoCAD. Para linhas que sejam cada uma um objeto próprio, use o [`TEXTO`](/docs/commands/text).
+
+A primeira linha mostra o estilo e a altura atuais. Cada opção é pedida no prompt do canto oposto e volta a ele, então uma execução define a altura, a justificação e o resto antes de fechar a caixa. As palavras passam para a linha seguinte onde uma linha passaria da largura, e uma palavra mais longa que a largura fica para fora. A altura é compartilhada com o [`TEXTO`](/docs/commands/text) e fica guardada no desenho; a justificação, a rotação e o espaçamento de linha voltam ao padrão a cada execução. O `-TEXTOM` pergunta o mesmo e depois recebe o texto na linha de comando, uma linha por vez.
+
+- **Comando:** `TEXTOM`
+- **Em inglês:** `MTEXT`, que se digita `_MTEXT` em qualquer idioma
+- **Aliases:** `T`, `TXM`
+- **Painel:** [Anotação](/docs/commands#annotate)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `T` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="mtext" caption="Uma nota numa caixa: primeiro a altura, depois o canto oposto, e um parágrafo ajustado à largura entre eles." />
+
+## Opções [#options]
+
+### `Altura` (`A`) [#height]
+
+Define a altura do texto, digitada ou como a distância do primeiro canto até um ponto; precisa ser maior que zero. Fica para a próxima execução e para o [`TEXTO`](/docs/commands/text).
+
+### `Justificar` (`J`) [#justify]
+
+Define de qual dos nove pontos da caixa o texto fica pendurado: superior esquerdo por padrão, ou superior, meio e inferior por esquerda, centro e direita, como o prompt os lista. O texto fica preso a esse ponto da caixa, seja qual for o sentido em que a caixa foi arrastada.
+
+### `Espaçamento de linha` (`E`) [#line-spacing]
+
+Pede o tipo, pelo menos (o padrão), que abre espaço para uma linha com letras mais altas, ou exatamente, e depois um fator escrito com x, como `2x`, ou uma distância. O espaçamento simples é 1x, e o fator vai de 0.25x a 4x.
+
+### `Rotação` (`R`) [#rotation]
+
+Gira a caixa e o seu texto, por um ângulo digitado ou indicado a partir do primeiro canto.
+
+### `eStilo` (`S`) [#style]
+
+Torna atual um estilo de texto, pelo nome; `?` lista os estilos do desenho, e um nome que o desenho não tem é recusado. Os estilos são criados na paleta que o `ESTILO` abre.
+
+### `Largura` (`L`) [#width]
+
+Pede a largura em vez do canto oposto, digitada ou como a distância até um ponto, e depois abre o editor. Uma largura 0, ou Enter, deixa as linhas sem ajuste, cada uma do tamanho em que foi digitada.
+
+## O que ainda não faz [#missing]
+
+As colunas, que o AutoCAD 2027 lista no prompt do canto oposto, não são oferecidas. A formatação dentro do texto, como a altura, a fonte ou a cor de uma palavra, frações empilhadas ou sublinhado, não é desenhada nem aplicada, e o editor não tem régua, tabulações, recuos, listas nem a guia Editor de texto da faixa de opções, nem um cursor sobre o desenho. Não há máscara de fundo nem quadro de texto, altura definida, escala anotativa ou snap ao objeto Nó nos seus cantos, e um clique dentro da sua caixa o seleciona mesmo fora das letras, onde o AutoCAD não seleciona nada.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#mtext--t--mt---mtext---t--es-textom--txm--mtext---textom---txm--pt-br-textom--t--txm---textom---t)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando MTEXT no AutoCAD em português?
+
+TEXTOM, com os aliases `T` e `TXM`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_MTEXT`. O `-TEXTOM`, `-T`, pergunta o mesmo e recebe o texto na linha de comando.
+
+### Como quebrar linha no texto multilinha?
+
+Pressione Enter: começa um novo parágrafo. Dentro de um parágrafo, as linhas se ajustam sozinhas à largura da caixa. Ctrl+Enter, ou um clique fora do quadro, fecha o editor e mantém o texto.
+
+### Como mudar a largura de um texto multilinha?
+
+Selecione-o e arraste a alça do lado: o texto se ajusta de novo à largura, a partir do seu ponto de justificação. A linha Largura definida da paleta Propriedades faz o mesmo por número, e as linhas de espaçamento de linha mudam o espaçamento.
+
+### Como explodir um texto multilinha no AutoCAD?
+
+Use o `EXPLODIR`: cada linha dele vira um [`TEXTO`](/docs/commands/text), justificado à esquerda onde a linha estava, como no AutoCAD. Para redigitá-lo, em vez disso, clique duas vezes nele e o editor se abre.
+
+## Comandos relacionados [#related]
+
+- [Comando TEXT (TEXTO) no AutoCAD](/docs/commands/text)
+- [EDITARTEXTO (TEXTEDIT)](/docs/commands#textedit): Editar texto
+- [ESTILO (STYLE)](/docs/commands#style): Cria e modifica estilos de texto
+- [EXPLODIR (EXPLODE)](/docs/commands#explode): Explodir

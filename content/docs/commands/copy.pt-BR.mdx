@@ -1,0 +1,66 @@
+---
+title: "Comando COPY (COPIAR) no AutoCAD"
+description: "Como funciona o COPY do AutoCAD em português, COPIAR (aliases CO e CP), prompt a prompt: um ponto base e quantas cópias você colocar. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando COPY no AutoCAD em português?","answer":"COPIAR, com os aliases CO e CP. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _COPY."},{"question":"Como fazer várias cópias de uma vez?","answer":"Continue colocando: cada ponto que você dá é mais uma cópia a partir do mesmo ponto base, até o Enter. Para cópias em linhas, colunas ou em volta de um centro, o MATRIZ as faz de uma vez."},{"question":"Como copiar um objeto a uma distância exata?","answer":"Dê o ponto base e digite o segundo ponto como a distância: 30,0 o copia 30 em X, porque a entrada dinâmica lê a partir do primeiro um ponto que vem depois. Ou aponte o cursor para onde quer ir, com Orto ou o rastreamento polar, e digite só a distância."},{"question":"Por que o COPY não tem a opção Matriz?","answer":"O MellowCAD ainda não a oferece. Para uma fileira de cópias equidistantes, o MATRIZRETANG com uma linha faz o mesmo e as mantém como uma matriz editável."}]
+---
+
+O COPY, COPIAR no AutoCAD em português, coloca cópias dos objetos que você seleciona: você os seleciona, dá um ponto base e depois um segundo ponto para cada cópia. Como no AutoCAD, cujo modo de cópia é Múltiplo por padrão, ele continua pedindo mais uma até você pressionar Enter ou escolher Sair, cada cópia medida a partir do mesmo ponto base. As cópias mantêm a camada, a cor e todas as outras propriedades dos objetos. Se havia objetos selecionados antes do comando, são eles que ele copia, e enquanto você coloca uma cópia o conjunto acompanha o cursor.
+
+- **Comando:** `COPIAR`
+- **Em inglês:** `COPY`, que se digita `_COPY` em qualquer idioma
+- **Aliases:** `CO`, `CP`
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `CO` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="copy" caption="Um círculo copiado três vezes em X a partir do mesmo ponto base, e depois Enter." />
+
+## Opções [#options]
+
+### `Descolamento` (`D`) [#displacement]
+
+Escolhido no prompt do ponto base, ou com Enter nele: pede um deslocamento como vetor, `30,0` coloca uma cópia 30 em X, e encerra. Propõe o último que o COPIAR usou naquele desenho.
+
+### `Sair` (`S`) [#exit]
+
+Encerra o comando, como o Enter depois de colocada uma cópia.
+
+### `Desfazer` (`D`) [#undo]
+
+Desfaz a última cópia colocada. Desfazer a primeira diz `O comando foi desfeito completamente.` e volta a pedir o segundo ponto.
+
+## O que ainda não faz [#missing]
+
+O modo Único do COPYMODE (copiar uma vez e encerrar) não é oferecido: o COPIAR é sempre Múltiplo, então o prompt do ponto base só lista `Deslocamento`. A opção Matriz do segundo ponto, a fileira de cópias equidistantes do AutoCAD, também não é oferecida.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#copy--co--es-copia--cp--dup--pt-br-copiar--co--cp)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando COPY no AutoCAD em português?
+
+COPIAR, com os aliases `CO` e `CP`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_COPY`.
+
+### Como fazer várias cópias de uma vez?
+
+Continue colocando: cada ponto que você dá é mais uma cópia a partir do mesmo ponto base, até o Enter. Para cópias em linhas, colunas ou em volta de um centro, o [`MATRIZ`](/docs/commands/array) as faz de uma vez.
+
+### Como copiar um objeto a uma distância exata?
+
+Dê o ponto base e digite o segundo ponto como a distância: `30,0` o copia 30 em X, porque a entrada dinâmica lê a partir do primeiro um ponto que vem depois. Ou aponte o cursor para onde quer ir, com Orto ou o rastreamento polar, e digite só a distância.
+
+### Por que o COPY não tem a opção Matriz?
+
+O MellowCAD ainda não a oferece. Para uma fileira de cópias equidistantes, o [`MATRIZRETANG`](/docs/commands/arrayrect) com uma linha faz o mesmo e as mantém como uma matriz editável.
+
+## Comandos relacionados [#related]
+
+- [Comando MOVE (MOVER) no AutoCAD](/docs/commands/move)
+- [Comando ARRAY (MATRIZ) no AutoCAD](/docs/commands/array)
+- [Comando OFFSET (DESLOCAMENTO) no AutoCAD](/docs/commands/offset)
+- [Comando MIRROR (ESPELHAR) no AutoCAD](/docs/commands/mirror)

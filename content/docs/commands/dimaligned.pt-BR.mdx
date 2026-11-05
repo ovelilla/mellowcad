@@ -1,0 +1,63 @@
+---
+title: "Comando DIMALIGNED (COTAALIN) no AutoCAD"
+metaTitle: "Cota alinhada no AutoCAD: DIMALIGNED (COTAALIN)"
+description: "Como funciona o DIMALIGNED do AutoCAD em português, COTAALIN (atalho COA): cotar um lado inclinado com duas origens ou um objeto. Experimente grátis online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando DIMALIGNED no AutoCAD em português?","answer":"COTAALIN, com os aliases COA e DIMALI. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _DIMALIGNED."},{"question":"Qual a diferença entre cota linear e cota alinhada?","answer":"Num lado inclinado, o COTALINEAR dá a largura ou a altura dele, conforme a linha de cota seja horizontal ou vertical; o COTAALIN dá o comprimento, com a linha paralela ao lado. Num lado em X ou em Y, os dois dão o mesmo número."},{"question":"Como cotar uma linha inclinada no AutoCAD?","answer":"Com o COTAALIN: pressione Enter no primeiro prompt, selecione a linha e coloque a cota do lado que quiser. Ou indique as duas pontas com o snap ao objeto Ponto final, para que as origens fiquem exatas."},{"question":"Como escrever o meu próprio texto numa cota?","answer":"Escolha Texto antes de colocá-la e digite o texto: <> representa a medida, então “<> mm” a escreve seguida da unidade, e Enter sem digitar nada deixa só a medida. Depois de colocada, quem a muda é Sobrepor texto, na paleta Propriedades."}]
+---
+
+O DIMALIGNED, COTAALIN no AutoCAD em português, mede a distância real entre dois pontos: a linha de cota fica paralela à linha que os une, seja qual for o ângulo, enquanto o [`COTALINEAR`](/docs/commands/dimlinear) só mede em X ou em Y. Os prompts são os do [`COTALINEAR`](/docs/commands/dimlinear): a origem da primeira e da segunda linha de extensão, ou Enter e a seleção de uma linha, um arco ou um segmento de polilinha para usar as duas pontas, e depois a localização da linha de cota, de um lado ou do outro. Um círculo selecionado dá o diâmetro que passa pelo ponto onde foi selecionado. A linha de comando diz a medida, e o comando termina.
+
+- **Comando:** `COTAALIN`
+- **Em inglês:** `DIMALIGNED`, que se digita `_DIMALIGNED` em qualquer idioma
+- **Aliases:** `COA`, `DIMALI`
+- **Painel:** [Anotação](/docs/commands#annotate)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `COA` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="dimaligned" caption="O lado inclinado de um triângulo cotado no seu comprimento: as duas pontas e depois onde vai a linha." />
+
+## Opções [#options]
+
+### `Texto` (`T`) [#text]
+
+Pede o texto a escrever no lugar da medida, que ele oferece como padrão: Enter mantém a medida. No que você digita, `<>` representa a medida.
+
+### `âNgulo` (`N`) [#angle]
+
+Pede o ângulo do texto, que passa a ser desenhado nesse ângulo em vez de ao longo da linha de cota. 0 o devolve à linha.
+
+## O que ainda não faz [#missing]
+
+A opção de texto multilinha: o texto de uma cota é uma linha só, definida com `Texto` na linha de comando, nunca no editor de texto. Com um ângulo definido em `âNgulo`, o AutoCAD centraliza o texto sobre a linha de cota; aqui ele fica acima dela, como sem ângulo. Uma cota não é associativa: ela não acompanha o objeto que mede.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimaligned--dal--es-acoalineada--acoali--pt-br-cotaalin--coa--dimali)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando DIMALIGNED no AutoCAD em português?
+
+COTAALIN, com os aliases `COA` e `DIMALI`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_DIMALIGNED`.
+
+### Qual a diferença entre cota linear e cota alinhada?
+
+Num lado inclinado, o [`COTALINEAR`](/docs/commands/dimlinear) dá a largura ou a altura dele, conforme a linha de cota seja horizontal ou vertical; o COTAALIN dá o comprimento, com a linha paralela ao lado. Num lado em X ou em Y, os dois dão o mesmo número.
+
+### Como cotar uma linha inclinada no AutoCAD?
+
+Com o COTAALIN: pressione Enter no primeiro prompt, selecione a linha e coloque a cota do lado que quiser. Ou indique as duas pontas com o snap ao objeto Ponto final, para que as origens fiquem exatas.
+
+### Como escrever o meu próprio texto numa cota?
+
+Escolha `Texto` antes de colocá-la e digite o texto: `<>` representa a medida, então `<> mm` a escreve seguida da unidade, e Enter sem digitar nada deixa só a medida. Depois de colocada, quem a muda é Sobrepor texto, na paleta Propriedades.
+
+## Comandos relacionados [#related]
+
+- [Cotas no AutoCAD: comando COTALINEAR (DIMLINEAR)](/docs/commands/dimlinear)
+- [Comando DIMANGULAR (COTAANG) no AutoCAD](/docs/commands/dimangular)
+- [Cota contínua no AutoCAD: COTASERIE (DIMCONTINUE)](/docs/commands/dimcontinue)
+- [Estilo de cota no AutoCAD: comando ESTILOCOTA (DIMSTYLE)](/docs/commands/dimstyle)

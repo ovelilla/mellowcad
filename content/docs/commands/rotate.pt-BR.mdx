@@ -1,0 +1,66 @@
+---
+title: "Comando ROTATE (ROTAC) no AutoCAD"
+description: "Como funciona o ROTATE do AutoCAD em português, ROTAC (alias RO), prompt a prompt: ponto base e ângulo, Cópia e Referência. Experimente grátis online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando ROTATE no AutoCAD em português?","answer":"ROTAC, com o alias RO. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _ROTATE."},{"question":"Como girar um objeto para alinhá-lo com outro?","answer":"Escolha Referência, indique dois pontos da aresta do objeto, escolha Pontos e indique dois pontos da linha com a qual ele deve ficar alinhado."},{"question":"Como girar um objeto e manter o original?","answer":"Escolha Cópia antes de dar o ângulo: a cópia gira e o original fica."},{"question":"Por que o ROTATE gira para o outro lado?","answer":"Um ângulo positivo gira no sentido anti-horário, como diz o ANGDIR na primeira linha. Digite um ângulo negativo, -30, para girar no sentido horário."}]
+---
+
+O ROTATE, ROTAC no AutoCAD em português, gira os objetos que você seleciona em torno de um ponto base: você os seleciona, dá o ponto base e depois o ângulo, digitado ou indicado como um ponto cuja direção a partir do ponto base é o ângulo. A primeira linha dele diz qual sentido é positivo, o anti-horário por padrão (ANGDIR), e onde fica o 0 (ANGBASE). Enter no ângulo repete a última rotação, 0 num desenho novo. Os objetos giram em torno de um eixo paralelo ao Z do UCS que passa pelo ponto base, então em 3D eles mantêm a altura. A rotação é um passo que o Desfazer reverte.
+
+- **Comando:** `ROTAC`
+- **Em inglês:** `ROTATE`, que se digita `_ROTATE` em qualquer idioma
+- **Aliases:** `RO`
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `RO` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="rotate" caption="Um retângulo girado 30° em torno do canto com Cópia: o original fica." />
+
+## Opções [#options]
+
+### `Cópia` (`C`) [#copy]
+
+Gira uma cópia e deixa os objetos onde estavam, dizendo `Rotacionando uma cópia dos objetos selecionados.`. Depois pede o ângulo de novo.
+
+### `Referência` (`R`) [#reference]
+
+Gira de um ângulo que você tem para o que você quer: pede o ângulo de referência (digitado, ou dois pontos que o medem) e depois o novo ângulo, e gira a diferença. Para deixar horizontal uma aresta inclinada, indique as duas pontas dela como referência e digite 0.
+
+### `Pontos` (`P`) [#points]
+
+No novo ângulo da Referência: o novo ângulo é o de uma linha entre dois pontos que você indica, então os objetos se alinham com uma aresta já desenhada.
+
+## O que ainda não faz [#missing]
+
+Enquanto você dá o ângulo, o conjunto girado acompanha o cursor com a cor de cada objeto, mas não com o tipo de linha nem a espessura de linha.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#rotate--ro--es-gira--gi--pt-br-rotac--ro)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando ROTATE no AutoCAD em português?
+
+ROTAC, com o alias `RO`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_ROTATE`.
+
+### Como girar um objeto para alinhá-lo com outro?
+
+Escolha `Referência`, indique dois pontos da aresta do objeto, escolha `Pontos` e indique dois pontos da linha com a qual ele deve ficar alinhado.
+
+### Como girar um objeto e manter o original?
+
+Escolha `Cópia` antes de dar o ângulo: a cópia gira e o original fica.
+
+### Por que o ROTATE gira para o outro lado?
+
+Um ângulo positivo gira no sentido anti-horário, como diz o ANGDIR na primeira linha. Digite um ângulo negativo, `-30`, para girar no sentido horário.
+
+## Comandos relacionados [#related]
+
+- [Comando MOVE (MOVER) no AutoCAD](/docs/commands/move)
+- [Comando COPY (COPIAR) no AutoCAD](/docs/commands/copy)
+- [Comando MIRROR (ESPELHAR) no AutoCAD](/docs/commands/mirror)
+- [Escala no AutoCAD: comando ESCALA (SCALE)](/docs/commands/scale)

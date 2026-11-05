@@ -1,0 +1,42 @@
+---
+title: "MIRROR in AutoCAD"
+metaTitle: "MIRROR in AutoCAD: command, options and alias"
+description: "How AutoCAD's MIRROR (MI) works, prompt by prompt: select, two points of the mirror line, then keep or erase the source. Text keeps reading. Try it free online."
+figure: "A closed outline reflected about a vertical mirror line, the source kept."
+related: ["COPY", "ROTATE", "MOVE", "ARRAYPOLAR"]
+coverage: "d07ede7adae4"
+---
+
+MIRROR reflects the objects you select about a line: select them, give the first and the second point of the mirror line, then say whether to erase the source objects. The reflection is a copy, and with the default, No, the originals stay, which is how a symmetric part is drawn by halves. The two points are taken in the plan of the UCS, so a mirror line drawn with Ortho on reflects straight across, horizontally or vertically. As in AutoCAD with MIRRTEXT at 0, its default, a text keeps reading left to right in the reflection, and a hatch keeps its pattern's angle. The run is one step that Undo takes back.
+
+## Options
+
+### Yes
+
+Erases the source objects, so only the reflection is left: a flip in place.
+
+### No
+
+The default: keeps the source objects beside their reflection.
+
+## Missing
+
+MIRRTEXT and MIRRHATCH stay at 0: text is never mirrored to read backwards, and a hatch pattern is never reflected. A text inside a mirrored block reference turns back to read as a loose one does, where AutoCAD mirrors it with the block. A mirrored ellipse keeps its normal, so its Start angle and End angle read otherwise than AutoCAD's for the same curve. While the reflection follows the cursor it wears each object's colour, not its linetype or lineweight.
+
+## Questions
+
+### What is the shortcut for MIRROR in AutoCAD?
+
+`MI`, then Enter or Space. The full name works too, and `_MIRROR` in any language of AutoCAD.
+
+### How do I mirror without the text reading backwards?
+
+You do not have to do anything: as in AutoCAD with MIRRTEXT at 0, a mirrored text keeps reading normally, placed where the reflection of its box falls.
+
+### How do I mirror and delete the original?
+
+Answer <Keyword id="Yes" /> when MIRROR asks whether to erase the source objects.
+
+### How do I mirror horizontally or vertically?
+
+Turn Ortho on (F8) and give the two points of the mirror line along the axis to reflect about: a vertical line flips left and right, a horizontal one top and bottom.

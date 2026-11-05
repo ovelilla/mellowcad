@@ -1,0 +1,38 @@
+---
+title: "MOVE in AutoCAD"
+metaTitle: "MOVE in AutoCAD: command, base point and alias"
+description: "How AutoCAD's MOVE (M) works, prompt by prompt: select, then a base point and a second point, or a displacement typed as X,Y,Z. Try it free in your browser."
+figure: "A circle moved 50 to the right: picked, its centre the base point, the second point typed."
+related: ["COPY", "ROTATE", "STRETCH", "SCALE"]
+coverage: "d5d3e9bf5013"
+---
+
+MOVE takes the objects you select from one place to another: select them, give a base point, then a second point, and they move by the distance and direction from the first to the second. Nothing else about them changes. As in AutoCAD, objects selected before the command are the ones it moves, a point can be picked, snapped or typed, and while you choose the second point the set follows the cursor, with a line from the base point. The move is one step that Undo takes back.
+
+## Options
+
+### Displacement
+
+Chosen at the base point prompt, or by Enter there, its default: asks for the move as a vector, `10,5` moving 10 along X and 5 along Y, its default the last one MOVE used in that drawing. At the second point, Enter does the same with the base point: its coordinates are the move.
+
+## Missing
+
+Two of AutoCAD's selection modes at the object prompt, Group and Multiple, and picking a solid's faces, edges or vertices with Ctrl to reshape it. While the set follows the cursor it wears each object's colour, but not its linetype or lineweight, and a block reference's objects all wear the reference's colour.
+
+## Questions
+
+### What is the shortcut for MOVE in AutoCAD?
+
+`M`, then Enter or Space. The full name works too, and `_MOVE` in any language of AutoCAD.
+
+### How do I move an object a set distance?
+
+Give the base point, then type the move as the second point: `50,0` moves 50 along X. With dynamic input on, as it starts, a point after the first is relative to it, so the history writes it `@50,0`. Or point the cursor the way to go, with Ortho or polar tracking, and type only the distance.
+
+### How do I move objects up in 3D?
+
+Give the move a Z: `0,0,5` as the second point, or as the <Keyword id="Displacement" />, lifts the set by 5. A point typed without a Z lies at the current elevation.
+
+### What is the difference between MOVE and STRETCH?
+
+MOVE moves whole objects. <Command id="STRETCH" /> moves only the ends and vertices inside its crossing window, and stretches the objects they belong to.

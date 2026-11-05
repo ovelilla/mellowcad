@@ -1,0 +1,78 @@
+---
+title: "Comando EXTEND (ESTENDER) no AutoCAD"
+description: "Como funciona o EXTEND do AutoCAD em português, ESTENDER (alias EST), prompt a prompt: modos Rápido e Padrão, arestas de limite e cerca. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando EXTEND no AutoCAD em português?","answer":"ESTENDER, com o alias EST. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _EXTEND."},{"question":"Por que o extend diz que não há aresta?","answer":"Porque nada cruza o caminho que essa ponta seguiria. Uma linha diz “Não há arestas nessa direção.” quando a outra ponta alcançaria uma aresta, e uma linha ou um arco, “O caminho não efetua a intersecção com a aresta de limite.” nos outros casos; uma polilinha ou uma spline diz “Objeto não faz intersecção com uma aresta.”. Selecione perto da outra ponta ou, no modo Padrão, escolha aResta e Estender para que um limite que fica curto conte como se fosse prolongado. Um círculo, uma polilinha fechada, uma elipse inteira, um texto ou uma hachura não podem ser estendidos: “Não é possível ESTENDER este objeto.”"},{"question":"Como estender várias linhas de uma vez?","answer":"Clique num ponto vazio e indique um segundo ponto: cada objeto que essa cerca cruza cresce pela ponta mais próxima, num só passo. Ou escolha Intersecção e desenhe uma janela sobre as pontas a estender."},{"question":"Como aparar com o extend?","answer":"Segure Shift ao selecionar: o trecho é aparado até os cruzamentos mais próximos, como o APARAR faria, e um objeto que nada cruza é apagado. A próxima seleção sem Shift volta a estender."}]
+---
+
+O EXTEND, ESTENDER no AutoCAD em português, prolonga um objeto até encontrar outro: você o seleciona perto da ponta que deve crescer, e essa ponta segue até a aresta mais próxima no caminho. Ele estende linhas, arcos, arcos elípticos, polilinhas abertas (pelo segmento final, reto ou seguindo o arco), polilinhas 3D e splines abertas. Começa no modo Rápido, como o do AutoCAD: todo objeto é limite. Segurando Shift ao selecionar, ele apara em vez de estender, como o [`APARAR`](/docs/commands/trim). Cada seleção é um passo que o Desfazer reverte; Enter encerra o comando.
+
+- **Comando:** `ESTENDER`
+- **Em inglês:** `EXTEND`, que se digita `_EXTEND` em qualquer idioma
+- **Aliases:** `EST`
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `EST` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="extend" caption="Duas linhas estendidas até a linha que cruza o caminho delas: cada uma selecionada uma vez perto da ponta que cresce, no modo Rápido." />
+
+## Opções [#options]
+
+### `Arestas de limite` (`A`) [#boundary]
+
+Escolhe quais objetos servem de limite: selecione-os, ou pressione Enter para usar todos. Daí em diante só eles servem de limite, qualquer que seja o modo, até o comando terminar.
+
+### `Cerca` (`C`) [#fence]
+
+Pede os pontos de uma linha, quantos você quiser até Enter: cada objeto que ela cruza é estendido pela ponta mais próxima de onde é cruzado, num só passo. O modo Padrão a lista; o Rápido também a aceita.
+
+### `Intersecção` (`I`) [#crossing]
+
+Pede os dois cantos de uma janela: cada objeto que o contorno dela cruza é estendido, num só passo.
+
+### `mOdo` (`O`) [#mode]
+
+Alterna entre `Rápido` e `Padrão`. No modo Padrão, o ESTENDER pede primeiro as arestas de limite (Enter usa todas) e lista Cerca e Aresta. O modo vale para o ESTENDER e o APARAR, e dura a sessão.
+
+### `aResta` (`R`) [#edge]
+
+Só no modo Padrão. Com `Estender`, um objeto também para onde um limite estaria se fosse prolongado (uma linha para os dois lados, um arco pelo círculo inteiro), de modo que uma linha pode crescer até outra que não alcança o caminho dela; `Não` é o padrão.
+
+### `Desfazer` (`D`) [#undo]
+
+Aparece assim que o prompt teve uma resposta (uma seleção, uma cerca, uma janela): desfaz a última extensão e, quando não resta nada a desfazer, avisa.
+
+## O que ainda não faz [#missing]
+
+Projeção: a opção de projeção do AutoCAD (Nenhuma, UCS, Vista) não é oferecida, e tudo é calculado projetado no plano XY do UCS, que é o padrão do AutoCAD, UCS. A cerca ainda não pode ser arrastada com o cursor, só indicada ponto a ponto. O modo e a escolha de Aresta duram a sessão, enquanto o AutoCAD os guarda de uma sessão para outra. Um objeto inclinado em relação ao UCS, exceto uma spline, não serve de limite nem é estendido, e uma polilinha suavizada pelo `AJustar` do `EDITARP` é recusada, enquanto o AutoCAD estende o último arco dela.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#trim--extend--es-recorta--rr--alarga--al--pt-br-aparar--ap--estender--est)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando EXTEND no AutoCAD em português?
+
+ESTENDER, com o alias `EST`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_EXTEND`.
+
+### Por que o extend diz que não há aresta?
+
+Porque nada cruza o caminho que essa ponta seguiria. Uma linha diz `Não há arestas nessa direção.` quando a outra ponta alcançaria uma aresta, e uma linha ou um arco, `O caminho não efetua a intersecção com a aresta de limite.` nos outros casos; uma polilinha ou uma spline diz `Objeto não faz intersecção com uma aresta.`. Selecione perto da outra ponta ou, no modo Padrão, escolha `aResta` e `Estender` para que um limite que fica curto conte como se fosse prolongado. Um círculo, uma polilinha fechada, uma elipse inteira, um texto ou uma hachura não podem ser estendidos: `Não é possível ESTENDER este objeto.`
+
+### Como estender várias linhas de uma vez?
+
+Clique num ponto vazio e indique um segundo ponto: cada objeto que essa cerca cruza cresce pela ponta mais próxima, num só passo. Ou escolha `Intersecção` e desenhe uma janela sobre as pontas a estender.
+
+### Como aparar com o extend?
+
+Segure Shift ao selecionar: o trecho é aparado até os cruzamentos mais próximos, como o [`APARAR`](/docs/commands/trim) faria, e um objeto que nada cruza é apagado. A próxima seleção sem Shift volta a estender.
+
+## Comandos relacionados [#related]
+
+- [Comando TRIM (APARAR) no AutoCAD](/docs/commands/trim)
+- [Comando OFFSET (DESLOCAMENTO) no AutoCAD](/docs/commands/offset)
+- [Comando FILLET (CONCORD) no AutoCAD](/docs/commands/fillet)
+- [UNIR (JOIN)](/docs/commands#join): Unir

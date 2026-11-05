@@ -1,0 +1,64 @@
+---
+title: "TEXT in AutoCAD"
+metaTitle: "TEXT in AutoCAD: single-line text and alignment"
+description: "How AutoCAD's TEXT (DT) works, prompt by prompt: start point, height and rotation, Justify and Style, one object per line. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for TEXT in AutoCAD?","answer":"DT, then Enter or Space; DTEXT and TEXT work too, and _TEXT in any language of AutoCAD. T is not TEXT's: it starts MTEXT, multiline text."},{"question":"How do I align text in AutoCAD?","answer":"Choose Justify at the first prompt, or type the justification's letters there, then give the point it names: middle centre puts the middle of each line on its point, as a label goes in the middle of a box. To run the text along a line at an angle, type that angle at the rotation prompt."},{"question":"What is the difference between TEXT and MTEXT?","answer":"TEXT makes one object per line, each moved, edited and justified on its own, and never wraps. MTEXT makes one object of paragraphs that wrap to the width of a box, justified as a whole. Both share the text height and the text styles."},{"question":"How do I edit text in AutoCAD?","answer":"Double-click it: TEXTEDIT opens it to be retyped, then asks for the next text to edit until you press Escape. Its height and rotation are rows of the Properties palette, and its grips move it."}]
+---
+
+TEXT writes single-line text. You give a start point, a height and a rotation angle, then type a line and press Enter: the line becomes an object of its own, and the next one starts a line below it. An empty line ends the command. A click elsewhere before that starts the next lines at that point, and Escape keeps the lines already entered and drops the one being typed. For a paragraph that wraps to a width, as one object, use [`MTEXT`](/docs/commands/mtext).
+
+The first line says the current style, height and justification. The height is the one it shares with [`MTEXT`](/docs/commands/mtext) and `ATTDEF`, kept in the drawing, and the next TEXT offers it as its default; a style with a height of its own skips the height prompt. Enter at the start point carries on below the last line TEXT wrote, without asking the height or the angle again. U takes back the whole run.
+
+- **Command:** `TEXT`
+- **Aliases:** `DT`, `DTEXT`
+- **Panel:** [Annotate](/docs/commands#annotate)
+- **Try it:** [Open the editor](/draw), type `DT` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="text" caption="Two lines of single-line text centred in a box, justified middle centre: each line an object of its own." />
+
+## Options [#options]
+
+### `Justify` (`J`) [#justify]
+
+Asks where the text hangs from its point: `Left` (the default), `Center`, `Right`, `Middle`, or one of nine points, top, middle and bottom by left, centre and right, as the prompt lists them. The start point prompt then asks for the point the justification names: for middle centre, the middle point. As in AutoCAD, the nine are also taken unlisted at the first prompt, so typing middle centre's letters there asks for the middle point at once. The justification is kept in the drawing for the next TEXT.
+
+### `Style` (`S`) [#style]
+
+Asks for the name of the text style to make current, Enter keeping the one there is. `?` lists the drawing's styles; a name the drawing does not have is refused and asked again. Styles are made in the palette that `STYLE` opens.
+
+## What it does not do yet [#missing]
+
+The Align and Fit justifications. Style's `?` lists every style at once, without asking which ones or pausing page by page. The text is typed in the dynamic input box, not with a caret on the drawing, and its wording cannot be retyped in the Properties palette, which also lacks the Annotative, Width factor, Obliquing, Upside down and Backward rows. A click inside a text's box picks it even off its letters, where AutoCAD picks nothing.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#text--dtext--dt---text--es-texto--t--textodin---texto--pt-br-texto--ete--etexto---texto)
+
+## Questions [#questions]
+
+### What is the shortcut for TEXT in AutoCAD?
+
+`DT`, then Enter or Space; `DTEXT` and `TEXT` work too, and `_TEXT` in any language of AutoCAD. `T` is not TEXT's: it starts [`MTEXT`](/docs/commands/mtext), multiline text.
+
+### How do I align text in AutoCAD?
+
+Choose `Justify` at the first prompt, or type the justification's letters there, then give the point it names: middle centre puts the middle of each line on its point, as a label goes in the middle of a box. To run the text along a line at an angle, type that angle at the rotation prompt.
+
+### What is the difference between TEXT and MTEXT?
+
+TEXT makes one object per line, each moved, edited and justified on its own, and never wraps. [`MTEXT`](/docs/commands/mtext) makes one object of paragraphs that wrap to the width of a box, justified as a whole. Both share the text height and the text styles.
+
+### How do I edit text in AutoCAD?
+
+Double-click it: `TEXTEDIT` opens it to be retyped, then asks for the next text to edit until you press Escape. Its height and rotation are rows of the Properties palette, and its grips move it.
+
+## Related commands [#related]
+
+- [MTEXT in AutoCAD](/docs/commands/mtext)
+- [TEXTEDIT](/docs/commands#textedit): Edit text
+- [STYLE](/docs/commands#style): Create and modify text styles
+- [MATCHPROP](/docs/commands#matchprop): Match properties

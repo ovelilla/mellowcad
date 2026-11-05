@@ -1,0 +1,65 @@
+---
+title: "Cota de línea base en AutoCAD: ACOLINEABASE (DIMBASELINE)"
+metaTitle: "Cotas de línea base en AutoCAD: ACOLINEABASE"
+description: "Cómo funciona ACOLINEABASE (DIMBASELINE, alias ACOLINE) de AutoCAD en español: cotas desde una misma base y su intervalo. Pruébalo gratis online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando DIMBASELINE en español?","answer":"ACOLINEABASE, con el alias ACOLINE. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _DIMBASELINE."},{"question":"¿Cómo cambio la separación de las cotas de línea base?","answer":"Es el intervalo de línea base del estilo de cota: ACOESTIL (ACES) abre los estilos en la paleta Estilos, donde está en Líneas, como en AutoCAD. Las cotas ya dibujadas mantienen su sitio; ACOESPAC las vuelve a espaciar por igual."},{"question":"¿Cómo empiezo desde otra cota?","answer":"Pulsa Intro en la primera solicitud, o elige Designar, y designa la cota cerca de la línea de referencia desde la que medir: todas las cotas nuevas empiezan allí."},{"question":"¿Qué diferencia hay entre ACOLINEABASE y ACOCONTINUA?","answer":"ACOLINEABASE mide todas las cotas desde la misma línea de referencia, cada una en una línea más alejada. ACOCONTINUA las pone una tras otra en una línea, cada una desde donde terminó la anterior."}]
+---
+
+ACOLINEABASE (DIMBASELINE en inglés) dibuja cotas que miden todas desde una misma línea de referencia, la base: cada una va de la primera línea de referencia de la última cota al siguiente punto que precisas, con su línea de cota un intervalo más alejada. Empieza desde la última cota lineal o alineada hecha desde que se abrió el dibujo, así que suele ir después de [`ACOLINEAL`](/docs/commands/dimlinear) o [`ACOALINEADA`](/docs/commands/dimaligned); si no hay ninguna, pregunta desde cuál empezar. La línea de comandos dice cada medida en cuanto se hace. Intro en la solicitud del origen elige `Designar`, e Intro allí termina el comando, como Esc.
+
+El intervalo es el intervalo de línea base del estilo de cota actual, 3,75 en ISO-25, por la escala general de la base. Como en AutoCAD, cada cota nueva mide en la dirección de su base y toma el estilo de cota y la capa de la base, con el color, el tipo de línea y el grosor de línea actuales.
+
+- **Comando:** `ACOLINEABASE`
+- **En inglés:** `DIMBASELINE`, que se escribe `_DIMBASELINE` en cualquier idioma
+- **Alias:** `ACOLINE`
+- **Grupo:** [Anotación](/docs/commands#annotate)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `ACOLINE` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="dimbaseline" caption="Un perfil escalonado acotado 30 desde su lado izquierdo, y después 70 y 100 desde el mismo lado, cada una en una línea más alejada." />
+
+## Opciones [#options]
+
+### `Designar` (`D`) [#select]
+
+Pide la cota base: designa una lineal o alineada cerca de la línea de referencia desde la que medir. Un punto escrito ahí también designa. Una cota de radio o de diámetro se rechaza con `Requiere una cota asociativa lineal, de coordenada o angular.`, y se vuelve a preguntar.
+
+### `desHacer` (`H`) [#undo]
+
+Deshace la última cota hecha y sigue desde la anterior, tantas veces como cotas haya. Cuando no queda ninguna, responde `Todos los efectos del comando han sido deshechos.` y la solicitud sigue.
+
+## Lo que aún no hace [#missing]
+
+Una cota no es asociativa: las cotas no siguen a los objetos que miden. Una cota angular no puede ser la base: AutoCAD toma la que se hizo la última o la que se designa; aquí, si es la última, el comando pide una cota, y si se designa, se rechaza como una de radio. Aún no existen las cotas de coordenadas.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimbaseline--dba--es-acolineabase--acoline--pt-br-cotalinbase--clb--dimbase)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando DIMBASELINE en español?
+
+ACOLINEABASE, con el alias `ACOLINE`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_DIMBASELINE`.
+
+### ¿Cómo cambio la separación de las cotas de línea base?
+
+Es el intervalo de línea base del estilo de cota: [`ACOESTIL`](/docs/commands/dimstyle) (`ACES`) abre los estilos en la paleta Estilos, donde está en Líneas, como en AutoCAD. Las cotas ya dibujadas mantienen su sitio; `ACOESPAC` las vuelve a espaciar por igual.
+
+### ¿Cómo empiezo desde otra cota?
+
+Pulsa Intro en la primera solicitud, o elige `Designar`, y designa la cota cerca de la línea de referencia desde la que medir: todas las cotas nuevas empiezan allí.
+
+### ¿Qué diferencia hay entre ACOLINEABASE y ACOCONTINUA?
+
+ACOLINEABASE mide todas las cotas desde la misma línea de referencia, cada una en una línea más alejada. [`ACOCONTINUA`](/docs/commands/dimcontinue) las pone una tras otra en una línea, cada una desde donde terminó la anterior.
+
+## Comandos relacionados [#related]
+
+- [Cota continua en AutoCAD: ACOCONTINUA (DIMCONTINUE)](/docs/commands/dimcontinue)
+- [Acotar en AutoCAD: ACOLINEAL (DIMLINEAR)](/docs/commands/dimlinear)
+- [ACOESPAC (DIMSPACE)](/docs/commands#dimspace): Ajustar espacio
+- [Estilos de cota en AutoCAD: ACOESTIL (DIMSTYLE)](/docs/commands/dimstyle)

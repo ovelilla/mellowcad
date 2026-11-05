@@ -1,0 +1,69 @@
+---
+title: "Escalar en AutoCAD: ESCALA (SCALE)"
+metaTitle: "Escalar en AutoCAD: comando ESCALA (SCALE)"
+description: "Cómo funciona ESCALA (SCALE, alias ES) de AutoCAD en español: un factor, Copiar y Referencia para escalar a una medida conocida. Pruébalo gratis online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando SCALE en español?","answer":"ESCALA, con el alias ES (en AutoCAD en español, SC es SECCION). Como allí, el nombre inglés también funciona con un guion bajo delante: _SCALE."},{"question":"¿Cómo se escala con referencia en AutoCAD?","answer":"Elige Referencia en el factor, señala los dos extremos de una arista cuya longitud conoces y escribe la que debe tener. Todo lo designado se escala por la nueva longitud entre la antigua, así que un dibujo a un tamaño equivocado queda bien a partir de una sola medida conocida."},{"question":"¿Cómo escalo un objeto sin perder el original?","answer":"Elige Copiar en el factor: se escala la copia y el original se queda donde estaba."},{"question":"¿Cómo cambio la escala del tipo de línea?","answer":"No con ESCALA, que cambia el tamaño de los objetos: ESCALATL fija lo largos que se dibujan los trazos y los huecos de todos los tipos de línea."},{"question":"¿Cómo pongo un plano a escala para imprimir?","answer":"MellowCAD no tiene presentaciones, ventanas gráficas ni trazado: se dibuja a tamaño real en espacio modelo, y ESCALA cambia el tamaño de los propios objetos, no cómo se imprimirían."}]
+---
+
+ESCALA (SCALE en inglés) agranda o reduce los objetos que designas respecto a un punto base, que se queda donde está: un factor 2 los duplica y uno de 0.5 los reduce a la mitad, igual en todas las direcciones. Designa los objetos, precisa el punto base y escribe el factor, o mueve el cursor y señala: los objetos lo siguen. Intro ahí, sin escribir nada, escala por el último factor usado. Cada ejecución es un paso que Deshacer revierte.
+
+Escala todo lo que toma, como AutoCAD: el patrón de un sombreado crece con su contorno, una cota mide su nueva longitud y un objeto fuera del plano se escala también en Z respecto al punto base.
+
+- **Comando:** `ESCALA`
+- **En inglés:** `SCALE`, que se escribe `_SCALE` en cualquier idioma
+- **Alias:** `ES`
+- **Grupo:** [Modificar](/docs/commands#modify)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `ES` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="scale" caption="Una placa con su agujero escalada en una copia con Referencia, respecto a su esquina: la arista de 40 señalada y convertida en 60." />
+
+## Opciones [#options]
+
+### `Copiar` (`C`) [#copy]
+
+Escala una copia y deja los objetos como estaban: dice `Escalando una copia de los objetos seleccionados.` y vuelve a pedir el factor, con `Copiar` todavía en la lista.
+
+### `Referencia` (`R`) [#reference]
+
+Pide una longitud de referencia, escrita o señalada con dos puntos, y después la longitud que debe tener: el factor es la nueva longitud entre la de referencia. La nueva longitud se escribe, o es la distancia de un punto al punto base; `Puntos` pide dos puntos y mide entre ellos. Las dos longitudes ofrecen las últimas dadas, 1 en un dibujo nuevo.
+
+## Lo que aún no hace [#missing]
+
+Intro en el primer o el segundo punto de `Puntos` termina el comando sin escalar, mientras que AutoCAD escala por lo que marca el cursor ahí. Un factor diminuto se aplica sin aviso, mientras que AutoCAD dice que lo ignora. Los objetos arrastrados se dibujan como los arrastra [`DESPLAZA`](/docs/commands/move), solo con su color.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#scale--sc--es-escala--es--pt-br-escala--es)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando SCALE en español?
+
+ESCALA, con el alias `ES` (en AutoCAD en español, `SC` es `SECCION`). Como allí, el nombre inglés también funciona con un guion bajo delante: `_SCALE`.
+
+### ¿Cómo se escala con referencia en AutoCAD?
+
+Elige `Referencia` en el factor, señala los dos extremos de una arista cuya longitud conoces y escribe la que debe tener. Todo lo designado se escala por la nueva longitud entre la antigua, así que un dibujo a un tamaño equivocado queda bien a partir de una sola medida conocida.
+
+### ¿Cómo escalo un objeto sin perder el original?
+
+Elige `Copiar` en el factor: se escala la copia y el original se queda donde estaba.
+
+### ¿Cómo cambio la escala del tipo de línea?
+
+No con ESCALA, que cambia el tamaño de los objetos: `ESCALATL` fija lo largos que se dibujan los trazos y los huecos de todos los tipos de línea.
+
+### ¿Cómo pongo un plano a escala para imprimir?
+
+MellowCAD no tiene presentaciones, ventanas gráficas ni trazado: se dibuja a tamaño real en espacio modelo, y ESCALA cambia el tamaño de los propios objetos, no cómo se imprimirían.
+
+## Comandos relacionados [#related]
+
+- [Girar en AutoCAD: GIRA (ROTATE)](/docs/commands/rotate)
+- [Desplazar en AutoCAD: DESPLAZA (MOVE)](/docs/commands/move)
+- [ESTIRA (STRETCH)](/docs/commands#stretch): Estirar
+- [ESCALATL (LTSCALE)](/docs/commands#ltscale): Escala de tipo de línea

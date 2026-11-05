@@ -1,0 +1,58 @@
+---
+title: "DIMSTYLE in AutoCAD"
+metaTitle: "DIMSTYLE in AutoCAD: dimension style command"
+description: "How AutoCAD's DIMSTYLE (D) works: dimension styles from ISO-25, New, Set Current, and the settings for text height, arrows, scale and units. Try it free online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for DIMSTYLE in AutoCAD?","answer":"D, then Enter or Space; DST, DIMSTY and DDIM too, and _DIMSTYLE in any language of AutoCAD. -DIMSTYLE works at the command line instead: it saves the current settings as a new style, or makes a style current by name."},{"question":"How do I change the dimension text size in AutoCAD?","answer":"Select the style in the palette and change Text height, under Text, or Use overall scale of, under Fit, which multiplies every size of the style, arrows and offsets with the text. Every dimension in that style is redrawn at once. To change some dimensions alone, give them a style of their own."},{"question":"How do I apply a dimension style to existing dimensions?","answer":"Select the dimensions and choose the style in the Properties palette's Dim style row, or right-click them and pick it under Dimension Style: one undo step either way. New dimensions take the current style, which Set Current in the palette changes."},{"question":"How do I change the decimal separator of dimensions?","answer":"ISO-25 writes a comma, as 82,5. Under Primary units, set Decimal separator to a period or a space; Precision and Suppress trailing zeros are there too. The command line still reports the measurement with a point, as AutoCAD's does."},{"question":"How do I create a new dimension style?","answer":"Select the style to start from and press New: the copy is named after it, made current, and ready to be renamed and changed. Every dimension drawn from then on takes it."}]
+---
+
+DIMSTYLE manages the drawing's dimension styles: named sets of settings, arrow size, text height, overall scale, units and the rest, which every dimension takes from its style. A new drawing starts with ISO-25, current, the metric style AutoCAD starts with. Where AutoCAD opens the Dimension Style Manager dialog, DIMSTYLE here opens the dimension table of the Styles palette, a tab of the palette panel that stays open as you draw; `STYLE` opens the same palette on its text styles.
+
+The palette lists the styles, the current one marked. New makes a copy of the selected style, named after it, and makes it current; a style is renamed in the list, and a name already in use is refused. ISO-25, the current style and a style in use cannot be deleted. Under the list, the selected style's settings are grouped under the names of the manager's tabs: Lines (baseline spacing, extension beyond the dimension line, offset from origin), Symbols and arrows (arrow size, centre mark size), Text (text height, offset from the dimension line), Fit (the overall scale, and whether a dimension line is drawn between the extension lines) and Primary units (precision, decimal separator, trailing zeros, angular precision). A change redraws every dimension in that style at once. Each change, and every new style, rename, deletion and change of current style, is a step U takes back.
+
+- **Command:** `DIMSTYLE`
+- **Aliases:** `D`, `DIMSTY`, `DST`, `DDIM`
+- **Panel:** [Annotate](/docs/commands#annotate)
+- **Try it:** [Open the editor](/draw), type `D` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="dimstyle" caption="Dimensions drawn in ISO-25, the current style: arrows, the text above the line and a comma as the decimal separator." />
+
+## What it does not do yet [#missing]
+
+The Dimension Style Manager dialog itself: the palette has no preview, list filter, Override, Compare or Description, no sub-styles for one kind of dimension, no Alternate Units or Tolerances, and only the settings listed above. A dimension variable typed at the command line, such as DIMSCALE, does not make an override of the current style. A new drawing has ISO-25 alone, without the Standard and Annotative styles that a new metric drawing in AutoCAD also holds.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/dimensions.md#dimstyle--d--dimsty--dst--ddim--es-acoestil--aces--acoest--aes--dcota--pt-br-estilocota--ec--dimsty)
+
+## Questions [#questions]
+
+### What is the shortcut for DIMSTYLE in AutoCAD?
+
+`D`, then Enter or Space; `DST`, `DIMSTY` and `DDIM` too, and `_DIMSTYLE` in any language of AutoCAD. `-DIMSTYLE` works at the command line instead: it saves the current settings as a new style, or makes a style current by name.
+
+### How do I change the dimension text size in AutoCAD?
+
+Select the style in the palette and change Text height, under Text, or Use overall scale of, under Fit, which multiplies every size of the style, arrows and offsets with the text. Every dimension in that style is redrawn at once. To change some dimensions alone, give them a style of their own.
+
+### How do I apply a dimension style to existing dimensions?
+
+Select the dimensions and choose the style in the Properties palette's Dim style row, or right-click them and pick it under Dimension Style: one undo step either way. New dimensions take the current style, which Set Current in the palette changes.
+
+### How do I change the decimal separator of dimensions?
+
+ISO-25 writes a comma, as `82,5`. Under Primary units, set Decimal separator to a period or a space; Precision and Suppress trailing zeros are there too. The command line still reports the measurement with a point, as AutoCAD's does.
+
+### How do I create a new dimension style?
+
+Select the style to start from and press New: the copy is named after it, made current, and ready to be renamed and changed. Every dimension drawn from then on takes it.
+
+## Related commands [#related]
+
+- [Dimensioning in AutoCAD: DIMLINEAR](/docs/commands/dimlinear)
+- [DIMALIGNED in AutoCAD](/docs/commands/dimaligned)
+- [DIMSPACE](/docs/commands#dimspace): Adjust space
+- [STYLE](/docs/commands#style): Create and modify text styles

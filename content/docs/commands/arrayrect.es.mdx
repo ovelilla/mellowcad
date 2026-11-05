@@ -1,0 +1,82 @@
+---
+title: "Matriz rectangular en AutoCAD: MATRIZRECTANG (ARRAYRECT)"
+metaTitle: "Matriz rectangular en AutoCAD: MATRIZRECTANG"
+description: "Cómo funciona MATRIZRECTANG (ARRAYRECT) de AutoCAD en español, solicitud a solicitud: columnas, filas, niveles y separación, asociativa o no. Pruébalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo hago una matriz rectangular?","answer":"Escribe MATRIZRECTANG, que no tiene alias, o MA para MATRIZ e Intro en su pregunta, porque la rectangular es la de por defecto. Designa los objetos y pulsa Intro: la matriz se dibuja al momento, lista para editarla."},{"question":"¿Cómo fijo la distancia entre filas y columnas?","answer":"Elige Espaciado y escribe la distancia entre columnas y después entre filas; una negativa va hacia la izquierda o hacia abajo. Con Unidad, dos esquinas dan las dos a la vez. O arrastra las flechas de la segunda columna y de la segunda fila."},{"question":"¿Cómo hago que las copias sean objetos independientes?","answer":"Elige Asociativa y responde No antes de pulsar Intro: cada copia es un objeto propio. Una matriz asociativa se puede descomponer en sus elementos más tarde con DESCOMP."},{"question":"¿Cómo hago una matriz 3D?","answer":"Elige Niveles: las filas y columnas se copian hacia arriba a lo largo del eje Z del SCP, tantos niveles como indiques y a la distancia que des. Filas pide además una elevación, que sube cada fila sobre la anterior."}]
+---
+
+MATRIZRECTANG (ARRAYRECT en inglés) copia una selección en columnas y filas, y en niveles si los quieres, como un solo objeto de matriz. Pide los objetos, dice el tipo y si la matriz es asociativa, y la muestra al momento: 4 columnas a lo largo del eje X del SCP y 3 filas a lo largo de su Y, separadas una vez y media el tamaño de la selección. Después, una sola solicitud la edita en vivo hasta que Intro la crea, con sus opciones o con los pinzamientos de la vista previa, como en AutoCAD: haz clic en una de sus flechas y después donde debe quedar, o escribe un número, para fijar una cantidad o una separación. Esc también crea la matriz. Los objetos designados pasan a ser su primer elemento.
+
+- **Comando:** `MATRIZRECTANG`
+- **En inglés:** `ARRAYRECT`, que se escribe `_ARRAYRECT` en cualquier idioma
+- **Grupo:** [Modificar](/docs/commands#modify)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `MATRIZRECTANG` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="arrayrect" caption="Un cuadrado y su círculo en 5 columnas y 3 filas, a 16 y 14: primero el número, después la separación." />
+
+## Opciones [#options]
+
+### `Asociativa` (`A`) [#associative]
+
+`Sí`, la opción por defecto, crea un solo objeto de matriz: sus pinzamientos y la paleta Propiedades lo cambian después, y `DESCOMP` lo descompone en sus elementos. `No` crea copias independientes junto a los objetos designados. La respuesta se mantiene durante la sesión, también para [`MATRIZPOLAR`](/docs/commands/arraypolar) y [`MATRIZCAMINO`](/docs/commands/arraypath).
+
+### `COntar` (`CO`) [#count]
+
+El número de columnas y después el de filas, de 1 a 32767 cada uno.
+
+### `Espaciado` (`E`) [#spacing]
+
+La distancia entre columnas y después entre filas; si es negativa, hacia la izquierda o hacia abajo. O `Unidad`: las dos esquinas de un rectángulo cuyos lados son las dos distancias.
+
+### `Columnas` (`C`) [#columns]
+
+El número de columnas y la distancia entre ellas.
+
+### `Filas` (`F`) [#rows]
+
+El número de filas, la distancia entre ellas y la elevación que cada fila sube sobre la anterior.
+
+### `Niveles` (`N`) [#levels]
+
+Copias apiladas a lo largo del eje Z del SCP: el número de niveles y después la distancia entre ellos, o con `Total` la distancia del primer nivel al último.
+
+### `Salir` (`S`) [#exit]
+
+Crea la matriz y termina el comando, como Intro.
+
+## Lo que aún no hace [#missing]
+
+El punto base; `Total` en las distancias entre columnas y entre filas (`Niveles` sí lo tiene); Expresión, que vincula un valor con los parámetros del dibujo. ARRAYEDIT y ARRAYCLOSE, que editan el origen de una matriz o sustituyen sus elementos. Los menús de los pinzamientos de la matriz (Conteo de columnas, Espaciado total de columnas, Ángulo de eje…) y Ctrl para recorrerlos, así que una separación total o un ángulo de eje no se pueden fijar desde un pinzamiento; tampoco escribe un pinzamiento sus líneas en la línea de comandos. En la paleta, las coordenadas X e Y del punto base no se pueden escribir de nuevo.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arrayrect--es-matrizrectang--pt-br-matrizretang)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo hago una matriz rectangular?
+
+Escribe `MATRIZRECTANG`, que no tiene alias, o `MA` para [`MATRIZ`](/docs/commands/array) e Intro en su pregunta, porque la rectangular es la de por defecto. Designa los objetos y pulsa Intro: la matriz se dibuja al momento, lista para editarla.
+
+### ¿Cómo fijo la distancia entre filas y columnas?
+
+Elige `Espaciado` y escribe la distancia entre columnas y después entre filas; una negativa va hacia la izquierda o hacia abajo. Con `Unidad`, dos esquinas dan las dos a la vez. O arrastra las flechas de la segunda columna y de la segunda fila.
+
+### ¿Cómo hago que las copias sean objetos independientes?
+
+Elige `Asociativa` y responde `No` antes de pulsar Intro: cada copia es un objeto propio. Una matriz asociativa se puede descomponer en sus elementos más tarde con `DESCOMP`.
+
+### ¿Cómo hago una matriz 3D?
+
+Elige `Niveles`: las filas y columnas se copian hacia arriba a lo largo del eje Z del SCP, tantos niveles como indiques y a la distancia que des. `Filas` pide además una elevación, que sube cada fila sobre la anterior.
+
+## Comandos relacionados [#related]
+
+- [Matriz en AutoCAD: MATRIZ (ARRAY)](/docs/commands/array)
+- [Matriz polar en AutoCAD: MATRIZPOLAR (ARRAYPOLAR)](/docs/commands/arraypolar)
+- [Matriz de camino en AutoCAD: MATRIZCAMINO (ARRAYPATH)](/docs/commands/arraypath)
+- [Copiar en AutoCAD: COPIA (COPY)](/docs/commands/copy)

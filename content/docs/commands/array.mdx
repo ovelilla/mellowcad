@@ -1,0 +1,67 @@
+---
+title: "ARRAY in AutoCAD"
+metaTitle: "ARRAY in AutoCAD: rectangular, polar and path"
+description: "How AutoCAD's ARRAY (AR) works, prompt by prompt: rectangular, polar and path arrays, edited live before they are made. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for ARRAY in AutoCAD?","answer":"AR, then Enter or Space. The full name works too, and _ARRAY in any language of AutoCAD. ARRAYRECT, ARRAYPOLAR and ARRAYPATH have no alias, and typed in full they skip the question of the type."},{"question":"How do I make a circular array?","answer":"Choose POlar, or run ARRAYPOLAR, and pick the centre point: the selection is copied round it, 6 items at first. Change the count with Items, and set the angle they fill with Fill."},{"question":"How do I explode an array?","answer":"Select it and run EXPLODE: the array becomes its items' objects, each object on its own layer. To get loose copies from the start, answer No to ASsociative before you press Enter."},{"question":"How do I change an array after it is made?","answer":"Select it. Its grips change it: the square at the base point moves it, the arrows set the counts and the spacing, and a number typed while a count arrow is hot is the count. The Properties palette lists its columns, rows and spacing, or its items and angles, to retype. ARRAYEDIT is not there yet."}]
+---
+
+ARRAY copies a selection in a pattern: in columns and rows, round a centre, or along a path. It asks for the objects, then for the type of array, Enter taking a rectangular one, and hands the selection to [`ARRAYRECT`](/docs/commands/arrayrect), [`ARRAYPOLAR`](/docs/commands/arraypolar) or [`ARRAYPATH`](/docs/commands/arraypath), which go on without asking for the objects again. Each shows the array at once and edits it live, through its options and its grips, until Enter makes it: one array object, or loose copies if you said it should not be associative. The whole run is one undo step, and Enter at the command prompt repeats ARRAY.
+
+- **Command:** `ARRAY`
+- **Aliases:** `AR`
+- **Panel:** [Modify](/docs/commands#modify)
+- **Try it:** [Open the editor](/draw), type `AR` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="array" caption="A square and its circle arrayed with the defaults: Enter for a rectangular array, 4 columns and 3 rows." />
+
+## Options [#options]
+
+### `Rectangular` (`R`) [#rectangular]
+
+Columns and rows, and levels stacked along Z if you want them: [`ARRAYRECT`](/docs/commands/arrayrect). It starts with 4 columns and 3 rows, one and a half times the selection's size apart.
+
+### `PAth` (`PA`) [#path]
+
+Along a line, an arc, a circle or a polyline: [`ARRAYPATH`](/docs/commands/arraypath). It asks for the path curve, then lays the items along it, each turned as the path turns.
+
+### `POlar` (`PO`) [#polar]
+
+Round a centre point: [`ARRAYPOLAR`](/docs/commands/arraypolar). It asks for the centre and starts with 6 items over a full turn.
+
+## What it does not do yet [#missing]
+
+The type offered is always Rectangular: ARRAYTYPE, the variable that sets AutoCAD's default, is not read.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#array--ar--es-matriz--ma--pt-br-matriz--ma)
+
+## Questions [#questions]
+
+### What is the shortcut for ARRAY in AutoCAD?
+
+`AR`, then Enter or Space. The full name works too, and `_ARRAY` in any language of AutoCAD. [`ARRAYRECT`](/docs/commands/arrayrect), [`ARRAYPOLAR`](/docs/commands/arraypolar) and [`ARRAYPATH`](/docs/commands/arraypath) have no alias, and typed in full they skip the question of the type.
+
+### How do I make a circular array?
+
+Choose `POlar`, or run [`ARRAYPOLAR`](/docs/commands/arraypolar), and pick the centre point: the selection is copied round it, 6 items at first. Change the count with `Items`, and set the angle they fill with `Fill`.
+
+### How do I explode an array?
+
+Select it and run `EXPLODE`: the array becomes its items' objects, each object on its own layer. To get loose copies from the start, answer `No` to `ASsociative` before you press Enter.
+
+### How do I change an array after it is made?
+
+Select it. Its grips change it: the square at the base point moves it, the arrows set the counts and the spacing, and a number typed while a count arrow is hot is the count. The Properties palette lists its columns, rows and spacing, or its items and angles, to retype. ARRAYEDIT is not there yet.
+
+## Related commands [#related]
+
+- [ARRAYRECT in AutoCAD](/docs/commands/arrayrect)
+- [ARRAYPOLAR in AutoCAD](/docs/commands/arraypolar)
+- [ARRAYPATH in AutoCAD](/docs/commands/arraypath)
+- [COPY in AutoCAD](/docs/commands/copy)
+- [EXPLODE](/docs/commands#explode): Explode

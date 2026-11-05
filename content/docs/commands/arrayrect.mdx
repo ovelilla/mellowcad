@@ -1,0 +1,81 @@
+---
+title: "ARRAYRECT in AutoCAD"
+metaTitle: "Rectangular array in AutoCAD: ARRAYRECT command"
+description: "How AutoCAD's ARRAYRECT works, prompt by prompt: columns, rows and levels, their spacing, associative or not. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"How do I start a rectangular array?","answer":"Type ARRAYRECT, which has no alias, or AR for ARRAY and Enter at its question, since rectangular is its default. Select the objects and press Enter: the array is drawn at once, ready to edit."},{"question":"How do I set the distance between rows and columns?","answer":"Choose Spacing and type the distance between columns, then between rows; a negative one goes left or down. With Unit, two corners give both at once. Or drag the arrows at the second column and row."},{"question":"How do I make the copies separate objects?","answer":"Choose ASsociative and answer No before you press Enter: each copy is an object of its own. An associative array can be broken into its items later with EXPLODE."},{"question":"How do I make a 3D array?","answer":"Choose Levels: the rows and columns are copied up along the UCS's Z, as many levels as you say, the distance apart you give. Rows also asks for an elevation, which lifts each row over the one before it."}]
+---
+
+ARRAYRECT copies a selection in columns and rows, and in levels if you want them, as one array object. It asks for the objects, says the type and whether the array is associative, and shows it at once: 4 columns along the UCS's X and 3 rows along its Y, one and a half times the selection's size apart. Then one prompt edits it live until Enter makes it, through its options or the preview's grips, as in AutoCAD: click one of its arrows, then click where it should go or type a number, to set a count or a spacing. Escape there makes the array too. The objects selected become its first item.
+
+- **Command:** `ARRAYRECT`
+- **Panel:** [Modify](/docs/commands#modify)
+- **Try it:** [Open the editor](/draw), type `ARRAYRECT` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="arrayrect" caption="A square and its circle in 5 columns and 3 rows, 16 and 14 apart: the count given, then the spacing." />
+
+## Options [#options]
+
+### `ASsociative` (`AS`) [#associative]
+
+`Yes`, the default, makes one array object: its grips and the Properties palette change it later, and `EXPLODE` breaks it into its items. `No` makes separate copies beside the objects selected. The answer is kept for the session, by ARRAYPOLAR and ARRAYPATH too.
+
+### `COUnt` (`COU`) [#count]
+
+The number of columns, then of rows, from 1 to 32767 each.
+
+### `Spacing` (`S`) [#spacing]
+
+The distance between columns, then between rows, negative to the left or below. Or `Unit`: the two corners of a rectangle whose sides are both distances.
+
+### `COLumns` (`COL`) [#columns]
+
+The number of columns and the distance between them.
+
+### `Rows` (`R`) [#rows]
+
+The number of rows, the distance between them, and an elevation each row rises over the one before it.
+
+### `Levels` (`L`) [#levels]
+
+Copies stacked along the UCS's Z: the number of levels, then the distance between them, or with `Total` the distance from the first level to the last.
+
+### `eXit` (`X`) [#exit]
+
+Makes the array and ends the command, as Enter does.
+
+## What it does not do yet [#missing]
+
+Base point; Total at the distances between columns and between rows (Levels has it); Expression, which ties a value to the drawing's parameters. ARRAYEDIT and ARRAYCLOSE, which edit an array's source or replace its items. The menus of the array's grips (Column Count, Total Column Spacing, Axis Angle…) and Ctrl to cycle them, so a total spacing or an axis angle cannot be set from a grip; nor does a grip write its lines at the command line. The palette's Base X and Base Y cannot be retyped.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arrayrect--es-matrizrectang--pt-br-matrizretang)
+
+## Questions [#questions]
+
+### How do I start a rectangular array?
+
+Type `ARRAYRECT`, which has no alias, or `AR` for [`ARRAY`](/docs/commands/array) and Enter at its question, since rectangular is its default. Select the objects and press Enter: the array is drawn at once, ready to edit.
+
+### How do I set the distance between rows and columns?
+
+Choose `Spacing` and type the distance between columns, then between rows; a negative one goes left or down. With `Unit`, two corners give both at once. Or drag the arrows at the second column and row.
+
+### How do I make the copies separate objects?
+
+Choose `ASsociative` and answer `No` before you press Enter: each copy is an object of its own. An associative array can be broken into its items later with `EXPLODE`.
+
+### How do I make a 3D array?
+
+Choose `Levels`: the rows and columns are copied up along the UCS's Z, as many levels as you say, the distance apart you give. `Rows` also asks for an elevation, which lifts each row over the one before it.
+
+## Related commands [#related]
+
+- [ARRAY in AutoCAD](/docs/commands/array)
+- [ARRAYPOLAR in AutoCAD](/docs/commands/arraypolar)
+- [ARRAYPATH in AutoCAD](/docs/commands/arraypath)
+- [COPY in AutoCAD](/docs/commands/copy)

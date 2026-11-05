@@ -1,0 +1,82 @@
+---
+title: "Comando ARRAYRECT (MATRIZRETANG) no AutoCAD"
+metaTitle: "Array retangular no AutoCAD: comando ARRAYRECT"
+description: "Como funciona o ARRAYRECT do AutoCAD em português, MATRIZRETANG, prompt a prompt: colunas, linhas e níveis, espaçamento, associativa ou não. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Como fazer um array retangular?","answer":"Digite MATRIZRETANG, que não tem alias, ou MA para o MATRIZ e Enter na pergunta dele, já que a retangular é o padrão. Selecione os objetos e pressione Enter: a matriz é desenhada na hora, pronta para editar."},{"question":"Como definir a distância entre linhas e colunas?","answer":"Escolha Espaçamento e digite a distância entre colunas e depois entre linhas; uma negativa vai para a esquerda ou para baixo. Com Unidade, dois cantos dão as duas de uma vez. Ou arraste as setas da segunda coluna e da segunda linha."},{"question":"Como deixar as cópias como objetos separados?","answer":"Escolha ASsociativa e responda Não antes de pressionar Enter: cada cópia é um objeto próprio. Uma matriz associativa pode ser dividida nos seus itens depois com o EXPLODIR."},{"question":"Como fazer um array 3D?","answer":"Escolha Níveis: as linhas e colunas são copiadas para cima ao longo do eixo Z do UCS, quantos níveis você disser, à distância que você der. Linhas também pede uma elevação, que sobe cada linha em relação à anterior."}]
+---
+
+O ARRAYRECT, MATRIZRETANG no AutoCAD em português, copia uma seleção em colunas e linhas, e em níveis se você quiser, como um só objeto de matriz. Ele pede os objetos, diz o tipo e se a matriz é associativa, e a mostra na hora: 4 colunas ao longo do eixo X do UCS e 3 linhas ao longo do Y, afastadas uma vez e meia o tamanho da seleção. Depois, um só prompt a edita ao vivo até o Enter criá-la, com as opções ou com as alças da visualização, como no AutoCAD: clique numa das setas e depois onde ela deve ficar, ou digite um número, para definir uma quantidade ou um espaçamento. O Esc também cria a matriz. Os objetos selecionados passam a ser o primeiro item.
+
+- **Comando:** `MATRIZRETANG`
+- **Em inglês:** `ARRAYRECT`, que se digita `_ARRAYRECT` em qualquer idioma
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `MATRIZRETANG` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="arrayrect" caption="Um quadrado e seu círculo em 5 colunas e 3 linhas, a 16 e 14: primeiro a quantidade, depois o espaçamento." />
+
+## Opções [#options]
+
+### `ASsociativa` (`AS`) [#associative]
+
+`Sim`, o padrão, cria um só objeto de matriz: as alças e a paleta Propriedades o alteram depois, e o `EXPLODIR` o divide nos seus itens. `Não` cria cópias independentes ao lado dos objetos selecionados. A resposta vale pela sessão, também para o [`MATRIZPOLAR`](/docs/commands/arraypolar) e o [`MATRIZCAMINHO`](/docs/commands/arraypath).
+
+### `CONtagem` (`CON`) [#count]
+
+A quantidade de colunas e depois a de linhas, de 1 a 32767 cada uma.
+
+### `Espaçamento` (`E`) [#spacing]
+
+A distância entre colunas e depois entre linhas; negativa, para a esquerda ou para baixo. Ou `Unidade`: os dois cantos de um retângulo cujos lados são as duas distâncias.
+
+### `COLunas` (`COL`) [#columns]
+
+A quantidade de colunas e a distância entre elas.
+
+### `Linhas` (`L`) [#rows]
+
+A quantidade de linhas, a distância entre elas e a elevação que cada linha sobe em relação à anterior.
+
+### `Níveis` (`N`) [#levels]
+
+Cópias empilhadas ao longo do eixo Z do UCS: a quantidade de níveis e depois a distância entre eles, ou com `Total` a distância do primeiro nível ao último.
+
+### `saIr` (`I`) [#exit]
+
+Cria a matriz e encerra o comando, como o Enter.
+
+## O que ainda não faz [#missing]
+
+O ponto base; `Total` nas distâncias entre colunas e entre linhas (`Níveis` tem); Expressão, que liga um valor aos parâmetros do desenho. ARRAYEDIT e ARRAYCLOSE, que editam a origem de uma matriz ou substituem os itens. Os menus das alças da matriz (quantidade de colunas, espaçamento total, ângulo do eixo…) e o Ctrl para percorrê-los, então um espaçamento total ou um ângulo do eixo não podem ser definidos por uma alça; uma alça também não escreve as suas linhas na linha de comando. Na paleta, as coordenadas X e Y do ponto base não podem ser digitadas de novo.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#arrayrect--es-matrizrectang--pt-br-matrizretang)
+
+## Perguntas frequentes [#questions]
+
+### Como fazer um array retangular?
+
+Digite `MATRIZRETANG`, que não tem alias, ou `MA` para o [`MATRIZ`](/docs/commands/array) e Enter na pergunta dele, já que a retangular é o padrão. Selecione os objetos e pressione Enter: a matriz é desenhada na hora, pronta para editar.
+
+### Como definir a distância entre linhas e colunas?
+
+Escolha `Espaçamento` e digite a distância entre colunas e depois entre linhas; uma negativa vai para a esquerda ou para baixo. Com `Unidade`, dois cantos dão as duas de uma vez. Ou arraste as setas da segunda coluna e da segunda linha.
+
+### Como deixar as cópias como objetos separados?
+
+Escolha `ASsociativa` e responda `Não` antes de pressionar Enter: cada cópia é um objeto próprio. Uma matriz associativa pode ser dividida nos seus itens depois com o `EXPLODIR`.
+
+### Como fazer um array 3D?
+
+Escolha `Níveis`: as linhas e colunas são copiadas para cima ao longo do eixo Z do UCS, quantos níveis você disser, à distância que você der. `Linhas` também pede uma elevação, que sobe cada linha em relação à anterior.
+
+## Comandos relacionados [#related]
+
+- [Comando ARRAY (MATRIZ) no AutoCAD](/docs/commands/array)
+- [Comando ARRAYPOLAR (MATRIZPOLAR) no AutoCAD](/docs/commands/arraypolar)
+- [Comando ARRAYPATH (MATRIZCAMINHO) no AutoCAD](/docs/commands/arraypath)
+- [Comando COPY (COPIAR) no AutoCAD](/docs/commands/copy)

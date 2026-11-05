@@ -1,0 +1,53 @@
+---
+title: "Empalme en AutoCAD: EMPALME (FILLET)"
+metaTitle: "Empalme en AutoCAD: comando EMPALME (FILLET)"
+description: "Cómo funciona EMPALME (FILLET, alias MP) de AutoCAD en español, solicitud a solicitud: el radio, dos líneas, una polilínea, radio 0, múltiple. Pruébalo gratis."
+figure: "Cuatro líneas, radio 15 y la opción múltiple: dos esquinas redondeadas y dos vivas."
+sourceHash: "f97d737f74a9"
+---
+
+EMPALME (FILLET en inglés) redondea la esquina entre dos objetos con un arco del radio que indicas, recortando o alargando cada objeto hasta él. Su primera línea dice el modo y el radio actual; después designas el primer objeto y el segundo, cada uno por el lado que quieres conservar, y el comando termina. Acepta líneas, arcos, círculos, elipses, splines y los segmentos de una polilínea 2D. Dos líneas no tienen por qué tocarse: se alargan hasta el arco, como en AutoCAD. Con radio 0, o manteniendo Mayús al designar el segundo objeto, hace una esquina viva.
+
+## Options
+
+### Undo
+
+Deshace el último empalme, <Keyword id="Polyline" /> o radio dado en este EMPALME, de uno en uno. Si no queda nada que deshacer, dice <Message id="commandCompletelyUndone" />
+
+### Polyline
+
+Pide una polilínea 2D y redondea cada esquina donde se encuentran dos de sus segmentos, en un solo paso; después dice cuántas ha empalmado y cuántas ha dejado, por paralelas o por demasiado cortas para el radio. Un rectángulo dibujado con <Command id="RECTANG" /> es una polilínea así.
+
+### Radius
+
+Pide el radio, que también se ofrece en la segunda solicitud. Es el del dibujo (FILLETRAD): el siguiente EMPALME empieza con él, y se guarda con el dibujo. 0 hace esquinas vivas; un radio negativo se rechaza.
+
+### Multiple
+
+Vuelve a pedir el primer objeto después de cada empalme, para redondear esquina tras esquina sin empezar de nuevo, hasta Intro.
+
+## Missing
+
+<Keyword id="Trim" />: los objetos se recortan o se alargan siempre hasta el arco, como con TRIMMODE 1, el valor por defecto de AutoCAD; no se ofrece la opción de no recortar. El arco no toma la escala de tipo de línea del segundo objeto, porque aquí ningún objeto tiene una propia. Antes del clic, la información de herramientas muestra la solicitud y no por qué un par no se puede empalmar, y ningún candado marca un objeto de una capa bloqueada. Unos pocos pares raros de elipses o splines terminan de otro modo: una spline cerrada con una línea a radio 0, un arco que solo toca el desfase de una elipse y un par así en un plano inclinado.
+
+## Questions
+
+### ¿Cómo se llama el comando FILLET en español?
+
+EMPALME, con el alias `MP`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_FILLET`.
+
+### ¿Cómo empalmo dos líneas?
+
+Elige <Keyword id="Radius" />, escríbelo y después designa cada línea por el lado que quieres conservar. Las líneas que no se tocan se alargan hasta el arco, y las que se cruzan se recortan hasta él. Dos líneas paralelas se unen con media circunferencia, sea cual sea el radio. Una línea y el segmento de una polilínea se unen en una sola polilínea.
+
+### ¿Qué hace un radio de empalme 0?
+
+Hace una esquina viva: cada línea se recorta o se alarga hasta que se encuentran, sin arco. Para una sola esquina viva sin cambiar el radio, mantén Mayús al designar el segundo objeto.
+
+### ¿Por qué no funciona EMPALME?
+
+Lo dice en la línea de comandos. <Message id="filletRadiusTooLarge" /> significa que el arco no cabe entre las líneas; <Message id="segmentsNotConsecutive" />, que dos segmentos de una polilínea están demasiado separados. Los textos, los bloques, las cotas y los sombreados se rechazan, de los objetos a distinta altura dice que no son coplanares, y un objeto de una capa bloqueada no se toma.
+
+### ¿Cómo empalmo las aristas de un sólido 3D?
+
+Ejecuta <Command id="FILLETEDGE" />: elige <Keyword command="FILLETEDGE" id="Radius" /> si el radio no es el que dice, designa las aristas del sólido, pulsa Intro y otra vez Intro para aceptar el empalme. Trabaja sobre sólidos 3D, que aquí aún son parciales.

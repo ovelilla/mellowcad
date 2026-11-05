@@ -1,0 +1,74 @@
+---
+title: "Comando FILLET (CONCORD) no AutoCAD"
+description: "Como funciona o FILLET do AutoCAD em português, CONCORD (alias CNC), prompt a prompt: o raio, duas linhas, uma polilinha, raio 0 e Múltiplo. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando FILLET no AutoCAD em português?","answer":"CONCORD, com o alias CNC. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _FILLET."},{"question":"Como fazer o fillet de duas linhas?","answer":"Escolha Raio, digite o valor e depois selecione cada linha do lado que quer manter. As linhas que não se tocam são estendidas até o arco, e as que se cruzam são aparadas até ele. Duas linhas paralelas são unidas por meia circunferência, qualquer que seja o raio. Uma linha e o segmento de uma polilinha viram uma só polilinha."},{"question":"O que faz o fillet com raio 0?","answer":"Um canto vivo: cada linha é aparada ou estendida até se encontrarem, sem arco. Para um só canto vivo sem mudar o raio, segure Shift ao selecionar o segundo objeto."},{"question":"Por que o fillet não funciona?","answer":"Ele diz o motivo na linha de comando. “Raio da concordância é grande demais” quer dizer que o arco não cabe entre as linhas; “Linhas pertencentes a polilinhas devem ser consecutivas ou serem separadas por um segmento”, que dois segmentos de uma polilinha estão longe demais. Textos, blocos, cotas e hachuras são recusados, de objetos em alturas diferentes ele diz que não são coplanares, e um objeto numa camada bloqueada não é aceito."},{"question":"Como fazer o fillet das arestas de um sólido 3D?","answer":"Execute o ARESTACONCORD: escolha Raio se o raio não for o que ele mostra, selecione as arestas do sólido, pressione Enter e mais uma vez Enter para aceitar a concordância. Ele trabalha com sólidos 3D, que aqui ainda são parciais."}]
+---
+
+O FILLET, CONCORD no AutoCAD em português, arredonda o canto entre dois objetos com um arco do raio que você der, aparando ou estendendo cada objeto até ele. A primeira linha mostra o modo e o raio atual; depois você seleciona o primeiro objeto e o segundo, cada um do lado que quer manter, e o comando termina. Ele aceita linhas, arcos, círculos, elipses, splines e os segmentos de uma polilinha 2D. Duas linhas não precisam se tocar: são estendidas até o arco, como no AutoCAD. Com raio 0, ou segurando Shift ao selecionar o segundo objeto, ele faz um canto vivo.
+
+- **Comando:** `CONCORD`
+- **Em inglês:** `FILLET`, que se digita `_FILLET` em qualquer idioma
+- **Aliases:** `CNC`
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `CNC` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="fillet" caption="Quatro linhas, raio 15 e a opção Múltiplo: dois cantos arredondados e dois vivos." />
+
+## Opções [#options]
+
+### `Desfazer` (`D`) [#undo]
+
+Desfaz a última concordância, `Polilinha` ou raio dado neste CONCORD, um de cada vez. Quando não resta nada a desfazer, avisa `O comando foi desfeito completamente.`
+
+### `Polilinha` (`P`) [#polyline]
+
+Pede uma polilinha 2D e arredonda cada canto onde dois segmentos dela se encontram, num só passo; depois diz quantos arredondou e quantos deixou, por serem paralelos ou curtos demais para o raio. Um retângulo desenhado com o `RETANGULO` é uma polilinha assim.
+
+### `Raio` (`R`) [#radius]
+
+Pede o raio, que também é oferecido no segundo prompt. É o do desenho (FILLETRAD): o próximo CONCORD começa com ele, e ele é salvo com o desenho. 0 faz cantos vivos; um raio negativo é recusado.
+
+### `Múltiplo` (`M`) [#multiple]
+
+Volta a pedir o primeiro objeto depois de cada concordância, para arredondar canto após canto sem recomeçar, até o Enter.
+
+## O que ainda não faz [#missing]
+
+`Aparar`: os objetos são sempre aparados ou estendidos até o arco, como com TRIMMODE 1, o padrão do AutoCAD; a opção de não aparar não é oferecida. O arco não recebe a escala do tipo de linha do segundo objeto, pois aqui nenhum objeto tem uma própria. Antes do clique, a dica de ferramenta mostra o prompt, e não por que um par não pode ser concordado, e nenhum cadeado marca um objeto numa camada bloqueada. Alguns pares raros de elipses ou splines terminam de outro jeito: uma spline fechada com uma linha a raio 0, um arco que só toca o deslocamento de uma elipse e um par assim num plano inclinado.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#fillet--f--es-empalme--mp--pt-br-concord--cnc)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando FILLET no AutoCAD em português?
+
+CONCORD, com o alias `CNC`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_FILLET`.
+
+### Como fazer o fillet de duas linhas?
+
+Escolha `Raio`, digite o valor e depois selecione cada linha do lado que quer manter. As linhas que não se tocam são estendidas até o arco, e as que se cruzam são aparadas até ele. Duas linhas paralelas são unidas por meia circunferência, qualquer que seja o raio. Uma linha e o segmento de uma polilinha viram uma só polilinha.
+
+### O que faz o fillet com raio 0?
+
+Um canto vivo: cada linha é aparada ou estendida até se encontrarem, sem arco. Para um só canto vivo sem mudar o raio, segure Shift ao selecionar o segundo objeto.
+
+### Por que o fillet não funciona?
+
+Ele diz o motivo na linha de comando. `Raio da concordância é grande demais` quer dizer que o arco não cabe entre as linhas; `Linhas pertencentes a polilinhas devem ser consecutivas ou serem separadas por um segmento`, que dois segmentos de uma polilinha estão longe demais. Textos, blocos, cotas e hachuras são recusados, de objetos em alturas diferentes ele diz que não são coplanares, e um objeto numa camada bloqueada não é aceito.
+
+### Como fazer o fillet das arestas de um sólido 3D?
+
+Execute o `ARESTACONCORD`: escolha `Raio` se o raio não for o que ele mostra, selecione as arestas do sólido, pressione Enter e mais uma vez Enter para aceitar a concordância. Ele trabalha com sólidos 3D, que aqui ainda são parciais.
+
+## Comandos relacionados [#related]
+
+- [CHANFRO (CHAMFER)](/docs/commands#chamfer): Chanfro
+- [ARESTACONCORD (FILLETEDGE)](/docs/commands#filletedge): Aresta de concordância
+- [Comando TRIM (APARAR) no AutoCAD](/docs/commands/trim)
+- [Comando OFFSET (DESLOCAMENTO) no AutoCAD](/docs/commands/offset)

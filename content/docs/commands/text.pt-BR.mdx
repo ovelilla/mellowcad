@@ -1,0 +1,65 @@
+---
+title: "Comando TEXT (TEXTO) no AutoCAD"
+metaTitle: "Texto no AutoCAD: comando TEXT (TEXTO)"
+description: "Como funciona o TEXT do AutoCAD em português, TEXTO (alias ETE), prompt a prompt: ponto inicial, altura, rotação e Justificar para alinhar. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando TEXT no AutoCAD em português?","answer":"TEXTO, com os aliases ETE e ETEXTO. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _TEXT. T não é do TEXTO: inicia o TEXTOM, o texto multilinha."},{"question":"Como alinhar texto no AutoCAD?","answer":"Escolha Justificar no primeiro prompt, ou digite ali as letras da justificação, e especifique o ponto que ela nomeia: meio centro põe o meio de cada linha nesse ponto, como um rótulo no meio de uma caixa. Para o texto seguir uma linha inclinada, digite o ângulo dela no prompt da rotação."},{"question":"Qual é a diferença entre TEXTO e TEXTOM?","answer":"O TEXTO cria um objeto por linha, que se move, se edita e se justifica à parte, e nunca ajusta o texto a uma largura. O TEXTOM cria um só objeto de parágrafos que se ajustam à largura de uma caixa, justificado como um todo. Os dois compartilham a altura do texto e os estilos de texto."},{"question":"Como editar um texto no AutoCAD?","answer":"Clique duas vezes nele: o EDITARTEXTO o abre para você redigitá-lo e depois pede o próximo texto, até você pressionar Esc. A altura e a rotação dele são linhas da paleta Propriedades, e as suas alças o movem."}]
+---
+
+O TEXT, TEXTO no AutoCAD em português, escreve texto de uma linha. Você especifica um ponto inicial, uma altura e um ângulo de rotação, depois digita uma linha e pressiona Enter: a linha vira um objeto próprio, e a seguinte começa uma linha abaixo. Uma linha vazia encerra o comando. Um clique em outro ponto antes disso começa ali as linhas seguintes, e Esc mantém as linhas já digitadas e descarta a que estava sendo digitada. Para um parágrafo que se ajusta a uma largura, num só objeto, use o [`TEXTOM`](/docs/commands/mtext).
+
+A primeira linha mostra o estilo, a altura e a justificação atuais. A altura é a que ele compartilha com o [`TEXTOM`](/docs/commands/mtext) e o `DEFATRIB`, fica guardada no desenho e o próximo TEXTO a oferece como padrão; um estilo com altura própria pula o prompt da altura. Enter no prompt do ponto inicial continua abaixo da última linha que o TEXTO escreveu, sem pedir de novo a altura nem o ângulo. O Desfazer reverte a execução inteira.
+
+- **Comando:** `TEXTO`
+- **Em inglês:** `TEXT`, que se digita `_TEXT` em qualquer idioma
+- **Aliases:** `ETE`, `ETEXTO`
+- **Painel:** [Anotação](/docs/commands#annotate)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `ETE` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="text" caption="Duas linhas de texto centralizadas num retângulo com a justificação meio centro: cada linha, um objeto próprio." />
+
+## Opções [#options]
+
+### `Justificar` (`J`) [#justify]
+
+Pergunta de que ponto o texto fica pendurado: `Esquerda` (o padrão), `Centro`, `Direita`, `Meio` ou um de nove pontos, superior, meio e inferior por esquerda, centro e direita, como o prompt os lista. Depois, o prompt do ponto inicial pede o ponto que a justificação nomeia: para meio centro, o ponto do meio. Como no AutoCAD, os nove também são aceitos fora da lista no primeiro prompt, então digitar ali as letras de meio centro já pede o ponto do meio. A justificação fica guardada no desenho para o próximo TEXTO.
+
+### `Estilo` (`E`) [#style]
+
+Pede o nome do estilo de texto que passa a ser o atual; Enter mantém o que está. `?` lista os estilos do desenho, e um nome que o desenho não tem é recusado e pedido de novo. Os estilos são criados na paleta que o `ESTILO` abre.
+
+## O que ainda não faz [#missing]
+
+As justificações Alinhar e Ajustar. A opção `?` de `Estilo` lista todos os estilos de uma vez, sem perguntar quais nem parar página a página. O texto é digitado na caixa da entrada dinâmica, não com um cursor sobre o desenho, e o seu conteúdo não pode ser redigitado na paleta Propriedades, que também não tem as linhas de anotativo, fator de largura, ângulo oblíquo e texto de cabeça para baixo ou invertido. Um clique dentro da caixa de um texto o seleciona mesmo fora das letras, onde o AutoCAD não seleciona nada.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#text--dtext--dt---text--es-texto--t--textodin---texto--pt-br-texto--ete--etexto---texto)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando TEXT no AutoCAD em português?
+
+TEXTO, com os aliases `ETE` e `ETEXTO`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_TEXT`. `T` não é do TEXTO: inicia o [`TEXTOM`](/docs/commands/mtext), o texto multilinha.
+
+### Como alinhar texto no AutoCAD?
+
+Escolha `Justificar` no primeiro prompt, ou digite ali as letras da justificação, e especifique o ponto que ela nomeia: meio centro põe o meio de cada linha nesse ponto, como um rótulo no meio de uma caixa. Para o texto seguir uma linha inclinada, digite o ângulo dela no prompt da rotação.
+
+### Qual é a diferença entre TEXTO e TEXTOM?
+
+O TEXTO cria um objeto por linha, que se move, se edita e se justifica à parte, e nunca ajusta o texto a uma largura. O [`TEXTOM`](/docs/commands/mtext) cria um só objeto de parágrafos que se ajustam à largura de uma caixa, justificado como um todo. Os dois compartilham a altura do texto e os estilos de texto.
+
+### Como editar um texto no AutoCAD?
+
+Clique duas vezes nele: o `EDITARTEXTO` o abre para você redigitá-lo e depois pede o próximo texto, até você pressionar Esc. A altura e a rotação dele são linhas da paleta Propriedades, e as suas alças o movem.
+
+## Comandos relacionados [#related]
+
+- [Comando MTEXT (TEXTOM) no AutoCAD](/docs/commands/mtext)
+- [EDITARTEXTO (TEXTEDIT)](/docs/commands#textedit): Editar texto
+- [ESTILO (STYLE)](/docs/commands#style): Cria e modifica estilos de texto
+- [PROPIG (MATCHPROP)](/docs/commands#matchprop): Corresponder propriedades
