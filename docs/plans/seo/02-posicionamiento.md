@@ -66,9 +66,9 @@ busca y lo que el producto es: **CAD online gratis, con los comandos de AutoCAD 
   descripción y las palabras clave de `cad/package.json` y de los paquetes (salen con la próxima
   publicación: déjalo dicho en §7 del plan), la diferencia de F4 en `/docs/differences` (su `WHY`
   está en el código: `.claude/rules/docs.md`, «Each difference from AutoCAD quotes why»).
-- **GitHub**: escribe en `docs/next-seo.md` §7 el comando `gh repo edit` con la descripción y los
-  temas (cad, autocad, browser, 2d, 3d, drafting, typescript, open-source…) para que el dueño lo
-  ejecute: es un cambio hacia fuera.
+- **GitHub**: la descripción y los temas están en el comando `gh repo edit` de
+  `docs/plans/seo/launch-kit.md` §0, que ejecuta el dueño (un cambio hacia fuera); ajústalo al
+  texto nuevo si el dueño aún no lo ejecutó.
 
 ## Qué no tocar
 

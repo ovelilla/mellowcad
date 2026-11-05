@@ -89,10 +89,11 @@ el hreflang o las canónicas.
   y la documentación ni pide datos de Search Console para una página que aún no existe;
   `.claude/rules/i18n.md` afirma el 3D parcial en vez de prohibirlo y deja localizar los slugs con
   datos de búsqueda; el README, al día (3D, cuatro idiomas, los tres paquetes en npm).
-- **El commit de este plan**: el plan, los prompts de cada sesión (`docs/plans/seo/`) y las
-  pausas en los briefs; el kit de lanzamiento, en el commit siguiente. El brief de lanzamiento anterior (next-launch.md, en el historial de
-  git) queda integrado en L5 y borrado: sus restricciones («una página nueva solo si Search Console
-  muestra demanda», «los ejercicios irán dentro del editor y no como páginas») decaen.
+- **`7eede991`**: el plan, los prompts de cada sesión (`docs/plans/seo/`) y las pausas en los
+  briefs. El brief de lanzamiento anterior (next-launch.md, en el historial de git) queda integrado
+  en L5 y borrado: sus restricciones («una página nueva solo si Search Console muestra demanda»,
+  «los ejercicios irán dentro del editor y no como páginas») decaen.
+- **El commit siguiente**: el kit de lanzamiento (`docs/plans/seo/launch-kit.md`).
 
 ## 4. Líneas de trabajo
 
@@ -140,11 +141,16 @@ decisiones, dentro de los presupuestos de `.claude/rules/i18n.md`.
 ### L5. Lanzamiento y autoridad
 
 Objetivo: los primeros 20–30 dominios que enlazan y el tráfico de lanzamiento, la causa de más
-peso. El kit (docs/plans/seo/launch-kit.md) tiene los textos de Show HN, Reddit, Product Hunt,
-AlternativeTo y SaaSHub, el correo de outreach y el calendario; la lista de artículos con los
-contactos de sus autores queda fuera del repo, que es público
-(`~/seo-data/audit-2026-11-05/authority-listicles.csv`). Los directorios pueden ir ya; Show HN,
-Reddit y Product Hunt, cuando L2–L4 estén publicados. **Ninguna publicación la hace una sesión.**
+peso. El kit (`docs/plans/seo/launch-kit.md`) tiene los textos de Reddit, Product Hunt,
+AlternativeTo y SaaSHub, el guion de Show HN (Hacker News pide que ese texto lo escriba a mano su
+autor, sin LLM), el correo de outreach en inglés y en español, la galería y el vídeo, y el
+calendario; la lista de los 73 artículos de seis idiomas con los contactos de sus autores, y la de
+creadores, quedan fuera del repo, que es público (`~/seo-data/audit-2026-11-05/authority-*.csv`).
+Lo medido: ninguno de los 73 nombra a MellowCAD, 53 nombran alguna herramienta del navegador (casi
+todas modeladores 3D) y 36 enlazan sin `nofollow`: los enlaces que cuentan salen del outreach, no de
+las plataformas de lanzamiento. Los directorios pueden ir ya; Show HN, Reddit y Product Hunt, cuando
+L2 y L4 estén publicados; el outreach, en diciembre, antes de que los listados se reescriban para
+2027. **Ninguna publicación la hace una sesión.**
 **Terminado:** el kit al día con la landing nueva y las publicaciones hechas por el dueño, con su
 fecha aquí.
 
@@ -230,10 +236,11 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    preparado (y en cada push con páginas nuevas); Inspección de URLs → «Request indexing» de
    `/docs/commands` y `/pt-br`, hoy «descubiertas pero no rastreadas»; un Site Scan para que el
    informe de SEO tenga datos.
-4. **GitHub y npm**: la descripción y los temas del repositorio, con el comando `gh repo edit` que
-   deja escrito la sesión 02; la descripción de los paquetes sale con su próxima publicación.
-5. **Directorios** con cuenta propia (AlternativeTo, SaaSHub y los demás de launch-kit.md): ya,
-   no esperan a la landing.
+4. **GitHub y npm**: la descripción y los temas del repositorio, ya, con el comando `gh repo edit`
+   de `docs/plans/seo/launch-kit.md` §0 (hoy 0 estrellas, sin temas, «2D engine»); la descripción
+   de los paquetes sale con su próxima publicación.
+5. **Directorios** con cuenta propia (AlternativeTo, SaaSHub, TheCADHub y los demás del kit, §6):
+   ya, no esperan a la landing.
 6. **Show HN, Reddit, Product Hunt**, con los textos y el calendario del kit, cuando 02–04 estén
    publicados.
 7. **Outreach** a los autores de los artículos de la lista, con el correo del kit.
@@ -242,7 +249,7 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
 
 Una línea por sesión, que cada una actualiza al cerrar su parte.
 
-- Auditoría: hecha el 5/11/2026 (`4c6094db` y el commit de este plan).
+- Auditoría: hecha el 5/11/2026 (`4c6094db`, `7eede991` y el kit de lanzamiento).
 - 01 Técnica y rastreo: pendiente.
 - 02 Posicionamiento y metadatos: pendiente.
 - 03 Una página por comando: pendiente.

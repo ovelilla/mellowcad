@@ -6,7 +6,7 @@
 
 Eres la sesión 05 del plan de visibilidad de MellowCAD. Lee primero `AGENTS.md`,
 `docs/next-seo.md` (el plan maestro: la autoridad es la causa de más peso, el 40 %),
-docs/plans/seo/launch-kit.md (los textos preparados el 5/11/2026) y `.claude/rules/i18n.md`
+`docs/plans/seo/launch-kit.md` (los textos preparados el 5/11/2026) y `.claude/rules/i18n.md`
 («Claims and copy»: todo lo que se publique la sigue). Responde en español; el conocimiento del
 repo, en inglés (el plan y el kit, como se escribieron). Decide sin preguntar.
 
