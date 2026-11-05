@@ -194,7 +194,8 @@ transparency, groups, a block's units other than the drawing's)
 ### `MASSPROP` · es `PROPFIS` · pt-BR `PROPMASS`
 
 **Implemented:** `Select objects:` (es `Designe objetos`, pt-BR `Selecionar objetos`), a set of
-whole objects, locked ones measured (solid/m09); a preselection measured at once; Enter on nothing
+whole objects, locked ones measured (solid/m09), what ALL finds on a layer that is off too
+(solid-inquiry/p111); a preselection dropped, the objects asked (p124, desktop d01); Enter on nothing
 says `Nothing selected.` (es `No se ha designado nada.`, pt-BR `Nada foi selecionado.`), a set with
 no solid or region `No solids or regions selected.` (es `No se ha designado ningún sólido o
 región.`), and both end (m05). Then the report, at the command prompt in AutoCAD 2027's columns,
@@ -205,7 +206,9 @@ overlaps counted twice (m05). A solid's: `Mass:`, `Volume:`, `Bounding box:` X, 
 `Moments of inertia:` about the UCS's axes through its origin, `Products of inertia:` XY, YZ, ZX as
 the inertia tensor's (`−∫ xy`: −50000.0000 for a box at the origin), `Radii of gyration:`, and
 `Principal moments and X-Y-Z directions about centroid:` I, J, K in the order and with the signs
-of Jacobi's sweeps, as AutoCAD's (m01's wedge, m04's tilted UCS). A region's, in the XY plane at
+of Jacobi's sweeps, as AutoCAD's (m01's wedge, m04's tilted UCS), two moments equal but for their
+rounding turned by +45° as AutoCAD turns them (solid-inquiry/p114, p115); the box tight round a
+tilted torus or cone (p118, p119). A region's, in the XY plane at
 its Z 0: `Area:`, `Perimeter:`, its box and centroid in X and Y, `Moments of inertia:` X and Y,
 `Product of inertia:  XY:`, the radii, `Principal moments and X-Y directions about centroid:` (b02,
 m05, m07); off that plane — tilted, standing, or level at another Z — `Area:`, `Perimeter:`, its
@@ -215,10 +218,17 @@ box and centroid in X, Y and Z alone (m07). The regions are those in the plane o
 moved (m04, m07); every number at LUPREC, `-0` unsigned (m08). The numbers are exact: the kernel
 integrates each face's flux by the divergence theorem in closed form (`geometry/massProperties.ts`:
 planes by Green's theorem round their loops, cylinders, cones, spheres and tori, elliptical,
-apples and lemons too, round their axis), equal to MPDUMP's to 1e-12 for every primitive
-(m01–m03). Then `Write analysis to a file? [Yes/No] <N>:` (es `¿Escribir análisis en un archivo?
+apples and lemons too, round their axis; a swept, blended or trimmed face by Green's theorem in
+its parameters), equal to MPDUMP's to 1e-12 for every primitive (m01–m03), and to AutoCAD's report
+for the solids made of others: UNION, SUBTRACT and INTERSECT (a box and a cylinder, a sphere taken
+from a box, two crossed cylinders), a tapered EXTRUDE, a REVOLVE of 270°, FILLETEDGE, SLICE and
+SOLIDEDIT's faces (p112–p116, p125). A block reference or an array holding a solid is no solid:
+`No solids or regions selected.` (p108, p109). Then `Write analysis to a file? [Yes/No] <N>:` (es `¿Escribir análisis en un archivo?
 [Sí/No] <N>:`, pt-BR `Gravar análise em arquivo? [Sim/Não] <N>:`), `FOO` refused `Invalid option
-keyword.`, Enter and No ending (m06); one undo step that changes nothing. WHY Yes writes the file
+keyword.`, as are another prompt's keyword and a command typed there, transparent commands run
+(`Resuming MASSPROP command.`, p103), es and pt-BR `S` and `N` (p101, p102), Enter and No ending
+(m06); one undo step that changes nothing, also when it measured nothing, U, REDO and UNDO naming
+it (p104, p105); Enter at `Command:` repeats it, `'MASSPROP` is refused (p100). WHY Yes writes the file
 at once, a download named as the drawing (`drawing-2026-11-01.mpr`): AutoCAD asks for it in its
 `Create Mass and Area Properties File` dialog (the console's `Enter file name <Drawing1.mpr>:` and
 `… already exists, do you want to replace it? [Yes/No] <N>:`, m06), and in a browser the download
@@ -227,11 +237,15 @@ properties file drawing-….mpr.` (22138). The file is AutoCAD's byte for byte: 
 with their empty unit fields' spaces, CRLF (m10). Typed only, as in AutoCAD, whose ribbon has no
 button for it (acad.cuix's `ID_Massprop` is the Inquiry toolbar's and the Tools menu's)
 
-**Missing:** the units after each number with architectural or engineering units (`lb`, `cu in`,
-`in`, `lb sq in`, `Principal moments (lb sq in) and …`, m08: no unit but decimal here); a
+**Missing:** the units after each number with architectural or engineering units (m08, p122:
+`41.2000 sq in`, `40.3000 in`, `1030.0000 cu in`, `lb`, `lb sq in`, a region's moments
+`sq in sq in`, `Principal moments (lb sq in) and …`; fractional units print decimals, as here: no
+unit but decimal here); a
 degenerate pair of principal axes as AutoCAD's rounding turns it (m01's pyramid `[0.9963 0.0860
 0.0000]`, m02's elliptical cone, m04's torus in the WCS: here the axes); the last digit of a
 number AutoCAD's ACIS gets off by its own rounding (m02's frustum `J: 4439.8759`, m04's tilted
-UCS `296444.2735`: here the exact `…60`, `…32`); a solid made by a boolean (phase 4), whose trimmed
-curved faces the kernel does not integrate yet; the file name and the replace question (the
-download names it)
+UCS `296444.2735`: here the exact `…60`, `…32`); a body far from the origin, where AutoCAD writes a
+product of 1e15 as `-1.0000E+15`, a moment as an integer, and loses digits (p123's box at 1e6:
+`35416.7500` for the exact 35416.6667; here every digit, exact); the file name and the replace
+question (the download names it); PRESSPULL's solid is **unverified** (the console cannot pick its
+face, SLP-03)

@@ -534,7 +534,10 @@ export function jacobiEigen(matrix: readonly (readonly number[])[]): {
         ) {
           a[p][q] = 0
         } else if (Math.abs(a[p][q]) > threshold) {
-          let h = d[q] - d[p]
+          // Two moments equal but for their rounding are equal: AutoCAD
+          // turns such a pair by +45°, whichever way the rounding leans
+          // (solid-inquiry/p114, p115).
+          let h = Math.abs(d[q] - d[p]) <= noise ? 0 : d[q] - d[p]
           let t: number
           if (Math.abs(h) + g === Math.abs(h)) {
             t = a[p][q] / h

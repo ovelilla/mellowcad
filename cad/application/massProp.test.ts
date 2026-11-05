@@ -122,6 +122,102 @@ describe("MASSPROP of a solid, as AutoCAD 2027's console reports it", () => {
   })
 })
 
+/** A report less its principal moments, which AutoCAD turns by its rounding where two are equal. */
+function withoutPrincipal(lines: readonly string[]): string[] {
+  const at = lines.findIndex((line) => line.startsWith("Principal moments"))
+  return at < 0 ? [...lines] : lines.slice(0, at)
+}
+
+describe("MASSPROP of composite and derived solids (probes solid-inquiry/p112–p116)", () => {
+  it("a union of a box and a cylinder (p112)", () => {
+    const cad = harness()
+    answer(cad, "_BOX", "0,0,0", "10,10,10", "_CYLINDER", "10,5,0", "3", "10")
+    answer(cad, "_UNION", "_ALL", "")
+    expectNear(massprop(cad, "_L"), INQUIRY.p112[0])
+  })
+
+  it("two crossed cylinders, their union and their intersection (p113)", () => {
+    for (const [boolean, k] of [
+      ["_UNION", 0],
+      ["_INTERSECT", 1],
+    ] as const) {
+      const cad = harness()
+      answer(cad, "_CYLINDER", "0,0,0", "3", "20", "_UCS", "_Y", "90")
+      answer(cad, "_CYLINDER", "-10,0,-10", "3", "20", "_UCS", "_W")
+      answer(cad, boolean, "_ALL", "")
+      // Two equal moments: AutoCAD's axes are its rounding's (Missing).
+      expectNear(
+        withoutPrincipal(massprop(cad, "_L")),
+        withoutPrincipal(INQUIRY.p113[k])
+      )
+    }
+  })
+
+  it("a tapered extrusion and a partial revolution (p114)", () => {
+    const cad = harness()
+    answer(cad, "_CIRCLE", "0,0", "5", "_EXTRUDE", "_L", "", "_T", "10", "10")
+    // WHY near: ACIS' last digit (6762.6299 and 6762.6297 for one moment).
+    expectNear(massprop(cad, "_L"), INQUIRY.p114[0])
+    answer(cad, "_ERASE", "_ALL", "", "_RECTANG", "5,0", "8,4")
+    answer(cad, "_REVOLVE", "_L", "", "0,0", "0,10", "270")
+    // Ixx and Izz equal but for rounding: AutoCAD turns them by +45° (MSP-01).
+    expect(massprop(cad, "_L")).toEqual(INQUIRY.p114[1])
+  })
+
+  it("a filleted edge and a slice (p115)", () => {
+    const cad = harness()
+    answer(cad, "_BOX", "0,0,0", "10,10,10", "_ZOOM", "_E")
+    answer(cad, "_FILLETEDGE", "10,5,10", "", "")
+    expectNear(massprop(cad, "_L"), INQUIRY.p115[0])
+    answer(cad, "_ERASE", "_ALL", "", "_SPHERE", "0,0,0", "5")
+    answer(cad, "_SLICE", "_L", "", "_XY", "0,0,2", "0,0,10")
+    expectNear(massprop(cad, "_L"), INQUIRY.p115[1])
+  })
+
+  it("SOLIDEDIT's extruded and offset faces (p116)", () => {
+    const cad = harness()
+    answer(cad, "_BOX", "0,0,0", "10,10", "10", "_-VPOINT", "-1.3,-2.2,1.6")
+    answer(cad, "_ZOOM", "_E", "_SOLIDEDIT", "_F", "_E", "5,5,10", "", "3", "0")
+    answer(cad, "_X", "_X")
+    expectNear(massprop(cad, "_L"), INQUIRY.p116[0])
+    answer(cad, "_SOLIDEDIT", "_F", "_O", "5,5,13", "", "1", "_X", "_X")
+    expectNear(massprop(cad, "_L"), INQUIRY.p116[1])
+  })
+
+  it("the tight box of a tilted torus, cone and cylinder, in the UCS and the WCS (p118, p119)", () => {
+    const cad = harness()
+    answer(cad, "_UCS", "_X", "30", "_TORUS", "0,0,0", "10", "3")
+    answer(cad, "_CONE", "40,0,0", "5", "12", "_CYLINDER", "70,0,0", "4", "10")
+    expectNear(massprop(cad, "_L"), INQUIRY.p118[0])
+    expectNear(massprop(cad, "_ALL"), INQUIRY.p118[1])
+    answer(cad, "_UCS", "_W")
+    expectNear(massprop(cad, "_ALL"), INQUIRY.p118[2])
+    const torus = harness()
+    answer(
+      torus,
+      "_UCS",
+      "_X",
+      "30",
+      "_TORUS",
+      "0,0,0",
+      "10",
+      "3",
+      "_UCS",
+      "_W"
+    )
+    expectNear(
+      withoutPrincipal(massprop(torus, "_L")),
+      withoutPrincipal(INQUIRY.p119[0])
+    )
+    const cone = harness()
+    answer(cone, "_UCS", "_X", "30", "_CONE", "0,0,0", "5", "12", "_UCS", "_W")
+    expectNear(
+      withoutPrincipal(massprop(cone, "_L")),
+      withoutPrincipal(INQUIRY.p119[1])
+    )
+  })
+})
+
 describe("MASSPROP of a region", () => {
   it("regions and solids, the regions first, and two regions summed (m05)", () => {
     const cad = harness()
@@ -231,6 +327,8 @@ describe("MASSPROP's prompts and refusals", () => {
     expect(cad.runtime.getState().activeToolId).toBe("select")
   })
 
+  // The platform's case: AutoCAD's file dialog always opens; a host with no
+  // file transport cannot save the download (22138's words).
   it("says it cannot write without a file transport", () => {
     const cad = createHarness({ files: null })
     answer(cad, "_BOX", "0,0,0", "10,20", "5")
@@ -239,25 +337,122 @@ describe("MASSPROP's prompts and refusals", () => {
     )
   })
 
-  it("measures a preselection at once", () => {
+  it("drops a preselection and asks for the objects (probe solid-inquiry/p124, d01)", () => {
     const cad = harness()
     answer(cad, "_SPHERE", "0,0,0", "5")
     cad.runtime.selectAll()
-    const lines = written(cad, "_MASSPROP")
-    expect(lines).toContain("Volume:                  523.5988")
-    answer(cad, "_N")
+    expect(written(cad, "_MASSPROP")).toEqual(["MASSPROP"])
     expect(cad.runtime.getState().selectionCount).toBe(0)
+    expect(written(cad, "")).toEqual(["Select objects:", "Nothing selected."])
+    expect(cad.runtime.getState().activeToolId).toBe("select")
   })
 
-  it("is one undo step that changes nothing", () => {
+  it("is one undo step that changes nothing, REDO's too (probe solid-inquiry/p104)", () => {
     const cad = harness()
     answer(cad, "_BOX", "0,0,0", "10,20", "5", "_MASSPROP", "_L", "", "_N")
     expect(written(cad, "_U")).toEqual(["U", "MASSPROP"])
     expect(cad.entities()).toHaveLength(1)
+    expect(written(cad, "_REDO")).toEqual([
+      "REDO",
+      "MASSPROP",
+      "Everything has been redone",
+    ])
+  })
+
+  it("is a step when it reports nothing, and UNDO 2 names it (p104, p105)", () => {
+    const cad = harness()
+    answer(cad, "_BOX", "0,0,0", "10,20", "5", "_LINE", "0,0", "10,0", "")
+    answer(cad, "_MASSPROP", "_L", "")
+    expect(written(cad, "_U")).toEqual(["U", "MASSPROP"])
+    answer(cad, "_MASSPROP", "")
+    expect(written(cad, "_U")).toEqual(["U", "MASSPROP"])
+    answer(cad, "_MASSPROP", "_ALL", "", "_N")
+    expect(written(cad, "_UNDO", "2").at(-1)).toBe("MASSPROP LINE")
+    expect(cad.entities()).toHaveLength(1)
+  })
+
+  it("repeats on Enter, and is no transparent command (p100)", () => {
+    const cad = harness()
+    answer(cad, "_BOX", "0,0,0", "10,20", "5", "_MASSPROP", "_L", "", "_N")
+    expect(written(cad, "", "_L", "", "_N")[0]).toBe("MASSPROP")
+    expect(written(cad, "_LINE", "0,0", "'_MASSPROP").slice(-2)).toEqual([
+      "** That command may not be invoked transparently **",
+      "Point or option keyword required.",
+    ])
+  })
+
+  it("refuses another prompt's keyword and a command at Write analysis, runs transparent ones (p103)", () => {
+    const cad = harness()
+    answer(cad, "_BOX", "0,0,0", "10,20", "5", "_MASSPROP", "_L", "")
+    expect(written(cad, "_C", "_LINE")).toEqual([
+      "Write analysis to a file? [Yes/No] <N>: _C",
+      "Invalid option keyword.",
+      "Write analysis to a file? [Yes/No] <N>: _LINE",
+      "Invalid option keyword.",
+    ])
+    const ortho = written(cad, "'ORTHOMODE", "1")
+    expect(ortho[0]).toBe("Write analysis to a file? [Yes/No] <N>: 'ORTHOMODE")
+    expect(ortho.at(-1)).toBe("Resuming MASSPROP command.")
+    answer(cad, "_No")
+    expect(cad.runtime.getState().activeToolId).toBe("select")
+  })
+
+  it("measures a solid and a region among other objects, the regions first (p107)", () => {
+    const cad = harness()
+    answer(cad, "_BOX", "0,0,0", "10,10,10", "_LINE", "20,0", "30,0", "")
+    answer(cad, "_CIRCLE", "50,0", "5", "_REGION", "_L", "")
+    expect(massprop(cad, "_ALL")).toEqual(INQUIRY.p107[0])
+  })
+
+  it("measures no block reference and no array (p108, p109)", () => {
+    const cad = harness()
+    answer(cad, "_BOX", "0,0,0", "10,10,10", "_-BLOCK", "B1", "0,0,0", "_L", "")
+    answer(cad, "_-INSERT", "B1", "20,0,0", "1", "1", "0")
+    expect(written(cad, "_MASSPROP", "_L", "").at(-1)).toBe(
+      "No solids or regions selected."
+    )
+    answer(cad, "_BOX", "0,0,0", "10,10,10", "_ARRAYRECT", "_L", "", "_X")
+    expect(written(cad, "_MASSPROP", "_L", "").at(-1)).toBe(
+      "No solids or regions selected."
+    )
+  })
+
+  it("measures what ALL finds on a layer that is off (p111)", () => {
+    const cad = harness()
+    answer(cad, "_BOX", "0,0,0", "10,10,10", "_BOX", "20,0,0", "30,10,10")
+    const off = cad.runtime.createLayer("L1")
+    answer(cad, "_CHPROP", "_L", "", "_LA", "L1", "")
+    cad.runtime.updateLayer(off, { visible: false })
+    const lines = written(cad, "_MASSPROP", "_ALL", "", "_N")
+    expect(lines).toContain("2 found")
+    expect(lines).toContain("Volume:                  2000.0000")
+  })
+
+  it("writes decimals in fractional units (p122)", () => {
+    const cad = harness()
+    answer(cad, "_LUNITS", "5", "_BOX", "0,0,0", "10.3,20", "5")
+    expect(massprop(cad, "_L")).toEqual(INQUIRY.p122[0])
+    answer(cad, "_RECTANG", "30,0", "40.3,4", "_REGION", "_L", "")
+    expect(massprop(cad, "_L")).toEqual(INQUIRY.p122[1])
   })
 })
 
 describe("MASSPROP in other languages", () => {
+  it("takes the bare S and N of es and pt-BR (probes solid-inquiry/p101, p102)", () => {
+    for (const [locale, name] of [
+      [es, "PROPFIS"],
+      [ptBR, "PROPMASS"],
+    ] as const) {
+      const files = new MemoryFileTransport()
+      const cad = createHarness({ locale, files })
+      answer(cad, "_BOX", "0,0,0", "10,20", "5", name, "_L", "", "N")
+      expect(files.saved).toEqual([])
+      answer(cad, name, "_L", "", "S")
+      expect(files.saved).toHaveLength(1)
+      expect(cad.runtime.getState().activeToolId).toBe("select")
+    }
+  })
+
   it("es: PROPFIS, its columns as its tables lay them (m05)", () => {
     const cad = harness(es)
     answer(cad, "_BOX", "0,0,0", "10,10", "10", "_BOX", "5,5,5", "15,15", "10")
@@ -1188,6 +1383,443 @@ const CONSOLE = {
       "Centroide:            X: 50.0000",
       "                      Y: 0.0000",
       "                      Z: 0.0000",
+    ],
+  ],
+} as const
+/** AutoCAD 2027's reports in the console, en-US (probes solid-inquiry/p107–p122). */
+const INQUIRY = {
+  p107: [
+    [
+      " ----------------   REGIONS   ----------------",
+      "Area:                    78.5398",
+      "Perimeter:               31.4159",
+      "Bounding box:         X: 45.0000  --  55.0000",
+      "                      Y: -5.0000  --  5.0000",
+      "Centroid:             X: 50.0000",
+      "                      Y: 0.0000",
+      "Moments of inertia:   X: 490.8739",
+      "                      Y: 196840.4147",
+      "Product of inertia:  XY: 0.0000",
+      "Radii of gyration:    X: 2.5000",
+      "                      Y: 50.0625",
+      "Principal moments and X-Y directions about centroid:",
+      "                      I: 490.8739 along [1.0000 0.0000]",
+      "                      J: 490.8739 along [0.0000 1.0000]",
+      " ----------------   SOLIDS    ----------------",
+      "Mass:                    1000.0000",
+      "Volume:                  1000.0000",
+      "Bounding box:         X: 0.0000  --  10.0000",
+      "                      Y: 0.0000  --  10.0000",
+      "                      Z: 0.0000  --  10.0000",
+      "Centroid:             X: 5.0000",
+      "                      Y: 5.0000",
+      "                      Z: 5.0000",
+      "Moments of inertia:   X: 66666.6667",
+      "                      Y: 66666.6667",
+      "                      Z: 66666.6667",
+      "Products of inertia: XY: -25000.0000",
+      "                     YZ: -25000.0000",
+      "                     ZX: -25000.0000",
+      "Radii of gyration:    X: 8.1650",
+      "                      Y: 8.1650",
+      "                      Z: 8.1650",
+      "Principal moments and X-Y-Z directions about centroid:",
+      "                      I: 16666.6667 along [1.0000 0.0000 0.0000]",
+      "                      J: 16666.6667 along [0.0000 1.0000 0.0000]",
+      "                      K: 16666.6667 along [0.0000 0.0000 1.0000]",
+    ],
+  ],
+  p112: [
+    [
+      " ----------------   SOLIDS    ----------------",
+      "Mass:                    1141.3717",
+      "Volume:                  1141.3717",
+      "Bounding box:         X: 0.0000  --  13.0000",
+      "                      Y: 0.0000  --  10.0000",
+      "                      Z: 0.0000  --  10.0000",
+      "Centroid:             X: 5.7770",
+      "                      Y: 5.0000",
+      "                      Z: 5.0000",
+      "Moments of inertia:   X: 75231.4336",
+      "                      Y: 89434.3088",
+      "                      Z: 88574.2979",
+      "Products of inertia: XY: -32968.5835",
+      "                     YZ: -28534.2917",
+      "                     ZX: -32968.5835",
+      "Radii of gyration:    X: 8.1187",
+      "                      Y: 8.8519",
+      "                      Z: 8.8093",
+      "Principal moments and X-Y-Z directions about centroid:",
+      "                      I: 18162.8502 along [1.0000 0.0000 0.0000]",
+      "                      J: 22808.0432 along [0.0000 1.0000 0.0000]",
+      "                      K: 21948.0322 along [0.0000 0.0000 1.0000]",
+    ],
+  ],
+  p113: [
+    [
+      " ----------------   SOLIDS    ----------------",
+      "Mass:                    986.9734",
+      "Volume:                  986.9734",
+      "Bounding box:         X: -10.0000  --  10.0000",
+      "                      Y: -3.0000  --  3.0000",
+      "                      Z: 0.0000  --  20.0000",
+      "Centroid:             X: 0.0000",
+      "                      Y: 0.0000",
+      "                      Z: 10.0000",
+      "Moments of inertia:   X: 120759.1265",
+      "                      Y: 138249.9374",
+      "                      Z: 22061.7910",
+      "Products of inertia: XY: 0.0000",
+      "                     YZ: 0.0000",
+      "                     ZX: 0.0000",
+      "Radii of gyration:    X: 11.0613",
+      "                      Y: 11.8353",
+      "                      Z: 4.7279",
+      "Principal moments and X-Y-Z directions about centroid:",
+      "                      I: 22061.7910 along [0.9732 0.0000 -0.2298]",
+      "                      J: 39552.6019 along [0.0000 1.0000 0.0000]",
+      "                      K: 22061.7910 along [0.2298 0.0000 0.9732]",
+    ],
+    [
+      " ----------------   SOLIDS    ----------------",
+      "Mass:                    144.0000",
+      "Volume:                  144.0000",
+      "Bounding box:         X: -3.0000  --  3.0000",
+      "                      Y: -3.0000  --  3.0000",
+      "                      Z: 7.0000  --  13.0000",
+      "Centroid:             X: 0.0000",
+      "                      Y: 0.0000",
+      "                      Z: 10.0000",
+      "Moments of inertia:   X: 15004.8000",
+      "                      Y: 15091.2000",
+      "                      Z: 604.8000",
+      "Products of inertia: XY: 0.0000",
+      "                     YZ: 0.0000",
+      "                     ZX: 0.0000",
+      "Radii of gyration:    X: 10.2078",
+      "                      Y: 10.2372",
+      "                      Z: 2.0494",
+      "Principal moments and X-Y-Z directions about centroid:",
+      "                      I: 604.8000 along [0.9988 0.0000 0.0498]",
+      "                      J: 691.2000 along [0.0000 1.0000 0.0000]",
+      "                      K: 604.8000 along [-0.0498 0.0000 0.9988]",
+    ],
+  ],
+  p114: [
+    [
+      " ----------------   SOLIDS    ----------------",
+      "Mass:                    540.9830",
+      "Volume:                  540.9830",
+      "Bounding box:         X: -5.0000  --  5.0000",
+      "                      Y: -5.0000  --  5.0000",
+      "                      Z: 0.0000  --  10.0000",
+      "Centroid:             X: 0.0000",
+      "                      Y: 0.0000",
+      "                      Z: 4.2972",
+      "Moments of inertia:   X: 16752.1813",
+      "                      Y: 16752.1811",
+      "                      Z: 4934.8263",
+      "Products of inertia: XY: 0.0000",
+      "                     YZ: 0.0000",
+      "                     ZX: 0.0000",
+      "Radii of gyration:    X: 5.5647",
+      "                      Y: 5.5647",
+      "                      Z: 3.0203",
+      "Principal moments and X-Y-Z directions about centroid:",
+      "                      I: 6762.6299 along [1.0000 0.0000 0.0000]",
+      "                      J: 6762.6297 along [0.0000 1.0000 0.0000]",
+      "                      K: 4934.8263 along [0.0000 0.0000 1.0000]",
+    ],
+    [
+      " ----------------   SOLIDS    ----------------",
+      "Mass:                    367.5663",
+      "Volume:                  367.5663",
+      "Bounding box:         X: -8.0000  --  8.0000",
+      "                      Y: 0.0000  --  4.0000",
+      "                      Z: -8.0000  --  8.0000",
+      "Centroid:             X: -1.4038",
+      "                      Y: 2.0000",
+      "                      Z: -1.4038",
+      "Moments of inertia:   X: 10138.7049",
+      "                      Y: 16356.7022",
+      "                      Z: 10138.7049",
+      "Products of inertia: XY: 1032.0000",
+      "                     YZ: 1032.0000",
+      "                     ZX: 1735.5000",
+      "Radii of gyration:    X: 5.2520",
+      "                      Y: 6.6708",
+      "                      Z: 5.2520",
+      "Principal moments and X-Y-Z directions about centroid:",
+      "                      I: 5484.1888 along [0.7071 0.0000 -0.7071]",
+      "                      J: 14907.9514 along [0.0000 1.0000 0.0000]",
+      "                      K: 10403.9395 along [0.7071 0.0000 0.7071]",
+    ],
+  ],
+  p115: [
+    [
+      " ----------------   SOLIDS    ----------------",
+      "Mass:                    997.8540",
+      "Volume:                  997.8540",
+      "Bounding box:         X: 0.0000  --  10.0000",
+      "                      Y: 0.0000  --  10.0000",
+      "                      Z: 0.0000  --  10.0000",
+      "Centroid:             X: 4.9897",
+      "                      Y: 5.0000",
+      "                      Z: 5.0103",
+      "Moments of inertia:   X: 66594.9502",
+      "                      Y: 66461.2868",
+      "                      Z: 66389.9354",
+      "Products of inertia: XY: -24895.0958",
+      "                     YZ: -24997.6032",
+      "                     ZX: -24995.2692",
+      "Radii of gyration:    X: 8.1693",
+      "                      Y: 8.1611",
+      "                      Z: 8.1568",
+      "Principal moments and X-Y-Z directions about centroid:",
+      "                      I: 16648.6633 along [0.7071 0.0000 -0.7071]",
+      "                      J: 16568.3771 along [0.0000 1.0000 0.0000]",
+      "                      K: 16550.6135 along [0.7071 0.0000 0.7071]",
+    ],
+    [
+      " ----------------   SOLIDS    ----------------",
+      "Mass:                    113.0973",
+      "Volume:                  113.0973",
+      "Bounding box:         X: -4.5826  --  4.5826",
+      "                      Y: -4.5826  --  4.5826",
+      "                      Z: 2.0000  --  5.0000",
+      "Centroid:             X: 0.0000",
+      "                      Y: 0.0000",
+      "                      Z: 3.0625",
+      "Moments of inertia:   X: 1546.6061",
+      "                      Y: 1546.6061",
+      "                      Z: 853.8849",
+      "Products of inertia: XY: 0.0000",
+      "                     YZ: 0.0000",
+      "                     ZX: 0.0000",
+      "Radii of gyration:    X: 3.6980",
+      "                      Y: 3.6980",
+      "                      Z: 2.7477",
+      "Principal moments and X-Y-Z directions about centroid:",
+      "                      I: 485.8768 along [1.0000 0.0000 0.0000]",
+      "                      J: 485.8768 along [0.0000 1.0000 0.0000]",
+      "                      K: 853.8849 along [0.0000 0.0000 1.0000]",
+    ],
+  ],
+  p116: [
+    [
+      " ----------------   SOLIDS    ----------------",
+      "Mass:                    1300.0000",
+      "Volume:                  1300.0000",
+      "Bounding box:         X: 0.0000  --  10.0000",
+      "                      Y: 0.0000  --  10.0000",
+      "                      Z: 0.0000  --  13.0000",
+      "Centroid:             X: 5.0000",
+      "                      Y: 5.0000",
+      "                      Z: 6.5000",
+      "Moments of inertia:   X: 116566.6667",
+      "                      Y: 116566.6667",
+      "                      Z: 86666.6667",
+      "Products of inertia: XY: -32500.0000",
+      "                     YZ: -42250.0000",
+      "                     ZX: -42250.0000",
+      "Radii of gyration:    X: 9.4692",
+      "                      Y: 9.4692",
+      "                      Z: 8.1650",
+      "Principal moments and X-Y-Z directions about centroid:",
+      "                      I: 29141.6667 along [1.0000 0.0000 0.0000]",
+      "                      J: 29141.6667 along [0.0000 1.0000 0.0000]",
+      "                      K: 21666.6667 along [0.0000 0.0000 1.0000]",
+    ],
+    [
+      " ----------------   SOLIDS    ----------------",
+      "Mass:                    1400.0000",
+      "Volume:                  1400.0000",
+      "Bounding box:         X: 0.0000  --  10.0000",
+      "                      Y: 0.0000  --  10.0000",
+      "                      Z: 0.0000  --  14.0000",
+      "Centroid:             X: 5.0000",
+      "                      Y: 5.0000",
+      "                      Z: 7.0000",
+      "Moments of inertia:   X: 138133.3333",
+      "                      Y: 138133.3333",
+      "                      Z: 93333.3333",
+      "Products of inertia: XY: -35000.0000",
+      "                     YZ: -49000.0000",
+      "                     ZX: -49000.0000",
+      "Radii of gyration:    X: 9.9331",
+      "                      Y: 9.9331",
+      "                      Z: 8.1650",
+      "Principal moments and X-Y-Z directions about centroid:",
+      "                      I: 34533.3333 along [1.0000 0.0000 0.0000]",
+      "                      J: 34533.3333 along [0.0000 1.0000 0.0000]",
+      "                      K: 23333.3333 along [0.0000 0.0000 1.0000]",
+    ],
+  ],
+  p118: [
+    [
+      " ----------------   SOLIDS    ----------------",
+      "Mass:                    502.6548",
+      "Volume:                  502.6548",
+      "Bounding box:         X: 66.0000  --  74.0000",
+      "                      Y: -4.0000  --  4.0000",
+      "                      Z: 0.0000  --  10.0000",
+      "Centroid:             X: 70.0000",
+      "                      Y: 0.0000",
+      "                      Z: 5.0000",
+      "Moments of inertia:   X: 18765.7801",
+      "                      Y: 2481774.4205",
+      "                      Z: 2467029.8790",
+      "Products of inertia: XY: 0.0000",
+      "                     YZ: 0.0000",
+      "                     ZX: -175929.1886",
+      "Radii of gyration:    X: 6.1101",
+      "                      Y: 70.2662",
+      "                      Z: 70.0571",
+      "Principal moments and X-Y-Z directions about centroid:",
+      "                      I: 6199.4095 along [1.0000 0.0000 0.0000]",
+      "                      J: 6199.4095 along [0.0000 1.0000 0.0000]",
+      "                      K: 4021.2386 along [0.0000 0.0000 1.0000]",
+    ],
+    [
+      " ----------------   SOLIDS    ----------------",
+      "Mass:                    2593.3429",
+      "Volume:                  2593.3429",
+      "Bounding box:         X: -13.0000  --  74.0000",
+      "                      Y: -13.0000  --  13.0000",
+      "                      Z: -3.0000  --  12.0000",
+      "Centroid:             X: 18.4134",
+      "                      Y: 0.0000",
+      "                      Z: 1.3325",
+      "Moments of inertia:   X: 123287.1848",
+      "                      Y: 3088950.6498",
+      "                      Z: 3161685.3466",
+      "Products of inertia: XY: 0.0000",
+      "                     YZ: 0.0000",
+      "                     ZX: -213628.3004",
+      "Radii of gyration:    X: 6.8949",
+      "                      Y: 34.5124",
+      "                      Z: 34.9164",
+      "Principal moments and X-Y-Z directions about centroid:",
+      "                      I: 108333.5108 along [0.9976 0.0000 0.0688]",
+      "                      J: 2205066.1323 along [0.0000 1.0000 0.0000]",
+      "                      K: 2292754.5031 along [-0.0688 0.0000 0.9976]",
+    ],
+    [
+      " ----------------   SOLIDS    ----------------",
+      "Mass:                    2593.3429",
+      "Volume:                  2593.3429",
+      "Bounding box:         X: -13.0000  --  74.0000",
+      "                      Y: -11.6603  --  11.6603",
+      "                      Z: -8.0000  --  10.6603",
+      "Centroid:             X: 18.4134",
+      "                      Y: -0.6663",
+      "                      Z: 1.1540",
+      "Moments of inertia:   X: 123287.1848",
+      "                      Y: 3107134.3240",
+      "                      Z: 3143501.6724",
+      "Products of inertia: XY: 106814.1502",
+      "                     YZ: -31495.0476",
+      "                     ZX: -185007.5352",
+      "Radii of gyration:    X: 6.8949",
+      "                      Y: 34.6139",
+      "                      Z: 34.8158",
+      "Principal moments and X-Y-Z directions about centroid:",
+      "                      I: 108333.5108 along [0.9976 -0.0344 0.0596]",
+      "                      J: 2205066.1323 along [0.0000 0.8660 0.5000]",
+      "                      K: 2292754.5031 along [-0.0688 -0.4988 0.8640]",
+    ],
+  ],
+  p119: [
+    [
+      " ----------------   SOLIDS    ----------------",
+      "Mass:                    1776.5288",
+      "Volume:                  1776.5288",
+      "Bounding box:         X: -13.0000  --  13.0000",
+      "                      Y: -11.6603  --  11.6603",
+      "                      Z: -8.0000  --  8.0000",
+      "Centroid:             X: 0.0000",
+      "                      Y: 0.0000",
+      "                      Z: 0.0000",
+      "Moments of inertia:   X: 98819.4141",
+      "                      Y: 121525.6727",
+      "                      Z: 166938.1899",
+      "Products of inertia: XY: 0.0000",
+      "                     YZ: -39328.3936",
+      "                     ZX: 0.0000",
+      "Radii of gyration:    X: 7.4582",
+      "                      Y: 8.2708",
+      "                      Z: 9.6937",
+      "Principal moments and X-Y-Z directions about centroid:",
+      "                      I: 98819.4141 along [1.0000 0.0000 0.0000]",
+      "                      J: 98819.4141 along [0.0000 0.8660 0.5000]",
+      "                      K: 189644.4486 along [0.0000 -0.5000 0.8660]",
+    ],
+    [
+      " ----------------   SOLIDS    ----------------",
+      "Mass:                    314.1593",
+      "Volume:                  314.1593",
+      "Bounding box:         X: -5.0000  --  5.0000",
+      "                      Y: -6.0000  --  4.3301",
+      "                      Z: -2.5000  --  10.3923",
+      "Centroid:             X: 0.0000",
+      "                      Y: -1.5000",
+      "                      Z: 2.5981",
+      "Moments of inertia:   X: 5701.9907",
+      "                      Y: 4865.5416",
+      "                      Z: 3192.6435",
+      "Products of inertia: XY: 0.0000",
+      "                     YZ: 1448.7722",
+      "                     ZX: 0.0000",
+      "Radii of gyration:    X: 4.2603",
+      "                      Y: 3.9354",
+      "                      Z: 3.1879",
+      "Principal moments and X-Y-Z directions about centroid:",
+      "                      I: 2874.5573 along [1.0000 -0.0054 -0.0031]",
+      "                      J: 2874.5573 along [0.0063 0.8660 0.5000]",
+      "                      K: 2356.1945 along [0.0000 -0.5000 0.8660]",
+    ],
+  ],
+  p122: [
+    [
+      " ----------------   SOLIDS    ----------------",
+      "Mass:                    1030.0000",
+      "Volume:                  1030.0000",
+      "Bounding box:         X: 0.0000  --  10.3000",
+      "                      Y: 0.0000  --  20.0000",
+      "                      Z: 0.0000  --  5.0000",
+      "Centroid:             X: 5.1500",
+      "                      Y: 10.0000",
+      "                      Z: 2.5000",
+      "Moments of inertia:   X: 145916.6667",
+      "                      Y: 45007.5667",
+      "                      Z: 173757.5667",
+      "Products of inertia: XY: -53045.0000",
+      "                     YZ: -25750.0000",
+      "                     ZX: -13261.2500",
+      "Radii of gyration:    X: 11.9024",
+      "                      Y: 6.6103",
+      "                      Z: 12.9883",
+      "Principal moments and X-Y-Z directions about centroid:",
+      "                      I: 36479.1667 along [1.0000 0.0000 0.0000]",
+      "                      J: 11251.8917 along [0.0000 1.0000 0.0000]",
+      "                      K: 43439.3917 along [0.0000 0.0000 1.0000]",
+    ],
+    [
+      " ----------------   REGIONS   ----------------",
+      "Area:                    41.2000",
+      "Perimeter:               28.6000",
+      "Bounding box:         X: 30.0000  --  40.3000",
+      "                      Y: 0.0000  --  4.0000",
+      "Centroid:             X: 35.1500",
+      "                      Y: 2.0000",
+      "Moments of inertia:   X: 219.7333",
+      "                      Y: 51267.7693",
+      "Product of inertia:  XY: -2896.3600",
+      "Radii of gyration:    X: 2.3094",
+      "                      Y: 35.2755",
+      "Principal moments and X-Y directions about centroid:",
+      "                      I: 54.9333 along [1.0000 0.0000]",
+      "                      J: 364.2423 along [0.0000 1.0000]",
     ],
   ],
 } as const

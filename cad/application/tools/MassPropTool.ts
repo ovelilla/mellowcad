@@ -30,10 +30,11 @@ import {
 } from "./Tool"
 
 /**
- * AutoCAD's MASSPROP (solid/m01–m10, region/p01, b02): `Select objects:`,
- * then the regions' report and the solids', each set summed as one body with
- * a density of 1, in the current UCS — its origin the moments', its axes the
- * box's and the directions' —, every number at LUPREC (m08); then `Write
+ * AutoCAD's MASSPROP (solid/m01–m10, region/p01, b02): `Select objects:`, a
+ * preselection dropped (solid-inquiry/p124, d01), then the regions' report
+ * and the solids', each set summed as one body with a density of 1, in the
+ * current UCS — its origin the moments', its axes the box's and the
+ * directions' —, every number at LUPREC (m08); then `Write
  * analysis to a file? [Yes/No] <N>:`. Objects on a locked layer are measured
  * (m09); a set with neither says `No solids or regions selected.`, an empty
  * one `Nothing selected.` (m05). The regions are those in the plane of the
@@ -65,6 +66,12 @@ export class MassPropTool extends SelectionActionTool {
     this.order = []
     this.analysis = null
     super.onDeactivate(ctx)
+  }
+
+  // WHY: MASSPROP asks for its set though LIST and MOVE took the preselection
+  // in the same run (solid-inquiry/p124; the desktop too, d01).
+  protected takesPreselection(): boolean {
+    return false
   }
 
   protected takesLocked(): boolean {

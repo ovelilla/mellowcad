@@ -596,6 +596,21 @@ describe("Jacobi's eigenvectors", () => {
       [0, 0, 1],
     ])
   })
+
+  it("turn two equal moments as if their rounding were not there (solid-inquiry/p114)", () => {
+    // p114's REVOLVE: Ixx and Izz equal but for 3.6e-12, a product between
+    // them. AutoCAD turns `[c, 0, −s]` first, the lesser moment on it.
+    const { values, vectors } = jacobiEigen([
+      [10, 0, 2],
+      [0, 5, 0],
+      [2, 0, 10 - 1e-14],
+    ])
+    expect(values.map((v) => Math.round(v))).toEqual([8, 5, 12])
+    expect([0, 2].map((k) => vectors.map((row) => row[k].toFixed(4)))).toEqual([
+      ["0.7071", "0.0000", "-0.7071"],
+      ["0.7071", "0.0000", "0.7071"],
+    ])
+  })
 })
 
 /** A square `side` wide from `corner`, counter-clockwise, and a hole round `hole`. */
