@@ -1,8 +1,8 @@
 # Visibilidad y tráfico orgánico — plan maestro
 
-> **Estado:** auditoría, plan y sesiones 01 y 02 hechos (5/11/2026), y por decisión del dueño la
-> visibilidad va antes que cualquier funcionalidad; siguiente: el push de 01 y 02 con sus acciones
-> de §7, y las sesiones 03 y 04 (§5), que pueden ir en paralelo. Esperan detrás
+> **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), y por decisión
+> del dueño la visibilidad va antes que cualquier funcionalidad; siguiente: las acciones del dueño
+> de §7 y las sesiones 03 y 04 (§5), que pueden ir en paralelo. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -255,8 +255,8 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    validador de schema.org ya dio 0 errores y 0 advertencias en las dos. Las 45 copias de la
    documentación inglesa bajo `/es`, `/ar` y `/pt-br` redirigen ya (308): Páginas las irá mostrando
    como «Página con redirección», sin hacer nada.
-3. **Bing Webmaster Tools**: tras el push de 01, comprobar que la clave responde
-   (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`) y enviar el sitemap a IndexNow:
+3. **Bing Webmaster Tools**: la clave responde ya en producción
+   (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
    clave no está desplegada); repetirlo en cada push con páginas nuevas o cambiadas. Inspección de
    URLs → «Request indexing» de `/docs/commands` y `/pt-br`, hoy «descubiertas pero no rastreadas»;
@@ -277,21 +277,21 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
 Una línea por sesión, que cada una actualiza al cerrar su parte.
 
 - Auditoría: hecha el 5/11/2026 (`4c6094db`, `7eede991` y el kit de lanzamiento).
-- 01 Técnica y rastreo: hecha el 5/11/2026 (`bd30cf81` a `506c3d5b`), sin push. Medido en builds
+- 01 Técnica y rastreo: hecha y publicada el 5/11/2026 (`bd30cf81` a `506c3d5b`). Medido en builds
   de producción de antes y después: de 111 URLs rastreables (92 HTML, 45 copias, 7.064 enlaces
   internos, 58,3 MB de HTML) a 78 (47 HTML, 0 copias, 3.741 enlaces, 8,9 MB); las 43 indexables son
   las del sitemap, con título y descripción únicos y `lastmod`; `/docs/engine/api` de 9,1 MB a
   0,6 MB y ninguna página por encima de 1 MB; JSON-LD con 0 errores en el validador de schema.org;
   Lighthouse igual (100 en `/`, `/es` y `/docs/commands`) y `/docs/commands` de 777 a 320 KB en
-  escritorio. Quedan del dueño (§7): el push, IndexNow y la prueba de resultados enriquecidos.
+  escritorio. Quedan del dueño (§7): IndexNow y la prueba de resultados enriquecidos.
   `/pt-BR` sigue en 404 (una redirección pide rutas sensibles a mayúsculas, sin verificar en Vercel).
-- 02 Posicionamiento y metadatos: hecha el 5/11/2026 (`353027e8`, `146fffea`), sin push. La tabla
+- 02 Posicionamiento y metadatos: hecha y publicada el 5/11/2026 (`353027e8`, `146fffea`). La tabla
   de consultas de cada home, en L2; las 21 ubicaciones de `technical.md` §6.2, reescritas (16) o
   conservadas por estar ya bien (5: el `featureList`, «Todavía no» y «A continuación», el README y
   los recuentos de idiomas), cada una con su motivo en los commits. Titles de 52 a 59 caracteres y
   descriptions de 145 a 155, con la consulta principal delante, sostenidos por
   `i18n/messages.test.ts`; el FAQ pregunta por el 3D; las tarjetas OG, vistas en los cuatro
-  idiomas. Quedan del dueño (§7): el push, el `gh repo edit` y la próxima publicación en npm.
+  idiomas. Quedan del dueño (§7): el `gh repo edit` y la próxima publicación en npm.
 - 03 Una página por comando: pendiente.
 - 04 Rediseño de la landing: pendiente.
 - 05 Lanzamiento: pendiente (los directorios pueden ir ya).
