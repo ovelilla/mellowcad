@@ -23,7 +23,7 @@ rastreadores, Lighthouse móvil da 97–100 y el LCP 1,1–1,2 s. Lo que falla, 
    a la inglesa (`.claude/rules/docs.md`, «Languages»): 45 copias, que reciben 2.364 enlaces
    internos (el 33 % del sitio) y pesan 37 MB; con los originales son 60 de las 92 URLs HTML y el
    89 % de los bytes. 15 de los 19 enlaces de cada barra lateral localizada apuntan a ellas. Gastan
-   el rastreo de un dominio nuevo (Google tardó del 26/9 al 4/11 en rastrear la documentación) y
+   el rastreo de un dominio nuevo (la documentación, publicada el 30/10, no se rastreó hasta el 4/11) y
    Google desaconseja la navegación traducida alrededor de contenido en otro idioma.
 2. **`/docs/engine/api` pesa 9,1 MB de HTML** (en cuatro URLs): Google solo lee los primeros 2 MB
    (ve el 54 % del texto y 9 de 16 encabezados) y Bing recomienda menos de 1 MB. La causa es el
