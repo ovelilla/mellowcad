@@ -244,9 +244,9 @@ deviation without a `WHY` and a coverage note is a finding.
   commands' results, or the last go unasked), and write scratch tests only in a folder each
   (`research/review/<command>/<letter>/`) and scratch files only in a scratchpad folder each (two
   overwrote a shared helper). They never drive the desktop.
-- Each gets its list of files, the rules to open, the matrix rows and prompts it answers (disjoint:
-  two subagents with the same prompts found ELLIPSE's differences twice; a case every prompt meets,
-  such as a zero vector, goes to one of them, or MOVE's turned up under three ids), the finding format
+- A fork already holds the template and inventory: its brief is the scope, ranges and cells.
+- Each gets its list of files, the rules to open, the matrix rows and prompts it answers (disjoint,
+  ELLIPSE's found twice; a case every prompt meets, a zero vector, to one of them), the finding format
   (§5.1), its prefix and a range of decision ids of its own (the Undo keyword's listing and steps
   at every prompt, the preselection, a run after one with options (SWO-01) and the review of the
   existing tests go to one subagent by name: OFFSET's turned up three times; so does a path two
@@ -257,8 +257,7 @@ deviation without a `WHY` and a coverage note is a finding.
   `picksLocked`, `THEME.entityHover`) across all the review's tools and gives that sweep to one
   subagent by name: three found LASTPOINT broken, each in its own tools (Dimensions).
 - They return the cells they answered (findings numbered without gaps), what they could not
-  check, the tests they read, and the suspects their tool showed for the others' (SLICE's UCS
-  axes read as the frame's were SOLIDEDIT's too: SOE-12, SOE-20), which the reviewer probes, as text: a subagent cannot write a report file, so the reviewer keeps it in the scratchpad.
+  check, the tests they read, and the suspects their tool showed for the others' (SOE-12, SOE-20), which the reviewer probes, as text: a subagent cannot write a report file, so the reviewer keeps it in the scratchpad.
 - Their high and critical findings are verified by the reviewer, in person, before the plan.
 - A desktop surprise goes at once to the subagent owning that prompt (SendMessage): the console
   then settles it case by case (SCALE's factor, transforms/d06 → p219, within the hour).
@@ -398,4 +397,4 @@ traced BasePoint, a pick from the cursor, a jig prompt twice, pixels in two view
 Node: annex-probes.md §2, §4; the ribbon's answers, a run after options, the desktop drawing's
 variables: §4.1, §4.8, §5.3), Solid edits (the others' suspects, a new variable's OPEN test, a
 shared default, a sibling's pairing: §4.1, §4.8, matrix.md B, annex-catalogs.md §1), its desktop
-(matrix.md C, G, I; annex-probes.md §4; §4.8).
+(matrix.md C, G, I; annex-probes.md §4; §4.8); 11-05 Solid inquiry (annex-probes.md §2, §4; §4.8).

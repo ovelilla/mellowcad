@@ -8,7 +8,7 @@ is how a review uses them.
 
 - A probe is `<command>/<id>`: `p01`, `p02`… for the console, `d01`… for the desktop, numbered in
   the order written and never renumbered; a probe that hangs keeps its id and the retry takes the
-  next free one (View's p201, p203, p238 were rewritten). A test or a comment cites it as
+  next free one. A test or a comment cites it as
   `probe line/p07` (adding `es-ES` or `en-US` when only one language shows it).
 - **The input is committed**: `scripts/research/probes/<command>/<id>.txt` for the console (one
   answer per line, as `runacc.sh` takes it), `<id>.sh` for the desktop (the `acad.sh` calls, in
@@ -37,18 +37,17 @@ Writing one (the traps of `console.md` hold; these are the review's):
   a probe of the Spanish names (`LINEA`, `H` for undo) runs in es-ES only and says so in its index.
 - `_ZOOM _W` around the drawing before any pick or window selection (`console.md`).
 - **How far U and UNDO go is probed untraced**: name the file `<id>.plain.txt`. Loading the
-  tracer leaves undo steps of its own (SECURELOAD, NETLOAD, MPTRACE), and U took them back
-  silently in LINE's first probes.
+  tracer leaves undo steps of its own (SECURELOAD, NETLOAD, MPTRACE), which U takes back too.
 - **An empty line at `Command:` repeats the last command**: end a probe on the command's own last
   answer, not on an extra Enter (FILLET ran twice in LINE's p60).
 - A command that hangs the console (real-time PAN, 3DORBIT) goes last, alone: every answer after
   it is lost. Between U and REDO read with `getvar` only: an `(ssget "_X")` there left
   REDO `Nothing to redo` (View review).
 - Typed coordinates are taken as typed: with the console's OSMODE 4133 and OSNAPCOORD 2, a point
-  typed beside an endpoint was not snapped (checked 2026-10-21). A snap is probed with a typed
+  typed beside an endpoint was not snapped. A snap is probed with a typed
   override (`_END`) and a point inside the aperture.
 - A batched probe's fallback answer is a number: a word that lands at `Command:` can run a command
-  (AutoComplete turned `ANGLE` into MEASUREMENT, es `ByLayer` ran SETBYLAYERMODE). The traced
+  (AutoComplete turned `ANGLE` into MEASUREMENT). The traced
   runner types `_SECURELOAD` itself, which becomes SETVAR's default, and filters its lines: probe
   SETVAR's default untraced. The trace's `AllowSpaces` is false even at -TEXT's `Enter text:`, and
   the console takes each line whole: whether a name takes a space is a desktop cell (Workspace).
@@ -58,15 +57,14 @@ Writing one (the traps of `console.md` hold; these are the review's):
   overwrites the owner's clipboard, so ask first. A Lisp command missing a function in the console
   runs with a stub defined first (`AI_SELALL`'s INITCOMMANDVERSION; Clipboard review).
   Its paste is text's, an MTEXT's point: its refusals and its `(ssget "_I")` say nothing of an
-  object paste, which is INSERT's jig (p108–p110 and erase/p263 refuted by clipboard/d02, d04).
+  object paste, which is INSERT's jig.
 - What a result is: `MPDUMP` with `-` after the command (every property, full precision);
   `(getvar "LASTPOINT")` for LASTPOINT; `_QAFLAGS 2` as the first line of any probe that
-  LISTs (LIST's paging ate three subagents' es-ES runs, 3D primitives).
+  LISTs (LIST's paging ate es-ES runs).
 - Before probing a new object's snaps one by one, read its help's Drafting Settings, Object Snap
   tab: "do not work with edges or corners of 3D solids" settled Intersection there (SPK-01).
-- A behaviour that may be the console's carries a known command as its control in the same run:
-  MOVE before REGION (p129), EXTRUDE and SLICE beside the booleans (p349) settled the
-  preselection, and the desktop agreed (regions/d01; Regions).
+- A behaviour that may be the console's carries a known command as its control in the same run
+  (MOVE before REGION, regions/p129; the desktop agreed, d01).
 - A setting the cell needs is set inside the probe (`CECOLOR`, `-LAYER`, `_ELEVATION`,
   `_THICKNESS`, `_UCS _Z 30`, `_UCS _X 90`, `-LINETYPE _L`): each run is isolated, so nothing
   needs restoring.
@@ -84,6 +82,9 @@ A traced `BasePoint` is evidence of its own: varied inputs fit it to 1e-15 (EXTR
 sweeps/EXT-01). A pick the console cannot click reads a typed point from its fixed cursor: those
 answers wait for the desktop (PRESSPULL, SLP-03). Two `Prompting` events with one message (a
 distance, then a point) are two history lines (p164, SWD-04).
+
+A look is plotted As displayed (console.md) and its pixels read against the scene's primitives
+(solid-inquiry/p300–p316).
 
 A command the ribbon runs in modes has its buttons' macros in `acad.cuix`, a zip (read it with
 Python's `zipfile`; `unzip` is not installed): `^C^C_circle \_d` is what the history echoes.
@@ -142,7 +143,7 @@ Then, per desktop probe:
 5. When the session's last desktop probe is done, quit AutoCAD (`gui.md`): the closed window tells
    the owner the mouse is free.
 
-Traps seen on the desktop (PLINE's review, 2026-10-21):
+Traps seen on the desktop:
 
 - Ctrl+1 docks the Properties palette and shifts the drawing area: capture the palette last, or
   read the view again after closing it. When Ctrl+1 does not reach AutoCAD, `com send
@@ -300,6 +301,9 @@ Traps seen on the desktop (PLINE's review, 2026-10-21):
   Right; sweeps/d01); a click lands within a pixel, so the target is a POINT snapped by Node (d05).
   AutoCAD may move monitors between probes: a white shot means `acad.sh children` again; a fresh
   launch needs `com netload` before `com hist` (Sweeps).
+
+- A console finding COM can show (a history line, a `sssetfirst` preselection) is checked through
+  COM alone in the console session; `_MASSPROP\n\n` ends either branch (solid-inquiry/d01).
 
 A probe that only reads the raw `initget` (flags, `control`) loads MellowProbe with
 `acad.sh com netload` and reads `com trace` (`tracing.md`).

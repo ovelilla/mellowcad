@@ -1,9 +1,9 @@
 # Solid inquiry review (MASSPROP; VSCURRENT's Hidden and Conceptual)
 
-> **Status:** plan, 2026-11-05. Console blocks MSP, VSC and VST reviewed (Phases 0–3 in one
-> session, three subagents), with a COM-only desktop check (d01) of the two findings the console
-> alone could not settle. The look of the visual styles (block VSD) needs the owner's mouse: a
-> later desktop session, after the console blocks are executed.
+> **Status:** console blocks executed, 2026-11-05 (MSP, VSC, VST: §15); block VSD, the visual
+> styles' look on the desktop with the owner's mouse, is next, in a session of its own. Phases 0–3
+> in one session with three subagents; a COM-only desktop check (d01) settled the two findings the
+> console alone could not.
 
 ## 1. Summary
 
@@ -429,3 +429,30 @@ No platform deviation is declared but MASSPROP's download (its `WHY` and coverag
   brief is the scope, the ranges and the cells (§4.8).
 - **A render area's console eye**: plots As displayed read by their pixels against the scene's
   primitives settled most of VST before the desktop (annex-probes.md §2).
+
+## 15. Execution
+
+| Id     | What it was                                                                     | Commit   |
+| ------ | ------------------------------------------------------------------------------- | -------- |
+| MSP-01 | two equal moments' axes in the reverse order and sign                            | 860732aa |
+| MSP-02 | MASSPROP measured a preselection AutoCAD drops                                   | 860732aa |
+| MSP-03 | the Missing said booleans were not measured                                      | 860732aa |
+| MSP-04 | a far body's E notation and lost digits (Missing)                                | 860732aa |
+| MSP-05 | tests and citations                                                              | 860732aa |
+| VSC-01 | U, UNDO and REDO back to 2D Wireframe were silent                                | f5877454 |
+| VSC-02 | the view commands said `Regenerating model.` in Hidden and Conceptual            | f5877454 |
+| VSC-03 | the hidden `3DHIDDEN` was refused                                                | f5877454 |
+| VSC-04 | the saved views' style (-VIEW's Missing)                                         | f5877454 |
+| VSC-05 | tests                                                                            | f5877454 |
+| VST-01 | Conceptual's shaded regions, wide polylines and thickness (Missing)              | 414c8d1b |
+| VST-02 | a click over a hidden edge took the solid behind                                 | 414c8d1b |
+| VST-03 | a locked solid's faces not faded                                                 | 414c8d1b |
+| VST-04 | three claims of the Missing                                                      | 414c8d1b |
+| VST-05 | tests                                                                            | 414c8d1b |
+
+- **VST-02 grew in the execution:** p314's click lands on the front box's face away from its edges,
+  so reading the drawn edges alone (SINQ-D61) would have taken nothing; a solid off 2D Wireframe
+  is now picked by the face nearest the viewer (`shadedSolidPick`), and "picking a solid by its
+  faces" left the Missing. Its cost is a ray through every solid's faces per pointer move, with no
+  box to skip the far ones: VSD watches the rollover on a heavy drawing.
+- The template improvements of §14 are applied (annex-probes.md §2, §4; template §4.8).
