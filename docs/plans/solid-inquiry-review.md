@@ -1,20 +1,20 @@
 # Solid inquiry review (MASSPROP; VSCURRENT's Hidden and Conceptual)
 
 > **Status:** console blocks executed, 2026-11-05 (MSP, VSC, VST: §15); block VSD, the visual
-> styles' look on the desktop with the owner's mouse, is next, in a session of its own. Phases 0–3
-> in one session with three subagents; a COM-only desktop check (d01) settled the two findings the
-> console alone could not.
+> styles' look on the desktop with the owner's mouse (d02–d11), planned the same day (§16), its
+> execution next. Phases 0–3 in one session with three subagents; a COM-only desktop check (d01)
+> settled the two findings the console alone could not.
 
 ## 1. Summary
 
-**Findings:** 0 critical, 1 high, 6 medium, 8 low.
+**Findings:** 0 critical, 1 high, 12 medium, 13 low.
 
 | Block | What                                         | Critical | High | Medium | Low |
 | ----- | -------------------------------------------- | -------- | ---- | ------ | --- |
 | MSP   | MASSPROP                                     | 0        | 1    | 1      | 3   |
 | VSC   | VSCURRENT, the command                       | 0        | 0    | 3      | 2   |
 | VST   | the visual styles (the area), console side   | 0        | 0    | 2      | 3   |
-| VSD   | the visual styles' look, desktop (to come)   | –        | –    | –      | –   |
+| VSD   | the visual styles' look, desktop (§16)       | 0        | 0    | 6      | 5   |
 
 The worst:
 
@@ -456,3 +456,210 @@ No platform deviation is declared but MASSPROP's download (its `WHY` and coverag
   faces" left the Missing. Its cost is a ray through every solid's faces per pointer move, with no
   box to skip the far ones: VSD watches the rollover on a heavy drawing.
 - The template improvements of §14 are applied (annex-probes.md §2, §4; template §4.8).
+
+## 16. Block VSD — the visual styles on the desktop
+
+Phases 0–4 on 2026-11-05 (commit `e6ff2655`, AutoCAD 2027 X.118.0.0, es-ES then en-US profiles;
+the owner's mouse), one fork pinning mellowcad's side in scratch tests
+(`research/review/solid-inquiry/a/`). Added to the inventory: `shading.ts`' fit,
+`tools/selectToolOverlay.ts` (`pushRolloverHighlight`), `tools/ghostLook.ts`,
+`tools/boxSelection.ts` (`buildSelectionPreview`), `CadRuntime.ts`' `shadedSolidPick` and
+`setsLastPoint`, `EngineState.ts`' `buildDynamicInputUi`, SceneBuilder's `pushUcsIcon`.
+
+### Probes (desktop, `scripts/research/probes/solid-inquiry/d02.sh`–`d11.sh`, `lib.sh`)
+
+| Id  | What it asks                                                                                       |
+| --- | -------------------------------------------------------------------------------------------------- |
+| d02 | COM only: p306's scene in 2D Wireframe, Hidden, Conceptual; the VS* variables; edge pixels          |
+| d03 | the grid, UCS icon, ViewCube and crosshair in each style, a box SW Iso                              |
+| d04 | p314's boxes: rollover, a click on a face, on a hidden edge, Ctrl hover and click, in H and C       |
+| d05 | a window and a crossing over A, held open, in H and C                                               |
+| d06 | COM only: a locked box, a 0.80 lineweight, a red box; LWDISPLAY 0 and 1; each style's pixels        |
+| d07 | COM only: VST-01's objects (p316's scene) on screen                                                 |
+| d08 | MASSPROP typed: the text window, the pager (es)                                                     |
+| d09 | MASSPROP: Escape and the right button at `Write analysis` (es)                                       |
+| d10 | MASSPROP with DYNMODE 3 typed; LASTPOINT after a click at `Select objects:` (MASSPROP, LIST, ERASE) |
+| d11 | en-US: the rollover tooltip, the pager, the right button's menu, `*Cancel*`                         |
+
+### Matrix
+
+| Row | Cell                                                                        | State                                     |
+| --- | --------------------------------------------------------------------------- | ----------------------------------------- |
+| M   | Hidden's and Conceptual's edges: white, 1–2 px, unantialiased; tangent edges | match (presentation) · d02, d03 · look.test |
+| M   | silhouettes 1–2 px on screen (VSSILHWIDTH 3)                                 | differs (docs) VSD-11 · d02, d03          |
+| M   | Conceptual's faces on screen: 230,230,212 / 207,207,209 / 114,114,193        | differs VSD-01 · d02, d03, d06            |
+| M   | a red box's faces 230,102,76 / 207,91,88 / 114,44,134                         | differs VSD-01 · d06                      |
+| M   | faceted outlines                                                             | known · d02 (Missing)                     |
+| M   | locked: edges 178 grey, faces lighter and yellower                           | differs VSD-07 · d06                      |
+| M   | lineweight 0.80: 9–10 px in 2D Wireframe, 6 px in H and C                    | differs VSD-10 · d06                      |
+| M   | VST-01's objects shaded and hiding on screen                                 | known · d07 = p302, p316                  |
+| P   | the grid in H and C; covered by Conceptual's faces                           | known · d03                               |
+| P   | the UCS icon's arms red, green, blue in H and C                              | differs VSD-08 · d03                      |
+| P   | the ViewCube in H and C only (NAVVCUBEDISPLAY 1)                             | known · d03 (NAVVCUBE's Missing)          |
+| P   | the 3D crosshair's coloured axes                                             | known · d03 (3D primitives, PDJ)          |
+| P   | the viewport label `[Conceptual (Fast)]`, es `[Conceptual (Rápido)]`          | known · d03, d11 (VSD-11 adds the suffix) |
+| I   | rollover over a solid in H and C: its visible edges thick white              | differs VSD-02 · d04-a · look.test cell 3 |
+| I   | rollover, selection, preview: the faces tinted                               | differs VSD-09 · d04, d05                 |
+| I   | the rollover tooltip `3D Solid`, es `Sólido 3D`                              | match · d04, d11 · CadRuntime.test.ts:553 |
+| I   | selection: glow on the visible edges, the primitive's grips                  | match · d04-b · look.test cell 4          |
+| I   | selection: the Move gizmo                                                    | known · d04-b (draw.md's gizmos)          |
+| Q   | a window and a crossing over a solid in H and C                              | differs VSD-02, VSD-09 · d05              |
+| O   | a click on a face, over a hidden edge (VST-02 by mouse)                      | match · d04-c · more.test cell 7          |
+| O   | Ctrl hover and click on a face in H and C                                    | differs VSD-09 · d04-e                    |
+| perf| the rollover's cost, 400 solids                                              | differs VSD-03 · cost.test                |
+| G   | MASSPROP: the text window and `Press ENTER to continue:`                     | differs (docs) VSD-06 · d08, d09, d11     |
+| G   | Escape at the pager skips the rest of the report                              | known with VSD-06 · d09                   |
+| G   | Escape at `Write analysis`: `*Cancel*`, es `*Cancelado*`                      | match · d09, d11 · cells11.test           |
+| G   | the right button there: Enter, Cancel, Yes, No, Pan, Zoom, SteeringWheels, QuickCalc | known (Pan, Zoom, QuickCalc: workspace.md) · d09, d11 |
+| I   | dynamic input: `Select objects:` at the cursor                               | differs VSD-05 · d10 · dyn.test           |
+| D   | LASTPOINT after a click at `Select objects:` off the plan                    | differs VSD-04 · d10 · cells9.test cell 13 |
+
+### Findings
+
+#### VSD-01 — Conceptual's faces take the plot's colours, not the screen's
+
+- **Severity:** medium (the style is not recognised at a glance: dark grey where AutoCAD shows ivory
+  and blue) · **Row:** M · **Status:** verified
+- **Where:** `cad/application/shading.ts`: its light, base and slope fitted to the plot p03.
+- **AutoCAD:** d02, d03 on screen, a white box SW Iso: top 230,230,212, left 207,207,209, right
+  114,114,193; d06's red box 230,102,76 / 207,91,88 / 114,44,134.
+- **mellowcad:** 130,130,135 / 122,122,129 / 85,85,101 (scratch look.test cell 1).
+- **Fix:** SINQ-D64. **Regression test:** the white and the red box's three faces in
+  `visualStyles.test.ts`, citing d03, d06. **Coverage:** view.md's "fitted to … (p03: 130, 122 and
+  85 grey)" names the screen's values; the tint line of Missing is revisited with the red box.
+
+#### VSD-02 — In Hidden and Conceptual the rollover and the window's preview draw a solid's hidden edges
+
+- **Severity:** medium (geometry the style hides, on every hover) · **Row:** I, Q · **Status:**
+  verified (the reviewer read the code and ran the test)
+- **Where:** `selectToolOverlay.ts` `pushRolloverHighlight`, `ghostLook.ts` `rollover`,
+  `boxSelection.ts` `buildSelectionPreview`: none passes `solidLines`, so a solid falls back to its
+  whole wireframe.
+- **AutoCAD:** d04-a, d05: only the visible edges, thick white.
+- **mellowcad:** 12 `entityHover` segments over A where 9 are visible (look.test cell 3, cell 5).
+- **Fix:** the scene's visible stretches (`solidViewEntities` for the view) passed wherever a
+  solid's highlight is drawn off 2D Wireframe; one helper for the three, and OFFSET's, MATCHPROP's
+  and ATTEDIT's hovers through it. **Regression test:** the hover and the window over A in H and C → 9.
+
+#### VSD-03 — The rollover off 2D Wireframe costs about 50 ms a pointer move with 400 solids
+
+- **Severity:** medium (felt: about 8 frames a second with the scene) · **Row:** perf · **Status:**
+  verified in the harness (51 ms against 9.5 in 2D Wireframe)
+- **Where:** `CadRuntime.ts` `shadedSolidPick`'s closure, applied to every solid by `pickAllBy`
+  with no box test (49.5 of the 51 ms; the ray through the faces is 1 ms).
+- **Fix:** a solid whose screen box, padded by the tolerance, misses the cursor is skipped before
+  its wires are measured. **Test:** the pick's answer unchanged on p314; a cost test stays a scratch
+  (timing is not gated).
+
+#### VSD-04 — A click at `Select objects:` off the plan leaves LASTPOINT
+
+- **Severity:** medium · **Row:** D · **Status:** verified
+- **Where:** `CadRuntime.ts` `setsLastPoint` ("a selection does not"); SED-06 fixed the single
+  picks only.
+- **AutoCAD:** d10, LASTPOINT 7,7,7, a click on 5,0,10 of a box in SW Iso at `Select objects:` of
+  MASSPROP, LIST and ERASE: `(15.0514 10.0266 0.0)` in all three, the cursor's point on the work plane.
+- **mellowcad:** 7,7,7 (cells9.test cell 13).
+- **Fix:** a pick at `Select objects:` sets LASTPOINT as SED-06's do. **Regression test:**
+  MASSPROP, LIST, ERASE off the plan, citing d10. **Coverage:** coordinate-systems.md's LASTPOINT;
+  the roadmap's SED-06 note (the suspect settled).
+
+#### VSD-05 — No dynamic prompt at `Select objects:`
+
+- **Severity:** medium (every selection prompt, dynamic input on) · **Row:** I · **Status:** verified
+  (area: dynamic input, drafting-aids.md, and `Select objects:`, ERASE review; no Missing names it)
+- **AutoCAD:** d10, DYNMODE 3 typed: `Designe objetos:` in a tip at the cursor, no box.
+- **mellowcad:** `dynamicInput` null at MASSPROP's and ERASE's `Select objects:` (dyn.test).
+- **Fix:** SINQ-D67. **Regression test:** MASSPROP's and ERASE's `Select objects:` show the prompt
+  in `dynamicInput` with no field, citing d10. **Coverage:** drafting-aids.md's Dynamic input.
+
+#### VSD-06 — MASSPROP's entry lacks the WHY for its report without the pager
+
+- **Severity:** medium by §5.2 (a deviation without its WHY), none in effect · **Row:** G, L
+- **AutoCAD:** d08, d09, d11: the report opens the text window and stops at `Press ENTER to
+  continue:` (es `Pulse INTRO para continuar:`) before the principal moments; Escape there skips the
+  rest and asks `Write analysis`.
+- **Fix:** LIST's WHY (inquiry.md) in MASSPROP's entry, naming the pause and Escape's skip, and at
+  the tool.
+
+#### VSD-07 — Hidden's and Conceptual's locked fade
+
+- **Severity:** low · **Row:** M · **Status:** verified
+- **AutoCAD:** d06: a locked box's edges neutral 178 grey (0.7 of 255) in H and C, the half mix into
+  the background only in 2D Wireframe (124,129,134 antialiased); its Conceptual faces lighter and
+  yellower: 220,220,160 / 199,200,162 / 114,119,171.
+- **mellowcad:** both faded half into the background: edges ≈ 118,124,130, faces 71,73,78 / 67,69,75 /
+  48,50,61 (cells9.test cell 9).
+- **Fix:** SINQ-D68.
+
+#### VSD-08 — The UCS icon keeps one colour in Hidden and Conceptual
+
+- **Severity:** low · **Row:** P · **Status:** verified
+- **AutoCAD:** d03: off 2D Wireframe its arms red, green and blue, and thicker.
+- **mellowcad:** `THEME.ucsIcon` in every style (look.test cell 2).
+- **Fix:** the arms in `ucsIconX`, `ucsIconY` and a blue Z off 2D Wireframe. **Coverage:**
+  coordinate-systems.md UCSICON.
+
+#### VSD-09 — No face tint under the rollover, the selection, the preview or Ctrl
+
+- **Severity:** low · **Row:** I, O, Q · **Status:** verified
+- **AutoCAD:** d04, d05: Hidden fills the visible faces 49,71,112 on hover, 40,74,140 selected;
+  Conceptual tints them blue (top 184,201,224 hovered, 148,179,230 selected); Ctrl tints the one face,
+  and once taken shows the gizmo and no tint.
+- **Fix:** SINQ-D65 (Missing).
+
+#### VSD-10 — LWDISPLAY's widths
+
+- **Severity:** low · **Row:** M · **Status:** verified, the scale unread
+- **AutoCAD:** d06, 0.80 mm: 9–10 px in 2D Wireframe, 6 px in H and C. **mellowcad:** 3 px in each.
+- **Fix:** SINQ-D66 (Missing).
+
+#### VSD-11 — VSCURRENT's Missing: the 3 px silhouettes and the viewport label
+
+- **Severity:** low (docs) · **Row:** M, P
+- The screen draws silhouettes 1–2 px, as the edges (d02, d03), as here: the clause goes. The
+  viewport controls' line of Missing (view.md) adds 2027's `(Fast)` suffix (es `(Rápido)`) off 2D
+  Wireframe (d03, d11).
+
+### Decisions
+
+- **SINQ-D64** — VSD-01: Conceptual's colours are fitted to the screen (d03's white box, d06's red
+  box), the light's direction kept (a ramp linear in it fits the white box within 2); the plot's
+  p03 values stay named as what the plot gives, which nothing here prints.
+- **SINQ-D65** — VSD-09: the tints go to Missing with their colours: a translucent fill over a
+  solid's visible faces needs Hidden's face set per solid, which the painter's order does not give;
+  the thick visible edges (VSD-02) carry the cue.
+- **SINQ-D66** — VSD-10: the absolute scale depends on the Lineweight Settings' display scale of the
+  owner's profile, not read: **unverified**; the narrower lines of H and C go to Missing.
+- **SINQ-D67** — VSD-05: the prompt alone in the dynamic-input tip at `Select objects:`, no box, as
+  d10 shows; nothing typed changes there.
+- **SINQ-D68** — VSD-07: off 2D Wireframe a locked solid's edges are its colour × 0.7, neutral; its
+  faces are refitted to d06's three values on VSD-01's ramp (SINQ-D62's half mix was the wrong way).
+
+### Tests proposed
+
+`visualStyles.test.ts`: VSD-01 (d03, d06), VSD-02 (d04-a, d05), VSD-07 (d06), VSD-08 (d03), the
+p314 click at `Command:` (d04-c), the rollover tooltip in Conceptual (d11); `massProp.test.ts`:
+Escape's `*Cancel*` at `Write analysis` (d09, d11), VSD-04 (d10, with LIST and ERASE where their
+tests live), VSD-05 (d10); the cost (VSD-03) stays a scratch.
+
+### Not tested, and why
+
+The tints (Missing), the pixels' antialiasing, the lineweights' absolute scale (SINQ-D66), the
+gizmo and the 3D crosshair (Missing elsewhere).
+
+### Refuted in the adversarial pass
+
+- **Edges in `#e2e8f0`, not 255 white** (d02): THEME's colour 7 everywhere, 2D Wireframe's too
+  (AutoCAD's antialiased core is 228 there): presentation.
+- **The Move gizmo on a selected solid in H and C** (d04-b): the gizmos are Missing (draw.md).
+- **The ViewCube only in the 3D styles** (d03): NAVVCUBEDISPLAY per style is NAVVCUBE's Missing.
+- **The text window, Pan, Zoom, SteeringWheels and QuickCalc on the menu** (d08, d09): Missing in
+  command-line.md and workspace.md.
+- **No dynamic tip at `Write analysis`** (d10): the text window held the focus there; mellowcad's
+  keyword prompt is the area's, unchanged.
+
+### Order of execution
+
+One block, one subagent: VSD-01 first (VSD-07 needs its ramp), then VSD-07, VSD-02, VSD-03,
+VSD-08, VSD-04, VSD-05, the docs (VSD-06, VSD-09, VSD-10, VSD-11), about three hours. Then the
+roadmap marks review 30 `done` with the visual styles owned, and the plan shrinks to its index.
