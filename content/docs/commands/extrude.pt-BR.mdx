@@ -1,0 +1,80 @@
+---
+title: "Comando EXTRUDE (EXTRUSAO) no AutoCAD"
+description: "Como funciona o EXTRUDE do AutoCAD em português, EXTRUSAO (alias EX): a extrusão de um perfil 2D fechado em sólido 3D, Direção e COnicidade. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando EXTRUDE no AutoCAD em português?","answer":"EXTRUSAO, com o alias EX. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _EXTRUDE."},{"question":"Como fazer extrusão no AutoCAD?","answer":"Desenhe o contorno como um só objeto fechado — uma polilinha fechada, um círculo ou uma região —, execute o EXTRUSAO, selecione-o, pressione Enter e digite a altura. Visto de cima, um sólido parece o seu contorno: gire a vista com o ViewCube, ou com -VISTA e isoSE, para vê-lo em 3D."},{"question":"Por que a extrusão não vira um sólido?","answer":"O perfil está aberto ou cruza a si mesmo. Uma linha, um arco ou uma polilinha aberta viram superfície no AutoCAD, e o MellowCAD ainda não tem superfícies: o EXTRUSAO diz “Não é possível efetuar a varredura de um objeto deste tipo.” e os tira do conjunto de seleção; um perfil que cruza a si mesmo recebe “Não é possível efetuar a varredura ou extrusão de uma curva de autointersecção.” e também sai. Una as peças com UNIR, faça delas uma região com REGIAO ou clique dentro delas com PRESSIONARPUXAR."},{"question":"Como extrudar uma forma com furo?","answer":"Faça dela uma só região: REGIAO no contorno e no furo, depois SUBTRAIR para tirar a região do furo da região do contorno. Faça a extrusão dessa região, e o furo atravessa o sólido. Ou execute o PRESSIONARPUXAR e clique entre o contorno e o furo."},{"question":"Como fazer extrusão ao longo de um caminho?","answer":"Ainda não dá: Caminho aparece, mas é recusado, e a varredura ainda não existe. Direção faz a extrusão ao longo da linha reta entre dois pontos."}]
+---
+
+O EXTRUDE, EXTRUSAO no AutoCAD em português, transforma perfis 2D fechados em sólidos 3D: puxa cada um em linha reta para fora do seu plano, na altura que você dá. Selecione os perfis — círculos, elipses, polilinhas ou splines fechadas, regiões — e pressione Enter; depois digite a altura ou indique-a com um ponto. A última altura é o padrão da execução seguinte. Cada perfil vira um sólido próprio, na camada atual, e é apagado, como DELOBJ diz por padrão. O comando inteiro é um passo que o Desfazer reverte.
+
+O 3D do MellowCAD é só de sólidos, e ainda parcial: um perfil aberto, que o AutoCAD transforma em superfície, recebe `Não é possível efetuar a varredura de um objeto deste tipo.` e sai do conjunto de seleção.
+
+- **Comando:** `EXTRUSAO`
+- **Em inglês:** `EXTRUDE`, que se digita `_EXTRUDE` em qualquer idioma
+- **Aliases:** `EX`
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `EX` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="extrude" caption="Uma polilinha fechada em forma de L extrudada 20 até virar um sólido, vista depois do sudeste no estilo visual Oculto." />
+
+## Opções [#options]
+
+### `MOdo` (`MO`) [#mode]
+
+Pede `SÓlido` ou `SUperfície`. `SÓlido` é o padrão e o único que existe: sem objetos de superfície ainda, `SUperfície` é recusado.
+
+### `Direção` (`D`) [#direction]
+
+Em vez de uma altura, dois pontos dão a direção e o comprimento: os perfis são extrudados ao longo dessa linha, inclinados se ela for inclinada. Uma direção contida no plano do perfil recebe `A direção de extrusão é paralela ao plano da curva de varredura.`, e o comando termina.
+
+### `Caminho` (`C`) [#path]
+
+Listado, como no AutoCAD, mas não implementado: escolhê-lo é recusado, e a altura é pedida de novo.
+
+### `ângulo de COnicidade` (`CO`) [#taper]
+
+Pede um ângulo entre −90 e 90 graus e depois a altura de novo: um ângulo positivo estreita o sólido à medida que ele sobe; um negativo o alarga. Um círculo que se fecha antes de chegar à altura termina num ponto, um cone; um perfil que não aceita a conicidade não gera nada.
+
+### `Expressão` (`E`) [#expression]
+
+A altura como expressão: `2*3` é 6. Por enquanto, só aritmética.
+
+## O que ainda não faz [#missing]
+
+`Caminho`, a varredura ao longo de um caminho. O modo `SUperfície` e os perfis abertos, dos quais o AutoCAD faz superfícies: ainda não há objetos de superfície. As faces de sólidos e as áreas que um clique encontra dentro de objetos, que o [`PRESSIONARPUXAR`](/docs/commands/presspull) aceita. A conicidade numa elipse, numa spline ou num arco que encontra o segmento seguinte num canto. Os parâmetros e as funções de `Expressão`. O `EXPLODIR` de um sólido extrudado com lados curvos, que o AutoCAD transforma em superfícies e regiões. Suas alças, e a altura e o ângulo de conicidade editados na paleta Propriedades.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#extrude--ext--es-extrusion--ext--pt-br-extrusao--ex)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando EXTRUDE no AutoCAD em português?
+
+EXTRUSAO, com o alias `EX`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_EXTRUDE`.
+
+### Como fazer extrusão no AutoCAD?
+
+Desenhe o contorno como um só objeto fechado — uma polilinha fechada, um círculo ou uma região —, execute o EXTRUSAO, selecione-o, pressione Enter e digite a altura. Visto de cima, um sólido parece o seu contorno: gire a vista com o ViewCube, ou com `-VISTA` e `isoSE`, para vê-lo em 3D.
+
+### Por que a extrusão não vira um sólido?
+
+O perfil está aberto ou cruza a si mesmo. Uma linha, um arco ou uma polilinha aberta viram superfície no AutoCAD, e o MellowCAD ainda não tem superfícies: o EXTRUSAO diz `Não é possível efetuar a varredura de um objeto deste tipo.` e os tira do conjunto de seleção; um perfil que cruza a si mesmo recebe `Não é possível efetuar a varredura ou extrusão de uma curva de autointersecção.` e também sai. Una as peças com `UNIR`, faça delas uma região com `REGIAO` ou clique dentro delas com [`PRESSIONARPUXAR`](/docs/commands/presspull).
+
+### Como extrudar uma forma com furo?
+
+Faça dela uma só região: `REGIAO` no contorno e no furo, depois [`SUBTRAIR`](/docs/commands/subtract) para tirar a região do furo da região do contorno. Faça a extrusão dessa região, e o furo atravessa o sólido. Ou execute o [`PRESSIONARPUXAR`](/docs/commands/presspull) e clique entre o contorno e o furo.
+
+### Como fazer extrusão ao longo de um caminho?
+
+Ainda não dá: `Caminho` aparece, mas é recusado, e a varredura ainda não existe. `Direção` faz a extrusão ao longo da linha reta entre dois pontos.
+
+## Comandos relacionados [#related]
+
+- [Comando PRESSPULL (PRESSIONARPUXAR) no AutoCAD](/docs/commands/presspull)
+- [Comando REVOLVE (REVOLUCAO) no AutoCAD](/docs/commands/revolve)
+- [REGIAO (REGION)](/docs/commands#region): Região
+- [Comando SUBTRACT (SUBTRAIR) no AutoCAD](/docs/commands/subtract)

@@ -1,0 +1,55 @@
+---
+title: "Intersección de sólidos en AutoCAD: INTERSEC (INTERSECT)"
+metaTitle: "Intersección de sólidos en AutoCAD: INTERSEC"
+description: "Cómo funciona INTERSEC (INTERSECT, alias INT) de AutoCAD en español: sólidos 3D, o regiones de un plano, reducidos a lo que comparten. Pruébalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando INTERSECT en español?","answer":"INTERSEC, con el alias INT. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _INTERSECT."},{"question":"¿Qué diferencia hay entre UNION, DIFERENCIA e INTERSEC?","answer":"Los tres hacen un solo objeto con sólidos 3D, o con regiones de un mismo plano. UNION conserva todo lo que cubre cualquiera de ellos, DIFERENCIA conserva el primer conjunto menos el segundo, e INTERSEC conserva solo lo que comparten todos. Cada uno es un solo paso de deshacer, y cada uno borra los objetos que consume."},{"question":"¿Cómo hago que dos líneas se corten en AutoCAD?","answer":"No con INTERSEC, que trabaja con sólidos y regiones y pasa por alto las líneas. Para encontrar el punto donde se cruzan, usa la referencia a objetos Intersección; para que se encuentren, EMPALME con radio 0, RECORTA o ALARGA."},{"question":"¿Por qué INTERSEC borra mis objetos?","answer":"Porque no tienen nada en común: sin parte compartida dice «Sólido nulo creado - eliminado», o «Región nula creada - eliminada.» con regiones, y los borra, como AutoCAD. H los recupera. Un sólido y una región, o dos regiones de planos distintos, no se intersecan: dice «Hay que designar al menos 2 sólidos, superficies o regiones coplanares.» y no cambia nada."}]
+---
+
+INTERSEC (INTERSECT en inglés) conserva solo lo que tienen en común dos o más sólidos 3D, o dos o más regiones de un mismo plano, y borra el resto: un prisma rectangular y una esfera que lo desborda dejan una bola con caras planas. Pide objetos hasta Intro, como [`UNION`](/docs/commands/union), y pasa por alto lo que no es un sólido ni una región. Como en AutoCAD 2027, descarta el conjunto designado antes del comando y vuelve a pedirlo. Los sólidos y las regiones se calculan por separado, y las regiones, plano a plano.
+
+El objeto designado primero pasa a ser el resultado, con su capa y su color, y los demás se borran; si se designan con una ventana, una captura o todos a la vez, es el más reciente de ellos. El resultado es un sólido compuesto, que ya no es un prisma ni una esfera y no tiene historial. Cuando los objetos no tienen nada en común, dice `Sólido nulo creado - eliminado` o `Región nula creada - eliminada.` y los borra todos, como AutoCAD. Todo el comando es un solo paso de deshacer. El 3D de MellowCAD aún es parcial: hay sólidos, pero no superficies ni mallas.
+
+- **Comando:** `INTERSEC`
+- **En inglés:** `INTERSECT`, que se escribe `_INTERSECT` en cualquier idioma
+- **Alias:** `INT`
+- **Grupo:** [Modificar](/docs/commands#modify)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `INT` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="intersect" caption="Un prisma rectangular y una esfera que lo desborda, intersecados: lo que comparten es una bola con seis caras planas, vista desde el sudeste." />
+
+## Lo que aún no hace [#missing]
+
+Las superficies, que aquí no existen. Las caras curvas que se cortan en una curva para la que MellowCAD aún no tiene una forma exacta: cilindros, conos, esferas o toroides cuyos ejes ni coinciden ni son paralelos (dos cilindros también pueden cortarse); un cono con algo que no sea un plano o un sólido sobre su eje; un toroide o un sólido de revolución con un plano que ni es perpendicular a su eje ni pasa por él, o con un sólido fuera de su eje; un sólido extruido con algo que no sea un plano o una cara extruida en su dirección. Se rechazan con un mensaje de que ha fallado una operación booleana, y los sólidos se quedan como estaban; igual que un corte que toca una arista de forma tangente, unas caras casi pero no del todo sobre una misma superficie y una lámina muy fina entre un corte y una arista. Un cilindro apoyado a lo largo de una cara de un prisma se une con el volumen correcto, pero con una arista y una cara menos que en AutoCAD. No se guarda el historial del sólido (SOLIDHIST, SHOWHISTORY), y qué objeto conservan Borde o Previo está sin verificar.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#intersect--in--es-intersec--int--pt-br-intersec--int)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando INTERSECT en español?
+
+INTERSEC, con el alias `INT`. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_INTERSECT`.
+
+### ¿Qué diferencia hay entre UNION, DIFERENCIA e INTERSEC?
+
+Los tres hacen un solo objeto con sólidos 3D, o con regiones de un mismo plano. [`UNION`](/docs/commands/union) conserva todo lo que cubre cualquiera de ellos, [`DIFERENCIA`](/docs/commands/subtract) conserva el primer conjunto menos el segundo, e INTERSEC conserva solo lo que comparten todos. Cada uno es un solo paso de deshacer, y cada uno borra los objetos que consume.
+
+### ¿Cómo hago que dos líneas se corten en AutoCAD?
+
+No con INTERSEC, que trabaja con sólidos y regiones y pasa por alto las líneas. Para encontrar el punto donde se cruzan, usa la referencia a objetos Intersección; para que se encuentren, [`EMPALME`](/docs/commands/fillet) con radio 0, [`RECORTA`](/docs/commands/trim) o [`ALARGA`](/docs/commands/extend).
+
+### ¿Por qué INTERSEC borra mis objetos?
+
+Porque no tienen nada en común: sin parte compartida dice `Sólido nulo creado - eliminado`, o `Región nula creada - eliminada.` con regiones, y los borra, como AutoCAD. `H` los recupera. Un sólido y una región, o dos regiones de planos distintos, no se intersecan: dice `Hay que designar al menos 2 sólidos, superficies o regiones coplanares.` y no cambia nada.
+
+## Comandos relacionados [#related]
+
+- [Unión de sólidos en AutoCAD: UNION](/docs/commands/union)
+- [Diferencia de sólidos en AutoCAD: DIFERENCIA (SUBTRACT)](/docs/commands/subtract)
+- [Cortar sólidos en AutoCAD: CORTE (SLICE)](/docs/commands/slice)
+- [REGION](/docs/commands#region): Región

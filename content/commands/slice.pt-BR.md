@@ -1,0 +1,71 @@
+---
+title: "Comando SLICE (FATIAR) no AutoCAD"
+metaTitle: "Comando SLICE no AutoCAD: fatiar sólidos 3D"
+description: "Como funciona o SLICE do AutoCAD em português, FATIAR (alias FAT): os sólidos, o plano por dois pontos, 3pontos ou o UCS, e o lado que fica. Experimente grátis."
+figure: "Um cilindro fatiado pelo eixo com dois pontos, mantendo a metade do lado indicado: visto do sudeste."
+sourceHash: "07b1512fb042"
+---
+
+O SLICE, FATIAR no AutoCAD em português, corta sólidos 3D com um plano e mantém a parte de um lado, ou as duas partes como dois sólidos. Ele pede os sólidos a fatiar, até o Enter: como no AutoCAD 2027, descarta o conjunto selecionado antes do comando e volta a pedi-lo, e ignora o que não é um sólido. Depois, o plano: por padrão você dá dois pontos, e o plano passa por eles na vertical, perpendicular ao plano XY do UCS; as opções o dão de outro modo. Por fim, um ponto do lado a manter, ou Enter para manter os dois.
+
+O mesmo plano corta todos os sólidos do conjunto. Um que o plano não atinge, ou só toca numa face, numa aresta ou num vértice, fica como estava, e o FATIAR avisa. Um sólido fatiado não é mais uma caixa nem um cilindro, e não tem histórico. O comando inteiro é um só passo de desfazer. O 3D do MellowCAD ainda é parcial: há sólidos, mas não superfícies nem malhas.
+
+## Options
+
+### Object
+
+Usa o plano de um objeto que você seleciona: um círculo, uma elipse, um arco, uma polilinha 2D ou uma spline plana, também um círculo inclinado. Uma linha, ou o próprio sólido, não tem plano próprio: ele diz <Message id="unableToExtractPlane" /> e pergunta de novo. O Enter encerra o comando.
+
+### Surface
+
+Pede uma superfície pela qual cortar. O MellowCAD ainda não tem superfícies, então uma seleção diz <Message id="noSurfacesSelected" />, e o Enter encerra o comando.
+
+### Zaxis
+
+Pede um ponto do plano e depois um ponto do seu eixo Z, a reta perpendicular a ele. Os dois não podem ser o mesmo ponto.
+
+### View
+
+O plano paralelo à tela, por um ponto que você dá; o Enter usa 0,0,0.
+
+### XY
+
+O plano XY do UCS, por um ponto que você dá: um ponto a certa altura faz um corte horizontal nessa altura. O Enter usa a origem do UCS.
+
+### YZ
+
+O plano YZ do UCS, por um ponto que você dá; o Enter usa a origem do UCS.
+
+### ZX
+
+O plano ZX do UCS, por um ponto que você dá; o Enter usa a origem do UCS.
+
+### 3points
+
+Três pontos do plano, que então pode se inclinar em qualquer direção. É o padrão do primeiro prompt, então o Enter o escolhe. O segundo ponto precisa ser diferente do primeiro, e o terceiro não pode estar na reta que passa por eles.
+
+### Both
+
+No prompt do lado, e é o seu padrão, então o Enter o escolhe: as duas partes são mantidas. O sólido fica com uma, e a outra passa a ser um sólido novo com a mesma camada, cor, tipo de linha e espessura de linha, não os atuais. Um ponto, por outro lado, mantém o lado em que está e descarta o outro; um ponto sobre o plano é recusado.
+
+## Missing
+
+As superfícies, como plano de corte e como objetos a fatiar, e as malhas. Uma polilinha 3D plana como objeto do plano, que o AutoCAD aceita. Um toroide ou um sólido de revolução cortado nem perpendicular ao seu eixo nem ao longo dele, e os outros cortes para os quais o MellowCAD ainda não tem uma forma exata, que dizem que uma operação booleana falhou.
+
+## Questions
+
+### Qual é o comando SLICE no AutoCAD em português?
+
+FATIAR, com o alias `FAT`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_SLICE`. Não o confunda com o <Command id="SECTION" /> do AutoCAD em português, que é o SECTION em inglês.
+
+### Como usar o SLICE no AutoCAD 3D?
+
+Selecione o sólido e pressione Enter. Indique dois pontos por onde passa o corte: o plano fica na vertical, por eles. Depois indique um ponto do lado a manter, ou pressione Enter para manter as duas metades e afaste uma com o <Command id="MOVE" />. Para um corte inclinado, escolha <Keyword id="3points" /> e dê três pontos do plano.
+
+### O SLICE corta linhas ou objetos 2D?
+
+Não: o FATIAR corta sólidos 3D e ignora linhas, regiões e blocos; um conjunto só com eles encerra o comando. Para cortar objetos 2D, use o <Command id="TRIM" /> ou o <Command id="BREAK" />. No AutoCAD, o FATIAR também corta superfícies e malhas, que o MellowCAD ainda não tem.
+
+### Por que o FATIAR diz que o plano não faz intersecção com o sólido?
+
+Porque o plano não o atinge, ou só o toca numa face, numa aresta ou num vértice: esse sólido fica inteiro. Confira como o plano foi dado. Com dois pontos, ele fica na vertical, então dois pontos da face de cima de um sólido o cortam na vertical, não na horizontal; para um corte horizontal, escolha <Keyword id="XY" /> e dê um ponto na altura do corte.

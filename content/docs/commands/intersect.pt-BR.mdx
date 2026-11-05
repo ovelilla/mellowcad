@@ -1,0 +1,55 @@
+---
+title: "Comando INTERSECT (INTERSEC) no AutoCAD"
+metaTitle: "INTERSECT no AutoCAD: intersecção de sólidos"
+description: "Como funciona o INTERSECT do AutoCAD em português, INTERSEC (alias INT): sólidos 3D, ou regiões de um plano, reduzidos ao que têm em comum. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando INTERSECT no AutoCAD em português?","answer":"INTERSEC, com o alias INT. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _INTERSECT."},{"question":"Qual é a diferença entre UNION, SUBTRACT e INTERSECT?","answer":"Os três fazem um só objeto de sólidos 3D, ou de regiões de um mesmo plano. O UNIAO mantém tudo o que qualquer um deles cobre, o SUBTRAIR mantém o primeiro conjunto menos o segundo, e o INTERSEC mantém só o que todos compartilham. Cada um é um só passo de desfazer, e cada um apaga os objetos que consome."},{"question":"Como fazer a intersecção de linhas no AutoCAD?","answer":"Não com o INTERSEC, que trabalha com sólidos e regiões e ignora as linhas. Para achar o ponto onde elas se cruzam, use o snap ao objeto Intersecção; para que se encontrem, o CONCORD com raio 0, o APARAR ou o ESTENDER."},{"question":"Por que o INTERSEC apaga os meus objetos?","answer":"Porque eles não têm nada em comum: sem parte compartilhada, ele diz “Foi criado um sólido nulo - excluído”, ou “Foi criada uma região nula - excluída” com regiões, e os apaga, como o AutoCAD. O D os traz de volta. Um sólido e uma região, ou duas regiões de planos diferentes, não são intersectados: ele diz “Pelo menos 2 sólidos, superfícies ou regiões coplanares precisam estar selecionados.” e não muda nada."}]
+---
+
+O INTERSECT, INTERSEC no AutoCAD em português, mantém só o que dois ou mais sólidos 3D têm em comum, ou duas ou mais regiões de um mesmo plano, e apaga o resto: uma caixa e uma esfera que a ultrapassa deixam uma bola com faces planas. Ele pede objetos até o Enter, como o [`UNIAO`](/docs/commands/union), e ignora o que não é um sólido nem uma região. Como no AutoCAD 2027, ele descarta o conjunto selecionado antes do comando e volta a pedi-lo. Os sólidos e as regiões são calculados à parte, e as regiões, plano a plano.
+
+O objeto selecionado primeiro passa a ser o resultado, com a sua camada e a sua cor, e os outros são apagados; se forem selecionados com uma janela, uma seleção por intersecção ou todos de uma vez, é o mais recente deles. O resultado é um sólido composto, que não é mais uma caixa nem uma esfera e não tem histórico. Quando os objetos não têm nada em comum, ele diz `Foi criado um sólido nulo - excluído` ou `Foi criada uma região nula - excluída` e apaga todos, como o AutoCAD. O comando inteiro é um só passo de desfazer. O 3D do MellowCAD ainda é parcial: há sólidos, mas não superfícies nem malhas.
+
+- **Comando:** `INTERSEC`
+- **Em inglês:** `INTERSECT`, que se digita `_INTERSECT` em qualquer idioma
+- **Aliases:** `INT`
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `INT` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="intersect" caption="Uma caixa e uma esfera que a ultrapassa, intersectadas: o que têm em comum é uma bola com seis faces planas, vista do sudeste." />
+
+## O que ainda não faz [#missing]
+
+As superfícies, que aqui não existem. As faces curvas que se cortam numa curva para a qual o MellowCAD ainda não tem uma forma exata: cilindros, cones, esferas ou toroides cujos eixos nem coincidem nem são paralelos (dois cilindros também podem se cruzar); um cone com algo que não seja um plano ou um sólido no seu eixo; um toroide ou um sólido de revolução com um plano que nem é perpendicular ao seu eixo nem passa por ele, ou com um sólido fora do seu eixo; um sólido extrudado com algo que não seja um plano ou uma face extrudada na sua direção. Eles são recusados com uma mensagem de que uma operação booleana falhou, e os sólidos ficam como estavam; assim como um corte que toca uma aresta de forma tangente, faces quase, mas não de todo, sobre uma mesma superfície e uma lâmina muito fina entre um corte e uma aresta. Um cilindro deitado ao longo de uma face de uma caixa se une com o volume certo, mas com uma aresta e uma face a menos que no AutoCAD. O histórico do sólido não é guardado (SOLIDHIST, SHOWHISTORY), e qual objeto Cerca ou Anterior mantêm não foi verificado.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#intersect--in--es-intersec--int--pt-br-intersec--int)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando INTERSECT no AutoCAD em português?
+
+INTERSEC, com o alias `INT`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_INTERSECT`.
+
+### Qual é a diferença entre UNION, SUBTRACT e INTERSECT?
+
+Os três fazem um só objeto de sólidos 3D, ou de regiões de um mesmo plano. O [`UNIAO`](/docs/commands/union) mantém tudo o que qualquer um deles cobre, o [`SUBTRAIR`](/docs/commands/subtract) mantém o primeiro conjunto menos o segundo, e o INTERSEC mantém só o que todos compartilham. Cada um é um só passo de desfazer, e cada um apaga os objetos que consome.
+
+### Como fazer a intersecção de linhas no AutoCAD?
+
+Não com o INTERSEC, que trabalha com sólidos e regiões e ignora as linhas. Para achar o ponto onde elas se cruzam, use o snap ao objeto Intersecção; para que se encontrem, o [`CONCORD`](/docs/commands/fillet) com raio 0, o [`APARAR`](/docs/commands/trim) ou o [`ESTENDER`](/docs/commands/extend).
+
+### Por que o INTERSEC apaga os meus objetos?
+
+Porque eles não têm nada em comum: sem parte compartilhada, ele diz `Foi criado um sólido nulo - excluído`, ou `Foi criada uma região nula - excluída` com regiões, e os apaga, como o AutoCAD. O `D` os traz de volta. Um sólido e uma região, ou duas regiões de planos diferentes, não são intersectados: ele diz `Pelo menos 2 sólidos, superfícies ou regiões coplanares precisam estar selecionados.` e não muda nada.
+
+## Comandos relacionados [#related]
+
+- [Comando UNION (UNIAO) no AutoCAD](/docs/commands/union)
+- [Comando SUBTRACT (SUBTRAIR) no AutoCAD](/docs/commands/subtract)
+- [Comando SLICE (FATIAR) no AutoCAD](/docs/commands/slice)
+- [REGIAO (REGION)](/docs/commands#region): Região

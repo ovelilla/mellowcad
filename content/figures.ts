@@ -16,6 +16,7 @@ import { sessions as arraypathSessions } from "./demos/commands/arraypath"
 import { sessions as arraypolarSessions } from "./demos/commands/arraypolar"
 import { sessions as arrayrectSessions } from "./demos/commands/arrayrect"
 import { sessions as blockSessions } from "./demos/commands/block"
+import { sessions as boxSessions } from "./demos/commands/box"
 import { sessions as circleSessions } from "./demos/commands/circle"
 import { sessions as copySessions } from "./demos/commands/copy"
 import { sessions as dimalignedSessions } from "./demos/commands/dimaligned"
@@ -27,9 +28,11 @@ import { sessions as dimlinearSessions } from "./demos/commands/dimlinear"
 import { sessions as dimradiusSessions } from "./demos/commands/dimradius"
 import { sessions as dimstyleSessions } from "./demos/commands/dimstyle"
 import { sessions as extendSessions } from "./demos/commands/extend"
+import { sessions as extrudeSessions } from "./demos/commands/extrude"
 import { sessions as filletSessions } from "./demos/commands/fillet"
 import { sessions as hatchSessions } from "./demos/commands/hatch"
 import { sessions as insertSessions } from "./demos/commands/insert"
+import { sessions as intersectSessions } from "./demos/commands/intersect"
 import { sessions as layerSessions } from "./demos/commands/layer"
 import { sessions as lineSessions } from "./demos/commands/line"
 import { sessions as mirrorSessions } from "./demos/commands/mirror"
@@ -37,10 +40,15 @@ import { sessions as moveSessions } from "./demos/commands/move"
 import { sessions as mtextSessions } from "./demos/commands/mtext"
 import { sessions as offsetSessions } from "./demos/commands/offset"
 import { sessions as plineSessions } from "./demos/commands/pline"
+import { sessions as presspullSessions } from "./demos/commands/presspull"
+import { sessions as revolveSessions } from "./demos/commands/revolve"
 import { sessions as rotateSessions } from "./demos/commands/rotate"
 import { sessions as scaleSessions } from "./demos/commands/scale"
+import { sessions as sliceSessions } from "./demos/commands/slice"
+import { sessions as subtractSessions } from "./demos/commands/subtract"
 import { sessions as textSessions } from "./demos/commands/text"
 import { sessions as trimSessions } from "./demos/commands/trim"
+import { sessions as unionSessions } from "./demos/commands/union"
 import { hero } from "./demos/hero"
 import { offsetSession } from "./demos/offset"
 import {
@@ -137,6 +145,7 @@ export const COMMAND_SESSIONS = {
   ...arraypolarSessions,
   ...arrayrectSessions,
   ...blockSessions,
+  ...boxSessions,
   ...circleSessions,
   ...copySessions,
   ...dimalignedSessions,
@@ -148,9 +157,11 @@ export const COMMAND_SESSIONS = {
   ...dimradiusSessions,
   ...dimstyleSessions,
   ...extendSessions,
+  ...extrudeSessions,
   ...filletSessions,
   ...hatchSessions,
   ...insertSessions,
+  ...intersectSessions,
   ...layerSessions,
   ...lineSessions,
   ...mirrorSessions,
@@ -158,10 +169,15 @@ export const COMMAND_SESSIONS = {
   ...mtextSessions,
   ...offsetSessions,
   ...plineSessions,
+  ...presspullSessions,
+  ...revolveSessions,
   ...rotateSessions,
   ...scaleSessions,
+  ...sliceSessions,
+  ...subtractSessions,
   ...textSessions,
   ...trimSessions,
+  ...unionSessions,
 }
 
 /**

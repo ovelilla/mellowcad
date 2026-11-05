@@ -1,0 +1,34 @@
+---
+title: "UNION in AutoCAD"
+metaTitle: "UNION in AutoCAD: join 3D solids and regions"
+description: "How AutoCAD's UNION (UNI) works: 3D solids, or regions in one plane, joined into one object, what it passes over and why it asks for two. Try it free online."
+figure: "Two boxes that overlap, joined into one solid by UNION: seen from the south-east, hidden lines removed."
+related: ["SUBTRACT", "INTERSECT", "REGION", "BOX", "EXTRUDE"]
+coverage: "895b786600ba"
+---
+
+UNION joins two or more 3D solids into one solid, or two or more regions that lie in one plane into one region: where they overlap counts once, and the edges inside are gone. It asks for objects, as many as you like, and Enter combines them. As in AutoCAD 2027, a set selected before it is dropped and asked for again, and whatever is neither a solid nor a region is passed over. Solids and regions are combined apart: all the solids into one, the regions plane by plane.
+
+The object picked first becomes the result, with its layer and colour, and the others are erased; with a window, a crossing or ALL it is the newest of them. The result is a composite solid: no longer a box or a cylinder, with no history (<Command id="LIST" /> shows History = None), and selected it shows one grip, which moves it whole. Solids that do not touch become one object of two pieces. The whole command is one undo step. MellowCAD's 3D is still partial: solids exist, surfaces and meshes do not.
+
+## Missing
+
+Surfaces, which do not exist here. Curved faces that meet along a curve MellowCAD has no exact form for yet: cylinders, cones, spheres or tori whose axes neither coincide nor run parallel (two cylinders may also cross); a cone with anything but a plane or a solid on its axis; a torus or a revolved solid with a plane neither square to its axis nor through it, or with a solid off its axis; an extruded solid with anything but a plane or a face extruded its way. These are refused, and the solids left as they were; so are a cut that meets an edge tangentially, faces almost but not quite on one surface, and a very thin sliver between a cut and an edge. A cylinder lying along a box's face unites into the right volume, but with one edge and one face fewer than AutoCAD's. No solid history is kept (SOLIDHIST, SHOWHISTORY).
+
+## Questions
+
+### What is the shortcut for UNION in AutoCAD?
+
+`UNI`, then Enter or Space. The full name works too, and `_UNION` in any language of AutoCAD.
+
+### Why is UNION not working?
+
+It needs two solids, or two regions in the same plane: with fewer it says <Message id="booleanNeedsTwo" /> and changes nothing. Lines, arcs and polylines are not regions, even closed: make them regions first with <Command id="REGION" />. Objects selected before UNION are dropped, as in AutoCAD 2027: select them at its prompt. When it says that one boolean operation failed, the solids meet in a way MellowCAD cannot work out yet, and are left as they were.
+
+### How do I undo a UNION?
+
+<Command id="U" />, or Ctrl+Z, right after it: the whole command goes back in one step, the objects as they were. Later there is nothing to take apart, as the combined solid keeps no record of its parts. The opposite operation is <Command id="SUBTRACT" />, which takes solids away instead of adding them.
+
+### How do I join regions with UNION?
+
+Make each closed shape a region with <Command id="REGION" />, then UNION them: the regions of each plane become one region, their shared sides merged. Shapes that close around a gap leave a hole, and regions apart become one region of separate pieces. A region alone in its plane is left as it is.

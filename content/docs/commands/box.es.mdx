@@ -1,0 +1,72 @@
+---
+title: "Prisma rectangular en AutoCAD: PRISMARECT (BOX)"
+metaTitle: "Prisma en AutoCAD 3D: comando PRISMARECT (BOX)"
+description: "Cómo funciona PRISMARECT (BOX) de AutoCAD en español, solicitud a solicitud: dos esquinas y una altura, Centro, Cubo, Longitud y 2Puntos. Pruébalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando BOX en español?","answer":"PRISMARECT, sin alias. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _BOX."},{"question":"¿Por qué el prisma se ve como un rectángulo?","answer":"Lo estás mirando desde arriba, en planta. Gira la vista: una esquina del ViewCube, -VISTA y SEIso, o 3DORBITA. ESTVISACTUAL con ocUlto oculta las aristas que quedan detrás."},{"question":"¿Cómo hacer un cubo en AutoCAD?","answer":"Precisa la primera esquina, elige Cubo y escribe la longitud de un lado."},{"question":"¿Cómo dibujar un prisma desde su centro?","answer":"Elige Centro y precisa el centro, y después una esquina, Cubo o Longitud: el prisma queda centrado en el punto, también en altura."}]
+---
+
+PRISMARECT (BOX en inglés) dibuja un prisma rectangular, un sólido 3D con sus caras alineadas con los ejes del SCP: precisa la primera esquina, la otra esquina y después la altura. La altura sube por el eje Z del SCP, una negativa baja, y un punto la da por su distancia a la esquina; una esquina precisada a otra Z que la primera fija la altura sin preguntarla. La última altura, y la última longitud y anchura de un cubo o de `Longitud`, se ofrecen como valores por defecto que Intro acepta, compartidos con las demás primitivas y con [`EXTRUSION`](/docs/commands/extrude). El prisma va a la capa actual, y Deshacer lo revierte en un paso.
+
+El prisma conserva sus medidas: `LIST` muestra su posición, longitud, anchura, altura y rotación, y la paleta Propiedades deja escribir las cuatro primeras. Sus pinzamientos lo desplazan, lo estiran y, fuera de la vista en planta, fijan su altura. Es un sólido 3D para [`UNION`](/docs/commands/union), [`DIFERENCIA`](/docs/commands/subtract) y el resto del 3D de MellowCAD, que es solo de sólidos y aún parcial.
+
+- **Comando:** `PRISMARECT`
+- **En inglés:** `BOX`, que se escribe `_BOX` en cualquier idioma
+- **Grupo:** [Dibujo](/docs/commands#draw)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `PRISMARECT` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="box" caption="Un prisma de 60 por 40 por 25, con dos esquinas y una altura, visto desde el sureste con el estilo visual Oculto." />
+
+## Opciones [#options]
+
+### `Centro` (`C`) [#center]
+
+En la primera solicitud: pide el centro y después una esquina, `Cubo` o `Longitud`. El prisma queda centrado en el punto, también en altura.
+
+### `Cubo` (`C`) [#cube]
+
+En la otra esquina: pide una longitud, escrita o señalada, y crea un cubo con todos los lados de esa longitud. Una longitud escrita va hacia el cursor; una negativa, en sentido contrario.
+
+### `Longitud` (`L`) [#length]
+
+En la otra esquina: pide la longitud y después la anchura. La longitud va hacia el cursor, así que el prisma puede quedar girado; la anchura va hacia el lado en el que está el cursor.
+
+### `2Puntos` (`2P`) [#2point]
+
+En la altura: pide dos puntos, y la altura es la distancia entre ellos.
+
+## Lo que aún no hace [#missing]
+
+Desplazar, Girar, Escalar y Simetría desde un pinzamiento activo, que AutoCAD recorre con Intro. Los comandos 3D propios —desplazar, girar, escalar, simetría y alinear en 3D— con sus gizmos, y desplazar sus caras, aristas y vértices uno a uno. El SCP dinámico. Las cotas punteadas que AutoCAD dibuja mientras precisas la esquina, la longitud y la anchura. [`EMPALME`](/docs/commands/fillet) y `CHAFLAN` de sus aristas, que hacen `ARISTAEMPALME` y `ACHAFLANAARISTA`. Registrar historial y Mostrar historial, del Historial de sólido, y la fila Material. Los estilos visuales que le faltan a `ESTVISACTUAL` además de Estructura alámbrica 2D, Oculto y Conceptual.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#box--es-prismarect--pt-br-caixa)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando BOX en español?
+
+PRISMARECT, sin alias. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_BOX`.
+
+### ¿Por qué el prisma se ve como un rectángulo?
+
+Lo estás mirando desde arriba, en planta. Gira la vista: una esquina del ViewCube, `-VISTA` y `SEIso`, o `3DORBITA`. `ESTVISACTUAL` con `ocUlto` oculta las aristas que quedan detrás.
+
+### ¿Cómo hacer un cubo en AutoCAD?
+
+Precisa la primera esquina, elige `Cubo` y escribe la longitud de un lado.
+
+### ¿Cómo dibujar un prisma desde su centro?
+
+Elige `Centro` y precisa el centro, y después una esquina, `Cubo` o `Longitud`: el prisma queda centrado en el punto, también en altura.
+
+## Comandos relacionados [#related]
+
+- [CUÑA (WEDGE)](/docs/commands#wedge): Cuña
+- [CILINDRO (CYLINDER)](/docs/commands#cylinder): Cilindro
+- [Extruir en AutoCAD: EXTRUSION (EXTRUDE)](/docs/commands/extrude)
+- [Unión de sólidos en AutoCAD: UNION](/docs/commands/union)

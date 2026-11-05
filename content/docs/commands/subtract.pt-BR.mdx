@@ -1,0 +1,60 @@
+---
+title: "Comando SUBTRACT (SUBTRAIR) no AutoCAD"
+metaTitle: "Comando SUBTRACT no AutoCAD: subtrair sólidos"
+description: "Como funciona o SUBTRACT do AutoCAD em português, SUBTRAIR (alias SU): o que fica, Enter e o que se subtrai, sólidos 3D ou regiões. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando SUBTRACT no AutoCAD em português?","answer":"SUBTRAIR, com o alias SU. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _SUBTRACT."},{"question":"Como subtrair um sólido de outro no AutoCAD?","answer":"Desenhe o sólido a tirar onde ele se sobrepõe ao outro: um cilindro que atravesse uma caixa, para um furo. Execute o SUBTRAIR, selecione a caixa e pressione Enter, depois selecione o cilindro e pressione Enter: a caixa fica com um furo e o cilindro desaparece. A ordem importa, pois o que você seleciona primeiro é o que fica."},{"question":"Por que o SUBTRACT não funciona?","answer":"Muitas vezes, pela ordem: o que fica vai no primeiro conjunto, e o que se subtrai, no segundo. Se o primeiro conjunto não tiver nenhum sólido nem região, ou o segundo não tiver nenhum que já não esteja no primeiro, ele diz “Não há sólidos, superfícies ou regiões selecionados.” e termina; se nada do segundo puder ser subtraído do primeiro, como um sólido de uma região ou uma região de outro plano, ele diz “Pelo menos dois sólidos, superfícies ou regiões coplanares precisam estar selecionados.” e não muda nada. Linhas e polilinhas precisam virar regiões antes. Quando ele diz que uma operação booleana falhou, os sólidos se cortam de um jeito que o MellowCAD ainda não sabe calcular, e ficam como estavam."},{"question":"Como subtrair área no AutoCAD?","answer":"Para tirar uma forma 2D de outra, transforme as duas em regiões com o REGIAO e subtraia a interna da externa com o SUBTRAIR: um quadrado do qual se subtrai um círculo passa a ser uma só região com um furo. Para medir uma área sem mudar o desenho, o AREA subtrai espaços do seu total acumulado com Subtrair."},{"question":"Como subtrair sem apagar o objeto?","answer":"O SUBTRAIR apaga o que subtrai, como o do AutoCAD. Para guardá-lo, copie-o antes no mesmo lugar: COPIAR, o objeto e Enter, um ponto base 0,0 e outro Enter, que o copia com um deslocamento de 0,0, em cima de si mesmo. O SUBTRAIR gasta depois uma das duas cópias."}]
+---
+
+O SUBTRACT, SUBTRAIR no AutoCAD em português, subtrai sólidos 3D de outros sólidos, ou regiões de outras regiões do mesmo plano: um cilindro subtraído de uma caixa deixa um furo passante, e um círculo subtraído de um quadrado, um quadrado com um furo. Ele pergunta duas vezes. Primeiro diz `Selecionar sólidos, superfícies e regiões a subtrair de ..` e pede os objetos que ficam, até o Enter; depois diz `Selecionar sólidos, superfícies e regiões a subtrair ..` e pede os objetos a subtrair, até outro Enter. Como no AutoCAD 2027, ele descarta o conjunto selecionado antes do comando e volta a pedi-lo.
+
+Os sólidos do primeiro conjunto passam a ser um só, e cada sólido do segundo é subtraído dele e apagado, tenha se sobreposto ou não. As regiões vão plano a plano: as do primeiro conjunto num plano são unidas, as do segundo nesse plano são subtraídas delas e apagadas, e uma região num plano onde o primeiro conjunto não tem nenhuma fica como estava. Um resultado sólido é um sólido composto, que não é mais uma caixa nem um cilindro e não tem histórico. Quando não sobra nada, ele diz `Foi criado um sólido nulo - excluído` ou `Foi criada uma região nula - excluída` e os apaga. O comando inteiro é um só passo de desfazer. O 3D do MellowCAD ainda é parcial: há sólidos, mas não superfícies nem malhas.
+
+- **Comando:** `SUBTRAIR`
+- **Em inglês:** `SUBTRACT`, que se digita `_SUBTRACT` em qualquer idioma
+- **Aliases:** `SU`
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `SU` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="subtract" caption="Um cilindro subtraído de uma caixa pelo SUBTRAIR, deixando um furo passante: primeiro a caixa, depois o cilindro." />
+
+## O que ainda não faz [#missing]
+
+As superfícies, que aqui não existem. As faces curvas que se cortam numa curva para a qual o MellowCAD ainda não tem uma forma exata: cilindros, cones, esferas ou toroides cujos eixos nem coincidem nem são paralelos (dois cilindros também podem se cruzar); um cone com algo que não seja um plano ou um sólido no seu eixo; um toroide ou um sólido de revolução com um plano que nem é perpendicular ao seu eixo nem passa por ele, ou com um sólido fora do seu eixo; um sólido extrudado com algo que não seja um plano ou uma face extrudada na sua direção. Eles são recusados, e os sólidos ficam como estavam; assim como um corte que toca uma aresta de forma tangente, faces quase, mas não de todo, sobre uma mesma superfície e uma lâmina muito fina entre um corte e uma aresta. Anterior logo depois do SUBTRAIR diz que não há conjunto de seleção anterior, onde o AutoCAD não encontra nenhum dos objetos apagados. O histórico do sólido não é guardado (SOLIDHIST, SHOWHISTORY).
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#subtract--su--es-diferencia--dif--pt-br-subtrair--su)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando SUBTRACT no AutoCAD em português?
+
+SUBTRAIR, com o alias `SU`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_SUBTRACT`.
+
+### Como subtrair um sólido de outro no AutoCAD?
+
+Desenhe o sólido a tirar onde ele se sobrepõe ao outro: um cilindro que atravesse uma caixa, para um furo. Execute o SUBTRAIR, selecione a caixa e pressione Enter, depois selecione o cilindro e pressione Enter: a caixa fica com um furo e o cilindro desaparece. A ordem importa, pois o que você seleciona primeiro é o que fica.
+
+### Por que o SUBTRACT não funciona?
+
+Muitas vezes, pela ordem: o que fica vai no primeiro conjunto, e o que se subtrai, no segundo. Se o primeiro conjunto não tiver nenhum sólido nem região, ou o segundo não tiver nenhum que já não esteja no primeiro, ele diz `Não há sólidos, superfícies ou regiões selecionados.` e termina; se nada do segundo puder ser subtraído do primeiro, como um sólido de uma região ou uma região de outro plano, ele diz `Pelo menos dois sólidos, superfícies ou regiões coplanares precisam estar selecionados.` e não muda nada. Linhas e polilinhas precisam virar regiões antes. Quando ele diz que uma operação booleana falhou, os sólidos se cortam de um jeito que o MellowCAD ainda não sabe calcular, e ficam como estavam.
+
+### Como subtrair área no AutoCAD?
+
+Para tirar uma forma 2D de outra, transforme as duas em regiões com o `REGIAO` e subtraia a interna da externa com o SUBTRAIR: um quadrado do qual se subtrai um círculo passa a ser uma só região com um furo. Para medir uma área sem mudar o desenho, o `AREA` subtrai espaços do seu total acumulado com `Subtrair`.
+
+### Como subtrair sem apagar o objeto?
+
+O SUBTRAIR apaga o que subtrai, como o do AutoCAD. Para guardá-lo, copie-o antes no mesmo lugar: [`COPIAR`](/docs/commands/copy), o objeto e Enter, um ponto base 0,0 e outro Enter, que o copia com um deslocamento de 0,0, em cima de si mesmo. O SUBTRAIR gasta depois uma das duas cópias.
+
+## Comandos relacionados [#related]
+
+- [Comando UNION (UNIAO) no AutoCAD](/docs/commands/union)
+- [Comando INTERSECT (INTERSEC) no AutoCAD](/docs/commands/intersect)
+- [REGIAO (REGION)](/docs/commands#region): Região
+- [CILINDRO (CYLINDER)](/docs/commands#cylinder): Cilindro
+- [Comando SLICE (FATIAR) no AutoCAD](/docs/commands/slice)

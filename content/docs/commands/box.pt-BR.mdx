@@ -1,0 +1,71 @@
+---
+title: "Comando BOX (CAIXA) no AutoCAD 3D"
+description: "Como funciona o BOX do AutoCAD em português, CAIXA, prompt a prompt: dois cantos e uma altura, Centro, CUbo, COmprimento e 2Pontos. Experimente grátis online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando BOX no AutoCAD em português?","answer":"CAIXA, sem alias. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _BOX."},{"question":"Por que a caixa aparece como um retângulo?","answer":"Você a está vendo de cima, em planta. Gire a vista: um canto do ViewCube, -VISTA e isoSE, ou ORBITA3D. O EVATUAL com ocUlto oculta as arestas que ficam atrás."},{"question":"Como fazer um cubo no AutoCAD?","answer":"Especifique o primeiro canto, escolha CUbo e digite o comprimento de um lado."},{"question":"Como desenhar uma caixa a partir do centro?","answer":"Escolha Centro e especifique o centro, depois um canto, CUbo ou COmprimento: a caixa fica centrada no ponto, também na altura."}]
+---
+
+O BOX, CAIXA no AutoCAD em português, desenha uma caixa, um sólido 3D com as faces alinhadas aos eixos do UCS: especifique o primeiro canto, o outro canto e depois a altura. A altura sobe pelo eixo Z do UCS, uma negativa desce, e um ponto a dá pela distância até o canto; um canto dado num Z diferente do primeiro define a altura sem perguntá-la. A última altura, e o último comprimento e a última largura de um cubo ou de `COmprimento`, são oferecidos como padrões que o Enter aceita, compartilhados com as outras primitivas e com o [`EXTRUSAO`](/docs/commands/extrude). A caixa fica na camada atual, e o Desfazer a reverte num passo.
+
+A caixa guarda as suas medidas: o `LISTA` mostra posição, comprimento, largura, altura e rotação, e a paleta Propriedades permite digitar as quatro primeiras. Suas alças a movem, a esticam e, fora da vista em planta, definem a altura. É um sólido 3D para o [`UNIAO`](/docs/commands/union), o [`SUBTRAIR`](/docs/commands/subtract) e o resto do 3D do MellowCAD, que é só de sólidos e ainda parcial.
+
+- **Comando:** `CAIXA`
+- **Em inglês:** `BOX`, que se digita `_BOX` em qualquer idioma
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `CAIXA` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="box" caption="Uma caixa de 60 por 40 por 25, com dois cantos e uma altura, vista do sudeste no estilo visual Oculto." />
+
+## Opções [#options]
+
+### `Centro` (`C`) [#center]
+
+No primeiro prompt: pede o centro e depois um canto, `CUbo` ou `COmprimento`. A caixa fica centrada no ponto, também na altura.
+
+### `CUbo` (`CU`) [#cube]
+
+No outro canto: pede um comprimento, digitado ou indicado, e faz um cubo com todos os lados desse tamanho. Um comprimento digitado vai na direção do cursor; um negativo, no sentido contrário.
+
+### `COmprimento` (`CO`) [#length]
+
+No outro canto: pede o comprimento e depois a largura. O comprimento vai na direção do cursor, então a caixa pode ficar girada; a largura vai para o lado em que o cursor está.
+
+### `2Pontos` (`2P`) [#2point]
+
+Na altura: pede dois pontos, e a altura é a distância entre eles.
+
+## O que ainda não faz [#missing]
+
+Mover, Rotacionar, Escala e Espelhar a partir de uma alça ativa, que o AutoCAD percorre com Enter. Os comandos 3D próprios — mover, rotacionar, escalar, espelhar e alinhar em 3D — com os seus gizmos, e mover as suas faces, arestas e vértices um a um. O UCS dinâmico. As cotas pontilhadas que o AutoCAD desenha enquanto você dá o canto, o comprimento e a largura. O [`CONCORD`](/docs/commands/fillet) e o `CHANFRO` das suas arestas, que o `ARESTACONCORD` e o `CHANFRARARESTA` fazem. Registrar histórico e Mostrar histórico, do Histórico do sólido, e a linha Material. Os estilos visuais que faltam ao `EVATUAL` além de Estrutura de arame 2D, Oculto e Conceitual.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#box--es-prismarect--pt-br-caixa)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando BOX no AutoCAD em português?
+
+CAIXA, sem alias. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_BOX`.
+
+### Por que a caixa aparece como um retângulo?
+
+Você a está vendo de cima, em planta. Gire a vista: um canto do ViewCube, `-VISTA` e `isoSE`, ou `ORBITA3D`. O `EVATUAL` com `ocUlto` oculta as arestas que ficam atrás.
+
+### Como fazer um cubo no AutoCAD?
+
+Especifique o primeiro canto, escolha `CUbo` e digite o comprimento de um lado.
+
+### Como desenhar uma caixa a partir do centro?
+
+Escolha `Centro` e especifique o centro, depois um canto, `CUbo` ou `COmprimento`: a caixa fica centrada no ponto, também na altura.
+
+## Comandos relacionados [#related]
+
+- [CUNHA (WEDGE)](/docs/commands#wedge): Cunha
+- [CILINDRO (CYLINDER)](/docs/commands#cylinder): Cilindro
+- [Comando EXTRUDE (EXTRUSAO) no AutoCAD](/docs/commands/extrude)
+- [Comando UNION (UNIAO) no AutoCAD](/docs/commands/union)

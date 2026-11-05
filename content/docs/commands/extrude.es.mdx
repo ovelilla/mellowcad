@@ -1,0 +1,81 @@
+---
+title: "Extruir en AutoCAD: EXTRUSION (EXTRUDE)"
+metaTitle: "Extruir en AutoCAD: comando EXTRUSION (EXTRUDE)"
+description: "Cómo funciona EXTRUSION (EXTRUDE, alias EXT) de AutoCAD en español: de un perfil 2D cerrado a un sólido 3D, altura, Dirección e Inclinación. Pruébalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo se llama el comando EXTRUSION en inglés?","answer":"EXTRUDE. En AutoCAD en español es EXTRUSION, con el alias EXT, y el nombre inglés también funciona en cualquier idioma con un guion bajo delante: _EXTRUDE."},{"question":"¿Cómo extruir en AutoCAD 3D?","answer":"Dibuja el contorno como un solo objeto cerrado —una polilínea cerrada, un círculo o una región—, ejecuta EXTRUSION, desígnalo, pulsa Intro y escribe la altura. Visto desde arriba, un sólido parece su contorno: gira la vista con el ViewCube, o con -VISTA y SEIso, para verlo en 3D."},{"question":"¿Por qué EXTRUSION no crea un sólido?","answer":"El perfil está abierto o se cruza consigo mismo. Una línea, un arco o una polilínea abierta dan una superficie en AutoCAD, y MellowCAD aún no tiene superficies: EXTRUSION dice «No se puede barrer ni extruir un objeto de este tipo.» y los quita del conjunto de selección; un perfil que se cruza consigo mismo recibe «No se puede barrer ni extruir una curva que interseca consigo misma.», y también sale. Une las piezas con UNIR, haz con ellas una región con REGION o haz clic dentro de ellas con PRESIONARTIRAR."},{"question":"¿Cómo extruir una forma con un agujero?","answer":"Haz de ella una sola región: REGION sobre el contorno y el agujero, y después resta con DIFERENCIA la región del agujero de la del contorno. Extruye esa región y el agujero atraviesa el sólido. O ejecuta PRESIONARTIRAR y haz clic entre el contorno y el agujero."},{"question":"¿Cómo extruir a lo largo de una trayectoria?","answer":"Todavía no se puede: Trayectoria aparece, pero se rechaza, y el barrido aún no existe. Dirección extruye a lo largo de la línea recta entre dos puntos."}]
+---
+
+EXTRUSION (EXTRUDE en inglés) convierte perfiles 2D cerrados en sólidos 3D: saca cada uno en línea recta de su plano, a la altura que le das. Designa los perfiles —círculos, elipses, polilíneas o splines cerradas, regiones— y pulsa Intro; después escribe la altura o precísala con un punto. La última altura es la opción por defecto de la siguiente ejecución. Cada perfil se convierte en un sólido propio, en la capa actual, y se borra, como indica DELOBJ por defecto. El comando entero es un paso que Deshacer revierte.
+
+El 3D de MellowCAD es solo de sólidos, y aún parcial: un perfil abierto, que AutoCAD convierte en superficie, recibe `No se puede barrer ni extruir un objeto de este tipo.` y sale del conjunto de selección.
+
+- **Comando:** `EXTRUSION`
+- **En inglés:** `EXTRUDE`, que se escribe `_EXTRUDE` en cualquier idioma
+- **Alias:** `EXT`
+- **Grupo:** [Dibujo](/docs/commands#draw)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `EXT` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="extrude" caption="Una polilínea cerrada en forma de L extruida 20 hasta un sólido, vista después desde el sureste con el estilo visual Oculto." />
+
+## Opciones [#options]
+
+### `MOdo` (`MO`) [#mode]
+
+Pide `Sólido` o `SUperficie`. `Sólido` es la opción por defecto y la única que hay: sin objetos de superficie todavía, `SUperficie` se rechaza.
+
+### `Dirección` (`D`) [#direction]
+
+En lugar de una altura, dos puntos dan la dirección y la longitud: los perfiles se extruyen a lo largo de esa línea, inclinados si ella lo está. Una dirección contenida en el plano del perfil recibe `La dirección de extrusión es paralela al plano de la curva de barrido.`, y el comando termina.
+
+### `Trayectoria` (`T`) [#path]
+
+Aparece en la lista, como en AutoCAD, pero no está hecha: elegirla se rechaza y se vuelve a pedir la altura.
+
+### `ángulo Inclinación` (`I`) [#taper]
+
+Pide un ángulo entre −90 y 90 grados y después otra vez la altura: un ángulo positivo estrecha el sólido a medida que sube; uno negativo lo ensancha. Un círculo que se cierra antes de llegar a la altura acaba en un punto, un cono; un perfil que no admite la inclinación no crea nada.
+
+### `Expresión` (`E`) [#expression]
+
+La altura como expresión: `2*3` es 6. Por ahora, solo aritmética.
+
+## Lo que aún no hace [#missing]
+
+`Trayectoria`, el barrido a lo largo de una trayectoria. El modo `SUperficie` y los perfiles abiertos, de los que AutoCAD hace superficies: aún no hay objetos de superficie. Las caras de los sólidos y las áreas que un clic encuentra dentro de unos objetos, que toma [`PRESIONARTIRAR`](/docs/commands/presspull). Una inclinación sobre una elipse, una spline o un arco que se une al segmento siguiente en una esquina. Los parámetros y las funciones de `Expresión`. `DESCOMP` de un sólido extruido con lados curvos, que AutoCAD convierte en superficies y regiones. Sus pinzamientos, y su altura y su ángulo de inclinación editados en la paleta Propiedades.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#extrude--ext--es-extrusion--ext--pt-br-extrusao--ex)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo se llama el comando EXTRUSION en inglés?
+
+EXTRUDE. En AutoCAD en español es EXTRUSION, con el alias `EXT`, y el nombre inglés también funciona en cualquier idioma con un guion bajo delante: `_EXTRUDE`.
+
+### ¿Cómo extruir en AutoCAD 3D?
+
+Dibuja el contorno como un solo objeto cerrado —una polilínea cerrada, un círculo o una región—, ejecuta EXTRUSION, desígnalo, pulsa Intro y escribe la altura. Visto desde arriba, un sólido parece su contorno: gira la vista con el ViewCube, o con `-VISTA` y `SEIso`, para verlo en 3D.
+
+### ¿Por qué EXTRUSION no crea un sólido?
+
+El perfil está abierto o se cruza consigo mismo. Una línea, un arco o una polilínea abierta dan una superficie en AutoCAD, y MellowCAD aún no tiene superficies: EXTRUSION dice `No se puede barrer ni extruir un objeto de este tipo.` y los quita del conjunto de selección; un perfil que se cruza consigo mismo recibe `No se puede barrer ni extruir una curva que interseca consigo misma.`, y también sale. Une las piezas con `UNIR`, haz con ellas una región con `REGION` o haz clic dentro de ellas con [`PRESIONARTIRAR`](/docs/commands/presspull).
+
+### ¿Cómo extruir una forma con un agujero?
+
+Haz de ella una sola región: `REGION` sobre el contorno y el agujero, y después resta con [`DIFERENCIA`](/docs/commands/subtract) la región del agujero de la del contorno. Extruye esa región y el agujero atraviesa el sólido. O ejecuta [`PRESIONARTIRAR`](/docs/commands/presspull) y haz clic entre el contorno y el agujero.
+
+### ¿Cómo extruir a lo largo de una trayectoria?
+
+Todavía no se puede: `Trayectoria` aparece, pero se rechaza, y el barrido aún no existe. `Dirección` extruye a lo largo de la línea recta entre dos puntos.
+
+## Comandos relacionados [#related]
+
+- [Presionar/Tirar en AutoCAD: PRESIONARTIRAR (PRESSPULL)](/docs/commands/presspull)
+- [Sólidos de revolución en AutoCAD: REVOLUCION (REVOLVE)](/docs/commands/revolve)
+- [REGION](/docs/commands#region): Región
+- [Diferencia de sólidos en AutoCAD: DIFERENCIA (SUBTRACT)](/docs/commands/subtract)

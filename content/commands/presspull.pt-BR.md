@@ -1,0 +1,38 @@
+---
+title: "Comando PRESSPULL (PRESSIONARPUXAR) no AutoCAD"
+description: "Como funciona o PRESSPULL do AutoCAD em português, PRESSIONARPUXAR: pressiona ou puxa um objeto fechado, uma área delimitada ou uma face. Experimente grátis."
+figure: "A área entre um retângulo e um círculo pressionada 8 para baixo: uma placa com um furo, vista do sudeste no estilo visual Oculto."
+sourceHash: "b806d59060e1"
+---
+
+O PRESSPULL, PRESSIONARPUXAR no AutoCAD em português, faz a extrusão do que você clica: um objeto fechado, uma área que objetos fecham em volta do clique ou uma face plana de um sólido 3D. Clique e depois digite a altura, ou mova o cursor e clique: uma altura positiva puxa; uma negativa, pressiona. Um objeto fechado ou uma área viram um sólido novo, o mesmo que o <Command id="EXTRUDE" /> faria, e os objetos ficam; as ilhas de uma área são furos nele, como na sessão. Uma face soma o seu prisma ao sólido ou o retira dele: o topo de uma caixa, puxado, a deixa mais alta. O prompt volta para o próximo clique até o Enter, e a execução inteira é um passo que o Desfazer reverte.
+
+Segure Ctrl e a face que um clique pegaria se acende; Ctrl+clique desloca essa face, com as vizinhas prolongadas até encontrá-la, e assim um lado inclinado mantém a inclinação. Como no AutoCAD, o PRESSIONARPUXAR funciona com cliques: a um número ou um ponto digitados no primeiro prompt ele responde <Message id="presspullClick" />, e pergunta de novo.
+
+## Options
+
+### Multiple
+
+No prompt da altura, ou no da distância de deslocamento: continue clicando para somar mais — objetos fechados e áreas, ou faces de um mesmo sólido — e depois pressione Enter: uma só altura vale para todos. Uma face clicada depois de um objeto ou de uma área é filtrada.
+
+## Missing
+
+Uma face curva, que o AutoCAD também desloca: aqui o clique não encontra face nenhuma. Um deslocamento cujas faces vizinhas são cones, esferas ou toros, ou planos e faces curvas juntos, ou que empurraria uma face através da oposta: o sólido fica como estava. As áreas que o AutoCAD imprime numa face (IMPLIEDFACE), e Ctrl+Shift+E. Um objeto aberto, do qual o AutoCAD faz a extrusão como superfície: ainda não há superfícies. Enquanto você arrasta, a prévia mostra o prisma da face ou o sólido novo, não o sólido como ele ficará, e uma face só se acende com Ctrl. Uma área delimitada fora do plano do UCS não foi testada.
+
+## Questions
+
+### Qual a diferença entre PRESSPULL e EXTRUDE?
+
+O <Command id="EXTRUDE" /> pega os objetos fechados que você seleciona, apaga-os conforme DELOBJ e oferece uma direção, uma conicidade e uma expressão. O PRESSIONARPUXAR pega cliques — um objeto fechado, a área dentro de vários objetos ou uma face de um sólido, que ele soma a esse sólido ou corta dele — e mantém os objetos. A partir de um objeto, os dois fazem o mesmo sólido.
+
+### Como extrudar uma face de um sólido?
+
+Execute o PRESSIONARPUXAR, clique na face e dê a distância: uma positiva a puxa para fora e o sólido cresce; uma negativa a empurra para dentro. Segure Ctrl ao clicar para deslocar a face em vez disso. Por enquanto, só faces planas.
+
+### Por que o presspull não funciona?
+
+Ele precisa de um clique em algo fechado. A um número ou um ponto digitados no primeiro prompt, e a um clique num objeto aberto ou numa face curva, o PRESSIONARPUXAR responde <Message id="presspullClick" /> e pergunta de novo. Clique num objeto fechado, dentro de uma área que objetos fecham em planta ou numa face plana de um sólido.
+
+### Qual é o comando PRESSPULL no AutoCAD em português?
+
+PRESSIONARPUXAR, sem alias. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_PRESSPULL`. O Ctrl+Shift+E, a tecla do AutoCAD para ele, ainda não existe aqui.

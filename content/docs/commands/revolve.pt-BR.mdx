@@ -1,0 +1,88 @@
+---
+title: "Comando REVOLVE (REVOLUCAO) no AutoCAD"
+description: "Como funciona o REVOLVE do AutoCAD em português, REVOLUCAO (alias REV): um sólido 3D de revolução a partir de um perfil 2D, eixo e ângulo. Experimente grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o comando REVOLVE no AutoCAD em português?","answer":"REVOLUCAO, com o alias REV. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _REVOLVE."},{"question":"Como fazer um sólido de revolução?","answer":"Desenhe meia seção como um só objeto fechado ao lado da linha do eixo: uma polilinha fechada ou uma região. Execute o REVOLUCAO, selecione o perfil e pressione Enter; Enter de novo para Objeto e selecione a linha do eixo, ou dê as suas duas pontas; depois, Enter para uma volta inteira."},{"question":"Por que o revolve não funciona?","answer":"Quase sempre porque o eixo cruza o perfil: o REVOLUCAO diz “O objeto precisa estar em um lado do eixo.” e termina. Leve o eixo até a borda do perfil ou além dela; uma aresta sobre o eixo é permitida. Um eixo perpendicular ao plano do perfil recebe “Eixo de revolução é perpendicular ao plano de curva de revolução.”, e um perfil aberto é recusado, pois o MellowCAD ainda não tem superfícies."},{"question":"Como fazer uma revolução de menos de 360 graus?","answer":"Digite o ângulo, 90 ou 270, no prompt do ângulo. INicial começa o giro mais adiante, e Reverter o faz girar ao contrário."}]
+---
+
+O REVOLVE, REVOLUCAO no AutoCAD em português, gira perfis 2D fechados em torno de um eixo e os transforma em sólidos 3D: um retângulo com uma aresta no eixo dá um cilindro; um círculo ao lado dele, um anel. Selecione os perfis — círculos, elipses, polilinhas ou splines fechadas, regiões — e pressione Enter; dê o eixo por dois pontos ou por uma das suas opções e depois o ângulo, com Enter para uma volta inteira. Cada perfil vira um sólido na camada atual e é apagado, como DELOBJ diz por padrão. O comando inteiro é um passo que o Desfazer reverte.
+
+O eixo fica no plano do perfil, com o perfil inteiro de um lado dele, ou o comando termina com `O objeto precisa estar em um lado do eixo.` antes de pedir qualquer ângulo. O ângulo gira pela regra da mão direita em torno do eixo, do primeiro ponto para o segundo; um negativo gira ao contrário. O 3D do MellowCAD é só de sólidos, e ainda parcial: perfis abertos, que o AutoCAD transforma em superfícies, são recusados.
+
+- **Comando:** `REVOLUCAO`
+- **Em inglês:** `REVOLVE`, que se digita `_REVOLVE` em qualquer idioma
+- **Aliases:** `REV`
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `REV` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="revolve" caption="Um perfil escalonado girado uma volta inteira em torno do eixo Y: um carretel, visto do sudeste no estilo visual Oculto." />
+
+## Opções [#options]
+
+### `MOdo` (`MO`) [#mode]
+
+Pede `SÓlido` ou `SUperfície`, como o [`EXTRUSAO`](/docs/commands/extrude): sem objetos de superfície ainda, só `SÓlido`, o padrão, é aceito.
+
+### `Objeto` (`O`) [#object]
+
+O padrão do prompt do eixo, então o Enter o escolhe: selecione uma linha, uma polilinha, um arco ou uma spline, e o eixo vai em linha reta entre as suas duas pontas, a partir da ponta mais perto do ponto selecionado. Um objeto fechado não tem pontas: `Não é possível obter direção do eixo a partir de uma curva ou aresta.`, e o comando termina.
+
+### `X` [#x]
+
+O eixo X do UCS, pela sua origem.
+
+### `Y` [#y]
+
+O eixo Y do UCS, pela sua origem: um perfil desenhado à direita dele, como na sessão, vira uma peça deitada ao longo de Y.
+
+### `Z` [#z]
+
+O eixo Z do UCS, pela sua origem. Um perfil no plano XY do UCS é perpendicular a ele, então o REVOLUCAO responde `Eixo de revolução é perpendicular ao plano de curva de revolução.` e termina: Z é para um perfil em pé.
+
+### `ângulo INicial` (`IN`) [#start]
+
+No prompt do ângulo: o ângulo de partida, sempre 0 por padrão. O perfil é girado até lá primeiro, e o ângulo é pedido de novo.
+
+### `Reverter` (`R`) [#reverse]
+
+Inverte o eixo, para que o ângulo gire ao contrário, e pede o ângulo de novo.
+
+### `EXpressão` (`EX`) [#expression]
+
+O ângulo como expressão aritmética, como no [`EXTRUSAO`](/docs/commands/extrude).
+
+## O que ainda não faz [#missing]
+
+Um eixo fora do plano do perfil, em torno do qual o AutoCAD gira o perfil e gera superfícies: aqui o REVOLUCAO diz `Não é possível efetuar a revolução do objeto selecionado.` e termina. Um arco elíptico ou uma aresta de sólido como eixo de `Objeto`. O modo `SUperfície` e os perfis abertos, sem objetos de superfície ainda. A prévia girando com o cursor: enquanto você dá o ângulo, a volta inteira é mostrada. O `EXPLODIR` de um sólido de revolução, que o AutoCAD transforma em superfícies e regiões. Suas alças, e o ângulo editado na paleta Propriedades.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#revolve--rev--es-revolucion--rv--pt-br-revolucao--rev)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o comando REVOLVE no AutoCAD em português?
+
+REVOLUCAO, com o alias `REV`. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_REVOLVE`.
+
+### Como fazer um sólido de revolução?
+
+Desenhe meia seção como um só objeto fechado ao lado da linha do eixo: uma polilinha fechada ou uma região. Execute o REVOLUCAO, selecione o perfil e pressione Enter; Enter de novo para `Objeto` e selecione a linha do eixo, ou dê as suas duas pontas; depois, Enter para uma volta inteira.
+
+### Por que o revolve não funciona?
+
+Quase sempre porque o eixo cruza o perfil: o REVOLUCAO diz `O objeto precisa estar em um lado do eixo.` e termina. Leve o eixo até a borda do perfil ou além dela; uma aresta sobre o eixo é permitida. Um eixo perpendicular ao plano do perfil recebe `Eixo de revolução é perpendicular ao plano de curva de revolução.`, e um perfil aberto é recusado, pois o MellowCAD ainda não tem superfícies.
+
+### Como fazer uma revolução de menos de 360 graus?
+
+Digite o ângulo, 90 ou 270, no prompt do ângulo. `INicial` começa o giro mais adiante, e `Reverter` o faz girar ao contrário.
+
+## Comandos relacionados [#related]
+
+- [Comando EXTRUDE (EXTRUSAO) no AutoCAD](/docs/commands/extrude)
+- [Comando PRESSPULL (PRESSIONARPUXAR) no AutoCAD](/docs/commands/presspull)
+- [REGIAO (REGION)](/docs/commands#region): Região
+- [Comando UNION (UNIAO) no AutoCAD](/docs/commands/union)
