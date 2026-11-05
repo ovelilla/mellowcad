@@ -1,9 +1,9 @@
 # Visibilidad y tráfico orgánico — plan maestro
 
 > **Estado:** auditoría, plan y sesiones 01 y 02 hechos y publicados (5/11/2026), y la 03 con su
-> mecánica y 38 comandos (sin publicar), y por decisión del dueño la visibilidad va antes que
-> cualquier funcionalidad; siguiente: el push de la 03 y las acciones del dueño de §7, la sesión 04
-> (§5) y las tandas de comandos que quedan. Esperan detrás
+> mecánica y 38 comandos publicada el 6/11, y por decisión del dueño la visibilidad va antes que
+> cualquier funcionalidad; siguiente: la sesión 04 (§5), las tandas de comandos que quedan y lo que
+> queda de §7. Esperan detrás
 > `docs/next-solids.md`, `docs/next-integrations.md` y la revisión 32 del roadmap. Se borra cuando §6
 > se cumpla a seis meses y cada línea esté hecha o descartada.
 
@@ -279,12 +279,20 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    validador de schema.org ya dio 0 errores y 0 advertencias en las dos. Las 45 copias de la
    documentación inglesa bajo `/es`, `/ar` y `/pt-br` redirigen ya (308): Páginas las irá mostrando
    como «Página con redirección», sin hacer nada.
+   **Tras la sesión 03 (6/11, hecho a petición del dueño):** el sitemap reenviado (Google lo leyó al
+   momento: 195 páginas) y «Solicitar indexación» de los cuatro índices `/docs/commands` y de
+   OFFSET y TRIM en casi todos los idiomas, 11 URLs, hasta la cuota diaria de Google. Quedan 33 de
+   la lista (diez comandos por idioma), una docena al día:
+   `node gsc-request.mjs gsc-request-pending.txt` en ~/seo-data/scripts (con el Chrome del README
+   de esa carpeta abierto), que salta las ya pedidas.
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
    clave no está desplegada); repetirlo en cada push con páginas nuevas o cambiadas. Inspección de
    URLs → «Request indexing» de `/docs/commands` y `/pt-br`, hoy «descubiertas pero no rastreadas»;
-   un Site Scan para que el informe de SEO tenga datos.
+   un Site Scan para que el informe de SEO tenga datos. **6/11:** IndexNow enviado con las 195 URLs
+   (202) y «Request indexing» de las 44 URLs de la lista de Google (los índices y diez comandos por
+   idioma; cuota de 100 al día); quedan `/pt-br` y el Site Scan.
 4. **GitHub y npm**: la descripción y los temas del repositorio, ya, con el comando `gh repo edit`
    de `docs/plans/seo/launch-kit.md` §0, al día con la sesión 02 (hoy 0 estrellas, sin temas, «2D
    engine»). La descripción y las palabras clave nuevas de los tres paquetes y los README del motor
@@ -316,8 +324,9 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   descriptions de 145 a 155, con la consulta principal delante, sostenidos por
   `i18n/messages.test.ts`; el FAQ pregunta por el 3D; las tarjetas OG, vistas en los cuatro
   idiomas. Quedan del dueño (§7): el `gh repo edit` y la próxima publicación en npm.
-- 03 Una página por comando: la mecánica y la primera tanda hechas el 5/11/2026, sin publicar (el
-  push es del dueño, y tras él la indexación de §7). **38 comandos con página** en los cuatro
+- 03 Una página por comando: la mecánica y la primera tanda hechas el 5/11/2026 y publicadas el
+  6/11 (`4f005c37` a `1ca32508`), con IndexNow, el sitemap reenviado y la indexación pedida en
+  Google y Bing (§7). **38 comandos con página** en los cuatro
   idiomas (152 URLs más en el sitemap, con hreflang): BLOCK, INSERT, TEXT, MTEXT, SCALE, LAYER,
   HATCH (con la galería de patrones del motor), las siete cotas y DIMSTYLE, PLINE, FILLET, OFFSET,
   TRIM y EXTEND, ARRAY y sus tres tipos; el 3D (EXTRUDE, REVOLVE, PRESSPULL, BOX, UNION, SUBTRACT,
