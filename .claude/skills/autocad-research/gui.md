@@ -63,6 +63,20 @@ Windows desktop.
   reviews took that for a quirk). Beside the user's instance, COM will not reach it; type and
   capture by its window handle.
 
+## Traps (PEDIT, SPLINEDIT review, 2026-11-05)
+
+- **An owner's window over AutoCAD** (a browser) keeps the top even after a click on AutoCAD's
+  visible part: ask the owner to minimise it before the first click, and never type while it is up.
+- **`type.ps1` hands the focus back** to whatever was in front when AutoCAD was not: after it, a
+  hover draws no crosshair and opens no grip menu. A click on empty space in the view first (then
+  Escape for the window it starts) keeps AutoCAD in front for the probe.
+- **Draw through Lisp**, `com eval '(progn (command "_.LINE" "0,0" "10,0" "") …)'`: a `com send`
+  ending in a space, or one more Enter than the prompts take (`-LINETYPE`'s reload question once
+  loaded), repeats the command and locks COM.
+- **The Spanish profile's data names are Spanish**: acadiso.lin's `DASHED` is `TRAZOS`.
+- A helper library several commands' probes source takes each command's shot folder as a variable
+  set on a line of its own: `OUT=… source lib.sh` lasts only for the `source` in bash.
+
 ## What does not work
 
 - **The MCP server bundled with AutoCAD 2027**
