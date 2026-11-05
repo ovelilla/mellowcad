@@ -30,7 +30,8 @@
     "docs:check": "node scripts/docs/check.ts",
     "locales": "node scripts/locales/compile.ts && node scripts/locales/editor.ts && node scripts/locales/sources.ts",
     "version-packages": "changeset version && node scripts/packages/examples.ts",
-    "deps:check": "node scripts/deps/check.ts"
+    "deps:check": "node scripts/deps/check.ts",
+    "indexnow": "node scripts/seo/indexnow.ts"
   },
   "dependencies": {
     "@base-ui/react": "^1.9.0",

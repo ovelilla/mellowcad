@@ -161,6 +161,9 @@ script — updates it in the same change.
   read). `sitemap.ts` lists indexable pages once per live language with their `hreflang` and
   `CONTENT_UPDATED` — bump it with the copy.
 - Search Console / Bing tokens come from `GOOGLE_SITE_VERIFICATION` / `BING_SITE_VERIFICATION`.
+- IndexNow's key is `INDEXNOW_KEY`, served as `public/<key>.txt` (`test/indexnow.test.ts`).
+  `npm run indexnow` lists the live sitemap's URLs and `-- --send` submits them: the owner runs it
+  after a deploy that adds or changes pages, never a session (it sends data out).
 - Icons are generated from `lib/brand.ts` by `node scripts/icons/generate.ts`; the mark and the logo
   component share that geometry.
 

@@ -40,6 +40,13 @@ export const ENGINE_PACKAGE_URL = `https://www.npmjs.com/package/${ENGINE_PACKAG
 export const DATA_CONTROLLER = "Oscar Velilla Abril"
 
 /**
+ * The site's IndexNow key (Bing, Yandex, Seznam, Naver, Yep), served as
+ * `/<key>.txt` from `public/`: it proves the URLs `npm run indexnow` submits
+ * are this host's. Public by design; a new one needs only its file.
+ */
+export const INDEXNOW_KEY = "1eb5d0fec5dc99d5695b010f04667a07"
+
+/**
  * When the landing's copy last changed materially. It is the sitemap's
  * `lastModified`, which Google only trusts if it moves with the content, so it
  * is bumped by hand with the copy — never stamped with the build time.
