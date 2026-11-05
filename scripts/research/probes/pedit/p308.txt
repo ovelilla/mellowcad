@@ -1,0 +1,19 @@
+_PLINE
+0,0
+100,0
+100,50
+
+_PLINE
+0,0
+100,0
+100,-50
+
+_ZOOM
+_W
+-20,-60
+120,70
+_PEDIT
+50,0
+_C
+
+(progn (setq s (ssget "_X")) (setq i 0) (repeat (sslength s) (setq d (entget (ssname s i))) (print (list (cdr (assoc 5 d)) (cdr (assoc 70 d)) (cdr (assoc 10 (reverse d))))) (setq i (1+ i))) (princ))

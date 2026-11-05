@@ -1,0 +1,15 @@
+_3DPOLY
+0,0
+10,0
+
+_3DPOLY
+0,5
+10,5
+
+_U
+_REDO
+_UNDO
+2
+_MREDO
+1
+(sslength (ssget "_X"))

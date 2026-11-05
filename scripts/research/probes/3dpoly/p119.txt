@@ -1,0 +1,15 @@
+_FILEDIA
+0
+_3DPOLY
+0,0,0
+10,0,5
+10,10,-3
+_C
+_.SAVEAS
+2018
+tpo119
+_.OPEN
+tpo119
+(getvar "DWGNAME")
+MPDUMP
+-

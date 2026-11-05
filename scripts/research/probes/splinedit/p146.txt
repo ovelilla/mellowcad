@@ -1,0 +1,12 @@
+_ZOOM
+_W
+-20,-20
+60,40
+_LINE
+0,0
+10,10
+
+(sssetfirst nil (ssget "_L"))
+_SPLINEDIT
+
+(ssget "_I")

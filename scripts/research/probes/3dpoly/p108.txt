@@ -1,0 +1,23 @@
+(defun mpd (/ e g v) (setq e (entnext)) (while e (setq g (entget e)) (print (list (cdr (assoc 0 g)) (cdr (assoc 70 g)))) (cond ((= "POLYLINE" (cdr (assoc 0 g))) (setq v (entnext e)) (while (= "VERTEX" (cdr (assoc 0 (entget v)))) (print (cdr (assoc 10 (entget v)))) (setq v (entnext v))) (setq e v)) (T (foreach p g (if (member (car p) (quote (10 11 38 40 42 50 51 210))) (print p))))) (setq e (entnext e))) (princ))
+_LINE
+0,0
+100,0
+
+_LINE
+50,-50
+50,50
+
+_ZOOM
+_W
+-20,-60
+120,60
+_3DPOLY
+_INT
+50.5,0.5
+20,20
+_PER
+50.4,30
+_NEA
+99,0.3
+
+(mpd)

@@ -1,0 +1,6 @@
+_ID
+99,99
+_3DPOLY
+5,5,5
+
+(getvar "LASTPOINT")

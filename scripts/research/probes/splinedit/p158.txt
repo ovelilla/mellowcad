@@ -1,0 +1,21 @@
+_ZOOM
+_W
+-20,-20
+60,40
+_SPLINE
+0,0
+10,10
+20,0
+30,10
+
+_SPLINE
+0,20
+10,30
+20,20
+
+(sssetfirst nil (ssget "_X"))
+_SPLINEDIT
+_C
+_X
+MPDUMP
+-

@@ -1,0 +1,16 @@
+_-LAYER
+_M
+L1
+
+_CLAYER
+0
+_3DPOLY
+0,0
+'_-COLOR
+1
+'_CLAYER
+L1
+10,0
+
+MPDUMP
+-

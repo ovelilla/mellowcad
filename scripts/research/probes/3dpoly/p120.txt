@@ -1,0 +1,11 @@
+_LINE
+0,0
+10,10
+
+(sssetfirst nil (ssget "_X"))
+(ssget "_I")
+_3DPOLY
+0,5
+10,5
+
+(ssget "_I")

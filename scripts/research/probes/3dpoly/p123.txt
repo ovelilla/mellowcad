@@ -1,0 +1,15 @@
+_-LINETYPE
+_L
+DASHED
+acadiso.lin
+
+_CELTYPE
+DASHED
+_3DPOLY
+40,0
+70,0
+70,-30
+
+MPDUMP
+-
+(cdr (assoc 6 (entget (entlast))))
