@@ -35,9 +35,9 @@ claims follow `i18n.md`.
 
 ## One source
 
-- **A "Build" page is its package's file**: frontmatter (`title`, `description`, `type`) and one
-  `<include>` of the README, the `api.md` or a guide (`<dir>/docs/<name>.md`, the page
-  `<slug>/<name>`), nothing else; `DOCS_PACKAGES` ties a slug to a folder, `packagePageFile` a page
+- **A "Build" page is its package's file**: frontmatter (`title`, `metaTitle`, `description`,
+  `type`) and one `<include>` of the README, the `api.md` or a guide (`<dir>/docs/<name>.md`, the
+  page `<slug>/<name>`), nothing else; `DOCS_PACKAGES` ties a slug to a folder, `packagePageFile` a page
   to its file. A guide is the package's, read on GitHub and npm as the README is. Never copy a
   package file's words into a page.
 - `remarkPackageSource` drops the file's `#` heading (the title is the frontmatter's), sends a
@@ -93,7 +93,9 @@ claims follow `i18n.md`.
   rule over any other, which dropped next-intl's catalog loader and shipped every message
   uncompiled, tags and all; next-intl adds its rule beside it (`i18n/next-config.test.ts`).
 - A collection's `mdxOptions` replace the defaults: extend them through `applyMdxPreset`.
-- `next dev` keeps the compiled `.mdx` when the collection's options change: restart it.
+- `next dev` keeps the compiled `.mdx` when the collection's options change: restart it. Its cache
+  keeps the macro's evaluation across a restart when only a file `docs-source.ts` imports changed
+  (a remark plugin, `code-tokens.ts`): stop it, delete `.next/dev/cache`, start it.
 - Outside the bundler the macro does not exist: `docs:check` and the tests read the files
   (`lib/docs/check.ts`, `lib/docs/schema.ts`), never `docsSource`, and what they import uses
   `.ts` extensions, for Node to run it.
@@ -129,5 +131,8 @@ claims follow `i18n.md`.
 `npm run docs:check`, in the hook and CI: frontmatter and `meta.json`, each package's pages (its
 README, `api.md` and every guide) and their includes, each "Use" page in every live language and its translations' `sourceHash`, each
 `<Command id>`, the differences' quotes and sections, the links of the package files and of
-written pages (a fragment to a root page's heading), the examples blocks name, and the homepage.
+written pages (a fragment to a root page's heading), the examples blocks name, the homepage, and
+every page's search title (`metaTitle`, else `title`, with ` · MellowCAD`) and description: each its
+own, within `TITLE_MAX` and `DESCRIPTION_MAX`. A short `title` names the page in the navigation
+and its heading; `metaTitle` says it with the words a search uses.
 A README link that leads nowhere fails it. Its own cases are `lib/docs/check.test.ts`.

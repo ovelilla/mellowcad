@@ -90,7 +90,7 @@ editor starts. To change one, mount a new editor: give it a new `key`.
 | ----------------------------------- | ------------------------------------------------------------------------ |
 | [Customizing](docs/customizing.md)  | Replacing or removing the top bar, the status bar and the other pieces   |
 | [Saving drawings](docs/drawings.md) | Your own store, and saving and opening drawings from your code           |
-| [Languages](docs/languages.md)      | Spanish and Arabic, right to left, the language menu, your own words     |
+| [Languages](docs/languages.md)      | Its four languages, right to left, the language menu, your own words     |
 | [Next.js](docs/nextjs.md)           | Server pages, catalogs loaded on the server, fonts and the layout script |
 | [API reference](api.md)             | Every export, with its signature and its documentation                   |
 

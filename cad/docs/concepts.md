@@ -148,5 +148,5 @@ Each one is a pair of functions, so a host can put a drawing anywhere: see
 
 The engine speaks two languages at once, as AutoCAD's language packs do: the **interface** (tool
 labels, palette rows, the names of snaps and colours) and the **command language** (command
-names, prompts, keywords and what is drawn on the canvas). English is built in; Spanish and Arabic
-are one import away. See [Languages](languages.md).
+names, prompts, keywords and what is drawn on the canvas). English is built in; Spanish, Arabic
+and Brazilian Portuguese are one import away. See [Languages](languages.md).

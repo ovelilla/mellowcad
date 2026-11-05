@@ -70,12 +70,13 @@ export async function generateMetadata({
       })),
     }
   }
+  const title = page.data.metaTitle ?? page.data.title
   return {
-    title: page.data.title,
+    title,
     description: page.data.description,
     ...(await pageMetadata({
       path: canonicalPath(page),
-      title: `${page.data.title} · ${SITE_NAME}`,
+      title: `${title} · ${SITE_NAME}`,
       description: page.data.description,
       contentLocale:
         isTranslated(page) && pageLanguage(page) === locale

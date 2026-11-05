@@ -18,7 +18,7 @@ import { resolvePackageLink } from "./remark-package-source.ts"
 import { docsPageSchema, metaSchema } from "./schema.ts"
 import { USE_PAGES, githubAnchor, sourceHash } from "./use.ts"
 import { LOCALE_STATUS, routing } from "../../i18n/routing.ts"
-import { SITE_URL } from "../site.ts"
+import { SITE_NAME, SITE_URL } from "../site.ts"
 
 export const CONTENT_DIR = "content/docs"
 
@@ -28,6 +28,15 @@ const FENCE = /^(`{3,}|~{3,})[^\n]*\n[\s\S]*?^\1[ \t]*$/gm
 const INLINE_CODE = /`[^`\n]*`/g
 const LINK = /\]\(([^)\s]+)(?:\s+"[^"]*")?\)/g
 const LOCALE_SUFFIX = /\.[a-z]{2}(?:-[A-Z]{2})?(?=\.mdx$)/
+
+/**
+ * What a search result shows before cutting a page's title, the template's
+ * ` · MellowCAD` included, and its description: Google's ~600 px and ~155
+ * characters, Bing's alike.
+ */
+export const TITLE_MAX = 60
+export const DESCRIPTION_MAX = 160
+const TITLE_SUFFIX = ` · ${SITE_NAME}`
 
 function files(dir: string): string[] {
   return readdirSync(dir, { withFileTypes: true }).flatMap((entry) => {
@@ -147,6 +156,8 @@ export function checkDocs(root: string): string[] {
     }
   }
 
+  const titles = new Map<string, string>()
+  const descriptions = new Map<string, string>()
   for (const page of pages) {
     const file = `${CONTENT_DIR}/${page}`
     const { data, content } = frontmatter(
@@ -156,6 +167,25 @@ export function checkDocs(root: string): string[] {
     if (!parsed.success) {
       for (const issue of parsed.error.issues) {
         report(file, `frontmatter ${issue.path.join(".") || "(root)"}: ${issue.message}`)
+      }
+    } else {
+      // Each page is its own search result: a title and a description no
+      // other page has, short enough to be shown whole.
+      const title = `${parsed.data.metaTitle ?? parsed.data.title}${TITLE_SUFFIX}`
+      const { description } = parsed.data
+      if (title.length > TITLE_MAX) {
+        report(file, `its title in search results, "${title}", is over ${TITLE_MAX} characters: shorten metaTitle`)
+      }
+      if (description.length > DESCRIPTION_MAX) {
+        report(file, `its description is over ${DESCRIPTION_MAX} characters`)
+      }
+      for (const [seen, value, what] of [
+        [titles, title, "title"],
+        [descriptions, description, "description"],
+      ] as const) {
+        const other = seen.get(value)
+        if (other) report(file, `${other} has the same ${what}: give one a metaTitle or reword it`)
+        else seen.set(value, file)
       }
     }
     const pkg = pagePackage(file)

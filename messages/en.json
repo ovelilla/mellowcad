@@ -284,11 +284,13 @@
     "pages": {
       "commands": {
         "title": "Commands",
+        "metaTitle": "AutoCAD commands and aliases, by ribbon panel",
         "description": "Every AutoCAD command MellowCAD runs, by ribbon panel: its name, its aliases and the first thing it asks.",
         "lead": "Each command as you type it at the command line, filed under the ribbon panel you would look for it on. The first prompt is the engine's own: the same order and the same option letters you will see when you run it."
       },
       "shortcuts": {
         "title": "Keyboard shortcuts",
+        "metaTitle": "AutoCAD keyboard shortcuts: F-keys and Ctrl keys",
         "description": "The keys MellowCAD answers: the drafting aids, editing and files, the window and the command line.",
         "lead": "The keys MellowCAD answers, the ones an AutoCAD user already has in their fingers. A command is named as you would type it; its aliases are on the commands page."
       }

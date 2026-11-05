@@ -284,11 +284,13 @@
     "pages": {
       "commands": {
         "title": "Comandos",
+        "metaTitle": "Comandos do AutoCAD em português e seus aliases",
         "description": "Cada comando do AutoCAD que o MellowCAD executa, por painel da faixa de opções: seu nome, seus aliases e a primeira coisa que ele pergunta.",
         "lead": "Cada comando como você o digita na linha de comando, com o nome que ele tem no AutoCAD em português, sob o painel da faixa de opções em que você o procuraria. Com um sublinhado na frente, digita-se o nome em inglês, como no AutoCAD (`_LINE`). O primeiro prompt é o do próprio motor: a mesma ordem e as mesmas letras de opção que você verá ao executá-lo."
       },
       "shortcuts": {
         "title": "Atalhos de teclado",
+        "metaTitle": "Atalhos de teclado do AutoCAD: teclas F e Ctrl",
         "description": "As teclas a que o MellowCAD responde: os auxílios de desenho, a edição e os arquivos, a janela e a linha de comando.",
         "lead": "As teclas a que o MellowCAD responde, as que um usuário do AutoCAD já tem nos dedos. Cada comando é nomeado como você o digitaria; seus aliases estão na página de comandos."
       }

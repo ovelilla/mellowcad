@@ -28,11 +28,14 @@ function repo(tree: Record<string, string>): string {
   return dir
 }
 
+// Each page its own title and description, as docs:check holds them.
+let pages = 0
+
 const page = (body: string, type = "reference") =>
-  `---\ntitle: T\ndescription: D\ntype: ${type}\n---\n\n${body}\n`
+  `---\ntitle: T${++pages}\ndescription: D${pages}\ntype: ${type}\n---\n\n${body}\n`
 
 const translated = (english: string, body: string) =>
-  `---\ntitle: T\ndescription: D\ntype: howTo\nsourceHash: "${sourceHash(english)}"\n---\n\n${body}\n`
+  `---\ntitle: T${++pages}\ndescription: D${pages}\ntype: howTo\nsourceHash: "${sourceHash(english)}"\n---\n\n${body}\n`
 
 const differences = DIFFERENCES.map(({ id }) => `## ${id} [#${id}]`).join("\n\n")
 
@@ -164,7 +167,7 @@ describe("docs:check", () => {
     const tree = packages()
     const [name] = USE_PAGES
     const generated = (body: string) =>
-      `---\ntitle: T\ndescription: D\ntype: reference\ngenerated: "gen.test.ts"\n---\n\n${body}\n`
+      `---\ntitle: T${++pages}\ndescription: D${pages}\ntype: reference\ngenerated: "gen.test.ts"\n---\n\n${body}\n`
     const byHand = LIVE.at(-1)
     tree[`content/docs/${name}.mdx`] = generated("## A [#a]")
     for (const locale of LIVE) {
@@ -176,6 +179,26 @@ describe("docs:check", () => {
       'content/docs/guide.mdx: "guide" is not in USE_PAGES (lib/docs/use.ts)',
       `content/docs/${name}.${byHand}.mdx: written by gen.test.ts, as ${name}.mdx is: no sourceHash`,
       `content/docs/guide.mdx: the link "/docs/${name}#b" names no heading of /docs/${name}`,
+    ])
+  })
+
+  it("gives each page a title and a description of its own, short enough to show whole", () => {
+    const tree = packages()
+    const [first, second, third] = USE_PAGES
+    // Translations, which no English page's hash holds.
+    const file = (name: string) => `content/docs/${name}.${LIVE[0]}.mdx`
+    tree[file(second)] = tree[file(second)].replace(
+      /^title: .*$/m,
+      `title: Other\nmetaTitle: ${"A long one, ".repeat(5)}`
+    )
+    for (const name of [first, third]) {
+      tree[file(name)] = tree[file(name)].replace(/^description: .*$/m, "description: Same")
+    }
+    expect(checkDocs(repo(tree))).toEqual([
+      expect.stringMatching(
+        new RegExp(`^${file(second).replace(/\./g, "\\.")}: its title in search results, ".+", is over 60`)
+      ),
+      `${file(third)}: ${file(first)} has the same description: give one a metaTitle or reword it`,
     ])
   })
 })

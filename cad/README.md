@@ -78,7 +78,7 @@ what each control does. You can build that chrome yourself, or take it ready-mad
 | [Building a host](docs/host.md)          | The canvas, focus and keys, the command line, dynamic input and the chrome |
 | [Drawings and files](docs/drawings.md)   | Autosave, the drawing file, open and save, the clipboard, previews, SVG    |
 | [Without a browser](docs/headless.md)    | `CadDriver`: scripts, tests and rendering on a server                      |
-| [Languages](docs/languages.md)           | Spanish and Arabic, rewording a few words, a language of your own          |
+| [Languages](docs/languages.md)           | Its four languages, rewording a few words, a language of your own          |
 | [API reference](api.md)                  | Every export, with its signature and its documentation                     |
 
 What each command does, with its prompts and options, is in the user's

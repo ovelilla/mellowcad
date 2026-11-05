@@ -13,6 +13,11 @@ export const DOCS_PAGE_TYPES = [
 
 export const docsPageSchema = pageSchema.extend({
   description: z.string().min(1),
+  /**
+   * The page's name in search results and the browser's tab, when its title
+   * (the navigation's, the heading's) needs more words to stand alone there.
+   */
+  metaTitle: z.string().optional(),
   type: z.enum(DOCS_PAGE_TYPES),
   /** A translation: the `sourceHash` of the English file it says. */
   sourceHash: z.string().optional(),

@@ -1,8 +1,8 @@
 # Languages
 
-The engine speaks English, Spanish and Arabic, with Brazilian Portuguese on its way, and a host can
-reword any of it or add a language of its own. A language is passed to the engine, never registered
-globally, so one page can run two engines in two languages.
+The engine speaks English, Spanish, Arabic and Brazilian Portuguese, and a host can reword any of
+it or add a language of its own. A language is passed to the engine, never registered globally, so
+one page can run two engines in two languages.
 
 ## Two languages in one
 
@@ -18,7 +18,7 @@ As in AutoCAD's language packs, a language has two parts:
 | English              | Built in         | Built in, the global one                                                                  |
 | Spanish              | `es`             | Spanish AutoCAD's: `LINEA`, `DESFASE`, `[Cerrar/desHacer]`                                |
 | Arabic               | `ar`             | The global one, as there is no Arabic AutoCAD                                             |
-| Brazilian Portuguese | `pt-BR` (`ptBR`) | Brazilian Portuguese AutoCAD's, in progress: `LINHA`, `DESLOCAMENTO`, `[Fechar/Desfazer]` |
+| Brazilian Portuguese | `pt-BR` (`ptBR`) | Brazilian Portuguese AutoCAD's: `LINHA`, `DESLOCAMENTO`, `[Fechar/Desfazer]`              |
 
 In every language, `_` before a global name or keyword reaches the global vocabulary — `_LINE`,
 `_C` — as AutoCAD's scripts and macros rely on. A keyword whose global id has a space is typed as

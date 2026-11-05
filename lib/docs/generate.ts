@@ -141,6 +141,7 @@ export async function commandsPage(locale: AppLocale): Promise<string> {
   }
   return `${frontmatter({
     title: page.title,
+    metaTitle: page.metaTitle,
     description: page.description,
     type: "reference",
     generated: GENERATOR,
@@ -230,6 +231,7 @@ export async function shortcutsPage(locale: AppLocale): Promise<string> {
   const page = t.Docs.pages.shortcuts
   return `${frontmatter({
     title: page.title,
+    metaTitle: page.metaTitle,
     description: page.description,
     type: "reference",
     generated: GENERATOR,
