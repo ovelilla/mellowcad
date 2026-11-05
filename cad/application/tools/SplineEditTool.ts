@@ -28,6 +28,7 @@ import {
 import { formatLength } from "../../domain/units"
 import { WORLD_UCS, ucsZAxis } from "../../domain/ucs"
 import type { ScenePrimitive } from "../../scene/types"
+import { THEME } from "../../scene/theme"
 import {
   ReplaceEntitiesCommand,
   UpdateEntityCommand,
@@ -37,12 +38,11 @@ import {
   parseCoordinate,
 } from "../input/coordinateInput"
 import type { PromptId } from "../../locales/types"
-import { glow, rollover } from "./ghostLook"
+import { drawn, glow, rollover } from "./ghostLook"
 import { joinToSpline } from "./JoinTool"
 import { lockedObjectAt } from "./lockedPick"
 import { ONE_OBJECT_MODES, ObjectSelector } from "./objectSelection"
 import { newestFirst } from "./listReport"
-import { gripRubberBand } from "./selectToolOverlay"
 import { gripPrimitives, vertexGripShape } from "./selectToolGrips"
 import {
   CommandOption,
@@ -650,14 +650,21 @@ export class SplineEditTool implements Tool {
     ctx: ToolContext,
     change: (spline: SplineEntity) => SplineEntity | null
   ): void {
+    const edited = this.edited(ctx, change)
+    if (edited) ctx.execute(new UpdateEntityCommand(edited))
+  }
+
+  /** The spline as `change` leaves it, stored as the drawing keeps it; null for no change. */
+  private edited(
+    ctx: ToolContext,
+    change: (spline: SplineEntity) => SplineEntity | null
+  ): SplineEntity | null {
     const source = this.spline(ctx)
-    if (!source) return
+    if (!source) return null
     const before = splineInWorld(source)
     const after = change(before)
-    if (!after || after === before) return
-    ctx.execute(
-      new UpdateEntityCommand(splineOnItsPlane(splineInPlaneOf(after, source)))
-    )
+    if (!after || after === before) return null
+    return splineOnItsPlane(splineInPlaneOf(after, source))
   }
 
   private ask(step: Step, ctx: ToolContext): void {
@@ -936,19 +943,27 @@ export class SplineEditTool implements Tool {
         }
         // The point moved to, `@` read from it next (pedit/p321, p325, p335).
         ctx.setLastPoint(point)
-        const index = this.pointIndex(step.walked)
-        this.edit(ctx, (s) => {
-          const target = step.walked === "fit" ? s : SplineEditTool.vertices(s)
-          // A Z typed at Edit vertex's Move is kept, the spline leaving its
-          // plane (splinedit/p120); Fit data's is unprobed.
-          const to = step.walked === "fit" ? this.onPlane(s, point) : point
-          return {
-            ...target,
-            points: target.points.map((p, i) => (i === index ? to : p)),
-          }
-        })
+        this.edit(ctx, this.movedTo(step.walked, point))
         this.ask(step, ctx)
         return
+      }
+    }
+  }
+
+  /** Move's edit: the current point at `point`, which the answer and the ghost share. */
+  private movedTo(
+    walked: Walked,
+    point: Vec3
+  ): (spline: SplineEntity) => SplineEntity {
+    const index = this.pointIndex(walked)
+    return (s) => {
+      const target = walked === "fit" ? s : SplineEditTool.vertices(s)
+      // A Z typed at Edit vertex's Move is kept, the spline leaving its
+      // plane (splinedit/p120); Fit data's is unprobed.
+      const to = walked === "fit" ? this.onPlane(s, point) : point
+      return {
+        ...target,
+        points: target.points.map((p, i) => (i === index ? to : p)),
       }
     }
   }
@@ -1221,9 +1236,11 @@ export class SplineEditTool implements Tool {
 
   /**
    * The spline in the selection's glow, with the grips of the points its
-   * prompt is about, the one Move or Weight is on hot, and a dashed line from
-   * the point a prompt starts from to the cursor (its prompts' rubber band,
-   * k64 trace). The look of the jig is **unverified** on the desktop.
+   * prompt is about, the one Move or Weight is on hot; Edit vertex's control
+   * frame dashed (desktop splinedit/d01-5); an amber dashed line from the
+   * point a prompt starts from to the cursor (its prompts' rubber band, k64
+   * trace), and at Move the spline as the cursor would leave it (desktop
+   * splinedit/d01-4, d01-6, d02-2, d02-3).
    */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const step = this.step
@@ -1239,6 +1256,18 @@ export class SplineEditTool implements Tool {
     const walked = this.walkedNow()
     const target = walked === "fit" ? shown : SplineEditTool.vertices(shown)
     const shape = vertexGripShape(target)
+    if (walked === "cv" && step.kind !== "main") {
+      out.push({
+        kind: "path",
+        points: target.points.map((point) => ctx.viewport.worldToScreen(point)),
+        closed: target.closed,
+        stroke: { color: THEME.splineEditFrame, width: 1, dash: [2, 3] },
+      })
+    }
+    if (step.kind === "move" && this.cursor) {
+      const ghost = this.edited(ctx, this.movedTo(step.walked, this.cursor))
+      if (ghost) out.push(...drawn(ctx, ghost, "plain"))
+    }
     target.points.forEach((point, i) => {
       const hot =
         (step.kind === "move" || step.kind === "weight") &&
@@ -1247,12 +1276,12 @@ export class SplineEditTool implements Tool {
     })
     const from = this.anchor(ctx)
     if (from && this.cursor) {
-      out.push(
-        gripRubberBand(
-          ctx.viewport.worldToScreen(from),
-          ctx.viewport.worldToScreen(this.cursor)
-        )
-      )
+      out.push({
+        kind: "segment",
+        a: ctx.viewport.worldToScreen(from),
+        b: ctx.viewport.worldToScreen(this.cursor),
+        stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
+      })
     }
     return out
   }

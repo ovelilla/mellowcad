@@ -1850,6 +1850,11 @@ export declare const THEME: {
      * colour (desktop pline/d03, d06).
      */
     readonly dashedRubberBand: "#d7a320";
+    /**
+     * SPLINEDIT's Edit vertex: the control frame, dashed in a dim red, unlike
+     * a selected CV spline's (desktop splinedit/d01-5).
+     */
+    readonly splineEditFrame: "#7f493a";
     readonly preview: "#38bdf8";
     readonly selectionWindowFill: "rgba(64, 140, 255, 0.12)";
     /**

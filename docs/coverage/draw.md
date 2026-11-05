@@ -648,10 +648,11 @@ stays, unlike PLINE's ('LTSCALE, p112, p117; the regeneration it queued is done 
 and UNDO Control None stops nothing (p125). Close joins the start and ends. A point with no Z lies
 at ELEVATION, a typed Z is kept, a pick lies at the elevation it is on (p04); points are read in the
 UCS and stored in the WCS (p07). Not transparent (p18). The polyline wears what is current at its
-start, and is added at the end, Escape included (**unverified**: the console cannot press Escape;
-AutoCAD appends it at the start point, p01's trace). The jig draws the chain and the next segment
-in its colour (**unverified**: AutoCAD's endpoint prompt has a dashed band from its base, p116's
-trace, and appends the polyline at its start, p01's; the desktop pass PSD settles it). `<45` is
+start, and is added at the end, Escape keeping it (desktop d04-4; AutoCAD appends it at the start
+point, p01's trace). The jig draws the chain given in that colour, solid, as AutoCAD draws the
+polyline it has added, and an amber dashed line from the last vertex to the cursor (desktop d04,
+d05-2); the chain finds no object snap meanwhile (p79, p128, desktop d08). A point on the last
+vertex, typed or clicked, is a vertex, a zero-length segment (p127, desktop d04). `<45` is
 honoured before a length, which the console ignores (p104; the desktop honours it elsewhere,
 rectang/d03); dynamic input asks Length and Angle as PLINE does. Its name and alias, and the
 ribbon's place (Home ▸ Draw, expanded, beside Spline Fit and Spline CV: acad.cuix ID_PanelDraw),
@@ -669,7 +670,12 @@ PEDIT's Spline curve fits one, drawn and picked as its curve, Decurve back to it
 **Missing:** the palette's Fit/Smooth of a fitted one, which reads None here (AutoCAD's
 `Quadratic` and `Cubic`, es `Cuadrática`, `Cúbica`, ax26res.dll, not in the catalogs yet: a new
 interface word every language's catalog owes), and editing it there; one as a hatch boundary or ARRAYPATH's path, the 3D Visualization group's
-Material row (desktop d02), and the grips' hover menus (Stretch / Add / Remove Vertex, unprobed)
+Material row (desktop d02); the start point's dynamic input, X, Y and Z fields in AutoCAD (desktop
+d05-1; the one coordinate box here, a Z typed after a comma: PEDIT-D51); and the grips' hover
+menus (desktop d07: the start's `Stretch`, `Add Vertex`, `Remove Vertex`, `New Start Point`,
+`Lengthen`, a middle one's first three, the end's `Stretch`, `Remove Vertex`, `New Endpoint`,
+`Lengthen`; es `Estirar`, `Insertar vértice`, `Eliminar vértice`, `Nuevo punto inicial`, `Nuevo
+punto final`, `Longitud`; the English **unverified**)
 
 ### `TEXT` / `DTEXT` / `DT` / `-TEXT` · es `TEXTO` / `T` / `TEXTODIN` / `-TEXTO` · pt-BR `TEXTO` / `ETE` / `ETEXTO` / `-TEXTO`
 

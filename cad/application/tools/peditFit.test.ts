@@ -16,6 +16,7 @@ import {
 import { createHarness } from "../../../test/harness"
 import { p, polylineOf } from "../../../test/builders"
 import { es } from "../../locales/es"
+import { THEME } from "../../scene/theme"
 
 // PEDIT's Fit, Spline and Decurve, as AutoCAD 2027's console leaves the
 // polyline (probes pedit/p50–p62, p147–p199, p208–p215, p252, traced,
@@ -809,5 +810,18 @@ describe("what other commands make of a fitted polyline", () => {
       "Cannot set SPLINETYPE to that value.",
       "*Invalid*",
     ])
+  })
+})
+
+describe("a fitted polyline selected", () => {
+  it("wears its frame's vertices' grips alone (desktop pedit/d02-2)", () => {
+    const scaled = FOUR.map((v) => p(v.x * 10, v.y * 10))
+    const cad = edit(polylineOf(scaled, { id: "P" }))
+    typeAnswer(cad, "_F")
+    cad.enter().escape().select("P").moveTo(p(-300, -300))
+    const grips = cad
+      .scene()
+      .primitives.filter((q) => q.kind === "rect" && q.fill === THEME.grip)
+    expect(grips).toHaveLength(4)
   })
 })

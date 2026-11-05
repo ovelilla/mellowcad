@@ -74,7 +74,6 @@ import {
   ONE_OBJECT_MODES,
   ObjectSelector,
 } from "./objectSelection"
-import { gripRubberBand } from "./selectToolOverlay"
 import {
   SplineConversion,
   integerIn,
@@ -130,8 +129,12 @@ const MAX_PRECISION = 99
 /** World tolerance within which two ends touch. */
 const TOUCH = 1e-6
 
-/** The X Edit vertex marks its vertex with, half its size in pixels. */
-const MARK_SIZE = 6
+/**
+ * The X Edit vertex marks its vertex with, half its size in pixels: 24 each
+ * way in the crosshair's colour (desktop pedit/d01-2, where a grip measured
+ * 8 pixels, as here).
+ */
+const MARK_SIZE = 24
 
 /**
  * PEDIT, as AutoCAD 2027's console asks it (probes pedit/p01–p199, en and
@@ -1313,11 +1316,11 @@ export class PolylineEditTool implements Tool {
         return this.joiner.wantsSnap()
       case "insert":
       case "move":
-      case "fuzz":
         return true
       default:
-        // WHY Width, Edit vertex's widths and Tangent too: the runtime
-        // measures their points, from the X or two (p303–p305).
+        // WHY Width, Edit vertex's widths, Tangent and Multiple's fuzz too:
+        // the runtime measures their points, from the X or two (p303–p305,
+        // p340).
         return false
     }
   }
@@ -1409,9 +1412,9 @@ export class PolylineEditTool implements Tool {
   }
 
   /**
-   * The polylines in the selection's glow, Edit vertex's X on its vertex,
-   * and Insert's and Move's dashed line from it to the cursor (the look of
-   * the console's X on the desktop **unverified**).
+   * The polylines in the selection's glow at the main prompt; in Edit vertex
+   * none, the X on its vertex, and Insert's and Move's amber dashed line from
+   * it to the cursor, with no ghost (desktop pedit/d01, d02-1).
    */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     const step = this.step
@@ -1427,7 +1430,6 @@ export class PolylineEditTool implements Tool {
         return glow(ctx, step.entity)
     }
     const polylines = this.polylines(ctx)
-    const out = polylines.flatMap((poly) => glow(ctx, poly))
     const onVertex =
       step.kind === "vertex" ||
       step.kind === "walk" ||
@@ -1435,10 +1437,12 @@ export class PolylineEditTool implements Tool {
       step.kind === "move" ||
       step.kind === "vertexWidth" ||
       step.kind === "tangent"
+    if (!onVertex) return polylines.flatMap((poly) => glow(ctx, poly))
     const poly = polylines[0]
-    if (!onVertex || !poly) return out
+    if (!poly) return []
     const at = ctx.viewport.worldToScreen(vertexInWorld(poly, this.current))
-    const mark = { color: THEME.gripHot, width: 1.5 }
+    const mark = { color: THEME.crosshair, width: 1 }
+    const out: ScenePrimitive[] = []
     out.push(
       {
         kind: "segment",
@@ -1454,7 +1458,12 @@ export class PolylineEditTool implements Tool {
       }
     )
     if ((step.kind === "insert" || step.kind === "move") && this.cursor) {
-      out.push(gripRubberBand(at, ctx.viewport.worldToScreen(this.cursor)))
+      out.push({
+        kind: "segment",
+        a: at,
+        b: ctx.viewport.worldToScreen(this.cursor),
+        stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
+      })
     }
     return out
   }

@@ -11,6 +11,7 @@ import type {
 } from "../../domain/entities"
 import { lineEndZ, lineStartZ } from "../../domain/entities"
 import { es } from "../../locales/es"
+import { THEME } from "../../scene/theme"
 import { ptBR } from "../../locales/pt-BR"
 
 // AutoCAD 2027's console is the reference for every prompt, refusal and
@@ -1493,5 +1494,44 @@ describe("JOIN with a 3D polyline", () => {
     expect(run(es, window)).toBe("3 segmentos unidos en2 polilíneas 3D")
     expect(run(ptBR, one)).toBe("1 segmento unido em 1 polilinha 3D")
     expect(run(ptBR, window)).toBe("3 segmentos unidos em 2 polilinhas 3D")
+  })
+})
+
+// The desktop's 3DPOLY (es-ES, desktop 3dpoly/d04, d05-2; console p127).
+describe("3DPOLY's jig", () => {
+  const strokes = (cad: CadHarness) =>
+    cad
+      .scene()
+      .primitives.flatMap((q) =>
+        (q.kind === "segment" || q.kind === "path") && q.stroke
+          ? [q.stroke]
+          : []
+      )
+
+  it("draws the band from the last vertex amber and dashed, the chain solid (d04, d05-2)", () => {
+    const cad = createHarness()
+    cad.command("3DPOLY").click(p(0, 0)).click(p(100, 0)).moveTo(p(100, 80))
+    const band = cad
+      .scene()
+      .primitives.find(
+        (q) => q.kind === "segment" && q.stroke.color === THEME.dashedRubberBand
+      )
+    expect(band?.kind === "segment" && band.stroke.dash).toEqual([2, 3])
+    expect(
+      strokes(cad).filter((s) => s.color !== THEME.dashedRubberBand && !s.dash)
+    ).not.toHaveLength(0)
+  })
+
+  it("takes a click on the last vertex as a vertex, a zero-length segment (d04, p127)", () => {
+    const cad = createHarness()
+    cad.command("3DPOLY").click(p(0, 0)).click(p(10, 0)).click(p(10, 0))
+    expect(cad.state().commandLine.prompt).toContain("[Close/Undo]")
+    cad.click(p(20, 5)).enter()
+    expect(vertices(cad.latest())).toEqual([
+      [0, 0, 0],
+      [10, 0, 0],
+      [10, 0, 0],
+      [20, 5, 0],
+    ])
   })
 })

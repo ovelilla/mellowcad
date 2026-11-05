@@ -20,6 +20,7 @@ import {
   polylineOf,
 } from "../../../test/builders"
 import { es } from "../../locales/es"
+import { THEME } from "../../scene/theme"
 import { ptBR } from "../../locales/pt-BR"
 
 // PEDIT, as AutoCAD 2027's console asks it and leaves the polyline (probes
@@ -871,6 +872,47 @@ describe("PEDIT's Multiple", () => {
     expect(asked(cad)).toBe("Enter fuzz distance or [Jointype] <5.00>:")
   })
 
+  describe("the fuzz distance given by two points (p339, p340)", () => {
+    /** p340's two polylines 4 apart, LASTPOINT moved off them. */
+    const drawn = (locale?: typeof es) =>
+      answer(
+        createHarness(locale ? { locale } : {}),
+        ...["_PLINE", "0,0", "10,0", "", "_PLINE", "14,0", "20,0", ""],
+        ...["_ID", "30,30"]
+      )
+    const toFuzz = (cad: Harness) =>
+      answer(cad, "_PEDIT", "_M", "_ALL", "", "_J", "_J", "_A")
+
+    it("measures two typed points, LASTPOINT kept, and keeps 5 (p340)", () => {
+      const cad = answer(toFuzz(drawn()), "10,10")
+      expect(asked(cad)).toBe("Specify second point:")
+      answer(cad, "13,14")
+      expect(cad.commandLog().at(-1)).toBe("2 segments added to polyline")
+      answer(cad, "", "_ID", "@")
+      expect(cad.commandLog().at(-1)).toBe(
+        " X = 30.00     Y = 30.00     Z = 0.00"
+      )
+      answer(cad, "_PEDIT", "_M", "_ALL", "", "_J")
+      expect(asked(cad)).toBe("Enter fuzz distance or [Jointype] <5.00>:")
+    })
+
+    it("measures two clicks, and asks in Spanish (p340)", () => {
+      const cad = toFuzz(drawn())
+      cad.click(p(10, 10))
+      expect(asked(cad)).toBe("Specify second point:")
+      cad.click(p(13, 14))
+      expect(cad.commandLog().at(-1)).toBe("2 segments added to polyline")
+      expect(asked(answer(toFuzz(drawn(es)), "10,10"))).toBe(
+        "Designe segundo punto:"
+      )
+    })
+
+    it("adds nothing between collinear ends under Extend (p339)", () => {
+      const cad = answer(drawn(), "_PEDIT", "_M", "_ALL", "", "_J", "5")
+      expect(cad.commandLog().at(-1)).toBe("0 segments added to polyline")
+    })
+  })
+
   it("grows an arc end on its circle to a straight end's line (p207)", () => {
     const cad = multiple(
       polylineOf([p(0, 0), p(10, 0), p(15, 5)], {
@@ -1530,5 +1572,72 @@ describe("PEDIT's LASTPOINT and its pick", () => {
     const clicked = edit(p5())
     clicked.option("Edit vertex").option("Tangent").click(p(10, 10))
     expect(asked(clicked)).toBe(`${VERTEX} <N>:`)
+  })
+})
+
+// The desktop's PEDIT (es-ES, desktop pedit/d01, d02).
+describe("PEDIT's look", () => {
+  const strokeOf = (q: { kind: string }) =>
+    "stroke" in q ? (q as { stroke: { color: string } }).stroke : null
+  const drawn = () => {
+    const cad = createHarness({
+      entities: [polylineOf([p(0, 0), p(200, 0), p(200, 150)], { id: "P" })],
+    })
+    cad.command("PEDIT").click(p(100, 0))
+    return cad
+  }
+  const glows = (cad: Harness) =>
+    cad.scene().primitives.filter((q) => strokeOf(q)?.color === THEME.selected)
+      .length
+
+  it("glows the polyline at the main prompt, not in Edit vertex (d02-1, d01-2)", () => {
+    const cad = drawn()
+    expect(glows(cad)).toBe(1)
+    answer(cad, "_E")
+    expect(glows(cad)).toBe(0)
+  })
+
+  it("marks the vertex with an X in the crosshair's colour, 24 px each way (d01-2)", () => {
+    const cad = answer(drawn(), "_E")
+    const at = cad.runtime.viewport.worldToScreen(p(0, 0))
+    const arms = cad
+      .scene()
+      .primitives.filter(
+        (q) =>
+          q.kind === "segment" &&
+          q.stroke.color === THEME.crosshair &&
+          q.a.x !== q.b.x &&
+          q.a.y !== q.b.y
+      )
+    expect(
+      arms.map((q) =>
+        q.kind === "segment"
+          ? [
+              q.a.x - at.x,
+              q.a.y - at.y,
+              q.b.x - at.x,
+              q.b.y - at.y,
+              q.stroke.width,
+            ]
+          : []
+      )
+    ).toEqual([
+      [-24, -24, 24, 24, 1],
+      [-24, 24, 24, -24, 1],
+    ])
+  })
+
+  it("draws Move's and Insert's lines from the X amber and dashed (d01-3, d01-5)", () => {
+    for (const option of ["_M", "_I"]) {
+      const cad = answer(drawn(), "_E", option)
+      cad.moveTo(p(60, 90))
+      const band = cad
+        .scene()
+        .primitives.find(
+          (q) =>
+            q.kind === "segment" && q.stroke.color === THEME.dashedRubberBand
+        )
+      expect(band?.kind === "segment" && band.stroke.dash).toEqual([2, 3])
+    }
   })
 })

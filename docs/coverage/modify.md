@@ -1822,9 +1822,12 @@ again, a Fit polyline too (p103), Enter ending the command (k93, k96, k118); the
 selected before it is the one edited, the rest dropped (k121, p145, p158), a set with none said of
 its newest, `Object selected is not a spline.`, and `Select spline:` asked (p146), nothing left
 selected (p147); a double-click on a spline at `Command:` runs it on it as acad.cuix's
-`^C^C^R_splinedit ` does (DoubleClickRoot.cui `DC_0012`), echoed `_splinedit` (what `^R` echoes is
-**unverified**); a polyline PEDIT's Spline fitted turned at once, in silence, into the CV spline of its curve,
-as SPLINE's Object makes it (k94, pedit/p180). Then `Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit]
+`^C^C^R_splinedit ` does (DoubleClickRoot.cui `DC_0012`), echoed `_splinedit` and the main prompt
+(desktop splinedit/d01-7); a polyline PEDIT's Spline fitted turned at once, in silence, into the CV spline of its curve,
+as SPLINE's Object makes it (k94, pedit/p180). Its prompts' look (desktop splinedit/d01, d02): the
+spline in the selection's glow with its fit points' grips, at Edit vertex its control vertices'
+round grips and the control frame dashed in a dim red; at Move the point's grip hot, the spline as
+the cursor would leave it, and an amber dashed line from the point to the cursor. Then `Enter an option [Close/Join/Fit data/Edit vertex/convert to Polyline/Reverse/Undo/eXit]
 <eXit>:` (es `Indique una opción [Cerrar/Unir/Ajustar datos/Editar vértices/coNvertir en
 polilínea/Invertir/desHacer/Salir] <Salir>:`), a closed spline's with Open (es `aBrir`) and no Join,
 its Spanish declaring `Polilínea` where it lists `coNvertir`; the hidden words Data, R, X and
@@ -1911,9 +1914,8 @@ leaves far coarser (5, 7, 13 and 31 at precisions 0, 1, 3 and 10, at the fit poi
 against 74, 144, 286 and 786 here: k120, k132–k134), PLINECONVERTMODE's arcs and DELOBJ's keeping
 of the spline; Group at `Select spline:`; pt-BR's listing `[Antes/Depois]` at Add's first point
 (p113 pt-BR; `[Depois/Antes]` here: a language's own order of a prompt's keywords has no place in
-the catalog yet); the look of the prompts on the desktop (here the spline glows with
-its fit points' or vertices' grips, Move's and Weight's hot, a dashed line from the point to the
-cursor: **unverified**). **Unverified:** Add and Delete on a closed spline's own knots that are not
+the catalog yet); the `+` AutoCAD draws on the current point (amber at Fit data's and Edit
+vertex's prompts, green under Move: splinedit/d02, its rule unprobed). **Unverified:** Add and Delete on a closed spline's own knots that are not
 1 apart (worked out again as chord ones here); Delete of a closed CV spline's first vertex and of
 a closed one of another degree (the knot nearest the Greville abscissa half a degree back here);
 a Z typed at Fit data's Move and Add and at Edit vertex's Add (projected onto the spline's plane
@@ -1977,7 +1979,9 @@ vertices the other way, each segment's bulge negated and widths swapped, a close
 last vertex (p33, p113). **Edit vertex**: `Enter a vertex editing option
 [Next/Previous/Break/Insert/Move/Regen/Straighten/Tangent/Width/eXit] <N>:` (es
 `[sigUiente/Precedente/Cortar/Insertar/Desplazar/Regenerar/Alisar/Tangente/Grosor/Salir] <U>:`; a
-3D polyline's without Tangent and Width, p30), an X on the vertex from the first, Enter stepping
+3D polyline's without Tangent and Width, p30), an X on the vertex from the first — in the
+crosshair's colour, 24 pixels each way, the polyline out of the glow it wears at the main prompt
+(desktop d01-2, d02-1) —, Enter stepping
 the way Next or Previous last went, staying put at either end of an open or a closed one (p21,
 p29, p63–p65); Insert's `Specify location for new vertex:` after the X, the segment it splits
 keeping its bulge and widths and the new one straight as wide as it ended, the X onto it (p23,
@@ -1986,7 +1990,8 @@ both doing nothing at Enter (p74), with their Z on a 3D polyline (p30), `@` read
 LASTPOINT, with its Z on a 3D polyline (p227, p251), a Z, `*`, a keyword or a command on a 2D one
 `Invalid 2D point.` (p228, p229, p238), an object snap taken, Ortho leaving a typed point (p230),
 LASTPOINT the point given (p301, p302), Edit vertex entered, stepped and left keeping it (p250,
-p332); Break's and Straighten's
+p332), an amber dashed line from the X to the cursor at both, no ghost (desktop d01-3, d01-5);
+Break's and Straighten's
 `Enter an option [Next/Previous/Go/eXit] <N>:` (es `[sigUiente/Precedente/Ejecutar/Salir]`), Go
 breaking between the vertex they began at and the X — the runs before the lower and after the
 higher, a closed one read from its first vertex round to it again, the piece from the start
@@ -2005,7 +2010,8 @@ Regen. **Undo**: the last
 step of the main prompt back, a whole Edit vertex at once, `Command has been completely undone.`
 (es `Todos los efectos del comando han sido deshechos.`) once none is left, even as it takes back
 the last (p34, p35, p46, p81; a 3D polyline's, p247); a conversion stays (p112). Escape keeps
-what was done; U after the command takes it all back, named PEDIT (es EDITPOL; p36, p47), a run
+what was done, and ends PEDIT from inside Edit vertex too, at its prompt, Move's or Insert's
+(desktop d01-4, d01-6, d01-7); U after the command takes it all back, named PEDIT (es EDITPOL; p36, p47), a run
 that changed nothing too, and UNDO and MREDO count it (p236, p237). A converted line or arc keeps
 its properties, in a turned UCS its plane and elevation (p240, p241). **Multiple**: `Select objects:`,
 read newest first (p12, p14, p93), its lines, arcs and splines asked about with `Convert Lines,
@@ -2029,8 +2035,10 @@ parallel ones never, or an arc end segment grown on its circle to a straight end
 p86–p88, p92, p106, p107, p207); Add, the nearest
 two ends joined by a segment where their gap is less than the fuzz times the distance between the
 other two ends — the rule twenty probes give, no help states it (p83, p105, p108, p116–p127,
-p134–p146); Both, Extend where it can, else Add (p15, p85, p91, p93); `1 segments added to
-polyline`, as AutoCAD writes it.
+p134–p146); Both, Extend where it can, else Add (p15, p85, p91, p93), collinear ends under Extend
+none (p339); `1 segments added to polyline`, as AutoCAD writes it. The fuzz is a number or two
+points measured, ` Specify second point:` (es `Designe segundo punto:`), typed or clicked, LASTPOINT
+kept (p340).
 
 **Fit** lays two arcs between each pair of vertices, the curve through them all, tangent at each:
 at an inner vertex `a/|a|² · sin(turn after) + b/|b|² · sin(turn before)`, `a` and `b` the chords
@@ -2082,8 +2090,7 @@ Width asked and nothing changed, Fit silent, Ltype gen's `[ON/OFF]` with no defa
 fitting them (p40, p249; the 3D one here, PEDIT-D29); Extend of two arc end segments
 (**unverified**, never here: PEDIT-D23); JOIN of a spline-fit polyline (unprobed; its frame here);
 EXTEND of a Fit one, whose last arc AutoCAD grows off the edge (p211; refused here, as it finds no
-edge); the meshes; the X's look on the desktop (**unverified**: a red cross
-here); the widths of Close's segment, AutoCAD's the last vertex's, which nothing stores here
+edge); the meshes; the widths of Close's segment, AutoCAD's the last vertex's, which nothing stores here
 (the last segment's end width here, PLINE's and Width's alike, p34, p78), and of an open
 polyline's last vertex, which Edit vertex's Width sets and nothing here keeps (p79); the bulge
 Straighten leaves on an open polyline's last vertex, which a later Close would use (p131);
@@ -2091,9 +2098,13 @@ Multiple's Spanish listing, `[…/curVar/SPline/…]` and the 3D one's `curvaB`,
 `Eliminarcurva` (p196, p197; here Spline, curva Spline and ELiminarcurva, as the single prompts
 spell them: a keyword's label is one per command); FILLET's and CHAMFER's Polyline option on a
 fitted polyline, which AutoCAD runs over its curve's vertices, the result unprobed (p194, p195); a
-fitted polyline's grips on the desktop and its palette (the 2D one's Fit/Smooth, ax26res.dll's
-`None;Curve fit;Quadratic;Cubic`, es `Ninguna;Ajuste de curva;Cuadrática;Cúbica`, not shown; the
-3D one's reads None, properties.md); the area LIST and AREA give an open curve-fit one
+fitted polyline's palette as AutoCAD's 2D Polyline shows it (desktop d02-4: titled `2D Polyline`,
+es `Polilínea 2D`, as Fit makes the object a POLYLINE; Fit/Smooth `Curve fit`, ax26res.dll's
+`None;Curve fit;Quadratic;Cubic`, es `Ninguna;Ajuste de curva;Cuadrática;Cúbica`; here `Polyline`
+and no such row; the 3D one's reads None, properties.md) and its vertex grip's hover menu
+(`Stretch`, `Remove Vertex`, `Tangent Direction`, es `Estirar`, `Eliminar vértice`, `Dirección de
+tangente`, d02-3; the English **unverified**), its grips being the frame's vertices alone, as here
+(d02-2); the area LIST and AREA give an open curve-fit one
 (inquiry.md); the small arcs OFFSET rounds some outer corners of a spline-fit
 one's copy with (p169); SPLFRAME, which 2027 no longer ties to spline-fit polylines (its help:
 helixes and meshes; plotted with it on, the frame is not drawn, p193).

@@ -9,6 +9,7 @@ import {
   parseCoordinate,
 } from "../input/coordinateInput"
 import { ScenePrimitive } from "../../scene/types"
+import { THEME } from "../../scene/theme"
 import { entityScenePrimitive } from "../SceneBuilder"
 import { PointerInput, Tool, ToolContext } from "./Tool"
 import { CommandOption, CommandOptionOutcome } from "./Tool"
@@ -102,9 +103,9 @@ export class Polyline3dTool implements Tool {
       return
     }
     const last = this.lastVertex(this.state)
-    const point = this.resolveEnd(last, input.point, ctx)
-    if (point.x === last.x && point.y === last.y && point.z === last.z) return
-    this.append(point, ctx)
+    // WHY no guard on the last vertex: a click there is a zero-length
+    // segment, as a typed one is (desktop 3dpoly/d04, p127).
+    this.append(this.resolveEnd(last, input.point, ctx), ctx)
     ctx.dynamicInput.setPosition(input.screen)
   }
 
@@ -152,17 +153,33 @@ export class Polyline3dTool implements Tool {
     return this.state.phase === "drawing" ? this.lastVertex(this.state) : null
   }
 
+  /**
+   * The chain given so far in the colour current at its start, AutoCAD's
+   * polyline added at its start point, and an amber dashed line from its
+   * last vertex to the cursor (desktop 3dpoly/d04, d05-2).
+   */
   buildOverlay(ctx: ToolContext): ScenePrimitive[] {
     if (this.state.phase !== "drawing") return []
+    const { viewport } = ctx
     const stroke = { color: currentColor(ctx, this.state.properties), width: 1 }
     const last = this.lastVertex(this.state)
-    const jig = createPolyline3d(
-      [...this.state.vertices, this.resolveEnd(last, this.state.cursor, ctx)],
-      false,
-      this.state.properties.layerId,
-      "polyline3d-preview"
-    )
-    return entityScenePrimitive(ctx.viewport, jig, stroke)
+    const out: ScenePrimitive[] = []
+    if (this.state.vertices.length >= 2) {
+      const chain = createPolyline3d(
+        this.state.vertices,
+        false,
+        this.state.properties.layerId,
+        "polyline3d-preview"
+      )
+      out.push(...entityScenePrimitive(viewport, chain, stroke))
+    }
+    out.push({
+      kind: "segment",
+      a: viewport.worldToScreen(last),
+      b: viewport.worldToScreen(this.resolveEnd(last, this.state.cursor, ctx)),
+      stroke: { color: THEME.dashedRubberBand, width: 1, dash: [2, 3] },
+    })
+    return out
   }
 
   private lastVertex(state: Drawing): Vec3 {

@@ -15,6 +15,7 @@ import { bsplinePoint, periodicLoop } from "../../geometry/nurbs"
 import { createHarness } from "../../../test/harness"
 import { layerOf, lineOf, p } from "../../../test/builders"
 import { es } from "../../locales/es"
+import { THEME } from "../../scene/theme"
 import { ptBR } from "../../locales/pt-BR"
 
 // SPLINEDIT, as AutoCAD 2027's console asks it and leaves the spline (probes
@@ -1422,5 +1423,69 @@ describe("SPLINEDIT's LASTPOINT and its pick", () => {
       ...["_SPLINEDIT", "0,0", "_F", "_D", "50,30", "", "_X", ""]
     )
     expect(lastPoint(fitDelete)).toBe(at(0, 0))
+  })
+})
+
+// The desktop's SPLINEDIT (es-ES, desktop splinedit/d01, d02).
+describe("SPLINEDIT's look", () => {
+  const big = () =>
+    createSpline("fit", [p(0, 0), p(100, 100), p(200, 0), p(300, 100)], {
+      id: "S",
+    })
+  type H = ReturnType<typeof createHarness>
+  const near = (a: { x: number; y: number }, b: { x: number; y: number }) =>
+    Math.hypot(a.x - b.x, a.y - b.y) < 1
+  /** A solid path starting or ending at `world`: the ghost of the spline moved there. */
+  const ghostThrough = (cad: H, world: { x: number; y: number }) => {
+    const at = cad.runtime.viewport.worldToScreen(world)
+    return cad
+      .scene()
+      .primitives.some(
+        (q) =>
+          q.kind === "path" &&
+          !q.stroke?.dash &&
+          q.points.length > 2 &&
+          (near(q.points[0], at) || near(q.points.at(-1)!, at))
+      )
+  }
+  const band = (cad: H) =>
+    cad
+      .scene()
+      .primitives.find(
+        (q) => q.kind === "segment" && q.stroke.color === THEME.dashedRubberBand
+      )
+  const frame = (cad: H) =>
+    cad
+      .scene()
+      .primitives.filter(
+        (q) => q.kind === "path" && q.stroke?.color === THEME.splineEditFrame
+      )
+
+  it("drags a ghost of the curve and an amber band at Fit data's Move (d01-4, d02-2, d02-3)", () => {
+    const cad = answer(edit(big()), "_F", "_M")
+    cad.moveTo(p(40, 120))
+    expect(ghostThrough(cad, p(40, 120))).toBe(true)
+    const line = band(cad)
+    expect(line?.kind === "segment" && line.stroke.dash).toEqual([2, 3])
+  })
+
+  it("drags a ghost and an amber band at Edit vertex's Move (d01-6)", () => {
+    const cad = answer(edit(big()), "_E", "_M")
+    cad.moveTo(p(40, 120))
+    expect(ghostThrough(cad, p(40, 120))).toBe(true)
+    expect(band(cad)).toBeDefined()
+  })
+
+  it("draws the control frame dashed while Edit vertex runs, not before (d01-5)", () => {
+    const cad = edit(big())
+    expect(frame(cad)).toHaveLength(0)
+    answer(cad, "_F")
+    expect(frame(cad)).toHaveLength(0)
+    answer(cad, "_X", "_E")
+    const [path] = frame(cad)
+    expect(path?.kind === "path" && path.stroke?.dash).toEqual([2, 3])
+    expect(path?.kind === "path" && path.points.length).toBe(6)
+    answer(cad, "_M")
+    expect(frame(cad)).toHaveLength(1)
   })
 })
