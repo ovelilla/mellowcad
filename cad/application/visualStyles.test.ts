@@ -64,26 +64,126 @@ describe("VSCURRENT", () => {
     expect(segments(cad).length).toBe(wireframe - 3)
   })
 
-  it("is a step U takes back, and says Regenerating model. only back to 2D Wireframe (v02)", () => {
+  it("is a step U takes back, Enter's run too (probe solid-inquiry/p205)", () => {
     const cad = isoBox()
-    expect(written(cad, "VSCURRENT", "H")).not.toContain("Regenerating model.")
-    expect(written(cad, "VSCURRENT", "2")).toContain("Regenerating model.")
+    answer(cad, "VSCURRENT", "H")
+    expect(written(cad, "VSCURRENT", "")).toEqual([
+      "VSCURRENT",
+      "Enter an option [2dwireframe/Hidden/Conceptual] <Hidden>:",
+    ])
     expect(written(cad, "U")).toEqual(["U", "VSCURRENT"])
     expect(style(cad)).toBe("hidden")
-    expect(written(cad, "REDO").slice(0, 2)).toEqual(["REDO", "VSCURRENT"])
+    expect(written(cad, "U")).toEqual(["U", "VSCURRENT Regenerating model."])
     expect(style(cad)).toBe("2dWireframe")
   })
 
-  it("will not run inside another command (v02)", () => {
+  it("says Regenerating model. whenever a step leaves 2D Wireframe current, and only then (solid-inquiry/p205–p207)", () => {
+    const cad = isoBox()
+    expect(written(cad, "VSCURRENT", "H")).toEqual([
+      "VSCURRENT",
+      "Enter an option [2dwireframe/Hidden/Conceptual] <2dwireframe>: H",
+    ])
+    expect(written(cad, "VSCURRENT", "2")).toEqual([
+      "VSCURRENT",
+      "Enter an option [2dwireframe/Hidden/Conceptual] <Hidden>: 2",
+      "Regenerating model.",
+    ])
+    // p207: U back to Hidden is silent, REDO back to 2D Wireframe is not.
+    expect(written(cad, "U")).toEqual(["U", "VSCURRENT"])
+    expect(style(cad)).toBe("hidden")
+    expect(written(cad, "REDO")).toEqual([
+      "REDO",
+      "VSCURRENT",
+      "Everything has been redone",
+      "Regenerating model.",
+    ])
+    expect(style(cad)).toBe("2dWireframe")
+    // p207: 2D Wireframe again from 2D Wireframe regenerates nothing.
+    expect(written(cad, "VSCURRENT", "2")).toEqual([
+      "VSCURRENT",
+      "Enter an option [2dwireframe/Hidden/Conceptual] <2dwireframe>: 2",
+    ])
+  })
+
+  it("takes two styles back with UNDO 2 and redoes them with MREDO All (solid-inquiry/p206)", () => {
+    const cad = isoBox()
+    answer(cad, "VSCURRENT", "H", "VSCURRENT", "C")
+    expect(written(cad, "UNDO", "2").at(-1)).toBe(
+      "VSCURRENT VSCURRENT Regenerating model."
+    )
+    expect(style(cad)).toBe("2dWireframe")
+    expect(written(cad, "MREDO", "_A").slice(-2)).toEqual([
+      "VSCURRENT VSCURRENT",
+      "Everything has been redone",
+    ])
+    expect(style(cad)).toBe("conceptual")
+  })
+
+  it("lets no view command say Regenerating model. in Hidden or Conceptual (solid-inquiry/p219, p220, d01)", () => {
+    const cad = createHarness()
+    answer(cad, "BOX", "0,0,0", "10,10,10", "VSCURRENT", "H")
+    const silent = (...texts: string[]) =>
+      expect(written(cad, ...texts)).not.toContain("Regenerating model.")
+    silent("-VIEW", "_SWISO")
+    silent("-VIEW", "_TOP")
+    silent("PLAN", "")
+    silent("ZOOM", "_E")
+    silent("REGEN")
+    silent("-VPOINT", "1,1,1")
+    // p220: their U and REDO too.
+    expect(written(cad, "U")).toEqual(["U", "-VPOINT"])
+    silent("-VIEW", "_TOP")
+    expect(written(cad, "U")).toEqual(["U", "-VIEW"])
+    expect(written(cad, "REDO")).toEqual([
+      "REDO",
+      "-VIEW",
+      "Everything has been redone",
+    ])
+    answer(cad, "VSCURRENT", "C")
+    silent("-VIEW", "_SEISO")
+    silent("REGEN")
+    // In 2D Wireframe a turn of the view says it (p214, d01).
+    answer(cad, "VSCURRENT", "2")
+    expect(written(cad, "-VIEW", "_SWISO")).toContain("Regenerating model.")
+  })
+
+  it("takes Hidden's hidden keyword, in each language (solid-inquiry/p204, p222)", () => {
+    const english = isoBox()
+    answer(english, "VSCURRENT", "_3DHIDDEN")
+    expect(style(english)).toBe("hidden")
+    const spanish = isoBox(es)
+    answer(spanish, "ESTVISACTUAL", "OCULTO3D")
+    expect(style(spanish)).toBe("hidden")
+    const portuguese = isoBox(ptBR)
+    answer(portuguese, "EVATUAL", "3DOCULTO")
+    expect(style(portuguese)).toBe("hidden")
+    // Not listed: the prompt reads as before.
+    expect(written(english, "VSCURRENT", "")).toEqual([
+      "VSCURRENT",
+      "Enter an option [2dwireframe/Hidden/Conceptual] <Hidden>:",
+    ])
+  })
+
+  it("will not run inside another command (solid-inquiry/p213)", () => {
     const cad = isoBox()
     answer(cad, "LINE", "0,0")
-    expect(written(cad, "'VSCURRENT")).toContain(
-      "** That command may not be invoked transparently **"
-    )
+    expect(written(cad, "'VSCURRENT")).toEqual([
+      "Specify next point or [Undo]: 'VSCURRENT",
+      "** That command may not be invoked transparently **",
+      "Point or option keyword required.",
+    ])
+    expect(cad.runtime.getState().activeToolId).toBe("line")
     answer(cad, "")
   })
 
-  it("is saved with the drawing (v03, v04)", () => {
+  it("drops a preselection (solid-inquiry/p216)", () => {
+    const cad = isoBox()
+    cad.runtime.selectAll()
+    answer(cad, "VSCURRENT", "H")
+    expect(cad.runtime.getState().selectionCount).toBe(0)
+  })
+
+  it("is saved with the drawing, and offered as the default once reopened (v03, v04, solid-inquiry/p211)", () => {
     const cad = isoBox()
     answer(cad, "VSCURRENT", "H")
     const file = serializeDrawing(
@@ -92,6 +192,12 @@ describe("VSCURRENT", () => {
       })
     )
     expect(parseDrawingFile(file).settings.visualStyle).toBe("hidden")
+    const reopened = createHarness()
+    reopened.runtime.loadDrawing(file)
+    expect(written(reopened, "VSCURRENT", "")).toEqual([
+      "VSCURRENT",
+      "Enter an option [2dwireframe/Hidden/Conceptual] <Hidden>:",
+    ])
   })
 
   it("speaks Spanish and Portuguese as their AutoCADs do (v02, table 23337)", () => {
@@ -103,6 +209,12 @@ describe("VSCURRENT", () => {
       "Indique una opción [estructuraalámbrica2d/ocUlto/Conceptual] <Oculto>:",
     ])
     expect(written(spanish, "H")).toEqual(["H", "ESTVISACTUAL"])
+    // p202 es: the refusal in its words.
+    expect(written(spanish, "ESTVISACTUAL", "FOO").slice(-2)).toEqual([
+      "Indique una opción [estructuraalámbrica2d/ocUlto/Conceptual] <Oculto>: FOO",
+      "Opción no válida.",
+    ])
+    answer(spanish, "")
     const portuguese = isoBox(ptBR)
     expect(written(portuguese, "EVATUAL", "U", "EVA", "")).toEqual([
       "EVATUAL",

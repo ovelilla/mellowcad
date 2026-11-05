@@ -810,7 +810,7 @@ export class CadRuntime extends Observable {
         }
         if (how === "silently") return
         if (this.suspended === null) {
-          this.commandLine.write("info", this.text.message("regeneratingModel"))
+          this.sayRegenerating()
           return
         }
         this.commandLine.write("info", this.text.message("regenQueued"))
@@ -1315,7 +1315,7 @@ export class CadRuntime extends Observable {
     }
     if (this.regenQueued) {
       this.regenQueued = false
-      this.commandLine.write("info", this.text.message("regeneratingModel"))
+      this.sayRegenerating()
     }
     // A command is one undo step, closed only once its tool has committed
     // what it holds on deactivation, with what it did to the view.
@@ -3153,7 +3153,7 @@ export class CadRuntime extends Observable {
     const taken = this.history.undoTo(depth).length > 0
     if (taken && this.regenQueued && this.regenQueuedAt > depth) {
       this.regenQueued = false
-      this.commandLine.write("info", this.text.message("regeneratingModel"))
+      this.sayRegenerating()
     }
     return taken
   }
@@ -3205,7 +3205,10 @@ export class CadRuntime extends Observable {
       if (names.length > 0) {
         const regen = this.text.message("regeneratingModel")
         const line = names.join(" ")
-        this.commandLine.write("info", regenerates ? `${line} ${regen}` : line)
+        this.commandLine.write(
+          "info",
+          regenerates && this.regenerationSaid() ? `${line} ${regen}` : line
+        )
       }
       const ending =
         stop === "mark"
@@ -3299,7 +3302,24 @@ export class CadRuntime extends Observable {
    */
   private regenerateView(): void {
     this.history.markRegenerated()
-    this.commandLine.write("info", this.text.message("regeneratingModel"))
+    this.sayRegenerating()
+  }
+
+  /**
+   * WHY: AutoCAD says `Regenerating model.` — a run, its U, UNDO, REDO and
+   * MREDO alike — only when 2D Wireframe is the style after it; in Hidden
+   * or Conceptual REGEN, -VIEW, PLAN, ZOOM and -VPOINT are silent, and U
+   * from Hidden back to 2D Wireframe speaks (solid-inquiry/p205–p207,
+   * p214, p219, p220, desktop d01).
+   */
+  private regenerationSaid(): boolean {
+    return this.document.getSettings().visualStyle === "2dWireframe"
+  }
+
+  private sayRegenerating(): void {
+    if (this.regenerationSaid()) {
+      this.commandLine.write("info", this.text.message("regeneratingModel"))
+    }
   }
 
   /** Whether the last undo already said `Everything has been undone`. */
@@ -3398,6 +3418,7 @@ export class CadRuntime extends Observable {
     }
     const all = !this.history.canRedo()
     const regen = this.text.message("regeneratingModel")
+    regenerates &&= this.regenerationSaid()
     if (names.length > 0) {
       const line = names.join(" ")
       this.commandLine.write(

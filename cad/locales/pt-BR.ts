@@ -1883,7 +1883,8 @@ export const ptBR: EngineLocale = {
       "VSCURRENT": {
         "2dwireframe": "estruturadearame2d",
         "Hidden": "ocUlto",
-        "Conceptual": "Conceitual"
+        "Conceptual": "Conceitual",
+        "3DHIDDEN": "3DOCULTO"
       },
       "SETVAR": {
         "?": "?",

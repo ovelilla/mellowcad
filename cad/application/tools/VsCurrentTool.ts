@@ -26,11 +26,12 @@ const STYLES: readonly {
  * Gray/SKetchy/X-ray/Other] <2dwireframe>:`, the current style's name as the
  * default (tables 23335, 23337, 8027), Enter keeping it. The style is the view's,
  * saved in the drawing as its viewport's (visualstyle/v03, v04); a run is a
- * step U undoes (`VSCURRENT`, es `ESTVISACTUAL`, v02). Back to 2D Wireframe
- * it says `Regenerating model.`, its U does not (v02). Not transparent
- * (`** That command may not be invoked transparently **`, v02). Only the
- * styles built are offered: the rest, and Other's named style, are
- * refused as any answer (docs/coverage/view.md).
+ * step U undoes (`VSCURRENT`, es `ESTVISACTUAL`, v02). Into 2D Wireframe it
+ * says `Regenerating model.`, as U and REDO back into it do
+ * (solid-inquiry/p205–p207). Not transparent (`** That command may not be
+ * invoked transparently **`, v02, p213). Only the styles built are offered:
+ * the rest, and Other's named style, are refused as any answer
+ * (docs/coverage/view.md).
  */
 export class VsCurrentTool implements Tool {
   readonly id = "vscurrent"
@@ -53,18 +54,26 @@ export class VsCurrentTool implements Tool {
     return { id: "vscurrentOption", enter: name }
   }
 
+  // WHY 3DHIDDEN: the initget declares it unlisted, Hidden by another word
+  // (es OCULTO3D, pt-BR 3DOCULTO; solid-inquiry/p204, p222). Its siblings
+  // 3DWIREFRAME and EDGES set styles not built and stay refused.
   commandOptions(): readonly CommandOption[] {
-    return STYLES.map(({ option }) => ({ id: option }))
+    return [
+      ...STYLES.map(({ option }) => ({ id: option })),
+      { id: "3DHIDDEN", hidden: true },
+    ]
   }
 
   invokeOption(id: string, ctx: ToolContext): CommandOptionOutcome {
-    const chosen = STYLES.find((s) => s.option === id)
+    const option = id === "3DHIDDEN" ? "Hidden" : id
+    const chosen = STYLES.find((s) => s.option === option)
     if (!chosen) return "unhandled"
-    const was = this.current
+    const changed = chosen.style !== this.current
     ctx.execute(new UpdateSettingsCommand({ visualStyle: chosen.style }))
-    if (chosen.style === "2dWireframe" && was !== "2dWireframe") {
-      ctx.regenerate("once")
-    }
+    // The style already current regenerates nothing (solid-inquiry/p207); a
+    // change does, said only into 2D Wireframe, as its U and REDO say it
+    // (the runtime's regenerationSaid, p205–p207).
+    if (changed) ctx.regenerate()
     return "end"
   }
 

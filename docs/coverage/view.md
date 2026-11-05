@@ -156,7 +156,10 @@ the first prompt is an undo step too (p366)
 `Vistas guardadas:`, `  No se han encontrado las vistas.`, p316), Save
 (`Enter view name to save:`, then `UCSVIEW = 1  UCS will be saved with view`; es
 `Indique nombre de vista a guardar:`, `UCSVIEW = 1  SCP se guardará con la vista`, p317), Restore
-(`Enter view name to restore:`, es `Indique nombre de vista a restituir:`, p318), Delete
+(`Enter view name to restore:`, es `Indique nombre de vista a restituir:`, p318) — a view keeps
+the visual style current when it was saved and Restore makes it current again
+(solid-inquiry/p212, p218; restored from 2D Wireframe it stayed 2D Wireframe in the console, p214,
+p217: **unverified**) —, Delete
 (`Enter view name(s) to delete:`, es `Indique nombre(s) de vista a suprimir:`, p319), Window (the
 name, then `Specify first corner:` and `Specify opposite corner:`, es `Designe primera esquina:`,
 `Designe esquina opuesta:`, p320), sEttings
@@ -215,11 +218,19 @@ as AutoCAD 2027's console does (move/p238)
 `Indique una opción [estructuraalámbrica2d/ocUlto/Conceptual]`, pt-BR `Insira uma opção
 [estruturadearame2d/ocUlto/Conceitual]`; keywords `2`, `H` and `C`, es and pt-BR `2`, `U` and
 `C`), the current style's name as the default (tables 23335, 23337, 8027: `<Hidden>`, es `<Oculto>`,
-pt-BR `<ocUlto>`), Enter keeping it, `Invalid option keyword.` for anything else
-(visualstyle/v02); the style is the view's, saved in the drawing as AutoCAD saves it with its
-viewport (v03, v04); a run is a step U and REDO name (`VSCURRENT`, es `ESTVISACTUAL`, pt-BR
-`EVATUAL`); back to 2D Wireframe from another style it says `Regenerating model.`, its U does not
-(v02, v06); not transparent (`** That command may not be invoked transparently **`, v02).
+pt-BR `<ocUlto>`), Enter keeping it, the hidden `3DHIDDEN` (es `OCULTO3D`, pt-BR `3DOCULTO`)
+setting Hidden too (solid-inquiry/p204, p222), `Invalid option keyword.` (es `Opción no válida.`)
+for anything else (visualstyle/v02, solid-inquiry/p202); a preselection dropped (p216); the style
+is the view's, saved in the drawing as AutoCAD saves it with its viewport and the default once
+reopened (v03, v04, p211); a run is a step U and REDO name (`VSCURRENT`, es `ESTVISACTUAL`, pt-BR
+`EVATUAL`), Enter's too (p205); not transparent
+(`** That command may not be invoked transparently **`, then `Point or option keyword required.`
+and the prompt again, p213). **`Regenerating model.`** is said only when 2D Wireframe is the style
+after a step: by the run into it from another style (none from 2D Wireframe itself), by U, UNDO,
+REDO and MREDO that end in it (`VSCURRENT Regenerating model.`; REDO's `Everything has been redone`
+then `Regenerating model.`), never into Hidden or Conceptual; and in Hidden or Conceptual REGEN,
+-VIEW, PLAN, ZOOM and -VPOINT do not say it, nor their U and REDO (p205–p207, p214, p219, p220,
+desktop d01; 3DORBIT and the ViewCube keep the same rule here, **unverified**).
 **Hidden** draws each solid's edges and the outlines of its curved faces where no face of any solid
 hides them, in the object's colour, and no isolines (plotted with Shade plot As displayed, p02;
 `cad/geometry/hiddenLines.ts`); a solid behind another is hidden by it, also along an edge they
@@ -233,7 +244,8 @@ Hidden's lines in colour 7 whatever the object's (VSEDGECOLOR `7`, v06)
 Other (`Enter a visual style name or [?]:`, es `Indique un nombre de estilo visual o [?]`, pt-BR
 `Inserir um nome de estilo visual ou [?]`; `?` lists the ten by name, an unknown one
 `The "FOO" visual style does not exist`, v05), refused here as any answer, so the prompt lists only
-the styles built; SHADEMODE (es MODOSOMBRA), which runs VSCURRENT; -VISUALSTYLES and the Visual
+the styles built, and the hidden `3DWIREFRAME` (`3`, Wireframe) and `EDGES` (Shaded with edges)
+refused with them (p204); SHADEMODE (es MODOSOMBRA), which runs VSCURRENT; -VISUALSTYLES and the Visual
 Styles Manager; the viewport controls' style menu; in Hidden and Conceptual, what hides lines but a
 solid: regions, circles, wide polylines and objects with thickness ("Objects that can hide other
 objects", HIDE's page), and what a solid hides but its own kind: lines, curves, text, the grid (p02

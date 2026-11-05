@@ -384,7 +384,8 @@ CECOLOR, CELTYPE or CELWEIGHT set from one (desktop properties/d05-1 to d05-3b, 
 `properties.md`) —, and with nothing left `Everything has been undone`, then `Nothing to undo`; REDO
 only right after a U that took something back, writing the command's name
 (`LTSCALE Regenerating model.` while more is left to redo), then `Everything has been redone` once
-nothing is and `Regenerating model.` last; what ZOOM, PAN, -PAN, -VIEW, VPOINT, PLAN and 3DORBIT do
+nothing is and `Regenerating model.` last — every `Regenerating model.` only when 2D Wireframe is
+the style after the step (VSCURRENT in `view.md`) —; what ZOOM, PAN, -PAN, -VIEW, VPOINT, PLAN and 3DORBIT do
 to the view is part of their step, or an entry of the command a transparent ZOOM or -PAN ran in,
 which its Undo keyword takes back too (view/p358–p360); the wheel, the wheel button and the ViewCube
 are steps of their own at the Command prompt (`INTELLIZOOM`, `INTELLIPAN`, `'.VIEWCUBEACTION`,

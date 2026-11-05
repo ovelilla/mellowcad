@@ -1224,7 +1224,8 @@
       "VSCURRENT": {
         "2dwireframe": "2dwireframe",
         "Hidden": "Hidden",
-        "Conceptual": "Conceptual"
+        "Conceptual": "Conceptual",
+        "3DHIDDEN": "3DHIDDEN"
       },
       "SETVAR": {
         "?": "?",

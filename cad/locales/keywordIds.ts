@@ -647,7 +647,8 @@ export const KEYWORD_IDS: Readonly<Record<string, readonly string[]>> = {
   "VSCURRENT": [
     "2dwireframe",
     "Hidden",
-    "Conceptual"
+    "Conceptual",
+    "3DHIDDEN"
   ],
   "SETVAR": [
     "?",

@@ -1324,6 +1324,7 @@ declare const source: {
         "2dwireframe": string
         "Hidden": string
         "Conceptual": string
+        "3DHIDDEN": string
       }
       "SETVAR": {
         "?": string

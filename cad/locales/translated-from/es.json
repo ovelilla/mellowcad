@@ -1098,6 +1098,7 @@
   "commands.keywords.VSCURRENT.2dwireframe": "2dwireframe",
   "commands.keywords.VSCURRENT.Hidden": "Hidden",
   "commands.keywords.VSCURRENT.Conceptual": "Conceptual",
+  "commands.keywords.VSCURRENT.3DHIDDEN": "3DHIDDEN",
   "commands.keywords.SETVAR.?": "?",
   "commands.keywords.SETVAR.ON": "ON",
   "commands.keywords.SETVAR.OFF": "OFF",

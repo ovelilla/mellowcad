@@ -1872,7 +1872,8 @@ export const es: EngineLocale = {
       "VSCURRENT": {
         "2dwireframe": "estructuraalámbrica2d",
         "Hidden": "ocUlto",
-        "Conceptual": "Conceptual"
+        "Conceptual": "Conceptual",
+        "3DHIDDEN": "OCULTO3D"
       },
       "SETVAR": {
         "?": "?",
