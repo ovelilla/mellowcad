@@ -233,7 +233,7 @@ ban); votes from new accounts count far less; featuring is an editorial choice.
 - **Tags**: the closest of Product Hunt's own to design tools, open source and engineering (3 at
   most).
 - **Thumbnail**: `logo/mellowcad-240.png`. **Gallery**: `gallery/01` to `08`, in order, with the
-  captions in `~/seo-data/launch/README.md`. **Video**: `video/mellowcad-demo-en.webm` on YouTube.
+  captions in `~/seo-data/launch/README.md`. **Video**: `video/mellowcad-demo-en.webm`, on YouTube unlisted since 2026-11-06: https://youtu.be/VhN7JUqjT10.
 - **Maker's first comment** (in your own words; the facts):
 
 > Hi, I'm [name] and I build MellowCAD. It's for people whose hands already know AutoCAD: L and
@@ -292,6 +292,16 @@ and that the interface is not yet in their language.
 ## 6. Directories and listings
 
 Rules read on 2026-11-06.
+
+**Done on 2026-11-06** (from a browser session the owner logged into, as `ovelilla`; the account
+email of SaaSHub and G2 is `hello@mellowcad.com`, Cloudflare Email Routing to the owner's inbox):
+SaaSHub submitted and verified (free queue, 1–12 weeks), with the logo, five screenshots, MIT and
+nine competitors; AlternativeTo submitted with six alternatives (AutoCAD, LibreCAD, QCAD,
+DraftSight, FreeCAD, BricsCAD), the icon, six screenshots and the video, free queue unless the
+owner pays the priority review (15 $). Refused: G2's automatic check calls the URL a B2C product
+and stops the form (its support is the only way on); OpenAlternative needs 250 stars on a
+repository under six months old; TheCADHub is now free only with its badge linking back from our
+site (a link exchange, declined) or 49 $.
 
 - **AlternativeTo** (#1–2 on Bing for "free autocad alternative"; its AutoCAD page filtered to
   free + online lists 21 tools): "Suggest new application" from the user menu, with a verified

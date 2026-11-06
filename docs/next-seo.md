@@ -204,7 +204,8 @@ el texto de cada uno, en la sección del kit indicada; anota la fecha real al ha
 | Cuándo | Qué (lo hace el dueño) | Texto | Condición |
 | --- | --- | --- | --- |
 | lun 9/11 | GitHub: la vista previa social (descripción y temas, puestos el 6/11); las cuentas, con el nombre de usuario `ovelilla`, nunca el nombre completo (Product Hunt necesita una semana antes de publicar); el vídeo en YouTube, oculto | kit §0, §4 | — |
-| 9–13/11 | Directorios: AlternativeTo (decidir si se paga la revisión prioritaria), SaaSHub con sus competidores, G2, TheCADHub, OpenAlternative; Appvizer y Quelle-Alternative | kit §6 | — |
+| 6/11 (hecho) | Directorios: SaaSHub enviado y verificado, AlternativeTo enviado (decidir si se paga la revisión prioritaria, 15 $); G2, OpenAlternative y TheCADHub no admiten hoy (kit §6); el vídeo en YouTube, oculto | kit §6 | — |
+| 9–13/11 | Appvizer y Quelle-Alternative | kit §6 | — |
 | 9–13/11 | Participar de verdad en r/AutoCAD y r/cad | kit §3 | — |
 | jue 12/11 | **r/SideProject**, pidiendo opiniones: es el lanzamiento suave (el dueño no tiene cinco usuarios de AutoCAD a mano) | kit §3 | — |
 | semana del 16/11 | Arreglar lo que salga de r/SideProject (sesiones) | — | — |
