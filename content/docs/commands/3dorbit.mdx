@@ -1,0 +1,54 @@
+---
+title: "3DORBIT in AutoCAD"
+metaTitle: "3DORBIT in AutoCAD: 3D orbit and its shortcut"
+description: "How AutoCAD's 3D orbit (3DORBIT, 3DO, ORBIT) turns the view as you drag, how to leave it, orbit with Shift and the wheel, and get back to plan. Try it free."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"What is the shortcut for 3D orbit in AutoCAD?","answer":"3DO or ORBIT, then Enter or Space. Without typing anything, hold Shift and the wheel button and drag."},{"question":"How do I orbit with the mouse?","answer":"Hold Shift, press the wheel button and drag: across to turn the model round, up and down to look at it from higher or lower. Let go and you are back in the command you were in."},{"question":"How do I exit 3D orbit?","answer":"Press Enter or Escape. The view stays where you left it."},{"question":"How do I get back to the plan view after orbiting?","answer":"Run PLAN and press Enter, or -VIEW and Top, or click the top of the ViewCube. ZOOM Previous steps back one drag at a time."}]
+---
+
+3DORBIT turns the view round the drawing as you drag; nothing in the drawing moves or changes. Dragging across turns the camera about the world's Z axis, dragging up and down raises or lowers it, round the middle of the drawing under the centre of the screen, in parallel projection. It starts by saying how to leave it: while it runs you can only orbit, and Enter or Escape ends it, dragged or not.
+
+Holding Shift and the wheel button orbits from anywhere, even inside another command, and the Orbit button on the navigation bar runs it too. Typed with an apostrophe, `'3DORBIT`, it works inside another command, which goes on after it. Each drag is a step for [`ZOOM`](/docs/commands/zoom)'s `Previous`, and the whole run is one undo step, so `U` puts the view back. To see the solids as solids, not as wires, use [`VSCURRENT`](/docs/commands/vscurrent); MellowCAD's 3D is solids only, and still partial.
+
+- **Command:** `3DORBIT`
+- **Aliases:** `3DO`, `ORBIT`
+- **Panel:** [Inquiry & view](/docs/commands#inquiry)
+- **Try it:** [Open the editor](/draw), type `3DO` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="3dorbit" caption="A box first seen in plan: 3DORBIT, a drag across and down, then Enter, and the box is seen from above its front corner." />
+
+## What it does not do yet [#missing]
+
+The right-click menu, with its projections, visual styles and other navigation modes. Orbiting about the selected objects only. Perspective. 3DFORBIT, 3DCORBIT and the rest of AutoCAD's 3D navigation.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#3dorbit--3do--orbit--es-3dorbita--3do--orbit--pt-br-orbita3d--o3d)
+
+## Questions [#questions]
+
+### What is the shortcut for 3D orbit in AutoCAD?
+
+`3DO` or `ORBIT`, then Enter or Space. Without typing anything, hold Shift and the wheel button and drag.
+
+### How do I orbit with the mouse?
+
+Hold Shift, press the wheel button and drag: across to turn the model round, up and down to look at it from higher or lower. Let go and you are back in the command you were in.
+
+### How do I exit 3D orbit?
+
+Press Enter or Escape. The view stays where you left it.
+
+### How do I get back to the plan view after orbiting?
+
+Run `PLAN` and press Enter, or `-VIEW` and `Top`, or click the top of the ViewCube. [`ZOOM`](/docs/commands/zoom) `Previous` steps back one drag at a time.
+
+## Related commands [#related]
+
+- [VSCURRENT in AutoCAD](/docs/commands/vscurrent)
+- [VIEW](/docs/commands#view): Preset views
+- [PLAN](/docs/commands#plan): Plan view
+- [ZOOM in AutoCAD](/docs/commands/zoom)

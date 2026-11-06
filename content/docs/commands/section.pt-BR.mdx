@@ -1,0 +1,85 @@
+---
+title: "Comando SECTION (CORTE) no AutoCAD 3D"
+metaTitle: "SECTION (CORTE) no AutoCAD: seção de sólidos 3D"
+description: "Como o SECTION, CORTE (alias SECAO) no AutoCAD em português, faz a seção de sólidos 3D numa região: 3 pontos, Objeto, Eixo Z, Vista, XY, YZ e ZX. Teste grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Como fazer um corte de um sólido 3D no AutoCAD?","answer":"Execute o CORTE, selecione o sólido e pressione Enter, depois dê o plano: ZX e um ponto no meio o cortam de frente para trás; XY e um ponto numa altura, na horizontal. A região fica dentro do sólido: tire-a com o MOVER para vê-la."},{"question":"Qual a diferença entre SECTION e SLICE?","answer":"O FATIAR corta o sólido em dois e mantém uma parte ou as duas. O CORTE deixa o sólido inteiro e desenha uma região onde o plano o corta."},{"question":"Qual é o comando SECTION no AutoCAD em português?","answer":"CORTE, com o alias SECAO, depois Enter ou a barra de espaço. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _SECTION."},{"question":"Por que o CORTE diz que o plano não faz intersecção com o sólido?","answer":"O plano não o atinge: confira como você o deu. XY, YZ e ZX são os planos do UCS, então um ponto na altura ou no lado errado põe o plano fora do sólido."}]
+---
+
+O SECTION, CORTE no AutoCAD em português, faz uma seção transversal de sólidos 3D: uma região onde um plano corta cada um, e os sólidos ficam como estavam. Ele pede os sólidos, até o Enter: como no AutoCAD 2027, uma seleção feita antes dele é descartada e pedida de novo, o que não é sólido é ignorado, e uma seleção sem nenhum sólido diz `Nenhum sólido, superfície ou malha selecionado.`. Depois, o plano: por padrão você dá três pontos nele, e as opções o dão de outro jeito, como no [`FATIAR`](/docs/commands/slice).
+
+Cada sólido que o plano corta ganha a sua região, no plano: um bloco com um furo passante dá o contorno com o vão do furo; um cilindro cortado ao longo do eixo, um retângulo. Um plano sobre uma das faces de um sólido dá essa face. Um sólido que o plano não atinge diz `O plano de corte não faz intersecção com o sólido selecionado.`. As regiões ficam na camada e com as propriedades atuais, não nas do sólido; o [`MOVER`](/docs/commands/move) tira uma para fora para vê-la, o [`AREA`](/docs/commands/area) e o [`PROPMASS`](/docs/commands/massprop) a medem, e o [`EXTRUSAO`](/docs/commands/extrude) a transforma num sólido. O comando inteiro é um passo de desfazer. O 3D do MellowCAD é só de sólidos e ainda parcial.
+
+- **Comando:** `CORTE`
+- **Em inglês:** `SECTION`, que se digita `_SECTION` em qualquer idioma
+- **Aliases:** `SECAO`
+- **Painel:** [Desenhar](/docs/commands#draw)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `CORTE` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="section" caption="Um bloco com um furo passante, cortado pelo plano ZX que passa pelo centro do furo: o CORTE faz o perfil, levado para a frente, dois retângulos com o vão do furo entre eles." />
+
+## Opções [#options]
+
+### `Objeto` (`O`) [#object]
+
+Usa o plano de um objeto que você seleciona: um círculo, uma elipse, um arco, uma spline 2D ou uma polilinha 2D.
+
+### `eixoZ` (`Z`) [#zaxis]
+
+Pede um ponto no plano e depois um ponto no seu eixo Z, a linha perpendicular a ele.
+
+### `Vista` (`V`) [#view]
+
+O plano paralelo à tela, passando por um ponto que você dá.
+
+### `XY` [#xy]
+
+O plano XY do UCS, passando por um ponto que você dá: um ponto numa altura faz ali uma seção horizontal. O Enter aceita a origem do UCS.
+
+### `YZ` [#yz]
+
+O plano YZ do UCS, passando por um ponto que você dá; o Enter aceita a origem do UCS.
+
+### `ZX` [#zx]
+
+O plano ZX do UCS, passando por um ponto que você dá; o Enter aceita a origem do UCS. A seção da figura é este plano passando pelo centro do furo.
+
+### `3pontos` (`3`) [#3points]
+
+Três pontos no plano, que então pode se inclinar para qualquer lado. É o padrão do primeiro prompt, então um ponto ali é o primeiro dos três.
+
+## O que ainda não faz [#missing]
+
+Superfícies e malhas, que o MellowCAD não tem. Uma polilinha 3D plana como objeto do plano, que o AutoCAD aceita. Os cortes para os quais o MellowCAD ainda não tem forma exata, como no [`FATIAR`](/docs/commands/slice), que dizem que uma operação booleana falhou. O SECTIONPLANE e o corte automático, que a faixa de opções do AutoCAD oferece no lugar do SECTION: aqui o CORTE é digitado.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#section--sec--es-seccion--sc--pt-br-corte--secao)
+
+## Perguntas frequentes [#questions]
+
+### Como fazer um corte de um sólido 3D no AutoCAD?
+
+Execute o CORTE, selecione o sólido e pressione Enter, depois dê o plano: `ZX` e um ponto no meio o cortam de frente para trás; `XY` e um ponto numa altura, na horizontal. A região fica dentro do sólido: tire-a com o [`MOVER`](/docs/commands/move) para vê-la.
+
+### Qual a diferença entre SECTION e SLICE?
+
+O [`FATIAR`](/docs/commands/slice) corta o sólido em dois e mantém uma parte ou as duas. O CORTE deixa o sólido inteiro e desenha uma região onde o plano o corta.
+
+### Qual é o comando SECTION no AutoCAD em português?
+
+CORTE, com o alias `SECAO`, depois Enter ou a barra de espaço. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_SECTION`.
+
+### Por que o CORTE diz que o plano não faz intersecção com o sólido?
+
+O plano não o atinge: confira como você o deu. `XY`, `YZ` e `ZX` são os planos do UCS, então um ponto na altura ou no lado errado põe o plano fora do sólido.
+
+## Comandos relacionados [#related]
+
+- [Comando SLICE (FATIAR) no AutoCAD](/docs/commands/slice)
+- [Comando REGION (REGIAO) no AutoCAD](/docs/commands/region)
+- [Comando SUBTRACT (SUBTRAIR) no AutoCAD](/docs/commands/subtract)
+- [Comando MASSPROP (PROPMASS) no AutoCAD](/docs/commands/massprop)

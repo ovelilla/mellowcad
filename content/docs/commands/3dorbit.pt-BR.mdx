@@ -1,0 +1,55 @@
+---
+title: "Comando 3DORBIT (ORBITA3D) no AutoCAD"
+metaTitle: "Órbita 3D no AutoCAD: 3DORBIT (ORBITA3D)"
+description: "A órbita 3D do AutoCAD em português, ORBITA3D (alias O3D): girar a vista arrastando, sair, orbitar com Shift e a roda e voltar à vista em planta. Teste grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Qual é o atalho da órbita 3D no AutoCAD em português?","answer":"O3D, depois Enter ou a barra de espaço; o comando é ORBITA3D. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _3DORBIT. Sem digitar nada, segure Shift e o botão da roda e arraste."},{"question":"Como orbitar com o mouse?","answer":"Segure Shift, pressione o botão da roda e arraste: para os lados para girar o modelo, para cima e para baixo para vê-lo de mais alto ou de mais baixo. Solte e você volta ao comando em que estava."},{"question":"Como sair da órbita 3D?","answer":"Pressione Enter ou Esc. A vista fica onde você a deixou."},{"question":"Como voltar à vista em planta depois de orbitar?","answer":"Execute o PLANTA e pressione Enter, ou o -VISTA e SUperior, ou clique no topo do ViewCube. O ZOOM Anterior volta um arraste de cada vez."}]
+---
+
+O 3DORBIT, ORBITA3D no AutoCAD em português, gira a vista em volta do desenho enquanto você arrasta; nada no desenho se move nem muda. Arrastar para os lados gira a câmera em torno do eixo Z universal, e arrastar para cima e para baixo a sobe ou a desce, em torno do meio do desenho que está sob o centro da tela, em projeção paralela. Ao começar, ele diz como sair: enquanto ele roda, você só pode orbitar, e o Enter ou o Esc o encerram, com ou sem arraste.
+
+Segurar Shift e o botão da roda orbita de qualquer lugar, até dentro de outro comando, e o botão Órbita da barra de navegação também o executa. Digitado com um apóstrofo, `'ORBITA3D`, ele funciona dentro de outro comando, que continua depois. Cada arraste é um passo para o `Anterior` do [`ZOOM`](/docs/commands/zoom), e a execução inteira é um passo de desfazer, então o `D` devolve a vista. Para ver os sólidos como sólidos, e não como arames, use o [`EVATUAL`](/docs/commands/vscurrent); o 3D do MellowCAD é só de sólidos e ainda parcial.
+
+- **Comando:** `ORBITA3D`
+- **Em inglês:** `3DORBIT`, que se digita `_3DORBIT` em qualquer idioma
+- **Aliases:** `O3D`
+- **Painel:** [Consulta e vista](/docs/commands#inquiry)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `O3D` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="3dorbit" caption="Uma caixa vista primeiro em planta: ORBITA3D, um arraste para o lado e para baixo, depois Enter, e a caixa é vista de cima do seu canto da frente." />
+
+## O que ainda não faz [#missing]
+
+O menu de atalho, com as suas projeções, estilos visuais e outros modos de navegação. Orbitar só em torno dos objetos selecionados. A perspectiva. 3DFORBIT, 3DCORBIT e o resto da navegação 3D do AutoCAD.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#3dorbit--3do--orbit--es-3dorbita--3do--orbit--pt-br-orbita3d--o3d)
+
+## Perguntas frequentes [#questions]
+
+### Qual é o atalho da órbita 3D no AutoCAD em português?
+
+`O3D`, depois Enter ou a barra de espaço; o comando é ORBITA3D. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_3DORBIT`. Sem digitar nada, segure Shift e o botão da roda e arraste.
+
+### Como orbitar com o mouse?
+
+Segure Shift, pressione o botão da roda e arraste: para os lados para girar o modelo, para cima e para baixo para vê-lo de mais alto ou de mais baixo. Solte e você volta ao comando em que estava.
+
+### Como sair da órbita 3D?
+
+Pressione Enter ou Esc. A vista fica onde você a deixou.
+
+### Como voltar à vista em planta depois de orbitar?
+
+Execute o `PLANTA` e pressione Enter, ou o `-VISTA` e `SUperior`, ou clique no topo do ViewCube. O [`ZOOM`](/docs/commands/zoom) `Anterior` volta um arraste de cada vez.
+
+## Comandos relacionados [#related]
+
+- [Comando VSCURRENT (EVATUAL) no AutoCAD](/docs/commands/vscurrent)
+- [VISTA (VIEW)](/docs/commands#view): Vistas predefinidas
+- [PLANTA (PLAN)](/docs/commands#plan): Vista em planta
+- [Comando ZOOM no AutoCAD: opções e atalhos](/docs/commands/zoom)

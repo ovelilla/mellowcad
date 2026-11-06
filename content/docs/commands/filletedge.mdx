@@ -1,0 +1,67 @@
+---
+title: "FILLETEDGE in AutoCAD"
+metaTitle: "FILLETEDGE in AutoCAD: fillet 3D solid edges"
+description: "How AutoCAD's FILLETEDGE rounds the edges of a 3D solid, prompt by prompt: the edges, Chain, Loop, Radius and the arrow grip. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"How do I fillet an edge of a 3D solid in AutoCAD?","answer":"Run FILLETEDGE, choose Radius and type it, pick the edges, then press Enter twice: once to end the picking, once to accept. The session's 8 rounds two edges of a box."},{"question":"How do I fillet all the edges of a face?","answer":"Choose Loop and pick an edge of the face, then Accept, or Next if the loop shown is the other face's. For edges that already flow into one another, round a rounded block's top, Chain takes them all."},{"question":"Why does FILLET not work on a 3D solid?","answer":"AutoCAD's FILLET rounds a solid's edge too, but MellowCAD's does not yet: use FILLETEDGE, and CHAMFEREDGE for a bevel."},{"question":"How do I change the fillet radius?","answer":"Choose Radius before you pick or at the accept prompt, or drag the arrow grip in the middle of the first fillet. The last radius is offered next time."}]
+---
+
+FILLETEDGE rounds the edges of a 3D solid. It says the current radius, then asks for edges, until Enter: a click takes the edge under the cursor, lit as it passes over, and a point typed takes the edge drawn through it. As edges are taken, the solid is drawn as it will be, the fillets in place. Enter counts the edges and asks you to press Enter again to accept, or to change the radius; that Enter makes the fillets. Edges of one solid only: another's says `Cannot fillet multiple bodies.`, one taken twice `Edge has already been picked.`.
+
+A straight edge between two flat faces becomes a quarter of a cylinder, and the round edge of a hole or a rim a quarter of a torus; fillets that meet at a corner are joined, three of them by a piece of a sphere. The radius is saved in the drawing and offered again the next time. The solid keeps its layer and properties but loses what made it: a box is no longer a box. The whole command is one undo step. MellowCAD's 3D is solids only, and still partial.
+
+- **Command:** `FILLETEDGE`
+- **Panel:** [Modify](/docs/commands#modify)
+- **Try it:** [Open the editor](/draw), type `FILLETEDGE` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="filletedge" caption="A box seen from the south-east: FILLETEDGE with a radius of 8 rounds its two upright edges on the right." />
+
+## Options [#options]
+
+### `Chain` (`C`) [#chain]
+
+Takes the edge you pick and every edge tangent to it, one after another: the eight round the top of a block whose upright edges are already rounded. With none tangent it says `No adjacent tangent edges found in chain.` and takes the one picked. `Edge` goes back to single edges.
+
+### `Loop` (`L`) [#loop]
+
+Takes every edge round a face: pick one edge, then `Accept` the loop shown, or `Next` for the loop of the other face the edge belongs to.
+
+### `Radius` (`R`) [#radius]
+
+Asks for the radius, typed or as the distance between two points; 0 or less says `Radius too small. *Invalid*`. `Expression` takes it as a formula. At the accept prompt, it changes the radius of the fillets shown. The arrow grip in the middle of the first fillet sets it by dragging: click it, move, click; `eXit` or Escape leaves it as it was.
+
+## What it does not do yet [#missing]
+
+Fillets of two radii that meet, and a fillet that ends on a curved face. A fillet wider than a face beside it, which AutoCAD rolls over the next edge: here it fails with a modeling error. A straight edge beside a curved face, a round edge off its cylinder's axis, and any edge of a sphere, a torus, an extrusion or a revolved solid, which fail the same way. Some corners where fillets meet on edges at different slopes. The arrow grip on any edge but the first, and the line from it to the cursor. [`FILLET`](/docs/commands/fillet) picking a solid's edge, which AutoCAD also allows. The fillet drawn as a mesh while you pick, and surfaces.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#filletedge--es-aristaempalme--pt-br-arestaconcord)
+
+## Questions [#questions]
+
+### How do I fillet an edge of a 3D solid in AutoCAD?
+
+Run FILLETEDGE, choose `Radius` and type it, pick the edges, then press Enter twice: once to end the picking, once to accept. The session's `8` rounds two edges of a box.
+
+### How do I fillet all the edges of a face?
+
+Choose `Loop` and pick an edge of the face, then `Accept`, or `Next` if the loop shown is the other face's. For edges that already flow into one another, round a rounded block's top, `Chain` takes them all.
+
+### Why does FILLET not work on a 3D solid?
+
+AutoCAD's [`FILLET`](/docs/commands/fillet) rounds a solid's edge too, but MellowCAD's does not yet: use FILLETEDGE, and [`CHAMFEREDGE`](/docs/commands/chamferedge) for a bevel.
+
+### How do I change the fillet radius?
+
+Choose `Radius` before you pick or at the accept prompt, or drag the arrow grip in the middle of the first fillet. The last radius is offered next time.
+
+## Related commands [#related]
+
+- [CHAMFEREDGE in AutoCAD](/docs/commands/chamferedge)
+- [FILLET in AutoCAD](/docs/commands/fillet)
+- [SOLIDEDIT in AutoCAD](/docs/commands/solidedit)
+- [BOX in AutoCAD](/docs/commands/box)

@@ -1,0 +1,64 @@
+---
+title: "Comando CHAMFEREDGE (CHANFRARARESTA) no AutoCAD 3D"
+metaTitle: "Chanfro de arestas 3D no AutoCAD: CHAMFEREDGE"
+description: "Como o CHAMFEREDGE do AutoCAD em português, CHANFRARARESTA, faz o chanfro de arestas de sólidos 3D: as arestas de uma face, Loop e Distância. Teste grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Como fazer chanfro numa aresta no AutoCAD 3D?","answer":"Execute o CHANFRARARESTA, escolha Distância e dê as duas distâncias, selecione as arestas de uma face e pressione Enter duas vezes: uma para terminar a seleção, outra para aceitar. Os 6 e 6 da figura chanfram duas arestas de cima de uma caixa."},{"question":"Por que o CHANFRARARESTA diz que as arestas precisam pertencer a uma face?","answer":"As arestas de um chanfro compartilham uma face: a primeira distância corre ao longo dela. Chanfre as arestas de outra face numa segunda execução."},{"question":"Por que o CHAMFER não funciona num sólido 3D?","answer":"O CHANFRO do AutoCAD também chanfra a aresta de um sólido, mas o do MellowCAD ainda não: use o CHANFRARARESTA, e o ARESTACONCORD para arredondar uma aresta."},{"question":"Como chanfrar a aresta de um furo?","answer":"Selecione a aresta redonda onde ele encontra a face plana: o chanfro é uma faixa de cone em volta do furo."}]
+---
+
+O CHAMFEREDGE, CHANFRARARESTA no AutoCAD em português, faz o chanfro das arestas de um sólido 3D. Ele diz as duas distâncias atuais e depois pede uma aresta e, depois da primeira, outras da mesma face, até o Enter: um clique pega a aresta sob o cursor, e um ponto digitado, a aresta desenhada por ele. Uma aresta que não tem nenhuma face em comum com as primeiras diz `As arestas precisam pertencer a uma face.`, e uma de outro sólido, `O chanframento de múltiplos corpos não é permitido.`. À medida que as arestas são selecionadas, o sólido é desenhado como vai ficar. O Enter então pede que você pressione Enter de novo para aceitar, ou que mude as distâncias deste chanfro; esse Enter o faz.
+
+A primeira distância corre ao longo da face que as arestas compartilham; para uma aresta sozinha, ao longo da face que o AutoCAD toma: a da frente, para a aresta de cima da frente de uma caixa, e a de cima, para a borda de um cilindro. Uma aresta reta entre duas faces planas vira uma faixa plana; a aresta redonda de um furo ou de uma borda, uma faixa de cone; e chanfros que se encontram num canto são unidos numa linha. As distâncias são oferecidas de novo na próxima vez. O sólido mantém a camada e as propriedades, mas perde o que o fez: uma caixa deixa de ser uma caixa. O comando inteiro é um passo de desfazer. O 3D do MellowCAD é só de sólidos e ainda parcial.
+
+- **Comando:** `CHANFRARARESTA`
+- **Em inglês:** `CHAMFEREDGE`, que se digita `_CHAMFEREDGE` em qualquer idioma
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `CHANFRARARESTA` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="chamferedge" caption="Uma caixa vista do sudeste: o CHANFRARARESTA com as duas distâncias 6 chanfra as duas arestas de cima no seu canto da frente, que se encontram numa linha." />
+
+## Opções [#options]
+
+### `Loop` (`L`) [#loop]
+
+Pega todas as arestas em volta de uma face: selecione uma aresta e depois escolha `Aceitar` para o loop mostrado, ou `Próximo` para o loop da outra face a que a aresta pertence. `Aresta` volta às arestas uma a uma.
+
+### `Distância` (`D`) [#distance]
+
+Pede a primeira distância e depois a segunda, cada uma digitada ou como a distância entre dois pontos; 0 ou menos diz `Distância pequena demais. *Inválida*`. `Expressão` aceita uma delas como fórmula. No prompt de aceitar, pede a distância da superfície de base e a da outra superfície, só para este chanfro.
+
+## O que ainda não faz [#missing]
+
+Um canto onde três arestas chanfradas se encontram. Uma aresta reta ao lado de uma face curva, uma aresta redonda fora do eixo do seu cilindro, e qualquer aresta de uma esfera, de um toroide, de uma extrusão ou de um sólido de revolução: aqui elas falham com um erro de modelagem. As duas alças de seta que o AutoCAD mostra no prompt de aceitar, uma por distância. O [`CHANFRO`](/docs/commands/chamfer) selecionando a aresta de um sólido, o que o AutoCAD também permite. O chanfro desenhado como malha enquanto você seleciona, e as superfícies.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#chamferedge--es-achaflanaarista--pt-br-chanfrararesta)
+
+## Perguntas frequentes [#questions]
+
+### Como fazer chanfro numa aresta no AutoCAD 3D?
+
+Execute o CHANFRARARESTA, escolha `Distância` e dê as duas distâncias, selecione as arestas de uma face e pressione Enter duas vezes: uma para terminar a seleção, outra para aceitar. Os `6` e `6` da figura chanfram duas arestas de cima de uma caixa.
+
+### Por que o CHANFRARARESTA diz que as arestas precisam pertencer a uma face?
+
+As arestas de um chanfro compartilham uma face: a primeira distância corre ao longo dela. Chanfre as arestas de outra face numa segunda execução.
+
+### Por que o CHAMFER não funciona num sólido 3D?
+
+O [`CHANFRO`](/docs/commands/chamfer) do AutoCAD também chanfra a aresta de um sólido, mas o do MellowCAD ainda não: use o CHANFRARARESTA, e o [`ARESTACONCORD`](/docs/commands/filletedge) para arredondar uma aresta.
+
+### Como chanfrar a aresta de um furo?
+
+Selecione a aresta redonda onde ele encontra a face plana: o chanfro é uma faixa de cone em volta do furo.
+
+## Comandos relacionados [#related]
+
+- [Comando FILLETEDGE (ARESTACONCORD) no AutoCAD 3D](/docs/commands/filletedge)
+- [Comando CHAMFER (CHANFRO) no AutoCAD](/docs/commands/chamfer)
+- [Comando SOLIDEDIT (EDITARSOLIDO) no AutoCAD 3D](/docs/commands/solidedit)
+- [Comando BOX (CAIXA) no AutoCAD 3D](/docs/commands/box)

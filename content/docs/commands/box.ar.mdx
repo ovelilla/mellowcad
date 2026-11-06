@@ -41,7 +41,7 @@ faq: [{"question":"كيف أرسم صندوقًا ثلاثي الأبعاد في
 
 ## ما لا يفعله بعد [#missing]
 
-النقل والتدوير والتحجيم والانعكاس من مقبض نشط، التي يتنقل أوتوكاد بينها بـ⁨Enter⁩. وأوامر الأبعاد الثلاثة الخاصة به — ⁨3DMOVE⁩ و⁨3DROTATE⁩ و⁨3DSCALE⁩ و⁨MIRROR3D⁩ و⁨ROTATE3D⁩ و⁨ALIGN⁩ و⁨3DALIGN⁩ — بأدواتها التفاعلية، ونقل أوجهه وحوافه ورؤوسه كلٍّ على حدة. ونظام الإحداثيات الديناميكي. والأبعاد المنقطة التي يرسمها أوتوكاد أثناء إعطاء الركن والطول والعرض. و[`FILLET`](/docs/commands/fillet) و[`CHAMFER`](/docs/commands/chamfer) لحوافه، اللذان يقوم بعملهما `FILLETEDGE` و`CHAMFEREDGE`. وتسجيل السجل وإظهار السجل في سجل المجسم، وصف المادة. والأنماط المرئية التي تنقص `VSCURRENT` عدا `2dwireframe` و`Hidden` و`Conceptual`.
+النقل والتدوير والتحجيم والانعكاس من مقبض نشط، التي يتنقل أوتوكاد بينها بـ⁨Enter⁩. وأوامر الأبعاد الثلاثة الخاصة به — ⁨3DMOVE⁩ و⁨3DROTATE⁩ و⁨3DSCALE⁩ و⁨MIRROR3D⁩ و⁨ROTATE3D⁩ و⁨ALIGN⁩ و⁨3DALIGN⁩ — بأدواتها التفاعلية، ونقل أوجهه وحوافه ورؤوسه كلٍّ على حدة. ونظام الإحداثيات الديناميكي. والأبعاد المنقطة التي يرسمها أوتوكاد أثناء إعطاء الركن والطول والعرض. و[`FILLET`](/docs/commands/fillet) و[`CHAMFER`](/docs/commands/chamfer) لحوافه، اللذان يقوم بعملهما [`FILLETEDGE`](/docs/commands/filletedge) و[`CHAMFEREDGE`](/docs/commands/chamferedge). وتسجيل السجل وإظهار السجل في سجل المجسم، وصف المادة. والأنماط المرئية التي تنقص [`VSCURRENT`](/docs/commands/vscurrent) عدا `2dwireframe` و`Hidden` و`Conceptual`.
 
 [ما يفعله وما ينقصه بالتفصيل (بالإنجليزية)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#box--es-prismarect--pt-br-caixa)
 
@@ -53,7 +53,7 @@ faq: [{"question":"كيف أرسم صندوقًا ثلاثي الأبعاد في
 
 ### لماذا يبدو الصندوق مستطيلًا؟
 
-لأنك تنظر إليه من أعلى، في المسقط الأفقي. غيّر زاوية النظر: ركن من أركان مكعب العرض، أو `-VIEW` و`SEIso`، أو `3DORBIT`. ويخفي `VSCURRENT` مع `Hidden` الحواف الواقعة خلفه.
+لأنك تنظر إليه من أعلى، في المسقط الأفقي. غيّر زاوية النظر: ركن من أركان مكعب العرض، أو `-VIEW` و`SEIso`، أو [`3DORBIT`](/docs/commands/3dorbit). ويخفي [`VSCURRENT`](/docs/commands/vscurrent) مع `Hidden` الحواف الواقعة خلفه.
 
 ### كيف أرسم مكعبًا؟
 

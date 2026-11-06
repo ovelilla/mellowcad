@@ -1,0 +1,85 @@
+---
+title: "Sección de sólidos en AutoCAD: SECCION (SECTION)"
+metaTitle: "Sección de sólidos en AutoCAD: comando SECCION"
+description: "Cómo SECCION (SECTION, alias SC) de AutoCAD en español crea la región donde un plano corta sólidos 3D: 3puntos, Objeto, ejeZ, Vista, XY, YZ o ZX. Pruébalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo hacer una sección de un sólido 3D en AutoCAD?","answer":"Ejecuta SECCION, designa el sólido y pulsa Intro, y después da el plano: ZX y un punto en el centro lo cortan de delante atrás, XY y un punto a cierta altura lo cortan en horizontal. La región queda dentro del sólido: sácala con DESPLAZA para verla."},{"question":"¿Qué diferencia hay entre SECCION y CORTE?","answer":"CORTE corta el sólido en dos y conserva una parte o las dos. SECCION deja el sólido entero y dibuja una región donde el plano lo corta."},{"question":"¿Cómo se llama el comando SECTION en español?","answer":"SECCION, con el alias SC: escríbelo y pulsa Intro o la barra espaciadora. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: _SECTION."},{"question":"¿Por qué SECCION dice que el plano no interseca el sólido?","answer":"Porque el plano no lo toca: revisa cómo lo diste. XY, YZ y ZX son los planos del SCP, así que un punto a una altura o en un lado equivocados deja el plano fuera del sólido."}]
+---
+
+SECCION (SECTION en inglés) crea una sección transversal de sólidos 3D: una región donde un plano corta cada uno, y los sólidos se quedan como estaban. Pide los sólidos, hasta Intro: como en AutoCAD 2027, descarta el conjunto designado antes del comando y vuelve a pedirlo, pasa por alto lo que no es un sólido, y un conjunto sin ninguno dice `No se ha seleccionado ningún sólido, superficie o malla.`. Después, el plano: por defecto das tres puntos de él, y las opciones lo dan de otro modo, como en [`CORTE`](/docs/commands/slice).
+
+Cada sólido que el plano corta recibe su región, que queda en el plano: una pieza con un agujero pasante da el contorno con el hueco del agujero, y un cilindro cortado a lo largo de su eje, un rectángulo. Un plano sobre una de las caras de un sólido da esa cara. Uno que el plano no toca dice `El plano de sección no se interseca con el sólido designado.`. Las regiones toman la capa y las propiedades actuales, no las del sólido; [`DESPLAZA`](/docs/commands/move) saca una para verla, [`AREA`](/docs/commands/area) y [`PROPFIS`](/docs/commands/massprop) la miden, y [`EXTRUSION`](/docs/commands/extrude) la convierte en un sólido. Todo el comando es un solo paso de deshacer. El 3D de MellowCAD es solo de sólidos y aún parcial.
+
+- **Comando:** `SECCION`
+- **En inglés:** `SECTION`, que se escribe `_SECTION` en cualquier idioma
+- **Alias:** `SC`
+- **Grupo:** [Dibujo](/docs/commands#draw)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `SC` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="section" caption="Una pieza con un agujero pasante, cortada por el plano ZX que pasa por el centro del agujero: SECCION crea el perfil, desplazado hacia delante, dos rectángulos con el hueco del agujero entre ellos." />
+
+## Opciones [#options]
+
+### `Objeto` (`O`) [#object]
+
+Toma el plano de un objeto que designas: un círculo, una elipse, un arco, una spline 2D o una polilínea 2D.
+
+### `ejeZ` (`Z`) [#zaxis]
+
+Pide un punto del plano y después un punto de su eje Z, la recta perpendicular a él.
+
+### `Vista` (`V`) [#view]
+
+El plano paralelo a la pantalla, por un punto que das.
+
+### `XY` [#xy]
+
+El plano XY del SCP, por un punto que das: un punto a cierta altura da una sección horizontal a esa altura. Intro toma el origen del SCP.
+
+### `YZ` [#yz]
+
+El plano YZ del SCP, por un punto que das; Intro toma el origen del SCP.
+
+### `ZX` [#zx]
+
+El plano ZX del SCP, por un punto que das; Intro toma el origen del SCP. La sección de la figura es este plano por el centro del agujero.
+
+### `3puntos` (`3`) [#3points]
+
+Tres puntos del plano, que entonces puede inclinarse en cualquier dirección. Es la opción por defecto de la primera solicitud, así que un punto ahí es el primero de los tres.
+
+## Lo que aún no hace [#missing]
+
+Las superficies y las mallas, que MellowCAD no tiene. Una polilínea 3D plana como objeto del plano, que AutoCAD admite. Los cortes para los que MellowCAD aún no tiene una forma exacta, como en [`CORTE`](/docs/commands/slice), que dicen que ha fallado una operación booleana. SECTIONPLANE y la sección automática, que la cinta de opciones de AutoCAD ofrece en lugar de SECCION: aquí SECCION se escribe.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#section--sec--es-seccion--sc--pt-br-corte--secao)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo hacer una sección de un sólido 3D en AutoCAD?
+
+Ejecuta SECCION, designa el sólido y pulsa Intro, y después da el plano: `ZX` y un punto en el centro lo cortan de delante atrás, `XY` y un punto a cierta altura lo cortan en horizontal. La región queda dentro del sólido: sácala con [`DESPLAZA`](/docs/commands/move) para verla.
+
+### ¿Qué diferencia hay entre SECCION y CORTE?
+
+[`CORTE`](/docs/commands/slice) corta el sólido en dos y conserva una parte o las dos. SECCION deja el sólido entero y dibuja una región donde el plano lo corta.
+
+### ¿Cómo se llama el comando SECTION en español?
+
+SECCION, con el alias `SC`: escríbelo y pulsa Intro o la barra espaciadora. Como en AutoCAD en español, el nombre inglés también funciona con un guion bajo delante: `_SECTION`.
+
+### ¿Por qué SECCION dice que el plano no interseca el sólido?
+
+Porque el plano no lo toca: revisa cómo lo diste. `XY`, `YZ` y `ZX` son los planos del SCP, así que un punto a una altura o en un lado equivocados deja el plano fuera del sólido.
+
+## Comandos relacionados [#related]
+
+- [Cortar sólidos en AutoCAD: CORTE (SLICE)](/docs/commands/slice)
+- [Regiones en AutoCAD: comando REGION](/docs/commands/region)
+- [Diferencia de sólidos en AutoCAD: DIFERENCIA (SUBTRACT)](/docs/commands/subtract)
+- [Propiedades físicas en AutoCAD: PROPFIS (MASSPROP)](/docs/commands/massprop)

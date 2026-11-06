@@ -332,7 +332,8 @@ Ninguna sesión publica, envía ni cambia nada fuera del repo: esto es del dueñ
    comandos (ERASE a BREAK en los cuatro idiomas), añadidas al final antes de su push: el script
    salta, sin gastar cuota, una URL que aún no responde 200 (`not live`), y la vuelve a intentar en
    la tanda siguiente. **6/11:** las 40 de la tercera tanda (SPLINE a ZOOM), añadidas igual antes de su
-   push. **6/11:** las 32 de la cuarta (CYLINDER a MASSPROP), igual.
+   push. **6/11:** las 32 de la cuarta (CYLINDER a MASSPROP), igual, y las 28 de la quinta (UCS a
+   SOLIDEDIT).
 3. **Bing Webmaster Tools**: la clave responde ya en producción
    (`https://mellowcad.com/1eb5d0fec5dc99d5695b010f04667a07.txt`, 5/11); enviar el sitemap a IndexNow:
    `npm run indexnow` lista lo que enviaría y `npm run indexnow -- --send` lo envía (se niega si la
@@ -399,7 +400,15 @@ Una línea por sesión, que cada una actualiza al cerrar su parte.
   TORUS, PYRAMID, REGION y MASSPROP (32 URLs más, al final de la cola de §7): 66 comandos con
   página. Las primitivas, como BOX, en vivo desde el sureste; la esfera y el toroide con el estilo
   Conceptual, porque Oculto solo dibuja su contorno; REGION, cuatro líneas y un círculo con su
-  recuento, y MASSPROP, el informe de un prisma. **Quedan 74 comandos sin página**, por tandas con la
+  recuento, y MASSPROP, el informe de un prisma. **Quinta tanda, hecha el 6/11 y sin publicar:** el
+  resto del 3D, UCS, 3DORBIT, VSCURRENT, SECTION, FILLETEDGE, CHAMFEREDGE y SOLIDEDIT (28 URLs más,
+  al final de la cola de §7), con lo que el 3D está entero: 73 comandos con página. Todas en vivo
+  (las de vista porque una imagen fija enmarca la planta): UCS lleva el origen a la cara superior de
+  un prisma y dibuja un círculo en ella; 3DORBIT arrastra desde la planta; VSCURRENT, un bloque
+  taladrado en Conceptual; SECTION, el perfil de ese bloque por el plano ZX, sacado delante con
+  MOVE. UCS y SOLIDEDIT, con una `###` por palabra clave que se elige y las subrespuestas dentro.
+  Los términos árabes sin glosario, en la tabla de `docs/i18n/ar.md` («Command pages»), para la
+  revisión nativa. **Quedan 67 comandos sin página**, por tandas con la
   skill `command-page` (el orden y la lista, en `docs/plans/seo/03-comandos.md`, «Lo que queda»). Para la sesión 04: el tablero de comandos de la landing puede enlazar cada
   comando con página (`commandPageIds`).
 - 04 Rediseño de la landing: hecha y publicada el 6/11/2026 (`82c1eaf2` a `719f3b03`). Tras el push,

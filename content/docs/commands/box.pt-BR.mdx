@@ -41,7 +41,7 @@ Na altura: pede dois pontos, e a altura é a distância entre eles.
 
 ## O que ainda não faz [#missing]
 
-Mover, Rotacionar, Escala e Espelhar a partir de uma alça ativa, que o AutoCAD percorre com Enter. Os comandos 3D próprios — mover, rotacionar, escalar, espelhar e alinhar em 3D — com os seus gizmos, e mover as suas faces, arestas e vértices um a um. O UCS dinâmico. As cotas pontilhadas que o AutoCAD desenha enquanto você dá o canto, o comprimento e a largura. O [`CONCORD`](/docs/commands/fillet) e o [`CHANFRO`](/docs/commands/chamfer) das suas arestas, que o `ARESTACONCORD` e o `CHANFRARARESTA` fazem. Registrar histórico e Mostrar histórico, do Histórico do sólido, e a linha Material. Os estilos visuais que faltam ao `EVATUAL` além de Estrutura de arame 2D, Oculto e Conceitual.
+Mover, Rotacionar, Escala e Espelhar a partir de uma alça ativa, que o AutoCAD percorre com Enter. Os comandos 3D próprios — mover, rotacionar, escalar, espelhar e alinhar em 3D — com os seus gizmos, e mover as suas faces, arestas e vértices um a um. O UCS dinâmico. As cotas pontilhadas que o AutoCAD desenha enquanto você dá o canto, o comprimento e a largura. O [`CONCORD`](/docs/commands/fillet) e o [`CHANFRO`](/docs/commands/chamfer) das suas arestas, que o [`ARESTACONCORD`](/docs/commands/filletedge) e o [`CHANFRARARESTA`](/docs/commands/chamferedge) fazem. Registrar histórico e Mostrar histórico, do Histórico do sólido, e a linha Material. Os estilos visuais que faltam ao [`EVATUAL`](/docs/commands/vscurrent) além de Estrutura de arame 2D, Oculto e Conceitual.
 
 [O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#box--es-prismarect--pt-br-caixa)
 
@@ -53,7 +53,7 @@ CAIXA, sem alias. Como no AutoCAD em português, o nome em inglês também funci
 
 ### Por que a caixa aparece como um retângulo?
 
-Você a está vendo de cima, em planta. Gire a vista: um canto do ViewCube, `-VISTA` e `isoSE`, ou `ORBITA3D`. O `EVATUAL` com `ocUlto` oculta as arestas que ficam atrás.
+Você a está vendo de cima, em planta. Gire a vista: um canto do ViewCube, `-VISTA` e `isoSE`, ou [`ORBITA3D`](/docs/commands/3dorbit). O [`EVATUAL`](/docs/commands/vscurrent) com `ocUlto` oculta as arestas que ficam atrás.
 
 ### Como fazer um cubo no AutoCAD?
 

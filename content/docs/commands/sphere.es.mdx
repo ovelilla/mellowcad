@@ -42,7 +42,7 @@ En el radio: pide en su lugar el diámetro, y ofrece el doble del último radio.
 
 ## Lo que aún no hace [#missing]
 
-[`DESCOMP`](/docs/commands/explode) de una esfera, que AutoCAD convierte en una superficie: MellowCAD no tiene superficies, así que dice que no ha podido descomponerla. Desplazar, Girar, Escalar y Simetría desde un pinzamiento activo, y los comandos 3D propios (desplazar, girar y escalar en 3D). La silueta que dibuja `DISPSILH` en AutoCAD. Los estilos visuales que le faltan a `ESTVISACTUAL` además de Estructura alámbrica 2D, Oculto y Conceptual.
+[`DESCOMP`](/docs/commands/explode) de una esfera, que AutoCAD convierte en una superficie: MellowCAD no tiene superficies, así que dice que no ha podido descomponerla. Desplazar, Girar, Escalar y Simetría desde un pinzamiento activo, y los comandos 3D propios (desplazar, girar y escalar en 3D). La silueta que dibuja `DISPSILH` en AutoCAD. Los estilos visuales que le faltan a [`ESTVISACTUAL`](/docs/commands/vscurrent) además de Estructura alámbrica 2D, Oculto y Conceptual.
 
 [Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#sphere--es-esfera--pt-br-esfera)
 
@@ -54,7 +54,7 @@ Ejecuta ESFERA, precisa el centro y después el radio: `0,0,0` y `25` dibujan la
 
 ### ¿Por qué la esfera se ve como un círculo con líneas?
 
-Estructura alámbrica 2D y Oculto dibujan una esfera con sus meridianos y paralelos; en planta son un círculo y unas líneas que lo cruzan. `ESTVISACTUAL` con `Conceptual` la sombrea, y `ISOLINES` fija cuántas líneas muestra.
+Estructura alámbrica 2D y Oculto dibujan una esfera con sus meridianos y paralelos; en planta son un círculo y unas líneas que lo cruzan. [`ESTVISACTUAL`](/docs/commands/vscurrent) con `Conceptual` la sombrea, y `ISOLINES` fija cuántas líneas muestra.
 
 ### ¿Cómo hacer una semiesfera?
 

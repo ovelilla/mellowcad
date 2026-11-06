@@ -1,0 +1,68 @@
+---
+title: "Comando FILLETEDGE (ARESTACONCORD) no AutoCAD 3D"
+metaTitle: "FILLETEDGE no AutoCAD: fillet de arestas 3D"
+description: "Como o FILLETEDGE do AutoCAD em português, ARESTACONCORD, arredonda arestas de sólidos 3D, prompt a prompt: Cadeia, Loop, Raio e a alça de seta. Teste grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Como fazer fillet numa aresta de um sólido 3D no AutoCAD?","answer":"Execute o ARESTACONCORD, escolha Raio e digite-o, selecione as arestas e pressione Enter duas vezes: uma para terminar a seleção, outra para aceitar. O 8 da figura arredonda duas arestas de uma caixa."},{"question":"Como arredondar todas as arestas de uma face?","answer":"Escolha Loop e selecione uma aresta da face, depois Aceitar, ou Próximo se o loop mostrado for o da outra face. Para arestas que já se continuam umas nas outras, em volta do topo de um bloco arredondado, Cadeia pega todas."},{"question":"Por que o FILLET não funciona num sólido 3D?","answer":"O CONCORD do AutoCAD também arredonda a aresta de um sólido, mas o do MellowCAD ainda não: use o ARESTACONCORD, e o CHANFRARARESTA para um chanfro."},{"question":"Como mudar o raio da concordância?","answer":"Escolha Raio antes de selecionar ou no prompt de aceitar, ou arraste a alça de seta no meio da primeira concordância. O último raio é oferecido na próxima vez."}]
+---
+
+O FILLETEDGE, ARESTACONCORD no AutoCAD em português, arredonda as arestas de um sólido 3D. Ele diz o raio atual e depois pede arestas, até o Enter: um clique pega a aresta sob o cursor, que se acende quando ele passa por cima, e um ponto digitado pega a aresta desenhada por ele. À medida que as arestas são selecionadas, o sólido é desenhado como vai ficar, com as concordâncias no lugar. O Enter conta as arestas e pede que você pressione Enter de novo para aceitar, ou que mude o raio; esse Enter faz as concordâncias. Arestas de um só sólido: a de outro diz `Não é possível fazer a concordância de corpos múltiplos.`, e uma selecionada duas vezes, `A aresta já foi selecionada.`.
+
+Uma aresta reta entre duas faces planas vira um quarto de cilindro, e a aresta redonda de um furo ou de uma borda, um quarto de toroide; concordâncias que se encontram num canto são unidas, três delas por um pedaço de esfera. O raio é salvo no desenho e oferecido de novo na próxima vez. O sólido mantém a camada e as propriedades, mas perde o que o fez: uma caixa deixa de ser uma caixa. O comando inteiro é um passo de desfazer. O 3D do MellowCAD é só de sólidos e ainda parcial.
+
+- **Comando:** `ARESTACONCORD`
+- **Em inglês:** `FILLETEDGE`, que se digita `_FILLETEDGE` em qualquer idioma
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `ARESTACONCORD` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="filletedge" caption="Uma caixa vista do sudeste: o ARESTACONCORD com raio 8 arredonda as suas duas arestas verticais da direita." />
+
+## Opções [#options]
+
+### `Cadeia` (`C`) [#chain]
+
+Pega a aresta que você seleciona e todas as arestas tangentes a ela, uma depois da outra: as oito em volta do topo de um bloco cujas arestas verticais já estão arredondadas. Sem nenhuma tangente, diz `Nenhuma aresta de tangente adjacente encontrada na cadeia.` e pega a selecionada. `Aresta` volta às arestas uma a uma.
+
+### `Loop` (`L`) [#loop]
+
+Pega todas as arestas em volta de uma face: selecione uma aresta e depois escolha `Aceitar` para o loop mostrado, ou `Próximo` para o loop da outra face a que a aresta pertence.
+
+### `Raio` (`R`) [#radius]
+
+Pede o raio, digitado ou como a distância entre dois pontos; 0 ou menos diz `O raio é pequeno demais. *Inválido*`. `Expressão` o aceita como uma fórmula. No prompt de aceitar, muda o raio das concordâncias mostradas. A alça de seta no meio da primeira concordância o define arrastando: clique nela, mova, clique; `saIr` ou Esc o deixam como estava.
+
+## O que ainda não faz [#missing]
+
+Concordâncias de dois raios que se encontram, e uma concordância que termina numa face curva. Uma concordância mais larga que uma face ao lado, que o AutoCAD faz rolar por cima da aresta seguinte: aqui ela falha com um erro de modelagem. Uma aresta reta ao lado de uma face curva, uma aresta redonda fora do eixo do seu cilindro, e qualquer aresta de uma esfera, de um toroide, de uma extrusão ou de um sólido de revolução, que falham do mesmo jeito. Alguns cantos onde concordâncias se encontram em arestas de inclinações diferentes. A alça de seta em qualquer aresta que não seja a primeira, e a linha dela até o cursor. O [`CONCORD`](/docs/commands/fillet) selecionando a aresta de um sólido, o que o AutoCAD também permite. A concordância desenhada como malha enquanto você seleciona, e as superfícies.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#filletedge--es-aristaempalme--pt-br-arestaconcord)
+
+## Perguntas frequentes [#questions]
+
+### Como fazer fillet numa aresta de um sólido 3D no AutoCAD?
+
+Execute o ARESTACONCORD, escolha `Raio` e digite-o, selecione as arestas e pressione Enter duas vezes: uma para terminar a seleção, outra para aceitar. O `8` da figura arredonda duas arestas de uma caixa.
+
+### Como arredondar todas as arestas de uma face?
+
+Escolha `Loop` e selecione uma aresta da face, depois `Aceitar`, ou `Próximo` se o loop mostrado for o da outra face. Para arestas que já se continuam umas nas outras, em volta do topo de um bloco arredondado, `Cadeia` pega todas.
+
+### Por que o FILLET não funciona num sólido 3D?
+
+O [`CONCORD`](/docs/commands/fillet) do AutoCAD também arredonda a aresta de um sólido, mas o do MellowCAD ainda não: use o ARESTACONCORD, e o [`CHANFRARARESTA`](/docs/commands/chamferedge) para um chanfro.
+
+### Como mudar o raio da concordância?
+
+Escolha `Raio` antes de selecionar ou no prompt de aceitar, ou arraste a alça de seta no meio da primeira concordância. O último raio é oferecido na próxima vez.
+
+## Comandos relacionados [#related]
+
+- [Comando CHAMFEREDGE (CHANFRARARESTA) no AutoCAD 3D](/docs/commands/chamferedge)
+- [Comando FILLET (CONCORD) no AutoCAD](/docs/commands/fillet)
+- [Comando SOLIDEDIT (EDITARSOLIDO) no AutoCAD 3D](/docs/commands/solidedit)
+- [Comando BOX (CAIXA) no AutoCAD 3D](/docs/commands/box)

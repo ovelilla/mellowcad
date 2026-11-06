@@ -1,0 +1,96 @@
+---
+title: "Comando SOLIDEDIT (EDITARSOLIDO) no AutoCAD 3D"
+metaTitle: "SOLIDEDIT no AutoCAD: editar faces de sólidos 3D"
+description: "Como o SOLIDEDIT do AutoCAD em português, EDITARSOLIDO, edita faces de sólidos 3D: Extrusão, Mover, Rotacionar, Deslocar, Afilar, Excluir, Copiar. Teste grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Como editar um sólido 3D no AutoCAD?","answer":"Execute o EDITARSOLIDO, escolha Face e depois o que fazer: Extrusão ou Mover numa face para deixar o sólido mais alto, eXcluir para preencher um furo, Afilar para inclinar um lado. Selecione as faces, pressione Enter e responda aos prompts da opção. Para empurrar ou puxar rápido, o PRESSIONARPUXAR também arrasta uma face."},{"question":"Como extrudar uma face de um sólido 3D?","answer":"EDITARSOLIDO, Face, Extrusão, selecione a face e pressione Enter, depois a altura e o ângulo de conicidade: os 15 e 15 da figura levantam um tronco de pirâmide no topo de uma caixa."},{"question":"Como tirar um furo de um sólido?","answer":"EDITARSOLIDO, Face, eXcluir, selecione a parede do furo e pressione Enter: o furo é preenchido. O mesmo tira uma concordância ou um chanfro."},{"question":"Qual a diferença entre SOLIDEDIT e PRESSPULL?","answer":"O PRESSIONARPUXAR move uma face por um arraste ou uma distância, perpendicular a ela. O EDITARSOLIDO faz isso e mais: afila, gira, desloca, exclui e copia faces, várias de uma vez."}]
+---
+
+O SOLIDEDIT, EDITARSOLIDO no AutoCAD em português, edita um sólido 3D pelas suas faces. Ele diz se cada edição é verificada e depois pergunta o que editar: `Face`, depois a opção de face, depois as faces, depois o que a opção precisa. Cada edição é feita na hora, e as opções de face são perguntadas de novo, então uma execução pode fazer várias edições; `Sair` ou Enter sai das opções de face e depois do comando. As vizinhas de uma face a acompanham: mova o topo de uma caixa para cima e os lados crescem até encontrá-lo.
+
+O sólido mantém a camada e as propriedades, mas perde o que o fez: uma caixa deixa de ser uma caixa. A execução inteira é um passo de desfazer, e o seu `Desfazer` desfaz as edições uma a uma dentro dela. O Enter no prompt `Comando:` o executa de novo desde a primeira pergunta. O botão de faces do painel Editar sólidos executa cada opção de face diretamente. O 3D do MellowCAD é só de sólidos e ainda parcial.
+
+- **Comando:** `EDITARSOLIDO`
+- **Em inglês:** `SOLIDEDIT`, que se digita `_SOLIDEDIT` em qualquer idioma
+- **Painel:** [Modificar](/docs/commands#modify)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `EDITARSOLIDO` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="solidedit" caption="A face de cima de uma caixa extrudada 15 para cima com uma conicidade de 15 graus pelo EDITARSOLIDO: um tronco de pirâmide sobre a caixa, visto do sudeste." />
+
+## Opções [#options]
+
+### `Face` (`F`) [#face]
+
+As opções de face. Cada uma pede faces, até o Enter: um clique ou um ponto digitado pega a face mais perto de você sob ele, ou as duas faces de uma aresta ali, e uma face já selecionada dá a que está atrás dela. Depois que uma face é selecionada, `Todas` pega todas as faces do seu sólido; `Remover` passa a tirar faces do conjunto, e `Desfazer` desfaz a última seleção. Um clique no vazio diz `Sólidos não detectados.`. Faces de um só sólido.
+
+### `Extrusão` (`E`) [#extrude]
+
+Pede uma altura e um ângulo de conicidade: cada face cresce num prisma, somado ao sólido ou, com uma altura negativa, retirado dele, que se estreita à medida que sobe com um ângulo positivo. O Enter na altura aceita a última altura que as primitivas ou o [`EXTRUSAO`](/docs/commands/extrude) usaram.
+
+### `Mover` (`M`) [#move]
+
+Pede um ponto base e um segundo ponto: uma face plana se move o quanto esse deslocamento corre ao longo da sua normal, levando as vizinhas com ela. O Enter no segundo ponto toma o ponto base como o deslocamento.
+
+### `Rotacionar` (`R`) [#rotate]
+
+Pede um eixo, por dois pontos ou ao longo do `eixoX`, do `eixoY` ou do `eixoZ` do UCS, ou perpendicular à tela por `Vista`, e depois um ângulo: a face gira em torno dele pela regra da mão direita.
+
+### `desLocamento` (`L`) [#offset]
+
+Pede uma distância: a face se move para fora ao longo da sua normal, ou para dentro com uma negativa, levando as vizinhas com ela, e as faces redondas em torno do seu eixo também. Um deslocamento para dentro de metade do maior lado da caixa em volta do sólido é recusado, e ele diz até onde pode ir.
+
+### `Afilar` (`A`) [#taper]
+
+Pede um ponto base, um ponto ao longo do eixo de afilamento e um ângulo: a face se inclina em torno da linha onde encontra o plano que passa pelo ponto base, e um ângulo positivo a inclina para dentro ao longo do eixo.
+
+### `eXcluir` (`X`) [#delete]
+
+Tira a parede de um furo, fechando o furo, ou a faixa de uma concordância ou de um chanfro, devolvendo a aresta que ela substituiu.
+
+### `COpiar` (`CO`) [#copy]
+
+Faz uma região de cada face plana, onde ela está ou movida por dois pontos, na camada atual e com as propriedades atuais.
+
+### `Desfazer` (`D`) [#undo]
+
+Nas opções de face, desfaz a última edição desta execução; quando não resta nenhuma, `O comando foi desfeito completamente.`.
+
+### `Sair` (`S`) [#exit]
+
+Sai das opções de face para a primeira pergunta, e o da primeira pergunta sai do comando; o Enter faz o mesmo.
+
+## O que ainda não faz [#missing]
+
+`Aresta` e `Corpo`, e `Cor` e `maTerial` das faces, que são oferecidos e recusados, assim como `Caminho` da Extrusão, o eixo por objeto de Rotacionar e o seu ângulo `Referência`. Intersecção, Cerca e PIntersecção para selecionar faces. Mover, rotacionar, afilar ou copiar uma face curva, deslocar uma face curva entre outras vizinhas, excluir uma que não seja a parede de um furo ou uma faixa, e uma edição que muda tanto a forma do sólido que uma face acaba consumindo outra. Edições ao lado de uma face extrudada com conicidade. Um deslocamento para fora longo demais para ser feito, que o AutoCAD descarta em silêncio e o MellowCAD faz. Uma prévia enquanto você dá uma distância ou um ângulo.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#solidedit--es-editsolido--pt-br-editarsolido)
+
+## Perguntas frequentes [#questions]
+
+### Como editar um sólido 3D no AutoCAD?
+
+Execute o EDITARSOLIDO, escolha `Face` e depois o que fazer: `Extrusão` ou `Mover` numa face para deixar o sólido mais alto, `eXcluir` para preencher um furo, `Afilar` para inclinar um lado. Selecione as faces, pressione Enter e responda aos prompts da opção. Para empurrar ou puxar rápido, o [`PRESSIONARPUXAR`](/docs/commands/presspull) também arrasta uma face.
+
+### Como extrudar uma face de um sólido 3D?
+
+EDITARSOLIDO, `Face`, `Extrusão`, selecione a face e pressione Enter, depois a altura e o ângulo de conicidade: os `15` e `15` da figura levantam um tronco de pirâmide no topo de uma caixa.
+
+### Como tirar um furo de um sólido?
+
+EDITARSOLIDO, `Face`, `eXcluir`, selecione a parede do furo e pressione Enter: o furo é preenchido. O mesmo tira uma concordância ou um chanfro.
+
+### Qual a diferença entre SOLIDEDIT e PRESSPULL?
+
+O [`PRESSIONARPUXAR`](/docs/commands/presspull) move uma face por um arraste ou uma distância, perpendicular a ela. O EDITARSOLIDO faz isso e mais: afila, gira, desloca, exclui e copia faces, várias de uma vez.
+
+## Comandos relacionados [#related]
+
+- [Comando PRESSPULL (PRESSIONARPUXAR) no AutoCAD](/docs/commands/presspull)
+- [Comando FILLETEDGE (ARESTACONCORD) no AutoCAD 3D](/docs/commands/filletedge)
+- [Comando EXTRUDE (EXTRUSAO) no AutoCAD](/docs/commands/extrude)
+- [Comando SUBTRACT (SUBTRAIR) no AutoCAD](/docs/commands/subtract)

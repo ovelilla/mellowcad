@@ -141,6 +141,19 @@ marks a choice between competing terms that a native review should settle first 
 | Open source | Open source; the code; MIT licence | مفتوح المصدر؛ الشيفرة؛ رخصة MIT (M) |
 | Docs | Docs; Documentation; Build with MellowCAD; API reference; Not published yet | التوثيق؛ البناء باستخدام MellowCAD؛ مرجع الواجهة البرمجية؛ لم يُنشر بعد (M) |
 | Search | Technical drawing online, free, 2D and 3D, AutoCAD commands, aliases, AutoCAD alternative | رسم هندسي، أون لاين، مجاني، ثنائي الأبعاد، ثلاثي الأبعاد، أوامر أوتوكاد، اختصارات، بديل أوتوكاد — Google's Arabic suggestions in SA, EG, AE, MA, IQ and JO, 01/10/2026, and the visibility audit, 05/11/2026 (see Search texts, below) |
+| Command pages | User coordinate system (UCS); orthographic UCS | نظام إحداثيات المستخدم؛ نظام إحداثيات إسقاطي (C; إسقاطي L) |
+|  | Normal (a face's or an object's) | المتجه العمودي (M) † — الناظم |
+|  | Line of sight; right-hand rule | خط النظر؛ قاعدة اليد اليمنى (M) |
+|  | Viewport; crosshair | منفذ عرض (C) †؛ المؤشر المتقاطع (L) † |
+|  | Parallel projection; perspective; navigation bar; wheel button | الإسقاط المتوازي؛ المنظور (M)؛ شريط التنقل؛ زر العجلة (L) |
+|  | Wireframe; shaded; outlines (of a curved face) | إطار سلكي؛ مظلَّل؛ خطوط الكفاف (M) |
+|  | Section, cross-section (SECTION); live section | مقطع، مقطع عرضي (C) † — قطاع is what Egypt and Saudi Arabia search («قطاع اوتوكاد»), the notes ask with both; المقطع الحي (L) |
+|  | Surface, mesh; Boolean operation | سطح، شبكة (M)؛ عملية بوليانية (L) † |
+|  | Loop, chain (of edges); tangent edges; round edge, rim | حلقة، سلسلة؛ حواف مماسة؛ الحافة الدائرية، طرف مستدير (L) |
+|  | Arrow grip; base surface (a chamfer's); modeling error | مقبض السهم؛ السطح الأساسي؛ خطأ في النمذجة (L) |
+|  | Solid editing (SOLIDEDIT's tool and rail group) | تحرير المجسمات (C) |
+|  | Frustum; prism | جذع (جذع هرم، جذع مخروط)؛ منشور (M) |
+|  | Block reference; wildcards; backquote | مرجع كتلة (C)؛ أحرف البدل؛ علامة الاقتباس الخلفية (L) |
 
 ## Register
 

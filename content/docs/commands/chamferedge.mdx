@@ -1,0 +1,63 @@
+---
+title: "CHAMFEREDGE in AutoCAD"
+metaTitle: "CHAMFEREDGE in AutoCAD: chamfer 3D solid edges"
+description: "How AutoCAD's CHAMFEREDGE bevels the edges of a 3D solid, prompt by prompt: the edges of one face, Loop, Distance1 and Distance2. Try it free in your browser."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"How do I chamfer an edge of a 3D solid in AutoCAD?","answer":"Run CHAMFEREDGE, choose Distance and give both distances, pick the edges of one face, then press Enter twice: once to end the picking, once to accept. The session's 6 and 6 bevel two top edges of a box."},{"question":"Why does CHAMFEREDGE say the edges must belong to one face?","answer":"The edges of one chamfer share a face: the first distance runs along it. Chamfer the edges of another face in a second run."},{"question":"Why does CHAMFER not work on a 3D solid?","answer":"AutoCAD's CHAMFER bevels a solid's edge too, but MellowCAD's does not yet: use CHAMFEREDGE, and FILLETEDGE to round an edge."},{"question":"How do I chamfer a hole's edge?","answer":"Pick its round edge where it meets the flat face: the chamfer is a strip of a cone round the hole."}]
+---
+
+CHAMFEREDGE bevels the edges of a 3D solid. It says the two current distances, then asks for an edge and, after the first, for others on the same face, until Enter: a click takes the edge under the cursor, a point typed the edge drawn through it. An edge the first ones share no face with says `Edges must belong to one face.`, one of another solid `Chamfering multiple bodies not allowed.`. As edges are taken, the solid is drawn as it will be. Enter then asks you to press Enter again to accept, or to change the distances for this chamfer; that Enter makes it.
+
+The first distance runs along the face the edges share; for a lone edge, along the face AutoCAD takes: the front, for a box's top front edge, and the top, for a cylinder's rim. A straight edge between two flat faces becomes a flat strip, the round edge of a hole or a rim a strip of a cone, and chamfers that meet at a corner are joined in a line. The distances are offered again the next time. The solid keeps its layer and properties but loses what made it: a box is no longer a box. The whole command is one undo step. MellowCAD's 3D is solids only, and still partial.
+
+- **Command:** `CHAMFEREDGE`
+- **Panel:** [Modify](/docs/commands#modify)
+- **Try it:** [Open the editor](/draw), type `CHAMFEREDGE` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="chamferedge" caption="A box seen from the south-east: CHAMFEREDGE with both distances 6 bevels the two top edges at its front corner, which meet in a line." />
+
+## Options [#options]
+
+### `Loop` (`L`) [#loop]
+
+Takes every edge round a face: pick one edge, then `Accept` the loop shown, or `Next` for the loop of the other face the edge belongs to. `Edge` goes back to single edges.
+
+### `Distance` (`D`) [#distance]
+
+Asks for the first distance, then the second, each typed or as the distance between two points; 0 or less says `Distance too small. *Invalid*`. `Expression` takes one as a formula. At the accept prompt it asks for the base surface's distance and the other surface's, for this chamfer only.
+
+## What it does not do yet [#missing]
+
+A corner where three chamfered edges meet. A straight edge beside a curved face, a round edge off its cylinder's axis, and any edge of a sphere, a torus, an extrusion or a revolved solid: here they fail with a modeling error. The two arrow grips AutoCAD shows at the accept prompt, one per distance. [`CHAMFER`](/docs/commands/chamfer) picking a solid's edge, which AutoCAD also allows. The chamfer drawn as a mesh while you pick, and surfaces.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#chamferedge--es-achaflanaarista--pt-br-chanfrararesta)
+
+## Questions [#questions]
+
+### How do I chamfer an edge of a 3D solid in AutoCAD?
+
+Run CHAMFEREDGE, choose `Distance` and give both distances, pick the edges of one face, then press Enter twice: once to end the picking, once to accept. The session's `6` and `6` bevel two top edges of a box.
+
+### Why does CHAMFEREDGE say the edges must belong to one face?
+
+The edges of one chamfer share a face: the first distance runs along it. Chamfer the edges of another face in a second run.
+
+### Why does CHAMFER not work on a 3D solid?
+
+AutoCAD's [`CHAMFER`](/docs/commands/chamfer) bevels a solid's edge too, but MellowCAD's does not yet: use CHAMFEREDGE, and [`FILLETEDGE`](/docs/commands/filletedge) to round an edge.
+
+### How do I chamfer a hole's edge?
+
+Pick its round edge where it meets the flat face: the chamfer is a strip of a cone round the hole.
+
+## Related commands [#related]
+
+- [FILLETEDGE in AutoCAD](/docs/commands/filletedge)
+- [CHAMFER in AutoCAD](/docs/commands/chamfer)
+- [SOLIDEDIT in AutoCAD](/docs/commands/solidedit)
+- [BOX in AutoCAD](/docs/commands/box)

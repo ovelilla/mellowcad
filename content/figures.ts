@@ -7,6 +7,7 @@ import {
   firstLine,
   offsetRectangle,
 } from "./demos/docs"
+import { sessions as orbit3dSessions } from "./demos/commands/3dorbit"
 import { sessions as arcSessions } from "./demos/commands/arc"
 import { sessions as areaSessions } from "./demos/commands/area"
 import { sessions as arraySessions } from "./demos/commands/array"
@@ -17,6 +18,7 @@ import { sessions as blockSessions } from "./demos/commands/block"
 import { sessions as boxSessions } from "./demos/commands/box"
 import { sessions as breakSessions } from "./demos/commands/break"
 import { sessions as chamferSessions } from "./demos/commands/chamfer"
+import { sessions as chamferedgeSessions } from "./demos/commands/chamferedge"
 import { sessions as circleSessions } from "./demos/commands/circle"
 import { sessions as coneSessions } from "./demos/commands/cone"
 import { sessions as copySessions } from "./demos/commands/copy"
@@ -36,6 +38,7 @@ import { sessions as explodeSessions } from "./demos/commands/explode"
 import { sessions as extendSessions } from "./demos/commands/extend"
 import { sessions as extrudeSessions } from "./demos/commands/extrude"
 import { sessions as filletSessions } from "./demos/commands/fillet"
+import { sessions as filletedgeSessions } from "./demos/commands/filletedge"
 import { sessions as hatchSessions } from "./demos/commands/hatch"
 import { sessions as insertSessions } from "./demos/commands/insert"
 import { sessions as intersectSessions } from "./demos/commands/intersect"
@@ -61,7 +64,9 @@ import { sessions as regionSessions } from "./demos/commands/region"
 import { sessions as revolveSessions } from "./demos/commands/revolve"
 import { sessions as rotateSessions } from "./demos/commands/rotate"
 import { sessions as scaleSessions } from "./demos/commands/scale"
+import { sessions as sectionSessions } from "./demos/commands/section"
 import { sessions as sliceSessions } from "./demos/commands/slice"
+import { sessions as solideditSessions } from "./demos/commands/solidedit"
 import { sessions as sphereSessions } from "./demos/commands/sphere"
 import { sessions as splineSessions } from "./demos/commands/spline"
 import { sessions as stretchSessions } from "./demos/commands/stretch"
@@ -69,8 +74,10 @@ import { sessions as subtractSessions } from "./demos/commands/subtract"
 import { sessions as textSessions } from "./demos/commands/text"
 import { sessions as torusSessions } from "./demos/commands/torus"
 import { sessions as trimSessions } from "./demos/commands/trim"
+import { sessions as ucsSessions } from "./demos/commands/ucs"
 import { sessions as unionSessions } from "./demos/commands/union"
 import { sessions as unitsSessions } from "./demos/commands/units"
+import { sessions as vscurrentSessions } from "./demos/commands/vscurrent"
 import { sessions as wedgeSessions } from "./demos/commands/wedge"
 import { sessions as zoomSessions } from "./demos/commands/zoom"
 import { hero, heroDrawing } from "./demos/hero"
@@ -169,6 +176,7 @@ export type FigureId = keyof typeof FIGURES
  * shows it.
  */
 export const COMMAND_SESSIONS = {
+  ...orbit3dSessions,
   ...arcSessions,
   ...areaSessions,
   ...arraySessions,
@@ -179,6 +187,7 @@ export const COMMAND_SESSIONS = {
   ...boxSessions,
   ...breakSessions,
   ...chamferSessions,
+  ...chamferedgeSessions,
   ...circleSessions,
   ...coneSessions,
   ...copySessions,
@@ -198,6 +207,7 @@ export const COMMAND_SESSIONS = {
   ...extendSessions,
   ...extrudeSessions,
   ...filletSessions,
+  ...filletedgeSessions,
   ...hatchSessions,
   ...insertSessions,
   ...intersectSessions,
@@ -223,7 +233,9 @@ export const COMMAND_SESSIONS = {
   ...revolveSessions,
   ...rotateSessions,
   ...scaleSessions,
+  ...sectionSessions,
   ...sliceSessions,
+  ...solideditSessions,
   ...sphereSessions,
   ...splineSessions,
   ...stretchSessions,
@@ -231,8 +243,10 @@ export const COMMAND_SESSIONS = {
   ...textSessions,
   ...torusSessions,
   ...trimSessions,
+  ...ucsSessions,
   ...unionSessions,
   ...unitsSessions,
+  ...vscurrentSessions,
   ...wedgeSessions,
   ...zoomSessions,
 }

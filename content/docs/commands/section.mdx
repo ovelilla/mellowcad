@@ -1,0 +1,84 @@
+---
+title: "SECTION in AutoCAD"
+metaTitle: "SECTION in AutoCAD: cross-section of 3D solids"
+description: "How AutoCAD's SECTION (SEC) makes a region where a plane cuts 3D solids, prompt by prompt: 3points, Object, Zaxis, View, XY, YZ, ZX. Try it free online."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"How do I make a section of a 3D solid in AutoCAD?","answer":"Run SECTION, select the solid and press Enter, then give the plane: ZX and a point through the middle cuts it front to back, XY and a point at a height cuts it level. The region lies inside the solid: MOVE it out to see it."},{"question":"What is the difference between SECTION and SLICE?","answer":"SLICE cuts the solid in two and keeps one part or both. SECTION leaves the solid whole and draws a region where the plane cuts it."},{"question":"What is the shortcut for SECTION in AutoCAD?","answer":"SEC, then Enter or Space."},{"question":"Why does SECTION say the plane does not intersect the solid?","answer":"The plane misses it: check how you gave it. XY, YZ and ZX are the UCS's planes, so a point at the wrong height or side puts the plane outside the solid."}]
+---
+
+SECTION makes a cross-section of 3D solids: a region where a plane cuts each one, and the solids stay as they were. It asks for the solids, until Enter: as in AutoCAD 2027, a set selected before it is dropped and asked for again, what is not a solid is passed over, and a set with none says `No Solids, Surfaces or Meshes selected.`. Then the plane: by default you give three points on it, and the options give it another way, as at [`SLICE`](/docs/commands/slice).
+
+Each solid the plane cuts gets its region, lying in the plane: a block with a hole through it gives the outline with the hole's gap, a cylinder cut along its axis a rectangle. A plane on one of a solid's faces gives that face. One the plane misses says `Sectioning plane does not intersect the selected solid.`. The regions take the current layer and properties, not the solid's; [`MOVE`](/docs/commands/move) takes one out to see it, [`AREA`](/docs/commands/area) and [`MASSPROP`](/docs/commands/massprop) measure it, and [`EXTRUDE`](/docs/commands/extrude) turns it into a solid. The whole command is one undo step. MellowCAD's 3D is solids only, and still partial.
+
+- **Command:** `SECTION`
+- **Aliases:** `SEC`
+- **Panel:** [Draw](/docs/commands#draw)
+- **Try it:** [Open the editor](/draw), type `SEC` and press Enter.
+
+## At the command line [#session]
+
+The engine draws it and writes its history as you would type it: the prompts in AutoCAD 2027's order, with the same option letters.
+
+<Session name="section" caption="A block with a hole through it, cut by the ZX plane through the hole's centre: SECTION makes the profile, moved out in front, two rectangles with the hole's gap between." />
+
+## Options [#options]
+
+### `Object` (`O`) [#object]
+
+Takes the plane of an object you pick: a circle, an ellipse, an arc, a 2D spline or a 2D polyline.
+
+### `Zaxis` (`Z`) [#zaxis]
+
+Asks for a point on the plane, then a point on its Z axis, the line square to it.
+
+### `View` (`V`) [#view]
+
+The plane parallel to the screen, through a point you give.
+
+### `XY` [#xy]
+
+The UCS's XY plane, through a point you give: a point at a height makes a level section there. Enter takes the UCS's origin.
+
+### `YZ` [#yz]
+
+The UCS's YZ plane, through a point you give; Enter takes the UCS's origin.
+
+### `ZX` [#zx]
+
+The UCS's ZX plane, through a point you give; Enter takes the UCS's origin. The session's section is this plane through the hole's centre.
+
+### `3points` (`3`) [#3points]
+
+Three points on the plane, which may then tilt any way. It is the first prompt's default, so a point there is the first of the three.
+
+## What it does not do yet [#missing]
+
+Surfaces and meshes, which MellowCAD does not have. A planar 3D polyline as the plane's object, which AutoCAD takes. The cuts MellowCAD has no exact form for yet, as at [`SLICE`](/docs/commands/slice), which say that one boolean operation failed. SECTIONPLANE and live sectioning, which AutoCAD's ribbon offers in SECTION's place: here SECTION is typed.
+
+[What it does and still lacks, in detail (in English)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#section--sec--es-seccion--sc--pt-br-corte--secao)
+
+## Questions [#questions]
+
+### How do I make a section of a 3D solid in AutoCAD?
+
+Run SECTION, select the solid and press Enter, then give the plane: `ZX` and a point through the middle cuts it front to back, `XY` and a point at a height cuts it level. The region lies inside the solid: [`MOVE`](/docs/commands/move) it out to see it.
+
+### What is the difference between SECTION and SLICE?
+
+[`SLICE`](/docs/commands/slice) cuts the solid in two and keeps one part or both. SECTION leaves the solid whole and draws a region where the plane cuts it.
+
+### What is the shortcut for SECTION in AutoCAD?
+
+`SEC`, then Enter or Space.
+
+### Why does SECTION say the plane does not intersect the solid?
+
+The plane misses it: check how you gave it. `XY`, `YZ` and `ZX` are the UCS's planes, so a point at the wrong height or side puts the plane outside the solid.
+
+## Related commands [#related]
+
+- [SLICE in AutoCAD](/docs/commands/slice)
+- [REGION in AutoCAD](/docs/commands/region)
+- [SUBTRACT in AutoCAD](/docs/commands/subtract)
+- [MASSPROP in AutoCAD](/docs/commands/massprop)

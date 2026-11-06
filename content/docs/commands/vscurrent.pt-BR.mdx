@@ -1,0 +1,69 @@
+---
+title: "Comando VSCURRENT (EVATUAL) no AutoCAD"
+metaTitle: "Estilos visuais no AutoCAD: VSCURRENT (EVATUAL)"
+description: "Como o VSCURRENT do AutoCAD em português, EVATUAL (alias EVA), define o estilo visual: Estrutura de arame 2D, Oculto e Conceitual, e como voltar. Teste grátis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"Como mudar o estilo visual no AutoCAD?","answer":"Execute o EVATUAL (ou EVA) e escolha o estilo: ocUlto para ocultar as arestas de trás, Conceitual para sombrear as faces. Ele muda só a vista, não os objetos. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: _VSCURRENT."},{"question":"Como voltar para a Estrutura de arame 2D?","answer":"Execute o EVATUAL e escolha estruturadearame2d, a letra 2."},{"question":"Qual a diferença entre Oculto e Conceitual?","answer":"Os dois ocultam o que as faces ocultam. O Oculto desenha só as arestas, sobre o fundo, como um desenho a traço; o Conceitual também pinta as faces, sombreadas pela luz, com as mesmas arestas por cima."},{"question":"Por que ainda vejo linhas através do sólido?","answer":"Elas não fazem parte de um sólido. Linhas, círculos e regiões são desenhados como na Estrutura de arame 2D em todos os estilos, então uma linha atrás de uma caixa continua aparecendo. Em estruturadearame2d, as arestas de trás do próprio sólido também aparecem: escolha ocUlto."}]
+---
+
+O VSCURRENT, EVATUAL no AutoCAD em português, define o estilo visual: como a vista desenha os sólidos 3D. Ele pede um estilo, oferecendo o atual como padrão, e o Enter o mantém. `estruturadearame2d` desenha todas as arestas, também as de trás; `ocUlto` oculta o que as faces ocultam; `Conceitual` pinta as faces, sombreadas. O estilo pertence à vista e é salvo com o desenho, e cada execução é um passo de desfazer. Ele não pode ser usado dentro de outro comando.
+
+O que não é sólido — linhas, círculos, regiões, textos — é desenhado como na Estrutura de arame 2D, qualquer que seja o estilo, nas suas próprias cores. No Oculto e no Conceitual, um clique pega o sólido cuja face está mais perto de você sob o cursor, nunca um sólido através de uma face que o oculta, e os snaps ao objeto continuam encontrando todas as arestas. Um sólido numa camada bloqueada tem as arestas desenhadas mais apagadas. O 3D do MellowCAD é só de sólidos e ainda parcial.
+
+- **Comando:** `EVATUAL`
+- **Em inglês:** `VSCURRENT`, que se digita `_VSCURRENT` em qualquer idioma
+- **Aliases:** `EVA`
+- **Painel:** [Consulta e vista](/docs/commands#inquiry)
+- **Experimente:** [Abra o editor](/pt-br/draw), digite `EVA` e pressione Enter.
+
+## Na linha de comando [#session]
+
+O motor o desenha e escreve o histórico como você o digitaria: os prompts na ordem do AutoCAD 2027, com as mesmas letras de opção.
+
+<Session name="vscurrent" caption="Um bloco com um furo passante, visto do sudeste: o EVATUAL Conceitual sombreia as faces e desenha as arestas por cima delas." />
+
+## Opções [#options]
+
+### `estruturadearame2d` (`2`) [#2dwireframe]
+
+Todas as arestas de todos os sólidos, incluindo as de trás, com as linhas que mostram as suas faces curvas; o padrão num desenho novo. Ao voltar a ele de outro estilo, o EVATUAL diz `Regenerando modelo.`.
+
+### `ocUlto` (`U`) [#hidden]
+
+As arestas de cada sólido, e os contornos das suas faces curvas, onde nenhuma face de nenhum sólido as oculta, na cor do objeto: um sólido atrás de outro fica oculto por ele. As linhas que mostram uma face curva na Estrutura de arame 2D não são desenhadas.
+
+### `Conceitual` (`C`) [#conceptual]
+
+As faces voltadas para você pintadas na cor do objeto, puxando para um azul frio no lado oposto à luz, que acompanha o seu ponto de vista, e as arestas do Oculto desenhadas por cima numa só cor, qualquer que seja a do objeto. Aqui e no Oculto, um cilindro ou um cone vistos em planta mostram só o círculo, como no AutoCAD.
+
+## O que ainda não faz [#missing]
+
+Os outros estilos do AutoCAD — Estrutura de arame, Realista, Sombreado, Sombreado com arestas, Tons de cinza, Croqui e Raio X — e dar o nome de um estilo ou listá-los com `?`: o prompt lista só os três estilos que existem aqui, e recusa qualquer outra resposta.
+
+[O que ele faz e o que ainda falta, em detalhe (em inglês)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/view.md#vscurrent--vs--es-estvisactual--eva--pt-br-evatual--eva)
+
+## Perguntas frequentes [#questions]
+
+### Como mudar o estilo visual no AutoCAD?
+
+Execute o EVATUAL (ou `EVA`) e escolha o estilo: `ocUlto` para ocultar as arestas de trás, `Conceitual` para sombrear as faces. Ele muda só a vista, não os objetos. Como no AutoCAD em português, o nome em inglês também funciona com um sublinhado na frente: `_VSCURRENT`.
+
+### Como voltar para a Estrutura de arame 2D?
+
+Execute o EVATUAL e escolha `estruturadearame2d`, a letra `2`.
+
+### Qual a diferença entre Oculto e Conceitual?
+
+Os dois ocultam o que as faces ocultam. O Oculto desenha só as arestas, sobre o fundo, como um desenho a traço; o Conceitual também pinta as faces, sombreadas pela luz, com as mesmas arestas por cima.
+
+### Por que ainda vejo linhas através do sólido?
+
+Elas não fazem parte de um sólido. Linhas, círculos e regiões são desenhados como na Estrutura de arame 2D em todos os estilos, então uma linha atrás de uma caixa continua aparecendo. Em `estruturadearame2d`, as arestas de trás do próprio sólido também aparecem: escolha `ocUlto`.
+
+## Comandos relacionados [#related]
+
+- [Comando 3DORBIT (ORBITA3D) no AutoCAD](/docs/commands/3dorbit)
+- [Comando BOX (CAIXA) no AutoCAD 3D](/docs/commands/box)
+- [VISTA (VIEW)](/docs/commands#view): Vistas predefinidas
+- [Comando UCS no AutoCAD 3D](/docs/commands/ucs)

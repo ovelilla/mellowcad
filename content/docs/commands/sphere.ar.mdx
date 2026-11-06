@@ -41,7 +41,7 @@ faq: [{"question":"كيف أرسم كرة في الأوتوكاد؟","answer":"�
 
 ## ما لا يفعله بعد [#missing]
 
-[`EXPLODE`](/docs/commands/explode) على الكرة، فأوتوكاد يحوّلها إلى سطح: ولا أسطح في ⁨MellowCAD⁩، فيقول إنه تعذّر تفكيكها. والنقل والتدوير والتحجيم والانعكاس من مقبض نشط، وأوامر الأبعاد الثلاثة الخاصة به (⁨3DMOVE⁩ و⁨3DROTATE⁩ و⁨3DSCALE⁩). وخط الكفاف الذي يرسمه `DISPSILH` في أوتوكاد. والأنماط المرئية التي تنقص `VSCURRENT` عدا `2dwireframe` و`Hidden` و`Conceptual`.
+[`EXPLODE`](/docs/commands/explode) على الكرة، فأوتوكاد يحوّلها إلى سطح: ولا أسطح في ⁨MellowCAD⁩، فيقول إنه تعذّر تفكيكها. والنقل والتدوير والتحجيم والانعكاس من مقبض نشط، وأوامر الأبعاد الثلاثة الخاصة به (⁨3DMOVE⁩ و⁨3DROTATE⁩ و⁨3DSCALE⁩). وخط الكفاف الذي يرسمه `DISPSILH` في أوتوكاد. والأنماط المرئية التي تنقص [`VSCURRENT`](/docs/commands/vscurrent) عدا `2dwireframe` و`Hidden` و`Conceptual`.
 
 [ما يفعله وما ينقصه بالتفصيل (بالإنجليزية)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/draw.md#sphere--es-esfera--pt-br-esfera)
 
@@ -53,7 +53,7 @@ faq: [{"question":"كيف أرسم كرة في الأوتوكاد؟","answer":"�
 
 ### لماذا تبدو الكرة دائرة تقطعها خطوط؟
 
-يرسم ⁨2D Wireframe⁩ و⁨Hidden⁩ الكرة بخطوط طولها ودوائر عرضها؛ وفي المسقط الأفقي تكون دائرةً وخطوطًا تمر بها. ويظلّلها `VSCURRENT` مع `Conceptual`، ويحدد `ISOLINES` عدد الخطوط التي تظهر.
+يرسم ⁨2D Wireframe⁩ و⁨Hidden⁩ الكرة بخطوط طولها ودوائر عرضها؛ وفي المسقط الأفقي تكون دائرةً وخطوطًا تمر بها. ويظلّلها [`VSCURRENT`](/docs/commands/vscurrent) مع `Conceptual`، ويحدد `ISOLINES` عدد الخطوط التي تظهر.
 
 ### كيف أرسم نصف كرة؟
 

@@ -1,0 +1,96 @@
+---
+title: "Editar sólidos en AutoCAD: EDITSOLIDO (SOLIDEDIT)"
+metaTitle: "Editar sólidos en AutoCAD: comando EDITSOLIDO"
+description: "Cómo editar caras de sólidos 3D con EDITSOLIDO (SOLIDEDIT) en AutoCAD en español: Extruir, Desplazar, Girar, Desfasar, Inclinar, Suprimir y Copiar. Pruébalo."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo editar sólidos en AutoCAD con EDITSOLIDO?","answer":"Ejecuta EDITSOLIDO, elige Cara y después qué hacer: eXtruir o Desplazar sobre una cara para que el sólido sea más alto, sUprimir para rellenar un agujero, Inclinar para inclinar un lado. Designa las caras, pulsa Intro y responde a las solicitudes de la opción. Para presionar o tirar rápido, PRESIONARTIRAR también arrastra una cara."},{"question":"¿Cómo extruir una cara de un sólido 3D?","answer":"EDITSOLIDO, Cara, eXtruir, designa la cara y pulsa Intro, y después la altura y el ángulo de inclinación: el 15 y 15 de la figura levantan un tronco de pirámide sobre la cara superior de un prisma."},{"question":"¿Cómo quitar un agujero de un sólido en AutoCAD?","answer":"EDITSOLIDO, Cara, sUprimir, designa la pared del agujero y pulsa Intro: el agujero se rellena. Lo mismo quita un empalme o un chaflán."},{"question":"¿Qué diferencia hay entre EDITSOLIDO y PRESIONARTIRAR?","answer":"PRESIONARTIRAR desplaza una cara con un arrastre o una distancia, en perpendicular a sí misma. EDITSOLIDO hace eso y más: inclina, gira, desfasa, suprime y copia caras, varias a la vez."}]
+---
+
+EDITSOLIDO (SOLIDEDIT en inglés) edita un sólido 3D por sus caras. Dice si cada edición se comprueba y después pregunta qué editar: `Cara`, después la opción de caras, después las caras y después lo que pide la opción. Cada edición se hace en el acto, y las opciones de caras se vuelven a preguntar, así que una ejecución puede hacer varias ediciones; `Salir` o Intro salen de las opciones de caras y después del comando. Las vecinas de una cara la siguen: desplaza hacia arriba la cara superior de un prisma y sus lados crecen hasta encontrarla.
+
+El sólido conserva su capa y sus propiedades, pero pierde lo que lo creó: un prisma deja de ser un prisma. Toda la ejecución es un solo paso de deshacer, y su `desHacer` revierte dentro de ella las ediciones de una en una. Intro en la solicitud `Comando:` lo vuelve a ejecutar desde la primera pregunta. El botón de caras del panel Editar sólidos ejecuta directamente cada opción de caras. El 3D de MellowCAD es solo de sólidos y aún parcial.
+
+- **Comando:** `EDITSOLIDO`
+- **En inglés:** `SOLIDEDIT`, que se escribe `_SOLIDEDIT` en cualquier idioma
+- **Grupo:** [Modificar](/docs/commands#modify)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `EDITSOLIDO` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="solidedit" caption="La cara superior de un prisma extruida 15 hacia arriba con una inclinación de 15 grados por EDITSOLIDO: un tronco de pirámide sobre el prisma, visto desde el sureste." />
+
+## Opciones [#options]
+
+### `Cara` (`C`) [#face]
+
+Las opciones de caras. Cada una pide caras, hasta Intro: un clic o un punto escrito toma la cara más cercana a ti bajo él, o las dos caras de una arista que esté ahí, y una cara ya tomada da la que hay detrás. Una vez tomada una cara, `Todas` toma todas las caras de su sólido; `Eliminar` pasa a quitar caras del conjunto, y `desHacer` revierte la última designación. Una designación en el vacío dice `Ningún sólido detectado.`. Solo caras de un mismo sólido.
+
+### `eXtruir` (`X`) [#extrude]
+
+Pide una altura y un ángulo de inclinación: cada cara crece hasta formar un prisma, que se añade al sólido o, con una altura negativa, se le resta, y que se estrecha al subir con un ángulo positivo. Intro en la altura toma la última altura que usaron las primitivas o [`EXTRUSION`](/docs/commands/extrude).
+
+### `Desplazar` (`D`) [#move]
+
+Pide un punto base y un segundo punto: una cara plana se desplaza tanto como avanza ese recorrido a lo largo de su normal, y arrastra a sus vecinas. Intro en el segundo punto toma el punto base como desplazamiento.
+
+### `Girar` (`G`) [#rotate]
+
+Pide un eje, por dos puntos o a lo largo del `ejeX`, el `ejeY` o el `ejeZ` del SCP, o perpendicular a la pantalla con `Vista`, y después un ángulo: la cara gira alrededor de él según la regla de la mano derecha.
+
+### `dEsfasar` (`E`) [#offset]
+
+Pide una distancia: la cara se desplaza hacia fuera a lo largo de su normal, o hacia dentro con una negativa, y arrastra a sus vecinas; las caras curvas también, alrededor de su eje. Un desfase hacia dentro de la mitad del lado mayor de la caja que envuelve el sólido se rechaza, y dice hasta dónde puede llegar.
+
+### `Inclinar` (`I`) [#taper]
+
+Pide un punto base, un punto a lo largo del eje de inclinación y un ángulo: la cara se inclina alrededor de la línea donde la corta el plano que pasa por el punto base, y un ángulo positivo la inclina hacia dentro a lo largo del eje.
+
+### `sUprimir` (`U`) [#delete]
+
+Quita la pared de un agujero, que se cierra, o la franja de un empalme o de un chaflán, y devuelve la arista a la que sustituía.
+
+### `Copiar` (`C`) [#copy]
+
+Crea una región de cada cara plana, donde está o desplazada con dos puntos, en la capa actual y con las propiedades actuales.
+
+### `desHacer` (`H`) [#undo]
+
+En las opciones de caras, revierte la última edición de esta ejecución; cuando ya no queda ninguna, `Todos los efectos del comando han sido deshechos.`.
+
+### `Salir` (`S`) [#exit]
+
+Sale de las opciones de caras a la primera pregunta, y la de esa pregunta sale del comando; Intro hace lo mismo.
+
+## Lo que aún no hace [#missing]
+
+`Arista` y `cUerpo`, y el `cOlor` y el `mAterial` de las caras, que se ofrecen y se rechazan, como la `Trayectoria` de Extruir, el eje por objeto de Girar y su ángulo de `Referencia`. Captura, Borde y PolígonoC para designar caras. Desplazar, girar, inclinar o copiar una cara curva, desfasar una entre otras vecinas, suprimir una que no sea la pared de un agujero ni una franja, y una edición que cambia tanto la forma del sólido que una cara hace desaparecer a otra. Las ediciones junto a una cara extruida con inclinación. Un desfase hacia fuera demasiado grande para hacerse, que AutoCAD descarta en silencio y MellowCAD hace. Una vista previa mientras das una distancia o un ángulo.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/modify.md#solidedit--es-editsolido--pt-br-editarsolido)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo editar sólidos en AutoCAD con EDITSOLIDO?
+
+Ejecuta EDITSOLIDO, elige `Cara` y después qué hacer: `eXtruir` o `Desplazar` sobre una cara para que el sólido sea más alto, `sUprimir` para rellenar un agujero, `Inclinar` para inclinar un lado. Designa las caras, pulsa Intro y responde a las solicitudes de la opción. Para presionar o tirar rápido, [`PRESIONARTIRAR`](/docs/commands/presspull) también arrastra una cara.
+
+### ¿Cómo extruir una cara de un sólido 3D?
+
+EDITSOLIDO, `Cara`, `eXtruir`, designa la cara y pulsa Intro, y después la altura y el ángulo de inclinación: el `15` y `15` de la figura levantan un tronco de pirámide sobre la cara superior de un prisma.
+
+### ¿Cómo quitar un agujero de un sólido en AutoCAD?
+
+EDITSOLIDO, `Cara`, `sUprimir`, designa la pared del agujero y pulsa Intro: el agujero se rellena. Lo mismo quita un empalme o un chaflán.
+
+### ¿Qué diferencia hay entre EDITSOLIDO y PRESIONARTIRAR?
+
+[`PRESIONARTIRAR`](/docs/commands/presspull) desplaza una cara con un arrastre o una distancia, en perpendicular a sí misma. EDITSOLIDO hace eso y más: inclina, gira, desfasa, suprime y copia caras, varias a la vez.
+
+## Comandos relacionados [#related]
+
+- [Presionar/Tirar en AutoCAD: PRESIONARTIRAR (PRESSPULL)](/docs/commands/presspull)
+- [Empalme de aristas en AutoCAD 3D: ARISTAEMPALME (FILLETEDGE)](/docs/commands/filletedge)
+- [Extruir en AutoCAD: EXTRUSION (EXTRUDE)](/docs/commands/extrude)
+- [Diferencia de sólidos en AutoCAD: DIFERENCIA (SUBTRACT)](/docs/commands/subtract)

@@ -1,0 +1,96 @@
+---
+title: "SCP en AutoCAD: comando SCP (UCS)"
+metaTitle: "SCP en AutoCAD: comando SCP (UCS) y sus opciones"
+description: "Cómo funciona SCP (UCS) de AutoCAD en español: origen y 3 puntos, Objeto, Vista, girar en X, Y y Z, ejeZ, los SCP guardados y el Universal. Pruébalo gratis."
+type: "reference"
+generated: "lib/docs/generate.test.ts"
+faq: [{"question":"¿Cómo volver al SCU (Universal) en AutoCAD?","answer":"Ejecuta SCP y pulsa Intro: Univ es la opción por defecto. Para volver a mirar el dibujo en planta, ejecuta PLANTA y elige Universal."},{"question":"¿Cómo girar el SCP en AutoCAD?","answer":"Ejecuta SCP, elige Z y escribe el ángulo: 30 gira X e Y 30 grados en sentido contrario a las agujas del reloj. X e Y levantan el plano XY, 90 grados por defecto."},{"question":"¿Qué diferencia hay entre el SCP y el SCU?","answer":"El sistema de coordenadas universal (SCU) nunca se mueve; el sistema de coordenadas personales (SCP) es el que desplazas y giras. Al principio coinciden, y SCP dice que el actual es *UNIVERSAL*. Las coordenadas que escribes se leen en el SCP, y lo que dibujas queda en su plano XY."},{"question":"¿Cómo dibujar en una cara de un sólido 3D?","answer":"Lleva el SCP hasta ella. En la cara superior de un prisma basta con su origen: SCP, una esquina de la cara superior e Intro, como en la figura. Para un lado, da tres puntos: el origen en una esquina, un punto a lo largo de una arista para X y otro más en la cara para Y. Después dibuja: lo que dibujas queda en la cara."}]
+---
+
+SCP (UCS en inglés) define el sistema de coordenadas personales: un origen y unos ejes X e Y en cualquier lugar del espacio, de modo que su plano XY puede inclinarse. Las coordenadas que escribes se leen en él, y lo que dibujas queda en su plano XY: con el origen desplazado a la cara superior de un prisma, un círculo con centro en `30,20` queda sobre esa cara. Primero dice el nombre del SCP actual —`*UNIVERSAL*`, `*SIN NOMBRE*` o el nombre con el que se guardó— y después pide el nuevo origen o una opción; Intro ahí vuelve al SCU. Un punto es el origen, con su Z, y un punto sin Z queda a la elevación actual. Después, un punto en la parte positiva del eje X y un punto en el plano XY, leídos en el SCP actual: Intro en cualquiera de los dos conserva los ejes como están. Un punto desplaza el SCP; tres lo giran en cualquier dirección.
+
+Los comandos trabajan entonces en el plano XY del SCP: [`LINEA`](/docs/commands/line) y [`CIRCULO`](/docs/commands/circle) dibujan en él, y [`PRISMARECT`](/docs/commands/box) y [`EXTRUSION`](/docs/commands/extrude) suben desde él a lo largo de su Z. Cada objeto conserva su propio plano cuando cambia el SCP, y `PLANTA` mira en perpendicular al SCP actual. El SCP se guarda en el dibujo, y cada ejecución es un paso de deshacer. El 3D de MellowCAD es solo de sólidos y aún parcial.
+
+- **Comando:** `SCP`
+- **En inglés:** `UCS`, que se escribe `_UCS` en cualquier idioma
+- **Grupo:** [Consulta y vista](/docs/commands#inquiry)
+- **Pruébalo:** [Abre el editor](/es/draw), escribe `SCP` y pulsa Intro.
+
+## En la línea de comandos [#session]
+
+El motor lo dibuja y escribe su historial tal como lo teclearías: las solicitudes en el orden de AutoCAD 2027, con las mismas letras de opción.
+
+<Session name="ucs" caption="Un prisma visto desde el sureste: SCP desplaza el origen a su cara superior, y un círculo dibujado después en 30,20 queda sobre esa cara, no en el suelo." />
+
+## Opciones [#options]
+
+### `Cara` (`C`) [#face]
+
+Aparece como en AutoCAD 2027, para alinear el SCP con una cara de un sólido. MellowCAD pide la cara, pero aún no se alinea con ninguna: ninguna designación encuentra una.
+
+### `gUArdado` (`UA`) [#named]
+
+Los SCP guardados, por nombre. `Guardar` guarda el actual, y pregunta `Sí` o `No` antes de sustituir un nombre ya guardado; `Rest` hace actual uno guardado, con su nombre escrito en mayúsculas o en minúsculas; `Supr` admite nombres, con comas y comodines; `?` los lista, cada uno con su origen y sus ejes. Un nombre admite espacios, pero no `<>/\":;|,=*?` ni un acento grave: `Nombre SCP no válido.`.
+
+### `oBjeto` (`B`) [#object]
+
+Alinea el SCP con un objeto que designas: una línea, un círculo, un arco, una elipse, una polilínea, una spline, un texto, un texto de líneas múltiples, una definición de atributo o una referencia a bloque. El origen y el eje X van donde AutoCAD los pone para cada tipo, y el eje Z es la normal del propio objeto, así que el SCP queda en el plano del objeto. Se puede designar un objeto de una capa bloqueada. Un sombreado dice `Este objeto no define un sistema de coordenadas`, y SCP termina con el SCP como estaba.
+
+### `PRev` (`PR`) [#previous]
+
+Vuelve al SCP anterior, hasta diez atrás en una sesión, incluidos los guardados con nombre y los ortogonales. Si no queda ninguno: `No hay ningún sistema de coordenadas guardado.`.
+
+### `Vista` (`V`) [#view]
+
+Pone el plano XY perpendicular a tu línea de visión, con X en la horizontal de la pantalla, y conserva el origen: el texto que dibujas después se lee plano en la pantalla de una vista 3D.
+
+### `Univ` (`U`) [#world]
+
+Vuelve al sistema de coordenadas universal (SCU), que nunca se mueve. Es la opción por defecto de la primera solicitud, así que Intro la elige, y también devuelve la elevación a 0.
+
+### `X` [#x]
+
+Gira el SCP alrededor de su eje X: 90 grados por defecto, un ángulo escrito o un punto que lo da. Un ángulo positivo lo gira según la regla de la mano derecha, así que 90 levanta el plano XY sobre el antiguo eje X.
+
+### `Y` [#y]
+
+Gira el SCP alrededor de su eje Y, como `X` alrededor de X.
+
+### `Z` [#z]
+
+Gira el SCP alrededor de su eje Z, como `X` alrededor de X: 30 gira X e Y 30 grados en sentido contrario a las agujas del reloj, visto desde arriba.
+
+### `ejEZ` (`EZ`) [#zaxis]
+
+Un nuevo origen, o Intro para conservar el actual, y después un punto en la parte positiva del eje Z: el plano XY queda perpendicular a él, con su X horizontal respecto al plano XY universal. Dos puntos que coinciden dicen `Los puntos coinciden`. Su `Objeto` admite una línea, un arco, una polilínea abierta o una spline: el origen en el extremo más cercano al punto designado, y el eje Z a lo largo del objeto, alejándose de él.
+
+## Lo que aún no hace [#missing]
+
+`Cara`, que alinea el SCP con una cara de un sólido: la pide, pero aún no encuentra ninguna. Aplicar y Sección, que la primera solicitud admite y aquí se rechazan, porque hay una sola ventana gráfica y no hay objetos de sección. El cuadro de diálogo SCP (UCSMAN), los pinzamientos del icono y su menú contextual, y el icono mostrando el nuevo SCP mientras lo colocas. La cruz del cursor girando con el SCP: se queda recta en la pantalla hasta que `PLANTA` alinea la vista con él. UCSFOLLOW, UCSVP y el SCP dinámico. `oBjeto` sobre una cota, y Grupo en su designación. La profundidad que conserva un SCP ortogonal. La pausa en una lista larga, que espera a que pulses Intro para continuar.
+
+[Qué hace y qué le falta, en detalle (en inglés)](https://github.com/ovelilla/mellowcad/blob/main/docs/coverage/coordinate-systems.md#ucs--es-scp--pt-br-ucs--ucsdd)
+
+## Preguntas frecuentes [#questions]
+
+### ¿Cómo volver al SCU (Universal) en AutoCAD?
+
+Ejecuta SCP y pulsa Intro: `Univ` es la opción por defecto. Para volver a mirar el dibujo en planta, ejecuta `PLANTA` y elige `Universal`.
+
+### ¿Cómo girar el SCP en AutoCAD?
+
+Ejecuta SCP, elige `Z` y escribe el ángulo: `30` gira X e Y 30 grados en sentido contrario a las agujas del reloj. `X` e `Y` levantan el plano XY, 90 grados por defecto.
+
+### ¿Qué diferencia hay entre el SCP y el SCU?
+
+El sistema de coordenadas universal (SCU) nunca se mueve; el sistema de coordenadas personales (SCP) es el que desplazas y giras. Al principio coinciden, y SCP dice que el actual es `*UNIVERSAL*`. Las coordenadas que escribes se leen en el SCP, y lo que dibujas queda en su plano XY.
+
+### ¿Cómo dibujar en una cara de un sólido 3D?
+
+Lleva el SCP hasta ella. En la cara superior de un prisma basta con su origen: SCP, una esquina de la cara superior e Intro, como en la figura. Para un lado, da tres puntos: el origen en una esquina, un punto a lo largo de una arista para X y otro más en la cara para Y. Después dibuja: lo que dibujas queda en la cara.
+
+## Comandos relacionados [#related]
+
+- [PLANTA (PLAN)](/docs/commands#plan): Vista en planta
+- [Órbita 3D en AutoCAD: comando 3DORBITA (3DORBIT)](/docs/commands/3dorbit)
+- [Prisma rectangular en AutoCAD: PRISMARECT (BOX)](/docs/commands/box)
+- [Extruir en AutoCAD: EXTRUSION (EXTRUDE)](/docs/commands/extrude)
