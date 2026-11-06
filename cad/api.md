@@ -2730,6 +2730,8 @@ export interface DemoOptions {
     readonly height?: number;
     /** Running object snaps; off unless the script is about them. */
     readonly snap?: boolean;
+    /** The UCS icon, where UCSICON puts it; off unless the script is about it. */
+    readonly ucsIcon?: boolean;
     readonly layers?: readonly DemoLayer[];
     /** DIMSCALE of the current dimension style, as a template sets it. */
     readonly dimScale?: number;

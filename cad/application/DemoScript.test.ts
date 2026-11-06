@@ -101,6 +101,18 @@ describe("recordDemo", () => {
     expect(segments.length).toBeLessThanOrEqual(4)
   })
 
+  it("shows the UCS icon only when the script asks for it", async () => {
+    const showsIcon = async (ucsIcon?: boolean) => {
+      const { scene } = await recordDemo(demo({ ucsIcon }).command("LINE"))
+      return scene.primitives.some(
+        (primitive) =>
+          "stroke" in primitive && primitive.stroke?.color === THEME.ucsIcon
+      )
+    }
+    expect(await showsIcon()).toBe(false)
+    expect(await showsIcon(true)).toBe(true)
+  })
+
   it("acquires on a hover without the clock, so a late event loop drops nothing", async () => {
     // Timers that never advance: a recording that waited on one would hang.
     vi.useFakeTimers()
