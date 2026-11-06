@@ -8,6 +8,7 @@ import type { LinetypeId } from "../domain/linetypes"
 import type { Lineweight } from "../domain/lineweights"
 import type { Vec2 } from "../geometry/Vec2"
 import type { Scene } from "../scene/types"
+import type { EngineState } from "./EngineState"
 import type { SnapType } from "./snapping/types"
 import type { EngineLocale } from "../locales/types"
 import { engineText, promptString, type PromptSegment } from "./EngineText"
@@ -186,6 +187,11 @@ export interface DemoRecording {
    * tooltips included, since those are what a precision demo is about.
    */
   readonly scene: Scene
+  /**
+   * The editor's state at the end: what a host draws around the frame — the
+   * ViewCube's faces, the view's name — as the editor would.
+   */
+  readonly state: EngineState
 }
 
 export interface RecordOptions {
@@ -268,6 +274,7 @@ export async function recordDemo(
       steps,
       document: runtime.document,
       scene: runtime.buildScene(),
+      state: driver.state(),
     }
   } finally {
     driver.dispose()
