@@ -298,8 +298,8 @@ email of SaaSHub and G2 is `hello@mellowcad.com`, Cloudflare Email Routing to th
 SaaSHub submitted and verified (free queue, 1–12 weeks), with the logo, five screenshots, MIT and
 nine competitors; AlternativeTo submitted with six alternatives (AutoCAD, LibreCAD, QCAD,
 DraftSight, FreeCAD, BricsCAD), the icon, six screenshots and the video, in the free queue (the
-owner declined the 15 $ priority review on 2026-11-06; it can still be bought from "My
-submissions"). Refused: G2's automatic check calls the URL a B2C product
+owner declined the 15 $ priority review on 2026-11-06), approved the same day from the free queue
+(`alternativeto.net/software/mellowcad/`, the six alternatives connected). Refused: G2's automatic check calls the URL a B2C product
 and stops the form (its support is the only way on); OpenAlternative needs 250 stars on a
 repository under six months old; TheCADHub is now free only with its badge linking back from our
 site (a link exchange, declined) or 49 $.

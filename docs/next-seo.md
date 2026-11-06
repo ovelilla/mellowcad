@@ -208,7 +208,8 @@ el texto de cada uno, en la sección del kit indicada; anota la fecha real al ha
 | 9–13/11 | Appvizer y Quelle-Alternative | kit §6 | — |
 | 9–13/11 | Participar de verdad en r/AutoCAD y r/cad | kit §3 | — |
 | jue 12/11 | **r/SideProject**, pidiendo opiniones: es el lanzamiento suave (el dueño no tiene cinco usuarios de AutoCAD a mano) | kit §3 | — |
-| lun 16/11 y cada lunes | Seguimiento: ¿aprobados SaaSHub y AlternativeTo (su página `/software/mellowcad/`)?, correo en hello@; si AlternativeTo sigue sin revisar el 30/11, reconsiderar los 15 $ antes de Product Hunt | kit §6 | — |
+| 6/11 (hecho) | AlternativeTo aprobado el mismo día, por la cola gratuita (`/software/mellowcad/`), con sus seis alternativas; queda del dueño: pedir el acceso de desarrollador, comprobar que se ven las capturas y el vídeo, y el nombre del desarrollador (la ficha dice el completo) y la categoría (Photos & Graphics). Su insignia, no: un enlace saliente en la landing que no da posicionamiento | kit §6 | — |
+| lun 16/11 y cada lunes | Seguimiento: ¿aprobado SaaSHub?, ¿aparece MellowCAD en la lista de AutoCAD gratis y online de AlternativeTo (22 herramientas el 6/11)?, correo en hello@ | kit §6 | — |
 | semana del 16/11 | Arreglar lo que salga de r/SideProject (sesiones) | — | — |
 | mié 18/11, 14:00–16:00 (hora de España) | **Show HN**, escrito a mano; todo el día respondiendo | kit §2 | lo del lanzamiento suave, arreglado |
 | jue 19/11 | Artículo técnico en dev.to sobre el motor, escrito a mano | kit §6 | — |
